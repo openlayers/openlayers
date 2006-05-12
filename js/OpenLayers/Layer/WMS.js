@@ -42,5 +42,5 @@ OpenLayers.Layer.WMS.prototype =
     _initTiles: function () {
         this.div.innerHTML="";
         OpenLayers.Layer.Grid.prototype._initTiles.apply(this, arguments);
-    },
+    }
 });

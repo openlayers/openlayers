@@ -321,5 +321,5 @@ OpenLayers.Map.prototype = {
     defaultMouseUp: function (evt) {
         this.mouseDragStart = null;
         this.div.style.cursor = "default";
-    },
+    }
 };
