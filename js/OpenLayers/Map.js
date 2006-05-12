@@ -287,6 +287,7 @@ OpenLayers.Map.prototype = {
     */
     defaultDblClick: function (evt) {
         var newCenter = this.getLatLonFromPoint( evt.xy ); 
+        this.zoomIn();
         this.setCenter(newCenter);
     },
 
