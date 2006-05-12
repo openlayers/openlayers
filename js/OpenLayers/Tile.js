@@ -32,34 +32,6 @@ OpenLayers.Tile.prototype = {
         }
     },
 
-    /** get the full request string from the ds and the tile params 
-    *     and call the AJAX loadURL(). 
-    *
-    *     input are function pointers for what to do on success and failure.
-    * 
-    * @param {function} success
-    * @param {function} failure
-    */
-    loadFeaturesForRegion:function(success, failure) {
-
-        if (!this.loaded) {
-        
-            var server = this.ds.serverPath;
-            
-            if (server != "") {
-        
-                var queryString = this.getFullRequestString();
-                // TODO: Hmmm, this stops multiple loads of the data when a 
-                //       result isn't immediately retrieved, but it's hacky. 
-                //       Do it better.
-                this.loaded = true; 
-                OpenLayers.Application.loadURL(queryString, null, this, 
-                                       success, failure);
-            }
-        }
-    },
-
-
     /**
     */
     draw:function() {
