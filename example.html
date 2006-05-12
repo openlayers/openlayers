@@ -1,0 +1,41 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="imagetoolbar" content="no"> <!--ie image gizmo OFF!-->
+    <style type="text/css">
+        #map {
+            width: 800px;
+            height: 475px;
+            border: 1px solid black;
+            background-color: red;
+        }
+    </style>
+<!--
+    <script src="js/3rd/prototype.js" ></script>
+    <script src="js/3rd/logger.js" ></script> 
+    <script src="http://maps.google.com/maps?file=api&amp;v=1&amp;key=ABQIAAAAmQ3udCHPQVB_9T_edFZ7YRTcPsh3Vei3pvv-O2gjJ-8oYrRtdhQUNNh-FlqSqbWQTvBoeGLmUYa5EQ" type="text/javascript"></script>
+-->
+    <script src="js/OpenLayers.js"></script>
+    <script type="text/javascript">
+      <!--
+        var lat = 40;
+        var lon = 5;
+	var zoom = 5;
+        var map, layer;
+
+        function init(){
+            map = new OpenLayers.Map( $('map') );
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                "http://octo.metacarta.com/cgi-bin/mapserv",
+                {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'} );
+                
+            map.addLayer(layer);
+            map.setCenter(new OpenLayers.LatLon(lat, lon), zoom);
+        }
+      -->
+    </script>
+  </head>
+  <body onload="init()">
+    <h1>OpenLayers Example</h1>
+    <div id="map"></div>
+  </body>
+</html>

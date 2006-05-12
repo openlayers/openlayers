@@ -1,0 +1,216 @@
+OpenLayers.Layer.Grid = Class.create();
+OpenLayers.Layer.Grid.prototype = Object.extend( new OpenLayers.Layer(), {
+    
+    // str: url
+    url: null,
+
+    // hash: params
+    params: null,
+
+    // tileSize: OpenLayers.Size
+    tileSize: null,
+
+    // grid: Array(Array())
+    // this is an array of rows, each row is an array of tiles
+    grid: null,
+
+    DEFAULT_TILE_SIZE: new OpenLayers.Size(256,256),
+
+    /**
+    * @param {str} name
+    * @param {str} url
+    * @param {hash} params
+    */
+    initialize: function(name, url, params) {
+        OpenLayers.Layer.prototype.initialize.apply(this, [name]);
+        this.url = url;
+        this.params = params;
+        this.tileSize = this.DEFAULT_TILE_SIZE;
+    },
+    /** 
+     * moveTo
+     * moveTo is a function called whenever the map is moved. All the moving
+     * of actual 'tiles' is done by the map, but moveTo's role is to accept
+     * a bounds and make sure the data that that bounds requires is pre-loaded.
+     * @param {OpenLayers.Bounds}
+     */
+    moveTo:function(bounds,zoomChanged) {
+        if (!this.grid || zoomChanged) {
+            this._initTiles();
+        } else {
+          var i = 0;
+          while (this.getGridBounds().minlat > bounds.minlat) {
+             this.insertRow(false); 
+          }
+          while (this.getGridBounds().minlon > bounds.minlon) {
+             this.insertColumn(true); 
+          }
+          while (this.getGridBounds().maxlat < bounds.maxlat) {
+             this.insertRow(true); 
+          }
+          while (this.getGridBounds().maxlon < bounds.maxlon) {
+             this.insertColumn(false); 
+          }
+        }
+    },
+    getGridBounds:function() {
+        var topLeftTile = this.grid[0][0];
+        var bottomRightTile = this.grid[this.grid.length-1][this.grid[0].length-1];
+        return new OpenLayers.Bounds(bottomRightTile.bounds.minlat, topLeftTile.bounds.minlon,
+                                     topLeftTile.bounds.maxlat, bottomRightTile.bounds.maxlon);
+    },
+    _initTiles:function() {
+        var viewSize = this.map.getSize();
+        var bounds = this.map.getExtent();
+        var extent = this.map.getFullExtent();
+        var resolution = this.map.getResolution();
+        var tilelon = resolution*this.tileSize.w;
+        var tilelat = resolution*this.tileSize.h;
+        
+        var offsetlon = bounds.minlon - extent.minlon;
+        var tilecol = Math.floor(offsetlon/tilelon);
+        var tilecolremain = offsetlon/tilelon - tilecol;
+        var tileoffsetx = -tilecolremain * this.tileSize.w;
+        var tileoffsetlon = extent.minlon + tilecol * tilelon;
+        
+        var offsetlat = bounds.maxlat - (extent.minlat + tilelat);  
+        var tilerow = Math.ceil(offsetlat/tilelat);
+        var tilerowremain = tilerow - offsetlat/tilelat;
+        var tileoffsety = -tilerowremain * this.tileSize.h;
+        var tileoffsetlat = extent.minlat + tilerow * tilelat;
+        
+        tileoffsetx = Math.round(tileoffsetx); // heaven help us
+        tileoffsety = Math.round(tileoffsety);
+
+        this.origin = new OpenLayers.Point(tileoffsetx,tileoffsety);
+        this.grid = new Array();
+
+        var startX = tileoffsetx; 
+        var startLon = tileoffsetlon;
+        
+        do {
+            var row = new Array();
+            this.grid.append(row);
+            tileoffsetlon = startLon;
+            tileoffsetx = startX;
+            do {
+                var tileBounds = new OpenLayers.Bounds(
+                                       tileoffsetlat, 
+                                       tileoffsetlon, 
+                                       tileoffsetlat+tilelat,
+                                       tileoffsetlon+tilelon
+                                     );
+                var tile = this.addTile(tileBounds, 
+                                        new OpenLayers.Point(tileoffsetx,
+                                                         tileoffsety
+                                                        )
+                                        );
+                row.append(tile);
+     
+                tileoffsetlon += tilelon;       
+                tileoffsetx += this.tileSize.w;
+            } while (tileoffsetlon < bounds.maxlon)  
+            
+            tileoffsetlat -= tilelat;
+            tileoffsety += this.tileSize.h;
+        } while(tileoffsetlat > bounds.minlat - tilelat)
+
+    },
+    
+    /**
+    * @param {bool} prepend - if true, prepend to beginning.
+    *                         if false, then append to end
+    */
+    insertRow:function(prepend) {
+        var modelRowIndex = (prepend) ? 0 : (this.grid.length - 1);
+        var modelRow = this.grid[modelRowIndex];
+
+        var newRow = new Array();
+
+        var resolution = this.map.getResolution();
+        var deltaY = (prepend) ? -this.tileSize.h : this.tileSize.h;
+        var deltaLat = resolution * -deltaY;
+
+        for (var i=0; i < modelRow.length; i++) {
+            var modelTile = modelRow[i];
+            var bounds = modelTile.bounds.copyOf();
+            var position = modelTile.position.copyOf();
+            bounds.minlat = bounds.minlat + deltaLat;
+            bounds.maxlat = bounds.maxlat + deltaLat;
+            position.y = position.y + deltaY;
+            var newTile = this.addTile(bounds, position);
+            newRow.append(newTile);
+        }
+        
+        if (newRow.length>0){
+            if (prepend) {
+                this.grid.prepend(newRow);
+            } else {
+                this.grid.append(newRow);
+            }
+        }       
+    },
+
+    /**
+    * @param {bool} prepend - if true, prepend to beginning.
+    *                         if false, then append to end
+    */
+    insertColumn:function(prepend) {
+        var modelCellIndex;
+        var deltaX = (prepend) ? -this.tileSize.w : this.tileSize.w;
+        var resolution = this.map.getResolution();
+        var deltaLon = resolution * deltaX;
+
+        for (var i=0; i<this.grid.length; i++) {
+            var row = this.grid[i];
+            modelTileIndex = (prepend) ? 0 : (row.length - 1);
+            var modelTile = row[modelTileIndex];
+            
+            var bounds = modelTile.bounds.copyOf();
+            var position = modelTile.position.copyOf();
+            bounds.minlon = bounds.minlon + deltaLon;
+            bounds.maxlon = bounds.maxlon + deltaLon;
+            position.x = position.x + deltaX;
+            var newTile = this.addTile(bounds, position);
+            
+            if (prepend) {
+                row = row.prepend(newTile);
+            } else {
+                row = row.append(newTile);
+            }
+        }
+    },
+    /** combine the ds's serverPath with its params and the tile's params. 
+    *   
+    *    does checking on the serverPath variable, allowing for cases when it 
+    *     is supplied with trailing ? or &, as well as cases where not. 
+    *
+    *    return in formatted string like this:
+    *        "server?key1=value1&key2=value2&key3=value3"
+    *
+    * @return {str}
+    */
+    getFullRequestString:function(params) {
+        var requestString = "";        
+        
+        // concat tile params with layer params and convert to string
+        var allParams = Object.extend(params, this.params);
+        var paramsString = OpenLayers.getParameterString(allParams);
+
+        var server = this.url;
+        var lastServerChar = server.charAt(server.length - 1);
+
+        if ((lastServerChar == "&") || (lastServerChar == "?")) {
+            requestString = server + paramsString;
+        } else {
+            if (server.indexOf('?') == -1) {
+                //serverPath has no ? -- add one
+                requestString = server + '?' + paramsString;
+            } else {
+                //serverPath contains ?, so must already have paramsString at the end
+                requestString = server + '&' + paramsString;
+            }
+        }
+        return requestString;
+    }
+});
