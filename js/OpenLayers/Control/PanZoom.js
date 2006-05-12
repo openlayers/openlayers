@@ -66,7 +66,7 @@ OpenLayers.Control.PanZoom.prototype =
                 var resolution = this.map.getResolution();
                 var center = this.map.getCenter();
                 this.map.setCenter(
-                  new OpenLayers.LatLon(center.lat + (reslution * 50), 
+                  new OpenLayers.LatLon(center.lat + (resolution * 50), 
                                         center.lon
                                        )
                                   );
@@ -75,7 +75,7 @@ OpenLayers.Control.PanZoom.prototype =
                 var resolution = this.map.getResolution();
                 var center = this.map.getCenter();
                 this.map.setCenter(
-                  new OpenLayers.LatLon(center.lat - (reslution * 50), 
+                  new OpenLayers.LatLon(center.lat - (resolution * 50), 
                                         center.lon
                                        )
                                   );
