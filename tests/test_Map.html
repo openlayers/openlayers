@@ -1,0 +1,33 @@
+<html>
+<head>
+  <script src="../lib/OpenLayers.js"></script>
+  <script language="text/javascript"><!--
+    var map; 
+    function test_01_Map_constructor (t) {
+	t.plan( 9 );
+	
+	map = new OpenLayers.Map('map');
+	t.ok( map instanceof OpenLayers.Map, "new OpenLayers.Map returns object" );
+	t.ok( map.div instanceof HTMLDivElement, "map.div is an HTMLDivElement" );
+	t.ok( map.controlDiv instanceof HTMLDivElement, "map.controlDiv is an HTMLDivElement" );
+	t.ok( map.viewPortDiv instanceof HTMLDivElement, "map.viewPortDiv is an HTMLDivElement" );
+	t.ok( map.layerContainerDiv instanceof HTMLDivElement, "map.layerContainerDiv is an HTMLDivElement" );
+	t.ok( map.layerContainerDiv instanceof HTMLDivElement, "map.layerContainerDiv is an HTMLDivElement" );
+	t.ok( map.layers instanceof Array, "map.layers is an Array" );
+	t.ok( map.controls instanceof Array, "map.controls is an Array" );
+	t.ok( map.events instanceof OpenLayers.Events, "map.events is an OpenLayers.Events" );
+    }
+
+    function test_99_Map_destroy (t) {
+	t.plan( 2 );	
+	map.destroy();
+	t.eq( map.layers, null, "map.layers is null after destroy" );
+	t.eq( map.controls, null, "map.controls is null after destroy" );
+    }
+  // -->
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 1024px; height: 512px;"/>
+</body>
+</html>

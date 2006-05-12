@@ -1,0 +1,18 @@
+<html>
+<head>
+  <script src="../lib/OpenLayers.js"></script>
+  <script language="text/javascript"><!--
+    var map; 
+    function test_01_Control_constructor (t) {
+	t.plan( 1 );
+	
+	control = new OpenLayers.Control();
+	t.ok( control instanceof OpenLayers.Control, "new OpenLayers.Control returns object" );
+    }
+  // -->
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 1024px; height: 512px;"/>
+</body>
+</html>
