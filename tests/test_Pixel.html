@@ -1,0 +1,18 @@
+<html>
+<head>
+  <script src="../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var pixel; 
+    function test_01_Pixel_constructor (t) {
+	t.plan( 3 );
+        pixel = new OpenLayers.Pixel(5,6);
+        t.ok( pixel instanceof OpenLayers.Pixel, "new OpenLayers.Pixel returns Pixel object" );
+        t.eq( pixel.x, 5, "pixel.x is set correctly");
+        t.eq( pixel.y, 6, "pixel.y is set correctly");
+    }
+  // -->
+  </script>
+</head>
+<body>
+</body>
+</html>
