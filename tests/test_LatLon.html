@@ -1,0 +1,18 @@
+<html>
+<head>
+  <script src="../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var latlon; 
+    function test_01_LatLon_constructor (t) {
+	t.plan( 3 );
+        latlon = new OpenLayers.LatLon(5,6);
+        t.ok( latlon instanceof OpenLayers.LatLon, "new OpenLayers.LatLon returns LatLon object" );
+        t.eq( latlon.lat, 5, "latlon.lat is set correctly");
+        t.eq( latlon.lon, 6, "latlon.lon is set correctly");
+    }
+  // -->
+  </script>
+</head>
+<body>
+</body>
+</html>
