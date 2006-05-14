@@ -29,6 +29,7 @@
             map.setCenter(new OpenLayers.LatLon(lat, lon), zoom);
             map.addLayer(layer);
             map.addLayer(gmap);
+            map.addControl( new OpenLayers.Control.LayerSwitcher() );
         }
         // -->
     </script>
