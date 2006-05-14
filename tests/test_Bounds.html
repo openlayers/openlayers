@@ -15,6 +15,7 @@
      }
      function test_02_Bounds_toBBOX(t) {
          t.plan( 1 );
+         bounds = new OpenLayers.Bounds(1,2,3,4);
          t.eq( bounds.toBBOX(), "2,1,4,3", "toBBOX() returns correct value." )
      }
   // -->

@@ -19,6 +19,7 @@
     }
     function test_2_Map_center(t) {
         t.plan(4);
+        map = new OpenLayers.Map($('map'));
         map.setCenter(new OpenLayers.LatLon(1,2), 3);
         t.ok( map.getCenter() instanceof OpenLayers.LatLon, "map.getCenter returns a LatLon");
         t.eq( map.getZoom(), 3, "map.zoom is correct after calling setCenter");
@@ -27,6 +28,7 @@
     }
     function test_99_Map_destroy (t) {
         t.plan( 2 );    
+        map = new OpenLayers.Map($('map'));
         map.destroy();
         t.eq( map.layers, null, "map.layers is null after destroy" );
         t.eq( map.controls, null, "map.controls is null after destroy" );
