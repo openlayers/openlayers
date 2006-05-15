@@ -24,7 +24,6 @@
                 {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'} );
                 
             map.addLayer(layer);
-            map.addControl( new OpenLayers.Control.LayerSwitcher() );
             map.setCenter(new OpenLayers.LatLon(lat, lon), zoom);
         }
         // -->
