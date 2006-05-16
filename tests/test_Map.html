@@ -21,11 +21,12 @@
         t.ok( map.maxResolution > 0, "map.maxResolution is set" );
     }
     function test_02_Map_center(t) {
-        t.plan(4);
+        t.plan(5);
         map = new OpenLayers.Map($('map'));
-        map.setCenter(new OpenLayers.LatLon(1,2), 3);
+        map.setCenter(new OpenLayers.LatLon(1,2), 0);
         t.ok( map.getCenter() instanceof OpenLayers.LatLon, "map.getCenter returns a LatLon");
-        t.eq( map.getZoom(), 3, "map.zoom is correct after calling setCenter");
+        t.eq( map.getZoom(), 0, "map.zoom is correct after calling setCenter");
+        t.eq( map.getResolution(), map.maxResolution, "map.getResolution() == map.maxResolution");
         t.eq( map.getCenter().lat, 1, "map center lat is correct after calling setCenter");
         t.eq( map.getCenter().lon, 2, "map center lon is correct after calling setCenter");
     }
