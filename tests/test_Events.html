@@ -1,0 +1,42 @@
+<html>
+<head>
+  <script src="../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var map; 
+    function test_01_Events_constructor (t) {
+	t.plan( 18 );
+        var obj = {result: 0}, eventTypes = ["doThingA", "doThingB", "doThingC"];
+	events = new OpenLayers.Events(obj, $('map'), eventTypes);
+	t.ok( events instanceof OpenLayers.Events, "new OpenLayers.Control returns object" );
+        t.ok( events.div instanceof HTMLDivElement, "events.div isa HTMLDivElement" );
+        t.ok( events.object === obj, "events.object is the object we passed" );
+
+        var builtin = OpenLayers.Events.prototype.BROWSER_EVENTS;
+        for (var i = 0; i < builtin.length; i++) {
+            t.ok( events.listeners[builtin[i]] instanceof Array, 
+                    builtin[i] + " builtin listener isa Array" );
+        }
+        for (var i = 0; i < eventTypes.length; i++) {
+            t.ok( events.listeners[eventTypes[i]] instanceof Array, 
+                    eventTypes[i] + " custom listener isa Array" );
+        }
+
+        t.eq( events.listeners["this doesn't exist"], null, "undefined event handler is none" );
+
+        var func = function () { this.result++ }
+        events.register( "doThingA", obj, func );
+        t.eq( events.listeners["doThingA"].length, 1, "register correctly sets event.listener" );
+
+        t.eq( obj.result, 0, "result is 0 before we call triggerEvent" );
+        events.triggerEvent("doThingA", {});
+        t.eq( obj.result, 1, "result is 1 after we call triggerEvent" );
+        events.triggerEvent("doThingA");
+        t.eq( obj.result, 2, "result is 2 after we call triggerEvent with no event" );
+    }
+  // -->
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 1024px; height: 512px;"/>
+</body>
+</html>
