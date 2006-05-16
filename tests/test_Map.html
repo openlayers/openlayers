@@ -4,7 +4,7 @@
   <script type="text/javascript"><!--
     var map; 
     function test_01_Map_constructor (t) {
-        t.plan( 9 );
+        t.plan( 12 );
         
         map = new OpenLayers.Map($('map'));
         t.ok( map instanceof OpenLayers.Map, "new OpenLayers.Map returns object" );
@@ -16,6 +16,9 @@
         t.ok( map.layers instanceof Array, "map.layers is an Array" );
         t.ok( map.controls instanceof Array, "map.controls is an Array" );
         t.ok( map.events instanceof OpenLayers.Events, "map.events is an OpenLayers.Events" );
+        t.ok( map.maxExtent instanceof OpenLayers.Bounds, "map.maxExtent is an OpenLayers.Bounds" );
+        t.ok( map.maxZoomLevel > 0, "map.maxZoomLevel is set" );
+        t.ok( map.maxResolution > 0, "map.maxResolution is set" );
     }
     function test_02_Map_center(t) {
         t.plan(4);
@@ -41,6 +44,12 @@
         t.ok( map.layers[1] === layer2, "2nd layer is layer2" );
         t.eq( parseInt(layer1.div.style.zIndex), map.Z_INDEX_BASE['Layer'], 
                 "layer1 zIndex is set" );
+    }
+    function test_04_Map_options(t) {
+        t.plan(2);
+        map = new OpenLayers.Map($('map'), {maxZoomLevel: 5, maxResolution: 3.14159});
+        t.eq( map.maxZoomLevel, 5, "map.maxZoomLevel set correctly via options hash" );
+        t.eq( map.maxResolution, 3.14159, "map.maxResolution set correctly via options hash" );
     }
     function test_99_Map_destroy (t) {
         t.plan( 2 );    
