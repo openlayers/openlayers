@@ -17,7 +17,7 @@
         t.ok( map.controls instanceof Array, "map.controls is an Array" );
         t.ok( map.events instanceof OpenLayers.Events, "map.events is an OpenLayers.Events" );
     }
-    function test_2_Map_center(t) {
+    function test_02_Map_center(t) {
         t.plan(4);
         map = new OpenLayers.Map($('map'));
         map.setCenter(new OpenLayers.LatLon(1,2), 3);
@@ -25,6 +25,22 @@
         t.eq( map.getZoom(), 3, "map.zoom is correct after calling setCenter");
         t.eq( map.getCenter().lat, 1, "map center lat is correct after calling setCenter");
         t.eq( map.getCenter().lon, 2, "map center lon is correct after calling setCenter");
+    }
+    function test_03_Map_add_layers(t) {
+        t.plan(4);
+        map = new OpenLayers.Map($('map'));
+        var layer1 = new OpenLayers.Layer.WMS("Layer 1", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        var layer2 = new OpenLayers.Layer.WMS("Layer 2",
+            "http://wms.jpl.nasa.gov/wms.cgi", {layers: "modis,global_mosaic"});
+        // this uses map.addLayer internally
+        map.addLayers([layer1, layer2])
+        t.eq( map.layers.length, 2, "map has exactly two layers" );
+        t.ok( map.layers[0] === layer1, "1st layer is layer1" );
+        t.ok( map.layers[1] === layer2, "2nd layer is layer2" );
+        t.eq( parseInt(layer1.div.style.zIndex), map.Z_INDEX_BASE['Layer'], 
+                "layer1 zIndex is set" );
     }
     function test_99_Map_destroy (t) {
         t.plan( 2 );    
