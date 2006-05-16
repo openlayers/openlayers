@@ -6,15 +6,11 @@
             width: 800px;
             height: 475px;
             border: 1px solid black;
-            background-color: red;
         }
     </style>
     <script src="lib/OpenLayers.js"></script>
     <script type="text/javascript">
         <!--
-        var lat = 40;
-        var lon = 5;
-        var zoom = 5;
         var map, layer;
 
         function init(){
@@ -24,7 +20,7 @@
                 {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'} );
                 
             map.addLayer(layer);
-            map.setCenter(new OpenLayers.LatLon(lat, lon), zoom);
+            map.setCenter(new OpenLayers.LatLon(0, 0), 0);
         }
         // -->
     </script>
