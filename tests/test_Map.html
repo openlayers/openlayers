@@ -53,6 +53,18 @@
         t.eq( map.maxZoomLevel, 5, "map.maxZoomLevel set correctly via options hash" );
         t.eq( map.maxResolution, 3.14159, "map.maxResolution set correctly via options hash" );
     }
+    function test_05_Map_center(t) {
+        t.plan(5);
+        map = new OpenLayers.Map($('map'));
+        map.setCenter(new OpenLayers.LatLon(1,2), 0);
+        map.zoomIn();
+        t.ok( map.getCenter() instanceof OpenLayers.LatLon, "map.getCenter returns a LatLon");
+        t.eq( map.getZoom(), 1, "map.zoom is correct after calling setCenter,zoom in");
+        t.eq( map.getCenter().lat, 1, "map center lat is correct after calling setCenter,zoom in");
+        t.eq( map.getCenter().lon, 2, "map center lon is correct after calling setCenter, zoom in");
+        map.zoomOut();
+        t.eq( map.getZoom(), 0, "map.zoom is correct after calling setCenter,zoom in, zoom out");
+    }
     function test_99_Map_destroy (t) {
         t.plan( 2 );    
         map = new OpenLayers.Map($('map'));
