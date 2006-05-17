@@ -1,0 +1,38 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="imagetoolbar" content="no"> <!--ie image gizmo OFF!-->
+    <style type="text/css">
+        #map {
+            width: 800px;
+            height: 475px;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+        var map, layer;
+
+        function init(){
+            map = new OpenLayers.Map('map');
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                "http://octo.metacarta.com/cgi-bin/mapserv",
+                {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'} );
+                
+            map.addLayer(layer);
+            var markers = new OpenLayers.Layer.Marker( "Markers" );
+            map.addLayer(markers);
+            var icon = new OpenLayers.Icon('http://boston.openguides.org/markers/AQUA.png',new OpenLayers.Size(10,17));
+            markers.addMarker(new OpenLayers.Marker(icon, new OpenLayers.LonLat(0,0)));
+            markers.addMarker(new OpenLayers.Marker(icon, new OpenLayers.LonLat(-5,-10)));
+            map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+        }
+        // -->
+    </script>
+  </head>
+  <body onload="init()">
+    <h1>OpenLayers Example</h1>
+    <div id="map"></div>
+  </body>
+</html>
