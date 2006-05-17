@@ -1,0 +1,54 @@
+<html>
+<head>
+  <script src="../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var tile; 
+    
+    function test_01_Tile_Image_constructor (t) {
+        t.plan( 10 );
+        tile = new OpenLayers.Tile.Image(
+          new OpenLayers.Bounds(1,2,3,4), "http://www.openlayers.org/dev/tests/tileimage",
+          new OpenLayers.Size(5,6));
+        t.ok( tile instanceof OpenLayers.Tile.Image, "new OpenLayers.Tile returns Tile object" );
+        t.ok( tile.bounds instanceof OpenLayers.Bounds, "tile.bounds is a Bounds object" );
+        t.eq( tile.bounds.minlat, 1, "tile.bounds.minlat is set correctly");
+        t.eq( tile.bounds.maxlat, 3, "tile.bounds.maxlat is set correctly");
+        t.eq( tile.bounds.minlon, 2, "tile.bounds.minlon is set correctly");
+        t.eq( tile.bounds.maxlon, 4, "tile.bounds.maxlon is set correctly");
+        t.ok( tile.size instanceof OpenLayers.Size, "tile.size is a Size object" );
+        t.eq( tile.size.w, 5, "tile.size.w is set correctly");
+        t.eq( tile.size.h, 6, "tile.size.h is set correctly");
+        t.eq( tile.url, "http://www.openlayers.org/dev/tests/tileimage", "tile.size.h is set correctly");
+    }
+    function test_02_Tile_Image_draw (t) {
+        t.plan( 4 );
+        tile = new OpenLayers.Tile.Image(
+          new OpenLayers.Bounds(1,2,3,4), "http://www.openlayers.org/dev/tests/tileimage",
+          new OpenLayers.Size(5,6));
+        tile.draw();
+        t.ok( tile.img instanceof HTMLImageElement, "tile.draw creates an image");
+        t.eq( tile.img.src, "http://www.openlayers.org/dev/tests/tileimage", "tile.draw creates an image");
+        t.eq( tile.img.style.width, "5px", "Image width is correct" );
+        t.eq( tile.img.style.height, "6px", "Image height is correct" );
+    }
+    function test_03_Tile_setPosition (t) {
+        t.plan( 4 );
+        tile = new OpenLayers.Tile.Image(
+          new OpenLayers.Bounds(1,2,3,4), "http://www.openlayers.org/dev/tests/tileimage",
+          new OpenLayers.Size(5,6));
+        t.eq( tile.getPosition(), null, "getPosition before draw returns null" );
+        tile.setPosition(new OpenLayers.Pixel(1,2));
+        t.eq( tile.getPosition(), null, "setPosition before draw has no effect" );
+        tile.draw();
+        tile.setPosition(new OpenLayers.Pixel(1,2));
+        t.eq( tile.getPosition().x, 1, "setPosition sets x after draw" );
+        t.eq( tile.getPosition().y, 2, "setPosition sets y after draw" );
+    }
+
+  // -->
+  </script>
+</head>
+<body>
+</body>
+</html>
+
