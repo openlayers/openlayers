@@ -7,16 +7,16 @@
 	t.plan( 5 );
         bounds = new OpenLayers.Bounds(1,2,3,4);
         t.ok( bounds instanceof OpenLayers.Bounds, "new OpenLayers.Bounds returns Bounds object" );
-        t.eq( bounds.minlon, 2, "bounds.minlon is set correctly" );
-        t.eq( bounds.minlat, 1, "bounds.minlat is set correctly" );
-        t.eq( bounds.maxlon, 4, "bounds.maxlon is set correctly" );
-        t.eq( bounds.maxlat, 3, "bounds.maxlat is set correctly" );
+        t.eq( bounds.minlon, 1, "bounds.minlon is set correctly" );
+        t.eq( bounds.minlat, 2, "bounds.minlat is set correctly" );
+        t.eq( bounds.maxlon, 3, "bounds.maxlon is set correctly" );
+        t.eq( bounds.maxlat, 4, "bounds.maxlat is set correctly" );
     
      }
      function test_02_Bounds_toBBOX(t) {
          t.plan( 1 );
          bounds = new OpenLayers.Bounds(1,2,3,4);
-         t.eq( bounds.toBBOX(), "2,1,4,3", "toBBOX() returns correct value." )
+         t.eq( bounds.toBBOX(), "1,2,3,4", "toBBOX() returns correct value." )
      }
   // -->
   </script>

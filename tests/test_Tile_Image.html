@@ -11,10 +11,10 @@
           new OpenLayers.Size(5,6));
         t.ok( tile instanceof OpenLayers.Tile.Image, "new OpenLayers.Tile returns Tile object" );
         t.ok( tile.bounds instanceof OpenLayers.Bounds, "tile.bounds is a Bounds object" );
-        t.eq( tile.bounds.minlon, 2, "tile.bounds.minlon is set correctly");
-        t.eq( tile.bounds.minlat, 1, "tile.bounds.minlat is set correctly");
-        t.eq( tile.bounds.maxlon, 4, "tile.bounds.maxlon is set correctly");
-        t.eq( tile.bounds.maxlat, 3, "tile.bounds.maxlat is set correctly");
+        t.eq( tile.bounds.minlon, 1, "tile.bounds.minlon is set correctly");
+        t.eq( tile.bounds.minlat, 2, "tile.bounds.minlat is set correctly");
+        t.eq( tile.bounds.maxlon, 3, "tile.bounds.maxlon is set correctly");
+        t.eq( tile.bounds.maxlat, 4, "tile.bounds.maxlat is set correctly");
         t.ok( tile.size instanceof OpenLayers.Size, "tile.size is a Size object" );
         t.eq( tile.size.w, 5, "tile.size.w is set correctly");
         t.eq( tile.size.h, 6, "tile.size.h is set correctly");
