@@ -1,0 +1,41 @@
+<html>
+<head>
+  <script src="../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var layer; 
+
+    function test_01_Layer_WMS_constructor (t) {
+	    t.plan( 4 );
+	    
+	    layer = new OpenLayers.Layer.WMS('Test Layer', "http://octo.metacarta.com/cgi-bin/mapserv", {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'});
+	    t.ok( layer instanceof OpenLayers.Layer.WMS, "new OpenLayers.Layer.WMS returns object" );
+	    t.eq( layer.name, "Test Layer", "layer.name is correct" );
+	    t.eq( layer.url, "http://octo.metacarta.com/cgi-bin/mapserv", "layer.url is correct" );
+	    t.eq( layer.params.map, "/mapdata/vmap_wms.map", "layer.params.map is correct" );
+    }
+    function test_02_Layer_WMS_addtile (t) {
+        t.plan( 6 );
+	    layer = new OpenLayers.Layer.WMS('Test Layer', "http://octo.metacarta.com/cgi-bin/mapserv", {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'});
+        var pixel = new OpenLayers.Pixel(5,6);
+        var tile = layer.addTile(new OpenLayers.Bounds(1,2,3,4), pixel);
+        t.eq( tile.img.src, "http://octo.metacarta.com/cgi-bin/mapserv?bbox=1,2,3,4&width=256&height=256&map=/mapdata/vmap_wms.map&layers=basic&format=image/jpeg&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:4326&exceptions=application/vnd.ogc.se_inimage", "image src is created correctly via addtile" );
+        t.eq( tile.img.style.top, "6px", "image top is set correctly via addtile" );
+        t.eq( tile.img.style.left, "5px", "image top is set correctly via addtile" );
+        t.ok( layer.div.firstChild instanceof HTMLImageElement, "div first child is an image object" );
+        t.eq( layer.div.firstChild.src, "http://octo.metacarta.com/cgi-bin/mapserv?bbox=1,2,3,4&width=256&height=256&map=/mapdata/vmap_wms.map&layers=basic&format=image/jpeg&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:4326&exceptions=application/vnd.ogc.se_inimage", "div first child is correct image object" );
+        var pos = tile.getPosition();
+        t.eq( pos.toString(), "x=5,y=6", "Position of tile is set correctly." );
+    }
+
+    function test_99_Layer_WMS_destroy (t) {
+	    t.plan( 1 );	
+	    layer = new OpenLayers.Layer.WMS('Test Layer', "http://octo.metacarta.com/cgi-bin/mapserv", {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'});
+	    layer.destroy();
+	    t.eq( layer.map, null, "layer.map is null after destroy" );
+    }
+  // -->
+  </script>
+</head>
+<body>
+</body>
+</html>
