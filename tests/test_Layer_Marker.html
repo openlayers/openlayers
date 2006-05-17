@@ -1,0 +1,26 @@
+<html>
+<head>
+  <script src="../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var layer; 
+
+    function test_01_Layer_Marker_constructor (t) {
+	    t.plan( 2 );
+	    
+	    layer = new OpenLayers.Layer.Marker('Test Layer');
+	    t.ok( layer instanceof OpenLayers.Layer.Marker, "new OpenLayers.Layer.Marker returns object" );
+	    t.eq( layer.name, "Test Layer", "layer.name is correct" );
+    }
+
+    function test_99_Layer_Marker_destroy (t) {
+	    t.plan( 1 );	
+	    layer = new OpenLayers.Layer.Marker('Test Layer');
+	    layer.destroy();
+	    t.eq( layer.map, null, "layer.map is null after destroy" );
+    }
+  // -->
+  </script>
+</head>
+<body>
+</body>
+</html>
