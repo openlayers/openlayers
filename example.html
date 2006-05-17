@@ -20,7 +20,7 @@
                 {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'} );
                 
             map.addLayer(layer);
-            map.setCenter(new OpenLayers.LatLon(0, 0), 0);
+            map.setCenter(new OpenLayers.LonLat(0, 0), 0);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
         }
         // -->

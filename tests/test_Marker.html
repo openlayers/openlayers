@@ -6,12 +6,12 @@
     
     function test_01_Marker_constructor (t) {
         t.plan( 5 );
-        marker = new OpenLayers.Marker(new OpenLayers.Icon(),new OpenLayers.LatLon(1,2));
+        marker = new OpenLayers.Marker(new OpenLayers.Icon(),new OpenLayers.LonLat(2,1));
         t.ok( marker instanceof OpenLayers.Marker, "new OpenLayers.Marker returns Marker object" );
         t.ok( marker.icon instanceof OpenLayers.Icon, "new marker.Icon returns Icon object" );
-        t.ok( marker.latlon instanceof OpenLayers.LatLon, "new marker.latlon returns LatLon object" );
-        t.eq( marker.latlon.lat, 1, "marker.latlon.lat returns correct lat" );
-        t.eq( marker.latlon.lon, 2, "marker.latlon.lon returns correct lon" );
+        t.ok( marker.lonlat instanceof OpenLayers.LonLat, "new marker.lonlat returns LonLat object" );
+        t.eq( marker.lonlat.lat, 1, "marker.lonlat.lat returns correct lat" );
+        t.eq( marker.lonlat.lon, 2, "marker.lonlat.lon returns correct lon" );
     }
 
 

@@ -26,7 +26,7 @@
                 "http://octo.metacarta.com/cgi-bin/mapserv",
                 {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'} );
                 
-            map.setCenter(new OpenLayers.LatLon(lat, lon), zoom);
+            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
             map.addLayer(layer);
             map.addLayer(gmap);
             map.addControl( new OpenLayers.Control.LayerSwitcher() );
