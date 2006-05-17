@@ -11,17 +11,29 @@
     <script src="lib/OpenLayers.js"></script>
     <script type="text/javascript">
         <!--
-        var map, layer;
-
         function init(){
-            map = new OpenLayers.Map('map');
-            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+            var map = new OpenLayers.Map('map');
+
+            var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                 "http://octo.metacarta.com/cgi-bin/mapserv",
-                {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'} );
-                
-            map.addLayer(layer);
-            map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+                {map: '/mapdata/vmap_wms.map', layers: 'basic'} );
+
+            var jpl_wms = new OpenLayers.Layer.WMS( "NASA Global Mosaic",
+                "http://wms.jpl.nasa.gov/wms.cgi", 
+                {layers: "modis,global_mosaic"});
+
+            var dm_wms = new OpenLayers.Layer.WMS( "DM Solutions Demo",
+                "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap",
+                {layers: "bathymetry,land_fn,park,drain_fn,drainage," +
+                         "prov_bound,fedlimit,rail,road,popplace",
+                 transparent: "true", format: "image/png" });
+
+            jpl_wms.setVisibility(false);
+            dm_wms.setVisibility(false);
+
+            map.addLayers([ol_wms, jpl_wms, dm_wms]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.setCenter(new OpenLayers.LonLat(0, 0), 0);
         }
         // -->
     </script>
