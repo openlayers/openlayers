@@ -13,6 +13,16 @@
         t.eq( icon.size.h, 6, "icon.size.w returns correct value" );
         t.eq( icon.url, "", "icon.url returns str object" );
     }
+    function test_02_Icon_clone (t) {
+        t.plan( 4 );
+        icon = new OpenLayers.Icon("a",new OpenLayers.Size(5,6));
+        t.ok( icon instanceof OpenLayers.Icon, "new OpenLayers.Icon returns Icon object" );
+        var cloned = icon.clone();
+        t.ok( cloned instanceof OpenLayers.Icon, "clone is an OpenLayers.Icon" );
+        cloned.url = "b"
+        t.eq( icon.url, "a", "icon.url doesn't change with clone's url" );
+        t.eq( cloned.url, "b", "cloned.url does change when edited" );
+    }
 
   // -->
   </script>
