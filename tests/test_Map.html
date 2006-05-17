@@ -27,8 +27,8 @@
         t.ok( map.getCenter() instanceof OpenLayers.LonLat, "map.getCenter returns a LonLat");
         t.eq( map.getZoom(), 0, "map.zoom is correct after calling setCenter");
         t.eq( map.getResolution(), map.maxResolution, "map.getResolution() == map.maxResolution");
-        t.eq( map.getCenter().lat, 1, "map center lat is correct after calling setCenter");
         t.eq( map.getCenter().lon, 2, "map center lon is correct after calling setCenter");
+        t.eq( map.getCenter().lat, 1, "map center lat is correct after calling setCenter");
     }
     function test_03_Map_add_layers(t) {
         t.plan(5);
@@ -59,8 +59,8 @@
         map.setCenter(new OpenLayers.LonLat(2, 1), 0);
         map.zoomIn();
         t.eq( map.getZoom(), 1, "map.zoom is correct after calling setCenter,zoom in");
-        t.eq( map.getCenter().lat, 1, "map center lat is correct after calling setCenter,zoom in");
         t.eq( map.getCenter().lon, 2, "map center lon is correct after calling setCenter, zoom in");
+        t.eq( map.getCenter().lat, 1, "map center lat is correct after calling setCenter,zoom in");
         map.zoomOut();
         t.eq( map.getZoom(), 0, "map.zoom is correct after calling setCenter,zoom in, zoom out");
     }
