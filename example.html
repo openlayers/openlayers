@@ -21,6 +21,7 @@
                 
             map.addLayer(layer);
             map.setCenter(new OpenLayers.LatLon(0, 0), 0);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
         }
         // -->
     </script>
