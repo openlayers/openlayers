@@ -8,6 +8,48 @@
         t.ok( OpenLayers.Util.getImagesLocation(), "../img/",
                     "getImagesLocation()" );
     }
+/*
+
+    function test_01_Util_Strings(t) {
+//String.prototype.startsWith = function(sStart){
+//String.prototype.trim = function() {
+    }
+    
+    function test_01_Util_Array(t) {
+//Array.prototype.append = function(item) {
+//Array.prototype.prepend = function(item) {
+//Array.prototype.remove = function(item) {
+//Array.prototype.copyOf
+//Array.prototype.clear
+    }
+
+
+    function test_01_Util_createDiv(t) {
+        t.plan( 1 );
+
+        var div = 
+        t.eq( OpenLayers.getParameterString(params), "foo=bar&chicken=1.5", "getParameterString returns correctly");    
+    }
+
+    function test_01_Util_createImage(t) {
+    }
+
+    function test_01_Util_applyDefaults(t) {
+    }
+
+*/
+    function test_01_Util_getParameterString(t) {
+        t.plan( 1 );
+
+        var params = { foo: "bar",
+                       chicken: 1.5
+                     }
+
+        t.eq( OpenLayers.getParameterString(params), "foo=bar&chicken=1.5", "getParameterString returns correctly");    
+    }
+
+
+
   // -->
   </script>
 </head>
