@@ -4,10 +4,10 @@
   <script type="text/javascript"><!--
     var map; 
     function test_01_Events_constructor (t) {
-	t.plan( 18 );
+	    t.plan( 18 );
         var obj = {result: 0}, eventTypes = ["doThingA", "doThingB", "doThingC"];
-	events = new OpenLayers.Events(obj, $('map'), eventTypes);
-	t.ok( events instanceof OpenLayers.Events, "new OpenLayers.Control returns object" );
+	    events = new OpenLayers.Events(obj, $('map'), eventTypes);
+	    t.ok( events instanceof OpenLayers.Events, "new OpenLayers.Control returns object" );
         t.ok( events.div instanceof HTMLDivElement, "events.div isa HTMLDivElement" );
         t.ok( events.object === obj, "events.object is the object we passed" );
 
@@ -32,6 +32,11 @@
         t.eq( obj.result, 1, "result is 1 after we call triggerEvent" );
         events.triggerEvent("doThingA");
         t.eq( obj.result, 2, "result is 2 after we call triggerEvent with no event" );
+    }
+    function test_02_Events_nullEventTypes (t) {
+        t.plan(1);
+	    events = new OpenLayers.Events(null, $('map'), null);
+        t.ok( events.listeners, "Creation of Events with null Event Types is okay" );
     }
   // -->
   </script>
