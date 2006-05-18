@@ -8,37 +8,130 @@
         t.ok( OpenLayers.Util.getImagesLocation(), "../img/",
                     "getImagesLocation()" );
     }
+
+    function test_02_Util_Strings(t) {
+        t.plan(3);
+        
+        var str = "  chicken pox  ";
+
+        var trimmedStr = str.trim();        
+
+        t.eq(trimmedStr, "chicken pox", "String.trim works correctly");
+
+        t.eq(trimmedStr.startsWith("chicken"), true, "String.startsWith correctly finds chicken");
+        t.eq(trimmedStr.startsWith("dolphin"), false, "String.startsWith correctly does not find turkey");
+    }
+
+    function test_03_Util_Array(t) {
+        t.plan( 6 );
+
+        var array = new Array(1,2,3,4,5);
+
+        array.prepend(0);        
+        t.eq( array.toString(), "0,1,2,3,4,5", "array.prepend works");    
+
+        array.append(6);        
+        t.eq( array.toString(), "0,1,2,3,4,5,6", "array.append works");    
+
+        array.remove(3);
+        t.eq( array.toString(), "0,1,2,4,5,6", "array.remove works");    
+
+        copy = array.copyOf();
+        t.eq( copy.toString(), "0,1,2,4,5,6", "array.copyOf() works");    
+        array.append(7);
+        t.eq( copy.toString(), "0,1,2,4,5,6", "changing a value in the copied array doesnt affect the new array");    
+        
+        array.clear();
+        t.eq( array.toString(), "", "array.clear() works");    
+    }
+
+    function test_04_Util_createDiv(t) {
+        t.plan( 18 );
+
+        var id = "boo";
+        var px = new OpenLayers.Pixel(5,5);
+        var sz = new OpenLayers.Size(10,10);
+        var overflow = "hidden";
+        var img = "http://www.openlayers.org/images/OpenLayers.trac.png";
+        var position = "absolute";
+
+        var div = OpenLayers.Util.createDiv(id, px, sz, overflow, img, position);
+
+        t.ok( div instanceof HTMLDivElement, "createDiv creates a valid HTMLDivElement" );
+        t.eq( div.id, id, "div.id set correctly");    
+        t.eq( div.style.left, px.x + "px", "div.style.left set correctly");    
+        t.eq( div.style.top, px.y + "px", "div.style.top set correctly");    
+
+        t.eq( div.style.width, sz.w + "px", "div.style.width set correctly");    
+        t.eq( div.style.height, sz.h + "px", "div.style.height set correctly");    
+
+        t.eq( div.style.overflow, overflow, "div.style.overflow set correctly");    
+        t.eq( div.style.backgroundImage, "url(" + img + ")", "div.style.backgroundImage correctly");    
+        t.eq( div.style.position, position, "div.style.positionset correctly");    
+
+        //test defaults
+        var div = OpenLayers.Util.createDiv();
+
+        t.ok( div instanceof HTMLDivElement, "createDiv creates a valid HTMLDivElement" );
+        t.ok( (div.id != ""), "div.id set correctly");    
+        t.eq( div.style.left, "0pt", "div.style.left set correctly");    
+        t.eq( div.style.top, "0pt", "div.style.top set correctly");    
+
+        t.eq( div.style.width, "", "div.style.width set correctly");    
+        t.eq( div.style.height, "", "div.style.height set correctly");    
+
+        t.eq(div.style.overflow, "", "div.style.overflow set correctly");    
+        t.eq(div.style.backgroundImage, "", "div.style.backgroundImage correctly");    
+        t.eq( div.style.position, "absolute", "div.style.positionset correctly");    
+
+    }
+
+    function test_05_Util_createImage(t) {
+        t.plan( 18 );
+
+        var img = "http://www.openlayers.org/images/OpenLayers.trac.png";
+        var sz = new OpenLayers.Size(10,10);
+        var xy = new OpenLayers.Pixel(5,5);
+        var position = "absolute";
+        var id = "boo";
+        var border = "1";
+
+        var image = OpenLayers.Util.createImage(img, sz, xy, position, id, border);
+
+        t.ok( image instanceof HTMLImageElement, "createImage creates a valid HTMLImageElement" );
+        t.eq( image.id, id, "image.id set correctly");    
+        t.eq( image.style.left, xy.x + "px", "image.style.left set correctly");    
+        t.eq( image.style.top, xy.y + "px", "image.style.top set correctly");    
+
+        t.eq( image.style.width, sz.w + "px", "image.style.width set correctly");    
+        t.eq( image.style.height, sz.h + "px", "image.style.height set correctly");    
+
+        t.ok( image.style.border.startsWith(border + "px"), "image.style.border set correctly");    
+        t.eq( image.src, img, "image.style.backgroundImage correctly");    
+        t.eq( image.style.position, position, "image.style.positionset correctly");    
+
+        //test defaults
+        var image = OpenLayers.Util.createImage();
+
+        t.ok( image instanceof HTMLImageElement, "createDiv creates a valid HTMLDivElement" );
+        t.eq( image.id, "", "image.id set correctly");    
+        t.eq( image.style.left, "", "image.style.left set correctly");    
+        t.eq( image.style.top, "", "image.style.top set correctly");    
+
+        t.eq( image.style.width, "", "image.style.width set correctly");    
+        t.eq( image.style.height, "", "image.style.height set correctly");    
+
+        t.ok(image.style.border.startsWith("0"), "image.style.border set correctly");    
+        t.eq(image.src, "", "image.style.backgroundImage correctly");    
+        t.eq( image.style.position, "relative", "image.style.positionset correctly");    
+
+    }
 /*
-
-    function test_01_Util_Strings(t) {
-//String.prototype.startsWith = function(sStart){
-//String.prototype.trim = function() {
-    }
-    
-    function test_01_Util_Array(t) {
-//Array.prototype.append = function(item) {
-//Array.prototype.prepend = function(item) {
-//Array.prototype.remove = function(item) {
-//Array.prototype.copyOf
-//Array.prototype.clear
-    }
-
-
-    function test_01_Util_createDiv(t) {
-        t.plan( 1 );
-
-        var div = 
-        t.eq( OpenLayers.Util.getParameterString(params), "foo=bar&chicken=1.5", "getParameterString returns correctly");    
-    }
-
-    function test_01_Util_createImage(t) {
-    }
-
-    function test_01_Util_applyDefaults(t) {
+    function test_06_Util_applyDefaults(t) {
     }
 
 */
-    function test_01_Util_getParameterString(t) {
+    function test_07_Util_getParameterString(t) {
         t.plan( 1 );
 
         var params = { foo: "bar",
