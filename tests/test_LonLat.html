@@ -38,18 +38,17 @@
         t.eq( lonlat.lon, 5, "changing oldLonLat.lon doesn't change lonlat.lon");
     }
 
-    function test_04_LonLat_diff(t) {
+    function test_04_LonLat_add(t) {
         t.plan( 4 );
 
         lonlatA = new OpenLayers.LonLat(10,100);
-        lonlatB = new OpenLayers.LonLat(15,150);
 
-        diffpx = lonlatA.diff(lonlatB);
-        t.eq( lonlatA.lon, 10, "lonlatA.lon is not modified by diff operation");
-        t.eq( lonlatA.lat, 100, "lonlatA.lat is not modified by diff operation");
+        addpx = lonlatA.add(5, 50);
+        t.eq( lonlatA.lon, 10, "lonlatA.lon is not modified by add operation");
+        t.eq( lonlatA.lat, 100, "lonlatA.lat is not modified by add operation");
 
-        t.eq( diffpx.lon, -5, "diffpx.lon is set correctly");
-        t.eq( diffpx.lat, -50, "diffpx.lat is set correctly");
+        t.eq( addpx.lon, 15, "addpx.lon is set correctly");
+        t.eq( addpx.lat, 150, "addpx.lat is set correctly");
     }
     
     function test_06_LonLat_equals(t) {
