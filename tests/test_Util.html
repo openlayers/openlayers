@@ -126,11 +126,27 @@
         t.eq( image.style.position, "relative", "image.style.positionset correctly");    
 
     }
-/*
+
     function test_06_Util_applyDefaults(t) {
+    
+        t.plan(4);
+        
+        var to = { a: "abra",
+                   b: "blorg"
+                 };
+
+        var from = { b: "zoink",
+                     c: "press"
+                   };
+
+        to = OpenLayers.Util.applyDefaults(to, from);
+
+        t.ok( to instanceof Object, " applyDefaults returns an object");
+        t.eq( to["a"], "abra", "key present in to but not from maintained");
+        t.eq( to["b"], "blorg", "key present in to and from, maintained in to");
+        t.eq( to["c"], "press", "key present in from and not to successfully copied to to");
     }
 
-*/
     function test_07_Util_getParameterString(t) {
         t.plan( 1 );
 
