@@ -5,18 +5,18 @@
     var layer; 
 
     function test_01_Layer_constructor (t) {
-	t.plan( 2 );
-	
-	layer = new OpenLayers.Layer('Test Layer');
-	t.ok( layer instanceof OpenLayers.Layer, "new OpenLayers.Layer returns object" );
-	t.eq( layer.name, "Test Layer", "layer.name is correct" );
+        t.plan( 2 );
+        
+        layer = new OpenLayers.Layer('Test Layer');
+        t.ok( layer instanceof OpenLayers.Layer, "new OpenLayers.Layer returns object" );
+        t.eq( layer.name, "Test Layer", "layer.name is correct" );
     }
 
     function test_99_Layer_destroy (t) {
-	t.plan( 1 );	
-	layer = new OpenLayers.Layer('Test Layer');
-	layer.destroy();
-	t.eq( layer.map, null, "layer.map is null after destroy" );
+        t.plan( 1 );    
+        layer = new OpenLayers.Layer('Test Layer');
+        layer.destroy();
+        t.eq( layer.map, null, "layer.map is null after destroy" );
     }
   // -->
   </script>
