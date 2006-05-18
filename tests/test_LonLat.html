@@ -2,14 +2,81 @@
 <head>
   <script src="../lib/OpenLayers.js"></script>
   <script type="text/javascript"><!--
+
     var lonlat; 
+
     function test_01_LonLat_constructor (t) {
-	t.plan( 3 );
+        t.plan( 4 );
         lonlat = new OpenLayers.LonLat(6, 5);
+        t.ok( lonlat instanceof OpenLayers.LonLat, "new OpenLayers.LonLat returns LonLat object" );
+        t.eq( lonlat.CLASS_NAME, "OpenLayers.LonLat", "lonlat.CLASS_NAME is set correctly");
+        t.eq( lonlat.lon, 6, "lonlat.lon is set correctly");
+        t.eq( lonlat.lat, 5, "lonlat.lat is set correctly");
+    }
+
+    function test_02_LonLat_toString(t) {
+        t.plan( 1 );
+        lonlat = new OpenLayers.LonLat(5,6);
+        t.eq( lonlat.toString(), "lon=5,lat=6", "lonlat.toString() returns correctly");
+    }
+
+    function test_02A_LonLat_toShortString(t) {
+        t.plan( 1 );
+        lonlat = new OpenLayers.LonLat(5,6);
+        t.eq( lonlat.toShortString(), "5, 6", "lonlat.toShortString() returns correctly");
+    }
+
+    function test_03_LonLat_copyOf(t) {
+        t.plan( 4 );
+        oldLonLat = new OpenLayers.LonLat(5,6);
+        lonlat = oldLonLat.copyOf();
+        t.ok( lonlat instanceof OpenLayers.LonLat, "copyOf returns new OpenLayers.LonLat object" );
+        t.eq( lonlat.lon, 5, "lonlat.lon is set correctly");
+        t.eq( lonlat.lat, 6, "lonlat.lat is set correctly");
+        
+        oldLonLat.lon = 100;
+        t.eq( lonlat.lon, 5, "changing oldLonLat.lon doesn't change lonlat.lon");
+    }
+
+    function test_04_LonLat_diff(t) {
+        t.plan( 4 );
+
+        lonlatA = new OpenLayers.LonLat(10,100);
+        lonlatB = new OpenLayers.LonLat(15,150);
+
+        diffpx = lonlatA.diff(lonlatB);
+        t.eq( lonlatA.lon, 10, "lonlatA.lon is not modified by diff operation");
+        t.eq( lonlatA.lat, 100, "lonlatA.lat is not modified by diff operation");
+
+        t.eq( diffpx.lon, -5, "diffpx.lon is set correctly");
+        t.eq( diffpx.lat, -50, "diffpx.lat is set correctly");
+    }
+    
+    function test_06_LonLat_equals(t) {
+        t.plan( 4 );
+        lonlat = new OpenLayers.LonLat(5,6);
+
+        ll = new OpenLayers.LonLat(5,6);
+        t.eq( lonlat.equals(ll), true, "(5,6) equals (5,6)");
+
+        ll = new OpenLayers.LonLat(1,6);
+        t.eq( lonlat.equals(ll), false, "(5,6) does not equal (1,6)");
+
+        ll = new OpenLayers.LonLat(5,2);
+        t.eq( lonlat.equals(ll), false, "(5,6) does not equal (5,2)");
+
+        ll = new OpenLayers.LonLat(1,2);
+        t.eq( lonlat.equals(ll), false, "(5,6) does not equal (1,2)");
+    }
+
+    function test_07_LonLat_fromString(t) {
+        t.plan( 3 );
+        lonlat = OpenLayers.LonLat.fromString("6,5");
         t.ok( lonlat instanceof OpenLayers.LonLat, "new OpenLayers.LonLat returns LonLat object" );
         t.eq( lonlat.lon, 6, "lonlat.lon is set correctly");
         t.eq( lonlat.lat, 5, "lonlat.lat is set correctly");
     }
+
   // -->
   </script>
 </head>

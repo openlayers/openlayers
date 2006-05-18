@@ -4,20 +4,78 @@
   <script type="text/javascript"><!--
     var bounds; 
     function test_01_Bounds_constructor (t) {
-	t.plan( 5 );
-        bounds = new OpenLayers.Bounds(1,2,3,4);
+        t.plan( 8 );
+        bounds = new OpenLayers.Bounds(0,2,10,4);
+        t.ok( bounds instanceof OpenLayers.Bounds, "new OpenLayers.Bounds returns Bounds object" );
+        t.eq( bounds.CLASS_NAME, "OpenLayers.Bounds", "bounds.CLASS_NAME is set correctly" );
+        t.eq( bounds.minlon, 0, "bounds.minlon is set correctly" );
+        t.eq( bounds.minlat, 2, "bounds.minlat is set correctly" );
+        t.eq( bounds.maxlon, 10, "bounds.maxlon is set correctly" );
+        t.eq( bounds.maxlat, 4, "bounds.maxlat is set correctly" );
+        t.eq( bounds.width, 10, "bounds.width is set correctly" );
+        t.eq( bounds.height, 2, "bounds.height is set correctly" );
+     }
+
+     function test_02_Bounds_toBBOX(t) {
+         t.plan( 1 );
+         bounds = new OpenLayers.Bounds(1,2,3,4);
+         t.eq( bounds.toBBOX(), "1,2,3,4", "toBBOX() returns correct value." );
+     }
+
+     function test_03_Bounds_toString(t) {
+         t.plan( 1 );
+         bounds = new OpenLayers.Bounds(1,2,3,4);
+         t.eq( bounds.toString(), "Min lon/lat=1/2 Max lon/lat=3/4 width=2 height=2", "toString() returns correct value." ); 
+     }
+
+     function test_04_Bounds_contains(t) {
+         t.plan( 3 );
+         bounds = new OpenLayers.Bounds(10,10,40,40);
+         ll = new OpenLayers.LonLat(20,20);
+         t.eq( bounds.contains(ll), true, "bounds(10,10,40,40) correctly contains LonLat(20,20)" );
+         ll = new OpenLayers.LonLat(0,0);
+         t.eq( bounds.contains(ll), false, "bounds(10,10,40,40) correctly does not contain LonLat(0,0)" );
+         ll = new OpenLayers.LonLat(40,40);
+         t.eq( bounds.contains(ll), true, "bounds(10,10,40,40) correctly contains LonLat(40,40)" );
+     }
+
+     function test_05_Bounds_fromString_int(t) {
+        t.plan( 5 );
+        bounds = OpenLayers.Bounds.fromString("1,2,3,4");
         t.ok( bounds instanceof OpenLayers.Bounds, "new OpenLayers.Bounds returns Bounds object" );
         t.eq( bounds.minlon, 1, "bounds.minlon is set correctly" );
         t.eq( bounds.minlat, 2, "bounds.minlat is set correctly" );
         t.eq( bounds.maxlon, 3, "bounds.maxlon is set correctly" );
         t.eq( bounds.maxlat, 4, "bounds.maxlat is set correctly" );
-    
      }
-     function test_02_Bounds_toBBOX(t) {
-         t.plan( 1 );
-         bounds = new OpenLayers.Bounds(1,2,3,4);
-         t.eq( bounds.toBBOX(), "1,2,3,4", "toBBOX() returns correct value." )
+
+     function test_06_Bounds_fromString_float(t) {
+        t.plan( 5 );
+        bounds = OpenLayers.Bounds.fromString("1.1,2.2,3.3,4.4");
+        t.ok( bounds instanceof OpenLayers.Bounds, "new OpenLayers.Bounds returns Bounds object" );
+        t.eq( bounds.minlon, 1.1, "bounds.minlon is set correctly" );
+        t.eq( bounds.minlat, 2.2, "bounds.minlat is set correctly" );
+        t.eq( bounds.maxlon, 3.3, "bounds.maxlon is set correctly" );
+        t.eq( bounds.maxlat, 4.4, "bounds.maxlat is set correctly" );
      }
+
+     function test_07_Bounds_copyOf(t) {
+        t.plan( 6 );
+        var oldBounds = new OpenLayers.Bounds(1,2,3,4);
+        var bounds = oldBounds.copyOf();
+        t.ok( bounds instanceof OpenLayers.Bounds, "copyOf returns new OpenLayers.Bounds object" );
+        t.eq( bounds.minlon, 1, "bounds.minlon is set correctly" );
+        t.eq( bounds.minlat, 2, "bounds.minlat is set correctly" );
+        t.eq( bounds.maxlon, 3, "bounds.maxlon is set correctly" );
+        t.eq( bounds.maxlat, 4, "bounds.maxlat is set correctly" );
+        
+        //change minlon of oldBounds - if bounds is a 
+        // real copyOf, bounds.minlon should not change
+        oldBounds.minlon = 100;
+        t.eq( bounds.minlon, 1, "changing olBounds.minlon does not change bounds.minlon" );
+     }
+
+
   // -->
   </script>
 </head>

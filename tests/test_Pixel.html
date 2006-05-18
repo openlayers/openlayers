@@ -5,13 +5,91 @@
     var pixel; 
     
     function test_01_Pixel_constructor (t) {
-        t.plan( 3 );
+        t.plan( 4 );
         pixel = new OpenLayers.Pixel(5,6);
         t.ok( pixel instanceof OpenLayers.Pixel, "new OpenLayers.Pixel returns Pixel object" );
+        t.eq( pixel.CLASS_NAME, "OpenLayers.Pixel", "pixel.CLASS_NAME is set correctly");
         t.eq( pixel.x, 5, "pixel.x is set correctly");
         t.eq( pixel.y, 6, "pixel.y is set correctly");
     }
 
+    function test_02_Pixel_toString(t) {
+        t.plan( 1 );
+        pixel = new OpenLayers.Pixel(5,6);
+        t.eq( pixel.toString(), "x=5,y=6", "pixel.toString() returns correctly");
+    }
+
+    function test_03_Pixel_copyOf(t) {
+        t.plan( 4 );
+        oldPixel = new OpenLayers.Pixel(5,6);
+        pixel = oldPixel.copyOf();
+        t.ok( pixel instanceof OpenLayers.Pixel, "copyOf returns new OpenLayers.Pixel object" );
+        t.eq( pixel.x, 5, "pixel.x is set correctly");
+        t.eq( pixel.y, 6, "pixel.y is set correctly");
+        
+        oldPixel.x = 100;
+        t.eq( pixel.x, 5, "changing oldPixel.x doesn't change pixel.x");
+    }
+
+    function test_04_Pixel_diff(t) {
+        t.plan( 4 );
+
+        pixelA = new OpenLayers.Pixel(10,100);
+        pixelB = new OpenLayers.Pixel(15,150);
+
+        diffpx = pixelA.diff(pixelB);
+        t.eq( pixelA.x, 10, "pixelA.x is not modified by diff operation");
+        t.eq( pixelA.y, 100, "pixelA.y is not modified by diff operation");
+
+        t.eq( diffpx.x, -5, "diffpx.x is set correctly");
+        t.eq( diffpx.y, -50, "diffpx.y is set correctly");
+
+    }
+    
+    function test_05_Pixel_diffABS(t) {
+        t.plan( 4 );
+
+        pixelA = new OpenLayers.Pixel(10,100);
+        pixelB = new OpenLayers.Pixel(15,150);
+
+        diffABSpx = pixelA.diffABS(pixelB);
+        t.eq( pixelA.x, 10, "pixelA.x is not modified by diffABS operation");
+        t.eq( pixelA.y, 100, "pixelA.y is not modified by diffABS operation");
+
+        t.eq( diffABSpx.x, 5, "diffABSpx.x is set correctly");
+        t.eq( diffABSpx.y, 50, "diffABSpx.y is set correctly");
+    }
+
+
+    function test_06_Pixel_equals(t) {
+        t.plan( 4 );
+        pixel = new OpenLayers.Pixel(5,6);
+
+        px = new OpenLayers.Pixel(5,6);
+        t.eq( pixel.equals(px), true, "(5,6) equals (5,6)");
+
+        px = new OpenLayers.Pixel(1,6);
+        t.eq( pixel.equals(px), false, "(5,6) does not equal (1,6)");
+
+        px = new OpenLayers.Pixel(5,2);
+        t.eq( pixel.equals(px), false, "(5,6) does not equal (5,2)");
+
+        px = new OpenLayers.Pixel(1,2);
+        t.eq( pixel.equals(px), false, "(5,6) does not equal (1,2)");
+    }
+
+    function test_07_Pixel_add(t) {
+        t.plan( 4 );
+        oldPixel = new OpenLayers.Pixel(5,6);
+
+        pixel = oldPixel.add(10,20);
+
+        t.eq( oldPixel.x, 5, "oldPixel.x not modified by add operation");
+        t.eq( oldPixel.y, 6, "oldPixel.y not modified by add operation");
+
+        t.eq( pixel.x, 15, "pixel.x is set correctly");
+        t.eq( pixel.y, 26, "pixel.y is set correctly");
+    }
 
   // -->
   </script>

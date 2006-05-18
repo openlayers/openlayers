@@ -1,0 +1,57 @@
+<html>
+<head>
+  <script src="../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var Size; 
+    
+    function test_01_Size_constructor (t) {
+        t.plan( 4 );
+        size = new OpenLayers.Size(5,6);
+        t.ok( size instanceof OpenLayers.Size, "new OpenLayers.Size returns size object" );
+        t.eq( size.CLASS_NAME, "OpenLayers.Size", "size.CLASS_NAME is set correctly");
+        t.eq( size.w, 5, "size.w is set correctly");
+        t.eq( size.h, 6, "size.h is set correctly");
+    }
+
+    function test_02_Size_toString(t) {
+        t.plan( 1 );
+        size = new OpenLayers.Size(5,6);
+        t.eq( size.toString(), "w=5,h=6", "size.toString() returns correctly");
+    }
+
+    function test_03_Size_copyOf(t) {
+        t.plan( 4 );
+
+        oldSize = new OpenLayers.Size(5,6);
+        size = oldSize.copyOf();
+        t.ok( size instanceof OpenLayers.Size, "copyOf returns new OpenLayers.Size object" );
+        t.eq( size.w, 5, "Size.w is set correctly");
+        t.eq( size.h, 6, "Size.h is set correctly");
+        
+        oldSize.w = 100;
+        t.eq( size.w, 5, "changing oldSize.w doesn't change size.w");
+    }
+
+     function test_04_Size_equals(t) {
+        t.plan( 4 );
+        size = new OpenLayers.Size(5,6);
+
+        sz = new OpenLayers.Size(5,6);
+        t.eq( size.equals(sz), true, "(5,6) equals (5,6)");
+
+        sz = new OpenLayers.Size(1,6);
+        t.eq( size.equals(sz), false, "(5,6) does not equal (1,6)");
+
+        sz = new OpenLayers.Size(5,2);
+        t.eq( size.equals(sz), false, "(5,6) does not equal (5,2)");
+
+        sz = new OpenLayers.Size(1,2);
+        t.eq( size.equals(sz), false, "(5,6) does not equal (1,2)");
+    }
+
+  // -->
+  </script>
+</head>
+<body>
+</body>
+</html>
