@@ -28,7 +28,7 @@
         t.plan( 1 );
 
         var div = 
-        t.eq( OpenLayers.getParameterString(params), "foo=bar&chicken=1.5", "getParameterString returns correctly");    
+        t.eq( OpenLayers.Util.getParameterString(params), "foo=bar&chicken=1.5", "getParameterString returns correctly");    
     }
 
     function test_01_Util_createImage(t) {
@@ -45,7 +45,7 @@
                        chicken: 1.5
                      }
 
-        t.eq( OpenLayers.getParameterString(params), "foo=bar&chicken=1.5", "getParameterString returns correctly");    
+        t.eq( OpenLayers.Util.getParameterString(params), "foo=bar&chicken=1.5", "getParameterString returns correctly");    
     }
 
 
