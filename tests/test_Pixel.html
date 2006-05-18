@@ -31,36 +31,6 @@
         t.eq( pixel.x, 5, "changing oldPixel.x doesn't change pixel.x");
     }
 
-    function test_04_Pixel_diff(t) {
-        t.plan( 4 );
-
-        pixelA = new OpenLayers.Pixel(10,100);
-        pixelB = new OpenLayers.Pixel(15,150);
-
-        diffpx = pixelA.diff(pixelB);
-        t.eq( pixelA.x, 10, "pixelA.x is not modified by diff operation");
-        t.eq( pixelA.y, 100, "pixelA.y is not modified by diff operation");
-
-        t.eq( diffpx.x, -5, "diffpx.x is set correctly");
-        t.eq( diffpx.y, -50, "diffpx.y is set correctly");
-
-    }
-    
-    function test_05_Pixel_diffABS(t) {
-        t.plan( 4 );
-
-        pixelA = new OpenLayers.Pixel(10,100);
-        pixelB = new OpenLayers.Pixel(15,150);
-
-        diffABSpx = pixelA.diffABS(pixelB);
-        t.eq( pixelA.x, 10, "pixelA.x is not modified by diffABS operation");
-        t.eq( pixelA.y, 100, "pixelA.y is not modified by diffABS operation");
-
-        t.eq( diffABSpx.x, 5, "diffABSpx.x is set correctly");
-        t.eq( diffABSpx.y, 50, "diffABSpx.y is set correctly");
-    }
-
-
     function test_06_Pixel_equals(t) {
         t.plan( 4 );
         pixel = new OpenLayers.Pixel(5,6);
