@@ -1,0 +1,49 @@
+<html>
+<head>
+  <script src="../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var layer; 
+
+    function test_01_Layer_Text_constructor (t) {
+        t.plan( 6 );
+        
+        layer = new OpenLayers.Layer.Text('Test Layer', 'data_Layer_Text_textfile.txt');
+        t.ok( layer instanceof OpenLayers.Layer.Text, "new OpenLayers.Layer.Text returns object" );
+        t.eq( layer.location, "data_Layer_Text_textfile.txt", "layer.location is correct" );
+        var markers;
+        t.delay_call( 1, function() {  
+            t.eq( layer.markers.length, 1, "marker length is correct" );
+            t.eq( layer.markers[0].lonlat.lat, 10, "latitude on first marker is correct" );
+            t.eq( layer.markers[0].lonlat.lon, 20, "latitude on first marker is correct" );
+            t.eq( layer.markers[0].icon.url, 'http://boston.openguides.org/markers/ORANGE.png', "icon" );
+        } );
+    }
+    function test_02_Layer_Text_generateMarker (t) { 
+        t.plan(5);
+        layer = new OpenLayers.Layer.Text('Test Layer', 'data_Layer_Text_textfile.txt');
+        t.ok( layer instanceof OpenLayers.Layer.Text, "new OpenLayers.Layer.Text returns object" );
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
+        t.eq( map.layers[0].name, layer.name, "Layer added to map okay" );
+        t.delay_call( 1, function() { 
+          map.setCenter(new OpenLayers.LonLat(0,0),0);
+          t.ok( map.layers[0].div.firstChild instanceof HTMLImageElement, "Marker added to div" )
+          t.eq( map.layers[0].div.firstChild.style.top, "205px", "Marker top set correctly" )
+          t.eq( map.layers[0].div.firstChild.style.left, "302px", "Marker left set correctly" )
+        });;
+    }
+    function test_99_Layer_Text_destroy (t) {
+        t.plan( 1 );    
+        layer = new OpenLayers.Layer.Text('Test Layer');
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
+        layer.destroy();
+        t.eq( layer.map, null, "layer.map is null after destroy" );
+    }
+  // -->
+  </script>
+</head>
+<body>
+  <div id="map" style="width:500px; height:500px"></div>
+</body>
+</html>
