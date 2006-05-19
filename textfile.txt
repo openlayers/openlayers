@@ -1,0 +1,4 @@
+point	image
+10,20	http://boston.openguides.org/markers/ORANGE.png
+2,4	http://boston.openguides.org/markers/AQUA.png
+42,-71	http://boston.openguides.org/markers/PURPLE.png
