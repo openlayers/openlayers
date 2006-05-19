@@ -32,17 +32,18 @@
         t.eq( tile.img.style.height, "6px", "Image height is correct" );
     }
     function test_03_Tile_setPosition (t) {
-        t.plan( 4 );
+        t.plan( 5 );
         tile = new OpenLayers.Tile.Image(
           new OpenLayers.Bounds(1,2,3,4), "http://www.openlayers.org/dev/tests/tileimage",
           new OpenLayers.Size(5,6));
         t.eq( tile.getPosition(), null, "getPosition before draw returns null" );
         tile.setPosition(new OpenLayers.Pixel(1,2));
-        t.eq( tile.getPosition(), null, "setPosition before draw has no effect" );
+        t.eq( tile.getPosition().x, 1, "tile's x position set correctly " );
+        t.eq( tile.getPosition().y, 2, "tile's y position set correctly" );
         tile.draw();
         tile.setPosition(new OpenLayers.Pixel(1,2));
-        t.eq( tile.getPosition().x, 1, "setPosition sets x after draw" );
-        t.eq( tile.getPosition().y, 2, "setPosition sets y after draw" );
+        t.eq( tile.img.style.left, 1 + "px", "setPosition sets x of image correctly after draw" );
+        t.eq( tile.img.style.top, 2 + "px", "setPosition sets y of image correctly after draw" );
     }
 
   // -->
