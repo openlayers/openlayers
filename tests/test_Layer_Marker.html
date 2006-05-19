@@ -24,6 +24,8 @@
     function test_99_Layer_Marker_destroy (t) {
         t.plan( 1 );    
         layer = new OpenLayers.Layer.Marker('Test Layer');
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
         layer.destroy();
         t.eq( layer.map, null, "layer.map is null after destroy" );
     }

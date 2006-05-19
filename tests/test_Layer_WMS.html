@@ -43,6 +43,8 @@
     function test_99_Layer_WMS_destroy (t) {
         t.plan( 1 );
         layer = new OpenLayers.Layer.WMS('Test Layer', "http://octo.metacarta.com/cgi-bin/mapserv", {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'});
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
         layer.destroy();
         t.eq( layer.map, null, "layer.map is null after destroy" );
     }
