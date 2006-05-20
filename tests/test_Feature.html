@@ -1,0 +1,71 @@
+<html>
+<head>
+  <script src="../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var feature, layer; 
+    
+    function test_01_Feature_constructor (t) {
+        t.plan( 5 );
+
+        feature = new OpenLayers.Feature(new OpenLayers.LonLat(2,1), 
+               {
+                iconURL:'http://boston.openguides.org/features/ORANGE.png',
+                iconW: 12,
+                iconH: 17
+               });
+        t.ok( feature instanceof OpenLayers.Feature, "new OpenLayers.Feature returns Feature object" );
+        t.ok( feature.lonlat instanceof OpenLayers.LonLat, "new feature.lonlat returns LonLat object" );
+        t.eq( feature.lonlat.lon, 2, "feature.lonlat.lon returns correct lon" );
+        t.eq( feature.lonlat.lat, 1, "feature.lonlat.lat returns correct lat" );
+        t.eq( feature.data.iconW, 12, "feature.data.iconW set correctly" );
+    }
+    
+    function test_02_Feature_createMarker (t) {
+        t.plan( 11 );
+        feature = new OpenLayers.Feature(new OpenLayers.LonLat(2,1), 
+               {
+                iconURL:'http://boston.openguides.org/features/ORANGE.png',
+                iconW: 12,
+                iconH: 17
+               });
+        layer = new OpenLayers.Layer.Marker('Marker Layer');
+        t.ok( feature instanceof OpenLayers.Feature, "new OpenLayers.Feature returns Feature object" );
+        t.ok( layer instanceof OpenLayers.Layer.Marker, "Layer is a marker layer" );
+        feature.createMarker(layer);
+        
+        t.ok( feature.marker instanceof OpenLayers.Marker, 
+              "createMarker sets a marker property to a marker" );
+        t.ok( layer.markers[0] === feature.marker, 
+              "First marker in layer is the feature marker" );
+        
+        t.ok( feature.marker.lonlat instanceof OpenLayers.LonLat, 
+              "createMarker sets a marker lontlat property to a lonlat" );
+        t.ok( layer.markers[0].lonlat === feature.lonlat, 
+              "First marker in the layer matches feature lonlat" );
+        
+        t.ok( feature.marker.icon instanceof OpenLayers.Icon, 
+              "createMarker sets a marker icon property to an icon" );
+        t.eq( feature.marker.icon.url, 
+              "http://boston.openguides.org/features/ORANGE.png", 
+              "createMarker sets marker url correctly" );
+       
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0),0);
+        t.ok( map.layers[0] === layer,
+              "Marker layer added to map okay." );
+        t.ok( map.layers[0].div.firstChild instanceof HTMLImageElement,
+              "layer div firstChild is an image" );
+        t.eq( map.layers[0].div.firstChild.src,
+              "http://boston.openguides.org/features/ORANGE.png", 
+              "Layer div img contains correct url" );
+    }
+
+
+  // -->
+  </script>
+</head>
+<body>
+  <div id="map"></div>
+</body>
+</html>
