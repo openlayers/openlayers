@@ -18,20 +18,36 @@ import cgi
 fs = cgi.FieldStorage()
 url = fs.getvalue('url', "http://openlayers.org")
 
-if url.startswith("http://") or url.startswith("https://"):
+allowedHosts = ['www.openlayers.org', 'openlayers.org', 'octo.metacarta.com']
+allowedHosts = object()
+host = url.split("/")[2]
 
-    y = urllib.urlopen(url)
+try:
+    if allowedHosts and not host in allowedHosts:
+        print "Status: 502 Bad Gateway"
+        print "Content-Type: text/plain"
+        print
+        print "This proxy does not allow you to access that location."
     
-    headers = str(y.info()).split('\n')
-    for h in headers:
-        if h.startswith("Content-Type:"):
-            print h
-    print
+    elif url.startswith("http://") or url.startswith("https://"):
     
-    print y.read()
-    
-    y.close()
-else:
-    print """Content-Type: text/plain
-
+        y = urllib.urlopen(url)
+        
+        headers = str(y.info()).split('\n')
+        for h in headers:
+            if h.startswith("Content-Type:"):
+                print h
+        print
+        
+        print y.read()
+        
+        y.close()
+    else:
+        print """Content-Type: text/plain
+ 
 Illegal request."""
+except Exception, E:
+    print "Status: 500 Unexpected Error"
+    print "Content-Type: text/plain"
+    print 
+    print "Some unexpected error occurred. Error text was:", E
