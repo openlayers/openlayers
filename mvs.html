@@ -1,0 +1,107 @@
+<html>
+<!--
+     OpenLayers Map Viewer Service
+
+     Copyright 2005-2006 MetaCarta, Inc., released under the BSD License.
+-->
+<!-- 
+     This probably needs to be renamed index.html for deployment.
+     Specifically, it needs to be the default page for whatever
+     directory it is in.
+-->
+<head>
+
+<script src="lib/OpenLayers.js"></script>
+
+<script>
+
+// From: 
+// <http://www.oreilly.com/catalog/jscript3/chapter/ch13.html#JSCRIPT-CH-WINDOWS-EX-LOC>
+/*
+ * This function parses comma-separated name=value argument pairs from
+ * the query string of the URL. It stores the name=value pairs in 
+ * properties of an object and returns that object.
+ */
+// +pjl changed to split on ampersand, not comma.
+
+function getArgs() {
+    var args = new Object();
+    var query = location.search.substring(1);  // Get query string.
+    var pairs = query.split("&");              // Break at ampersand. //+pjl
+
+    for(var i = 0; i < pairs.length; i++) {
+    var pos = pairs[i].indexOf('=');       // Look for "name=value".
+    if (pos == -1) continue;               // If not found, skip.
+    var argname = pairs[i].substring(0,pos);  // Extract the name.
+    var value = pairs[i].substring(pos+1); // Extract the value.
+    args[argname] = unescape(value);          // Store as a property.
+    }
+    return args;                               // Return the object.
+}
+
+
+function runMVS() {
+    if (document.location.protocol != "file:") {
+        theArgs = getArgs();
+    } else {
+        theArgs = {};
+        theArgs.center = "0,0";
+        theArgs.zoom = "0";            
+        theArgs.data = "textfile.txt";
+    }
+
+
+    // ----
+    // TODO: Handle all this parsing better.
+    var safeArgs = {}
+
+    var DEFAULT_LAT = 0;
+    var DEFAULT_LON = 0;
+    var DEFAULT_ZOOM_LEVEL = 0;
+
+    var IDX_LAT = 0;
+    var IDX_LON = 1;
+
+    safeArgs.centerLat = theArgs.center ? 
+        parseFloat(theArgs.center.split(",")[IDX_LAT]) : DEFAULT_LAT;
+    
+    safeArgs.centerLon = theArgs.center ? 
+        parseFloat(theArgs.center.split(",")[IDX_LON]) : DEFAULT_LON;
+
+    safeArgs.zoom = theArgs.zoom ? parseInt(theArgs.zoom) : DEFAULT_ZOOM_LEVEL;
+
+    safeArgs.data = theArgs.data; // TODO: Make this "safe".
+
+    // -----
+    var theMVS = new OpenLayers.Map($('map'));
+        theMVS.addLayer(
+             new OpenLayers.Layer.WMS("OpenLayers WMS",
+                          "http://octo.metacarta.com/cgi-bin/mapserv",
+                          {"map" : "/mapdata/vmap_wms.map",
+                           layers: 'basic'}
+                          ));
+
+        theMVS.addLayer(
+            new OpenLayers.Layer.WMS("NASA Mosaic", 
+                         "http://wms.jpl.nasa.gov/wms.cgi",
+                         {"EXCEPTIONS" : "application/vnd.ogc.se_inimage",
+                          "format" : "image/jpeg",
+                          layers:"modis,global_mosaic"}
+                         ));
+    theMVS.setCenter(new OpenLayers.LonLat(safeArgs.centerLon, safeArgs.centerLat), safeArgs.zoom);
+
+    if (safeArgs.data) {
+        theMVS.addLayer(new OpenLayers.Layer.Text("Data", safeArgs.data));
+    }
+
+}
+</script>
+</head>
+<body style="margin:0px;"
+      onload="runMVS();">
+<div id="map"
+     style="width: 100%; height: 100%;
+            background: lightyellow;
+           "></div>
+</body>
+</html>
