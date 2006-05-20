@@ -21,9 +21,9 @@
                 
             map.addLayer(layer);
             var markers = new OpenLayers.Layer.Marker( "Markers" );
-            map.addLayer(markers, 300);
+            map.addLayer(markers);
             var newl = new OpenLayers.Layer.Text( "text", "./textfile.txt" );
-            map.addLayer(newl,301);
+            map.addLayer(newl);
             var icon = new OpenLayers.Icon('http://boston.openguides.org/markers/AQUA.png',new OpenLayers.Size(10,17));
             markers.addMarker(new OpenLayers.Marker(icon, new OpenLayers.LonLat(0,0)));
             markers.addMarker(new OpenLayers.Marker(icon, new OpenLayers.LonLat(0,45)));
