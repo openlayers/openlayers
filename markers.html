@@ -21,12 +21,15 @@
                 
             map.addLayer(layer);
             var markers = new OpenLayers.Layer.Marker( "Markers" );
-            map.addLayer(markers);
+            map.addLayer(markers, 300);
             var newl = new OpenLayers.Layer.Text( "text", "./textfile.txt" );
-            map.addLayer(newl);
+            map.addLayer(newl,301);
             var icon = new OpenLayers.Icon('http://boston.openguides.org/markers/AQUA.png',new OpenLayers.Size(10,17));
             markers.addMarker(new OpenLayers.Marker(icon, new OpenLayers.LonLat(0,0)));
-            markers.addMarker(new OpenLayers.Marker(icon, new OpenLayers.LonLat(-5,-10)));
+            markers.addMarker(new OpenLayers.Marker(icon, new OpenLayers.LonLat(0,45)));
+            marker = new OpenLayers.Marker(icon, new OpenLayers.LonLat(90,10));
+            marker.events.register('mousedown', marker, function(evt) { alert(this.icon.url); Event.stop(evt); });
+            markers.addMarker(marker); 
             map.setCenter(new OpenLayers.LonLat(0, 0), 0);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
         }
