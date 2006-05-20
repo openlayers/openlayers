@@ -6,7 +6,7 @@
     
     function test_01_Marker_constructor (t) {
         t.plan( 5 );
-        marker = new OpenLayers.Marker(new OpenLayers.Icon(),new OpenLayers.LonLat(2,1));
+        marker = new OpenLayers.Marker(new OpenLayers.LonLat(2,1),new OpenLayers.Icon());
         t.ok( marker instanceof OpenLayers.Marker, "new OpenLayers.Marker returns Marker object" );
         t.ok( marker.icon instanceof OpenLayers.Icon, "new marker.Icon returns Icon object" );
         t.ok( marker.lonlat instanceof OpenLayers.LonLat, "new marker.lonlat returns LonLat object" );
