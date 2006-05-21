@@ -27,16 +27,16 @@
 
         function init(){
 	    // these should be object methods or something
-            map = new OpenLayers.Map( $('map'), {maxExtent: new OpenLayers.Bounds(33861, 717605, 330846, 1019656), maxResolution: 296985/1024 } );
+            map = new OpenLayers.Map( $('map'), {maxExtent: new OpenLayers.Bounds(33861, 717605, 330846, 1019656), maxResolution: 296985/1024, projection:"EPSG:2805" } );
             var basemap = new OpenLayers.Layer.WMS( "Boston", 
                 "http://boston.freemap.in/cgi-bin/mapserv?",
-                {map: '/www/freemap.in/boston/map/mass.map', layers: 'border,water,roads', format: 'png', srs:"EPSG:2805"} );
+                {map: '/www/freemap.in/boston/map/mass.map', layers: 'border,water,roads', format: 'png'} );
             var rapid = new OpenLayers.Layer.WMS( "Rapid Transit", 
                 "http://boston.freemap.in/cgi-bin/mapserv?",
-                {map: '/www/freemap.in/boston/map/mass.map', layers: 'rapid_transit', format: 'png', srs:"EPSG:2805"} );
+                {map: '/www/freemap.in/boston/map/mass.map', layers: 'rapid_transit', format: 'png'} );
             var buildings = new OpenLayers.Layer.WMS( "Buildings", 
                 "http://boston.freemap.in/cgi-bin/mapserv?",
-                {map: '/www/freemap.in/boston/map/mass.map', layers: 'buildings', format: 'png', srs:"EPSG:2805"} );
+                {map: '/www/freemap.in/boston/map/mass.map', layers: 'buildings', format: 'png'} );
                 
             map.addLayer(basemap);
             map.addLayer(rapid);
