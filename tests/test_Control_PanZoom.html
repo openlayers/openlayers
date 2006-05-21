@@ -1,0 +1,52 @@
+<html>
+<head>
+  <script src="../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var map; 
+    function test_01_Control_PanZoom_constructor (t) {
+        t.plan( 1 );
+    
+        control = new OpenLayers.Control.PanZoom();
+        t.ok( control instanceof OpenLayers.Control.PanZoom, "new OpenLayers.Control.PanZoom returns object" );
+    }
+    function test_02_Control_PanZoom_addControl (t) {
+        t.plan( 6 );
+        map = new OpenLayers.Map('map');
+        control = new OpenLayers.Control.PanZoom();
+        t.ok( control instanceof OpenLayers.Control.PanZoom, "new OpenLayers.Control.PanZoom returns object" );
+        t.ok( map instanceof OpenLayers.Map, "new OpenLayers.Map creates map" );
+        map.addControl(control);
+        t.ok( control.map === map, "Control.map is set to the map object" );
+        t.ok( map.controls[2] === control, "map.controls contains control" );
+        t.eq( control.div.style.zIndex, "253", "Control div zIndexed properly" );
+        t.eq( map.viewPortDiv.lastChild.style.zIndex, "253", "Viewport div contains control div" );
+    }
+    function test_03_Control_PanZoom_control_events (t) {
+        t.plan( 6 );
+        var evt = new Object();
+        map = new OpenLayers.Map('map');
+        control = new OpenLayers.Control.PanZoom();
+        map.addControl(control);
+        map.setCenter(new OpenLayers.LonLat(0,0), 0);
+        control.buttons[0].onmousedown(evt);
+        t.eq( map.getCenter().lat, 360/1024*50, "Pan up works correctly" );
+        control.buttons[1].onmousedown(evt);
+        t.eq( map.getCenter().lon, -360/1024*50, "Pan left works correctly" );
+        control.buttons[2].onmousedown(evt);
+        t.eq( map.getCenter().lon, 0, "Pan right works correctly" );
+        control.buttons[3].onmousedown(evt);
+        t.eq( map.getCenter().lat, 0, "Pan down works correctly" );
+        control.buttons[4].onmousedown(evt);
+        control.buttons[4].onmousedown(evt);
+        t.eq( map.getZoom(), 2, "zoomin workds correctly" );
+        control.buttons[5].onmousedown(evt);
+        t.eq( map.getZoom(), 1, "zoomout workds correctly" );
+
+    }
+  // -->
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 1024px; height: 512px;"/>
+</body>
+</html>
