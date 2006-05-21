@@ -21,25 +21,29 @@
                 
             map.addLayer(layer);
 
-            popup = new OpenLayers.Popup("chicken");
-        
-            map.addPopup(popup);
- 
             map.setCenter(new OpenLayers.LonLat(0, 0), 0);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
         }
         
         function changer() {
             popup.setBackgroundColor("red");
-            popup.setSize(new OpenLayers.Size(20,200));
+            popup.setSize(new OpenLayers.Size(200,20));
             popup.setPx(new OpenLayers.Pixel(120,120));
             popup.setOpacity(.9);
             popup.setBorder("2px solid");    
             popup.setContentHTML("High Chickens");            
         }
+
+        function add() {
+            popup = new OpenLayers.Popup("chicken", 
+                                         new OpenLayers.Pixel(400,200),
+                                         new OpenLayers.Size(200,200),
+                                         "example popup");
+        
+            map.addPopup(popup);
+        }        
         
         function destroy() {
-            alert(navigator.appName);
             popup.destroy();
         }
 
@@ -54,8 +58,9 @@
   <body onload="init()">
     <h1>OpenLayers Example</h1>
     <div id="map"></div>
-    <div style="background-color:blue" onclick="changer()"> changer</div>
-    <div style="background-color:red" onclick="destroy()"> destroy</div>
-    <div style="background-color:green" onclick="remove()"> remove</div>
+    <div style="background-color:purple" onclick="add()"> click to add popup to map</div>
+    <div style="background-color:blue" onclick="changer()"> click to modify popup's attributes</div>
+    <div style="background-color:red" onclick="destroy()"> click to destroy the popup</div>
+    <div style="background-color:green" onclick="remove()"> click to remove the popup from map</div>
   </body>
 </html>
