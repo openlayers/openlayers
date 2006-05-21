@@ -21,10 +21,7 @@
                 
             map.addLayer(layer);
 
-            popup = new OpenLayers.Popup("chicken", 
-                                         new OpenLayers.Pixel(20,240),
-                                         new OpenLayers.Size(500,100)
-                                         );
+            popup = new OpenLayers.Popup("chicken");
         
             map.addPopup(popup);
  
@@ -32,15 +29,33 @@
             map.addControl(new OpenLayers.Control.LayerSwitcher());
         }
         
-        function away() {
+        function changer() {
+            popup.setBackgroundColor("red");
+            popup.setSize(new OpenLayers.Size(20,200));
+            popup.setPx(new OpenLayers.Pixel(120,120));
+            popup.setOpacity(.9);
+            popup.setBorder("2px solid");    
+            popup.setContentHTML("High Chickens");            
+        }
+        
+        function destroy() {
+            alert(navigator.appName);
+            popup.destroy();
+        }
+
+        function remove() {
             map.removePopup(popup);
         }
+
+
         // -->
     </script>
   </head>
   <body onload="init()">
     <h1>OpenLayers Example</h1>
     <div id="map"></div>
-    <div style="background-color:blue" onclick="away()"> hello</div>
+    <div style="background-color:blue" onclick="changer()"> changer</div>
+    <div style="background-color:red" onclick="destroy()"> destroy</div>
+    <div style="background-color:green" onclick="remove()"> remove</div>
   </body>
 </html>

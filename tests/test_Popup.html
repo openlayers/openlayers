@@ -4,50 +4,94 @@
   <script type="text/javascript"><!--
     var popup; 
     
-    function test_01_Popup_constructor (t) {
-        t.plan( 6 );
+    function test_01_Popup_default_constructor(t) {
+        t.plan( 11 );
+
+        popup = new OpenLayers.Popup();
+
+        t.ok( popup instanceof OpenLayers.Popup, "new OpenLayers.Popup returns Popup object" );
+        t.ok(popup.id.startsWith("Popup"), "good default popup.id");
+        t.eq(popup.px.x, OpenLayers.Popup.PX.x, "good default popup.px.x");
+        t.eq(popup.px.y, OpenLayers.Popup.PX.y, "good default popup.px.y");
+        t.eq(popup.size.w, OpenLayers.Popup.SIZE.w, "good default popup.size.w");
+        t.eq(popup.size.h, OpenLayers.Popup.SIZE.h, "good default popup.size.h");
+        t.eq(popup.contentHTML, "", "good default popup.contentHTML");
+        t.eq(popup.backgroundColor, OpenLayers.Popup.COLOR, "good default popup.backgroundColor");
+        t.eq(popup.opacity, OpenLayers.Popup.OPACITY, "good default popup.opacity");
+        t.eq(popup.border, OpenLayers.Popup.BORDER, "good default popup.border");
+
+        
+        var oldIndex = parseInt(popup.id.slice("Popup".length));
+
+        popup = new OpenLayers.Popup();
+        var newIndex = parseInt(popup.id.slice("Popup".length));
+        
+        t.eq(newIndex, oldIndex + 1, "default id generator incrementing correctly");
+    }
+    
+    function test_02_Popup_constructor (t) {
+        t.plan( 7 );
 
         var id = "chicken";
         var x = 50;
         var y = 100;
         var w = 500;
         var h = 400;
-        
+        var content = "foo";
 
         popup = new OpenLayers.Popup(id,
                                      new OpenLayers.Pixel(x, y),
-                                     new OpenLayers.Size(w, h));
+                                     new OpenLayers.Size(w, h),
+                                     content);
 
         t.ok( popup instanceof OpenLayers.Popup, "new OpenLayers.Popup returns Popup object" );
         t.eq(popup.id, id, "popup.id set correctly");
         t.eq(popup.px.x, x, "left position of popup.px set correctly");
         t.eq(popup.px.y, y, "top position of popup.px set correctly");
-        t.eq(popup.size.w, w, "width position of popup.size set correctly");
-        t.eq(popup.size.h, h, "heightposition of popup.size set correctly");
+        t.eq(popup.size.w, w, "width of popup.size set correctly");
+        t.eq(popup.size.h, h, "height of popup.size set correctly");
+        t.eq(popup.contentHTML, content, "contentHTML porpoerty of set correctly");
     }
+
+    function test_03_Popup_draw(t) {
     
-    function test_02_Popup_draw(t) {
-    
-        t.plan( 5 );
+        t.plan( 9 );
         
         var id = "chicken";
         var x = 50;
         var y = 100;
         var w = 500;
         var h = 400;
-        
+        var content = "charlie";
+        var color = "red";
+        var opacity = 0.5;
+        var border = "1px solid";
+
 
         popup = new OpenLayers.Popup(id,
                                      new OpenLayers.Pixel(x, y),
-                                     new OpenLayers.Size(w, h));
+                                     new OpenLayers.Size(w, h),
+                                     content);
         popup.draw();
+        popup.setBackgroundColor(color);
+        popup.setOpacity(opacity);
+        popup.setBorder(border);
                                      
         t.eq(popup.div.id, id + "_div", "popup.div.id set correctly");
         t.eq(popup.div.style.left, x + "px", "left position of popup.div set correctly");
         t.eq(popup.div.style.top, y + "px", "top position of popup.div set correctly");
         t.eq(popup.div.style.width, w + "px", "width position of popup.div set correctly");
         t.eq(popup.div.style.height, h + "px", "heightposition of popup.div set correctly");
-    
+        t.eq(popup.div.innerHTML, content, "good default popup.contentHTML");
+        t.eq(popup.div.style.backgroundColor, color, "good default popup.backgroundColor");
+
+        if (navigator.appName.indexOf("Microsoft") == -1) {
+            t.eq(parseFloat(popup.div.style.opacity), opacity, "good default popup.opacity");
+        } else {
+            t.eq(popup.div.style.filter, "alpha(opacity=" + opacity*100 + ")", "good default popup.opacity");
+        }
+        t.ok(popup.div.style.border.indexOf(border) != -1, "good default popup.border");
+
     }
 
 
