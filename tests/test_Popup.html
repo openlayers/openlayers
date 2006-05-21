@@ -68,10 +68,10 @@
         var border = "1px solid";
 
 
-        popup = new OpenLayers.Popup(id,
-                                     new OpenLayers.Pixel(x, y),
-                                     new OpenLayers.Size(w, h),
-                                     content);
+        popup = new OpenLayers.Popup(id);
+        popup.setPx(new OpenLayers.Pixel(x, y));
+        popup.setSize(new OpenLayers.Size(w, h));
+        popup.setContentHTML(content);
         popup.draw();
         popup.setBackgroundColor(color);
         popup.setOpacity(opacity);
