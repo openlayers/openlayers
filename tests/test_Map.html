@@ -73,6 +73,47 @@
         map.zoomIn();
         map.zoomOut();
     }
+    
+    function test_07_Map_add_remove_popup (t) {
+        t.plan(5);
+
+        map = new OpenLayers.Map('map');
+        
+        var popup = new OpenLayers.Popup("chicken", 
+                                         new OpenLayers.Pixel(20,20),
+                                         new OpenLayers.Size(200,200));
+
+        map.addPopup(popup);
+        t.ok((popup.map == map), "popup's reference back to map set correctly");
+        t.eq(map.popups.indexOf(popup), 0, "popup successfully added to Map's internal popups array");
+        
+        var nodes = map.viewPortDiv.childNodes;
+        
+        var found = false;
+        for (var i=0; i < nodes.length; i++) {
+            if (nodes.item(i) == popup.div) {
+                found = true;
+                break;
+            }
+        }
+        t.ok(found, "popup.div successfully added to the map's viewPort");
+
+        
+        map.removePopup(popup);
+        t.eq(map.popups.indexOf(popup), -1, "popup successfully removed from Map's internal popups array");
+
+        var found = false;
+        for (var i=0; i < nodes.length; i++) {
+            if (nodes.item(i) == popup.div) {
+                found = true;
+                break;
+            }
+        }
+        t.ok(!found, "popup.div successfully removed from the map's viewPort");
+
+
+    }
+
     function test_99_Map_destroy (t) {
         t.plan( 2 );    
         map = new OpenLayers.Map($('map'));
