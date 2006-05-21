@@ -75,7 +75,7 @@
     }
     
     function test_07_Map_add_remove_popup (t) {
-        t.plan(5);
+        t.plan(4);
 
         map = new OpenLayers.Map('map');
         
@@ -84,7 +84,6 @@
                                          new OpenLayers.Size(200,200));
 
         map.addPopup(popup);
-        t.ok((popup.map == map), "popup's reference back to map set correctly");
         t.eq(map.popups.indexOf(popup), 0, "popup successfully added to Map's internal popups array");
         
         var nodes = map.viewPortDiv.childNodes;
