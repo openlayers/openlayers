@@ -5,9 +5,49 @@
     var popup; 
     
     function test_01_Popup_constructor (t) {
-        t.plan( 1 );
-        popup = new OpenLayers.Popup();
+        t.plan( 6 );
+
+        var id = "chicken";
+        var x = 50;
+        var y = 100;
+        var w = 500;
+        var h = 400;
+        
+
+        popup = new OpenLayers.Popup(id,
+                                     new OpenLayers.Pixel(x, y),
+                                     new OpenLayers.Size(w, h));
+
         t.ok( popup instanceof OpenLayers.Popup, "new OpenLayers.Popup returns Popup object" );
+        t.eq(popup.id, id, "popup.id set correctly");
+        t.eq(popup.px.x, x, "left position of popup.px set correctly");
+        t.eq(popup.px.y, y, "top position of popup.px set correctly");
+        t.eq(popup.size.w, w, "width position of popup.size set correctly");
+        t.eq(popup.size.h, h, "heightposition of popup.size set correctly");
+    }
+    
+    function test_02_Popup_draw(t) {
+    
+        t.plan( 5 );
+        
+        var id = "chicken";
+        var x = 50;
+        var y = 100;
+        var w = 500;
+        var h = 400;
+        
+
+        popup = new OpenLayers.Popup(id,
+                                     new OpenLayers.Pixel(x, y),
+                                     new OpenLayers.Size(w, h));
+        popup.draw();
+                                     
+        t.eq(popup.div.id, id + "_div", "popup.div.id set correctly");
+        t.eq(popup.div.style.left, x + "px", "left position of popup.div set correctly");
+        t.eq(popup.div.style.top, y + "px", "top position of popup.div set correctly");
+        t.eq(popup.div.style.width, w + "px", "width position of popup.div set correctly");
+        t.eq(popup.div.style.height, h + "px", "heightposition of popup.div set correctly");
+    
     }
 
 
