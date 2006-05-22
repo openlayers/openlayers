@@ -113,6 +113,25 @@
 
     }
 
+    function test_08_Map_px_lonlat_translation (t) {
+        t.plan( 3 );    
+        map = new OpenLayers.Map($('map'));
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+ 
+        var pixel = new OpenLayers.Pixel(50,150);
+        var lonlat = map.getLonLatFromPixel(pixel);
+        t.ok( lonlat instanceof OpenLayers.LonLat, "getLonLatFromPixel returns valid OpenLayers.LonLat" );
+
+        var newPixel = map.getPixelFromLonLat(lonlat);
+        t.ok( newPixel instanceof OpenLayers.Pixel, "getPixelFromLonLat returns valid OpenLayers.Pixel" );
+
+        // WARNING!!!  I'm faily sure that the following test's validity 
+        //             depends highly on rounding and the resolution. For now,
+        //             in the default case, it seems to work. This may not 
+        //             always be so.
+        t.ok( newPixel.equals(pixel), "Translation to pixel and back to lonlat is consistent");
+    }
+
     function test_99_Map_destroy (t) {
         t.plan( 2 );    
         map = new OpenLayers.Map($('map'));
