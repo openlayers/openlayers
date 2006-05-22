@@ -18,7 +18,7 @@
             t.eq( layer.markers[0].icon.url, 'http://boston.openguides.org/markers/ORANGE.png', "icon" );
         } );
     }
-    function test_02_Layer_Text_generateMarker (t) { 
+    function test_02_Layer_Text_draw (t) { 
         t.plan(5);
         layer = new OpenLayers.Layer.Text('Test Layer', 'data_Layer_Text_textfile.txt');
         t.ok( layer instanceof OpenLayers.Layer.Text, "new OpenLayers.Layer.Text returns object" );
