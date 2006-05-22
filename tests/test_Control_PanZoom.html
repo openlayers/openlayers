@@ -10,17 +10,21 @@
         t.ok( control instanceof OpenLayers.Control.PanZoom, "new OpenLayers.Control.PanZoom returns object" );
     }
     function test_02_Control_PanZoom_addControl (t) {
-        t.plan( 6 );
+        t.plan( 8 );
         map = new OpenLayers.Map('map');
         control = new OpenLayers.Control.PanZoom();
         t.ok( control instanceof OpenLayers.Control.PanZoom, "new OpenLayers.Control.PanZoom returns object" );
         t.ok( map instanceof OpenLayers.Map, "new OpenLayers.Map creates map" );
-        map.addControl(control,
-                       new OpenLayers.Pixel(10,10));
+        map.addControl(control);
         t.ok( control.map === map, "Control.map is set to the map object" );
         t.ok( map.controls[2] === control, "map.controls contains control" );
         t.eq( control.div.style.zIndex, "253", "Control div zIndexed properly" );
         t.eq( map.viewPortDiv.lastChild.style.zIndex, "253", "Viewport div contains control div" );
+        t.eq( control.div.style.top, "4px", "Control div top located correctly by default");
+
+        var control2 = new OpenLayers.Control.PanZoom();
+        map.addControl(control2, new OpenLayers.Pixel(100,100));
+        t.eq( control2.div.style.top, "100px", "2nd control div is located correctly");
     }
     function test_03_Control_PanZoom_control_events (t) {
         t.plan( 6 );
