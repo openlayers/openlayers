@@ -4,7 +4,7 @@
   <script type="text/javascript"><!--
     var map; 
     function test_01_Events_constructor (t) {
-        t.plan( 18 );
+        t.plan( 21 );
         var obj = {result: 0}, eventTypes = ["doThingA", "doThingB", "doThingC"];
         events = new OpenLayers.Events(obj, $('map'), eventTypes);
         t.ok( events instanceof OpenLayers.Events, "new OpenLayers.Control returns object" );
