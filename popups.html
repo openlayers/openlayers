@@ -28,7 +28,7 @@
         function changer() {
             popup.setBackgroundColor("red");
             popup.setSize(new OpenLayers.Size(200,20));
-            popup.setPx(new OpenLayers.Pixel(120,120));
+            popup.moveTo(new OpenLayers.Pixel(120,120));
             popup.setOpacity(.9);
             popup.setBorder("2px solid");    
             popup.setContentHTML("High Chickens");            
@@ -36,11 +36,10 @@
 
         function add() {
             popup = new OpenLayers.Popup("chicken", 
-                                         new OpenLayers.Pixel(0,00),
                                          new OpenLayers.Size(200,200),
                                          "example popup");
         
-            map.addPopup(popup);
+            map.addPopup(popup, new OpenLayers.Pixel(50,50));
         }        
         
         function destroy() {
