@@ -80,10 +80,9 @@
         map = new OpenLayers.Map('map');
         
         var popup = new OpenLayers.Popup("chicken", 
-                                         new OpenLayers.Pixel(20,20),
                                          new OpenLayers.Size(200,200));
 
-        map.addPopup(popup);
+        map.addPopup(popup, new OpenLayers.Pixel(20,20));
         t.eq(map.popups.indexOf(popup), 0, "popup successfully added to Map's internal popups array");
         
         var nodes = map.viewPortDiv.childNodes;

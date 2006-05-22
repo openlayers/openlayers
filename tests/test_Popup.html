@@ -5,14 +5,12 @@
     var popup; 
     
     function test_01_Popup_default_constructor(t) {
-        t.plan( 11 );
+        t.plan( 9 );
 
         popup = new OpenLayers.Popup();
 
         t.ok( popup instanceof OpenLayers.Popup, "new OpenLayers.Popup returns Popup object" );
         t.ok(popup.id.startsWith("Popup"), "good default popup.id");
-        t.eq(popup.px.x, OpenLayers.Popup.PX.x, "good default popup.px.x");
-        t.eq(popup.px.y, OpenLayers.Popup.PX.y, "good default popup.px.y");
         t.eq(popup.size.w, OpenLayers.Popup.SIZE.w, "good default popup.size.w");
         t.eq(popup.size.h, OpenLayers.Popup.SIZE.h, "good default popup.size.h");
         t.eq(popup.contentHTML, "", "good default popup.contentHTML");
@@ -30,24 +28,19 @@
     }
     
     function test_02_Popup_constructor (t) {
-        t.plan( 7 );
+        t.plan( 5 );
 
         var id = "chicken";
-        var x = 50;
-        var y = 100;
         var w = 500;
         var h = 400;
         var content = "foo";
 
         popup = new OpenLayers.Popup(id,
-                                     new OpenLayers.Pixel(x, y),
                                      new OpenLayers.Size(w, h),
                                      content);
 
         t.ok( popup instanceof OpenLayers.Popup, "new OpenLayers.Popup returns Popup object" );
         t.eq(popup.id, id, "popup.id set correctly");
-        t.eq(popup.px.x, x, "left position of popup.px set correctly");
-        t.eq(popup.px.y, y, "top position of popup.px set correctly");
         t.eq(popup.size.w, w, "width of popup.size set correctly");
         t.eq(popup.size.h, h, "height of popup.size set correctly");
         t.eq(popup.contentHTML, content, "contentHTML porpoerty of set correctly");
@@ -55,7 +48,7 @@
 
     function test_03_Popup_draw(t) {
     
-        t.plan( 9 );
+        t.plan( 11 );
         
         var id = "chicken";
         var x = 50;
@@ -69,13 +62,12 @@
 
 
         popup = new OpenLayers.Popup(id);
-        popup.setPx(new OpenLayers.Pixel(x, y));
         popup.setSize(new OpenLayers.Size(w, h));
         popup.setContentHTML(content);
-        popup.draw();
         popup.setBackgroundColor(color);
         popup.setOpacity(opacity);
         popup.setBorder(border);
+        popup.draw(new OpenLayers.Pixel(x, y));
                                      
         t.eq(popup.div.id, id + "_div", "popup.div.id set correctly");
         t.eq(popup.div.style.left, x + "px", "left position of popup.div set correctly");
@@ -91,6 +83,12 @@
             t.eq(popup.div.style.filter, "alpha(opacity=" + opacity*100 + ")", "good default popup.opacity");
         }
         t.ok(popup.div.style.border.indexOf(border) != -1, "good default popup.border");
+
+        x += 50;
+        popup.moveTo(new OpenLayers.Pixel(x, y));
+        t.eq(popup.div.style.left, x + "px", "moveTo updates left position of popup.div correctly");
+        t.eq(popup.div.style.top, y + "px", "moveTo updates top position of popup.div correctly");
+        
 
     }
 
