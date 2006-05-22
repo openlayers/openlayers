@@ -15,7 +15,8 @@
         control = new OpenLayers.Control.PanZoom();
         t.ok( control instanceof OpenLayers.Control.PanZoom, "new OpenLayers.Control.PanZoom returns object" );
         t.ok( map instanceof OpenLayers.Map, "new OpenLayers.Map creates map" );
-        map.addControl(control);
+        map.addControl(control,
+                       new OpenLayers.Pixel(10,10));
         t.ok( control.map === map, "Control.map is set to the map object" );
         t.ok( map.controls[2] === control, "map.controls contains control" );
         t.eq( control.div.style.zIndex, "253", "Control div zIndexed properly" );
@@ -26,7 +27,8 @@
         var evt = new Object();
         map = new OpenLayers.Map('map');
         control = new OpenLayers.Control.PanZoom();
-        map.addControl(control);
+        map.addControl(control,
+                       new OpenLayers.Pixel(20,20));
         map.setCenter(new OpenLayers.LonLat(0,0), 0);
         control.buttons[0].onmousedown(evt);
         t.eq( map.getCenter().lat, 360/1024*50, "Pan up works correctly" );
