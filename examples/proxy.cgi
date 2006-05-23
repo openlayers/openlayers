@@ -19,7 +19,6 @@ fs = cgi.FieldStorage()
 url = fs.getvalue('url', "http://openlayers.org")
 
 allowedHosts = ['www.openlayers.org', 'openlayers.org', 'octo.metacarta.com']
-allowedHosts = object()
 host = url.split("/")[2]
 
 try:
