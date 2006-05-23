@@ -7,7 +7,8 @@
     function test_01_Feature_constructor (t) {
         t.plan( 5 );
 
-        feature = new OpenLayers.Feature(new OpenLayers.LonLat(2,1), 
+        feature = new OpenLayers.Feature("myfeature", 
+                                         new OpenLayers.LonLat(2,1), 
                {
                 iconURL:'http://boston.openguides.org/features/ORANGE.png',
                 iconW: 12,
@@ -22,7 +23,7 @@
     
     function test_02_Feature_createMarker (t) {
         t.plan( 11 );
-        feature = new OpenLayers.Feature(new OpenLayers.LonLat(2,1), 
+        feature = new OpenLayers.Feature("myfeature", new OpenLayers.LonLat(2,1), 
                {
                 iconURL:'http://boston.openguides.org/features/ORANGE.png',
                 iconW: 12,
