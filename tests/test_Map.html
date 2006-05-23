@@ -80,12 +80,14 @@
         map = new OpenLayers.Map('map');
         
         var popup = new OpenLayers.Popup("chicken", 
+                                         new OpenLayers.LonLat(0,0),
                                          new OpenLayers.Size(200,200));
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
 
-        map.addPopup(popup, new OpenLayers.Pixel(20,20));
+        map.addPopup(popup);
         t.eq(map.popups.indexOf(popup), 0, "popup successfully added to Map's internal popups array");
-        
-        var nodes = map.viewPortDiv.childNodes;
+
+        var nodes = map.layerContainerDiv.childNodes;
         
         var found = false;
         for (var i=0; i < nodes.length; i++) {
@@ -108,8 +110,6 @@
             }
         }
         t.ok(!found, "popup.div successfully removed from the map's viewPort");
-
-
     }
 
     function test_08_Map_px_lonlat_translation (t) {

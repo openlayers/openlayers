@@ -36,10 +36,11 @@
 
         function add() {
             popup = new OpenLayers.Popup("chicken", 
+                                         new OpenLayers.LonLat(5,40),
                                          new OpenLayers.Size(200,200),
                                          "example popup");
         
-            map.addPopup(popup, new OpenLayers.Pixel(50,50));
+            map.addPopup(popup);
         }        
         
         function destroy() {
