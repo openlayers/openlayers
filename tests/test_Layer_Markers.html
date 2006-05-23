@@ -4,24 +4,24 @@
   <script type="text/javascript"><!--
     var layer; 
 
-    function test_01_Layer_Marker_constructor (t) {
+    function test_01_Layer.Markers_constructor (t) {
         t.plan( 2 );
         
         layer = new OpenLayers.Layer.Markers('Test Layer');
-        t.ok( layer instanceof OpenLayers.Layer.Markers, "new OpenLayers.Layer.Marker returns object" );
+        t.ok( layer instanceof OpenLayers.Layer.Markers, "new OpenLayers.Layer.Markers returns object" );
         t.eq( layer.name, "Test Layer", "layer.name is correct" );
     }
-    function test_02_Layer_Marker_addlayer (t) {
+    function test_02_Layer.Markers_addlayer (t) {
         t.plan( 3 );
         
         layer = new OpenLayers.Layer.Markers('Test Layer');
-        t.ok( layer instanceof OpenLayers.Layer.Markers, "new OpenLayers.Layer.Marker returns object" );
+        t.ok( layer instanceof OpenLayers.Layer.Markers, "new OpenLayers.Layer.Markers returns object" );
         t.eq( layer.name, "Test Layer", "layer.name is correct" );
         layer.addMarker(new OpenLayers.Marker(new OpenLayers.Icon(),new OpenLayers.LonLat(0,0)));
         t.eq( layer.markers.length, 1, "addLayer adds marker to layer." );
     }
 
-    function test_99_Layer_Marker_destroy (t) {
+    function test_99_Layer.Markers_destroy (t) {
         t.plan( 1 );    
         layer = new OpenLayers.Layer.Markers('Test Layer');
         var map = new OpenLayers.Map('map');
