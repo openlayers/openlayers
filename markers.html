@@ -20,7 +20,7 @@
                 {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'} );
                 
             map.addLayer(layer);
-            var markers = new OpenLayers.Layer.Marker( "Markers" );
+            var markers = new OpenLayers.Layer.Markers( "Markers" );
             map.addLayer(markers);
             var newl = new OpenLayers.Layer.Text( "text", "./textfile.txt" );
             map.addLayer(newl);
