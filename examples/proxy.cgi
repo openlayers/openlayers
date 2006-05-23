@@ -19,9 +19,9 @@ fs = cgi.FieldStorage()
 url = fs.getvalue('url', "http://openlayers.org")
 
 allowedHosts = ['www.openlayers.org', 'openlayers.org', 'octo.metacarta.com']
-host = url.split("/")[2]
 
 try:
+    host = url.split("/")[2]
     if allowedHosts and not host in allowedHosts:
         print "Status: 502 Bad Gateway"
         print "Content-Type: text/plain"
