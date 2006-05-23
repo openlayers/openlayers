@@ -28,9 +28,9 @@
                 iconW: 12,
                 iconH: 17
                });
-        layer = new OpenLayers.Layer.Marker('Marker Layer');
+        layer = new OpenLayers.Layer.Markers('Marker Layer');
         t.ok( feature instanceof OpenLayers.Feature, "new OpenLayers.Feature returns Feature object" );
-        t.ok( layer instanceof OpenLayers.Layer.Marker, "Layer is a marker layer" );
+        t.ok( layer instanceof OpenLayers.Layer.Markers, "Layer is a marker layer" );
         feature.createMarker(layer);
         
         t.ok( feature.marker instanceof OpenLayers.Marker, 
