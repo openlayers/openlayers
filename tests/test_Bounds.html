@@ -139,6 +139,21 @@
          t.eq( containerBounds.containsBounds(bounds, true, false) , true, "(" + containerBounds.toBBOX() + ") correctly contains (" + bounds.toBBOX() + ") when partial is true, inclusive is false" );
      }
      
+     function test_09_Bounds_determineQuadrant(t) {
+
+        t.plan( 4 );
+        var bounds = new OpenLayers.Bounds(0,0,100,100);
+
+        var tl = new OpenLayers.LonLat(25, 75);
+        var tr = new OpenLayers.LonLat(75, 75);
+        var bl = new OpenLayers.LonLat(25, 25);
+        var br = new OpenLayers.LonLat(75, 25);
+
+        t.eq( bounds.determineQuadrant(tl), "tl", "bounds.determineQuadrant correctly identifies a coordinate in the top left quadrant");
+        t.eq( bounds.determineQuadrant(tr), "tr", "bounds.determineQuadrant correctly identifies a coordinate in the top right quadrant");
+        t.eq( bounds.determineQuadrant(bl), "bl", "bounds.determineQuadrant correctly identifies a coordinate in the bottom left quadrant");
+        t.eq( bounds.determineQuadrant(br), "br", "bounds.determineQuadrant correctly identifies a coordinate in the bottom right quadrant");
+     }
      
   // -->
   </script>
