@@ -37,8 +37,8 @@
         layer = new OpenLayers.Layer.WMS('Test Layer', "http://octo.metacarta.com/cgi-bin/mapserv", {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'});
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,0),5);
-        t.eq( layer.grid.length, 4, "Grid rows is correct." );
-        t.eq( layer.grid[0].length, 2, "Grid cols is correct." );
+        t.eq( layer.grid.length, 3, "Grid rows is correct." );
+        t.eq( layer.grid[0].length, 3, "Grid cols is correct." );
         
     }
 
