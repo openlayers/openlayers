@@ -28,8 +28,8 @@
         t.delay_call( 1, function() { 
           map.setCenter(new OpenLayers.LonLat(0,0),0);
           t.ok( map.layers[0].div.firstChild instanceof HTMLImageElement, "Marker added to div" )
-          t.eq( map.layers[0].div.firstChild.style.top, "205px", "Marker top set correctly" )
-          t.eq( map.layers[0].div.firstChild.style.left, "302px", "Marker left set correctly" )
+          t.eq( map.layers[0].div.firstChild.style.top, "219px", "Marker top set correctly" )
+          t.eq( map.layers[0].div.firstChild.style.left, "273px", "Marker left set correctly" )
         });;
     }
     function test_99_Layer_Text_destroy (t) {
