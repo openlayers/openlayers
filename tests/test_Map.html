@@ -125,11 +125,11 @@
         map.setCenter(new OpenLayers.LonLat(0, 0), 0);
  
         var pixel = new OpenLayers.Pixel(50,150);
-        var lonlat = map.getLonLatFromPixel(pixel);
-        t.ok( lonlat instanceof OpenLayers.LonLat, "getLonLatFromPixel returns valid OpenLayers.LonLat" );
+        var lonlat = map.getLonLatFromScreenPx(pixel);
+        t.ok( lonlat instanceof OpenLayers.LonLat, "getLonLatFromScreenPx returns valid OpenLayers.LonLat" );
 
-        var newPixel = map.getPixelFromLonLat(lonlat);
-        t.ok( newPixel instanceof OpenLayers.Pixel, "getPixelFromLonLat returns valid OpenLayers.Pixel" );
+        var newPixel = map.getScreenPxFromLonLat(lonlat);
+        t.ok( newPixel instanceof OpenLayers.Pixel, "getScreenPxFromLonLat returns valid OpenLayers.Pixel" );
 
         // WARNING!!!  I'm faily sure that the following test's validity 
         //             depends highly on rounding and the resolution. For now,
