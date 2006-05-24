@@ -2,15 +2,22 @@
 <head>
   <script src="../lib/OpenLayers.js"></script>
   <script type="text/javascript"><!--
+    var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var map; 
     function test_01_Map_constructor (t) {
         t.plan( 10 );
         
         map = new OpenLayers.Map('map'); // no longer need to call $(), constructor does it
-        t.ok( map instanceof OpenLayers.Map, "new OpenLayers.Map returns object" );
-        t.ok( map.div instanceof HTMLDivElement, "map.div is an HTMLDivElement" );
-        t.ok( map.viewPortDiv instanceof HTMLDivElement, "map.viewPortDiv is an HTMLDivElement" );
-        t.ok( map.layerContainerDiv instanceof HTMLDivElement, "map.layerContainerDiv is an HTMLDivElement" );
+            t.ok( map instanceof OpenLayers.Map, "new OpenLayers.Map returns object" );
+        if (!isMozilla) {
+            t.ok( true, "skipping element test outside of Mozilla");
+            t.ok( true, "skipping element test outside of Mozilla");
+            t.ok( true, "skipping element test outside of Mozilla");
+        } else {
+            t.ok( map.div instanceof HTMLDivElement, "map.div is an HTMLDivElement" );
+            t.ok( map.viewPortDiv instanceof HTMLDivElement, "map.viewPortDiv is an HTMLDivElement" );
+            t.ok( map.layerContainerDiv instanceof HTMLDivElement, "map.layerContainerDiv is an HTMLDivElement" );
+        }
         t.ok( map.layers instanceof Array, "map.layers is an Array" );
         t.ok( map.controls instanceof Array, "map.controls is an Array" );
         t.ok( map.events instanceof OpenLayers.Events, "map.events is an OpenLayers.Events" );

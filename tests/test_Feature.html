@@ -2,6 +2,8 @@
 <head>
   <script src="../lib/OpenLayers.js"></script>
   <script type="text/javascript"><!--
+    var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
+    var map; 
     var feature, layer; 
     
     function test_01_Feature_constructor (t) {
@@ -46,6 +48,7 @@
         
         t.ok( feature.marker.icon instanceof OpenLayers.Icon, 
               "createMarker sets a marker icon property to an icon" );
+        
         t.eq( feature.marker.icon.url, 
               "http://boston.openguides.org/features/ORANGE.png", 
               "createMarker sets marker url correctly" );
@@ -53,10 +56,13 @@
         var map = new OpenLayers.Map('map');
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,0),0);
-        t.ok( map.layers[0] === layer,
+        t.ok( map.layers[0] == layer,
               "Marker layer added to map okay." );
-        t.ok( map.layers[0].div.firstChild instanceof HTMLImageElement,
-              "layer div firstChild is an image" );
+        if (!isMozilla)
+            t.ok( true, "skipping element test outside of Mozilla");
+        else
+            t.ok( map.layers[0].div.firstChild instanceof HTMLImageElement,
+                  "layer div firstChild is an image" );
         t.eq( map.layers[0].div.firstChild.src,
               "http://boston.openguides.org/features/ORANGE.png", 
               "Layer div img contains correct url" );
@@ -67,6 +73,6 @@
   </script>
 </head>
 <body>
-  <div id="map"></div>
+  <div id="map" style="width: 500px; height: 300px;"></div>
 </body>
 </html>

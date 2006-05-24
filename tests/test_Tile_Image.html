@@ -2,6 +2,7 @@
 <head>
   <script src="../lib/OpenLayers.js"></script>
   <script type="text/javascript"><!--
+    var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var tile; 
     
     function test_01_Tile_Image_constructor (t) {
@@ -28,7 +29,10 @@
                                          "http://www.openlayers.org/dev/tests/tileimage",
                                          new OpenLayers.Size(5,6));
         tile.draw();
-        t.ok( tile.img instanceof HTMLImageElement, "tile.draw creates an image");
+        if (!isMozilla)
+            t.ok( true, "skipping element test outside of Mozilla");
+        else
+            t.ok( tile.img instanceof HTMLImageElement, "tile.draw creates an image");
         t.eq( tile.img.src, "http://www.openlayers.org/dev/tests/tileimage", "tile.draw creates an image");
         t.eq( tile.img.style.width, "5px", "Image width is correct" );
         t.eq( tile.img.style.height, "6px", "Image height is correct" );

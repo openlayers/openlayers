@@ -887,6 +887,9 @@ Test.AnotherWay._test_page_onload=function()
 					script_text=script_text.substring( fun_start, script_text.length );
 					var fun_end=script_text.indexOf( '(' );
 					var fun_name=script_text.substring( "function ".length,  fun_end );
+                                        var whitespace = fun_name.indexOf( ' ' );
+                                        if (whitespace >= 0)
+                                            fun_name = fun_name.substring( 0, whitespace );
 					test_page.test_objects.push( new Test.AnotherWay._test_object_t( fun_name ) );
 					script_text=script_text.substring( fun_end, script_text.length );
 					fun_start=script_text.indexOf( fun_sig  );

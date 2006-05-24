@@ -2,6 +2,7 @@
 <head>
   <script src="../lib/OpenLayers.js"></script>
   <script type="text/javascript"><!--
+    var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var map; 
     function test_01_Util_getImagesLocation (t) {
         t.plan( 1 );
@@ -63,7 +64,10 @@
 
         var div = OpenLayers.Util.createDiv(id, px, sz, overflow, img, position);
 
-        t.ok( div instanceof HTMLDivElement, "createDiv creates a valid HTMLDivElement" );
+        if (!isMozilla)
+            t.ok( true, "skipping element test outside of Mozilla");
+        else
+            t.ok( div instanceof HTMLDivElement, "createDiv creates a valid HTMLDivElement" );
         t.eq( div.id, id, "div.id set correctly");    
         t.eq( div.style.left, px.x + "px", "div.style.left set correctly");    
         t.eq( div.style.top, px.y + "px", "div.style.top set correctly");    
@@ -78,10 +82,14 @@
         //test defaults
         var div = OpenLayers.Util.createDiv();
 
-        t.ok( div instanceof HTMLDivElement, "createDiv creates a valid HTMLDivElement" );
+        if (!isMozilla)
+            t.ok( true, "skipping element test outside of Mozilla");
+        else
+            t.ok( div instanceof HTMLDivElement, "createDiv creates a valid HTMLDivElement" );
         t.ok( (div.id != ""), "div.id set correctly");    
-        t.eq( div.style.left, "0pt", "div.style.left set correctly");    
-        t.eq( div.style.top, "0pt", "div.style.top set correctly");    
+        // the next two tests return "0pt" in Mozilla, "0px" in IE
+        t.eq( div.style.left.indexOf("0p"), 0, "div.style.left set correctly");    
+        t.eq( div.style.top.indexOf("0p"), 0, "div.style.top set correctly");    
 
         t.eq( div.style.width, "", "div.style.width set correctly");    
         t.eq( div.style.height, "", "div.style.height set correctly");    
@@ -104,7 +112,10 @@
 
         var image = OpenLayers.Util.createImage(img, sz, xy, position, id, border);
 
-        t.ok( image instanceof HTMLImageElement, "createImage creates a valid HTMLImageElement" );
+        if (!isMozilla)
+            t.ok( true, "skipping element test outside of Mozilla");
+        else
+            t.ok( image instanceof HTMLImageElement, "createImage creates a valid HTMLImageElement" );
         t.eq( image.id, id, "image.id set correctly");    
         t.eq( image.style.left, xy.x + "px", "image.style.left set correctly");    
         t.eq( image.style.top, xy.y + "px", "image.style.top set correctly");    
@@ -119,7 +130,10 @@
         //test defaults
         var image = OpenLayers.Util.createImage();
 
-        t.ok( image instanceof HTMLImageElement, "createDiv creates a valid HTMLDivElement" );
+        if (!isMozilla)
+            t.ok( true, "skipping element test outside of Mozilla");
+        else
+            t.ok( image instanceof HTMLImageElement, "createDiv creates a valid HTMLDivElement" );
         t.eq( image.id, "", "image.id set correctly");    
         t.eq( image.style.left, "", "image.style.left set correctly");    
         t.eq( image.style.top, "", "image.style.top set correctly");    

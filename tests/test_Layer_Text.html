@@ -2,6 +2,7 @@
 <head>
   <script src="../lib/OpenLayers.js"></script>
   <script type="text/javascript"><!--
+    var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var layer; 
 
     function test_01_Layer_Text_constructor (t) {
@@ -27,7 +28,10 @@
         t.eq( map.layers[0].name, layer.name, "Layer added to map okay" );
         t.delay_call( 1, function() { 
           map.setCenter(new OpenLayers.LonLat(0,0),0);
-          t.ok( map.layers[0].div.firstChild instanceof HTMLImageElement, "Marker added to div" )
+            if (!isMozilla)
+                t.ok( true, "skipping element test outside of Mozilla");
+            else
+              t.ok( map.layers[0].div.firstChild instanceof HTMLImageElement, "Marker added to div" )
           t.eq( map.layers[0].div.firstChild.style.top, "219px", "Marker top set correctly" )
           t.eq( map.layers[0].div.firstChild.style.left, "273px", "Marker left set correctly" )
         });;

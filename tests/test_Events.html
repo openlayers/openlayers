@@ -2,13 +2,17 @@
 <head>
   <script src="../lib/OpenLayers.js"></script>
   <script type="text/javascript"><!--
+    var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var map; 
     function test_01_Events_constructor (t) {
         t.plan( 21 );
         var obj = {result: 0}, eventTypes = ["doThingA", "doThingB", "doThingC"];
         events = new OpenLayers.Events(obj, $('map'), eventTypes);
         t.ok( events instanceof OpenLayers.Events, "new OpenLayers.Control returns object" );
-        t.ok( events.div instanceof HTMLDivElement, "events.div isa HTMLDivElement" );
+        if (!isMozilla)
+            t.ok( true, "skipping element test outside of Mozilla");
+        else
+            t.ok( events.div instanceof HTMLDivElement, "events.div isa HTMLDivElement" );
         t.ok( events.object === obj, "events.object is the object we passed" );
 
         var builtin = OpenLayers.Events.prototype.BROWSER_EVENTS;
