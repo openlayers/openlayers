@@ -27,9 +27,9 @@
         
         function changer() {
             popup.setBackgroundColor("red");
-            popup.setSize(new OpenLayers.Size(200,20));
-            popup.moveTo(new OpenLayers.Pixel(120,120));
-            popup.setOpacity(.9);
+            popup.setSize(new OpenLayers.Size(100,600));
+//            popup.moveTo(new OpenLayers.Pixel(120,120));
+//            popup.setOpacity(.5);
             popup.setBorder("2px solid");    
             popup.setContentHTML("High Chickens");            
         }
@@ -52,6 +52,16 @@
             map.addPopup(popup);
         }        
         
+        function addAnchorBubble() {
+            popup = new OpenLayers.Popup.AnchoredBubble("chicken", 
+                                         new OpenLayers.LonLat(5,40),
+                                         new OpenLayers.Size(200,200),
+                                         "example popup");
+        
+            popup.setBackgroundColor("yellow");
+            popup.setOpacity(0.7);
+            map.addPopup(popup);
+        }        
         function destroy() {
             popup.destroy();
         }
@@ -65,11 +75,11 @@
     </script>
   </head>
   <body onload="init()">
-    <h1>OpenLayers Example</h1>
     <div id="map"></div>
-    <div style="background-color:purple" onclick="add()"> click to add popup to map</div>
+    <div style="background-color:purple" onclick="add()"> click to add Popup to map</div>
+    <div style="background-color:green" onclick="addAnchor()"> click to add an Popup.Anchored</div>
+    <div style="background-color:orange" onclick="addAnchorBubble()"> click to add Popup.AnchoredBubble</div>
     <div style="background-color:blue" onclick="changer()"> click to modify popup's attributes</div>
-    <div style="background-color:red" onclick="addAnchor()"> click to add an anchored popup</div>
-    <div style="background-color:green" onclick="remove()"> click to remove the popup from map</div>
+    <div style="background-color:red" onclick="remove()"> click to remove the popup from map</div>
   </body>
 </html>
