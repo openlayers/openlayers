@@ -154,7 +154,16 @@
         t.eq( bounds.determineQuadrant(bl), "bl", "bounds.determineQuadrant correctly identifies a coordinate in the bottom left quadrant");
         t.eq( bounds.determineQuadrant(br), "br", "bounds.determineQuadrant correctly identifies a coordinate in the bottom right quadrant");
      }
-     
+
+     function test_10_Bounds_oppositeQuadrant(t) {
+
+        t.plan( 4 );
+
+        t.eq( OpenLayers.Bounds.oppositeQuadrant("tl"), "br", "OpenLayers.Bounds.oppositeQuadrant returns 'br' for 'tl'");
+        t.eq( OpenLayers.Bounds.oppositeQuadrant("tr"), "bl", "OpenLayers.Bounds.oppositeQuadrant returns 'bl' for 'tr'");
+        t.eq( OpenLayers.Bounds.oppositeQuadrant("bl"), "tr", "OpenLayers.Bounds.oppositeQuadrant returns 'tr' for 'bl'");
+        t.eq( OpenLayers.Bounds.oppositeQuadrant("br"), "tl", "OpenLayers.Bounds.oppositeQuadrant returns 'tl' for 'br'");
+     }     
   // -->
   </script>
 </head>
