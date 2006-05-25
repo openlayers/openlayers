@@ -11,8 +11,8 @@
 
         t.ok( popup instanceof OpenLayers.Popup, "new OpenLayers.Popup returns Popup object" );
         t.ok(popup.id.startsWith("Popup"), "good default popup.id");
-        t.eq(popup.size.w, OpenLayers.Popup.SIZE.w, "good default popup.size.w");
-        t.eq(popup.size.h, OpenLayers.Popup.SIZE.h, "good default popup.size.h");
+        t.eq(popup.size.w, OpenLayers.Popup.WIDTH, "good default popup.size.w");
+        t.eq(popup.size.h, OpenLayers.Popup.HEIGHT, "good default popup.size.h");
         t.eq(popup.contentHTML, "", "good default popup.contentHTML");
         t.eq(popup.backgroundColor, OpenLayers.Popup.COLOR, "good default popup.backgroundColor");
         t.eq(popup.opacity, OpenLayers.Popup.OPACITY, "good default popup.opacity");
