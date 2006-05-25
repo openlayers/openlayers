@@ -42,6 +42,15 @@
         
             map.addPopup(popup);
         }        
+
+        function addAnchor() {
+            popup = new OpenLayers.Popup.Anchored("chicken", 
+                                         new OpenLayers.LonLat(5,40),
+                                         new OpenLayers.Size(200,200),
+                                         "example popup");
+        
+            map.addPopup(popup);
+        }        
         
         function destroy() {
             popup.destroy();
@@ -60,7 +69,7 @@
     <div id="map"></div>
     <div style="background-color:purple" onclick="add()"> click to add popup to map</div>
     <div style="background-color:blue" onclick="changer()"> click to modify popup's attributes</div>
-    <div style="background-color:red" onclick="destroy()"> click to destroy the popup</div>
+    <div style="background-color:red" onclick="addAnchor()"> click to add an anchored popup</div>
     <div style="background-color:green" onclick="remove()"> click to remove the popup from map</div>
   </body>
 </html>
