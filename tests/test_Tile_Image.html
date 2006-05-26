@@ -6,28 +6,32 @@
     var tile; 
     
     function test_01_Tile_Image_constructor (t) {
-        t.plan( 10 );
-        tile = new OpenLayers.Tile.Image(null,
-                                         new OpenLayers.Bounds(1,2,3,4), 
-                                         "http://www.openlayers.org/dev/tests/tileimage",
-                                         new OpenLayers.Size(5,6) );
+        t.plan( 6 );
+        
+        var layer = new Object(); //bogus layer
+        var position = new OpenLayers.Pixel(20,30);
+        var bounds = new OpenLayers.Bounds(1,2,3,4);
+        var url = "http://www.openlayers.org/dev/tests/tileimage";
+        var size = new OpenLayers.Size(5,6);
+        tile = new OpenLayers.Tile.Image(layer, position, bounds, url, size);
+        
         t.ok( tile instanceof OpenLayers.Tile.Image, "new OpenLayers.Tile returns Tile object" );
-        t.ok( tile.bounds instanceof OpenLayers.Bounds, "tile.bounds is a Bounds object" );
-        t.eq( tile.bounds.left, 1, "tile.bounds.left is set correctly");
-        t.eq( tile.bounds.bottom, 2, "tile.bounds.bottom is set correctly");
-        t.eq( tile.bounds.right, 3, "tile.bounds.right is set correctly");
-        t.eq( tile.bounds.top, 4, "tile.bounds.top is set correctly");
-        t.ok( tile.size instanceof OpenLayers.Size, "tile.size is a Size object" );
-        t.eq( tile.size.w, 5, "tile.size.w is set correctly");
-        t.eq( tile.size.h, 6, "tile.size.h is set correctly");
-        t.eq( tile.url, "http://www.openlayers.org/dev/tests/tileimage", "tile.size.h is set correctly");
+        t.eq( tile.layer, layer, "tile.layer is set correctly");
+        t.ok( tile.position.equals(position), "tile.position is set correctly");
+        t.ok( tile.bounds.equals(bounds), "tile.bounds is set correctly");
+        t.eq( tile.url, url, "tile.url is set correctly");
+        t.ok( tile.size.equals(size), "tile.size is set correctly");
     }
     function test_02_Tile_Image_draw (t) {
         t.plan( 4 );
-        tile = new OpenLayers.Tile.Image(null,
-                                         new OpenLayers.Bounds(1,2,3,4), 
-                                         "http://www.openlayers.org/dev/tests/tileimage",
-                                         new OpenLayers.Size(5,6));
+
+        var layer = new Object(); //bogus layer
+        var position = new OpenLayers.Pixel(20,30);
+        var bounds = new OpenLayers.Bounds(1,2,3,4);
+        var url = "http://www.openlayers.org/dev/tests/tileimage";
+        var size = new OpenLayers.Size(5,6);
+        tile = new OpenLayers.Tile.Image(layer, position, bounds, url, size);
+        
         tile.draw();
         if (!isMozilla)
             t.ok( true, "skipping element test outside of Mozilla");
@@ -36,20 +40,6 @@
         t.eq( tile.img.src, "http://www.openlayers.org/dev/tests/tileimage", "tile.draw creates an image");
         t.eq( tile.img.style.width, "5px", "Image width is correct" );
         t.eq( tile.img.style.height, "6px", "Image height is correct" );
-    }
-    function test_03_Tile_setPosition (t) {
-        t.plan( 5 );
-        tile = new OpenLayers.Tile.Image(
-          new OpenLayers.Bounds(1,2,3,4), "http://www.openlayers.org/dev/tests/tileimage",
-          new OpenLayers.Size(5,6));
-        t.eq( tile.getPosition(), null, "getPosition before draw returns null" );
-        tile.setPosition(new OpenLayers.Pixel(1,2));
-        t.eq( tile.getPosition().x, 1, "tile's x position set correctly " );
-        t.eq( tile.getPosition().y, 2, "tile's y position set correctly" );
-        tile.draw();
-        tile.setPosition(new OpenLayers.Pixel(1,2));
-        t.eq( tile.img.style.left, 1 + "px", "setPosition sets x of image correctly after draw" );
-        t.eq( tile.img.style.top, 2 + "px", "setPosition sets y of image correctly after draw" );
     }
 
   // -->

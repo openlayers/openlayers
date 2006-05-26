@@ -5,21 +5,22 @@
     var tile; 
     
     function test_01_Tile_constructor (t) {
-        t.plan( 9 );
-        tile = new OpenLayers.Tile(null,
-                                   new OpenLayers.Bounds(1,2,3,4), 
-                                   "",
-                                   new OpenLayers.Size(5,6) );
+        t.plan( 6 );
+        
+        var layer = new Object(); // bogus layer
+        var position = new OpenLayers.Pixel(10,20);
+        var bounds = new OpenLayers.Bounds(1,2,3,4);
+        var url = "bobob";
+        var size = new OpenLayers.Size(5,6);
+        
+        tile = new OpenLayers.Tile(layer, position, bounds, url, size);
 
         t.ok( tile instanceof OpenLayers.Tile, "new OpenLayers.Tile returns Tile object" );
-        t.ok( tile.bounds instanceof OpenLayers.Bounds, "tile.bounds is a Bounds object" );
-        t.eq( tile.bounds.left, 1, "tile.bounds.left is set correctly");
-        t.eq( tile.bounds.bottom, 2, "tile.bounds.bottom is set correctly");
-        t.eq( tile.bounds.right, 3, "tile.bounds.right is set correctly");
-        t.eq( tile.bounds.top, 4, "tile.bounds.top is set correctly");
-        t.ok( tile.size instanceof OpenLayers.Size, "tile.size is a Size object" );
-        t.eq( tile.size.w, 5, "tile.size.w is set correctly");
-        t.eq( tile.size.h, 6, "tile.size.h is set correctly");
+        t.eq( tile.layer, layer, "tile.layer set correctly");
+        t.ok( tile.position.equals(position), "tile.position set correctly");
+        t.ok( tile.bounds.equals(bounds), "tile.bounds set correctly");
+        t.eq( tile.url, url, "tile.url set correctly");        
+        t.ok( tile.size.equals(size), "tile.size is set correctly" );
     }
 
 
