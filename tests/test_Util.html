@@ -53,16 +53,17 @@
     }
 
     function test_04_Util_createDiv(t) {
-        t.plan( 18 );
+        t.plan( 20 );
 
         var id = "boo";
         var px = new OpenLayers.Pixel(5,5);
         var sz = new OpenLayers.Size(10,10);
-        var overflow = "hidden";
         var img = "http://www.openlayers.org/images/OpenLayers.trac.png";
         var position = "absolute";
+        var border = "13px solid red";
+        var overflow = "hidden";
 
-        var div = OpenLayers.Util.createDiv(id, px, sz, overflow, img, position);
+        var div = OpenLayers.Util.createDiv(id, px, sz, img, position, border, overflow);
 
         if (!isMozilla)
             t.ok( true, "skipping element test outside of Mozilla");
@@ -75,9 +76,11 @@
         t.eq( div.style.width, sz.w + "px", "div.style.width set correctly");    
         t.eq( div.style.height, sz.h + "px", "div.style.height set correctly");    
 
-        t.eq( div.style.overflow, overflow, "div.style.overflow set correctly");    
         t.eq( div.style.backgroundImage, "url(" + img + ")", "div.style.backgroundImage correctly");    
+
         t.eq( div.style.position, position, "div.style.positionset correctly");    
+        t.ok( (div.style.border.indexOf(border) != -1), "div.style.border set correctly");    
+        t.eq( div.style.overflow, overflow, "div.style.overflow set correctly");    
 
         //test defaults
         var div = OpenLayers.Util.createDiv();
@@ -87,16 +90,17 @@
         else
             t.ok( div instanceof HTMLDivElement, "createDiv creates a valid HTMLDivElement" );
         t.ok( (div.id != ""), "div.id set correctly");    
-        // the next two tests return "0pt" in Mozilla, "0px" in IE
-        t.eq( div.style.left.indexOf("0p"), 0, "div.style.left set correctly");    
-        t.eq( div.style.top.indexOf("0p"), 0, "div.style.top set correctly");    
+        t.eq(div.style.left, "", "div.style.left set correctly");    
+        t.eq(div.style.top, "", "div.style.top set correctly");    
 
         t.eq( div.style.width, "", "div.style.width set correctly");    
         t.eq( div.style.height, "", "div.style.height set correctly");    
 
-        t.eq(div.style.overflow, "", "div.style.overflow set correctly");    
         t.eq(div.style.backgroundImage, "", "div.style.backgroundImage correctly");    
+
         t.eq( div.style.position, "absolute", "div.style.positionset correctly");    
+        t.eq( div.style.border, "", "div.style.border set correctly");    
+        t.eq(div.style.overflow, "", "div.style.overflow set correctly");    
 
     }
 
@@ -108,9 +112,9 @@
         var xy = new OpenLayers.Pixel(5,5);
         var position = "absolute";
         var id = "boo";
-        var border = "1";
+        var border = "1px solid red";
 
-        var image = OpenLayers.Util.createImage(img, sz, xy, position, id, border);
+        var image = OpenLayers.Util.createImage(id, xy, sz, img, position, border);
 
         if (!isMozilla)
             t.ok( true, "skipping element test outside of Mozilla");
@@ -123,7 +127,7 @@
         t.eq( image.style.width, sz.w + "px", "image.style.width set correctly");    
         t.eq( image.style.height, sz.h + "px", "image.style.height set correctly");    
 
-        t.ok( image.style.border.startsWith(border + "px"), "image.style.border set correctly");    
+        t.ok( (image.style.border.indexOf(border) != -1), "image.style.border set correctly");    
         t.eq( image.src, img, "image.style.backgroundImage correctly");    
         t.eq( image.style.position, position, "image.style.positionset correctly");    
 
@@ -134,14 +138,14 @@
             t.ok( true, "skipping element test outside of Mozilla");
         else
             t.ok( image instanceof HTMLImageElement, "createDiv creates a valid HTMLDivElement" );
-        t.eq( image.id, "", "image.id set correctly");    
+        t.ok( (image.id != ""), "image.id set to something");    
         t.eq( image.style.left, "", "image.style.left set correctly");    
         t.eq( image.style.top, "", "image.style.top set correctly");    
 
         t.eq( image.style.width, "", "image.style.width set correctly");    
         t.eq( image.style.height, "", "image.style.height set correctly");    
 
-        t.ok(image.style.border.startsWith("0"), "image.style.border set correctly");    
+        t.ok((image.style.border == ""), "image.style.border set correctly");    
         t.eq(image.src, "", "image.style.backgroundImage correctly");    
         t.eq( image.style.position, "relative", "image.style.positionset correctly");    
 
@@ -185,9 +189,9 @@
         var xy = new OpenLayers.Pixel(5,5);
         var position = "absolute";
         var id = "boo";
-        var border = "1";
+        var border = "1px solid red";
 
-        var imageDiv = OpenLayers.Util.createAlphaImageDiv(img, sz, xy, position, id, border);
+        var imageDiv = OpenLayers.Util.createAlphaImageDiv(id, xy, sz, img, position, border);
 
         if (!isMozilla)
             t.ok( true, "skipping element test outside of Mozilla");
@@ -215,7 +219,7 @@
         t.eq( image.style.width, sz.w + "px", "image.style.width set correctly");    
         t.eq( image.style.height, sz.h + "px", "image.style.height set correctly");    
 
-        t.ok( image.style.border.startsWith(border + "px"), "image.style.border set correctly");    
+        t.ok( (image.style.border.indexOf(border) != -1), "image.style.border set correctly");    
         t.eq( image.style.position, "relative", "image.style.positionset correctly");    
 
         var arVersion = navigator.appVersion.split("MSIE");
@@ -243,7 +247,34 @@
 
     }
 
+    function test_09_Util_modifyDOMElement(t) {
 
+        t.plan( 8 );
+
+        var id = "boo";
+        var px = new OpenLayers.Pixel(5,5);
+        var sz = new OpenLayers.Size(10,10);
+        var position = "absolute";
+        var border = "1px solid red";
+        var overflow = "hidden";
+
+        var element = document.createElement("div");
+
+        OpenLayers.Util.modifyDOMElement(element, id, px, sz, 
+                                         position, border, overflow);
+
+        t.eq( element.id, id, "element.id set correctly");    
+        t.eq( element.style.left, px.x + "px", "element.style.left set correctly");    
+        t.eq( element.style.top, px.y + "px", "element.style.top set correctly");    
+
+        t.eq( element.style.width, sz.w + "px", "element.style.width set correctly");    
+        t.eq( element.style.height, sz.h + "px", "element.style.height set correctly");    
+
+        t.eq( element.style.position, position, "element.style.position set correctly");    
+        t.ok( (element.style.border.indexOf(border) != -1), "element.style.border set correctly");    
+        t.eq( element.style.overflow, overflow, "element.style.overflow set correctly");    
+
+    }
 
   // -->
   </script>
