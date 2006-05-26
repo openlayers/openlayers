@@ -7,20 +7,25 @@
     var feature, layer; 
     
     function test_01_Feature_constructor (t) {
-        t.plan( 5 );
+        t.plan( 6 );
 
-        feature = new OpenLayers.Feature("myfeature", 
-                                         new OpenLayers.LonLat(2,1), 
-               {
-                iconURL:'http://boston.openguides.org/features/ORANGE.png',
-                iconW: 12,
-                iconH: 17
-               });
+        var layer = new Object();
+        var id = "myfeature";
+        var lonlat = new OpenLayers.LonLat(2,1);
+        var iconURL = 'http://boston.openguides.org/features/ORANGE.png';
+        var iconSize = new OpenLayers.Size(12, 17);
+        var data =  { iconURL: iconURL,
+                      iconSize: iconSize 
+                    };
+        
+        feature = new OpenLayers.Feature(layer, id, lonlat, data);
+
         t.ok( feature instanceof OpenLayers.Feature, "new OpenLayers.Feature returns Feature object" );
-        t.ok( feature.lonlat instanceof OpenLayers.LonLat, "new feature.lonlat returns LonLat object" );
-        t.eq( feature.lonlat.lon, 2, "feature.lonlat.lon returns correct lon" );
-        t.eq( feature.lonlat.lat, 1, "feature.lonlat.lat returns correct lat" );
-        t.eq( feature.data.iconW, 12, "feature.data.iconW set correctly" );
+        t.eq( feature.layer, layer, "feature.layer set correctly" );
+        t.eq( feature.id, id, "feature.id set correctly" );
+        t.ok( feature.lonlat.equals(lonlat), "feature.lonlat set correctly" );
+        t.eq( feature.data.iconURL, iconURL, "feature.data.iconURL set correctly" );
+        t.ok( feature.data.iconSize.equals(iconSize), "feature.data.iconSize set correctly" );
     }
     
     function test_02_Feature_createMarker (t) {
