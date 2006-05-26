@@ -163,7 +163,18 @@
         t.eq( OpenLayers.Bounds.oppositeQuadrant("tr"), "bl", "OpenLayers.Bounds.oppositeQuadrant returns 'bl' for 'tr'");
         t.eq( OpenLayers.Bounds.oppositeQuadrant("bl"), "tr", "OpenLayers.Bounds.oppositeQuadrant returns 'tr' for 'bl'");
         t.eq( OpenLayers.Bounds.oppositeQuadrant("br"), "tl", "OpenLayers.Bounds.oppositeQuadrant returns 'tl' for 'br'");
-     }     
+     }
+
+     function test_11_Bounds_equals(t) {
+         t.plan( 2 );
+         var boundsA = new OpenLayers.Bounds(1,2,3,4);
+         var boundsB = new OpenLayers.Bounds(1,2,3,4);
+         var boundsC = new OpenLayers.Bounds(1,5,3,4);
+         
+         t.ok( boundsA.equals(boundsB), "equals() returns true on two equal bounds." );
+         t.ok( !boundsA.equals(boundsC), "equals() returns false on two different bounds." );
+     }
+
   // -->
   </script>
 </head>
