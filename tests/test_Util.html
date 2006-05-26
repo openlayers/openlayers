@@ -60,7 +60,7 @@
         var sz = new OpenLayers.Size(10,10);
         var img = "http://www.openlayers.org/images/OpenLayers.trac.png";
         var position = "absolute";
-        var border = "13px solid red";
+        var border = "13px solid";
         var overflow = "hidden";
 
         var div = OpenLayers.Util.createDiv(id, px, sz, img, position, border, overflow);
@@ -112,7 +112,7 @@
         var xy = new OpenLayers.Pixel(5,5);
         var position = "absolute";
         var id = "boo";
-        var border = "1px solid red";
+        var border = "1px solid";
 
         var image = OpenLayers.Util.createImage(id, xy, sz, img, position, border);
 
@@ -182,16 +182,17 @@
     }
 
     function test_08_Util_createAlphaImageDiv(t) {
-        t.plan( 16 );
+        t.plan( 17 );
 
         var img = "http://www.openlayers.org/images/OpenLayers.trac.png";
         var sz = new OpenLayers.Size(10,10);
         var xy = new OpenLayers.Pixel(5,5);
         var position = "absolute";
         var id = "boo";
-        var border = "1px solid red";
+        var border = "1px solid";
+        var sizing = "crop";
 
-        var imageDiv = OpenLayers.Util.createAlphaImageDiv(id, xy, sz, img, position, border);
+        var imageDiv = OpenLayers.Util.createAlphaImageDiv(id, xy, sz, img, position, border, sizing);
 
         if (!isMozilla)
             t.ok( true, "skipping element test outside of Mozilla");
@@ -222,18 +223,13 @@
         t.ok( (image.style.border.indexOf(border) != -1), "image.style.border set correctly");    
         t.eq( image.style.position, "relative", "image.style.positionset correctly");    
 
-        var arVersion = navigator.appVersion.split("MSIE");
-        var version = parseFloat(arVersion[1]);
-        
-        var alphaHack = ( (document.body.filters) &&
-                          (version >= 5.5) && (version < 7) );
-
-        if (alphaHack) {
+        if (OpenLayers.Util.alphaHack()) {
         
             t.eq(imageDiv.style.display, "inline-block", "imageDiv.style.display set correctly");
 
             var filter = "progid:DXImageTransform.Microsoft" +
-                         ".AlphaImageLoader(src='" + img + "')";
+                         ".AlphaImageLoader(src='" + img + "', " +
+                         "sizingMethod='" + sizing + "')";
             t.eq(imageDiv.style.filter, filter, "div filter value correctly set");
 
             filter = "progid:DXImageTransform.Microsoft.Alpha(opacity=0)";
@@ -245,6 +241,16 @@
             t.ok(true, "image filter value not set (not in IE)");
         }
 
+        var imageDiv = OpenLayers.Util.createAlphaImageDiv(id, xy, sz, img, position, border);
+        if (OpenLayers.Util.alphaHack()) {
+            var filter = "progid:DXImageTransform.Microsoft" +
+                         ".AlphaImageLoader(src='" + img + "', " +
+                         "sizingMethod='scale')";
+            t.eq(imageDiv.style.filter, filter, "sizingMethod correctly set to scale");
+        } else {
+            t.ok(true);
+        }        
+
     }
 
     function test_09_Util_modifyDOMElement(t) {
@@ -255,7 +261,7 @@
         var px = new OpenLayers.Pixel(5,5);
         var sz = new OpenLayers.Size(10,10);
         var position = "absolute";
-        var border = "1px solid red";
+        var border = "1px solid";
         var overflow = "hidden";
 
         var element = document.createElement("div");
