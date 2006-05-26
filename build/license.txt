@@ -1,0 +1,10 @@
+/*
+
+  openlayers.js -- OpenLayers Map Viewer Library
+
+  Copyright 2005-2006 MetaCarta, Inc., released under the BSD License.
+
+  TODO: Add other copyright notices.
+
+*/
+
