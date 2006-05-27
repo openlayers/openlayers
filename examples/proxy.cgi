@@ -18,6 +18,8 @@ import cgi
 fs = cgi.FieldStorage()
 url = fs.getvalue('url', "http://openlayers.org")
 
+# Designed to prevent Open Proxy type stuff.
+
 allowedHosts = ['www.openlayers.org', 'openlayers.org', 'octo.metacarta.com']
 
 try:
