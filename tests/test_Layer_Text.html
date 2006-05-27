@@ -13,7 +13,7 @@
         t.eq( layer.location, "data_Layer_Text_textfile.txt", "layer.location is correct" );
         var markers;
         t.delay_call( 1, function() {  
-            t.eq( layer.markers.length, 1, "marker length is correct" );
+            t.eq( layer.markers.length, 2, "marker length is correct" );
             t.eq( layer.markers[0].lonlat.lat, 10, "latitude on first marker is correct" );
             t.eq( layer.markers[0].lonlat.lon, 20, "latitude on first marker is correct" );
             t.eq( layer.markers[0].icon.url, 'http://boston.openguides.org/markers/ORANGE.png', "icon" );
@@ -41,6 +41,23 @@
 */
         });;
     }
+    function test_03_Layer_Text_events (t) {
+        t.plan( 4 );    
+        layer = new OpenLayers.Layer.Text('Test Layer', 'data_Layer_Text_textfile.txt');
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0),0);
+        var event = {};
+        t.delay_call( 1, function() {  
+          t.ok(layer.markers[0].events, "First marker has an events object");
+          t.eq(layer.markers[0].events.listeners['click'].length, 1, "Marker events has one object");
+          layer.markers[0].events.triggerEvent('click', event);
+          t.eq(map.popups.length, 1, "Popup opened correctly");
+          layer.markers[1].events.triggerEvent('click', event);
+          t.eq(map.popups.length, 1, "1st popup gone, 2nd Popup opened correctly");
+        });
+    }
+
     function test_99_Layer_Text_destroy (t) {
         t.plan( 1 );    
         layer = new OpenLayers.Layer.Text('Test Layer');
