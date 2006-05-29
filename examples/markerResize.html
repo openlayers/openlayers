@@ -12,7 +12,8 @@
     <script type="text/javascript">
         <!--
         var map, layer;
-
+        var size, icon;
+        
         function init(){
             map = new OpenLayers.Map('map');
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
@@ -22,18 +23,24 @@
             map.addLayer(layer);
             var markers = new OpenLayers.Layer.Markers( "Markers" );
             map.addLayer(markers);
-            var newl = new OpenLayers.Layer.Text( "text", "./textfile.txt" );
-            map.addLayer(newl);
-            var size = new OpenLayers.Size(10,17);
-            var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-            var icon = new OpenLayers.Icon('http://boston.openguides.org/markers/AQUA.png',size,offset);
-            markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(0,0),icon));
-            markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(0,45),icon));
-            marker = new OpenLayers.Marker(new OpenLayers.LonLat(90,10),icon);
-            marker.events.register('mousedown', marker, function(evt) { alert(this.icon.url); Event.stop(evt); });
-            markers.addMarker(marker); 
+
+            size = new OpenLayers.Size(50,50);
+            calculateOffset = function(size) {
+                                return new OpenLayers.Pixel(-(size.w/2), -size.h);
+                              };
+            icon = new OpenLayers.Icon('http://boston.openguides.org/markers/AQUA.png',size,null, calculateOffset);
+            markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(-180,90),
+                                                    icon));
+
             map.setCenter(new OpenLayers.LonLat(0, 0), 0);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
+        }
+
+        function resize() {
+         
+            size = new OpenLayers.Size(size.w + 10, size.h + 10);
+            icon.setSize(size);   
+            
         }
         // -->
     </script>
@@ -41,5 +48,6 @@
   <body onload="init()">
     <h1>OpenLayers Example</h1>
     <div id="map"></div>
+    <div style="background-color:purple" onclick="resize()"> click to resize marker</div>
   </body>
 </html>
