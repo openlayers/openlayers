@@ -61,6 +61,21 @@
         t.eq( pixel.y, 26, "pixel.y is set correctly");
     }
 
+    function test_08_Pixel_offset(t) {
+        t.plan( 4 );
+
+        var oldPixel = new OpenLayers.Pixel(5,6);
+        var offset = new OpenLayers.Pixel(10,20);
+
+        pixel = oldPixel.offset(offset);
+
+        t.eq( oldPixel.x, 5, "oldPixel.x not modified by offset operation");
+        t.eq( oldPixel.y, 6, "oldPixel.y not modified by offset operation");
+
+        t.eq( pixel.x, 15, "pixel.x is set correctly");
+        t.eq( pixel.y, 26, "pixel.y is set correctly");
+    }
+
   // -->
   </script>
 </head>
