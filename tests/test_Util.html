@@ -246,7 +246,7 @@
             var filter = "progid:DXImageTransform.Microsoft" +
                          ".AlphaImageLoader(src='" + img + "', " +
                          "sizingMethod='scale')";
-            t.eq(imageDiv.style.filter, filter, "sizingMethod correctly set to scale");
+            t.eq(imageDiv.style.filter, filter, "sizingMethod default correctly set to scale");
         } else {
             t.ok(true);
         }        
@@ -282,6 +282,79 @@
 
     }
 
+    function test_09_Util_modifyAlphaImageDiv(t) {
+        t.plan( 17 );
+
+        var imageDiv = OpenLayers.Util.createAlphaImageDiv();
+
+        var img = "http://www.openlayers.org/images/OpenLayers.trac.png";
+        var sz = new OpenLayers.Size(10,10);
+        var xy = new OpenLayers.Pixel(5,5);
+        var position = "absolute";
+        var id = "boo";
+        var border = "1px solid";
+        var sizing = "crop";
+
+        OpenLayers.Util.modifyAlphaImageDiv(imageDiv, id, xy, sz, img, position, border, sizing);
+
+        if (!isMozilla)
+            t.ok( true, "skipping element test outside of Mozilla");
+        else
+            t.ok( imageDiv instanceof HTMLDivElement, "createDiv creates a valid HTMLDivElement" );
+
+        t.eq( imageDiv.id, id, "image.id set correctly");    
+        t.eq( imageDiv.style.left, xy.x + "px", "image.style.left set correctly");    
+        t.eq( imageDiv.style.top, xy.y + "px", "image.style.top set correctly");    
+
+        t.eq( imageDiv.style.width, sz.w + "px", "image.style.width set correctly");    
+        t.eq( imageDiv.style.height, sz.h + "px", "image.style.height set correctly");    
+
+        t.eq( imageDiv.style.position, position, "image.style.positionset correctly");    
+
+
+        image = imageDiv.firstChild;
+
+        if (!isMozilla)
+            t.ok( true, "skipping element test outside of Mozilla");
+        else
+            t.ok( image instanceof HTMLImageElement, "createImage creates a valid HTMLImageElement" );
+        t.eq( image.id, id + "_innerImage", "image.id set correctly");    
+
+        t.eq( image.style.width, sz.w + "px", "image.style.width set correctly");    
+        t.eq( image.style.height, sz.h + "px", "image.style.height set correctly");    
+
+        t.ok( (image.style.border.indexOf(border) != -1), "image.style.border set correctly");    
+        t.eq( image.style.position, "relative", "image.style.positionset correctly");    
+
+        if (OpenLayers.Util.alphaHack()) {
+        
+            t.eq(imageDiv.style.display, "inline-block", "imageDiv.style.display set correctly");
+
+            var filter = "progid:DXImageTransform.Microsoft" +
+                         ".AlphaImageLoader(src='" + img + "', " +
+                         "sizingMethod='" + sizing + "')";
+            t.eq(imageDiv.style.filter, filter, "div filter value correctly set");
+
+            filter = "progid:DXImageTransform.Microsoft.Alpha(opacity=0)";
+            t.eq(image.style.filter, filter, "image filter set correctly");
+
+        } else {
+            t.eq( image.src, img, "image.style.backgroundImage correctly");    
+            t.ok(true, "div filter value not set (not in IE)");
+            t.ok(true, "image filter value not set (not in IE)");
+        }
+
+        var imageDiv = OpenLayers.Util.createAlphaImageDiv(id, xy, sz, img, position, border);
+        if (OpenLayers.Util.alphaHack()) {
+            var filter = "progid:DXImageTransform.Microsoft" +
+                         ".AlphaImageLoader(src='" + img + "', " +
+                         "sizingMethod='scale')";
+            t.eq(imageDiv.style.filter, filter, "sizingMethod default correctly set to scale");
+        } else {
+            t.ok(true);
+        }        
+
+    }
   // -->
   </script>
 </head>
