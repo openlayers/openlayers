@@ -18,8 +18,8 @@
         map.addControl(control);
         t.ok( control.map === map, "Control.map is set to the map object" );
         t.ok( map.controls[2] === control, "map.controls contains control" );
-        t.eq( parseInt(control.div.style.zIndex), 253, "Control div zIndexed properly" );
-        t.eq( parseInt(map.viewPortDiv.lastChild.style.zIndex), 253, "Viewport div contains control div" );
+        t.eq( parseInt(control.div.style.zIndex), map.Z_INDEX_BASE['Control'] + 3, "Control div zIndexed properly" );
+        t.eq( parseInt(map.viewPortDiv.lastChild.style.zIndex), map.Z_INDEX_BASE['Control'] + 3, "Viewport div contains control div" );
         t.eq( control.div.style.top, "4px", "Control div top located correctly by default");
 
         var control2 = new OpenLayers.Control.PanZoom();
