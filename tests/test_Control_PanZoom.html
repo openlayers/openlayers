@@ -27,7 +27,7 @@
         t.eq( control2.div.style.top, "100px", "2nd control div is located correctly");
     }
     function test_03_Control_PanZoom_control_events (t) {
-        t.plan( 6 );
+        t.plan( 7 );
         var evt = new Object();
         map = new OpenLayers.Map('map');
         control = new OpenLayers.Control.PanZoom();
@@ -45,8 +45,11 @@
         control.buttons[4].onmousedown(evt);
         control.buttons[4].onmousedown(evt);
         t.eq( map.getZoom(), 2, "zoomin workds correctly" );
-        control.buttons[5].onmousedown(evt);
+        control.buttons[6].onmousedown(evt);
         t.eq( map.getZoom(), 1, "zoomout workds correctly" );
+        control.buttons[4].onmousedown(evt);
+        control.buttons[5].onmousedown(evt);
+        t.eq( map.getZoom(), 0, "zoomworld workds correctly" );
 
     }
   // -->
