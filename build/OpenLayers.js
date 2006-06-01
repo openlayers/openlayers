@@ -1,27 +1,3 @@
-////
-/// This blob sucks in all the files in uncompressed form for ease of use
-///
-
-OpenLayers = new Object();
-OpenLayers._scriptName = "lib/OpenLayers.js";
-OpenLayers._getScriptLocation = function () {
-    var scriptLocation = "";
-    var SCRIPT_NAME = OpenLayers._scriptName;
- 
-    var scripts = document.getElementsByTagName('script');
-    for (var i = 0; i < scripts.length; i++) {
-        var src = scripts[i].getAttribute('src');
-        if (src) {
-            var index = src.lastIndexOf(SCRIPT_NAME); 
-            // is it found, at the end of the URL?
-            if ((index > -1) && (index + SCRIPT_NAME.length == src.length)) {  
-                scriptLocation = src.slice(0, -SCRIPT_NAME.length);
-                break;
-            }
-        }
-    }
-    return scriptLocation;
-}
 /*  Prototype JavaScript framework, version 1.4.0
  *  (c) 2005 Sam Stephenson <sam@conio.net>
  *
@@ -2690,8 +2666,8 @@ OpenLayers.Bounds.prototype = {
     * @type OpenLayers.Pixel
     */
     getCenterPixel:function() {
-        return new OpenLayers.Pixel(this.left + (this.getWidth() / 2),
-                                    this.bottom + (this.getHeight() / 2));
+        return new OpenLayers.Pixel( (this.left + this.right) / 2,
+                                     (this.bottom + this.top) / 2);
     },
 
     /**
@@ -2699,8 +2675,8 @@ OpenLayers.Bounds.prototype = {
     * @type OpenLayers.LonLat
     */
     getCenterLonLat:function() {
-        return new OpenLayers.LonLat(this.left + (this.getWidth() / 2),
-                                    this.bottom + (this.getHeight() / 2));
+        return new OpenLayers.LonLat( (this.left + this.right) / 2,
+                                      (this.bottom + this.top) / 2);
     },
 
     /**
@@ -2821,12 +2797,25 @@ OpenLayers.Bounds.prototype = {
 */
 OpenLayers.Bounds.fromString = function(str) {
     var bounds = str.split(",");
-    return new OpenLayers.Bounds(parseFloat(bounds[0]),
-                                 parseFloat(bounds[1]),
-                                 parseFloat(bounds[2]),
-                                 parseFloat(bounds[3]));
+    return OpenLayers.Bounds.fromArray(bounds);
 };
 
+/** Alternative constructor that builds a new OpenLayers.Bounds
+*    from an array
+* 
+* @constructor
+* 
+* @param {Array} bbox Array of bounds values (ex. <i>[5,42,10,45]</i>)
+*
+* @returns New OpenLayers.Bounds object built from the passed-in Array.
+* @type OpenLayers.Bounds
+*/
+OpenLayers.Bounds.fromArray = function(bbox) {
+    return new OpenLayers.Bounds(parseFloat(bbox[0]),
+                                 parseFloat(bbox[1]),
+                                 parseFloat(bbox[2]),
+                                 parseFloat(bbox[3]));
+};
 
 /**
  * @param {String} quadrant 
@@ -3259,21 +3248,23 @@ OpenLayers.ProxyHost = "/viewer/Crossbrowser/blindproxy.py?url=";
 /**
 * Ajax reader for OpenLayers
 *
-* Pay close attention to how this works:
-*
 *@uri url to do remote XML http get
 *@param 'get' format params (x=y&a=b...)
-*@who  object which is providing a specific callbacks for this request
-*@complete  the name of the function which must be defined in the callers.handler[] array
-*@failure  the name of the function which must be defined in the callers.handler[] array
+*@who object to handle callbacks for this request
+*@complete  the function to be called on success 
+*@failure  the function to be called on failure
 *
 * example usage from a caller:
 *
-*   this.handlers["caps"] = function(request){..}
-*   OpenLayers.loadURL(url,params,this,"caps");
+*   caps: function(request) {
+*    -blah-  
+*   },
+*
+*   OpenLayers.loadURL(url,params,this,caps);
 *
 * Notice the above example does not provide an error handler; a default empty
-* handler is provided which merely logs the error if a failure handler is not supplied
+* handler is provided which merely logs the error if a failure handler is not 
+* supplied
 *
 */
 
@@ -3309,31 +3300,18 @@ OpenLayers.loadURL = function(uri, params, caller,
 
 //    ol.Log.debug("loadURL [" + uri + "]");
 
-    var successx;
-    var failurex;
-    var bind1 = null;
-    var bind2 = null;
+    var success = (onComplete) ? onComplete.bind(caller)
+                                : OpenLayers.nullHandler;
 
-    if (onComplete) {
-        successx = caller.handlers[onComplete];
-        bind1 = caller;
-    } else {
-        successx = OpenLayers.nullHandler;
-    }
-
-    if (onFailure) {
-        failurex = caller.handlers[onFailure];
-        bind2=caller;
-    } else {
-        failurex = OpenLayers.nullHandler;
-    }
+    var failure = (onFailure) ? onFailure.bind(caller)
+                           : OpenLayers.nullHandler;
 
     // from prototype.js
     new Ajax.Request(uri, 
                      {   method: 'get', 
                          parameters: params,
-                         onComplete: successx.bind(bind1), 
-                         onFailure: failurex.bind(bind2)
+                         onComplete: success, 
+                         onFailure: failure
                       }
                      );
 };
@@ -4366,9 +4344,9 @@ OpenLayers.Popup.prototype = {
         }
         
         if (this.div != null) {
-    		this.div.style.width = this.size.w;
-    		this.div.style.height = this.size.h;
-    	}    	
+            this.div.style.width = this.size.w;
+            this.div.style.height = this.size.h;
+        }
     },  
 
     /**
@@ -4380,8 +4358,8 @@ OpenLayers.Popup.prototype = {
         }
         
         if (this.div != null) {
-    		this.div.style.backgroundColor = this.backgroundColor;
-    	}    	
+            this.div.style.backgroundColor = this.backgroundColor;
+        }
     },  
     
     /**
@@ -4394,11 +4372,11 @@ OpenLayers.Popup.prototype = {
         
         if (this.div != null) {
             // for Mozilla and Safari
-    		this.div.style.opacity = this.opacity;
+            this.div.style.opacity = this.opacity;
 
             // for IE
-    		this.div.style.filter = 'alpha(opacity=' + this.opacity*100 + ')';
-    	}    	
+            this.div.style.filter = 'alpha(opacity=' + this.opacity*100 + ')';
+        }
     },  
     
     /**
@@ -4411,7 +4389,7 @@ OpenLayers.Popup.prototype = {
         
         if (this.div != null) {
             this.div.style.border = this.border;
-    	}
+        }
     },      
     
     /**
@@ -4712,16 +4690,13 @@ OpenLayers.Tile.WFS.prototype =
         OpenLayers.Tile.prototype.initialize.apply(this, arguments);
         
         this.features = new Array();
-
-        this.handlers = new Array();
-        this.handlers["requestSuccess"] = this.requestSuccess;
     },
 
     /**
     */
     draw:function() {
         OpenLayers.Tile.prototype.draw.apply(this, arguments);
-        this.loadFeaturesForRegion("requestSuccess");        
+        this.loadFeaturesForRegion(this.requestSuccess);        
     },
 
     
@@ -5606,9 +5581,9 @@ OpenLayers.Popup.AnchoredBubble.prototype =
         
         this.setRicoCorners(true);
         
-        //set the popup color and opacity   	    
-    	this.setBackgroundColor(); 
-    	this.setOpacity();
+        //set the popup color and opacity           
+        this.setBackgroundColor(); 
+        this.setOpacity();
 
         return this.div;
     },
@@ -5640,11 +5615,11 @@ OpenLayers.Popup.AnchoredBubble.prototype =
         }
         
         if (this.div != null) {
-        	if (this.contentDiv != null) {
-        		this.div.style.background = "transparent";
+            if (this.contentDiv != null) {
+                this.div.style.background = "transparent";
                 Rico.Corner.changeColor(this.contentDiv, this.backgroundColor);
             }
-    	}    	
+        }
     },  
     
     /**
@@ -5658,7 +5633,7 @@ OpenLayers.Popup.AnchoredBubble.prototype =
         if (this.div != null) {
             if (this.contentDiv != null) {
             Rico.Corner.changeOpacity(this.contentDiv, this.opacity);
-        	}    	
+            }
         }
     },  
  
@@ -5704,9 +5679,9 @@ OpenLayers.Popup.AnchoredBubble.prototype =
             Rico.Corner.round(this.div, options);
         } else {
             Rico.Corner.reRound(this.contentDiv, options);
-            //set the popup color and opacity   	    
-        	this.setBackgroundColor(); 
-        	this.setOpacity();
+            //set the popup color and opacity
+            this.setBackgroundColor(); 
+            this.setOpacity();
         }
     },
 
