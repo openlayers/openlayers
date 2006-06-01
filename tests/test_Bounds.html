@@ -68,6 +68,13 @@
 
      }
 
+     function test_06_Bounds_getSize(t) {
+         t.plan( 1 );
+         var bounds = new OpenLayers.Bounds(0,10,100,120);
+
+         t.ok( bounds.getSize().equals(new OpenLayers.Size(100, 110)), "getCenterPixel() works correctly");
+     }
+     
      function test_07_Bounds_copyOf(t) {
         t.plan( 6 );
         var oldBounds = new OpenLayers.Bounds(1,2,3,4);
