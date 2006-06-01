@@ -1,4 +1,4 @@
-#!/usr/bin/python2.3
+#!/usr/bin/env python
 #
 # Merge multiple JavaScript source code files into one.
 #

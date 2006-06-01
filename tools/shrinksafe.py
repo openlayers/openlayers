@@ -1,5 +1,4 @@
-#!/usr/bin/python2.3
-
+#!/usr/bin/env python
 #
 # Script to provide a wrapper around the ShrinkSafe "web service"
 # <http://alex.dojotoolkit.org/shrinksafe/>
