@@ -175,6 +175,23 @@
          t.ok( !boundsA.equals(boundsC), "equals() returns false on two different bounds." );
      }
 
+     function test_12_Bounds_getHeight_getWidth(t) {
+         t.plan( 2 );
+         var bounds = new OpenLayers.Bounds(10,20,100,120);
+
+         t.eq( bounds.getWidth(), 90, "getWidth() works" );
+         t.eq( bounds.getHeight(), 100, "getHeight() works" );
+
+     }
+
+     function test_13_Bounds_getCenters(t) {
+         t.plan( 2 );
+         var bounds = new OpenLayers.Bounds(0,20,100,120);
+
+         t.ok( bounds.getCenterPixel().equals(new OpenLayers.Pixel(50, 70)), "getCenterPixel() works correctly");
+         t.ok( bounds.getCenterLonLat().equals(new OpenLayers.LonLat(50, 70)), "getCenterLonLat() works correctly");
+     }
+
   // -->
   </script>
 </head>
