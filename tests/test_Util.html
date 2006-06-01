@@ -353,8 +353,40 @@
         } else {
             t.ok(true);
         }        
-
+   
     }
+       
+    function test_10_Util_upperCaseObject(t) {
+    
+        t.plan(8);
+        
+        var aKey = "chicken";
+        var aValue = "pot pie";
+
+        var bKey = "blorg";
+        var bValue = "us maximus";
+        
+        var obj = new Object();
+        obj[aKey] = aValue;        
+        obj[bKey] = bValue;        
+             
+        var uObj = OpenLayers.Util.upperCaseObject(obj);          
+
+        //make sure old object not modified
+        t.eq(obj[aKey], aValue, "old lowercase value still present in old obj");
+        t.eq(obj[bKey], bValue, "old lowercase value still present in old obj");
+
+        t.eq(obj[aKey.toUpperCase()], null, "new uppercase value not present in old obj");
+        t.eq(obj[bKey.toUpperCase()], null, "new uppercase value not present in old obj");
+
+        //make sure new object modified
+        t.eq(uObj[aKey], null, "old lowercase value not present");
+        t.eq(uObj[bKey], null, "old lowercase value not present");
+
+        t.eq(uObj[aKey.toUpperCase()], aValue, "new uppercase value present");
+        t.eq(uObj[bKey.toUpperCase()], bValue, "new uppercase value present");
+    }
+    
   // -->
   </script>
 </head>
