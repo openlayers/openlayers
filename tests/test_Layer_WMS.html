@@ -12,9 +12,9 @@
         t.ok( layer instanceof OpenLayers.Layer.WMS, "new OpenLayers.Layer.WMS returns object" );
         t.eq( layer.name, "Test Layer", "layer.name is correct" );
         t.eq( layer.url, "http://octo.metacarta.com/cgi-bin/mapserv", "layer.url is correct" );
-        t.eq( layer.params.map, "/mapdata/vmap_wms.map", "layer.params.map is correct" );
-        t.eq( layer.params.format, "image/png", "layer.params.format is correctly overridden" );
-        t.eq( layer.params.exceptions, "application/vnd.ogc.se_inimage", 
+        t.eq( layer.params.MAP, "/mapdata/vmap_wms.map", "layer.params.map is correct" );
+        t.eq( layer.params.FORMAT, "image/png", "layer.params.format is correctly overridden" );
+        t.eq( layer.params.EXCEPTIONS, "application/vnd.ogc.se_inimage", 
                                        "other default layer.params are set correctly" );
     }
     function test_02_Layer_WMS_addtile (t) {
@@ -24,14 +24,14 @@
         map.addLayer(layer);
         var pixel = new OpenLayers.Pixel(5,6);
         var tile = layer.addTile(new OpenLayers.Bounds(1,2,3,4), pixel);
-        t.eq( tile.img.src, "http://octo.metacarta.com/cgi-bin/mapserv?bbox=1,2,3,4&width=256&height=256&map=/mapdata/vmap_wms.map&layers=basic&format=image/jpeg&service=WMS&version=1.1.1&request=GetMap&styles=&exceptions=application/vnd.ogc.se_inimage&srs=EPSG:4326", "image src is created correctly via addtile" );
+        t.eq( tile.img.src, "http://octo.metacarta.com/cgi-bin/mapserv?BBOX=1,2,3,4&WIDTH=256&HEIGHT=256&MAP=/mapdata/vmap_wms.map&LAYERS=basic&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&SRS=EPSG:4326", "image src is created correctly via addtile" );
         t.eq( tile.img.style.top, "6px", "image top is set correctly via addtile" );
         t.eq( tile.img.style.left, "5px", "image top is set correctly via addtile" );
         if (!isMozilla)
             t.ok( true, "skipping element test outside of Mozilla");
         else
             t.ok( layer.div.firstChild instanceof HTMLImageElement, "div first child is an image object" );
-        t.eq( layer.div.firstChild.src, "http://octo.metacarta.com/cgi-bin/mapserv?bbox=1,2,3,4&width=256&height=256&map=/mapdata/vmap_wms.map&layers=basic&format=image/jpeg&service=WMS&version=1.1.1&request=GetMap&styles=&exceptions=application/vnd.ogc.se_inimage&srs=EPSG:4326", "div first child is correct image object" );
+        t.eq( layer.div.firstChild.src, "http://octo.metacarta.com/cgi-bin/mapserv?BBOX=1,2,3,4&WIDTH=256&HEIGHT=256&MAP=/mapdata/vmap_wms.map&LAYERS=basic&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&SRS=EPSG:4326", "div first child is correct image object" );
         var pos = tile.getPosition();
         t.eq( pos.toString(), "x=5,y=6", "Position of tile is set correctly." );
     }
