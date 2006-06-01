@@ -1,3 +1,27 @@
+////
+/// This blob sucks in all the files in uncompressed form for ease of use
+///
+
+OpenLayers = new Object();
+OpenLayers._scriptName = "lib/OpenLayers.js";
+OpenLayers._getScriptLocation = function () {
+    var scriptLocation = "";
+    var SCRIPT_NAME = OpenLayers._scriptName;
+ 
+    var scripts = document.getElementsByTagName('script');
+    for (var i = 0; i < scripts.length; i++) {
+        var src = scripts[i].getAttribute('src');
+        if (src) {
+            var index = src.lastIndexOf(SCRIPT_NAME); 
+            // is it found, at the end of the URL?
+            if ((index > -1) && (index + SCRIPT_NAME.length == src.length)) {  
+                scriptLocation = src.slice(0, -SCRIPT_NAME.length);
+                break;
+            }
+        }
+    }
+    return scriptLocation;
+}
 /*  Prototype JavaScript framework, version 1.4.0
  *  (c) 2005 Sam Stephenson <sam@conio.net>
  *
