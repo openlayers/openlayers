@@ -50,7 +50,7 @@
          t.eq( bounds.contains(40,40, false), false, "bounds(10,10,40,40) correctly does not contain LonLat(40,40) with inclusive set to false" );
      }
 
-     function test_05_Bounds_fromString_int(t) {
+     function test_05_Bounds_fromString(t) {
         t.plan( 10 );
         bounds = OpenLayers.Bounds.fromString("1,2,3,4");
         t.ok( bounds instanceof OpenLayers.Bounds, "new OpenLayers.Bounds returns Bounds object" );
@@ -193,8 +193,20 @@
          t.plan( 2 );
          var bounds = new OpenLayers.Bounds(0,20,100,120);
 
-         t.ok( bounds.getCenterPixel().equals(new OpenLayers.Pixel(50, 70)), "getCenterPixel() works correctly");
+                 t.ok( bounds.getCenterPixel().equals(new OpenLayers.Pixel(50, 70)), "getCenterPixel() works correctly");
          t.ok( bounds.getCenterLonLat().equals(new OpenLayers.LonLat(50, 70)), "getCenterLonLat() works correctly");
+     }
+
+     function test_14_Bounds_fromArray(t) {
+        t.plan( 5 );
+        
+        var bbox = [1,2,3,4];
+        bounds = OpenLayers.Bounds.fromArray(bbox);
+        t.ok( bounds instanceof OpenLayers.Bounds, "new OpenLayers.Bounds returns Bounds object" );
+        t.eq( bounds.left, 1, "bounds.left is set correctly" );
+        t.eq( bounds.bottom, 2, "bounds.bottom is set correctly" );
+        t.eq( bounds.right, 3, "bounds.right is set correctly" );
+        t.eq( bounds.top, 4, "bounds.top is set correctly" );
      }
 
   // -->
