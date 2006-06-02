@@ -16,6 +16,7 @@ SRC_DIR=../lib
 CMD_MERGE_JS=${TOOLS_DIR}/mergejs.py
 
 CMD_SHRINKSAFE=${TOOLS_DIR}/shrinksafe.py
+CMD_JSMIN=${TOOLS_DIR}/jsmin.py
 
 LICENSE_HEADER_FILENAME=license.txt
 
@@ -29,7 +30,8 @@ ${CMD_MERGE_JS} -c ${CFG_FILENAME} ${TMP_OUTPUT_FILENAME} ${SRC_DIR}
 echo
 echo Shrinking and post-processing...
 # (We also append the license header here.)
-${CMD_SHRINKSAFE} ${TMP_OUTPUT_FILENAME} | cat ${LICENSE_HEADER_FILENAME} - > ${OUTPUT_FILENAME}
+cat ${LICENSE_HEADER_FILENAME} > ${OUTPUT_FILENAME}
+${CMD_JSMIN} <${TMP_OUTPUT_FILENAME} >> ${OUTPUT_FILENAME}
 
 echo
 echo Done.
