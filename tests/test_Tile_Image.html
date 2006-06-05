@@ -26,6 +26,7 @@
         t.plan( 4 );
 
         var layer = new Object(); //bogus layer
+        layer.div = document.createElement("div");
         var position = new OpenLayers.Pixel(20,30);
         var bounds = new OpenLayers.Bounds(1,2,3,4);
         var url = "http://www.openlayers.org/dev/tests/tileimage";
