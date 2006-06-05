@@ -12,7 +12,7 @@
     <script type="text/javascript">
         <!--
         var map, layer, popup;
-        var markers, feature;
+        var markers, feature, marker;
         
         function init(){
             map = new OpenLayers.Map('map');
@@ -62,14 +62,14 @@
                                                  new OpenLayers.LonLat(0,0));
 
 
-            var marker = feature.createMarker();
+            marker = feature.createMarker();
             
             markers.addMarker(marker);
             marker.events.register("mousedown", marker, mousedown);
                                                              
         }
         
-        function mousedown() {
+        function mousedown(evt) {
             if (popup == null) {
                 popup = feature.createPopup();
                 popup.setBackgroundColor("yellow");
@@ -100,7 +100,7 @@
         }
 
         function remove() {
-            map.removePopup(popup);
+            markers.removeMarker(marker);
         }
 
 
