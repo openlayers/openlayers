@@ -209,6 +209,20 @@
         t.eq( bounds.top, 4, "bounds.top is set correctly" );
      }
 
+     function test_14_Bounds_fromSize(t) {
+        t.plan( 5 );
+        
+        var height = 15;
+        var width = 16;
+        var size = new OpenLayers.Size(width, height);
+        bounds = OpenLayers.Bounds.fromSize(size);
+        t.ok( bounds instanceof OpenLayers.Bounds, "new OpenLayers.Bounds returns Bounds object" );
+        t.eq( bounds.left, 0, "bounds.left is set correctly" );
+        t.eq( bounds.bottom, height, "bounds.bottom is set correctly" );
+        t.eq( bounds.right, width, "bounds.right is set correctly" );
+        t.eq( bounds.top, 0, "bounds.top is set correctly" );
+     }
+
   // -->
   </script>
 </head>
