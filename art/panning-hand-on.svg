@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 12.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 51448)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [
+	<!ENTITY ns_extend "http://ns.adobe.com/Extensibility/1.0/">
+	<!ENTITY ns_ai "http://ns.adobe.com/AdobeIllustrator/10.0/">
+	<!ENTITY ns_graphs "http://ns.adobe.com/Graphs/1.0/">
+	<!ENTITY ns_vars "http://ns.adobe.com/Variables/1.0/">
+	<!ENTITY ns_imrep "http://ns.adobe.com/ImageReplacement/1.0/">
+	<!ENTITY ns_sfw "http://ns.adobe.com/SaveForWeb/1.0/">
+	<!ENTITY ns_custom "http://ns.adobe.com/GenericCustomNamespace/1.0/">
+	<!ENTITY ns_adobe_xpath "http://ns.adobe.com/XPath/1.0/">
+	<!ENTITY ns_svg "http://www.w3.org/2000/svg">
+	<!ENTITY ns_xlink "http://www.w3.org/1999/xlink">
+]>
+<svg  version="1.1" id="Layer_1" xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;"
+	 xmlns="&ns_svg;" xmlns:xlink="&ns_xlink;" width="28.375" height="28" viewBox="0 0 28.375 28"
+	 overflow="visible" enable-background="new 0 0 28.375 28" xml:space="preserve">
+	<g i:extraneous="self">
+		<path fill="none" stroke="#00008B" stroke-width="1.5" d="M27.875,1.375"/>
+		<path fill="none" stroke="#00008B" stroke-width="1.5" d="M0,1.375"/>
+		<path fill="none" stroke="#FFFFFF" d="M0,27.475"/>
+		<path fill="none" stroke="#00008B" stroke-width="1.5" d="M1,27.645"/>
+		<path fill="none" stroke="#00008B" stroke-width="1.5" d="M1,0.544"/>
+		<line fill="none" stroke="#FFFFFF" x1="0.875" y1="27.5" x2="27.875" y2="27.475"/>
+		<rect x="0.875" y="1.045" fill="#ADD8E6" width="27.125" height="26"/>
+		<line fill="none" stroke="#FFFFFF" x1="27.875" y1="26.925" x2="27.875" y2="0.925"/>
+		<line fill="none" stroke="#00008B" x1="1.375" y1="0.5" x2="27.375" y2="0.5"/>
+		<line fill="none" stroke="#00008B" x1="0.875" y1="1" x2="0.875" y2="27"/>
+		<path fill="#FFFFFF" stroke="#000000" d="M8.458,23.458c-0.473-0.168-1.02-1.269-1.363-1.695
+			c-0.479-0.595-0.894-1.245-1.377-1.829c-0.733-0.887-1.356-1.729-1.854-2.764c-0.375-0.782-0.884-1.997-0.005-2.648
+			c1.036-0.767,2.095-0.161,2.934,0.479c0.844,0.646,1.729,1.18,2.526,1.869c-0.372-0.305-0.548-0.986-0.778-1.421
+			c-0.253-0.477-0.565-0.906-0.822-1.375c-0.359-0.657-0.767-1.201-1.21-1.823c-0.544-0.763-1.051-1.74-0.925-2.709
+			c0.133-1.025,0.972-1.527,1.924-1.207c1.202,0.405,1.969,1.692,2.627,2.698c0.636,0.971,1.201,2.159,1.938,3.042
+			c-0.222-0.21-0.148-0.509-0.155-0.783c-0.01-0.37-0.097-0.626-0.219-0.967c-0.162-0.455-0.219-0.972-0.24-1.45
+			c-0.034-0.776-0.25-1.465-0.25-2.247c0-0.988-0.14-1.963,0.71-2.631c0.666-0.523,1.649-0.764,2.381-0.248
+			c1.385,0.976,1.057,2.999,1.209,4.458c0.079,0.759,0.165,1.489,0.2,2.263c0.022,0.496,0.209,1.068,0.168,1.558
+			c-0.146-0.27-0.113-0.75-0.127-1.058c-0.022-0.502-0.041-0.982-0.115-1.47c-0.114-0.743-0.188-1.564-0.25-2.324
+			c-0.152-1.877,2.054-3.17,3.301-1.469c0.884,1.206,0.773,2.643,0.773,4.085c0,0.698-0.034,1.251-0.22,1.91
+			c-0.13,0.459-0.293,1.222-0.239,1.639c0-0.902,0.334-1.697,0.334-2.589c0-0.678-0.272-2.099,0.581-2.334
+			c1.065-0.294,2.008,0.875,2.428,1.66c0.458,0.855,0.555,1.901,0.409,2.883c-0.318,2.153-0.845,4.227-2.096,6.071
+			c-0.268,0.396-0.485,0.838-0.79,1.22c-0.361,0.452-0.923,0.772-1.416,1.071c-0.381,0.232-0.764,0.53-1.176,0.604
+			c-0.822,0.149-1.725,0.157-2.565,0.157c-1.29,0-2.564-0.068-3.832-0.251c-0.799-0.115-2.12,0.153-2.668-0.54"/>
+	</g>
+</svg>
