@@ -23,8 +23,7 @@
             map = new OpenLayers.Map( $('map') );
             gmap = new OpenLayers.Layer.Google( "Google" );
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-                "http://octo.metacarta.com/cgi-bin/mapserv",
-                {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'} );
+                "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
                 
             map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
             map.addLayer(layer);

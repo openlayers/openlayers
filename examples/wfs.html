@@ -16,9 +16,7 @@
         function init(){
             map = new OpenLayers.Map('map');
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-                "http://octo.metacarta.com/cgi-bin/mapserv",
-                {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'} );
-                
+                "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
             map.addLayer(layer);
 
             layer = new OpenLayers.Layer.WFS( "OpenLayers WFS", 

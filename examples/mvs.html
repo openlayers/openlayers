@@ -107,11 +107,10 @@ function runMVS() {
         switch(safeArgs.layers[i]) {
             case 'openlayers':
                 theMVS.addLayer(
-                    new OpenLayers.Layer.WMS("OpenLayers WMS",
-                       "http://octo.metacarta.com/cgi-bin/mapserv",
-                       {"map" : "/mapdata/vmap_wms.map",
-                        layers: 'basic'}
-                       ));
+                  new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                        "http://labs.metacarta.com/wms/vmap0", 
+                        {layers: 'basic'} )
+                  );
                 break;
             case 'nasa': 
                 theMVS.addLayer(
