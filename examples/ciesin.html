@@ -19,10 +19,13 @@
             var jpl_wms = new OpenLayers.Layer.WMS( "Population Density 2000",
                 "http://beta.sedac.ciesin.columbia.edu/mapserver/wms/gpw2000", 
                 {layers: "gpw"});
+            var cie_wms = new OpenLayers.Layer.WMS( "Human Footprint",
+                "http://beta.sedac.ciesin.columbia.edu/mapserver/wms/hfoot", 
+                {layers: "hfoot"});
 
+            jpl_wms.setVisibility(false);
 
-
-            map.addLayers([ol_wms, jpl_wms]);
+            map.addLayers([ol_wms, jpl_wms, cie_wms]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.setCenter(new OpenLayers.LonLat(0, 0), 0);
         }
