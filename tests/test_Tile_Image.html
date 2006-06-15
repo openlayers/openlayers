@@ -23,7 +23,7 @@
         t.ok( tile.size.equals(size), "tile.size is set correctly");
     }
     function test_02_Tile_Image_draw (t) {
-        t.plan( 4 );
+        t.plan( 5 );
 
         var layer = new Object(); //bogus layer
         layer.div = document.createElement("div");
@@ -34,13 +34,20 @@
         tile = new OpenLayers.Tile.Image(layer, position, bounds, url, size);
         
         tile.draw();
+        
+        var img = tile.imgDiv.childNodes[0];
+        
         if (!isMozilla)
             t.ok( true, "skipping element test outside of Mozilla");
         else
-            t.ok( tile.img instanceof HTMLImageElement, "tile.draw creates an image");
-        t.eq( tile.img.src, "http://www.openlayers.org/dev/tests/tileimage", "tile.draw creates an image");
-        t.eq( tile.img.style.width, "5px", "Image width is correct" );
-        t.eq( tile.img.style.height, "6px", "Image height is correct" );
+            t.ok( tile.imgDiv instanceof HTMLElement, "tile.draw creates an image");
+        if (!isMozilla)
+            t.ok( true, "skipping element test outside of Mozilla");
+        else
+            t.ok( img instanceof HTMLImageElement, "tile.draw creates an image");
+        t.eq( img.src, "http://www.openlayers.org/dev/tests/tileimage", "tile.draw creates an image");
+        t.eq( tile.imgDiv.style.width, "5px", "Image width is correct" );
+        t.eq( tile.imgDiv.style.height, "6px", "Image height is correct" );
     }
 
   // -->
