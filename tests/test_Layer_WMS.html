@@ -25,14 +25,14 @@
         var pixel = new OpenLayers.Pixel(5,6);
         var tile = layer.addTile(new OpenLayers.Bounds(1,2,3,4), pixel);
         tile.draw();
-        t.eq( tile.img.src, "http://octo.metacarta.com/cgi-bin/mapserv?BBOX=1,2,3,4&WIDTH=256&HEIGHT=256&MAP=/mapdata/vmap_wms.map&LAYERS=basic&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&SRS=EPSG:4326", "image src is created correctly via addtile" );
+        t.eq( tile.img.src, "http://octo.metacarta.com/cgi-bin/mapserv?MAP=/mapdata/vmap_wms.map&LAYERS=basic&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&SRS=EPSG:4326&BBOX=1,2,3,4&WIDTH=256&HEIGHT=256", "image src is created correctly via addtile" );
         t.eq( tile.img.style.top, "6px", "image top is set correctly via addtile" );
         t.eq( tile.img.style.left, "5px", "image top is set correctly via addtile" );
         if (!isMozilla)
             t.ok( true, "skipping element test outside of Mozilla");
         else
             t.ok( layer.div.firstChild instanceof HTMLImageElement, "div first child is an image object" );
-        t.eq( layer.div.firstChild.src, "http://octo.metacarta.com/cgi-bin/mapserv?BBOX=1,2,3,4&WIDTH=256&HEIGHT=256&MAP=/mapdata/vmap_wms.map&LAYERS=basic&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&SRS=EPSG:4326", "div first child is correct image object" );
+        t.eq( layer.div.firstChild.src, "http://octo.metacarta.com/cgi-bin/mapserv?MAP=/mapdata/vmap_wms.map&LAYERS=basic&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&SRS=EPSG:4326&BBOX=1,2,3,4&WIDTH=256&HEIGHT=256", "div first child is correct image object" );
         var pos = tile.getPosition();
         t.eq( pos.toString(), "x=5,y=6", "Position of tile is set correctly." );
     }
