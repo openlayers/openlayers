@@ -32,7 +32,7 @@
     }
 
     function test_06_Pixel_equals(t) {
-        t.plan( 4 );
+        t.plan( 5 );
         pixel = new OpenLayers.Pixel(5,6);
 
         px = new OpenLayers.Pixel(5,6);
@@ -46,6 +46,9 @@
 
         px = new OpenLayers.Pixel(1,2);
         t.eq( pixel.equals(px), false, "(5,6) does not equal (1,2)");
+
+        t.ok( !pixel.equals(null), "equals() returns false on comparison to null");
+
     }
 
     function test_07_Pixel_add(t) {

@@ -33,7 +33,7 @@
     }
 
      function test_04_Size_equals(t) {
-        t.plan( 4 );
+        t.plan( 5 );
         size = new OpenLayers.Size(5,6);
 
         sz = new OpenLayers.Size(5,6);
@@ -47,6 +47,8 @@
 
         sz = new OpenLayers.Size(1,2);
         t.eq( size.equals(sz), false, "(5,6) does not equal (1,2)");
+
+        t.ok( !size.equals(null), "equals() returns false on comparison to null");
     }
 
   // -->
