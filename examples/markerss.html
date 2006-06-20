@@ -41,8 +41,8 @@
         function changer() {
             var lon = map.getLonLatFromLayerPx(new OpenLayers.Pixel(0,0)).lon;
             var lat = map.getLonLatFromLayerPx(new OpenLayers.Pixel(0,0)).lat;
-            var slon = map.getLonLatFromScreenPx(new OpenLayers.Pixel(0,0)).lon;
-            var slat = map.getLonLatFromScreenPx(new OpenLayers.Pixel(0,0)).lat;
+            var slon = map.getLonLatFromViewPortPx(new OpenLayers.Pixel(0,0)).lon;
+            var slat = map.getLonLatFromViewPortPx(new OpenLayers.Pixel(0,0)).lat;
             alert("lon=" + lon + " lat=" + lat 
                   + "slon=" + slon + " slat=" + slat);
         }

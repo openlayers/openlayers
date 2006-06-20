@@ -125,8 +125,8 @@
         map.setCenter(new OpenLayers.LonLat(0, 0), 0);
  
         var pixel = new OpenLayers.Pixel(50,150);
-        var lonlat = map.getLonLatFromScreenPx(pixel);
-        t.ok( lonlat instanceof OpenLayers.LonLat, "getLonLatFromScreenPx returns valid OpenLayers.LonLat" );
+        var lonlat = map.getLonLatFromViewPortPx(pixel);
+        t.ok( lonlat instanceof OpenLayers.LonLat, "getLonLatFromViewPortPx returns valid OpenLayers.LonLat" );
 
         var newPixel = map.getScreenPxFromLonLat(lonlat);
         t.ok( newPixel instanceof OpenLayers.Pixel, "getScreenPxFromLonLat returns valid OpenLayers.Pixel" );
