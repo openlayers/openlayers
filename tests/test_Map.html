@@ -128,8 +128,8 @@
         var lonlat = map.getLonLatFromViewPortPx(pixel);
         t.ok( lonlat instanceof OpenLayers.LonLat, "getLonLatFromViewPortPx returns valid OpenLayers.LonLat" );
 
-        var newPixel = map.getScreenPxFromLonLat(lonlat);
-        t.ok( newPixel instanceof OpenLayers.Pixel, "getScreenPxFromLonLat returns valid OpenLayers.Pixel" );
+        var newPixel = map.getViewPortPxFromLonLat(lonlat);
+        t.ok( newPixel instanceof OpenLayers.Pixel, "getViewPortPxFromLonLat returns valid OpenLayers.Pixel" );
 
         // WARNING!!!  I'm faily sure that the following test's validity 
         //             depends highly on rounding and the resolution. For now,
