@@ -35,9 +35,9 @@
                        new OpenLayers.Pixel(20,20));
         map.setCenter(new OpenLayers.LonLat(0,0), 0);
         control.buttons[0].onmousedown(evt);
-        t.eq( map.getCenter().lat, 360/1024*50, "Pan up works correctly" );
+        t.eq( map.getCenter().lat, 1.40625*50, "Pan up works correctly" );
         control.buttons[1].onmousedown(evt);
-        t.eq( map.getCenter().lon, -360/1024*50, "Pan left works correctly" );
+        t.eq( map.getCenter().lon, 1.40625*-50, "Pan left works correctly" );
         control.buttons[2].onmousedown(evt);
         t.eq( map.getCenter().lon, 0, "Pan right works correctly" );
         control.buttons[3].onmousedown(evt);
