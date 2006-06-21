@@ -59,7 +59,7 @@
         t.eq( map.maxResolution, 3.14159, "map.maxResolution set correctly via options hash" );
     }
     function test_05_Map_center(t) {
-        t.plan(4);
+        t.plan(7);
         map = new OpenLayers.Map($('map'));
         map.setCenter(new OpenLayers.LonLat(2, 1), 0);
         map.zoomIn();
@@ -68,7 +68,15 @@
         t.eq( map.getCenter().lat, 1, "map center lat is correct after calling setCenter,zoom in");
         map.zoomOut();
         t.eq( map.getZoom(), 0, "map.zoom is correct after calling setCenter,zoom in, zoom out");
+	map.zoomTo(5);
+	t.eq( map.getZoom(), 5, "map.zoom is correct after calling zoomTo" );
+	map.zoomToFullExtent();
+	t.eq( map.getZoom(), 0, "map.zoom is correct after calling zoomToFullExtent" );
+	var lonlat = map.getCenter();
+	var zero = new OpenLayers.LonLat(0, 0);
+	t.ok( lonlat.equals(zero), "map center is correct after calling zoomToFullExtent" );
     }
+
     function test_06_Map_zoomend_event (t) {
         t.plan(3);
         map = new OpenLayers.Map('map');
@@ -120,7 +128,7 @@
     }
 
     function test_08_Map_px_lonlat_translation (t) {
-        t.plan( 3 );    
+        t.plan( 6 );    
         map = new OpenLayers.Map($('map'));
         map.setCenter(new OpenLayers.LonLat(0, 0), 0);
  
@@ -136,6 +144,14 @@
         //             in the default case, it seems to work. This may not 
         //             always be so.
         t.ok( newPixel.equals(pixel), "Translation to pixel and back to lonlat is consistent");
+
+        lonlat = map.getLonLatFromPixel(pixel);
+        t.ok( lonlat instanceof OpenLayers.LonLat, "getLonLatFromPixel returns valid OpenLayers.LonLat" );
+
+        newPixel = map.getPixelFromLonLat(lonlat);
+        t.ok( newPixel instanceof OpenLayers.Pixel, "getPixelFromLonLat returns valid OpenLayers.Pixel" );
+
+        t.ok( newPixel.equals(pixel), "2nd translation to pixel and back to lonlat is consistent");
     }
 
     function test_99_Map_destroy (t) {
