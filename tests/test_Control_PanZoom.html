@@ -34,10 +34,12 @@
         map.addControl(control,
                        new OpenLayers.Pixel(20,20));
         map.setCenter(new OpenLayers.LonLat(0,0), 0);
+        var res = map.getResolution();
+        alert(res)
         control.buttons[0].onmousedown(evt);
-        t.eq( map.getCenter().lat, 1.40625*50, "Pan up works correctly" );
+        t.eq( map.getCenter().lat, res*50, "Pan up works correctly" );
         control.buttons[1].onmousedown(evt);
-        t.eq( map.getCenter().lon, 1.40625*-50, "Pan left works correctly" );
+        t.eq( map.getCenter().lon, res*-50, "Pan left works correctly" );
         control.buttons[2].onmousedown(evt);
         t.eq( map.getCenter().lon, 0, "Pan right works correctly" );
         control.buttons[3].onmousedown(evt);
