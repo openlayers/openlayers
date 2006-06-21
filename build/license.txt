@@ -3,7 +3,8 @@
   OpenLayers.js -- OpenLayers Map Viewer Library
 
   Copyright 2005-2006 MetaCarta, Inc., released under the BSD License.
-
+  Please see http://svn.openlayers.org/trunk/openlayers/license.txt
+  for the full text of the license.
 
   Includes compressed code under the following licenses:
 
