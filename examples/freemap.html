@@ -33,10 +33,10 @@
                 {map: '/www/freemap.in/boston/map/mass.map', layers: 'border,water,roads', format: 'png'} );
             var rapid = new OpenLayers.Layer.WMS( "Rapid Transit", 
                 "http://boston.freemap.in/cgi-bin/mapserv?",
-                {map: '/www/freemap.in/boston/map/mass.map', layers: 'rapid_transit', format: 'png'} );
+                {map: '/www/freemap.in/boston/map/mass.map', layers: 'rapid_transit', format: 'png', transparent:'true'} );
             var buildings = new OpenLayers.Layer.WMS( "Buildings", 
                 "http://boston.freemap.in/cgi-bin/mapserv?",
-                {map: '/www/freemap.in/boston/map/mass.map', layers: 'buildings', format: 'png'} );
+                {map: '/www/freemap.in/boston/map/mass.map', layers: 'buildings', format: 'png', transparent:'true'} );
                 
             map.addLayer(basemap);
             map.addLayer(rapid);
