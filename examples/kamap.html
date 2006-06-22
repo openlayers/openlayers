@@ -16,7 +16,7 @@
             var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                 "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'} );
             var ka_wms = new OpenLayers.Layer.KaMap( "KaMap", 
-                "http://www.h2guide.com/my-ka-map/h2tile.php?" , { map: 'h2guide', g: 'background' });
+                "http://www.h2guide.com/my-ka-map/h2tile.php?" , { map: 'h2guide', g: 'background' }, new OpenLayers.LonLat(0,0));
 
 
             map.addLayers([ol_wms, ka_wms]);
