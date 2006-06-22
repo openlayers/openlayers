@@ -11,12 +11,14 @@
     <script type="text/javascript">
         <!--
         function init(){
-            var map = new OpenLayers.Map('map', {'maxResolution': 1.2/4});
+            var map = new OpenLayers.Map('map', {'maxResolution': 1.2/4, controls:[]});
 
             var ka_wms = new OpenLayers.Layer.KaMap( "KaMap", "http://maps.dmsolutions.ca/demo/us_streets/tile.php", {map:'tiger04', g:'__base__'}, new OpenLayers.LonLat(0,0)); 
             ka_wms.setTileSize(new OpenLayers.Size(300,300));
             map.addLayers([ka_wms]); // , ka_wms, kamap_wms]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.addControl(new OpenLayers.Control.MouseToolbar());
+            map.addControl(new OpenLayers.Control.PanZoomBar());
             map.setCenter(new OpenLayers.LonLat(-70, 30), 2);
         }
         // -->
