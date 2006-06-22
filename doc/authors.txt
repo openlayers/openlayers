@@ -1,0 +1,10 @@
+OpenLayers core development team
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Erik Uzureau
+Christopher R. Schmidt
+Philip Lindsay
+John Frank
+Schuyler Erle
+
+OpenLayers is graciously supported by MetaCarta, Inc.
+<http://www.metacarta.com>.
