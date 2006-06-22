@@ -13,7 +13,7 @@
         function init(){
             var map = new OpenLayers.Map('map');
 
-            var ol_wms = new OpenLayers.Layer.UntiledWMS( "OpenLayers WMS", 
+            var ol_wms = new OpenLayers.Layer.WMS.Untiled( "OpenLayers WMS", 
                 "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'} );
 
             map.addLayers([ol_wms]);
