@@ -1,0 +1,29 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 800px;
+            height: 475px;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+        function init(){
+            var map = new OpenLayers.Map('map', {'maxResolution': 1.2/4});
+
+            var ka_wms = new OpenLayers.Layer.KaMap( "KaMap", "http://maps.dmsolutions.ca/demo/us_streets/tile.php", {map:'tiger04', g:'__base__'}, new OpenLayers.LonLat(0,0)); 
+            ka_wms.setTileSize(new OpenLayers.Size(300,300));
+            map.addLayers([ka_wms]); // , ka_wms, kamap_wms]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.setCenter(new OpenLayers.LonLat(-70, 30), 2);
+        }
+        // -->
+    </script>
+  </head>
+  <body onload="init()">
+    <h1>OpenLayers Example</h1>
+    <div id="map"></div>
+  </body>
+</html>
