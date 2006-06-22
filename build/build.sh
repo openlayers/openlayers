@@ -33,5 +33,8 @@ echo Shrinking and post-processing...
 cat ${LICENSE_HEADER_FILENAME} > ${OUTPUT_FILENAME}
 ${CMD_JSMIN} <${TMP_OUTPUT_FILENAME} >> ${OUTPUT_FILENAME}
 
+echo Cleaning up...
+rm $TMP_OUTPUT_FILENAME
+
 echo
 echo Done.
