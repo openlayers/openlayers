@@ -1,0 +1,41 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 800px;
+            height: 475px;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+        function init(){
+            var map = new OpenLayers.Map('map', {'maxResolution': .0703125*4});
+
+            var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'} );
+
+            var ww = new OpenLayers.Layer.WorldWind( "Bathy", 
+                "http://worldwind25.arc.nasa.gov/tile/tile.aspx?", 36, 4,
+                {T:"bmng.topo.bathy.200406"});
+            ww.setTileSize(new OpenLayers.Size(512,512));
+            var ww2 = new OpenLayers.Layer.WorldWind( "LANDSAT", 
+                "http://worldwind25.arc.nasa.gov/tile/tile.aspx", 2.25, 4,
+                {T:"105"});
+            ww2.setTileSize(new OpenLayers.Size(512,512));
+
+
+
+            map.addLayers([ol_wms, ww, ww2]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.setCenter(new OpenLayers.LonLat(-71.4, 42.3), 8);
+        }
+        // -->
+    </script>
+  </head>
+  <body onload="init()">
+    <h1>OpenLayers Example</h1>
+    <div id="map"></div>
+  </body>
+</html>
