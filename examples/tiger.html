@@ -11,11 +11,14 @@
     <script type="text/javascript">
         <!--
         function init(){
-            var map = new OpenLayers.Map('map', {'maxResolution': 1.2/4, controls:[]});
+            var map = new OpenLayers.Map('map', {'maxResolution': 1.40625/4, controls:[]});
 
             var ka_wms = new OpenLayers.Layer.KaMap( "KaMap", "http://maps.dmsolutions.ca/demo/us_streets/tile.php", {map:'tiger04', g:'__base__'}); 
             ka_wms.setTileSize(new OpenLayers.Size(300,300));
-            map.addLayers([ka_wms]); // , ka_wms, kamap_wms]);
+            var jpl_wms = new OpenLayers.Layer.WMS( "NASA Global Mosaic",
+                "http://wms.jpl.nasa.gov/wms.cgi", 
+                {layers: "modis,global_mosaic"});
+            map.addLayers([jpl_wms,ka_wms]); // , ka_wms, kamap_wms]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.addControl(new OpenLayers.Control.MouseToolbar());
             map.addControl(new OpenLayers.Control.PanZoomBar());

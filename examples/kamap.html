@@ -17,6 +17,8 @@
                 "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'} );
             var ka_wms = new OpenLayers.Layer.KaMap( "KaMap", 
                 "http://freemap.in/~crschmidt/ka-map/ka-map-0.2-20060208/htdocs/tile.php?" , { map: 'gmap', g: 'roads' }, 'degrees', 72 );
+            var tiger = new OpenLayers.Layer.KaMap( "KaMap", "http://maps.dmsolutions.ca/demo/us_streets/tile.php", {map:'tiger04', g:'__base__'}); 
+            tiger.setTileSize(new OpenLayers.Size(300,300));
             var jpl_wms = new OpenLayers.Layer.WMS( "NASA Global Mosaic",
                 "http://wms.jpl.nasa.gov/wms.cgi", 
                 {layers: "modis,global_mosaic"});
@@ -24,7 +26,7 @@
 
 
 
-            map.addLayers([jpl_wms, ka_wms]);
+            map.addLayers([jpl_wms, ka_wms, tiger]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.setCenter(new OpenLayers.LonLat(0, 0), 0);
         }
