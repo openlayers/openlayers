@@ -6,5 +6,9 @@ Philip Lindsay
 John Frank
 Schuyler Erle
 
+Patch contributors
+------------------
+Corey Puffault
+
 OpenLayers is graciously supported by MetaCarta, Inc.
 <http://www.metacarta.com>.
