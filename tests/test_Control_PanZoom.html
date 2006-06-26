@@ -28,7 +28,7 @@
     }
     function test_03_Control_PanZoom_control_events (t) {
         t.plan( 7 );
-        var evt = new Object();
+        var evt = {which: 1}; // control expects left-click
         map = new OpenLayers.Map('map');
         control = new OpenLayers.Control.PanZoom();
         map.addControl(control,
