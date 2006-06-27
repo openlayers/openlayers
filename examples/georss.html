@@ -4,7 +4,7 @@
     <style type="text/css">
         #map {
             width: 800px;
-            height: 475px;
+            height: 400px;
             border: 1px solid black;
         }
     </style>
@@ -14,24 +14,29 @@
         var map, layer;
 
         function init(){
-            OpenLayers.ProxyHost = '/proxy/?url=';
             map = new OpenLayers.Map('map', {maxResolution:'auto'});
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                 "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
-                
             map.addLayer(layer);
-
-            var newl = new OpenLayers.Layer.GeoRSS( "text", "http://earthquake.usgs.gov/eqcenter/recenteqsww/catalogs/eqs7day-M2.5.xml" );
-            map.addLayer(newl);
-
             map.setCenter(new OpenLayers.LonLat(0, 0), 0);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
         }
+	function addUrl() {
+	    var value = $('url').value;
+	    var parts = value.split("/");
+            var newl = new OpenLayers.Layer.GeoRSS( parts[parts.length-1], value);
+            map.addLayer(newl);
+	    $("url").value = "";
+	}
         // -->
     </script>
   </head>
   <body onload="init()">
-    <h1>OpenLayers Example</h1>
+    <h1>GeoRSS in OpenLayers</h1>
+    <p style="font-size:.9em;">This demo uses the OpenLayers GeoRSS parser, which supports GeoRSS Simple and W3C GeoRSS. Only points are currently supported. <a href="http://trac.openlayers.org/wiki/HowToDownload">Get the code!</a></p>
+    <form onsubmit="return false;">
+   GeoRSS URL: <input type="text" id="url" size="50" /><input type="submit" onclick="addUrl(); return false;" value="Load Feed" onsubmit="addUrl(); return false;" />
+    </form>  
     <div id="map"></div>
   </body>
 </html>
