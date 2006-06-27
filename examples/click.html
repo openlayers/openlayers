@@ -25,7 +25,7 @@
             map.addLayers([ol_wms, jpl_wms]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             // map.setCenter(new OpenLayers.LonLat(0, 0), 0);
-            map.zoomToFullExtent();
+            map.zoomToMaxExtent();
             map.events.register("click", map, function(e) { 
                 var lonlat = map.getLonLatFromViewPortPx(e.xy);
                 alert("You clicked near " + lonlat.lat + " N, " +

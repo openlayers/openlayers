@@ -33,7 +33,7 @@
             marker.events.register('mousedown', marker, function(evt) { alert(this.icon.url); Event.stop(evt); });
             markers.addMarker(marker); 
             map.addControl(new OpenLayers.Control.LayerSwitcher());
-            map.zoomToFullExtent();
+            map.zoomToMaxExtent();
         }
         // -->
     </script>
