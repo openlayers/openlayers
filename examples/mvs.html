@@ -11,7 +11,7 @@
 -->
 <head>
 
-<script src="../lib/OpenLayers.js"></script>
+<script src="http://openlayers.org/dev/lib/OpenLayers.js"></script>
 
 <script>
 
@@ -48,8 +48,6 @@ function runMVS() {
         theArgs.center = "0,0";
         theArgs.zoom = "0";            
         theArgs.data = "textfile.txt";
-        theArgs.controls = ['panzoom','mouse'];
-        theArgs.layers = ['openlayers', 'nasa'];
     }
 
 
@@ -60,9 +58,7 @@ function runMVS() {
     var DEFAULT_LAT = 0;
     var DEFAULT_LON = 0;
     var DEFAULT_ZOOM_LEVEL = 0;
-    var DEFAULT_CONTROLS = ['panzoom','mouse'];
-    var DEFAULT_LAYERS = ['openlayers', 'nasa'];
-    
+
     var IDX_LAT = 0;
     var IDX_LON = 1;
 
@@ -73,57 +69,30 @@ function runMVS() {
         parseFloat(theArgs.center.split(",")[IDX_LON]) : DEFAULT_LON;
 
     safeArgs.zoom = theArgs.zoom ? parseInt(theArgs.zoom) : DEFAULT_ZOOM_LEVEL;
-    
-    safeArgs.controls = theArgs.controls ? 
-        theArgs.controls.split(",") : DEFAULT_CONTROLS;
-    
-    safeArgs.controls = theArgs.controls ? 
-        theArgs.controls.split(",") : DEFAULT_CONTROLS;
 
-    safeArgs.layers = theArgs.layers ? 
-        theArgs.layers.split(",") : DEFAULT_LAYERS;
-    
     safeArgs.data = theArgs.data; // TODO: Make this "safe".
 
     // -----
-    var theMVS = new OpenLayers.Map($('map'), {controls: []});
-    for(var i = 0; i < safeArgs.controls.length; i++) {
-        switch(safeArgs.controls[i]) {
-            case 'panzoombar':
-                theMVS.addControl(new OpenLayers.Control.PanZoomBar());
-                break;
-            case 'panzoom':
-                theMVS.addControl(new OpenLayers.Control.PanZoom());
-                break;
-            case 'layerswitcher':
-                theMVS.addControl(new OpenLayers.Control.LayerSwitcher());
-                break;
-            case 'mouse':
-                theMVS.addControl(new OpenLayers.Control.MouseDefaults());
-                break;
-        }
-    }
-    for(var i = 0; i < safeArgs.layers.length; i++) {
-        switch(safeArgs.layers[i]) {
-            case 'openlayers':
-                theMVS.addLayer(
-                  new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-                        "http://labs.metacarta.com/wms/vmap0", 
-                        {layers: 'basic'} )
-                  );
-                break;
-            case 'nasa': 
-                theMVS.addLayer(
-                    new OpenLayers.Layer.WMS("NASA Mosaic", 
-                       "http://wms.jpl.nasa.gov/wms.cgi",
-                       {"EXCEPTIONS" : "application/vnd.ogc.se_inimage",
-                        "format" : "image/jpeg",
-                        layers:"modis,global_mosaic"}
-                       ));
-                break;
-        }
-    }
-    theMVS.setCenter(new OpenLayers.LonLat(safeArgs.centerLon, safeArgs.centerLat), safeArgs.zoom);
+    var theMVS = new OpenLayers.Map('map', {maxResolution: 'auto'});
+        theMVS.addLayer(
+             new OpenLayers.Layer.WMS("OpenLayers WMS",
+                          "http://labs.metacarta.com/wms/vmap0?",
+                          {layers: 'basic'}
+                          ));
+
+    /* not yet.....
+
+        theMVS.addLayer(
+            new OpenLayers.Layer.WMS("NASA Mosaic", 
+                         "http://wms.jpl.nasa.gov/wms.cgi",
+                         {"EXCEPTIONS" : "application/vnd.ogc.se_inimage",
+                          "format" : "image/jpeg",
+                          layers:"modis,global_mosaic"}
+                         ));
+    */
+    theMVS.setCenter(
+        new OpenLayers.LonLat(safeArgs.centerLon, safeArgs.centerLat), 
+        safeArgs.zoom);
 
     if (safeArgs.data) {
         theMVS.addLayer(new OpenLayers.Layer.Text("Data", safeArgs.data));

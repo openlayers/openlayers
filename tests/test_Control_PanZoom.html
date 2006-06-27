@@ -28,12 +28,12 @@
     }
     function test_03_Control_PanZoom_control_events (t) {
         t.plan( 7 );
-        var evt = new Object();
+        var evt = {which: 1}; // control expects left-click
         map = new OpenLayers.Map('map');
         control = new OpenLayers.Control.PanZoom();
         map.addControl(control,
                        new OpenLayers.Pixel(20,20));
-        map.setCenter(new OpenLayers.LonLat(0,0), 0);
+        map.setCenter(new OpenLayers.LonLat(0,0), 4);
         var res = map.getResolution();
         control.buttons[0].onmousedown(evt);
         t.eq( map.getCenter().lat, res*50, "Pan up works correctly" );
@@ -45,12 +45,12 @@
         t.eq( map.getCenter().lat, 0, "Pan down works correctly" );
         control.buttons[4].onmousedown(evt);
         control.buttons[4].onmousedown(evt);
-        t.eq( map.getZoom(), 2, "zoomin workds correctly" );
+        t.eq( map.getZoom(), 6, "zoomin works correctly" );
         control.buttons[6].onmousedown(evt);
-        t.eq( map.getZoom(), 1, "zoomout workds correctly" );
+        t.eq( map.getZoom(), 5, "zoomout works correctly" );
         control.buttons[4].onmousedown(evt);
         control.buttons[5].onmousedown(evt);
-        t.eq( map.getZoom(), 0, "zoomworld workds correctly" );
+        t.eq( map.getZoom(), 2, "zoomworld works correctly" );
 
     }
   // -->
