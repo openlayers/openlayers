@@ -14,7 +14,7 @@
         var map, layer;
 
         function init(){
-            OpenLayers.ProxyHost = '/proxy/';
+            OpenLayers.ProxyHost = '/proxy/?url=';
             map = new OpenLayers.Map('map', {maxResolution:'auto'});
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                 "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
