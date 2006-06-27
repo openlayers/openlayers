@@ -2,8 +2,8 @@
   <head>
     <style type="text/css">
         #map {
-            width: 800px;
-            height: 475px;
+            width: 512px;
+            height: 512px;
             border: 1px solid black;
         }
     </style>
@@ -16,12 +16,14 @@
             var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                 "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'} );
             var ka_wms = new OpenLayers.Layer.KaMap( "KaMap", 
-                "http://www.h2guide.com/my-ka-map/h2tile.php?" , { map: 'h2guide', g: 'background' }, new OpenLayers.LonLat(0,0));
+                "http://www.h2guide.com/my-ka-map/h2tile.php?", 
+                { map: 'h2guide', g: 'background' }, 
+                new OpenLayers.LonLat(0,0));
 
 
             map.addLayers([ol_wms, ka_wms]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
-            map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+            map.zoomToFullExtent();
         }
         // -->
     </script>

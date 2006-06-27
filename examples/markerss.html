@@ -3,8 +3,8 @@
     <meta http-equiv="imagetoolbar" content="no"> <!--ie image gizmo OFF!-->
     <style type="text/css">
         #map {
-            width: 800px;
-            height: 475px;
+            width: 512px;
+            height: 512px;
             border: 1px solid black;
         }
     </style>
@@ -34,8 +34,8 @@
             markers = new OpenLayers.Layer.Markers( "Markers" );
             map.addLayer(markers);
 
-            map.setCenter(new OpenLayers.LonLat(0, 0), 0);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.zoomToFullExtent();
         }
         
         function changer() {

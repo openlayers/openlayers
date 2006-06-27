@@ -3,8 +3,8 @@
     <meta http-equiv="imagetoolbar" content="no"> <!--ie image gizmo OFF!-->
     <style type="text/css">
         #map {
-            width: 800px;
-            height: 475px;
+            width: 512px;
+            height: 512px;
             border: 1px solid black;
         }
     </style>
@@ -14,20 +14,18 @@
         var map, layer;
 
         function init(){
-            OpenLayers.ProxyHost = '/dev/examples/proxy.cgi?url=';
             map = new OpenLayers.Map('map');
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                 "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
             map.addLayer(layer);
 
-            layer = new OpenLayers.Layer.WFS( "OpenLayers WFS", 
-                "http://labs.metacarta.com/search/WFS?",
-                {q: 'dolphins', maxfeatures: 10} );
-                
+            layer = new OpenLayers.Layer.WFS( "Owl Survey",
+                "http://www.bsc-eoc.org/cgi-bin/bsc_ows.asp?",
+                {typename: "OWLS", maxfeatures: 10},
+                OpenLayers.Feature.WFS );
             map.addLayer(layer);
-
-            map.setCenter(new OpenLayers.LonLat(0, 0), 0);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.setCenter(new OpenLayers.LonLat(-100, 60), 3);
         }
         // -->
     </script>
