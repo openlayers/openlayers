@@ -14,13 +14,14 @@
         var map, layer;
 
         function init(){
+            OpenLayers.ProxyHost = '/proxy/';
             map = new OpenLayers.Map('map', {maxResolution:'auto'});
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                 "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
                 
             map.addLayer(layer);
 
-            var newl = new OpenLayers.Layer.GeoRSS( "text", "./georss.xml" );
+            var newl = new OpenLayers.Layer.GeoRSS( "text", "http://earthquake.usgs.gov/eqcenter/recenteqsww/catalogs/eqs7day-M2.5.xml" );
             map.addLayer(newl);
 
             map.setCenter(new OpenLayers.LonLat(0, 0), 0);
