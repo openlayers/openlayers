@@ -20,7 +20,7 @@
                 
             map.addLayer(layer);
 
-            var newl = new OpenLayers.Layer.Text( "text", "./textfile.txt" );
+            var newl = new OpenLayers.Layer.Text( "text", {location: "./textfile.txt"} );
             map.addLayer(newl);
 
             map.addControl(new OpenLayers.Control.LayerSwitcher());

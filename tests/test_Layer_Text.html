@@ -8,7 +8,7 @@
     function test_01_Layer_Text_constructor (t) {
         t.plan( 6 );
         
-        layer = new OpenLayers.Layer.Text('Test Layer', 'data_Layer_Text_textfile.txt');
+        layer = new OpenLayers.Layer.Text('Test Layer', { location: 'data_Layer_Text_textfile.txt'});
         t.ok( layer instanceof OpenLayers.Layer.Text, "new OpenLayers.Layer.Text returns object" );
         t.eq( layer.location, "data_Layer_Text_textfile.txt", "layer.location is correct" );
         var markers;
@@ -22,11 +22,15 @@
     function test_02_Layer_Text_draw (t) { 
 //        t.plan(5);
         t.plan( 2 );
-        layer = new OpenLayers.Layer.Text('Test Layer', 'data_Layer_Text_textfile.txt');
+        layer = new OpenLayers.Layer.Text('Test Layer', { location: 'data_Layer_Text_textfile.txt'});
         t.ok( layer instanceof OpenLayers.Layer.Text, "new OpenLayers.Layer.Text returns object" );
         var map = new OpenLayers.Map('map');
+        var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(baseLayer);
         map.addLayer(layer);
-        t.eq( map.layers[0].name, layer.name, "Layer added to map okay" );
+        t.eq( map.layers[1].name, layer.name, "Layer added to map okay" );
         t.delay_call( 1, function() { 
           map.setCenter(new OpenLayers.LonLat(0,0),0);
 
@@ -43,8 +47,12 @@
     }
     function test_03_Layer_Text_events (t) {
         t.plan( 4 );    
-        layer = new OpenLayers.Layer.Text('Test Layer', 'data_Layer_Text_textfile.txt');
+        layer = new OpenLayers.Layer.Text('Test Layer', { location: 'data_Layer_Text_textfile.txt'});
         var map = new OpenLayers.Map('map');
+        var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(baseLayer);
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,0),0);
         var event = {};

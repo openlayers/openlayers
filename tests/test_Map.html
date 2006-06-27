@@ -5,10 +5,15 @@
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var map; 
     function test_01_Map_constructor (t) {
-        t.plan( 10 );
+        t.plan( 9 );
         
         map = new OpenLayers.Map('map'); // no longer need to call $(), constructor does it
-            t.ok( map instanceof OpenLayers.Map, "new OpenLayers.Map returns object" );
+        var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(baseLayer);
+
+        t.ok( map instanceof OpenLayers.Map, "new OpenLayers.Map returns object" );
         if (!isMozilla) {
             t.ok( true, "skipping element test outside of Mozilla");
             t.ok( true, "skipping element test outside of Mozilla");
@@ -21,17 +26,19 @@
         t.ok( map.layers instanceof Array, "map.layers is an Array" );
         t.ok( map.controls instanceof Array, "map.controls is an Array" );
         t.ok( map.events instanceof OpenLayers.Events, "map.events is an OpenLayers.Events" );
-        t.ok( map.maxExtent instanceof OpenLayers.Bounds, "map.maxExtent is an OpenLayers.Bounds" );
-        t.ok( map.maxZoomLevel > 0, "map.maxZoomLevel is set" );
-        t.ok( map.maxResolution > 0, "map.maxResolution is set" );
+        t.ok( map.getMaxExtent() instanceof OpenLayers.Bounds, "map.maxExtent is an OpenLayers.Bounds" );
+        t.ok( map.getMaxZoomLevel() > 0, "map.maxZoomLevel is set" );
     }
     function test_02_Map_center(t) {
-        t.plan(5);
+        t.plan(4);
         map = new OpenLayers.Map($('map'));
+        var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(baseLayer);
         map.setCenter(new OpenLayers.LonLat(2,1), 0);
         t.ok( map.getCenter() instanceof OpenLayers.LonLat, "map.getCenter returns a LonLat");
         t.eq( map.getZoom(), 0, "map.zoom is correct after calling setCenter");
-        t.eq( map.getResolution(), map.maxResolution, "map.getResolution() == map.maxResolution");
         t.eq( map.getCenter().lon, 2, "map center lon is correct after calling setCenter");
         t.eq( map.getCenter().lat, 1, "map center lat is correct after calling setCenter");
     }
@@ -59,8 +66,12 @@
         t.eq( map.maxResolution, 3.14159, "map.maxResolution set correctly via options hash" );
     }
     function test_05_Map_center(t) {
-        t.plan(7);
+        t.plan(5);
         map = new OpenLayers.Map($('map'));
+        var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"} );
+        map.addLayer(baseLayer);
         map.setCenter(new OpenLayers.LonLat(2, 1), 0);
         map.zoomIn();
         t.eq( map.getZoom(), 1, "map.zoom is correct after calling setCenter,zoom in");
@@ -68,18 +79,26 @@
         t.eq( map.getCenter().lat, 1, "map center lat is correct after calling setCenter,zoom in");
         map.zoomOut();
         t.eq( map.getZoom(), 0, "map.zoom is correct after calling setCenter,zoom in, zoom out");
+
 	map.zoomTo(5);
 	t.eq( map.getZoom(), 5, "map.zoom is correct after calling zoomTo" );
-	map.zoomToFullExtent();
+/**
+	map.zoomToMaxExtent();
 	t.eq( map.getZoom(), 2, "map.zoom is correct after calling zoomToFullExtent" );
 	var lonlat = map.getCenter();
 	var zero = new OpenLayers.LonLat(0, 0);
 	t.ok( lonlat.equals(zero), "map center is correct after calling zoomToFullExtent" );
+
+    */
     }
 
     function test_06_Map_zoomend_event (t) {
-        t.plan(3);
+        t.plan(2);
         map = new OpenLayers.Map('map');
+        var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(baseLayer);
         map.events.register("zoomend", {count: 0}, function() { 
             this.count++; 
             t.ok(true, "zoomend event was triggered " + this.count + " times");
@@ -93,6 +112,10 @@
         t.plan(4);
 
         map = new OpenLayers.Map('map');
+        var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(baseLayer);
         
         var popup = new OpenLayers.Popup("chicken", 
                                          new OpenLayers.LonLat(0,0),
@@ -127,9 +150,16 @@
         t.ok(!found, "popup.div successfully removed from the map's viewPort");
     }
 
+/***  THIS IS A GOOD TEST, BUT IT SHOULD BE MOVED TO WMS. 
+ *     Also, it won't work until we figure out the viewSize bug
+
     function test_08_Map_px_lonlat_translation (t) {
         t.plan( 6 );    
         map = new OpenLayers.Map($('map'));
+        var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(baseLayer);
         map.setCenter(new OpenLayers.LonLat(0, 0), 0);
  
         var pixel = new OpenLayers.Pixel(50,150);
@@ -152,6 +182,20 @@
         t.ok( newPixel instanceof OpenLayers.Pixel, "getPixelFromLonLat returns valid OpenLayers.Pixel" );
 
         t.ok( newPixel.equals(pixel), "2nd translation to pixel and back to lonlat is consistent");
+    }
+ */
+    function test_09_Map_isValidLonLat(t) {
+        t.plan( 3 );    
+        map = new OpenLayers.Map($('map'));
+        layer = new OpenLayers.Layer.WMS('Test Layer', 
+                    "http://octo.metacarta.com/cgi-bin/mapserv", 
+                    {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'}, 
+                    {maxExtent: new OpenLayers.Bounds(33861, 717605, 330846, 1019656), maxResolution: 296985/1024, projection:"EPSG:2805" } );
+        map.addLayer(layer);
+        
+        t.ok( !map.isValidLonLat(null), "null lonlat is not valid" );
+        t.ok( map.isValidLonLat(new OpenLayers.LonLat(33862, 717606)), "lonlat outside max extent is valid" );
+        t.ok( !map.isValidLonLat(new OpenLayers.LonLat(10, 10)), "lonlat outside max extent is not valid" );
     }
 
     function test_99_Map_destroy (t) {

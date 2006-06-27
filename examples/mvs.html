@@ -95,7 +95,7 @@ function runMVS() {
         safeArgs.zoom);
 
     if (safeArgs.data) {
-        theMVS.addLayer(new OpenLayers.Layer.Text("Data", safeArgs.data));
+        theMVS.addLayer(new OpenLayers.Layer.Text("Data", {location: safeArgs.data}));
     }
 
 }

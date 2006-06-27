@@ -27,10 +27,11 @@
 
         function init(){
 	    // these should be object methods or something
-            map = new OpenLayers.Map( $('map'), {maxExtent: new OpenLayers.Bounds(33861, 717605, 330846, 1019656), maxResolution: 296985/1024, projection:"EPSG:2805" } );
+            map = new OpenLayers.Map( $('map') );
             var basemap = new OpenLayers.Layer.WMS( "Boston", 
                 "http://boston.freemap.in/cgi-bin/mapserv?",
-                {map: '/www/freemap.in/boston/map/mass.map', layers: 'border,water,roads', format: 'png'} );
+                {map: '/www/freemap.in/boston/map/mass.map', layers: 'border,water,roads', format: 'png'},
+                {maxExtent: new OpenLayers.Bounds(33861, 717605, 330846, 1019656), maxResolution: 296985/1024, projection:"EPSG:2805" } );
             var rapid = new OpenLayers.Layer.WMS( "Rapid Transit", 
                 "http://boston.freemap.in/cgi-bin/mapserv?",
                 {map: '/www/freemap.in/boston/map/mass.map', layers: 'rapid_transit', format: 'png', transparent:'true'} );
