@@ -149,6 +149,13 @@
         }
         t.ok(!found, "popup.div successfully removed from the map's viewPort");
     }
+    function test_10_Map_auto_res(t) {
+        t.plan(2);
+        map = new OpenLayers.Map($('map'), {maxZoomLevel: 5, maxResolution: 'auto'});
+        t.eq( map.maxResolution, 1/3, "map.maxResolution set correctly via auto" );
+        map = new OpenLayers.Map($('map'), {maxZoomLevel: 5, maxResolution: null});
+        t.eq( map.maxResolution, 1/3, "map.maxResolution set correctly via null" );
+    } 
 
 /***  THIS IS A GOOD TEST, BUT IT SHOULD BE MOVED TO WMS. 
  *     Also, it won't work until we figure out the viewSize bug
@@ -209,6 +216,6 @@
   </script>
 </head>
 <body>
-    <div id="map" style="width: 1024px; height: 512px;"/>
+    <div id="map" style="width: 1080px; height: 600px;"/>
 </body>
 </html>
