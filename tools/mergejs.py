@@ -149,7 +149,7 @@ if __name__ == "__main__":
     ## Find all the Javascript source files
     for root, dirs, files in os.walk(sourceDirectory):
 	for filename in files:
-	    if filename.endswith(SUFFIX_JAVASCRIPT):
+	    if filename.endswith(SUFFIX_JAVASCRIPT) and not filename.startswith("."):
 		filepath = os.path.join(root, filename)[len(sourceDirectory)+1:]
 		if (not cfg) or (filepath not in cfg.exclude):
 		    allFiles.append(filepath)
