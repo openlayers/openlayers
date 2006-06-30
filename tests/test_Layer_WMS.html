@@ -51,6 +51,21 @@
         t.eq( layer.grid[0].length, 2, "Grid cols is correct." );
         
     }
+    function test_03_Layer_WMS_changeParams (t) {
+        t.plan( 4 );
+        var map = new OpenLayers.Map($('map'));
+        layer = new OpenLayers.Layer.WMS('Test Layer', "http://octo.metacarta.com/cgi-bin/mapserv", {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'});
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0),5);
+        t.eq( layer.params.MAP, "/mapdata/vmap_wms.map", "Map param set to original." );
+        layer.changeParams({'map':'newparam'});
+        t.eq( layer.params.MAP, "newparam", "Map param changed.");
+        layer.changeParams({'MAP':'newparam2'});
+        t.eq( layer.params.MAP, "newparam2", "Map param changed again with upper-case.");
+        var firstChild = layer.div.firstChild;
+        t.eq( firstChild.src, "http://octo.metacarta.com/cgi-bin/mapserv?MAP=newparam2&LAYERS=basic&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&SRS=EPSG:4326&BBOX=-11.25,11.25,0,22.5&WIDTH=256&HEIGHT=256", "div first child is correct image object after param change." );
+        
+    }
 
     function test_99_Layer_WMS_destroy (t) {
         t.plan( 1 );
