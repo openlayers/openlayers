@@ -15,35 +15,10 @@
 
 <script>
 
-// From: 
-// <http://www.oreilly.com/catalog/jscript3/chapter/ch13.html#JSCRIPT-CH-WINDOWS-EX-LOC>
-/*
- * This function parses comma-separated name=value argument pairs from
- * the query string of the URL. It stores the name=value pairs in 
- * properties of an object and returns that object.
- */
-// +pjl changed to split on ampersand, not comma.
-
-function getArgs() {
-    var args = new Object();
-    var query = location.search.substring(1);  // Get query string.
-    var pairs = query.split("&");              // Break at ampersand. //+pjl
-
-    for(var i = 0; i < pairs.length; i++) {
-    var pos = pairs[i].indexOf('=');       // Look for "name=value".
-    if (pos == -1) continue;               // If not found, skip.
-    var argname = pairs[i].substring(0,pos);  // Extract the name.
-    var value = pairs[i].substring(pos+1); // Extract the value.
-    args[argname] = unescape(value);          // Store as a property.
-    }
-    return args;                               // Return the object.
-}
-
-
 function runMVS() {
     OpenLayers.ProxyHost = '/proxy/?url='; 
     if (document.location.protocol != "file:") {
-        theArgs = getArgs();
+        theArgs = OpenLayers.Util.getArgs();
     } else {
         theArgs = {};
         theArgs.center = "0,0";
