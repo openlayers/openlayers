@@ -34,14 +34,16 @@
             map.addControl(new OpenLayers.Control.PanZoomBar());
             map.addControl(new OpenLayers.Control.MouseToolbar());
             map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.addControl(new OpenLayers.Control.Permalink($('permalink')));
             // map.setCenter(new OpenLayers.LonLat(0, 0), 0);
-            map.zoomToMaxExtent();
+            if (!map.getCenter()) map.zoomToMaxExtent();
         }
         // -->
     </script>
   </head>
   <body onload="init()">
     <h1>OpenLayers Example</h1>
+    <a href="" id="permalink">Permalink</a><br />
     <div id="map"></div>
   </body>
 </html>
