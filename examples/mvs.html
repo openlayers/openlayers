@@ -24,8 +24,8 @@ function runMVS() {
         theArgs.center = "0,0";
         theArgs.zoom = "0";            
         theArgs.data = "textfile.txt";
-        theArgs.controls = ['panzoom','mouse'];
-        theArgs.layers = ['openlayers'];
+        theArgs.controls = 'panzoom,mouse';
+        theArgs.layers = 'openlayers';
     }
 
 
@@ -53,9 +53,6 @@ function runMVS() {
     safeArgs.controls = theArgs.controls ? 
         theArgs.controls.split(",") : DEFAULT_CONTROLS;
     
-    safeArgs.controls = theArgs.controls ? 
-        theArgs.controls.split(",") : DEFAULT_CONTROLS;
-
     safeArgs.layers = theArgs.layers ? 
         theArgs.layers.split(",") : DEFAULT_LAYERS;
     
