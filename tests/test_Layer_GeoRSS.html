@@ -58,7 +58,7 @@
 
     function test_99_Layer_GeoRSS_destroy (t) {
         t.plan( 1 );    
-        layer = new OpenLayers.Layer.GeoRSS('Test Layer');
+        layer = new OpenLayers.Layer.GeoRSS('Test Layer', './georss.txt');
         var map = new OpenLayers.Map('map');
         map.addLayer(layer);
         layer.destroy();
