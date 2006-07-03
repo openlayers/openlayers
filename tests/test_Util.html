@@ -11,9 +11,13 @@
     }
 
     function test_02_Util_Strings(t) {
-        t.plan(3);
+        t.plan(5);
         
         var str = "  chicken pox  ";
+
+        t.ok(str.contains("chicken"), "contains() function correctly finds an embedded string");
+        t.ok(!str.contains("marsupial"), "contains() function correctly does not finds an random string");
+        
 
         var trimmedStr = str.trim();        
 
@@ -21,6 +25,8 @@
 
         t.eq(trimmedStr.startsWith("chicken"), true, "String.startsWith correctly finds chicken");
         t.eq(trimmedStr.startsWith("dolphin"), false, "String.startsWith correctly does not find turkey");
+
+
     }
 
     function test_03_Util_Array(t) {
