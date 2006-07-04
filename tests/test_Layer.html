@@ -12,6 +12,50 @@
         t.eq( layer.name, "Test Layer", "layer.name is correct" );
     }
 
+    function test_02_Layer_clone (t) {
+        t.plan( 7 );
+        
+        var options = { chicken: 151, foo: "bar" };
+        var layer = new OpenLayers.Layer('Test Layer', options);
+        var clone = layer.clone();
+        
+        t.ok( clone instanceof OpenLayers.Layer, "new OpenLayers.Layer returns object" );
+        t.eq( clone.name, "Test Layer", "default clone.name is correct" );
+        t.ok( ((clone.options["chicken"] == 151) && (clone.options["foo"] == "bar")), "clone.options correctly set" );
+
+
+        var layer = new OpenLayers.Layer('Test Layer');
+        var clone = layer.clone();
+        
+        t.ok( clone.options == null, "clone.options correctly left at null" );
+
+
+
+        var layer = new OpenLayers.Layer('Test Layer', options);
+        var clone = layer.clone("Special Bonus");
+        
+        t.eq( clone.name, "Special Bonus", "clone.name is correct" );
+
+
+
+        var newOptions = { foo: "stoo", clear: "skies" };
+        var layer = new OpenLayers.Layer('Test Layer', options);
+        var clone = layer.clone("Special Bonus", newOptions);
+        
+        t.ok( ((clone.options["chicken"] == 151) && 
+               (clone.options["foo"] == "stoo") &&
+               (clone.options["clear"] == "skies")), "clone.options correctly merged" );
+
+
+        var newOptions = { chicken: 151, foo: "stoo", clear: "skies" };
+        var layer = new OpenLayers.Layer('Test Layer');
+        var clone = layer.clone("Special Bonus", newOptions);
+
+        t.ok( ((clone.options["foo"] == "stoo") &&
+               (clone.options["clear"] == "skies")), "clone.options correctly merged" );
+
+    }
+
     function test_99_Layer_destroy (t) {
         t.plan( 1 );    
         layer = new OpenLayers.Layer('Test Layer');
