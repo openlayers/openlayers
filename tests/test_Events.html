@@ -105,7 +105,34 @@
 
     }
 
-    function test_03_Events_triggerEvent(t) {
+    function test_03_Events_remove(t) {
+
+        t.plan( 2 );
+ 
+        var mapDiv = $('map');
+        var obj = {result: 0};
+        var eventTypes = ["doThingA", "doThingB", "doThingC"];
+        
+        events = new OpenLayers.Events(obj, mapDiv, eventTypes);
+        
+        var func = function () { this.result++ }
+        var func2 = function () { this.result-- }
+        var func3 = function () { this.result = this.result + 3; }
+
+        events.register( "doThingA", obj, func );
+        events.register( "doThingA", obj, func2 );
+        events.register( "doThingA", null, func3 );
+
+        events.remove("doThingA");
+
+        t.eq( events.listeners["doThingA"].length, 0, "remove() correctly clears the event listeners" );
+
+        events.remove("chicken");
+        t.ok( events.listeners["chicken"] == null, "remove on non-enabled event does not break or accidentally enable the event");
+
+    }
+
+    function test_04_Events_triggerEvent(t) {
     
         t.plan( 2 );
  
