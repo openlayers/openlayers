@@ -4,6 +4,7 @@
   <script type="text/javascript"><!--
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var map; 
+    var a;
     
     function test_01_Events_constructor (t) {
         var mapDiv = $('map');
@@ -151,7 +152,7 @@
 
     function test_04_Events_triggerEvent(t) {
     
-        t.plan( 2 );
+        t.plan( 6 );
  
         var mapDiv = $('map');
         var obj = {result: 0};
@@ -168,6 +169,37 @@
         events.triggerEvent("doThingA");
         t.eq( obj.result, 2, "result is 2 after we call triggerEvent with no event" );
 
+        var funcB = function() { this.FUNK = "B"; return false; }
+        events.register( "doThingA", obj, funcB);
+
+        events.triggerEvent("doThingA");
+        t.ok ((obj.result == 3) && (obj.FUNK == "B"), "executing multiple callbacks works")
+
+        var funcZ = function() { this.FUNK = "Z"; }
+        events.register( "doThingA", obj, funcZ);
+
+        events.triggerEvent("doThingA");
+        t.ok ((obj.result == 4) && (obj.FUNK == "B"), "executing multiple callbacks works, and when one returns false, it stops chain correctly")
+
+
+        var func2 = function() { this.result = this.result + 10; }
+        events.register( "doThingB", null, func2);
+        
+        events.triggerEvent("doThingB");
+        t.eq( obj.result, 14, "passing a null object default gets set correctly");
+        
+        //no specific t.ok for this one, but if it breaks, you will know it.
+        events.triggerEvent("chicken");
+
+        events = new OpenLayers.Events(null, mapDiv, eventTypes);
+        
+        // a is global variable (context-irrelevant)
+        a = 0;
+        var func = function () { a = 5; }
+        events.register( "doThingC", null, func );
+        events.triggerEvent("doThingC");
+
+        t.eq(a, 5, "if Events has no object set and an event is registered also with no object, triggerEvent() calls it without trying to set the context to null");        
     }
    
   // -->
