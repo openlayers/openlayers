@@ -12,7 +12,7 @@
         if (!isMozilla)
             t.ok( true, "skipping element test outside of Mozilla");
         else
-            t.ok( events.div instanceof HTMLDivElement, "events.div isa HTMLDivElement" );
+            t.ok( events.element instanceof HTMLDivElement, "events.element isa HTMLDivElement" );
         t.ok( events.object === obj, "events.object is the object we passed" );
 
         var builtin = OpenLayers.Events.prototype.BROWSER_EVENTS;
