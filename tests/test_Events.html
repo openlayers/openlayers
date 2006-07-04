@@ -41,7 +41,7 @@
 
     function test_02_Events_register_unregister(t) {
  
-        t.plan( 14 );
+        t.plan( 15 );
  
         var mapDiv = $('map');
         var obj = {result: 0};
@@ -105,7 +105,8 @@
         }                
         t.ok( (listenerList.length == 1) && !found, "unregister correctly removes callback when no obj specified" );
         
-
+        events.unregister("chicken", null, func3);
+        t.ok( events.listeners["chicken"] == null, "unregistering an event that is not enabled does not wierdly enable it -- or cause a script error")
     }
 
     function test_03_Events_remove(t) {
