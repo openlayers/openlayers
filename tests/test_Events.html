@@ -41,7 +41,7 @@
 
     function test_02_Events_register_unregister(t) {
  
-        t.plan( 13 );
+        t.plan( 14 );
  
         var mapDiv = $('map');
         var obj = {result: 0};
@@ -77,6 +77,9 @@
 
         var listenerList = events.listeners["doThingA"];
         t.eq( listenerList.length, 3, "register correctly does not append null callback to event.listeners[doThingA] even when obj passed in is null" );
+
+        events.register( "chicken", obj, func);
+        t.ok( events.listeners["chicken"] == null, "register() does nothing on attempt to register un-enabled event");
 
         events.unregister("doThingA", obj, null);
         var listenerList = events.listeners["doThingA"];
