@@ -5,13 +5,37 @@
     var layer; 
 
     function test_01_Layer_constructor (t) {
-        t.plan( 2 );
+        t.plan( 6 );
         
+        var options = { chicken: 151, foo: "bar" };
+        var layer = new OpenLayers.Layer('Test Layer', options);
+        
+        t.ok( layer instanceof OpenLayers.Layer, "new OpenLayers.Layer returns object" );
+        t.eq( layer.name, "Test Layer", "layer.name is correct" );
+        t.ok( ((layer.options["chicken"] == 151) && (layer.options["foo"] == "bar")), "layer.options correctly set" );
+
+
         layer = new OpenLayers.Layer('Test Layer');
         t.ok( layer instanceof OpenLayers.Layer, "new OpenLayers.Layer returns object" );
         t.eq( layer.name, "Test Layer", "layer.name is correct" );
+        t.ok( layer.options instanceof Object, "layer.options correctly not set to null" );
     }
 
+    function test_02_Layer_clone (t) {
+        t.plan( 3 );
+        
+        var options = { chicken: 151, foo: "bar" };
+        var layer = new OpenLayers.Layer('Test Layer', options);
+        var clone = layer.clone();
+        
+        t.ok( clone instanceof OpenLayers.Layer, "new OpenLayers.Layer returns object" );
+        t.eq( clone.name, "Test Layer", "default clone.name is correct" );
+        t.ok( ((clone.options["chicken"] == 151) && (clone.options["foo"] == "bar")), "clone.options correctly set" );
+        
+    }
+
+/**
+ * 
     function test_02_Layer_clone (t) {
         t.plan( 7 );
         
@@ -55,6 +79,7 @@
                (clone.options["clear"] == "skies")), "clone.options correctly merged" );
 
     }
+ */
 
     function test_99_Layer_destroy (t) {
         t.plan( 1 );    
