@@ -39,9 +39,9 @@
               "init of Events with null object/element/eventTypes still creates listeners array" );
     }
 
-    function test_02_Events_register(t) {
+    function test_02_Events_register_unregister(t) {
  
-        t.plan( 10 );
+        t.plan( 13 );
  
         var mapDiv = $('map');
         var obj = {result: 0};
@@ -78,6 +78,30 @@
         var listenerList = events.listeners["doThingA"];
         t.eq( listenerList.length, 3, "register correctly does not append null callback to event.listeners[doThingA] even when obj passed in is null" );
 
+        events.unregister("doThingA", obj, null);
+        var listenerList = events.listeners["doThingA"];
+        t.eq( listenerList.length, 3, "trying to unregister a null callback does nothing -- but doesnt crash :-)" );
+    
+        events.unregister("doThingA", obj, func);
+        var found = false;
+        for (var i = 0; i < listenerList.length; i++) {
+            var listener = listenerList[i];
+            if (listener.obj == obj && listener.func == func) {
+                found = true;
+            }
+        }                
+        t.ok( (listenerList.length == 2) && !found, "unregister correctly removes callback" );
+
+        events.unregister("doThingA", null, func3);
+        var found = false;
+        for (var i = 0; i < listenerList.length; i++) {
+            var listener = listenerList[i];
+            if (listener.obj == obj && listener.func == func) {
+                found = true;
+            }
+        }                
+        t.ok( (listenerList.length == 1) && !found, "unregister correctly removes callback when no obj specified" );
+        
 
     }
 
