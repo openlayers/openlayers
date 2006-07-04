@@ -82,12 +82,21 @@
  */
 
     function test_99_Layer_destroy (t) {
-        t.plan( 1 );    
-        layer = new OpenLayers.Layer('Test Layer');
+        t.plan( 4 );    
+
         var map = new OpenLayers.Map('map');
+        
+        layer = new OpenLayers.Layer('Test Layer');
+
         map.addLayer(layer);
+
         layer.destroy();
+
+        t.eq( layer.name, null, "layer.name is null after destroy" );
+        t.eq( layer.div, null, "layer.div is null after destroy" );
         t.eq( layer.map, null, "layer.map is null after destroy" );
+        t.eq( layer.options, null, "layer.options is null after destroy" );
+
     }
   // -->
   </script>
