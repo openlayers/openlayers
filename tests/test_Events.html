@@ -41,7 +41,7 @@
 
     function test_02_Events_register(t) {
  
-        t.plan( 6 );
+        t.plan( 10 );
  
         var mapDiv = $('map');
         var obj = {result: 0};
@@ -65,6 +65,18 @@
         t.ok( listenerList[1].obj == obj, "obj property correctly registered");
         t.ok( listenerList[1].func == func2, "func property correctly registered");
 
+        var func3 = function () { this.result = this.result + 3; }
+        events.register( "doThingA", null, func3 );
+
+        var listenerList = events.listeners["doThingA"];
+        t.eq( listenerList.length, 3, "register correctly appends new callback to event.listeners[doThingA] even when obj passed in is null" );
+        t.ok( listenerList[2].obj == obj, "obj is correctly set to Events.object default when null is passed in.");
+        t.ok( listenerList[2].func == func3, "func property correctly registered");
+
+        events.register( "doThingA", obj, null);
+
+        var listenerList = events.listeners["doThingA"];
+        t.eq( listenerList.length, 3, "register correctly does not append null callback to event.listeners[doThingA] even when obj passed in is null" );
 
 
     }
