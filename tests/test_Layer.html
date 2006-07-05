@@ -5,81 +5,112 @@
     var layer; 
 
     function test_01_Layer_constructor (t) {
-        t.plan( 6 );
+        t.plan( 10 );
         
         var options = { chicken: 151, foo: "bar" };
         var layer = new OpenLayers.Layer('Test Layer', options);
         
         t.ok( layer instanceof OpenLayers.Layer, "new OpenLayers.Layer returns object" );
-        t.eq( layer.name, "Test Layer", "layer.name is correct" );
-        t.ok( ((layer.options["chicken"] == 151) && (layer.options["foo"] == "bar")), "layer.options correctly set" );
+        t.eq( layer.CLASS_NAME, "OpenLayers.Layer", "CLASS_NAME variable set correctly");
 
+        t.eq( layer.name, "Test Layer", "layer.name is correct" );
+        t.ok( ((layer.chicken == 151) && (layer.foo == "bar")), "layer.options correctly set to Layer Object" );
+        t.ok( ((layer.options["chicken"] == 151) && (layer.options["foo"] == "bar")), "layer.options correctly backed up" );
+
+        options.chicken = 552;
+        
+        t.eq( layer.options["chicken"], 151 , "layer.options correctly made fresh copy" );
+        
+        t.eq( layer.isBaseLayer(), false, "Default layer is not base layer" );
 
         layer = new OpenLayers.Layer('Test Layer');
         t.ok( layer instanceof OpenLayers.Layer, "new OpenLayers.Layer returns object" );
         t.eq( layer.name, "Test Layer", "layer.name is correct" );
-        t.ok( layer.options instanceof Object, "layer.options correctly not set to null" );
+        t.ok( layer.options instanceof Object, "layer.options correctly initialized as a non-null Object" );
     }
 
     function test_02_Layer_clone (t) {
-        t.plan( 3 );
+        t.plan( 5 );
         
         var options = { chicken: 151, foo: "bar" };
         var layer = new OpenLayers.Layer('Test Layer', options);
+        layer.chocolate = 5;
+
         var clone = layer.clone();
-        
+
         t.ok( clone instanceof OpenLayers.Layer, "new OpenLayers.Layer returns object" );
         t.eq( clone.name, "Test Layer", "default clone.name is correct" );
         t.ok( ((clone.options["chicken"] == 151) && (clone.options["foo"] == "bar")), "clone.options correctly set" );
+        t.eq(layer.chocolate, 5, "correctly copied randomly assigned property");
+
+        layer.addOptions({chicken:152});
+        t.eq(clone.options["chicken"], 151, "made a clean copy of options");        
         
     }
 
-/**
+    function test_03_Layer_setName (t) {
+        
+        t.plan( 1 );
+
+        layer = new OpenLayers.Layer('Test Layer');
+        layer.setName("chicken");
+        
+        t.eq(layer.name, "chicken", "setName() works")
+        
+    }
+
+    function test_04_Layer_addOptions (t) {
+        
+        t.plan( 4 );
+
+        var options = { chicken: 151, foo: "bar" };
+        var layer = new OpenLayers.Layer('Test Layer', options);
+
+        layer.addOptions({bark:55, chicken: 171});
+
+        t.eq(layer.bark, 55, "addOptions() assigns new option correctly to Layer");
+        t.eq(layer.options.bark, 55, "addOptions() adds new option correctly to backup");
+
+        t.eq(layer.chicken, 171, "addOptions() overwrites option correctly to Layer");
+        t.eq(layer.options.chicken, 171, "addOptions() overwrites option correctly to backup");
+
+    }
+    
+    function test_04_Layer_StandardOptionsAccessors (t) {
+
+        t.plan( 5 );
+
+        var projection = "chicken";
+        var maxExtent = new OpenLayers.Bounds(50,50,100,100);
+        var maxResolution = 1.5726;
+        var minZoomLevel = 5;
+        var maxZoomLevel = 15;
+
+        var options = { projection: projection, 
+                        maxExtent: maxExtent,
+                        maxResolution: maxResolution,
+                        minZoomLevel: minZoomLevel,
+                        maxZoomLevel: maxZoomLevel,
+                        };
+
+        var layer = new OpenLayers.Layer('Test Layer', options);
+
+        t.eq(layer.getProjection(), projection, "getProjection() works");
+        t.ok(layer.getMaxExtent().equals(maxExtent), "getMaxExtent() works");
+        t.eq(layer.getMaxResolution(), maxResolution, "getMaxResolution() works");
+        t.eq(layer.getMinZoomLevel(), minZoomLevel, "getMinZoomLevel() works");
+        t.eq(layer.getMaxZoomLevel(), maxZoomLevel, "getMaxZoomLevel() works");
+    }
+
+/******
  * 
-    function test_02_Layer_clone (t) {
-        t.plan( 7 );
-        
-        var options = { chicken: 151, foo: "bar" };
-        var layer = new OpenLayers.Layer('Test Layer', options);
-        var clone = layer.clone();
-        
-        t.ok( clone instanceof OpenLayers.Layer, "new OpenLayers.Layer returns object" );
-        t.eq( clone.name, "Test Layer", "default clone.name is correct" );
-        t.ok( ((clone.options["chicken"] == 151) && (clone.options["foo"] == "bar")), "clone.options correctly set" );
-
-
-        var layer = new OpenLayers.Layer('Test Layer');
-        var clone = layer.clone();
-        
-        t.ok( clone.options == null, "clone.options correctly left at null" );
-
-
-
-        var layer = new OpenLayers.Layer('Test Layer', options);
-        var clone = layer.clone("Special Bonus");
-        
-        t.eq( clone.name, "Special Bonus", "clone.name is correct" );
-
-
-
-        var newOptions = { foo: "stoo", clear: "skies" };
-        var layer = new OpenLayers.Layer('Test Layer', options);
-        var clone = layer.clone("Special Bonus", newOptions);
-        
-        t.ok( ((clone.options["chicken"] == 151) && 
-               (clone.options["foo"] == "stoo") &&
-               (clone.options["clear"] == "skies")), "clone.options correctly merged" );
-
-
-        var newOptions = { chicken: 151, foo: "stoo", clear: "skies" };
-        var layer = new OpenLayers.Layer('Test Layer');
-        var clone = layer.clone("Special Bonus", newOptions);
-
-        t.ok( ((clone.options["foo"] == "stoo") &&
-               (clone.options["clear"] == "skies")), "clone.options correctly merged" );
-
-    }
+ * 
+ * HERE IS WHERE SOME TESTS SHOULD BE PUT TO CHECK ON THE LONLAT-PX TRANSLATION
+ * FUNCTIONS AND RESOLUTION AND GETEXTENT GETZOOMLEVEL, ETC
+ * 
+ * 
  */
+
 
     function test_99_Layer_destroy (t) {
         t.plan( 4 );    
