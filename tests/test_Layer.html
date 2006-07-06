@@ -30,10 +30,14 @@
     }
 
     function test_02_Layer_clone (t) {
-        t.plan( 5 );
+        t.plan( 6 );
         
+        var map = new OpenLayers.Map('map'); 
         var options = { chicken: 151, foo: "bar" };
         var layer = new OpenLayers.Layer('Test Layer', options);
+        map.addLayer(layer);
+
+        // randomly assigned property
         layer.chocolate = 5;
 
         var clone = layer.clone();
@@ -41,10 +45,13 @@
         t.ok( clone instanceof OpenLayers.Layer, "new OpenLayers.Layer returns object" );
         t.eq( clone.name, "Test Layer", "default clone.name is correct" );
         t.ok( ((clone.options["chicken"] == 151) && (clone.options["foo"] == "bar")), "clone.options correctly set" );
-        t.eq(layer.chocolate, 5, "correctly copied randomly assigned property");
+        t.eq(clone.chocolate, 5, "correctly copied randomly assigned property");
 
         layer.addOptions({chicken:152});
         t.eq(clone.options["chicken"], 151, "made a clean copy of options");        
+
+        
+        t.ok( clone.map == null, "cloned layer has map property set to null")
         
     }
 
