@@ -109,6 +109,23 @@
         t.eq(layer.getMaxZoomLevel(), maxZoomLevel, "getMaxZoomLevel() works");
     }
 
+    function test_05_Layer_visibility(t) {
+
+        t.plan(3)
+
+        var layer = new OpenLayers.Layer('Test Layer');
+    
+        t.eq(layer.getVisibility(), true, "default for layer creation is visible");
+        
+        layer.setVisibility(false);
+        t.eq(layer.getVisibility(), false, "setVisibility false works");
+
+        layer.setVisibility(true);
+        t.eq(layer.getVisibility(), true, "setVisibility true works");
+    
+    }
+
+
 /******
  * 
  * 
