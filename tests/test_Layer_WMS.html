@@ -5,21 +5,39 @@
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var layer; 
 
+    var name = 'Test Layer';
+    var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+    var params = { map: '/mapdata/vmap_wms.map', 
+                   layers: 'basic', 
+                   format: 'image/png'};
+
     function test_01_Layer_WMS_constructor (t) {
-        t.plan( 6 );
-        
-        layer = new OpenLayers.Layer.WMS('Test Layer', "http://octo.metacarta.com/cgi-bin/mapserv", {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/png'});
+        t.plan( 4 );
+
+     // this is a sneaky trick -- because DEFAULT_PARAMS is actually an 
+     //  object, if we modify it in one layer, it is modified permanently. 
+     //  this is why we only allow object creation in this manner for constant
+     //  values. Anyways, so create a dummy layer, add a dummy default param
+     //  so that we can later test to see if it is uppercased and included.
+        layer = new OpenLayers.Layer.WMS();
+        layer.DEFAULT_PARAMS.chicken = "foo";        
+
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.WMS(name, url, params);
         t.ok( layer instanceof OpenLayers.Layer.WMS, "new OpenLayers.Layer.WMS returns object" );
-        t.eq( layer.name, "Test Layer", "layer.name is correct" );
-        t.eq( layer.url, "http://octo.metacarta.com/cgi-bin/mapserv", "layer.url is correct" );
-        t.eq( layer.params.MAP, "/mapdata/vmap_wms.map", "layer.params.map is correct" );
-        t.eq( layer.params.FORMAT, "image/png", "layer.params.format is correctly overridden" );
-        t.eq( layer.params.EXCEPTIONS, "application/vnd.ogc.se_inimage", 
-                                       "other default layer.params are set correctly" );
+        t.eq( layer.url, "http://octo.metacarta.com/cgi-bin/mapserv", "layer.url is correct (HTTPRequest inited)" );
+        t.eq( layer.params.MAP, "/mapdata/vmap_wms.map", "params passed in correctly uppercased" );
+
+        t.eq( layer.params.CHICKEN, "foo", "default params correclty uppercased and copied");
+
+
     }
+    
     function test_02_Layer_WMS_addtile (t) {
         t.plan( 6 );
-        layer = new OpenLayers.Layer.WMS('Test Layer', "http://octo.metacarta.com/cgi-bin/mapserv", {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'});
+    
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.WMS(name, url, params);
         var map = new OpenLayers.Map($('map'));
         map.addLayer(layer);
         var pixel = new OpenLayers.Pixel(5,6);
@@ -28,7 +46,7 @@
 
         var img = tile.imgDiv;
 
-        t.eq( img.src, "http://octo.metacarta.com/cgi-bin/mapserv?MAP=/mapdata/vmap_wms.map&LAYERS=basic&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&SRS=EPSG:4326&BBOX=1,2,3,4&WIDTH=256&HEIGHT=256", "image src is created correctly via addtile" );
+        t.eq( img.src, "http://octo.metacarta.com/cgi-bin/mapserv?MAP=/mapdata/vmap_wms.map&LAYERS=basic&FORMAT=image/png&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&SRS=EPSG:4326&BBOX=1,2,3,4&WIDTH=256&HEIGHT=256", "image src is created correctly via addtile" );
         t.eq( tile.imgDiv.style.top, "6px", "image top is set correctly via addtile" );
         t.eq( tile.imgDiv.style.left, "5px", "image top is set correctly via addtile" );
 
@@ -37,43 +55,119 @@
             t.ok( true, "skipping element test outside of Mozilla");
         else
             t.ok( firstChild instanceof HTMLElement, "div first child is an image object" );
-        t.eq( firstChild.src, "http://octo.metacarta.com/cgi-bin/mapserv?MAP=/mapdata/vmap_wms.map&LAYERS=basic&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&SRS=EPSG:4326&BBOX=1,2,3,4&WIDTH=256&HEIGHT=256", "div first child is correct image object" );
+        t.eq( firstChild.src, "http://octo.metacarta.com/cgi-bin/mapserv?MAP=/mapdata/vmap_wms.map&LAYERS=basic&FORMAT=image/png&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&SRS=EPSG:4326&BBOX=1,2,3,4&WIDTH=256&HEIGHT=256", "div first child is correct image object" );
         var pos = tile.getPosition();
         t.eq( pos.toString(), "x=5,y=6", "Position of tile is set correctly." );
     }
+    
     function test_03_Layer_WMS_inittiles (t) {
         t.plan( 2 );
         var map = new OpenLayers.Map($('map'));
-        layer = new OpenLayers.Layer.WMS('Test Layer', "http://octo.metacarta.com/cgi-bin/mapserv", {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'});
+        layer = new OpenLayers.Layer.WMS(name, url, params);
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,0),5);
         t.eq( layer.grid.length, 4, "Grid rows is correct." );
         t.eq( layer.grid[0].length, 2, "Grid cols is correct." );
         
     }
-    function test_03_Layer_WMS_changeParams (t) {
-        t.plan( 4 );
-        var map = new OpenLayers.Map($('map'));
-        layer = new OpenLayers.Layer.WMS('Test Layer', "http://octo.metacarta.com/cgi-bin/mapserv", {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'});
-        map.addLayer(layer);
-        map.setCenter(new OpenLayers.LonLat(0,0),5);
-        t.eq( layer.params.MAP, "/mapdata/vmap_wms.map", "Map param set to original." );
-        layer.changeParams({'map':'newparam'});
-        t.eq( layer.params.MAP, "newparam", "Map param changed.");
-        layer.changeParams({'MAP':'newparam2'});
-        t.eq( layer.params.MAP, "newparam2", "Map param changed again with upper-case.");
-        var firstChild = layer.div.firstChild;
-        t.eq( firstChild.src, "http://octo.metacarta.com/cgi-bin/mapserv?MAP=newparam2&LAYERS=basic&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&SRS=EPSG:4326&BBOX=-11.25,11.25,0,22.5&WIDTH=256&HEIGHT=256", "div first child is correct image object after param change." );
+
+
+    function test_04_Layer_WMS_clone (t) {
+        t.plan(4);
         
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        var options = {tileSize: new OpenLayers.Size(500,50)};
+        var map = new OpenLayers.Map('map', options);
+        layer = new OpenLayers.Layer.WMS(name, url, params);
+        map.addLayer(layer);
+
+        layer.grid = [ [6, 7], 
+                       [8, 9]];
+
+        var clone = layer.clone();
+
+        t.ok( clone.grid == null, "clone does not copy grid");
+
+        t.ok( clone.tileSize.equals(layer.tileSize), "tileSize correctly cloned");
+
+        layer.tileSize.w += 40;
+
+        t.eq( clone.tileSize.w, 500, "changing layer.tileSize does not change clone.tileSize -- a fresh copy was made, not just copied reference");
+
+        t.eq( clone.alpha, layer.alpha, "alpha copied correctly");
     }
 
-    function test_99_Layer_WMS_destroy (t) {
+    function test_05_Layer_WMS_isBaseLayer(t) {
+
+        t.plan(2);
+        
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.WMS(name, url, params);
+
+        t.ok( layer.isBaseLayer(), "baselayer is true when no transparent set");
+
+        layer.params.TRANSPARENT = "true";
+
+        t.ok( !layer.isBaseLayer(), "baselayer is false when transparent set");
+    }
+
+    function test_06_Layer_WMS_mergeNewParams (t) {
+        t.plan( 3 );
+
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.WMS(name, url, params);
+        
+        var newParams = { layers: 'sooper', 
+                          chickpeas: 'image/png'};
+
+        layer.mergeNewParams(newParams);
+        
+        t.eq( layer.params.LAYERS, "sooper", "mergeNewParams() overwrites well");
+        t.eq( layer.params.CHICKPEAS, "image/png", "mergeNewParams() adds well");
+
+        newParams.CHICKPEAS = 151;
+
+        t.eq( layer.params.CHICKPEAS, "image/png", "mergeNewParams() makes clean copy of hash");
+    }
+
+    function test_07_Layer_WMS_getFullRequestString (t) {
+
+        
         t.plan( 1 );
-        layer = new OpenLayers.Layer.WMS('Test Layer', "http://octo.metacarta.com/cgi-bin/mapserv", {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'});
+
         var map = new OpenLayers.Map('map');
+        map.projection = "xx";
+        tUrl = "http://octo.metacarta.com/cgi-bin/mapserv";
+        tParams = { layers: 'basic', 
+                   format: 'image/png'};
+        var tLayer = new OpenLayers.Layer.WMS(name, tUrl, tParams, null);
+        map.addLayer(tLayer);
+        str = tLayer.getFullRequestString();
+        t.eq(str, "http://octo.metacarta.com/cgi-bin/mapserv?LAYERS=basic&FORMAT=image/png&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&SRS=xx", "getFullRequestString() adds SRS value");
+    }
+    
+    function test_99_Layer_WMS_destroy (t) {
+
+        t.plan( 2 );
+
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.WMS(name, url, params);
         map.addLayer(layer);
+
+        map.setCenter(new OpenLayers.LonLat(0,0), 5);
+
+        //grab a reference to one of the tiles
+        var tile = layer.grid[0][0];        
+
         layer.destroy();
-        t.eq( layer.map, null, "layer.map is null after destroy" );
+        
+    // checks to make sure superclass (grid) destroy() was called    
+        
+        t.ok( layer.grid == null, "grid set to null");
+
+        t.ok( (tile.layer == null) &&
+              (tile.bounds == null) &&
+              (tile.size == null), "tiles appropriately destroyed")
     }
   // -->
   </script>
