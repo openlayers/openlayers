@@ -98,12 +98,12 @@
 
         layer.mergeNewParams(newParams);
         
-        t.eq( layer.params.layers, "sooper", "changeParams() overwrites well");
-        t.eq( layer.params.chickpeas, "image/png", "changeParams() adds well");
+        t.eq( layer.params.layers, "sooper", "mergeNewParams() overwrites well");
+        t.eq( layer.params.chickpeas, "image/png", "mergeNewParams() adds well");
 
         newParams.chickpeas = 151;
 
-        t.eq( layer.params.chickpeas, "image/png", "changeParams() makes clean copy of hash");
+        t.eq( layer.params.chickpeas, "image/png", "mergeNewParams() makes clean copy of hash");
 
 
     }
