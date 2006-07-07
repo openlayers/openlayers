@@ -38,7 +38,7 @@
 
     function test_03_Layer_Google_Translation_zoom (t) {
         
-        t.plan( 2 );
+        t.plan( 4 );
         
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.Google('Goog Layer');
@@ -54,11 +54,14 @@
         olZoom = layer.getOLZoomFromGZoom(gZoom);
         t.eq(olZoom, correspondingOLZoom, "Translation from GZoom to OL Zoom works");
         t.eq(layer.getGZoomFromOLZoom(olZoom), gZoom, "Translation from OL Zoom to GZoom works");
+
+        t.ok( layer.getGZoomFromOLZoom(null) == null, "getGZoomFromOLZoom(null) returns null");
+        t.ok( layer.getOLZoomFromGZoom(null) == null, "getOLZoomFromGZoom(null) returns null");
     }
 
     function test_04_Layer_Google_Translation_lonlat (t) {
         
-        t.plan( 2 );
+        t.plan( 4 );
         
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.Google('Goog Layer');
@@ -76,11 +79,14 @@
 
         var transGLatLng = layer.getGLatLngFromOLLonLat(olLonLat);
         t.ok( transGLatLng.equals(gLatLng), "Translation from OpenLayers.LonLat to GLatLng works");
+
+        t.ok( layer.getGLatLngFromOLLonLat(null) == null, "getGLatLngFromOLLonLat(null) returns null");
+        t.ok( layer.getOLLonLatFromGLatLng(null) == null, "getOLLonLatFromGLatLng(null) returns null");
     }
 
     function test_05_Layer_Google_Translation_pixel (t) {
         
-        t.plan( 2 );
+        t.plan( 4 );
         
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.Google('Goog Layer');
@@ -98,11 +104,14 @@
 
         var transGPoint = layer.getGPointFromOLPixel(olPixel);
         t.ok( transGPoint.equals(gPoint), "Translation from OpenLayers.Pixel to GPoint works");
+
+        t.ok( layer.getGPointFromOLPixel(null) == null, "getGPointFromOLPixel(null) returns null");
+        t.ok( layer.getOLPixelFromGPoint(null) == null, "getOLPixelFromGPoint(null) returns null");
     }
 
     function test_06_Layer_Google_Translation_bounds (t) {
         
-        t.plan( 2 );
+        t.plan( 4 );
         
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.Google('Goog Layer');
@@ -123,6 +132,9 @@
 
         var transGBounds = layer.getGLatLngBoundsFromOLBounds(olBounds);
         t.ok( transGBounds.equals(gBounds), "Translation from OpenLayers.Bounds to GLatLngBounds works");
+
+        t.ok( layer.getGLatLngBoundsFromOLBounds(null) == null, "getGLatLngBoundsFromOLBounds(null) returns null");
+        t.ok( layer.getOLBoundsFromGLatLngBounds(null) == null, "getOLBoundsFromGLatLngBounds(null) returns null");
     }
 
     function test_99_Layer_destroy (t) {
