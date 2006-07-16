@@ -8,31 +8,49 @@
             border: 1px solid black;
         }
     </style>
+
+
+    <script src='http://dev.virtualearth.net/mapcontrol/v3/mapcontrol.js'></script>
+
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         <!--
-        var map, layer, velayer;
+ 
+        var lon = 5;
+        var lat = 40;
+        var zoom = 5;
+        var map, velayer, layer;
 
         function init(){
-            map = new OpenLayers.Map('map');
-
-            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-                "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
-            map.addLayer(layer);
-
+            map = new OpenLayers.Map( $('map') );
 
             velayer = new OpenLayers.Layer.VirtualEarth( "VE"); 
-
             map.addLayer(velayer);
+            
+            markers = new OpenLayers.Layer.Markers("markers");
+            map.addLayer(markers);
 
-            map.setCenter(new OpenLayers.LonLat(-5, 40), 4);
-            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.setCenter(new OpenLayers.LonLat(lon, lat), 2);
+            map.addControl( new OpenLayers.Control.LayerSwitcher() );
         }
-        // -->
+        
+        function add() {
+            
+            var icon = new OpenLayers.Icon('http://boston.openguides.org/markers/AQUA.png',new OpenLayers.Size(10,17));
+            marker = new OpenLayers.Marker(new OpenLayers.LonLat(2, 41), icon);
+            markers.addMarker(marker);
+        }
+
+        function remove() {
+            markers.removeMarker(marker);
+        }
+  // -->
     </script>
   </head>
   <body onload="init()">
-    <h1>OpenLayers Example</h1>
+    <h1>OpenLayers VE Example</h1>
     <div id="map"></div>
+    <div style="background-color:green" onclick="add()"> click to add the marker to the map</div>
+    <div style="background-color:red" onclick="remove()"> click to remove the marker from the map</div>
   </body>
 </html>
