@@ -133,17 +133,22 @@
     function test_07_Layer_WMS_getFullRequestString (t) {
 
         
-        t.plan( 1 );
+        t.plan( 2 );
 
         var map = new OpenLayers.Map('map');
         map.projection = "xx";
         tUrl = "http://octo.metacarta.com/cgi-bin/mapserv";
         tParams = { layers: 'basic', 
                    format: 'image/png'};
-        var tLayer = new OpenLayers.Layer.WMS(name, tUrl, tParams, null);
+        var tLayer = new OpenLayers.Layer.WMS(name, tUrl, tParams);
         map.addLayer(tLayer);
         str = tLayer.getFullRequestString();
         t.eq(str, "http://octo.metacarta.com/cgi-bin/mapserv?LAYERS=basic&FORMAT=image/png&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&SRS=xx", "getFullRequestString() adds SRS value");
+ 
+        tLayer.projection = "none";
+        str = tLayer.getFullRequestString();
+        t.eq(str, "http://octo.metacarta.com/cgi-bin/mapserv?LAYERS=basic&FORMAT=image/png&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage", "getFullRequestString() by default does *not* add SRS value if projection is 'none'");
+ 
     }
     
     function test_99_Layer_WMS_destroy (t) {

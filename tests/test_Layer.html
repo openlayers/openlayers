@@ -5,15 +5,16 @@
     var layer; 
 
     function test_01_Layer_constructor (t) {
-        t.plan( 10 );
+        t.plan( 12 );
         
-        var options = { chicken: 151, foo: "bar" };
+        var options = { chicken: 151, foo: "bar", projection: "none" };
         var layer = new OpenLayers.Layer('Test Layer', options);
         
         t.ok( layer instanceof OpenLayers.Layer, "new OpenLayers.Layer returns object" );
         t.eq( layer.CLASS_NAME, "OpenLayers.Layer", "CLASS_NAME variable set correctly");
 
         t.eq( layer.name, "Test Layer", "layer.name is correct" );
+        t.ok( layer.projection, "none", "default layer projection correctly set");
         t.ok( ((layer.chicken == 151) && (layer.foo == "bar")), "layer.options correctly set to Layer Object" );
         t.ok( ((layer.options["chicken"] == 151) && (layer.options["foo"] == "bar")), "layer.options correctly backed up" );
 
@@ -26,6 +27,7 @@
         layer = new OpenLayers.Layer('Test Layer');
         t.ok( layer instanceof OpenLayers.Layer, "new OpenLayers.Layer returns object" );
         t.eq( layer.name, "Test Layer", "layer.name is correct" );
+        t.ok( layer.projection == null, "default layer projection correctly set");
         t.ok( layer.options instanceof Object, "layer.options correctly initialized as a non-null Object" );
     }
 
