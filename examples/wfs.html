@@ -22,7 +22,7 @@
             layer = new OpenLayers.Layer.WFS( "Owl Survey",
                 "http://www.bsc-eoc.org/cgi-bin/bsc_ows.asp?",
                 {typename: "OWLS", maxfeatures: 10},
-                OpenLayers.Feature.WFS );
+                { featureClass: OpenLayers.Feature.WFS});
             map.addLayer(layer);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.setCenter(new OpenLayers.LonLat(-100, 60), 3);
