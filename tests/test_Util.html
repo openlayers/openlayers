@@ -393,6 +393,15 @@
         t.eq(uObj[bKey.toUpperCase()], bValue, "new uppercase value present");
     }
     
+    function test_10_Util_createUniqueID(t) {
+        t.plan(2);
+        
+        var id = OpenLayers.Util.createUniqueID();
+        t.ok( id.startsWith("id_"), "default OpenLayers.Util.createUniqueID starts id correctly");
+
+        var id = OpenLayers.Util.createUniqueID("chicken");
+        t.ok( id.startsWith("chicken"), "OpenLayers.Util.createUniqueID starts id correctly");
+    }
   // -->
   </script>
 </head>
