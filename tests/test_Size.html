@@ -19,12 +19,12 @@
         t.eq( size.toString(), "w=5,h=6", "size.toString() returns correctly");
     }
 
-    function test_03_Size_copyOf(t) {
+    function test_03_Size_clone(t) {
         t.plan( 4 );
 
         oldSize = new OpenLayers.Size(5,6);
-        size = oldSize.copyOf();
-        t.ok( size instanceof OpenLayers.Size, "copyOf returns new OpenLayers.Size object" );
+        size = oldSize.clone();
+        t.ok( size instanceof OpenLayers.Size, "clone returns new OpenLayers.Size object" );
         t.eq( size.w, 5, "Size.w is set correctly");
         t.eq( size.h, 6, "Size.h is set correctly");
         

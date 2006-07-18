@@ -43,8 +43,8 @@
         array.remove(3);
         t.eq( array.toString(), "0,1,2,4,5,6", "array.remove works");    
 
-        copy = array.copyOf();
-        t.eq( copy.toString(), "0,1,2,4,5,6", "array.copyOf() works");    
+        copy = array.clone();
+        t.eq( copy.toString(), "0,1,2,4,5,6", "array.clone() works");    
         array.append(7);
         t.eq( copy.toString(), "0,1,2,4,5,6", "changing a value in the copied array doesnt affect the new array");    
 

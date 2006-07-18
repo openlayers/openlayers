@@ -75,11 +75,11 @@
          t.ok( bounds.getSize().equals(new OpenLayers.Size(100, 110)), "getCenterPixel() works correctly");
      }
      
-     function test_07_Bounds_copyOf(t) {
+     function test_07_Bounds_clone(t) {
         t.plan( 6 );
         var oldBounds = new OpenLayers.Bounds(1,2,3,4);
-        var bounds = oldBounds.copyOf();
-        t.ok( bounds instanceof OpenLayers.Bounds, "copyOf returns new OpenLayers.Bounds object" );
+        var bounds = oldBounds.clone();
+        t.ok( bounds instanceof OpenLayers.Bounds, "clone returns new OpenLayers.Bounds object" );
         t.eq( bounds.left, 1, "bounds.left is set correctly" );
         t.eq( bounds.bottom, 2, "bounds.bottom is set correctly" );
         t.eq( bounds.right, 3, "bounds.right is set correctly" );

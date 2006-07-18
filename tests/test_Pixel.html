@@ -19,11 +19,11 @@
         t.eq( pixel.toString(), "x=5,y=6", "pixel.toString() returns correctly");
     }
 
-    function test_03_Pixel_copyOf(t) {
+    function test_03_Pixel_clone(t) {
         t.plan( 4 );
         oldPixel = new OpenLayers.Pixel(5,6);
-        pixel = oldPixel.copyOf();
-        t.ok( pixel instanceof OpenLayers.Pixel, "copyOf returns new OpenLayers.Pixel object" );
+        pixel = oldPixel.clone();
+        t.ok( pixel instanceof OpenLayers.Pixel, "clone returns new OpenLayers.Pixel object" );
         t.eq( pixel.x, 5, "pixel.x is set correctly");
         t.eq( pixel.y, 6, "pixel.y is set correctly");
         

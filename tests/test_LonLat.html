@@ -26,11 +26,11 @@
         t.eq( lonlat.toShortString(), "5, 6", "lonlat.toShortString() returns correctly");
     }
 
-    function test_03_LonLat_copyOf(t) {
+    function test_03_LonLat_clone(t) {
         t.plan( 4 );
         oldLonLat = new OpenLayers.LonLat(5,6);
-        lonlat = oldLonLat.copyOf();
-        t.ok( lonlat instanceof OpenLayers.LonLat, "copyOf returns new OpenLayers.LonLat object" );
+        lonlat = oldLonLat.clone();
+        t.ok( lonlat instanceof OpenLayers.LonLat, "clone returns new OpenLayers.LonLat object" );
         t.eq( lonlat.lon, 5, "lonlat.lon is set correctly");
         t.eq( lonlat.lat, 6, "lonlat.lat is set correctly");
         
