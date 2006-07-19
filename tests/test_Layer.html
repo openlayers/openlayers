@@ -5,7 +5,7 @@
     var layer; 
 
     function test_01_Layer_constructor (t) {
-        t.plan( 12 );
+        t.plan( 14 );
         
         var options = { chicken: 151, foo: "bar", projection: "none" };
         var layer = new OpenLayers.Layer('Test Layer', options);
@@ -14,6 +14,8 @@
         t.eq( layer.CLASS_NAME, "OpenLayers.Layer", "CLASS_NAME variable set correctly");
 
         t.eq( layer.name, "Test Layer", "layer.name is correct" );
+        t.ok( layer.id != null, "Layer is given an id");
+        t.ok( layer.id.startsWith(layer.name), "layer id starts with layer name");
         t.ok( layer.projection, "none", "default layer projection correctly set");
         t.ok( ((layer.chicken == 151) && (layer.foo == "bar")), "layer.options correctly set to Layer Object" );
         t.ok( ((layer.options["chicken"] == 151) && (layer.options["foo"] == "bar")), "layer.options correctly backed up" );
