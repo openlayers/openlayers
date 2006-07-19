@@ -205,6 +205,24 @@
         t.ok( !map.isValidLonLat(new OpenLayers.LonLat(10, 10)), "lonlat outside max extent is not valid" );
     }
 
+    function test_10_Map_getLayer(t) {
+        t.plan( 2 );    
+        map = new OpenLayers.Map($('map'));
+        layer = new OpenLayers.Layer.WMS('Test Layer', 
+                    "http://octo.metacarta.com/cgi-bin/mapserv", 
+                    {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'}, 
+                    {maxExtent: new OpenLayers.Bounds(33861, 717605, 330846, 1019656), maxResolution: 296985/1024, projection:"EPSG:2805" } );
+
+        map.addLayer(layer);
+        var gotLayer = map.getLayer(layer.id);
+
+        t.ok( layer == gotLayer, "getLayer correctly returns layer" );
+
+        gotLayer = map.getLayer("chicken");
+
+        t.ok( gotLayer == null, "getLayer correctly returns null when layer not found");
+    }
+
     function test_99_Map_destroy (t) {
         t.plan( 2 );    
         map = new OpenLayers.Map($('map'));
