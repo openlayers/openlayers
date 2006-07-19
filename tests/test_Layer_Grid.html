@@ -173,6 +173,31 @@
     }
 
 
+    function test_11_Layer_Grid_getTile(t) {
+
+        t.plan(2);
+        
+        var options = {tileSize: new OpenLayers.Size(500,50)};
+        var map = new OpenLayers.Map('map', options);
+
+   //test with tile creation
+        layer = new OpenLayers.Layer.WMS(name, url, params);
+        map.addLayer(layer);
+
+        map.setCenter(new OpenLayers.LonLat(0,0), 5);
+
+        //grab a reference to one of the tiles
+        var tile = layer.grid[0][0];        
+        
+        var gotTile = layer.getTile(tile.id); 
+        
+        t.ok( gotTile == tile, "got right tile");
+        
+        gotTile = layer.getTile("chicken"); 
+        t.ok( gotTile == null, "getTile() of bogus id returns null");
+    }
+
+
     function test_99_Layer_Grid_destroy (t) {
 
         t.plan( 4 );
