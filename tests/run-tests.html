@@ -36,7 +36,6 @@ body { height: 98%; font: normal normal 10pt sans-serif }
 #run_buttons { margin-bottom: 4em; }
 
 #right_header { padding-top: 0.8em; }
-#clear_btn { position: absolute; left: 12em; top: 0.1em }
 #results_count { float: left; }
 .active_tab 			{ float: right; padding: 0 1em 0.2em 1em; background: #0af; border: 1px solid #048; border-bottom: none; cursor: pointer; cursor: hand;
 					 position: relative; top: -0.2em; }
@@ -2290,6 +2289,7 @@ onload=function()
 <table id="testtable">
 </table>
 <div id="run_buttons">
+<input type="button" value=" clear " id="clear_btn" />
 <input type="button" value=" run all " id="run_all" />
 <input type="button" value=" run selected " id="run_selected" />
 <input type="button" value=" unselect all " id="unselect_all" />
@@ -2308,7 +2308,6 @@ onload=function()
 <div id="col2">
 <div id="right_header">
 <span id="results_count">Results: <span id="total"></span></span>
-<input type="button" value=" clear " id="clear_btn" />
 <span id="results_tab" class="active_tab" style="visibility:hidden">Results</span>
 <span id="debug_tab" class="inactive_tab" style="visibility:hidden">Debug</span>
 </div>
