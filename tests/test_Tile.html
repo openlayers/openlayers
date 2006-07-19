@@ -5,7 +5,7 @@
     var tile; 
     
     function test_01_Tile_constructor (t) {
-        t.plan( 6 );
+        t.plan( 8 );
         
         var layer = new Object(); // bogus layer
         var position = new OpenLayers.Pixel(10,20);
@@ -21,6 +21,9 @@
         t.ok( tile.bounds.equals(bounds), "tile.bounds set correctly");
         t.eq( tile.url, url, "tile.url set correctly");        
         t.ok( tile.size.equals(size), "tile.size is set correctly" );
+
+        t.ok( tile.id != null, "tile is given an id");
+        t.ok( tile.id.startsWith(bounds.toBBOX()), "tile's id starts with bbox of bounds");
     }
 
 
