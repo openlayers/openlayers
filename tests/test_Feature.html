@@ -10,7 +10,6 @@
         t.plan( 6 );
 
         var layer = new Object();
-        var id = "myfeature";
         var lonlat = new OpenLayers.LonLat(2,1);
         var iconURL = 'http://boston.openguides.org/features/ORANGE.png';
         var iconSize = new OpenLayers.Size(12, 17);
@@ -18,11 +17,11 @@
                       iconSize: iconSize 
                     };
         
-        feature = new OpenLayers.Feature(layer, lonlat, data, id);
+        feature = new OpenLayers.Feature(layer, lonlat, data);
 
         t.ok( feature instanceof OpenLayers.Feature, "new OpenLayers.Feature returns Feature object" );
         t.eq( feature.layer, layer, "feature.layer set correctly" );
-        t.eq( feature.id, id, "feature.id set correctly" );
+        t.ok( feature.id.startsWith("Feature_"), "feature.id set correctly" );
         t.ok( feature.lonlat.equals(lonlat), "feature.lonlat set correctly" );
         t.eq( feature.data.iconURL, iconURL, "feature.data.iconURL set correctly" );
         t.ok( feature.data.iconSize.equals(iconSize), "feature.data.iconSize set correctly" );
