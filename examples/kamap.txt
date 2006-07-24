@@ -1,4 +1,16 @@
 <?php
+/*
+
+This is a PHP file to be used as a backend for a ka-Map layer. It requires
+PHP with Mapscript and libgd modules installed. The top of the file
+is a configuration section: please edit the variables in this configuration
+section to meet your needs, then rename this file to tile.php or something
+similar and put it in a web accessible directory. More information
+on the OpenLayers ka-Map layer is available from:
+
+  http://trac.openlayers.org/wiki/OpenLayers.Layer.KaMap
+
+*/
 /**********************************************************************
  *
  * $Id: tile.php,v 1.33 2006/02/07 03:19:55 pspencer Exp $
@@ -12,9 +24,7 @@
  *
  * modifications by Daniel Morissette (dmorissette@dmsolutions.ca)
  *
- * TODO:
- *
- *   - remove debugging stuff (not really needed now)
+ * Modified by Christopher Schmidt for OpenLayers redistribution.
  * 
  **********************************************************************
  *
@@ -40,28 +50,6 @@
  *
  **********************************************************************/
  
- /*
- * the tile renderer accepts several parameters and returns a tile image from
- * the cache, creating the tile only if necessary.
- *
- * all requests include the pixel location of the request at a certain scale
- * and this script figures out the geographic location of the tile from the
- * scale assuming that 0,0 in pixels is 0,0 in geographic units
- * 
- * Request parameters are:
- *
- * map: the name of the map to use.  This is handled by config.php.
- * 
- * t: top pixel position
- * l: left pixel position
- * s: scale
- * g: (optional) comma-delimited list of group names to draw
- * layers: (optional) comma-delimited list of layers to draw
- * force: optional.  If set, force redraw of the meta tile.  This was added to
- *        help with invalid images sometimes being generated.
- * tileid: (optional) can be used instead of t+l to specify the tile coord.,
- *         useful in regenerating the cache
- */
 
 /****************************************************************************** 
  * basic system configuration
@@ -99,7 +87,7 @@ $szPHPGDModule = 'php_gd.'.PHP_SHLIB_SUFFIX;
  * server, ultimately reducing performance.
  */
 $tileWidth = 256;
-$tileHeight =256;
+$tileHeight = 256;
 $metaWidth = 5;
 $metaHeight = 5;
 /* $metaBuffer = Buffer size in pixels to add around metatiles to avoid 
@@ -275,6 +263,28 @@ if (!@is_dir($szMapCacheDir))
 /* get the various request parameters 
  * also need to make sure inputs are clean, especially those used to
  * build paths and filenames
+ */
+ /*
+ * the tile renderer accepts several parameters and returns a tile image from
+ * the cache, creating the tile only if necessary.
+ *
+ * all requests include the pixel location of the request at a certain scale
+ * and this script figures out the geographic location of the tile from the
+ * scale assuming that 0,0 in pixels is 0,0 in geographic units
+ * 
+ * Request parameters are:
+ *
+ * map: the name of the map to use.  This is handled by config.php.
+ * 
+ * t: top pixel position
+ * l: left pixel position
+ * s: scale
+ * g: (optional) comma-delimited list of group names to draw
+ * layers: (optional) comma-delimited list of layers to draw
+ * force: optional.  If set, force redraw of the meta tile.  This was added to
+ *        help with invalid images sometimes being generated.
+ * tileid: (optional) can be used instead of t+l to specify the tile coord.,
+ *         useful in regenerating the cache
  */
 
 $top = isset( $_REQUEST['t'] ) ? intval($_REQUEST['t']) : 0;
