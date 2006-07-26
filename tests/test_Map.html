@@ -80,14 +80,14 @@
         map.zoomOut();
         t.eq( map.getZoom(), 0, "map.zoom is correct after calling setCenter,zoom in, zoom out");
 
-	map.zoomTo(5);
-	t.eq( map.getZoom(), 5, "map.zoom is correct after calling zoomTo" );
+    map.zoomTo(5);
+    t.eq( map.getZoom(), 5, "map.zoom is correct after calling zoomTo" );
 /**
-	map.zoomToMaxExtent();
-	t.eq( map.getZoom(), 2, "map.zoom is correct after calling zoomToFullExtent" );
-	var lonlat = map.getCenter();
-	var zero = new OpenLayers.LonLat(0, 0);
-	t.ok( lonlat.equals(zero), "map center is correct after calling zoomToFullExtent" );
+    map.zoomToMaxExtent();
+    t.eq( map.getZoom(), 2, "map.zoom is correct after calling zoomToFullExtent" );
+    var lonlat = map.getCenter();
+    var zero = new OpenLayers.LonLat(0, 0);
+    t.ok( lonlat.equals(zero), "map center is correct after calling zoomToFullExtent" );
 
     */
     }
