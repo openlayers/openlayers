@@ -24,7 +24,7 @@
         
         t.eq( layer.options["chicken"], 151 , "layer.options correctly made fresh copy" );
         
-        t.eq( layer.isBaseLayer(), false, "Default layer is not base layer" );
+        t.eq( layer.isBaseLayer, false, "Default layer is not base layer" );
 
         layer = new OpenLayers.Layer('Test Layer');
         t.ok( layer instanceof OpenLayers.Layer, "new OpenLayers.Layer returns object" );

@@ -32,6 +32,7 @@ body { height: 98%; font: normal normal 10pt sans-serif }
 #col1 {  float: left; width: 27em; margin: 0 0 0 1em; overflow: visible; }
 #col2 {  position: relative; height: 98%; margin: 0 0.5em 0 27em; }
 #col1_header { margin-top: 0.5em; }
+#scroller { height: 550px; overflow: auto;}
 #testtable { margin: 0 0 2em 0; width: 97%; }
 #run_buttons { margin-bottom: 4em; }
 
@@ -2286,8 +2287,10 @@ onload=function()
 
 <div id="col1">
 <div id="col1_header">Test pages:</div>
+<div id="scroller">
 <table id="testtable">
 </table>
+</div>
 <div id="run_buttons">
 <input type="button" value=" clear " id="clear_btn" />
 <input type="button" value=" run all " id="run_all" />

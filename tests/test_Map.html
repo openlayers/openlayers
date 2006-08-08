@@ -223,6 +223,37 @@
         t.ok( gotLayer == null, "getLayer correctly returns null when layer not found");
     }
 
+    function test_10_Map_setBaseLayer(t) {
+        t.plan( 4 );
+        
+        map = new OpenLayers.Map($('map'));
+
+        var wmslayer = new OpenLayers.Layer.WMS('Test Layer', 
+                    "http://octo.metacarta.com/cgi-bin/mapserv", 
+                    {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'}, 
+                    {maxExtent: new OpenLayers.Bounds(33861, 717605, 330846, 1019656), maxResolution: 296985/1024, projection:"EPSG:2805" } );
+
+        var wmslayer2 = new OpenLayers.Layer.WMS('Test Layer2', 
+                    "http://octo.metacarta.com/cgi-bin/mapserv", 
+                    {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'}, 
+                    {maxExtent: new OpenLayers.Bounds(33861, 717605, 330846, 1019656), maxResolution: 296985/1024, projection:"EPSG:2805" } );
+
+        map.addLayers([wmslayer, wmslayer2]);
+
+        t.ok(map.baseLayer == wmslayer, "default base layer is first one added");
+        
+        map.setBaseLayer(null);
+        t.ok(map.baseLayer == wmslayer, "setBaseLayer on null object does nothing (and does not break)");
+        
+        map.setBaseLayer("chicken");
+        t.ok(map.baseLayer == wmslayer, "setBaseLayer on non-layer object does nothing (and does not break)");
+        
+        map.setBaseLayer(wmslayer2);
+        t.ok(map.baseLayer == wmslayer2, "setbaselayer correctly sets 'baseLayer' property");
+
+    }
+    
+    
     function test_99_Map_destroy (t) {
         t.plan( 2 );    
         map = new OpenLayers.Map($('map'));

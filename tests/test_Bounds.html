@@ -4,7 +4,7 @@
   <script type="text/javascript"><!--
     var bounds; 
     function test_01_Bounds_constructor (t) {
-        t.plan( 14 );
+        t.plan( 12 );
         bounds = new OpenLayers.Bounds(0,2,10,4);
         t.ok( bounds instanceof OpenLayers.Bounds, "new OpenLayers.Bounds returns Bounds object" );
         t.eq( bounds.CLASS_NAME, "OpenLayers.Bounds", "bounds.CLASS_NAME is set correctly" );
@@ -19,14 +19,13 @@
         t.eq( sz.w, 10, "bounds.getSize() has correct width value" );
         t.eq( sz.h, 2, "bounds.getSize() has correct height value" );
     
-        var center = bounds.getCenterPixel();
-        t.eq( center.x, 5, "bounds.getCenterPixel() has correct x value" );
-        t.eq( center.y, 3, "bounds.getCenterPixel() has correct y value" );
+        var center = new OpenLayers.Pixel(5,3);
+        var boundsCenter = bounds.getCenterPixel();
+        t.ok( boundsCenter.equals(center), "bounds.getCenterLonLat() has correct value" );
 
-        var center = bounds.getCenterLonLat();
-        t.eq( center.lon, 5, "bounds.getCenterLonLat() has correct lon value" );
-        t.eq( center.lat, 3, "bounds.getCenterLonLat() has correct lat value" );
-
+        var center = new OpenLayers.LonLat(5,3);
+        var boundsCenter = bounds.getCenterLonLat();
+        t.ok( boundsCenter.equals(center), "bounds.getCenterLonLat() has correct value" );
      }
 
      function test_02_Bounds_toBBOX(t) {

@@ -23,17 +23,11 @@
     }
 
     function test_02_Layer_Google_isBaseLayer (t) {
-        t.plan(2);
+        t.plan(1);
         
-        var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.Google('Goog Layer');
-        map.addLayer(layer);
 
-        t.ok(layer.isBaseLayer(), "a default load of google layer responds as a base layer");
-        
-        layer.gmap = null;
-
-        t.ok(!layer.isBaseLayer(), "a bad load of google layer does not respond as a base layer");
+        t.ok(layer.isBaseLayer, "a default load of google layer responds as a base layer");
     }    
 
     function test_03_Layer_Google_Translation_zoom (t) {
@@ -48,7 +42,7 @@
      //  the code afterwards works by itself to test that translation
      //  works correctly both ways.
         var gZoom = 5;
-        var correspondingOLZoom = 4;
+        var correspondingOLZoom = 5;
 
 
         olZoom = layer.getOLZoomFromGZoom(gZoom);

@@ -22,7 +22,7 @@
 
         function init(){
             map = new OpenLayers.Map( $('map') );
-            gmap = new OpenLayers.Layer.Google( "Google" );
+            gmap = new OpenLayers.Layer.Google( "Google" , {type: G_HYBRID_MAP });
             map.addLayer(gmap);
 
             markers = new OpenLayers.Layer.Markers("markers");
@@ -30,6 +30,7 @@
 
             map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
             map.addControl( new OpenLayers.Control.LayerSwitcher() );
+
         }
         
         function add() {
@@ -41,7 +42,7 @@
         function remove() {
             markers.removeMarker(marker);
         }
-        
+                
     // -->
 
     </script>
@@ -49,7 +50,6 @@
   <body onload="init()">
     <h1>OpenLayers With Google Layer Example</h1>
     <div id="map"></div>
-    <div style="background-color:green" onclick="add()"> click to add the marker to the map</div>
     <div style="background-color:red" onclick="remove()"> click to remove the marker from the map</div>
   </body>
 </html>

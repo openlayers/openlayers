@@ -43,11 +43,6 @@
 
         map.setCenter(new OpenLayers.LonLat(0,0));
 
-        layer = new OpenLayers.Layer.KaMap(name, url, params, units);
-        map.addLayer(layer);
-
-        map.setCenter(new OpenLayers.LonLat(0,0), 5);
-
         //grab a reference to one of the tiles
         var tile = layer.grid[0][0];        
 

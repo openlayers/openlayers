@@ -99,16 +99,12 @@
 
     function test_05_Layer_WMS_isBaseLayer(t) {
 
-        t.plan(2);
+        t.plan(1);
         
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
         layer = new OpenLayers.Layer.WMS(name, url, params);
 
-        t.ok( layer.isBaseLayer(), "baselayer is true when no transparent set");
-
-        layer.params.TRANSPARENT = "true";
-
-        t.ok( !layer.isBaseLayer(), "baselayer is false when transparent set");
+        t.ok( layer.isBaseLayer, "baselayer is true by default");
     }
 
     function test_06_Layer_WMS_mergeNewParams (t) {
