@@ -1,0 +1,17 @@
+<html>
+<head>
+<script src="../lib/OpenLayers.js"></script>
+</head>
+<body>
+  <div style="width:100%; height:100%" id="map"></div>
+  <script defer="defer" type="text/javascript">
+    var map = new OpenLayers.Map('map');
+    var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+        "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+    map.addLayer(wms);
+    map.setCenter(new OpenLayers.LonLat(1,1), 1);
+    map.setCenter(new OpenLayers.LonLat(1,1), 1);
+  </script>
+</body>
+</html>
+
