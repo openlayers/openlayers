@@ -20,13 +20,12 @@
     }
 
     function test_03_Size_clone(t) {
-        t.plan( 4 );
+        t.plan( 3 );
 
         oldSize = new OpenLayers.Size(5,6);
         size = oldSize.clone();
         t.ok( size instanceof OpenLayers.Size, "clone returns new OpenLayers.Size object" );
-        t.eq( size.w, 5, "Size.w is set correctly");
-        t.eq( size.h, 6, "Size.h is set correctly");
+        t.ok( size.equals(oldSize), "new size is equal to old size correctly");
         
         oldSize.w = 100;
         t.eq( size.w, 5, "changing oldSize.w doesn't change size.w");

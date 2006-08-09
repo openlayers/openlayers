@@ -5,14 +5,15 @@
     var popup; 
     
     function test_01_Popup_default_constructor(t) {
-        t.plan( 9 );
+        t.plan( 8 );
 
+        var size = new OpenLayers.Size(OpenLayers.Popup.WIDTH,
+                                       OpenLayers.Popup.HEIGHT);
         popup = new OpenLayers.Popup();
 
         t.ok( popup instanceof OpenLayers.Popup, "new OpenLayers.Popup returns Popup object" );
         t.ok(popup.id.startsWith("Popup"), "good default popup.id");
-        t.eq(popup.size.w, OpenLayers.Popup.WIDTH, "good default popup.size.w");
-        t.eq(popup.size.h, OpenLayers.Popup.HEIGHT, "good default popup.size.h");
+        t.ok(popup.size.equals(size), "good default popup.size");
         t.eq(popup.contentHTML, "", "good default popup.contentHTML");
         t.eq(popup.backgroundColor, OpenLayers.Popup.COLOR, "good default popup.backgroundColor");
         t.eq(popup.opacity, OpenLayers.Popup.OPACITY, "good default popup.opacity");
@@ -28,26 +29,26 @@
     }
     
     function test_02_Popup_constructor (t) {
-        t.plan( 7 );
+        t.plan( 5 );
 
         var id = "chicken";
         var w = 500;
         var h = 400;
+        var sz = new OpenLayers.Size(w,h);
         var lon = 5;
         var lat = 40;
+        var ll = new OpenLayers.LonLat(lon, lat);
         var content = "foo";
 
         popup = new OpenLayers.Popup(id,
-                                     new OpenLayers.LonLat(lon, lat),
-                                     new OpenLayers.Size(w, h),
+                                     ll,
+                                     sz,
                                      content);
 
         t.ok( popup instanceof OpenLayers.Popup, "new OpenLayers.Popup returns Popup object" );
         t.eq(popup.id, id, "popup.id set correctly");
-        t.eq(popup.lonlat.lon, lon, "lon of popup.lonlat set correctly");
-        t.eq(popup.lonlat.lat, lat, "lat of popup.lonlat set correctly");
-        t.eq(popup.size.w, w, "width of popup.size set correctly");
-        t.eq(popup.size.h, h, "height of popup.size set correctly");
+        t.ok(popup.lonlat.equals(ll), "popup.lonlat set correctly");
+        t.ok(popup.size.equals(sz), "popup.size set correctly");
         t.eq(popup.contentHTML, content, "contentHTML porpoerty of set correctly");
     }
 

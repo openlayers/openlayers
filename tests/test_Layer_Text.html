@@ -6,7 +6,7 @@
     var layer; 
 
     function test_01_Layer_Text_constructor (t) {
-        t.plan( 6 );
+        t.plan( 5 );
         
         layer = new OpenLayers.Layer.Text('Test Layer', { location: 'data_Layer_Text_textfile.txt'});
         t.ok( layer instanceof OpenLayers.Layer.Text, "new OpenLayers.Layer.Text returns object" );
@@ -14,8 +14,8 @@
         var markers;
         t.delay_call( 1, function() {  
             t.eq( layer.markers.length, 2, "marker length is correct" );
-            t.eq( layer.markers[0].lonlat.lat, 10, "latitude on first marker is correct" );
-            t.eq( layer.markers[0].lonlat.lon, 20, "latitude on first marker is correct" );
+            var ll = new OpenLayers.LonLat(20, 10);
+            t.ok( layer.markers[0].lonlat.equals(ll), "first marker is correct" );
             t.eq( layer.markers[0].icon.url, 'http://boston.openguides.org/markers/ORANGE.png', "icon" );
         } );
     }

@@ -4,7 +4,7 @@
   <script type="text/javascript"><!--
     var bounds; 
     function test_01_Bounds_constructor (t) {
-        t.plan( 12 );
+        t.plan( 11 );
         bounds = new OpenLayers.Bounds(0,2,10,4);
         t.ok( bounds instanceof OpenLayers.Bounds, "new OpenLayers.Bounds returns Bounds object" );
         t.eq( bounds.CLASS_NAME, "OpenLayers.Bounds", "bounds.CLASS_NAME is set correctly" );
@@ -16,8 +16,8 @@
         t.eq( bounds.getHeight(), 2, "bounds.getHeight() returns correct value" );
         
         var sz = bounds.getSize();
-        t.eq( sz.w, 10, "bounds.getSize() has correct width value" );
-        t.eq( sz.h, 2, "bounds.getSize() has correct height value" );
+        var size = new OpenLayers.Size(10,2);
+        t.ok(sz.equals(size),"bounds.getSize() has correct value" );
     
         var center = new OpenLayers.Pixel(5,3);
         var boundsCenter = bounds.getCenterPixel();

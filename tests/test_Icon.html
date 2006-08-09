@@ -5,12 +5,12 @@
     var icon; 
     
     function test_01_Icon_constructor (t) {
-        t.plan( 5 );
-        icon = new OpenLayers.Icon("",new OpenLayers.Size(5,6));
+        t.plan( 4 );
+        var size = new OpenLayers.Size(5,6);
+        icon = new OpenLayers.Icon("", size);
         t.ok( icon instanceof OpenLayers.Icon, "new OpenLayers.Icon returns Icon object" );
         t.ok( icon.size instanceof OpenLayers.Size, "icon.size returns Size object" );
-        t.eq( icon.size.w, 5, "icon.size.w returns correct value" );
-        t.eq( icon.size.h, 6, "icon.size.w returns correct value" );
+        t.ok( icon.size.equals(size), "icon.size returns correct value" );
         t.eq( icon.url, "", "icon.url returns str object" );
     }
     function test_02_Icon_clone (t) {

@@ -30,17 +30,17 @@
         t.ok( map.getMaxZoomLevel() > 0, "map.maxZoomLevel is set" );
     }
     function test_02_Map_center(t) {
-        t.plan(4);
+        t.plan(3);
         map = new OpenLayers.Map($('map'));
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
             {map: "/mapdata/vmap_wms.map", layers: "basic"});
         map.addLayer(baseLayer);
-        map.setCenter(new OpenLayers.LonLat(2,1), 0);
+        var ll = new OpenLayers.LonLat(2,1);
+        map.setCenter(ll, 0);
         t.ok( map.getCenter() instanceof OpenLayers.LonLat, "map.getCenter returns a LonLat");
         t.eq( map.getZoom(), 0, "map.zoom is correct after calling setCenter");
-        t.eq( map.getCenter().lon, 2, "map center lon is correct after calling setCenter");
-        t.eq( map.getCenter().lat, 1, "map center lat is correct after calling setCenter");
+        t.ok( map.getCenter().equals(ll), "map center is correct after calling setCenter");
     }
     function test_03_Map_add_layers(t) {
         t.plan(5);
@@ -66,17 +66,17 @@
         t.eq( map.maxResolution, 3.14159, "map.maxResolution set correctly via options hash" );
     }
     function test_05_Map_center(t) {
-        t.plan(5);
+        t.plan(4);
         map = new OpenLayers.Map($('map'));
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
             {map: "/mapdata/vmap_wms.map", layers: "basic"} );
         map.addLayer(baseLayer);
-        map.setCenter(new OpenLayers.LonLat(2, 1), 0);
+        var ll = new OpenLayers.LonLat(2,1);
+        map.setCenter(ll, 0);
         map.zoomIn();
         t.eq( map.getZoom(), 1, "map.zoom is correct after calling setCenter,zoom in");
-        t.eq( map.getCenter().lon, 2, "map center lon is correct after calling setCenter, zoom in");
-        t.eq( map.getCenter().lat, 1, "map center lat is correct after calling setCenter,zoom in");
+        t.ok( map.getCenter().equals(ll), "map center is correct after calling setCenter, zoom in");
         map.zoomOut();
         t.eq( map.getZoom(), 0, "map.zoom is correct after calling setCenter,zoom in, zoom out");
 
