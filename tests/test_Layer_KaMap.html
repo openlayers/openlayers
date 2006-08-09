@@ -30,8 +30,8 @@
         layer = new OpenLayers.Layer.KaMap(name, url, params, units);
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,0),5);
-        t.eq( layer.grid.length, 5, "KaMap rows is correct." );
-        t.eq( layer.grid[0].length, 2, "KaMap cols is correct." );
+        t.eq( layer.grid.length, 6, "KaMap rows is correct." );
+        t.eq( layer.grid[0].length, 4, "KaMap cols is correct." );
         
     }
 
