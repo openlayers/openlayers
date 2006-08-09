@@ -66,8 +66,8 @@
         layer = new OpenLayers.Layer.WMS(name, url, params);
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,0),5);
-        t.eq( layer.grid.length, 4, "Grid rows is correct." );
-        t.eq( layer.grid[0].length, 2, "Grid cols is correct." );
+        t.eq( layer.grid.length, 7, "Grid rows is correct." );
+        t.eq( layer.grid[0].length, 6, "Grid cols is correct." );
         
     }
 
