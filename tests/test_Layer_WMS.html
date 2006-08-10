@@ -149,7 +149,7 @@
     
     function test_99_Layer_WMS_destroy (t) {
 
-        t.plan( 2 );
+        t.plan( 1 );
 
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS(name, url, params);
@@ -165,10 +165,6 @@
     // checks to make sure superclass (grid) destroy() was called    
         
         t.ok( layer.grid == null, "grid set to null");
-
-        t.ok( (tile.layer == null) &&
-              (tile.bounds == null) &&
-              (tile.size == null), "tiles appropriately destroyed")
     }
   // -->
   </script>

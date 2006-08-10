@@ -42,7 +42,7 @@
     }
 
     function test_03_Layer_Grid_clearTiles (t) {
-        t.plan( 2 );
+        t.plan(1);
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS(name, url, params);
         map.addLayer(layer);
@@ -56,9 +56,6 @@
         layer.clearGrid();
 
         t.ok( layer.grid != null, "layer.grid does not get nullified" );
-        t.ok( (tile.layer == null) &&
-              (tile.bounds == null) &&
-              (tile.size == null), "tiles appropriately destroyed")
     }
 
 
@@ -218,9 +215,7 @@
 
         layer.destroy();
 
-        t.ok( (tile.layer == null) &&
-              (tile.bounds == null) &&
-              (tile.size == null), "tiles appropriately destroyed")
+        t.ok( layer.grid == null, "tiles appropriately destroyed")
     }
     
        // -->

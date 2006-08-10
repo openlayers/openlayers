@@ -43,7 +43,7 @@
         t.ok( map.getCenter().equals(ll), "map center is correct after calling setCenter");
     }
     function test_03_Map_add_layers(t) {
-        t.plan(5);
+        t.plan(6);
         map = new OpenLayers.Map($('map'));
         var layer1 = new OpenLayers.Layer.WMS("Layer 1", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
@@ -56,8 +56,10 @@
         t.ok( map.layers[0] === layer1, "1st layer is layer1" );
         t.ok( map.layers[1] === layer2, "2nd layer is layer2" );
         t.ok( layer1.map === map, "layer.map is map" ); 
-        t.eq( parseInt(layer1.div.style.zIndex), map.Z_INDEX_BASE['Layer'], 
+        t.eq( parseInt(layer1.div.style.zIndex), map.Z_INDEX_BASE['BaseLayer'], 
                 "layer1 zIndex is set" );
+        t.eq( parseInt(layer2.div.style.zIndex), map.Z_INDEX_BASE['BaseLayer'] + 5, 
+                "layer2 zIndex is set" );
     }
     function test_04_Map_options(t) {
         t.plan(2);
