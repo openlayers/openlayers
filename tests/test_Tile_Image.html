@@ -8,7 +8,9 @@
     function test_01_Tile_Image_constructor (t) {
         t.plan( 6 );
         
-        var layer = new Object(); //bogus layer
+        var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+            "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
+
         var position = new OpenLayers.Pixel(20,30);
         var bounds = new OpenLayers.Bounds(1,2,3,4);
         var url = "http://www.openlayers.org/dev/tests/tileimage";
@@ -16,7 +18,7 @@
         tile = new OpenLayers.Tile.Image(layer, position, bounds, url, size);
         
         t.ok( tile instanceof OpenLayers.Tile.Image, "new OpenLayers.Tile returns Tile object" );
-        t.eq( tile.layer, layer, "tile.layer is set correctly");
+        t.ok( tile.layer == layer, "tile.layer is set correctly");
         t.ok( tile.position.equals(position), "tile.position is set correctly");
         t.ok( tile.bounds.equals(bounds), "tile.bounds is set correctly");
         t.eq( tile.url, url, "tile.url is set correctly");
