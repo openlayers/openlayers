@@ -14,7 +14,7 @@
             var map = new OpenLayers.Map('map');
 
             var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'} );
+                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
 
             var jpl_wms = new OpenLayers.Layer.WMS( "NASA Global Mosaic",
                 "http://wms.jpl.nasa.gov/wms.cgi", 
@@ -25,9 +25,6 @@
                 {layers: "bathymetry,land_fn,park,drain_fn,drainage," +
                          "prov_bound,fedlimit,rail,road,popplace",
                  transparent: "true", format: "image/png" });
-
-            jpl_wms.setVisibility(false);
-            dm_wms.setVisibility(false);
 
             map.addLayers([ol_wms, jpl_wms, dm_wms]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
