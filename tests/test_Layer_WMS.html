@@ -56,8 +56,7 @@
         else
             t.ok( firstChild instanceof HTMLElement, "div first child is an image object" );
         t.eq( firstChild.src, "http://octo.metacarta.com/cgi-bin/mapserv?MAP=/mapdata/vmap_wms.map&LAYERS=basic&FORMAT=image/png&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&SRS=EPSG:4326&BBOX=1,2,3,4&WIDTH=256&HEIGHT=256", "div first child is correct image object" );
-        var pos = tile.getPosition();
-        t.eq( pos.toString(), "x=5,y=6", "Position of tile is set correctly." );
+        t.eq( tile.position.toString(), "x=5,y=6", "Position of tile is set correctly." );
     }
     
     function test_03_Layer_WMS_inittiles (t) {
