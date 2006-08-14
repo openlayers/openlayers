@@ -22,31 +22,14 @@
                     "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
             map.addLayer(layer);
 
-            markers = new OpenLayers.Layer.Markers("markers");
-            map.addLayer(markers);
-
             map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
             map.addControl( new OpenLayers.Control.LayerSwitcher() );
         }
         
-        function add() {
-            var icon = new OpenLayers.Icon('http://boston.openguides.org/markers/AQUA.png',new OpenLayers.Size(10,17));
-            marker = new OpenLayers.Marker(new OpenLayers.LonLat(2, 41), icon);
-            markers.addMarker(marker);
-        }
-
-
-        function remove() {
-            markers.removeMarker(marker);
-        }
-        
-
         // -->
     </script>
   </head>
   <body onload="init()">
     <div id="map"></div>
-    <div style="background-color:green" onclick="add()"> click to add the marker to the map</div>
-    <div style="background-color:red" onclick="remove()"> click to remove the marker from the map</div>
   </body>
 </html>
