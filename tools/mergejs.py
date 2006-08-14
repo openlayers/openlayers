@@ -7,11 +7,19 @@
 #
 # Dependencies are specified with a comment of the form:
 #
-#     // @require: <file path>
+#     // @requires <file path>
 #
 #  e.g.
 #
-#    // @require: Geo/DataSource.js
+#    // @requires Geo/DataSource.js
+#
+#  or (ideally) within a class comment definition
+#
+#     /**
+#      * @class
+#      *
+#      * @requires OpenLayers/Layer.js
+#      */
 #
 # This script should be executed like so:
 #
@@ -43,7 +51,7 @@ import sys
 
 SUFFIX_JAVASCRIPT = ".js"
 
-RE_REQUIRE = "@require: (.*)\n" # TODO: Ensure in comment?
+RE_REQUIRE = "@requires (.*)\n" # TODO: Ensure in comment?
 class SourceFile:
     """
     Represents a Javascript source code file.
