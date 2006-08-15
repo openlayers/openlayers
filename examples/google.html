@@ -22,8 +22,13 @@
 
         function init(){
             map = new OpenLayers.Map( $('map') );
-            gmap = new OpenLayers.Layer.Google( "Google" , {type: G_HYBRID_MAP });
-            map.addLayer(gmap);
+
+            var normal = new OpenLayers.Layer.Google( "Google" );
+            var satellite = new OpenLayers.Layer.Google( "Google Satellite" , {type: G_SATELLITE_MAP });
+            var hybrid = new OpenLayers.Layer.Google( "Google Hybrid" , {type: G_HYBRID_MAP });
+
+
+            map.addLayers([normal, satellite, hybrid]);
 
             markers = new OpenLayers.Layer.Markers("markers");
             map.addLayer(markers);
