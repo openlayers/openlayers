@@ -11,6 +11,10 @@
 -->
 <head>
 
+    <!-- this gmaps key generated for http://openlayers.org/dev/ -->
+    <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAA9XNhd8q0UdwNC7YSO4YZghSPUCi5aRYVveCcVYxzezM4iaj_gxQ9t-UajFL70jfcpquH5l1IJ-Zyyw'></script>
+    <!-- Localhost key -->
+     <!--<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhT2yXp_ZAY8_ufC3CFXhHIE1NvwkxTS6gjckBmeABOGXIUiOiZObZESPg'></script>-->
 <script src="http://openlayers.org/dev/lib/OpenLayers.js"></script>
 
 <script>
@@ -94,6 +98,11 @@ function runMVS() {
                         "format" : "image/jpeg",
                         layers:"modis,global_mosaic"}
                        ));
+                break;
+            case 'gmaps':
+                theMVS.addLayer(
+                    new OpenLayers.Layer.Google( "Google" , {type: G_HYBRID_MAP })
+                );
                 break;
         }
     }
