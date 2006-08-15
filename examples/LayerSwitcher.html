@@ -18,6 +18,7 @@
         var zoom = 5;
         var map, layer, glayer;
 
+        OpenLayers.ProxyHost = "/proxy/?url=";
         function init(){
             map = new OpenLayers.Map( $('map') );
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 

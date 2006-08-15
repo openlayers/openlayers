@@ -13,6 +13,7 @@
         <!--
         var map, layer;
 
+        OpenLayers.ProxyHost = "/proxy/?url=";
         function init(){
             map = new OpenLayers.Map('map', {maxResolution:'auto'});
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
@@ -21,13 +22,13 @@
             map.setCenter(new OpenLayers.LonLat(0, 0), 0);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
         }
-	function addUrl() {
-	    var value = $('url').value;
-	    var parts = value.split("/");
-            var newl = new OpenLayers.Layer.GeoRSS( parts[parts.length-1], value);
-            map.addLayer(newl);
-	    $("url").value = "";
-	}
+        function addUrl() {
+            var value = $('url').value;
+            var parts = value.split("/");
+                var newl = new OpenLayers.Layer.GeoRSS( parts[parts.length-1], value);
+                map.addLayer(newl);
+            $("url").value = "";
+        }
         // -->
     </script>
   </head>
