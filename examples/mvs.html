@@ -57,6 +57,7 @@ function runMVS() {
         theArgs.layers.split(",") : DEFAULT_LAYERS;
     
     safeArgs.data = theArgs.data; // TODO: Make this "safe".
+    safeArgs.marker = theArgs.marker; // TODO: Make this "safe".
     
     // -----
     var theMVS = new OpenLayers.Map($('map'), {controls: [], maxResolution: 'auto'});
@@ -98,6 +99,11 @@ function runMVS() {
     }
     theMVS.setCenter(new OpenLayers.LonLat(safeArgs.centerLon, safeArgs.centerLat), safeArgs.zoom);
 
+    if (safeArgs.marker) {
+        var m = new OpenLayers.Layer.Markers("Marker");
+        m.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(safeArgs.centerLon, safeArgs.centerLat)));
+        theMVS.addLayer(m);
+    }
     if (safeArgs.data) {
         theMVS.addLayer(new OpenLayers.Layer.Text("Data", {location: safeArgs.data}));
     }
