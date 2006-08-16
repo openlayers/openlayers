@@ -64,30 +64,6 @@
         t.eq( layer.url, "foo", "setUrl() works");
     }
 
-
-    /**
-     * @deprecated
-     */
-    function test_04_Layer_HTTPRequest_changeParams (t) {
-        t.plan( 3 );
-
-        layer = new OpenLayers.Layer.HTTPRequest(name, url, params, options);
-        
-        var newParams = { layers: 'sooper', 
-                          chickpeas: 'image/png'};
-
-        layer.changeParams(newParams);
-        
-        t.eq( layer.params.layers, "sooper", "changeParams() overwrites well");
-        t.eq( layer.params.chickpeas, "image/png", "changeParams() adds well");
-
-        newParams.chickpeas = 151;
-
-        t.eq( layer.params.chickpeas, "image/png", "changeParams() makes clean copy of hash");
-
-
-    }
-
     function test_05_Layer_HTTPRequest_mergeNewParams (t) {
         t.plan( 3 );
 
