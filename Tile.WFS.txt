@@ -1,0 +1,6 @@
+OpenLayers.Tile.WFS
+
+The WFS tile allows you to load any number of WFS URLs into a single tile. 
+
+* Constructor
+  OpenLayers.Tile.WFS({OpenLayers.Layer|layer}, {OpenLayers.Pixel|position}, {OpenLayers.Bounds|bounds}, {String|urls}, {OpenLayers.Size|size}) -- Create a new tile, with properties passed. The major difference between this tile and other tiles is what it does with results: The WFS tile is designed to parse XML responses, and create features for each item in the response. 
