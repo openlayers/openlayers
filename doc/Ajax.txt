@@ -1,0 +1,9 @@
+OpenLayers contains a number of helper functions for working with AJAX. 
+
+* Methods
+  OpenLayers.loadURL({String|uri}, {String|params}, {Object|caller}, {function|onComplete}, {function|onFailure}) -- none -- This function sends an XMLHTTPRequest to a remote site, specified by URI, with the params string given as the params argument. Caller is bound as 'this' to the function specified by either onComplete or onFailure.
+  OpenLayers.parseXMLString({String|text}) -- {AJAXResponse} -- Accepts a block of text, and creates a DOM response document from the text.
+
+* Parameters
+  OpenLayers.ProxyHost -- When initiating an AJAX request, any URL that is absolute is prefixed with OpenLayers.ProxyHost. The ProxyHost is designed to accept a URL and return the content, in an effort to work around cross-browser security restrictions. This defaults to null, but if you wish to access content from another domain that Javascript would restrict access to, you must set this to be the URL which will accept a URL encoded version of the passed URL and return the content at that URL. An example is available as proxy.txt in the examples/ directory.
+  
