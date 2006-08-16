@@ -22,6 +22,10 @@
         var lat = 40;
         var zoom = 5;
         var map, markers;
+        var barcelona = new OpenLayers.LonLat(2.13134765625,
+                                              41.37062534198901);
+        var madrid = new OpenLayers.LonLat(-3.6968994140625,
+                                              40.428314208984375);
 
         function init(){
             map = new OpenLayers.Map( $('map') );
@@ -44,9 +48,18 @@
         }
         
         function add() {
-            var icon = new OpenLayers.Icon('http://boston.openguides.org/markers/AQUA.png',new OpenLayers.Size(10,17));
-            marker = new OpenLayers.Marker(new OpenLayers.LonLat(2, 41), icon);
+            var url = 'http://boston.openguides.org/markers/AQUA.png';
+            var sz = new OpenLayers.Size(10, 17);
+            var calculateOffset = function(size) {
+                                return new OpenLayers.Pixel(-(size.w/2), -size.h);
+                             };           
+            var icon = new OpenLayers.Icon(url, sz, null, calculateOffset);
+            marker = new OpenLayers.Marker(barcelona, icon);
             markers.addMarker(marker);
+
+            marker = new OpenLayers.Marker(madrid, icon.clone());
+            markers.addMarker(marker);
+
         }
 
         function remove() {
