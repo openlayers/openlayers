@@ -14,13 +14,7 @@
     function test_01_Layer_WMS_constructor (t) {
         t.plan( 4 );
 
-     // this is a sneaky trick -- because DEFAULT_PARAMS is actually an 
-     //  object, if we modify it in one layer, it is modified permanently. 
-     //  this is why we only allow object creation in this manner for constant
-     //  values. Anyways, so create a dummy layer, add a dummy default param
-     //  so that we can later test to see if it is uppercased and included.
         layer = new OpenLayers.Layer.WMS();
-        layer.DEFAULT_PARAMS.chicken = "foo";        
 
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
         layer = new OpenLayers.Layer.WMS(name, url, params);
@@ -28,7 +22,7 @@
         t.eq( layer.url, "http://octo.metacarta.com/cgi-bin/mapserv", "layer.url is correct (HTTPRequest inited)" );
         t.eq( layer.params.MAP, "/mapdata/vmap_wms.map", "params passed in correctly uppercased" );
 
-        t.eq( layer.params.CHICKEN, "foo", "default params correclty uppercased and copied");
+        t.eq( layer.params.SERVICE, "WMS", "default params correclty uppercased and copied");
 
 
     }
