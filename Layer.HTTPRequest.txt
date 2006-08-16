@@ -1,0 +1,11 @@
+OpenLayers.Layer.HTTPRequest
+
+Sublass of Layer used for services which require initiating multiple HTTPRequests.
+
+* Constructor
+  OpenLayers.Layer.HTTPRequest(name, url, params, options) -- URL is the base URL to the layer. Params is a set of params to be included in the HTTP Request. Options is a set of options, extending the parameters of the layer.
+
+* Methods
+  initResolutions() -- none -- Based on the current minScale/maxScale/maxResolution/maxZoomLevels/scales/resolutions parameters, initializes an array of 'zoom levels' as this.resolutions, which are then used as an index into when zooming.
+  getFullRequestString(newParams) -- {String} -- Returns the full request string for a combination of the defaults on this layer and the parameters passed via newParams.
+  

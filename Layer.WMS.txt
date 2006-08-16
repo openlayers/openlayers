@@ -1,0 +1,13 @@
+OpenLayers.Layer.WMS
+
+The WMS layer allows one to connect to a WMS server to obtain images.
+
+* Constructor
+  OpenLayers.Layer.WMS(name, url, params, options) -- URL is the base URL to the layer. Params is a set of params to be included in the HTTP Request. Options is a set of options, extending the parameters of the layer.
+
+* Methods
+  getURL({OpenLayers.Bounds|bounds}) -- {String} -- Returns a WMS URL for the given bounds based on the properties of the layer.
+  All other methods are inherited from {OpenLayers.Layer.Grid}
+  
+* Parameters 
+  isBaseLayer -- WMS layers default to being base layers unless one of their parameters is 'transparent':'true'.
