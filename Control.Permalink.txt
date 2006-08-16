@@ -1,0 +1,6 @@
+OpenLayers.Control.Permalink
+
+A small control which updates a "Permalink" to the map every time the viewport changes. This allows users to copy a link to a specfic map view. By default, it places itself in the lower right corner of the map, 
+
+* Constructor
+  OpenLayers.Control.Scale({DOMElement|element}?, {String|base}) -- Creates a new permalink control. The DOMElement is used, if passed, as the element on which the 'href' is set. If you prefer to put this link on an element outside of the map, set this element to an anchor element to have its href updated when the map moves. If you wish to make the link go to some other URL (for example, an editing interface rather than the current URL), the 'base' property can be used, to which the ?lat=&lon=&zoom= will be appended after the map has moved.

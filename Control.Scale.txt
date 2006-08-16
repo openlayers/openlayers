@@ -1,0 +1,6 @@
+OpenLayers.Control.Scale
+
+A small control which displays an informative scale value, a la "1:50K" , by defualt in the lower right of the map viewport.
+
+* Constructor
+  OpenLayers.Control.Scale({DOMElement|element}?) -- Creates a new scale control. The DOMElement is used, if passed, to put the scale inside -- this allows you to have the scale displayed in some location outside the map. 
