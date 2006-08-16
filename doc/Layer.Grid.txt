@@ -1,0 +1,31 @@
+OpenLayers.Layer.Grid
+
+The Grid layer is the base layer for almost all image layers. This is a subclass of HTTPRequest.
+
+* Constructor
+  OpenLayers.Layer.Grid(name, url, params, options) -- URL is the base URL to the layer. Params is a set of params to be included in the HTTP Request. Options is a set of options, extending the parameters of the layer.
+
+* Methods
+  getGridBounds() -- {OpenLayers.Bounds} -- return geographic extent of the grid of tiles.
+  _initTiles() -- none -- Used to initialize the tile grid, creating image elements as neccesary and filling them with the correct images.
+  spiralTileLoad() -- none -- Called from _initTiles. Rotates through the grid filling in the images for the grid.
+  clone() -- {OpenLayers.Layer.Grid} -- create a clone of the layer. Subclassed from {OpenLayers.Layer}.
+  setMap(map) -- none -- Set the map property of the layer. Also set the parameters which are inherited from the map. This is also where the tileSize is retrieved from the map. Subclassed from {OpenLayers.Layer}.
+  moveTo({OpenLayers.Bounds|bounds}, {Boolean|zoomChanged}) -- none -- Not implemented here, but the general function called on dragging or setCenter, to move the Layer to a new geographic location. Subclassed from {OpenLayers.Layer}.
+  getResolution() -- {float} -- Return the current resolution of the map, in units/pixel. Subclassed from {OpenLayers.Layer}.
+  getExtent() -- {OpenLayers.Bounds} -- Return the geographic extent of the current map viewport. Subclassed from {OpenLayers.Layer}.
+  getZoomForExtent({OpenLayers.Bounds|bounds}) -- {Integer} -- return the integer zoom which most closely matches the passed bounds. Subclassed from {OpenLayers.Layer}.
+  getLonLatFromViewPortPx({OpenLayers.Pixel|pixel}) -- {OpenLayers.LonLat} -- Returns an OpenLayers.LonLat which is the passed-in view port OpenLayers.Pixel, translated into lon/lat by the layer. Subclassed from {OpenLayers.Layer}.
+  getViewPortPxFromLonLat({OpenLayers.LonLat|lonlat}) -- {OpenLayers.Pixel} -- Returns An OpenLayers.Pixel which is the passed-in OpenLayers.LonLat, translated into view port pixels. Subclassed from {OpenLayers.Layer}.
+
+* Parameters
+  buffer -- Default 2. Number of tiles around the central map area which OpenLayers will preload so that dragging goes more smoothly.
+  * Subclassed from OpenLayers.Layer
+  isBaseLayer -- This determines whether the layer is a base layer or an overlay. Only one Base Layer can be displayed on the map at once. Default is false.
+  projection -- SRS string to describe the layer. If this is set on the map before the Layer is added to the map, it will inherit from the map.
+  maxExtent -- an OpenLayers.Bounds for the layer. This is the maximum geographic extent of the layer. If this is set on the map before the Layer is added to the map, it will inherit from the map.
+  maxResolution -- The number of degrees per pixel at zoom level 0. If this is set on the map before the Layer is added to the map, it will inherit from the map.
+  maxZoomLevel -- The maximum zoom level for the layer. If this is set on the map before the Layer is added to the map, it will inherit from the map.
+  minScale -- The scale at zoom level 0. If this is set on the map before the Layer is added to the map, it will inherit from the map.
+  maxScale -- The scale at the highest zoom level. If this is set on the map before the Layer is added to the map, it will inherit from the map.
+  units -- The units the map is projected into. If this is set on the map before the Layer is added to the map, it will inherit from the map.
