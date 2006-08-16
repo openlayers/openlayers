@@ -1,0 +1,9 @@
+OpenLayers.Icon
+
+Icon is used as the visual representation of a Marker. Creating such a representation requres up to three parts: An Icon URL, a size, and an offset. The icon URL is a pointer to an image to use as an icon. The size is the size of the image, as an {OpenLayers.Size} object, and the offset is the position of the top left corner of the image in pixels, relative to the latitude and longitude of the Marker.
+
+* Constructor
+  OpenLayers.Icon({String|url}, {OpenLayers.Size|size}, {OpenLayers.Pixel|offset}) -- creates a new icon.
+
+* Methods
+  clone() -- {OpenLayers.Icon} -- Create an exact copy of the icon.
