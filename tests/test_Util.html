@@ -159,7 +159,7 @@
                      c: "press"
                    };
 
-        to = OpenLayers.Util.applyDefaults(to, from);
+        OpenLayers.Util.applyDefaults(to, from);
 
         t.ok( to instanceof Object, " applyDefaults returns an object");
         t.eq( to["a"], "abra", "key present in to but not from maintained");
