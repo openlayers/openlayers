@@ -41,8 +41,16 @@
         }
         
         function add() {
-            var icon = new OpenLayers.Icon('http://boston.openguides.org/markers/AQUA.png',new OpenLayers.Size(10,17));
-            marker = new OpenLayers.Marker(new OpenLayers.LonLat(2, 41), icon);
+
+            var url = 'http://boston.openguides.org/markers/AQUA.png';
+            var sz = new OpenLayers.Size(10, 17);
+            var calculateOffset = function(size) {
+                                return new OpenLayers.Pixel(-(size.w/2), -size.h);
+                             };           
+            var icon = new OpenLayers.Icon(url, sz, null, calculateOffset);
+            var barcelona = new OpenLayers.LonLat(2.13134765625,
+                                                  41.37062534198901);
+            marker = new OpenLayers.Marker(barcelona, icon);
             markers.addMarker(marker);
         }
 
