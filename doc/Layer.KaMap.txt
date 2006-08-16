@@ -1,0 +1,7 @@
+OpenLayers.Layer.KaMap
+
+ka-Map is a Mapserver wrapper which performs caching and works around many of the deficiencies with tiling when using Mapserver as a WMS client.
+
+* Construtor
+  OpenLayers.Layer.KaMap(name, url, params, options) -- URL is the url of the tile.php for KaMap.
+

@@ -1,0 +1,10 @@
+OpenLayers.Marker.Box
+
+A different kind of Marker, designed to be added to a Boxes layer instead of a Markers layer.
+
+* Constructor
+  OpenLayers.Marker.Box({OpenLayers.Bounds|bounds}, borderColor, borderWidth) -- Set up a box. Defaults are red, with a width of 2.
+
+* Methods
+  setBorder(color, width) -- sets properties of border color and width.
+

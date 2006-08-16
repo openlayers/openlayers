@@ -1,0 +1,7 @@
+OpenLayers.Layer.Boxes
+
+A subclass of the markers layer, this layer draws boxes using div elements
+instead of icons using images.
+
+* Constructor
+  OpenLayers.Layer.Boxes(name, options) -- Same as OpenLayers.Layer.Markers.

@@ -1,0 +1,10 @@
+OpenLayers.Layer.Text
+
+Subclass of Markers layer which retrieves CSV file from the web, and parses content to create markers and popups.
+
+* Constructor
+  OpenLayers.Layer.Text(name, options) -- Pass in name, and set location: 'URL of CSV file' in the options hash.
+
+* Methods
+  parseData(ajaxRequest) -- none -- Parses returned CSV file. 
+
