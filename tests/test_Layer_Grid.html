@@ -168,14 +168,13 @@
 
     function test_99_Layer_Grid_destroy (t) {
 
-        t.plan( 4 );
+        t.plan( 3 );
 
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.Grid(name, url, params);
         map.addLayer(layer);
         layer.destroy();
         t.eq( layer.grid, null, "layer.grid is null after destroy" );
-        t.eq( layer.alpha, null, "layer.alpha is null after destroy" );
         t.eq( layer.tileSize, null, "layer.tileSize is null after destroy" );
 
 
