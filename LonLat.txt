@@ -1,0 +1,13 @@
+OpenLayers.LonLat
+
+This class represents a geographic coordinate pair, either projected or unprojected.
+
+* Constructor
+  OpenLayers.LonLat({float|lon}, {float|lat}) -- Create LonLat.
+
+* Methods
+  toString() -- {String} -- Converts to human readable string.
+  toShortString() -- {String} -- Converts to short human readable string.
+  clone() -- {OpenLayers.Size} -- Returns a copy of the pixel.
+  equals({OpenLayers.LonLat|ll}) -- {Boolean} -- Compares two LonLats. 
+  add({int|lon}, {int|lat}) -- {OpenLayers.LonLat} -- add x and y to the current coordinates.

@@ -1,0 +1,13 @@
+OpenLayers.Pixel
+
+This class represents a screen coordinate in x and y coordinates.
+
+* Constructor
+  OpenLayers.Pixel({float|x}, {float|y}) -- Create Pixel.
+
+* Methods
+  toString() -- {String} -- Converts to human readable string.
+  clone() -- {OpenLayers.Pixel} -- Returns a copy of the pixel.
+  equals({OpenLayers.Pixel|px}) -- {Boolean} -- Tests for equivilance.
+  add({int|x}, {int|y}) -- {OpenLayers.Pixel} -- add x and y to the current coordinates.
+  offset({OpenLayers.Pixel|pixel}) -- {OpenLayers.Pixel} -- Add pixels together.
