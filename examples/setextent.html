@@ -1,0 +1,29 @@
+<html>
+<head>
+<title>Setting a visual Extent</title>
+<script src="../lib/OpenLayers.js"></script>
+</head>
+<body>
+<h1>Setting a Visual Extent</h1>
+<p>
+  Because the ability to set the map to a given extent is limited by the 
+  current resolutions available, zoomToExtent will not always set the map to 
+  exactly the right extent. In order to visually annotate the actual extent, 
+  this example, will use the Boxes layer to visually describe the desired
+  extent as well as setting the map extent.
+</p>
+  <div style="width:100%; height:75%" id="map"></div>
+  <script defer="defer" type="text/javascript">
+    var map = new OpenLayers.Map('map');
+    var bounds = new OpenLayers.Bounds(-45,-45, 0, 45); 
+    var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+        "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+    map.addLayer(wms);
+    map.zoomToExtent(bounds);
+    var boxes = new OpenLayers.Layer.Boxes("boxes");
+    var box = new OpenLayers.Marker.Box(bounds);
+    boxes.addMarker(box);
+    map.addLayer(boxes);
+  </script>
+</body>
+</html>
