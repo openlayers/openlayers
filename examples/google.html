@@ -23,20 +23,23 @@
         var map, layer;
 
         function init(){
-            map = new OpenLayers.Map( $('map') );
+            map = new OpenLayers.Map( $('map') , 
+            { controls: [new OpenLayers.Control.MouseDefaults()] });
 
-            var normal = new OpenLayers.Layer.Google( "Google" );
+            var normal = new OpenLayers.Layer.Google( "Google", // );
+             { minZoomLevel: 3, maxZoomLevel: 8  });
             var satellite = new OpenLayers.Layer.Google( "Google Satellite" , {type: G_SATELLITE_MAP });
             var hybrid = new OpenLayers.Layer.Google( "Google Hybrid" , {type: G_HYBRID_MAP });
 
 
-            map.addLayers([normal, satellite, hybrid]);
+            map.addLayers([satellite, normal, hybrid]);
 
             markers = new OpenLayers.Layer.Markers("markers");
             map.addLayer(markers);
 
             map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
             map.addControl( new OpenLayers.Control.LayerSwitcher() );
+            map.addControl( new OpenLayers.Control.PanZoomBar() );
 
         }
         
