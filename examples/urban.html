@@ -11,15 +11,15 @@
     <script type="text/javascript">
         <!--
         function init(){
-            var map = new OpenLayers.Map('map', {'maxResolution': 1.6, maxZoomLevel:20});
-
+            var mapOptions = { maxResolution: 1.6, numZoomLevels: 21};
+            var map = new OpenLayers.Map('map', mapOptions);
+            
             var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                 "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'} );
 
             var ww = new OpenLayers.Layer.WorldWind( "Urban", 
                 "http://worldwind25.arc.nasa.gov/tile/tile.aspx?", .8, 9,
-                {T:"104"});
-            ww.setTileSize(new OpenLayers.Size(512,512));
+                {T:"104"}, { tileSize: new OpenLayers.Size(512,512) });
 
 
             map.addLayers([ol_wms, ww]);
