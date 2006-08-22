@@ -38,7 +38,10 @@ Using OpenLayers in Your Own Website
 
 The examples/ directory is full of useful examples.
 
-There is some documentation at http://trac.openlayers.org/ as well.
+Dcumentation is available in the doc/ directory: to build an HTML version
+of the documentation, run ./docs.sh in the build/ directory.
+
+Information on changes in the API is available in news.txt.
 
 --------------------------
 Contributing to OpenLayers
