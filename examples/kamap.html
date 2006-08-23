@@ -18,7 +18,7 @@
                  {layers: 'basic'} );
 
             var jpl_wms = new OpenLayers.Layer.KaMap( "Satellite",
-                    "/world/index.php", {g: "satellite", map: "world"});
+                    "http://www.openlayers.org/world/index.php", {g: "satellite", map: "world"});
             var dm_wms = new OpenLayers.Layer.WMS( "Canada",
                 "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap",
                 {layers: "bathymetry,land_fn,park,drain_fn,drainage," +
