@@ -1,0 +1,58 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="imagetoolbar" content="no"> <!--ie image gizmo OFF!-->
+    <style type="text/css">
+        #map {
+            width: 100%;
+            height: 512px;
+            border: 1px solid black;
+        }
+    </style>
+
+
+    <script type="text/javascript" src="http://clients.multimap.com/API/maps/1.1/metacarta_04"></script>
+
+
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+ 
+        var lon = 5;
+        var lat = 40;
+        var zoom = 5;
+        var map, mmlayer, layer;
+
+        function init(){
+            map = new OpenLayers.Map( $('map') , 
+            {controls:[new OpenLayers.Control.MouseDefaults()]});
+
+            mmlayer = new OpenLayers.Layer.MultiMap( "MultiMap");
+            map.addLayer(mmlayer);
+            
+            markers = new OpenLayers.Layer.Markers("markers");
+            map.addLayer(markers);
+
+            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+            map.addControl( new OpenLayers.Control.LayerSwitcher() );
+            map.addControl( new OpenLayers.Control.PanZoomBar() );
+        }
+        
+        function add() {
+            
+            marker = new OpenLayers.Marker(new OpenLayers.LonLat(2, 41));
+            markers.addMarker(marker);
+        }
+
+        function remove() {
+            markers.removeMarker(marker);
+        }
+  // -->
+    </script>
+  </head>
+  <body onload="init()">
+    <h1>OpenLayers MultiMap Example</h1>
+    <div id="map"></div>
+    <div style="background-color:green" onclick="add()"> click to add the marker to the map</div>
+    <div style="background-color:red" onclick="remove()"> click to remove the marker from the map</div>
+  </body>
+</html>
