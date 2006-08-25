@@ -107,13 +107,13 @@
      *    -insertColumn
      *    -insertRow
     
-    function test_07_Layer_KaMap_moveTo(t) {
+    function 07_Layer_KaMap_moveTo(t) {
     }
 
-    function test_08_Layer_KaMap_insertColumn(t) {
+    function 08_Layer_KaMap_insertColumn(t) {
     }
 
-    function test_09_Layer_KaMap_insertRow(t) {
+    function 09_Layer_KaMap_insertRow(t) {
     }
 
      * 
@@ -158,42 +158,15 @@
         t.ok( (layer.tileSize.h == 50) && (layer.tileSize.w == 500), "tileSize has been set correctly");
     }
 
-
-    function test_11_Layer_KaMap_getTile(t) {
-
-        t.plan(2);
-        
-        var options = {tileSize: new OpenLayers.Size(500,50)};
-        var map = new OpenLayers.Map('map', options);
-
-   //test with tile creation
-        layer = new OpenLayers.Layer.KaMap(name, url, params, units);
-        map.addLayer(layer);
-
-        map.setCenter(new OpenLayers.LonLat(0,0), 5);
-
-        //grab a reference to one of the tiles
-        var tile = layer.grid[0][0];        
-        
-        var gotTile = layer.getTile(tile.id); 
-        
-        t.ok( gotTile == tile, "got right tile");
-        
-        gotTile = layer.getTile("chicken"); 
-        t.ok( gotTile == null, "getTile() of bogus id returns null");
-    }
-
-
     function test_99_Layer_KaMap_destroy (t) {
 
-        t.plan( 4 );
+        t.plan( 3 );
 
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.KaMap(name, url, params, units);
         map.addLayer(layer);
         layer.destroy();
         t.eq( layer.grid, null, "layer.grid is null after destroy" );
-        t.eq( layer.alpha, null, "layer.alpha is null after destroy" );
         t.eq( layer.tileSize, null, "layer.tileSize is null after destroy" );
 
 

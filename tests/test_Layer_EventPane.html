@@ -56,7 +56,11 @@
 // MOUSEMOVE test does not seem to work... 
 //         t.plan( 2 );    
 
-        t.plan(1);
+        if (document.createEventObject) {
+          t.plan(3);
+        } else {
+          t.plan(1);
+        }
         var map = new OpenLayers.Map('map');
         
         layer = new OpenLayers.Layer.EventPane('Test Layer');

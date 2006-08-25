@@ -18,20 +18,23 @@
  
         var lon = 5;
         var lat = 40;
-        var zoom = 5;
+        var zoom = 15;
         var map, velayer, layer;
 
         function init(){
-            map = new OpenLayers.Map( $('map') );
+            map = new OpenLayers.Map( $('map') , 
+            {controls:[new OpenLayers.Control.MouseDefaults()]});
 
-            velayer = new OpenLayers.Layer.VirtualEarth( "VE"); 
+            velayer = new OpenLayers.Layer.VirtualEarth( "VE",
+            { minZoomLevel: 4, maxZoomLevel: 6 }); 
             map.addLayer(velayer);
             
             markers = new OpenLayers.Layer.Markers("markers");
             map.addLayer(markers);
 
-            map.setCenter(new OpenLayers.LonLat(lon, lat), 2);
+            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
             map.addControl( new OpenLayers.Control.LayerSwitcher() );
+            map.addControl( new OpenLayers.Control.PanZoomBar() );
         }
         
         function add() {

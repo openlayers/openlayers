@@ -1,0 +1,90 @@
+<html>
+
+    <script src="../lib/Prototype.js"></script>
+    <script type="text/javascript">
+
+		var one, two, div, msg;
+
+		function init() {
+		
+			one = $("one");
+			two = $("two");
+			div = $("div");
+			msg = $("msg");
+			
+			Event.observe(div, "click", bar);
+		
+			one.checked = true;
+		    two.checked = false;
+		    
+		    Event.observe(one, "change", oneClick);
+		    Event.observe(two, "change", twoClick);
+		
+		}
+
+		function bar(e) {
+			message("clicked div");
+
+			Event.stop(e);
+			
+			var status = "one: ";
+			status += (one.checked) ? "checked" : "unchecked";
+			status += " two: ";
+			status += (two.checked) ? "checked" : "unchecked";
+			message(status);
+		}
+
+		function oneClick(e) {
+			message("clicked one");
+		}
+
+		function twoClick(e) {
+			message("clicked two");
+		}
+		
+		function message(txt) {
+			msg.innerHTML += " ** "  + txt;
+		}
+
+	</script>
+
+	<body onload="init()" onclick="message('clicked body')" onmouseup="message('<br>')">
+
+		<div> The idea here is to simulate the layerswitcher radiobuttons UI 
+		      without all the overhead of openlayers. 
+		      <br>
+		      <br>
+		      There are event handlers attached to the following elements:
+		      <br>
+		      * Body - Prints message "clicked body" to message area
+		      <br>
+		      * Blue Div - Prints message "clicked div" to message area, stops
+		                   the event propagation, prints a message with the 
+		                   status of the two radiobuttons
+		      <br>
+		      * Radio One - Prints message "clicked one" to message area
+		      <br>
+		      * Radio Two - Prints message "clicked two" to message area
+		      <br>
+		      <br>
+		      <b>
+			  The problem, as you will see if you click the radio buttons 
+			  themselves, is that their "checked" status seems to update, but
+			  their visual UI bit does not. Can we fix this!?!
+		      </b>
+		</div>
+
+		<div id="div" style="background-color:blue; margin:50px">
+			<input id="one" type="radio" name="foo"/>
+			<span> one </span>
+			<br>
+			<input id="two" type="radio" name="foo"/>
+			<span> two </span>
+		</div>
+	
+		<div id="msg" style="background-color:pink; margin-top:200px">
+			Events: 
+		</div>
+
+	</body>
+</html>

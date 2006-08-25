@@ -27,7 +27,7 @@
         t.ok( map.controls instanceof Array, "map.controls is an Array" );
         t.ok( map.events instanceof OpenLayers.Events, "map.events is an OpenLayers.Events" );
         t.ok( map.getMaxExtent() instanceof OpenLayers.Bounds, "map.maxExtent is an OpenLayers.Bounds" );
-        t.ok( map.getMaxZoomLevel() > 0, "map.maxZoomLevel is set" );
+        t.ok( map.getNumZoomLevels() > 0, "map has a default numZoomLevels" );
     }
     function test_02_Map_center(t) {
         t.plan(3);
@@ -63,8 +63,8 @@
     }
     function test_04_Map_options(t) {
         t.plan(2);
-        map = new OpenLayers.Map($('map'), {maxZoomLevel: 5, maxResolution: 3.14159});
-        t.eq( map.maxZoomLevel, 5, "map.maxZoomLevel set correctly via options hashtable" );
+        map = new OpenLayers.Map($('map'), {numZoomLevels: 6, maxResolution: 3.14159});
+        t.eq( map.numZoomLevels, 6, "map.numZoomLevels set correctly via options hashtable" );
         t.eq( map.maxResolution, 3.14159, "map.maxResolution set correctly via options hashtable" );
     }
     function test_05_Map_center(t) {
@@ -151,18 +151,10 @@
         }
         t.ok(!found, "popup.div successfully removed from the map's viewPort");
     }
-    function test_10_Map_auto_res(t) {
-        t.plan(2);
-        map = new OpenLayers.Map($('map'), {maxZoomLevel: 5, maxResolution: 'auto'});
-        t.eq( map.maxResolution, 1/3, "map.maxResolution set correctly via auto" );
-        map = new OpenLayers.Map($('map'), {maxZoomLevel: 5, maxResolution: null});
-        t.eq( map.maxResolution, 1/3, "map.maxResolution set correctly via null" );
-    } 
-
 /***  THIS IS A GOOD TEST, BUT IT SHOULD BE MOVED TO WMS. 
  *     Also, it won't work until we figure out the viewSize bug
 
-    function test_08_Map_px_lonlat_translation (t) {
+    function 08_Map_px_lonlat_translation (t) {
         t.plan( 6 );    
         map = new OpenLayers.Map($('map'));
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 

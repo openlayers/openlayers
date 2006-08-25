@@ -20,7 +20,11 @@
         if (!map.getCenter())  map.zoomToMaxExtent();
         map.addControl(control);
         map.pan(5, 0);
-        t.eq($('permalink').href, location+"?lat=0&lon=1.75781&zoom=2", "Panning sets permalink");
+        if (/MSIE/.test(navigator.userAgent)) {
+            t.eq($('permalink').href, "?lat=0&lon=1.75781&zoom=2", "Panning sets permalink");
+        } else {
+            t.eq($('permalink').href, location+"?lat=0&lon=1.75781&zoom=2", "Panning sets permalink");
+        }
     }
     function test_03_Control_Permalink_updateLinksBase (t) {
         t.plan( 2 );

@@ -1,0 +1,56 @@
+OpenLayers 2.0 Release Notes
+
+ * Deprecated Methods which were removed: 
+
+ For details, see r1228
+
+ * OpenLayers.Map
+   * removed: getFullExtent() -- use  getMaxExtent() instead
+   * removed: zoomToFullExtent() -- use  zoomToMaxExtent() instead
+ * OpenLayers.Layer.Grid
+   * removed: setTileSize() -- user should instead pass a 'tileSize' property 
+              as one of the options when initializing the Grid Layer. ex: 
+        
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        var options = {tileSize: new OpenLayers.Size(500,50)};
+        var map = new OpenLayers.Map('map', options);
+        layer = new OpenLayers.Layer.WMS(name, url, params);
+ 
+ * OpenLayers.Layer.HTTPRequest
+   * removed: changeParams() -- use mergeNewParams() instead
+ * OpenLayers.Pixel
+   * removed: copyOf() -- use  clone() instead
+ * OpenLayers.Size
+   * removed: copyOf() -- use  clone() instead
+ * OpenLayers.LonLat
+   * removed: copyOf() -- use  clone() instead
+ * OpenLayers.Bounds
+   * removed: copyOf() -- use  clone() instead
+ * Array
+   * removed: copyOf() -- use  clone() instead
+
+ * MouseWheel
+  * It is now possible to zoom in/out with the mouse wheel instead of clicks.
+ 
+ * Spiral Gridding
+  * Instead of loading from the top to bottom of the map, Openlayers will 
+    now start loading tiles from the center of the map.
+
+ * Tile Re-Use
+  * In order to lower memory constraints and reduce element creation times, 
+    OpenLayers now creates a single set of images/tiles and reuses them as 
+    you scroll around the map.
+
+ * New Layer Support
+  * Google 
+  * Virtual Earth
+  * GeoRSS (RSS 1.0 and 2.0 in FF, IE, RSS 2.0 in Safari)
+  * KaMap
+  * Untiled WMS
+
+ * Scale Based Methods 
+  * It is now possible to set zooms based on the concept of scale. See 
+    documentation in the options for the Map constructor.
+
+OpenLayers 1.0
+ Initial release.

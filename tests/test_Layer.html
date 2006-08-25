@@ -89,19 +89,17 @@
     
     function test_04_Layer_StandardOptionsAccessors (t) {
 
-        t.plan( 5 );
+        t.plan( 4 );
 
         var projection = "chicken";
         var maxExtent = new OpenLayers.Bounds(50,50,100,100);
         var maxResolution = 1.5726;
-        var minZoomLevel = 5;
-        var maxZoomLevel = 15;
+        var numZoomLevels = 11;
 
         var options = { projection: projection, 
                         maxExtent: maxExtent,
                         maxResolution: maxResolution,
-                        minZoomLevel: minZoomLevel,
-                        maxZoomLevel: maxZoomLevel
+                        numZoomLevels: numZoomLevels
                         };
 
         var layer = new OpenLayers.Layer('Test Layer', options);
@@ -109,8 +107,7 @@
         t.eq(layer.getProjection(), projection, "getProjection() works");
         t.ok(layer.getMaxExtent().equals(maxExtent), "getMaxExtent() works");
         t.eq(layer.getMaxResolution(), maxResolution, "getMaxResolution() works");
-        t.eq(layer.getMinZoomLevel(), minZoomLevel, "getMinZoomLevel() works");
-        t.eq(layer.getMaxZoomLevel(), maxZoomLevel, "getMaxZoomLevel() works");
+        t.eq(layer.getNumZoomLevels(), numZoomLevels, "getNumZoomLevels() works");
     }
 
     function test_05_Layer_visibility(t) {
