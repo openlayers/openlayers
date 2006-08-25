@@ -1,0 +1,613 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 512px;
+            height: 512px;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhQtCjFYhdtNUZyqZQW2mFbq_dOIHBSGvjZ-C7_tXAXYdB-ehlOacmC_xA" type="text/javascript"></script>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+        var map, canvas;
+        var click;
+        function init(){
+            map = new OpenLayers.Map('map');
+
+            var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
+            var g = new OpenLayers.Layer.Google("Google");    
+            canvas = new OpenLayers.Layer.Canvas("Canvas Layer");
+            map.addLayers([ol_wms, g,canvas]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            // map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+            map.zoomToMaxExtent();
+            canvas.drawLine(new OpenLayers.LonLat(-71,42), new OpenLayers.LonLat(0,0));
+            canvas.setStrokeColor("red");
+            canvas.setStrokeWidth(5);
+            canvas.setAlpha(.5);
+            map.events.register("click", map, function(e) {
+              if (click) {
+                canvas.drawLine(click, this.getLonLatFromPixel(e.xy));
+                click = null;
+                $('status').innerHTML = "";
+              } 
+              else { 
+               click = this.getLonLatFromPixel(e.xy);
+               $('status').innerHTML = "Point 1 stored: "+click+". <a href='#' onclick='click=null;return false'>Reset</a>";
+             }
+           });
+        }
+        function drawIt() { 
+          canvas.drawLine(
+            new OpenLayers.LonLat(parseFloat($('lon1').value), parseFloat($('lat1').value)), 
+            new OpenLayers.LonLat(parseFloat($('lon2').value), parseFloat($('lat2').value))
+          );
+        }
+        // -->
+    </script>
+  </head>
+  <body onload="init()">
+    <h1>OpenLayers Example</h1>
+    <div style="float:right">
+    <br />
+    Start Lon: <input type="text" id="lon1" />
+    Start Lat: <input type="text" id="lat1" /><br />
+    End Lon: <input type="text" id="lon2" />
+    End Lat: <input type="text" id="lat2" /><br />
+    <input type="submit" value="Add line" onclick="drawIt()" />
+    <div id="status"></div>
+    <center>
+<table border="1" cellpadding="0" cellspacing="1">
+<tbody>
+<tr>
+<td bgcolor="#000000">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#000000');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#000033">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#000033');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#000066">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#000066');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#000099">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#000099');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#0000cc">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#0000CC');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#0000ff">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#0000FF');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#330000">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#330000');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#330033">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#330033');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#330066">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#330066');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#330099">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#330099');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#3300cc">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#3300CC');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#3300ff">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#3300FF');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#660000">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#660000');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#660033">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#660033');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#660066">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#660066');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#660099">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#660099');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#6600cc">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#6600CC');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#6600ff">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#6600FF');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+</tr>
+<tr>
+<td bgcolor="#990000">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#990000');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#990033">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#990033');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#990066">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#990066');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#990099">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#990099');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#9900cc">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#9900CC');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#9900ff">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#9900FF');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#cc0000">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#CC0000');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#cc0033">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#CC0033');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#cc0066">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#CC0066');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#cc0099">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#CC0099');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#cc00cc">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#CC00CC');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#cc00ff">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#CC00FF');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#ff0000">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#FF0000');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#ff0033">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#FF0033');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#ff0066">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#FF0066');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#ff0099">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#FF0099');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#ff00cc">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#FF00CC');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#ff00ff">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#FF00FF');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+</tr>
+<tr>
+<td bgcolor="#003300">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#003300');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#003333">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#003333');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#003366">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#003366');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#003399">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#003399');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#0033cc">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#0033CC');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#0033ff">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#0033FF');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#333300">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#333300');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#333333">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#333333');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#333366">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#333366');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#333399">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#333399');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#3333cc">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#3333CC');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#3333ff">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#3333FF');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#663300">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#663300');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#663333">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#663333');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#663366">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#663366');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#663399">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#663399');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#6633cc">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#6633CC');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#6633ff">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#6633FF');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+</tr>
+<tr>
+<td bgcolor="#993300">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#993300');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#993333">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#993333');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#993366">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#993366');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#993399">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#993399');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#9933cc">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#9933CC');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#9933ff">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#9933FF');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#cc3300">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#CC3300');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#cc3333">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#CC3333');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#cc33cc">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#CC33CC');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#cc33ff">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#CC33FF');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#ff3300">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#FF3300');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#ff3333">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#FF3333');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#ff3366">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#FF3366');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#ff3399">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#FF3399');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#ff33cc">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#FF33CC');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#ff33ff">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#FF33FF');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+</tr>
+<tr>
+<td bgcolor="#006600">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#006600');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#006633">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#006633');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#006666">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#006666');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#006699">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#006699');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#0066cc">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#0066CC');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#336699">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#336699');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#3366cc">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#3366CC');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#3366ff">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#3366FF');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#666600">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#666600');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#666633">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#666633');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#666666">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#666666');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#666699">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#666699');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#6666cc">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#6666CC');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#6666ff">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#6666FF');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+</tr>
+<tr>
+<td bgcolor="#996600">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#996600');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#996633">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#996633');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#9966ff">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#9966FF');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#cc6600">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#CC6600');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#cc6633">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#CC6633');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#cc6666">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#CC6666');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#cc6699">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#CC6699');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#cc66cc">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#CC66CC');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#cc66ff">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#CC66FF');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#ff6600">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#FF6600');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#ff6633">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#FF6633');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+</tr>
+<tr>
+<td bgcolor="#009900">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#009900');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#009933">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#009933');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#009966">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#009966');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#009999">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#009999');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#0099cc">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#0099CC');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#0099ff">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#0099FF');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#339900">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#339900');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#339933">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#339933');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#339966">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#339966');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#339999">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#339999');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+<td bgcolor="#3399cc">
+<font size="-3">
+<a href="#" onclick="canvas.setStrokeColor('#3399CC');return false">&nbsp;&nbsp;&nbsp;</a>
+</font>
+</td>
+</tr>
+</table>
+    </div>
+    <div id="map"></div>
+  </body>
+</html>
