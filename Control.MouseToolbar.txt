@@ -1,6 +1,6 @@
 OpenLayers.Control.MouseToolbar
 
-Control to set up mouse handling. This includes clicks, double clicks, scrollwheel events, and mouse movement. There are a number of functions which act as the default handlers for these events: if you wish to create your own mouse control which behaves differently, you should create a subclass of MouseToolbar, replacing the functions whose behavior you wish to change. Additionally, a toolbar of images can be clicked to start events, as well as using the keyboard shortcuts.
+Control to set up mouse handling. This includes clicks, double clicks, scrollwheel events, and mouse movement. There are a number of functions which act as the default handlers for these events: if you wish to create your own mouse control which behaves differently, you should create a subclass of MouseToolbar, replacing the functions whose behavior you wish to change. Additionally, a toolbar of images can be clicked to start events, as well as using the keyboard shortcuts. Note that if you wish to use the MouseToolbar, you *must* add a 'controls' option to the map constructor, otherwise you will have both MouseDefaults and MouseToolbar on the map, which will not work.
 
 * Constructor
   OpenLayers.Control.MouseToolbar({OpenLayers.Pixel|position}, {String|direction}) -- Creates a new control. The direction of the control can be either "vertical" or "horizontal". The default is vertical.
