@@ -28,6 +28,18 @@
         t.ok( boundsCenter.equals(center), "bounds.getCenterLonLat() has correct value" );
      }
 
+    function test_01a_Bounds_constructorFromStrings(t) {
+        t.plan( 6 );
+        bounds = new OpenLayers.Bounds("0","2","10","4");
+        t.ok( bounds instanceof OpenLayers.Bounds, "new OpenLayers.Bounds returns Bounds object" );
+        t.eq( bounds.CLASS_NAME, "OpenLayers.Bounds", "bounds.CLASS_NAME is set correctly" );
+        t.eq( bounds.left, 0, "bounds.left is set correctly" );
+        t.eq( bounds.bottom, 2, "bounds.bottom is set correctly" );
+        t.eq( bounds.right, 10, "bounds.right is set correctly" );
+        t.eq( bounds.top, 4, "bounds.top is set correctly" );
+        
+    }
+
      function test_02_Bounds_toBBOX(t) {
          t.plan( 1 );
          bounds = new OpenLayers.Bounds(1,2,3,4);
