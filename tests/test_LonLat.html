@@ -6,12 +6,19 @@
     var lonlat; 
 
     function test_01_LonLat_constructor (t) {
-        t.plan( 4 );
+        t.plan( 8 );
         lonlat = new OpenLayers.LonLat(6, 5);
         t.ok( lonlat instanceof OpenLayers.LonLat, "new OpenLayers.LonLat returns LonLat object" );
         t.eq( lonlat.CLASS_NAME, "OpenLayers.LonLat", "lonlat.CLASS_NAME is set correctly");
         t.eq( lonlat.lon, 6, "lonlat.lon is set correctly");
         t.eq( lonlat.lat, 5, "lonlat.lat is set correctly");
+
+        lonlat = new OpenLayers.LonLat("6", "5");
+        t.ok( lonlat instanceof OpenLayers.LonLat, "new OpenLayers.LonLat returns LonLat object" );
+        t.eq( lonlat.CLASS_NAME, "OpenLayers.LonLat", "lonlat.CLASS_NAME is set correctly");
+        t.eq( lonlat.lon, 6, "lonlat.lon is set correctly");
+        t.eq( lonlat.lat, 5, "lonlat.lat is set correctly");
+
     }
 
     function test_02_LonLat_toString(t) {
