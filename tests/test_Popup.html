@@ -73,7 +73,7 @@
         popup.setBorder(border);
         popup.draw(new OpenLayers.Pixel(x, y));
                                      
-        t.eq(popup.div.id, id + "_div", "popup.div.id set correctly");
+        t.eq(popup.div.id, id, "popup.div.id set correctly");
         t.eq(popup.div.style.left, x + "px", "left position of popup.div set correctly");
         t.eq(popup.div.style.top, y + "px", "top position of popup.div set correctly");
         t.eq(popup.div.style.width, w + "px", "width position of popup.div set correctly");
