@@ -12,7 +12,8 @@
         popup = new OpenLayers.Popup();
 
         t.ok( popup instanceof OpenLayers.Popup, "new OpenLayers.Popup returns Popup object" );
-        t.ok(popup.id.startsWith("Popup"), "good default popup.id");
+        t.ok(popup.id.startsWith("OpenLayers.Popup"), "valid default popupid");
+        var firstID = popup.id;
         t.ok(popup.size.equals(size), "good default popup.size");
         t.eq(popup.contentHTML, "", "good default popup.contentHTML");
         t.eq(popup.backgroundColor, OpenLayers.Popup.COLOR, "good default popup.backgroundColor");
@@ -20,12 +21,9 @@
         t.eq(popup.border, OpenLayers.Popup.BORDER, "good default popup.border");
 
         
-        var oldIndex = parseInt(popup.id.slice("Popup".length));
-
         popup = new OpenLayers.Popup();
-        var newIndex = parseInt(popup.id.slice("Popup".length));
-        
-        t.eq(newIndex, oldIndex + 1, "default id generator incrementing correctly");
+        var newID = popup.id;
+        t.ok(newID != firstID, "default id generator creating unique ids");
     }
     
     function test_02_Popup_constructor (t) {
