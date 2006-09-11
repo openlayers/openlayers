@@ -149,6 +149,31 @@
         t.eq(str, "http://octo.metacarta.com/cgi-bin/mapserv?LAYERS=basic&FORMAT=image/png&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage", "getFullRequestString() by default does *not* add SRS value if projection is 'none'");
  
     }
+
+    function test_08_Layer_WMS_setOpacity (t) {
+        t.plan( 5 );
+
+        var map = new OpenLayers.Map('map');
+        map.projection = "xx";
+        tUrl = "http://octo.metacarta.com/cgi-bin/mapserv";
+        tParams = { layers: 'basic', 
+                   format: 'image/png'};
+        tOptions = { 'opacity': '0.5' };           
+        var tLayer = new OpenLayers.Layer.WMS(name, tUrl, tParams, tOptions);
+        map.addLayer(tLayer);
+        map.zoomToMaxExtent();
+        t.eq(tLayer.opacity, "0.5", "Opacity is set correctly");
+        t.eq(tLayer.div.firstChild.style.opacity, "0.5", "Opacity on tile is correct");
+        tLayer.setOpacity("0.6");
+        t.eq(tLayer.opacity, "0.6", "setOpacity works properly");
+        t.eq(tLayer.div.firstChild.style.opacity, "0.6", "Opacity on tile is changed correctly");
+        var pixel = new OpenLayers.Pixel(5,6);
+        var tile = tLayer.addTile(new OpenLayers.Bounds(1,2,3,4), pixel);
+        tile.draw();
+        t.eq(tile.imgDiv.style.opacity, "0.6", "Tile opacity is set correctly");
+
+    }    
+        
     
     function test_99_Layer_WMS_destroy (t) {
 
