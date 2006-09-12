@@ -121,11 +121,9 @@ class Config:
                  for line in open(filename)
                  if line != "\n"] # Skip blank lines
 
-        self.forceFirst = \
-                    lines[lines.index("[first]") + 1:lines.index("[last]")]
+        self.forceFirst = lines[lines.index("[first]") + 1:lines.index("[last]")]
 
-        self.forceLast = \
-                      lines[lines.index("[last]") + 1:lines.index("[exclude]")]
+        self.forceLast = lines[lines.index("[last]") + 1:lines.index("[exclude]")]
         
         self.exclude =  lines[lines.index("[exclude]") + 1:]
 
@@ -163,9 +161,7 @@ if __name__ == "__main__":
 		    allFiles.append(filepath)
 
     ## Header inserted at the start of each file in the output
-    HEADER = "/* " + "=" * 70 + "\n"\
-             "    %s\n" +\
-             "   " + "=" * 70 + " */\n\n"
+    HEADER = "/* " + "=" * 70 + "    %s\n" + "   " + "=" * 70 + " */\n\n"
 
     files = {}
 
@@ -200,12 +196,10 @@ if __name__ == "__main__":
     ## Move forced first and last files to the required position
     if cfg:
         print "Re-ordering files...\n"
-        order = cfg.forceFirst + \
-                    [item
+        order = cfg.forceFirst + [item
                      for item in order
                      if ((item not in cfg.forceFirst) and
-                         (item not in cfg.forceLast))] + \
-                cfg.forceLast
+                         (item not in cfg.forceLast))] + cfg.forceLast
 
     ## Double check all dependencies have been met
     for fp in order:
