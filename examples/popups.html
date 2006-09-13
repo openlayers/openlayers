@@ -3,8 +3,8 @@
     <meta http-equiv="imagetoolbar" content="no"> <!--ie image gizmo OFF!-->
     <style type="text/css">
         #map {
-            width: 400px;
-            height: 400px;
+            width: 512px;
+            height: 512px;
             border: 1px solid black;
         }
     </style>
@@ -24,15 +24,7 @@
             map.zoomToMaxExtent();
             
         }
-        
-        function bar(e) {
-            alert("body");
-        }
-        function foo(e) {
-            alert("yo");
-            return true;
-        }
-        
+
         function changer() {
             popup.setBackgroundColor("red");
             popup.setSize(new OpenLayers.Size(100,600));
@@ -82,7 +74,6 @@
                 popup.setContentHTML("<a href='http://www.somethingconstructive.net' target='_blank'>click me</a>");
                 popup.setBackgroundColor("yellow");
                 popup.setOpacity(0.7);
-//                popup.events.register("mousedown", popup, onPopupMouseDown);
                 markers.map.addPopup(popup);
             } else {
                 markers.map.removePopup(popup);
@@ -122,14 +113,12 @@
   </head>
   <body onload="init()">
     <div id="map"></div>
-    <div id="foo" style="background-color:purple" onclick="add()"> click to add Popup to map</div>
+    <div style="background-color:purple" onclick="add()"> click to add Popup to map</div>
     <div style="background-color:green" onclick="addMarker()"> click to add a Marker with an AnchoredBubble popup</div>
     <div style="background-color:blue" onclick="changer()"> click to modify popup's attributes</div>
     <div style="background-color:red" onclick="remove()"> click to remove the popup from map</div>
     <div style="background-color:grey" onclick="removelayer()"> click to remove the markers layer</div>
-    <div id="yar" style="background-color:orange" onclick="alert(marker.onScreen())"> marker.onscreen()?</div>
-    <div id="ar" style="background-color:yellow"> 
-        <a href='http://www.somethingconstructive.net' target='_blank'>click me</a>
-    </div>
+    <div style="background-color:orange" onclick="alert(marker.onScreen())"> marker.onscreen()?</div>
+    <div style="background-color:yellow" onclick="destroy()"> click to destroy the popup from map</div> 
   </body>
 </html>
