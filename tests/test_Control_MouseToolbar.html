@@ -24,8 +24,8 @@
 
     }
     function test_03_Control_MouseToolbar_control_events (t) {
+        t.plan( 1 );
         if ((navigator.userAgent.indexOf("compatible") == -1)) { 
-            t.plan( 1 );
             var evt = {which: 1}; // control expects left-click
             map = new OpenLayers.Map('map');
             var layer = new OpenLayers.Layer.WMS("Test Layer", 
@@ -45,6 +45,8 @@
             evt.xy = new OpenLayers.Size(15,15);
             control.defaultMouseUp(evt);
             t.eq(map.getZoom(), 6, "Map zoom set correctly after zoombox");
+        } else {
+            t.ok(true, "IE does not run this test.") 
         }
     }
   // -->
