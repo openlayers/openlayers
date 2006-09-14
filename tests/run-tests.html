@@ -663,7 +663,7 @@ Test.AnotherWay._test_object_t.prototype.delay_call=function()
 Test.AnotherWay._test_object_t.prototype.open_window=function( url, fn, timeout_seconds )
 {
 	if( timeout_seconds==null ) {
-		timeout_seconds=2;
+		timeout_seconds=4;
 	}
 	var no_close=document.getElementById( "dont_close_test_windows" );
 	var action={ action_kind: "window", wnd_url: url.toString(), wnd_wnd: null, wnd_fn: fn, wnd_timeout_milliseconds: timeout_seconds*1000, wnd_no_close: no_close.checked };
