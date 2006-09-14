@@ -1,0 +1,79 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="imagetoolbar" content="no"> <!--ie image gizmo OFF!-->
+    <style type="text/css">
+        #map {
+            width: 100%;
+            height: 512px;
+            border: 1px solid black;
+            background-color: blue;
+        }
+    </style>
+
+    <!-- this gmaps key generated for http://openlayers.org/dev/ -->
+    <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAA9XNhd8q0UdwNC7YSO4YZghSPUCi5aRYVveCcVYxzezM4iaj_gxQ9t-UajFL70jfcpquH5l1IJ-Zyyw'></script>
+    <!-- Localhost key -->
+    <!-- <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhT2yXp_ZAY8_ufC3CFXhHIE1NvwkxTS6gjckBmeABOGXIUiOiZObZESPg'></script>-->
+    <script src='http://dev.virtualearth.net/mapcontrol/v3/mapcontrol.js'></script>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+        var lon = 5;
+        var lat = 40;
+        var zoom = 5;
+        var map, markers;
+        var barcelona = new OpenLayers.LonLat(2.13134765625,
+                                              41.37062534198901);
+        var madrid = new OpenLayers.LonLat(-3.6968994140625,
+                                              40.428314208984375);
+
+        function init(){
+            map = new OpenLayers.Map( $('map') );
+
+            var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                      "http://labs.metacarta.com/wms/vmap0", 
+                      {layers: 'basic'} );
+            var google = new OpenLayers.Layer.Google( "Google Hybrid" , {type: G_HYBRID_MAP });
+            var ve = new OpenLayers.Layer.VirtualEarth( "VE"); 
+            
+
+            map.addLayers([wms, google, ve]);
+
+            markers = new OpenLayers.Layer.Markers("markers");
+            map.addLayer(markers);
+
+            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+            map.addControl( new OpenLayers.Control.LayerSwitcher() );
+
+        }
+        
+        function add() {
+            var url = 'http://boston.openguides.org/markers/AQUA.png';
+            var sz = new OpenLayers.Size(10, 17);
+            var calculateOffset = function(size) {
+                                return new OpenLayers.Pixel(-(size.w/2), -size.h);
+                             };           
+            var icon = new OpenLayers.Icon(url, sz, null, calculateOffset);
+            marker = new OpenLayers.Marker(barcelona, icon);
+            markers.addMarker(marker);
+
+            marker = new OpenLayers.Marker(madrid, icon.clone());
+            markers.addMarker(marker);
+
+        }
+
+        function remove() {
+            markers.removeMarker(marker);
+        }
+                
+    // -->
+
+    </script>
+  </head>
+  <body onload="init()">
+    <h1>OpenLayers With WMS, Google, VE Example</h1>
+    <div id="map"></div>
+    <div style="background-color:green" onclick="add()"> click to add a marker to the map</div>
+    <div style="background-color:red" onclick="remove()"> click to remove the marker from the map</div>
+  </body>
+</html>
