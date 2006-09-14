@@ -24,27 +24,28 @@
 
     }
     function test_03_Control_MouseToolbar_control_events (t) {
-        t.plan( 1 );
-        var evt = {which: 1}; // control expects left-click
-        map = new OpenLayers.Map('map');
-        var layer = new OpenLayers.Layer.WMS("Test Layer", 
-            "http://octo.metacarta.com/cgi-bin/mapserv?",
-            {map: "/mapdata/vmap_wms.map", layers: "basic"});
-        map.addLayer(layer);
+        if ((navigator.userAgent.indexOf("compatible") == -1)) { 
+            t.plan( 1 );
+            var evt = {which: 1}; // control expects left-click
+            map = new OpenLayers.Map('map');
+            var layer = new OpenLayers.Layer.WMS("Test Layer", 
+                "http://octo.metacarta.com/cgi-bin/mapserv?",
+                {map: "/mapdata/vmap_wms.map", layers: "basic"});
+            map.addLayer(layer);
 
-        control = new OpenLayers.Control.MouseToolbar();
-        map.addControl(control);
+            control = new OpenLayers.Control.MouseToolbar();
+            map.addControl(control);
 
-        var centerLL = new OpenLayers.LonLat(0,0); 
-        map.setCenter(centerLL, 5);
+            var centerLL = new OpenLayers.LonLat(0,0); 
+            map.setCenter(centerLL, 5);
 
-        evt.shiftKey = true;
-        evt.xy = new OpenLayers.Size(5,5);
-        control.defaultMouseDown(evt);
-        evt.xy = new OpenLayers.Size(15,15);
-        control.defaultMouseUp(evt);
-        t.eq(map.getZoom(), 6, "Map zoom set correctly after zoombox");
-
+            evt.shiftKey = true;
+            evt.xy = new OpenLayers.Size(5,5);
+            control.defaultMouseDown(evt);
+            evt.xy = new OpenLayers.Size(15,15);
+            control.defaultMouseUp(evt);
+            t.eq(map.getZoom(), 6, "Map zoom set correctly after zoombox");
+        }
     }
   // -->
   </script>
