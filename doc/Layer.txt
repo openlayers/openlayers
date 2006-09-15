@@ -12,7 +12,6 @@ of different layers.
   clone() -- {OpenLayers.Layer} -- create a clone of the layer.
   setName({String|name}) -- none -- Set the name of the layer to something different.
   moveTo({OpenLayers.Bounds|bounds}, {Boolean|zoomChanged}) -- none -- Not implemented here, but the general function called on dragging or setCenter, to move the Layer to a new geographic location.
-  reproject() -- none -- Subclassed by vector layers to redraw vectors when base layer changes.
   setMap(map) -- none -- Set the map property of the layer. Also set the parameters which are inherited from the map.
   getVisibility() -- {Boolean} -- Return true or false based on visibility of the layer.
   setVisibility({Boolean|visible}) -- none -- Set the layer visibility, and trigger the appropriate events.
