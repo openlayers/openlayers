@@ -1,0 +1,40 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 100%;
+            height: 100%;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+        function init(){
+            var map = new OpenLayers.Map('map');
+
+            var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
+
+            var jpl_wms = new OpenLayers.Layer.WMS( "NASA Global Mosaic",
+                "http://wms.jpl.nasa.gov/wms.cgi", 
+                {layers: "modis,global_mosaic"});
+
+            var dm_wms = new OpenLayers.Layer.WMS( "DM Solutions Demo",
+                "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap",
+                {layers: "bathymetry,land_fn,park,drain_fn,drainage," +
+                         "prov_bound,fedlimit,rail,road,popplace",
+                 transparent: "true", format: "image/png" });
+
+            map.addLayers([ol_wms, jpl_wms, dm_wms]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            // map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+            map.zoomToMaxExtent();
+        }
+        // -->
+    </script>
+  </head>
+  <body onload="init()">
+    <div id="map"></div>
+  </body>
+</html>
