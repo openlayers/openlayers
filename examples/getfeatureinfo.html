@@ -1,0 +1,48 @@
+<html>
+<head>
+<script src="http://openlayers.org/api/2.1-rc2/OpenLayers.js"></script>
+<style type="text/css">
+ul, li { padding-left: 0px; margin-left: 0px; }
+</style>
+<title>World Map Query</title> 
+</head>
+<body>
+  <a id='permalink' href="">Permalink</a><br />
+  <div style="float:right;width:28%">
+    <h1 style="font-size:1.3em;">CIA Factbook</h1>
+    <p style='font-size:.8em;'>Click a country to see statistics about the country below.</p>
+    <div id="nodeList">
+    </div>
+  </div>
+  <div id="map" style="width:70%; height:90%"></div>
+  <script defer="defer" type="text/javascript">
+    OpenLayers.ProxyHost = "/dev/examples/proxy.cgi?url=";
+    var map = new OpenLayers.Map('map', {'maxResolution':'auto'});
+    
+    var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+        "http://world.freemap.in/cgi-bin/mapserv?map=/www/freemap.in/world/map/factbook.map", {'layers': 'factbook'} );
+    map.addLayer(wms);
+    map.addControl(new OpenLayers.Control.Permalink($('permalink')));
+    map.zoomToMaxExtent();
+    map.events.register('click', map, function (e) {
+        if(e.altKey) {
+            var url =  wms.getFullRequestString({
+                            REQUEST: "GetFeatureInfo",
+                            EXCEPTIONS: "application/vnd.ogc.se_xml",
+                            BBOX: wms.map.getExtent().toBBOX(),
+                            X: e.xy.x,
+                            Y: e.xy.y,
+                            INFO_FORMAT: 'text/html',
+                            QUERY_LAYERS: wms.params.LAYERS,
+                            WIDTH: wms.map.size.w,
+                            HEIGHT: wms.map.size.h});
+            OpenLayers.loadURL(url, '', this, setHTML);
+            Event.stop(e);
+        }
+      });
+    function setHTML(response) { 
+        $('nodeList').innerHTML = response.responseText;
+    }
+  </script>
+</body>
+</html>
