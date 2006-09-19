@@ -10,16 +10,17 @@
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         <!--
+        var ol_wms, ww, ww2;
         function init(){
-            var map = new OpenLayers.Map('map', {'maxResolution': .0703125*4, tileSize: new OpenLayers.Size(512, 512)});
+            var map = new OpenLayers.Map('map', {'maxResolution': .28125, tileSize: new OpenLayers.Size(512, 512)});
 
-            var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'} );
+            ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+            "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'} );
 
-            var ww = new OpenLayers.Layer.WorldWind( "Bathy", 
-                "http://worldwind25.arc.nasa.gov/tile/tile.aspx?", 36, 4,
-                {T:"bmng.topo.bathy.200406"});
-            var ww2 = new OpenLayers.Layer.WorldWind( "LANDSAT", 
+            ww = new OpenLayers.Layer.WorldWind( "Bathy", 
+            "http://worldwind25.arc.nasa.gov/tile/tile.aspx?", 36, 4,
+            {T:"bmng.topo.bathy.200406"});
+            ww2 = new OpenLayers.Layer.WorldWind( "LANDSAT", 
                 "http://worldwind25.arc.nasa.gov/tile/tile.aspx", 2.25, 4,
                 {T:"105"});
 
@@ -35,5 +36,7 @@
   <body onload="init()">
     <h1>OpenLayers Example</h1>
     <div id="map"></div>
+    <p>This is a demonstration of using Tiled WorldWind layers. WorldWind requires you to define a "LZTD" -- the 3rd param of the constructor -- and the number of zoom levels it supports. When a worldwind layer is not visible at a given tile level, and empty tile is placed there instead. Note that the maxResolution of the map times 512px, must be a multiple of a power of two different from the LZTD -- in this case, .28125 * 512 is 144, which is 36*4, and 2.25*64.</p>
+    <p>This example has a 'Bathy' layer, visible as you zoom out, and a 'landsat' layer, visible as you zoom in, both visible at zoom level 6.</p>
   </body>
 </html>
