@@ -11,7 +11,7 @@
     <script type="text/javascript">
         <!--
         function init(){
-            var map = new OpenLayers.Map('map', {'maxResolution': .0703125*4});
+            var map = new OpenLayers.Map('map', {'maxResolution': .0703125*4, tileSize: new OpenLayers.Size(512, 512)});
 
             var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                 "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'} );
@@ -19,11 +19,9 @@
             var ww = new OpenLayers.Layer.WorldWind( "Bathy", 
                 "http://worldwind25.arc.nasa.gov/tile/tile.aspx?", 36, 4,
                 {T:"bmng.topo.bathy.200406"});
-            ww.setTileSize(new OpenLayers.Size(512,512));
             var ww2 = new OpenLayers.Layer.WorldWind( "LANDSAT", 
                 "http://worldwind25.arc.nasa.gov/tile/tile.aspx", 2.25, 4,
                 {T:"105"});
-            ww2.setTileSize(new OpenLayers.Size(512,512));
 
 
 
