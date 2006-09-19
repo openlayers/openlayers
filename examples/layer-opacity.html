@@ -1,0 +1,86 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        body {
+            font-family: sans-serif;
+        }
+        #map {
+            width: 512px;
+            height: 350px;
+            border: 1px solid lightgray;
+        }
+        p {
+            width: 512px;
+        }
+        a {
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        #opacity {
+            padding: 0;
+            text-align: center;
+            width: 2em;
+            font-family: sans-serif;
+            background: transparent;
+            color: black;
+            border: 0;
+        }
+        p.note {
+            font-style: italic;
+            font-size: 0.8em;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+        var map = null;
+        var shade = null;
+        var maxOpacity = 0.9;
+        var minOpacity = 0.1;
+        function changeOpacity(byOpacity) {
+            var newOpacity = (parseFloat($F('opacity')) + byOpacity).toFixed(1);
+            newOpacity = Math.min(maxOpacity,
+                                  Math.max(minOpacity, newOpacity));
+            $('opacity').value = newOpacity;
+            shade.setOpacity(newOpacity);
+        }
+        function init(){
+            var options = {
+                projection: "EPSG:26912",
+                units: 'm',
+                maxExtent: new OpenLayers.Bounds(455402, 4967657, 473295, 4984095),
+                maxResolution: 'auto',
+                maxZoomLevel: 8
+            };
+            map = new OpenLayers.Map('map', options);
+            var drg = new OpenLayers.Layer.WMS("Topo Maps",
+                "http://terraservice.net/ogcmap.ashx",
+                {layers: "DRG"});
+            shade = new OpenLayers.Layer.WMS("Shaded Relief",
+                "http://ims.cr.usgs.gov:80/servlet19/com.esri.wms.Esrimap/USGS_EDC_Elev_NED_3", 
+                {layers: "HR-NED.IMAGE", reaspect: "false", transparent: 'true'},
+                {isBaseLayer: false, opacity: 0.3});
+            map.addLayers([drg, shade]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.setCenter(new OpenLayers.LonLat(464348.5,4975876), 1);
+        }
+        // -->
+    </script>
+  </head>
+  <body onload="init()">
+    <h2>OpenLayers Layer Opacity Example</h2>
+    <div id="map"></div>
+    <p>
+        Note that if you also have the setOpacity method defined on the Layer
+        class, you can tweak the layer opacity after it has been added to the map.
+    </p>
+    <p>Opacity:
+        <a title="decrease opacity" href="javascript: changeOpacity(-0.1);">&lt;&lt;</a>
+        <input id="opacity" type="text" value="0.3" size="3" disabled="true" />
+        <a title="increase opacity" href="javascript: changeOpacity(0.1);">&gt;&gt;</a>
+    </p>
+    <p class="note">IE users: Wait until the shade layer has finished loading to try this.</p>
+  </body>
+</html>
