@@ -20,7 +20,7 @@ url = fs.getvalue('url', "http://openlayers.org")
 
 # Designed to prevent Open Proxy type stuff.
 
-allowedHosts = ['www.openlayers.org', 'openlayers.org', 'octo.metacarta.com', 'merrimack.metacarta.com', 'labs.metacarta.com']
+allowedHosts = ['www.openlayers.org', 'openlayers.org', 'octo.metacarta.com', 'merrimack.metacarta.com', 'labs.metacarta.com', 'world.freemap.in']
 
 try:
     host = url.split("/")[2]
