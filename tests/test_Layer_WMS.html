@@ -14,8 +14,6 @@
     function test_01_Layer_WMS_constructor (t) {
         t.plan( 4 );
 
-        layer = new OpenLayers.Layer.WMS();
-
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
         layer = new OpenLayers.Layer.WMS(name, url, params);
         t.ok( layer instanceof OpenLayers.Layer.WMS, "new OpenLayers.Layer.WMS returns object" );
