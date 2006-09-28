@@ -53,12 +53,19 @@
      }
 
      function test_04_Bounds_contains(t) {
-         t.plan( 4 );
+         t.plan( 6 );
          bounds = new OpenLayers.Bounds(10,10,40,40);
          t.eq( bounds.contains(20,20), true, "bounds(10,10,40,40) correctly contains LonLat(20,20)" );
          t.eq( bounds.contains(0,0), false, "bounds(10,10,40,40) correctly does not contain LonLat(0,0)" );
          t.eq( bounds.contains(40,40), true, "bounds(10,10,40,40) correctly contains LonLat(40,40) with inclusive set to true" );
          t.eq( bounds.contains(40,40, false), false, "bounds(10,10,40,40) correctly does not contain LonLat(40,40) with inclusive set to false" );
+
+         var px = new OpenLayers.Pixel(15,30);
+         t.eq( bounds.containsPixel(px), bounds.contains(px.x, px.y), "containsPixel works");
+
+         var ll = new OpenLayers.LonLat(15,30);
+         t.eq( bounds.containsLonLat(ll), bounds.contains(ll.lon, ll.lat), "containsLonLat works");
+
      }
 
      function test_05_Bounds_fromString(t) {

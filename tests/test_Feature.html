@@ -76,6 +76,32 @@
               "Layer div img contains correct url" );
 */
     }
+    
+    function test_03_Feature_onScreen(t) {
+        t.plan( 2 );
+
+        var map = new OpenLayers.Map("map");
+
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        var wms = new OpenLayers.Layer.WMS(name, url);
+
+        map.addLayer(wms);
+
+        var layer = new OpenLayers.Layer("foo");
+        map.addLayer(layer);
+        
+        map.zoomToExtent(new OpenLayers.Bounds(-50,-50,50,50));
+
+        //onscreen feature
+        var feature1 = new OpenLayers.Feature(layer, 
+                                              new OpenLayers.LonLat(0,0));
+        t.ok( feature1.onScreen(), "feature knows it's onscreen" );
+
+        //onscreen feature
+        var feature2 = new OpenLayers.Feature(layer, 
+                                              new OpenLayers.LonLat(100,100));
+        t.ok( !feature2.onScreen(), "feature knows it's offscreen" );
+    }
 
   // -->
   </script>
