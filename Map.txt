@@ -54,7 +54,7 @@ Instantiate class {OpenLayers.Map} in order to create a map. This is the central
   changelayer -- a layer has some property of it, typically visibility, changed.
   changebaselayer -- the current base layer changes
   movestart -- start of a movement in the map       
-  move -- end of movement in a map -- this happens while te mouse is dragging as well as for all other events.
+  move -- end of movement in a map. this happens while te mouse is dragging as well as for all other events.
   moveend -- end of movement in a map, but does not happen when the move is 'minor', as is the case when the move event is in the middle of a drag action.         
   zoomend -- end of a zoom action
   mouseover -- map is moused over
