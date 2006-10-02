@@ -24,7 +24,8 @@
                 "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap",
                 {layers: "bathymetry,land_fn,park,drain_fn,drainage," +
                          "prov_bound,fedlimit,rail,road,popplace",
-                 transparent: "true", format: "image/png" });
+                 transparent: "true", format: "image/png" },
+                 { displayInLayerSwitcher: false });
 
             map.addLayers([ol_wms, jpl_wms, dm_wms]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
