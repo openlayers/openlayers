@@ -26,7 +26,7 @@
             {controls:[new OpenLayers.Control.MouseDefaults()]});
 
             velayer = new OpenLayers.Layer.VirtualEarth( "VE",
-            { minZoomLevel: 4, maxZoomLevel: 6 }); 
+            { minZoomLevel: 4, maxZoomLevel: 6, 'type': VEMapStyle.Aerial}); 
             map.addLayer(velayer);
             
             markers = new OpenLayers.Layer.Markers("markers");
