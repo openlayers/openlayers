@@ -107,7 +107,44 @@
         t.eq( bounds.left, 1, "changing olBounds.left does not change bounds.left" );
      }
 
-     function test_08_Bounds_containsBounds(t) {
+     function test_08a_Bounds_intersectsBounds(t) {
+         t.plan( 15 );
+
+        var aBounds = new OpenLayers.Bounds(-180, -90, 180, 90);
+
+        //inside
+        var bBounds = new OpenLayers.Bounds(-20, -10, 20, 10);
+        t.eq( aBounds.intersectsBounds(bBounds),        true, "(" + aBounds.toBBOX() + ") correctly intersects (" + bBounds.toBBOX() + ")" );
+        t.eq( aBounds.intersectsBounds(bBounds, true),  true, "(" + aBounds.toBBOX() + ") correctly intersects (" + bBounds.toBBOX() + "), inclusive is true" );
+        t.eq( aBounds.intersectsBounds(bBounds, false), true, "(" + aBounds.toBBOX() + ") correctly intersects (" + bBounds.toBBOX() + "), inclusive is false" );
+
+        //outside
+        bBounds = new OpenLayers.Bounds(-181, -91, 181, 91);
+        t.eq( aBounds.intersectsBounds(bBounds),        true, "(" + aBounds.toBBOX() + ") correctly intersects (" + bBounds.toBBOX() + ")" );
+        t.eq( aBounds.intersectsBounds(bBounds, true),  true, "(" + aBounds.toBBOX() + ") correctly intersects (" + bBounds.toBBOX() + "), inclusive is true" );
+        t.eq( aBounds.intersectsBounds(bBounds, false), true, "(" + aBounds.toBBOX() + ") correctly intersects (" + bBounds.toBBOX() + "), inclusive is false" );
+
+        //total intersect
+        bBounds = new OpenLayers.Bounds(-185, -100, 20, 50);
+        t.eq( aBounds.intersectsBounds(bBounds),        true, "(" + aBounds.toBBOX() + ") correctly intersects (" + bBounds.toBBOX() + ")" );
+        t.eq( aBounds.intersectsBounds(bBounds, true),  true, "(" + aBounds.toBBOX() + ") correctly intersects (" + bBounds.toBBOX() + "), inclusive is true" );
+        t.eq( aBounds.intersectsBounds(bBounds, false), true, "(" + aBounds.toBBOX() + ") correctly intersects (" + bBounds.toBBOX() + "), inclusive is false" );
+
+        //border intersect
+        bBounds = new OpenLayers.Bounds(-360, -180, -180, -90);
+        t.eq( aBounds.intersectsBounds(bBounds),        true, "(" + aBounds.toBBOX() + ") correctly intersects (" + bBounds.toBBOX() + ")" );
+        t.eq( aBounds.intersectsBounds(bBounds, true),  true, "(" + aBounds.toBBOX() + ") correctly intersects (" + bBounds.toBBOX() + "), inclusive is true" );
+        t.eq( aBounds.intersectsBounds(bBounds, false), false, "(" + aBounds.toBBOX() + ") does not intersect (" + bBounds.toBBOX() + "), inclusive is false" );
+
+        //no intersect
+        bBounds = new OpenLayers.Bounds(-360, -180, -185, -95);
+        t.eq( aBounds.intersectsBounds(bBounds),        false, "(" + aBounds.toBBOX() + ") does not intersect (" + bBounds.toBBOX() + ")" );
+        t.eq( aBounds.intersectsBounds(bBounds, true),  false, "(" + aBounds.toBBOX() + ") does not intersect (" + bBounds.toBBOX() + "), inclusive is true" );
+        t.eq( aBounds.intersectsBounds(bBounds, false), false, "(" + aBounds.toBBOX() + ") does not intersect (" + bBounds.toBBOX() + "), inclusive is false" );
+
+     }
+     
+     function test_08b_Bounds_containsBounds(t) {
          t.plan( 35 );
          containerBounds = new OpenLayers.Bounds(10,10,40,40);
 
