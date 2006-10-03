@@ -74,6 +74,8 @@
         var testBounds = new OpenLayers.Bounds(1,2,3,4);
         
         t.ok( bounds.equals(testBounds), "getGridBounds() returns correct bounds")
+
+        layer.grid = null;
     }
 
     function test_05_Layer_Grid_getResolution(t) {
@@ -148,6 +150,8 @@
         t.eq( clone.tileSize.w, 500, "changing layer.tileSize does not change clone.tileSize -- a fresh copy was made, not just copied reference");
 
         t.eq( clone.alpha, layer.alpha, "alpha copied correctly");
+
+        layer.grid = null;
     }
 
     function test_11_Layer_Grid_setMap(t) {

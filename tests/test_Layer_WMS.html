@@ -86,6 +86,8 @@
         t.eq( clone.tileSize.w, 500, "changing layer.tileSize does not change clone.tileSize -- a fresh copy was made, not just copied reference");
 
         t.eq( clone.alpha, layer.alpha, "alpha copied correctly");
+
+        layer.grid = null;
     }
 
     function test_05_Layer_WMS_isBaseLayer(t) {
