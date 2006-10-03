@@ -78,7 +78,7 @@
         t.eq( div.style.position, position, "div.style.positionset correctly");    
         t.ok( (div.style.border.indexOf(border) != -1), "div.style.border set correctly");    
         t.eq( div.style.overflow, overflow, "div.style.overflow set correctly");    
-        t.eq( div.style.opacity, opacity + "", "elemnt.style.opacity set correctly");    
+        t.eq( div.style.opacity + "", opacity + "", "elemnt.style.opacity set correctly");    
         var filterString = 'alpha(opacity=' + (opacity * 100) + ')';
         t.eq( div.style.filter, filterString, "element.style.filter set correctly");
 
@@ -133,7 +133,7 @@
         t.ok( (image.style.border.indexOf(border) != -1), "image.style.border set correctly");    
         t.eq( image.src, img, "image.style.backgroundImage correctly");    
         t.eq( image.style.position, position, "image.style.position set correctly");    
-        t.eq( image.style.opacity, opacity + "", "image.style.opacity set correctly");    
+        t.eq( image.style.opacity+"", opacity + "", "image.style.opacity set correctly");    
         var filterString = 'alpha(opacity=' + (opacity * 100) + ')';
         t.eq( image.style.filter, filterString, "element.style.filter set correctly");
 
@@ -216,8 +216,14 @@
         t.eq( imageDiv.style.height, sz.h + "px", "image.style.height set correctly");    
 
         t.eq( imageDiv.style.position, position, "image.style.positionset correctly");    
-        t.eq( imageDiv.style.opacity, opacity + "", "elemnt.style.opacity set correctly");    
-        var filterString = 'alpha(opacity=' + (opacity * 100) + ')';
+        t.eq( imageDiv.style.opacity+"", opacity + "", "elemnt.style.opacity set correctly");    
+        
+        var filterString;
+        if (OpenLayers.Util.alphaHack()) {
+            filterString = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.openlayers.org/images/OpenLayers.trac.png', sizingMethod='crop') alpha(opacity=50)";
+        } else {
+            filterString = 'alpha(opacity=' + (opacity * 100) + ')';
+        }        
         t.eq( imageDiv.style.filter, filterString, "element.style.filter set correctly");
 
 
@@ -241,7 +247,7 @@
 
             var filter = "progid:DXImageTransform.Microsoft" +
                          ".AlphaImageLoader(src='" + img + "', " +
-                         "sizingMethod='" + sizing + "')";
+                         "sizingMethod='" + sizing + "') alpha(opacity=50)";
             t.eq(imageDiv.style.filter, filter, "div filter value correctly set");
 
             filter = "progid:DXImageTransform.Microsoft.Alpha(opacity=0)";
@@ -292,7 +298,7 @@
         t.eq( element.style.position, position, "element.style.position set correctly");    
         t.ok( (element.style.border.indexOf(border) != -1), "element.style.border set correctly");    
         t.eq( element.style.overflow, overflow, "element.style.overflow set correctly");    
-        t.eq( element.style.opacity, opacity + "", "elemnt.style.opacity set correctly");    
+        t.eq( element.style.opacity+"", opacity + "", "elemnt.style.opacity set correctly");    
         var filterString = 'alpha(opacity=' + (opacity * 100) + ')';
         t.eq( element.style.filter, filterString, "element.style.filter set correctly");
     }
@@ -326,17 +332,21 @@
         t.eq( imageDiv.style.height, sz.h + "px", "image.style.height set correctly");    
 
         t.eq( imageDiv.style.position, position, "image.style.position set correctly");    
-        t.eq( imageDiv.style.opacity, opacity + "", "elemnt.style.opacity set correctly");    
-        var filterString = 'alpha(opacity=' + (opacity * 100) + ')';
-        t.eq( imageDiv.style.filter, filterString, "element.style.filter set correctly");
+        t.eq( imageDiv.style.opacity+"", opacity + "", "elemnt.style.opacity set correctly");    
 
+        
 
         image = imageDiv.firstChild;
 
-        if (OpenLayers.Util.alphaHack())
+        var filterString;
+        if (OpenLayers.Util.alphaHack()) {
+            filterString = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.openlayers.org/images/OpenLayers.trac.png', sizingMethod='crop') alpha(opacity=50)";
             t.ok( true, "skipping element test outside of Mozilla");
-        else
+        } else {
+            var filterString = 'alpha(opacity=' + (opacity * 100) + ')';
             t.ok( image instanceof HTMLImageElement, "createImage creates a valid HTMLImageElement" );
+        }
+        t.eq( imageDiv.style.filter, filterString, "element.style.filter set correctly");
         t.eq( image.id, id + "_innerImage", "image.id set correctly");    
 
         t.eq( image.style.width, sz.w + "px", "image.style.width set correctly");    
@@ -367,7 +377,7 @@
         if (OpenLayers.Util.alphaHack()) {
             var filter = "progid:DXImageTransform.Microsoft" +
                          ".AlphaImageLoader(src='" + img + "', " +
-                         "sizingMethod='scale')";
+                         "sizingMethod='scale') alpha(opacity=" + opacity *100 + ")";
             t.eq(imageDiv.style.filter, filter, "sizingMethod default correctly set to scale");
         } else {
             t.ok(true);
