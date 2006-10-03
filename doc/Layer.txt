@@ -22,6 +22,7 @@ of different layers.
   getViewPortPxFromLonLat({OpenLayers.LonLat|lonlat}) -- {OpenLayers.Pixel} -- Returns An OpenLayers.Pixel which is the passed-in OpenLayers.LonLat, translated into view port pixels
   
 * Parameters
+  displayOutsideMaxExtent -- Determine whether images or data are loaded outside the maxExtent. Default is false.
   isBaseLayer -- This determines whether the layer is a base layer or an overlay. Only one Base Layer can be displayed on the map at once. Default is false.
   projection -- SRS string to describe the layer. If this is set on the map before the Layer is added to the map, it will inherit from the map.
   maxExtent -- an OpenLayers.Bounds for the layer. This is the maximum geographic extent of the layer. If this is set on the map before the Layer is added to the map, it will inherit from the map.

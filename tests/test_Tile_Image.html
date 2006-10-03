@@ -27,7 +27,7 @@
     function test_02_Tile_Image_draw (t) {
         t.plan( 5 );
 
-        var layer = new Object(); //bogus layer
+        var layer = {maxExtent:new OpenLayers.Bounds(-180,-90,180,90)}; //bogus layer
         layer.div = document.createElement("div");
         var position = new OpenLayers.Pixel(20,30);
         var bounds = new OpenLayers.Bounds(1,2,3,4);
@@ -51,11 +51,57 @@
         t.eq( tile.imgDiv.style.width, "5px", "Image width is correct" );
         t.eq( tile.imgDiv.style.height, "6px", "Image height is correct" );
     }
-
+    function test_03_Tile_Image_OutsideMaxExtent(t) {
+        t.plan( 11 );
+        var position = new OpenLayers.Pixel(20,30);
+        var bounds = new OpenLayers.Bounds(1,2,3,4);
+        var url = "http://www.openlayers.org/dev/tests/tileimage";
+        var size = new OpenLayers.Size(5,6);
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+            "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
+        map.addLayer(layer);
+        tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-185,-90,-180,90), url, size);
+        tile.draw()
+        t.eq(tile.imgDiv.src, "", "Images against side of maxextent don't load");
+        tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-181,-91,180,90), url, size);
+        tile.draw()
+        t.eq(tile.imgDiv.src, "http://www.openlayers.org/dev/tests/tileimage", "Images over edges of maxextent do load");
+        tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-181,-90,180,90), url, size);
+        tile.draw()
+        t.eq(tile.imgDiv.src, "http://www.openlayers.org/dev/tests/tileimage", "Images over edges of maxextent do load");
+        tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-180,-90,180,90), url, size);
+        tile.draw()
+        t.eq(tile.imgDiv.src, "http://www.openlayers.org/dev/tests/tileimage", "Image covering all of extent loads");
+        tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-80,-45,80,45), url, size);
+        tile.draw()
+        t.eq(tile.imgDiv.src, "http://www.openlayers.org/dev/tests/tileimage", "Image covering small part of extent loads");
+        tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-185,-95,185,95), url, size);
+        tile.draw()
+        t.eq(tile.imgDiv.src, "http://www.openlayers.org/dev/tests/tileimage", "Image covering more than all of extent loads");
+        
+        layer.displayOutsideMaxExtent=1;
+        tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-185,-90,-180,90), url, size);
+        tile.draw()
+        t.eq(tile.imgDiv.src, "http://www.openlayers.org/dev/tests/tileimage", "Images against side of maxextent do load with displayOutsideMaxExtent");
+        tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-181,-90,180,90), url, size);
+        tile.draw()
+        t.eq(tile.imgDiv.src, "http://www.openlayers.org/dev/tests/tileimage", "Images over edges of maxextent do load with displayOutsideMaxExtent set");
+        tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-180,-90,180,90), url, size);
+        tile.draw()
+        t.eq(tile.imgDiv.src, "http://www.openlayers.org/dev/tests/tileimage", "Image covering all of extent loads with display outside max extent");
+        tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-80,-45,80,45), url, size);
+        tile.draw()
+        t.eq(tile.imgDiv.src, "http://www.openlayers.org/dev/tests/tileimage", "Image covering small part of extent loads with display outside max extent");
+        tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-185,-95,185,95), url, size);
+        tile.draw()
+        t.eq(tile.imgDiv.src, "http://www.openlayers.org/dev/tests/tileimage", "Image covering more than all of extent loads");
+    } 
   // -->
   </script>
 </head>
 <body>
+<div id="map"></div>
 </body>
 </html>
 
