@@ -178,7 +178,7 @@
     }
 
     function test_08_Util_createAlphaImageDiv(t) {
-        t.plan( 17 );
+        t.plan( 18 );
 
         var img = "http://www.openlayers.org/images/OpenLayers.trac.png";
         var sz = new OpenLayers.Size(10,10);
@@ -187,8 +187,9 @@
         var id = "boo";
         var border = "1px solid";
         var sizing = "crop";
+        var opacity = 0.5;
 
-        var imageDiv = OpenLayers.Util.createAlphaImageDiv(id, xy, sz, img, position, border, sizing);
+        var imageDiv = OpenLayers.Util.createAlphaImageDiv(id, xy, sz, img, position, border, sizing, opacity);
 
         if (!isMozilla)
             t.ok( true, "skipping element test outside of Mozilla");
@@ -203,6 +204,7 @@
         t.eq( imageDiv.style.height, sz.h + "px", "image.style.height set correctly");    
 
         t.eq( imageDiv.style.position, position, "image.style.positionset correctly");    
+        t.eq( imageDiv.style.opacity, opacity + "", "image.style.opacity set correctly");    
 
 
         image = imageDiv.firstChild;
@@ -307,7 +309,7 @@
         t.eq( imageDiv.style.height, sz.h + "px", "image.style.height set correctly");    
 
         t.eq( imageDiv.style.position, position, "image.style.position set correctly");    
-        t.eq( imageDiv.style.opacity, opacity, "image.style.opacity set correctly");    
+        t.eq( imageDiv.style.opacity, opacity + "", "image.style.opacity set correctly");    
 
 
         image = imageDiv.firstChild;
