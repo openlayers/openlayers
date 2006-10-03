@@ -49,7 +49,7 @@
     }
 
     function test_04_Util_createDiv(t) {
-        t.plan( 20 );
+        t.plan( 24 );
 
         var id = "boo";
         var px = new OpenLayers.Pixel(5,5);
@@ -58,8 +58,9 @@
         var position = "absolute";
         var border = "13px solid";
         var overflow = "hidden";
+        var opacity = 0.5;
 
-        var div = OpenLayers.Util.createDiv(id, px, sz, img, position, border, overflow);
+        var div = OpenLayers.Util.createDiv(id, px, sz, img, position, border, overflow, opacity);
 
         if (!isMozilla)
             t.ok( true, "skipping element test outside of Mozilla");
@@ -77,6 +78,9 @@
         t.eq( div.style.position, position, "div.style.positionset correctly");    
         t.ok( (div.style.border.indexOf(border) != -1), "div.style.border set correctly");    
         t.eq( div.style.overflow, overflow, "div.style.overflow set correctly");    
+        t.eq( div.style.opacity, opacity + "", "elemnt.style.opacity set correctly");    
+        var filterString = 'alpha(opacity=' + (opacity * 100) + ')';
+        t.eq( div.style.filter, filterString, "element.style.filter set correctly");
 
         //test defaults
         var div = OpenLayers.Util.createDiv();
@@ -97,11 +101,13 @@
         t.eq( div.style.position, "absolute", "div.style.positionset correctly");    
         t.eq( div.style.border, "", "div.style.border set correctly");    
         t.eq(div.style.overflow, "", "div.style.overflow set correctly");    
+        t.ok( !div.style.opacity, "elemnt.style.opacity set correctly");    
+        t.ok( !div.style.filter, "element.style.filter set correctly");
 
     }
 
     function test_05_Util_createImage(t) {
-        t.plan( 18 );
+        t.plan( 22 );
 
         var img = "http://www.openlayers.org/images/OpenLayers.trac.png";
         var sz = new OpenLayers.Size(10,10);
@@ -109,8 +115,9 @@
         var position = "absolute";
         var id = "boo";
         var border = "1px solid";
+        var opacity = 0.5;
 
-        var image = OpenLayers.Util.createImage(id, xy, sz, img, position, border);
+        var image = OpenLayers.Util.createImage(id, xy, sz, img, position, border, opacity);
 
         if (!isMozilla)
             t.ok( true, "skipping element test outside of Mozilla");
@@ -125,7 +132,10 @@
 
         t.ok( (image.style.border.indexOf(border) != -1), "image.style.border set correctly");    
         t.eq( image.src, img, "image.style.backgroundImage correctly");    
-        t.eq( image.style.position, position, "image.style.positionset correctly");    
+        t.eq( image.style.position, position, "image.style.position set correctly");    
+        t.eq( image.style.opacity, opacity + "", "image.style.opacity set correctly");    
+        var filterString = 'alpha(opacity=' + (opacity * 100) + ')';
+        t.eq( image.style.filter, filterString, "element.style.filter set correctly");
 
         //test defaults
         var image = OpenLayers.Util.createImage();
@@ -144,6 +154,8 @@
         t.ok((image.style.border == ""), "image.style.border set correctly");    
         t.eq(image.src, "", "image.style.backgroundImage correctly");    
         t.eq( image.style.position, "relative", "image.style.positionset correctly");    
+        t.ok( !image.style.opacity, "elemnt.style.opacity default unset");    
+        t.ok( !image.style.filter, "element.style.filter default unset");
 
     }
 
@@ -178,7 +190,7 @@
     }
 
     function test_08_Util_createAlphaImageDiv(t) {
-        t.plan( 18 );
+        t.plan( 19 );
 
         var img = "http://www.openlayers.org/images/OpenLayers.trac.png";
         var sz = new OpenLayers.Size(10,10);
@@ -204,7 +216,9 @@
         t.eq( imageDiv.style.height, sz.h + "px", "image.style.height set correctly");    
 
         t.eq( imageDiv.style.position, position, "image.style.positionset correctly");    
-        t.eq( imageDiv.style.opacity, opacity + "", "image.style.opacity set correctly");    
+        t.eq( imageDiv.style.opacity, opacity + "", "elemnt.style.opacity set correctly");    
+        var filterString = 'alpha(opacity=' + (opacity * 100) + ')';
+        t.eq( imageDiv.style.filter, filterString, "element.style.filter set correctly");
 
 
         image = imageDiv.firstChild;
@@ -284,7 +298,7 @@
     }
 
     function test_09_Util_modifyAlphaImageDiv(t) {
-        t.plan( 18 );
+        t.plan( 19 );
 
         var imageDiv = OpenLayers.Util.createAlphaImageDiv();
 
@@ -312,7 +326,9 @@
         t.eq( imageDiv.style.height, sz.h + "px", "image.style.height set correctly");    
 
         t.eq( imageDiv.style.position, position, "image.style.position set correctly");    
-        t.eq( imageDiv.style.opacity, opacity + "", "image.style.opacity set correctly");    
+        t.eq( imageDiv.style.opacity, opacity + "", "elemnt.style.opacity set correctly");    
+        var filterString = 'alpha(opacity=' + (opacity * 100) + ')';
+        t.eq( imageDiv.style.filter, filterString, "element.style.filter set correctly");
 
 
         image = imageDiv.firstChild;
