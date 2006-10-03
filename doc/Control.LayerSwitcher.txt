@@ -11,4 +11,4 @@ This control will by default display a small image in the upper right corner of 
 * Parameters
   position -- (inherited from {OpenLayers.Control}) {OpenLayers.Pixel} to use as the top-left corner of the control div, relative to the map area.
   activeColor -- The color to use for the background of the layer switcher div.
-
+  ascending -- Ascending determines whether layers are added to the layer switcher in ascending or descending order. If ascending is true, the lowest layer is appended to the list first. If ascending is false, the lowest layer is at the very bottom of the LayerSwitcher. Default is true.  

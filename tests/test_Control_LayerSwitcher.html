@@ -81,6 +81,28 @@
         t.eq(markersInput.value, markers.name, "wms correctly valued");
 
     }
+    function test_05_Control_LayerSwitcher_ascendingw (t) {
+
+        t.plan( 4 );
+
+        map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS("WMS", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(layer);
+
+        markers = new OpenLayers.Layer.Markers("markers");
+        map.addLayer(markers);
+
+        control = new OpenLayers.Control.LayerSwitcher();
+        map.addControl(control);
+        control2 = new OpenLayers.Control.LayerSwitcher({'ascending':false});
+        map.addControl(control2);
+        t.eq(control.div.childNodes[1].childNodes[0].innerHTML, "<u>Base Layer</u>", "Base Layers first in LayerSwitcher with ascending true");
+        t.eq(control.div.childNodes[1].childNodes[2].innerHTML, "<u>Overlays</u>", "Overlays in LayerSwitcher with ascending true");
+        t.eq(control2.div.childNodes[1].childNodes[2].innerHTML, "<u>Base Layer</u>", "Base Layers last in LayerSwitcher with ascending false");
+        t.eq(control2.div.childNodes[1].childNodes[0].innerHTML, "<u>Overlays</u>", "Base Layers last in LayerSwitcher with ascending false");
+    }
 
 
   // -->
