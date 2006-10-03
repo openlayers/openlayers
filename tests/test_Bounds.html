@@ -108,7 +108,7 @@
      }
 
      function test_08a_Bounds_intersectsBounds(t) {
-         t.plan( 16 );
+         t.plan( 17 );
 
         var aBounds = new OpenLayers.Bounds(-180, -90, 180, 90);
 
@@ -118,6 +118,7 @@
         t.eq( aBounds.intersectsBounds(bBounds),        true, "(" + aBounds.toBBOX() + ") correctly intersects (" + bBounds.toBBOX() + ")" );
         t.eq( aBounds.intersectsBounds(bBounds, true),  true, "(" + aBounds.toBBOX() + ") correctly intersects (" + bBounds.toBBOX() + "), inclusive is true" );
         t.eq( aBounds.intersectsBounds(bBounds, false), true, "(" + aBounds.toBBOX() + ") correctly intersects (" + bBounds.toBBOX() + "), inclusive is false" );
+        t.eq( aBounds.intersectsBounds(cBounds, false), true, "aBounds with cBounds adjusted one degree left passes intersect bounds. (3 sides match, 1 side different)." );
         t.eq( cBounds.intersectsBounds(aBounds, false), true, "cBounds with aBounds adjusted one degree left passes intersect bounds. (3 sides match, 1 side different)." );
 
         //outside
