@@ -448,7 +448,7 @@
         resolution = OpenLayers.Util.getResolutionFromScale(scale);
         t.eq(resolution.toFixed(6), "0.476217", "Calculated correct resolution for " + scale);
 
-        scale = 1/150000000; 
+        scale = 150000000; 
         resolution = OpenLayers.Util.getResolutionFromScale(scale);
         t.eq(OpenLayers.Util.getScaleFromResolution(resolution), scale, "scale->resolution->scale works");
     }
