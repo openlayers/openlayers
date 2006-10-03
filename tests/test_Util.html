@@ -253,7 +253,7 @@
 
     function test_09_Util_modifyDOMElement(t) {
 
-        t.plan( 8 );
+        t.plan( 10 );
 
         var id = "boo";
         var px = new OpenLayers.Pixel(5,5);
@@ -261,11 +261,12 @@
         var position = "absolute";
         var border = "1px solid";
         var overflow = "hidden";
+        var opacity = 1/2;
 
         var element = document.createElement("div");
 
-        OpenLayers.Util.modifyDOMElement(element, id, px, sz, 
-                                         position, border, overflow);
+        OpenLayers.Util.modifyDOMElement(element, id, px, sz, position, 
+                                         border, overflow, opacity);
 
         t.eq( element.id, id, "element.id set correctly");    
         t.eq( element.style.left, px.x + "px", "element.style.left set correctly");    
@@ -277,7 +278,9 @@
         t.eq( element.style.position, position, "element.style.position set correctly");    
         t.ok( (element.style.border.indexOf(border) != -1), "element.style.border set correctly");    
         t.eq( element.style.overflow, overflow, "element.style.overflow set correctly");    
-
+        t.eq( element.style.opacity, opacity + "", "elemnt.style.opacity set correctly");    
+        var filterString = 'alpha(opacity=' + (opacity * 100) + ')';
+        t.eq( element.style.filter, filterString, "element.style.filter set correctly");
     }
 
     function test_09_Util_modifyAlphaImageDiv(t) {
