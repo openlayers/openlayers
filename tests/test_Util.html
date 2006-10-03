@@ -294,7 +294,7 @@
 
         OpenLayers.Util.modifyAlphaImageDiv(imageDiv, id, xy, sz, img, position, border, sizing, opacity);
 
-        if (!isMozilla)
+        if (OpenLayers.Util.alphaHack())
             t.ok( true, "skipping element test outside of Mozilla");
         else
             t.ok( imageDiv instanceof HTMLDivElement, "createDiv creates a valid HTMLDivElement" );
@@ -312,7 +312,7 @@
 
         image = imageDiv.firstChild;
 
-        if (!isMozilla)
+        if (OpenLayers.Util.alphaHack())
             t.ok( true, "skipping element test outside of Mozilla");
         else
             t.ok( image instanceof HTMLImageElement, "createImage creates a valid HTMLImageElement" );
