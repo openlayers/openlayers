@@ -279,7 +279,7 @@
     }
 
     function test_09_Util_modifyAlphaImageDiv(t) {
-        t.plan( 17 );
+        t.plan( 18 );
 
         var imageDiv = OpenLayers.Util.createAlphaImageDiv();
 
@@ -290,8 +290,9 @@
         var id = "boo";
         var border = "1px solid";
         var sizing = "crop";
+        var opacity = "0.5";
 
-        OpenLayers.Util.modifyAlphaImageDiv(imageDiv, id, xy, sz, img, position, border, sizing);
+        OpenLayers.Util.modifyAlphaImageDiv(imageDiv, id, xy, sz, img, position, border, sizing, opacity);
 
         if (!isMozilla)
             t.ok( true, "skipping element test outside of Mozilla");
@@ -305,7 +306,8 @@
         t.eq( imageDiv.style.width, sz.w + "px", "image.style.width set correctly");    
         t.eq( imageDiv.style.height, sz.h + "px", "image.style.height set correctly");    
 
-        t.eq( imageDiv.style.position, position, "image.style.positionset correctly");    
+        t.eq( imageDiv.style.position, position, "image.style.position set correctly");    
+        t.eq( imageDiv.style.opacity, opacity, "image.style.opacity set correctly");    
 
 
         image = imageDiv.firstChild;
@@ -328,7 +330,7 @@
 
             var filter = "progid:DXImageTransform.Microsoft" +
                          ".AlphaImageLoader(src='" + img + "', " +
-                         "sizingMethod='" + sizing + "')";
+                         "sizingMethod='" + sizing + "') alpha(opacity=" + opacity *100 + ")";
             t.eq(imageDiv.style.filter, filter, "div filter value correctly set");
 
             filter = "progid:DXImageTransform.Microsoft.Alpha(opacity=0)";
@@ -340,7 +342,7 @@
             t.ok(true, "image filter value not set (not in IE)");
         }
 
-        var imageDiv = OpenLayers.Util.createAlphaImageDiv(id, xy, sz, img, position, border);
+        var imageDiv = OpenLayers.Util.createAlphaImageDiv(id, xy, sz, img, position, border, "scale", opacity);
         if (OpenLayers.Util.alphaHack()) {
             var filter = "progid:DXImageTransform.Microsoft" +
                          ".AlphaImageLoader(src='" + img + "', " +
