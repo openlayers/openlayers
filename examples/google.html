@@ -11,7 +11,7 @@
     </style>
 
     <!-- this gmaps key generated for http://openlayers.org/dev/ -->
-    <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAA9XNhd8q0UdwNC7YSO4YZghSPUCi5aRYVveCcVYxzezM4iaj_gxQ9t-UajFL70jfcpquH5l1IJ-Zyyw'></script>
+    <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
     <!-- Localhost key -->
     <!-- <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhT2yXp_ZAY8_ufC3CFXhHIE1NvwkxTS6gjckBmeABOGXIUiOiZObZESPg'></script>-->
     <script src="../lib/OpenLayers.js"></script>
@@ -19,25 +19,22 @@
         <!--
         var lon = 5;
         var lat = 40;
-        var zoom = 5;
+        var zoom = 18;
         var map, layer;
 
         function init(){
             map = new OpenLayers.Map( $('map') , 
-            { controls: [new OpenLayers.Control.MouseDefaults()] });
+            { controls: [new OpenLayers.Control.MouseDefaults()] , 'numZoomLevels':20});
 
-            var normal = new OpenLayers.Layer.Google( "Google", // );
-             { minZoomLevel: 3, maxZoomLevel: 8  });
-            var satellite = new OpenLayers.Layer.Google( "Google Satellite" , {type: G_SATELLITE_MAP });
-            var hybrid = new OpenLayers.Layer.Google( "Google Hybrid" , {type: G_HYBRID_MAP });
+            var satellite = new OpenLayers.Layer.Google( "Google Satellite" , {type: G_SATELLITE_MAP, 'maxZoomLevel':18} );
 
 
-            map.addLayers([satellite, normal, hybrid]);
+            map.addLayers([satellite]);
 
             markers = new OpenLayers.Layer.Markers("markers");
             map.addLayer(markers);
 
-            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+            map.setCenter(new OpenLayers.LonLat(10.205188,48.857593), zoom);
             map.addControl( new OpenLayers.Control.LayerSwitcher() );
             map.addControl( new OpenLayers.Control.PanZoomBar() );
 
