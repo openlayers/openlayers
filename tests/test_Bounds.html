@@ -41,9 +41,18 @@
     }
 
      function test_02_Bounds_toBBOX(t) {
-         t.plan( 1 );
+         t.plan( 5 );
          bounds = new OpenLayers.Bounds(1,2,3,4);
          t.eq( bounds.toBBOX(), "1,2,3,4", "toBBOX() returns correct value." );
+         bounds = new OpenLayers.Bounds(1.00000001,2,3,4);
+         t.eq( bounds.toBBOX(), "1,2,3,4", "toBBOX() rounds off small differences." );
+         bounds = new OpenLayers.Bounds(1.00000001,2.5,3,4);
+         t.eq( bounds.toBBOX(), "1,2.5,3,4", "toBBOX() returns correct value. for a half number" );
+         bounds = new OpenLayers.Bounds(1,2.5555555,3,4);
+         t.eq( bounds.toBBOX(), "1,2.555556,3,4", "toBBOX() rounds to correct value." );
+         bounds = new OpenLayers.Bounds(1,2.5555555,3,4);
+         t.eq( bounds.toBBOX(1), "1,2.6,3,4", "toBBOX() rounds to correct value with power provided." );
+         bounds = new OpenLayers.Bounds(1,2.5555555,3,4);
      }
 
      function test_03_Bounds_toString(t) {
