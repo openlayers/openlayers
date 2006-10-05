@@ -13,8 +13,13 @@
         function init(){
             var map = new OpenLayers.Map('map');
 
+            var options = { 
+                            resolutions: [1.40625,0.703125,0.3515625,0.17578125,0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101]
+            };
+            
             var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
+                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'},
+                options); 
 
             var jpl_wms = new OpenLayers.Layer.WMS( "NASA Global Mosaic",
                 "http://wms.jpl.nasa.gov/wms.cgi", 
@@ -24,8 +29,9 @@
                 "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap",
                 {layers: "bathymetry,land_fn,park,drain_fn,drainage," +
                          "prov_bound,fedlimit,rail,road,popplace",
-                 transparent: "true", format: "image/png" },
-                 { displayInLayerSwitcher: false });
+                 transparent: "true", format: "image/png"},
+                 {minResolution: 0.17578125,
+                  maxResolution: 0.703125});
 
             map.addLayers([ol_wms, jpl_wms, dm_wms]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
