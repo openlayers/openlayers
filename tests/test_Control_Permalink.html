@@ -21,9 +21,9 @@
         map.addControl(control);
         map.pan(5, 0);
         if (/MSIE/.test(navigator.userAgent)) {
-            t.eq($('permalink').href, "?lat=0&lon=1.75781&zoom=2", "Panning sets permalink");
+            t.eq($('permalink').href, "?lat=0&lon=1.75781&zoom=2&layers=0", "Panning sets permalink");
         } else {
-            t.eq($('permalink').href, location+"?lat=0&lon=1.75781&zoom=2", "Panning sets permalink");
+            t.eq($('permalink').href, location+"?lat=0&lon=1.75781&zoom=2&layers=0", "Panning sets permalink");
         }
     }
     function test_03_Control_Permalink_updateLinksBase (t) {
@@ -37,7 +37,7 @@
         if (!map.getCenter())  map.zoomToMaxExtent();
         map.addControl(control);
         map.pan(5, 0);
-        $('edit_permalink').href = './edit.html?lat=0&lon=1.75781&zoom=2';
+        $('edit_permalink').href = './edit.html?lat=0&lon=1.75781&zoom=2&layers=0';
         t.eq($('permalink').href, $('edit_permalink').href, "Panning sets permalink with base");
   }
   function test_04_Control_Permalink_noElement (t) {
