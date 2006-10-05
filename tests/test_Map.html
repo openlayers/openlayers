@@ -125,7 +125,8 @@
         map.setCenter(new OpenLayers.LonLat(0, 0), 0);
 
         map.addPopup(popup);
-        t.eq(map.popups.indexOf(popup), 0, "popup successfully added to Map's internal popups array");
+        var pIndex = OpenLayers.Util.indexOf(map.popups, popup);
+        t.eq(pIndex, 0, "popup successfully added to Map's internal popups array");
 
         var nodes = map.layerContainerDiv.childNodes;
         
@@ -140,7 +141,8 @@
 
         
         map.removePopup(popup);
-        t.eq(map.popups.indexOf(popup), -1, "popup successfully removed from Map's internal popups array");
+        var pIndex = OpenLayers.Util.indexOf(map.popups, popup);
+        t.eq(pIndex, -1, "popup successfully removed from Map's internal popups array");
 
         var found = false;
         for (var i=0; i < nodes.length; i++) {
