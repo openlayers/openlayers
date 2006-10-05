@@ -5,3 +5,4 @@ Utility class. Stores a bunch of methods and settings that don't fit anywhere el
 * Options
 
  OpenLayers.Util.onImageLoadErrorColor -- A string to set img.style.backgroundColor to if the onerror event fires for the image (useful for 500 errors from WMS, for example). 
+ OpenLayers.ImgPath -- A string to be used as the base for images for controls and the like. Should end with '/'. 
