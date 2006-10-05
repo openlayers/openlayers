@@ -9,7 +9,11 @@ TMP_OUTPUT_FILENAME=tmp.${OUTPUT_FILENAME}
 
 TOOLS_DIR=../tools
 
-CFG_FILENAME=library.cfg
+if [ "$1" != "" ]; then
+  CFG_FILENAME="$1.cfg"
+else
+  CFG_FILENAME=library.cfg
+fi
 
 SRC_DIR=../lib
 

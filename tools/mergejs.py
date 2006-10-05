@@ -123,8 +123,8 @@ class Config:
 
         self.forceFirst = lines[lines.index("[first]") + 1:lines.index("[last]")]
 
-        self.forceLast = lines[lines.index("[last]") + 1:lines.index("[exclude]")]
-        
+        self.forceLast = lines[lines.index("[last]") + 1:lines.index("[include]")]
+        self.include =  lines[lines.index("[include]") + 1:lines.index("[exclude]")]
         self.exclude =  lines[lines.index("[exclude]") + 1:]
 
 if __name__ == "__main__":
@@ -150,6 +150,7 @@ if __name__ == "__main__":
 
         cfg = Config(filename)
 
+    print cfg.include
     allFiles = []
 
     ## Find all the Javascript source files
@@ -157,7 +158,10 @@ if __name__ == "__main__":
 	for filename in files:
 	    if filename.endswith(SUFFIX_JAVASCRIPT) and not filename.startswith("."):
 		filepath = os.path.join(root, filename)[len(sourceDirectory)+1:]
-		if (not cfg) or (filepath not in cfg.exclude):
+                if cfg and cfg.include:
+                    if filepath in cfg.include or filepath in cfg.forceFirst:
+                        allFiles.append(filepath)
+                elif (not cfg) or (filepath not in cfg.exclude):
 		    allFiles.append(filepath)
 
     ## Header inserted at the start of each file in the output
