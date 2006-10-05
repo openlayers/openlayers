@@ -99,7 +99,7 @@
 
         t.ok( layer.isBaseLayer, "baselayer is true by default");
 
-        var newParams = Object.extend(new Object(), params);
+        var newParams = OpenLayers.Util.extend(new Object(), params);
         newParams.transparent = "true";
         layer = new OpenLayers.Layer.WMS(name, url, newParams);
         
