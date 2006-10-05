@@ -86,9 +86,9 @@
         t.plan( 2 );    
         layer = new OpenLayers.Layer.EventPane('Test Layer');
         layer.setVisibility(false);
-        t.eq(layer.pane.style.display, "none", "layer pane is now invisible");
+        t.eq(layer.visibility, false, "layer pane is now invisible");
         layer.setVisibility(true);
-        t.eq(layer.pane.style.display, "block", "layer pane is now visible");
+        t.eq(layer.visibility, true, "layer pane is now visible");
     }
   // -->
   </script>
