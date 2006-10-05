@@ -479,7 +479,16 @@
         resolution = OpenLayers.Util.getResolutionFromScale(scale);
         t.eq(OpenLayers.Util.getScaleFromResolution(resolution), scale, "scale->resolution->scale works");
     }
+    function test_14_Util_getImgLocation(t) {
+        t.plan(3);
+        OpenLayers.ImgPath = "foo/";
+        t.eq(OpenLayers.Util.getImagesLocation(), "foo/", "ImgPath works as expected."); 
+        OpenLayers.ImgPath = null;
+        t.eq(OpenLayers.Util.getImagesLocation().substr(OpenLayers.Util.getImagesLocation().length-4,4), "img/", "ImgPath works as expected when not set."); 
 
+        OpenLayers.ImgPath = '';
+        t.eq(OpenLayers.Util.getImagesLocation().substr(OpenLayers.Util.getImagesLocation().length-4,4), "img/", "ImgPath works as expected when set to ''."); 
+    }
   // -->
   </script>
 </head>
