@@ -248,8 +248,47 @@
         t.ok(map.baseLayer == wmslayer2, "setbaselayer correctly sets 'baseLayer' property");
 
     }
+
+    function test_12_Map_moveLayer (t) {
+        t.plan(10);
+        var ct  = 0;
+        map = new OpenLayers.Map($('map'));
+        var wmslayer = new OpenLayers.Layer.WMS('Test Layer', 
+                    "http://octo.metacarta.com/cgi-bin/mapserv", 
+                    {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'}, 
+                    {maxExtent: new OpenLayers.Bounds(33861, 717605, 330846, 1019656), maxResolution: 296985/1024, projection:"EPSG:2805" } );
+
+        var wmslayer2 = new OpenLayers.Layer.WMS('Test Layer2', 
+                    "http://octo.metacarta.com/cgi-bin/mapserv", 
+                    {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'}, 
+                    {maxExtent: new OpenLayers.Bounds(33861, 717605, 330846, 1019656), maxResolution: 296985/1024, projection:"EPSG:2805" } );
+
+        var wmslayer3 = new OpenLayers.Layer.WMS('Test Layer2', 
+                    "http://octo.metacarta.com/cgi-bin/mapserv", 
+                    {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'}, 
+                    {maxExtent: new OpenLayers.Bounds(33861, 717605, 330846, 1019656), maxResolution: 296985/1024, projection:"EPSG:2805" } );
+
+        map.addLayers([wmslayer, wmslayer2, wmslayer3]);
+        map.events.register("changelayer", map, function (e) { ct++; });
+        t.eq( map.getNumLayers(), 3, "getNumLayers returns the number of layers" );
+        t.eq( map.getLayerIndex(wmslayer3), 2, "getLayerIndex returns the right index" );
+        map.raiseLayer(wmslayer3, 1);
+        t.eq( map.getLayerIndex(wmslayer3), 2, "can't moveLayer up past the top of the stack" );
+        map.raiseLayer(wmslayer, -1);
+        t.eq( map.getLayerIndex(wmslayer), 0, "can't moveLayer down past the bottom of the stack" );
+        map.raiseLayer(wmslayer3, -1);
+        t.eq( map.getLayerIndex(wmslayer3), 1, "can moveLayer down from the top" );
+        t.eq( parseInt(wmslayer3.div.style.zIndex), map.Z_INDEX_BASE['BaseLayer'] + 5,
+            "layer div has the right zIndex after moving down" );
+        map.raiseLayer(wmslayer, 2);
+        t.eq( map.getLayerIndex(wmslayer), 2, "can moveLayer up from the bottom" );
+        t.eq( parseInt(wmslayer.div.style.zIndex), map.Z_INDEX_BASE['BaseLayer'] + 2 * 5,
+            "layer div has the right zIndex after moving up" );
+        t.eq( map.getLayerIndex(wmslayer3), 0, "top layer is now on the bottom" );
+        t.eq( ct, 3, "raiseLayer triggered changelayer the right # of times" );
+    }
     
-    function test_088_Map_setCenter(t) {
+    function test_08_Map_setCenter(t) {
         t.plan(1);
         map = new OpenLayers.Map($('map'));
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
