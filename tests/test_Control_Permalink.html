@@ -40,7 +40,7 @@
         $('edit_permalink').href = './edit.html?lat=0&lon=1.75781&zoom=2';
         t.eq($('permalink').href, $('edit_permalink').href, "Panning sets permalink with base");
   }
-  function test_03_Control_Permalink_noElement (t) {
+  function test_04_Control_Permalink_noElement (t) {
         t.plan( 2 );
         control = new OpenLayers.Control.Permalink( );
         t.ok( control instanceof OpenLayers.Control.Permalink, "new OpenLayers.Control returns object" );
