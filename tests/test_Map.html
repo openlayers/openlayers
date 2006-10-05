@@ -247,6 +247,19 @@
 
     }
     
+    function test_088_Map_setCenter(t) {
+        t.plan(1);
+        map = new OpenLayers.Map($('map'));
+        var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"},
+            {maxResolution: 'auto', maxExtent: new OpenLayers.Bounds(-10,-10,10,10)});
+        map.addLayer(baseLayer);
+        var ll = new OpenLayers.LonLat(-100,-150);
+        map.setCenter(ll, 0);
+        t.ok(map.getCenter().equals(new OpenLayers.LonLat(0,0)), "safely sets out-of-bounds lonlat");
+    }
+
     
     function test_99_Map_destroy (t) {
         t.plan( 2 );    
