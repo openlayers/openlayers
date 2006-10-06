@@ -9,4 +9,12 @@
     bottom: 1.5em;
     display: block;
     position: absolute;
+} 
+.olLayerGoogleCopyright {
+    left: 2px;
+    bottom: 2px;  
+}
+.olLayerGooglePoweredBy {
+    left: 2px;
+    bottom: 15px;   
 }
