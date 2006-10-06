@@ -18,3 +18,11 @@
     left: 2px;
     bottom: 15px;   
 }
+div.olControlMousePosition {
+    bottom: 0em;
+    right: 3px;
+    display: block;
+    position: absolute;
+    font-family: Arial;
+    font-size: smaller;
+}

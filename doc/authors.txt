@@ -10,6 +10,7 @@ Patch contributors
 ------------------
 Corey Puffault
 Tim Schaub
+Jeff Dege
 
 OpenLayers is graciously supported by MetaCarta, Inc.
 <http://www.metacarta.com>.

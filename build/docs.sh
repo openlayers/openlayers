@@ -1,7 +1,7 @@
 #!/bin/sh
 
 rm ../doc/reference.html
-CLASSES="Map Layer Layer.HTTPRequest Layer.Grid Layer.WMS Layer.KaMap Layer.EventPane Layer.Google Layer.VirtualEarth Layer.Markers Layer.Text Layer.GeoRSS Layer.Boxes Icon Marker Marker.Box Tile Tile.Image Tile.WFS Control Control.LayerSwitcher Control.MouseDefaults Control.MouseToolbar Control.PanZoom Control.PanZoomBar Control.Permalink Control.Scale LonLat Size Pixel Bounds Util"
+CLASSES="Map Layer Layer.HTTPRequest Layer.Grid Layer.WMS Layer.KaMap Layer.EventPane Layer.Google Layer.VirtualEarth Layer.Markers Layer.Text Layer.GeoRSS Layer.Boxes Icon Marker Marker.Box Tile Tile.Image Tile.WFS Control Control.LayerSwitcher Control.MouseDefaults Control.MousePosition Control.MouseToolbar Control.PanZoom Control.PanZoomBar Control.Permalink Control.Scale LonLat Size Pixel Bounds Util"
 echo "<html>
   <head>
     <title>OpenLayers Class Reference Documentation</title>
