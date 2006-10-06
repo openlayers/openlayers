@@ -134,7 +134,7 @@
 
         var clone = layer.clone();
 
-        t.ok( clone.grid == null, "clone does not copy grid");
+        t.ok( clone.grid != layer.grid, "clone does not copy grid");
 
         t.ok( clone.tileSize.equals(layer.tileSize), "tileSize correctly cloned");
 
