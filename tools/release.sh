@@ -8,6 +8,7 @@ mkdir /www/openlayers/htdocs/api/$VERSION
 cp OpenLayers.js /www/openlayers/htdocs/api/$VERSION
 cd ..
 cp -a img/ /www/openlayers/htdocs/api/$VERSION
+cp -a theme/ /www/openlayers/htdocs/api/$VERSION
 rm tools/*.pyc
 cd ..
 tar -zvcf OpenLayers-$VERSION.tar.gz OpenLayers-$VERSION

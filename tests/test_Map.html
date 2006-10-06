@@ -63,9 +63,10 @@
     }
     function test_04_Map_options(t) {
         t.plan(2);
-        map = new OpenLayers.Map($('map'), {numZoomLevels: 6, maxResolution: 3.14159});
+        map = new OpenLayers.Map($('map'), {numZoomLevels: 6, maxResolution: 3.14159, theme: 'foo'});
         t.eq( map.numZoomLevels, 6, "map.numZoomLevels set correctly via options hashtable" );
         t.eq( map.maxResolution, 3.14159, "map.maxResolution set correctly via options hashtable" );
+        t.eq( map.theme, 'foo', "map theme set correctly." );
     }
     function test_05_Map_center(t) {
         t.plan(4);
