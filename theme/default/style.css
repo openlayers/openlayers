@@ -4,3 +4,9 @@
     display: block;
     position: absolute;
 }
+.olControlPermalink {
+    right: 3px;
+    bottom: 1.5em;
+    display: block;
+    position: absolute;
+}
