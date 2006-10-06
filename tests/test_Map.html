@@ -62,7 +62,7 @@
                 "layer2 zIndex is set" );
     }
     function test_04_Map_options(t) {
-        t.plan(2);
+        t.plan(3);
         map = new OpenLayers.Map($('map'), {numZoomLevels: 6, maxResolution: 3.14159, theme: 'foo'});
         t.eq( map.numZoomLevels, 6, "map.numZoomLevels set correctly via options hashtable" );
         t.eq( map.maxResolution, 3.14159, "map.maxResolution set correctly via options hashtable" );
