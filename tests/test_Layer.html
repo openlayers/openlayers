@@ -33,17 +33,22 @@
     }
 
     function test_02_Layer_clone (t) {
-        t.plan( 6 );
+        t.plan( 8 );
         
-        var map = new OpenLayers.Map('map'); 
-        var options = { chicken: 151, foo: "bar" };
+        var mapone = new OpenLayers.Map('map'); 
+        var options = { chicken: 151, foo: "bar", maxResolution: "auto" };
         var layer = new OpenLayers.Layer('Test Layer', options);
-        map.addLayer(layer);
+        mapone.addLayer(layer);
 
         // randomly assigned property
         layer.chocolate = 5;
 
         var clone = layer.clone();
+
+        t.ok( clone.map == null, "cloned layer has map property set to null")
+
+        var maptwo = new OpenLayers.Map('map2'); 
+        maptwo.addLayer(clone);
 
         t.ok( clone instanceof OpenLayers.Layer, "new OpenLayers.Layer returns object" );
         t.eq( clone.name, "Test Layer", "default clone.name is correct" );
@@ -53,8 +58,8 @@
         layer.addOptions({chicken:152});
         t.eq(clone.options["chicken"], 151, "made a clean copy of options");        
 
-        
-        t.ok( clone.map == null, "cloned layer has map property set to null")
+        t.ok( (layer.maxResolution != clone.maxResolution), "maxresolution of clone reset to new map div");
+        t.ok( (layer.minResolution != clone.minResolution), "minresolution of clone reset to new map div");
         
     }
 
@@ -174,6 +179,7 @@
   </script>
 </head>
 <body>
-  <div id="map"></div>
+  <div id="map" style="width:500px;height:500px"></div>
+  <div id="map2" style="width:100px;height:100px"></div>
 </body>
 </html>
