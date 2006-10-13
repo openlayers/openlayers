@@ -27,6 +27,14 @@
             velayer = new OpenLayers.Layer.VirtualEarth( "VE",
             { minZoomLevel: 4, maxZoomLevel: 6, 'type': VEMapStyle.Aerial}); 
             map.addLayer(velayer);
+
+            var twms = new OpenLayers.Layer.WMS( "World Map", 
+                        "http://world.freemap.in/cgi-bin/mapserv?", 
+                        { map: '/www/freemap.in/world/map/factbooktrans.map', 
+                          transparent:'true',
+                          layers: 'factbook', 
+                          'format':'png'} );
+            map.addLayer(twms);
             
             markers = new OpenLayers.Layer.Markers("markers");
             map.addLayer(markers);

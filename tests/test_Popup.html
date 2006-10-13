@@ -78,7 +78,7 @@
         t.eq(popup.div.style.top, y + "px", "top position of popup.div set correctly");
         t.eq(popup.div.style.width, w + "px", "width position of popup.div set correctly");
         t.eq(popup.div.style.height, h + "px", "heightposition of popup.div set correctly");
-        t.eq(popup.div.innerHTML, content, "good default popup.contentHTML");
+        t.eq(popup.div.innerHTML, '<div class="olPopupContent" style="overflow: hidden; width: 200px; height: 200px; position: relative;" id="chicken_contentDiv">charlie</div>', "good default popup.contentHTML");
         t.eq(popup.div.style.backgroundColor, color, "good default popup.backgroundColor");
 
         if (navigator.appName.indexOf("Microsoft") == -1) {

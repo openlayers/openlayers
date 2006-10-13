@@ -18,7 +18,7 @@
         <!--
         var lon = 5;
         var lat = 40;
-        var zoom = 18;
+        var zoom = 17;
         var map, layer;
 
         function init(){
@@ -29,11 +29,24 @@
 
 
             map.addLayers([satellite]);
-
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                    "http://labs.metacarta.com/wms/vmap0", {layers: 'basic', 'transparent':true}, 
+                      {isBaseLayer: false} );
+            layer.setVisibility(false);
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                    "http://labs.metacarta.com/wms/vmap0", {layers: 'basic', 'transparent':true}, 
+                      {isBaseLayer: false} );
+            layer.setVisibility(false);
+            map.addLayer(layer);
+ var twms = new OpenLayers.Layer.WMS( "World Map", 
+         "http://world.freemap.in/cgi-bin/mapserv?", 
+                 {map: '/www/freemap.in/world/map/factbooktrans.map', transparent:'true',
+                         layers: 'factbook', 'format':'png'} );
+                         map.addLayer(twms);
             markers = new OpenLayers.Layer.Markers("markers");
             map.addLayer(markers);
 
-            map.setCenter(new OpenLayers.LonLat(10.205188,48.857593), zoom);
+            map.setCenter(new OpenLayers.LonLat(10.205188,48.857593), 5);
             map.addControl( new OpenLayers.Control.LayerSwitcher() );
             map.addControl( new OpenLayers.Control.PanZoomBar() );
 

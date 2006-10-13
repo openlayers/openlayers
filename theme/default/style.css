@@ -1,3 +1,16 @@
+div.olMapViewport {
+   -moz-user-select: none 
+}
+
+.olLayerGoogleCopyright {
+    left: 2px;
+    bottom: 2px;  
+}
+.olLayerGooglePoweredBy {
+    left: 2px;
+    bottom: 15px;   
+}
+
 .olControlScale {
     right: 3px;
     bottom: 3em;
@@ -10,14 +23,7 @@
     display: block;
     position: absolute;
 } 
-.olLayerGoogleCopyright {
-    left: 2px;
-    bottom: 2px;  
-}
-.olLayerGooglePoweredBy {
-    left: 2px;
-    bottom: 15px;   
-}
+
 div.olControlMousePosition {
     bottom: 0em;
     right: 3px;
@@ -26,3 +32,48 @@ div.olControlMousePosition {
     font-family: Arial;
     font-size: smaller;
 }
+
+.olControlOverviewMapContainer {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+}
+
+.olControlOverviewMapElement {
+    padding: 10px 18px 10px 10px;
+    background-color: #00008B;
+    -moz-border-radius: 1em 0 0 0;
+}
+
+.olControlOverviewMapMinimizeButton {
+    right: 0px;
+    bottom: 80px;
+}    
+
+.olControlOverviewMapMaximizeButton {
+    right: 0px;
+    bottom: 80px;
+}
+
+.olControlOverviewMapExtentRectangle {
+    border: 2px dotted red;
+}
+.olLayerGeoRSSDescription {
+    float:left;
+    width:100%;
+    overflow:auto;
+    font-size:1.0em;
+}
+.olLayerGeoRSSClose {
+    float:right;
+    color:gray;
+    font-size:1.2em;
+    font-family:sans-serif;
+}
+.olLayerGeoRSSTitle {
+    float:left;font-size:1.2em;
+}
+
+.olPopupContent {
+    padding:5px;
+}    

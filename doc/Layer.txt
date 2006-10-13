@@ -20,6 +20,7 @@ of different layers.
   getZoomForExtent({OpenLayers.Bounds|bounds}) -- {Integer} -- return the integer zoom which most closely matches the passed bounds.
   getLonLatFromViewPortPx({OpenLayers.Pixel|pixel}) -- {OpenLayers.LonLat} -- Returns an OpenLayers.LonLat which is the passed-in view port OpenLayers.Pixel, translated into lon/lat by the laye
   getViewPortPxFromLonLat({OpenLayers.LonLat|lonlat}) -- {OpenLayers.Pixel} -- Returns An OpenLayers.Pixel which is the passed-in OpenLayers.LonLat, translated into view port pixels
+  addOptions({options})) -- none -- Change the options on the layer. This is the supported way to change properties of the layer. 
   
 * Parameters
   displayOutsideMaxExtent -- Determine whether images or data are loaded outside the maxExtent. Default is false.
@@ -31,6 +32,7 @@ of different layers.
   minScale -- The scale at zoom level 0. If this is set on the map before the Layer is added to the map, it will inherit from the map.
   maxScale -- The scale at the highest zoom level. If this is set on the map before the Layer is added to the map, it will inherit from the map.
   units -- The units the map is projected into. If this is set on the map before the Layer is added to the map, it will inherit from the map.
+  
 
  
  

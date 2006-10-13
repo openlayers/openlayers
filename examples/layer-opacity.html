@@ -40,7 +40,7 @@
         var maxOpacity = 0.9;
         var minOpacity = 0.1;
         function changeOpacity(byOpacity) {
-            var newOpacity = (parseFloat($F('opacity')) + byOpacity).toFixed(1);
+            var newOpacity = (parseFloat($('opacity').value) + byOpacity).toFixed(1);
             newOpacity = Math.min(maxOpacity,
                                   Math.max(minOpacity, newOpacity));
             $('opacity').value = newOpacity;

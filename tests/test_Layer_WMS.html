@@ -1,6 +1,7 @@
 <html>
 <head>
-  <script src="../lib/OpenLayers.js"></script>
+    <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
+<script src="../lib/OpenLayers.js"></script>
   <script type="text/javascript"><!--
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var layer; 
@@ -91,23 +92,19 @@
     }
 
     function test_05_Layer_WMS_isBaseLayer(t) {
-
-        t.plan(2);
+        t.plan(3);
         
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
         layer = new OpenLayers.Layer.WMS(name, url, params);
-
         t.ok( layer.isBaseLayer, "baselayer is true by default");
 
         var newParams = OpenLayers.Util.extend(new Object(), params);
         newParams.transparent = "true";
         layer = new OpenLayers.Layer.WMS(name, url, newParams);
-        
-
         t.ok( !layer.isBaseLayer, "baselayer is false when transparent is set to true");
 
-
-
+        layer = new OpenLayers.Layer.WMS(name, url, params, {isBaseLayer: false});
+        t.ok( !layer.isBaseLayer, "baselayer is false when option is set to false" );
     }
 
     function test_06_Layer_WMS_mergeNewParams (t) {
@@ -173,7 +170,29 @@
         t.eq(tile.imgDiv.style.opacity, "0.6", "Tile opacity is set correctly");
 
     }    
+    
+    function test_20_Layer_WMS_Reproject (t) { 
+        t.plan(5);
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.Google("Google");
+        map.addLayer(layer);
+        layer = new OpenLayers.Layer.WMS(name, url, params, {isBaseLayer: false});
+        layer.isBaseLayer=false;
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0), 5);
+        var tile = layer.grid[0][0];
+        t.eq( tile.bounds.left, -22.5, "left side matches" ); 
+        t.eq( tile.bounds.right, -11.25, "top side matches" ); 
+        t.eq( tile.bounds.bottom.toFixed(6), '11.178402', "bottom side matches" ); 
+        t.eq( tile.bounds.top.toFixed(6), '21.943046', "top side matches" ); 
         
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.WMS(name, url, params);
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0), 5);
+        var tile = layer.grid[0][0];
+        t.ok( tile.bounds.equals(new OpenLayers.Bounds(-33.75, 33.75, -22.5, 45)), "okay");
+    }
     
     function test_99_Layer_WMS_destroy (t) {
 
@@ -194,10 +213,11 @@
         
         t.ok( layer.grid == null, "grid set to null");
     }
+    
   // -->
   </script>
 </head>
 <body>
-<div id="map" style="width:500px;height:550px;display:none"></div>
+<div id="map" style="width:500px;height:550px"></div>
 </body>
 </html>

@@ -27,8 +27,10 @@
     function test_02_Tile_Image_draw (t) {
         t.plan( 5 );
 
-        var layer = {maxExtent:new OpenLayers.Bounds(-180,-90,180,90)}; //bogus layer
-        layer.div = document.createElement("div");
+        var map = new OpenLayers.Map('map');
+        
+        layer = new OpenLayers.Layer.WMS("Name", "http://labs.metacarta.com/TESTURL");  
+        map.addLayer(layer);  
         var position = new OpenLayers.Pixel(20,30);
         var bounds = new OpenLayers.Bounds(1,2,3,4);
         var url = "http://www.openlayers.org/dev/tests/tileimage";
@@ -36,7 +38,6 @@
         tile = new OpenLayers.Tile.Image(layer, position, bounds, url, size);
         
         tile.draw();
-        
         var img = tile.imgDiv;
         
         if (!isMozilla)
@@ -47,7 +48,7 @@
             t.ok( true, "skipping element test outside of Mozilla");
         else
             t.ok( img instanceof HTMLImageElement, "tile.draw creates an image");
-        t.eq( img.src, "http://www.openlayers.org/dev/tests/tileimage", "tile.draw creates an image");
+        t.eq( img.src, "http://labs.metacarta.com/TESTURL?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&FORMAT=image/jpeg&SRS=EPSG:4326&BBOX=1,2,3,4&WIDTH=256&HEIGHT=256", "tile.draw creates an image");
         t.eq( tile.imgDiv.style.width, "5px", "Image width is correct" );
         t.eq( tile.imgDiv.style.height, "6px", "Image height is correct" );
     }
@@ -59,44 +60,69 @@
         var size = new OpenLayers.Size(5,6);
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-            "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
+            "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}, {reproject:false}); 
         map.addLayer(layer);
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-185,-90,-180,90), url, size);
         tile.draw()
         t.eq(tile.imgDiv.src, "", "Images against side of maxextent don't load");
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-181,-91,180,90), url, size);
         tile.draw()
-        t.eq(tile.imgDiv.src, "http://www.openlayers.org/dev/tests/tileimage", "Images over edges of maxextent do load");
+        t.eq(tile.imgDiv.src, "http://labs.metacarta.com/wms/vmap0?LAYERS=basic&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&FORMAT=image/jpeg&SRS=EPSG:4326&BBOX=-181,-91,180,90&WIDTH=256&HEIGHT=256", "Images over edges of maxextent do load");
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-181,-90,180,90), url, size);
         tile.draw()
-        t.eq(tile.imgDiv.src, "http://www.openlayers.org/dev/tests/tileimage", "Images over edges of maxextent do load");
+        t.eq(tile.imgDiv.src, "http://labs.metacarta.com/wms/vmap0?LAYERS=basic&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&FORMAT=image/jpeg&SRS=EPSG:4326&BBOX=-181,-90,180,90&WIDTH=256&HEIGHT=256", "Images over edges of maxextent do load");
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-180,-90,180,90), url, size);
         tile.draw()
-        t.eq(tile.imgDiv.src, "http://www.openlayers.org/dev/tests/tileimage", "Image covering all of extent loads");
+        t.eq(tile.imgDiv.src, "http://labs.metacarta.com/wms/vmap0?LAYERS=basic&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&FORMAT=image/jpeg&SRS=EPSG:4326&BBOX=-180,-90,180,90&WIDTH=256&HEIGHT=256", "Image covering all of extent loads");
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-80,-45,80,45), url, size);
         tile.draw()
-        t.eq(tile.imgDiv.src, "http://www.openlayers.org/dev/tests/tileimage", "Image covering small part of extent loads");
+        t.eq(tile.imgDiv.src, "http://labs.metacarta.com/wms/vmap0?LAYERS=basic&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&FORMAT=image/jpeg&SRS=EPSG:4326&BBOX=-80,-45,80,45&WIDTH=256&HEIGHT=256", "Image covering small part of extent loads");
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-185,-95,185,95), url, size);
         tile.draw()
-        t.eq(tile.imgDiv.src, "http://www.openlayers.org/dev/tests/tileimage", "Image covering more than all of extent loads");
+        t.eq(tile.imgDiv.src, "http://labs.metacarta.com/wms/vmap0?LAYERS=basic&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&FORMAT=image/jpeg&SRS=EPSG:4326&BBOX=-185,-95,185,95&WIDTH=256&HEIGHT=256", "Image covering more than all of extent loads");
         
         layer.displayOutsideMaxExtent=1;
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-185,-90,-180,90), url, size);
         tile.draw()
-        t.eq(tile.imgDiv.src, "http://www.openlayers.org/dev/tests/tileimage", "Images against side of maxextent do load with displayOutsideMaxExtent");
+        t.eq(tile.imgDiv.src, "http://labs.metacarta.com/wms/vmap0?LAYERS=basic&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&FORMAT=image/jpeg&SRS=EPSG:4326&BBOX=-185,-90,-180,90&WIDTH=256&HEIGHT=256", "Images against side of maxextent do load with displayOutsideMaxExtent");
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-181,-90,180,90), url, size);
         tile.draw()
-        t.eq(tile.imgDiv.src, "http://www.openlayers.org/dev/tests/tileimage", "Images over edges of maxextent do load with displayOutsideMaxExtent set");
+        t.eq(tile.imgDiv.src, "http://labs.metacarta.com/wms/vmap0?LAYERS=basic&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&FORMAT=image/jpeg&SRS=EPSG:4326&BBOX=-181,-90,180,90&WIDTH=256&HEIGHT=256", "Images over edges of maxextent do load with displayOutsideMaxExtent set");
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-180,-90,180,90), url, size);
         tile.draw()
-        t.eq(tile.imgDiv.src, "http://www.openlayers.org/dev/tests/tileimage", "Image covering all of extent loads with display outside max extent");
+        t.eq(tile.imgDiv.src, "http://labs.metacarta.com/wms/vmap0?LAYERS=basic&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&FORMAT=image/jpeg&SRS=EPSG:4326&BBOX=-180,-90,180,90&WIDTH=256&HEIGHT=256", "Image covering all of extent loads with display outside max extent");
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-80,-45,80,45), url, size);
         tile.draw()
-        t.eq(tile.imgDiv.src, "http://www.openlayers.org/dev/tests/tileimage", "Image covering small part of extent loads with display outside max extent");
+        t.eq(tile.imgDiv.src, "http://labs.metacarta.com/wms/vmap0?LAYERS=basic&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&FORMAT=image/jpeg&SRS=EPSG:4326&BBOX=-80,-45,80,45&WIDTH=256&HEIGHT=256", "Image covering small part of extent loads with display outside max extent");
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-185,-95,185,95), url, size);
         tile.draw()
-        t.eq(tile.imgDiv.src, "http://www.openlayers.org/dev/tests/tileimage", "Image covering more than all of extent loads");
+        t.eq(tile.imgDiv.src, "http://labs.metacarta.com/wms/vmap0?LAYERS=basic&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&FORMAT=image/jpeg&SRS=EPSG:4326&BBOX=-185,-95,185,95&WIDTH=256&HEIGHT=256", "Image covering more than all of extent loads");
     } 
+    function test_04_Tile_Image_Display_After_Move(t) {
+        t.plan(3);
+        var position = new OpenLayers.Pixel(20,30);
+        var bounds = new OpenLayers.Bounds(1,2,3,4);
+        var url = "http://www.openlayers.org/dev/tests/tileimage";
+        var size = new OpenLayers.Size(5,6);
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+            "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-90,-85,-90,85), url, size);
+        tile.draw();
+        tile.moveTo(new OpenLayers.Bounds(-185,-90,-180,-80), new OpenLayers.Pixel(-180,-85), true);
+        t.delay_call( 1, function() { t.eq(tile.imgDiv.style.display, 'none', "Tile display is set to none.") } );
+        var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+            "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}, {'alpha':true});
+        map.addLayer(layer);
+        tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-90,-85,-90,85), url, size);
+        tile.draw();
+        tile.moveTo(new OpenLayers.Bounds(-185,-90,-180,-80), new OpenLayers.Pixel(-180,-85), true)
+        t.ok(tile.imgDiv.firstChild.src != tile.url, "Check to make sure that the alpha image URL really is different");
+        t.delay_call( 1, function() { t.eq(tile.imgDiv.style.display, 'none', "Alpha tile display is set to none.") } );
+        
+    }
   // -->
   </script>
 </head>

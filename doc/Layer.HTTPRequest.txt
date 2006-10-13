@@ -6,6 +6,8 @@ Sublass of Layer used for services which require initiating multiple HTTPRequest
   OpenLayers.Layer.HTTPRequest(name, url, params, options) -- URL is the base URL to the layer. Params is a set of params to be included in the HTTP Request. Options is a set of options, extending the parameters of the layer.
 
 * Methods
-  initResolutions() -- none -- Based on the current minScale/maxScale/maxResolution/maxZoomLevels/scales/resolutions parameters, initializes an array of 'zoom levels' as this.resolutions, which are then used as an index into when zooming.
+  initResolutions() -- none -- Based on the current minScale/maxScale/maxResolution/numZoomLevel/scales/resolutions parameters, initializes an array of 'zoom levels' as this.resolutions, which are then used as an index into when zooming.
   getFullRequestString(newParams) -- {String} -- Returns the full request string for a combination of the defaults on this layer and the parameters passed via newParams.
-  
+
+* Options
+  reproject -- If reproject is true, then the layer will alter the bounding boxes of its tiles to be based on the geographic location of the pixel bounds in the base layer. This is important for reprojecting WMS tiles onto something like Google Maps. Tile locations are calculated, and then when creating the tile request, the bounding box is adjusted to match the bounding box of the base layer at that location.    

@@ -13,7 +13,9 @@
     <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAA9XNhd8q0UdwNC7YSO4YZghSPUCi5aRYVveCcVYxzezM4iaj_gxQ9t-UajFL70jfcpquH5l1IJ-Zyyw'></script>
     <!-- Localhost key -->
     <!-- <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhT2yXp_ZAY8_ufC3CFXhHIE1NvwkxTS6gjckBmeABOGXIUiOiZObZESPg'></script>-->
+    <script type="text/javascript" src="http://clients.multimap.com/API/maps/1.1/metacarta_04"></script>
     <script src='http://dev.virtualearth.net/mapcontrol/v3/mapcontrol.js'></script>
+    <script src="http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=euzuro-openlayers"></script>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         <!--
@@ -34,15 +36,18 @@
                       {layers: 'basic'} );
             var google = new OpenLayers.Layer.Google( "Google Hybrid" , {type: G_HYBRID_MAP });
             var ve = new OpenLayers.Layer.VirtualEarth( "VE"); 
+            var yahoo = new OpenLayers.Layer.Yahoo( "Yahoo"); 
+            var mm = new OpenLayers.Layer.MultiMap( "MultiMap"); 
             
 
-            map.addLayers([wms, google, ve]);
+            map.addLayers([wms, google, ve, yahoo, mm]);
 
             markers = new OpenLayers.Layer.Markers("markers");
             map.addLayer(markers);
 
             map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
             map.addControl( new OpenLayers.Control.LayerSwitcher() );
+            map.addControl( new OpenLayers.Control.MousePosition() );
 
         }
         

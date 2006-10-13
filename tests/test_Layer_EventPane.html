@@ -57,17 +57,31 @@
 //         t.plan( 2 );    
 
         if (document.createEventObject) {
-          t.plan(2);
+          t.plan(4);
         } else {
-          t.plan(1);
+          t.plan(3);
         }
         var map = new OpenLayers.Map('map');
         
         layer = new OpenLayers.Layer.EventPane('Test Layer');
 
+        //give dummy function so test wont bomb on layer.setMap()
+        layer.loadMapObject = function() { };
+        layer.getWarningHTML = function() { this.warning = true; return ""; };
         map.addLayer(layer);
         t.eq( parseInt(layer.pane.style.zIndex) - parseInt(layer.div.style.zIndex),
             1, "layer pane is 1 z-level above its div" );
+
+        t.ok( layer.warning, "warning correctly registered on no mapObject load" );
+
+        layer2 = new OpenLayers.Layer.EventPane('Test Layer');
+
+        //give dummy function so test wont bomb on layer.setMap()
+        layer2.loadMapObject = function() { this.mapObject = new Object(); };
+        layer2.getWarningHTML = function() { this.warning = true; return ""; }
+
+        map.addLayer(layer2);
+        t.ok( !layer2.warning, "warning not registered on mapObject load" );
 
         map.events.register("mousemove", map, function () {
             t.ok(true, "got mouse move");

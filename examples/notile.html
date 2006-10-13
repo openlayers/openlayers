@@ -15,7 +15,7 @@
 
             var ol_wms = new OpenLayers.Layer.WMS.Untiled( "OpenLayers WMS", 
                 "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'} );
-            ol_wms.isBaseLayer = true;
+            ol_wms.addOptions({isBaseLayer: true});
             map.addLayers([ol_wms]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.setCenter(new OpenLayers.LonLat(0, 0), 0);
