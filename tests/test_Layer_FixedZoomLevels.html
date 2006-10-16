@@ -1,0 +1,97 @@
+<html>
+<head>
+  <script src="../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var layer; 
+
+    function test_01_Layer_FixedZoomLevels (t) {
+        t.plan( 36 );
+        
+        var layer = { 'MIN_ZOOM_LEVEL': 5,
+                      'MAX_ZOOM_LEVEL': 10 };        
+
+
+    //defaults 
+
+        layer = p_createLayer(layer);
+        p_minMaxNum(t, layer, layer.MIN_ZOOM_LEVEL, layer.MAX_ZOOM_LEVEL, "nothing specified");
+
+    
+    //layer.options
+
+        // min,num
+        layer = p_createLayer(layer, {}, { minZoomLevel: 3, numZoomLevels: 12});
+        p_minMaxNum(t, layer, layer.MIN_ZOOM_LEVEL, layer.MAX_ZOOM_LEVEL, "min too low num too high(layer.options)");
+
+        layer = p_createLayer(layer, {}, { minZoomLevel: 6, numZoomLevels: 3 });
+        p_minMaxNum(t, layer, 6, 8, "valid min,num(layer.options)");
+
+
+        // max
+        layer = p_createLayer(layer, {}, { maxZoomLevel: 9 });
+        p_minMaxNum(t, layer, layer.MIN_ZOOM_LEVEL, 9, "valid max(layer.options)");
+
+        layer = p_createLayer(layer, {}, { maxZoomLevel: 12 });
+        p_minMaxNum(t, layer, layer.MIN_ZOOM_LEVEL, layer.MAX_ZOOM_LEVEL, "invalid max(layer.options)");
+
+
+
+    //map
+
+        // min,num
+        layer = p_createLayer(layer, { minZoomLevel: 3, numZoomLevels: 12});
+        p_minMaxNum(t, layer, layer.MIN_ZOOM_LEVEL, layer.MAX_ZOOM_LEVEL, "min too low num too high(map)");
+
+        layer = p_createLayer(layer, { minZoomLevel: 6, numZoomLevels: 3 });
+        p_minMaxNum(t, layer, 6, 8, "valid min,num(map)");
+
+
+        // max
+        layer = p_createLayer(layer, { maxZoomLevel: 9 });
+        p_minMaxNum(t, layer, layer.MIN_ZOOM_LEVEL, 9, "valid max(map)");
+
+        layer = p_createLayer(layer, { maxZoomLevel: 12 });
+        p_minMaxNum(t, layer, layer.MIN_ZOOM_LEVEL, layer.MAX_ZOOM_LEVEL, "invalid max(map)");
+
+    //map vs. options
+
+        layer = p_createLayer(layer, {minZoomLevel: 6, numZoomLevels: 2}, { minZoomLevel: 7, numZoomLevels: 3});
+        p_minMaxNum(t, layer, 7, 9, "min,num(layer.options) wins over (map)");
+
+        layer = p_createLayer(layer, {minZoomLevel: 6, maxZoomLevel: 8}, { minZoomLevel: 7, maxZoomLevel: 9});
+        p_minMaxNum(t, layer, 7, 9, "min,max(layer.options) wins over (map)");
+
+
+    // numZoomLevels vs. maxZoomLevel
+    
+        layer = p_createLayer(layer, {maxZoomLevel: 8, numZoomLevels: 6});
+        p_minMaxNum(t, layer, layer.MIN_ZOOM_LEVEL, 10, "min,max(layer.options) wins over (map)");
+
+
+
+    }
+
+    function p_createLayer(layer, mapOptions, layerOptions) {
+
+        layer.map = mapOptions || {};
+        layer.options = layerOptions || {};
+        OpenLayers.Layer.FixedZoomLevels.prototype.initResolutions.apply(layer);
+
+        return layer;
+    }
+
+    function p_minMaxNum(t, layer, min, max, msg) {
+
+        t.eq( layer.minZoomLevel, min, "min zoom level inherited from layer constant: " + msg);
+        t.eq( layer.maxZoomLevel, max, "max zoom level inherited from layer constant: " + msg);
+        t.eq( layer.numZoomLevels, max - min + 1, "num zoom levels correctly calcuated: " + msg);
+        
+    }
+
+  // -->
+  </script>
+</head>
+<body>
+  <div id="map"></div>
+</body>
+</html>
