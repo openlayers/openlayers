@@ -25,6 +25,7 @@ ul, li { padding-left: 0px; margin-left: 0px; }
     map.addControl(new OpenLayers.Control.Permalink($('permalink')));
     map.zoomToMaxExtent();
     map.events.register('click', map, function (e) {
+            $('nodeList').innerHTML = "Loading... please wait...";
             var url =  wms.getFullRequestString({
                             REQUEST: "GetFeatureInfo",
                             EXCEPTIONS: "application/vnd.ogc.se_xml",
