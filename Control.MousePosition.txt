@@ -13,7 +13,7 @@ A small control which displays the Longitude and Latitude of the current mouse p
   separator -- html to separate the longitude and latitude values (default: '<br />')
   suffix -- html to follow the latitude value (default: '')
   numdigits -- number of digits to the right of the decimal (default: 5)
-  granularity -- a change of how many pixels is considered a mouse move (default: 1)
+  granularity -- Don't refresh display if mouse has moved more than this (default: 10)
 
 prefix, separator, and suffix are used to format the lon/lat values.
 
