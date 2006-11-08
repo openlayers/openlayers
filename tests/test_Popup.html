@@ -52,7 +52,7 @@
 
     function test_03_Popup_draw(t) {
     
-        t.plan( 11 );
+        t.plan( 17 );
         
         var id = "chicken";
         var x = 50;
@@ -78,7 +78,17 @@
         t.eq(popup.div.style.top, y + "px", "top position of popup.div set correctly");
         t.eq(popup.div.style.width, w + "px", "width position of popup.div set correctly");
         t.eq(popup.div.style.height, h + "px", "heightposition of popup.div set correctly");
-        t.eq(popup.div.innerHTML, '<div class="olPopupContent" style="overflow: hidden; width: 200px; height: 200px; position: relative;" id="chicken_contentDiv">charlie</div>', "good default popup.contentHTML");
+
+        var contentDiv = popup.div.childNodes[0];
+        
+        t.eq(contentDiv.className, "olPopupContent", "correct content div className");
+        t.eq(contentDiv.id, "chicken_contentDiv", "correct content div id");
+        t.eq(contentDiv.style.width, "200px", "correct content div width");	 
+        t.eq(contentDiv.style.height, "200px", "correct content div height");
+        t.eq(contentDiv.style.position, "relative", "correct content div position");
+        t.eq(contentDiv.style.overflow, "hidden", "correct content div overflow");
+        t.eq(contentDiv.innerHTML, content, "correct content div content");				 
+
         t.eq(popup.div.style.backgroundColor, color, "good default popup.backgroundColor");
 
         if (navigator.appName.indexOf("Microsoft") == -1) {
