@@ -59,7 +59,7 @@
                 "http://terraservice.net/ogcmap.ashx",
                 {layers: "DRG"});
             shade = new OpenLayers.Layer.WMS("Shaded Relief",
-                "http://ims.cr.usgs.gov:80/servlet19/com.esri.wms.Esrimap/USGS_EDC_Elev_NED_3", 
+                "http://ims.cr.usgs.gov/servlet19/com.esri.wms.Esrimap/USGS_EDC_Elev_NED_3", 
                 {layers: "HR-NED.IMAGE", reaspect: "false", transparent: 'true'},
                 {isBaseLayer: false, opacity: 0.3});
             map.addLayers([drg, shade]);
