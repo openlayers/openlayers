@@ -181,6 +181,7 @@
                      }
 
         t.eq( OpenLayers.Util.getParameterString(params), "foo=bar&chicken=1.5", "getParameterString returns correctly");    
+        t.eq( OpenLayers.Util.getParameterString({'a:':'b='}), "a%3A=b%3D", "getParameterString returns correctly with non-ascii keys/values");    
     }
 
     function test_08_Util_createAlphaImageDiv(t) {
