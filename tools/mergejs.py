@@ -155,14 +155,14 @@ if __name__ == "__main__":
 
     ## Find all the Javascript source files
     for root, dirs, files in os.walk(sourceDirectory):
-	for filename in files:
-	    if filename.endswith(SUFFIX_JAVASCRIPT) and not filename.startswith("."):
-		filepath = os.path.join(root, filename)[len(sourceDirectory)+1:]
+        for filename in files:
+            if filename.endswith(SUFFIX_JAVASCRIPT) and not filename.startswith("."):
+                filepath = os.path.join(root, filename)[len(sourceDirectory)+1:]
                 if cfg and cfg.include:
                     if filepath in cfg.include or filepath in cfg.forceFirst:
                         allFiles.append(filepath)
                 elif (not cfg) or (filepath not in cfg.exclude):
-		    allFiles.append(filepath)
+                    allFiles.append(filepath)
 
     ## Header inserted at the start of each file in the output
     HEADER = "/* " + "=" * 70 + "    %s\n" + "   " + "=" * 70 + " */\n\n"
@@ -175,7 +175,7 @@ if __name__ == "__main__":
     ## TODO: Do import when we walk the directories above?
     for filepath in allFiles:
         print "Importing: %s" % filepath
-	fullpath = os.path.join(sourceDirectory, filepath)
+        fullpath = os.path.join(sourceDirectory, filepath)
         content = open(fullpath, "U").read() # TODO: Ensure end of line @ EOF?
         files[filepath] = SourceFile(filepath, content) # TODO: Chop path?
 
