@@ -89,7 +89,7 @@
         tParams = { layers: 'basic', 
                    format: 'image/png'};
         
-        t.plan( 8 );
+        t.plan( 9 );
 
   // without ?        
         tUrl = "http://octo.metacarta.com/cgi-bin/mapserv";
@@ -109,6 +109,12 @@
         layer = new OpenLayers.Layer.HTTPRequest(name, tUrl, tParams, null);
         str = layer.getFullRequestString();
         t.eq(str, "http://octo.metacarta.com/cgi-bin/mapserv?param1=5&layers=basic&format=image/png", "getFullRequestString() works for url with ?param1=5");
+  
+  // with ?param1=5&
+        tUrl = "http://octo.metacarta.com/cgi-bin/mapserv?param1=5&format=image/jpeg";
+        layer = new OpenLayers.Layer.HTTPRequest(name, tUrl, tParams, null);
+        str = layer.getFullRequestString();
+        t.eq(str, "http://octo.metacarta.com/cgi-bin/mapserv?param1=5&format=image/jpeg&layers=basic", "getFullRequestString() doesn't override already-existing params in URL");
 
  
   // with ?param1=5&
@@ -116,6 +122,8 @@
         layer = new OpenLayers.Layer.HTTPRequest(name, tUrl, tParams, null);
         str = layer.getFullRequestString();
         t.eq(str, "http://octo.metacarta.com/cgi-bin/mapserv?param1=5&layers=basic&format=image/png", "getFullRequestString() works for url with ?param1=5&");
+  
+
 
   // passing in new params
         layer = new OpenLayers.Layer.HTTPRequest(name, tUrl, tParams, null);
