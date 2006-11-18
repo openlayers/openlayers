@@ -1,4 +1,4 @@
-OpenLayers.Control.PanZoom
+OpenLayers.Control.PanZoomBar
 
 Creates a small toolset for controlling the location of the map with panning and zooming, including four directional arrows, a zoom in and zoom out, and a bar on which a slider can be moved to zoom in or out by multiple stops at once.
 

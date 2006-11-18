@@ -1,0 +1,38 @@
+OpenLayers.Control.OverviewMap
+
+This control provides a locator or overview map linked to another map. By default, the overview map shows up in the lower right of the main map and can be expdaned with the '+' button.
+
+* Constructor
+  OpenLayers.Control.OverviewMap(opts?) -- Creates a new overview map. The opts variable is an object with various options, as described in the options section below.
+  
+* Methods
+isSuitableOverview() -- {Boolean} -- Determines if the overview map is suitable given the extent and resolution of the main map.
+getRectPxBounds() -- {OpenLayers.Bounds|bounds} -- An OpenLayers.Bounds which is the extent rectangle's pixel bounds (relative to the parent element).
+setRectPxBounds({OpenLayers.Bounds|bounds}) -- none -- Set extent rectangle pixel bounds.
+getRectBoundsFromMapBounds({OpenLayers.Bounds|lonLatBounds}) -- {OpenLayers.Bounds|bounds} -- An OpenLayers.Bounds which is the passed-in map lon/lat extent translated into pixel bounds for the overview map.
+getMapBoundsFromRectBounds({OpenLayers.Bounds|pxBounds]}) -- {OpenLayers.Bounds|bounds} -- An OpenLayers.Bounds which is the passed-in overview rect bounds translated into lon/lat bounds for the overview map.
+getLonLatFromOverviewPx({OpenLayers.Pixel|pixel}) -- {OpenLayers.LonLat|lonlat} -- An OpenLayers.LonLat which is the passed-in overview map OpenLayers.Pixel translated into lon/lat by the overview map.
+getOverviewPxFromLonLat({OpenLayers.LonLat|lonlat}) -- {OpenLayers.Pixel|pixel} -- An OpenLayers.Pixel which is the passed-in OpenLayers.LonLat, translated into overview map pixels
+
+
+* Events
+  * Rectangle events
+They are defined on OverviewMap.rectEvents
+	
+  mouseover -- rectangle is moused over
+  mouseout -- rectangle is no longer mousedout
+  mousemove -- mouse moves inside rectangle
+  mousedown -- mouse button is pressed over the rectangle.
+  mouseup -- mouse button is released over the rectangle.
+  click -- mouse clicked
+  dblclick -- mouse double clicked
+	
+  * Map events
+	They are defined on OverviewMap.mapDivEvents
+	
+  click -- mouse clicked	
+  
+* Options:
+  * minRatio -- The ratio of the overview map resolution to the main map resolution at which to zoom farther out on the overview map.
+  * maxRatio -- The ratio of the overview map resolution to the main map resolution at which to zoom farther in on the overview map.
+  * layers -- Ordered list of layers in the overview map.  If none, then the map base layer is used.
