@@ -108,7 +108,7 @@
         tUrl = "http://octo.metacarta.com/cgi-bin/mapserv?param1=5";
         layer = new OpenLayers.Layer.HTTPRequest(name, tUrl, tParams, null);
         str = layer.getFullRequestString();
-        t.eq(str, "http://octo.metacarta.com/cgi-bin/mapserv?param1=5&layers=basic&format=image/png", "getFullRequestString() works for url with ?param1=5");
+        t.eq(str, tUrl + '&' + OpenLayers.Util.getParameterString(tParams), "getFullRequestString() works for url with ?param1=5");
   
   // with ?param1=5&
         tUrl = "http://octo.metacarta.com/cgi-bin/mapserv?param1=5&format=image/jpeg";
