@@ -38,8 +38,18 @@
         tile.draw();
 
         var img = tile.imgDiv;
-
-        t.eq( img.src, "http://octo.metacarta.com/cgi-bin/mapserv?MAP=/mapdata/vmap_wms.map&LAYERS=basic&FORMAT=image/png&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&SRS=EPSG:4326&BBOX=1,2,3,4&WIDTH=256&HEIGHT=256", "image src is created correctly via addtile" );
+        var tParams = OpenLayers.Util.extend({},
+                        OpenLayers.Util.upperCaseObject(params));
+        tParams = OpenLayers.Util.extend(tParams, {
+            SERVICE: "WMS", VERSION: "1.1.1",
+            REQUEST: "GetMap", STYLES: "",
+            EXCEPTIONS: "application/vnd.ogc.se_inimage",
+            SRS: "EPSG:4326", BBOX: "1,2,3,4",
+            WIDTH: "256", HEIGHT: "256"
+        });
+        t.eq( img.src,
+             url + "?" + OpenLayers.Util.getParameterString(tParams),
+             "image src is created correctly via addtile" );
         t.eq( tile.imgDiv.style.top, "6px", "image top is set correctly via addtile" );
         t.eq( tile.imgDiv.style.left, "5px", "image top is set correctly via addtile" );
 
@@ -48,7 +58,9 @@
             t.ok( true, "skipping element test outside of Mozilla");
         else
             t.ok( firstChild instanceof HTMLElement, "div first child is an image object" );
-        t.eq( firstChild.src, "http://octo.metacarta.com/cgi-bin/mapserv?MAP=/mapdata/vmap_wms.map&LAYERS=basic&FORMAT=image/png&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&SRS=EPSG:4326&BBOX=1,2,3,4&WIDTH=256&HEIGHT=256", "div first child is correct image object" );
+        t.eq( firstChild.src,
+             url + "?" + OpenLayers.Util.getParameterString(tParams),
+             "div first child is correct image object" );
         t.eq( tile.position.toString(), "x=5,y=6", "Position of tile is set correctly." );
     }
     
@@ -130,7 +142,6 @@
 
         
         t.plan( 2 );
-
         var map = new OpenLayers.Map('map');
         map.projection = "xx";
         tUrl = "http://octo.metacarta.com/cgi-bin/mapserv";
@@ -139,11 +150,21 @@
         var tLayer = new OpenLayers.Layer.WMS(name, tUrl, tParams);
         map.addLayer(tLayer);
         str = tLayer.getFullRequestString();
-        t.eq(str, "http://octo.metacarta.com/cgi-bin/mapserv?LAYERS=basic&FORMAT=image/png&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&SRS=xx", "getFullRequestString() adds SRS value");
+        var tParams = {
+            LAYERS: "basic", FORMAT: "image/png", SERVICE: "WMS",
+            VERSION: "1.1.1", REQUEST: "GetMap", STYLES: "",
+            EXCEPTIONS: "application/vnd.ogc.se_inimage", SRS: "xx"
+        };
+        t.eq(str,
+             tUrl + "?" + OpenLayers.Util.getParameterString(tParams),
+             "getFullRequestString() adds SRS value");
  
         tLayer.projection = "none";
         str = tLayer.getFullRequestString();
-        t.eq(str, "http://octo.metacarta.com/cgi-bin/mapserv?LAYERS=basic&FORMAT=image/png&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage", "getFullRequestString() by default does *not* add SRS value if projection is 'none'");
+        delete tParams['SRS'];
+        t.eq(str,
+             tUrl + "?" + OpenLayers.Util.getParameterString(tParams),
+             "getFullRequestString() by default does *not* add SRS value if projection is 'none'");
  
     }
 

@@ -95,14 +95,14 @@
         tUrl = "http://octo.metacarta.com/cgi-bin/mapserv";
         layer = new OpenLayers.Layer.HTTPRequest(name, tUrl, tParams, null);
         str = layer.getFullRequestString();
-        t.eq(str, "http://octo.metacarta.com/cgi-bin/mapserv?layers=basic&format=image/png", "getFullRequestString() works for url sans ?");
+        t.eq(str, tUrl + '?' + OpenLayers.Util.getParameterString(tParams), "getFullRequestString() works for url sans ?");
 
 
   // with ?        
         tUrl = "http://octo.metacarta.com/cgi-bin/mapserv?";
         layer = new OpenLayers.Layer.HTTPRequest(name, tUrl, tParams, null);
         str = layer.getFullRequestString();
-        t.eq(str, "http://octo.metacarta.com/cgi-bin/mapserv?layers=basic&format=image/png", "getFullRequestString() works for url with ?");
+        t.eq(str, tUrl + OpenLayers.Util.getParameterString(tParams), "getFullRequestString() works for url with ?");
 
   // with ?param1=5
         tUrl = "http://octo.metacarta.com/cgi-bin/mapserv?param1=5";
@@ -114,14 +114,14 @@
         tUrl = "http://octo.metacarta.com/cgi-bin/mapserv?param1=5&format=image/jpeg";
         layer = new OpenLayers.Layer.HTTPRequest(name, tUrl, tParams, null);
         str = layer.getFullRequestString();
-        t.eq(str, "http://octo.metacarta.com/cgi-bin/mapserv?param1=5&format=image/jpeg&layers=basic", "getFullRequestString() doesn't override already-existing params in URL");
+        t.eq(str, tUrl + '&' + OpenLayers.Util.getParameterString({'layers':'basic'}), "getFullRequestString() doesn't override already-existing params in URL");
 
  
   // with ?param1=5&
         tUrl = "http://octo.metacarta.com/cgi-bin/mapserv?param1=5&";
         layer = new OpenLayers.Layer.HTTPRequest(name, tUrl, tParams, null);
         str = layer.getFullRequestString();
-        t.eq(str, "http://octo.metacarta.com/cgi-bin/mapserv?param1=5&layers=basic&format=image/png", "getFullRequestString() works for url with ?param1=5&");
+        t.eq(str, tUrl + OpenLayers.Util.getParameterString(tParams), "getFullRequestString() works for url with ?param1=5&");
   
 
 
@@ -129,24 +129,24 @@
         layer = new OpenLayers.Layer.HTTPRequest(name, tUrl, tParams, null);
         str = layer.getFullRequestString( { chicken: 6, 
                                             layers:"road" } );
-        t.eq(str, "http://octo.metacarta.com/cgi-bin/mapserv?param1=5&layers=road&format=image/png&chicken=6", "getFullRequestString() works for passing in new params");
+        t.eq(str, tUrl + OpenLayers.Util.getParameterString({layers: 'road', format: "image/png", chicken: 6}), "getFullRequestString() works for passing in new params");
 
   // layer with null params
         layer = new OpenLayers.Layer.HTTPRequest(name, tUrl, null, null);
         str = layer.getFullRequestString();
-        t.eq(str, "http://octo.metacarta.com/cgi-bin/mapserv?param1=5&", "getFullRequestString() works for layer with null params");
+        t.eq(str, tUrl + OpenLayers.Util.getParameterString({}), "getFullRequestString() works for layer with null params");
 
   // layer with null params passing in new params
         layer = new OpenLayers.Layer.HTTPRequest(name, tUrl, null, null);
         str = layer.getFullRequestString( { chicken: 6, 
                                             layers:"road" } );
-        t.eq(str, "http://octo.metacarta.com/cgi-bin/mapserv?param1=5&chicken=6&layers=road", "getFullRequestString() works for layer with null params passing in new params");
+        t.eq(str, tUrl + OpenLayers.Util.getParameterString({chicken: 6, layers: "road"}), "getFullRequestString() works for layer with null params passing in new params");
 
   // with specified altUrl parameter
         tUrl = "http://octo.metacarta.com/cgi-bin/mapserv";
         layer = new OpenLayers.Layer.HTTPRequest(name, "chicken", tParams, null);
         str = layer.getFullRequestString(null, tUrl);
-        t.eq(str, "http://octo.metacarta.com/cgi-bin/mapserv?layers=basic&format=image/png", "getFullRequestString() works for url sans ?");
+        t.eq(str, tUrl + '?' + OpenLayers.Util.getParameterString(tParams), "getFullRequestString() works for url sans ?");
 
     }
 
