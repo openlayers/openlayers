@@ -1,0 +1,39 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 800px;
+            height: 475px;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+        var lon = 5;
+        var lat = 40;
+        var zoom = 5;
+        var map, layer;
+
+        function init(){
+            map = new OpenLayers.Map( $('map'), {maxResolution:1.40625/2} );
+            layer = new OpenLayers.Layer.TMS( "TMS", 
+                    "http://labs.metacarta.com/wms-c/Basic.py/", {layername: 'basic', type:'png'} );
+            map.addLayer(layer);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+        }
+        function addTMS() {
+          l=new OpenLayers.Layer.TMS($('layer').value, $('url').value, {layername: $('layer').value, type:$('type').value});
+          map.addLayer(l);
+          map.setBaseLayer(l);
+        }  
+        // -->
+    </script>
+  </head>
+  <body onload="init()">
+    URL of TMS (Should end in /): <input type="text" id="url" size="60" /> layer_name <input type="text" id="layer" /> <select id="type"><option>png</option><option>jpg</option></select> <input type="submit" onclick="addTMS()"/><br />
+    Example: http://mapserver.refractions.net/cgi-bin/tms/, global_mosaic, jpg
+    <div id="map"></div>
+  </body>
+</html>
