@@ -1,0 +1,15 @@
+OpenLayers.Layer.TMS
+
+The TMS layer allows one to connect to a TMS -- Tiled Map Service -- server to obtain images. 
+
+* Constructor
+  OpenLayers.Layer.TMS(name, url, options) -- URL is the base URL to the layer. Options is a set of options, extending the parameters of the layer.
+
+* Methods
+  getURL({OpenLayers.Bounds|bounds}) -- {String} -- Returns a TMS URL for the given bounds based on the properties of the layer.
+  All other methods are inherited from {OpenLayers.Layer.Grid}
+  
+* Options 
+  tileOrigin -- The tileOrigin option will allow you to set your tileOrigin to something other than the lower left extent of your map. 
+  layername -- Name of the layer in the TMS request.
+  type -- The extension images have. 
