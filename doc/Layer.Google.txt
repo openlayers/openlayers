@@ -12,5 +12,5 @@ The Google Layer in OpenLayers allows you to include Google Maps functionality i
   getGPointFromOLPixel({OpenLayers.Pixel|pixel}) -- GPoint -- Create GPoint from OpenLayers Pixel.
   
 * Parameters
-  type -- one of G_MAP, G_SATELLITE_MAP, G_HYBRID_MAP, used to choose the type of map to display.
+  type -- one of G_NORMAL_MAP, G_SATELLITE_MAP, G_HYBRID_MAP, used to choose the type of map to display. (See <a href="http://www.google.com/apis/maps/documentation/reference.html#GMapType">GMapType in the Google documentation</a> for more.)
   
