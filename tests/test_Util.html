@@ -490,7 +490,71 @@
         OpenLayers.ImgPath = '';
         t.eq(OpenLayers.Util.getImagesLocation().substr(OpenLayers.Util.getImagesLocation().length-4,4), "img/", "ImgPath works as expected when set to ''."); 
     }
-  // -->
+
+    function test_15_Util_isEquivalentUrl(t) {
+        t.plan(8);
+        
+        var url1, url2, options;
+
+  //CASE
+
+        url1 = "http://www.openlayers.org";
+        url2 = "HTTP://WWW.OPENLAYERS.ORG";
+
+        t.ok(OpenLayers.Util.isEquivalentUrl(url1, url2), "default ignoreCase works"); 
+
+  //ARGS
+
+        url1 = "http://www.openlayers.org?foo=5;bar=6";
+        url2 = "http://www.openlayers.org?bar=6;foo=5";
+
+        t.ok(OpenLayers.Util.isEquivalentUrl(url1, url2), "shuffled arguments works"); 
+
+  //PORT
+
+        url1 = "http://www.openlayers.org:80";
+        url2 = "http://www.openlayers.org";
+
+        t.ok(OpenLayers.Util.isEquivalentUrl(url1, url2), "default ignorePort80 works"); 
+        options = {
+            'ignorePort80': false
+        }        
+
+        url1 = "http://www.openlayers.org:80";
+        url2 = "http://www.openlayers.org:50";
+
+        t.ok(!OpenLayers.Util.isEquivalentUrl(url1, url2), "port check works"); 
+
+
+  //HASH
+
+        url1 = "http://www.openlayers.org#barf";
+        url2 = "http://www.openlayers.org";
+
+        t.ok(OpenLayers.Util.isEquivalentUrl(url1, url2), "default ignoreHash works"); 
+        options = {
+            'ignoreHash': false
+        }        
+        t.ok(!OpenLayers.Util.isEquivalentUrl(url1, url2, options), "ignoreHash FALSE works"); 
+
+  //PROTOCOL
+
+        url1 = "http://www.openlayers.org";
+        url2 = "ftp://www.openlayers.org";
+
+        t.ok(!OpenLayers.Util.isEquivalentUrl(url1, url2), "default ignoreHash works"); 
+
+
+  //PATHNAME
+        url1 = document.location.pathName + "/foo.html";
+        url2 = "foo.html";
+
+        t.ok(!OpenLayers.Util.isEquivalentUrl(url1, url2), "relative vs. absolute paths works"); 
+        
+ 
+    }
+
+   // -->
   </script>
 </head>
 <body>
