@@ -73,7 +73,7 @@
         map.addLayer(layer);
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-185,-90,-180,90), url, size);
         tile.draw()
-        t.eq(tile.imgDiv.src, "", "Images against side of maxextent don't load");
+        t.eq(tile.imgDiv, null, "Images against side of maxextent don't load");
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-181,-91,180,90), url, size);
         tile.draw()
         var tParams = {
@@ -144,7 +144,7 @@
              "Image covering more than all of extent loads");
     } 
     function test_04_Tile_Image_Display_After_Move(t) {
-        t.plan(3);
+        t.plan(2);
         var position = new OpenLayers.Pixel(20,30);
         var bounds = new OpenLayers.Bounds(1,2,3,4);
         var url = "http://www.openlayers.org/dev/tests/tileimage";
@@ -157,15 +157,14 @@
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-90,-85,-90,85), url, size);
         tile.draw();
         tile.moveTo(new OpenLayers.Bounds(-185,-90,-180,-80), new OpenLayers.Pixel(-180,-85), true);
-        t.delay_call( 1, function() { t.eq(tile.imgDiv.style.display, 'none', "Tile display is set to none.") } );
+        t.delay_call( 1, function() { t.eq(tile.imgDiv, null, "Tile imgDiv is null.") } );
         var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
             "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}, {'alpha':true});
         map.addLayer(layer);
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-90,-85,-90,85), url, size);
         tile.draw();
         tile.moveTo(new OpenLayers.Bounds(-185,-90,-180,-80), new OpenLayers.Pixel(-180,-85), true)
-        t.ok(tile.imgDiv.firstChild.src != tile.url, "Check to make sure that the alpha image URL really is different");
-        t.delay_call( 1, function() { t.eq(tile.imgDiv.style.display, 'none', "Alpha tile display is set to none.") } );
+        t.delay_call( 1, function() { t.eq(tile.imgDiv, null, "Alpha tile imgDiv is null.") } );
         
     }
   // -->
