@@ -12,4 +12,5 @@ cp -a theme/ /www/openlayers/htdocs/api/$VERSION
 rm tools/*.pyc
 cd ..
 tar -zvcf OpenLayers-$VERSION.tar.gz OpenLayers-$VERSION
-cp OpenLayers-$VERSION.tar.gz /www/openlayers/htdocs/download/
+zip -9r OpenLayers-$VERSION.zip OpenLayers-$VERSION
+cp OpenLayers-$VERSION.{tar.gz,zip} /www/openlayers/htdocs/download/
