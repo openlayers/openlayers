@@ -140,6 +140,7 @@ def run (sourceDirectory, outputFilename = None, configFile = None):
         for filename in files:
             if filename.endswith(SUFFIX_JAVASCRIPT) and not filename.startswith("."):
                 filepath = os.path.join(root, filename)[len(sourceDirectory)+1:]
+                filepath = filepath.replace("\\", "/")
                 if cfg and cfg.include:
                     if filepath in cfg.include or filepath in cfg.forceFirst:
                         allFiles.append(filepath)
