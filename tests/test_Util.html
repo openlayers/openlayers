@@ -546,10 +546,11 @@
 
 
   //PATHNAME
-        url1 = document.location.pathName + "/foo.html";
-        url2 = "foo.html";
+        url1 = "foo.html";
+        url2 = "../tests/foo.html";
+        console.log(url1);
 
-        t.ok(!OpenLayers.Util.isEquivalentUrl(url1, url2), "relative vs. absolute paths works"); 
+        t.ok(OpenLayers.Util.isEquivalentUrl(url1, url2), "relative vs. absolute paths works"); 
         
  
     }
