@@ -127,28 +127,10 @@ class Config:
         self.include =  lines[lines.index("[include]") + 1:lines.index("[exclude]")]
         self.exclude =  lines[lines.index("[exclude]") + 1:]
 
-if __name__ == "__main__":
-    import getopt
-
-    options, args = getopt.getopt(sys.argv[1:], "-c:")
-    
-    try:
-        outputFilename = args[0]
-    except IndexError:
-        usage(sys.argv[0])
-        raise SystemExit
-    else:
-        sourceDirectory = args[1]
-        if not sourceDirectory:
-            usage(sys.argv[0])
-            raise SystemExit
-
+def run (sourceDirectory, outputFilename = None, configFile = None):
     cfg = None
-    if options and options[0][0] == "-c":
-        filename = options[0][1]
-        print "Parsing configuration file: %s" % filename
-
-        cfg = Config(filename)
+    if configFile:
+        cfg = Config(configFile)
 
     print cfg.include
     allFiles = []
@@ -227,6 +209,30 @@ if __name__ == "__main__":
 
     print "\nTotal files merged: %d " % len(allFiles)
 
-    print "\nGenerating: %s" % (outputFilename)
+    if outputFilename:
+        print "\nGenerating: %s" % (outputFilename)
+        open(outputFilename, "w").write("".join(result))
+    return "".join(result)
 
-    open(outputFilename, "w").write("".join(result))
+if __name__ == "__main__":
+    import getopt
+
+    options, args = getopt.getopt(sys.argv[1:], "-c:")
+    
+    try:
+        outputFilename = args[0]
+    except IndexError:
+        usage(sys.argv[0])
+        raise SystemExit
+    else:
+        sourceDirectory = args[1]
+        if not sourceDirectory:
+            usage(sys.argv[0])
+            raise SystemExit
+
+    configFile = None
+    if options and options[0][0] == "-c":
+        configFile = options[0][1]
+        print "Parsing configuration file: %s" % filename
+
+    run( sourceDirectory, outputFilename, configFile )
