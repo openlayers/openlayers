@@ -61,6 +61,7 @@
         var h = 400;
         var content = "charlie";
         var color = "red";
+        var hexColor = "#ff0000";
         var opacity = 0.5;
         var border = "1px solid";
 
@@ -89,7 +90,9 @@
         t.eq(contentDiv.style.overflow, "hidden", "correct content div overflow");
         t.eq(contentDiv.innerHTML, content, "correct content div content");				 
 
-        t.eq(popup.div.style.backgroundColor, color, "good default popup.backgroundColor");
+        var bColor = popup.div.style.backgroundColor;
+        var goodColor = ( (bColor == color) || (bColor == hexColor));
+        t.ok(goodColor, "good default popup.backgroundColor");
 
         if (navigator.appName.indexOf("Microsoft") == -1) {
             t.eq(parseFloat(popup.div.style.opacity), opacity, "good default popup.opacity");
