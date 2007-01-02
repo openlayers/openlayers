@@ -3,6 +3,7 @@
   <script src="../lib/OpenLayers.js"></script>
   <script type="text/javascript"><!--
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
+    var isOpera = (navigator.userAgent.indexOf("Opera") != -1);
     var layer; 
 
     function test_01_Layer_EventPane_constructor (t) {
@@ -56,7 +57,7 @@
 // MOUSEMOVE test does not seem to work... 
 //         t.plan( 2 );    
 
-        if (document.createEventObject) {
+        if (!isMozilla || isOpera) {
           t.plan(4);
         } else {
           t.plan(3);
