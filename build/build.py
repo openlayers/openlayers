@@ -14,12 +14,12 @@ if len(sys.argv) > 1:
 if len(sys.argv) > 2:
     outputFilename = sys.argv[2]
 
-print "Adding license file."
-merged = file("license.txt").read()
 print "Merging libraries."
-merged += mergejs.run(sourceDirectory, None, configFilename)
+merged = mergejs.run(sourceDirectory, None, configFilename)
 print "Compressing."
 minimized = jsmin.jsmin(merged)
+print "Adding license file."
+minimized = file("license.txt").read() + minimized
 
 print "Writing to %s." % outputFilename
 file(outputFilename, "w").write(minimized)
