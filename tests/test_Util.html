@@ -119,7 +119,7 @@
         if (!isMozilla)
             t.ok( true, "skipping element test outside of Mozilla");
         else
-            t.ok( image instanceof HTMLImageElement, "createImage creates a valid HTMLImageElement" );
+            t.ok( image.nodeName == "IMG", "createImage creates a valid HTMLImageElement" );
         t.eq( image.id, id, "image.id set correctly");    
         t.eq( image.style.left, xy.x + "px", "image.style.left set correctly");    
         t.eq( image.style.top, xy.y + "px", "image.style.top set correctly");    
@@ -140,7 +140,7 @@
         if (!isMozilla)
             t.ok( true, "skipping element test outside of Mozilla");
         else
-            t.ok( image instanceof HTMLImageElement, "createDiv creates a valid HTMLDivElement" );
+            t.ok( image.nodeName == "IMG", "createDiv creates a valid HTMLDivElement" );
         t.ok( (image.id != ""), "image.id set to something");    
         t.eq( image.style.left, "", "image.style.left set correctly");    
         t.eq( image.style.top, "", "image.style.top set correctly");    
@@ -226,11 +226,10 @@
 
 
         image = imageDiv.firstChild;
-
         if (!isMozilla)
             t.ok( true, "skipping element test outside of Mozilla");
         else
-            t.ok( image instanceof HTMLImageElement, "createImage creates a valid HTMLImageElement" );
+            t.ok( image.nodeName == "IMG", "createImage creates a valid HTMLImageElement" );
         t.eq( image.id, id + "_innerImage", "image.id set correctly");    
 
         t.eq( image.style.width, sz.w + "px", "image.style.width set correctly");    
@@ -316,11 +315,10 @@
         var opacity = 0.5;
 
         OpenLayers.Util.modifyAlphaImageDiv(imageDiv, id, xy, sz, img, position, border, sizing, opacity);
-
         if (OpenLayers.Util.alphaHack())
             t.ok( true, "skipping element test outside of Mozilla");
         else
-            t.ok( imageDiv instanceof HTMLDivElement, "createDiv creates a valid HTMLDivElement" );
+            t.ok( imageDiv.nodeName == "DIV", "createDiv creates a valid HTMLDivElement" );
 
         t.eq( imageDiv.id, id, "image.id set correctly");    
         t.eq( imageDiv.style.left, xy.x + "px", "image.style.left set correctly");    
@@ -342,7 +340,7 @@
             t.ok( true, "skipping element test outside of Mozilla");
         } else {
             var filterString = 'alpha(opacity=' + (opacity * 100) + ')';
-            t.ok( image instanceof HTMLImageElement, "createImage creates a valid HTMLImageElement" );
+            t.ok( image.nodeName == "IMG", "createImage creates a valid HTMLImageElement" );
         }
         t.eq( imageDiv.style.filter, filterString, "element.style.filter set correctly");
         t.eq( image.id, id + "_innerImage", "image.id set correctly");    
