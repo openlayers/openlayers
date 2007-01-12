@@ -517,14 +517,14 @@
         url2 = "http://www.openlayers.org";
 
         t.ok(OpenLayers.Util.isEquivalentUrl(url1, url2), "default ignorePort80 works"); 
+
         options = {
             'ignorePort80': false
         }        
-
         url1 = "http://www.openlayers.org:80";
         url2 = "http://www.openlayers.org:50";
 
-        t.ok(!OpenLayers.Util.isEquivalentUrl(url1, url2), "port check works"); 
+        t.ok(!OpenLayers.Util.isEquivalentUrl(url1, url2, options), "port check works"); 
 
 
   //HASH
