@@ -547,8 +547,8 @@
 
 
   //PATHNAME
-        url1 = "foo.html";
-        url2 = "../tests/foo.html";
+        url1 = "foo.html?bar=now#go";
+        url2 = "../tests/../tests/foo.html?bar=now#go";
 
         t.ok(OpenLayers.Util.isEquivalentUrl(url1, url2), "relative vs. absolute paths works"); 
         
