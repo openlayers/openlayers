@@ -45,7 +45,7 @@
         
     }
 
-    function test_02_Marker_setOpacity(t) {
+    function test_03_Marker_setOpacity(t) {
         t.plan( 2 );
         
         var map = new OpenLayers.Map("map");
@@ -69,7 +69,7 @@
         
         marker.setOpacity(0.5);
 
-        t.eq(marker.icon.imageDiv.style.opacity + "", "0.5", "marker.setOpacity() works");
+        t.eq(parseFloat(marker.icon.imageDiv.style.opacity), 0.5, "marker.setOpacity() works");
     }
 
   // -->
