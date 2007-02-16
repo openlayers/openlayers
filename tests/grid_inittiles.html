@@ -11,7 +11,7 @@
     <script type="text/javascript">
         <!--
         function init(){
-            map = new OpenLayers.Map('map', {'maxResolution': 1.40625/2, tileSize: new OpenLayers.Size(256,256)});
+            var map = new OpenLayers.Map('map', {'maxResolution': 1.40625/2, tileSize: new OpenLayers.Size(256,256)});
             ww = new OpenLayers.Layer.WMS( "Basic", 
             "http://labs.metacarta.com/wms-c/Basic.py?", 
             {layers:"basic"});
