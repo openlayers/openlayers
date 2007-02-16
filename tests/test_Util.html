@@ -177,7 +177,7 @@
     }
 
     function test_07_Util_getParameterString(t) {
-        t.plan( 2 );
+        t.plan( 4 );
 
         var params = { foo: "bar",
                        chicken: 1.5
@@ -185,6 +185,15 @@
 
         t.eq( OpenLayers.Util.getParameterString(params), "foo=bar&chicken=1.5", "getParameterString returns correctly");    
         t.eq( OpenLayers.Util.getParameterString({'a:':'b='}), "a%3A=b%3D", "getParameterString returns correctly with non-ascii keys/values");    
+        
+
+        // Parameters which are a list should end up being a comma-seperated
+        // list of the URL encoded strings
+        var params = { foo: ["bar,baz"] };
+        t.eq( OpenLayers.Util.getParameterString(params), "foo=bar%2Cbaz", "getParameterString encodes , correctly in arrays");    
+        
+        var params = { foo: ["bar","baz,"] };
+        t.eq( OpenLayers.Util.getParameterString(params), "foo=bar,baz%2C", "getParameterString returns with list of CSVs when given a list. ");    
     }
 
     function test_08_Util_createAlphaImageDiv(t) {
