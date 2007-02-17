@@ -101,6 +101,31 @@
 
         t.eq( zoom, 2, "getZoomForExtent() returns correct value");
     }   
+    
+    function test_06_Layer_kaMap_mergeNewParams (t) {
+        t.plan( 5 );
+
+        var map = new OpenLayers.Map("map");
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.KaMap(name, url, params);
+        
+        var newParams = { layers: 'sooper', 
+                          chickpeas: 'image/png'};
+
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        t.ok( !layer.grid[0][0].url.match("chickpeas"), "chickpeas is not in URL of first tile in grid" );
+
+        layer.mergeNewParams(newParams);
+        
+        t.eq( layer.params.layers, "sooper", "mergeNewParams() overwrites well");
+        t.eq( layer.params.chickpeas, "image/png", "mergeNewParams() adds well");
+        t.ok( layer.grid[0][0].url.match("chickpeas"), "CHICKPEAS is in URL of first tile in grid" );
+
+        newParams.chickpeas = 151;
+
+        t.eq( layer.params.chickpeas, "image/png", "mergeNewParams() makes clean copy of hashtable");
+    }
 
 
     /** THIS WOULD BE WHERE THE TESTS WOULD GO FOR 
