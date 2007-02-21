@@ -18,6 +18,22 @@
             t.eq( layer.name, "Crschmidt's Places At Platial", "Layer name is correct." );
         } );
     }
+    
+    function test_01_Layer_GeoRSS_AtomParsing (t) {
+        t.plan( 6 );
+        layer = new OpenLayers.Layer.GeoRSS('Test Layer', "./atom-1.0.xml" );
+        t.ok( layer instanceof OpenLayers.Layer.GeoRSS, "new OpenLayers.Layer.GeoRSS returns object" );
+        t.eq( layer.location, "./atom-1.0.xml", "layer.location is correct" );
+        var markers;
+        t.delay_call( 1, function() {  
+            t.eq( layer.markers.length, 2, "marker length is correct" );
+            var ll = new OpenLayers.LonLat(29.9805, 36.7702);
+            t.ok( layer.markers[0].lonlat.equals(ll), "lonlat on first marker is correct" );
+            t.like( layer.features[0].data['popupContentHTML'], '<a class="link" href="http://pleiades.stoa.org/places/638896" target="_blank">Unnamed Tumulus</a>', "Link is correct.");
+            t.eq( layer.name, "tumulus", "Layer name is correct." );
+        } );
+    }
+
     function test_02_Layer_GeoRSS_draw (t) { 
 //        t.plan(5);
         t.plan( 2 );
