@@ -219,6 +219,20 @@
 
         t.ok( gotLayer == null, "getLayer correctly returns null when layer not found");
     }
+    
+    function test_11_Map_double_addLayer(t) {
+        t.plan( 1 );    
+        map = new OpenLayers.Map($('map'));
+        layer = new OpenLayers.Layer.WMS('Test Layer', 
+                    "http://octo.metacarta.com/cgi-bin/mapserv", 
+                    {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'} 
+                    );
+
+        map.addLayers([layer,layer]);
+        
+        t.eq( map.layers.length, 1, "Map does not allow double adding of layers." );
+    
+    }
 
     function test_10_Map_setBaseLayer(t) {
         t.plan( 4 );
