@@ -32,18 +32,18 @@
               if (click) {
                 canvas.drawLine(click, this.getLonLatFromPixel(e.xy));
                 click = null;
-                $('status').innerHTML = "";
+                OpenLayers.Util.getElement('status').innerHTML = "";
               } 
               else { 
                click = this.getLonLatFromPixel(e.xy);
-               $('status').innerHTML = "Point 1 stored: "+click+". <a href='#' onclick='click=null;return false'>Reset</a>";
+               OpenLayers.Util.getElement('status').innerHTML = "Point 1 stored: "+click+". <a href='#' onclick='click=null;return false'>Reset</a>";
              }
            });
         }
         function drawIt() { 
           canvas.drawLine(
-            new OpenLayers.LonLat(parseFloat($('lon1').value), parseFloat($('lat1').value)), 
-            new OpenLayers.LonLat(parseFloat($('lon2').value), parseFloat($('lat2').value))
+            new OpenLayers.LonLat(parseFloat(OpenLayers.Util.getElement('lon1').value), parseFloat(OpenLayers.Util.getElement('lat1').value)), 
+            new OpenLayers.LonLat(parseFloat(OpenLayers.Util.getElement('lon2').value), parseFloat(OpenLayers.Util.getElement('lat2').value))
           );
         }
         // -->

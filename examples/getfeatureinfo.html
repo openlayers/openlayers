@@ -22,10 +22,10 @@ ul, li { padding-left: 0px; margin-left: 0px; }
     var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
         "http://world.freemap.in/cgi-bin/mapserv?map=/www/freemap.in/world/map/factbook.map", {'layers': 'factbook'} );
     map.addLayer(wms);
-    map.addControl(new OpenLayers.Control.Permalink($('permalink')));
+    map.addControl(new OpenLayers.Control.Permalink('permalink'));
     map.zoomToMaxExtent();
     map.events.register('click', map, function (e) {
-            $('nodeList').innerHTML = "Loading... please wait...";
+            OpenLayers.Util.getElement('nodeList').innerHTML = "Loading... please wait...";
             var url =  wms.getFullRequestString({
                             REQUEST: "GetFeatureInfo",
                             EXCEPTIONS: "application/vnd.ogc.se_xml",
@@ -40,7 +40,7 @@ ul, li { padding-left: 0px; margin-left: 0px; }
             Event.stop(e);
       });
     function setHTML(response) { 
-        $('nodeList').innerHTML = response.responseText;
+        OpenLayers.Util.getElement('nodeList').innerHTML = response.responseText;
     }
   </script>
 </body>

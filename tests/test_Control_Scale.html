@@ -12,25 +12,26 @@
     function test_02_Control_Scale_updateScale (t) {
         t.plan( 4 );
     
-        control = new OpenLayers.Control.Scale($('scale'));
+        control = new OpenLayers.Control.Scale('scale');
         t.ok( control instanceof OpenLayers.Control.Scale, "new OpenLayers.Control returns object" );
-        map = new OpenLayers.Map($('map'));
+        map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS('Test Layer', "http://octo.metacarta.com/cgi-bin/mapserv", {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'});
         map.addLayer(layer);
         map.zoomTo(0);
         map.addControl(control);
-        t.eq($('scale').innerHTML, "Scale = 1 : 443M", "Scale set by default."  );
+        var scaleElem = OpenLayers.Util.getElement('scale');
+        t.eq(scaleElem.innerHTML, "Scale = 1 : 443M", "Scale set by default."  );
         map.zoomIn();
-        t.eq($('scale').innerHTML, "Scale = 1 : 221M", "Zooming in changes scale"  );
+        t.eq(scaleElem.innerHTML, "Scale = 1 : 221M", "Zooming in changes scale"  );
         map.baseLayer.resolutions = [OpenLayers.Util.getResolutionFromScale(110)];
         map.zoomTo(0);
-        t.eq($('scale').innerHTML, "Scale = 1 : 110", "Scale of 100 isn't rounded"  );
+        t.eq(scaleElem.innerHTML, "Scale = 1 : 110", "Scale of 100 isn't rounded"  );
     }
     function test_03_Control_Scale_internalScale (t) {
         t.plan(2);
         control = new OpenLayers.Control.Scale();
         t.ok( control instanceof OpenLayers.Control.Scale, "new OpenLayers.Control returns object" );
-        map = new OpenLayers.Map($('map'));
+        map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS('Test Layer', "http://octo.metacarta.com/cgi-bin/mapserv", {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'});
         map.addLayer(layer);
         map.zoomTo(0);

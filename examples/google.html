@@ -22,7 +22,7 @@
         var map, layer;
 
         function init(){
-            map = new OpenLayers.Map( $('map') , 
+            map = new OpenLayers.Map( 'map' , 
             { controls: [new OpenLayers.Control.MouseDefaults()] , 'numZoomLevels':20});
 
             var satellite = new OpenLayers.Layer.Google( "Google Satellite" , {type: G_SATELLITE_MAP, 'maxZoomLevel':18} );

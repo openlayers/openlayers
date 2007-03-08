@@ -22,7 +22,7 @@
         var map, mmlayer, layer;
 
         function init(){
-            map = new OpenLayers.Map( $('map') , 
+            map = new OpenLayers.Map( 'map' , 
             {controls:[new OpenLayers.Control.MouseDefaults()]});
 
             mmlayer = new OpenLayers.Layer.MultiMap( "MultiMap");

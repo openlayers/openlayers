@@ -26,7 +26,7 @@
 
     function test_02_Layer_KaMap_inittiles (t) {
         t.plan( 2 );
-        var map = new OpenLayers.Map($('map'));
+        var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.KaMap(name, url, params, units);
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,0),5);

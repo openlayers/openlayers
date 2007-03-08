@@ -17,7 +17,7 @@
             map.addControl(new OpenLayers.Control.MouseToolbar());
             map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending':false}));
             map.addControl(new OpenLayers.Control.Permalink());
-            map.addControl(new OpenLayers.Control.Permalink($('permalink')));
+            map.addControl(new OpenLayers.Control.Permalink('permalink'));
             map.addControl(new OpenLayers.Control.MousePosition());
             map.addControl(new OpenLayers.Control.OverviewMap());
             var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 

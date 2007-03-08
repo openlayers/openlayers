@@ -21,7 +21,7 @@
         var map, velayer, layer;
 
         function init(){
-            map = new OpenLayers.Map( $('map') , 
+            map = new OpenLayers.Map( 'map' , 
             {controls:[new OpenLayers.Control.MouseDefaults()]});
 
             velayer = new OpenLayers.Layer.VirtualEarth( "VE",

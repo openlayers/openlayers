@@ -25,7 +25,7 @@
 
             map.addLayers([ol_wms]);
 			
-			OpenLayers.Event.observe($('map'),"click",mapclicked.bindAsEventListener(map)); 
+			OpenLayers.Event.observe(OpenLayers.Util.getElem('map'),"click",mapclicked.bindAsEventListener(map)); 
 			function mapclicked(e){
                 var lonlat = map.getLonLatFromPixel(e.xy);                
                 alert("Lat: " + lonlat.lat + " (Pixel.x:" + e.xy.x + ")" + "\n" + "Lon: " + lonlat.lon + " (Pixel.y:" + e.xy.y + ")" );

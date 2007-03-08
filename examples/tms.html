@@ -16,7 +16,7 @@
         var map, layer;
 
         function init(){
-            map = new OpenLayers.Map( $('map'), {maxResolution:1.40625/2} );
+            map = new OpenLayers.Map( 'map', {maxResolution:1.40625/2} );
             layer = new OpenLayers.Layer.TMS( "TMS", 
                     "http://labs.metacarta.com/wms-c/Basic.py/", {layername: 'basic', type:'png'} );
             map.addLayer(layer);
@@ -24,9 +24,15 @@
             map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
         }
         function addTMS() {
-          l=new OpenLayers.Layer.TMS($('layer').value, $('url').value, {layername: $('layer').value, type:$('type').value});
-          map.addLayer(l);
-          map.setBaseLayer(l);
+            l = new OpenLayers.Layer.TMS(
+                OpenLayers.Util.getElement('layer').value, 
+                OpenLayers.Util.getElement('url').value, 
+                {
+                    'layername': OpenLayers.Util.getElement('layer').value, 
+                    'type': OpenLayers.Util.getElement('type').value
+            });
+            map.addLayer(l);
+            map.setBaseLayer(l);
         }  
         // -->
     </script>

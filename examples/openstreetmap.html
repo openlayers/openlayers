@@ -14,7 +14,7 @@
         var map, layer;
 
         function init(){
-            map = new OpenLayers.Map( $('map') );
+            map = new OpenLayers.Map( 'map' );
             layer = new OpenLayers.Layer.WMS( "OpenStreetMap WMS", 
                     "http://tile.openstreetmap.org/ruby/wmsmod.rbx?" );
             layer.setTileSize(new OpenLayers.Size(256,128));

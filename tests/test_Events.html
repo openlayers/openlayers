@@ -7,7 +7,7 @@
     var a;
     
     function test_01_Events_constructor (t) {
-        var mapDiv = $('map');
+        var mapDiv = OpenLayers.Util.getElement('map');
         var obj = {result: 0};
         var eventTypes = ["doThingA", "doThingB", "doThingC"];
         var browserTypes = OpenLayers.Events.prototype.BROWSER_EVENTS;
@@ -44,7 +44,7 @@
  
         t.plan( 18 );
  
-        var mapDiv = $('map');
+        var mapDiv = OpenLayers.Util.getElement('map');
         var obj = {result: 0};
         var eventTypes = ["doThingA", "doThingB", "doThingC"];
         
@@ -127,7 +127,7 @@
 
         t.plan( 2 );
  
-        var mapDiv = $('map');
+        var mapDiv = OpenLayers.Util.getElement('map');
         var obj = {result: 0};
         var eventTypes = ["doThingA", "doThingB", "doThingC"];
         
@@ -154,7 +154,7 @@
     
         t.plan( 6 );
  
-        var mapDiv = $('map');
+        var mapDiv = OpenLayers.Util.getElement('map');
         var obj = {result: 0};
         var eventTypes = ["doThingA", "doThingB", "doThingC"];
         

@@ -12,39 +12,41 @@
     function test_02_Control_Permalink_updateLinks (t) {
         t.plan( 2 );
     
-        control = new OpenLayers.Control.Permalink($('permalink'));
+        control = new OpenLayers.Control.Permalink('permalink');
         t.ok( control instanceof OpenLayers.Control.Permalink, "new OpenLayers.Control returns object" );
-        map = new OpenLayers.Map($('map'));
+        map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS('Test Layer', "http://octo.metacarta.com/cgi-bin/mapserv", {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'});
         map.addLayer(layer);
         if (!map.getCenter())  map.zoomToMaxExtent();
         map.addControl(control);
         map.pan(5, 0);
+        var pm = OpenLayers.Util.getElement('permalink');
         if (/MSIE/.test(navigator.userAgent)) {
-            t.eq($('permalink').href, "?lat=0&lon=1.75781&zoom=2&layers=B", "Panning sets permalink");
+            t.eq(pm.href, "?lat=0&lon=1.75781&zoom=2&layers=B", "Panning sets permalink");
         } else {
-            t.eq($('permalink').href, location+"?lat=0&lon=1.75781&zoom=2&layers=B", "Panning sets permalink");
+            t.eq(pm.href, location+"?lat=0&lon=1.75781&zoom=2&layers=B", "Panning sets permalink");
         }
     }
     function test_03_Control_Permalink_updateLinksBase (t) {
         t.plan( 2 );
     
-        control = new OpenLayers.Control.Permalink($('permalink'), "./edit.html" );
+        control = new OpenLayers.Control.Permalink('permalink', "./edit.html" );
         t.ok( control instanceof OpenLayers.Control.Permalink, "new OpenLayers.Control returns object" );
-        map = new OpenLayers.Map($('map'));
+        map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS('Test Layer', "http://octo.metacarta.com/cgi-bin/mapserv", {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'});
         map.addLayer(layer);
         if (!map.getCenter())  map.zoomToMaxExtent();
         map.addControl(control);
         map.pan(5, 0);
-        $('edit_permalink').href = './edit.html?lat=0&lon=1.75781&zoom=2&layers=B';
-        t.eq($('permalink').href, $('edit_permalink').href, "Panning sets permalink with base");
+        var edit_pm = OpenLayers.Util.getElement('edit_permalink');
+        edit_pm.href = './edit.html?lat=0&lon=1.75781&zoom=2&layers=B';
+        t.eq(OpenLayers.Util.getElement('permalink').href, edit_pm.href, "Panning sets permalink with base");
   }
   function test_04_Control_Permalink_noElement (t) {
         t.plan( 2 );
         control = new OpenLayers.Control.Permalink( );
         t.ok( control instanceof OpenLayers.Control.Permalink, "new OpenLayers.Control returns object" );
-        map = new OpenLayers.Map($('map'));
+        map = new OpenLayers.Map('map');
         map.addControl(control);
         t.eq(map.controls[3].div.firstChild.nodeName, "A", "Permalink control creates div with 'a' inside." );
   }

@@ -22,11 +22,12 @@
             map.addControl(new OpenLayers.Control.LayerSwitcher());
         }
         function addUrl() {
-            var value = $('url').value;
+            var urlObj = OpenLayers.Util.getElement('url'); 
+            var value = urlObj.value;
             var parts = value.split("/");
                 var newl = new OpenLayers.Layer.GeoRSS( parts[parts.length-1], value);
                 map.addLayer(newl);
-            $("url").value = "";
+            urlObj.value = "";
         }
         // -->
     </script>

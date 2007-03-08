@@ -7,7 +7,7 @@
     function test_01_Map_constructor (t) {
         t.plan( 9 );
         
-        map = new OpenLayers.Map('map'); // no longer need to call $(), constructor does it
+        map = new OpenLayers.Map('map'); 
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
             {map: "/mapdata/vmap_wms.map", layers: "basic"});
@@ -31,7 +31,7 @@
     }
     function test_02_Map_center(t) {
         t.plan(3);
-        map = new OpenLayers.Map($('map'));
+        map = new OpenLayers.Map('map');
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
             {map: "/mapdata/vmap_wms.map", layers: "basic"});
@@ -44,7 +44,7 @@
     }
     function test_03_Map_add_layers(t) {
         t.plan(6);
-        map = new OpenLayers.Map($('map'));
+        map = new OpenLayers.Map('map');
         var layer1 = new OpenLayers.Layer.WMS("Layer 1", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
             {map: "/mapdata/vmap_wms.map", layers: "basic"});
@@ -63,14 +63,14 @@
     }
     function test_04_Map_options(t) {
         t.plan(3);
-        map = new OpenLayers.Map($('map'), {numZoomLevels: 6, maxResolution: 3.14159, theme: 'foo'});
+        map = new OpenLayers.Map('map', {numZoomLevels: 6, maxResolution: 3.14159, theme: 'foo'});
         t.eq( map.numZoomLevels, 6, "map.numZoomLevels set correctly via options hashtable" );
         t.eq( map.maxResolution, 3.14159, "map.maxResolution set correctly via options hashtable" );
         t.eq( map.theme, 'foo', "map theme set correctly." );
     }
     function test_05_Map_center(t) {
         t.plan(4);
-        map = new OpenLayers.Map($('map'));
+        map = new OpenLayers.Map('map');
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
             {map: "/mapdata/vmap_wms.map", layers: "basic"} );
@@ -159,7 +159,7 @@
 
     function 08_Map_px_lonlat_translation (t) {
         t.plan( 6 );    
-        map = new OpenLayers.Map($('map'));
+        map = new OpenLayers.Map('map');
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
             {map: "/mapdata/vmap_wms.map", layers: "basic"});
@@ -190,7 +190,7 @@
  */
     function test_09_Map_isValidLonLat(t) {
         t.plan( 3 );    
-        map = new OpenLayers.Map($('map'));
+        map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS('Test Layer', 
                     "http://octo.metacarta.com/cgi-bin/mapserv", 
                     {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'}, 
@@ -204,7 +204,7 @@
 
     function test_10_Map_getLayer(t) {
         t.plan( 2 );    
-        map = new OpenLayers.Map($('map'));
+        map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS('Test Layer', 
                     "http://octo.metacarta.com/cgi-bin/mapserv", 
                     {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'}, 
@@ -237,7 +237,7 @@
     function test_10_Map_setBaseLayer(t) {
         t.plan( 4 );
         
-        map = new OpenLayers.Map($('map'));
+        map = new OpenLayers.Map('map');
 
         var wmslayer = new OpenLayers.Layer.WMS('Test Layer', 
                     "http://octo.metacarta.com/cgi-bin/mapserv", 
@@ -267,7 +267,7 @@
     function test_12_Map_moveLayer (t) {
         t.plan(10);
         var ct  = 0;
-        map = new OpenLayers.Map($('map'));
+        map = new OpenLayers.Map('map');
         var wmslayer = new OpenLayers.Layer.WMS('Test Layer', 
                     "http://octo.metacarta.com/cgi-bin/mapserv", 
                     {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'}, 
@@ -305,7 +305,7 @@
     
     function test_08_Map_setCenter(t) {
         t.plan(1);
-        map = new OpenLayers.Map($('map'));
+        map = new OpenLayers.Map('map');
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
             {map: "/mapdata/vmap_wms.map", layers: "basic"},
@@ -319,7 +319,7 @@
     
     function test_99_Map_destroy (t) {
         t.plan( 2 );    
-        map = new OpenLayers.Map($('map'));
+        map = new OpenLayers.Map('map');
         map.destroy();
         t.eq( map.layers, null, "map.layers is null after destroy" );
         t.eq( map.controls, null, "map.controls is null after destroy" );

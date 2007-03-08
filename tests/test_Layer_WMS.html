@@ -31,7 +31,7 @@
     
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
         layer = new OpenLayers.Layer.WMS(name, url, params);
-        var map = new OpenLayers.Map($('map'));
+        var map = new OpenLayers.Map('map');
         map.addLayer(layer);
         var pixel = new OpenLayers.Pixel(5,6);
         var tile = layer.addTile(new OpenLayers.Bounds(1,2,3,4), pixel);
@@ -66,7 +66,7 @@
     
     function test_03_Layer_WMS_inittiles (t) {
         t.plan( 2 );
-        var map = new OpenLayers.Map($('map'));
+        var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS(name, url, params);
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,0),5);

@@ -24,7 +24,7 @@
     var map, layer;
 
         function init(){
-            map = new OpenLayers.Map( $('map') );
+            map = new OpenLayers.Map( 'map' );
             var basemap = new OpenLayers.Layer.WMS( "Boston", 
                 "http://boston.freemap.in/cgi-bin/mapserv?",
                 {map: '/www/freemap.in/boston/map/gmaps.map', layers: 'border,water,roads,rapid_transit,buildings', format: 'png', 'transparent': 'off'},

@@ -64,7 +64,7 @@ function runMVS() {
     safeArgs.marker = theArgs.marker; // TODO: Make this "safe".
     
     // -----
-    var theMVS = new OpenLayers.Map($('map'), {controls: [], maxResolution: 'auto'});
+    var theMVS = new OpenLayers.Map('map', {controls: [], maxResolution: 'auto'});
     for(var i = 0; i < safeArgs.controls.length; i++) {
         switch(safeArgs.controls[i]) {
             case 'panzoombar':
