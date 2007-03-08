@@ -132,7 +132,6 @@ def run (sourceDirectory, outputFilename = None, configFile = None):
     if configFile:
         cfg = Config(configFile)
 
-    print cfg.include
     allFiles = []
 
     ## Find all the Javascript source files
@@ -162,40 +161,59 @@ def run (sourceDirectory, outputFilename = None, configFile = None):
         content = open(fullpath, "U").read() # TODO: Ensure end of line @ EOF?
         files[filepath] = SourceFile(filepath, content) # TODO: Chop path?
 
-    ## Resolve the dependencies
-    print "\nResolving dependencies...\n"
+    print
 
     from toposort import toposort
 
-    nodes = []
-    routes = []
+    complete = False
+    resolution_pass = 1
 
-    for filepath, info in files.items():
-        nodes.append(filepath)
-        for neededFilePath in info.requires:
-            routes.append((neededFilePath, filepath))
+    while not complete:
+        order = [] # List of filepaths to output, in a dependency satisfying order 
+        nodes = []
+        routes = []
+        ## Resolve the dependencies
+        print "Resolution pass %s... " % resolution_pass
+        resolution_pass += 1 
 
-    for dependencyLevel in toposort(nodes, routes):
-        for filepath in dependencyLevel:
-            order.append(filepath)
+        for filepath, info in files.items():
+            nodes.append(filepath)
+            for neededFilePath in info.requires:
+                routes.append((neededFilePath, filepath))
+
+        for dependencyLevel in toposort(nodes, routes):
+            for filepath in dependencyLevel:
+                order.append(filepath)
+                if not files.has_key(filepath):
+                    print "Importing: %s" % filepath
+                    fullpath = os.path.join(sourceDirectory, filepath)
+                    content = open(fullpath, "U").read() # TODO: Ensure end of line @ EOF?
+                    files[filepath] = SourceFile(filepath, content) # TODO: Chop path?
+        
+
+
+        # Double check all dependencies have been met
+        complete = True
+        try:
+            for fp in order:
+                if max([order.index(rfp) for rfp in files[fp].requires] +
+                       [order.index(fp)]) != order.index(fp):
+                    complete = False
+        except:
+            complete = False
+        
+        print    
 
 
     ## Move forced first and last files to the required position
     if cfg:
-        print "Re-ordering files...\n"
+        print "Re-ordering files..."
         order = cfg.forceFirst + [item
                      for item in order
                      if ((item not in cfg.forceFirst) and
                          (item not in cfg.forceLast))] + cfg.forceLast
-
-    ## Double check all dependencies have been met
-    for fp in order:
-        if max([order.index(rfp) for rfp in files[fp].requires] +
-               [order.index(fp)]) != order.index(fp):
-            print "Inconsistent!"
-            raise SystemExit
-
-
+    
+    print
     ## Output the files in the determined order
     result = []
 
@@ -208,7 +226,7 @@ def run (sourceDirectory, outputFilename = None, configFile = None):
         if not source.endswith("\n"):
             result.append("\n")
 
-    print "\nTotal files merged: %d " % len(allFiles)
+    print "\nTotal files merged: %d " % len(files)
 
     if outputFilename:
         print "\nGenerating: %s" % (outputFilename)
