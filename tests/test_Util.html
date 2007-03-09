@@ -563,7 +563,13 @@
         
  
     }
-
+    function test_Util_createUniqueIDSeq(t) {
+        t.plan(1);
+        OpenLayers.Util.lastSeqID = 0;
+        OpenLayers.Util.createDiv();
+        OpenLayers.Util.createDiv();
+        t.eq(OpenLayers.Util.createDiv().id, "OpenLayersDiv3", "Div created is sequential, starting at lastSeqID in Util.");
+    }
    // -->
   </script>
 </head>
