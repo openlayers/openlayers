@@ -10,7 +10,7 @@
         t.ok( control instanceof OpenLayers.Control.MouseToolbar, "new OpenLayers.Control.MouseToolbar returns object" );
     }
     function test_02_Control_MouseToolbar_addControl (t) {
-        t.plan( 7 );
+        t.plan( 8 );
         map = new OpenLayers.Map('map');
         control = new OpenLayers.Control.MouseToolbar();
         t.ok( control instanceof OpenLayers.Control.MouseToolbar, "new OpenLayers.Control.MouseToolbar returns object" );
@@ -20,7 +20,8 @@
         t.ok( map.controls[3] === control, "map.controls contains control" );
         t.eq( parseInt(control.div.style.zIndex), map.Z_INDEX_BASE['Control'] + 4, "Control div zIndexed properly" );
         t.eq( parseInt(map.viewPortDiv.lastChild.style.zIndex), map.Z_INDEX_BASE['Control'] + 4, "Viewport div contains control div" );
-        t.eq( control.div.style.top, "6px", "Control div top located correctly by default");
+        t.eq( control.div.style.top, "300px", "Control div top located correctly by default");
+        t.eq( control.div.style.left, "6px", "Control div left located correctly by default");
 
     }
     function test_03_Control_MouseToolbar_control_events (t) {
