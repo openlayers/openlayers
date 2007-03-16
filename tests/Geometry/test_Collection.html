@@ -1,0 +1,215 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var coll;
+        
+    function test_01_Collection_constructor (t) {
+        t.plan( 4 );
+        
+      //null param
+        coll = new OpenLayers.Geometry.Collection();
+        t.ok( coll instanceof OpenLayers.Geometry.Collection, "new OpenLayers.Geometry.Collection returns coll object" );
+        t.eq( coll.CLASS_NAME, "OpenLayers.Geometry.Collection", "coll.CLASS_NAME is set correctly");
+        t.eq( coll.components.length, 0, "coll.components is set correctly");
+        
+        OpenLayers.Geometry.Collection.prototype._addComponents = 
+            OpenLayers.Geometry.Collection.prototype.addComponents;
+        OpenLayers.Geometry.Collection.prototype.addComponents = 
+            function(comps) { g_addcomponents = comps; };
+
+      //valid param
+        g_addcomponents = null;
+        var components = {};
+        coll = new OpenLayers.Geometry.Collection(components);
+        t.ok(g_addcomponents, components, "addcomponents called on non-null param")
+        
+        OpenLayers.Geometry.Collection.prototype.addComponents = 
+            OpenLayers.Geometry.Collection.prototype._addComponents;
+    }
+
+    function test_02_Collection_addComponents (t) {
+        t.plan( 10 );
+
+        coll = new OpenLayers.Geometry.Collection();
+
+      //null
+        coll.addComponents(null);
+        t.ok(true, "doesn't break on add null components");
+
+        OpenLayers.Geometry.Collection.prototype._addComponent = 
+            OpenLayers.Geometry.Collection.prototype.addComponent;
+
+        OpenLayers.Geometry.Collection.prototype.addComponent = 
+            function(comp) { g_addComp = comp; g_added++};
+            
+
+      //nonarray argument
+        var g_added = 0;
+        var g_addComp = 0;
+        var component = {};
+        coll.addComponents(component);
+        t.eq(g_added, 1, "added once");
+        t.eq(g_addComp, component, "added component");
+        
+      //array arg
+        var g_added = 0;
+        var g_addComp = 0;
+        var component1 = {};
+        var component2 = {};
+        coll.addComponents([component1, component2]);
+        t.eq(g_added, 2, "added twice");
+        t.eq(g_addComp, component2, "added component");
+
+        OpenLayers.Geometry.Collection.prototype.addComponent = 
+            OpenLayers.Geometry.Collection.prototype._addComponent;
+
+
+
+        coll.addComponents(new OpenLayers.Geometry.Point(0,0));
+        coll.addComponents(new OpenLayers.Geometry.Point(10,10));
+        t.eq( coll.components.length, 2, "added two components to collection" );
+        bounds = coll.getBounds();
+        t.eq( bounds.left, 0, "left bound is 0" );
+        t.eq( bounds.bottom, 0, "bottom bound is 0" );
+        t.eq( bounds.right, 10, "right bound is 10" );
+        t.eq( bounds.top, 10, "top bound is 10" );
+    }
+
+    function test_03_Collection_clone (t) {
+        t.plan( 3 );
+        coll = new OpenLayers.Geometry.Collection();
+        coll.addComponents(new OpenLayers.Geometry.Point(0,0));
+        coll.addComponents(new OpenLayers.Geometry.Point(10,10));
+        coll2 = coll.clone(); 
+        t.ok( coll2 instanceof OpenLayers.Geometry.Collection, "coll.clone() returns collection object" );
+        t.eq( coll2.getComponents().length, 2, "coll2.components.length is set correctly");
+        t.ok( coll2.components[0] instanceof OpenLayers.Geometry.Point,
+            "coll2.components.length is set correctly");
+    }
+
+    function test_04_Collection_removeComponents (t) {
+        t.plan( 4 );
+        coll = new OpenLayers.Geometry.Collection();
+        point = new OpenLayers.Geometry.Point(0,0);
+        coll.addComponents(point);
+        coll.addComponents(new OpenLayers.Geometry.Point(10,10));
+        coll.removeComponents(coll.components[0]);
+        t.eq( coll.getComponents().length, 1, "coll.components.length is smaller after removeComponent" );
+        t.ok( coll.bounds == null, "bounds are nullified after call to remove (to trigger recalc on getBounds()");
+        bounds = coll.getBounds();
+        t.eq( bounds.left, 10, "left bound is 10 after removeComponent" );
+        t.eq( bounds.bottom, 10, "bottom bound is 10 after removeComponent" );
+    }
+
+    function test_05_Collection_getComponents (t) {
+        t.plan(1);
+        
+        coll = new OpenLayers.Geometry.Collection();
+        coll.components = {};
+        
+        t.eq( coll.getComponents(), coll.components, "getComponents returns great");
+    }
+    
+    function test_06_Collection_calculateBounds(t) {
+        t.plan( 9 );
+        
+        var coll = new OpenLayers.Geometry.Collection();
+        coll.calculateBounds();
+        t.eq(coll.bounds, null, "null components list gives null bounds on calculation()");
+
+        var p1 = new OpenLayers.Geometry.Point(10,20);
+        var p2 = new OpenLayers.Geometry.Point(30,40);
+        
+        var components = [p1, p2];
+        coll = new OpenLayers.Geometry.Collection(components);
+        
+        coll.calculateBounds();
+        
+        t.eq(coll.bounds.left, 10, "good left bounds");
+        t.eq(coll.bounds.bottom, 20, "good bottom bounds");
+        t.eq(coll.bounds.right, 30, "good right bounds");
+        t.eq(coll.bounds.top, 40, "good top bounds");
+
+        var newPoint = new OpenLayers.Geometry.Point(60,70);
+        coll.addComponent(newPoint);
+        coll.calculateBounds();
+        
+        t.eq(coll.bounds.left, 10, "good left bounds");
+        t.eq(coll.bounds.bottom, 20, "good bottom bounds");
+        t.eq(coll.bounds.right, 60, "good right bounds");
+        t.eq(coll.bounds.top, 70, "good top bounds");
+    }
+    
+    function test_07_Collection_addComponent(t)   {
+        t.plan(3);
+        
+        var coll = new OpenLayers.Geometry.Collection();
+        
+      //null
+        coll.addComponent(null);
+        t.ok(true, "no breakage, no executage from null input")        
+
+      //good component
+        var component = new OpenLayers.Geometry.Point(3,4);
+        coll.addComponent(component);      
+         
+        t.ok(coll.bounds == null, "bounds cache correctly cleared");         
+         
+        var foundComponent = false;
+        for(var i=0; i< coll.components.length; i++) {
+            if (coll.components[i].equals(component)) {
+                foundComponent = true;
+            }
+        }
+        t.ok(foundComponent, "component added to internal array");
+
+    }
+    
+    function test_08_collection_getLength(t) {
+        t.plan(2);
+        
+      //null
+        var coll = new OpenLayers.Geometry.Collection();
+        t.eq( coll.getLength(), 0, "null coll has 0 getlength");
+            
+      //valid
+        coll.components = [
+            { 'getLength': function() { return 50; } },
+            { 'getLength': function() { return 15; } }
+        ];
+        t.eq( coll.getLength(), 65, "coll with valid components correctly sums getlength");
+    }
+    
+    function test_09_collection_getArea(t) {
+        t.plan(2);
+        
+      //null
+        var coll = new OpenLayers.Geometry.Collection();
+        t.eq( coll.getArea(), 0, "null coll has 0 getArea");
+            
+      //valid
+        coll.components = [
+            { 'getArea': function() { return 50; } },
+            { 'getArea': function() { return 15; } }
+        ];
+        t.eq( coll.getArea(), 65, "coll with valid components correctly sums getArea");
+    }
+    
+    function test_99_Collection_destroy(t) {
+        t.plan( 1 );
+        coll = new OpenLayers.Geometry.Collection();
+        coll.components = {};
+        
+        coll.destroy(); 
+        
+        t.ok(coll.components == null, "components array cleared");
+
+    }
+
+  // -->
+  </script>
+</head>
+<body>
+</body>
+</html>

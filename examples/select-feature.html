@@ -1,0 +1,87 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 512px;
+            height: 350px;
+            border: 1px solid gray;
+        }
+        #controlToggle li {
+            list-style: none;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+        var map, drawControls, select;
+        function init(){
+            map = new OpenLayers.Map('map');
+            var wmsLayer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
+
+            var pointLayer = new OpenLayers.Layer.Vector("Point Layer");
+            var lineLayer = new OpenLayers.Layer.Vector("Line Layer");
+            var polygonLayer = new OpenLayers.Layer.Vector("Polygon Layer");
+
+            map.addLayers([wmsLayer, pointLayer, lineLayer, polygonLayer]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.addControl(new OpenLayers.Control.MousePosition());
+            
+            drawControls = {
+                point: new OpenLayers.Control.DrawFeature(pointLayer,
+                            OpenLayers.Handler.Point),
+                line: new OpenLayers.Control.DrawFeature(lineLayer,
+                            OpenLayers.Handler.Path),
+                polygon: new OpenLayers.Control.DrawFeature(polygonLayer,
+                            OpenLayers.Handler.Polygon),
+                select: new OpenLayers.Control.SelectFeature(polygonLayer)
+            };
+            
+            for(var key in drawControls) {
+                map.addControl(drawControls[key]);
+            }
+            map.setCenter(new OpenLayers.LonLat(0, 0), 3);
+
+        }
+
+        function toggleControl(element) {
+            for(key in drawControls) {
+                var control = drawControls[key];
+                if(element.value == key && element.checked) {
+                    control.activate();
+                } else {
+                    control.deactivate();
+                }
+            }
+        }
+        // -->
+    </script>
+  </head>
+  <body onload="init()">
+    <h1>OpenLayers Draw Feature Example</h1>
+    <div id="map"></div>
+    <ul id="controlToggle">
+        <li>
+            <input type="radio" name="type" value="none" id="noneToggle"
+                   onclick="toggleControl(this);" checked="checked" />
+            <label for="noneToggle">navigate</label>
+        </li>
+        <li>
+            <input type="radio" name="type" value="point" id="pointToggle" onclick="toggleControl(this);" />
+            <label for="pointToggle">draw point</label>
+        </li>
+        <li>
+            <input type="radio" name="type" value="line" id="lineToggle" onclick="toggleControl(this);" />
+            <label for="lineToggle">draw line</label>
+        </li>
+        <li>
+            <input type="radio" name="type" value="polygon" id="polygonToggle" onclick="toggleControl(this);" />
+            <label for="polygonToggle">draw polygon</label>
+        </li>
+        <li>
+            <input type="radio" name="type" value="select" id="selectToggle" onclick="toggleControl(this);" />
+            <label for="selectToggle">select polygon</label>
+        </li>
+    </ul>        
+  </body>
+</html>

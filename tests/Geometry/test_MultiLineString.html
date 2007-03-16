@@ -1,0 +1,29 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var line;
+        
+    function test_01_MultiLineString_constructor (t) {
+        t.plan( 3 );
+        mline = new OpenLayers.Geometry.MultiLineString();
+        t.ok( mline instanceof OpenLayers.Geometry.MultiLineString, "new OpenLayers.Geometry.MultiLineString returns mline object" );
+        t.eq( mline.CLASS_NAME, "OpenLayers.Geometry.MultiLineString", "mline.CLASS_NAME is set correctly");
+        t.eq( mline.components, [], "line.components is set correctly");
+    }
+
+    function test_01a_MultiLineString_constructor (t) {
+        t.plan( 3 );
+        line = new OpenLayers.Geometry.LineString();
+        mline = new OpenLayers.Geometry.MultiLineString(line);
+        t.ok( mline instanceof OpenLayers.Geometry.MultiLineString, "new OpenLayers.Geometry.MultiLineString returns mline object" );
+        t.eq( mline.CLASS_NAME, "OpenLayers.Geometry.MultiLineString", "mline.CLASS_NAME is set correctly");
+        t.eq( mline.components.length, 1, "mline.components.length is set correctly");
+    }
+
+  // -->
+  </script>
+</head>
+<body>
+</body>
+</html>

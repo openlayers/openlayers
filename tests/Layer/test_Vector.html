@@ -1,0 +1,63 @@
+<html>
+<head>
+<script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+
+    var name = "Vector Layer";
+    
+    function test_01_Layer_Vector_constructor(t) {
+        t.plan(3);
+
+        var layer = new OpenLayers.Layer.Vector(name);
+        t.ok(layer instanceof OpenLayers.Layer.Vector, "new OpenLayers.Layer.Vector returns correct object" );
+        t.eq(layer.name, name, "layer name is correctly set");
+        t.ok(layer.renderer.CLASS_NAME, "layer has a renderer");
+
+    }
+    
+    function test_02_Layer_Vector_addFeatures(t) {
+        t.plan(2);
+    
+        var layer = new OpenLayers.Layer.Vector(name);
+
+        var point = new OpenLayers.Geometry.Point(-111.04, 45.68);
+        var pointFeature = new OpenLayers.Feature.Vector(layer, point);
+        
+        layer.addFeatures([pointFeature]);
+        
+        t.eq(layer.features.length, 1, "OpenLayers.Layer.Vector.addFeatures adds something to the array");
+        t.ok(layer.features[0] == pointFeature, "OpenLayers.Layer.Vector.addFeatures returns an array of features");
+    }
+
+    function test_03_Layer_Vector_removeFeatures(t) {
+        t.plan(1);
+    
+        var layer = new OpenLayers.Layer.Vector(name);
+
+        var point1 = new OpenLayers.Geometry.Point(-111.04, 45.68);
+        var pointFeature1 = new OpenLayers.Feature.Vector(layer, point1);
+        var point2 = new OpenLayers.Geometry.Point(-111.14, 45.78);
+        var pointFeature2 = new OpenLayers.Feature.Vector(layer, point2);
+        
+        layer.addFeatures([pointFeature1, pointFeature2]);
+        var features = layer.removeFeatures([pointFeature1]);
+        
+        t.ok(layer.features.length == 1, "OpenLayers.Layer.Vector.removeFeatures removes a feature from the features array");
+    }
+
+    function test_99_Layer_Vector_destroy (t) {
+        t.plan(1);    
+        layer = new OpenLayers.Layer.Vector(name);
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
+        layer.destroy();
+        t.eq(layer.map, null, "layer.map is null after destroy");
+    }
+
+  // -->
+  </script>
+</head>
+<body>
+<div id="map" style="width:500px;height:550px"></div>
+</body>
+</html>

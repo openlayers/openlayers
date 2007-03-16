@@ -1,0 +1,105 @@
+<html>
+<head>
+  <!-- this gmaps key generated for http://openlayers.org/dev/ -->
+  <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAA9XNhd8q0UdwNC7YSO4YZghSPUCi5aRYVveCcVYxzezM4iaj_gxQ9t-UajFL70jfcpquH5l1IJ-Zyyw'></script>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var layer; 
+
+    function test_01_Layer_Google_constructor (t) {
+        t.plan( 4 );
+        
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.Google('Goog Layer');
+        map.addLayer(layer);
+        
+        
+        t.ok( layer instanceof OpenLayers.Layer.Google, "new OpenLayers.Layer.Google returns object" );
+        t.eq( layer.CLASS_NAME, "OpenLayers.Layer.Google", "CLASS_NAME variable set correctly");
+
+        t.eq( layer.name, "Goog Layer", "layer.name is correct" );
+
+        t.ok ( layer.mapObject != null, "GMap2 Object correctly loaded");
+    }
+
+    function test_02_Layer_Google_isBaseLayer (t) {
+        t.plan(1);
+        
+        var layer = new OpenLayers.Layer.Google('Goog Layer');
+
+        t.ok(layer.isBaseLayer, "a default load of google layer responds as a base layer");
+    }    
+
+    function test_03_Layer_Google_Translation_lonlat (t) {
+        
+        t.plan( 4 );
+        
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.Google('Goog Layer');
+        map.addLayer(layer);
+
+     // these two lines specify an appropriate translation. 
+     //  the code afterwards works by itself to test that translation
+     //  works correctly both ways.
+        var gLatLng = new GLatLng(50,100);
+        var correspondingOLLonLat = new OpenLayers.LonLat(100,50);
+
+
+        olLonLat = layer.getOLLonLatFromMapObjectLonLat(gLatLng);
+        t.ok(olLonLat.equals(correspondingOLLonLat), "Translation from GLatLng to OpenLayers.LonLat works");
+
+        var transGLatLng = layer.getMapObjectLonLatFromOLLonLat(olLonLat);
+        t.ok( transGLatLng.equals(gLatLng), "Translation from OpenLayers.LonLat to GLatLng works");
+
+        t.ok( layer.getMapObjectLonLatFromOLLonLat(null) == null, "getGLatLngFromOLLonLat(null) returns null");
+        t.ok( layer.getOLLonLatFromMapObjectLonLat(null) == null, "getOLLonLatFromGLatLng(null) returns null");
+    }
+
+    function test_04_Layer_Google_Translation_pixel (t) {
+        
+        t.plan( 4 );
+        
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.Google('Goog Layer');
+        map.addLayer(layer);
+
+     // these two lines specify an appropriate translation. 
+     //  the code afterwards works by itself to test that translation
+     //  works correctly both ways.
+        var gPoint = new GPoint(50,100);
+        var correspondingOLPixel = new OpenLayers.Pixel(50, 100);
+
+
+        olPixel = layer.getOLPixelFromMapObjectPixel(gPoint);
+        t.ok( olPixel.equals(correspondingOLPixel), "Translation from GPoint to OpenLayers.Pixel works");
+
+        var transGPoint = layer.getMapObjectPixelFromOLPixel(olPixel);
+        t.ok( transGPoint.equals(gPoint), "Translation from OpenLayers.Pixel to GPoint works");
+
+        t.ok( layer.getMapObjectPixelFromOLPixel(null) == null, "getGPointFromOLPixel(null) returns null");
+        t.ok( layer.getOLPixelFromMapObjectPixel(null) == null, "getOLPixelFromGPoint(null) returns null");
+    }
+
+    function test_99_Layer_destroy (t) {
+        t.plan( 5 );    
+
+        var map = new OpenLayers.Map('map');
+        
+        layer = new OpenLayers.Layer.Google('Test Layer');
+        map.addLayer(layer);
+
+        layer.destroy();
+
+        t.eq( layer.name, null, "layer.name is null after destroy" );
+        t.eq( layer.div, null, "layer.div is null after destroy" );
+        t.eq( layer.map, null, "layer.map is null after destroy" );
+        t.eq( layer.options, null, "layer.options is null after destroy" );
+        t.eq( layer.gmap, null, "layer.gmap is null after destroy" );
+    }
+  // -->
+  </script>
+</head>
+<body>
+  <div id="map"></div>
+</body>
+</html>

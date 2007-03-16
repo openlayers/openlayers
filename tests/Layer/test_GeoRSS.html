@@ -1,0 +1,89 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
+    var layer; 
+
+    function test_01_Layer_GeoRSS_constructor (t) {
+        t.plan( 5 );
+        layer = new OpenLayers.Layer.GeoRSS('Test Layer', "./georss.txt" );
+        t.ok( layer instanceof OpenLayers.Layer.GeoRSS, "new OpenLayers.Layer.GeoRSS returns object" );
+        t.eq( layer.location, "./georss.txt", "layer.location is correct" );
+        var markers;
+        t.delay_call( 1, function() {  
+            t.eq( layer.markers.length, 40, "marker length is correct" );
+            var ll = new OpenLayers.LonLat(-71.142197, 42.405696);
+            t.ok( layer.markers[0].lonlat.equals(ll), "lonlat on first marker is correct" );
+            t.eq( layer.name, "Crschmidt's Places At Platial", "Layer name is correct." );
+        } );
+    }
+    
+    function test_01_Layer_GeoRSS_AtomParsing (t) {
+        t.plan( 6 );
+        layer = new OpenLayers.Layer.GeoRSS('Test Layer', "./atom-1.0.xml" );
+        t.ok( layer instanceof OpenLayers.Layer.GeoRSS, "new OpenLayers.Layer.GeoRSS returns object" );
+        t.eq( layer.location, "./atom-1.0.xml", "layer.location is correct" );
+        var markers;
+        t.delay_call( 1, function() {  
+            t.eq( layer.markers.length, 2, "marker length is correct" );
+            var ll = new OpenLayers.LonLat(29.9805, 36.7702);
+            t.ok( layer.markers[0].lonlat.equals(ll), "lonlat on first marker is correct" );
+            t.like( layer.features[0].data['popupContentHTML'], '<a class="link" href="http://pleiades.stoa.org/places/638896" target="_blank">Unnamed Tumulus</a>', "Link is correct.");
+            t.eq( layer.name, "tumulus", "Layer name is correct." );
+        } );
+    }
+
+    function test_02_Layer_GeoRSS_draw (t) { 
+//        t.plan(5);
+        t.plan( 2 );
+        layer = new OpenLayers.Layer.GeoRSS('Test Layer', './georss.txt');
+        t.ok( layer instanceof OpenLayers.Layer.GeoRSS, "new OpenLayers.Layer.GeoRSS returns object" );
+        var map = new OpenLayers.Map('map');
+        var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(baseLayer);
+        map.addLayer(layer);
+        t.delay_call( 1, function() { 
+          map.setCenter(new OpenLayers.LonLat(0,0),0);
+          t.eq( map.layers[1].name, layer.name, "Layer name is correct" );
+
+        });;
+    }
+    function test_03_Layer_GeoRSS_events (t) {
+        t.plan( 4 );    
+        layer = new OpenLayers.Layer.GeoRSS('Test Layer', './georss.txt');
+        var map = new OpenLayers.Map('map');
+        var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(baseLayer);
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0),0);
+        var event = {};
+        t.delay_call( 1, function() {  
+          t.ok(layer.markers[0].events, "First marker has an events object");
+          t.eq(layer.markers[0].events.listeners['click'].length, 1, "Marker events has one object");
+          layer.markers[0].events.triggerEvent('click', event);
+          t.eq(map.popups.length, 1, "Popup opened correctly");
+          layer.markers[1].events.triggerEvent('click', event);
+          t.eq(map.popups.length, 1, "1st popup gone, 2nd Popup opened correctly");
+        });
+    }
+
+    function test_99_Layer_GeoRSS_destroy (t) {
+        t.plan( 1 );    
+        layer = new OpenLayers.Layer.GeoRSS('Test Layer', './georss.txt');
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
+        layer.destroy();
+        t.eq( layer.map, null, "layer.map is null after destroy" );
+    }
+  // -->
+  </script>
+</head>
+<body>
+  <div id="map" style="width:500px; height:500px"></div>
+</body>
+</html>

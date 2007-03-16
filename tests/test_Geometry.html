@@ -1,0 +1,212 @@
+<html>
+<head>
+  <script src="../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var map; 
+
+    function test_01_Geometry_constructor (t) {
+        t.plan( 2 );
+        
+        var g = new OpenLayers.Geometry();
+        
+        t.eq(g.CLASS_NAME, "OpenLayers.Geometry", "correct CLASS_NAME")
+        t.ok(g.id.startsWith("OpenLayers.Geometry_"), "id correctly set");
+    }
+
+
+    function test_02_Geometry_setBounds(t) {
+        t.plan( 2 );
+        
+        var g = new OpenLayers.Geometry();
+        
+      //null object
+        g.setBounds(null);
+        t.ok(g.bounds == null, "setbounds with null value does not crash or set bounds");
+      
+      //no classname object
+        g_clone = {};
+        var object = {
+            'clone': function() { return g_clone; }
+        };
+        g.setBounds(object);
+        t.ok(g.bounds == g_clone, "setbounds with valid object sets bounds, calls clone");
+    }
+
+    function test_03_Geometry_extendBounds(t) {
+        t.plan(9);
+        
+        OpenLayers.Bounds.prototype._extend = 
+            OpenLayers.Bounds.prototype.extend;
+        OpenLayers.Bounds.prototype.extend = function(b) { 
+            g_extendBounds = b; 
+        };
+        
+        var g = new OpenLayers.Geometry();
+
+      //this.bounds null (calculateBounds(), setBounds() called)
+        g.setBounds = function(b) { g_setBounds = b; };
+        g.calculateBounds = function() { g_calculateBounds = {}; };
+        var object = {};
+        g_setBounds = null;
+        g_calculateBounds = null;
+        g_extendBounds = null;
+        g.extendBounds(object);
+        t.ok(g_calculateBounds != null, "calculateBounds() called when this.bounds is null");
+        t.ok(g_setBounds == object, "setBounds() called when this.bounds is null and calculateBounds() is null too");        
+        t.ok(g_extendBounds != object, "this.bounds.extend() not called when this.bounds is null and calculateBounds() is null too");
+        
+      //this.bounds null (calculateBounds() sets this.bounds:
+      //   -  setBounds() not called
+      //   -  this.bounds.extend() called
+        g_calcBounds = new OpenLayers.Bounds(1,2,3,4);
+        g.calculateBounds = function() { 
+            g_calculateBounds = {}; 
+            this.bounds = g_calcBounds; 
+        };
+        var object = {};
+
+        g_setBounds = null;
+        g_calculateBounds = null;
+        g_extendBounds = null;
+        g.extendBounds(object);
+        t.ok(g_calculateBounds != null, "calculateBounds() called when this.bounds is null");
+        t.ok(g_setBounds == null, "setBounds() not called when this.bounds is null and calculateBounds() sets this.bounds");        
+        t.ok(g_extendBounds == object, "this.bounds.extend() called when this.bounds is null and calculateBounds() sets this.bounds");        
+
+        
+      //this.bounds non-null thus extend()
+      //   -  setBounds() not called
+      //   -  this.bounds.extend() called
+        g_setBounds = null;
+        g_calculateBounds = null;
+        g_extendBounds = null;
+        g.extendBounds(object);
+        t.ok(g_calculateBounds == null, "calculateBounds() not called when this.bounds is non null");
+        t.ok(g_setBounds == null, "setBounds() not called when this.bounds is nonnull");        
+        t.ok(g_extendBounds == object, "this.bounds.extend() called when this.bounds is non-null");        
+
+        OpenLayers.Bounds.prototype.extend = 
+            OpenLayers.Bounds.prototype._extend;
+
+
+    }
+
+    function test_04_Geometry_getBounds(t) {
+        t.plan(1);
+        
+        var g = new OpenLayers.Geometry();
+        
+        var testBounds = new OpenLayers.Bounds(1,2,3,4);
+        g.bounds = testBounds.clone();
+        
+        t.ok(g.getBounds().equals(testBounds), "getBounds works");
+    }
+    
+    function test_05_Geometry_atPoint(t) {
+        t.plan(6);
+            
+        var g = new OpenLayers.Geometry();
+    
+        var lonlat = null;
+        var lon = 5;
+        var lat = 10;
+    
+      //null lonlat
+        g.bounds = new OpenLayers.Bounds();
+
+        var atPoint = g.atPoint(lonlat, lon, lat);
+        t.ok(!atPoint, "null lonlat")
+
+      //null this.bounds
+        g.bounds = null;
+        lonlat = new OpenLayers.LonLat(1,2);      
+      
+        atPoint = g.atPoint(lonlat, lon, lat);
+        t.ok(!atPoint, "null this.bounds")
+
+    //toleranceLon/toleranceLat
+
+      //default toleranceLon/toleranceLat
+        OpenLayers.Bounds.prototype._containsLonLat = OpenLayers.Bounds.prototype.containsLonLat;
+        g_Return = {};
+        OpenLayers.Bounds.prototype.containsLonLat = function(ll) {
+            g_bounds = this;
+            return g_Return;
+         }
+
+        var testBounds = new OpenLayers.Bounds(10,20,30,40);
+        g.bounds = testBounds.clone();
+        lonlat = new OpenLayers.LonLat(20,30);
+      
+        g_bounds = null;
+        atPoint = g.atPoint(lonlat);
+        t.ok(g_bounds.equals(testBounds), "default toleranceLon/Lat are 0");
+        t.ok(atPoint == g_Return, "default toleranceLon/Lat returns correctly");
+
+      //real toleranceLon/toleranceLat
+        var testBounds = new OpenLayers.Bounds(10,20,30,40);
+        g.bounds = testBounds.clone();
+        lonlat = new OpenLayers.LonLat(20,30);
+      
+        g_bounds = null;
+        atPoint = g.atPoint(lonlat, lon, lat);
+        testBounds.left -= lon;
+        testBounds.bottom -= lat;
+        testBounds.right += lon;
+        testBounds.top += lat;
+        t.ok(g_bounds.equals(testBounds), "real toleranceLon/Lat are 0");
+        t.ok(atPoint == g_Return, "real toleranceLon/Lat returns correctly");
+
+        OpenLayers.Bounds.prototype.containsLonLat = OpenLayers.Bounds.prototype._containsLonLat;
+    
+    }
+    
+    function test_06_Geometry_getLength(t) {
+        t.plan(1);
+        
+        var g = new OpenLayers.Geometry();
+        
+        t.eq(g.getLength(), 0, "getLength is 0");
+    }    
+
+    function test_07_Geometry_getArea(t) {
+        t.plan(1);
+        
+        var g = new OpenLayers.Geometry();
+        
+        t.eq(g.getArea(), 0, "getArea is 0");
+    }    
+
+    function test_99_Geometry_destroy(t) {
+        t.plan( 5 );
+
+        var g = new OpenLayers.Geometry();
+        g.bounds = new OpenLayers.Bounds();
+        g.feature = new Object();
+        g.events = {
+            'destroy': function() {
+                g_events_destroy = {};
+            }
+        };        
+
+        g_style_destroy = null;
+        g_events_destroy = {};
+        g.destroy();
+        
+        t.eq(g.id, null, "id nullified");
+
+        t.eq(g.bounds, null, "bounds nullified");
+        t.eq(g.feature, null, "feature reference nullified");
+
+        t.ok(g_events_destroy != null, "events.destroy() called on non-null events");
+        t.eq(g.events, null, "events nullified");
+    }
+
+
+  // -->
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 1024px; height: 512px;"/>
+</body>
+</html>

@@ -20,6 +20,8 @@
             map.addControl(new OpenLayers.Control.Permalink('permalink'));
             map.addControl(new OpenLayers.Control.MousePosition());
             map.addControl(new OpenLayers.Control.OverviewMap());
+            map.addControl(new OpenLayers.Control.KeyboardDefaults());
+
             var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                 "http://labs.metacarta.com/wms/vmap0",
                 {layers: 'basic'} );

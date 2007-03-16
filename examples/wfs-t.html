@@ -1,0 +1,71 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 800px;
+            height: 475px;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+        var map, layer;
+
+        function init(){
+            map = new OpenLayers.Map( $('map') );
+            layer = new OpenLayers.Layer.WMS( "State", 
+                    "http://dev.openlayers.org/geoserver/wms", {layers: 'topp:tasmania_state_boundaries'} );
+            map.addLayer(layer);
+            layer = new OpenLayers.Layer.WMS( "Water", 
+                    "http://dev.openlayers.org/geoserver/wms", {layers: 'topp:tasmania_water_bodies', 'transparent': true, format: 'image/gif' } );
+            map.addLayer(layer);
+            rlayer = new OpenLayers.Layer.WFS( "Roads", 
+                    "http://dev.openlayers.org/geoserver/wfs", {typename: 'topp:tasmania_roads'},
+               {  
+                      typename: 'tasmania_roads', 
+                      featureNS: 'http://www.openplans.org/topp', 
+                      extractAttributes: false
+               } );
+            rlayer.onFeatureInsert=function(feature) { feature.style.strokeColor = "#ff0000"; feature.layer.renderer.drawGeometry(feature.geometry, feature.style); }
+            map.addLayer(rlayer);
+            layer = new OpenLayers.Layer.WFS( "Cities", 
+                    "http://dev.openlayers.org/geoserver/wfs", {typename: 'topp:tasmania_cities'}, 
+               {  
+                      typename: 'tasmania_cities', 
+                      featureNS: 'http://www.openplans.org/topp', 
+                      extractAttributes: false
+               } );
+            map.addLayer(layer);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            var p = new OpenLayers.Control.Panel({'displayClass': 'olControlEditingToolbar'});
+            
+            df = new OpenLayers.Control.DrawFeature(rlayer, OpenLayers.Handler.Path, {handlerOptions: {'freehand': false}, 'displayClass': 'olControlDrawFeaturePath'});
+            df.featureAdded = function(feature) { 
+              feature.state = OpenLayers.State.INSERT; 
+              feature.style['strokeColor'] = "#0000ff"; 
+              feature.layer.renderer.drawGeometry(feature.geometry, feature.style);  
+            }
+            dp = new OpenLayers.Control.DrawFeature(layer, OpenLayers.Handler.Point, {handlerOptions: {'freehand': false}, 'displayClass': 'olControlDrawFeaturePoint'});
+            dp.featureAdded = function(feature) { 
+              var oldgeom = feature.geometry;
+              feature.layer.renderer.eraseGeometry(oldgeom);
+              feature.geometry = new OpenLayers.Geometry.MultiPoint(oldgeom);
+              feature.state = OpenLayers.State.INSERT; 
+              feature.style['strokeColor'] = "#0000ff"; 
+              feature.layer.renderer.drawGeometry(feature.geometry, feature.style);  
+            }
+            p.addControls([ new OpenLayers.Control.Navigation(), df, dp ]);
+             
+            map.addControl(p);
+            map.zoomToExtent(new OpenLayers.Bounds(145.51045,-44.0,149.0,-40.5));
+        }
+        // -->
+    </script>
+  </head>
+  <body onload="init()">
+    <a href="#" onclick="map.layers[2].commit();return false">Save Roads</a><br />
+    <a href="#" onclick="map.layers[3].commit();return false">Save Cities</a><br />
+    <div id="map"></div>
+  </body>
+</html>

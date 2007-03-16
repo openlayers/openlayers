@@ -1,0 +1,33 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 800px;
+            height: 475px;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        function parseData(req) {
+          g =  new OpenLayers.Format.GML();
+          html = ""
+          features = g.read(req.responseText);
+          for(var feat in features) {
+            html += "Feature: Geometry: "+ features[feat].geometry+",";
+                html += "<ul>";
+            for (var j in features[feat].attributes) {
+                html += "<li>"+j+":"+features[feat].attributes[j]+"</li>";
+            }
+                html += "</ul>"
+          }
+          document.body.innerHTML = html;
+        }
+        function load() {
+            OpenLayers.loadURL("gml/owls.xml", "", null, parseData);
+        }   
+    </script>
+  </head>
+  <body onload="load()">
+  </body>
+</html>  

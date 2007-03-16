@@ -1,0 +1,113 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 800px;
+            height: 475px;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+        var map, layer;
+
+        function init(){
+            OpenLayers.ProxyHost="proxy.cgi?url=";
+            map = new OpenLayers.Map( $('map'), {'maxResolution':'auto', maxExtent: new OpenLayers.Bounds(-203349.72008129774,4816309.33,1154786.8041952979,5472346.5), projection: 'EPSG:26915' } );
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                    ["http://geoint.lmic.state.mn.us/cgi-bin/wms"], {layers: 'fsa'} );
+            map.addLayer(layer);
+
+    
+            wfs_url = "http://prototype.openmnnd.org/cgi-bin/mapserv.exe?map=openmnndwfs/openmnndwfs.map";
+            wms = new OpenLayers.Layer.WMS("Minnesota Parcels (WMS)", wfs_url, {'layers':'streams', 'transparent': true, 'format':'image/gif'});
+            
+            map.addLayer(wms);
+            
+            wfs = new OpenLayers.Layer.WFS("Minnesota Streams (WFS)", wfs_url, {'typename':'streams'}, {ratio:1.25, minZoomLevel:4});
+            wfs.onFeatureInsert= function(feature) { feature.style.strokeWidth="3"; feature.style.strokeColor="blue"; feature.layer.renderer.drawGeometry(feature.geometry,feature.style); $('stream_features').innerHTML = feature.layer.features.length;}
+            map.addLayer(wfs);
+            
+            pwfs = new OpenLayers.Layer.WFS("Minnesota Plat (WFS)", wfs_url, {'typename':'plat'}, {ratio:1.25, minZoomLevel:8, extractAttributes: true});
+            pwfs.onFeatureInsert= function(feature) { feature.style.fillColor="green"; feature.layer.renderer.drawGeometry(feature.geometry,feature.style); $('plat_features').innerHTML = feature.layer.features.length;}
+            map.addLayer(pwfs); 
+            
+            rwfs = new OpenLayers.Layer.WFS("Minnesota Roads (WFS)", wfs_url, {'typename':'roads'}, {ratio:1.25, minZoomLevel:7, extractAttributes: true});
+            rwfs.onFeatureInsert= function(feature) { feature.style.strokeColor="white"; feature.style.strokeWidth="4"; feature.layer.renderer.drawGeometry(feature.geometry,feature.style); $('road_features').innerHTML = feature.layer.features.length; }
+            map.addLayer(rwfs); 
+            
+            map.events.register('moveend', null, function() { 
+                $('stream_features').innerHTML = "0";
+                $('road_features').innerHTML = "0";
+                $('plat_features').innerHTML = "0";
+            });    
+
+            var ls = new OpenLayers.Control.LayerSwitcher();
+            map.addControl(ls);
+
+            drawControls = {
+                selectPlat: new OpenLayers.Control.SelectFeature(pwfs, {callbacks: {'up':feature_info,'move':feature_info_hover}}),
+                selectRoad: new OpenLayers.Control.SelectFeature(rwfs, {callbacks: {'up':feature_info,'move':feature_info_hover}})
+            };
+
+            for(var key in drawControls) {
+                map.addControl(drawControls[key]);
+            }
+            drawControls.selectPlat.activate();
+            
+            map.zoomToExtent(new OpenLayers.Bounds(303232.550864,5082911.694856,305885.161263,5084486.682281));
+        }
+        
+        function toggleControl(element) {
+            for(key in drawControls) {
+                var control = drawControls[key];
+                if(element.value == key && element.checked) {
+                    control.activate();
+                } else {
+                    control.deactivate();
+                }
+            }
+        }
+        var displayedGeom = null;
+        function feature_info_hover(geometry) {
+           if (displayedGeom != geometry && 
+               (!geometry.feature.layer.selectedFeatures.length || 
+               (geometry.feature.layer.selectedFeatures[0].geometry == geometry))) {
+            feature_info(geometry);
+            displaydGeom = geometry;
+           }
+        }    
+        function feature_info(geometry) {
+            var html = "<ul>";
+            for(var i in geometry.feature.attributes)
+               html += "<li><b>" + i + "</b>: "+  geometry.feature.attributes[i] + "</li>";
+            html += "</ul>";
+            $('feature_info').innerHTML = html;
+        }
+        // -->
+    </script>
+  </head>
+  <body onload="init()">
+    <div style="right: 20px; width: 350px; position:absolute;">
+      <ul>
+        <li>Streams: Feature Count <span id="stream_features">0</span></li> 
+        <li>Plat: Feature Count <span id="plat_features">0</span></li> 
+        <li>Roads: Feature Count <span id="road_features">0</span></li> 
+      </ul>
+      <div id="feature_info">
+      </div>
+      <ul>  
+        <li>
+            <input type="radio" name="type" value="selectRoad" id="selectToggle" onclick="toggleControl(this);"  />
+            <label for="selectToggle">select road</label>
+        </li>
+        <li>
+            <input type="radio" name="type" value="selectPlat" id="selectToggle" onclick="toggleControl(this);" checked=checked />
+            <label for="selectToggle">select polygon</label>
+        </li>
+    </ul>        
+    </div>  
+    <div id="map"></div>
+  </body>
+</html>

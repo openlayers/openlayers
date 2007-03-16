@@ -1,0 +1,114 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var map; 
+
+    function test_01_Control_LayerSwitcher_constructor (t) {
+        t.plan( 1 );
+    
+        control = new OpenLayers.Control.LayerSwitcher();
+        t.ok( control instanceof OpenLayers.Control.LayerSwitcher, "new OpenLayers.Control.LayerSwitcher returns object" );
+    }
+
+    function test_02_Control_LayerSwitcher_draw (t) {
+        t.plan( 2 );
+
+        map = new OpenLayers.Map('map');
+        control = new OpenLayers.Control.LayerSwitcher();
+        map.addControl(control);
+
+        var div = control.draw();
+        t.ok( control.div != null, "draw makes a div" );
+        t.ok( div != null, "draw returns its div" );
+    }
+ 
+    function test_03_Control_LayerSwitcher_loadContents(t) {
+
+        t.plan( 5 );
+
+        map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS("WMS", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(layer);
+
+        markers = new OpenLayers.Layer.Markers("markers");
+        map.addLayer(markers);
+
+        control = new OpenLayers.Control.LayerSwitcher();
+        map.addControl(control);
+
+        t.ok(control.layersDiv != null, "correctly makes layers div");
+        t.ok(control.baseLayersDiv != null, "correctly makes layers div");
+        t.ok(control.dataLayersDiv != null, "correctly makes layers div");
+
+        t.ok(control.maximizeDiv != null, "correctly makes resize div");
+        t.ok(control.minimizeDiv != null, "correctly makes resize div");
+
+        
+
+    }
+
+
+    function test_04_Control_LayerSwitcher_redraw (t) {
+
+        t.plan( 8 );
+
+        map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS("WMS", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(layer);
+
+        markers = new OpenLayers.Layer.Markers("markers");
+        map.addLayer(markers);
+
+        control = new OpenLayers.Control.LayerSwitcher();
+        map.addControl(control);
+
+        
+        var wmsInput = OpenLayers.Util.getElement("input_" + layer.name);
+        t.ok(wmsInput != null, "correctly makes an input for wms layer");
+        t.eq(wmsInput.type, "radio", "wms correctly made a radio button");
+        t.eq(wmsInput.name, "baseLayers", "wms correctly named");
+        t.eq(wmsInput.value, layer.name, "wms correctly valued");
+        
+        var markersInput = OpenLayers.Util.getElement("input_" + markers.name);
+        t.ok(markersInput != null, "correctly makes an input for markers layer");
+        t.eq(markersInput.type, "checkbox", "wms correctly made a radio button");
+        t.eq(markersInput.name, markers.name, "wms correctly named");
+        t.eq(markersInput.value, markers.name, "wms correctly valued");
+
+    }
+    function test_05_Control_LayerSwitcher_ascendingw (t) {
+
+        t.plan( 4 );
+
+        map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS("WMS", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(layer);
+
+        markers = new OpenLayers.Layer.Markers("markers");
+        map.addLayer(markers);
+
+        control = new OpenLayers.Control.LayerSwitcher();
+        map.addControl(control);
+        control2 = new OpenLayers.Control.LayerSwitcher({'ascending':false});
+        map.addControl(control2);
+        t.ok(control.div.childNodes[1].childNodes[0].innerHTML.match("Base Layer"), "Base Layers first in LayerSwitcher with ascending true");
+        t.ok(control.div.childNodes[1].childNodes[2].innerHTML.match("Overlays"), "Overlays in LayerSwitcher with ascending true");
+        t.ok(control2.div.childNodes[1].childNodes[2].innerHTML.match("Base Layer"), "Base Layers last in LayerSwitcher with ascending false");
+        t.ok(control2.div.childNodes[1].childNodes[0].innerHTML.match("Overlays"), "Base Layers last in LayerSwitcher with ascending false");
+    }
+
+
+  // -->
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 1024px; height: 512px;"/>
+</body>
+</html>

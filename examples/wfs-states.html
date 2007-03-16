@@ -1,0 +1,36 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 100%;
+            height: 80%;
+            border: 1px solid black;
+        }
+    </style>
+    <title>WFS: United States (GeoServer)</title>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map, layer;
+
+        function init(){
+            OpenLayers.ProxyHost="/cgi-bin/proxy.cgi?url="; 
+            map = new OpenLayers.Map( $('map'), {controls: [ new OpenLayers.Control.PanZoom(), new OpenLayers.Control.Permalink(), new OpenLayers.Control.MouseDefaults() ]} );
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                    "http://labs.metacarta.com/wms-c/Basic.py", 
+                    {layers: 'basic'} );
+            map.addLayer(layer);
+            
+            layer = new OpenLayers.Layer.WFS( "States WFS", 
+                    "http://dev.openlayers.org/geoserver/wfs", 
+                    { typename: 'topp:states' } );
+            map.addLayer(layer);
+            
+            map.zoomToExtent(new OpenLayers.Bounds(-140.444336,25.115234,-44.438477,50.580078));
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h2>GeoServer WFS</h2>
+    <div id="map"></div>
+  </body>
+</html>

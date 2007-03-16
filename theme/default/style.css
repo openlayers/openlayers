@@ -78,3 +78,61 @@ div.olControlMousePosition {
 .olPopupContent {
     padding:5px;
 }    
+.olControlNavToolbar div { 
+  display:block;
+  width:  28px;
+  height: 28px;
+  top: 300px;
+  left: 6px;
+  position: relative;
+}
+
+.olControlNavToolbar .olControlNavigationItemActive { 
+  background-image: url("img/panning-hand-on.png");
+}
+.olControlNavToolbar .olControlNavigationItemInactive { 
+  background-image: url("img/panning-hand-off.png");
+}
+.olControlNavToolbar .olControlZoomBoxItemActive { 
+  background-image: url("img/drag-rectangle-on.png");
+  background-color: orange;
+}
+.olControlNavToolbar .olControlZoomBoxItemInactive { 
+  background-image: url("img/drag-rectangle-off.png");
+}
+.olControlEditingToolbar  {
+    float:right;
+    right: 0px;
+    height: 30px; 
+    width: 200px;
+}
+.olControlEditingToolbar div { 
+  float:right;
+  width:  24px;
+  height: 24px;
+  margin: 5px;
+}
+.olControlEditingToolbar .olControlNavigationItemActive { 
+  background-image: url("img/pan_on.png");
+}
+.olControlEditingToolbar .olControlNavigationItemInactive { 
+  background-image: url("img/pan_off.png");
+}
+.olControlEditingToolbar .olControlDrawFeaturePointItemActive { 
+  background-image: url("img/draw_point_on.png");
+}
+.olControlEditingToolbar .olControlDrawFeaturePointItemInactive { 
+  background-image: url("img/draw_point_off.png");
+}
+.olControlEditingToolbar .olControlDrawFeaturePathItemInactive { 
+  background-image: url("img/draw_line_off.png");
+}
+.olControlEditingToolbar .olControlDrawFeaturePathItemActive { 
+  background-image: url("img/draw_line_on.png");
+}
+.olControlEditingToolbar .olControlDrawFeaturePolygonItemInactive { 
+  background-image: url("img/draw_polygon_off.png");
+}
+.olControlEditingToolbar .olControlDrawFeaturePolygonItemActive { 
+  background-image: url("img/draw_polygon_on.png");
+}

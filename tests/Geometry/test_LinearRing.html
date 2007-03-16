@@ -1,0 +1,98 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var line;
+    var components = [new OpenLayers.Geometry.Point(10,10), 
+                new OpenLayers.Geometry.Point(0,0)];
+        
+    function test_01_LinearRing_constructor (t) {
+        t.plan( 6 );
+
+      //null
+        ring = new OpenLayers.Geometry.LinearRing();
+        t.ok( ring instanceof OpenLayers.Geometry.LinearRing, "new OpenLayers.Geometry.LinearRing returns ring object" );
+        t.eq( ring.CLASS_NAME, "OpenLayers.Geometry.LinearRing", "ring.CLASS_NAME is set correctly");
+        t.eq( ring.components, [], "ring.components is set correctly");
+
+      //valid components
+        ring = new OpenLayers.Geometry.LinearRing(components);
+        t.ok( ring instanceof OpenLayers.Geometry.LinearRing, "new OpenLayers.Geometry.LinearRing returns ring object" );
+        t.eq( ring.CLASS_NAME, "OpenLayers.Geometry.LinearRing", "ring.CLASS_NAME is set correctly");
+        t.eq( ring.components.length, 3, "ring.components.length is set correctly");
+    }
+    
+    function test_02_LinearRing_addComponent(t) {
+        t.plan(12);
+        
+        var ring = new OpenLayers.Geometry.LinearRing();
+ 
+        var point = new OpenLayers.Geometry.Point(0,0);
+        ring.addComponent( point );
+        t.eq(ring.components.length, 2, "add first point, correct length");
+        t.ok(ring.components[0].equals(point), "point one correct");
+        t.ok(ring.components[0].equals(ring.components[ring.components.length - 1]), "first and last point equal");
+        
+        ring.addComponent( point );
+        t.eq(ring.components.length, 3, "add second point, correct length");
+        t.ok(ring.components[0].equals(point), "point one correct");
+        t.ok(ring.components[1].equals(point), "point two correct");
+        t.ok(ring.components[0].equals(ring.components[ring.components.length - 1]), "first and last point equal");
+        
+        newPoint = new OpenLayers.Geometry.Point(10,10);
+        ring.addComponent( newPoint );
+        t.eq(ring.components.length, 4, "correctly adds 3rd point");
+        t.ok(ring.components[0].equals(point), "point one correct");
+        t.ok(ring.components[1].equals(point), "point two correct");
+        t.ok(ring.components[2].equals(newPoint), "point one correct");
+        t.ok(ring.components[0].equals(ring.components[ring.components.length - 1]), "first and last point equal");
+    }
+    
+    function test_03_LinearRing_removeComponent(t) {
+        t.plan(11);
+        
+        var components = [new OpenLayers.Geometry.Point(0,0), 
+                    new OpenLayers.Geometry.Point(0,10),
+                    new OpenLayers.Geometry.Point(15,15), 
+                    new OpenLayers.Geometry.Point(10,0)
+                    ];
+        var ring = new OpenLayers.Geometry.LinearRing(components);
+ 
+        ring.removeComponent( ring.components[2] );
+        t.eq(ring.components.length, 4, "removing from linear ring with 5 points: length ok");
+        t.ok(ring.components[0].equals(components[0]), "point one correct");
+        t.ok(ring.components[1].equals(components[1]), "point two correct");
+        t.ok(ring.components[2].equals(components[3]), "point one correct");
+        t.ok(ring.components[0].equals(ring.components[ring.components.length - 1]), "first and last point equal");
+ 
+        var testBounds = new OpenLayers.Bounds(0,0,10,10);
+        var ringBounds = ring.getBounds();
+        t.ok(ringBounds.equals(testBounds), "bounds correctly recalculated");
+        
+        ring.removeComponent( ring.components[2] );
+        t.eq(ring.components.length, 4, "cant remove from linear ring with only 4 points. new length ok (unchanged)");
+        t.ok(ring.components[0].equals(components[0]), "point one correct");
+        t.ok(ring.components[1].equals(components[1]), "point two correct");
+        t.ok(ring.components[2].equals(components[3]), "point one correct");
+        t.ok(ring.components[0].equals(ring.components[ring.components.length - 1]), "first and last point equal");
+        
+     }
+    
+    function test_04_LinearRing_getArea(t) {
+        t.plan(1);
+        var components = [new OpenLayers.Geometry.Point(0,0), 
+                    new OpenLayers.Geometry.Point(0,10),
+                    new OpenLayers.Geometry.Point(10,10), 
+                    new OpenLayers.Geometry.Point(10,0)
+                    ];
+        var ring = new OpenLayers.Geometry.LinearRing(components);
+        
+        t.eq(ring.getArea(), 100, "getArea works lovely");
+    }
+
+  // -->
+  </script>
+</head>
+<body>
+</body>
+</html>

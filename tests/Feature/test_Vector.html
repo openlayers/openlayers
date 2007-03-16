@@ -1,0 +1,24 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
+    var map; 
+    var feature; 
+    
+    function test_01_Feature_Vector_constructor (t) {
+        t.plan( 1 );
+
+        feature = new OpenLayers.Feature.Vector();
+
+        t.ok( feature instanceof OpenLayers.Feature.Vector, "new OpenLayers.Feature.Vector returns Feature.Vector object" );
+    }
+    
+
+  // -->
+  </script>
+</head>
+<body>
+  <div id="map" style="width: 500px; height: 300px;"></div>
+</body>
+</html>

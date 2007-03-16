@@ -1,0 +1,82 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var line;
+    var components = [new OpenLayers.Geometry.Point(10,15), 
+                new OpenLayers.Geometry.Point(0,0)];
+        
+    function test_01_LineString_constructor (t) {
+        t.plan( 3 );
+        line = new OpenLayers.Geometry.LineString();
+        t.ok( line instanceof OpenLayers.Geometry.LineString, "new OpenLayers.Geometry.LineString returns line object" );
+        t.eq( line.CLASS_NAME, "OpenLayers.Geometry.LineString", "line.CLASS_NAME is set correctly");
+        t.eq( line.components, [], "line.components is set correctly");
+    }
+
+    function test_01a_LineString_constructor (t) {
+        t.plan( 3 );
+        line = new OpenLayers.Geometry.LineString(components);
+        t.ok( line instanceof OpenLayers.Geometry.LineString, "new OpenLayers.Geometry.LineString returns line object" );
+        t.eq( line.CLASS_NAME, "OpenLayers.Geometry.LineString", "line.CLASS_NAME is set correctly");
+        // TBD FIXME, recursion
+        // t.eq( line.components, components, "line.components is set correctly");
+        t.eq( line.components.length, 2, "line.components.length is set correctly");
+    }
+    
+    function test_02_LineString_toString(t) {
+        t.plan(1);
+        
+        line = new OpenLayers.Geometry.LineString(components);
+        t.eq( line.toString(), components.toString(), "toString output checks in");
+    }
+    
+    function test_03_LineString_removeComponent(t) {
+        t.plan(2);
+        
+        OpenLayers.Geometry.Curve.prototype._removeComponent = 
+            OpenLayers.Geometry.Curve.prototype.removeComponent;
+        OpenLayers.Geometry.Curve.prototype.removeComponent = 
+            function(point) { g_removeComponent = point; };
+        
+        line = new OpenLayers.Geometry.LineString(components);
+
+        g_removeComponent = null;
+        line.removeComponent(components[0]);
+        t.ok(g_removeComponent == null, "point not removed if only 2 points in components");
+
+        line.components.push(new OpenLayers.Geometry.Point(4,4));
+        line.removeComponent(components[0]);
+        t.ok(g_removeComponent, components[0], "point removed if 3 points in components");
+        
+        OpenLayers.Geometry.Curve.prototype.removeComponent = 
+            OpenLayers.Geometry.Curve.prototype._removeComponent;
+    }
+    
+    function test_04_LineString_move(t) {
+        t.plan(4);
+        
+        line = new OpenLayers.Geometry.LineString(components);
+        
+        var x0 = components[0].x;
+        var y0 = components[0].y;
+        var x1 = components[1].x;
+        var y1 = components[1].y;
+        
+        var dx = 10 * Math.random();
+        var dy = 10 * Math.random();
+        line.move(dx, dy);
+        
+        t.eq(line.components[0].x, x0 + dx, "move() correctly modifies first x");
+        t.eq(line.components[0].y, y0 + dy, "move() correctly modifies first y");
+        t.eq(line.components[1].x, x1 + dx, "move() correctly modifies second x");
+        t.eq(line.components[1].y, y1 + dy, "move() correctly modifies second y");
+    }
+
+        
+  // -->
+  </script>
+</head>
+<body>
+</body>
+</html>

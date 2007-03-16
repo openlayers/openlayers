@@ -1,0 +1,37 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 800px;
+            height: 475px;
+            border: 1px solid black;
+            float:right;
+        }
+        
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+        var lon = 5;
+        var lat = 40;
+        var zoom = 5;
+        var map, layer;
+
+        function init(){
+            map = new OpenLayers.Map( 'map', { controls: [new OpenLayers.Control.PanZoom()] } );
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                    "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+            map.addLayer(layer);
+
+            var panel = new OpenLayers.Control.NavToolbar();
+            map.addControl(panel);
+
+            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+        }
+        // -->
+    </script>
+  </head>
+  <body onload="init()">
+    <div id="map"></div>
+  </body>
+</html>

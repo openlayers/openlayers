@@ -1,0 +1,114 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var polygon;
+    var components = [new OpenLayers.Geometry.Point(10,14), new OpenLayers.Geometry.Point(5,3)];
+    var components2 = [new OpenLayers.Geometry.Point(12,15), new OpenLayers.Geometry.Point(2,3), new OpenLayers.Geometry.Point(10,0), new OpenLayers.Geometry.Point(10,10)];
+    var linearRing = new OpenLayers.Geometry.LinearRing(components);
+    var linearRing2 = new OpenLayers.Geometry.LinearRing(components2);
+    
+    function test_01_Polygon_constructor (t) {
+        t.plan( 3 );
+        polygon = new OpenLayers.Geometry.Polygon();
+        t.ok( polygon instanceof OpenLayers.Geometry.Polygon, "new OpenLayers.Geometry.Polygon returns polygon object" );
+        t.eq( polygon.CLASS_NAME, "OpenLayers.Geometry.Polygon", "polygon.CLASS_NAME is set correctly");
+        t.eq( polygon.components.length, 0, "polygon.components is set correctly");
+    }
+
+    function test_01a_Polygon_constructor (t) {
+        t.plan( 3 );
+        polygon = new OpenLayers.Geometry.Polygon([linearRing]);
+        t.ok( polygon instanceof OpenLayers.Geometry.Polygon, "new OpenLayers.Geometry.Polygon returns polygon object" );
+        t.eq( polygon.CLASS_NAME, "OpenLayers.Geometry.Polygon", "polygon.CLASS_NAME is set correctly");
+        t.eq( polygon.components.length, 1, "polygon.components.length is set correctly");
+    }
+    
+    function test_01b_Polygon_constructor (t) {
+        t.plan( 3 );
+        polygon = new OpenLayers.Geometry.Polygon([linearRing, linearRing2]);
+        t.ok( polygon instanceof OpenLayers.Geometry.Polygon, "new OpenLayers.Geometry.Polygon returns polygon object" );
+        t.eq( polygon.CLASS_NAME, "OpenLayers.Geometry.Polygon", "polygon.CLASS_NAME is set correctly");
+        t.eq( polygon.components.length, 2, "polygon.components.length is set correctly");
+    }
+    
+    function test_02_Polygon_getArea(t) {
+        t.plan( 5 );
+
+      //no components
+        var polygon = new OpenLayers.Geometry.Polygon();
+        t.eq(polygon.getArea(), 0, "getArea empty polygon is 0");
+
+        var createSquareRing = function(area) {
+            var points = [
+                new OpenLayers.Geometry.Point(0, 0),
+                new OpenLayers.Geometry.Point(0, area),
+                new OpenLayers.Geometry.Point(area, area),
+                new OpenLayers.Geometry.Point(area, 0)
+            ];
+            var ring = new OpenLayers.Geometry.LinearRing(points);
+            return ring;
+        };
+    
+
+      //simple polygon
+        var comps = [ createSquareRing(2) ];
+        
+        var polygon = new OpenLayers.Geometry.Polygon(comps);
+        t.eq(polygon.getArea(), 4, "getArea simple polygon works lovely");
+
+      //polygon with holes
+        comps = [ createSquareRing(10),
+                           createSquareRing(2),
+                           createSquareRing(3),
+                           createSquareRing(4),
+                         ];
+
+        var polygon = new OpenLayers.Geometry.Polygon(comps);
+        t.eq(polygon.getArea(), 71, "getArea polygon with holes works lovely");
+        
+      //simple polygon negative
+        comps = [ createSquareRing(-2) ];
+        
+        var polygon = new OpenLayers.Geometry.Polygon(comps);
+        t.eq(polygon.getArea(), 4, "getArea simple polygon negative works lovely");
+
+      //polygon with holes negative
+        comps = [ createSquareRing(-10),
+                           createSquareRing(-2),
+                           createSquareRing(-3),
+                           createSquareRing(-4),
+                         ];
+        
+        var polygon = new OpenLayers.Geometry.Polygon(comps);
+        t.eq(polygon.getArea(), 71, "getArea negative polygon with holes works lovely");
+        
+    }
+    
+    function test_03_Polygon_move(t) {
+        t.plan(4);
+        
+        polygon = new OpenLayers.Geometry.Polygon([linearRing, linearRing2]);
+        
+        var x = linearRing.components[0].x;
+        var y = linearRing.components[0].y;
+        var x2 = linearRing2.components[0].x;
+        var y2 = linearRing2.components[0].y;
+        
+        var dx = 10 * Math.random();
+        var dy = 10 * Math.random();
+
+        polygon.move(dx, dy);
+
+        t.eq(polygon.components[0].components[0].x, x + dx, "move() correctly modifies first x");
+        t.eq(polygon.components[0].components[0].y, y + dy, "move() correctly modifies first y");
+        t.eq(polygon.components[1].components[0].x, x2 + dx, "move() correctly modifies second x");
+        t.eq(polygon.components[1].components[0].y, y2 + dy, "move() correctly modifies second y");
+    }
+    
+  // -->
+  </script>
+</head>
+<body>
+</body>
+</html>

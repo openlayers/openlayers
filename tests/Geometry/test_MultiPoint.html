@@ -1,0 +1,44 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var point = new OpenLayers.Geometry.Point(10, 15);
+     
+        
+    function test_01_MultiPoint_constructor (t) {
+        t.plan( 2 );
+        multipoint = new OpenLayers.Geometry.MultiPoint();
+        t.ok( multipoint instanceof OpenLayers.Geometry.MultiPoint, "new OpenLayers.Geometry.MultiPoint returns multipoint object" );
+        t.eq( multipoint.CLASS_NAME, "OpenLayers.Geometry.MultiPoint", "multipoint.CLASS_NAME is set correctly");
+    }
+
+    function test_01a_MultiPoint_constructor (t) {
+        t.plan( 3 );
+        multipoint = new OpenLayers.Geometry.MultiPoint([point]);
+        t.ok( multipoint instanceof OpenLayers.Geometry.MultiPoint, "new OpenLayers.Geometry.MultiPoint returns multipoint object" );
+        t.eq( multipoint.CLASS_NAME, "OpenLayers.Geometry.MultiPoint", "multipoint.CLASS_NAME is set correctly");
+        t.eq( multipoint.components.length, 1, "multipolygon.components.length is set correctly");
+    }
+
+    function test_02_MultiPoint_move(t) {
+        t.plan(4);
+        
+        multipoint = new OpenLayers.Geometry.MultiPoint([point]);
+        var x = point.x;
+        var y = point.y;
+        
+        var dx = 10 * Math.random();
+        var dy = 10 * Math.random();
+        multipoint.move(dx, dy);
+        t.eq(multipoint.components[0].x, x + dx, "move() correctly modifies x");
+        t.eq(multipoint.components[0].y, y + dy, "move() correctly modifies y");
+        t.eq(multipoint.components[0].lon, x + dx, "move() correctly modifies lon");
+        t.eq(multipoint.components[0].lat, y + dy, "move() correctly modifies lat");
+    }
+
+  // -->
+  </script>
+</head>
+<body>
+</body>
+</html>

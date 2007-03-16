@@ -1,0 +1,83 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
+    var layer; 
+
+    function test_01_Layer_Text_constructor (t) {
+        t.plan( 5 );
+        
+        layer = new OpenLayers.Layer.Text('Test Layer', { location: 'data_Layer_Text_textfile.txt'});
+        t.ok( layer instanceof OpenLayers.Layer.Text, "new OpenLayers.Layer.Text returns object" );
+        t.eq( layer.location, "data_Layer_Text_textfile.txt", "layer.location is correct" );
+        var markers;
+        t.delay_call( 1, function() {  
+            t.eq( layer.markers.length, 2, "marker length is correct" );
+            var ll = new OpenLayers.LonLat(20, 10);
+            t.ok( layer.markers[0].lonlat.equals(ll), "first marker is correct" );
+            t.eq( layer.markers[0].icon.url, 'http://boston.openguides.org/markers/ORANGE.png', "icon" );
+        } );
+    }
+    function test_02_Layer_Text_draw (t) { 
+//        t.plan(5);
+        t.plan( 2 );
+        layer = new OpenLayers.Layer.Text('Test Layer', { location: 'data_Layer_Text_textfile.txt'});
+        t.ok( layer instanceof OpenLayers.Layer.Text, "new OpenLayers.Layer.Text returns object" );
+        var map = new OpenLayers.Map('map');
+        var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(baseLayer);
+        map.addLayer(layer);
+        t.eq( map.layers[1].name, layer.name, "Layer added to map okay" );
+        t.delay_call( 1, function() { 
+          map.setCenter(new OpenLayers.LonLat(0,0),0);
+
+/*
+            if (!isMozilla)
+                t.ok( true, "skipping element test outside of Mozilla");
+            else
+              t.ok( map.layers[0].div.firstChild instanceof HTMLImageElement, "Marker added to div" )
+
+          t.eq( map.layers[0].div.firstChild.style.top, "219px", "Marker top set correctly" )
+          t.eq( map.layers[0].div.firstChild.style.left, "273px", "Marker left set correctly" )
+*/
+        });;
+    }
+    function test_03_Layer_Text_events (t) {
+        t.plan( 4 );    
+        layer = new OpenLayers.Layer.Text('Test Layer', { location: 'data_Layer_Text_textfile.txt'});
+        var map = new OpenLayers.Map('map');
+        var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(baseLayer);
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0),0);
+        var event = {};
+        t.delay_call( 1, function() {  
+          t.ok(layer.markers[0].events, "First marker has an events object");
+          t.eq(layer.markers[0].events.listeners['click'].length, 1, "Marker events has one object");
+          layer.markers[0].events.triggerEvent('click', event);
+          t.eq(map.popups.length, 1, "Popup opened correctly");
+          layer.markers[1].events.triggerEvent('click', event);
+          t.eq(map.popups.length, 1, "1st popup gone, 2nd Popup opened correctly");
+        });
+    }
+
+    function test_99_Layer_Text_destroy (t) {
+        t.plan( 1 );    
+        layer = new OpenLayers.Layer.Text('Test Layer');
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
+        layer.destroy();
+        t.eq( layer.map, null, "layer.map is null after destroy" );
+    }
+  // -->
+  </script>
+</head>
+<body>
+  <div id="map" style="width:500px; height:500px"></div>
+</body>
+</html>

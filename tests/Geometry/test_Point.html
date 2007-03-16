@@ -1,0 +1,112 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var point; 
+        
+    function test_01_Point_constructor (t) {
+        t.plan( 8 );
+
+      //empty
+        point = new OpenLayers.Geometry.Point();
+        t.ok( point instanceof OpenLayers.Geometry.Point, "new OpenLayers.Geometry.Point returns point object" );
+        t.eq( point.CLASS_NAME, "OpenLayers.Geometry.Point", "point.CLASS_NAME is set correctly");
+
+      //valid
+        var x = 10;
+        var y = 20;
+        point = new OpenLayers.Geometry.Point(x, y);
+        t.ok( point instanceof OpenLayers.Geometry.Point, "new OpenLayers.Geometry.Point returns point object" );
+        t.eq( point.CLASS_NAME, "OpenLayers.Geometry.Point", "point.CLASS_NAME is set correctly");
+        t.eq( point.x, x, "point.x is set correctly");
+        t.eq( point.y, y, "point.y is set correctly");
+        t.eq( point.lon, x, "point.lon is set correctly");
+        t.eq( point.lat, y, "point.lat is set correctly");
+    }
+
+    function test_02_Point_accessors(t) {
+        t.plan( 6 )
+                
+      //valid
+        var x = 10;
+        var y = 20;
+        point = new OpenLayers.Geometry.Point(x, y);
+
+        t.eq( point.getX(), x, "point.x is get() correctly");
+        t.eq( point.getY(), y, "point.y is get() correctly");
+
+        var x1 = 55;
+        var y1 = 73;
+        
+        point.setX(x1);
+        point.setY(y1);
+        
+        t.eq( point.x, x1, "point.x is set() correctly");
+        t.eq( point.y, y1, "point.y is set() correctly");
+        t.eq( point.lon, x1, "point.lon is set() correctly");
+        t.eq( point.lat, y1, "point.lat is set() correctly");
+
+    }
+    
+    function test_03_Point_calculateBounds (t) {
+        t.plan(4);
+
+        var x = 10;
+        var y = 20;
+        point = new OpenLayers.Geometry.Point(x, y);
+        point.calculateBounds();
+        t.eq( point.bounds.left, x, "bounds.left is 10" );
+        t.eq( point.bounds.right, x, "bounds.right is 10" );
+        t.eq( point.bounds.top, y, "bounds.top is 20" );
+        t.eq( point.bounds.bottom, y, "bounds.bottom is 20" );
+    }
+    
+    function test_04_Point_distanceTo(t) {
+        t.plan(2);
+
+        var x1 = 10;
+        var y1 = 20;
+        point1 = new OpenLayers.Geometry.Point(x1, y1);
+
+        var x2 = 100;
+        var y2 = 200;
+        point2 = new OpenLayers.Geometry.Point(x2, y2);
+
+        var dist = point1.distanceTo(point2)
+        t.eq( dist, 201.24611797498107267682563018581, "distances calculating correctly");
+        t.eq( dist, Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)), "distance calculation correct");
+    }
+    
+    function test_05_Point_toString(t) {
+        t.plan(1);
+
+        var x = 10;
+        var y = 20;
+        point = new OpenLayers.Geometry.Point(x, y);
+        bounds = point.getBounds();
+        t.eq( point.toString(), x + ", " + y, "toString() works" );
+        
+    }
+    
+    function test_06_Point_move(t) {
+        t.plan(4);
+        
+        var x = 10;
+        var y = 20;
+        point = new OpenLayers.Geometry.Point(x, y);
+        
+        var dx = 10 * Math.random();
+        var dy = 10 * Math.random();
+        point.move(dx, dy);
+        t.eq(point.x, x + dx, "move() correctly modifies x");
+        t.eq(point.y, y + dy, "move() correctly modifies y");
+        t.eq(point.lon, x + dx, "move() correctly modifies lon");
+        t.eq(point.lat, y + dy, "move() correctly modifies lat");
+    }
+    
+  // -->
+  </script>
+</head>
+<body>
+</body>
+</html>

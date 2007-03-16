@@ -1,0 +1,50 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 512px;
+            height: 350px;
+            border: 1px solid gray;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+        var map, drawControl, g;
+        function serialize(feature) {
+            feature.attributes = {};
+            var name = prompt("Title for feature?");
+            feature.attributes['title'] = name;
+            s = new XMLSerializer();
+            var data = g.write(feature.layer.features);
+            $("gml").value = s.serializeToString(data);
+        }
+        function init(){
+            g = new OpenLayers.Format.GeoRSS();
+            map = new OpenLayers.Map('map');
+            
+            var wmsLayer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
+
+            var pointLayer = new OpenLayers.Layer.Vector("Point Layer");
+            pointLayer.onFeatureInsert = serialize;
+
+            map.addLayers([wmsLayer, pointLayer]);
+            map.addControl(new OpenLayers.Control.EditingToolbar(pointLayer));
+            map.addControl(new OpenLayers.Control.MousePosition());
+            
+            
+            map.setCenter(new OpenLayers.LonLat(0, 0), 3);
+        }
+
+        // -->
+    </script>
+  </head>
+  <body onload="init()">
+    <h1>OpenLayers Draw Point Example</h1>
+    <div style="float:right">
+    <textarea id="gml" cols="80" rows="30"></textarea>
+    </div>
+    <div id="map"></div>
+  </body>
+</html>
