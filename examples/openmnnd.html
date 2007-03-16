@@ -13,7 +13,7 @@
         var map, layer;
 
         function init(){
-            OpenLayers.ProxyHost="proxy.cgi?url=";
+            OpenLayers.ProxyHost="/proxy/?url=";
             map = new OpenLayers.Map( $('map'), {'maxResolution':'auto', maxExtent: new OpenLayers.Bounds(-203349.72008129774,4816309.33,1154786.8041952979,5472346.5), projection: 'EPSG:26915' } );
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                     ["http://geoint.lmic.state.mn.us/cgi-bin/wms"], {layers: 'fsa'} );
