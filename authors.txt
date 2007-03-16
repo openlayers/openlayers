@@ -1,17 +1,20 @@
-OpenLayers core development team
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-Erik Uzureau
-Christopher R. Schmidt
-Philip Lindsay
-John Frank
+OpenLayers contributors:
+Bertil Chaupis                                                               
+Jeff Dege
 Schuyler Erle
-
-Patch contributors
-------------------
+Christian López Espínola
+John Frank
+Sean Gilles
+Pierre Giraud                                                                
+Philip Lindsay
 Corey Puffault
 Tim Schaub
-Jeff Dege
-Sean Gilles
+Christopher Schmidt
+Cameron Shorter                                                              
+Paul Spencer                                                                 
+Erik Uzureau
+Bill Woodall
+
 
 OpenLayers is graciously supported by MetaCarta, Inc.
 <http://www.metacarta.com>.
