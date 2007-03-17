@@ -1,4 +1,5 @@
 OpenLayers contributors:
+Howard Butler
 Bertil Chaupis                                                               
 Jeff Dege
 Schuyler Erle
