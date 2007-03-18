@@ -1,9 +1,0 @@
-OpenLayers.Control
-
-Base class from which controls are derived. Controls are elements of the map used to control things like zoom, layer status, or to provide information to the user about the status of the map, such as scale or copyright information.
-
-* Constructor
-  OpenLayers.Control({Object|options}?) -- Creates a new control. The options here are used to control parameters of the control. The base control defines only "position", which is designed to be an {OpenLayers.Pixel} which is the top-left of the location of the control relative to the map div. 
-
-* Parameters
-  position -- {OpenLayers.Pixel} to use as the top-left corner of the control div, relative to the map area.

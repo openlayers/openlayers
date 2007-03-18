@@ -1,9 +1,0 @@
-OpenLayers.Control.PanZoom
-
-Creates a small toolset for controlling the location of the map with panning and zooming, including four directional arrows, a zoom in and zoom out, and one button which zooms to the max extent of the map.
-
-* Constructor
-  OpenLayers.Control.PanZoom({Object|options}) -- Creates a new panzoom control.
-
-* Parameters
-  slideFactor -- Number of pixels by which to slide the map when a pan arrow is clicked.

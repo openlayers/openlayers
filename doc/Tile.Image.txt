@@ -1,7 +1,0 @@
-OpenLayers.Tile.Image
-
-The image tile is designed to hold images for all types of layers, from WMS to KaMap to WorldWind.
-
-* Constructor
-  OpenLayers.Tile.Image({OpenLayers.Layer|layer}, {OpenLayers.Pixel|position}, {OpenLayers.Bounds|bounds}, {String|url}, {OpenLayers.Size|size}) -- Create a new tile, with properties passed.
-  
