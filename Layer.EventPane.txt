@@ -1,6 +1,0 @@
-OpenLayers.Layer.EventPane
-
-Designed to act as a super-class for layers which need OpenLayers to intercept click events. Google Maps and Microsoft Virtual Earth both use this functionality, in order to allow for actions like the rubber-band-zoom/zoombox functionality. This Layer is not designed to be used on its own, but instead to act as an intermediary between the user and layers which have their own click handlers.
-
-* Constructor
-  OpenLayers.Layer.EventPane(name, options) -- Only designed to be used by subclasses.

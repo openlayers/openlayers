@@ -1,9 +1,0 @@
-OpenLayers.Layer.Image
-
-The Image Layer allows you to load a single image and use it as a layer in your
-map.
-
-
-* Constructor
-  OpenLayers.Layer(name, url, {OpenLayers.Bounds|bounds}, {OpenLayers.Size|size}, {options}) -- Image Layer constructor requires a name, URL of the image, geographic bounds of the image, pixel size of the image, and an optional options parameter. 
-
