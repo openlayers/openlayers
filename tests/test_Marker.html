@@ -71,6 +71,39 @@
 
         t.eq(parseFloat(marker.icon.imageDiv.style.opacity), 0.5, "marker.setOpacity() works");
     }
+    function test_04_Marker_moveTo(t) {
+        t.plan( 6 );
+        
+        var map = new OpenLayers.Map("map");
+
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.WMS(name, url);
+
+        map.addLayer(layer);
+        
+        mlayer = new OpenLayers.Layer.Markers('Test Layer');
+        map.addLayer(mlayer);
+               
+        map.zoomToExtent(new OpenLayers.Bounds(-50,-50,50,50));
+
+        //onscreen marker
+        var ll = new OpenLayers.LonLat(0,0);
+        var marker = new OpenLayers.Marker(ll);
+        mlayer.addMarker(marker);
+        
+        t.eq(marker.lonlat.lon, 0, "marker lon okay"); 
+        t.eq(marker.lonlat.lat, 0, "marker lat okay");
+        console.log(marker.icon);
+
+        marker.moveTo(new OpenLayers.Pixel(250,275));
+        t.eq(marker.lonlat.lon, 0, "marker lon no change"); 
+        t.eq(marker.lonlat.lat, 0, "marker lat no change"); 
+        
+        marker.moveTo(new OpenLayers.Pixel(0,0));
+        t.eq(marker.lonlat.lon, map.getExtent().left, "on left edge of map"); 
+        t.eq(marker.lonlat.lat, map.getExtent().top, "on top edge of map"); 
+    
+    }
 
   // -->
   </script>
