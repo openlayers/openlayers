@@ -47,7 +47,7 @@
     }
     function test_03_Layer_Text_events (t) {
         t.plan( 4 );    
-        layer = new OpenLayers.Layer.Text('Test Layer', { location: 'data_Layer_Text_textfile.txt'});
+        layer = new OpenLayers.Layer.Text('Test Layer', { location: 'data_Layer_Text_textfile_2.txt'});
         var map = new OpenLayers.Map('map');
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
@@ -63,6 +63,26 @@
           t.eq(map.popups.length, 1, "Popup opened correctly");
           layer.markers[1].events.triggerEvent('click', event);
           t.eq(map.popups.length, 1, "1st popup gone, 2nd Popup opened correctly");
+        });
+    }
+    function test_04_Layer_Text_events_nopopups (t) {
+        t.plan( 4 );    
+        layer = new OpenLayers.Layer.Text('Test Layer', { location: 'data_Layer_Text_textfile.txt'});
+        var map = new OpenLayers.Map('map');
+        var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(baseLayer);
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0),0);
+        var event = {};
+        t.delay_call( 1, function() {  
+          t.ok(layer.markers[0].events, "First marker has an events object");
+          t.eq(layer.markers[0].events.listeners['click'].length, 0, "Marker events has one object");
+          layer.markers[0].events.triggerEvent('click', event);
+          t.eq(map.popups.length, 0, "no popup on first marker");
+          layer.markers[1].events.triggerEvent('click', event);
+          t.eq(map.popups.length, 0, "no popup on second marker");
         });
     }
 
