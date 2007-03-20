@@ -106,7 +106,7 @@
      */
     function test_10_Layer_TMS_getURL(t) {
 
-        t.plan(1);
+        t.plan(2);
         
         var map = new OpenLayers.Map('map', options);
         var options = {'layername':'basic', 'type':'png'}; 
@@ -115,6 +115,10 @@
         map.setCenter(new OpenLayers.LonLat(0,0), 9);
         var tileurl = layer.getURL(new OpenLayers.Bounds(3.515625,45,4.21875,45.703125));
         t.eq(tileurl, "http://labs.metacarta.com/wms-c/Basic.py/1.0.0/basic/9/261/192.png", "Tile URL is correct");
+
+        layer.url = ["http://tilecache1/", "http://tilecache2/", "http://tilecache3/"];
+        tileurl = layer.getURL(new OpenLayers.Bounds(3.515625,45,4.21875,45.703125));
+        t.eq(tileurl, "http://tilecache2/1.0.0/basic/9/261/192.png", "Tile URL is deterministic");
     }
 
     function test_11_Layer_TMS_setMap(t) {
