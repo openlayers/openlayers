@@ -21,6 +21,7 @@
         t.eq( parseInt(control.div.style.zIndex), map.Z_INDEX_BASE['Control'] + 4, "Control div zIndexed properly" );
         t.eq( parseInt(map.viewPortDiv.lastChild.style.zIndex), map.Z_INDEX_BASE['Control'] + 4, "Viewport div contains control div" );
 
+        map.destroy();
     }
     function test_03_Control_PanZoom_control_events (t) {
         t.plan( 10 );
@@ -64,6 +65,7 @@
         t.eq(overviewCenter.lat, 0, "Overviewmap center lat correct -- second zoom");
         t.eq(overviewZoom, 0, "Overviewmap zoomcorrect -- second zoom");
         
+        map.destroy();
 
     }
   // -->

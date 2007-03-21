@@ -62,6 +62,7 @@
              url + "?" + OpenLayers.Util.getParameterString(tParams),
              "div first child is correct image object" );
         t.eq( tile.position.toString(), "x=5,y=6", "Position of tile is set correctly." );
+        map.destroy();
     }
     
     function test_03_Layer_WMS_inittiles (t) {
@@ -72,7 +73,7 @@
         map.setCenter(new OpenLayers.LonLat(0,0),5);
         t.eq( layer.grid.length, 7, "Grid rows is correct." );
         t.eq( layer.grid[0].length, 6, "Grid cols is correct." );
-        
+        map.destroy();
     }
 
 
@@ -101,6 +102,7 @@
         t.eq( clone.alpha, layer.alpha, "alpha copied correctly");
 
         layer.grid = null;
+        map.destroy();
     }
 
     function test_05_Layer_WMS_isBaseLayer(t) {
@@ -142,6 +144,7 @@
         newParams.CHICKPEAS = 151;
 
         t.eq( layer.params.CHICKPEAS, "image/png", "mergeNewParams() makes clean copy of hashtable");
+        map.destroy();
     }
 
     function test_07_Layer_WMS_getFullRequestString (t) {
@@ -171,6 +174,7 @@
         t.eq(str,
              tUrl + "?" + OpenLayers.Util.getParameterString(tParams),
              "getFullRequestString() by default does *not* add SRS value if projection is 'none'");
+        map.destroy();
  
     }
 
@@ -196,22 +200,25 @@
         tile.draw();
         t.eq(parseFloat(tile.imgDiv.style.opacity), 0.6, "Tile opacity is set correctly");
 
+        map.destroy();
     }    
     
     function test_20_Layer_WMS_Reproject (t) { 
         t.plan(5);
+
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.Google("Google");
         map.addLayer(layer);
-        layer = new OpenLayers.Layer.WMS(name, url, params, {isBaseLayer: false});
-        layer.isBaseLayer=false;
-        map.addLayer(layer);
+        wmslayer = new OpenLayers.Layer.WMS(name, url, params, {isBaseLayer: false});
+        wmslayer.isBaseLayer=false;
+        map.addLayer(wmslayer);
         map.setCenter(new OpenLayers.LonLat(0,0), 5);
         var tile = layer.grid[0][0];
         t.eq( tile.bounds.left, -22.5, "left side matches" ); 
         t.eq( tile.bounds.right, -11.25, "top side matches" ); 
         t.eq( tile.bounds.bottom.toFixed(6), '11.178402', "bottom side matches" ); 
         t.eq( tile.bounds.top.toFixed(6), '21.943046', "top side matches" ); 
+        map.destroy();
         
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS(name, url, params);
@@ -219,6 +226,8 @@
         map.setCenter(new OpenLayers.LonLat(0,0), 5);
         var tile = layer.grid[0][0];
         t.ok( tile.bounds.equals(new OpenLayers.Bounds(-33.75, 33.75, -22.5, 45)), "okay");
+
+        map.destroy();
     }
     
     function test_99_Layer_WMS_destroy (t) {
