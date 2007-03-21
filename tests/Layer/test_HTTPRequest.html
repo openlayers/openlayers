@@ -146,7 +146,7 @@
         tUrl = "http://octo.metacarta.com/cgi-bin/mapserv";
         layer = new OpenLayers.Layer.HTTPRequest(name, "chicken", tParams, null);
         str = layer.getFullRequestString(null, tUrl);
-        t.eq(str, tUrl + '?' + OpenLayers.Util.getParameterString(tParams), "getFullRequestString() works for url sans ?");
+        t.eq(str, tUrl + '?' + OpenLayers.Util.getParameterString(tParams), "getFullRequestString() works with specified altUrl parameter");
   
   // single url object        
         tUrl = ["http://octo.metacarta.com/cgi-bin/mapserv"];
