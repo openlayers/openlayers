@@ -19,22 +19,18 @@
             var wmsLayer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                 "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
 
-            var pointLayer = new OpenLayers.Layer.Vector("Point Layer");
-            var lineLayer = new OpenLayers.Layer.Vector("Line Layer");
             var polygonLayer = new OpenLayers.Layer.Vector("Polygon Layer");
 
-            map.addLayers([wmsLayer, pointLayer, lineLayer, polygonLayer]);
+            map.addLayers([wmsLayer, polygonLayer]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.addControl(new OpenLayers.Control.MousePosition());
             
             drawControls = {
-                point: new OpenLayers.Control.DrawFeature(pointLayer,
-                            OpenLayers.Handler.Point),
-                line: new OpenLayers.Control.DrawFeature(lineLayer,
-                            OpenLayers.Handler.Path),
                 polygon: new OpenLayers.Control.DrawFeature(polygonLayer,
                             OpenLayers.Handler.Polygon),
-                select: new OpenLayers.Control.SelectFeature(polygonLayer)
+                select: new OpenLayers.Control.SelectFeature(polygonLayer),
+                hover: new OpenLayers.Control.SelectFeature(polygonLayer,
+                                                            {hover: true})
             };
             
             for(var key in drawControls) {
@@ -67,20 +63,19 @@
             <label for="noneToggle">navigate</label>
         </li>
         <li>
-            <input type="radio" name="type" value="point" id="pointToggle" onclick="toggleControl(this);" />
-            <label for="pointToggle">draw point</label>
-        </li>
-        <li>
-            <input type="radio" name="type" value="line" id="lineToggle" onclick="toggleControl(this);" />
-            <label for="lineToggle">draw line</label>
-        </li>
-        <li>
-            <input type="radio" name="type" value="polygon" id="polygonToggle" onclick="toggleControl(this);" />
+            <input type="radio" name="type" value="polygon" id="polygonToggle"
+                   onclick="toggleControl(this);" />
             <label for="polygonToggle">draw polygon</label>
         </li>
         <li>
-            <input type="radio" name="type" value="select" id="selectToggle" onclick="toggleControl(this);" />
-            <label for="selectToggle">select polygon</label>
+            <input type="radio" name="type" value="select" id="selectToggle"
+                   onclick="toggleControl(this);" />
+            <label for="selectToggle">select polygon on click</label>
+        </li>
+        <li>
+            <input type="radio" name="type" value="hover" id="hoverToggle"
+                   onclick="toggleControl(this);" />
+            <label for="hoverToggle">select polygon on hover</label>
         </li>
     </ul>        
   </body>
