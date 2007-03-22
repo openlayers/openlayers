@@ -61,6 +61,8 @@
         t.ok( (layer.maxResolution != clone.maxResolution), "maxresolution of clone reset to new map div");
         t.ok( (layer.minResolution != clone.minResolution), "minresolution of clone reset to new map div");
         
+        mapone.destroy();
+        maptwo.destroy();
     }
 
     function test_03_Layer_setName (t) {
@@ -159,7 +161,7 @@
 
 
     function test_99_Layer_destroy (t) {
-        t.plan( 4 );    
+        t.plan( 5 );    
 
         var map = new OpenLayers.Map('map');
         
@@ -173,6 +175,10 @@
         t.eq( layer.div, null, "layer.div is null after destroy" );
         t.eq( layer.map, null, "layer.map is null after destroy" );
         t.eq( layer.options, null, "layer.options is null after destroy" );
+
+        t.eq(map.layers.length, 0, "layer removed from map");
+        
+        map.destroy();
 
     }
   // -->
