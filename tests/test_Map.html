@@ -367,7 +367,7 @@
         map.destroy();
         t.eq( map.layers, null, "map.layers is null after destroy" );
         t.eq( map.controls, null, "map.controls is null after destroy" );
-        t.eq( map.div.innerHTML, "", "map's div cleared out");
+        t.eq( map.viewPortDiv, null, "map's viewportDiv nullified");
     }
   // -->
   </script>
