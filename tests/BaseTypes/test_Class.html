@@ -31,6 +31,7 @@
         var initA = 0;
         A.prototype = {
             count: 0,
+            mixed: false,
             initialize: function () {
                 initA++;
                 this.count++;
@@ -95,7 +96,7 @@
             t.ok( true, "IE sucks" );
             t.ok( true, "IE sucks" );
         }
-        t.eq( objC.mixed, true, "class C mixes has mixin properties" );
+        t.eq( objC.mixed, true, "class C has mixin properties" );
     }
 
   // -->
