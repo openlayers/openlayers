@@ -3,13 +3,24 @@
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript"><!--
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
+    var isMSIE    = (navigator.userAgent.indexOf("MSIE") > -1);
     var layer; 
+
+    var georss_txt = "./georss.txt";
+    var atom_xml   = "./atom-1.0.xml";
+
+    // if this test is running online, different rules apply
+    if (isMSIE) {
+        alert("I'm IE");
+        georss_txt = "." + georss_txt;
+        atom_xml = "." + atom_xml;
+    }
 
     function test_01_Layer_GeoRSS_constructor (t) {
         t.plan( 5 );
-        layer = new OpenLayers.Layer.GeoRSS('Test Layer', "./georss.txt" );
+        layer = new OpenLayers.Layer.GeoRSS('Test Layer', georss_txt );
         t.ok( layer instanceof OpenLayers.Layer.GeoRSS, "new OpenLayers.Layer.GeoRSS returns object" );
-        t.eq( layer.location, "./georss.txt", "layer.location is correct" );
+        t.eq( layer.location, georss_txt, "layer.location is correct" );
         var markers;
         t.delay_call( 1, function() {  
             t.eq( layer.markers.length, 40, "marker length is correct" );
@@ -21,9 +32,9 @@
     
     function test_01_Layer_GeoRSS_AtomParsing (t) {
         t.plan( 6 );
-        layer = new OpenLayers.Layer.GeoRSS('Test Layer', "./atom-1.0.xml" );
+        layer = new OpenLayers.Layer.GeoRSS('Test Layer', atom_xml );
         t.ok( layer instanceof OpenLayers.Layer.GeoRSS, "new OpenLayers.Layer.GeoRSS returns object" );
-        t.eq( layer.location, "./atom-1.0.xml", "layer.location is correct" );
+        t.eq( layer.location, atom_xml, "layer.location is correct" );
         var markers;
         t.delay_call( 1, function() {  
             t.eq( layer.markers.length, 2, "marker length is correct" );
@@ -37,7 +48,7 @@
     function test_02_Layer_GeoRSS_draw (t) { 
 //        t.plan(5);
         t.plan( 2 );
-        layer = new OpenLayers.Layer.GeoRSS('Test Layer', './georss.txt');
+        layer = new OpenLayers.Layer.GeoRSS('Test Layer', georss_txt);
         t.ok( layer instanceof OpenLayers.Layer.GeoRSS, "new OpenLayers.Layer.GeoRSS returns object" );
         var map = new OpenLayers.Map('map');
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
@@ -53,7 +64,7 @@
     }
     function test_03_Layer_GeoRSS_events (t) {
         t.plan( 4 );    
-        layer = new OpenLayers.Layer.GeoRSS('Test Layer', './georss.txt');
+        layer = new OpenLayers.Layer.GeoRSS('Test Layer', georss_txt);
         var map = new OpenLayers.Map('map');
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
@@ -74,7 +85,7 @@
 
     function test_99_Layer_GeoRSS_destroy (t) {
         t.plan( 1 );    
-        layer = new OpenLayers.Layer.GeoRSS('Test Layer', './georss.txt');
+        layer = new OpenLayers.Layer.GeoRSS('Test Layer', georss_txt);
         var map = new OpenLayers.Map('map');
         map.addLayer(layer);
         layer.destroy();

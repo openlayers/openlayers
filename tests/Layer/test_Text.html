@@ -3,14 +3,24 @@
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript"><!--
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
+    var isMSIE = (navigator.userAgent.indexOf("MSIE") > -1);
     var layer; 
+
+    var datafile  = "./data_Layer_Text_textfile.txt";
+    var datafile2 = "./data_Layer_Text_textfile_2.txt";
+
+    // if this test is running in IE, different rules apply
+    if (isMSIE) {
+        datafile = "." + datafile;
+        datafile2 = "." + datafile2;
+    }
 
     function test_01_Layer_Text_constructor (t) {
         t.plan( 5 );
         
-        layer = new OpenLayers.Layer.Text('Test Layer', { location: 'data_Layer_Text_textfile.txt'});
+        layer = new OpenLayers.Layer.Text('Test Layer', { location: datafile });
         t.ok( layer instanceof OpenLayers.Layer.Text, "new OpenLayers.Layer.Text returns object" );
-        t.eq( layer.location, "data_Layer_Text_textfile.txt", "layer.location is correct" );
+        t.eq( layer.location, datafile, "layer.location is correct" );
         var markers;
         t.delay_call( 1, function() {  
             t.eq( layer.markers.length, 2, "marker length is correct" );
@@ -22,7 +32,7 @@
     function test_02_Layer_Text_draw (t) { 
 //        t.plan(5);
         t.plan( 2 );
-        layer = new OpenLayers.Layer.Text('Test Layer', { location: 'data_Layer_Text_textfile.txt'});
+        layer = new OpenLayers.Layer.Text('Test Layer', { location: datafile });
         t.ok( layer instanceof OpenLayers.Layer.Text, "new OpenLayers.Layer.Text returns object" );
         var map = new OpenLayers.Map('map');
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
@@ -47,7 +57,7 @@
     }
     function test_03_Layer_Text_events (t) {
         t.plan( 4 );    
-        layer = new OpenLayers.Layer.Text('Test Layer', { location: 'data_Layer_Text_textfile_2.txt'});
+        layer = new OpenLayers.Layer.Text('Test Layer', { location: datafile2 });
         var map = new OpenLayers.Map('map');
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
@@ -67,7 +77,7 @@
     }
     function test_04_Layer_Text_events_nopopups (t) {
         t.plan( 4 );    
-        layer = new OpenLayers.Layer.Text('Test Layer', { location: 'data_Layer_Text_textfile.txt'});
+        layer = new OpenLayers.Layer.Text('Test Layer', { location: datafile });
         var map = new OpenLayers.Map('map');
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
