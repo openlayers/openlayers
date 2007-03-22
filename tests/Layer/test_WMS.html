@@ -213,7 +213,8 @@
         wmslayer.isBaseLayer=false;
         map.addLayer(wmslayer);
         map.setCenter(new OpenLayers.LonLat(0,0), 5);
-        var tile = layer.grid[0][0];
+        
+        var tile = wmslayer.grid[0][0];
         t.eq( tile.bounds.left, -22.5, "left side matches" ); 
         t.eq( tile.bounds.right, -11.25, "top side matches" ); 
         t.eq( tile.bounds.bottom.toFixed(6), '11.178402', "bottom side matches" ); 

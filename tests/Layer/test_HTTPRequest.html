@@ -158,9 +158,9 @@
         tUrl = ["http://octo.metacarta.com/cgi-bin/mapserv","http://labs.metacarta.com/cgi-bin/mapserv"];
         layer = new OpenLayers.Layer.HTTPRequest(name, tUrl, tParams, null);
         str = layer.getFullRequestString();
-        t.eq(str, tUrl[0] + '?' + OpenLayers.Util.getParameterString(tParams), "getFullRequestString() works for list of two urls");
-        str = layer.getFullRequestString({'a':'f'});
-        t.eq(str, tUrl[1] + '?' + OpenLayers.Util.getParameterString(OpenLayers.Util.extend(tParams,{'a':'f'})), "getFullRequestString() works for list of two urls and is deterministic");
+        t.eq(str, tUrl[1] + '?' + OpenLayers.Util.getParameterString(tParams), "getFullRequestString() works for list of two urls");
+        str = layer.getFullRequestString({'a':'b'});
+        t.eq(str, tUrl[0] + '?' + OpenLayers.Util.getParameterString(OpenLayers.Util.extend(tParams,{'a':'b'})), "getFullRequestString() works for list of two urls and is deterministic");
 
     }
 
@@ -170,10 +170,10 @@
         layer = new OpenLayers.Layer.HTTPRequest(name, url, params, options); 
 
         urls = ["wms1", "wms2", "wms3", "wms4"]; 
-        t.eq( layer.selectUrl("bbox=-180,0,0,90",  urls), "wms4", "selectUrl(-90,-180) returns 4" ); 
-        t.eq( layer.selectUrl("bbox=-180,-90,0,0", urls), "wms3", "selectUrl(90,-180) returns 3" ); 
+        t.eq( layer.selectUrl("bbox=-180,0,0,90",  urls), "wms3", "selectUrl(-90,-180) returns 4" ); 
+        t.eq( layer.selectUrl("bbox=-180,-90,0,0", urls), "wms1", "selectUrl(90,-180) returns 3" ); 
         t.eq( layer.selectUrl("bbox=0,90,180,0",   urls), "wms1", "selectUrl(-90,180) returns 1" ); 
-        t.eq( layer.selectUrl("bbox=0,0,180,90",   urls), "wms2", "selectUrl(90,180) returns 2" ); 
+        t.eq( layer.selectUrl("bbox=0,0,180,90",   urls), "wms4", "selectUrl(90,180) returns 2" ); 
     }
 
     function test_99_Layer_HTTPRequest_destroy (t) {
