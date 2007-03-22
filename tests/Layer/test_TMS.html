@@ -118,7 +118,7 @@
 
         layer.url = ["http://tilecache1/", "http://tilecache2/", "http://tilecache3/"];
         tileurl = layer.getURL(new OpenLayers.Bounds(3.515625,45,4.21875,45.703125));
-        t.eq(tileurl, "http://tilecache1/1.0.0/basic/9/261/192.png", "Tile URL is deterministic");
+        t.eq(tileurl, "http://tilecache2/1.0.0/basic/9/261/192.png", "Tile URL is deterministic");
     }
 
     function test_11_Layer_TMS_setMap(t) {
