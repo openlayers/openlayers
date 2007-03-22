@@ -2,9 +2,13 @@
   <head>
     <style type="text/css">
         #map {
-            width: 800px;
+            margin-right: 300px;
             height: 475px;
             border: 1px solid black;
+        }
+        #info {
+            width: 300px;
+            float: right;
         }
     </style>
     <script src="../lib/OpenLayers.js"></script>
@@ -47,8 +51,8 @@
             map.addControl(ls);
 
             drawControls = {
-                selectPlat: new OpenLayers.Control.SelectFeature(pwfs, {callbacks: {'up':feature_info,'move':feature_info_hover}}),
-                selectRoad: new OpenLayers.Control.SelectFeature(rwfs, {callbacks: {'up':feature_info,'move':feature_info_hover}})
+                selectPlat: new OpenLayers.Control.SelectFeature(pwfs, {callbacks: {'up':feature_info,'over':feature_info_hover}}),
+                selectRoad: new OpenLayers.Control.SelectFeature(rwfs, {callbacks: {'up':feature_info,'over':feature_info_hover}})
             };
 
             for(var key in drawControls) {
@@ -71,7 +75,10 @@
         }
         var displayedGeom = null;
         function feature_info_hover(geometry) {
-           if (displayedGeom != geometry && 
+            if(geometry.parent) {
+                geometry = geometry.parent;
+            }
+            if (displayedGeom != geometry && 
                (!geometry.feature.layer.selectedFeatures.length || 
                (geometry.feature.layer.selectedFeatures[0].geometry == geometry))) {
             feature_info(geometry);
@@ -79,6 +86,9 @@
            }
         }    
         function feature_info(geometry) {
+            if(geometry.parent) {
+                geometry = geometry.parent;
+            }
             var html = "<ul>";
             for(var i in geometry.feature.attributes)
                html += "<li><b>" + i + "</b>: "+  geometry.feature.attributes[i] + "</li>";
@@ -89,7 +99,7 @@
     </script>
   </head>
   <body onload="init()">
-    <div style="right: 20px; width: 350px; position:absolute;">
+    <div id="info">
       <ul>
         <li>Streams: Feature Count <span id="stream_features">0</span></li> 
         <li>Plat: Feature Count <span id="plat_features">0</span></li> 
