@@ -317,6 +317,50 @@
     }
 
     
+    function test_01_Map_defaultTheme(t) {
+        t.plan(5);
+        
+        var head = document.getElementsByTagName('head')[0];
+        var nodeCount = head.childNodes.length;
+        
+        map = new OpenLayers.Map('map');
+        var lastNode = head.childNodes[head.childNodes.length - 1];
+
+        t.eq(nodeCount + 1, head.childNodes.length, "by default, a node is added to document head" );
+        t.eq(lastNode.tagName, "LINK", "node added is a link element");
+        t.eq(lastNode.rel, "stylesheet", "node added has rel set to stylesheet");
+        t.eq(lastNode.type, "text/css", "node added has type set to text/css");
+        t.ok(OpenLayers.Util.isEquivalentUrl(map.theme, lastNode.href), "node added has href equivalent to map.theme");
+    }
+    function test_01_Map_customTheme(t) {
+        t.plan(5);
+        
+        var head = document.getElementsByTagName('head')[0];
+        var nodeCount = head.childNodes.length;
+        
+        var options = {theme: 'foo'};
+        map = new OpenLayers.Map('map', options);
+
+        var lastNode = head.childNodes[head.childNodes.length - 1];
+
+        t.eq(nodeCount + 1, head.childNodes.length, "with custom theme, a node is added to document head" );
+        t.eq(lastNode.tagName, "LINK", "node added is a link element");
+        t.eq(lastNode.rel, "stylesheet", "node added has rel set to stylesheet");
+        t.eq(lastNode.type, "text/css", "node added has type set to text/css");
+        t.ok(OpenLayers.Util.isEquivalentUrl(map.theme, lastNode.href), "node added has href equivalent to map.theme");
+    }
+    function test_01_Map_noTheme(t) {
+        t.plan(1);
+        
+        var head = document.getElementsByTagName('head')[0];
+        var nodeCount = head.childNodes.length;
+        
+        var options = {theme: null};
+        map = new OpenLayers.Map('map', options);
+
+        t.eq(nodeCount, head.childNodes.length, "with no theme, a node is not added to document head" );
+    }
+
     function test_99_Map_destroy (t) {
         t.plan( 3 );    
         map = new OpenLayers.Map('map');
