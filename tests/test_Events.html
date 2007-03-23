@@ -201,11 +201,27 @@
 
         t.eq(a, 5, "if Events has no object set and an event is registered also with no object, triggerEvent() calls it without trying to set the context to null");        
     }
+
+    function test_05_Event_destroy (t) {
+        t.plan(2);
+        var start = OpenLayers.Event.observers.length;
+        var div   = OpenLayers.Util.getElement('test');
+        var obj   = {};
+        var events = new OpenLayers.Events(obj, div);
+        // +1 because of blocking dragstart in attachToElement()
+        t.eq(OpenLayers.Event.observers.length,
+             start + OpenLayers.Events.prototype.BROWSER_EVENTS.length + 1,
+             "construction increases the number of event observers");
+        events = events.destroy();
+        t.eq(OpenLayers.Event.observers.length, start,
+             "destruction restores the number of event observers");
+    }
    
   // -->
   </script>
 </head>
 <body>
     <div id="map" style="width: 1024px; height: 512px;"/>
+    <div id="test"></div>
 </body>
 </html>
