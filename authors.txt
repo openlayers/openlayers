@@ -15,6 +15,7 @@ Cameron Shorter
 Paul Spencer                                                                 
 Erik Uzureau
 Bill Woodall
+Steve Woodbridge
 
 
 OpenLayers is graciously supported by MetaCarta, Inc.
