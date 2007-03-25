@@ -1,0 +1,163 @@
+<html>
+<head>A
+
+<script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
+    var layer; 
+
+    var name = 'Test Layer';
+    var url = "http://labs.metacarta.com/cgi-bin/mapserv";
+    var params = { map: '/mapdata/vmap_wms.map', 
+                   Alayers: 'basic'};
+
+    function test_01_Layer_MapServer_Untiled_constructor (t) {
+        t.plan( 4 );
+
+        var url = "http://labs.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.MapServer.Untiled(name, url, params);
+        t.ok( layer instanceof OpenLayers.Layer.MapServer.Untiled, "new OpenLayers.Layer.MapServer returns object" );
+        t.eq( layer.url, "http://labs.metacarta.com/cgi-bin/mapserv", "layer.url is correct (HTTPRequest inited)" );
+
+        t.eq( layer.params.mode, "map", "default mode param correctly copied");
+        t.eq( layer.params.map_imagetype, "png", "default imagetype correctly copied");
+
+
+    }
+    
+    function test_04_Layer_MapServer_Untiled_clone (t) {
+        t.plan(3);
+        
+        var url = "http://labs.metacarta.com/cgi-bin/mapserv";
+        var map = new OpenLayers.Map('map', {});
+        layer = new OpenLayers.Layer.MapServer.Untiled(name, url, params);
+        map.addLayer(layer);
+
+        var clone = layer.clone();
+		layer.tile = [[1,2],[3,4]];
+		
+        t.ok( clone.tile != layer.tile, "clone does not copy tile");
+
+        layer.ratio += 1;
+
+        t.eq( clone.ratio, 1, "changing layer.ratio does not change clone.ratio -- a fresh copy was made, not just copied reference");
+
+        t.eq( clone.alpha, layer.alpha, "alpha copied correctly");
+
+        layer.tile = null;
+    }
+
+    function test_05_Layer_MapServer_Untiled_isBaseLayer(t) {
+        t.plan(3);
+        
+        var url = "http://labs.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.MapServer.Untiled(name, url, params);
+        t.ok( layer.isBaseLayer, "baselayer is true by default");
+
+        var newParams = OpenLayers.Util.extend(new Object(), params);
+        newParams.transparent = "true";
+        layer = new OpenLayers.Layer.MapServer.Untiled(name, url, newParams);
+        t.ok( !layer.isBaseLayer, "baselayer is false when transparent is set to true");
+
+        layer = new OpenLayers.Layer.MapServer.Untiled(name, url, params, {isBaseLayer: false});
+        t.ok( !layer.isBaseLayer, "baselayer is false when option is set to false" );
+    }
+
+    function test_06_Layer_MapServer_Untiled_mergeNewParams (t) {
+        t.plan( 5 );
+
+        var map = new OpenLayers.Map("map");
+        var url = "http://labs.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.MapServer.Untiled(name, url, params);
+        
+        var newParams = { layers: 'sooper', 
+                          chickpeas: 'image/png'};
+
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        t.ok( !layer.tile.url.match("chickpeas"), "chickpeas is not in URL of first tile in grid" );
+
+        layer.mergeNewParams(newParams);
+        
+        t.eq( layer.params.layers, "sooper", "mergeNewParams() overwrites well");
+        t.eq( layer.params.chickpeas, "image/png", "mergeNewParams() adds well");
+        t.ok( layer.tile.url.match("chickpeas"), "chickpeas is in URL of first tile in grid" );
+
+        newParams.chickpeas = 151;
+
+        t.eq( layer.params.chickpeas, "image/png", "mergeNewParams() makes clean copy of hashtable");
+    }
+
+    function test_07_Layer_MapServer_Untiled_getFullRequestString (t) {
+
+        
+        t.plan( 1 );
+        var map = new OpenLayers.Map('map');
+        tUrl = "http://labs.metacarta.com/cgi-bin/mapserv";
+        tParams = { layers: 'basic', 
+                    format: 'png'};
+        var tLayer = new OpenLayers.Layer.MapServer.Untiled(name, tUrl, tParams);
+        map.addLayer(tLayer);
+        str = tLayer.getFullRequestString();
+        var tParams = {
+		     layers: 'basic', 
+			 format: 'png',
+			 mode: 'map',
+			 map_imagetype: 'png',
+			srs: 'EPSG:4326'
+        };
+
+		var sStr = tUrl + "?" + OpenLayers.Util.getParameterString(tParams);
+		sStr = sStr.replace(/,/g, "+");
+        
+        t.eq(str, sStr , "getFullRequestString() works");
+
+    }
+
+    function test_08_Layer_MapServer_Untiled_setOpacity (t) {
+        t.plan( 4 );
+
+        var map = new OpenLayers.Map('map');
+        map.projection = "xx";
+        tUrl = "http://labs.metacarta.com/cgi-bin/mapserv";
+        tParams = { layers: 'basic', 
+                   format: 'image/png'};
+        tOptions = { 'opacity': '0.5' };           
+        var tLayer = new OpenLayers.Layer.MapServer.Untiled(name, tUrl, tParams, tOptions);
+        map.addLayer(tLayer);
+        map.zoomToMaxExtent();
+        t.eq(tLayer.opacity, "0.5", "Opacity is set correctly");
+        t.eq(parseFloat(tLayer.div.firstChild.style.opacity), 0.5, "Opacity on tile is correct");
+        tLayer.setOpacity("0.6");
+        t.eq(tLayer.opacity, "0.6", "setOpacity works properly");
+        t.eq(parseFloat(tLayer.div.firstChild.style.opacity), 0.6, "Opacity on tile is changed correctly");
+
+    }    
+    
+    function test_99_Layer_MapServer_Untiled_destroy (t) {
+
+        t.plan( 1 );
+
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.MapServer.Untiled(name, url, params);
+        map.addLayer(layer);
+
+        map.setCenter(new OpenLayers.LonLat(0,0), 5);
+
+        //grab a reference to one of the tiles
+        var tile = layer.tile;        
+
+        layer.destroy();
+        
+    // checks to make sure superclass (grid) destroy() was called    
+        
+        t.ok( layer.tile == null, "tile set to null");
+    }
+    
+  // -->
+  </script>
+</head>
+<body>
+<div id="map" style="width:256px;height:256px"></div>
+</body>
+</html>

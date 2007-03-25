@@ -1,0 +1,26 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 800px;
+            height: 475px;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script src="../lib/OpenLayers/Layer/MapServer/Untiled.js"></script>
+    <script type="text/javascript">
+        window.onload = function(){
+            var map = new OpenLayers.Map( 'map', {maxResolution: 'auto'} );
+            var layer = new OpenLayers.Layer.MapServer.Untiled( "MapServer Untiled", 
+                    "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+            map.addLayer(layer);
+            map.setCenter(new OpenLayers.LonLat(0, 0), 1);
+            map.addControl( new OpenLayers.Control.LayerSwitcher() );
+        }
+    </script>
+  </head>
+  <body>
+    <div id="map"></div>
+  </body>
+</html>
