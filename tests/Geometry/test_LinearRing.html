@@ -90,6 +90,13 @@
         t.eq(ring.getArea(), 100, "getArea works lovely");
     }
 
+    function test_05_LinearRing_toString(t) {
+        t.plan(1);
+        
+        ring = new OpenLayers.Geometry.LinearRing(components);
+        t.eq( ring.toString(), components.toString() + ',' + components[0].toString(), "toString output is ok");
+    }
+
   // -->
   </script>
 </head>
