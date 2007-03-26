@@ -212,7 +212,8 @@
         t.eq(OpenLayers.Event.observers.length,
              start + OpenLayers.Events.prototype.BROWSER_EVENTS.length + 1,
              "construction increases the number of event observers");
-        events = events.destroy();
+        events.destroy();
+        events = null;
         t.eq(OpenLayers.Event.observers.length, start,
              "destruction restores the number of event observers");
     }
