@@ -204,18 +204,19 @@
 
     function test_05_Event_destroy (t) {
         t.plan(2);
-        var start = OpenLayers.Event.observers.length;
+
         var div   = OpenLayers.Util.getElement('test');
         var obj   = {};
         var events = new OpenLayers.Events(obj, div);
         // +1 because of blocking dragstart in attachToElement()
-        t.eq(OpenLayers.Event.observers.length,
-             start + OpenLayers.Events.prototype.BROWSER_EVENTS.length + 1,
-             "construction increases the number of event observers");
+        t.eq(OpenLayers.Event.observers["test"].length,
+             OpenLayers.Events.prototype.BROWSER_EVENTS.length + 1,
+             "construction creates new arrayin hash, registers appropriate events");
+             
         events.destroy();
         events = null;
-        t.eq(OpenLayers.Event.observers.length, start,
-             "destruction restores the number of event observers");
+        t.eq(OpenLayers.Event.observers["test"], null,
+             "destruction removes the event observer from hash");
     }
    
   // -->
