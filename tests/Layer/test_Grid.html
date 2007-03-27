@@ -173,7 +173,7 @@
 
     function test_99_Layer_Grid_destroy (t) {
 
-        t.plan( 3 );
+        t.plan( 5 );
 
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.Grid(name, url, params);
@@ -190,10 +190,12 @@
         map.setCenter(new OpenLayers.LonLat(0,0), 5);
 
         //grab a reference to one of the tiles
-        var tile = layer.grid[0][0];        
+        var tile = layer.grid[1][1];        
+        t.eq( tile.imgDiv.className, "olTileImage", "Tile has an image" ); 
 
         layer.destroy();
-
+        t.eq( tile.imgDiv, null, "Tile destroyed" ); 
+        
         t.ok( layer.grid == null, "tiles appropriately destroyed")
     }
     
