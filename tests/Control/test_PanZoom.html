@@ -26,47 +26,66 @@
         map.addControl(control2, new OpenLayers.Pixel(100,100));
         t.eq( control2.div.style.top, "100px", "2nd control div is located correctly");
     }
+
     function test_03_Control_PanZoom_control_events (t) {
-        t.plan( 7 );
-        var evt = {which: 1}; // control expects left-click
-        map = new OpenLayers.Map('map');
+
+        if ( !window.document.createEvent ) {
+            //ie can't simulate mouseclicks
+            t.plan(0)
+        } else {
+            t.plan( 7 );
+            t.open_window( "Control/test_PanZoom.html", function( wnd ) {
+                t.delay_call( 3, function() {
+                    simulateClick(wnd, wnd.control.buttons[0]); 
+                    t.ok( wnd.mapper.getCenter().lat > wnd.centerLL.lat, "Pan up works correctly" );
+
+                    simulateClick(wnd, wnd.control.buttons[1]);
+                    t.ok( wnd.mapper.getCenter().lon < wnd.centerLL.lon, "Pan left works correctly" );
+
+                    simulateClick(wnd, wnd.control.buttons[2]);
+                    t.ok( wnd.mapper.getCenter().lon == wnd.centerLL.lon, "Pan right works correctly" );
+
+                    simulateClick(wnd, wnd.control.buttons[3]);
+                    t.ok( wnd.mapper.getCenter().lat == wnd.centerLL.lat, "Pan down works correctly" );
+
+                    simulateClick(wnd, wnd.control.buttons[4]);
+                    t.eq( wnd.mapper.getZoom(), 6, "zoomin works correctly" );
+
+                    simulateClick(wnd, wnd.control.buttons[6]);
+                    t.eq( wnd.mapper.getZoom(), 5, "zoomout works correctly" );
+
+                    simulateClick(wnd, wnd.control.buttons[5]);
+                    t.eq( wnd.mapper.getZoom(), 2, "zoomworld works correctly" );
+                });
+            });
+        }
+    }
+
+    function simulateClick(wnd, elem) {
+      var evt = wnd.document.createEvent("MouseEvents");
+      evt.initMouseEvent("mousedown", true, true, wnd, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+      var canceled = !elem.dispatchEvent(evt);
+    }
+
+    function loader() {
+        control = new OpenLayers.Control.PanZoom();
+    
+        mapper = new OpenLayers.Map('map', { controls: [control]});
+        
+    
         var layer = new OpenLayers.Layer.WMS("Test Layer", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
             {map: "/mapdata/vmap_wms.map", layers: "basic"});
-        map.addLayer(layer);
-
-        control = new OpenLayers.Control.PanZoom();
-        map.addControl(control, new OpenLayers.Pixel(20,20));
-
-        var centerLL = new OpenLayers.LonLat(0,0); 
-        map.setCenter(centerLL, 5);
-
-        control.buttons[0].onmousedown(evt);
-        t.ok( map.getCenter().lat > centerLL.lat, "Pan up works correctly" );
-
-        control.buttons[1].onmousedown(evt);
-        t.ok( map.getCenter().lon < centerLL.lon, "Pan left works correctly" );
-
-        control.buttons[2].onmousedown(evt);
-        t.ok( map.getCenter().lon == centerLL.lon, "Pan right works correctly" );
-
-        control.buttons[3].onmousedown(evt);
-        t.ok( map.getCenter().lat == centerLL.lat, "Pan down works correctly" );
-
-        control.buttons[4].onmousedown(evt);
-        t.eq( map.getZoom(), 6, "zoomin works correctly" );
-
-        control.buttons[6].onmousedown(evt);
-        t.eq( map.getZoom(), 5, "zoomout works correctly" );
-
-        control.buttons[5].onmousedown(evt);
-        t.eq( map.getZoom(), 2, "zoomworld works correctly" );
-
+        mapper.addLayer(layer);
+    
+        centerLL = new OpenLayers.LonLat(0,0); 
+        mapper.setCenter(centerLL, 5);
     }
+        
   // -->
   </script>
 </head>
-<body>
+<body onload="loader()">
     <div id="map" style="width: 1024px; height: 512px;"/>
 </body>
 </html>
