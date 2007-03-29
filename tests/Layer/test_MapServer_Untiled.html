@@ -34,8 +34,8 @@
         map.addLayer(layer);
 
         var clone = layer.clone();
-		layer.tile = [[1,2],[3,4]];
-		
+        layer.tile = [[1,2],[3,4]];
+        
         t.ok( clone.tile != layer.tile, "clone does not copy tile");
 
         layer.ratio += 1;
@@ -100,15 +100,15 @@
         map.addLayer(tLayer);
         str = tLayer.getFullRequestString();
         var tParams = {
-		     layers: 'basic', 
-			 format: 'png',
-			 mode: 'map',
-			 map_imagetype: 'png',
-			srs: 'EPSG:4326'
+             layers: 'basic', 
+             format: 'png',
+             mode: 'map',
+             map_imagetype: 'png',
+             srs: 'EPSG:4326'
         };
 
-		var sStr = tUrl + "?" + OpenLayers.Util.getParameterString(tParams);
-		sStr = sStr.replace(/,/g, "+");
+        var sStr = tUrl + "?" + OpenLayers.Util.getParameterString(tParams);
+        sStr = sStr.replace(/,/g, "+");
         
         t.eq(str, sStr , "getFullRequestString() works");
 
