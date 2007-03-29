@@ -6,9 +6,9 @@
 <script src="../lib/OpenLayers.js" type="text/javascript"></script>
 <style>
 #map{
-	width:100%; 
-	height:500px;
-	border:1px solid;
+    width:100%; 
+    height:500px;
+    border:1px solid;
 }
 </style>
 </head>
@@ -16,32 +16,32 @@
   <div id="map"></div>
   <script defer="defer" type="text/javascript">
     var map = new OpenLayers.Map('map');
-	// my city
-	var constantina = new OpenLayers.LonLat(-5.6165,37.8623);
+    // my city
+    var constantina = new OpenLayers.LonLat(-5.6165,37.8623);
     var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
         "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
     var nasa_wms = new OpenLayers.Layer.WMS( "NASA Global Mosaic", 
         "http://wms.jpl.nasa.gov/wms.cgi", {layers: "modis,global_mosaic"} );
 
-    map.addLayers([	
-		nasa_wms,
-		wms
-	]);
-	
-	map.addControl(new OpenLayers.Control.LayerSwitcher());
-	
-	var options = {
+    map.addLayers([    
+        nasa_wms,
+        wms
+    ]);
+    
+    map.addControl(new OpenLayers.Control.LayerSwitcher());
+    
+    var options = {
       layers: [wms.clone()],
       minRatio: 8,
       maxRatio: 128
     };
-	var overview = new OpenLayers.Control.OverviewMap(options);
-		
-	map.addControl(overview);
-	
-	map.setCenter(constantina, 4);
-	
-	overview.maximizeControl();	
+    var overview = new OpenLayers.Control.OverviewMap(options);
+        
+    map.addControl(overview);
+    
+    map.setCenter(constantina, 4);
+    
+    overview.maximizeControl();    
   </script>
 </body>
 </html>
