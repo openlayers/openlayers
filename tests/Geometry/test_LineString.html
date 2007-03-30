@@ -34,9 +34,9 @@
     function test_03_LineString_removeComponent(t) {
         t.plan(2);
         
-        OpenLayers.Geometry.Curve.prototype._removeComponent = 
-            OpenLayers.Geometry.Curve.prototype.removeComponent;
-        OpenLayers.Geometry.Curve.prototype.removeComponent = 
+        OpenLayers.Geometry.Collection.prototype._removeComponent = 
+            OpenLayers.Geometry.Collection.prototype.removeComponent;
+        OpenLayers.Geometry.Collection.prototype.removeComponent = 
             function(point) { g_removeComponent = point; };
         
         line = new OpenLayers.Geometry.LineString(components);
@@ -49,8 +49,8 @@
         line.removeComponent(components[0]);
         t.ok(g_removeComponent, components[0], "point removed if 3 points in components");
         
-        OpenLayers.Geometry.Curve.prototype.removeComponent = 
-            OpenLayers.Geometry.Curve.prototype._removeComponent;
+        OpenLayers.Geometry.Collection.prototype.removeComponent = 
+            OpenLayers.Geometry.Collection.prototype._removeComponent;
     }
     
     function test_04_LineString_move(t) {
@@ -73,6 +73,46 @@
         t.eq(line.components[1].y, y1 + dy, "move() correctly modifies second y");
     }
 
+    function test_LineString_equals(t) {
+        t.plan(3);
+        
+        var x0 = Math.random() * 100;
+        var y0 = Math.random() * 100;
+        var x1 = Math.random() * 100;
+        var y1 = Math.random() * 100;
+        var point0 = new OpenLayers.Geometry.Point(x0, y0);
+        var point1 = new OpenLayers.Geometry.Point(x1, y1);
+        var geometry = new OpenLayers.Geometry.LineString([point0, point1]);
+        var equal = new OpenLayers.Geometry.LineString([point0, point1]);
+        var offX =  new OpenLayers.Geometry.LineString([
+                            new OpenLayers.Geometry.Point(x0 + 1, y0),
+                            new OpenLayers.Geometry.Point(x1 + 1, y1)]);
+        var offY =  new OpenLayers.Geometry.LineString([
+                            new OpenLayers.Geometry.Point(x0, y0 + 1),
+                            new OpenLayers.Geometry.Point(x1, y1 + 1)]);
+        t.ok(geometry.equals(equal),
+             "equals() returns true for a geometry with equivalent coordinates");
+        t.ok(!geometry.equals(offX),
+             "equals() returns false for a geometry with offset x");
+        t.ok(!geometry.equals(offY),
+             "equals() returns false for a geometry with offset y");
+    }
+    
+    function test_LineString_clone(t) {
+        t.plan(2);
+        
+        var x0 = Math.random() * 100;
+        var y0 = Math.random() * 100;
+        var x1 = Math.random() * 100;
+        var y1 = Math.random() * 100;
+        var point0 = new OpenLayers.Geometry.Point(x0, y0);
+        var point1 = new OpenLayers.Geometry.Point(x1, y1);
+        var geometry = new OpenLayers.Geometry.LineString([point0, point1]);
+        var clone = geometry.clone();
+        t.ok(clone instanceof OpenLayers.Geometry.LineString,
+             "clone() creates an OpenLayers.Geometry.LineString");
+        t.ok(geometry.equals(clone), "clone has equivalent coordinates");
+    }
         
   // -->
   </script>

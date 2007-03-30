@@ -142,18 +142,19 @@
     }
     
     function test_07_Collection_addComponent(t)   {
-        t.plan(3);
+        t.plan(10);
         
         var coll = new OpenLayers.Geometry.Collection();
         
-      //null
+        //null
         coll.addComponent(null);
-        t.ok(true, "no breakage, no executage from null input")        
+        t.ok(!coll.addComponent(null),
+             "addComponent returns false for bad component")        
 
-      //good component
+        //good component
         var component = new OpenLayers.Geometry.Point(3,4);
-        coll.addComponent(component);      
-         
+        t.ok(coll.addComponent(component),
+             "addComponent returns true for good component");
         t.ok(coll.bounds == null, "bounds cache correctly cleared");         
          
         var foundComponent = false;
@@ -163,6 +164,27 @@
             }
         }
         t.ok(foundComponent, "component added to internal array");
+        
+        // restricted components
+        coll.componentTypes = ["OpenLayers.Geometry.Point",
+                               "OpenLayers.Geometry.LineString"];
+        var point1 = new OpenLayers.Geometry.Point(0,0);
+        var point2 = new OpenLayers.Geometry.Point(1,1);
+        var line = new OpenLayers.Geometry.LineString([point1, point2]);
+        var multipoint = new OpenLayers.Geometry.MultiPoint([point1, point2]);
+        
+        t.ok(coll.addComponent(point1),
+             "addComponent returns true for 1st geometry type in componentTypes");
+        t.ok(OpenLayers.Util.indexOf(coll.components, point1) > -1,
+             "addComponent adds 1st restricted type to components array");
+        t.ok(coll.addComponent(line),
+             "addComponent returns true for 2nd geometry type in componentTypes");
+        t.ok(OpenLayers.Util.indexOf(coll.components, point1) > -1,
+             "addComponent adds 2nd restricted type to components array");
+        t.ok(!coll.addComponent(multipoint),
+             "addComponent returns false for geometry type not in componentTypes");
+        t.ok(OpenLayers.Util.indexOf(coll.components, multipoint) == -1,
+             "addComponent doesn't add restricted type to component array");
 
     }
     

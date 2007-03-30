@@ -7,14 +7,14 @@
         
     function test_01_MultiPoint_constructor (t) {
         t.plan( 2 );
-        multipoint = new OpenLayers.Geometry.MultiPoint();
+        var multipoint = new OpenLayers.Geometry.MultiPoint();
         t.ok( multipoint instanceof OpenLayers.Geometry.MultiPoint, "new OpenLayers.Geometry.MultiPoint returns multipoint object" );
         t.eq( multipoint.CLASS_NAME, "OpenLayers.Geometry.MultiPoint", "multipoint.CLASS_NAME is set correctly");
     }
 
     function test_01a_MultiPoint_constructor (t) {
         t.plan( 3 );
-        multipoint = new OpenLayers.Geometry.MultiPoint([point]);
+        var multipoint = new OpenLayers.Geometry.MultiPoint([point]);
         t.ok( multipoint instanceof OpenLayers.Geometry.MultiPoint, "new OpenLayers.Geometry.MultiPoint returns multipoint object" );
         t.eq( multipoint.CLASS_NAME, "OpenLayers.Geometry.MultiPoint", "multipoint.CLASS_NAME is set correctly");
         t.eq( multipoint.components.length, 1, "multipolygon.components.length is set correctly");
@@ -23,7 +23,7 @@
     function test_02_MultiPoint_move(t) {
         t.plan(4);
         
-        multipoint = new OpenLayers.Geometry.MultiPoint([point]);
+        var multipoint = new OpenLayers.Geometry.MultiPoint([point]);
         var x = point.x;
         var y = point.y;
         
@@ -34,6 +34,40 @@
         t.eq(multipoint.components[0].y, y + dy, "move() correctly modifies y");
         t.eq(multipoint.components[0].lon, x + dx, "move() correctly modifies lon");
         t.eq(multipoint.components[0].lat, y + dy, "move() correctly modifies lat");
+    }
+
+    function test_MultiPoint_equals(t) {
+        t.plan(3);
+        
+        var x = Math.random() * 100;
+        var y = Math.random() * 100;
+        var geometry = new OpenLayers.Geometry.MultiPoint(
+                                        [new OpenLayers.Geometry.Point(x, y)]);
+        var equal =  new OpenLayers.Geometry.MultiPoint(
+                                        [new OpenLayers.Geometry.Point(x, y)]);        
+        var offX =  new OpenLayers.Geometry.MultiPoint(
+                                        [new OpenLayers.Geometry.Point(x + 1, y)]);        
+        var offY =  new OpenLayers.Geometry.MultiPoint(
+                                        [new OpenLayers.Geometry.Point(x, y + 1)]);        
+        t.ok(geometry.equals(equal),
+             "equals() returns true for a geometry with equivalent coordinates");
+        t.ok(!geometry.equals(offX),
+             "equals() returns false for a geometry with offset x");
+        t.ok(!geometry.equals(offY),
+             "equals() returns false for a geometry with offset y");
+    }
+    
+    function test_MultiPoint_clone(t) {
+        t.plan(2);
+        
+        var x = Math.random() * 100;
+        var y = Math.random() * 100;
+        var geometry = new OpenLayers.Geometry.MultiPoint(
+                                        [new OpenLayers.Geometry.Point(x, y)]);
+        var clone = geometry.clone();
+        t.ok(clone instanceof OpenLayers.Geometry.MultiPoint,
+             "clone() creates an OpenLayers.Geometry.MultiPoint");
+        t.ok(geometry.equals(clone), "clone has equivalent coordinates");
     }
 
   // -->

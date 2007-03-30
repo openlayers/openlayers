@@ -23,29 +23,36 @@
     }
     
     function test_02_LinearRing_addComponent(t) {
-        t.plan(12);
+        t.plan(13);
         
         var ring = new OpenLayers.Geometry.LinearRing();
  
         var point = new OpenLayers.Geometry.Point(0,0);
-        ring.addComponent( point );
+        t.ok(ring.addComponent(point),
+             "addComponent returns true for 1st point");
         t.eq(ring.components.length, 2, "add first point, correct length");
         t.ok(ring.components[0].equals(point), "point one correct");
         t.ok(ring.components[0].equals(ring.components[ring.components.length - 1]), "first and last point equal");
-        
-        ring.addComponent( point );
-        t.eq(ring.components.length, 3, "add second point, correct length");
-        t.ok(ring.components[0].equals(point), "point one correct");
-        t.ok(ring.components[1].equals(point), "point two correct");
-        t.ok(ring.components[0].equals(ring.components[ring.components.length - 1]), "first and last point equal");
-        
+    
         newPoint = new OpenLayers.Geometry.Point(10,10);
-        ring.addComponent( newPoint );
-        t.eq(ring.components.length, 4, "correctly adds 3rd point");
+        t.ok(ring.addComponent( newPoint ),
+             "addComponent returns true for unique point");
+        t.eq(ring.components.length, 3, "correctly adds 3rd point");
         t.ok(ring.components[0].equals(point), "point one correct");
-        t.ok(ring.components[1].equals(point), "point two correct");
-        t.ok(ring.components[2].equals(newPoint), "point one correct");
-        t.ok(ring.components[0].equals(ring.components[ring.components.length - 1]), "first and last point equal");
+        t.ok(ring.components[1].equals(newPoint), "point one correct");
+        t.ok(ring.components[2].equals(ring.components[0]), "first and last point equal");
+        
+        var length = ring.components.length;
+        var clone = ring.components[length - 1].clone();
+        t.ok(!ring.addComponent(clone),
+             "addComponent returns false for adding a duplicate last point");
+        t.eq(ring.components.length, length,
+             "components remains unchanged after trying to add duplicate point");
+        t.ok(ring.addComponent(clone, length - 1),
+             "addComponent returns true when adding a duplicate with an index");
+        t.eq(ring.components.length, length + 1,
+             "components increase in length after adding a duplicate point with index");
+        
     }
     
     function test_03_LinearRing_removeComponent(t) {

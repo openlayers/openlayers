@@ -103,6 +103,35 @@
         t.eq(point.lon, x + dx, "move() correctly modifies lon");
         t.eq(point.lat, y + dy, "move() correctly modifies lat");
     }
+
+    function test_Point_equals(t) {
+        t.plan(3);
+        
+        var x = Math.random() * 100;
+        var y = Math.random() * 100;
+        var geometry = new OpenLayers.Geometry.Point(x, y);
+        var equal = new OpenLayers.Geometry.Point(x, y);
+        var offX = new OpenLayers.Geometry.Point(x + 1, y);
+        var offY = new OpenLayers.Geometry.Point(x, y + 1);
+        t.ok(geometry.equals(equal),
+             "equals() returns true for a geometry with equivalent coordinates");
+        t.ok(!geometry.equals(offX),
+             "equals() returns false for a geometry with offset x");
+        t.ok(!geometry.equals(offY),
+             "equals() returns false for a geometry with offset y");
+    }
+    
+    function test_Point_clone(t) {
+        t.plan(2);
+        
+        var x = Math.random() * 100;
+        var y = Math.random() * 100;
+        var geometry = new OpenLayers.Geometry.Point(x, y);
+        var clone = geometry.clone();
+        t.ok(clone instanceof OpenLayers.Geometry.Point,
+             "clone() creates an OpenLayers.Geometry.Point");
+        t.ok(geometry.equals(clone), "clone has equivalent coordinates");
+    }
     
   // -->
   </script>
