@@ -1,0 +1,146 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>WKT</title>
+    <style type="text/css">
+        #info {
+            position: absolute;
+            top: 70px;
+            left: 550px;
+            width: 350px;
+        }
+        #map {
+            width: 512px;
+            height: 350px;
+            border: 1px solid gray;
+        }
+        #controls {
+            width: 512px;
+        }
+        #wktInput {
+            float: right;
+        }
+        #controlToggle {
+            padding-left: 1em;
+        }
+        #controlToggle li {
+            list-style: none;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+        var map, vectors, drawControls, wkt;
+        function init(){
+            map = new OpenLayers.Map('map');
+            var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
+
+            vectors = new OpenLayers.Layer.Vector("Vector Layer");
+
+            map.addLayers([wms, vectors]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.addControl(new OpenLayers.Control.MousePosition());
+            
+            var options = {
+                hover: true,
+                onSelect: displayWKT
+            };
+
+            drawControls = {
+                point: new OpenLayers.Control.DrawFeature(vectors,
+                            OpenLayers.Handler.Point),
+                line: new OpenLayers.Control.DrawFeature(vectors,
+                            OpenLayers.Handler.Path),
+                polygon: new OpenLayers.Control.DrawFeature(vectors,
+                            OpenLayers.Handler.Polygon),
+                hover: new OpenLayers.Control.SelectFeature(vectors, options)
+            };
+            
+            for(var key in drawControls) {
+                map.addControl(drawControls[key]);
+            }
+            
+            wkt = new OpenLayers.Format.WKT();
+            
+            map.setCenter(new OpenLayers.LonLat(0, 0), 3);
+            document.getElementById('noneToggle').checked = true;
+        }
+
+        function toggleControl(element) {
+            for(key in drawControls) {
+                var control = drawControls[key];
+                if(element.value == key && element.checked) {
+                    control.activate();
+                } else {
+                    control.deactivate();
+                }
+            }
+        }
+        
+        function displayWKT(geometry) {
+            var str = wkt.write(geometry);
+            // not a good idea in general, just for this demo
+            str = str.replace(/,/g, ', ');
+            document.getElementById('info').innerHTML = str;
+        }
+
+        function parseWKT() {
+            var element = document.getElementById('wkt');
+            var collection = wkt.read(element.value);
+            if(collection) {
+                if(collection.constructor != Array) {
+                    collection = [collection];
+                }
+                var features = [];
+                for(var i=0; i<collection.length; ++i) {
+                    features.push(new OpenLayers.Feature.Vector(collection[i]));
+                }
+                vectors.addFeatures(features);
+                var plural = (features.length > 1) ? 's' : '';
+                element.value = 'Feature' + plural + ' added'
+            } else {
+                element.value = 'Bad WKT';
+            }
+        }
+        // -->
+    </script>
+  </head>
+  <body onload="init()">
+    <h1>OpenLayers WKT Example</h1>
+    <div id="info"></div>
+    <div id="map"></div>
+    <div id="controls">
+        <p>See <a href="http://en.wikipedia.org/wiki/Well-known_text#Geometric_Objects">Wikipedia</a>
+        for a description and examples of WKT.</p>
+        <div id="wktInput">
+            <textarea id="wkt" rows="6" cols="30">paste WKT here...</textarea>
+            <br />
+            <input type="button" value="add feature" onclick="parseWKT();" />
+        </div>
+        <ul id="controlToggle">
+            <li>
+                <input type="radio" name="type" value="none" id="noneToggle"
+                       onclick="toggleControl(this);" checked="checked" />
+                <label for="noneToggle">navigate</label>
+            </li>
+            <li>
+                <input type="radio" name="type" value="point" id="pointToggle" onclick="toggleControl(this);" />
+                <label for="pointToggle">draw point</label>
+            </li>
+            <li>
+                <input type="radio" name="type" value="line" id="lineToggle" onclick="toggleControl(this);" />
+                <label for="lineToggle">draw line</label>
+            </li>
+            <li>
+                <input type="radio" name="type" value="polygon" id="polygonToggle" onclick="toggleControl(this);" />
+                <label for="polygonToggle">draw polygon</label>
+            </li>
+            <li>
+                <input type="radio" name="type" value="hover" id="hoverToggle"
+                       onclick="toggleControl(this);" />
+                <label for="hoverToggle">view WKT for feature</label>
+            </li>
+        </ul>
+    </div>
+  </body>
+</html>
