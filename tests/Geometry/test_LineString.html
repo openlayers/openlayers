@@ -28,7 +28,9 @@
         t.plan(1);
         
         line = new OpenLayers.Geometry.LineString(components);
-        t.eq( line.toString(), components.toString(), "toString output checks in");
+        t.eq(line.toString(),
+             "LINESTRING(10 15,0 0)",
+             "toString() returns WKT");
     }
     
     function test_03_LineString_removeComponent(t) {
@@ -56,7 +58,9 @@
     function test_04_LineString_move(t) {
         t.plan(4);
         
-        line = new OpenLayers.Geometry.LineString(components);
+        var components = [new OpenLayers.Geometry.Point(10,15), 
+                new OpenLayers.Geometry.Point(0,0)];
+        var line = new OpenLayers.Geometry.LineString(components);
         
         var x0 = components[0].x;
         var y0 = components[0].y;

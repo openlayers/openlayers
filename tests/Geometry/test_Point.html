@@ -60,7 +60,8 @@
         var y = 20;
         point = new OpenLayers.Geometry.Point(x, y);
         bounds = point.getBounds();
-        t.eq( point.toString(), x + ", " + y, "toString() works" );
+        t.eq(point.toString(), "POINT(" + x + " " + y + ")",
+             "toString() returns WKT" );
         
     }
     
