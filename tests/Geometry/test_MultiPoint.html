@@ -21,7 +21,7 @@
     }
 
     function test_02_MultiPoint_move(t) {
-        t.plan(4);
+        t.plan(2);
         
         var multipoint = new OpenLayers.Geometry.MultiPoint([point]);
         var x = point.x;
@@ -32,8 +32,6 @@
         multipoint.move(dx, dy);
         t.eq(multipoint.components[0].x, x + dx, "move() correctly modifies x");
         t.eq(multipoint.components[0].y, y + dy, "move() correctly modifies y");
-        t.eq(multipoint.components[0].lon, x + dx, "move() correctly modifies lon");
-        t.eq(multipoint.components[0].lat, y + dy, "move() correctly modifies lat");
     }
 
     function test_MultiPoint_equals(t) {

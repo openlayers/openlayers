@@ -361,8 +361,8 @@
         
         bounds.extend(object);
                
-        t.ok( ((bounds.left == object.lon) &&
-               (bounds.bottom == object.lat) &&
+        t.ok( ((bounds.left == object.x) &&
+               (bounds.bottom == object.y) &&
                (bounds.right == originalBounds.right) &&
                (bounds.top == originalBounds.top)), "obj Point to extends correclty modifies left and bottom");
               
@@ -375,8 +375,8 @@
 
         t.ok( ((bounds.left == originalBounds.left) &&
                (bounds.bottom == originalBounds.bottom) &&
-               (bounds.right == object.lon) &&
-               (bounds.top == object.lat)), "obj Point to extends correclty modifies right and top");
+               (bounds.right == object.x) &&
+               (bounds.top == object.y)), "obj Point to extends correclty modifies right and top");
 
      }
 

@@ -96,8 +96,8 @@
         t.eq( curve.components.length, 4, "new point added to array" );
         t.eq( bounds.bottom, -30, "bottom bound is -30 after 2nd addComponent" );
         t.eq( bounds.left, -20, "left bound is 20 after 2nd addComponent" );
-        t.eq( curve.components[1].lon, -20,  "new point.lon is -20 (index worked)" );
-        t.eq( curve.components[1].lat, -30,  "new point.lat is -30 (index worked)" );
+        t.eq( curve.components[1].x, -20,  "new point.lon is -20 (index worked)" );
+        t.eq( curve.components[1].y, -30,  "new point.lat is -30 (index worked)" );
     }
 
     function test_05_Curve_removeComponent (t) {

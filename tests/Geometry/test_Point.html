@@ -20,34 +20,10 @@
         t.eq( point.CLASS_NAME, "OpenLayers.Geometry.Point", "point.CLASS_NAME is set correctly");
         t.eq( point.x, x, "point.x is set correctly");
         t.eq( point.y, y, "point.y is set correctly");
-        t.eq( point.lon, x, "point.lon is set correctly");
-        t.eq( point.lat, y, "point.lat is set correctly");
+        t.eq( point.lon, null, "point.lon is not set");
+        t.eq( point.lat, null, "point.lat is not set");
     }
 
-    function test_02_Point_accessors(t) {
-        t.plan( 6 )
-                
-      //valid
-        var x = 10;
-        var y = 20;
-        point = new OpenLayers.Geometry.Point(x, y);
-
-        t.eq( point.getX(), x, "point.x is get() correctly");
-        t.eq( point.getY(), y, "point.y is get() correctly");
-
-        var x1 = 55;
-        var y1 = 73;
-        
-        point.setX(x1);
-        point.setY(y1);
-        
-        t.eq( point.x, x1, "point.x is set() correctly");
-        t.eq( point.y, y1, "point.y is set() correctly");
-        t.eq( point.lon, x1, "point.lon is set() correctly");
-        t.eq( point.lat, y1, "point.lat is set() correctly");
-
-    }
-    
     function test_03_Point_calculateBounds (t) {
         t.plan(4);
 
@@ -89,7 +65,7 @@
     }
     
     function test_06_Point_move(t) {
-        t.plan(4);
+        t.plan(2);
         
         var x = 10;
         var y = 20;
@@ -100,8 +76,6 @@
         point.move(dx, dy);
         t.eq(point.x, x + dx, "move() correctly modifies x");
         t.eq(point.y, y + dy, "move() correctly modifies y");
-        t.eq(point.lon, x + dx, "move() correctly modifies lon");
-        t.eq(point.lat, y + dy, "move() correctly modifies lat");
     }
 
     function test_Point_equals(t) {
