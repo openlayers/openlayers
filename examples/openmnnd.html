@@ -29,15 +29,42 @@
             map.addLayer(wms);
             
             wfs = new OpenLayers.Layer.WFS("Minnesota Streams (WFS)", wfs_url, {'typename':'streams'}, {ratio:1.25, minZoomLevel:4});
-            wfs.onFeatureInsert= function(feature) { feature.style.strokeWidth="3"; feature.style.strokeColor="blue"; feature.layer.renderer.drawGeometry(feature.geometry,feature.style); $('stream_features').innerHTML = feature.layer.features.length;}
+            
+            // preFeatureInsert can be used to set style before the feature is drawn 
+            wfs.preFeatureInsert= function(feature) { feature.style.strokeWidth="3"; feature.style.strokeColor="blue";  
+            }
+            wfs.onFeatureInsert = function() {
+              $('stream_features').innerHTML = feature.layer.features.length;
+            }  
             map.addLayer(wfs);
             
-            pwfs = new OpenLayers.Layer.WFS("Minnesota Plat (WFS)", wfs_url, {'typename':'plat'}, {ratio:1.25, minZoomLevel:8, extractAttributes: true});
-            pwfs.onFeatureInsert= function(feature) { feature.style.fillColor="green"; feature.layer.renderer.drawGeometry(feature.geometry,feature.style); $('plat_features').innerHTML = feature.layer.features.length;}
+            // Or a style can be set on the layer.
+            pwfsstyle = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+            OpenLayers.Util.extend(pwfsstyle, {'fillColor': 'green'}); 
+            
+            pwfs = new OpenLayers.Layer.WFS("Minnesota Plat (WFS)", wfs_url, 
+              {'typename':'plat'}, 
+              {
+               ratio:1.25, 
+               minZoomLevel:8, 
+               extractAttributes: true, 
+               style: pwfsstyle
+              });
+            
+            pwfs.onFeatureInsert= function(feature) { 
+              $('plat_features').innerHTML = feature.layer.features.length;
+            }
             map.addLayer(pwfs); 
             
-            rwfs = new OpenLayers.Layer.WFS("Minnesota Roads (WFS)", wfs_url, {'typename':'roads'}, {ratio:1.25, minZoomLevel:7, extractAttributes: true});
-            rwfs.onFeatureInsert= function(feature) { feature.style.strokeColor="white"; feature.style.strokeWidth="4"; feature.layer.renderer.drawGeometry(feature.geometry,feature.style); $('road_features').innerHTML = feature.layer.features.length; }
+            rstyle = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+            OpenLayers.Util.extend(rstyle, {'strokeColor': 'white', strokeWIdth: "4"}); 
+            rwfs = new OpenLayers.Layer.WFS("Minnesota Roads (WFS)", wfs_url, {'typename':'roads'}, 
+              {ratio:1.25, minZoomLevel:7, extractAttributes: true, style:rstyle});
+            
+            rwfs.onFeatureInsert= function(feature) {  
+              $('road_features').innerHTML = feature.layer.features.length; 
+            }
+            
             map.addLayer(rwfs); 
             
             map.events.register('moveend', null, function() { 
