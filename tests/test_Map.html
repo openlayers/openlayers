@@ -1,5 +1,6 @@
 <html>
 <head>
+  <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
   <script src="../lib/OpenLayers.js"></script>
   <script type="text/javascript"><!--
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
@@ -261,7 +262,22 @@
         
         map.setBaseLayer(wmslayer2);
         t.ok(map.baseLayer == wmslayer2, "setbaselayer correctly sets 'baseLayer' property");
+    }
 
+    function test_01_Map_setBaseLayer_after_pan (t) {
+        t.plan(1);
+        map = new OpenLayers.Map('map');
+        var wmsLayer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+            "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+        var google = new OpenLayers.Layer.Google("GOOG");
+        map.addLayers([wmsLayer,google]);
+        map.setBaseLayer(wmsLayer);
+        map.zoomToMaxExtent();
+        map.setBaseLayer(google);
+        map.zoomIn();
+        map.pan(0, -200);
+        map.setBaseLayer(wmsLayer);
+        t.eq(map.layerContainerDiv.style.top, "0px", "layerContainer is recentered after setBaseLayer");
     }
 
     function test_12_Map_moveLayer (t) {
