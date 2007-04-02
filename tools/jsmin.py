@@ -5,22 +5,22 @@
 # license.
 #
 # /* jsmin.c
-#    2003-04-21
-# 
+#    2007-01-08
+#
 # Copyright (c) 2002 Douglas Crockford  (www.crockford.com)
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this software and associated documentation files (the "Software"), to deal in
 # the Software without restriction, including without limitation the rights to
 # use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
 # of the Software, and to permit persons to whom the Software is furnished to do
 # so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # The Software shall be used for Good, not Evil.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -120,7 +120,7 @@ class JavascriptMinify(object):
         """
         if action <= 1:
             self._outA()
-            
+
         if action <= 2:
             self.theA = self.theB
             if self.theA == "'" or self.theA == '"':
@@ -138,7 +138,11 @@ class JavascriptMinify(object):
 
         if action <= 3:
             self.theB = self._next()
-            if self.theB == '/' and (self.theA == '(' or self.theA == ',' or self.theA == '='):
+            if self.theB == '/' and (self.theA == '(' or self.theA == ',' or
+                                     self.theA == '=' or self.theA == ':' or
+                                     self.theA == '[' or self.theA == '?' or
+                                     self.theA == '!' or self.theA == '&' or
+                                     self.theA == '|'):
                 self._outA()
                 self._outB()
                 while 1:
