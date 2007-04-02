@@ -29,12 +29,15 @@
 
         var map = new OpenLayers.Map('map');
         
-        layer = new OpenLayers.Layer.WMS("Name", "http://labs.metacarta.com/TESTURL");  
+        var size = new OpenLayers.Size(5,6);
+        layer = new OpenLayers.Layer.WMS("Name",
+                                         "http://labs.metacarta.com/TESTURL",
+                                         null,
+                                         {tileSize: size});  
         map.addLayer(layer);  
         var position = new OpenLayers.Pixel(20,30);
         var bounds = new OpenLayers.Bounds(1,2,3,4);
         var url = "http://www.openlayers.org/dev/tests/tileimage";
-        var size = new OpenLayers.Size(5,6);
         tile = new OpenLayers.Tile.Image(layer, position, bounds, url, size);
         
         tile.draw();
@@ -53,7 +56,7 @@
             REQUEST: "GetMap", STYLES: "",
             EXCEPTIONS: "application/vnd.ogc.se_inimage", FORMAT: "image/jpeg",
             SRS: "EPSG:4326", BBOX: "1,2,3,4",
-            WIDTH: "256", HEIGHT: "256"
+            WIDTH: String(size.w), HEIGHT: String(size.h)
         };
         t.eq( img.src,
              "http://labs.metacarta.com/TESTURL?" + OpenLayers.Util.getParameterString(tParams),
@@ -167,11 +170,57 @@
         t.delay_call( 1, function() { t.eq(tile.imgDiv, null, "Alpha tile imgDiv is null.") } );
         
     }
+
+    function test_05_Tile_Image_gutters(t) {
+        t.plan(5);
+        
+        var gutter = 0;
+        var name = 'Test Layer';
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        var params = { map: '/mapdata/vmap_wms.map', 
+                       layers: 'basic', 
+                       format: 'image/png'};
+
+
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS(name, url, params, {gutter: gutter});
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0), 5);
+        
+        var tile = layer.grid[0][0];
+        
+        t.ok(tile.layer.imageSize.equals(tile.size),
+             "zero size gutter doesn't change image size"); 
+
+        t.ok(tile.layer.imageOffset.equals(new OpenLayers.Pixel(0, 0)),
+             "zero size gutter doesn't affect image offset");
+
+        map.destroy();
+        
+        var gutter = 15;
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS(name, url, params, {gutter: gutter});
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0), 5);
+        var tile = layer.grid[0][0];
+        t.ok(tile.layer.imageSize.equals(new OpenLayers.Size(tile.size.w + (2 * gutter),
+                                                             tile.size.h + (2 * gutter))),
+             "gutter properly changes image size"); 
+
+        t.ok(tile.layer.imageOffset.equals(new OpenLayers.Pixel(-gutter, -gutter)),
+             "gutter properly sets image offset");
+
+        t.ok(tile.bounds.equals(new OpenLayers.Bounds(-33.75, 33.75, -22.5, 45)),
+             "gutter doesn't affect tile bounds");
+
+        map.destroy();
+    }
+    
   // -->
   </script>
 </head>
 <body>
-<div id="map" style="height:500px;width:500px"></div>
+<div id="map" style="height:550px;width:500px"></div>
 </body>
 </html>
 

@@ -8,19 +8,27 @@
         }
     </style>
     <script src="../lib/OpenLayers.js"></script>
-    <script src="../lib/OpenLayers/Layer/MapServer/Untiled.js"></script>
     <script type="text/javascript">
-        window.onload = function(){
-            var map = new OpenLayers.Map( 'map', {maxResolution: 'auto'} );
-            var layer = new OpenLayers.Layer.MapServer.Untiled( "MapServer Untiled", 
+        <!--
+        var lon = 5;
+        var lat = 40;
+        var zoom = 5;
+        var map, layer;
+
+        function init(){
+            map = new OpenLayers.Map( 'map' );
+            layer = new OpenLayers.Layer.WMS.Untiled( "OpenLayers WMS", 
                     "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
             map.addLayer(layer);
-            map.setCenter(new OpenLayers.LonLat(0, 0), 1);
+
+            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
             map.addControl( new OpenLayers.Control.LayerSwitcher() );
         }
+        
+        // -->
     </script>
   </head>
-  <body>
+  <body onload="init()">
     <div id="map"></div>
   </body>
 </html>

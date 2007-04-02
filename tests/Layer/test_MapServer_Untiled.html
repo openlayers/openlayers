@@ -127,10 +127,10 @@
         map.addLayer(tLayer);
         map.zoomToMaxExtent();
         t.eq(tLayer.opacity, "0.5", "Opacity is set correctly");
-        t.eq(parseFloat(tLayer.div.firstChild.style.opacity), 0.5, "Opacity on tile is correct");
+        t.eq(parseFloat(tLayer.div.firstChild.firstChild.style.opacity), 0.5, "Opacity on tile is correct");
         tLayer.setOpacity("0.6");
         t.eq(tLayer.opacity, "0.6", "setOpacity works properly");
-        t.eq(parseFloat(tLayer.div.firstChild.style.opacity), 0.6, "Opacity on tile is changed correctly");
+        t.eq(parseFloat(tLayer.div.firstChild.firstChild.style.opacity), 0.6, "Opacity on tile is changed correctly");
 
     }    
     

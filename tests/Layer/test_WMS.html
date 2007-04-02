@@ -50,10 +50,10 @@
         t.eq( img.src,
              url + "?" + OpenLayers.Util.getParameterString(tParams),
              "image src is created correctly via addtile" );
-        t.eq( tile.imgDiv.style.top, "6px", "image top is set correctly via addtile" );
-        t.eq( tile.imgDiv.style.left, "5px", "image top is set correctly via addtile" );
+        t.eq( tile.frame.style.top, "6px", "image top is set correctly via addtile" );
+        t.eq( tile.frame.style.left, "5px", "image top is set correctly via addtile" );
 
-        var firstChild = layer.div.firstChild;
+        var firstChild = layer.div.firstChild.firstChild;
         if (!isMozilla)
             t.ok( true, "skipping element test outside of Mozilla");
         else
@@ -191,10 +191,10 @@
         map.addLayer(tLayer);
         map.zoomToMaxExtent();
         t.eq(tLayer.opacity, "0.5", "Opacity is set correctly");
-        t.eq(parseFloat(tLayer.div.firstChild.style.opacity), 0.5, "Opacity on tile is correct");
+        t.eq(parseFloat(tLayer.div.firstChild.firstChild.style.opacity), 0.5, "Opacity on tile is correct");
         tLayer.setOpacity("0.6");
         t.eq(tLayer.opacity, "0.6", "setOpacity works properly");
-        t.eq(parseFloat(tLayer.div.firstChild.style.opacity), 0.6, "Opacity on tile is changed correctly");
+        t.eq(parseFloat(tLayer.div.firstChild.firstChild.style.opacity), 0.6, "Opacity on tile is changed correctly");
         var pixel = new OpenLayers.Pixel(5,6);
         var tile = tLayer.addTile(new OpenLayers.Bounds(1,2,3,4), pixel);
         tile.draw();
@@ -229,6 +229,48 @@
         t.ok( tile.bounds.equals(new OpenLayers.Bounds(-33.75, 33.75, -22.5, 45)), "okay");
 
         map.destroy();
+    }
+    
+    function test_21_Layer_WMS_noGutters (t) { 
+        t.plan(2);
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS("no gutter layer", url, params, {gutter: 0});
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0), 5);
+        var tile = layer.grid[0][0];
+        var request = layer.getURL(tile.bounds);
+        var args = OpenLayers.Util.getArgs(request);
+        t.eq(parseInt(args['WIDTH']),
+             tile.size.w,
+             "layer without gutter requests images that are as wide as the tile");
+        t.eq(parseInt(args['HEIGHT']),
+             tile.size.h,
+             "layer without gutter requests images that are as tall as the tile");
+        
+        layer.destroy();
+        map.destroy();
+    }
+
+    function test_22_Layer_WMS_gutters (t) { 
+        t.plan(2);
+        var gutter = 15;
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS("gutter layer", url, params, {gutter: gutter});
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0), 5);
+        var tile = layer.grid[0][0];
+        var request = layer.getURL(tile.bounds);
+        var args = OpenLayers.Util.getArgs(request);
+        t.eq(parseInt(args['WIDTH']),
+             tile.size.w + (2 * gutter),
+             "layer with gutter requests images that are wider by twice the gutter");
+        t.eq(parseInt(args['HEIGHT']),
+             tile.size.h + (2 * gutter),
+             "layer with gutter requests images that are taller by twice the gutter");
+
+        layer.destroy();
+        map.destroy();
+
     }
     
     function test_99_Layer_WMS_destroy (t) {
