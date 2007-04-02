@@ -40,7 +40,16 @@
 
         var img = tile.imgDiv;
         var tParams = OpenLayers.Util.extend({},params);
-        tParams = OpenLayers.Util.extend(tParams, {                 layers: 'basic',                  mode: 'map',                 map_imagetype: 'png',                 mapext:[1,2,3,4],                 imgext:[1,2,3,4],                 map_size:[256, 256],                 imgx:128,                 imgy:128,                 imgxy:[256,256]
+        tParams = OpenLayers.Util.extend(tParams, {
+                 layers: 'basic', 
+                 mode: 'map',
+                 map_imagetype: 'png',
+                 mapext:[1,2,3,4],
+                 imgext:[1,2,3,4],
+                 map_size:[256, 256],
+                 imgx:128,
+                 imgy:128,
+                 imgxy:[256,256]
         });
         t.eq( img.src,
              url + "?" + OpenLayers.Util.getParameterString(tParams).replace(/,/g, "+"),
@@ -150,9 +159,15 @@
         var tLayer = new OpenLayers.Layer.MapServer(name, tUrl, tParams);
         map.addLayer(tLayer);
         str = tLayer.getFullRequestString();
-        var tParams = {                 layers: 'basic',                  format: 'png',                 mode: 'map',                 map_imagetype: 'png'
+        var tParams = {
+                 layers: 'basic', 
+                 format: 'png',
+                 mode: 'map',
+                 map_imagetype: 'png'
         };
-            var sStr = tUrl + "?" + OpenLayers.Util.getParameterString(tParams);            sStr = sStr.replace(/,/g, "+");
+
+            var sStr = tUrl + "?" + OpenLayers.Util.getParameterString(tParams);
+            sStr = sStr.replace(/,/g, "+");
         
         t.eq(str, sStr , "getFullRequestString() works");
 
