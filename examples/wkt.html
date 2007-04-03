@@ -87,6 +87,7 @@
         function parseWKT() {
             var element = document.getElementById('wkt');
             var collection = wkt.read(element.value);
+            var bounds;
             if(collection) {
                 if(collection.constructor != Array) {
                     collection = [collection];
@@ -94,8 +95,14 @@
                 var features = [];
                 for(var i=0; i<collection.length; ++i) {
                     features.push(new OpenLayers.Feature.Vector(collection[i]));
+                    if (!bounds) {
+                        bounds = collection[i].getBounds();
+                    }
+                    bounds.extend(collection[i].getBounds());
+                    
                 }
                 vectors.addFeatures(features);
+                map.zoomToExtent(bounds);
                 var plural = (features.length > 1) ? 's' : '';
                 element.value = 'Feature' + plural + ' added'
             } else {
