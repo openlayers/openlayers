@@ -45,7 +45,7 @@
         t.ok(layer.features.length == 1, "OpenLayers.Layer.Vector.removeFeatures removes a feature from the features array");
     }
     
-    function test_Layer_Vector_addsStyle (t) {
+    function test_Layer_Vector_addStyle (t) {
         t.plan(2);    
         layer = new OpenLayers.Layer.Vector(name);
         var map = new OpenLayers.Map('map');
@@ -54,6 +54,22 @@
         t.eq( f.style,  null, "Feature style is null by default.");
         layer.addFeatures(f);
         t.ok( f.style != null, "Feature style is set by layer.");
+    }
+
+    function test_Layer_Vector_destroyFeatures (t) {
+        t.plan(2); 
+        layer = new OpenLayers.Layer.Vector(name);
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
+        var features = [];
+        for (var i = 0; i < 5; i++) {
+            features.push(new OpenLayers.Feature.Vector(
+                          new OpenLayers.Geometry.Point(0,0)));
+        }
+        layer.addFeatures(features);
+        t.eq(layer.features.length, 5, "addFeatures adds 5 features");
+        layer.destroyFeatures();
+        t.eq(layer.features.length, 0, "destroyFeatures triggers removal");
     }
 
     function test_99_Layer_Vector_destroy (t) {
