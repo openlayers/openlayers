@@ -202,14 +202,15 @@
         t.eq(a, 5, "if Events has no object set and an event is registered also with no object, triggerEvent() calls it without trying to set the context to null");        
     }
 
-    function test_05_Event_destroy (t) {
+    function test_05_Events_destroy (t) {
         t.plan(2);
 
         var div   = OpenLayers.Util.getElement('test');
         var obj   = {};
         var events = new OpenLayers.Events(obj, div);
+
         // +1 because of blocking dragstart in attachToElement()
-        t.eq(OpenLayers.Event.observers["test"].length,
+        t.eq(OpenLayers.Event.observers[div._eventCacheID].length,
              OpenLayers.Events.prototype.BROWSER_EVENTS.length + 1,
              "construction creates new arrayin hash, registers appropriate events");
              
@@ -218,6 +219,92 @@
         t.eq(OpenLayers.Event.observers["test"], null,
              "destruction removes the event observer from hash");
     }
+    
+    function test_06_Event(t) {
+        t.plan(24);
+        
+        var div   = OpenLayers.Util.getElement('test');
+        var name = "mouseover";
+        var func = function() {};
+
+      //1st elem 1st listener        
+        OpenLayers.Event.observe(div, name, func);
+
+        var cacheID = div._eventCacheID;
+        t.ok(cacheID, "element given new cache id");
+        
+        var elementObservers = OpenLayers.Event.observers[cacheID];
+        
+        t.ok(elementObservers, "new cache bucket made for event");
+        t.eq(elementObservers.length, 1, "one listener registered");        
+        
+        var listener = elementObservers[0];
+        
+        t.ok(listener.element == div, "element registered");
+        t.eq(listener.name, name, "name registered");
+        t.ok(listener.observer == func, "function registered");
+        t.eq(listener.useCapture, false, "useCapture defaults to false");
+
+      //1st elem 2nd listener        
+        name = "mouseout";
+        var newFunc = function() {};
+      
+        OpenLayers.Event.observe(div, name, newFunc, true);
+        var newCacheID = div._eventCacheID;
+        t.eq(newCacheID, cacheID, "element's cache id not overridden");
+        
+        t.eq(elementObservers.length, 2, "listener added to existing bucket");        
+        
+        var listener = elementObservers[1];
+        
+        t.ok(listener.element == div, "element registered");
+        t.eq(listener.name, name, "name registered");
+        t.ok(listener.observer == newFunc, "function registered");
+        t.eq(listener.useCapture, true, "useCapture correctly registered");
+
+      //2st elem 1st listener        
+        div = OpenLayers.Util.getElement('test2'); 
+        OpenLayers.Event.observe(div, name, func);
+
+        var cacheID = div._eventCacheID;
+        t.ok(cacheID, "new element given new cache id");
+        t.ok(cacheID != newCacheID, "new cache id is unique");
+        
+        elementObservers = OpenLayers.Event.observers[cacheID];
+        
+        t.ok(elementObservers, "new cache bucket made for event");
+        t.eq(elementObservers.length, 1, "one listener registered");        
+        
+        var listener = elementObservers[0];
+        
+        t.ok(listener.element == div, "element registered");
+        t.eq(listener.name, name, "name registered");
+        t.ok(listener.observer == func, "function registered");
+        t.eq(listener.useCapture, false, "useCapture defaults to false");
+
+      //stopObservingElement by element
+        OpenLayers.Event.stopObservingElement(div);
+        elementObservers = OpenLayers.Event.observers[cacheID];
+        t.ok(elementObservers == null, "stopObservingElement by elem works");
+
+      //stopObservingElement by id
+        OpenLayers.Event.stopObservingElement("test");
+        elementObservers = OpenLayers.Event.observers[newCacheID];
+        t.ok(elementObservers == null, "stopObservingElement by id works");
+
+
+      //unloadCache by element
+        OpenLayers.Event.observe(div, name, func);
+        
+        OpenLayers.Event.unloadCache();
+
+        elementObservers = OpenLayers.Event.observers[cacheID];
+        t.ok(elementObservers == null, "stopObservingElement by elem works");
+
+        
+    }
+
+
    
   // -->
   </script>
@@ -225,5 +312,6 @@
 <body>
     <div id="map" style="width: 1024px; height: 512px;"/>
     <div id="test"></div>
+    <div id="test2"></div>
 </body>
 </html>
