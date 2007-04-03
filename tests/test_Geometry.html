@@ -178,19 +178,13 @@
     }    
 
     function test_99_Geometry_destroy(t) {
-        t.plan( 5 );
+        t.plan( 3 );
 
         var g = new OpenLayers.Geometry();
         g.bounds = new OpenLayers.Bounds();
         g.feature = new Object();
-        g.events = {
-            'destroy': function() {
-                g_events_destroy = {};
-            }
-        };        
 
         g_style_destroy = null;
-        g_events_destroy = {};
         g.destroy();
         
         t.eq(g.id, null, "id nullified");
@@ -198,8 +192,6 @@
         t.eq(g.bounds, null, "bounds nullified");
         t.eq(g.feature, null, "feature reference nullified");
 
-        t.ok(g_events_destroy != null, "events.destroy() called on non-null events");
-        t.eq(g.events, null, "events nullified");
     }
 
 
