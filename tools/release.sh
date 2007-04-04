@@ -3,7 +3,7 @@ VERSION=$1
 echo "Building OpenLayers $VERSION"
 svn export http://svn.openlayers.org/tags/openlayers/release-$VERSION OpenLayers-$VERSION
 cd OpenLayers-$VERSION/build
-./build.sh
+./build.py full
 mkdir /www/openlayers/htdocs/api/$VERSION
 cp OpenLayers.js /www/openlayers/htdocs/api/$VERSION
 cd ..
