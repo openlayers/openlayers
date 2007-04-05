@@ -117,9 +117,9 @@ class Config:
         """
         Parses the content of the named file and stores the values.
         """
-        lines = [line[:-1] # Assumes end-of-line character is present
+        lines = [line.strip() # Assumes end-of-line character is present
                  for line in open(filename)
-                 if line != "\n"] # Skip blank lines
+                 if line.strip()] # Skip blank lines
 
         self.forceFirst = lines[lines.index("[first]") + 1:lines.index("[last]")]
 
