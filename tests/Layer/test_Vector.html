@@ -30,7 +30,7 @@
     }
 
     function test_03_Layer_Vector_removeFeatures(t) {
-        t.plan(1);
+        t.plan(2);
     
         var layer = new OpenLayers.Layer.Vector(name);
 
@@ -43,6 +43,12 @@
         var features = layer.removeFeatures([pointFeature1]);
         
         t.ok(layer.features.length == 1, "OpenLayers.Layer.Vector.removeFeatures removes a feature from the features array");
+
+        layer.addFeatures([pointFeature1.clone(), pointFeature2.clone()]);
+        var features = layer.removeFeatures(layer.features);
+        
+        t.ok(layer.features.length == 0,
+             "OpenLayers.Layer.Vector.removeFeatures(layer.features) removes all feature from the features array");
     }
     
     function test_Layer_Vector_addStyle (t) {
