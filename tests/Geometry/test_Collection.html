@@ -83,7 +83,7 @@
         coll.addComponents(new OpenLayers.Geometry.Point(10,10));
         coll2 = coll.clone(); 
         t.ok( coll2 instanceof OpenLayers.Geometry.Collection, "coll.clone() returns collection object" );
-        t.eq( coll2.getComponents().length, 2, "coll2.components.length is set correctly");
+        t.eq( coll2.components.length, 2, "coll2.components.length is set correctly");
         t.ok( coll2.components[0] instanceof OpenLayers.Geometry.Point,
             "coll2.components.length is set correctly");
     }
@@ -95,20 +95,11 @@
         coll.addComponents(point);
         coll.addComponents(new OpenLayers.Geometry.Point(10,10));
         coll.removeComponents(coll.components[0]);
-        t.eq( coll.getComponents().length, 1, "coll.components.length is smaller after removeComponent" );
+        t.eq( coll.components.length, 1, "coll.components.length is smaller after removeComponent" );
         t.ok( coll.bounds == null, "bounds are nullified after call to remove (to trigger recalc on getBounds()");
         bounds = coll.getBounds();
         t.eq( bounds.left, 10, "left bound is 10 after removeComponent" );
         t.eq( bounds.bottom, 10, "bottom bound is 10 after removeComponent" );
-    }
-
-    function test_05_Collection_getComponents (t) {
-        t.plan(1);
-        
-        coll = new OpenLayers.Geometry.Collection();
-        coll.components = {};
-        
-        t.eq( coll.getComponents(), coll.components, "getComponents returns great");
     }
     
     function test_06_Collection_calculateBounds(t) {
