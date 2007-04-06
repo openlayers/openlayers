@@ -1,0 +1,107 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var map; 
+    function test_01_Control_KeyboardDefaults_constructor (t) {
+        t.plan( 1 );
+    
+        control = new OpenLayers.Control.KeyboardDefaults();
+        t.ok( control instanceof OpenLayers.Control.KeyboardDefaults, 
+                "new OpenLayers.Control.KeyboardDefaults returns object" );
+    }
+
+    function test_02_Control_KeyboardDefaults_addControl (t) {
+        t.plan( 4 );
+
+        map = new OpenLayers.Map('map');
+        control = new OpenLayers.Control.KeyboardDefaults();
+        t.ok( control instanceof OpenLayers.Control.KeyboardDefaults, 
+                "new OpenLayers.Control.KeyboardDefaults returns object" );
+        t.ok( map instanceof OpenLayers.Map, 
+                "new OpenLayers.Map creates map" );
+        map.addControl(control);
+        t.ok( control.map === map, "Control.map is set to the map object" );
+        t.ok( map.controls[3] === control, "map.controls contains control" );
+    }
+
+    function test_03_Control_KeyboardDefaults_KeyDownEvent (t) {
+        t.plan( 10 );
+
+        var evt = {which: 1};
+        map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS("Test Layer", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(layer);
+        control = new OpenLayers.Control.KeyboardDefaults();
+        map.addControl(control);
+        
+        var centerLL = new OpenLayers.LonLat(0,0);
+        map.setCenter(centerLL,4);
+
+
+        evt.keyCode = OpenLayers.Event.KEY_LEFT;
+        control.defaultKeyDown(evt);
+        t.delay_call( 
+            1, function() {
+                t.ok( map.getCenter().lon < centerLL.lon, "key left works correctly" );
+                evt.keyCode = OpenLayers.Event.KEY_RIGHT;
+                control.defaultKeyDown(evt);
+            },
+            1, function() {
+                t.ok( map.getCenter().lon == centerLL.lon, "key right works correctly" ); 
+                evt.keyCode = OpenLayers.Event.KEY_UP;
+                control.defaultKeyDown(evt);
+            },
+            1, function() {
+                t.ok( map.getCenter().lat > centerLL.lat, "key up works correctly" ); 
+                evt.keyCode = OpenLayers.Event.KEY_DOWN;
+                control.defaultKeyDown(evt);
+            },
+            1, function() {
+                t.ok( map.getCenter().lat == centerLL.lat, "key down works correctly" ); 
+                evt.keyCode = 33; //page up
+                control.defaultKeyDown(evt);
+            },
+            1, function() {
+                t.ok( map.getCenter().lat > centerLL.lat, "key page up works correctly" ); 
+                evt.keyCode = 34; //page down
+                control.defaultKeyDown(evt);
+            },
+            1, function() {
+                t.ok( map.getCenter().lat == centerLL.lat, "key page down works correctly" ); 
+                evt.keyCode = 35; //end
+                control.defaultKeyDown(evt);
+            },
+            1, function() {
+                t.ok( map.getCenter().lon > centerLL.lon, "key end works correctly" ); 
+                evt.keyCode = 36; //pos1
+                control.defaultKeyDown(evt);
+            },
+            1, function() {
+                t.ok( map.getCenter().lon == centerLL.lon, "key pos1 works correctly" ); 
+                evt.charCode = 43; //+
+                control.defaultKeyDown(evt);
+            },
+            1, function() {
+                t.eq( map.getZoom(), 5, "key + works correctly" ); 
+                // set zoomanimation flag manually,
+                // reason: loadend event in layers.js will not achieved in unittests
+                map.zoomanimationActive = false;
+                evt.charCode = 45; //-
+                control.defaultKeyDown(evt);
+            },
+            1, function() {
+                t.eq( map.getZoom(), 4, "key - works correctly" ); 
+            }
+        );
+    }
+
+  // -->
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 1024px; height: 512px;"/>
+</body>
+</html>
