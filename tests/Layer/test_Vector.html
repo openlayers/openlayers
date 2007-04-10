@@ -21,8 +21,7 @@
         var layer = new OpenLayers.Layer.Vector(name);
 
         var point = new OpenLayers.Geometry.Point(-111.04, 45.68);
-        var pointFeature = new OpenLayers.Feature.Vector(layer, point);
-        
+        var pointFeature = new OpenLayers.Feature.Vector(point);
         layer.addFeatures([pointFeature]);
         
         t.eq(layer.features.length, 1, "OpenLayers.Layer.Vector.addFeatures adds something to the array");
@@ -59,6 +58,46 @@
         t.eq( f.style,  null, "Feature style is null by default.");
         layer.addFeatures(f);
         t.ok( f.style != null, "Feature style is set by layer.");
+    }
+    
+    function test_Layer_Vector_drawFeature(t) {
+        t.plan(4);
+        var layer = new OpenLayers.Layer.Vector("Test Layer");
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
+        var geometry = new OpenLayers.Geometry.Point(10, 10);
+        var feature = new OpenLayers.Feature.Vector(geometry);
+        
+        var f, s;
+        layer.renderer = {
+            drawFeature: function(feature, style) {
+                f = feature;
+                s = style;
+            }
+        };
+
+        layer.drawFeature(feature);
+        t.ok(geometry.equals(f.geometry),
+             "calls layer.renderer.drawFeature() with feature.geometry");
+        
+        feature.style = 'exists';
+        layer.drawFeature(feature);
+        t.eq(feature.style, s,
+             "calls layer.renderer.drawFeature() with feature.style");
+        
+        feature.style = null;
+        layer.style = 'exists';
+        layer.drawFeature(feature);
+        t.eq(layer.style, s,
+             "given null feature style, uses layer style");
+
+        feature.style = 'exists';
+        layer.style = 'exists';
+        var customStyle = 'custom';
+        layer.drawFeature(feature, customStyle);
+        t.eq(customStyle, s,
+             "given a custom style, renders with that");
+        
     }
 
     function test_Layer_Vector_destroyFeatures (t) {
