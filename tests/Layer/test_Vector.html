@@ -100,6 +100,27 @@
         
     }
 
+    function test_Layer_Vector_eraseFeatures(t) {
+        t.plan(2);
+        var layer = new OpenLayers.Layer.Vector("Test Layer");
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
+        var geometry = new OpenLayers.Geometry.Point(10, 10);
+        var feature = new OpenLayers.Feature.Vector(geometry);
+        
+        var f;
+        layer.renderer = {
+            eraseFeatures: function(features) {
+                f = features[0];
+            }
+        };
+
+        layer.eraseFeatures([feature]);
+        t.ok(f, "calls layer.renderer.eraseFeatures");
+        t.ok(geometry.equals(f.geometry),
+             "calls layer.renderer.eraseFeatures() given an array of features");
+    }
+
     function test_Layer_Vector_destroyFeatures (t) {
         t.plan(2); 
         layer = new OpenLayers.Layer.Vector(name);
