@@ -122,7 +122,7 @@
     }
 
     function test_Layer_Vector_destroyFeatures (t) {
-        t.plan(2); 
+        t.plan(3); 
         layer = new OpenLayers.Layer.Vector(name);
         var map = new OpenLayers.Map('map');
         map.addLayer(layer);
@@ -133,8 +133,10 @@
         }
         layer.addFeatures(features);
         t.eq(layer.features.length, 5, "addFeatures adds 5 features");
+        layer.selectedFeatures.push(features[0]); 
         layer.destroyFeatures();
         t.eq(layer.features.length, 0, "destroyFeatures triggers removal");
+        t.eq(layer.selectedFeatures, [], "Destroy features removes selected features");
     }
 
     function test_99_Layer_Vector_destroy (t) {
