@@ -147,7 +147,7 @@
      */
 
     function test_10_Layer_KaMap_clone(t) {
-        t.plan(4);
+        t.plan(5);
         
         var options = {tileSize: new OpenLayers.Size(500,50)};
         var map = new OpenLayers.Map('map', options);
@@ -168,6 +168,8 @@
         t.eq( clone.tileSize.w, 500, "changing layer.tileSize does not change clone.tileSize -- a fresh copy was made, not just copied reference");
 
         t.eq( clone.alpha, layer.alpha, "alpha copied correctly");
+        
+        t.eq( clone.CLASS_NAME, "OpenLayers.Layer.KaMap", "Clone is a ka-map layer");
 
         layer.grid = null;
     }
