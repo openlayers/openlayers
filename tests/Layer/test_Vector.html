@@ -21,8 +21,7 @@
         var layer = new OpenLayers.Layer.Vector(name);
 
         var point = new OpenLayers.Geometry.Point(-111.04, 45.68);
-        var pointFeature = new OpenLayers.Feature.Vector(layer, point);
-        
+        var pointFeature = new OpenLayers.Feature.Vector(point);
         layer.addFeatures([pointFeature]);
         
         t.eq(layer.features.length, 1, "OpenLayers.Layer.Vector.addFeatures adds something to the array");
@@ -30,7 +29,7 @@
     }
 
     function test_03_Layer_Vector_removeFeatures(t) {
-        t.plan(1);
+        t.plan(2);
     
         var layer = new OpenLayers.Layer.Vector(name);
 
@@ -43,6 +42,11 @@
         var features = layer.removeFeatures([pointFeature1]);
         
         t.ok(layer.features.length == 1, "OpenLayers.Layer.Vector.removeFeatures removes a feature from the features array");
+        layer.addFeatures([pointFeature1.clone(), pointFeature2.clone()]);
+        var features = layer.removeFeatures(layer.features);
+        
+        t.ok(layer.features.length == 0,
+             "OpenLayers.Layer.Vector.removeFeatures(layer.features) removes all feature from the features array");
     }
     
     function test_Layer_Vector_addStyle (t) {
@@ -55,9 +59,70 @@
         layer.addFeatures(f);
         t.ok( f.style != null, "Feature style is set by layer.");
     }
+    
+    function test_Layer_Vector_drawFeature(t) {
+        t.plan(4);
+        var layer = new OpenLayers.Layer.Vector("Test Layer");
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
+        var geometry = new OpenLayers.Geometry.Point(10, 10);
+        var feature = new OpenLayers.Feature.Vector(geometry);
+        
+        var f, s;
+        layer.renderer = {
+            drawFeature: function(feature, style) {
+                f = feature;
+                s = style;
+            }
+        };
+
+        layer.drawFeature(feature);
+        t.ok(geometry.equals(f.geometry),
+             "calls layer.renderer.drawFeature() with feature.geometry");
+        
+        feature.style = 'exists';
+        layer.drawFeature(feature);
+        t.eq(feature.style, s,
+             "calls layer.renderer.drawFeature() with feature.style");
+        
+        feature.style = null;
+        layer.style = 'exists';
+        layer.drawFeature(feature);
+        t.eq(layer.style, s,
+             "given null feature style, uses layer style");
+
+        feature.style = 'exists';
+        layer.style = 'exists';
+        var customStyle = 'custom';
+        layer.drawFeature(feature, customStyle);
+        t.eq(customStyle, s,
+             "given a custom style, renders with that");
+        
+    }
+
+    function test_Layer_Vector_eraseFeatures(t) {
+        t.plan(2);
+        var layer = new OpenLayers.Layer.Vector("Test Layer");
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
+        var geometry = new OpenLayers.Geometry.Point(10, 10);
+        var feature = new OpenLayers.Feature.Vector(geometry);
+        
+        var f;
+        layer.renderer = {
+            eraseFeatures: function(features) {
+                f = features[0];
+            }
+        };
+
+        layer.eraseFeatures([feature]);
+        t.ok(f, "calls layer.renderer.eraseFeatures");
+        t.ok(geometry.equals(f.geometry),
+             "calls layer.renderer.eraseFeatures() given an array of features");
+    }
 
     function test_Layer_Vector_destroyFeatures (t) {
-        t.plan(2); 
+        t.plan(3); 
         layer = new OpenLayers.Layer.Vector(name);
         var map = new OpenLayers.Map('map');
         map.addLayer(layer);
@@ -68,8 +133,10 @@
         }
         layer.addFeatures(features);
         t.eq(layer.features.length, 5, "addFeatures adds 5 features");
+        layer.selectedFeatures.push(features[0]); 
         layer.destroyFeatures();
         t.eq(layer.features.length, 0, "destroyFeatures triggers removal");
+        t.eq(layer.selectedFeatures, [], "Destroy features removes selected features");
     }
 
     function test_99_Layer_Vector_destroy (t) {

@@ -35,7 +35,7 @@
             df.featureAdded = function(feature) { 
               feature.state = OpenLayers.State.INSERT; 
               feature.style['strokeColor'] = "#ff0000"; 
-              feature.layer.renderer.drawGeometry(feature.geometry, feature.style);  
+              feature.layer.drawFeature(feature);  
             }
             p.addControls([ new OpenLayers.Control.Navigation(), df ]);
              
@@ -47,7 +47,7 @@
             for(var i = 0; i < map.layers[1].features.length; i++) { 
                 var f = map.layers[1].features[i]; 
                 f.style['strokeColor'] = '#ee9900'; 
-                map.layers[1].renderer.drawGeometry(f.geometry, f.style);  
+                map.layers[1].drawFeature(f);  
             } 
             map.layers[1].commit();
             return false;
