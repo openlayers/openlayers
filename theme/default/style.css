@@ -89,16 +89,20 @@ div.olControlMousePosition {
 
 .olControlNavToolbar .olControlNavigationItemActive { 
   background-image: url("img/panning-hand-on.png");
+  background-repeat: no-repeat;
 }
 .olControlNavToolbar .olControlNavigationItemInactive { 
   background-image: url("img/panning-hand-off.png");
+  background-repeat: no-repeat;
 }
 .olControlNavToolbar .olControlZoomBoxItemActive { 
   background-image: url("img/drag-rectangle-on.png");
   background-color: orange;
+  background-repeat: no-repeat;
 }
 .olControlNavToolbar .olControlZoomBoxItemInactive { 
   background-image: url("img/drag-rectangle-off.png");
+  background-repeat: no-repeat;
 }
 .olControlEditingToolbar  {
     float:right;
@@ -114,25 +118,33 @@ div.olControlMousePosition {
 }
 .olControlEditingToolbar .olControlNavigationItemActive { 
   background-image: url("img/pan_on.png");
+  background-repeat: no-repeat;
 }
 .olControlEditingToolbar .olControlNavigationItemInactive { 
   background-image: url("img/pan_off.png");
+  background-repeat: no-repeat;
 }
 .olControlEditingToolbar .olControlDrawFeaturePointItemActive { 
   background-image: url("img/draw_point_on.png");
+  background-repeat: no-repeat;
 }
 .olControlEditingToolbar .olControlDrawFeaturePointItemInactive { 
   background-image: url("img/draw_point_off.png");
+  background-repeat: no-repeat;
 }
 .olControlEditingToolbar .olControlDrawFeaturePathItemInactive { 
   background-image: url("img/draw_line_off.png");
+  background-repeat: no-repeat;
 }
 .olControlEditingToolbar .olControlDrawFeaturePathItemActive { 
   background-image: url("img/draw_line_on.png");
+  background-repeat: no-repeat;
 }
 .olControlEditingToolbar .olControlDrawFeaturePolygonItemInactive { 
   background-image: url("img/draw_polygon_off.png");
+  background-repeat: no-repeat;
 }
 .olControlEditingToolbar .olControlDrawFeaturePolygonItemActive { 
   background-image: url("img/draw_polygon_on.png");
+  background-repeat: no-repeat;
 }

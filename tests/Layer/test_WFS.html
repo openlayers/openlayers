@@ -1,0 +1,37 @@
+<html>
+<head>
+<script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+
+    var name = "Vector Layer";
+    
+    function test_01_Layer_WFS_constructor(t) {
+        t.plan(3);
+
+        var layer = new OpenLayers.Layer.WFS(name, "url", {});
+        t.ok(layer instanceof OpenLayers.Layer.WFS, "new OpenLayers.Layer.Vector returns correct object" );
+        t.eq(layer.name, name, "layer name is correctly set");
+        t.ok(layer.renderer.CLASS_NAME, "layer has a renderer");
+
+    }
+    function test_02_Layer_WFS_mapresizevector(t) {
+        t.plan(2);
+
+        var map = new OpenLayers.Map("map");
+        map.addLayer(new OpenLayers.Layer.WMS("WMS", "url", {}));
+        var layer = new OpenLayers.Layer.WFS(name, "url", {});
+        t.ok(layer.renderer.CLASS_NAME, "layer has a renderer");
+        map.addLayer(layer);
+        setSize = false;
+        layer.renderer.setSize = function() { setSize = true; }
+        layer.onMapResize();
+        t.eq(setSize, true, "Renderer resize called on map size change.");
+
+    }
+  // -->
+  </script>
+</head>
+<body>
+<div id="map" style="width:500px;height:550px"></div>
+</body>
+</html>

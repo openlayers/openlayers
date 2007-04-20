@@ -18,7 +18,7 @@
 
         t.eq( layer.name, "Test Layer", "layer.name is correct" );
         t.ok( layer.id != null, "Layer is given an id");
-        t.ok( layer.projection, "none", "default layer projection correctly set");
+        t.eq( layer.projection, "none", "default layer projection correctly set");
         t.ok( ((layer.chicken == 151) && (layer.foo == "bar")), "layer.options correctly set to Layer Object" );
         t.ok( ((layer.options["chicken"] == 151) && (layer.options["foo"] == "bar")), "layer.options correctly backed up" );
 
@@ -39,7 +39,7 @@
     }
 
     function test_50_Layer_Image_tileTests (t) {
-        t.plan(4);
+        t.plan(9);
         var map = new OpenLayers.Map('map');
         
         layer = new OpenLayers.Layer.Image('Test Layer', 
@@ -49,8 +49,20 @@
 
         map.addLayer(layer);
         map.zoomToMaxExtent();
-        t.eq(layer.tile.position.x,-40, "Tile x positioned correctly at maxextent");
-        t.eq(layer.tile.position.y,107, "Tile y positioned correctly at maxextent");
+        t.ok(layer.imageSize, "layer.imageSize is set");
+        t.ok(layer.tileSize, "layer.tileSize is set");
+        t.ok(layer.tileSize.equals(layer.imageSize), "tileSize equals imageSize");
+
+        // no resolution info was sent, so maxResolution should be calculated
+        // by aspectRatio*extent/size (this is the pixel aspect ratio)
+        var aspectRatio =  (layer.extent.getHeight() / layer.size.h) /
+                           (layer.extent.getWidth() / layer.size.w);
+        t.eq(aspectRatio, layer.aspectRatio, "aspectRatio is properly set");
+        var maxExtent = aspectRatio * layer.extent.getWidth() / layer.size.w;
+        t.eq(maxExtent, layer.maxResolution, "maxResolution is properly set");
+
+        t.eq(layer.tile.position.x,-42, "Tile x positioned correctly at maxextent");
+        t.eq(layer.tile.position.y,106, "Tile y positioned correctly at maxextent");
         t.eq(layer.tile.imgDiv.src, "http://earthtrends.wri.org/images/maps/4_m_citylights_lg.gif", "URL is correct");
         map.zoomIn();
         t.eq(layer.tile.imgDiv.src, "http://earthtrends.wri.org/images/maps/4_m_citylights_lg.gif", "URL is correct");

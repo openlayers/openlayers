@@ -99,25 +99,19 @@
                 }
             }
         }
-        var displayedGeom = null;
-        function feature_info_hover(geometry) {
-            if(geometry.parent) {
-                geometry = geometry.parent;
-            }
-            if (displayedGeom != geometry && 
-               (!geometry.feature.layer.selectedFeatures.length || 
-               (geometry.feature.layer.selectedFeatures[0].geometry == geometry))) {
-            feature_info(geometry);
-            displaydGeom = geometry;
+        var displayedFeature = null;
+        function feature_info_hover(feature) {
+            if (displayedFeature != feature && 
+               (!feature.layer.selectedFeatures.length || 
+               (feature.layer.selectedFeatures[0] == feature))) {
+            feature_info(feature);
+            displayedFeature = feature;
            }
         }    
-        function feature_info(geometry) {
-            if(geometry.parent) {
-                geometry = geometry.parent;
-            }
+        function feature_info(feature) {
             var html = "<ul>";
-            for(var i in geometry.feature.attributes)
-               html += "<li><b>" + i + "</b>: "+  geometry.feature.attributes[i] + "</li>";
+            for(var i in feature.attributes)
+               html += "<li><b>" + i + "</b>: "+  feature.attributes[i] + "</li>";
             html += "</ul>";
             $('feature_info').innerHTML = html;
         }

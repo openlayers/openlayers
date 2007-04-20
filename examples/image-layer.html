@@ -13,10 +13,11 @@
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         <!--
+        var map;
         function init(){
-            var map = new OpenLayers.Map('map');
+            map = new OpenLayers.Map('map');
 
-            var options = {maxResolution: 'auto', numZoomLevels: 3};
+            var options = {numZoomLevels: 3};
             
             var graphic = new OpenLayers.Layer.Image(
                                 'City Lights',

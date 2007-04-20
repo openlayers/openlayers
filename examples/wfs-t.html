@@ -27,7 +27,7 @@
                       featureNS: 'http://www.openplans.org/topp', 
                       extractAttributes: false
                } );
-            rlayer.onFeatureInsert=function(feature) { feature.style.strokeColor = "#ff0000"; feature.layer.renderer.drawGeometry(feature.geometry, feature.style); }
+            rlayer.onFeatureInsert=function(feature) { feature.style.strokeColor = "#ff0000"; feature.layer.drawFeature(feature); }
             map.addLayer(rlayer);
             layer = new OpenLayers.Layer.WFS( "Cities", 
                     "http://dev.openlayers.org/geoserver/wfs", {typename: 'topp:tasmania_cities'}, 
@@ -44,7 +44,7 @@
             df.featureAdded = function(feature) { 
               feature.state = OpenLayers.State.INSERT; 
               feature.style['strokeColor'] = "#0000ff"; 
-              feature.layer.renderer.drawGeometry(feature.geometry, feature.style);  
+              feature.layer.drawFeature(feature);  
             }
             dp = new OpenLayers.Control.DrawFeature(layer, OpenLayers.Handler.Point, {handlerOptions: {'freehand': false}, 'displayClass': 'olControlDrawFeaturePoint'});
             dp.featureAdded = function(feature) { 
@@ -53,7 +53,7 @@
               feature.geometry = new OpenLayers.Geometry.MultiPoint(oldgeom);
               feature.state = OpenLayers.State.INSERT; 
               feature.style['strokeColor'] = "#0000ff"; 
-              feature.layer.renderer.drawGeometry(feature.geometry, feature.style);  
+              feature.layer.drawFeature(feature);  
             }
             p.addControls([ new OpenLayers.Control.Navigation(), df, dp ]);
              

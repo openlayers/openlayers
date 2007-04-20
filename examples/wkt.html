@@ -77,8 +77,8 @@
             }
         }
         
-        function displayWKT(geometry) {
-            var str = wkt.write(geometry);
+        function displayWKT(feature) {
+            var str = wkt.write(feature.geometry);
             // not a good idea in general, just for this demo
             str = str.replace(/,/g, ', ');
             document.getElementById('info').innerHTML = str;
