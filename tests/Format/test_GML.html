@@ -1,0 +1,57 @@
+<html> 
+<head> 
+    <script src="../../lib/OpenLayers.js"></script> 
+    <script type="text/javascript"><!-- 
+
+    var test_content = '<wfs:FeatureCollection' + 
+ '   xmlns:fs="http://example.com/featureserver"' + 
+ '   xmlns:wfs="http://www.opengis.net/wfs"' + 
+ '   xmlns:gml="http://www.opengis.net/gml"' + 
+ '   xmlns:ogc="http://www.opengis.net/ogc"' + 
+ '   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' + 
+ '   xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengeospatial.net//wfs/1.0.0/WFS-basic.xsd">' + 
+ '        ' + 
+ '' + 
+ '        <gml:featureMember>' + 
+ '  \n<fs:scribble fid="221">' + 
+ '        <fs:geometry>' + 
+ '        <gml:Polygon>' + 
+ '              ' + 
+ '              <gml:outerBoundaryIs><gml:LinearRing>' + 
+ '              <gml:coordinates>149.105072021,-35.1816558838 149.100608826,-35.1844024658 149.098892212,-35.1898956299  149.105072021,-35.1816558838</gml:coordinates>' + 
+ '              </gml:LinearRing></gml:outerBoundaryIs>' + 
+ '             ' + 
+ '              </gml:Polygon>' + 
+ '        </fs:geometry>' + 
+ '        <fs:title>random test features</fs:title>' + 
+ '        </fs:scribble>' + 
+ '</gml:featureMember> ' +
+ ' <gml:featureMember><fs:scribble fid="8">    <fs:geometry>        <gml:Point><gml:coordinates>-81.38671875,27.0703125</gml:coordinates></gml:Point>         </fs:geometry> ' +
+ '        <fs:down>south</fs:down><fs:title>Florida</fs:title>        </fs:scribble></gml:featureMember>' + 
+ '</wfs:FeatureCollection>'; 
+
+     
+    function test_Format_GML_constructor(t) { 
+        t.plan(4); 
+         
+        var options = {'foo': 'bar'}; 
+        var format = new OpenLayers.Format.GML(options); 
+        t.ok(format instanceof OpenLayers.Format.GML, 
+             "new OpenLayers.Format.GML returns object" ); 
+        t.eq(format.foo, "bar", "constructor sets options correctly"); 
+        t.eq(typeof format.read, "function", "format has a read function"); 
+        t.eq(typeof format.write, "function", "format has a write function"); 
+    } 
+    function test_Format_GML_getFid(t) { 
+        t.plan(2);
+        var parser = new OpenLayers.Format.GML();
+        data = parser.read(test_content);
+        t.eq(data[0].fid, '221', 'fid on polygons set correctly (with whitespace)');
+        t.eq(data[1].fid, '8', 'fid on linestrings set correctly with whitespace'); 
+    }
+    // --> 
+    </script> 
+</head> 
+<body> 
+</body> 
+</html> 
