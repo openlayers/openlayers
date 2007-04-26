@@ -1,0 +1,54 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <style type="text/css">
+        #map {
+            width: 650px;
+            height: 550px;
+            border: 1px solid black;
+        }
+    </style>
+    <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAKsGpqSOKkB-Ih2JopAmNbBTv_3ENzieGiNBMV02NiUJp8KZGIRTQWhul8K0wiNOHDxOF0-W2RmFoRg'></script>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+        function init(){
+            
+            // Variables
+            var map = new OpenLayers.Map('map', { controls: [] });
+            var lon = 35;
+            var lat = -6;
+            var zoom = 6;
+            var map, layer;
+
+            // Map Controls
+            map.addControl(new OpenLayers.Control.PanZoomBar());
+            map.addControl(new OpenLayers.Control.MouseToolbar());
+            map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending':false}));
+            map.addControl(new OpenLayers.Control.MousePosition());
+
+
+            // Map Layers
+            var GMapsSat = new OpenLayers.Layer.Google( "Google Satellite" , {type: G_SATELLITE_MAP, 'maxZoomLevel':18} );
+            var GMapsHybr = new OpenLayers.Layer.Google( "Google Hybrid" , {type: G_HYBRID_TYPE, 'maxZoomLevel':18} );
+            var GMapsStreets = new OpenLayers.Layer.Google( "Google Steets" , {type: G_NORMAL_MAP, 'maxZoomLevel':18} );
+            var MarkersLayer2 = new OpenLayers.Layer.Text( "Region info", {location: "outOfRangeMarkers.txt", maxResolution: 0.02});
+
+            // Add Layers
+            map.addLayers([GMapsHybr, GMapsStreets, GMapsSat, MarkersLayer2]);
+            
+
+            // Visual
+            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+            if (!map.getCenter()) map.zoomToMaxExtent();
+        }
+        // -->
+    </script>
+ </head>
+
+
+ <body onload="init()">
+
+    <div id="map"></div>
+
+  </body>
+</html>
