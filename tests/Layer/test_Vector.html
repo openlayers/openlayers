@@ -72,12 +72,16 @@
         var feature = new OpenLayers.Feature.Vector(geometry);
         
         var f, s;
+        
+        // Layer renderer needs a destroy, and draw, for functional tests. 
         layer.renderer = {
             drawFeature: function(feature, style) {
                 f = feature;
                 s = style;
-            }
+            },
+            destroy: function() { }
         };
+        
 
         layer.drawFeature(feature);
         t.ok(geometry.equals(f.geometry),
