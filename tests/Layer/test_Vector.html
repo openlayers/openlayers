@@ -29,7 +29,7 @@
     }
 
     function test_03_Layer_Vector_removeFeatures(t) {
-        t.plan(2);
+        t.plan(3);
     
         var layer = new OpenLayers.Layer.Vector(name);
 
@@ -43,6 +43,9 @@
         
         t.ok(layer.features.length == 1, "OpenLayers.Layer.Vector.removeFeatures removes a feature from the features array");
         layer.addFeatures([pointFeature1.clone(), pointFeature2.clone()]);
+        layer.selectedFeatures.push(layer.features[0]); 
+        layer.removeFeatures(layer.features[0]);
+        t.eq(layer.selectedFeatures, [], "Remove features removes selected features");
         var features = layer.removeFeatures(layer.features);
         
         t.ok(layer.features.length == 0,
