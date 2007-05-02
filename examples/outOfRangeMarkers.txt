@@ -1,0 +1,3 @@
+point	title	description	icon
+-4.14,37.90	 	Kilimanjaro Beskrivning	http://www.villageografica.com/Africa-Webmap/img/marker-blue.png
+-3.24,34.35	 	Shinyanga Beskrivning	http://www.villageografica.com/Africa-Webmap/img/marker-blue.png
