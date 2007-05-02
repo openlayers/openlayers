@@ -119,7 +119,8 @@
         layer.renderer = {
             eraseFeatures: function(features) {
                 f = features[0];
-            }
+            },
+            destroy: function() { }
         };
 
         layer.eraseFeatures([feature]);
