@@ -69,7 +69,7 @@
             
             
             zb = new OpenLayers.Control.ZoomBox();
-            panel = new OpenLayers.Control.Panel({defaultControl: zb});
+            var panel = new OpenLayers.Control.Panel({defaultControl: zb});
             panel.addControls([
                 new OpenLayers.Control.MouseDefaults(),
                 zb,
