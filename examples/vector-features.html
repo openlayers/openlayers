@@ -17,11 +17,23 @@
             var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                     "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
             map.addLayer(layer);
+            
+            var style_blue = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+            style_blue.strokeColor = "blue"; 
+            style_blue.fillColor = "blue"; 
+            var style_green = {
+                strokeColor: "#00FF00",
+                strokeOpacity: 1,
+                strokeWidth: 3,
+                pointRadius: 6,
+                pointerEvents: "visiblePainted"
+            };
+            
             var vectorLayer = new OpenLayers.Layer.Vector("Simple Geometry");
             
             // create a point feature
             var point = new OpenLayers.Geometry.Point(-111.04, 45.68);
-            var pointFeature = new OpenLayers.Feature.Vector(point);
+            var pointFeature = new OpenLayers.Feature.Vector(point,null,style_blue);
             
             // create a line feature from a list of points
             var pointList = [];
@@ -32,7 +44,7 @@
                 pointList.push(newPoint);
             }
             var lineFeature = new OpenLayers.Feature.Vector(
-                new OpenLayers.Geometry.LineString(pointList));
+                new OpenLayers.Geometry.LineString(pointList),null,style_green);
             
             // create a polygon feature from a linear ring of points
             var pointList = [];
@@ -59,5 +71,9 @@
   </head>
   <body onload="init()">
     <div id="map"></div>
+    <p>This example shows drawing simple vector features -- point, line, polygon
+       in different styles, created 'manually', by constructing the entire style
+       object, via 'copy', extending the default style object, and by 
+       inheriting the default style from the layer.</p>
   </body>
 </html>
