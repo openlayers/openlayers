@@ -80,7 +80,7 @@
         t.eq(popup.div.style.width, w + "px", "width position of popup.div set correctly");
         t.eq(popup.div.style.height, h + "px", "heightposition of popup.div set correctly");
 
-        var contentDiv = popup.div.childNodes[0];
+        var contentDiv = popup.div.childNodes[0].childNodes[0];
         
         t.eq(contentDiv.className, "olPopupContent", "correct content div className");
         t.eq(contentDiv.id, "chicken_contentDiv", "correct content div id");
