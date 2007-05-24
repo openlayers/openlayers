@@ -20,17 +20,30 @@ Installing OpenLayers
 ---------------------
 
 You can use OpenLayers as-is by copying build/OpenLayers.js and the
-entire lib/ directory up to your webserver, putting them in the same
-directory. To include the OpenLayers library in your web page, use:
+entire theme/ and img/ directories up to your webserver, putting them 
+in the same directory. The files can be in subdirectories on your website, or right in the root of the site, as in these examples. To include the OpenLayers library in your web page from the root of the site, use:
 
-  <script type="text/javascript" src="OpenLayers.js" />
+  <script type="text/javascript" src="/OpenLayers.js" />
+
+As an example, using bash (with the release files in ~/openlayers ):
+$ cd /var/www/html
+$ cp ~/openlayers/build/OpenLayers.js ./
+$ cp -R ~/openlayers/theme ./
+$ cp -R ~/openlayers/img ./
 
 If you want to use the multiple-file version of OpenLayers (for, say,
 debugging or development purposes), copy the lib/ directory up to your
 webserver in the same directory you put the img/ folder. Then add
 the following to your web page instead:
 
-  <script type="text/javascript" src="lib/OpenLayers.js" />
+  <script type="text/javascript" src="/lib/OpenLayers.js" />
+
+As an example, using bash (with the release files in ~/openlayers ):
+$ cd /var/www/html
+$ cp -R ~/openlayers/lib ./
+$ cp -R ~/openlayers/theme ./
+$ cp -R ~/openlayers/img ./
+
 
 ------------------------------------
 Using OpenLayers in Your Own Website

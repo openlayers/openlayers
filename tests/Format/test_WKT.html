@@ -5,37 +5,53 @@
      
     var points = []; 
     for(var i=0; i<12; ++i) { 
-        points.push(new OpenLayers.Geometry.Point(Math.random() * 100, 
-                                                  Math.random() * 100)); 
+        points.push(new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(Math.random() * 100,
+                                          Math.random() * 100))
+        ); 
     } 
-    var multipoint = new OpenLayers.Geometry.MultiPoint([ 
-        points[0], points[1], points[2] 
-    ]); 
+    var multipoint = new OpenLayers.Feature.Vector(
+        new OpenLayers.Geometry.MultiPoint([ 
+            points[0].geometry, points[1].geometry, points[2].geometry
+        ])
+    ); 
      
     var linestrings = [ 
-        new OpenLayers.Geometry.LineString([points[0], points[1], points[2]]), 
-        new OpenLayers.Geometry.LineString([points[3], points[4], points[5]]) 
+        new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.LineString([points[0].geometry, points[1].geometry, points[2].geometry])
+        ), 
+        new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.LineString([points[3].geometry, points[4].geometry, points[5].geometry])
+        )
     ]; 
      
-    var multilinestring = new OpenLayers.Geometry.MultiLineString([ 
-        linestrings[0], linestrings[1] 
-    ]); 
+    var multilinestring = new OpenLayers.Feature.Vector(
+        new OpenLayers.Geometry.MultiLineString([ 
+            linestrings[0].geometry, linestrings[1].geometry
+        ])
+    ); 
  
     var rings = [ 
-        new OpenLayers.Geometry.LinearRing([points[0], points[1], points[2]]), 
-        new OpenLayers.Geometry.LinearRing([points[3], points[4], points[5]]), 
-        new OpenLayers.Geometry.LinearRing([points[6], points[7], points[8]]), 
-        new OpenLayers.Geometry.LinearRing([points[9], points[10], points[11]]) 
+        new OpenLayers.Geometry.LinearRing([points[0].geometry, points[1].geometry, points[2].geometry]), 
+        new OpenLayers.Geometry.LinearRing([points[3].geometry, points[4].geometry, points[5].geometry]), 
+        new OpenLayers.Geometry.LinearRing([points[6].geometry, points[7].geometry, points[8].geometry]), 
+        new OpenLayers.Geometry.LinearRing([points[9].geometry, points[10].geometry, points[11].geometry]) 
     ]; 
  
     var polygons = [ 
-        new OpenLayers.Geometry.Polygon([rings[0], rings[1]]), 
-        new OpenLayers.Geometry.Polygon([rings[2], rings[3]]) 
+        new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Polygon([rings[0], rings[1]])
+        ), 
+        new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Polygon([rings[2], rings[3]])
+        )
     ]; 
      
-    var multipolygon = new OpenLayers.Geometry.MultiPolygon([ 
-        polygons[0], polygons[1] 
-    ]); 
+    var multipolygon = new OpenLayers.Feature.Vector(
+        new OpenLayers.Geometry.MultiPolygon([ 
+            polygons[0].geometry, polygons[1].geometry 
+        ])
+    ); 
      
     var collection = [points[0], linestrings[0]]; 
      
@@ -53,74 +69,74 @@
     function test_Format_WKT_write(t) { 
         t.plan(7); 
         var format = new OpenLayers.Format.WKT(); 
-         
+
         // test a point 
         t.eq(format.write(points[0]), 
-             "POINT(" + points[0].x + " " + points[0].y + ")", 
+             "POINT(" + points[0].geometry.x + " " + points[0].geometry.y + ")", 
              "format correctly writes Point WKT"); 
  
         // test a multipoint 
         t.eq(format.write(multipoint), 
-             "MULTIPOINT(" + points[0].x + " " + points[0].y + "," + 
-                             points[1].x + " " + points[1].y + "," + 
-                             points[2].x + " " + points[2].y + ")", 
+             "MULTIPOINT(" + points[0].geometry.x + " " + points[0].geometry.y + "," + 
+                             points[1].geometry.x + " " + points[1].geometry.y + "," + 
+                             points[2].geometry.x + " " + points[2].geometry.y + ")", 
              "format correctly writes MultiPoint WKT"); 
  
         // test a linestring 
         t.eq(format.write(linestrings[0]), 
-             "LINESTRING(" + points[0].x + " " + points[0].y + "," + 
-                             points[1].x + " " + points[1].y + "," + 
-                             points[2].x + " " + points[2].y + ")", 
+             "LINESTRING(" + points[0].geometry.x + " " + points[0].geometry.y + "," + 
+                             points[1].geometry.x + " " + points[1].geometry.y + "," + 
+                             points[2].geometry.x + " " + points[2].geometry.y + ")", 
              "format correctly writes LineString WKT"); 
  
         // test a multilinestring 
         t.eq(format.write(multilinestring), 
-             "MULTILINESTRING((" + points[0].x + " " + points[0].y + "," + 
-                                   points[1].x + " " + points[1].y + "," + 
-                                   points[2].x + " " + points[2].y + ")," + 
-                             "(" + points[3].x + " " + points[3].y + "," + 
-                                   points[4].x + " " + points[4].y + "," + 
-                                   points[5].x + " " + points[5].y + "))", 
+             "MULTILINESTRING((" + points[0].geometry.x + " " + points[0].geometry.y + "," + 
+                                   points[1].geometry.x + " " + points[1].geometry.y + "," + 
+                                   points[2].geometry.x + " " + points[2].geometry.y + ")," + 
+                             "(" + points[3].geometry.x + " " + points[3].geometry.y + "," + 
+                                   points[4].geometry.x + " " + points[4].geometry.y + "," + 
+                                   points[5].geometry.x + " " + points[5].geometry.y + "))", 
              "format correctly writes MultiLineString WKT"); 
  
         // test a polygon 
         t.eq(format.write(polygons[0]), 
-             "POLYGON((" + points[0].x + " " + points[0].y + "," + 
-                           points[1].x + " " + points[1].y + "," + 
-                           points[2].x + " " + points[2].y + "," + 
-                           points[0].x + " " + points[0].y + ")," + 
-                     "(" + points[3].x + " " + points[3].y + "," + 
-                           points[4].x + " " + points[4].y + "," + 
-                           points[5].x + " " + points[5].y + "," + 
-                           points[3].x + " " + points[3].y + "))", 
+             "POLYGON((" + points[0].geometry.x + " " + points[0].geometry.y + "," + 
+                           points[1].geometry.x + " " + points[1].geometry.y + "," + 
+                           points[2].geometry.x + " " + points[2].geometry.y + "," + 
+                           points[0].geometry.x + " " + points[0].geometry.y + ")," + 
+                     "(" + points[3].geometry.x + " " + points[3].geometry.y + "," + 
+                           points[4].geometry.x + " " + points[4].geometry.y + "," + 
+                           points[5].geometry.x + " " + points[5].geometry.y + "," + 
+                           points[3].geometry.x + " " + points[3].geometry.y + "))", 
              "format correctly writes Polygon WKT"); 
  
         // test a multipolygon 
         t.eq(format.write(multipolygon), 
-             "MULTIPOLYGON(((" + points[0].x + " " + points[0].y + "," + 
-                                 points[1].x + " " + points[1].y + "," + 
-                                 points[2].x + " " + points[2].y + "," + 
-                                 points[0].x + " " + points[0].y + ")," + 
-                           "(" + points[3].x + " " + points[3].y + "," + 
-                                 points[4].x + " " + points[4].y + "," + 
-                                 points[5].x + " " + points[5].y + "," + 
-                                 points[3].x + " " + points[3].y + "))," + 
-                          "((" + points[6].x + " " + points[6].y + "," + 
-                                 points[7].x + " " + points[7].y + "," + 
-                                 points[8].x + " " + points[8].y + "," + 
-                                 points[6].x + " " + points[6].y + ")," + 
-                           "(" + points[9].x + " " + points[9].y + "," + 
-                                 points[10].x + " " + points[10].y + "," + 
-                                 points[11].x + " " + points[11].y + "," + 
-                                 points[9].x + " " + points[9].y + ")))", 
+             "MULTIPOLYGON(((" + points[0].geometry.x + " " + points[0].geometry.y + "," + 
+                                 points[1].geometry.x + " " + points[1].geometry.y + "," + 
+                                 points[2].geometry.x + " " + points[2].geometry.y + "," + 
+                                 points[0].geometry.x + " " + points[0].geometry.y + ")," + 
+                           "(" + points[3].geometry.x + " " + points[3].geometry.y + "," + 
+                                 points[4].geometry.x + " " + points[4].geometry.y + "," + 
+                                 points[5].geometry.x + " " + points[5].geometry.y + "," + 
+                                 points[3].geometry.x + " " + points[3].geometry.y + "))," + 
+                          "((" + points[6].geometry.x + " " + points[6].geometry.y + "," + 
+                                 points[7].geometry.x + " " + points[7].geometry.y + "," + 
+                                 points[8].geometry.x + " " + points[8].geometry.y + "," + 
+                                 points[6].geometry.x + " " + points[6].geometry.y + ")," + 
+                           "(" + points[9].geometry.x + " " + points[9].geometry.y + "," + 
+                                 points[10].geometry.x + " " + points[10].geometry.y + "," + 
+                                 points[11].geometry.x + " " + points[11].geometry.y + "," + 
+                                 points[9].geometry.x + " " + points[9].geometry.y + ")))", 
              "format correctly writes MultiPolygon WKT"); 
          
         // test a geometrycollection 
         t.eq(format.write(collection), 
-             "GEOMETRYCOLLECTION(POINT(" + points[0].x + " " + points[0].y + ")," + 
-                                "LINESTRING(" + points[0].x + " " + points[0].y + "," + 
-                                                points[1].x + " " + points[1].y + "," + 
-                                                points[2].x + " " + points[2].y + "))", 
+             "GEOMETRYCOLLECTION(POINT(" + points[0].geometry.x + " " + points[0].geometry.y + ")," + 
+                                "LINESTRING(" + points[0].geometry.x + " " + points[0].geometry.y + "," + 
+                                                points[1].geometry.x + " " + points[1].geometry.y + "," + 
+                                                points[2].geometry.x + " " + points[2].geometry.y + "))", 
              "format correctly writes GeometryCollection WKT"); 
  
     } 
@@ -134,35 +150,35 @@
          */ 
  
         // test a point 
-        t.ok(points[0].equals(format.read(format.write(points[0]))), 
+        t.ok(points[0].geometry.equals(format.read(format.write(points[0])).geometry), 
              "format correctly reads Point WKT"); 
- 
+
         // test a multipoint 
-        t.ok(multipoint.equals(format.read(format.write(multipoint))), 
+        t.ok(multipoint.geometry.equals(format.read(format.write(multipoint)).geometry), 
              "format correctly reads MultiPoint WKT"); 
  
         // test a linestring 
-        t.ok(linestrings[0].equals(format.read(format.write(linestrings[0]))), 
+        t.ok(linestrings[0].geometry.equals(format.read(format.write(linestrings[0])).geometry), 
              "format correctly reads LineString WKT"); 
  
         // test a multilinestring 
-        t.ok(multilinestring.equals(format.read(format.write(multilinestring))), 
+        t.ok(multilinestring.geometry.equals(format.read(format.write(multilinestring)).geometry), 
              "format correctly reads MultiLineString WKT"); 
  
         // test a polygon 
-        t.ok(polygons[0].equals(format.read(format.write(polygons[0]))), 
+        t.ok(polygons[0].geometry.equals(format.read(format.write(polygons[0])).geometry), 
              "format correctly reads Polygon WKT"); 
  
         // test a multipolygon 
-        t.ok(multipolygon.equals(format.read(format.write(multipolygon))), 
+        t.ok(multipolygon.geometry.equals(format.read(format.write(multipolygon)).geometry), 
              "format correctly reads MultiPolygon WKT"); 
          
         // test a geometrycollection 
         t.eq(format.write(collection), 
-             "GEOMETRYCOLLECTION(POINT(" + points[0].x + " " + points[0].y + ")," + 
-                                "LINESTRING(" + points[0].x + " " + points[0].y + "," + 
-                                                points[1].x + " " + points[1].y + "," + 
-                                                points[2].x + " " + points[2].y + "))", 
+             "GEOMETRYCOLLECTION(POINT(" + points[0].geometry.x + " " + points[0].geometry.y + ")," + 
+                                "LINESTRING(" + points[0].geometry.x + " " + points[0].geometry.y + "," + 
+                                                points[1].geometry.x + " " + points[1].geometry.y + "," + 
+                                                points[2].geometry.x + " " + points[2].geometry.y + "))", 
              "format correctly writes GeometryCollection WKT"); 
  
     } 

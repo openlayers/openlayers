@@ -336,34 +336,48 @@
     function test_01_Map_defaultTheme(t) {
         t.plan(5);
         
-        var head = document.getElementsByTagName('head')[0];
-        var nodeCount = head.childNodes.length;
-        
+        var links = document.getElementsByTagName('link');
         map = new OpenLayers.Map('map');
-        var lastNode = head.childNodes[head.childNodes.length - 1];
-
-        t.eq(nodeCount + 1, head.childNodes.length, "by default, a node is added to document head" );
-        t.eq(lastNode.tagName, "LINK", "node added is a link element");
-        t.eq(lastNode.rel, "stylesheet", "node added has rel set to stylesheet");
-        t.eq(lastNode.type, "text/css", "node added has type set to text/css");
-        t.ok(OpenLayers.Util.isEquivalentUrl(map.theme, lastNode.href), "node added has href equivalent to map.theme");
+        var gotNodes = 0;
+        var themeNode = null;
+        for(var i=0; i<links.length; ++i) {
+            if(OpenLayers.Util.isEquivalentUrl(map.theme, links.item(i).href)) {
+                gotNodes += 1;
+                themeNode = links.item(i);
+            }
+        }
+        t.eq(gotNodes, 1, "by default, a single link node is added to document");
+        t.ok(themeNode != null, "a link node with the theme href was added");
+        t.eq(themeNode.rel, "stylesheet", "node added has rel set to stylesheet");
+        t.eq(themeNode.type, "text/css", "node added has type set to text/css");
+        
+        // reconstruct the map to prove that another link is not added
+        map = new OpenLayers.Map('map');
+        t.eq(links.length, document.getElementsByTagName('link').length,
+             "calling the map constructor twice with the same theme doesn't add duplicate link nodes");
     }
     function test_01_Map_customTheme(t) {
         t.plan(5);
         
-        var head = document.getElementsByTagName('head')[0];
-        var nodeCount = head.childNodes.length;
-        
-        var options = {theme: 'foo'};
+        var customTheme = 'foo';
+        var options = {theme: customTheme};
         map = new OpenLayers.Map('map', options);
 
-        var lastNode = head.childNodes[head.childNodes.length - 1];
-
-        t.eq(nodeCount + 1, head.childNodes.length, "with custom theme, a node is added to document head" );
-        t.eq(lastNode.tagName, "LINK", "node added is a link element");
-        t.eq(lastNode.rel, "stylesheet", "node added has rel set to stylesheet");
-        t.eq(lastNode.type, "text/css", "node added has type set to text/css");
-        t.ok(OpenLayers.Util.isEquivalentUrl(map.theme, lastNode.href), "node added has href equivalent to map.theme");
+        var links = document.getElementsByTagName('link');
+        var gotNodes = 0;
+        var themeNode = null;
+        for(var i=0; i<links.length; ++i) {
+            if(OpenLayers.Util.isEquivalentUrl(map.theme, links.item(i).href)) {
+                gotNodes += 1;
+                themeNode = links.item(i);
+            }
+        }
+        
+        t.eq(map.theme, customTheme, "map theme is properly set");
+        t.eq(gotNodes, 1, "with custom theme, a single link node is added to document");
+        t.ok(themeNode != null, "a link node with the theme href was added");
+        t.eq(themeNode.rel, "stylesheet", "node added has rel set to stylesheet");
+        t.eq(themeNode.type, "text/css", "node added has type set to text/css");
     }
     function test_01_Map_noTheme(t) {
         t.plan(1);
