@@ -1,0 +1,34 @@
+<html> 
+<head> 
+    <script src="../../lib/OpenLayers.js"></script> 
+    <script type="text/javascript"><!-- 
+
+
+     
+    function test_Format_GeoRSS_constructor(t) { 
+        t.plan(4); 
+         
+        var options = {'foo': 'bar'}; 
+        var format = new OpenLayers.Format.GeoRSS(options); 
+        t.ok(format instanceof OpenLayers.Format.GeoRSS, 
+             "new OpenLayers.Format.GeoRSS returns object" ); 
+        t.eq(format.foo, "bar", "constructor sets options correctly"); 
+        t.eq(typeof format.read, "function", "format has a read function"); 
+        t.eq(typeof format.write, "function", "format has a write function"); 
+    } 
+    function test_Format_GeoRSS_serializeline(t) { 
+        t.plan(1);
+        var parser = new OpenLayers.Format.GeoRSS();
+        var point = new OpenLayers.Geometry.Point(-111.04, 45.68);  
+        var point2 = new OpenLayers.Geometry.Point(-112.04, 45.68); 
+        var l = new OpenLayers.Geometry.LineString([point, point2]);
+        var f = new OpenLayers.Feature.Vector(l);
+        var data = parser.write([f]);
+        t.eq(data.firstChild.childNodes[2].firstChild.nodeValue, '45.68 -111.04 45.68 -112.04 ', 'GeoRSS serializes a line correctly');
+    }
+    // --> 
+    </script> 
+</head> 
+<body> 
+</body> 
+</html> 
