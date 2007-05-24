@@ -187,8 +187,9 @@
         layer = new OpenLayers.Layer.WMS(name, url, params);
         map.addLayer(layer);
 
-        map.setCenter(new OpenLayers.LonLat(0,0), 5);
+        map.setCenter(new OpenLayers.LonLat(0,0), 10);
 
+         
         //grab a reference to one of the tiles
         var tile = layer.grid[1][1];        
         t.eq( tile.imgDiv.className, "olTileImage", "Tile has an image" ); 

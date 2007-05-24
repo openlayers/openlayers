@@ -78,7 +78,7 @@
         }
         
         function displayWKT(feature) {
-            var str = wkt.write(feature.geometry);
+            var str = wkt.write(feature);
             // not a good idea in general, just for this demo
             str = str.replace(/,/g, ', ');
             document.getElementById('info').innerHTML = str;
@@ -86,19 +86,18 @@
 
         function parseWKT() {
             var element = document.getElementById('wkt');
-            var collection = wkt.read(element.value);
+            var features = wkt.read(element.value);
             var bounds;
-            if(collection) {
-                if(collection.constructor != Array) {
-                    collection = [collection];
+            if(features) {
+                if(features.constructor != Array) {
+                    features = [features];
                 }
-                var features = [];
-                for(var i=0; i<collection.length; ++i) {
-                    features.push(new OpenLayers.Feature.Vector(collection[i]));
+                for(var i=0; i<features.length; ++i) {
                     if (!bounds) {
-                        bounds = collection[i].getBounds();
+                        bounds = features[i].geometry.getBounds();
+                    } else {
+                        bounds.extend(features[i].geometry.getBounds());
                     }
-                    bounds.extend(collection[i].getBounds());
                     
                 }
                 vectors.addFeatures(features);

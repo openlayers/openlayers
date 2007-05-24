@@ -188,13 +188,14 @@
         map.setCenter(new OpenLayers.LonLat(0,0), 5);
         
         var tile = layer.grid[0][0];
-        
         t.ok(tile.layer.imageSize.equals(tile.size),
              "zero size gutter doesn't change image size"); 
 
         t.ok(tile.layer.imageOffset.equals(new OpenLayers.Pixel(0, 0)),
              "zero size gutter doesn't affect image offset");
-
+        
+        var zero_gutter_bounds = tile.bounds;
+        
         map.destroy();
         
         var gutter = 15;
@@ -209,8 +210,7 @@
 
         t.ok(tile.layer.imageOffset.equals(new OpenLayers.Pixel(-gutter, -gutter)),
              "gutter properly sets image offset");
-
-        t.ok(tile.bounds.equals(new OpenLayers.Bounds(-33.75, 33.75, -22.5, 45)),
+        t.ok(tile.bounds.equals(zero_gutter_bounds),
              "gutter doesn't affect tile bounds");
 
         map.destroy();
