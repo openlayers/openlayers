@@ -82,6 +82,26 @@
         });
     }
 
+	function test_04_Layer_GeoRSS_icon(t) {
+		t.plan( 3 );
+		layer = new OpenLayers.Layer.GeoRSS('Test Layer', georss_txt);
+        var the_icon = new OpenLayers.Icon('http://boston.openguides.org/markers/AQUA.png');
+		var otherLayer = new OpenLayers.Layer.GeoRSS('Test Layer', georss_txt,{icon:the_icon});
+		var map = new OpenLayers.Map('map');
+        var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(baseLayer);
+        map.addLayers([layer,otherLayer]);
+        map.setCenter(new OpenLayers.LonLat(0,0),0);
+		var defaultIcon = OpenLayers.Marker.defaultIcon();
+		t.delay_call( 1, function() {
+			t.ok(layer.markers[0].icon, "The layer has a icon");
+			t.eq(layer.markers[0].icon.url, defaultIcon.url, "The layer without icon has the default icon.");
+			t.eq(otherLayer.markers[0].icon.url, the_icon.url,"The layer with an icon has that icon.");
+		});
+	}
+	
     function test_99_Layer_GeoRSS_destroy (t) {
         t.plan( 1 );    
         layer = new OpenLayers.Layer.GeoRSS('Test Layer', georss_txt);

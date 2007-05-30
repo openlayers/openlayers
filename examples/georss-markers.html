@@ -1,0 +1,36 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 800px;
+            height: 400px;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+        var map, layer;
+
+        OpenLayers.ProxyHost = "/proxy/?url=";
+        function init(){
+            map = new OpenLayers.Map('map', {maxResolution:'auto'});
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+            map.addLayer(layer);
+            map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            var newl = new OpenLayers.Layer.GeoRSS( 'GeoRSS', 'georss.xml');
+            map.addLayer(newl);
+            var yelp = new OpenLayers.Icon("http://openlayers.org/~crschmidt/yelp.png", new OpenLayers.Size(20,29));
+            var newl = new OpenLayers.Layer.GeoRSS( 'Yelp GeoRSS', 'yelp-georss.xml', {'icon':yelp});
+            map.addLayer(newl);
+        }
+        // -->
+    </script>
+  </head>
+  <body onload="init()">
+    <h1>GeoRSS in OpenLayers</h1>
+    <div id="map"></div>
+  </body>
+</html>
