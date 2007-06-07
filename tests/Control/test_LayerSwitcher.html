@@ -22,6 +22,18 @@
         t.ok( control.div != null, "draw makes a div" );
         t.ok( div != null, "draw returns its div" );
     }
+    function test_Control_LayerSwitcher_outsideViewport (t) {
+        t.plan( 2 );
+
+        map = new OpenLayers.Map('map');
+        control = new OpenLayers.Control.LayerSwitcher({'div':OpenLayers.Util.getElement('layerswitcher')});
+        map.addControl(control);
+        console.log(control.outsideViewport);
+        t.eq(control.div.style.width, "250px", "Div is not minimized when added."); 
+        control = new OpenLayers.Control.LayerSwitcher();
+        map.addControl(control);
+        t.eq(control.div.style.width, "0px", "Div is minimized when added."); 
+    }
  
     function test_03_Control_LayerSwitcher_loadContents(t) {
 
@@ -110,5 +122,6 @@
 </head>
 <body>
     <div id="map" style="width: 1024px; height: 512px;"/>
+    <div id="layerswitcher" style="width:250px; height:256px;" />
 </body>
 </html>
