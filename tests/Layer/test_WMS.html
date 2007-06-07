@@ -13,7 +13,7 @@
                    format: 'image/png'};
 
     function test_01_Layer_WMS_constructor (t) {
-        t.plan( 4 );
+        t.plan( 10 );
 
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
         layer = new OpenLayers.Layer.WMS(name, url, params);
@@ -23,7 +23,27 @@
 
         t.eq( layer.params.SERVICE, "WMS", "default params correclty uppercased and copied");
 
+        t.eq(layer.isBaseLayer, true, "no transparency setting, wms is baselayer");
 
+        params.TRANSPARENT = "true";
+        var layer2 = new OpenLayers.Layer.WMS(name, url, params);
+        t.eq(layer2.isBaseLayer, false, "transparency == 'true', wms is baselayer");
+
+        params.TRANSPARENT = "TRUE";
+        var layer3 = new OpenLayers.Layer.WMS(name, url, params);
+        t.eq(layer3.isBaseLayer, false, "transparency == 'TRUE', wms is baselayer");
+
+        params.TRANSPARENT = "TRuE";
+        var layer4 = new OpenLayers.Layer.WMS(name, url, params);
+        t.eq(layer4.isBaseLayer, true, "transparency == 'TRuE', wms is not baselayer");
+
+        params.TRANSPARENT = true;
+        var layer5 = new OpenLayers.Layer.WMS(name, url, params);
+        t.eq(layer5.isBaseLayer, false, "transparency == true, wms is baselayer");
+
+        params.TRANSPARENT = false;
+        var layer6 = new OpenLayers.Layer.WMS(name, url, params);
+        t.eq(layer6.isBaseLayer, true, "transparency == false, wms is not baselayer");
     }
     
     function test_02_Layer_WMS_addtile (t) {
