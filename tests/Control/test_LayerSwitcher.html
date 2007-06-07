@@ -28,7 +28,6 @@
         map = new OpenLayers.Map('map');
         control = new OpenLayers.Control.LayerSwitcher({'div':OpenLayers.Util.getElement('layerswitcher')});
         map.addControl(control);
-        console.log(control.outsideViewport);
         t.eq(control.div.style.width, "250px", "Div is not minimized when added."); 
         control = new OpenLayers.Control.LayerSwitcher();
         map.addControl(control);
