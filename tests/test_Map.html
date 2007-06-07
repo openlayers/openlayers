@@ -235,7 +235,7 @@
     
     }
 
-    function test_10_Map_setBaseLayer(t) {
+    function test_12_Map_setBaseLayer(t) {
         t.plan( 4 );
         
         map = new OpenLayers.Map('map');
@@ -264,7 +264,7 @@
         t.ok(map.baseLayer == wmslayer2, "setbaselayer correctly sets 'baseLayer' property");
     }
 
-    function test_01_Map_setBaseLayer_after_pan (t) {
+    function test_13_Map_setBaseLayer_after_pan (t) {
         t.plan(1);
         map = new OpenLayers.Map('map');
         var wmsLayer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
@@ -280,7 +280,7 @@
         t.eq(map.layerContainerDiv.style.top, "0px", "layerContainer is recentered after setBaseLayer");
     }
 
-    function test_12_Map_moveLayer (t) {
+    function test_14_Map_moveLayer (t) {
         t.plan(10);
         var ct  = 0;
         map = new OpenLayers.Map('map');
@@ -319,7 +319,7 @@
         t.eq( ct, 3, "raiseLayer triggered changelayer the right # of times" );
     }
     
-    function test_08_Map_setCenter(t) {
+    function test_15_Map_setCenter(t) {
         t.plan(1);
         map = new OpenLayers.Map('map');
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
@@ -333,7 +333,7 @@
     }
 
     
-    function test_01_Map_defaultTheme(t) {
+    function test_16_Map_defaultTheme(t) {
         t.plan(5);
         
         var links = document.getElementsByTagName('link');
@@ -356,7 +356,7 @@
         t.eq(links.length, document.getElementsByTagName('link').length,
              "calling the map constructor twice with the same theme doesn't add duplicate link nodes");
     }
-    function test_01_Map_customTheme(t) {
+    function test_17_Map_customTheme(t) {
         t.plan(5);
         
         var customTheme = 'foo';
@@ -379,7 +379,7 @@
         t.eq(themeNode.rel, "stylesheet", "node added has rel set to stylesheet");
         t.eq(themeNode.type, "text/css", "node added has type set to text/css");
     }
-    function test_01_Map_noTheme(t) {
+    function test_18_Map_noTheme(t) {
         t.plan(1);
         
         var head = document.getElementsByTagName('head')[0];
