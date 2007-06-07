@@ -390,6 +390,68 @@
 
         t.eq(nodeCount, head.childNodes.length, "with no theme, a node is not added to document head" );
     }
+    
+    function test_19_Map_getControl(t) {
+        t.plan(2);
+        
+        var map1 = new OpenLayers.Map('map');
+        
+        var control = new OpenLayers.Control();
+        map1.addControl(control);
+
+        var gotControl = map1.getControl(control.id);
+        t.ok(gotControl == control, "got right control");
+        
+        gotControl = map1.getControl("bogus id");
+        t.ok(gotControl == null, "getControl() for bad id returns null");
+    }
+
+    function test_19_Map_removeControl(t) {
+        t.plan(6);
+        
+        var oldNumControls, newNumControls;
+        
+        var map1 = new OpenLayers.Map('map');
+        oldNumControls = map1.controls.length;
+        
+        var control = new OpenLayers.Control();
+        map1.addControl(control);
+
+    //add control        
+        newNumControls = map1.controls.length;
+        t.ok( newNumControls = oldNumControls + 1, "adding a control increases control count")
+
+        var foundDiv = false;
+        for(var i=0; i < map1.viewPortDiv.childNodes.length; i++) {
+            var childNode = map1.viewPortDiv.childNodes[i];
+            if (childNode == control.div) {
+                foundDiv = true;
+            }
+        }
+        t.ok(foundDiv, "new control's div correctly added to viewPort");
+
+    //remove control        
+        map1.removeControl(control.id)
+        newNumControls = map1.controls.length;
+        t.ok( newNumControls == oldNumControls, "removing the control decreases control count")
+
+        var gotControl = map1.getControl(control.id);
+        t.ok( gotControl == null, "control no longer in map's controls array");
+
+        var foundDiv = false;
+        for(var i=0; i < map1.viewPortDiv.childNodes.length; i++) {
+            var childNode = map1.viewPortDiv.childNodes[i];
+            if (childNode == control.div) {
+                foundDiv = true;
+            }
+        }
+        t.ok(!foundDiv, "control no longer child of viewPort");
+
+    //remove bogus
+        map1.removeControl("bogus id");
+        newNumControls = map1.controls.length;
+        t.ok( newNumControls == oldNumControls, "removing bad controlid doesnt crash or decrease control count")
+    }
 
     function test_99_Map_destroy (t) {
         t.plan( 3 );    
