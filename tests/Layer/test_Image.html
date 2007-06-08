@@ -77,6 +77,16 @@
  */
 
 
+    function test_99_Layer_Image_destroy_before_use (t) {
+        t.plan(1);
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.Image('Test', 'http://earthtrends.wri.org/images/maps/4_m_citylights_lg.gif', new OpenLayers.Bounds(-180, -88.759, 180, 88.759), new OpenLayers.Size(580, 288));
+        map.addLayer(layer);
+        map.removeLayer(layer);
+        layer.destroy();
+        t.ok(true, "destroy() didn't throw an error");
+    }
+
     function test_99_Layer_Image_destroy (t) {
         t.plan( 4 );    
 
