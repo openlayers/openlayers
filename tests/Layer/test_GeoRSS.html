@@ -28,7 +28,6 @@
             t.eq( layer.name, "Crschmidt's Places At Platial", "Layer name is correct." );
         } );
     }
-    
     function test_01_Layer_GeoRSS_AtomParsing (t) {
         t.plan( 6 );
         layer = new OpenLayers.Layer.GeoRSS('Test Layer', atom_xml );
@@ -107,8 +106,10 @@
         layer = new OpenLayers.Layer.GeoRSS('Test Layer', georss_txt);
         var map = new OpenLayers.Map('map');
         map.addLayer(layer);
+        t.delay_call( 1, function() {  
         layer.destroy();
         t.eq( layer.map, null, "layer.map is null after destroy" );
+        });
     }
   // -->
   </script>
