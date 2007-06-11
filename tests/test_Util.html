@@ -571,18 +571,6 @@
         t.eq(OpenLayers.Util.createDiv().id, "OpenLayersDiv3", "Div created is sequential, starting at lastSeqID in Util.");
     }
 
-    function test_Util_getArgs(t) {
-        t.plan(5);
-        t.eq(OpenLayers.Util.getArgs('http://www.example.com'), {}, "getArgs works when args = ''");
-        t.eq(OpenLayers.Util.getArgs('http://www.example.com?'), {}, "getArgs works when args = '?'");
-        t.eq(OpenLayers.Util.getArgs('http://www.example.com?hello=world&foo=bar'), 
-                                     {'hello' : 'world', 'foo': 'bar'}, "getArgs works when args = '?hello=world&foo=bar'");
-        t.eq(OpenLayers.Util.getArgs('http://www.example.com?hello=&foo=bar'), 
-                                     {'hello' : '', 'foo': 'bar'}, "getArgs works when args = '?hello=&foo=bar'");
-        t.eq(OpenLayers.Util.getArgs('http://www.example.com?foo=bar#bugssucks'), 
-                                     {'foo': 'bar'}, "getArgs works when using a fragment identifier");
-    }
-
    // -->
   </script>
 </head>
