@@ -88,6 +88,50 @@
         t.ok( lonlat.equals(ll), "lonlat is set correctly");
     }
 
+    function test_08_LonLat_wrapDateLine(t) {
+        t.plan( 6 );
+
+        var goodLL = new OpenLayers.LonLat(0,0);
+        var testLL, wrappedLL;
+
+  //bad maxextent
+        var maxExtent = null;
+
+        testLL = goodLL.clone();
+        wrappedLL = testLL.wrapDateLine(maxExtent);
+        t.ok(wrappedLL.equals(goodLL), "wrapping a ll with a bad maxextent does nothing");
+        
+        
+  //good maxextent
+        maxExtent = new OpenLayers.Bounds(-10,-10,10,10);
+
+    //inside
+        testLL = goodLL.clone();
+        wrappedLL = testLL.wrapDateLine(maxExtent);
+        t.ok(wrappedLL.equals(goodLL), "wrapping a ll within the maxextent does nothing");
+        
+    //left
+        testLL = goodLL.add(-20,0);
+        wrappedLL = testLL.wrapDateLine(maxExtent);
+        t.ok(wrappedLL.equals(goodLL), "wrapping a ll once left of maxextent works");
+        
+    //way left
+        testLL = goodLL.add(-200,0);
+        wrappedLL = testLL.wrapDateLine(maxExtent);
+        t.ok(wrappedLL.equals(goodLL), "wrapping a ll way left of maxextent works");
+
+    //right
+        testLL = goodLL.add(20,0);
+        wrappedLL = testLL.wrapDateLine(maxExtent);
+        t.ok(wrappedLL.equals(goodLL), "wrapping a ll once right of maxextent works");
+        
+    //way right
+        testLL = goodLL.add(200,0);
+        wrappedLL = testLL.wrapDateLine(maxExtent);
+        t.ok(wrappedLL.equals(goodLL), "wrapping a ll way right of maxextent works");
+
+    }
+
   // -->
   </script>
 </head>

@@ -1,0 +1,61 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 800px;
+            height: 475px;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+        var map;
+        function init(){
+            map = new OpenLayers.Map( 'map', {maxResolution: 1.40625} );
+            var mapserv = new OpenLayers.Layer.MapServer( "OpenLayers Basic", 
+                        "http://labs.metacarta.com/wms/vmap0",
+                        {layers: 'basic'},
+                        {wrapDateLine: true} );
+                        
+            var kamap = new OpenLayers.Layer.KaMap( "Blue Marble NG",
+                        "http://www.openlayers.org/world/index.php",
+                        {g: "satellite", map: "world"},
+                        {wrapDateLine: true} );
+
+            var wms = new OpenLayers.Layer.WMS( "DM Solutions Demo",
+                "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap",
+                {layers: "bathymetry,land_fn,park,drain_fn,drainage," +
+                         "prov_bound,fedlimit,rail,road,popplace",
+                 transparent: "true", format: "image/png"},
+                {wrapDateLine: true, reproject: false});
+
+            /* TMS is broken, too */
+            tms = new OpenLayers.Layer.TMS( "OpenStreetMap", 
+                    "http://labs.metacarta.com/wms-c/Basic.py/",
+                    {layername: 'osm-map', type:'png', wrapDateLine: true} );
+
+            /* WW doesn't quite work yet */
+            ww = new OpenLayers.Layer.WorldWind( "LANDSAT",
+                    "http://worldwind25.arc.nasa.gov/tile/tile.aspx", 2.25, 4,
+                    {T:"105"},
+                    {'maxResolution': .28125,
+                     tileSize: new OpenLayers.Size(512, 512),
+                     wrapDateLine: true});
+        
+            map.addLayers([mapserv, kamap, wms]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.addControl(new OpenLayers.Control.MousePosition());
+            map.zoomToMaxExtent();
+        }
+        // -->
+    </script>
+  </head>
+  <body onload="init()">
+    <div id="map"></div>
+    <div id="docs">
+        This is an example that shows wrapping the date line. Wrapping the 
+        date line is an option on the layer.  
+    </div>
+  </body>
+</html>

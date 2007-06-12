@@ -379,6 +379,98 @@
                (bounds.top == object.y)), "obj Point to extends correclty modifies right and top");
 
      }
+     
+     
+     function test_16_Bounds_wrapDateLine(t) {
+        t.plan( 13 );
+        
+        var testBounds, wrappedBounds, desiredBounds;
+
+        var maxExtent = new OpenLayers.Bounds(-10,-10,10,10);
+        var exactBounds = maxExtent.clone();
+        var simpleBounds = new OpenLayers.Bounds( -5,-5,5,5);
+
+
+
+    //bad maxextent
+        testBounds = simpleBounds.clone();
+        wrappedBounds = testBounds.wrapDateLine(null);
+        t.ok(wrappedBounds.equals(simpleBounds), "wrapping a bounds with a bad maxextent does nothing");
+
+
+
+    //exactly inside 
+        testBounds = exactBounds.clone();
+        wrappedBounds = testBounds.wrapDateLine(maxExtent);
+        t.ok(wrappedBounds.equals(exactBounds), "wrapping a bounds precisely within (equal to) maxextent does nothing");
+
+
+    //inside 
+        testBounds = simpleBounds.clone();
+        wrappedBounds = testBounds.wrapDateLine(maxExtent);
+        t.ok(wrappedBounds.equals(simpleBounds), "wrapping a bounds within maxextent does nothing");
+    
+// LEFT //
+
+    //straddling left
+        testBounds = simpleBounds.add(-10,0);
+        wrappedBounds = testBounds.wrapDateLine(maxExtent);
+        t.ok(wrappedBounds.equals(testBounds), "wrapping a bounds that straddles the left of maxextent does nothing");
+    
+    //left rightTolerance
+        testBounds = simpleBounds.add(-14,0);
+        wrappedBounds = 
+            testBounds.wrapDateLine(maxExtent, {'rightTolerance': 1} );
+        desiredBounds = simpleBounds.add(6,0);
+        t.ok(wrappedBounds.equals(desiredBounds), "wrapping a bounds rightTolerance left of maxextent works");
+
+    //exactly left
+        testBounds = exactBounds.add(-20,0);
+        wrappedBounds = testBounds.wrapDateLine(maxExtent);
+        t.ok(wrappedBounds.equals(exactBounds), "wrapping an exact bounds once left of maxextent works");
+    
+    //left
+        testBounds = simpleBounds.add(-20,0);
+        wrappedBounds = testBounds.wrapDateLine(maxExtent);
+        t.ok(wrappedBounds.equals(simpleBounds), "wrapping a bounds once left of maxextent works");
+    
+    //way left
+        testBounds = simpleBounds.add(-200,0);
+        wrappedBounds = testBounds.wrapDateLine(maxExtent);
+        t.ok(wrappedBounds.equals(simpleBounds), "wrapping a bounds way left of maxextent works");
+
+// RIGHT //
+
+    //straddling right
+        testBounds = simpleBounds.add(10,0);
+        wrappedBounds = testBounds.wrapDateLine(maxExtent);
+        t.ok(wrappedBounds.equals(testBounds), "wrapping a bounds that straddles the right of maxextent does nothing");
+    
+    //right leftTolerance
+        testBounds = simpleBounds.add(14,0);
+        wrappedBounds = 
+            testBounds.wrapDateLine(maxExtent, {'leftTolerance': 1} );
+        desiredBounds = simpleBounds.add(-6,0);
+        t.ok(wrappedBounds.equals(desiredBounds), "wrapping a bounds leftTolerance right of maxextent works");
+    
+    //exactly right
+        testBounds = exactBounds.add(20,0);
+        wrappedBounds = testBounds.wrapDateLine(maxExtent);
+        t.ok(wrappedBounds.equals(exactBounds), "wrapping an exact bounds once right of maxextent works");
+    
+    //right
+        testBounds = simpleBounds.add(20,0);
+        wrappedBounds = testBounds.wrapDateLine(maxExtent);
+        t.ok(wrappedBounds.equals(simpleBounds), "wrapping a bounds once right of maxextent works");
+    
+    //way right
+        testBounds = simpleBounds.add(200,0);
+        wrappedBounds = testBounds.wrapDateLine(maxExtent);
+        t.ok(wrappedBounds.equals(simpleBounds), "wrapping a bounds way right of maxextent works");
+
+
+
+      }
 
   // -->
   </script>
