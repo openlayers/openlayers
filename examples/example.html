@@ -9,8 +9,40 @@
     </style>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
+
+        
         <!--
         function init(){
+
+            //set title name to include Browser Detection
+            // this is the only way to test the functionality 
+            // of the getBrowserName() function
+            //
+            var header = OpenLayers.Util.getElement("browserHeader");
+            header.innerHTML = "(browser: ";
+            var browserCode = OpenLayers.Util.getBrowserName();
+            switch (browserCode) {
+                case "opera":
+                    browserName = "Opera";
+                    break;
+                case "msie":
+                    browserName = "Internet Explorer";
+                    break;
+                case "safari":
+                    browserName = "Safari";
+                    break;
+                case "firefox":
+                    browserName = "FireFox";
+                    break;
+                case "mozilla":
+                    browserName = "Mozilla";
+                    break;
+                default: 
+                    browserName = "detection error"
+                    break;
+            }                        
+            header.innerHTML += browserName + ")";
+
             var map = new OpenLayers.Map('map');
 
             var options = { 
@@ -45,7 +77,11 @@
     </script>
   </head>
   <body onload="init()">
-    <h1>OpenLayers Example</h1>
+    <table><tr><td>
+        <h1>OpenLayers Example</h1>
+    </td><td>
+        <h3 id="browserHeader"></h3>
+    </td></tr></table>
     <div id="map"></div>
   </body>
 </html>
