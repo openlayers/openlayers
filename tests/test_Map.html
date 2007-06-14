@@ -431,7 +431,7 @@
         t.ok(foundDiv, "new control's div correctly added to viewPort");
 
     //remove control        
-        map1.removeControl(control.id)
+        map1.removeControl(control)
         newNumControls = map1.controls.length;
         t.ok( newNumControls == oldNumControls, "removing the control decreases control count")
 
@@ -448,7 +448,8 @@
         t.ok(!foundDiv, "control no longer child of viewPort");
 
     //remove bogus
-        map1.removeControl("bogus id");
+        control = { id: "bogus id" };
+        map1.removeControl(control);
         newNumControls = map1.controls.length;
         t.ok( newNumControls == oldNumControls, "removing bad controlid doesnt crash or decrease control count")
     }
