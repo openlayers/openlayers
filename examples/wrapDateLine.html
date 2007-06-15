@@ -3,7 +3,7 @@
     <style type="text/css">
         #map {
             width: 800px;
-            height: 475px;
+            height: 350px;
             border: 1px solid black;
         }
     </style>
@@ -52,10 +52,30 @@
     </script>
   </head>
   <body onload="init()">
+    <h1 id="title">Wrapping the Date Line</h1>
+    <div id="tags">
+      Related to: 
+        <a href="http://dev.openlayers.org/docs/OpenLayers/Layer/WMS.html">Layer.WMS</a>, 
+        <a href="http://dev.openlayers.org/docs2/OpenLayers/Layer/MapServer.html">Layer.MapServer</a>, 
+        <a href="http://dev.openlayers.org/docs2/OpenLayers/Layer.html#wrapDateLine">wrapDateLine</a>
+    </div> 
+    
+    <p id="shortdesc">This example shows the use of the <a href="http://dev.openlayers.org/docs/OpenLayers/Layer.html#wrapDateLine">wrapDateLine</a> layer option on a number of layer types.</p>
     <div id="map"></div>
     <div id="docs">
+        <p>
         This is an example that shows wrapping the date line. Wrapping the 
-        date line is an option on the layer.  
+        date line is an option on the layer. 
+        </p>
+        <p>
+          You can do it with a 'Layer.WMS' or a 'Layer.MapServer' layer.
+        </p>
+    <pre id="code">
+    var mapserv = new OpenLayers.Layer.MapServer( "OpenLayers Basic", 
+                "http://labs.metacarta.com/wms/vmap0",
+                {layers: 'basic'},
+                <b>{wrapDateLine: true}</b> );
+    </pre>  
     </div>
   </body>
 </html>
