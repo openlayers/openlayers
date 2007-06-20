@@ -2,13 +2,51 @@
 <head>
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript"><!--
-    var map; 
     function test_Control_Panel_constructor (t) {
         t.plan( 1 );
     
         control = new OpenLayers.Control.Panel();
         t.ok( control instanceof OpenLayers.Control.Panel, "new OpenLayers.Control returns object" );
     }
+    function test_01_Control_Panel_constructor (t) {
+    		t.plan(5);
+		    var map = new OpenLayers.Map('map');
+		    var panel = new OpenLayers.Control.Panel();
+		    var toolControl = new OpenLayers.Control.ZoomBox();
+		    var AnotherToolControl = OpenLayers.Class.create();
+		    AnotherToolControl.prototype = OpenLayers.Class.inherit(OpenLayers.Control, {
+		  				CLASS_NAME: 'mbControl.TestTool',
+		  				type: OpenLayers.Control.TYPE_TOOL
+		  	});
+		   	var anotherToolControl = new AnotherToolControl();
+				var ToggleControl = OpenLayers.Class.create();
+				ToggleControl.prototype = OpenLayers.Class.inherit(OpenLayers.Control, {
+							CLASS_NAME: 'mbControl.TestToggle',
+							type: OpenLayers.Control.TYPE_TOGGLE,
+				});
+				var toggleControl = new ToggleControl();
+
+        t.ok(panel instanceof OpenLayers.Control.Panel, 
+        			"new OpenLayers.Control.Panel returns object");
+
+ 				panel.addControls([toolControl, anotherToolControl, toggleControl]);
+
+        t.eq(panel.controls.length, 3,
+        			"added three controls to the panel");
+        map.addControl(panel);
+
+				panel.activateControl(toolControl);
+				t.ok(toolControl.active && !anotherToolControl.active && !toggleControl.active,
+							"activated one tool control, the other one is inactive and the toggle control also.");
+							
+				panel.activateControl(toggleControl);
+				t.ok(toolControl.active && !anotherToolControl.active && toggleControl.active,
+							"activated the toggle control, which has no influence on the tool controls.");
+							
+				panel.activateControl(anotherToolControl);
+				t.ok(!toolControl.active && anotherToolControl.active && toggleControl.active,
+							"activated the other tool control, the first one is inactive and the toggle control still active.");
+		}
   // -->
   </script>
 </head>
