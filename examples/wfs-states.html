@@ -14,7 +14,7 @@
 
         function init(){
             OpenLayers.ProxyHost="/cgi-bin/proxy.cgi?url="; 
-            map = new OpenLayers.Map( $('map'), {controls: [ new OpenLayers.Control.PanZoom(), new OpenLayers.Control.Permalink(), new OpenLayers.Control.MouseDefaults() ]} );
+            map = new OpenLayers.Map('map', {controls: [ new OpenLayers.Control.PanZoom(), new OpenLayers.Control.Permalink(), new OpenLayers.Control.MouseDefaults() ]} );
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                     "http://labs.metacarta.com/wms-c/Basic.py", 
                     {layers: 'basic'} );

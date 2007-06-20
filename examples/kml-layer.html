@@ -16,7 +16,7 @@
         var map, layer;
 
         function init(){
-            map = new OpenLayers.Map( $('map') );
+            map = new OpenLayers.Map('map');
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                     "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
             map.addLayer(layer);

@@ -13,7 +13,7 @@
         var map, layer;
 
         function init(){
-            map = new OpenLayers.Map( $('map') );
+            map = new OpenLayers.Map('map');
             layer = new OpenLayers.Layer.WMS( "State", 
                     "http://dev.openlayers.org/geoserver/wms", {layers: 'topp:tasmania_state_boundaries'} );
             map.addLayer(layer);
