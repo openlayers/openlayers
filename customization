@@ -1,0 +1,49 @@
+Customizing OpenLayers
+======================
+
+OpenLayers is designed to fit many needs -- fitting in alongside all kinds of
+various applications which are currently in use. 
+
+Currently, OpenLayers supports a 'theme' option when creating a map. This 
+theme option allows you to specify the location of a CSS theme which should
+be included.
+
+A default theme is available as an example in the theme/ directory: the setup
+is:
+
+ * theme/
+ * theme/default/
+ * theme/default/style.css
+ * theme/default/img/
+
+Currently, the OpenLayers code does not support class names, and therefore,
+it is not possible to control many aspects of OpenLayers code with CSS 
+classes. However, with this framework in place, we expect to invest time 
+to make existing features and new features use the CSS theming framework
+where apropriate. 
+
+
+Class Naming
+============
+Elements should have class names which are descriptive of the Javascript
+class from which they come. For example, the main layer switcher element
+in the OpenLayers.Control.LayerSwitcher would be classed:
+
+  olControlLayerSwitcher
+
+This would allow users to add to their style.css class in their theme,
+changing, for example: 
+
+::
+  
+  .olControlLayerSwitcher input {
+    width:10px;
+  }
+
+Sub elements of a particular control can add to the class name:
+
+::
+
+  .olControlLayerSwitcherBaseLabel {
+      color: red;
+  }
