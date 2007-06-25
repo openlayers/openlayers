@@ -27,23 +27,23 @@
 
         params.TRANSPARENT = "true";
         var layer2 = new OpenLayers.Layer.WMS(name, url, params);
-        t.eq(layer2.isBaseLayer, false, "transparency == 'true', wms is baselayer");
+        t.eq(layer2.isBaseLayer, false, "transparency == 'true', wms is not baselayer");
 
         params.TRANSPARENT = "TRUE";
         var layer3 = new OpenLayers.Layer.WMS(name, url, params);
-        t.eq(layer3.isBaseLayer, false, "transparency == 'TRUE', wms is baselayer");
+        t.eq(layer3.isBaseLayer, false, "transparency == 'TRUE', wms is not baselayer");
 
         params.TRANSPARENT = "TRuE";
         var layer4 = new OpenLayers.Layer.WMS(name, url, params);
-        t.eq(layer4.isBaseLayer, true, "transparency == 'TRuE', wms is not baselayer");
+        t.eq(layer4.isBaseLayer, true, "transparency == 'TRuE', wms is baselayer");
 
         params.TRANSPARENT = true;
         var layer5 = new OpenLayers.Layer.WMS(name, url, params);
-        t.eq(layer5.isBaseLayer, false, "transparency == true, wms is baselayer");
+        t.eq(layer5.isBaseLayer, false, "transparency == true, wms is not baselayer");
 
         params.TRANSPARENT = false;
         var layer6 = new OpenLayers.Layer.WMS(name, url, params);
-        t.eq(layer6.isBaseLayer, true, "transparency == false, wms is not baselayer");
+        t.eq(layer6.isBaseLayer, true, "transparency == false, wms is baselayer");
     }
     
     function test_02_Layer_WMS_addtile (t) {
