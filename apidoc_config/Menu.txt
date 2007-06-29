@@ -1,0 +1,177 @@
+Format: 1.35
+
+
+Title: OpenLayers
+SubTitle: JavaScript Mapping Library
+
+# You can add a footer to your documentation like this:
+# Footer: [text]
+# If you want to add a copyright notice, this would be the place to do it.
+
+
+# --------------------------------------------------------------------------
+# 
+# Cut and paste the lines below to change the order in which your files
+# appear on the menu.  Don't worry about adding or removing files, Natural
+# Docs will take care of that.
+# 
+# You can further organize the menu by grouping the entries.  Add a
+# "Group: [name] {" line to start a group, and add a "}" to end it.
+# 
+# You can add text and web links to the menu by adding "Text: [text]" and
+# "Link: [name] ([URL])" lines, respectively.
+# 
+# The formatting and comments are auto-generated, so don't worry about
+# neatness when editing the file.  Natural Docs will clean it up the next
+# time it is run.  When working with groups, just deal with the braces and
+# forget about the indentation and comments.
+# 
+# --------------------------------------------------------------------------
+
+
+File: OpenLayers  (OpenLayers.js)
+
+Group: OpenLayers  {
+
+   File: Ajax  (no auto-title, OpenLayers/Ajax.js)
+   File: Base Types  (no auto-title, OpenLayers/BaseTypes.js)
+   File: Console  (no auto-title, OpenLayers/Console.js)
+
+   Group: Control  {
+
+      File: Control  (no auto-title, OpenLayers/Control.js)
+      File: ArgParser  (no auto-title, OpenLayers/Control/ArgParser.js)
+      File: ZoomToMaxExtent  (no auto-title, OpenLayers/Control/ZoomToMaxExtent.js)
+      File: OverviewMap  (no auto-title, OpenLayers/Control/OverviewMap.js)
+      File: DragPan  (no auto-title, OpenLayers/Control/DragPan.js)
+      File: DrawFeature  (no auto-title, OpenLayers/Control/DrawFeature.js)
+      File: EditingToolbar  (no auto-title, OpenLayers/Control/EditingToolbar.js)
+      File: KeyboardDefaults  (no auto-title, OpenLayers/Control/KeyboardDefaults.js)
+      File: LayerSwitcher  (no auto-title, OpenLayers/Control/LayerSwitcher.js)
+      File: MouseDefaults  (no auto-title, OpenLayers/Control/MouseDefaults.js)
+      File: MousePosition  (no auto-title, OpenLayers/Control/MousePosition.js)
+      File: MouseToolbar  (no auto-title, OpenLayers/Control/MouseToolbar.js)
+      File: Navigation  (no auto-title, OpenLayers/Control/Navigation.js)
+      File: NavToolbar  (no auto-title, OpenLayers/Control/NavToolbar.js)
+      File: Panel  (no auto-title, OpenLayers/Control/Panel.js)
+      File: PanZoomBar  (no auto-title, OpenLayers/Control/PanZoomBar.js)
+      File: Permalink  (no auto-title, OpenLayers/Control/Permalink.js)
+      File: Scale  (no auto-title, OpenLayers/Control/Scale.js)
+      File: SelectFeature  (no auto-title, OpenLayers/Control/SelectFeature.js)
+      File: ZoomBox  (no auto-title, OpenLayers/Control/ZoomBox.js)
+      File: PanZoom  (OpenLayers/Control/PanZoom.js)
+      }  # Group: Control
+
+   File: Events  (no auto-title, OpenLayers/Events.js)
+
+   Group: Feature  {
+
+      File: Feature  (no auto-title, OpenLayers/Feature.js)
+      File: WFS  (no auto-title, OpenLayers/Feature/WFS.js)
+      File: Vector  (no auto-title, OpenLayers/Feature/Vector.js)
+      }  # Group: Feature
+
+   Group: Format  {
+
+      File: Format  (no auto-title, OpenLayers/Format.js)
+      File: GeoRSS  (OpenLayers/Format/GeoRSS.js)
+      File: GML  (OpenLayers/Format/GML.js)
+      File: KML  (OpenLayers/Format/KML.js)
+      File: WFS  (OpenLayers/Format/WFS.js)
+      File: WKT  (no auto-title, OpenLayers/Format/WKT.js)
+      }  # Group: Format
+
+   Group: Geometry  {
+
+      File: Geometry  (no auto-title, OpenLayers/Geometry.js)
+      File: Collection  (no auto-title, OpenLayers/Geometry/Collection.js)
+      File: Curve  (OpenLayers/Geometry/Curve.js)
+      File: LinearRing  (OpenLayers/Geometry/LinearRing.js)
+      File: LineString  (no auto-title, OpenLayers/Geometry/LineString.js)
+      File: MultiLineString  (no auto-title, OpenLayers/Geometry/MultiLineString.js)
+      File: MultiPoint  (no auto-title, OpenLayers/Geometry/MultiPoint.js)
+      File: MultiPolygon  (no auto-title, OpenLayers/Geometry/MultiPolygon.js)
+      File: Point  (no auto-title, OpenLayers/Geometry/Point.js)
+      File: Polygon  (no auto-title, OpenLayers/Geometry/Polygon.js)
+      File: Rectangle  (OpenLayers/Geometry/Rectangle.js)
+      File: Surface  (OpenLayers/Geometry/Surface.js)
+      }  # Group: Geometry
+
+   Group: Handler  {
+
+      File: Handler  (no auto-title, OpenLayers/Handler.js)
+      File: Box  (OpenLayers/Handler/Box.js)
+      File: Drag  (no auto-title, OpenLayers/Handler/Drag.js)
+      File: Feature  (no auto-title, OpenLayers/Handler/Feature.js)
+      File: Keyboard  (no auto-title, OpenLayers/Handler/Keyboard.js)
+      File: MouseWheel  (no auto-title, OpenLayers/Handler/MouseWheel.js)
+      File: Path  (no auto-title, OpenLayers/Handler/Path.js)
+      File: Point  (no auto-title, OpenLayers/Handler/Point.js)
+      File: Polygon  (OpenLayers/Handler/Polygon.js)
+      }  # Group: Handler
+
+   File: Icon  (no auto-title, OpenLayers/Icon.js)
+
+   Group: Layer  {
+
+      File: Layer  (no auto-title, OpenLayers/Layer.js)
+      File: Boxes  (OpenLayers/Layer/Boxes.js)
+      File: EventPane  (OpenLayers/Layer/EventPane.js)
+      File: FixedZoomLevels  (OpenLayers/Layer/FixedZoomLevels.js)
+      File: GeoRSS  (no auto-title, OpenLayers/Layer/GeoRSS.js)
+      File: GML  (no auto-title, OpenLayers/Layer/GML.js)
+      File: Grid  (OpenLayers/Layer/Grid.js)
+      File: Image  (no auto-title, OpenLayers/Layer/Image.js)
+      File: MapServer  (OpenLayers/Layer/MapServer.js)
+      File: Markers  (no auto-title, OpenLayers/Layer/Markers.js)
+      File: Text  (OpenLayers/Layer/Text.js)
+      File: Vector  (no auto-title, OpenLayers/Layer/Vector.js)
+      File: WMS  (no auto-title, OpenLayers/Layer/WMS.js)
+      File: WMS.Untiled  (no auto-title, OpenLayers/Layer/WMS/Untiled.js)
+      File: WorldWind  (OpenLayers/Layer/WorldWind.js)
+      }  # Group: Layer
+
+   File: Map  (no auto-title, OpenLayers/Map.js)
+
+   Group: Marker  {
+
+      File: Marker  (no auto-title, OpenLayers/Marker.js)
+      File: Box  (no auto-title, OpenLayers/Marker/Box.js)
+      }  # Group: Marker
+
+   Group: Popup  {
+
+      File: Popup  (no auto-title, OpenLayers/Popup.js)
+      File: Anchored  (no auto-title, OpenLayers/Popup/Anchored.js)
+      File: AnchoredBubble  (OpenLayers/Popup/AnchoredBubble.js)
+      }  # Group: Popup
+
+   Group: Renderer  {
+
+      File: Renderer  (OpenLayers/Renderer.js)
+      File: Elements  (no auto-title, OpenLayers/Renderer/Elements.js)
+      File: SVG  (no auto-title, OpenLayers/Renderer/SVG.js)
+      File: VML  (no auto-title, OpenLayers/Renderer/VML.js)
+      }  # Group: Renderer
+
+   Group: Tile  {
+
+      File: Tile  (no auto-title, OpenLayers/Tile.js)
+      File: Image  (no auto-title, OpenLayers/Tile/Image.js)
+      File: WFS  (no auto-title, OpenLayers/Tile/WFS.js)
+      }  # Group: Tile
+
+   File: Util  (OpenLayers/Util.js)
+   }  # Group: OpenLayers
+
+Group: Index  {
+
+   Index: Everything
+   Class Index: Classes
+   Constant Index: Constants
+   Function Index: Functions
+   Property Index: Properties
+   File Index: Files
+   Constructor Index: Constructor
+   }  # Group: Index
+
