@@ -4,9 +4,10 @@
   <script type="text/javascript"><!--
     var map; 
     function test_01_Control_NavToolbar_constructor (t) {
-        t.plan( 3 );
+        t.plan( 4 );
         control = new OpenLayers.Control.NavToolbar();
         t.ok( control instanceof OpenLayers.Control.NavToolbar, "new OpenLayers.Control.NavToolbar returns object" );
+        t.eq( control.displayClass,  "olControlNavToolbar", "displayClass is correct" );
         t.ok( control.controls[0] instanceof OpenLayers.Control.Navigation, "NavToolbar contains Control.Navigation object" );
         t.ok( control.controls[1] instanceof OpenLayers.Control.ZoomBox, "NavToolbar contains Control.ZoomBox object" );
     }

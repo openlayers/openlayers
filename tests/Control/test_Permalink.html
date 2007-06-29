@@ -4,10 +4,11 @@
   <script type="text/javascript"><!--
     var map; 
     function test_01_Control_Permalink_constructor (t) {
-        t.plan( 1 );
+        t.plan( 2 );
     
         control = new OpenLayers.Control.Permalink();
         t.ok( control instanceof OpenLayers.Control.Permalink, "new OpenLayers.Control returns object" );
+        t.eq( control.displayClass,  "olControlPermalink", "displayClass is correct" );
     }
     function test_02_Control_Permalink_updateLinks (t) {
         t.plan( 2 );

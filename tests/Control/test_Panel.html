@@ -3,10 +3,11 @@
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript"><!--
     function test_Control_Panel_constructor (t) {
-        t.plan( 1 );
+        t.plan( 2 );
     
         control = new OpenLayers.Control.Panel();
         t.ok( control instanceof OpenLayers.Control.Panel, "new OpenLayers.Control returns object" );
+        t.eq( control.displayClass,  "olControlPanel", "displayClass is correct" );
     }
     function test_01_Control_Panel_constructor (t) {
     		t.plan(5);

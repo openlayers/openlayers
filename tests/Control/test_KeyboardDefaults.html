@@ -4,11 +4,12 @@
   <script type="text/javascript"><!--
     var map; 
     function test_01_Control_KeyboardDefaults_constructor (t) {
-        t.plan( 1 );
+        t.plan( 2 );
     
         control = new OpenLayers.Control.KeyboardDefaults();
         t.ok( control instanceof OpenLayers.Control.KeyboardDefaults, 
                 "new OpenLayers.Control.KeyboardDefaults returns object" );
+        t.eq( control.displayClass,  "olControlKeyboardDefaults", "displayClass is correct" );
     }
 
     function test_02_Control_KeyboardDefaults_addControl (t) {

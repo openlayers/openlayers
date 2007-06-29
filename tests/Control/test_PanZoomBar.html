@@ -4,10 +4,11 @@
   <script type="text/javascript"><!--
     var map; 
     function test_01_Control_PanZoomBar_constructor (t) {
-        t.plan( 3 );
+        t.plan( 4 );
     
         control = new OpenLayers.Control.PanZoomBar({position: new OpenLayers.Pixel(100,100)});
         t.ok( control instanceof OpenLayers.Control.PanZoomBar, "new OpenLayers.Control.PanZoomBar returns object" );
+        t.eq( control.displayClass,  "olControlPanZoomBar", "displayClass is correct" );
         t.eq( control.position.x, 100, "PanZoom X Set correctly."); 
         t.eq( control.position.y, 100, "PanZoom y Set correctly."); 
     }

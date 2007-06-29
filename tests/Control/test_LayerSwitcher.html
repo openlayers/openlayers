@@ -5,10 +5,11 @@
     var map; 
 
     function test_01_Control_LayerSwitcher_constructor (t) {
-        t.plan( 1 );
+        t.plan( 2 );
     
         control = new OpenLayers.Control.LayerSwitcher();
         t.ok( control instanceof OpenLayers.Control.LayerSwitcher, "new OpenLayers.Control.LayerSwitcher returns object" );
+        t.eq( control.displayClass,  "olControlLayerSwitcher", "displayClass is correct" );
     }
 
     function test_02_Control_LayerSwitcher_draw (t) {

@@ -4,10 +4,11 @@
   <script type="text/javascript"><!--
     var map; 
     function test_01_Control_Scale_constructor (t) {
-        t.plan( 1 );
+        t.plan( 2 );
     
         control = new OpenLayers.Control.Scale();
         t.ok( control instanceof OpenLayers.Control.Scale, "new OpenLayers.Control returns object" );
+        t.eq( control.displayClass,  "olControlScale", "displayClass is correct" );
     }
     function test_02_Control_Scale_updateScale (t) {
         t.plan( 4 );
