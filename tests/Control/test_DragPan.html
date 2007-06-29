@@ -1,0 +1,19 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var map; 
+    function test_Control_DragPan_constructor (t) {
+        t.plan( 1 );
+    
+        control = new OpenLayers.Control.DragPan();
+        t.ok( control instanceof OpenLayers.Control.DragPan, "new OpenLayers.Control returns object" );
+    }
+  // -->
+  </script>
+</head>
+<body>
+    <a id="scale" href="">DragPan</a> <br />
+    <div id="map" style="width: 1024px; height: 512px;"/>
+</body>
+</html>
