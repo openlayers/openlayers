@@ -39,7 +39,7 @@
     }
 
     function test_50_Layer_Image_tileTests (t) {
-        t.plan(9);
+        t.plan(6);
         var map = new OpenLayers.Map('map');
         
         layer = new OpenLayers.Layer.Image('Test Layer', 
@@ -49,9 +49,6 @@
 
         map.addLayer(layer);
         map.zoomToMaxExtent();
-        t.ok(layer.imageSize, "layer.imageSize is set");
-        t.ok(layer.tileSize, "layer.tileSize is set");
-        t.ok(layer.tileSize.equals(layer.imageSize), "tileSize equals imageSize");
 
         // no resolution info was sent, so maxResolution should be calculated
         // by aspectRatio*extent/size (this is the pixel aspect ratio)
