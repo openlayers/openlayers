@@ -10,11 +10,14 @@
     var url = "http://octo.metacarta.com/cgi-bin/mapserv";
     var params = { map: '/mapdata/vmap_wms.map', 
                    layers: 'basic', 
-                   format: 'image/png'};
+                   format: 'image/jpeg'};
 
     function test_01_Layer_WMS_constructor (t) {
-        t.plan( 10 );
+        t.plan( 13 );
 
+        var trans_format = "image/png";
+        if (OpenLayers.Util.alphaHack()) { trans_format = "image/gif"; } 
+        
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
         layer = new OpenLayers.Layer.WMS(name, url, params);
         t.ok( layer instanceof OpenLayers.Layer.WMS, "new OpenLayers.Layer.WMS returns object" );
@@ -32,14 +35,17 @@
         params.TRANSPARENT = "TRUE";
         var layer3 = new OpenLayers.Layer.WMS(name, url, params);
         t.eq(layer3.isBaseLayer, false, "transparency == 'TRUE', wms is not baselayer");
+        t.eq(layer3.params.FORMAT, trans_format, "transparent = TRUE causes non-image/jpeg format");
 
         params.TRANSPARENT = "TRuE";
         var layer4 = new OpenLayers.Layer.WMS(name, url, params);
-        t.eq(layer4.isBaseLayer, true, "transparency == 'TRuE', wms is baselayer");
+        t.eq(layer4.isBaseLayer, false, "transparency == 'TRuE', wms is not baselayer");
+        t.eq(layer4.params.FORMAT, trans_format, "transparent = TRuE causes non-image/jpeg format");
 
         params.TRANSPARENT = true;
         var layer5 = new OpenLayers.Layer.WMS(name, url, params);
         t.eq(layer5.isBaseLayer, false, "transparency == true, wms is not baselayer");
+        t.eq(layer5.params.FORMAT, trans_format, "transparent = true causes non-image/jpeg format");
 
         params.TRANSPARENT = false;
         var layer6 = new OpenLayers.Layer.WMS(name, url, params);
