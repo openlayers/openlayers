@@ -9,8 +9,10 @@
     </style>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
+        // making this a global variable so that it is accessible for
+        // debugging/inspecting in Firebug
+        var map = null;
 
-        
         <!--
         function init(){
 
@@ -43,7 +45,7 @@
             }                        
             header.innerHTML += browserName + ")";
 
-            var map = new OpenLayers.Map('map');
+            map = new OpenLayers.Map('map');
 
             var options = { 
                             resolutions: [1.40625,0.703125,0.3515625,0.17578125,0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101]
