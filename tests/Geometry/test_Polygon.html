@@ -106,6 +106,33 @@
         t.eq(polygon.components[1].components[0].y, y2 + dy, "move() correctly modifies second y");
     }
 
+    function test_Polygon_rotate(t) {
+        t.plan(6);
+        
+        var geometry = new OpenLayers.Geometry.Polygon([linearRing, linearRing2]);
+        
+        var originals = [];
+        var comp;
+        var angle = 2 * Math.PI * Math.random();
+        var origin = new OpenLayers.Geometry.Point(10 * Math.random(),
+                                                   10 * Math.random());
+        for(var i=0; i<geometry.components.length; ++i) {
+            comp = geometry.components[i];
+            originals[i] = comp.rotate;
+            comp.rotate = function(a, o) {
+                t.ok(true, "rotate called for component " + i);
+                t.ok(a == angle, "rotate called with correct angle");
+                t.ok(o == origin, "rotate called with correct origin");
+            }
+        }
+        geometry.rotate(angle, origin);
+        
+        // restore the original rotate defs
+        for(var i=0; i<geometry.components.length; ++i) {
+            comp.rotate = originals[i];
+        }
+    }
+
     function test_Polygon_equals(t) {
         t.plan(3);
         

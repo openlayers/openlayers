@@ -79,6 +79,30 @@
         t.eq(point.y, y + dy, "move() correctly modifies y");
     }
 
+    function test_Point_rotate(t) {
+        t.plan(4);
+        
+        var tolerance = 1e-10;
+        var x = 10;
+        var y = 20;
+        var point = new OpenLayers.Geometry.Point(x, y);
+        var origin = new OpenLayers.Geometry.Point(5, 10);
+        
+        // rotate a full revolution
+        point.rotate(2 * Math.PI, origin);
+        t.ok(((point.x - x) / x) < tolerance,
+             "rotate by 2 * Math.PI returns to the same y");
+        t.ok(((point.y - y) / y) < tolerance,
+             "rotate by 2 * Math.PI returns to the same y")
+        
+        // rotate an 1/8 turn
+        point.rotate(Math.PI / 4, origin);
+        t.ok(((point.x - 1.4644660940672636) / 1.4644660940672636) < tolerance,
+             "rotate 1/8 turn correctly");
+        t.ok(((point.y - 20.606601717798213) / 20.606601717798213) < tolerance,
+             "rotate 1/8 turn correctly")
+    }
+
     function test_Point_equals(t) {
         t.plan(3);
         
