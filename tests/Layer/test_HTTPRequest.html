@@ -65,7 +65,7 @@
     }
 
     function test_05_Layer_HTTPRequest_mergeNewParams (t) {
-        t.plan( 3 );
+        t.plan( 4 );
 
         layer = new OpenLayers.Layer.HTTPRequest(name, url, params, options);
         
@@ -80,6 +80,11 @@
         newParams.chickpeas = 151;
 
         t.eq( layer.params.chickpeas, "image/png", "mergeNewParams() makes clean copy of hash");
+        
+        layer.redraw = function() {
+            t.ok(true, "layer.mergeNewParams calls layer.redraw");
+        }
+        layer.mergeNewParams();
 
 
     }
