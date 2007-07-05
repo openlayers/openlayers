@@ -34,7 +34,18 @@ File: OpenLayers  (OpenLayers.js)
 Group: OpenLayers  {
 
    File: Ajax  (no auto-title, OpenLayers/Ajax.js)
-   File: Base Types  (no auto-title, OpenLayers/BaseTypes.js)
+
+   Group: BaseTypes  {
+
+      File: Base Types  (no auto-title, OpenLayers/BaseTypes.js)
+      File: Bounds  (OpenLayers/BaseTypes/Bounds.js)
+      File: Class  (OpenLayers/BaseTypes/Class.js)
+      File: Element  (OpenLayers/BaseTypes/Element.js)
+      File: LonLat  (OpenLayers/BaseTypes/LonLat.js)
+      File: Pixel  (OpenLayers/BaseTypes/Pixel.js)
+      File: Size  (OpenLayers/BaseTypes/Size.js)
+      }  # Group: BaseTypes
+
    File: Console  (no auto-title, OpenLayers/Console.js)
 
    Group: Control  {
