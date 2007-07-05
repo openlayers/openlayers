@@ -165,6 +165,50 @@
 
     }
     
+    function test_Layer_redraw(t) {
+        t.plan(8)
+
+        var name = 'Test Layer';
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        var params = { map: '/mapdata/vmap_wms.map', 
+                       layers: 'basic', 
+                       format: 'image/jpeg'};
+
+        var layer = new OpenLayers.Layer.WMS(name, url, params);
+        
+        t.ok(!layer.redraw(),
+             "redraw on an orphan layer returns false");
+        
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
+
+        t.ok(!layer.redraw(),
+             "redraw returns false if map does not yet have a center");
+        map.zoomToMaxExtent();
+        
+        t.ok(layer.redraw(),
+             "redraw returns true after map has a center");
+        
+        layer.setVisibility(false);
+        t.ok(!layer.redraw(),
+             "redraw returns false if a layer is not visible");
+        
+        layer.setVisibility(true);
+        t.ok(layer.redraw(),
+                "redraw returns true even if extent has not changed");
+        
+        layer.moveTo = function(bounds, zoomChanged, dragging) {
+            var extent = layer.map.getExtent();
+            t.ok(bounds.equals(extent),
+                 "redraw calls moveTo with the map extent");
+            t.ok(zoomChanged,
+                 "redraw calls moveTo with zoomChanged true");
+            t.ok(!dragging,
+                 "redraw calls moveTo with dragging false");
+        }
+        layer.redraw();
+        
+    }
     
 /******
  * 
