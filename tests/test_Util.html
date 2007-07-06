@@ -30,16 +30,12 @@
     }
 
     function test_03_Util_Array(t) {
-        t.plan( 2 );
+        t.plan( 1 );
 
         var array = new Array(1,2,3,4,5);
 
         OpenLayers.Util.removeItem(array, 3);
         t.eq( array.toString(), "1,2,4,5", "Util.removeItem works");    
-
-        OpenLayers.Util.clearArray(array);
-        t.eq( array.toString(), "", "Util.clearArray works");    
-        
     }
 
     function test_04_Util_createDiv(t) {
