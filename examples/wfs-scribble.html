@@ -56,8 +56,8 @@
             var xmls = new XMLSerializer();
             var serialize = new OpenLayers.Format[type]({},map.layers[1]);
             var data = serialize.write(map.layers[1].features);
-            $('serialize').value = xmls.serializeToString(data);
-            $('serialize').style.display='block';
+            OpenLayers.Util.getElement('serialize').value = xmls.serializeToString(data);
+            OpenLayers.Util.getElement('serialize').style.display='block';
         }
     </script>
   </head>

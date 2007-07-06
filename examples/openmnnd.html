@@ -34,7 +34,7 @@
             wfs.preFeatureInsert= function(feature) { feature.style.strokeWidth="3"; feature.style.strokeColor="blue";  
             }
             wfs.onFeatureInsert = function() {
-              $('stream_features').innerHTML = feature.layer.features.length;
+              OpenLayers.Util.getElement('stream_features').innerHTML = feature.layer.features.length;
             }  
             map.addLayer(wfs);
             
@@ -52,7 +52,7 @@
               });
             
             pwfs.onFeatureInsert= function(feature) { 
-              $('plat_features').innerHTML = feature.layer.features.length;
+              OpenLayers.Util.getElement('plat_features').innerHTML = feature.layer.features.length;
             }
             map.addLayer(pwfs); 
             
@@ -62,15 +62,15 @@
               {ratio:1.25, minZoomLevel:7, extractAttributes: true, style:rstyle});
             
             rwfs.onFeatureInsert= function(feature) {  
-              $('road_features').innerHTML = feature.layer.features.length; 
+              OpenLayers.Util.getElement('road_features').innerHTML = feature.layer.features.length; 
             }
             
             map.addLayer(rwfs); 
             
             map.events.register('moveend', null, function() { 
-                $('stream_features').innerHTML = "0";
-                $('road_features').innerHTML = "0";
-                $('plat_features').innerHTML = "0";
+                OpenLayers.Util.getElement('stream_features').innerHTML = "0";
+                OpenLayers.Util.getElement('road_features').innerHTML = "0";
+                OpenLayers.Util.getElement('plat_features').innerHTML = "0";
             });    
 
             var ls = new OpenLayers.Control.LayerSwitcher();
@@ -113,7 +113,7 @@
             for(var i in feature.attributes)
                html += "<li><b>" + i + "</b>: "+  feature.attributes[i] + "</li>";
             html += "</ul>";
-            $('feature_info').innerHTML = html;
+            OpenLayers.Util.getElement('feature_info').innerHTML = html;
         }
         // -->
     </script>
