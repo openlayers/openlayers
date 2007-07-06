@@ -133,6 +133,46 @@
         }
     }
 
+    function test_Polygon_resize(t) {
+        t.plan(8);
+        
+        var tolerance = 1e-10;
+        var geometry = new OpenLayers.Geometry.Polygon([linearRing, linearRing2]);
+        var origin = new OpenLayers.Geometry.Point(10 * Math.random(),
+                                                   10 * Math.random());
+        var scale = 10 * Math.random();
+        
+        var oldArea = geometry.getArea();
+        var oldPerimeter = geometry.getLength();
+        geometry.resize(scale, origin);
+        var newArea = geometry.getArea();
+        var newPerimeter = geometry.getLength();
+        
+        t.ok((((newArea / oldArea) - (scale * scale)) / (scale * scale)) < tolerance,
+             "resize correctly changes the area of a polygon")
+        t.ok((((newPerimeter / oldPerimeter) - scale) / scale) < tolerance,
+             "resize correctly changes the perimeter of a polygon")
+
+        var originals = [];
+        var comp;
+        for(var i=0; i<geometry.components.length; ++i) {
+            comp = geometry.components[i];
+            originals[i] = comp.resize;
+            comp.resize = function(s, o) {
+                t.ok(true, "resize called for component " + i);
+                t.ok(s == scale, "resize called with correct scale");
+                t.ok(o == origin, "resize called with correct origin");
+            }
+        }
+        geometry.resize(scale, origin);
+        
+        // restore the original resize defs
+        for(var i=0; i<geometry.components.length; ++i) {
+            comp.resize = originals[i];
+        }
+        
+    }
+
     function test_Polygon_equals(t) {
         t.plan(3);
         

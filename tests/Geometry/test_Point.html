@@ -103,6 +103,30 @@
              "rotate 1/8 turn correctly")
     }
 
+    function test_Point_resize(t) {
+        t.plan(2);
+        
+        var tolerance = 1e-10;
+        var x = 100 * Math.random();
+        var y = 100 * Math.random();
+        var point = new OpenLayers.Geometry.Point(x, y);
+        
+        var i = 100 * Math.random();
+        var j = 100 * Math.random();
+        var origin = new OpenLayers.Geometry.Point(i, j);
+        
+        var scale = 10 * Math.random();
+        var oldDistance = origin.distanceTo(point);
+        
+        point.resize(scale, origin);
+        var newDistance = origin.distanceTo(point);
+        
+        t.ok((origin.x == i) && (origin.y == j),
+             "resize leaves the origin untouched");
+        t.ok((((newDistance / oldDistance) - scale) / scale) < tolerance,
+             "resize moves points the correct distance from the origin")        
+    }
+
     function test_Point_equals(t) {
         t.plan(3);
         

@@ -106,6 +106,48 @@
         }
     }
 
+    function test_LineString_resize(t) {
+        t.plan(7);
+        
+        var tolerance = 1e-10;
+
+        var components = [new OpenLayers.Geometry.Point(10 * Math.random(),
+                                                        10 * Math.random()), 
+                          new OpenLayers.Geometry.Point(10 * Math.random(),
+                                                        10 * Math.random())];
+        var geometry = new OpenLayers.Geometry.LineString(components);
+
+        var origin = new OpenLayers.Geometry.Point(10 * Math.random(),
+                                                   10 * Math.random());
+        
+        var scale = 10 * Math.random();
+        
+        var oldLength = geometry.getLength();
+        geometry.resize(scale, origin);
+        var newLength = geometry.getLength();
+        t.ok((((newLength / oldLength) - scale) / scale) < tolerance,
+             "resize correctly changes the length of a linestring")
+
+        var originals = [];
+        var comp;
+        for(var i=0; i<geometry.components.length; ++i) {
+            comp = geometry.components[i];
+            originals[i] = comp.resize;
+            comp.resize = function(s, o) {
+                t.ok(true, "resize called for component " + i);
+                t.ok(s == scale, "resize called with correct scale");
+                t.ok(o == origin, "resize called with correct origin");
+            }
+        }
+        geometry.resize(scale, origin);
+        
+        // restore the original resize defs
+        for(var i=0; i<geometry.components.length; ++i) {
+            comp.resize = originals[i];
+        }
+        
+    }
+    
     function test_LineString_equals(t) {
         t.plan(3);
         
