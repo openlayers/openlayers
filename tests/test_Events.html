@@ -304,6 +304,33 @@
         
     }
 
+    function test_06_Events_addEventType(t) {
+
+        t.plan( 6 );
+ 
+        var mapDiv = OpenLayers.Util.getElement('map');
+        var obj = {result: 0};
+        var eventTypes = ["doThingA", "doThingB"];
+
+        events = new OpenLayers.Events(obj, mapDiv, eventTypes);
+
+
+        t.eq( events.listeners["doThingA"].length, 0, "event type passed as passed as param to OpenLayers.Events constructor correctly set up" );
+        t.eq( events.listeners["doThingB"].length, 0, "event type passed as passed as param to OpenLayers.Events constructor correctly set up" );
+
+        var newEventType = "onFoo";
+        t.ok( events.listeners[newEventType] == null, "event type not yet registered has null entry in listeners array");
+
+        events.addEventType(newEventType);
+        t.eq( events.listeners[newEventType].length, 0, "event type passed to addEventType correctly set up" );
+        
+        var func = function () {};
+        events.register( "doThingA", obj, func );
+        t.eq( events.listeners["doThingA"].length, 1, "listener correctly registered" );
+
+        events.addEventType("doThingsA");
+        t.eq( events.listeners["doThingA"].length, 1, "event type passed to addEventType correctly does nothing if clashes with already defined event type" );
+    }
 
    
   // -->
