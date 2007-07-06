@@ -1,5 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <title>OpenLayers Rotate Features Example</title>
     <style type="text/css">
         #map {
             width: 500px;
@@ -35,7 +36,7 @@
             var vectorLayer = new OpenLayers.Layer.Vector("Simple Geometry");
             
             // create a point feature
-            var point = new OpenLayers.Geometry.Point(-111.04, 45.68);
+            var point = new OpenLayers.Geometry.Point(-110, 45);
             pointFeature = new OpenLayers.Feature.Vector(point, null, style_blue);
             
             // create a line feature from a list of points
@@ -70,7 +71,16 @@
             vectorLayer.addFeatures([pointFeature, lineFeature, polygonFeature]);
             
             // start rotating
-            var origin = new OpenLayers.Geometry.Point(-110, 45);
+            var origin = new OpenLayers.Geometry.Point(-111.04, 45.68);
+            var style = {
+                strokeColor: "#666666",
+                strokeOpacity: 1,
+                strokeWidth: 1,
+                pointRadius: 2,
+                pointerEvents: "visiblePainted"
+            };
+            var center = new OpenLayers.Feature.Vector(origin, null, style);
+            vectorLayer.addFeatures([center]);
             window.setInterval(rotateFeature, 100,
                                pointFeature, Math.PI / 10, origin);
             window.setInterval(rotateFeature, 100,
