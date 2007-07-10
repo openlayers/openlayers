@@ -4,12 +4,10 @@
   <script type="text/javascript"><!--
     function test_Handler_Drag_constructor(t) {
         t.plan(3);
-        var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
         control.id = Math.random();
         var callbacks = {foo: "bar"};
         var options = {bar: "foo"};
-        map.addControl(control);
         OpenLayers.Handler.prototype.initialize = function(con, call, opt) {
             t.eq(con.id, control.id,
                  "constructor calls parent with the correct control");
@@ -20,6 +18,46 @@
         }
         var drag = new OpenLayers.Handler.Drag(control, callbacks, options);
     }
+
+    function test_Handler_Drag_activate(t) {
+        t.plan(3);
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var drag = new OpenLayers.Handler.Drag(control);
+        drag.active = true;
+        var activated = drag.activate();
+        t.ok(!activated,
+             "activate returns false if the handler was already active");
+        drag.active = false;
+        drag.dragging = true;
+        activated = drag.activate();
+        t.ok(activated,
+             "activate returns true if the handler was not already active");
+        t.ok(!drag.dragging,
+             "activate sets dragging to false");
+        
+    }
+
+    function test_Handler_Drag_deactivate(t) {
+        t.plan(3);
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var drag = new OpenLayers.Handler.Drag(control);
+        drag.active = false;
+        var deactivated = drag.deactivate();
+        t.ok(!deactivated,
+             "deactivate returns false if the handler was not already active");
+        drag.active = true;
+        drag.dragging = true;
+        deactivated = drag.deactivate();
+        t.ok(deactivated,
+             "deactivate returns true if the handler was active already");
+        t.ok(!drag.dragging,
+             "deactivate sets dragging to false");
+    }
+
   // -->
   </script>
 </head>
