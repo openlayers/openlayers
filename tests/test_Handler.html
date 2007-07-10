@@ -22,20 +22,87 @@
     }
     
     function test_Handler_activate(t) {
-        t.plan(1);
+        t.plan(42);
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
         map.addControl(control);
     
-        var callbacks = {foo: "bar"};
-        var handler = new OpenLayers.Handler(control, callbacks);
+        var events = ["mouseover", "mouseout", "mousedown",
+                      "mouseup", "mousemove", "click",
+                      "dblclick", "resize", "focus", "blur"];
+
+        var handler = new OpenLayers.Handler(control);
         handler.active = true;
-        t.ok(!handler.activate(),
+        var activated = handler.activate();
+        t.ok(!activated,
              "activate returns false if the handler is already active");
+
         handler.active = false;
+        map.events.registerPriority = function(type, obj, func) {
+            t.ok(OpenLayers.Util.indexOf(events, type) > -1,
+                 "activate calls registerPriority with browser event: " + type);
+            t.eq(typeof func, "function",
+                 "activate calls registerPriority with a function");
+            t.eq(func(), type,
+                 "activate calls registerPriority with the correct method");
+            t.eq(obj["CLASS_NAME"], "OpenLayers.Handler",
+                 "activate calls registerPriority with the handler");
+        }
+        
+        // set browser event like properties on the handler
+        for(var i=0; i<events.length; ++i) {
+            setMethod(events[i]);
+        }
+        function setMethod(key) {
+            handler[key] = function() {return key};
+        }
+        activated = handler.activate();
+        t.ok(activated,
+             "activated returns true if the handler is not already active");
         
     }
     
+    function test_Handler_deactivate(t) {
+        t.plan(42);
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+    
+        var events = ["mouseover", "mouseout", "mousedown",
+                      "mouseup", "mousemove", "click",
+                      "dblclick", "resize", "focus", "blur"];
+
+        var handler = new OpenLayers.Handler(control);
+        handler.active = false;
+        var deactivated = handler.deactivate();
+        t.ok(!deactivated,
+             "deactivate returns false if the handler is already deactive");
+
+        handler.activate();
+        map.events.unregister = function(type, obj, func) {
+            t.ok(OpenLayers.Util.indexOf(events, type) > -1,
+                 "deactivate calls unregister with browser event: " + type);
+            t.eq(typeof func, "function",
+                 "activate calls unregister with a function");
+            t.eq(func(), type,
+                 "activate calls unregister with the correct method");
+            t.eq(obj["CLASS_NAME"], "OpenLayers.Handler",
+                 "activate calls unregister with the handler");
+        }
+        
+        // set browser event like properties on the handler
+        for(var i=0; i<events.length; ++i) {
+            setMethod(events[i]);
+        }
+        function setMethod(key) {
+            handler[key] = function() {return key};
+        }
+        deactivated = handler.deactivate();
+        t.ok(deactivated,
+             "deactivated returns true if the handler is already active");
+        
+    }
+
   // -->
   </script>
 </head>
