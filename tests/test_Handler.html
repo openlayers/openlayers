@@ -1,0 +1,45 @@
+<html>
+<head>
+  <script src="../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    function test_Handler_constructor(t) {
+        t.plan(4);
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+    
+        var callbacks = {foo: "bar"};
+        var options = {bar: "foo"};
+        var handler = new OpenLayers.Handler(control, callbacks, options);
+        t.ok(handler instanceof OpenLayers.Handler,
+             "new OpenLayers.Handler returns object");
+        t.eq(handler.map.id, map.id,
+             "constructing a handler with a map sets the map on the handler");
+        t.eq(handler.callbacks.foo, callbacks.foo,
+             "constructor correctly sets callbacks");
+        t.eq(handler.bar, options.bar,
+             "constructor correctly extends handler with options");
+    }
+    
+    function test_Handler_activate(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+    
+        var callbacks = {foo: "bar"};
+        var handler = new OpenLayers.Handler(control, callbacks);
+        handler.active = true;
+        t.ok(!handler.activate(),
+             "activate returns false if the handler is already active");
+        handler.active = false;
+        
+    }
+    
+  // -->
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 1024px; height: 512px;"/>
+</body>
+</html>
