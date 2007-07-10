@@ -209,7 +209,57 @@
         layer.redraw();
         
     }
-    
+      
+      
+    function test_08_layer_setTileSize(t) {
+        t.plan(6);
+
+        layer = new OpenLayers.Layer();
+        
+        g_MapTileSize = new OpenLayers.Size(25,67);        
+        layer.map = {
+            getTileSize: function() {
+                return g_MapTileSize;
+            }
+        };
+
+        var layerTileSize = new OpenLayers.Size(1,1);
+
+    //TILE SIZE
+        layer.tileSize = layerTileSize;
+      
+      //parameter
+        var size = new OpenLayers.Size(2,2);
+        layer.setTileSize(size);
+        t.ok(layer.tileSize.equals(size), "size paramater set correctly to layer's tile size");
+        t.ok(layer.imageOffset == null, "imageOffset and imageSize null when no gutters")
+      
+      //set on layer
+        layer.tileSize = layerTileSize;
+        layer.setTileSize();
+        t.ok(layer.tileSize.equals(layerTileSize), "layer's tileSize property preserved if no parameter sent in");
+      
+      //take it from map
+        layer.tileSize = null;
+        layer.setTileSize();
+        t.ok(layer.tileSize.equals(g_MapTileSize), "layer's tileSize property is null and so correctly taken from the map");
+        
+        
+
+    //GUTTERS
+        layer.gutter = 15;
+        size = new OpenLayers.Size(10,100);
+        layer.setTileSize(size);
+
+        var desiredImageOffset = new OpenLayers.Pixel(-15, -15); 
+        var desiredImageSize = new OpenLayers.Size(40, 130); 
+
+        t.ok(layer.imageOffset.equals(desiredImageOffset), "image offset correctly calculated");
+        t.ok(layer.imageSize.equals(desiredImageSize), "image size correctly calculated");
+    }
+
+
+
 /******
  * 
  * 
