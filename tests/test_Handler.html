@@ -92,15 +92,32 @@
         
         // set browser event like properties on the handler
         for(var i=0; i<events.length; ++i) {
-            setMethod(events[i]);
-        }
-        function setMethod(key) {
-            handler[key] = function() {return key};
+            // add in a closure for key
+            (function(key) {
+                handler[key] = function() {return key};
+            })(events[i]);
         }
         deactivated = handler.deactivate();
         t.ok(deactivated,
              "deactivated returns true if the handler is already active");
         
+    }
+    
+    function test_Handler_destroy(t) {
+        t.plan(4);
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var handler = new OpenLayers.Handler(control);
+        t.ok(handler.control,
+             "handler has a control prior to destroy");
+        t.ok(handler.map,
+             "handler has a map prior to destroy");
+        handler.destroy();
+        t.eq(handler.control, null,
+             "hanlder.control is null after destroy");
+        t.eq(handler.map, null,
+             "handler.map is null after destroy");
     }
 
   // -->
