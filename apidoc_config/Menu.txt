@@ -119,6 +119,7 @@ Group: OpenLayers  {
       File: Path  (no auto-title, OpenLayers/Handler/Path.js)
       File: Point  (no auto-title, OpenLayers/Handler/Point.js)
       File: Polygon  (OpenLayers/Handler/Polygon.js)
+      File: RegularPolygon  (OpenLayers/Handler/RegularPolygon.js)
       }  # Group: Handler
 
    File: Icon  (no auto-title, OpenLayers/Icon.js)
