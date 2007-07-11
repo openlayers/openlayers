@@ -121,31 +121,31 @@
     }
     
     function test_Handler_checkModifiers(t) {
-        t.plan(17);
+        t.plan(26);
         var handler = new OpenLayers.Handler({});
         handler.keyMask = null;
         var proceed = handler.checkModifiers({});
         t.ok(proceed,
              "checkModifiers returns true if no keyMask on the handler");
         
+        
+        /**
+         * Test checkModifiers for single keyMask values.  The method should
+         *     return true if the corresponding key is associated with the
+         *     event.  For example, if evt.shiftKey is true and handler.keyMask
+         *     is OpenLayers.Handler.MOD_SHIFT, checkModifiers should return
+         *     true.
+         */
         var constants = {
             MOD_NONE: null,
             MOD_SHIFT: "shiftKey",
             MOD_CTRL: "ctrlKey",
             MOD_ALT: "altKey"
         }
-        
-        /**
-         * Test checkModifiers for single keyMask values.  The method should
-         *     return false if the corresponding key is associated with the
-         *     event.  For example, if evt.shiftKey is true and handler.keyMask
-         *     is OpenLayers.Handler.MOD_SHIFT, checkModifiers should return
-         *     true.
-         */
         var proceed, evt, value, c, k;
         for(c in constants) {
             handler.keyMask = OpenLayers.Handler[c];
-            // for this key mask, we want to test all single key possibilities
+            // for this key mask, test all single key possibilities
             for(k in constants) {
                 value = constants[k];
                 evt = {};
@@ -158,6 +158,43 @@
                 t.eq(k == c, proceed,
                      "returns " + proceed + " if keyMask is " + c +
                      " and " + ((value) ? value : "no key") + " is down");
+            }
+        }
+
+        /**
+         * Test checkModifiers for double keyMask values.  The method should
+         *     return true if the corresponding key combo is associated with the
+         *     event.  For example, if evt.shiftKey is true and handler.keyMask
+         *     is OpenLayers.Handler.MOD_SHIFT, checkModifiers should return
+         *     true.
+         */
+        var constants = ["MOD_SHIFT", "MOD_CTRL", "MOD_ALT"];
+        var keys = ["shiftKey", "ctrlKey", "altKey"];
+        var proceed, evt, c1, c2, k1, k2;
+        for(var i=0; i<constants.length-1; ++i) {
+            c1 = constants[i];
+            for(var j=i+1; j<constants.length; ++j) {
+                c2 = constants[j];
+                handler.keyMask = OpenLayers.Handler[c1] |
+                                  OpenLayers.Handler[c2];
+                // for this key mask, test all double key possibilities
+                for(var x=0; x<keys.length-1; ++x) {
+                    k1 = keys[x];
+                    for(var y=x+1; y<keys.length; ++y) {
+                        k2 = keys[y];
+                        evt = {};
+                        evt[k1] = true;
+                        evt[k2] = true;
+                        proceed = handler.checkModifiers(evt);
+                        // if the combo matches, proceed should be true
+                        // at this point we know that i != j and x != y
+                        t.eq(((i == x) || (i == y)) &&
+                             ((j == x) || (j == y)),
+                             proceed,
+                             "returns " + proceed + " if " + c1 + " | " + c2 +
+                             " and " + k1 + " + " + k2 + " is down");
+                    }
+                }
             }
         }
             
