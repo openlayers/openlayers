@@ -8,6 +8,10 @@
         control.id = Math.random();
         var callbacks = {foo: "bar"};
         var options = {bar: "foo"};
+        
+        OpenLayers.Handler.prototype._initialize = 
+            OpenLayers.Handler.prototype.initialize;
+        
         OpenLayers.Handler.prototype.initialize = function(con, call, opt) {
             t.eq(con.id, control.id,
                  "constructor calls parent with the correct control");
@@ -17,6 +21,10 @@
                  "constructor calls parent with the correct options");
         }
         var drag = new OpenLayers.Handler.Drag(control, callbacks, options);
+
+        OpenLayers.Handler.prototype.initialize = 
+            OpenLayers.Handler.prototype._initialize;
+
     }
 
     function test_Handler_Drag_activate(t) {
