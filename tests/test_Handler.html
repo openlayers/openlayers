@@ -119,6 +119,49 @@
         t.eq(handler.map, null,
              "handler.map is null after destroy");
     }
+    
+    function test_Handler_checkModifiers(t) {
+        t.plan(17);
+        var handler = new OpenLayers.Handler({});
+        handler.keyMask = null;
+        var proceed = handler.checkModifiers({});
+        t.ok(proceed,
+             "checkModifiers returns true if no keyMask on the handler");
+        
+        var constants = {
+            MOD_NONE: null,
+            MOD_SHIFT: "shiftKey",
+            MOD_CTRL: "ctrlKey",
+            MOD_ALT: "altKey"
+        }
+        
+        /**
+         * Test checkModifiers for single keyMask values.  The method should
+         *     return false if the corresponding key is associated with the
+         *     event.  For example, if evt.shiftKey is true and handler.keyMask
+         *     is OpenLayers.Handler.MOD_SHIFT, checkModifiers should return
+         *     true.
+         */
+        var proceed, evt, value, c, k;
+        for(c in constants) {
+            handler.keyMask = OpenLayers.Handler[c];
+            // for this key mask, we want to test all single key possibilities
+            for(k in constants) {
+                value = constants[k];
+                evt = {};
+                if(value) {
+                    // mimic a key down on an event
+                    evt[value] = true;
+                }
+                proceed = handler.checkModifiers(evt);
+                // if k == c, proceed should be true - false otherwise
+                t.eq(k == c, proceed,
+                     "returns " + proceed + " if keyMask is " + c +
+                     " and " + ((value) ? value : "no key") + " is down");
+            }
+        }
+            
+    }
 
   // -->
   </script>
