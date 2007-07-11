@@ -9,8 +9,7 @@
         var callbacks = {foo: "bar"};
         var options = {bar: "foo"};
         
-        OpenLayers.Handler.prototype._initialize = 
-            OpenLayers.Handler.prototype.initialize;
+        var oldInit = OpenLayers.Handler.prototype.initialize;
         
         OpenLayers.Handler.prototype.initialize = function(con, call, opt) {
             t.eq(con.id, control.id,
@@ -22,9 +21,7 @@
         }
         var drag = new OpenLayers.Handler.Drag(control, callbacks, options);
 
-        OpenLayers.Handler.prototype.initialize = 
-            OpenLayers.Handler.prototype._initialize;
-
+        OpenLayers.Handler.prototype.initialize = oldInit;
     }
 
     function test_Handler_Drag_activate(t) {
