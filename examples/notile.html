@@ -17,7 +17,7 @@
                 "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'} );
             old_ol_wms.addOptions({isBaseLayer: true});
             
-            var new_ol_wms = new OpenLayers.Layer.WMS.Untiled( "WMS w/singleTile", 
+            var new_ol_wms = new OpenLayers.Layer.WMS( "WMS w/singleTile", 
                 "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}, 
                 { singleTile: true, ratio: 1 } );
             new_ol_wms.addOptions({isBaseLayer: true});
