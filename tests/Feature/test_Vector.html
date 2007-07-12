@@ -5,12 +5,22 @@
     var map; 
     var feature; 
     
-    function test_01_Feature_Vector_constructor (t) {
-        t.plan( 1 );
+    function test_Feature_Vector_constructor(t) {
+        t.plan(3);
+        
+        var geometry = new OpenLayers.Geometry();
+        geometry.id = Math.random();
+        var style = {foo: "bar"};
+        var attributes = {bar: "foo"};
 
-        feature = new OpenLayers.Feature.Vector();
+        feature = new OpenLayers.Feature.Vector(geometry, attributes, style);
 
-        t.ok( feature instanceof OpenLayers.Feature.Vector, "new OpenLayers.Feature.Vector returns Feature.Vector object" );
+        t.ok(feature instanceof OpenLayers.Feature.Vector,
+             "new OpenLayers.Feature.Vector returns Feature.Vector object" );
+        t.eq(feature.attributes, attributes,
+             "attributes property set properly" );
+        t.eq(feature.geometry.id, geometry.id,
+             "geometry.property set properly" );
     }
     
 
