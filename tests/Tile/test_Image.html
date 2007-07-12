@@ -25,7 +25,7 @@
         t.ok( tile.size.equals(size), "tile.size is set correctly");
     }
     function test_02_Tile_Image_draw (t) {
-        t.plan( 5 );
+        t.plan( 7 );
 
         var map = new OpenLayers.Map('map');
         
@@ -40,7 +40,16 @@
         var url = "http://www.openlayers.org/dev/tests/tileimage";
         tile = new OpenLayers.Tile.Image(layer, position, bounds, url, size);
         
+        tile.events.register("loadstart", this, function() { 
+            t.ok(true, "loadstart triggered");
+        });
+        tile.events.register("reload", this, function() { 
+            t.ok(true, "reload triggered");
+        });
+                
+        //this should trigger a "loadstart" event
         tile.draw();
+        
         var img = tile.imgDiv;
         
         if (!isMozilla)
@@ -63,6 +72,11 @@
              "tile.draw creates an image");
         t.eq( tile.imgDiv.style.width, "5px", "Image width is correct" );
         t.eq( tile.imgDiv.style.height, "6px", "Image height is correct" );
+
+        // this should trigger a "reload" event (since the image never actually
+        // loads in tests)
+        tile.draw();
+        
     }
     function test_03_Tile_Image_OutsideMaxExtent(t) {
         t.plan( 11 );

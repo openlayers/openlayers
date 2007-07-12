@@ -23,10 +23,15 @@
 
 
     function test_01_Layer_Grid_constructor (t) {
-        t.plan( 1 );
+        t.plan( 5 );
                        
         layer = new OpenLayers.Layer.Grid(name, url, params, null);
         t.ok( layer instanceof OpenLayers.Layer.Grid, "returns OpenLayers.Layer.Grid object" );
+        t.eq( layer.buffer, 2, "buffer default is 2");
+        t.eq( layer.ratio, 1.5, "ratio default is 1.5");
+        t.eq( layer.numLoadingTiles, 0, "numLoadingTiles starts at 0");
+        t.ok( layer.events.listeners["tileloaded"] != null, "'tileloaded' event added to layer's event types");
+        
     }
 
 
@@ -42,40 +47,80 @@
     }
 
     function test_03_Layer_Grid_clearTiles (t) {
-        t.plan(1);
+        t.plan(3);
+
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS(name, url, params);
         map.addLayer(layer);
 
         map.setCenter(new OpenLayers.LonLat(0,0));
 
+        var numTiles = layer.grid.length * layer.grid[0].length;
 
-        //grab a reference to one of the tiles
-        var tile = layer.grid[0][0];        
+        //our count of how many times tile.destroy() is called
+        tilesDeleted = 0;
+        
+        //this will get set to false if we try to destroy a tile that has 
+        // not been unhookedv
+        allTilesUnhooked = true;
+        
+        OpenLayers.Tile.Image.prototype._destroy =
+            OpenLayers.Tile.Image.prototype.destroy;
+
+        OpenLayers.Tile.Image.prototype.destroy = function() {
+            if (!this.unhooked) {
+                allTilesUnhooked = false;
+            }
+            tilesDeleted++;
+        }
+
+        layer.removeTileMonitoringHooks = function(tile) {
+            tile.unhooked = true;            
+        }
 
         layer.clearGrid();
 
         t.ok( layer.grid != null, "layer.grid does not get nullified" );
+        t.eq(tilesDeleted, numTiles, "all tiles destroy()ed properly");
+        t.ok(allTilesUnhooked, "all tiles unhooked before being destroyed");
+
+        OpenLayers.Tile.Image.prototype.destroy =
+            OpenLayers.Tile.Image.prototype._destroy;
+        
     }
 
 
-    function test_04_Layer_Grid_getGridBounds(t) {
-        t.plan( 1 );
+    function test_04_Layer_Grid_getTilesBounds(t) {
+        t.plan( 3 );
 
         layer = new OpenLayers.Layer.WMS(name, url, params);
 
+
+    //normal grid
         var bl = { bounds: new OpenLayers.Bounds(1,2,0,0)};
         var tr = { bounds: new OpenLayers.Bounds(0,0,3,4)};
         layer.grid = [ [6, tr], 
                        [bl, 7]];
 
-        var bounds = layer.getGridBounds();
-    
+        var bounds = layer.getTilesBounds();
         var testBounds = new OpenLayers.Bounds(1,2,3,4);
         
-        t.ok( bounds.equals(testBounds), "getGridBounds() returns correct bounds")
+        t.ok( bounds.equals(testBounds), "getTilesBounds() returns correct bounds");
 
-        layer.grid = null;
+    //no tiles
+        layer.grid = new Array();
+        bounds = layer.getTilesBounds();
+        
+        t.ok(bounds == null, "getTilesBounds() on a tile-less grid returns null");
+        
+
+    //singleTile
+        var singleTile = { bounds: new OpenLayers.Bounds(1,2,3,4)};
+        layer.grid = [ [ singleTile ] ];
+        bounds = layer.getTilesBounds();
+        
+        t.ok( bounds.equals(testBounds), "getTilesBounds() returns correct bounds");
+        
     }
 
     function test_05_Layer_Grid_getResolution(t) {
@@ -108,16 +153,155 @@
 
         t.eq( zoom, 2, "getZoomForExtent() returns correct value");
     }   
+    
+    function test_07_Layer_Grid_moveTo(t) {
 
+    t.plan(13);
+
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.WMS(name, url, params);
+        layer.destroy = function() {}; //we're going to do funky things with the grid
+        map.addLayer(layer);
+
+    //make sure null bounds doesnt cause script error. 
+    // no test necessary, just action
+        map.getExtent = function() { return null; }
+        layer.singleTile = false;
+        layer.moveTo(); //checks to make sure null bounds doesnt break us
+  
+
+
+      //observing globals
+        layer.initSingleTile = function(bounds) {
+            g_WhichFunc = "InitSingle";
+            g_Bounds = bounds;
+        };
+        layer.initGriddedTiles = function(bounds) {
+            g_WhichFunc = "InitGridded";
+            g_Bounds = bounds;
+        };
+        layer.moveGriddedTiles = function(bounds) {
+            g_WhichFunc = "MoveGridded";
+            g_Bounds = bounds;
+        };
+        var clearTestBounds = function() {
+            g_WhichFunc = null;
+            g_Bounds = null;
+        };
+
+      //default map extent (tested every time below)
+        b = new OpenLayers.Bounds(0,0,100,100);        
+        map.getExtent = function() {
+            return b;
+        };
+        var tilesBounds = null;
+        layer.getTilesBounds = function() {
+            return tilesBounds;
+        }
+
+
+//FORCE
+
+    //empty grid
+        layer.grid = new Array();
+       //grid
+        clearTestBounds();
+        layer.singleTile = false;
+        layer.moveTo()        
+        t.ok(g_Bounds.equals(b), "if grid is empty, initGridded called");
+        
+       //singletile
+        clearTestBounds();
+        layer.singleTile = true;
+        layer.moveTo()        
+        t.ok(g_Bounds.equals(b), "if grid is empty, initSingleTile called");
+
+    //zoomChanged
+        zoomChanged = true;
+        layer.grid = [ [ {} ] ];
+
+       //grid
+        clearTestBounds();
+        layer.singleTile = false;
+        layer.moveTo(null, zoomChanged);        
+        t.ok(g_Bounds.equals(b), "if layer has grid but zoomChanged is called, initGridded called");
+        
+       //singletile
+        clearTestBounds();
+        layer.singleTile = true;
+        layer.moveTo(null, zoomChanged);
+        t.ok(g_Bounds.equals(b), "if layer has grid but zoomChanged is called, initSingleTile called");
+
+
+        layer.getTilesBounds = function() {
+            return tilesBounds;
+        }
+        
+        
+
+//NO FORCE
+        zoomChanged = false;
+        layer.grid = [ [ {} ] ];
+ 
+   //single tile
+        layer.singleTile = true; 
+        
+      //DRAGGING   
+        var dragging = true;
+            
+        //in bounds
+        clearTestBounds();
+        tilesBounds = new OpenLayers.Bounds(-10,-10,110,110);
+        layer.moveTo(null, zoomChanged, dragging);
+        t.ok(g_Bounds == null, "if dragging and tile in bounds, no init()");
+        
+        //out bounds
+        clearTestBounds();
+        tilesBounds = new OpenLayers.Bounds(10,10,120,120);
+        layer.moveTo(null, zoomChanged, dragging);
+        t.ok(g_Bounds == null, "if dragging and tile out of bounds, no init()");
+
+      //NOT DRAGGING
+        dragging = false;
+
+        //in bounds
+        clearTestBounds();
+        tilesBounds = new OpenLayers.Bounds(-10,-10,110,110);
+        layer.moveTo(null, zoomChanged, dragging);
+        t.ok(g_Bounds == null, "if dragging and tile in bounds, no init()");
+        
+        //out bounds
+        clearTestBounds();
+        tilesBounds = new OpenLayers.Bounds(10,10,120,120);
+        layer.moveTo(null, zoomChanged, dragging);
+        t.ok(g_WhichFunc == "InitSingle", "if not dragging and tile out of bounds, we call initSingleTile()");
+        t.ok(g_Bounds.equals(b), "if not dragging and tile out of bounds, we call initSingleTile() with correct bounds");
+
+  
+   //gridded
+        layer.grid = [ [ {} ] ];
+        layer.singleTile = false;
+        
+        // drastic pan
+        clearTestBounds();
+        tilesBounds = new OpenLayers.Bounds(-150,-150,-120,-120);
+        layer.moveTo(null, zoomChanged);
+        t.ok(g_WhichFunc == "InitGridded", "if tiles drastically out of bounds, we call initGriddedTile()");
+        t.ok(g_Bounds.equals(b), "if tiles drastically out of bounds, we call initGriddedTile() with correct bounds");
+       
+        //regular move 
+        clearTestBounds();
+        tilesBounds = new OpenLayers.Bounds(10,10,120,120);
+        layer.moveTo(null, zoomChanged);
+        t.ok(g_WhichFunc == "MoveGridded", "if tiles not drastically out of bounds, we call moveGriddedTile()");
+        t.ok(g_Bounds.equals(b), "if tiles not drastically out of bounds, we call moveGriddedTile() with correct bounds");
+    }
 
     /** THIS WOULD BE WHERE THE TESTS WOULD GO FOR 
      *     
-     *    -moveTo
      *    -insertColumn
      *    -insertRow
-    
-    function 07_Layer_Grid_moveTo(t) {
-    }
+     * 
 
     function 08_Layer_Grid_insertColumn(t) {
     }
@@ -155,21 +339,176 @@
         layer.grid = null;
     }
 
-    function test_11_Layer_Grid_setMap(t) {
+    function test_11_Layer_Grid_setTileSize(t) {
+        t.plan(1);
 
+        OpenLayers.Layer.HTTPRequest.prototype._setTileSize = 
+            OpenLayers.Layer.HTTPRequest.prototype.setTileSize;
+
+        OpenLayers.Layer.HTTPRequest.prototype.setTileSize = function(size) {
+            g_Size = size;
+        };
+
+
+        layer = new OpenLayers.Layer.Grid(name, url, params, {
+            singleTile: true
+        });
+        mapSize = new OpenLayers.Size(100,1000);
+        layer.map = {
+            getSize: function() { return mapSize; }
+        }
+        
+        g_Size = null;
+        layer.setTileSize();
+        
+        var idealSize = new OpenLayers.Size(150,1500);
+        t.ok( g_Size && g_Size.equals(idealSize), "correctly calculated tile size passed to superclass setTileSize() function");
+ 
+        OpenLayers.Layer.HTTPRequest.prototype.setTileSize = 
+            OpenLayers.Layer.HTTPRequest.prototype._setTileSize;
+    }
+    
+    function test_12_Layer_Grid_initSingleTile(t) {
+      t.plan( 11 );
+      
+        layer = new OpenLayers.Layer.Grid(name, url, params, {
+            singleTile: true,
+            ratio: 2
+        });
+        
+        var bounds = new OpenLayers.Bounds(-10,10,50,100);
+        
+        var desiredTileBounds = new OpenLayers.Bounds(-40,-35,80,145);
+        var desiredUL = new OpenLayers.LonLat(-40,145);
+        
+        translatedPX = {};
+        layer.map = {
+            getLayerPxFromLonLat: function(ul) {
+                t.ok(ul.equals(desiredUL), "correct ul passed to translation");
+                return translatedPX;        
+            }
+        }
+
+        var newTile = {
+            draw: function() {
+                t.ok(true, "newly created tile has been drawn");
+            }
+        };
+        layer.addTile = function(tileBounds, px) {
+            t.ok(tileBounds.equals(desiredTileBounds), "correct tile bounds passed to addTile to create new tile");
+            t.ok(px == translatedPX, "correct tile px passed to addTile to create new tile");
+            return newTile;
+        };
+        layer.addTileMonitoringHooks = function(tile) {
+            t.ok(tile == newTile, "adding monitoring hooks to the newly added tile");
+        };
+        layer.removeExcessTiles = function(x,y) {
+            t.ok(x == 1 && y == 1, "removeExcessTiles called")  
+        };
+
+
+        layer.grid = new Array();
+        layer.initSingleTile(bounds);       
+      
+        t.ok(layer.grid[0][0] == newTile, "grid's 0,0 is set to the newly created tile");        
+        
+        var tile = { 
+            moveTo: function(tileBounds, px) {
+                t.ok(tileBounds.equals(desiredTileBounds), "correct tile bounds passed to tile.moveTo()");
+                t.ok(px == translatedPX, "correct tile px passed to tile.moveTo()");
+            }
+        }; 
+        layer.grid = [[ tile ]];
+        layer.initSingleTile(bounds);       
+      
+    }  
+     
+    function test_14_Layer_Grid_addTileMonitoringHooks(t) {
+        t.plan(14);
+        
+        layer = new OpenLayers.Layer.Grid();
+        layer.events = {
+            'triggerEvent': function(str) {
+                g_events.push(str); 
+            }
+        }
+                
+        var tile = {
+            events: {
+                register: function(name, obj, func) {
+                    g_registered[name] = [obj, func];
+                }
+            }
+        }
+
+        g_registered = {};
+        g_events = new Array();
+        
+        layer.addTileMonitoringHooks(tile);
+        
+    //loadstart
+        t.ok(tile.onLoadStart != null, "onLoadStart function created and added to tile");
+        entry =  g_registered["loadstart"];
+        t.ok( entry && entry[0] == layer && entry[1] == tile.onLoadStart, "loadstart correctly registered");
+
+        layer.numLoadingTiles = 0; 
+        g_events = new Array();
+        tile.onLoadStart.apply(layer);
+
+        t.eq(g_events[0], "loadstart", "loadstart event triggered when numLoadingTiles is 0");
+        t.eq(layer.numLoadingTiles, 1, "numLoadingTiles incremented");
+
+        g_events = new Array();
+        tile.onLoadStart.apply(layer);
+        t.eq(g_events.length, 0, "loadstart event not triggered when numLoadingTiles is not 0");
+        t.eq(layer.numLoadingTiles, 2, "numLoadingTiles incremented");
+
+
+    //loadend
+        t.ok(tile.onLoadEnd != null, "onLoadEnd function created and added to tile");
+        entry = g_registered["loadend"];
+        t.ok( entry && entry[0] == layer && entry[1] == tile.onLoadEnd, "loadend correctly registered");
+        
+        layer.numLoadingTiles = 2; 
+        g_events = new Array();
+        tile.onLoadEnd.apply(layer);
+        t.eq(g_events[0], "tileloaded", "tileloaded triggered when numLoadingTiles is > 0");
+        t.eq(g_events.length, 1, "loadend event not triggered when numLoadingTiles is > 0");
+        t.eq(layer.numLoadingTiles, 1, "numLoadingTiles decremented");
+
+
+        g_events = new Array();
+        tile.onLoadEnd.apply(layer);
+        t.eq(g_events[0], "tileloaded", "tileloaded triggered when numLoadingTiles is 0");
+        t.eq(g_events[1], "loadend", "loadend event triggered when numLoadingTiles is 0");
+        t.eq(layer.numLoadingTiles, 0, "numLoadingTiles decremented");
+    }
+    
+    function test_15_Layer_Grid_removeTileMonitoringHooks(t) {
         t.plan(2);
         
-        var options = {tileSize: new OpenLayers.Size(500,50)};
-        var map = new OpenLayers.Map('map', options);
-        layer = new OpenLayers.Layer.Grid(name, url, params);
+        layer = new OpenLayers.Layer.Grid();
+                
+        var tile = {
+            onLoadStart: {},
+            onLoadEnd: {},
+            events: {
+                unregister: function(name, obj, func) {
+                    g_unregistered[name] = [obj, func];
+                }
+            }
+        }
 
-
-        layer.setMap(map);
+        g_unregistered = {};
         
-        t.ok( layer.tileSize != null, "tileSize has been set");
-        t.ok( (layer.tileSize.h == 50) && (layer.tileSize.w == 500), "tileSize has been set correctly");
-    }
+        layer.removeTileMonitoringHooks(tile);
+        
+        entry =  g_unregistered["loadstart"];
+        t.ok( entry && entry[0] == layer && entry[1] == tile.onLoadStart, "loadstart correctly unregistered");
 
+        entry =  g_unregistered["loadend"];
+        t.ok( entry && entry[0] == layer && entry[1] == tile.onLoadEnd, "loadend correctly unregistered");
+    }
 
     function test_99_Layer_Grid_destroy (t) {
 

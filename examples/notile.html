@@ -1,9 +1,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <style type="text/css">
-        #map {
-            width: 512px;
-            height: 512px;
+        #mapDiv {
+            width: 400px;
+            height: 400px;
             border: 1px solid black;
         }
     </style>
@@ -11,20 +11,30 @@
     <script type="text/javascript">
         <!--
         function init(){
-            var map = new OpenLayers.Map('map', {maxResolution: 'auto'});
+            map = new OpenLayers.Map('mapDiv', {maxResolution: 'auto'});
 
-            var ol_wms = new OpenLayers.Layer.WMS.Untiled( "OpenLayers WMS", 
+            var old_ol_wms = new OpenLayers.Layer.WMS.Untiled( "WMS.Untiled", 
                 "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'} );
-            ol_wms.addOptions({isBaseLayer: true});
-            map.addLayers([ol_wms]);
+            old_ol_wms.addOptions({isBaseLayer: true});
+            
+            var new_ol_wms = new OpenLayers.Layer.WMS.Untiled( "WMS w/singleTile", 
+                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}, 
+                { singleTile: true, ratio: 1 } );
+            new_ol_wms.addOptions({isBaseLayer: true});
+
+            map.addLayers([old_ol_wms, new_ol_wms]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
-            map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+            map.setCenter(new OpenLayers.LonLat(6.5, 40.5), 4);
         }
         // -->
     </script>
   </head>
   <body onload="init()">
     <h1>OpenLayers Example</h1>
-    <div id="map"></div>
+    <div id="mapDiv"></div>
+    <p> The first layer is an old OpenLayers.Layer.WMS.Untiled layer, using 
+        a default ratio value of 1.5.
+    <p> The second layer is an OpenLayers.Layer.WMS layer with singleTile set
+        to true, and with a ratio of 1.    
   </body>
 </html>
