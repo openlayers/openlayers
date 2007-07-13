@@ -7,7 +7,7 @@
             border: 1px solid black;
         }
     </style>
-    <script src="../lib/OpenLayers.js"></script>
+    <script src="../lib/OpenLayers.js" type="text/javascript"></script>
     <script type="text/javascript">
         <!--
         var map;
@@ -21,6 +21,16 @@
             var style_blue = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
             style_blue.strokeColor = "blue"; 
             style_blue.fillColor = "blue"; 
+            style_blue.externalGraphic = "../img/marker.png";
+            
+            // each of the three lines below means the same, if only one of
+            // them is active: the image will have a size of 24px, and the
+            // aspect ratio will be kept
+            style_blue.pointRadius = 12;
+            //style_blue.graphicWidth = 24;
+            //style_blue.graphicHeight = 24;
+            
+            style_blue.fillOpacity = 1;
             var style_green = {
                 strokeColor: "#00FF00",
                 strokeOpacity: 1,
@@ -28,12 +38,24 @@
                 pointRadius: 6,
                 pointerEvents: "visiblePainted"
             };
+            var style_mark = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+            
+            // if graphicWidth and graphicHeight are both set, the aspect ratio
+            // of the image will be ignored
+            style_mark.graphicWidth = 24;
+            style_mark.graphicHeight = 20;
+            
+            style_mark.externalGraphic = "../img/marker.png";
             
             var vectorLayer = new OpenLayers.Layer.Vector("Simple Geometry");
             
             // create a point feature
             var point = new OpenLayers.Geometry.Point(-111.04, 45.68);
             var pointFeature = new OpenLayers.Feature.Vector(point,null,style_blue);
+            var point2 = new OpenLayers.Geometry.Point(-105.04, 49.68);
+            var pointFeature2 = new OpenLayers.Feature.Vector(point2,null,style_green);
+            var point3 = new OpenLayers.Geometry.Point(-105.04, 49.68);
+            var pointFeature3 = new OpenLayers.Feature.Vector(point3,null,style_mark);
             
             // create a line feature from a list of points
             var pointList = [];
@@ -64,7 +86,7 @@
             
             map.addLayer(vectorLayer);
             map.setCenter(new OpenLayers.LonLat(point.x, point.y), 5);
-            vectorLayer.addFeatures([pointFeature, lineFeature, polygonFeature]);
+            vectorLayer.addFeatures([pointFeature, pointFeature3, pointFeature2, lineFeature, polygonFeature]);
         }
         // -->
     </script>
@@ -75,5 +97,12 @@
        in different styles, created 'manually', by constructing the entire style
        object, via 'copy', extending the default style object, and by 
        inheriting the default style from the layer.</p>
+    <p>It also shows how to use external graphic files for point features
+       and how to set their size: If either graphicWidth or graphicHeight is set,
+       the aspect ratio of the image will be respected. If both graphicWidth and
+       graphicHeight are set, it will be ignored. Alternatively, if graphicWidth
+       and graphicHeight are omitted, pointRadius will be used to set the size
+       of the image, which will then be twice the value of pointRadius with the
+       original aspect ratio.</p>
   </body>
 </html>
