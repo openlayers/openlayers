@@ -101,7 +101,7 @@
         var map = new OpenLayers.Map("map");
 
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
-        layer = new OpenLayers.Layer.WMS(name, url);
+        layer = new OpenLayers.Layer.WMS("WMS Layer", url);
 
         map.addLayer(layer);
         
