@@ -61,16 +61,31 @@
     }
 
     function test_07_Pixel_add(t) {
-        t.plan( 4 );
-        oldPixel = new OpenLayers.Pixel(5,6);
+        t.plan( 8 );
 
-        pixel = oldPixel.add(10,20);
+        var origPX = new OpenLayers.Pixel(5,6);
+        var oldPixel = origPX.clone();
 
-        t.eq( oldPixel.x, 5, "oldPixel.x not modified by add operation");
-        t.eq( oldPixel.y, 6, "oldPixel.y not modified by add operation");
+        var pixel = oldPixel.add(10,20);
+        
+        t.ok( oldPixel.equals(origPX), "oldPixel not modified by add operation");
+        
+        var px = new OpenLayers.Pixel(15,26);
+        t.ok( pixel.equals(px), "returned pixel is correct");
 
-        t.eq( pixel.x, 15, "pixel.x is set correctly");
-        t.eq( pixel.y, 26, "pixel.y is set correctly");
+    //null values
+        var desiredMsg = "You must pass both x and y values to the add function.";
+        OpenLayers.Console.error = function(msg) {
+            t.eq(msg, desiredMsg, "error correctly reported");
+        }
+    
+        pixel = oldPixel.add(null, 50);
+        t.ok( oldPixel.equals(origPX), "oldPixel is not modified by erroneous add operation (null x)");
+        t.ok(pixel == null, "returns null on erroneous add operation (null x)");
+ 
+        addpx = oldPixel.add(5, null);
+        t.ok( oldPixel.equals(origPX), "oldPixel is not modified by erroneous add operation (null y)");
+        t.ok(pixel == null, "returns null on erroneous add operation (null y)");
     }
 
     function test_08_Pixel_offset(t) {

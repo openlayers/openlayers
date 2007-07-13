@@ -472,6 +472,33 @@
 
       }
 
+    function test_17_Bounds_add(t) {
+        t.plan( 8 );
+
+        origBounds = new OpenLayers.Bounds(1,2,3,4);
+        testBounds = origBounds.clone();
+
+        var bounds = testBounds.add(5, 50);
+        t.ok( testBounds.equals(origBounds), "testBounds is not modified by add operation");
+
+        var b = new OpenLayers.Bounds(6,52,8,54);
+        t.ok( bounds.equals(b), "bounds is set correctly");
+        
+    //null values
+        var desiredMsg = "You must pass both x and y values to the add function.";
+        OpenLayers.Console.error = function(msg) {
+            t.eq(msg, desiredMsg, "error correctly reported");
+        }
+    
+        bounds = testBounds.add(null, 50);
+        t.ok( testBounds.equals(origBounds), "testBounds is not modified by erroneous add operation (null x)");
+        t.ok(bounds == null, "returns null on erroneous add operation (null x)");
+ 
+        bounds = testBounds.add(5, null);
+        t.ok( testBounds.equals(origBounds), "testBounds is not modified by erroneous add operation (null y)");
+        t.ok(bounds == null, "returns null on erroneous add operation (null y)");
+    }
+
   // -->
   </script>
 </head>

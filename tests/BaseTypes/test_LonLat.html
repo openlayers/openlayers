@@ -47,16 +47,30 @@
     }
 
     function test_04_LonLat_add(t) {
-        t.plan( 2 );
+        t.plan( 8 );
 
-        lonlatA = new OpenLayers.LonLat(10,100);
+        origLL = new OpenLayers.LonLat(10,100);
+        lonlatA = origLL.clone();
 
         addpx = lonlatA.add(5, 50);
-        var ll = new OpenLayers.LonLat(10,100);
-        t.ok( lonlatA.equals(ll), "lonlatA is not modified by add operation");
+        t.ok( lonlatA.equals(origLL), "lonlatA is not modified by add operation");
 
         var ll = new OpenLayers.LonLat(15,150);
         t.ok( addpx.equals(ll), "addpx is set correctly");
+        
+    //null values
+        var desiredMsg = "You must pass both lon and lat values to the add function.";
+        OpenLayers.Console.error = function(msg) {
+            t.eq(msg, desiredMsg, "error correctly reported");
+        }
+    
+        addpx = lonlatA.add(null, 50);
+        t.ok( lonlatA.equals(origLL), "lonlatA is not modified by erroneous add operation (null lon)");
+        t.ok(addpx == null, "returns null on erroneous add operation (null lon)");
+ 
+        addpx = lonlatA.add(5, null);
+        t.ok( lonlatA.equals(origLL), "lonlatA is not modified by erroneous add operation (null lat)");
+        t.ok(addpx == null, "returns null on erroneous add operation (null lat)");
     }
     
     function test_06_LonLat_equals(t) {
