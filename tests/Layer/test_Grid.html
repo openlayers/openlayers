@@ -106,6 +106,10 @@
         var testBounds = new OpenLayers.Bounds(1,2,3,4);
         
         t.ok( bounds.equals(testBounds), "getTilesBounds() returns correct bounds");
+        
+        var bounds = layer.getGridBounds();
+        
+        t.ok( bounds.equals(testBounds), "getGridBounds() wrapper works the same as getTilesBounds.");
 
     //no tiles
         layer.grid = new Array();
