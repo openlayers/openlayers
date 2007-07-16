@@ -1,0 +1,58 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+        #title {
+            position: absolute;
+            left: 1em;
+            bottom: 1em;
+            z-index: 5000;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+        var map, layer;
+        function init(){
+            map = new OpenLayers.Map( $('map'));
+            layer = new OpenLayers.Layer.TileCache("TileCache Layer",
+                    ["http://c0.labs.metacarta.com/wms-c/cache/",
+                     "http://c1.labs.metacarta.com/wms-c/cache/",
+                     "http://c2.labs.metacarta.com/wms-c/cache/",
+                     "http://c3.labs.metacarta.com/wms-c/cache/",
+                     "http://c4.labs.metacarta.com/wms-c/cache/"],
+                    "basic");
+            map.addLayer(layer);
+            map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+        }
+
+        OpenLayers.Util.onImageLoadError = function() {
+            /**
+             * For images that don't exist in the cache, you can display
+             * a default image - one that looks like water for example.
+             * To show nothing at all, leave the following lines commented out.
+             */
+
+            //this.src = "../img/blank.gif";
+            //this.style.display = "";
+        };
+
+        // -->
+    </script>
+  </head>
+  <body onload="init()">
+    <div id="map">
+    <div id="title">
+        <b>OpenLayers (Read-Only) TileCache Example</b>
+        <br />from a web accessible disk-based cache only
+    </div>
+  </body>
+</html>
