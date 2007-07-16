@@ -578,7 +578,33 @@
         t.eq(OpenLayers.Util.getArgs('http://www.example.com?foo=bar#bugssucks'),
                                      {'foo': 'bar'}, "getArgs works when using a fragment identifier");
     }
-   // -->
+
+    function tests_Util_extend(t) {
+        t.plan(4);
+        var source = {
+            num: Math.random(),
+            obj: {
+                foo: "bar"
+            },
+            method: function() {
+                return "method";
+            },
+            toString: function() {
+                return "source";
+            }
+        };
+        var destination = OpenLayers.Util.extend({}, source);
+        t.eq(destination.num, source.num,
+             "extend properly sets primitive property on destination");
+        t.eq(destination.obj, source.obj,
+             "extend properly sets object property on destination");
+        t.eq(destination.method(), "method",
+             "extend properly sets function property on destination");
+        t.eq(destination.toString(), "source",
+             "extend properly sets custom toString method");
+    }
+
+    // -->
   </script>
 </head>
 <body>
