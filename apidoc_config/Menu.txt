@@ -39,7 +39,7 @@ Group: OpenLayers  {
 
       File: Base Types  (no auto-title, OpenLayers/BaseTypes.js)
       File: Bounds  (OpenLayers/BaseTypes/Bounds.js)
-      File: Class  (OpenLayers/BaseTypes/Class.js)
+      File: Class  (no auto-title, OpenLayers/BaseTypes/Class.js)
       File: Element  (OpenLayers/BaseTypes/Element.js)
       File: LonLat  (OpenLayers/BaseTypes/LonLat.js)
       File: Pixel  (OpenLayers/BaseTypes/Pixel.js)
@@ -119,7 +119,6 @@ Group: OpenLayers  {
       File: Path  (no auto-title, OpenLayers/Handler/Path.js)
       File: Point  (no auto-title, OpenLayers/Handler/Point.js)
       File: Polygon  (OpenLayers/Handler/Polygon.js)
-      File: RegularPolygon  (OpenLayers/Handler/RegularPolygon.js)
       }  # Group: Handler
 
    File: Icon  (no auto-title, OpenLayers/Icon.js)
