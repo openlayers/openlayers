@@ -142,6 +142,7 @@ Group: OpenLayers  {
       File: Markers  (no auto-title, OpenLayers/Layer/Markers.js)
       File: MultiMap  (OpenLayers/Layer/MultiMap.js)
       File: Text  (OpenLayers/Layer/Text.js)
+      File: TileCache  (OpenLayers/Layer/TileCache.js)
       File: TMS  (OpenLayers/Layer/TMS.js)
       File: Vector  (no auto-title, OpenLayers/Layer/Vector.js)
       File: VirtualEarth  (OpenLayers/Layer/VirtualEarth.js)
