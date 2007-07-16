@@ -2,8 +2,171 @@
 <head>
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript"><!--
+    // remove this next line at 3.0
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
+
+    function test_Class(t) {
+        t.plan(1);
+        var MyClass = OpenLayers.Class({
+            initialize: function () {
+                t.ok(false, "initialize should not be called");
+            }
+        });
+        t.ok(true,
+             "defining a class does not call the constructor for the class");
+    }
+
+    function test_Class_constructor(t) {
+        t.plan(7);
+        
+        var MyClass = OpenLayers.Class({
+            prop: null,
+            classProp: {'bad': 'practice'},
+            initialize: function(a1, a2) {
+                this.prop = "instance property";
+                t.ok(true,
+                     "initialize is called when a new instance is created");
+                t.eq(a1, arg1,
+                     "initialize is called with the proper first argument");
+                t.eq(a2, arg2,
+                     "initialize is called with the proper second argument");
+            },
+            CLASS_NAME: "MyClass"
+        });
+
+        var arg1 = "anArg";
+        var arg2 = {"another": "arg"};
+        var myObj = new MyClass(arg1, arg2);
+        t.eq(MyClass.prop, null,
+             "creating a new instance doesn't modify the class");
+        t.eq(myObj.prop, "instance property",
+             "the new instance is assigned a property in the constructor");
+        t.eq(myObj["CLASS_NAME"], "MyClass",
+             "the new object is an instance of MyClass");
+
+        // allow for modification of class properties
+        MyClass.prototype.classProp.bad = "good";
+        t.eq(myObj.classProp.bad, "good",
+             "modifying a class property modifies properties of the instance");
+    }
+
+    function test_Class_inheritance(t) {
+        t.plan(4);
+        
+        var BaseClass = OpenLayers.Class({
+            prop: "base",
+            initialize: function() {
+                t.ok(false,
+                     "base class constructor is not called during inheritance");
+            },
+            toString: function() {
+                return "toString inherited";
+            },
+            CLASS_NAME: "BaseClass"
+        });
+        
+        var ChildClass = OpenLayers.Class(BaseClass, {
+            initialize: function() {
+                t.ok(true,
+                     "child class constructor is called in creating an instance");
+            },
+            CLASS_NAME: "ChildClass"
+        });
+        
+        var child = new ChildClass();
+        t.eq(child.prop, "base",
+             "instance of child inherits properties from base");
+        t.eq(child.toString(), "toString inherited",
+             "instance of child inherits toString method from base");
+        t.eq(child["CLASS_NAME"],
+             "ChildClass",
+             "new object is an instance of the child class");
+    }
     
+    function test_Class_multiple_inheritance(t) {
+        t.plan(7);
+        var BaseClass1 = OpenLayers.Class({
+            override: "base1",
+            prop: "base1",
+            variable: null,
+            initialize: function() {
+                t.ok(true,
+                     "only called when an instance of this class is created");
+            },
+            CLASS_NAME: "BaseClass1"
+        });
+
+        var BaseClass2 = OpenLayers.Class({
+            override: "base2",
+            initialize: function() {
+                t.ok(false,
+                     "base class constructor is not called during inheritance");
+            },
+            CLASS_NAME: "BaseClass1"
+        });
+        
+        var ChildClass = OpenLayers.Class(BaseClass1, BaseClass2, {
+            initialize: function(arg) {
+                if(this.prop == "base1") {
+                    this.variable = "child";
+                }
+                t.ok(true,
+                     "only child class constructor is called on initialization");
+            },
+            CLASS_NAME: "ChildClass"
+        });
+        
+        var arg = "child";
+        var child = new ChildClass(arg);
+        t.eq(child.variable, arg,
+             "inheritance works before construction");
+        t.eq(child.prop, "base1",
+             "properties are inherited with multiple classes")
+        t.eq(child.override, "base2",
+             "properties are inherited in the expected order");
+        t.eq(child["CLASS_NAME"],
+             "ChildClass",
+             "object is an instance of child class");
+        
+        var base1 = new BaseClass1();
+        t.eq(base1.override, "base1",
+             "inheritance doesn't mess with parents");
+
+    }
+    
+    // Remove this at 3.0
+    function test_Class_backwards(t) {
+        t.plan(4);
+        // test that a new style class supports old style inheritance
+        var NewClass = OpenLayers.Class({
+            newProp: "new",
+            initialize: function() {
+                t.ok(false, "the base class is never instantiated");
+            },
+            toString: function() {
+                return "new style";
+            }
+        });
+        
+        var OldClass = OpenLayers.Class.create();
+        OldClass.prototype = OpenLayers.Class.inherit(NewClass, {
+            oldProp: "old",
+            initialize: function() {
+                t.ok(true, "only the child class constructor is called");
+            }
+        });
+        
+        var oldObj = new OldClass();
+        t.eq(oldObj.oldProp, "old",
+             "old style classes can still be instantiated");
+        t.eq(oldObj.newProp, "new",
+             "old style inheritance of properties works with new style base");
+        t.eq(oldObj.toString(), "new style",
+             "toString inheritance works with backwards style");
+        
+    }
+
+    // Remove this at 3.0
     function test_01_Class_create (t) {
         t.plan( 3 );
         var cls = OpenLayers.Class.create();
@@ -25,6 +188,7 @@
             t.ok(true, "this test doesn't work in IE");
     }
 
+    // Remove this at 3.0
     function test_02_Class_inherit (t) {
         t.plan( 20 );
         var A = OpenLayers.Class.create();

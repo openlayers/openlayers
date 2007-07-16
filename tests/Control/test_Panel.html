@@ -14,14 +14,12 @@
 		    var map = new OpenLayers.Map('map');
 		    var panel = new OpenLayers.Control.Panel();
 		    var toolControl = new OpenLayers.Control.ZoomBox();
-		    var AnotherToolControl = OpenLayers.Class.create();
-		    AnotherToolControl.prototype = OpenLayers.Class.inherit(OpenLayers.Control, {
+		    var AnotherToolControl = OpenLayers.Class(OpenLayers.Control, {
 		  				CLASS_NAME: 'mbControl.TestTool',
 		  				type: OpenLayers.Control.TYPE_TOOL
 		  	});
 		   	var anotherToolControl = new AnotherToolControl();
-				var ToggleControl = OpenLayers.Class.create();
-				ToggleControl.prototype = OpenLayers.Class.inherit(OpenLayers.Control, {
+				var ToggleControl = OpenLayers.Class(OpenLayers.Control, {
 							CLASS_NAME: 'mbControl.TestToggle',
 							type: OpenLayers.Control.TYPE_TOGGLE
 				});
