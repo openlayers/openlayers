@@ -1,0 +1,180 @@
+<html>
+  <head>
+  
+    <script src="../../lib/OpenLayers.js"></script>
+
+    <script type="text/javascript">
+
+    function test_01_Element_visible(t) {
+        t.plan(3);
+        
+        var elem = {
+            style: {
+                'display': ""
+            }
+        };
+        
+        elem.style.display = "";
+        t.ok(OpenLayers.Element.visible(elem), "element with style.display == '' is visible");
+            
+        elem.style.display = "block";
+        t.ok(OpenLayers.Element.visible(elem), "element with style.display == block is visible");
+            
+        elem.style.display = "none";
+        t.ok(!OpenLayers.Element.visible(elem), "element with style.display == none is not visible");
+    }
+    
+    function test_02_Element_toggle(t) {
+        t.plan(2);
+
+        var elem1 = {
+            style: {
+                'display': "none"
+            }
+        };
+        
+        var elem2 = {
+            style: {
+                'display': ""
+            }
+        };
+
+        OpenLayers.Element.toggle(elem1, elem2);
+        
+        t.eq(elem1.style.display, "", "hidden element toggled to display");
+        t.eq(elem2.style.display, "none", "shown element toggled to hidden");
+    }
+    
+    function test_03_Element_hide(t) {
+        t.plan(2);
+
+        var elem1 = {
+            style: {
+                'display': "none"
+            }
+        };
+        
+        var elem2 = {
+            style: {
+                'display': ""
+            }
+        };
+
+        OpenLayers.Element.hide(elem1, elem2);
+        
+        t.eq(elem1.style.display, "none", "hidden element stays hidden");
+        t.eq(elem2.style.display, "none", "shown element hidden");
+    }
+    
+    function test_04_Element_show(t) {
+        t.plan(2);
+
+        var elem1 = {
+            style: {
+                'display': "none"
+            }
+        };
+        
+        var elem2 = {
+            style: {
+                'display': ""
+            }
+        };
+
+        OpenLayers.Element.show(elem1, elem2);
+        
+        t.eq(elem1.style.display, "", "hidden element shown");
+        t.eq(elem2.style.display, "", "shown element stays shown");
+    }
+    
+    function test_05_Element_remove(t) {
+        t.plan(1);
+
+        var elem = {
+            parentNode: {
+                'removeChild': function(elem) {
+                    t.ok(true, "removeChild called");
+                }
+            }        
+        };
+        OpenLayers.Element.remove(elem);
+    }
+    
+    function test_06_Element_getHeight(t) {
+        t.plan(1);
+
+        var elem = {
+            'offsetHeight': {}
+        };
+        
+        t.ok(OpenLayers.Element.getHeight(elem) == elem.offsetHeight, "offsetHeight returned");
+    }
+    
+    function test_07_Element_getDimensions(t) {
+        t.plan(4);
+        
+      //shown
+        t.open_window( "BaseTypes/test_Element.html", function( wnd ) {
+            t.delay_call( function() {
+                var elem = wnd.document.getElementById("elemID");
+
+                var dims = OpenLayers.Element.getDimensions(elem);
+                t.eq(dims.width, 50, "width correct when displayed");
+                t.eq(dims.height, 100, "height correct when displayed")
+      
+                elem.style.display = "none";
+                dims = OpenLayers.Element.getDimensions(elem);
+                t.eq(dims.width, 50, "width correct when hidden");
+                t.eq(dims.height, 100, "height correct when hidden")
+      
+
+            });
+        });      
+      
+      //hidden
+        
+
+    }    
+
+    function test_08_Element_getStyle(t) {
+        t.plan(4);
+
+    //tests for this function are not 100% complete... there is some funky
+    // business going on in there with 
+    //  * document.defaultView (moz/ff I believe)
+    // but I cant seem to find a good way to test them.
+    // 
+
+        var elem = document.getElementById("elemID");
+        elem.style.chickenHead = {}
+
+        var style = "chickenHead";
+        t.ok(OpenLayers.Element.getStyle(elem, style) == elem.style.chickenHead, "get style on basic stylename returns correctly");
+
+        elem.style.chickenHead = "auto";
+        style = "chickenHead";
+        t.ok(OpenLayers.Element.getStyle(elem, style) == null, "get style on 'auto' style returns null");
+
+        if (OpenLayers.Util.getBrowserName() == "opera") {
+            elem.style.top = "15px";
+            style = "top";
+
+            elem.style.position = "static";
+            t.ok(OpenLayers.Element.getStyle(elem, style) == null, "in opera: get (top/left/right/bottom) style when position == 'static' returns null");
+            
+            elem.style.position = "";
+            t.ok(OpenLayers.Element.getStyle(elem, style) == null, "in opera: get (top/left/right/bottom) style when position != 'static', gets computedStyle as static and returns null");
+
+        } else {
+            t.ok(true, "browser is not opera.");
+            t.ok(true, "trust me. browser is not opera.");
+        }
+
+    }    
+
+    </script>
+  </head>
+  <body>
+    <div id="elemID" style="width:50px; height:100px; background-color:red">test</div>
+  </body>
+</html>
