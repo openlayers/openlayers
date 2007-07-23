@@ -7,8 +7,9 @@ Schuyler Erle
 Christian López Espínola
 John Frank
 Sean Gilles
-Pierre Giraud                                                                
+Pierre Giraud
 Andreas Hocevar
+Eric Lemoine
 Philip Lindsay
 Corey Puffault
 Tim Schaub
