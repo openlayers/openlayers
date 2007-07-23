@@ -14,6 +14,15 @@
     }
 
 
+    function test_Geometry_clone(t) {
+        t.plan(2);
+        var geometry = new OpenLayers.Geometry();
+        var clone = geometry.clone();
+
+        t.eq(clone.CLASS_NAME, "OpenLayers.Geometry", "correct CLASS_NAME")
+        t.ok(clone.id.startsWith("OpenLayers.Geometry_"), "id correctly set");
+    }
+
     function test_02_Geometry_setBounds(t) {
         t.plan( 2 );
         

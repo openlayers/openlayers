@@ -23,6 +23,29 @@
              "geometry.property set properly" );
     }
     
+    function test_Feature_Vector_clone(t) {
+        t.plan(5);
+
+        var geometry = new OpenLayers.Geometry.Point(Math.random(),
+                                                     Math.random());
+        var style = {foo: "bar"};
+        var attributes = {bar: "foo"};
+
+        feature = new OpenLayers.Feature.Vector(geometry, attributes, style);
+        var clone = feature.clone();
+
+        t.ok(clone instanceof OpenLayers.Feature.Vector,
+             "new OpenLayers.Feature.Vector returns Feature.Vector object");
+        t.eq(clone.attributes, attributes,
+             "attributes property set properly");
+        t.eq(clone.style, style,
+             "style property set properly");
+        t.eq(clone.geometry.x, geometry.x,
+             "geometry.x property set properly");
+        t.eq(clone.geometry.y, geometry.y,
+             "geometry.y property set properly");
+    }
+        
 
   // -->
   </script>
