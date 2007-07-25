@@ -112,7 +112,7 @@
         t.ok( bounds.equals(testBounds), "getGridBounds() wrapper works the same as getTilesBounds.");
 
     //no tiles
-        layer.grid = new Array();
+        layer.grid = [];
         bounds = layer.getTilesBounds();
         
         t.ok(bounds == null, "getTilesBounds() on a tile-less grid returns null");
@@ -207,7 +207,7 @@
 //FORCE
 
     //empty grid
-        layer.grid = new Array();
+        layer.grid = [];
        //grid
         clearTestBounds();
         layer.singleTile = false;
@@ -411,7 +411,7 @@
         };
 
 
-        layer.grid = new Array();
+        layer.grid = [];
         layer.initSingleTile(bounds);       
       
         t.ok(layer.grid[0][0] == newTile, "grid's 0,0 is set to the newly created tile");        
@@ -446,7 +446,7 @@
         }
 
         g_registered = {};
-        g_events = new Array();
+        g_events = [];
         
         layer.addTileMonitoringHooks(tile);
         
@@ -456,13 +456,13 @@
         t.ok( entry && entry[0] == layer && entry[1] == tile.onLoadStart, "loadstart correctly registered");
 
         layer.numLoadingTiles = 0; 
-        g_events = new Array();
+        g_events = [];
         tile.onLoadStart.apply(layer);
 
         t.eq(g_events[0], "loadstart", "loadstart event triggered when numLoadingTiles is 0");
         t.eq(layer.numLoadingTiles, 1, "numLoadingTiles incremented");
 
-        g_events = new Array();
+        g_events = [];
         tile.onLoadStart.apply(layer);
         t.eq(g_events.length, 0, "loadstart event not triggered when numLoadingTiles is not 0");
         t.eq(layer.numLoadingTiles, 2, "numLoadingTiles incremented");
@@ -474,14 +474,14 @@
         t.ok( entry && entry[0] == layer && entry[1] == tile.onLoadEnd, "loadend correctly registered");
         
         layer.numLoadingTiles = 2; 
-        g_events = new Array();
+        g_events = [];
         tile.onLoadEnd.apply(layer);
         t.eq(g_events[0], "tileloaded", "tileloaded triggered when numLoadingTiles is > 0");
         t.eq(g_events.length, 1, "loadend event not triggered when numLoadingTiles is > 0");
         t.eq(layer.numLoadingTiles, 1, "numLoadingTiles decremented");
 
 
-        g_events = new Array();
+        g_events = [];
         tile.onLoadEnd.apply(layer);
         t.eq(g_events[0], "tileloaded", "tileloaded triggered when numLoadingTiles is 0");
         t.eq(g_events[1], "loadend", "loadend event triggered when numLoadingTiles is 0");
