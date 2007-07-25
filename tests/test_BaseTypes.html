@@ -1,0 +1,169 @@
+<html>
+<head>
+  <script src="../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+
+    function test_01_String_startsWith(t) {
+        t.plan(3);
+        
+        var str = "chickenHead";
+        
+        var test1 = "chicken";
+        var test2 = "beet";
+
+        t.ok(str.startsWith("chicken"), " 'chickenHead' starts with 'chicken'");
+        t.ok(!str.startsWith("Head"), " 'chickenHead' contains 'Head' but does *not* start with it");
+        t.ok(!str.startsWith("beet"), "'chickenHead' doesnt start with 'beet'");
+    }
+    
+    function test_02_String_contains(t) {
+        t.plan(4);
+        
+        var str = "chickenHead";
+
+        t.ok(str.contains("chicken"), "(beginning) 'chickenHead' contains with 'chicken'");
+        t.ok(str.contains("ick"), "(middle) 'chickenHead' contains with 'ick'");
+        t.ok(str.contains("Head"), "(end) 'chickenHead' contains with 'Head'");
+        t.ok(!str.startsWith("beet"), "'chickenHead' doesnt start with 'beet'");
+    }
+    
+    function test_03_String_trim(t) {
+        t.plan(4);
+        
+        var str = "chickenHead";
+        t.eq(str.trim(), "chickenHead", "string with no extra whitespace is left alone");
+
+        str = "  chickenHead";
+        t.eq(str.trim(), "chickenHead", "string with extra whitespace at beginning is trimmed correctly");
+
+        str = "chickenHead    ";
+        t.eq(str.trim(), "chickenHead", "string with extra whitespace at end is trimmed correctly");
+
+        str = "  chickenHead    ";
+        t.eq(str.trim(), "chickenHead", "string with extra whitespace at beginning and end is trimmed correctly");
+
+    }
+    
+    function test_04_String_indexOf(t) {
+        t.plan(5);
+        
+        var str = "chickenHead";
+
+        t.eq(str.indexOf('c'), 0, "correctly finds first character");
+        t.eq(str.indexOf('k'), 4, "correctly finds middle character");
+        t.eq(str.indexOf('e'), 5, "correctly returns index of *first*instance* of repeated character");
+        t.eq(str.indexOf('d'), 10, "correctly finds last character");
+        t.eq(str.indexOf('z'), -1, "correctly returns -1 for unfound character");
+    }    
+    
+    function test_05_String_camelize(t) {
+        t.plan(7);
+        
+        var str = "chickenhead";
+        t.eq(str.camelize(), "chickenhead", "string with no hyphens is left alone");
+
+        str = "chicken-head";
+        t.eq(str.camelize(), "chickenHead", "string with one middle hyphen is camelized correctly");
+
+        str = "chicken-head-man";
+        t.eq(str.camelize(), "chickenHeadMan", "string with multiple middle hyphens is camelized correctly");
+
+        str = "-chickenhead";
+        t.eq(str.camelize(), "Chickenhead", "string with starting hyphen is camelized correctly (capitalized)");
+
+        str = "-chicken-head-man";
+        t.eq(str.camelize(), "ChickenHeadMan", "string with starting hypen and multiple middle hyphens is camelized correctly");
+
+        str = "chicken-";
+        t.eq(str.camelize(), "chicken", "string ending in hyphen is camelized correctly (hyphen dropped)");
+
+        str = "chicken-head-man-";
+        t.eq(str.camelize(), "chickenHeadMan", "string with multiple middle hyphens and end hyphen is camelized correctly (end hyphen dropped)");
+
+
+   }
+   
+    function test_06_Number_limitSigDigs(t) {
+/** PENDING APPROVAL OF http://trac.openlayers.org/ticket/862
+        t.plan(10);
+*/
+        t.plan(8);
+      
+        var num = 123456789; 
+        t.eq(num.limitSigDigs(), 0, "passing 'null' as sig returns 0");
+        t.eq(num.limitSigDigs(-1), 0, "passing -1 as sig returns 0");
+        t.eq(num.limitSigDigs(0), 0, "passing 0 as sig returns 0");
+        
+        t.eq(num.limitSigDigs(15), 123456789, "passing sig greater than num digits in number returns number unmodified");
+        
+        t.eq(num.limitSigDigs(1), 100000000, "passing sig 1 works");
+        t.eq(num.limitSigDigs(3), 123000000, "passing middle sig works (rounds down)");
+        t.eq(num.limitSigDigs(5), 123460000, "passing middle sig works (rounds up)");
+        t.eq(num.limitSigDigs(9), 123456789, "passing sig equal to num digits in number works");
+
+/** PENDING APPROVAL OF http://trac.openlayers.org/ticket/862
+        var temp = OpenLayers.Console.error;
+        OpenLayers.Console.error = function() {
+            t.ok(true, "error reported when run on floating point number")
+        }
+        num = 1234.56789;
+        t.ok(num.limitSigDigs(5) == null, "running limSigDig() on a floating point number returns null");
+        
+        OpenLayers.Console.error = temp;
+ * 
+ */
+    }
+
+    function test_07_Function_bind(t) {
+        t.plan(5);
+
+        g_obj = {};
+        g_Arg1 = {};
+        g_Arg2 = {};
+        g_Arg3 = {};
+        g_Arg4 = {};
+        var foo = function(x,y,z,a) {
+            t.ok(this == g_obj, "context correctly set");
+            t.ok(x == g_Arg1, "arg1 passed correctly");    
+            t.ok(y == g_Arg2, "arg2 passed correctly");    
+            t.ok(z == g_Arg3, "arg3 passed correctly");    
+            t.ok(a == g_Arg4, "arg4 passed correctly");    
+        };
+
+        var newFoo = foo.bind(g_obj, g_Arg1, g_Arg2);
+        
+        newFoo(g_Arg3, g_Arg4);
+
+    }
+
+    function test_08_Function_bindAsEventListener(t) {
+        t.plan(4);
+
+        g_obj = {};
+        g_Event = {};
+        g_WindowEvent = {};
+
+        var foo = function(x) {
+            t.ok(this == g_obj, "context correctly set");
+            g_X = x;
+        };
+
+        var newFoo = foo.bindAsEventListener(g_obj);
+        
+
+        g_X = null;
+        newFoo(g_Event);
+        t.ok(g_X == g_Event, "event properly passed as first argument when event specified");
+    
+        g_X = null;
+        newFoo();
+        t.ok(g_X == window.event, "window.event properly passed as first argument when nothing specified");
+    }
+
+        
+  // -->
+  </script>
+</head>
+<body>
+</body>
+</html>
