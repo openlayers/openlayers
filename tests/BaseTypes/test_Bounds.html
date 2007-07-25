@@ -304,7 +304,7 @@
         t.ok(bounds.equals(originalBounds), "null to extend does not crash or change original bounds");
 
       //obj with no classname        
-        var object = new Object();
+        var object = {};
         bounds.extend(object);        
         t.ok(bounds.equals(originalBounds), "extend() passing object with no classname does not crash or change original bounds")
 

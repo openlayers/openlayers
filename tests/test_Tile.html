@@ -7,7 +7,7 @@
     function test_01_Tile_constructor (t) {
         t.plan( 9 );
         
-        var layer = new Object(); // bogus layer
+        var layer = {}; // bogus layer
         var position = new OpenLayers.Pixel(10,20);
         var bounds = new OpenLayers.Bounds(1,2,3,4);
         var url = "bobob";
@@ -31,7 +31,7 @@
         t.plan( 6 );
         
         
-        var layer = new Object(); // bogus layer
+        var layer = {}; // bogus layer
         var position = new OpenLayers.Pixel(10,20);
         var bounds = new OpenLayers.Bounds(1,2,3,4);
         var url = "bobob";

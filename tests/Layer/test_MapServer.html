@@ -114,7 +114,7 @@
         layer = new OpenLayers.Layer.MapServer(name, url, params);
         t.ok( layer.isBaseLayer, "baselayer is true by default");
 
-        var newParams = OpenLayers.Util.extend(new Object(), params);
+        var newParams = OpenLayers.Util.extend({}, params);
         newParams.transparent = "true";
         layer = new OpenLayers.Layer.MapServer(name, url, newParams);
         t.ok( !layer.isBaseLayer, "baselayer is false when transparent is set to true");

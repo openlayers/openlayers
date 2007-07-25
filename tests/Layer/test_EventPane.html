@@ -78,7 +78,7 @@
         layer2 = new OpenLayers.Layer.EventPane('Test Layer');
 
         //give dummy function so test wont bomb on layer.setMap()
-        layer2.loadMapObject = function() { this.mapObject = new Object(); };
+        layer2.loadMapObject = function() { this.mapObject = {}; };
         layer2.getWarningHTML = function() { this.warning = true; return ""; }
 
         map.addLayer(layer2);
