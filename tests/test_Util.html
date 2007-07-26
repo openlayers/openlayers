@@ -603,6 +603,39 @@
         t.eq(destination.toString(), "source",
              "extend properly sets custom toString method");
     }
+    
+    function test_XX_Util_Try(t) {
+        t.plan(7);
+
+        var func1 = function() {
+            t.ok(true, "func1 executed");
+            throw "error";
+        }
+        
+        var func2 = function() {
+            t.ok(true, "func2 executed");
+            throw "error";
+        }
+
+        g_TestVal3 = {};
+        var func3 = function() {
+            t.ok(true, "func3 executed");
+            return g_TestVal3;            
+        }
+
+        g_TestVal4 = {};
+        var func4 = function() {
+            t.fail("func4 should *not* be executed");
+            return g_TestVal4;            
+        }
+
+        var ret = OpenLayers.Util.Try(func1, func2);
+        t.ok(ret == null, "if all functions throw exceptions, null returned");
+
+        var ret = OpenLayers.Util.Try(func1, func2, func3, func4);
+        t.ok(ret == g_TestVal3, "try returns first sucessfully executed function's return");
+
+    }    
 
     // -->
   </script>
