@@ -147,7 +147,7 @@ def run (sourceDirectory, outputFilename = None, configFile = None):
                     allFiles.append(filepath)
 
     ## Header inserted at the start of each file in the output
-    HEADER = "/* " + "=" * 70 + "    %s\n" + "   " + "=" * 70 + " */\n\n"
+    HEADER = "/* " + "=" * 70 + "\n    %s\n" + "   " + "=" * 70 + " */\n\n"
 
     files = {}
 
