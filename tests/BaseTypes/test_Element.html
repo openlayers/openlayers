@@ -115,7 +115,7 @@
         
       //shown
         t.open_window( "BaseTypes/test_Element.html", function( wnd ) {
-            t.delay_call( function() {
+            t.delay_call( 0.2, function() {
                 var elem = wnd.document.getElementById("elemID");
 
                 var dims = OpenLayers.Element.getDimensions(elem);
