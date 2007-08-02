@@ -580,7 +580,7 @@
     }
 
     function tests_Util_extend(t) {
-        t.plan(4);
+        t.plan(5);
         var source = {
             num: Math.random(),
             obj: {
@@ -602,6 +602,7 @@
              "extend properly sets function property on destination");
         t.eq(destination.toString(), "source",
              "extend properly sets custom toString method");
+        t.eq(window.property, undefined, "Property variable not clobbered.");
     }
     
     function test_XX_Util_Try(t) {
