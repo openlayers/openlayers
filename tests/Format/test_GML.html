@@ -49,6 +49,13 @@
         t.eq(data[0].fid, '221', 'fid on polygons set correctly (with whitespace)');
         t.eq(data[1].fid, '8', 'fid on linestrings set correctly with whitespace'); 
     }
+    function test_Format_GML_no_clobber(t) { 
+        t.plan(1); 
+        var parser = new OpenLayers.Format.GML(); 
+        data = parser.read(test_content); 
+        t.eq(window.i, undefined,
+             "i is undefined in window scope after reading."); 
+    }
     // --> 
     </script> 
 </head> 
