@@ -17,11 +17,11 @@
 
             var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                 "http://labs.metacarta.com/wms/vmap0",
-                {layers: 'basic'} );
+                {layers: 'basic'}, {'displayInLayerSwitcher':false} );
 
             var jpl_wms = new OpenLayers.Layer.WMS( "NASA Global Mosaic",
                 "http://wms.jpl.nasa.gov/wms.cgi", 
-                {layers: "modis,global_mosaic"});
+                {layers: "modis,global_mosaic"}, {'isBaseLayer': false});
 
             var dm_wms = new OpenLayers.Layer.WMS( "DM Solutions Demo",
                 "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap",
@@ -42,5 +42,10 @@
     <h1>OpenLayers Example</h1>
     <div id="layerswitcher" style="float:right; width: 20em;"></div>
     <div id="map"></div>
+    <div id="docs">
+      <p>This demonstrates use of the LayerSwitcher outside the map div. It also shows use 
+         of the displayInLayerSwitcher option on the Layer to cause it to not display in the
+         LayerSwitcher.</p>
+   </div>      
   </body>
 </html>

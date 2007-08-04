@@ -115,6 +115,31 @@
         t.ok(control2.div.childNodes[1].childNodes[2].innerHTML.match("Base Layer"), "Base Layers last in LayerSwitcher with ascending false");
         t.ok(control2.div.childNodes[1].childNodes[0].innerHTML.match("Overlays"), "Base Layers last in LayerSwitcher with ascending false");
     }
+    
+    function test_Control_LayerSwitcher_displayInLayerSwitcher (t) {
+
+        t.plan( 2 );
+
+        map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS("WMS", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"}, {'displayInLayerSwitcher': false});
+        map.addLayer(layer);
+
+        control = new OpenLayers.Control.LayerSwitcher();
+        map.addControl(control);
+        t.eq(control.div.childNodes[1].childNodes[0].style.display, "none" , "Base layer display off when no visble base layer");
+        
+        map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS("WMS", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(layer);
+
+        control = new OpenLayers.Control.LayerSwitcher();
+        map.addControl(control);
+        t.eq(control.div.childNodes[1].childNodes[0].style.display, "" , "Base layer display on when visble base layer");
+    }
 
 
   // -->
