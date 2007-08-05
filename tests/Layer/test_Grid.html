@@ -513,6 +513,21 @@
         entry =  g_unregistered["loadend"];
         t.ok( entry && entry[0] == layer && entry[1] == tile.onLoadEnd, "loadend correctly unregistered");
     }
+    
+    function test_16_Layer_Grid_tileSizeIsInteger(t) {
+    		t.plan(1);
+    		
+        var map = new OpenLayers.Map('map');
+    		var layer = new OpenLayers.Layer.Grid(name, url, params, {
+            singleTile: true,
+            ratio: 1.5
+        });
+        map.addLayers([layer]);
+        
+        width = layer.tileSize.w;
+        height = layer.tileSize.h;
+        t.ok(width == parseInt(width) && height == parseInt(height), "calculated tileSize width/height are integer values");
+    }
 
     function test_99_Layer_Grid_destroy (t) {
 
@@ -547,6 +562,6 @@
   </script>
 </head>
 <body>
-<div id="map" style="width:500px;height:550px;display:none"></div>
+<div id="map" style="width:499px;height:549px;display:none"></div>
 </body>
 </html>
