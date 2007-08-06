@@ -80,7 +80,64 @@
 
         var activated = handler.activate();
 
+    }
 
+    function test_Handler_Drag_callbacks(t) {
+        t.plan(3);
+        
+        var map = new OpenLayers.Map('map', {controls: []});
+
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        
+        // set callback methods
+        var events = ["down", "move", "up", "out", "done"];
+        var xys = {};
+        var callbacks = {};
+        for(var i=0; i<events.length; ++i) {
+            var px = new OpenLayers.Pixel(Math.random(), Math.random());
+            xys[events[i]] = px;
+            setCallback(events[i]);
+        }
+        function setCallback(key) {
+            callbacks[key] = function(evtxy) {
+                t.ok(evtxy.x == xys[key].x &&
+                     evtxy.y == xys[key].y,
+                     key + " callback called with the proper evt.xy");
+            }
+        }
+
+        var handler = new OpenLayers.Handler.Drag(control, callbacks);
+        handler.activate();
+        
+        // test mousedown
+        var oldIsLeftClick = OpenLayers.Event.isLeftClick;
+        var oldStop = OpenLayers.Event.stop;
+        var testEvt = {
+            xy: xys.down
+        }
+        handler.checkModifiers = function(evt) {
+            t.ok(evt.xy.x == testEvt.xy.x &&
+                 evt.xy.y == testEvt.xy.y,
+                 "checkModifiers called with the proper event");
+            return true;
+        }
+        OpenLayers.Event.isLeftClick = function(evt) {
+            t.ok(evt.xy.x == testEvt.xy.x &&
+                 evt.xy.y == testEvt.xy.y,
+                 "isLeftClick called with the proper event");
+            return true;
+        }
+        //OpenLayers.Event.stop = function(evt) {
+        //    t.ok(evt.xy.x == testEvt.xy.x &&
+        //         evt.xy.y == testEvt.xy.y,
+        //         "mousedown event is stopped");
+        //}
+        map.events.triggerEvent("mousedown", testEvt);
+
+        OpenLayers.Event.isLeftClick = oldIsLeftClick;
+        OpenLayers.Event.stop = oldStop;
+        
     }
 
     function test_Handler_Drag_deactivate(t) {
