@@ -19,7 +19,7 @@
             t.eq(opt, options,
                  "constructor calls parent with the correct options");
         }
-        var drag = new OpenLayers.Handler.Drag(control, callbacks, options);
+        var handler = new OpenLayers.Handler.Drag(control, callbacks, options);
 
         OpenLayers.Handler.prototype.initialize = oldInit;
     }
@@ -29,19 +29,58 @@
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
         map.addControl(control);
-        var drag = new OpenLayers.Handler.Drag(control);
-        drag.active = true;
-        var activated = drag.activate();
+        var handler = new OpenLayers.Handler.Drag(control);
+        handler.active = true;
+        var activated = handler.activate();
         t.ok(!activated,
              "activate returns false if the handler was already active");
-        drag.active = false;
-        drag.dragging = true;
-        activated = drag.activate();
+        handler.active = false;
+        handler.dragging = true;
+        activated = handler.activate();
         t.ok(activated,
              "activate returns true if the handler was not already active");
-        t.ok(!drag.dragging,
+        t.ok(!handler.dragging,
              "activate sets dragging to false");
         
+    }
+    
+    function test_Handler_Drag_events(t) {
+        t.plan(25);
+        
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.Drag(control);
+
+        // list below events that should be handled (events) and those
+        // that should not be handled (nonevents) by the handler
+        var events = ["mousedown", "mouseup", "mousemove", "mouseout", "click"];
+        var nonevents = ["dblclick", "resize", "focus", "blur"];
+        map.events.registerPriority = function(type, obj, func) {
+            t.eq(OpenLayers.Util.indexOf(nonevents, type), -1,
+                 "registered method is not one of the events " +
+                 "that should not be handled");
+            t.ok(OpenLayers.Util.indexOf(events, type) > -1,
+                 "activate calls registerPriority with browser event: " + type);
+            t.eq(typeof func, "function",
+                 "activate calls registerPriority with a function");
+            t.eq(func(), type,
+                 "activate calls registerPriority with the correct method");
+            t.eq(obj["CLASS_NAME"], "OpenLayers.Handler.Drag",
+                 "activate calls registerPriority with the handler");
+        }
+        
+        // set browser event like properties on the handler
+        for(var i=0; i<events.length; ++i) {
+            setMethod(events[i]);
+        }
+        function setMethod(key) {
+            handler[key] = function() {return key};
+        }
+
+        var activated = handler.activate();
+
+
     }
 
     function test_Handler_Drag_deactivate(t) {
@@ -49,17 +88,17 @@
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
         map.addControl(control);
-        var drag = new OpenLayers.Handler.Drag(control);
-        drag.active = false;
-        var deactivated = drag.deactivate();
+        var handler = new OpenLayers.Handler.Drag(control);
+        handler.active = false;
+        var deactivated = handler.deactivate();
         t.ok(!deactivated,
              "deactivate returns false if the handler was not already active");
-        drag.active = true;
-        drag.dragging = true;
-        deactivated = drag.deactivate();
+        handler.active = true;
+        handler.dragging = true;
+        deactivated = handler.deactivate();
         t.ok(deactivated,
              "deactivate returns true if the handler was active already");
-        t.ok(!drag.dragging,
+        t.ok(!handler.dragging,
              "deactivate sets dragging to false");
     }
 
