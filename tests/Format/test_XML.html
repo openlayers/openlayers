@@ -18,7 +18,7 @@
         '<' + '/ol:root>';
 
     function test_Format_XML_constructor(t) { 
-        t.plan(4); 
+        t.plan(window.ActiveXObject ? 5 : 4); 
          
         var options = {'foo': 'bar'}; 
         var format = new OpenLayers.Format.XML(options); 
@@ -26,13 +26,18 @@
              "new OpenLayers.Format.XML returns object" ); 
         t.eq(format.foo, "bar", "constructor sets options correctly"); 
         t.eq(typeof format.read, "function", "format has a read function"); 
-        t.eq(typeof format.write, "function", "format has a write function"); 
+        t.eq(typeof format.write, "function", "format has a write function");
+        
+        if(format.xmldom) {
+            t.ok(true, "format only has xmldom in browsers with ActiveX");
+        }
     }
     
     function test_Format_XML_read(t) {
-        t.plan(5);
         
         var format = new OpenLayers.Format.XML();
+        t.plan(format.xmldom ? 11 : 10);
+
         var doc = format.read(text);
         t.eq(doc.nodeType, 9,
              "doc has the correct node type");
@@ -44,6 +49,26 @@
              "doc root has the correct node name");
         t.eq(doc.documentElement.childNodes[1].firstChild.nodeValue, "junk2",
              "second child of doc root has correct child node");
+        
+        // read can also be called on the prototype directly
+        doc = OpenLayers.Format.XML.prototype.read(text);
+        t.eq(doc.nodeType, 9,
+             "doc has the correct node type");
+        t.eq(doc.nodeName, "#document",
+             "doc has the correct node name");
+        t.ok(doc.documentElement,
+             "ok to access doc.documentElement");
+        t.eq(doc.documentElement.nodeName, "ol:root",
+             "doc root has the correct node name");
+        t.eq(doc.documentElement.childNodes[1].firstChild.nodeValue, "junk2",
+             "second child of doc root has correct child node");
+        
+        // where appropriate, make sure doc is loaded into xmldom property
+        if(format.xmldom) {
+            t.eq(format.xmldom.documentElement.childNodes[1].firstChild.nodeValue,
+                 "junk2",
+                 "second child of doc root has correct child node");
+        }
     }
     
     function test_Format_XML_write(t) {
