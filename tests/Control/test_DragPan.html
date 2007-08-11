@@ -3,14 +3,8 @@
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript"><!--
     var map; 
-    function test_Control_DragPan_constructor (t) {
-        t.plan( 1 );
-    
-        control = new OpenLayers.Control.DragPan();
-        t.ok( control instanceof OpenLayers.Control.DragPan, "new OpenLayers.Control returns object" );
-    }
-    function test_Control_DragPan_drag (t) {
-        t.plan(4);
+
+    function init_map() {
         control = new OpenLayers.Control.DragPan();
         map = new OpenLayers.Map("map", {controls:[control]});
         layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
@@ -20,6 +14,18 @@
         map.zoomToMaxExtent();
         map.zoomIn();
         control.activate();
+        return [map, control];
+    }    
+    function test_Control_DragPan_constructor (t) {
+        t.plan( 1 );
+    
+        control = new OpenLayers.Control.DragPan();
+        t.ok( control instanceof OpenLayers.Control.DragPan, "new OpenLayers.Control returns object" );
+    }
+    function test_Control_DragPan_drag (t) {
+        t.plan(4);
+        var data = init_map();
+        map = data[0]; control = data[1];
         res = map.baseLayer.resolutions[map.getZoom()];
         t.eq(map.center.lat, 0, "Lat is 0 before drag");
         t.eq(map.center.lon, 0, "Lon is 0 before drag");
@@ -30,6 +36,7 @@
         t.eq(map.getCenter().lat, res * 5, "Lat is " + (res * 5) + " after drag");
         t.eq(map.getCenter().lon, res * -5, "Lon is " + (res * -5) + " after drag");
     }
+    
   // -->
   </script>
 </head>
