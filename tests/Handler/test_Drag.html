@@ -83,7 +83,7 @@
     }
 
     function test_Handler_Drag_callbacks(t) {
-        t.plan(25);
+        t.plan(28);
         
         var map = new OpenLayers.Map('map', {controls: []});
 
@@ -141,6 +141,9 @@
         map.events.triggerEvent("mousedown", testEvents.down);
         t.ok(handler.started, "mousedown sets the started flag to true");
         t.ok(!handler.dragging, "mouse down sets the dragging flag to false");
+        t.ok(handler.last.x == testEvents.down.xy.x &&
+             handler.last.y == testEvents.down.xy.y,
+             "mouse down sets handler.last correctly");
         OpenLayers.Event.isLeftClick = oldIsLeftClick;
         OpenLayers.Event.stop = oldStop;
         handler.checkModifiers = oldCheckModifiers;
@@ -156,6 +159,19 @@
         handler.started = true;
         map.events.triggerEvent("mousemove", testEvents.move);
         t.ok(handler.dragging, "mousemove sets the dragging flag to true");
+        t.ok(handler.last.x == testEvents.move.xy.x &&
+             handler.last.y == testEvents.move.xy.y,
+             "mouse move sets handler.last correctly");
+        
+        // a second move with the same evt.xy should not trigger move callback
+        // if it does, the test page will complain about a bad plan number
+        var oldMove = handler.callbacks.move;
+        handler.callbacks.move = function() {
+            t.ok(false,
+                 "a second move with the same evt.xy should not trigger a move callback");
+        }
+        map.events.triggerEvent("mousemove", testEvents.move);
+        handler.callbacks.move = oldMove;
         
         // test mouseup
         handler.started = false;
@@ -170,6 +186,7 @@
         testEvents.done = testEvents.up;
         map.events.triggerEvent("mouseup", testEvents.up);
         t.ok(!this.started, "mouseup sets the started flag to false");
+        t.ok(!this.dragging, "mouseup sets the dragging flag to false");
         
         // test mouseout
         handler.started = false;
