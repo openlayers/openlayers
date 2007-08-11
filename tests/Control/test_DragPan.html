@@ -9,6 +9,27 @@
         control = new OpenLayers.Control.DragPan();
         t.ok( control instanceof OpenLayers.Control.DragPan, "new OpenLayers.Control returns object" );
     }
+    function test_Control_DragPan_drag (t) {
+        t.plan(4);
+        control = new OpenLayers.Control.DragPan();
+        map = new OpenLayers.Map("map", {controls:[control]});
+        layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                    "http://labs.metacarta.com/wms/vmap0",
+                    {layers: 'basic'} );
+        map.addLayer(layer); 
+        map.zoomToMaxExtent();
+        map.zoomIn();
+        control.activate();
+        res = map.baseLayer.resolutions[map.getZoom()];
+        t.eq(map.center.lat, 0, "Lat is 0 before drag");
+        t.eq(map.center.lon, 0, "Lon is 0 before drag");
+        map.events.triggerEvent('mousedown', {'type':'mousedown', 'xy':new OpenLayers.Pixel(0,0), 'which':1});
+        map.events.triggerEvent('mousemove', {'type':'mousemove', 'xy':new OpenLayers.Pixel(5,5), 'which':1});
+        map.events.triggerEvent('mouseup', {'type':'mouseup', 'xy':new OpenLayers.Pixel(5,5), 'which':1});
+        
+        t.eq(map.getCenter().lat, res * 5, "Lat is " + (res * 5) + " after drag");
+        t.eq(map.getCenter().lon, res * -5, "Lon is " + (res * -5) + " after drag");
+    }
   // -->
   </script>
 </head>
