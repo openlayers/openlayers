@@ -18,7 +18,7 @@
         '<' + '/ol:root>';
 
     function test_Format_XML_constructor(t) { 
-        t.plan(window.ActiveXObject ? 5 : 4); 
+        t.plan(5); 
          
         var options = {'foo': 'bar'}; 
         var format = new OpenLayers.Format.XML(options); 
@@ -27,10 +27,8 @@
         t.eq(format.foo, "bar", "constructor sets options correctly"); 
         t.eq(typeof format.read, "function", "format has a read function"); 
         t.eq(typeof format.write, "function", "format has a write function");
-        
-        if(format.xmldom) {
-            t.ok(true, "format only has xmldom in browsers with ActiveX");
-        }
+
+        t.ok(!window.ActiveXObject || format.xmldom, "browsers with activeX must have xmldom");
     }
     
     function test_Format_XML_read(t) {
