@@ -2,7 +2,7 @@
 <head>
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript"><!--
-    var map; 
+    var map, control, layer; 
 
     function init_map() {
         control = new OpenLayers.Control.DragPan();
@@ -35,6 +35,41 @@
         
         t.eq(map.getCenter().lat, res * 5, "Lat is " + (res * 5) + " after drag");
         t.eq(map.getCenter().lon, res * -5, "Lon is " + (res * -5) + " after drag");
+    }
+    function test_Control_DragPan_click(t) {
+        t.plan(1);
+        var control = new OpenLayers.Control.DragPan();
+        var map = new OpenLayers.Map("map", {controls:[control]});
+        var layer = new OpenLayers.Layer.WMS("OpenLayers WMS", 
+                                        "http://labs.metacarta.com/wms/vmap0",
+                                        {layers: 'basic'});
+        map.addLayer(layer); 
+        map.zoomToMaxExtent();
+        map.zoomIn();
+        control.activate();
+        map.setCenter = function() {
+            t.ok(false, "map.setCenter should not be called here");
+        };
+        var xy = new OpenLayers.Pixel(0, 0);
+        var down = {
+            'type': 'mousedown',
+            'xy': xy,
+            'which': 1
+        };
+        var move = {
+            'type': 'mousemove',
+            'xy': xy,
+            'which': 1
+        };
+        var up = {
+            'type': 'mouseup',
+            'xy': xy,
+            'which': 1
+        };
+        map.events.triggerEvent('mousedown', down);
+        map.events.triggerEvent('mousemove', move);
+        map.events.triggerEvent('mouseup', up);
+        t.ok(true, "clicking without moving the mouse does not call setCenter");
     }
     
   // -->
