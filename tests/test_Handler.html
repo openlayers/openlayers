@@ -104,11 +104,15 @@
     }
     
     function test_Handler_destroy(t) {
-        t.plan(4);
+        t.plan(5);
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
         map.addControl(control);
         var handler = new OpenLayers.Handler(control);
+        var deactivated = false;
+        handler.deactivate = function() {
+            deactivated = true;
+        };
         t.ok(handler.control,
              "handler has a control prior to destroy");
         t.ok(handler.map,
@@ -118,6 +122,8 @@
              "hanlder.control is null after destroy");
         t.eq(handler.map, null,
              "handler.map is null after destroy");
+        t.ok(deactivated,
+             "handler.deactivate is called by destroy");
     }
     
     function test_Handler_checkModifiers(t) {
