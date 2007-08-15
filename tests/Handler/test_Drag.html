@@ -83,7 +83,7 @@
     }
 
     function test_Handler_Drag_callbacks(t) {
-        t.plan(28);
+        t.plan(30);
         
         var map = new OpenLayers.Map('map', {controls: []});
 
@@ -141,6 +141,9 @@
         map.events.triggerEvent("mousedown", testEvents.down);
         t.ok(handler.started, "mousedown sets the started flag to true");
         t.ok(!handler.dragging, "mouse down sets the dragging flag to false");
+        t.ok(handler.start.x == testEvents.down.xy.x &&
+             handler.start.y == testEvents.down.xy.y,
+             "mouse down sets handler.start correctly");
         t.ok(handler.last.x == testEvents.down.xy.x &&
              handler.last.y == testEvents.down.xy.y,
              "mouse down sets handler.last correctly");
@@ -159,6 +162,9 @@
         handler.started = true;
         map.events.triggerEvent("mousemove", testEvents.move);
         t.ok(handler.dragging, "mousemove sets the dragging flag to true");
+        t.ok(handler.start.x == testEvents.down.xy.x &&
+             handler.start.y == testEvents.down.xy.y,
+             "mouse move leaves handler.start alone");
         t.ok(handler.last.x == testEvents.move.xy.x &&
              handler.last.y == testEvents.move.xy.y,
              "mouse move sets handler.last correctly");
