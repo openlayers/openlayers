@@ -103,7 +103,7 @@
     }   
     
     function test_06_Layer_kaMap_mergeNewParams (t) {
-        t.plan( 5 );
+        t.plan( 4 );
 
         var map = new OpenLayers.Map("map");
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
@@ -114,13 +114,14 @@
 
         map.addLayer(layer);
         map.zoomToMaxExtent();
-        t.ok( !layer.grid[0][0].url.match("chickpeas"), "chickpeas is not in URL of first tile in grid" );
-
+        layer.redraw = function() {
+            t.ok(true, "layer is redrawn after new params merged");
+        }
+        
         layer.mergeNewParams(newParams);
         
         t.eq( layer.params.layers, "sooper", "mergeNewParams() overwrites well");
         t.eq( layer.params.chickpeas, "image/png", "mergeNewParams() adds well");
-        t.ok( layer.grid[0][0].url.match("chickpeas"), "CHICKPEAS is in URL of first tile in grid" );
 
         newParams.chickpeas = 151;
 

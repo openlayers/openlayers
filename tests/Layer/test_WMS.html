@@ -160,12 +160,15 @@
         map.addLayer(layer);
         map.zoomToMaxExtent();
 
+        layer.redraw = function() {
+            t.ok(true, "layer is redrawn after new params merged");
+        }
+
         layer.mergeNewParams(newParams);
         
         t.eq( layer.params.LAYERS, "sooper", "mergeNewParams() overwrites well");
         t.eq( layer.params.CHICKPEAS, "image/png", "mergeNewParams() adds well");
-        t.ok( layer.grid[0][0].url.match("CHICKPEAS"), "CHICKPEAS is in URL of first tile in grid" );
-
+    
         newParams.CHICKPEAS = 151;
 
         t.eq( layer.params.CHICKPEAS, "image/png", "mergeNewParams() makes clean copy of hashtable");
