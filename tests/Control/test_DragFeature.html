@@ -1,0 +1,173 @@
+<html>
+<head>
+    <script src="../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+    function test_Control_DragFeature_constructor(t) {
+        t.plan(3);
+        
+        var options = {
+            geometryTypes: "foo"
+        };
+        var layer = "bar";
+        var control = new OpenLayers.Control.DragFeature(layer, options);
+        t.ok(control instanceof OpenLayers.Control.DragFeature,
+             "new OpenLayers.Control.DragFeature returns an instance");
+        t.eq(control.layer, "bar",
+             "constructor sets layer correctly");        
+        t.eq(control.featureHandler.geometryTypes, "foo",
+             "constructor sets options correctly on feature handler");
+    }
+    
+    function test_Control_DragFeature_destroy(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.DragFeature(layer);
+        control.dragHandler.destroy = function() {
+            t.ok(true,
+                 "control.destroy calls destroy on drag handler");
+        }
+        control.featureHandler.destroy = function() {
+            t.ok(true,
+                 "control.destroy calls destroy on feature handler");
+        }
+        control.destroy();
+        
+    }
+    
+    function test_Control_DragFeature_activate(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.DragFeature(layer);
+        map.addControl(control);
+        t.ok(!control.featureHandler.active,
+             "feature handler is not active prior to activating control");
+        control.activate();
+        t.ok(control.featureHandler.active,
+             "feature handler is active after activating control");
+    }
+
+    function test_Control_DragFeature_deactivate(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.DragFeature(layer);
+        map.addControl(control);
+        
+        control.dragHandler.deactivate = function() {
+            t.ok(true,
+                 "control.deactivate calls deactivate on drag handler");
+        }
+        control.featureHandler.deactivate = function() {
+            t.ok(true,
+                 "control.deactivate calls deactivate on feature handler");
+        }
+        control.deactivate();
+    }
+    
+    function test_Control_DragFeature_over(t) {
+        t.plan(3);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.DragFeature(layer);
+        map.addControl(control);
+        
+        control.activate();
+        t.ok(!control.dragHandler.active,
+             "drag handler is not active before over a feature");
+        
+        // simulate a mouseover on a feature
+        layer.getFeatureFromEvent = function(evt) {
+            return "foo";
+        }
+        map.events.triggerEvent("mousemove");
+        
+        t.eq(control.feature, "foo",
+             "control gets the proper feature from the feature handler");
+        t.ok(control.dragHandler.active,
+             "drag handler activated when over a feature");
+    }
+
+    function test_Control_DragFeature_down(t) {
+        t.plan(3);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.DragFeature(layer);
+        map.addControl(control);
+        
+        control.activate();
+        
+        // simulate a mouseover on a feature
+        layer.getFeatureFromEvent = function(evt) {
+            return "foo";
+        }
+        map.events.triggerEvent("mousemove");
+
+        t.ok(!control.dragHandler.dragging,
+             "control is not dragging before the mousedown");
+        
+        // simulate a mousedown on a feature
+        map.events.triggerEvent("mousedown", {xy: "bar", which: 1});
+
+        t.ok(control.dragHandler.dragging,
+             "drag is dragging after the mousedown");
+        t.eq(control.lastPixel, "bar",
+             "mousedown sets the lastPixel correctly");
+    }
+
+    function test_Control_DragFeature_move(t) {
+        t.plan(3);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.DragFeature(layer);
+        map.addControl(control);
+        map.getResolution = function() {
+            return 2;
+        }
+
+        control.activate();
+
+        // mock up a feature - for the sole purpose of testing mousemove
+        var uid = Math.random();
+        layer.getFeatureFromEvent = function() {
+            var geom = new OpenLayers.Geometry.Point(Math.random(),
+                                                     Math.random());
+            geom.move = function(x, y) {
+                t.eq(x, 2, "move called with dx * res");
+                t.eq(y, -4, "move called with -dy * res");
+            };
+            var feature = new OpenLayers.Feature.Vector(geom);
+            feature.uid = uid;
+            return feature;
+        };
+        layer.drawFeature = function(feature) {
+            t.eq(feature.uid, uid,
+                 "layer.drawFeature called with correct feature");
+        };
+
+        // simulate a mouseover on a feature
+        map.events.triggerEvent("mousemove");
+
+        // simulate a mousedown on a feature
+        var down = new OpenLayers.Pixel(0, 0);
+        map.events.triggerEvent("mousedown", {xy: down, which: 1});
+
+        // simulate a mousemove on a feature
+        var move = new OpenLayers.Pixel(1, 2);
+        map.events.triggerEvent("mousemove", {xy: move, which: 1});
+        
+    }
+
+    </script>
+</head>
+<body>
+    <div id="map" style="width: 400px; height: 250px;"/>
+</body>
+</html>
