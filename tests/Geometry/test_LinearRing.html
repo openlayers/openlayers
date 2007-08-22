@@ -32,15 +32,17 @@
              "addComponent returns true for 1st point");
         t.eq(ring.components.length, 2, "add first point, correct length");
         t.ok(ring.components[0].equals(point), "point one correct");
-        t.ok(ring.components[0].equals(ring.components[ring.components.length - 1]), "first and last point equal");
-    
+        t.ok(ring.components[0] === ring.components[ring.components.length - 1],
+             "first and last point are the same");
+        
         newPoint = new OpenLayers.Geometry.Point(10,10);
         t.ok(ring.addComponent( newPoint ),
              "addComponent returns true for unique point");
         t.eq(ring.components.length, 3, "correctly adds 3rd point");
         t.ok(ring.components[0].equals(point), "point one correct");
         t.ok(ring.components[1].equals(newPoint), "point one correct");
-        t.ok(ring.components[2].equals(ring.components[0]), "first and last point equal");
+        t.ok(ring.components[0] === ring.components[ring.components.length - 1],
+             "first and last point are the same");
         
         var length = ring.components.length;
         var clone = ring.components[length - 1].clone();
@@ -70,7 +72,8 @@
         t.ok(ring.components[0].equals(components[0]), "point one correct");
         t.ok(ring.components[1].equals(components[1]), "point two correct");
         t.ok(ring.components[2].equals(components[3]), "point one correct");
-        t.ok(ring.components[0].equals(ring.components[ring.components.length - 1]), "first and last point equal");
+        t.ok(ring.components[0] === ring.components[ring.components.length - 1],
+             "first and last point are the same");
  
         var testBounds = new OpenLayers.Bounds(0,0,10,10);
         var ringBounds = ring.getBounds();
@@ -81,7 +84,8 @@
         t.ok(ring.components[0].equals(components[0]), "point one correct");
         t.ok(ring.components[1].equals(components[1]), "point two correct");
         t.ok(ring.components[2].equals(components[3]), "point one correct");
-        t.ok(ring.components[0].equals(ring.components[ring.components.length - 1]), "first and last point equal");
+        t.ok(ring.components[0] === ring.components[ring.components.length - 1],
+             "first and last point are the same");
         
      }
     
@@ -95,6 +99,138 @@
         var ring = new OpenLayers.Geometry.LinearRing(components);
         
         t.eq(ring.getArea(), 100, "getArea works lovely");
+    }
+    
+    function test_LinearRing_getLength(t) {
+        t.plan(1);
+        var components = [
+            new OpenLayers.Geometry.Point(0,0), 
+            new OpenLayers.Geometry.Point(0,10),
+            new OpenLayers.Geometry.Point(10,10), 
+            new OpenLayers.Geometry.Point(10,0)
+        ];
+        var ring = new OpenLayers.Geometry.LinearRing(components);
+        t.eq(ring.getLength(), 40, "getLength returns the correct perimiter");
+    }
+    
+    function test_LinearRing_move(t) {
+
+        var nvert = 4,
+            x = new Array(nvert),
+            y = new Array(nvert),
+            components = new Array(nvert);
+            
+        t.plan(2 * (nvert + 1));
+
+        for(var i=0; i<nvert; ++i) {
+            x[i] = Math.random();
+            y[i] = Math.random();
+            components[i] = new OpenLayers.Geometry.Point(x[i], y[i]);
+        }
+        x.push(x[0]);
+        y.push(y[0]);
+
+        var ring = new OpenLayers.Geometry.LinearRing(components);
+
+        var dx = Math.random();
+        var dy = Math.random();
+
+        ring.move(dx, dy);
+        
+        for(var j=0; j<nvert + 1; ++j) {
+            t.eq(ring.components[j].x, x[j] + dx,
+                 "move correctly adjust x coord of " + j + " component");
+            t.eq(ring.components[j].y, y[j] + dy,
+                 "move correctly adjust y coord of " + j + " component");
+        }
+    }
+    
+    function test_LinearRing_rotate(t) {
+        t.plan(10);
+
+        var components = [
+            new OpenLayers.Geometry.Point(10,10), 
+            new OpenLayers.Geometry.Point(11,10),
+            new OpenLayers.Geometry.Point(11,11), 
+            new OpenLayers.Geometry.Point(10,11)
+        ];
+        
+        var ring = new OpenLayers.Geometry.LinearRing(components);
+
+        // rotate a quarter turn around the origin
+        var origin = new OpenLayers.Geometry.Point(0, 0);
+        var angle = Math.PI / 2;
+        
+        ring.rotate(angle, origin);
+        
+        function withinTolerance(i, j) {
+            return Math.abs(i - j) < 1e-9;
+        }
+
+        t.ok(withinTolerance(ring.components[0].x , -10),
+             "rotate correctly adjusts x of component 0");
+        t.ok(withinTolerance(ring.components[0].y, 10),
+             "rotate correctly adjusts y of component 0");
+        t.ok(withinTolerance(ring.components[1].x, -10),
+             "rotate correctly adjusts x of component 1");
+        t.ok(withinTolerance(ring.components[1].y, 11),
+             "rotate correctly adjusts y of component 1");
+        t.ok(withinTolerance(ring.components[2].x, -11),
+             "rotate correctly adjusts x of component 2");
+        t.ok(withinTolerance(ring.components[2].y, 11),
+             "rotate correctly adjusts y of component 2");
+        t.ok(withinTolerance(ring.components[3].x, -11),
+             "rotate correctly adjusts x of component 3");
+        t.ok(withinTolerance(ring.components[3].y, 10),
+             "rotate correctly adjusts y of component 3");
+        t.ok(withinTolerance(ring.components[4].x, -10),
+             "rotate correctly adjusts x of component 4");
+        t.ok(withinTolerance(ring.components[4].y, 10),
+             "rotate correctly adjusts y of component 4");
+    }
+
+    function test_LinearRing_resize(t) {
+        t.plan(10);
+
+        var components = [
+            new OpenLayers.Geometry.Point(10,10), 
+            new OpenLayers.Geometry.Point(11,10),
+            new OpenLayers.Geometry.Point(11,11), 
+            new OpenLayers.Geometry.Point(10,11)
+        ];
+        
+        var ring = new OpenLayers.Geometry.LinearRing(components);
+
+        // rotate a quarter turn around the origin
+        var origin = new OpenLayers.Geometry.Point(0, 0);
+        var scale = Math.random();
+        
+        ring.resize(scale, origin);
+        
+        function withinTolerance(i, j) {
+            return Math.abs(i - j) < 1e-9;
+        }
+
+        t.ok(withinTolerance(ring.components[0].x , 10 * scale),
+             "resize correctly adjusts x of component 0");
+        t.ok(withinTolerance(ring.components[0].y, 10 * scale),
+             "resize correctly adjusts y of component 0");
+        t.ok(withinTolerance(ring.components[1].x, 11 * scale),
+             "resize correctly adjusts x of component 1");
+        t.ok(withinTolerance(ring.components[1].y, 10 * scale),
+             "resize correctly adjusts y of component 1");
+        t.ok(withinTolerance(ring.components[2].x, 11 * scale),
+             "resize correctly adjusts x of component 2");
+        t.ok(withinTolerance(ring.components[2].y, 11 * scale),
+             "resize correctly adjusts y of component 2");
+        t.ok(withinTolerance(ring.components[3].x, 10 * scale),
+             "resize correctly adjusts x of component 3");
+        t.ok(withinTolerance(ring.components[3].y, 11 * scale),
+             "resize correctly adjusts y of component 3");
+        t.ok(withinTolerance(ring.components[4].x, 10 * scale),
+             "resize correctly adjusts x of component 4");
+        t.ok(withinTolerance(ring.components[4].y, 10 * scale),
+             "resize correctly adjusts y of component 4");
     }
 
   // -->
