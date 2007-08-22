@@ -17,21 +17,32 @@
             z-index: 5000;
         }
     </style>
-    <script src="../lib/OpenLayers.js"></script>
+    <script src="http://www.openlayers.org/api/OpenLayers.js"></script
+    <!--<script src="../lib/OpenLayers.js"></script>-->
     <script type="text/javascript">
         <!--
         var map, layer;
         function init(){
-            map = new OpenLayers.Map( $('map'));
-            layer = new OpenLayers.Layer.TileCache("TileCache Layer",
-                    ["http://c0.labs.metacarta.com/wms-c/cache/",
-                     "http://c1.labs.metacarta.com/wms-c/cache/",
-                     "http://c2.labs.metacarta.com/wms-c/cache/",
-                     "http://c3.labs.metacarta.com/wms-c/cache/",
-                     "http://c4.labs.metacarta.com/wms-c/cache/"],
-                    "basic");
-            map.addLayer(layer);
-            map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+            
+            map = new OpenLayers.Map( $('map'), {maxExtent:new OpenLayers.Bounds(-122.6579,37.4901,-122.0738,37.8795), maxResolution:0.000634956337608418,0.000396847711005261,0.000238108626603157,0.000111117359081473,0.0000555586795407366,0.0000380973802565051,0.0000238108626603157,0.00000793695422010523]});
+            
+            tcLayer = new OpenLayers.Layer.TileCache("TileCache Layer",
+                    ["http://web01.dmsolutions.ca/cache/",
+                     "http://web02.dmsolutions.ca/cache/",
+                     "http://web03.dmsolutions.ca/cache/",
+                     "http://web04.dmsolutions.ca/cache/"],
+                    "navteq-sample");
+            
+            wmsLayer = new OpenLayers.Layer.WMS("WMS Layer", "http://sandbox01.dmsolutions.ca/tilecache/tilecache.cgi", {layers:"navteq-sample"});
+            tmsLayer = new OpenLayers.Layer.TMS("TMS Layer", "http://sandbox01.dmsolutions.ca/tilecache/tilecache.cgi/", {layername:"navteq-sample", type: 'png'});
+            
+            map.addLayer(tcLayer);
+            map.addLayer(wmsLayer);
+            map.addLayer(tmsLayer);
+            
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            
+            map.setCenter(new OpenLayers.LonLat(-122.3, 37.7), 1);
         }
 
         OpenLayers.Util.onImageLoadError = function() {
