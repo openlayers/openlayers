@@ -1,7 +1,7 @@
 This license applies to all code and content in the OpenLayers code
 repository at svn.openlayers.org:
 
-Copyright (c) 2005-2006 MetaCarta, Inc.
+Copyright (c) 2005-2007 MetaCarta, Inc.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
