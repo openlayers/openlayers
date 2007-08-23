@@ -1,0 +1,168 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Vector Formats</title>
+    <style type="text/css">
+        html, body {
+            margin: 0;
+            padding: 1em;
+            font: 0.9em Verdana, Arial, sans serif;
+        }
+        input, select, textarea {
+            font: 0.9em Verdana, Arial, sans-serif;
+        }
+        h2 {
+            margin-top: 0.75em;
+            font-size: 1.6em;
+        }
+        #leftcol {
+            position: absolute;
+            top: 0;
+            left: 1em;
+            padding: 0;
+            width: 455px;
+        }
+        #map {
+            width: 450px;
+            height: 225px;
+            border: 1px solid #ccc;
+        }
+        #input {
+            width: 450px;
+        }
+        #text {
+            font-size: 0.85em;
+            margin: 1em 0 1em 0;
+            width: 100%;
+            height: 10em;
+        }
+        #info {
+            position: relative;
+            padding: 2em 0;
+            margin-left: 470px;
+        }
+        #output {
+            font-size: 0.8em;
+            width: 100%;
+            height: 500px;
+            border: 0;
+        }
+        p {
+            margin: 0;
+            padding: 0.75em 0 0.75em 0;
+        }
+    </style>
+    <script src="../lib/Firebug/firebug.js"></script>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+        var map, vectors, drawControls, formats, select;
+        function init(){
+            map = new OpenLayers.Map('map');
+            var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
+
+            vectors = new OpenLayers.Layer.Vector("Vector Layer");
+
+            map.addLayers([wms, vectors]);
+            map.addControl(new OpenLayers.Control.MousePosition());
+            map.addControl(new OpenLayers.Control.EditingToolbar(vectors));
+            
+            var options = {
+                hover: true,
+                onSelect: serialize
+            };
+            select = new OpenLayers.Control.SelectFeature(vectors, options);
+            map.addControl(select);
+            select.activate();
+            
+            formats = {
+                wkt: new OpenLayers.Format.WKT(),
+                geojson: new OpenLayers.Format.GeoJSON()
+            };
+            
+            map.setCenter(new OpenLayers.LonLat(0, 0), 1);
+        }
+        
+        function serialize(feature) {
+            var type = document.getElementById("formatType").value;
+            // second argument for pretty printing (geojson only)
+            var pretty = document.getElementById("prettyPrint").checked;
+            var str = formats[type].write(feature, pretty);
+            // not a good idea in general, just for this demo
+            str = str.replace(/,/g, ', ');
+            document.getElementById('output').value = str;
+        }
+
+        function deserialize() {
+            var element = document.getElementById('text');
+            var type = document.getElementById("formatType").value;
+            var features = formats[type].read(element.value);
+            var bounds;
+            if(features) {
+                if(features.constructor != Array) {
+                    features = [features];
+                }
+                for(var i=0; i<features.length; ++i) {
+                    if (!bounds) {
+                        bounds = features[i].geometry.getBounds();
+                    } else {
+                        bounds.extend(features[i].geometry.getBounds());
+                    }
+                    
+                }
+                vectors.addFeatures(features);
+                map.zoomToExtent(bounds);
+                var plural = (features.length > 1) ? 's' : '';
+                element.value = features.length + ' feature' + plural + ' added'
+            } else {
+                element.value = 'Bad input ' + type;
+            }
+        }
+
+        // preload images
+        (function() {
+            var roots = ["draw_point", "draw_line", "draw_polygon", "pan"];
+            var onImages = [];
+            var offImages = [];
+            for(var i=0; i<roots.length; ++i) {
+                onImages[i] = new Image();
+                onImages[i].src = "../theme/default/img/" + roots[i] + "_on.png";
+                offImages[i] = new Image();
+                offImages[i].src = "../theme/default/img/" + roots[i] + "_on.png";
+            }
+        })();
+
+        // -->
+    </script>
+  </head>
+  <body onload="init()">
+    <div id="leftcol">
+        <h2>OpenLayers Vector Formats Example</h2>
+        <div id="map"></div>
+        <div id="input">
+            <p>Use the drop-down below to select the input/output format
+            for vector features.  New features can be added by using the drawing
+            tools above or by pasting their text representation below.</p>
+            <label for="formatType">Format</label>
+            <select name="formatType" id="formatType">
+                <option value="geojson" selected="selected">GeoJSON</option>
+                <option value="wkt">Well-Known Text (WKT)</option>
+            </select>
+            &nbsp;
+            <label for="prettyPrint">Pretty print</label>
+            <input id="prettyPrint" type="checkbox"
+                   name="prettyPrint" value="1" />
+            <br />
+            <textarea id="text">paste text here...</textarea>
+            <br />
+            <input type="button" value="add feature" onclick="deserialize();" />
+        </div>
+    </div>
+    <div id="info">
+        <p>Use the tools to the left to draw new polygons, lines, and points.
+        After drawing some new features, hover over a feature to see the
+        serialized version below.</p>
+        <textarea id="output"></textarea>
+    </div>
+  </body>
+</html>
