@@ -73,6 +73,7 @@
         
         var dx = 10 * Math.random();
         var dy = 10 * Math.random();
+        point.bounds = "foo";
         point.move(dx, dy);
         t.eq(point.x, x + dx, "move() correctly modifies x");
         t.eq(point.y, y + dy, "move() correctly modifies y");
@@ -90,6 +91,7 @@
         var origin = new OpenLayers.Geometry.Point(5, 10);
         
         // rotate a full revolution
+        point.bounds = "foo";
         point.rotate(2 * Math.PI, origin);
         t.ok(((point.x - x) / x) < tolerance,
              "rotate by 2 * Math.PI returns to the same y");
@@ -113,7 +115,7 @@
         var x = 100 * Math.random();
         var y = 100 * Math.random();
         var point = new OpenLayers.Geometry.Point(x, y);
-        var bounds = point.getBounds();
+        point.bounds = "foo";
         
         var i = 100 * Math.random();
         var j = 100 * Math.random();
