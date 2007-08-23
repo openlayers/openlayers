@@ -39,7 +39,7 @@
 #
 # Note: This is a very rough initial version of this code.
 #
-# -- Copyright 2005-2006 MetaCarta, Inc. / OpenLayers project --
+# -- Copyright 2005-2007 MetaCarta, Inc. / OpenLayers project --
 #
 
 # TODO: Allow files to be excluded. e.g. `Crossbrowser/DebugMode.js`?
