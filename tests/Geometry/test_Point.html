@@ -65,7 +65,7 @@
     }
     
     function test_06_Point_move(t) {
-        t.plan(2);
+        t.plan(3);
         
         var x = 10;
         var y = 20;
@@ -76,10 +76,12 @@
         point.move(dx, dy);
         t.eq(point.x, x + dx, "move() correctly modifies x");
         t.eq(point.y, y + dy, "move() correctly modifies y");
+        
+        t.ok(point.bounds == null, "bounds is cleared after a move()");
     }
 
     function test_Point_rotate(t) {
-        t.plan(4);
+        t.plan(5);
         
         var tolerance = 1e-10;
         var x = 10;
@@ -92,23 +94,26 @@
         t.ok(((point.x - x) / x) < tolerance,
              "rotate by 2 * Math.PI returns to the same y");
         t.ok(((point.y - y) / y) < tolerance,
-             "rotate by 2 * Math.PI returns to the same y")
+             "rotate by 2 * Math.PI returns to the same y");
+        
+        t.ok(point.bounds == null, "bounds is cleared after a rotate()");
         
         // rotate an 1/8 turn
         point.rotate(Math.PI / 4, origin);
         t.ok(((point.x - 1.4644660940672636) / 1.4644660940672636) < tolerance,
              "rotate 1/8 turn correctly");
         t.ok(((point.y - 20.606601717798213) / 20.606601717798213) < tolerance,
-             "rotate 1/8 turn correctly")
+             "rotate 1/8 turn correctly");
     }
 
     function test_Point_resize(t) {
-        t.plan(2);
+        t.plan(3);
         
         var tolerance = 1e-10;
         var x = 100 * Math.random();
         var y = 100 * Math.random();
         var point = new OpenLayers.Geometry.Point(x, y);
+        var bounds = point.getBounds();
         
         var i = 100 * Math.random();
         var j = 100 * Math.random();
@@ -123,7 +128,10 @@
         t.ok((origin.x == i) && (origin.y == j),
              "resize leaves the origin untouched");
         t.ok((((newDistance / oldDistance) - scale) / scale) < tolerance,
-             "resize moves points the correct distance from the origin")        
+             "resize moves points the correct distance from the origin");
+        
+        t.ok(point.bounds == null, "bounds is correctly cleared after a resize()");
+        
     }
 
     function test_Point_equals(t) {
