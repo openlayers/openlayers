@@ -54,6 +54,7 @@ Group: OpenLayers  {
       File: ArgParser  (no auto-title, OpenLayers/Control/ArgParser.js)
       File: ZoomToMaxExtent  (no auto-title, OpenLayers/Control/ZoomToMaxExtent.js)
       File: OverviewMap  (no auto-title, OpenLayers/Control/OverviewMap.js)
+      File: DragFeature  (no auto-title, OpenLayers/Control/DragFeature.js)
       File: DragPan  (no auto-title, OpenLayers/Control/DragPan.js)
       File: DrawFeature  (no auto-title, OpenLayers/Control/DrawFeature.js)
       File: EditingToolbar  (no auto-title, OpenLayers/Control/EditingToolbar.js)
@@ -71,7 +72,6 @@ Group: OpenLayers  {
       File: SelectFeature  (no auto-title, OpenLayers/Control/SelectFeature.js)
       File: ZoomBox  (no auto-title, OpenLayers/Control/ZoomBox.js)
       File: PanZoom  (OpenLayers/Control/PanZoom.js)
-      File: Control.DragFeature  (OpenLayers/Control/DragFeature.js)
       }  # Group: Control
 
    File: Events  (no auto-title, OpenLayers/Events.js)
