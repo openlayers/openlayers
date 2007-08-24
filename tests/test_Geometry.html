@@ -184,7 +184,21 @@
         var g = new OpenLayers.Geometry();
         
         t.eq(g.getArea(), 0, "getArea is 0");
-    }    
+    }
+    
+    function test_08_Geometry_clearBounds(t) {
+        t.plan(2);
+        
+        var g = new OpenLayers.Geometry();
+        g.parent = new OpenLayers.Geometry();
+
+        g.bounds = "foo";
+        g.parent.bounds = "bar";
+        
+        g.clearBounds();
+        t.ok(g.bounds == null, "bounds is correctly cleared");
+        t.ok(g.parent.bounds == null, "parent geometry bounds is correctly cleared");
+    }
 
     function test_99_Geometry_destroy(t) {
         t.plan( 2 );
