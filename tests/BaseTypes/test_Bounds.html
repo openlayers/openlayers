@@ -60,6 +60,11 @@
          bounds = new OpenLayers.Bounds(1,2,3,4);
          t.eq( bounds.toString(), "left-bottom=(1,2) right-top=(3,4)", "toString() returns correct value." ); 
      }
+     function test_Bounds_toArray(t) {
+         t.plan( 1 );
+         bounds = new OpenLayers.Bounds(1,2,3,4);
+         t.eq( bounds.toArray(), [1,2,3,4], "toArray() returns correct value." ); 
+     }
 
      function test_04_Bounds_contains(t) {
          t.plan( 6 );

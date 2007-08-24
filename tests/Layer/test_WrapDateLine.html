@@ -127,7 +127,7 @@
         t.plan( 3 );
 
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
-        layer = new OpenLayers.Layer.WMS(name, url, params, {'wrapDateLine':true});
+        layer = new OpenLayers.Layer.WMS(name, url, params, {'wrapDateLine':true,encodeBBOX:true});
         var m = new OpenLayers.Map('map');
         m.addLayer(layer);
         m.zoomToMaxExtent();
@@ -159,7 +159,7 @@
             {layers: "bathymetry,land_fn,park,drain_fn,drainage," +
                      "prov_bound,fedlimit,rail,road,popplace",
              transparent: "true", format: "image/png"},
-            {wrapDateLine: true, reproject: false});
+            {wrapDateLine: true, reproject: false,encodeBBOX:true});
         var m = new OpenLayers.Map('map');
         m.addLayers([baselayer,layer]);
         m.zoomToMaxExtent();

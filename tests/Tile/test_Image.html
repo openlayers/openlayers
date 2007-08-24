@@ -64,7 +64,7 @@
             SERVICE: "WMS", VERSION: "1.1.1",
             REQUEST: "GetMap", STYLES: "",
             EXCEPTIONS: "application/vnd.ogc.se_inimage", FORMAT: "image/jpeg",
-            SRS: "EPSG:4326", BBOX: "1,2,3,4",
+            SRS: "EPSG:4326", BBOX: [1,2,3,4],
             WIDTH: String(size.w), HEIGHT: String(size.h)
         };
         t.eq( img.src,
@@ -86,7 +86,7 @@
         var size = new OpenLayers.Size(5,6);
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-            "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}, {reproject:false}); 
+            "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}, {reproject:false, encodeBBOX: true}); 
         map.addLayer(layer);
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-185,-90,-180,90), url, size);
         tile.draw()

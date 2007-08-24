@@ -70,6 +70,45 @@
             SERVICE: "WMS", VERSION: "1.1.1",
             REQUEST: "GetMap", STYLES: "",
             EXCEPTIONS: "application/vnd.ogc.se_inimage",
+            SRS: "EPSG:4326", BBOX: [1,2,3,4],
+            WIDTH: "256", HEIGHT: "256"
+        });
+        t.eq( img.src,
+             url + "?" + OpenLayers.Util.getParameterString(tParams),
+             "image src is created correctly via addtile" );
+        t.eq( tile.frame.style.top, "6px", "image top is set correctly via addtile" );
+        t.eq( tile.frame.style.left, "5px", "image top is set correctly via addtile" );
+
+        var firstChild = layer.div.firstChild.firstChild;
+        if (!isMozilla)
+            t.ok( true, "skipping element test outside of Mozilla");
+        else
+            t.ok( firstChild instanceof HTMLElement, "div first child is an image object" );
+        t.eq( firstChild.src,
+             url + "?" + OpenLayers.Util.getParameterString(tParams),
+             "div first child is correct image object" );
+        t.eq( tile.position.toString(), "x=5,y=6", "Position of tile is set correctly." );
+        map.destroy();
+    }
+    
+    function test_Layer_WMS_bboxEncoding (t) {
+        t.plan( 6 );
+    
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.WMS(name, url, params, {encodeBBOX:true});
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
+        var pixel = new OpenLayers.Pixel(5,6);
+        var tile = layer.addTile(new OpenLayers.Bounds(1,2,3,4), pixel);
+        tile.draw();
+
+        var img = tile.imgDiv;
+        var tParams = OpenLayers.Util.extend({},
+                        OpenLayers.Util.upperCaseObject(params));
+        tParams = OpenLayers.Util.extend(tParams, {
+            SERVICE: "WMS", VERSION: "1.1.1",
+            REQUEST: "GetMap", STYLES: "",
+            EXCEPTIONS: "application/vnd.ogc.se_inimage",
             SRS: "EPSG:4326", BBOX: "1,2,3,4",
             WIDTH: "256", HEIGHT: "256"
         });
