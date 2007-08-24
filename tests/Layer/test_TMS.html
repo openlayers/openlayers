@@ -120,6 +120,16 @@
         tileurl = layer.getURL(new OpenLayers.Bounds(3.515625,45,4.21875,45.703125));
         t.eq(tileurl, "http://tilecache1/1.0.0/basic/9/261/192.png", "Tile URL is deterministic");
     }
+    function test_Layer_TMS_Rounding(t) {
+        t.plan(1);
+            m = new OpenLayers.Map("map", {'maxExtent':new OpenLayers.Bounds(-122.6579,37.4901,-122.0738,37.8795)});
+            layer = new OpenLayers.Layer.TMS( "TMS", 
+                    "http://labs.metacarta.com/wms-c/Basic.py/", {layername: 'basic', type:'png', resolutions:[0.000634956337608418]} );
+            m.addLayer(layer);
+            m.zoomToMaxExtent()
+            t.eq(layer.getURL(layer.grid[3][3].bounds), "http://labs.metacarta.com/wms-c/Basic.py/1.0.0/basic/0/1/1.png", "TMS tiles around rounded properly.");
+    }        
+            
 
     function test_11_Layer_TMS_setMap(t) {
 
