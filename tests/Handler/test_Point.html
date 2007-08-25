@@ -1,0 +1,73 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    function test_Handler_Point_constructor(t) {
+        t.plan(3);
+        var control = new OpenLayers.Control();
+        control.id = Math.random();
+        var callbacks = {foo: "bar"};
+        var options = {bar: "foo"};
+        
+        var oldInit = OpenLayers.Handler.prototype.initialize;
+        
+        OpenLayers.Handler.prototype.initialize = function(con, call, opt) {
+            t.eq(con.id, control.id,
+                 "constructor calls parent with the correct control");
+            t.eq(call, callbacks,
+                 "constructor calls parent with the correct callbacks");
+            t.eq(opt, options,
+                 "constructor calls parent with the correct options");
+        }
+        var handler = new OpenLayers.Handler.Point(control, callbacks, options);
+
+        OpenLayers.Handler.prototype.initialize = oldInit;
+    }
+
+    function test_Handler_Point_activation(t) {
+        t.plan(3);
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.Point(control);
+        handler.active = true;
+        var activated = handler.activate();
+        t.ok(!activated,
+             "activate returns false if the handler was already active");
+        handler.active = false;
+        activated = handler.activate();
+        t.ok(activated,
+             "activate returns true if the handler was not already active");
+        activated = handler.deactivate();
+        t.ok(activated,
+             "deactivate returns true if the handler was active already");
+    }
+
+    function test_Handler_Point_bounds(t) {
+        t.plan(4);
+        var map = new OpenLayers.Map('map');
+        map.addLayer(new OpenLayers.Layer.WMS("", "", {}));
+        map.zoomToMaxExtent();
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.Point(control);
+        var activated = handler.activate();
+        var evt = {xy: new OpenLayers.Pixel(150, 75), which: 1};
+        handler.mousedown(evt);
+        t.eq(handler.point.geometry.x, 0, "X is correct"); 
+        t.eq(handler.point.geometry.y, 0, "Y is correct"); 
+        t.ok(handler.point.geometry.getBounds().equals(new OpenLayers.Bounds(0,0,0,0)), "Correct bounds"); 
+        var evt = {xy: new OpenLayers.Pixel(175, 100), which: 1};
+        handler.mousemove(evt);
+        t.ok(!handler.point.geometry.getBounds().equals(new OpenLayers.Bounds(0,0,0,0)), "Bounds changed after moving mouse"); 
+    }     
+        
+    
+
+  // -->
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 300px; height: 150px;"/>
+</body>
+</html>
