@@ -62,6 +62,29 @@
         t.ok(!handler.point.geometry.getBounds().equals(new OpenLayers.Bounds(0,0,0,0)), "Bounds changed after moving mouse"); 
     }     
         
+    function test_Handler_Point_destroy(t) {
+        t.plan(4);
+        var map = new OpenLayers.Map('map');
+        map.addLayer(new OpenLayers.Layer.WMS("", "", {}));
+        map.zoomToMaxExtent();
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.Point(control, {foo: 'bar'});
+
+        handler.activate();
+        var evt = {xy: new OpenLayers.Pixel(150, 75), which: 1};
+        handler.mousedown(evt);
+
+        t.ok(handler.layer,
+             "handler has a layer prior to destroy");
+        t.ok(handler.point,
+             "handler has a point prior to destroy");
+        handler.destroy();
+        t.eq(handler.layer, null,
+             "handler.layer is null after destroy");
+        t.eq(handler.point, null,
+             "handler.point is null after destroy");
+    }
     
 
 

@@ -66,6 +66,33 @@
         t.ok(!handler.line.geometry.getBounds().equals(new OpenLayers.Bounds(0,-35.15625,35.15625,0)), "Correct bounds after dragging without letting go. (Came out as "+handler.line.geometry.getBounds().toBBOX() + ".)"); 
     }     
         
+    function test_Handler_Path_destroy(t) {
+        t.plan(6);
+        var map = new OpenLayers.Map('map');
+        map.addLayer(new OpenLayers.Layer.WMS("", "", {}));
+        map.zoomToMaxExtent();
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.Path(control, {foo: 'bar'});
+
+        handler.activate();
+        var evt = {xy: new OpenLayers.Pixel(150, 75), which: 1};
+        handler.mousedown(evt);
+
+        t.ok(handler.layer,
+             "handler has a layer prior to destroy");
+        t.ok(handler.point,
+             "handler has a point prior to destroy");
+        t.ok(handler.line,
+             "handler has a line prior to destroy");
+        handler.destroy();
+        t.eq(handler.layer, null,
+             "handler.layer is null after destroy");
+        t.eq(handler.point, null,
+             "handler.point is null after destroy");
+        t.eq(handler.line, null,
+             "handler.line is null after destroy");
+    }
     
 
 
