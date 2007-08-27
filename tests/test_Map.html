@@ -1,6 +1,5 @@
 <html>
 <head>
-  <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
   <script src="../lib/OpenLayers.js"></script>
   <script type="text/javascript"><!--
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
@@ -269,11 +268,13 @@
         map = new OpenLayers.Map('map');
         var wmsLayer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
             "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
-        var google = new OpenLayers.Layer.Google("GOOG");
-        map.addLayers([wmsLayer,google]);
+        var tmsLayer = new OpenLayers.Layer.TMS("TMS",
+                                    "http://labs.metacarta.com/wms-c/Basic.py/",
+                                    {'layername':'basic', 'type':'png'});
+        map.addLayers([wmsLayer,tmsLayer]);
         map.setBaseLayer(wmsLayer);
         map.zoomToMaxExtent();
-        map.setBaseLayer(google);
+        map.setBaseLayer(tmsLayer);
         map.zoomIn();
         map.pan(0, -200);
         map.setBaseLayer(wmsLayer);
