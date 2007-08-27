@@ -8,12 +8,11 @@
         }
     </style>
     <script src="../lib/OpenLayers.js"></script>
-    <script src="../lib/OpenLayers/Layer/MapServer/Untiled.js"></script>
     <script type="text/javascript">
         window.onload = function(){
             var map = new OpenLayers.Map( 'map', {maxResolution: 'auto'} );
-            var layer = new OpenLayers.Layer.MapServer.Untiled( "MapServer Untiled", 
-                    "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+            var layer = new OpenLayers.Layer.MapServer( "MapServer Untiled", 
+                    "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'}, {singleTile: true} );
             map.addLayer(layer);
             map.setCenter(new OpenLayers.LonLat(0, 0), 1);
             map.addControl( new OpenLayers.Control.LayerSwitcher() );
