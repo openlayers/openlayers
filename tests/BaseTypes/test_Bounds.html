@@ -4,7 +4,17 @@
   <script type="text/javascript"><!--
     var bounds; 
     function test_01_Bounds_constructor (t) {
-        t.plan( 11 );
+        t.plan( 17 );
+        
+        bounds = new OpenLayers.Bounds();
+        t.ok( bounds instanceof OpenLayers.Bounds, "new OpenLayers.Bounds returns Bounds object" );
+        t.eq( bounds.CLASS_NAME, "OpenLayers.Bounds", "bounds.CLASS_NAME is set correctly" );
+        t.eq( bounds.left, null, "bounds.left is initialized to null" );
+        t.eq( bounds.bottom, null, "bounds.bottom is initialized to null" );
+        t.eq( bounds.right, null, "bounds.right is initialized to null" );
+        t.eq( bounds.top, null, "bounds.top is initialized to null" );
+
+
         bounds = new OpenLayers.Bounds(0,2,10,4);
         t.ok( bounds instanceof OpenLayers.Bounds, "new OpenLayers.Bounds returns Bounds object" );
         t.eq( bounds.CLASS_NAME, "OpenLayers.Bounds", "bounds.CLASS_NAME is set correctly" );
@@ -298,11 +308,19 @@
 
 
      function test_16_Bounds_extend(t) {
-        t.plan( 8 );
+        t.plan( 9 );
 
-        var originalBounds = new OpenLayers.Bounds(10,20,50,80);
-
+        var originalBounds = new OpenLayers.Bounds();
         var bounds = originalBounds.clone();
+      //null bounds to start
+        bounds.extend(new OpenLayers.LonLat(4,5));        
+        t.ok(bounds.equals(new OpenLayers.Bounds(4,5,4,5)), "uninitialized bounds can be safely extended");
+
+
+
+        originalBounds = new OpenLayers.Bounds(10,20,50,80);
+
+        bounds = originalBounds.clone();
         
       //null obj
         bounds.extend(null);        
