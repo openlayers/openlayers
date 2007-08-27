@@ -49,6 +49,32 @@
         map.addControl(control);
         t.eq(map.controls[3].div.firstChild.nodeName, "A", "Permalink control creates div with 'a' inside." );
   }
+  function test_05_Control_Permalink_base_with_query (t) {
+      t.plan( 3 );
+  
+      control = new OpenLayers.Control.Permalink('permalink', "./edit.html?foo=bar" );
+      map = new OpenLayers.Map('map');
+      layer = new OpenLayers.Layer.WMS('Test Layer', "http://example.com" );
+      map.addLayer(layer);
+      if (!map.getCenter())  map.zoomToMaxExtent();
+      map.addControl(control);
+      map.pan(5, 0);
+      OpenLayers.Util.getElement('edit_permalink').href = './edit.html?foo=bar&lat=0&lon=1.75781&zoom=2&layers=B';
+      t.eq(OpenLayers.Util.getElement('permalink').href, OpenLayers.Util.getElement('edit_permalink').href, "Panning sets permalink with base and querystring");
+      
+      control = new OpenLayers.Control.Permalink('permalink', "./edit.html?foo=bar&" );
+      map.addControl(control);
+      map.pan(0, 0);
+      t.eq(OpenLayers.Util.getElement('permalink').href, OpenLayers.Util.getElement('edit_permalink').href, "Panning sets permalink with base and querystring ending with '&'");
+      
+      control = new OpenLayers.Control.Permalink('permalink', "./edit.html?" );
+      OpenLayers.Util.getElement('edit_permalink').href = './edit.html?lat=0&lon=1.75781&zoom=2&layers=B';
+      map.addControl(control);
+      map.pan(5, 0);
+      map.pan(-5, 0);
+      t.eq(OpenLayers.Util.getElement('permalink').href, OpenLayers.Util.getElement('edit_permalink').href, "Panning sets permalink with base and querystring ending with '?'");
+
+  }
   // -->
   </script>
 </head>
