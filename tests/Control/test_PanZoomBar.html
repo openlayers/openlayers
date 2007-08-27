@@ -1,7 +1,7 @@
 <html>
 <head>
   <script src="../../lib/OpenLayers.js"></script>
-  <script type="text/javascript"><!--
+  <script type="text/javascript">
     var map; 
     function test_01_Control_PanZoomBar_constructor (t) {
         t.plan( 4 );
@@ -33,7 +33,7 @@
         map.addControl(control2, new OpenLayers.Pixel(100,100));
         t.eq( control2.div.style.top, "100px", "2nd control div is located correctly");
     }
-  // -->
+
   </script>
 </head>
 <body>
