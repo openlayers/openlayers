@@ -49,6 +49,34 @@
         layer.destroy();
         t.eq( layer.map, null, "layer.map is null after destroy" );
     }
+
+    function test_03_Layer_Markers_getDataExtent(t) {
+        t.plan( 4 );
+
+        var layer = {};
+        var ret = OpenLayers.Layer.Markers.prototype.getDataExtent.apply(layer, []);
+        t.eq(ret, null, "does not crash, returns null on layer with null 'this.markers'");
+
+        layer.markers = [];
+        ret = OpenLayers.Layer.Markers.prototype.getDataExtent.apply(layer, []);
+        t.eq(ret, null, "returns null on layer with empty 'this.markers'");
+        
+        layer.markers.push({
+            'lonlat': new OpenLayers.LonLat(4,5)
+        });
+        var expectedBounds = new OpenLayers.Bounds(4,5,4,5);
+        ret = OpenLayers.Layer.Markers.prototype.getDataExtent.apply(layer, []);
+        t.ok(ret.equals(expectedBounds), "returns expected bounds with only one marker");
+
+        layer.markers.push({
+            'lonlat': new OpenLayers.LonLat(1,2)
+        });
+        var expectedBounds = new OpenLayers.Bounds(1,2,4,5);
+        ret = OpenLayers.Layer.Markers.prototype.getDataExtent.apply(layer, []);
+        t.ok(ret.equals(expectedBounds), "returns expected bounds with multiple markers");
+
+    }
+
   // -->
   </script>
 </head>
