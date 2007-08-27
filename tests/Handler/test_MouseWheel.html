@@ -72,17 +72,20 @@
         var events = ["mousemove"];
         var nonevents = ["dblclick", "resize", "focus", "blur"];
         map.events.registerPriority = function(type, obj, func) {
-            t.eq(OpenLayers.Util.indexOf(nonevents, type), -1,
-                 "registered method is not one of the events " +
-                 "that should not be handled");
-            t.ok(OpenLayers.Util.indexOf(events, type) > -1,
-                 "activate calls registerPriority with browser event: " + type);
-            t.eq(typeof func, "function",
-                 "activate calls registerPriority with a function");
-            t.eq(func(), type,
-                 "activate calls registerPriority with the correct method");
-            t.eq(obj["CLASS_NAME"], "OpenLayers.Handler.MouseWheel",
-                 "activate calls registerPriority with the handler");
+            var r = func();
+            if(typeof r == "string") {
+                t.eq(OpenLayers.Util.indexOf(nonevents, type), -1,
+                     "registered method is not one of the events " +
+                     "that should not be handled");
+                t.ok(OpenLayers.Util.indexOf(events, type) > -1,
+                     "activate calls registerPriority with browser event: " + type);
+                t.eq(typeof func, "function",
+                     "activate calls registerPriority with a function");
+                t.eq(func(), type,
+                     "activate calls registerPriority with the correct method");
+                t.eq(obj["CLASS_NAME"], "OpenLayers.Handler.MouseWheel",
+                     "activate calls registerPriority with the handler");
+            }
         }
         
         // set browser event like properties on the handler
