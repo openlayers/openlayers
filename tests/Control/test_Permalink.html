@@ -21,11 +21,7 @@
         if (!map.getCenter())  map.zoomToMaxExtent();
         map.addControl(control);
         map.pan(5, 0);
-        if (/MSIE/.test(navigator.userAgent)) {
-            t.eq(OpenLayers.Util.getElement('permalink').href, "?lat=0&lon=1.75781&zoom=2&layers=B", "Panning sets permalink");
-        } else {
-            t.eq(OpenLayers.Util.getElement('permalink').href, location+"?lat=0&lon=1.75781&zoom=2&layers=B", "Panning sets permalink");
-        }
+        t.eq(OpenLayers.Util.getElement('permalink').href, location+"?lat=0&lon=1.75781&zoom=2&layers=B", "Panning sets permalink");
     }
     function test_03_Control_Permalink_updateLinksBase (t) {
         t.plan( 2 );
