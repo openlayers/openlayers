@@ -105,6 +105,20 @@
         layer.setVisibility(true);
         t.eq(layer.visibility, true, "layer pane is now visible");
     }
+
+    
+    function test_Layer_EventPane_removeLayer(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map('map');
+        
+        layer = new OpenLayers.Layer.EventPane('Test Layer');
+        layer.loadMapObject = function() { };
+        layer.getWarningHTML = function() { this.warning = true; return ""; };
+        map.addLayer(layer);
+        map.removeLayer(layer);
+        t.eq(layer.pane, null, "Layer.pane is null after being removed.");
+   }      
+
   // -->
   </script>
 </head>
