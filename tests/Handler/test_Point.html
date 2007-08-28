@@ -52,11 +52,13 @@
         map.addControl(control);
         var handler = new OpenLayers.Handler.Point(control);
         var activated = handler.activate();
-        var evt = {xy: new OpenLayers.Pixel(150, 75), which: 1};
+        var px = new OpenLayers.Pixel(150, 75);
+        var evt = {xy: px, which: 1};
         handler.mousedown(evt);
-        t.eq(handler.point.geometry.x, 0, "X is correct"); 
-        t.eq(handler.point.geometry.y, 0, "Y is correct"); 
-        t.ok(handler.point.geometry.getBounds().equals(new OpenLayers.Bounds(0,0,0,0)), "Correct bounds"); 
+        var lonlat = map.getLonLatFromPixel(px);
+        t.eq(handler.point.geometry.x, lonlat.lon, "X is correct"); 
+        t.eq(handler.point.geometry.y, lonlat.lat, "Y is correct"); 
+        t.ok(handler.point.geometry.getBounds().equals(new OpenLayers.Bounds(lonlat.lon,lonlat.lat,lonlat.lon,lonlat.lat)), "Correct bounds"); 
         var evt = {xy: new OpenLayers.Pixel(175, 100), which: 1};
         handler.mousemove(evt);
         t.ok(!handler.point.geometry.getBounds().equals(new OpenLayers.Bounds(0,0,0,0)), "Bounds changed after moving mouse"); 
