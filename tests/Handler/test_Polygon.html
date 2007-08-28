@@ -1,0 +1,110 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+    function test_Handler_Polygon_constructor(t) {
+        t.plan(3);
+        var control = new OpenLayers.Control();
+        control.id = Math.random();
+        var callbacks = {foo: "bar"};
+        var options = {bar: "foo"};
+
+        var oldInit = OpenLayers.Handler.prototype.initialize;
+
+        OpenLayers.Handler.prototype.initialize = function(con, call, opt) {
+            t.eq(con.id, control.id,
+                 "constructor calls parent with the correct control");
+            t.eq(call, callbacks,
+                 "constructor calls parent with the correct callbacks");
+            t.eq(opt, options,
+                 "constructor calls parent with the correct options");
+        }
+        var handler = new OpenLayers.Handler.Polygon(control, callbacks, options);
+
+        OpenLayers.Handler.prototype.initialize = oldInit;
+    }
+
+    function test_Handler_Polygon_activation(t) {
+        t.plan(3);
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.Polygon(control);
+        handler.active = true;
+        var activated = handler.activate();
+        t.ok(!activated,
+             "activate returns false if the handler was already active");
+        handler.active = false;
+        activated = handler.activate();
+        t.ok(activated,
+             "activate returns true if the handler was not already active");
+        activated = handler.deactivate();
+        t.ok(activated,
+             "deactivate returns true if the handler was active already");
+    }
+
+    function test_Handler_Polygon_bounds(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map('map');
+        map.addLayer(new OpenLayers.Layer.WMS("", "", {}));
+        map.zoomToMaxExtent();
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.Polygon(control, {});
+        var activated = handler.activate();
+
+        var evt = {xy: new OpenLayers.Pixel(150, 75), which: 1};
+        handler.mousedown(evt);
+        handler.mouseup(evt);
+        var evt = {xy: new OpenLayers.Pixel(175, 100), which: 1};
+        handler.mousedown(evt);
+        handler.mouseup(evt);
+        t.ok(handler.line.geometry.getBounds().equals(new OpenLayers.Bounds(0,-35.15625,35.15625,0)), "Correct bounds");
+        var evt = {xy: new OpenLayers.Pixel(175, 100), which: 1};
+        handler.mousedown(evt);
+        var evt = {xy: new OpenLayers.Pixel(125, 100), which: 1};
+        handler.mousemove(evt);
+        t.ok(handler.polygon.geometry.getBounds().equals(new OpenLayers.Bounds(0,-35.15625,35.15625,0)),
+             "Correct bounds after dragging without letting go. (Came out as "+handler.line.geometry.getBounds().toBBOX() + ".)");
+    }
+
+    function test_Handler_Polygon_destroy(t) {
+        t.plan(8);
+        var map = new OpenLayers.Map('map');
+        map.addLayer(new OpenLayers.Layer.WMS("", "", {}));
+        map.zoomToMaxExtent();
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.Polygon(control, {foo: 'bar'});
+
+        handler.activate();
+        var evt = {xy: new OpenLayers.Pixel(150, 75), which: 1};
+        handler.mousedown(evt);
+
+        t.ok(handler.layer,
+             "handler has a layer prior to destroy");
+        t.ok(handler.point,
+             "handler has a point prior to destroy");
+        t.ok(handler.line,
+             "handler has a line prior to destroy");
+        t.ok(handler.polygon,
+             "handler has a polygon prior to destroy");
+        handler.destroy();
+        t.eq(handler.layer, null,
+             "handler.layer is null after destroy");
+        t.eq(handler.point, null,
+             "handler.point is null after destroy");
+        t.eq(handler.line, null,
+             "handler.line is null after destroy");
+        t.eq(handler.polygon, null,
+             "handler.polygon is null after destroy");
+    }
+
+
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 300px; height: 150px;"/>
+</body>
+</html>
