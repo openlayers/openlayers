@@ -189,6 +189,24 @@
         t.ok( layer.tileSize != null, "tileSize has been set");
         t.ok( (layer.tileSize.h == 50) && (layer.tileSize.w == 500), "tileSize has been set correctly");
     }
+    function test_12_Layer_KaMap_getTileBounds(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.KaMap(name, url, params);
+        
+        var newParams = { layers: 'sooper', 
+                          chickpeas: 'image/png'};
+
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        map.zoomIn();
+        var bounds = layer.getTileBounds(new OpenLayers.Pixel(200,200));
+        t.eq(bounds.toBBOX(), "-180,0,0,180", "get tile bounds returns correct bounds"); 
+        map.pan(200,0);
+        var bounds = layer.getTileBounds(new OpenLayers.Pixel(200,200));
+        t.eq(bounds.toBBOX(), "0,0,180,180", "get tile bounds returns correct bounds after pan"); 
+    }
 
     function test_99_Layer_KaMap_destroy (t) {
 

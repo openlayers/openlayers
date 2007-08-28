@@ -528,6 +528,24 @@
         height = layer.tileSize.h;
         t.ok(width == parseInt(width) && height == parseInt(height), "calculated tileSize width/height are integer values");
     }
+    function test_12_Layer_Grid_getTileBounds(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map2");
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.WMS(name, url, params);
+        
+        var newParams = { layers: 'sooper', 
+                          chickpeas: 'image/png'};
+
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        map.zoomIn();
+        var bounds = layer.getTileBounds(new OpenLayers.Pixel(200,200));
+        t.eq(bounds.toBBOX(), "-180,-90,0,90", "get tile bounds returns correct bounds"); 
+        map.pan(200,0);
+        var bounds = layer.getTileBounds(new OpenLayers.Pixel(200,200));
+        t.eq(bounds.toBBOX(), "0,-90,180,90", "get tile bounds returns correct bounds after pan"); 
+    }
 
     function test_99_Layer_Grid_destroy (t) {
 
@@ -563,5 +581,6 @@
 </head>
 <body>
 <div id="map" style="width:499px;height:549px;display:none"></div>
+<div id="map2" style="width:500px;height:550px;display:none"></div>
 </body>
 </html>
