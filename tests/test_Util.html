@@ -569,16 +569,22 @@
 
     function test_Util_getParameters(t) {
         t.plan(6);
-        t.eq(OpenLayers.Util.getParameters('http://www.example.com'), {}, "getArgs works when args = ''");
-        t.eq(OpenLayers.Util.getParameters('http://www.example.com?'), {}, "getArgs works when args = '?'");
+        t.eq(OpenLayers.Util.getParameters('http://www.example.com'), {},
+             "getParameters works when args = ''");
+        t.eq(OpenLayers.Util.getParameters('http://www.example.com?'), {},
+             "getParameters works when args = '?'");
         t.eq(OpenLayers.Util.getParameters('http://www.example.com?hello=world&foo=bar'),
-                                     {'hello' : 'world', 'foo': 'bar'}, "getArgs works when args = '?hello=world&foo=bar'");
+             {'hello' : 'world', 'foo': 'bar'},
+             "getParameters works when args = '?hello=world&foo=bar'");
         t.eq(OpenLayers.Util.getParameters('http://www.example.com?hello=&foo=bar'),
-                                     {'hello' : '', 'foo': 'bar'}, "getArgs works when args = '?hello=&foo=bar'");
+             {'hello' : '', 'foo': 'bar'},
+             "getParameters works when args = '?hello=&foo=bar'");
         t.eq(OpenLayers.Util.getParameters('http://www.example.com?foo=bar#bugssucks'),
-                                     {'foo': 'bar'}, "getArgs works when using a fragment identifier");
+             {'foo': 'bar'},
+             "getParameters works when using a fragment identifier");
         t.eq(OpenLayers.Util.getParameters('http://www.example.com?foo=bar,pub,disco'),
-                                     {'foo': ['bar', 'pub', 'disco']}, "getArgs works with a comma-separated value (parses into array)");
+             {'foo': ['bar', 'pub', 'disco']},
+             "getParameters works with a comma-separated value (parses into array)");
     }
 
     function test_Util_getArgs(t) {

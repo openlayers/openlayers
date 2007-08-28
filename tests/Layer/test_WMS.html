@@ -317,7 +317,7 @@
         map.setCenter(new OpenLayers.LonLat(0,0), 5);
         var tile = layer.grid[0][0];
         var request = layer.getURL(tile.bounds);
-        var args = OpenLayers.Util.getArgs(request);
+        var args = OpenLayers.Util.getParameters(request);
         t.eq(parseInt(args['WIDTH']),
              tile.size.w,
              "layer without gutter requests images that are as wide as the tile");
@@ -338,7 +338,7 @@
         map.setCenter(new OpenLayers.LonLat(0,0), 5);
         var tile = layer.grid[0][0];
         var request = layer.getURL(tile.bounds);
-        var args = OpenLayers.Util.getArgs(request);
+        var args = OpenLayers.Util.getParameters(request);
         t.eq(parseInt(args['WIDTH']),
              tile.size.w + (2 * gutter),
              "layer with gutter requests images that are wider by twice the gutter");
