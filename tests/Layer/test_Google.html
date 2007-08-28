@@ -129,9 +129,29 @@
         }
     }
 
+    function test_Layer_Google_overlay(t) {
+        // Test for #849.
+        t.plan(1);
+        map = new OpenLayers.Map( 'map' , 
+        { controls: [] , 'numZoomLevels':20});
+
+        var satellite = new OpenLayers.Layer.Google( "Google Satellite" , {type: G_SATELLITE_MAP, 'maxZoomLevel':18} );
+        layer = new OpenLayers.Layer.WMS.Untiled( "OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0", {layers: 'basic', 'transparent':true}, 
+                  {isBaseLayer: false} );
+
+        map.addLayers([satellite, layer]);
+        map.setCenter(new OpenLayers.LonLat(10.205188,48.857593), 5);
+        map.zoomIn();
+        var size = map.getSize();
+        var px = new OpenLayers.Pixel(size.w, size.h);
+        var br = map.getLonLatFromPixel(px);
+        t.ok(layer.grid[0][0].bounds.containsLonLat(br), "Bottom right pixel is covered by untiled WMS layer");
+    }    
+
   </script>
 </head>
 <body>
-  <div id="map"></div>
+  <div id="map" style="width:500px; height: 500px"></div>
 </body>
 </html>
