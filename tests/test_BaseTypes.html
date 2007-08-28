@@ -115,7 +115,7 @@
     }
 
     function test_07_Function_bind(t) {
-        t.plan(5);
+        t.plan(12);
 
         g_obj = {};
         g_Arg1 = {};
@@ -128,12 +128,15 @@
             t.ok(y == g_Arg2, "arg2 passed correctly");    
             t.ok(z == g_Arg3, "arg3 passed correctly");    
             t.ok(a == g_Arg4, "arg4 passed correctly");    
+            t.eq(arguments.length, 4, "correct number of arguments ((regression test for #876))");
         };
 
         var newFoo = foo.bind(g_obj, g_Arg1, g_Arg2);
-        
-        newFoo(g_Arg3, g_Arg4);
 
+        newFoo(g_Arg3, g_Arg4);
+        
+        //run again to make sure the arguments are handled correctly
+        newFoo(g_Arg3, g_Arg4);
     }
 
     function test_08_Function_bindAsEventListener(t) {
