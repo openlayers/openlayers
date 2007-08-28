@@ -132,11 +132,11 @@
     function test_Layer_Google_overlay(t) {
         // Test for #849.
         t.plan(1);
-        map = new OpenLayers.Map( 'map' , 
+        var map = new OpenLayers.Map( 'map' , 
         { controls: [] , 'numZoomLevels':20});
 
         var satellite = new OpenLayers.Layer.Google( "Google Satellite" , {type: G_SATELLITE_MAP, 'maxZoomLevel':18} );
-        layer = new OpenLayers.Layer.WMS.Untiled( "OpenLayers WMS", 
+        var layer = new OpenLayers.Layer.WMS.Untiled( "OpenLayers WMS", 
                 "http://labs.metacarta.com/wms/vmap0", {layers: 'basic', 'transparent':true}, 
                   {isBaseLayer: false} );
 
