@@ -10,7 +10,12 @@ configFilename = "library.cfg"
 outputFilename = "OpenLayers.js"
 
 if len(sys.argv) > 1:
-    configFilename = sys.argv[1] + ".cfg"
+    configFilename = sys.argv[1]
+    extension = configFilename[-4:]
+
+    if extension  != ".cfg":
+        configFilename = sys.argv[1] + ".cfg"
+
 if len(sys.argv) > 2:
     outputFilename = sys.argv[2]
 
