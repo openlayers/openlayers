@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" debug="true">
+  <head>
+    <style type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            width: 512px;
+            height: 256px;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+        function init(){
+            var map = new OpenLayers.Map('map');
+
+            map.addControl(new OpenLayers.Control.MousePosition());
+
+            var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0",
+                {layers: 'basic'} );
+
+            map.addLayers([ol_wms]);
+            if (!map.getCenter()) map.zoomToMaxExtent();
+            
+            map.events.register("mousemove", map, function(e) { 
+                var position = this.events.getMousePosition(e);
+                OpenLayers.Util.getElement("coords").innerHTML = position;
+            });
+        }
+        // -->
+    </script>
+  </head>
+  <body onload="init()">
+    <div id="map"></div>
+    <div id="coords"></div>
+    <p>Moving your mouse to the upper left corner of this map should return 'x=0,y=0' -- in the past, it didn't in IE. If it returns 2,2, consider it a bug, and report it.</p> 
+  </body>
+</html>
