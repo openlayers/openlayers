@@ -117,6 +117,15 @@
         t.ok(deactivated,
              "deactivate returns true if the handler was active already");
     }
+    function test_handler_MouseWheel_destroy(t) {
+        t.plan(1);
+        var control = new OpenLayers.Control();
+        var handler = new OpenLayers.Handler.MouseWheel(control);
+        handler.deactivate = function() { 
+            t.ok(true, "Deactivate called one time.");
+        }    
+        handler.destroy();
+    }
 
 
   </script>
