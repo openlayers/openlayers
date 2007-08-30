@@ -82,11 +82,11 @@
             var center = new OpenLayers.Feature.Vector(origin, null, style);
             vectorLayer.addFeatures([center]);
             window.setInterval(rotateFeature, 100,
-                               pointFeature, Math.PI / 10, origin);
+                               pointFeature, 360 / 20, origin);
             window.setInterval(rotateFeature, 100,
-                               lineFeature, Math.PI / 20, origin);
+                               lineFeature, 360 / 40, origin);
             window.setInterval(rotateFeature, 100,
-                               polygonFeature, -1 * Math.PI / 10, origin);
+                               polygonFeature, -360 / 20, origin);
         }
 
         function rotateFeature(feature, angle, origin) {

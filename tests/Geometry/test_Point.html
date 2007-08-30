@@ -92,16 +92,16 @@
         
         // rotate a full revolution
         point.bounds = "foo";
-        point.rotate(2 * Math.PI, origin);
+        point.rotate(360, origin);
         t.ok(((point.x - x) / x) < tolerance,
-             "rotate by 2 * Math.PI returns to the same y");
+             "rotate by 360 returns to the same y");
         t.ok(((point.y - y) / y) < tolerance,
-             "rotate by 2 * Math.PI returns to the same y");
+             "rotate by 360 returns to the same y");
         
         t.ok(point.bounds == null, "bounds is cleared after a rotate()");
         
         // rotate an 1/8 turn
-        point.rotate(Math.PI / 4, origin);
+        point.rotate(45, origin);
         t.ok(((point.x - 1.4644660940672636) / 1.4644660940672636) < tolerance,
              "rotate 1/8 turn correctly");
         t.ok(((point.y - 20.606601717798213) / 20.606601717798213) < tolerance,
