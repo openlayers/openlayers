@@ -17,12 +17,22 @@
             var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                     "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
             map.addLayer(layer);
+
+            /*
+             * Layer style
+             */
+            // we want opaque external graphics and non-opaque internal graphics
+            var layer_style = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+            layer_style.fillOpacity = 0.2;
+            layer_style.graphicOpacity = 1;
             
-            var style_blue = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+            /*
+             * Blue style
+             */
+            var style_blue = OpenLayers.Util.extend({}, layer_style);
             style_blue.strokeColor = "blue"; 
             style_blue.fillColor = "blue"; 
             style_blue.externalGraphic = "../img/marker.png";
-            
             // each of the three lines below means the same, if only one of
             // them is active: the image will have a size of 24px, and the
             // aspect ratio will be kept
@@ -30,7 +40,9 @@
             //style_blue.graphicWidth = 24;
             //style_blue.graphicHeight = 24;
             
-            style_blue.fillOpacity = 1;
+            /*
+             * Green style
+             */
             var style_green = {
                 strokeColor: "#00FF00",
                 strokeOpacity: 1,
@@ -38,16 +50,18 @@
                 pointRadius: 6,
                 pointerEvents: "visiblePainted"
             };
+
+            /*
+             * Mark style
+             */
             var style_mark = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
-            
             // if graphicWidth and graphicHeight are both set, the aspect ratio
             // of the image will be ignored
             style_mark.graphicWidth = 24;
             style_mark.graphicHeight = 20;
-            
             style_mark.externalGraphic = "../img/marker.png";
             
-            var vectorLayer = new OpenLayers.Layer.Vector("Simple Geometry");
+            var vectorLayer = new OpenLayers.Layer.Vector("Simple Geometry", {style: layer_style});
             
             // create a point feature
             var point = new OpenLayers.Geometry.Point(-111.04, 45.68);

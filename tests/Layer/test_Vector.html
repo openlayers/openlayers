@@ -157,15 +157,15 @@
     }
 
     function test_Layer_Vector_externalGraphic(t) {
-    		t.plan(8);
-    		// base layer is needed for getResolution() to return a value,
-    		// otherwise VML test will fail because style.left and style.top
-    		// cannot be set
-    		var baseLayer = new OpenLayers.Layer.WMS("Base Layer",
-    				"http://octo.metacarta.com/cgi-bin/mapserv",
-    				{ map: '/mapdata/vmap_wms.map', 
-                   layers: 'basic', 
-                   format: 'image/png'});
+        t.plan(9);
+        // base layer is needed for getResolution() to return a value,
+        // otherwise VML test will fail because style.left and style.top
+        // cannot be set
+        var baseLayer = new OpenLayers.Layer.WMS("Base Layer",
+                "http://octo.metacarta.com/cgi-bin/mapserv",
+                { map: '/mapdata/vmap_wms.map', 
+               layers: 'basic', 
+               format: 'image/png'});
     		
         var layer = new OpenLayers.Layer.Vector("Test Layer");
         var map = new OpenLayers.Map('map');
@@ -190,6 +190,11 @@
         		externalGraphic: 'test.png',
         		graphicWidth: 24,
         		graphicHeight: 16
+        });
+        var customStyle5 = new Object({
+                externalGraphic: 'test.png',
+        		graphicWidth: 24,
+                graphicOpacity: 1
         });
                
         var root = layer.renderer.root;
@@ -222,10 +227,15 @@
         		layer.drawFeature(feature);
          		t.eq(root.firstChild.getAttributeNS(null, 'height'),
          					customStyle4.graphicHeight.toString(),
-         					"given graphicHeight and graphicWidth, both are set: height")
+         					"given graphicHeight and graphicWidth, both are set: height");
          		t.eq(root.firstChild.getAttributeNS(null, 'width'),
          					customStyle4.graphicWidth.toString(),
-         					"given graphicHeight and graphicWidth, both are set: width")
+         					"given graphicHeight and graphicWidth, both are set: width");
+                feature.style = customStyle5;
+                layer.drawFeature(feature);
+         		t.eq(root.firstChild.getAttributeNS(null, 'style'),
+         					'opacity: '+customStyle5.graphicOpacity.toString()+';',
+         					"graphicOpacity correctly set");
         }
         if (layer.renderer.CLASS_NAME == 'OpenLayers.Renderer.VML') {
         		feature.style = customStyle1;
@@ -256,10 +266,19 @@
         		layer.drawFeature(feature);
          		t.eq(root.firstChild.style.height,
          					customStyle4.graphicHeight.toString()+'px',
-         					"given graphicHeight and graphicWidth, both are set: height")
+         					"given graphicHeight and graphicWidth, both are set: height");
          		t.eq(root.firstChild.style.width,
          					customStyle4.graphicWidth.toString()+'px',
-         					"given graphicHeight and graphicWidth, both are set: width")
+         					"given graphicHeight and graphicWidth, both are set: width");
+                feature.style = customStyle5;
+                layer.drawFeature(feature);
+                var fill = root.firstChild.getElementsByTagName("fill")[0];
+                if (fill == null) fill = root.firstChild.getElementsByTagName("v:fill");
+                var opacity = fill.getAttribute('opacity');
+                t.eq(opacity,
+         					customStyle5.graphicOpacity,
+         					"graphicOpacity correctly set"); 
+
         }
     }
 
