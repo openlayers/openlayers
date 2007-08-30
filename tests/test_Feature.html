@@ -7,7 +7,7 @@
     var feature, layer; 
     
     function test_01_Feature_constructor (t) {
-        t.plan( 6 );
+        t.plan( 7 );
 
         var layer = {};
         var lonlat = new OpenLayers.LonLat(2,1);
@@ -25,6 +25,7 @@
         t.ok( feature.lonlat.equals(lonlat), "feature.lonlat set correctly" );
         t.eq( feature.data.iconURL, iconURL, "feature.data.iconURL set correctly" );
         t.ok( feature.data.iconSize.equals(iconSize), "feature.data.iconSize set correctly" );
+        t.ok( feature.popupClass == OpenLayers.Popup.AnchoredBubble, "default popupClass is AnchoredBubble");
     }
     
     function test_02_Feature_createMarker (t) {
@@ -103,6 +104,71 @@
         t.ok( !feature2.onScreen(), "feature knows it's offscreen" );
     }
 
+    function test_04_Feature_createPopup(t) {
+        t.plan(15);
+
+    //no lonlat        
+        var f = {
+            'popup': null
+        };
+        
+        var ret = OpenLayers.Feature.prototype.createPopup.apply(f, []);
+        t.ok((ret == f.popup) && (f.popup == null), "if no 'lonlat' set on feature, still returns reference to this.popup (though it is null)");
+
+
+
+        f.popupClass = OpenLayers.Class({
+            initialize: function(id, lonlat, size, contentHTML, anchor, closeBox) {
+                t.eq(id, "Campion_popup", "correctly generates new popup id from feature's id");
+                t.eq(lonlat, f.lonlat, "correctly passes feature's lonlat to popup constructor");
+                t.eq(size, f.data.popupSize, "correctly passes feature's data.popupSize to popup constructor");
+                t.eq(contentHTML, f.data.popupContentHTML, "correctly passes feature's data.popupContentHTML to popup constructor");
+                t.eq(anchor, g_ExpectedAnchor, "passes correct anchor to popup constructor");
+                t.eq(closeBox, g_CloseBox, "correctly relays closeBox argument to popup constructor");
+            }
+        });
+        
+
+    //valid lonlat but no anchor    
+        f.popup = null;
+        
+        f.id = "Campion";
+        f.lonlat = {};
+        f.data = {
+            'popupSize': {},
+            'popupContentHTML': {}
+        };
+        g_ExpectedAnchor = null;
+        g_CloseBox = {};
+
+        ret = OpenLayers.Feature.prototype.createPopup.apply(f, [g_CloseBox]);
+        
+        t.ok((ret == f.popup) && (f.popup != null), "a valid popup has been set and returned")
+
+    
+    //valid lonlat with anchor    
+
+        f.marker = {
+            'icon': {}
+        };
+        g_ExpectedAnchor = f.marker.icon;
+        ret = OpenLayers.Feature.prototype.createPopup.apply(f, [g_CloseBox]);
+        t.ok((ret == f.popup) && (f.popup != null), "a valid popup has been set and returned")
+    }
+
+    function test_04_Feature_destroyPopup(t) {
+        t.plan(1);
+
+        var f = {
+            'popup': {
+                'destroy': function() {
+                    t.ok(true, "default destroyPopup() calls popup.destroy");
+                }
+            }
+        };
+        
+        OpenLayers.Feature.prototype.destroyPopup.apply(f, []);
+    }
 
   </script>
 </head>
