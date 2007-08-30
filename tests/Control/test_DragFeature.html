@@ -109,14 +109,13 @@
         }
         map.events.triggerEvent("mousemove");
 
-        t.ok(!control.dragHandler.dragging,
-             "control is not dragging before the mousedown");
-        
         // simulate a mousedown on a feature
+        control.onStart = function(feature, pixel) {
+            t.eq(feature, "foo", "onStart called with the correct feature");
+            t.eq(pixel, "bar", "onStart called with the correct pixel");
+        }
         map.events.triggerEvent("mousedown", {xy: "bar", which: 1});
 
-        t.ok(control.dragHandler.dragging,
-             "drag is dragging after the mousedown");
         t.eq(control.lastPixel, "bar",
              "mousedown sets the lastPixel correctly");
     }

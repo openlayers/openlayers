@@ -306,7 +306,7 @@
     }
 
     function test_Handler_Drag_deactivate(t) {
-        t.plan(3);
+        t.plan(6);
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
         map.addControl(control);
@@ -320,8 +320,14 @@
         deactivated = handler.deactivate();
         t.ok(deactivated,
              "deactivate returns true if the handler was active already");
+        t.ok(!handler.started,
+             "deactivate sets started to false");
         t.ok(!handler.dragging,
              "deactivate sets dragging to false");
+        t.ok(handler.start == null,
+             "deactivate sets start to null");
+        t.ok(handler.last == null,
+             "deactivate sets start to null");
     }
 
 
