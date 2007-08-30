@@ -1,0 +1,88 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+    function test_Handler_Feature_constructor(t) {
+        t.plan(4);
+        var control = new OpenLayers.Control();
+        control.id = Math.random();
+        var layer = "boo";
+        var callbacks = {foo: "bar"};
+        var options = {bar: "foo"};
+        
+        var oldInit = OpenLayers.Handler.prototype.initialize;
+        
+        OpenLayers.Handler.prototype.initialize = function(con, call, opt) {
+            t.eq(con.id, control.id,
+                 "constructor calls parent with the correct control");
+            t.eq(call, callbacks,
+                 "constructor calls parent with the correct callbacks");
+            t.eq(opt, options,
+                 "constructor calls parent with the correct options");
+        }
+        var handler = new OpenLayers.Handler.Feature(control, layer,
+                                                     callbacks, options);
+        
+        t.eq(handler.layer, "boo",
+             "layer property properly set");
+
+        OpenLayers.Handler.prototype.initialize = oldInit;
+    }
+
+    function test_Handler_Feature_activate(t) {
+        t.plan(4);
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var layer = new OpenLayers.Layer();
+        map.addLayer(layer);
+        var handler = new OpenLayers.Handler.Feature(control, layer);
+        handler.active = true;
+        var activated = handler.activate();
+        t.ok(!activated,
+             "activate returns false if the handler was already active");
+        handler.active = false;
+        
+        var zIndex = layer.div.style.zIndex;
+        activated = handler.activate();
+        t.ok(activated,
+             "activate returns true if the handler was not already active");
+        t.eq(handler.layerIndex, zIndex,
+             "layerIndex property properly set");
+        t.eq(parseInt(layer.div.style.zIndex),
+             map.Z_INDEX_BASE['Popup'] - 1,
+             "layer z-index properly adjusted");
+        
+    }
+
+    function test_Handler_Feature_deactivate(t) {
+        t.plan(3);
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var layer = new OpenLayers.Layer();
+        map.addLayer(layer);
+        var handler = new OpenLayers.Handler.Feature(control, layer);
+        handler.active = false;
+        var deactivated = handler.deactivate();
+        t.ok(!deactivated,
+             "deactivate returns false if the handler was not already active");
+        
+        handler.active = true;
+        handler.layerIndex = Math.floor(Math.random() * 10);
+
+        deactivated = handler.deactivate();
+        t.ok(deactivated,
+             "deactivate returns true if the handler was active already");
+        t.eq(parseInt(layer.div.style.zIndex),
+             handler.layerIndex,
+             "deactivate sets the layer z-index back");
+    }
+
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 300px; height: 150px;"/>
+</body>
+</html>
