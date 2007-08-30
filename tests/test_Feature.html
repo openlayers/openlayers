@@ -105,7 +105,7 @@
     }
 
     function test_04_Feature_createPopup(t) {
-        t.plan(15);
+        t.plan(17);
 
     //no lonlat        
         var f = {
@@ -144,6 +144,7 @@
         ret = OpenLayers.Feature.prototype.createPopup.apply(f, [g_CloseBox]);
         
         t.ok((ret == f.popup) && (f.popup != null), "a valid popup has been set and returned")
+        t.ok( f.popup.feature == f, "popup's 'feature' property correctly set");
 
     
     //valid lonlat with anchor    
@@ -154,13 +155,15 @@
         g_ExpectedAnchor = f.marker.icon;
         ret = OpenLayers.Feature.prototype.createPopup.apply(f, [g_CloseBox]);
         t.ok((ret == f.popup) && (f.popup != null), "a valid popup has been set and returned")
+        t.ok( f.popup.feature == f, "popup's 'feature' property correctly set");
     }
 
     function test_04_Feature_destroyPopup(t) {
-        t.plan(1);
+        t.plan(2);
 
         var f = {
             'popup': {
+                'feature': {},
                 'destroy': function() {
                     t.ok(true, "default destroyPopup() calls popup.destroy");
                 }
@@ -168,6 +171,7 @@
         };
         
         OpenLayers.Feature.prototype.destroyPopup.apply(f, []);
+        t.ok(f.popup.feature == null, "popup's 'feature' property nullified on destroy");
     }
 
   </script>
