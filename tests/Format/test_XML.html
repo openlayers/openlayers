@@ -2,6 +2,7 @@
 <head> 
     <script src="../../lib/OpenLayers.js"></script> 
     <script type="text/javascript">
+
     var text =
         '<?xml version="1.0"?>' + 
         '<ol:root xmlns="http://namespace.default.net" ' +
@@ -30,7 +31,7 @@
 
         t.ok(!window.ActiveXObject || format.xmldom, "browsers with activeX must have xmldom");
     }
-    
+
     function test_Format_XML_read(t) {
         
         var format = new OpenLayers.Format.XML();
@@ -68,9 +69,10 @@
                  "second child of doc root has correct child node");
         }
     }
-    
+
     function test_Format_XML_write(t) {
         t.plan(1);
+
         var format = new OpenLayers.Format.XML();
         var doc = format.read(text);
         var out = format.write(doc);
@@ -78,9 +80,10 @@
         t.eq(text, out,
              "correctly writes an XML DOM doc");
     }
-    
+
     function test_Format_XML_createElementNS(t) {
         t.plan(5);
+
         var format = new OpenLayers.Format.XML();
         var uri = "http://foo.com";
         var prefix = "foo";
@@ -100,9 +103,10 @@
         t.ok(doc.documentElement.appendChild(node),
              "node can be appended to a doc root");
     }
-    
+
     function test_Format_XML_createTextNode(t) {
         t.plan(4);
+
         var format = new OpenLayers.Format.XML();
         var value = Math.random().toString();
         var node = format.createTextNode(value);
@@ -117,7 +121,7 @@
         t.ok(doc.documentElement.appendChild(node),
              "node can be appended to a doc root");
     }
-    
+
     function test_Format_XML_getElementsByTagNameNS(t) {
         t.plan(3);
 
@@ -141,9 +145,10 @@
              "gets correct number of nodes in default namespace");
         
     }
-    
+
     function test_Format_XML_getAttributeNodeNS(t) {
         t.plan(5);
+
         var format = new OpenLayers.Format.XML();
         var doc = format.read(text);
         var olUri = "http://namespace.openlayers.org";
@@ -170,9 +175,10 @@
         t.ok(nullAttribute === null,
              "returns null for nonexistent attribute");
     }
-    
+
     function test_Format_XML_getAttributeNS(t) {
         t.plan(2);
+
         var format = new OpenLayers.Format.XML();
         var doc = format.read(text);
         var olUri = "http://namespace.openlayers.org";
@@ -191,9 +197,10 @@
         t.ok(emptyValue === "",
              "returns empty string for nonexistent attributes");
     }
-    
+
     function test_Format_XML_hasAttributeNS(t) {
         t.plan(2);
+
         var format = new OpenLayers.Format.XML();
         var doc = format.read(text);
         var olUri = "http://namespace.openlayers.org";
@@ -208,7 +215,6 @@
         found = format.hasAttributeNS(nodes[0], taUri, "nothing");
         t.ok(found === false, "returns false for bad attribute");
     }
-    
 
     </script> 
 </head> 

@@ -3,8 +3,6 @@
     <script src="../../lib/OpenLayers.js"></script> 
     <script type="text/javascript">
 
-
-     
     function test_Format_GeoRSS_constructor(t) { 
         t.plan(4); 
          
@@ -15,9 +13,11 @@
         t.eq(format.foo, "bar", "constructor sets options correctly"); 
         t.eq(typeof format.read, "function", "format has a read function"); 
         t.eq(typeof format.write, "function", "format has a write function"); 
-    } 
+    }
+
     function test_Format_GeoRSS_serializeline(t) { 
         t.plan(1);
+
         if (OpenLayers.Util.getBrowserName() == "msie") {
             //serialization currently not supported in IE
             t.ok(true, "GeoRSS serialization not currently supported in IE");

@@ -6,7 +6,7 @@
     
     function test_01_Tile_constructor (t) {
         t.plan( 9 );
-        
+     
         var layer = {}; // bogus layer
         var position = new OpenLayers.Pixel(10,20);
         var bounds = new OpenLayers.Bounds(1,2,3,4);
@@ -25,7 +25,7 @@
         t.ok( tile.id != null, "tile is given an id");
         t.ok( tile.id.startsWith("Tile_"), "tile's id starts correctly");
         t.ok( tile.events != null, "tile's events intitialized");
-    };
+    }
 
     function test_99_Tile_destroy(t) {
         t.plan( 6 );
@@ -39,7 +39,7 @@
         tile = new OpenLayers.Tile(layer, position, bounds, url, size);
         tile.events.destroy = function() {
             t.ok(true, "tile events destroy() called");
-        }
+        };
 
  
         tile.destroy();
@@ -50,7 +50,7 @@
         t.ok(tile.position == null, "tile.position set to null");
         
         t.ok(tile.events == null, "tile.events set to null");
-    };
+    }
 
   </script>
 </head>
