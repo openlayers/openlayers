@@ -84,10 +84,7 @@
    }
    
     function test_06_Number_limitSigDigs(t) {
-/** PENDING APPROVAL OF http://trac.openlayers.org/ticket/862
         t.plan(10);
-*/
-        t.plan(8);
       
         var num = 123456789; 
         t.eq(num.limitSigDigs(), 0, "passing 'null' as sig returns 0");
@@ -101,7 +98,6 @@
         t.eq(num.limitSigDigs(5), 123460000, "passing middle sig works (rounds up)");
         t.eq(num.limitSigDigs(9), 123456789, "passing sig equal to num digits in number works");
 
-/** PENDING APPROVAL OF http://trac.openlayers.org/ticket/862
         var temp = OpenLayers.Console.error;
         OpenLayers.Console.error = function() {
             t.ok(true, "error reported when run on floating point number")
@@ -110,8 +106,6 @@
         t.ok(num.limitSigDigs(5) == null, "running limSigDig() on a floating point number returns null");
         
         OpenLayers.Console.error = temp;
- * 
- */
     }
 
     function test_07_Function_bind(t) {
