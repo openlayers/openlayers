@@ -2,8 +2,10 @@
 <head>
   <script src="../lib/OpenLayers.js"></script>
   <script type="text/javascript">
+
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
-    var map; 
+    var map;
+
     function test_01_Map_constructor (t) {
         t.plan( 9 );
         
@@ -28,7 +30,8 @@
         t.ok( map.events instanceof OpenLayers.Events, "map.events is an OpenLayers.Events" );
         t.ok( map.getMaxExtent() instanceof OpenLayers.Bounds, "map.maxExtent is an OpenLayers.Bounds" );
         t.ok( map.getNumZoomLevels() > 0, "map has a default numZoomLevels" );
-    }
+    };
+
     function test_02_Map_center(t) {
         t.plan(3);
         map = new OpenLayers.Map('map');
@@ -41,7 +44,8 @@
         t.ok( map.getCenter() instanceof OpenLayers.LonLat, "map.getCenter returns a LonLat");
         t.eq( map.getZoom(), 0, "map.zoom is correct after calling setCenter");
         t.ok( map.getCenter().equals(ll), "map center is correct after calling setCenter");
-    }
+    };
+
     function test_03_Map_add_layers(t) {
         t.plan(6);
         map = new OpenLayers.Map('map');
@@ -60,14 +64,16 @@
                 "layer1 zIndex is set" );
         t.eq( parseInt(layer2.div.style.zIndex), map.Z_INDEX_BASE['BaseLayer'] + 5, 
                 "layer2 zIndex is set" );
-    }
+    };
+
     function test_04_Map_options(t) {
         t.plan(3);
         map = new OpenLayers.Map('map', {numZoomLevels: 6, maxResolution: 3.14159, theme: 'foo'});
         t.eq( map.numZoomLevels, 6, "map.numZoomLevels set correctly via options hashtable" );
         t.eq( map.maxResolution, 3.14159, "map.maxResolution set correctly via options hashtable" );
         t.eq( map.theme, 'foo', "map theme set correctly." );
-    }
+    };
+
     function test_05_Map_center(t) {
         t.plan(4);
         map = new OpenLayers.Map('map');
@@ -83,20 +89,22 @@
         map.zoomOut();
         t.eq( map.getZoom(), 0, "map.zoom is correct after calling setCenter,zoom in, zoom out");
 
-    map.zoomTo(5);
-    t.eq( map.getZoom(), 5, "map.zoom is correct after calling zoomTo" );
-/**
-    map.zoomToMaxExtent();
-    t.eq( map.getZoom(), 2, "map.zoom is correct after calling zoomToMaxExtent" );
-    var lonlat = map.getCenter();
-    var zero = new OpenLayers.LonLat(0, 0);
-    t.ok( lonlat.equals(zero), "map center is correct after calling zoomToFullExtent" );
+        map.zoomTo(5);
+        t.eq( map.getZoom(), 5, "map.zoom is correct after calling zoomTo" );
 
+    /**
+        map.zoomToMaxExtent();
+        t.eq( map.getZoom(), 2, "map.zoom is correct after calling zoomToMaxExtent" );
+        var lonlat = map.getCenter();
+        var zero = new OpenLayers.LonLat(0, 0);
+        t.ok( lonlat.equals(zero), "map center is correct after calling zoomToFullExtent" );
     */
-    }
+
+    };
 
     function test_06_Map_zoomend_event (t) {
         t.plan(2);
+
         map = new OpenLayers.Map('map');
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
@@ -109,8 +117,8 @@
         map.setCenter(new OpenLayers.LonLat(2, 1), 0);
         map.zoomIn();
         map.zoomOut();
-    }
-    
+    };
+
     function test_07_Map_add_remove_popup (t) {
         t.plan(4);
 
@@ -153,7 +161,8 @@
             }
         }
         t.ok(!found, "popup.div successfully removed from the map's viewPort");
-    }
+    };
+
 /***  THIS IS A GOOD TEST, BUT IT SHOULD BE MOVED TO WMS. 
  *     Also, it won't work until we figure out the viewSize bug
 
@@ -186,10 +195,12 @@
         t.ok( newPixel instanceof OpenLayers.Pixel, "getPixelFromLonLat returns valid OpenLayers.Pixel" );
 
         t.ok( newPixel.equals(pixel), "2nd translation to pixel and back to lonlat is consistent");
-    }
+    };
  */
+
     function test_09_Map_isValidLonLat(t) {
         t.plan( 3 );    
+
         map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS('Test Layer', 
                     "http://octo.metacarta.com/cgi-bin/mapserv", 
@@ -200,10 +211,11 @@
         t.ok( !map.isValidLonLat(null), "null lonlat is not valid" );
         t.ok( map.isValidLonLat(new OpenLayers.LonLat(33862, 717606)), "lonlat outside max extent is valid" );
         t.ok( !map.isValidLonLat(new OpenLayers.LonLat(10, 10)), "lonlat outside max extent is not valid" );
-    }
+    };
 
     function test_10_Map_getLayer(t) {
         t.plan( 2 );    
+
         map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS('Test Layer', 
                     "http://octo.metacarta.com/cgi-bin/mapserv", 
@@ -218,10 +230,11 @@
         gotLayer = map.getLayer("chicken");
 
         t.ok( gotLayer == null, "getLayer correctly returns null when layer not found");
-    }
-    
+    };
+
     function test_11_Map_double_addLayer(t) {
         t.plan( 1 );    
+
         map = new OpenLayers.Map($('map'));
         layer = new OpenLayers.Layer.WMS('Test Layer', 
                     "http://octo.metacarta.com/cgi-bin/mapserv", 
@@ -232,7 +245,7 @@
         
         t.eq( map.layers.length, 1, "Map does not allow double adding of layers." );
     
-    }
+    };
 
     function test_12_Map_setBaseLayer(t) {
         t.plan( 4 );
@@ -261,10 +274,11 @@
         
         map.setBaseLayer(wmslayer2);
         t.ok(map.baseLayer == wmslayer2, "setbaselayer correctly sets 'baseLayer' property");
-    }
+    };
 
     function test_13_Map_setBaseLayer_after_pan (t) {
         t.plan(1);
+
         map = new OpenLayers.Map('map');
         var wmsLayer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
             "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
@@ -279,10 +293,11 @@
         map.pan(0, -200);
         map.setBaseLayer(wmsLayer);
         t.eq(map.layerContainerDiv.style.top, "0px", "layerContainer is recentered after setBaseLayer");
-    }
+    };
 
     function test_14_Map_moveLayer (t) {
         t.plan(10);
+
         var ct  = 0;
         map = new OpenLayers.Map('map');
         var wmslayer = new OpenLayers.Layer.WMS('Test Layer', 
@@ -318,10 +333,11 @@
             "layer div has the right zIndex after moving up" );
         t.eq( map.getLayerIndex(wmslayer3), 0, "top layer is now on the bottom" );
         t.eq( ct, 3, "raiseLayer triggered changelayer the right # of times" );
-    }
-    
+    };
+
     function test_15_Map_setCenter(t) {
         t.plan(1);
+
         map = new OpenLayers.Map('map');
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
@@ -331,9 +347,8 @@
         var ll = new OpenLayers.LonLat(-100,-150);
         map.setCenter(ll, 0);
         t.ok(map.getCenter().equals(new OpenLayers.LonLat(0,0)), "safely sets out-of-bounds lonlat");
-    }
+    };
 
-    
     function test_16_Map_defaultTheme(t) {
         t.plan(5);
         
@@ -356,7 +371,8 @@
         map = new OpenLayers.Map('map');
         t.eq(links.length, document.getElementsByTagName('link').length,
              "calling the map constructor twice with the same theme doesn't add duplicate link nodes");
-    }
+    };
+
     function test_17_Map_customTheme(t) {
         t.plan(5);
         
@@ -379,7 +395,8 @@
         t.ok(themeNode != null, "a link node with the theme href was added");
         t.eq(themeNode.rel, "stylesheet", "node added has rel set to stylesheet");
         t.eq(themeNode.type, "text/css", "node added has type set to text/css");
-    }
+    };
+
     function test_18_Map_noTheme(t) {
         t.plan(1);
         
@@ -390,8 +407,8 @@
         map = new OpenLayers.Map('map', options);
 
         t.eq(nodeCount, head.childNodes.length, "with no theme, a node is not added to document head" );
-    }
-    
+    };
+
     function test_19_Map_getControl(t) {
         t.plan(2);
         
@@ -405,7 +422,7 @@
         
         gotControl = map1.getControl("bogus id");
         t.ok(gotControl == null, "getControl() for bad id returns null");
-    }
+    };
 
     function test_19_Map_removeControl(t) {
         t.plan(6);
@@ -453,7 +470,7 @@
         map1.removeControl(control);
         newNumControls = map1.controls.length;
         t.ok( newNumControls == oldNumControls, "removing bad controlid doesnt crash or decrease control count")
-    }
+    };
 
     function test_99_Map_destroy (t) {
         t.plan( 3 );    
@@ -462,7 +479,7 @@
         t.eq( map.layers, null, "map.layers is null after destroy" );
         t.eq( map.controls, null, "map.controls is null after destroy" );
         t.eq( map.viewPortDiv, null, "map's viewportDiv nullified");
-    }
+    };
 
   </script>
 </head>

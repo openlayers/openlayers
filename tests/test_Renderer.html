@@ -3,14 +3,14 @@
 <script src="../lib/OpenLayers.js"></script>
   <script type="text/javascript">
 
-var layer;
-    
+    var layer;
 
     function test_01_Renderer_drawGeometry(t) {
         t.plan(1); 
         var r = new OpenLayers.Renderer();
         t.ok( r instanceof OpenLayers.Renderer, "new OpenLayers.Renderer returns REnderer object" );
-    }
+    };
+
 /* 
 function test_01_Renderer_drawGeometry(t) {
         t.plan(12); 
@@ -155,7 +155,7 @@ function test_01_Renderer_drawGeometry(t) {
         r.drawGeometry(geometry, style);
         t.ok(properDraw, "drawGeometry called drawPolygon when passed a multi-polygon");
 
-    }
+    };
      */
 
   </script>

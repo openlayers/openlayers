@@ -2,8 +2,9 @@
 <head>
   <script src="../lib/OpenLayers.js"></script>
   <script type="text/javascript">
-    var popup; 
-    
+
+    var popup;
+
     function test_01_Popup_default_constructor(t) {
         t.plan( 8 );
 
@@ -24,7 +25,7 @@
         popup = new OpenLayers.Popup();
         var newID = popup.id;
         t.ok(newID != firstID, "default id generator creating unique ids");
-    }
+    };
     
     function test_02_Popup_constructor (t) {
         t.plan( 5 );
@@ -48,10 +49,9 @@
         t.ok(popup.lonlat.equals(ll), "popup.lonlat set correctly");
         t.ok(popup.size.equals(sz), "popup.size set correctly");
         t.eq(popup.contentHTML, content, "contentHTML porpoerty of set correctly");
-    }
+    };
 
     function test_03_Popup_draw(t) {
-    
         t.plan( 17 );
         
         var id = "chicken";
@@ -64,7 +64,6 @@
         var hexColor = "#ff0000";
         var opacity = 0.5;
         var border = "1px solid";
-
 
         popup = new OpenLayers.Popup(id);
         popup.setSize(new OpenLayers.Size(w, h));
@@ -105,11 +104,7 @@
         popup.moveTo(new OpenLayers.Pixel(x, y));
         t.eq(popup.div.style.left, x + "px", "moveTo updates left position of popup.div correctly");
         t.eq(popup.div.style.top, y + "px", "moveTo updates top position of popup.div correctly");
-        
-
-    }
-
-
+    };
 
   </script>
 </head>
