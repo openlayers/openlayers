@@ -9,7 +9,7 @@
         t.plan( 1 );
         t.ok( OpenLayers.Util.getImagesLocation(), "../img/",
                     "getImagesLocation()" );
-    };
+    }
 
     function test_02_Util_Strings(t) {
         t.plan(5);
@@ -28,7 +28,7 @@
         t.eq(trimmedStr.startsWith("dolphin"), false, "String.startsWith correctly does not find turkey");
 
 
-    };
+    }
 
     function test_03_Util_Array(t) {
         t.plan( 1 );
@@ -37,7 +37,7 @@
 
         OpenLayers.Util.removeItem(array, 3);
         t.eq( array.toString(), "1,2,4,5", "Util.removeItem works");    
-    };
+    }
 
     function test_04_Util_createDiv(t) {
         t.plan( 24 );
@@ -98,7 +98,7 @@
         t.ok( !div.style.opacity, "element.style.opacity set correctly");    
         t.ok( !div.style.filter, "element.style.filter set correctly");
 
-    };
+    }
 
     function test_05_Util_createImage(t) {
         t.plan( 22 );
@@ -151,7 +151,7 @@
         t.ok( !image.style.opacity, "element.style.opacity default unset");    
         t.ok( !image.style.filter, "element.style.filter default unset");
 
-    };
+    }
 
     function test_06_Util_applyDefaults(t) {
     
@@ -173,14 +173,15 @@
         t.eq( to["a"], "abra", "key present in to but not from maintained");
         t.eq( to["b"], "blorg", "key present in to and from, maintained in to");
         t.eq( to["c"], "press", "key present in from and not to successfully copied to to");
-    };
+    }
 
     function test_07_Util_getParameterString(t) {
         t.plan( 4 );
 
-        var params = { foo: "bar",
-                       chicken: 1.5
-                     };
+        var params = { 
+            'foo': "bar",
+            'chicken': 1.5
+        };
 
         t.eq( OpenLayers.Util.getParameterString(params), "foo=bar&chicken=1.5", "getParameterString returns correctly");    
         t.eq( OpenLayers.Util.getParameterString({'a:':'b='}), "a%3A=b%3D", "getParameterString returns correctly with non-ascii keys/values");    
@@ -193,7 +194,7 @@
         
         var params = { foo: ["bar","baz,"] };
         t.eq( OpenLayers.Util.getParameterString(params), "foo=bar,baz%2C", "getParameterString returns with list of CSVs when given a list. ");    
-    };
+    }
 
     function test_08_Util_createAlphaImageDiv(t) {
         t.plan( 19 );
@@ -274,10 +275,9 @@
             t.ok(true);
         }        
 
-    };
+    }
 
     function test_09_Util_modifyDOMElement(t) {
-
         t.plan( 10 );
 
         var id = "boo";
@@ -306,7 +306,7 @@
         t.eq( parseFloat(element.style.opacity), opacity, "element.style.opacity set correctly");    
         var filterString = 'alpha(opacity=' + (opacity * 100) + ')';
         t.eq( element.style.filter, filterString, "element.style.filter set correctly");
-    };
+    }
 
     function test_09_Util_modifyAlphaImageDiv(t) {
         t.plan( 19 );
@@ -387,10 +387,9 @@
             t.ok(true);
         }        
    
-    };
+    }
        
     function test_10_Util_upperCaseObject(t) {
-    
         t.plan(8);
         
         var aKey = "chicken";
@@ -418,7 +417,7 @@
 
         t.eq(uObj[aKey.toUpperCase()], aValue, "new uppercase value present");
         t.eq(uObj[bKey.toUpperCase()], bValue, "new uppercase value present");
-    };
+    }
     
     function test_11_Util_createUniqueID(t) {
         t.plan(2);
@@ -428,7 +427,7 @@
 
         var id = OpenLayers.Util.createUniqueID("chicken");
         t.ok( id.startsWith("chicken"), "OpenLayers.Util.createUniqueID starts id correctly");
-    };
+    }
     
     function test_12_Util_limitSigDigs(t) {
         t.plan(7);
@@ -450,7 +449,7 @@
 
         x = 0;
         t.eq(x.limitSigDigs(2), 0, "correctly handles 0 number");
-    };
+    }
     
     function test_13_Util_normalizeScale(t) {
         t.plan(2); 
@@ -462,7 +461,7 @@
         //funky scale
         var scale = 5;
         t.eq( OpenLayers.Util.normalizeScale(scale), 1/5, "normalizing a wrong scale works!");
-    };
+    }
     
     function test_13_Util_getScaleResolutionTranslation(t) {
         t.plan(4); 
@@ -482,10 +481,11 @@
         scale = 150000000; 
         resolution = OpenLayers.Util.getResolutionFromScale(scale);
         t.eq(OpenLayers.Util.getScaleFromResolution(resolution), scale, "scale->resolution->scale works");
-    };
+    }
     
     function test_14_Util_getImgLocation(t) {
         t.plan(3);
+
         OpenLayers.ImgPath = "foo/";
         t.eq(OpenLayers.Util.getImagesLocation(), "foo/", "ImgPath works as expected."); 
         OpenLayers.ImgPath = null;
@@ -493,7 +493,7 @@
 
         OpenLayers.ImgPath = '';
         t.eq(OpenLayers.Util.getImagesLocation().substr(OpenLayers.Util.getImagesLocation().length-4,4), "img/", "ImgPath works as expected when set to ''."); 
-    };
+    }
 
     function test_15_Util_isEquivalentUrl(t) {
         t.plan(8);
@@ -554,18 +554,20 @@
         url2 = "../tests/../tests/foo.html?bar=now#go";
 
         t.ok(OpenLayers.Util.isEquivalentUrl(url1, url2), "relative vs. absolute paths works"); 
-    };
+    }
     
     function test_Util_createUniqueIDSeq(t) {
         t.plan(1);
+
         OpenLayers.Util.lastSeqID = 0;
         OpenLayers.Util.createDiv();
         OpenLayers.Util.createDiv();
         t.eq(OpenLayers.Util.createDiv().id, "OpenLayersDiv3", "Div created is sequential, starting at lastSeqID in Util.");
-    };
+    }
 
     function test_Util_getParameters(t) {
         t.plan(6);
+
         t.eq(OpenLayers.Util.getParameters('http://www.example.com'), {},
              "getParameters works when args = ''");
         t.eq(OpenLayers.Util.getParameters('http://www.example.com?'), {},
@@ -582,7 +584,7 @@
         t.eq(OpenLayers.Util.getParameters('http://www.example.com?foo=bar,pub,disco'),
              {'foo': ['bar', 'pub', 'disco']},
              "getParameters works with a comma-separated value (parses into array)");
-    };
+    }
 
     function test_Util_getArgs(t) {
         //DEPRECATED -- to be removed in 3.0
@@ -607,10 +609,11 @@
 
         OpenLayers.Console.warn = temp;
         OpenLayers.Util.getParameters = temp2;
-    };
+    }
 
     function tests_Util_extend(t) {
         t.plan(5);
+
         var source = {
             num: Math.random(),
             obj: {
@@ -633,7 +636,7 @@
         t.eq(destination.toString(), "source",
              "extend properly sets custom toString method");
         t.eq(window.property, undefined, "Property variable not clobbered.");
-    };
+    }
     
     function test_XX_Util_Try(t) {
         t.plan(7);
@@ -641,24 +644,24 @@
         var func1 = function() {
             t.ok(true, "func1 executed");
             throw "error";
-        }
+        };
         
         var func2 = function() {
             t.ok(true, "func2 executed");
             throw "error";
-        }
+        };
 
         g_TestVal3 = {};
         var func3 = function() {
             t.ok(true, "func3 executed");
             return g_TestVal3;            
-        }
+        };
 
         g_TestVal4 = {};
         var func4 = function() {
             t.fail("func4 should *not* be executed");
             return g_TestVal4;            
-        }
+        };
 
         var ret = OpenLayers.Util.Try(func1, func2);
         t.ok(ret == null, "if all functions throw exceptions, null returned");
@@ -666,7 +669,7 @@
         var ret = OpenLayers.Util.Try(func1, func2, func3, func4);
         t.ok(ret == g_TestVal3, "try returns first sucessfully executed function's return");
 
-    };
+    }
 
   </script>
 </head>

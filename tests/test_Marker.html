@@ -13,7 +13,7 @@
         t.ok( marker.icon instanceof OpenLayers.Icon, "new marker.Icon returns Icon object" );
         t.ok( marker.lonlat instanceof OpenLayers.LonLat, "new marker.lonlat returns LonLat object" );
         t.ok( marker.lonlat.equals(ll), "marker.lonlat returns correct" );
-    };
+    }
 
     function test_02_Marker_onScreen(t) {
         t.plan( 2 );
@@ -44,7 +44,7 @@
 
         t.ok( !marker2.onScreen(), "marker knows it's offscreen" );
         map.destroy();
-    };
+    }
 
     function test_03_Marker_setOpacity(t) {
         t.plan( 2 );
@@ -72,7 +72,7 @@
 
         t.eq(parseFloat(marker.icon.imageDiv.style.opacity), 0.5, "marker.setOpacity() works");
         map.destroy();
-    };
+    }
 
     function test_04_Marker_moveTo(t) {
         t.plan( 6 );
@@ -105,7 +105,7 @@
         t.eq(marker.lonlat.lon, map.getExtent().left, "on left edge of map"); 
         t.eq(marker.lonlat.lat, map.getExtent().top, "on top edge of map"); 
         map.destroy();
-    };
+    }
 
   </script>
 </head>
