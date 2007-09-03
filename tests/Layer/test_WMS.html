@@ -282,7 +282,7 @@
             var layer = new OpenLayers.Layer.Google("Google");
             map.addLayer(layer);
             var wmslayer = new OpenLayers.Layer.WMS(name, url, params,
-                                                    {isBaseLayer: false});
+                                                    {isBaseLayer: false, reproject:true});
             wmslayer.isBaseLayer=false;
             map.addLayer(wmslayer);
             map.setCenter(new OpenLayers.LonLat(0,0), 5);

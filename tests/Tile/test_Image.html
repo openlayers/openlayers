@@ -168,7 +168,7 @@
         var size = new OpenLayers.Size(5,6);
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-            "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
+            "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}, {'reproject': true}); 
         map.addLayer(layer);
         map.zoomToMaxExtent();
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-90,-85,-90,85), url, size);
@@ -176,7 +176,7 @@
         tile.moveTo(new OpenLayers.Bounds(-185,-90,-180,-80), new OpenLayers.Pixel(-180,-85), true);
         t.delay_call( 1, function() { t.eq(tile.imgDiv, null, "Tile imgDiv is null.") } );
         var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-            "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}, {'alpha':true});
+            "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}, {'reproject': true, 'alpha':true});
         map.addLayer(layer);
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-90,-85,-90,85), url, size);
         tile.draw();
