@@ -76,7 +76,9 @@
             
             formats = {
                 wkt: new OpenLayers.Format.WKT(),
-                geojson: new OpenLayers.Format.GeoJSON()
+                geojson: new OpenLayers.Format.GeoJSON(),
+                gml: new OpenLayers.Format.GML() //,
+                //kml: new OpenLayers.Format.KML()
             };
             
             map.setCenter(new OpenLayers.LonLat(0, 0), 1);
@@ -144,6 +146,8 @@
             <label for="formatType">Format</label>
             <select name="formatType" id="formatType">
                 <option value="geojson" selected="selected">GeoJSON</option>
+                <!--<option value="kml">KML</option>-->
+                <option value="gml">GML</option>
                 <option value="wkt">Well-Known Text (WKT)</option>
             </select>
             &nbsp;
