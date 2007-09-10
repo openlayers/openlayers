@@ -1,0 +1,162 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>OpenLayers Regular Polygon Example</title>
+    <style type="text/css">
+        html, body {
+            margin: 0;
+            padding: 1em;
+            font: 0.9em Verdana, Arial, sans serif;
+        }
+        input, select, textarea {
+            font: 1em Verdana, Arial, sans serif;
+        }
+        #map {
+            width: 512px;
+            height: 350px;
+            border: 1px solid gray;
+        }
+        p {
+            width: 512px;
+        }
+        #config {
+            margin-top: 1em;
+            width: 512px;
+            position: relative;
+            height: 8em;
+        }
+        #controls {
+            padding-left: 2em;
+            margin-left: 0;
+            width: 12em;
+        }
+        #controls li {
+            padding-top: 0.5em;
+            list-style: none;
+        }
+        #options {
+            font-size: 1em;
+            top: 0;
+            margin-left: 15em;
+            position: absolute;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+        var map, polygonControl;
+        OpenLayers.Util.onImageLoadErrorColor = "transparent";
+        function init(){
+            map = new OpenLayers.Map('map');
+            
+            var wmsLayer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
+
+            var polygonLayer = new OpenLayers.Layer.Vector("Polygon Layer");
+
+            map.addLayers([wmsLayer, polygonLayer]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.addControl(new OpenLayers.Control.MousePosition());
+
+            polyOptions = {sides: 4};
+            polygonControl = new OpenLayers.Control.DrawFeature(polygonLayer,
+                                            OpenLayers.Handler.RegularPolygon,
+                                            {handlerOptions: polyOptions});
+            
+            map.addControl(polygonControl);
+            
+            map.setCenter(new OpenLayers.LonLat(0, 0), 3);
+            
+            document.getElementById('noneToggle').checked = true;
+        }
+        function setOptions(options) {
+            polygonControl.handler.setOptions(options);
+        }
+        function setSize(fraction) {
+            var radius = fraction * map.getExtent().getHeight();
+            polygonControl.handler.setOptions({radius: radius,
+                                               angle: 0});
+        }
+        // -->
+    </script>
+  </head>
+  <body onload="init()">
+    <h2>OpenLayers Regular Polygon Example</h2>
+    <div id="map"></div>
+    <div id="config">
+        
+        <ul id="controls"><b>Map Controls</b>
+            <li>
+                <input type="radio" name="type"
+                       value="none" id="noneToggle"
+                       onclick="polygonControl.deactivate()"
+                       checked="checked" />
+                <label for="noneToggle">navigate</label>
+            </li>
+            <li>
+                <input type="radio" name="type"
+                       value="polygon" id="polygonToggle"
+                       onclick="polygonControl.activate()" />
+                <label for="polygonToggle">draw polygon</label>
+            </li>
+        </ul>
+        <table id="options">
+            <tbody>
+                <tr>
+                    <th>Draw Option</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td>
+                        shape
+                    </td>
+                    <td>
+                        <select name="sides"
+                                onchange="setOptions({sides: parseInt(this.value)})">
+                            <option value="3">triangle</option>
+                            <option value="4" selected="selected">square</option>
+                            <option value="5">pentagon</option>
+                            <option value="6">hexagon</option>
+                            <option value="40">circle</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        snap angle
+                    </td>
+                    <td>
+                        <select name="angle"
+                                onchange="setOptions({snapAngle: parseFloat(this.value)})">
+                            <option value="" selected="selected">no snap</option>
+                            <option value="15">15&deg;</option>
+                            <option value="45">45&deg;</option>
+                            <option value="90">90&deg;</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        size
+                    </td>
+                    <td>
+                        <select name="size"
+                                onchange="setSize(parseFloat(this.value))">
+                            <option value="" selected="selected">variable</option>
+                            <option value="0.1">small</option>
+                            <option value="0.2">medium</option>
+                            <option value="0.4">large</option>
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <p>
+        Regular polygons can be drawn by pointing a DrawFeature control to the
+        RegularPolygon handler class.  The options above demonstrate how the
+        handler can be configured.  Note if you are in angle snapping mode (if
+        the snap angle is non-null) and you hold down the <b>Shift</b> key, you
+        will toggle to non-snapping mode.
+    </p>
+  </body>
+</html>

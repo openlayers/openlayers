@@ -173,6 +173,47 @@
         
     }
 
+    function test_Polygon_createRegular(t) {
+        t.plan(22);
+        var sides = 40;
+        var poly = OpenLayers.Geometry.Polygon.createRegularPolygon(new OpenLayers.Geometry.Point(5,0), 6, sides);
+        var polyBounds = poly.getBounds();
+        t.eq(polyBounds.toBBOX(), "-0.981504,-5.981504,10.981504,5.981504", sides + " sided figure generates correct bbox.");
+        t.eq(poly.components.length, 1, "Poly has one linear ring");
+        t.eq(poly.components[0].components.length, sides + 1, "ring has 41 components");
+        t.eq(poly.components[0].components[0].id, poly.components[0].components[sides].id, "ring starts and ends with same geom");
+        t.eq(Math.round(poly.getArea()), Math.round(Math.PI * 36), "area of "+sides+" sided poly rounds to same area as a circle.");
+        
+        var sides = 3;
+        var poly = OpenLayers.Geometry.Polygon.createRegularPolygon(new OpenLayers.Geometry.Point(5,0), 6, sides);
+        var polyBounds = poly.getBounds();
+        t.eq(polyBounds.toBBOX(), "-0.196152,-3,10.196152,6", sides + " sided figure generates correct bbox.");
+        t.eq(poly.components.length, 1, "Poly has one linear ring");
+        t.eq(poly.components[0].components.length, sides + 1, "ring has  correct count of  components");
+        t.eq(poly.components[0].components[0].id, poly.components[0].components[sides].id, "ring starts and ends with same geom");
+        t.eq(Math.round(poly.getArea()), 47, "area of 3 sided poly is correct");
+        
+        var sides = 3;
+        var poly3 = OpenLayers.Geometry.Polygon.createRegularPolygon(new OpenLayers.Geometry.Point(10,0), 15, sides);
+        var polyBounds = poly3.getBounds();
+        t.eq(polyBounds.toBBOX(), "-2.990381,-7.5,22.990381,15", sides + " sided figure generates correct bbox.");
+        t.eq(Math.round(polyBounds.getCenterLonLat().lon), 10, "longitude of center of bounds is same as origin");
+        t.eq(poly3.components.length, 1, "Poly has one linear ring");
+        t.eq(poly3.components[0].components.length, sides + 1, "ring has  correct count of  components");
+        t.eq(poly3.components[0].components[0].id, poly3.components[0].components[sides].id, "ring starts and ends with same geom");
+        t.ok(poly3.getArea() > poly.getArea(), "area with radius 15 > poly with radius 6"); 
+        
+        var sides = 4;
+        var poly4 = OpenLayers.Geometry.Polygon.createRegularPolygon(new OpenLayers.Geometry.Point(10,0), 15, sides);
+        var polyBounds = poly4.getBounds();
+        t.eq(polyBounds.toBBOX(), "-0.606602,-10.606602,20.606602,10.606602", sides + " sided figure generates correct bbox.");
+        t.eq(Math.round(polyBounds.getCenterLonLat().lon), 10, "longitude of center of bounds is same as origin");
+        t.eq(poly4.components.length, 1, "Poly has one linear ring");
+        t.eq(poly4.components[0].components.length, sides + 1, "ring has  correct count of  components");
+        t.eq(poly4.components[0].components[0].id, poly4.components[0].components[sides].id, "ring starts and ends with same geom");
+        t.ok(poly4.getArea() > poly3.getArea(), "square with radius 15 > triangle with radius 15"); 
+    }
+
     function test_Polygon_equals(t) {
         t.plan(3);
         
