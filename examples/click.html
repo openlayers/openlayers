@@ -9,9 +9,9 @@
     </style>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
-        <!--
+        var map;
         function init(){
-            var map = new OpenLayers.Map('map');
+            map = new OpenLayers.Map('map');
 
             var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                 "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'} );
@@ -32,7 +32,6 @@
                                           + lonlat.lon + " E");
             });
         }
-        // -->
     </script>
   </head>
   <body onload="init()">

@@ -14,11 +14,11 @@
   
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
-        <!--
+        var map;
         function init(){
             
             // Variables
-            var map = new OpenLayers.Map('map', { controls: [] });
+            map = new OpenLayers.Map('map', { controls: [] });
             var lon = 35;
             var lat = -6;
             var zoom = 6;
@@ -45,7 +45,6 @@
             map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
             if (!map.getCenter()) map.zoomToMaxExtent();
         }
-        // -->
     </script>
  </head>
 

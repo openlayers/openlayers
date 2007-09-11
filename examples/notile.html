@@ -9,7 +9,7 @@
     </style>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
-        <!--
+        var map;
         function init(){
             map = new OpenLayers.Map('mapDiv', {maxResolution: 'auto'});
 
@@ -26,7 +26,6 @@
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.setCenter(new OpenLayers.LonLat(6.5, 40.5), 4);
         }
-        // -->
     </script>
   </head>
   <body onload="init()">

@@ -9,9 +9,9 @@
     </style>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
-        <!--
+        var map;
         function init(){
-            var map = new OpenLayers.Map('map');
+            map = new OpenLayers.Map('map');
 
             var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                 "http://labs.metacarta.com:80/wms/vmap0?", {layers: 'basic'}); 
@@ -31,7 +31,6 @@
             // map.setCenter(new OpenLayers.LonLat(0, 0), 0);
             map.zoomToMaxExtent();
         }
-        // -->
     </script>
   </head>
   <body onload="init()">

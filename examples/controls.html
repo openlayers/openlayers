@@ -9,9 +9,9 @@
     </style>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
-        <!--
+        var map;
         function init(){
-            var map = new OpenLayers.Map('map', { controls: [] });
+            map = new OpenLayers.Map('map', { controls: [] });
 
             map.addControl(new OpenLayers.Control.PanZoomBar());
             map.addControl(new OpenLayers.Control.MouseToolbar());
@@ -42,7 +42,6 @@
             map.addLayers([ol_wms, jpl_wms, dm_wms]);
             if (!map.getCenter()) map.zoomToMaxExtent();
         }
-        // -->
     </script>
   </head>
   <body onload="init()">

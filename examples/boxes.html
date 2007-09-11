@@ -9,16 +9,15 @@
     </style>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
-        <!--
-        box_extents = [
+        var box_extents = [
             [-10, 50, 5, 60],
             [-75, 41, -71, 44],
             [-122.6, 37.6, -122.3, 37.9],
             [10, 10, 20, 20]
         ];
-
+        var map;
         function init(){
-            var map = new OpenLayers.Map('map');
+            map = new OpenLayers.Map('map');
 
             var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                 "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'} );
@@ -39,7 +38,6 @@
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.zoomToMaxExtent();
         }
-        // -->
     </script>
   </head>
   <body onload="init()">

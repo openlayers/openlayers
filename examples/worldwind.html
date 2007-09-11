@@ -9,10 +9,9 @@
     </style>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
-        <!--
-        var ol_wms, ww, ww2;
+        var map, ol_wms, ww, ww2;
         function init(){
-            var map = new OpenLayers.Map('map', {'maxResolution': .28125, tileSize: new OpenLayers.Size(512, 512)});
+            map = new OpenLayers.Map('map', {'maxResolution': .28125, tileSize: new OpenLayers.Size(512, 512)});
 
             ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
             "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'} );
@@ -30,7 +29,6 @@
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.setCenter(new OpenLayers.LonLat(-71.4, 42.3), 6);
         }
-        // -->
     </script>
   </head>
   <body onload="init()">

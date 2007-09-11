@@ -9,8 +9,9 @@
     </style>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
+        var map;
         window.onload = function(){
-            var map = new OpenLayers.Map( 'map', {maxResolution: 'auto'} );
+            map = new OpenLayers.Map( 'map', {maxResolution: 'auto'} );
             var layer = new OpenLayers.Layer.MapServer( "MapServer Untiled", 
                     "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'}, {singleTile: true} );
             map.addLayer(layer);
