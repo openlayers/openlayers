@@ -1,0 +1,129 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 100%;
+            height: 512px;
+            border: 1px solid gray;
+        }
+    </style>
+
+    <script src='http://dev.virtualearth.net/mapcontrol/v3/mapcontrol.js'></script>
+    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAeDjUod8ItM9dBg5_lz0esxTk5UTxNMOJaMwpeYJby65YwI0-cxSmHf2_ZfIP7bDb_moMph5qZy25YA" type="text/javascript"></script>
+    <script src="http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=euzuro-openlayers"></script>
+
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+ 
+        // make map available for easy debugging
+        var map;
+
+        // avoid pink tiles
+        OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
+        OpenLayers.Util.onImageLoadErrorColor = "transparent";
+
+        function init(){
+            var options = {
+                projection: "EPSG:900913",
+                units: "m",
+                maxResolution: 156543.0339,
+                maxExtent: new OpenLayers.Bounds(-20037508, -20037508,
+                                                 20037508, 20037508.34)
+            };
+            map = new OpenLayers.Map('map', options);
+
+            // create Google Mercator layers
+            var gmap = new OpenLayers.Layer.Google(
+                "Google Streets",
+                {'sphericalMercator': true}
+            );
+            var gsat = new OpenLayers.Layer.Google(
+                "Google Sattelite",
+                {type: G_SATELLITE_MAP, 'sphericalMercator': true}
+            );
+            var ghyb = new OpenLayers.Layer.Google(
+                "Google Hybrid",
+                {type: G_HYBRID_MAP, 'sphericalMercator': true}
+            );
+
+            // create Virtual Earth layers
+            var veroad = new OpenLayers.Layer.VirtualEarth(
+                "Virtual Earth Raods",
+                {'type': VEMapStyle.Road, 'sphericalMercator': true}
+            ); 
+            var veaer = new OpenLayers.Layer.VirtualEarth(
+                "Virtual Earth Aerial",
+                {'type': VEMapStyle.Aerial, 'sphericalMercator': true}
+            ); 
+            var vehyb = new OpenLayers.Layer.VirtualEarth(
+                "Virtual Earth Hybrid",
+                {'type': VEMapStyle.Hybrid, 'sphericalMercator': true}
+            ); 
+
+            // create Yahoo layer
+            var yahoo = new OpenLayers.Layer.Yahoo(
+                "Yahoo Street",
+                {'sphericalMercator': true}
+            );
+            var yahoosat = new OpenLayers.Layer.Yahoo(
+                "Yahoo Sattelite",
+                {'type': YAHOO_MAP_SAT, 'sphericalMercator': true}
+            );
+            var yahoohyb = new OpenLayers.Layer.Yahoo(
+                "Yahoo Hybrid",
+                {'type': YAHOO_MAP_HYB, 'sphericalMercator': true}
+            );
+
+            // create OSM layer
+            var mapnik = new OpenLayers.Layer.TMS(
+                "OpenStreetMap",
+                "http://tile.openstreetmap.org/",
+                {
+                    type: 'png', getURL: osm_getTileURL,
+                    displayOutsideMaxExtent: true
+                }
+            );
+
+            // create WMS layer
+            var wms = new OpenLayers.Layer.WMS(
+                "World Map",
+                "http://world.freemap.in/tiles/",
+                {'layers': 'factbook-overlay', 'format':'png'},
+                {
+                    'reproject': false, 'opacity': 0.4,
+                    'isBaseLayer': false,'wrapDateLine': true
+                }
+            );
+
+            // create a vector layer for drawing
+            var vector = new OpenLayers.Layer.Vector("Editable Vectors");
+            
+            map.addLayers([gmap, gsat, ghyb, veroad, veaer, vehyb,
+                           yahoo, yahoosat, yahoohyb, mapnik, wms]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.addControl(new OpenLayers.Control.EditingToolbar(vector));
+            map.zoomToMaxExtent()
+        }
+
+        function osm_getTileURL(bounds) {
+            var res = this.map.getResolution();
+            var x = Math.round((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
+            var y = Math.round((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));
+            var z = this.map.getZoom();
+            var limit = Math.pow(2, z);
+            
+            if (y < 0 || y >= limit) {
+                return OpenLayers.Util.getImagesLocation() + "404.png";
+            } else {
+                x = ((x % limit) + limit) % limit;            
+                return this.url + z + "/" + x + "/" + y + "." + this.type;
+            }
+        }
+        
+    </script>
+  </head>
+  <body onload="init()">
+    <h3>OpenLayers Spherical Mercator Example</h3>
+    <div id="map"></div>
+  </body>
+</html>

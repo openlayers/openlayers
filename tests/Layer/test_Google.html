@@ -128,6 +128,23 @@
                           window.location.host);
         }
     }
+	
+    function test_Layer_Goole_forwardMercator(t){
+		t.plan(2);
+		//Just test that the fowardMercator function still exists.
+		var layer = new OpenLayers.Layer.Google('Test Layer', {'sphericalMercator': true});
+		layer.forwardMercator = function(evt) {
+									t.ok( true, "GoogleMercator.forwardMercator was called and executed." );
+            						return;
+        						}
+		layer.forwardMercator();
+		//Now test the fowardMercator returns the expected LonLat object
+		var layer = new OpenLayers.Layer.Google('Test Layer', {'sphericalMercator': true});
+		var lonlat2 = new OpenLayers.LonLat(Math.random(),Math.random());
+		var result = layer.forwardMercator(lonlat2.lon, lonlat2.lat);
+        t.ok( result instanceof OpenLayers.LonLat, "OpenLayers.Google.fowardMercator returns LonLat object" );
+		
+	}
 
     function test_Layer_Google_overlay(t) {
         // Test for #849.

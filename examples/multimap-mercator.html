@@ -1,0 +1,57 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 100%;
+            height: 512px;
+            border: 1px solid gray;
+        }
+    </style>
+
+
+    <script type="text/javascript" src="http://clients.multimap.com/API/maps/1.1/metacarta_04"></script>
+
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+ 
+        var map, ve, merc, vector;
+
+        function init(){
+            var options = {
+                projection: "EPSG:900913",
+                units: "m",
+                maxResolution: 156543.0339,
+                maxExtent: new OpenLayers.Bounds(-20037508, -20037508,
+                                                 20037508, 20037508)
+            };
+            map = new OpenLayers.Map('map', options);
+
+            ve = new OpenLayers.Layer.MultiMap(
+                "multimap",
+                {'sphericalMercator': true}
+            ); 
+            merc = new OpenLayers.Layer.WMS("World Map",
+                                            "http://world.freemap.in/tiles/",
+                                            {'layers': 'factbook-overlay',
+                                             'format':'png'},
+                                            {'reproject': false,
+                                             'opacity': 0.4,
+                                             'isBaseLayer': false,
+                                             'wrapDateLine': true});
+
+            // create a vector layer for drawing
+            vector = new OpenLayers.Layer.Vector("Editable Vectors");
+            
+            map.addLayers([ve, merc, vector]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.addControl(new OpenLayers.Control.EditingToolbar(vector));
+            map.zoomToMaxExtent()
+        }
+        
+    </script>
+  </head>
+  <body onload="init()">
+    <h3>OpenLayers VE Mercator Example</h3>
+    <div id="map"></div>
+  </body>
+</html>

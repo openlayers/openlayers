@@ -1,0 +1,50 @@
+<html>
+<head>
+    <!-- this gmaps key generated for http://openlayers.org/dev/ -->
+    <script src="../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+    function test_SphericalMercator_forwardProject(t) {
+        t.plan(12);
+        var arctic = OpenLayers.Layer.SphericalMercator.forwardMercator(0, 85);
+        var antarctic = OpenLayers.Layer.SphericalMercator.forwardMercator(0, -85);
+        var hawaii = OpenLayers.Layer.SphericalMercator.forwardMercator(-180, 0);
+        var phillipines = OpenLayers.Layer.SphericalMercator.forwardMercator(180, 0);
+        var ne = OpenLayers.Layer.SphericalMercator.forwardMercator(180, 90);
+        var sw = OpenLayers.Layer.SphericalMercator.forwardMercator(-180, -90);
+        
+        t.eq(arctic.lon, 0, "Arctic longitude is correct");
+        t.eq(Math.round(arctic.lat), 19971869, "Arctic latitude is correct");
+        
+        t.eq(antarctic.lon, 0, "Antarctic longitude is correct");
+        t.eq(Math.round(antarctic.lat), -19971869, "Antarctic latitude is correct");
+        
+        t.eq(Math.round(hawaii.lat), 0, "Hawaiian lat is correct");
+        t.eq(hawaii.lon, -20037508.34, "Hawaiian lon is correct");
+        
+        t.eq(Math.round(phillipines.lat), 0, "Phillipines lat is correct");
+        t.eq(phillipines.lon, 20037508.340, "Phillipines lon is correct");
+       
+        // Rounding errors make this not infinity 
+        t.ok(ne.lat > 50000000, "NE lat is correct");
+        t.eq(ne.lon, 20037508.34, "NE lon is correct");
+        
+        t.eq(sw.lat, -Infinity, "SW lat is correct");
+        t.eq(sw.lon, -20037508.34, "SW lon is correct");
+    } 
+    
+    function test_sphericalMercator_inverseProject(t) {
+        t.plan(4);
+        var sw =  OpenLayers.Layer.SphericalMercator.inverseMercator(-20037508.34,  -20037508.34);
+        var ne =  OpenLayers.Layer.SphericalMercator.inverseMercator(20037508.34,  20037508.34);
+        t.eq(sw.lon, -180, "Southwest lon correct");
+        t.eq(ne.lon, 180, "Northeast lon correct");
+        
+        t.eq(sw.lat, -85.05112877980659, "Southwest lat correct");
+        t.eq(ne.lat, 85.05112877980660, "Northeast lat correct");
+    }
+    
+  </script> 
+</head>
+<body>
+</body>
+</html>
