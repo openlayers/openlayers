@@ -3,6 +3,7 @@
     <script src="../../lib/OpenLayers.js"></script> 
     <script type="text/javascript">
 
+    var test_content = '<kml xmlns="http://earth.google.com/kml/2.0"><Folder><name>OpenLayers export</name><description>Vector geometries from OpenLayers</description><Placemark id="KML.Polygon"><name>OpenLayers.Feature.Vector_344</name><description>A KLM Polygon</description><Polygon><outerBoundaryIs><LinearRing><coordinates>5.001370157823406,49.26855713824488 8.214706453896161,49.630662409673505 8.397385910100951,48.45172350357396 5.001370157823406,49.26855713824488</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark><Placemark id="KML.LineString"><name>OpenLayers.Feature.Vector_402</name><description>A KML LineString</description><LineString><coordinates>5.838523393080493,49.74814616928052 5.787079558782349,48.410795432216574 8.91427702008381,49.28932499608202</coordinates></LineString></Placemark><Placemark id="KML.Point"><name>OpenLayers.Feature.Vector_451</name><description>A KML Point</description><Point><coordinates>6.985073041685488,49.8682250149058</coordinates></Point></Placemark><Placemark id="KML.MultiGeometry"><name>SF Marina Harbor Master</name><description>KML MultiGeometry</description><MultiGeometry><LineString><coordinates>-122.4425587930444,37.80666418607323 -122.4428379594768,37.80663578323093</coordinates></LineString><LineString><coordinates>-122.4425509770566,37.80662588061205 -122.4428340530617,37.8065999493009</coordinates></LineString></MultiGeometry></Placemark></Folder></kml>';
 
     function test_Format_KML_constructor(t) { 
         t.plan(4); 
@@ -14,24 +15,32 @@
         t.eq(format.foo, "bar", "constructor sets options correctly"); 
         t.eq(typeof format.read, "function", "format has a read function"); 
         t.eq(typeof format.write, "function", "format has a write function");
-
     }
 
     function test_Format_KML_read(t) {
-        t.plan(1);
-        t.ok(true, "Read tests not done yet.");
+        t.plan(5);
+        var features = (new OpenLayers.Format.KML()).read(this.test_content);
+        t.eq(features.length, 4, "Number of features read is correct");
+        t.ok(features[0].geometry.toString() == "POLYGON((5.001370157823406 49.26855713824488,8.214706453896161 49.630662409673505,8.397385910100951 48.45172350357396,5.001370157823406 49.26855713824488))", "polygon feature geometry correctly created");
+        t.ok(features[1].geometry.toString() == "LINESTRING(5.838523393080493 49.74814616928052,5.787079558782349 48.410795432216574,8.91427702008381 49.28932499608202)", "linestring feature geometry correctly created");
+        t.ok(features[2].geometry.toString() == "POINT(6.985073041685488 49.8682250149058)", "point feature geometry correctly created");
+        t.ok(features[3].geometry.CLASS_NAME == "OpenLayers.Geometry.Collection",
+             "read geometry collection");
     }
 
     function test_Format_KML_write(t) {
+        // make sure id, name, and description are preserved
         t.plan(1);
-        t.ok(true, "Write tests not done yet.");
+        var kmlExpected = this.test_content;
+        var options = {
+            folderName: "OpenLayers export",
+            foldersDesc: "Vector geometries from OpenLayers"
+        }
 
-        var format = new OpenLayers.Format.KML();
-        //var doc = format.read(text);
-        //var out = format.write(doc);
-        //out = out.replace(/[\r\n]/g, '');
-        //t.eq(text, out,
-        //     "correctly writes an KML DOM doc");
+        var format = new OpenLayers.Format.KML(options);
+        var features = format.read(kmlExpected);
+        var kmlOut = format.write(features);
+        t.eq(kmlOut, kmlExpected, "correctly writes an KML doc string");
     }
 
     </script> 
