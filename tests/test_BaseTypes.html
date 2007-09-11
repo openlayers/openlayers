@@ -28,7 +28,7 @@
     }
     
     function test_03_String_trim(t) {
-        t.plan(4);
+        t.plan(5);
         
         var str = "chickenHead";
         t.eq(str.trim(), "chickenHead", "string with no extra whitespace is left alone");
@@ -42,6 +42,8 @@
         str = "  chickenHead    ";
         t.eq(str.trim(), "chickenHead", "string with extra whitespace at beginning and end is trimmed correctly");
 
+        str = " ";
+        t.eq(str.trim(), "", "whitespace string is trimmed correctly");
     }
     
     function test_04_String_indexOf(t) {
