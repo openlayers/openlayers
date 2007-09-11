@@ -38,12 +38,12 @@ Group: OpenLayers  {
    Group: BaseTypes  {
 
       File: Base Types  (no auto-title, OpenLayers/BaseTypes.js)
-      File: Bounds  (OpenLayers/BaseTypes/Bounds.js)
+      File: Bounds  (no auto-title, OpenLayers/BaseTypes/Bounds.js)
       File: Class  (no auto-title, OpenLayers/BaseTypes/Class.js)
-      File: Element  (OpenLayers/BaseTypes/Element.js)
-      File: LonLat  (OpenLayers/BaseTypes/LonLat.js)
-      File: Pixel  (OpenLayers/BaseTypes/Pixel.js)
-      File: Size  (OpenLayers/BaseTypes/Size.js)
+      File: Element  (no auto-title, OpenLayers/BaseTypes/Element.js)
+      File: LonLat  (no auto-title, OpenLayers/BaseTypes/LonLat.js)
+      File: Pixel  (no auto-title, OpenLayers/BaseTypes/Pixel.js)
+      File: Size  (no auto-title, OpenLayers/BaseTypes/Size.js)
       }  # Group: BaseTypes
 
    File: Console  (no auto-title, OpenLayers/Console.js)
@@ -85,90 +85,92 @@ Group: OpenLayers  {
 
    Group: Format  {
 
-      File: Format  (no auto-title, OpenLayers/Format.js)
-      File: GeoJSON  (OpenLayers/Format/GeoJSON.js)
-      File: GeoRSS  (OpenLayers/Format/GeoRSS.js)
-      File: GML  (OpenLayers/Format/GML.js)
-      File: JSON  (OpenLayers/Format/JSON.js)
-      File: KML  (OpenLayers/Format/KML.js)
-      File: WFS  (OpenLayers/Format/WFS.js)
+      File: Format  (OpenLayers/Format.js)
+      File: GeoJSON  (no auto-title, OpenLayers/Format/GeoJSON.js)
+      File: GeoRSS  (no auto-title, OpenLayers/Format/GeoRSS.js)
+      File: GML  (no auto-title, OpenLayers/Format/GML.js)
+      File: JSON  (no auto-title, OpenLayers/Format/JSON.js)
+      File: KML  (no auto-title, OpenLayers/Format/KML.js)
+      File: WFS  (no auto-title, OpenLayers/Format/WFS.js)
       File: WKT  (no auto-title, OpenLayers/Format/WKT.js)
-      File: XML  (OpenLayers/Format/XML.js)
+      File: XML  (no auto-title, OpenLayers/Format/XML.js)
       }  # Group: Format
 
    Group: Geometry  {
 
-      File: Geometry  (no auto-title, OpenLayers/Geometry.js)
+      File: Geometry  (OpenLayers/Geometry.js)
       File: Collection  (no auto-title, OpenLayers/Geometry/Collection.js)
-      File: Curve  (OpenLayers/Geometry/Curve.js)
-      File: LinearRing  (OpenLayers/Geometry/LinearRing.js)
+      File: Curve  (no auto-title, OpenLayers/Geometry/Curve.js)
+      File: LinearRing  (no auto-title, OpenLayers/Geometry/LinearRing.js)
       File: LineString  (no auto-title, OpenLayers/Geometry/LineString.js)
       File: MultiLineString  (no auto-title, OpenLayers/Geometry/MultiLineString.js)
       File: MultiPoint  (no auto-title, OpenLayers/Geometry/MultiPoint.js)
       File: MultiPolygon  (no auto-title, OpenLayers/Geometry/MultiPolygon.js)
       File: Point  (no auto-title, OpenLayers/Geometry/Point.js)
       File: Polygon  (no auto-title, OpenLayers/Geometry/Polygon.js)
-      File: Rectangle  (OpenLayers/Geometry/Rectangle.js)
-      File: Surface  (OpenLayers/Geometry/Surface.js)
+      File: Rectangle  (no auto-title, OpenLayers/Geometry/Rectangle.js)
+      File: Surface  (no auto-title, OpenLayers/Geometry/Surface.js)
       }  # Group: Geometry
 
    Group: Handler  {
 
-      File: Handler  (no auto-title, OpenLayers/Handler.js)
-      File: Box  (OpenLayers/Handler/Box.js)
+      File: Handler  (OpenLayers/Handler.js)
+      File: Box  (no auto-title, OpenLayers/Handler/Box.js)
       File: Drag  (no auto-title, OpenLayers/Handler/Drag.js)
       File: Feature  (no auto-title, OpenLayers/Handler/Feature.js)
       File: Keyboard  (no auto-title, OpenLayers/Handler/Keyboard.js)
       File: MouseWheel  (no auto-title, OpenLayers/Handler/MouseWheel.js)
       File: Path  (no auto-title, OpenLayers/Handler/Path.js)
       File: Point  (no auto-title, OpenLayers/Handler/Point.js)
-      File: Polygon  (OpenLayers/Handler/Polygon.js)
+      File: Polygon  (no auto-title, OpenLayers/Handler/Polygon.js)
+      File: RegularPolygon  (no auto-title, OpenLayers/Handler/RegularPolygon.js)
       }  # Group: Handler
 
    File: Icon  (no auto-title, OpenLayers/Icon.js)
 
    Group: Layer  {
 
-      File: Layer  (no auto-title, OpenLayers/Layer.js)
-      File: Boxes  (OpenLayers/Layer/Boxes.js)
-      File: EventPane  (OpenLayers/Layer/EventPane.js)
-      File: FixedZoomLevels  (OpenLayers/Layer/FixedZoomLevels.js)
+      File: Layer  (OpenLayers/Layer.js)
+      File: Boxes  (no auto-title, OpenLayers/Layer/Boxes.js)
+      File: EventPane  (no auto-title, OpenLayers/Layer/EventPane.js)
+      File: FixedZoomLevels  (no auto-title, OpenLayers/Layer/FixedZoomLevels.js)
       File: GeoRSS  (no auto-title, OpenLayers/Layer/GeoRSS.js)
       File: GML  (no auto-title, OpenLayers/Layer/GML.js)
-      File: Gooogle  (no auto-title, OpenLayers/Layer/Google.js)
-      File: Grid  (OpenLayers/Layer/Grid.js)
-      File: HTTPRequest  (OpenLayers/Layer/HTTPRequest.js)
+      File: Google  (no auto-title, OpenLayers/Layer/Google.js)
+      File: Grid  (no auto-title, OpenLayers/Layer/Grid.js)
+      File: HTTPRequest  (no auto-title, OpenLayers/Layer/HTTPRequest.js)
       File: Image  (no auto-title, OpenLayers/Layer/Image.js)
-      File: KaMap  (OpenLayers/Layer/KaMap.js)
-      File: MapServer  (OpenLayers/Layer/MapServer.js)
-      File: MapServer.Untiled  (OpenLayers/Layer/MapServer/Untiled.js)
+      File: KaMap  (no auto-title, OpenLayers/Layer/KaMap.js)
+      File: MapServer  (no auto-title, OpenLayers/Layer/MapServer.js)
+      File: MapServer.Untiled  (no auto-title, OpenLayers/Layer/MapServer/Untiled.js)
       File: Markers  (no auto-title, OpenLayers/Layer/Markers.js)
-      File: MultiMap  (OpenLayers/Layer/MultiMap.js)
-      File: Text  (OpenLayers/Layer/Text.js)
-      File: TileCache  (OpenLayers/Layer/TileCache.js)
-      File: TMS  (OpenLayers/Layer/TMS.js)
+      File: MultiMap  (no auto-title, OpenLayers/Layer/MultiMap.js)
+      File: SphericalMercator  (no auto-title, OpenLayers/Layer/SphericalMercator.js)
+      File: Text  (no auto-title, OpenLayers/Layer/Text.js)
+      File: TileCache  (no auto-title, OpenLayers/Layer/TileCache.js)
+      File: TMS  (no auto-title, OpenLayers/Layer/TMS.js)
       File: Vector  (no auto-title, OpenLayers/Layer/Vector.js)
-      File: VirtualEarth  (OpenLayers/Layer/VirtualEarth.js)
-      File: WFS  (OpenLayers/Layer/WFS.js)
+      File: VirtualEarth  (no auto-title, OpenLayers/Layer/VirtualEarth.js)
+      File: WFS  (no auto-title, OpenLayers/Layer/WFS.js)
       File: WMS  (no auto-title, OpenLayers/Layer/WMS.js)
       File: WMS.Untiled  (no auto-title, OpenLayers/Layer/WMS/Untiled.js)
-      File: WorldWind  (OpenLayers/Layer/WorldWind.js)
-      File: Yahoo  (OpenLayers/Layer/Yahoo.js)
+      File: WorldWind  (no auto-title, OpenLayers/Layer/WorldWind.js)
+      File: Yahoo  (no auto-title, OpenLayers/Layer/Yahoo.js)
       }  # Group: Layer
 
    File: Map  (no auto-title, OpenLayers/Map.js)
 
    Group: Marker  {
 
-      File: Marker  (no auto-title, OpenLayers/Marker.js)
+      File: Marker  (OpenLayers/Marker.js)
       File: Box  (no auto-title, OpenLayers/Marker/Box.js)
       }  # Group: Marker
 
    Group: Popup  {
 
-      File: Popup  (no auto-title, OpenLayers/Popup.js)
+      File: Popup  (OpenLayers/Popup.js)
       File: Anchored  (no auto-title, OpenLayers/Popup/Anchored.js)
-      File: AnchoredBubble  (OpenLayers/Popup/AnchoredBubble.js)
+      File: AnchoredBubble  (no auto-title, OpenLayers/Popup/AnchoredBubble.js)
       }  # Group: Popup
 
    Group: Renderer  {
@@ -181,7 +183,7 @@ Group: OpenLayers  {
 
    Group: Tile  {
 
-      File: Tile  (no auto-title, OpenLayers/Tile.js)
+      File: Tile  (OpenLayers/Tile.js)
       File: Image  (no auto-title, OpenLayers/Tile/Image.js)
       File: WFS  (no auto-title, OpenLayers/Tile/WFS.js)
       }  # Group: Tile
