@@ -64,7 +64,7 @@
         handler.mousedown(evt);
         var evt = {xy: new OpenLayers.Pixel(125, 100), which: 1};
         handler.mousemove(evt);
-        t.ok(handler.polygon.geometry.getBounds().equals(new OpenLayers.Bounds(0,-35.15625,35.15625,0)),
+        t.ok(!handler.polygon.geometry.getBounds().equals(new OpenLayers.Bounds(0,-35.15625,35.15625,0)),
              "Correct bounds after dragging without letting go. (Came out as "+handler.line.geometry.getBounds().toBBOX() + ".)");
     }
 
