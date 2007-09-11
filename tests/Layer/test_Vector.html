@@ -148,12 +148,13 @@
     }
 
     function test_99_Layer_Vector_destroy (t) {
-        t.plan(1);    
+        t.plan(2);    
         layer = new OpenLayers.Layer.Vector(name);
         var map = new OpenLayers.Map('map');
         map.addLayer(layer);
         layer.destroy();
         t.eq(layer.map, null, "layer.map is null after destroy");
+        t.eq(layer.getFeatureFromEvent({'target':'map'}), null, "getFeatureIdFromEvent doesn't cause an error when called on layer which has been destroyed.");
     }
 
     function test_Layer_Vector_externalGraphic(t) {
