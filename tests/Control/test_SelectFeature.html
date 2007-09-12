@@ -32,6 +32,21 @@
         
     }
     
+    function test_Control_SelectFeature_select(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.SelectFeature(layer);
+        var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0));
+        layer.addFeatures(feature);
+        layer.drawFeature = function() { }
+        control.select(feature);
+        t.eq(feature.style.strokeColor, OpenLayers.Feature.Vector.style['select'].strokeColor, "feature style is set to select style");
+        control.unselect(feature);
+        t.eq(feature.style.strokeColor, OpenLayers.Feature.Vector.style['default'].strokeColor, "feature style is set back to old style");
+    }
+    
     function test_Control_SelectFeature_activate(t) {
         t.plan(2);
         var map = new OpenLayers.Map("map");
