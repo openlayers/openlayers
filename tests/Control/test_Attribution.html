@@ -1,0 +1,32 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript"><!--
+    var map; 
+    function test_01_Control_Attribution_constructor (t) {
+        t.plan( 2 );
+    
+        control = new OpenLayers.Control.Attribution();
+        t.ok( control instanceof OpenLayers.Control.Attribution, "new OpenLayers.Control returns object" );
+        t.eq( control.displayClass,  "olControlAttribution", "displayClass is correct" );
+    }
+    function test_Control_Attribution_draw (t) {
+        t.plan(3);
+        control = new OpenLayers.Control.Attribution();
+        map = new OpenLayers.Map("map");
+        map.addControl(control);
+        map.addLayer(new OpenLayers.Layer("name",{'attribution':'My layer!'}));
+        t.eq(control.div.innerHTML, 'My layer!', "Attribution correct with one layer.");
+        map.addLayer(new OpenLayers.Layer("name", {'attribution':'My layer 2!'}));
+        t.eq(control.div.innerHTML, 'My layer!, My layer 2!', "Attribution correct with two layers.");
+        control.seperator = '|';
+        map.addLayer(new OpenLayers.Layer("name",{'attribution':'My layer 3!'}));
+        t.eq(control.div.innerHTML, 'My layer!|My layer 2!|My layer 3!', "Attribution correct with three layers and diff seperator.");
+    }    
+  // -->
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 1024px; height: 512px;"/>
+</body>
+</html>

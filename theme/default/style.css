@@ -10,7 +10,13 @@ div.olMapViewport {
     left: 2px;
     bottom: 15px;   
 }
-
+.olControlAttribution {
+    font-size: smaller; 
+    right: 3px; 
+    bottom: 4.5em; 
+    position: absolute; 
+    display: block;
+}
 .olControlScale {
     right: 3px;
     bottom: 3em;
