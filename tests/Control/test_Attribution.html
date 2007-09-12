@@ -10,6 +10,16 @@
         t.ok( control instanceof OpenLayers.Control.Attribution, "new OpenLayers.Control returns object" );
         t.eq( control.displayClass,  "olControlAttribution", "displayClass is correct" );
     }
+    function test_Control_Attribution_setBaseLayer (t) {
+        t.plan(1);
+        map = new OpenLayers.Map("map");
+        map.addControl(control);
+        map.addLayer(new OpenLayers.Layer("name",{'attribution':'My layer!', isBaseLayer: true}));
+        map.addLayer(new OpenLayers.Layer("name",{'attribution':'My layer 2!', isBaseLayer: true}));
+        map.setBaseLayer(map.layers[1]);
+        t.eq(control.div.innerHTML, 'My layer 2!', "Attribution correct with changed base layer");
+
+    }
     function test_Control_Attribution_draw (t) {
         t.plan(3);
         control = new OpenLayers.Control.Attribution();
@@ -19,9 +29,11 @@
         t.eq(control.div.innerHTML, 'My layer!', "Attribution correct with one layer.");
         map.addLayer(new OpenLayers.Layer("name", {'attribution':'My layer 2!'}));
         t.eq(control.div.innerHTML, 'My layer!, My layer 2!', "Attribution correct with two layers.");
-        control.seperator = '|';
+        control.separator = '|';
         map.addLayer(new OpenLayers.Layer("name",{'attribution':'My layer 3!'}));
         t.eq(control.div.innerHTML, 'My layer!|My layer 2!|My layer 3!', "Attribution correct with three layers and diff seperator.");
+
+
     }    
   // -->
   </script>
