@@ -51,6 +51,19 @@
         t.eq(popup.contentHTML, content, "contentHTML porpoerty of set correctly");
     }
 
+    function test_Popup_updatePosition(t) {
+        t.plan(1)
+        var map = new OpenLayers.Map('map');
+        map.addLayer(new OpenLayers.Layer('name', {'isBaseLayer':true}));
+        map.zoomToMaxExtent();
+        var popup = new OpenLayers.Popup('id');
+        map.addPopup(popup);
+        map.getLayerPxFromLonLat = function () { return null; }
+        popup.moveTo=function() { t.fail("Shouldnt' call moveTo if layerpx is null"); }
+        popup.lonlat = true;
+        popup.updatePosition();
+        t.ok(true, "update position doesn't fail when getLayerPxFromLonLat fails.");
+    }
     function test_03_Popup_draw(t) {
         t.plan( 17 );
         
@@ -109,5 +122,6 @@
   </script>
 </head>
 <body>
+<div id="map" style="width:512px; height:256px"> </div>
 </body>
 </html>
