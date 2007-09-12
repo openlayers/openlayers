@@ -1,0 +1,51 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 800px;
+            height: 475px;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+        var lon = 5;
+        var lat = 40;
+        var zoom = 5;
+        var map, layer;
+
+        function init(){
+            map = new OpenLayers.Map( $('map') );
+
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                    "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+
+            var control = new OpenLayers.Control();
+            OpenLayers.Util.extend(control, {
+                draw: function () {
+                    // this Handler.Point will intercept the shift-mousedown
+                    // before Control.MouseDefault gets to see it
+                    this.point = new OpenLayers.Handler.Point( control,
+                        {"done": this.notice},
+                        {keyMask: OpenLayers.Handler.MOD_SHIFT});
+                    this.point.activate();
+                },
+
+                notice: function (bounds) {
+                    document.getElementById('bounds').innerHTML = bounds;
+                }
+            });
+
+            map.addLayer(layer);
+            map.addControl(control);
+            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+        }
+        // -->
+    </script>
+  </head>
+  <body onload="init()">
+    <div id="map"></div>
+    <div id="bounds"></div>
+  </body>
+</html>
