@@ -145,6 +145,8 @@ Test.AnotherWay._add_test_page_url=function( test_url, convention )
 	cell_child=document.createElement( "input" );
 	cell_child.type="checkbox";
 	cell_child.id="checkbox"+index;
+    cell_child.checked='checked';
+    cell_child.defaultChecked='checked';
 	cell.appendChild( cell_child );
 
 	cell=row.insertCell( -1 );
