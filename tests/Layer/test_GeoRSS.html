@@ -28,6 +28,15 @@
             t.eq( layer.name, "Crschmidt's Places At Platial", "Layer name is correct." );
         } );
     }
+    
+    function test_Layer_GeoRSS_dontUseFeedTitle (t) {
+        t.plan( 1 );
+        layer = new OpenLayers.Layer.GeoRSS('Test Layer', georss_txt, {'useFeedTitle': false} );
+        t.delay_call( 1, function() {  
+            t.eq( layer.name, "Test Layer", "Layer name is correct when not used from feed." );
+        } );
+    }
+    
     function test_01_Layer_GeoRSS_AtomParsing (t) {
         t.plan( 6 );
         layer = new OpenLayers.Layer.GeoRSS('Test Layer', atom_xml );
