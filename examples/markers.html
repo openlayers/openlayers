@@ -36,7 +36,7 @@
 
             marker = new OpenLayers.Marker(new OpenLayers.LonLat(90,10),icon.clone());
             marker.setOpacity(0.2);
-            marker.events.register('mousedown', marker, function(evt) { alert(this.icon.url); Event.stop(evt); });
+            marker.events.register('mousedown', marker, function(evt) { alert(this.icon.url); OpenLayers.Event.stop(evt); });
             markers.addMarker(marker); 
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.zoomToMaxExtent();

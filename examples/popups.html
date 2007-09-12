@@ -88,7 +88,7 @@
                 popup.destroy();
                 popup = null;
             }
-            Event.stop(evt);
+            OpenLayers.Event.stop(evt);
         }        
 
         /**
@@ -98,7 +98,7 @@
             markers.map.removePopup(popup);
             popup.destroy();
             popup = null;
-            Event.stop(evt);
+            OpenLayers.Event.stop(evt);
         }
 
 

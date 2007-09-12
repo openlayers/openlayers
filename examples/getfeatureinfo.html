@@ -37,7 +37,7 @@ ul, li { padding-left: 0px; margin-left: 0px; }
                             WIDTH: wms.map.size.w,
                             HEIGHT: wms.map.size.h});
             OpenLayers.loadURL(url, '', this, setHTML);
-            Event.stop(e);
+            OpenLayers.Event.stop(e);
       });
     function setHTML(response) { 
         OpenLayers.Util.getElement('nodeList').innerHTML = response.responseText;
