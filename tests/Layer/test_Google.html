@@ -128,42 +128,54 @@
                           window.location.host);
         }
     }
-	
+
     function test_Layer_Goole_forwardMercator(t){
-		t.plan(2);
-		//Just test that the fowardMercator function still exists.
-		var layer = new OpenLayers.Layer.Google('Test Layer', {'sphericalMercator': true});
-		layer.forwardMercator = function(evt) {
-									t.ok( true, "GoogleMercator.forwardMercator was called and executed." );
-            						return;
-        						}
-		layer.forwardMercator();
-		//Now test the fowardMercator returns the expected LonLat object
-		var layer = new OpenLayers.Layer.Google('Test Layer', {'sphericalMercator': true});
-		var lonlat2 = new OpenLayers.LonLat(Math.random(),Math.random());
-		var result = layer.forwardMercator(lonlat2.lon, lonlat2.lat);
-        t.ok( result instanceof OpenLayers.LonLat, "OpenLayers.Google.fowardMercator returns LonLat object" );
-		
-	}
+        if(validkey) {
+            t.plan(2);
+            //Just test that the fowardMercator function still exists.
+            var layer = new OpenLayers.Layer.Google('Test Layer', {'sphericalMercator': true});
+            layer.forwardMercator = function(evt) {
+                t.ok(true,
+                     "GoogleMercator.forwardMercator was called and executed." );
+                return;
+            }
+            layer.forwardMercator();
+            //Now test the fowardMercator returns the expected LonLat object
+            var layer = new OpenLayers.Layer.Google('Test Layer', {'sphericalMercator': true});
+            var lonlat2 = new OpenLayers.LonLat(Math.random(),Math.random());
+            var result = layer.forwardMercator(lonlat2.lon, lonlat2.lat);
+            t.ok(result instanceof OpenLayers.LonLat, "OpenLayers.Google.fowardMercator returns LonLat object" );
+        } else {
+            t.plan(0);
+            t.debug_print("Google tests can't be run from " +
+                          window.location.host);
+        }
+    }
 
     function test_Layer_Google_overlay(t) {
         // Test for #849.
-        t.plan(1);
-        var map = new OpenLayers.Map( 'map' , 
-        { controls: [] , 'numZoomLevels':20});
-
-        var satellite = new OpenLayers.Layer.Google( "Google Satellite" , {type: G_SATELLITE_MAP, 'maxZoomLevel':18} );
-        var layer = new OpenLayers.Layer.WMS.Untiled( "OpenLayers WMS", 
-                "http://labs.metacarta.com/wms/vmap0", {layers: 'basic', 'transparent':true}, 
-                  {isBaseLayer: false} );
-
-        map.addLayers([satellite, layer]);
-        map.setCenter(new OpenLayers.LonLat(10.205188,48.857593), 5);
-        map.zoomIn();
-        var size = map.getSize();
-        var px = new OpenLayers.Pixel(size.w, size.h);
-        var br = map.getLonLatFromPixel(px);
-        t.ok(layer.grid[0][0].bounds.containsLonLat(br), "Bottom right pixel is covered by untiled WMS layer");
+        if(validkey) {
+            t.plan(1);
+            var map = new OpenLayers.Map( 'map' , 
+            { controls: [] , 'numZoomLevels':20});
+    
+            var satellite = new OpenLayers.Layer.Google( "Google Satellite" , {type: G_SATELLITE_MAP, 'maxZoomLevel':18} );
+            var layer = new OpenLayers.Layer.WMS.Untiled( "OpenLayers WMS", 
+                    "http://labs.metacarta.com/wms/vmap0", {layers: 'basic', 'transparent':true}, 
+                      {isBaseLayer: false} );
+    
+            map.addLayers([satellite, layer]);
+            map.setCenter(new OpenLayers.LonLat(10.205188,48.857593), 5);
+            map.zoomIn();
+            var size = map.getSize();
+            var px = new OpenLayers.Pixel(size.w, size.h);
+            var br = map.getLonLatFromPixel(px);
+            t.ok(layer.grid[0][0].bounds.containsLonLat(br), "Bottom right pixel is covered by untiled WMS layer");
+        } else {
+            t.plan(0);
+            t.debug_print("Google tests can't be run from " +
+                          window.location.host);
+        }
     }    
 
   </script>
