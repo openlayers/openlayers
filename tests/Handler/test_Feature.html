@@ -98,6 +98,28 @@
  
     }
  
+    function test_Handler_feature_geometrytype_limit(t) {
+        t.plan(2);
+        var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0));
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var layer = new OpenLayers.Layer();
+        layer.getFeatureFromEvent = function(evt) { return feature };
+        map.addLayer(layer);
+        var handler = new OpenLayers.Handler.Feature(control, layer, {}, {'geometryTypes':['OpenLayers.Geometry.Point']});
+        handler.activate();
+        handler.callback = function(type,featurelist) {
+            t.eq(featurelist[0].id, feature.id, "Correct feature called back on");
+        }
+        handler.select("foo", {}); 
+        handler.feature = null;
+        handler.callback = function(type,featurelist) {
+            t.fail("Shouldn't have called back on " + featurelist[0].geometry);
+        }    
+        feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString(0,0));
+        handler.select("foo", {}); 
+    }
     function test_Handler_Feature_callbacks(t) {
         t.plan(75);
         
