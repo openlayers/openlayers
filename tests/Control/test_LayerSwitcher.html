@@ -65,7 +65,7 @@
 
     function test_04_Control_LayerSwitcher_redraw (t) {
 
-        t.plan( 8 );
+        t.plan( 12 );
 
         map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS("WMS", 
@@ -91,6 +91,16 @@
         t.eq(markersInput.type, "checkbox", "wms correctly made a radio button");
         t.eq(markersInput.name, markers.name, "wms correctly named");
         t.eq(markersInput.value, markers.name, "wms correctly valued");
+
+        t.eq(false, control.checkRedraw(), "check redraw is false");
+        
+        control = new OpenLayers.Control.LayerSwitcher();
+        control.redraw = function() { 
+            t.ok(true, "redraw called when setting vis");
+        }
+        map.addControl(control); 
+        markers.setVisibility(false); 
+        t.eq(control.checkRedraw(), true, "check redraw is true after changing layer and not letting redraw happen.");
 
     }
     function test_05_Control_LayerSwitcher_ascendingw (t) {

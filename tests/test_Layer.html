@@ -118,7 +118,7 @@
 
     function test_05_Layer_visibility(t) {
 
-        t.plan(5)
+        t.plan(7);
 
         var layer = new OpenLayers.Layer('Test Layer');
     
@@ -139,6 +139,10 @@
         
         layermoved = false; 
         layer.moveTo = function() { layermoved = true; }
+        
+        layer.events.register('visibilitychanged', t, function() {
+            this.ok(true, "Visibility changed calls layer event.");
+        });    
         
         layer.setVisibility(false);
         t.eq(layermoved, false, "Layer didn't move when calling setvis false");
