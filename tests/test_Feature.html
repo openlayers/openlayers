@@ -28,6 +28,21 @@
         t.ok( feature.popupClass == OpenLayers.Popup.AnchoredBubble, "default popupClass is AnchoredBubble");
     }
     
+    function test_02_Feature_createPopup (t) {
+        t.plan(1);
+        var layer = {};
+        var lonlat = new OpenLayers.LonLat(2,1);
+        var iconURL = 'http://boston.openguides.org/features/ORANGE.png';
+        var iconSize = new OpenLayers.Size(12, 17);
+        var data =  { iconURL: iconURL,
+                      iconSize: iconSize,
+                      'overflow':'auto'
+                    };
+        
+        feature = new OpenLayers.Feature(layer, lonlat, data);
+        popup = feature.createPopup(); 
+        t.eq(popup.contentDiv.style.overflow, "auto", 'overflow on popup is correct');
+    }    
     function test_02_Feature_createMarker (t) {
         t.plan(1);
         t.ok(true);

@@ -8,11 +8,13 @@
 
     var datafile  = "./data_Layer_Text_textfile.txt";
     var datafile2 = "./data_Layer_Text_textfile_2.txt";
+    var datafile_overflow = "./data_Layer_Text_textfile_overflow.txt";
 
     // if this test is running in IE, different rules apply
     if (isMSIE) {
         datafile = "." + datafile;
         datafile2 = "." + datafile2;
+        datafile_overflow = "." + datafile_overflow;
     }
 
     function test_01_Layer_Text_constructor (t) {
@@ -56,7 +58,7 @@
         });;
     }
     function test_03_Layer_Text_events (t) {
-        t.plan( 4 );    
+        t.plan( 5 );    
         layer = new OpenLayers.Layer.Text('Test Layer', { location: datafile2 });
         var map = new OpenLayers.Map('map');
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
@@ -73,6 +75,27 @@
           t.eq(map.popups.length, 1, "Popup opened correctly");
           layer.markers[1].events.triggerEvent('click', event);
           t.eq(map.popups.length, 1, "1st popup gone, 2nd Popup opened correctly");
+          t.eq(map.popups[0].contentDiv.style.overflow,"auto", "default Popup overflow correct");
+        });
+    }
+    function test_03_Layer_Text_overflow (t) {
+        t.plan( 4 );    
+        layer = new OpenLayers.Layer.Text('Test Layer', { location: datafile_overflow });
+        var map = new OpenLayers.Map('map');
+        var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(baseLayer);
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0),0);
+        var event = {};
+        t.delay_call( 1, function() {  
+          layer.markers[0].events.triggerEvent('click', event);
+          t.eq(map.popups.length, 1, "Popup opened correctly");
+          t.eq(map.popups[0].contentDiv.style.overflow,"auto", "Popup overflow read from file");
+          layer.markers[1].events.triggerEvent('click', event);
+          t.eq(map.popups.length, 1, "1st popup gone, 2nd Popup opened correctly");
+          t.eq(map.popups[0].contentDiv.style.overflow,"hidden", "Popup overflow read from file");
         });
     }
     function test_04_Layer_Text_events_nopopups (t) {
