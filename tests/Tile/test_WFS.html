@@ -26,6 +26,21 @@
         t.ok( tile.events != null, "tile's events intitialized");
     }
 
+    function test_Tile_WFS_requestSuccess(t) {
+        t.plan(1);
+        var layer = {}; // bogus layer
+        var position = new OpenLayers.Pixel(10,20);
+        var bounds = new OpenLayers.Bounds(1,2,3,4);
+        var url = "bobob";
+        var size = new OpenLayers.Size(5,6);
+        
+        tile = new OpenLayers.Tile.WFS(layer, position, bounds, url, size);
+        tile.destroy();
+        tile.requestSuccess({'requestText': '<xml><foo /></xml>'});
+        t.ok(true, "Didn't fail after calling requestSuccess on destroyed tile.");
+        
+    }
+    
     function test_99_Tile_WFS_destroy(t) {
         t.plan( 6 );
 
