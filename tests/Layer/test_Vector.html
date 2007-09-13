@@ -158,7 +158,7 @@
     }
 
     function test_Layer_Vector_externalGraphic(t) {
-        t.plan(9);
+        t.plan(11);
         // base layer is needed for getResolution() to return a value,
         // otherwise VML test will fail because style.left and style.top
         // cannot be set
@@ -169,11 +169,16 @@
                format: 'image/png'});
     		
         var layer = new OpenLayers.Layer.Vector("Test Layer");
+        var renderer = layer.renderer;
         var map = new OpenLayers.Map('map');
         map.addLayers([baseLayer, layer]);
 
-        var geometry = new OpenLayers.Geometry.Point(10, 10);
+        var geometryX = 10;
+        var geometryY = 10;
+        var geometry = new OpenLayers.Geometry.Point(geometryX, geometryY);
         var feature = new OpenLayers.Feature.Vector(geometry);
+
+        map.zoomToMaxExtent();
 
         var customStyle1 = new Object({
         		externalGraphic: 'test.png',
@@ -197,8 +202,15 @@
         		graphicWidth: 24,
                 graphicOpacity: 1
         });
+        var customStyle6 = new Object({
+                externalGraphic: 'test.png',
+                graphicWidth: 24,
+                graphicHeight: 16,
+                graphicXOffset: -24,
+                graphicYOffset: -16
+        });
                
-        var root = layer.renderer.root;
+        var root = renderer.root;
         if (layer.renderer.CLASS_NAME == 'OpenLayers.Renderer.SVG') {
         		feature.style = customStyle1;
         		layer.drawFeature(feature);
@@ -237,6 +249,23 @@
          		t.eq(root.firstChild.getAttributeNS(null, 'style'),
          					'opacity: '+customStyle5.graphicOpacity.toString()+';',
          					"graphicOpacity correctly set");
+                feature.style = customStyle6;
+                layer.drawFeature(feature);
+                var x = geometryX / renderer.getResolution() + renderer.left;
+                var y = geometryY / renderer.getResolution() - renderer.top;
+                // SVG setStyle() gets x and y using getAttributeNS(), which returns
+                // a value with only 3 decimal digits. To mimic this we use toFixed(3) here
+                x = x.toFixed(3);
+                y = y.toFixed(3);
+                // toFixed() returns a string
+                x = parseFloat(x);
+                y = parseFloat(y);
+                t.eq(root.firstChild.getAttributeNS(null, 'x'),
+                        (x + customStyle6.graphicXOffset).toFixed().toString(),
+                        "graphicXOffset correctly set");
+                t.eq(root.firstChild.getAttributeNS(null, 'y'),
+                        (-y + customStyle6.graphicYOffset).toFixed().toString(),
+                        "graphicYOffset correctly set");
         }
         if (layer.renderer.CLASS_NAME == 'OpenLayers.Renderer.VML') {
         		feature.style = customStyle1;
@@ -279,6 +308,17 @@
                 t.eq(opacity,
          					customStyle5.graphicOpacity,
          					"graphicOpacity correctly set"); 
+                feature.style = customStyle6;
+                layer.drawFeature(feature);
+                var x = geometryX / renderer.getResolution();
+                var y = geometryY / renderer.getResolution();
+                t.eq(root.firstChild.style.left,
+                            (x + customStyle6.graphicXOffset).toFixed().toString()+'px',
+                            "graphicXOffset correctly set");
+                            
+                t.eq(root.firstChild.style.top,
+                            (y - (customStyle6.graphicYOffset+parseInt(root.firstChild.style.height))).toFixed().toString()+'px',
+                            "graphicYOffset correctly set");
 
         }
     }

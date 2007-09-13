@@ -58,6 +58,8 @@
             // of the image will be ignored
             style_mark.graphicWidth = 24;
             style_mark.graphicHeight = 20;
+            style_mark.graphicXOffset = -(style_mark.graphicWidth/2);  // this is the default value
+            style_mark.graphicYOffset = -style_mark.graphicHeight;
             style_mark.externalGraphic = "../img/marker.png";
             
             var vectorLayer = new OpenLayers.Layer.Vector("Simple Geometry", {style: layer_style});
