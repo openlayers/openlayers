@@ -1,0 +1,112 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Modify Feature</title>
+    <style type="text/css">
+        #map {
+            width: 512px;
+            height: 350px;
+            border: 1px solid gray;
+        }
+        #controls {
+            width: 512px;
+        }
+        #controlToggle {
+            padding-left: 1em;
+        }
+        #controlToggle li {
+            list-style: none;
+        }
+    </style>
+    <script src="../lib/Firebug/firebug.js"></script>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map, vectors, controls;
+        function init(){
+            map = new OpenLayers.Map('map');
+            var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
+            OpenLayers.Feature.Vector.style['default']['strokeWidth'] = '2';
+            vectors = new OpenLayers.Layer.Vector("Vector Layer");
+
+            map.addLayers([wms, vectors]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.addControl(new OpenLayers.Control.MousePosition());
+            
+            var modifyOptions = {
+                onModificationStart: function(feature) {
+                    OpenLayers.Console.log("start modifying", feature.id);
+                },
+                onModification: function(feature) {
+                    OpenLayers.Console.log("modified", feature.id);
+                },
+                onModificationEnd: function(feature) {
+                    OpenLayers.Console.log("end modifying", feature.id);
+                },
+                onDelete: function(feature) {
+                    OpenLayers.Console.log("delete", feature.id);
+                }
+            };
+            controls = {
+                point: new OpenLayers.Control.DrawFeature(vectors,
+                            OpenLayers.Handler.Point),
+                line: new OpenLayers.Control.DrawFeature(vectors,
+                            OpenLayers.Handler.Path),
+                polygon: new OpenLayers.Control.DrawFeature(vectors,
+                            OpenLayers.Handler.Polygon),
+                modify: new OpenLayers.Control.ModifyFeature(vectors,
+                                                             modifyOptions)
+            };
+            
+            for(var key in controls) {
+                map.addControl(controls[key]);
+            }
+            
+            map.setCenter(new OpenLayers.LonLat(0, 0), 3);
+            document.getElementById('noneToggle').checked = true;
+        }
+        
+
+        function toggleControl(element) {
+            for(key in controls) {
+                var control = controls[key];
+                if(element.value == key && element.checked) {
+                    control.activate();
+                } else {
+                    control.deactivate();
+                }
+            }
+        }
+        
+    </script>
+  </head>
+  <body onload="init()">
+    <h3>OpenLayers Modify Feature Example</h3>
+    <div id="map"></div>
+    <div id="controls">
+        <ul id="controlToggle">
+            <li>
+                <input type="radio" name="type" value="none" id="noneToggle"
+                       onclick="toggleControl(this);" checked="checked" />
+                <label for="noneToggle">navigate</label>
+            </li>
+            <li>
+                <input type="radio" name="type" value="point" id="pointToggle" onclick="toggleControl(this);" />
+                <label for="pointToggle">draw point</label>
+            </li>
+            <li>
+                <input type="radio" name="type" value="line" id="lineToggle" onclick="toggleControl(this);" />
+                <label for="lineToggle">draw line</label>
+            </li>
+            <li>
+                <input type="radio" name="type" value="polygon" id="polygonToggle" onclick="toggleControl(this);" />
+                <label for="polygonToggle">draw polygon</label>
+            </li>
+            <li>
+                <input type="radio" name="type" value="modify" id="modifyToggle"
+                       onclick="toggleControl(this);" />
+                <label for="modifyToggle">modify feature</label>
+            </li>
+        </ul>
+    </div>
+  </body>
+</html>

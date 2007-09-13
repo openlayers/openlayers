@@ -1,0 +1,448 @@
+<html>
+<head>
+    <script src="../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+    
+    function test_ModifyFeature_constructor(t) {
+        t.plan(2);
+        var layer = "foo";        
+        var options = {
+            geometryTypes: "bar"
+        };
+        var control = new OpenLayers.Control.ModifyFeature(layer, options);
+        
+        t.eq(control.layer, "foo",
+             "constructor sets layer correctly");
+        t.eq(control.selectControl.geometryTypes, "bar",
+             "constructor sets options correctly on feature handler");
+    }
+
+    function test_ModifyFeature_destroy(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.ModifyFeature(layer);
+        control.selectControl.destroy = function() {
+            t.ok(true,
+                 "control.destroy calls destroy on select control");
+        }
+        control.dragControl.destroy = function() {
+            t.ok(true,
+                 "control.destroy calls destroy on feature handler");
+        }
+        control.destroy();
+    }
+    
+    function test_ModifyFeature_activate(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.ModifyFeature(layer);
+        map.addControl(control);
+        t.ok(!control.selectControl.active,
+             "select control is not active prior to activating control");
+        control.activate();
+        t.ok(control.selectControl.active,
+             "select control is active after activating control");
+    }
+
+    function test_ModifyFeature_initDeleteCodes(t) {
+        t.plan(3);
+        var layer = new OpenLayers.Layer.Vector();
+        var control = new OpenLayers.Control.ModifyFeature(layer, {'deleteCodes': 46});
+        t.eq(control.deleteCodes[0], 46, "Delete code properly turned into an array.");
+        var control = new OpenLayers.Control.ModifyFeature(layer);
+        t.eq(control.deleteCodes[0], 46, "Default deleteCodes include delete"); 
+        t.eq(control.deleteCodes[1], 100, "Default deleteCodes include 'd'"); 
+        
+    }
+    
+    function test_ModifyFeature_handleKeypress(t) {
+        t.plan(8);
+
+        /**
+         * There are two things that we want to test here
+         * 1) test that control.deleteCodes are respected
+         * 3) test that a vertex is properly deleted
+         *
+         * In the future, feature deletion may be added to the control.
+         */
+        
+        var control = new OpenLayers.Control.ModifyFeature({style: null});
+        var delKey = 46;
+        var dKey = 100;
+        control.deleteCodes = [delKey, dKey];
+
+        //// test that point is deleted for all delete codes
+        //var point = new OpenLayers.Feature.Vector(
+        //    new OpenLayers.Geometry.Point()
+        //);
+        //// mock up deletion before dragging (but after selection)
+        //control.dragControl.feature = null;
+        //control.feature = point;
+        //var oldUnselect = control.unselectFeature;
+        //control.unselectFeature = function(feature) {
+        //    t.eq(feature.id, point.id,
+        //         "point deletion before drag: unselectFeature called with the correct feature");
+        //};
+        //control.layer = {
+        //    removeFeatures: function(features) {
+        //        t.ok(features.length == 1,
+        //             "point deletion before drag: removeFeatures called with a single feature");
+        //        t.eq(features[0].id, point.id,
+        //             "point deletion before drag: removeFeatures called with the correct feature");
+        //    }
+        //};
+        //control.onDelete = function(feature) {
+        //    t.eq(feature.id, point.id,
+        //         "point deletion before drag: onDelete called with the correct feature");
+        //};
+        //// run the above four tests twice
+        //control.handleKeypress(delKey);
+        //control.handleKeypress(dKey);
+        //// reset modified methods
+        //control.unselectFeatures = oldUnselect;
+        //control.onDelete = function() {};
+        //
+        //// mock up deletion during dragging - these repeat the above tests
+        //control.dragControl.feature = point;
+        //control.feature = point;
+        //var oldUnselect = control.unselectFeature;
+        //control.unselectFeature = function(feature) {
+        //    t.eq(feature.id, point.id,
+        //         "point deletion during drag: unselectFeature called with the correct feature");
+        //};
+        //control.layer = {
+        //    removeFeatures: function(features) {
+        //        t.ok(features.length == 1,
+        //             "point deletion during drag: removeFeatures called with a single feature");
+        //        t.eq(features[0].id, point.id,
+        //             "point deletion during drag: removeFeatures called with the correct feature");
+        //    }
+        //};
+        //control.onDelete = function(feature) {
+        //    t.eq(feature.id, point.id,
+        //         "point deletion during drag: onDelete called with the correct feature");
+        //};
+        //// run the above four tests twice
+        //control.handleKeypress(delKey);
+        //control.handleKeypress(dKey);
+        //// reset modified methods
+        //control.unselectFeatures = oldUnselect;
+        //control.onDelete = function() {};
+        
+        // test that a polygon vertex is deleted for all delete codes
+        var point = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point()
+        );
+        var poly = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Polygon()
+        );
+        
+        // mock up vertex deletion
+        control.dragControl.feature = point;
+        control.feature = poly;
+        control.vertices = [point];
+        point.geometry.parent = {
+            removeComponent: function(geometry) {
+                t.eq(geometry.id, point.geometry.id,
+                     "vertex deletion: removeComponent called on parent with proper geometry");
+            }
+        };
+        control.layer = {
+            drawFeature: function(feature) {
+                t.eq(feature.id, poly.id,
+                     "vertex deletion: drawFeature called with the proper feature");
+            }
+        };
+        var oldReset = control.resetVertices;
+        control.resetVertices = function() {
+            t.ok(true, "vertex deletion: resetVertices called");
+        };
+        control.onModification = function(feature) {
+            t.eq(feature.id, poly.id,
+                 "vertex deletion: onModification called with the proper feature");
+        };
+        // run the above four tests twice
+        control.handleKeypress(delKey);
+        control.handleKeypress(dKey);
+        // reset modified methods
+        control.onModification = function() {};
+        
+    }    
+        
+
+    function test_ModifyFeature_onUnSelect(t) {
+        t.plan(5);
+        var layer = new OpenLayers.Layer.Vector();
+        var control = new OpenLayers.Control.ModifyFeature(layer);
+        var fakeFeature = {'id':'myid'};
+        control.vertices = 'a';
+        control.virtualVertices = 'b';
+        control.features = true;
+        control.dragControl.deactivate = function() { t.ok(true, "Deactivate called on drag control"); }
+        control.onModificationEnd = function (feature) { t.eq(feature.id, fakeFeature.id, "onModificationEnd got feature.") }
+        layer.removeFeatures = function(verts) {
+            t.ok(verts == 'a' || verts == 'b', "Verts removed correctly")
+        }
+        control.unselectFeature(fakeFeature);
+        t.eq(control.feature, null, "feature is set to null");
+    }    
+    function test_ModifyFeature_selectFeature(t) {
+        t.plan(12);
+        var layer = new OpenLayers.Layer.Vector();
+        var control = new OpenLayers.Control.ModifyFeature(layer);
+        control.vertices = [];
+        control.virtualVertices = [];
+        control.dragControl.activate = function() { t.ok(true, "drag Control activated"); }
+        control.onModificationStart = function(feature)  { t.eq(feature.id, fakeFeature.id, "On Modification Start called with correct feature."); } 
+        
+        
+        // Start of testing
+        
+        control.collectVertices = function() { t.fail("Collect vertices called when geom is a point"); }
+        var fakeFeature = {'id':'myFakeFeature','geometry':{'CLASS_NAME':'OpenLayers.Geometry.Point'}};
+        
+        // Points don't call collectVertices
+        control.selectFeature(fakeFeature);
+        
+        control.collectVertices = function() { 
+          this.vertices = 'a';
+          this.virtualVertices = 'd';
+          t.ok(true, "collectVertices called"); 
+        }
+        
+        layer.addFeatures = function(features) { 
+            t.ok(features == 'a' || features == 'd', "features passed correctly"); 
+        }
+        fakeFeature.geometry.CLASS_NAME='OpenLayers.Geometry.Polygon';
+        
+        // OnSelect calls collectVertices and passes features to layer 
+        control.selectFeature(fakeFeature);
+        
+        control.vertices = ['a'];
+        control.virtualVertices = ['b'];
+        
+        layer.addFeatures = function(features) {} 
+        
+        layer.removeFeatures = function(features) { 
+            t.eq(features.length, 1, "Correct feature length passed in");
+        }    
+
+        // Features are removed whenever they exist
+        control.selectFeature(fakeFeature);
+        
+    }  
+
+    function test_ModifyFeature_resetVertices(t) {
+        t.plan(9);
+        var layer = new OpenLayers.Layer.Vector();
+        var control = new OpenLayers.Control.ModifyFeature(layer);
+        var point = new OpenLayers.Geometry.Point(5,6);
+        var point2 = new OpenLayers.Geometry.Point(7,8);
+        var point3 = new OpenLayers.Geometry.Point(9,10);
+        
+        control.feature = new OpenLayers.Feature.Vector(point);
+        control.resetVertices();
+        t.eq(control.vertices.length, 0, "Correct vertices length");
+        t.eq(control.virtualVertices.length, 0, "Correct virtual vertices length.");
+        
+        var multiPoint = new OpenLayers.Geometry.MultiPoint([point, point2]);
+        control.feature = new OpenLayers.Feature.Vector(multiPoint);
+        control.resetVertices();
+        t.eq(control.vertices.length, 2, "Correct vertices length with multipoint");
+        t.eq(control.virtualVertices.length, 0, "Correct virtual vertices length (multipoint).");
+
+        var line = new OpenLayers.Geometry.LineString([point, point2]);
+        control.feature = new OpenLayers.Feature.Vector(line);
+        control.resetVertices();
+        t.eq(control.vertices.length, 2, "Correct vertices length with line");
+        t.eq(control.virtualVertices.length, 1, "Correct virtual vertices length (linestring).");
+        
+        var polygon = new OpenLayers.Geometry.Polygon([new OpenLayers.Geometry.LinearRing([point, point2, point3])]);
+        control.feature = new OpenLayers.Feature.Vector(polygon);
+        control.resetVertices();
+        t.eq(control.vertices.length, 4, "Correct vertices length with polygon");
+        t.eq(control.vertices[0].geometry.id, control.vertices[3].geometry.id, "First and last vertices are the same");
+        t.eq(control.virtualVertices.length, 3, "Correct virtual vertices length (polygon).");
+
+    }    
+        
+    function test_ModifyFeature_onDrag(t) {
+        t.plan(1);
+        t.ok(true, "onDrag not tested yet.");
+    }
+    
+    function test_ModifyFeature_dragComplete(t) {
+        t.plan(6);
+        var layer = new OpenLayers.Layer.Vector();
+        var control = new OpenLayers.Control.ModifyFeature(layer);
+       
+        var fakeFeature = {
+         'geometry': { 'id':'myGeom'},
+         'id': 'fakeFeature'
+        };
+        control.collectVertices = function(geom) {
+            t.eq(geom.id, 'myGeom', "collect geom called");
+            this.vertices = 'normal';
+            this.virtualVertices = 'virtual';
+        }
+        layer.addFeatures = function (verts) {
+            t.ok(verts == 'virtual' || verts == 'normal', verts + " verts correct");
+        }
+        layer.removeFeatures = function (verts) {
+            t.ok(verts == 'previous virtual' || verts == 'previous normal', verts + " verts correct");
+        }
+        control.onModification = function(feat) {
+            t.eq(feat.id, fakeFeature.id, "onModification gets correct feat");
+        }
+        control.feature = fakeFeature;
+        control.vertices = 'previous normal';
+        control.virtualVertices = 'previous virtual';
+        control.dragComplete();
+    }
+    
+    function test_ModifyFeature_deactivate(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.ModifyFeature(layer);
+        map.addControl(control);
+        
+        control.selectControl.deactivate = function() {
+            t.ok(true,
+                 "control.deactivate calls deactivate on select control");
+        }
+        control.dragControl.deactivate = function() {
+            t.ok(true,
+                 "control.deactivate calls deactivate on drag control");
+        }
+        control.active = true;
+        control.deactivate();
+    }
+
+    function test_ModifyFeature_onModificationStart(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.ModifyFeature(layer);
+        map.addControl(control);
+        control.activate();
+        
+        // make sure onModificationStart is called on feature selection
+        var testFeature = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(Math.random(), Math.random())
+        );
+        control.onModificationStart = function(feature) {
+            t.eq(feature.id, testFeature.id,
+                 "onModificationStart called with the right feature");
+        };
+        control.selectFeature(testFeature);
+    }
+    
+    function test_ModifyFeature_onModification(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.ModifyFeature(layer);
+        map.addControl(control);
+        control.activate();
+        
+        // make sure onModification is called on drag complete
+        var point = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(Math.random(), Math.random())
+        );
+        control.feature = point;
+        control.onModification = function(feature) {
+            t.eq(feature.id, point.id,
+                "onModification called with the right feature on drag complete");
+        };
+        control.dragComplete();
+        
+        // make sure onModification is called on vertex deletion
+        var poly = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Polygon()
+        );
+        var oldDraw = layer.drawFeature;
+        layer.drawFeature = function() {
+            return;
+        };
+        control.feature = poly;
+        control.vertices = [point];
+        control.onModification = function(feature) {
+            t.eq(feature.id, poly.id,
+                "onModification called with the right feature on vertex delete");
+        };
+        point.geometry.parent = poly.geometry;
+        control.dragControl.feature = point;
+        control.handleKeypress(46);
+        layer.drawFeature = oldDraw;
+        
+    }
+
+    function test_ModifyFeature_onModificationEnd(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.ModifyFeature(layer);
+        map.addControl(control);
+        control.activate();
+        
+        // make sure onModificationEnd is called on unselect feature
+        var testFeature = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(Math.random(), Math.random())
+        );
+        control.onModificationEnd = function(feature) {
+            t.eq(feature.id, testFeature.id,
+                 "onModificationEnd called with the right feature");
+        };
+        control.unselectFeature(testFeature);
+    }
+
+
+    //function t//est_ModifyFeature_onDelete(t) {
+    //    t.plan(2);
+    //    var map = new OpenLayers.Map("map");
+    //    var layer = new OpenLayers.Layer.Vector();
+    //    map.addLayer(layer);
+    //    var control = new OpenLayers.Control.ModifyFeature(layer);
+    //    map.addControl(control);
+    //    control.activate();
+    //    
+    //    // make sure onDelete is called on point deletion (before dragging)
+    //    var point = new OpenLayers.Feature.Vector(
+    //        new OpenLayers.Geometry.Point(Math.random(), Math.random())
+    //    );
+    //    control.feature = point;
+    //    control.onDelete = function(feature) {
+    //        t.eq(feature.id, point.id,
+    //            "onDelete called with the right feature before drag");
+    //    };
+    //    control.handleKeypress(46);
+    //
+    //    // make sure onDelete is called on point deletion (during dragging)
+    //    var point = new OpenLayers.Feature.Vector(
+    //        new OpenLayers.Geometry.Point(Math.random(), Math.random())
+    //    );
+    //    control.dragControl.feature = point;
+    //    control.feature = point;
+    //    control.onDelete = function(feature) {
+    //        t.eq(feature.id, point.id,
+    //            "onDelete called with the right feature during drag");
+    //    };
+    //    control.handleKeypress(46);
+    //
+    //}
+
+    </script>
+</head>
+<body>
+    <div id="map" style="width: 400px; height: 250px;"/>
+</body>
+</html>
