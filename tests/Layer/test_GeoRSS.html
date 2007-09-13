@@ -80,7 +80,7 @@
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,0),0);
         var event = {};
-        t.delay_call( 1, function() {  
+        t.delay_call( 2, function() {  
           t.ok(layer.markers[0].events, "First marker has an events object");
           t.eq(layer.markers[0].events.listeners['click'].length, 1, "Marker events has one object");
           layer.markers[0].events.triggerEvent('click', event);
@@ -159,7 +159,26 @@
 			t.eq(otherLayer.markers[0].icon.url, the_icon.url,"The layer with an icon has that icon.");
 		});
 	}
-	
+    function test_Layer_GeoRSS_loadend_Event(t) {
+        var browserCode = OpenLayers.Util.getBrowserName();
+        if (browserCode == "msie") {
+            t.plan(1);
+            t.ok(true, "IE fails the GeoRSS test. This could probably be fixed by someone with enough energy to fix it.");
+        } else {
+            t.plan(2);
+            layer = new OpenLayers.Layer.GeoRSS('Test Layer', georss_txt);
+            t.delay_call(2, function() { 
+                layer.events.register('loadend', layer, function() { 
+                    t.ok(true, "Loadend event fired"); 
+                });
+                layer.parseData({
+                    'responseText': '<xml xmlns="http://example.com"><title> </title></xml>'
+                });
+                t.ok(true, "Parsing data didn't fail"); 
+            });
+        } 
+    }
+
     function test_99_Layer_GeoRSS_destroy (t) {
         t.plan( 1 );    
         layer = new OpenLayers.Layer.GeoRSS('Test Layer', georss_txt);

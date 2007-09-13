@@ -118,6 +118,19 @@
           t.eq(map.popups.length, 0, "no popup on second marker");
         });
     }
+    function test_Layer_Text_loadend_Event(t) {
+        t.plan(2);
+		layer = new OpenLayers.Layer.Text('Test Layer', {location:datafile});
+        t.delay_call(2, function() { 
+            layer.events.register('loadend', layer, function() { 
+                t.ok(true, "Loadend event fired"); 
+            });
+            layer.parseData({
+                'responseText':''
+            });
+            t.ok(true, "Parsing data didn't fail"); 
+        });
+    }
 
     function test_99_Layer_Text_destroy (t) {
         t.plan( 1 );    

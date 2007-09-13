@@ -5,6 +5,14 @@
 
     var name = "GML Layer";
     
+    var gml = "./owls.xml";
+
+    // if this test is running online, different rules apply
+    var isMSIE = (navigator.userAgent.indexOf("MSIE") > -1);
+    if (isMSIE) {
+        gml = "." + gml;
+    }
+    
     function test_01_Layer_GML_constructor(t) {
         t.plan(3);
 
@@ -12,6 +20,24 @@
         t.ok(layer instanceof OpenLayers.Layer.GML, "new OpenLayers.Layer.GML returns correct object" );
         t.eq(layer.name, name, "layer name is correctly set");
         t.ok(layer.renderer.CLASS_NAME, "layer has a renderer");
+
+    }
+    function test_Layer_GML_events(t) {
+        t.plan(3);
+
+        var layer = new OpenLayers.Layer.GML(name, gml, {isBaseLayer: true});
+        layer.events.register("loadstart", layer, function() { 
+            t.ok(true, "loadstart called.")
+        });
+        layer.events.register("loadend", layer, function() { 
+            t.ok(true, "loadend called.")
+        });
+        var map = new OpenLayers.Map("map");
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        t.delay_call(1, function() { 
+            t.ok(true, "waited for 1s"); 
+        });
 
     }
   </script>
