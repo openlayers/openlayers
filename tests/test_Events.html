@@ -332,6 +332,11 @@
         t.eq( events.listeners["doThingA"].length, 1, "event type passed to addEventType correctly does nothing if clashes with already defined event type" );
     }
 
+    /** HACK HACK HACK Deprecated This test should be removed in 3.0 **/
+    function test_Events_globalEventObject(t) {
+        t.plan(1);
+        t.ok(Event.stop, "a stop() function exists on the global JS Event object, if indeed it exists. This is legacy deprecated and will be gone in 3.0");
+    }
    
 
   </script>
