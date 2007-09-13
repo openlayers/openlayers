@@ -472,6 +472,102 @@
         t.ok( newNumControls == oldNumControls, "removing bad controlid doesnt crash or decrease control count")
     }
 
+    function test_Map_restrictedExtent(t) {
+        t.plan(24);
+        var extent = new OpenLayers.Bounds(-180, -90, 180, 90);
+        var options = {
+            maxResolution: "auto"
+        };
+        var map = new OpenLayers.Map("map", options);
+        var layer = new OpenLayers.Layer.WMS(
+            "test", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"}
+        );
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        var nw = new OpenLayers.LonLat(extent.left, extent.top);
+        var ne = new OpenLayers.LonLat(extent.right, extent.top);
+        var sw = new OpenLayers.LonLat(extent.left, extent.bottom);
+        var se = new OpenLayers.LonLat(extent.right, extent.bottom);
+        
+        // try panning to northwest corner
+        map.setOptions({restrictedExtent: extent});
+        map.setCenter(nw, 0);
+        t.eq(map.getExtent().getCenterLonLat().toString(),
+             extent.getCenterLonLat().toString(),
+             "map extent properly restricted to northwest at zoom 0");
+        t.eq(map.zoom, 0, "zoom not restricted for nw, 0");
+        map.setCenter(nw, 5);
+        t.eq(map.getExtent().top, extent.top,
+             "map extent top properly restricted to northwest at zoom 5");
+        t.eq(map.getExtent().left, extent.left,
+             "map extent left properly restricted to northwest at zoom 5");
+        t.eq(map.zoom, 5, "zoom not restricted for nw, 5");
+        map.setOptions({restrictedExtent: null});
+        map.setCenter(nw, 0);
+        t.eq(map.getExtent().getCenterLonLat().toString(),
+             nw.toString(),
+             "map extent not restricted with null restrictedExtent for nw");
+
+        // try panning to northeast corner
+        map.setOptions({restrictedExtent: extent});
+        map.setCenter(ne, 0);
+        t.eq(map.getExtent().getCenterLonLat().toString(),
+             extent.getCenterLonLat().toString(),
+             "map extent properly restricted to northeast at zoom 0");
+        t.eq(map.zoom, 0, "zoom not restricted for ne, 0");
+        map.setCenter(ne, 5);
+        t.eq(map.getExtent().top, extent.top,
+             "map extent top properly restricted to northeast at zoom 5");
+        t.eq(map.getExtent().right, extent.right,
+             "map extent right properly restricted to northeast at zoom 5");
+        t.eq(map.zoom, 5, "zoom not restricted for ne, 5");
+        map.setOptions({restrictedExtent: null});
+        map.setCenter(ne, 0);
+        t.eq(map.getExtent().getCenterLonLat().toString(),
+             ne.toString(),
+             "map extent not restricted with null restrictedExtent for ne");
+        
+        // try panning to southwest corner
+        map.setOptions({restrictedExtent: extent});
+        map.setCenter(sw, 0);
+        t.eq(map.getExtent().getCenterLonLat().toString(),
+             extent.getCenterLonLat().toString(),
+             "map extent properly restricted to southwest at zoom 0");
+        t.eq(map.zoom, 0, "zoom not restricted for sw, 0");
+        map.setCenter(sw, 5);
+        t.eq(map.getExtent().bottom, extent.bottom,
+             "map extent bottom properly restricted to southwest at zoom 5");
+        t.eq(map.getExtent().left, extent.left,
+             "map extent left properly restricted to southwest at zoom 5");
+        t.eq(map.zoom, 5, "zoom not restricted for sw, 5");
+        map.setOptions({restrictedExtent: null});
+        map.setCenter(sw, 0);
+        t.eq(map.getExtent().getCenterLonLat().toString(),
+             sw.toString(),
+             "map extent not restricted with null restrictedExtent for sw");
+
+        // try panning to southeast corner
+        map.setOptions({restrictedExtent: extent});
+        map.setCenter(se, 0);
+        t.eq(map.getExtent().getCenterLonLat().toString(),
+             extent.getCenterLonLat().toString(),
+             "map extent properly restricted to southeast at zoom 0");
+        t.eq(map.zoom, 0, "zoom not restricted for se, 0");
+        map.setCenter(se, 5);
+        t.eq(map.getExtent().bottom, extent.bottom,
+             "map extent bottom properly restricted to southeast at zoom 5");
+        t.eq(map.getExtent().right, extent.right,
+             "map extent right properly restricted to southeast at zoom 5");
+        t.eq(map.zoom, 5, "zoom not restricted for se, 5");
+        map.setOptions({restrictedExtent: null});
+        map.setCenter(se, 0);
+        t.eq(map.getExtent().getCenterLonLat().toString(),
+             se.toString(),
+             "map extent not restricted with null restrictedExtent for se");
+    }
+
     function test_99_Map_destroy (t) {
         t.plan( 3 );    
         map = new OpenLayers.Map('map');
@@ -484,6 +580,6 @@
   </script>
 </head>
 <body>
-    <div id="map" style="width: 1080px; height: 600px;"/>
+    <div id="map" style="width: 600px; height: 300px;"/>
 </body>
 </html>
