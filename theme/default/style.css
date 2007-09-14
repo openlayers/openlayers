@@ -85,6 +85,10 @@ div.olControlMousePosition {
 .olPopupContent {
     padding:5px;
 }    
+.olControlNavToolbar { 
+    width:0px;
+    height:0px;
+}    
 .olControlNavToolbar div { 
   display:block;
   width:  28px;
