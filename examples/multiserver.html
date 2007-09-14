@@ -17,8 +17,8 @@
         function init(){
             map = new OpenLayers.Map( 'map' );
             
-            var urlArray = ["http://labs.metacarta.com/wms-c/Basic.py",
-                            "http://monitor.metacarta.com/wms-c/Basic.py"];
+            var urlArray = ["http://t1.labs.metacarta.com/wms-c/Basic.py",
+                            "http://t2.labs.metacarta.com/wms-c/Basic.py"];
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                                               urlArray,
                                               {layers: 'basic'} );
