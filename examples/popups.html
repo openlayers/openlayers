@@ -18,8 +18,7 @@
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                 "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
             map.addLayer(layer);
-            layer = new OpenLayers.Layer.Google( "Google", 
-                "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+            layer = new OpenLayers.Layer.Google( "Google" );
             map.addLayer(layer);
 
             map.addControl(new OpenLayers.Control.LayerSwitcher());
