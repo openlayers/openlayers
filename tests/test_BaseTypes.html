@@ -45,19 +45,7 @@
         str = " ";
         t.eq(str.trim(), "", "whitespace string is trimmed correctly");
     }
-    
-    function test_04_String_indexOf(t) {
-        t.plan(5);
         
-        var str = "chickenHead";
-
-        t.eq(str.indexOf('c'), 0, "correctly finds first character");
-        t.eq(str.indexOf('k'), 4, "correctly finds middle character");
-        t.eq(str.indexOf('e'), 5, "correctly returns index of *first*instance* of repeated character");
-        t.eq(str.indexOf('d'), 10, "correctly finds last character");
-        t.eq(str.indexOf('z'), -1, "correctly returns -1 for unfound character");
-    }    
-    
     function test_05_String_camelize(t) {
         t.plan(7);
         
