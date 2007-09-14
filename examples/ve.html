@@ -32,7 +32,8 @@
                         { map: '/www/freemap.in/world/map/factbooktrans.map', 
                           transparent:'true',
                           layers: 'factbook', 
-                          'format':'png'} );
+                          'format':'png'},
+                          {'reproject': true});
             map.addLayer(twms);
             
             markers = new OpenLayers.Layer.Markers("markers");
