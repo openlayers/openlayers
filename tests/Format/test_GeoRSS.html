@@ -18,19 +18,34 @@
     function test_Format_GeoRSS_serializeline(t) { 
         t.plan(1);
 
-        if (OpenLayers.Util.getBrowserName() == "msie") {
-            //serialization currently not supported in IE
-            t.ok(true, "GeoRSS serialization not currently supported in IE");
-        } else {
-            var parser = new OpenLayers.Format.GeoRSS();
-            var point = new OpenLayers.Geometry.Point(-111.04, 45.68);  
-            var point2 = new OpenLayers.Geometry.Point(-112.04, 45.68); 
-            var l = new OpenLayers.Geometry.LineString([point, point2]);
-            var f = new OpenLayers.Feature.Vector(l);
-            var data = parser.write([f]);
-            t.eq(data.firstChild.childNodes[2].firstChild.nodeValue, '45.68 -111.04 45.68 -112.04 ', 'GeoRSS serializes a line correctly');
+        var parser = new OpenLayers.Format.GeoRSS();
+        var point = new OpenLayers.Geometry.Point(-111.04, 45.68);  
+        var point2 = new OpenLayers.Geometry.Point(-112.04, 45.68); 
+        var l = new OpenLayers.Geometry.LineString([point, point2]);
+        var f = new OpenLayers.Feature.Vector(l);
+        var data = parser.write([f]);
+        t.eq(data, '<rss xmlns="http://backend.userland.com/rss2"><item><title></title><description></description><georss:line xmlns:georss="http://www.georss.org/georss">45.68 -111.04 45.68 -112.04</georss:line></item></rss>', 'GeoRSS serializes a line correctly');
+    }
+    function test_Format_GeoRSS_roundtrip(t) {
+        t.plan(input.length);
+        var parser = new OpenLayers.Format.GeoRSS();
+        for(var i=0; i < input.length; i++) {
+            var feed = shell_start+input[i]+shell_end;
+            var data = parser.read(feed);
+            var out = parser.write(data);
+            t.eq(out, output[i], "Output gave expected value");
         }
     }
+             
+    var shell_start = '<feed xmlns="http://www.w3.org/2005/Atom" \n              xmlns:georss="http://www.georss.org/georss">\n              <title>scribble</title>\n              <id>http://featureserver.org/featureserver.cgi/scribble?format=atom</id>\n              <author><name>FeatureServer</name></author>\n';             
+    var shell_end = '</feed>'; 
+    var input = ['<entry><id>http://featureserver.org/featureserver.cgi/scribble/562.atom</id><link href="http://featureserver.org/featureserver.cgi/scribble/562.atom"/><title>Feature 2</title><content type="html">&lt;b&gt;strokeColor&lt;/b&gt;: red&lt;br /&gt;&lt;b&gt;title&lt;/b&gt;: Feature 2&lt;br /&gt;&lt;b&gt;author&lt;/b&gt;: Your Name Here</content><georss:polygon>-5.9765625 -131.484375 -58.0078125 -112.5 -50.2734375 -32.34375 52.3828125 -114.609375 -35.5078125 -167.34375 -57.3046875 -146.953125 -34.1015625 -139.921875 -5.9765625 -131.484375</georss:polygon></entry>',
+    '<entry><id>http://featureserver.org/featureserver.cgi/scribble/796.atom</id><link href="http://featureserver.org/featureserver.cgi/scribble/796.atom"/><title>Feature 2</title><content type="html">&lt;b&gt;strokeColor&lt;/b&gt;: 00ccff&lt;br /&gt;&lt;b&gt;title&lt;/b&gt;: Feature 2&lt;br /&gt;&lt;b&gt;author&lt;/b&gt;: Your Name Here</content><georss:point>75.5859375 15.46875</georss:point></entry>',
+    '<entry><id>http://featureserver.org/featureserver.cgi/scribble/794.atom</id><link href="http://featureserver.org/featureserver.cgi/scribble/794.atom"/><title>Feature 5</title><content type="html">&lt;b&gt;strokeColor&lt;/b&gt;: red&lt;br /&gt;&lt;b&gt;title&lt;/b&gt;: Feature 5&lt;br /&gt;&lt;b&gt;author&lt;/b&gt;: Your Name Here</content><georss:line>28.828125 32.6953125 49.921875 34.8046875 39.375 58.0078125 39.375 58.0078125 40.078125 58.0078125 41.484375 58.0078125 43.59375 58.0078125 45.703125 58.7109375 47.8125 58.7109375 49.21875 58.7109375 51.328125 59.4140625 52.03125 59.4140625 54.140625 60.8203125 56.25 61.5234375 56.25 62.2265625 57.65625 62.2265625 57.65625 62.9296875 58.359375 63.6328125 58.359375 65.0390625 58.359375 65.7421875 59.0625 66.4453125 59.0625 67.1484375 59.0625 68.5546875 59.765625 69.9609375 59.765625 72.0703125 59.765625 73.4765625 59.765625 76.2890625 59.765625 78.3984375 59.765625 79.8046875 59.765625 81.9140625 59.765625 83.3203125 59.0625 84.7265625 59.0625 86.8359375 58.359375 87.5390625 58.359375 88.2421875 56.953125 89.6484375 56.25 91.0546875 54.84375 93.8671875 52.03125 96.6796875 51.328125 98.7890625 50.625 100.1953125 49.21875 102.3046875 48.515625 103.7109375 47.8125 104.4140625 47.109375 105.8203125 46.40625 106.5234375 46.40625 107.9296875 45.703125 109.3359375 45 110.7421875 43.59375 112.8515625 43.59375 114.2578125 43.59375 114.9609375 42.890625 117.0703125 42.890625 117.7734375 42.1875 118.4765625 42.1875 119.1796875 42.1875 119.8828125</georss:line></entry>' 
+    ];
+    var output= ['<rss xmlns="http://backend.userland.com/rss2"><item><title>Feature 2</title><description>&lt;b&gt;strokeColor&lt;/b&gt;: red&lt;br /&gt;&lt;b&gt;title&lt;/b&gt;: Feature 2&lt;br /&gt;&lt;b&gt;author&lt;/b&gt;: Your Name Here</description><link>http://featureserver.org/featureserver.cgi/scribble/562.atom</link><georss:polygon xmlns:georss="http://www.georss.org/georss">-5.9765625 -131.484375 -58.0078125 -112.5 -50.2734375 -32.34375 52.3828125 -114.609375 -35.5078125 -167.34375 -57.3046875 -146.953125 -34.1015625 -139.921875 -5.9765625 -131.484375</georss:polygon></item></rss>',
+   '<rss xmlns="http://backend.userland.com/rss2"><item><title>Feature 2</title><description>&lt;b&gt;strokeColor&lt;/b&gt;: 00ccff&lt;br /&gt;&lt;b&gt;title&lt;/b&gt;: Feature 2&lt;br /&gt;&lt;b&gt;author&lt;/b&gt;: Your Name Here</description><link>http://featureserver.org/featureserver.cgi/scribble/796.atom</link><georss:point xmlns:georss="http://www.georss.org/georss">75.5859375 15.46875</georss:point></item></rss>',
+   '<rss xmlns="http://backend.userland.com/rss2"><item><title>Feature 5</title><description>&lt;b&gt;strokeColor&lt;/b&gt;: red&lt;br /&gt;&lt;b&gt;title&lt;/b&gt;: Feature 5&lt;br /&gt;&lt;b&gt;author&lt;/b&gt;: Your Name Here</description><link>http://featureserver.org/featureserver.cgi/scribble/794.atom</link><georss:line xmlns:georss="http://www.georss.org/georss">28.828125 32.6953125 49.921875 34.8046875 39.375 58.0078125 39.375 58.0078125 40.078125 58.0078125 41.484375 58.0078125 43.59375 58.0078125 45.703125 58.7109375 47.8125 58.7109375 49.21875 58.7109375 51.328125 59.4140625 52.03125 59.4140625 54.140625 60.8203125 56.25 61.5234375 56.25 62.2265625 57.65625 62.2265625 57.65625 62.9296875 58.359375 63.6328125 58.359375 65.0390625 58.359375 65.7421875 59.0625 66.4453125 59.0625 67.1484375 59.0625 68.5546875 59.765625 69.9609375 59.765625 72.0703125 59.765625 73.4765625 59.765625 76.2890625 59.765625 78.3984375 59.765625 79.8046875 59.765625 81.9140625 59.765625 83.3203125 59.0625 84.7265625 59.0625 86.8359375 58.359375 87.5390625 58.359375 88.2421875 56.953125 89.6484375 56.25 91.0546875 54.84375 93.8671875 52.03125 96.6796875 51.328125 98.7890625 50.625 100.1953125 49.21875 102.3046875 48.515625 103.7109375 47.8125 104.4140625 47.109375 105.8203125 46.40625 106.5234375 46.40625 107.9296875 45.703125 109.3359375 45 110.7421875 43.59375 112.8515625 43.59375 114.2578125 43.59375 114.9609375 42.890625 117.0703125 42.890625 117.7734375 42.1875 118.4765625 42.1875 119.1796875 42.1875 119.8828125</georss:line></item></rss>'];
 
     </script> 
 </head> 

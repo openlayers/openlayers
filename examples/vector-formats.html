@@ -77,6 +77,7 @@
             formats = {
                 wkt: new OpenLayers.Format.WKT(),
                 geojson: new OpenLayers.Format.GeoJSON(),
+                georss: new OpenLayers.Format.GeoRSS(),
                 gml: new OpenLayers.Format.GML(),
                 kml: new OpenLayers.Format.KML()
             };
@@ -147,6 +148,7 @@
             <select name="formatType" id="formatType">
                 <option value="geojson" selected="selected">GeoJSON</option>
                 <option value="kml">KML</option>
+                <option value="georss">GeoRSS</option>
                 <option value="gml">GML</option>
                 <option value="wkt">Well-Known Text (WKT)</option>
             </select>
