@@ -17,17 +17,19 @@
         function init(){
             
             var options = { 
-//                            resolutions: [1.40625,0.703125,0.3515625,0.17578125,0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101],
-//                            scales: [50000000, 10000000],
-//                            maxResolution: 0.17578125,
-//                            minResolution: 0.0439453125,
-//                            maxScale: 10000000,
-//                            minScale: 50000000,
+
+// various ways of specifying similar things
+//                          resolutions: [1.40625,0.703125,0.3515625,0.17578125,0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101],
+//                          scales: [50000000, 10000000],
+//                          maxResolution: 0.17578125,
+//                          minResolution: 0.0439453125,
+//                          maxScale: 10000000,
+//                          minScale: 50000000,
+//                          numZoomLevels: 5,
                             minResolution: "auto",
                             minExtent: new OpenLayers.Bounds(-1, -1, 1, 1), 
                             maxResolution: "auto",
-                            maxExtent: new OpenLayers.Bounds(-180, -90, 90, 180), 
-//                            numZoomLevels: 5,
+                            maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90), 
                             controls: [new OpenLayers.Control.MouseDefaults()]
                           };
 
