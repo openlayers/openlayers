@@ -32,16 +32,11 @@
                     "http://labs.metacarta.com/wms/vmap0", {layers: 'basic', 'transparent':true}, 
                       {isBaseLayer: false} );
             layer.setVisibility(false);
-            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-                    "http://labs.metacarta.com/wms/vmap0", {layers: 'basic', 'transparent':true}, 
-                      {isBaseLayer: false} );
-            layer.setVisibility(false);
-            map.addLayer(layer);
- var twms = new OpenLayers.Layer.WMS( "World Map", 
+         var twms = new OpenLayers.Layer.WMS( "World Map", 
          "http://world.freemap.in/cgi-bin/mapserv?", 
                  {map: '/www/freemap.in/world/map/factbooktrans.map', transparent:'true',
-                         layers: 'factbook', 'format':'png'} );
-                         map.addLayer(twms);
+                         layers: 'factbook', 'format':'png'}, {'reproject': true} );
+            map.addLayer(twms);
             markers = new OpenLayers.Layer.Markers("markers");
             map.addLayer(markers);
 
