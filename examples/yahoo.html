@@ -15,14 +15,14 @@
         function init(){
             map = new OpenLayers.Map('map');
 
+            yahooLayer = new OpenLayers.Layer.Yahoo( "Yahoo"); 
+
+            map.addLayer(yahooLayer);
+
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                 "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
             map.addLayer(layer);
 
-
-            yahooLayer = new OpenLayers.Layer.Yahoo( "Yahoo"); 
-
-            map.addLayer(yahooLayer);
 
             map.setCenter(new OpenLayers.LonLat(-5, 40), 4);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
