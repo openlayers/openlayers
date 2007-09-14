@@ -21,7 +21,8 @@
 
         t.ok( feature instanceof OpenLayers.Feature, "new OpenLayers.Feature returns Feature object" );
         t.eq( feature.layer, layer, "feature.layer set correctly" );
-        t.ok( feature.id.startsWith("OpenLayers.Feature_"), "feature.id set correctly" );
+        t.ok(OpenLayers.String.startsWith(feature.id, "OpenLayers.Feature_"),
+             "feature.id set correctly");
         t.ok( feature.lonlat.equals(lonlat), "feature.lonlat set correctly" );
         t.eq( feature.data.iconURL, iconURL, "feature.data.iconURL set correctly" );
         t.ok( feature.data.iconSize.equals(iconSize), "feature.data.iconSize set correctly" );

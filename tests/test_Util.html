@@ -11,25 +11,6 @@
                     "getImagesLocation()" );
     }
 
-    function test_02_Util_Strings(t) {
-        t.plan(5);
-        
-        var str = "  chicken pox  ";
-
-        t.ok(str.contains("chicken"), "contains() function correctly finds an embedded string");
-        t.ok(!str.contains("marsupial"), "contains() function correctly does not finds an random string");
-        
-
-        var trimmedStr = str.trim();        
-
-        t.eq(trimmedStr, "chicken pox", "String.trim works correctly");
-
-        t.eq(trimmedStr.startsWith("chicken"), true, "String.startsWith correctly finds chicken");
-        t.eq(trimmedStr.startsWith("dolphin"), false, "String.startsWith correctly does not find turkey");
-
-
-    }
-
     function test_03_Util_Array(t) {
         t.plan( 1 );
 
@@ -423,34 +404,14 @@
         t.plan(2);
         
         var id = OpenLayers.Util.createUniqueID();
-        t.ok( id.startsWith("id_"), "default OpenLayers.Util.createUniqueID starts id correctly");
+        t.ok(OpenLayers.String.startsWith(id, "id_"),
+             "default OpenLayers.Util.createUniqueID starts id correctly");
 
         var id = OpenLayers.Util.createUniqueID("chicken");
-        t.ok( id.startsWith("chicken"), "OpenLayers.Util.createUniqueID starts id correctly");
+        t.ok(OpenLayers.String.startsWith(id, "chicken"),
+             "OpenLayers.Util.createUniqueID starts id correctly");
     }
-    
-    function test_12_Util_limitSigDigs(t) {
-        t.plan(7);
-
-        var x;
-
-        x = 123456;
-        t.eq(x.limitSigDigs(3), 123000, "correctly rounds down");
-
-        x = 555555;
-        t.eq(x.limitSigDigs(3), 556000, "correctly rounds up");
-
-        x = 66;
-        t.eq(x.limitSigDigs(3), 66, "correctly handles number smaller than sigdig");
-
-        t.eq(x.limitSigDigs(null), 0, "correctly handles null sigdig");
-        t.eq(x.limitSigDigs(0), 0, "correctly handles 0 sigdig");
-        t.eq(x.limitSigDigs(-1), 0, "correctly handles negative sigdig");
-
-        x = 0;
-        t.eq(x.limitSigDigs(2), 0, "correctly handles 0 number");
-    }
-    
+        
     function test_13_Util_normalizeScale(t) {
         t.plan(2); 
         

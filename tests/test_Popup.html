@@ -13,7 +13,8 @@
         popup = new OpenLayers.Popup();
 
         t.ok( popup instanceof OpenLayers.Popup, "new OpenLayers.Popup returns Popup object" );
-        t.ok(popup.id.startsWith("OpenLayers.Popup"), "valid default popupid");
+        t.ok(OpenLayers.String.startsWith(popup.id, "OpenLayers.Popup"),
+             "valid default popupid");
         var firstID = popup.id;
         t.ok(popup.size.equals(size), "good default popup.size");
         t.eq(popup.contentHTML, "", "good default popup.contentHTML");

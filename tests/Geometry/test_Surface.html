@@ -9,7 +9,8 @@
         var g = new OpenLayers.Geometry.Surface();
         
         t.eq(g.CLASS_NAME, "OpenLayers.Geometry.Surface", "correct CLASS_NAME")
-        t.ok(g.id.startsWith("OpenLayers.Geometry.Surface_"), "id correctly set");
+        t.ok(OpenLayers.String.startsWith(g.id, "OpenLayers.Geometry.Surface_"),
+             "id correctly set");
     }
 
 

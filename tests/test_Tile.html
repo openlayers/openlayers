@@ -23,7 +23,8 @@
         t.ok( tile.size.equals(size), "tile.size is set correctly" );
 
         t.ok( tile.id != null, "tile is given an id");
-        t.ok( tile.id.startsWith("Tile_"), "tile's id starts correctly");
+        t.ok(OpenLayers.String.startsWith(tile.id, "Tile_"),
+             "tile's id starts correctly");
         t.ok( tile.events != null, "tile's events intitialized");
     }
 
