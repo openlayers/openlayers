@@ -14,9 +14,8 @@
             feature.attributes = {};
             var name = prompt("Title for feature?");
             feature.attributes['title'] = name;
-            s = new XMLSerializer();
             var data = g.write(feature.layer.features);
-            OpenLayers.Util.getElement("gml").value = s.serializeToString(data);
+            OpenLayers.Util.getElement("gml").value = data;
         }
         function init(){
             g = new OpenLayers.Format.GeoRSS();
