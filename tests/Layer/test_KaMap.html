@@ -23,6 +23,40 @@
         t.ok( layer instanceof OpenLayers.Layer.KaMap, "returns OpenLayers.Layer.KaMap object" );
     }
 
+    function test_Layer_Grid_moveTo_buffer_calculation (t) {
+        t.plan(6);
+
+        var map = new OpenLayers.Map( 'map3' ); // odd map size
+        var layer0 = new OpenLayers.Layer.KaMap( "0 buffer: OpenLayers WMS", 
+                    "http://labs.metacarta.com/wms/vmap0",
+                    {layers: 'basic'}, {'buffer':0} );
+        map.addLayer(layer0);
+
+        var layer1 = new OpenLayers.Layer.KaMap( "1 buffer: OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0",
+                {layers: 'basic'}, {'buffer':1} );
+        map.addLayer(layer1);
+
+        var layer2 = new OpenLayers.Layer.KaMap( "2 buffer: OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0",
+                {layers: 'basic'}, {'buffer':2} );
+        map.addLayer(layer2);
+
+        map.setCenter(new OpenLayers.LonLat(0, 0), 4); 
+        t.eq( layer0.grid.length, 3, "Grid rows with buffer:0" );
+        map.setBaseLayer(layer1);
+        t.eq( layer1.grid.length, 4, "Grid rows with buffer:1" );
+        map.setBaseLayer(layer2);
+        t.eq( layer2.grid.length, 6, "Grid rows with buffer:2" );
+
+        // zooming in on Greenland exercises the bug from pre-r4313
+        map.setCenter(new OpenLayers.LonLat(0, 90), 4); 
+        t.eq( layer0.grid.length, 3, "Grid rows with buffer:0" );
+        map.setBaseLayer(layer1);
+        t.eq( layer1.grid.length, 4, "Grid rows with buffer:1" );
+        map.setBaseLayer(layer2);
+        t.eq( layer2.grid.length, 6, "Grid rows with buffer:2" );
+    }
 
     function test_02_Layer_KaMap_inittiles (t) {
         t.plan( 2 );
@@ -30,8 +64,8 @@
         layer = new OpenLayers.Layer.KaMap(name, url, params, units);
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,0),5);
-        t.eq( layer.grid.length, 6, "KaMap rows is correct." );
-        t.eq( layer.grid[0].length, 4, "KaMap cols is correct." );
+        t.eq( layer.grid.length, 8, "KaMap rows is correct." );
+        t.eq( layer.grid[0].length, 6, "KaMap cols is correct." );
         
     }
 
@@ -237,5 +271,7 @@
 </head>
 <body>
 <div id="map" style="width:500px;height:550px;display:none"></div>
+<div id="map2" style="width:500px;height:550px;display:none"></div>
+<div id="map3" style="width:594px;height:464px;display:none"></div>
 </body>
 </html>
