@@ -36,6 +36,7 @@
     <form onsubmit="return false;">
    GeoRSS URL: <input type="text" id="url" size="50" /><input type="submit" onclick="addUrl(); return false;" value="Load Feed" onsubmit="addUrl(); return false;" />
     </form>  
+    <p>The above input box allows the input of a URL to a GeoRSS feed. This feed can be local to the HTML page -- for example, entering 'georss.xml' will work by default, because there is a local file in the directory called georss.xml -- or, with a properly set up ProxyHost variable (as is used here), it will be able to load any HTTP URL which contains GeoRSS and display it. Anything else will simply have no effect.</p>    
     <div id="map"></div>
   </body>
 </html>
