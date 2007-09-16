@@ -10,6 +10,12 @@
         t.ok( control instanceof OpenLayers.Control.Scale, "new OpenLayers.Control returns object" );
         t.eq( control.displayClass,  "olControlScale", "displayClass is correct" );
     }
+    function test_02_Control_Scale_initwithelem (t) {
+        t.plan( 1 );
+    
+        control = new OpenLayers.Control.Scale(OpenLayers.Util.getElement('scale'));
+        t.ok(true, "If this happens, then we passed. (FF throws an error above otherwise)");
+    }
     function test_02_Control_Scale_updateScale (t) {
         t.plan( 4 );
     

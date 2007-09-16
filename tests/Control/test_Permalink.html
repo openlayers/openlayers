@@ -19,6 +19,12 @@
         map.events.triggerEvent("changelayer", {});
         t.ok(true, "permalink didn't bomb out.");
     }   
+    function test_02_Control_Permalink_initwithelem (t) {
+        t.plan( 1 );
+    
+        control = new OpenLayers.Control.Permalink(OpenLayers.Util.getElement('permalink'));
+        t.ok(true, "If the above line doesn't throw an error, we're safe."); 
+    }
     function test_02_Control_Permalink_updateLinks (t) {
         t.plan( 3 );
     
