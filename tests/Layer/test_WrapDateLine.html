@@ -146,9 +146,9 @@
         var m = new OpenLayers.Map('map');
         m.addLayer(layer);
         m.zoomToMaxExtent();
-        t.eq(layer.grid[0][0].url, "http://www.openlayers.org/world/index.php?g=satellite&map=world&i=jpeg&t=-768&l=0&s=221471921.25", "grid[0][0] kamap is okay");
-        t.eq(layer.grid[0][3].url, "http://www.openlayers.org/world/index.php?g=satellite&map=world&i=jpeg&t=-768&l=-256&s=221471921.25", "grid[0][3] kamap is okay");
-        t.eq(layer.grid[3][0].url, "http://www.openlayers.org/world/index.php?g=satellite&map=world&i=jpeg&t=0&l=0&s=221471921.25", "grid[3][0] is okay");
+        t.eq(layer.grid[0][0].url, "http://www.openlayers.org/world/index.php?g=satellite&map=world&i=jpeg&t=-1280&l=0&s=221471921.25", "grid[0][0] kamap is okay");
+        t.eq(layer.grid[0][3].url, "http://www.openlayers.org/world/index.php?g=satellite&map=world&i=jpeg&t=-1280&l=-256&s=221471921.25", "grid[0][3] kamap is okay");
+        t.eq(layer.grid[3][0].url, "http://www.openlayers.org/world/index.php?g=satellite&map=world&i=jpeg&t=-512&l=0&s=221471921.25", "grid[3][0] is okay");
     }
     function test_Layer_WrapDateLine_WMS_Overlay (t) {
         t.plan( 3 );
