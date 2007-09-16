@@ -163,6 +163,30 @@
         map.events.triggerEvent("mousemove", {xy: move, which: 1});
         
     }
+    
+    function test_Control_DragFeature_done(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.DragFeature(layer);
+        map.addControl(control);
+
+        control.activate();
+
+
+        // simulate a mouseover on a feature
+        layer.getFeatureFromEvent = function() {
+            return "foo";
+        };
+        map.events.triggerEvent("mousemove");
+        t.eq(control.feature, "foo",
+             "feature is set on mouse over");
+        control.doneDragging();
+        t.eq(control.feature, "foo", 
+          "feature sticks around after doneDragging is called.");
+        
+    }
 
     function test_Control_DragFeature_out(t) {
         t.plan(2);
