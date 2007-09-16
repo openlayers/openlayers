@@ -7,7 +7,7 @@
     var map;
 
     function test_01_Map_constructor (t) {
-        t.plan( 9 );
+        t.plan( 10 );
         
         map = new OpenLayers.Map('map'); 
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
@@ -27,6 +27,7 @@
         }
         t.ok( map.layers instanceof Array, "map.layers is an Array" );
         t.ok( map.controls instanceof Array, "map.controls is an Array" );
+        t.eq( map.controls.length, 4, "Default map has 4 controls." );
         t.ok( map.events instanceof OpenLayers.Events, "map.events is an OpenLayers.Events" );
         t.ok( map.getMaxExtent() instanceof OpenLayers.Bounds, "map.maxExtent is an OpenLayers.Bounds" );
         t.ok( map.getNumZoomLevels() > 0, "map has a default numZoomLevels" );
