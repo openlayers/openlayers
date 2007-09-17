@@ -120,7 +120,7 @@
     }
     function test_Layer_Text_loadend_Event(t) {
         t.plan(2);
-		layer = new OpenLayers.Layer.Text('Test Layer', {location:datafile});
+        layer = new OpenLayers.Layer.Text('Test Layer', {location:datafile});
         t.delay_call(2, function() { 
             layer.events.register('loadend', layer, function() { 
                 t.ok(true, "Loadend event fired"); 

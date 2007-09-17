@@ -515,10 +515,10 @@
     }
     
     function test_16_Layer_Grid_tileSizeIsInteger(t) {
-    		t.plan(1);
-    		
+            t.plan(1);
+            
         var map = new OpenLayers.Map('map');
-    		var layer = new OpenLayers.Layer.Grid(name, url, params, {
+            var layer = new OpenLayers.Layer.Grid(name, url, params, {
             singleTile: true,
             ratio: 1.5
         });
