@@ -1,6 +1,7 @@
 OpenLayers 2.5:
  r4???
  Released ?? 
+ RC1: 09/17/07
  http://trac.openlayers.org/wiki/Release/2.5/Notes
 
 OpenLayers 2.4:
