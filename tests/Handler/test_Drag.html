@@ -87,7 +87,7 @@
     }
 
     function test_Handler_Drag_callbacks(t) {
-        t.plan(30);
+        t.plan(27);
         
         var map = new OpenLayers.Map('map', {controls: []});
 
@@ -227,24 +227,25 @@
         t.ok(!handler.dragging, "mouseout sets dragging flag to false");
         OpenLayers.Util.mouseLeft = oldMouseLeft;
         
-        // test click
-        handler.dragging = true;
-        handler.started = "foo";
-        map.events.triggerEvent("click", null);
-        t.ok(!handler.dragging,
-             "click while dragging sets dragging to false");
-        t.eq(handler.started, "foo",
-             "click while dragging doesn't mess with started");
-
-        handler.dragging = null;
-        handler.started = true;
-        map.events.triggerEvent("click", null);
-        t.ok(handler.dragging == null,
-             "click while not dragging doesn't mess with dragging flag");
-        t.ok(!handler.started,
-             "click while not dragging sets started to false");
+        // test click with the click.html example - the click method on the
+        // drag handler returns (handler.start == handler.last), stopping
+        // propagation of the click event if the mouse moved during a drag.
         
-
+        // regression tests will assure that the drag handler doesn't mess
+        // with anything else on a click
+        function getProperties(obj) {
+            var props = {};
+            for(key in obj) {
+                if(typeof obj[key] != "function" && typeof obj[key] != "object") {
+                    props[key] = obj[key];
+                }
+            }
+            return props;
+        }
+        var before = getProperties(handler);
+        map.events.triggerEvent("click", null);
+        var after = getProperties(handler);
+        t.eq(before, after, "click doesn't mess with handler");
         
     }
 
