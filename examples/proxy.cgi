@@ -9,24 +9,28 @@ people can use this proxy to browse the web and possibly do bad stuff
 with it.  It only loads pages via http and https, but it can load any
 content type. It supports GET and POST requests."""
 
-import urllib
+import urllib2
 import cgi
-import os
-import sys
+import sys, os
 
 # Designed to prevent Open Proxy type stuff.
 
 allowedHosts = ['www.openlayers.org', 'openlayers.org', 
                 'labs.metacarta.com', 'world.freemap.in', 
-                'prototype.openmnnd.org']
+                'prototype.openmnnd.org', 'geo.openplans.org']
 
-# HTTP GET
-if os.getenv("REQUEST_METHOD") != "POST":
-    fs = cgi.FieldStorage()
-    url = fs.getvalue('url', "http://openlayers.org")
-# HTTP POST
+method = os.environ["REQUEST_METHOD"]
+
+if method == "POST":
+    qs = os.environ["QUERY_STRING"]
+    d = cgi.parse_qs(qs)
+    if d.has_key("url"):
+        url = d["url"][0]
+    else:
+        url = "http://www.openlayers.org"
 else:
-    url = urllib.unquote(os.getenv("QUERY_STRING").split("=")[1])
+    fs = cgi.FieldStorage()
+    url = fs.getvalue('url', "http://www.openlayers.org")
 
 try:
     host = url.split("/")[2]
@@ -35,29 +39,36 @@ try:
         print "Content-Type: text/plain"
         print
         print "This proxy does not allow you to access that location."
-    
+        print 
+        print os.environ
+  
     elif url.startswith("http://") or url.startswith("https://"):
     
-        # HTTP GET
-        if os.getenv("REQUEST_METHOD") != "POST":
-            y = urllib.urlopen(url)
-        # HTTP POST
+        if method == "POST":
+            length = int(os.environ["CONTENT_LENGTH"])
+            headers = {"Content-Type": os.environ["CONTENT_TYPE"]}
+            body = sys.stdin.read(length)
+            r = urllib2.Request(url, body, headers)
+            y = urllib2.urlopen(r)
         else:
-            y = urllib.urlopen(url,sys.stdin.read())
-
-        headers = str(y.info()).split('\n')
-        for h in headers:
-            if h.startswith("Content-Type:"):
-                print h
+            y = urllib2.urlopen(url)
+        
+        # print content type header
+        i = y.info()
+        if i.has_key("Content-Type"):
+            print "Content-Type: %s" % (i["Content-Type"])
+        else:
+            print "Content-Type: text/plain"
         print
         
         print y.read()
         
         y.close()
     else:
-        print """Content-Type: text/plain
- 
-Illegal request."""
+        print "Content-Type: text/plain"
+        print
+        print "Illegal request."
+
 except Exception, E:
     print "Status: 500 Unexpected Error"
     print "Content-Type: text/plain"
