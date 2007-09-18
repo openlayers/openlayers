@@ -6,22 +6,27 @@ restrictions that prevent the Javascript from loading pages not on the
 same server as the Javascript.  This has several problems: it's less
 efficient, it might break some sites, and it's a security risk because
 people can use this proxy to browse the web and possibly do bad stuff
-with it.  If you can get your code signed (see:
-http://trac.openlayers.org/wiki/HowToSignJavascript), then you should
-modify Parameters.js so that this isn't used.  Otherwise, you're stuck
 with it.  It only loads pages via http and https, but it can load any
-content type. XML and HTML are both currently used by Openlayers."""
+content type. It supports GET and POST requests."""
 
 import urllib
 import cgi
-
-fs = cgi.FieldStorage()
-url = fs.getvalue('url', "http://openlayers.org")
+import os
+import sys
 
 # Designed to prevent Open Proxy type stuff.
 
-allowedHosts = ['www.openlayers.org', 'openlayers.org', 'octo.metacarta.com', 'merrimack.metacarta.com', 'labs.metacarta.com', 'world.freemap.in',
+allowedHosts = ['www.openlayers.org', 'openlayers.org', 
+                'labs.metacarta.com', 'world.freemap.in', 
                 'prototype.openmnnd.org']
+
+# HTTP GET
+if os.getenv("REQUEST_METHOD") != "POST":
+    fs = cgi.FieldStorage()
+    url = fs.getvalue('url', "http://openlayers.org")
+# HTTP POST
+else:
+    url = urllib.unquote(os.getenv("QUERY_STRING").split("=")[1])
 
 try:
     host = url.split("/")[2]
@@ -33,8 +38,13 @@ try:
     
     elif url.startswith("http://") or url.startswith("https://"):
     
-        y = urllib.urlopen(url)
-        
+        # HTTP GET
+        if os.getenv("REQUEST_METHOD") != "POST":
+            y = urllib.urlopen(url)
+        # HTTP POST
+        else:
+            y = urllib.urlopen(url,sys.stdin.read())
+
         headers = str(y.info()).split('\n')
         for h in headers:
             if h.startswith("Content-Type:"):
