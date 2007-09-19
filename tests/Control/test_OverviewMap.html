@@ -43,21 +43,33 @@
         var overviewZoom = control.ovmap.getZoom();
         t.eq(overviewCenter.lon, -71, "Overviewmap center lon correct");
         t.eq(overviewCenter.lat, 42, "Overviewmap center lat correct");
-        t.eq(overviewZoom, 8, "Overviewmap zoomcorrect");
+        t.eq(overviewZoom, 9, "Overviewmap zoomcorrect");
         
         control.mapDivClick({'xy':new OpenLayers.Pixel(5,5)});
         
+        // There are box model issues that keep browsers from giving us
+        // identical results here.  Test the normalized difference against
+        // a tolerance instead of testing equality.
+        function normalizedDiff(a, b) {
+            return Math.abs((a - b) / (a + b));
+        }
+        var tolerance = 1e-4;
+        
         var cent = map.getCenter();
-        t.eq(cent.lon, -71.3515625, "Clicking on the Overview Map has the correct effect on map lon");
-        t.eq(cent.lat, 42.17578125, "Clicking on the Overview Map has the correct effect on map lat");
+        t.ok(normalizedDiff(cent.lon, -71.00390625) < tolerance,
+             "Clicking on the Overview Map has the correct effect on map lon");
+        t.ok(normalizedDiff(cent.lat, 42.00390625) < tolerance,
+             "Clicking on the Overview Map has the correct effect on map lat");
 
         control.rectMouseDown({'xy':new OpenLayers.Pixel(5,5), 'which':1});
         control.rectMouseMove({'xy':new OpenLayers.Pixel(15,15), 'which':1});
         control.rectMouseUp({'xy':new OpenLayers.Pixel(15,15), 'which':1});
         
         var cent = map.getCenter();
-        t.eq(cent.lon, -71.2734375, "Dragging on the Overview Map has the correct effect on map lon");
-        t.eq(cent.lat, 42.09765625, "Dragging on the Overview Map has the correct effect on map lat");
+        t.ok(normalizedDiff(cent.lon, -70.83984375) < tolerance,
+             "Dragging on the Overview Map has the correct effect on map lon");
+        t.ok(normalizedDiff(cent.lat, 41.84765625) < tolerance,
+             "Dragging on the Overview Map has the correct effect on map lat");
         
         map.setCenter(new OpenLayers.LonLat(0,0), 0);
         var overviewCenter = control.ovmap.getCenter();

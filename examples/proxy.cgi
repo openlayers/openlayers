@@ -6,22 +6,31 @@ restrictions that prevent the Javascript from loading pages not on the
 same server as the Javascript.  This has several problems: it's less
 efficient, it might break some sites, and it's a security risk because
 people can use this proxy to browse the web and possibly do bad stuff
-with it.  If you can get your code signed (see:
-http://trac.openlayers.org/wiki/HowToSignJavascript), then you should
-modify Parameters.js so that this isn't used.  Otherwise, you're stuck
 with it.  It only loads pages via http and https, but it can load any
-content type. XML and HTML are both currently used by Openlayers."""
+content type. It supports GET and POST requests."""
 
-import urllib
+import urllib2
 import cgi
-
-fs = cgi.FieldStorage()
-url = fs.getvalue('url', "http://openlayers.org")
+import sys, os
 
 # Designed to prevent Open Proxy type stuff.
 
-allowedHosts = ['www.openlayers.org', 'openlayers.org', 'octo.metacarta.com', 'merrimack.metacarta.com', 'labs.metacarta.com', 'world.freemap.in',
-                'prototype.openmnnd.org']
+allowedHosts = ['www.openlayers.org', 'openlayers.org', 
+                'labs.metacarta.com', 'world.freemap.in', 
+                'prototype.openmnnd.org', 'geo.openplans.org']
+
+method = os.environ["REQUEST_METHOD"]
+
+if method == "POST":
+    qs = os.environ["QUERY_STRING"]
+    d = cgi.parse_qs(qs)
+    if d.has_key("url"):
+        url = d["url"][0]
+    else:
+        url = "http://www.openlayers.org"
+else:
+    fs = cgi.FieldStorage()
+    url = fs.getvalue('url', "http://www.openlayers.org")
 
 try:
     host = url.split("/")[2]
@@ -30,24 +39,36 @@ try:
         print "Content-Type: text/plain"
         print
         print "This proxy does not allow you to access that location."
-    
+        print 
+        print os.environ
+  
     elif url.startswith("http://") or url.startswith("https://"):
     
-        y = urllib.urlopen(url)
+        if method == "POST":
+            length = int(os.environ["CONTENT_LENGTH"])
+            headers = {"Content-Type": os.environ["CONTENT_TYPE"]}
+            body = sys.stdin.read(length)
+            r = urllib2.Request(url, body, headers)
+            y = urllib2.urlopen(r)
+        else:
+            y = urllib2.urlopen(url)
         
-        headers = str(y.info()).split('\n')
-        for h in headers:
-            if h.startswith("Content-Type:"):
-                print h
+        # print content type header
+        i = y.info()
+        if i.has_key("Content-Type"):
+            print "Content-Type: %s" % (i["Content-Type"])
+        else:
+            print "Content-Type: text/plain"
         print
         
         print y.read()
         
         y.close()
     else:
-        print """Content-Type: text/plain
- 
-Illegal request."""
+        print "Content-Type: text/plain"
+        print
+        print "Illegal request."
+
 except Exception, E:
     print "Status: 500 Unexpected Error"
     print "Content-Type: text/plain"
