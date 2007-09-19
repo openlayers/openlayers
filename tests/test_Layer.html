@@ -155,7 +155,7 @@
 
     function test_06_Layer_getZoomForResolution(t) {
 
-        t.plan(4);
+        t.plan(6);
 
         var layer = new OpenLayers.Layer('Test Layer');
             
@@ -163,6 +163,8 @@
         layer.resolutions = [128, 64, 32, 16, 8, 4, 2];
         
         t.eq(layer.getZoomForResolution(200), 0, "zoom all the way out");
+        t.eq(layer.getZoomForResolution(65), 1, "index closest to 65");
+        t.eq(layer.getZoomForResolution(63), 1, "index closest to 63");
         t.eq(layer.getZoomForResolution(25), 2, "zoom in middle");
         t.eq(layer.getZoomForResolution(3), 5, "zoom allmost all the way in");
         t.eq(layer.getZoomForResolution(1), 6, "zoom  all the way in");
