@@ -39,7 +39,7 @@
     }
 
     function test_50_Layer_Image_tileTests (t) {
-        t.plan(6);
+        t.plan(7);
         var map = new OpenLayers.Map('map');
         
         layer = new OpenLayers.Layer.Image('Test Layer', 
@@ -63,6 +63,8 @@
         t.eq(layer.tile.imgDiv.src, "http://earthtrends.wri.org/images/maps/4_m_citylights_lg.gif", "URL is correct");
         map.zoomIn();
         t.eq(layer.tile.imgDiv.src, "http://earthtrends.wri.org/images/maps/4_m_citylights_lg.gif", "URL is correct");
+        layer.setUrl('http://labs.metacarta.com/wms/vmap0?LAYERS=basic&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A4326&BBOX=-180,-90,0,90&WIDTH=256&HEIGHT=256');
+        t.eq(layer.tile.imgDiv.src, "http://labs.metacarta.com/wms/vmap0?LAYERS=basic&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A4326&BBOX=-180,-90,0,90&WIDTH=256&HEIGHT=256", "URL is correct after setURL");
     }
 /******
  * 

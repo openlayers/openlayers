@@ -165,9 +165,9 @@
         var baseLayer = new OpenLayers.Layer.WMS("Base Layer",
                 "http://octo.metacarta.com/cgi-bin/mapserv",
                 { map: '/mapdata/vmap_wms.map', 
-               layers: 'basic', 
-               format: 'image/png'});
-    		
+                  layers: 'basic', 
+                  format: 'image/png'});
+            
         var layer = new OpenLayers.Layer.Vector("Test Layer");
         var renderer = layer.renderer;
         var map = new OpenLayers.Map('map');
@@ -181,25 +181,25 @@
         map.zoomToMaxExtent();
 
         var customStyle1 = new Object({
-        		externalGraphic: 'test.png',
-        		pointRadius: 10
+                externalGraphic: 'test.png',
+                pointRadius: 10
         });
         var customStyle2 = new Object({
-        		externalGraphic: 'test.png',
-        		graphicWidth: 12
+                externalGraphic: 'test.png',
+                graphicWidth: 12
         });
         var customStyle3 = new Object({
-         		externalGraphic: 'test.png',
-        		graphicHeight: 14
+                externalGraphic: 'test.png',
+                graphicHeight: 14
         });
         var customStyle4 = new Object({
-        		externalGraphic: 'test.png',
-        		graphicWidth: 24,
-        		graphicHeight: 16
+                externalGraphic: 'test.png',
+                graphicWidth: 24,
+                graphicHeight: 16
         });
         var customStyle5 = new Object({
                 externalGraphic: 'test.png',
-        		graphicWidth: 24,
+                graphicWidth: 24,
                 graphicOpacity: 1
         });
         var customStyle6 = new Object({
@@ -212,43 +212,43 @@
                
         var root = renderer.root;
         if (layer.renderer.CLASS_NAME == 'OpenLayers.Renderer.SVG') {
-        		feature.style = customStyle1;
-        		layer.drawFeature(feature);
-         		t.eq(root.firstChild.getAttributeNS(null, 'width'),
-         					(2*customStyle1.pointRadius).toString(),
-         					"given a pointRadius, width equals 2*pointRadius");
-         		t.eq(root.firstChild.getAttributeNS(null, 'height'),
-         					(2*customStyle1.pointRadius).toString(),
-         					"given a pointRadius, height equals 2*pointRadius");
-         		feature.style = customStyle2;
-        		layer.drawFeature(feature);
-         		t.eq(root.firstChild.getAttributeNS(null, 'width'),
-         					root.firstChild.getAttributeNS(null, 'height'),
-         					"given a graphicWidth, width equals height");
-         		t.eq(root.firstChild.getAttributeNS(null, 'width'),
-         					customStyle2.graphicWidth.toString(),
-         					"width is set correctly");
-         		feature.style = customStyle3;
-        		layer.drawFeature(feature);
-         		t.eq(root.firstChild.getAttributeNS(null, 'height'),
-         					root.firstChild.getAttributeNS(null, 'width'),
-         					"given a graphicHeight, height equals width");
-         		t.eq(root.firstChild.getAttributeNS(null, 'height'),
-         					customStyle3.graphicHeight.toString(),
-         					"height is set correctly");
-         		feature.style = customStyle4;
-        		layer.drawFeature(feature);
-         		t.eq(root.firstChild.getAttributeNS(null, 'height'),
-         					customStyle4.graphicHeight.toString(),
-         					"given graphicHeight and graphicWidth, both are set: height");
-         		t.eq(root.firstChild.getAttributeNS(null, 'width'),
-         					customStyle4.graphicWidth.toString(),
-         					"given graphicHeight and graphicWidth, both are set: width");
+                feature.style = customStyle1;
+                layer.drawFeature(feature);
+                t.eq(root.firstChild.getAttributeNS(null, 'width'),
+                             (2*customStyle1.pointRadius).toString(),
+                             "given a pointRadius, width equals 2*pointRadius");
+                t.eq(root.firstChild.getAttributeNS(null, 'height'),
+                             (2*customStyle1.pointRadius).toString(),
+                             "given a pointRadius, height equals 2*pointRadius");
+                feature.style = customStyle2;
+                layer.drawFeature(feature);
+                t.eq(root.firstChild.getAttributeNS(null, 'width'),
+                             root.firstChild.getAttributeNS(null, 'height'),
+                             "given a graphicWidth, width equals height");
+                t.eq(root.firstChild.getAttributeNS(null, 'width'),
+                             customStyle2.graphicWidth.toString(),
+                             "width is set correctly");
+                feature.style = customStyle3;
+                layer.drawFeature(feature);
+                t.eq(root.firstChild.getAttributeNS(null, 'height'),
+                             root.firstChild.getAttributeNS(null, 'width'),
+                             "given a graphicHeight, height equals width");
+                t.eq(root.firstChild.getAttributeNS(null, 'height'),
+                             customStyle3.graphicHeight.toString(),
+                             "height is set correctly");
+                feature.style = customStyle4;
+                layer.drawFeature(feature);
+                t.eq(root.firstChild.getAttributeNS(null, 'height'),
+                             customStyle4.graphicHeight.toString(),
+                             "given graphicHeight and graphicWidth, both are set: height");
+                t.eq(root.firstChild.getAttributeNS(null, 'width'),
+                             customStyle4.graphicWidth.toString(),
+                             "given graphicHeight and graphicWidth, both are set: width");
                 feature.style = customStyle5;
                 layer.drawFeature(feature);
-         		t.eq(root.firstChild.getAttributeNS(null, 'style'),
-         					'opacity: '+customStyle5.graphicOpacity.toString()+';',
-         					"graphicOpacity correctly set");
+                t.eq(root.firstChild.getAttributeNS(null, 'style'),
+                             'opacity: '+customStyle5.graphicOpacity.toString()+';',
+                             "graphicOpacity correctly set");
                 feature.style = customStyle6;
                 layer.drawFeature(feature);
                 var x = geometryX / renderer.getResolution() + renderer.left;
@@ -268,46 +268,46 @@
                         "graphicYOffset correctly set");
         }
         if (layer.renderer.CLASS_NAME == 'OpenLayers.Renderer.VML') {
-        		feature.style = customStyle1;
-        		layer.drawFeature(feature);
-         		t.eq(root.firstChild.style.width,
-         					(2*customStyle1.pointRadius).toString()+'px',
-         					"given a pointRadius, width equals 2*pointRadius");
-         		t.eq(root.firstChild.style.height,
-         					(2*customStyle1.pointRadius).toString()+'px',
-         					"given a pointRadius, height equals 2*pointRadius");
-         		feature.style = customStyle2;
-        		layer.drawFeature(feature);
-         		t.eq(root.firstChild.style.width,
-         					root.firstChild.style.height,
-         					"given a graphicWidth, width equals height");
-         		t.eq(root.firstChild.style.width,
-         					customStyle2.graphicWidth.toString()+'px',
-         					"width is set correctly");
-         		feature.style = customStyle3;
-        		layer.drawFeature(feature);
-         		t.eq(root.firstChild.style.height,
-         					root.firstChild.style.width,
-         					"given a graphicHeight, height equals width");
-         		t.eq(root.firstChild.style.height,
-         					customStyle3.graphicHeight.toString()+'px',
-         					"height is set correctly");
-         		feature.style = customStyle4;
-        		layer.drawFeature(feature);
-         		t.eq(root.firstChild.style.height,
-         					customStyle4.graphicHeight.toString()+'px',
-         					"given graphicHeight and graphicWidth, both are set: height");
-         		t.eq(root.firstChild.style.width,
-         					customStyle4.graphicWidth.toString()+'px',
-         					"given graphicHeight and graphicWidth, both are set: width");
+                feature.style = customStyle1;
+                layer.drawFeature(feature);
+                t.eq(root.firstChild.style.width,
+                             (2*customStyle1.pointRadius).toString()+'px',
+                             "given a pointRadius, width equals 2*pointRadius");
+                t.eq(root.firstChild.style.height,
+                             (2*customStyle1.pointRadius).toString()+'px',
+                             "given a pointRadius, height equals 2*pointRadius");
+                feature.style = customStyle2;
+                layer.drawFeature(feature);
+                t.eq(root.firstChild.style.width,
+                             root.firstChild.style.height,
+                             "given a graphicWidth, width equals height");
+                t.eq(root.firstChild.style.width,
+                             customStyle2.graphicWidth.toString()+'px',
+                             "width is set correctly");
+                feature.style = customStyle3;
+                layer.drawFeature(feature);
+                t.eq(root.firstChild.style.height,
+                             root.firstChild.style.width,
+                             "given a graphicHeight, height equals width");
+                t.eq(root.firstChild.style.height,
+                             customStyle3.graphicHeight.toString()+'px',
+                             "height is set correctly");
+                feature.style = customStyle4;
+                layer.drawFeature(feature);
+                t.eq(root.firstChild.style.height,
+                             customStyle4.graphicHeight.toString()+'px',
+                             "given graphicHeight and graphicWidth, both are set: height");
+                t.eq(root.firstChild.style.width,
+                             customStyle4.graphicWidth.toString()+'px',
+                             "given graphicHeight and graphicWidth, both are set: width");
                 feature.style = customStyle5;
                 layer.drawFeature(feature);
                 var fill = root.firstChild.getElementsByTagName("fill")[0];
                 if (fill == null) fill = root.firstChild.getElementsByTagName("v:fill");
                 var opacity = fill.getAttribute('opacity');
                 t.eq(opacity,
-         					customStyle5.graphicOpacity,
-         					"graphicOpacity correctly set"); 
+                             customStyle5.graphicOpacity,
+                             "graphicOpacity correctly set"); 
                 feature.style = customStyle6;
                 layer.drawFeature(feature);
                 var x = geometryX / renderer.getResolution();
