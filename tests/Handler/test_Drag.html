@@ -87,7 +87,7 @@
     }
 
     function test_Handler_Drag_callbacks(t) {
-        t.plan(27);
+        t.plan(33);
         
         var map = new OpenLayers.Map('map', {controls: []});
 
@@ -115,10 +115,41 @@
         var handler = new OpenLayers.Handler.Drag(control, callbacks);
         handler.activate();
         
-        // test mousedown
         var oldIsLeftClick = OpenLayers.Event.isLeftClick;
         var oldStop = OpenLayers.Event.stop;
         var oldCheckModifiers = handler.checkModifiers;
+
+        // test mousedown with right click
+        OpenLayers.Event.isLeftClick = function() {
+            return false;
+        }
+        handler.checkModifiers = function() {
+            return true;
+        }
+        handler.started = true;
+        handler.start = {x: "foo", y: "bar"};
+        handler.last = {x: "foo", y: "bar"};
+        map.events.triggerEvent("mousedown", testEvents.down);
+        t.ok(!handler.started, "right-click sets started to false");
+        t.eq(handler.start, null, "right-click sets start to null");
+        t.eq(handler.last, null, "right-click sets last to null");
+
+        // test mousedown with improper modifier
+        OpenLayers.Event.isLeftClick = function() {
+            return true;
+        }
+        handler.checkModifiers = function() {
+            return false;
+        }
+        handler.started = true;
+        handler.start = {x: "foo", y: "bar"};
+        handler.last = {x: "foo", y: "bar"};
+        map.events.triggerEvent("mousedown", testEvents.down);
+        t.ok(!handler.started, "bad modifier sets started to false");
+        t.eq(handler.start, null, "bad modifier sets start to null");
+        t.eq(handler.last, null, "bad modifier sets last to null");
+
+        // test mousedown
         handler.checkModifiers = function(evt) {
             t.ok(evt.xy.x == testEvents.down.xy.x &&
                  evt.xy.y == testEvents.down.xy.y,
@@ -151,8 +182,9 @@
         t.ok(handler.last.x == testEvents.down.xy.x &&
              handler.last.y == testEvents.down.xy.y,
              "mouse down sets handler.last correctly");
+        
+        OpenLayers.Event.stop = oldStop;        
         OpenLayers.Event.isLeftClick = oldIsLeftClick;
-        OpenLayers.Event.stop = oldStop;
         handler.checkModifiers = oldCheckModifiers;
 
         // test mousemove
