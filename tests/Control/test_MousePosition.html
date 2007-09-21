@@ -1,0 +1,45 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+
+    function test_MousePosition_constructor(t) {
+        t.plan(2);
+    
+        var control = new OpenLayers.Control.MousePosition();
+        t.ok(control instanceof OpenLayers.Control.MousePosition, "new OpenLayers.Control.MousePosition returns object");
+        t.eq(control.displayClass, "olControlMousePosition", "displayClass set correctly");
+    }
+
+    function test_MousePosition_destroy(t) {
+        t.plan(1);
+    
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control.MousePosition();
+        map.addControl(control);
+
+        var listeners = map.events.listeners.mousemove.length;
+        control.destroy();
+        
+        t.eq(map.events.listeners.mousemove.length, listeners - 1, "mousemove event is unregistered");
+    }
+
+    function test_MousePosition_addControl(t) {
+        t.plan(4);
+
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control.MousePosition();
+        map.addControl(control);
+
+        t.ok(control.map === map, "Control.map is set to the map object");
+        t.ok(map.controls[map.controls.length - 1] === control, "map.controls contains control");
+        t.eq(parseInt(control.div.style.zIndex), map.Z_INDEX_BASE['Control'] + 5, "Control div zIndexed properly" );
+        t.eq(parseInt(map.viewPortDiv.lastChild.style.zIndex), map.Z_INDEX_BASE['Control'] + 5, "Viewport div contains control div");
+    }
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 1024px; height: 512px;"/>
+</body>
+</html>
