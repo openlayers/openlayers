@@ -5,7 +5,7 @@
     var tile; 
     
     function test_01_Tile_constructor (t) {
-        t.plan( 9 );
+        t.plan( 12 );
      
         var layer = {}; // bogus layer
         var position = new OpenLayers.Pixel(10,20);
@@ -18,9 +18,12 @@
         t.ok( tile instanceof OpenLayers.Tile, "new OpenLayers.Tile returns Tile object" );
         t.eq( tile.layer, layer, "tile.layer set correctly");
         t.ok( tile.position.equals(position), "tile.position set correctly");
+        t.ok( tile.position != position, "tile.position set not by reference");
         t.ok( tile.bounds.equals(bounds), "tile.bounds set correctly");
+        t.ok( tile.bounds != bounds, "tile.bounds set not by reference");
         t.eq( tile.url, url, "tile.url set correctly");        
         t.ok( tile.size.equals(size), "tile.size is set correctly" );
+        t.ok( tile.size != size, "tile.size set not by reference");
 
         t.ok( tile.id != null, "tile is given an id");
         t.ok(OpenLayers.String.startsWith(tile.id, "Tile_"),
