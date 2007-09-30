@@ -99,7 +99,7 @@
             var vector = new OpenLayers.Layer.Vector("Editable Vectors");
             
             map.addLayers([gmap, gsat, ghyb, veroad, veaer, vehyb,
-                           yahoo, yahoosat, yahoohyb, mapnik, wms]);
+                           yahoo, yahoosat, yahoohyb, mapnik, wms, vector]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.addControl(new OpenLayers.Control.EditingToolbar(vector));
             map.zoomToMaxExtent()
