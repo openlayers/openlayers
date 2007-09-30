@@ -277,6 +277,35 @@
         t.ok(map.baseLayer == wmslayer2, "setbaselayer correctly sets 'baseLayer' property");
     }
 
+    function test_Map_removeLayer_res(t) {
+        t.plan(2);
+        
+        map = new OpenLayers.Map('map');
+
+        var layer0 = new OpenLayers.Layer.WMS(
+            'Test Layer 0', 
+            "http://octo.metacarta.com/cgi-bin/mapserv", 
+            {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'}, 
+            {resolutions: [4, 2, 1]}
+        );
+
+        var layer1 = new OpenLayers.Layer.WMS(
+            'Test Layer 1', 
+            "http://octo.metacarta.com/cgi-bin/mapserv", 
+            {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'}, 
+            {resolutions: [4, 2]}
+        );
+
+        map.addLayers([layer0, layer1]);
+        map.zoomToMaxExtent();
+        map.zoomTo(2);
+        t.eq(map.getResolution(), layer0.resolutions[2],
+             "correct resolution before removal");
+        map.removeLayer(layer0);
+        t.eq(map.getResolution(), layer0.resolutions[1],
+             "correct resolution after removal");
+    }
+
     function test_13_Map_setBaseLayer_after_pan (t) {
         t.plan(1);
 
