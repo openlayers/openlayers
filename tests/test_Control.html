@@ -2,12 +2,38 @@
 <head>
   <script src="../lib/OpenLayers.js"></script>
   <script type="text/javascript">
-    var map; 
-    function test_01_Control_constructor (t) {
-        t.plan( 1 );
+    function test_Control_constructor(t) {
+        t.plan(2);
     
-        control = new OpenLayers.Control();
-        t.ok( control instanceof OpenLayers.Control, "new OpenLayers.Control returns object" );
+        var control = new OpenLayers.Control();
+
+        t.ok(control instanceof OpenLayers.Control, "new OpenLayers.Control returns object");
+        t.eq(control.displayClass, "olControl", "displayClass set correctly");
+    }
+
+    function test_Control_addControl(t) {
+        t.plan(2);
+    
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+
+        t.ok(control.map === map, "Control.map is set to the map object" );
+        t.ok(map.controls[map.controls.length - 1] === control, "map.controls contains control");
+    }
+
+    function test_Control_destroy(t) {
+        t.plan(3);
+    
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+
+        control.destroy();
+        t.ok(map.controls[map.controls.length - 1] != control, "map.controls doesn't contains control");
+
+        t.ok(control.map == null, "Control.map is null");
+        t.ok(control.handler == null, "Control.handler is null");
     }
 
   </script>
