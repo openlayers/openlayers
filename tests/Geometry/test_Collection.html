@@ -132,6 +132,12 @@
         t.eq(coll.bounds.top, 70, "good top bounds");
     }
     
+    function test_Collection_equals(t) {
+        t.plan(1);
+        var geom = new OpenLayers.Geometry.Collection();
+        t.ok(!geom.equals(), "collection.equals() returns false for undefined");
+    }
+
     function test_07_Collection_addComponent(t)   {
         t.plan(10);
         
