@@ -78,27 +78,13 @@
 
         bounds = new OpenLayers.Bounds(10,10,12,12);
         zoom = layer.getZoomForExtent(bounds);
-        /**
-         * ideal resolution: 2 map units / 500px = 0.004
-         * layer.resolutions = [0.703125, 0.3515625, 0.17578125,
-         *                      0.087890625, 0.0439453125, 0.02197265625,
-         *                      0.010986328125, 0.0054931640625, 0.00274658203125,
-         *                      0.001373291015625, 0.0006866455078125, 0.00034332275390625,
-         *                      0.000171661376953125, 0.0000858306884765625, 0.00004291534423828125,
-         *                      0.000021457672119140625]
-         *
-         * So, we expect a zoom of 8 because it is the closest resolution.
-         */
-        t.eq( zoom, 8, "getZoomForExtent() returns correct value");
+
+        t.eq( zoom, 7, "getZoomForExtent() returns correct value");
 
         bounds = new OpenLayers.Bounds(10,10,100,100);
         zoom = layer.getZoomForExtent(bounds);
-        /**
-         * ideal resolution: 90 map units / 500px = 0.18
-         * So, we expect a zoom of 2 because it is the closest.
-         */
 
-        t.eq( zoom, 2, "getZoomForExtent() returns correct value");
+        t.eq( zoom, 1, "getZoomForExtent() returns correct value");
     }   
 
 
