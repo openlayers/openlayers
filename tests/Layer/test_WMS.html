@@ -352,6 +352,17 @@
         map.destroy();
 
     }
+
+    // DEPRECATED -- REMOVE IN 3.0
+    function test_Layer_Untiled_WMS(t) { 
+        t.plan(1);
+        
+        var layer = new OpenLayers.Layer.WMS.Untiled();
+        
+        var clone = layer.clone();
+        
+        t.ok(clone.singleTile, "regression test: clone works. this is for #1013");
+    }
     
     function test_99_Layer_WMS_destroy (t) {
 
