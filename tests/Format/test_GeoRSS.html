@@ -26,6 +26,14 @@
         var data = parser.write([f]);
         t.eq(data, '<rss xmlns="http://backend.userland.com/rss2"><item><title></title><description></description><georss:line xmlns:georss="http://www.georss.org/georss">45.68 -111.04 45.68 -112.04</georss:line></item></rss>', 'GeoRSS serializes a line correctly');
     }
+    function test_Format_GeoRSS_w3cgeo(t) { 
+        t.plan(2);
+
+        var parser = new OpenLayers.Format.GeoRSS();
+        var data = parser.read('<rss xmlns="http://backend.userland.com/rss2" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"><item><geo:long>-1</geo:long><geo:lat>1</geo:long></item></rss>');
+        t.eq(features.geometry.x, "-1", "w3c geo x read correctly"); 
+        t.eq(features.geometry.y, "1", "w3c geo y read correctly"); 
+    }
     function test_Format_GeoRSS_roundtrip(t) {
         t.plan(input.length);
         var parser = new OpenLayers.Format.GeoRSS();
