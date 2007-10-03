@@ -30,9 +30,9 @@
         t.plan(2);
 
         var parser = new OpenLayers.Format.GeoRSS();
-        var data = parser.read('<rss xmlns="http://backend.userland.com/rss2" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"><item><geo:long>-1</geo:long><geo:lat>1</geo:long></item></rss>');
-        t.eq(features.geometry.x, "-1", "w3c geo x read correctly"); 
-        t.eq(features.geometry.y, "1", "w3c geo y read correctly"); 
+        var data = parser.read('<rss xmlns="http://backend.userland.com/rss2" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"><item><geo:long>-1</geo:long><geo:lat>1</geo:lat></item></rss>');
+        t.eq(data[0].geometry.x, -1, "w3c geo x read correctly"); 
+        t.eq(data[0].geometry.y, 1, "w3c geo y read correctly"); 
     }
     function test_Format_GeoRSS_roundtrip(t) {
         t.plan(input.length);
