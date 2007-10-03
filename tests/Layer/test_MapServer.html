@@ -399,6 +399,17 @@
         t.eq(parseFloat(tLayer.div.firstChild.firstChild.style.opacity), 0.6, "Opacity on tile is changed correctly");
 
     }    
+
+    // DEPRECATED -- REMOVE IN 3.0
+    function test_Layer_Untiled_MapServer(t) { 
+        t.plan(1);
+        
+        var layer = new OpenLayers.Layer.MapServer.Untiled();
+        
+        var clone = layer.clone();
+        
+        t.ok(clone.singleTile, "regression test: clone works. this is for #1013");
+    }
     
     function test_99_Layer_MapServer_Untiled_destroy (t) {
 
