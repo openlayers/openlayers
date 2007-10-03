@@ -19,6 +19,13 @@
         OpenLayers.Util.removeItem(array, 3);
         t.eq( array.toString(), "1,2,4,5", "Util.removeItem works");    
     }
+    
+    function test_03_Util_pagePosition(t) {
+        t.plan( 1 );
+        var pp = OpenLayers.Util.pagePosition(window);
+        t.eq( pp.toString(), "0,0", "Page position doesn't bail if passed 'window'")
+        
+    }
 
     function test_04_Util_createDiv(t) {
         t.plan( 24 );
