@@ -131,9 +131,9 @@
         var m = new OpenLayers.Map('map');
         m.addLayer(layer);
         m.zoomToMaxExtent();
-        t.eq(layer.grid[3][0].url, "http://octo.metacarta.com/cgi-bin/mapserv?MAP=%2Fmapdata%2Fvmap_wms.map&LAYERS=basic&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&SRS=EPSG%3A4326&BBOX=0%2C0%2C90%2C90&WIDTH=256&HEIGHT=256", "cell [3][0] is wrapped around the world.");
-        t.eq(layer.grid[0][0].url, "http://octo.metacarta.com/cgi-bin/mapserv?MAP=%2Fmapdata%2Fvmap_wms.map&LAYERS=basic&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&SRS=EPSG%3A4326&BBOX=0%2C270%2C90%2C360&WIDTH=256&HEIGHT=256", "cell [0][0] is wrapped around the world lon, but not lat");
-        t.eq(layer.grid[0][3].url, "http://octo.metacarta.com/cgi-bin/mapserv?MAP=%2Fmapdata%2Fvmap_wms.map&LAYERS=basic&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&SRS=EPSG%3A4326&BBOX=-90%2C270%2C0%2C360&WIDTH=256&HEIGHT=256", "cell [3][0] is not wrapped at all.");
+        t.eq(layer.grid[3][0].url, "http://octo.metacarta.com/cgi-bin/mapserv?MAP=%2Fmapdata%2Fvmap_wms.map&LAYERS=basic&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&SRS=EPSG%3A4326&BBOX=0%2C-90%2C180%2C90&WIDTH=256&HEIGHT=256", "cell [3][0] is wrapped around the world.");
+        t.eq(layer.grid[0][0].url, "http://octo.metacarta.com/cgi-bin/mapserv?MAP=%2Fmapdata%2Fvmap_wms.map&LAYERS=basic&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&SRS=EPSG%3A4326&BBOX=0%2C450%2C180%2C630&WIDTH=256&HEIGHT=256", "cell [0][0] is wrapped around the world lon, but not lat");
+        t.eq(layer.grid[0][3].url, "http://octo.metacarta.com/cgi-bin/mapserv?MAP=%2Fmapdata%2Fvmap_wms.map&LAYERS=basic&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&SRS=EPSG%3A4326&BBOX=-180%2C450%2C0%2C630&WIDTH=256&HEIGHT=256", "cell [3][0] is not wrapped at all.");
 
     }
     function test_Layer_WrapDateLine_KaMap (t) {
@@ -146,9 +146,9 @@
         var m = new OpenLayers.Map('map');
         m.addLayer(layer);
         m.zoomToMaxExtent();
-        t.eq(layer.grid[0][0].url, "http://www.openlayers.org/world/index.php?g=satellite&map=world&i=jpeg&t=-1280&l=0&s=110735960.625", "grid[0][0] kamap is okay");
-        t.eq(layer.grid[0][3].url, "http://www.openlayers.org/world/index.php?g=satellite&map=world&i=jpeg&t=-1280&l=-256&s=110735960.625", "grid[0][3] kamap is okay");
-        t.eq(layer.grid[3][0].url, "http://www.openlayers.org/world/index.php?g=satellite&map=world&i=jpeg&t=-512&l=0&s=110735960.625", "grid[3][0] is okay");
+        t.eq(layer.grid[0][0].url, "http://www.openlayers.org/world/index.php?g=satellite&map=world&i=jpeg&t=-1280&l=0&s=221471921.25", "grid[0][0] kamap is okay");
+        t.eq(layer.grid[0][3].url, "http://www.openlayers.org/world/index.php?g=satellite&map=world&i=jpeg&t=-1280&l=-256&s=221471921.25", "grid[0][3] kamap is okay");
+        t.eq(layer.grid[3][0].url, "http://www.openlayers.org/world/index.php?g=satellite&map=world&i=jpeg&t=-512&l=0&s=221471921.25", "grid[3][0] is okay");
     }
     function test_Layer_WrapDateLine_WMS_Overlay (t) {
         t.plan( 3 );
@@ -163,9 +163,9 @@
         var m = new OpenLayers.Map('map');
         m.addLayers([baselayer,layer]);
         m.zoomToMaxExtent();
-        t.eq(layer.grid[0][0].url, "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap?LAYERS=bathymetry%2Cland_fn%2Cpark%2Cdrain_fn%2Cdrainage%2Cprov_bound%2Cfedlimit%2Crail%2Croad%2Cpopplace&TRANSPARENT=true&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&SRS=EPSG%3A4326&BBOX=0%2C270%2C90%2C360&WIDTH=256&HEIGHT=256", "grid[0][0] wms overlay is okay");
-        t.eq(layer.grid[0][3].url, "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap?LAYERS=bathymetry%2Cland_fn%2Cpark%2Cdrain_fn%2Cdrainage%2Cprov_bound%2Cfedlimit%2Crail%2Croad%2Cpopplace&TRANSPARENT=true&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&SRS=EPSG%3A4326&BBOX=-90%2C270%2C0%2C360&WIDTH=256&HEIGHT=256", "grid[0][3] wms overlay is okay");
-        t.eq(layer.grid[3][0].url, "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap?LAYERS=bathymetry%2Cland_fn%2Cpark%2Cdrain_fn%2Cdrainage%2Cprov_bound%2Cfedlimit%2Crail%2Croad%2Cpopplace&TRANSPARENT=true&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&SRS=EPSG%3A4326&BBOX=0%2C0%2C90%2C90&WIDTH=256&HEIGHT=256", "grid[3][0] wms overlay okay");
+        t.eq(layer.grid[0][0].url, "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap?LAYERS=bathymetry%2Cland_fn%2Cpark%2Cdrain_fn%2Cdrainage%2Cprov_bound%2Cfedlimit%2Crail%2Croad%2Cpopplace&TRANSPARENT=true&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&SRS=EPSG%3A4326&BBOX=0%2C450%2C180%2C630&WIDTH=256&HEIGHT=256", "grid[0][0] wms overlay is okay");
+        t.eq(layer.grid[0][3].url, "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap?LAYERS=bathymetry%2Cland_fn%2Cpark%2Cdrain_fn%2Cdrainage%2Cprov_bound%2Cfedlimit%2Crail%2Croad%2Cpopplace&TRANSPARENT=true&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&SRS=EPSG%3A4326&BBOX=-180%2C450%2C0%2C630&WIDTH=256&HEIGHT=256", "grid[0][3] wms overlay is okay");
+        t.eq(layer.grid[3][0].url, "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap?LAYERS=bathymetry%2Cland_fn%2Cpark%2Cdrain_fn%2Cdrainage%2Cprov_bound%2Cfedlimit%2Crail%2Croad%2Cpopplace&TRANSPARENT=true&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&SRS=EPSG%3A4326&BBOX=0%2C-90%2C180%2C90&WIDTH=256&HEIGHT=256", "grid[3][0] wms overlay okay");
     }
 
   </script>
