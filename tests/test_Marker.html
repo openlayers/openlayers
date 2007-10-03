@@ -73,6 +73,34 @@
         t.eq(parseFloat(marker.icon.imageDiv.style.opacity), 0.5, "marker.setOpacity() works");
         map.destroy();
     }
+    
+    function test_03_Marker_setUrl(t) {
+        t.plan( 2 );
+        
+        var map = new OpenLayers.Map("map");
+
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.WMS(name, url);
+
+        map.addLayer(layer);
+        
+        mlayer = new OpenLayers.Layer.Markers('Test Layer');
+        map.addLayer(mlayer);
+               
+        map.zoomToExtent(new OpenLayers.Bounds(-50,-50,50,50));
+
+        //onscreen marker
+        var ll = new OpenLayers.LonLat(0,0);
+        var marker = new OpenLayers.Marker(ll);
+        mlayer.addMarker(marker);
+
+        t.ok(marker.icon.imageDiv.firstChild.src.contains("img/marker.png"), "Marker.png is default URL");
+        
+        marker.setUrl("http://example.com/broken.png");
+        t.eq(marker.icon.imageDiv.firstChild.src, "http://example.com/broken.png", "image source changes correctly.");
+
+        map.destroy();
+    }
 
     function test_04_Marker_moveTo(t) {
         t.plan( 6 );
