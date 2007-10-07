@@ -31,13 +31,6 @@
             var style_blue = OpenLayers.Util.extend({}, layer_style);
             style_blue.strokeColor = "blue"; 
             style_blue.fillColor = "blue"; 
-            style_blue.externalGraphic = "../img/marker.png";
-            // each of the three lines below means the same, if only one of
-            // them is active: the image will have a size of 24px, and the
-            // aspect ratio will be kept
-            style_blue.pointRadius = 12;
-            //style_blue.graphicWidth = 24;
-            //style_blue.graphicHeight = 24;
             
             /*
              * Green style
@@ -54,6 +47,13 @@
              * Mark style
              */
             var style_mark = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+            // each of the three lines below means the same, if only one of
+            // them is active: the image will have a size of 24px, and the
+            // aspect ratio will be kept
+            // style_mark.pointRadius = 12;
+            // style_mark.graphicHeight = 24; 
+            // style_mark.graphicWidth = 24;
+
             // if graphicWidth and graphicHeight are both set, the aspect ratio
             // of the image will be ignored
             style_mark.graphicWidth = 24;
