@@ -32,7 +32,7 @@
             // preFeatureInsert can be used to set style before the feature is drawn 
             wfs.preFeatureInsert= function(feature) { feature.style.strokeWidth="3"; feature.style.strokeColor="blue";  
             }
-            wfs.onFeatureInsert = function() {
+            wfs.onFeatureInsert = function(feature) {
               OpenLayers.Util.getElement('stream_features').innerHTML = feature.layer.features.length;
             }  
             map.addLayer(wfs);
