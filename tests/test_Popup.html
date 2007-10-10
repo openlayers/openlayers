@@ -29,7 +29,7 @@
     }
     
     function test_02_Popup_constructor (t) {
-        t.plan( 5 );
+        t.plan( 8 );
 
         var id = "chicken";
         var w = 500;
@@ -39,17 +39,37 @@
         var lat = 40;
         var ll = new OpenLayers.LonLat(lon, lat);
         var content = "foo";
+        var closePopupCallback = function(e) {
+            //this should get triggered by the "observer.observer();" call below
+            t.ok(true, "closePopupCallback called")
+        };
 
         popup = new OpenLayers.Popup(id,
                                      ll,
                                      sz,
-                                     content);
+                                     content,
+                                     true,
+                                     closePopupCallback);
 
         t.ok( popup instanceof OpenLayers.Popup, "new OpenLayers.Popup returns Popup object" );
         t.eq(popup.id, id, "popup.id set correctly");
         t.ok(popup.lonlat.equals(ll), "popup.lonlat set correctly");
         t.ok(popup.size.equals(sz), "popup.size set correctly");
         t.eq(popup.contentHTML, content, "contentHTML porpoerty of set correctly");
+
+        // test that a browser event is registered on click on popup closebox
+        var closeImgDiv = popup.groupDiv.childNodes[1];
+        var cacheID = closeImgDiv._eventCacheID;
+        for (var i = 0; i < OpenLayers.Event.observers[cacheID].length; i++) {
+            var observer = OpenLayers.Event.observers[cacheID][i];
+            if (observer.element == closeImgDiv) {
+                t.ok(true, "An event was registered for the close box element");
+                t.eq(observer.name, "click", "A click event was registered for the close box element");
+                //call the registered observer to make sure it's the right one
+                observer.observer();
+                break;
+            }
+        }
     }
 
     function test_Popup_updatePosition(t) {

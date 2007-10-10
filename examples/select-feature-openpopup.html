@@ -12,13 +12,17 @@
     </style>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
-        var map, drawControls, select;
+        var map, drawControls, selectControl, selectedFeature;
+        function onPopupClose(evt) {
+            selectControl.unselect(selectedFeature);
+        }
         function onFeatureSelect(feature) {
+            selectedFeature = feature;
             popup = new OpenLayers.Popup.Anchored("chicken", 
                                      feature.geometry.getBounds().getCenterLonLat(),
                                      new OpenLayers.Size(250,75),
                                      "<div style='font-size:.8em'>Feature: " + feature.id +"<br />Area: " + feature.geometry.getArea()+"</div>",
-                                     null, true);
+                                     null, true, onPopupClose);
             feature.popup = popup;
             map.addPopup(popup);
         }
@@ -38,13 +42,12 @@
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.addControl(new OpenLayers.Control.MousePosition());
             
+            selectControl = new OpenLayers.Control.SelectFeature(polygonLayer,
+                {onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
             drawControls = {
                 polygon: new OpenLayers.Control.DrawFeature(polygonLayer,
                             OpenLayers.Handler.Polygon),
-                select: new OpenLayers.Control.SelectFeature(polygonLayer,
-                {onSelect: onFeatureSelect,
-                 onUnselect: onFeatureUnselect
-                })
+                select: selectControl
             };
             
             for(var key in drawControls) {
