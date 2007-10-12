@@ -121,7 +121,7 @@
     }
 
     function test_04_Feature_createPopup(t) {
-        t.plan(17);
+        t.plan(11);
 
     //no lonlat        
         var f = {
@@ -187,7 +187,7 @@
         };
         
         OpenLayers.Feature.prototype.destroyPopup.apply(f, []);
-        t.ok(f.popup.feature == null, "popup's 'feature' property nullified on destroy");
+        t.ok(f.popup == null, "popup property nullified on destroy");
     }
 
   </script>
