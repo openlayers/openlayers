@@ -79,5 +79,4 @@ function (fn, expectedException, doc) {
     } else {
         this.fail(doc);
     }
-}
-
+};
