@@ -43,6 +43,21 @@
              "deactivate returns true if the handler was active already");
     }
 
+    function test_Handler_RegularPolygon_deactivation(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+             
+        var handler = new OpenLayers.Handler.RegularPolygon(control, {foo: 'bar'});
+        handler.activate();
+        handler.layer.destroy();
+        handler.deactivate();
+        t.eq(handler.layer, null,
+             "deactivate doesn't throw an error if layer was" +
+             " previously destroyed");
+    }
+
     function test_Handler_RegularPolygon_four_corners(t) {
         t.plan(7);
         var map = new OpenLayers.Map('map');
