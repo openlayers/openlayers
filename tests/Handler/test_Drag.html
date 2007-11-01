@@ -87,7 +87,7 @@
     }
 
     function test_Handler_Drag_callbacks(t) {
-        t.plan(33);
+        t.plan(34);
         
         var map = new OpenLayers.Map('map', {controls: []});
 
@@ -186,6 +186,14 @@
         OpenLayers.Event.stop = oldStop;        
         OpenLayers.Event.isLeftClick = oldIsLeftClick;
         handler.checkModifiers = oldCheckModifiers;
+
+        // test mouseup before mousemove
+        var realUp = testEvents.up;
+        testEvents.up = testEvents.down;
+        // this will fail with notice about the done callback being called
+        // if done is called when it shouldn't be
+        map.events.triggerEvent("mouseup", testEvents.up);
+        testEvents.up = realUp;
 
         // test mousemove
         handler.started = false;
