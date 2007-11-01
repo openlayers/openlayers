@@ -168,6 +168,11 @@
         // run the above four tests twice
         control.handleKeypress(delKey);
         control.handleKeypress(dKey);
+
+        // now make sure nothing happens if the vertex is mid-drag
+        control.dragControl.dragHandler.dragging = true;
+        control.handleKeypress(delKey);
+
         // reset modified methods
         control.onModification = function() {};
         
