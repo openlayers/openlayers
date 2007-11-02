@@ -110,16 +110,16 @@
         t.plan(2);
         
         var map = new OpenLayers.Map('map', options);
-        var options = {'layername':'basic', 'type':'png'}; 
+        var options = {'layername':'basic', 'format':'image/jpg'}; 
         layer = new OpenLayers.Layer.TileCache(name, url, layername, options);
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,0), 9);
         var tileurl = layer.getURL(new OpenLayers.Bounds(3.515625,45,4.21875,45.703125));
-        t.eq(tileurl, "http://labs.metacarta.com/wms-c/Basic.py/basic/09/000/000/522/000/000/384.png", "Tile URL is correct");
+        t.eq(tileurl, "http://labs.metacarta.com/wms-c/Basic.py/basic/09/000/000/522/000/000/384.jpeg", "Tile URL is correct");
 
         layer.url = ["http://tilecache1/", "http://tilecache2/", "http://tilecache3/"];
         tileurl = layer.getURL(new OpenLayers.Bounds(3.515625,45,4.21875,45.703125));
-        t.eq(tileurl, "http://tilecache3/basic/09/000/000/522/000/000/384.png", "Tile URL is deterministic");
+        t.eq(tileurl, "http://tilecache2/basic/09/000/000/522/000/000/384.jpeg", "Tile URL is deterministic");
     }
 
     function test_11_Layer_TileCache_setMap(t) {
