@@ -18,8 +18,8 @@
                 {'attribution': 'Provided by <a href="http://labs.metacarta.com/">MetaCarta</a>'}); 
 
             var jpl_wms = new OpenLayers.Layer.WMS( "NASA Global Mosaic",
-                "http://wms.jpl.nasa.gov/wms.cgi", 
-                {layers: "modis,global_mosaic"},{attribution:"Provided by NASA"});
+                "http://t1.hypercube.telascience.org/cgi-bin/landsat7", 
+                {layers: "landsat7"},{attribution:"Provided by Telascience"});
 
             map.addLayers([ol_wms, jpl_wms]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());

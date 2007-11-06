@@ -39,8 +39,8 @@
         
         var jpl = new OpenLayers.Layer.WMS(
             "NASA Global Mosaic", 
-            "http://wms..nasa.gov/wms.cgi",
-            {layers: "modis,global_mosaic"}
+            "http://t1.hypercube.telascience.org/tiles/landsat7",
+            {layers: "landsat7"}
         );
         
         map1.addLayers([ol, jpl]);
