@@ -60,6 +60,59 @@
         var kmlOut = format.write(features);
         t.eq(kmlOut, kmlExpected, "correctly writes an KML doc string");
     }
+    
+    function test_Format_KML_write_multis(t) {
+        /**
+         * KML doesn't have a representation for multi geometries of a
+         * specific type.  KML MultiGeometry maps to OL Geometry.Collection.
+         * Because of this, multi-geometries in OL can't make a round trip
+         * through KML (an OL MultiPoint maps to a KML MultiGeometry
+         * containing points, which maps back to an OL Collection containing
+         * points).  So we need to acceptance tests for the writing of
+         * multi-geometries specifically instead of relying on the round-trip
+         * write test above.
+         */
+        t.plan(3);
+        var format = new OpenLayers.Format.KML({foldersDesc: "test output"});
+        var multi, feature, output, expected;
+        
+        // test multipoint
+        var multi = new OpenLayers.Geometry.MultiPoint([
+            new OpenLayers.Geometry.Point(0, 1)
+        ]);
+        feature = new OpenLayers.Feature.Vector(multi, {name: "test name"});
+        output = format.write(feature);
+        expected = '<kml xmlns="http://earth.google.com/kml/2.0"><Folder><name>OpenLayers export</name><description>test output</description><Placemark><name>test name</name><description>No description available</description><MultiGeometry><Point><coordinates>0,1</coordinates></Point></MultiGeometry></Placemark></Folder></kml>';
+        t.eq(output, expected, "multipoint correctly written");
+        
+        // test multilinestring
+        var multi = new OpenLayers.Geometry.MultiLineString([
+            new OpenLayers.Geometry.LineString([
+                new OpenLayers.Geometry.Point(1, 0),
+                new OpenLayers.Geometry.Point(0, 1)
+            ])
+        ]);
+        feature = new OpenLayers.Feature.Vector(multi, {name: "test name"});
+        output = format.write(feature);
+        expected = '<kml xmlns="http://earth.google.com/kml/2.0"><Folder><name>OpenLayers export</name><description>test output</description><Placemark><name>test name</name><description>No description available</description><MultiGeometry><LineString><coordinates>1,0 0,1</coordinates></LineString></MultiGeometry></Placemark></Folder></kml>';
+        t.eq(output, expected, "multilinestring correctly written");
+
+        // test multipolygon
+        var multi = new OpenLayers.Geometry.MultiPolygon([
+            new OpenLayers.Geometry.Polygon([
+                new OpenLayers.Geometry.LinearRing([
+                    new OpenLayers.Geometry.Point(0, 0),
+                    new OpenLayers.Geometry.Point(1, 0),
+                    new OpenLayers.Geometry.Point(0, 1)
+                ])
+            ])
+        ]);
+        feature = new OpenLayers.Feature.Vector(multi, {name: "test name"});
+        output = format.write(feature);
+        expected = '<kml xmlns="http://earth.google.com/kml/2.0"><Folder><name>OpenLayers export</name><description>test output</description><Placemark><name>test name</name><description>No description available</description><MultiGeometry><Polygon><outerBoundaryIs><LinearRing><coordinates>0,0 1,0 0,1 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon></MultiGeometry></Placemark></Folder></kml>';
+        t.eq(output, expected, "multilinestring correctly written");
+
+    }
 
     </script> 
 </head> 
