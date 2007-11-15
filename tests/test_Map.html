@@ -162,7 +162,34 @@
             }
         }
         t.ok(!found, "popup.div successfully removed from the map's viewPort");
-    };
+    }
+
+    function test_Map_add_popup_exclusive(t) {
+        t.plan(2);
+
+        map = new OpenLayers.Map('map');
+        var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(baseLayer);
+        
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+
+        for (var i = 0; i < 10; i++) {
+            var popup = new OpenLayers.Popup("chicken", 
+                                             new OpenLayers.LonLat(0,0),
+                                             new OpenLayers.Size(200,200));
+            map.addPopup(popup);
+        }
+        t.eq(map.popups.length, 10, "addPopup non exclusive mode works");
+
+        var popup = new OpenLayers.Popup("chicken", 
+                                         new OpenLayers.LonLat(0,0),
+                                         new OpenLayers.Size(200,200));
+        map.addPopup(popup, true);
+        t.eq(map.popups.length, 1, "addPopup exclusive mode works");
+    }   
+    
 
 /***  THIS IS A GOOD TEST, BUT IT SHOULD BE MOVED TO WMS. 
  *     Also, it won't work until we figure out the viewSize bug
