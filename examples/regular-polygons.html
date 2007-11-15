@@ -66,6 +66,7 @@
             map.setCenter(new OpenLayers.LonLat(0, 0), 3);
             
             document.getElementById('noneToggle').checked = true;
+             document.getElementById('irregularToggle').checked = false;
         }
         function setOptions(options) {
             polygonControl.handler.setOptions(options);
@@ -146,6 +147,16 @@
                         </select>
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        irregular
+                    </td>
+                    <td>
+                        <input id="irregularToggle" name="irregular"
+                               type="checkbox"
+                               onchange="setOptions({irregular: this.checked})") />
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -156,5 +167,7 @@
         the snap angle is non-null) and you hold down the <b>Shift</b> key, you
         will toggle to non-snapping mode.
     </p>
+    <p>
+         The <i>irregular</i> option allows drawing of irregular polygons.  With this option, the fixed radius option is ignored.
   </body>
 </html>

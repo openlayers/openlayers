@@ -140,7 +140,47 @@
         t.eq(handler.feature.geometry.getBounds().toBBOX(),
              "34.159333,-8.028167,36.153167,-6.034333",
              "bounds with manual radius setting and mousemove");
-    }     
+    }
+
+    function test_Handler_RegularPolygon_irregular(t) {
+        t.plan(4);
+        var map = {
+            getLonLatFromPixel: function(px) {
+                return {lon: px.x, lat: px.y};
+            },
+            getResolution: function() {
+                return 1;
+            }
+        };
+        var layer = {
+            addFeatures: function() {},
+            drawFeature: function(feature, style) {
+                var ring = feature.geometry.components[0];
+                t.eq(ring.components[0].x, 20, "correct right");
+                t.eq(ring.components[0].y, 10, "correct bottom");
+                t.eq(ring.components[2].x, 10, "correct left");
+                t.eq(ring.components[2].y, 15, "correct top");
+            }
+        };
+        var control = {};
+        var options = {
+            sides: 4,
+            irregular: true,
+            layer: layer,
+            map: map
+        };
+        var handler = new OpenLayers.Handler.RegularPolygon(
+            control, null, options
+        );
+        handler.origin = new OpenLayers.Geometry.Point(10, 10);
+        handler.feature = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Polygon(
+                [new OpenLayers.Geometry.LinearRing()]
+            )
+        );
+        // should result in a 10 x 5 rectangle
+        handler.move({xy: {x: 20, y: 15}});
+    }
 
   </script>
 </head>
