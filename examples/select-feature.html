@@ -13,23 +13,34 @@
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var map, drawControls, select;
+        OpenLayers.Feature.Vector.style['default']['strokeWidth'] = '2';
         function init(){
             map = new OpenLayers.Map('map');
-            var wmsLayer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
+            var wmsLayer = new OpenLayers.Layer.WMS(
+                "OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0",
+                {layers: 'basic'}
+            ); 
 
-            var polygonLayer = new OpenLayers.Layer.Vector("Polygon Layer");
-
-            map.addLayers([wmsLayer, polygonLayer]);
+            var vectors = new OpenLayers.Layer.Vector("Vector Layer");
+            map.addLayers([wmsLayer, vectors]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.addControl(new OpenLayers.Control.MousePosition());
             
             drawControls = {
-                polygon: new OpenLayers.Control.DrawFeature(polygonLayer,
-                            OpenLayers.Handler.Polygon),
-                select: new OpenLayers.Control.SelectFeature(polygonLayer),
-                hover: new OpenLayers.Control.SelectFeature(polygonLayer,
-                                                            {hover: true})
+                point: new OpenLayers.Control.DrawFeature(
+                    vectors, OpenLayers.Handler.Point
+                ),
+                line: new OpenLayers.Control.DrawFeature(
+                    vectors, OpenLayers.Handler.Path
+                ),
+                polygon: new OpenLayers.Control.DrawFeature(
+                    vectors, OpenLayers.Handler.Polygon
+                ),
+                select: new OpenLayers.Control.SelectFeature(vectors),
+                hover: new OpenLayers.Control.SelectFeature(
+                    vectors, {hover: true}
+                )
             };
             
             for(var key in drawControls) {
@@ -61,6 +72,16 @@
             <label for="noneToggle">navigate</label>
         </li>
         <li>
+            <input type="radio" name="type" value="point" id="pointToggle"
+                   onclick="toggleControl(this);" />
+            <label for="pointToggle">draw point</label>
+        </li>
+        <li>
+            <input type="radio" name="type" value="line" id="lineToggle"
+                   onclick="toggleControl(this);" />
+            <label for="lineToggle">draw line</label>
+        </li>
+        <li>
             <input type="radio" name="type" value="polygon" id="polygonToggle"
                    onclick="toggleControl(this);" />
             <label for="polygonToggle">draw polygon</label>
@@ -68,12 +89,12 @@
         <li>
             <input type="radio" name="type" value="select" id="selectToggle"
                    onclick="toggleControl(this);" />
-            <label for="selectToggle">select polygon on click</label>
+            <label for="selectToggle">select feature on click</label>
         </li>
         <li>
             <input type="radio" name="type" value="hover" id="hoverToggle"
                    onclick="toggleControl(this);" />
-            <label for="hoverToggle">select polygon on hover</label>
+            <label for="hoverToggle">select feature on hover</label>
         </li>
     </ul>        
   </body>
