@@ -242,21 +242,23 @@
     }
 
     function test_10_Map_getLayer(t) {
-        t.plan( 2 );    
+        var numLayers = 3;
+        t.plan( numLayers + 1 );    
 
-        map = new OpenLayers.Map('map');
-        layer = new OpenLayers.Layer.WMS('Test Layer', 
-                    "http://octo.metacarta.com/cgi-bin/mapserv", 
-                    {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'}, 
-                    {maxExtent: new OpenLayers.Bounds(33861, 717605, 330846, 1019656), maxResolution: 296985/1024, projection:"EPSG:2805" } );
+        var m = {
+            layers: []
+        };
+        
+        for(var i = 0; i < numLayers; i++) {
+            m.layers.push( { 'id': i } );
+        }
 
-        map.addLayer(layer);
-        var gotLayer = map.getLayer(layer.id);
+        for(var i = 0; i < numLayers; i++) {
+            var layer = OpenLayers.Map.prototype.getLayer.apply(m, [i]);
+            t.ok( layer == m.layers[i], "getLayer correctly returns layer " + i);
+        }
 
-        t.ok( layer == gotLayer, "getLayer correctly returns layer" );
-
-        gotLayer = map.getLayer("chicken");
-
+        var gotLayer = OpenLayers.Map.prototype.getLayer.apply(m, ["chicken"]);
         t.ok( gotLayer == null, "getLayer correctly returns null when layer not found");
     }
 
