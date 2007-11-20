@@ -1,0 +1,62 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 100%;
+            height: 512px;
+            border: 1px solid gray;
+        }
+    </style>
+
+    <script src='http://maps.google.com/maps?file=api&amp;v=2.82&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhQtCjFYhdtNUZyqZQW2mFbq_dOIHBSGvjZ-C7_tXAXYdB-ehlOacmC_xA'></script>
+
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+ 
+        // make map available for easy debugging
+        var map;
+
+        // avoid pink tiles
+        OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
+        OpenLayers.Util.onImageLoadErrorColor = "transparent";
+
+        function init(){
+            var options = {
+                projection: "EPSG:900913",
+                units: "m",
+                maxResolution: 156543.0339,
+                maxExtent: new OpenLayers.Bounds(-20037508, -20037508,
+                                                 20037508, 20037508.34)
+            };
+            map = new OpenLayers.Map('map', options);
+
+            // create Google Mercator layers
+            var gmap = new OpenLayers.Layer.Google(
+                "Google Streets",
+                {'sphericalMercator': true}
+            );
+
+            // create WMS layer
+            var wms = new OpenLayers.Layer.WMS(
+                "World Map",
+                "http://world.freemap.in/tiles/",
+                {'layers': 'factbook-overlay', 'format':'png'},
+                {
+                    'opacity': 0.4,
+                    'isBaseLayer': false,'wrapDateLine': true
+                }
+            );
+
+            map.addLayers([gmap, wms]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.zoomToMaxExtent()
+        }
+
+    </script>
+  </head>
+  <body onload="init()">
+    <h2>OpenLayers With Responsive Google Dragging</h3>
+    <h3>Uses Google Maps v2.82</h2>
+    <div id="map"></div>
+  </body>
+</html>
