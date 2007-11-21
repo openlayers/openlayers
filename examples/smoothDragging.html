@@ -10,6 +10,7 @@
 
     <script src='http://maps.google.com/maps?file=api&amp;v=2.82&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhQtCjFYhdtNUZyqZQW2mFbq_dOIHBSGvjZ-C7_tXAXYdB-ehlOacmC_xA'></script>
     <script src='http://dev.virtualearth.net/mapcontrol/v3/mapcontrol.js'></script>
+    <script src="http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=euzuro-openlayers"></script>
 
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
@@ -49,6 +50,12 @@
                 {'type': VEMapStyle.Road, 'sphericalMercator': true}
             ); 
 
+            // create Yahoo layer
+            var yahoo = new OpenLayers.Layer.Yahoo(
+                "Yahoo Street",
+                {'sphericalMercator': true}
+            );
+
             // create WMS layer
             var wms = new OpenLayers.Layer.WMS(
                 "World Map",
@@ -60,7 +67,7 @@
                 }
             );
 
-            map.addLayers([gmap, wms, ve]);
+            map.addLayers([gmap, wms, ve, yahoo]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.zoomToMaxExtent()
         }
