@@ -73,7 +73,7 @@
         t.eq(data[0].geometry.CLASS_NAME, "OpenLayers.Geometry.Point", "Point GML returns correct classname");
         t.eq(data[0].geometry.x, 1, "x coord correct");
         t.eq(data[0].geometry.y, 2, "y coord correct");
-    }    
+    }
     function test_Format_GML_read_linestring_geom(t) {
         t.plan(5);
         
@@ -152,7 +152,169 @@
         data = parser.read(test_content[0]);
         t.eq(data[0].attributes['NAME'], "WY", "Simple Attribute data is read correctly.");
         t.eq(data[0].attributes['LONGNAME'], "Wyoming", "Attribute data is read from CDATA node correctly.");
+    }
+    function test_Format_GML_read_envelope_geom(t) {
+        t.plan(13);
+        
+        var envelope = shell_start + geoms['envelope'] + shell_end;
+        var parser = new OpenLayers.Format.GML();
+        data = parser.read(envelope);
+        t.eq(data[0].geometry.CLASS_NAME, "OpenLayers.Geometry.Polygon", "Envelope GML returns correct classname");
+        t.eq(data[0].geometry.components[0].components[0].x, 0, "first x coord correct");
+        t.eq(data[0].geometry.components[0].components[0].y, 1, "first y coord correct");
+        t.eq(data[0].geometry.components[0].components[1].x, 20, "second x coord correct");
+        t.eq(data[0].geometry.components[0].components[1].y, 1, "second y coord correct");
+        t.eq(data[0].geometry.components[0].components[2].x, 20, "third x coord correct");
+        t.eq(data[0].geometry.components[0].components[2].y, 21, "third y coord correct");
+        t.eq(data[0].geometry.components[0].components[3].x, 0, "fouth x coord correct");
+        t.eq(data[0].geometry.components[0].components[3].y, 21, "fourth y coord correct");
+        t.eq(data[0].geometry.components[0].components[4].x, 0, "fifth x coord correct");
+        t.eq(data[0].geometry.components[0].components[4].y, 1, "fifth y coord correct");
+        t.eq(data[0].geometry.components[0].components.length, 5, "coords length correct");
+        t.eq(data[0].geometry.components.length, 1, "rings length correct");
     }    
+    ///////////////////////////////////////////////////////////////
+    // tests the y x order of gml point
+    /////////////////////////////////////////////////////////////
+    function test_Format_GML_read_point_geom_yx(t) {
+        t.plan(3);
+        
+        var point = shell_start + geoms_yx['point'] + shell_end;
+        var parser = new OpenLayers.Format.GML({'xy':false});
+        data = parser.read(point);
+        t.eq(data[0].geometry.CLASS_NAME, "OpenLayers.Geometry.Point", "Point GML returns correct classname");
+        t.eq(data[0].geometry.x, 1, "x coord correct");
+        t.eq(data[0].geometry.y, 2, "y coord correct");
+    } 
+    function test_Format_GML_read_linestring_geom_yx(t) {
+        t.plan(5);
+        
+        var line = shell_start + geoms_yx['linestring'] + shell_end;
+        var parser = new OpenLayers.Format.GML({'xy':false});
+        data = parser.read(line);
+        t.eq(data[0].geometry.CLASS_NAME, "OpenLayers.Geometry.LineString", "LineString GML returns correct classname");
+        t.eq(data[0].geometry.components[0].x, 1, "first x coord correct");
+        t.eq(data[0].geometry.components[0].y, 2, "first y coord correct");
+        t.eq(data[0].geometry.components[1].x, 4, "second x coord correct");
+        t.eq(data[0].geometry.components[1].y, 5, "second y coord correct");
+    }    
+    function test_Format_GML_read_polygon_geom_yx(t) {
+        t.plan(7);
+        
+        var polygon = shell_start + geoms_yx['polygon'] + shell_end;
+        var parser = new OpenLayers.Format.GML({'xy':false});
+        data = parser.read(polygon);
+        t.eq(data[0].geometry.CLASS_NAME, "OpenLayers.Geometry.Polygon", "Polygon GML returns correct classname");
+        t.eq(data[0].geometry.components[0].components[0].x, 1, "first x coord correct");
+        t.eq(data[0].geometry.components[0].components[0].y, 2, "first y coord correct");
+        t.eq(data[0].geometry.components[0].components[1].x, 4, "second x coord correct");
+        t.eq(data[0].geometry.components[0].components[1].y, 5, "second y coord correct");
+        t.eq(data[0].geometry.components[0].components.length, 4, "coords length correct");
+        t.eq(data[0].geometry.components.length, 1, "rings length correct");
+    }   
+    function test_Format_GML_read_multipoint_geom_yx(t) {
+        t.plan(6);
+        
+        var multipoint = shell_start + geoms_yx['multipoint'] + shell_end;
+        var parser = new OpenLayers.Format.GML({'xy':false});
+        data = parser.read(multipoint);
+        t.eq(data[0].geometry.CLASS_NAME, "OpenLayers.Geometry.MultiPoint", "MultiPoint GML returns correct classname");
+        t.eq(data[0].geometry.components[0].x, 1, "x coord correct");
+        t.eq(data[0].geometry.components[0].y, 2, "y coord correct");
+        t.eq(data[0].geometry.components.length, 2, "length correct");
+        t.eq(data[0].geometry.components[1].x, 4, "x coord correct");
+        t.eq(data[0].geometry.components[1].y, 5, "y coord correct");
+    }    
+    function test_Format_GML_read_multilinestring_geom_yx(t) {
+        t.plan(6);
+        
+        var multilinestring = shell_start + geoms_yx['multilinestring'] + shell_end;
+        var parser = new OpenLayers.Format.GML({'xy':false});
+        data = parser.read(multilinestring);
+        t.eq(data[0].geometry.CLASS_NAME, "OpenLayers.Geometry.MultiLineString", "MultiLineString GML returns correct classname");
+        t.eq(data[0].geometry.components[0].components[0].x, 1, "x coord correct");
+        t.eq(data[0].geometry.components[0].components[0].y, 2, "y coord correct");
+        t.eq(data[0].geometry.components[0].components.length, 2, "length correct");
+        t.eq(data[0].geometry.components[0].components[1].x, 4, "x coord correct");
+        t.eq(data[0].geometry.components[0].components[1].y, 5, "y coord correct");
+        
+    }    
+    function test_Format_GML_read_polygon_with_holes_geom_yx(t) {
+        t.plan(12);
+        
+        var polygon_with_holes = shell_start + geoms_yx['polygon_with_holes'] + shell_end;
+        var parser = new OpenLayers.Format.GML({'xy':false});
+        data = parser.read(polygon_with_holes);
+        t.eq(data[0].geometry.CLASS_NAME, "OpenLayers.Geometry.Polygon", "Polygon GML returns correct classname");
+        t.eq(data[0].geometry.components[0].components[0].x, 1, "first x coord correct");
+        t.eq(data[0].geometry.components[0].components[0].y, 2, "first y coord correct");
+        t.eq(data[0].geometry.components[0].components[1].x, 4, "second x coord correct");
+        t.eq(data[0].geometry.components[0].components[1].y, 5, "second y coord correct");
+        t.eq(data[0].geometry.components[0].components.length, 4, "coords length correct");
+        t.eq(data[0].geometry.components[1].components[0].x, 11, "first x coord correct");
+        t.eq(data[0].geometry.components[1].components[0].y, 12, "first y coord correct");
+        t.eq(data[0].geometry.components[1].components[1].x, 14, "second x coord correct");
+        t.eq(data[0].geometry.components[1].components[1].y, 15, "second y coord correct");
+        t.eq(data[0].geometry.components[1].components.length, 4, "coords length correct");
+        t.eq(data[0].geometry.components.length, 2, "rings length correct");
+    }
+
+    function test_Format_GML_read_envelope_geom_yx(t) {
+        t.plan(13);
+        
+        var envelope = shell_start + geoms_yx['envelope'] + shell_end;
+        var parser = new OpenLayers.Format.GML({'xy':false});
+        data = parser.read(envelope);
+        t.eq(data[0].geometry.CLASS_NAME, "OpenLayers.Geometry.Polygon", "Envelope GML returns correct classname");
+        t.eq(data[0].geometry.components[0].components[0].x, 0, "first x coord correct");
+        t.eq(data[0].geometry.components[0].components[0].y, 1, "first y coord correct");
+        t.eq(data[0].geometry.components[0].components[1].x, 20, "second x coord correct");
+        t.eq(data[0].geometry.components[0].components[1].y, 1, "second y coord correct");
+        t.eq(data[0].geometry.components[0].components[2].x, 20, "third x coord correct");
+        t.eq(data[0].geometry.components[0].components[2].y, 21, "third y coord correct");
+        t.eq(data[0].geometry.components[0].components[3].x, 0, "fouth x coord correct");
+        t.eq(data[0].geometry.components[0].components[3].y, 21, "fourth y coord correct");
+        t.eq(data[0].geometry.components[0].components[4].x, 0, "fifth x coord correct");
+        t.eq(data[0].geometry.components[0].components[4].y, 1, "fifth y coord correct");
+        t.eq(data[0].geometry.components[0].components.length, 5, "coords length correct");
+        t.eq(data[0].geometry.components.length, 1, "rings length correct");
+    }
+    
+    function test_Format_GML_write_geoms_yx(t) {
+        t.plan(5);
+        var parser = new OpenLayers.Format.GML({'xy':false});
+        
+        var point_xy = shell_start + serialize_geoms['point'] + shell_end;
+        var point = shell_start + serialize_geoms_yx['point'] + shell_end;
+        data = parser.read(point);
+        var output = parser.write(data);
+        t.eq(output, point_xy, "Point geometry round trips correctly.");
+        
+        var linestring_xy = shell_start + serialize_geoms['linestring'] + shell_end;
+        var linestring = shell_start + serialize_geoms_yx['linestring'] + shell_end;
+        data = parser.read(linestring);
+        var output = parser.write(data);
+        t.eq(output, linestring_xy, "Line geometry round trips correctly.");
+        
+        var polygon_xy = shell_start + serialize_geoms['polygon'] + shell_end;
+        var polygon = shell_start + serialize_geoms_yx['polygon'] + shell_end;
+        data = parser.read(polygon);
+        var output = parser.write(data);
+        t.eq(output, polygon_xy, "Poly geometry round trips correctly.");
+        
+        var multipoint_xy = shell_start + serialize_geoms['multipoint'] + shell_end;
+        var multipoint = shell_start + serialize_geoms_yx['multipoint'] + shell_end;
+        data = parser.read(multipoint);
+        var output = parser.write(data);
+        t.eq(output, multipoint_xy, "MultiPoint geometry round trips correctly.");
+        
+        var multilinestring_xy = shell_start + serialize_geoms['multilinestring'] + shell_end;
+        var multilinestring = shell_start + serialize_geoms_yx['multilinestring'] + shell_end;
+        data = parser.read(multilinestring);
+        var output = parser.write(data);
+        t.eq(output, multilinestring_xy, "MultiLine geometry round trips correctly.");
+    }
+    
 
     var test_content = ['<?xml version="1.0" encoding="utf-8" ?>\n<ogr:FeatureCollection\n     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n     xsi:schemaLocation="http://ogr.maptools.org/ testoutput.xsd"\n     xmlns:ogr="http://ogr.maptools.org/"\n     xmlns:gml="http://www.opengis.net/gml">\n  <gml:boundedBy>\n    <gml:Box>\n      <gml:coord><gml:X>-1254041.389711702</gml:X><gml:Y>250906.9515983529</gml:Y></gml:coord>\n      <gml:coord><gml:X>-634517.1199908922</gml:X><gml:Y>762236.2940800377</gml:Y></gml:coord>\n    </gml:Box>\n  </gml:boundedBy>                    \n  <gml:featureMember>\n    <ogr:states fid="F0">\n      <ogr:geometryProperty><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-634517.11999089224,691849.77929356066,0 -653761.64509297756,471181.53429472551,0 -673343.60852865304,250906.9515983529,0 -1088825.734430399,299284.85108220269,0 -1254041.3897117018,324729.27754874947,0 -1235750.4212498858,434167.33911316615,0 -1190777.7803201093,704392.96327195223,0 -1181607.835811228,762236.29408003774,0 -634517.11999089224,691849.77929356066,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>\n      <ogr:NAME>WY</ogr:NAME>\n    <ogr:LONGNAME><![CDATA[Wyoming]]></ogr:LONGNAME>\n    </ogr:states>\n  </gml:featureMember>\n</ogr:FeatureCollection>\n',
  '<wfs:FeatureCollection' + 
@@ -198,9 +360,33 @@
         'polygon': '<gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>1,2 4,5 3,6 1,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>',
         'polygon_with_holes': '<gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>1,2 4,5 3,6 1,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs><gml:innerBoundaryIs><gml:LinearRing><gml:coordinates>11,12 14,15 13,16 11,12</gml:coordinates></gml:LinearRing></gml:innerBoundaryIs></gml:Polygon>',
         'multipoint': '<gml:MultiPoint><gml:Point><gml:coordinates>1,2,3</gml:coordinates></gml:Point><gml:Point><gml:coordinates>4,5,6</gml:coordinates></gml:Point></gml:MultiPoint>',
-        'multilinestring': '<gml:MultiLineString><gml:LineString><gml:coordinates>1,2,3 4,5,6</gml:coordinates></gml:LineString><gml:LineString><gml:coordinates>11,12,13 14,15,16</gml:coordinates></gml:LineString></gml:MultiLineString>' // ,
+        'multilinestring': '<gml:MultiLineString><gml:LineString><gml:coordinates>1,2,3 4,5,6</gml:coordinates></gml:LineString><gml:LineString><gml:coordinates>11,12,13 14,15,16</gml:coordinates></gml:LineString></gml:MultiLineString>',
+        'envelope': '<gml:Envelope><gml:lowerCorner>0 1</gml:lowerCorner><gml:upperCorner>20 21</gml:upperCorner></gml:Envelope>' // ,
         // 'multipolygon_with_holes': '<gml:MultiPolygon><gml:Polygon><gml:outerBoundaryIs>1,2 4,5 3,6 1,2</gml:outerBoundaryIs><gml:innerBoundaryIs>11,12 14,15 13,16 11,12</gml:innerBoundaryIs></gml:Polygon><gml:Polygon><gml:outerBoundaryIs>101,102 104,105 103,106 101,102</gml:outerBoundaryIs><gml:innerBoundaryIs>111,112 114,115 113,116 111,112</gml:innerBoundaryIs></gml:Polygon></gml:MultiPolygon>'
     };
+
+
+//
+// The following data has the (x y) reordered to (y x), in 3 dimensions it goes from (x y z) to (y x z)
+//
+    
+    var serialize_geoms_yx = {
+        'point': '<gml:Point><gml:coordinates decimal="." cs="," ts=" ">2,1</gml:coordinates></gml:Point>',
+        'linestring': '<gml:LineString><gml:coordinates decimal="." cs="," ts=" ">2,1 5,4</gml:coordinates></gml:LineString>',
+        'polygon': '<gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates decimal="." cs="," ts=" ">2,1 5,4 6,3 2,1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>',
+        'multipoint': '<gml:MultiPoint><gml:pointMember><gml:Point><gml:coordinates decimal="." cs="," ts=" ">2,1</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates decimal="." cs="," ts=" ">5,4</gml:coordinates></gml:Point></gml:pointMember></gml:MultiPoint>',
+        'multilinestring': '<gml:MultiLineString><gml:lineStringMember><gml:LineString><gml:coordinates decimal="." cs="," ts=" ">2,1 5,4</gml:coordinates></gml:LineString></gml:lineStringMember><gml:lineStringMember><gml:LineString><gml:coordinates decimal="." cs="," ts=" ">12,11 15,14</gml:coordinates></gml:LineString></gml:lineStringMember></gml:MultiLineString>'
+    };
+    var geoms_yx = {
+        'point': '<gml:Point><gml:coordinates>2,1,3</gml:coordinates></gml:Point>',
+        'linestring': '<gml:LineString><gml:coordinates>2,1,3 5,4,6</gml:coordinates></gml:LineString>',
+        'polygon': '<gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>2,1 5,4 6,3 2,1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>',
+        'polygon_with_holes': '<gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>2,1 5,4 6,3 2,1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs><gml:innerBoundaryIs><gml:LinearRing><gml:coordinates>12,11 15,14 16,13 12,11</gml:coordinates></gml:LinearRing></gml:innerBoundaryIs></gml:Polygon>',
+        'multipoint': '<gml:MultiPoint><gml:Point><gml:coordinates>2,1,3</gml:coordinates></gml:Point><gml:Point><gml:coordinates>5,4,6</gml:coordinates></gml:Point></gml:MultiPoint>',
+        'multilinestring': '<gml:MultiLineString><gml:LineString><gml:coordinates>2,1,3 5,4,6</gml:coordinates></gml:LineString><gml:LineString><gml:coordinates>12,11,13 15,14,16</gml:coordinates></gml:LineString></gml:MultiLineString>',
+        'envelope': '<gml:Envelope><gml:lowerCorner>1 0</gml:lowerCorner><gml:upperCorner>21 20</gml:upperCorner></gml:Envelope>'
+    };
+    
     </script> 
 </head> 
 <body> 
