@@ -6,6 +6,7 @@
             height: 512px;
             border: 1px solid gray;
         }
+        .olControlAttribution { bottom: 0px!important }
     </style>
 
     <script src='http://dev.virtualearth.net/mapcontrol/v3/mapcontrol.js'></script>
@@ -80,7 +81,8 @@
                 "http://tile.openstreetmap.org/",
                 {
                     type: 'png', getURL: osm_getTileURL,
-                    displayOutsideMaxExtent: true
+                    displayOutsideMaxExtent: true,
+                    attribution: '<a href="http://www.openstreetmap.org/">OpenStreetMap</a>'
                 }
             );
 
