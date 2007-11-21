@@ -8,7 +8,8 @@
         }
     </style>
 
-    <script src='http://maps.google.com/maps?file=api&amp;v=2.82&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
+    <script src='http://maps.google.com/maps?file=api&amp;v=2.82&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhQtCjFYhdtNUZyqZQW2mFbq_dOIHBSGvjZ-C7_tXAXYdB-ehlOacmC_xA'></script>
+    <script src='http://dev.virtualearth.net/mapcontrol/v3/mapcontrol.js'></script>
 
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
@@ -36,6 +37,18 @@
                 {'sphericalMercator': true}
             );
 
+            // create Virtual Earth layers
+            var ve = new OpenLayers.Layer.VirtualEarth(
+                "Virtual Earth Raods",
+                {'type': VEMapStyle.Road, 'sphericalMercator': true}
+            ); 
+
+            // create Virtual Earth layers
+            var ve = new OpenLayers.Layer.VirtualEarth(
+                "Virtual Earth Raods",
+                {'type': VEMapStyle.Road, 'sphericalMercator': true}
+            ); 
+
             // create WMS layer
             var wms = new OpenLayers.Layer.WMS(
                 "World Map",
@@ -47,7 +60,7 @@
                 }
             );
 
-            map.addLayers([gmap, wms]);
+            map.addLayers([gmap, wms, ve]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.zoomToMaxExtent()
         }
@@ -55,7 +68,7 @@
     </script>
   </head>
   <body onload="init()">
-    <h2>OpenLayers With Responsive Google Dragging</h3>
+    <h2>OpenLayers With Responsive Dragging</h3>
     <h3>Uses Google Maps v2.82</h2>
     <div id="map"></div>
   </body>
