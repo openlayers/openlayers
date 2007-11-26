@@ -141,18 +141,21 @@
 
     }
 
-    function test_06_Util_applyDefaults(t) {
+    function test_Util_applyDefaults(t) {
     
-        t.plan(8);
+        t.plan(10);
         
         var to = { 
             'a': "abra",
-            'b': "blorg"
+            'b': "blorg",
+            'n': null
         };
 
         var from = { 
             'b': "zoink",
-            'c': "press"
+            'c': "press",
+            'toString': function() {return 'works'},
+            'n': "broken"
         };
 
         OpenLayers.Util.applyDefaults(to, from);
@@ -167,6 +170,8 @@
         t.eq( ret["a"], "abra", "key present in ret but not from maintained");
         t.eq( ret["b"], "blorg", "key present in ret and from, maintained in ret");
         t.eq( ret["c"], "press", "key present in from and not ret successfully copied to ret");
+        t.eq(to.toString(), "works", "correctly applies custom toString");
+        t.eq(to.n, null, "correctly preserves null");
     }
 
     function test_07_Util_getParameterString(t) {
