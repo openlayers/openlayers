@@ -52,26 +52,28 @@ Group: OpenLayers  {
 
       File: Control  (OpenLayers/Control.js)
       File: ArgParser  (no auto-title, OpenLayers/Control/ArgParser.js)
-      File: ZoomToMaxExtent  (no auto-title, OpenLayers/Control/ZoomToMaxExtent.js)
-      File: OverviewMap  (no auto-title, OpenLayers/Control/OverviewMap.js)
+      File: Attribution  (no auto-title, OpenLayers/Control/Attribution.js)
       File: DragFeature  (no auto-title, OpenLayers/Control/DragFeature.js)
       File: DragPan  (no auto-title, OpenLayers/Control/DragPan.js)
       File: DrawFeature  (no auto-title, OpenLayers/Control/DrawFeature.js)
       File: EditingToolbar  (no auto-title, OpenLayers/Control/EditingToolbar.js)
       File: KeyboardDefaults  (no auto-title, OpenLayers/Control/KeyboardDefaults.js)
       File: LayerSwitcher  (no auto-title, OpenLayers/Control/LayerSwitcher.js)
+      File: ModifyFeature  (no auto-title, OpenLayers/Control/ModifyFeature.js)
       File: MouseDefaults  (no auto-title, OpenLayers/Control/MouseDefaults.js)
       File: MousePosition  (no auto-title, OpenLayers/Control/MousePosition.js)
       File: MouseToolbar  (no auto-title, OpenLayers/Control/MouseToolbar.js)
       File: Navigation  (no auto-title, OpenLayers/Control/Navigation.js)
       File: NavToolbar  (no auto-title, OpenLayers/Control/NavToolbar.js)
+      File: OverviewMap  (no auto-title, OpenLayers/Control/OverviewMap.js)
       File: Panel  (no auto-title, OpenLayers/Control/Panel.js)
+      File: PanZoom  (no auto-title, OpenLayers/Control/PanZoom.js)
       File: PanZoomBar  (no auto-title, OpenLayers/Control/PanZoomBar.js)
       File: Permalink  (no auto-title, OpenLayers/Control/Permalink.js)
       File: Scale  (no auto-title, OpenLayers/Control/Scale.js)
       File: SelectFeature  (no auto-title, OpenLayers/Control/SelectFeature.js)
       File: ZoomBox  (no auto-title, OpenLayers/Control/ZoomBox.js)
-      File: PanZoom  (no auto-title, OpenLayers/Control/PanZoom.js)
+      File: ZoomToMaxExtent  (no auto-title, OpenLayers/Control/ZoomToMaxExtent.js)
       }  # Group: Control
 
    File: Events  (no auto-title, OpenLayers/Events.js)
@@ -79,8 +81,8 @@ Group: OpenLayers  {
    Group: Feature  {
 
       File: Feature  (OpenLayers/Feature.js)
-      File: WFS  (no auto-title, OpenLayers/Feature/WFS.js)
       File: Vector  (no auto-title, OpenLayers/Feature/Vector.js)
+      File: WFS  (no auto-title, OpenLayers/Feature/WFS.js)
       }  # Group: Feature
 
    Group: Format  {
