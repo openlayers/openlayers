@@ -130,7 +130,7 @@
     }
 
     function test_Layer_Vector_destroyFeatures (t) {
-        t.plan(3); 
+        t.plan(5); 
         layer = new OpenLayers.Layer.Vector(name);
         var map = new OpenLayers.Map('map');
         map.addLayer(layer);
@@ -145,6 +145,17 @@
         layer.destroyFeatures();
         t.eq(layer.features.length, 0, "destroyFeatures triggers removal");
         t.eq(layer.selectedFeatures, [], "Destroy features removes selected features");
+        features = [];
+        for (var i = 0; i < 5; i++) {
+            features.push(new OpenLayers.Feature.Vector(
+                          new OpenLayers.Geometry.Point(0,0)));
+        }
+        layer.addFeatures(features);
+        layer.selectedFeatures.push(features[0]);
+        layer.selectedFeatures.push(features[1]);
+        layer.destroyFeatures([features[0], features[1]]);
+        t.eq(layer.features.length, 3, "destroyFeatures removes appropriate features");
+        t.eq(layer.selectedFeatures, [], "destroyFeatures removes appropriate selected features");
     }
 
     function test_99_Layer_Vector_destroy (t) {

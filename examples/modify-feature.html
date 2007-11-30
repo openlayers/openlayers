@@ -53,6 +53,9 @@
                             OpenLayers.Handler.Path),
                 polygon: new OpenLayers.Control.DrawFeature(vectors,
                             OpenLayers.Handler.Polygon),
+                regular: new OpenLayers.Control.DrawFeature(vectors,
+                            OpenLayers.Handler.RegularPolygon,
+                            {handlerOptions: {sides: 5}}),
                 modify: new OpenLayers.Control.ModifyFeature(vectors,
                                                              modifyOptions)
             };
@@ -65,6 +68,19 @@
             document.getElementById('noneToggle').checked = true;
         }
         
+        function update() {
+            var rotate = document.getElementById("rotate").checked;
+            controls.modify.rotate = rotate;
+            var resize = document.getElementById("resize").checked;
+            controls.modify.resize = resize;
+            var drag = document.getElementById("drag").checked;
+            controls.modify.drag = drag;
+            var sides = parseInt(document.getElementById("sides").value);
+            sides = Math.max(3, isNaN(sides) ? 0 : sides);
+            controls.regular.handler.sides = sides;
+            var irregular =  document.getElementById("irregular").checked;
+            controls.regular.handler.irregular = irregular;
+        }
 
         function toggleControl(element) {
             for(key in controls) {
@@ -102,9 +118,40 @@
                 <label for="polygonToggle">draw polygon</label>
             </li>
             <li>
+                <input type="radio" name="type" value="regular" id="regularToggle" onclick="toggleControl(this);" />
+                <label for="regularToggle">draw regular polygon</label>
+                <label for="sides"> - sides</label>
+                <input id="sides" type="text" size="2" maxlength="2"
+                       name="sides" value="5" onchange="update()" />
+                <ul>
+                    <li>
+                        <input id="irregular" type="checkbox"
+                               name="irregular" onchange="update()" />
+                        <label for="irregular">irregular</label>
+                    </li>
+                </ul>
+            </li>
+            <li>
                 <input type="radio" name="type" value="modify" id="modifyToggle"
                        onclick="toggleControl(this);" />
                 <label for="modifyToggle">modify feature</label>
+                <ul>
+                    <li>
+                        <input id="rotate" type="checkbox"
+                               name="rotate" onchange="update()" />
+                        <label for="rotate">allow rotation</label>
+                    </li>
+                    <li>
+                        <input id="resize" type="checkbox"
+                               name="resize" onchange="update()" />
+                        <label for="resize">allow resizing</label>
+                    </li>
+                    <li>
+                        <input id="drag" type="checkbox"
+                               name="drag" onchange="update()" />
+                        <label for="drag">allow dragging</label>
+                    </li>
+                </ul>
             </li>
         </ul>
     </div>
