@@ -82,7 +82,41 @@
         t.eq(OpenLayers.String.camelize(str), "chickenHeadMan", "string with multiple middle hyphens and end hyphen is camelized correctly (end hyphen dropped)");
 
 
-   }
+    }
+    
+    function test_String_format(t) {
+        var unchanged = [
+            "", "${ ", "${", " ${", "${${", "${}", "${${}}", " ${ ${",
+            "}", "${${} }"
+        ]
+        t.plan(4 + unchanged.length);
+
+        var format = OpenLayers.String.format;
+        
+        var expected;
+        for(var i=0; i<unchanged.length; ++i) {
+            expected = unchanged[i];
+            t.eq(format(expected), expected,
+                 "'" + expected + "' left unchanged");
+        }
+
+        t.eq(format("${foo} none"),
+             "undefined none", "undefined properties don't bomb");
+
+        window.foo = "bar";
+        t.eq(format("${foo} none"),
+             "bar none", "window context used if none passed");
+        
+        var context = {bar: "foo"};
+        t.eq(format("${bar} foo", context), "foo foo",
+             "properties accessed from context");
+        
+        var context = {bar: "foo", foo: "bar"};
+        t.eq(format("a ${bar} is a ${foo}", context), "a foo is a bar",
+             "multiple properties replaced correctly");
+
+    }
+   
    
     function test_06_Number_limitSigDigs(t) {
         t.plan(9);
