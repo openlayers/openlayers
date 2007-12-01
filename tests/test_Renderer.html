@@ -3,160 +3,74 @@
 <script src="../lib/OpenLayers.js"></script>
   <script type="text/javascript">
 
-    var layer;
-
-    function test_01_Renderer_drawGeometry(t) {
-        t.plan(1); 
-        var r = new OpenLayers.Renderer();
-        t.ok( r instanceof OpenLayers.Renderer, "new OpenLayers.Renderer returns REnderer object" );
-    }
-
-/* 
-function test_01_Renderer_drawGeometry(t) {
-        t.plan(12); 
-
-        var r = new OpenLayers.Renderer();
-        r.root = document.body;
-        r.setStyle = function() {};
+    function test_Renderer_constructor(t) {
+        t.plan(2);
+        var el = document.body;
+        el.id = "foo";
+        var r = new OpenLayers.Renderer(el.id);
         
-        var geometry = null; 
-        var style = null; 
+        t.ok(r instanceof OpenLayers.Renderer, "new OpenLayers.Renderer returns Renderer object" );
+        t.ok(r.container == el, "renderer container is correctly set");
+    }
     
-        r.drawGeometry(geometry, style); 
-        t.ok(true, "didnt do anything on null style");
+    function test_Renderer_supported(t) {
+        t.plan(1);
         
-        // point
-        var properDraw = false;
-        r.drawPoint = function(g) {
-            properDraw = true;
-            return {};
-        }
-        geometry = {CLASS_NAME: 'OpenLayers.Geometry.Point'};
-        style = true; 
-        r.drawGeometry(geometry, style);
-        t.ok(properDraw, "drawGeometry called drawPoint when passed a point");
-
-        // curve
-        var properDraw = false;
-        r.drawCurve = function(g) {
-            properDraw = true;
-            return {};
-        } 
-        geometry = {CLASS_NAME: 'OpenLayers.Geometry.Curve'};
-        style = true; 
-        r.drawGeometry(geometry, style);
-        t.ok(properDraw, "drawGeometry called drawCurve when passed a curve");
-
-        // line segment
-        var properDraw = false;
-        r.drawLineString = function(g) {
-            properDraw = true;
-            return {};
-        }
-        geometry = {CLASS_NAME: 'OpenLayers.Geometry.LineSegment'};
-        style = true;
-        r.drawGeometry(geometry, style);
-        t.ok(properDraw, "drawGeometry called drawLineString when passed a line segment");
-
-        // line string
-        var properDraw = false;
-        r.drawLineString = function(g) {
-            properDraw = true;
-            return {};
-        }
-        geometry = {CLASS_NAME: 'OpenLayers.Geometry.LineString'};
-        style = true;
-        r.drawGeometry(geometry, style);
-        t.ok(properDraw, "drawGeometry called drawLineString when passed a line string");
-
-        // linear ring
-        var properDraw = false;
-        r.drawLinearRing = function(g) {
-            properDraw = true;
-            return {};
-        }
-        geometry = {CLASS_NAME: 'OpenLayers.Geometry.LinearRing'};
-        style = true;
-        r.drawGeometry(geometry, style);
-        t.ok(properDraw, "drawGeometry called drawLinearRing when passed a linear ring");
-
-        // polygon
-        var properDraw = false;
-        r.drawPolygon = function(g) {
-            properDraw = true;
-            return {};
-        }
-        geometry = {CLASS_NAME: 'OpenLayers.Geometry.Polygon'};
-        style = true;
-        r.drawGeometry(geometry, style);
-        t.ok(properDraw, "drawGeometry called drawPolygon when passed a polygon");
-
-        // surface
-        var properDraw = false;
-        r.drawSurface = function(g) {
-            properDraw = true;
-            return {};
-        }
-        geometry = {CLASS_NAME: 'OpenLayers.Geometry.Surface'};
-        style = true;
-        r.drawGeometry(geometry, style);
-        t.ok(properDraw, "drawGeometry called drawSurface when passed a surface");
-
-        // rectangle
-        var properDraw = false;
-        r.drawRectangle = function(g) {
-            properDraw = true;
-            return {};
-        }
-        geometry = {CLASS_NAME: 'OpenLayers.Geometry.Rectangle'};
-        style = true;
-        r.drawGeometry(geometry, style);
-        t.ok(properDraw, "drawGeometry called drawRectangle when passed a rectangle");
-
-        // multi-point
-        var properDraw = false;
-        r.drawPoint = function(g) {
-            properDraw = true;
-            return {};
-        }
-        geometry = {
-            CLASS_NAME: 'OpenLayers.Geometry.MultiPoint',
-            components: [{CLASS_NAME: 'OpenLayers.Geometry.Point'}]
-        };
-        style = true;
-        r.drawGeometry(geometry, style);
-        t.ok(properDraw, "drawGeometry called drawPoint when passed a multi-point");
-
-        // multi-linestring
-        var properDraw = false;
-        r.drawLineString = function(g) {
-            properDraw = true;
-            return {};
-        }
-        geometry = {
-            CLASS_NAME: 'OpenLayers.Geometry.MultiLineString',
-            components: [{CLASS_NAME: 'OpenLayers.Geometry.LineString'}]
-        };
-        style = true;
-        r.drawGeometry(geometry, style);
-        t.ok(properDraw, "drawGeometry called drawLineString when passed a multi-linestring");
-
-        // multi-polygon
-        var properDraw = false;
-        r.drawPolygon = function(g) {
-            properDraw = true;
-            return {};
-        }
-        geometry = {
-            CLASS_NAME: 'OpenLayers.Geometry.MultiPolygon',
-            components: [{CLASS_NAME: 'OpenLayers.Geometry.Polygon'}]
-        };
-        style = true;
-        r.drawGeometry(geometry, style);
-        t.ok(properDraw, "drawGeometry called drawPolygon when passed a multi-polygon");
-
+        var r = new OpenLayers.Renderer();
+        t.eq(r.supported(), false, "supported returns false by default");
     }
-     */
+    
+    function test_Renderer_setextent(t) {
+        t.plan(2);
+        
+        var r = new OpenLayers.Renderer();
+        var extent = new OpenLayers.Bounds(1,2,3,4);
+        r.resolution = 1;
+        r.setExtent(extent);
+        t.ok(r.extent.equals(extent), "extent is correctly set");
+        t.eq(r.resolution, null, "resolution nullified");
+    }
+    
+    function test_Renderer_setsize(t) {
+        t.plan(2);
+        
+        var r = new OpenLayers.Renderer();
+        var size = new OpenLayers.Size(1,2);
+        r.resolution = 1;
+        r.setSize(size);
+        t.ok(r.size.equals(size), "size is correctly set");
+        t.eq(r.resolution, null, "resolution nullified");
+    }
+    
+    function test_Renderer_getresolution(t) {
+        t.plan(2);
+        
+        var r = new OpenLayers.Renderer();
+        var map = new OpenLayers.Map("map");
+        r.map = map;
+        var resolution = r.getResolution();
+        t.eq(resolution, map.getResolution(), "resolution matches the map resolution");
+        t.eq(r.resolution, resolution, "resolution is correctly set");
+    }
+
+    function test_Renderer_destroy(t) {
+        t.plan(5);
+
+        var r = new OpenLayers.Renderer();
+        r.container = document.createElement("div");
+        r.extent = new OpenLayers.Bounds(1,2,3,4);
+        r.size = new OpenLayers.Size(1,2);
+        r.resolution = 1;
+        r.map = {};
+
+        r.destroy();
+
+        t.eq(r.container, null, "container nullified");
+        t.eq(r.extent, null, "extent nullified");
+        t.eq(r.size, null, "size nullified");
+        t.eq(r.resolution, null, "resolution nullified");
+        t.eq(r.map, null, "map nullified");
+    }
 
   </script>
 </head>
