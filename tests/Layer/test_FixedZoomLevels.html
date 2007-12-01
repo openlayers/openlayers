@@ -5,7 +5,7 @@
     var layer; 
 
     function test_01_Layer_FixedZoomLevels (t) {
-        t.plan( 36 );
+        t.plan( 39 );
         
         var layer = { 'MIN_ZOOM_LEVEL': 5,
                       'MAX_ZOOM_LEVEL': 10 };        
@@ -67,8 +67,20 @@
         layer = p_createLayer(layer, {maxZoomLevel: 8, numZoomLevels: 6});
         p_minMaxNum(t, layer, layer.MIN_ZOOM_LEVEL, 10, "min,max(layer.options) wins over (map)");
 
+    // resolutions array
 
-
+        var resolutions = Array(20);
+        for (var i = 0; i < 20; i++) {
+            resolutions[i] = Math.random();
+        }
+        OpenLayers.Util.extend(layer, {RESOLUTIONS:resolutions});
+        var minZoomLevel = 6;
+        var numZoomLevels = 2;
+        layer = p_createLayer(layer, {}, {minZoomLevel: minZoomLevel, numZoomLevels: numZoomLevels});
+        t.eq( layer.resolutions.length, numZoomLevels, "length of resolutions array ok");
+        for (var i = 0; i < numZoomLevels; i++) {
+            t.eq( layer.resolutions[i], resolutions[i + minZoomLevel], "resolutions array at index " + i + " ok");
+        }
     }
 
     function p_createLayer(layer, mapOptions, layerOptions) {
