@@ -18,7 +18,16 @@
         t.ok( layer instanceof OpenLayers.Layer.TileCache, "returns OpenLayers.Layer.TileCache object" );
     }
 
+    function test__Layer_TileCache_clone(t) {
+        t.plan(3);
 
+        layer = new OpenLayers.Layer.TileCache(name, url, layername, options);
+
+        var clone = layer.clone();
+        t.eq(layer.name, clone.name, "clone() correctly copy the 'name' property");
+        t.eq(layer.url, clone.url, "clone() correctly copy the 'url' property");
+        t.eq(layer.layername, clone.layername, "clone() correctly copy the 'layername' property");
+    }
 
     function test_03_Layer_TileCache_clearTiles (t) {
         t.plan( 1 );
