@@ -305,6 +305,26 @@
         map.setBaseLayer(wmslayer2);
         t.ok(map.baseLayer == wmslayer2, "setbaselayer correctly sets 'baseLayer' property");
     }
+    
+    function test_Map_removeLayer(t) {
+        t.plan(1);
+        var f = function() {};
+        var layers = [
+            {name: "fee", removeMap: f},
+            {name: "fi", removeMap: f},
+            {name: "fo", removeMap: f},
+            {name: "fum", removeMap: f}
+        ];
+        var map = {
+            layers: layers,
+            baseLayer: layers[0],
+            layerContainerDiv: {removeChild: f},
+            events: {triggerEvent: f}
+        };
+        OpenLayers.Map.prototype.removeLayer.apply(map, [map.baseLayer, false]);
+        t.eq(map.baseLayer, null,
+             "removing the baselayer sets baseLayer to null");        
+    }
 
     function test_Map_removeLayer_res(t) {
         t.plan(2);
