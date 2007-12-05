@@ -89,7 +89,7 @@
     }
 
     function test_04_Collection_removeComponents (t) {
-        t.plan( 4 );
+        t.plan( 5 );
         coll = new OpenLayers.Geometry.Collection();
         point = new OpenLayers.Geometry.Point(0,0);
         coll.addComponents(point);
@@ -100,6 +100,17 @@
         bounds = coll.getBounds();
         t.eq( bounds.left, 10, "left bound is 10 after removeComponent" );
         t.eq( bounds.bottom, 10, "bottom bound is 10 after removeComponent" );
+        
+        coll = new OpenLayers.Geometry.Collection();
+        for(var i=0; i<5; ++i) {
+            coll.addComponents(
+                new OpenLayers.Geometry.Point(Math.random(), Math.random())
+            );
+        }
+        coll.removeComponents(coll.components);
+        t.eq(coll.components.length, 0,
+             "remove components even works with multiple components");
+        
     }
     
     function test_06_Collection_calculateBounds(t) {
