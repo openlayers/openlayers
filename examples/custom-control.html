@@ -1,49 +1,61 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <style type="text/css">
-        #map {
-            width: 800px;
-            height: 475px;
-            border: 1px solid black;
-        }
-    </style>
-    <script src="../lib/OpenLayers.js"></script>
-    <script type="text/javascript">
-        <!--
-        var lon = 5;
-        var lat = 40;
-        var zoom = 5;
-        var map, layer;
+    <head>
+        <title>Custom Control Example</title>
+        <style type="text/css">
+            #map {
+                width: 512px;
+                height: 512px;
+                border: 1px solid black;
+            }
+        </style>
+        <script src="../lib/OpenLayers.js"></script>
+        <script type="text/javascript">
+            <!--
+            var lon = 5;
+            var lat = 40;
+            var zoom = 5;
+            var map, layer;
 
-        function init(){
-            map = new OpenLayers.Map('map');
-            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-                    "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
-            
-            var control = new OpenLayers.Control();
-            OpenLayers.Util.extend(control, {
-                draw: function () {
-                    // this Handler.Box will intercept the shift-mousedown
-                    // before Control.MouseDefault gets to see it
-                    this.box = new OpenLayers.Handler.Box( control, 
-                        {"done": this.notice},
-                        {keyMask: OpenLayers.Handler.MOD_SHIFT});
-                    this.box.activate();
-                },
+            function init(){
+                map = new OpenLayers.Map('map');
+                layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                        "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
 
-                notice: function (bounds) {
-                    alert(bounds);
-                }
-            }); 
+                var control = new OpenLayers.Control();
+                OpenLayers.Util.extend(control, {
+                    draw: function () {
+                        // this Handler.Box will intercept the shift-mousedown
+                        // before Control.MouseDefault gets to see it
+                        this.box = new OpenLayers.Handler.Box( control,
+                            {"done": this.notice},
+                            {keyMask: OpenLayers.Handler.MOD_SHIFT});
+                        this.box.activate();
+                    },
 
-            map.addLayer(layer);
-            map.addControl(control);
-            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
-        }
-        // -->
-    </script>
-  </head>
-  <body onload="init()">
-    <div id="map"></div>
-  </body>
+                    notice: function (bounds) {
+                        alert(bounds);
+                    }
+                });
+
+                map.addLayer(layer);
+                map.addControl(control);
+                map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+            }
+            // -->
+        </script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">Custom Control Example</h1>
+
+      	<div id="tags">
+        </div>
+
+        <p id="shortdesc">
+            Demonstrate the addition of a draggable rectangle to the OpenLayers window.
+        </p>
+  	
+        <div id="map"></div>
+
+        <div id="docs"></div>
+    </body>
 </html>

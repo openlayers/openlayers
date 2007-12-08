@@ -1,40 +1,52 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <style type="text/css">
-        #map {
-            width: 800px;
-            height: 475px;
-            border: 1px solid black;
-        }
-    </style>
-    <script src="../lib/Firebug/firebug.js"></script>
-    <script src="../lib/OpenLayers.js"></script>
-    <script type="text/javascript">
-        <!--
-        var lon = 5;
-        var lat = 40;
-        var zoom = 5;
-        var map, layer;
+    <head>
+        <title>OpenLayers Editing Toolbar Example</title>
+        
+        <style type="text/css">
+            #map {
+                width: 512px;
+                height: 512px;
+                border: 1px solid black;
+            }
+        </style>
+        <script src="../lib/OpenLayers.js"></script>
+        <script src="../lib/Firebug/debug.js"></script>
+        <script type="text/javascript">
+            <!--
+            var lon = 5;
+            var lat = 40;
+            var zoom = 5;
+            var map, layer;
 
-        function init(){
-            map = new OpenLayers.Map( 'map', { controls: [] } );
-            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-                    "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
-            map.addLayer(layer);
+            function init(){
+                map = new OpenLayers.Map( 'map', { controls: [] } );
+                layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                        "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+                map.addLayer(layer);
+    
+                vlayer = new OpenLayers.Layer.Vector( "Editable" );
+                map.addLayer(vlayer);
+                map.addControl(new OpenLayers.Control.PanZoomBar());
+                map.addControl(new OpenLayers.Control.EditingToolbar(vlayer));
+    
+                map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+            }
+            // -->
+        </script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">Editing Toolbar Example</h1>
 
-            vlayer = new OpenLayers.Layer.Vector( "Editable" );
-            map.addLayer(vlayer);
-            map.addControl(new OpenLayers.Control.PanZoomBar());
-            map.addControl(new OpenLayers.Control.EditingToolbar(vlayer));
-            
-            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
-        }
-        // -->
-    </script>
-  </head>
-  <body onload="init()">
-    <div id="panel"></div>
-    <div id="map"></div>
-  </body>
+        <div id="tags"></div>
+
+        <p id="shortdesc">
+            Demonstrate polygon, polyline and point creation and editing tools.
+        </p>
+
+        <div id="panel"></div>
+        <div id="map"></div>
+
+        <div id="docs"></div>
+    </body>
 </html>

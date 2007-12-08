@@ -2,8 +2,8 @@
   <head>
     <style type="text/css">
         #map {
-            width: 100%;
-            height: 80%;
+            width: 512px;
+            height: 512px;
             border: 1px solid black;
         }
     </style>
@@ -14,44 +14,44 @@
 
         function init(){
             map = new OpenLayers.Map('map', {controls: [ new OpenLayers.Control.PanZoom(), new OpenLayers.Control.Permalink() ]} );
-            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-                    "http://labs.metacarta.com/wms-c/Basic.py", 
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                    "http://labs.metacarta.com/wms-c/Basic.py",
                     {layers: 'basic'} );
             map.addLayer(layer);
-            
-            layer = new OpenLayers.Layer.WFS( "Scribble WFS", 
-                    "/geoserver/wfs", 
-                    { typename: 'topp:line' }, 
-                    {  
-                      typename: 'line', 
-                      featureNS: 'http://www.openplans.org/topp', 
+
+            layer = new OpenLayers.Layer.WFS( "Scribble WFS",
+                    "/geoserver/wfs",
+                    { typename: 'topp:line' },
+                    {
+                      typename: 'line',
+                      featureNS: 'http://www.openplans.org/topp',
                       extractAttributes: false
                     } );
             map.addLayer(layer);
-            
+
             var p = new OpenLayers.Control.Panel({'displayClass': 'olControlEditingToolbar'});
-            
+
             df = new OpenLayers.Control.DrawFeature(layer, OpenLayers.Handler.Path, {handlerOptions: {'freehand': false}, 'displayClass': 'olControlDrawFeaturePath'});
-            df.featureAdded = function(feature) { 
-              feature.state = OpenLayers.State.INSERT; 
-              feature.style['strokeColor'] = "#ff0000"; 
-              feature.layer.drawFeature(feature);  
+            df.featureAdded = function(feature) {
+              feature.state = OpenLayers.State.INSERT;
+              feature.style['strokeColor'] = "#ff0000";
+              feature.layer.drawFeature(feature);
             }
             p.addControls([ new OpenLayers.Control.Navigation(), df ]);
-             
+
             map.addControl(p);
             p.activateControl(p.controls[0])
             map.setCenter(new OpenLayers.LonLat(0,0), 3);
         }
         function save() {
-            for(var i = 0; i < map.layers[1].features.length; i++) { 
-                var f = map.layers[1].features[i]; 
-                f.style['strokeColor'] = '#ee9900'; 
-                map.layers[1].drawFeature(f);  
-            } 
+            for(var i = 0; i < map.layers[1].features.length; i++) {
+                var f = map.layers[1].features[i];
+                f.style['strokeColor'] = '#ee9900';
+                map.layers[1].drawFeature(f);
+            }
             map.layers[1].commit();
             return false;
-        }   
+        }
         function serialize(type) {
             var xmls = new XMLSerializer();
             var serialize = new OpenLayers.Format[type]({},map.layers[1]);
@@ -62,18 +62,29 @@
     </script>
   </head>
   <body onload="init()">
-    <h2>Draw Lines, Save to GeoServer</h2>
-    <p>Using GeoServer and the WFS-T support in OpenLayers, draw on a map,
-       save the results, reload the page and see the results still there!<br />
-       Hold shift to turn on freehand mode while drawing.</p>
-    <div style="float:right; text-align:right;"> 
-    <a href="#serialize" onclick="serialize('WFS')">Show WFS Transaction</a> | 
-    <a href="#serialize" onclick="serialize('GML')">Export GML</a> | 
-    <a href="#serialize" onclick="serialize('GeoRSS')">Export GeoRSS</a> | 
-    <a href="#" onclick="return save()">Save</a> | 
+   <h1 id="title">Scribble on a WFS Example</h1>
+
+   <div id="tags">
+   </div>
+   <p id="shortdesc">
+        Shows how you can draw features and save to GeoServer.
+   </p>
+   <div id="map"></div>
+
+   <div id="docs">
+   Using GeoServer and the WFS-T support in OpenLayers, draw on a map, save the results, reload the page and see the results still there!
+   Hold shift to turn on freehand mode while drawing. </div>
+    
+    <div style="float:left; text-align:right;">
+    <a href="#serialize" onclick="serialize('WFS')">Show WFS Transaction</a> |
+    <a href="#serialize" onclick="serialize('GML')">Export GML</a> |
+    <a href="#serialize" onclick="serialize('GeoRSS')">Export GeoRSS</a> |
+    <a href="#" onclick="return save()">Save</a> |
     <a href="#" onclick="map.layers[1].refresh(); return false">Refresh</a> (removes all newly added lines)</div><br />
-    <div id="map"></div>
     <textarea style="display:none" id="serialize" cols="100" rows="10">
     </textarea>
+ </div>
   </body>
 </html>
+
+

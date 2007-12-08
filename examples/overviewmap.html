@@ -16,6 +16,13 @@
         </style>
     </head>
     <body>
+        <h1 id="title">Overview Map</h1>
+
+        <div id="tags">
+        </div>
+        <p id="shortdesc">
+        	Enable a small Overview Map that moves/interacts with your main map.
+        </p>
         <div id="map1"></div>
         <p>The above map has an overview map control that is created with
         the default options.  Much like a regular map, the map contained by
@@ -39,7 +46,7 @@
         
         var jpl = new OpenLayers.Layer.WMS(
             "NASA Global Mosaic", 
-            "http://t1.hypercube.telascience.org/tiles/landsat7",
+            "http://t1.hypercube.telascience.org/cgi-bin/landsat7",
             {layers: "landsat7"}
         );
         

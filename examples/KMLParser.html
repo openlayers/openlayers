@@ -1,12 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <style type="text/css">
-        #map {
-            width: 800px;
-            height: 475px;
-            border: 1px solid black;
-        }
-    </style>
+	<title>OpenLayers KML Parser Example</title>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         function parseData(req) {
@@ -21,13 +15,27 @@
             }
                 html += "</ul>"
           }
-          document.body.innerHTML = html;
+          document.getElementById('output').innerHTML = html;
         }
         function load() {
             OpenLayers.loadURL("kml/lines.kml", "", null, parseData);
-        }   
+        }
     </script>
   </head>
   <body onload="load()">
+  	<h1 id="title">KML Parser Example</h1>
+
+  	<div id="tags"></div>
+
+  	<p id="shortdesc">
+  		Demonstrate the operation of the KML parser.
+  	</p>
+
+  	<div id="output"></div>
+
+  	<div id="docs">
+  		This script reads data from a KML file and parses out the coordinates, appending them to a HTML string with markup tags.
+  		This markup is dumped to an element in the page.
+	</div>
   </body>
-</html>  
+</html>

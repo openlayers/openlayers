@@ -1,5 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+	<title>OpenLayers Example</title>
     <style type="text/css">
         #map {
             width: 512px;
@@ -17,7 +18,7 @@
         function init(){
 
             //set title name to include Browser Detection
-            // this is the only way to test the functionality 
+            // this is the only way to test the functionality
             // of the getBrowserName() function
             //
             var header = OpenLayers.Util.getElement("browserHeader");
@@ -39,27 +40,27 @@
                 case "mozilla":
                     browserName = "Mozilla";
                     break;
-                default: 
+                default:
                     browserName = "detection error"
                     break;
-            }                        
+            }
             header.innerHTML += browserName + ")";
 
             map = new OpenLayers.Map('map');
 
-            var options = { 
+            var options = {
                             resolutions: [1.40625,0.703125,0.3515625,0.17578125,0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101]
             };
-            
-            var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'},
-                options); 
 
-            var options2 = { 
+            var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'},
+                options);
+
+            var options2 = {
                             resolutions: [0.17578125,0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101]
             };
             var jpl_wms = new OpenLayers.Layer.WMS( "NASA Global Mosaic",
-                "http://t1.hypercube.telascience.org/tiles/landsat7", 
+                "http://t1.hypercube.telascience.org/cgi-bin/landsat7", 
                 {layers: "landsat7"}, options2);
 
             var dm_wms = new OpenLayers.Layer.WMS( "DM Solutions Demo",
@@ -79,11 +80,17 @@
     </script>
   </head>
   <body onload="init()">
-    <table><tr><td>
-        <h1>OpenLayers Example</h1>
-    </td><td>
-        <h3 id="browserHeader"></h3>
-    </td></tr></table>
+    <h1 id="title" style="display:inline;">OpenLayers Example</h1>
+    <h3 id="browserHeader" style="display:inline;"></h3>
+
+	<div id="tags"></div>
+
+	<p id="shortdesc">
+		Demonstrate a simple map with an overlay that includes layer switching controls.
+	</p>
+
     <div id="map"></div>
+
+    <div id="docs"></div>
   </body>
 </html>

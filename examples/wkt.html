@@ -10,7 +10,7 @@
         }
         #map {
             width: 512px;
-            height: 350px;
+            height: 512px;
             border: 1px solid gray;
         }
         #controls {
@@ -31,15 +31,15 @@
         var map, vectors, drawControls, wkt;
         function init(){
             map = new OpenLayers.Map('map');
-            var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
+            var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'});
 
             vectors = new OpenLayers.Layer.Vector("Vector Layer");
 
             map.addLayers([wms, vectors]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.addControl(new OpenLayers.Control.MousePosition());
-            
+
             var options = {
                 hover: true,
                 onSelect: displayWKT
@@ -54,13 +54,13 @@
                             OpenLayers.Handler.Polygon),
                 hover: new OpenLayers.Control.SelectFeature(vectors, options)
             };
-            
+
             for(var key in drawControls) {
                 map.addControl(drawControls[key]);
             }
-            
+
             wkt = new OpenLayers.Format.WKT();
-            
+
             map.setCenter(new OpenLayers.LonLat(0, 0), 3);
             document.getElementById('noneToggle').checked = true;
         }
@@ -75,7 +75,7 @@
                 }
             }
         }
-        
+
         function displayWKT(feature) {
             var str = wkt.write(feature);
             // not a good idea in general, just for this demo
@@ -97,7 +97,7 @@
                     } else {
                         bounds.extend(features[i].geometry.getBounds());
                     }
-                    
+
                 }
                 vectors.addFeatures(features);
                 map.zoomToExtent(bounds);
@@ -110,10 +110,18 @@
     </script>
   </head>
   <body onload="init()">
-    <h1>OpenLayers WKT Example</h1>
+    <h1 id="title">WKT Example</h1>
     <div id="info"></div>
+    	<p id="shortdesc">
+			Shows the use of WKT (Well known text) to draw features in openlayers
+	</p>
     <div id="map"></div>
-    <div id="controls">
+    <div id="tags"></div>
+
+
+
+	<div id="docs">
+      <div id="controls">
         <p>See <a href="http://en.wikipedia.org/wiki/Well-known_text#Geometric_Objects">Wikipedia</a>
         for a description and examples of WKT.</p>
         <div id="wktInput">
@@ -145,6 +153,7 @@
                 <label for="hoverToggle">view WKT for feature</label>
             </li>
         </ul>
+      </div>
     </div>
   </body>
 </html>

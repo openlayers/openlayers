@@ -88,7 +88,7 @@ function runMVS() {
             case 'nasa': 
                 theMVS.addLayer(
                     new OpenLayers.Layer.WMS("NASA Mosaic", 
-                       "http://t1.hypercube.telascience.org/tiles/landsat7",
+                       "http://t1.hypercube.telascience.org/cgi-bin/landsat7",
                        {"EXCEPTIONS" : "application/vnd.ogc.se_inimage",
                         "format" : "image/jpeg",
                         layers:"landsat7"}

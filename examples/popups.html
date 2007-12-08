@@ -120,7 +120,15 @@
     </script>
   </head>
   <body onload="init()">
-    <div id="map"></div>
+  <h1 id="title">Popup Mayhem</h1>
+
+  <div id="tags">
+  </div>
+  <p id="shortdesc">
+  	All kinds of ways to create and interact with Popups.
+  </p>
+
+  <div id="map"></div>
     <p>If you open an anchoredbubble and switch to google, it shouldn't crash. If it does, don't release OpenLayers.</p>  
     <div style="background-color:purple" onclick="add()"> click to add Popup to map</div>
     <div style="background-color:green" onclick="addMarker()"> click to add a Marker with an AnchoredBubble popup</div>
@@ -129,5 +137,8 @@
     <div style="background-color:grey" onclick="removelayer()"> click to remove the markers layer</div>
     <div style="background-color:orange" onclick="alert(marker.onScreen())"> marker.onscreen()?</div>
     <div style="background-color:yellow" onclick="destroy()"> click to destroy the popup from map</div> 
+    <div id="docs">
+  	Detailed description of this example needs to be written.
+   </div>
   </body>
 </html>

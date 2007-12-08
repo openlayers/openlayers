@@ -1,5 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <title>OpenLayers Restricted Extent Example</title>
     <style type="text/css">
         #map {
             width: 512px;
@@ -40,7 +41,11 @@
     </script>
   </head>
   <body onload="init()">
-    <h3>OpenLayers Restricted Extent Example</h3>
+    <h3 id="title">OpenLayers Restricted Extent Example</h3>
+    <p id="shortdesc">
+      Don't let users drag outside the map extent: instead, limit dragging such
+      that the extent of the layer is the maximum viewable area.
+    </p>
     <div id="map"></div>
     <p>
         Map navigation is limited by a combination of map and layer properties.

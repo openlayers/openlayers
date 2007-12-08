@@ -2,8 +2,8 @@
   <head>
     <style type="text/css">
         #map {
-            width: 100%;
-            height: 100%;
+            width: 512px;
+            height: 512px;
             border: 1px solid black;
         }
     </style>
@@ -16,7 +16,7 @@
 
         function init(){
             map = new OpenLayers.Map( 'map' );
-            layer = new OpenLayers.Layer.WMS.Untiled( "OpenLayers WMS", 
+            layer = new OpenLayers.Layer.WMS.Untiled( "OpenLayers WMS",
                     "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
             map.addLayer(layer);
 
@@ -26,6 +26,20 @@
     </script>
   </head>
   <body onload="init()">
+    <h1 id="title"> WMS Untiled Example</h1>
+
+    <div id="tags">
+    </div>
+	<p id="shortdesc">
+		Shows an example of the Untiled wms layer, which requests a single image for the entire map view</a>.
+	</p>
+
     <div id="map"></div>
+
+	<div id="docs">
+		An untiled map will only request a single image at a time.
+	</div>
   </body>
 </html>
+
+

@@ -2,8 +2,8 @@
   <head>
     <style type="text/css">
         #map {
-            width: 800px;
-            height: 350px;
+            width: 512px;
+            height: 512px;
             border: 1px solid black;
         }
     </style>
@@ -12,11 +12,11 @@
         var map;
         function init(){
             map = new OpenLayers.Map( 'map', {maxResolution: 1.40625} );
-            var mapserv = new OpenLayers.Layer.MapServer( "OpenLayers Basic", 
+            var mapserv = new OpenLayers.Layer.MapServer( "OpenLayers Basic",
                         "http://labs.metacarta.com/wms/vmap0",
                         {layers: 'basic'},
                         {wrapDateLine: true} );
-                        
+
             var kamap = new OpenLayers.Layer.KaMap( "Blue Marble NG",
                         "http://www.openlayers.org/world/index.php",
                         {g: "satellite", map: "world"},
@@ -30,7 +30,7 @@
                 {wrapDateLine: true, reproject: false});
 
             /* TMS is broken, too */
-            tms = new OpenLayers.Layer.TMS( "OpenStreetMap", 
+            tms = new OpenLayers.Layer.TMS( "OpenStreetMap",
                     "http://labs.metacarta.com/wms-c/Basic.py/",
                     {layername: 'osm-map', type:'png', wrapDateLine: true} );
 
@@ -41,7 +41,7 @@
                     {'maxResolution': .28125,
                      tileSize: new OpenLayers.Size(512, 512),
                      wrapDateLine: true});
-        
+
             map.addLayers([mapserv, kamap, wms]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.addControl(new OpenLayers.Control.MousePosition());
@@ -52,28 +52,28 @@
   <body onload="init()">
     <h1 id="title">Wrapping the Date Line</h1>
     <div id="tags">
-      Related to: 
-        <a href="http://dev.openlayers.org/docs/OpenLayers/Layer/WMS.html">Layer.WMS</a>, 
-        <a href="http://dev.openlayers.org/docs2/OpenLayers/Layer/MapServer.html">Layer.MapServer</a>, 
+      Related to:
+        <a href="http://dev.openlayers.org/docs/OpenLayers/Layer/WMS.html">Layer.WMS</a>,
+        <a href="http://dev.openlayers.org/docs2/OpenLayers/Layer/MapServer.html">Layer.MapServer</a>,
         <a href="http://dev.openlayers.org/docs2/OpenLayers/Layer.html#wrapDateLine">wrapDateLine</a>
-    </div> 
-    
-    <p id="shortdesc">This example shows the use of the <a href="http://dev.openlayers.org/docs/OpenLayers/Layer.html#wrapDateLine">wrapDateLine</a> layer option on a number of layer types.</p>
+    </div>
+
+    <p id="shortdesc">Shows how to work around dateline issues, by wrapping the dateline on a number of layer types.</p>
     <div id="map"></div>
     <div id="docs">
         <p>
-        This is an example that shows wrapping the date line. Wrapping the 
-        date line is an option on the layer. 
+        This is an example that shows wrapping the date line. Wrapping the
+        date line is an option on the layer.
         </p>
         <p>
           You can do it with a 'Layer.WMS' or a 'Layer.MapServer' layer.
         </p>
     <pre id="code">
-    var mapserv = new OpenLayers.Layer.MapServer( "OpenLayers Basic", 
+    var mapserv = new OpenLayers.Layer.MapServer( "OpenLayers Basic",
                 "http://labs.metacarta.com/wms/vmap0",
                 {layers: 'basic'},
                 <b>{wrapDateLine: true}</b> );
-    </pre>  
+    </pre>
     </div>
   </body>
 </html>

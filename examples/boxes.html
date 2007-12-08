@@ -1,47 +1,58 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <style type="text/css">
-        #map {
-            width: 512px;
-            height: 512px;
-            border: 1px solid black;
-        }
-    </style>
-    <script src="../lib/OpenLayers.js"></script>
-    <script type="text/javascript">
-        var box_extents = [
-            [-10, 50, 5, 60],
-            [-75, 41, -71, 44],
-            [-122.6, 37.6, -122.3, 37.9],
-            [10, 10, 20, 20]
-        ];
-        var map;
-        function init(){
-            map = new OpenLayers.Map('map');
-
-            var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'} );
-
-            var boxes  = new OpenLayers.Layer.Boxes( "Boxes" );
-
-            for (var i = 0; i < box_extents.length; i++) {
-                ext = box_extents[i];
-                bounds = new OpenLayers.Bounds(ext[0], ext[1], ext[2], ext[3]); 
-                box = new OpenLayers.Marker.Box(bounds);
-                box.events.register("click", box, function (e) {
-                    this.setBorder("yellow");
-                });
-                boxes.addMarker(box);
+    <head>
+        <title>OpenLayers Boxes Example</title>
+        <style type="text/css">
+            #map {
+                width: 512px;
+                height: 512px;
+                border: 1px solid black;
             }
+        </style>
+        <script src="../lib/OpenLayers.js"></script>
+        <script type="text/javascript">
+            var box_extents = [
+                [-10, 50, 5, 60],
+                [-75, 41, -71, 44],
+                [-122.6, 37.6, -122.3, 37.9],
+                [10, 10, 20, 20]
+            ];
+            var map;
+            function init(){
+                map = new OpenLayers.Map('map');
 
-            map.addLayers([ol_wms, boxes]);
-            map.addControl(new OpenLayers.Control.LayerSwitcher());
-            map.zoomToMaxExtent();
-        }
-    </script>
-  </head>
-  <body onload="init()">
-    <h1>OpenLayers Example</h1>
-    <div id="map"></div>
-  </body>
+                var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                    "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'} );
+
+                var boxes  = new OpenLayers.Layer.Boxes( "Boxes" );
+    
+                for (var i = 0; i < box_extents.length; i++) {
+                    ext = box_extents[i];
+                    bounds = new OpenLayers.Bounds(ext[0], ext[1], ext[2], ext[3]);
+                    box = new OpenLayers.Marker.Box(bounds);
+                    box.events.register("click", box, function (e) {
+                        this.setBorder("yellow");
+                    });
+                    boxes.addMarker(box);
+                }
+
+                map.addLayers([ol_wms, boxes]);
+                map.addControl(new OpenLayers.Control.LayerSwitcher());
+                map.zoomToMaxExtent();
+            }
+        </script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">Boxes Example</h1>
+
+        <div id="tags">
+        </div>
+
+        <p id="shortdesc">
+            Demonstrate marker and box type annotations on a map.
+        </p>
+        
+        <div id="map"></div>
+
+        <div id="docs"></div>
+    </body>
 </html>

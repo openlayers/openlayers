@@ -1,5 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+  	<title>OpenLayers WorldWind Example</title>
     <style type="text/css">
         #map {
             width: 800px;
@@ -13,8 +14,8 @@
         function init(){
             var mapOptions = { maxResolution: 1.6, numZoomLevels: 21};
             map = new OpenLayers.Map('map', mapOptions);
-            
-            var ww = new OpenLayers.Layer.WorldWind( "Urban", 
+
+            var ww = new OpenLayers.Layer.WorldWind( "Urban",
                 "http://worldwind25.arc.nasa.gov/tile/tile.aspx?", .8, 9,
                 {T:"104"}, { tileSize: new OpenLayers.Size(512,512) });
 
@@ -26,7 +27,24 @@
     </script>
   </head>
   <body onload="init()">
-    <h1>OpenLayers Example</h1>
+    <h1 id="title">WorldWind Example</h1>
+
+    <div id="tags"></div>
+
+    <p id="shortdesc">
+    	Demonstrate the use of a NASA WorldWind base layer.
+    </p>
+
     <div id="map"></div>
+
+	<div id="docs">
+        <p>
+        Add the Nasa WorldWind "Urban" layer to your map. The "Urban" layer contains aerial imagery for urban areas only.
+        </p>
+        <p>
+          You can do it with a ...
+        </p>
+
+	</div>
   </body>
 </html>

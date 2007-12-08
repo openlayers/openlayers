@@ -1,17 +1,36 @@
 <html>
-<head>
-<script src="../lib/OpenLayers.js"></script>
-</head>
-<body>
-  <div style="width:100%; height:100%" id="map"></div>
-  <script defer="defer" type="text/javascript">
-    var map = new OpenLayers.Map('map');
-    var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-        "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
-    map.addLayer(wms);
-    map.setCenter(new OpenLayers.LonLat(100,10));
-    map.setCenter(new OpenLayers.LonLat(1,1));
-  </script>
-</body>
+    <head>
+        <title>OpenLayers Double Set Center Example</title>
+	   
+        <script src="../lib/OpenLayers.js"></script>
+        <style type="text/css">
+            #map {
+                width:512px;
+                height:521px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1 id="title">Double Set Center Example</h1>
+
+        <div id="tags"></div>
+
+        <p id="shortdesc">
+            Demonstrate the behavior of two calls to set the center after instatiating the layer object.
+        </p>
+
+        <div id="map"></div>
+    
+        <script defer="defer" type="text/javascript">
+            var map = new OpenLayers.Map('map');
+            var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+            map.addLayer(wms);
+            map.setCenter(new OpenLayers.LonLat(100,10));
+            map.setCenter(new OpenLayers.LonLat(1,1));
+        </script>
+
+        <div id="docs"></div>
+    </body>
 </html>
 

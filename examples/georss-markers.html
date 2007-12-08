@@ -1,9 +1,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+  	<title>OpenLayers GeoRSS Marker Example</title>
     <style type="text/css">
         #map {
-            width: 800px;
-            height: 400px;
+            width: 512px;
+            height: 512px;
             border: 1px solid black;
         }
     </style>
@@ -14,7 +15,7 @@
         OpenLayers.ProxyHost = "/proxy/?url=";
         function init(){
             map = new OpenLayers.Map('map', {maxResolution:'auto'});
-            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
                 "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
             map.addLayer(layer);
             map.setCenter(new OpenLayers.LonLat(0, 0), 0);
@@ -28,7 +29,16 @@
     </script>
   </head>
   <body onload="init()">
-    <h1>GeoRSS in OpenLayers</h1>
+    <h1 id="title">GeoRSS Marker Example</h1>
+
+    <div id="tags"></div>
+
+    <p id="shortdesc">
+    	Demonstrate loading a GeoRSS feed using the GeoRSS parser.
+    </p>
+
     <div id="map"></div>
+
+    <div id="docs"></div>
   </body>
 </html>

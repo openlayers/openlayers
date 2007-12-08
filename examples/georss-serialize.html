@@ -1,9 +1,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+  	<title>OpenLayers GeoRSS Serialize Example</title>
     <style type="text/css">
         #map {
-            width: 45%;
-            height: 350px;
+            width: 512px;
+            height: 512px;
             border: 1px solid gray;
         }
     </style>
@@ -20,9 +21,9 @@
         function init(){
             g = new OpenLayers.Format.GeoRSS();
             map = new OpenLayers.Map('map');
-            
-            var wmsLayer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
+
+            var wmsLayer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'});
 
             var pointLayer = new OpenLayers.Layer.Vector("Point Layer");
             pointLayer.onFeatureInsert = serialize;
@@ -30,17 +31,27 @@
             map.addLayers([wmsLayer, pointLayer]);
             map.addControl(new OpenLayers.Control.EditingToolbar(pointLayer));
             map.addControl(new OpenLayers.Control.MousePosition());
-            
-            
+
+
             map.setCenter(new OpenLayers.LonLat(0, 0), 3);
         }
     </script>
   </head>
   <body onload="init()">
-    <h1>OpenLayers Draw Point Example</h1>
+    <h1 id="title">Draw Point Example</h1>
+
+    <div id="tags"></div>
+
+    <p id="shortdesc">
+    	Demonstrate serialization of features in a Vector layer to GeoRSS.
+    </p>
+
     <div style="float:right;width:50%">
-    <textarea id="gml" style="width:100%" rows="30"></textarea>
+    	<textarea id="gml" style="width:100%" rows="30"></textarea>
     </div>
+
     <div id="map"></div>
+
+    <div id="docs"></div>
   </body>
 </html>

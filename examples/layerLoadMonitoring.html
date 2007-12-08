@@ -1,18 +1,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+  	<title>OpenLayers Layer Load Monitoring Example</title>
     <style type="text/css">
         #map {
-            position: absolute;
-            top: 5px;
-            left: 5px;
-            width: 450px;
-            height: 475px;
+            width: 512px;
+            height: 512px;
             border: 1px solid black;
         }
+        #controls {
+        	float: left;
+        	text-align: right;
+        }
         #eventsLogID {
-            position: absolute;
-            top: 5px;
-            left: 460px;
+        	text-align: left;
             width: 350px;
             height: 475px;
             overflow: auto;
@@ -26,79 +26,79 @@
         var lat = 40;
         var zoom = 5;
         var map, layer;
-        
+
         function init(){
 
             eventsLog = OpenLayers.Util.getElement("eventsLogID");
 
             map = new OpenLayers.Map( 'map' );
             map.addControl(new OpenLayers.Control.LayerSwitcher());
-           
-            buffer0 = new OpenLayers.Layer.WMS( "WMS Buffer 0", 
+
+            buffer0 = new OpenLayers.Layer.WMS( "WMS Buffer 0",
                     "http://labs.metacarta.com/wms/vmap0",
-                    {layers: 'basic'} , 
+                    {layers: 'basic'} ,
                     { singleTile: false, buffer:0}
             );
             registerEvents(buffer0);
 
-            buffer1 = new OpenLayers.Layer.WMS( "WMS Buffer 1", 
+            buffer1 = new OpenLayers.Layer.WMS( "WMS Buffer 1",
                     "http://labs.metacarta.com/wms/vmap0",
-                    {layers: 'basic'} , 
+                    {layers: 'basic'} ,
                     { singleTile: false, buffer:1}
             );
             registerEvents(buffer1);
 
-            buffer2 = new OpenLayers.Layer.WMS( "WMS Buffer 2", 
+            buffer2 = new OpenLayers.Layer.WMS( "WMS Buffer 2",
                     "http://labs.metacarta.com/wms/vmap0",
-                    {layers: 'basic'} , 
+                    {layers: 'basic'} ,
                     { singleTile: false, buffer:2 }
             );
             registerEvents(buffer2);
 
-            singleTileLayer = new OpenLayers.Layer.WMS( "Single Tile Layer", 
+            singleTileLayer = new OpenLayers.Layer.WMS( "Single Tile Layer",
                     "http://labs.metacarta.com/wms/vmap0",
-                    {layers: 'basic'} , 
+                    {layers: 'basic'} ,
                     { singleTile: true}
             );
             registerEvents(singleTileLayer);
-            
+
             map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
-        }        
-        
+        }
+
         function registerEvents(layer) {
-                
+
             layer.logEvent = function(event) {
                 eventsLog.innerHTML += "<br>(" + getTimeStamp() + ") " +
-                                       this.name + ": " + event;    
+                                       this.name + ": " + event;
             }
-            
+
             layer.events.register("loadstart", layer, function() {
                 this.logEvent("Load Start");
             });
-     
+
             layer.events.register("tileloaded", layer, function() {
                 this.logEvent("Tile loaded. " + this.numLoadingTiles + " left.");
             });
-            
+
             layer.events.register("loadend", layer, function() {
                 this.logEvent("Load End. Grid:" + this.grid.length + "x" + this.grid[0].length);
             });
-            
+
             map.addLayer(layer);
         }
 
-        
+
         function getTimeStamp() {
             var date = new Date();
-            
+
             var timeParts = [
-                date.getHours(), 
-                date.getMinutes(), 
+                date.getHours(),
+                date.getMinutes(),
                 date.getSeconds()
             ];
-            
+
             var timeStamp = timeParts.join(":");
-            
+
             return timeStamp;
         }
 
@@ -108,14 +108,25 @@
     </script>
   </head>
   <body onload="init()">
-    <div id="map"></div>
-    <div id="controls">
+  	<h1 id="title">Layer Load Monitoring Example</h1>
+
+  	<div id="tags"></div>
+
+  	<p id="shortdesc">
+  		Demonstrate a method for monitoring tile loading performance.
+  	</p>
+
+    <div id="map" style="float:left;"></div>
+
+	<div id="controls">
         <div id="eventsLogID">
             <b>Events Log:</b>
-        </div>         
+        </div>
+
+		<input type="button" value="Clear" onclick="clearLog()"/>
     </div>
-    <div style="position:absolute; top: 500px; width: 700px">
-        <input type="button" value="Clear" style="float:right" onclick="clearLog()"/>
+
+    <div id="docs">
     </div>
   </body>
 </html>

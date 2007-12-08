@@ -1,9 +1,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
+        <title>OpenLayers Accessible Example</title>
+        
         <style type="text/css">
             #map {
                 width: 512px;
-                height: 256px;
+                height: 512px;
                 border: 1px solid #eee;
             }
             table {
@@ -21,10 +23,14 @@
                 font-style: normal;
                 font-weight: normal;
                 text-decoration: underline;
-            }            
+            }
             a:hover {
                 text-decoration: underline;
-            }         
+            }
+            a.api {
+            	font-size:1em;
+            	text-decoration:underline;
+            }
         </style>
         <script src="../lib/OpenLayers.js"></script>
         <script type="text/javascript">
@@ -35,7 +41,7 @@
                 };
                 map = new OpenLayers.Map('map', options);
                 var wms = new OpenLayers.Layer.WMS(
-                    "OpenLayers WMS", 
+                    "OpenLayers WMS",
                     "http://labs.metacarta.com/wms/vmap0?",
                     {layers: 'basic'}
                 );
@@ -45,7 +51,15 @@
         </script>
     </head>
     <body onload="init()">
-        <h3>OpenLayers Example</h3>
+	    <h1 id="title">Accessible Example</h1>
+
+        <div id="tags">
+    	</div>
+
+    	<p id="shortdesc">
+    		Demonstrate how to use the KeyboardDefaults option parameter for layer types.
+    	</p>
+
         <table>
             <tbody>
                 <tr>
@@ -95,30 +109,35 @@
                 </tr>
             </tbody>
         </table>
-        <p>Navigate the map in one of three ways:
-            <ul>
-                <li>Click on the named links to zoom and pan</li>
-                <li>Use following keys to pan and zoom:
-                    <ul>
-                        <li>+ (zoom in)</li>
-                        <li>- (zoom out)</li>
-                        <li>up-arrow (pan north)</li>
-                        <li>down-arrow (pan south)</li>
-                        <li>left-arrow (pan east)</li>
-                        <li>right-arrow (pan west)</li>
-                    </ul>
-                </li>
-                <li>If access keys work for links in your browser, use:
-                    <ul>
-                        <li>i (zoom in)</li>
-                        <li>o (zoom out)</li>
-                        <li>n (pan north)</li>
-                        <li>s (pan south)</li>
-                        <li>e (pan east)</li>
-                        <li>w (pan west)</li>
-                    </ul>
-                </li>
-            </ul>
-        </p>
+
+		<div id="docs">
+			<p>Navigate the map in one of three ways:
+				<ul>
+					<li>Click on the named links to zoom and pan</li>
+					<li>Use following keys to pan and zoom:
+						<ul>
+							<li>+ (zoom in)</li>
+							<li>- (zoom out)</li>
+							<li>up-arrow (pan north)</li>
+							<li>down-arrow (pan south)</li>
+							<li>left-arrow (pan east)</li>
+							<li>right-arrow (pan west)</li>
+						</ul>
+					</li>
+					<li>If access keys work for links in your browser, use:
+						<ul>
+							<li>i (zoom in)</li>
+							<li>o (zoom out)</li>
+							<li>n (pan north)</li>
+							<li>s (pan south)</li>
+							<li>e (pan east)</li>
+							<li>w (pan west)</li>
+						</ul>
+					</li>
+				</ul>
+			</p>
+
+        	This is an example of using alternate methods to control panning and zooming.  This approach uses map.pan() and map.zoom().  You'll note that to pan, additional math is necessary along with map.size() in order to set the distance to pan.
+		</div>
     </body>
 </html>

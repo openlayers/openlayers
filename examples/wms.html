@@ -2,8 +2,8 @@
   <head>
     <style type="text/css">
         #map {
-            width: 800px;
-            height: 475px;
+            width: 512px;
+            height: 512px;
             border: 1px solid black;
         }
     </style>
@@ -16,7 +16,7 @@
 
         function init(){
             map = new OpenLayers.Map( 'map' );
-            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
                     "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
             map.addLayer(layer);
 
@@ -26,6 +26,23 @@
     </script>
   </head>
   <body onload="init()">
-    <div id="map"></div>
+	<h1 id="title">WMS Example</h1>
+
+	<div id="tags">
+	</div>
+	<p id="shortdesc">
+		Shows the basic use of openlayers using a WMS layer
+	</p>
+
+	<div id="map"></div>
+
+	<div id="docs">
+		This is an example of how to add an WMS layer to the OpenLayers window. The images are tiled in this instance if you wanted to not use a tiled WMS
+		please use this example and pass the option ‘singleTile’ as true.
+	</div>
   </body>
 </html>
+
+
+
+

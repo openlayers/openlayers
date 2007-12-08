@@ -1,14 +1,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+	<title>OpenLayers Basic Single WMS Example</title>
     <style type="text/css">
-        #map { width:512px; height:256px; border:1px solid black; }
+        #map {
+            width: 512px;
+            height: 512px;
+            border: 1px solid black;
+        }
     </style>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var map, layer;
         function init(){
             map = new OpenLayers.Map( 'map' );
-            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
                     "http://labs.metacarta.com/wms/vmap0",
                     {layers: 'basic'} );
             map.addLayer(layer);
@@ -17,6 +22,16 @@
     </script>
   </head>
   <body onload="init()">
+	<h1 id="title">Basic Single WMS Example</h1>
+
+	<div id="tags"></div>
+
+	<div id="shortdesc">Show a Simple Map</div>
+
     <div id="map"></div>
+
+	<div id="docs">
+		This example shows a very simple layout with minimal controls.  This example uses a single WMS base layer.
+	</div>
   </body>
 </html>

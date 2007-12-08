@@ -1,41 +1,54 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <style type="text/css">
-        #map {
-            width: 694px;
-            height: 464px;
-            border: 1px solid black;
-        }
-    </style>
-    <script src="../lib/OpenLayers.js"></script>
-    <script type="text/javascript">
-        var lon = 0;
-        var lat = 0;
-        var zoom = 2;
-        var map, layer;
+    <head>
+        <title>OpenLayers Buffer Example</title>
+        <style type="text/css">
+            #map {
+                width: 512px;
+                height: 512px;
+                border: 1px solid black;
+            }
+        </style>
+        <script src="../lib/OpenLayers.js"></script>
+        <script type="text/javascript">
+            var lon = 0;
+            var lat = 0;
+            var zoom = 2;
+            var map, layer;
 
-        function init(){
-            map = new OpenLayers.Map( 'map' );
-            layer = new OpenLayers.Layer.WMS( "0 buffer: OpenLayers WMS", 
-                    "http://labs.metacarta.com/wms/vmap0",
-                    {layers: 'basic'}, {'buffer':0} );
-            map.addLayer(layer);
-            layer = new OpenLayers.Layer.WMS( "1 buffer: OpenLayers WMS", 
-                    "http://labs.metacarta.com/wms/vmap0",
-                    {layers: 'basic'}, {'buffer':1} );
-            map.addLayer(layer);
-            layer = new OpenLayers.Layer.WMS( "4 buffer: OpenLayers WMS", 
-                    "http://labs.metacarta.com/wms/vmap0",
-                    {layers: 'basic'}, {'buffer':4} );
-            map.addLayer(layer);
-            map.addControl(new OpenLayers.Control.LayerSwitcher())
-            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
-        }
-    </script>
-  </head>
-  <body onload="init()">
-    <div id="map"></div>
-    <p>Use the buffer property to control how many tiles are included
-       outside the visible map area. Default is 2</p> 
-  </body>
+            function init(){
+                map = new OpenLayers.Map( 'map' );
+                layer = new OpenLayers.Layer.WMS( "0 buffer: OpenLayers WMS",
+                        "http://labs.metacarta.com/wms/vmap0",
+                        {layers: 'basic'}, {'buffer':0} );
+                map.addLayer(layer);
+                layer = new OpenLayers.Layer.WMS( "1 buffer: OpenLayers WMS",
+                        "http://labs.metacarta.com/wms/vmap0",
+                        {layers: 'basic'}, {'buffer':1} );
+                map.addLayer(layer);
+                layer = new OpenLayers.Layer.WMS( "4 buffer: OpenLayers WMS",
+                        "http://labs.metacarta.com/wms/vmap0",
+                        {layers: 'basic'}, {'buffer':4} );
+                map.addLayer(layer);
+                map.addControl(new OpenLayers.Control.LayerSwitcher())
+                map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+            }
+        </script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">Buffer Example</h1>
+
+        <div id="tags">
+        </div>
+
+        <p id="shortdesc">
+        	This example shows the use of the buffer layer option for any layer that inherits from OpenLayers.Layer.Grid.
+        </p>
+
+        <div id="map"></div>
+
+        <div id="docs">
+        	Use the buffer property to control how many tiles are included
+            outside the visible map area. Default is 2.
+        </div>
+    </body>
 </html>

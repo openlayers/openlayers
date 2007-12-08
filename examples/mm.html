@@ -1,5 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <title>MultiMap</title>
     <style type="text/css">
         #map {
             width: 100%;
@@ -46,7 +47,10 @@
     </script>
   </head>
   <body onload="init()">
-    <h1>OpenLayers MultiMap Example</h1>
+    <h1 id="title">MultiMap Example</h1>
+    <p id="shortdesc">
+      An example of using the Layer.MultiMap class.
+    </p>  
     <div id="map"></div>
     <div style="background-color:green" onclick="add()"> click to add the marker to the map</div>
     <div style="background-color:red" onclick="remove()"> click to remove the marker from the map</div>

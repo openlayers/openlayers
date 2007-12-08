@@ -2,6 +2,7 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" debug="true">
   <head>
+    <title>MousePosition Control</title>
     <style type="text/css">
         body {
             margin: 0;
@@ -35,6 +36,11 @@
     </script>
   </head>
   <body onload="init()">
+    <h3 id="title">MousePosition Control</h3>
+    <p id="shortdesc">
+      Use the MousePosition Control to display the coordinates of the cursor
+      inside or outside the map div.
+    </p>  
     <div id="map"></div>
     <div id="coords"></div>
     <p>Moving your mouse to the upper left corner of this map should return 'x=0,y=0' -- in the past, it didn't in IE. If it returns 2,2, consider it a bug, and report it.</p> 

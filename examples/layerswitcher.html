@@ -1,5 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+  	<title>OpenLayers Layer Switcher Example</title>
     <style type="text/css">
         #map {
             width: 512px;
@@ -15,12 +16,12 @@
 
             map.addControl(new OpenLayers.Control.LayerSwitcher({'div':OpenLayers.Util.getElement('layerswitcher')}));
 
-            var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+            var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
                 "http://labs.metacarta.com/wms/vmap0",
                 {layers: 'basic'}, {'displayInLayerSwitcher':false} );
 
             var jpl_wms = new OpenLayers.Layer.WMS( "NASA Global Mosaic",
-                "http://t1.hypercube.telascience.org/tiles/landsat7", 
+                "http://t1.hypercube.telascience.org/cgi-bin/landsat7", 
                 {layers: "landsat7"}, {'isBaseLayer': false});
 
             var dm_wms = new OpenLayers.Layer.WMS( "DM Solutions Demo",
@@ -38,13 +39,21 @@
     </script>
   </head>
   <body onload="init()">
-    <h1>OpenLayers Example</h1>
+    <h1 id="title">Layer Switcher Example</h1>
+
+    <div id="tags">
+    </div>
+
+    <p id="shortdesc">
+    	Demonstrates the use of the LayerSwitcher outside of the OpenLayers window.
+    </p>
+
     <div id="layerswitcher" style="float:right; width: 20em;"></div>
     <div id="map"></div>
     <div id="docs">
-      <p>This demonstrates use of the LayerSwitcher outside the map div. It also shows use 
+      <p>This demonstrates use of the LayerSwitcher outside the map div. It also shows use
          of the displayInLayerSwitcher option on the Layer to cause it to not display in the
          LayerSwitcher.</p>
-   </div>      
+   </div>
   </body>
 </html>

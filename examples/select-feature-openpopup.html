@@ -1,5 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <title>Open Popup on Layer.Vector</title> 
     <style type="text/css">
         #map {
             width: 800px;
@@ -72,7 +73,10 @@
     </script>
   </head>
   <body onload="init()">
-    <h1>OpenLayers Draw Feature Example</h1>
+    <h1 id="title">Open Popup on Layer.Vector</h1> 
+    <p id="shortdesc">
+      Using a Control.SelectFeature, open a popup on click.
+    </p>
     <div id="map"></div>
     <ul id="controlToggle">
         <li>

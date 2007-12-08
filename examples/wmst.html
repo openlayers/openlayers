@@ -3,7 +3,7 @@
     <style type="text/css">
         #map {
             width: 512px;
-            height: 400px;
+            height: 512px;
             border: 1px solid black;
         }
     </style>
@@ -13,11 +13,11 @@
         function init(){
             map = new OpenLayers.Map('map');
 
-            var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+            var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
                 "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'} );
 
             var jpl_wms = new OpenLayers.Layer.WMS( "NASA Global Mosaic",
-                "http://t1.hypercube.telascience.org/tiles/landsat7", 
+                "http://t1.hypercube.telascience.org/cgi-bin/landsat7", 
                 {layers: "landsat7"});
 
             ia_wms = new OpenLayers.Layer.WMS("Nexrad","http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi?",{layers:"nexrad-n0r-wmst",transparent:true,format:'image/png',time:"2005-08-29T13:00:00Z"});
@@ -29,22 +29,31 @@
             map.zoomToExtent(new OpenLayers.Bounds(-100.898437,22.148438,-78.398437,39.726563));
         }
         function update_date() {
-            var string = OpenLayers.Util.getElement('year').value + "-" + 
-                         OpenLayers.Util.getElement('month').value + "-" +  
-                         OpenLayers.Util.getElement('day').value + "T" +  
-                         OpenLayers.Util.getElement('hour').value + ":" +  
+            var string = OpenLayers.Util.getElement('year').value + "-" +
+                         OpenLayers.Util.getElement('month').value + "-" +
+                         OpenLayers.Util.getElement('day').value + "T" +
+                         OpenLayers.Util.getElement('hour').value + ":" +
                          OpenLayers.Util.getElement('minute').value + ":00";
-            ia_wms.mergeNewParams({'time':string});             
-                         
-        }    
+            ia_wms.mergeNewParams({'time':string});
+
+        }
     </script>
   </head>
   <body onload="init()">
-    <h1>OpenLayers Example</h1>
-    <p>WMS-T example: update the times, and the radar image will change. Uses Layer.mergeNewParams to update the date element with the strings from the input fields every time one of them is changed.</p>
-    <p>The inputs below describe a timestamp: The minute increments can only be updated in units of 5.</p>   
+     <h1 id="title"> WMS Time Example</h1>
+	    <div id="tags">
+	    </div>
+		<p id="shortdesc">
+			Shows the use of the layer WMS-T (time) layer</a>
+		</p>
     <input size="4" type='text' id='year' value="2005" onchange="update_date()"/>-<input size="2" type="text" id="month" value="08" onchange="update_date()"/>-<input size="2" type="text" id="day" value="29" onchange="update_date()" />T<input type="text" size="2" id="hour" value="13" onchange="update_date()" />:<input type="text" size="2" id="minute" value="00" onchange="update_date()" />:00
     <div id="map"></div>
+    <div id="docs">
+			WMS-T example: update the times, and the radar image will change. Uses Layer.mergeNewParams to update the date element with the strings from the input fields every time one of them is changed.
+			The inputs below describe a timestamp: The minute increments can only be updated in units of 5.
+	</div>
   </body>
 </html>
+
+
 

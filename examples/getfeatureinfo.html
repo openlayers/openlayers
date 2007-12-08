@@ -1,25 +1,35 @@
 <html>
-<head>
-<script src="../lib/OpenLayers.js"></script>
-<style type="text/css">
-ul, li { padding-left: 0px; margin-left: 0px; }
-</style>
-<title>World Map Query</title> 
-</head>
-<body>
-  <a id='permalink' href="">Permalink</a><br />
-  <div style="float:right;width:28%">
-    <h1 style="font-size:1.3em;">CIA Factbook</h1>
-    <p style='font-size:.8em;'>Click a country to see statistics about the country below.</p>
-    <div id="nodeList">
+  <head>
+	<title>OpenLayers Feature Info Example</title>
+	<script src="../lib/OpenLayers.js"></script>
+	<style type="text/css">
+  	  ul, li { padding-left: 0px; margin-left: 0px; }
+	</style>
+  </head>
+  <body>
+  	<h1 id="title">Feature Info Example</h1>
+
+  	<div id="tags"></div>
+
+  	<p id="shortdesc">
+		Demonstrates sending a GetFeatureInfo query to an OWS. Returns information about a map feature in the side DIV.
+  	</p>
+
+	<a id="permalink" href="">Permalink</a><br />
+
+	<div style="float:right;width:28%">
+    	<h1 style="font-size:1.3em;">CIA Factbook</h1>
+    	<p style="font-size:.8em;">Click a country to see statistics about the country below.</p>
+    	<div id="nodeList">
+    	</div>
     </div>
-  </div>
-  <div id="map" style="width:70%; height:90%"></div>
+  	<div id="map" style="width:512px; height:512px"></div>
+
   <script defer="defer" type="text/javascript">
     OpenLayers.ProxyHost = "/dev/examples/proxy.cgi?url=";
     var map = new OpenLayers.Map('map', {'maxResolution':'auto'});
-    
-    var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+
+    var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
         "http://world.freemap.in/cgi-bin/mapserv?map=/www/freemap.in/world/map/factbook.map", {'layers': 'factbook'} );
     map.addLayer(wms);
     map.addControl(new OpenLayers.Control.Permalink('permalink'));
@@ -39,9 +49,12 @@ ul, li { padding-left: 0px; margin-left: 0px; }
             OpenLayers.loadURL(url, '', this, setHTML);
             OpenLayers.Event.stop(e);
       });
-    function setHTML(response) { 
+    function setHTML(response) {
         OpenLayers.Util.getElement('nodeList').innerHTML = response.responseText;
     }
   </script>
-</body>
+
+	<div id="docs">
+	</div>
+  </body>
 </html>

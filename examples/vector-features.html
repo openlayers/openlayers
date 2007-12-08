@@ -2,8 +2,8 @@
   <head>
     <style type="text/css">
         #map {
-            width: 800px;
-            height: 475px;
+            width: 512px;
+            height: 512px;
             border: 1px solid black;
         }
     </style>
@@ -13,7 +13,7 @@
 
         function init(){
             map = new OpenLayers.Map('map');
-            var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+            var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
                     "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
             map.addLayer(layer);
 
@@ -24,14 +24,14 @@
             var layer_style = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
             layer_style.fillOpacity = 0.2;
             layer_style.graphicOpacity = 1;
-            
+
             /*
              * Blue style
              */
             var style_blue = OpenLayers.Util.extend({}, layer_style);
-            style_blue.strokeColor = "blue"; 
-            style_blue.fillColor = "blue"; 
-            
+            style_blue.strokeColor = "blue";
+            style_blue.fillColor = "blue";
+
             /*
              * Green style
              */
@@ -61,9 +61,9 @@
             style_mark.graphicXOffset = -(style_mark.graphicWidth/2);  // this is the default value
             style_mark.graphicYOffset = -style_mark.graphicHeight;
             style_mark.externalGraphic = "../img/marker.png";
-            
+
             var vectorLayer = new OpenLayers.Layer.Vector("Simple Geometry", {style: layer_style});
-            
+
             // create a point feature
             var point = new OpenLayers.Geometry.Point(-111.04, 45.68);
             var pointFeature = new OpenLayers.Feature.Vector(point,null,style_blue);
@@ -71,7 +71,7 @@
             var pointFeature2 = new OpenLayers.Feature.Vector(point2,null,style_green);
             var point3 = new OpenLayers.Geometry.Point(-105.04, 49.68);
             var pointFeature3 = new OpenLayers.Feature.Vector(point3,null,style_mark);
-            
+
             // create a line feature from a list of points
             var pointList = [];
             var newPoint = point;
@@ -82,7 +82,7 @@
             }
             var lineFeature = new OpenLayers.Feature.Vector(
                 new OpenLayers.Geometry.LineString(pointList),null,style_green);
-            
+
             // create a polygon feature from a linear ring of points
             var pointList = [];
             for(var p=0; p<6; ++p) {
@@ -93,12 +93,12 @@
                 pointList.push(newPoint);
             }
             pointList.push(pointList[0]);
-            
+
             var linearRing = new OpenLayers.Geometry.LinearRing(pointList);
             var polygonFeature = new OpenLayers.Feature.Vector(
                 new OpenLayers.Geometry.Polygon([linearRing]));
-                
-            
+
+
             map.addLayer(vectorLayer);
             map.setCenter(new OpenLayers.LonLat(point.x, point.y), 5);
             vectorLayer.addFeatures([pointFeature, pointFeature3, pointFeature2, lineFeature, polygonFeature]);
@@ -106,10 +106,20 @@
     </script>
   </head>
   <body onload="init()">
-    <div id="map"></div>
+<h1 id="title">Drawing Simple Vector Features Example</h1>
+
+<div id="tags">
+</div>
+<p id="shortdesc">
+	Shows the use of the shows drawing simple vector features, in different styles.
+</p>
+
+<div id="map"></div>
+
+<div id="docs">
     <p>This example shows drawing simple vector features -- point, line, polygon
        in different styles, created 'manually', by constructing the entire style
-       object, via 'copy', extending the default style object, and by 
+       object, via 'copy', extending the default style object, and by
        inheriting the default style from the layer.</p>
     <p>It also shows how to use external graphic files for point features
        and how to set their size: If either graphicWidth or graphicHeight is set,
@@ -118,5 +128,8 @@
        and graphicHeight are omitted, pointRadius will be used to set the size
        of the image, which will then be twice the value of pointRadius with the
        original aspect ratio.</p>
+</div>
+
   </body>
 </html>
+

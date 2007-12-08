@@ -19,15 +19,15 @@
             top: 0;
             left: 1em;
             padding: 0;
-            width: 455px;
+            width: 517px;
         }
         #map {
-            width: 450px;
+            width: 512px;
             height: 225px;
             border: 1px solid #ccc;
         }
         #input {
-            width: 450px;
+            width: 512px;
         }
         #text {
             font-size: 0.85em;
@@ -38,12 +38,12 @@
         #info {
             position: relative;
             padding: 2em 0;
-            margin-left: 470px;
+            margin-left: 540px;
         }
         #output {
             font-size: 0.8em;
             width: 100%;
-            height: 500px;
+            height: 512px;
             border: 0;
         }
         p {
@@ -57,15 +57,15 @@
         var map, vectors, formats;
         function init(){
             map = new OpenLayers.Map('map');
-            var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
+            var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'});
 
             vectors = new OpenLayers.Layer.Vector("Vector Layer");
 
             map.addLayers([wms, vectors]);
             map.addControl(new OpenLayers.Control.MousePosition());
             map.addControl(new OpenLayers.Control.EditingToolbar(vectors));
-            
+
             var options = {
                 hover: true,
                 onSelect: serialize
@@ -73,7 +73,7 @@
             var select = new OpenLayers.Control.SelectFeature(vectors, options);
             map.addControl(select);
             select.activate();
-            
+
             formats = {
                 wkt: new OpenLayers.Format.WKT(),
                 geojson: new OpenLayers.Format.GeoJSON(),
@@ -81,10 +81,10 @@
                 gml: new OpenLayers.Format.GML(),
                 kml: new OpenLayers.Format.KML()
             };
-            
+
             map.setCenter(new OpenLayers.LonLat(0, 0), 1);
         }
-        
+
         function serialize(feature) {
             var type = document.getElementById("formatType").value;
             // second argument for pretty printing (geojson only)
@@ -110,7 +110,7 @@
                     } else {
                         bounds.extend(features[i].geometry.getBounds());
                     }
-                    
+
                 }
                 vectors.addFeatures(features);
                 map.zoomToExtent(bounds);
@@ -138,7 +138,14 @@
   </head>
   <body onload="init()">
     <div id="leftcol">
-        <h2>OpenLayers Vector Formats Example</h2>
+        <h1 id="title">Vector Formats Example</h1>
+
+		<div id="tags">
+		</div>
+		<p id="shortdesc">
+			Shows the wide variety of vector formats that open layers supports.
+		</p>
+
         <div id="map"></div>
         <div id="input">
             <p>Use the drop-down below to select the input/output format
@@ -161,6 +168,10 @@
             <br />
             <input type="button" value="add feature" onclick="deserialize();" />
         </div>
+
+        <div id="docs">
+		</div>
+
     </div>
     <div id="info">
         <p>Use the tools to the left to draw new polygons, lines, and points.
@@ -168,5 +179,6 @@
         serialized version below.</p>
         <textarea id="output"></textarea>
     </div>
+
   </body>
 </html>

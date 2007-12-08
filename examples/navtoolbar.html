@@ -9,6 +9,7 @@
         }
         
     </style>
+    <title>NavToolbar Demo</title>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var lon = 5;
@@ -16,7 +17,7 @@
         var zoom = 5;
         var map, layer;
 
-        function init(){
+        function init() {
             map = new OpenLayers.Map( 'map', { controls: [new OpenLayers.Control.PanZoom()] } );
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                     "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
@@ -30,6 +31,11 @@
     </script>
   </head>
   <body onload="init()">
+    <h3 id="title">NavToolbar Demo</h3>
+    <p id="shortdesc">
+       Demo the NavToolbar, a subclass of Control.Panel which shows icons for
+       navigation.
+    </p> 
     <div id="map"></div>
   </body>
 </html>

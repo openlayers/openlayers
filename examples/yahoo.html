@@ -15,14 +15,13 @@
         function init(){
             map = new OpenLayers.Map('map');
 
-            yahooLayer = new OpenLayers.Layer.Yahoo( "Yahoo"); 
+            yahooLayer = new OpenLayers.Layer.Yahoo( "Yahoo");
 
             map.addLayer(yahooLayer);
 
-            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
                 "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
             map.addLayer(layer);
-
 
             map.setCenter(new OpenLayers.LonLat(-5, 40), 4);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
@@ -30,7 +29,22 @@
     </script>
   </head>
   <body onload="init()">
-    <h1>OpenLayers Example</h1>
-    <div id="map"></div>
+    <h1 id="title">Yahoo Base Layer Example</h1>
+
+		<div id="tags">
+		</div>
+
+		<p id="shortdesc">
+			Shows how you would add a yahoo layer and add the LayerSwitcher control
+		</p>
+
+		<div id="map"></div>
+
+		<div id="docs">
+			This is an example of how to add a yahoo layer to the OpenLayers window.  In order to enable a
+			yahoo layer. Also shown in this example is the LayerSwitcher() control for toggling between both the yahoo layer and
+			the open layer WMS.
+		</div>
+
   </body>
 </html>
