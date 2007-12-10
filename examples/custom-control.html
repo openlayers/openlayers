@@ -33,7 +33,13 @@
                     },
 
                     notice: function (bounds) {
-                        alert(bounds);
+                        console.log(bounds);
+                        var ll = map.getLonLatFromPixel(new OpenLayers.Pixel(bounds.left, bounds.bottom)); 
+                        var ur = map.getLonLatFromPixel(new OpenLayers.Pixel(bounds.right, bounds.top)); 
+                        alert(ll.lon.toFixed(4) + ", " + 
+                              ll.lat.toFixed(4) + ", " + 
+                              ur.lon.toFixed(4) + ", " + 
+                              ur.lat.toFixed(4));
                     }
                 });
 
