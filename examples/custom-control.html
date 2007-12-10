@@ -33,7 +33,6 @@
                     },
 
                     notice: function (bounds) {
-                        console.log(bounds);
                         var ll = map.getLonLatFromPixel(new OpenLayers.Pixel(bounds.left, bounds.bottom)); 
                         var ur = map.getLonLatFromPixel(new OpenLayers.Pixel(bounds.right, bounds.top)); 
                         alert(ll.lon.toFixed(4) + ", " + 
