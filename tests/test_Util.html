@@ -255,7 +255,7 @@
                          "sizingMethod='" + sizing + "') alpha(opacity=50)";
             t.eq(imageDiv.style.filter, filter, "div filter value correctly set");
 
-            filter = "progid:DXImageTransform.Microsoft.Alpha(opacity=0)";
+            filter = "alpha(opacity=0)";
             t.eq(image.style.filter, filter, "image filter set correctly");
 
         } else {
@@ -274,6 +274,47 @@
             t.ok(true);
         }        
 
+    }
+
+    function test_Util_modifyDOMElement_opacity(t) {
+        t.plan(8);
+
+        var opacity = 0.2;
+
+        var element = document.createElement("div");
+
+        OpenLayers.Util.modifyDOMElement(element, null, null, null, null, 
+                                         null, null, opacity);
+
+        t.eq(parseFloat(element.style.opacity), opacity, 
+             "element.style.opacity set correctly when opacity = " + opacity);
+        t.eq(element.style.filter, 'alpha(opacity=' + (opacity * 100) + ')', 
+             "element.style.filter set correctly when opacity = " + opacity);
+
+        OpenLayers.Util.modifyDOMElement(element, null, null, null, null, 
+                                         null, null, "5");
+    
+        t.eq(parseFloat(element.style.opacity), opacity, 
+             "element.style.opacity not changed if the value is incorrect");
+        t.eq(element.style.filter, 'alpha(opacity=' + (opacity * 100) + ')', 
+             "element.style.filter not changed if the value is incorrect");
+
+        OpenLayers.Util.modifyDOMElement(element, null, null, null, null, 
+                                         null, null, "hello");
+    
+        t.eq(parseFloat(element.style.opacity), opacity, 
+             "element.style.opacity not changed if the value is incorrect");
+        t.eq(element.style.filter, 'alpha(opacity=' + (opacity * 100) + ')', 
+             "element.style.filter not changed if the value is incorrect");
+
+        opacity = 1.00;
+        OpenLayers.Util.modifyDOMElement(element, null, null, null, null, 
+                                         null, null, opacity);
+
+        t.eq(element.style.opacity, '', 
+             "element.style.opacity is removed when opacity = " + opacity);
+        t.eq(element.style.filter, '', 
+             "element.style.filter is removed when opacity = " + opacity);
     }
 
     function test_09_Util_modifyDOMElement(t) {
@@ -367,7 +408,7 @@
                          "sizingMethod='" + sizing + "') alpha(opacity=" + opacity *100 + ")";
             t.eq(imageDiv.style.filter, filter, "div filter value correctly set");
 
-            filter = "progid:DXImageTransform.Microsoft.Alpha(opacity=0)";
+            filter = "alpha(opacity=0)";
             t.eq(image.style.filter, filter, "image filter set correctly");
 
         } else {
