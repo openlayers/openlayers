@@ -54,10 +54,11 @@
     
     function test_Layer_Vector_addStyle (t) {
         t.plan(2);    
-        layer = new OpenLayers.Layer.Vector(name);
+        var layer = new OpenLayers.Layer.Vector(name);
         var map = new OpenLayers.Map('map');
         map.addLayer(layer);
-        f = new OpenLayers.Feature.Vector();
+        var g = new OpenLayers.Geometry.Point(0, 0);
+        var f = new OpenLayers.Feature.Vector(g);
         t.eq( f.style,  null, "Feature style is null by default.");
         layer.addFeatures(f);
         t.ok( f.style != null, "Feature style is set by layer.");
