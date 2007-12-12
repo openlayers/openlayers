@@ -375,12 +375,12 @@
         
     }
 
-    function test_Map_getLayersByType(t) {
+    function test_Map_getLayersByClass(t) {
         
         var map = {
             getBy: OpenLayers.Map.prototype.getBy,
             getLayersBy: OpenLayers.Map.prototype.getLayersBy,
-            getLayersByType: OpenLayers.Map.prototype.getLayersByType,
+            getLayersByClass: OpenLayers.Map.prototype.getLayersByClass,
             layers: [
                 {CLASS_NAME: "foo", id: Math.random()},
                 {CLASS_NAME: "bar", id: Math.random()},
@@ -392,35 +392,35 @@
 
         var cases = [
             {
-                got: map.getLayersByType("foo"),
+                got: map.getLayersByClass("foo"),
                 expected: [map.layers[0], map.layers[4]],
                 message: "(string literal) got two layers matching type"
             }, {
-                got: map.getLayersByType("bar"),
+                got: map.getLayersByClass("bar"),
                 expected: [map.layers[1]],
                 message: "(string literal) got one layer matching type"
             }, {
-                got: map.getLayersByType("barfoo"),
+                got: map.getLayersByClass("barfoo"),
                 expected: [],
                 message: "(string literal) got empty array for no match"
             }, {
-                got: map.getLayersByType(/foo/),
+                got: map.getLayersByClass(/foo/),
                 expected: [map.layers[0], map.layers[2], map.layers[3], map.layers[4]],
                 message: "(regexp literal) got three layers containing string"
             }, {
-                got: map.getLayersByType(/foo$/),
+                got: map.getLayersByClass(/foo$/),
                 expected: [map.layers[0], map.layers[4]],
                 message: "(regexp literal) got three layers ending with string"
             }, {
-                got: map.getLayersByType(/\s/),
+                got: map.getLayersByClass(/\s/),
                 expected: [map.layers[3]],
                 message: "(regexp literal) got layer containing space"
             }, {
-                got: map.getLayersByType(new RegExp("BAR", "i")),
+                got: map.getLayersByClass(new RegExp("BAR", "i")),
                 expected: [map.layers[1], map.layers[2], map.layers[3]],
                 message: "(regexp object) got layers ignoring case"
             }, {
-                got: map.getLayersByType({test: function(str) {return str.length > 3;}}),
+                got: map.getLayersByClass({test: function(str) {return str.length > 3;}}),
                 expected: [map.layers[2], map.layers[3]],
                 message: "(custom object) got layers with type length greater than 3"
             }
@@ -488,12 +488,12 @@
         
     }
 
-    function test_Map_getControlsByType(t) {
+    function test_Map_getControlsByClass(t) {
         
         var map = {
             getBy: OpenLayers.Map.prototype.getBy,
             getControlsBy: OpenLayers.Map.prototype.getControlsBy,
-            getControlsByType: OpenLayers.Map.prototype.getControlsByType,
+            getControlsByClass: OpenLayers.Map.prototype.getControlsByClass,
             controls: [
                 {CLASS_NAME: "foo", id: Math.random()},
                 {CLASS_NAME: "bar", id: Math.random()},
@@ -505,35 +505,35 @@
 
         var cases = [
             {
-                got: map.getControlsByType("foo"),
+                got: map.getControlsByClass("foo"),
                 expected: [map.controls[0], map.controls[4]],
                 message: "(string literal) got two controls matching type"
             }, {
-                got: map.getControlsByType("bar"),
+                got: map.getControlsByClass("bar"),
                 expected: [map.controls[1]],
                 message: "(string literal) got one control matching type"
             }, {
-                got: map.getControlsByType("barfoo"),
+                got: map.getControlsByClass("barfoo"),
                 expected: [],
                 message: "(string literal) got empty array for no match"
             }, {
-                got: map.getControlsByType(/foo/),
+                got: map.getControlsByClass(/foo/),
                 expected: [map.controls[0], map.controls[2], map.controls[3], map.controls[4]],
                 message: "(regexp literal) got three controls containing string"
             }, {
-                got: map.getControlsByType(/foo$/),
+                got: map.getControlsByClass(/foo$/),
                 expected: [map.controls[0], map.controls[4]],
                 message: "(regexp literal) got three controls ending with string"
             }, {
-                got: map.getControlsByType(/\s/),
+                got: map.getControlsByClass(/\s/),
                 expected: [map.controls[3]],
                 message: "(regexp literal) got control containing space"
             }, {
-                got: map.getControlsByType(new RegExp("BAR", "i")),
+                got: map.getControlsByClass(new RegExp("BAR", "i")),
                 expected: [map.controls[1], map.controls[2], map.controls[3]],
                 message: "(regexp object) got controls ignoring case"
             }, {
-                got: map.getControlsByType({test: function(str) {return str.length > 3;}}),
+                got: map.getControlsByClass({test: function(str) {return str.length > 3;}}),
                 expected: [map.controls[2], map.controls[3]],
                 message: "(custom object) got controls with type length greater than 3"
             }
