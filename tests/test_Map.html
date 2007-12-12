@@ -602,7 +602,8 @@
             layers: layers,
             baseLayer: layers[0],
             layerContainerDiv: {removeChild: f},
-            events: {triggerEvent: f}
+            events: {triggerEvent: f},
+            resetLayersZIndex: function() {}
         };
         OpenLayers.Map.prototype.removeLayer.apply(map, [map.baseLayer, false]);
         t.eq(map.baseLayer, null,
@@ -636,6 +637,24 @@
         map.removeLayer(layer0);
         t.eq(map.getResolution(), layer0.resolutions[1],
              "correct resolution after removal");
+    }
+
+    function test_Map_removeLayer_zindex(t) {
+        t.plan(2);
+        
+        map = new OpenLayers.Map('map');
+
+        var layer0 = new OpenLayers.Layer('Test Layer 0', {isBaseLayer:true});
+        var layer1 = new OpenLayers.Layer('Test Layer 1', {isBaseLayer:true});
+        var layer2 = new OpenLayers.Layer('Test Layer 2', {isBaseLayer:false});
+
+        map.addLayers([layer0, layer1, layer2]);
+        map.removeLayer(layer0);
+
+        t.eq(parseInt(layer1.div.style.zIndex), map.Z_INDEX_BASE['BaseLayer'],
+             "correct z-index after removeLayer");
+        t.eq(parseInt(layer2.div.style.zIndex), map.Z_INDEX_BASE['Overlay'] + 5,
+             "correct z-index after removeLayer");
     }
 
     function test_13_Map_setBaseLayer_after_pan (t) {
