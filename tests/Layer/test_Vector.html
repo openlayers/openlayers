@@ -314,6 +314,7 @@
                              customStyle4.graphicWidth.toString()+'px',
                              "given graphicHeight and graphicWidth, both are set: width");
                 feature.style = customStyle5;
+                layer.renderer.clear();
                 layer.drawFeature(feature);
                 var fill = root.firstChild.getElementsByTagName("v:fill")[0];
                 var opacity;
