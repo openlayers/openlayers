@@ -152,7 +152,7 @@
 
     function test_04_Events_triggerEvent(t) {
     
-        t.plan( 6 );
+        t.plan(13);
  
         var mapDiv = OpenLayers.Util.getElement('map');
         var obj = {result: 0};
@@ -199,7 +199,53 @@
         events.register( "doThingC", null, func );
         events.triggerEvent("doThingC");
 
-        t.eq(a, 5, "if Events has no object set and an event is registered also with no object, triggerEvent() calls it without trying to set the context to null");        
+        t.eq(a, 5, "if Events has no object set and an event is registered also with no object, triggerEvent() calls it without trying to set the context to null");
+        
+        // trigger events with additional arguments
+        eventTypes = ["something"];
+        events = new OpenLayers.Events(null, null, eventTypes);
+        var instance = {id: Math.random()};
+        var listener = function() {
+            t.eq(this.id, instance.id,
+                 "listener called with proper scope");
+            t.eq(arguments[0].id, evt.id,
+                 "listener called with evt as first arg");
+            t.eq(arguments[1], "arg1",
+                 "listener called with correct extra arg1");
+            t.eq(arguments[2], "arg2",
+                 "listener called with correct extra arg2");
+        };
+        events.register("something", instance, listener);        
+        var evt = {id: Math.random()};
+        events.triggerEvent("something", evt, ["arg1", "arg2", "arg3"]);
+        events.unregister("something", instance, listener);
+        
+        // test return from triggerEvent
+        var listener1 = function() {
+            return "foo";
+        }
+        var listener2 = function() {
+            return false;
+        }
+        var listener3 = function() {
+            t.fail("never call me again!");
+        }
+        events.register("something", instance, listener1);
+        var ret = events.triggerEvent("something", evt);
+        t.eq(ret, "foo", "correct return from single listener");
+        
+        events.register("something", instance, listener2);
+        ret = events.triggerEvent("something", evt);
+        t.eq(ret, false, "correct return for two listeners");
+        
+        events.register("something", instance, listener3);
+        ret = events.triggerEvent("something", evt);
+        t.eq(ret, false, "correct return for three listeners where second cancels");
+        
+        events.unregister("something", instance, listener1);
+        events.unregister("something", instance, listener2);
+        events.unregister("something", instance, listener3);
+        
     }
 
     function test_05_Events_destroy (t) {
