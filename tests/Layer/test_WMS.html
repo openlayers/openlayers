@@ -236,8 +236,10 @@
         t.eq(str,
              tUrl + "?" + OpenLayers.Util.getParameterString(tParams),
              "getFullRequestString() adds SRS value");
- 
+        
+        map.removeLayer(tLayer);
         tLayer.projection = "none";
+        map.addLayer(tLayer);
         str = tLayer.getFullRequestString();
         delete tParams['SRS'];
         t.eq(str,
