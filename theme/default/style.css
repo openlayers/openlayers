@@ -22,6 +22,7 @@ div.olMapViewport {
     bottom: 3em;
     display: block;
     position: absolute;
+    font-size: smaller;
 }
 .olControlPermalink {
     right: 3px;
