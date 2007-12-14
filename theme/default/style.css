@@ -29,6 +29,7 @@ div.olMapViewport {
     bottom: 1.5em;
     display: block;
     position: absolute;
+    font-size: smaller;
 } 
 
 div.olControlMousePosition {
