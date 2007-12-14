@@ -1,0 +1,27 @@
+<html> 
+  <head> 
+    <script src="../lib/OpenLayers.js"></script> 
+    <script type="text/javascript"> 
+     function test_01_Projection_constructor(t) { 
+         t.plan(7); 
+      
+         var options = {'foo': 'bar'}; 
+         var projection = new OpenLayers.Projection("code", options); 
+         t.ok(projection instanceof OpenLayers.Projection, 
+              "new OpenLayers.Projection returns object" ); 
+         t.eq(projection.projCode, "code", "The proj code is maintained");  
+         t.eq(projection.getCode(), "code", "The proj code is maintained.");  
+         t.eq(projection.getUnits(), null, "Null units with no proj4js library.");  
+         t.eq(projection.foo, "bar", "constructor sets options correctly"); 
+  
+         var projection2 = new OpenLayers.Projection("epsg:4325", options); 
+         out = OpenLayers.Projection.transform({'x':10,'y':12}, projection, projection2); 
+         t.eq(out.x, 10, "Null transform has no effect"); 
+         t.eq(out.y, 12, "Null transform has no effect"); 
+     } 
+       
+    </script> 
+  </head> 
+  <body> 
+  </body> 
+</html> 
