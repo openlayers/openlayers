@@ -168,6 +168,8 @@ Group: OpenLayers  {
       File: Box  (no auto-title, OpenLayers/Marker/Box.js)
       }  # Group: Marker
 
+   File: Projection  (no auto-title, OpenLayers/Projection.js)
+
    Group: Popup  {
 
       File: Popup  (OpenLayers/Popup.js)

@@ -1,9 +1,8 @@
 <html>
 <head>
-    <!-- this gmaps key generated for http://openlayers.org/dev/ -->
     <script src="../../lib/OpenLayers.js"></script>
     <script type="text/javascript">
-    function test_SphericalMercator_forwardProject(t) {
+    function test_SphericalMercator_forwardMercator(t) {
         t.plan(12);
         var arctic = OpenLayers.Layer.SphericalMercator.forwardMercator(0, 85);
         var antarctic = OpenLayers.Layer.SphericalMercator.forwardMercator(0, -85);
@@ -32,7 +31,7 @@
         t.eq(sw.lon, -20037508.34, "SW lon is correct");
     } 
     
-    function test_sphericalMercator_inverseProject(t) {
+    function test_sphericalMercator_inverseMercator(t) {
         t.plan(4);
         var sw =  OpenLayers.Layer.SphericalMercator.inverseMercator(-20037508.34,  -20037508.34);
         var ne =  OpenLayers.Layer.SphericalMercator.inverseMercator(20037508.34,  20037508.34);
@@ -41,6 +40,52 @@
         
         t.eq(sw.lat, -85.05112877980659, "Southwest lat correct");
         t.eq(ne.lat, 85.05112877980660, "Northeast lat correct");
+    }
+
+    function strToFixed(str, dig) { 
+        if(dig == undefined) { 
+            dig = 5; 
+        } 
+        return str.replace(/(\d+\.\d+)/g, function(match) { 
+            return parseFloat(match).toFixed(dig); 
+        }); 
+    } 
+ 
+    function test_SphericalMercator_projectForward(t) { 
+        t.plan(1);
+        var point = new OpenLayers.Geometry.Point(10, 20); 
+        OpenLayers.Layer.SphericalMercator.projectForward(point); 
+
+        t.eq(strToFixed(point.toString()), 
+             strToFixed("POINT(1113194.9077777779 2273030.9266712805)"), 
+             "point transforms from EPSG:4326 to Spherical Mercator"); 
+    } 
+         
+    function test_SphericalMercator_to4326(t) { 
+        t.plan(1);
+        var point = new OpenLayers.Geometry.Point(1113195, 2273031); 
+
+        OpenLayers.Layer.SphericalMercator.projectInverse(point); 
+         
+        t.eq(strToFixed(point.toString()), 
+             strToFixed("POINT(10.000000828446318 20.000000618997227)"), 
+             "point transforms from EPSG:4326 to Spherical Mercator"); 
+    }
+    
+    function test_SphericalMercator_addTransform(t) {
+        // this class should add two methods to the
+        // OpenLayers.Projection.transforms object
+        t.plan(4);
+        var wgs84 = OpenLayers.Projection.transforms["EPSG:4326"];
+        t.ok(wgs84 instanceof Object, "EPSG:4326 exists in table");
+        
+        var smerc = OpenLayers.Projection.transforms["EPSG:900913"];
+        t.ok(smerc instanceof Object, "EPSG:900913 exists in table");
+        
+        t.ok(wgs84["EPSG:900913"] === OpenLayers.Layer.SphericalMercator.projectForward,
+             "from EPSG:4326 to EPSG:900913 correctly defined");
+        t.ok(smerc["EPSG:4326"] === OpenLayers.Layer.SphericalMercator.projectInverse,
+             "from EPSG:900913 to EPSG:4326 correctly defined");
     }
     
   </script> 
