@@ -1,0 +1,70 @@
+<html> 
+<head> 
+    <script src="../../lib/OpenLayers.js"></script> 
+    <script type="text/javascript">
+
+    function test_Comparison_constructor(t) { 
+        t.plan(3); 
+         
+        var options = {'foo': 'bar'}; 
+        var rule = new OpenLayers.Rule.Comparison(options); 
+        t.ok(rule instanceof OpenLayers.Rule.Comparison, 
+             "new OpenLayers.Rule.Comparison returns object" ); 
+        t.eq(rule.foo, "bar", "constructor sets options correctly"); 
+        t.eq(typeof rule.evaluate, "function", "rule has an evaluate function"); 
+    }
+
+    function test_Comparison_destroy(t) {
+        t.plan(1);
+        
+        var rule = new OpenLayers.Rule.Comparison();
+        rule.destroy();
+        t.eq(rule.symbolizer, null, "symbolizer hash nulled properly");
+    }
+    
+    function test_Comparison_value2regex(t) {
+        t.plan(2);
+        
+        var rule = new OpenLayers.Rule.Comparison({
+                property: "foo",
+                value: "*b?r\\*\\?*",
+                type: OpenLayers.Rule.Comparison.LIKE});
+        rule.value2regex("*", "?", "\\");
+        t.eq(rule.value, ".*b.r\\*\\?.*", "Regular expression generated correctly.");
+        
+        rule.value = "%b.r!%!.%";
+        rule.value2regex("%", ".", "!");
+        t.eq(rule.value, ".*b.r\\%\\..*", "Regular expression with different wildcard and escape chars generated correctly.");
+    }
+    
+    function test_Comparison_evaluate(t) {
+        t.plan(3);
+        
+        var rule = new OpenLayers.Rule.Comparison({
+                property: "area",
+                lowerBoundary: 1000,
+                upperBoundary: 5000,
+                type: OpenLayers.Rule.Comparison.BETWEEN});
+
+        var features = [
+                new OpenLayers.Feature.Vector(null, {
+                        area: 2000}),
+                new OpenLayers.Feature.Vector(null, {
+                        area: 6000}),
+                new OpenLayers.Feature.Vector(null, {
+                        area: 4999})];
+        var ruleResults = {
+                0: true,
+                1: false,
+                2: true};
+        for (var i in ruleResults) {
+            var result = rule.evaluate(features[i]);
+            t.eq(result, ruleResults[i], "feature "+i+
+                    " evaluates to "+result.toString()+" correctly.");
+        }
+    }
+    </script> 
+</head> 
+<body> 
+</body> 
+</html> 

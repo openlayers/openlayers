@@ -1,0 +1,105 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 800px;
+            height: 400px;
+            border: 1px solid black;
+        }
+        
+        .olPopupContent {
+            font-size: smaller;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map, layer, markerLayer, style, popup;
+        
+
+        function init(){
+            map = new OpenLayers.Map('map', {maxResolution:'auto'});
+            
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+            map.addLayer(layer);
+            
+            map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            
+            // create a property style that reads the externalGraphic url from
+            // the thumbail attribute of the rss item
+            style = new OpenLayers.Style({
+                externalGraphic: "${thumbnail}",
+                pointRadius: 20});
+            
+            // create a rule with a point symbolizer that will make the thumbnail
+            // larger if the title of the rss item conatins "powder"
+            var rule = new OpenLayers.Rule.Comparison({
+                    type: OpenLayers.Rule.Comparison.LIKE,
+                    property: "title",
+                    value: "*powder*",
+                    symbolizer: {"Point": {pointRadius: 30}}});
+            rule.value2regex("*");
+            
+            style.addRules([rule]);
+            
+            markerLayer = new OpenLayers.Layer.Vector("", {style: style});
+            map.addLayer(markerLayer);
+            
+            // control that will show a popup when clicking on a thumbnail
+            var popupControl = new OpenLayers.Control.SelectFeature(markerLayer, {
+              selectStyle: style,
+              onSelect: function(feature) {
+                  var pos = feature.geometry;
+                  if (popup) {
+                      map.removePopup(popup);
+                  }
+                  popup = new OpenLayers.Popup("popup",
+                      new OpenLayers.LonLat(pos.x, pos.y),
+                      new OpenLayers.Size(254,320),
+                      "<h3>" + feature.attributes.title + "</h3>" +
+                      feature.attributes.description,
+                      true);
+                  map.addPopup(popup);
+              }
+            }); 
+            map.addControl(popupControl);
+            
+            popupControl.activate();
+            
+            OpenLayers.loadURL("xml/georss-flickr.xml", "", null, afterload);
+            
+        }
+        
+        function afterload(req) {
+            // extended version of OpenLayers.Format.GeoRSS.createFeatureFromItem;
+            // adds the thumbnail attribute to the feature
+            function createFeatureFromItem(item) {
+                var feature = OpenLayers.Format.GeoRSS.prototype
+                        .createFeatureFromItem.apply(this, arguments);
+                feature.attributes.thumbnail =
+                        this.getElementsByTagNameNS(
+                        item, "*", "thumbnail")[0].getAttribute("url");
+                return feature;
+            }
+
+            var store = new OpenLayers.Format.GeoRSS({
+                    createFeatureFromItem: createFeatureFromItem});
+
+            rss = store.read(req.responseXML);
+
+            // get the title of the RSS feed
+            var title = req.responseXML.getElementsByTagName("title")[0]
+                    .firstChild.nodeValue;
+                    
+            markerLayer.setName(title);
+            markerLayer.addFeatures(rss);
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1>GeoRSS from Flickr in OpenLayers</h1>
+    <p>The displayed GeoRSS feed has a <tt>&lt;media:thumbnail/&gt;</tt> property for each item. An extended <tt>createFeatureFromItem()</tt> function is used to add this attribute to the attributes hash of each feature read in by <tt>OpenLayers.Format.GeoRSS</tt>. The example is configured with a style to render each item with its thumbnail image. Also, to show how rules work, we defined a rule that if the title of an rss item contains "powder", it will be rendered larger than the others.</p>
+    <div id="map"></div>
+  </body>
+</html>

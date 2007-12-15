@@ -1,0 +1,79 @@
+<html> 
+<head> 
+    <script src="../lib/OpenLayers.js"></script> 
+    <script type="text/javascript">
+
+    function test_Style_constructor(t) { 
+        t.plan(3); 
+         
+        var options = {'foo': 'bar'}; 
+        var style = new OpenLayers.Style(null, options); 
+        t.ok(style instanceof OpenLayers.Style, 
+             "new OpenLayers.Style returns object" ); 
+        t.eq(style.foo, "bar", "constructor sets options correctly"); 
+        t.eq(typeof style.createStyle, "function", "style has a createStyle function"); 
+    }
+    
+    function test_Style_create(t) {
+        t.plan(5);
+        
+        var map = new OpenLayers.Map("map");
+        
+        var layer = new OpenLayers.Layer.Vector("layer");
+         
+        var baseStyle = {externalGraphic: "bar${foo}.png"};
+        
+        var style = new OpenLayers.Style(baseStyle);
+        
+        var rule = new OpenLayers.Rule.FeatureId({
+                fids: ["1"],
+                symbolizer: {"Point": {fillColor: "green"}},
+                maxScale: 2000000});
+        style.addRules([rule]);
+        
+        var feature = new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(3,5),
+                {"foo": "bar"},
+                style);
+
+        feature.fid = "1";
+        // for this fid, the above rule should apply
+                
+        layer.addFeatures([feature]);
+        map.addLayer(layer);
+        map.setBaseLayer(layer);
+
+        map.setCenter(new OpenLayers.LonLat(3,5), 8);
+        // at this scale, the feature should be visible
+        var createdStyle = style.createStyle(feature);
+        t.eq(createdStyle.externalGraphic, "barbar.png", "Calculated property style correctly.");
+        t.eq(createdStyle.display, "", "Feature is visible at scale "+map.getScale());
+
+        map.setCenter(new OpenLayers.LonLat(3,5), 7);
+        // at this scale, the feature should be invisible
+        createdStyle = style.createStyle(feature);
+        t.eq(createdStyle.display, "none", "Feature is invisible at scale "+map.getScale());
+        t.eq(createdStyle.fillColor, "green", "Point symbolizer from rule for fid=\"1\" applied correctly.");
+        
+        feature.fid = "2";
+        // now the rule should not apply
+        
+        createdStyle = style.createStyle(feature);
+        t.eq(createdStyle.fillColor, undefined, "Correct style for rule that does not apply to fid=\"2\".");
+        
+    }
+
+    function test_Style_destroy(t) {
+        t.plan(1);
+        
+        var style = new OpenLayers.Style();
+        style.destroy();
+        t.eq(style.rules, null, "rules array nulled properly");
+    }
+
+    </script> 
+</head> 
+<body> 
+  <div id="map" style="width:500px;height:500px"></div>
+</body> 
+</html> 
