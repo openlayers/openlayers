@@ -1,0 +1,59 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+
+   function test_Popup_Anchored_setOpacity(t) { 
+        t.plan(5);
+        var opacity = 0.5;
+        var id = "chicken";
+        var w = 500;
+        var h = 400;
+        var sz = new OpenLayers.Size(w,h);
+        var lon = 5;
+        var lat = 40;
+        var ll = new OpenLayers.LonLat(lon, lat);
+        var content = "foo";
+        var x = 50;
+        var y = 100;
+
+        var map = new OpenLayers.Map('map');
+        map.addLayer(new OpenLayers.Layer('name', {'isBaseLayer':true}));
+        map.zoomToMaxExtent();
+
+        var popup = new OpenLayers.Popup.AnchoredBubble(id,
+                                     ll,
+                                     sz,
+                                     content,
+                                     null,
+                                     false);
+        map.addPopup(popup);
+
+        popup.setOpacity(opacity);
+        popup.draw(new OpenLayers.Pixel(x, y));
+
+        if (navigator.appName.indexOf("Microsoft") == -1) {
+            t.eq(parseFloat(popup.div.style.opacity), opacity, "good default popup.opacity");
+        } else {
+            t.eq(popup.div.style.filter, "alpha(opacity=" + opacity*100 + ")", "good default popup.opacity");
+        }
+
+        t.ok(popup.groupDiv!=null, "popup.groupDiv exists");
+        t.ok(popup.groupDiv.parentNode!=null, "popup.groupDiv.parentNode exists");
+        t.ok(popup.groupDiv.parentNode.getElementsByTagName("span").length > 0, "popup.groupDiv.parentNode has SPAN children");
+
+        var ricoCornerDiv = popup.groupDiv.parentNode.getElementsByTagName("span")[0];
+        if (navigator.appName.indexOf("Microsoft") == -1) {
+            t.eq(parseFloat(ricoCornerDiv.style.opacity), opacity, "good default ricoCornerDiv.opacity");
+        } else {
+            t.eq(ricoCornerDiv.style.filter, "alpha(opacity=" + opacity*100 + ")", "good default ricoCornerDiv.opacity");
+        }
+        
+   }
+
+  </script>
+</head>
+<body>
+<div id="map" style="width:512px; height:256px"> </div>
+</body>
+</html>
