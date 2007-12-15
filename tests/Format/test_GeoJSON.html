@@ -22,10 +22,10 @@
     }
 
     function test_Format_GeoJSON_valid_type(t) { 
-        t.plan(13);
+        t.plan(14);
 
         OpenLayers.Console.error = function(error) { window.global_error = error; }
-        var types = ["Point", "MultiPoint", "LineString", "MultiLineString", "Polygon", "MultiPolygon", "Box"];
+        var types = ["Point", "MultiPoint", "LineString", "MultiLineString", "Polygon", "MultiPolygon", "Box", "GeometryCollection"];
         for (var i = 0; i < types.length; i++) {
             t.ok(parser.isValidType({'type':types[i]}, "Geometry"), "Geometry with type " + types[i] + " is valid");
         }
@@ -140,8 +140,8 @@
     }
 
     // This test is from the geom_collection example on geojson spec.
-    function test_Format_GeoJSON_geom_collection(t) {
-       t.plan(7);
+    function test_Format_GeoJSON_collection(t) {
+       t.plan(10);
 
        var geomcol = {
            "type": "GeometryCollection",
@@ -158,17 +158,57 @@
                }
            ]
         };
-        data = parser.read(geomcol, "GeometryCollection");
-        t.eq(data[0].CLASS_NAME, 
-              "OpenLayers.Geometry.Point", "First geom in geom collection is point type");  
-        t.eq(data[0].x, 100, "First geom in geom collection has correct x");  
-        t.eq(data[0].y, 0, "First geom in geom collection has correct x");  
+        data = parser.read(geomcol, "Geometry");
+        t.eq(data.CLASS_NAME, "OpenLayers.Geometry.Collection",
+             "GeometryCollection deserialized into geometry.collection");  
+        t.eq(data.components[0].CLASS_NAME, "OpenLayers.Geometry.Point",
+             "First geom is correct type");  
+        t.eq(data.components[0].x, 100,
+             "First geom in geom collection has correct x");  
+        t.eq(data.components[0].y, 0,
+             "First geom in geom collection has correct x");  
         
-        t.eq(data[1].CLASS_NAME, 
-              "OpenLayers.Geometry.LineString", "Second geom in geom collection is point linestring");  
-        t.eq(data[1].components.length, 2, "linestring is correct length");
-        t.eq(data[1].components[1].x, 102, "linestring is correct x end");
-        t.eq(data[1].components[1].y, 1, "linestring is correct y end");
+        t.eq(data.components[1].CLASS_NAME, "OpenLayers.Geometry.LineString",
+             "Second geom in geom collection is point linestring");  
+        t.eq(data.components[1].components.length, 2,
+             "linestring is correct length");
+        t.eq(data.components[1].components[1].x, 102,
+             "linestring is correct x end");
+        t.eq(data.components[1].components[1].y, 1,
+             "linestring is correct y end");
+
+        data = parser.read(geomcol, "FeatureCollection");
+        t.eq(data[0].CLASS_NAME, "OpenLayers.Feature.Vector",
+             "GeometryCollection can be read in as a feature collection");
+        t.eq(data[0].geometry.CLASS_NAME, "OpenLayers.Geometry.Collection",
+             "feature contains the correct geometry type");
+        var feature = {
+           "type": "Feature",
+           "geometry": {
+              "type": "GeometryCollection",
+              "geometries": [
+                  {
+                    "type": "Point",
+                    "coordinates": [100.0, 0.0]
+                  },
+                  {
+                    "type": "LineString",
+                    "coordinates": [
+                        [101.0, 0.0], [102.0, 1.0]
+                    ]
+                  }
+              ]
+           },
+           "properties": {
+               "prop0": "value0",
+               "prop1": "value1"
+           }
+        };
+        data = parser.read(feature);
+        t.eq(data.geometry.CLASS_NAME, "OpenLayers.Geometry.Collection", "Geometry of feature is a collection");
+        var l = new OpenLayers.Layer.Vector();
+        l.addFeatures(data);
+        t.ok(true, "adding a feature with geomcollection to layer doesn't cause error."); 
     }
 
     function test_Format_GeoJSON_multipleFeatures(t) {
@@ -263,6 +303,23 @@
                     ])
                 ]), 
                 '{"type":"Polygon","coordinates":[[[1,2],[3,4],[5,6],[1,2]]]}'
+            ],
+            [
+                new OpenLayers.Geometry.Collection([
+                    new OpenLayers.Geometry.Polygon([
+                        new OpenLayers.Geometry.LinearRing([
+                            new OpenLayers.Geometry.Point(1,2), 
+                            new OpenLayers.Geometry.Point(3,4), 
+                            new OpenLayers.Geometry.Point(5,6)
+                        ])
+                    ]), 
+                    new OpenLayers.Geometry.LineString([
+                        new OpenLayers.Geometry.Point(1,2), 
+                        new OpenLayers.Geometry.Point(3,4)
+                    ]),
+                    new OpenLayers.Geometry.Point(1,2)
+                ]),
+                '{"type":"GeometryCollection","geometries":[{"type":"Polygon","coordinates":[[[1,2],[3,4],[5,6],[1,2]]]},{"type":"LineString","coordinates":[[1,2],[3,4]]},{"type":"Point","coordinates":[1,2]}]}'
             ]
         ];
         serialize_tests[0][0].fid = 0;
@@ -271,7 +328,6 @@
         multipolygon = new OpenLayers.Geometry.MultiPolygon([serialize_tests[4][0],  serialize_tests[4][0]]);
         serialize_tests.push([multipolygon, '{"type":"MultiPolygon","coordinates":[[[[1,2],[3,4],[5,6],[1,2]]],[[[1,2],[3,4],[5,6],[1,2]]]]}']);
         serialize_tests.push([ [ serialize_tests[0][0] ], '{"type":"FeatureCollection","features":[{"type":"Feature","id":0,"properties":{},"geometry":{"type":"Point","coordinates":[1,2]}}]}' ]);
-        serialize_tests.push([ [ serialize_tests[1][0], serialize_tests[2][0] ], '{"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[1,2]},{"type":"MultiPoint","coordinates":[[1,2]]}]}' ]);
         for (var i = 0; i < serialize_tests.length; i++) {
             var input = serialize_tests[i][0];
             var output = serialize_tests[i][1];
