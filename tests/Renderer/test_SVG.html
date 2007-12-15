@@ -144,7 +144,7 @@
         r.drawCircle(node, geometry, 3);
         
         t.eq(node.getAttributeNS(null, 'cx'), '2', "cx is correct");
-        t.eq(node.getAttributeNS(null, 'cy'), '4', "cy is correct");
+        t.eq(node.getAttributeNS(null, 'cy'), '-4', "cy is correct");
         t.eq(node.getAttributeNS(null, 'r'), '3', "r is correct");
     }
     
@@ -271,7 +271,7 @@
         r.drawRectangle(node, geometry);
         
         t.eq(node.getAttributeNS(null, "x"), "2", "x attribute is correctly set");
-        t.eq(node.getAttributeNS(null, "y"), "4", "y attribute is correctly set");
+        t.eq(node.getAttributeNS(null, "y"), "-4", "y attribute is correctly set");
         t.eq(node.getAttributeNS(null, "width"), "6", "width attribute is correctly set");
         t.eq(node.getAttributeNS(null, "height"), "8", "height attribute is correctly set");
     }
@@ -355,7 +355,7 @@
         };
         
         var string = r.getShortString(point);
-        t.eq(string, "2,4", "returned string is correct");
+        t.eq(string, "2,-4", "returned string is correct");
     }
     
     
