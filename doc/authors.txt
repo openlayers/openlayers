@@ -13,6 +13,7 @@ Andreas Hocevar
 Eric Lemoine
 Philip Lindsay
 Corey Puffault
+Gregers Rygg
 Tim Schaub
 Christopher Schmidt
 Cameron Shorter                                                              
