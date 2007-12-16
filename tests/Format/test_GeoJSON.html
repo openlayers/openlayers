@@ -141,7 +141,7 @@
 
     // This test is from the geom_collection example on geojson spec.
     function test_Format_GeoJSON_collection(t) {
-       t.plan(10);
+       t.plan(12);
 
        var geomcol = {
            "type": "GeometryCollection",
@@ -204,7 +204,7 @@
                "prop1": "value1"
            }
         };
-        data = parser.read(feature);
+        data = parser.read(feature, "Feature");
         t.eq(data.geometry.CLASS_NAME, "OpenLayers.Geometry.Collection", "Geometry of feature is a collection");
         var l = new OpenLayers.Layer.Vector();
         l.addFeatures(data);
