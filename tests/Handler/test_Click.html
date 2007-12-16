@@ -1,0 +1,317 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+    function test_Handler_Click_constructor(t) {
+        t.plan(3);
+        var control = new OpenLayers.Control();
+        control.id = Math.random();
+        var callbacks = {foo: "bar"};
+        var options = {bar: "foo"};
+        
+        var oldInit = OpenLayers.Handler.prototype.initialize;
+        
+        OpenLayers.Handler.prototype.initialize = function(con, call, opt) {
+            t.eq(con.id, control.id,
+                 "constructor calls parent with the correct control");
+            t.eq(call, callbacks,
+                 "constructor calls parent with the correct callbacks");
+            t.eq(opt, options,
+                 "constructor calls parent with the correct options");
+        }
+        var handler = new OpenLayers.Handler.Click(control, callbacks, options);
+
+        OpenLayers.Handler.prototype.initialize = oldInit;
+    }
+
+    function test_Handler_Click_activate(t) {
+        t.plan(2);
+        var control = {
+            map: new OpenLayers.Map('map')
+        };
+        var handler = new OpenLayers.Handler.Click(control);
+        handler.active = true;
+        var activated = handler.activate();
+        t.ok(!activated,
+             "activate returns false if the handler was already active");
+        handler.active = false;
+        handler.dragging = true;
+        activated = handler.activate();
+        t.ok(activated,
+             "activate returns true if the handler was not already active");
+        
+    }
+    
+    function test_Handler_Click_events(t) {
+        t.plan(30);
+        
+        var map = new OpenLayers.Map('map');
+        var control = {
+            map: map
+        };
+        map.events.registerPriority = function(type, obj, func) {
+            var r = func();
+            if(typeof r == "string") {
+                // this is one of the mock handler methods
+                t.eq(OpenLayers.Util.indexOf(nonevents, type), -1,
+                     "registered method is not one of the events " +
+                     "that should not be handled");
+                t.ok(OpenLayers.Util.indexOf(events, type) > -1,
+                     "activate calls registerPriority with browser event: " + type);
+                t.eq(typeof func, "function",
+                     "activate calls registerPriority with a function");
+                t.eq(func(), type,
+                     "activate calls registerPriority with the correct method");
+                t.eq(obj["CLASS_NAME"], "OpenLayers.Handler.Click",
+                     "activate calls registerPriority with the handler");
+            }
+        }
+        function setMethod(key) {
+            handler[key] = function() {return key};
+        }
+
+        // list below events that should be handled (events) and those
+        // that should not be handled (nonevents) by the handler
+        var events = ["click", "dblclick"];
+        var nonevents = ["mousedown", "mousemove", "mouseup", "resize", "focus", "blur"];
+        var handler = new OpenLayers.Handler.Click(control);
+        // set browser event like properties on the handler
+        for(var i=0; i<events.length; ++i) {
+            setMethod(events[i]);
+        }
+        handler.activate();
+
+        // different listeners registered for pixelTolerance option
+        var events = ["click", "dblclick", "mousedown", "mouseup"];
+        var nonevents = ["mousemove", "resize", "focus", "blur"];
+        var handler = new OpenLayers.Handler.Click(control, {}, {
+            pixelTolerance: 2
+        });
+        for(var i=0; i<events.length; ++i) {
+            setMethod(events[i]);
+        }
+        handler.activate();
+
+    }
+
+    function test_Handler_Click_callbacks(t) {
+        t.plan(13);
+        
+        var map = new OpenLayers.Map('map', {controls: []});
+
+        var control = {
+            map: map
+        };
+
+        var handler = new OpenLayers.Handler.Click(control, {});
+        handler.activate();
+        
+        
+        // set up for single click - three tests here
+        var timers = {};
+        var sto = window.setTimeout;
+        window.setTimeout = function(func, delay) {
+            var key = Math.random();
+            timers[key] = true;
+            t.ok(typeof func == "function",
+                 "setTimeout called with a function");
+            t.eq(delay, handler.delay,
+                 "setTimeout called with proper delay");
+            // execute function that is supposed to be delayed
+            func();
+            return key;
+        }
+        var cto = window.clearTimeout;
+        window.clearTimeout = function(key) {
+            if(timers[key] === true) {
+                delete timers[key];
+            } else {
+                t.fail("clearTimeout called with non-existent timerId");
+            }
+        }
+        var testEvt = Math.random();
+        handler.callbacks = {
+            "click": function(evt) {
+                t.eq(evt, testEvt,
+                     "(click w/ single true) click callback called with correct evt");
+            },
+            "dblclick": function(evt) {
+                t.fail("(click w/ single true) dblclick should not be called here");
+            }
+        };
+        map.events.triggerEvent("click", testEvt);
+        
+        // set up for double click with double false - no tests here (only failures)
+        handler.callbacks = {
+            "click": function(evt) {
+                t.fail("(dblclick w/ double false) click should not be called here");
+            },
+            "dblclick": function(evt) {
+                t.fail("(dblclick w/ double false) dblclick should not be called here");
+            }
+        };
+        testEvt = Math.random();
+        map.events.triggerEvent("dblclick", testEvt);
+
+        // set up for double click with double true - one test here
+        handler.double = true;
+        handler.callbacks = {
+            "click": function(evt) {
+                t.fail("(dblclick w/ double true) click should not be called here");
+            },
+            "dblclick": function(evt) {
+                t.eq(evt, testEvt,
+                     "(dblclick w/ double true) dblclick called with correct evt");
+            }
+        };
+        testEvt = Math.random();
+        map.events.triggerEvent("dblclick", testEvt);
+        
+        // set up for two clicks with double true - 6 tests here (with timeout ones from above)
+        handler.double = true;
+        handler.callbacks = {
+            "click": function(evt) {
+                t.ok(evt != null, "(two clicks w/ double true) click will not be called here if next three tests pass");
+            },
+            "dblclick": function(evt) {
+                t.eq(evt, testEvt,
+                     "(two clicks w/ double true) dblclick called with correct evt");
+            }
+        };
+        testEvt = Math.random();
+        map.events.triggerEvent("click", testEvt);
+        t.ok(handler.timerId != null,
+             "(two clicks w/ double true) timer is set to call click");
+        map.events.triggerEvent("click", testEvt);
+        t.ok(handler.timerId == null,
+             "(two clicks w/ double true) timer is cleared to call click");
+        map.events.triggerEvent("dblclick", testEvt);
+        handler.destroy();
+        
+        // set up to tests pixelTolerance - three tests here (2 from setTimeout above)
+        handler = new OpenLayers.Handler.Click(control, {}, {
+            pixelTolerance: 2
+        });
+        handler.activate();
+        var downEvt = {
+            xy: new OpenLayers.Pixel(0, 0)
+        };
+        map.events.triggerEvent("mousedown", downEvt);
+        var clickEvt = {
+            xy: new OpenLayers.Pixel(0, 1)
+        };
+        // mouse moves one pixel, click should be called
+        handler.callbacks = {
+            "click": function(evt) {
+                t.ok(evt == clickEvt, "(pixelTolerance met) click called");
+            }
+        };
+        map.events.triggerEvent("click", clickEvt);
+        handler.clearTimer();
+        
+        // mouse moves 3x3 pixels, click should not be called
+        map.events.triggerEvent("mousedown", downEvt);
+        var clickEvt = {
+            xy: new OpenLayers.Pixel(3, 3)
+        };
+        // mouse moves one pixel, click should be called
+        handler.callbacks = {
+            "click": function(evt) {
+                t.fail("(pixelTolerance not met) click should not be called");
+            }
+        };
+        map.events.triggerEvent("click", clickEvt); // no test run
+        handler.clearTimer();
+        
+        window.setTimeout = sto;
+        window.clearTimeout = cto;
+        
+
+    }
+
+    function test_Handler_Drag_submethods(t) {
+        t.plan(4);
+        
+        var map = new OpenLayers.Map('map', {controls: []});
+
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        
+
+        var handler = new OpenLayers.Handler.Drag(control, {});
+        // set test events
+        var events = ["down", "move", "up", "out"];
+        var testEvents = {};
+        var type, px;
+        for(var i=0; i<events.length; ++i) {
+            type = events[i];
+            px = new OpenLayers.Pixel(Math.random(), Math.random());
+            testEvents[type] = {xy: px};
+            setMethod(type);
+        }
+        function setMethod(type) {
+            handler[type] = function(evt) {
+                t.ok(evt.xy.x == testEvents[type].xy.x &&
+                     evt.xy.y == testEvents[type].xy.y,
+                     "handler." + type + " called with the right event");
+            }
+        }
+        handler.activate();
+        
+        // test mousedown
+        handler.checkModifiers = function(evt) {
+            return true;
+        }
+        var oldIsLeftClick = OpenLayers.Event.isLeftClick;
+        OpenLayers.Event.isLeftClick = function(evt) {
+            return true;
+        }
+        map.events.triggerEvent("mousedown", testEvents.down);
+        OpenLayers.Event.isLeftClick = oldIsLeftClick;
+
+        // test mousemove
+        map.events.triggerEvent("mousemove", testEvents.move);
+        
+        // test mouseup
+        map.events.triggerEvent("mouseup", testEvents.up);
+        
+        // test mouseout
+        var oldMouseLeft = OpenLayers.Util.mouseLeft;
+        OpenLayers.Util.mouseLeft = function() {
+            return true;
+        };
+        handler.started = true;
+        map.events.triggerEvent("mouseout", testEvents.out);
+        OpenLayers.Util.mouseLeft = oldMouseLeft;
+        
+    }
+
+    function test_Handler_Click_deactivate(t) {
+        t.plan(4);
+        var control = {
+            map: new OpenLayers.Map('map')
+        };
+        var handler = new OpenLayers.Handler.Click(control);
+        handler.active = false;
+        var deactivated = handler.deactivate();
+        t.ok(!deactivated,
+             "deactivate returns false if the handler was not already active");
+        handler.active = true;
+        handler.down = true;
+        handler.timerId = true;
+        deactivated = handler.deactivate();
+        t.ok(deactivated,
+             "deactivate returns true if the handler was active already");
+        t.eq(handler.down, null,
+             "deactivate sets down to null");
+        t.eq(handler.timerId, null,
+             "deactivate sets timerId to null");
+    }
+
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 300px; height: 150px;"/>
+</body>
+</html>
