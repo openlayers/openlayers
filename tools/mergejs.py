@@ -51,7 +51,7 @@ import sys
 
 SUFFIX_JAVASCRIPT = ".js"
 
-RE_REQUIRE = "@requires (.*)\n" # TODO: Ensure in comment?
+RE_REQUIRE = "@requires:? (.*)\n" # TODO: Ensure in comment?
 class SourceFile:
     """
     Represents a Javascript source code file.
