@@ -21,7 +21,9 @@
         
         var layer = new OpenLayers.Layer.Vector("layer");
          
-        var baseStyle = {externalGraphic: "bar${foo}.png"};
+        var baseStyle = OpenLayers.Util.extend(
+                OpenLayers.Feature.Vector.style["default"],
+                {externalGraphic: "bar${foo}.png"});
         
         var style = new OpenLayers.Style(baseStyle);
         
@@ -59,7 +61,7 @@
         // now the rule should not apply
         
         createdStyle = style.createStyle(feature);
-        t.eq(createdStyle.fillColor, undefined, "Correct style for rule that does not apply to fid=\"2\".");
+        t.eq(createdStyle.fillColor, baseStyle.fillColor, "Correct style for rule that does not apply to fid=\"2\".");
         
     }
 
