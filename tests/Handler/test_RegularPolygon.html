@@ -41,6 +41,7 @@
         activated = handler.deactivate();
         t.ok(activated,
              "deactivate returns true if the handler was active already");
+        map.destroy();     
     }
 
     function test_Handler_RegularPolygon_deactivation(t) {
@@ -56,6 +57,7 @@
         t.eq(handler.layer, null,
              "deactivate doesn't throw an error if layer was" +
              " previously destroyed");
+        map.destroy();     
     }
 
     function test_Handler_RegularPolygon_four_corners(t) {
@@ -98,6 +100,7 @@
         t.eq(handler.feature.geometry.getBounds().toBBOX(),
              "34.15625,-22.09375,36.15625,-20.09375",
              "bounds with manual radius setting and mousemove");
+        map.destroy();     
     }
 
     function test_Handler_RegularPolygon_circle(t) {
@@ -140,6 +143,7 @@
         t.eq(handler.feature.geometry.getBounds().toBBOX(),
              "34.159333,-8.028167,36.153167,-6.034333",
              "bounds with manual radius setting and mousemove");
+        map.destroy();     
     }
 
     function test_Handler_RegularPolygon_irregular(t) {
