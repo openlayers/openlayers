@@ -494,6 +494,16 @@
 
 
       }
+    function test_Bounds_transform(t) {
+        t.plan( 3 );
+        bounds = new OpenLayers.Bounds(10, -10, 20, 10);
+        bounds.transform(new OpenLayers.Projection("foo"), new OpenLayers.Projection("Bar")); 
+        t.eq(bounds.toBBOX(), "10,-10,20,10", "null transform okay");
+        bounds.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")); 
+        t.eq(bounds.toBBOX(), "1113194.907778,-1118889.974702,2226389.815556,1118889.974702", "bounds for spherical mercator transform are correct");
+        bounds.transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326")); 
+        t.eq(bounds.toBBOX(), "10,-10,20,10", "bounds for inverse spherical mercator transform are correct");
+    }
 
     function test_17_Bounds_add(t) {
         t.plan( 8 );

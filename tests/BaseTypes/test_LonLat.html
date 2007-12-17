@@ -102,6 +102,20 @@
         t.ok( lonlat.equals(ll), "lonlat is set correctly");
     }
 
+    function test_LonLat_transform(t) {
+        t.plan( 6 );
+        lonlat = new OpenLayers.LonLat(10, -10);
+        lonlat.transform(new OpenLayers.Projection("foo"), new OpenLayers.Projection("Bar")); 
+        t.eq(lonlat.lon, 10, "lon for null transform is the same")
+        t.eq(lonlat.lat, -10, "lat for null transform is the same")
+        lonlat.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")); 
+        t.eq(Math.round(lonlat.lon), 1113195, "lon for spherical mercator transform is correct");
+        t.eq(Math.round(lonlat.lat), -1118890, "lat for spherical mercator correct")
+        lonlat.transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326")); 
+        t.eq(lonlat.lon, 10, "lon for inverse spherical mercator transform is correct");
+        t.eq(Math.round(lonlat.lat), -10, "lat for inverse spherical mercator correct")
+    }
+    
     function test_08_LonLat_wrapDateLine(t) {
         t.plan( 6 );
 
