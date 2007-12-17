@@ -345,7 +345,18 @@ Test.AnotherWay._constructor_name=function( x )
 	}else if( s.match( /^\s*function\s+(\w+)\s*\(/ ) ) {
 		return RegExp.$1;
 	}else {
-		return "";
+	  var c = '';
+	  switch(typeof x) {
+	    case 'string':
+	      c = 'String';
+	      break;
+	    case 'object':
+	      c = 'Object';
+	      break;
+	    default:
+	      c = '';
+	  }
+		return c;
 	}
 }
 Test.AnotherWay._is_array=function( x )
