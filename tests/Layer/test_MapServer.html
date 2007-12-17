@@ -1,7 +1,7 @@
 <html>
 <head>
     <script type="text/javascript">var oldAlert = window.alert, gMess; window.alert = function(message) {gMess = message; return true;};</script>
-    <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>Z
+    <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
     <script type="text/javascript">window.alert = oldAlert;</script>
     
 
@@ -68,6 +68,7 @@
              url + "?" + OpenLayers.Util.getParameterString(tParams).replace(/,/g, "+"),
              "div first child is correct image object" );
         t.eq( tile.position.toString(), "x=5,y=6", "Position of tile is set correctly." );
+        map.destroy();
     }
     
     function test_03_Layer_MapServer_inittiles (t) {
@@ -78,6 +79,7 @@
         map.setCenter(new OpenLayers.LonLat(0,0),5);
         t.eq( layer.grid.length, 7, "Grid rows is correct." );
         t.eq( layer.grid[0].length, 6, "Grid cols is correct." );
+        map.destroy();
         
     }
 
@@ -107,6 +109,7 @@
         t.eq( clone.alpha, layer.alpha, "alpha copied correctly");
 
         layer.grid = null;
+        map.destroy();
     }
 
     function test_05_Layer_MapServer_isBaseLayer(t) {
@@ -149,6 +152,7 @@
         newParams.chickpeas = 151;
 
         t.eq( layer.params.chickpeas, "image/png", "mergeNewParams() makes clean copy of hashtable");
+        map.destroy();
     }
 
     function test_07_Layer_MapServer_getFullRequestString (t) {
@@ -173,6 +177,7 @@
             sStr = sStr.replace(/,/g, "+");
         
         t.eq(str, sStr , "getFullRequestString() works");
+        map.destroy();
 
     }
 
@@ -197,6 +202,7 @@
         var tile = tLayer.addTile(new OpenLayers.Bounds(1,2,3,4), pixel);
         tile.draw();
         t.eq(parseFloat(tile.imgDiv.style.opacity), 0.6, "Tile opacity is set correctly");
+        map.destroy();
 
     }    
     
@@ -219,6 +225,7 @@
             t.eq( tile.bounds.right, -11.25, "top side matches" ); 
             t.eq( tile.bounds.bottom.toFixed(6), '11.178402', "bottom side matches" ); 
             t.eq( tile.bounds.top.toFixed(6), '21.943046', "top side matches" );
+            map.destroy();
         } else {
             t.plan(1);
             t.debug_print("can't test google layer from " +
@@ -231,6 +238,7 @@
         map.setCenter(new OpenLayers.LonLat(0,0), 5);
         var tile = layer.grid[0][0];
         t.ok( tile.bounds.equals(new OpenLayers.Bounds(-33.75, 33.75, -22.5, 45)), "okay");
+        map.destroy();
     }
     
     function test_30_Layer_MapServer_singleTile (t) {
@@ -244,6 +252,7 @@
         t.eq( layer.grid[0].length, 1, "Grid has only a single column, good enough!" );
         t.eq( layer.tileSize.w, 750, "Image width is correct" );
         t.eq( layer.tileSize.h, 825, "Image height is correct" );
+        map.destroy();
     }
 
     
@@ -266,6 +275,7 @@
     // checks to make sure superclass (grid) destroy() was called    
         
         t.ok( layer.grid == null, "grid set to null");
+        map.destroy();
     }
    
     // Untiled tests 
@@ -312,6 +322,7 @@
         t.eq( clone.alpha, layer.alpha, "alpha copied correctly");
 
         layer.tile = null;
+        map.destroy();
     }
 
     function test_05_Layer_MapServer_Untiled_isBaseLayer(t) {
@@ -353,6 +364,7 @@
         newParams.chickpeas = 151;
 
         t.eq( layer.params.chickpeas, "image/png", "mergeNewParams() makes clean copy of hashtable");
+        map.destroy();
     }
 
     function test_07_Layer_MapServer_Untiled_getFullRequestString (t) {
@@ -377,6 +389,7 @@
         sStr = sStr.replace(/,/g, "+");
         
         t.eq(str, sStr , "getFullRequestString() works");
+        map.destroy();
 
     }
 
@@ -397,6 +410,7 @@
         tLayer.setOpacity("0.6");
         t.eq(tLayer.opacity, "0.6", "setOpacity works properly");
         t.eq(parseFloat(tLayer.div.firstChild.firstChild.style.opacity), 0.6, "Opacity on tile is changed correctly");
+        map.destroy();
 
     }    
 
@@ -429,6 +443,7 @@
     // checks to make sure superclass (grid) destroy() was called    
         
         t.ok( layer.tile == null, "tile set to null");
+        map.destroy();
     }
     
   // -->
