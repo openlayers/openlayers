@@ -32,13 +32,15 @@
     }
 
     function test_03_Control_PanZoom_control_events (t) {
-        loader();
-        if ( !window.document.createEvent ) {
+
+        if ( !window.document.createEvent || OpenLayers.Util.getBrowserName() == "opera") {
             //ie can't simulate mouseclicks
-            t.plan(0)
+            t.plan(0);
+            t.debug_print("FIXME: This browser does not support the PanZoom test at this time.");
         } else {
             t.plan(35);
-                t.delay_call( 1, function() {
+            t.open_window( "Control/test_PanZoom.html", function( wnd ) {
+                t.delay_call( 3, function() {
                     var flag;
                     function setFlag(evt) {
                         flag[evt.type] = true;
@@ -53,61 +55,61 @@
                     }
                     resetFlags();
                     
-                    window.mapper.events.register("mousedown", mapper, setFlag);
-                    window.mapper.events.register("mouseup", mapper, setFlag);
-                    window.mapper.events.register("click", mapper, setFlag);
-                    window.mapper.events.register("dblclick", mapper, setFlag);
+                    wnd.mapper.events.register("mousedown", mapper, setFlag);
+                    wnd.mapper.events.register("mouseup", mapper, setFlag);
+                    wnd.mapper.events.register("click", mapper, setFlag);
+                    wnd.mapper.events.register("dblclick", mapper, setFlag);
                     
-                    simulateClick(window, window.control.buttons[0]);
-                    t.ok( window.mapper.getCenter().lat > window.centerLL.lat, "Pan up works correctly" );
+                    simulateClick(wnd, wnd.control.buttons[0]);
+                    t.ok( wnd.mapper.getCenter().lat > wnd.centerLL.lat, "Pan up works correctly" );
                     t.ok(!flag.mousedown, "mousedown does not get to the map");
                     t.ok(flag.mouseup, "mouseup does get to the map");
                     t.ok(!flag.click, "click does not get to the map");
                     t.ok(!flag.dblclick, "dblclick does not get to the map");
                     resetFlags();
 
-                    simulateClick(window, window.control.buttons[1]);
-                    t.ok( window.mapper.getCenter().lon < window.centerLL.lon, "Pan left works correctly" );
+                    simulateClick(wnd, wnd.control.buttons[1]);
+                    t.ok( wnd.mapper.getCenter().lon < wnd.centerLL.lon, "Pan left works correctly" );
                     t.ok(!flag.mousedown, "mousedown does not get to the map");
                     t.ok(flag.mouseup, "mouseup does get to the map");
                     t.ok(!flag.click, "click does not get to the map");
                     t.ok(!flag.dblclick, "dblclick does not get to the map");
                     resetFlags();
 
-                    simulateClick(window, window.control.buttons[2]);
-                    t.ok( window.mapper.getCenter().lon == window.centerLL.lon, "Pan right works correctly" );
+                    simulateClick(wnd, wnd.control.buttons[2]);
+                    t.ok( wnd.mapper.getCenter().lon == wnd.centerLL.lon, "Pan right works correctly" );
                     t.ok(!flag.mousedown, "mousedown does not get to the map");
                     t.ok(flag.mouseup, "mouseup does get to the map");
                     t.ok(!flag.click, "click does not get to the map");
                     t.ok(!flag.dblclick, "dblclick does not get to the map");
                     resetFlags();
 
-                    simulateClick(window, window.control.buttons[3]);
-                    t.ok( window.mapper.getCenter().lat == window.centerLL.lat, "Pan down works correctly" );
+                    simulateClick(wnd, wnd.control.buttons[3]);
+                    t.ok( wnd.mapper.getCenter().lat == wnd.centerLL.lat, "Pan down works correctly" );
                     t.ok(!flag.mousedown, "mousedown does not get to the map");
                     t.ok(flag.mouseup, "mouseup does get to the map");
                     t.ok(!flag.click, "click does not get to the map");
                     t.ok(!flag.dblclick, "dblclick does not get to the map");
                     resetFlags();
 
-                    simulateClick(window, window.control.buttons[4]);
-                    t.eq( window.mapper.getZoom(), 6, "zoomin works correctly" );
+                    simulateClick(wnd, wnd.control.buttons[4]);
+                    t.eq( wnd.mapper.getZoom(), 6, "zoomin works correctly" );
                     t.ok(!flag.mousedown, "mousedown does not get to the map");
                     t.ok(flag.mouseup, "mouseup does get to the map");
                     t.ok(!flag.click, "click does not get to the map");
                     t.ok(!flag.dblclick, "dblclick does not get to the map");
                     resetFlags();
 
-                    simulateClick(window, window.control.buttons[6]);
-                    t.eq( window.mapper.getZoom(), 5, "zoomout works correctly" );
+                    simulateClick(wnd, wnd.control.buttons[6]);
+                    t.eq( wnd.mapper.getZoom(), 5, "zoomout works correctly" );
                     t.ok(!flag.mousedown, "mousedown does not get to the map");
                     t.ok(flag.mouseup, "mouseup does get to the map");
                     t.ok(!flag.click, "click does not get to the map");
                     t.ok(!flag.dblclick, "dblclick does not get to the map");
                     resetFlags();
 
-                    simulateClick(window, window.control.buttons[5]);
-                    t.eq( window.mapper.getZoom(), 2, "zoomworld works correctly" );
+                    simulateClick(wnd, wnd.control.buttons[5]);
+                    t.eq( wnd.mapper.getZoom(), 2, "zoomworld works correctly" );
                     t.ok(!flag.mousedown, "mousedown does not get to the map");
                     t.ok(flag.mouseup, "mouseup does get to the map");
                     t.ok(!flag.click, "click does not get to the map");
@@ -115,24 +117,25 @@
                     resetFlags();
                     
                 });
+            });
         }
     }
 
-    function simulateClick(window, elem) {
-      var evt = window.document.createEvent("MouseEvents");
-      evt.initMouseEvent("mousedown", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+    function simulateClick(wnd, elem) {
+      var evt = wnd.document.createEvent("MouseEvents");
+      evt.initMouseEvent("mousedown", true, true, wnd, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
       elem.dispatchEvent(evt);
 
-      evt = window.document.createEvent("MouseEvents");
-      evt.initMouseEvent("mouseup", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+      evt = wnd.document.createEvent("MouseEvents");
+      evt.initMouseEvent("mouseup", true, true, wnd, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
       elem.dispatchEvent(evt);
 
-      evt = window.document.createEvent("MouseEvents");
-      evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+      evt = wnd.document.createEvent("MouseEvents");
+      evt.initMouseEvent("click", true, true, wnd, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
       elem.dispatchEvent(evt);
 
-      evt = window.document.createEvent("MouseEvents");
-      evt.initMouseEvent("dblclick", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+      evt = wnd.document.createEvent("MouseEvents");
+      evt.initMouseEvent("dblclick", true, true, wnd, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
       elem.dispatchEvent(evt);
     }
 
@@ -154,7 +157,7 @@
 
   </script>
 </head>
-<body>
+<body onload="loader()">
     <div id="map" style="width: 1024px; height: 512px;"/>
 </body>
 </html>
