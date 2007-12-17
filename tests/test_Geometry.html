@@ -1,6 +1,7 @@
 <html>
 <head>
   <script src="../lib/OpenLayers.js"></script>
+  <script src="data/geos_wkt_intersects.js"></script>
   <script type="text/javascript">
     var map; 
 
@@ -217,7 +218,39 @@
 
     }
 
-
+    function test_Geometry_intersects_geos_wkt(t) {
+        var wkt = new OpenLayers.Format.WKT();
+        var failures = [];
+        var intersect12, intersect21, msg;
+        for (var i = 0; i < geos_test_data.length; i++) {
+            var testcase = geos_test_data[i];
+            f1 = wkt.read(testcase['wkt1']);
+            f2 = wkt.read(testcase['wkt2']);
+            intersect12 = f1.geometry.intersects(f2.geometry);
+            intersect21 = f2.geometry.intersects(f1.geometry);
+            if(intersect12 != testcase.result) {
+                msg = "f1 should " + (testcase.result ? "" : "not ") +
+                      "intersect f2: f1 = '" + testcase['wkt1'] + "' " +
+                      "f2 = '" + testcase['wkt2'] + "'";
+                failures.push(msg);
+            }
+            if(intersect21 != testcase.result) {
+                msg = "f2 should " + (testcase.result ? "" : "not ") +
+                      "intersect f1: f1 = '" + testcase['wkt1'] + "' " +
+                      "f2 = '" + testcase['wkt2'] + "'";
+                failures.push(msg);
+            }
+        }
+        if(failures.length == 0) {
+            t.plan(1);
+            t.ok(true, "all " + geos_test_data.length + " geos tests pass");
+        } else {
+            t.plan(failures.length);
+            for(var f=0; f<failures.length; ++f) {
+                t.fail(failures[f]);
+            }
+        }
+    }    
 
   </script>
 </head>
