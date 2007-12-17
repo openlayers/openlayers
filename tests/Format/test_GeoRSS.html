@@ -41,7 +41,11 @@
             var feed = shell_start+input[i]+shell_end;
             var data = parser.read(feed);
             var out = parser.write(data);
-            t.eq(out, output[i], "Output gave expected value");
+            var expected_result = output[i];
+            if (OpenLayers.Util.getBrowserName() == "opera") {
+                expected_result = expected_result.replace(/&gt;/g, ">");
+            }
+            t.eq(out, expected_result, "Output gave expected value");
         }
     }
     function test_Format_GeoRSS_gml_roundtrip(t) {
@@ -51,7 +55,11 @@
             var feed = shell_start_gml+input_gml[i]+shell_end_gml;
             var data = parser.read(feed);
             var out = parser.write(data);
-            t.eq(out, output_gml[i], "Output gave expected value");
+            var expected_result = output_gml[i];
+            if (OpenLayers.Util.getBrowserName() == "opera") {
+                expected_result = expected_result.replace(/&gt;/g, ">");
+            }
+            t.eq(out, expected_result, "Output gave expected value");
         }
     }
              
