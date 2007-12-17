@@ -346,6 +346,9 @@
  ];
    
     var shell_start = '<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs"><gml:featureMember xmlns:gml="http://www.opengis.net/gml"><feature:features xmlns:feature="http://mapserver.gis.umn.edu/mapserver" fid="221"><feature:geometry>'; 
+    if (OpenLayers.Util.getBrowserName() == "opera") {
+        shell_start = '<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs"><gml:featureMember xmlns:gml="http://www.opengis.net/gml"><feature:features fid="221" xmlns:feature="http://mapserver.gis.umn.edu/mapserver"><feature:geometry>'; 
+    }    
     var shell_end = '</feature:geometry></feature:features></gml:featureMember></wfs:FeatureCollection>';
     var serialize_geoms = {
         'point': '<gml:Point><gml:coordinates decimal="." cs="," ts=" ">1,2</gml:coordinates></gml:Point>',
