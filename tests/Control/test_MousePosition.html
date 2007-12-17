@@ -22,6 +22,7 @@
         control.destroy();
         
         t.eq(map.events.listeners.mousemove.length, listeners - 1, "mousemove event is unregistered");
+        map.destroy();     
     }
 
     function test_MousePosition_addControl(t) {
@@ -35,6 +36,7 @@
         t.ok(map.controls[map.controls.length - 1] === control, "map.controls contains control");
         t.eq(parseInt(control.div.style.zIndex), map.Z_INDEX_BASE['Control'] + 5, "Control div zIndexed properly" );
         t.eq(parseInt(map.viewPortDiv.lastChild.style.zIndex), map.Z_INDEX_BASE['Control'] + 5, "Viewport div contains control div");
+        map.destroy();     
     }
 
     function test_02_Control_MousePosition_redraw_noLayer_displayProjection(t) {
@@ -52,6 +54,7 @@
         control.redraw({'xy': new OpenLayers.Pixel(10,10)});
         control.redraw({'xy': new OpenLayers.Pixel(12,12)});
         t.eq(control.div.innerHTML, "-175.78125, 85.78125", "innerHTML set correctly when triggered.");
+        map.destroy();     
     }
 
   </script>

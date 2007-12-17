@@ -41,6 +41,7 @@
         activated = handler.deactivate();
         t.ok(activated,
              "deactivate returns true if the handler was active already");
+        map.destroy();     
     }
 
     function test_Handler_Path_bounds(t) {
@@ -64,6 +65,7 @@
         var evt = {xy: new OpenLayers.Pixel(125, 100), which: 1};
         handler.mousemove(evt);
         t.ok(!handler.line.geometry.getBounds().equals(new OpenLayers.Bounds(0,-35.15625,35.15625,0)), "Correct bounds after dragging without letting go. (Came out as "+handler.line.geometry.getBounds().toBBOX() + ".)"); 
+        map.destroy();     
     }     
         
     function test_Handler_Path_destroy(t) {
@@ -92,6 +94,7 @@
              "handler.point is null after destroy");
         t.eq(handler.line, null,
              "handler.line is null after destroy");
+        map.destroy();     
     }
     
 
