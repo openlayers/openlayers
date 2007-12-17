@@ -4,7 +4,7 @@
     <script type="text/javascript">
     
     function test_ModifyFeature_constructor(t) {
-        t.plan(2);
+        t.plan(3);
         var layer = "foo";        
         var options = {
             geometryTypes: "bar"
@@ -15,6 +15,8 @@
              "constructor sets layer correctly");
         t.eq(control.selectControl.geometryTypes, "bar",
              "constructor sets options correctly on feature handler");
+        t.eq(control.mode, OpenLayers.Control.ModifyFeature.RESHAPE,
+             "constructor initializes modification mode correctly");
     }
 
     function test_ModifyFeature_destroy(t) {
@@ -247,7 +249,7 @@
     }  
 
     function test_ModifyFeature_resetVertices(t) {
-        t.plan(15);
+        t.plan(18);
         var layer = new OpenLayers.Layer.Vector();
         var control = new OpenLayers.Control.ModifyFeature(layer);
         var point = new OpenLayers.Geometry.Point(5,6);
@@ -278,20 +280,26 @@
         t.eq(control.vertices[0].geometry.id, control.vertices[3].geometry.id, "First and last vertices are the same");
         t.eq(control.virtualVertices.length, 3, "Correct virtual vertices length (polygon).");
 
-        control.drag = true;
+        control.mode = OpenLayers.Control.ModifyFeature.DRAG;
         control.resetVertices();
         t.ok(control.dragHandle != null, "Drag handle is set");
-        t.eq(control.vertices.length, 4, "Correct vertices length with polygon (drag)");
+        t.eq(control.vertices.length, 0, "Correct vertices length with polygon (DRAG)");
 
-        control.rotate = true;
+        control.mode = OpenLayers.Control.ModifyFeature.ROTATE;
         control.resetVertices();
         t.ok(control.radiusHandle != null, "Radius handle is set");
-        t.eq(control.vertices.length, 0, "Correct vertices length with polygon (rotate)");
+        t.eq(control.vertices.length, 0, "Correct vertices length with polygon (ROTATE)");
 
-        control.rotate = false;
-        control.resize = true;
+        control.mode = OpenLayers.Control.ModifyFeature.RESIZE;
+        control.resetVertices();
         t.ok(control.radiusHandle != null, "Radius handle is set");
-        t.eq(control.vertices.length, 0, "Correct vertices length with polygon (resize)");
+        t.eq(control.vertices.length, 0, "Correct vertices length with polygon (RESIZE)");
+
+        control.mode = OpenLayers.Control.ModifyFeature.RESHAPE | OpenLayers.Control.ModifyFeature.RESIZE;
+        control.resetVertices();
+        t.ok(control.radiusHandle != null, "Radius handle is set");
+        t.eq(control.vertices.length, 4, "Correct vertices length with polygon (RESHAPE | RESIZE)");
+        t.eq(control.virtualVertices.length, 3, "Correct virtual vertices length (RESHAPE | RESIZE)");
     }    
         
     function test_ModifyFeature_onDrag(t) {

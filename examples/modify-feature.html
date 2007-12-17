@@ -69,12 +69,25 @@
         }
         
         function update() {
+            // reset modification mode
+            controls.modify.mode = OpenLayers.Control.ModifyFeature.RESHAPE;
             var rotate = document.getElementById("rotate").checked;
-            controls.modify.rotate = rotate;
+            if(rotate) {
+                controls.modify.mode |= OpenLayers.Control.ModifyFeature.ROTATE;
+            }
             var resize = document.getElementById("resize").checked;
-            controls.modify.resize = resize;
+            if(resize) {
+                controls.modify.mode |= OpenLayers.Control.ModifyFeature.RESIZE;
+            }
             var drag = document.getElementById("drag").checked;
-            controls.modify.drag = drag;
+            if(drag) {
+                controls.modify.mode |= OpenLayers.Control.ModifyFeature.DRAG;
+            }
+            // disable reshape mode if at least one of modes rotate, resize,
+            // drag is enabled
+            if (rotate || resize || drag) {
+                controls.modify.mode &= ~OpenLayers.Control.ModifyFeature.RESHAPE;
+            }
             var sides = parseInt(document.getElementById("sides").value);
             sides = Math.max(3, isNaN(sides) ? 0 : sides);
             controls.regular.handler.sides = sides;
