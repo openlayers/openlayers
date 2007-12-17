@@ -211,7 +211,10 @@
                        (window.location.host == "localhost") ||
                        (window.location.host == "openlayers.org");
         
-        if(validkey) {
+        if (OpenLayers.Util.getBrowserName() == "opera") {
+            t.plan(1);
+            t.debug_print("Can't test google reprojection in Opera.");
+        } else if(validkey) {
             t.plan(5);
             var map = new OpenLayers.Map('map');
             var layer = new OpenLayers.Layer.Google("Google");

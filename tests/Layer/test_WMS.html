@@ -278,8 +278,10 @@
         var validkey = (window.location.protocol == "file:") ||
                        (window.location.host == "localhost") ||
                        (window.location.host == "openlayers.org");
-        
-        if(validkey) {
+        if (OpenLayers.Util.getBrowserName() == "opera") {
+            t.plan(1);
+            t.debug_print("Can't test google reprojection in Opera.");
+        } else if(validkey) {
             t.plan(5);
 
             var map = new OpenLayers.Map('map');
@@ -290,10 +292,9 @@
             wmslayer.isBaseLayer=false;
             map.addLayer(wmslayer);
             map.setCenter(new OpenLayers.LonLat(0,0), 5);
-            
             var tile = wmslayer.grid[0][0];
             t.eq( tile.bounds.left, -22.5, "left side matches" ); 
-            t.eq( tile.bounds.right, -11.25, "top side matches" ); 
+            t.eq( tile.bounds.right, -11.25, "right side matches" ); 
             t.eq( tile.bounds.bottom.toFixed(6), '11.178402', "bottom side matches" ); 
             t.eq( tile.bounds.top.toFixed(6), '21.943046', "top side matches" ); 
             map.destroy();
