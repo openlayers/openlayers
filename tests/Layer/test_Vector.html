@@ -16,16 +16,33 @@
     }
     
     function test_02_Layer_Vector_addFeatures(t) {
-        t.plan(2);
+        t.plan(4);
     
         var layer = new OpenLayers.Layer.Vector(name);
 
         var point = new OpenLayers.Geometry.Point(-111.04, 45.68);
         var pointFeature = new OpenLayers.Feature.Vector(point);
+
+        layer.preFeatureInsert = function(feature) {
+            t.ok(feature == pointFeature, "OpenLayers.Layer.Vector.addFeatures calls preFeatureInsert with the right arg");
+        }
+        layer.onFeatureInsert = function(feature) {
+            t.ok(feature == pointFeature, "OpenLayers.Layer.Vector.addFeatures calls onFeatureInsert with the right arg");
+        }
+
         layer.addFeatures([pointFeature]);
         
         t.eq(layer.features.length, 1, "OpenLayers.Layer.Vector.addFeatures adds something to the array");
         t.ok(layer.features[0] == pointFeature, "OpenLayers.Layer.Vector.addFeatures returns an array of features");
+
+        layer.preFeatureInsert = function(feature) {
+            t.fail("OpenLayers.Layer.Vector.addFeatures calls preFeatureInsert while it must not");
+        }
+        layer.onFeatureInsert = function(feature) {
+            t.fail("OpenLayers.Layer.Vector.addFeatures calls onFeatureInsert while it must not");
+        }
+
+        layer.addFeatures([pointFeature], {silent: true});
     }
 
     function test_03_Layer_Vector_removeFeatures(t) {
