@@ -899,7 +899,9 @@ Test.AnotherWay._test_page_onload=function()
 			}
 		}else { // otherwise (not IE) it ought to work like this
 			for( var i in Test.AnotherWay._g_test_iframe) {
-				if( typeof( Test.AnotherWay._g_test_iframe[i] )=='function' ) {
+				// Hack to prevent failure in FF3.0b1 
+                if (i == "innerWidth" || i == "innerHeight") { continue; }
+                if( typeof( Test.AnotherWay._g_test_iframe[i] )=='function' ) {
 					if( i.substring( 0, 4 )=="test" ) {
 						test_page.test_objects.push( new Test.AnotherWay._test_object_t( i ) );
 					}
