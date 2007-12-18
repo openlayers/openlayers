@@ -134,7 +134,13 @@
         } else {
             t.eq(popup.div.style.filter, "alpha(opacity=" + opacity*100 + ")", "good default popup.opacity");
         }
-        t.ok(popup.div.style.border.indexOf(border) != -1, "good default popup.border");
+        //Safari 3 separates the border style into separate entities when reading it
+        if (OpenLayers.Util.getBrowserName() == 'safari') {
+          var s = border.split(' ');
+          t.ok(popup.div.style.borderTopWidth == s[0] && popup.div.style.borderTopStyle == s[1], "good default popup.border")
+        } else {
+          t.ok(popup.div.style.border.indexOf(border) != -1, "good default popup.border");
+        }
 
         x += 50;
         popup.moveTo(new OpenLayers.Pixel(x, y));

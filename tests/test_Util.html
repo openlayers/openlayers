@@ -58,12 +58,20 @@
         t.ok(imgCorrect, "div.style.backgroundImage correctly");    
 
         t.eq( div.style.position, position, "div.style.positionset correctly");    
-        t.ok( (div.style.border.indexOf(border) != -1), "div.style.border set correctly");    
+        //Safari 3 separates the border style into separate entities when reading it
+        if (OpenLayers.Util.getBrowserName() == 'safari') {
+          var s = border.split(' ');
+          t.ok(div.style.borderTopWidth == s[0] && div.style.borderTopStyle == s[1], "good default popup.border")
+        } else {
+          t.ok( (div.style.border.indexOf(border) != -1), "div.style.border set correctly");
+        }
+            
         //Safari 3 separates style overflow into overflow-x and overflow-y
         var prop = (OpenLayers.Util.getBrowserName() == 'safari') ? 'overflowX' : 'overflow';
         t.eq( div.style[prop], overflow, "div.style.overflow set correctly");    
         t.eq( parseFloat(div.style.opacity), opacity, "element.style.opacity set correctly");    
-        var filterString = 'alpha(opacity=' + (opacity * 100) + ')';
+        //Safari 3 returns null for this value, which is okay
+        var filterString = (OpenLayers.Util.getBrowserName() == 'safari') ? null : 'alpha(opacity=' + (opacity * 100) + ')';
         t.eq( div.style.filter, filterString, "element.style.filter set correctly");
 
         //test defaults
@@ -83,7 +91,12 @@
         t.eq(div.style.backgroundImage, "", "div.style.backgroundImage correctly");    
 
         t.eq( div.style.position, "absolute", "div.style.positionset correctly");    
-        t.eq( div.style.border, "", "div.style.border set correctly");    
+        //Safari 3 separates the border style into separate entities when reading it
+        if (OpenLayers.Util.getBrowserName() == 'safari') {
+          t.ok(div.style.borderTopWidth == '' && div.style.borderTopStyle == '', "good default popup.border")
+        } else {
+          t.eq( div.style.border, "", "div.style.border set correctly");    
+        }
         //Safari 3 separates style overflow into overflow-x and overflow-y
         var prop = (OpenLayers.Util.getBrowserName() == 'safari') ? 'overflowX' : 'overflow';
         t.eq(div.style[prop], "", "div.style.overflow set correctly");    
@@ -116,11 +129,18 @@
         t.eq( image.style.width, sz.w + "px", "image.style.width set correctly");    
         t.eq( image.style.height, sz.h + "px", "image.style.height set correctly");    
 
-        t.ok( (image.style.border.indexOf(border) != -1), "image.style.border set correctly");    
+        //Safari 3 separates the border style into separate entities when reading it
+        if (OpenLayers.Util.getBrowserName() == 'safari') {
+          var s = border.split(' ');
+          t.ok(image.style.borderTopWidth == s[0] && image.style.borderTopStyle == s[1], "good default popup.border")
+        } else {
+          t.ok( (image.style.border.indexOf(border) != -1), "image.style.border set correctly");
+        }
         t.eq( image.src, img, "image.style.backgroundImage correctly");    
         t.eq( image.style.position, position, "image.style.position set correctly");    
         t.eq( parseFloat(image.style.opacity), opacity, "image.style.opacity set correctly");    
-        var filterString = 'alpha(opacity=' + (opacity * 100) + ')';
+        //Safari 3 returns null for this value, which is okay
+        var filterString = (OpenLayers.Util.getBrowserName() == 'safari') ? null : 'alpha(opacity=' + (opacity * 100) + ')';
         t.eq( image.style.filter, filterString, "element.style.filter set correctly");
 
         //test defaults
@@ -232,7 +252,8 @@
         if (OpenLayers.Util.alphaHack()) {
             filterString = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.openlayers.org/images/OpenLayers.trac.png', sizingMethod='crop') alpha(opacity=50)";
         } else {
-            filterString = 'alpha(opacity=' + (opacity * 100) + ')';
+            //Safari 3 returns null for this value, which is okay
+            var filterString = (OpenLayers.Util.getBrowserName() == 'safari') ? null : 'alpha(opacity=' + (opacity * 100) + ')';
         }        
         t.eq( imageDiv.style.filter, filterString, "element.style.filter set correctly");
 
@@ -247,7 +268,14 @@
         t.eq( image.style.width, sz.w + "px", "image.style.width set correctly");    
         t.eq( image.style.height, sz.h + "px", "image.style.height set correctly");    
 
-        t.ok( (image.style.border.indexOf(border) != -1), "image.style.border set correctly");    
+        //Safari 3 separates the border style into separate entities when reading it
+        if (OpenLayers.Util.getBrowserName() == 'safari') {
+          var s = border.split(' ');
+          t.ok(image.style.borderTopWidth == s[0] && image.style.borderTopStyle == s[1], "good default popup.border")
+        } else {
+          t.ok( (image.style.border.indexOf(border) != -1), "image.style.border set correctly");
+        }
+        
         t.eq( image.style.position, "relative", "image.style.positionset correctly");    
 
         if (OpenLayers.Util.alphaHack()) {
@@ -292,7 +320,9 @@
 
         t.eq(parseFloat(element.style.opacity), opacity, 
              "element.style.opacity set correctly when opacity = " + opacity);
-        t.eq(element.style.filter, 'alpha(opacity=' + (opacity * 100) + ')', 
+        //Safari 3 returns null for this value, which is okay
+        var filterString = (OpenLayers.Util.getBrowserName() == 'safari') ? null : 'alpha(opacity=' + (opacity * 100) + ')';
+        t.eq(element.style.filter, filterString, 
              "element.style.filter set correctly when opacity = " + opacity);
 
         OpenLayers.Util.modifyDOMElement(element, null, null, null, null, 
@@ -300,7 +330,9 @@
     
         t.eq(parseFloat(element.style.opacity), opacity, 
              "element.style.opacity not changed if the value is incorrect");
-        t.eq(element.style.filter, 'alpha(opacity=' + (opacity * 100) + ')', 
+        //Safari 3 returns null for this value, which is okay
+        var filterString = (OpenLayers.Util.getBrowserName() == 'safari') ? null : 'alpha(opacity=' + (opacity * 100) + ')';
+        t.eq(element.style.filter, filterString, 
              "element.style.filter not changed if the value is incorrect");
 
         OpenLayers.Util.modifyDOMElement(element, null, null, null, null, 
@@ -308,7 +340,9 @@
     
         t.eq(parseFloat(element.style.opacity), opacity, 
              "element.style.opacity not changed if the value is incorrect");
-        t.eq(element.style.filter, 'alpha(opacity=' + (opacity * 100) + ')', 
+        //Safari 3 returns null for this value, which is okay
+        var filterString = (OpenLayers.Util.getBrowserName() == 'safari') ? null : 'alpha(opacity=' + (opacity * 100) + ')';
+        t.eq(element.style.filter, filterString, 
              "element.style.filter not changed if the value is incorrect");
 
         opacity = 1.00;
@@ -317,7 +351,9 @@
 
         t.eq(element.style.opacity, '', 
              "element.style.opacity is removed when opacity = " + opacity);
-        t.eq(element.style.filter, '', 
+        //Safari 3 returns null for this value, which is okay
+        var filterString = (OpenLayers.Util.getBrowserName() == 'safari') ? null : '';
+        t.eq(element.style.filter, filterString, 
              "element.style.filter is removed when opacity = " + opacity);
     }
 
@@ -345,12 +381,19 @@
         t.eq( element.style.height, sz.h + "px", "element.style.height set correctly");    
 
         t.eq( element.style.position, position, "element.style.position set correctly");    
-        t.ok( (element.style.border.indexOf(border) != -1), "element.style.border set correctly");    
+        //Safari 3 separates the border style into separate entities when reading it
+        if (OpenLayers.Util.getBrowserName() == 'safari') {
+          var s = border.split(' ');
+          t.ok(element.style.borderTopWidth == s[0] && element.style.borderTopStyle == s[1], "good default popup.border")
+        } else {
+          t.ok( (element.style.border.indexOf(border) != -1), "element.style.border set correctly");
+        }
         //Safari 3 separates style overflow into overflow-x and overflow-y
         var prop = (OpenLayers.Util.getBrowserName() == 'safari') ? 'overflowX' : 'overflow';
         t.eq( element.style[prop], overflow, "element.style.overflow set correctly");    
         t.eq( parseFloat(element.style.opacity), opacity, "element.style.opacity set correctly");    
-        var filterString = 'alpha(opacity=' + (opacity * 100) + ')';
+        //Safari 3 returns null for this value, which is okay
+        var filterString = (OpenLayers.Util.getBrowserName() == 'safari') ? null : 'alpha(opacity=' + (opacity * 100) + ')';
         t.eq( element.style.filter, filterString, "element.style.filter set correctly");
     }
 
@@ -393,7 +436,8 @@
             filterString = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.openlayers.org/images/OpenLayers.trac.png', sizingMethod='crop') alpha(opacity=50)";
             t.ok( true, "skipping element test outside of Mozilla");
         } else {
-            var filterString = 'alpha(opacity=' + (opacity * 100) + ')';
+            //Safari 3 returns null for this value, which is okay
+            var filterString = (OpenLayers.Util.getBrowserName() == 'safari') ? null : 'alpha(opacity=' + (opacity * 100) + ')';
             t.ok( image.nodeName == "IMG", "createImage creates a valid HTMLImageElement" );
         }
         t.eq( imageDiv.style.filter, filterString, "element.style.filter set correctly");
@@ -402,7 +446,14 @@
         t.eq( image.style.width, sz.w + "px", "image.style.width set correctly");    
         t.eq( image.style.height, sz.h + "px", "image.style.height set correctly");    
 
-        t.ok( (image.style.border.indexOf(border) != -1), "image.style.border set correctly");    
+        //Safari 3 separates the border style into separate entities when reading it
+        if (OpenLayers.Util.getBrowserName() == 'safari') {
+          var s = border.split(' ');
+          t.ok(image.style.borderTopWidth == s[0] && image.style.borderTopStyle == s[1], "good default popup.border")
+        } else {
+          t.ok( (image.style.border.indexOf(border) != -1), "image.style.border set correctly");
+        }
+
         t.eq( image.style.position, "relative", "image.style.positionset correctly");    
 
         if (OpenLayers.Util.alphaHack()) {
