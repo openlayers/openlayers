@@ -83,9 +83,6 @@
              "correctly writes an XML DOM doc");
 
         var out = format.write(doc.firstChild);
-        out = out.replace(/[\r\n]/g, '');
-        out = out.replace( /<\?.*\?>/, '')
-        var expected = text.replace(/<\?.*\?>/, '')
         t.eq(expected, out,
              "correctly writes an XML DOM node");
     }
