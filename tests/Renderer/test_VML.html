@@ -89,11 +89,11 @@
         
         var size = new OpenLayers.Size(1,2);
         r.setSize(size);
-        t.eq(r.rendererRoot.style.width, "100%", "rendererRoot width is correct");
-        t.eq(r.rendererRoot.style.height, "100%", "rendererRoot height is correct");
+        t.eq(r.rendererRoot.style.width, "1px", "rendererRoot width is correct");
+        t.eq(r.rendererRoot.style.height, "2px", "rendererRoot height is correct");
         
-        t.eq(r.root.style.width, "100%", "root width is correct");
-        t.eq(r.root.style.height, "100%", "root height is correct");
+        t.eq(r.root.style.width, "1px", "root width is correct");
+        t.eq(r.root.style.height, "2px", "root height is correct");
     }
 
     function test_VML_drawpoint(t) {
