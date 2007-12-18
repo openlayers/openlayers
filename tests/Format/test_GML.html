@@ -42,26 +42,31 @@
         var point = shell_start + serialize_geoms['point'] + shell_end;
         data = parser.read(point);
         var output = parser.write(data);
+        var output = output.replace(/<\?[^>]*\?>/, ''); // Remove XML Prolog
         t.eq(output, point, "Point geometry round trips correctly.");
         
         var linestring = shell_start + serialize_geoms['linestring'] + shell_end;
         data = parser.read(linestring);
         var output = parser.write(data);
+        var output = output.replace(/<\?[^>]*\?>/, ''); // Remove XML Prolog
         t.eq(output, linestring, "Line geometry round trips correctly.");
         
         var polygon = shell_start + serialize_geoms['polygon'] + shell_end;
         data = parser.read(polygon);
         var output = parser.write(data);
+        output = output.replace(/<\?[^>]*\?>/, ''); // Remove XML Prolog
         t.eq(output, polygon, "Poly geometry round trips correctly.");
         
         var multipoint = shell_start + serialize_geoms['multipoint'] + shell_end;
         data = parser.read(multipoint);
         var output = parser.write(data);
+        var output = output.replace(/<\?[^>]*\?>/, ''); // Remove XML Prolog
         t.eq(output, multipoint, "MultiPoint geometry round trips correctly.");
         
         var multilinestring = shell_start + serialize_geoms['multilinestring'] + shell_end;
         data = parser.read(multilinestring);
         var output = parser.write(data);
+        var output = output.replace(/<\?[^>]*\?>/, ''); // Remove XML Prolog
         t.eq(output, multilinestring, "MultiLine geometry round trips correctly.");
     }    
     function test_Format_GML_read_point_geom(t) {
@@ -288,30 +293,35 @@
         var point = shell_start + serialize_geoms_yx['point'] + shell_end;
         data = parser.read(point);
         var output = parser.write(data);
+        var output = output.replace(/<\?[^>]*\?>/, ''); // Remove XML Prolog
         t.eq(output, point_xy, "Point geometry round trips correctly.");
         
         var linestring_xy = shell_start + serialize_geoms['linestring'] + shell_end;
         var linestring = shell_start + serialize_geoms_yx['linestring'] + shell_end;
         data = parser.read(linestring);
         var output = parser.write(data);
+        var output = output.replace(/<\?[^>]*\?>/, ''); // Remove XML Prolog
         t.eq(output, linestring_xy, "Line geometry round trips correctly.");
         
         var polygon_xy = shell_start + serialize_geoms['polygon'] + shell_end;
         var polygon = shell_start + serialize_geoms_yx['polygon'] + shell_end;
         data = parser.read(polygon);
         var output = parser.write(data);
+        output = output.replace(/<\?[^>]*\?>/, ''); // Remove XML Prolog
         t.eq(output, polygon_xy, "Poly geometry round trips correctly.");
         
         var multipoint_xy = shell_start + serialize_geoms['multipoint'] + shell_end;
         var multipoint = shell_start + serialize_geoms_yx['multipoint'] + shell_end;
         data = parser.read(multipoint);
         var output = parser.write(data);
+        var output = output.replace(/<\?[^>]*\?>/, ''); // Remove XML Prolog
         t.eq(output, multipoint_xy, "MultiPoint geometry round trips correctly.");
         
         var multilinestring_xy = shell_start + serialize_geoms['multilinestring'] + shell_end;
         var multilinestring = shell_start + serialize_geoms_yx['multilinestring'] + shell_end;
         data = parser.read(multilinestring);
         var output = parser.write(data);
+        var output = output.replace(/<\?[^>]*\?>/, ''); // Remove XML Prolog
         t.eq(output, multilinestring_xy, "MultiLine geometry round trips correctly.");
     }
     

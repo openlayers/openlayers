@@ -58,6 +58,7 @@
         var format = new OpenLayers.Format.KML(options);
         var features = format.read(kmlExpected);
         var kmlOut = format.write(features);
+        var kmlOut = kmlOut.replace(/<\?[^>]*\?>/, ''); // Remove XML Prolog
         t.eq(kmlOut, kmlExpected, "correctly writes an KML doc string");
     }
     
@@ -83,6 +84,7 @@
         feature = new OpenLayers.Feature.Vector(multi, {name: "test name"});
         output = format.write(feature);
         expected = '<kml xmlns="http://earth.google.com/kml/2.0"><Folder><name>OpenLayers export</name><description>test output</description><Placemark><name>test name</name><description>No description available</description><MultiGeometry><Point><coordinates>0,1</coordinates></Point></MultiGeometry></Placemark></Folder></kml>';
+        var output = output.replace(/<\?[^>]*\?>/, ''); // Remove XML Prolog
         t.eq(output, expected, "multipoint correctly written");
         
         // test multilinestring
@@ -95,6 +97,7 @@
         feature = new OpenLayers.Feature.Vector(multi, {name: "test name"});
         output = format.write(feature);
         expected = '<kml xmlns="http://earth.google.com/kml/2.0"><Folder><name>OpenLayers export</name><description>test output</description><Placemark><name>test name</name><description>No description available</description><MultiGeometry><LineString><coordinates>1,0 0,1</coordinates></LineString></MultiGeometry></Placemark></Folder></kml>';
+        var output = output.replace(/<\?[^>]*\?>/, ''); // Remove XML Prolog
         t.eq(output, expected, "multilinestring correctly written");
 
         // test multipolygon
@@ -110,6 +113,7 @@
         feature = new OpenLayers.Feature.Vector(multi, {name: "test name"});
         output = format.write(feature);
         expected = '<kml xmlns="http://earth.google.com/kml/2.0"><Folder><name>OpenLayers export</name><description>test output</description><Placemark><name>test name</name><description>No description available</description><MultiGeometry><Polygon><outerBoundaryIs><LinearRing><coordinates>0,0 1,0 0,1 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon></MultiGeometry></Placemark></Folder></kml>';
+        var output = output.replace(/<\?[^>]*\?>/, ''); // Remove XML Prolog
         t.eq(output, expected, "multilinestring correctly written");
 
     }
