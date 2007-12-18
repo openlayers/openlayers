@@ -120,7 +120,9 @@
         t.eq(contentDiv.style.width, "500px", "correct content div width"); 
         t.eq(contentDiv.style.height, "400px", "correct content div height");
         t.eq(contentDiv.style.position, "relative", "correct content div position");
-        t.eq(contentDiv.style.overflow, "hidden", "correct content div overflow");
+        //Safari 3 separates style overflow into overflow-x and overflow-y
+        var prop = (OpenLayers.Util.getBrowserName() == 'safari') ? 'overflowX' : 'overflow';
+        t.eq(contentDiv.style[prop], "hidden", "correct content div overflow");
         t.eq(contentDiv.innerHTML, content, "correct content div content");
 
         var bColor = popup.div.style.backgroundColor;

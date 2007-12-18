@@ -59,7 +59,9 @@
 
         t.eq( div.style.position, position, "div.style.positionset correctly");    
         t.ok( (div.style.border.indexOf(border) != -1), "div.style.border set correctly");    
-        t.eq( div.style.overflow, overflow, "div.style.overflow set correctly");    
+        //Safari 3 separates style overflow into overflow-x and overflow-y
+        var prop = (OpenLayers.Util.getBrowserName() == 'safari') ? 'overflowX' : 'overflow';
+        t.eq( div.style[prop], overflow, "div.style.overflow set correctly");    
         t.eq( parseFloat(div.style.opacity), opacity, "element.style.opacity set correctly");    
         var filterString = 'alpha(opacity=' + (opacity * 100) + ')';
         t.eq( div.style.filter, filterString, "element.style.filter set correctly");
@@ -82,7 +84,9 @@
 
         t.eq( div.style.position, "absolute", "div.style.positionset correctly");    
         t.eq( div.style.border, "", "div.style.border set correctly");    
-        t.eq(div.style.overflow, "", "div.style.overflow set correctly");    
+        //Safari 3 separates style overflow into overflow-x and overflow-y
+        var prop = (OpenLayers.Util.getBrowserName() == 'safari') ? 'overflowX' : 'overflow';
+        t.eq(div.style[prop], "", "div.style.overflow set correctly");    
         t.ok( !div.style.opacity, "element.style.opacity set correctly");    
         t.ok( !div.style.filter, "element.style.filter set correctly");
 
@@ -342,7 +346,9 @@
 
         t.eq( element.style.position, position, "element.style.position set correctly");    
         t.ok( (element.style.border.indexOf(border) != -1), "element.style.border set correctly");    
-        t.eq( element.style.overflow, overflow, "element.style.overflow set correctly");    
+        //Safari 3 separates style overflow into overflow-x and overflow-y
+        var prop = (OpenLayers.Util.getBrowserName() == 'safari') ? 'overflowX' : 'overflow';
+        t.eq( element.style[prop], overflow, "element.style.overflow set correctly");    
         t.eq( parseFloat(element.style.opacity), opacity, "element.style.opacity set correctly");    
         var filterString = 'alpha(opacity=' + (opacity * 100) + ')';
         t.eq( element.style.filter, filterString, "element.style.filter set correctly");

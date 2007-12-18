@@ -25,7 +25,9 @@
         t.ok( box instanceof OpenLayers.Marker.Box, "new OpenLayers.Marker.Box returns Box object" );
         t.ok( box.bounds.equals(bounds), "bounds object correctly set");
         t.ok( box.div != null, "div created");
-        t.eq( box.div.style.overflow, "hidden", "div style overflow hidden");
+        //Safari 3 separates style overflow into overflow-x and overflow-y
+        var prop = (OpenLayers.Util.getBrowserName() == 'safari') ? 'overflowX' : 'overflow';
+        t.eq( box.div.style[prop], "hidden", "div style overflow hidden");
         t.ok( box.events != null, "events object created");
         t.eq( g_Color, borderColor, "setBorder called with correct border color");        
         t.eq( g_Width, borderWidth, "setBorder called with correct border width");        

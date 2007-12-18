@@ -75,7 +75,9 @@
           t.eq(map.popups.length, 1, "Popup opened correctly");
           layer.markers[1].events.triggerEvent('click', event);
           t.eq(map.popups.length, 1, "1st popup gone, 2nd Popup opened correctly");
-          t.eq(map.popups[0].contentDiv.style.overflow,"auto", "default Popup overflow correct");
+          //Safari 3 separates style overflow into overflow-x and overflow-y
+          var prop = (OpenLayers.Util.getBrowserName() == 'safari') ? 'overflowX' : 'overflow';
+          t.eq(map.popups[0].contentDiv.style[prop],"auto", "default Popup overflow correct");
         });
     }
     function test_03_Layer_Text_overflow (t) {
@@ -92,10 +94,14 @@
         t.delay_call( 1, function() {  
           layer.markers[0].events.triggerEvent('click', event);
           t.eq(map.popups.length, 1, "Popup opened correctly");
-          t.eq(map.popups[0].contentDiv.style.overflow,"auto", "Popup overflow read from file");
+          //Safari 3 separates style overflow into overflow-x and overflow-y
+          var prop = (OpenLayers.Util.getBrowserName() == 'safari') ? 'overflowX' : 'overflow';
+          t.eq(map.popups[0].contentDiv.style[prop],"auto", "Popup overflow read from file");
           layer.markers[1].events.triggerEvent('click', event);
           t.eq(map.popups.length, 1, "1st popup gone, 2nd Popup opened correctly");
-          t.eq(map.popups[0].contentDiv.style.overflow,"hidden", "Popup overflow read from file");
+          //Safari 3 separates style overflow into overflow-x and overflow-y
+          var prop = (OpenLayers.Util.getBrowserName() == 'safari') ? 'overflowX' : 'overflow';
+          t.eq(map.popups[0].contentDiv.style[prop],"hidden", "Popup overflow read from file");
         });
     }
     function test_04_Layer_Text_events_nopopups (t) {
