@@ -84,6 +84,8 @@
         var out = format.write(
           format.getElementsByTagNameNS(doc,
            "http://namespace.openlayers.org","root")[0]);
+        out = out.replace(/[\r\n]/g, '');
+        out = out.replace( /<\?.*\?>/, '')
         t.eq(out, expected,
              "correctly writes an XML DOM node");
     }
