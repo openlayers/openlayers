@@ -71,7 +71,7 @@
     }
 
     function test_Format_XML_write(t) {
-        t.plan(1);
+        t.plan(2);
 
         var format = new OpenLayers.Format.XML();
         var doc = format.read(text);
@@ -81,6 +81,13 @@
         var expected = text.replace(/<\?.*\?>/, '')
         t.eq(expected, out,
              "correctly writes an XML DOM doc");
+
+        var out = format.write(doc.firstChild);
+        out = out.replace(/[\r\n]/g, '');
+        out = out.replace( /<\?.*\?>/, '')
+        var expected = text.replace(/<\?.*\?>/, '')
+        t.eq(expected, out,
+             "correctly writes an XML DOM node");
     }
 
     function test_Format_XML_createElementNS(t) {
@@ -102,6 +109,9 @@
              "node has correct namespace uri");
         
         var doc = format.read(text);
+        if (doc.importNode) {
+            node = doc.importNode(node, true);
+        }    
         t.ok(doc.documentElement.appendChild(node),
              "node can be appended to a doc root");
     }
@@ -120,6 +130,9 @@
              "node has correct value");
         
         var doc = format.read(text);
+        if (doc.importNode) {
+            node = doc.importNode(node, true);
+        }    
         t.ok(doc.documentElement.appendChild(node),
              "node can be appended to a doc root");
     }
