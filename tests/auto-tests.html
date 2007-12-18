@@ -698,7 +698,7 @@ Test.AnotherWay._test_object_t.prototype.delay_call=function()
 	var timeout_ms=200;
 	for( var i=0; i<arguments.length; ++i ) {
 		if( typeof( arguments[i] )!="function" ) {
-			timeout_ms=1000*arguments[i];
+			timeout_ms=3000*arguments[i];
 		}else {
 			var action={ action_kind: "call", call_delay_milliseconds: timeout_ms, call_fn: arguments[i] };
 			this.delay_total_milliseconds_left+=Test.AnotherWay._action_estimate_milliseconds( action );
