@@ -81,9 +81,10 @@
         var expected = text.replace(/<\?.*\?>/, '')
         t.eq(expected, out,
              "correctly writes an XML DOM doc");
-
-        var out = format.write(doc.firstChild);
-        t.eq(expected, out,
+        var out = format.write(
+          format.getElementsByTagNameNS(doc,
+           "http://namespace.openlayers.org","root")[0]);
+        t.eq(out, expected,
              "correctly writes an XML DOM node");
     }
 
