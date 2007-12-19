@@ -33,6 +33,16 @@
         t.ok( map.getNumZoomLevels() > 0, "map has a default numZoomLevels" );
     }
 
+    function test_Map_setOptions(t) {
+        t.plan(2);
+        map = new OpenLayers.Map('map', {maxExtent: new OpenLayers.Bounds(100, 200, 300, 400)});
+        map.setOptions({theme: 'foo'});
+        
+        t.eq(map.theme, 'foo', "theme is correctly set by setOptions");
+        t.ok(map.maxExtent.equals(new OpenLayers.Bounds(100, 200, 300, 400)), 
+             "maxExtent is correct after calling setOptions");
+    }
+    
     function test_02_Map_center(t) {
         t.plan(3);
         map = new OpenLayers.Map('map');
