@@ -85,6 +85,35 @@
         }
     }
 
+    function test_Layer_Google_setMapType (t) {
+        if (validkey) {
+            t.plan(3);
+            var layer = new OpenLayers.Layer.Google('Goog Layer');
+            layer.map = {'events':{'unregister': function() {}}};
+            layer.loadMapObject();
+            layer.mapObject.getCenter= function()  { return true; }
+            layer.mapObject.getMapTypes = function() { return [0, 1]; }
+            layer.mapObject.addMapType = function(type) {
+                t.eq(type, 5, "new map type passed correctly.");
+            }
+            layer.mapObject.setMapType = function(arg) { 
+               t.eq(arg, 5, "got map type"); 
+            }
+            layer.type = 5;
+            layer.setMapType();
+            layer.mapObject.setMapType = function(arg) { 
+               t.eq(arg, 0, "got map type"); 
+            }
+            layer.type = 0
+            layer.setMapType();
+            
+        } else {
+            t.plan(0);
+            t.debug_print("Google tests can't be run from " +
+                          window.location.host);
+        }
+    }
+
     function test_04_Layer_Google_Translation_pixel (t) {
         if(validkey) {
             t.plan( 4 );
