@@ -1,4 +1,4 @@
-Format: 1.35
+Format: Development Release 12-07-2007 (1.35 base)
 
 
 Title: OpenLayers
@@ -7,6 +7,22 @@ SubTitle: JavaScript Mapping Library
 # You can add a footer to your documentation like this:
 # Footer: [text]
 # If you want to add a copyright notice, this would be the place to do it.
+
+# You can add a timestamp to your documentation like one of these:
+# Timestamp: Generated on month day, year
+# Timestamp: Updated mm/dd/yyyy
+# Timestamp: Last updated mon day
+#
+#   m     - One or two digit month.  January is "1"
+#   mm    - Always two digit month.  January is "01"
+#   mon   - Short month word.  January is "Jan"
+#   month - Long month word.  January is "January"
+#   d     - One or two digit day.  1 is "1"
+#   dd    - Always two digit day.  1 is "01"
+#   day   - Day with letter extension.  1 is "1st"
+#   yy    - Two digit year.  2006 is "06"
+#   yyyy  - Four digit year.  2006 is "2006"
+#   year  - Four digit year.  2006 is "2006"
 
 
 # --------------------------------------------------------------------------
@@ -80,19 +96,20 @@ Group: OpenLayers  {
 
    Group: Feature  {
 
-      File: Feature  (OpenLayers/Feature.js)
+      File: Feature  (no auto-title, OpenLayers/Feature.js)
       File: Vector  (no auto-title, OpenLayers/Feature/Vector.js)
       File: WFS  (no auto-title, OpenLayers/Feature/WFS.js)
       }  # Group: Feature
 
    Group: Format  {
 
-      File: Format  (OpenLayers/Format.js)
+      File: Format  (no auto-title, OpenLayers/Format.js)
       File: GeoJSON  (no auto-title, OpenLayers/Format/GeoJSON.js)
       File: GeoRSS  (no auto-title, OpenLayers/Format/GeoRSS.js)
       File: GML  (no auto-title, OpenLayers/Format/GML.js)
       File: JSON  (no auto-title, OpenLayers/Format/JSON.js)
       File: KML  (no auto-title, OpenLayers/Format/KML.js)
+      File: Text  (no auto-title, OpenLayers/Format/Text.js)
       File: WFS  (no auto-title, OpenLayers/Format/WFS.js)
       File: WKT  (no auto-title, OpenLayers/Format/WKT.js)
       File: XML  (no auto-title, OpenLayers/Format/XML.js)
@@ -100,7 +117,7 @@ Group: OpenLayers  {
 
    Group: Geometry  {
 
-      File: Geometry  (OpenLayers/Geometry.js)
+      File: Geometry  (no auto-title, OpenLayers/Geometry.js)
       File: Collection  (no auto-title, OpenLayers/Geometry/Collection.js)
       File: Curve  (no auto-title, OpenLayers/Geometry/Curve.js)
       File: LinearRing  (no auto-title, OpenLayers/Geometry/LinearRing.js)
@@ -116,8 +133,9 @@ Group: OpenLayers  {
 
    Group: Handler  {
 
-      File: Handler  (OpenLayers/Handler.js)
+      File: Handler  (no auto-title, OpenLayers/Handler.js)
       File: Box  (no auto-title, OpenLayers/Handler/Box.js)
+      File: Click  (no auto-title, OpenLayers/Handler/Click.js)
       File: Drag  (no auto-title, OpenLayers/Handler/Drag.js)
       File: Feature  (no auto-title, OpenLayers/Handler/Feature.js)
       File: Keyboard  (no auto-title, OpenLayers/Handler/Keyboard.js)
@@ -132,7 +150,7 @@ Group: OpenLayers  {
 
    Group: Layer  {
 
-      File: Layer  (OpenLayers/Layer.js)
+      File: Layer  (no auto-title, OpenLayers/Layer.js)
       File: Boxes  (no auto-title, OpenLayers/Layer/Boxes.js)
       File: EventPane  (no auto-title, OpenLayers/Layer/EventPane.js)
       File: FixedZoomLevels  (no auto-title, OpenLayers/Layer/FixedZoomLevels.js)
@@ -169,6 +187,8 @@ Group: OpenLayers  {
       }  # Group: Marker
 
    File: Projection  (no auto-title, OpenLayers/Projection.js)
+   File: Rule  (no auto-title, OpenLayers/Rule.js)
+   File: Style  (no auto-title, OpenLayers/Style.js)
 
    Group: Popup  {
 
@@ -187,10 +207,17 @@ Group: OpenLayers  {
 
    Group: Tile  {
 
-      File: Tile  (OpenLayers/Tile.js)
+      File: Tile  (no auto-title, OpenLayers/Tile.js)
       File: Image  (no auto-title, OpenLayers/Tile/Image.js)
       File: WFS  (no auto-title, OpenLayers/Tile/WFS.js)
       }  # Group: Tile
+
+   Group: Rule  {
+
+      File: Comparison  (no auto-title, OpenLayers/Rule/Comparison.js)
+      File: FeatureId  (no auto-title, OpenLayers/Rule/FeatureId.js)
+      File: Logical  (no auto-title, OpenLayers/Rule/Logical.js)
+      }  # Group: Rule
 
    File: Util  (OpenLayers/Util.js)
    }  # Group: OpenLayers

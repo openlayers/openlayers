@@ -1,4 +1,4 @@
-Format: 1.35
+Format: Development Release 12-07-2007 (1.35 base)
 
 # This is the Natural Docs languages file for this project.  If you change
 # anything here, it will apply to THIS PROJECT ONLY.  If you'd like to change
