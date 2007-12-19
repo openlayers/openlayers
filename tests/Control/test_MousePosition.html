@@ -2,15 +2,29 @@
 <head>
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript">
-
-    function test_MousePosition_constructor(t) {
-        t.plan(2);
+    var map, control; 
+    function test_01_Control_MousePosition_constructor (t) {
+        t.plan( 2 );
     
-        var control = new OpenLayers.Control.MousePosition();
-        t.ok(control instanceof OpenLayers.Control.MousePosition, "new OpenLayers.Control.MousePosition returns object");
-        t.eq(control.displayClass, "olControlMousePosition", "displayClass set correctly");
+        control = new OpenLayers.Control.MousePosition();
+        t.ok( control instanceof OpenLayers.Control.MousePosition, "new OpenLayers.Control returns object" );
+        t.eq( control.displayClass,  "olControlMousePosition", "displayClass is correct" );
     }
-
+    function test_02_Control_MousePosition_redraw_noLayer_displayProjection(t) {
+        t.plan(2);
+        control = new OpenLayers.Control.MousePosition({'displayProjection': new OpenLayers.Projection("WGS84")});
+        map = new OpenLayers.Map('map');
+        map.addControl(control);
+        control.redraw({'xy': new OpenLayers.Pixel(10,10)});
+        control.redraw({'xy': new OpenLayers.Pixel(12,12)});
+        t.eq(control.div.innerHTML, "", "innerHTML set correctly");
+        l = new OpenLayers.Layer('name', {'isBaseLayer': true});
+        map.addLayer(l);
+        map.zoomToMaxExtent();
+        control.redraw({'xy': new OpenLayers.Pixel(10,10)});
+        control.redraw({'xy': new OpenLayers.Pixel(12,12)});
+        t.eq(control.div.innerHTML, "-175.78125, 85.78125", "innerHTML set correctly when triggered.");
+    }
     function test_MousePosition_destroy(t) {
         t.plan(1);
     
@@ -56,7 +70,6 @@
         t.eq(control.div.innerHTML, "-175.78125, 85.78125", "innerHTML set correctly when triggered.");
         map.destroy();     
     }
-
   </script>
 </head>
 <body>
