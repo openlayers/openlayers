@@ -55,6 +55,32 @@
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var map, vectors, formats;
+        function updateFormats() {
+            var in_options = {
+                'internalProjection': map.baseLayer.projection,
+                'externalProjection': new OpenLayers.Projection(OpenLayers.Util.getElement("inproj").value)
+            }    
+            var out_options = {
+                'internalProjection': map.baseLayer.projection,
+                'externalProjection': new OpenLayers.Projection(OpenLayers.Util.getElement("outproj").value)
+            }    
+            formats = {
+              'in': {
+                wkt: new OpenLayers.Format.WKT(in_options),
+                geojson: new OpenLayers.Format.GeoJSON(in_options),
+                georss: new OpenLayers.Format.GeoRSS(in_options),
+                gml: new OpenLayers.Format.GML(in_options),
+                kml: new OpenLayers.Format.KML(in_options)
+              }, 
+              'out': {
+                wkt: new OpenLayers.Format.WKT(out_options),
+                geojson: new OpenLayers.Format.GeoJSON(out_options),
+                georss: new OpenLayers.Format.GeoRSS(out_options),
+                gml: new OpenLayers.Format.GML(out_options),
+                kml: new OpenLayers.Format.KML(out_options)
+              } 
+            };
+        }
         function init(){
             map = new OpenLayers.Map('map');
             var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
@@ -73,14 +99,8 @@
             var select = new OpenLayers.Control.SelectFeature(vectors, options);
             map.addControl(select);
             select.activate();
-
-            formats = {
-                wkt: new OpenLayers.Format.WKT(),
-                geojson: new OpenLayers.Format.GeoJSON(),
-                georss: new OpenLayers.Format.GeoRSS(),
-                gml: new OpenLayers.Format.GML(),
-                kml: new OpenLayers.Format.KML()
-            };
+            
+            updateFormats();
 
             map.setCenter(new OpenLayers.LonLat(0, 0), 1);
         }
@@ -89,7 +109,7 @@
             var type = document.getElementById("formatType").value;
             // second argument for pretty printing (geojson only)
             var pretty = document.getElementById("prettyPrint").checked;
-            var str = formats[type].write(feature, pretty);
+            var str = formats['out'][type].write(feature, pretty);
             // not a good idea in general, just for this demo
             str = str.replace(/,/g, ', ');
             document.getElementById('output').value = str;
@@ -98,7 +118,7 @@
         function deserialize() {
             var element = document.getElementById('text');
             var type = document.getElementById("formatType").value;
-            var features = formats[type].read(element.value);
+            var features = formats['in'][type].read(element.value);
             var bounds;
             if(features) {
                 if(features.constructor != Array) {
@@ -164,6 +184,15 @@
             <input id="prettyPrint" type="checkbox"
                    name="prettyPrint" value="1" />
             <br />
+            Input Projection: <select id="inproj" onchange='updateFormats()'>
+              <option value="EPSG:4326" selected="selected">EPSG:4326</option>
+              <option value="EPSG:900913">Spherical Mercator</option>
+            </select> <br /> 
+            Output Projection: <select id="outproj" onchange='updateFormats()'>
+              <option value="EPSG:4326" selected="selected">EPSG:4326</option>
+              <option value="EPSG:900913">Spherical Mercator</option>
+            </select> 
+            <br /> 
             <textarea id="text">paste text here...</textarea>
             <br />
             <input type="button" value="add feature" onclick="deserialize();" />
