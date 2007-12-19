@@ -13,7 +13,7 @@
     </style>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
-        var map, drawControls, select;
+        var map, drawControls;
         OpenLayers.Feature.Vector.style['default']['strokeWidth'] = '2';
         function init(){
             map = new OpenLayers.Map('map');
@@ -38,9 +38,14 @@
                 polygon: new OpenLayers.Control.DrawFeature(
                     vectors, OpenLayers.Handler.Polygon
                 ),
-                select: new OpenLayers.Control.SelectFeature(vectors),
-                hover: new OpenLayers.Control.SelectFeature(
-                    vectors, {hover: true}
+                select: new OpenLayers.Control.SelectFeature(
+                    vectors,
+                    {
+                        clickout: false, toggle: false,
+                        multiple: false, hover: false,
+                        toggleKey: "ctrlKey", // ctrl key removes from selection
+                        multipleKey: "shiftKey" // shift key adds to selection
+                    }
                 )
             };
             
@@ -59,6 +64,18 @@
                 } else {
                     control.deactivate();
                 }
+            }
+        }
+
+        function update() {
+            var clickout = document.getElementById("clickout").checked;
+            drawControls.select.clickout = clickout;
+            var hover = document.getElementById("hover").checked;
+            drawControls.select.hover = hover;
+            if(hover && drawControls.select.active) {
+                // turn on/off to clear feature property of handler
+                drawControls.select.deactivate();
+                drawControls.select.activate();
             }
         }
     </script>
@@ -94,13 +111,23 @@
         <li>
             <input type="radio" name="type" value="select" id="selectToggle"
                    onclick="toggleControl(this);" />
-            <label for="selectToggle">select feature on click</label>
+            <label for="selectToggle">select feature</label>
+            <ul>
+                <li>
+                    <input id="clickout" type="checkbox"
+                           name="clickout" onchange="update()" />
+                    <label for="clickout">click out to unselect features</label>
+                </li>
+                <li>
+                    <input id="hover" type="checkbox"
+                           name="hover" onchange="update()" />
+                    <label for="hover">hover to select features</label>
+                </li>
+            </ul>
         </li>
-        <li>
-            <input type="radio" name="type" value="hover" id="hoverToggle"
-                   onclick="toggleControl(this);" />
-            <label for="hoverToggle">select feature on hover</label>
-        </li>
-    </ul>        
+    </ul>
+    <p>Use the shift key to select multiple features.  Use the ctrl key to
+    toggle selection on features one at a time.  Note: the "clickout" option has no
+    effect when "hover" is selected.</p>
   </body>
 </html>

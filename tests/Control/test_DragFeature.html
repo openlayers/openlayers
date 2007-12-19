@@ -85,7 +85,7 @@
         layer.getFeatureFromEvent = function(evt) {
             return "foo";
         }
-        map.events.triggerEvent("mousemove");
+        map.events.triggerEvent("mousemove", {type: "mousemove"});
         
         t.eq(control.feature, "foo",
              "control gets the proper feature from the feature handler");
@@ -107,14 +107,14 @@
         layer.getFeatureFromEvent = function(evt) {
             return "foo";
         }
-        map.events.triggerEvent("mousemove");
+        map.events.triggerEvent("mousemove", {type: "mousemove"});
 
         // simulate a mousedown on a feature
         control.onStart = function(feature, pixel) {
             t.eq(feature, "foo", "onStart called with the correct feature");
             t.eq(pixel, "bar", "onStart called with the correct pixel");
         }
-        map.events.triggerEvent("mousedown", {xy: "bar", which: 1});
+        map.events.triggerEvent("mousedown", {xy: "bar", which: 1, type: "mousemove"});
 
         t.eq(control.lastPixel, "bar",
              "mousedown sets the lastPixel correctly");
@@ -152,15 +152,15 @@
         };
 
         // simulate a mouseover on a feature
-        map.events.triggerEvent("mousemove");
+        map.events.triggerEvent("mousemove", {type: "mousemove"});
 
         // simulate a mousedown on a feature
         var down = new OpenLayers.Pixel(0, 0);
-        map.events.triggerEvent("mousedown", {xy: down, which: 1});
+        map.events.triggerEvent("mousedown", {xy: down, which: 1, type: "mousemove"});
 
         // simulate a mousemove on a feature
         var move = new OpenLayers.Pixel(1, 2);
-        map.events.triggerEvent("mousemove", {xy: move, which: 1});
+        map.events.triggerEvent("mousemove", {xy: move, which: 1, type: "mousemove"});
         
     }
     
@@ -179,7 +179,7 @@
         layer.getFeatureFromEvent = function() {
             return "foo";
         };
-        map.events.triggerEvent("mousemove");
+        map.events.triggerEvent("mousemove", {type: "mousemove"});
         t.eq(control.feature, "foo",
              "feature is set on mouse over");
         control.doneDragging();
@@ -203,7 +203,7 @@
         layer.getFeatureFromEvent = function() {
             return "foo";
         };
-        map.events.triggerEvent("mousemove");
+        map.events.triggerEvent("mousemove", {type: "mousemove"});
         t.eq(control.feature, "foo",
              "feature is set on mouse over");
         
@@ -211,7 +211,7 @@
         layer.getFeatureFromEvent = function() {
             return null;
         };
-        map.events.triggerEvent("mousemove");
+        map.events.triggerEvent("mousemove", {type: "mousemove"});
         t.ok(control.feature == null,
              "feature is set to null on mouse out");
         

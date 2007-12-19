@@ -99,7 +99,7 @@
     }
  
     function test_Handler_feature_geometrytype_limit(t) {
-        t.plan(2);
+        t.plan(1);
         var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0));
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
@@ -112,112 +112,106 @@
         handler.callback = function(type,featurelist) {
             t.eq(featurelist[0].id, feature.id, "Correct feature called back on");
         }
-        handler.select("foo", {}); 
+        handler.handle({type: "click"});
         handler.feature = null;
+        handler.lastFeature = null;
         handler.callback = function(type,featurelist) {
             t.fail("Shouldn't have called back on " + featurelist[0].geometry);
         }    
         feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString(0,0));
-        handler.select("foo", {}); 
+        handler.handle("click", {}); 
     }
     function test_Handler_Feature_callbacks(t) {
-        t.plan(75);
+        t.plan(9);
         
         var map = new OpenLayers.Map('map', {controls: []});
         var control = new OpenLayers.Control();
         map.addControl(control);
         var layer = new OpenLayers.Layer();
         map.addLayer(layer);
-        
-        var evtsToTest = [
-            {
-                shortName: "down",
-                longName: "mousedown"
-            },
-            {
-                shortName: "move",
-                longName: "mousemove"
-            },
-            {
-                shortName: "up",
-                longName: "mouseup"
-            },
-            {
-                shortName: "click",
-                longName: "click"
-            },
-            {
-                shortName: "dblclick",
-                longName: "dblclick"
-            }
-       ];
  
-        var numEvents = {};
         var callbacks = {};
+        var newFeature, lastFeature;
+        var evtPx = {xy: new OpenLayers.Pixel(Math.random(), Math.random())};
  
-        var newFeature;
-        var oldFeature;
- 
+        // define a callback factory function
         function getCallback(evt, feature) {
             return function(f) {
-                t.ok(f == feature, "callback called with proper feature");
-                numEvents[evt]++;
+                t.ok(f == feature, evt + " callback called with proper feature");
             };
         }
  
+        // override the layer's getFeatureFromEvent func so that it always
+        // returns newFeature
         layer.getFeatureFromEvent = function(evt) { return newFeature; };
  
         var handler = new OpenLayers.Handler.Feature(control, layer, callbacks);
         handler.activate();
- 
-        for (var i = 0; i < evtsToTest.length; i++) {
-            evt = evtsToTest[i];
- 
-            var evtShortName = evt.shortName;
-            var evtLongName = evt.longName;
- 
-            var evtPx = {xy: new OpenLayers.Pixel(Math.random(), Math.random())};
- 
-            handler.feature = null;
- 
-            numEvents[evtShortName] = 0;
-            numEvents["over"] = 0;
-            numEvents["out"] = 0;
-            oldFeature = null;
-            newFeature = new OpenLayers.Feature.Vector();
-            callbacks[evtShortName] = getCallback(evtShortName, newFeature);
-            callbacks["over"] = getCallback("over", newFeature);
-            callbacks["out"] = getCallback("out", oldFeature);
-            map.events.triggerEvent(evtLongName, evtPx);
-            t.ok(numEvents[evtShortName] == 1, evtShortName + " triggered click callback");
-            t.ok(numEvents["over"] == 1, evtShortName + " triggered over callbacks");
-            t.ok(numEvents["out"] == 0, evtShortName + " did not trigger out callback");
- 
-            numEvents[evtShortName] = 0;
-            numEvents["over"] = 0;
-            numEvents["out"] = 0;
-            oldFeature = newFeature;
-            newFeature = new OpenLayers.Feature.Vector();
-            callbacks[evtShortName] = getCallback(evtShortName, newFeature);
-            callbacks["over"] = getCallback("over", newFeature);
-            callbacks["out"] = getCallback("out", oldFeature);
-            map.events.triggerEvent(evtLongName, evtPx);
-            t.ok(numEvents[evtShortName] == 1, evtShortName + " triggered click callback");
-            t.ok(numEvents["over"] == 1, evtShortName + " triggered over callbacks");
-            t.ok(numEvents["out"] == 1, evtShortName + " triggered out callback");
- 
-            numEvents[evtShortName] = 0;
-            numEvents["over"] = 0;
-            numEvents["out"] = 0;
-            oldFeature =  newFeature;
-            callbacks[evtShortName] = getCallback(evtShortName, newFeature);
-            callbacks["over"] = getCallback("over", newFeature);
-            callbacks["out"] = getCallback("out", oldFeature);
-            map.events.triggerEvent(evtLongName, evtPx);
-            t.ok(numEvents[evtShortName] == 1, evtShortName + " triggered click callback");
-            t.ok(numEvents["over"] == 0, evtShortName + " did not trigger over callbacks");
-            t.ok(numEvents["out"] == 0, evtShortName + " did not trigger out callback");
-        }
+
+        // test click in new feature
+        // only 'click' callback should be called
+        handler.feature = null;
+        lastFeature = null;
+        newFeature = new OpenLayers.Feature.Vector();
+        callbacks['click'] = getCallback('click', newFeature);
+        callbacks['clickout'] = getCallback('clickout', lastFeature);
+        evtPx.type = "click";
+        map.events.triggerEvent('click', evtPx);
+
+        // test click in new feature and out of last feature
+        // both 'click' and 'clickout' callbacks should be called
+        lastFeature = newFeature;
+        newFeature = new OpenLayers.Feature.Vector();
+        callbacks['click'] = getCallback('click', newFeature);
+        callbacks['clickout'] = getCallback('clickout', lastFeature);
+        evtPx.type = "click";
+        map.events.triggerEvent('click', evtPx);
+
+        // test click out of last feature
+        // only 'clickout' callback should be called
+        lastFeature = newFeature;
+        newFeature = null;
+        callbacks['click'] = getCallback('click', newFeature);
+        callbacks['clickout'] = getCallback('clickout', lastFeature);
+        evtPx.type = "click";
+        map.events.triggerEvent('click', evtPx);
+
+        // test over a new feature
+        // only 'over' callback should be called
+        handler.feature = null;
+        lastFeature = null;
+        newFeature = new OpenLayers.Feature.Vector();
+        callbacks['over'] = getCallback('over', newFeature);
+        callbacks['out'] = getCallback('out', lastFeature);
+        evtPx.type = "mousemove";
+        map.events.triggerEvent('mousemove', evtPx);
+
+        // test over a new feature and out of last feature
+        // both 'over' and 'out' callbacks should be called
+        lastFeature = newFeature;
+        newFeature = new OpenLayers.Feature.Vector();
+        callbacks['over'] = getCallback('over', newFeature);
+        callbacks['out'] = getCallback('out', lastFeature);
+        evtPx.type = "mousemove";
+        map.events.triggerEvent('mousemove', evtPx);
+
+        // test out of last feature
+        // only 'out' callback should be called
+        lastFeature = newFeature;
+        newFeature = null;
+        callbacks['over'] = getCallback('over', newFeature);
+        callbacks['out'] = getCallback('out', lastFeature);
+        evtPx.type = "mousemove";
+        map.events.triggerEvent('mousemove', evtPx);
+
+        // test dblclick on a feature
+        // 'dblclick' callback should be called
+        handler.feature = null;
+        lastFeature = null;
+        newFeature = new OpenLayers.Feature.Vector();
+        callbacks['dblclick'] = getCallback('dblclick', newFeature);
+        evtPx.type = "dblclick";
+        map.events.triggerEvent('dblclick', evtPx);
     }
 
     function test_Handler_Feature_deactivate(t) {
