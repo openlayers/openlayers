@@ -77,6 +77,32 @@
 
     }
 
+    function test_Layer_Markers_setOpacity(t) {
+        t.plan(1);
+
+        layer = new OpenLayers.Layer.Markers('Test Layer');
+
+        var opacity = 0.1234;
+        
+        for (var i = 0; i < 12; i++) {
+            layer.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(0,0), new OpenLayers.Icon()));
+        }
+
+        layer.setOpacity(opacity);
+
+        for (var i = 0; i < 4; i++) {
+            layer.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(0,0), new OpenLayers.Icon()));
+        }
+        
+        var itWorks = false;
+        for (var i = 0; i < layer.markers.length; i++) {
+            itWorks = parseFloat(layer.markers[i].icon.imageDiv.style.opacity) == opacity;
+            if (!itWorks) {
+                break;
+            }
+        }
+        t.ok(itWorks, "setOpacity change markers opacity");
+    }
 
   </script>
 </head>
