@@ -13,12 +13,17 @@
         function init(){
             map = new OpenLayers.Map( $('map'));
             layer = new OpenLayers.Layer.TileCache("TileCache Layer",
-                    ["http://c0.labs.metacarta.com/wms-c/cache/",
-                     "http://c1.labs.metacarta.com/wms-c/cache/",
-                     "http://c2.labs.metacarta.com/wms-c/cache/",
-                     "http://c3.labs.metacarta.com/wms-c/cache/",
-                     "http://c4.labs.metacarta.com/wms-c/cache/"],
-                    "basic", {'format': 'image/png'});
+                ["http://c0.labs.metacarta.com/wms-c/cache/",
+                 "http://c1.labs.metacarta.com/wms-c/cache/",
+                 "http://c2.labs.metacarta.com/wms-c/cache/",
+                 "http://c3.labs.metacarta.com/wms-c/cache/",
+                 "http://c4.labs.metacarta.com/wms-c/cache/"],
+                "basic",
+                {
+                    'format': 'image/png',
+                    maxResolution: 180/256 // same as the TileCache config
+                }
+            );
             map.addLayer(layer);
             map.setCenter(new OpenLayers.LonLat(0, 0), 0);
         }
@@ -41,12 +46,17 @@
   	<div id="tags"></div>
 
   	<p id="shortdesc">
-        Demonstrates a TileCache layer that loads tiles from from a web accessible disk-based cache only.
+        Demonstrates a TileCache layer that loads tiles from from a web
+        accessible disk-based cache only.
   	</p>
 
-    <div id="map">
+    <div id="map"></div>
 
     <div id="docs">
+        This layer should be used for web accessible disk-based caches only.
+        It is not used to request new tiles from TileCache.  Note that you
+        should specify resolutions explicitly on this layer so that they match
+        your TileCache configuration.
     </div>
   </body>
 </html>

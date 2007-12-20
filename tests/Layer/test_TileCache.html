@@ -2,37 +2,47 @@
 <head>
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript">
-    var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
-    var layer; 
 
-    var name = 'Test Layer';
-    var url = "http://labs.metacarta.com/wms-c/Basic.py/";
-    var layername = "basic";
-    var options = {'type':'png'}; 
 
 
     function test_01_Layer_TileCache_constructor (t) {
         t.plan( 1 );
-                       
-        layer = new OpenLayers.Layer.TileCache(name, url, layername, options);
+
+        var name = 'Test Layer';
+        var url = "http://labs.metacarta.com/wms-c/Basic.py/";
+        var layername = "basic";
+        var options = {'type':'png'}; 
+
+        var layer = new OpenLayers.Layer.TileCache(name, url, layername, options);
         t.ok( layer instanceof OpenLayers.Layer.TileCache, "returns OpenLayers.Layer.TileCache object" );
+        layer.destroy();
     }
 
     function test__Layer_TileCache_clone(t) {
         t.plan(3);
 
-        layer = new OpenLayers.Layer.TileCache(name, url, layername, options);
+        var name = 'Test Layer';
+        var url = "http://labs.metacarta.com/wms-c/Basic.py/";
+        var layername = "basic";
+        var options = {'type':'png'}; 
+        var layer = new OpenLayers.Layer.TileCache(name, url, layername, options);
 
         var clone = layer.clone();
         t.eq(layer.name, clone.name, "clone() correctly copy the 'name' property");
         t.eq(layer.url, clone.url, "clone() correctly copy the 'url' property");
         t.eq(layer.layername, clone.layername, "clone() correctly copy the 'layername' property");
+        clone.destroy();
+        layer.destroy();
     }
 
     function test_03_Layer_TileCache_clearTiles (t) {
         t.plan( 1 );
+        var name = 'Test Layer';
+        var url = "http://labs.metacarta.com/wms-c/Basic.py/";
+        var layername = "basic";
+        var options = {'type':'png'}; 
+        var layer = new OpenLayers.Layer.TileCache(name, url, layername, options);
         var map = new OpenLayers.Map('map');
-        layer = new OpenLayers.Layer.TileCache(name, url, layername, options);
         map.addLayer(layer);
 
         map.setCenter(new OpenLayers.LonLat(0,0));
@@ -43,13 +53,18 @@
         layer.clearGrid();
 
         t.ok( layer.grid != null, "layer.grid does not get nullified" );
+        map.destroy();
     }
 
 
     function test_04_Layer_TileCache_getTileCacheBounds(t) {
         t.plan( 1 );
 
-        layer = new OpenLayers.Layer.TileCache(name, url, layername, options);
+        var name = 'Test Layer';
+        var url = "http://labs.metacarta.com/wms-c/Basic.py/";
+        var layername = "basic";
+        var options = {'type':'png'}; 
+        var layer = new OpenLayers.Layer.TileCache(name, url, layername, options);
 
         var bl = { bounds: new OpenLayers.Bounds(1,2,0,0)};
         var tr = { bounds: new OpenLayers.Bounds(0,0,3,4)};
@@ -61,28 +76,36 @@
         var testBounds = new OpenLayers.Bounds(1,2,3,4);
         
         t.ok( bounds.equals(testBounds), "getTileCacheBounds() returns correct bounds")
-        
-        layer.grid = null;
+
     }
 
     function test_05_Layer_TileCache_getResolution(t) {
         t.plan( 1 );
 
+        var name = 'Test Layer';
+        var url = "http://labs.metacarta.com/wms-c/Basic.py/";
+        var layername = "basic";
+        var options = {'type':'png', maxResolution: 180/256}; 
         var map = new OpenLayers.Map('map');
-        layer = new OpenLayers.Layer.TileCache(name, url, layername, options);
+        var layer = new OpenLayers.Layer.TileCache(name, url, layername, options);
         map.addLayer(layer);
 
         map.zoom = 5;
 
         t.eq( layer.getResolution(), 0.02197265625, "getResolution() returns correct value");
+        map.destroy();
     }
 
     function test_06_Layer_TileCache_getZoomForExtent(t) {
         t.plan( 2 );
         var bounds, zoom;
 
+        var name = 'Test Layer';
+        var url = "http://labs.metacarta.com/wms-c/Basic.py/";
+        var layername = "basic";
+        var options = {'type':'png', maxResolution: 180/256}; 
         var map = new OpenLayers.Map('map');
-        layer = new OpenLayers.Layer.TileCache(name, url, layername, options);
+        var layer = new OpenLayers.Layer.TileCache(name, url, layername, options);
         map.addLayer(layer);
 
         bounds = new OpenLayers.Bounds(10,10,12,12);
@@ -94,33 +117,19 @@
         zoom = layer.getZoomForExtent(bounds);
 
         t.eq( zoom, 1, "getZoomForExtent() returns correct value");
+        map.destroy();
     }   
 
-
-    /** THIS WOULD BE WHERE THE TESTS WOULD GO FOR 
-     *     
-     *    -moveTo
-     *    -insertColumn
-     *    -insertRow
-    
-    function 07_Layer_TileCache_moveTo(t) {
-    }
-
-    function 08_Layer_TileCache_insertColumn(t) {
-    }
-
-    function 09_Layer_TileCache_insertRow(t) {
-    }
-
-     * 
-     */
     function test_10_Layer_TileCache_getURL(t) {
 
         t.plan(2);
         
-        var map = new OpenLayers.Map('map', options);
-        var options = {'layername':'basic', 'format':'image/jpg'}; 
-        layer = new OpenLayers.Layer.TileCache(name, url, layername, options);
+        var map = new OpenLayers.Map('map');
+        var name = 'Test Layer';
+        var url = "http://labs.metacarta.com/wms-c/Basic.py/";
+        var layername = "basic";
+        var options = {'layername':'basic', 'format':'image/jpg', maxResolution: 180/256}; 
+        var layer = new OpenLayers.Layer.TileCache(name, url, layername, options);
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,0), 9);
         var tileurl = layer.getURL(new OpenLayers.Bounds(3.515625,45,4.21875,45.703125));
@@ -129,28 +138,38 @@
         layer.url = ["http://tilecache1/", "http://tilecache2/", "http://tilecache3/"];
         tileurl = layer.getURL(new OpenLayers.Bounds(3.515625,45,4.21875,45.703125));
         t.eq(tileurl, "http://tilecache2/basic/09/000/000/522/000/000/384.jpeg", "Tile URL is deterministic");
+        map.destroy();
     }
 
     function test_11_Layer_TileCache_setMap(t) {
 
         t.plan(3);
         
-        var map = new OpenLayers.Map('map', options);
-        layer = new OpenLayers.Layer.TileCache(name, url, layername, options);
+        var name = 'Test Layer';
+        var url = "http://labs.metacarta.com/wms-c/Basic.py/";
+        var layername = "basic";
+        var options = {'layername':'basic', 'format':'image/jpg', maxResolution: 180/256}; 
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.TileCache(name, url, layername, options);
 
         t.eq(layer.tileOrigin, null, "Tile origin starts out null");
         layer.setMap(map);
         
         t.eq(layer.tileOrigin.lat, -90, "lat is -90");
         t.eq(layer.tileOrigin.lon, -180, "lon is -180");
+        map.destroy();
     }
 
     function test_99_Layer_TileCache_destroy (t) {
 
         t.plan( 3 );
 
+        var name = 'Test Layer';
+        var url = "http://labs.metacarta.com/wms-c/Basic.py/";
+        var layername = "basic";
+        var options = {'layername':'basic', 'format':'image/jpg', maxResolution: 180/256}; 
         var map = new OpenLayers.Map('map');
-        layer = new OpenLayers.Layer.TileCache(name, url, layername, options);
+        var layer = new OpenLayers.Layer.TileCache(name, url, layername, options);
         map.addLayer(layer);
         layer.destroy();
         t.eq( layer.grid, null, "layer.grid is null after destroy" );
@@ -167,6 +186,7 @@
         layer.destroy();
 
         t.ok( layer.grid == null, "tiles appropriately destroyed");
+        map.destroy();
     }
     
 
