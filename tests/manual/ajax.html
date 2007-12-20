@@ -1,0 +1,70 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Draw Feature Acceptance Test</title>
+    <style type="text/css">
+    
+        body {
+            font-size: 0.8em;
+        }
+        p {
+            padding-top: 1em;
+        }
+        
+        .buttons {
+            margin: 1em;
+            float: left;
+        }
+
+    </style>
+
+    <script src="../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var url = "ajax.txt";
+        function sendSynchronous(){
+            var request = new OpenLayers.Ajax.Request(url, {
+                onComplete: function() {
+                    document.getElementById('send_sync').value += 'request completed\n';
+                }
+            });
+            document.getElementById('send_sync').value += 'other processing\n';
+        }
+        function sendAsynchronous(){
+            var request = new OpenLayers.Ajax.Request(url, {
+               'asynchronous': false,
+                onComplete: function() {
+                    document.getElementById('send_sync').value += 'request completed\n';
+                }
+            });
+            document.getElementById('send_sync').value += 'other processing\n';
+        }
+        function sendAndAbort(){
+            var request = new OpenLayers.Ajax.Request(url, {
+                onComplete: function(request) {
+                    if (request.responseText == '') {
+                        document.getElementById('send_sync').value += 'request aborted\n';
+                    }
+                }
+            });
+            request.transport.abort();
+            document.getElementById('send_sync').value += 'other processing\n';
+        }
+
+    </script>
+  </head>
+  <body >
+    <div class="buttons">
+        <button onclick="sendSynchronous()">Send an synchronous Ajax request</button><br />
+        <button onclick="sendAsynchronous()">Send an asynchronous Ajax request</button><br />
+        <button onclick="sendAndAbort()">Send a request and abort it</button><br />
+        <textarea id="send_sync" rows="6"></textarea><br />
+        <button onclick="document.getElementById('send_sync').value = ''">Clear</button>
+    </div>
+    <p><b></b></p>
+    <p>Clicking on the different buttons should give the following results in the textarea below :</p>
+    <ul>
+      <li>"other processing" then "request completed"</li>
+      <li>"request completed" then "other processing"</li>
+      <li>"request aborted" then "other processing"</li>
+    </ul>
+  </body>
+</html>
