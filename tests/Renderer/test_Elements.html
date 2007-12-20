@@ -103,7 +103,7 @@
     }
     
     function test_Elements_drawGeometry(t) {
-        t.plan(4);
+        t.plan(5);
         
         OpenLayers.Renderer.Elements.prototype._initialize =
             OpenLayers.Renderer.Elements.prototype.initialize;
@@ -138,7 +138,17 @@
         t.eq(g_Node._featureId, 'dude', "_featureId is correct");
         t.ok(g_Node._style, "_style is correct");
         t.eq(g_Node._geometryClass, 'bar', "_geometryClass is correct");
-        
+
+        var _getElement = OpenLayers.Util.getElement;
+        OpenLayers.Util.getElement = function(id) {
+            return g_Node;
+        }
+
+        var style = {'display':'none'};
+        r.drawGeometry(geometry, style, featureId);
+        t.ok(g_Node.parentNode != r.root, "node is correctly removed");
+       
+        OpenLayers.Util.getElement = _getElement;
         OpenLayers.Renderer.Elements.prototype.initialize =
             OpenLayers.Renderer.Elements.prototype._initialize;
     }
