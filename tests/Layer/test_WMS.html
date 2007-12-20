@@ -278,9 +278,9 @@
         var validkey = (window.location.protocol == "file:") ||
                        (window.location.host == "localhost") ||
                        (window.location.host == "openlayers.org");
-        if (OpenLayers.Util.getBrowserName() == "opera") {
+        if (OpenLayers.Util.getBrowserName() == "opera" || OpenLayers.Util.getBrowserName() == "safari") {
             t.plan(1);
-            t.debug_print("Can't test google reprojection in Opera.");
+            t.debug_print("Can't test google reprojection in Opera or Safari.");
         } else if(validkey) {
             t.plan(5);
 
