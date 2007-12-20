@@ -43,6 +43,62 @@
              "deactivate returns true if the handler was active already");
     }
 
+    function test_Handler_Point_events(t) {
+        t.plan(29);
+        
+        var map = new OpenLayers.Map('map');
+        var control = {
+            map: map
+        };
+        var handler = new OpenLayers.Handler.Point(control);
+
+        // list below events that should be handled (events) and those
+        // that should not be handled (nonevents) by the handler
+        var events = ["click", "dblclick", "mousedown", "mouseup", "mousemove"];
+        var nonevents = ["mouseout", "resize", "focus", "blur"];
+        map.events.registerPriority = function(type, obj, func) {
+            var r = func();
+            if(typeof r == "string") {
+                // this is one of the mock handler methods
+                t.eq(OpenLayers.Util.indexOf(nonevents, type), -1,
+                     "registered method is not one of the events " +
+                     "that should not be handled");
+                t.ok(OpenLayers.Util.indexOf(events, type) > -1,
+                     "activate calls registerPriority with browser event: " + type);
+                t.eq(typeof func, "function",
+                     "activate calls registerPriority with a function");
+                t.eq(func(), type,
+                     "activate calls registerPriority with the correct method");
+                t.eq(obj["CLASS_NAME"], "OpenLayers.Handler.Point",
+                     "activate calls registerPriority with the handler");
+            }
+        }
+        
+        // set browser event like properties on the handler
+        for(var i=0; i<events.length; ++i) {
+            setMethod(events[i]);
+        }
+        function setMethod(key) {
+            handler[key] = function() {return key};
+        }
+
+        var activated = handler.activate();
+        handler.destroy();
+
+        // test that click and dblclick are stopped
+        var handler = new OpenLayers.Handler.Point(control);
+        var oldStop = OpenLayers.Event.stop;
+        OpenLayers.Event.stop = function(evt) {
+            t.ok(evt.type == "click" || evt.type == "dblclick",
+                 evt.type + " stopped");
+        }
+        t.eq(handler.click({type: "click"}), false, "click returns false");
+        t.eq(handler.dblclick({type: "dblclick"}), false, "dblclick returns false");
+        OpenLayers.Event.stop = oldStop;
+
+    }
+
+
     function test_Handler_Point_deactivation(t) {
         t.plan(1);
         var map = new OpenLayers.Map('map');
