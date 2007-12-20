@@ -47,6 +47,63 @@
               "activated the other tool control, the first one is inactive and the toggle control still active.");
     }
 
+    function test_Control_Panel_getBy(t) {
+        
+        var panel = {
+            getBy: OpenLayers.Control.Panel.prototype.getBy,
+            getControlsBy: OpenLayers.Control.Panel.prototype.getControlsBy,
+            controls: [
+                {foo: "foo", id: Math.random()},
+                {foo: "bar", id: Math.random()},
+                {foo: "foobar", id: Math.random()},
+                {foo: "foo bar", id: Math.random()},
+                {foo: "foo", id: Math.random()}
+            ]
+        };
+
+        var cases = [
+            {
+                got: panel.getControlsBy("foo", "foo"),
+                expected: [panel.controls[0], panel.controls[4]],
+                message: "(string literal) got two controls matching foo"
+            }, {
+                got: panel.getControlsBy("foo", "bar"),
+                expected: [panel.controls[1]],
+                message: "(string literal) got one control matching foo"
+            }, {
+                got: panel.getControlsBy("foo", "barfoo"),
+                expected: [],
+                message: "(string literal) got empty array for no foo match"
+            }, {
+                got: panel.getControlsBy("foo", /foo/),
+                expected: [panel.controls[0], panel.controls[2], panel.controls[3], panel.controls[4]],
+                message: "(regexp literal) got three controls containing string"
+            }, {
+                got: panel.getControlsBy("foo", /foo$/),
+                expected: [panel.controls[0], panel.controls[4]],
+                message: "(regexp literal) got three controls ending with string"
+            }, {
+                got: panel.getControlsBy("foo", /\s/),
+                expected: [panel.controls[3]],
+                message: "(regexp literal) got control containing space"
+            }, {
+                got: panel.getControlsBy("foo", new RegExp("BAR", "i")),
+                expected: [panel.controls[1], panel.controls[2], panel.controls[3]],
+                message: "(regexp object) got layers ignoring case"
+            }, {
+                got: panel.getControlsBy("foo", {test: function(str) {return str.length > 3;}}),
+                expected: [panel.controls[2], panel.controls[3]],
+                message: "(custom object) got controls with foo length greater than 3"
+            }
+        ];
+        t.plan(cases.length);
+        for(var i=0; i<cases.length; ++i) {
+            t.eq(cases[i].got, cases[i].expected, cases[i].message);
+        }
+
+
+    }
+
   </script>
 </head>
 <body>
