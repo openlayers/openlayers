@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs" xmlns:topp="http://www.openplans.org/topp" xmlns:gml="http://www.opengis.net/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openplans.org/topp http://192.168.0.100:8080/geoserver-1.4.0-RC3/wfs/DescribeFeatureType?typeName=topp:tasmania_cities http://www.opengis.net/wfs http://192.168.0.100:8080/geoserver-1.4.0-RC3/schemas/wfs/1.0.0/WFS-basic.xsd">
+  <gml:boundedBy>
+    <gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+      <gml:coordinates xmlns:gml="http://www.opengis.net/gml" decimal="." cs="," ts=" ">147.29100045,-42.85100182 147.29100045,-42.85100182</gml:coordinates>
+    </gml:Box>
+  </gml:boundedBy>
+  <gml:featureMember>
+    <topp:tasmania_cities fid="tasmania_cities.1">
+      <topp:the_geom>
+        <gml:MultiPoint srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+          <gml:pointMember>
+            <gml:Point>
+              <gml:coordinates xmlns:gml="http://www.opengis.net/gml" decimal="." cs="," ts=" ">147.29100045,-42.85100182</gml:coordinates>
+            </gml:Point>
+          </gml:pointMember>
+        </gml:MultiPoint>
+      </topp:the_geom>
+      <topp:CITY_NAME>Hobart</topp:CITY_NAME>
+      <topp:ADMIN_NAME>Tasmania</topp:ADMIN_NAME>
+      <topp:CNTRY_NAME>Australia</topp:CNTRY_NAME>
+      <topp:STATUS>Provincial capital</topp:STATUS>
+      <topp:POP_CLASS>100,000 to 250,000</topp:POP_CLASS>
+    </topp:tasmania_cities>
+  </gml:featureMember>
+</wfs:FeatureCollection>
