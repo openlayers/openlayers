@@ -12,12 +12,14 @@
     }
 
     function test_03_Util_Array(t) {
-        t.plan( 1 );
+        t.plan( 2 );
 
-        var array = new Array(1,2,3,4,5);
+        var array = new Array(1,2,3,4,4,5);
 
         OpenLayers.Util.removeItem(array, 3);
-        t.eq( array.toString(), "1,2,4,5", "Util.removeItem works");    
+        t.eq( array.toString(), "1,2,4,4,5", "Util.removeItem works on one element");    
+        OpenLayers.Util.removeItem(array, 4);
+        t.eq( array.toString(), "1,2,5", "Util.removeItem works on more than one element ");    
     }
     
     function test_03_Util_pagePosition(t) {
