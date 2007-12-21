@@ -67,26 +67,34 @@ Group: OpenLayers  {
    Group: Control  {
 
       File: Control  (OpenLayers/Control.js)
-      File: ArgParser  (no auto-title, OpenLayers/Control/ArgParser.js)
-      File: Attribution  (no auto-title, OpenLayers/Control/Attribution.js)
-      File: DragFeature  (no auto-title, OpenLayers/Control/DragFeature.js)
-      File: DrawFeature  (no auto-title, OpenLayers/Control/DrawFeature.js)
-      File: EditingToolbar  (no auto-title, OpenLayers/Control/EditingToolbar.js)
-      File: KeyboardDefaults  (no auto-title, OpenLayers/Control/KeyboardDefaults.js)
-      File: LayerSwitcher  (no auto-title, OpenLayers/Control/LayerSwitcher.js)
-      File: ModifyFeature  (no auto-title, OpenLayers/Control/ModifyFeature.js)
-      File: MouseDefaults  (no auto-title, OpenLayers/Control/MouseDefaults.js)
-      File: MousePosition  (no auto-title, OpenLayers/Control/MousePosition.js)
-      File: MouseToolbar  (no auto-title, OpenLayers/Control/MouseToolbar.js)
-      File: Navigation  (no auto-title, OpenLayers/Control/Navigation.js)
-      File: NavToolbar  (no auto-title, OpenLayers/Control/NavToolbar.js)
-      File: OverviewMap  (no auto-title, OpenLayers/Control/OverviewMap.js)
-      File: Panel  (no auto-title, OpenLayers/Control/Panel.js)
-      File: PanZoom  (no auto-title, OpenLayers/Control/PanZoom.js)
-      File: PanZoomBar  (no auto-title, OpenLayers/Control/PanZoomBar.js)
-      File: Permalink  (no auto-title, OpenLayers/Control/Permalink.js)
-      File: Scale  (no auto-title, OpenLayers/Control/Scale.js)
-      File: SelectFeature  (no auto-title, OpenLayers/Control/SelectFeature.js)
+
+      Group: Control  {
+
+         File: ArgParser  (no auto-title, OpenLayers/Control/ArgParser.js)
+         File: Attribution  (no auto-title, OpenLayers/Control/Attribution.js)
+         File: DragFeature  (no auto-title, OpenLayers/Control/DragFeature.js)
+         File: DragPan  (OpenLayers/Control/DragPan.js)
+         File: DrawFeature  (no auto-title, OpenLayers/Control/DrawFeature.js)
+         File: EditingToolbar  (no auto-title, OpenLayers/Control/EditingToolbar.js)
+         File: KeyboardDefaults  (no auto-title, OpenLayers/Control/KeyboardDefaults.js)
+         File: LayerSwitcher  (no auto-title, OpenLayers/Control/LayerSwitcher.js)
+         File: ModifyFeature  (no auto-title, OpenLayers/Control/ModifyFeature.js)
+         File: MouseDefaults  (no auto-title, OpenLayers/Control/MouseDefaults.js)
+         File: MousePosition  (no auto-title, OpenLayers/Control/MousePosition.js)
+         File: MouseToolbar  (no auto-title, OpenLayers/Control/MouseToolbar.js)
+         File: Navigation  (no auto-title, OpenLayers/Control/Navigation.js)
+         File: NavToolbar  (no auto-title, OpenLayers/Control/NavToolbar.js)
+         File: OverviewMap  (no auto-title, OpenLayers/Control/OverviewMap.js)
+         File: Panel  (no auto-title, OpenLayers/Control/Panel.js)
+         File: PanZoom  (no auto-title, OpenLayers/Control/PanZoom.js)
+         File: PanZoomBar  (no auto-title, OpenLayers/Control/PanZoomBar.js)
+         File: Permalink  (no auto-title, OpenLayers/Control/Permalink.js)
+         File: Scale  (no auto-title, OpenLayers/Control/Scale.js)
+         File: SelectFeature  (no auto-title, OpenLayers/Control/SelectFeature.js)
+         File: ZoomBox  (OpenLayers/Control/ZoomBox.js)
+         File: ZoomToMaxExtent  (OpenLayers/Control/ZoomToMaxExtent.js)
+         }  # Group: Control
+
       }  # Group: Control
 
    File: Events  (no auto-title, OpenLayers/Events.js)
@@ -100,16 +108,22 @@ Group: OpenLayers  {
 
    Group: Format  {
 
-      File: Format.js  (OpenLayers/Format.js)
-      File: GeoJSON  (no auto-title, OpenLayers/Format/GeoJSON.js)
-      File: GeoRSS  (no auto-title, OpenLayers/Format/GeoRSS.js)
-      File: GML  (no auto-title, OpenLayers/Format/GML.js)
-      File: JSON  (no auto-title, OpenLayers/Format/JSON.js)
-      File: KML  (no auto-title, OpenLayers/Format/KML.js)
-      File: Text  (no auto-title, OpenLayers/Format/Text.js)
-      File: WFS  (no auto-title, OpenLayers/Format/WFS.js)
-      File: WKT  (no auto-title, OpenLayers/Format/WKT.js)
-      File: XML  (no auto-title, OpenLayers/Format/XML.js)
+      File: Format  (OpenLayers/Format.js)
+
+      Group: Format  {
+
+         File: GeoJSON  (no auto-title, OpenLayers/Format/GeoJSON.js)
+         File: GeoRSS  (no auto-title, OpenLayers/Format/GeoRSS.js)
+         File: GML  (no auto-title, OpenLayers/Format/GML.js)
+         File: JSON  (no auto-title, OpenLayers/Format/JSON.js)
+         File: KML  (no auto-title, OpenLayers/Format/KML.js)
+         File: SLD  (OpenLayers/Format/SLD.js)
+         File: Text  (no auto-title, OpenLayers/Format/Text.js)
+         File: WFS  (no auto-title, OpenLayers/Format/WFS.js)
+         File: WKT  (no auto-title, OpenLayers/Format/WKT.js)
+         File: XML  (no auto-title, OpenLayers/Format/XML.js)
+         }  # Group: Format
+
       }  # Group: Format
 
    Group: Geometry  {

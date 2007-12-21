@@ -104,15 +104,21 @@ Group: OpenLayers  {
    Group: Format  {
 
       File: Format  (no auto-title, OpenLayers/Format.js)
-      File: GeoJSON  (no auto-title, OpenLayers/Format/GeoJSON.js)
-      File: GeoRSS  (no auto-title, OpenLayers/Format/GeoRSS.js)
-      File: GML  (no auto-title, OpenLayers/Format/GML.js)
-      File: JSON  (no auto-title, OpenLayers/Format/JSON.js)
-      File: KML  (no auto-title, OpenLayers/Format/KML.js)
-      File: Text  (no auto-title, OpenLayers/Format/Text.js)
-      File: WFS  (no auto-title, OpenLayers/Format/WFS.js)
-      File: WKT  (no auto-title, OpenLayers/Format/WKT.js)
-      File: XML  (no auto-title, OpenLayers/Format/XML.js)
+
+      Group: Format  {
+
+         File: GeoJSON  (no auto-title, OpenLayers/Format/GeoJSON.js)
+         File: GeoRSS  (no auto-title, OpenLayers/Format/GeoRSS.js)
+         File: GML  (no auto-title, OpenLayers/Format/GML.js)
+         File: JSON  (no auto-title, OpenLayers/Format/JSON.js)
+         File: KML  (no auto-title, OpenLayers/Format/KML.js)
+         File: SLD  (OpenLayers/Format/SLD.js)
+         File: Text  (no auto-title, OpenLayers/Format/Text.js)
+         File: WFS  (no auto-title, OpenLayers/Format/WFS.js)
+         File: WKT  (no auto-title, OpenLayers/Format/WKT.js)
+         File: XML  (no auto-title, OpenLayers/Format/XML.js)
+         }  # Group: Format
+
       }  # Group: Format
 
    Group: Geometry  {
