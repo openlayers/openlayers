@@ -2,7 +2,7 @@ This license applies to all code and content in the 'branches', 'trunk', and
 'project' directories of the Openlayers code repository at svn.openlayers.org,
 and applies to all release of OpenLayers later than 2.5.
 
-Copyright (c) 2005-2007 MetaCarta, Inc.
+Copyright (c) 2005-2008 MetaCarta, Inc.
 
 All rights reserved.
 
