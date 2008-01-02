@@ -156,9 +156,7 @@
     }
 
     function test_07_Layer_MapServer_getFullRequestString (t) {
-
-        
-        t.plan( 1 );
+        t.plan( 3 );
         var map = new OpenLayers.Map('map');
         tUrl = "http://labs.metacarta.com/cgi-bin/mapserv";
         tParams = { layers: 'basic', 
@@ -178,6 +176,23 @@
         
         t.eq(str, sStr , "getFullRequestString() works");
         map.destroy();
+        
+        tUrl = ["http://octo.metacarta.com/cgi-bin/mapserv","http://labs.metacarta.com/cgi-bin/mapserv"];
+        layer = new OpenLayers.Layer.MapServer(name, tUrl, tParams, null);
+        str = layer.getFullRequestString({'c':'d'});
+        t.eq(str, tUrl[1] + '?' + OpenLayers.Util.getParameterString(OpenLayers.Util.extend(tParams,{'c':'d'})), "getFullRequestString() works for list of two urls and is deterministic");
+        layer.destroy();
+        var tParams = {
+                 layers: 'basic', 
+                 format: 'png',
+                 mode: 'map',
+                 map_imagetype: 'png'
+        };
+        tUrl = ["http://octo.metacarta.com/cgi-bin/mapserv","http://labs.metacarta.com/cgi-bin/mapserv"];
+        layer = new OpenLayers.Layer.MapServer(name, tUrl, tParams, null);
+        str = layer.getFullRequestString({'a':'b'});
+        t.eq(str, tUrl[0] + '?' + OpenLayers.Util.getParameterString(OpenLayers.Util.extend(tParams,{'a':'b'})), "getFullRequestString() works for list of two urls and is deterministic");
+        layer.destroy();
 
     }
 
