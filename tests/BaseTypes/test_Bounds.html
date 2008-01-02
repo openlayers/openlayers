@@ -76,6 +76,31 @@
         t.eq( bounds.toArray(), [1,2,3,4], "toArray() returns correct value." ); 
     }
 
+    function test_Bounds_toGeometry(t) {
+        t.plan(7);
+        var minx = Math.random();
+        var miny = Math.random();
+        var maxx = Math.random();
+        var maxy = Math.random();
+        var bounds = new OpenLayers.Bounds(minx, miny, maxx, maxy);
+        var poly = bounds.toGeometry();
+        t.eq(poly.CLASS_NAME, "OpenLayers.Geometry.Polygon",
+             "polygon instance created");
+        t.eq(poly.components.length, 1,
+             "polygon with one ring created");
+        var ring = poly.components[0];
+        t.eq(ring.components.length, 5,
+             "four sided polygon created");
+        t.eq(ring.components[0].x, minx,
+             "bounds left preserved");
+        t.eq(ring.components[0].y, miny,
+             "bounds bottom preserved");
+        t.eq(ring.components[2].x, maxx,
+             "bounds left preserved");
+        t.eq(ring.components[2].y, maxy,
+             "bounds bottom preserved");
+    }
+
     function test_04_Bounds_contains(t) {
         t.plan( 6 );
         bounds = new OpenLayers.Bounds(10,10,40,40);

@@ -23,6 +23,41 @@
              "geometry.property set properly" );
     }
     
+    function test_Feature_onScreen(t) {
+        t.plan(6);
+        var line = new OpenLayers.Geometry.LineString([
+            new OpenLayers.Geometry.Point(0, 0),
+            new OpenLayers.Geometry.Point(10, 20)
+        ]);
+        var feature = new OpenLayers.Feature.Vector(line);
+        feature.layer = {
+            map: {
+                getExtent: function() {
+                    return new OpenLayers.Bounds(5, 5, 10, 10);
+                }
+            }
+        };
+        t.eq(feature.onScreen(), true,
+             "intersecting feature returns true for intersection");
+        t.eq(feature.onScreen(true), true,
+             "intersecting feature returns true for bounds only");
+        
+        // move the line so only the bounds intersects
+        line.move(0, 5);
+        t.eq(feature.onScreen(), false,
+             "bounds-only feature returns false for intersection");
+        t.eq(feature.onScreen(true), true,
+             "bounds-only feature returns true for bounds only");
+
+        // move the line so bounds does not intersect
+        line.move(0, 10);
+        t.eq(feature.onScreen(), false,
+             "off-screen feature returns false for intersection");
+        t.eq(feature.onScreen(true), false,
+             "off-screen feature returns false for bounds only");
+        
+    }
+    
     function test_Feature_Vector_clone(t) {
         t.plan(5);
 
