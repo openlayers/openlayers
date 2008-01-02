@@ -249,7 +249,7 @@
     }  
 
     function test_ModifyFeature_resetVertices(t) {
-        t.plan(18);
+        t.plan(17);
         var layer = new OpenLayers.Layer.Vector();
         var control = new OpenLayers.Control.ModifyFeature(layer);
         var point = new OpenLayers.Geometry.Point(5,6);
@@ -276,8 +276,7 @@
         var polygon = new OpenLayers.Geometry.Polygon([new OpenLayers.Geometry.LinearRing([point, point2, point3])]);
         control.feature = new OpenLayers.Feature.Vector(polygon);
         control.resetVertices();
-        t.eq(control.vertices.length, 4, "Correct vertices length with polygon");
-        t.eq(control.vertices[0].geometry.id, control.vertices[3].geometry.id, "First and last vertices are the same");
+        t.eq(control.vertices.length, 3, "Correct vertices length with polygon");
         t.eq(control.virtualVertices.length, 3, "Correct virtual vertices length (polygon).");
 
         control.mode = OpenLayers.Control.ModifyFeature.DRAG;
@@ -298,7 +297,7 @@
         control.mode = OpenLayers.Control.ModifyFeature.RESHAPE | OpenLayers.Control.ModifyFeature.RESIZE;
         control.resetVertices();
         t.ok(control.radiusHandle != null, "Radius handle is set");
-        t.eq(control.vertices.length, 4, "Correct vertices length with polygon (RESHAPE | RESIZE)");
+        t.eq(control.vertices.length, 3, "Correct vertices length with polygon (RESHAPE | RESIZE)");
         t.eq(control.virtualVertices.length, 3, "Correct virtual vertices length (RESHAPE | RESIZE)");
     }    
         
