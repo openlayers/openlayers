@@ -2,8 +2,19 @@
 
 import sys
 sys.path.append("../tools")
+import mergejs
 
-import jsmin, mergejs
+have_compressor = None
+try:
+    import jsmin
+    have_compressor = "jsmin"
+except ImportError:
+    try:
+        import minimize
+        have_compressor = "minimize"
+    except Exception, E:
+        print E
+        pass
 
 sourceDirectory = "../lib"
 configFilename = "library.cfg"
@@ -21,8 +32,15 @@ if len(sys.argv) > 2:
 
 print "Merging libraries."
 merged = mergejs.run(sourceDirectory, None, configFilename)
-print "Compressing."
-minimized = jsmin.jsmin(merged)
+if have_compressor == "jsmin":
+    print "Compressing using jsmin."
+    minimized = jsmin.jsmin(merged)
+elif have_compressor == "minimize":
+    print "Compressing using minimize."
+    minimized = minimize.minimize(merged)
+else: # fallback
+    print "Not compressing."
+    minimized = merged 
 print "Adding license file."
 minimized = file("license.txt").read() + minimized
 
