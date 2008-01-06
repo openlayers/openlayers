@@ -1,7 +1,7 @@
 <html>
 <head>
   <script src="../../lib/OpenLayers.js"></script>
-  <script type="text/javascript"><!--
+  <script type="text/javascript">
     var map; 
     function test_01_Control_Scale_constructor (t) {
         t.plan( 2 );
@@ -44,7 +44,6 @@
         map.addControl(control);
         t.eq(control.div.firstChild.innerHTML, "Scale = 1 : 443M", "Internal scale displayed properly.");
     }    
-  // -->
   </script>
 </head>
 <body>
