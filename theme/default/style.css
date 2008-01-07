@@ -64,9 +64,19 @@ div.olControlMousePosition {
 }
 
 .olControlOverviewMapExtentRectangle {
-   cursor: move;
+    overflow: hidden;
+    background-image: url("img/blank.gif");
+    cursor: move;
     border: 2px dotted red;
 }
+.olControlOverviewMapRectReplacement {
+    overflow: hidden;
+    cursor: move;
+    background-image: url("img/overview_replacement.gif");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
 .olLayerGeoRSSDescription {
     float:left;
     width:100%;

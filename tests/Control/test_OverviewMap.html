@@ -51,9 +51,12 @@
         t.eq(cent.lon, -71.3515625, "Clicking on the Overview Map has the correct effect on map lon");
         t.eq(cent.lat, 42.17578125, "Clicking on the Overview Map has the correct effect on map lat");
 
-        control.rectMouseDown({'xy':new OpenLayers.Pixel(5,5), 'which':1});
-        control.rectMouseMove({'xy':new OpenLayers.Pixel(15,15), 'which':1});
-        control.rectMouseUp({'xy':new OpenLayers.Pixel(15,15), 'which':1});
+        control.dragHandler = {
+            last: new OpenLayers.Pixel(5,5),
+            destroy: function() {}
+        };
+        control.rectDrag(new OpenLayers.Pixel(15, 15));
+        control.updateMapToRect();
         
         var cent = map.getCenter();
         t.eq(cent.lon, -71.2734375, "Dragging on the Overview Map has the correct effect on map lon");
