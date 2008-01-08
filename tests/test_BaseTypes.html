@@ -137,6 +137,24 @@
         t.eq(OpenLayers.Number.limitSigDigs(num, 5), 1234.6, "running limSigDig() on a floating point number works fine");
         
     }
+    
+    function test_Number_format(t) {
+        t.plan(9);
+        var format = OpenLayers.Number.format;
+        t.eq(format(12345), "12,345", "formatting an integer number works");
+        t.eq(format(12345, 3), "12,345.000", "zero padding an integer works");
+        t.eq(format(12345, null, ","), "12,345", "adding thousands separator to an integer works");
+        t.eq(format(12345, 0, ","), "12,345", "adding thousands separator to an integer with defined 0 decimal places works");
+
+        var num = 12345.6789
+        t.eq(format(num, null, "", ","), "12345,6789", "only changing decimal separator and leaving everything else untouched works");
+        t.eq(format(num, 5), "12,345.67890", "filling up decimals with trailing zeroes works");
+        t.eq(format(num, 3, ".", ","), "12.345,679", "rounding and changing decimal/thousands separator in function call works");
+        t.eq(format(num, 0, ""), "12346", "empty thousands separator in function call works");
+        OpenLayers.Number.thousandsSeparator = ".";
+        OpenLayers.Number.decimalSeparator = ",";
+        t.eq(format(num, 3), "12.345,679", "changing thousands/decimal separator globally works");
+    }
 
     function test_07_Function_bind(t) {
         t.plan(12);
