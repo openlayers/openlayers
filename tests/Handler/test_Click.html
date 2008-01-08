@@ -229,63 +229,6 @@
 
     }
 
-    function test_Handler_Drag_submethods(t) {
-        t.plan(4);
-        
-        var map = new OpenLayers.Map('map', {controls: []});
-
-        var control = new OpenLayers.Control();
-        map.addControl(control);
-        
-
-        var handler = new OpenLayers.Handler.Drag(control, {});
-        // set test events
-        var events = ["down", "move", "up", "out"];
-        var testEvents = {};
-        var type, px;
-        for(var i=0; i<events.length; ++i) {
-            type = events[i];
-            px = new OpenLayers.Pixel(Math.random(), Math.random());
-            testEvents[type] = {xy: px};
-            setMethod(type);
-        }
-        function setMethod(type) {
-            handler[type] = function(evt) {
-                t.ok(evt.xy.x == testEvents[type].xy.x &&
-                     evt.xy.y == testEvents[type].xy.y,
-                     "handler." + type + " called with the right event");
-            }
-        }
-        handler.activate();
-        
-        // test mousedown
-        handler.checkModifiers = function(evt) {
-            return true;
-        }
-        var oldIsLeftClick = OpenLayers.Event.isLeftClick;
-        OpenLayers.Event.isLeftClick = function(evt) {
-            return true;
-        }
-        map.events.triggerEvent("mousedown", testEvents.down);
-        OpenLayers.Event.isLeftClick = oldIsLeftClick;
-
-        // test mousemove
-        map.events.triggerEvent("mousemove", testEvents.move);
-        
-        // test mouseup
-        map.events.triggerEvent("mouseup", testEvents.up);
-        
-        // test mouseout
-        var oldMouseLeft = OpenLayers.Util.mouseLeft;
-        OpenLayers.Util.mouseLeft = function() {
-            return true;
-        };
-        handler.started = true;
-        map.events.triggerEvent("mouseout", testEvents.out);
-        OpenLayers.Util.mouseLeft = oldMouseLeft;
-        
-    }
-
     function test_Handler_Click_deactivate(t) {
         t.plan(4);
         var control = {
