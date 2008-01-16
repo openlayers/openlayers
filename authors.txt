@@ -10,6 +10,7 @@ John Frank
 Sean Gilles
 Pierre Giraud
 Andreas Hocevar
+Ian Johnson
 Eric Lemoine
 Philip Lindsay
 Corey Puffault
