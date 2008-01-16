@@ -6,6 +6,7 @@
     var name = "GML Layer";
     
     var gml = "./owls.xml";
+    var gml2 = "./mice.xml";
 
     // if this test is running online, different rules apply
     var isMSIE = (navigator.userAgent.indexOf("MSIE") > -1);
@@ -39,6 +40,15 @@
             t.ok(true, "waited for 1s"); 
         });
 
+    }
+    function test_GML_setUrl(t) {
+        t.plan(2);
+        var layer = new OpenLayers.Layer.GML(name, gml);
+        var map = new OpenLayers.Map("map");
+        map.addLayer(layer);
+        t.eq(layer.url, gml, "layer has correct original url");
+        layer.setUrl(gml2);
+        t.eq(layer.url, gml2, "layer has correctly changed url");
     }
   </script>
 </head>
