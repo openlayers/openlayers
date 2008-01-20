@@ -18,6 +18,9 @@
          out = OpenLayers.Projection.transform({'x':10,'y':12}, projection, projection2); 
          t.eq(out.x, 10, "Null transform has no effect"); 
          t.eq(out.y, 12, "Null transform has no effect"); 
+
+         t.eq(projection.equals(null), false, "equals on null projection returns false");
+         t.eq(projection.equals({}), false, "equals on null projection object returns false (doesn't call getCode)");
      } 
        
     </script> 
