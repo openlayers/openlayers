@@ -35,7 +35,7 @@
 
                 map.addLayers([ol_wms, boxes]);
                 map.addControl(new OpenLayers.Control.LayerSwitcher());
-                var sf = new OpenLayers.Control.SelectFeature(boxes, {'hover': true });
+                var sf = new OpenLayers.Control.SelectFeature(boxes);
                 map.addControl(sf);
                 sf.activate();
                 map.zoomToMaxExtent();
