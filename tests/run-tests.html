@@ -798,7 +798,7 @@ Test.AnotherWay._set_iframe_location=function( iframe, loc, outside_path_correct
 Test.AnotherWay._start_loading_page=function()
 {
 	var test_page=Test.AnotherWay._g_tests_queue[0];
-	test_page.loading_timeout_milliseconds=6000;
+	test_page.loading_timeout_milliseconds=12000;
 	test_page.timeout_id=setTimeout( Test.AnotherWay._loading_timeout, Test.AnotherWay._g_timeout_granularity );
 	test_page.wait_msg=Test.AnotherWay._print_counter_result( test_page.url, "loading...", test_page.loading_timeout_milliseconds, "loading" );
 	if( test_page.convention=="jsan" ) {
