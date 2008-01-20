@@ -127,7 +127,7 @@
             return;
         }
         
-        t.plan(3);
+        t.plan(6);
         
         var r = new OpenLayers.Renderer.SVG(document.body);
         r.resolution = 0.5;
@@ -142,6 +142,18 @@
         }
         
         r.drawCircle(node, geometry, 3);
+        
+        t.eq(node.getAttributeNS(null, 'cx'), '2', "cx is correct");
+        t.eq(node.getAttributeNS(null, 'cy'), '-4', "cy is correct");
+        t.eq(node.getAttributeNS(null, 'r'), '3', "r is correct");
+       
+        // #1274: out of bound node fails when first added
+        var geometry = {
+            x: 10000000,
+            y: 200000000
+        }
+        
+        r.drawCircle(node, geometry, "blah_4000");
         
         t.eq(node.getAttributeNS(null, 'cx'), '2', "cx is correct");
         t.eq(node.getAttributeNS(null, 'cy'), '-4', "cy is correct");
