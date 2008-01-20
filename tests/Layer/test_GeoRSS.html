@@ -21,6 +21,7 @@
         t.ok( layer instanceof OpenLayers.Layer.GeoRSS, "new OpenLayers.Layer.GeoRSS returns object" );
         t.eq( layer.location, georss_txt, "layer.location is correct" );
         var markers;
+        layer.loadRSS();
         t.delay_call( 1, function() {  
             t.eq( layer.markers.length, 40, "marker length is correct" );
             var ll = new OpenLayers.LonLat(-71.142197, 42.405696);
@@ -43,6 +44,7 @@
         t.ok( layer instanceof OpenLayers.Layer.GeoRSS, "new OpenLayers.Layer.GeoRSS returns object" );
         t.eq( layer.location, atom_xml, "layer.location is correct" );
         var markers;
+        layer.loadRSS();
         t.delay_call( 1, function() {  
             t.eq( layer.markers.length, 2, "marker length is correct" );
             var ll = new OpenLayers.LonLat(29.9805, 36.7702);
@@ -153,7 +155,9 @@
         map.addLayers([layer,otherLayer]);
         map.setCenter(new OpenLayers.LonLat(0,0),0);
         var defaultIcon = OpenLayers.Marker.defaultIcon();
-        t.delay_call( 1, function() {
+        layer.loadRSS();
+        otherLayer.loadRSS();
+        t.delay_call( 2, function() {
             t.ok(layer.markers[0].icon, "The layer has a icon");
             t.eq(layer.markers[0].icon.url, defaultIcon.url, "The layer without icon has the default icon.");
             t.eq(otherLayer.markers[0].icon.url, the_icon.url,"The layer with an icon has that icon.");

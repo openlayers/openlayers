@@ -21,6 +21,7 @@
         t.plan( 5 );
         
         layer = new OpenLayers.Layer.Text('Test Layer', { location: datafile });
+        layer.loadText();
         t.ok( layer instanceof OpenLayers.Layer.Text, "new OpenLayers.Layer.Text returns object" );
         t.eq( layer.location, datafile, "layer.location is correct" );
         var markers;
