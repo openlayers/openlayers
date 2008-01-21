@@ -27,6 +27,7 @@
             var parts = value.split("/");
             rss = new OpenLayers.Layer.GeoRSS(parts[parts.length-1], value);
             rss.events.register("loadend", window, populateMap);
+            map.addLayer(rss);
         }
 
         function populateMap() {
@@ -42,14 +43,15 @@
             
             var feature, marker;
             // only show markers for features that are not "Untitled"
-            for (var i = 0; i< rss.features.length-1; i++) {
+            for (var i = rss.features.length-1; i>0; i--) {
                 if (rss.features[i].data.popupContentHTML.indexOf(
                         "Untitled") != -1) {
-                    // nullify lonlat to hide marker
-                    rss.markers[i].lonlat = null;
+                    rss.removeMarker(rss.markers[i]);
                 }
             }
-            map.addLayer(rss);
+            
+            // keep markers on top of tracks
+            map.raiseLayer(rss, 1);
         }
     </script>
   </head>
