@@ -35,6 +35,13 @@
         t.eq(data[0].geometry.x, -1, "w3c geo x read correctly"); 
         t.eq(data[0].geometry.y, 1, "w3c geo y read correctly"); 
     }
+    function test_Format_GeoRSS_reproject_null(t) { 
+        t.plan(1);
+
+        var parser = new OpenLayers.Format.GeoRSS({'internalProjection':new OpenLayers.Projection("EPSG:4326"), 'externalProjection': new OpenLayers.Projection("EPSG:4326")});
+        var data = parser.read('<rss xmlns="http://backend.userland.com/rss2" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"><item></item></rss>');
+        t.eq(data.length, 1, "Parsing items with null geometry and reprojection doesn't fail");
+    }
     function test_Format_GeoRSS_roundtrip(t) {
         t.plan(input.length);
         var parser = new OpenLayers.Format.GeoRSS();
