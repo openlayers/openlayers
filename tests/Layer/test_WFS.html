@@ -5,7 +5,7 @@
 
     var name = "Vector Layer";
     
-    function test_01_Layer_WFS_constructor(t) {
+    function test_Layer_WFS_constructor(t) {
         t.plan(3);
 
         var layer = new OpenLayers.Layer.WFS(name, "url", {});
@@ -14,7 +14,7 @@
         t.ok(layer.renderer.CLASS_NAME, "layer has a renderer");
 
     }
-    function test_02_Layer_WFS_mapresizevector(t) {
+    function test_Layer_WFS_mapresizevector(t) {
         t.plan(2);
 
         var map = new OpenLayers.Map("map");
