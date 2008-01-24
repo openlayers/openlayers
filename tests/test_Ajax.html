@@ -1,0 +1,19 @@
+<html>
+<head>
+  <script src="../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+
+    function test_Ajax_loadUrl(t) {
+        t.plan(1);
+        var req = OpenLayers.Ajax.Request;
+        OpenLayers.ProxyHost = "/?url=";
+        OpenLayers.Ajax.Request = function(uri) {
+            t.eq(uri, "/?url=http%3A%2F%2Fexample.com%2F%3Fformat%3Dimage%2Bkml", "URI matches what we expect from loadurl");
+        }
+        OpenLayers.loadURL("http://example.com/?format=image+kml");
+    }
+  </script>
+</head>
+<body>
+</body>
+</html>
