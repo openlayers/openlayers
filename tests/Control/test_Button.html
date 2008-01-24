@@ -1,0 +1,17 @@
+<html>
+<head>
+    <script src="../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+      function test_Control_Button_constructor (t) {
+          t.plan( 2 );
+      
+          control = new OpenLayers.Control.Button();
+          t.ok( control instanceof OpenLayers.Control.Button, "new OpenLayers.Control returns object" );
+          t.eq( control.displayClass, "olControlButton", "displayClass is correct" );
+      }
+    
+    </script>
+</head>
+<body>
+</body>
+</html>
