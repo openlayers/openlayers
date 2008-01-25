@@ -90,8 +90,7 @@
 
         handler.activate();
         map.events.unregister = function(type, obj, func) {
-            try {
-                var r = func();
+            var r = func();
             if(typeof r == "string") {
                 // this is one of the mock handler methods
                 t.ok(OpenLayers.Util.indexOf(events, type) > -1,
