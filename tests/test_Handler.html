@@ -71,7 +71,10 @@
     
     function test_Handler_deactivate(t) {
         t.plan(52);
-        var map = new OpenLayers.Map('map');
+        var map = new OpenLayers.Map('map', { controls: []});
+        // No controls so that we don't get more thingies than we expect
+        // when we actually clean up after ourselves: r5891 caused this
+        // because we actually destroy things now on the navigation control. 
         var control = new OpenLayers.Control();
         map.addControl(control);
     
@@ -87,7 +90,8 @@
 
         handler.activate();
         map.events.unregister = function(type, obj, func) {
-            var r = func();
+            try {
+                var r = func();
             if(typeof r == "string") {
                 // this is one of the mock handler methods
                 t.ok(OpenLayers.Util.indexOf(events, type) > -1,
