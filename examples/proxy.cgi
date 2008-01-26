@@ -17,7 +17,8 @@ import sys, os
 
 allowedHosts = ['www.openlayers.org', 'openlayers.org', 
                 'labs.metacarta.com', 'world.freemap.in', 
-                'prototype.openmnnd.org', 'geo.openplans.org']
+                'prototype.openmnnd.org', 'geo.openplans.org',
+                'www.openstreetmap.org']
 
 method = os.environ["REQUEST_METHOD"]
 
