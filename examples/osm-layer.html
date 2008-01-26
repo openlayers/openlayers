@@ -27,7 +27,7 @@
             if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.Point") {
                 type = "node";
             }    
-            text += "<li>" + feature.fid + ": <a href='http://crschmidt.net/osm/attributes.html?type="+type+"&id="+feature.fid+"'>Edit</a>, <a href='http://www.openstreetmap.org/api/0.5/"+type + "/" + feature.fid + "'>API</a></li>";
+            text += "<li>" + feature.osm_id + ": <a href='http://crschmidt.net/osm/attributes.html?type="+type+"&id="+feature.osm_id+"'>Edit</a>, <a href='http://www.openstreetmap.org/api/0.5/"+type + "/" + feature.osm_id + "'>API</a></li>";
             for (var key in feature.attributes) {
                 text += "<li>" + key + ": " + feature.attributes[key] + "</li>";
             }
