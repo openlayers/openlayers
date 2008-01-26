@@ -1,0 +1,122 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Tiles Loading Acceptance Test</title>
+    <style type="text/css">
+        body {
+            font-size: 0.8em;
+        }
+        p {
+            padding-top: 1em;
+        }
+        #map {
+            margin: 1em;
+            float: left;
+            width: 512px;
+            height: 512px;
+        }
+    </style>
+
+    <script src='http://maps.google.com/maps?file=api&amp;v=2.82&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
+    <script src="../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        // make map available for easy debugging
+        var map;
+
+        // avoid pink tiles
+        OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
+        OpenLayers.Util.onImageLoadErrorColor = "transparent";
+
+        function init(){
+            var options = {
+                controls: [],
+                projection: "EPSG:900913",
+                units: "m",
+                maxResolution: 156543.0339,
+                maxExtent: new OpenLayers.Bounds(-20037508, -20037508,
+                                                 20037508, 20037508.34)
+            };
+            map = new OpenLayers.Map('map', options);
+            // create Google Mercator layers
+            var gmap = new OpenLayers.Layer.Google(
+                "Google Streets",
+                {'sphericalMercator': true}
+            );
+            // create WMS layer
+            var wmsMaxResolution = 78271.51695;
+            var wms = new OpenLayers.Layer.WMS(
+                "World Map",
+                "http://world.freemap.in/tiles/",
+                {'layers': 'factbook-overlay', 'format':'png'},
+                {
+                    'opacity': 0.4,
+                    'isBaseLayer': false,
+                    'wrapDateLine': true,
+                    'buffer': 0,
+                    'maxResolution' : wmsMaxResolution
+                }
+            );
+            map.addLayers([gmap, wms]);
+            map.addControl(new OpenLayers.Control.Navigation());
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.addControl(new OpenLayers.Control.PanZoomBar());
+
+            function onLayerChanged() {
+                var html = '<p>WMS Layer state - in range: '
+                    + this.inRange
+                    + ', visibility: '
+                    + this.visibility;
+                    + '</p>';
+                document.getElementById('layerstate').innerHTML = html;
+            }
+            map.events.register('changelayer', wms, onLayerChanged);
+
+            function onTileLoaded() {
+                var html = '<p>Message: ';
+                if (this.numLoadingTiles > 0) {
+                    html += 'Loading tiles...';
+                } else {
+                    html += 'Done loading tiles';
+                }
+                html += '</p>';
+                document.getElementById('tilesloading').innerHTML = html;
+            }
+            wms.events.register('tileloaded', wms, onTileLoaded);
+
+            map.zoomToMaxExtent()
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <div id="map"></div>
+    <p>
+
+      <b>Test 0</b> : at the initial zoom the WMS layer is in range, you should
+      therefore see the 'Loading tiles...' message when loading the page for
+      the first time.
+
+    </p>
+    <p>
+
+      <b>Test 1</b> : If you zoom out by one level (using the zoombar), the WMS
+      layer becomes out of range. No tile should be loaded so you shouldn't see
+      the 'Loading tiles...' message.
+
+    </p>
+    <p>
+
+      <b>Test 2</b> : Zoom in by one level to go back to initial state (the WMS
+      is back). Open the layer switcher and turn off the WMS layer. No tile
+      should be loaded so you shouldn't see the 'Loading tiles...' message.
+
+    </p>
+    <p>
+
+      <b>Test 3</b> : Keep the WMS layer turned off in the layer switcher. Zoom
+      out by one level again. The layer is both invisible and out of range, so
+      you shouldn't see the 'Loading tiles...' message.
+
+    </p>
+    <div id="layerstate"><p>WMS Layer state - in range: true, visibility: true</p></div>
+    <div id="tilesloading"><p>Message:</p></div>
+  </body>
+</html>
