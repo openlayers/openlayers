@@ -87,7 +87,7 @@
     }
 
     function test_Handler_Drag_callbacks(t) {
-        t.plan(34);
+        t.plan(33);
         
         var map = new OpenLayers.Map('map', {controls: []});
 
@@ -168,8 +168,7 @@
                      evt.xy.y == testEvents.down.xy.y,
                      "mousedown default action is disabled");
             } else {
-                t.ok(evt.xy.x == testEvents.down.xy.x &&
-                     evt.xy.y == testEvents.down.xy.y,
+                t.fail(
                      "mousedown is prevented from falling to other elements");
             }
         }
