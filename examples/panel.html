@@ -69,13 +69,16 @@
             map.addLayer(vlayer);
             
             
-            zb = new OpenLayers.Control.ZoomBox();
+            zb = new OpenLayers.Control.ZoomBox(
+                {title:"Zoom box: Selecting it you can zoom on an area by clicking and dragging."});
             var panel = new OpenLayers.Control.Panel({defaultControl: zb});
             panel.addControls([
-                new OpenLayers.Control.MouseDefaults(),
+                new OpenLayers.Control.MouseDefaults(
+                    {title:'You can use the default mouse configuration'}), 
                 zb,
-                new OpenLayers.Control.DrawFeature(vlayer, OpenLayers.Handler.Path),
-                new OpenLayers.Control.ZoomToMaxExtent()
+                new OpenLayers.Control.DrawFeature(vlayer, OpenLayers.Handler.Path,
+                    {title:'Draw a feature'}),
+                new OpenLayers.Control.ZoomToMaxExtent({title:"Zoom to the max extent"}) 
             ]);
             map.addControl(panel);
 

@@ -21,7 +21,14 @@
         t.ok(control.map === map, "Control.map is set to the map object" );
         t.ok(map.controls[map.controls.length - 1] === control, "map.controls contains control");
     }
-
+    
+    function test_Control_title(t) { 
+        t.plan( 1 ); 
+        var titleText = 'Title test'; 
+        control = new OpenLayers.Control({title:titleText}); 
+        t.eq( control.title, titleText, "control.title set correctly" ); 
+    }
+    
     function test_Control_destroy(t) {
         t.plan(3);
     

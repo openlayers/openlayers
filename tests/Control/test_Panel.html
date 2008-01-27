@@ -46,7 +46,17 @@
         t.ok(!toolControl.active && anotherToolControl.active && toggleControl.active,
               "activated the other tool control, the first one is inactive and the toggle control still active.");
     }
-
+    function test_02_Control_Panel_titles (t) { 
+        t.plan(2); 
+        var panel = new OpenLayers.Control.Panel(); 
+        var toolControl = new OpenLayers.Control.ZoomBox({ 
+            title:"Zoom box: Selecting it you can zoom on an area by clicking and dragging." 
+        }); 
+        panel.addControls([toolControl]); 
+        t.eq(panel.controls.length, 1, "added a control to the panel"); 
+        t.eq(panel.controls[0].title, toolControl.panel_div.title, "the title is correctly set"); 
+    } 
+    
     function test_Control_Panel_getBy(t) {
         
         var panel = {
