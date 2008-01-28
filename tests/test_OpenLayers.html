@@ -1,0 +1,20 @@
+<html>
+<head>
+  <script id="script" src="../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+    function test_OpenLayers(t) {
+        t.plan(2);
+        
+        var script = document.getElementById("script");
+
+        t.eq(OpenLayers._getScriptLocation(), "../", "Script location correctly detected.");
+        
+        script.setAttribute("src", "../lib/OpenLayers.js?foo");
+        t.eq(OpenLayers._getScriptLocation(), "../", "Script location with search string correctly detected.");
+    }
+
+  </script>
+</head>
+<body>
+</body>
+</html>
