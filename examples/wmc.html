@@ -1,0 +1,146 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            height: 256px;
+            width: 512px;
+        }
+        #wmc {
+            width: 90%;
+            height: 300px;
+        }
+    </style>
+    <script src="../lib/Firebug/firebug.js"></script>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+
+        // no pink please
+        OpenLayers.IMAGE_RELOAD_ATTEMPTS = 2;
+        OpenLayers.Util.onImageLoadErrorColor = "transparent";
+        
+        var format = new OpenLayers.Format.WMC();
+        var doc, context, map;
+        
+        function init() {
+            var options = {
+                maxExtent: new OpenLayers.Bounds(-130, 14, -60, 55)
+            };
+            map = new OpenLayers.Map("map", options);
+
+            var jpl = new OpenLayers.Layer.WMS(
+                "NASA Global Mosaic",
+                "http://t1.hypercube.telascience.org/cgi-bin/landsat7", 
+                {layers: "landsat7"},
+                {
+                    maxExtent: new OpenLayers.Bounds(-130, 14, -60, 55),
+                    maxResolution: 0.1,
+                    numZoomLevels: 4,
+                    minResolution: 0.02
+                }
+            );
+
+            var vmap = new OpenLayers.Layer.WMS(
+                "OpenLayers WMS",
+                "http://labs.metacarta.com/wms/vmap0",
+                {layers: 'basic'},
+                {
+                    maxExtent: new OpenLayers.Bounds(-130, 14, -60, 55),
+                    maxResolution: 0.1,
+                    numZoomLevels: 4,
+                    minResolution: 0.02
+                }
+            );
+
+            var roads = new OpenLayers.Layer.WMS(
+                "Transportation Network",
+                "http://lioapp.lrc.gov.on.ca/cubeserv/cubeserv.pl",
+                {layers: "na_road:CCRS", transparent: "TRUE"},
+                {
+                    isBaseLayer: false,
+                    maxExtent: new OpenLayers.Bounds(
+                        -166.532, 4.05046, -0.206818, 70.287
+                    ),
+                    displayInLayerSwitcher: false,
+                    opacity: 0.6,
+                    minScale: 32000000,
+                    numZoomLevels: 4,
+                    maxScale: 6200000
+                }
+            );
+
+            var nexrad = new OpenLayers.Layer.WMS(
+                "Radar 3:1",
+                "http://columbo.nrlssc.navy.mil/ogcwms/servlet/WMSServlet/AccuWeather_Maps.wms",
+                {layers: "3:1", transparent: "TRUE"},
+                {
+                    isBaseLayer: false,
+                    maxExtent: new OpenLayers.Bounds(
+                        -131.029495239, 14.5628967285,
+                        -61.0295028687, 54.562896728
+                    ),
+                    opacity: 0.8,
+                    singleTile: true,
+                    maxResolution: 0.1,
+                    numZoomLevels: 4,
+                    minResolution: 0.02
+                }
+            );
+
+            map.addLayers([jpl, vmap, roads, nexrad]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.setCenter(new OpenLayers.LonLat(-95, 34.5), 1);
+        };
+        
+        function readWMC(merge) {
+            var text = document.getElementById("wmc").value;
+            
+            if(merge) {
+                try {
+                    map = format.read(text, {map: map});
+                } catch(err) {
+                    document.getElementById("wmc").value = err;
+                }
+            } else {
+                map.destroy();
+                try {
+                    map = format.read(text, {map: "map"});
+                    map.addControl(new OpenLayers.Control.LayerSwitcher());
+                } catch(err) {
+                    document.getElementById("wmc").value = err;
+                }
+            }
+        }
+        
+        function writeWMC(merge) {
+            try {
+                var text = format.write(map);
+                document.getElementById("wmc").value = text;
+            } catch(err) {
+                document.getElementById("wmc").value = err;
+            }
+        }
+            
+    </script>
+    </head>
+    <body onload="init()">
+	<h1 id="title">WMC Example</h1>
+
+	<div id="tags">
+	</div>
+	<p id="shortdesc">
+	    Shows parsing of Web Map Context documents.
+	</p>
+	<div id="map"></div>
+        <button onclick="writeWMC();">write</button>
+        <button onclick="readWMC();">read as new map</button>
+        <button onclick="readWMC(true);">read and merge</button>
+        <textarea id="wmc">paste WMC doc here</textarea>
+	<div id="docs">
+            This is an example of parsing WMC documents.
+	</div>
+  </body>
+</html>
+
+
+
+
