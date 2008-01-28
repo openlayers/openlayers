@@ -118,6 +118,24 @@
         t.eq(layer.maxResolution, maxResolution, "maxResolution set correctly");
         t.eq(layer.numZoomLevels, numZoomLevels, "numZoomLevels set correctly");
     }
+    
+    function test_Layer_initResolutions(t) {
+        t.plan(3);
+        var map = new OpenLayers.Map("map");
+        var options = {
+            minResolution: 1,
+            maxResolution: 10,
+            numZoomLevels: 5
+        };
+        var layer = new OpenLayers.Layer("test", options);
+        layer.map = map;
+        layer.initResolutions();
+        t.eq(layer.minResolution.toPrecision(9), (1).toPrecision(9),
+             "layer minResolution preserved");
+        t.eq(layer.maxResolution.toPrecision(9), (10).toPrecision(9),
+             "layer maxResolution preserved");
+        t.eq(layer.numZoomLevels, 5, "layer numZoomLevels preserved"); 
+    }
 
     function test_05_Layer_visibility(t) {
 
