@@ -65,22 +65,10 @@
                     OpenLayers.Feature.Vector.style["select"];
             hover = new OpenLayers.Control.SelectFeature(gmlLayers[2], {
                     selectStyle: waterStyle["Hover Styler"],
-                    hover: true,
-                    select: select
+                    hover: true
                 });
             map.addControl(hover);
             hover.activate();
-        }
-
-        // replaces OpenLayers.Control.Select.select
-        var select = function(feature) {
-            // store layer style
-            var style = feature.layer.style;
-            // set temporary layer style for hover rendering
-            feature.layer.style = hover.selectStyle;
-            OpenLayers.Control.SelectFeature.prototype.select.apply(hover, arguments);
-            // restore layer style
-            feature.layer.style = style;
         }
         
         // set a new style when the radio button changes
