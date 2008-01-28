@@ -16,8 +16,12 @@
 
         function init(){
             map = new OpenLayers.Map( 'map' );
-            layer = new OpenLayers.Layer.WMS.Untiled( "OpenLayers WMS",
-                    "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+            layer = new OpenLayers.Layer.WMS(
+                "OpenLayers WMS",
+                "http://labs.metacarta.com/wms/vmap0",
+                {layers: 'basic'},
+                {singleTile: true}
+            );
             map.addLayer(layer);
 
             map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
@@ -30,15 +34,16 @@
 
     <div id="tags">
     </div>
-	<p id="shortdesc">
-		Shows an example of the Untiled wms layer, which requests a single image for the entire map view</a>.
-	</p>
-
+        <p id="shortdesc">
+            Shows an example of an "untiled" WMS layer, which requests a single
+            image for the entire map view.
+        </p>
     <div id="map"></div>
-
-	<div id="docs">
-		An untiled map will only request a single image at a time.
-	</div>
+        <div id="docs">
+            An untiled layer will only request a single image at a time.
+            This is equivalent to using the deprecated
+            OpenLayers.Layer.WMS.Untiled class, which will be removed at 3.0.
+        </div>
   </body>
 </html>
 
