@@ -223,6 +223,19 @@
         
     }
       
+    function test_layer_setIsBaseLayer(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer();
+
+        map.events.register("changebaselayer", t, function() {
+          this.ok(true, "setIsBaseLayer() trig changebaselayer event.")
+        });
+
+        map.addLayer(layer);
+        layer.setIsBaseLayer(true);
+        t.ok(layer.isBaseLayer, "setIsBaseLayer() change isBaseLayer property.");
+    }
       
     function test_08_layer_setTileSize(t) {
         t.plan(6);
