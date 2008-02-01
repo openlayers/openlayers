@@ -73,6 +73,64 @@
         t.eq(feature.style.strokeColor, OpenLayers.Feature.Vector.style["default"].strokeColor, "style set back to original correctly");
     }
     
+    function test_Control_SelectFeature_clickFeature(t) {
+        t.plan(4);
+        // mock up layer
+        var layer = {
+            selectedFeatures: [],
+            drawFeature: function() {}
+        };
+        // mock up active control
+        var control = new OpenLayers.Control.SelectFeature(layer);
+        control.handler = {
+            evt: {}
+        };
+        // mock up features
+        var features = new Array(4);
+        for(var i=0; i<features.length; ++i) {
+            features[i] = {
+                id: Math.random(),
+                tested: 0,
+                style: ""
+            };
+        }
+        
+        // test that onSelect gets called properly
+        control.onSelect = function(feature) {
+            feature.tested += 1;
+            t.eq(feature, features[feature.index],
+                 "onSelect called with proper feature (" + feature.index + ")");
+            t.eq(feature.tested, feature.test,
+                 "onSelect called only once for feature (" + feature.index + ")");
+        }
+
+        // test that onUnselect gets called properly
+        control.onUnselect = function(feature) {
+            feature.tested += 1;
+            t.eq(feature, features[feature.index],
+                 "onUnselect called with proper feature (" + feature.index + ")");
+            t.eq(feature.tested, feature.test, 
+                 "onUnselect called only once for feature (" + feature.index + ")");
+        }
+        
+        // mock up first click on first feature (runs 2 tests from onSelect)
+        var feature = features[0];
+        feature.index = 0;
+        feature.test = 1;
+        control.clickFeature(feature);
+
+        // mock up second click on first feature (runs no tests - already selected)
+        control.toggle = false;
+        control.clickFeature(feature);
+
+        // mock up second click on first feature (runs 2 tests from onUnselect)
+        control.toggle = true;
+        feature.test = 2;
+        control.clickFeature(feature);
+
+        
+    }
+    
     function test_Control_SelectFeature_activate(t) {
         t.plan(2);
         var map = new OpenLayers.Map("map");
