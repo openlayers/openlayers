@@ -51,6 +51,12 @@
             </sld:Stroke>
           </sld:PolygonSymbolizer>
         </sld:Rule>
+        <sld:Rule>
+          <sld:Name>testRuleNameElse</sld:Name>
+          <sld:Title>title</sld:Title>
+          <sld:Abstract>Abstract</sld:Abstract>
+          <ogc:ElseFilter/>
+        </sld:Rule>
       </sld:FeatureTypeStyle>
     </sld:UserStyle>
 
@@ -113,7 +119,12 @@
             </sld:Stroke>
           </sld:PolygonSymbolizer>
         </sld:Rule>
-
+        <sld:Rule>
+          <sld:Name>testRuleNameHoverElse</sld:Name>
+          <sld:Title>title</sld:Title>
+          <sld:Abstract>Abstract</sld:Abstract>
+          <ogc:ElseFilter/>
+        </sld:Rule>
       </sld:FeatureTypeStyle>
     </sld:UserStyle>
 

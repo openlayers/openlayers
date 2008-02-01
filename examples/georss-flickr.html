@@ -28,9 +28,7 @@
             
             // create a property style that reads the externalGraphic url from
             // the thumbail attribute of the rss item
-            style = new OpenLayers.Style({
-                externalGraphic: "${thumbnail}",
-                pointRadius: 20});
+            style = new OpenLayers.Style({externalGraphic: "${thumbnail}"});
             
             // create a rule with a point symbolizer that will make the thumbnail
             // larger if the title of the rss item conatins "powder"
@@ -41,7 +39,11 @@
                     symbolizer: {"Point": {pointRadius: 30}}});
             rule.value2regex("*");
             
-            style.addRules([rule]);
+            // If the above rule does not apply, use a smaller pointRadius.
+            var elseRule = new OpenLayers.Rule({
+                    symbolizer: {"Point": {pointRadius: 20}}});
+            
+            style.addRules([rule, elseRule]);
             
             markerLayer = new OpenLayers.Layer.Vector("", {style: style});
             map.addLayer(markerLayer);
