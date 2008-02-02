@@ -1,4 +1,5 @@
 OpenLayers contributors:
+
 Howard Butler
 Bertil Chaupis                                                               
 John Cole
@@ -26,6 +27,8 @@ Erik Uzureau
 Bill Woodall
 Steve Woodbridge
 
+Some portions of OpenLayers are used under the Apache 2.0 license, available
+in doc/licenses/APACHE-2.0.txt.
 
-OpenLayers is graciously supported by MetaCarta, Inc.
-<http://www.metacarta.com>.
+Some portions of OpenLayers are used under the MIT license, availabie in 
+doc/licenses/MIT-LICENSE.txt.
