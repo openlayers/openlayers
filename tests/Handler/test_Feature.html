@@ -121,6 +121,7 @@
         feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString(0,0));
         handler.handle("click", {}); 
     }
+
     function test_Handler_Feature_callbacks(t) {
         t.plan(9);
         
@@ -238,6 +239,46 @@
              "deactivate sets the layer z-index back");
     }
 
+    function test_Handler_Feature_stopHandled(t) {
+        t.plan(3);
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var layer = new OpenLayers.Layer();
+        map.addLayer(layer);
+        var handler = new OpenLayers.Handler.Feature(control, layer);
+        handler.activate();
+        handler.handle = function(evt) { return /* handled */ true; };
+        var  evtPx = {xy: new OpenLayers.Pixel(Math.random(), Math.random())};
+        map.events.register("click", map, function(e) {
+            t.ok(!handler.stopClick, "clicks propagate with stopClick set to false" );
+        });
+        map.events.register("mousedown", map, function(e) {
+            t.ok(!handler.stopDown, "mousedown propagate with stopDown set to false" );
+        });
+        map.events.register("mouseup", map, function(e) {
+            t.ok(!handler.stopUp, "mouseup propagate with stopUp set to false" );
+        });
+
+        // 0 test
+        map.events.triggerEvent('click', evtPx);
+        // 0 test
+        map.events.triggerEvent('mousedown', evtPx);
+        // 0 test
+        map.events.triggerEvent('mousedown', evtPx);
+
+        // 1 test
+        handler.stopClick = false;
+        map.events.triggerEvent('click', evtPx);
+        // 1 test
+        handler.stopDown = false;
+        map.events.triggerEvent('mousedown', evtPx);
+        // 1 test
+        handler.stopUp = false;
+        map.events.triggerEvent('mouseup', evtPx);
+        
+        // 3 tests total
+    }
 
   </script>
 </head>
