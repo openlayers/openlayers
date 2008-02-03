@@ -87,6 +87,33 @@
         createdStyle = style.createStyle(feature);
         t.eq(createdStyle.fillColor, baseStyle.fillColor, "Correct style for rule that does not apply to fid=\"2\".");
     }
+    
+    function test_Style_createStyle(t) {
+        t.plan(2);
+        var style = new OpenLayers.Style();
+        var rule = new OpenLayers.Rule({
+            id: Math.random()
+        });
+        var elseRule = new OpenLayers.Rule({
+            id: Math.random(),
+            elseFilter: true
+        });
+        style.addRules([rule, elseRule]);
+
+        // test that applySymbolizer is only called with rule
+        style.applySymbolizer = function(r) {
+            t.eq(r.id, rule.id, "(plain) applySymbolizer called with correct rule");
+        }
+        style.createStyle(new OpenLayers.Feature.Vector());
+
+        rule.evaluate = function() {return false;};
+        style.applySymbolizer = function(r) {
+            t.eq(r.id, elseRule.id, "(else) applySymbolizer called with correct rule");
+        }
+        style.createStyle(new OpenLayers.Feature.Vector());
+
+
+    }
 
     function test_Style_destroy(t) {
         t.plan(1);

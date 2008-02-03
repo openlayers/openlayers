@@ -41,6 +41,7 @@
             
             // If the above rule does not apply, use a smaller pointRadius.
             var elseRule = new OpenLayers.Rule({
+                    elseFilter: true,
                     symbolizer: {"Point": {pointRadius: 20}}});
             
             style.addRules([rule, elseRule]);
@@ -69,7 +70,7 @@
             
             popupControl.activate();
             
-            OpenLayers.loadURL("xml/georss-flickr.xml", "", null, afterload);
+            OpenLayers.loadURL("xml/georss-flickr.xml", null, window, afterload);
             
         }
         
@@ -88,13 +89,9 @@
             var store = new OpenLayers.Format.GeoRSS({
                     createFeatureFromItem: createFeatureFromItem});
 
-            rss = store.read(req.responseXML);
+            rss = store.read(req.responseText);
 
-            // get the title of the RSS feed
-            var title = req.responseXML.getElementsByTagName("title")[0]
-                    .firstChild.nodeValue;
-                    
-            markerLayer.setName(title);
+            markerLayer.setName("Some images from Flickr");
             markerLayer.addFeatures(rss);
         }
     </script>
