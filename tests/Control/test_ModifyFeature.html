@@ -249,7 +249,7 @@
     }  
 
     function test_ModifyFeature_resetVertices(t) {
-        t.plan(17);
+        t.plan(18);
         var layer = new OpenLayers.Layer.Vector();
         var control = new OpenLayers.Control.ModifyFeature(layer);
         var point = new OpenLayers.Geometry.Point(5,6);
@@ -299,6 +299,21 @@
         t.ok(control.radiusHandle != null, "Radius handle is set");
         t.eq(control.vertices.length, 3, "Correct vertices length with polygon (RESHAPE | RESIZE)");
         t.eq(control.virtualVertices.length, 3, "Correct virtual vertices length (RESHAPE | RESIZE)");
+        
+        control.dragControl.feature = new OpenLayers.Feature.Vector(polygon);
+        control.dragControl.map = {};
+        control.dragControl.map.div = {};
+        control.dragControl.map.div.style = {};
+        control.dragControl.map.div.cursor = "foo";
+        control.dragControl.dragHandler.deactivate = function() {
+            this.active = false;
+        }
+        control.resetVertices();
+        t.ok(!control.dragControl.dragHandler.active, "resetVertices deactivates drag handler");
+        control.dragControl.map = null;
+        
+        control.destroy();
+        layer.destroy();
     }    
         
     function test_ModifyFeature_onDrag(t) {
