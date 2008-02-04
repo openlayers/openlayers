@@ -958,6 +958,22 @@
              se.toString(),
              "map extent not restricted with null restrictedExtent for se");
     }
+    
+    function test_Map_getResolutionForZoom(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var res = map.getResolutionForZoom();
+        t.eq(res, null, "getResolutionForZoom returns null for no base layer");
+        map.fractionalZoom = true;
+        var layer = new OpenLayers.Layer("test", {isBaseLayer: true});
+        layer.getResolutionForZoom = function() {
+            t.ok(true, "getResolutionForZoom calls base layer getResolutionForZoom");
+        }
+        map.addLayer(layer);
+        var res = map.getResolutionForZoom();
+        layer.destroy();
+        map.destroy();
+    }
 
     function test_99_Map_destroy (t) {
         t.plan( 3 );    

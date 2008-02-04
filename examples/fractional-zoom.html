@@ -1,0 +1,69 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 512px;
+            height: 256px;
+            border: 1px solid gray;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map;
+
+        function init() {
+            map = new OpenLayers.Map('map');
+            var wms = new OpenLayers.Layer.WMS(
+                "OpenLayers WMS",
+                "http://labs.metacarta.com/wms/vmap0",
+                {layers: 'basic'}
+            );
+            map.addLayers([wms]);
+
+            map.events.register("moveend", null, displayZoom);
+            map.addControl( new OpenLayers.Control.LayerSwitcher() );
+
+            map.zoomToMaxExtent();
+            
+            update(document.getElementById("fractional"));
+            
+        }
+        
+        function displayZoom() {
+            document.getElementById("zoom").innerHTML = map.zoom.toFixed(4);
+        }
+        
+        function update(input) {
+            map.fractionalZoom = input.checked;
+        }
+    </script>
+  </head>
+  <body onload="init()">
+	<h1 id="title">Fractional Zoom Example</h1>
+
+	<div id="tags">
+	</div>
+	<p id="shortdesc">
+            Shows the use of a map with fractional (or non-discrete) zoom levels.
+	</p>
+
+	<div id="map"></div>
+        <input type="checkbox" name="fractional"
+               id="fractional" checked="checked" onclick="update(this)" />
+        <label for="fractional">Fractional Zoom</label>
+        (zoom: <span id="zoom"></span>)
+        <br /><br />
+	<div id="docs">
+            <p>
+            Setting the map.fractionalZoom property to true allows zooming to
+            an arbitrary level (between the min and max resolutions).  This
+            can be demonstrated by shift-dragging a box to zoom to an arbitrary
+            extent.
+            </p>
+	</div>
+  </body>
+</html>
+
+
+
+
