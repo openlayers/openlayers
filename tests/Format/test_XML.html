@@ -16,6 +16,14 @@
             '<ol:child>junk3<' + '/ol:child>' +
             '<element>junk4<' + '/element>' + 
             '<ol:element>junk5<' + '/ol:element>' + 
+            '<ol:p>' +
+                '<ol:a>junk' +
+                '<' + '/ol:a>' + 
+                '<ol:b>junk' +
+                '<' + '/ol:b>' + 
+                '<ol:a>junk' +
+                '<' + '/ol:a>' + 
+            '<' + '/ol:p>' + 
         '<' + '/ol:root>';
 
     function test_Format_XML_constructor(t) { 
@@ -138,7 +146,7 @@
     }
 
     function test_Format_XML_getElementsByTagNameNS(t) {
-        t.plan(3);
+        t.plan(5);
 
         var format = new OpenLayers.Format.XML();
         var olUri = "http://namespace.openlayers.org";
@@ -158,6 +166,16 @@
                                                   defaultUri, name);
         t.eq(nodes.length, 1,
              "gets correct number of nodes in default namespace");
+        
+        var pList = format.getElementsByTagNameNS(doc.documentElement,
+                                                  olUri, "p");
+        t.eq(pList.length, 1, "got one ol:p element");
+        var p = pList[0];
+        
+        var aList = format.getElementsByTagNameNS(p, olUri, "a");
+        t.eq(aList.length, 2, "got two child ol:a elements");
+        
+        
         
     }
 
