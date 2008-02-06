@@ -3,14 +3,14 @@
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript">
     var map; 
-    function test_01_Control_OverviewMap_constructor (t) {
+    function test_initialize(t) {
         t.plan( 2 );
     
         control = new OpenLayers.Control.OverviewMap();
         t.ok( control instanceof OpenLayers.Control.OverviewMap, "new OpenLayers.Control.OverviewMap returns object" );
         t.eq( control.displayClass,  "olControlOverviewMap", "displayClass is correct" );
     }
-    function test_02_Control_OverviewMap_addControl (t) {
+    function test_addControl (t) {
         t.plan( 6 );
         map = new OpenLayers.Map('map');
         control = new OpenLayers.Control.OverviewMap();
@@ -24,7 +24,7 @@
 
         map.destroy();
     }
-    function test_03_Control_OverviewMap_control_events (t) {
+    function test_control_events (t) {
         t.plan( 10 );
         var evt = {which: 1}; // control expects left-click
         map = new OpenLayers.Map('map');
