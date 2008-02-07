@@ -140,36 +140,44 @@ div.olControlMousePosition {
   margin: 5px;
 }
 .olControlEditingToolbar .olControlNavigationItemActive { 
-  background-image: url("img/pan_on.png");
+  background-image: url("img/editing_tool_bar.png");
   background-repeat: no-repeat;
+  background-position: -103px -23px; 
 }
 .olControlEditingToolbar .olControlNavigationItemInactive { 
-  background-image: url("img/pan_off.png");
+  background-image: url("img/editing_tool_bar.png");
   background-repeat: no-repeat;
+  background-position: -103px -0px; 
 }
 .olControlEditingToolbar .olControlDrawFeaturePointItemActive { 
-  background-image: url("img/draw_point_on.png");
+  background-image: url("img/editing_tool_bar.png");
   background-repeat: no-repeat;
+  background-position: -77px -23px; 
 }
 .olControlEditingToolbar .olControlDrawFeaturePointItemInactive { 
-  background-image: url("img/draw_point_off.png");
+  background-image: url("img/editing_tool_bar.png");
   background-repeat: no-repeat;
+  background-position: -77px -0px; 
 }
 .olControlEditingToolbar .olControlDrawFeaturePathItemInactive { 
-  background-image: url("img/draw_line_off.png");
+  background-image: url("img/editing_tool_bar.png");
   background-repeat: no-repeat;
+  background-position: -51px 0px; 
 }
 .olControlEditingToolbar .olControlDrawFeaturePathItemActive { 
-  background-image: url("img/draw_line_on.png");
+  background-image: url("img/editing_tool_bar.png");
   background-repeat: no-repeat;
+  background-position: -51px -23px; 
 }
 .olControlEditingToolbar .olControlDrawFeaturePolygonItemInactive { 
-  background-image: url("img/draw_polygon_off.png");
+  background-image: url("img/editing_tool_bar.png");
   background-repeat: no-repeat;
+  background-position: -26px 0px; 
 }
 .olControlEditingToolbar .olControlDrawFeaturePolygonItemActive { 
-  background-image: url("img/draw_polygon_on.png");
+  background-image: url("img/editing_tool_bar.png");
   background-repeat: no-repeat;
+  background-position: -26px -23px ;                                                                   
 }
 
 .olHandlerBoxZoomBox {
