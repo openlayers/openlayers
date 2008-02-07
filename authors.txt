@@ -1,5 +1,6 @@
 OpenLayers contributors:
 
+Seb Benthall
 Howard Butler
 Bertil Chaupis                                                               
 John Cole
@@ -24,6 +25,7 @@ Paul Spencer
 Glen Stampoultzis
 James Stembridge
 Erik Uzureau
+Ivan Willig
 Bill Woodall
 Steve Woodbridge
 
