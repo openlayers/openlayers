@@ -1,0 +1,74 @@
+<html> 
+<head> 
+    <script src="../../../lib/OpenLayers.js"></script> 
+    <script type="text/javascript">
+    
+    function test_write_wmc_Layer(t) {
+        if (OpenLayers.Util.getBrowserName() == "safari") {
+            t.plan(0);
+            t.debug_print("Safari has wierd behavior with getElementsByTagNameNS: the result is that we can't run these tests there. Patches welcome.");
+            return;
+        }
+        t.plan(10);
+        
+        // direct construction of a parser for a unit test
+        var wmc = new OpenLayers.Format.WMC.v1_1_0();
+        var sldNS = wmc.namespaces["sld"];
+        
+        // test that Min/MaxScaleDenominator is not written out when no
+        // resolution related options are set
+        var layer = new OpenLayers.Layer.WMS(
+            "test", "http://foo", {},
+            {maxExtent: new OpenLayers.Bounds(1, 2, 3, 4)}
+        );
+        var node = wmc.write_wmc_Layer(layer);
+        var minList = wmc.getElementsByTagNameNS(node, sldNS, "MinScaleDenominator");
+        t.eq(minList.length, 0, "(none) node not written with MinScaleDenominator");
+        var maxList = wmc.getElementsByTagNameNS(node, sldNS, "MaxScaleDenominator");
+        t.eq(maxList.length, 0, "(none) node not written with MaxScaleDenominator");
+
+        // test that Min/MaxScaleDenominator is written out for explicit
+        // resolutions array
+        layer = new OpenLayers.Layer.WMS(
+            "test", "http://foo", {},
+            {resolutions: [4, 2, 1], maxExtent: new OpenLayers.Bounds(1, 2, 3, 4)}
+        );
+        layer.minScale = Math.random();
+        layer.maxScale = Math.random();
+        sldNS = wmc.namespaces["sld"];
+        node = wmc.write_wmc_Layer(layer);
+        minList = wmc.getElementsByTagNameNS(node, sldNS, "MinScaleDenominator");
+        t.eq(minList.length, 1, "(resolutions) node written with MinScaleDenominator");
+        t.eq(layer.maxScale.toPrecision(10), wmc.getChildValue(minList[0]),
+             "(resolutions) node written with correct MinScaleDenominator value");
+        maxList = wmc.getElementsByTagNameNS(node, sldNS, "MaxScaleDenominator");
+        t.eq(maxList.length, 1, "(resolutions) node written with MaxScaleDenominator");
+        t.eq(layer.minScale.toPrecision(10), wmc.getChildValue(maxList[0]),
+             "(resolutions) node written with correct MaxScaleDenominator value");
+        
+        layer = new OpenLayers.Layer.WMS(
+            "test", "http://foo", {},
+            {scales: [4, 2, 1], maxExtent: new OpenLayers.Bounds(1, 2, 3, 4)}
+        );
+        layer.minScale = Math.random();
+        layer.maxScale = Math.random();
+        node = wmc.write_wmc_Layer(layer);
+        minList = wmc.getElementsByTagNameNS(node, sldNS, "MinScaleDenominator");
+        var f = new OpenLayers.Format.XML();
+        t.eq(minList.length, 1, "(scales) node written with MinScaleDenominator");
+        t.eq(layer.maxScale.toPrecision(10), wmc.getChildValue(minList[0]),
+             "(scales) node written with correct MinScaleDenominator value");
+        maxList = wmc.getElementsByTagNameNS(node, sldNS, "MaxScaleDenominator");
+        t.eq(maxList.length, 1, "(scales) node written with MaxScaleDenominator");
+        t.eq(layer.minScale.toPrecision(10), wmc.getChildValue(maxList[0]),
+             "(scales) node written with correct MaxScaleDenominator value");
+        
+    }
+    
+
+    </script> 
+</head> 
+<body>
+    <div id="map" style="width: 512px; height: 256px;"></div>
+</body> 
+</html> 
