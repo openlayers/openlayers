@@ -117,6 +117,7 @@
         deactivated = handler.deactivate();
         t.ok(deactivated,
              "deactivated returns true if the handler is already active");
+        map.events.unregister = OpenLayers.Events.prototype.unregister;
         map.destroy();
         
     }
