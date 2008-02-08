@@ -5,61 +5,63 @@
 
     function test_Control_Navigation_constructor (t) {
         t.plan( 2 );
-    	var temp = OpenLayers.Control.prototype.initialize;
-    	OpenLayers.Control.prototype.initialize = function() {
-    		t.ok(true, "OpenLayers.Control's constructor called");
-    	};
+        var temp = OpenLayers.Control.prototype.initialize;
+        OpenLayers.Control.prototype.initialize = function() {
+            t.ok(true, "OpenLayers.Control's constructor called");
+        };
 
         var control = new OpenLayers.Control.Navigation();
         t.ok( control instanceof OpenLayers.Control.Navigation, "new OpenLayers.Control returns object" );
 
-		OpenLayers.Control.prototype.initialize = temp;
+        OpenLayers.Control.prototype.initialize = temp;
     }
 
     function test_Control_Navigation_destroy (t) {
-        t.plan(10);
-		
-    	var temp = OpenLayers.Control.prototype.destroy;
-    	OpenLayers.Control.prototype.destroy = function() {
-    		t.ok(true, "OpenLayers.Control's destroy called");
-    	};
+        t.plan(9);
+        
+        var temp = OpenLayers.Control.prototype.destroy;
+        OpenLayers.Control.prototype.destroy = function() {
+            t.ok(true, "OpenLayers.Control's destroy called");
+            temp.call(this);
+        };
 
-		var control = {
-			'deactivate': function() {
-				t.ok(true, "navigation control deactivated before being destroyed");
-			},
-			'dragPan': {
-				'destroy': function() {
-					t.ok(true, "dragPan destroyed");
-				}
-			},
-			'zoomBox': {
-				'destroy': function() {
-					t.ok(true, "zoomBox destroyed");
-				}
-			},
-			'wheelHandler': {
-				'destroy': function() {
-					t.ok(true, "wheelHandler destroyed");
-				}
-			},
-			'clickHandler': {
-				'destroy': function() {
-					t.ok(true, "clickHandler destroyed");
-				}
-			}
-		};
+        var control = {
+            'deactivate': function() {
+                t.ok(true, "navigation control deactivated before being destroyed");
+            },
+            'dragPan': {
+                'destroy': function() {
+                    t.ok(true, "dragPan destroyed");
+                }
+            },
+            'zoomBox': {
+                'destroy': function() {
+                    t.ok(true, "zoomBox destroyed");
+                }
+            },
+            handlers: {
+                'wheel': {
+                    'destroy': function() {
+                        t.ok(true, "wheelHandler destroyed");
+                    }
+                },
+                'click': {
+                    'destroy': function() {
+                        t.ok(true, "clickHandler destroyed");
+                    }
+                }
+            }
+        };
 
-		//this will also trigger one test by calling OpenLayers.Control's destroy
-		// and three more for the destruction of dragPan, zoomBox, and wheelHandler
-		OpenLayers.Control.Navigation.prototype.destroy.apply(control, []);
+        //this will also trigger one test by calling OpenLayers.Control's destroy
+        // and three more for the destruction of dragPan, zoomBox, and wheelHandler
+        OpenLayers.Control.Navigation.prototype.destroy.apply(control, []);
 
-		t.eq(control.dragPan, null, "'dragPan' set to null");
-		t.eq(control.zoomBox, null, "'zoomBox' set to null");
-		t.eq(control.wheelHandler, null, "'wheelHandler' set to null");
-		t.eq(control.clickHandler, null, "'clickHandler' set to null");
+        t.eq(control.dragPan, null, "'dragPan' set to null");
+        t.eq(control.zoomBox, null, "'zoomBox' set to null");
+        t.eq(control.handlers, null, "handlers set to null");
 
-		OpenLayers.Control.prototype.destroy = temp;
+        OpenLayers.Control.prototype.destroy = temp;
     }
 
   </script>

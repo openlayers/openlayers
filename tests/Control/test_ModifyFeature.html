@@ -172,7 +172,7 @@
         control.handleKeypress(dKey);
 
         // now make sure nothing happens if the vertex is mid-drag
-        control.dragControl.dragHandler.dragging = true;
+        control.dragControl.handlers.drag.dragging = true;
         control.handleKeypress(delKey);
 
         // reset modified methods
@@ -305,11 +305,11 @@
         control.dragControl.map.div = {};
         control.dragControl.map.div.style = {};
         control.dragControl.map.div.cursor = "foo";
-        control.dragControl.dragHandler.deactivate = function() {
+        control.dragControl.handlers.drag.deactivate = function() {
             this.active = false;
         }
         control.resetVertices();
-        t.ok(!control.dragControl.dragHandler.active, "resetVertices deactivates drag handler");
+        t.ok(!control.dragControl.handlers.drag.active, "resetVertices deactivates drag handler");
         control.dragControl.map = null;
         
         control.destroy();
