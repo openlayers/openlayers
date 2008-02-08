@@ -43,7 +43,7 @@
     }
     
     function test_Handler_Click_events(t) {
-        t.plan(30);
+        t.plan(35);
         
         var map = new OpenLayers.Map('map');
         var control = {
@@ -72,8 +72,8 @@
 
         // list below events that should be handled (events) and those
         // that should not be handled (nonevents) by the handler
-        var events = ["click", "dblclick"];
-        var nonevents = ["mousedown", "mousemove", "mouseup", "resize", "focus", "blur"];
+        var events = ["click", "dblclick", "mousedown"];
+        var nonevents = ["mousemove", "mouseup", "resize", "focus", "blur"];
         var handler = new OpenLayers.Handler.Click(control);
         // set browser event like properties on the handler
         for(var i=0; i<events.length; ++i) {

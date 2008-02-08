@@ -38,7 +38,7 @@
                 defaultHandlerOptions: {
                     'single': true,
                     'double': false,
-                    'pixelTolerance': null,
+                    'pixelTolerance': 0,
                     'stopSingle': false,
                     'stopDouble': false
                 },
@@ -102,10 +102,10 @@
                             "double": true
                         }
                     }),
-                    "nodrag": new OpenLayers.Control.Click({
+                    "drag": new OpenLayers.Control.Click({
                         handlerOptions: {
                             "single": true,
-                            "pixelTolerance": 1
+                            "pixelTolerance": null
                         }
                     }),
                     "stopsingle": new OpenLayers.Control.Click({
@@ -204,9 +204,9 @@
                         <td><textarea class="output" id="bothOutput"></textarea></td>
                     </tr>
                     <tr>
-                        <td>single no drag</td>
-                        <td><button id="nodragStatus" onclick="toggle('nodrag')">off</button></td>
-                        <td><textarea class="output" id="nodragOutput"></textarea></td>
+                        <td>single with drag</td>
+                        <td><button id="dragStatus" onclick="toggle('drag')">off</button></td>
+                        <td><textarea class="output" id="dragOutput"></textarea></td>
                     </tr>
                     <tr>
                         <td>single with stop</td>
