@@ -681,7 +681,7 @@
         map.zoomToMaxExtent();
         map.setBaseLayer(tmsLayer);
         map.zoomIn();
-        map.pan(0, -200);
+        map.pan(0, -200, {animate:false});
         map.setBaseLayer(wmsLayer);
         t.eq(map.layerContainerDiv.style.top, "0px", "layerContainer is recentered after setBaseLayer");
     }

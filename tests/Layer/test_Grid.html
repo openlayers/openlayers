@@ -542,7 +542,7 @@
         map.zoomIn();
         var bounds = layer.getTileBounds(new OpenLayers.Pixel(200,200));
         t.eq(bounds.toBBOX(), "-180,-90,0,90", "get tile bounds returns correct bounds"); 
-        map.pan(200,0);
+        map.pan(200,0, {animate:false});
         var bounds = layer.getTileBounds(new OpenLayers.Pixel(200,200));
         t.eq(bounds.toBBOX(), "0,-90,180,90", "get tile bounds returns correct bounds after pan"); 
     }

@@ -38,7 +38,7 @@
         layer.setVisibility(true);
         if (!map.getCenter())  map.zoomToMaxExtent();
         map.addControl(control);
-        map.pan(5, 0);
+        map.pan(5, 0, {animate:false});
         t.ok(OpenLayers.Util.isEquivalentUrl(OpenLayers.Util.getElement('permalink').href, location+"?zoom=2&lat=0&lon=1.75781&layers=BT"), 'pan sets permalink');
         
         map.layers[1].setVisibility(false);
@@ -55,7 +55,7 @@
         map.addLayer(layer);
         if (!map.getCenter())  map.zoomToMaxExtent();
         map.addControl(control);
-        map.pan(5, 0);
+        map.pan(5, 0, {animate:false});
         OpenLayers.Util.getElement('edit_permalink').href = './edit.html?zoom=2&lat=0&lon=1.75781&layers=B';
         t.eq(OpenLayers.Util.getElement('permalink').href, OpenLayers.Util.getElement('edit_permalink').href, "Panning sets permalink with base");
   }
@@ -76,20 +76,20 @@
       map.addLayer(layer);
       if (!map.getCenter())  map.zoomToMaxExtent();
       map.addControl(control);
-      map.pan(5, 0);
+      map.pan(5, 0, {animate:false});
       OpenLayers.Util.getElement('edit_permalink').href = './edit.html?foo=bar&zoom=2&lat=0&lon=1.75781&layers=B';
       t.eq(OpenLayers.Util.getElement('permalink').href, OpenLayers.Util.getElement('edit_permalink').href, "Panning sets permalink with base and querystring");
       
       control = new OpenLayers.Control.Permalink('permalink', "./edit.html?foo=bar&" );
       map.addControl(control);
-      map.pan(0, 0);
+      map.pan(0, 0, {animate:false});
       t.eq(OpenLayers.Util.getElement('permalink').href, OpenLayers.Util.getElement('edit_permalink').href, "Panning sets permalink with base and querystring ending with '&'");
       
       control = new OpenLayers.Control.Permalink('permalink', "./edit.html?" );
       OpenLayers.Util.getElement('edit_permalink').href = './edit.html?zoom=2&lat=0&lon=1.75781&layers=B';
       map.addControl(control);
-      map.pan(5, 0);
-      map.pan(-5, 0);
+      map.pan(5, 0, {animate:false});
+      map.pan(-5, 0, {animate:false});
       t.eq(OpenLayers.Util.getElement('permalink').href, OpenLayers.Util.getElement('edit_permalink').href, "Panning sets permalink with base and querystring ending with '?'");
 
   }
@@ -104,7 +104,7 @@
         map.addLayer(layer);
         if (!map.getCenter())  map.zoomToMaxExtent();
         map.addControl(control);
-        map.pan(5, 0);
+        map.pan(5, 0, {animate:false});
         OpenLayers.Util.getElement('edit_permalink').href = './edit.html?zoom=2&lat=0&lon=1.75781&layers=B';
         t.eq(OpenLayers.Util.getElement('permalink').href, OpenLayers.Util.getElement('edit_permalink').href, "Panning sets permalink with existing zoom in base");
   }

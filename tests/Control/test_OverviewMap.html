@@ -38,7 +38,7 @@
 
         var centerLL = new OpenLayers.LonLat(-71,42); 
         map.setCenter(centerLL, 11);
-
+        t.delay_call(1, function() {
         var overviewCenter = control.ovmap.getCenter();
         var overviewZoom = control.ovmap.getZoom();
         t.eq(overviewCenter.lon, -71, "Overviewmap center lon correct");
@@ -46,7 +46,7 @@
         t.eq(overviewZoom, 8, "Overviewmap zoomcorrect");
         
         control.mapDivClick({'xy':new OpenLayers.Pixel(5,5)});
-        
+        }, 2, function() {
         var cent = map.getCenter();
         t.eq(cent.lon, -71.3515625, "Clicking on the Overview Map has the correct effect on map lon");
         t.eq(cent.lat, 42.17578125, "Clicking on the Overview Map has the correct effect on map lat");
@@ -57,7 +57,7 @@
         };
         control.rectDrag(new OpenLayers.Pixel(15, 15));
         control.updateMapToRect();
-        
+        }, 2, function() {
         var cent = map.getCenter();
         t.eq(cent.lon, -71.2734375, "Dragging on the Overview Map has the correct effect on map lon");
         t.eq(cent.lat, 42.09765625, "Dragging on the Overview Map has the correct effect on map lat");
@@ -68,9 +68,8 @@
         t.eq(overviewCenter.lon, 0, "Overviewmap center lon correct -- second zoom");
         t.eq(overviewCenter.lat, 0, "Overviewmap center lat correct -- second zoom");
         t.eq(overviewZoom, 0, "Overviewmap zoomcorrect -- second zoom");
-        
         map.destroy();
-
+        });
     }
 
   </script>

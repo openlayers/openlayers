@@ -1,0 +1,85 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+	<title>Animated Panning of the Map via map.panTo</title>
+    <style type="text/css">
+        #map {
+            width: 512px;
+            height: 256px;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map, layer, running = false;
+
+        OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {                
+            defaultHandlerOptions: {
+                'single': true,
+                'delay': 200
+            },
+
+            initialize: function(options) {
+                this.handlerOptions = OpenLayers.Util.extend(
+                    {}, this.defaultHandlerOptions
+                );
+                OpenLayers.Control.prototype.initialize.apply(
+                    this, arguments
+                ); 
+                this.handler = new OpenLayers.Handler.Click(
+                    this, {
+                        'click': this.onClick 
+                    }, this.handlerOptions
+                );
+            }, 
+
+            onClick: function(evt) {  
+                map.panTo(map.getLonLatFromPixel(evt.xy));
+            }   
+
+        });
+
+        function init(){
+            map = new OpenLayers.Map('map');
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+                
+            map.addLayer(layer);
+            map.zoomToMaxExtent();
+            var click = new OpenLayers.Control.Click();
+            map.addControl(click);
+            click.activate();
+            map.addControl(new OpenLayers.Control.OverviewMap());
+        }
+
+        function setCenterInterval() {
+            if (!running) {
+                setCenter();
+                running = setInterval('setCenter()', 500);
+            } else {
+                clearInterval(running);
+                running = false;
+            }    
+        }
+        
+        function setCenter() {
+            var lon = Math.random() * 360 - 180;
+            var lat = Math.random() * 180 - 90;
+            var lonlat = new OpenLayers.LonLat(lon, lat);
+            map.panTo(lonlat);
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">map.panTo Example</h1>
+	<div id="tags">map.panTo</div>
+	<div id="shortdesc">Show animated panning effects in the map</div>
+	<div id="map"></div>
+    <div id="docs">
+    	This is an example of transition effects. If the new random center is in the current extent, the map will pan smoothly. <br />
+        The random selection will continue until you press it again. Additionally, you can single click in the map to pan smoothly
+        to that area, or use the pan control to pan smoothly.
+
+    </div>
+    <button onclick="setCenterInterval()">Start/stop random recenter</button>
+  </body>
+</html>

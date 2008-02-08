@@ -61,14 +61,16 @@
                     wnd.mapper.events.register("dblclick", mapper, setFlag);
                     
                     simulateClick(wnd, wnd.control.buttons[0]);
-                    t.ok( wnd.mapper.getCenter().lat > wnd.centerLL.lat, "Pan up works correctly" );
-                    t.ok(!flag.mousedown, "mousedown does not get to the map");
-                    t.ok(flag.mouseup, "mouseup does get to the map");
-                    t.ok(!flag.click, "click does not get to the map");
-                    t.ok(!flag.dblclick, "dblclick does not get to the map");
-                    resetFlags();
+                    t.delay_call(2, function() {
+                        t.ok( wnd.mapper.getCenter().lat > wnd.centerLL.lat, "Pan up works correctly" );
+                        t.ok(!flag.mousedown, "mousedown does not get to the map");
+                        t.ok(flag.mouseup, "mouseup does get to the map");
+                        t.ok(!flag.click, "click does not get to the map");
+                        t.ok(!flag.dblclick, "dblclick does not get to the map");
+                        resetFlags();
 
-                    simulateClick(wnd, wnd.control.buttons[1]);
+                        simulateClick(wnd, wnd.control.buttons[1]);
+                    }, 2, function() {    
                     t.ok( wnd.mapper.getCenter().lon < wnd.centerLL.lon, "Pan left works correctly" );
                     t.ok(!flag.mousedown, "mousedown does not get to the map");
                     t.ok(flag.mouseup, "mouseup does get to the map");
@@ -77,6 +79,7 @@
                     resetFlags();
 
                     simulateClick(wnd, wnd.control.buttons[2]);
+                    }, 2, function() {
                     t.ok( wnd.mapper.getCenter().lon == wnd.centerLL.lon, "Pan right works correctly" );
                     t.ok(!flag.mousedown, "mousedown does not get to the map");
                     t.ok(flag.mouseup, "mouseup does get to the map");
@@ -85,6 +88,7 @@
                     resetFlags();
 
                     simulateClick(wnd, wnd.control.buttons[3]);
+                    }, 2, function() {
                     t.ok( wnd.mapper.getCenter().lat == wnd.centerLL.lat, "Pan down works correctly" );
                     t.ok(!flag.mousedown, "mousedown does not get to the map");
                     t.ok(flag.mouseup, "mouseup does get to the map");
@@ -93,6 +97,7 @@
                     resetFlags();
 
                     simulateClick(wnd, wnd.control.buttons[4]);
+                    }, 2, function() {
                     t.eq( wnd.mapper.getZoom(), 6, "zoomin works correctly" );
                     t.ok(!flag.mousedown, "mousedown does not get to the map");
                     t.ok(flag.mouseup, "mouseup does get to the map");
@@ -101,6 +106,7 @@
                     resetFlags();
 
                     simulateClick(wnd, wnd.control.buttons[6]);
+                    }, 2, function() {
                     t.eq( wnd.mapper.getZoom(), 5, "zoomout works correctly" );
                     t.ok(!flag.mousedown, "mousedown does not get to the map");
                     t.ok(flag.mouseup, "mouseup does get to the map");
@@ -109,13 +115,14 @@
                     resetFlags();
 
                     simulateClick(wnd, wnd.control.buttons[5]);
+                    }, 2, function() {
                     t.eq( wnd.mapper.getZoom(), 2, "zoomworld works correctly" );
                     t.ok(!flag.mousedown, "mousedown does not get to the map");
                     t.ok(flag.mouseup, "mouseup does get to the map");
                     t.ok(!flag.click, "click does not get to the map");
                     t.ok(!flag.dblclick, "dblclick does not get to the map");
                     resetFlags();
-                    
+                    });
                 });
             });
         }
@@ -146,8 +153,8 @@
         
     
         var layer = new OpenLayers.Layer.WMS("Test Layer", 
-            "http://octo.metacarta.com/cgi-bin/mapserv?",
-            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+            "http://labs.metacarta.com/wms-c/Basic.py?",
+            {layers: "basic"});
         mapper.addLayer(layer);
     
         centerLL = new OpenLayers.LonLat(0,0); 
