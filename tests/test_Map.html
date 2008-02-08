@@ -726,7 +726,7 @@
         t.eq( ct, 3, "raiseLayer triggered changelayer the right # of times" );
     }
 
-    function test_15_Map_setCenter(t) {
+    function test_15_Map_moveTo(t) {
         t.plan(1);
 
         map = new OpenLayers.Map('map');
@@ -736,7 +736,7 @@
             {maxResolution: 'auto', maxExtent: new OpenLayers.Bounds(-10,-10,10,10)});
         map.addLayer(baseLayer);
         var ll = new OpenLayers.LonLat(-100,-150);
-        map.setCenter(ll, 0);
+        map.moveTo(ll, 0);
         t.ok(map.getCenter().equals(new OpenLayers.LonLat(0,0)), "safely sets out-of-bounds lonlat");
     }
 
