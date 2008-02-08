@@ -205,19 +205,22 @@
         eventTypes = ["something"];
         events = new OpenLayers.Events(null, null, eventTypes);
         var instance = {id: Math.random()};
-        var listener = function() {
+        var listener = function(obj) {
             t.eq(this.id, instance.id,
                  "listener called with proper scope");
-            t.eq(arguments[0].id, evt.id,
-                 "listener called with evt as first arg");
-            t.eq(arguments[1], "arg1",
-                 "listener called with correct extra arg1");
-            t.eq(arguments[2], "arg2",
-                 "listener called with correct extra arg2");
+            t.eq(arguments.length, 1,
+                 "listener called with a single argument");
+            t.eq(typeof arguments, "object",
+                 "listener called with an object");
+            t.eq(obj.foo, evt.foo,
+                 "foo property set on the layer");
         };
         events.register("something", instance, listener);        
-        var evt = {id: Math.random()};
-        events.triggerEvent("something", evt, ["arg1", "arg2", "arg3"]);
+        var evt = {
+            id: Math.random(),
+            "foo": "bar"
+        };
+        events.triggerEvent("something", evt);
         events.unregister("something", instance, listener);
         
         // test return from triggerEvent

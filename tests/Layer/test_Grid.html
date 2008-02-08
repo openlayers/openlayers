@@ -499,7 +499,8 @@
             events: {
                 unregister: function(name, obj, func) {
                     g_unregistered[name] = [obj, func];
-                }
+                },
+                un: OpenLayers.Events.prototype.un
             }
         }
 

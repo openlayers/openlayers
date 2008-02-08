@@ -5,13 +5,17 @@
     
     function test_ModifyFeature_constructor(t) {
         t.plan(3);
-        var layer = "foo";        
+        var layer = {
+            events: {
+                on: function() {}
+            }
+        };
         var options = {
             geometryTypes: "bar"
         };
         var control = new OpenLayers.Control.ModifyFeature(layer, options);
         
-        t.eq(control.layer, "foo",
+        t.ok(control.layer == layer,
              "constructor sets layer correctly");
         t.eq(control.selectControl.geometryTypes, "bar",
              "constructor sets options correctly on feature handler");
@@ -72,7 +76,12 @@
          * In the future, feature deletion may be added to the control.
          */
         
-        var control = new OpenLayers.Control.ModifyFeature({style: null});
+        var control = new OpenLayers.Control.ModifyFeature({
+            style: null,
+            events: {
+                on: function() {}
+            }
+        });
         var delKey = 46;
         var dKey = 100;
         control.deleteCodes = [delKey, dKey];
@@ -197,7 +206,7 @@
         layer.destroyFeatures = function(verts) {
             t.ok(verts == 'b', "Virtual verts destroyed correctly");
         }
-        control.unselectFeature(fakeFeature);
+        control.unselectFeature({feature: fakeFeature});
         t.eq(control.feature, null, "feature is set to null");
     }    
     function test_ModifyFeature_selectFeature(t) {
@@ -216,7 +225,7 @@
         var fakeFeature = {'id':'myFakeFeature','geometry':{'CLASS_NAME':'OpenLayers.Geometry.Point'}};
         
         // Points don't call collectVertices
-        control.selectFeature(fakeFeature);
+        control.selectFeature({feature: fakeFeature});
         
         control.collectVertices = function() { 
           t.ok(true, "collectVertices called"); 
@@ -232,7 +241,7 @@
         fakeFeature.geometry.CLASS_NAME='OpenLayers.Geometry.Polygon';
         
         // OnSelect calls collectVertices and passes features to layer 
-        control.selectFeature(fakeFeature);
+        control.selectFeature({feature: fakeFeature});
         
         control.vertices = ['a'];
         control.virtualVertices = ['b'];
@@ -244,7 +253,7 @@
         }    
 
         // Features are removed whenever they exist
-        control.selectFeature(fakeFeature);
+        control.selectFeature({feature: fakeFeature});
         
     }  
 
@@ -389,7 +398,7 @@
             t.eq(feature.id, testFeature.id,
                  "onModificationStart called with the right feature");
         };
-        control.selectFeature(testFeature);
+        control.selectFeature({feature: testFeature});
     }
     
     function test_ModifyFeature_onModification(t) {
@@ -450,7 +459,7 @@
             t.eq(feature.id, testFeature.id,
                  "onModificationEnd called with the right feature");
         };
-        control.unselectFeature(testFeature);
+        control.unselectFeature({feature: testFeature});
     }
 
 

@@ -78,7 +78,10 @@
         // mock up layer
         var layer = {
             selectedFeatures: [],
-            drawFeature: function() {}
+            drawFeature: function() {},
+            events: {
+                triggerEvent: function() {}
+            }
         };
         // mock up active control
         var control = new OpenLayers.Control.SelectFeature(layer);
