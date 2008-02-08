@@ -34,3 +34,6 @@ in doc/licenses/APACHE-2.0.txt.
 
 Some portions of OpenLayers are used under the MIT license, availabie in 
 doc/licenses/MIT-LICENSE.txt.
+
+Some portions of OpenLayers are Copyright 2001 Robert Penner, and are used 
+under the BSD license, available in doc/licenses/BSD-LICENSE.txt
