@@ -111,8 +111,23 @@
             t.eq(r.id, elseRule.id, "(else) applySymbolizer called with correct rule");
         }
         style.createStyle(new OpenLayers.Feature.Vector());
-
-
+    }
+    
+    function test_Style_context(t) {
+        t.plan(1);
+        var context = {
+            foo: "bar",
+            size: 10};
+        var rule = new OpenLayers.Rule.Comparison({
+            type: OpenLayers.Rule.Comparison.LESS_THAN,
+            context: context,
+            property: "size",
+            value: 11,
+            symbolizer: {"Point": {externalGraphic: "${foo}.png"}}});
+        var style = new OpenLayers.Style();
+        style.addRules([rule]);
+        var styleHash = style.createStyle(new OpenLayers.Feature.Vector());
+        t.eq(styleHash.externalGraphic, "bar.png", "correctly evaluated rule against a custom context");
     }
 
     function test_Style_destroy(t) {

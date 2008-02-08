@@ -19,7 +19,7 @@
         
         var rule = new OpenLayers.Rule.Logical();
         rule.destroy();
-		t.eq(rule.children, null, "children array nulled properly");
+		t.eq(rule.rules, null, "rules array nulled properly");
     }
     
     function test_Logical_evaluate(t) {
@@ -27,7 +27,7 @@
         
         var rule = new OpenLayers.Rule.Logical({
                 type: OpenLayers.Rule.Logical.NOT});
-        rule.children.push(new OpenLayers.Rule());
+        rule.rules.push(new OpenLayers.Rule());
         
         var feature = new OpenLayers.Feature.Vector();
 
