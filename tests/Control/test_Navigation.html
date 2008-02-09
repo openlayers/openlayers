@@ -17,7 +17,7 @@
     }
 
     function test_Control_Navigation_destroy (t) {
-        t.plan(9);
+        t.plan(10);
         
         var temp = OpenLayers.Control.prototype.destroy;
         OpenLayers.Control.prototype.destroy = function() {
@@ -26,6 +26,11 @@
         };
 
         var control = {
+            events: {
+                destroy: function() {
+                    t.ok(true, "events destroyed");
+                }
+            },
             'deactivate': function() {
                 t.ok(true, "navigation control deactivated before being destroyed");
             },

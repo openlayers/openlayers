@@ -36,21 +36,8 @@
             function init(){
                 map = new OpenLayers.Map('map');
                 
-                // set any application specific behavior here
-                // this will become unnecessary when controls have better event handling
-                var previousOptions = {
-                    onActivate: function() {panel.redraw();},
-                    onDeactivate: function() {panel.redraw();}
-                };
-                var nextOptions = {
-                    onActivate: function() {panel.redraw();},
-                    onDeactivate: function() {panel.redraw();}
-                };
-                var options = {
-                    previousOptions: previousOptions,
-                    nextOptions: nextOptions
-                };
-                nav = new OpenLayers.Control.NavigationHistory(options);
+                nav = new OpenLayers.Control.NavigationHistory();
+                // parent control must be added to the map
                 map.addControl(nav);
 
                 panel = new OpenLayers.Control.Panel(
