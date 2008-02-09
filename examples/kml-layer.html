@@ -20,7 +20,14 @@
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
                     "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
             map.addLayer(layer);
-            map.addLayer(new OpenLayers.Layer.GML("KML", "kml/lines.kml", {format: OpenLayers.Format.KML}));
+            map.addLayer(new OpenLayers.Layer.GML("KML", "kml/lines.kml", 
+               {
+                format: OpenLayers.Format.KML, 
+                formatOptions: {
+                  extractStyles: true, 
+                  extractAttributes: true
+                }
+               }));
             map.zoomToExtent(new OpenLayers.Bounds(-112.306698,36.017792,-112.03204,36.18087));
         }
     </script>

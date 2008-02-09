@@ -4,14 +4,19 @@
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         function parseData(req) {
-          g =  new OpenLayers.Format.KML();
+          g =  new OpenLayers.Format.KML({extractStyles: true});
           html = ""
           features = g.read(req.responseText);
           for(var feat in features) {
             html += "Feature: Geometry: "+ features[feat].geometry+",";
                 html += "<ul>";
             for (var j in features[feat].attributes) {
-                html += "<li>"+j+":"+features[feat].attributes[j]+"</li>";
+                html += "<li>Attribute "+j+":"+features[feat].attributes[j]+"</li>";
+            }
+                html += "</ul>"
+                html += "<ul>";
+            for (var j in features[feat].style) {
+                html += "<li>Style "+j+":"+features[feat].style[j]+"</li>";
             }
                 html += "</ul>"
           }
