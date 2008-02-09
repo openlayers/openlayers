@@ -1,0 +1,88 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>OpenLayers Navigation History Example</title>
+        <style type="text/css">
+            #map {
+                width: 512px;
+                height: 256px;
+                border: 1px solid gray;
+            }
+            #panel {
+                right: 0px;
+                height: 30px; 
+                width: 200px;
+            }
+            #panel div { 
+                float: left;
+                margin: 5px;
+            }
+                
+        </style>
+        <script src="../lib/OpenLayers.js"></script>
+        <script type="text/javascript">
+            var map, nav, panel;
+
+            // preload images if you care
+            var preload = [
+                "../theme/default/img/view_previous_on.png",
+                "../theme/default/img/view_next_on.png"
+            ];
+            var img = new Array(preload.length);
+            for(var i=0; i<preload.length; ++i) {
+                img[i] = new Image();
+                img[i].src = preload[i];
+            }
+            
+            function init(){
+                map = new OpenLayers.Map('map');
+                
+                // set any application specific behavior here
+                // this will become unnecessary when controls have better event handling
+                var previousOptions = {
+                    onActivate: function() {panel.redraw();},
+                    onDeactivate: function() {panel.redraw();}
+                };
+                var nextOptions = {
+                    onActivate: function() {panel.redraw();},
+                    onDeactivate: function() {panel.redraw();}
+                };
+                var options = {
+                    previousOptions: previousOptions,
+                    nextOptions: nextOptions
+                };
+                nav = new OpenLayers.Control.NavigationHistory(options);
+                map.addControl(nav);
+
+                panel = new OpenLayers.Control.Panel(
+                    {div: document.getElementById("panel")}
+                );
+                panel.addControls([nav.next, nav.previous]);
+                map.addControl(panel);
+                
+                var layer = new OpenLayers.Layer.WMS(
+                    "OpenLayers WMS",
+                    "http://labs.metacarta.com/wms/vmap0",
+                    {layers: 'basic'}
+                );
+                map.addLayer(layer);
+                map.zoomToMaxExtent();
+
+
+            }
+        </script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">Map Navigation History Example</h1>
+
+        <div id="tags">
+        </div>
+
+        <p id="shortdesc">
+            A control for zooming to previous and next map extents.
+        </p>
+
+        <div id="map"></div>
+        Map navigation history controls<div id="panel"><div>
+        <div id="docs"></div>
+    </body>
+</html>

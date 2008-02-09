@@ -1,0 +1,176 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+
+    function test_initialize(t) {
+        t.plan(4);
+        control = new OpenLayers.Control.NavigationHistory();
+        t.ok(control instanceof OpenLayers.Control.NavigationHistory,
+             "constructor returns correct instance");
+        t.eq(control.displayClass, "olControlNavigationHistory",
+             "displayClass is correct");
+        t.ok(control.next instanceof OpenLayers.Control.Button,
+             "constructor creates next control");
+        t.ok(control.previous instanceof OpenLayers.Control.Button,
+             "constructor creates previous control");
+    }
+
+    function test_destroy(t) {
+        t.plan(2);
+        control = new OpenLayers.Control.NavigationHistory();
+        control.next.destroy = function() {
+            t.ok(true, "destroy calls next.destroy");
+        }
+        control.previous.destroy = function() {
+            t.ok(true, "destroy calls previous.destroy");
+        }
+        control.destroy();
+    }
+    
+    function test_previous(t) {
+        var numStates = 10;
+        
+        t.plan(
+            numStates * 3 // for lon, lat, zoom
+            + 3 // for confirming that previous with empty stack works
+        );       
+
+        var history = new Array(numStates);
+        for(var i=0; i<numStates; ++i) {
+            history[i] = {
+                center: new OpenLayers.LonLat(
+                    (i * 360 / numStates) - 180, (i * 180 / numStates) - 90
+                ),
+                zoom: i
+            };
+        }
+        
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer(
+            "test", {isBaseLayer: true}
+        );
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.NavigationHistory();
+        map.addControl(control);
+        
+        // set previous states
+        for(i=0; i<numStates; ++i) {
+            map.setCenter(history[i].center, history[i].zoom);
+        }
+        // test previous states
+        for(i=numStates-1; i>=0; --i) {
+            t.eq(map.getCenter().lon, history[i].center.lon, "(step " + i + ") lon correct");
+            t.eq(map.getCenter().lat, history[i].center.lat, "(step " + i + ") lat correct");
+            t.eq(map.getZoom(), history[i].zoom, "(step " + i + ") zoom correct");
+            control.previous.trigger();
+        }
+        // test previous with empty stack
+        t.eq(map.getCenter().lon, history[0].center.lon, "(step 0 again) lon correct");
+        t.eq(map.getCenter().lat, history[0].center.lat, "(step 0 again) lat correct");
+        t.eq(map.getZoom(), history[0].zoom, "(step 0 again) zoom correct");
+    }
+
+    function test_next(t) {
+        var numStates = 10;
+        
+        t.plan(
+            numStates * 3 // for lon, lat, zoom
+            + 3 // for confirming that next with empty stack works
+        );
+
+        var history = new Array(numStates);
+        for(var i=0; i<numStates; ++i) {
+            history[i] = {
+                center: new OpenLayers.LonLat(
+                    (i * 360 / numStates) - 180, (i * 180 / numStates) - 90
+                ),
+                zoom: i
+            };
+        }
+        
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer(
+            "test", {isBaseLayer: true}
+        );
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.NavigationHistory();
+        map.addControl(control);
+        
+        // set previous states
+        for(i=0; i<numStates; ++i) {
+            map.setCenter(history[i].center, history[i].zoom);
+        }
+        // set next states
+        for(i=numStates-1; i>=0; --i) {
+            control.previous.trigger();
+        }
+        // test next states
+        for(i=0; i<numStates; ++i) {
+            t.eq(map.getCenter().lon, history[i].center.lon, "(step " + i + ") lon correct");
+            t.eq(map.getCenter().lat, history[i].center.lat, "(step " + i + ") lat correct");
+            t.eq(map.getZoom(), history[i].zoom, "(step " + i + ") zoom correct");
+            control.next.trigger();
+        }
+        // test next with empty stack
+        t.eq(map.getCenter().lon, history[numStates-1].center.lon, "(step " + (numStates-1) + " again) lon correct");
+        t.eq(map.getCenter().lat, history[numStates-1].center.lat, "(step " + (numStates-1) + " again) lat correct");
+        t.eq(map.getZoom(), history[numStates-1].zoom, "(step " + (numStates-1) + " again) zoom correct");
+    }
+    
+    function test_limit(t) {
+        var numStates = 10;
+        var limit = 3;
+        
+        t.plan(
+            numStates * 6 // for previous & next lon, lat, zoom
+        );
+
+        var history = new Array(numStates);
+        for(var i=0; i<numStates; ++i) {
+            history[i] = {
+                center: new OpenLayers.LonLat(
+                    (i * 360 / numStates) - 180, (i * 180 / numStates) - 90
+                ),
+                zoom: i
+            };
+        }
+        
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer(
+            "test", {isBaseLayer: true}
+        );
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.NavigationHistory({limit: limit});
+        map.addControl(control);
+        
+        // set previous states
+        for(i=0; i<numStates; ++i) {
+            map.setCenter(history[i].center, history[i].zoom);
+        }
+        // test previous states (only up to limit should work)
+        var state;
+        for(i=numStates-1; i>=0; --i) {
+            state = Math.max(i, numStates - limit - 1);
+            t.eq(map.getCenter().lon, history[state].center.lon, "(previous step " + i + ") lon correct: state " + state);
+            t.eq(map.getCenter().lat, history[state].center.lat, "(previous step " + i + ") lat correct: state " + state);
+            t.eq(map.getZoom(), history[state].zoom, "(previous step " + i + ") zoom correct: state " + state);
+            control.previous.trigger();
+        }
+        // test next states
+        for(i=0; i<numStates; ++i) {
+            state = Math.min(numStates - 1, numStates - limit - 1 + i);
+            t.eq(map.getCenter().lon, history[state].center.lon, "(next step " + i + ") lon correct: state " + state);
+            t.eq(map.getCenter().lat, history[state].center.lat, "(next step " + i + ") lat correct: state " + state);
+            t.eq(map.getZoom(), history[state].zoom, "(next step " + i + ") zoom correct: state " + state);
+            control.next.trigger();
+        }
+        
+    }
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 100px; height: 100px;"/>
+</body>
+</html>

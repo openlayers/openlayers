@@ -110,6 +110,31 @@ div.olControlMousePosition {
   position: relative;
 }
 
+.olControlNavigationHistoryPreviousItemActive { 
+   background-image: url("img/view_previous_on.png");
+   background-repeat: no-repeat;
+   width:  24px;
+   height: 24px;
+}
+.olControlNavigationHistoryPreviousItemInactive { 
+   background-image: url("img/view_previous_off.png");
+   background-repeat: no-repeat;
+   width:  24px;
+   height: 24px;
+}
+.olControlNavigationHistoryNextItemActive { 
+   background-image: url("img/view_next_on.png");
+   background-repeat: no-repeat;
+   width:  24px;
+   height: 24px;
+}
+.olControlNavigationHistoryNextItemInactive { 
+   background-image: url("img/view_next_off.png");
+   background-repeat: no-repeat;
+   width:  24px;
+   height: 24px;
+}
+
 .olControlNavToolbar .olControlNavigationItemActive { 
   background-image: url("img/panning-hand-on.png");
   background-repeat: no-repeat;
