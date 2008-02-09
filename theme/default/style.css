@@ -24,6 +24,23 @@ div.olLayerDiv {
     position: absolute;
     font-size: smaller;
 }
+.olControlScaleLine {
+   left: 10px;
+   bottom: 15px;
+   font-size: xx-small;
+}
+.olControlScaleLineBottom {
+   border: solid 2px black;
+   border-bottom: none;
+   margin-top:-2px;
+   text-align: center;
+}
+.olControlScaleLineTop {
+   border: solid 2px black;
+   border-top: none;
+   text-align: center;
+}
+
 .olControlPermalink {
     right: 3px;
     bottom: 1.5em;
