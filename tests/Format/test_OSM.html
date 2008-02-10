@@ -26,22 +26,24 @@
         t.eq(feat.geometry.y, 52.5503033, "lat is correct"); 
     }
     function test_Format_OSM_node_with_tags(t) {
-        t.plan(4);
+        t.plan(5);
         var f = new OpenLayers.Format.OSM();
         var features = f.read(osm_test_data['node_with_tags']);
         var feat = features[0];
         t.eq(feat.attributes, {'a':'b'}, "attributes match");
         t.eq(feat.osm_id, 200545, "internal osm_id property set correctly");
+        t.eq(feat.fid, "node.200545", "OSM-based FID set correctly.");
         t.eq(feat.geometry.x, -1.8166417, "lon is correct"); 
         t.eq(feat.geometry.y, 52.5503033, "lat is correct"); 
     }
     function test_Format_OSM_way(t) {
-        t.plan(7);
+        t.plan(8);
         var f = new OpenLayers.Format.OSM();
         var features = f.read(osm_test_data['way']);
         t.eq(features.length, 1, "One feature");
         var feat = features[0];
         t.eq(feat.osm_id, 4685537, "OSM ID set correctly.");
+        t.eq(feat.fid, "way.4685537", "OSM-based FID set correctly.");
         t.eq(feat.geometry.CLASS_NAME, "OpenLayers.Geometry.Polygon", "returned as polygon");
         t.eq(feat.geometry.components[0].components.length, 11, "Correct number of components"); 
         t.eq(feat.geometry.components[0].components[0].osm_id, 29783472, "OSM ID set on components");
