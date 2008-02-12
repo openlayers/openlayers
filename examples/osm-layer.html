@@ -47,7 +47,7 @@
             gml.loadGML();
         }
         function style_osm_feature(feature) {
-            feature.style.fill = "black";
+            feature.style = OpenLayers.Util.extend({'fill':'black'}, OpenLayers.Feature.Vector.style['default']);
             if (feature.attributes.highway == "motorway") {
                 feature.style.strokeColor = "blue";
                 feature.style.strokeWidth = 5;

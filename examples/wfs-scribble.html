@@ -35,7 +35,7 @@
             df = new OpenLayers.Control.DrawFeature(layer, OpenLayers.Handler.Path, {handlerOptions: {'freehand': false}, 'displayClass': 'olControlDrawFeaturePath'});
             df.featureAdded = function(feature) {
               feature.state = OpenLayers.State.INSERT;
-              feature.style['strokeColor'] = "#ff0000";
+              feature.style = OpenLayers.Util.extend({'strokeColor': '#ff0000'}, OpenLayers.Feature.Vector.style['default']);
               feature.layer.drawFeature(feature);
             }
             p.addControls([ new OpenLayers.Control.Navigation(), df ]);

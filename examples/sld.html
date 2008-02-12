@@ -32,41 +32,33 @@
             
             styles = sld[1];
             
-            waterStyle = styles["WaterBodies"];
+            // for the hover style, we do not want to use the SLD default as
+            // base style
+            styles["WaterBodies"]["Hover Styler"].defaultStyle = OpenLayers.Util.extend({},
+                OpenLayers.Feature.Vector.style["select"]);
             
             gmlLayers = [
                     // use the sld UserStyle named "Default Styler"
                     new OpenLayers.Layer.GML("StateBoundaries",
                             "tasmania/TasmaniaStateBoundaries.xml", {
-                            style: waterStyle["default"]}),
+                            styleMap: new OpenLayers.StyleMap(styles["WaterBodies"])}),
                     new OpenLayers.Layer.GML("Roads",
                             "tasmania/TasmaniaRoads.xml", {
-                            style: waterStyle["default"]}),
+                            styleMap: new OpenLayers.StyleMap(styles["Roads"])}),
                     new OpenLayers.Layer.GML("WaterBodies",
                             "tasmania/TasmaniaWaterBodies.xml", {
-                            style: waterStyle["default"]}),
+                            styleMap: new OpenLayers.StyleMap(styles["WaterBodies"])}),
                     new OpenLayers.Layer.GML("Cities",
                             "tasmania/TasmaniaCities.xml", {
-                            style: waterStyle["default"]})];
+                            styleMap: new OpenLayers.StyleMap(styles["Cities"])})];
  
-            // add the first layer with the style passed to the constructor
-            map.addLayer(gmlLayers[0]);
-            // add the other layers after setting the style using the
-            // setStyle() method, which will pick the correct default style
-            // from the styles hash we got back from
-            // OpenLayers.Format.SLD.read()
-            for (var i=1; i<gmlLayers.length; i++) {
-                gmlLayers[i].style = styles[gmlLayers[i].name]["default"];
-                      map.addLayer(gmlLayers[i]);
-                gmlLayers[i].redraw();
+            for (var i=0; i<gmlLayers.length; i++) {
+                map.addLayer(gmlLayers[i]);
             }
             
-            // SLD can also be used for the SelectFeature control
-            waterStyle["Hover Styler"].defaultStyle =
-                    OpenLayers.Feature.Vector.style["select"];
             hover = new OpenLayers.Control.SelectFeature(gmlLayers[2], {
-                    selectStyle: waterStyle["Hover Styler"],
-                    hover: true
+                    hover: true,
+                    renderIntent: "Hover Styler"
                 });
             map.addControl(hover);
             hover.activate();
@@ -74,11 +66,8 @@
         
         // set a new style when the radio button changes
         function setStyle(styleName) {
+            gmlLayers[2].styleMap.styles["default"] = styles["WaterBodies"][styleName];
             // change the style of the features of the WaterBodies layer
-            var features = gmlLayers[2].features;
-            for (var i=0; i<features.length; i++) {
-                features[i].style = waterStyle[styleName];
-            }
             gmlLayers[2].redraw();
         }
     </script>

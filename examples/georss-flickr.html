@@ -31,6 +31,9 @@
             // the thumbail attribute of the rss item
             style = new OpenLayers.Style({externalGraphic: "${thumbnail}"});
             
+            // make the thumbnails larger when we select them
+            selectStyle = new OpenLayers.Style({pointRadius: 35});
+            
             // create a rule with a point symbolizer that will make the thumbnail
             // larger if the title of the rss item conatins "powder"
             var rule = new OpenLayers.Rule.Comparison({
@@ -47,12 +50,13 @@
             
             style.addRules([rule, elseRule]);
             
-            markerLayer = new OpenLayers.Layer.Vector("", {style: style});
+            markerLayer = new OpenLayers.Layer.Vector("", {styleMap: new OpenLayers.StyleMap({
+                "default": style,
+                "select": selectStyle})});
             map.addLayer(markerLayer);
             
             // control that will show a popup when clicking on a thumbnail
             var popupControl = new OpenLayers.Control.SelectFeature(markerLayer, {
-              selectStyle: style,
               onSelect: function(feature) {
                   var pos = feature.geometry;
                   if (popup) {

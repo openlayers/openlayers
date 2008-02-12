@@ -28,7 +28,7 @@
 
             map.addLayer(wms);
 
-            wfs = new OpenLayers.Layer.WFS("Minnesota Streams (WFS)", wfs_url, {'typename':'streams'}, {ratio:1.25, minZoomLevel:4});
+            wfs = new OpenLayers.Layer.WFS("Minnesota Streams (WFS)", wfs_url, {'typename':'streams'}, {ratio:1.25, minZoomLevel:4, style: OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default'])});
 
             // preFeatureInsert can be used to set style before the feature is drawn
             wfs.preFeatureInsert= function(feature) { feature.style.strokeWidth="3"; feature.style.strokeColor="blue";
@@ -57,7 +57,7 @@
             map.addLayer(pwfs);
 
             rstyle = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
-            OpenLayers.Util.extend(rstyle, {'strokeColor': 'white', strokeWIdth: "4"});
+            OpenLayers.Util.extend(rstyle, {'strokeColor': 'white', strokeWidth: "4"});
             rwfs = new OpenLayers.Layer.WFS("Minnesota Roads (WFS)", wfs_url, {'typename':'roads'},
               {ratio:1.25, minZoomLevel:7, extractAttributes: true, style:rstyle});
 

@@ -33,44 +33,20 @@
     }
     
     function test_Control_SelectFeature_select(t) {
-        t.plan(7);
+        t.plan(2);
         var map = new OpenLayers.Map("map");
         var layer = new OpenLayers.Layer.Vector();
         map.addLayer(layer);
         var control = new OpenLayers.Control.SelectFeature(layer);
         var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0));
         layer.addFeatures(feature);
-        layer.drawFeature = function() { }
+        layer.drawFeature = function(feature, style) {
+            layer.styleMap.createSymbolizer(feature, style);
+        }
         control.select(feature);
-        t.eq(feature.style.strokeColor, OpenLayers.Feature.Vector.style['select'].strokeColor, "feature style is set to select style");
+        t.eq(feature.renderIntent, "select", "render intent is set to select");
         control.unselect(feature);
-        t.eq(feature.style.strokeColor, OpenLayers.Feature.Vector.style['default'].strokeColor, "feature style is set back to old style");
-        
-        // Don't ever overwrite my feature style with undefined properties from the selectStyle
-        feature.style = {externalGraphic: "foo.png", pointRadius: 39};
-        control.selectStyle.pointRadius = undefined;
-        control.select(feature);
-        t.eq(feature.style.pointRadius, 39, "undefined style property inherited from original feature style");
-        control.unselect(feature);
-        
-        // Ok, that one went well. But I'm sure you cannot handle OL.Style.
-        feature.style = new OpenLayers.Style({externalGraphic: "foo.png", pointRadius: 39});
-        control.select(feature);
-        t.eq(feature.style.pointRadius, 39, "undefined style property inherited from original feature style object");
-        control.unselect(feature);
-        
-        // Wow, but using OL.Style as selectStyle will break you.
-        control.selectStyle = new OpenLayers.Style({strokeColor: "green"});
-        control.select(feature);
-        t.eq(feature.style.strokeColor, "green", "style correct if both feature.style and selectStyle are OL.Style");
-        control.unselect(feature);
-        
-        // Not bad, not bad. And what if I set feature.style back to a style hash?
-        feature.style = layer.style;
-        control.select(feature);
-        t.eq(feature.style.strokeColor, "green", "style still correct with only selectStyle being OL.Style");
-        control.unselect(feature);
-        t.eq(feature.style.strokeColor, OpenLayers.Feature.Vector.style["default"].strokeColor, "style set back to original correctly");
+        t.eq(feature.renderIntent, "default", "render intent is set back to default");
     }
     
     function test_Control_SelectFeature_clickFeature(t) {

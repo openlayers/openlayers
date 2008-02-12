@@ -11,7 +11,7 @@
         t.ok(style instanceof OpenLayers.Style, 
              "new OpenLayers.Style returns object" ); 
         t.eq(style.foo, "bar", "constructor sets options correctly"); 
-        t.eq(typeof style.createStyle, "function", "style has a createStyle function"); 
+        t.eq(typeof style.createSymbolizer, "function", "style has a createSymbolizer function"); 
     }
     
     function test_Style_create(t) {
@@ -45,11 +45,12 @@
         
         var feature = new OpenLayers.Feature.Vector(
                 new OpenLayers.Geometry.Point(3,5),
-                {"foo": "bar"},
-                style);
+                {"foo": "bar"});
 
         feature.fid = "1";
         // for this fid, the above rule should apply
+        
+        layer.styleMap = new OpenLayers.StyleMap(style);
                 
         layer.addFeatures([feature]);
         map.addLayer(layer);
@@ -58,37 +59,37 @@
         map.setCenter(new OpenLayers.LonLat(3,5), 10);
 
         // at this scale, the feature should be green
-        var createdStyle = style.createStyle(feature);
+        var createdStyle = style.createSymbolizer(feature);
         t.eq(createdStyle.externalGraphic, "barbar.png", "Calculated property style correctly.");
         t.eq(createdStyle.display, "", "Feature is visible at scale "+map.getScale());
         t.eq(createdStyle.fillColor, "green", "Point symbolizer from rule applied correctly.");
 
         map.setCenter(new OpenLayers.LonLat(3,5), 9);
         // at this scale, the feature should be red
-        createdStyle = style.createStyle(feature);
+        createdStyle = style.createSymbolizer(feature);
         t.eq(createdStyle.display, "", "Feature is visible at scale "+map.getScale());
         t.eq(createdStyle.fillColor, "yellow", "Point symbolizer from rule applied correctly.");
 
         map.setCenter(new OpenLayers.LonLat(3,5), 8);
         // at this scale, the feature should be yellow
-        createdStyle = style.createStyle(feature);
+        createdStyle = style.createSymbolizer(feature);
         t.eq(createdStyle.display, "", "Feature is visible at scale "+map.getScale());
         t.eq(createdStyle.fillColor, "red", "Point symbolizer from rule applied correctly.");
 
         map.setCenter(new OpenLayers.LonLat(3,5), 7);
         // at this scale, the feature should be invisible
-        createdStyle = style.createStyle(feature);
+        createdStyle = style.createSymbolizer(feature);
         t.eq(createdStyle.display, "none", "Feature is invisible at scale "+map.getScale());
         t.eq(createdStyle.fillColor, baseStyle.fillColor, "Point symbolizer from base style applied correctly.");
         
         feature.fid = "2";
         // now the rule should not apply
         
-        createdStyle = style.createStyle(feature);
+        createdStyle = style.createSymbolizer(feature);
         t.eq(createdStyle.fillColor, baseStyle.fillColor, "Correct style for rule that does not apply to fid=\"2\".");
     }
     
-    function test_Style_createStyle(t) {
+    function test_Style_createSymbolizer(t) {
         t.plan(2);
         var style = new OpenLayers.Style();
         var rule = new OpenLayers.Rule({
@@ -104,13 +105,13 @@
         style.applySymbolizer = function(r) {
             t.eq(r.id, rule.id, "(plain) applySymbolizer called with correct rule");
         }
-        style.createStyle(new OpenLayers.Feature.Vector());
+        style.createSymbolizer(new OpenLayers.Feature.Vector());
 
         rule.evaluate = function() {return false;};
         style.applySymbolizer = function(r) {
             t.eq(r.id, elseRule.id, "(else) applySymbolizer called with correct rule");
         }
-        style.createStyle(new OpenLayers.Feature.Vector());
+        style.createSymbolizer(new OpenLayers.Feature.Vector());
     }
     
     function test_Style_context(t) {
@@ -126,7 +127,7 @@
             symbolizer: {"Point": {externalGraphic: "${foo}.png"}}});
         var style = new OpenLayers.Style();
         style.addRules([rule]);
-        var styleHash = style.createStyle(new OpenLayers.Feature.Vector());
+        var styleHash = style.createSymbolizer(new OpenLayers.Feature.Vector());
         t.eq(styleHash.externalGraphic, "bar.png", "correctly evaluated rule against a custom context");
     }
 

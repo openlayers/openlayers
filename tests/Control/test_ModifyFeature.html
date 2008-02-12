@@ -6,6 +6,7 @@
     function test_ModifyFeature_constructor(t) {
         t.plan(3);
         var layer = {
+            styleMap: {createSymbolizer: function(){}},
             events: {
                 on: function() {}
             }
@@ -77,7 +78,7 @@
          */
         
         var control = new OpenLayers.Control.ModifyFeature({
-            style: null,
+            styleMap: {createSymbolizer: function(){}},
             events: {
                 on: function() {}
             }

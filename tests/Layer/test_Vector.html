@@ -69,18 +69,6 @@
              "OpenLayers.Layer.Vector.removeFeatures(layer.features) removes all feature from the features array");
     }
     
-    function test_Layer_Vector_addStyle (t) {
-        t.plan(2);    
-        var layer = new OpenLayers.Layer.Vector(name);
-        var map = new OpenLayers.Map('map');
-        map.addLayer(layer);
-        var g = new OpenLayers.Geometry.Point(0, 0);
-        var f = new OpenLayers.Feature.Vector(g);
-        t.eq( f.style,  null, "Feature style is null by default.");
-        layer.addFeatures(f);
-        t.ok( f.style != null, "Feature style is set by layer.");
-    }
-    
     function test_Layer_Vector_drawFeature(t) {
         t.plan(4);
         var layer = new OpenLayers.Layer.Vector("Test Layer");
@@ -106,22 +94,22 @@
         t.ok(geometry.equals(f.geometry),
              "calls layer.renderer.drawFeature() with feature.geometry");
         
-        feature.style = 'exists';
+        feature.style = {foo: "bar"};
         layer.drawFeature(feature);
         t.eq(feature.style, s,
              "calls layer.renderer.drawFeature() with feature.style");
         
         feature.style = null;
-        layer.style = 'exists';
+        layer.style = {foo: "bar"};
         layer.drawFeature(feature);
-        t.eq(layer.style, s,
+        t.eq(layer.style.foo, s.foo,
              "given null feature style, uses layer style");
 
-        feature.style = 'exists';
-        layer.style = 'exists';
-        var customStyle = 'custom';
+        feature.style = {foo1: "bar1"};
+        layer.style = {foo2: "bar2"};
+        var customStyle = {foo: "bar"};
         layer.drawFeature(feature, customStyle);
-        t.eq(customStyle, s,
+        t.eq(customStyle.foo, s.foo,
              "given a custom style, renders with that");
         
     }
