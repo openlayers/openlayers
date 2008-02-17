@@ -79,7 +79,7 @@
 
             // create OSM layer
             var mapnik = new OpenLayers.Layer.TMS(
-                "OpenStreetMap",
+                "OpenStreetMap (Mapnik)",
                 "http://tile.openstreetmap.org/",
                 {
                     type: 'png', getURL: osm_getTileURL,
@@ -87,6 +87,18 @@
                     attribution: '<a href="http://www.openstreetmap.org/">OpenStreetMap</a>'
                 }
             );
+
+            // create OSM layer
+            var osmarender = new OpenLayers.Layer.TMS(
+                "OpenStreetMap (Tiles@Home)",
+                "http://tah.openstreetmap.org/Tiles/tile.php/",
+                {
+                    type: 'png', getURL: osm_getTileURL,
+                    displayOutsideMaxExtent: true,
+                    attribution: '<a href="http://www.openstreetmap.org/">OpenStreetMap</a>'
+                }
+            );
+
 
             // create WMS layer
             var wms = new OpenLayers.Layer.WMS(
@@ -103,7 +115,8 @@
             var vector = new OpenLayers.Layer.Vector("Editable Vectors");
 
             map.addLayers([gmap, gsat, ghyb, veroad, veaer, vehyb,
-                           yahoo, yahoosat, yahoohyb, mapnik, wms, vector]);
+                           yahoo, yahoosat, yahoohyb, mapnik, osmarender,
+                           wms, vector]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.addControl(new OpenLayers.Control.EditingToolbar(vector));
             map.addControl(new OpenLayers.Control.Permalink());
