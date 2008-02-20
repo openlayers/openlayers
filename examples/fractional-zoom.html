@@ -13,7 +13,10 @@
         var map;
 
         function init() {
-            map = new OpenLayers.Map('map');
+            map = new OpenLayers.Map('map', 
+                 {controls: [new OpenLayers.Control.Navigation(), 
+                             new OpenLayers.Control.PanZoomBar()], 
+                  numZoomLevels: 10 });
             var wms = new OpenLayers.Layer.WMS(
                 "OpenLayers WMS",
                 "http://labs.metacarta.com/wms/vmap0",
@@ -22,7 +25,6 @@
             map.addLayers([wms]);
 
             map.events.register("moveend", null, displayZoom);
-            map.addControl( new OpenLayers.Control.LayerSwitcher() );
 
             map.zoomToMaxExtent();
             
@@ -36,6 +38,7 @@
         
         function update(input) {
             map.fractionalZoom = input.checked;
+            map.zoomTo(Math.round(map.zoom));
         }
     </script>
   </head>
