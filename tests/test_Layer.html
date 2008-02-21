@@ -120,21 +120,71 @@
     }
     
     function test_Layer_initResolutions(t) {
-        t.plan(3);
+        t.plan(12);
         var map = new OpenLayers.Map("map");
-        var options = {
-            minResolution: 1,
-            maxResolution: 10,
-            numZoomLevels: 5
+        var options, layer;
+        
+        // three tests for minResolution, maxResolution, and numZoomLevels
+        options = {
+            minResolution: 1.5,
+            maxResolution: 10.5,
+            numZoomLevels: 5,
+            map: map
         };
-        var layer = new OpenLayers.Layer("test", options);
-        layer.map = map;
+        layer = new OpenLayers.Layer("test", options);
         layer.initResolutions();
-        t.eq(layer.minResolution.toPrecision(9), (1).toPrecision(9),
-             "layer minResolution preserved");
-        t.eq(layer.maxResolution.toPrecision(9), (10).toPrecision(9),
-             "layer maxResolution preserved");
-        t.eq(layer.numZoomLevels, 5, "layer numZoomLevels preserved"); 
+        t.eq(layer.minResolution.toPrecision(6), (1.5).toPrecision(6),
+             "(with numZoomLevels) layer minResolution preserved");
+        t.eq(layer.maxResolution.toPrecision(6), (10.5).toPrecision(6),
+             "(with numZoomLevels) layer maxResolution preserved");
+        t.eq(layer.numZoomLevels, 5, "(with numZoomLevels) layer numZoomLevels preserved");
+        
+        // three tests for minResolution, and maxResolution
+        options = {
+            minResolution: 1.5,
+            maxResolution: 10.5,
+            map: map
+        };
+        layer = new OpenLayers.Layer("test", options);
+        layer.initResolutions();
+        t.eq(layer.minResolution.toPrecision(6), (1.5).toPrecision(6),
+             "(without numZoomLevels) layer minResolution preserved");
+        t.eq(layer.maxResolution.toPrecision(6), (10.5).toPrecision(6),
+             "(without numZoomLevels) layer maxResolution preserved");
+        t.eq(layer.numZoomLevels, 3, "(without numZoomLevels) layer numZoomLevels calculated");
+        
+        // three tests for minScale, maxScale, and numZoomLevels
+        options = {
+            minScale: 105,
+            maxScale: 15,
+            numZoomLevels: 10,
+            map: map
+        };
+        layer = new OpenLayers.Layer("test", options);
+        layer.initResolutions();
+        t.eq(layer.minScale.toPrecision(6), (105).toPrecision(6),
+             "(with numZoomLevels) layer minScale preserved");
+        t.eq(layer.maxScale.toPrecision(6), (15).toPrecision(6),
+             "(with numZoomLevels) layer maxScale preserved");
+        t.eq(layer.numZoomLevels, 10, "(with numZoomLevels) layer numZoomLevels preserved");
+        
+        // three tests for minScale, and maxScale
+        options = {
+            minScale: 1555,
+            maxScale: 155,
+            map: map
+        };
+        layer = new OpenLayers.Layer("test", options);
+        layer.initResolutions();
+        t.eq(layer.minScale.toPrecision(6), (1555).toPrecision(6),
+             "(without numZoomLevels) layer minScale preserved");
+        t.eq(layer.maxScale.toPrecision(6), (155).toPrecision(6),
+             "(without numZoomLevels) layer maxScale preserved");
+        t.eq(layer.numZoomLevels, 4, "(without numZoomLevels) layer numZoomLevels calculated");
+
+        map.destroy();
+        
+        
     }
 
     function test_05_Layer_visibility(t) {
