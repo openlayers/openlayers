@@ -667,7 +667,9 @@
 
     function test_Util_getArgs(t) {
         //DEPRECATED -- to be removed in 3.0
-        t.plan(4);
+        t.plan(3);
+        
+        OpenLayers.Lang.setCode(OpenLayers.Lang.defaultCode);
         
         var temp = OpenLayers.Console.warn;
         OpenLayers.Console.warn = function(err) {
