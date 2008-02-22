@@ -2,59 +2,9 @@
  * File: xml_eq.js
  * Adds a xml_eq method to AnotherWay test objects.
  *
- * Function: Test.AnotherWay._test_object_t.xml_eq
- * Test if two XML nodes are equivalent.  Tests for same node types, same
- *     node names, same namespace prefix and URI, same attributes, and
- *     recursively tests child nodes.
- *
- * (code)
- * t.xml_eq(got, expected, message);
- * (end)
- * 
- * Parameters:
- * got - {DOMElement | String} A DOM node or XML string to test.
- * expected - {DOMElement | String} The expected DOM node or XML string.
- * msg - {String} A message to print with test output.
- * 
  */
 
 (function() {
-    
-    /**
-     * Function: stringFormat
-     * Given a string with tokens in the form ${token}, return a string
-     *     with tokens replaced with properties from the given context
-     *     object.  Represent a literal "${" by doubling it, e.g. "${${".
-     *
-     * Parameters:
-     * template - {String} A string with tokens to be replaced.  A template
-     *     has the form "literal ${token}" where the token will be replaced
-     *     by the value of context["token"].
-     * context - {Object} An optional object with properties corresponding
-     *     to the tokens in the format string.  If no context is sent, the
-     *     window object will be used.
-     *
-     * Returns:
-     * {String} A string with tokens replaced from the context object.
-     */
-    function formatString(template, context) {
-        if(!context) {
-            context = window;
-        }
-        var tokens = template.split("${");
-        var item, last;
-        for(var i=1; i<tokens.length; i++) {
-            item = tokens[i];
-            last = item.indexOf("}"); 
-            if(last > 0) { 
-                tokens[i] = context[item.substring(0, last)] +
-                            item.substring(++last); 
-            } else {
-                tokens[i] = "${" + item;
-            }
-        }
-        return tokens.join("");
-    }
 
     /**
      * Function: createNode
@@ -117,9 +67,9 @@
      * Parameters:
      * got - {Object}
      * expected - {Object}
-     * msg - {String} The message to be thrown.  Can be formatted for use with
-     *     formatString where got and expected (cast to string) will be
-     *     substituted.
+     * msg - {String} The message to be thrown.  This message will be appended
+     *     with ": got {got} but expected {expected}" where got and expected are
+     *     replaced with string representations of the above arguments.
      */
     function assertEqual(got, expected, msg) {
         if(got === undefined) {
@@ -132,11 +82,8 @@
         } else if (expected === null) {
             expected = "null";
         }
-        if(!msg) {
-            msg = "got ${got} but expected ${expected}";
-        }
         if(got != expected) {
-            throw formatString(msg, {got: got, expected: expected});
+            throw msg + ": got " + got + " but expected " + expected;
         }
     }
     
@@ -150,78 +97,102 @@
      * Parameters:
      * got - {DOMElement}
      * expected - {DOMElement}
+     * options - {Object} Optional object for configuring test options.  Set
+     *     'prefix' property to true in order to compare element and attribute
+     *     prefixes (namespace uri always tested).  By default, prefixes
+     *     are not tested.
      */
-    function assertElementNodesEqual(got, expected) {
+    function assertElementNodesEqual(got, expected, options) {
+        var testPrefix = (options && options.prefix === true);
+        
         // compare types
-        assertEqual(
-            got.nodeType, expected.nodeType,
-            "Node type mismatch: got ${got} but expected ${expected}"
-        );
+        assertEqual(got.nodeType, expected.nodeType, "Node type mismatch");
         
         // compare names
-        assertEqual(
-            got.nodeName, expected.nodeName,
-            "Node name mismatch: got ${got} but expected ${expected}"
-        );
+        var gotName = testPrefix ?
+            got.nodeName : got.nodeName.split(":").pop();
+        var expName = testPrefix ?
+            expected.nodeName : expected.nodeName.split(":").pop();
+        assertEqual(gotName, expName, "Node name mismatch");
         
+        // for text nodes compare value
+        if(got.nodeType == 3) {
+            assertEqual(
+                got.nodeValue, expected.nodeValue, "Node value mismatch"
+            );
+        }
         // for element type nodes compare namespace, attributes, and children
-        if(got.nodeType == 1) {
+        else if(got.nodeType == 1) {
             
             // test namespace alias and uri
             if(got.prefix || expected.prefix) {
-                assertEqual(
-                    got.prefix, expected.prefix,
-                    "Bad prefix for " + got.nodeName +
-                    ": got ${got} but expected ${expected}"
-                );
+                if(testPrefix) {
+                    assertEqual(
+                        got.prefix, expected.prefix,
+                        "Bad prefix for " + got.nodeName
+                    );
+                }
             }
             if(got.namespaceURI || expected.namespaceURI) {
                 assertEqual(
                     got.namespaceURI, expected.namespaceURI,
-                    "Bad namespaceURI for " + got.nodeName +
-                    ": got ${got} but expected ${expected}"
+                    "Bad namespaceURI for " + got.nodeName
                 );
             }
             
             // compare attributes - disregard xmlns given namespace handling above
             var gotAttrLen = 0;
             var gotAttr = {};
-            var expectedAttrLen = 0;
-            var expectedAttr = {};
-            var ga, ea;
+            var expAttrLen = 0;
+            var expAttr = {};
+            var ga, ea, gn, en;
             for(var i=0; i<got.attributes.length; ++i) {
                 ga = got.attributes[i];
-                if(ga.name.split(":").shift() != "xmlns") {
-                    gotAttr[ga.name] = ga.value;
-                    ++gotAttrLen;
+                if(ga.specified === undefined || ga.specified === true) {
+                    if(ga.name.split(":").shift() != "xmlns") {
+                        gn = testPrefix ? ga.name : ga.name.split(":").pop();
+                        gotAttr[gn] = ga;
+                        ++gotAttrLen;
+                    }
                 }
             }
             for(var i=0; i<expected.attributes.length; ++i) {
                 ea = expected.attributes[i];
-                if(ea.name.split(":").shift() != "xmlns") {
-                    expectedAttr[ea.name] = ea.value;
-                    ++expectedAttrLen;
+                if(ea.specified === undefined || ea.specified === true) {
+                    if(ea.name.split(":").shift() != "xmlns") {
+                        en = testPrefix ? ea.name : ea.name.split(":").pop();
+                        expAttr[en] = ea;
+                        ++expAttrLen;
+                    }
                 }
             }
             assertEqual(
-                gotAttrLen, expectedAttrLen,
-                "Attributes length mismatch for " + got.nodeName +
-                ": got ${got} but expected ${expected}"
+                gotAttrLen, expAttrLen,
+                "Attributes length mismatch for " + got.nodeName
             );
             var gv, ev;
             for(var name in gotAttr) {
+                if(expAttr[name] == undefined) {
+                    throw "Attribute name " + gotAttr[name].name + " expected for element " + got.nodeName;
+                }
+                // test attribute namespace
                 assertEqual(
-                    gotAttr[name], expectedAttr[name],
+                    gotAttr[name].namespaceURI, expAttr[name].namespaceURI,
+                    "Attribute namespace mismatch for element " +
+                    got.nodeName + " attribute name " + gotAttr[name].name
+                );
+                // test attribute value
+                assertEqual(
+                    gotAttr[name].value, expAttr[name].value,
                     "Attribute value mismatch for element " + got.nodeName +
-                    " attribute " + name + ": got ${got} but expected ${expected}"
+                    " attribute name " + gotAttr[name].name
                 );
             }
             
             // compare children
             assertEqual(
                 got.childNodes.length, expected.childNodes.length,
-                "Children length mismatch for " + got.nodeName +
-                ": got ${got} but expected ${expected}"
+                "Children length mismatch for " + got.nodeName
             );
             for(var j=0; j<got.childNodes.length; ++j) {
                 try {
@@ -229,22 +200,40 @@
                         got.childNodes[j], expected.childNodes[j]
                     );
                 } catch(err) {
-                    throw "Bad child " + j + " for node " + got.nodeName + ": " + err;
+                    throw "Bad child " + j + " for element " + got.nodeName + ": " + err;
                 }
             }
         }
         return true;
     }
     
-    // assign test function to AnotherWay test prototype
-    var proto = Test.AnotherWay._test_object_t.prototype;    
-    proto.xml_eq = function(got, expected, msg) {        
+    /**
+     * Function: Test.AnotherWay._test_object_t.xml_eq
+     * Test if two XML nodes are equivalent.  Tests for same node types, same
+     *     node names, same namespace URI, same attributes, and recursively
+     *     tests child nodes for same criteria.
+     *
+     * (code)
+     * t.xml_eq(got, expected, message);
+     * (end)
+     * 
+     * Parameters:
+     * got - {DOMElement | String} A DOM node or XML string to test.
+     * expected - {DOMElement | String} The expected DOM node or XML string.
+     * msg - {String} A message to print with test output.
+     * options - {Object} Optional object for configuring test options.  Set
+     *     'prefix' property to true in order to compare element and attribute
+     *     prefixes (namespace uri always tested).  By default, prefixes
+     *     are not tested.
+     */
+    var proto = Test.AnotherWay._test_object_t.prototype;
+    proto.xml_eq = function(got, expected, msg, options) {
         // convert arguments to nodes if string
         if(typeof got == "string") {
             try {
                 got = createNode(got);
             } catch(err) {
-                this.fail("got argument could not be converted to an XML node: " + err);
+                this.fail(msg + ": got argument could not be converted to an XML node: " + err);
                 return;
             }
         }
@@ -252,17 +241,17 @@
             try {
                 expected = createNode(expected);
             } catch(err) {
-                this.fail("expected argument could not be converted to an XML node: " + err);
+                this.fail(msg + ": expected argument could not be converted to an XML node: " + err);
                 return;
             }
         }
         
         // test nodes for equivalence
         try {
-            assertElementNodesEqual(got, expected);
+            assertElementNodesEqual(got, expected, options);
             this.ok(true, msg);
         } catch(err) {
-            this.fail(err);
+            this.fail(msg + ": " + err);
         }
     }
     

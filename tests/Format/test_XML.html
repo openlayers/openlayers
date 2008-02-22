@@ -43,7 +43,7 @@
     function test_Format_XML_read(t) {
         
         var format = new OpenLayers.Format.XML();
-        t.plan(format.xmldom ? 11 : 10);
+        t.plan(format.xmldom ? 10 : 9);
 
         var doc = format.read(text);
         t.eq(doc.nodeType, 9,
@@ -52,10 +52,8 @@
              "doc has the correct node name");
         t.ok(doc.documentElement,
              "ok to access doc.documentElement");
-        t.eq(doc.documentElement.nodeName, "ol:root",
-             "doc root has the correct node name");
-        t.eq(doc.documentElement.childNodes[1].firstChild.nodeValue, "junk2",
-             "second child of doc root has correct child node");
+        t.xml_eq(doc.documentElement, text,
+                 "doc.documentElement correctly read");
         
         // read can also be called on the prototype directly
         doc = OpenLayers.Format.XML.prototype.read(text);
@@ -65,17 +63,31 @@
              "doc has the correct node name");
         t.ok(doc.documentElement,
              "ok to access doc.documentElement");
-        t.eq(doc.documentElement.nodeName, "ol:root",
-             "doc root has the correct node name");
-        t.eq(doc.documentElement.childNodes[1].firstChild.nodeValue, "junk2",
-             "second child of doc root has correct child node");
+        t.xml_eq(doc.documentElement, text,
+                 "doc.documentElement correctly read");
         
         // where appropriate, make sure doc is loaded into xmldom property
         if(format.xmldom) {
-            t.eq(format.xmldom.documentElement.childNodes[1].firstChild.nodeValue,
-                 "junk2",
-                 "second child of doc root has correct child node");
+            t.xml_eq(format.xmldom.documentElement, text,
+                     "xmldom.documentElement contains equivalent xml");
         }
+        
+        // test equivalence with different namespace alias
+        var pre1 = 
+            "<pre1:parent xmlns:pre1='http://namespace'>" +
+                "<pre1:child1>value2</pre1:child1>" +
+                "<pre1:child2 pre1:attr1='foo'>value2</pre1:child2>" +
+                "<pre1:child3 chicken:attr='hot' xmlns:chicken='http://soup'/>" +
+            "</pre1:parent>";
+        var pre2 = 
+            "<pre2:parent xmlns:pre2='http://namespace'>" +
+                "<pre2:child1>value2</pre2:child1>" +
+                "<pre2:child2 pre2:attr1='foo'>value2</pre2:child2>" +
+                "<pre2:child3 pea:attr='hot' xmlns:pea='http://soup'/>" +
+            "</pre2:parent>";
+        var doc1 = format.read(pre1);
+        t.xml_eq(doc1.documentElement, pre2, "read correctly sets namespaces");
+        
     }
 
     function test_Format_XML_write(t) {
