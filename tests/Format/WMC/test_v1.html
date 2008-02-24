@@ -1,0 +1,200 @@
+<html> 
+<head> 
+    <script src="../../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+    
+    function test_write_wmc_StyleList(t) {
+        t.plan(3);
+        
+        var layer, got, expected;
+        
+        var parser = new OpenLayers.Format.WMC.v1();
+        var name = "test";
+        var url = "http://foo";
+
+        // test named style
+        layer = new OpenLayers.Layer.WMS(name, url, {
+            styles: "mystyle"
+        });
+        got = parser.write_wmc_StyleList(layer);
+        expected = 
+            "<StyleList xmlns='http://www.opengis.net/context'>" +
+                "<Style current='1'>" +
+                    "<Name>mystyle</Name><Title>Default</Title>" +
+                "</Style>" +
+            "</StyleList>";
+        
+        t.xml_eq(got, expected, "named style correctly written");
+        layer.destroy();
+        
+        // test linked style
+        layer = new OpenLayers.Layer.WMS(name, url, {
+            sld: "http://linked.sld"
+        });
+        got = parser.write_wmc_StyleList(layer);
+        expected = 
+            "<StyleList xmlns='http://www.opengis.net/context'>" +
+                "<Style current='1'>" +
+                    "<SLD>" + 
+                        "<OnlineResource xmlns:xlink='http://www.w3.org/1999/xlink' "+
+                                        "xlink:type='simple' " +
+                                        "xlink:href='http://linked.sld' />" +
+                    "</SLD>" + 
+                "</Style>" +
+            "</StyleList>";
+            
+        t.xml_eq(got, expected, "linked style correctly written");
+        layer.destroy();
+        
+        // test inline style
+        layer = new OpenLayers.Layer.WMS(name, url, {
+            sld_body:
+                "<sld:StyledLayerDescriptor version='1.0.0' " +
+                    "xmlns:ogc='http://www.opengis.net/ogc' " +
+                    "xmlns:sld='http://www.opengis.net/sld' " +
+                    "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' " +
+                    "xsi:schemaLocation='http://www.opengis.net/sld http://schemas.opengeospatial.net/sld/1.0.0/StyledLayerDescriptor.xsd'>" +
+                    "<sld:NamedLayer>" +
+                        "<sld:Name>AAA212</sld:Name>" +
+                        "<sld:UserStyle>" +
+                            "<sld:FeatureTypeStyle>" +
+                                "<sld:Rule>" +
+                                    "<sld:TextSymbolizer>" +
+                                        "<sld:Label>" +
+                                            "<ogc:PropertyName>ZONENR</ogc:PropertyName>" +
+                                        "</sld:Label>" +
+                                        "<sld:Font>" +
+                                            "<sld:CssParameter name='font-family'>Arial</sld:CssParameter>" +
+                                            "<sld:CssParameter name='font-size'>10</sld:CssParameter>" +
+                                        "</sld:Font>" +
+                                        "<sld:Fill>" +
+                                            "<sld:CssParameter name='fill'>#FF9900</sld:CssParameter>" +
+                                        "</sld:Fill>" +
+                                    "</sld:TextSymbolizer>" +
+                                "</sld:Rule>" +
+                            "</sld:FeatureTypeStyle>" +
+                        "</sld:UserStyle>" +
+                    "</sld:NamedLayer>" +
+                "</sld:StyledLayerDescriptor>"
+        });
+        
+        got = parser.write_wmc_StyleList(layer);
+        expected =
+            "<StyleList xmlns='http://www.opengis.net/context'>" +
+                "<Style current='1'>" +
+                    "<SLD>" + 
+                        "<sld:StyledLayerDescriptor version='1.0.0' " +
+                            "xmlns:sld='http://www.opengis.net/sld' " +
+                            "xmlns:ogc='http://www.opengis.net/ogc' " +
+                            "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' " +
+                            "xsi:schemaLocation='http://www.opengis.net/sld http://schemas.opengeospatial.net/sld/1.0.0/StyledLayerDescriptor.xsd'>" +
+                            "<sld:NamedLayer>" +
+                                "<sld:Name>AAA212</sld:Name>" +
+                                "<sld:UserStyle>" +
+                                    "<sld:FeatureTypeStyle>" +
+                                        "<sld:Rule>" +
+                                            "<sld:TextSymbolizer>" +
+                                                "<sld:Label>" +
+                                                    "<ogc:PropertyName>ZONENR</ogc:PropertyName>" +
+                                                "</sld:Label>" +
+                                                "<sld:Font>" +
+                                                    "<sld:CssParameter name='font-family'>Arial</sld:CssParameter>" +
+                                                    "<sld:CssParameter name='font-size'>10</sld:CssParameter>" +
+                                                "</sld:Font>" +
+                                                "<sld:Fill>" +
+                                                    "<sld:CssParameter name='fill'>#FF9900</sld:CssParameter>" +
+                                                "</sld:Fill>" +
+                                            "</sld:TextSymbolizer>" +
+                                        "</sld:Rule>" +
+                                    "</sld:FeatureTypeStyle>" +
+                                "</sld:UserStyle>" +
+                            "</sld:NamedLayer>" +
+                        "</sld:StyledLayerDescriptor>" +
+                    "</SLD>" +
+                "</Style>" + 
+            "</StyleList>";
+        
+        t.xml_eq(got, expected, "inline style correctly written");
+        layer.destroy();
+    }
+    
+    function test_read_wmc_StyleList(t) {
+        t.plan(3);
+        
+        var xml = new OpenLayers.Format.XML();
+        var parser = new OpenLayers.Format.WMC.v1();
+        var node, text, layerInfo;
+
+        // test named style
+        text = 
+            "<StyleList xmlns='http://www.opengis.net/context'>" +
+                "<Style current='1'>" +
+                    "<Name>mystyle</Name><Title>Default</Title>" +
+                "</Style>" +
+            "</StyleList>";
+        node = xml.read(text).documentElement;
+        layerInfo = {
+            params: {},
+            styles: []
+        };
+        parser.read_wmc_StyleList(layerInfo, node);
+        t.eq(layerInfo.params.styles, "mystyle", "named style correctly read");
+        
+        // test linked style
+        text = 
+            "<StyleList xmlns='http://www.opengis.net/context'>" +
+                "<Style current='1'>" +
+                    "<SLD>" + 
+                        "<OnlineResource xmlns:xlink='http://www.w3.org/1999/xlink' "+
+                                        "xlink:type='simple' " +
+                                        "xlink:href='http://linked.sld' />" +
+                    "</SLD>" + 
+                "</Style>" +
+            "</StyleList>";
+        node = xml.read(text).documentElement;
+        layerInfo = {
+            params: {},
+            styles: []
+        };
+        parser.read_wmc_StyleList(layerInfo, node);
+        t.eq(layerInfo.params.sld, "http://linked.sld", "linked style correctly read");        
+        
+        // test inline style
+        // any valid xml under the StyledLayerDescriptor node should make the
+        // round trip from string to node and back
+        text = 
+            "<StyleList xmlns='http://www.opengis.net/context'>" +
+                "<Style current='1'>" +
+                    "<SLD>" + 
+                        "<sld:StyledLayerDescriptor version='1.0.0' " +
+                            "xmlns:sld='http://www.opengis.net/sld' " +
+                            "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' " +
+                            "xsi:schemaLocation='http://www.opengis.net/sld http://schemas.opengeospatial.net/sld/1.0.0/StyledLayerDescriptor.xsd'>" +
+                            "<foo>bar<more/></foo>" + 
+                        "</sld:StyledLayerDescriptor>" + 
+                    "</SLD>" + 
+                "</Style>" +
+            "</StyleList>";
+        node = xml.read(text).documentElement;
+        layerInfo = {
+            params: {},
+            styles: []
+        };
+        parser.read_wmc_StyleList(layerInfo, node);        
+        var expected = 
+            "<sld:StyledLayerDescriptor version='1.0.0' " +
+                "xmlns:sld='http://www.opengis.net/sld' " +
+                "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' " +
+                "xsi:schemaLocation='http://www.opengis.net/sld http://schemas.opengeospatial.net/sld/1.0.0/StyledLayerDescriptor.xsd'>" +
+                "<foo xmlns='http://www.opengis.net/context'>bar<more/></foo>" + 
+            "</sld:StyledLayerDescriptor>";
+        t.xml_eq(layerInfo.params.sld_body, expected, "inline style correctly read");
+
+    }
+    
+
+    </script> 
+</head> 
+<body>
+</body> 
+</html> 
