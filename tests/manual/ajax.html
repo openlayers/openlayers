@@ -22,6 +22,7 @@
         var url = "ajax.txt";
         function sendSynchronous(){
             var request = new OpenLayers.Ajax.Request(url, {
+               'asynchronous': false,
                 onComplete: function() {
                     document.getElementById('send_sync').value += 'request completed\n';
                 }
@@ -30,7 +31,6 @@
         }
         function sendAsynchronous(){
             var request = new OpenLayers.Ajax.Request(url, {
-               'asynchronous': false,
                 onComplete: function() {
                     document.getElementById('send_sync').value += 'request completed\n';
                 }
@@ -62,9 +62,9 @@
     <p><b></b></p>
     <p>Clicking on the different buttons should give the following results in the textarea below :</p>
     <ul>
-      <li>"other processing" then "request completed"</li>
-      <li>"request completed" then "other processing"</li>
-      <li>"request aborted" then "other processing"</li>
+      <li>synchronous: "request completed" then "other processing"</li>
+      <li>asynchronous: "other processing" then "request completed"</li>
+      <li>abort: "request aborted" then "other processing"</li>
     </ul>
   </body>
 </html>
