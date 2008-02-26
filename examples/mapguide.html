@@ -1,0 +1,110 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 400px;
+            height: 400px;
+            border: 1px solid black;
+            float:left;
+        }
+        #map2 {
+            width: 400px;
+            height: 400px;
+            border: 1px solid black;
+            float:left;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+    
+        var map, layer;
+        var url = "http://demo01.dmsolutions.ca/mapguide/mapagent/mapagent.fcgi";
+        //you can use this URL when MapGuide OS is installed locally
+        //var url = "/mapguide/mapagent/mapagent.fcgi";
+        
+        //tiled version
+        function initTiled(){
+        
+            OpenLayers.DOTS_PER_INCH = 96;
+            var extent = new OpenLayers.Bounds(-3631568.75,-1293815.5,4491139.5833333321,4937122);
+            var tempScales = [50000000,23207944.16806,10772173.45016,5000000,2320794.41681,1077217.34502,500000,232079.44168,107721.7345,50000];
+            var mapOptions = {
+                maxExtent: extent, 
+                scales: tempScales,
+                units: 'm',
+                projection: 'EPSG:42304'
+            };
+            map = new OpenLayers.Map( 'map', mapOptions );
+            
+            var params = {
+              mapdefinition: 'Library://Samples/Gmap/Maps/gmapTiled.MapDefinition',
+              basemaplayergroupname: "BaseLayerGroup"
+            }
+            var options = {
+              singleTile: false 
+            }
+            var layer = new OpenLayers.Layer.MapGuide( "MapGuide OS tiled layer", url, params, options );
+            map.addLayer(layer);
+            
+            map.zoomToMaxExtent();
+        }
+
+        //un-tiled version
+        function initUntiled() {
+        
+          OpenLayers.DOTS_PER_INCH = 96;
+          var extent = new OpenLayers.Bounds(-87.865114442365922,43.665065564837931,-87.595394059497067,43.823852564430069);
+          var mapOptions = {
+                maxExtent: extent, 
+                maxResolution: 'auto'
+          };
+          map = new OpenLayers.Map( 'map2', mapOptions );
+            
+          var options = {
+              buffer: 1,
+              singleTile: true
+          };
+          
+          var params = {
+              mapdefinition: 'Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition'
+          };
+          /*
+                    The MapGuide layer can also be created using mapname and session as follows provided there
+                    is some wrapper code to obtain a valid session id and mapname
+          var params = {
+              mapname: 'Sheboygan47b3560bf1071',
+              session: '043bb716-0000-1000-8000-0017a4e6ff5d_en_7F0000010AFC0AFB0AFA'
+          };
+          */
+          var layer = new OpenLayers.Layer.MapGuide( "MapGuide OS untiled baselayer", url, params, options );
+          map.addLayer(layer);
+          
+          //this is how to set up the layer for transparent overlays.  Requires a valid session ID 
+          //and mapName stored in that session.
+          //If the mapagent URL is on a different server than this OL layer, the OpenLayers proxy script
+          //must be used since this layer must perform an additional AJAX request before requesting the
+          //map  image
+          /* 
+            var options = {
+              isBaseLayer: false,
+              transparent: true,
+              buffer: 1,
+              singleTile: true
+            };
+            var params = {
+              mapName: 'Sheboygan',
+              session: '0b8cb80e-0000-1000-8003-0017a4e6ff5d_en_C0A802AD0AFC0AFB0AFA',
+            };
+            layer = new OpenLayers.Layer.MapGuide( "MapGuide OS Overlay layer", url, params, options );
+            map.addLayer(layer);
+          */ 
+          map.zoomToMaxExtent();
+    }
+    </script>
+  </head>
+  <body onload="initUntiled(); initTiled()">
+    <p>If prompted for a password, username is Anonymous and an empty password</p>
+    <div id="map"></div>
+    <div id="map2"></div>
+  </body>
+</html>
