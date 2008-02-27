@@ -155,9 +155,9 @@
         
         r.drawCircle(node, geometry, "blah_4000");
         
-        t.eq(node.getAttributeNS(null, 'cx'), '2', "cx is correct");
-        t.eq(node.getAttributeNS(null, 'cy'), '-4', "cy is correct");
-        t.eq(node.getAttributeNS(null, 'r'), '3', "r is correct");
+        t.eq(node.getAttributeNS(null, 'cx'), '', "cx is correct");
+        t.eq(node.getAttributeNS(null, 'cy'), '', "cy is correct");
+        t.eq(node.getAttributeNS(null, 'r'), '0', "r is correct");
     }
     
     function test_SVG_drawlinestring(t) {
