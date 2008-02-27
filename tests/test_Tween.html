@@ -46,12 +46,18 @@
     }
 
     function test_Tween_stop(t) {
-        t.plan(1);
+        t.plan(2);
         
         var tween = new OpenLayers.Tween();
         tween.interval = window.setInterval(function() {}, 10);
+        tween.playing = true;
         tween.stop();
         t.eq(tween.interval, null, "tween correctly stopped");
+        
+        tween.interval = window.setInterval(function() {}, 10);
+        tween.playing = false;
+        tween.stop();
+        t.ok(tween.interval != null, "stop method doesn't do anything if tween isn't running");
     }
 
     </script> 
