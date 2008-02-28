@@ -72,8 +72,10 @@
 
       //running request (cancelled) -- 4 tests + 1 test (for request abort)
         tile.request = {
-            'abort': function() {
-                    t.ok(true, "request aborted");
+            transport: {
+                'abort': function() {
+                        t.ok(true, "request aborted");
+                }
             }
         };
         OpenLayers.Tile.WFS.prototype.loadFeaturesForRegion.apply(tile, [g_Success]);
