@@ -1,0 +1,72 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>OpenLayers Styles Unique Value Styles Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <style type="text/css">
+        #map {
+            width: 800px;
+            height: 400px;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map, layer;
+
+        function init(){
+            map = new OpenLayers.Map('map', {maxResolution:'auto'});
+            var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+            map.addLayer(wms);
+            map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+            
+            // create 20 random features with a random type attribute. The
+            // type attribute is a value between 0 and 2.
+            var features = new Array(20);
+            for (var i=0; i<20; i++) {
+                features[i] = new OpenLayers.Feature.Vector(
+                    new OpenLayers.Geometry.Point(Math.random()*360-180, Math.random()*180-90),
+                    {type: parseInt(Math.random()*3)}
+                );
+            }
+            
+            // create a styleMap with a custom default symbolizer
+            var styleMap = new OpenLayers.StyleMap({
+                fillOpacity: 1,
+                pointRadius: 10
+            });
+            
+            // create a lookup table with different symbolizers for 0, 1 and 2
+            var lookup = {
+                0: {externalGraphic: "../img/marker-blue.png"},
+                1: {externalGraphic: "../img/marker-green.png"},
+                2: {externalGraphic: "../img/marker-gold.png"}
+            }
+            
+            // add rules from the above lookup table, with the keyes mapped to
+            // the "type" property of the features, for the "default" intent
+            styleMap.addUniqueValueRules("default", "type", lookup);
+            
+            layer = new OpenLayers.Layer.Vector('Points', {
+                styleMap: styleMap
+            });
+            
+            layer.addFeatures(features);
+            map.addLayer(layer);
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Unique Value Styles Example</h1>
+
+    <div id="tags"></div>
+
+    <p id="shortdesc">
+      Shows how to create a style based on unique feature attribute values.
+    </p>
+
+    <div id="map"></div>
+
+    <div id="docs"></div>
+  </body>
+</html>

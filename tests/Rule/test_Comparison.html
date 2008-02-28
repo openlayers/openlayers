@@ -38,7 +38,7 @@
     }
     
     function test_Comparison_evaluate(t) {
-        t.plan(3);
+        t.plan(4);
         
         var rule = new OpenLayers.Rule.Comparison({
                 property: "area",
@@ -62,6 +62,11 @@
             t.eq(result, ruleResults[i], "feature "+i+
                     " evaluates to "+result.toString()+" correctly.");
         }
+        rule.context = {
+            area: 4998
+        }
+        var result = rule.evaluate();
+        t.eq(result, true, "evaluation against custom rule context works.");
     }
     </script> 
 </head> 

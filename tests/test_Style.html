@@ -116,19 +116,41 @@
     
     function test_Style_context(t) {
         t.plan(1);
-        var context = {
-            foo: "bar",
-            size: 10};
         var rule = new OpenLayers.Rule.Comparison({
             type: OpenLayers.Rule.Comparison.LESS_THAN,
-            context: context,
             property: "size",
             value: 11,
-            symbolizer: {"Point": {externalGraphic: "${foo}.png"}}});
+            symbolizer: {"Point": {externalGraphic: "${img1}"}}});
         var style = new OpenLayers.Style();
+        style.context = {
+            "img1": "myImage.png"
+        };
         style.addRules([rule]);
-        var styleHash = style.createSymbolizer(new OpenLayers.Feature.Vector());
-        t.eq(styleHash.externalGraphic, "bar.png", "correctly evaluated rule against a custom context");
+        var feature = new OpenLayers.Feature.Vector();
+        feature.attributes = {size: 10};
+        var styleHash = style.createSymbolizer(feature);
+        t.eq(styleHash.externalGraphic, "myImage.png", "correctly evaluated rule and calculated property styles from a custom context");
+    }
+    
+    function test_Style_findPropertyStyles(t) {
+        t.plan(4);
+        var rule1 = new OpenLayers.Rule({symbolizer: {
+            pointRadius: 3,
+            externalGraphic: "${foo}.bar"
+        }});
+        var rule2 = new OpenLayers.Rule({symbolizer: {"Point": {
+            strokeWidth: "${foo}"
+        }}});
+        var style = new OpenLayers.Style({
+            strokeOpacity: 1,
+            strokeColor: "${foo}"
+        });
+        style.addRules([rule1, rule2]);
+        var propertyStyles = style.findPropertyStyles();
+        t.ok(propertyStyles.externalGraphic, "detected externalGraphic from rule correctly");
+        t.ok(propertyStyles.strokeWidth, "detected strokeWidth from Point symbolizer correctly");
+        t.ok(propertyStyles.strokeColor, "detected strokeColor from style correctly");
+        t.eq(typeof propertyStyles.pointRadius, "undefined", "correctly detected pointRadius as non-property style");
     }
 
     function test_Style_destroy(t) {
