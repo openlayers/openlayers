@@ -29,13 +29,13 @@
     function test_Tile_WFS_requestSuccess(t) {
         t.plan(2);
 
-		var tile = {
-			'request': {}
-		};
-			
-		OpenLayers.Tile.WFS.prototype.requestSuccess.apply(tile, []);
-		
-		t.ok(tile.request == null, "request property on tile set to null");
+        var tile = {
+            'request': {}
+        };
+            
+        OpenLayers.Tile.WFS.prototype.requestSuccess.apply(tile, []);
+        
+        t.ok(tile.request == null, "request property on tile set to null");
 
         var layer = {}; // bogus layer
         var position = new OpenLayers.Pixel(10,20);
@@ -51,36 +51,34 @@
     }
     
     function test_Tile_WFS_loadFeaturesForRegion(t) {
-    	t.plan(9);
-		
-		var tile = {
-			'url': {}
-		};
+        t.plan(9);
+        
+        var tile = {
+            'url': {}
+        };
 
-		var g_Success = {};		
+        var g_Success = {};        
 
-		var tLoadURL = OpenLayers.loadURL;
-		OpenLayers.loadURL = function(url, params, caller, onComplete) {
-			t.ok(url == tile.url, "tile's url correctly passed as 1st param to loadURL");
-			t.ok(params == null, "null passed as 2nd param to loadURL");
-			t.ok(caller == tile, "tile passed as 3rd param to loadURL");
-			t.ok(onComplete == g_Success, "success param from loadFeaturesForRegion() passed as 4th param to loadURL");
-		};
-		
-	  //no running request -- 4 tests
-		OpenLayers.Tile.WFS.prototype.loadFeaturesForRegion.apply(tile, [g_Success]);
+        var tLoadURL = OpenLayers.loadURL;
+        OpenLayers.loadURL = function(url, params, caller, onComplete) {
+            t.ok(url == tile.url, "tile's url correctly passed as 1st param to loadURL");
+            t.ok(params == null, "null passed as 2nd param to loadURL");
+            t.ok(caller == tile, "tile passed as 3rd param to loadURL");
+            t.ok(onComplete == g_Success, "success param from loadFeaturesForRegion() passed as 4th param to loadURL");
+        };
+        
+      //no running request -- 4 tests
+        OpenLayers.Tile.WFS.prototype.loadFeaturesForRegion.apply(tile, [g_Success]);
 
-	  //running request (cancelled) -- 4 tests + 1 test (for request abort)
-		tile.request = {
-			'transport': {
-				'abort': function() {
-					t.ok(true, "request aborted");
-				}
-			}
-		};
-		OpenLayers.Tile.WFS.prototype.loadFeaturesForRegion.apply(tile, [g_Success]);
-		    	
-		OpenLayers.loadURL = tLoadURL;
+      //running request (cancelled) -- 4 tests + 1 test (for request abort)
+        tile.request = {
+            'abort': function() {
+                    t.ok(true, "request aborted");
+            }
+        };
+        OpenLayers.Tile.WFS.prototype.loadFeaturesForRegion.apply(tile, [g_Success]);
+                
+        OpenLayers.loadURL = tLoadURL;
     }
     
     function test_Tile_WFS_destroy(t) {
