@@ -1,0 +1,169 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <style type="text/css">
+        #map {
+            width: 550px;
+            height: 450px;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script src='http://maps.google.com/maps?file=api&amp;v=2.82&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
+    <script type="text/javascript">
+
+        var map;
+        OpenLayers.ProxyHost = "/proxy/?url=";
+        function init(){
+
+            map = new OpenLayers.Map('map', {
+                projection: new OpenLayers.Projection("EPSG:900913"),
+                displayProjection: new OpenLayers.Projection("EPSG:4326"),
+                units: "m",
+                maxResolution: 156543.0339,
+                maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34,
+                                                 20037508.34, 20037508.34)
+            });
+
+            var g = new OpenLayers.Layer.Google("G", {sphericalMercator: true});
+
+            // prepare to style the data
+            var styleMap = new OpenLayers.StyleMap({
+                strokeColor: "black",
+                strokeWidth: 2,
+                strokeOpacity: 0.5,
+                fillOpacity: 0.2
+            });
+            // create a color table for state FIPS code
+            var colors = ["red", "orange", "yellow", "green", "blue", "purple"];
+            var code, fips = {};
+            for(var i=1; i<=66; ++i) {
+                code = "0" + i;
+                code = code.substring(code.length - 2);
+                fips[code] = {fillColor: colors[i % colors.length]};
+            }
+            // add unique value rules with your color lookup
+            styleMap.addUniqueValueRules("default", "STATE_FIPS", fips);
+
+            // create a wfs layer with a projection different than the map
+            // (only if your wfs doens't support your map projection)
+            var wfs = layer = new OpenLayers.Layer.WFS(
+                "States",
+                "http://geo.openplans.org/geoserver/ows",
+                {typename: 'topp:states'},
+                {
+                    typename: 'states',
+                    featureNS: 'http://www.openplans.org/topp',
+                    projection: new OpenLayers.Projection("EPSG:4326"),
+                    extractAttributes: true,
+                    ratio: 1.2,
+                    styleMap: styleMap
+                }
+            );
+
+            map.addLayers([g, wfs]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+
+            // if you want to use Geographic coords, transform to ESPG:900913
+            var ddBounds = new OpenLayers.Bounds(
+                -73.839111,40.287907,-68.214111,44.441624
+            );
+            map.zoomToExtent(
+                ddBounds.transform(map.displayProjection, map.getProjectionObject())
+            );
+        }
+    </script>
+  </head>
+  <body onload="init()">
+
+  <h1 id="title">WFS Reprojection Example</h1>
+
+  <div id="tags">
+  </div>
+  <p id="shortdesc">
+        Shows the use of the WFS layer reprojection support 
+  </p>
+
+        <div id="map"></div>
+
+  <div id="docs">
+    <p>This example shows automatic WFS reprojection, displaying an 'unprojected'
+    WFS layer projected on the client side over Google Maps. The key configuration
+    here is the 'projection' option on the WFS layer.</p>
+    <p>Also shown is styleMap for the layer with unique value rules.  Colors
+    are assigned based on the STATE_FIPS attribute.</p>
+  </div>
+
+
+
+  </body>
+</html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <style type="text/css">
+        #map {
+            width: 512px;
+            height: 512px;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script src='http://maps.google.com/maps?file=api&amp;v=2.82&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
+    <script type="text/javascript">
+        var map, layer;
+        OpenLayers.ProxyHost = "/cgi-bin/proxy.cgi?url=";
+        function init(){
+            map = new OpenLayers.Map('map', {
+                projection: new OpenLayers.Projection("EPSG:900913"),
+                displayProjection: new OpenLayers.Projection("EPSG:4326"),
+                units: "m",
+                maxResolution: 156543.0339,
+                maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34,
+                                                 20037508.34, 20037508.34)
+            });
+            layer = new OpenLayers.Layer.Google( "G",
+                    {sphericalMercator: true} );
+            map.addLayer(layer);
+            layer = new OpenLayers.Layer.WFS( "States",
+                    "http://geo.openplans.org:8080/geoserver/ows", {typename: 'topp:states'},
+               {
+                      typename: 'states',
+                      featureNS: 'http://www.openplans.org/topp',
+                      projection: new OpenLayers.Projection("EPSG:4326"),
+                      extractAttributes: false,
+                      ratio: 1.2
+               } );
+            map.addLayer(layer);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+
+            map.zoomToExtent(new OpenLayers.Bounds(
+              -73.839111,40.287907,-68.214111,44.441624).
+              transform(map.displayProjection, map.getProjectionObject()));
+        }
+    </script>
+  </head>
+  <body onload="init()">
+
+  <h1 id="title">WFS Reprojection Example</h1>
+
+  <div id="tags">
+  </div>
+  <p id="shortdesc">
+  	Shows the use of the WFS layer reprojection support 
+  </p>
+
+	<div id="map"></div>
+
+  <div id="docs">
+    This example shows automatic WFS reprojection, displaying an 'unprojected' WFS layer projected on the client side over Google Maps. The key configuration here is the 'projection' option on the WFS layer.  
+  </div>
+
+
+
+  </body>
+</html>
+
+
