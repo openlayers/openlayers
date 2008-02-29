@@ -78,16 +78,16 @@
         var testEvt;
 
         // test pause and move callbacks - four tests here (2 from setTimeout above)
-        testEvt = Math.random();
+        testEvt = {id: Math.random()};
         handler.callbacks = {
             "pause": function(evt) {
-                t.eq(evt, testEvt,
+                t.eq(evt.id, testEvt.id,
                      "pause callback called with correct evt");
-             },
-             "move": function(evt) {
-                t.eq(evt, testEvt,
-                    "move callback called with correct evt");
-             }
+            },
+            "move": function(evt) {
+               t.eq(evt.id, testEvt.id,
+                   "move callback called with correct evt");
+            }
         };
         map.events.triggerEvent("mousemove", testEvt);
         handler.clearTimer();
@@ -116,7 +116,7 @@
         // mouse moves 3x3 pixels, callbacks should be called
         handler.callbacks =  {
             "pause": function(evt) {
-                t.ok(evt == testEvt, "(pixelTolerance unmet) pause callback called");
+                t.ok(evt.xy == testEvt.xy, "(pixelTolerance unmet) pause callback called");
             },
             "move": function(evt) {
                 t.ok(evt == testEvt, "(pixelTolerance unmet) move callback called");

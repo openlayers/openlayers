@@ -129,10 +129,10 @@
                 t.fail("clearTimeout called with non-existent timerId");
             }
         }
-        var testEvt = Math.random();
+        var testEvt = {id: Math.random()};
         handler.callbacks = {
             "click": function(evt) {
-                t.eq(evt, testEvt,
+                t.eq(evt.id, testEvt.id,
                      "(click w/ single true) click callback called with correct evt");
             },
             "dblclick": function(evt) {
@@ -203,7 +203,7 @@
         // mouse moves one pixel, click should be called
         handler.callbacks = {
             "click": function(evt) {
-                t.ok(evt == clickEvt, "(pixelTolerance met) click called");
+                t.ok(evt.xy == clickEvt.xy, "(pixelTolerance met) click called");
             }
         };
         map.events.triggerEvent("click", clickEvt);
