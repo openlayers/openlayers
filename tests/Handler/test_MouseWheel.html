@@ -57,7 +57,7 @@
         handler.activate();
         var delta = 120;
         if (window.opera && window.opera.version() < 9.2)  delta = -delta;
-        handler.onWheelEvent({'target':map.div, wheelDelta: delta});
+        handler.onWheelEvent({'target':map.layers[0].div, wheelDelta: delta});
         t.ok(pass, "evt.xy was set even without a mouse move");
     }    
     
