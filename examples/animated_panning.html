@@ -8,6 +8,11 @@
             height: 256px;
             border: 1px solid black;
         }
+        #map2 {
+            width: 512px;
+            height: 256px;
+            border: 1px solid black;
+        }
     </style>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
@@ -50,6 +55,13 @@
             map.addControl(click);
             click.activate();
             map.addControl(new OpenLayers.Control.OverviewMap());
+
+            map2 = new OpenLayers.Map('map2', {'panMethod': null} );
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+                
+            map2.addLayer(layer);
+            map2.zoomToMaxExtent();
         }
 
         function setCenterInterval() {
@@ -76,11 +88,16 @@
 	<div id="shortdesc">Show animated panning effects in the map</div>
 	<div id="map"></div>
     <div id="docs">
-    	This is an example of transition effects. If the new random center is in the current extent, the map will pan smoothly. <br />
+    	<p>This is an example of transition effects. If the new random center is in the current extent, the map will pan smoothly. <br />
         The random selection will continue until you press it again. Additionally, you can single click in the map to pan smoothly
         to that area, or use the pan control to pan smoothly.
-
+        </p>
     </div>
     <button onclick="setCenterInterval()">Start/stop random recenter</button>
+     <div id="map2"></div>
+    <div>    
+    <p>To turn off Animated Panning, create a map with an panMethod set to
+        null. </p>
+    </div>
   </body>
 </html>
