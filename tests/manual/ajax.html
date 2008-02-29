@@ -1,6 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>Draw Feature Acceptance Test</title>
+    <title>Ajax Acceptance Test</title>
     <style type="text/css">
     
         body {
@@ -64,7 +64,7 @@
     <ul>
       <li>synchronous: "request completed" then "other processing"</li>
       <li>asynchronous: "other processing" then "request completed"</li>
-      <li>abort: "request aborted" then "other processing"</li>
+      <li>abort: "request aborted" then "other processing" (note that real XHR behavior would not call onComplete with abort - meaning "request aborted" would not be displayed here)</li>
     </ul>
   </body>
 </html>
