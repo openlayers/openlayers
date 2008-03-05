@@ -84,6 +84,32 @@
         t.eq( map.maxResolution, 3.14159, "map.maxResolution set correctly via options hashtable" );
         t.eq( map.theme, 'foo', "map theme set correctly." );
     }
+    
+    function test_eventListeners(t) {
+        t.plan(1);
+        
+        var method = OpenLayers.Events.prototype.on;
+        // test that events.on is called at map construction
+        var options = {
+            eventListeners: {foo: "bar"},
+            controls: []
+        };
+        OpenLayers.Events.prototype.on = function(obj) {
+            t.eq(obj, options.eventListeners, "events.on called with eventListeners");
+        }
+        var map = new OpenLayers.Map('map', options);
+        OpenLayers.Events.prototype.on = method;
+        map.destroy();
+
+        // if events.on is called again, this will fail due to an extra test
+        // test map without eventListeners
+        OpenLayers.Events.prototype.on = function(obj) {
+            t.fail("events.on called without eventListeners");
+        }
+        var map2 = new OpenLayers.Map("map", {controls: []});
+        OpenLayers.Events.prototype.on = method;
+        map2.destroy();
+    }
 
     function test_05_Map_center(t) {
         t.plan(4);

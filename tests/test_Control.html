@@ -29,6 +29,31 @@
         t.eq( control.title, titleText, "control.title set correctly" ); 
     }
     
+    function test_eventListeners(t) {
+        t.plan(1);
+        
+        var method = OpenLayers.Events.prototype.on;
+        // test that events.on is called at control construction
+        var options = {
+            eventListeners: {foo: "bar"}
+        };
+        OpenLayers.Events.prototype.on = function(obj) {
+            t.eq(obj, options.eventListeners, "events.on called with eventListeners");
+        }
+        var control = new OpenLayers.Control(options);
+        OpenLayers.Events.prototype.on = method;
+        control.destroy();
+
+        // if events.on is called again, this will fail due to an extra test
+        // test control without eventListeners
+        OpenLayers.Events.prototype.on = function(obj) {
+            t.fail("events.on called without eventListeners");
+        }
+        var control2 = new OpenLayers.Control();
+        OpenLayers.Events.prototype.on = method;
+        control2.destroy();
+    }
+
     function test_Control_destroy(t) {
         t.plan(3);
     

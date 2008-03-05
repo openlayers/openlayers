@@ -119,6 +119,31 @@
         t.eq(layer.numZoomLevels, numZoomLevels, "numZoomLevels set correctly");
     }
     
+    function test_eventListeners(t) {
+        t.plan(1);
+        
+        var method = OpenLayers.Events.prototype.on;
+        // test that events.on is called at layer construction
+        var options = {
+            eventListeners: {foo: "bar"}
+        };
+        OpenLayers.Events.prototype.on = function(obj) {
+            t.eq(obj, options.eventListeners, "events.on called with eventListeners");
+        }
+        var layer = new OpenLayers.Layer("test", options);
+        OpenLayers.Events.prototype.on = method;
+        layer.destroy();
+        
+        // if events.on is called again, this will fail due to an extra test
+        // test layer without eventListeners
+        OpenLayers.Events.prototype.on = function(obj) {
+            t.fail("events.on called without eventListeners");
+        }
+        var layer2 = new OpenLayers.Layer("test");
+        OpenLayers.Events.prototype.on = method;
+        layer2.destroy();
+    }
+
     function test_Layer_initResolutions(t) {
         t.plan(12);
         var map = new OpenLayers.Map("map");
