@@ -1,0 +1,69 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>OpenLayers Transitions Example</title>
+    <style type="text/css">
+        #mapDiv {
+            width: 400px;
+            height: 400px;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map;
+        function init(){
+            map = new OpenLayers.Map('mapDiv', {maxResolution: 'auto'});
+
+            var single_default_effect = new OpenLayers.Layer.WMS(
+                "WMS untiled default", 
+                "http://labs.metacarta.com/wms/vmap0?",
+                {layers: 'basic'}, 
+                {singleTile: true}
+            );
+            var single_resize_effect = new OpenLayers.Layer.WMS(
+                "WMS untiled resize", 
+                "http://labs.metacarta.com/wms/vmap0?",
+                {layers: 'basic'}, 
+                {singleTile: true, transitionEffect: 'resize'}
+            );
+            var tiled_default_effect = new OpenLayers.Layer.WMS(
+                "WMS tiled default ", 
+                "http://labs.metacarta.com/wms/vmap0?",
+                {layers: 'basic'}
+            );
+            var tiled_resize_effect = new OpenLayers.Layer.WMS(
+                "WMS tiled resize", 
+                "http://labs.metacarta.com/wms/vmap0?",
+                {layers: 'basic'}, 
+                {transitionEffect: 'resize'}
+            );
+
+            map.addLayers([single_default_effect, single_resize_effect,
+                           tiled_default_effect, tiled_resize_effect]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.setCenter(new OpenLayers.LonLat(6.5, 40.5), 4);
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Transition Example</h1>
+    <p id="shortdesc">
+        Demonstrates the use of transition effects in tiled and untiled layers.
+    </p>
+    <div id="mapDiv"></div>
+    <div id="docs">
+        There are two transitions that are currently implemented: null (the
+        default) and 'resize'.  The default transition effect is used when no
+        transition is specified and is implemented as no transition effect except
+        for panning singleTile layers.  The 'resize' effect resamples the current
+        tile and displays it stretched or compressed until the new tile is available.
+    <ul>
+        <li>The first layer is an untiled WMS layer with no transition effect.</li>
+        <li>The second layer is an untiled WMS layer with a 'resize' effect. </li>
+        <li>The third layer is a tiled WMS layer with no transition effect. </li>
+        <li>The fourth layer is a tiled WMS layer with a 'resize' effect. </li>
+    </ul>
+    </div>
+  </body>
+  </body>
+</html>
