@@ -69,6 +69,32 @@
         OpenLayers.Control.prototype.destroy = temp;
     }
 
+    function test_Control_Navigation_disableZoomWheel(t) {
+        t.plan(2);
+        var nav = new OpenLayers.Control.Navigation();
+        var wheel = new OpenLayers.Handler.MouseWheel(nav, {});
+        nav.handlers.wheel = wheel;
+        wheel.register = function() {};
+        wheel.unregister = function() {};
+        wheel.activate();
+        nav.disableZoomWheel();
+        t.eq(nav.zoomWheelEnabled, false, "mouse wheel deactivated");
+        t.eq(wheel.active, false, "mouse wheel handler deactivated");
+    }
+
+    function test_Control_Navigation_enableZoomWheel(t) {
+        t.plan(2);
+        var nav = new OpenLayers.Control.Navigation({zoomWheelEnabled: false});
+        nav.active = true;
+        var wheel = new OpenLayers.Handler.MouseWheel(nav, {});
+        wheel.register = function() {};
+        wheel.unregister = function() {};
+        nav.handlers.wheel = wheel;
+        nav.enableZoomWheel();
+        t.eq(nav.zoomWheelEnabled, true, "mouse wheel activated");
+        t.eq(wheel.active, true, "mouse wheel handler activated");
+    }
+
   </script>
 </head>
 <body>

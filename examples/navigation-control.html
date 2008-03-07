@@ -1,0 +1,40 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+	<title>OpenLayers Navigation Control</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <style type="text/css">
+        #map {
+            width: 512px;
+            height: 512px;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map, layer;
+        function init(){
+            map = new OpenLayers.Map( 'map', { controls: [] });
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                    "http://labs.metacarta.com/wms/vmap0",
+                    {layers: 'basic'} );
+            map.addLayer(layer);
+            nav = new OpenLayers.Control.Navigation({'zoomWheelEnabled': false});
+            map.addControl(nav);
+            map.zoomToMaxExtent();
+        }
+    </script>
+  </head>
+  <body onload="init()">
+	<h1 id="title">Navigation Control</h1>
+
+	<div id="tags"></div>
+
+	<div id="shortdesc">Demonstrate Navigation Control features</div>
+
+    <div id="map"></div>
+    <a href="#" onclick="nav.enableZoomWheel();return false">Turn on Wheel Zoom</a> | <a href="#" onclick="nav.disableZoomWheel(); return false;">Turn off Wheel Zoom</a>
+	<div id="docs">
+	    This example demonstrates a couple features of the Navigation control. The Navigation control controls most map dragging, movement, zooming, etc. In this case, we have a demonstration of how to create a navigation control with no zoom wheel action, which can then be enabled or disabled by the user.
+    </div>
+  </body>
+</html>
