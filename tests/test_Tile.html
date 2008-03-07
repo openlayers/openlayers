@@ -60,7 +60,12 @@
     function test_99_Tile_destroy(t) {
         t.plan( 6 );
 
-        var layer = {}; // bogus layer
+        var layer = {
+            SUPPORTED_TRANSITIONS: [],
+            events: {
+                unregister: function() {}
+            }
+        }; // bogus layer
         var position = new OpenLayers.Pixel(10,20);
         var bounds = new OpenLayers.Bounds(1,2,3,4);
         var url = "bobob";

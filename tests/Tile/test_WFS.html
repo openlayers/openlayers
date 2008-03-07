@@ -37,7 +37,12 @@
         
         t.ok(tile.request == null, "request property on tile set to null");
 
-        var layer = {}; // bogus layer
+        var layer = {
+            SUPPORTED_TRANSITIONS: [],
+            events: {
+                unregister: function() {}
+            }
+        }; // bogus layer
         var position = new OpenLayers.Pixel(10,20);
         var bounds = new OpenLayers.Bounds(1,2,3,4);
         var url = "bobob";
@@ -84,7 +89,12 @@
     function test_Tile_WFS_destroy(t) {
         t.plan(9);
 
-        var layer = {}; // bogus layer
+        var layer = {
+            SUPPORTED_TRANSITIONS: [],
+            events: {
+                unregister: function() {}
+            }
+        }; // bogus layer
         var position = new OpenLayers.Pixel(10,20);
         var bounds = new OpenLayers.Bounds(1,2,3,4);
         var url = "bobob";
