@@ -27,7 +27,7 @@
 
     </style>
 
-    <script src='http://maps.google.com/maps?file=api&amp;v=2.82&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
+    <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
 
     <script src="../../lib/OpenLayers.js"></script>
     <script type="text/javascript">
@@ -50,9 +50,13 @@
                 var px = new OpenLayers.Pixel(evenmap.size.w / 2,
                                               evenmap.size.h / 2);
                 var pc = evenmap.getLonLatFromViewPortPx(px);
+                pc.lon = parseFloat(pc.lon.toPrecision(6));
+                pc.lat = parseFloat(pc.lat.toPrecision(6));
                 var mc = evenmap.baseLayer.getOLLonLatFromMapObjectLonLat(
                     evenmap.baseLayer.mapObject.getCenter()
                 );
+                mc.lon = parseFloat(mc.lon.toPrecision(6));
+                mc.lat = parseFloat(mc.lat.toPrecision(6));
                 epc.innerHTML = "(" + pc.lon + ", " + pc.lat + ")";
                 emc.innerHTML = "(" + mc.lon + ", " + mc.lat + ")";
                 ee.innerHTML = pc.equals(mc);
@@ -72,9 +76,13 @@
                 var px = new OpenLayers.Pixel(oddmap.size.w / 2,
                                               oddmap.size.h / 2);
                 var pc = oddmap.getLonLatFromViewPortPx(px);
+                pc.lon = parseFloat(pc.lon.toPrecision(6));
+                pc.lat = parseFloat(pc.lat.toPrecision(6));
                 var mc = oddmap.baseLayer.getOLLonLatFromMapObjectLonLat(
                     oddmap.baseLayer.mapObject.getCenter()
                 );
+                mc.lon = parseFloat(mc.lon.toPrecision(6));
+                mc.lat = parseFloat(mc.lat.toPrecision(6));
                 opc.innerHTML = "(" + pc.lon + ", " + pc.lat + ")";
                 omc.innerHTML = "(" + mc.lon + ", " + mc.lat + ")";
                 oe.innerHTML = pc.equals(mc);
