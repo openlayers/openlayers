@@ -39,33 +39,11 @@
                  {map: '/www/freemap.in/world/map/factbooktrans.map', transparent:'true',
                          layers: 'factbook', 'format':'png'}, {'reproject': true} );
             map.addLayer(twms);
-            markers = new OpenLayers.Layer.Markers("markers");
-            map.addLayer(markers);
 
             map.setCenter(new OpenLayers.LonLat(10.205188,48.857593), 5);
             map.addControl( new OpenLayers.Control.LayerSwitcher() );
             map.addControl( new OpenLayers.Control.PanZoomBar() );
-
         }
-
-        function add() {
-
-            var url = 'http://boston.openguides.org/markers/AQUA.png';
-            var sz = new OpenLayers.Size(10, 17);
-            var calculateOffset = function(size) {
-                                return new OpenLayers.Pixel(-(size.w/2), -size.h);
-                             };
-            var icon = new OpenLayers.Icon(url, sz, null, calculateOffset);
-            var barcelona = new OpenLayers.LonLat(2.13134765625,
-                                                  41.37062534198901);
-            marker = new OpenLayers.Marker(barcelona, icon);
-            markers.addMarker(marker);
-        }
-
-        function remove() {
-            markers.removeMarker(marker);
-        }
-
     </script>
   </head>
   <body onload="init()">
@@ -74,15 +52,10 @@
     <div id="tags"></div>
 
     <p id="shortdesc">
-    	Demonstrate a Google basemap used with boundary and marker overlay layers.
+    	Demonstrate a Google basemap used with boundary overlay layer.
     </p>
 
     <div id="map"></div>
-
-    <div style="width:512px">
-	    <div style="background-color:green" onclick="add()"> click to add a marker to the map</div>
-	    <div style="background-color:red" onclick="remove()"> click to remove the marker from the map</div>
-    </div>
 
     <div id="docs"></div>
   </body>
