@@ -41,7 +41,6 @@
                 symbolizer: {"Point": {fillColor: "red"}},
                 minScaleDenominator: 1000000,
                 maxScaleDenominator: 2500000});
-        style.addRules([rule1, rule2, rule3]);
         
         var feature = new OpenLayers.Feature.Vector(
                 new OpenLayers.Geometry.Point(3,5),
@@ -58,9 +57,13 @@
 
         map.setCenter(new OpenLayers.LonLat(3,5), 10);
 
-        // at this scale, the feature should be green
         var createdStyle = style.createSymbolizer(feature);
-        t.eq(createdStyle.externalGraphic, "barbar.png", "Calculated property style correctly.");
+        t.eq(createdStyle.externalGraphic, "barbar.png", "Calculated property style for default symbolizer correctly.");
+        
+        style.addRules([rule1, rule2, rule3]);
+        createdStyle = style.createSymbolizer(feature);
+        
+        // at this scale, the feature should be green
         t.eq(createdStyle.display, "", "Feature is visible at scale "+map.getScale());
         t.eq(createdStyle.fillColor, "green", "Point symbolizer from rule applied correctly.");
 
