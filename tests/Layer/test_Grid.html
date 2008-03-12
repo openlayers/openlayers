@@ -496,6 +496,7 @@
         var tile = {
             onLoadStart: {},
             onLoadEnd: {},
+            unload: function() {},
             events: {
                 unregister: function(name, obj, func) {
                     g_unregistered[name] = [obj, func];
