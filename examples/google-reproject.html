@@ -1,0 +1,68 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>OpenLayers Google with Overlay Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <style type="text/css">
+        #map {
+            width: 512px;
+            height: 512px;
+            border: 1px solid black;
+        }
+    </style>
+
+    <!-- this gmaps key generated for http://openlayers.org/dev/ -->
+    <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var lon = 5;
+        var lat = 40;
+        var zoom = 17;
+        var map, layer;
+
+        function init(){
+            map = new OpenLayers.Map('map');
+
+            var satellite = new OpenLayers.Layer.Google(
+                "Google Satellite" , {type: G_SATELLITE_MAP}
+            );
+
+            var wms = new OpenLayers.Layer.WMS(
+                "World Map",
+                "http://world.freemap.in/cgi-bin/mapserv",
+                {
+                    map: '/www/freemap.in/world/map/factbooktrans.map',
+                    transparent: 'TRUE',
+                    layers: 'factbook'
+                },
+                {'reproject': true}
+            );
+
+            map.addLayers([satellite, wms]);
+
+            map.setCenter(new OpenLayers.LonLat(10.205188,48.857593), 5);
+            map.addControl( new OpenLayers.Control.LayerSwitcher() );
+            map.addControl( new OpenLayers.Control.PanZoomBar() );
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Google with Overlay Example</h1>
+
+    <div id="tags"></div>
+
+    <p id="shortdesc">
+        Demonstrate a Google basemap used with boundary overlay layer.
+    </p>
+
+    <div id="map"></div>
+
+    <div id="docs">
+        An overlay in a Geographic projection can be stretched to somewhat
+        line up with Google tiles (in a Mercator projection).  Results get
+        worse farther from the equator.  Use the "reproject" option on a
+        layer to get this behavior.  Use the sphericalMercator option on
+        a Google layer to get proper overlays (with other layers in
+        Spherical Mercator).
+    </div>
+  </body>
+</html>

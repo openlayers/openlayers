@@ -1,48 +1,48 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-      <title>OpenLayers Google Layer Example</title>
+    <title>OpenLayers Google Layer Example</title>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
     <style type="text/css">
         #map {
             width: 512px;
             height: 512px;
             border: 1px solid black;
-            background-color: red;
         }
     </style>
 
     <!-- this gmaps key generated for http://openlayers.org/dev/ -->
     <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
-    <!-- Localhost key -->
-    <!-- <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhT2yXp_ZAY8_ufC3CFXhHIE1NvwkxTS6gjckBmeABOGXIUiOiZObZESPg'></script>-->
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var lon = 5;
         var lat = 40;
         var zoom = 17;
-        var map, layer;
+        var map;
 
-        function init(){
-            map = new OpenLayers.Map( 'map' ,
-            { controls: [new OpenLayers.Control.MouseDefaults()] , 'numZoomLevels':20});
+        function init() {
+            map = new OpenLayers.Map('map');
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            
+            var gphy = new OpenLayers.Layer.Google(
+                "Google Physical",
+                {type: G_PHYSICAL_MAP}
+            );
+            var gmap = new OpenLayers.Layer.Google(
+                "Google Streets" // the default
+            );
+            var ghyb = new OpenLayers.Layer.Google(
+                "Google Hybrid",
+                {type: G_HYBRID_MAP}
+            );
+            var gsat = new OpenLayers.Layer.Google(
+                "Google Satellite",
+                {type: G_SATELLITE_MAP}
+            );
 
-            var satellite = new OpenLayers.Layer.Google( "Google Satellite" , {type: G_SATELLITE_MAP, 'maxZoomLevel':18} );
 
+            map.addLayers([gphy, gmap, ghyb, gsat]);
 
-            map.addLayers([satellite]);
-            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
-                    "http://labs.metacarta.com/wms/vmap0", {layers: 'basic', 'transparent':true},
-                      {isBaseLayer: false} );
-            layer.setVisibility(false);
-         var twms = new OpenLayers.Layer.WMS( "World Map",
-         "http://world.freemap.in/cgi-bin/mapserv?",
-                 {map: '/www/freemap.in/world/map/factbooktrans.map', transparent:'true',
-                         layers: 'factbook', 'format':'png'}, {'reproject': true} );
-            map.addLayer(twms);
-
-            map.setCenter(new OpenLayers.LonLat(10.205188,48.857593), 5);
-            map.addControl( new OpenLayers.Control.LayerSwitcher() );
-            map.addControl( new OpenLayers.Control.PanZoomBar() );
+            map.setCenter(new OpenLayers.LonLat(10.2, 48.9), 5);
         }
     </script>
   </head>
@@ -52,16 +52,16 @@
     <div id="tags"></div>
 
     <p id="shortdesc">
-        Demonstrate a Google basemap used with boundary overlay layer.
+        Demonstrate use of the various types of Google layers.
     </p>
 
     <div id="map"></div>
 
     <div id="docs">
-      For best performance, you must be using a version of the Google Maps
-      API which is v2.93 or higher. In order to use this version of the API,
-      it is best to simply set your application to use the string "v=2" in
-      the request, rather than tying your application to an explicit version.
+        For best performance, you must be using a version of the Google Maps
+        API which is v2.93 or higher. In order to use this version of the API,
+        it is best to simply set your application to use the string "v=2" in
+        the request, rather than tying your application to an explicit version.
     </div>
   </body>
 </html>
