@@ -89,7 +89,7 @@
             "", "${ ", "${", " ${", "${${", "${}", "${${}}", " ${ ${",
             "}", "${${} }"
         ]
-        t.plan(4 + unchanged.length);
+        t.plan(6 + unchanged.length);
 
         var format = OpenLayers.String.format;
         
@@ -114,6 +114,31 @@
         var context = {bar: "foo", foo: "bar"};
         t.eq(format("a ${bar} is a ${foo}", context), "a foo is a bar",
              "multiple properties replaced correctly");
+        
+        // test context with properties that are functions
+        var context = {
+            bar: "church",
+            getDrunk: function() {
+                return arguments[0];
+            }
+        };
+        t.eq(
+            format("I go to the ${bar} to ${getDrunk}.", context, ["eat pretzels"]),
+            "I go to the church to eat pretzels.",
+            "function correctly called in context with arguments"
+        );
+        
+        // test that things don't break
+        var context = {
+            meaning: function(truth) {
+                return truth;
+            }
+        };
+        t.eq(
+            format("In life, truth is ${meaning}.", context),
+            "In life, truth is undefined.",
+            "still works if arguments are not supplied"
+        );
 
     }
    
