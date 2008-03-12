@@ -42,17 +42,17 @@
   </head>
   <body onload="init()">
      <h1 id="title"> WMS Time Example</h1>
-	    <div id="tags">
-	    </div>
-		<p id="shortdesc">
-			Shows the use of the layer WMS-T (time) layer</a>
-		</p>
+        <div id="tags">
+        </div>
+        <p id="shortdesc">
+            Shows the use of the layer WMS-T (time) layer</a>
+        </p>
     <input size="4" type='text' id='year' value="2005" onchange="update_date()"/>-<input size="2" type="text" id="month" value="08" onchange="update_date()"/>-<input size="2" type="text" id="day" value="29" onchange="update_date()" />T<input type="text" size="2" id="hour" value="13" onchange="update_date()" />:<input type="text" size="2" id="minute" value="00" onchange="update_date()" />:00
     <div id="map"></div>
     <div id="docs">
-			WMS-T example: update the times, and the radar image will change. Uses Layer.mergeNewParams to update the date element with the strings from the input fields every time one of them is changed.
-			The inputs below describe a timestamp: The minute increments can only be updated in units of 5.
-	</div>
+            WMS-T example: update the times, and the radar image will change. Uses Layer.mergeNewParams to update the date element with the strings from the input fields every time one of them is changed.
+            The inputs below describe a timestamp: The minute increments can only be updated in units of 5.
+    </div>
   </body>
 </html>
 

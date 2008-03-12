@@ -1,6 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-  	<title>OpenLayers Tiled Map Service Example</title>
+      <title>OpenLayers Tiled Map Service Example</title>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
     <style type="text/css">
         #map {
@@ -38,25 +38,25 @@
     </script>
   </head>
   <body onload="init()">
-  	<h1 id="title">Tiled Map Service Example</h1>
+      <h1 id="title">Tiled Map Service Example</h1>
 
-	<div id="tags"></div>
+    <div id="tags"></div>
 
-	<p id="shortdesc">
-		Demonstrate the initialization and modification of a Tiled Map Service layer.
-	</p>
+    <p id="shortdesc">
+        Demonstrate the initialization and modification of a Tiled Map Service layer.
+    </p>
 
     <div id="map"></div>
 
     <div id="docs">
-		URL of TMS (Should end in /): <input type="text" id="url" size="60" value="http://labs.metacarta.com/wms-c/Basic.py/" /> layer_name <input type="text" id="layer" value="satellite" /> <select id="type"><option>jpg</option><option>png</option></select> <input type="submit" onclick="addTMS()"/><br />
-		<p>
-		Example: http://labs.metacarta.com/wms-c/Basic.py/, satellite, jpg<br />
-		The first input must be an HTTP URL pointing to a TMS instance. The second
-		input must be a layer name available from that instance, and the third must
-		be the output format used by that layer. (Any other behavior will result in
-		broken images being displayed.)
-		</p>
+        URL of TMS (Should end in /): <input type="text" id="url" size="60" value="http://labs.metacarta.com/wms-c/Basic.py/" /> layer_name <input type="text" id="layer" value="satellite" /> <select id="type"><option>jpg</option><option>png</option></select> <input type="submit" onclick="addTMS()"/><br />
+        <p>
+        Example: http://labs.metacarta.com/wms-c/Basic.py/, satellite, jpg<br />
+        The first input must be an HTTP URL pointing to a TMS instance. The second
+        input must be a layer name available from that instance, and the third must
+        be the output format used by that layer. (Any other behavior will result in
+        broken images being displayed.)
+        </p>
     </div>
   </body>
 </html>

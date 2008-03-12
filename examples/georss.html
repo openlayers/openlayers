@@ -1,6 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-  	<title>OpenLayers GeoRSS Example</title>
+      <title>OpenLayers GeoRSS Example</title>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
     <style type="text/css">
         #map {
@@ -38,7 +38,7 @@
     <div id="tags"></div>
 
     <p id="shortdesc">
-		Display a couple of locally cached georss feeds on an a basemap.
+        Display a couple of locally cached georss feeds on an a basemap.
     </p>
 
     <div id="map"></div>
@@ -49,15 +49,15 @@
         markers, similar to Google maps.  In addition, the parser can use custom PNG icons for markers.  A sample GeoRSS
         file (georss.xml) is included.
 
-	    <form onsubmit="return false;">
-	   		GeoRSS URL: <input type="text" id="url" size="50" value="georss.xml" />
-	   		<input type="submit" onclick="addUrl(); return false;" value="Load Feed" onsubmit="addUrl(); return false;" />
-	    </form>
+        <form onsubmit="return false;">
+               GeoRSS URL: <input type="text" id="url" size="50" value="georss.xml" />
+               <input type="submit" onclick="addUrl(); return false;" value="Load Feed" onsubmit="addUrl(); return false;" />
+        </form>
 
-	    <p>The above input box allows the input of a URL to a GeoRSS feed. This feed can be local to the HTML page --
-	    for example, entering 'georss.xml' will work by default, because there is a local file in the directory called
-	    georss.xml -- or, with a properly set up ProxyHost variable (as is used here), it will be able to load any
-	    HTTP URL which contains GeoRSS and display it. Anything else will simply have no effect.</p>
-	</div>
+        <p>The above input box allows the input of a URL to a GeoRSS feed. This feed can be local to the HTML page --
+        for example, entering 'georss.xml' will work by default, because there is a local file in the directory called
+        georss.xml -- or, with a properly set up ProxyHost variable (as is used here), it will be able to load any
+        HTTP URL which contains GeoRSS and display it. Anything else will simply have no effect.</p>
+    </div>
   </body>
 </html>

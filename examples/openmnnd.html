@@ -140,23 +140,23 @@
     <p id="shortdesc">This example shows the use of a WFS service rendered using the OpenLayers vector library.</p>
     <div id="map"></div>
     <div id="docs">
-	        <p>
-	        This is an example that shows rendering a WFS service using OpenLayer vectors in the browser. The OpenLayers code will download the GML
-	        from the WFS service for each layer, parse it and create features using the OL vector library to draw the features on the map. For
-	        more information on the vector library, please visit <a href="http://trac.openlayers.org/wiki/Documentation/VectorSupport">vector support wiki</a>.
-	        In this example there are 4 layers shown on the map.  The base layer and parcel layer are created from a WMS serivce using the OpenLayers.Layer.WMS object.
-	        The streams, roads, and plat layers are drawn from a WFS service using the OpenLayers.Layer.WFS object.
-	        </p>
+            <p>
+            This is an example that shows rendering a WFS service using OpenLayer vectors in the browser. The OpenLayers code will download the GML
+            from the WFS service for each layer, parse it and create features using the OL vector library to draw the features on the map. For
+            more information on the vector library, please visit <a href="http://trac.openlayers.org/wiki/Documentation/VectorSupport">vector support wiki</a>.
+            In this example there are 4 layers shown on the map.  The base layer and parcel layer are created from a WMS serivce using the OpenLayers.Layer.WMS object.
+            The streams, roads, and plat layers are drawn from a WFS service using the OpenLayers.Layer.WFS object.
+            </p>
 
-	        <p>
-	        Rendering WFS layers into vectors is possible, but you need to be cautions when showing the features on the map.  Testing has shown that when
-	        you renderer more than 200 vectors in the browser the performance decreases dramatically.  Also features that have a lot of vertices
-	        can cause performance issues. In this example the parcel layer is rendered as a WMS layer because at the time of developing this example
-	        there where a handful of features that had too many vertices to render without killing the browser resources.
+            <p>
+            Rendering WFS layers into vectors is possible, but you need to be cautions when showing the features on the map.  Testing has shown that when
+            you renderer more than 200 vectors in the browser the performance decreases dramatically.  Also features that have a lot of vertices
+            can cause performance issues. In this example the parcel layer is rendered as a WMS layer because at the time of developing this example
+            there where a handful of features that had too many vertices to render without killing the browser resources.
 
-	        There are a number of properties that can be set for each WFS layer, such color and line weight using style properties such as strokeColor and strokeWidth.
-	        You can also get feature attributes from the WFS services using the extractAttribute property.  View the source to see the example code.
-	        </p>
+            There are a number of properties that can be set for each WFS layer, such color and line weight using style properties such as strokeColor and strokeWidth.
+            You can also get feature attributes from the WFS services using the extractAttribute property.  View the source to see the example code.
+            </p>
     </div>
   </body>
 </html>

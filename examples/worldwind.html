@@ -35,18 +35,18 @@
   <body onload="init()">
         <h1 id="title">WorldWind layers Example</h1>
 
-	    <div id="tags">
-	    </div>
-		<p id="shortdesc">
-			Shows the use of the Tiled WorldWind layers.
-		</p>
+        <div id="tags">
+        </div>
+        <p id="shortdesc">
+            Shows the use of the Tiled WorldWind layers.
+        </p>
 
-	    <div id="map"></div>
+        <div id="map"></div>
 
-		<div id="docs">
-			This is a demonstration of using Tiled WorldWind layers. WorldWind requires you to define a "LZTD" -- the 3rd param of the constructor -- and the number of zoom levels it supports. When a worldwind layer is not visible at a given tile level, and empty tile is placed there instead. Note that the maxResolution of the map times 512px, must be a multiple of a power of two different from the LZTD -- in this case, .28125 * 512 is 144, which is 36*4, and 2.25*64.
-			This example has a 'Bathy' layer, visible as you zoom out, and a 'landsat' layer, visible as you zoom in, both visible at zoom level 6.
-	    </div>
+        <div id="docs">
+            This is a demonstration of using Tiled WorldWind layers. WorldWind requires you to define a "LZTD" -- the 3rd param of the constructor -- and the number of zoom levels it supports. When a worldwind layer is not visible at a given tile level, and empty tile is placed there instead. Note that the maxResolution of the map times 512px, must be a multiple of a power of two different from the LZTD -- in this case, .28125 * 512 is 144, which is 36*4, and 2.25*64.
+            This example has a 'Bathy' layer, visible as you zoom out, and a 'landsat' layer, visible as you zoom in, both visible at zoom level 6.
+        </div>
       </body>
 </html>
 

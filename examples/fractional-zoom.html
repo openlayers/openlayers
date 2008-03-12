@@ -43,28 +43,28 @@
     </script>
   </head>
   <body onload="init()">
-	<h1 id="title">Fractional Zoom Example</h1>
+    <h1 id="title">Fractional Zoom Example</h1>
 
-	<div id="tags">
-	</div>
-	<p id="shortdesc">
+    <div id="tags">
+    </div>
+    <p id="shortdesc">
             Shows the use of a map with fractional (or non-discrete) zoom levels.
-	</p>
+    </p>
 
-	<div id="map"></div>
+    <div id="map"></div>
         <input type="checkbox" name="fractional"
                id="fractional" checked="checked" onclick="update(this)" />
         <label for="fractional">Fractional Zoom</label>
         (zoom: <span id="zoom"></span>)
         <br /><br />
-	<div id="docs">
+    <div id="docs">
             <p>
             Setting the map.fractionalZoom property to true allows zooming to
             an arbitrary level (between the min and max resolutions).  This
             can be demonstrated by shift-dragging a box to zoom to an arbitrary
             extent.
             </p>
-	</div>
+    </div>
   </body>
 </html>
 

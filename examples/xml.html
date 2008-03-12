@@ -112,46 +112,46 @@
         </script>
     </head>
     <body>
-			<h1 id="title">XML Format Example</h1>
+            <h1 id="title">XML Format Example</h1>
 
-			<div id="tags">
-			</div>
+            <div id="tags">
+            </div>
 
-			<p id="shortdesc">
-				Shows the use of the OpenLayers XML format class
-			</p>
+            <p id="shortdesc">
+                Shows the use of the OpenLayers XML format class
+            </p>
 
-			<div id="docs">
-				<p>OpenLayers has a very simple XML format class (OpenLayers.Format.XML)
-				        that can be used to read/write XML docs.  The methods available on the
-				        XML format (or parser if you like) allow for reading and writing of the
-				        various XML flavors used by the library - in particular the vector data
-				        formats.  It is by no means intended to be a full-fledged XML toolset.
-				        Additional methods will be added only as needed elsewhere in the
-				        library.</p>
-				        <p>This page loads an XML document and demonstrates a few of the methods
-				        available in the parser.</p>
-				        <p>Status: <b>XML document <span id="loadStatus">loading..</span>.</b></p>
-				        <p>After the XML document loads, see the result of a few of the methods
-				        below.  Assume that you start with the following code:
-				        <br />
-				        <span class="code">
-				            var format = new OpenLayers.Format.XML();
-				        </span>
-				        </p>
-				        Sample methods
-				        <ul>
-				            <li><a href="javascript:void write();">format.write()</a> - write the XML doc as text</li>
-				            <li><a href="javascript:void getElementsByTagNameNS(doc, 'http://www.opengis.net/gml', 'MultiPolygon');">format.getElementsByTagNameNS()</a> - get all gml:MultiPolygon</li>
-				            <li><a href="javascript:void hasAttributeNS(doc.documentElement, 'http://www.w3.org/2001/XMLSchema-instance', 'schemaLocation');">format.hasAttributeNS()</a> - test to see schemaLocation attribute exists in the http://www.w3.org/2001/XMLSchema-instance namespace</li>
-				            <li><a href="javascript:void getAttributeNodeNS(doc.documentElement, 'http://www.w3.org/2001/XMLSchema-instance', 'schemaLocation');">format.getAttributeNodeNS()</a> - get schemaLocation attribute in the http://www.w3.org/2001/XMLSchema-instance namespace</li>
-				            <li><a href="javascript:void getAttributeNS(doc.documentElement, 'http://www.w3.org/2001/XMLSchema-instance', 'schemaLocation');">format.getAttributeNS()</a> - get schemaLocation attribute value in the http://www.w3.org/2001/XMLSchema-instance namespace</li>
-				            <li><a href="javascript:void createElementNS('http://bar.com/foo', 'foo:TestNode');">format.createElementNS()</a> - create a foo:TestNode element (and append it to the doc)</li>
-				            <li><a href="javascript:void createTextNode('test text ');">format.createTextNode()</a> - create a text node (and append it to the doc)</li>
-				        </ul>
-				        Output:
-		        <div id="output">&nbsp;</div>
-			</div>
+            <div id="docs">
+                <p>OpenLayers has a very simple XML format class (OpenLayers.Format.XML)
+                        that can be used to read/write XML docs.  The methods available on the
+                        XML format (or parser if you like) allow for reading and writing of the
+                        various XML flavors used by the library - in particular the vector data
+                        formats.  It is by no means intended to be a full-fledged XML toolset.
+                        Additional methods will be added only as needed elsewhere in the
+                        library.</p>
+                        <p>This page loads an XML document and demonstrates a few of the methods
+                        available in the parser.</p>
+                        <p>Status: <b>XML document <span id="loadStatus">loading..</span>.</b></p>
+                        <p>After the XML document loads, see the result of a few of the methods
+                        below.  Assume that you start with the following code:
+                        <br />
+                        <span class="code">
+                            var format = new OpenLayers.Format.XML();
+                        </span>
+                        </p>
+                        Sample methods
+                        <ul>
+                            <li><a href="javascript:void write();">format.write()</a> - write the XML doc as text</li>
+                            <li><a href="javascript:void getElementsByTagNameNS(doc, 'http://www.opengis.net/gml', 'MultiPolygon');">format.getElementsByTagNameNS()</a> - get all gml:MultiPolygon</li>
+                            <li><a href="javascript:void hasAttributeNS(doc.documentElement, 'http://www.w3.org/2001/XMLSchema-instance', 'schemaLocation');">format.hasAttributeNS()</a> - test to see schemaLocation attribute exists in the http://www.w3.org/2001/XMLSchema-instance namespace</li>
+                            <li><a href="javascript:void getAttributeNodeNS(doc.documentElement, 'http://www.w3.org/2001/XMLSchema-instance', 'schemaLocation');">format.getAttributeNodeNS()</a> - get schemaLocation attribute in the http://www.w3.org/2001/XMLSchema-instance namespace</li>
+                            <li><a href="javascript:void getAttributeNS(doc.documentElement, 'http://www.w3.org/2001/XMLSchema-instance', 'schemaLocation');">format.getAttributeNS()</a> - get schemaLocation attribute value in the http://www.w3.org/2001/XMLSchema-instance namespace</li>
+                            <li><a href="javascript:void createElementNS('http://bar.com/foo', 'foo:TestNode');">format.createElementNS()</a> - create a foo:TestNode element (and append it to the doc)</li>
+                            <li><a href="javascript:void createTextNode('test text ');">format.createTextNode()</a> - create a text node (and append it to the doc)</li>
+                        </ul>
+                        Output:
+                <div id="output">&nbsp;</div>
+            </div>
     </body>
 </html>
 
