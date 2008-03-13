@@ -4,22 +4,27 @@
   <script type="text/javascript">
     var map; 
     function test_01_Control_PanZoomBar_constructor (t) {
-        t.plan( 4 );
+        
+        t.plan( 6 );
+		
     
-        control = new OpenLayers.Control.PanZoomBar({position: new OpenLayers.Pixel(100,100)});
+        control = new OpenLayers.Control.PanZoomBar({position: new OpenLayers.Pixel(100,100), showPan: false, showZoomBar: false});
         t.ok( control instanceof OpenLayers.Control.PanZoomBar, "new OpenLayers.Control.PanZoomBar returns object" );
         t.eq( control.displayClass,  "olControlPanZoomBar", "displayClass is correct" );
         t.eq( control.position.x, 100, "PanZoom X Set correctly."); 
         t.eq( control.position.y, 100, "PanZoom y Set correctly."); 
+        t.eq( control.showPan, false, "showPan Set correctly."); 
+        t.eq( control.showZoomBar, false, "showZoomBar Set correctly."); 
+        
     }
     function test_02_Control_PanZoomBar_addControl (t) {
-        t.plan( 8 );
+        t.plan( 10 );
         map = new OpenLayers.Map('map', {controls:[]});
         var layer = new OpenLayers.Layer.WMS("Test Layer", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
             {map: "/mapdata/vmap_wms.map", layers: "basic"});
         map.addLayer(layer);
-        control = new OpenLayers.Control.PanZoomBar();
+        control = new OpenLayers.Control.PanZoomBar({showPan: false, showZoomBar: false});
         t.ok( control instanceof OpenLayers.Control.PanZoomBar, "new OpenLayers.Control.PanZoomBar returns object" );
         t.ok( map instanceof OpenLayers.Map, "new OpenLayers.Map creates map" );
         map.addControl(control);
@@ -28,10 +33,12 @@
         t.eq( parseInt(control.div.style.zIndex), 1001, "Control div zIndexed properly" );
         t.eq( parseInt(map.viewPortDiv.lastChild.style.zIndex), 1001, "Viewport div contains control div" );
         t.eq( control.div.style.top, "4px", "Control div top located correctly by default");
+        t.eq( control.div.childNodes.length, 0, "showPan/showZoomBar work correctly");
 
         var control2 = new OpenLayers.Control.PanZoomBar();
         map.addControl(control2, new OpenLayers.Pixel(100,100));
         t.eq( control2.div.style.top, "100px", "2nd control div is located correctly");
+        t.eq( control2.div.childNodes.length, 8, "showPan/showZoomBar work correctly on 2nd control div");
     }
 
   </script>
