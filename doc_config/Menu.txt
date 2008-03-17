@@ -66,9 +66,10 @@ Group: OpenLayers  {
 
    Group: Control  {
 
-      File: Control  (OpenLayers/Control.js)
+      File: Control  (no auto-title, OpenLayers/Control.js)
       File: ArgParser  (no auto-title, OpenLayers/Control/ArgParser.js)
       File: Attribution  (no auto-title, OpenLayers/Control/Attribution.js)
+      File: Control.Button  (no auto-title, OpenLayers/Control/Button.js)
       File: DragFeature  (no auto-title, OpenLayers/Control/DragFeature.js)
       File: DragPan  (no auto-title, OpenLayers/Control/DragPan.js)
       File: DrawFeature  (no auto-title, OpenLayers/Control/DrawFeature.js)
@@ -80,6 +81,7 @@ Group: OpenLayers  {
       File: MousePosition  (no auto-title, OpenLayers/Control/MousePosition.js)
       File: MouseToolbar  (no auto-title, OpenLayers/Control/MouseToolbar.js)
       File: Navigation  (no auto-title, OpenLayers/Control/Navigation.js)
+      File: NavigationHistory  (no auto-title, OpenLayers/Control/NavigationHistory.js)
       File: NavToolbar  (no auto-title, OpenLayers/Control/NavToolbar.js)
       File: OverviewMap  (no auto-title, OpenLayers/Control/OverviewMap.js)
       File: Panel  (no auto-title, OpenLayers/Control/Panel.js)
@@ -87,6 +89,7 @@ Group: OpenLayers  {
       File: PanZoomBar  (no auto-title, OpenLayers/Control/PanZoomBar.js)
       File: Permalink  (no auto-title, OpenLayers/Control/Permalink.js)
       File: Scale  (no auto-title, OpenLayers/Control/Scale.js)
+      File: ScaleLine  (no auto-title, OpenLayers/Control/ScaleLine.js)
       File: SelectFeature  (no auto-title, OpenLayers/Control/SelectFeature.js)
       File: ZoomBox  (no auto-title, OpenLayers/Control/ZoomBox.js)
       File: ZoomToMaxExtent  (no auto-title, OpenLayers/Control/ZoomToMaxExtent.js)
@@ -104,21 +107,26 @@ Group: OpenLayers  {
    Group: Format  {
 
       File: Format  (no auto-title, OpenLayers/Format.js)
+      File: GeoJSON  (no auto-title, OpenLayers/Format/GeoJSON.js)
+      File: GeoRSS  (no auto-title, OpenLayers/Format/GeoRSS.js)
+      File: GML  (no auto-title, OpenLayers/Format/GML.js)
+      File: JSON  (no auto-title, OpenLayers/Format/JSON.js)
+      File: KML  (no auto-title, OpenLayers/Format/KML.js)
+      File: OSM  (no auto-title, OpenLayers/Format/OSM.js)
+      File: SLD  (no auto-title, OpenLayers/Format/SLD.js)
+      File: Text  (no auto-title, OpenLayers/Format/Text.js)
+      File: WFS  (no auto-title, OpenLayers/Format/WFS.js)
+      File: WKT  (no auto-title, OpenLayers/Format/WKT.js)
 
-      Group: Format  {
+      Group: WMC  {
 
-         File: GeoJSON  (no auto-title, OpenLayers/Format/GeoJSON.js)
-         File: GeoRSS  (no auto-title, OpenLayers/Format/GeoRSS.js)
-         File: GML  (no auto-title, OpenLayers/Format/GML.js)
-         File: JSON  (no auto-title, OpenLayers/Format/JSON.js)
-         File: KML  (no auto-title, OpenLayers/Format/KML.js)
-         File: SLD  (OpenLayers/Format/SLD.js)
-         File: Text  (no auto-title, OpenLayers/Format/Text.js)
-         File: WFS  (no auto-title, OpenLayers/Format/WFS.js)
-         File: WKT  (no auto-title, OpenLayers/Format/WKT.js)
-         File: XML  (no auto-title, OpenLayers/Format/XML.js)
-         }  # Group: Format
+         File: WMC  (no auto-title, OpenLayers/Format/WMC.js)
+         File: v1  (no auto-title, OpenLayers/Format/WMC/v1.js)
+         File: v1_0_0  (no auto-title, OpenLayers/Format/WMC/v1_0_0.js)
+         File: v1_1_0  (no auto-title, OpenLayers/Format/WMC/v1_1_0.js)
+         }  # Group: WMC
 
+      File: XML  (no auto-title, OpenLayers/Format/XML.js)
       }  # Group: Format
 
    Group: Geometry  {
@@ -144,6 +152,7 @@ Group: OpenLayers  {
       File: Click  (no auto-title, OpenLayers/Handler/Click.js)
       File: Drag  (no auto-title, OpenLayers/Handler/Drag.js)
       File: Feature  (no auto-title, OpenLayers/Handler/Feature.js)
+      File: Hover  (no auto-title, OpenLayers/Handler/Hover.js)
       File: Keyboard  (no auto-title, OpenLayers/Handler/Keyboard.js)
       File: MouseWheel  (no auto-title, OpenLayers/Handler/MouseWheel.js)
       File: Path  (no auto-title, OpenLayers/Handler/Path.js)
@@ -153,6 +162,15 @@ Group: OpenLayers  {
       }  # Group: Handler
 
    File: Icon  (no auto-title, OpenLayers/Icon.js)
+
+   Group: Lang  {
+
+      File: Lang  (no auto-title, OpenLayers/Lang.js)
+      File: Lang["de"]  (no auto-title, OpenLayers/Lang/de.js)
+      File: Lang["en"]  (no auto-title, OpenLayers/Lang/en.js)
+      File: Lang["en-CA"]  (no auto-title, OpenLayers/Lang/en-CA.js)
+      File: Lang["fr"]  (no auto-title, OpenLayers/Lang/fr.js)
+      }  # Group: Lang
 
    Group: Layer  {
 
@@ -167,10 +185,12 @@ Group: OpenLayers  {
       File: HTTPRequest  (no auto-title, OpenLayers/Layer/HTTPRequest.js)
       File: Image  (no auto-title, OpenLayers/Layer/Image.js)
       File: KaMap  (no auto-title, OpenLayers/Layer/KaMap.js)
+      File: MapGuide  (no auto-title, OpenLayers/Layer/MapGuide.js)
       File: MapServer  (no auto-title, OpenLayers/Layer/MapServer.js)
       File: MapServer.Untiled  (no auto-title, OpenLayers/Layer/MapServer/Untiled.js)
       File: Markers  (no auto-title, OpenLayers/Layer/Markers.js)
       File: MultiMap  (no auto-title, OpenLayers/Layer/MultiMap.js)
+      File: PointTrack  (no auto-title, OpenLayers/Layer/PointTrack.js)
       File: SphericalMercator  (no auto-title, OpenLayers/Layer/SphericalMercator.js)
       File: Text  (no auto-title, OpenLayers/Layer/Text.js)
       File: TileCache  (no auto-title, OpenLayers/Layer/TileCache.js)
@@ -192,24 +212,33 @@ Group: OpenLayers  {
       File: Box  (no auto-title, OpenLayers/Marker/Box.js)
       }  # Group: Marker
 
-   File: Projection  (no auto-title, OpenLayers/Projection.js)
-   File: Rule  (no auto-title, OpenLayers/Rule.js)
-   File: Style  (no auto-title, OpenLayers/Style.js)
-
    Group: Popup  {
 
-      File: Popup  (OpenLayers/Popup.js)
+      File: Popup  (no auto-title, OpenLayers/Popup.js)
       File: Anchored  (no auto-title, OpenLayers/Popup/Anchored.js)
       File: AnchoredBubble  (no auto-title, OpenLayers/Popup/AnchoredBubble.js)
       }  # Group: Popup
 
+   File: Projection  (no auto-title, OpenLayers/Projection.js)
+
    Group: Renderer  {
 
-      File: Renderer  (OpenLayers/Renderer.js)
+      File: Renderer  (no auto-title, OpenLayers/Renderer.js)
       File: Elements  (no auto-title, OpenLayers/Renderer/Elements.js)
       File: SVG  (no auto-title, OpenLayers/Renderer/SVG.js)
       File: VML  (no auto-title, OpenLayers/Renderer/VML.js)
       }  # Group: Renderer
+
+   Group: Rule  {
+
+      File: Rule  (no auto-title, OpenLayers/Rule.js)
+      File: Comparison  (no auto-title, OpenLayers/Rule/Comparison.js)
+      File: FeatureId  (no auto-title, OpenLayers/Rule/FeatureId.js)
+      File: Logical  (no auto-title, OpenLayers/Rule/Logical.js)
+      }  # Group: Rule
+
+   File: Style  (no auto-title, OpenLayers/Style.js)
+   File: StyleMap  (no auto-title, OpenLayers/StyleMap.js)
 
    Group: Tile  {
 
@@ -218,14 +247,8 @@ Group: OpenLayers  {
       File: WFS  (no auto-title, OpenLayers/Tile/WFS.js)
       }  # Group: Tile
 
-   Group: Rule  {
-
-      File: Comparison  (no auto-title, OpenLayers/Rule/Comparison.js)
-      File: FeatureId  (no auto-title, OpenLayers/Rule/FeatureId.js)
-      File: Logical  (no auto-title, OpenLayers/Rule/Logical.js)
-      }  # Group: Rule
-
-   File: Util  (OpenLayers/Util.js)
+   File: Tween  (no auto-title, OpenLayers/Tween.js)
+   File: Util  (no auto-title, OpenLayers/Util.js)
    }  # Group: OpenLayers
 
 Group: Index  {
