@@ -14,6 +14,7 @@
         var map;
         function init(){
             map = new OpenLayers.Map('map', { controls: [] });
+            map.addControl(new OpenLayers.Control.Navigation());
 
             map.addControl(new OpenLayers.Control.LayerSwitcher({'div':OpenLayers.Util.getElement('layerswitcher')}));
 
