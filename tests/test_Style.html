@@ -155,6 +155,47 @@
         t.ok(propertyStyles.strokeColor, "detected strokeColor from style correctly");
         t.eq(typeof propertyStyles.pointRadius, "undefined", "correctly detected pointRadius as non-property style");
     }
+    
+    function test_createLiteral(t) {
+        t.plan(6);
+        
+        var value, context, feature, result, expected;
+        var func = OpenLayers.Style.createLiteral;
+
+        // without templates
+        value = "foo";
+        expected = value;
+        result = func(value);
+        t.eq(result, expected, "(no template) preserves literal");
+        
+        // with templates
+        value = "${foo}"
+        expected = "bar";
+        context = {foo: expected};
+        result = func(value, context);
+        t.eq(result, expected, "(template) preserves literal");
+        
+        expected = "";
+        context = {foo: expected};
+        result = func(value, context);
+        t.eq(result, expected, "(template) preserves empty string");
+        
+        expected = "16/03/2008";
+        context = {foo: expected};
+        result = func(value, context);
+        t.eq(result, expected, "(template) preserves string with numbers");
+        
+        expected = 16;
+        context = {foo: expected + ""};
+        result = func(value, context);
+        t.eq(result, expected, "(template) casts integer in a string");
+
+        expected = 16;
+        context = {foo: " " + expected + " "};
+        result = func(value, context);
+        t.eq(result, expected, "(template) casts integer in a space padded string");
+
+    }
 
     function test_Style_destroy(t) {
         t.plan(1);
