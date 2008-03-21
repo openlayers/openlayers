@@ -215,6 +215,28 @@
                           window.location.host);
         }
     }    
+    function test_02_Layer_Google_isBaseLayer (t) {
+        if(validkey) {
+            t.plan(3);
+            var map = new OpenLayers.Map( 'map' , 
+            { controls: [] , 'numZoomLevels':20});
+    
+            var satellite = new OpenLayers.Layer.Google( "Google Satellite" , {type: G_SATELLITE_MAP, 'maxZoomLevel':18} );
+            map.addLayers([satellite]);
+            map.zoomToMaxExtent();
+            
+            t.eq(satellite.div.style.display, "", "Satellite layer is visible.");
+            satellite.setVisibility(false);
+            t.eq(satellite.div.style.display, "none", "Satellite layer is not visible.");
+            satellite.setVisibility(true);
+            t.eq(satellite.div.style.display, "block", "Satellite layer is visible.");
+            
+        } else {
+            t.plan(0);
+            t.debug_print("Google tests can't be run from " +
+                          window.location.host);
+        }
+    }    
 
   </script>
 </head>
