@@ -12,6 +12,36 @@
         </style>
         <script src="../lib/OpenLayers.js"></script>
         <script type="text/javascript">
+OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {                
+                defaultHandlerOptions: {
+                    'single': true,
+                    'double': false,
+                    'pixelTolerance': 0,
+                    'stopSingle': false,
+                    'stopDouble': false
+                },
+
+                initialize: function(options) {
+                    this.handlerOptions = OpenLayers.Util.extend(
+                        {}, this.defaultHandlerOptions
+                    );
+                    OpenLayers.Control.prototype.initialize.apply(
+                        this, arguments
+                    ); 
+                    this.handler = new OpenLayers.Handler.Click(
+                        this, {
+                            'click': this.trigger,
+                        }, this.handlerOptions
+                    );
+                }, 
+
+                trigger: function(e) {
+                    var lonlat = map.getLonLatFromViewPortPx(e.xy);
+                    alert("You clicked near " + lonlat.lat + " N, " +
+                                              + lonlat.lon + " E");
+                },
+
+            });
             var map;
             function init(){
                 map = new OpenLayers.Map('map');
@@ -29,11 +59,11 @@
                 map.addControl(new OpenLayers.Control.LayerSwitcher());
                 // map.setCenter(new OpenLayers.LonLat(0, 0), 0);
                 map.zoomToMaxExtent();
-                map.events.register("click", map, function(e) {
-                    var lonlat = map.getLonLatFromViewPortPx(e.xy);
-                    alert("You clicked near " + lonlat.lat + " N, " +
-                                              + lonlat.lon + " E");
-                });
+                
+                var click = new OpenLayers.Control.Click();
+                map.addControl(click);
+                click.activate();
+
             }
         </script>
     </head>
@@ -44,11 +74,14 @@
         </div>
 
         <p id="shortdesc">
-            This example shows the use of the register and getLonLatFromViewPortPx functions to trigger events on mouse click.
+            This example shows the use of the click handler and getLonLatFromViewPortPx functions to trigger events on mouse click. 
+
         </p>
 
         <div id="map"></div>
     
-        <div id="docs"></div>
+        <div id="docs">
+            Using the Click handler allows you to (for example) catch clicks without catching double clicks, something that standard browser events don't do for you. (Try double clicking: you'll zoom in, whereas using the browser click event, you would just get two alerts.) This example click control shows you how to use it. 
+        </div>
     </body>
 </html>
