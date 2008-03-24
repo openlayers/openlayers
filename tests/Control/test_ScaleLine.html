@@ -1,7 +1,11 @@
 <html>
 <head>
+  <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAA9XNhd8q0UdwNC7YSO4YZghSPUCi5aRYVveCcVYxzezM4iaj_gxQ9t-UajFL70jfcpquH5l1IJ-Zyyw'></script>
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript">
+  var validkey = (window.location.protocol == "file:") ||
+                 (window.location.host == "localhost") ||
+                 (window.location.host == "openlayers.org");
 
     function test_initialize(t) {
         t.plan(2);    
@@ -104,8 +108,11 @@
     }
 
     function test_respectZoom (t) {
-        t.plan(5);
-
+        if(validkey) {
+            t.plan( 4 );
+        } else {
+            t.plan( 3 );
+        }
         // ok, switch the units we use for zoomed in values.  This will test that we're both
         //   correctly respecting all specified parameters and that we're switching to the 
         //   "in" units when zoomed in
@@ -116,22 +123,49 @@
         map.addLayer(layer);
         map.zoomTo(0);
         map.addControl(control);
-        t.eq(control.div.firstChild.innerHTML, "5000 mi", "top scale respects constructor parameter.");
-        t.eq(control.div.lastChild.innerHTML, "10000 km", "bottom scale respects constructor parameter.");
-        map.zoomIn();
-        map.zoomIn();
-        map.zoomIn();
-        map.zoomIn();
-        map.zoomIn();
-        map.zoomIn();
-        map.zoomIn();
-        map.zoomIn();
-        map.zoomIn();
-        map.zoomIn();
-        map.zoomIn();
+        var widthIsOk = true;
+        for (var i=0; i<map.numZoomLevels && widthIsOk; i++) {
+            map.zoomTo(i);
+            var w1 = parseInt(control.eTop.style.width);
+            var w2 = parseInt(control.eBottom.style.width);
+            widthIsOk = w1 <= control.maxWidth && w2 <= control.maxWidth;
+        }
+        t.ok(widthIsOk, "respects maxWidth at all zoom levels in dd");
         
-        t.eq(control.div.firstChild.innerHTML, "10000 ft", "top scale zooms in & respects constructor parameter.");
-        t.eq(control.div.lastChild.innerHTML, "5000 m", "bottom scale zooms in & respects constructor parameter.");
+        widthIsOk = true;
+        control.maxWidth = 200;
+        for (var i=0; i<map.numZoomLevels && widthIsOk; i++) {
+            map.zoomTo(i);
+            var w1 = parseInt(control.eTop.style.width);
+            var w2 = parseInt(control.eBottom.style.width);
+            widthIsOk = w1 <= control.maxWidth && w2 <= control.maxWidth;
+        }
+        t.ok(widthIsOk, "respects modified maxWidth at all zoom levels in dd");
+
+        if (validkey) {
+            var map = new OpenLayers.Map('map');
+            var layer = new OpenLayers.Layer.Google('Goog Layer');
+            var control = new OpenLayers.Control.ScaleLine({topOutUnits : "mi", bottomOutUnits: "km", topInUnits: 'ft', bottomInUnits: 'm'});
+            map.addLayer(layer);
+            map.zoomTo(0);
+            map.addControl(control);
+            var widthIsOk = true;
+            for (var i=0; i<map.numZoomLevels && widthIsOk; i++) {
+                map.zoomTo(i);
+                var w1 = parseInt(control.eTop.style.width);
+                var w2 = parseInt(control.eBottom.style.width);
+                widthIsOk = w1 <= control.maxWidth && w2 <= control.maxWidth;
+            }
+            t.ok(widthIsOk, "respects maxWidth at all zoom levels in m");
+        } else {
+            t.debug_print("Google tests can't be run from " +
+                          window.location.host);          
+        }
+
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.Google('Goog Layer');
+        map.addLayer(layer);
+        
         map.destroy();
     }   
   </script>
