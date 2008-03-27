@@ -17,17 +17,16 @@
     }
 
     function test_Format_SLD_read(t) {
-        t.plan(5);
-        var styles = new OpenLayers.Format.SLD().read(this.test_content,
-                {withNamedLayer: true});
+        t.plan(4);
+        var sld = new OpenLayers.Format.SLD().read(this.test_content);
         
-        var testLayer = styles[1].TestLayer;
+        var testLayer = sld.namedLayers["TestLayer"];
+        var userStyles = testLayer.userStyles;
         
-        t.ok(testLayer.foo != undefined, "SLD correctly reads a UserStyle named \"foo\"");
-        t.eq(testLayer.foo.rules.length, 1, "The number of rules for the UserStyle is correct");
-        t.eq(testLayer.foo.rules[0].name, "bar", "The first rule's name is \"bar\"");
-        t.eq(testLayer.foo.rules[0].symbolizer.Polygon.fillColor, "blue", "The fillColor for the Polygon symbolizer is correct");
-        t.eq(testLayer.foo.name, styles[0][0].name, "The content hash of the Format contains the correct rules.");
+        t.eq(userStyles[0].name, "foo", "SLD correctly reads a UserStyle named 'foo'");
+        t.eq(userStyles[0].rules.length, 1, "The number of rules for the UserStyle is correct");
+        t.eq(userStyles[0].rules[0].name, "bar", "The first rule's name is 'bar'");
+        t.eq(userStyles[0].rules[0].symbolizer.Polygon.fillColor, "blue", "The fillColor for the Polygon symbolizer is correct");
     }
 
     </script> 

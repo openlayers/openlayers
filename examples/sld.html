@@ -6,89 +6,114 @@
             width: 800px;
             height: 475px;
             border: 1px solid black;
+            background: #ccddff;
         }
     </style>
     <script src="../lib/Firebug/firebug.js"></script>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
-        var lon = 5;
-        var lat = 40;
-        var zoom = 5;
-        var map, layer, gmlLayers, styles, waterStyle, hover;
+        
+        var map, sld, gmlLayers;
+        var format = new OpenLayers.Format.SLD();
+        function init() {
 
-        function load(){
-           OpenLayers.loadURL("tasmania/sld-tasmania.xml", "", null, init);
+            map = new OpenLayers.Map('map');
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+
+            OpenLayers.loadURL("tasmania/sld-tasmania.xml", null, null, complete);
+
         }
         
-        function init(req){
-            map = new OpenLayers.Map('map');
-            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-                    "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
-            map.addLayer(layer);           
-                  map.zoomToExtent(new OpenLayers.Bounds(143,-39,150,-45));
-
-            sld = new OpenLayers.Format.SLD().read(req.responseText,
-                    {withNamedLayer: true});
-            
-            styles = sld[1];
-            
-            // for the hover style, we do not want to use the SLD default as
-            // base style
-            styles["WaterBodies"]["Hover Styler"].defaultStyle = OpenLayers.Util.extend({},
-                OpenLayers.Feature.Vector.style["select"]);
-            
-            gmlLayers = [
-                    // use the sld UserStyle named "Default Styler"
-                    new OpenLayers.Layer.GML("StateBoundaries",
-                            "tasmania/TasmaniaStateBoundaries.xml", {
-                            styleMap: new OpenLayers.StyleMap(styles["WaterBodies"])}),
-                    new OpenLayers.Layer.GML("Roads",
-                            "tasmania/TasmaniaRoads.xml", {
-                            styleMap: new OpenLayers.StyleMap(styles["Roads"])}),
-                    new OpenLayers.Layer.GML("WaterBodies",
-                            "tasmania/TasmaniaWaterBodies.xml", {
-                            styleMap: new OpenLayers.StyleMap(styles["WaterBodies"])}),
-                    new OpenLayers.Layer.GML("Cities",
-                            "tasmania/TasmaniaCities.xml", {
-                            styleMap: new OpenLayers.StyleMap(styles["Cities"])})];
- 
-            for (var i=0; i<gmlLayers.length; i++) {
-                map.addLayer(gmlLayers[i]);
+        function getDefaultStyle(sld, layerName) {
+            var styles = sld.namedLayers[layerName].userStyles;
+            var style;
+            for(var i=0; i<styles.length; ++i) {
+                style = styles[i];
+                if(style.isDefault) {
+                    break;
+                }
             }
+            return style;
+        }
+
+        function complete(req) {
+
+            sld = format.read(req.responseXML || req.responseText);
+            var hoverStyle = sld.namedLayers["WaterBodies"].userStyles[1];
+            hoverStyle.defaultStyle = OpenLayers.Util.extend(
+                {}, OpenLayers.Feature.Vector.style["select"]
+            );
+
+            gmlLayers = [
+                // use the sld UserStyle named "Default Styler"
+                new OpenLayers.Layer.GML(
+                    "StateBoundaries",
+                    "tasmania/TasmaniaStateBoundaries.xml",
+                    {
+                        styleMap: new OpenLayers.StyleMap(
+                            getDefaultStyle(sld, "Land")
+                        ),
+                        isBaseLayer: true
+                    }
+                ),
+                new OpenLayers.Layer.GML(
+                    "Roads",
+                    "tasmania/TasmaniaRoads.xml",
+                    {styleMap: new OpenLayers.StyleMap(getDefaultStyle(sld, "Roads"))}
+                ),
+                new OpenLayers.Layer.GML(
+                    "WaterBodies",
+                    "tasmania/TasmaniaWaterBodies.xml",
+                    {
+                        styleMap: new OpenLayers.StyleMap({
+                            "default": getDefaultStyle(sld, "WaterBodies"),
+                            "select": hoverStyle
+                        })
+                    }
+                ),
+                new OpenLayers.Layer.GML(
+                    "Cities",
+                    "tasmania/TasmaniaCities.xml",
+                    {styleMap: new OpenLayers.StyleMap(getDefaultStyle(sld, "Cities"))}
+                )
+            ];
             
-            hover = new OpenLayers.Control.SelectFeature(gmlLayers[2], {
-                    hover: true,
-                    renderIntent: "Hover Styler"
-                });
+            map.addLayers(gmlLayers);
+            map.zoomToExtent(new OpenLayers.Bounds(143,-39,150,-45));
+            
+            var hover = new OpenLayers.Control.SelectFeature(
+                gmlLayers[2], {hover: true}
+            );
             map.addControl(hover);
             hover.activate();
         }
         
         // set a new style when the radio button changes
-        function setStyle(styleName) {
-            gmlLayers[2].styleMap.styles["default"] = styles["WaterBodies"][styleName];
+        function setStyle(index) {
+            gmlLayers[2].styleMap.styles["default"] = sld.namedLayers["WaterBodies"].userStyles[index];
             // change the style of the features of the WaterBodies layer
             gmlLayers[2].redraw();
         }
     </script>
   </head>
-  <body onload="load()">
+  <body onload="init()">
     <div id="map"></div>
     <p>This example uses a <a target="_blank" href="tasmania/sld-tasmania.xml">SLD
-    file</a> to style the vector features. The style to be used is either
-    determined by the NamedLayer and IsDefault properties in the sld file, or
-    can directly be applied by addressing a style from the styles
-    hash with the UserStyle name from the sld file as key. Select a new style for the WaterBodies layer below:<p>
+    file</a> to style the vector features. To construct layers that use styles
+    from SLD, create a StyleMap for the layer that uses one of the userStyles in the
+    namedLayers object of the return from format.read().</p>
+    <p>Select a new style for the WaterBodies layer below:</p>
     <form>
-      <input type="radio" name="style" onclick="setStyle(this.value)" checked="checked" value="default">Default Styler (zoom in to see more features)</input><br/>
-      <input type="radio" name="style" onclick="setStyle(this.value)" value="Styler Test PropertyIsEqualTo">Styler Test PropertyIsEqualTo</input><br/>
-      <input type="radio" name="style" onclick="setStyle(this.value)" value="Styler Test Not FeatureId">Styler Test Not FeatureId</input><br/>
-      <input type="radio" name="style" onclick="setStyle(this.value)" value="Styler Test WATER_TYPE">Styler Test WATER_TYPE</input><br/>
-      <input type="radio" name="style" onclick="setStyle(this.value)" value="Styler Test PropertyIsGreaterThanOrEqualTo">Styler Test PropertyIsGreaterThanOrEqualTo</input><br/>
-      <input type="radio" name="style" onclick="setStyle(this.value)" value="Styler Test PropertyIsLessThanOrEqualTo">Styler Test PropertyIsLessThanOrEqualTo</input><br/>
-      <input type="radio" name="style" onclick="setStyle(this.value)" value="Styler Test PropertyIsGreaterThan">Styler Test PropertyIsGreaterThan</input><br/>
-      <input type="radio" name="style" onclick="setStyle(this.value)" value="Styler Test PropertyIsLessThan">Styler Test PropertyIsLessThan</input><br/>
-      <input type="radio" name="style" onclick="setStyle(this.value)" value="Styler Test PropertyIsLike">Styler Test PropertyIsLike</input><br/>
+      <input type="radio" name="style" onclick="setStyle(this.value)" checked="checked" value="0">Default Styler (zoom in to see more features)</input><br/>
+      <input type="radio" name="style" onclick="setStyle(this.value)" value="3">Styler Test PropertyIsEqualTo</input><br/>
+      <input type="radio" name="style" onclick="setStyle(this.value)" value="4">Styler Test WATER_TYPE</input><br/>
+      <input type="radio" name="style" onclick="setStyle(this.value)" value="5">Styler Test PropertyIsGreaterThanOrEqualTo</input><br/>
+      <input type="radio" name="style" onclick="setStyle(this.value)" value="6">Styler Test PropertyIsLessThanOrEqualTo</input><br/>
+      <input type="radio" name="style" onclick="setStyle(this.value)" value="7">Styler Test PropertyIsGreaterThan</input><br/>
+      <input type="radio" name="style" onclick="setStyle(this.value)" value="8">Styler Test PropertyIsLessThan</input><br/>
+      <input type="radio" name="style" onclick="setStyle(this.value)" value="9">Styler Test PropertyIsLike</input><br/>
+      <input type="radio" name="style" onclick="setStyle(this.value)" value="10">Styler Test PropertyIsBetween</input><br/>
+      <input type="radio" name="style" onclick="setStyle(this.value)" value="11">Styler Test FeatureId</input><br/>
     </form>
   </body>
 </html>

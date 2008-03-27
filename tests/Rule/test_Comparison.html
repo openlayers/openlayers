@@ -37,26 +37,50 @@
         t.eq(rule.value, ".*b.r\\%\\..*", "Regular expression with different wildcard and escape chars generated correctly.");
     }
     
+    function test_regex2value(t) {
+        t.plan(8);
+        
+        function r2v(regex) {
+            return OpenLayers.Rule.Comparison.prototype.regex2value.call(
+                {value: regex}
+            );
+        }
+        
+        t.eq(r2v("foo"), "foo", "doesn't change string without special chars");
+        t.eq(r2v("foo.*foo"), "foo*foo", "wildCard replaced");
+        t.eq(r2v("foo.foo"), "foo.foo", "singleChar replaced");
+        t.eq(r2v("foo\\\\foo"), "foo\\foo", "escape removed");
+        t.eq(r2v("foo!foo"), "foo!!foo", "escapes !");
+        t.eq(r2v("foo\\*foo"), "foo!*foo", "replaces escape on *");
+        t.eq(r2v("foo\\.foo"), "foo!.foo", "replaces escape on .");
+        t.eq(r2v("foo\\\\.foo"), "foo\\.foo", "unescapes only \\ before .");
+        
+    }
+    
     function test_Comparison_evaluate(t) {
-        t.plan(4);
+        t.plan(5);
         
         var rule = new OpenLayers.Rule.Comparison({
                 property: "area",
                 lowerBoundary: 1000,
-                upperBoundary: 5000,
+                upperBoundary: 4999,
                 type: OpenLayers.Rule.Comparison.BETWEEN});
 
         var features = [
                 new OpenLayers.Feature.Vector(null, {
-                        area: 2000}),
+                        area: 999}),
                 new OpenLayers.Feature.Vector(null, {
-                        area: 6000}),
+                        area: 1000}),
                 new OpenLayers.Feature.Vector(null, {
-                        area: 4999})];
+                        area: 4999}),
+                new OpenLayers.Feature.Vector(null, {
+                        area: 5000})];
+        // PropertyIsBetween filter: lower and upper boundary are inclusive
         var ruleResults = {
-                0: true,
-                1: false,
-                2: true};
+                0: false,
+                1: true,
+                2: true,
+                3: false};
         for (var i in ruleResults) {
             var result = rule.evaluate(features[i]);
             t.eq(result, ruleResults[i], "feature "+i+
