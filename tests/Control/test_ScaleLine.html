@@ -43,7 +43,7 @@
         var control = new OpenLayers.Control.ScaleLine();
         t.ok(control instanceof OpenLayers.Control.ScaleLine, "new OpenLayers.Control returns object" );
         var map = new OpenLayers.Map('map');
-	map.units = "mi";
+        map.units = "mi";
         var layer = new OpenLayers.Layer.WMS('Test Layer', "http://octo.metacarta.com/cgi-bin/mapserv", {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'});
         map.addLayer(layer);
         map.zoomTo(0);
@@ -55,8 +55,8 @@
         map.destroy();
     }
 
-    function test_calcMeters (t) {		
-        t.plan(5);		 
+    function test_calcMeters (t) {        
+        t.plan(5);         
         // this example is taken from the projected-map.html OpenLayers example
         var lat = 900863; 
         var lon = 235829;
@@ -78,9 +78,9 @@
               units: "m"                  // Only neccesary for working with scales.
               } );
             
-        map.addLayer(basemap);	    
+        map.addLayer(basemap);        
         map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
-        map.addControl(new OpenLayers.Control.LayerSwitcher());        		
+        map.addControl(new OpenLayers.Control.LayerSwitcher());                
         var control = new OpenLayers.Control.ScaleLine();
         t.ok( control instanceof OpenLayers.Control.ScaleLine, "new OpenLayers.Control returns object" );
         map.addControl(control);
