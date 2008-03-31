@@ -1040,7 +1040,7 @@ http://www.bigwaste.com/photos/az/sundial/]]></description>
 			</Placemark>
 			<Placemark>
 				<name>Sundial, University of Science and Technology, Hong Kong</name>
-				<description><![CDATA[<p><img src="http://perso.orange.fr/cadrans.solaires/cadrans/images/Maes-hongkong.jpg"></p>
+				<description><![CDATA[<p><img src="http://perso.orange.fr/cadrans.solaires/cadrans/images/Maes-hongkong.jpg" width="295" height="370"></p>
 
 <p>Image source:<a href="http://perso.orange.fr/cadrans.solaires/cadrans/originaux-monde.html">http://perso.orange.fr</a></p>]]></description>
 				<LookAt>
@@ -1831,7 +1831,7 @@ California</name>
 			</Placemark>
 			<Placemark>
 				<name>Sundial, Tazacorte Beach ,La Palma island</name>
-				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/display/10cced19-2b34-482d-86c5-ee72fca9ab87.jpg"></p>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/display/10cced19-2b34-482d-86c5-ee72fca9ab87.jpg" width="400" height="300"></p>
 
 <p>Image credit:<a href="http://www.waymarking.com/waymarks/WM173Y">www.groundspeak.com</a></p>]]></description>
 				<LookAt>
