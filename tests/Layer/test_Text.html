@@ -6,16 +6,19 @@
     var isMSIE = (navigator.userAgent.indexOf("MSIE") > -1);
     var layer; 
 
+    // The actual path these files are read from differs: 
+    // some browsers treat relative paths from within an iframe 
+    // as relative to the parent, some treat them as relative to the child
+    // At this time:
+    //  * IE6 + IE7
+    //  * Firefox 2.0.0.13+
+    // read them from relative to the iframe contents, rather than parent, 
+    // so these files are in *two* places: one in the "Layer/" subdirectory,
+    // and one in the root. This majorly sucks, but it's a way to keep it 
+    // working without hardcoding a version number into the tests.
     var datafile  = "./data_Layer_Text_textfile.txt";
     var datafile2 = "./data_Layer_Text_textfile_2.txt";
     var datafile_overflow = "./data_Layer_Text_textfile_overflow.txt";
-
-    // if this test is running in IE, different rules apply
-    if (isMSIE) {
-        datafile = "." + datafile;
-        datafile2 = "." + datafile2;
-        datafile_overflow = "." + datafile_overflow;
-    }
 
     function test_01_Layer_Text_constructor (t) {
         t.plan( 5 );
