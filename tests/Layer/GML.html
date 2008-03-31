@@ -5,20 +5,15 @@
 
     var name = "GML Layer";
     
-    // The actual path these files are read from differs: 
-    // some browsers treat relative paths from within an iframe 
-    // as relative to the parent, some treat them as relative to the child
-    // At this time:
-    //  * IE6 + IE7
-    //  * Firefox 2.0.0.13+
-    // read them from relative to the iframe contents, rather than parent, 
-    // so these files are in *two* places: one in the "Layer/" subdirectory,
-    // and one in the root. This majorly sucks, but it's a way to keep it 
-    // working without hardcoding a version number into the tests.
     var gml = "./owls.xml";
     var gml2 = "./mice.xml";
 
+    // if this test is running online, different rules apply
     var isMSIE = (navigator.userAgent.indexOf("MSIE") > -1);
+    if (isMSIE) {
+        gml = "." + gml;
+        gml2 = "." + gml2;
+    }
     
     function test_01_Layer_GML_constructor(t) {
         t.plan(3);
