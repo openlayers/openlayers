@@ -240,3 +240,7 @@ div.olControlMousePosition {
   background: url("../../img/close.gif") no-repeat;
   cursor: pointer;
 }
+
+.olControlNoSelect {
+ -moz-user-select: none;
+}
