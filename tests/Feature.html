@@ -6,7 +6,7 @@
     var map; 
     var feature, layer; 
     
-    function test_01_Feature_constructor (t) {
+    function test_Feature_constructor (t) {
         t.plan( 7 );
 
         var layer = {};
@@ -29,7 +29,7 @@
         t.ok( feature.popupClass == OpenLayers.Popup.AnchoredBubble, "default popupClass is AnchoredBubble");
     }
     
-    function test_02_Feature_createPopup (t) {
+    function test_Feature_createPopup (t) {
         t.plan(1);
         var layer = {};
         var lonlat = new OpenLayers.LonLat(2,1);
@@ -46,7 +46,7 @@
         var prop = (OpenLayers.Util.getBrowserName() == 'safari') ? 'overflowX' : 'overflow';
         t.eq(popup.contentDiv.style[prop], "auto", 'overflow on popup is correct');
     }    
-    function test_02_Feature_createMarker (t) {
+    function test_Feature_createMarker (t) {
         t.plan(1);
         t.ok(true);
 /*
@@ -96,7 +96,7 @@
 */
     }
     
-    function test_03_Feature_onScreen(t) {
+    function test_Feature_onScreen(t) {
         t.plan( 2 );
 
         var map = new OpenLayers.Map("map");
@@ -122,7 +122,7 @@
         t.ok( !feature2.onScreen(), "feature knows it's offscreen" );
     }
 
-    function test_04_Feature_createPopup(t) {
+    function test_Feature_createPopup(t) {
         t.plan(11);
 
     //no lonlat        
@@ -176,7 +176,7 @@
         t.ok( f.popup.feature == f, "popup's 'feature' property correctly set");
     }
 
-    function test_04_Feature_destroyPopup(t) {
+    function test_Feature_destroyPopup(t) {
         t.plan(2);
 
         var f = {

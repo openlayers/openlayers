@@ -15,7 +15,7 @@
         atom_xml = "." + atom_xml;
     }
 
-    function test_01_Layer_GeoRSS_constructor (t) {
+    function test_Layer_GeoRSS_constructor (t) {
         t.plan( 5 );
         layer = new OpenLayers.Layer.GeoRSS('Test Layer', georss_txt );
         t.ok( layer instanceof OpenLayers.Layer.GeoRSS, "new OpenLayers.Layer.GeoRSS returns object" );
@@ -38,7 +38,7 @@
         } );
     }
     
-    function test_01_Layer_GeoRSS_AtomParsing (t) {
+    function test_Layer_GeoRSS_AtomParsing (t) {
         t.plan( 6 );
         layer = new OpenLayers.Layer.GeoRSS('Test Layer', atom_xml );
         t.ok( layer instanceof OpenLayers.Layer.GeoRSS, "new OpenLayers.Layer.GeoRSS returns object" );
@@ -54,7 +54,7 @@
         } );
     }
 
-    function test_02_Layer_GeoRSS_draw (t) { 
+    function test_Layer_GeoRSS_draw (t) { 
 //        t.plan(5);
         t.plan( 2 );
         layer = new OpenLayers.Layer.GeoRSS('Test Layer', georss_txt);
@@ -71,7 +71,7 @@
 
         });;
     }
-    function test_03_Layer_GeoRSS_events (t) {
+    function test_Layer_GeoRSS_events (t) {
         t.plan( 4 );    
         layer = new OpenLayers.Layer.GeoRSS('Test Layer', georss_txt);
         var map = new OpenLayers.Map('map');
@@ -142,7 +142,7 @@
         });
     }    
 
-    function test_04_Layer_GeoRSS_icon(t) {
+    function test_Layer_GeoRSS_icon(t) {
         t.plan( 3 );
         layer = new OpenLayers.Layer.GeoRSS('Test Layer', georss_txt);
         var the_icon = new OpenLayers.Icon('http://boston.openguides.org/markers/AQUA.png');
@@ -183,7 +183,7 @@
         } 
     }
 
-    function test_99_Layer_GeoRSS_destroy (t) {
+    function test_Layer_GeoRSS_destroy (t) {
         t.plan( 1 );    
         layer = new OpenLayers.Layer.GeoRSS('Test Layer', georss_txt);
         var map = new OpenLayers.Map('map');

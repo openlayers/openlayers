@@ -16,7 +16,7 @@
 
 
 
-    function test_01_Layer_KaMap_constructor (t) {
+    function test_Layer_KaMap_constructor (t) {
         t.plan( 1 );
                        
         layer = new OpenLayers.Layer.KaMap(name, url, params, units);
@@ -59,7 +59,7 @@
         map.destroy();
     }
 
-    function test_02_Layer_KaMap_inittiles (t) {
+    function test_Layer_KaMap_inittiles (t) {
         t.plan( 2 );
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.KaMap(name, url, params, units);
@@ -71,7 +71,7 @@
         
     }
 
-    function test_03_Layer_KaMap_clearTiles (t) {
+    function test_Layer_KaMap_clearTiles (t) {
         t.plan( 1 );
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.KaMap(name, url, params, units);
@@ -89,7 +89,7 @@
     }
 
 
-    function test_04_Layer_KaMap_getKaMapBounds(t) {
+    function test_Layer_KaMap_getKaMapBounds(t) {
         t.plan( 1 );
 
         layer = new OpenLayers.Layer.KaMap(name, url, params, units);
@@ -108,7 +108,7 @@
         layer.grid = null;
     }
 
-    function test_05_Layer_KaMap_getResolution(t) {
+    function test_Layer_KaMap_getResolution(t) {
         t.plan( 1 );
 
         var map = new OpenLayers.Map('map');
@@ -121,7 +121,7 @@
         map.destroy();
     }
 
-    function test_06_Layer_KaMap_getZoomForExtent(t) {
+    function test_Layer_KaMap_getZoomForExtent(t) {
         t.plan( 2 );
         var bounds, zoom;
 
@@ -141,7 +141,7 @@
         map.destroy();
     }   
     
-    function test_06_Layer_kaMap_mergeNewParams (t) {
+    function test_Layer_kaMap_mergeNewParams (t) {
         t.plan( 4 );
 
         var map = new OpenLayers.Map("map");
@@ -187,7 +187,7 @@
      * 
      */
 
-    function test_10_Layer_KaMap_clone(t) {
+    function test_Layer_KaMap_clone(t) {
         t.plan(5);
         
         var options = {tileSize: new OpenLayers.Size(500,50)};
@@ -216,7 +216,7 @@
         map.destroy();
     }
 
-    function test_11_Layer_KaMap_setMap(t) {
+    function test_Layer_KaMap_setMap(t) {
 
         t.plan(2);
         
@@ -231,7 +231,7 @@
         t.ok( (layer.tileSize.h == 50) && (layer.tileSize.w == 500), "tileSize has been set correctly");
         map.destroy();
     }
-    function test_12_Layer_KaMap_getTileBounds(t) {
+    function test_Layer_KaMap_getTileBounds(t) {
         t.plan(2);
         var map = new OpenLayers.Map("map");
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
@@ -251,7 +251,7 @@
         map.destroy();
     }
 
-    function test_99_Layer_KaMap_destroy (t) {
+    function test_Layer_KaMap_destroy (t) {
 
         t.plan( 3 );
 

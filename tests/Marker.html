@@ -5,7 +5,7 @@
 
     var marker;
 
-    function test_01_Marker_constructor (t) {
+    function test_Marker_constructor (t) {
         t.plan( 4 );
         var ll = new OpenLayers.LonLat(2,1);
         marker = new OpenLayers.Marker(ll,new OpenLayers.Icon());
@@ -15,7 +15,7 @@
         t.ok( marker.lonlat.equals(ll), "marker.lonlat returns correct" );
     }
 
-    function test_02_Marker_onScreen(t) {
+    function test_Marker_onScreen(t) {
         t.plan( 2 );
 
         var map = new OpenLayers.Map("map");
@@ -46,7 +46,7 @@
         map.destroy();
     }
 
-    function test_03_Marker_setOpacity(t) {
+    function test_Marker_setOpacity(t) {
         t.plan( 2 );
         
         var map = new OpenLayers.Map("map");
@@ -74,7 +74,7 @@
         map.destroy();
     }
     
-    function test_03_Marker_setUrl(t) {
+    function test_Marker_setUrl(t) {
         t.plan( 2 );
         
         var map = new OpenLayers.Map("map");
@@ -102,7 +102,7 @@
         map.destroy();
     }
 
-    function test_04_Marker_moveTo(t) {
+    function test_Marker_moveTo(t) {
         t.plan( 6 );
         
         var map = new OpenLayers.Map("map");

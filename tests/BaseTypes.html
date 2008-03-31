@@ -3,7 +3,7 @@
   <script src="../lib/OpenLayers.js"></script>
   <script type="text/javascript">
 
-    function test_01_String_startsWith(t) {
+    function test_String_startsWith(t) {
         t.plan(3);
         
         var str = "chickenHead";
@@ -19,7 +19,7 @@
              "'chickenHead' doesnt start with 'beet'");
     }
     
-    function test_02_String_contains(t) {
+    function test_String_contains(t) {
         t.plan(4);
         
         var str = "chickenHead";
@@ -34,7 +34,7 @@
              "'chickenHead' doesnt start with 'beet'");
     }
     
-    function test_03_String_trim(t) {
+    function test_String_trim(t) {
         t.plan(5);
         
         var str = "chickenHead";
@@ -57,7 +57,7 @@
         t.eq(OpenLayers.String.trim(str), "", "whitespace string is trimmed correctly");
     }
         
-    function test_05_String_camelize(t) {
+    function test_String_camelize(t) {
         t.plan(7);
         
         var str = "chickenhead";
@@ -143,7 +143,7 @@
     }
    
    
-    function test_06_Number_limitSigDigs(t) {
+    function test_Number_limitSigDigs(t) {
         t.plan(9);
       
         var num = 123456789; 
@@ -181,7 +181,7 @@
         t.eq(format(num, 3), "12.345,679", "changing thousands/decimal separator globally works");
     }
 
-    function test_07_Function_bind(t) {
+    function test_Function_bind(t) {
         t.plan(12);
 
         g_obj = {};
@@ -206,7 +206,7 @@
         newFoo(g_Arg3, g_Arg4);
     }
 
-    function test_08_Function_bindAsEventListener(t) {
+    function test_Function_bindAsEventListener(t) {
         t.plan(4);
 
         g_obj = {};

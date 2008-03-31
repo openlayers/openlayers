@@ -11,14 +11,14 @@
     var polygon = new OpenLayers.Geometry.Polygon([linearRing]);
     var polygon2 = new OpenLayers.Geometry.Polygon([linearRing2]);
         
-    function test_01_MultiPolygon_constructor (t) {
+    function test_MultiPolygon_constructor (t) {
         t.plan( 2 );
         multipolygon = new OpenLayers.Geometry.MultiPolygon();
         t.ok( multipolygon instanceof OpenLayers.Geometry.MultiPolygon, "new OpenLayers.Geometry.MultiPolygon returns multipolygon object" );
         t.eq( multipolygon.CLASS_NAME, "OpenLayers.Geometry.MultiPolygon", "multipolygon.CLASS_NAME is set correctly");
     }
 
-    function test_01a_MultiPolygon_constructor (t) {
+    function test_MultiPolygon_constructor (t) {
         t.plan( 3 );
         multipolygon = new OpenLayers.Geometry.MultiPolygon([polygon, polygon2]);
         t.ok( multipolygon instanceof OpenLayers.Geometry.MultiPolygon, "new OpenLayers.Geometry.MultiPolygon returns multipolygon object" );

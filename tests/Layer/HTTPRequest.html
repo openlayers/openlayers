@@ -11,7 +11,7 @@
                    format: 'image/png'};
     var options = { chicken: 151, foo: "bar" };
 
-    function test_01_Layer_HTTPRequest_constructor (t) {
+    function test_Layer_HTTPRequest_constructor (t) {
         t.plan( 5 );
 
         layer = new OpenLayers.Layer.HTTPRequest(name, url, params, options);
@@ -31,7 +31,7 @@
 
     }
 
-    function test_02_Layer_HTTPRequest_clone (t) {
+    function test_Layer_HTTPRequest_clone (t) {
         t.plan( 6 );
         
         var toClone = new OpenLayers.Layer.HTTPRequest(name, url, params, options);
@@ -55,7 +55,7 @@
 
     }
 
-    function test_03_Layer_HTTPRequest_setUrl (t) {
+    function test_Layer_HTTPRequest_setUrl (t) {
         t.plan( 1 );
 
         layer = new OpenLayers.Layer.HTTPRequest(name, url, params, options);
@@ -64,7 +64,7 @@
         t.eq( layer.url, "foo", "setUrl() works");
     }
 
-    function test_05_Layer_HTTPRequest_mergeNewParams (t) {
+    function test_Layer_HTTPRequest_mergeNewParams (t) {
         t.plan( 4 );
 
         layer = new OpenLayers.Layer.HTTPRequest(name, url, params, options);
@@ -89,7 +89,7 @@
 
     }
 
-    function test_06_Layer_HTTPRequest_getFullRequestString (t) {
+    function test_Layer_HTTPRequest_getFullRequestString (t) {
 
         tParams = { layers: 'basic', 
                    format: 'image/png'};
@@ -169,7 +169,7 @@
 
     }
 
-    function test_04_Layer_HTTPRequest_selectUrl (t) { 
+    function test_Layer_HTTPRequest_selectUrl (t) { 
         t.plan( 4 ); 
 
         layer = new OpenLayers.Layer.HTTPRequest(name, url, params, options); 
@@ -181,7 +181,7 @@
         t.eq( layer.selectUrl("bbox=0,0,180,90",   urls), "wms4", "selectUrl(90,180) returns 2" ); 
     }
 
-    function test_99_Layer_HTTPRequest_destroy (t) {
+    function test_Layer_HTTPRequest_destroy (t) {
         t.plan( 6 );    
 
         var map = new OpenLayers.Map('map');

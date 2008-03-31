@@ -3,7 +3,7 @@
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript">
     var map; 
-    function test_01_Control_PanZoomBar_constructor (t) {
+    function test_Control_PanZoomBar_constructor (t) {
         t.plan( 4 );
     
         control = new OpenLayers.Control.PanZoomBar({position: new OpenLayers.Pixel(100,100)});
@@ -12,7 +12,7 @@
         t.eq( control.position.x, 100, "PanZoom X Set correctly."); 
         t.eq( control.position.y, 100, "PanZoom y Set correctly."); 
     }
-    function test_02_Control_PanZoomBar_addControl (t) {
+    function test_Control_PanZoomBar_addControl (t) {
         t.plan( 8 );
         map = new OpenLayers.Map('map', {controls:[]});
         var layer = new OpenLayers.Layer.WMS("Test Layer", 

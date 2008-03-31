@@ -4,7 +4,7 @@
   <script type="text/javascript">
     var Size; 
     
-    function test_01_Size_constructor (t) {
+    function test_Size_constructor (t) {
         t.plan( 4 );
         size = new OpenLayers.Size(5,6);
         t.ok( size instanceof OpenLayers.Size, "new OpenLayers.Size returns size object" );
@@ -13,7 +13,7 @@
         t.eq( size.h, 6, "size.h is set correctly");
     }
 
-    function test_01a_Size_constructorFromString (t) {
+    function test_Size_constructorFromString (t) {
         t.plan( 4 );
         size = new OpenLayers.Size("5","6");
         t.ok( size instanceof OpenLayers.Size, "new OpenLayers.Size returns size object" );
@@ -22,13 +22,13 @@
         t.eq( size.h, 6, "size.h is set correctly");
     }
     
-    function test_02_Size_toString(t) {
+    function test_Size_toString(t) {
         t.plan( 1 );
         size = new OpenLayers.Size(5,6);
         t.eq( size.toString(), "w=5,h=6", "size.toString() returns correctly");
     }
 
-    function test_03_Size_clone(t) {
+    function test_Size_clone(t) {
         t.plan( 3 );
 
         oldSize = new OpenLayers.Size(5,6);
@@ -40,7 +40,7 @@
         t.eq( size.w, 5, "changing oldSize.w doesn't change size.w");
     }
 
-     function test_04_Size_equals(t) {
+     function test_Size_equals(t) {
         t.plan( 5 );
         size = new OpenLayers.Size(5,6);
 

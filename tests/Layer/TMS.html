@@ -10,7 +10,7 @@
     var options = {'layername':'basic', 'type':'png'}; 
 
 
-    function test_01_Layer_TMS_constructor (t) {
+    function test_Layer_TMS_constructor (t) {
         t.plan( 1 );
                        
         layer = new OpenLayers.Layer.TMS(name, url, options);
@@ -19,7 +19,7 @@
 
 
 
-    function test_03_Layer_TMS_clearTiles (t) {
+    function test_Layer_TMS_clearTiles (t) {
         t.plan( 1 );
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.TMS(name, url, options);
@@ -37,7 +37,7 @@
     }
 
 
-    function test_04_Layer_TMS_getTMSBounds(t) {
+    function test_Layer_TMS_getTMSBounds(t) {
         t.plan( 1 );
 
         layer = new OpenLayers.Layer.TMS(name, url, options);
@@ -56,7 +56,7 @@
         layer.grid = null;
     }
 
-    function test_05_Layer_TMS_getResolution(t) {
+    function test_Layer_TMS_getResolution(t) {
         t.plan( 1 );
 
         var map = new OpenLayers.Map('map');
@@ -69,7 +69,7 @@
         map.destroy();
     }
 
-    function test_06_Layer_TMS_getZoomForExtent(t) {
+    function test_Layer_TMS_getZoomForExtent(t) {
         t.plan( 2 );
         var bounds, zoom;
 
@@ -107,7 +107,7 @@
 
      * 
      */
-    function test_10_Layer_TMS_getURL(t) {
+    function test_Layer_TMS_getURL(t) {
 
         t.plan(3);
         
@@ -142,7 +142,7 @@
     }        
             
 
-    function test_11_Layer_TMS_setMap(t) {
+    function test_Layer_TMS_setMap(t) {
 
         t.plan(3);
         
@@ -157,7 +157,7 @@
         map.destroy();
     }
 
-    function test_99_Layer_TMS_destroy (t) {
+    function test_Layer_TMS_destroy (t) {
 
         t.plan( 3 );
 

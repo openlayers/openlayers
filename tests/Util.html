@@ -5,13 +5,13 @@
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var map; 
     
-    function test_01_Util_getImagesLocation (t) {
+    function test_Util_getImagesLocation (t) {
         t.plan( 1 );
         t.ok( OpenLayers.Util.getImagesLocation(), "../img/",
                     "getImagesLocation()" );
     }
 
-    function test_03_Util_Array(t) {
+    function test_Util_Array(t) {
         t.plan( 2 );
 
         var array = new Array(1,2,3,4,4,5);
@@ -22,14 +22,14 @@
         t.eq( array.toString(), "1,2,5", "Util.removeItem works on more than one element ");    
     }
     
-    function test_03_Util_pagePosition(t) {
+    function test_Util_pagePosition(t) {
         t.plan( 1 );
         var pp = OpenLayers.Util.pagePosition(window);
         t.eq( pp.toString(), "0,0", "Page position doesn't bail if passed 'window'")
         
     }
 
-    function test_04_Util_createDiv(t) {
+    function test_Util_createDiv(t) {
         t.plan( 24 );
 
         var id = "boo";
@@ -107,7 +107,7 @@
 
     }
 
-    function test_05_Util_createImage(t) {
+    function test_Util_createImage(t) {
         t.plan( 22 );
 
         var img = "http://www.openlayers.org/images/OpenLayers.trac.png";
@@ -200,7 +200,7 @@
         t.eq(to.n, null, "correctly preserves null");
     }
 
-    function test_07_Util_getParameterString(t) {
+    function test_Util_getParameterString(t) {
         t.plan( 4 );
 
         var params = { 
@@ -221,7 +221,7 @@
         t.eq( OpenLayers.Util.getParameterString(params), "foo=bar,baz%2C", "getParameterString returns with list of CSVs when given a list. ");    
     }
 
-    function test_08_Util_createAlphaImageDiv(t) {
+    function test_Util_createAlphaImageDiv(t) {
         t.plan( 19 );
 
         var img = "http://www.openlayers.org/images/OpenLayers.trac.png";
@@ -359,7 +359,7 @@
              "element.style.filter is removed when opacity = " + opacity);
     }
 
-    function test_09_Util_modifyDOMElement(t) {
+    function test_Util_modifyDOMElement(t) {
         t.plan( 10 );
 
         var id = "boo";
@@ -399,7 +399,7 @@
         t.eq( element.style.filter, filterString, "element.style.filter set correctly");
     }
 
-    function test_09_Util_modifyAlphaImageDiv(t) {
+    function test_Util_modifyAlphaImageDiv(t) {
         t.plan( 19 );
 
         var imageDiv = OpenLayers.Util.createAlphaImageDiv();
@@ -488,7 +488,7 @@
    
     }
        
-    function test_10_Util_upperCaseObject(t) {
+    function test_Util_upperCaseObject(t) {
         t.plan(8);
         
         var aKey = "chicken";
@@ -518,7 +518,7 @@
         t.eq(uObj[bKey.toUpperCase()], bValue, "new uppercase value present");
     }
     
-    function test_11_Util_createUniqueID(t) {
+    function test_Util_createUniqueID(t) {
         t.plan(2);
         
         var id = OpenLayers.Util.createUniqueID();
@@ -530,7 +530,7 @@
              "OpenLayers.Util.createUniqueID starts id correctly");
     }
         
-    function test_13_Util_normalizeScale(t) {
+    function test_Util_normalizeScale(t) {
         t.plan(2); 
         
         //normal scale
@@ -542,7 +542,7 @@
         t.eq( OpenLayers.Util.normalizeScale(scale), 1/5, "normalizing a wrong scale works!");
     }
     
-    function test_13_Util_getScaleResolutionTranslation(t) {
+    function test_Util_getScaleResolutionTranslation(t) {
         t.plan(4); 
         
         var scale = 1/150000000; 
@@ -562,7 +562,7 @@
         t.eq(OpenLayers.Util.getScaleFromResolution(resolution), scale, "scale->resolution->scale works");
     }
     
-    function test_14_Util_getImgLocation(t) {
+    function test_Util_getImgLocation(t) {
         t.plan(3);
 
         OpenLayers.ImgPath = "foo/";
@@ -574,7 +574,7 @@
         t.eq(OpenLayers.Util.getImagesLocation().substr(OpenLayers.Util.getImagesLocation().length-4,4), "img/", "ImgPath works as expected when set to ''."); 
     }
 
-    function test_15_Util_isEquivalentUrl(t) {
+    function test_Util_isEquivalentUrl(t) {
         t.plan(8);
         
         var url1, url2, options;

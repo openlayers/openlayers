@@ -5,7 +5,7 @@
   <script type="text/javascript">
     var layer; 
 
-    function test_01_Layer_Yahoo_constructor (t) {
+    function test_Layer_Yahoo_constructor (t) {
         t.plan( 4 );
 
         var tempEventPane = OpenLayers.Layer.EventPane.prototype.initialize;
@@ -29,7 +29,7 @@
         OpenLayers.Layer.FixedZoomLevels.prototype.initialize = tempFixedZoomLevels;
     }
 
-    function test_02_Layer_Yahoo_loadMapObject(t) {
+    function test_Layer_Yahoo_loadMapObject(t) {
         t.plan(5);
         
         var temp = YMap;
@@ -67,7 +67,7 @@
         YMap = temp;
     }    
 
-    function test_03_Layer_Yahoo_onMapResize(t) {
+    function test_Layer_Yahoo_onMapResize(t) {
         t.plan(2);
         
         g_MapSize = {};
@@ -92,7 +92,7 @@
         l.onMapResize();
     }
     
-    function test_04_Layer_Yahoo_getMapObjectSizeFromOLSize(t) {
+    function test_Layer_Yahoo_getMapObjectSizeFromOLSize(t) {
         t.plan(2);
         
         var temp = YSize;

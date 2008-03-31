@@ -18,7 +18,7 @@
       mapdefinition: 'Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition'
     };
 
-    function test_01_Layer_MapGuide_untiled_constructor (t) {
+    function test_Layer_MapGuide_untiled_constructor (t) {
         t.plan( 8 );
 
         var trans_format = "image/png";
@@ -47,7 +47,7 @@
         t.eq(layer6.isBaseLayer, true, "transparency == false, wms is baselayer");
     }
     
-    function test_02_Layer_MapGuide_tiled_constructor (t) {
+    function test_Layer_MapGuide_tiled_constructor (t) {
         t.plan( 5 );
 
         var trans_format = "image/png";
@@ -63,7 +63,7 @@
         t.eq( layer.params.version, "1.2.0", "version params set correctly set");
     }
     
-    function test_03_Layer_MapGuide_inittiles (t) {
+    function test_Layer_MapGuide_inittiles (t) {
         t.plan( 1 );
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.MapGuide(name, url, paramsTiled);
@@ -75,7 +75,7 @@
     }
 
 
-    function test_04_Layer_MapGuide_clone (t) {
+    function test_Layer_MapGuide_clone (t) {
         t.plan(4);
         
         var options = {tileSize: new OpenLayers.Size(500,50)};
@@ -101,7 +101,7 @@
         map.destroy();
     }
 
-    function test_05_Layer_MapGuide_isBaseLayer(t) {
+    function test_Layer_MapGuide_isBaseLayer(t) {
         t.plan(3);
         
         var options = {singleTile:true};
@@ -119,7 +119,7 @@
         t.ok( !layer.isBaseLayer, "baselayer is false when option is set to false" );
     }
 
-    function test_06_Layer_MapGuide_mergeNewParams (t) {
+    function test_Layer_MapGuide_mergeNewParams (t) {
         t.plan( 4 );
 
         var options = {singleTile:true};
@@ -147,7 +147,7 @@
         map.destroy();
     }
 
-    function test_99_Layer_MapGuide_destroy (t) {
+    function test_Layer_MapGuide_destroy (t) {
 
         t.plan( 1 );
 

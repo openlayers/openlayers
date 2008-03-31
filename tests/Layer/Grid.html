@@ -22,7 +22,7 @@
      */
 
 
-    function test_01_Layer_Grid_constructor (t) {
+    function test_Layer_Grid_constructor (t) {
         t.plan( 5 );
                        
         layer = new OpenLayers.Layer.Grid(name, url, params, null);
@@ -35,7 +35,7 @@
     }
 
 
-    function test_02_Layer_Grid_inittiles (t) {
+    function test_Layer_Grid_inittiles (t) {
         t.plan( 2 );
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS(name, url, params);
@@ -46,7 +46,7 @@
         
     }
 
-    function test_03_Layer_Grid_clearTiles (t) {
+    function test_Layer_Grid_clearTiles (t) {
         t.plan(3);
 
         var map = new OpenLayers.Map('map');
@@ -90,7 +90,7 @@
     }
 
 
-    function test_04_Layer_Grid_getTilesBounds(t) {
+    function test_Layer_Grid_getTilesBounds(t) {
         t.plan( 4 );
 
         layer = new OpenLayers.Layer.WMS(name, url, params);
@@ -127,7 +127,7 @@
         
     }
 
-    function test_05_Layer_Grid_getResolution(t) {
+    function test_Layer_Grid_getResolution(t) {
         t.plan( 1 );
 
         var map = new OpenLayers.Map('map');
@@ -139,7 +139,7 @@
         t.eq( layer.getResolution(), 0.0439453125, "getResolution() returns correct value");
     }
 
-    function test_06_Layer_Grid_getZoomForExtent(t) {
+    function test_Layer_Grid_getZoomForExtent(t) {
         t.plan( 2 );
         var bounds, zoom;
 
@@ -158,7 +158,7 @@
         t.eq( zoom, 2, "getZoomForExtent() returns correct value");
     }   
     
-    function test_07_Layer_Grid_moveTo(t) {
+    function test_Layer_Grid_moveTo(t) {
 
     t.plan(13);
 
@@ -316,7 +316,7 @@
      * 
      */
 
-    function test_10_Layer_Grid_clone(t) {
+    function test_Layer_Grid_clone(t) {
         t.plan(5);
         
         var options = {tileSize: new OpenLayers.Size(500,50)};
@@ -343,7 +343,7 @@
         layer.grid = null;
     }
 
-    function test_11_Layer_Grid_setTileSize(t) {
+    function test_Layer_Grid_setTileSize(t) {
         t.plan(1);
 
         OpenLayers.Layer.HTTPRequest.prototype._setTileSize = 
@@ -372,7 +372,7 @@
             OpenLayers.Layer.HTTPRequest.prototype._setTileSize;
     }
     
-    function test_12_Layer_Grid_initSingleTile(t) {
+    function test_Layer_Grid_initSingleTile(t) {
       t.plan( 11 );
       
         layer = new OpenLayers.Layer.Grid(name, url, params, {
@@ -427,7 +427,7 @@
       
     }  
      
-    function test_14_Layer_Grid_addTileMonitoringHooks(t) {
+    function test_Layer_Grid_addTileMonitoringHooks(t) {
         t.plan(14);
         
         layer = new OpenLayers.Layer.Grid();
@@ -488,7 +488,7 @@
         t.eq(layer.numLoadingTiles, 0, "numLoadingTiles decremented");
     }
     
-    function test_15_Layer_Grid_removeTileMonitoringHooks(t) {
+    function test_Layer_Grid_removeTileMonitoringHooks(t) {
         t.plan(2);
         
         layer = new OpenLayers.Layer.Grid();
@@ -516,7 +516,7 @@
         t.ok( entry && entry[0] == layer && entry[1] == tile.onLoadEnd, "loadend correctly unregistered");
     }
     
-    function test_16_Layer_Grid_tileSizeIsInteger(t) {
+    function test_Layer_Grid_tileSizeIsInteger(t) {
             t.plan(1);
             
         var map = new OpenLayers.Map('map');
@@ -530,7 +530,7 @@
         height = layer.tileSize.h;
         t.ok(width == parseInt(width) && height == parseInt(height), "calculated tileSize width/height are integer values");
     }
-    function test_12_Layer_Grid_getTileBounds(t) {
+    function test_Layer_Grid_getTileBounds(t) {
         t.plan(2);
         var map = new OpenLayers.Map("map2");
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
@@ -584,7 +584,7 @@
         t.eq( layer2.grid.length, 6, "Grid rows with buffer:2" );
     }
 
-    function test_99_Layer_Grid_destroy (t) {
+    function test_Layer_Grid_destroy (t) {
 
         t.plan( 5 );
 

@@ -8,7 +8,7 @@
     var linearRing = new OpenLayers.Geometry.LinearRing(components);
     var linearRing2 = new OpenLayers.Geometry.LinearRing(components2);
     
-    function test_01_Polygon_constructor (t) {
+    function test_Polygon_constructor (t) {
         t.plan( 3 );
         polygon = new OpenLayers.Geometry.Polygon();
         t.ok( polygon instanceof OpenLayers.Geometry.Polygon, "new OpenLayers.Geometry.Polygon returns polygon object" );
@@ -16,7 +16,7 @@
         t.eq( polygon.components.length, 0, "polygon.components is set correctly");
     }
 
-    function test_01a_Polygon_constructor (t) {
+    function test_Polygon_constructor (t) {
         t.plan( 3 );
         polygon = new OpenLayers.Geometry.Polygon([linearRing]);
         t.ok( polygon instanceof OpenLayers.Geometry.Polygon, "new OpenLayers.Geometry.Polygon returns polygon object" );
@@ -24,7 +24,7 @@
         t.eq( polygon.components.length, 1, "polygon.components.length is set correctly");
     }
     
-    function test_01b_Polygon_constructor (t) {
+    function test_Polygon_constructor (t) {
         t.plan( 3 );
         polygon = new OpenLayers.Geometry.Polygon([linearRing, linearRing2]);
         t.ok( polygon instanceof OpenLayers.Geometry.Polygon, "new OpenLayers.Geometry.Polygon returns polygon object" );
@@ -32,7 +32,7 @@
         t.eq( polygon.components.length, 2, "polygon.components.length is set correctly");
     }
     
-    function test_02_Polygon_getArea(t) {
+    function test_Polygon_getArea(t) {
         t.plan( 5 );
 
       //no components
@@ -85,7 +85,7 @@
         
     }
     
-    function test_03_Polygon_move(t) {
+    function test_Polygon_move(t) {
         t.plan(4);
         
         polygon = new OpenLayers.Geometry.Polygon([linearRing, linearRing2]);

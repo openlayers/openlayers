@@ -14,7 +14,7 @@
                    layers: 'basic', 
                    format: 'image/jpeg'};
 
-    function test_01_Layer_WMS_constructor (t) {
+    function test_Layer_WMS_constructor (t) {
         t.plan( 13 );
 
         var trans_format = "image/png";
@@ -54,7 +54,7 @@
         t.eq(layer6.isBaseLayer, true, "transparency == false, wms is baselayer");
     }
     
-    function test_02_Layer_WMS_addtile (t) {
+    function test_Layer_WMS_addtile (t) {
         t.plan( 6 );
     
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
@@ -132,7 +132,7 @@
         map.destroy();
     }
     
-    function test_03_Layer_WMS_inittiles (t) {
+    function test_Layer_WMS_inittiles (t) {
         t.plan( 2 );
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS(name, url, params);
@@ -144,7 +144,7 @@
     }
 
 
-    function test_04_Layer_WMS_clone (t) {
+    function test_Layer_WMS_clone (t) {
         t.plan(4);
         
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
@@ -172,7 +172,7 @@
         map.destroy();
     }
 
-    function test_05_Layer_WMS_isBaseLayer(t) {
+    function test_Layer_WMS_isBaseLayer(t) {
         t.plan(3);
         
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
@@ -188,7 +188,7 @@
         t.ok( !layer.isBaseLayer, "baselayer is false when option is set to false" );
     }
 
-    function test_06_Layer_WMS_mergeNewParams (t) {
+    function test_Layer_WMS_mergeNewParams (t) {
         t.plan( 4 );
 
         var map = new OpenLayers.Map("map");
@@ -216,7 +216,7 @@
         map.destroy();
     }
 
-    function test_07_Layer_WMS_getFullRequestString (t) {
+    function test_Layer_WMS_getFullRequestString (t) {
 
         
         t.plan( 2 );
@@ -249,7 +249,7 @@
  
     }
 
-    function test_08_Layer_WMS_setOpacity (t) {
+    function test_Layer_WMS_setOpacity (t) {
         t.plan( 5 );
 
         var map = new OpenLayers.Map('map');
@@ -274,7 +274,7 @@
         map.destroy();
     }    
     
-    function test_20_Layer_WMS_Reproject (t) {
+    function test_Layer_WMS_Reproject (t) {
         var validkey = (window.location.protocol == "file:") ||
                        (window.location.host == "localhost") ||
                        (window.location.host == "openlayers.org");
@@ -314,7 +314,7 @@
         map.destroy();
     }
     
-    function test_21_Layer_WMS_noGutters (t) { 
+    function test_Layer_WMS_noGutters (t) { 
         t.plan(2);
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS("no gutter layer", url, params, {gutter: 0});
@@ -334,7 +334,7 @@
         map.destroy();
     }
 
-    function test_22_Layer_WMS_gutters (t) { 
+    function test_Layer_WMS_gutters (t) { 
         t.plan(2);
         var gutter = 15;
         var map = new OpenLayers.Map('map');
@@ -367,7 +367,7 @@
         t.ok(clone.singleTile, "regression test: clone works. this is for #1013");
     }
     
-    function test_99_Layer_WMS_destroy (t) {
+    function test_Layer_WMS_destroy (t) {
 
         t.plan( 1 );
 

@@ -9,7 +9,7 @@
         t.ok( control instanceof OpenLayers.Control.Panel, "new OpenLayers.Control returns object" );
         t.eq( control.displayClass,  "olControlPanel", "displayClass is correct" );
     }
-    function test_01_Control_Panel_constructor (t) {
+    function test_Control_Panel_constructor (t) {
         t.plan(5);
         var map = new OpenLayers.Map('map');
         var panel = new OpenLayers.Control.Panel();
@@ -46,7 +46,7 @@
         t.ok(!toolControl.active && anotherToolControl.active && toggleControl.active,
               "activated the other tool control, the first one is inactive and the toggle control still active.");
     }
-    function test_02_Control_Panel_titles (t) { 
+    function test_Control_Panel_titles (t) { 
         t.plan(2); 
         var panel = new OpenLayers.Control.Panel(); 
         var toolControl = new OpenLayers.Control.ZoomBox({ 

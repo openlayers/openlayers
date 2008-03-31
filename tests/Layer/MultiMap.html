@@ -5,7 +5,7 @@
   <script type="text/javascript">
     var layer; 
 
-    function test_01_Layer_MultiMap_constructor (t) {
+    function test_Layer_MultiMap_constructor (t) {
         t.plan( 4 );
         
         var map = new OpenLayers.Map('map');
@@ -21,7 +21,7 @@
         t.ok ( layer.mapObject != null, "MultiMap Object correctly loaded");
     }
 
-    function test_02_Layer_MultiMap_isBaseLayer (t) {
+    function test_Layer_MultiMap_isBaseLayer (t) {
         t.plan(1);
         
         var layer = new OpenLayers.Layer.MultiMap('Goog Layer');
@@ -29,7 +29,7 @@
         t.ok(layer.isBaseLayer, "a default load of google layer responds as a base layer");
     }    
 
-    function test_04_Layer_MultiMap_Translation_lonlat (t) {
+    function test_Layer_MultiMap_Translation_lonlat (t) {
         
         t.plan( 4 );
         
@@ -54,7 +54,7 @@
         t.ok( layer.getOLLonLatFromMapObjectLonLat(null) == null, "getOLLonLatFromGLatLng(null) returns null");
     }
 
-    function test_05_Layer_MultiMap_Translation_pixel (t) {
+    function test_Layer_MultiMap_Translation_pixel (t) {
         
         t.plan( 4 );
         
@@ -80,7 +80,7 @@
     }
 
 
-    function test_99_Layer_destroy (t) {
+    function test_Layer_destroy (t) {
         t.plan( 5 );    
 
         var map = new OpenLayers.Map('map');

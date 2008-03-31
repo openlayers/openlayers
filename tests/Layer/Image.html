@@ -4,7 +4,7 @@
   <script type="text/javascript">
     var layer; 
 
-    function test_01_Layer_Image_constructor (t) {
+    function test_Layer_Image_constructor (t) {
         t.plan( 13 );
         
         var options = { chicken: 151, foo: "bar", projection: "none" };
@@ -38,7 +38,7 @@
         t.ok( layer.options instanceof Object, "layer.options correctly initialized as a non-null Object" );
     }
 
-    function test_50_Layer_Image_tileTests (t) {
+    function test_Layer_Image_tileTests (t) {
         t.plan(7);
         var map = new OpenLayers.Map('map');
         
@@ -76,7 +76,7 @@
  */
 
 
-    function test_99_Layer_Image_destroy_before_use (t) {
+    function test_Layer_Image_destroy_before_use (t) {
         t.plan(1);
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.Image('Test', 'http://earthtrends.wri.org/images/maps/4_m_citylights_lg.gif', new OpenLayers.Bounds(-180, -88.759, 180, 88.759), new OpenLayers.Size(580, 288));
@@ -86,7 +86,7 @@
         t.ok(true, "destroy() didn't throw an error");
     }
 
-    function test_99_Layer_Image_destroy (t) {
+    function test_Layer_Image_destroy (t) {
         t.plan( 4 );    
 
         var map = new OpenLayers.Map('map');

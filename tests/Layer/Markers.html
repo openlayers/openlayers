@@ -4,14 +4,14 @@
   <script type="text/javascript">
     var layer; 
 
-    function test_01_Layer_Markers_constructor (t) {
+    function test_Layer_Markers_constructor (t) {
         t.plan( 2 );
         
         layer = new OpenLayers.Layer.Markers('Test Layer');
         t.ok( layer instanceof OpenLayers.Layer.Markers, "new OpenLayers.Layer.Markers returns object" );
         t.eq( layer.name, "Test Layer", "layer.name is correct" );
     }
-    function test_02_Layer_Markers_addlayer (t) {
+    function test_Layer_Markers_addlayer (t) {
         t.plan( 3 );
         
         layer = new OpenLayers.Layer.Markers('Test Layer');
@@ -22,7 +22,7 @@
                        );
         t.eq( layer.markers.length, 1, "addLayer adds marker to layer." );
     }
-    function test_98_Layer_Markers_addMarker_removeMarker (t) {
+    function test_Layer_Markers_addMarker_removeMarker (t) {
         t.plan( 4 );
 
         var map = new OpenLayers.Map('map');
@@ -46,7 +46,7 @@
         t.ok(true, "removing marker when no markers present does not script error");
 
     }
-    function test_99_Layer_Markers_destroy (t) {
+    function test_Layer_Markers_destroy (t) {
         t.plan( 1 );    
         layer = new OpenLayers.Layer.Markers('Test Layer');
         var map = new OpenLayers.Map('map');
@@ -55,7 +55,7 @@
         t.eq( layer.map, null, "layer.map is null after destroy" );
     }
 
-    function test_03_Layer_Markers_getDataExtent(t) {
+    function test_Layer_Markers_getDataExtent(t) {
         t.plan( 4 );
 
         var layer = {};

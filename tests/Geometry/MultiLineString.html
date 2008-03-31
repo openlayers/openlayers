@@ -4,7 +4,7 @@
   <script type="text/javascript">
     var line;
         
-    function test_01_MultiLineString_constructor (t) {
+    function test_MultiLineString_constructor (t) {
         t.plan( 3 );
         mline = new OpenLayers.Geometry.MultiLineString();
         t.ok( mline instanceof OpenLayers.Geometry.MultiLineString, "new OpenLayers.Geometry.MultiLineString returns mline object" );
@@ -12,7 +12,7 @@
         t.eq( mline.components, [], "line.components is set correctly");
     }
 
-    function test_01a_MultiLineString_constructor (t) {
+    function test_MultiLineString_constructor (t) {
         t.plan( 3 );
         line = new OpenLayers.Geometry.LineString();
         mline = new OpenLayers.Geometry.MultiLineString(line);

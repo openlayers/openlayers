@@ -6,7 +6,7 @@
     var map; 
     var a;
     
-    function test_01_Events_constructor (t) {
+    function test_Events_constructor (t) {
         var mapDiv = OpenLayers.Util.getElement('map');
         var obj = {result: 0};
         var eventTypes = ["doThingA", "doThingB", "doThingC"];
@@ -40,7 +40,7 @@
               "init of Events with null object/element/eventTypes still creates listeners array" );
     }
 
-    function test_02_Events_register_unregister(t) {
+    function test_Events_register_unregister(t) {
  
         t.plan( 18 );
  
@@ -123,7 +123,7 @@
 
     }
 
-    function test_03_Events_remove(t) {
+    function test_Events_remove(t) {
 
         t.plan( 2 );
  
@@ -150,7 +150,7 @@
 
     }
 
-    function test_04_Events_triggerEvent(t) {
+    function test_Events_triggerEvent(t) {
     
         t.plan(13);
  
@@ -251,7 +251,7 @@
         
     }
 
-    function test_05_Events_destroy (t) {
+    function test_Events_destroy (t) {
         t.plan(2);
 
         var div   = OpenLayers.Util.getElement('test');
@@ -269,7 +269,7 @@
              "destruction removes the event observer from hash");
     }
     
-    function test_06_Event(t) {
+    function test_Event(t) {
         t.plan(24);
         
         var div   = OpenLayers.Util.getElement('test');
@@ -353,7 +353,7 @@
         
     }
 
-    function test_06_Events_addEventType(t) {
+    function test_Events_addEventType(t) {
 
         t.plan( 6 );
  

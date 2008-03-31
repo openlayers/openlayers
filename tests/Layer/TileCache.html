@@ -5,7 +5,7 @@
 
 
 
-    function test_01_Layer_TileCache_constructor (t) {
+    function test_Layer_TileCache_constructor (t) {
         t.plan( 1 );
 
         var name = 'Test Layer';
@@ -35,7 +35,7 @@
         layer.destroy();
     }
 
-    function test_03_Layer_TileCache_clearTiles (t) {
+    function test_Layer_TileCache_clearTiles (t) {
         t.plan( 1 );
         var name = 'Test Layer';
         var url = "http://labs.metacarta.com/wms-c/Basic.py/";
@@ -57,7 +57,7 @@
     }
 
 
-    function test_04_Layer_TileCache_getTileCacheBounds(t) {
+    function test_Layer_TileCache_getTileCacheBounds(t) {
         t.plan( 1 );
 
         var name = 'Test Layer';
@@ -79,7 +79,7 @@
 
     }
 
-    function test_05_Layer_TileCache_getResolution(t) {
+    function test_Layer_TileCache_getResolution(t) {
         t.plan( 1 );
 
         var name = 'Test Layer';
@@ -96,7 +96,7 @@
         map.destroy();
     }
 
-    function test_06_Layer_TileCache_getZoomForExtent(t) {
+    function test_Layer_TileCache_getZoomForExtent(t) {
         t.plan( 2 );
         var bounds, zoom;
 
@@ -120,7 +120,7 @@
         map.destroy();
     }   
 
-    function test_10_Layer_TileCache_getURL(t) {
+    function test_Layer_TileCache_getURL(t) {
 
         t.plan(2);
         
@@ -141,7 +141,7 @@
         map.destroy();
     }
 
-    function test_11_Layer_TileCache_setMap(t) {
+    function test_Layer_TileCache_setMap(t) {
 
         t.plan(3);
         
@@ -160,7 +160,7 @@
         map.destroy();
     }
 
-    function test_99_Layer_TileCache_destroy (t) {
+    function test_Layer_TileCache_destroy (t) {
 
         t.plan( 3 );
 

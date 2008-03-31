@@ -4,7 +4,7 @@
   <script type="text/javascript">
     var tile; 
     
-    function test_01_Tile_constructor (t) {
+    function test_Tile_constructor (t) {
         t.plan( 12 );
      
         var layer = {}; // bogus layer
@@ -31,7 +31,7 @@
         t.ok( tile.events != null, "tile's events intitialized");
     }
 
-    function test_02_Tile_clone (t) {
+    function test_Tile_clone (t) {
         t.plan( 10 );
      
         var layer = {}; // bogus layer
@@ -57,7 +57,7 @@
         t.ok( clone.events != null, "clone's events intitialized");
     }
 
-    function test_99_Tile_destroy(t) {
+    function test_Tile_destroy(t) {
         t.plan( 6 );
 
         var layer = {

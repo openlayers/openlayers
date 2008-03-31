@@ -5,7 +5,7 @@
 
     var popup;
 
-    function test_01_Popup_default_constructor(t) {
+    function test_Popup_default_constructor(t) {
         t.plan( 8 );
 
         var size = new OpenLayers.Size(OpenLayers.Popup.WIDTH,
@@ -28,7 +28,7 @@
         t.ok(newID != firstID, "default id generator creating unique ids");
     }
     
-    function test_02_Popup_constructor (t) {
+    function test_Popup_constructor (t) {
         t.plan( 8 );
 
         var id = "chicken";
@@ -85,7 +85,7 @@
         popup.updatePosition();
         t.ok(true, "update position doesn't fail when getLayerPxFromLonLat fails.");
     }
-    function test_03_Popup_draw(t) {
+    function test_Popup_draw(t) {
         t.plan( 17 );
         
         var id = "chicken";

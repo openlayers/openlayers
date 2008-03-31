@@ -5,7 +5,7 @@
   <script type="text/javascript">
     var map; 
 
-    function test_01_Geometry_constructor (t) {
+    function test_Geometry_constructor (t) {
         t.plan( 2 );
         
         var g = new OpenLayers.Geometry();
@@ -26,7 +26,7 @@
              "id correctly set");
     }
 
-    function test_02_Geometry_setBounds(t) {
+    function test_Geometry_setBounds(t) {
         t.plan( 2 );
         
         var g = new OpenLayers.Geometry();
@@ -44,7 +44,7 @@
         t.ok(g.bounds == g_clone, "setbounds with valid object sets bounds, calls clone");
     }
 
-    function test_03_Geometry_extendBounds(t) {
+    function test_Geometry_extendBounds(t) {
         t.plan(9);
         
         OpenLayers.Bounds.prototype._extend = 
@@ -103,7 +103,7 @@
 
     }
 
-    function test_04_Geometry_getBounds(t) {
+    function test_Geometry_getBounds(t) {
         t.plan(1);
         
         var g = new OpenLayers.Geometry();
@@ -114,7 +114,7 @@
         t.ok(g.getBounds().equals(testBounds), "getBounds works");
     }
     
-    function test_05_Geometry_atPoint(t) {
+    function test_Geometry_atPoint(t) {
         t.plan(6);
             
         var g = new OpenLayers.Geometry();
@@ -173,7 +173,7 @@
     
     }
     
-    function test_06_Geometry_getLength(t) {
+    function test_Geometry_getLength(t) {
         t.plan(1);
         
         var g = new OpenLayers.Geometry();
@@ -181,7 +181,7 @@
         t.eq(g.getLength(), 0, "getLength is 0");
     }    
 
-    function test_07_Geometry_getArea(t) {
+    function test_Geometry_getArea(t) {
         t.plan(1);
         
         var g = new OpenLayers.Geometry();
@@ -189,7 +189,7 @@
         t.eq(g.getArea(), 0, "getArea is 0");
     }
     
-    function test_08_Geometry_clearBounds(t) {
+    function test_Geometry_clearBounds(t) {
         t.plan(2);
         
         var g = new OpenLayers.Geometry();
@@ -203,7 +203,7 @@
         t.ok(g.parent.bounds == null, "parent geometry bounds is correctly cleared");
     }
 
-    function test_99_Geometry_destroy(t) {
+    function test_Geometry_destroy(t) {
         t.plan( 2 );
 
         var g = new OpenLayers.Geometry();

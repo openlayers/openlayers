@@ -6,7 +6,7 @@
     var components = [new OpenLayers.Geometry.Point(10,10), 
                 new OpenLayers.Geometry.Point(0,0)];
         
-    function test_01_LinearRing_constructor (t) {
+    function test_LinearRing_constructor (t) {
         t.plan( 6 );
 
       //null
@@ -22,7 +22,7 @@
         t.eq( ring.components.length, 3, "ring.components.length is set correctly");
     }
     
-    function test_02_LinearRing_addComponent(t) {
+    function test_LinearRing_addComponent(t) {
         t.plan(13);
         
         var ring = new OpenLayers.Geometry.LinearRing();
@@ -57,7 +57,7 @@
         
     }
     
-    function test_03_LinearRing_removeComponent(t) {
+    function test_LinearRing_removeComponent(t) {
         t.plan(11);
         
         var components = [new OpenLayers.Geometry.Point(0,0), 
@@ -89,7 +89,7 @@
         
      }
     
-    function test_04_LinearRing_getArea(t) {
+    function test_LinearRing_getArea(t) {
         t.plan(1);
         var components = [new OpenLayers.Geometry.Point(0,0), 
                     new OpenLayers.Geometry.Point(0,10),

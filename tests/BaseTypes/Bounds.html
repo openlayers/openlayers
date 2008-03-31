@@ -3,7 +3,7 @@
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript">
     var bounds; 
-    function test_01_Bounds_constructor (t) {
+    function test_Bounds_constructor (t) {
         t.plan( 17 );
         
         bounds = new OpenLayers.Bounds();
@@ -38,7 +38,7 @@
         t.ok( boundsCenter.equals(center), "bounds.getCenterLonLat() has correct value" );
     }
 
-    function test_01a_Bounds_constructorFromStrings(t) {
+    function test_Bounds_constructorFromStrings(t) {
         t.plan( 6 );
         bounds = new OpenLayers.Bounds("0","2","10","4");
         t.ok( bounds instanceof OpenLayers.Bounds, "new OpenLayers.Bounds returns Bounds object" );
@@ -50,7 +50,7 @@
         
     }
 
-    function test_02_Bounds_toBBOX(t) {
+    function test_Bounds_toBBOX(t) {
         t.plan( 5 );
         bounds = new OpenLayers.Bounds(1,2,3,4);
         t.eq( bounds.toBBOX(), "1,2,3,4", "toBBOX() returns correct value." );
@@ -65,7 +65,7 @@
         bounds = new OpenLayers.Bounds(1,2.5555555,3,4);
     }
 
-    function test_03_Bounds_toString(t) {
+    function test_Bounds_toString(t) {
         t.plan( 1 );
         bounds = new OpenLayers.Bounds(1,2,3,4);
         t.eq( bounds.toString(), "left-bottom=(1,2) right-top=(3,4)", "toString() returns correct value." ); 
@@ -101,7 +101,7 @@
              "bounds bottom preserved");
     }
 
-    function test_04_Bounds_contains(t) {
+    function test_Bounds_contains(t) {
         t.plan( 6 );
         bounds = new OpenLayers.Bounds(10,10,40,40);
         t.eq( bounds.contains(20,20), true, "bounds(10,10,40,40) correctly contains LonLat(20,20)" );
@@ -117,7 +117,7 @@
 
     }
 
-    function test_05_Bounds_fromString(t) {
+    function test_Bounds_fromString(t) {
        t.plan( 10 );
        bounds = OpenLayers.Bounds.fromString("1,2,3,4");
        t.ok( bounds instanceof OpenLayers.Bounds, "new OpenLayers.Bounds returns Bounds object" );
@@ -135,14 +135,14 @@
 
     }
 
-    function test_06_Bounds_getSize(t) {
+    function test_Bounds_getSize(t) {
         t.plan( 1 );
         var bounds = new OpenLayers.Bounds(0,10,100,120);
 
         t.ok( bounds.getSize().equals(new OpenLayers.Size(100, 110)), "getCenterPixel() works correctly");
     }
     
-    function test_07_Bounds_clone(t) {
+    function test_Bounds_clone(t) {
        t.plan( 6 );
        var oldBounds = new OpenLayers.Bounds(1,2,3,4);
        var bounds = oldBounds.clone();
@@ -156,7 +156,7 @@
        t.eq( bounds.left, 1, "changing olBounds.left does not change bounds.left" );
     }
 
-    function test_08a_Bounds_intersectsBounds(t) {
+    function test_Bounds_intersectsBounds(t) {
         t.plan( 17 );
 
        var aBounds = new OpenLayers.Bounds(-180, -90, 180, 90);
@@ -196,7 +196,7 @@
 
     }
     
-    function test_08b_Bounds_containsBounds(t) {
+    function test_Bounds_containsBounds(t) {
         t.plan( 35 );
         containerBounds = new OpenLayers.Bounds(10,10,40,40);
 
@@ -251,7 +251,7 @@
         t.eq( containerBounds.containsBounds(bounds, true, false) , true, "(" + containerBounds.toBBOX() + ") correctly contains (" + bounds.toBBOX() + ") when partial is true, inclusive is false" );
     }
     
-    function test_09_Bounds_determineQuadrant(t) {
+    function test_Bounds_determineQuadrant(t) {
 
        t.plan( 4 );
        var bounds = new OpenLayers.Bounds(0,0,100,100);
@@ -267,7 +267,7 @@
        t.eq( bounds.determineQuadrant(br), "br", "bounds.determineQuadrant correctly identifies a coordinate in the bottom right quadrant");
     }
 
-    function test_10_Bounds_oppositeQuadrant(t) {
+    function test_Bounds_oppositeQuadrant(t) {
 
        t.plan( 4 );
 
@@ -277,7 +277,7 @@
        t.eq( OpenLayers.Bounds.oppositeQuadrant("br"), "tl", "OpenLayers.Bounds.oppositeQuadrant returns 'tl' for 'br'");
     }
 
-    function test_11_Bounds_equals(t) {
+    function test_Bounds_equals(t) {
         t.plan( 3 );
         var boundsA = new OpenLayers.Bounds(1,2,3,4);
         var boundsB = new OpenLayers.Bounds(1,2,3,4);
@@ -288,7 +288,7 @@
         t.ok( !boundsA.equals(null), "equals() returns false on comparison to null");
     }
 
-    function test_12_Bounds_getHeight_getWidth(t) {
+    function test_Bounds_getHeight_getWidth(t) {
         t.plan( 2 );
         var bounds = new OpenLayers.Bounds(10,20,100,120);
 
@@ -297,7 +297,7 @@
 
     }
 
-    function test_13_Bounds_getCenters(t) {
+    function test_Bounds_getCenters(t) {
         t.plan( 2 );
         var bounds = new OpenLayers.Bounds(0,20,100,120);
 
@@ -305,7 +305,7 @@
         t.ok( bounds.getCenterLonLat().equals(new OpenLayers.LonLat(50, 70)), "getCenterLonLat() works correctly");
     }
 
-    function test_14_Bounds_fromArray(t) {
+    function test_Bounds_fromArray(t) {
        t.plan( 5 );
        
        var bbox = [1,2,3,4];
@@ -317,7 +317,7 @@
        t.eq( bounds.top, 4, "bounds.top is set correctly" );
     }
 
-    function test_15_Bounds_fromSize(t) {
+    function test_Bounds_fromSize(t) {
        t.plan( 5 );
        
        var height = 15;
@@ -332,7 +332,7 @@
     }
 
 
-    function test_16_Bounds_extend(t) {
+    function test_Bounds_extend(t) {
         t.plan( 9 );
     
         var originalBounds = new OpenLayers.Bounds();
@@ -429,7 +429,7 @@
     }
      
      
-    function test_16_Bounds_wrapDateLine(t) {
+    function test_Bounds_wrapDateLine(t) {
         t.plan( 13 );
         
         var testBounds, wrappedBounds, desiredBounds;
@@ -530,7 +530,7 @@
         t.eq(bounds.toBBOX(), "10,-10,20,10", "bounds for inverse spherical mercator transform are correct");
     }
 
-    function test_17_Bounds_add(t) {
+    function test_Bounds_add(t) {
         t.plan( 8 );
 
         origBounds = new OpenLayers.Bounds(1,2,3,4);

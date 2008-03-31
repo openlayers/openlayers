@@ -5,7 +5,7 @@
 
     var name = "Vector Layer";
     
-    function test_01_Layer_Vector_constructor(t) {
+    function test_Layer_Vector_constructor(t) {
         t.plan(3);
 
         var layer = new OpenLayers.Layer.Vector(name);
@@ -15,7 +15,7 @@
 
     }
     
-    function test_02_Layer_Vector_addFeatures(t) {
+    function test_Layer_Vector_addFeatures(t) {
         t.plan(4);
     
         var layer = new OpenLayers.Layer.Vector(name);
@@ -45,7 +45,7 @@
         layer.addFeatures([pointFeature], {silent: true});
     }
 
-    function test_03_Layer_Vector_removeFeatures(t) {
+    function test_Layer_Vector_removeFeatures(t) {
         t.plan(3);
     
         var layer = new OpenLayers.Layer.Vector(name);
@@ -165,7 +165,7 @@
         t.eq(layer.selectedFeatures, [], "destroyFeatures removes appropriate selected features");
     }
 
-    function test_99_Layer_Vector_destroy (t) {
+    function test_Layer_Vector_destroy (t) {
         t.plan(2);    
         layer = new OpenLayers.Layer.Vector(name);
         var map = new OpenLayers.Map('map');

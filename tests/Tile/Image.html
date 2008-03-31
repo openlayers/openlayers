@@ -5,7 +5,7 @@
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var tile; 
     
-    function test_01_Tile_Image_constructor (t) {
+    function test_Tile_Image_constructor (t) {
         t.plan( 6 );
         
         var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
@@ -25,7 +25,7 @@
         t.ok( tile.size.equals(size), "tile.size is set correctly");
     }
     
-    function test_02_Tile_Image_clone (t) {
+    function test_Tile_Image_clone (t) {
         t.plan( 9 );
         
         var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
@@ -50,7 +50,7 @@
         t.ok( clone.imgDiv == null, "clone's imgDiv was not copied");
     }
     
-    function test_03_Tile_Image_draw (t) {
+    function test_Tile_Image_draw (t) {
         t.plan( 7 );
 
         var map = new OpenLayers.Map('map');
@@ -104,7 +104,7 @@
         tile.draw();
         
     }
-    function test_04_Tile_Image_OutsideMaxExtent(t) {
+    function test_Tile_Image_OutsideMaxExtent(t) {
         t.plan( 11 );
         var position = new OpenLayers.Pixel(20,30);
         var bounds = new OpenLayers.Bounds(1,2,3,4);
@@ -186,7 +186,7 @@
              "http://labs.metacarta.com/wms/vmap0?" + OpenLayers.Util.getParameterString(tParams),
              "Image covering more than all of extent loads");
     } 
-    function test_05_Tile_Image_Display_After_Move(t) {
+    function test_Tile_Image_Display_After_Move(t) {
         t.plan(2);
         var position = new OpenLayers.Pixel(20,30);
         var bounds = new OpenLayers.Bounds(1,2,3,4);
@@ -211,7 +211,7 @@
         
     }
 
-    function test_06_Tile_Image_gutters(t) {
+    function test_Tile_Image_gutters(t) {
         t.plan(5);
         
         var gutter = 0;

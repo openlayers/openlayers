@@ -4,7 +4,7 @@
   <script type="text/javascript">
     var coll;
         
-    function test_01_Collection_constructor (t) {
+    function test_Collection_constructor (t) {
         t.plan( 4 );
         
       //null param
@@ -28,7 +28,7 @@
             OpenLayers.Geometry.Collection.prototype._addComponents;
     }
 
-    function test_02_Collection_addComponents (t) {
+    function test_Collection_addComponents (t) {
         t.plan( 10 );
 
         coll = new OpenLayers.Geometry.Collection();
@@ -76,7 +76,7 @@
         t.eq( bounds.top, 10, "top bound is 10" );
     }
 
-    function test_03_Collection_clone (t) {
+    function test_Collection_clone (t) {
         t.plan( 3 );
         coll = new OpenLayers.Geometry.Collection();
         coll.addComponents(new OpenLayers.Geometry.Point(0,0));
@@ -88,7 +88,7 @@
             "coll2.components.length is set correctly");
     }
 
-    function test_04_Collection_removeComponents (t) {
+    function test_Collection_removeComponents (t) {
         t.plan( 5 );
         coll = new OpenLayers.Geometry.Collection();
         point = new OpenLayers.Geometry.Point(0,0);
@@ -113,7 +113,7 @@
         
     }
     
-    function test_06_Collection_calculateBounds(t) {
+    function test_Collection_calculateBounds(t) {
         t.plan( 9 );
         
         var coll = new OpenLayers.Geometry.Collection();
@@ -149,7 +149,7 @@
         t.ok(!geom.equals(), "collection.equals() returns false for undefined");
     }
 
-    function test_07_Collection_addComponent(t)   {
+    function test_Collection_addComponent(t)   {
         t.plan(10);
         
         var coll = new OpenLayers.Geometry.Collection();
@@ -196,7 +196,7 @@
 
     }
     
-    function test_08_collection_getLength(t) {
+    function test_collection_getLength(t) {
         t.plan(2);
         
       //null
@@ -211,7 +211,7 @@
         t.eq( coll.getLength(), 65, "coll with valid components correctly sums getlength");
     }
     
-    function test_09_collection_getArea(t) {
+    function test_collection_getArea(t) {
         t.plan(2);
         
       //null
@@ -226,7 +226,7 @@
         t.eq( coll.getArea(), 65, "coll with valid components correctly sums getArea");
     }
     
-    function test_99_Collection_destroy(t) {
+    function test_Collection_destroy(t) {
         t.plan( 1 );
         coll = new OpenLayers.Geometry.Collection();
         coll.components = {};

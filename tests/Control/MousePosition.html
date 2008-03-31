@@ -3,14 +3,14 @@
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript">
     var map, control; 
-    function test_01_Control_MousePosition_constructor (t) {
+    function test_Control_MousePosition_constructor (t) {
         t.plan( 2 );
     
         control = new OpenLayers.Control.MousePosition();
         t.ok( control instanceof OpenLayers.Control.MousePosition, "new OpenLayers.Control returns object" );
         t.eq( control.displayClass,  "olControlMousePosition", "displayClass is correct" );
     }
-    function test_02_Control_MousePosition_redraw_noLayer_displayProjection(t) {
+    function test_Control_MousePosition_redraw_noLayer_displayProjection(t) {
         t.plan(2);
         control = new OpenLayers.Control.MousePosition({'displayProjection': new OpenLayers.Projection("WGS84")});
         map = new OpenLayers.Map('map');
@@ -53,7 +53,7 @@
         map.destroy();     
     }
 
-    function test_02_Control_MousePosition_redraw_noLayer_displayProjection(t) {
+    function test_Control_MousePosition_redraw_noLayer_displayProjection(t) {
         t.plan(3);
         var control = new OpenLayers.Control.MousePosition();
         var map = new OpenLayers.Map('map');

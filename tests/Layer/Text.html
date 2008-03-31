@@ -17,7 +17,7 @@
         datafile_overflow = "." + datafile_overflow;
     }
 
-    function test_01_Layer_Text_constructor (t) {
+    function test_Layer_Text_constructor (t) {
         t.plan( 5 );
         
         layer = new OpenLayers.Layer.Text('Test Layer', { location: datafile });
@@ -32,7 +32,7 @@
             t.eq( layer.markers[0].icon.url, 'http://boston.openguides.org/markers/ORANGE.png', "icon" );
         } );
     }
-    function test_02_Layer_Text_draw (t) { 
+    function test_Layer_Text_draw (t) { 
 //        t.plan(5);
         t.plan( 2 );
         layer = new OpenLayers.Layer.Text('Test Layer', { location: datafile });
@@ -58,7 +58,7 @@
 */
         });;
     }
-    function test_03_Layer_Text_events (t) {
+    function test_Layer_Text_events (t) {
         t.plan( 5 );    
         layer = new OpenLayers.Layer.Text('Test Layer', { location: datafile2 });
         var map = new OpenLayers.Map('map');
@@ -81,7 +81,7 @@
           t.eq(map.popups[0].contentDiv.style[prop],"auto", "default Popup overflow correct");
         });
     }
-    function test_03_Layer_Text_overflow (t) {
+    function test_Layer_Text_overflow (t) {
         t.plan( 4 );    
         layer = new OpenLayers.Layer.Text('Test Layer', { location: datafile_overflow });
         var map = new OpenLayers.Map('map');
@@ -105,7 +105,7 @@
           t.eq(map.popups[0].contentDiv.style[prop],"hidden", "Popup overflow read from file");
         });
     }
-    function test_04_Layer_Text_events_nopopups (t) {
+    function test_Layer_Text_events_nopopups (t) {
         t.plan( 4 );    
         layer = new OpenLayers.Layer.Text('Test Layer', { location: datafile });
         var map = new OpenLayers.Map('map');
@@ -139,7 +139,7 @@
         });
     }
 
-    function test_99_Layer_Text_destroy (t) {
+    function test_Layer_Text_destroy (t) {
         t.plan( 1 );    
         layer = new OpenLayers.Layer.Text('Test Layer');
         var map = new OpenLayers.Map('map');

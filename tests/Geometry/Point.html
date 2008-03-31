@@ -4,7 +4,7 @@
   <script type="text/javascript">
     var point; 
         
-    function test_01_Point_constructor (t) {
+    function test_Point_constructor (t) {
         t.plan( 8 );
 
       //empty
@@ -24,7 +24,7 @@
         t.eq( point.lat, null, "point.lat is not set");
     }
 
-    function test_03_Point_calculateBounds (t) {
+    function test_Point_calculateBounds (t) {
         t.plan(4);
 
         var x = 10;
@@ -37,7 +37,7 @@
         t.eq( point.bounds.bottom, y, "bounds.bottom is 20" );
     }
     
-    function test_04_Point_distanceTo(t) {
+    function test_Point_distanceTo(t) {
         t.plan(2);
 
         var x1 = 10;
@@ -53,7 +53,7 @@
         t.eq( dist, Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)), "distance calculation correct");
     }
     
-    function test_05_Point_toString(t) {
+    function test_Point_toString(t) {
         t.plan(1);
 
         var x = 10;
@@ -64,7 +64,7 @@
         
     }
     
-    function test_06_Point_move(t) {
+    function test_Point_move(t) {
         t.plan(3);
         
         var x = 10;

@@ -15,7 +15,7 @@
     var params = { map: '/mapdata/vmap_wms.map', 
                    layers: 'basic'};
 
-    function test_01_Layer_MapServer_constructor (t) {
+    function test_Layer_MapServer_constructor (t) {
         t.plan( 4 );
 
         var url = "http://labs.metacarta.com/cgi-bin/mapserv";
@@ -29,7 +29,7 @@
 
     }
     
-    function test_02_Layer_MapServer_addtile (t) {
+    function test_Layer_MapServer_addtile (t) {
         t.plan( 6 );
     
         var url = "http://labs.metacarta.com/cgi-bin/mapserv";
@@ -71,7 +71,7 @@
         map.destroy();
     }
     
-    function test_03_Layer_MapServer_inittiles (t) {
+    function test_Layer_MapServer_inittiles (t) {
         t.plan( 2 );
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.MapServer(name, url, params);
@@ -84,7 +84,7 @@
     }
 
 
-    function test_04_Layer_MapServer_clone (t) {
+    function test_Layer_MapServer_clone (t) {
         t.plan(4);
         
         var url = "http://labs.metacarta.com/cgi-bin/mapserv";
@@ -112,7 +112,7 @@
         map.destroy();
     }
 
-    function test_05_Layer_MapServer_isBaseLayer(t) {
+    function test_Layer_MapServer_isBaseLayer(t) {
         t.plan(3);
         
         var url = "http://labs.metacarta.com/cgi-bin/mapserv";
@@ -128,7 +128,7 @@
         t.ok( !layer.isBaseLayer, "baselayer is false when option is set to false" );
     }
 
-    function test_06_Layer_MapServer_mergeNewParams (t) {
+    function test_Layer_MapServer_mergeNewParams (t) {
         t.plan( 4 );
 
         var map = new OpenLayers.Map("map");
@@ -155,7 +155,7 @@
         map.destroy();
     }
 
-    function test_07_Layer_MapServer_getFullRequestString (t) {
+    function test_Layer_MapServer_getFullRequestString (t) {
         t.plan( 3 );
         var map = new OpenLayers.Map('map');
         tUrl = "http://labs.metacarta.com/cgi-bin/mapserv";
@@ -196,7 +196,7 @@
 
     }
 
-    function test_08_Layer_MapServer_setOpacity (t) {
+    function test_Layer_MapServer_setOpacity (t) {
         t.plan( 5 );
 
         var map = new OpenLayers.Map('map');
@@ -221,7 +221,7 @@
 
     }    
     
-    function test_20_Layer_MapServer_Reproject (t) { 
+    function test_Layer_MapServer_Reproject (t) { 
         var validkey = (window.location.protocol == "file:") ||
                        (window.location.host == "localhost") ||
                        (window.location.host == "openlayers.org");
@@ -259,7 +259,7 @@
         map.destroy();
     }
     
-    function test_30_Layer_MapServer_singleTile (t) {
+    function test_Layer_MapServer_singleTile (t) {
         t.plan( 5 );
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.MapServer(name, url, params, {singleTile: true});
@@ -275,7 +275,7 @@
 
     
     
-    function test_99_Layer_MapServer_destroy (t) {
+    function test_Layer_MapServer_destroy (t) {
 
         t.plan( 1 );
 
@@ -306,7 +306,7 @@
     var params = { map: '/mapdata/vmap_wms.map', 
                    layers: 'basic'};
     
-    function test_01_Layer_MapServer_Untiled_constructor (t) {
+    function test_Layer_MapServer_Untiled_constructor (t) {
         t.plan( 4 );
 
         var url = "http://labs.metacarta.com/cgi-bin/mapserv";
@@ -320,7 +320,7 @@
 
     }
     
-    function test_04_Layer_MapServer_Untiled_clone (t) {
+    function test_Layer_MapServer_Untiled_clone (t) {
         t.plan(3);
         
         var url = "http://labs.metacarta.com/cgi-bin/mapserv";
@@ -343,7 +343,7 @@
         map.destroy();
     }
 
-    function test_05_Layer_MapServer_Untiled_isBaseLayer(t) {
+    function test_Layer_MapServer_Untiled_isBaseLayer(t) {
         t.plan(3);
         
         var url = "http://labs.metacarta.com/cgi-bin/mapserv";
@@ -359,7 +359,7 @@
         t.ok( !layer.isBaseLayer, "baselayer is false when option is set to false" );
     }
 
-    function test_06_Layer_MapServer_Untiled_mergeNewParams (t) {
+    function test_Layer_MapServer_Untiled_mergeNewParams (t) {
         t.plan( 5 );
 
         var map = new OpenLayers.Map("map");
@@ -385,7 +385,7 @@
         map.destroy();
     }
 
-    function test_07_Layer_MapServer_Untiled_getFullRequestString (t) {
+    function test_Layer_MapServer_Untiled_getFullRequestString (t) {
 
         
         t.plan( 1 );
@@ -411,7 +411,7 @@
 
     }
 
-    function test_08_Layer_MapServer_Untiled_setOpacity (t) {
+    function test_Layer_MapServer_Untiled_setOpacity (t) {
         t.plan( 4 );
 
         var map = new OpenLayers.Map('map');
@@ -443,7 +443,7 @@
         t.ok(clone.singleTile, "regression test: clone works. this is for #1013");
     }
     
-    function test_99_Layer_MapServer_Untiled_destroy (t) {
+    function test_Layer_MapServer_Untiled_destroy (t) {
 
         t.plan( 1 );
 

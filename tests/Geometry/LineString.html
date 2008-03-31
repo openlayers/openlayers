@@ -6,7 +6,7 @@
     var components = [new OpenLayers.Geometry.Point(10,15), 
                 new OpenLayers.Geometry.Point(0,0)];
         
-    function test_01_LineString_constructor (t) {
+    function test_LineString_constructor (t) {
         t.plan( 3 );
         line = new OpenLayers.Geometry.LineString();
         t.ok( line instanceof OpenLayers.Geometry.LineString, "new OpenLayers.Geometry.LineString returns line object" );
@@ -14,7 +14,7 @@
         t.eq( line.components, [], "line.components is set correctly");
     }
 
-    function test_01a_LineString_constructor (t) {
+    function test_LineString_constructor (t) {
         t.plan( 3 );
         line = new OpenLayers.Geometry.LineString(components);
         t.ok( line instanceof OpenLayers.Geometry.LineString, "new OpenLayers.Geometry.LineString returns line object" );
@@ -24,7 +24,7 @@
         t.eq( line.components.length, 2, "line.components.length is set correctly");
     }
     
-    function test_02_LineString_toString(t) {
+    function test_LineString_toString(t) {
         t.plan(1);
         
         line = new OpenLayers.Geometry.LineString(components);
@@ -33,7 +33,7 @@
              "toString() returns WKT");
     }
     
-    function test_03_LineString_removeComponent(t) {
+    function test_LineString_removeComponent(t) {
         t.plan(2);
         
         OpenLayers.Geometry.Collection.prototype._removeComponent = 
@@ -55,7 +55,7 @@
             OpenLayers.Geometry.Collection.prototype._removeComponent;
     }
     
-    function test_04_LineString_move(t) {
+    function test_LineString_move(t) {
         t.plan(4);
         
         var components = [new OpenLayers.Geometry.Point(10,15), 

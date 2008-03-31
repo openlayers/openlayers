@@ -3,7 +3,7 @@
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript">
     var map; 
-    function test_01_Control_Permalink_constructor (t) {
+    function test_Control_Permalink_constructor (t) {
         t.plan( 2 );
     
         control = new OpenLayers.Control.Permalink();
@@ -19,13 +19,13 @@
         map.events.triggerEvent("changelayer", {});
         t.ok(true, "permalink didn't bomb out.");
     }   
-    function test_02_Control_Permalink_initwithelem (t) {
+    function test_Control_Permalink_initwithelem (t) {
         t.plan( 1 );
     
         control = new OpenLayers.Control.Permalink(OpenLayers.Util.getElement('permalink'));
         t.ok(true, "If the above line doesn't throw an error, we're safe."); 
     }
-    function test_02_Control_Permalink_updateLinks (t) {
+    function test_Control_Permalink_updateLinks (t) {
         t.plan( 3 );
     
         control = new OpenLayers.Control.Permalink('permalink');
@@ -45,7 +45,7 @@
         
         t.ok(OpenLayers.Util.isEquivalentUrl(OpenLayers.Util.getElement('permalink').href, location+"?zoom=2&lat=0&lon=1.75781&layers=BF"), 'setVisibility sets permalink');
     }
-    function test_03_Control_Permalink_updateLinksBase (t) {
+    function test_Control_Permalink_updateLinksBase (t) {
         t.plan( 2 );
     
         control = new OpenLayers.Control.Permalink('permalink', "./edit.html" );
@@ -59,7 +59,7 @@
         OpenLayers.Util.getElement('edit_permalink').href = './edit.html?zoom=2&lat=0&lon=1.75781&layers=B';
         t.eq(OpenLayers.Util.getElement('permalink').href, OpenLayers.Util.getElement('edit_permalink').href, "Panning sets permalink with base");
   }
-  function test_04_Control_Permalink_noElement (t) {
+  function test_Control_Permalink_noElement (t) {
         t.plan( 2 );
         control = new OpenLayers.Control.Permalink( );
         t.ok( control instanceof OpenLayers.Control.Permalink, "new OpenLayers.Control returns object" );
@@ -67,7 +67,7 @@
         map.addControl(control);
         t.eq(map.controls[4].div.firstChild.nodeName, "A", "Permalink control creates div with 'a' inside." );
   }
-  function test_05_Control_Permalink_base_with_query (t) {
+  function test_Control_Permalink_base_with_query (t) {
       t.plan( 3 );
   
       control = new OpenLayers.Control.Permalink('permalink', "./edit.html?foo=bar" );
@@ -94,7 +94,7 @@
 
   }
 
-    function test_06_Control_Permalink_nonRepeating (t) {
+    function test_Control_Permalink_nonRepeating (t) {
         t.plan( 2 );
     
         control = new OpenLayers.Control.Permalink('permalink', "./edit.html?zoom=3" );

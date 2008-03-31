@@ -4,7 +4,7 @@
   <script type="text/javascript">
     var pixel; 
     
-    function test_01_Pixel_constructor (t) {
+    function test_Pixel_constructor (t) {
         t.plan( 4 );
         pixel = new OpenLayers.Pixel(5,6);
         t.ok( pixel instanceof OpenLayers.Pixel, "new OpenLayers.Pixel returns Pixel object" );
@@ -13,7 +13,7 @@
         t.eq( pixel.y, 6, "pixel.y is set correctly");
     }
 
-    function test_01a_Pixel_constructorFromString (t) {
+    function test_Pixel_constructorFromString (t) {
         t.plan( 4 );
         pixel = new OpenLayers.Pixel("5","6");
         t.ok( pixel instanceof OpenLayers.Pixel, "new OpenLayers.Pixel returns Pixel object" );
@@ -22,13 +22,13 @@
         t.eq( pixel.y, 6, "pixel.y is set correctly");
     }
 
-    function test_02_Pixel_toString(t) {
+    function test_Pixel_toString(t) {
         t.plan( 1 );
         pixel = new OpenLayers.Pixel(5,6);
         t.eq( pixel.toString(), "x=5,y=6", "pixel.toString() returns correctly");
     }
 
-    function test_03_Pixel_clone(t) {
+    function test_Pixel_clone(t) {
         t.plan( 4 );
         oldPixel = new OpenLayers.Pixel(5,6);
         pixel = oldPixel.clone();
@@ -40,7 +40,7 @@
         t.eq( pixel.x, 5, "changing oldPixel.x doesn't change pixel.x");
     }
 
-    function test_06_Pixel_equals(t) {
+    function test_Pixel_equals(t) {
         t.plan( 5 );
         pixel = new OpenLayers.Pixel(5,6);
 
@@ -60,7 +60,7 @@
 
     }
 
-    function test_07_Pixel_add(t) {
+    function test_Pixel_add(t) {
         t.plan( 8 );
 
         var origPX = new OpenLayers.Pixel(5,6);
@@ -88,7 +88,7 @@
         t.ok(pixel == null, "returns null on erroneous add operation (null y)");
     }
 
-    function test_08_Pixel_offset(t) {
+    function test_Pixel_offset(t) {
         t.plan( 4 );
 
         var oldPixel = new OpenLayers.Pixel(5,6);

@@ -4,7 +4,7 @@
   <script type="text/javascript">
     var map; 
 
-    function test_01_Control_LayerSwitcher_constructor (t) {
+    function test_Control_LayerSwitcher_constructor (t) {
         t.plan( 2 );
     
         control = new OpenLayers.Control.LayerSwitcher();
@@ -12,7 +12,7 @@
         t.eq( control.displayClass,  "olControlLayerSwitcher", "displayClass is correct" );
     }
 
-    function test_02_Control_LayerSwitcher_draw (t) {
+    function test_Control_LayerSwitcher_draw (t) {
         t.plan( 2 );
 
         map = new OpenLayers.Map('map');
@@ -35,7 +35,7 @@
         t.eq(control.div.style.width, "0px", "Div is minimized when added."); 
     }
  
-    function test_03_Control_LayerSwitcher_loadContents(t) {
+    function test_Control_LayerSwitcher_loadContents(t) {
 
         t.plan( 5 );
 
@@ -63,7 +63,7 @@
     }
 
 
-    function test_04_Control_LayerSwitcher_redraw (t) {
+    function test_Control_LayerSwitcher_redraw (t) {
 
         t.plan( (OpenLayers.Util.getBrowserName() == "opera" ? 9 : 19 ) );
 
@@ -135,7 +135,7 @@
         }    
 
     }
-    function test_05_Control_LayerSwitcher_ascendingw (t) {
+    function test_Control_LayerSwitcher_ascendingw (t) {
 
         t.plan( 4 );
 

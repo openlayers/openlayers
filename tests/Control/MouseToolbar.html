@@ -3,13 +3,13 @@
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript">
     var map; 
-    function test_01_Control_MouseToolbar_constructor (t) {
+    function test_Control_MouseToolbar_constructor (t) {
         t.plan( 1 );
     
         control = new OpenLayers.Control.MouseToolbar();
         t.ok( control instanceof OpenLayers.Control.MouseToolbar, "new OpenLayers.Control.MouseToolbar returns object" );
     }
-    function test_02_Control_MouseToolbar_addControl (t) {
+    function test_Control_MouseToolbar_addControl (t) {
         t.plan( 8 );
         map = new OpenLayers.Map('map');
         control = new OpenLayers.Control.MouseToolbar();
@@ -24,7 +24,7 @@
         t.eq( control.div.style.top, "300px", "Control div top located correctly by default");
 
     }
-    function test_03_Control_MouseToolbar_control_events (t) {
+    function test_Control_MouseToolbar_control_events (t) {
         t.plan( 1 );
         if ((navigator.userAgent.indexOf("compatible") == -1)) { 
             var evt = {which: 1}; // control expects left-click

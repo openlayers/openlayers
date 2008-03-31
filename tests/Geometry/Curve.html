@@ -6,7 +6,7 @@
     var components = [new OpenLayers.Geometry.Point(10,10), 
                 new OpenLayers.Geometry.Point(0,0)];
         
-    function test_01_Curve_constructor (t) {
+    function test_Curve_constructor (t) {
         t.plan( 3 );
         curve = new OpenLayers.Geometry.Curve();
         t.ok( curve instanceof OpenLayers.Geometry.Curve, "new OpenLayers.Geometry.Curve returns curve object" );
@@ -14,14 +14,14 @@
         t.eq( curve.components, [], "curve.components is set correctly");
     }
 
-    function test_01a_Curve_constructor (t) {
+    function test_Curve_constructor (t) {
         t.plan( 2 );
         curve = new OpenLayers.Geometry.Curve(components);
         t.ok( curve instanceof OpenLayers.Geometry.Curve, "new OpenLayers.Geometry.Curve returns curve object" );
         t.eq( curve.components.length, 2, "curve.components.length is set correctly");
     }
 
-    function test_02_Curve_clone (t) {
+    function test_Curve_clone (t) {
         t.plan( 2 );
         curve = new OpenLayers.Geometry.Curve(components);
         curve2 = curve.clone(); 
@@ -29,7 +29,7 @@
         t.eq( curve2.components.length, 2, "curve2.components.length is set correctly");
     }
 
-    function test_03_Curve_calculateBounds(t) {
+    function test_Curve_calculateBounds(t) {
         t.plan( 17 );
 
 
@@ -83,7 +83,7 @@
 
     }
 
-    function test_04_Curve_addComponent (t) {
+    function test_Curve_addComponent (t) {
         t.plan( 8 );
         curve = new OpenLayers.Geometry.Curve(components);
         curve.addComponent(new OpenLayers.Geometry.Point(20,30));
@@ -100,7 +100,7 @@
         t.eq( curve.components[1].y, -30,  "new point.lat is -30 (index worked)" );
     }
 
-    function test_05_Curve_removeComponent (t) {
+    function test_Curve_removeComponent (t) {
         t.plan( 4 );
         curve = new OpenLayers.Geometry.Curve(components);
         curve.removeComponent(curve.components[1]);
@@ -111,7 +111,7 @@
         t.eq( bounds.bottom, 10, "bottom bound is 10 after removeComponent" );
     }
 
-    function test_06_Curve_getLength (t) {
+    function test_Curve_getLength (t) {
         t.plan( 4 );
 
       //no components
@@ -138,7 +138,7 @@
         t.eq(curve.getLength(), 50, "curve.getLength returns a reasonably accurate length" );
     }
     
-    function test_07_Curve_destroy(t) {
+    function test_Curve_destroy(t) {
         t.plan(1);
         
         var curve = new OpenLayers.Geometry.Curve();

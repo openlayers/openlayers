@@ -3,7 +3,7 @@
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript">
     var map; 
-    function test_01_Control_KeyboardDefaults_constructor (t) {
+    function test_Control_KeyboardDefaults_constructor (t) {
         t.plan( 2 );
     
         control = new OpenLayers.Control.KeyboardDefaults();
@@ -12,7 +12,7 @@
         t.eq( control.displayClass,  "olControlKeyboardDefaults", "displayClass is correct" );
     }
 
-    function test_02_Control_KeyboardDefaults_addControl (t) {
+    function test_Control_KeyboardDefaults_addControl (t) {
         t.plan( 4 );
 
         map = new OpenLayers.Map('map');
@@ -26,7 +26,7 @@
         t.ok( map.controls[3] === control, "map.controls contains control" );
     }
 
-    function test_03_Control_KeyboardDefaults_KeyDownEvent (t) {
+    function test_Control_KeyboardDefaults_KeyDownEvent (t) {
         t.plan( 10 );
 
         var evt = {which: 1};

@@ -6,7 +6,7 @@
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var map;
 
-    function test_01_Map_constructor (t) {
+    function test_Map_constructor (t) {
         t.plan( 10 );
         
         map = new OpenLayers.Map('map'); 
@@ -43,7 +43,7 @@
              "maxExtent is correct after calling setOptions");
     }
     
-    function test_02_Map_center(t) {
+    function test_Map_center(t) {
         t.plan(3);
         map = new OpenLayers.Map('map');
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
@@ -57,7 +57,7 @@
         t.ok( map.getCenter().equals(ll), "map center is correct after calling setCenter");
     }
 
-    function test_03_Map_add_layers(t) {
+    function test_Map_add_layers(t) {
         t.plan(6);
         map = new OpenLayers.Map('map');
         var layer1 = new OpenLayers.Layer.WMS("Layer 1", 
@@ -77,7 +77,7 @@
                 "layer2 zIndex is set" );
     }
 
-    function test_04_Map_options(t) {
+    function test_Map_options(t) {
         t.plan(3);
         map = new OpenLayers.Map('map', {numZoomLevels: 6, maxResolution: 3.14159, theme: 'foo'});
         t.eq( map.numZoomLevels, 6, "map.numZoomLevels set correctly via options hashtable" );
@@ -111,7 +111,7 @@
         map2.destroy();
     }
 
-    function test_05_Map_center(t) {
+    function test_Map_center(t) {
         t.plan(4);
         map = new OpenLayers.Map('map');
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
@@ -139,7 +139,7 @@
 
     }
 
-    function test_06_Map_zoomend_event (t) {
+    function test_Map_zoomend_event (t) {
         t.plan(2);
 
         map = new OpenLayers.Map('map');
@@ -156,7 +156,7 @@
         map.zoomOut();
     }
 
-    function test_07_Map_add_remove_popup (t) {
+    function test_Map_add_remove_popup (t) {
         t.plan(4);
 
         map = new OpenLayers.Map('map');
@@ -262,7 +262,7 @@
     }
  */
 
-    function test_09_Map_isValidLonLat(t) {
+    function test_Map_isValidLonLat(t) {
         t.plan( 3 );    
 
         map = new OpenLayers.Map('map');
@@ -277,7 +277,7 @@
         t.ok( !map.isValidLonLat(new OpenLayers.LonLat(10, 10)), "lonlat outside max extent is not valid" );
     }
 
-    function test_10_Map_getLayer(t) {
+    function test_Map_getLayer(t) {
         var numLayers = 3;
         t.plan( numLayers + 1 );    
 
@@ -581,7 +581,7 @@
         
     }
 
-    function test_11_Map_double_addLayer(t) {
+    function test_Map_double_addLayer(t) {
         t.plan( 1 );    
 
         map = new OpenLayers.Map($('map'));
@@ -596,7 +596,7 @@
     
     }
 
-    function test_12_Map_setBaseLayer(t) {
+    function test_Map_setBaseLayer(t) {
         t.plan( 4 );
         
         map = new OpenLayers.Map('map');
@@ -693,7 +693,7 @@
              "correct z-index after removeLayer");
     }
 
-    function test_13_Map_setBaseLayer_after_pan (t) {
+    function test_Map_setBaseLayer_after_pan (t) {
         t.plan(1);
 
         map = new OpenLayers.Map('map');
@@ -712,7 +712,7 @@
         t.eq(map.layerContainerDiv.style.top, "0px", "layerContainer is recentered after setBaseLayer");
     }
 
-    function test_14_Map_moveLayer (t) {
+    function test_Map_moveLayer (t) {
         t.plan(10);
 
         var ct  = 0;
@@ -752,7 +752,7 @@
         t.eq( ct, 3, "raiseLayer triggered changelayer the right # of times" );
     }
 
-    function test_15_Map_moveTo(t) {
+    function test_Map_moveTo(t) {
         t.plan(1);
 
         map = new OpenLayers.Map('map');
@@ -766,7 +766,7 @@
         t.ok(map.getCenter().equals(new OpenLayers.LonLat(0,0)), "safely sets out-of-bounds lonlat");
     }
 
-    function test_16_Map_defaultTheme(t) {
+    function test_Map_defaultTheme(t) {
         t.plan(5);
         
         var links = document.getElementsByTagName('link');
@@ -790,7 +790,7 @@
              "calling the map constructor twice with the same theme doesn't add duplicate link nodes");
     }
 
-    function test_17_Map_customTheme(t) {
+    function test_Map_customTheme(t) {
         t.plan(5);
         
         var customTheme = 'foo';
@@ -814,7 +814,7 @@
         t.eq(themeNode.type, "text/css", "node added has type set to text/css");
     }
 
-    function test_18_Map_noTheme(t) {
+    function test_Map_noTheme(t) {
         t.plan(1);
         
         var head = document.getElementsByTagName('head')[0];
@@ -826,7 +826,7 @@
         t.eq(nodeCount, head.childNodes.length, "with no theme, a node is not added to document head" );
     }
 
-    function test_19_Map_getControl(t) {
+    function test_Map_getControl(t) {
         t.plan(2);
         
         var map1 = new OpenLayers.Map('map');
@@ -841,7 +841,7 @@
         t.ok(gotControl == null, "getControl() for bad id returns null");
     }
 
-    function test_19_Map_removeControl(t) {
+    function test_Map_removeControl(t) {
         t.plan(6);
         
         var oldNumControls, newNumControls;
@@ -1001,7 +1001,7 @@
         map.destroy();
     }
 
-    function test_99_Map_destroy (t) {
+    function test_Map_destroy (t) {
         t.plan( 3 );    
         map = new OpenLayers.Map('map');
         map.destroy();

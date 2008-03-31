@@ -6,7 +6,7 @@
     var isOpera = (navigator.userAgent.indexOf("Opera") != -1);
     var layer; 
 
-    function test_01_Layer_EventPane_constructor (t) {
+    function test_Layer_EventPane_constructor (t) {
         t.plan( 5 );
         
         var layer = new OpenLayers.Layer.EventPane('Test Layer');
@@ -22,7 +22,7 @@
         }
     }
 
-    function test_02_Layer_EventPane_clone (t) {
+    function test_Layer_EventPane_clone (t) {
         t.plan( 1 );
         t.ok( true, "need to actually write some tests here" );
         return;
@@ -52,7 +52,7 @@
         
     }
 
-    function test_10_Layer_EventPane_setMap (t) {
+    function test_Layer_EventPane_setMap (t) {
 
 // MOUSEMOVE test does not seem to work... 
 //         t.plan( 2 );    
@@ -97,7 +97,7 @@
         }
     }
 
-    function test_20_Layer_EventPane_setVisibility (t) {
+    function test_Layer_EventPane_setVisibility (t) {
         t.plan( 2 );    
         layer = new OpenLayers.Layer.EventPane('Test Layer');
         layer.setVisibility(false);

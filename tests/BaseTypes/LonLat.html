@@ -5,7 +5,7 @@
 
     var lonlat; 
 
-    function test_01_LonLat_constructor (t) {
+    function test_LonLat_constructor (t) {
         t.plan( 4 );
         lonlat = new OpenLayers.LonLat(6, 5);
         t.ok( lonlat instanceof OpenLayers.LonLat, "new OpenLayers.LonLat returns LonLat object" );
@@ -14,7 +14,7 @@
         t.eq( lonlat.lat, 5, "lonlat.lat is set correctly");
     }
     
-    function test_01a_LonLat_constructorFromStrings (t) {
+    function test_LonLat_constructorFromStrings (t) {
         t.plan( 4 );
         lonlat = new OpenLayers.LonLat("6", "5");
         t.ok( lonlat instanceof OpenLayers.LonLat, "new OpenLayers.LonLat returns LonLat object" );
@@ -23,19 +23,19 @@
         t.eq( lonlat.lat, 5, "lonlat.lat is set correctly");
     }
 
-    function test_02_LonLat_toString(t) {
+    function test_LonLat_toString(t) {
         t.plan( 1 );
         lonlat = new OpenLayers.LonLat(5,6);
         t.eq( lonlat.toString(), "lon=5,lat=6", "lonlat.toString() returns correctly");
     }
 
-    function test_02A_LonLat_toShortString(t) {
+    function test_LonLat_toShortString(t) {
         t.plan( 1 );
         lonlat = new OpenLayers.LonLat(5,6);
         t.eq( lonlat.toShortString(), "5, 6", "lonlat.toShortString() returns correctly");
     }
 
-    function test_03_LonLat_clone(t) {
+    function test_LonLat_clone(t) {
         t.plan( 3 );
         oldLonLat = new OpenLayers.LonLat(5,6);
         lonlat = oldLonLat.clone();
@@ -46,7 +46,7 @@
         t.eq( lonlat.lon, 5, "changing oldLonLat.lon doesn't change lonlat.lon");
     }
 
-    function test_04_LonLat_add(t) {
+    function test_LonLat_add(t) {
         t.plan( 8 );
 
         origLL = new OpenLayers.LonLat(10,100);
@@ -73,7 +73,7 @@
         t.ok(addpx == null, "returns null on erroneous add operation (null lat)");
     }
     
-    function test_06_LonLat_equals(t) {
+    function test_LonLat_equals(t) {
         t.plan( 5 );
         lonlat = new OpenLayers.LonLat(5,6);
 
@@ -93,7 +93,7 @@
 
     }
 
-    function test_07_LonLat_fromString(t) {
+    function test_LonLat_fromString(t) {
         t.plan( 2 );
         lonlat = OpenLayers.LonLat.fromString("6,5");
         t.ok( lonlat instanceof OpenLayers.LonLat, "new OpenLayers.LonLat returns LonLat object" );
@@ -116,7 +116,7 @@
         t.eq(Math.round(lonlat.lat), -10, "lat for inverse spherical mercator correct")
     }
     
-    function test_08_LonLat_wrapDateLine(t) {
+    function test_LonLat_wrapDateLine(t) {
         t.plan( 6 );
 
         var goodLL = new OpenLayers.LonLat(0,0);

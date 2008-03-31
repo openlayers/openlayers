@@ -4,7 +4,7 @@
   <script type="text/javascript">
     var box; 
     
-    function test_01_Box_constructor (t) {
+    function test_Box_constructor (t) {
         t.plan( 7 );
 
         OpenLayers.Marker.Box.prototype._setBorder = 
@@ -38,7 +38,7 @@
     }
 
 
-    function test_02_Box_setBorder(t) {
+    function test_Box_setBorder(t) {
         t.plan( 2 );
 
         var box = {
@@ -61,7 +61,7 @@
         t.eq(box.div.style.border, borderWidth + "px solid " + borderColor, "style correctly set with both good values");
 
     }
-    function test_03_Box_draw(t) {
+    function test_Box_draw(t) {
         t.plan( 5 );
 
         OpenLayers.Util._modifyDOMElement = 
@@ -97,7 +97,7 @@
 
     }
 
-    function test_04_Box_onScreen(t) {
+    function test_Box_onScreen(t) {
         t.plan( 2 );
 
         var map = new OpenLayers.Map("map");
@@ -128,7 +128,7 @@
         map.destroy();
     }
 
-    function test_05_Box_display(t) {
+    function test_Box_display(t) {
         t.plan( 2 );
 
         var box = {
@@ -148,7 +148,7 @@
         t.eq(box.div.style.display, "none", "style.display correctly set to 'none' when display(false)");
     }
 
-    function test_99_Box_destroy(t) {
+    function test_Box_destroy(t) {
         t.plan(3);
         
         OpenLayers.Marker.prototype._destroy = 

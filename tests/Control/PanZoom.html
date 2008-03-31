@@ -3,7 +3,7 @@
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript">
     var map; 
-    function test_01_Control_PanZoom_constructor (t) {
+    function test_Control_PanZoom_constructor (t) {
         t.plan( 4 );
     
         control = new OpenLayers.Control.PanZoom();
@@ -13,7 +13,7 @@
         t.eq( control.position.x, 100, "PanZoom X Set correctly."); 
         t.eq( control.position.y, 100, "PanZoom y Set correctly."); 
     }
-    function test_02_Control_PanZoom_addControl (t) {
+    function test_Control_PanZoom_addControl (t) {
         t.plan( 8 );
         map = new OpenLayers.Map('map');
         control = new OpenLayers.Control.PanZoom();
@@ -31,7 +31,7 @@
         t.eq( control2.div.style.top, "100px", "2nd control div is located correctly");
     }
 
-    function test_03_Control_PanZoom_control_events (t) {
+    function test_Control_PanZoom_control_events (t) {
 
         if ( !window.document.createEvent || OpenLayers.Util.getBrowserName() == "opera") {
             //ie can't simulate mouseclicks

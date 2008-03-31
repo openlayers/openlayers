@@ -18,7 +18,7 @@
         }
     }
 
-    function test_01_Layer_Google_constructor (t) {
+    function test_Layer_Google_constructor (t) {
         if(validkey) {
             t.plan( 4 );
             
@@ -40,7 +40,7 @@
         }
     }
 
-    function test_02_Layer_Google_isBaseLayer (t) {
+    function test_Layer_Google_isBaseLayer (t) {
         if(validkey) {
             t.plan(1);
             
@@ -54,7 +54,7 @@
         }
     }    
 
-    function test_03_Layer_Google_Translation_lonlat (t) {
+    function test_Layer_Google_Translation_lonlat (t) {
         
         if(validkey) {
             t.plan( 4 );
@@ -114,7 +114,7 @@
         }
     }
 
-    function test_04_Layer_Google_Translation_pixel (t) {
+    function test_Layer_Google_Translation_pixel (t) {
         if(validkey) {
             t.plan( 4 );
             
@@ -144,7 +144,7 @@
         }
     }
 
-    function test_99_Layer_destroy (t) {
+    function test_Layer_destroy (t) {
         if(validkey) {
             t.plan( 5 );    
     
@@ -215,7 +215,7 @@
                           window.location.host);
         }
     }    
-    function test_02_Layer_Google_isBaseLayer (t) {
+    function test_Layer_Google_isBaseLayer (t) {
         if(validkey) {
             t.plan(3);
             var map = new OpenLayers.Map( 'map' , 

@@ -5,7 +5,7 @@
 
     <script type="text/javascript">
 
-    function test_01_Element_visible(t) {
+    function test_Element_visible(t) {
         t.plan(3);
         
         var elem = {
@@ -24,7 +24,7 @@
         t.ok(!OpenLayers.Element.visible(elem), "element with style.display == none is not visible");
     }
     
-    function test_02_Element_toggle(t) {
+    function test_Element_toggle(t) {
         t.plan(2);
 
         var elem1 = {
@@ -45,7 +45,7 @@
         t.eq(elem2.style.display, "none", "shown element toggled to hidden");
     }
     
-    function test_03_Element_hide(t) {
+    function test_Element_hide(t) {
         t.plan(2);
 
         var elem1 = {
@@ -66,7 +66,7 @@
         t.eq(elem2.style.display, "none", "shown element hidden");
     }
     
-    function test_04_Element_show(t) {
+    function test_Element_show(t) {
         t.plan(2);
 
         var elem1 = {
@@ -87,7 +87,7 @@
         t.eq(elem2.style.display, "", "shown element stays shown");
     }
     
-    function test_05_Element_remove(t) {
+    function test_Element_remove(t) {
         t.plan(1);
 
         var elem = {
@@ -100,7 +100,7 @@
         OpenLayers.Element.remove(elem);
     }
     
-    function test_06_Element_getHeight(t) {
+    function test_Element_getHeight(t) {
         t.plan(1);
 
         var elem = {
@@ -110,7 +110,7 @@
         t.ok(OpenLayers.Element.getHeight(elem) == elem.offsetHeight, "offsetHeight returned");
     }
     
-    function test_07_Element_getDimensions(t) {
+    function test_Element_getDimensions(t) {
         t.plan(4);
         
       //shown
@@ -136,7 +136,7 @@
 
     }    
 
-    function test_08_Element_getStyle(t) {
+    function test_Element_getStyle(t) {
         t.plan(4);
 
     //tests for this function are not 100% complete... there is some funky

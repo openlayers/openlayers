@@ -4,7 +4,7 @@
   <script type="text/javascript">
     var icon; 
     
-    function test_01_Icon_constructor (t) {
+    function test_Icon_constructor (t) {
         t.plan( 4 );
         var size = new OpenLayers.Size(5,6);
         icon = new OpenLayers.Icon("", size);
@@ -13,7 +13,7 @@
         t.ok( icon.size.equals(size), "icon.size returns correct value" );
         t.eq( icon.url, "", "icon.url returns str object" );
     }
-    function test_02_Icon_clone (t) {
+    function test_Icon_clone (t) {
         t.plan( 4 );
         icon = new OpenLayers.Icon("a",new OpenLayers.Size(5,6));
         t.ok( icon instanceof OpenLayers.Icon, "new OpenLayers.Icon returns Icon object" );
@@ -24,7 +24,7 @@
         t.eq( cloned.url, "b", "cloned.url does change when edited" );
     }
 
-    function test_03_Marker_setOpacity(t) {
+    function test_Marker_setOpacity(t) {
         t.plan( 2 );
         
         icon = new OpenLayers.Icon("a",new OpenLayers.Size(5,6));

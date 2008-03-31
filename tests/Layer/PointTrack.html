@@ -5,7 +5,7 @@
   
     var name = "PointTrack Layer";
 
-    function test_01_Layer_PointTrack_constructor(t) {
+    function test_Layer_PointTrack_constructor(t) {
         t.plan(2);
 
         var layer = new OpenLayers.Layer.PointTrack(name);
@@ -14,7 +14,7 @@
 
     }
     
-    function test_02_Layer_PointTrack_addNodes(t) {
+    function test_Layer_PointTrack_addNodes(t) {
         t.plan(11);
     
         var layer = new OpenLayers.Layer.PointTrack(name,
@@ -58,7 +58,7 @@
 
     }
 
-    function test_99_Layer_PointTrack_destroy (t) {
+    function test_Layer_PointTrack_destroy (t) {
         t.plan(3);    
         layer = new OpenLayers.Layer.PointTrack(name);
         var map = new OpenLayers.Map('map');
