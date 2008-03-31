@@ -1,0 +1,74 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+        <link rel="stylesheet" href="../theme/default/framedCloud.css" type="text/css" />
+
+    <style type="text/css">
+        #map {
+            width: 100%;
+            height: 100%;
+            border: 1px solid black;
+        }
+        .olPopup p { margin:0px; }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var lon = 5;
+        var lat = 40;
+        var zoom = 5;
+        var map, layer;
+
+        function init(){
+            map = new OpenLayers.Map('map');
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                    "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+            map.addLayer(layer);
+            map.addLayer(new OpenLayers.Layer.GML("KML", "sundials.kml", 
+               {
+                format: OpenLayers.Format.KML, 
+                formatOptions: {
+                  extractStyles: true, 
+                  extractAttributes: true
+                }
+               }));
+             selectControl = new OpenLayers.Control.SelectFeature(map.layers[1],
+                {onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
+  
+            map.addControl(selectControl);
+            selectControl.activate();   
+            map.zoomToMaxExtent();
+        }
+        function onPopupClose(evt) {
+            selectControl.unselect(selectedFeature);
+        }
+        function onFeatureSelect(feature) {
+            selectedFeature = feature;
+            popup = new OpenLayers.Popup.FramedCloud("chicken", 
+                                     feature.geometry.getBounds().getCenterLonLat(),
+                                     new OpenLayers.Size(100,100),
+                                     "<div style='font-size:.8em'>"+feature.attributes.description+"</div>",
+                                     null, true, onPopupClose);
+            feature.popup = popup;
+            map.addPopup(popup);
+        }
+        function onFeatureUnselect(feature) {
+            map.removePopup(feature.popup);
+            feature.popup.destroy();
+            feature.popup = null;
+        }
+    </script>
+  </head>
+  <body onload="init()">
+      <h1 id="title">KML Layer Example</h1>
+
+      <div id="tags"></div>
+
+      <p id="shortdesc">
+          Demonstrates loading and displaying a KML file on top of a basemap.
+    </p>
+
+    <div id="map"></div>
+
+    <div id="docs"></div>
+  </body>
+</html>

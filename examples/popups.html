@@ -72,26 +72,15 @@
         }
         
         function mousedown(evt) {
-             // check to see if the popup was hidden by the close box
-             // if so, then destroy it before continuing
-            if (popup != null) {
-                if (!popup.visible()) {
-                    markers.map.removePopup(popup);
-                    popup.destroy();
-                    popup = null;
-                }
-            }
             if (popup == null) {
                 popup = feature.createPopup(true);
-                popup.setContentHTML("<a href='http://www.somethingconstructive.net' target='_blank'>click me</a>");
+                popup.setContentHTML("<div style='background-color:red; width:150;height:100'><a href='http://www.somethingconstructive.net' target='_blank'>click me</a></div>");
                 popup.setBackgroundColor("yellow");
                 popup.setOpacity(0.7);
                 markers.map.addPopup(popup);
             } else {
-                markers.map.removePopup(popup);
-                popup.destroy();
-                popup = null;
-            }
+                popup.toggle();
+               }
             OpenLayers.Event.stop(evt);
         }        
 
