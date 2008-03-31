@@ -2,6 +2,7 @@
   <head>
     <title>Open Popup on Layer.Vector</title> 
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="../theme/default/framedCloud.css" type="text/css" />
     <style type="text/css">
         #map {
             width: 800px;
@@ -20,9 +21,9 @@
         }
         function onFeatureSelect(feature) {
             selectedFeature = feature;
-            popup = new OpenLayers.Popup.Anchored("chicken", 
+            popup = new OpenLayers.Popup.FramedCloud("chicken", 
                                      feature.geometry.getBounds().getCenterLonLat(),
-                                     new OpenLayers.Size(250,75),
+                                     null,
                                      "<div style='font-size:.8em'>Feature: " + feature.id +"<br />Area: " + feature.geometry.getArea()+"</div>",
                                      null, true, onPopupClose);
             feature.popup = popup;
