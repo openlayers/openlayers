@@ -92,7 +92,7 @@
         });
     }
     function test_Layer_GeoRSS_popups (t) {
-        t.plan( 8 );    
+        t.plan( 4 );    
         layer = new OpenLayers.Layer.GeoRSS('Test Layer', georss_txt);
         var map = new OpenLayers.Map('map');
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
@@ -107,18 +107,14 @@
           t.eq(layer.markers[0].events.listeners['click'].length, 1, "Marker events has one object");
           layer.markers[0].events.triggerEvent('click', event);
           t.eq(map.popups.length, 1, "Popup opened correctly");
-          t.eq(map.popups[0].size.w, 250, "Popup sized correctly x");
-          t.eq(map.popups[0].size.h, 120, "Popup sized correctly y");
           layer.markers[1].events.triggerEvent('click', event);
           t.eq(map.popups.length, 1, "1st popup gone, 2nd Popup opened correctly");
-          t.eq(map.popups[0].size.w, 250, "Popup sized correctly x");
-          t.eq(map.popups[0].size.h, 120, "Popup sized correctly y");
         });
         
     }
     function test_Layer_GeoRSS_resizedPopups(t) {
         layer = new OpenLayers.Layer.GeoRSS('Test Layer', georss_txt, {'popupSize': new OpenLayers.Size(200,100)});
-        t.plan( 8 );    
+        t.plan( 4 );    
         var map = new OpenLayers.Map('map');
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
@@ -132,13 +128,9 @@
           t.eq(layer.markers[0].events.listeners['click'].length, 1, "Marker events has one object");
           layer.markers[0].events.triggerEvent('click', event);
           t.eq(map.popups.length, 1, "Popup opened correctly");
-          t.eq(map.popups[0].size.w, 200, "Popup sized correctly x");
-          t.eq(map.popups[0].size.h, 100, "Popup sized correctly y");
           map.popups[0].size.w=300;
           layer.markers[1].events.triggerEvent('click', event);
           t.eq(map.popups.length, 1, "1st popup gone, 2nd Popup opened correctly");
-          t.eq(map.popups[0].size.w, 200, "Popup sized correctly x");
-          t.eq(map.popups[0].size.h, 100, "Popup sized correctly y");
         });
     }    
 
