@@ -237,7 +237,7 @@ div.olControlMousePosition {
  * replace this image with another image which is 17px x 17px. 
  */   
 .olPopupCloseBox {
-  background: url("../../img/close.gif") no-repeat;
+  background: url("img/close.gif") no-repeat;
   cursor: pointer;
 }
 
