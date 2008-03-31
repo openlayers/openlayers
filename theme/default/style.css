@@ -229,4 +229,9 @@ div.olControlMousePosition {
     opacity: 0.50;
     font-size: 1px;
     filter: alpha(opacity=50);
-}    
+}   
+
+.olControlNoSelect  {
+  -moz-user-select: none; 
+} 
+
