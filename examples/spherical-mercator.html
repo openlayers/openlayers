@@ -121,7 +121,7 @@
             map.addControl(new OpenLayers.Control.EditingToolbar(vector));
             map.addControl(new OpenLayers.Control.Permalink());
             map.addControl(new OpenLayers.Control.MousePosition());
-            map.zoomToMaxExtent()
+            if (!map.getCenter()) {map.zoomToMaxExtent()}
         }
 
         function osm_getTileURL(bounds) {
