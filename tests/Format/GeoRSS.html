@@ -24,8 +24,7 @@
         var l = new OpenLayers.Geometry.LineString([point, point2]);
         var f = new OpenLayers.Feature.Vector(l);
         var data = parser.write([f]);
-        var data = data.replace(/<\?[^>]*\?>/, ''); // Remove XML Prolog
-        t.eq(data, '<rss xmlns="http://backend.userland.com/rss2"><item><title></title><description></description><georss:line xmlns:georss="http://www.georss.org/georss">45.68 -111.04 45.68 -112.04</georss:line></item></rss>', 'GeoRSS serializes a line correctly');
+        t.xml_eq(data, '<rss xmlns="http://backend.userland.com/rss2"><item><title></title><description></description><georss:line xmlns:georss="http://www.georss.org/georss">45.68 -111.04 45.68 -112.04</georss:line></item></rss>', 'GeoRSS serializes a line correctly');
     }
     function test_Format_GeoRSS_w3cgeo(t) { 
         t.plan(2);
@@ -53,8 +52,7 @@
             if (OpenLayers.Util.getBrowserName() == "opera") {
                 expected_result = expected_result.replace(/&gt;/g, ">");
             }
-            var out = out.replace(/<\?[^>]*\?>/, ''); // Remove XML Prolog
-            t.eq(out, expected_result, "Output gave expected value");
+            t.xml_eq(out, expected_result, "Output gave expected value");
         }
     }
     function test_Format_GeoRSS_gml_roundtrip(t) {
@@ -68,8 +66,7 @@
             if (OpenLayers.Util.getBrowserName() == "opera") {
                 expected_result = expected_result.replace(/&gt;/g, ">");
             }
-            var out = out.replace(/<\?[^>]*\?>/, ''); // Remove XML Prolog
-            t.eq(out, expected_result, "Output gave expected value");
+            t.xml_eq(out, expected_result, "Output gave expected value");
         }
     }
              
