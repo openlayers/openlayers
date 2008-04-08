@@ -31,28 +31,34 @@
             // the thumbail attribute of the rss item
             style = new OpenLayers.Style({externalGraphic: "${thumbnail}"});
             
-            // make the thumbnails larger when we select them
-            selectStyle = new OpenLayers.Style({pointRadius: 35});
-            
             // create a rule with a point symbolizer that will make the thumbnail
             // larger if the title of the rss item conatins "powder"
-            var rule = new OpenLayers.Rule.Comparison({
-                    type: OpenLayers.Rule.Comparison.LIKE,
+            var rule = new OpenLayers.Rule({
+                symbolizer: {pointRadius: 30},
+                filter: new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.LIKE,
                     property: "title",
-                    value: "*powder*",
-                    symbolizer: {"Point": {pointRadius: 30}}});
-            rule.value2regex("*");
+                    value: "*powder*"
+                })
+            });
+            rule.filter.value2regex("*");
             
             // If the above rule does not apply, use a smaller pointRadius.
             var elseRule = new OpenLayers.Rule({
-                    elseFilter: true,
-                    symbolizer: {"Point": {pointRadius: 20}}});
+                elseFilter: true,
+                symbolizer: {pointRadius: 20}
+            });
             
             style.addRules([rule, elseRule]);
             
-            markerLayer = new OpenLayers.Layer.Vector("", {styleMap: new OpenLayers.StyleMap({
-                "default": style,
-                "select": selectStyle})});
+            // Create a layer with a style map.  Giving the style map keys
+            // for "default" and "select" rendering intent.
+            markerLayer = new OpenLayers.Layer.Vector("", {
+                styleMap: new OpenLayers.StyleMap({
+                    "default": style,
+                    "select": new OpenLayers.Style({pointRadius: 35})
+                })
+            });
             map.addLayer(markerLayer);
             
             // control that will show a popup when clicking on a thumbnail
