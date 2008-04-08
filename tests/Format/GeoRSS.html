@@ -49,9 +49,6 @@
             var data = parser.read(feed);
             var out = parser.write(data);
             var expected_result = output[i];
-            if (OpenLayers.Util.getBrowserName() == "opera") {
-                expected_result = expected_result.replace(/&gt;/g, ">");
-            }
             t.xml_eq(out, expected_result, "Output gave expected value");
         }
     }
@@ -63,9 +60,6 @@
             var data = parser.read(feed);
             var out = parser.write(data);
             var expected_result = output_gml[i];
-            if (OpenLayers.Util.getBrowserName() == "opera") {
-                expected_result = expected_result.replace(/&gt;/g, ">");
-            }
             t.xml_eq(out, expected_result, "Output gave expected value");
         }
     }
