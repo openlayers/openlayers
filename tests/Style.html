@@ -27,20 +27,29 @@
         
         var style = new OpenLayers.Style(baseStyle);
         
-        var rule1 = new OpenLayers.Rule.FeatureId({
-                fids: ["1"],
-                symbolizer: {"Point": {fillColor: "green"}},
-                maxScaleDenominator: 500000});
-        var rule2 = new OpenLayers.Rule.FeatureId({
-                fids: ["1"],
-                symbolizer: {"Point": {fillColor: "yellow"}},
-                minScaleDenominator: 500000,
-                maxScaleDenominator: 1000000});
-        var rule3 = new OpenLayers.Rule.FeatureId({
-                fids: ["1"],
-                symbolizer: {"Point": {fillColor: "red"}},
-                minScaleDenominator: 1000000,
-                maxScaleDenominator: 2500000});
+        var rule1 = new OpenLayers.Rule({
+            symbolizer: {"Point": {fillColor: "green"}},
+            maxScaleDenominator: 500000,
+            filter: new OpenLayers.Filter.FeatureId({
+                fids: ["1"]
+            })
+        });
+        var rule2 = new OpenLayers.Rule({
+            symbolizer: {"Point": {fillColor: "yellow"}},
+            minScaleDenominator: 500000,
+            maxScaleDenominator: 1000000,
+            filter: new OpenLayers.Filter.FeatureId({
+                fids: ["1"]
+            })
+        });
+        var rule3 = new OpenLayers.Rule({
+            symbolizer: {"Point": {fillColor: "red"}},
+            minScaleDenominator: 1000000,
+            maxScaleDenominator: 2500000,
+            filter: new OpenLayers.Filter.FeatureId({
+                fids: ["1"]
+            })
+        });
         
         var feature = new OpenLayers.Feature.Vector(
                 new OpenLayers.Geometry.Point(3,5),
@@ -119,11 +128,14 @@
     
     function test_Style_context(t) {
         t.plan(1);
-        var rule = new OpenLayers.Rule.Comparison({
-            type: OpenLayers.Rule.Comparison.LESS_THAN,
-            property: "size",
-            value: 11,
-            symbolizer: {"Point": {externalGraphic: "${img1}"}}});
+        var rule = new OpenLayers.Rule({
+            symbolizer: {"Point": {externalGraphic: "${img1}"}},
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.LESS_THAN,
+                property: "size",
+                value: 11
+            })
+        });
         var style = new OpenLayers.Style();
         style.context = {
             "img1": "myImage.png"

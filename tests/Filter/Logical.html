@@ -1,0 +1,41 @@
+<html> 
+<head> 
+    <script src="../../lib/OpenLayers.js"></script> 
+    <script type="text/javascript">
+
+    function test_Logical_constructor(t) { 
+        t.plan(3); 
+         
+        var options = {'foo': 'bar'}; 
+        var filter = new OpenLayers.Filter.Logical(options); 
+        t.ok(filter instanceof OpenLayers.Filter.Logical, 
+             "new OpenLayers.Filter.Logical returns object" ); 
+        t.eq(filter.foo, "bar", "constructor sets options correctly"); 
+        t.eq(typeof filter.evaluate, "function", "filter has an evaluate function"); 
+    }
+
+    function test_Logical_destroy(t) {
+        t.plan(1);
+        
+        var filter = new OpenLayers.Filter.Logical();
+        filter.destroy();
+        t.eq(filter.filters, null, "filters array nulled properly");
+    }
+    
+    function test_Logical_evaluate(t) {
+        t.plan(1);
+        
+        var filter = new OpenLayers.Filter.Logical({
+                type: OpenLayers.Filter.Logical.NOT});
+        filter.filters.push(new OpenLayers.Filter());
+        
+        var feature = new OpenLayers.Feature.Vector();
+
+        t.eq(filter.evaluate(feature.attributes), false,
+                "feature evaluates to false correctly.");
+    }
+    </script> 
+</head> 
+<body> 
+</body> 
+</html> 

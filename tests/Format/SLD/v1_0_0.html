@@ -1,0 +1,158 @@
+<html> 
+<head> 
+    <script src="../../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+    
+    var sld =
+        '<StyledLayerDescriptor version="1.0.0" ' +
+            'xmlns="http://www.opengis.net/sld" ' +
+            'xmlns:gml="http://www.opengis.net/gml" ' +
+            'xmlns:ogc="http://www.opengis.net/ogc" ' +
+            'xmlns:xlink="http://www.w3.org/1999/xlink" ' +
+            'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+            'xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd">' +
+            '<NamedLayer>' + 
+                '<Name>AAA161</Name>' + 
+                '<UserStyle>' + 
+                    '<FeatureTypeStyle>' + 
+                        '<Rule>' + 
+                            '<Name>stortsteen</Name>' + 
+                            '<ogc:Filter>' +
+                                '<ogc:PropertyIsEqualTo>' +
+                                    '<ogc:PropertyName>CTE</ogc:PropertyName>' +
+                                    '<ogc:Literal>V0305</ogc:Literal>' +
+                                '</ogc:PropertyIsEqualTo>' +
+                            '</ogc:Filter>' + 
+                            '<MaxScaleDenominator>50000</MaxScaleDenominator>' + 
+                            '<PolygonSymbolizer>' + 
+                                '<Fill>' + 
+                                    '<CssParameter name="fill">#ffffff</CssParameter>' + 
+                                '</Fill>' + 
+                                '<Stroke>' + 
+                                    '<CssParameter name="stroke">#000000</CssParameter>' + 
+                                '</Stroke>' + 
+                            '</PolygonSymbolizer>' + 
+                        '</Rule>' + 
+                        '<Rule>' + 
+                            '<Name>betonbekleding</Name>' + 
+                            '<ogc:Filter>' +
+                                '<ogc:PropertyIsLessThan>' +
+                                    '<ogc:PropertyName>CTE</ogc:PropertyName>' +
+                                    '<ogc:Literal>1000</ogc:Literal>' +
+                                '</ogc:PropertyIsLessThan>' +
+                            '</ogc:Filter>' + 
+                            '<MaxScaleDenominator>50000</MaxScaleDenominator>' + 
+                            '<PolygonSymbolizer>' + 
+                                '<Fill>' + 
+                                    '<CssParameter name="fill">#ffff00</CssParameter>' + 
+                                '</Fill>' + 
+                                '<Stroke>' + 
+                                    '<CssParameter name="stroke">#0000ff</CssParameter>' + 
+                                '</Stroke>' + 
+                            '</PolygonSymbolizer>' + 
+                        '</Rule>' + 
+                    '</FeatureTypeStyle>' + 
+                '</UserStyle>' + 
+            '</NamedLayer>' + 
+            '<NamedLayer>' + 
+                '<Name>Second Layer</Name>' + 
+                '<UserStyle>' + 
+                    '<FeatureTypeStyle>' + 
+                        '<Rule>' + 
+                            '<Name>first rule second layer</Name>' + 
+                            '<ogc:Filter>' +
+                                '<ogc:Or>' +
+                                    '<ogc:PropertyIsBetween>' +
+                                        '<ogc:PropertyName>number</ogc:PropertyName>' +
+                                        '<ogc:LowerBoundary>' +
+                                            '<ogc:Literal>1064866676</ogc:Literal>' +
+                                        '</ogc:LowerBoundary>' +
+                                        '<ogc:UpperBoundary>' +
+                                            '<ogc:Literal>1065512599</ogc:Literal>' +
+                                        '</ogc:UpperBoundary>' +
+                                    '</ogc:PropertyIsBetween>' +
+                                    '<ogc:PropertyIsLike wildCard="*" singleChar="." escape="!">' +
+                                        '<ogc:PropertyName>cat</ogc:PropertyName>' +
+                                        '<ogc:Literal>*dog.food!*good</ogc:Literal>' +
+                                    '</ogc:PropertyIsLike>' +
+                                    '<ogc:Not>' +
+                                        '<ogc:PropertyIsLessThanOrEqualTo>' +
+                                            '<ogc:PropertyName>FOO</ogc:PropertyName>' +
+                                            '<ogc:Literal>5000</ogc:Literal>' +
+                                        '</ogc:PropertyIsLessThanOrEqualTo>' +
+                                    '</ogc:Not>' +
+                                '</ogc:Or>' +
+                            '</ogc:Filter>' + 
+                            '<MaxScaleDenominator>10000</MaxScaleDenominator>' + 
+                            '<PointSymbolizer>' +
+                                '<Graphic>' +
+                                    '<Mark>' +
+                                        '<WellKnownName>star</WellKnownName>' +
+                                        '<Fill>' + 
+                                            '<CssParameter name="fill">lime</CssParameter>' + 
+                                        '</Fill>' + 
+                                        '<Stroke>' + 
+                                            '<CssParameter name="stroke">olive</CssParameter>' + 
+                                            '<CssParameter name="stroke-width">2</CssParameter>' +
+                                        '</Stroke>' + 
+                                    '</Mark>' + 
+                                '</Graphic>' +
+                            '</PointSymbolizer>' +
+                        '</Rule>' + 
+                    '</FeatureTypeStyle>' + 
+                '</UserStyle>' + 
+            '</NamedLayer>' +
+        '</StyledLayerDescriptor>';
+
+    function test_read(t) {
+        t.plan(6);
+        
+        var parser = new OpenLayers.Format.SLD.v1_0_0();
+        var xml = new OpenLayers.Format.XML();
+        var obj = parser.read(xml.read(sld));
+        
+        // test the named layer count
+        var count = 0;
+        for(var key in obj.namedLayers) {
+            ++count;
+        }        
+        t.eq(count, 2, "correct number of named layers");
+        
+        var layer, style, rule;
+        
+        // check the first named layer
+        layer = obj.namedLayers["AAA161"];
+        t.ok(layer, "first named layer exists");
+        t.ok(layer.userStyles instanceof Array, "(AAA161) layer has array of user styles");
+        t.eq(layer.userStyles.length, 1, "(AAA161) first layer has a single user style");
+        
+        // check the first user style
+        style = layer.userStyles[0];
+        t.ok(style instanceof OpenLayers.Style, "(AAA161,0) user style is instance of OpenLayers.Style");
+        t.eq(style.rules.length, 2, "(AAA161,0) user style has 2 rules");
+        
+        // check the first rule
+        // etc.  I'm convinced read works, really wanted to test write (since examples don't test that)
+        // I'll add more tests here later.        
+
+    }
+    
+    function test_write(t) {
+        t.plan(1);
+
+        // read first - testing that write produces the SLD aboce
+        var parser = new OpenLayers.Format.SLD.v1_0_0();
+        var xml = new OpenLayers.Format.XML();
+        var obj = parser.read(xml.read(sld));
+        
+        var node = parser.write(obj);
+        t.xml_eq(node, sld, "SLD correctly written");
+        
+    }
+    
+
+    </script> 
+</head> 
+<body>
+</body> 
+</html> 
