@@ -49,23 +49,20 @@
         }
         function init(){
             var options = {
-                projection: "EPSG:26912",
-                units: 'm',
-                maxExtent: new OpenLayers.Bounds(455402, 4967657, 473295, 4984095),
-                maxResolution: 'auto',
-                maxZoomLevel: 8
+                maxExtent: new OpenLayers.Bounds(-110.994, 45.885, -110.950, 45.929),
+                maxResolution: "auto"
             };
             map = new OpenLayers.Map('map', options);
             var drg = new OpenLayers.Layer.WMS("Topo Maps",
                 "http://terraservice.net/ogcmap.ashx",
                 {layers: "DRG"});
             shade = new OpenLayers.Layer.WMS("Shaded Relief",
-                "http://ims.cr.usgs.gov/servlet19/com.esri.wms.Esrimap/USGS_EDC_Elev_NED_3",
+                "http://gisdata.usgs.gov/wmsconnector/com.esri.wms.Esrimap?ServiceName=USGS_EDC_Elev_NED_3",
                 {layers: "HR-NED.IMAGE", reaspect: "false", transparent: 'true'},
                 {isBaseLayer: false, opacity: 0.3});
             map.addLayers([drg, shade]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
-            map.setCenter(new OpenLayers.LonLat(464348.5,4975876), 1);
+            map.zoomToMaxExtent();
         }
     </script>
   </head>
