@@ -16,7 +16,7 @@
     }
     
     function test_Layer_Vector_addFeatures(t) {
-        t.plan(4);
+        t.plan(5);
     
         var layer = new OpenLayers.Layer.Vector(name);
 
@@ -43,6 +43,9 @@
         }
 
         layer.addFeatures([pointFeature], {silent: true});
+
+        var extent = layer.getDataExtent();
+        t.eq(extent.toBBOX(), "-111.04,45.68,-111.04,45.68", "extent from getDataExtent is correct");
     }
 
     function test_Layer_Vector_removeFeatures(t) {
