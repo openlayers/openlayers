@@ -11,6 +11,7 @@
             }
         </style>
         <script src="../lib/OpenLayers.js"></script>
+
         <script type="text/javascript">
             var map;
             function init(){
@@ -20,11 +21,15 @@
                     "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'},
                     {'attribution': 'Provided by <a href="http://labs.metacarta.com/">MetaCarta</a>'});
 
-            var jpl_wms = new OpenLayers.Layer.WMS( "NASA Global Mosaic",
-                "http://t1.hypercube.telascience.org/cgi-bin/landsat7", 
-                {layers: "landsat7"},{attribution:"Provided by Telascience"});
+                var jpl_wms = new OpenLayers.Layer.WMS( "NASA Global Mosaic",
+                    "http://t1.hypercube.telascience.org/cgi-bin/landsat7", 
+                    {layers: "landsat7"},{attribution:"Provided by Telascience"});
 
-                map.addLayers([ol_wms, jpl_wms]);
+                var vector = new OpenLayers.Layer.Vector("Simple Geometry",
+                              {attribution:"Vector Attibution in 2nd arg"});
+
+                map.addLayers([ol_wms, jpl_wms, vector]);
+
                 map.addControl(new OpenLayers.Control.LayerSwitcher());
                 map.addControl(new OpenLayers.Control.Attribution());
                 // map.setCenter(new OpenLayers.LonLat(0, 0), 0);
@@ -36,6 +41,7 @@
         <h1 id="title">Attribution Example</h1>
 
         <div id="tags">
+            copyright watermark logo attribution
         </div>
 
         <p id="shortdesc">
@@ -47,7 +53,9 @@
         <div id="docs">
             This is an example of how to add an attribution block to the OpenLayers window.  In order to use an
             attribution block, an attribution parameter must be set in each layer that requires attribution. In
-            addition, an attribution control must be added to the map.
+            addition, an attribution control must be added to the map, though one is added to all OpenLayers Maps by default. 
+            Be aware that this is a layer *option*: the options hash goes in
+            different places depending on the layer type you are using.  
         </div>
     </body>
 </html>
