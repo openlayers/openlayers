@@ -30,7 +30,7 @@ OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
                     ); 
                     this.handler = new OpenLayers.Handler.Click(
                         this, {
-                            'click': this.trigger,
+                            'click': this.trigger
                         }, this.handlerOptions
                     );
                 }, 
@@ -39,7 +39,7 @@ OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
                     var lonlat = map.getLonLatFromViewPortPx(e.xy);
                     alert("You clicked near " + lonlat.lat + " N, " +
                                               + lonlat.lon + " E");
-                },
+                }
 
             });
             var map;
