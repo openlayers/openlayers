@@ -16,7 +16,7 @@
     }
 
     function test_Layer_GeoRSS_constructor (t) {
-        t.plan( 5 );
+        t.plan( 7 );
         layer = new OpenLayers.Layer.GeoRSS('Test Layer', georss_txt );
         t.ok( layer instanceof OpenLayers.Layer.GeoRSS, "new OpenLayers.Layer.GeoRSS returns object" );
         t.eq( layer.location, georss_txt, "layer.location is correct" );
@@ -25,8 +25,12 @@
         t.delay_call( 1, function() {  
             t.eq( layer.markers.length, 40, "marker length is correct" );
             var ll = new OpenLayers.LonLat(-71.142197, 42.405696);
+            var theTitle = "Knitting Room";
+            var theDescription = 'This little shop is jammed full. Yarn, yarn everywhere. They make the most of every possible nook and cranny. I like this place also because they have a lot of different kinds of knitting needles in all different sizes. Also, the people who work here are younger and hipper than in the other stores I go to. I reccomend buying supplies here and then knitting your way through a good documentary at the Capitol Theater across the street.<br/>Address: 2 lake St, Arlington, MA <br/>Tags: knitting, yarn, pins and needles, handspun, hand dyed, novelty yarn, fancy, simple, young, hip, friendly, needles, addy, cute hats<br /><br /><a href="http://platial.com/place/90306">Map this on Platial</a><br /> <a href="http://platial.com/place_grab/90306">Grab this on Platial</a> ';
             t.ok( layer.markers[0].lonlat.equals(ll), "lonlat on first marker is correct" );
             t.eq( layer.name, "Crschmidt's Places At Platial", "Layer name is correct." );
+            t.eq( layer.features[0].data.title, theTitle);
+            t.eq( layer.features[0].data.description, theDescription);
         } );
     }
     
