@@ -127,7 +127,7 @@
     }
     
     function test_Style_context(t) {
-        t.plan(1);
+        t.plan(2);
         var rule = new OpenLayers.Rule({
             symbolizer: {"Point": {externalGraphic: "${img1}"}},
             filter: new OpenLayers.Filter.Comparison({
@@ -145,8 +145,18 @@
         feature.attributes = {size: 10};
         var styleHash = style.createSymbolizer(feature);
         t.eq(styleHash.externalGraphic, "myImage.png", "correctly evaluated rule and calculated property styles from a custom context");
-    }
-    
+        
+        // same as above, but without rule (#1526)
+        style = new OpenLayers.Style(
+            {externalGraphic: "${getExternalGraphic}"},
+            {context: {
+                getExternalGraphic: function(feature) {
+                    return "foo" + feature.attributes.size + ".png";
+                }
+            }});
+        t.eq(style.createSymbolizer(feature).externalGraphic, "foo10.png", "correctly evaluated symbolizer without rule");
+    };
+        
     function test_Style_findPropertyStyles(t) {
         t.plan(4);
         var rule1 = new OpenLayers.Rule({symbolizer: {
