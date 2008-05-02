@@ -16,7 +16,7 @@
     }
     
     function test_Layer_Vector_addFeatures(t) {
-        t.plan(5);
+        t.plan(8);
     
         var layer = new OpenLayers.Layer.Vector(name);
 
@@ -25,10 +25,19 @@
 
         layer.preFeatureInsert = function(feature) {
             t.ok(feature == pointFeature, "OpenLayers.Layer.Vector.addFeatures calls preFeatureInsert with the right arg");
-        }
+        };
         layer.onFeatureInsert = function(feature) {
             t.ok(feature == pointFeature, "OpenLayers.Layer.Vector.addFeatures calls onFeatureInsert with the right arg");
-        }
+        };
+        layer.events.register('beforefeatureadded', null, function(obj) {
+            t.ok(pointFeature == obj.feature, "OpenLayers.Layer.Vector.addFeatures triggers beforefeatureadded with correct feature passed to callback");
+        });
+        layer.events.register('featureadded', null, function(obj) {
+            t.ok(pointFeature == obj.feature, "OpenLayers.Layer.Vector.addFeatures triggers featureadded with correct feature passed to callback");
+        });
+        layer.events.register('featuresadded', null, function(obj) {
+            t.ok(pointFeature == obj.features[0], "OpenLayers.Layer.Vector.addFeatures triggers featuresadded with correct features passed to callback");
+        });
 
         layer.addFeatures([pointFeature]);
         
@@ -37,10 +46,19 @@
 
         layer.preFeatureInsert = function(feature) {
             t.fail("OpenLayers.Layer.Vector.addFeatures calls preFeatureInsert while it must not");
-        }
+        };
         layer.onFeatureInsert = function(feature) {
             t.fail("OpenLayers.Layer.Vector.addFeatures calls onFeatureInsert while it must not");
-        }
+        };
+        layer.events.register('beforefeatureadded', null, function(obj) {
+            t.fail("OpenLayers.Layer.Vector.addFeatures triggers beforefeatureadded while it must not");
+        });
+        layer.events.register('featureadded', null, function(obj) {
+            t.fail("OpenLayers.Layer.Vector.addFeatures triggers featureadded while it must not");
+        });
+        layer.events.register('featuresadded', null, function(obj) {
+            t.fail("OpenLayers.Layer.Vector.addFeatures triggers featuresadded while it must not");
+        });
 
         layer.addFeatures([pointFeature], {silent: true});
 
