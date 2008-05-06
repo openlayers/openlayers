@@ -4,7 +4,7 @@
  * Build:
 
      cd build
-     ./build.sh
+     ./build.py
      cd ..
 
  * Upload the result to the server: e.g.
