@@ -3,13 +3,54 @@
     <head>
         <title>OL Docs</title>
         <style type="text/css">
-            html, body {margin: 0;padding: 0.5em 1em;font: 0.9em Verdana, Arial, sans serif;}
-            .exampleContainer{width:90%; padding:5px; border-bottom:1px solid grey; }
-            .exampleNumber{display:inline; font-weight:bold; color:#333; }
-            .exampleTitle{display:inline; font-weight:bold; color:#333; }
-            .exampleName{display:inline; color:#333; }
-            .exampleDescription{color:#222; padding:3px; font-size:1.2em; }
-            .exampleClasses{font-size:.7em; color:grey;display:none;}
+            html, body {
+                height: 100%;
+                overflow: hidden;
+                margin: 0;
+                padding: 0;
+                font: 0.9em Verdana, Arial, sans serif;
+            }
+            .ex_container{
+                border-bottom: 1px solid grey;
+            }
+            .ex_container a {
+                padding: 5px 1em;
+                display: block;
+            }
+            .ex_container a:hover {
+                background-color: #eeeeee;
+            }
+            .ex_title{
+                display: inline;
+                font-weight: bold;
+                color: #333;
+            }
+            .ex_description{
+                color: #222;
+                padding: 3px;
+            }
+            .ex_classes{
+                font-size: .7em;
+                color: grey;
+                display: none;
+            }
+            #toc {
+                width: 30%;
+                height: 100%;
+                overflow: auto;
+            }
+            #instructions {
+                padding: 0.5em 1em 0;
+            }
+            #exwin {
+                position: absolute;
+                top: 0;
+                left: 30%;
+                width: 70%;
+                height: 100%;
+                border: 1px solid grey;
+                margin: 0;
+            }
         </style>
         <script type="text/javascript" src="./Jugl.js"></script>
         <script type="text/javascript" src="examples.js"></script>
@@ -19,35 +60,35 @@
             var Jugl = window[uri];
             // this part does the actual template processing
             window.onload = function() {
-                var template = new Jugl.Template("basic");
-                template.process();
+                var template = new Jugl.Template("template");
+                var node = template.process(null, true);
+                document.getElementById("examples").appendChild(node);
+                document.getElementById("exwin").src = "../examples/example.html";
             }
         </script>
     </head>
     <body>
-        <div id="basic" style="margin: 0 auto;">
-            <div class="exampleContainer" jugl:repeat="example examples">
-                <div class="exampleNumber" jugl:content="repeat.example.number">
-                    Example # goes here
-                </div>
-                <div class="exampleTitle" jugl:content="example.title">
-                    Title goes here
-                </div>
-                <div class="exampleName">
-                    <a jugl:content="example.example"
-                     jugl:attributes="href example.link">
-                    Example Filename and Link
+        <div id="toc">
+            <p id="instructions">Click an example link below to view on the right.</p>
+            <div id="examples"></div>
+        </div>
+        <iframe id="exwin" name="exwin"></iframe>
+        
+        <div style="display: none;">
+            <div id="template">
+                <div class="ex_container" jugl:repeat="example examples">
+                    <a jugl:attributes="href example.link" target="exwin">
+                        <h3 class="ex_title">
+                            <span jugl:replace="example.title">title</span><br />
+                            <span class="exampleName" jugl:content="'(' + example.example + ')'">filename</span>
+                        </h3>
+                        <div class="ex_description" jugl:content="example.shortdesc">
+                            Short Description goes here
+                        </div>
+                        <p class="ex_classes" jugl:content="example.classes">
+                            Related Classes go here
+                        </p>
                     </a>
-                </div>
-                <div class="exampleDescription">
-                    <span jugl:content="example.shortdesc">
-                    Short Description goes here
-                    </span>
-                </div>
-                <div class="exampleClasses" >
-                    <span jugl:content="example.classes">
-                    Related Classes go here
-                    </span>
                 </div>
             </div>
         </div>
