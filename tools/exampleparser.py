@@ -81,7 +81,32 @@ def parseHtml(html,ids):
     d['classes'] = classes
     return d
     
-
+def wordIndex(examples):
+    """
+    Create an inverted index based on words in title and shortdesc.  Keys are
+    lower cased words.  Values are dictionaries with example index keys and
+    count values.
+    """
+    index = {}
+    unword = re.compile("\\W+")
+    keys = ["shortdesc", "title"]
+    for i in range(len(examples)):
+        for key in keys:
+            text = examples[i][key]
+            if text:
+                words = unword.split(text)
+                for word in words:
+                    if word:
+                        word = word.lower()
+                        if index.has_key(word):
+                            if index[word].has_key(i):
+                                index[word][i] += 1
+                            else:
+                                index[word][i] = 1
+                        else:
+                            index[word] = {i: 1}
+    return index
+    
 if __name__ == "__main__":
 
     if missing_deps:
@@ -114,9 +139,12 @@ if __name__ == "__main__":
         exampleList.append(tagvalues)
         
     exampleList.sort(key=lambda x:x['example'].lower())
-    json = simplejson.dumps(exampleList)
+    
+    index = wordIndex(exampleList)
+
+    json = simplejson.dumps({"examples": exampleList, "index": index})
     #give the json a global variable we can use in our js.  This should be replaced or made optional.
-    json = 'var examples=' + json 
+    json = 'var info=' + json 
     outFile.write(json)
     outFile.close()
     print 'complete'

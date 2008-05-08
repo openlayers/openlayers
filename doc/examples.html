@@ -1,19 +1,21 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN">
 <html>
     <head>
-        <title>OL Docs</title>
+        <title>OpenLayers Examples</title>        
+        <link rel="stylesheet" href="../examples/style.css" type="text/css" />
         <style type="text/css">
             html, body {
                 height: 100%;
                 overflow: hidden;
                 margin: 0;
                 padding: 0;
-                font: 0.9em Verdana, Arial, sans serif;
+                line-height: 1.25em;
             }
             .ex_container{
                 border-bottom: 1px solid grey;
             }
             .ex_container a {
+                text-decoration: none;
                 padding: 5px 1em;
                 display: block;
             }
@@ -24,6 +26,11 @@
                 display: inline;
                 font-weight: bold;
                 color: #333;
+            }
+            .ex_filename {
+                font-weight: normal;
+                font-size: 0.8em;
+                color: #ccc
             }
             .ex_description{
                 color: #222;
@@ -56,32 +63,94 @@
         <script type="text/javascript" src="examples.js"></script>
         <script type="text/javascript">
             // import
-            var uri = "http://jugl.tschaub.net/trunk/lib/Jugl.js";
-            var Jugl = window[uri];
-            // this part does the actual template processing
-            window.onload = function() {
-                var template = new Jugl.Template("template");
-                var node = template.process(null, true);
-                document.getElementById("examples").appendChild(node);
-                document.getElementById("exwin").src = "../examples/example.html";
+            var Jugl = window["http://jugl.tschaub.net/trunk/lib/Jugl.js"];
+            var template, target;
+
+            function listExamples(examples) {
+                var node = template.process({examples: examples}, true);
+                target.innerHTML = "";
+                target.appendChild(node);
+                document.getElementById("count").innerHTML = "(" + examples.length + ")";
             }
+            
+            var timerId;
+            function inputChange() {
+                if(timerId) {
+                    window.clearTimeout(timerId);
+                }
+                var text = this.value;
+                timerId = window.setTimeout(function() {
+                    filterList(text);
+                }, 500);
+            }
+            
+            function filterList(text) {
+                var examples;
+                if(text.length < 2) {
+                    examples = info.examples;
+                } else {
+                    var words = text.split(/\W+/);
+                    var scores = {};
+                    for(var i=0; i<words.length; ++i) {
+                        var word = words[i].toLowerCase()
+                        var dict = info.index[word];
+                        if(dict) {
+                            for(exIndex in dict) {
+                                var count = dict[exIndex];
+                                if(scores[exIndex]) {
+                                    scores[exIndex] += count;
+                                } else {
+                                    scores[exIndex] = count;
+                                }
+                            }
+                        }
+                    }
+                    examples = [];
+                    for(var j in scores) {
+                        var ex = info.examples[j];
+                        ex.score = scores[j];
+                        examples.push(ex);
+                    }
+                    // sort examples by descending score
+                    examples.sort(function(a, b) {
+                        return (b.score - a.score);
+                    });
+                }
+                listExamples(examples);
+            }
+            
+            function showAll() {
+                document.getElementById("keywords").value = "";
+                listExamples(info.examples);
+            }
+            window.onload = function() {
+                template = new Jugl.Template("template");
+                target = document.getElementById("examples");
+                listExamples(info.examples);
+                document.getElementById("exwin").src = "../examples/example.html";
+                document.getElementById("keywords").onkeyup = inputChange
+            };
         </script>
     </head>
     <body>
         <div id="toc">
-            <p id="instructions">Click an example link below to view on the right.</p>
+            <p id="instructions">
+                <label for="keywords">Filter by keywords</label>
+                <input type="text" id="keywords" /><br />
+                <span id="count"></span>
+                <a href="javascript:void showAll();">show all</a>
+            </p>
             <div id="examples"></div>
         </div>
-        <iframe id="exwin" name="exwin"></iframe>
-        
+        <iframe id="exwin" name="exwin"></iframe>        
         <div style="display: none;">
             <div id="template">
                 <div class="ex_container" jugl:repeat="example examples">
                     <a jugl:attributes="href example.link" target="exwin">
-                        <h3 class="ex_title">
+                        <h5 class="ex_title">
                             <span jugl:replace="example.title">title</span><br />
-                            <span class="exampleName" jugl:content="'(' + example.example + ')'">filename</span>
-                        </h3>
+                            <span class="ex_filename" jugl:content="'(' + example.example + ')'">filename</span>
+                        </h5>
                         <div class="ex_description" jugl:content="example.shortdesc">
                             Short Description goes here
                         </div>
