@@ -14,15 +14,17 @@
             var map, layer;
 
             function init(){
-                map = new OpenLayers.Map( 'map', { controls: [] } );
                 layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
                         "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
-                map.addLayer(layer);
     
                 vlayer = new OpenLayers.Layer.Vector( "Editable" );
-                map.addLayer(vlayer);
-                map.addControl(new OpenLayers.Control.PanZoomBar());
-                map.addControl(new OpenLayers.Control.EditingToolbar(vlayer));
+                map = new OpenLayers.Map( 'map', {
+                    controls: [
+                        new OpenLayers.Control.PanZoom(),
+                        new OpenLayers.Control.EditingToolbar(vlayer)
+                    ]
+                });
+                map.addLayers([layer, vlayer]);
     
                 map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
             }
