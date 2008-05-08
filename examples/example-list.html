@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>OpenLayers Examples</title>        
-        <link rel="stylesheet" href="../examples/style.css" type="text/css" />
+        <link rel="stylesheet" href="style.css" type="text/css" />
         <style type="text/css">
             html, body {
                 height: 100%;
@@ -59,8 +59,8 @@
                 margin: 0;
             }
         </style>
-        <script type="text/javascript" src="./Jugl.js"></script>
-        <script type="text/javascript" src="examples2.js"></script>
+        <script type="text/javascript" src="Jugl.js"></script>
+        <script type="text/javascript" src="example-list.js"></script>
         <script type="text/javascript">
             // import
             var Jugl = window["http://jugl.tschaub.net/trunk/lib/Jugl.js"];
@@ -157,8 +157,8 @@
     <body>
         <div id="toc">
             <p id="instructions">
-                <label for="keywords">Filter by keywords</label>
-                <input type="text" id="keywords" /><br />
+                <label for="keywords">Filter by keywords</label><br />
+                <input type="text" id="keywords" />
                 <span id="count"></span>
                 <a href="javascript:void showAll();">show all</a>
             </p>
