@@ -116,7 +116,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         outFile = open(sys.argv[1],'w')
     else:
-        outFile = open('../doc/examples.js','w')
+        outFile = open('../doc/examples2.js','w')
     
     examplesLocation = '../examples'
     print 'Reading examples from %s and writing out to %s' % (examplesLocation, outFile.name)
