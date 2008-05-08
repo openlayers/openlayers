@@ -67,9 +67,12 @@
             var template, target;
 
             function listExamples(examples) {
-                var node = template.process({examples: examples}, true);
                 target.innerHTML = "";
-                target.appendChild(node);
+                var node = template.process({
+                    context: {examples: examples},
+                    clone: true,
+                    parent: target
+                });
                 document.getElementById("count").innerHTML = "(" + examples.length + ")";
             }
             
