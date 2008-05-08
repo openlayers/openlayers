@@ -1,13 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-    <style type="text/css">
-        #map {
-            width: 800px;
-            height: 475px;
-            border: 1px solid black;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css" type="text/css" />
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var lon = 5;
@@ -62,6 +56,7 @@
     </script>
   </head>
   <body onload="init()">
-    <div id="map"></div>
+    <h1 id="title">GeoJSON Example</h1>
+    <div id="map" class="smallmap"></div>
   </body>
 </html>

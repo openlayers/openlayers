@@ -1,14 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-    <style type="text/css">
-        #map {
-            width: 100%;
-            height: 512px;
-            border: 1px solid gray;
-        }
-    </style>
-
+    <link rel="stylesheet" href="style.css" type="text/css" />
     <script src='http://maps.google.com/maps?file=api&amp;v=2.82&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
     <script src='http://dev.virtualearth.net/mapcontrol/v3/mapcontrol.js'></script>
     <script src="http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=euzuro-openlayers"></script>
@@ -76,8 +69,8 @@
     </script>
   </head>
   <body onload="init()">
-    <h2>OpenLayers With Responsive Dragging</h3>
+    <h1 id="title">OpenLayers With Responsive Dragging</h1>
     <h3>Uses Google Maps v2.82</h2>
-    <div id="map"></div>
+    <div id="map" class="smallmap"></div>
   </body>
 </html>

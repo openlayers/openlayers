@@ -1,14 +1,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-      <title>OpenLayers Tiled Map Service Example</title>
+    <title>OpenLayers Tiled Map Service Example</title>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-    <style type="text/css">
-        #map {
-            width: 800px;
-            height: 475px;
-            border: 1px solid black;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css" type="text/css" />
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var lon = 5;
@@ -46,7 +40,7 @@
         Demonstrate the initialization and modification of a Tiled Map Service layer.
     </p>
 
-    <div id="map"></div>
+    <div id="map" class="smallmap"></div>
 
     <div id="docs">
         URL of TMS (Should end in /): <input type="text" id="url" size="60" value="http://labs.metacarta.com/wms-c/Basic.py/" /> layer_name <input type="text" id="layer" value="satellite" /> <select id="type"><option>jpg</option><option>png</option></select> <input type="submit" onclick="addTMS()"/><br />

@@ -2,12 +2,8 @@
   <head>
     <title>SelectFeature Control on Layer.Vector</title> 
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
     <style type="text/css">
-        #map {
-            width: 512px;
-            height: 350px;
-            border: 1px solid gray;
-        }
         #controlToggle li {
             list-style: none;
         }
@@ -87,7 +83,7 @@
       Select a feature on hover or click with the Control.SelectFeature on a
       vector layer.
     </p>  
-    <div id="map"></div>
+    <div id="map" class="smallmap"></div>
     <ul id="controlToggle">
         <li>
             <input type="radio" name="type" value="none" id="noneToggle"

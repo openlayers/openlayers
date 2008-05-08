@@ -1,12 +1,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <title>OpenLayers Navigation History Example</title>
-        <style type="text/css">
-            #map {
-                width: 512px;
-                height: 256px;
-                border: 1px solid gray;
-            }
+        <link rel="stylesheet" href="style.css" type="text/css" />
+        <style>
             #panel {
                 right: 0px;
                 height: 30px; 
@@ -16,7 +12,6 @@
                 float: left;
                 margin: 5px;
             }
-                
         </style>
         <script src="../lib/OpenLayers.js"></script>
         <script type="text/javascript">
@@ -68,7 +63,7 @@
             A control for zooming to previous and next map extents.
         </p>
 
-        <div id="map"></div>
+        <div id="map" class="smallmap"></div>
         Map navigation history controls<div id="panel"></div>
         <div id="docs"></div>
     </body>

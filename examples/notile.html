@@ -1,13 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-    <style type="text/css">
-        #mapDiv {
-            width: 400px;
-            height: 400px;
-            border: 1px solid black;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css" type="text/css" />
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var map;
@@ -35,7 +29,7 @@
       Create an untiled WMS layer using the singleTile: true, option or the deprecated
       WMS.Untiled layer.
     </p>  
-    <div id="mapDiv"></div>
+    <div id="mapDiv" class="smallmap"></div>
     <p> The first layer is an old OpenLayers.Layer.WMS.Untiled layer, using 
         a default ratio value of 1.5.
     <p> The second layer is an OpenLayers.Layer.WMS layer with singleTile set

@@ -2,12 +2,8 @@
   <head>
 
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
     <style type="text/css">
-    body {
-    border: 0px;
-    margin: 0px;
-    padding: 0px;
-    }
     #map {
     width: 100%;
     height: 100%;
@@ -63,7 +59,7 @@
   <p id="shortdesc">
       Use different (not default) projections with your map 
   </p>
-    <div id="map"></div>
+    <div id="map" class="smallmap"></div>
     <p>When using alternative projections, you still use OpenLayers.LonLat objects, even though
        the properties are actually X/Y values at that point.</p>
 </body>

@@ -2,13 +2,7 @@
   <head>
     <title>MapServer Layer</title>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-    <style type="text/css">
-        #map {
-            width: 800px;
-            height: 475px;
-            border: 1px solid black;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css" type="text/css" />
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var lon = 5;
@@ -33,7 +27,7 @@
     <div id="title">MapServer Layer</div>
     <div id="tags"></div>
     <div id="shortdesc">Shows MapServer Layer</div>
-    <div id="map"></div>
+    <div id="map" class="smallmap"></div>
     <div id="docs">
         This is an example of using a MapServer Layer with a gutter parameter.  The gutter parameter is used to try to limit the edge effects between tiles.
     </div>

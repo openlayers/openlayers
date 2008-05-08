@@ -1,13 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>OpenLayers Transitions Example</title>
-    <style type="text/css">
-        #mapDiv {
-            width: 400px;
-            height: 400px;
-            border: 1px solid black;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css" type="text/css" />
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var map;
@@ -50,7 +44,7 @@
     <p id="shortdesc">
         Demonstrates the use of transition effects in tiled and untiled layers.
     </p>
-    <div id="mapDiv"></div>
+    <div id="mapDiv" class="smallmap"></div>
     <div id="docs">
         There are two transitions that are currently implemented: null (the
         default) and 'resize'.  The default transition effect is used when no

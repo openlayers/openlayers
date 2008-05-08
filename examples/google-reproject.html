@@ -2,14 +2,7 @@
   <head>
     <title>OpenLayers Google with Overlay Example</title>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-    <style type="text/css">
-        #map {
-            width: 512px;
-            height: 512px;
-            border: 1px solid black;
-        }
-    </style>
-
+    <link rel="stylesheet" href="style.css" type="text/css" />
     <!-- this gmaps key generated for http://openlayers.org/dev/ -->
     <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
     <script src="../lib/OpenLayers.js"></script>
@@ -38,7 +31,6 @@
 
             map.setCenter(new OpenLayers.LonLat(10.205188,48.857593), 5);
             map.addControl( new OpenLayers.Control.LayerSwitcher() );
-            map.addControl( new OpenLayers.Control.PanZoomBar() );
         }
     </script>
   </head>
@@ -51,7 +43,7 @@
         Demonstrate a Google basemap used with boundary overlay layer.
     </p>
 
-    <div id="map"></div>
+    <div id="map" class="smallmap"></div>
 
     <div id="docs">
         An overlay in a Geographic projection can be stretched to somewhat

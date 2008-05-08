@@ -1,13 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-    <style type="text/css">
-        #map {
-            width: 512px;
-            height: 512px;
-            border: 1px solid black;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css" type="text/css" />
     <title>Scribble on a WFS</title>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
@@ -70,7 +64,7 @@
    <p id="shortdesc">
         Shows how you can draw features and save to GeoServer.
    </p>
-   <div id="map"></div>
+   <div id="map" class="smallmap"></div>
 
    <div id="docs">
    Using GeoServer and the WFS-T support in OpenLayers, draw on a map, save the results, reload the page and see the results still there!

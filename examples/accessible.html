@@ -2,13 +2,8 @@
     <head>
         <title>OpenLayers Accessible Example</title>
         <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-        
+        <link rel="stylesheet" href="style.css" type="text/css" />
         <style type="text/css">
-            #map {
-                width: 512px;
-                height: 512px;
-                border: 1px solid #eee;
-            }
             table {
                 border: 1 px solid white;
                 padding: 0;
@@ -90,7 +85,7 @@
                             pan <em>w</em>est
                         </a>
                     </td>
-                    <td id="map"></td>
+                    <td id="map" class="smallmap"></td>
                     <td>
                         <a href="javascript: void map.pan(map.getSize().w / 4, 0);"
                            accesskey="e">

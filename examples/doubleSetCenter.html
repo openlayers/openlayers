@@ -4,12 +4,7 @@
        
         <script src="../lib/OpenLayers.js"></script>
         <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-        <style type="text/css">
-            #map {
-                width:512px;
-                height:521px;
-            }
-        </style>
+        <link rel="stylesheet" href="style.css" type="text/css" />
     </head>
     <body>
         <h1 id="title">Double Set Center Example</h1>
@@ -20,7 +15,7 @@
             Demonstrate the behavior of two calls to set the center after instatiating the layer object.
         </p>
 
-        <div id="map"></div>
+        <div id="map" class="smallmap"></div>
     
         <script defer="defer" type="text/javascript">
             var map = new OpenLayers.Map('map');

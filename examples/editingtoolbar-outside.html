@@ -2,17 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
     <style type="text/css">
         .olControlEditingToolbar  {
             float:left;
             right: 0px;
             height: 30px; 
             width: 150px;
-        }
-        #map {
-            width: 512px;
-            height: 256px;
-            border: 1px solid gray;
         }
     </style>
     <script src="../lib/Firebug/firebug.js"></script>
@@ -45,8 +41,8 @@
     </script>
   </head>
   <body onload="init()">
-    <h3>OpenLayers EditingToolbar Outside Viewport</h3>
-    <div id="map"></div>
+    <h1 id="title">OpenLayers EditingToolbar Outside Viewport</h1>
+    <div id="map" class="smallmap"></div>
     <div id="panel" class="olControlEditingToolbar"></div>
   </body>
 </html>

@@ -1,13 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-    <style type="text/css">
-        #map {
-            width: 512px;
-            height: 400px;
-            border: 1px solid black;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css" type="text/css" />
     <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
@@ -118,7 +112,7 @@
       All kinds of ways to create and interact with Popups.
   </p>
 
-  <div id="map"></div>
+  <div id="map" class="smallmap"></div>
     <p>If you open an anchoredbubble and switch to google, it shouldn't crash. If it does, don't release OpenLayers.</p>  
     <div style="background-color:purple" onclick="add()"> click to add Popup to map</div>
     <div style="background-color:green" onclick="addMarker()"> click to add a Marker with an AnchoredBubble popup</div>

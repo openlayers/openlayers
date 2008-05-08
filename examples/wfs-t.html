@@ -1,13 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-    <style type="text/css">
-        #map {
-            width: 512px;
-            height: 512px;
-            border: 1px solid black;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css" type="text/css" />
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var map, layer;
@@ -74,7 +68,7 @@
 
     <a href="#" onclick="map.layers[2].commit();return false">Save Roads</a><br />
     <a href="#" onclick="map.layers[3].commit();return false">Save Cities</a><br />
-    <div id="map"></div>
+    <div id="map" class="smallmap"></div>
 
   <div id="docs">
       This is an example of using a WFS layer type. Note that it requires a 

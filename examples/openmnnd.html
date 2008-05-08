@@ -1,16 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-    <style type="text/css">
-        #map {
-            width: 600px;
-            height: 475px;
-            border: 1px solid black;
-        }
-        #info {
-            float: right;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css" type="text/css" />
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var map, layer;
@@ -118,27 +109,8 @@
     </script>
   </head>
   <body onload="init()">
-    <div id="info">
-      <ul>
-        <li>Streams: Feature Count <span id="stream_features">0</span></li>
-        <li>Plat: Feature Count <span id="plat_features">0</span></li>
-        <li>Roads: Feature Count <span id="road_features">0</span></li>
-      </ul>
-      <div id="feature_info">
-      </div>
-      <ul>
-        <li>
-            <input type="radio" name="type" value="selectRoad" id="selectToggle" onclick="toggleControl(this);"  />
-            <label for="selectToggle">select road</label>
-        </li>
-        <li>
-            <input type="radio" name="type" value="selectPlat" id="selectToggle" onclick="toggleControl(this);" checked=checked />
-            <label for="selectToggle">select polygon</label>
-        </li>
-    </ul>
-    </div>
     <p id="shortdesc">This example shows the use of a WFS service rendered using the OpenLayers vector library.</p>
-    <div id="map"></div>
+    <div id="map" class="smallmap"></div>
     <div id="docs">
             <p>
             This is an example that shows rendering a WFS service using OpenLayer vectors in the browser. The OpenLayers code will download the GML
@@ -157,6 +129,25 @@
             There are a number of properties that can be set for each WFS layer, such color and line weight using style properties such as strokeColor and strokeWidth.
             You can also get feature attributes from the WFS services using the extractAttribute property.  View the source to see the example code.
             </p>
+    </div>
+    <div id="info">
+      <ul>
+        <li>Streams: Feature Count <span id="stream_features">0</span></li>
+        <li>Plat: Feature Count <span id="plat_features">0</span></li>
+        <li>Roads: Feature Count <span id="road_features">0</span></li>
+      </ul>
+      <div id="feature_info">
+      </div>
+      <ul>
+        <li>
+            <input type="radio" name="type" value="selectRoad" id="selectToggle" onclick="toggleControl(this);"  />
+            <label for="selectToggle">select road</label>
+        </li>
+        <li>
+            <input type="radio" name="type" value="selectPlat" id="selectToggle" onclick="toggleControl(this);" checked=checked />
+            <label for="selectToggle">select polygon</label>
+        </li>
+    </ul>
     </div>
   </body>
 </html>

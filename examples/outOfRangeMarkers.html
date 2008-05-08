@@ -2,11 +2,10 @@
 <head>
     <title>Using maxResolution to control overlays</title>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-    <style type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <style>
         #map {
-            width: 650px;
-            height: 550px;
-            border: 1px solid black;
+            height: 350px;
         }
     </style>
       <!-- this gmaps key generated for http://openlayers.org/dev/ -->
@@ -20,17 +19,17 @@
         function init(){
             
             // Variables
-            map = new OpenLayers.Map('map', { controls: [] });
+            map = new OpenLayers.Map('map', {
+                controls: [
+                    new OpenLayers.Control.PanZoomBar(),
+                    new OpenLayers.Control.LayerSwitcher({'ascending':false}),
+                    new OpenLayers.Control.MousePosition(),
+                    new OpenLayers.Control.Navigation()
+                ]
+            });
             var lon = 35;
             var lat = -6;
             var zoom = 6;
-            var map, layer;
-
-            // Map Controls
-            map.addControl(new OpenLayers.Control.PanZoomBar());
-            map.addControl(new OpenLayers.Control.MouseToolbar());
-            map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending':false}));
-            map.addControl(new OpenLayers.Control.MousePosition());
 
 
             // Map Layers
@@ -40,8 +39,7 @@
             var MarkersLayer2 = new OpenLayers.Layer.Text( "Region info", {location: "outOfRangeMarkers.txt", maxResolution: 0.02});
 
             // Add Layers
-            map.addLayers([GMapsHybr, GMapsStreets, GMapsSat, MarkersLayer2]);
-            
+            map.addLayers([GMapsHybr, GMapsStreets, GMapsSat, MarkersLayer2]);            
 
             // Visual
             map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
@@ -57,7 +55,7 @@
       See how to control the maximum resolution for a markers layer, 
       causing it to not be displayed beyond a certain point.
     </p>  
-    <div id="map"></div>
+    <div id="map" class="smallmap"></div>
 
   </body>
 </html>

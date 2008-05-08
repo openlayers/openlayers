@@ -1,13 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-    <style type="text/css">
-        #map {
-            width: 800px;
-            height: 475px;
-            border: 1px solid black;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css" type="text/css" />
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var lon = 5;
@@ -37,7 +31,7 @@
       Load your tiles faster by pointing to the same server, but with different urls
   </p>
 
-    <div id="map"></div>
+    <div id="map" class="smallmap"></div>
     <div id="docs">
     Browsers typically limit the number of concurrent requests to the same server, based on hostname. In order to ake tiles load more quickly, it often makes sense to distribute requests over multiple hostnames to achieve more concurrency. Typically, browsers perform best with 3 different hostnames -- your performance may vary. (For example, if your server can't handle more than 2 requests simultaneously, then additional hostnames will not help you.)    
    </div>

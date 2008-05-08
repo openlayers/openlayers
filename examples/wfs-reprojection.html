@@ -1,13 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-    <style type="text/css">
-        #map {
-            width: 550px;
-            height: 450px;
-            border: 1px solid black;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css" type="text/css" />
     <script src="../lib/OpenLayers.js"></script>
     <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
     <script type="text/javascript">
@@ -84,7 +78,7 @@
         Shows the use of the WFS layer reprojection support 
   </p>
 
-        <div id="map"></div>
+        <div id="map" class="smallmap"></div>
 
   <div id="docs">
     <p>This example shows automatic WFS reprojection, displaying an 'unprojected'

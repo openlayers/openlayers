@@ -3,13 +3,8 @@
         <title>OpenLayers Base Layers Example</title>
         
         <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+        <link rel="stylesheet" href="style.css" type="text/css" />
         <style type="text/css">
-            #map {
-                width: 512;
-                height: 512px;
-                border: 1px solid black;
-                background-color: blue;
-            }
             #controls
             {
                 width: 512px;
@@ -89,7 +84,7 @@
         </p>
 
         <div id="controls">
-            <div id="map"></div>
+            <div id="map" class="smallmap"></div>
 
             <div style="background-color:green" onclick="add()"> click to add a marker to the map</div>
             <div style="background-color:red" onclick="remove()"> click to remove the marker from the map</div>

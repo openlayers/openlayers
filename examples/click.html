@@ -3,16 +3,10 @@
         <title>OpenLayers Click Event Example</title>
         
         <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-        <style type="text/css">
-            #map {
-                width: 512px;
-                height: 512px;
-                border: 1px solid black;
-            }
-        </style>
+        <link rel="stylesheet" href="style.css" type="text/css" />
         <script src="../lib/OpenLayers.js"></script>
         <script type="text/javascript">
-OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {                
+            OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {                
                 defaultHandlerOptions: {
                     'single': true,
                     'double': false,
@@ -78,7 +72,7 @@ OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
 
         </p>
 
-        <div id="map"></div>
+        <div id="map" class="smallmap"></div>
     
         <div id="docs">
             Using the Click handler allows you to (for example) catch clicks without catching double clicks, something that standard browser events don't do for you. (Try double clicking: you'll zoom in, whereas using the browser click event, you would just get two alerts.) This example click control shows you how to use it. 

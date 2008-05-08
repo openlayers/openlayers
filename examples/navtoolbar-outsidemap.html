@@ -1,16 +1,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
     <style type="text/css">
-        #map {
-            width: 800px;
-            height: 475px;
-            border: 1px solid black;
+        #paneldiv {
+            height: 80px;
         }
-        
-        #paneldiv { float: right }
         #paneldiv div { 
-          top: 10px; 
+            top: 10px; 
         }
         
     </style>
@@ -35,8 +32,8 @@
   </head>
   <body onload="init()">
     <h1 id="title">Navigation Toolbar: Outside the Map</h1>
+    <div id="map" class="smallmap"></div>
     <div id="paneldiv" class="olControlNavToolbar"></div>
-    <div id="map"></div>
     <div id="docs">
      <p> To place the Naviation Toolbar outside the map:</p>
       <ul>
@@ -45,20 +42,6 @@
         <li>Specify the HTML element as a 'div' option in your NavToolbar constructor</li>
         <li>Add the olControlNavToolbar class to your div.</li>
       </ul>
-      <pre id="code">
-&lt;link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-&lt;style type="text/css">
-  #paneldiv { float: right; }
-  #paneldiv div { 
-    top: 10px; 
-  }
-&lt;/style>
-&lt;div id="paneldiv" class="olControlNavToolbar">&lt;/div>
-
-...
-
-var panel = new OpenLayers.Control.NavToolbar({'div':OpenLayers.Util.getElement('paneldiv')});
-</pre>
    </div> 
    
   </body>

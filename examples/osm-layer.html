@@ -1,11 +1,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-    <style type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <style>
         #map {
-            width: 70%;
-            height: 475px;
-            border: 1px solid black;
+            height: 350px;
         }
     </style>
     <script src="../lib/OpenLayers.js"></script>
@@ -103,7 +102,8 @@
     </script>
   </head>
   <body onload="init()">
-    <div style="width:28%; float:right" id="download">
+    <div id="map" class="smallmap"></div>
+    <div id="download">
       <ul>
        <li><a href="javascript:new_data();">Download current view</a></li>
        <li><a href="javascript:clear_data();">Clear current data</a></li>
@@ -111,7 +111,6 @@
       </ul>
     <div id="status">Loading...</div>
     </div>
-    <div id="map"></div>
     <a id="vectorlink" href="" style="display:none">Display via data: URL (FF Only)</a>
     <textarea id="vectors" style="display:none;width:100%" rows="10"></textarea>
   </body>

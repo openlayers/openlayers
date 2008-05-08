@@ -2,13 +2,7 @@
   <head>
     <title>OpenLayers Restricted Extent Example</title>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-    <style type="text/css">
-        #map {
-            width: 512px;
-            height: 256px;
-            border: 1px solid #ccc;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css" type="text/css" />
     <script src="../lib/Firebug/firebug.js"></script>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
@@ -47,7 +41,7 @@
       Don't let users drag outside the map extent: instead, limit dragging such
       that the extent of the layer is the maximum viewable area.
     </p>
-    <div id="map"></div>
+    <div id="map" class="smallmap"></div>
     <p>
         Map navigation is limited by a combination of map and layer properties.
         The base layer resolutions array controls the resolutions (or zoom

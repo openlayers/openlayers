@@ -1,14 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-    <style type="text/css">
-        #map {
-            width: 800px;
-            height: 475px;
-            border: 1px solid black;
-            background: #ccddff;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css" type="text/css" />
     <script src="../lib/Firebug/firebug.js"></script>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
@@ -97,7 +90,8 @@
     </script>
   </head>
   <body onload="init()">
-    <div id="map"></div>
+    <h1 id="title">Styled Layer Descriptor (SLD) Example</h1>
+    <div id="map" class="smallmap"></div>
     <p>This example uses a <a target="_blank" href="tasmania/sld-tasmania.xml">SLD
     file</a> to style the vector features. To construct layers that use styles
     from SLD, create a StyleMap for the layer that uses one of the userStyles in the
