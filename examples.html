@@ -98,9 +98,14 @@
                             for(exIndex in dict) {
                                 var count = dict[exIndex];
                                 if(scores[exIndex]) {
-                                    scores[exIndex] += count;
+                                    if(scores[exIndex][word]) {
+                                        scores[exIndex][word] += count;
+                                    } else {
+                                        scores[exIndex][word] = count;
+                                    }
                                 } else {
-                                    scores[exIndex] = count;
+                                    scores[exIndex] = {};
+                                    scores[exIndex][word] = count;
                                 }
                             }
                         }
@@ -111,9 +116,26 @@
                         ex.score = scores[j];
                         examples.push(ex);
                     }
-                    // sort examples by descending score
+                    // sort examples by first by number of words matched, then
+                    // by word frequency
                     examples.sort(function(a, b) {
-                        return (b.score - a.score);
+                        var cmp;
+                        var aWords = 0, bWords = 0;
+                        var aScore = 0, bScore = 0;
+                        for(var i in a.score) {
+                            aScore += a.score[i];
+                            aWords += 1;
+                        }
+                        for(var j in b.score) {
+                            bScore += b.score[j];
+                            bWords += 1;
+                        }
+                        if(aWords == bWords) {
+                            cmp = bScore - aScore;
+                        } else {
+                            cmp = bWords - aWords;
+                        }
+                        return cmp;
                     });
                 }
                 listExamples(examples);
