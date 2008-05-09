@@ -4,6 +4,7 @@ import sys
 import os
 import re
 import urllib2
+import time
 from xml.dom.minidom import Document
 
 missing_deps = False
@@ -86,6 +87,11 @@ def createFeed(examples):
     doc = Document()
     feed = doc.createElementNS("http://www.w3.org/2005/Atom", "feed")
     for example in examples:
+        s = os.stat("../examples/" + example["example"])
+        example["modified"] = s.st_mtime
+    
+    examples.sort(key=lambda x:x["modified"])
+    for example in sorted(examples, key=lambda x:x["modified"], reverse=True):
         entry = doc.createElementNS("http://www.w3.org/2005/Atom", "entry")
         
         title = doc.createElementNS("http://www.w3.org/2005/Atom", "title")
@@ -99,6 +105,11 @@ def createFeed(examples):
         summary = doc.createElementNS("http://www.w3.org/2005/Atom", "summary")
         summary.appendChild(doc.createTextNode(example["shortdesc"] or example["example"]))
         entry.appendChild(summary)
+        
+        updated = doc.createElementNS("http://www.w3.org/2005/Atom", "updated")
+        updated.appendChild(doc.createTextNode(
+            time.strftime("%Y-%m-%dT%I:%M:%SZ",time.gmtime(example["modified"]))))
+        entry.appendChild(updated)
         
         feed.appendChild(entry)
 
@@ -182,7 +193,7 @@ if __name__ == "__main__":
     print "writing feed to ../examples/example-list.xml "
     atom = open('../examples/example-list.xml','w')
     doc = createFeed(exampleList)
-    atom.write(doc.toprettyxml("    "))
+    atom.write(doc.toxml())
     atom.close()
 
 
