@@ -16,7 +16,7 @@
             map.addLayer(layer);
 
             layer = new OpenLayers.Layer.WFS( "States WFS",
-                    "/geoserver/wfs",
+                    "http://sigma.openplans.org/geoserver/ows",
                     { typename: 'topp:states' } );
             map.addLayer(layer);
 
@@ -36,8 +36,7 @@
 
 <div id="map" class="smallmap"></div>
 
-<div id="docs">see:
-    See <a href="WFS-js.html">WFS</a> for more info on Geoserver and WFS</div>
+<div id="docs"></div>
   </body>
 </html>
 
