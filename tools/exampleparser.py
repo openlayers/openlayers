@@ -27,10 +27,10 @@ def getListOfOnlineExamples(baseUrl):
     
 def getListOfExamples(relPath):
     """
-    returns list of .html filenames within a given path
+    returns list of .html filenames within a given path - excludes example-list.html
     """
     examples = os.listdir(relPath)
-    examples = [example for example in examples if example.endswith('.html')]
+    examples = [example for example in examples if example.endswith('.html') and example != "example-list.html"]
     return examples
     
 
