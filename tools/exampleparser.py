@@ -4,6 +4,7 @@ import sys
 import os
 import re
 import urllib2
+from xml.dom.minidom import Document
 
 missing_deps = False
 try:
@@ -81,6 +82,34 @@ def parseHtml(html,ids):
     d['classes'] = classes
     return d
     
+def createFeed(examples):
+    doc = Document()
+    feed = doc.createElementNS("http://www.w3.org/2005/Atom", "feed")
+    for example in examples:
+        entry = doc.createElementNS("http://www.w3.org/2005/Atom", "entry")
+        
+        title = doc.createElementNS("http://www.w3.org/2005/Atom", "title")
+        title.appendChild(doc.createTextNode(example["title"] or example["example"]))
+        entry.appendChild(title)
+        
+        link = doc.createElementNS("http://www.w3.org/2005/Atom", "link")
+        link.setAttribute("href", example["example"])
+        entry.appendChild(link)
+    
+        summary = doc.createElementNS("http://www.w3.org/2005/Atom", "summary")
+        summary.appendChild(doc.createTextNode(example["shortdesc"] or example["example"]))
+        entry.appendChild(summary)
+        
+        feed.appendChild(entry)
+
+    doc.appendChild(feed)
+    return doc
+
+def createEntry(doc, example):
+    
+    return entry
+    
+    
 def wordIndex(examples):
     """
     Create an inverted index based on words in title and shortdesc.  Keys are
@@ -138,6 +167,8 @@ if __name__ == "__main__":
         tagvalues['link'] = url
         exampleList.append(tagvalues)
         
+    print
+    
     exampleList.sort(key=lambda x:x['example'].lower())
     
     index = wordIndex(exampleList)
@@ -147,6 +178,14 @@ if __name__ == "__main__":
     json = 'var info=' + json 
     outFile.write(json)
     outFile.close()
+
+    print "writing feed to ../examples/example-list.xml "
+    atom = open('../examples/example-list.xml','w')
+    doc = createFeed(exampleList)
+    atom.write(doc.toprettyxml("    "))
+    atom.close()
+
+
     print 'complete'
 
     
