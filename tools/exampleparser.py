@@ -86,6 +86,7 @@ def parseHtml(html,ids):
 def createFeed(examples):
     doc = Document()
     feed = doc.createElementNS("http://www.w3.org/2005/Atom", "feed")
+    feed.setAttribute("xmlns", "http://www.w3.org/2005/Atom") #ug, is this for real??
     for example in examples:
         s = os.stat("../examples/" + example["example"])
         example["modified"] = s.st_mtime
