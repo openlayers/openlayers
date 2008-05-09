@@ -12,7 +12,7 @@
                 line-height: 1.25em;
             }
             .ex_container{
-                border-bottom: 1px solid grey;
+                border-bottom: 1px solid #cccccc;
             }
             .ex_container a {
                 text-decoration: none;
@@ -44,10 +44,32 @@
             #toc {
                 width: 30%;
                 height: 100%;
-                overflow: auto;
             }
-            #instructions {
-                padding: 0.5em 1em 0;
+            #filter {
+                top: 0px;
+                height: 50px;
+                padding: 10px 1em 10px 1em;
+            }
+            #examples {
+                border-top: 1px solid #cccccc;
+                position: absolute;
+                width: 30%;
+                top: 70px;
+                bottom: 0px;
+                overflow: auto;
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+            #examples ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+            #examples ul li {
+                display: block;
+                margin: 0;
+                padding: 0;
             }
             #exwin {
                 position: absolute;
@@ -55,7 +77,8 @@
                 left: 30%;
                 width: 70%;
                 height: 100%;
-                border: 1px solid grey;
+                border: none;
+                border-left: 1px solid #cccccc;
                 margin: 0;
             }
         </style>
@@ -148,29 +171,48 @@
                 document.getElementById("keywords").value = "";
                 listExamples(info.examples);
             }
+            
+            function parseQuery() {
+                var params = {};
+                var list = window.location.search.substring(1).split("&");
+                for(var i=0; i<list.length; ++i) {
+                    var pair = list[i].split("=");
+                    if(pair.length == 2) {
+                        params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+                    }
+                }
+                if(params["q"]) {
+                    var input = document.getElementById("keywords");
+                    input.value = params["q"];
+                    inputChange.call(input);
+                }
+            }
             window.onload = function() {
                 template = new Jugl.Template("template");
                 target = document.getElementById("examples");
                 listExamples(info.examples);
                 document.getElementById("exwin").src = "../examples/example.html";
                 document.getElementById("keywords").onkeyup = inputChange
+                parseQuery();
             };
         </script>
     </head>
     <body>
         <div id="toc">
-            <p id="instructions">
-                <label for="keywords">Filter by keywords</label><br />
-                <input type="text" id="keywords" />
-                <span id="count"></span>
-                <a href="javascript:void showAll();">show all</a>
-            </p>
+            <div id="filter">
+                <p>
+                    <label for="keywords">Filter by keywords</label><br />
+                    <input type="text" id="keywords" />
+                    <span id="count"></span><br />
+                    <a href="javascript:void showAll();">show all</a>
+                </p>
+            </div>
             <div id="examples"></div>
         </div>
-        <iframe id="exwin" name="exwin"></iframe>        
+        <iframe id="exwin" name="exwin" frameborder="0"></iframe>        
         <div style="display: none;">
-            <div id="template">
-                <div class="ex_container" jugl:repeat="example examples">
+            <ul id="template">
+                <li class="ex_container" jugl:repeat="example examples">
                     <a jugl:attributes="href example.link" target="exwin">
                         <h5 class="ex_title">
                             <span jugl:replace="example.title">title</span><br />
@@ -183,8 +225,8 @@
                             Related Classes go here
                         </p>
                     </a>
-                </div>
-            </div>
+                </li>
+            </ul>
         </div>
     </body>
 </html>
