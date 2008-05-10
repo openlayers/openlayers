@@ -1,18 +1,24 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-    <style type="text/css">
-        #map {
-            width: 800px;
-            height: 512px;
-            border: 1px solid black;
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <style>
+        .olControlSaveFeaturesItemActive { 
+            background-image: url("../theme/default/img/save_features_on.png");
+            background-repeat: no-repeat;
+            background-position: 0px 1px;
+        }
+        .olControlSaveFeaturesItemInactive { 
+            background-image: url("../theme/default/img/save_features_off.png");
+            background-repeat: no-repeat;
+            background-position: 0px 1px;
         }
     </style>
     <script src="../lib/Firebug/firebug.js"></script>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var map, wfs;
-        OpenLayers.ProxyHost= "proxy.cgi?url=";
+        OpenLayers.ProxyHost = "/proxy/?url=";
 
         function init() {
             map = new OpenLayers.Map('map');
@@ -29,7 +35,10 @@
                 {
                     typename: "tasmania_cities",
                     featureNS: "http://www.openplans.org/topp",
-                    extractAttributes: false
+                    extractAttributes: false,
+                    commitReport: function(str) {
+                        OpenLayers.Console.log(str);
+                    }
                 }
             );
            
@@ -39,15 +48,20 @@
                 displayClass: "olControlEditingToolbar"
             });
 
-            var dp = new OpenLayers.Control.DrawFeature(
+            var draw = new OpenLayers.Control.DrawFeature(
                 wfs, OpenLayers.Handler.Point,
                 {
                     handlerOptions: {freehand: false},
                     displayClass: "olControlDrawFeaturePoint"
                 }
             );
+            
+            var save = new OpenLayers.Control.Button({
+                trigger: OpenLayers.Function.bind(wfs.commit, wfs),
+                displayClass: "olControlSaveFeatures"
+            });
 
-            dp.featureAdded = function(feature) {
+            draw.featureAdded = function(feature) {
                 var oldgeom = feature.geometry;
                 feature.layer.renderer.eraseGeometry(oldgeom);
                 feature.geometry = new OpenLayers.Geometry.MultiPoint(oldgeom);
@@ -56,29 +70,28 @@
             }
            
             panel.addControls([
-                new OpenLayers.Control.Navigation(), dp
+                new OpenLayers.Control.Navigation(),
+                save, draw
             ]);
 
             map.addControl(panel);
             
-            map.zoomToExtent(new OpenLayers.Bounds(145.51045,-44.0,149.0,-40.5));
+            map.zoomToExtent(new OpenLayers.Bounds(140.64,-44.42,151.89,-38.80));
         }
         
     </script>
 </head>
 <body onload="init()">
 
-    <h1 id="title">WFS Example</h1>
+    <h1 id="title">WFS Transaction Example</h1>
     
     <div id="tags">
     </div>
     <p id="shortdesc">
-        Shows the use of the WFS layer type.
+        Shows the use the WFS layer for transactions.
     </p>
     
-    <a href="#" onclick="OpenLayers.Console.log(wfs.commit());return false">Save Cities</a><br />
-
-    <div id="map"></div>
+    <div id="map" class="smallmap"></div>
     
     <p id="docs">
     This is an example of using a WFS layer type. Note that it requires a 
