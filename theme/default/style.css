@@ -222,6 +222,16 @@ div.olControlMousePosition {
   background-repeat: no-repeat;
   background-position: -26px -23px ;                                                                   
 }
+.olControlSaveFeaturesItemActive { 
+    background-image: url(img/save_features_on.png);
+    background-repeat: no-repeat;
+    background-position: 0px 1px;
+}
+.olControlSaveFeaturesItemInactive { 
+    background-image: url(img/save_features_off.png);
+    background-repeat: no-repeat;
+    background-position: 0px 1px;
+}
 
 .olHandlerBoxZoomBox {
     border: 2px solid red;
