@@ -3,14 +3,14 @@
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript">
     var map, control; 
-    function test_Control_MousePosition_constructor (t) {
+    function test_initialize (t) {
         t.plan( 2 );
     
         control = new OpenLayers.Control.MousePosition();
         t.ok( control instanceof OpenLayers.Control.MousePosition, "new OpenLayers.Control returns object" );
         t.eq( control.displayClass,  "olControlMousePosition", "displayClass is correct" );
     }
-    function test_Control_MousePosition_redraw_noLayer_displayProjection(t) {
+    function test_redraw_noLayer_displayProjection(t) {
         t.plan(2);
         control = new OpenLayers.Control.MousePosition({'displayProjection': new OpenLayers.Projection("WGS84")});
         map = new OpenLayers.Map('map');
@@ -25,7 +25,7 @@
         control.redraw({'xy': new OpenLayers.Pixel(12,12)});
         t.eq(control.div.innerHTML, "-175.78125, 85.78125", "innerHTML set correctly when triggered.");
     }
-    function test_MousePosition_destroy(t) {
+    function test_destroy(t) {
         t.plan(1);
     
         var map = new OpenLayers.Map('map');
@@ -38,8 +38,7 @@
         t.eq(map.events.listeners.mousemove.length, listeners - 1, "mousemove event is unregistered");
         map.destroy();     
     }
-
-    function test_MousePosition_addControl(t) {
+    function test_addControl(t) {
         t.plan(4);
 
         var map = new OpenLayers.Map('map');
@@ -52,8 +51,7 @@
         t.eq(parseInt(map.viewPortDiv.lastChild.style.zIndex), map.Z_INDEX_BASE['Control'] + 5, "Viewport div contains control div");
         map.destroy();     
     }
-
-    function test_Control_MousePosition_redraw_noLayer_displayProjection(t) {
+    function test_redraw_noLayer_displayProjection(t) {
         t.plan(3);
         var control = new OpenLayers.Control.MousePosition();
         var map = new OpenLayers.Map('map');
@@ -69,6 +67,18 @@
         control.redraw({'xy': new OpenLayers.Pixel(12,12)});
         t.eq(control.div.innerHTML, "-175.78125, 85.78125", "innerHTML set correctly when triggered.");
         map.destroy();     
+    }
+    function test_formatOutput(t) {
+        t.plan(1);
+        var control = new OpenLayers.Control.MousePosition({
+            prefix: 'prefix',
+            suffix: 'suffix',
+            separator: 'separator',
+            numDigits: 3
+        });
+        var lonlat = new OpenLayers.LonLat(0.75699, 0.37365);
+        var val = control.formatOutput(lonlat);
+        t.eq(val, 'prefix0.757separator0.374suffix', 'formatOutput correctly formats the mouse position output');
     }
   </script>
 </head>
