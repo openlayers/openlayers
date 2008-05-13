@@ -27,7 +27,7 @@
             style = new OpenLayers.Style({externalGraphic: "${thumbnail}"});
             
             // create a rule with a point symbolizer that will make the thumbnail
-            // larger if the title of the rss item conatins "powder"
+            // larger if the title of the rss item contains "powder"
             var rule = new OpenLayers.Rule({
                 symbolizer: {pointRadius: 30},
                 filter: new OpenLayers.Filter.Comparison({
