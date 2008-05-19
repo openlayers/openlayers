@@ -13,6 +13,33 @@
         t.eq(rule.foo, "bar", "constructor sets options correctly"); 
         t.eq(typeof rule.evaluate, "function", "rule has an evaluate function"); 
     }
+    
+    function test_Rule_getContext(t) { 
+        t.plan(2);
+        var rule, options;
+        
+        var feature = {
+            attributes: {
+                'dude': 'hello'
+            },
+            'foobar': 'world'
+        }
+        
+        rule = new OpenLayers.Rule();
+        var context = rule.getContext(feature);
+        t.eq(context.dude, "hello", "value returned by getContext is correct"
+            + " if no context is specified"); 
+        
+        var options = {
+            context: function(feature){
+                return feature;
+            }
+        };
+        rule = new OpenLayers.Rule(options);
+        var context = rule.getContext(feature);
+        t.eq(context.foobar, "world", "value returned by getContext is correct"
+            + " if a context is given in constructor options"); 
+    }
 
     function test_Rule_destroy(t) {
         t.plan(1);

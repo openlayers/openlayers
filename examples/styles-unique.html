@@ -47,6 +47,42 @@
             
             layer.addFeatures(features);
             map.addLayer(layer);
+            
+            // create 20 random features with a random state property.
+            var features = new Array(20);
+            var states = [
+                OpenLayers.State.UNKNOWN,
+                OpenLayers.State.UPDATE,
+                OpenLayers.State.DELETE,
+                OpenLayers.State.INSERT
+            ];
+            for (var i=0; i<20; i++) {
+                features[i] = new OpenLayers.Feature.Vector(
+                    new OpenLayers.Geometry.Point(Math.random()*360-180, Math.random()*180-90)
+                );
+                features[i].state = states[parseInt(Math.random()*4)];
+            }
+            
+            var context = function(feature) {
+                return feature;
+            }
+            var styleMap = new OpenLayers.StyleMap();
+            
+            // create a lookup table with different symbolizers for the diffent
+            // state values
+            var lookup = {};
+            lookup[OpenLayers.State.UNKNOWN] = {fillColor: "green"};
+            lookup[OpenLayers.State.UPDATE] = {fillColor: "green"};
+            lookup[OpenLayers.State.DELETE] = {fillColor: "red"};
+            lookup[OpenLayers.State.INSERT] = {fillColor: "orange"};
+
+            styleMap.addUniqueValueRules("default", "state", lookup, context);
+            layer = new OpenLayers.Layer.Vector('Points', {
+                styleMap: styleMap
+            });
+            
+            layer.addFeatures(features);
+            map.addLayer(layer);
         }
     </script>
   </head>
@@ -56,7 +92,11 @@
     <div id="tags"></div>
 
     <p id="shortdesc">
-      Shows how to create a style based on unique feature attribute values.
+      Shows how to create a style based :
+      <ul> 
+        <li>on unique feature attribute values (markers),</li>
+        <li>on feature state values (circles).</li>
+      </ul>
     </p>
 
     <div id="map" class="smallmap"></div>
