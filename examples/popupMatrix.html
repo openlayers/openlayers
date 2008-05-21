@@ -841,7 +841,7 @@
          */
         function addMarker(ll, popupClass, popupContentHTML, closeBox, overflow) {
 
-            var feature = new OpenLayers.Feature(layer, ll); 
+            var feature = new OpenLayers.Feature(markers, ll); 
             feature.closeBox = closeBox;
             feature.popupClass = popupClass;
             feature.data.popupContentHTML = popupContentHTML;
