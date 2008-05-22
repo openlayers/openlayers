@@ -59,7 +59,7 @@
     }
     
     function test_Feature_Vector_clone(t) {
-        t.plan(5);
+        t.plan(6);
 
         var geometry = new OpenLayers.Geometry.Point(Math.random(),
                                                      Math.random());
@@ -79,6 +79,11 @@
              "geometry.x property set properly");
         t.eq(clone.geometry.y, geometry.y,
              "geometry.y property set properly");
+
+        feature = new OpenLayers.Feature.Vector();
+        clone = feature.clone();
+        t.ok(clone instanceof OpenLayers.Feature.Vector,
+             "clone can clone geometry-less features");
     }
         
 
