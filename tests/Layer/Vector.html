@@ -67,7 +67,7 @@
     }
 
     function test_Layer_Vector_removeFeatures(t) {
-        t.plan(3);
+        t.plan(6);
     
         var layer = new OpenLayers.Layer.Vector(name);
 
@@ -75,7 +75,7 @@
         var pointFeature1 = new OpenLayers.Feature.Vector(layer, point1);
         var point2 = new OpenLayers.Geometry.Point(-111.14, 45.78);
         var pointFeature2 = new OpenLayers.Feature.Vector(layer, point2);
-        
+      
         layer.addFeatures([pointFeature1, pointFeature2]);
         var features = layer.removeFeatures([pointFeature1]);
         
@@ -88,7 +88,36 @@
         
         t.ok(layer.features.length == 0,
              "OpenLayers.Layer.Vector.removeFeatures(layer.features) removes all feature from the features array");
-    }
+
+        // 3 tests
+        layer.events.register('beforefeatureremoved', null, function(obj) {
+            t.ok(pointFeature1 == obj.feature,
+                 "OpenLayers.Layer.Vector.removeFeatures triggers beforefeatureremoved with correct feature passed to callback");
+        });
+        layer.events.register('featureremoved', null, function(obj) {
+            t.ok(pointFeature1 == obj.feature,
+                 "OpenLayers.Layer.Vector.removeFeatures triggers featureremoved with correct feature passed to callback");
+        });
+        layer.events.register('featuresremoved', null, function(obj) {
+            t.ok(pointFeature1 == obj.features[0],
+                 "OpenLayers.Layer.Vector.removeFeatures triggers featuresremoved with correct features passed to callback");
+        });
+        layer.addFeatures([pointFeature1]);
+        layer.removeFeatures([pointFeature1]);
+
+        // 0 test
+        layer.events.register('beforefeatureremoved', null, function(obj) {
+            t.fail("OpenLayers.Layer.Vector.removeFeatures triggers beforefeatureremoved while it must not");
+        });
+        layer.events.register('featureremoved', null, function(obj) {
+            t.fail("OpenLayers.Layer.Vector.removeFeatures triggers featureremoved while it must not");
+        });
+        layer.events.register('featuresremoved', null, function(obj) {
+            t.fail("OpenLayers.Layer.Vector.removeFeatures triggers featuresremoved while it must not");
+        });
+        layer.addFeatures([pointFeature1]);
+        layer.removeFeatures([pointFeature1], {silent: true});
+     }
     
     function test_Layer_Vector_drawFeature(t) {
         t.plan(4);
