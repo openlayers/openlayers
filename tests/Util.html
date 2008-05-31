@@ -400,7 +400,7 @@
     }
 
     function test_Util_modifyAlphaImageDiv(t) {
-        t.plan( 19 );
+        t.plan( 20 );
 
         var imageDiv = OpenLayers.Util.createAlphaImageDiv();
 
@@ -460,8 +460,6 @@
 
         if (OpenLayers.Util.alphaHack()) {
         
-            t.eq(imageDiv.style.display, "inline-block", "imageDiv.style.display set correctly");
-
             var filter = "progid:DXImageTransform.Microsoft" +
                          ".AlphaImageLoader(src='" + img + "', " +
                          "sizingMethod='" + sizing + "') alpha(opacity=" + opacity *100 + ")";
@@ -475,6 +473,20 @@
             t.ok(true, "div filter value not set (not in IE)");
             t.ok(true, "image filter value not set (not in IE)");
         }
+
+        var imageDiv = OpenLayers.Util.createAlphaImageDiv();
+        var display = "none";
+        imageDiv.style.display = display;
+        OpenLayers.Util.modifyAlphaImageDiv(imageDiv, id, xy, sz, img, position, border, sizing, opacity);
+        t.eq(imageDiv.style.display, display, "imageDiv.style.display set correctly, if 'none'");
+
+        var imageDiv = OpenLayers.Util.createAlphaImageDiv();
+        var display = "block";
+        imageDiv.style.display = display;
+        OpenLayers.Util.modifyAlphaImageDiv(imageDiv, id, xy, sz, img, position, border, sizing, opacity);
+        t.eq(imageDiv.style.display, "inline-block", "imageDiv.style.display set correctly, if not 'none'");
+
+        
 
         var imageDiv = OpenLayers.Util.createAlphaImageDiv(id, xy, sz, img, position, border, "scale", opacity);
         if (OpenLayers.Util.alphaHack()) {
