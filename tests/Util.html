@@ -400,7 +400,7 @@
     }
 
     function test_Util_modifyAlphaImageDiv(t) {
-        t.plan( 20 );
+        t.plan( 21 );
 
         var imageDiv = OpenLayers.Util.createAlphaImageDiv();
 
@@ -484,7 +484,11 @@
         var display = "block";
         imageDiv.style.display = display;
         OpenLayers.Util.modifyAlphaImageDiv(imageDiv, id, xy, sz, img, position, border, sizing, opacity);
-        t.eq(imageDiv.style.display, "inline-block", "imageDiv.style.display set correctly, if not 'none'");
+        if(OpenLayers.Util.alphaHack()) {
+            t.eq(imageDiv.style.display, "inline-block", "imageDiv.style.display set correctly, if not 'none'");
+        } else {
+            t.ok(true, "inline-block is not part of CSS2 and is not supported by Firefox 2");
+        }
 
         
 
