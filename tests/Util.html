@@ -169,7 +169,7 @@
 
     function test_Util_applyDefaults(t) {
     
-        t.plan(10);
+        t.plan(11);
         
         var to = { 
             'a': "abra",
@@ -198,6 +198,12 @@
         t.eq( ret["c"], "press", "key present in from and not ret successfully copied to ret");
         t.eq(to.toString(), "works", "correctly applies custom toString");
         t.eq(to.n, null, "correctly preserves null");
+        
+        var to;
+        var from = {rand: Math.random()};
+        
+        var ret = OpenLayers.Util.applyDefaults(to, from);
+        t.eq(ret.rand, from.rand, "works with undefined to");
     }
 
     function test_Util_getParameterString(t) {
@@ -709,7 +715,7 @@
     }
 
     function tests_Util_extend(t) {
-        t.plan(6);
+        t.plan(7);
 
         var source = {
             num: Math.random(),
@@ -736,6 +742,12 @@
         t.eq(destination.nada, "untouched",
              "undefined source properties don't clobber existing properties");
         t.eq(window.property, undefined, "Property variable not clobbered.");
+        
+        var destination;
+        var source = {rand: Math.random()};
+        var ret = OpenLayers.Util.extend(destination, source);
+        t.eq(destination.rand, source.rand, "works with undefined destination");
+        
     }
     
     function test_XX_Util_Try(t) {
