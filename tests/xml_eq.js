@@ -83,7 +83,7 @@
             expected = "null";
         }
         if(got != expected) {
-            throw msg + ": got " + got + " but expected " + expected;
+            throw msg + ": got '" + got + "' but expected '" + expected + "'";
         }
     }
     
