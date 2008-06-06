@@ -143,6 +143,47 @@
         t.eq(node.style.width, (2 * radius) + "px", "width is correct");
         t.eq(node.style.height, (2 * radius) + "px", "height is correct");
     }
+    
+    function test_VML_drawGraphic(t) {
+        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(6);
+        
+        var r = new OpenLayers.Renderer.VML(document.body);
+        r.resolution = 1;
+        
+        var node = document.createElement('div');
+        node.id = "test"
+        node._geometryClass = "OpenLayers.Geometry.Point";
+        
+        var geometry = {
+            x: 1,
+            y: 2
+        }
+        
+        var style = {
+            externalGraphic: "foo.png",
+            graphicWidth: 7,
+            graphicHeight: 10
+        }
+        
+        r.drawGeometryNode(node, geometry, style);
+
+        t.eq(node.childNodes[0].id, "test_fill", "fill child node correctly created");
+        t.eq(node.style.left, "-3px", "x of insertion point with calculated xOffset correct");
+        t.eq(node.style.top, "-3px", "y of insertion point with calculated yOffset correct");
+        
+        style.rotation = 90;
+        
+        r.drawGeometryNode(node, geometry, style);
+        
+        t.eq(node.childNodes[1].id, "test_image", "image child node correctly created");
+        t.eq(node.style.left, "-4px", "x of insertion point of rotated image correct");
+        t.eq(node.style.top, "-4px", "y of insertion point of rotated image correct");
+    }
 
     function test_VML_drawlinestring(t) {
         if (!OpenLayers.Renderer.VML.prototype.supported()) {

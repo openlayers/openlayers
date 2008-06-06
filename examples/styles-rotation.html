@@ -1,0 +1,83 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>OpenLayers Styles Rotation Example</title>
+    <style type="text/css">
+        #map {
+            width: 800px;
+            height: 475px;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        
+        var map;
+        var vectors;
+        
+        function init(){
+            map = new OpenLayers.Map('map');
+            var wms = new OpenLayers.Layer.WMS(
+                "OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0",
+                {layers: 'basic'}
+            );
+
+            vectors = new OpenLayers.Layer.Vector(
+                "Simple Geometry",
+                {
+                    styleMap: new OpenLayers.StyleMap({
+                        "default": {
+                            externalGraphic: "../img/marker-gold.png",
+                            //graphicWidth: 17,
+                            graphicHeight: 20,
+                            graphicYOffset: -19,
+                            rotation: "${angle}",
+                            fillOpacity: "${opacity}"
+                        },
+                        "select": {
+                            cursor: "crosshair",
+                            externalGraphic: "../img/marker.png"
+                        }
+                    })
+                }
+            );
+            
+            map.addLayers([wms, vectors]);
+            
+            var features = [];
+            var x = -111.04;
+            var y = 45.68;
+            for(var i = 0; i < 10; i++){
+                x += i * .5;
+                y += i * .1;
+                features.push(
+                    new OpenLayers.Feature.Vector(
+                        new OpenLayers.Geometry.Point(x, y), {angle: (i*36)%360-180, opacity:i/10+.1}
+                    )
+                );
+                features.push(
+                    new OpenLayers.Feature.Vector(
+                        new OpenLayers.Geometry.Point(x, y), {angle: (i*36)%360, opacity:i/10+.1}
+                    )
+                );
+            }
+            
+            map.setCenter(new OpenLayers.LonLat(x-10, y), 5);
+            vectors.addFeatures(features);
+
+            var selectControl = new OpenLayers.Control.SelectFeature(
+                vectors, {hover: true});
+            map.addControl(selectControl);
+            selectControl.activate();
+
+        };
+        
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Rotation Styles Example</h1>
+    <p id="shortdesc">Vector point feature symbolizers can have a <tt>rotation</tt> property. The center of the rotation is the point of the image specified by <tt>graphicXOffset</tt> and <tt>graphicYOffset</tt>.</p>
+    <div id="map"></div>
+    <div id="docs"/>
+  </body>
+</html>
