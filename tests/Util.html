@@ -782,6 +782,20 @@
         t.ok(ret == g_TestVal3, "try returns first sucessfully executed function's return");
 
     }
+    
+    function test_getRenderedDimensions(t) {
+        t.plan(2);
+        var content = (new Array(100)).join("foo ");
+        
+        // test with fixed width
+        var fw = OpenLayers.Util.getRenderedDimensions(content, {w: 20});
+        t.eq(fw.w, 20, "got the fixed width");
+        
+        // test with fixed height
+        var fh = OpenLayers.Util.getRenderedDimensions(content, {h: 15});
+        t.eq(fh.h, 15, "got the fixed height");
+        
+    }
 
   </script>
 </head>
