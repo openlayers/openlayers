@@ -1,70 +1,49 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>Ajax Acceptance Test</title>
-    <style type="text/css">
-    
-        body {
-            font-size: 0.8em;
-        }
-        p {
-            padding-top: 1em;
-        }
-        
-        .buttons {
-            margin: 1em;
-            float: left;
-        }
-
-    </style>
-
+    <title>XHR Acceptance Test</title>
     <script src="../../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var url = "ajax.txt";
         function sendSynchronous(){
-            var request = new OpenLayers.Ajax.Request(url, {
-               'asynchronous': false,
-                onComplete: function() {
+            var request = OpenLayers.Request.GET({
+                url: url,
+                async: false,
+                callback: function() {
                     document.getElementById('send_sync').value += 'request completed\n';
                 }
             });
             document.getElementById('send_sync').value += 'other processing\n';
         }
         function sendAsynchronous(){
-            var request = new OpenLayers.Ajax.Request(url, {
-                onComplete: function() {
+            var request = OpenLayers.Request.GET({
+                url: url,
+                callback: function() {
                     document.getElementById('send_sync').value += 'request completed\n';
                 }
             });
             document.getElementById('send_sync').value += 'other processing\n';
         }
         function sendAndAbort(){
-            var request = new OpenLayers.Ajax.Request(url, {
-                onComplete: function(request) {
-                    if (request.responseText == '') {
-                        document.getElementById('send_sync').value += 'request aborted\n';
-                    }
+            var request = OpenLayers.Request.GET({
+                url: url,
+                callback: function() {
+                    document.getElementById('send_sync').value += 'never called\n';
                 }
             });
-            request.transport.abort();
+            request.abort();
             document.getElementById('send_sync').value += 'other processing\n';
         }
 
-    </script>
-  </head>
-  <body >
-    <div class="buttons">
-        <button onclick="sendSynchronous()">Send an synchronous Ajax request</button><br />
-        <button onclick="sendAsynchronous()">Send an asynchronous Ajax request</button><br />
-        <button onclick="sendAndAbort()">Send a request and abort it</button><br />
+        </script>
+    </head>
+    <body >
+        <button onclick="sendSynchronous()">synchronous</button>
+        expected output: "request completed" then "other processing"<br />
+        <button onclick="sendAsynchronous()">asynchronous</button>
+        expected output: "other processing" then "request completed"<br />
+        <button onclick="sendAndAbort()">send and abort</button>
+        expected output: "other processing" (and not "never called")<br />
         <textarea id="send_sync" rows="6"></textarea><br />
         <button onclick="document.getElementById('send_sync').value = ''">Clear</button>
-    </div>
-    <p><b></b></p>
-    <p>Clicking on the different buttons should give the following results in the textarea below :</p>
-    <ul>
-      <li>synchronous: "request completed" then "other processing"</li>
-      <li>asynchronous: "other processing" then "request completed"</li>
-      <li>abort: "request aborted" then "other processing" (note that real XHR behavior would not call onComplete with abort - meaning "request aborted" would not be displayed here)</li>
-    </ul>
   </body>
 </html>

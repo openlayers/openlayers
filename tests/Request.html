@@ -1,0 +1,205 @@
+<html>
+<head>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+    function setup() {
+        window._xhr = OpenLayers.Request.XMLHttpRequest;
+        var anon = new Function();
+        OpenLayers.Request.XMLHttpRequest = function() {};
+        OpenLayers.Request.XMLHttpRequest.prototype = {
+            open: anon,
+            setRequestHeader: anon,
+            send: anon
+        };
+        OpenLayers.Request.XMLHttpRequest.DONE = 4;
+    }
+    function teardown() {
+        OpenLayers.Request.XMLHttpRequest = window._xhr;
+        delete window._xhr;
+    }
+    
+    function test_issue(t) {
+        setup();
+
+        t.plan(18);
+        var request, config;
+        var proto = OpenLayers.Request.XMLHttpRequest.prototype;
+        var issue = OpenLayers.Function.bind(OpenLayers.Request.issue,
+                                             OpenLayers.Request);
+
+        // test that issue returns a new XMLHttpRequest - 1 test
+        request = issue();
+        t.ok(request instanceof OpenLayers.Request.XMLHttpRequest,
+             "returns an XMLHttpRequest instance");
+        
+        // test that issue calls xhr.open with correct args from config - 5 tests
+        var _open = proto.open;
+        config = {
+            method: "foo",
+            url: "http://nowhere",
+            async: "bar",
+            user: "uncle",
+            password: "sam"
+        };
+        proto.open = function(method, url, async, user, password) {
+            t.eq(method, config.method, "open called with correct method");
+            t.eq(url, config.url, "open called with correct url");
+            t.eq(async, config.async, "open called with correct async");
+            t.eq(user, config.user, "open called with correct user");
+            t.eq(password, config.password, "open called with correct password");
+        }
+        request = issue(config);
+        proto.open = _open;
+        
+        // test that headers are correctly set - 4 tests
+        var _setRequestHeader = proto.setRequestHeader;
+        config = {
+            headers: {
+                foo: "bar",
+                chicken: "soup"
+            }
+        };
+        proto.setRequestHeader = function(key, value) {
+            t.ok(key in config.headers, "setRequestHeader called with key: " + key);
+            t.eq(value, config.headers[key], "setRequestHeader called with correct value: " + value);
+        }
+        request = issue(config);
+        proto.setRequestHeader = _setRequestHeader;
+        
+        // test that callback is called (no scope) - 1 test
+        var unbound = function(request) {
+            t.ok(request instanceof OpenLayers.Request.XMLHttpRequest,
+                 "unbound callback called with xhr instance");
+        }
+        config = {
+            callback: unbound
+        };
+        request = issue(config);
+        request.readyState = OpenLayers.Request.XMLHttpRequest.DONE;
+        request.onreadystatechange();
+
+        // test that callback is called (with scope) - 2 tests
+        var obj = {};
+        var bound = function(request) {
+            t.ok(this === obj, "bound callback has correct scope");
+            t.ok(request instanceof OpenLayers.Request.XMLHttpRequest,
+                 "bound callback called with xhr instance");
+        }
+        config = {
+            callback: bound,
+            scope: obj
+        };
+        request = issue(config);
+        request.readyState = 4;
+        request.onreadystatechange();
+
+        // test that send is called with data - 1 test
+        var _send = proto.send;
+        config = {
+            method: "PUT",
+            data: "bling"
+        };
+        proto.send = function(data) {
+            t.eq(data, config.data, "send called with correct data");
+        }
+        request = issue(config);
+        proto.send = _send;
+        
+        // test that optional success callback is only called with 200s and
+        // failure is only called with non-200s
+        var _send = proto.send;
+        proto.send = function() {};
+        
+        config = {
+            success: function(req) {
+                t.ok(req.status >= 200 && req.status < 300,
+                     "success callback called with " + req.status + " status");
+            },
+            failure: function(req) {
+                t.ok(req.status < 200 || req.status >= 300,
+                     "failure callback called with " + req.status + " status");
+            }
+        };
+        request = issue(config);
+        request.readyState = 4;
+        
+        // mock up status 200 (1 test)
+        request.status = 200;
+        request.onreadystatechange();
+        
+        // mock up status 299 (1 test)
+        request.status = 299;
+        request.onreadystatechange();
+        
+        // mock up status 100 (1 test)
+        request.status = 100;
+        request.onreadystatechange();
+
+        // mock up status 300 (1 test)
+        request.status = 300;
+        request.onreadystatechange();
+
+        proto.send = _send;
+
+        teardown();
+    }
+    
+    function test_GET(t) {
+        t.plan(1);
+        var _issue = OpenLayers.Request.issue;
+        OpenLayers.Request.issue = function(config) {
+            t.eq(config.method, "GET", "calls issue with correct method");
+        }
+        OpenLayers.Request.GET();
+        OpenLayers.Request.issue = _issue;
+    }
+    function test_POST(t) {
+        t.plan(1);
+        var _issue = OpenLayers.Request.issue;
+        OpenLayers.Request.issue = function(config) {
+            t.eq(config.method, "POST", "calls issue with correct method");
+        }
+        OpenLayers.Request.POST();
+        OpenLayers.Request.issue = _issue;
+    }
+    function test_PUT(t) {
+        t.plan(1);
+        var _issue = OpenLayers.Request.issue;
+        OpenLayers.Request.issue = function(config) {
+            t.eq(config.method, "PUT", "calls issue with correct method");
+        }
+        OpenLayers.Request.PUT();
+        OpenLayers.Request.issue = _issue;
+    }
+    function test_DELETE(t) {
+        t.plan(1);
+        var _issue = OpenLayers.Request.issue;
+        OpenLayers.Request.issue = function(config) {
+            t.eq(config.method, "DELETE", "calls issue with correct method");
+        }
+        OpenLayers.Request.DELETE();
+        OpenLayers.Request.issue = _issue;
+    }
+    function test_HEAD(t) {
+        t.plan(1);
+        var _issue = OpenLayers.Request.issue;
+        OpenLayers.Request.issue = function(config) {
+            t.eq(config.method, "HEAD", "calls issue with correct method");
+        }
+        OpenLayers.Request.HEAD();
+        OpenLayers.Request.issue = _issue;
+    }
+    function test_OPTIONS(t) {
+        t.plan(1);
+        var _issue = OpenLayers.Request.issue;
+        OpenLayers.Request.issue = function(config) {
+            t.eq(config.method, "OPTIONS", "calls issue with correct method");
+        }
+        OpenLayers.Request.OPTIONS();
+        OpenLayers.Request.issue = _issue;
+    }
+    </script>
+</head>
+<body>
+</body>
+</html>
