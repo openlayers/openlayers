@@ -150,6 +150,42 @@
         
     }
     
+    function test_writeTextSymbolizer(t) {
+        t.plan(1);
+        var parser = new OpenLayers.Format.SLD.v1_0_0();
+        var symbolizer = {
+            "Text": {
+                "label": "This is the ${city} in ${state}.",
+                "fontFamily": "Arial",
+                "fontSize": 10,
+                "fillColor": "blue"
+            }
+        };
+        var node = parser.writers["sld"]["TextSymbolizer"].apply(
+            parser, [symbolizer["Text"]]
+        );
+        
+        var expected =
+            '<TextSymbolizer xmlns="http://www.opengis.net/sld">' +
+                '<Label>' +
+                    'This is the ' +
+                    '<ogc:PropertyName xmlns:ogc="http://www.opengis.net/ogc">city</ogc:PropertyName>' +
+                    ' in ' +
+                    '<ogc:PropertyName xmlns:ogc="http://www.opengis.net/ogc">state</ogc:PropertyName>' +
+                    '.' +
+                '</Label>' +
+                '<Font>' +
+                    '<CssParameter name="font-family">Arial</CssParameter>' +
+                    '<CssParameter name="font-size">10</CssParameter>' +
+                '</Font>' +
+                '<Fill>' +
+                    '<CssParameter name="fill">blue</CssParameter>' +
+                '</Fill>' + 
+            '</TextSymbolizer>';
+        
+        t.xml_eq(node, expected, "TextSymbolizer correctly written");
+        
+    }
 
     </script> 
 </head> 
