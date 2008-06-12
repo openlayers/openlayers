@@ -13,14 +13,6 @@
 #
 #    // @requires Geo/DataSource.js
 #
-#  or (ideally) within a class comment definition
-#
-#     /**
-#      * @class
-#      *
-#      * @requires OpenLayers/Layer.js
-#      */
-#
 # This script should be executed like so:
 #
 #     mergejs.py <output.js> <directory> [...]
