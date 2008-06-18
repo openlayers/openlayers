@@ -1000,6 +1000,23 @@
         layer.destroy();
         map.destroy();
     }
+    
+    function test_Map_getUnits(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var units = map.getUnits();
+        t.eq(units, null, "getUnits returns null for no base layer");
+        
+        var layer = new OpenLayers.Layer("test", {
+            isBaseLayer: true,
+            units: 'foo'
+        });
+        map.addLayer(layer);
+        var units = map.getUnits();
+        t.eq(units, 'foo', "getUnits returns the base layer units property");
+        layer.destroy();
+        map.destroy();
+    }
 
     function test_Map_destroy (t) {
         t.plan( 3 );    

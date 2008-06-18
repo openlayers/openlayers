@@ -86,8 +86,8 @@
         map.addControl(control);
         t.eq(control.div.firstChild.style.visibility, "visible", "top scale is present.");
         t.eq(control.div.lastChild.style.visibility, "visible", "bottom scale is present.");
-        t.eq(control.div.firstChild.innerHTML, "20000 km", "top scale has correct text.");
-        t.eq(control.div.lastChild.innerHTML, "20000 mi", "bottom scale has correct text.");
+        t.eq(control.div.firstChild.innerHTML, "200 m", "top scale has correct text.");
+        t.eq(control.div.lastChild.innerHTML, "1000 ft", "bottom scale has correct text.");
         map.destroy();
     }
     
