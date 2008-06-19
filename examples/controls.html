@@ -4,47 +4,15 @@
 
         <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
         <link rel="stylesheet" href="style.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="http://www.extjs.com/deploy/dev//resources/css/ext-all.css">
-
-    <script src="http://www.google-analytics.com/urchin.js" type="text/javascript"> </script><script type="text/javascript">_uacct = "UA-1396058-1";urchinTracker();</script>
-    <link rel="stylesheet" type="text/css" href="http://www.extjs.com/deploy/dev//resources/css/xtheme-default.css" /><!-- LIBS -->
-    <script type="text/javascript" src="http://www.extjs.com/deploy/dev//adapter/ext/ext-base.js"></script>
-    <!-- ENDLIBS -->
-
-    <script type="text/javascript" src="http://www.extjs.com/deploy/dev//ext-all.js"></script>
-
-    <!-- Common Styles for the examples -->
-    <link rel="stylesheet" type="text/css" href="../shared/examples.css">
         <script src="../lib/OpenLayers.js"></script>
         <script type="text/javascript">
             var map;
-            function layerRenderAdditional(layerDiv, layer) {
-                var sliderDiv = document.createElement("div");
-                sliderDiv.className = "olControlLayerSwitcherLayerDivSlider";
-                layerDiv.appendChild(sliderDiv);    
-                sliderDiv.style.height="20px";
-                var sliderValue = layer.opacity == null ? 100 : layer.opacity * 100;
-                var slider = new Ext.Slider({renderTo: sliderDiv, width: 100, minValue: 0, maxValue: 100, animate: false});
-                slider.on("change", function(slider, newValue) {
-                    this.layer.setOpacity(newValue/100);
-                }, {layer: layer, control: this}); 
-                slider.on("dragstart", function(slider, e) { 
-                    this.control.isMouseDown = false; 
-                }, {control: this});  
-                if (this.maximizeDiv.style.display != "none") { 
-                    this.maximizeControl();
-                    slider.setValue(sliderValue);
-                    this.minimizeControl();
-                } else {
-                    slider.setValue(sliderValue);
-                }
-            }
             function init(){
                 map = new OpenLayers.Map('map', {
                     controls: [
                         new OpenLayers.Control.PanZoomBar(),
                         new OpenLayers.Control.MouseToolbar(),
-                        new OpenLayers.Control.LayerSwitcher({'ascending':false, layerRenderAdditional: layerRenderAdditional}),
+                        new OpenLayers.Control.LayerSwitcher({'ascending':false}),
                         new OpenLayers.Control.Permalink(),
                         new OpenLayers.Control.ScaleLine(),
                         new OpenLayers.Control.Permalink('permalink'),
