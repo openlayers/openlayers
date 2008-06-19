@@ -75,6 +75,18 @@
 
         });;
     }
+    function test_Layer_GeoRSS_load_events (t) {
+        t.plan( 1 );    
+        layer = new OpenLayers.Layer.GeoRSS('Test Layer', georss_txt);
+        var map = new OpenLayers.Map('map');
+        var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(baseLayer);
+        map.addLayer(layer);
+        layer.events.register("loadstart", t, function() { this.ok(true, "loadstart event triggered once (#1580)") });
+        map.setCenter(new OpenLayers.LonLat(0,0),0);
+    }
     function test_Layer_GeoRSS_events (t) {
         t.plan( 4 );    
         layer = new OpenLayers.Layer.GeoRSS('Test Layer', georss_txt);
