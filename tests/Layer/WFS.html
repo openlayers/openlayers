@@ -129,6 +129,16 @@
         t.eq(layer.tile.url, "http://www.bsc-eoc.org/cgi-bin/bsc_ows.asp?typename=OWLS&maxfeatures=10&SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&SRS=EPSG%3A4326&BBOX=-187.890625%2C-36.679687%2C-12.109375%2C156.679688", "Tile URL is set correctly when not encoded");
         map.destroy();     
     }
+    function test_projection_srs(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map('map');
+        map.addLayer(new OpenLayers.Layer("",{isBaseLayer: true} ));
+        var layer = new OpenLayers.Layer.WFS("","",{},{'projection': new OpenLayers.Projection("EPSG:900913")});
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        var params = OpenLayers.Util.getParameters(layer.getFullRequestString());
+        t.eq(params.SRS, "EPSG:900913", "SRS represents projection of WFS layer, instead of map (#1537)");   
+    }
 
 
   </script>
