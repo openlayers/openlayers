@@ -216,6 +216,27 @@
  
     }
 
+    function test_Format_WKT_read_projection(t) {
+        t.plan(1);
+
+        var projections = {
+            src:  new OpenLayers.Projection("EPSG:4326"),
+            dest: new OpenLayers.Projection("EPSG:900913")
+        };
+
+        var points = {
+            src:  new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(-87.9, 41.9)),
+            dest: new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(-9784983.239366667, 5146011.678566458))
+        };
+
+        var format = new OpenLayers.Format.WKT({
+            externalProjection: projections["src"],
+            internalProjection: projections["dest"],
+        });
+        var feature = format.read("GEOMETRYCOLLECTION(POINT(" + points["src"].geometry.x + " " + points["src"].geometry.y + "))")[0];
+        t.eq(feature.geometry.toString(), points["dest"].geometry.toString(), 
+            "Geometry collections aren't transformed twice when reprojection.");
+    }
     </script> 
 </head> 
 <body> 
