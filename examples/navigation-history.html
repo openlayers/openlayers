@@ -17,18 +17,7 @@
         <script type="text/javascript">
             var map, nav, panel;
 
-            // preload images if you care
-            var preload = [
-                "../theme/default/img/view_previous_on.png",
-                "../theme/default/img/view_next_on.png"
-            ];
-            var img = new Array(preload.length);
-            for(var i=0; i<preload.length; ++i) {
-                img[i] = new Image();
-                img[i].src = preload[i];
-            }
-            
-            function init(){
+            function init() {
                 map = new OpenLayers.Map('map');
 
                 nav = new OpenLayers.Control.NavigationHistory();
@@ -48,8 +37,6 @@
                 );
                 map.addLayer(layer);
                 map.zoomToMaxExtent();
-
-
             }
         </script>
     </head>

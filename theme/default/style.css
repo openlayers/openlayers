@@ -128,29 +128,24 @@ div.olControlMousePosition {
   position: relative;
 }
 
-.olControlNavigationHistoryPreviousItemActive { 
-   background-image: url("img/view_previous_on.png");
+.olControlNavigationHistory {
+   background-image: url("img/navigation_history.png");
    background-repeat: no-repeat;
    width:  24px;
    height: 24px;
+
+}
+.olControlNavigationHistoryPreviousItemActive { 
+  background-position: 0px 0px;
 }
 .olControlNavigationHistoryPreviousItemInactive { 
-   background-image: url("img/view_previous_off.png");
-   background-repeat: no-repeat;
-   width:  24px;
-   height: 24px;
+   background-position: 0px -24px;
 }
 .olControlNavigationHistoryNextItemActive { 
-   background-image: url("img/view_next_on.png");
-   background-repeat: no-repeat;
-   width:  24px;
-   height: 24px;
+   background-position: -24px 0px;
 }
 .olControlNavigationHistoryNextItemInactive { 
-   background-image: url("img/view_next_off.png");
-   background-repeat: no-repeat;
-   width:  24px;
-   height: 24px;
+   background-position: -24px -24px;
 }
 
 .olControlNavToolbar .olControlNavigationItemActive { 
