@@ -100,7 +100,7 @@ def createFeed(examples):
         entry.appendChild(title)
         
         link = doc.createElementNS("http://www.w3.org/2005/Atom", "link")
-        link.setAttribute("href", "/dev/examples/" % example["example"])
+        link.setAttribute("href", "/dev/examples/%s" % example["example"])
         entry.appendChild(link)
     
         summary = doc.createElementNS("http://www.w3.org/2005/Atom", "summary")
