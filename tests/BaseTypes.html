@@ -141,6 +141,43 @@
         );
 
     }
+
+    function test_String_isNumeric(t) {
+        var cases = [
+            {value: "3", expect: true},
+            {value: "+3", expect: true},
+            {value: "-3", expect: true},
+            {value: "3.0", expect: true},
+            {value: "+3.0", expect: true},
+            {value: "-3.0", expect: true},
+            {value: "6.02e23", expect: true},
+            {value: "+1.0e-100", expect: true},
+            {value: "-1.0e+100", expect: true},
+            {value: "1E100", expect: true},
+            {value: null, expect: false},
+            {value: true, expect: false},
+            {value: false, expect: false},
+            {value: undefined, expect: false},
+            {value: "", expect: false},
+            {value: "3 ", expect: false},
+            {value: " 3", expect: false},
+            {value: "1e", expect: false},
+            {value: "1+e", expect: false},
+            {value: "1-e", expect: false}
+        ];
+        t.plan(cases.length);
+        
+        var func = OpenLayers.String.isNumeric;
+        var obj, val, got, exp;
+        for(var i=0; i<cases.length; ++i) {
+            obj = cases[i];
+            val = obj.value;
+            exp = obj.expect;
+            got = func(val);
+            t.eq(got, exp, "'" + val + "' returns " + exp);
+        }
+        
+    }
    
    
     function test_Number_limitSigDigs(t) {
