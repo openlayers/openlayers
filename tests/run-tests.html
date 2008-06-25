@@ -437,7 +437,14 @@ Test.AnotherWay._html_eq_node_to_string=function( node ) {
 	if( node.outerHTML!=null ) {
 		Test.AnotherWay._g_html_eq_span.innerHTML=node.outerHTML;
 	}else {
-		Test.AnotherWay._g_html_eq_span.appendChild( node.cloneNode( true ) );
+            var clone = node.cloneNode(true);
+            var node = Test.AnotherWay._g_html_eq_span;
+            if(node.ownerDocument && node.ownerDocument.importNode) {
+                if(node.ownerDocument != clone.ownerDocument) {
+                    clone = node.ownerDocument.importNode(clone, true);
+                }
+            }
+            node.appendChild(clone);
 	}
 	return Test.AnotherWay._g_html_eq_span.innerHTML;
 }
