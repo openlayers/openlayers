@@ -46,9 +46,23 @@
             
             style.addRules([rule, elseRule]);
             
-            // Create a layer with a style map.  Giving the style map keys
-            // for "default" and "select" rendering intent.
-            markerLayer = new OpenLayers.Layer.Vector("", {
+            // Create a GML layer with GeoRSS format and a style map.
+            markerLayer = new OpenLayers.Layer.GML("Some images from Flickr",
+			                                       "xml/georss-flickr.xml", {
+                format: OpenLayers.Format.GeoRSS,
+                formatOptions: {
+                    // adds the thumbnail attribute to the feature
+                    createFeatureFromItem: function(item) {
+                        var feature = OpenLayers.Format.GeoRSS.prototype
+                                .createFeatureFromItem.apply(this, arguments);
+                        feature.attributes.thumbnail =
+                                this.getElementsByTagNameNS(
+                                item, "*", "thumbnail")[0].getAttribute("url");
+                        return feature;
+                    }
+                },
+				// Giving the style map keys for "default" and "select"
+				// rendering intent, to make the image larger when selected
                 styleMap: new OpenLayers.StyleMap({
                     "default": style,
                     "select": new OpenLayers.Style({pointRadius: 35})
@@ -75,30 +89,6 @@
             map.addControl(popupControl);
             
             popupControl.activate();
-            
-            OpenLayers.loadURL("xml/georss-flickr.xml", null, window, afterload);
-            
-        }
-        
-        function afterload(req) {
-            // extended version of OpenLayers.Format.GeoRSS.createFeatureFromItem;
-            // adds the thumbnail attribute to the feature
-            function createFeatureFromItem(item) {
-                var feature = OpenLayers.Format.GeoRSS.prototype
-                        .createFeatureFromItem.apply(this, arguments);
-                feature.attributes.thumbnail =
-                        this.getElementsByTagNameNS(
-                        item, "*", "thumbnail")[0].getAttribute("url");
-                return feature;
-            }
-
-            var store = new OpenLayers.Format.GeoRSS({
-                    createFeatureFromItem: createFeatureFromItem});
-
-            rss = store.read(req.responseText);
-
-            markerLayer.setName("Some images from Flickr");
-            markerLayer.addFeatures(rss);
         }
     </script>
   </head>
