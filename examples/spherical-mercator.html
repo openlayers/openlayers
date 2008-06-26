@@ -41,7 +41,7 @@
             );
             var gsat = new OpenLayers.Layer.Google(
                 "Google Satellite",
-                {type: G_SATELLITE_MAP, 'sphericalMercator': true}
+                {type: G_SATELLITE_MAP, 'sphericalMercator': true, numZoomLevels: 22}
             );
             var ghyb = new OpenLayers.Layer.Google(
                 "Google Hybrid",
@@ -84,6 +84,14 @@
                     type: 'png', getURL: osm_getTileURL,
                     displayOutsideMaxExtent: true,
                     attribution: '<a href="http://www.openstreetmap.org/">OpenStreetMap</a>'
+                }
+            );
+            // create OSM layer
+            var mapnik = new OpenLayers.Layer.TMS(
+                "OpenAerialMap",
+                "http://tile.openaerialmap.org/tiles/1.0.0/openaerialmap-900913/",
+                {
+                    type: 'png', getURL: osm_getTileURL
                 }
             );
 
