@@ -77,12 +77,12 @@
             };
             var center = new OpenLayers.Feature.Vector(origin, null, style);
             vectorLayer.addFeatures([center]);
-            window.setInterval(rotateFeature, 100,
-                               pointFeature, 360 / 20, origin);
-            window.setInterval(rotateFeature, 100,
-                               lineFeature, 360 / 40, origin);
-            window.setInterval(rotateFeature, 100,
-                               polygonFeature, -360 / 20, origin);
+            window.setInterval(function() {rotateFeature(
+                               pointFeature, 360 / 20, origin)}, 100);
+            window.setInterval(function() {rotateFeature(
+                               lineFeature, 360 / 40, origin)}, 100);
+            window.setInterval(function(){rotateFeature(
+                               polygonFeature, -360 / 20, origin)}, 100);
         }
 
         function rotateFeature(feature, angle, origin) {
