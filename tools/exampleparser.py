@@ -6,7 +6,17 @@ import re
 import urllib2
 import time
 from xml.dom.minidom import Document
-from xml.etree import ElementTree
+
+try:
+    import xml.etree.ElementTree as ElementTree 
+except ImportError:
+    try:
+        import cElementTree as ElementTree
+    except ImportError:
+        try:
+            import elementtree.ElementTree as ElementTree
+        except ImportError:
+            import lxml.etree as ElementTree
 
 missing_deps = False
 try:
