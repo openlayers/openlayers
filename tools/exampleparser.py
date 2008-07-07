@@ -151,12 +151,7 @@ def createFeed(examples):
         feed.appendChild(entry)
 
     doc.appendChild(feed)
-    return doc
-
-def createEntry(doc, example):
-    
-    return entry
-    
+    return doc    
     
 def wordIndex(examples):
     """
