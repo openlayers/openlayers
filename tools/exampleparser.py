@@ -223,6 +223,7 @@ if __name__ == "__main__":
         d = getSvnInfo(url)
         tagvalues["modified"] = d["date"] or modtime
         tagvalues["author"] = d["author"] or "anonymous"
+        tagvalues['link'] = example
 
         exampleList.append(tagvalues)
         
