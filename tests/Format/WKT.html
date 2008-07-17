@@ -231,7 +231,7 @@
 
         var format = new OpenLayers.Format.WKT({
             externalProjection: projections["src"],
-            internalProjection: projections["dest"],
+            internalProjection: projections["dest"]
         });
         var feature = format.read("GEOMETRYCOLLECTION(POINT(" + points["src"].geometry.x + " " + points["src"].geometry.y + "))")[0];
         t.eq(feature.geometry.toString(), points["dest"].geometry.toString(), 
