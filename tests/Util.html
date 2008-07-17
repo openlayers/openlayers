@@ -463,7 +463,8 @@
         }
 
         t.eq( image.style.position, "relative", "image.style.positionset correctly");    
-
+        t.eq( image.src, img, "image.style.backgroundImage correctly");
+        
         if (OpenLayers.Util.alphaHack()) {
         
             var filter = "progid:DXImageTransform.Microsoft" +
@@ -474,8 +475,7 @@
             filter = "alpha(opacity=0)";
             t.eq(image.style.filter, filter, "image filter set correctly");
 
-        } else {
-            t.eq( image.src, img, "image.style.backgroundImage correctly");    
+        } else {  
             t.ok(true, "div filter value not set (not in IE)");
             t.ok(true, "image filter value not set (not in IE)");
         }
