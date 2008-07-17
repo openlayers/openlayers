@@ -1,5 +1,6 @@
 div.olLayerDiv {
-   -moz-user-select: none 
+   -moz-user-select: none;
+   text-align: left;
 }
 
 .olLayerGoogleCopyright {
