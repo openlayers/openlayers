@@ -308,7 +308,7 @@
     }
     
     function test_Elements_erasegeometry(t) {
-        t.plan(4);
+        t.plan(5);
         
         var el = document.createElement('div');
         document.body.appendChild(el);
@@ -358,6 +358,19 @@
         
         OpenLayers.Renderer.Elements.prototype.eraseGeometry(geometry);
         t.ok(el.parentNode != document.body, "geometry components correctly removed when passed a multipolygon");
+        
+        var el = document.createElement('div');
+        document.body.appendChild(el);
+        el.id = 'bar';
+        var geometry = {
+            CLASS_NAME: "OpenLayers.Geometry.Collection",
+            components: [{
+                id: 'bar'
+            }]
+        };
+        
+        OpenLayers.Renderer.Elements.prototype.eraseGeometry(geometry);
+        t.ok(el.parentNode != document.body, "geometry components correctly removed when passed a collection");
     }    
 
   </script>
