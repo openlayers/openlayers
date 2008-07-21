@@ -58,6 +58,7 @@
         handler.mousedown(evt);
         handler.mouseup(evt);
         var evt = {xy: new OpenLayers.Pixel(175, 100), which: 1};
+        handler.mousemove(evt);
         handler.mousedown(evt);
         handler.mouseup(evt);
         t.ok(handler.line.geometry.getBounds().equals(new OpenLayers.Bounds(0,-35.15625,35.15625,0)), "Correct bounds");
