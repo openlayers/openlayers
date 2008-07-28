@@ -1,6 +1,9 @@
+div.olMapViewport {
+    text-align: left;
+}
+
 div.olLayerDiv {
    -moz-user-select: none;
-   text-align: left;
 }
 
 .olLayerGoogleCopyright {
