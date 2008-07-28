@@ -136,6 +136,88 @@
 
     }    
 
+    function test_hasClass(t) {        
+        t.plan(14);
+        var has = OpenLayers.Element.hasClass;
+
+        var element = document.createElement("div");
+        element.className = "fe fi fo fum one.part two-part three:part four";
+        
+        t.ok(has(element, "fe"), "has fe");
+        t.ok(has(element, "fi"), "has fi");
+        t.ok(has(element, "fo"), "has fo");
+        t.ok(!has(element, "f"), "hasn't f");
+        t.ok(!has(element, "o"), "hasn't o");
+        t.ok(!has(element, "fumb"), "hasn't fumb");
+        t.ok(!has(element, "one"), "hasn't one");
+        t.ok(has(element, "one.part"), "has one.part");
+        t.ok(!has(element, "two"), "hasn't two");
+        t.ok(has(element, "two-part"), "has two-part");
+        t.ok(!has(element, "three"), "hasn't three");
+        t.ok(has(element, "three:part"), "has three:part");
+        t.ok(has(element, "four"), "has four");
+        
+        element.className = "";
+        t.ok(!has(element, "nada"), "hasn't nada");
+    }
+
+    function test_addClass(t) {        
+        t.plan(6);
+        var add = OpenLayers.Element.addClass;
+        
+        var element = document.createElement("div");
+        element.id = "foo";
+        t.eq(element.className, "", "starts with no class name");
+        
+        var mod = add(element, "first");
+        t.eq(mod.id, element.id, "returns the same element");
+        t.eq(element.className, "first", "properly adds first class name");        
+        t.eq(add(element, "second").className, "first second",
+             "properly adds second class name");
+        t.eq(add(element, "second").className, "first second",
+             "doesn't do anything for duplicated names");
+        t.eq(add(element, "third").className, "first second third",
+             "properly adds third class name");
+    }
+    
+    function test_removeClass(t) {
+        t.plan(5);
+        var remove = OpenLayers.Element.removeClass;
+        
+        var element = document.createElement("div");
+        element.id = "foo";
+        element.className = "first second middle fourth last";
+        
+        var mod = remove(element, "last");
+        t.eq(mod.id, element.id, "returns the same element");
+        t.eq(element.className, "first second middle fourth",
+             "properly removes last class name");
+        t.eq(remove(element, "first").className, "second middle fourth",
+             "properly removes first class name");
+        t.eq(remove(element, "middle").className, "second fourth",
+             "properly removes middle class name");
+        t.eq(remove(element, "nada").className, "second fourth",
+             "doesn't do anything for bogus class name");
+    }
+
+    function test_toggleClass(t) {
+        t.plan(5);
+        var toggle = OpenLayers.Element.toggleClass;
+        
+        var element = document.createElement("div");
+        element.id = "foo";
+        
+        var mod = toggle(element, "first");
+        t.eq(mod.id, element.id, "returns the same element");
+        t.eq(element.className, "first", "adds first new class name");
+        t.eq(toggle(element, "second").className, "first second",
+             "adds second new class name");
+        t.eq(toggle(element, "first").className, "second",
+             "removes first existing class name");
+        t.eq(toggle(element, "second").className, "",
+             "removes second existing class name");
+    }
+
     function test_Element_getStyle(t) {
         t.plan(4);
 
