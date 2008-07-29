@@ -59,6 +59,7 @@
         }
                 
         var r = new OpenLayers.Renderer.SVG(document.body);
+        r.setSize(new OpenLayers.Size(4,4));
         r.map = {
             getResolution: function() {
                 return 0.5;
@@ -78,7 +79,7 @@
         // test extent changes
         var extent = new OpenLayers.Bounds(4,3,2,1);
         r.setExtent(extent);
-        t.eq(r.rendererRoot.getAttributeNS(null, "viewBox"), "6 6 -4 -4", "rendererRoot viewBox is correct after a new setExtent");
+        t.eq(r.rendererRoot.getAttributeNS(null, "viewBox"), "6 6 4 4", "rendererRoot viewBox is correct after a new setExtent");
 
         OpenLayers.Renderer.Elements.prototype.setExtent =
             OpenLayers.Renderer.Elements.prototype._setExtent;

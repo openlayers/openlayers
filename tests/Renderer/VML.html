@@ -59,6 +59,7 @@
         }
                 
         var r = new OpenLayers.Renderer.VML(document.body);
+        r.setSize(new OpenLayers.Size(4,4));
         r.map = {
             getResolution: function() {
                 return 0.5;
@@ -70,8 +71,8 @@
         
         t.eq(g_SetExtent, true, "Elements.setExtent() called");
         
-        t.ok(r.root.coordorigin == "2,8", "coordorigin is correct");
-        t.ok(r.root.coordsize == "4,-4", "coordsize is correct");
+        t.ok(r.root.coordorigin == "2,4", "coordorigin is correct");
+        t.ok(r.root.coordsize == "4,4", "coordsize is correct");
         
         OpenLayers.Renderer.Elements.prototype.setExtent =
             OpenLayers.Renderer.Elements.prototype._setExtent;
