@@ -41,7 +41,8 @@
                         clickout: false, toggle: false,
                         multiple: false, hover: false,
                         toggleKey: "ctrlKey", // ctrl key removes from selection
-                        multipleKey: "shiftKey" // shift key adds to selection
+                        multipleKey: "shiftKey", // shift key adds to selection
+                        box: true
                     }
                 )
             };
@@ -69,8 +70,8 @@
             drawControls.select.clickout = clickout;
             var hover = document.getElementById("hover").checked;
             drawControls.select.hover = hover;
-            if(hover && drawControls.select.active) {
-                // turn on/off to clear feature property of handler
+            drawControls.select.box = document.getElementById("box").checked;
+            if(drawControls.select.active) {
                 drawControls.select.deactivate();
                 drawControls.select.activate();
             }
@@ -110,6 +111,11 @@
                    onclick="toggleControl(this);" />
             <label for="selectToggle">select feature</label>
             <ul>
+                <li>
+                    <input id="box" type="checkbox" checked="checked"
+                           name="box" onchange="update()" />
+                    <label for="box">select features in a box</label>
+                </li>
                 <li>
                     <input id="clickout" type="checkbox"
                            name="clickout" onchange="update()" />

@@ -13,19 +13,23 @@
              "new OpenLayers.Control.SelectFeature returns an instance");
         t.eq(control.layer, "bar",
              "constructor sets layer correctly");        
-//        t.eq(control.featureHandler.geometryTypes, "foo",
+//        t.eq(control.handlers.feature.geometryTypes, "foo",
 //             "constructor sets options correctly on feature handler");
     }
     
     function test_Control_SelectFeature_destroy(t) {
-        t.plan(1);
+        t.plan(2);
         var map = new OpenLayers.Map("map");
         var layer = new OpenLayers.Layer.Vector();
         map.addLayer(layer);
-        var control = new OpenLayers.Control.SelectFeature(layer);
-        control.handler.destroy = function() {
+        var control = new OpenLayers.Control.SelectFeature(layer, {box: true});
+        control.handlers.feature.deactivate = function() {
             t.ok(true,
-                 "control.destroy calls destroy on feature handler");
+                 "control.deactivate calls deactivate on feature handler");
+        }
+        control.handlers.box.deactivate = function() {
+            t.ok(true,
+                 "control.deactivate calls deactivate on box handler");
         }
 // should nullify the layer property here
         control.destroy();
@@ -61,7 +65,7 @@
         };
         // mock up active control
         var control = new OpenLayers.Control.SelectFeature(layer);
-        control.handler = {
+        control.handlers.feature = {
             evt: {}
         };
         // mock up features
@@ -110,32 +114,82 @@
         
     }
     
+    function test_box(t) {
+        t.plan(5);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.SelectFeature(layer, {'multiple': true, box: true });
+        var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0));
+        var feature2 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(1,1));
+        var feature3 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(-2,-2));
+        var feature4 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString([
+            new OpenLayers.Geometry.Point(0, 0), new OpenLayers.Geometry.Point(1, 1)
+        ]));
+        layer.addFeatures([feature, feature2, feature3, feature4]);
+        control.setMap(map);
+        map.getLonLatFromPixel = function(arg) {
+            return new OpenLayers.LonLat(arg.x, arg.y);
+        }    
+        control.selectBox(new OpenLayers.Bounds(-1, -1, 2, 2));
+        t.eq(layer.selectedFeatures.length, 3, "box around all features selects 3 features");
+        
+        control.selectBox(new OpenLayers.Bounds(-3, -3, -1, -1));
+        t.eq(layer.selectedFeatures.length, 4, "box around other features doesn't turn off already selected features.");        
+        
+        control.multipleSelect = function() {
+            return false;
+        };
+        control.selectBox(new OpenLayers.Bounds(-3, -3, -1, -1));
+        t.eq(layer.selectedFeatures.length, 1, "box around other features correctly turns off already selected features.");
+        
+        control.geometryTypes = null;
+        control.selectBox(new OpenLayers.Bounds(-100, -100, 100, 100));
+        t.eq(layer.selectedFeatures.length, layer.features.length, "all features selected with no geometryTypes filter");
+        
+        control.geometryTypes = ["OpenLayers.Geometry.Point"];
+        control.selectBox(new OpenLayers.Bounds(-100, -100, 100, 100));
+        t.eq(layer.selectedFeatures.length, 3, "3 features selected with geometryTypes filter");
+        
+        ["OpenLayers.Geometry.Point"]
+        
+
+    }
+    
     function test_Control_SelectFeature_activate(t) {
+        t.plan(4);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.SelectFeature(layer, {box: true});
+        map.addControl(control);
+        t.ok(!control.handlers.feature.active,
+             "feature handler is not active prior to activating control");
+        t.ok(!control.handlers.box.active,
+             "box handler is not active prior to activating control");
+        control.activate();
+        t.ok(control.handlers.feature.active,
+             "feature handler is active after activating control");
+        t.ok(control.handlers.box.active,
+             "box handler is active after activating control");
+    }
+
+    function test_Control_SelectFeature_deactivate(t) {
         t.plan(2);
         var map = new OpenLayers.Map("map");
         var layer = new OpenLayers.Layer.Vector();
         map.addLayer(layer);
-        var control = new OpenLayers.Control.SelectFeature(layer);
+        var control = new OpenLayers.Control.SelectFeature(layer, {box: true});
         map.addControl(control);
-        t.ok(!control.handler.active,
-             "feature handler is not active prior to activating control");
-        control.activate();
-        t.ok(control.handler.active,
-             "feature handler is active after activating control");
-    }
 
-    function test_Control_SelectFeature_deactivate(t) {
-        t.plan(1);
-        var map = new OpenLayers.Map("map");
-        var layer = new OpenLayers.Layer.Vector();
-        map.addLayer(layer);
-        var control = new OpenLayers.Control.SelectFeature(layer);
-        map.addControl(control);
-        
         control.activate();
-        control.handler.deactivate = function() {
+        control.handlers.feature.deactivate = function() {
             t.ok(true,
                  "control.deactivate calls deactivate on feature handler");
+        }
+        control.handlers.box.deactivate = function() {
+            t.ok(true,
+                 "control.deactivate calls deactivate on box handler");
         }
         control.deactivate();
     }
