@@ -1,0 +1,39 @@
+<html> 
+<head> 
+    <script src="../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+    
+    var gpx_data = '<?xml version="1.0" encoding="ISO-8859-1"?><gpx version="1.1" creator="Memory-Map 5.1.3.715 http://www.memory-map.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.topografix.com/GPX/1/1" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd"><wpt lat="51.3697845627" lon="-0.1853562259"><name>Mark</name><sym><![CDATA[Flag]]></sym><type><![CDATA[Marks]]></type></wpt><rte><name><![CDATA[Route8]]></name><type><![CDATA[Route]]></type><rtept lat="51.3761803674" lon="-0.1829991904"><name><![CDATA[WP0801]]></name><sym><![CDATA[Dot]]></sym><type><![CDATA[Waypoints]]></type></rtept><rtept lat="51.3697894659" lon="-0.1758887005"><name><![CDATA[WP0802]]></name><sym><![CDATA[Dot]]></sym><type><![CDATA[Waypoints]]></type></rtept><rtept lat="51.3639790884" lon="-0.1833202965"><name><![CDATA[WP0803]]></name><sym><![CDATA[Dot]]></sym><type><![CDATA[Waypoints]]></type></rtept><rtept lat="51.3567607069" lon="-0.1751119509"><name><![CDATA[WP0804]]></name><sym><![CDATA[Dot]]></sym><type><![CDATA[Waypoints]]></type></rtept></rte><trk><name><![CDATA[Track]]></name><type><![CDATA[Track]]></type><trkseg><trkpt lat="51.3768216433" lon="-0.1721292044"></trkpt><trkpt lat="51.3708337670" lon="-0.1649230916"></trkpt><trkpt lat="51.3644368725" lon="-0.1736741378"></trkpt><trkpt lat="51.3576354272" lon="-0.1662595250"></trkpt></trkseg></trk></gpx>';
+    
+    function test_Format_GPX_constructor(t) { 
+        t.plan(4); 
+         
+        var options = {'foo': 'bar'}; 
+        var format = new OpenLayers.Format.GPX(options); 
+        t.ok(format instanceof OpenLayers.Format.GPX, 
+             "new OpenLayers.Format.GPX returns object" ); 
+        t.eq(format.foo, "bar", "constructor sets options correctly"); 
+        t.eq(typeof format.read, "function", "format has a read function"); 
+        t.eq(typeof format.write, "function", "format has a write function"); 
+    }
+    function test_Format_GPX_read(t) {
+        t.plan(4);
+        var f = new OpenLayers.Format.GPX();
+        var features = f.read(gpx_data);
+        t.eq(features.length, 3, "Number of features read is correct");
+        t.eq(features[0].geometry.toString(), "POINT(-0.1853562259 51.3697845627)", "waypoint feature correctly created");
+        t.eq(features[1].geometry.toString(), "LINESTRING(-0.1721292044 51.3768216433,-0.1649230916 51.370833767,-0.1736741378 51.3644368725,-0.166259525 51.3576354272)", "track feature correctly created");
+        t.eq(features[2].geometry.toString(), "LINESTRING(-0.1829991904 51.3761803674,-0.1758887005 51.3697894659,-0.1833202965 51.3639790884,-0.1751119509 51.3567607069)", "route feature correctly created");
+    }
+    function test_format_GPX_read_attributes(t) {
+        t.plan(2);
+        var f = new OpenLayers.Format.GPX();
+        var features = f.read(gpx_data);
+        t.eq(features[0].attributes['name'], "Mark", "Text attribute node read correctly.");
+        t.eq(features[0].attributes['sym'], "Flag", "CDATA attribute node read correctly.");
+    }
+    </script> 
+</head> 
+<body> 
+</body> 
+</html> 
