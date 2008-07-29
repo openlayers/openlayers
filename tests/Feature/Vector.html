@@ -86,7 +86,47 @@
              "clone can clone geometry-less features");
     }
         
+    function test_Feature_Vector_move(t) {
+        t.plan(3);
 
+        var oldx = 26;
+        var oldy = 14;
+        var newx = 6;
+        var newy = 4;
+        var res = 10;
+
+        var geometry = new OpenLayers.Geometry.Point(oldx,
+                                                     oldy);
+
+        var drawn = false;
+
+        feature = new OpenLayers.Feature.Vector(geometry);
+
+        feature.layer = {
+            getViewPortPxFromLonLat : function(lonlat){
+                return new OpenLayers.Pixel(lonlat.lon,lonlat.lat);
+            },
+            map: {
+                getResolution: function(){
+                    return res;
+                }
+            },
+            drawFeature: function(){
+                drawn = true;
+            }
+        }
+
+        var pixel = new OpenLayers.Pixel(newx,newy)
+
+        feature.move(pixel);
+
+        geometry = feature.geometry;
+
+        t.ok(drawn, "The feature is redrawn after the move");
+        t.eq(geometry.x, res * (newx - oldx) + oldx, "New geometry has proper x coordinate");
+        t.eq(geometry.y, res * (oldy - newy) + oldy, "New geometry has proper y coordinate");
+    }
+        
 
   </script>
 </head>
