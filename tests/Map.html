@@ -7,13 +7,15 @@
     var map;
 
     function test_Map_constructor (t) {
-        t.plan( 10 );
+        t.plan( 11 );
         
         map = new OpenLayers.Map('map'); 
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
             {map: "/mapdata/vmap_wms.map", layers: "basic"});
         map.addLayer(baseLayer);
+
+        t.ok( OpenLayers.Element.hasClass(map.div, "olMap"), "Map div has olMap class");
 
         t.ok( map instanceof OpenLayers.Map, "new OpenLayers.Map returns object" );
         if (!isMozilla) {
