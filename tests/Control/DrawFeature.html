@@ -21,12 +21,12 @@
         layer.addFeatures = function(features) {
             t.ok(features[0].geometry == geom, "layer.addFeatures called");
         };
-        function test_featureadded(event) {
+        function testfeatureadded(event) {
             t.ok(event.feature.geometry == geom, "featureadded triggered");
         }
-        control.events.on({"featureadded": test_featureadded});
+        control.events.on({"featureadded": testfeatureadded});
         control.drawFeature(geom);
-        control.events.un({"featureadded": test_featureadded});
+        control.events.un({"featureadded": testfeatureadded});
         
     }
 
