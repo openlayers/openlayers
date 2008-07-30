@@ -22,8 +22,9 @@
         var layer = new OpenLayers.Layer.Vector("layer");
          
         var baseStyle = OpenLayers.Util.extend(
-                OpenLayers.Feature.Vector.style["default"],
-                {externalGraphic: "bar${foo}.png"});
+            OpenLayers.Feature.Vector.style["default"],
+            {externalGraphic: "bar${foo}.png"}
+        );
         
         var style = new OpenLayers.Style(baseStyle);
         
@@ -52,8 +53,9 @@
         });
         
         var feature = new OpenLayers.Feature.Vector(
-                new OpenLayers.Geometry.Point(3,5),
-                {"foo": "bar"});
+            new OpenLayers.Geometry.Point(3,5),
+            {"foo": "bar"}
+        );
 
         feature.fid = "1";
         // for this fid, the above rule should apply
@@ -122,7 +124,7 @@
         rule.evaluate = function() {return false;};
         style.applySymbolizer = function(r) {
             t.eq(r.id, elseRule.id, "(else) applySymbolizer called with correct rule");
-        }
+        };
         style.createSymbolizer(new OpenLayers.Feature.Vector());
     }
     
