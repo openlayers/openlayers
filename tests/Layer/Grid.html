@@ -36,9 +36,9 @@
         //regression testing for #1502
         t.ok( layer.events.listeners['tileloaded'].length == 0, "no listeners for tileloaded preregister");        
 
-		var obj = {};
-		var func = function() {};
-		layer.events.register('tileloaded', obj, func);        
+        var obj = {};
+        var func = function() {};
+        layer.events.register('tileloaded', obj, func);        
 
         t.ok( layer.events.listeners['tileloaded'].length == 1, "one listener for tileloaded after register");        
     }

@@ -46,34 +46,34 @@
 
         var ev = {
             'object': {},
-			'listeners': {
-				'listenerA': { 
-				    'push': function(options){
-					            gObjA = options.obj;
-					            gFuncA = options.func;
-           					}
-				},
-				'listenerB': { 
+            'listeners': {
+                'listenerA': { 
+                    'push': function(options){
+                                gObjA = options.obj;
+                                gFuncA = options.func;
+                            }
+                },
+                'listenerB': { 
                     'push': function(options){
                                 gObjB = options.obj;
                                 gFuncB = options.func;
                             }
                 }
-			},
-			'eventTypes': ['listenerA', 'listenerB']
-		};
-		
-		var type = null;
-		var object = null;
-		var func = null;
+            },
+            'eventTypes': ['listenerA', 'listenerB']
+        };
+
+        var type = null;
+        var object = null;
+        var func = null;
 
       //func null
         gObjA = null; gFuncA = null; gObjB = null; gFuncB = null;
-	    OpenLayers.Events.prototype.register.apply(ev, [type, object, func]);
+        OpenLayers.Events.prototype.register.apply(ev, [type, object, func]);
         t.ok((gObjA == null) && (gFuncA == null) && 
-		     (gObjB == null) && (gFuncB == null), "no push called func null"); 
-		
-	  //valid func, type not in ev.eventTypes
+             (gObjB == null) && (gFuncB == null), "no push called func null"); 
+
+      //valid func, type not in ev.eventTypes
         func = function() {};
         gObjA = null; gFuncA = null; gObjB = null; gFuncB = null;
         OpenLayers.Events.prototype.register.apply(ev, [type, object, func]);
@@ -89,13 +89,13 @@
         
       //valid func, type in ev.eventTypes, valid obj
         type = 'listenerB';
-		object = {};
+        object = {};
         gObjA = null; gFuncA = null; gObjB = null; gFuncB = null;
         OpenLayers.Events.prototype.register.apply(ev, [type, object, func]);
         t.ok((gObjA == null) && (gFuncA == null) && 
              (gObjB == object) && (gFuncB == func), "push called on listenerB's mock array when type passed in 'listenerB'."); 
         
-	}
+    }
 
     function test_Events_register_unregister(t) {
  
