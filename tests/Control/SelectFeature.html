@@ -119,6 +119,8 @@
         var map = new OpenLayers.Map("map");
         var layer = new OpenLayers.Layer.Vector();
         map.addLayer(layer);
+        map.setBaseLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(1,1));
         var control = new OpenLayers.Control.SelectFeature(layer, {'multiple': true, box: true });
         var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0));
         var feature2 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(1,1));
