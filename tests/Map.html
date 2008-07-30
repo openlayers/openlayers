@@ -1028,6 +1028,73 @@
         t.eq( map.controls, null, "map.controls is null after destroy" );
         t.eq( map.viewPortDiv, null, "map's viewportDiv nullified");
     }
+	
+    function test_Map_getMaxExtent(t){
+        t.plan(5);
+		
+		var options = null;
+		var map = {};
+		
+      //null options, no baseLayer
+        var maxExtent = OpenLayers.Map.prototype.getMaxExtent.apply(map, [options]);
+        t.eq(maxExtent, null, "null options, no baseLayer returns null");     
+
+      //null options.restricted, no baseLayer
+        maxExtent = OpenLayers.Map.prototype.getMaxExtent.apply(map, [options]);
+        t.eq(maxExtent, null, "null options.restricted, no baseLayer returns null");     
+
+      //true options.restricted, null map.restrictedExtent no baseLayer
+        maxExtent = OpenLayers.Map.prototype.getMaxExtent.apply(map, [options]);
+        t.eq(maxExtent, null, "true options.restricted, null map.restrictedExtent no baseLayer returns null");     
+
+      //true options.restricted, valid map.restrictedExtent no baseLayer
+        options = {
+			'restricted': true
+		};
+        map.restrictedExtent = {};
+        maxExtent = OpenLayers.Map.prototype.getMaxExtent.apply(map, [options]);
+        t.ok(maxExtent == map.restrictedExtent, "true options.restricted, valid map.restrictedExtent no baseLayer returns map.restrictedExtent");     
+
+      //null options, valid baseLayer
+	    options = null;
+        map.baseLayer = {
+			'maxExtent': {}
+		};
+        var maxExtent = OpenLayers.Map.prototype.getMaxExtent.apply(map, [options]);
+        t.ok(maxExtent == map.baseLayer.maxExtent, "null options, valid baseLayer returns map.baseLayer.maxExtent");     
+    }
+
+    function test_Map_zoomToMaxExtent(t){
+        t.plan(4)
+
+        gMaxExtent = {};
+
+        var map = {
+            'getMaxExtent': function(options) {
+                gRestricted = options.restricted; 
+                return gMaxExtent;
+            }, 
+            'zoomToExtent': function(extent) {
+                t.ok(extent == gMaxExtent, "zoomToExtent() always called on return from map.getMaxExtent()");
+            } 
+		};
+		
+      //options is null
+        var options = null;
+        gRestricted = null;
+        OpenLayers.Map.prototype.zoomToMaxExtent.apply(map, [options]);
+        t.eq(gRestricted, true, "default 'restricted' passed to map.getMaxExtent() is true");
+        
+      //valid options
+        options = {
+			'restricted': {}
+		};
+        gRestricted = null;
+        OpenLayers.Map.prototype.zoomToMaxExtent.apply(map, [options]);
+        t.ok(gRestricted == options.restricted, "when valid options argument, 'options.restricted' passed to map.getMaxExtent()");
+    }
+
+    
 
   </script>
 </head>
