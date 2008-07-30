@@ -164,22 +164,25 @@
     }    
 
     function test_selectFeature(t) {
-        t.plan(15);
-        var layer = new OpenLayers.Layer.Vector();
+        t.plan(12);
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.Vector("Vectors!", {isBaseLayer: true});
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0, 0));
         var control = new OpenLayers.Control.ModifyFeature(layer);
         control.vertices = [];
         control.virtualVertices = [];
-        layer.events.on({"beforefeaturemodified": function(event) {
-            t.eq(event.feature, fakeFeature, "beforefeaturemodified triggered");
-        }});
+        var callback = function(obj) {
+            t.ok(obj.feature == fakeFeature, "beforefeaturemodified triggered");
+        };
+        layer.events.on({"beforefeaturemodified": callback});
         control.dragControl.activate = function() { t.ok(true, "drag Control activated"); }
         control.onModificationStart = function(feature)  { t.eq(feature.id, fakeFeature.id, "On Modification Start called with correct feature."); } 
-        
         
         // Start of testing
         
         control.collectVertices = function() { t.fail("Collect vertices called when geom is a point"); }
-        var fakeFeature = {'id':'myFakeFeature','geometry':{'CLASS_NAME':'OpenLayers.Geometry.Point'}};
+        var fakeFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0, 0));
         
         // Points don't call collectVertices
         control.selectFeature({feature: fakeFeature});
@@ -195,7 +198,13 @@
         layer.addFeatures = function(features) { 
             t.ok(features == 'a' || features == 'd', "features passed correctly"); 
         }
-        fakeFeature.geometry.CLASS_NAME='OpenLayers.Geometry.Polygon';
+        
+        fakeFeature.geometry = new OpenLayers.Geometry.Polygon([
+            new OpenLayers.Geometry.LinearRing([
+                new OpenLayers.Geometry.Point(0, 0),
+                new OpenLayers.Geometry.Point(1, 1)
+            ])
+        ]);
         
         // OnSelect calls collectVertices and passes features to layer 
         control.selectFeature({feature: fakeFeature});
@@ -359,19 +368,13 @@
     }
 
     function test_onModificationStart(t) {
-        t.plan(2);
+        t.plan(1);
         var map = new OpenLayers.Map("map");
         var layer = new OpenLayers.Layer.Vector();
         map.addLayer(layer);
         var control = new OpenLayers.Control.ModifyFeature(layer);
         map.addControl(control);
         control.activate();
-        
-        // test that beforefeaturemodified is triggered
-        layer.events.on({"beforefeaturemodified": function(event) {
-            t.eq(event.feature.id, testFeature.id,
-                 "beforefeaturemodified is triggered with correct feature");
-        }});
         
         // make sure onModificationStart is called on feature selection
         var testFeature = new OpenLayers.Feature.Vector(
@@ -455,6 +458,52 @@
         
         map.destroy();
     }
+    
+    function test_events(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.ModifyFeature(layer);
+        map.addControl(control);
+        control.activate();
+        
+        // make sure onModificationStart is called on feature selection
+        var testFeature = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(Math.random(), Math.random())
+        );
+        
+        // test that beforefeatureselected is triggered
+        function handle_beforefeatureselected(event) {
+            t.ok(event.feature == testFeature, "beforefeatureselected called with the correct feature");
+        }
+        layer.events.on({
+            "beforefeatureselected": handle_beforefeatureselected
+        });
+        layer.events.triggerEvent("beforefeatureselected", {
+            feature: testFeature
+        });
+        layer.events.un({
+            "beforefeatureselected": handle_beforefeatureselected
+        });
+        
+        // test that beforefeatureselected is triggered
+        function handle_featureselected(event) {
+            t.ok(event.feature == testFeature, "featureselected called with the correct feature");
+        }
+        layer.events.on({
+            "featureselected": handle_featureselected
+        });
+        layer.events.triggerEvent("featureselected", {
+            feature: testFeature
+        });
+        layer.events.un({
+            "featureselected": handle_featureselected
+        });
+
+        map.destroy();
+    }
+
 
 
     </script>

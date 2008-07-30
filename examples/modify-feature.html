@@ -29,20 +29,14 @@
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.addControl(new OpenLayers.Control.MousePosition());
             
-            var modifyOptions = {
-                onModificationStart: function(feature) {
-                    OpenLayers.Console.log("start modifying", feature.id);
-                },
-                onModification: function(feature) {
-                    OpenLayers.Console.log("modified", feature.id);
-                },
-                onModificationEnd: function(feature) {
-                    OpenLayers.Console.log("end modifying", feature.id);
-                },
-                onDelete: function(feature) {
-                    OpenLayers.Console.log("delete", feature.id);
-                }
-            };
+            function report(event) {
+                OpenLayers.Console.log(event.type, event.feature.id);
+            }
+            vectors.events.on({
+                "beforefeaturemodified": report,
+                "featuremodified": report,
+                "afterfeaturemodified": report
+            });
             controls = {
                 point: new OpenLayers.Control.DrawFeature(vectors,
                             OpenLayers.Handler.Point),
@@ -53,8 +47,7 @@
                 regular: new OpenLayers.Control.DrawFeature(vectors,
                             OpenLayers.Handler.RegularPolygon,
                             {handlerOptions: {sides: 5}}),
-                modify: new OpenLayers.Control.ModifyFeature(vectors,
-                                                             modifyOptions)
+                modify: new OpenLayers.Control.ModifyFeature(vectors)
             };
             
             for(var key in controls) {
