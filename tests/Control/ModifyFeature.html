@@ -213,6 +213,11 @@
         control.selectFeature({feature: fakeFeature});
         
         control.destroy();
+
+        // layer.destroy() will call removeFeatures with an empty array, make
+        // removeFeatures reference an empty function to prevent the above
+        // test to fail
+        layer.removeFeatures = function(features) {};
         layer.destroy();
     }  
 
@@ -323,6 +328,11 @@
         control.dragComplete();
         
         control.destroy();
+
+        // layer.destroy() will call removeFeatures with an empty array, make
+        // removeFeatures reference an empty function to prevent the above
+        // test to fail
+        layer.removeFeatures = function(verts) {};
         layer.destroy();
     }
     
