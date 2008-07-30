@@ -1028,13 +1028,13 @@
         t.eq( map.controls, null, "map.controls is null after destroy" );
         t.eq( map.viewPortDiv, null, "map's viewportDiv nullified");
     }
-	
+
     function test_Map_getMaxExtent(t){
         t.plan(5);
-		
-		var options = null;
-		var map = {};
-		
+
+        var options = null;
+        var map = {};
+
       //null options, no baseLayer
         var maxExtent = OpenLayers.Map.prototype.getMaxExtent.apply(map, [options]);
         t.eq(maxExtent, null, "null options, no baseLayer returns null");     
@@ -1049,17 +1049,17 @@
 
       //true options.restricted, valid map.restrictedExtent no baseLayer
         options = {
-			'restricted': true
-		};
+            'restricted': true
+        };
         map.restrictedExtent = {};
         maxExtent = OpenLayers.Map.prototype.getMaxExtent.apply(map, [options]);
         t.ok(maxExtent == map.restrictedExtent, "true options.restricted, valid map.restrictedExtent no baseLayer returns map.restrictedExtent");     
 
       //null options, valid baseLayer
-	    options = null;
+        options = null;
         map.baseLayer = {
-			'maxExtent': {}
-		};
+            'maxExtent': {}
+        };
         var maxExtent = OpenLayers.Map.prototype.getMaxExtent.apply(map, [options]);
         t.ok(maxExtent == map.baseLayer.maxExtent, "null options, valid baseLayer returns map.baseLayer.maxExtent");     
     }
@@ -1077,8 +1077,8 @@
             'zoomToExtent': function(extent) {
                 t.ok(extent == gMaxExtent, "zoomToExtent() always called on return from map.getMaxExtent()");
             } 
-		};
-		
+        };
+
       //options is null
         var options = null;
         gRestricted = null;
@@ -1087,8 +1087,8 @@
         
       //valid options
         options = {
-			'restricted': {}
-		};
+            'restricted': {}
+        };
         gRestricted = null;
         OpenLayers.Map.prototype.zoomToMaxExtent.apply(map, [options]);
         t.ok(gRestricted == options.restricted, "when valid options argument, 'options.restricted' passed to map.getMaxExtent()");
