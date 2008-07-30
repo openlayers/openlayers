@@ -1,0 +1,106 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+        <link rel="stylesheet" href="../theme/default/framedCloud.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
+
+    <style type="text/css">
+        #map {
+            width: 100%;
+            height: 80%;
+            border: 1px solid black;
+        }
+        .olPopup p { margin:0px; font-size: .9em;}
+        .olPopup h2 { font-size:1.2em; }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var lon = 5;
+        var lat = 40;
+        var zoom = 5;
+        var map, layer;
+
+        function init(){
+            var options = {
+                projection: new OpenLayers.Projection("EPSG:900913"),
+                displayProjection: new OpenLayers.Projection("EPSG:4326"),
+                units: "m",
+                maxResolution: 156543.0339,
+                maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34,
+                                                 20037508.34, 20037508.34)
+            };
+            map = new OpenLayers.Map('map', options);
+            var mapnik = new OpenLayers.Layer.TMS(
+                "OpenStreetMap (Mapnik)",
+                "http://tile.openstreetmap.org/",
+                {
+                    type: 'png', getURL: osm_getTileURL,
+                    displayOutsideMaxExtent: true,
+                    attribution: '<a href="http://www.openstreetmap.org/">OpenStreetMap</a>'
+                }
+            );
+            map.addLayer(mapnik);
+            map.addLayer(new OpenLayers.Layer.GML("KML", "kml/sundials.kml", 
+               {
+                format: OpenLayers.Format.KML, 
+                projection: map.displayProjection,
+                formatOptions: {
+                  extractStyles: true, 
+                  extractAttributes: true
+                }
+               }));
+             selectControl = new OpenLayers.Control.SelectFeature(map.layers[1],
+                {onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
+  
+            map.addControl(selectControl);
+            selectControl.activate();   
+            map.zoomToExtent(new OpenLayers.Bounds(68.774414,11.381836,123.662109,34.628906).transform(map.displayProjection, map.projection));
+        }
+        function onPopupClose(evt) {
+            selectControl.unselect(selectedFeature);
+        }
+        function onFeatureSelect(feature) {
+            selectedFeature = feature;
+            popup = new OpenLayers.Popup.FramedCloud("chicken", 
+                                     feature.geometry.getBounds().getCenterLonLat(),
+                                     new OpenLayers.Size(100,100),
+                                     "<h2>"+feature.attributes.name + "</h2>" + feature.attributes.description,
+                                     null, true, onPopupClose);
+            feature.popup = popup;
+            map.addPopup(popup);
+        }
+        function onFeatureUnselect(feature) {
+            map.removePopup(feature.popup);
+            feature.popup.destroy();
+            feature.popup = null;
+        }
+        function osm_getTileURL(bounds) {
+            var res = this.map.getResolution();
+            var x = Math.round((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
+            var y = Math.round((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));
+            var z = this.map.getZoom();
+            var limit = Math.pow(2, z);
+
+            if (y < 0 || y >= limit) {
+                return OpenLayers.Util.getImagesLocation() + "404.png";
+            } else {
+                x = ((x % limit) + limit) % limit;
+                return this.url + z + "/" + x + "/" + y + "." + this.type;
+            }
+        }
+    </script>
+  </head>
+  <body onload="init()">
+      <h1 id="title">KML Layer Example</h1>
+
+      <div id="tags"></div>
+
+      <p id="shortdesc">
+          Demonstrates loading and displaying a KML file on top of a basemap.
+    </p>
+
+    <div id="map" class="smallmap"></div>
+
+    <div id="docs"></div>
+  </body>
+</html>
