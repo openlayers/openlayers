@@ -20,7 +20,7 @@
     function test_issue(t) {
         setup();
 
-        t.plan(18);
+        t.plan(19);
         var request, config;
         var proto = OpenLayers.Request.XMLHttpRequest.prototype;
         var issue = OpenLayers.Function.bind(OpenLayers.Request.issue,
@@ -111,11 +111,11 @@
         
         config = {
             success: function(req) {
-                t.ok(req.status >= 200 && req.status < 300,
+                t.ok(!req.status || (req.status >= 200 && req.status < 300),
                      "success callback called with " + req.status + " status");
             },
             failure: function(req) {
-                t.ok(req.status < 200 || req.status >= 300,
+                t.ok(req.status && (req.status < 200 || req.status >= 300),
                      "failure callback called with " + req.status + " status");
             }
         };
@@ -136,6 +136,10 @@
 
         // mock up status 300 (1 test)
         request.status = 300;
+        request.onreadystatechange();
+        
+        // mock up a status null (1 test)
+        request.status = null;
         request.onreadystatechange();
 
         proto.send = _send;
