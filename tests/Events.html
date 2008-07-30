@@ -12,7 +12,7 @@
         var eventTypes = ["doThingA", "doThingB", "doThingC"];
         var browserTypes = OpenLayers.Events.prototype.BROWSER_EVENTS;
 
-        var totalTests = 5 + eventTypes.length + browserTypes.length;
+        var totalTests = 4 + 2*eventTypes.length + 2*browserTypes.length;
 
         t.plan( totalTests );
 
@@ -22,16 +22,17 @@
 
         t.ok(events.object ==obj, " 'object' property correctly set");
         t.ok(events.element == mapDiv, " 'element' property correctly set");
-        t.ok(events.eventTypes == eventTypes, " 'eventTypes' property correctly set");
 
 
         for (var i = 0; i < browserTypes.length; i++) {
-            t.ok( events.listeners[browserTypes[i]] instanceof Array, 
-                  "browser event: " + browserTypes[i] + " correctly registered" );
+            var type = browserTypes[i];
+            t.ok( events.listeners[type] instanceof Array, "browser event: " + type + " correctly registered" );
+            t.ok( OpenLayers.Util.indexOf(events.eventTypes, type) != -1, "browser type " + type + "' correctly added to eventTypes array");
         }
         for (var i = 0; i < eventTypes.length; i++) {
-            t.ok( events.listeners[eventTypes[i]] instanceof Array, 
-                  "custom event: " + eventTypes[i] + " correctly registered");
+            var type = eventTypes[i];
+            t.ok( events.listeners[type] instanceof Array, "custom event: " + type + " correctly registered");
+            t.ok( OpenLayers.Util.indexOf(events.eventTypes, type) != -1, "eventType " + type + "' correctly added to eventTypes array");
         }
 
         // default/nulls
@@ -39,6 +40,62 @@
         t.ok( events.listeners != null,
               "init of Events with null object/element/eventTypes still creates listeners array" );
     }
+
+    function XXXtest_Events_register(t){
+        t.plan(4);
+
+        var ev = {
+            'object': {},
+			'listeners': {
+				'listenerA': { 
+				    'push': function(options){
+					            gObjA = options.obj;
+					            gFuncA = options.func;
+           					}
+				},
+				'listenerB': { 
+                    'push': function(options){
+                                gObjB = options.obj;
+                                gFuncB = options.func;
+                            }
+                }
+			},
+			'eventTypes': ['listenerA', 'listenerB']
+		};
+		
+		var type = null;
+		var object = null;
+		var func = null;
+
+      //func null
+        gObjA = null; gFuncA = null; gObjB = null; gFuncB = null;
+	    OpenLayers.Events.prototype.register.apply(ev, [type, object, func]);
+        t.ok((gObjA == null) && (gFuncA == null) && 
+		     (gObjB == null) && (gFuncB == null), "no push called func null"); 
+		
+	  //valid func, type not in ev.eventTypes
+        func = function() {};
+        gObjA = null; gFuncA = null; gObjB = null; gFuncB = null;
+        OpenLayers.Events.prototype.register.apply(ev, [type, object, func]);
+        t.ok((gObjA == null) && (gFuncA == null) && 
+             (gObjB == null) && (gFuncB == null), "no push called func null"); 
+
+      //valid func, type in ev.eventTypes, null obj
+        type = 'listenerA';
+        gObjA = null; gFuncA = null; gObjB = null; gFuncB = null;
+        OpenLayers.Events.prototype.register.apply(ev, [type, object, func]);
+        t.ok((gObjA == ev.object) && (gFuncA == func) && 
+             (gObjB == null) && (gFuncB == null), "push called on listenerA's mock array when type passed in 'listenerA'. events.object taken since obj is null."); 
+        
+      //valid func, type in ev.eventTypes, valid obj
+        type = 'listenerB';
+		object = {};
+        gObjA = null; gFuncA = null; gObjB = null; gFuncB = null;
+        OpenLayers.Events.prototype.register.apply(ev, [type, object, func]);
+        t.ok((gObjA == null) && (gFuncA == null) && 
+             (gObjB == object) && (gFuncB == func), "push called on listenerB's mock array when type passed in 'listenerB'."); 
+        
+	}
 
     function test_Events_register_unregister(t) {
  
@@ -355,7 +412,7 @@
 
     function test_Events_addEventType(t) {
 
-        t.plan( 6 );
+        t.plan( 8 );
  
         var mapDiv = OpenLayers.Util.getElement('map');
         var obj = {result: 0};
@@ -369,9 +426,11 @@
 
         var newEventType = "onFoo";
         t.ok( events.listeners[newEventType] == null, "event type not yet registered has null entry in listeners array");
+        t.ok( OpenLayers.Util.indexOf(events.eventTypes, newEventType) == -1, "event type not yet registered not in eventTypes array");
 
         events.addEventType(newEventType);
         t.eq( events.listeners[newEventType].length, 0, "event type passed to addEventType correctly set up" );
+        t.ok( OpenLayers.Util.indexOf(events.eventTypes, newEventType) != -1, "event type passed to addEventType in eventTypes array");
         
         var func = function () {};
         events.register( "doThingA", obj, func );

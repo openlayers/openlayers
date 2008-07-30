@@ -23,7 +23,7 @@
 
 
     function test_Layer_Grid_constructor (t) {
-        t.plan( 5 );
+        t.plan( 8 );
                        
         layer = new OpenLayers.Layer.Grid(name, url, params, null);
         t.ok( layer instanceof OpenLayers.Layer.Grid, "returns OpenLayers.Layer.Grid object" );
@@ -31,7 +31,16 @@
         t.eq( layer.ratio, 1.5, "ratio default is 1.5");
         t.eq( layer.numLoadingTiles, 0, "numLoadingTiles starts at 0");
         t.ok( layer.events.listeners["tileloaded"] != null, "'tileloaded' event added to layer's event types");
-        
+        t.ok( OpenLayers.Util.indexOf(layer.events.eventTypes, 'tileloaded') != -1 ,"'tileloaded' event added to layer's event types");
+
+        //regression testing for #1502
+        t.ok( layer.events.listeners['tileloaded'].length == 0, "no listeners for tileloaded preregister");        
+
+		var obj = {};
+		var func = function() {};
+		layer.events.register('tileloaded', obj, func);        
+
+        t.ok( layer.events.listeners['tileloaded'].length == 1, "one listener for tileloaded after register");        
     }
 
 
