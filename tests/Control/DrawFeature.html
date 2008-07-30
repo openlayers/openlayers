@@ -1,0 +1,38 @@
+<html>
+<head>
+    <script src="../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+
+    function test_initialize(t) {
+        t.plan(2);
+        var control = new OpenLayers.Control.DrawFeature("foo", function() {});
+        t.ok(control instanceof OpenLayers.Control.DrawFeature,
+             "constructor returns an instance");
+        t.ok(OpenLayers.Util.indexOf(control.EVENT_TYPES, "featureadded") > -1,
+             "featureadded event in EVENT_TYPES");
+    }
+    
+    function test_drawFeature(t) {
+        t.plan(2);
+        var layer = new OpenLayers.Layer.Vector();
+        var control = new OpenLayers.Control.DrawFeature(layer, function() {});
+        var geom = {};
+        
+        layer.addFeatures = function(features) {
+            t.ok(features[0].geometry == geom, "layer.addFeatures called");
+        };
+        function test_featureadded(event) {
+            t.ok(event.feature.geometry == geom, "featureadded triggered");
+        }
+        control.events.on({"featureadded": test_featureadded});
+        control.drawFeature(geom);
+        control.events.un({"featureadded": test_featureadded});
+        
+    }
+
+    </script>
+</head>
+<body>
+    <div id="map" style="width: 400px; height: 250px;"/>
+</body>
+</html>
