@@ -1,0 +1,61 @@
+<html> 
+<head> 
+    <script src="../../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+    
+    var test_xml =
+        '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+            '<ogc:Or>' +
+                '<ogc:PropertyIsBetween>' +
+                    '<ogc:PropertyName>number</ogc:PropertyName>' +
+                    '<ogc:LowerBoundary>' +
+                        '<ogc:Literal>1064866676</ogc:Literal>' +
+                    '</ogc:LowerBoundary>' +
+                    '<ogc:UpperBoundary>' +
+                        '<ogc:Literal>1065512599</ogc:Literal>' +
+                    '</ogc:UpperBoundary>' +
+                '</ogc:PropertyIsBetween>' +
+                '<ogc:PropertyIsLike wildCard="*" singleChar="." escape="!">' +
+                    '<ogc:PropertyName>cat</ogc:PropertyName>' +
+                    '<ogc:Literal>*dog.food!*good</ogc:Literal>' +
+                '</ogc:PropertyIsLike>' +
+                '<ogc:Not>' +
+                    '<ogc:PropertyIsLessThanOrEqualTo>' +
+                        '<ogc:PropertyName>FOO</ogc:PropertyName>' +
+                        '<ogc:Literal>5000</ogc:Literal>' +
+                    '</ogc:PropertyIsLessThanOrEqualTo>' +
+                '</ogc:Not>' +
+            '</ogc:Or>' +
+        '</ogc:Filter>';
+
+    function test_read(t) {
+        t.plan(3);
+
+        var parser = new OpenLayers.Format.Filter.v1_0_0();
+        var xml = new OpenLayers.Format.XML();
+        var filter = parser.read(xml.read(test_xml).documentElement);
+
+        t.ok(filter instanceof OpenLayers.Filter.Logical, "instance of correct class");
+        t.eq(filter.type, OpenLayers.Filter.Logical.OR, "correct type");
+        t.eq(filter.filters.length, 3, "correct number of child filters");
+    }
+    
+    function test_write(t) {
+        t.plan(1);
+
+        // read first - testing that write produces the ogc:Filter element above
+        var parser = new OpenLayers.Format.Filter.v1_0_0();
+        var xml = new OpenLayers.Format.XML();
+        var filter = parser.read(xml.read(test_xml).documentElement);
+        
+        var node = parser.write(filter);
+        t.xml_eq(node, test_xml, "filter correctly written");
+        
+    }
+    
+
+    </script> 
+</head> 
+<body>
+</body> 
+</html> 
