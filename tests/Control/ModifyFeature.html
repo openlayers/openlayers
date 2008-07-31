@@ -67,7 +67,7 @@
         t.eq(control.deleteCodes[0], 46, "Delete code properly turned into an array.");
         var control = new OpenLayers.Control.ModifyFeature(layer);
         t.eq(control.deleteCodes[0], 46, "Default deleteCodes include delete"); 
-        t.eq(control.deleteCodes[1], 100, "Default deleteCodes include 'd'"); 
+        t.eq(control.deleteCodes[1], 68, "Default deleteCodes include 'd'"); 
         
         control.destroy();
         layer.destroy();
@@ -123,12 +123,12 @@
                  "vertex deletion: onModification called with the proper feature");
         };
         // run the above four tests twice
-        control.handleKeypress(delKey);
-        control.handleKeypress(dKey);
+        control.handleKeypress({keyCode:delKey});
+        control.handleKeypress({keyCode:dKey});
 
         // now make sure nothing happens if the vertex is mid-drag
         control.dragControl.handlers.drag.dragging = true;
-        control.handleKeypress(delKey);
+        control.handleKeypress({keyCode:delKey});
 
         //  clean up
         control.destroy();
@@ -428,7 +428,7 @@
         };
         point.geometry.parent = poly.geometry;
         control.dragControl.feature = point;
-        control.handleKeypress(46);
+        control.handleKeypress({keyCode:46});
         layer.drawFeature = oldDraw;
         
         map.destroy();
