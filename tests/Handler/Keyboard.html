@@ -42,7 +42,7 @@
     }
 
     function test_Handler_Keyboard_activate(t) {
-        t.plan(11);
+        t.plan(8);
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
         map.addControl(control);
@@ -54,14 +54,14 @@
         handler.active = false;
         handler.dragging = true;
         var old = OpenLayers.Event.stopObserving;
-        var types = ["keydown", "keypress", "keyup"];
+        var types = ["keydown", "keyup"];
         OpenLayers.Event.observe = function(obj, type, method) {
-            t.ok(obj == window,
-                 "activate calls stopObserving with correct object");
+            t.ok(obj == document,
+                 "activate calls observing with correct object");
             var validType = (OpenLayers.Util.indexOf(types, type) != -1);
-            t.ok(validType, "activate calls stopObserving for " + type);
+            t.ok(validType, "activate calls observe for " + type);
             t.ok(method == handler.eventListener,
-                 "activate calls stopObserving with correct method");
+                 "activate calls observing with correct method");
         };
         activated = handler.activate();
         t.ok(activated,
@@ -71,7 +71,7 @@
     }
 
     function test_Handler_Drag_deactivate(t) {
-        t.plan(11);
+        t.plan(8);
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
         map.addControl(control);
@@ -82,9 +82,9 @@
              "deactivate returns false if the handler was not already active");
         handler.active = true;
         var old = OpenLayers.Event.stopObserving;
-        var types = ["keydown", "keypress", "keyup"];
+        var types = ["keydown", "keyup"];
         OpenLayers.Event.stopObserving = function(obj, type, method) {
-            t.ok(obj == window,
+            t.ok(obj == document,
                  "deactivate calls stopObserving with correct object");
             var validType = (OpenLayers.Util.indexOf(types, type) != -1);
             t.ok(validType, "deactivate calls stopObserving for " + type);
