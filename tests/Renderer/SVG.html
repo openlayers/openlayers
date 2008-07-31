@@ -371,8 +371,40 @@
         t.eq(string, "2,-4", "returned string is correct");
     }
     
-    
+    function test_svg_getnodetype(t) {
+        if (!OpenLayers.Renderer.SVG.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
 
+        t.plan(1);
+        
+        var r = new OpenLayers.Renderer.SVG(document.body);
+
+        var g = {CLASS_NAME: "OpenLayers.Geometry.Point"}
+        var s = {graphicName: "square"};
+        
+        t.eq(r.getNodeType(g, s), "use", "Correct node type for well known symbols");
+    }
+        
+    function test_svg_importsymbol(t) {
+        if (!OpenLayers.Renderer.SVG.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+
+        t.plan(2);
+        
+        var r = new OpenLayers.Renderer.SVG(document.body);
+
+        r.importSymbol("square");
+
+        var polygon = document.getElementById("ol-renderer-defs").firstChild.firstChild;
+
+        t.eq(polygon.getAttribute("points"), "0,0 0,1 1,1 1,0 0,0", "Square symbol rendered correctly");
+        t.ok(r.symbolSize["-square"], "Symbol size cached correctly.");
+    }
+        
   </script>
 </head>
 <body>

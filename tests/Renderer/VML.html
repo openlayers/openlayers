@@ -338,7 +338,39 @@
         t.eq(node.style.height, "8px", "node.style.height is correct");
     }
     
+    function test_vml_getnodetype(t) {
+        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
 
+        t.plan(1);
+        
+        var r = new OpenLayers.Renderer.VML(document.body);
+
+        var g = {CLASS_NAME: "OpenLayers.Geometry.Point"}
+        var s = {graphicName: "square"};
+        
+        t.eq(r.getNodeType(g, s), "olv:shape", "Correct node type for well known symbols");
+    }
+
+    function test_vml_importsymbol(t) {
+        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+
+        t.plan(2);
+        
+        var r = new OpenLayers.Renderer.VML(document.body);
+
+        var cache = r.importSymbol("square");
+
+        t.eq(cache.path, "m 0 0 l 0 1 1 1 1 0 0 0 x e", "Square symbol rendered correctly");
+        t.ok(r.symbolCache["-square"], "Symbol has been cached correctly.");
+        
+    }
+        
   </script>
 </head>
 <body>

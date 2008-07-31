@@ -23,4 +23,18 @@
       <topp:POP_CLASS>100,000 to 250,000</topp:POP_CLASS>
     </topp:tasmania_cities>
   </gml:featureMember>
+  <gml:featureMember>
+    <topp:tasmania_cities fid="tasmania_cities.2">
+      <topp:the_geom>
+        <gml:MultiPoint srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+          <gml:pointMember>
+            <gml:Point>
+              <gml:coordinates xmlns:gml="http://www.opengis.net/gml" decimal="." cs="," ts=" ">147,-41.1</gml:coordinates>
+            </gml:Point>
+          </gml:pointMember>
+        </gml:MultiPoint>
+      </topp:the_geom>
+      <topp:CNTRY_NAME>Australia</topp:CNTRY_NAME>
+    </topp:tasmania_cities>
+  </gml:featureMember>
 </wfs:FeatureCollection>

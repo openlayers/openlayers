@@ -1,0 +1,83 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>OpenLayers Graphic Names</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map;
+
+        function init() {
+            map = new OpenLayers.Map('map');
+
+            // list of well-known graphic names
+            var graphics = ["star", "cross", "x", "square", "triangle", "circle"];
+            
+            // Create one feature for each well known graphic.
+            // Give features a type attribute with the graphic name.
+            var num = graphics.length;
+            var slot = map.maxExtent.getWidth() / num;
+            var features = Array(num);
+            for(var i=0; i<graphics.length; ++i) {
+                lon = map.maxExtent.left + (i * slot) + (slot / 2);
+                features[i] = new OpenLayers.Feature.Vector(
+                    new OpenLayers.Geometry.Point(
+                        map.maxExtent.left + (i * slot) + (slot / 2), 0
+                    ), {
+                        type: graphics[i]
+                    }
+                );
+            }
+            
+            // Create a style map for painting the features.
+            // The graphicName property of the symbolizer is evaluated using
+            // the type attribute on each feature (set above).
+            var styles = new OpenLayers.StyleMap({
+                "default": {
+                    graphicName: "${type}",
+                    pointRadius: 10,
+                    strokeColor: "fuchsia",
+                    strokeWidth: 2,
+                    fillColor: "lime",
+                    fillOpacity: 0.6
+                },
+                "select": {
+                    pointRadius: 20,
+                    fillOpacity: 1
+                }
+            });
+
+            // Create a vector layer and give it your style map.
+            var layer = new OpenLayers.Layer.Vector(
+                "Graphics", {styleMap: styles, isBaseLayer: true}
+            );
+            layer.addFeatures(features);
+            map.addLayer(layer);
+            
+            // Create a select feature control and add it to the map.
+            var select = new OpenLayers.Control.SelectFeature(layer, {hover: true});
+            map.addControl(select);
+            select.activate();
+            
+            map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Named Graphics Example</h1>
+
+    <div id="tags"></div>
+
+    <p id="shortdesc">
+        Shows how to use well-known graphic names.
+    </p>
+
+    <div id="map" class="smallmap"></div>
+
+    <div id="docs">
+        OpenLayers supports well-known names for a few graphics.  You can use
+        the names "star", "cross", "x", "square", "triangle", and "circle" as
+        the value for the graphicName property of a symbolizer.
+    </div>
+  </body>
+</html>

@@ -528,13 +528,27 @@
       <sld:IsDefault>1</sld:IsDefault>
       <sld:FeatureTypeStyle>
         <sld:Rule>
+          <ogc:Filter>
+            <ogc:FeatureId fid="tasmania_cities.1"/>
+          </ogc:Filter>
           <sld:PointSymbolizer>
             <sld:Graphic>
               <sld:ExternalGraphic>
                 <sld:OnlineResource xlink:href="../img/marker.png" />
                 <sld:Format>image/png</sld:Format>
               </sld:ExternalGraphic>
-              <sld:Opacity>0.5</sld:Opacity>
+              <sld:Opacity>0.7</sld:Opacity>
+              <sld:Size>14</sld:Size>
+            </sld:Graphic>
+          </sld:PointSymbolizer>
+        </sld:Rule>
+        <sld:Rule>
+          <sld:ElseFilter/>
+          <sld:PointSymbolizer>
+            <sld:Graphic>
+              <sld:Mark>
+                <sld:WellKnownName>cross</sld:WellKnownName>
+              </sld:Mark>
               <sld:Size>10</sld:Size>
             </sld:Graphic>
           </sld:PointSymbolizer>
