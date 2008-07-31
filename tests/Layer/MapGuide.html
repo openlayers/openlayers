@@ -9,7 +9,7 @@
     var layer; 
 
     var name = 'MapGuide Test Layer';
-    var url = "http://demo01.dmsolutions.ca/mapguide/mapagent/mapagent.fcgi";
+    var url = "http://demo01.dmsolutions.ca/mapguide/mapagent/mapagent.fcgi?USERNAME=Anonymous&";
     var paramsTiled = {
       mapdefinition: 'Library://Samples/Gmap/Maps/gmapTiled.MapDefinition',
       basemaplayergroupname: "BaseLayerGroup"
@@ -27,7 +27,7 @@
         
         layer = new OpenLayers.Layer.MapGuide(name, url, paramsUntiled, options);
         t.ok( layer instanceof OpenLayers.Layer.MapGuide, "new OpenLayers.Layer.MapGuide returns object" );
-        t.eq( layer.url, "http://demo01.dmsolutions.ca/mapguide/mapagent/mapagent.fcgi", "layer.url is correct (HTTPRequest inited)" );
+        t.eq( layer.url, "http://demo01.dmsolutions.ca/mapguide/mapagent/mapagent.fcgi?USERNAME=Anonymous&", "layer.url is correct (HTTPRequest inited)" );
         t.eq( layer.params.mapdefinition, "Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition", "params passed in correctly" );
 
         t.eq( layer.params.operation, "GETMAPIMAGE", "default params set correctly and copied");
@@ -56,7 +56,7 @@
         
         layer = new OpenLayers.Layer.MapGuide(name, url, paramsTiled, options);
         t.ok( layer instanceof OpenLayers.Layer.MapGuide, "new OpenLayers.Layer.MapGuide returns object" );
-        t.eq( layer.url, "http://demo01.dmsolutions.ca/mapguide/mapagent/mapagent.fcgi", "layer.url is correct (HTTPRequest inited)" );
+        t.eq( layer.url, "http://demo01.dmsolutions.ca/mapguide/mapagent/mapagent.fcgi?USERNAME=Anonymous&", "layer.url is correct (HTTPRequest inited)" );
         t.eq( layer.params.basemaplayergroupname, "BaseLayerGroup", "params passed in correctly" );
 
         t.eq( layer.params.operation, "GETTILEIMAGE", "default params correctly uppercased and copied");
