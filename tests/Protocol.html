@@ -1,0 +1,30 @@
+<html>
+<head>
+  <script src="../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+
+    function test_initialize(t) {
+        t.plan(2);
+        var options = {};
+        var protocol = new OpenLayers.Protocol(options);
+
+        t.ok(protocol instanceof OpenLayers.Protocol,
+             "new OpenLayers.Protocol returns object" );
+        t.eq(protocol.options, options, "constructor sets this.options");
+    }
+    
+    function test_destroy(t) {
+        t.plan(1);
+        var protocol = new OpenLayers.Protocol({
+            format: 'foo'
+        });
+        protocol.destroy();
+
+        t.eq(protocol.format, null, "destroy nullify protocol.format");
+    }
+
+  </script>
+</head>
+<body>
+</body>
+</html>

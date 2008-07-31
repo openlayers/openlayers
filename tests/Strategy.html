@@ -1,0 +1,30 @@
+<html>
+<head>
+  <script src="../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+
+    function test_initialize(t) {
+        t.plan(2);
+        var options = {};
+        var strategy = new OpenLayers.Strategy(options);
+
+        t.ok(strategy instanceof OpenLayers.Strategy,
+             "new OpenLayers.Strategy returns object" );
+        t.eq(strategy.options, options, "constructor sets this.options");
+    }
+    
+    function test_destroy(t) {
+        t.plan(1);
+        var strategy = new OpenLayers.Strategy({
+            layer: 'foo'
+        });
+        strategy.destroy();
+
+        t.eq(strategy.layer, null, "destroy nullify protocol.layer");
+    }
+
+  </script>
+</head>
+<body>
+</body>
+</html>
