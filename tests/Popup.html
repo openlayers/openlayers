@@ -16,7 +16,7 @@
         t.ok(OpenLayers.String.startsWith(popup.id, "OpenLayers.Popup"),
              "valid default popupid");
         var firstID = popup.id;
-        t.ok(popup.contentSize.equals(size), "good default popup.size");
+        t.ok(popup.size.equals(size), "good default popup.size");
         t.eq(popup.contentHTML, "", "good default popup.contentHTML");
         t.eq(popup.backgroundColor, OpenLayers.Popup.COLOR, "good default popup.backgroundColor");
         t.eq(popup.opacity, OpenLayers.Popup.OPACITY, "good default popup.opacity");
@@ -54,7 +54,7 @@
         t.ok( popup instanceof OpenLayers.Popup, "new OpenLayers.Popup returns Popup object" );
         t.eq(popup.id, id, "popup.id set correctly");
         t.ok(popup.lonlat.equals(ll), "popup.lonlat set correctly");
-        t.ok(popup.contentSize.equals(sz), "popup.size set correctly");
+        t.ok(popup.size.equals(sz), "popup.size set correctly");
         t.eq(popup.contentHTML, content, "contentHTML porpoerty of set correctly");
 
         // test that a browser event is registered on click on popup closebox
