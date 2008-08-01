@@ -79,14 +79,13 @@
         control = new OpenLayers.Control.LayerSwitcher();
         map.addControl(control);
 
-        
-        var wmsInput = OpenLayers.Util.getElement("input_" + layer.name);
+        var wmsInput = OpenLayers.Util.getElement(control.id + "_input_" + layer.name);
         t.ok(wmsInput != null, "correctly makes an input for wms layer");
         t.eq(wmsInput.type, "radio", "wms correctly made a radio button");
         t.eq(wmsInput.name, "baseLayers", "wms correctly named");
         t.eq(wmsInput.value, layer.name, "wms correctly valued");
         
-        var markersInput = OpenLayers.Util.getElement("input_" + markers.name);
+        var markersInput = OpenLayers.Util.getElement(control.id + "_input_" + markers.name);
         t.ok(markersInput != null, "correctly makes an input for markers layer");
         t.eq(markersInput.type, "checkbox", "wms correctly made a radio button");
         t.eq(markersInput.name, markers.name, "wms correctly named");
