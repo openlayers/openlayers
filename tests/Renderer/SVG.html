@@ -407,6 +407,23 @@
         t.ok(r.symbolSize["-square"], "Symbol size cached correctly.");
     }
         
+    function test_svg_dashstyle(t) {
+        if (!OpenLayers.Renderer.SVG.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+
+        t.plan(5);
+        
+        var r = new OpenLayers.Renderer.SVG(document.body);
+
+        t.eq(r.dashStyle({strokeWidth: 1, strokeDashstyle: "dot"}, 1), "1,4", "dot dasharray created correctly");
+        t.eq(r.dashStyle({strokeWidth: 1, strokeDashstyle: "dash"}, 1), "4,4", "dash dasharray created correctly");
+        t.eq(r.dashStyle({strokeWidth: 1, strokeDashstyle: "longdash"}, 1), "8,4", "longdash dasharray created correctly");
+        t.eq(r.dashStyle({strokeWidth: 1, strokeDashstyle: "dashdot"}, 1), "4,4,1,4", "dashdot dasharray created correctly");
+        t.eq(r.dashStyle({strokeWidth: 1, strokeDashstyle: "longdashdot"}, 1), "8,4,1,4", "dashdot dasharray created correctly");
+    }
+
   </script>
 </head>
 <body>

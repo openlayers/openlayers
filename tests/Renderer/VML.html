@@ -370,6 +370,23 @@
         t.ok(r.symbolCache["-square"], "Symbol has been cached correctly.");
         
     }
+    
+    function test_vml_dashstyle(t) {
+        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(5);
+        
+        var r = new OpenLayers.Renderer.VML(document.body);
+        
+        t.eq(r.dashStyle({strokeDashstyle: "1 4"}), "dot", "dot pattern recognized correctly.");
+        t.eq(r.dashStyle({strokeDashstyle: "4 4"}), "dash", "dash pattern recognized correctly.");
+        t.eq(r.dashStyle({strokeDashstyle: "8 4"}), "longdash", "longdash pattern recognized correctly.");
+        t.eq(r.dashStyle({strokeDashstyle: "4 4 1 4"}), "dashdot", "dashdot pattern recognized correctly.");
+        t.eq(r.dashStyle({strokeDashstyle: "8 4 1 4"}), "longdashdot", "longdashdot pattern recognized correctly.");
+    }
         
   </script>
 </head>

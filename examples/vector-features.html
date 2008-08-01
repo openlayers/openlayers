@@ -38,6 +38,7 @@
             var style_green = {
                 strokeColor: "#00FF00",
                 strokeWidth: 3,
+                strokeDashstyle: "dashdot",
                 pointRadius: 6,
                 pointerEvents: "visiblePainted"
             };
@@ -74,7 +75,7 @@
             // create a line feature from a list of points
             var pointList = [];
             var newPoint = point;
-            for(var p=0; p<5; ++p) {
+            for(var p=0; p<15; ++p) {
                 newPoint = new OpenLayers.Geometry.Point(newPoint.x + Math.random(1),
                                                          newPoint.y + Math.random(1));
                 pointList.push(newPoint);

@@ -581,6 +581,9 @@
               <sld:CssParameter name="stroke-width">
                 <ogc:Literal>1</ogc:Literal>
               </sld:CssParameter>
+              <sld:CssParameter name="stroke-dasharray">
+                <ogc:Literal>3 5 1 5</ogc:Literal>
+              </sld:CssParameter>
             </sld:Stroke>
           </sld:PolygonSymbolizer>
         </sld:Rule>
