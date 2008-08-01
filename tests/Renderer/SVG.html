@@ -401,7 +401,9 @@
 
         var polygon = document.getElementById("ol-renderer-defs").firstChild.firstChild;
 
-        t.eq(polygon.getAttribute("points"), "0,0 0,1 1,1 1,0 0,0", "Square symbol rendered correctly");
+        var points = polygon.getAttribute("points");
+ 
+        t.eq(points.replace(/ /g,''), "0,00,11,11,00,0", "Square symbol rendered correctly");
         t.ok(r.symbolSize["-square"], "Symbol size cached correctly.");
     }
         
