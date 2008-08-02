@@ -45,10 +45,16 @@
         }
         function onFeatureSelect(feature) {
             selectedFeature = feature;
+            // Since KML is user-generated, do naive protection against
+            // Javascript.
+            var content = "<h2>"+feature.attributes.name + "</h2>" + feature.attributes.description;
+            if (content.search("<script") != -1) {
+                content = "Content contained Javascript! Escaped content below.<br />" + content.replace(/</g, "&lt;");
+            }
             popup = new OpenLayers.Popup.FramedCloud("chicken", 
                                      feature.geometry.getBounds().getCenterLonLat(),
                                      new OpenLayers.Size(100,100),
-                                     "<h2>"+feature.attributes.name + "</h2>" + feature.attributes.description,
+                                     content,
                                      null, true, onPopupClose);
             feature.popup = popup;
             map.addPopup(popup);
