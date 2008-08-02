@@ -557,6 +557,25 @@
         t.ok(bounds == null, "returns null on erroneous add operation (null y)");
     }
 
+    function test_Bounds_scale(t) {
+        t.plan(3);
+
+        origBounds = new OpenLayers.Bounds(1,2,3,4);
+        bounds = origBounds.scale(2);  
+        var b = new OpenLayers.Bounds(0,1,4,5);
+        t.ok(bounds.equals(b), "Bounds scale correctly with default origin at center")
+
+        var origin = new OpenLayers.Pixel(0,1);
+        bounds = origBounds.scale(2,origin);
+        b = new OpenLayers.Bounds(2,3,6,7);
+        t.ok(bounds.equals(b), "Bounds scale correctly with offset origin");
+
+        origin = new OpenLayers.Pixel(5,1);
+        bounds = bounds.scale(2, origin);
+        b = new OpenLayers.Bounds(-1, 5, 7, 13);
+        t.ok(bounds.equals(b), "Bounds scale correctly with offset origin");
+
+    }
 
   </script>
 </head>
