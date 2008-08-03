@@ -23,7 +23,6 @@
             var vectors = new OpenLayers.Layer.Vector("Vector Layer");
             map.addLayers([wmsLayer, vectors]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
-            map.addControl(new OpenLayers.Control.MousePosition());
             
             drawControls = {
                 point: new OpenLayers.Control.DrawFeature(
@@ -43,6 +42,14 @@
                         toggleKey: "ctrlKey", // ctrl key removes from selection
                         multipleKey: "shiftKey", // shift key adds to selection
                         box: true
+                    }
+                ),
+                selecthover: new OpenLayers.Control.SelectFeature(
+                    vectors,
+                    {
+                        multiple: false, hover: true,
+                        toggleKey: "ctrlKey", // ctrl key removes from selection
+                        multipleKey: "shiftKey" // shift key adds to selection
                     }
                 )
             };
@@ -107,6 +114,11 @@
             <label for="polygonToggle">draw polygon</label>
         </li>
         <li>
+            <input type="radio" name="type" value="selecthover" id="selecthoverToggle"
+                   onclick="toggleControl(this);" />
+            <label for="selecthoverToggle">Select features on hover</label>
+        </li>
+        <li>
             <input type="radio" name="type" value="select" id="selectToggle"
                    onclick="toggleControl(this);" />
             <label for="selectToggle">select feature</label>
@@ -120,11 +132,6 @@
                     <input id="clickout" type="checkbox"
                            name="clickout" onchange="update()" />
                     <label for="clickout">click out to unselect features</label>
-                </li>
-                <li>
-                    <input id="hover" type="checkbox"
-                           name="hover" onchange="update()" />
-                    <label for="hover">hover to select features</label>
                 </li>
             </ul>
         </li>

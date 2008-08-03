@@ -177,6 +177,11 @@
         evtPx.type = "click";
         map.events.triggerEvent('click', evtPx);
 
+        layer.getFeatureFromEvent = function(evt) { t.fail("mousemove called getFeatureFromEvent without any mousemove callbacks"); };
+        evtPx.type = "mousemove";
+        map.events.triggerEvent('mousemove', evtPx);
+        layer.getFeatureFromEvent = function(evt) { return newFeature; };
+        
         // test over a new feature
         // only 'over' callback should be called
         handler.feature = null;
