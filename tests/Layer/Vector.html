@@ -227,19 +227,10 @@
 
     function test_Layer_Vector_externalGraphic(t) {
         t.plan(11);
-        // base layer is needed for getResolution() to return a value,
-        // otherwise VML test will fail because style.left and style.top
-        // cannot be set
-        var baseLayer = new OpenLayers.Layer.WMS("Base Layer",
-                "http://octo.metacarta.com/cgi-bin/mapserv",
-                { map: '/mapdata/vmap_wms.map', 
-                  layers: 'basic', 
-                  format: 'image/png'});
-            
-        var layer = new OpenLayers.Layer.Vector("Test Layer");
+        var layer = new OpenLayers.Layer.Vector("Test Layer", {isBaseLayer: true});
         var renderer = layer.renderer;
         var map = new OpenLayers.Map('map');
-        map.addLayers([baseLayer, layer]);
+        map.addLayers([layer]);
 
         var geometryX = 10;
         var geometryY = 10;
@@ -397,7 +388,6 @@
 
         }
     }
-
 
   </script>
 </head>
