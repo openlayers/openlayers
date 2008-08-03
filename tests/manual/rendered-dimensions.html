@@ -1,0 +1,25 @@
+<html>
+<head>
+<style type="text/css">
+ .testDims p{
+    padding: 20px; 
+}     
+</style>
+<script src="../../lib/OpenLayers.js"></script>
+<script>
+function run() {
+    var out = document.getElementById("out");    
+    var size = OpenLayers.Util.getRenderedDimensions("<p>Content</p>");
+    var bigger = OpenLayers.Util.getRenderedDimensions("<p>Content</p>", null, {displayClass: 'testDims'});
+    if ((size.w + 40) == bigger.w && (size.h + 40) == bigger.h) {
+        out.innerHTML = "Pass:  " + size + ", " + bigger;
+    } else { 
+        out.innerHTML = "Fail:  " + size + ", " + bigger;
+    }
+} 
+</script>
+</head>
+<body onload="run()">
+<div id="out"></div>
+</body>
+</html>
