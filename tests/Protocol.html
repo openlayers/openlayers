@@ -14,13 +14,15 @@
     }
     
     function test_destroy(t) {
-        t.plan(1);
+        t.plan(2);
         var protocol = new OpenLayers.Protocol({
+            options: {foo: 'bar'},
             format: 'foo'
         });
         protocol.destroy();
 
         t.eq(protocol.format, null, "destroy nullify protocol.format");
+        t.eq(protocol.options, null, "destroy nullify protocol.options");
     }
 
   </script>
