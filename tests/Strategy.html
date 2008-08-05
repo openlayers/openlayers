@@ -4,13 +4,16 @@
   <script type="text/javascript">
 
     function test_initialize(t) {
-        t.plan(2);
+        t.plan(5);
         var options = {};
         var strategy = new OpenLayers.Strategy(options);
 
         t.ok(strategy instanceof OpenLayers.Strategy,
              "new OpenLayers.Strategy returns object" );
         t.eq(strategy.options, options, "constructor sets this.options");
+        t.eq(strategy.active, false, "constructor sets this.active to false");
+        t.eq(strategy.autoActivate, true, "constructor does not modify this.autoActivate");
+        t.eq(strategy.autoDestroy, true, "constructor does not modify this.autoDestroy");
     }
 
     function test_activate(t) {
@@ -44,6 +47,43 @@
 
         t.eq(strategy.layer, null, "destroy nullify protocol.layer");
         t.eq(strategy.options, null, "destroy nullify protocol.options");
+    }
+
+    function test_activate(t) {
+        t.plan(4);
+        var strategy = new OpenLayers.Strategy({
+            layer: 'foo'
+        });
+
+        var ret;
+        ret = strategy.activate();
+
+        t.eq(strategy.active, true, "activate sets this.active to true on first call");
+        t.eq(ret, true, "activate returns true on first call");
+
+        ret = strategy.activate();
+
+        t.eq(strategy.active, true, "activate does not modify this.active on second call");
+        t.eq(ret, false, "activate returns false on second call");
+    }
+
+    function test_deactivate(t) {
+        t.plan(4);
+        var strategy = new OpenLayers.Strategy({
+            layer: 'foo'
+        });
+        strategy.activate();
+
+        var ret;
+        ret = strategy.deactivate();
+
+        t.eq(strategy.active, false, "deactivate sets this.active to false on first call");
+        t.eq(ret, true, "deactivate returns true on first call");
+
+        ret = strategy.deactivate();
+
+        t.eq(strategy.active, false, "deactivate does not modify this.active on second call");
+        t.eq(ret, false, "deactivate returns false on second call");
     }
 
   </script>

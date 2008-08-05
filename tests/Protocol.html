@@ -4,13 +4,14 @@
   <script type="text/javascript">
 
     function test_initialize(t) {
-        t.plan(2);
+        t.plan(3);
         var options = {};
         var protocol = new OpenLayers.Protocol(options);
 
         t.ok(protocol instanceof OpenLayers.Protocol,
              "new OpenLayers.Protocol returns object" );
         t.eq(protocol.options, options, "constructor sets this.options");
+        t.eq(protocol.autoDestroy, true, "constructor does not modify this.autoDestroy");
     }
     
     function test_destroy(t) {
