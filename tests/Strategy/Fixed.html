@@ -1,0 +1,34 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+
+    function test_activate(t) {
+        t.plan(1);
+        var featureList = ['foo', 'bar'];
+
+        var layer = new OpenLayers.Layer.Vector("Vector Layer", {
+            strategies: [new OpenLayers.Strategy.Fixed()],
+
+            // a fake protocol
+            protocol: {
+                read: function(options) {
+                    options.callback.call(options.scope, {features: featureList});
+                }
+            },
+            
+            addFeatures: function(features) {
+                t.eq(features, featureList, "Features added to the layer");
+            }
+        });
+
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
+    }
+
+  </script>
+</head>
+<body>
+    <div id="map"/>
+</body>
+</html>
