@@ -12,10 +12,31 @@
              "new OpenLayers.Strategy returns object" );
         t.eq(strategy.options, options, "constructor sets this.options");
     }
+
+    function test_activate(t) {
+        t.plan(1);
+        var options = {
+            activate: function() {
+                t.ok(true, "OpenLayer.Map.addLayer calls activate");
+            }
+        };
+        
+        var layer = new OpenLayers.Layer.Vector("Vector Layer", {
+            strategies: [new OpenLayers.Strategy(options)]
+        });
+
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
+    }
     
     function test_destroy(t) {
-        t.plan(2);
+        t.plan(3);
+
         var strategy = new OpenLayers.Strategy({
+            deactivate: function() {
+                t.ok(true, "destroy calls deactivate");
+            },
+            
             options: {foo: 'bar'},
             layer: 'foo'
         });
@@ -28,5 +49,6 @@
   </script>
 </head>
 <body>
+    <div id="map"/>
 </body>
 </html>
