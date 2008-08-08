@@ -164,6 +164,50 @@
         map.events.triggerEvent("mousemove", {xy: move, which: 1, type: "mousemove"});
         
     }
+
+    function test_Control_DragFeature_up(t) {
+        t.plan(7);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.DragFeature(layer);
+        map.addControl(control);
+
+        control.activate();
+
+        // simulate a mouseover on a feature
+        layer.getFeatureFromEvent = function(evt) {
+            return "foo";
+        }
+        map.events.triggerEvent("mousemove", {type: "mousemove"});
+        t.eq(control.over, true,
+            "mouseover on a feature sets the over property to true");
+        t.eq(control.map.div.style.cursor, "move",
+            "mouseover on a feature sets the cursor to move");
+        t.eq(control.handlers.drag.active, true,
+            "mouseover on a feature activates drag handler");
+
+        // simulate a mouse-up on the map, with the mouse still
+        // over the dragged feature
+        control.handlers.drag.started = true;
+        map.events.triggerEvent("mouseup", {type: "mouseup"});
+        t.eq(control.map.div.style.cursor, "move",
+            "mouseup while still over dragged feature does not reset cursor to default");
+        t.eq(control.handlers.drag.active, true,
+            "mouseup while still over dragged feature does not deactivate drag handler");
+
+        // simulate a mouse-up on the map, with the mouse out of
+        // the dragged feature
+        control.handlers.drag.started = true;
+        control.over = false;
+        map.events.triggerEvent("mouseup", {type: "mouseup"});
+        t.eq(control.map.div.style.cursor, "default",
+            "mouseup resets cursor to default");
+        t.eq(control.handlers.drag.active, false,
+            "mouseup deactivates drag handler");
+
+        control.deactivate();
+    }
     
     function test_Control_DragFeature_done(t) {
         t.plan(2);
