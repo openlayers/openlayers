@@ -1,6 +1,6 @@
 OpenLayers
 -=-=-=-=-=-
-Copyright (c) 2005-2006 MetaCarta, Inc.
+Copyright (c) 2005-2008 MetaCarta, Inc.
 
 OpenLayers is a JavaScript library for building map applications
 on the web. OpenLayers is made available under a BSD-license.
@@ -21,7 +21,9 @@ Installing OpenLayers
 
 You can use OpenLayers as-is by copying build/OpenLayers.js and the
 entire theme/ and img/ directories up to your webserver, putting them 
-in the same directory. The files can be in subdirectories on your website, or right in the root of the site, as in these examples. To include the OpenLayers library in your web page from the root of the site, use:
+in the same directory. The files can be in subdirectories on your website, 
+or right in the root of the site, as in these examples. 
+To include the OpenLayers library in your web page from the root of the site, use:
 
   <script type="text/javascript" src="/OpenLayers.js" />
 
@@ -51,8 +53,11 @@ Using OpenLayers in Your Own Website
 
 The examples/ directory is full of useful examples.
 
-Dcumentation is available in the doc/ directory: to build an HTML version
-of the documentation, run ./docs.sh in the build/ directory.
+Documentation is available at http://trac.openlayers.org/wiki/Documentation.
+You can generate the API documentation with http://www.naturaldocs.org/:
+As an example, using bash (with the release files in ~/openlayers ):
+$ cd ~/openlayers/
+$ /path/to/NaturalDocs -i lib/ -o HTML doc/ -p doc_config/ -s Default OL
 
 Information on changes in the API is available in news.txt.
 
@@ -60,7 +65,7 @@ Information on changes in the API is available in news.txt.
 Contributing to OpenLayers
 --------------------------
 
-Please join the email lists at http://openlayers.org/EmailLists/.
+Please join the email lists at http://openlayers.org/mailman/listinfo
 Patches are welcome!
 
 = 30 =
