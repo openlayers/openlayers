@@ -489,40 +489,40 @@
             return result;
         }
 
-        t.ok(r.root.childNodes.length == 1, "root is correctly filled");
-        t.ok(r.indexer.maxZIndex == 10, "indexer.maxZIndex is correctly filled");
-        t.ok(r.indexer.order.length == 1, "indexer.order is correctly filled");
-        t.ok(count(r.indexer.indices) == 1, "indexer.indices is correctly filled");
+        t.eq(r.root.childNodes.length, 1, "root is correctly filled");
+        t.eq(r.indexer.maxZIndex, 10, "indexer.maxZIndex is correctly filled");
+        t.eq(r.indexer.order.length, 1, "indexer.order is correctly filled");
+        t.eq(count(r.indexer.indices), 1, "indexer.indices is correctly filled");
 
         r.eraseGeometry(geometry);
 
-        t.ok(r.root.childNodes.length == 0, "root is correctly cleared");
-        t.ok(r.indexer.maxZIndex == 0, "indexer.maxZIndex is correctly reset");
-        t.ok(r.indexer.order.length == 0, "indexer.order is correctly reset");
-        t.ok(count(r.indexer.indices) == 0, "indexer.indices is correctly reset");
+        t.eq(r.root.childNodes.length, 0, "root is correctly cleared");
+        t.eq(r.indexer.maxZIndex, 0, "indexer.maxZIndex is correctly reset");
+        t.eq(r.indexer.order.length, 0, "indexer.order is correctly reset");
+        t.eq(count(r.indexer.indices), 0, "indexer.indices is correctly reset");
 
         delete(style.graphicZIndex);
         r.drawGeometry(geometry, style, featureId);
 
-        t.ok(r.root.childNodes.length == 1, "root is correctly filled");
-        t.ok(r.indexer.maxZIndex == 0, "indexer.maxZIndex is correctly filled");
-        t.ok(r.indexer.order.length == 1, "indexer.order is correctly filled");
-        t.ok(count(r.indexer.indices) == 1, "indexer.indices is correctly filled");
+        t.eq(r.root.childNodes.length, 1, "root is correctly filled");
+        t.eq(r.indexer.maxZIndex, 0, "indexer.maxZIndex is correctly filled");
+        t.eq(r.indexer.order.length, 1, "indexer.order is correctly filled");
+        t.eq(count(r.indexer.indices), 1, "indexer.indices is correctly filled");
 
         r.clear();
 
-        t.ok(r.root.childNodes.length == 0, "root is correctly cleared");
-        t.ok(r.indexer.maxZIndex == 0, "indexer.maxZIndex is correctly reset");
-        t.ok(r.indexer.order.length == 0, "indexer.order is correctly reset");
-        t.ok(count(r.indexer.indices) == 0, "indexer.indices is correctly reset");
+        t.eq(r.root.childNodes.length, 0, "root is correctly cleared");
+        t.eq(r.indexer.maxZIndex, 0, "indexer.maxZIndex is correctly reset");
+        t.eq(r.indexer.order.length, 0, "indexer.order is correctly reset");
+        t.eq(count(r.indexer.indices), 0, "indexer.indices is correctly reset");
 
         style.graphicZIndex = 12;
         r.drawGeometry(geometry, style, featureId);
 
-        t.ok(r.root.childNodes.length == 1, "root is correctly filled");
-        t.ok(r.indexer.maxZIndex == 12, "indexer.maxZIndex is correctly filled");
-        t.ok(r.indexer.order.length == 1, "indexer.order is correctly filled");
-        t.ok(count(r.indexer.indices) == 1, "indexer.indices is correctly filled");
+        t.eq(r.root.childNodes.length, 1, "root is correctly filled");
+        t.eq(r.indexer.maxZIndex, 12, "indexer.maxZIndex is correctly filled");
+        t.eq(r.indexer.order.length, 1, "indexer.order is correctly filled");
+        t.eq(count(r.indexer.indices), 1, "indexer.indices is correctly filled");
 
         tearDown();
     }
