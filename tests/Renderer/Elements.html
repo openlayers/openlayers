@@ -32,7 +32,7 @@
     
     // Create a new Elements renderer based on an id and an ordering
     // type. For these tests, both of these parameters are optional.
-    function create_renderer(id, ordering) {
+    function create_renderer(id, options) {
         
         rendererRoot = null;
         
@@ -43,7 +43,7 @@
             id = el.id;
         }
         
-        return new OpenLayers.Renderer.Elements(id, ordering);
+        return new OpenLayers.Renderer.Elements(id, options);
     }
     
     // Cleanup stubs made in the function above.
@@ -66,7 +66,7 @@
         t.ok(r instanceof OpenLayers.Renderer.Elements, "new OpenLayers.Renderer.Elements returns Elements object" );
         t.ok(r.rendererRoot != null, "elements rendererRoot is not null");
         t.ok(r.root != null, "elements root is not null");
-        t.ok(r.indexer != null, "indexer is not null.");
+        t.ok(r.indexer == null, "indexer is null if unused.");
         
         t.ok(r.root.parentNode == r.rendererRoot, "elements root is correctly appended to rendererRoot");
         t.ok(r.rendererRoot.parentNode == r.container, "elements rendererRoot is correctly appended to container");
@@ -457,7 +457,7 @@
 
         setUp();
 
-        var r = create_renderer();
+        var r = create_renderer(null, {zIndexing: true});
         var element = document.createElement("div");
         r.root = element;
         document.body.appendChild(element);
