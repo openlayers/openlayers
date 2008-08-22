@@ -3,12 +3,17 @@
   <script src="../lib/OpenLayers.js"></script>
   <script type="text/javascript">
     function test_Control_constructor(t) {
-        t.plan(2);
+        t.plan(4);
     
         var control = new OpenLayers.Control();
 
         t.ok(control instanceof OpenLayers.Control, "new OpenLayers.Control returns object");
         t.eq(control.displayClass, "olControl", "displayClass set correctly");
+        t.ok(control.id != null, "default id assigned to control");
+        
+        var testID = {};
+        control = new OpenLayers.Control({ 'id': testID });
+        t.ok(control.id == testID, "if id specified in options, no default assigned.");
     }
 
     function test_Control_addControl(t) {
