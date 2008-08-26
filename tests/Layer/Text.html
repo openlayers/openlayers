@@ -58,6 +58,61 @@
 */
         });;
     }
+
+    function test_Layer_Text_moveTo(t) {
+        t.plan(16);
+        
+        temp = OpenLayers.Layer.Markers.prototype.moveTo;
+
+        g_Bounds = {};
+        g_ZoomChanged = {};
+        g_Minor = {};
+        var args = [g_Bounds, g_ZoomChanged, g_Minor];
+
+        OpenLayers.Layer.Markers.prototype.moveTo = 
+            function(bounds, zoomChanged, minor) {
+                t.ok(bounds == g_Bounds, "correct bounds passed to Markers superclass");
+                t.ok(zoomChanged == g_ZoomChanged, "correct zoomChanged passed to Markers superclass");
+                t.ok(minor == g_Minor, "correct minor passed to Markers superclass");
+            }
+
+        var layer = {
+            'loadText': function() { g_TextLoaded = true; }
+        };
+
+        //visibility true, loaded true
+        layer.visibility = true;
+        layer.loaded = true;
+        g_TextLoaded = false;
+        OpenLayers.Layer.Text.prototype.moveTo.apply(layer, args);
+        t.ok(g_TextLoaded == false, "text not loaded when visibility true, loaded true");
+
+        //visibility true, loaded false
+        layer.visibility = true;
+        layer.loaded = false;
+        g_TextLoaded = false;
+        OpenLayers.Layer.Text.prototype.moveTo.apply(layer, args);
+        t.ok(g_TextLoaded == true, "text is loaded when visibility true, loaded false");
+
+        //visibility false, loaded true
+        layer.visibility = false;
+        layer.loaded = true;
+        g_TextLoaded = false;
+        OpenLayers.Layer.Text.prototype.moveTo.apply(layer, args);
+        t.ok(g_TextLoaded == false, "text not loaded when visibility false, loaded true");
+
+        //visibility false, loaded false
+        layer.visibility = false;
+        layer.loaded = false;
+        g_TextLoaded = false;
+        OpenLayers.Layer.Text.prototype.moveTo.apply(layer, args);
+        t.ok(g_TextLoaded == false, "text not loaded when visibility false, loaded false");
+
+        OpenLayers.Layer.Markers.prototype.moveTo = temp;
+    }
+
+
+
     function test_Layer_Text_events (t) {
         t.plan( 5 );    
         layer = new OpenLayers.Layer.Text('Test Layer', { location: datafile2 });
