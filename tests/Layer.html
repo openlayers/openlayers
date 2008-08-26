@@ -145,11 +145,11 @@
     }
 
     function test_Layer_initResolutions(t) {
-        t.plan(12);
+        t.plan(15);
         var map = new OpenLayers.Map("map");
         var options, layer;
         
-        // three tests for minResolution, maxResolution, and numZoomLevels
+        // tests for minResolution, maxResolution, and numZoomLevels
         options = {
             minResolution: 1.5,
             maxResolution: 10.5,
@@ -163,7 +163,8 @@
         t.eq(layer.maxResolution.toPrecision(6), (10.5).toPrecision(6),
              "(with numZoomLevels) layer maxResolution preserved");
         t.eq(layer.numZoomLevels, 5, "(with numZoomLevels) layer numZoomLevels preserved");
-        
+        t.eq(layer.alwaysInRange, false, "Always in range is set to false due to passed options.")        
+
         // three tests for minResolution, and maxResolution
         options = {
             minResolution: 1.5,
@@ -206,6 +207,16 @@
         t.eq(layer.maxScale.toPrecision(6), (155).toPrecision(6),
              "(without numZoomLevels) layer maxScale preserved");
         t.eq(layer.numZoomLevels, 4, "(without numZoomLevels) layer numZoomLevels calculated");
+        
+        layer = new OpenLayers.Layer("test", {'projection': 'EPSG:4326', 'map': map});
+        layer.initResolutions();
+        t.eq(layer.alwaysInRange, true, "always in range true if only get projection.");     
+        
+        OpenLayers.Layer.prototype.alwaysInRange = false;
+        layer = new OpenLayers.Layer("test", {'projection': 'EPSG:4326', 'map': map});
+        layer.initResolutions();
+        t.eq(layer.alwaysInRange, false, "always in range true if overridden on prototype.");     
+        OpenLayers.Layer.prototype.alwaysInRange = null;
 
         map.destroy();
         
