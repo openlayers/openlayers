@@ -1,13 +1,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <title>WFS Reprojection + Canvas Renderer Example</title>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
     <link rel="stylesheet" href="style.css" type="text/css" />
     <script src="../lib/OpenLayers.js"></script>
     <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
     <script type="text/javascript">
 
-        var map;
-        OpenLayers.ProxyHost = "/proxy/?url=";
+        var map, layer, styleMap;
+        OpenLayers.ProxyHost = "/cgi-bin/proxy.cgi?url=";
         function init(){
 
             map = new OpenLayers.Map('map', {
@@ -20,9 +21,10 @@
             });
 
             var g = new OpenLayers.Layer.Google("G", {sphericalMercator: true});
+            map.addLayers([g]);
 
             // prepare to style the data
-            var styleMap = new OpenLayers.StyleMap({
+            styleMap = new OpenLayers.StyleMap({
                 strokeColor: "black",
                 strokeWidth: 2,
                 strokeOpacity: 0.5,
@@ -42,7 +44,7 @@
             // create a wfs layer with a projection different than the map
             // (only if your wfs doens't support your map projection)
             var wfs = layer = new OpenLayers.Layer.WFS(
-                "States",
+                "States (SVG)",
                 "http://sigma.openplans.org:8080/geoserver/ows",
                 {typename: 'topp:states'},
                 {
@@ -54,8 +56,23 @@
                     styleMap: styleMap
                 }
             );
-
-            map.addLayers([g, wfs]);
+            map.addLayer(wfs);
+            
+            var wfs = layer = new OpenLayers.Layer.WFS(
+                "States (Canvas)",
+                "http://sigma.openplans.org:8080/geoserver/ows",
+                {typename: 'topp:states'},
+                {
+                    typename: 'states',
+                    featureNS: 'http://www.openplans.org/topp',
+                    projection: new OpenLayers.Projection("EPSG:4326"),
+                    extractAttributes: true,
+                    ratio: 1.2,
+                    styleMap: styleMap,
+                    renderers: ['Canvas', 'SVG', 'VML'] 
+                }
+            );
+            map.addLayer(wfs);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
 
             // if you want to use Geographic coords, transform to ESPG:900913
@@ -70,7 +87,7 @@
   </head>
   <body onload="init()">
 
-  <h1 id="title">WFS Reprojection Example</h1>
+  <h1 id="title">WFS Reprojection + Canvas Renderer Example</h1>
 
   <div id="tags">
   </div>
@@ -86,6 +103,9 @@
     here is the 'projection' option on the WFS layer.</p>
     <p>Also shown is styleMap for the layer with unique value rules.  Colors
     are assigned based on the STATE_FIPS attribute.</p>
+    <p>Additionally, this map demonstrates the Canvas/SVG renderers in browsers
+       which support both. See the two different layers in the
+       LayerSwitcher.</p>
   </div>
 
 

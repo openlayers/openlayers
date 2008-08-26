@@ -1,0 +1,86 @@
+<html>
+<head>
+<script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+    var supported = OpenLayers.Renderer.Canvas.prototype.supported();
+    function test_Renderer_Canvas_constructor(t) {
+        if (!supported) { t.plan(0); return; }
+        t.plan(2);
+        var el = document.body;
+        el.id = "foo";
+        var r = new OpenLayers.Renderer.Canvas(el.id);
+        
+        t.ok(r instanceof OpenLayers.Renderer.Canvas, "new OpenLayers.Renderer.Canvas returns Renderer.Canvas object" );
+        t.ok(r.container == el, "renderer container is correctly set");
+    }
+    
+    function test_Renderer_Canvas_setextent(t) {
+        if (!supported) { t.plan(0); return; }
+        t.plan(2);
+        var el = document.body;
+        el.id = "foo";
+        var r = new OpenLayers.Renderer.Canvas(el.id);
+        
+        var extent = new OpenLayers.Bounds(1,2,3,4);
+        r.resolution = 1;
+        r.setExtent(extent);
+        t.ok(r.extent.equals(extent), "extent is correctly set");
+        t.eq(r.resolution, null, "resolution nullified");
+    }
+    
+    function test_Renderer_Canvas_setsize(t) {
+        if (!supported) { t.plan(0); return; }
+        t.plan(2);
+        
+        var el = document.body;
+        el.id = "foo";
+        var r = new OpenLayers.Renderer.Canvas(el.id);
+        var size = new OpenLayers.Size(1,2);
+        r.resolution = 1;
+        r.setSize(size);
+        t.ok(r.size.equals(size), "size is correctly set");
+        t.eq(r.resolution, null, "resolution nullified");
+    }
+    
+    function test_Renderer_Canvas_getresolution(t) {
+        if (!supported) { t.plan(0); return; }
+        t.plan(2);
+        
+        var el = document.body;
+        el.id = "foo";
+        var r = new OpenLayers.Renderer.Canvas(el.id);
+        var map = new OpenLayers.Map("map");
+        r.map = map;
+        var resolution = r.getResolution();
+        t.eq(resolution, map.getResolution(), "resolution matches the map resolution");
+        t.eq(r.resolution, resolution, "resolution is correctly set");
+    }
+
+    function test_Renderer_Canvas_destroy(t) {
+        if (!supported) { t.plan(0); return; }
+        t.plan(5);
+
+        var el = document.body;
+        el.id = "foo";
+        var r = new OpenLayers.Renderer.Canvas(el.id);
+        r.container = document.createElement("div");
+        r.extent = new OpenLayers.Bounds(1,2,3,4);
+        r.size = new OpenLayers.Size(1,2);
+        r.resolution = 1;
+        r.map = {};
+
+        r.destroy();
+
+        t.eq(r.container, null, "container nullified");
+        t.eq(r.extent, null, "extent nullified");
+        t.eq(r.size, null, "size nullified");
+        t.eq(r.resolution, null, "resolution nullified");
+        t.eq(r.map, null, "map nullified");
+    }
+
+  </script>
+</head>
+<body>
+<div id="map" style="width:500px;height:550px"></div>
+</body>
+</html>
