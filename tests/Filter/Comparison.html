@@ -23,7 +23,7 @@
     }
     
     function test_Comparison_value2regex(t) {
-        t.plan(2);
+        t.plan(4);
         
         var filter = new OpenLayers.Filter.Comparison({
                 property: "foo",
@@ -35,6 +35,15 @@
         filter.value = "%b.r!%!.%";
         filter.value2regex("%", ".", "!");
         t.eq(filter.value, ".*b.r\\%\\..*", "Regular expression with different wildcard and escape chars generated correctly.");
+    
+        filter.value = "!!";
+        filter.value2regex();
+        t.eq(filter.value, "\\!", "!! successfully unescaped to \\!");
+        
+        // Big one.
+        filter.value = "!!c!!!d!e";
+        filter.value2regex();
+        t.eq(filter.value, "\\!c\\!\\d\\e", "!!c!!!d!e successfully unescaped to \\!c\\!\\d\\e");
     }
     
     function test_regex2value(t) {
