@@ -108,6 +108,32 @@
         OpenLayers.Util.getElement('edit_permalink').href = './edit.html?zoom=2&lat=0&lon=1.75781&layers=B';
         t.eq(OpenLayers.Util.getElement('permalink').href, OpenLayers.Util.getElement('edit_permalink').href, "Panning sets permalink with existing zoom in base");
   }
+  
+    function test_Control_Permalink_customized(t) {
+        t.plan(2);
+      
+        var argParserClass = OpenLayers.Class(OpenLayers.Control.ArgParser, {
+            CLASS_NAME: "CustomArgParser"
+        });
+      
+        control = new OpenLayers.Control.Permalink(null, "./edit.html", {
+            argParserClass: argParserClass,
+            createParams: function(center, zoom, layers) {
+                var params = OpenLayers.Control.Permalink.prototype.createParams.apply(control, arguments);
+                params.customParam = "foo";
+                return params;
+            }
+        });
+        map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.WMS('Test Layer', "http://octo.metacarta.com/cgi-bin/mapserv", {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'});
+        map.addLayer(layer);
+        if (!map.getCenter())  map.zoomToMaxExtent();
+        map.addControl(control);
+        map.pan(5, 0, {animate:false});
+      
+        t.eq(this.map.controls[this.map.controls.length-1].CLASS_NAME, "CustomArgParser", "Custom ArgParser added correctly.");
+        t.eq(control.div.firstChild.getAttribute("href"), "./edit.html?zoom=2&lat=0&lon=1.75781&layers=B&customParam=foo", "Custom parameter encoded correctly.");
+    }
   </script>
 </head>
 <body>
