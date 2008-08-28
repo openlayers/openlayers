@@ -17,7 +17,7 @@
              "valid default popupid");
         var firstID = popup.id;
         t.ok(popup.size.equals(size), "good default popup.size");
-        t.eq(popup.contentHTML, "", "good default popup.contentHTML");
+        t.eq(popup.contentHTML, null, "good default popup.contentHTML");
         t.eq(popup.backgroundColor, OpenLayers.Popup.COLOR, "good default popup.backgroundColor");
         t.eq(popup.opacity, OpenLayers.Popup.OPACITY, "good default popup.opacity");
         t.eq(popup.border, OpenLayers.Popup.BORDER, "good default popup.border");
