@@ -226,6 +226,31 @@
         t.eq( coll.getArea(), 65, "coll with valid components correctly sums getArea");
     }
     
+    function test_transform(t) {
+        t.plan(5);
+        var p1 = new OpenLayers.Geometry.Point(0,0);
+        p1.bounds = "foo";
+        var p2 = new OpenLayers.Geometry.Point(1,1);
+        p2.bounds = "foo";
+        var line = new OpenLayers.Geometry.LineString([p1, p2]);
+        var multipoint = new OpenLayers.Geometry.MultiPoint([p1, p2]);
+        var coll = new OpenLayers.Geometry.Collection([
+            p1, p2, line, multipoint
+        ]);
+        coll.bounds = "foo";
+        
+        var wgs84 = new OpenLayers.Projection("EPSG:4326");
+        var sm = new OpenLayers.Projection("EPSG:900913");
+        coll.transform(wgs84, sm);
+        
+        t.eq(coll.bounds, null, "coll bounds cleared");
+        t.eq(p1.bounds, null, "p1 component bounds cleared");
+        t.eq(p2.bounds, null, "p2 component bounds cleared");
+        t.eq(line.bounds, null, "line component bounds cleared");
+        t.eq(multipoint.bounds, null, "multipoint component bounds cleared");
+
+    }
+    
     function test_Collection_destroy(t) {
         t.plan( 1 );
         coll = new OpenLayers.Geometry.Collection();

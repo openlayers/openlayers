@@ -37,6 +37,20 @@
         t.eq( point.bounds.bottom, y, "bounds.bottom is 20" );
     }
     
+
+    function test_Point_transform_getBounds (t) {
+        t.plan(2);
+
+        var x = 10;
+        var y = 20;
+        point = new OpenLayers.Geometry.Point(x, y);
+        point.calculateBounds();
+        t.ok( point.bounds != null, "bounds calculated by calcBounds" );
+        point.transform(new OpenLayers.Projection("EPSG:4326"), 
+                        new OpenLayers.Projection("EPSG:900913"));
+        t.eq(point.bounds, null, "Point bounds cleared after transform");
+    }
+    
     function test_Point_distanceTo(t) {
         t.plan(2);
 

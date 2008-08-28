@@ -32,6 +32,20 @@
         t.eq( polygon.components.length, 2, "polygon.components.length is set correctly");
     }
     
+    function test_Polygon_transform_getBounds (t) {
+        t.plan(3);
+
+        var components = [new OpenLayers.Geometry.Point(10,14), new OpenLayers.Geometry.Point(5,3)];
+        var linearRing = new OpenLayers.Geometry.LinearRing(components);
+        polygon = new OpenLayers.Geometry.Polygon([linearRing.clone()]);
+        polygon.calculateBounds();
+        t.ok( polygon.bounds != null, "bounds calculated by calcBounds" );
+        polygon.transform(new OpenLayers.Projection("EPSG:4326"), 
+                        new OpenLayers.Projection("EPSG:900913"));
+        t.eq(polygon.bounds, null, "Point bounds cleared after transform");
+        t.eq(polygon.getBounds().toBBOX(), "556597.453889,334111.171355,1113194.907778,1574216.547942", "Bounds are correct")
+    }
+
     function test_Polygon_getArea(t) {
         t.plan( 5 );
 
