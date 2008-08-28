@@ -879,10 +879,23 @@
       <div id="map" class="smallmap"></div>
 
         <!-- preloading these images so the autosize will work correctly -->
-        <img src="small.jpg" style="position:absolute; top:-5000px; left: -5000px"></img>
         <img src="wideshort.jpg" style="position:absolute; top:-5000px; left: -5000px"></img>
         <img src="widelong.jpg" style="position:absolute; top:-5000px; left: -5000px"></img>
         <img src="thinlong.jpg" style="position:absolute; top:-5000px; left: -5000px"></img>
+
+       <p> All of the images in this file a pre-cached, meaning they are 
+           loaded immediately when you load the page (they are just placed 
+           far offscreen, that's why you don't see them). 
+       </p>
+       <br>    
+       <p> The only image that is *not* preloaded is small.jpg, the brazilian
+           flag. We do this in order to test out to make sure that our auto-sizing
+             code does in fact activate itself as the images load. To verify 
+             this, clear your cache and reload this example page. Click on 
+             any of the markers in the 'AutoSize' row. If the popup autosizes
+             to correctly contain the entire flag: golden. If the popup is 
+             tiny and you can only see a corner of it, then this code is broken.
+        </p>
 
       <br/>      
 
