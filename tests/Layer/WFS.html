@@ -133,7 +133,9 @@
         t.plan(1);
         var map = new OpenLayers.Map('map');
         map.addLayer(new OpenLayers.Layer("",{isBaseLayer: true} ));
-        var layer = new OpenLayers.Layer.WFS("","",{},{'projection': new OpenLayers.Projection("EPSG:900913")});
+        // we use an empty moveTo function because we don't want to request tiles
+        var layer = new OpenLayers.Layer.WFS("","",{},{'projection': new OpenLayers.Projection("EPSG:900913"),
+            moveTo: function() {}});
         map.addLayer(layer);
         map.zoomToMaxExtent();
         var params = OpenLayers.Util.getParameters(layer.getFullRequestString());
