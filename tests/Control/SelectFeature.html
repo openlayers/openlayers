@@ -186,6 +186,7 @@
         control.handlers.feature.deactivate = function() {
             t.ok(true,
                  "control.deactivate calls deactivate on feature handler");
+            OpenLayers.Handler.Feature.prototype.deactivate.apply(this, arguments);
         }
         control.handlers.box.deactivate = function() {
             t.ok(true,
