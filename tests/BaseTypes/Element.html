@@ -219,13 +219,14 @@
     }
 
     function test_Element_getStyle(t) {
-        t.plan(4);
+        t.plan(5);
 
     //tests for this function are not 100% complete... there is some funky
     // business going on in there with 
     //  * document.defaultView (moz/ff I believe)
     // but I cant seem to find a good way to test them.
     // 
+		t.ok(OpenLayers.Element.getStyle(null, null) == null, "passing null values in to getStyle() doesnt bomb, returns null");
 
         var elem = document.getElementById("elemID");
         elem.style.chickenHead = {}
