@@ -127,13 +127,14 @@
     }
     
     function test_Elements_drawGeometry(t) {
-        t.plan(5);
+        t.plan(7);
 
         setUp();
 
         var r = create_renderer();
         
         var element = document.createElement("div");
+        document.body.appendChild(element);
         r.root = element;
 
         r.nodeFactory = function(id, type) {
@@ -145,6 +146,12 @@
             g_Node = node;
             return node;
         };
+        r.redrawBackgroundNode = function(id, geometry, style, featureId) {
+            var el = r.nodeFactory();
+            el.id = "foo_background";
+            r.root.appendChild(el);
+        };
+
         r.getNodeType = function(geometry, style) {
             return "div";
         };
@@ -152,22 +159,24 @@
             id: 'foo',
             CLASS_NAME: 'bar'
         };
-        var style = true;
+        var style = {'backgroundGraphic': 'foo'};
         var featureId = 'dude';
         r.drawGeometry(geometry, style, featureId);
         t.ok(g_Node.parentNode == r.root, "node is correctly appended to root");
+        t.eq(r.root.childNodes.length, 2, "redrawBackgroundNode appended background node");
         t.eq(g_Node._featureId, 'dude', "_featureId is correct");
-        t.ok(g_Node._style, "_style is correct");
+        t.eq(g_Node._style.backgroundGraphic, "foo", "_style is correct");
         t.eq(g_Node._geometryClass, 'bar', "_geometryClass is correct");
 
         var _getElement = OpenLayers.Util.getElement;
         OpenLayers.Util.getElement = function(id) {
             return g_Node;
         }
-
-        var style = {'display':'none'};
+        
+        style = {'display':'none'};
         r.drawGeometry(geometry, style, featureId);
         t.ok(g_Node.parentNode != r.root, "node is correctly removed");
+        t.ok(!document.getElementById("foo_background"), "background node correctly removed")
             
         tearDown();
     }
