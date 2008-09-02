@@ -26,7 +26,7 @@
         var r = new OpenLayers.Renderer();
         var extent = new OpenLayers.Bounds(1,2,3,4);
         r.resolution = 1;
-        r.setExtent(extent);
+        r.setExtent(extent, true);
         t.ok(r.extent.equals(extent), "extent is correctly set");
         t.eq(r.resolution, null, "resolution nullified");
     }

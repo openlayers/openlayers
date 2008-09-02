@@ -73,7 +73,7 @@
         }
         
         function vectorTestNew() {
-            vectorLayer.renderer.drawFeature = drawFeature;
+            vectorLayer.renderer.drawFeature = OpenLayers.Renderer[vectorLayer.renderer.CLASS_NAME.split(".")[2]].prototype.drawFeature;
             
             console.time("addFeatures");
             vectorLayer.addFeatures(features);
@@ -89,17 +89,25 @@
             map.addControl(new OpenLayers.Control.MousePosition());
             map.setCenter(new OpenLayers.LonLat(-22.5, -22.5), 3);
 
-            drawFeature = vectorLayer.renderer.drawFeature;
-
             vectorLayer.events.register("featuresadded", this, nextRun);
             
-            features = new Array(100);
+            features = new Array(200);
             var x, y
-            for (var i = 0; i < 100; i++) {
+            for (var i = 0; i < 200; i++) {
                 x = -Math.random()*45;
                 y = -Math.random()*45;
                 features[i] = new OpenLayers.Feature.Vector(
                     new OpenLayers.Geometry.LinearRing([
+                        new OpenLayers.Geometry.Point(
+                            -Math.random()*5+x, -Math.random()*5+y),
+                        new OpenLayers.Geometry.Point(
+                            -Math.random()*5+x, -Math.random()*5+y),
+                        new OpenLayers.Geometry.Point(
+                            -Math.random()*5+x, -Math.random()*5+y),
+                        new OpenLayers.Geometry.Point(
+                            -Math.random()*5+x, -Math.random()*5+y),
+                        new OpenLayers.Geometry.Point(
+                            -Math.random()*5+x, -Math.random()*5+y),
                         new OpenLayers.Geometry.Point(
                             -Math.random()*5+x, -Math.random()*5+y),
                         new OpenLayers.Geometry.Point(
@@ -119,14 +127,16 @@
     </script>
   </head>
   <body onload="init()">
-    <h1 id="title">Vector Features Performance Test</h1>
+    <h1 id="title">New Rendering - Vector Features Performance Test</h1>
     <div id="map"></div>
     <p>
-    
     This test examines if checking for a feature being inside the visible
-    extent before rendering it has an impact on performance. Make sure that
-    the Firebug console is visible when running this test to see the results.
-    
+    extent before rendering it has an impact on performance. Open the Firebug
+    console after running this test (hit F12) to see the results.
+    <br/>
+    After the performance test, you can drag around the map to see how the new
+    vector rendering feels where features get rendered only when they are visible
+    inside the map extent. 
     </p>
   </body>
 </html>

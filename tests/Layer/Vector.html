@@ -126,23 +126,28 @@
      }
     
     function test_Layer_Vector_drawFeature(t) {
-        t.plan(4);
-        var layer = new OpenLayers.Layer.Vector("Test Layer");
-        var map = new OpenLayers.Map('map');
+        t.plan(6);
+        var layer = new OpenLayers.Layer.Vector("Test Layer", {isBaseLayer: true});
+        var map = new OpenLayers.Map('map', {
+            maxExtent: new OpenLayers.Bounds(-100, -100, 100, 100)
+        });
         map.addLayer(layer);
         var geometry = new OpenLayers.Geometry.Point(10, 10);
         var feature = new OpenLayers.Feature.Vector(geometry);
         
         var f, s;
         
-        // Layer renderer needs a destroy, and draw, for functional tests. 
+        // Bogus layer renderer needs some methods
+        // for functional tests. 
         layer.renderer = {
             drawFeature: function(feature, style) {
                 f = feature;
                 s = style;
             },
+            root: document.createElement("div"),
             destroy: function() { },
-            eraseFeatures: function() {}
+            eraseFeatures: function() {},
+            setExtent: function() {}
         };
         
 
@@ -168,6 +173,17 @@
         t.eq(customStyle.foo, s.foo,
              "given a custom style, renders with that");
         
+        // the real renderer's drawFeature method is tested in Renderer.html
+        layer.renderer.drawFeature = function(feature) {
+            return(feature.geometry.getBounds().intersectsBounds(map.getExtent()));
+        }
+        layer.addFeatures([feature]);
+        map.setCenter(new OpenLayers.Bounds(0, 0, 0, 0), 6);
+        t.ok(layer.unrenderedFeatures[feature.id], "Did not render feature outside the viewport.");
+        map.panTo(new OpenLayers.LonLat(10, 10));
+        t.ok(!layer.unrenderedFeatures[feature.id], "Rendered feature inside the viewport.");
+        
+        layer.features = [];
     }
     
     function test_Layer_Vector_eraseFeatures(t) {

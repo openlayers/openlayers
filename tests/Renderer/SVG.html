@@ -79,7 +79,7 @@
         // test extent changes
         var extent = new OpenLayers.Bounds(4,3,2,1);
         r.setExtent(extent);
-        t.eq(r.rendererRoot.getAttributeNS(null, "viewBox"), "6 6 4 4", "rendererRoot viewBox is correct after a new setExtent");
+        t.eq(r.root.getAttributeNS(null, "transform").replace(/ /g, ""), "translate(-6,-6)", "rendererRoot viewBox is correct after a new setExtent");
 
         OpenLayers.Renderer.Elements.prototype.setExtent =
             OpenLayers.Renderer.Elements.prototype._setExtent;
@@ -128,7 +128,7 @@
             return;
         }
         
-        t.plan(6);
+        t.plan(5);
         
         var r = new OpenLayers.Renderer.SVG(document.body);
         r.resolution = 0.5;
@@ -151,14 +151,22 @@
         // #1274: out of bound node fails when first added
         var geometry = {
             x: 10000000,
-            y: 200000000
+            y: 200000000,
+            CLASS_NAME: "OpenLayers.Geometry.Point",
+            id: "foo"
+        }
+        node.id = geometry.id;
+        r.root.appendChild(node);
+
+        var drawCircleCalled = false;
+        r.drawCircle = function() {
+            drawCircleCalled = true;
+            return OpenLayers.Renderer.SVG.prototype.drawCircle.apply(r, arguments);
         }
         
-        r.drawCircle(node, geometry, "blah_4000");
-        
-        t.eq(node.getAttributeNS(null, 'cx'), '', "cx is correct");
-        t.eq(node.getAttributeNS(null, 'cy'), '', "cy is correct");
-        t.eq(node.getAttributeNS(null, 'r'), '0', "r is correct");
+        r.drawGeometry(geometry, {pointRadius: 3}, "blah_4000");
+        t.eq(drawCircleCalled, true, "drawCircle called on drawGeometry for a point geometry.")
+        t.ok(node.parentNode != r.root, "circle will not be drawn when coordinates are outside the valid range");
     }
     
     function test_SVG_drawlinestring(t) {
@@ -181,7 +189,7 @@
         r.getComponentsString = function(c) {
             g_GetString = true;
             g_Components = c;
-            return "bar";
+            return {path: "bar", complete: true};
         }
         
         r.drawLineString(node, geometry);
@@ -210,7 +218,7 @@
         r.getComponentsString = function(c) {
             g_GetString = true;
             g_Components = c;
-            return "bar";
+            return {path: "bar", complete: true};
         }
         
         r.drawLinearRing(node, geometry);
@@ -255,8 +263,7 @@
         r.getShortString = function(c) {
             return false;
         }
-        r.drawPolygon(node, geometry);
-        t.eq(node.getAttributeNS(null, "d"), "", "d attribute is empty if one linearRing cannot be drawn");
+        t.eq(r.drawPolygon(node, geometry), false, "drawPolygon returns false if one linearRing cannot be drawn");
     }
 
     function test_SVG_drawrectangle(t) {
@@ -319,8 +326,8 @@
         r.getShortString = function(c) {
             return false;
         }
-        r.drawSurface(node, geometry);
-        t.eq(node.getAttributeNS(null, "d"), "", "d attribute is empty if one linearRing cannot be drawn");
+
+        t.eq(r.drawSurface(node, geometry), false, "drawSurface returns false if one linearRing cannot be drawn");
     }
     
     function test_SVG_getcomponentsstring(t) {
@@ -340,7 +347,7 @@
             return p;
         };
         
-        var string = OpenLayers.Renderer.SVG.prototype.getComponentsString(components);
+        var string = OpenLayers.Renderer.SVG.prototype.getComponentsString(components).path;
         t.eq(string, "foo,bar", "returned string is correct");
         
         OpenLayers.Renderer.SVG.prototype.getShortString = 
@@ -422,6 +429,35 @@
         t.eq(r.dashStyle({strokeWidth: 1, strokeDashstyle: "longdash"}, 1), "8,4", "longdash dasharray created correctly");
         t.eq(r.dashStyle({strokeWidth: 1, strokeDashstyle: "dashdot"}, 1), "4,4,1,4", "dashdot dasharray created correctly");
         t.eq(r.dashStyle({strokeWidth: 1, strokeDashstyle: "longdashdot"}, 1), "8,4,1,4", "dashdot dasharray created correctly");
+    }
+    
+    function test_svg_clipline(t) {
+        if (!OpenLayers.Renderer.SVG.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(1);
+        
+        var r = new OpenLayers.Renderer.SVG(document.body);
+        r.setSize(new OpenLayers.Size(0, 0));
+        r.map = {
+            getResolution: function() {
+                return 0.5;
+            }
+        }
+        r.setExtent(new OpenLayers.Bounds(0, 0, 0, 0));
+
+        var geometry = new OpenLayers.Geometry.LineString([
+            new OpenLayers.Geometry.Point(0, -5000),
+            new OpenLayers.Geometry.Point(10000, 0),
+            new OpenLayers.Geometry.Point(0, 5000)
+        ]);
+        
+        var node = document.createElement('div');
+        
+        r.drawLineString(node, geometry);
+        t.eq(node.getAttribute("points"), "0,10000,15000,2500,15000,-2500,0,-10000", "Geometry correctly clipped at inValidRange bounds");
     }
 
   </script>
