@@ -21,14 +21,24 @@
     <script type="text/javascript">
     
         var map, layer;
-        var url = "http://demo01.dmsolutions.ca/mapguide/mapagent/mapagent.fcgi";
+        var url = "http://demo01.dmsolutions.ca/mapguide/mapagent/mapagent.fcgi?USERNAME=Anonymous&";
         //you can use this URL when MapGuide OS is installed locally
         //var url = "/mapguide/mapagent/mapagent.fcgi";
+        
+        //Adjust the scale assumptions for MapGuide layers
+        //Tiled layers MUST use a DPI value of 96, untiled layers can use a 
+        //different DPI value which will be passed to the server as a parameter.
+        //Tiled and untiled layers must adjust the OL INCHES_PER_UNIT values
+        //for any degree-based projections.
+        var metersPerUnit = 111319.4908;  //value returned from mapguide
+        var inPerUnit = OpenLayers.INCHES_PER_UNIT.m * metersPerUnit;
+        OpenLayers.INCHES_PER_UNIT["dd"] = inPerUnit;
+        OpenLayers.INCHES_PER_UNIT["degrees"] = inPerUnit;
+        OpenLayers.DOTS_PER_INCH = 96;
         
         //tiled version
         function initTiled(){
         
-            OpenLayers.DOTS_PER_INCH = 96;
             var extent = new OpenLayers.Bounds(-3631568.75,-1293815.5,4491139.5833333321,4937122);
             var tempScales = [50000000,23207944.16806,10772173.45016,5000000,2320794.41681,1077217.34502,500000,232079.44168,107721.7345,50000];
             var mapOptions = {
@@ -55,7 +65,6 @@
         //un-tiled version
         function initUntiled() {
         
-          OpenLayers.DOTS_PER_INCH = 96;
           var extent = new OpenLayers.Bounds(-87.865114442365922,43.665065564837931,-87.595394059497067,43.823852564430069);
           var mapOptions = {
                 maxExtent: extent, 
@@ -97,6 +106,14 @@
             var params = {
               mapName: 'Sheboygan',
               session: '0b8cb80e-0000-1000-8003-0017a4e6ff5d_en_C0A802AD0AFC0AFB0AFA',
+
+
+
+              mapName: 'Sheboygan',
+              session: '0b8cb80e-0000-1000-8003-0017a4e6ff5d_en_C0A802AD0AFC0AFB0AFA',
+              version: '2.0.0',
+              selectioncolor: '0xFF0000',
+              behavior: 7
             };
             layer = new OpenLayers.Layer.MapGuide( "MapGuide OS Overlay layer", url, params, options );
             map.addLayer(layer);
