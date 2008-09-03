@@ -238,7 +238,7 @@
     }
 
     function test_Layer_Vector_destroy (t) {
-        t.plan(4);    
+        t.plan(5);    
 
         var options = {protocol: new OpenLayers.Protocol(), 
                        strategies: [new OpenLayers.Strategy(), new OpenLayers.Strategy()]}
@@ -252,6 +252,16 @@
 
         t.eq(layer.protocol, null, "layer.protocol is null after destroy");
         t.eq(layer.strategies, null, "layer.strategies is null after destroy");
+        
+        // test that we can call layer.destroy a second time without trouble
+        try {
+            layer.destroy();
+            layer.destroy();
+            t.ok(true, "layer.destroy called twice without any issues");
+        } catch(err) {
+            t.fail("calling layer.destroy twice triggers exception: " + err + " in " + err.fileName + " line " + err.lineNumber);
+        }
+        
     }
 
     function test_Layer_Vector_externalGraphic(t) {
