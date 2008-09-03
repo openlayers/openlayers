@@ -1,0 +1,669 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+
+    function test_constructor(t) {
+        t.plan(8);
+        var a = new OpenLayers.Protocol.HTTP({
+            url: "foo"
+        });
+
+        // 4 tests
+        t.eq(a.url, "foo", "constructor sets url");
+        t.eq(a.options.url, a.url, "constructor copies url to options.url");
+        t.eq(a.params, {}, "constructor sets params");
+        t.eq(a.options.params, undefined, "constructor do not copy params to options.params");
+
+        var params = {hello: "world"};
+        var b = new OpenLayers.Protocol.HTTP({
+            url: "bar",
+            params: params
+        });
+
+        // 4 tests
+        t.eq(b.url, "bar", "constructor sets url");
+        t.eq(b.options.url, b.url, "constructor copies url to options.url");
+        t.eq(b.params, params, "constructor sets params");
+        t.eq(b.options.params, b.params, "constructor copies params to options.params");
+    }
+
+    function test_destroy(t) {
+        t.plan(3);
+        var protocol = new OpenLayers.Protocol.HTTP({
+            url: "bar",
+            params: {hello: "world"}
+        });
+        protocol.destroy();
+        t.eq(protocol.options, null, "destroy nullifies options");
+        t.eq(protocol.params, null, "destroy nullifies params");
+        t.eq(protocol.headers, null, "destroy nullifies headers");
+    }
+
+    function test_read(t) {
+        t.plan(10);
+        var protocol = new OpenLayers.Protocol.HTTP({
+            'url': 'foo_url',
+            'params': {'k': 'foo_param'}
+        });
+
+        // fake XHR request object
+        var request = {'status': 200};
+
+        // options to pass to read
+        var readOptions = {
+            'url': 'bar_url',
+            'params': {'k': 'bar_param'},
+            'headers': {'k': 'bar_header'},
+            'scope': {'hello': 'world'},
+            'callback': function() {}
+        };
+
+        var response;
+
+        protocol.handleResponse = function(resp, opt) {
+            // 4 tests
+            var req = resp.priv;
+            t.ok(this == protocol,
+                'handleResponse called with correct scope');
+            t.ok(opt == readOptions,
+                'handleResponse called with correct options');
+            t.eq(resp.CLASS_NAME, 'OpenLayers.Protocol.Response',
+                'handleResponse called with a Response object');
+            t.eq(req, request,
+                'handleResponse called with correct request');
+
+            response = resp;
+        };
+
+        var _get = OpenLayers.Request.GET;
+
+        OpenLayers.Request.GET = function(options) {
+            // 5 tests
+            t.eq(options.url, readOptions.url,
+                'GET called with correct url in options');
+            t.eq(options.params['k'], readOptions.params['k'],
+                'GET called with correct params in options');
+            t.eq(options.headers['k'], readOptions.headers['k'],
+                'GET called with correct headers in options');
+            t.eq(options.scope, undefined,
+                'GET called with correct scope in options');
+            t.ok(typeof options.callback == 'function',
+                'GET called with a callback in options');
+            t.delay_call(0.1, function() {
+                options.callback(request);
+                t.ok(resp == response,
+                    'read returns the expected response object');        
+                // cleanup
+                protocol.destroy();
+                OpenLayers.Request.GET = _get;
+            });
+            return request;
+        };
+
+        var resp = protocol.read(readOptions);
+    }
+
+    function test_parseFeatures(t) {
+        t.plan(5);
+
+        var protocol = new OpenLayers.Protocol.HTTP();
+
+        // test responseXML - 2 tests
+        var request = {
+            'responseXML': {
+                'documentElement': 'xml'
+            }
+        };
+        protocol.format = {
+            'read': function(doc) {
+                t.eq(doc.documentElement, 'xml',
+                    'format.read called with correct doc');
+                return doc.documentElement;
+            }
+        };
+        var ret = protocol.parseFeatures(request);
+        t.eq(ret, 'xml', 'parseFeatures returns expected value');
+
+        // test responseText - 2 tests
+        var request = {
+            'responseText': 'text'
+        };
+        protocol.format = {
+            'read': function(doc) {
+                t.eq(doc, 'text',
+                    'format.read called with correct doc');
+                return doc;
+            }
+        };
+        var ret = protocol.parseFeatures(request);
+        t.eq(ret, 'text', 'parseFeatures returns expected value');
+
+        // test empty responseText - 1 test
+        var request = {
+            'responseText': ''
+        };
+        protocol.format = {
+            'read': function(doc) {
+                t.fail('format.read should not be called');
+            }
+        };
+        var ret = protocol.parseFeatures(request);
+        t.eq(ret, null, 'parseFeatures returns expected value');
+    }
+
+    function test_create(t) {
+        t.plan(10);
+        var protocol = new OpenLayers.Protocol.HTTP({
+            'url': 'foo_url',
+            'format': {'write': function() {}}
+        });
+
+        // fake XHR request object
+        var request = {'status': 200};
+
+        // features to pass to create
+        var features = ['feature'];
+
+        // options to pass to create
+        var createOptions = {
+            'url': 'bar_url',
+            'headers': {'k': 'bar_header'},
+            'scope': {'hello': 'world'},
+            'callback': function() {}
+        };
+
+        var response;
+
+        protocol.handleCreate = function(resp, opt) {
+            // 5 tests
+            var req = resp.priv;
+            t.ok(this == protocol,
+                'handleCreate called with correct scope');
+            t.ok(opt == createOptions,
+                'handleCreate called with correct options');
+            t.eq(resp.CLASS_NAME, 'OpenLayers.Protocol.Response',
+                'handleCreate called with a Response object');
+            t.ok(resp.reqFeatures == features,
+                'handleCreate called with correct requested features in response');
+            t.eq(req, request,
+                'handleCreate called with correct request');
+
+            response = resp;
+        };
+
+        var _post = OpenLayers.Request.POST;
+
+        OpenLayers.Request.POST = function(options) {
+            // 4 tests
+            t.eq(options.url, createOptions.url,
+                'POST called with correct url in options');
+            t.eq(options.headers['k'], createOptions.headers['k'],
+                'POST called with correct headers in options');
+            t.eq(options.scope, undefined,
+                'POST called with correct scope in options');
+            t.ok(typeof options.callback == 'function',
+                'POST called with a callback in options');
+            // call callback - delayed because this function has to return first
+            t.delay_call(0.1, function() {
+                options.callback(request);
+                t.ok(resp == response,
+                    'create returns the expected response object');
+                // cleanup
+                protocol.destroy();
+                OpenLayers.Request.POST = _post;
+            });
+            return request;
+        };
+
+        var resp = protocol.create(features, createOptions);
+    }
+
+    function test_update(t) {
+        t.plan(10);
+        var protocol = new OpenLayers.Protocol.HTTP({
+            'url': 'foo_url',
+            'format': {'write': function() {}}
+        });
+
+        // fake XHR request object
+        var request = {'status': 200};
+
+        // feature to pass to update
+        var feature = {'feature':'feature'};
+
+        // options to pass to update
+        var updateOptions = {
+            'url': 'bar_url',
+            'headers': {'k': 'bar_header'},
+            'scope': {'hello': 'world'},
+            'callback': function() {}
+        };
+
+        var response;
+
+        protocol.handleUpdate = function(resp, opt) {
+            var req = resp.priv;
+            // 5 tests
+            t.ok(this == protocol,
+                'handleUpdate called with correct scope');
+            t.ok(opt == updateOptions,
+                'handleUpdate called with correct options');
+            t.eq(resp.CLASS_NAME, 'OpenLayers.Protocol.Response',
+                'handleUpdate called with a Response object');
+            t.ok(resp.reqFeatures == feature,
+                'handleUpdate called with correct requested feature in response');
+            t.eq(req, request,
+                'handleUpdate called with correct request');
+
+            response = resp;
+        };
+
+        var _put = OpenLayers.Request.PUT;
+
+        OpenLayers.Request.PUT = function(options) {
+            // 4 tests
+            t.eq(options.url, updateOptions.url,
+                'PUT called with correct url in options');
+            t.eq(options.headers['k'], updateOptions.headers['k'],
+                'PUT called with correct headers in options');
+            t.eq(options.scope, undefined,
+                'PUT called with correct scope in options');
+            t.ok(typeof options.callback == 'function',
+                'PUT called with a callback in options');
+            // call callback - delayed because this function has to return first
+            t.delay_call(0.1, function() {
+                options.callback(request);
+                t.ok(resp == response,
+                    'update returns the expected response object');
+                // cleanup
+                protocol.destroy();
+                OpenLayers.Request.PUT = _put;
+            });
+            return request;
+        };
+
+        var resp = protocol.update(feature, updateOptions);
+
+    }
+    function test_handleResponse(t) {
+        t.plan(6);
+
+        var protocol = new OpenLayers.Protocol.HTTP();
+
+        var options, response, request, features;
+
+        // test options - 2 tests
+        var scope = {'fake': 'scope'};
+        options = {
+            'scope': scope,
+            'callback': function(resp) {
+                t.ok(this == scope,
+                    '[no status] callback called with correct scope');
+                t.ok(resp == response,
+                    '[no status] callback called with correct response');
+            }
+        };
+        response = {priv: {}};
+        protocol.handleResponse(response, options);
+        
+        // test failure condition - 1 test
+        options = {
+            'callback': function(resp) {
+                t.eq(resp.code, OpenLayers.Protocol.Response.FAILURE,
+                    '[status 400] callback called with correct response code');
+            }
+        };
+        response = {priv: {status: 400}};
+        protocol.handleResponse(response, options);
+
+        // test success condition - 3 tests
+        features = {'fake': 'features'};
+        options = {
+            'callback': function(resp) {
+                t.eq(resp.code, OpenLayers.Protocol.Response.SUCCESS,
+                    '[status 200] callback called with correct response code');
+                t.eq(resp.features, features,
+                    '[status 200] callback called with correct features in response');
+            }
+        };
+        response = {priv: {status: 200}};
+        protocol.parseFeatures = function(request) {
+            t.ok(request == response.priv,
+                '[status 200] parseFeatures called with correct request');
+            return features;
+        }
+        protocol.handleResponse(response, options);
+
+        // cleanup
+        protocol.destroy();
+    }
+
+    function test_delete(t) {
+        t.plan(10);
+        var protocol = new OpenLayers.Protocol.HTTP({
+            'url': 'foo_url'
+        });
+
+        // fake XHR request object
+        var request = {'status': 200};
+
+        // feature to pass to delete
+        var feature = {'url': 'bar_url'};
+
+        // options to pass to delete
+        var deleteOptions = {
+            'url': 'bar_url',
+            'headers': {'k': 'bar_header'},
+            'scope': {'hello': 'world'},
+            'callback': function() {}
+        };
+
+        var response;
+
+        protocol.handleDelete = function(resp, opt) {
+            // 5 tests
+            var req = resp.priv;
+            t.ok(this == protocol,
+                'handleDelete called with correct scope');
+            t.ok(opt == deleteOptions,
+                'handleDelete called with correct options');
+            t.eq(resp.CLASS_NAME, 'OpenLayers.Protocol.Response',
+                'handleDelete called with a Response object');
+            t.ok(resp.reqFeatures == feature,
+                'handleDelete called with correct requested feature in response');
+            t.eq(req, request,
+                'handleDelete called with correct request');
+
+            response = resp;
+        };
+
+        var _delete = OpenLayers.Request.DELETE;
+
+        OpenLayers.Request.DELETE = function(options) {
+            // 4 tests
+            t.eq(options.url, deleteOptions.url,
+                'DELETE called with correct url in options');
+            t.eq(options.headers['k'], deleteOptions.headers['k'],
+                'DELETE called with correct headers in options');
+            t.eq(options.scope, undefined,
+                'DELETE called with correct scope in options');
+            t.ok(typeof options.callback == 'function',
+                'DELETE called with a callback in options');
+            // call callback - delayed because this function has to return first
+            t.delay_call(0.1, function() {
+                options.callback(request);
+                t.ok(resp == response,
+                    'read returns the expected response object');
+                // cleanup
+                protocol.destroy();
+                OpenLayers.Request.DELETE = _delete;
+            });
+            return request;
+        };
+
+        var resp = protocol['delete'](feature, deleteOptions);
+
+    }
+
+    function test_handleDelete(t) {
+        t.plan(4);
+
+        var protocol = new OpenLayers.Protocol.HTTP();
+
+        var options, response, request, features;
+
+        // test options - 2 tests
+        var scope = {'fake': 'scope'};
+        options = {
+            'scope': scope,
+            'callback': function(resp) {
+                t.ok(this == scope,
+                    'callback called with correct scope');
+                t.ok(resp == response,
+                    'callback called with correct response');
+            }
+        };
+        response = {priv: {}};
+        protocol.handleDelete(response, options);
+        
+        // test failure condition - 1 test
+        options = {
+            'callback': function(resp) {
+                t.eq(resp.code, OpenLayers.Protocol.Response.FAILURE,
+                    'callback called with correct response code');
+            }
+        };
+        response = {priv: {status: 400}};
+        protocol.handleDelete(response, options);
+
+        // test success condition - 1 test
+        options = {
+            'callback': function(resp) {
+                t.eq(resp.code, OpenLayers.Protocol.Response.SUCCESS,
+                    'callback called with correct response code');
+            }
+        };
+        response = {priv: {status: 200}};
+        protocol.handleDelete(response, options);
+
+        // cleanup
+        protocol.destroy();
+    }
+
+    function test_commit(t) {
+        t.plan(17);
+
+        var protocol = new OpenLayers.Protocol.HTTP();
+
+        // 6 features
+        var features = [
+            {'state': OpenLayers.State.INSERT},
+            {'state': OpenLayers.State.INSERT},
+            {'state': OpenLayers.State.UPDATE},
+            {'state': OpenLayers.State.UPDATE},
+            {'state': OpenLayers.State.DELETE},
+            {'state': OpenLayers.State.DELETE}
+        ];
+
+        var options = {
+            'create': {
+                'callback': function(resp) {
+                }
+            },
+            'update': {
+                'callback': function(resp) {
+                }
+            },
+            'delete': {
+                'callback': function(resp) {
+                }
+            }
+        };
+
+        var respCreate = new OpenLayers.Protocol.Response();
+        var respUpdate = new OpenLayers.Protocol.Response();
+        var respDelete = new OpenLayers.Protocol.Response();
+
+        // 2 tests
+        protocol['create'] = function(feature, options) {
+            t.ok(options.scope == protocol,
+                'create called with correct scope');
+            t.ok(typeof options.callback == 'function',
+                'create called with a callback in options');
+            options.callback.call(options.scope, respCreate);
+            return respCreate;
+        };
+        // 4 tests
+        protocol['update'] = function(feature, options) {
+            t.ok(options.scope == protocol,
+                'update called with correct scope');
+            t.ok(typeof options.callback == 'function',
+                'update called with a callback in options');
+            options.callback.call(options.scope, respUpdate);
+            return respUpdate;
+        };
+        // 4 tests
+        protocol['delete'] = function(feature, options) {
+            t.ok(options.scope == protocol,
+                'delete called with correct scope');
+            t.ok(typeof options.callback == 'function',
+                'delete called with a callback in options');
+            options.callback.call(options.scope, respDelete);
+            return respDelete;
+        };
+
+        var count = 0;
+
+        // 5 tests
+        protocol.callUserCallback = function(resp, opt) {
+            t.ok(opt == options,
+                'callUserCallback called with correction options map');
+            count++;
+        };
+
+        var resp = protocol.commit(features, options);
+
+        // 2 tests
+        t.eq(count, 5, 'callUserCallback called for each request');
+        t.eq(resp.length, 5, 'commit returns array with correct length');
+
+        // cleanup
+        protocol.destroy();
+    }
+
+    function test_callUserCallback(t) {
+        t.plan(6);
+
+        var protocol = new OpenLayers.Protocol.HTTP();
+
+        var options, resp;
+        var scope = {'fake': 'scope'};
+
+        // test commit callback
+        // 1 tests
+        options = {
+            'callback': function() {
+                t.ok(this == scope, 'callback called with correct scope');
+            },
+            'scope': scope
+        };
+        resp = {'requestType': 'create', 'last': true};
+        protocol.callUserCallback(resp, options);
+        // 0 test
+        resp = {'requestType': 'create', 'last': false};
+        protocol.callUserCallback(resp, options);
+
+        // test create callback
+        // 2 tests
+        options = {
+            'create': {
+                'callback': function(r) {
+                    t.ok(this == scope, 'callback called with correct scope');
+                    t.ok(r == resp, 'callback called with correct response');
+                },
+                'scope': scope
+            }
+        };
+        resp = {'requestType': 'create'};
+        protocol.callUserCallback(resp, options);
+
+        // test with both callbacks set
+        // 3 tests
+        options = {
+            'create': {
+                'callback': function(r) {
+                    t.ok(this == scope, 'callback called with correct scope');
+                    t.ok(r == resp, 'callback called with correct response');
+                },
+                'scope': scope
+            },
+            'callback': function() {
+                t.ok(this == scope, 'callback called with correct scope');
+            },
+            'scope': scope
+        };
+        resp = {'requestType': 'create', 'last': true};
+        protocol.callUserCallback(resp, options);
+
+        // no callback set
+        // 0 test
+        options = {
+            'delete': {
+                'callback': function(resp) {
+                    t.fail('callback should not get called');
+                }
+            }
+        };
+        resp = {'requestType': 'create'};
+        protocol.callUserCallback(resp, options);
+
+        // cleanup
+        protocol.destroy();
+    }
+
+    function test_options(t) {
+        t.plan(7);
+
+        var _R = OpenLayers.Protocol.Response;
+        OpenLayers.Protocol.Response = function() {
+            this.priv = {status: 200};
+        };
+
+        // test that read with no options uses protocol options - 5 tests
+        var url = "foo";
+        var headers = {};
+        var params = {};
+        var scope = {};
+        var protocol = new OpenLayers.Protocol.HTTP({
+            format: new OpenLayers.Format({read: function(){}, write: function(){}}),
+            url: url,
+            headers: headers,
+            params: params,
+            callback: function() {
+                t.ok(true, "[read] Correct callback.");
+                t.eq(this, scope, "[read] Correct scope.");
+            },
+            scope: scope
+        });        
+        var _issue = OpenLayers.Request.issue;
+        OpenLayers.Request.issue = function(config) {
+            t.eq(config.url, url, "[" + config.method + "] Correct url.");
+            t.eq(config.headers, headers, "[" + config.method + "] Correct headers.");
+            t.eq(config.params, params, "[" + config.method + "] Correct params.");
+            config.callback.call(config.scope);
+        };
+        protocol.read();
+        OpenLayers.Request.issue = _issue;
+
+        // test that commit with no options uses protocol options - 2 tests
+        _issue = OpenLayers.Request.issue;
+        OpenLayers.Request.issue = function(config) {
+            config.callback.call(config.scope);
+        };
+        var called = 0;
+        protocol.options.callback = function() {
+            called++;
+            t.eq(this, scope, "[commit] Correct scope.");
+        };
+        protocol.commit([
+            {state: OpenLayers.State.INSERT},
+            {state: OpenLayers.State.INSERT},
+            {state: OpenLayers.State.UPDATE},
+            {state: OpenLayers.State.UPDATE},
+            {state: OpenLayers.State.DELETE},
+            {state: OpenLayers.State.DELETE}
+        ]);
+        t.eq(called, 1, "[commit] Callback called once.");
+
+        // cleanup
+        protocol.destroy();
+        OpenLayers.Protocol.Response = _R;
+    }
+
+
+  </script>
+</head>
+<body>
+</body>
+</html>
