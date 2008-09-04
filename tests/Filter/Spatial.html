@@ -1,0 +1,78 @@
+<html> 
+<head> 
+    <script src="../../lib/OpenLayers.js"></script> 
+    <script type="text/javascript">
+
+    function test_constructor(t) { 
+        t.plan(3); 
+         
+        var options = {'foo': 'bar'}; 
+        var filter = new OpenLayers.Filter.Spatial(options); 
+        t.ok(filter instanceof OpenLayers.Filter.Spatial, 
+             "new OpenLayers.Filter.Spatial returns object" ); 
+        t.eq(filter.foo, "bar", "constructor sets options correctly"); 
+        t.eq(typeof filter.evaluate, "function", "filter has an evaluate function"); 
+    }
+
+    function test_destroy(t) {
+        t.plan(1);
+        
+        var filter = new OpenLayers.Filter.Spatial();
+        filter.destroy();
+        t.eq(filter.symbolizer, null, "symbolizer hash nulled properly");
+    }
+    
+    function test_evaluate(t) {
+        t.plan(4);
+        
+        var filer, feature, res, geom, bounds;
+
+        bounds = new OpenLayers.Bounds(0, 0, 10, 10);
+        filter = new OpenLayers.Filter.Spatial({
+            type: OpenLayers.Filter.Spatial.BBOX,
+            value: bounds
+        });
+
+        // 1 test
+        feature = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(2, 2));
+        res = filter.evaluate(feature);
+        t.eq(res, true,
+            "evaluates returns correct value when feature intersects bounds");
+
+        // 1 test
+        feature = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(20, 20));
+        res = filter.evaluate(feature);
+        t.eq(res, false,
+            "evaluates returns correct value when feature does not intersect bounds");
+
+        // 1 test
+        geom = bounds.toGeometry();
+        feature = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(2, 2));
+        filter = new OpenLayers.Filter.Spatial({
+            type: OpenLayers.Filter.Spatial.INTERSECTS,
+            value: geom
+        });
+        res = filter.evaluate(feature);
+        t.eq(res, true,
+            "evaluates returns correct value when feature intersects bounds");
+
+        // 1 test
+        geom = bounds.toGeometry();
+        feature = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(20, 20));
+        filter = new OpenLayers.Filter.Spatial({
+            type: OpenLayers.Filter.Spatial.INTERSECTS,
+            value: geom
+        });
+        res = filter.evaluate(feature);
+        t.eq(res, false,
+            "evaluates returns correct value when feature does not intersect bounds");
+    }
+    </script> 
+</head> 
+<body> 
+</body> 
+</html> 
