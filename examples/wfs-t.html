@@ -16,6 +16,20 @@
                 {layers: 'topp:tasmania_state_boundaries'}
             );
             
+            //
+            // Word to the Wise from an anonymous OpenLayers hacker:
+            //             
+            // The typename in the options list when adding/loading a wfs 
+            // layer not should contain the namespace before, (as in the 
+            // first typename parameter to the wfs consctructor).
+            // 
+            // Specifically, in the first parameter you write typename: 
+            // 'topp:myLayerName', and in the following option list 
+            // typeName: 'myLayerName'. 
+            // 
+            // If you have topp included in the second one you will get 
+            // namespace 14 errors when trying to insert features.
+            //
             wfs = new OpenLayers.Layer.WFS(
                 "Cities",
                 "http://sigma.openplans.org/geoserver/wfs",
