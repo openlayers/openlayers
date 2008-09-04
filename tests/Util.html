@@ -169,7 +169,7 @@
 
     function test_Util_applyDefaults(t) {
     
-        t.plan(11);
+        t.plan(12);
         
         var to = { 
             'a': "abra",
@@ -204,6 +204,15 @@
         
         var ret = OpenLayers.Util.applyDefaults(to, from);
         t.eq(ret.rand, from.rand, "works with undefined to");
+
+        //regression test for #1716 -- allow undefined from
+        try {
+            OpenLayers.Util.applyDefaults({}, undefined);
+            t.ok(true, "no exception thrown when from is undefined");
+        } catch(err) {
+            t.fail("exception thrown when from is undefined:" + err);
+        }
+
     }
 
     function test_Util_getParameterString(t) {
