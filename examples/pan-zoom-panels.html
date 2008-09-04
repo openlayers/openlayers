@@ -1,0 +1,49 @@
+<html>
+<head>
+    <title>Pan and Zoom Panels</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+
+    <!--[if IE]>
+        <link rel="stylesheet" href="../theme/default/ie6-style.css" type="text/css" />
+    <![endif]-->
+
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <script type="text/javascript" src="../lib/OpenLayers.js"></script>
+    <script>
+    var map;
+    var lon = 5;
+    var lat = 40;
+    var zoom = 5;
+    function init(){
+        map = new OpenLayers.Map("map", {
+            controls: [
+                new OpenLayers.Control.Navigation(),
+                new OpenLayers.Control.PanPanel(),
+                new OpenLayers.Control.ZoomPanel()
+            ]
+        });
+        
+        var wms = new OpenLayers.Layer.WMS(
+            "OpenLayers WMS",
+            "http://labs.metacarta.com/wms/vmap0",
+            {layers: 'basic'}
+        );
+        map.addLayers([wms]);
+        
+        map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+    }
+    </script>
+</head>
+<body onload='init();'>
+    <h1 id="title">Pan and Zoom Panels</h1>
+    <div id="tags"></div>
+    <p id="shortdesc">Customizable pan and zoom panels</p>
+    </p>
+    <div id="map" class="smallmap"></div>
+    <p id="docs">
+        The pan and zoom panels allow you to use CSS styling to change the
+        look and feel of the panels, including changing their position
+        and their icons without needing to change any code.
+    </p>   
+</body>
+</html>

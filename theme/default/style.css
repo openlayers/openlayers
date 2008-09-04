@@ -241,10 +241,72 @@ div.olControlMousePosition {
     filter: alpha(opacity=50);
 }   
 
-/* 
- * Due to current limitations in the OpenLayers code, you can only
- * replace this image with another image which is 17px x 17px. 
- */   
+.olControlPanPanel {
+    top: 10px;
+    left: 5px;
+}  
+
+.olControlPanPanel div {
+    background-image: url(img/pan-panel.png);
+    height: 18px;
+    width: 18px;
+    cursor: pointer;
+    position: absolute;
+}
+
+.olControlPanPanel .olControlPanNorthItemInactive {
+    top: 0px;
+    left: 9px;
+    background-position: 0px 0px;
+}
+.olControlPanPanel .olControlPanSouthItemInactive {
+    top: 36px;
+    left: 9px;
+    background-position: 18px 0px;
+}
+.olControlPanPanel .olControlPanWestItemInactive {
+    position: absolute;
+    top: 18px;
+    left: 0px;
+    background-position: 0px 18px;
+}
+.olControlPanPanel .olControlPanEastItemInactive {
+    top: 18px;
+    left: 18px;
+    background-position: 18px 18px;
+}
+
+.olControlZoomPanel {
+    top: 71px;
+    left: 14px;
+} 
+
+.olControlZoomPanel div {
+    background-image: url(img/zoom-panel.png);
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    cursor: pointer;
+}
+
+.olControlZoomPanel .olControlZoomInItemInactive {
+    top: 0px;
+    left: 0px;
+    background-position: 0px 0px;
+}
+
+.olControlZoomPanel .olControlZoomToMaxExtentItemInactive {
+    top: 18px;
+    left: 0px;
+    background-position: 0px -18px;
+}
+
+.olControlZoomPanel .olControlZoomOutItemInactive {
+    top: 36px;
+    left: 0px;
+    background-position: 0px 18px;
+}
+
 .olPopupCloseBox {
   background: url("img/close.gif") no-repeat;
   cursor: pointer;
