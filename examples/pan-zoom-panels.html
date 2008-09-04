@@ -3,7 +3,14 @@
     <title>Pan and Zoom Panels</title>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
 
-    <!--[if IE]>
+    <!-- 
+      -- Special stylesheet inclusion for ie6, which doesn't handle the alpha 
+      -- channel of images correctly. The special ie6 stylesheet will only 
+      -- be included if the browser running is ie6. For now, the only thing it
+      -- does is load alternative, non-alpha pngs for the zoom/pan panels.
+      -->
+
+    <!--[if lte IE 6]>
         <link rel="stylesheet" href="../theme/default/ie6-style.css" type="text/css" />
     <![endif]-->
 
