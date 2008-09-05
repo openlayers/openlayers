@@ -1,0 +1,149 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <style type="text/css">
+        #controlToggle li {
+            list-style: none;
+        }
+        p {
+            width: 512px;
+        }
+        #options {
+            position: relative;
+            width: 512px;
+        }
+        #output {
+            float: right;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map, measureControls;
+        OpenLayers.Util.onImageLoadErrorColor = "transparent";
+        function init(){
+            map = new OpenLayers.Map('map');
+            
+            var wmsLayer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
+
+            map.addLayers([wmsLayer]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.addControl(new OpenLayers.Control.MousePosition());
+            
+            // style the sketch fancy
+            sketchSymbolizers = {
+                "Point": {
+                    pointRadius: 4,
+                    graphicName: "square",
+                    fillColor: "white",
+                    fillOpacity: 1,
+                    strokeWidth: 1,
+                    strokeOpacity: 1,
+                    strokeColor: "#333333"
+                },
+                "Line": {
+                    strokeWidth: 3,
+                    strokeOpacity: 1,
+                    strokeColor: "#666666",
+                    strokeDashstyle: "dash"
+                },
+                "Polygon": {
+                    strokeWidth: 2,
+                    strokeOpacity: 1,
+                    strokeColor: "#666666",
+                    fillColor: "white",
+                    fillOpacity: 0.3
+                }
+            };
+            var style = new OpenLayers.Style();
+            style.addRules([
+                new OpenLayers.Rule({symbolizer: this.sketchSymbolizers})
+            ]);
+            var styleMap = new OpenLayers.StyleMap({"default": style});
+            
+            var options = {
+                handlerOptions: {
+                    style: "default", // this forces default render intent
+                    layerOptions: {styleMap: styleMap},
+                    persist: true
+                }
+            };
+            measureControls = {
+                line: new OpenLayers.Control.Measure(
+                  OpenLayers.Handler.Path, options
+                ),
+                polygon: new OpenLayers.Control.Measure(
+                    OpenLayers.Handler.Polygon, options
+                )
+            };
+            
+            var control;
+            for(var key in measureControls) {
+                control = measureControls[key];
+                control.events.on({
+                    "measure": handleMeasurements,
+                    "measurepartial": handleMeasurements
+                });
+                map.addControl(control);
+            }
+            
+            map.setCenter(new OpenLayers.LonLat(0, 0), 3);
+            
+            document.getElementById('noneToggle').checked = true;
+        }
+        
+        function handleMeasurements(event) {
+            var geometry = event.geometry;
+            var units = event.units;
+            var order = event.order;
+            var measure = event.measure;
+            var element = document.getElementById('output');
+            var out = "";
+            if(order == 1) {
+                out += "measure: " + measure.toFixed(3) + " " + units;
+            } else {
+                out += "measure: " + measure.toFixed(3) + " " + units + "<sup>2</" + "sup>";
+            }
+            element.innerHTML = out;
+        }
+
+        function toggleControl(element) {
+            for(key in measureControls) {
+                var control = measureControls[key];
+                if(element.value == key && element.checked) {
+                    control.activate();
+                } else {
+                    control.deactivate();
+                }
+            }
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">OpenLayers Measure Example</h1>
+    <p id="shortdesc">
+        Demonstrates the measure control to measure distances and areas.
+    </p>
+    <div id="map" class="smallmap"></div>
+    <div id="options">
+        <div id="output">
+        </div>
+        <ul id="controlToggle">
+            <li>
+                <input type="radio" name="type" value="none" id="noneToggle"
+                       onclick="toggleControl(this);" checked="checked" />
+                <label for="noneToggle">navigate</label>
+            </li>
+            <li>
+                <input type="radio" name="type" value="line" id="lineToggle" onclick="toggleControl(this);" />
+                <label for="lineToggle">measure distance</label>
+            </li>
+            <li>
+                <input type="radio" name="type" value="polygon" id="polygonToggle" onclick="toggleControl(this);" />
+                <label for="polygonToggle">measure area</label>
+            </li>
+        </ul>
+    </div>
+  </body>
+</html>
