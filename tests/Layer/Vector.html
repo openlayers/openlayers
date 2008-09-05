@@ -20,6 +20,41 @@
              (layer.strategies[0].layer.name == layer.strategies[1].layer.name), 
              "setLayer was called on strategies");
     }
+
+    function test_Layer_Vector_refresh(t) {
+        t.plan(1);
+
+        var obj = {"an": "object"};
+
+        var layer = new OpenLayers.Layer.Vector(name, {
+            eventListeners: {
+                refresh: function(o) {
+                    t.ok(o == obj,
+                         "refresh listener called with correct arg");
+                }
+            }
+        });
+
+        // 0 test
+        layer.inRange = false;
+        layer.visibility = false;
+        layer.refresh(obj);
+
+        // 0 test
+        layer.inRange = true;
+        layer.visibility = false;
+        layer.refresh(obj);
+
+        // 0 test
+        layer.inRange = false;
+        layer.visibility = true;
+        layer.refresh(obj);
+      
+        // 1 test
+        layer.inRange = true;
+        layer.visibility = true;
+        layer.refresh(obj);
+    }
     
     function test_Layer_Vector_addFeatures(t) {
         t.plan(8);
