@@ -96,11 +96,10 @@
         function calcVincenty(geometry) {
             /**
              * Note: this function assumes geographic coordinates and
-             *     will fail otherwise.  Though not documented anywhere,
-             *     OpenLayers.Util.distVincenty takes two objects representing
-             *     points with geographic coordinates and returns the geodesic
-             *     distance between them (shortest distance between the two
-             *     points on a sphere) in *kilometers*.
+             *     will fail otherwise.  OpenLayers.Util.distVincenty takes
+             *     two objects representing points with geographic coordinates
+             *     and returns the geodesic distance between them (shortest
+             *     distance between the two points on an ellipsoid) in *kilometers*.
              *
              * It is important to realize that the segments drawn on the map
              *     are *not* geodesics (or "great circle" segments).  This means
