@@ -92,6 +92,19 @@
             
             document.getElementById('noneToggle').checked = true;
         }
+
+        function calcVincenty(geometry) {
+            var dist = 0;
+            for (var i = 1; i < geometry.components.length; i++) {
+                var first = geometry.components[i-1];
+                var second = geometry.components[i];
+                dist += OpenLayers.Util.distVincenty(
+                   new OpenLayers.LonLat(first.x, first.y), 
+                   new OpenLayers.LonLat(second.x, second.y)
+                );
+            }
+            return dist;
+        }    
         
         function handleMeasurements(event) {
             var geometry = event.geometry;
@@ -102,6 +115,10 @@
             var out = "";
             if(order == 1) {
                 out += "measure: " + measure.toFixed(3) + " " + units;
+                if (map.getProjection() == "EPSG:4326") {
+                    out += "<br /> Great Circle Distance: " + 
+                        calcVincenty(geometry).toFixed(3) + " km"; 
+                }        
             } else {
                 out += "measure: " + measure.toFixed(3) + " " + units + "<sup>2</" + "sup>";
             }
