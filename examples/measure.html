@@ -94,13 +94,26 @@
         }
 
         function calcVincenty(geometry) {
+            /**
+             * Note: this function assumes geographic coordinates and
+             *     will fail otherwise.  Though not documented anywhere,
+             *     OpenLayers.Util.distVincenty takes two objects representing
+             *     points with geographic coordinates and returns the geodesic
+             *     distance between them (shortest distance between the two
+             *     points on a sphere) in *kilometers*.
+             *
+             * It is important to realize that the segments drawn on the map
+             *     are *not* geodesics (or "great circle" segments).  This means
+             *     that in general, the measure returned by this function
+             *     will not represent the length of segments drawn on the map.
+             */
             var dist = 0;
             for (var i = 1; i < geometry.components.length; i++) {
                 var first = geometry.components[i-1];
                 var second = geometry.components[i];
                 dist += OpenLayers.Util.distVincenty(
-                   new OpenLayers.LonLat(first.x, first.y), 
-                   new OpenLayers.LonLat(second.x, second.y)
+                    {lon: first.x, lat: first.y},
+                    {lon: second.x, lat: second.y}
                 );
             }
             return dist;
@@ -117,7 +130,7 @@
                 out += "measure: " + measure.toFixed(3) + " " + units;
                 if (map.getProjection() == "EPSG:4326") {
                     out += "<br /> Great Circle Distance: " + 
-                        calcVincenty(geometry).toFixed(3) + " km"; 
+                        calcVincenty(geometry).toFixed(3) + " km *"; 
                 }        
             } else {
                 out += "measure: " + measure.toFixed(3) + " " + units + "<sup>2</" + "sup>";
@@ -161,6 +174,12 @@
                 <label for="polygonToggle">measure area</label>
             </li>
         </ul>
+        <p>* Note that the geometries drawn are planar geometries and the
+        metrics returned by the measure control are planar measures.  The
+        "great circle" distance does not necessarily represent the length
+        of the segments drawn on the map.  Instead, it is a geodesic metric that
+        represents the cumulative shortest path between all vertices in the
+        geometry were they projected onto a sphere.</p>
     </div>
   </body>
 </html>
