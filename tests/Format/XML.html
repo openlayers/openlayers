@@ -27,7 +27,7 @@
         '<' + '/ol:root>';
 
     function test_Format_XML_constructor(t) { 
-        t.plan(5); 
+        t.plan(13); 
          
         var options = {'foo': 'bar'}; 
         var format = new OpenLayers.Format.XML(options); 
@@ -38,6 +38,36 @@
         t.eq(typeof format.write, "function", "format has a write function");
 
         t.ok(!window.ActiveXObject || format.xmldom, "browsers with activeX must have xmldom");
+        
+        // test namespaces
+        t.ok(format.namespaces instanceof Object, "format has namespace object");
+        var namespaces = {"foo": "bar"};
+        format = new OpenLayers.Format.XML({namespaces: namespaces});
+        t.eq(format.namespaces, namespaces, "format.namespaces correctly set in constructor");
+        
+        // test default prefix
+        t.eq(format.defaultPrefix, null, "defaultPrefix is null by default");
+        format = new OpenLayers.Format.XML({defaultPrefix: "foo"});
+        t.eq(format.defaultPrefix, "foo", "defaultPrefix correctly set in constructor");
+
+        // test readers
+        t.ok(format.readers instanceof Object, "format has readers object");
+        var readers = {"foo": "bar"};
+        format = new OpenLayers.Format.XML({readers: readers});
+        t.eq(format.readers, readers, "format.readers correctly set in constructor");
+
+        // test readers
+        t.ok(format.writers instanceof Object, "format has writers object");
+        var writers = {"foo": "bar"};
+        format = new OpenLayers.Format.XML({writers: writers});
+        t.eq(format.writers, writers, "format.writers correctly set in constructor");
+    }
+    
+    function test_destroy(t) {
+        t.plan(1);
+        var format = new OpenLayers.Format.XML();
+        format.destroy();
+        t.eq(format.xmldom, null, "xmldom set to null for all browsers");
     }
 
     function test_Format_XML_read(t) {
@@ -259,6 +289,359 @@
         
         found = format.hasAttributeNS(nodes[0], taUri, "nothing");
         t.ok(found === false, "returns false for bad attribute");
+    }
+    
+    function test_getNamespacePrefix(t) {
+        t.plan(6);
+        
+        // test that getNamespacePrefix returns null with no ns defined
+        var format = new OpenLayers.Format.XML();        
+        var got = format.getNamespacePrefix("http://example.com/foo");
+        t.eq(got, null, "returns null when no namespaces are defined");
+        
+        format.defaultPrefix = "def";
+        format.namespaces = {
+            "def": "http://example.com/default",
+            "foo": "http://example.com/foo",
+            "bar": "http://example.com/bar"
+        };
+        
+        var cases = [
+            {uri: null, expect: "def"},
+            {uri: "http://example.com/default", expect: "def"},
+            {uri: "http://example.com/foo", expect: "foo"},
+            {uri: "http://example.com/bar", expect: "bar"},            
+            {uri: "http://example.com/nothing", expect: null}
+        ];
+        
+        var test;
+        for(var i=0; i<cases.length; ++i) {
+            test = cases[i];
+            t.eq(format.getNamespacePrefix(test.uri), test.expect,
+                 "uri: " + test.uri + " works");
+        }
+
+    }
+    
+    function test_readChildNodes(t) {
+        
+        var text = "<?xml version='1.0' encoding='UTF-8'?>" +
+        "<container xmlns='http://example.com/foo'>" +
+            "<marker name='my marker 1'>" +
+                "<position>" +
+                    "<lon>-180</lon>" +
+                    "<lat>90</lat>" +
+                "</position>" +
+                "<detail>some text for first marker</detail>" +
+                "<atom:link xmlns:atom='http://www.w3.org/2005/Atom' href='http://host/path/1'/>" +
+            "</marker>" +
+            "<marker name='my marker 2'>" +
+                "<position>" +
+                    "<lon>180</lon>" +
+                    "<lat>-90</lat>" +
+                "</position>" +
+                "<detail>some text for second marker</detail>" +
+                "<atom:link xmlns:atom='http://www.w3.org/2005/Atom' href='http://host/path/2'/>" +
+            "</marker>" +
+        "</container>";
+        
+        var expect = [
+            new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(-180, 90),
+                {
+                    name: 'my marker 1',
+                    link: 'http://host/path/1',
+                    detail: 'some text for first marker'
+                }
+            ),
+            new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(180, -90),
+                {
+                    name: 'my marker 2',
+                    link: 'http://host/path/2',
+                    detail: 'some text for second marker'
+                }
+            )
+        ];
+        
+        var format = new OpenLayers.Format.XML({
+            defaultPrefix: "foo",
+            namespaces: {
+                "foo": "http://example.com/foo",
+                "atom": "http://www.w3.org/2005/Atom"
+            },
+            readers: {
+                "foo": {
+                    "container": function(node, obj) {
+                        var list = [];
+                        this.readChildNodes(node, list);
+                        obj.list = list;
+                    },
+                    "marker": function(node, list) {
+                        var feature = new OpenLayers.Feature.Vector();
+                        feature.attributes.name = node.getAttribute("name");
+                        this.readChildNodes(node, feature);
+                        list.push(feature);
+                    },
+                    "position": function(node, feature) {
+                        var obj = {};
+                        this.readChildNodes(node, obj);
+                        feature.geometry = new OpenLayers.Geometry.Point(obj.x, obj.y);
+                    },
+                    "lon": function(node, obj) {
+                        obj.x = this.getChildValue(node);
+                    },
+                    "lat": function(node, obj) {
+                        obj.y = this.getChildValue(node);
+                    },
+                    "detail": function(node, feature) {
+                        feature.attributes.detail = this.getChildValue(node);
+                    }
+                },
+                "atom": {
+                    "link": function(node, feature) {
+                        feature.attributes.link = node.getAttribute("href");
+                    }                    
+                }
+            }
+        });
+        
+        // convert text to document node
+        var doc = format.read(text);
+        // read child nodes to get back some object
+        var obj = format.readChildNodes(doc);
+        // start comparing what we got to what we expect
+        var got = obj.list;
+        
+        t.plan(11);
+        t.eq(got.length, expect.length, "correct number of items parsed");
+        t.eq(got[0].geometry.x, expect[0].geometry.x, "correct x coord parsed for marker 1");
+        t.eq(got[0].geometry.y, expect[0].geometry.y, "correct y coord parsed for marker 1");
+        t.eq(got[0].attributes.name, expect[0].attributes.name, "correct name parsed for marker 1");
+        t.eq(got[0].attributes.detail, expect[0].attributes.detail, "correct detail parsed for marker 1");
+        t.eq(got[0].attributes.link, expect[0].attributes.link, "correct link parsed for marker 1");
+        t.eq(got[1].geometry.x, expect[1].geometry.x, "correct x coord parsed for marker 2");
+        t.eq(got[1].geometry.y, expect[1].geometry.y, "correct y coord parsed for marker 2");
+        t.eq(got[1].attributes.name, expect[1].attributes.name, "correct name parsed for marker 2");
+        t.eq(got[1].attributes.detail, expect[1].attributes.detail, "correct detail parsed for marker 2");
+        t.eq(got[1].attributes.link, expect[1].attributes.link, "correct link parsed for marker 2");
+        
+    }
+    
+    function test_writeNode(t) {
+        
+        var features = [
+            new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(-180, 90),
+                {
+                    name: 'my marker 1',
+                    link: 'http://host/path/1',
+                    detail: 'some text for first marker'
+                }
+            ),
+            new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(180, -90),
+                {
+                    name: 'my marker 2',
+                    link: 'http://host/path/2',
+                    detail: 'some text for second marker'
+                }
+            )
+        ];
+
+        var expect = "<?xml version='1.0' encoding='UTF-8'?>" +
+        "<container xmlns='http://example.com/foo'>" +
+            "<marker name='my marker 1'>" +
+                "<position>" +
+                    "<lon>-180</lon>" +
+                    "<lat>90</lat>" +
+                "</position>" +
+                "<detail>some text for first marker</detail>" +
+                "<atom:link xmlns:atom='http://www.w3.org/2005/Atom' href='http://host/path/1'/>" +
+            "</marker>" +
+            "<marker name='my marker 2'>" +
+                "<position>" +
+                    "<lon>180</lon>" +
+                    "<lat>-90</lat>" +
+                "</position>" +
+                "<detail>some text for second marker</detail>" +
+                "<atom:link xmlns:atom='http://www.w3.org/2005/Atom' href='http://host/path/2'/>" +
+            "</marker>" +
+        "</container>";
+        
+        var format = new OpenLayers.Format.XML({
+            defaultPrefix: "foo",
+            namespaces: {
+                "foo": "http://example.com/foo",
+                "atom": "http://www.w3.org/2005/Atom"
+            },
+            writers: {
+                "foo": {
+                    "container": function(features) {
+                        var node = this.createElementNSPlus("container");
+                        var feature;
+                        for(var i=0; i<features.length; ++i) {
+                            feature = features[i];
+                            this.writeNode("marker", features[i], node);
+                        }
+                        return node;
+                    },
+                    "marker": function(feature) {
+                        var node = this.createElementNSPlus("marker", {
+                            attributes: {name: feature.attributes.name}
+                        });
+                        this.writeNode("position", feature.geometry, node);
+                        this.writeNode("detail", feature.attributes.detail, node);
+                        this.writeNode("atom:link", feature.attributes.link, node);
+                        return node;
+                    },
+                    "position": function(geometry) {
+                        var node = this.createElementNSPlus("position");
+                        this.writeNode("lon", geometry.x, node);
+                        this.writeNode("lat", geometry.y, node);
+                        return node;
+                    },
+                    "lon": function(x) {
+                        return this.createElementNSPlus("lon", {
+                            value: x
+                        });
+                    },
+                    "lat": function(y) {
+                        return this.createElementNSPlus("lat", {
+                            value: y
+                        });
+                    },
+                    "detail": function(text) {
+                        return this.createElementNSPlus("detail", {
+                            value: text
+                        });
+                    }
+                },
+                "atom": {
+                    "link": function(href) {
+                        return this.createElementNSPlus("atom:link", {
+                            attributes: {href: href}
+                        });
+                    }
+                }
+            }
+            
+        });
+        
+        t.plan(1);
+        // test that we get what we expect from writeNode
+        var got = format.writeNode("container", features);
+        t.xml_eq(got, expect, "features correctly written");
+    }
+    
+    function test_createElementNSPlus(t) {
+        
+        var format = new OpenLayers.Format.XML({
+            defaultPrefix: "def",
+            namespaces: {
+                "def": "http://example.com/default",
+                "foo": "http://example.com/foo",
+                "bar": "http://example.com/bar"
+            }
+        });
+        
+        var cases = [
+            {
+                description: "unprefixed name with default options",
+                node: format.createElementNSPlus("FooNode"),
+                expect: "<def:FooNode xmlns:def='http://example.com/default'/>"
+            }, {
+                description: "def prefixed name with default options",
+                node: format.createElementNSPlus("def:FooNode"),
+                expect: "<def:FooNode xmlns:def='http://example.com/default'/>"
+            }, {
+                description: "foo prefixed name with default options",
+                node: format.createElementNSPlus("foo:FooNode"),
+                expect: "<foo:FooNode xmlns:foo='http://example.com/foo'/>"
+            }, {
+                description: "unprefixed name with uri option",
+                node: format.createElementNSPlus("FooNode", {
+                    uri: "http://example.com/elsewhere"
+                }),
+                expect: "<FooNode xmlns='http://example.com/elsewhere'/>"
+            }, {
+                description: "foo prefixed name with uri option (overriding format.namespaces)",
+                node: format.createElementNSPlus("foo:FooNode", {
+                    uri: "http://example.com/elsewhere"
+                }),
+                expect: "<foo:FooNode xmlns:foo='http://example.com/elsewhere'/>"
+            }, {
+                description: "foo prefixed name with attributes option",
+                node: format.createElementNSPlus("foo:FooNode", {
+                    attributes: {
+                        "id": "123",
+                        "foo:attr1": "namespaced attribute 1",
+                        "bar:attr2": "namespaced attribute 2"
+                    }
+                }),
+                expect: "<foo:FooNode xmlns:foo='http://example.com/foo' xmlns:bar='http://example.com/bar' id='123' foo:attr1='namespaced attribute 1' bar:attr2='namespaced attribute 2'/>"
+            }, {
+                description: "foo prefixed name with attributes and value options",
+                node: format.createElementNSPlus("foo:FooNode", {
+                    attributes: {"id": "123"},
+                    value: "text value"
+                }),
+                expect: "<foo:FooNode xmlns:foo='http://example.com/foo' id='123'>text value<" + "/foo:FooNode>"
+            }
+        ];
+        
+        t.plan(cases.length);
+        var test;
+        for(var i=0; i<cases.length; ++i) {
+            test = cases[i];
+            t.xml_eq(test.node, test.expect, test.description);
+        }
+        
+    }
+    
+    function test_setAttributes(t) {
+        
+        var format = new OpenLayers.Format.XML({
+            defaultPrefix: "def",
+            namespaces: {
+                "def": "http://example.com/default",
+                "foo": "http://example.com/foo",
+                "bar": "http://example.com/bar"
+            }
+        });
+        
+        var cases = [
+            {
+                description: "unprefixed attribute",
+                node: format.createElementNSPlus("foo:Node"),
+                attributes: {"id": "123"},
+                expect: "<foo:Node xmlns:foo='http://example.com/foo' id='123'/>"
+            }, {
+                description: "foo prefixed attribute",
+                node: format.createElementNSPlus("foo:Node"),
+                attributes: {"foo:id": "123"},
+                expect: "<foo:Node xmlns:foo='http://example.com/foo' foo:id='123'/>"
+            }, {
+                description: "foo prefixed attribute with def prefixed node",
+                node: format.createElementNSPlus("def:Node"),
+                attributes: {"foo:id": "123"},
+                expect: "<def:Node xmlns:def='http://example.com/default' xmlns:foo='http://example.com/foo' foo:id='123'/>"
+            }, {
+                description: "multiple attributes",
+                node: format.createElementNSPlus("def:Node"),
+                attributes: {"id": "123", "foo": "bar"},
+                expect: "<def:Node xmlns:def='http://example.com/default' id='123' foo='bar'/>"
+            }
+        ];
+        
+        t.plan(cases.length);
+        var test;
+        for(var i=0; i<cases.length; ++i) {
+            test = cases[i];
+            format.setAttributes(test.node, test.attributes);
+            t.xml_eq(test.node, test.expect, test.description);
+        }
+        
     }
 
     </script> 
