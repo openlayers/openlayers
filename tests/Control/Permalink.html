@@ -134,6 +134,99 @@
         t.eq(this.map.controls[this.map.controls.length-1].CLASS_NAME, "CustomArgParser", "Custom ArgParser added correctly.");
         t.eq(control.div.firstChild.getAttribute("href"), "./edit.html?zoom=2&lat=0&lon=1.75781&layers=B&customParam=foo", "Custom parameter encoded correctly.");
     }
+    
+    function test_Control_Permalink_createParams(t) {
+        t.plan(18);
+
+        var baseLayer = { 'isBaseLayer': true };
+
+        var m = {
+            'getCenter': function() { return null; }
+        };
+        
+        var pl = {
+            'map': m,
+            'base': {}
+        };
+
+        old_getParameters = OpenLayers.Util.getParameters;
+        OpenLayers.Util.getParameters = function(base) {
+            t.ok(base == pl.base, "correct base sent in to Util.getParameters()");
+            return g_Params;
+        };
+        
+      //null center, null map.getCenter()
+        g_Params = {};
+        m.baseLayer = baseLayer;
+        var returnParams = OpenLayers.Control.Permalink.prototype.createParams.apply(pl, []);
+        t.ok(returnParams == g_Params, "correct params returned on null center");
+
+      //valid center, zoom, layers
+        g_Params = { 'test': {} };
+        var center = { 'lon': 1.2345678901, 'lat': 9.8765432109 };
+        var zoom = {};
+        var layers = [
+            { 'isBaseLayer': true },
+            baseLayer,
+            { 'isBaseLayer': false, 'getVisibility': function() { return true; } },
+            { 'isBaseLayer': false, 'getVisibility': function() { return false; } }
+        ];
+        var returnParams = OpenLayers.Control.Permalink.prototype.createParams.apply(pl, [center, zoom, layers]);
+
+        t.ok(returnParams.test == g_Params.test, "correct params returned from Util.getParameters() when valid center, zoom, layers");
+        t.ok(returnParams.zoom == zoom, "params.zoom set correctly when valid center, zoom, layers");
+        t.eq(returnParams.lon, 1.23457, "lon set and rounded correctly when valid center, zoom, layers");
+        t.eq(returnParams.lat, 9.87654, "lat set and rounded correctly when valid center, zoom, layers");
+        t.eq(returnParams.layers, "0BTF", "layers processed correctly when valid center, zoom, layers")
+
+
+      //null center, zoom, layers, with displayProjection
+        g_Params = { 'test': {} };
+        g_Projection = {};
+        m = {
+            'baseLayer': baseLayer,
+            'getProjectionObject':  function() { return g_Projection; },
+            'center': { 'lon': {}, 'lat': {} },
+            'getCenter': function() { return this.center; },
+            'zoom': {},
+            'getZoom': function() { return this.zoom; },
+           'layers': [
+                { 'isBaseLayer': false, 'getVisibility': function() { return true; } },
+                baseLayer,
+                { 'isBaseLayer': false, 'getVisibility': function() { return false; } },
+                { 'isBaseLayer': true }
+            ],
+            'getLayers': function() { return this.layers; }
+        };
+        pl = { 
+            'base': {},
+            'map': m,
+            'displayProjection': {}
+        };
+        
+        old_transform = OpenLayers.Projection.transform;
+        OpenLayers.Projection.transform = function(point, projObj, dispProj) {
+            t.ok(point.x = m.center.lon, "correct x value passed into transform");
+            t.ok(point.y = m.center.lat, "correct x value passed into transform");
+            t.ok(projObj == g_Projection, "correct projection object from map passed into transform");
+            t.ok(dispProj == pl.displayProjection, "correct displayProjection from control passed into transform");
+
+            return { 'x': 9.8765432109, 'y': 1.2345678901 };
+        };
+        
+        center = zoom = layers = null;
+
+        var returnParams = OpenLayers.Control.Permalink.prototype.createParams.apply(pl, [center, zoom, layers]);
+        t.ok(returnParams.test == g_Params.test, "correct params returned from Util.getParameters() when null center, zoom, layers, with displayProjection");
+        t.ok(returnParams.zoom == m.zoom, "params.zoom set correctly when null center, zoom, layers, with displayProjection");
+        t.eq(returnParams.lon, 9.87654, "lon set, transformed, and rounded correctly when null center, zoom, layers, with displayProjection");
+        t.eq(returnParams.lat, 1.23457, "lat set, transformed, and rounded correctly when null center, zoom, layers, with displayProjection");
+        t.eq(returnParams.layers, "TBF0", "layers processed correctly when null center, zoom, layers, with displayProjection");
+
+        OpenLayers.Util.getParameters = old_getParameters;
+        OpenLayers.Projection.transform = old_transform;
+    }
+    
   </script>
 </head>
 <body>
