@@ -20,7 +20,7 @@
     function test_issue(t) {
         setup();
 
-        t.plan(19);
+        t.plan(22);
         var request, config;
         var proto = OpenLayers.Request.XMLHttpRequest.prototype;
         var issue = OpenLayers.Function.bind(OpenLayers.Request.issue,
@@ -46,8 +46,43 @@
             t.eq(async, config.async, "open called with correct async");
             t.eq(user, config.user, "open called with correct user");
             t.eq(password, config.password, "open called with correct password");
+        };
+        request = issue(config);
+        
+        // test that params are serialized as query string - 1 test
+        config = {
+            method: "GET",
+            url: "http://example.com/",
+            params: {"foo": "bar"}
+        };
+        proto.open = function(method, url, async, user, password) {
+            t.eq(url, config.url + "?foo=bar", "params serialized as query string");
+        };
+        request = issue(config);
+        
+        // test that empty params object doesn't produce query string - 1 test
+        config = {
+            method: "GET",
+            url: "http://example.com/",
+            params: {}
+        };
+        proto.open = function(method, url, async, user, password) {
+            t.eq(url, config.url, "empty params doesn't produce query string");
         }
         request = issue(config);
+        
+        // test that query string doesn't get two ? separators
+        config = {
+            method: "GET",
+            url: "http://example.com/?existing=query",
+            params: {"foo": "bar"}
+        };
+        proto.open = function(method, url, async, user, password) {
+            t.eq(url, config.url + "&foo=bar", "existing query string gets extended with &");
+        }
+        request = issue(config);
+
+        // reset open method
         proto.open = _open;
         
         // test that headers are correctly set - 4 tests
