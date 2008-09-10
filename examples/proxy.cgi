@@ -40,8 +40,8 @@ try:
         print "Status: 502 Bad Gateway"
         print "Content-Type: text/plain"
         print
-        print "This proxy does not allow you to access that location."
-        print 
+        print "This proxy does not allow you to access that location (%s)." % (host,)
+        print
         print os.environ
   
     elif url.startswith("http://") or url.startswith("https://"):
