@@ -1,0 +1,166 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+
+    function test_initialize(t) {
+        t.plan(1);
+
+        var ratio = 4;
+
+        var s = new OpenLayers.Strategy.BBOX({ratio: ratio});
+        t.eq(s.ratio, ratio, "ctor sets ratio");
+    }
+
+    function test_activate(t) {
+        t.plan(5);
+
+        var l = new OpenLayers.Layer.Vector();
+        var s = new OpenLayers.Strategy.BBOX();
+        s.setLayer(l);
+
+        t.eq(s.active, false, "not active after construction");
+
+        var activated = s.activate();
+        t.eq(activated, true, "activate returns true");
+        t.eq(s.active, true, "activated after activate");
+        t.ok(l.events.listeners["moveend"][0].obj == s &&
+             l.events.listeners["moveend"][0].func == s.update,
+             "activates registers moveend listener");
+        t.ok(l.events.listeners["refresh"][0].obj == s &&
+             l.events.listeners["refresh"][0].func == s.update,
+             "activates registers refresh listener");
+    }
+
+    function test_update(t) {
+        t.plan(6);
+
+        var s = new OpenLayers.Strategy.BBOX();
+
+        var invalidBoundsReturnValue;
+        var bounds = new OpenLayers.Bounds(-100, -40, 100, 40);
+
+        s.invalidBounds = function(b) {
+            t.ok(b == bounds,
+                 "update calls invalidBounds with correct arg");
+            return invalidBoundsReturnValue;
+        };
+        s.calculateBounds = function(b) {
+            t.ok(b == bounds,
+                 "update calls calculateBounds with correct arg");
+        };
+        s.triggerRead = function() {
+            t.ok(true,
+                 "update calls triggerRead");
+        };
+
+        s.setLayer({
+            map: {
+                getExtent: function() {
+                    return bounds;
+                }
+            }
+        });
+
+        // 2 tests
+        invalidBoundsReturnValue = true;
+        s.update({force: true});
+
+        // 3 tests
+        invalidBoundsReturnValue = true;
+        s.update();
+
+        // 1 tests
+        invalidBoundsReturnValue = false;
+        s.update();
+    }
+
+    function test_triggerRead(t) {
+        t.plan(7);
+
+        var s = new OpenLayers.Strategy.BBOX();
+
+        var filter = {"fake": "filter"};
+
+        s.createFilter = function() {
+            return filter;
+        };
+
+        s.setLayer({
+            protocol: {
+                read: function(options) {
+                    t.ok(options.filter == filter,
+                         "protocol read called with correct filter");
+                    t.ok(options.callback == s.merge,
+                         "protocol read called with correct callback");
+                    t.ok(options.scope == s,
+                         "protocol read called with correct scope");
+                }
+            }
+        });
+
+        // 3 tests
+        s.triggerRead();
+
+        // 4 tests
+        s.response = {
+            priv: {
+                abort: function() {
+                    t.ok(true,
+                         "triggerRead aborts previous read request");
+                }
+            }
+        };
+        s.triggerRead();
+    }
+
+    function test_createFilter(t) {
+        t.plan(3);
+
+        var s = new OpenLayers.Strategy.BBOX();
+
+        var f;
+
+        // 2 test
+        s.setLayer({});
+        f = s.createFilter();
+        t.ok(f.CLASS_NAME.search(/^OpenLayers.Filter.Spatial/) != -1,
+             "createFilter returns a spatial filter object");
+        t.eq(f.type, OpenLayers.Filter.Spatial.BBOX,
+             "createFilter returns a BBOX-typed filter");
+
+        // 1 test
+        s.setLayer({filter: {fake: "filter"}});
+        f = s.createFilter();
+        t.ok(f.CLASS_NAME.search(/^OpenLayers.Filter.Logical/) != -1,
+             "createFilter returns a logical filter object");
+    }
+
+    function test_merge(t) {
+        t.plan(2);
+
+        var s = new OpenLayers.Strategy.BBOX();
+
+        var features = ["fake", "feature", "array"];
+
+        s.setLayer({
+           destroyFeatures: function() {
+               t.ok(true,
+                    "merge calls destroyFeatures");
+           },
+           addFeatures: function(f) {
+               t.ok(f == features,
+                    "merge calls addFeatures with the correct features");
+           }
+        });
+
+        // 2 tests
+        s.merge({features: features});
+    }
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 400px; height: 200px" />
+</body>
+</html>

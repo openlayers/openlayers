@@ -104,6 +104,31 @@
         var resp = protocol.read(readOptions);
     }
 
+    function test_read_bbox(t) {
+        t.plan(1);
+        var protocol = new OpenLayers.Protocol.HTTP();
+
+        // fake XHR request object
+        var request = {'status': 200};
+
+        var _get = OpenLayers.Request.GET;
+
+        var bounds = new OpenLayers.Bounds(1, 2, 3, 4);
+        var filter = new OpenLayers.Filter.Spatial({
+            type: OpenLayers.Filter.Spatial.BBOX,
+            value: bounds,
+            projection: "foo"
+        });
+        
+        OpenLayers.Request.GET = function(options) {
+            t.eq(options.params['bbox'].toString(), bounds.toArray().toString(),
+                'GET called with bbox filter in params');
+            return request;
+        };
+
+        var resp = protocol.read({filter: filter});
+    }
+
     function test_parseFeatures(t) {
         t.plan(5);
 
