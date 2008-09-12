@@ -1,0 +1,473 @@
+<html>
+<head>
+  <script src="../../../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+
+    function test_initialize(t) {
+        var protocol = new OpenLayers.Protocol.SQL.Gears();
+        if (!protocol.supported()) {
+            t.plan(0);
+            return;
+        }
+
+        t.plan(5);
+
+        t.eq(protocol.CLASS_NAME, "OpenLayers.Protocol.SQL.Gears",
+             "ctor returns correct value");
+
+        t.eq(protocol.jsonParser.CLASS_NAME,
+             "OpenLayers.Format.JSON",
+             "ctor creates a JSON parser");
+
+        t.eq(protocol.wktParser.CLASS_NAME,
+             "OpenLayers.Format.WKT",
+             "ctor creates a WKT parser");
+
+        var str = protocol.FID_PREFIX + "foo_bar";
+        t.ok(str.match(protocol.fidRegExp),
+             "ctor creates correct regexp");
+
+        t.ok(typeof protocol.db == "object",
+             "ctor creates a db object");
+
+        protocol.clear();
+        protocol.destroy();
+    }
+
+    function test_destroy(t) {
+        var protocol = new OpenLayers.Protocol.SQL.Gears();
+        if (!protocol.supported()) {
+            t.plan(0);
+            return;
+        }
+
+        t.plan(3);
+
+        protocol.destroy();
+
+        t.eq(protocol.db, null,
+             "destroy nullifies db");
+        t.eq(protocol.jsonParser, null,
+             "destroy nullifies jsonParser");
+        t.eq(protocol.wktParser, null,
+             "destroy nullifies wktParser");
+     }
+
+    function test_read(t) {
+        var protocolCallback, readCallback;
+        var protocolOptions = {callback: protocolCallback};
+        var readOptions = {callback: readCallback};
+
+        var protocol = new OpenLayers.Protocol.SQL.Gears(protocolOptions);
+        if (!protocol.supported()) {
+            t.plan(0);
+            return;
+        }
+
+        function okCallback(resp) {
+            t.eq(resp.CLASS_NAME, "OpenLayers.Protocol.Response",
+                 "read calls correct callback with a response object");
+        }
+
+        function failCallback(resp) {
+            t.fail("read calls incorrect callback");
+        }
+
+        t.plan(4);
+
+        var resp;
+
+        // 2 tests
+        protocolOptions.callback = okCallback;
+        readOptions.callback = failCallback;
+        resp = protocol.read();
+        t.eq(resp.CLASS_NAME, "OpenLayers.Protocol.Response",
+             "read returns a response object");
+
+        // 2 test
+        protocolOptions.callback = failCallback;
+        readOptions.callback = okCallback;
+        resp = protocol.read(readOptions);
+        t.eq(resp.CLASS_NAME, "OpenLayers.Protocol.Response",
+             "read returns a response object");
+
+        protocol.clear();
+        protocol.destroy();
+    }
+
+    function test_unfreezeFeature(t) {
+        var protocol = new OpenLayers.Protocol.SQL.Gears();
+        if (!protocol.supported()) {
+            t.plan(0);
+            return;
+        }
+
+        t.plan(10);
+
+        var feature;
+        var wkt, json, fid, state;
+
+        json = "{\"fake\":\"properties\"}";
+        fid = "1000";
+        state = OpenLayers.State.INSERT;
+
+        var row = {
+            fieldByName: function(str) {
+                if (str == "geometry") {
+                    return wkt;
+                }
+                if (str == "properties") {
+                    return json;
+                }
+                if (str == "fid") {
+                    return fid;
+                }
+                if (str == "state") {
+                    return state;
+                }
+            }
+        };
+
+        // 5 tests
+        wkt = "POINT(1 2)";
+        feature = protocol.unfreezeFeature(row);
+        t.eq(feature.CLASS_NAME, "OpenLayers.Feature.Vector",
+             "unfreezeFeature returns an OpenLayers.Feature.Vector");
+        t.ok(feature.geometry.x == 1 && feature.geometry.y == 2,
+             "unfreezeFeature returns a feature with correct geometry");
+        t.eq(feature.attributes.fake, "properties",
+             "unfreezeFeature returns a feature with correct attributes");
+        t.eq(feature.fid, fid,
+             "unfreezeFeature returns a feature with fid");
+        t.eq(feature.state, state,
+             "unfreezeFeature returns a feature with state");
+
+        // 5 tests
+        wkt = protocol.NULL_GEOMETRY;
+        state = protocol.NULL_FEATURE_STATE;
+        feature = protocol.unfreezeFeature(row);
+        t.eq(feature.CLASS_NAME, "OpenLayers.Feature.Vector",
+             "unfreezeFeature returns an OpenLayers.Feature.Vector");
+        t.eq(feature.geometry, null,
+             "unfreezeFeature returns a feature with correct geometry");
+        t.eq(feature.attributes.fake, "properties",
+             "unfreezeFeature returns a feature with correct attributes");
+        t.eq(feature.fid, fid,
+             "unfreezeFeature returns a feature with fid");
+        t.eq(feature.state, null,
+             "unfreezeFeature returns a feature with state");
+
+        protocol.clear();
+        protocol.destroy();
+    }
+
+    function test_extractFidFromField(t) {
+        var protocol = new OpenLayers.Protocol.SQL.Gears();
+        if (!protocol.supported()) {
+            t.plan(0);
+            return;
+        }
+
+        t.plan(4);
+
+        var field, fid;
+
+        // fid is a string, field is not prefixed with FID_PREFIX
+        // 1 test
+        field = "10";
+        res = protocol.extractFidFromField(field);
+        t.eq(res, "10",
+             "extractFidFromField returns expected string");
+
+        // fid is a string, field is prefixed with FID_PREFIX
+        // 1 test
+        field = protocol.FIX_PREFIX + "10";
+        res = protocol.extractFidFromField(field);
+        t.eq(res, protocol.FIX_PREFIX + "10",
+             "extractFidFromField returns expected prefixed string");
+
+        // fid is a number, field is not prefixed with FIX_PREFIX
+        // 1 test
+        protocol.typeOfFid = "number";
+        field = "10";
+        res = protocol.extractFidFromField(field);
+        t.eq(res, 10,
+             "extractFidFromField returns expected number");
+
+        // fid is a number, field is prefixed with FIX_PREFIX
+        // 1 test
+        protocol.typeOfFid = "number";
+        field = protocol.FID_PREFIX + "10";
+        res = protocol.extractFidFromField(field);
+        t.eq(res, protocol.FID_PREFIX + "10",
+             "extractFidFromField returns expected prefixed string");
+    }
+
+    function test_freezeFeature(t) {
+        var protocol = new OpenLayers.Protocol.SQL.Gears();
+        if (!protocol.supported()) {
+            t.plan(0);
+            return;
+        }
+
+        t.plan(8);
+
+        var feature, res;
+
+        // 4 tests
+        feature = new OpenLayers.Feature.Vector();
+        feature.geometry = new OpenLayers.Geometry.Point(1, 2);
+        feature.attributes.fake = "properties";
+        feature.fid = "1000";
+        feature.state = OpenLayers.State.INSERT;
+        res = protocol.freezeFeature(feature);
+        t.eq(res[0], feature.fid,
+             "freezeFeature returns correct fid");
+        t.eq(res[1], "POINT(1 2)",
+             "freezeFeature returns correct WKT");
+        t.eq(res[2], "{\"fake\":\"properties\"}",
+             "freezeFeature returns correct JSON");
+        t.eq(res[3], feature.state,
+             "freezeFeature returns correct feature state");
+
+        // 4 tests
+        protocol.saveFeatureState = false;
+        feature = new OpenLayers.Feature.Vector();
+        feature.attributes.fake = "properties";
+        feature.fid = "1000";
+        feature.state = OpenLayers.State.INSERT;
+        res = protocol.freezeFeature(feature);
+        t.eq(res[0], feature.fid,
+             "freezeFeature returns correct fid");
+        t.eq(res[1], protocol.NULL_GEOMETRY,
+             "freezeFeature returns expected null geom string");
+        t.eq(res[2], "{\"fake\":\"properties\"}",
+             "freezeFeature returns correct JSON");
+        t.eq(res[3], protocol.NULL_FEATURE_STATE,
+             "freezeFeature returns expected null feature state string");
+
+        protocol.clear();
+        protocol.destroy();
+     }
+
+     function test_create(t) {
+        var protocol = new OpenLayers.Protocol.SQL.Gears();
+        if (!protocol.supported()) {
+            t.plan(0);
+            return;
+        }
+
+        t.plan(8);
+
+        var resp;
+        var scope = {"fake": "scope"};
+
+        var options = {
+            callback: function(resp) {
+                t.eq(resp.CLASS_NAME, "OpenLayers.Protocol.Response",
+                     "user callback is passed a response");
+                t.eq(resp.requestType, "create",
+                     "user callback is passed correct request type in resp");
+                t.ok(this == scope,
+                     "user callback called with correct scope");
+            },
+            scope: scope
+        };
+
+        // 4 tests
+        var feature = new OpenLayers.Feature.Vector();
+        feature.fid = "1000";
+        feature.attributes.fake = "properties";
+        feature.state = OpenLayers.State.INSERT;
+        resp = protocol.create([feature], options);
+        t.eq(resp.CLASS_NAME, "OpenLayers.Protocol.Response",
+             "create returns a response");
+
+        // check what we have in the DB
+        // 4 tests
+        resp = protocol.read({"noFeatureStateReset": true});
+        t.eq(resp.features.length, 1,
+             "create inserts feature in the DB");
+        t.eq(resp.features[0].fid, feature.fid,
+             "create inserts feature with correct fid");
+        t.eq(resp.features[0].attributes.fake, feature.attributes.fake,
+             "create inserts feature with correct attributes");
+        t.eq(resp.features[0].state, feature.state,
+             "create inserts feature with correct state");
+
+        protocol.clear();
+        protocol.destroy();
+    }
+
+     function test_createOrUpdate(t) {
+        var protocol = new OpenLayers.Protocol.SQL.Gears();
+        if (!protocol.supported()) {
+            t.plan(0);
+            return;
+        }
+
+        t.plan(5);
+
+        // 1 test
+        var feature = new OpenLayers.Feature.Vector();
+        feature.fid = "1000";
+        feature.attributes.fake = "properties";
+        feature.state = OpenLayers.State.INSERT;
+        resp = protocol.createOrUpdate([feature]);
+        t.eq(resp.CLASS_NAME, "OpenLayers.Protocol.Response",
+             "createOrUpdate returns a response");
+
+        // check what we have in the DB
+        // 4 tests
+        resp = protocol.read({"noFeatureStateReset": true});
+        t.eq(resp.features.length, 1,
+             "createOrUpdate inserts feature in the DB");
+        t.eq(resp.features[0].fid, feature.fid,
+             "createOrUpdate inserts feature with correct fid");
+        t.eq(resp.features[0].attributes.fake, feature.attributes.fake,
+             "createOrUpdate inserts feature with correct attributes");
+        t.eq(resp.features[0].state, feature.state,
+             "createOrUpdate inserts feature with correct state");
+
+        protocol.clear();
+        protocol.destroy();
+    }
+
+    function test_delete(t) {
+        var protocol = new OpenLayers.Protocol.SQL.Gears();
+        if (!protocol.supported()) {
+            t.plan(0);
+            return;
+        }
+
+        t.plan(4);
+
+        function createOneAndDeleteOne(fid, deleteOptions) {
+            var feature = new OpenLayers.Feature.Vector();
+            feature.fid = fid;
+            feature.attributes.fake = "properties";
+            feature.state = OpenLayers.State.INSERT;
+            var r = protocol.create([feature]);
+            protocol["delete"](r.reqFeatures, deleteOptions);
+        }
+
+        var resp, fid;
+
+        // 1 test
+        fid = 1000;
+        protocol.saveFeatureState = false;
+        createOneAndDeleteOne(fid)
+        resp = protocol.read();
+        t.eq(resp.features.length, 0,
+             "delete deletes feature if saveFeatureState is false");
+        protocol.clear();
+
+        // 1 test
+        fid = 1000;
+        protocol.saveFeatureState = true;
+        createOneAndDeleteOne(fid);
+        resp = protocol.read();
+        t.eq(resp.features.length, 1,
+             "delete does not delete feature if saveFeatureState is true");
+        protocol.clear();
+
+        // 1 test
+        fid = "1000";
+        protocol.saveFeatureState = true;
+        createOneAndDeleteOne(fid);
+        resp = protocol.read();
+        t.eq(resp.features.length, 1,
+             "delete does not delete feature if saveFeatureState is true");
+        protocol.clear();
+
+        // 1 test
+        fid = protocol.FID_PREFIX + "1000";
+        protocol.saveFeatureState = true;
+        createOneAndDeleteOne(fid, {dontDelete: true});
+        resp = protocol.read();
+        t.eq(resp.features.length, 0,
+             "delete deletes feature if saveFeatureState is true and fid is prefixed");
+        protocol.clear();
+
+        protocol.destroy();
+    }
+
+    function test_callUserCallback(t) {
+        var protocol = new OpenLayers.Protocol.SQL.Gears();
+        if (!protocol.supported()) {
+            t.plan(0);
+            return;
+        }
+
+        t.plan(6);
+
+        var options, resp;
+        var scope = {'fake': 'scope'};
+
+        // test commit callback
+        // 1 tests
+        options = {
+            'callback': function() {
+                t.ok(this == scope, 'callback called with correct scope');
+            },
+            'scope': scope
+        };
+        resp = {'requestType': 'create', 'last': true};
+        protocol.callUserCallback(options, resp);
+        // 0 test
+        resp = {'requestType': 'create', 'last': false};
+        protocol.callUserCallback(options, resp);
+
+        // test create callback
+        // 2 tests
+        options = {
+            'create': {
+                'callback': function(r) {
+                    t.ok(this == scope, 'callback called with correct scope');
+                    t.ok(r == resp, 'callback called with correct response');
+                },
+                'scope': scope
+            }
+        };
+        resp = {'requestType': 'create'};
+        protocol.callUserCallback(options, resp);
+
+        // test with both callbacks set
+        // 3 tests
+        options = {
+            'create': {
+                'callback': function(r) {
+                    t.ok(this == scope, 'callback called with correct scope');
+                    t.ok(r == resp, 'callback called with correct response');
+                },
+                'scope': scope
+            },
+            'callback': function() {
+                t.ok(this == scope, 'callback called with correct scope');
+            },
+            'scope': scope
+        };
+        resp = {'requestType': 'create', 'last': true};
+        protocol.callUserCallback(options, resp);
+
+        // no callback set
+        // 0 test
+        options = {
+            'delete': {
+                'callback': function(resp) {
+                    t.fail('callback should not get called');
+                }
+            }
+        };
+        resp = {'requestType': 'create'};
+        protocol.callUserCallback(options, resp);
+
+        // cleanup
+        protocol.destroy();
+    }
+
+  </script>
+</head>
+<body>
+</body>
+</html>
