@@ -102,6 +102,8 @@
         };
 
         var resp = protocol.read(readOptions);
+
+        OpenLayers.Request.GET = _get;
     }
 
     function test_read_bbox(t) {
@@ -127,6 +129,8 @@
         };
 
         var resp = protocol.read({filter: filter});
+
+        OpenLayers.Request.GET = _get;        
     }
 
     function test_parseFeatures(t) {
@@ -242,6 +246,8 @@
         };
 
         var resp = protocol.create(features, createOptions);
+        
+        OpenLayers.Request.POST = _post;
     }
 
     function test_update(t) {
@@ -309,8 +315,10 @@
         };
 
         var resp = protocol.update(feature, updateOptions);
-
+        
+        OpenLayers.Request.PUT = _put;
     }
+
     function test_handleResponse(t) {
         t.plan(6);
 
@@ -429,6 +437,7 @@
 
         var resp = protocol['delete'](feature, deleteOptions);
 
+        OpenLayers.Request.DELETE = _delete;
     }
 
     function test_handleDelete(t) {
