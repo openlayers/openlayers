@@ -291,35 +291,39 @@
         t.ok(found === false, "returns false for bad attribute");
     }
     
-    function test_getNamespacePrefix(t) {
-        t.plan(6);
+    function test_namespaces(t) {
+        t.plan(2);
         
-        // test that getNamespacePrefix returns null with no ns defined
-        var format = new OpenLayers.Format.XML();        
-        var got = format.getNamespacePrefix("http://example.com/foo");
-        t.eq(got, null, "returns null when no namespaces are defined");
+        var format = new OpenLayers.Format.XML({
+            namespaces: {
+                "def": "http://example.com/default",
+                "foo": "http://example.com/foo",
+                "bar": "http://example.com/bar"
+            },
+            defaultPrefix: "def"
+        });
         
-        format.defaultPrefix = "def";
-        format.namespaces = {
-            "def": "http://example.com/default",
-            "foo": "http://example.com/foo",
-            "bar": "http://example.com/bar"
-        };
+        // test that prototype has not been altered
+        t.eq(OpenLayers.Format.XML.prototype.namespaces, null,
+             "setting namespaces at construction does not modify prototype");
         
-        var cases = [
-            {uri: null, expect: "def"},
-            {uri: "http://example.com/default", expect: "def"},
-            {uri: "http://example.com/foo", expect: "foo"},
-            {uri: "http://example.com/bar", expect: "bar"},            
-            {uri: "http://example.com/nothing", expect: null}
-        ];
+        // test that namespaceAlias has been set
+        t.eq(format.namespaceAlias["http://example.com/foo"], "foo",
+             "namespaceAlias mapping has been set");
         
-        var test;
-        for(var i=0; i<cases.length; ++i) {
-            test = cases[i];
-            t.eq(format.getNamespacePrefix(test.uri), test.expect,
-                 "uri: " + test.uri + " works");
-        }
+    }
+    
+    function test_setNamespace(t) {
+        t.plan(3);
+        
+        var format = new OpenLayers.Format.XML();
+        
+        // test that namespaces is an object
+        t.ok(format.namespaces instanceof Object, "empty namespace object set");
+        
+        format.setNamespace("foo", "http://example.com/foo");
+        t.eq(format.namespaces["foo"], "http://example.com/foo", "alias -> uri mapping set");
+        t.eq(format.namespaceAlias["http://example.com/foo"], "foo", "uri -> alias mapping set");
 
     }
     

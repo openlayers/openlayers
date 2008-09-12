@@ -52,24 +52,38 @@
             var in_options = {
                 'internalProjection': map.baseLayer.projection,
                 'externalProjection': new OpenLayers.Projection(OpenLayers.Util.getElement("inproj").value)
-            }    
+            };   
             var out_options = {
                 'internalProjection': map.baseLayer.projection,
                 'externalProjection': new OpenLayers.Projection(OpenLayers.Util.getElement("outproj").value)
-            }    
+            };
+            var gmlOptions = {
+                featureType: "feature",
+                featureNS: "http://example.com/feature"
+            };
+            var gmlOptionsIn = OpenLayers.Util.extend(
+                OpenLayers.Util.extend({}, gmlOptions),
+                in_options
+            );
+            var gmlOptionsOut = OpenLayers.Util.extend(
+                OpenLayers.Util.extend({}, gmlOptions),
+                out_options
+            );
             formats = {
               'in': {
                 wkt: new OpenLayers.Format.WKT(in_options),
                 geojson: new OpenLayers.Format.GeoJSON(in_options),
                 georss: new OpenLayers.Format.GeoRSS(in_options),
-                gml: new OpenLayers.Format.GML(in_options),
+                gml2: new OpenLayers.Format.GML.v2(gmlOptionsIn),
+                gml3: new OpenLayers.Format.GML.v3(gmlOptionsIn),
                 kml: new OpenLayers.Format.KML(in_options)
               }, 
               'out': {
                 wkt: new OpenLayers.Format.WKT(out_options),
                 geojson: new OpenLayers.Format.GeoJSON(out_options),
                 georss: new OpenLayers.Format.GeoRSS(out_options),
-                gml: new OpenLayers.Format.GML(out_options),
+                gml2: new OpenLayers.Format.GML.v2(gmlOptionsOut),
+                gml3: new OpenLayers.Format.GML.v3(gmlOptionsOut),
                 kml: new OpenLayers.Format.KML(out_options)
               } 
             };
@@ -169,7 +183,8 @@
                 <option value="geojson" selected="selected">GeoJSON</option>
                 <option value="kml">KML</option>
                 <option value="georss">GeoRSS</option>
-                <option value="gml">GML</option>
+                <option value="gml2">GML (v2)</option>
+                <option value="gml3">GML (v3)</option>
                 <option value="wkt">Well-Known Text (WKT)</option>
             </select>
             &nbsp;
