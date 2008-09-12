@@ -1,0 +1,261 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <style type="text/css">
+        .float-left {
+            float: left;
+        }
+        .clear-left {
+            clear: left;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map, vector, protocol, modify;
+
+        function init() {
+            // create Gears protocol
+            protocol = new OpenLayers.Protocol.SQL.Gears({
+                databaseName: "db_name",
+                tableName: "table_name",
+                saveFeatureState: false
+            });
+
+            if (!GearsIsSupported()) {
+                return;
+            }
+
+            map = new OpenLayers.Map("map");
+
+            // create base layer
+            var layer = new OpenLayers.Layer.WMS("OpenLayers WMS",
+                "http://labs.metacarta.com/wms/vmap0",
+                {"layers": "basic"}
+            );
+            map.addLayer(layer);
+
+            // create vector layer
+            vector = new OpenLayers.Layer.Vector("Vector", {
+                protocol: protocol,
+                strategies : [new OpenLayers.Strategy.Fixed()],
+                eventListeners: {
+                    featuremodified: function(obj) {
+                        if (obj.feature.state != OpenLayers.State.INSERT &&
+                            obj.feature.state != OpenLayers.State.DELETE) {
+
+                            obj.feature.state = OpenLayers.State.UPDATE;
+                        }
+                        displayStatus();
+                    }
+                }
+            });
+            map.addLayer(vector);
+
+            // create modify feature control
+            modify = new OpenLayers.Control.ModifyFeature(vector);
+
+            // create editing panel
+            var panel = new OpenLayers.Control.Panel({
+                displayClass: "olControlEditingToolbar"
+            });
+
+            var navigation = new OpenLayers.Control.Navigation({
+                eventListeners: {
+                    activate: function(obj) {
+                        modify.activate();
+                    },
+                    deactivate: function(obj) {
+                        modify.deactivate();
+                    }
+                }
+            });
+
+            var editing = new OpenLayers.Control.DrawFeature(
+                vector, OpenLayers.Handler.Polygon, {
+                displayClass: "olControlDrawFeaturePolygon",
+                eventListeners: {
+                    featureadded: function(obj) {
+                        obj.feature.state = OpenLayers.State.INSERT;
+                        displayStatus();
+                    }
+                }
+            });
+            panel.addControls([navigation, editing]);
+            panel.defaultControl = navigation;
+
+            // add controls to the map
+            map.addControl(modify);
+            map.addControl(panel);
+
+            // center the map
+            map.setCenter(new OpenLayers.LonLat(5, 40), 5);
+        }
+
+        function displayResult(txt) {
+            if (window.resultDomElement === undefined) {
+                window.resultDomElement = OpenLayers.Util.getElement("last-result");
+            }
+            resultDomElement.innerHTML = txt;
+            displayStatus();
+        }
+
+        function displayStatus() {
+            if (window.statusDomElement === undefined) {
+                window.statusDomElement = OpenLayers.Util.getElement("status");
+            }
+
+            var createCnt = 0;
+            var updateCnt = 0;
+            var deleteCnt = 0;
+            var i, len, state;
+            for (i = 0, len = vector.features.length; i < len; i++) {
+                state = vector.features[i].state;
+                if (state == OpenLayers.State.INSERT) {
+                    createCnt++;
+                } else if (state == OpenLayers.State.UPDATE) {
+                    updateCnt++;
+                } else if (state == OpenLayers.State.DELETE) {
+                    deleteCnt++;
+                }
+            }
+            statusDomElement.innerHTML = createCnt + " features to create, " +
+                                         updateCnt + " features to update, " +
+                                         deleteCnt + " features to delete";
+        }
+
+        function GearsIsSupported() {
+            if (!protocol.supported()) {
+                OpenLayers.Console.userError("You must install Gears prior to using this example");
+                return false;
+            }
+            return true;
+        }
+
+        function featuresWithState(state) {
+            var list = [];
+            var i, len, feature;
+            for (i = 0, len = vector.features.length; i < len; i++) {
+                feature = vector.features[i];
+                if (feature.state == state) {
+                    list.push(feature);
+                }
+            }
+            return list;
+        }
+
+        function _sync() {
+            if (!GearsIsSupported()) {
+                return;
+            }
+            var resp = protocol.read();
+            if (!resp.success()) {
+                OpenLayers.Console.error("reading from Gears DB failed");
+                return;
+            }
+            vector.destroyFeatures();
+            if (!resp.features || resp.features.length <= 0) {
+                displayResult("No features to read");
+                return;
+            }
+            vector.addFeatures(resp.features);
+            displayResult("features successfully read");
+        }
+
+        function _commit() {
+            if (!GearsIsSupported()) {
+                return;
+            }
+            var error = false;
+            function callback(resp) {
+                if (error) {
+                    return;
+                }
+                if (!resp.success()) {
+                    OpenLayers.Console.error("Commiting to Gears DB failed");
+                    error = true;
+                    return;
+                }
+                modify.selectControl.unselectAll()
+
+                if (resp.reqFeatures) {
+                    vector.destroyFeatures(resp.reqFeatures);
+                }
+                if (resp.features) {
+                    vector.addFeatures(resp.features);
+                }
+            }
+            if (vector.features.length > 0) {
+                protocol.commit(vector.features, {
+                    "create": {
+                        callback: callback
+                    },
+                    "update": {
+                        callback: callback
+                    },
+                    "delete": {
+                        callback: callback
+                    }
+                });
+                if (!error) {
+                    displayResult("features successfully committed");
+                }
+            } else {
+                displayResult("no features to commit");
+            }
+        }
+
+        function _delete() {
+            if (!GearsIsSupported()) {
+                return;
+            }
+            var feature = vector.selectedFeatures[0];
+            if (feature) {
+                modify.selectControl.unselectAll()
+                feature.state = OpenLayers.State.DELETE;
+                displayStatus();
+            }
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Gears Protocol Example</h1>
+
+    <div id="tags">
+    </div>
+    <p id="shortdesc">
+        Shows the usage of the Gears protocol.
+    </p>
+
+    <div class="float-left">
+      <div id="map" class="smallmap"></div>
+    </div>
+
+    <div>
+      <a href="javascript:_sync()">Sync</a>
+      <p>The Sync link destroys the features currently in the layer, reads
+         features from the Gears database, and adds them to the layer.
+         Uncommitted features will be lost.</p>
+
+      <a href="javascript:_commit()">Commit</a>
+      <p>The Commit link commits to the Gears database the features that are
+         marked as INSERT, UPDATE or DELETE.</p>
+
+      <a href="javascript:_delete()">Delete</a>
+      <p>The Delete link marks the selected feature as DELETE. To select a feature
+         click choose the navigation control in the editing toolbar.</p>
+    </div>
+
+    <div style="margin-top: 30px">
+      <p>Status: <span id="status"></span></p>
+      <p>Result: <span id="last-result"></span></p>
+    </div>
+
+    <div class="clear-left" id="docs">
+      <p>This example demonstrates the usage of OpenLayers Gears protocol to
+         read/create/update/delete features from/to the Gears database.
+         <a href="http://gears.google.com/">Gears</a> must obviously be installed
+         in your browser for this example to work.</p>
+    </div>
+  </body>
+</html>

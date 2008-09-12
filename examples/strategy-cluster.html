@@ -1,0 +1,201 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>OpenLayers Cluster Strategy Example</title>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+        <link rel="stylesheet" href="style.css" type="text/css" />
+        <style type="text/css">
+            #photos {
+                height: 100px;
+                width: 512px;
+                position: relative;
+                white-space: nowrap;
+            }
+            .shift {
+                height: 25px;
+                line-height: 25px;
+                background-color: #fefefe;
+                text-align: center;
+                position: absolute;
+                bottom: 10px;
+                font-size: 8px;
+                font-weight: bold;
+                color: #696969;
+                width: 25px;
+            }
+            #scroll-start {
+                left: 0px;
+            }
+            #scroll-end {
+                right: 0px;
+            }
+            #scroll {
+                left: 30px;
+                width: 452px;
+                height: 100px;
+                overflow: hidden;
+                position: absolute;
+                bottom: 0px;
+            }
+            #photos ul {
+                position: absolute;
+                bottom: 0px;
+                padding: 0;
+                margin: 0;
+            }
+            #photos ul.start {
+                left: 0px;
+            }
+            #photos ul.end {
+                right: 80px;
+            }
+            #photos ul li {
+                padding 10px;
+                margin: 0;
+                list-style: none;
+                display: inline;
+            }
+            img.thumb {
+                height: 30px;
+            }
+            img.big {
+                height: 90px;
+            }
+        </style>
+        <script src="../lib/OpenLayers.js"></script>
+        <script src="Jugl.js"></script>
+        <script src="animator.js"></script>
+        <script type="text/javascript">
+            var map, template;
+            var Jugl = window["http://jugl.tschaub.net/trunk/lib/Jugl.js"];
+            OpenLayers.ProxyHost = (window.location.host == "localhost") ?
+                "/cgi-bin/proxy.cgi?url=" : "proxy.cgi?url=";
+
+            function init() {
+                map = new OpenLayers.Map('map', {
+                    restrictedExtent: new OpenLayers.Bounds(-180, -90, 180, 90)
+                });
+                var base = new OpenLayers.Layer.WMS("OpenLayers WMS", 
+                    ["http://t3.labs.metacarta.com/wms-c/Basic.py",
+                     "http://t2.labs.metacarta.com/wms-c/Basic.py",
+                     "http://t1.labs.metacarta.com/wms-c/Basic.py"], 
+                    {layers: 'satellite'}
+                );
+
+                var style = new OpenLayers.Style({
+                    pointRadius: "${radius}",
+                    fillColor: "#ffcc66",
+                    fillOpacity: 0.8,
+                    strokeColor: "#cc6633",
+                    strokeWidth: 2,
+                    strokeOpacity: 0.8
+                }, {
+                    context: {
+                        radius: function(feature) {
+                            return Math.min(feature.attributes.count, 7) + 3;
+                        }
+                    }
+                });
+
+                var photos = new OpenLayers.Layer.Vector("Photos", {
+                    strategies: [
+                        new OpenLayers.Strategy.Fixed(),
+                        new OpenLayers.Strategy.Cluster()
+                    ],
+                    protocol: new OpenLayers.Protocol.HTTP({
+                        url: "http://labs.metacarta.com/flickrbrowse/flickr.py/flickr",
+                        params: {
+                            format: "WFS",
+                            sort: "interestingness-desc",
+                            service: "WFS",
+                            request: "GetFeatures",
+                            srs: "EPSG:4326",
+                            maxfeatures: 150,
+                            bbox: [-180, -90, 180, 90]
+                        },
+                        format: new OpenLayers.Format.GML()
+                    }),
+                    styleMap: new OpenLayers.StyleMap({
+                        "default": style,
+                        "select": {
+                            fillColor: "#8aeeef",
+                            strokeColor: "#32a8a9"
+                        }
+                    })
+                });
+                
+                var select = new OpenLayers.Control.SelectFeature(
+                    photos, {hover: true}
+                );
+                map.addControl(select);
+                select.activate();
+                photos.events.on({"featureselected": display});
+
+                map.addLayers([base, photos]);
+                map.setCenter(new OpenLayers.LonLat(0, 0), 1);
+                
+                // template setup
+                template = new Jugl.Template("template");
+
+            }
+            
+            function display(event) {
+                // clear previous photo list and create new one
+                $("photos").innerHTML = "";
+                var node = template.process({
+                    context: {features: event.feature.cluster},
+                    clone: true,
+                    parent: $("photos")
+                });
+                // set up forward/rewind
+                var forward = Animator.apply($("list"), ["start", "end"], {duration: 1500});
+                $("scroll-end").onmouseover = function() {forward.seekTo(1)};
+                $("scroll-end").onmouseout = function() {forward.seekTo(forward.state)};
+                $("scroll-start").onmouseover = function() {forward.seekTo(0)};
+                $("scroll-start").onmouseout = function() {forward.seekTo(forward.state)};
+                // set up photo zoom
+                for(var i=0; i<event.feature.cluster.length; ++i) {
+                    listen($("link-" + i), Animator.apply($("photo-" + i), ["thumb", "big"]));
+                }
+            }
+            
+            function listen(el, anim) {
+                el.onmouseover = function() {anim.seekTo(1)};
+                el.onmouseout = function() {anim.seekTo(0)};
+            }
+            
+        </script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">Cluster Strategy Example</h1>
+        <p id="shortdesc">
+            Uses a cluster strategy to render points representing clusters of features.
+        </p>
+        <div id="map" class="smallmap"></div>
+        <div id="docs">
+            <p>The Cluster strategy lets you display points representing clusters
+            of features within some pixel distance.</p>
+        </div>
+        <div id="photos"></div>
+        <p>Hover over a cluster on the map to see the photos it includes.</p>
+        <div style="display: none;">
+            <div id="template">
+                <div class="shift" id="scroll-start">&lt;&lt;</div>
+                <div id="scroll">
+                    <ul id="list" class="start">
+                        <li jugl:repeat="feature features">
+                            <a jugl:attributes="href feature.attributes.img_url;
+                                                id 'link-' + repeat.feature.index"
+                               target="_blank">
+                                <img jugl:attributes="src feature.attributes.img_url;
+                                                      title feature.attributes.title;
+                                                      id 'photo-' + repeat.feature.index"
+                                     class="thumb" />
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="shift" id="scroll-end">&gt;&gt;</div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,108 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+
+    function test_activate(t) {
+        t.plan(2);
+
+        var strategy = new OpenLayers.Strategy.Cluster();
+        t.eq(strategy.active, false, "not active after construction");
+
+        var layer = new OpenLayers.Layer.Vector("Vector Layer", {
+            strategies: [strategy]
+        });
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
+        
+        t.eq(strategy.active, true, "active after adding to map");
+    }
+
+    function test_clusters(t) {
+        t.plan(10);
+
+        function featuresEq(got, exp) {
+            var eq = false;
+            if(got instanceof Array && exp instanceof Array) {
+                if(got.length === exp.length) {
+                    for(var i=0; i<got.length; ++i) {
+                        if(got[i] !== exp[i]) {
+                            console.log(got[i], exp[i]);
+                            break;
+                        }
+                    }
+                    eq = (i == got.length);
+                }
+            }
+            return eq;
+        }
+
+        var strategy = new OpenLayers.Strategy.Cluster();
+        var layer = new OpenLayers.Layer.Vector("Vector Layer", {
+            strategies: [strategy],
+            isBaseLayer: true
+        });
+        var map = new OpenLayers.Map('map', {
+            resolutions: [4, 2, 1],
+            maxExtent: new OpenLayers.Bounds(-40, -40, 40, 40)
+        });
+        map.addLayer(layer);
+        
+        // create features in a line, 1 unit apart
+        var features = new Array(80);
+        for(var i=0; i<80; ++i) {
+            features[i] = new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(-40 + i, 0)
+            );
+        }
+        
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+        layer.addFeatures(features);
+        
+        // resolution 4
+        // threshold: 4 * 20 = 80 units
+        // one cluster
+        t.eq(layer.features.length, 1, "[4] layer has one cluster");
+        t.ok(featuresEq(layer.features[0].cluster, features), "[4] cluster includes all features");
+        
+        // resolution 2
+        // threshold: 2 * 20 = 40 units
+        // two clusters (41 and 39) - first cluster includes all features within 40 units of the first (0-40 or 41 features)
+        map.zoomIn();
+        t.eq(layer.features.length, 2, "[2] layer has two clusters");
+        t.ok(featuresEq(layer.features[0].cluster, features.slice(0, 41)), "[2] first cluster includes first 41 features");
+        t.ok(featuresEq(layer.features[1].cluster, features.slice(41, 80)), "[2] second cluster includes last 39 features");
+        
+        // resolution 1
+        // threshold: 1 * 20 = 20 units
+        // four clusters (21, 21, 21, and 17)
+        map.zoomIn();
+        t.eq(layer.features.length, 4, "[1] layer has four clusters");
+        t.ok(featuresEq(layer.features[0].cluster, features.slice(0, 21)), "[1] first cluster includes first 21 features");
+        t.ok(featuresEq(layer.features[1].cluster, features.slice(21, 42)), "[2] second cluster includes second 21 features");
+        t.ok(featuresEq(layer.features[2].cluster, features.slice(42, 63)), "[2] third cluster includes third 21 features");
+        t.ok(featuresEq(layer.features[3].cluster, features.slice(63, 80)), "[2] fourth cluster includes last 17 features");
+    }
+
+    function test_deactivate(t) {
+        t.plan(2);
+
+        var strategy = new OpenLayers.Strategy.Cluster();
+        var layer = new OpenLayers.Layer.Vector("Vector Layer", {
+            strategies: [strategy]
+        });
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
+        
+        t.eq(strategy.active, true, "active after adding to map");
+        
+        map.removeLayer(layer);
+        t.eq(strategy.active, false, "not active after removing from map");
+    }
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 400px; height: 200px" />
+</body>
+</html>

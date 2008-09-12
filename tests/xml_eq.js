@@ -97,10 +97,13 @@
      * Parameters:
      * got - {DOMElement}
      * expected - {DOMElement}
-     * options - {Object} Optional object for configuring test options.  Set
-     *     'prefix' property to true in order to compare element and attribute
-     *     prefixes (namespace uri always tested).  By default, prefixes
-     *     are not tested.
+     * options - {Object} Optional object for configuring test options.
+     *
+     * Valid options:
+     * prefix - {Boolean} Compare element and attribute
+     *     prefixes (namespace uri always tested).  Default is false.
+     * includeWhiteSpace - {Boolean} Include whitespace only nodes when
+     *     comparing child nodes.  Default is false.
      */
     function assertElementNodesEqual(got, expected, options) {
         var testPrefix = (options && options.prefix === true);
@@ -190,14 +193,17 @@
             }
             
             // compare children
+            var gotChildNodes = getChildNodes(got, options);
+            var expChildNodes = getChildNodes(expected, options);
+
             assertEqual(
-                got.childNodes.length, expected.childNodes.length,
+                gotChildNodes.length, expChildNodes.length,
                 "Children length mismatch for " + got.nodeName
             );
-            for(var j=0; j<got.childNodes.length; ++j) {
+            for(var j=0; j<gotChildNodes.length; ++j) {
                 try {
                     assertElementNodesEqual(
-                        got.childNodes[j], expected.childNodes[j]
+                        gotChildNodes[j], expChildNodes[j], options
                     );
                 } catch(err) {
                     throw "Bad child " + j + " for element " + got.nodeName + ": " + err;
@@ -206,6 +212,50 @@
         }
         return true;
     }
+
+    /**
+     * Function getChildNodes
+     * Returns the child nodes of the specified nodes. By default this method
+     *     will ignore child text nodes which are made up of whitespace content.
+     *     The 'includeWhiteSpace' option is used to control this behaviour.
+     * 
+     * Parameters:
+     * node - {DOMElement}
+     * options - {Object} Optional object for test configuration.
+     * 
+     * Valid options:
+     * includeWhiteSpace - {Boolean} Include whitespace only nodes when
+     *     comparing child nodes.  Default is false.
+     * 
+     * Returns:
+     * {Array} of {DOMElement}
+     */
+    function getChildNodes(node, options) {
+        //check whitespace
+        if (options && options.includeWhiteSpace) {
+            return node.childNodes;
+        }
+        else {
+           nodes = [];
+           for (var i = 0; i < node.childNodes.length; i++ ) {
+              var child = node.childNodes[i];
+              if (child.nodeType == 1) {
+                 //element node, add it 
+                 nodes.push(child);
+              }
+              else if (child.nodeType == 3) {
+                 //text node, add if non empty
+                 if (child.nodeValue && 
+                       child.nodeValue.replace(/^\s*(.*?)\s*$/, "$1") != "" ) { 
+
+                    nodes.push(child);
+                 }
+              }
+           }
+  
+           return nodes;
+        }
+    } 
     
     /**
      * Function: Test.AnotherWay._test_object_t.xml_eq
@@ -221,10 +271,13 @@
      * got - {DOMElement | String} A DOM node or XML string to test.
      * expected - {DOMElement | String} The expected DOM node or XML string.
      * msg - {String} A message to print with test output.
-     * options - {Object} Optional object for configuring test options.  Set
-     *     'prefix' property to true in order to compare element and attribute
-     *     prefixes (namespace uri always tested).  By default, prefixes
-     *     are not tested.
+     * options - {Object} Optional object for configuring test.
+     *
+     * Valid options:
+     * prefix - {Boolean} Compare element and attribute
+     *     prefixes (namespace uri always tested).  Default is false.
+     * includeWhiteSpace - {Boolean} Include whitespace only nodes when
+     *     comparing child nodes.  Default is false.
      */
     var proto = Test.AnotherWay._test_object_t.prototype;
     proto.xml_eq = function(got, expected, msg, options) {
