@@ -1,0 +1,78 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>OpenLayers Paging Strategy Example</title>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+        <link rel="stylesheet" href="style.css" type="text/css" />
+        <script src="../lib/OpenLayers.js"></script>
+        <script type="text/javascript">
+            var map, photos, paging;
+            OpenLayers.ProxyHost = (window.location.host == "localhost") ?
+                "/cgi-bin/proxy.cgi?url=" : "proxy.cgi?url=";
+        
+            function init() {
+                map = new OpenLayers.Map('map', {
+                    restrictedExtent: new OpenLayers.Bounds(-180, -90, 180, 90)
+                });
+                var base = new OpenLayers.Layer.WMS("OpenLayers WMS", 
+                    ["http://t3.labs.metacarta.com/wms-c/Basic.py",
+                     "http://t2.labs.metacarta.com/wms-c/Basic.py",
+                     "http://t1.labs.metacarta.com/wms-c/Basic.py"], 
+                    {layers: 'satellite'}
+                );
+
+                var style = new OpenLayers.Style({
+                    externalGraphic: "${img_url}",
+                    pointRadius: 30
+                });
+
+                paging = new OpenLayers.Strategy.Paging();
+
+                photos = new OpenLayers.Layer.Vector("Photos", {
+                    strategies: [new OpenLayers.Strategy.Fixed(), paging],
+                    protocol: new OpenLayers.Protocol.HTTP({
+                        url: "http://labs.metacarta.com/flickrbrowse/flickr.py/flickr",
+                        params: {
+                            format: "WFS",
+                            sort: "interestingness-desc",
+                            service: "WFS",
+                            request: "GetFeatures",
+                            srs: "EPSG:4326",
+                            maxfeatures: 100,
+                            bbox: [-180, -90, 180, 90]
+                        },
+                        format: new OpenLayers.Format.GML()
+                    }),
+                    styleMap: new OpenLayers.StyleMap(style)
+                });
+
+                map.addLayers([base, photos]);
+                photos.events.on({"featuresadded": updateButtons});
+                map.setCenter(new OpenLayers.LonLat(0, 0), 1);
+            }
+            
+            function updateButtons() {
+                document.getElementById("prev").disabled = (paging.pageNum() < 1);
+                document.getElementById("next").disabled = (paging.pageNum() >= paging.pageCount() - 1);
+                document.getElementById("num").innerHTML = paging.pageNum() + 1;
+                document.getElementById("count").innerHTML = paging.pageCount();
+            }
+        </script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">Paging Strategy Example</h1>
+        <p id="shortdesc">
+            Uses a paging strategy to cache large batches of features and render a page at a time.
+        </p>
+        <div id="map" class="smallmap"></div>
+        Displaying page <span id="num">0</span> of <span id="count">...</span>
+        <button id="prev" disabled="disabled" onclick="paging.pagePrevious();">previous</button>
+        <button id="next" disabled="disabled" onclick="paging.pageNext();">next</button>
+        <br /><br />
+        <div id="docs">
+            <p>The Paging strategy lets you apply client side paging for protocols
+            that do not support paging on the server.  In this case, the protocol requests a
+            batch of 100 features, the strategy caches those and supplies a single
+            page at a time to the layer.</p>
+        </div>
+    </body>
+</html>
