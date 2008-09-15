@@ -437,7 +437,7 @@
             return;
         }
         
-        t.plan(1);
+        t.plan(3);
         
         var r = new OpenLayers.Renderer.SVG(document.body);
         r.setSize(new OpenLayers.Size(0, 0));
@@ -448,16 +448,29 @@
         }
         r.setExtent(new OpenLayers.Bounds(0, 0, 0, 0));
 
+        var node = document.createElement('div');
+
         var geometry = new OpenLayers.Geometry.LineString([
             new OpenLayers.Geometry.Point(0, -5000),
             new OpenLayers.Geometry.Point(10000, 0),
             new OpenLayers.Geometry.Point(0, 5000)
         ]);
-        
-        var node = document.createElement('div');
-        
         r.drawLineString(node, geometry);
-        t.eq(node.getAttribute("points"), "0,10000,15000,2500,15000,-2500,0,-10000", "Geometry correctly clipped at inValidRange bounds");
+        t.eq(node.getAttribute("points"), "0,10000,15000,2500,15000,-2500,0,-10000", "Line with 3 points correctly clipped at inValidRange bounds");
+        
+        geometry = new OpenLayers.Geometry.LineString([
+            new OpenLayers.Geometry.Point(0, -5000),
+            new OpenLayers.Geometry.Point(10000, 0)
+        ]);
+        r.drawLineString(node, geometry);
+        t.eq(node.getAttribute("points"), "0,10000,15000,2500", "2-point line with 2nd point outside range correctly clipped at inValidRange bounds");
+
+        var geometry = new OpenLayers.Geometry.LineString([
+            new OpenLayers.Geometry.Point(10000, 0),
+            new OpenLayers.Geometry.Point(0, 5000)
+        ]);
+        r.drawLineString(node, geometry);
+        t.eq(node.getAttribute("points"), "15000,-2500,0,-10000", "2-point line with 1st point outside range correctly clipped at inValidRange bounds");
     }
 
   </script>
