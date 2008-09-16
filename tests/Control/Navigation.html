@@ -4,7 +4,7 @@
   <script type="text/javascript">
 
     function test_Control_Navigation_constructor (t) {
-        t.plan( 2 );
+        t.plan( 3 );
         var temp = OpenLayers.Control.prototype.initialize;
         OpenLayers.Control.prototype.initialize = function() {
             t.ok(true, "OpenLayers.Control's constructor called");
@@ -12,6 +12,8 @@
 
         var control = new OpenLayers.Control.Navigation();
         t.ok( control instanceof OpenLayers.Control.Navigation, "new OpenLayers.Control returns object" );
+
+        t.ok( !control.handleRightClicks, "'handleRightClicks' property is disabled by default");
 
         OpenLayers.Control.prototype.initialize = temp;
     }
