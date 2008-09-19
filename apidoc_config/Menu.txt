@@ -45,10 +45,9 @@ SubTitle: JavaScript Mapping Library
 # --------------------------------------------------------------------------
 
 
-File: OpenLayers  (OpenLayers.js)
-
 Group: OpenLayers  {
 
+   File: OpenLayers  (no auto-title, OpenLayers.js)
    File: Ajax  (no auto-title, OpenLayers/Ajax.js)
 
    Group: BaseTypes  {
@@ -76,6 +75,7 @@ Group: OpenLayers  {
       File: EditingToolbar  (no auto-title, OpenLayers/Control/EditingToolbar.js)
       File: KeyboardDefaults  (no auto-title, OpenLayers/Control/KeyboardDefaults.js)
       File: LayerSwitcher  (no auto-title, OpenLayers/Control/LayerSwitcher.js)
+      File: Measure  (no auto-title, OpenLayers/Control/Measure.js)
       File: ModifyFeature  (no auto-title, OpenLayers/Control/ModifyFeature.js)
       File: MouseDefaults  (no auto-title, OpenLayers/Control/MouseDefaults.js)
       File: MousePosition  (no auto-title, OpenLayers/Control/MousePosition.js)
@@ -84,7 +84,9 @@ Group: OpenLayers  {
       File: NavigationHistory  (no auto-title, OpenLayers/Control/NavigationHistory.js)
       File: NavToolbar  (no auto-title, OpenLayers/Control/NavToolbar.js)
       File: OverviewMap  (no auto-title, OpenLayers/Control/OverviewMap.js)
+      File: Pan  (no auto-title, OpenLayers/Control/Pan.js)
       File: Panel  (no auto-title, OpenLayers/Control/Panel.js)
+      File: PanPanel  (no auto-title, OpenLayers/Control/PanPanel.js)
       File: PanZoom  (no auto-title, OpenLayers/Control/PanZoom.js)
       File: PanZoomBar  (no auto-title, OpenLayers/Control/PanZoomBar.js)
       File: Permalink  (no auto-title, OpenLayers/Control/Permalink.js)
@@ -92,6 +94,9 @@ Group: OpenLayers  {
       File: ScaleLine  (no auto-title, OpenLayers/Control/ScaleLine.js)
       File: SelectFeature  (no auto-title, OpenLayers/Control/SelectFeature.js)
       File: ZoomBox  (no auto-title, OpenLayers/Control/ZoomBox.js)
+      File: ZoomIn  (no auto-title, OpenLayers/Control/ZoomIn.js)
+      File: ZoomOut  (no auto-title, OpenLayers/Control/ZoomOut.js)
+      File: ZoomPanel  (no auto-title, OpenLayers/Control/ZoomPanel.js)
       File: ZoomToMaxExtent  (no auto-title, OpenLayers/Control/ZoomToMaxExtent.js)
       }  # Group: Control
 
@@ -110,17 +115,39 @@ Group: OpenLayers  {
       File: Comparison  (no auto-title, OpenLayers/Filter/Comparison.js)
       File: FeatureId  (no auto-title, OpenLayers/Filter/FeatureId.js)
       File: Logical  (no auto-title, OpenLayers/Filter/Logical.js)
+      File: Spatial  (no auto-title, OpenLayers/Filter/Spatial.js)
       }  # Group: Filter
 
    Group: Format  {
 
       File: Format  (no auto-title, OpenLayers/Format.js)
+
+      Group: Filter  {
+
+         File: Filter  (no auto-title, OpenLayers/Format/Filter.js)
+         File: v1  (no auto-title, OpenLayers/Format/Filter/v1.js)
+         File: v1_0_0  (no auto-title, OpenLayers/Format/Filter/v1_0_0.js)
+         }  # Group: Filter
+
       File: GeoJSON  (no auto-title, OpenLayers/Format/GeoJSON.js)
       File: GeoRSS  (no auto-title, OpenLayers/Format/GeoRSS.js)
-      File: GML  (no auto-title, OpenLayers/Format/GML.js)
+
+      Group: GML  {
+
+         File: GML  (no auto-title, OpenLayers/Format/GML.js)
+         File: Base  (no auto-title, OpenLayers/Format/GML/Base.js)
+         File: v2  (no auto-title, OpenLayers/Format/GML/v2.js)
+         File: v3  (no auto-title, OpenLayers/Format/GML/v3.js)
+         }  # Group: GML
+
+      File: GPX  (no auto-title, OpenLayers/Format/GPX.js)
       File: JSON  (no auto-title, OpenLayers/Format/JSON.js)
       File: KML  (no auto-title, OpenLayers/Format/KML.js)
       File: OSM  (no auto-title, OpenLayers/Format/OSM.js)
+      File: Text  (no auto-title, OpenLayers/Format/Text.js)
+      File: WFS  (no auto-title, OpenLayers/Format/WFS.js)
+      File: WKT  (no auto-title, OpenLayers/Format/WKT.js)
+      File: XML  (no auto-title, OpenLayers/Format/XML.js)
 
       Group: SLD  {
 
@@ -128,11 +155,6 @@ Group: OpenLayers  {
          File: v1  (no auto-title, OpenLayers/Format/SLD/v1.js)
          File: v1_0_0  (no auto-title, OpenLayers/Format/SLD/v1_0_0.js)
          }  # Group: SLD
-
-      File: Text  (no auto-title, OpenLayers/Format/Text.js)
-      File: WFS  (no auto-title, OpenLayers/Format/WFS.js)
-      File: WKT  (no auto-title, OpenLayers/Format/WKT.js)
-      File: XML  (no auto-title, OpenLayers/Format/XML.js)
 
       Group: WMC  {
 
@@ -180,11 +202,18 @@ Group: OpenLayers  {
    Group: Lang  {
 
       File: Lang  (no auto-title, OpenLayers/Lang.js)
-      File: Lang["cs-CZ"]  (OpenLayers/Lang/cs-CZ.js)
-      File: Lang["de"]  (no auto-title, OpenLayers/Lang/de.js)
-      File: Lang["en"]  (no auto-title, OpenLayers/Lang/en.js)
-      File: Lang["en-CA"]  (no auto-title, OpenLayers/Lang/en-CA.js)
-      File: Lang["fr"]  (no auto-title, OpenLayers/Lang/fr.js)
+      File: cs-CZ  (no auto-title, OpenLayers/Lang/cs-CZ.js)
+      File: de  (no auto-title, OpenLayers/Lang/de.js)
+      File: en  (no auto-title, OpenLayers/Lang/en.js)
+      File: en-CA  (no auto-title, OpenLayers/Lang/en-CA.js)
+      File: fr  (no auto-title, OpenLayers/Lang/fr.js)
+      File: it  (no auto-title, OpenLayers/Lang/it.js)
+      File: nb  (no auto-title, OpenLayers/Lang/nb.js)
+      File: nl  (no auto-title, OpenLayers/Lang/nl.js)
+      File: pt-BR  (no auto-title, OpenLayers/Lang/pt-BR.js)
+      File: sv-SE  (no auto-title, OpenLayers/Lang/sv-SE.js)
+      File: zh-CN  (no auto-title, OpenLayers/Lang/zh-CN.js)
+      File: zh-TW  (no auto-title, OpenLayers/Lang/zh-TW.js)
       }  # Group: Lang
 
    Group: Layer  {
@@ -200,6 +229,7 @@ Group: OpenLayers  {
       File: HTTPRequest  (no auto-title, OpenLayers/Layer/HTTPRequest.js)
       File: Image  (no auto-title, OpenLayers/Layer/Image.js)
       File: KaMap  (no auto-title, OpenLayers/Layer/KaMap.js)
+      File: KaMapCache  (no auto-title, OpenLayers/Layer/KaMapCache.js)
       File: MapGuide  (no auto-title, OpenLayers/Layer/MapGuide.js)
       File: MapServer  (no auto-title, OpenLayers/Layer/MapServer.js)
       File: MapServer.Untiled  (no auto-title, OpenLayers/Layer/MapServer/Untiled.js)
@@ -232,21 +262,51 @@ Group: OpenLayers  {
       File: Popup  (no auto-title, OpenLayers/Popup.js)
       File: Anchored  (no auto-title, OpenLayers/Popup/Anchored.js)
       File: AnchoredBubble  (no auto-title, OpenLayers/Popup/AnchoredBubble.js)
-      File: Framed  (OpenLayers/Popup/Framed.js)
-      File: FramedCloud  (OpenLayers/Popup/FramedCloud.js)
+      File: Framed  (no auto-title, OpenLayers/Popup/Framed.js)
+      File: FramedCloud  (no auto-title, OpenLayers/Popup/FramedCloud.js)
       }  # Group: Popup
 
    File: Projection  (no auto-title, OpenLayers/Projection.js)
 
+   Group: Protocol  {
+
+      File: Protocol  (no auto-title, OpenLayers/Protocol.js)
+      File: HTTP  (no auto-title, OpenLayers/Protocol/HTTP.js)
+
+      Group: SQL  {
+
+         File: SQL  (no auto-title, OpenLayers/Protocol/SQL.js)
+         File: Gears  (no auto-title, OpenLayers/Protocol/SQL/Gears.js)
+         }  # Group: SQL
+
+      }  # Group: Protocol
+
    Group: Renderer  {
 
       File: Renderer  (no auto-title, OpenLayers/Renderer.js)
+      File: Canvas  (no auto-title, OpenLayers/Renderer/Canvas.js)
       File: Elements  (no auto-title, OpenLayers/Renderer/Elements.js)
       File: SVG  (no auto-title, OpenLayers/Renderer/SVG.js)
       File: VML  (no auto-title, OpenLayers/Renderer/VML.js)
       }  # Group: Renderer
 
+   Group: Request  {
+
+      File: Request  (no auto-title, OpenLayers/Request.js)
+      File: XMLHttpRequest  (no auto-title, OpenLayers/Request/XMLHttpRequest.js)
+      }  # Group: Request
+
    File: Rule  (no auto-title, OpenLayers/Rule.js)
+
+   Group: Strategy  {
+
+      File: Strategy  (no auto-title, OpenLayers/Strategy.js)
+      File: BBOX  (no auto-title, OpenLayers/Strategy/BBOX.js)
+      File: Cluster  (no auto-title, OpenLayers/Strategy/Cluster.js)
+      File: Fixed  (no auto-title, OpenLayers/Strategy/Fixed.js)
+      File: Paging  (no auto-title, OpenLayers/Strategy/Paging.js)
+      }  # Group: Strategy
+
    File: Style  (no auto-title, OpenLayers/Style.js)
    File: StyleMap  (no auto-title, OpenLayers/StyleMap.js)
 
