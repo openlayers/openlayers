@@ -134,6 +134,26 @@
         t.eq(marker.lonlat.lat, map.getExtent().top, "on top edge of map"); 
         map.destroy();
     }
+    
+    function test_Marker_isDrawn(t) {
+        t.plan(3);
+
+        var marker = {};
+
+        //no icon
+        var drawn = OpenLayers.Marker.prototype.isDrawn.apply(marker, []);
+        t.ok(!drawn, "marker with no icon not drawn");
+
+        //not drawn icon
+        marker.icon = { isDrawn: function() { return false; } };
+        drawn = OpenLayers.Marker.prototype.isDrawn.apply(marker, []);
+        t.ok(!drawn, "marker with not drawn icon not drawn");
+
+        //drawn icon
+        marker.icon.isDrawn = function() { return true; };
+        drawn = OpenLayers.Marker.prototype.isDrawn.apply(marker, []);
+        t.ok(drawn, "marker with drawn icon drawn");
+    }
 
   </script>
 </head>

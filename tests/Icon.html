@@ -33,6 +33,32 @@
         icon.setOpacity(0.5);
         t.eq(parseFloat(icon.imageDiv.style.opacity), 0.5, "icon.setOpacity() works");
     }
+    
+    function test_Icon_isDrawn(t) {
+        t.plan(4);
+
+        var icon = {};
+
+        //no imageDiv
+        var drawn = OpenLayers.Icon.prototype.isDrawn.apply(icon, []);
+        t.ok(!drawn, "icon with no imageDiv not drawn");
+
+        //imageDiv no parentNode
+        icon.imageDiv = {};
+        drawn = OpenLayers.Icon.prototype.isDrawn.apply(icon, []);
+        t.ok(!drawn, "icon with imageDiv with no parentNode not drawn");
+
+        //imageDiv with parent
+        icon.imageDiv.parentNode = {};
+        drawn = OpenLayers.Icon.prototype.isDrawn.apply(icon, []);
+        t.ok(drawn, "icon with imageDiv with parentNode drawn");
+
+        //imageDiv with parent but nodetype 11
+        icon.imageDiv.parentNode = {'nodeType': 11};
+        drawn = OpenLayers.Icon.prototype.isDrawn.apply(icon, []);
+        t.ok(!drawn, "imageDiv with parent but nodetype 11 not drawn");
+    }
+
 
 
   </script>
