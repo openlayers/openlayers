@@ -3,7 +3,7 @@
     <script src="../../lib/OpenLayers.js"></script> 
     <script type="text/javascript">
 
-    function test_Comparison_constructor(t) { 
+    function test_initialize(t) { 
         t.plan(3); 
          
         var options = {'foo': 'bar'}; 
@@ -14,7 +14,7 @@
         t.eq(typeof filter.evaluate, "function", "filter has an evaluate function"); 
     }
 
-    function test_Comparison_destroy(t) {
+    function test_destroy(t) {
         t.plan(1);
         
         var filter = new OpenLayers.Filter.Comparison();
@@ -22,7 +22,7 @@
         t.eq(filter.symbolizer, null, "symbolizer hash nulled properly");
     }
     
-    function test_Comparison_value2regex(t) {
+    function test_value2regex(t) {
         t.plan(4);
         
         var filter = new OpenLayers.Filter.Comparison({
@@ -66,7 +66,7 @@
         
     }
     
-    function test_Comparison_evaluate(t) {
+    function test_evaluate(t) {
         t.plan(5);
         
         var filter = new OpenLayers.Filter.Comparison({
