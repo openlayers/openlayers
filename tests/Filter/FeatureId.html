@@ -3,7 +3,7 @@
     <script src="../../lib/OpenLayers.js"></script> 
     <script type="text/javascript">
 
-    function test_FeatureId_constructor(t) { 
+    function test_initialize(t) { 
         t.plan(3); 
          
         var options = {'foo': 'bar'}; 
@@ -14,7 +14,7 @@
         t.eq(typeof filter.evaluate, "function", "filter has an evaluate function"); 
     }
 
-    function test_FeatureId_destroy(t) {
+    function test_destroy(t) {
         t.plan(1);
         
         var filter = new OpenLayers.Filter.FeatureId();
@@ -22,7 +22,7 @@
         t.eq(filter.symbolizer, null, "symbolizer hash nulled properly");
     }
     
-    function test_FeatureId_evaluate(t) {
+    function test_evaluate(t) {
         t.plan(3);
         
         var filter = new OpenLayers.Filter.FeatureId(
