@@ -161,7 +161,7 @@
      }
     
     function test_Layer_Vector_drawFeature(t) {
-        t.plan(6);
+        t.plan(7);
         var layer = new OpenLayers.Layer.Vector("Test Layer", {isBaseLayer: true});
         var map = new OpenLayers.Map('map', {
             maxExtent: new OpenLayers.Bounds(-100, -100, 100, 100)
@@ -173,7 +173,8 @@
         var f, s;
         
         // Bogus layer renderer needs some methods
-        // for functional tests. 
+        // for functional tests.
+        layer.drawn = true;
         layer.renderer = {
             drawFeature: function(feature, style) {
                 f = feature;
@@ -212,7 +213,14 @@
         layer.renderer.drawFeature = function(feature) {
             return(feature.geometry.getBounds().intersectsBounds(map.getExtent()));
         }
+        // reset the drawn to null as if the layer had never been rendered
+        layer.drawn = null;
+        
+        layer.drawFeature(feature);
+        t.ok(true, "Trying to draw a feature on an not drawn layer doesn't throw any error.");
+        
         layer.addFeatures([feature]);
+        
         map.setCenter(new OpenLayers.Bounds(0, 0, 0, 0), 6);
         t.ok(layer.unrenderedFeatures[feature.id], "Did not render feature outside the viewport.");
         map.panTo(new OpenLayers.LonLat(10, 10));
