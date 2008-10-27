@@ -251,6 +251,45 @@
              "deactivate sets timerId to null");
     }
 
+    function test_Handler_Click_mouseup(t) {
+        t.plan(4);
+        g_Propagate = {};
+        g_evt = {};
+                
+      //no modifiers, no handlerightclicks, no isrightclick        
+        var temp = OpenLayers.Event.isRightClick;
+        OpenLayers.Event.isRightClick = function(e) { 
+            t.ok(e == g_evt, 'correct event passed in to checkModifiers');
+            return false; 
+        };
+
+        var h = {
+            'checkModifiers': function(e) {
+                t.ok(e == g_evt, 'correct event passed in to checkModifiers');
+                return false;
+            },
+            'control': {
+                'handleRightClicks': false
+            },
+            'rightclick': function(e) {
+                t.ok(e == g_evt, 'correct event passed in to checkModifiers');
+                return g_Propagate;
+            }
+        };
+        var propagate = OpenLayers.Handler.Click.prototype.mouseup.apply(h, [g_evt]);
+        t.ok(propagate, "default propagate is true when no modifiers, no handlerightclicks, no isrightclick")
+
+      //modifiers, handlerightclicks, and isrightclick
+        h.checkModifiers = function() { return true; };
+        h.control.handleRightClicks = true;        
+        OpenLayers.Event.isRightClick = function(e) { return true; };
+        propagate = OpenLayers.Handler.Click.prototype.mouseup.apply(h, [g_evt]);
+
+        t.ok(propagate == g_Propagate, "return from handler's rightClick() returned from mouseup");
+
+        OpenLayers.Event.isRightClick = temp;
+    }
+
 
   </script>
 </head>
