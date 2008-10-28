@@ -47,6 +47,36 @@
 
     }
     
+    function test_markerMovement(t) {
+        
+        t.plan(6);
+        
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Markers("Base", {isBaseLayer: true});
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 1);
+        
+        var size = new OpenLayers.Size(10, 10);
+        var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+        var icon = new OpenLayers.Icon("foo", size, offset);
+        var marker = new OpenLayers.Marker(new OpenLayers.LonLat(10, -10), icon)
+        layer.addMarker(marker);
+        
+        t.eq(marker.icon.px.x, 554, "marker icon is placed at 554 px on x-axis");
+        t.eq(marker.icon.px.y, 314, "marker icon is placed at 314 px on y-axis");
+        
+        map.zoomTo(2);
+        
+        t.eq(marker.icon.px.x, 568, "marker icon moved to 568 px on x-axis");
+        t.eq(marker.icon.px.y, 328, "marker icon moved to 328 px on y-axis");
+        
+        map.zoomTo(1);
+
+        t.eq(marker.icon.px.x, 554, "marker icon moved back to 554 px on x-axis");
+        t.eq(marker.icon.px.y, 314, "marker icon moved back to 314 px on y-axis");
+        
+    }
+    
     function test_destroy (t) {
         t.plan( 1 );    
         layer = new OpenLayers.Layer.Markers('Test Layer');
