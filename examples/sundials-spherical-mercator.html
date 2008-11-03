@@ -1,6 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>OpenLayers: Sundials on a Map</title>
+    <title>OpenLayers: Sundials on a Spherical Mercator Map</title>
+    <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
         <link rel="stylesheet" href="../theme/default/framedCloud.css" type="text/css" />
     <link rel="stylesheet" href="style.css" type="text/css" />
@@ -41,6 +42,7 @@
                 }
             );
             map.addLayer(mapnik);
+            map.addLayer(new OpenLayers.Layer.Google("Google",{sphericalMercator:true}));
             map.addLayer(new OpenLayers.Layer.GML("KML", "kml/sundials.kml", 
                {
                 format: OpenLayers.Format.KML, 
@@ -56,6 +58,7 @@
             map.addControl(selectControl);
             selectControl.activate();   
             map.zoomToExtent(new OpenLayers.Bounds(68.774414,11.381836,123.662109,34.628906).transform(map.displayProjection, map.projection));
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
         }
         function onPopupClose(evt) {
             selectControl.unselect(selectedFeature);
@@ -92,12 +95,12 @@
     </script>
   </head>
   <body onload="init()">
-      <h1 id="title">KML Layer Example</h1>
+      <h1 id="title">OSM + Google Maps + KML Reprojection</h1>
 
       <div id="tags"></div>
 
       <p id="shortdesc">
-          Demonstrates loading and displaying a KML file on top of OpenStreetMap (OSM) data.
+          Demonstrates loading and displaying a KML file on top of OpenStreetMap (OSM) and Google Maps data. Loads data from a KML file of sundials.
     </p>
 
     <div id="map" class="smallmap"></div>
