@@ -2,7 +2,7 @@
 <head>
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript">
-    function test_Handler_Feature_constructor(t) {
+    function test_initialize(t) {
         t.plan(4);
         var control = new OpenLayers.Control();
         control.id = Math.random();
@@ -29,7 +29,7 @@
         OpenLayers.Handler.prototype.initialize = oldInit;
     }
 
-    function test_Handler_Feature_activate(t) {
+    function test_activate(t) {
         t.plan(3);
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
@@ -52,7 +52,7 @@
              "layer z-index properly adjusted");
         
     }
-    function test_Handler_Feature_events(t) {
+    function test_events(t) {
         t.plan(25);
         
         var map = new OpenLayers.Map('map');
@@ -96,7 +96,7 @@
  
     }
  
-    function test_Handler_feature_geometrytype_limit(t) {
+    function test_geometrytype_limit(t) {
         t.plan(1);
         var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0));
         var map = new OpenLayers.Map('map');
@@ -120,7 +120,7 @@
         handler.handle("click", {}); 
     }
 
-    function test_Handler_Feature_callbacks(t) {
+    function test_callbacks(t) {
         t.plan(9);
         
         var map = new OpenLayers.Map('map', {controls: []});
@@ -218,7 +218,7 @@
         map.events.triggerEvent('dblclick', evtPx);
     }
 
-    function test_Handler_Feature_deactivate(t) {
+    function test_deactivate(t) {
         t.plan(3);
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
@@ -243,7 +243,7 @@
              "deactivate sets the layer z-index back");
     }
 
-    function test_Handler_Feature_stopHandled(t) {
+    function test_stopHandled(t) {
         t.plan(3);
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
