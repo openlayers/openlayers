@@ -98,11 +98,12 @@
  
     function test_geometrytype_limit(t) {
         t.plan(1);
-        var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0));
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
         map.addControl(control);
         var layer = new OpenLayers.Layer();
+        var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0));
+        feature.layer = layer;
         layer.getFeatureFromEvent = function(evt) { return feature };
         map.addLayer(layer);
         var handler = new OpenLayers.Handler.Feature(control, layer, {}, {'geometryTypes':['OpenLayers.Geometry.Point']});
@@ -117,6 +118,7 @@
             t.fail("Shouldn't have called back on " + featurelist[0].geometry);
         }    
         feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString(0,0));
+        feature.layer = layer;
         handler.handle("click", {}); 
     }
 
@@ -152,6 +154,7 @@
         handler.feature = null;
         lastFeature = null;
         newFeature = new OpenLayers.Feature.Vector();
+        newFeature.layer = layer;
         callbacks['click'] = getCallback('click', newFeature);
         callbacks['clickout'] = getCallback('clickout', lastFeature);
         evtPx.type = "click";
@@ -161,6 +164,7 @@
         // both 'click' and 'clickout' callbacks should be called
         lastFeature = newFeature;
         newFeature = new OpenLayers.Feature.Vector();
+        newFeature.layer = layer;
         callbacks['click'] = getCallback('click', newFeature);
         callbacks['clickout'] = getCallback('clickout', lastFeature);
         evtPx.type = "click";
@@ -185,6 +189,7 @@
         handler.feature = null;
         lastFeature = null;
         newFeature = new OpenLayers.Feature.Vector();
+        newFeature.layer = layer;
         callbacks['over'] = getCallback('over', newFeature);
         callbacks['out'] = getCallback('out', lastFeature);
         evtPx.type = "mousemove";
@@ -194,6 +199,7 @@
         // both 'over' and 'out' callbacks should be called
         lastFeature = newFeature;
         newFeature = new OpenLayers.Feature.Vector();
+        newFeature.layer = layer;
         callbacks['over'] = getCallback('over', newFeature);
         callbacks['out'] = getCallback('out', lastFeature);
         evtPx.type = "mousemove";
@@ -213,6 +219,7 @@
         handler.feature = null;
         lastFeature = null;
         newFeature = new OpenLayers.Feature.Vector();
+        newFeature.layer = layer;
         callbacks['dblclick'] = getCallback('dblclick', newFeature);
         evtPx.type = "dblclick";
         map.events.triggerEvent('dblclick', evtPx);
