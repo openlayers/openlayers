@@ -161,7 +161,47 @@
         layer.destroyFeatures = function() {};        
         control.destroy();
         layer.destroy();
-    }    
+    }
+    
+    function test_stop_modification(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.Vector("Vectors!", {isBaseLayer: true});
+        var feature = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(0, 0)
+        );
+        layer.addFeatures([feature]);
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0, 0));
+
+
+        // If a feature is to be modified, control.selectFeature gets called.
+        // We want this test to fail if selectFeature gets called.
+        var modified = false;
+        var _ = OpenLayers.Control.ModifyFeature.prototype.selectFeature;
+        OpenLayers.Control.ModifyFeature.prototype.selectFeature = function() {
+            modified = true;
+        }
+
+        var control = new OpenLayers.Control.ModifyFeature(layer);
+        map.addControl(control);
+        control.activate();
+
+        // register a listener that will stop feature modification
+        layer.events.on({"beforefeaturemodified": function() {return false}});
+
+        // we can initiate feature modification by selecting a feature with
+        // the control's select feature control
+        control.selectControl.select(feature);
+        
+        if(modified) {
+            t.fail("selectFeature called, prepping feature for modification");
+        } else {
+            t.ok(true, "the beforefeaturemodified listener stopped feature modification");
+        }
+        
+        OpenLayers.Control.ModifyFeature.prototype.selectFeature = _;
+    }
 
     function test_selectFeature(t) {
         t.plan(12);
