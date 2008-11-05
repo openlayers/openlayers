@@ -304,6 +304,35 @@
                 t.ok( bounds.getCenterPixel().equals(new OpenLayers.Pixel(50, 70)), "getCenterPixel() works correctly");
         t.ok( bounds.getCenterLonLat().equals(new OpenLayers.LonLat(50, 70)), "getCenterLonLat() works correctly");
     }
+    
+    function test_getCenterLonLat(t) {
+        t.plan(7);
+        var bounds = new OpenLayers.Bounds(0, 10, 20, 60);
+        
+        // set private centerLonLat to confirm that it is getting returned if set
+        bounds.centerLonLat = "foo";
+        t.eq(bounds.getCenterLonLat(), "foo", "returns cached value");
+        bounds.centerLonLat = null;
+        
+        // unmodified
+        var center = bounds.getCenterLonLat();
+        t.eq(center.lon, 10, "unmodified: correct x");
+        t.eq(center.lat, 35, "unmodified: correct y");
+        
+        // transformed
+        bounds.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
+        center = bounds.getCenterLonLat();
+        t.eq(Math.round(center.lon), 1113195, "transformed: correct x");
+        t.eq(Math.round(center.lat), 4759314, "transformed: correct y");
+        
+        // extended
+        bounds.extend(new OpenLayers.Bounds(-10000000, -10000000, 10000000, 10000000));
+        center = bounds.getCenterLonLat();
+        t.eq(center.lon, 0, "extended: correct x");
+        t.eq(center.lat, 0, "extended: correct y");
+        
+        
+    }
 
     function test_Bounds_fromArray(t) {
        t.plan( 5 );
