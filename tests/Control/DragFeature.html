@@ -83,12 +83,14 @@
              "drag handler is not active before over a feature");
         
         // simulate a mouseover on a feature
+        var feature = new OpenLayers.Feature.Vector();
+        feature.layer = layer;
         layer.getFeatureFromEvent = function(evt) {
-            return "foo";
+            return feature;
         }
         map.events.triggerEvent("mousemove", {type: "mousemove"});
         
-        t.eq(control.feature, "foo",
+        t.eq(control.feature.id, feature.id,
              "control gets the proper feature from the feature handler");
         t.ok(control.handlers.drag.active,
              "drag handler activated when over a feature");
@@ -105,14 +107,16 @@
         control.activate();
         
         // simulate a mouseover on a feature
+        var feature = new OpenLayers.Feature.Vector();
+        feature.layer = layer;
         layer.getFeatureFromEvent = function(evt) {
-            return "foo";
+            return feature;
         }
         map.events.triggerEvent("mousemove", {type: "mousemove"});
 
         // simulate a mousedown on a feature
-        control.onStart = function(feature, pixel) {
-            t.eq(feature, "foo", "onStart called with the correct feature");
+        control.onStart = function(feat, pixel) {
+            t.eq(feat.id, feature.id, "onStart called with the correct feature");
             t.eq(pixel, "bar", "onStart called with the correct pixel");
         }
         map.events.triggerEvent("mousedown", {xy: "bar", which: 1, type: "mousemove"});
@@ -144,6 +148,7 @@
                 t.eq(y, -4, "move called with -dy * res");
             };
             var feature = new OpenLayers.Feature.Vector(geom);
+            feature.layer = layer;
             feature.uid = uid;
             return feature;
         };
@@ -176,8 +181,10 @@
         control.activate();
 
         // simulate a mouseover on a feature
+        var feature = new OpenLayers.Feature.Vector();
+        feature.layer = layer;
         layer.getFeatureFromEvent = function(evt) {
-            return "foo";
+            return feature;
         }
         map.events.triggerEvent("mousemove", {type: "mousemove"});
         t.eq(control.over, true,
@@ -221,14 +228,16 @@
 
 
         // simulate a mouseover on a feature
+        var feature = new OpenLayers.Feature.Vector();
+        feature.layer = layer;
         layer.getFeatureFromEvent = function() {
-            return "foo";
+            return feature;
         };
         map.events.triggerEvent("mousemove", {type: "mousemove"});
-        t.eq(control.feature, "foo",
+        t.eq(control.feature.id, feature.id,
              "feature is set on mouse over");
         control.doneDragging();
-        t.eq(control.feature, "foo", 
+        t.eq(control.feature.id, feature.id, 
           "feature sticks around after doneDragging is called.");
         
     }
@@ -245,11 +254,13 @@
 
 
         // simulate a mouseover on a feature
+        var feature = new OpenLayers.Feature.Vector();
+        feature.layer = layer;
         layer.getFeatureFromEvent = function() {
-            return "foo";
+            return feature;
         };
         map.events.triggerEvent("mousemove", {type: "mousemove"});
-        t.eq(control.feature, "foo",
+        t.eq(control.feature.id, feature.id,
              "feature is set on mouse over");
         
         // simulate a mouseout on a feature

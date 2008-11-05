@@ -291,6 +291,32 @@
         // 3 tests total
     }
 
+    function test_destroyed_feature(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var layer = new OpenLayers.Layer();
+        layer.removeFeatures = function() {};
+        var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0));
+        feature.layer = layer;
+        layer.getFeatureFromEvent = function(evt) {return feature};
+        map.addLayer(layer);
+        var handler = new OpenLayers.Handler.Feature(control, layer);
+        handler.activate();
+        var count = 0;
+        handler.callback = function(type, featurelist) {
+            ++count;
+            t.eq(featurelist[0].id, feature.id, type + ": correct feature sent to callback");
+        }
+        handler.handle({type: "click"});
+        
+        // now destroy the feature and confirm that the callback is not called again
+        feature.destroy();
+        handler.handle({type: "click"});
+        t.eq(count, 1, "callback not called after destroy");
+    }
+
   </script>
 </head>
 <body>
