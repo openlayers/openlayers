@@ -155,7 +155,7 @@
         layer.destroyFeatures = function(verts) {
             t.ok(verts == 'b', "Virtual verts destroyed correctly");
         }
-        control.unselectFeature({feature: fakeFeature});
+        control.unselectFeature(fakeFeature);
         t.eq(control.feature, null, "feature is set to null");
         
         layer.destroyFeatures = function() {};        
@@ -225,7 +225,7 @@
         var fakeFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0, 0));
         
         // Points don't call collectVertices
-        control.selectFeature({feature: fakeFeature});
+        control.selectFeature(fakeFeature);
         
         control.collectVertices = function() { 
           t.ok(true, "collectVertices called"); 
@@ -247,7 +247,7 @@
         ]);
         
         // OnSelect calls collectVertices and passes features to layer 
-        control.selectFeature({feature: fakeFeature});
+        control.selectFeature(fakeFeature);
         
         control.vertices = ['a'];
         control.virtualVertices = ['b'];
@@ -259,7 +259,7 @@
         }    
 
         // Features are removed whenever they exist
-        control.selectFeature({feature: fakeFeature});
+        control.selectFeature(fakeFeature);
         
         control.destroy();
 
@@ -424,7 +424,7 @@
             t.eq(feature.id, testFeature.id,
                  "onModificationStart called with the right feature");
         };
-        control.selectFeature({feature: testFeature});
+        control.selectFeature(testFeature);
         
         map.destroy();
     }
@@ -494,7 +494,7 @@
             t.eq(feature.id, testFeature.id,
                  "onModificationEnd called with the right feature");
         };
-        control.unselectFeature({feature: testFeature});
+        control.unselectFeature(testFeature);
         
         map.destroy();
     }
