@@ -107,6 +107,20 @@
         t.eq(extent.toBBOX(), "-111.04,45.68,-111.04,45.68", "extent from getDataExtent is correct");
     }
 
+    function test_Layer_Vector_getDataExtent(t) {
+        t.plan(1);
+        var layer = new OpenLayers.Layer.Vector(name);
+
+        var point = new OpenLayers.Geometry.Point(-111.04, 45.68);
+        var pointFeature = new OpenLayers.Feature.Vector(point);
+        layer.addFeatures([pointFeature]);
+        var point = new OpenLayers.Geometry.Point(-111.04, 5.68);
+        var pointFeature = new OpenLayers.Feature.Vector(point);
+        layer.addFeatures([pointFeature]);
+        var extent = layer.getDataExtent();
+        t.ok(extent.toBBOX() != layer.features[0].geometry.getBounds().toBBOX(), "extent from getDataExtent doesn't clobber first feature");
+    }
+
     function test_Layer_Vector_removeFeatures(t) {
         t.plan(6);
     
