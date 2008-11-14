@@ -23,7 +23,22 @@ if [ ! o$REV = $OLD_REV ]; then
     cd ..
     
     sed -i -e 's!../lib/OpenLayers.js!../OpenLayers.js!' examples/*.html
+    perl /home/crschmidt/NaturalDocs -i /www/openlayers/docs/dev/lib -o HTML /www/openlayers/dev/apidocs -p /www/openlayers/docs/dev/apidoc_config -s Default OL >/dev/null
+    perl /home/crschmidt/NaturalDocs -i /www/openlayers/docs/dev/lib -o HTML /www/openlayers/dev/docs -p /www/openlayers/docs/dev/doc_config -s Default OL >/dev/null
 
     # Record the revision
     echo -n $REV > /tmp/ol_svn_rev
+fi    
+   
+svn up /www/openlayers/documentation-checkout
+REV=`svn info /www/openlayers/documentation-checkout | grep Revision | awk '{print $2}'`
+# Get the last svn rev
+touch /tmp/ol_doc_rev
+OLD_REV="o`cat /tmp/ol_doc_rev`"
+# If they're not equal, do some work.
+if [ ! o$REV = $OLD_REV ]; then
+    cd /www/openlayers/documentation-checkout
+    python build/build.py /www/openlayers/documentation
+    
+    echo -n $REV > /tmp/ol_doc_rev
 fi    
