@@ -42,11 +42,6 @@
                 strategies : [new OpenLayers.Strategy.Fixed()],
                 eventListeners: {
                     featuremodified: function(obj) {
-                        if (obj.feature.state != OpenLayers.State.INSERT &&
-                            obj.feature.state != OpenLayers.State.DELETE) {
-
-                            obj.feature.state = OpenLayers.State.UPDATE;
-                        }
                         displayStatus();
                     }
                 }

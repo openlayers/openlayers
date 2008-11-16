@@ -54,7 +54,7 @@
             var draw = new OpenLayers.Control.DrawFeature(
                 wfs, OpenLayers.Handler.Point,
                 {
-                    handlerOptions: {freehand: false},
+                    handlerOptions: {freehand: false, multi: true},
                     displayClass: "olControlDrawFeaturePoint"
                 }
             );
@@ -63,14 +63,6 @@
                 trigger: OpenLayers.Function.bind(wfs.commit, wfs),
                 displayClass: "olControlSaveFeatures"
             });
-
-            draw.featureAdded = function(feature) {
-                var oldgeom = feature.geometry;
-                feature.layer.renderer.eraseGeometry(oldgeom);
-                feature.geometry = new OpenLayers.Geometry.MultiPoint(oldgeom);
-                feature.state = OpenLayers.State.INSERT;   	                  
-                feature.layer.drawFeature(feature);
-            }
            
             panel.addControls([
                 new OpenLayers.Control.Navigation(),

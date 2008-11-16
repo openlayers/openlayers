@@ -74,7 +74,7 @@
     }
     
     function test_handleKeypress(t) {
-        t.plan(10);
+        t.plan(11);
 
         /**
          * There are two things that we want to test here
@@ -125,6 +125,7 @@
         // run the above four tests twice
         control.handleKeypress({keyCode:delKey});
         control.handleKeypress({keyCode:dKey});
+        t.eq(control.feature.state, OpenLayers.State.UPDATE, "feature state set to update");
 
         // now make sure nothing happens if the vertex is mid-drag
         control.dragControl.handlers.drag.dragging = true;
@@ -344,7 +345,7 @@
     }
     
     function test_dragComplete(t) {
-        t.plan(7);
+        t.plan(8);
         var layer = new OpenLayers.Layer.Vector();
         var control = new OpenLayers.Control.ModifyFeature(layer);
        
@@ -375,6 +376,7 @@
         control.vertices = 'previous normal';
         control.virtualVertices = 'previous virtual';
         control.dragComplete();
+        t.eq(fakeFeature.state, OpenLayers.State.UPDATE, "feature state set to UPDATE");
         
         control.destroy();
 

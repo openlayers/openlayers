@@ -13,13 +13,14 @@
     }
     
     function test_drawFeature(t) {
-        t.plan(2);
+        t.plan(3);
         var layer = new OpenLayers.Layer.Vector();
         var control = new OpenLayers.Control.DrawFeature(layer, function() {});
         var geom = {};
         
         layer.addFeatures = function(features) {
             t.ok(features[0].geometry == geom, "layer.addFeatures called");
+            t.eq(features[0].state, OpenLayers.State.INSERT, "layer state set");
         };
         function handlefeatureadded(event) {
             t.ok(event.feature.geometry == geom, "featureadded triggered");
