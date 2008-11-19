@@ -87,7 +87,7 @@
         map.destroy();
     }
     function test_Popup_draw(t) {
-        t.plan( 13 );
+        t.plan( 15 );
         
         var id = "chicken";
         var x = 50;
@@ -144,6 +144,29 @@
         popup.moveTo(new OpenLayers.Pixel(x, y));
         t.eq(popup.div.style.left, x + "px", "moveTo updates left position of popup.div correctly");
         t.eq(popup.div.style.top, y + "px", "moveTo updates top position of popup.div correctly");
+
+
+    //closeOnMove
+        var checkMapEvent = function(map, popup) {
+            var startListeners = map.events.listeners['movestart'];
+            for(var i=0; i < startListeners.length; i++) {
+                var listener = startListeners[i];
+                
+                if ((listener.obj == popup) && (listener.func == popup.hide)) {
+                    return true;
+                }
+            }    
+            return false;
+        };
+        var registered = checkMapEvent(map1, popup);
+        t.ok(!registered, "when not 'closeOnMove', correctly not registered hide() on map's movestart.")    
+        
+        var popup2 = new OpenLayers.Popup('test');
+        popup2.closeOnMove = true;
+        map1.addPopup(popup2);
+        
+        registered = checkMapEvent(map1, popup2);
+        t.ok(registered, "when 'closeOnMove', correctly registered hide() on map's movestart.")    
     }
 
   </script>
