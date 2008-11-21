@@ -48,7 +48,7 @@
             
             // Create a GML layer with GeoRSS format and a style map.
             markerLayer = new OpenLayers.Layer.GML("Some images from Flickr",
-			                                       "xml/georss-flickr.xml", {
+                                                   "xml/georss-flickr.xml", {
                 format: OpenLayers.Format.GeoRSS,
                 formatOptions: {
                     // adds the thumbnail attribute to the feature
@@ -61,8 +61,8 @@
                         return feature;
                     }
                 },
-				// Giving the style map keys for "default" and "select"
-				// rendering intent, to make the image larger when selected
+                // Giving the style map keys for "default" and "select"
+                // rendering intent, to make the image larger when selected
                 styleMap: new OpenLayers.StyleMap({
                     "default": style,
                     "select": new OpenLayers.Style({pointRadius: 35})
