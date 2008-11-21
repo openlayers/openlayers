@@ -24,7 +24,44 @@
         t.eq( tile.url, url, "tile.url is set correctly");
         t.ok( tile.size.equals(size), "tile.size is set correctly");
     }
-    
+
+    function test_destroy_observers(t) {
+        t.plan(2);
+
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+            "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
+        map.addLayer(layer);
+
+        var position = new OpenLayers.Pixel(20,30);
+        var bounds = new OpenLayers.Bounds(1,2,3,4);
+        var size = new OpenLayers.Size(5,6);
+
+        // with alpha hack
+        var withAlpha = new OpenLayers.Tile.Image(layer, position, bounds, null, size);
+        withAlpha.layerAlphaHack = true;
+
+        withAlpha.draw();
+        var cacheID = withAlpha.imgDiv._eventCacheID;
+        withAlpha.destroy();
+        
+        t.eq(OpenLayers.Event.observers[cacheID], undefined, 
+             "With alpha hack: imgDiv observers are cleared in destroy");
+
+        // without alpha hack
+        var withoutAlpha = new OpenLayers.Tile.Image(layer, position, bounds, null, size);
+        withoutAlpha.layerAlphaHack = false;
+
+        withoutAlpha.draw();
+        var cacheID = withoutAlpha.imgDiv._eventCacheID;
+        withoutAlpha.destroy();
+
+        t.eq(OpenLayers.Event.observers[cacheID], undefined, 
+             "Without alpha hack: imgDiv observers are cleared in destroy");
+
+        map.destroy();
+    }
+
     function test_Tile_Image_clone (t) {
         t.plan( 9 );
         
