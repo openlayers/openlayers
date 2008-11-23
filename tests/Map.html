@@ -100,7 +100,7 @@
     }
 
     function test_Map_center(t) {
-        t.plan(7);
+        t.plan(8);
         map = new OpenLayers.Map('map');
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
@@ -128,6 +128,8 @@
         t.ok( lonlat.equals(zero), "map center is correct after calling zoomToFullExtent" );
     */
 
+        map.getCenter().lon = 10;
+        t.ok( map.getCenter().equals(ll), "map.getCenter returns a clone of map.center");
     }
 
     function test_Map_zoomend_event (t) {
