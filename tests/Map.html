@@ -746,16 +746,24 @@
     }
 
     function test_Map_moveTo(t) {
-        t.plan(1);
+        t.plan(2);
 
         map = new OpenLayers.Map('map');
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
             {map: "/mapdata/vmap_wms.map", layers: "basic"},
             {maxResolution: 'auto', maxExtent: new OpenLayers.Bounds(-10,-10,10,10)});
+        baseLayer.events.on({
+            move: function() {
+                t.ok(true, "move listener called");
+            },
+            moveend: function(e) {
+                t.eq(e.zoomChanged, true, "moveend listener called with expected value");
+            }
+        });
         map.addLayer(baseLayer);
         var ll = new OpenLayers.LonLat(-100,-150);
-        map.moveTo(ll, 0);
+        map.moveTo(ll, 2);
         t.ok(map.getCenter().equals(new OpenLayers.LonLat(0,0)), "safely sets out-of-bounds lonlat");
     }
 
