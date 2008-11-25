@@ -18,15 +18,16 @@
                 {type: G_PHYSICAL_MAP}
             );
             var gmap = new OpenLayers.Layer.Google(
-                "Google Streets" // the default
+                "Google Streets", // the default
+                {numZoomLevels: 20}
             );
             var ghyb = new OpenLayers.Layer.Google(
                 "Google Hybrid",
-                {type: G_HYBRID_MAP}
+                {type: G_HYBRID_MAP, numZoomLevels: 20}
             );
             var gsat = new OpenLayers.Layer.Google(
                 "Google Satellite",
-                {type: G_SATELLITE_MAP}
+                {type: G_SATELLITE_MAP, numZoomLevels: 20}
             );
 
 
