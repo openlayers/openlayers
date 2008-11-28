@@ -76,7 +76,7 @@
     }
 
     function test_triggerRead(t) {
-        t.plan(7);
+        t.plan(4);
 
         var s = new OpenLayers.Strategy.BBOX();
 
@@ -85,32 +85,26 @@
         s.createFilter = function() {
             return filter;
         };
+        s.response = {"fake": "response"};
 
-        s.setLayer({
-            protocol: {
-                read: function(options) {
-                    t.ok(options.filter == filter,
-                         "protocol read called with correct filter");
-                    t.ok(options.callback == s.merge,
-                         "protocol read called with correct callback");
-                    t.ok(options.scope == s,
-                         "protocol read called with correct scope");
-                }
+        var protocol = new OpenLayers.Protocol({
+            read: function(options) {
+                t.ok(options.filter == filter,
+                        "protocol read called with correct filter");
+                t.ok(options.callback == s.merge,
+                        "protocol read called with correct callback");
+                t.ok(options.scope == s,
+                        "protocol read called with correct scope");
+            },
+            abort: function(response) {
+                t.eq(response, s.response,
+                        "protocol abort called with correct response");
             }
         });
 
-        // 3 tests
-        s.triggerRead();
+        s.setLayer({protocol: protocol});
 
         // 4 tests
-        s.response = {
-            priv: {
-                abort: function() {
-                    t.ok(true,
-                         "triggerRead aborts previous read request");
-                }
-            }
-        };
         s.triggerRead();
     }
 
