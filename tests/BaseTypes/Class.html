@@ -263,7 +263,22 @@
         t.eq( objC.mixed, true, "class C has mixin properties" );
     }
 
+    function test_Class_isInstanceOf(t) {
+        t.plan(7);
+        var wfs = new OpenLayers.Layer.WFS({});
+        var drag = new OpenLayers.Control.DragFeature({});
+        t.ok(wfs instanceof OpenLayers.Layer.WFS, "isInstanceOf(WFS)");
+        t.ok(wfs instanceof OpenLayers.Layer, "isInstanceOf(Layer)");
+        t.ok(!(wfs instanceof OpenLayers.Format), "not isInstanceOf(Format)");
+        t.ok(drag instanceof OpenLayers.Control, "drag is a control");
+        t.ok(!(drag instanceof OpenLayers.Layer), "drag is not a layer");
 
+        //test a class with multiple inheritance
+        var BadClass=OpenLayers.Class(OpenLayers.Layer.WFS, OpenLayers.Control.DragFeature);
+        var bad = new BadClass({});
+        t.ok(!(bad instanceof OpenLayers.Control), "bad is a control, but it is also a layer and we cannot have two superclasses");
+        t.ok(bad instanceof OpenLayers.Layer, "bad is a layer, it inherits from the layer first");
+    }
   </script>
 </head>
 <body>
