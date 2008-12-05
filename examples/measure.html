@@ -32,7 +32,7 @@
             map.addControl(new OpenLayers.Control.MousePosition());
             
             // style the sketch fancy
-            sketchSymbolizers = {
+            var sketchSymbolizers = {
                 "Point": {
                     pointRadius: 4,
                     graphicName: "square",
@@ -58,7 +58,7 @@
             };
             var style = new OpenLayers.Style();
             style.addRules([
-                new OpenLayers.Rule({symbolizer: this.sketchSymbolizers})
+                new OpenLayers.Rule({symbolizer: sketchSymbolizers})
             ]);
             var styleMap = new OpenLayers.StyleMap({"default": style});
             
