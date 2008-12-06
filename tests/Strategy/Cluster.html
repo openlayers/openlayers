@@ -59,8 +59,8 @@
         // add one additional feature, with no geometry - just to confirm it doesn't break things
         features.push(new OpenLayers.Feature.Vector());
         
-        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
         layer.addFeatures(features);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
         
         // resolution 4
         // threshold: 4 * 20 = 80 units
