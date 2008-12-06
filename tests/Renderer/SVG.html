@@ -406,7 +406,7 @@
 
         r.importSymbol("square");
 
-        var polygon = document.getElementById("ol-renderer-defs").firstChild.firstChild;
+        var polygon = document.getElementById(r.container.id + "_defs").firstChild.firstChild;
 
         var points = polygon.getAttribute("points");
  
