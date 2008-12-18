@@ -414,7 +414,7 @@
     }
     
     function test_Layer_getResolutionForZoom(t) {
-        t.plan(5);
+        t.plan(8);
         var layer = new OpenLayers.Layer("test");
         layer.map = {fractionalZoom: false};
         layer.resolutions = ["zero", "one", "two"];
@@ -427,6 +427,16 @@
         layer.map.fractionalZoom = true;
         t.eq(layer.getResolutionForZoom(1).toPrecision(6), (4).toPrecision(6),
              "(fractionalZoom true) returns resolution for integer zoom");
+
+        t.eq(layer.getResolutionForZoom(1.3).toPrecision(6), (4.6).toPrecision(6),
+             "(fractionalZoom true) for zoom 1.3 should be 4.6");
+
+        t.eq(layer.getResolutionForZoom(1.6).toPrecision(6), (5.2).toPrecision(6),
+             "(fractionalZoom true) for zoom 1.6 should be 5.2");
+
+        t.eq(layer.getResolutionForZoom(1.8).toPrecision(6), (5.6).toPrecision(6),
+             "(fractionalZoom true) for zoom 1.8 should be 5.6");
+
         t.eq(layer.getResolutionForZoom(1.5).toPrecision(6), (5).toPrecision(6),
              "(fractionalZoom true) returns resolution for float zoom");             
         t.eq(layer.getResolutionForZoom(3.5).toPrecision(6), (8).toPrecision(6),
