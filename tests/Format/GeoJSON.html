@@ -5,10 +5,11 @@
 
     var poly_content = '{"type": "FeatureCollection", "features": [{"geometry": {"type": "Polygon", "coordinates": [[[-131.484375, -5.9765625], [-112.5, -58.0078125], [-32.34375, -50.2734375], [-114.609375, 52.3828125], [-167.34375, -35.5078125], [-146.953125, -57.3046875], [-139.921875, -34.1015625], [-131.484375, -5.9765625]]]}, "type": "Feature", "id": 562, "properties": {"strokeColor": "red", "title": "Feature 2", "author": "Your Name Here"}}]}'; 
     var null_geom_feature = '{"type":"Feature","id":573,"properties":{"strokeColor":"blue","title":"Feature 5","author":"Your Name Here"},"geometry":null}';
-    var point_feature = '{"geometry": {"type": "Point", "coordinates": [94.21875, 72.94921875]}, "type": "Feature", "id": 573, "properties": {"strokeColor": "blue", "title": "Feature 5", "author": "Your Name Here"}}'
+    var point_feature = '{"geometry": {"type": "Point", "coordinates": [94.21875, 72.94921875]}, "type": "Feature", "id": 573, "properties": {"strokeColor": "blue", "title": "Feature 5", "author": "Your Name Here"}}';
     var line_feature = '{"type": "FeatureCollection", "features": [{"geometry": {"type": "LineString", "coordinates": [[-27.0703125, 59.4140625], [-77.6953125, 20.7421875], [30.5859375, -36.2109375], [67.1484375, 34.8046875]]}, "type": "Feature", "id": 559, "properties": {"strokeColor": "red", "title": "Feature 1", "author": "Your Name Here"}}]}';
     var multiple_features = '{"type": "FeatureCollection", "features": [{"geometry": {"type": "Point", "coordinates": [-91.0546875, 43.9453125]}, "type": "Feature", "id": 577, "properties": {"strokeColor": "red", "title": "Feature 2", "image": "foo.gif", "author": "Your Name Here"}}, {"geometry": {"type": "LineString", "coordinates": [[91.40625, -1.40625], [116.015625, -42.890625], [153.28125, -28.125], [108.984375, 11.25], [75.234375, 8.4375], [76.640625, 9.140625], [67.5, -36.5625], [67.5, -35.859375]]}, "type": "Feature", "id": 576, "properties": {"strokeColor": "red", "title": "Feature 1", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [139.5703125, 57.48046875]}, "type": "Feature", "id": 575, "properties": {"strokeColor": "blue", "title": "Feature 7", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [107.2265625, 82.44140625]}, "type": "Feature", "id": 574, "properties": {"strokeColor": "blue", "title": "Feature 6", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [94.21875, 72.94921875]}, "type": "Feature", "id": 573, "properties": {"strokeColor": "blue", "title": "Feature 5", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [116.3671875, 61.69921875]}, "type": "Feature", "id": 572, "properties": {"strokeColor": "blue", "title": "Feature 4", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [145.8984375, 73.65234375]}, "type": "Feature", "id": 571, "properties": {"strokeColor": "blue", "title": "Feature 3", "author": "Your Name Here"}}, {"geometry": {"type": "Polygon", "coordinates": [[[32.34375, 52.20703125], [87.1875, 70.13671875], [122.6953125, 37.44140625], [75.234375, 42.36328125], [40.078125, 42.36328125], [28.828125, 48.33984375], [18.6328125, 56.77734375], [23.203125, 65.56640625], [32.34375, 52.20703125]]]}, "type": "Feature", "id": 570, "properties": {"strokeColor": "blue", "title": "Feature 2", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [62.578125, -53.4375]}, "type": "Feature", "id": 569, "properties": {"strokeColor": "red", "title": "Feature 3", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [121.640625, 16.875]}, "type": "Feature", "id": 568, "properties": {"strokeColor": "red", "title": "Feature 6", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [135.703125, 8.4375]}, "type": "Feature", "id": 567, "properties": {"strokeColor": "red", "title": "Feature 4", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [137.109375, 48.515625]}, "type": "Feature", "id": 566, "properties": {"strokeColor": "red", "title": "Feature 274", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [0, 5]}, "type": "Feature", "id": 565, "properties": {}}, {"geometry": {"type": "Point", "coordinates": [0, 5]}, "type": "Feature", "id": 564, "properties": {}}, {"geometry": {"type": "Point", "coordinates": [0, 5]}, "type": "Feature", "id": 563, "properties": {}}, {"geometry": {"type": "Polygon", "coordinates": [[[-131.484375, -5.9765625], [-112.5, -58.0078125], [-32.34375, -50.2734375], [-114.609375, 52.3828125], [-167.34375, -35.5078125], [-146.953125, -57.3046875], [-139.921875, -34.1015625], [-131.484375, -5.9765625]]]}, "type": "Feature", "id": 562, "properties": {"strokeColor": "red", "title": "Feature 2", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [48.8671875, -15.8203125]}, "type": "Feature", "id": 560, "properties": {"strokeColor": "red", "title": "Feature 2", "author": "Your Name Here"}}, {"geometry": {"type": "LineString", "coordinates": [[-27.0703125, 59.4140625], [-77.6953125, 20.7421875], [30.5859375, -36.2109375], [67.1484375, 34.8046875]]}, "type": "Feature", "id": 559, "properties": {"strokeColor": "red", "title": "Feature 1", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [12.65625, 16.5234375]}, "type": "Feature", "id": 558, "properties": {"styleUrl": "#allstyle", "title": "Feature 1", "strokeColor": "red", "author": "Your Name Here"}}]}';
     var parser = new OpenLayers.Format.GeoJSON();
+    var data;
 
     function test_Format_GeoJSON_constructor(t) { 
         t.plan(4); 
@@ -33,7 +34,7 @@
     function test_Format_GeoJSON_valid_type(t) { 
         t.plan(14);
 
-        OpenLayers.Console.error = function(error) { window.global_error = error; }
+        OpenLayers.Console.error = function(error) { window.global_error = error;};
         var types = ["Point", "MultiPoint", "LineString", "MultiLineString", "Polygon", "MultiPolygon", "Box", "GeometryCollection"];
         for (var i = 0; i < types.length; i++) {
             t.ok(parser.isValidType({'type':types[i]}, "Geometry"), "Geometry with type " + types[i] + " is valid");
@@ -71,7 +72,7 @@
         t.plan(2);
 
         data = parser.read(poly_content);
-        t.eq(data[0].fid, 562, "poly id is correct") 
+        t.eq(data[0].fid, 562, "poly id is correct");
         t.eq(data[0].geometry.components[0].components.length, 8, 
                 'Reading polygon first ring  on feature from featurecollection gives correct length');
     }
@@ -84,7 +85,7 @@
            "coordinates": [
                [100.0, 0.0], [101.0, 1.0]
            ]
-        }    
+        };
         data = parser.read(multipoint, "Geometry");
         t.eq(data.components.length, 2, 
             "Right number of components");
@@ -105,9 +106,9 @@
            ]
         };
         data = parser.read(multiline, "Geometry");
-        t.eq(data.CLASS_NAME, "OpenLayers.Geometry.MultiLineString", "Correct class retrieved")
-        t.eq(data.components[0].components[0].CLASS_NAME, "OpenLayers.Geometry.Point", "correct type of components")
-        t.eq(data.components[0].CLASS_NAME, "OpenLayers.Geometry.LineString", "correct type of components")
+        t.eq(data.CLASS_NAME, "OpenLayers.Geometry.MultiLineString", "Correct class retrieved");
+        t.eq(data.components[0].components[0].CLASS_NAME, "OpenLayers.Geometry.Point", "correct type of components");
+        t.eq(data.components[0].CLASS_NAME, "OpenLayers.Geometry.LineString", "correct type of components");
     }
 
     function test_Format_GeoJSON_multipol(t) {
@@ -125,10 +126,10 @@
                 ]
             ]
         };
-        OpenLayers.Console.error = function(error) { window.global_error = error; }
+        OpenLayers.Console.error = function(error) { window.global_error = error; };
         data = parser.read(multipol, "Geometry");
-        t.eq(data.CLASS_NAME, "OpenLayers.Geometry.MultiPolygon", "Correct class retrieved")
-        t.eq(data.components[1].components[0].components[0].CLASS_NAME, "OpenLayers.Geometry.Point", "correct type of components")
+        t.eq(data.CLASS_NAME, "OpenLayers.Geometry.MultiPolygon", "Correct class retrieved");
+        t.eq(data.components[1].components[0].components[0].CLASS_NAME, "OpenLayers.Geometry.Point", "correct type of components");
     }
 
     function test_Format_GeoJSON_box(t) {
@@ -144,7 +145,7 @@
         t.eq(poly.components[0].components[1].y, 0, "y of lower right is correct");
         t.eq(poly.components[0].components[3].x, 100, "x of upper left is correct");
         t.eq(poly.components[0].components[3].y, 1, "y of upper left is correct");
-        var box = parser.write(poly );
+        box = parser.write(poly );
         t.ok(box.search("Polygon") != -1 , "Serializes back to polygon");
     }
 
@@ -225,7 +226,7 @@
 
         var feats = parser.read(multiple_features);
         t.eq(feats.length, 19, "parsing a feature collection returns the correct number of features.");
-        var types = {'Point':0, 'LineString':0, 'Polygon':0}
+        var types = {'Point':0, 'LineString':0, 'Polygon':0};
         for(var i = 0; i < feats.length; i++) {
             var type = feats[i].geometry.CLASS_NAME.replace("OpenLayers.Geometry.", "");
             types[type]++;
@@ -234,18 +235,18 @@
     }
 
     function test_Format_GeoJSON_writeWithCRS(t) {
-        t.plan(2)
+        t.plan(2);
         var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(1,2));
         feature.fid = 0;
         var output = '{"type":"Feature","id":0,"properties":{},"geometry":{"type":"Point","coordinates":[1,2]},"crs":{"type":"OGC","properties":{"urn":"urn:ogc:def:crs:OGC:1.3:CRS84"}}}';
-        layer = new OpenLayers.Layer.Vector();
+        var layer = new OpenLayers.Layer.Vector();
         layer.projection = "EPSG:4326";
         feature.layer = layer;
         var parser = new OpenLayers.Format.GeoJSON();
-        test_out = parser.write(feature);
+        var test_out = parser.write(feature);
         t.eq(test_out, output, "Output is equal for vector with layer in EPSG:4326 ");
         feature.layer.projection = "EPSG:2805";
-        var output = '{"type":"Feature","id":0,"properties":{},"geometry":{"type":"Point","coordinates":[1,2]},"crs":{"type":"EPSG","properties":{"code":2805}}}';
+        output = '{"type":"Feature","id":0,"properties":{},"geometry":{"type":"Point","coordinates":[1,2]},"crs":{"type":"EPSG","properties":{"code":2805}}}';
         test_out = parser.write(feature);
         t.eq(test_out, output, "Output is equal for vector with point");
     }    
