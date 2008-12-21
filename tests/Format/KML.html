@@ -5,6 +5,7 @@
 
     var test_content = '<kml xmlns="http://earth.google.com/kml/2.0"><Folder><name>OpenLayers export</name><description>Vector geometries from OpenLayers</description><Placemark id="KML.Polygon"><name>OpenLayers.Feature.Vector_344</name><description>A KLM Polygon</description><Polygon><outerBoundaryIs><LinearRing><coordinates>5.001370157823406,49.26855713824488 8.214706453896161,49.630662409673505 8.397385910100951,48.45172350357396 5.001370157823406,49.26855713824488</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark><Placemark id="KML.LineString"><name>OpenLayers.Feature.Vector_402</name><description>A KML LineString</description><LineString><coordinates>5.838523393080493,49.74814616928052 5.787079558782349,48.410795432216574 8.91427702008381,49.28932499608202</coordinates></LineString></Placemark><Placemark id="KML.Point"><name>OpenLayers.Feature.Vector_451</name><description>A KML Point</description><Point><coordinates>6.985073041685488,49.8682250149058</coordinates></Point></Placemark><Placemark id="KML.MultiGeometry"><name>SF Marina Harbor Master</name><description>KML MultiGeometry</description><MultiGeometry><LineString><coordinates>-122.4425587930444,37.80666418607323 -122.4428379594768,37.80663578323093</coordinates></LineString><LineString><coordinates>-122.4425509770566,37.80662588061205 -122.4428340530617,37.8065999493009</coordinates></LineString></MultiGeometry></Placemark></Folder></kml>';
     var test_style = '<kml xmlns="http://earth.google.com/kml/2.0"> <Placemark>    <Style> <LineStyle> <color>870000ff</color> <width>10</width> </LineStyle> </Style>  <LineString> <coordinates> -112,36 -113,37 </coordinates> </LineString> </Placemark></kml>';
+    var test_style_fill = '<kml xmlns="http://earth.google.com/kml/2.0"> <Placemark>    <Style> <PolyStyle> <fill>0</fill> <color>870000ff</color> <width>10</width> </PolyStyle> </Style>  <LineString> <coordinates> -112,36 -113,37 </coordinates> </LineString> </Placemark></kml>';
     var test_nl = '<kml xmlns="http://earth.google.com/kml/2.2"> <Document> <NetworkLink> <Link> <href>http://maker.geocommons.com/maps/1717/overlays/0</href> </Link> </NetworkLink> </Document></kml>';
 
     function test_Format_KML_constructor(t) { 
@@ -133,6 +134,14 @@
         var f = new OpenLayers.Format.KML();
         var features = f.read(test_style);    
         t.ok(features[0].style == undefined, "KML Feature has no style with extractStyle false");        
+    } 
+    function test_Format_KML_extractStyleFill(t) {
+        t.plan(2);
+        var f = new OpenLayers.Format.KML({extractStyles: true});
+        var features = f.read(test_style);    
+        t.eq(features[0].style.fillColor, "#ff0000", "default fill is set");        
+        var features = f.read(test_style_fill);    
+        t.eq(features[0].style.fillColor, "none", "KML Feature has none fill");        
     } 
 
     </script> 
