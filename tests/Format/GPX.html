@@ -21,16 +21,16 @@
         var f = new OpenLayers.Format.GPX();
         var features = f.read(gpx_data);
         t.eq(features.length, 3, "Number of features read is correct");
-        t.eq(features[0].geometry.toString(), "POINT(-0.1853562259 51.3697845627)", "waypoint feature correctly created");
-        t.eq(features[1].geometry.toString(), "LINESTRING(-0.1721292044 51.3768216433,-0.1649230916 51.370833767,-0.1736741378 51.3644368725,-0.166259525 51.3576354272)", "track feature correctly created");
-        t.eq(features[2].geometry.toString(), "LINESTRING(-0.1829991904 51.3761803674,-0.1758887005 51.3697894659,-0.1833202965 51.3639790884,-0.1751119509 51.3567607069)", "route feature correctly created");
+        t.eq(features[2].geometry.toString(), "POINT(-0.1853562259 51.3697845627)", "waypoint feature correctly created");
+        t.eq(features[0].geometry.toString(), "LINESTRING(-0.1721292044 51.3768216433,-0.1649230916 51.370833767,-0.1736741378 51.3644368725,-0.166259525 51.3576354272)", "track feature correctly created");
+        t.eq(features[1].geometry.toString(), "LINESTRING(-0.1829991904 51.3761803674,-0.1758887005 51.3697894659,-0.1833202965 51.3639790884,-0.1751119509 51.3567607069)", "route feature correctly created");
     }
     function test_format_GPX_read_attributes(t) {
         t.plan(2);
         var f = new OpenLayers.Format.GPX();
         var features = f.read(gpx_data);
-        t.eq(features[0].attributes['name'], "Mark", "Text attribute node read correctly.");
-        t.eq(features[0].attributes['sym'], "Flag", "CDATA attribute node read correctly.");
+        t.eq(features[2].attributes['name'], "Mark", "Text attribute node read correctly.");
+        t.eq(features[2].attributes['sym'], "Flag", "CDATA attribute node read correctly.");
     }
     </script> 
 </head> 
