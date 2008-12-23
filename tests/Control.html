@@ -59,16 +59,6 @@
         control2.destroy();
     }
 
-    function test_Control_removeControl(t) {
-        t.plan(1);
-        var map = new OpenLayers.Map('map');
-        var control = new OpenLayers.Control();
-        map.addControl(control);
-        control.deactivate = function() { 
-            t.ok(true, "Deactivate is called.");
-        };
-        map.removeControl(control);
-    }    
     function test_Control_destroy(t) {
         t.plan(3);
     
