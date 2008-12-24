@@ -138,7 +138,7 @@
     }
     
     function test_write(t) {
-        t.plan(1);
+        t.plan(2);
 
         // read first - testing that write produces the SLD aboce
         var parser = new OpenLayers.Format.SLD.v1_0_0();
@@ -148,6 +148,19 @@
         var node = parser.write(obj);
         t.xml_eq(node, sld, "SLD correctly written");
         
+        // test that 0 fill opacity gets written
+        var symbolizer = {
+            fillColor: "red",
+            fillOpacity: 0
+        };
+        var root = parser.createElementNSPlus("PolygonSymbolizer");
+        var got = parser.writeNode(root, "Fill", symbolizer);
+        var expect =
+            '<Fill xmlns="http://www.opengis.net/sld">' +
+                '<CssParameter name="fill">red</CssParameter>' + 
+                '<CssParameter name="fill-opacity">0</CssParameter>' + 
+            '</Fill>';
+        t.xml_eq(got, expect, "zero fill opacity written");
     }
     
     function test_writeTextSymbolizer(t) {
