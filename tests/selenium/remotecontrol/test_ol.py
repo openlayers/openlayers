@@ -3,6 +3,8 @@ import time
 import sys
 from ConfigParser import ConfigParser
 
+MAX_TEST_LENGTH = 300
+
 if len(sys.argv) > 2: 
     filename = sys.argv[2]
 else:
@@ -42,12 +44,19 @@ if 1:
                 
             ok = 0 
             fail = 0
-            
+            last_change = time.time()
             while True:
-                ok = int(s.get_eval('window.Test.AnotherWay._g_ok_pages'))
-                fail = int(s.get_eval('window.Test.AnotherWay._g_fail_pages'))
+                new_ok = int(s.get_eval('window.Test.AnotherWay._g_ok_pages'))
+                new_fail = int(s.get_eval('window.Test.AnotherWay._g_fail_pages'))
+                if new_ok != ok or new_fail != fail:
+                    ok = new_ok
+                    fail = new_fail
+                    last_change = time.time()
+                    
                 if (ok + fail) >= count:
                     break 
+                if time.time() - last_change > MAX_TEST_LENGTH:
+                    raise Exception("Failed: with %s okay and %s failed, ran out of time: %s is more than %s" % (ok, fail, (time.time() - last_change), MAX_TEST_LENGTH))      
                 time.sleep(10)
             
             if fail:
