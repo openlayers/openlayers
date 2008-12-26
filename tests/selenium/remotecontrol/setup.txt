@@ -1,0 +1,8 @@
+ * Install selenium remote control from the latest snapshot:
+
+   http://nexus.openqa.org/content/repositories/snapshots/org/seleniumhq/selenium/selenium-remote-control/1.0-SNAPSHOT/
+
+ * Run the server with java -jar selenium-server.jar
+ * Run the python script
+
+ 
