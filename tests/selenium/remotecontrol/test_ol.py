@@ -52,7 +52,7 @@ if 1:
             
             if fail:
                 print "Failed: %s" % fail
-                html = s.get_eval("window.document.getElementById('results').innerHTML").decode("utf-8")
+                html = s.get_eval("window.document.getElementById('results').innerHTML").encode("utf-8")
                 all_html = """<html>
   <head>    
     <meta content="text/html; charset=utf-8" http-equiv="content-type" />
@@ -60,7 +60,7 @@ if 1:
   <body>%s</body></html>""" % html
 
                 f = open("fail.%s.%s.html" % (time.time(), b['name']), "w")
-                f.write(all_html.encode)
+                f.write(all_html)
                 f.close()
         except Exception, E:
             print "Error: ", E
