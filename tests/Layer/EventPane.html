@@ -57,7 +57,7 @@
 // MOUSEMOVE test does not seem to work... 
 //         t.plan( 2 );    
 
-        if (OpenLayers.Util.getBrowserName() != "firefox") {
+        if (OpenLayers.Util.getBrowserName() != "firefox" && OpenLayers.Util.getBrowserName() != "mozilla") {
           t.plan(4);
         } else {
           t.plan(0);
