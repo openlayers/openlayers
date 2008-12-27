@@ -4,7 +4,6 @@ import sys
 from ConfigParser import ConfigParser
 
 MAX_TEST_LENGTH = 300
-
 if len(sys.argv) > 2: 
     filename = sys.argv[2]
 else:
@@ -17,6 +16,9 @@ targets = {}
 
 server = c.get('config', 'server') 
 url= c.get('config', 'url')
+if c.has_option('config', 'timeout'):
+    MAX_TEST_LENGTH = int(c.get('config', 'timeout'))
+
 
 sections = c.sections()
 for s in sections:
@@ -33,14 +35,22 @@ elif sys.argv[1] not in targets:
 else:    
     browsers = [targets[sys.argv[1]]]
 
+keep_going = True
 
 if 1:
     for b in browsers:
+        if not keep_going: 
+            continue
+
         print "Running %s on %s" % (b['name'], b['host']) 
         s = selenium(b['host'], 4444, "*%s" % b['browsercmd'], server)
         s.start()
         try:
-            s.open(url)
+            s.open_window(url, "test_running")
+            time.sleep(2)
+            s.select_window("test_running")
+            time.sleep(2)
+            s.refresh()
             
             count = 0
             while count == 0: 
@@ -76,6 +86,9 @@ if 1:
                 f = open("fail.%s.%s.html" % (time.time(), b['name']), "w")
                 f.write(all_html)
                 f.close()
+        except KeyboardInterrupt, E:
+            keep_going = False
+            print "Stopped by keyboard interrupt"
         except Exception, E:
             print "Error: ", E
         s.stop()
