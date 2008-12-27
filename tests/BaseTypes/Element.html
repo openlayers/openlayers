@@ -111,7 +111,12 @@
     }
     
     function test_Element_getDimensions(t) {
-        t.plan(4);
+        if (!t.open_window) { 
+            t.plan(0);
+            return;
+        } else {    
+            t.plan(4);
+        }    
         
       //shown
         t.open_window( "BaseTypes/Element.html", function( wnd ) {

@@ -2225,6 +2225,10 @@ onload=function()
 				}
 			}else if( param[0]=="testframe_no_clear" ) {
 				Test.AnotherWay._g_test_frame_no_clear=true;
+			}else if( param[0]=="windows" ) {
+                if (param[1] == "none") {
+                    Test.AnotherWay._test_object_t.prototype.open_window=null;
+                }
 			}else if( param[0]=="run" ) {
 				auto_run=true;
 				if( param[1]=="all" ) {
