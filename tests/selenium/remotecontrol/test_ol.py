@@ -15,8 +15,13 @@ c.read(filename)
 
 targets = {}
 
+server = c.get('config', 'server') 
+url= c.get('config', 'url')
+
 sections = c.sections()
 for s in sections:
+    if s == 'config':
+       continue
     targets[s] = dict(c.items(s))
     targets[s]['name'] = s
 
@@ -32,10 +37,10 @@ else:
 if 1:
     for b in browsers:
         print "Running %s on %s" % (b['name'], b['host']) 
-        s = selenium(b['host'], 4444, "*%s" % b['browsercmd'], "http://openlayers.org/")
+        s = selenium(b['host'], 4444, "*%s" % b['browsercmd'], server)
         s.start()
         try:
-            s.open("/dev/tests/run-tests.html?run=all")
+            s.open(url)
             
             count = 0
             while count == 0: 
