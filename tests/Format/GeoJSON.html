@@ -386,6 +386,29 @@
         t.eq(data[0].attributes['author'], 'Your Name Here', 'read author attribute properly'); 
     }
 
+    function test_read_bbox(t) {
+        t.plan(8);
+
+        var f;
+        parser = new OpenLayers.Format.GeoJSON();
+
+        // 4 tests
+        f = '{"geometry": {"type": "Point", "coordinates": [94.21875, 72.94921875], "bbox": [94.21875, 72.94921875, 94.21875, 72.94921875]}, "type": "Feature", "id": 573, "properties": {}, "bbox": [95.0, 73.0]}';
+        data = parser.read(f);
+        t.eq(data[0].bounds.left, 94.21875, "read left bound is correct");
+        t.eq(data[0].bounds.bottom, 72.94921875, "read bottom left bound is correct");
+        t.eq(data[0].bounds.right, 94.21875, "read right bound is correct");
+        t.eq(data[0].bounds.top, 72.94921875, "read top left bound is correct");
+
+        // 4 tests
+        f = '{"geometry": {"type": "Point", "coordinates": [94.21875, 72.94921875]}, "type": "Feature", "id": 573, "properties": {}, "bbox": [95.0, 73.0, 96.0, 74.0]}';
+        data = parser.read(f);
+        t.eq(data[0].bounds.left, 95.0, "read left bound is correct");
+        t.eq(data[0].bounds.bottom, 73.0, "read bottom left bound is correct");
+        t.eq(data[0].bounds.right, 96.0, "read right bound is correct");
+        t.eq(data[0].bounds.top, 74.0, "read top left bound is correct");
+    }
+
     </script> 
 </head> 
 <body> 
