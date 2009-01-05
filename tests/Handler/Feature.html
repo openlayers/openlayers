@@ -292,29 +292,133 @@
     }
 
     function test_destroyed_feature(t) {
-        t.plan(2);
+        t.plan(18);
+        
+        // setup
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
         map.addControl(control);
         var layer = new OpenLayers.Layer();
         layer.removeFeatures = function() {};
-        var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0));
-        feature.layer = layer;
-        layer.getFeatureFromEvent = function(evt) {return feature};
         map.addLayer(layer);
         var handler = new OpenLayers.Handler.Feature(control, layer);
-        handler.activate();
-        var count = 0;
-        handler.callback = function(type, featurelist) {
+        var feature, count, lastType, lastHandled;
+        handler.callback = function(type, features) {
             ++count;
-            t.eq(featurelist[0].id, feature.id, type + ": correct feature sent to callback");
+            lastType = type;
+            lastHandled = features;
         }
+
+        /**
+         * Test that a destroyed feature doesn't get sent to the "click" callback
+         */
+        count = 0;
+        handler.activate();
+        feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0));
+        feature.layer = layer;
+        // mock click on a feature
+        layer.getFeatureFromEvent = function(evt) {return feature};
         handler.handle({type: "click"});
+        // confirm that feature was handled
+        t.eq(count, 1, "[click] callback called once");
+        t.eq(lastType, "click", "[click] correct callback type");
+        t.eq(lastHandled[0].id, feature.id, "[click] correct feature sent to callback");
         
         // now destroy the feature and confirm that the callback is not called again
         feature.destroy();
         handler.handle({type: "click"});
-        t.eq(count, 1, "callback not called after destroy");
+        if(count === 1) {
+            t.ok(true, "[click] callback not called after destroy");
+        } else {
+            t.fail("[click] callback called after destroy: " + lastType);
+        }
+        
+        /**
+         * Test that a destroyed feature doesn't get sent to the "clickout" callback
+         */
+        count = 0;
+        handler.deactivate();
+        handler.activate();
+        feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0));
+        feature.layer = layer;
+
+        // mock a click on a feature
+        layer.getFeatureFromEvent = function(evt) {return feature};
+        handler.handle({type: "click"});
+        // confirm that callback got feature
+        t.eq(count, 1, "[clickout] callback called once on in");
+        t.eq(lastType, "click", "[clickout] click callback called on in");
+        t.eq(lastHandled.length, 1, "[clickout] callback called with one feature");
+        t.eq(lastHandled[0].id, feature.id, "[clickout] callback called with correct feature");
+
+        // now mock a click off a destroyed feature
+        feature.destroy();
+        layer.getFeatureFromEvent = function(evt) {return null};
+        handler.handle({type: "click"});
+        // confirm that callback does not get called
+        if(count === 1) {
+            t.ok(true, "[clickout] callback not called when clicking out of a destroyed feature");
+        } else {
+            t.fail("[clickout] callback called when clicking out of a destroyed feature: " + lastType);
+        }
+        
+        /**
+         * Test that a destroyed feature doesn't get sent to the "over" callback
+         */
+        count = 0;
+        handler.deactivate();
+        handler.activate();
+        feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0));
+        feature.layer = layer;
+        // mock mousemove over a feature
+        layer.getFeatureFromEvent = function(evt) {return feature};
+        handler.handle({type: "mousemove"});
+        // confirm that feature was handled
+        t.eq(count, 1, "[over] callback called once");
+        t.eq(lastType, "over", "[over] correct callback type");
+        t.eq(lastHandled[0].id, feature.id, "[over] correct feature sent to callback");
+        
+        // now destroy the feature and confirm that the callback is not called again
+        feature.destroy();
+        handler.handle({type: "mousemove"});
+        if(count === 1) {
+            t.ok(true, "[over] callback not called after destroy");
+        } else {
+            t.fail("[over] callback called after destroy: " + lastType);
+        }
+
+        /**
+         * Test that a destroyed feature doesn't get sent to the "out" callback
+         */
+        count = 0;
+        handler.deactivate();
+        handler.activate();
+        feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0));
+        feature.layer = layer;
+
+        // mock a mousemove over a feature
+        layer.getFeatureFromEvent = function(evt) {return feature};
+        handler.handle({type: "mousemove"});
+        // confirm that callback got feature
+        t.eq(count, 1, "[out] callback called once on over");
+        t.eq(lastType, "over", "[out] click callback called on over");
+        t.eq(lastHandled.length, 1, "[out] callback called with one feature");
+        t.eq(lastHandled[0].id, feature.id, "[out] callback called with correct feature");
+
+        // now mock a click off a destroyed feature
+        feature.destroy();
+        layer.getFeatureFromEvent = function(evt) {return null};
+        handler.handle({type: "mousemove"});
+        // confirm that callback does not get called
+        if(count === 1) {
+            t.ok(true, "[out] callback not called when moving out of a destroyed feature");
+        } else {
+            t.fail("[out] callback called when moving out of a destroyed feature: " + lastType);
+        }
+        
+        handler.destroy();
+        
+
     }
 
   </script>
