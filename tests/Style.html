@@ -75,19 +75,19 @@
         createdStyle = style.createSymbolizer(feature);
         
         // at this scale, the feature should be green
-        t.eq(createdStyle.display, "", "Feature is visible at scale "+map.getScale());
+        t.eq(createdStyle.display, undefined, "Feature is visible at scale "+map.getScale());
         t.eq(createdStyle.fillColor, "green", "Point symbolizer from rule applied correctly.");
 
         map.setCenter(new OpenLayers.LonLat(3,5), 9);
         // at this scale, the feature should be red
         createdStyle = style.createSymbolizer(feature);
-        t.eq(createdStyle.display, "", "Feature is visible at scale "+map.getScale());
+        t.eq(createdStyle.display, undefined, "Feature is visible at scale "+map.getScale());
         t.eq(createdStyle.fillColor, "yellow", "Point symbolizer from rule applied correctly.");
 
         map.setCenter(new OpenLayers.LonLat(3,5), 8);
         // at this scale, the feature should be yellow
         createdStyle = style.createSymbolizer(feature);
-        t.eq(createdStyle.display, "", "Feature is visible at scale "+map.getScale());
+        t.eq(createdStyle.display, undefined, "Feature is visible at scale "+map.getScale());
         t.eq(createdStyle.fillColor, "red", "Point symbolizer from rule applied correctly.");
 
         map.setCenter(new OpenLayers.LonLat(3,5), 7);
