@@ -37,6 +37,23 @@
         t.ok( layer.projection == null, "default layer projection correctly set");
         t.ok( layer.options instanceof Object, "layer.options correctly initialized as a non-null Object" );
     }
+    
+    function test_maxExtent(t) {
+        t.plan(2);
+        var layer;
+        
+        // test that the image extent is set as the default maxExtent
+        var extent = new OpenLayers.Bounds(1, 2, 3, 4);
+        var size = new OpenLayers.Size(2, 2);
+        layer = new OpenLayers.Layer.Image("Test", "foo", extent, size);
+        t.eq(layer.maxExtent.toString(), extent.toString(), "extent set as default maxExtent");
+        
+        // test that the maxExtent can be set explicitly
+        var maxExtent = new OpenLayers.Bounds(10, 20, 30, 40);
+        layer = new OpenLayers.Layer.Image("Test", "foo", extent, size, {maxExtent: maxExtent});
+        t.eq(layer.maxExtent.toString(), maxExtent.toString(), "maxExtent can be set explicitly");
+        
+    }
 
     function test_Layer_Image_tileTests (t) {
         t.plan(7);
