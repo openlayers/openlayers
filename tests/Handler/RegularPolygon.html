@@ -186,6 +186,40 @@
         handler.move({xy: {x: 20, y: 15}});
     }
 
+    function test_callbacks(t) {
+        t.plan(1);
+
+        // setup
+        var map = new OpenLayers.Map("map", {
+            getLonLatFromPixel: function(px) {
+                return {lon: px.x, lat: px.y};
+            }
+        });
+
+        var control = {"map": map};
+
+        var done = function(geom) {
+            t.ok(true,
+                 "done callback called even if no move between down and up");
+        };
+
+        var handler = new OpenLayers.Handler.RegularPolygon(
+            control, {"done": done});
+        handler.activate();
+        
+        var xy = new OpenLayers.Pixel(Math.random(), Math.random());
+
+        var isLeftClick = OpenLayers.Event.isLeftClick;
+        OpenLayers.Event.isLeftClick = function() { return true; };
+
+        // test
+        map.events.triggerEvent("mousedown", {"xy": xy});
+        map.events.triggerEvent("mouseup", {"xy": xy});
+
+        // tear down
+        OpenLayers.Event.isLeftClick = isLeftClick;
+    }
+
   </script>
 </head>
 <body>
