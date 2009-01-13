@@ -34,7 +34,7 @@
         });
 
         function init(){
-            map = new OpenLayers.Map('map');
+            map = new OpenLayers.Map('map', {numZoomLevels: 2});
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                 "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
                 
@@ -45,7 +45,7 @@
             click.activate();
             map.addControl(new OpenLayers.Control.OverviewMap());
 
-            map2 = new OpenLayers.Map('map2', {'panMethod': null} );
+            map2 = new OpenLayers.Map('map2', {'panMethod': null, numZoomLevels: 2} );
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                 "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
                 
