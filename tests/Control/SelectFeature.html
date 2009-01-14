@@ -11,7 +11,7 @@
         var control = new OpenLayers.Control.SelectFeature(layer, options);
         t.ok(control instanceof OpenLayers.Control.SelectFeature,
              "new OpenLayers.Control.SelectFeature returns an instance");
-        t.eq(control.layer, "bar",
+        t.eq(control.layers[0], "bar",
              "constructor sets layer correctly");        
 //        t.eq(control.handlers.feature.geometryTypes, "foo",
 //             "constructor sets options correctly on feature handler");
@@ -74,14 +74,15 @@
             features[i] = {
                 id: Math.random(),
                 tested: 0,
-                style: ""
+                style: "",
+                layer: layer
             };
         }
         
         // test that onSelect gets called properly
         control.onSelect = function(feature) {
             feature.tested += 1;
-            t.eq(feature, features[feature.index],
+            t.eq(feature.id, features[feature.index].id,
                  "onSelect called with proper feature (" + feature.index + ")");
             t.eq(feature.tested, feature.test,
                  "onSelect called only once for feature (" + feature.index + ")");
@@ -90,7 +91,7 @@
         // test that onUnselect gets called properly
         control.onUnselect = function(feature) {
             feature.tested += 1;
-            t.eq(feature, features[feature.index],
+            t.eq(feature.id, features[feature.index].id,
                  "onUnselect called with proper feature (" + feature.index + ")");
             t.eq(feature.tested, feature.test, 
                  "onUnselect called only once for feature (" + feature.index + ")");
