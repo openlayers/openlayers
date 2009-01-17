@@ -252,6 +252,60 @@
         }
     }    
 
+    function test_fromWKT(t) {
+        
+        var cases = [{
+            wkt: "POINT(1 2)",
+            geom: new OpenLayers.Geometry.Point(1, 2)
+        }, {
+            wkt: "MULTIPOINT(3.5 5.6,4.8 10.5)",
+            geom: new OpenLayers.Geometry.MultiPoint([
+                new OpenLayers.Geometry.Point(3.5, 5.6),
+                new OpenLayers.Geometry.Point(4.8, 10.5)
+            ])
+        }, {
+            wkt: "LINESTRING(1 2, 3 4)",
+            geom: new OpenLayers.Geometry.LineString([
+                new OpenLayers.Geometry.Point(1, 2),
+                new OpenLayers.Geometry.Point(3, 4)
+            ])
+        }, {
+            wkt: "POLYGON((0 0, 0 4, 4 4, 4 0, 0 0),(1 1, 1 3, 3 3, 3 1, 1 1))",
+            geom: new OpenLayers.Geometry.Polygon([
+                new OpenLayers.Geometry.LinearRing([
+                    new OpenLayers.Geometry.Point(0, 0),
+                    new OpenLayers.Geometry.Point(0, 4),
+                    new OpenLayers.Geometry.Point(4, 4),
+                    new OpenLayers.Geometry.Point(4, 0),
+                    new OpenLayers.Geometry.Point(0, 0)
+                ]),
+                new OpenLayers.Geometry.LinearRing([
+                    new OpenLayers.Geometry.Point(1, 1),
+                    new OpenLayers.Geometry.Point(1, 3),
+                    new OpenLayers.Geometry.Point(3, 3),
+                    new OpenLayers.Geometry.Point(3, 1),
+                    new OpenLayers.Geometry.Point(1, 1)
+                ])
+            ])
+        }, {
+            wkt: "GEOMETRYCOLLECTION(POINT(4 6),LINESTRING(4 6,7 10))",
+            geom: new OpenLayers.Geometry.Collection([
+                new OpenLayers.Geometry.Point(4, 6),
+                new OpenLayers.Geometry.LineString([
+                    new OpenLayers.Geometry.Point(4, 6),
+                    new OpenLayers.Geometry.Point(7, 10)
+                ])
+            ])
+        }];
+        
+        t.plan(cases.length);
+        var wkt = OpenLayers.Geometry.fromWKT;
+        for(var i=0; i<cases.length; ++i) {
+            t.geom_eq(wkt(cases[i].wkt), cases[i].geom, "case " + i);
+        }
+    }
+
+
   </script>
 </head>
 <body>
