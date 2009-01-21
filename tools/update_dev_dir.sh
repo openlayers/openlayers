@@ -4,8 +4,8 @@
 
 svn up /www/openlayers/docs/dev; 
 
-# Get current Revision
-REV=`svn info /www/openlayers/docs/dev/ | grep Revision | awk '{print $2}'`
+# Get current 'Last Changed Rev'
+REV=`svn info /www/openlayers/docs/dev/ | grep 'Last Changed Rev' | awk '{print $4}'`
 
 # Get the last svn rev
 touch /tmp/ol_svn_rev
@@ -31,14 +31,15 @@ if [ ! o$REV = $OLD_REV ]; then
 fi    
    
 svn up /www/openlayers/documentation-checkout
-REV=`svn info /www/openlayers/documentation-checkout | grep Revision | awk '{print $2}'`
+REV=`svn info /www/openlayers/documentation-checkout | grep 'Last Changed Rev' | awk '{print $4}'`
 # Get the last svn rev
 touch /tmp/ol_doc_rev
 OLD_REV="o`cat /tmp/ol_doc_rev`"
 # If they're not equal, do some work.
 if [ ! o$REV = $OLD_REV ]; then
     cd /www/openlayers/documentation-checkout
-    python build/build.py /www/openlayers/documentation
+    make html > /dev/null
+    cp -r _build/html/*  /www/openlayers/documentation
     
     echo -n $REV > /tmp/ol_doc_rev
 fi    
