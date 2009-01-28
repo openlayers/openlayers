@@ -143,6 +143,15 @@
         var features = f.read(test_style_fill);    
         t.eq(features[0].style.fillColor, "none", "KML Feature has none fill");        
     } 
+    function test_Format_KML_getStyle(t) {
+        t.plan(1);
+        var style = {t: true};
+        var f = new OpenLayers.Format.KML();
+        f.styles = {test: style};
+        var gotStyle = f.getStyle('test');
+        gotStyle.t = false;
+        t.ok(style.t, "getStyle returns copy of style rather than reference");
+    }
 
     </script> 
 </head> 
