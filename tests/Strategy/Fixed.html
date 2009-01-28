@@ -4,26 +4,55 @@
   <script type="text/javascript">
 
     function test_activate(t) {
-        t.plan(1);
+        t.plan(5);
+
         var featureList = ['foo', 'bar'];
+        // a fake protocol
+        var protocol = {
+            read: function(options) {
+                options.callback.call(options.scope, {features: featureList});
+            }
+        };
 
         var layer = new OpenLayers.Layer.Vector("Vector Layer", {
             strategies: [new OpenLayers.Strategy.Fixed()],
-
-            // a fake protocol
-            protocol: {
-                read: function(options) {
-                    options.callback.call(options.scope, {features: featureList});
-                }
-            },
-            
+            protocol: protocol,
             addFeatures: function(features) {
                 t.eq(features, featureList, "Features added to the layer");
             }
         });
+        
+        var layerp = new OpenLayers.Layer.Vector("Hidden preload Layer", {
+            strategies: [new OpenLayers.Strategy.Fixed({preload:true})],
+            protocol: protocol,
+            visibility: false,
+            addFeatures: function(features) {
+                t.ok(!this.visibility, "Features preloaded before visible");
+            }
+        });
+
+        var s = new OpenLayers.Strategy.Fixed();
+        var layer2 = new OpenLayers.Layer.Vector("Hidden lazyload Layer", {
+            strategies: [s],
+            protocol: protocol,
+            visibility: false,
+            addFeatures: function(features) {
+                t.ok(this.visibility, "Layer visible when features added");
+            }
+        });
 
         var map = new OpenLayers.Map('map');
-        map.addLayer(layer);
+        map.addLayers([layer, layerp, layer2]);
+
+        t.ok(layer2.events.listeners["visibilitychanged"][0].obj == s &&
+                layer2.events.listeners["visibilitychanged"][0].func == s.load,
+                "activate registers visibilitychanged listener if layer hidden"+
+                " and is lazyloading");
+
+        layer2.setVisibility(true);
+        
+        t.ok(layer2.events.listeners["visibilitychanged"] == false,
+                "visibilitychanged listener unregistered");
     }
 
   </script>
