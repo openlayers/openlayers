@@ -596,6 +596,10 @@
                 node: format.createElementNSPlus("foo:bar", {value: 0}),
                 expect: "<foo:bar xmlns:foo='http://example.com/foo'>0</foo:bar>"
             }, {
+                description: "value of true gets appended as a text node",
+                node: format.createElementNSPlus("foo:bar", {value: true}),
+                expect: "<foo:bar xmlns:foo='http://example.com/foo'>true</foo:bar>"
+            }, {
                 description: "value of false gets appended as a text node",
                 node: format.createElementNSPlus("foo:bar", {value: false}),
                 expect: "<foo:bar xmlns:foo='http://example.com/foo'>false</foo:bar>"
