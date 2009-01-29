@@ -47,6 +47,7 @@
         map.addControl(control);
         
         var STARTING_ZOOM_LEVEL = 4;
+        var DELAY = 2;
         
         var centerLL = new OpenLayers.LonLat(0,0);
         map.setCenter(centerLL, STARTING_ZOOM_LEVEL);
@@ -55,56 +56,56 @@
         evt.keyCode = OpenLayers.Event.KEY_LEFT;
         control.defaultKeyPress(evt);
         t.delay_call( 
-            2, function() {
+            DELAY, function() {
                 t.ok( map.getCenter().lon < centerLL.lon, "key left works correctly" );
                 
                 // Start new test.
                 evt.keyCode = OpenLayers.Event.KEY_RIGHT;
                 control.defaultKeyPress(evt);
             },
-            2, function() {
+            DELAY, function() {
                 t.eq( map.getCenter().lon, centerLL.lon, "key right works correctly" );
                 
                 // Start new test. 
                 evt.keyCode = OpenLayers.Event.KEY_UP;
                 control.defaultKeyPress(evt);
             },
-            2, function() {
+            DELAY, function() {
                 t.ok( map.getCenter().lat > centerLL.lat, "key up works correctly" ); 
                 
                 // Start new test.
                 evt.keyCode = OpenLayers.Event.KEY_DOWN;
                 control.defaultKeyPress(evt);
             },
-            2, function() {
+            DELAY, function() {
                 t.ok( map.getCenter().lat == centerLL.lat, "key down works correctly" ); 
                 
                 // Start new test.
                 evt.keyCode = 33; //page up
                 control.defaultKeyPress(evt);
             },
-            2, function() {
+            DELAY, function() {
                 t.ok( map.getCenter().lat > centerLL.lat, "key page up works correctly" ); 
                 
                 // Start new test.
                 evt.keyCode = 34; //page down
                 control.defaultKeyPress(evt);
             },
-            2, function() {
+            DELAY, function() {
                 t.ok( map.getCenter().lat == centerLL.lat, "key page down works correctly" ); 
                 
                 // Start new test.
                 evt.keyCode = 35; //end
                 control.defaultKeyPress(evt);
             },
-            2, function() {
+            DELAY, function() {
                 t.ok( map.getCenter().lon > centerLL.lon, "key end works correctly" ); 
                 
                 // Start new test.
                 evt.keyCode = 36; //home
                 control.defaultKeyPress(evt);
             },
-            2, function() {
+            DELAY, function() {
                 t.ok( map.getCenter().lon == centerLL.lon, "key home works correctly"); 
                 
                 // Start new test.
