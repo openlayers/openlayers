@@ -106,6 +106,98 @@
         OpenLayers.Request.GET = _get;
     }
 
+    function test_readWithPOST(t) {
+        t.plan(10);
+        var protocol = new OpenLayers.Protocol.HTTP({
+            'url': 'foo_url',
+            'params': {'k': 'foo_param'}
+        });
+
+        // fake XHR request object
+        var request = {'status': 200};
+
+        // options to pass to read
+        var readOptions = {
+            'url': 'bar_url',
+            'params': {'k': 'bar_param'},
+            'scope': {'hello': 'world'},
+            'callback': function() {},
+            'readWithPOST': true
+        };
+
+        var response;
+
+        protocol.handleResponse = function(resp, opt) {
+            // 4 tests
+            var req = resp.priv;
+            t.ok(this == protocol,
+                'handleResponse called with correct scope');
+            t.ok(opt == readOptions,
+                'handleResponse called with correct options');
+            t.eq(resp.CLASS_NAME, 'OpenLayers.Protocol.Response',
+                'handleResponse called with a Response object');
+            t.eq(req, request,
+                'handleResponse called with correct request');
+
+            response = resp;
+        };
+
+        var _post = OpenLayers.Request.POST;
+
+        OpenLayers.Request.POST = function(options) {
+            // 5 tests
+            t.eq(options.url, readOptions.url,
+                'GET with POST called with correct url in options');
+            t.eq(options.data, OpenLayers.Util.getParameterString(readOptions.params),
+                'GET with POST called with correct params encoded in options');
+            t.eq(options.headers, {"Content-Type": "application/x-www-form-urlencoded"},
+                'GET with POST called with correct headers (application/x-www-form-urlencoded)');
+            t.eq(options.scope, undefined,
+                'GET with POST called with correct scope in options');
+            t.ok(typeof options.callback == 'function',
+                'GET with POST called with a callback in options');
+            t.delay_call(0.1, function() {
+                options.callback(request);
+                t.ok(resp == response,
+                    'read returns the expected response object');        
+                // cleanup
+                protocol.destroy();
+                OpenLayers.Request.POST = _post;
+            });
+            return request;
+        };
+
+        var resp = protocol.read(readOptions);
+
+        OpenLayers.Request.POST = _post;
+    }
+
+    function test_read_method(t) {
+        t.plan(4);
+
+        var _post = OpenLayers.Request.POST;
+        OpenLayers.Request.POST = function(options) { return 'post'; }
+        var _get = OpenLayers.Request.GET;
+        OpenLayers.Request.GET = function(options) { return 'get'; }
+
+        var protocol = new OpenLayers.Protocol.HTTP({});
+
+        t.eq(protocol.read({}).priv, 'get',
+            'readWithPOST is false by default');
+        t.eq(protocol.read({readWithPOST: true}).priv, 'post',
+            'readWithPOST can be set in read options');
+
+        var protocol = new OpenLayers.Protocol.HTTP({readWithPOST: true});
+
+        t.eq(protocol.read({}).priv, 'post',
+            'readWithPOST can be set in constructor');
+        t.eq(protocol.read({readWithPOST: false}).priv, 'get',
+            'readWithPOST can be overridden in read options');
+
+        OpenLayers.Request.POST = _post;
+        OpenLayers.Request.GET = _get;
+    }
+
     function test_read_bbox(t) {
         t.plan(1);
         var protocol = new OpenLayers.Protocol.HTTP();
