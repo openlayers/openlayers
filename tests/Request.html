@@ -20,7 +20,7 @@
     function test_issue(t) {
         setup();
 
-        t.plan(22);
+        t.plan(21);
         var request, config;
         var proto = OpenLayers.Request.XMLHttpRequest.prototype;
         var issue = OpenLayers.Function.bind(OpenLayers.Request.issue,
@@ -126,18 +126,6 @@
         request = issue(config);
         request.readyState = 4;
         request.onreadystatechange();
-
-        // test that send is called with data - 1 test
-        var _send = proto.send;
-        config = {
-            method: "PUT",
-            data: "bling"
-        };
-        proto.send = function(data) {
-            t.eq(data, config.data, "send called with correct data");
-        }
-        request = issue(config);
-        proto.send = _send;
         
         // test that optional success callback is only called with 200s and
         // failure is only called with non-200s
@@ -180,6 +168,29 @@
         proto.send = _send;
 
         teardown();
+    }
+    
+    function test_delayed_send(t) {
+        t.plan(1);
+        var proto = OpenLayers.Request.XMLHttpRequest.prototype;
+        var _send = proto.send;
+        
+        // test that send is called with data - 1 test
+        var config = {
+            method: "PUT",
+            data: "bling"
+        };
+        var got = {};
+        proto.send = function(data) {
+            got.data = data;
+        }
+        OpenLayers.Request.issue(config);
+        
+        t.delay_call(1, function() {
+            t.eq(got.data, config.data, "proper data sent");
+            proto.send = _send;
+        });        
+        
     }
     
     function test_GET(t) {
