@@ -8,7 +8,7 @@
         height: 250px;
     }
     #out0, #out1 {
-        height: 250px;
+        height: 100px;
         width: 90%;
         overflow: auto;
     }
@@ -17,6 +17,7 @@
     <script type="text/javascript">
         
         var filter_1_0 = new OpenLayers.Format.Filter({version: "1.0.0"});
+        var filter_1_1 = new OpenLayers.Format.Filter({version: "1.1.0"});
         var xml = new OpenLayers.Format.XML();
         
         var filter;
@@ -24,11 +25,25 @@
             var code = input.value;
             try {
                 eval(code);
+            } catch(err) {
+                out0.value = err.message;
+                out1.value = "";
+            }
+            try {
                 out0.value = xml.write(filter_1_0.write(filter));
             } catch(err) {
-                out0.innerHTML = err.message;
+                out0.value = err.message;
                 if(err.lineNumber != undefined) {
-                    out0.innerHTML += " (line " + err.lineNumber + " " +
+                    out0.value += " (line " + err.lineNumber + " " +
+                                        err.fileName + ")";
+                }
+            }
+            try {
+                out1.value = xml.write(filter_1_1.write(filter));
+            } catch(err) {
+                out1.value = err.message;
+                if(err.lineNumber != undefined) {
+                    out1.value += " (line " + err.lineNumber + " " +
                                         err.fileName + ")";
                 }
             }
@@ -38,6 +53,9 @@
         window.onload = function() {
             input = document.getElementById("in");
             out0 = document.getElementById("out0");
+            out1 = document.getElementById("out1");
+            out0.value = "";
+            out1.value = "";
             document.getElementById("write").onclick = write;
         };
 
@@ -61,6 +79,11 @@ filter = new OpenLayers.Filter.Logical({
             type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
             property: "mean",
             value: "yes"
+        }),
+        new OpenLayers.Filter.Spatial({
+            type: OpenLayers.Filter.Spatial.BBOX,
+            value: new OpenLayers.Bounds(-180, -90, 180, 90),
+            projection: "EPSG:4326"
         })
     ]
 });
@@ -68,6 +91,8 @@ filter = new OpenLayers.Filter.Logical({
     <button id="write">write</button><br />
     Filter Encoding 1.0
     <textarea id="out0"></textarea><br />
+    Filter Encoding 1.1
+    <textarea id="out1"></textarea><br />
     <p id="docs">
     </p>
   </body>

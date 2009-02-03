@@ -53,6 +53,31 @@
         
     }
     
+    function test_BBOX(t) {
+        t.plan(1);
+        var filter = new OpenLayers.Filter.Spatial({
+            type: OpenLayers.Filter.Spatial.BBOX,
+            property: "the_geom",
+            value: new OpenLayers.Bounds(-180, -90, 180, 90),
+            projection: "EPSG:4326"
+        });
+        
+        var out =
+            '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+                '<ogc:BBOX>' +
+                    '<ogc:PropertyName>the_geom</ogc:PropertyName>' +
+                    '<gml:Box xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">' +
+                        '<gml:coordinates decimal="." cs="," ts=" ">-90,-180 90,180</gml:coordinates>' +
+                    '</gml:Box>' +
+                '</ogc:BBOX>' +
+            '</ogc:Filter>';
+        
+        var parser = new OpenLayers.Format.Filter.v1_0_0();
+        var node = parser.write(filter);
+        
+        t.xml_eq(node, out, "bbox correctly written");
+    }
+    
 
     </script> 
 </head> 

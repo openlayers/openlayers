@@ -67,40 +67,116 @@
     }
     
     function test_evaluate(t) {
-        t.plan(5);
         
-        var filter = new OpenLayers.Filter.Comparison({
+        var cases = [{
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.BETWEEN,
                 property: "area",
                 lowerBoundary: 1000,
-                upperBoundary: 4999,
-                type: OpenLayers.Filter.Comparison.BETWEEN});
-
-        var features = [
-                new OpenLayers.Feature.Vector(null, {
-                        area: 999}),
-                new OpenLayers.Feature.Vector(null, {
-                        area: 1000}),
-                new OpenLayers.Feature.Vector(null, {
-                        area: 4999}),
-                new OpenLayers.Feature.Vector(null, {
-                        area: 5000})];
-        // PropertyIsBetween filter: lower and upper boundary are inclusive
-        var filterResults = {
-                0: false,
-                1: true,
-                2: true,
-                3: false};
-        for (var i in filterResults) {
-            var result = filter.evaluate(features[i].attributes);
-            t.eq(result, filterResults[i], "feature "+i+
-                    " evaluates to "+result.toString()+" correctly.");
+                upperBoundary: 4999
+            }),
+            context: {area: 999},
+            expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.BETWEEN,
+                property: "area",
+                lowerBoundary: 1000,
+                upperBoundary: 4999
+            }),
+            context: {area: 1000},
+            expect: true
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.BETWEEN,
+                property: "area",
+                lowerBoundary: 1000,
+                upperBoundary: 4999
+            }),
+            context: {area: 4999},
+            expect: true
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.BETWEEN,
+                property: "area",
+                lowerBoundary: 1000,
+                upperBoundary: 4999
+            }),
+            context: {area: 5000},
+            expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.BETWEEN,
+                property: "area",
+                lowerBoundary: 1000,
+                upperBoundary: 4999
+            }),
+            context: {area: 999},
+            expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                property: "prop",
+                value: "Foo"
+            }),
+            context: {prop: "Foo"},
+            expect: true
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                property: "prop",
+                value: "Foo"
+            }),
+            context: {prop: "foo"},
+            expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                matchCase: true,
+                property: "prop",
+                value: "Foo"
+            }),
+            context: {prop: "foo"},
+            expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
+                property: "prop",
+                value: "foo"
+            }),
+            context: {prop: "FOO"},
+            expect: true
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
+                matchCase: true,
+                property: "prop",
+                value: "foo"
+            }),
+            context: {prop: "FOO"},
+            expect: true
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
+                matchCase: false,
+                property: "prop",
+                value: "foo"
+            }),
+            context: {prop: "FOO"},
+            expect: false
+        }];
+        
+        t.plan(cases.length);
+        
+        var c;
+        for(var i=0; i<cases.length; ++i) {
+            c = cases[i];
+            t.eq(c.filter.evaluate(c.context), c.expect, "case " + i + ": " + c.filter.type);
         }
-        var context = {
-            area: 4998
-        };
-        var result = filter.evaluate(context);
-        t.eq(result, true, "evaluation against custom filter context works.");
+        
     }
+
+
     </script> 
 </head> 
 <body> 

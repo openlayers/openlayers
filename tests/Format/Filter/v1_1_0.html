@@ -1,0 +1,175 @@
+<html> 
+<head> 
+    <script src="../../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+    
+    var test_xml =
+        '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+            '<ogc:Or>' +
+                '<ogc:PropertyIsBetween>' +
+                    '<ogc:PropertyName>number</ogc:PropertyName>' +
+                    '<ogc:LowerBoundary>' +
+                        '<ogc:Literal>1064866676</ogc:Literal>' +
+                    '</ogc:LowerBoundary>' +
+                    '<ogc:UpperBoundary>' +
+                        '<ogc:Literal>1065512599</ogc:Literal>' +
+                    '</ogc:UpperBoundary>' +
+                '</ogc:PropertyIsBetween>' +
+                '<ogc:PropertyIsLike wildCard="*" singleChar="." escape="!">' +
+                    '<ogc:PropertyName>cat</ogc:PropertyName>' +
+                    '<ogc:Literal>*dog.food!*good</ogc:Literal>' +
+                '</ogc:PropertyIsLike>' +
+                '<ogc:Not>' +
+                    '<ogc:PropertyIsLessThanOrEqualTo>' +
+                        '<ogc:PropertyName>FOO</ogc:PropertyName>' +
+                        '<ogc:Literal>5000</ogc:Literal>' +
+                    '</ogc:PropertyIsLessThanOrEqualTo>' +
+                '</ogc:Not>' +
+                '<ogc:PropertyIsEqualTo matchCase="true">' +
+                    '<ogc:PropertyName>cat</ogc:PropertyName>' +
+                    '<ogc:Literal>dog</ogc:Literal>' +
+                '</ogc:PropertyIsEqualTo>' +
+                '<ogc:PropertyIsEqualTo matchCase="false">' +
+                    '<ogc:PropertyName>cat</ogc:PropertyName>' +
+                    '<ogc:Literal>dog</ogc:Literal>' +
+                '</ogc:PropertyIsEqualTo>' +
+            '</ogc:Or>' +
+        '</ogc:Filter>';
+
+    function test_read(t) {
+        t.plan(3);
+
+        var parser = new OpenLayers.Format.Filter.v1_1_0();
+        var xml = new OpenLayers.Format.XML();
+        var filter = parser.read(xml.read(test_xml).documentElement);
+
+        t.ok(filter instanceof OpenLayers.Filter.Logical, "instance of correct class");
+        t.eq(filter.type, OpenLayers.Filter.Logical.OR, "correct type");
+        t.eq(filter.filters.length, 5, "correct number of child filters");
+    }
+    
+    function test_write(t) {
+        t.plan(1);
+
+        // read first - testing that write produces the ogc:Filter element above
+        var parser = new OpenLayers.Format.Filter.v1_1_0();
+        var xml = new OpenLayers.Format.XML();
+        var filter = parser.read(xml.read(test_xml).documentElement);
+        
+        var node = parser.write(filter);
+        t.xml_eq(node, test_xml, "filter correctly written");
+        
+    }
+    
+    function test_matchCase(t) {
+        var parser = new OpenLayers.Format.Filter.v1_1_0();
+        var xml = new OpenLayers.Format.XML();
+        
+        var cases = [{
+            str:
+                '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+                    '<ogc:PropertyIsEqualTo>' +
+                        '<ogc:PropertyName>cat</ogc:PropertyName>' +
+                        '<ogc:Literal>dog</ogc:Literal>' +
+                    '</ogc:PropertyIsEqualTo>' +
+                '</ogc:Filter>',
+            exp: true
+        }, {
+            str:
+                '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+                    '<ogc:PropertyIsEqualTo matchCase="1">' +
+                        '<ogc:PropertyName>cat</ogc:PropertyName>' +
+                        '<ogc:Literal>dog</ogc:Literal>' +
+                    '</ogc:PropertyIsEqualTo>' +
+                '</ogc:Filter>',
+            exp: true
+        }, {
+            str:
+                '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+                    '<ogc:PropertyIsEqualTo matchCase="true">' +
+                        '<ogc:PropertyName>cat</ogc:PropertyName>' +
+                        '<ogc:Literal>dog</ogc:Literal>' +
+                    '</ogc:PropertyIsEqualTo>' +
+                '</ogc:Filter>',
+            exp: true
+        }, {
+            str:
+                '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+                    '<ogc:PropertyIsEqualTo matchCase="0">' +
+                        '<ogc:PropertyName>cat</ogc:PropertyName>' +
+                        '<ogc:Literal>dog</ogc:Literal>' +
+                    '</ogc:PropertyIsEqualTo>' +
+                '</ogc:Filter>',
+            exp: false
+        }, {
+            str:
+                '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+                    '<ogc:PropertyIsEqualTo matchCase="0">' +
+                        '<ogc:PropertyName>cat</ogc:PropertyName>' +
+                        '<ogc:Literal>dog</ogc:Literal>' +
+                    '</ogc:PropertyIsEqualTo>' +
+                '</ogc:Filter>',
+            exp: false
+        }, {
+            str:
+                '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+                    '<ogc:PropertyIsNotEqualTo matchCase="true">' +
+                        '<ogc:PropertyName>cat</ogc:PropertyName>' +
+                        '<ogc:Literal>dog</ogc:Literal>' +
+                    '</ogc:PropertyIsNotEqualTo>' +
+                '</ogc:Filter>',
+            exp: true
+        }, {
+            str:
+                '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+                    '<ogc:PropertyIsNotEqualTo matchCase="false">' +
+                        '<ogc:PropertyName>cat</ogc:PropertyName>' +
+                        '<ogc:Literal>dog</ogc:Literal>' +
+                    '</ogc:PropertyIsNotEqualTo>' +
+                '</ogc:Filter>',
+            exp: false
+        }];
+        
+        t.plan(cases.length);
+        
+        var filter, c;
+        for(var i=0; i<cases.length; ++i) {
+            c = cases[i];
+            filter = parser.read(xml.read(c.str).documentElement);
+            t.eq(filter.matchCase, c.exp, "case " + i);
+        }
+        
+    }
+
+    function test_BBOX(t) {
+        t.plan(1);
+        var filter = new OpenLayers.Filter.Spatial({
+            type: OpenLayers.Filter.Spatial.BBOX,
+            property: "the_geom",
+            value: new OpenLayers.Bounds(-180, -90, 180, 90),
+            projection: "EPSG:4326"
+        });
+        
+        var out =
+            '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+                '<ogc:BBOX>' +
+                    '<ogc:PropertyName>the_geom</ogc:PropertyName>' +
+                    '<gml:Envelope xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">' +
+                        '<gml:lowerCorner>-90 -180</gml:lowerCorner>' +
+                        '<gml:upperCorner>90 180</gml:upperCorner>' +
+                    '</gml:Envelope>' +
+                '</ogc:BBOX>' +
+            '</ogc:Filter>';
+        
+        var parser = new OpenLayers.Format.Filter.v1_1_0();
+        var node = parser.write(filter);
+        
+        t.xml_eq(node, out, "bbox correctly written");
+    }
+    
+
+    </script> 
+</head> 
+<body>
+</body> 
+</html> 
