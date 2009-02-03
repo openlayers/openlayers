@@ -13,6 +13,11 @@
                 options.callback.call(options.scope, {features: featureList});
             }
         };
+        
+        // Create a dummy layer that can act as the map base layer.
+        // This will be unnecessary if #1920 is addressed or if base layer
+        // handling is changed.
+        var dummy = new OpenLayers.Layer(null, {isBaseLayer: true});
 
         var layer = new OpenLayers.Layer.Vector("Vector Layer", {
             strategies: [new OpenLayers.Strategy.Fixed()],
@@ -42,7 +47,7 @@
         });
 
         var map = new OpenLayers.Map('map');
-        map.addLayers([layer, layerp, layer2]);
+        map.addLayers([dummy, layer, layerp, layer2]);
 
         t.ok(layer2.events.listeners["visibilitychanged"][0].obj == s &&
                 layer2.events.listeners["visibilitychanged"][0].func == s.load,
@@ -53,6 +58,62 @@
         
         t.ok(layer2.events.listeners["visibilitychanged"] == false,
                 "visibilitychanged listener unregistered");
+    }
+    
+    function tests_merge(t) {
+        
+        t.plan(4);
+        
+        var strategy = new OpenLayers.Strategy.Fixed();
+        
+        // create map with default projection
+        var map = new OpenLayers.Map("map");
+        
+        // create layer with custom projection
+        var layer = new OpenLayers.Layer.Vector(null, {
+            isBaseLayer: true,
+            strategies: [strategy],
+            protocol: new OpenLayers.Protocol(),
+            projection: new OpenLayers.Projection("EPSG:900913")
+        });
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        
+        // create some features
+        var geometries = [
+            new OpenLayers.Geometry.Point(100, 200),
+            new OpenLayers.Geometry.Point(1000, 2000)
+        ];
+        var features = [
+            new OpenLayers.Feature.Vector(geometries[0].clone()),
+            new OpenLayers.Feature.Vector(geometries[1].clone())
+        ];
+
+        // call merge with a mocked up response
+        strategy.merge({features: features});
+        
+        // test that feature geometries have been transformed to map projection
+        var from = layer.projection;
+        var to = map.getProjectionObject();
+        t.geom_eq(layer.features[0].geometry, features[0].geometry.transform(from, to), "[different proj] feature 0 geometry transformed");
+        t.geom_eq(layer.features[1].geometry, features[1].geometry.transform(from, to), "[different proj] feature 1 geometry transformed");
+        
+        // same as above but with same map/layer projection
+        layer.destroyFeatures();
+        layer.projection = map.getProjectionObject();
+        
+        features = [
+            new OpenLayers.Feature.Vector(geometries[0].clone()),
+            new OpenLayers.Feature.Vector(geometries[1].clone())
+        ];
+        
+        // call merge again with mocked up response
+        strategy.merge({features: features});
+
+        // test that feature geometries have not been transformed
+        t.geom_eq(layer.features[0].geometry, features[0].geometry, "[same proj] feature 0 geometry not transformed");
+        t.geom_eq(layer.features[1].geometry, features[1].geometry, "[same proj] feature 1 geometry not transformed");
+        
     }
 
   </script>
