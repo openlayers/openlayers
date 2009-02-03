@@ -209,14 +209,19 @@ var cases = {
 OpenLayers.Util.extend(cases, {
     "v3/point.xml": cases["v2/point-coordinates.xml"],
     "v3/linestring.xml": cases["v2/linestring-coordinates.xml"],
+    "v3/curve.xml": cases["v2/linestring-coordinates.xml"],
     "v3/polygon.xml": cases["v2/polygon-coordinates.xml"],
+    "v3/surface.xml": cases["v2/polygon-coordinates.xml"],
     "v3/multipoint-singular.xml": cases["v2/multipoint-coordinates.xml"],
     "v3/multipoint-plural.xml": cases["v2/multipoint-coordinates.xml"],
     "v3/multilinestring-singular.xml": cases["v2/multilinestring-coordinates.xml"],
     "v3/multilinestring-plural.xml": cases["v2/multilinestring-coordinates.xml"],
+    "v3/multicurve-singular.xml": cases["v2/multilinestring-coordinates.xml"],
+    "v3/multicurve-curve.xml": cases["v2/multilinestring-coordinates.xml"],
     "v3/multipolygon-singular.xml": cases["v2/multipolygon-coordinates.xml"],
     "v3/multipolygon-plural.xml": cases["v2/multipolygon-coordinates.xml"],
     "v3/multisurface-singular.xml": cases["v2/multipolygon-coordinates.xml"],
     "v3/multisurface-plural.xml": cases["v2/multipolygon-coordinates.xml"],
+    "v3/multisurface-surface.xml": cases["v2/multipolygon-coordinates.xml"],
     "v3/envelope.xml": cases["v2/box-coordinates.xml"]
 });
