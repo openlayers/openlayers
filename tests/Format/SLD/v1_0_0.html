@@ -154,7 +154,7 @@
             fillOpacity: 0
         };
         var root = parser.createElementNSPlus("PolygonSymbolizer");
-        var got = parser.writeNode(root, "Fill", symbolizer);
+        var got = parser.writeNode("Fill", symbolizer, root);
         var expect =
             '<Fill xmlns="http://www.opengis.net/sld">' +
                 '<CssParameter name="fill">red</CssParameter>' + 
