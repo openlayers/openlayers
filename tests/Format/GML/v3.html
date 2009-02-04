@@ -211,6 +211,39 @@
         t.eq(attributes["STATE_ABBR"], "IL", "read STATE_ABBR");
         t.eq(attributes["LAND_KM"], "143986.61", "read LAND_KM");
     }
+    
+    function test_emptyAttribute(t) {
+        t.plan(4);
+        var str =
+            '<gml:featureMembers xmlns:gml="http://www.opengis.net/gml">' +
+                '<topp:gnis_pop gml:id="gnis_pop.148604" xmlns:topp="http://www.openplans.org/topp">' +
+                    '<gml:name>Aflu</gml:name>' +
+                    '<topp:the_geom>' +
+                        '<gml:Point srsName="urn:x-ogc:def:crs:EPSG:4326">' +
+                            '<gml:pos>34.12 2.09</gml:pos>' +
+                        '</gml:Point>' +
+                    '</topp:the_geom>' +
+                    '<topp:population>84683</topp:population>' +
+                    '<topp:country>Algeria</topp:country>' +
+                    '<topp:type>place</topp:type>' +
+                    '<topp:name>Aflu</topp:name>' +
+                    '<topp:empty></topp:empty>' +
+                '</topp:gnis_pop>' +
+            '</gml:featureMembers>';
+
+        var format = new OpenLayers.Format.GML.v3({
+            featureType: "gnis_pop",
+            featureNS: "http://www.openplans.org/topp",
+            geometryName: "the_geom"
+        });
+        
+        var features = format.read(str);
+        t.eq(features.length, 1, "read one feature");
+        var attr = features[0].attributes;
+        t.eq(attr.name, "Aflu", "correctly read attribute value");
+        t.eq(attr.foo, undefined, "bogus attribute is undefined");
+        t.eq(attr.empty, "", "empty attribute value is empty string");
+    }
 
     function test_write(t) {
         t.plan(1);
