@@ -97,6 +97,60 @@
         OpenLayers.Event.stop = oldStop;
 
     }
+    
+    function test_callbacks(t) {
+        t.plan(10);
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var control = new OpenLayers.Control({
+        });
+        var log = {};
+        var handler = new OpenLayers.Handler.Point(control, {
+            modify: function() {
+                log.type = "modify",
+                log.args = arguments
+            },
+            done: function() {
+                log.type = "done",
+                log.args = arguments
+            },
+            cancel: function() {
+                log.type = "cancel",
+                log.args = arguments
+            }
+        });
+        control.handler = handler;
+        map.addControl(control);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+        
+        // mock up feature drawing
+        handler.activate();
+        handler.mousedown({type: "mousedown", xy: new OpenLayers.Pixel(0, 0)});
+        t.eq(log.type, "modify", "[mousedown] modify called");
+        t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-150, 75), "[mousedown] correct point");
+        t.geom_eq(log.args[1].geometry, new OpenLayers.Geometry.Point(-150, 75), "[mousedown] correct sketch feature");
+        handler.mousemove({type: "mousemove", xy: new OpenLayers.Pixel(1, 0)});
+        t.eq(log.type, "modify", "[mousemove] modify called");
+        t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-149, 75), "[mousemove] correct point");
+        t.geom_eq(log.args[1].geometry, new OpenLayers.Geometry.Point(-149, 75), "[mousemove] correct sketch feature");
+        handler.mouseup({type: "mouseup", xy: new OpenLayers.Pixel(1, 0)});
+        t.eq(log.type, "done", "[mouseup] done called");
+        t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-149, 75), "[mouseup] correct point");
+
+        // mock up feature drawing with a cancel
+        handler.mousedown({type: "mousedown", xy: new OpenLayers.Pixel(0, 0)});
+        handler.deactivate();
+        t.eq(log.type, "cancel", "[deactivate while drawing] cancel called");
+        t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-150, 75), "[deactivate while drawing] correct point");
+        
+        map.destroy();
+    }
 
 
     function test_Handler_Point_deactivation(t) {
@@ -121,7 +175,7 @@
         map.zoomToMaxExtent();
         var control = new OpenLayers.Control();
         map.addControl(control);
-        var handler = new OpenLayers.Handler.Point(control);
+        var handler = new OpenLayers.Handler.Point(control, {});
         var activated = handler.activate();
         var px = new OpenLayers.Pixel(150, 75);
         var evt = {xy: px, which: 1};

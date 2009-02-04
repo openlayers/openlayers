@@ -71,6 +71,86 @@
         map.destroy();     
     }
 
+    function test_callbacks(t) {
+        t.plan(12);
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var control = new OpenLayers.Control({
+        });
+        var log = {};
+        var handler = new OpenLayers.Handler.Polygon(control, {
+            modify: function() {
+                log.type = "modify",
+                log.args = arguments
+            },
+            done: function() {
+                log.type = "done",
+                log.args = arguments
+            },
+            cancel: function() {
+                log.type = "cancel",
+                log.args = arguments
+            }
+        });
+        control.handler = handler;
+        map.addControl(control);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+        
+        // mock up feature drawing
+        handler.activate();
+        // click at 0, 0
+        handler.mousedown({type: "mousedown", xy: new OpenLayers.Pixel(0, 0)});
+        handler.mouseup({type: "mouseup", xy: new OpenLayers.Pixel(0, 0)});
+        t.eq(log.type, "modify", "[mouseup] modify called");
+        t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-150, 75), "[mouseup] correct vertex");
+        t.ok(log.args[1] === handler.polygon, "[mouseup] correct sketch feature");
+        // move to 10, 10 and click
+        handler.mousemove({type: "mousemove", xy: new OpenLayers.Pixel(10, 10)});
+        t.eq(log.type, "modify", "[mousemove] modify called");
+        t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-140, 65), "[mousemove] correct vertex");
+        t.ok(log.args[1] === handler.polygon, "[mouseup] correct sketch feature");
+        handler.mousedown({type: "mousedown", xy: new OpenLayers.Pixel(10, 10)});
+        handler.mouseup({type: "mouseup", xy: new OpenLayers.Pixel(10, 10)});
+        // move to 0, 10 and double click
+        handler.mousemove({type: "mousemove", xy: new OpenLayers.Pixel(0, 10)});
+        t.eq(log.type, "modify", "[mousemove] modify called");
+        t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-150, 65), "[mousemove] correct vertex");
+        t.ok(log.args[1] === handler.polygon, "[mouseup] correct sketch feature");
+        handler.mousedown({type: "mousedown", xy: new OpenLayers.Pixel(0, 10)});
+        handler.mouseup({type: "mouseup", xy: new OpenLayers.Pixel(0, 10)});
+        handler.mousedown({type: "mousedown", xy: new OpenLayers.Pixel(0, 10)});
+        handler.mouseup({type: "mouseup", xy: new OpenLayers.Pixel(0, 10)});
+        handler.dblclick({type: "dblclick", xy: new OpenLayers.Pixel(0, 10)});
+        t.eq(log.type, "done", "[dblclick] done called");
+        t.geom_eq(
+            log.args[0],
+            new OpenLayers.Geometry.Polygon([
+                new OpenLayers.Geometry.LinearRing([
+                    new OpenLayers.Geometry.Point(-150, 75),
+                    new OpenLayers.Geometry.Point(-140, 65),
+                    new OpenLayers.Geometry.Point(-150, 65),
+                    new OpenLayers.Geometry.Point(-150, 75)
+                ])
+            ]),
+            "[dblclick] correct polygon"
+        );
+        
+        // mock up sketch cancel
+        handler.mousedown({type: "mousedown", xy: new OpenLayers.Pixel(0, 0)});
+        handler.mouseup({type: "mouseup", xy: new OpenLayers.Pixel(0, 0)});
+        handler.mousemove({type: "mousemove", xy: new OpenLayers.Pixel(1, 1)});
+        handler.deactivate();
+        t.eq(log.type, "cancel", "[deactivate while drawing] cancel called");
+        
+        map.destroy();
+    }        
+
     function test_Handler_Polygon_destroy(t) {
         t.plan(8);
         var map = new OpenLayers.Map('map');
