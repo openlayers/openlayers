@@ -30,6 +30,45 @@
         control.events.un({"featureadded": handlefeatureadded});
         
     }
+    
+    function test_sketch_events(t) {
+        t.plan(4);
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        var control = new OpenLayers.Control.DrawFeature(
+            layer, OpenLayers.Handler.Point
+        );
+        map.addLayer(layer);
+        map.addControl(control);
+        map.zoomToMaxExtent();
+        control.activate();
+        
+        var log = {};
+        layer.events.on({
+            sketchmodified: function(event) {
+                log.event = event;
+            },
+            sketchcomplete: function(event) {
+                log.event = event;
+            }
+        });
+        
+        // mock up draw/modify of a point
+        map.events.triggerEvent("mousedown", {xy: new OpenLayers.Pixel(0, 0)});
+        map.events.triggerEvent("mousemove", {xy: new OpenLayers.Pixel(10, 10)});
+        t.eq(log.event.type, "sketchmodified", "[mousemove] sketchmodified triggered");
+        t.geom_eq(log.event.vertex, new OpenLayers.Geometry.Point(-190, 115), "[mousemove] correct vertex");
+        map.events.triggerEvent("mouseup", {xy: new OpenLayers.Pixel(10, 10)});
+        t.eq(log.event.type, "sketchcomplete", "[mouseup] sketchcomplete triggered");
+        t.geom_eq(log.event.feature.geometry, new OpenLayers.Geometry.Point(-190, 115), "[mouseup] correct geometry");
+        
+        map.destroy();
+    }
 
     </script>
 </head>

@@ -337,7 +337,64 @@
         
         control.destroy();
         layer.destroy();
-    }    
+    }
+    
+    function test_dragVertex(t) {
+        t.plan(8);
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        
+        var control = new OpenLayers.Control.ModifyFeature(layer);
+        map.addControl(control);
+        control.activate();
+        
+        map.zoomToMaxExtent();
+        
+        var log = {};
+        layer.events.on({
+            "vertexmodified": function(event) {
+                log.event = event;
+            }
+        });
+        
+        // pretend to drag a point
+        var feature = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(0, 0)
+        );
+        control.feature = feature;
+        var pixel = new OpenLayers.Pixel(-100, 100);
+        control.dragVertex(feature, pixel);
+        t.eq(log.event.type, "vertexmodified", "[drag point] vertexmodified triggered");
+        t.geom_eq(log.event.vertex, feature.geometry, "[drag point] listeners receive correct vertex");
+        t.eq(log.event.feature.id, feature.id, "[drag point] listeners receive correct feature");
+        t.ok(log.event.pixel === pixel, "[drag point] listeners receive correct pixel");
+        
+        // pretend to drag vertex of a linestring
+        var vert = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(0, 0)
+        );
+        var feature = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.LineString([
+                vert.geometry, new OpenLayers.Geometry.Point(10, 0)
+            ])
+        );
+        control.feature = feature;
+        var pixel = new OpenLayers.Pixel(-100, 100);
+        control.dragVertex(vert, pixel);
+        t.eq(log.event.type, "vertexmodified", "[drag vertex] vertexmodified triggered");
+        t.geom_eq(log.event.vertex, vert.geometry, "[drag vertex] listeners receive correct vertex");
+        t.eq(log.event.feature.id, feature.id, "[drag vertex] listeners receive correct feature");
+        t.ok(log.event.pixel === pixel, "[drag vertex] listeners receive correct pixel");
+
+
+        map.destroy();
+    }
         
     function test_onDrag(t) {
         t.plan(1);
@@ -477,7 +534,7 @@
     }
 
     function test_onModificationEnd(t) {
-        t.plan(2);
+        t.plan(3);
         var map = new OpenLayers.Map("map");
         var layer = new OpenLayers.Layer.Vector();
         map.addLayer(layer);
@@ -491,6 +548,7 @@
         );
         layer.events.on({"afterfeaturemodified": function(event) {
             t.eq(event.feature.id, testFeature.id, "afterfeaturemodified triggered");
+            t.eq(event.modified, false, "afterfeaturemodified event given proper modified property (false - feature was not modified in this case)");
         }});
         control.onModificationEnd = function(feature) {
             t.eq(feature.id, testFeature.id,
