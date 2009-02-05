@@ -184,6 +184,16 @@
              "equals() returns false for a geometry with offset y");
     }
     
+    function test_getVertices(t) {
+        t.plan(3);
+        
+        var point = new OpenLayers.Geometry.Point(10, 20);
+        var verts = point.getVertices();
+        t.ok(verts instanceof Array, "got back an array");
+        t.eq(verts.length, 1, "of length 1");
+        t.geom_eq(verts[0], point, "with correct geometry");
+    }
+    
     function test_Point_clone(t) {
         t.plan(2);
         

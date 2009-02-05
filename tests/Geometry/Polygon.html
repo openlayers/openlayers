@@ -307,6 +307,29 @@
         
     }
 
+    function test_getVertices(t) {
+        t.plan(6);
+        
+        var points = [
+            new OpenLayers.Geometry.Point(10, 20),
+            new OpenLayers.Geometry.Point(20, 30),
+            new OpenLayers.Geometry.Point(30, 40),
+            new OpenLayers.Geometry.Point(40, 50)
+        ];
+        var polygon = new OpenLayers.Geometry.Polygon([
+            new OpenLayers.Geometry.LinearRing(points)
+        ]);
+        
+        var verts = polygon.getVertices();
+        t.ok(verts instanceof Array, "got back an array");
+        t.eq(verts.length, points.length, "of correct length length");
+        t.geom_eq(verts[0], points[0], "0: correct geometry");
+        t.geom_eq(verts[1], points[1], "1: correct geometry");
+        t.geom_eq(verts[2], points[2], "2: correct geometry");
+        t.geom_eq(verts[3], points[3], "3: correct geometry");
+        
+    }
+
     function test_Polygon_clone(t) {
         t.plan(2);
         

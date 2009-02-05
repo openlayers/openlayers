@@ -21,6 +21,44 @@
         t.eq( mline.components.length, 1, "mline.components.length is set correctly");
     }
 
+    function test_getVertices(t) {
+        t.plan(16);
+        
+        var points = [
+            new OpenLayers.Geometry.Point(10, 20),
+            new OpenLayers.Geometry.Point(20, 30),
+            new OpenLayers.Geometry.Point(30, 40),
+            new OpenLayers.Geometry.Point(40, 50)
+        ];
+        
+        var multi = new OpenLayers.Geometry.MultiLineString([
+            new OpenLayers.Geometry.LineString(points),
+            new OpenLayers.Geometry.LineString(points)
+        ]);
+        
+        var verts = multi.getVertices();
+        t.ok(verts instanceof Array, "got back an array");
+        t.eq(verts.length, 2 * points.length, "of correct length length");
+        t.geom_eq(verts[0], points[0], "0: correct geometry");
+        t.geom_eq(verts[1], points[1], "1: correct geometry");
+        t.geom_eq(verts[2], points[2], "2: correct geometry");
+        t.geom_eq(verts[3], points[3], "3: correct geometry");
+        t.geom_eq(verts[4], points[0], "4: correct geometry");
+        t.geom_eq(verts[5], points[1], "5: correct geometry");
+        t.geom_eq(verts[6], points[2], "6: correct geometry");
+        t.geom_eq(verts[7], points[3], "7: correct geometry");
+        
+        // nodes only
+        var nodes = multi.getVertices(true);
+        t.ok(nodes instanceof Array, "got back an array");
+        t.eq(nodes.length, 4, "of correct length length");
+        t.geom_eq(nodes[0], points[0], "0: correct geometry");
+        t.geom_eq(nodes[1], points[3], "1: correct geometry");
+        t.geom_eq(nodes[2], points[0], "2: correct geometry");
+        t.geom_eq(nodes[3], points[3], "3: correct geometry");
+        
+    }
+
 
   </script>
 </head>
