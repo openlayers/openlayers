@@ -107,7 +107,7 @@
     }
 
     function test_LineString_resize(t) {
-        t.plan(7);
+        t.plan(8);
         
         var tolerance = 1e-10;
 
@@ -123,7 +123,8 @@
         var scale = 10 * Math.random();
         
         var oldLength = geometry.getLength();
-        geometry.resize(scale, origin);
+        var ret = geometry.resize(scale, origin);
+        t.ok(ret === geometry, "resize returns geometry");
         var newLength = geometry.getLength();
         t.ok((((newLength / oldLength) - scale) / scale) < tolerance,
              "resize correctly changes the length of a linestring")

@@ -132,7 +132,7 @@
     }
 
     function test_Point_resize(t) {
-        t.plan(5);
+        t.plan(6);
         
         var tolerance = 1e-10;
         var x = 100 * Math.random();
@@ -147,9 +147,10 @@
         var scale = 10 * Math.random();
         var oldDistance = origin.distanceTo(point);
         
-        point.resize(scale, origin);
+        var ret = point.resize(scale, origin);
         var newDistance = origin.distanceTo(point);
         
+        t.ok(ret === point, "resize returns geometry");
         t.ok((origin.x == i) && (origin.y == j),
              "resize leaves the origin untouched");
         t.ok((((newDistance / oldDistance) - scale) / scale) < tolerance,
