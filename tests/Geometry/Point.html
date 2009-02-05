@@ -52,7 +52,7 @@
     }
     
     function test_Point_distanceTo(t) {
-        t.plan(2);
+        t.plan(7);
 
         var x1 = 10;
         var y1 = 20;
@@ -65,6 +65,15 @@
         var dist = point1.distanceTo(point2)
         t.eq( dist, 201.24611797498107267682563018581, "distances calculating correctly");
         t.eq( dist, Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)), "distance calculation correct");
+        
+        // test that details are returned (though trivial in this case)
+        var result = point1.distanceTo(point2, {details: true});
+        t.eq(result.distance, point1.distanceTo(point2), "[details] distance property is same as return without details");
+        t.eq(result.x0, x1, "[details] x0 property is correct");
+        t.eq(result.y0, y1, "[details] y0 property is correct");
+        t.eq(result.x1, x2, "[details] x1 property is correct");
+        t.eq(result.y1, y2, "[details] y1 property is correct");
+        
     }
     
     function test_Point_toString(t) {

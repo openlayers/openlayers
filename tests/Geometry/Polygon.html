@@ -258,6 +258,55 @@
              "equals() returns false for a geometry with offset y");
     }
     
+    function test_distanceTo(t) {
+        var wkt = OpenLayers.Geometry.fromWKT;
+        var geoms = [
+            wkt("POLYGON((0 3, 1 4, 2 3, 1 2, 0 3))"),
+            wkt("POINT(0 0)"),
+            wkt("LINESTRING(-2 0, 0 -2, 2 -1, 2 0)"),
+            wkt("LINESTRING(0 2, 1 3)"),
+            wkt("POINT(1 3)")
+        ];
+
+        var cases = [{
+            got: geoms[0].distanceTo(geoms[1]),
+            expected: Math.sqrt(5)
+        }, {
+            got: geoms[0].distanceTo(geoms[1], {details: true}),
+            expected: {
+                distance: Math.sqrt(5),
+                x0: 1, y0: 2,
+                x1: 0, y1: 0
+            }
+        }, {
+            got: geoms[0].distanceTo(geoms[2], {details: true}),
+            expected: {
+                distance: Math.sqrt(5),
+                x0: 1, y0: 2,
+                x1: 2, y1: 0
+            }
+        }, {
+            got: geoms[0].distanceTo(geoms[3], {details: true}),
+            expected: {
+                distance: 0,
+                x0: 0.5, y0: 2.5,
+                x1: 0.5, y1: 2.5
+            }
+        }, {
+            got: geoms[0].distanceTo(geoms[4]),
+            expected: Math.sqrt(0.5)
+        }, {
+            got: geoms[0].distanceTo(geoms[4], {edge: false}),
+            expected: 0
+        }];
+
+        t.plan(cases.length);
+        for(var i=0; i<cases.length; ++i) {
+            t.eq(cases[i].got, cases[i].expected, "case " + i);
+        }
+        
+    }
+
     function test_Polygon_clone(t) {
         t.plan(2);
         

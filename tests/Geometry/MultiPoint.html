@@ -33,6 +33,60 @@
         t.eq(multipoint.components[0].x, x + dx, "move() correctly modifies x");
         t.eq(multipoint.components[0].y, y + dy, "move() correctly modifies y");
     }
+    
+    function test_distanceTo(t) {
+        var points = [
+            new OpenLayers.Geometry.Point(0, 0),
+            new OpenLayers.Geometry.Point(10, 0),
+            new OpenLayers.Geometry.Point(0, 9),
+            new OpenLayers.Geometry.Point(-5, 0),
+            new OpenLayers.Geometry.Point(-5, 4)
+        ];
+        
+        var geoms = [
+            new OpenLayers.Geometry.MultiPoint([points[0], points[1]]),
+            new OpenLayers.Geometry.MultiPoint([points[2], points[3]]),
+            points[4]
+        ];
+        
+        var cases = [{
+            got: geoms[0].distanceTo(geoms[0]),
+            expected: 0
+        }, {
+            got: geoms[0].distanceTo(geoms[1]),
+            expected: 5
+        }, {
+            got: geoms[1].distanceTo(geoms[2]),
+            expected: 4
+        }, {
+            got: geoms[0].distanceTo(geoms[1], {details: true}),
+            expected: {
+                distance: 5,
+                x0: 0, y0: 0,
+                x1: -5, y1: 0
+            }
+        }, {
+            got: geoms[1].distanceTo(geoms[0], {details: true}),
+            expected: {
+                distance: 5,
+                x0: -5, y0: 0,
+                x1: 0, y1: 0
+            }
+        }, {
+            got: geoms[1].distanceTo(geoms[2], {details: true}),
+            expected: {
+                distance: 4,
+                x0: -5, y0: 0,
+                x1: -5, y1: 4
+            }
+        }];
+        
+        t.plan(cases.length);
+        for(var i=0; i<cases.length; ++i) {
+            t.eq(cases[i].got, cases[i].expected, "case " + i);
+        }
+        
+    }
 
     function test_MultiPoint_equals(t) {
         t.plan(3);

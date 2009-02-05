@@ -148,6 +148,32 @@
         
     }
     
+    function test_distanceTo(t) {
+        var wkt = OpenLayers.Geometry.fromWKT;
+        var geoms = [
+            wkt("POINT(0 0)"),
+            wkt("LINESTRING(-2 0, 0 -2, 2 -1, 2 0)")
+        ];
+
+        var cases = [{
+            got: geoms[1].distanceTo(geoms[0]),
+            expected: Math.sqrt(2)
+        }, {
+            got: geoms[1].distanceTo(geoms[0], {details: true}),
+            expected: {
+                distance: Math.sqrt(2),
+                x0: -1, y0: -1,
+                x1: 0, y1: 0
+            }
+        }];
+        
+        t.plan(cases.length);
+        for(var i=0; i<cases.length; ++i) {
+            t.eq(cases[i].got, cases[i].expected, "case " + i);
+        }
+        
+    }
+
     function test_LineString_equals(t) {
         t.plan(3);
         
