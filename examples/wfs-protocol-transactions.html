@@ -1,0 +1,197 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAbs-AXzXTiUE-iwvdTFv0TRTJUVlep-V_kcHWKMoAW7P0KYzoHRSbTZ4mBasJApBqjm2Vnrs7dKOYJg'></script>
+    <script src="../lib/OpenLayers.js"></script>
+    <style>
+        .customEditingToolbar {
+            float: right;
+            right: 0px;
+            height: 30px; 
+            width: 200px;
+        }
+        .customEditingToolbar div {
+            float: right;
+            margin: 5px;
+            width: 24px;
+            height: 24px;
+        }
+        .olControlNavigationItemActive { 
+            background-image: url("../theme/default/img/editing_tool_bar.png");
+            background-repeat: no-repeat;
+            background-position: -103px -23px; 
+        }
+        .olControlNavigationItemInactive { 
+            background-image: url("../theme/default/img/editing_tool_bar.png");
+            background-repeat: no-repeat;
+            background-position: -103px -0px; 
+        }
+        .olControlDrawFeaturePolygonItemInactive { 
+            background-image: url("../theme/default/img/editing_tool_bar.png");
+            background-repeat: no-repeat;
+            background-position: -26px 0px; 
+        }
+        .olControlDrawFeaturePolygonItemActive { 
+            background-image: url("../theme/default/img/editing_tool_bar.png");
+            background-repeat: no-repeat;
+            background-position: -26px -23px ;                                                                   
+        }
+        .olControlModifyFeatureItemActive { 
+            background-image: url(../theme/default/img/move_feature_on.png);
+            background-repeat: no-repeat;
+            background-position: 0px 1px;
+        }
+        .olControlModifyFeatureItemInactive { 
+            background-image: url(../theme/default/img/move_feature_off.png);
+            background-repeat: no-repeat;
+            background-position: 0px 1px;
+        }
+        .olControlDeleteFeatureItemActive { 
+            background-image: url(../theme/default/img/remove_point_on.png);
+            background-repeat: no-repeat;
+            background-position: 0px 1px;
+        }
+        .olControlDeleteFeatureItemInactive { 
+            background-image: url(../theme/default/img/remove_point_off.png);
+            background-repeat: no-repeat;
+            background-position: 0px 1px;
+        }
+    </style>
+    <script type="text/javascript">
+        var map, wfs;
+        
+        var DeleteFeature = OpenLayers.Class(OpenLayers.Control, {
+            initialize: function(layer, options) {
+                OpenLayers.Control.prototype.initialize.apply(this, [options]);
+                this.layer = layer;
+                this.handler = new OpenLayers.Handler.Feature(
+                    this, layer, {click: this.clickFeature}
+                );
+            },
+            clickFeature: function(feature) {
+                // if feature doesn't have a fid, destroy it
+                if(feature.fid == undefined) {
+                    this.layer.destroyFeatures([feature]);
+                } else {
+                    feature.state = OpenLayers.State.DELETE;
+                    this.layer.events.triggerEvent("afterfeaturemodified", 
+                                                   {feature: feature});
+                    feature.renderIntent = "select";
+                    this.layer.drawFeature(feature);
+                }
+            },
+            setMap: function(map) {
+                this.handler.setMap(map);
+                OpenLayers.Control.prototype.setMap.apply(this, arguments);
+            },
+            CLASS_NAME: "OpenLayers.Control.DeleteFeature"
+        });
+
+        function init() {
+            OpenLayers.ProxyHost= "/cgi-bin/proxy.cgi?url=";
+            map = new OpenLayers.Map('map', {
+                projection: new OpenLayers.Projection("EPSG:900913"),
+                displayProjection: new OpenLayers.Projection("EPSG:4326"),
+                units: "m",
+                maxResolution: 156543.0339,
+                maxExtent: new OpenLayers.Bounds(
+                    -11593508, 5509847, -11505759, 5557774
+                ),
+                controls: [
+                    new OpenLayers.Control.PanZoom()
+                ]
+            });
+            var gphy = new OpenLayers.Layer.Google(
+                "Google Physical",
+                {type: G_PHYSICAL_MAP, sphericalMercator: true}
+            );
+
+            var saveStrategy = new OpenLayers.Strategy.Save();
+
+            wfs = new OpenLayers.Layer.Vector("Editable Features", {
+                strategies: [new OpenLayers.Strategy.BBOX(), saveStrategy],
+                projection: new OpenLayers.Projection("EPSG:4326"),
+                protocol: new OpenLayers.Protocol.WFS({
+                    version: "1.1.0",
+                    srsName: "EPSG:4326",
+                    url: "http://demo.opengeo.org/geoserver/wfs",
+                    featureNS :  "http://www.openplans.org/spearfish",
+                    featureType: "restricted",
+                    geometryName: "the_geom",
+                    schema: "http://demo.opengeo.org/geoserver/wfs/DescribeFeatureType?version=1.1.0&typename=sf:restricted"
+                })
+            }); 
+           
+            map.addLayers([gphy, wfs]);
+
+            var panel = new OpenLayers.Control.Panel(
+                {'displayClass': 'customEditingToolbar'}
+            );
+            
+            var navigate = new OpenLayers.Control.Navigation({
+                title: "Pan Map",
+            });
+            
+            var draw = new OpenLayers.Control.DrawFeature(
+                wfs, OpenLayers.Handler.Polygon,
+                {
+                    title: "Draw Feature",
+                    displayClass: "olControlDrawFeaturePolygon",
+                    handlerOptions: {multi: true}
+                }
+            );
+            
+            var edit = new OpenLayers.Control.ModifyFeature(wfs, {
+                title: "Modify Feature",
+                displayClass: "olControlModifyFeature",
+            });
+
+            var del = new DeleteFeature(wfs, {title: "Delete Feature"});
+           
+            var save = new OpenLayers.Control.Button({
+                title: "Save Changes",
+                trigger: function() {
+                    if(edit.feature) {
+                        edit.selectControl.unselectAll();
+                    }
+                    saveStrategy.save();
+                },
+                displayClass: "olControlSaveFeatures"
+            });
+
+            panel.addControls([navigate, save, del, edit, draw]);
+            panel.defaultControl = navigate;
+            map.addControl(panel);
+            map.zoomToMaxExtent();
+        }
+        
+    </script>
+    </head>
+    <body onload="init()">
+    
+    <h1 id="title">WFS Transaction Example</h1>
+    
+    <div id="tags">
+    </div>
+    <p id="shortdesc">
+        Shows the use of the WFS Transactions (WFS-T).
+    </p>
+    
+    <div id="map" class="smallmap"></div>
+
+    <div id="docs">
+        <p>The WFS protocol allows for creation of new features and reading,
+        updating, or deleting of existing features.</p>
+        <p>Use the tools to create, modify, and delete (in order from left
+        to right) features.  Use the save tool (picture of a disk) to
+        save your changes.  Use the navigation tool (hand) to stop editing
+        and use the mouse for map navigation.</p>
+    </div>
+
+
+
+</body>
+</html>
+
+

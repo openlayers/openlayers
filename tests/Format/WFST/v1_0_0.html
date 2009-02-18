@@ -1,0 +1,87 @@
+<html>
+<head>
+  <script src="../../../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+
+    function test_initialize(t) {
+        t.plan(1);
+
+        var format = new OpenLayers.Format.WFST.v1_0_0({});
+        t.ok(format instanceof OpenLayers.Format.WFST.v1_0_0, "constructor returns instance");
+    }
+    
+    function test_read(t) {
+        t.plan(2);
+        
+        var data = readXML("Transaction_Response");        
+        var format = new OpenLayers.Format.WFST.v1_0_0({
+            featureNS: "http://www.openplans.org/topp",
+            featureType: "states"
+        });
+        var result = format.read(data);
+        t.eq(result.insertIds[0], "none", "InsertIds read correctly");
+        t.eq(result.success, true, "Success read correctly");
+    }
+    
+    function test_write(t) {
+
+        var format = new OpenLayers.Format.WFST.v1_0_0({
+            featureNS: "http://www.openplans.org/topp",
+            featureType: "states",
+            featurePrefix: "topp",
+            geometryName: "the_geom"
+        });
+
+        t.plan(1);
+        var snippets = {
+            "Query": {
+                filter: new OpenLayers.Filter.Spatial({
+                    type: OpenLayers.Filter.Spatial.BBOX,
+                    value: new OpenLayers.Bounds (1,2,3,4)
+                })}
+        }
+
+        var arg;
+        for(var snippet in snippets) {
+            arg = snippets[snippet]
+            var expected = readXML(snippet);
+            var got = format.writers["wfs"][snippet].apply(format, [arg]);
+            t.xml_eq(got, expected, snippet + " request created correctly");
+        }
+    }
+
+    function readXML(id) {
+        var xml = document.getElementById(id).firstChild.nodeValue;
+        return new OpenLayers.Format.XML().read(xml).documentElement;        
+    }
+
+  </script>
+</head>
+<body>
+<div id="map" style="width:512px; height:256px"> </div>
+<div id="Transaction_Response"><!--
+<wfs:WFS_TransactionResponse version="1.0.0" xmlns:wfs="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc">
+    <wfs:InsertResult>
+        <ogc:FeatureId fid="none"/>
+    </wfs:InsertResult>
+    <wfs:TransactionResult>
+        <wfs:Status>
+            <wfs:SUCCESS/>
+        </wfs:Status>
+    </wfs:TransactionResult>
+</wfs:WFS_TransactionResponse>
+--></div>
+<div id="Query"><!--
+<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
+    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+        <ogc:BBOX>
+            <ogc:PropertyName>the_geom</ogc:PropertyName>
+            <gml:Box xmlns:gml="http://www.opengis.net/gml">
+                <gml:coordinates decimal="." cs="," ts=" ">1,2 3,4</gml:coordinates>
+            </gml:Box>
+        </ogc:BBOX>
+    </ogc:Filter>
+</wfs:Query>
+--></div>
+</body>
+</html>
