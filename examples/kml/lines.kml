@@ -262,6 +262,14 @@
             -112.2626894973474,36.10149062823369,630 </coordinates>
         </LineString>
       </Placemark>
+		<Placemark>
+			<name>Blue Icon</name>
+			<description>Just another blue icon.</description>
+			<styleUrl>kml/styles.kml#blueIcons</styleUrl>
+			<Point>
+				<coordinates>-112.292238941097,36.09520916122063,630</coordinates>
+			</Point>
+		</Placemark>
     </Folder>
   </Document>
 </kml>
