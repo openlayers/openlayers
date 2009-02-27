@@ -89,7 +89,7 @@
             "", "${ ", "${", " ${", "${${", "${}", "${${}}", " ${ ${",
             "}", "${${} }"
         ]
-        t.plan(6 + unchanged.length);
+        t.plan(7 + unchanged.length);
 
         var format = OpenLayers.String.format;
         
@@ -138,6 +138,23 @@
             format("In life, truth is ${meaning}.", context),
             "In life, truth is undefined.",
             "still works if arguments are not supplied"
+        );
+
+        // test contexts where attribute values can be objects
+        var context = {
+            a: {
+                b: {
+                    c: 'd',
+                    e: function() {
+                        return 'f';
+                    }
+                }
+            }
+        };
+        t.eq(
+            format("${a.b.c} ${a.b.e} ${a.b.q} ${a} ${a...b...c}", context),
+            "d f undefined [object Object] d",
+            "attribute values that are objects are supported"
         );
 
     }
