@@ -1,5 +1,6 @@
 OpenLayers contributors:
 
+Jeff Adams
 Seb Benthall
 Howard Butler
 Bertil Chaupis                                                               
