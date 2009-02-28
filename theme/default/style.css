@@ -312,6 +312,12 @@ div.olControlMousePosition {
   cursor: pointer;
 }
 
+.olFramedCloudPopupContent {
+    padding: 5px;
+    overflow: auto;
+}
+
 .olControlNoSelect {
  -moz-user-select: none;
 }
+
