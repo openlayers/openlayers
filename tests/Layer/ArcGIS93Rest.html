@@ -12,6 +12,7 @@
     var params = {layers: "show:0,2"};
 
     function test_Layer_AGS93_constructor (t) {
+        var params = {layers: "show:0,2"};
         t.plan( 14 );
 
         var trans_format = "png";
@@ -55,6 +56,7 @@
     }
     
     function test_Layer_AGS93_addtile (t) {
+        var params = {layers: "show:0,2"};
         t.plan( 6 );
     
         layer = new OpenLayers.Layer.ArcGIS93Rest(name, url, params);
@@ -89,6 +91,7 @@
     }
     
     function test_Layer_AGS93_inittiles (t) {
+        var params = {layers: "show:0,2"};
         t.plan( 2 );
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.ArcGIS93Rest(name, url, params);
@@ -101,6 +104,7 @@
 
 
     function test_Layer_AGS93_clone (t) {
+        var params = {layers: "show:0,2"};
         t.plan(4);
         
         var options = {tileSize: new OpenLayers.Size(500,50)};
@@ -128,6 +132,7 @@
     }
 
     function test_Layer_AGS93_isBaseLayer(t) {
+        var params = {layers: "show:0,2"};
         t.plan(3);
         
         layer = new OpenLayers.Layer.ArcGIS93Rest(name, url, params);
@@ -143,6 +148,7 @@
     }
 
     function test_Layer_AGS93_mergeNewParams (t) {
+        var params = {layers: "show:0,2"};
         t.plan( 4 );
 
         var map = new OpenLayers.Map("map");
@@ -170,6 +176,7 @@
     }
 
     function test_Layer_AGS93_getFullRequestString (t) {
+        var params = {layers: "show:0,2"};
         t.plan( 1 );
         var map = new OpenLayers.Map('map');
         map.projection = "xx";
@@ -189,6 +196,7 @@
     }
 
     function test_Layer_AGS93_setOpacity (t) {
+        var params = {layers: "show:0,2"};
         t.plan( 5 );
 
         var map = new OpenLayers.Map('map');
@@ -233,6 +241,7 @@
     }
 
     function test_Layer_AGS93_gutters (t) { 
+        var params = {layers: "show:0,2"};
         t.plan(2);
         var gutter = 15;
         var map = new OpenLayers.Map('map');
@@ -275,6 +284,7 @@
     }
     
     function test_Layer_ADG93_Filter(t) {
+        var params = {layers: "show:0,2"};
         t.plan( 9 );
     
         layer = new OpenLayers.Layer.ArcGIS93Rest(name, url, params);
