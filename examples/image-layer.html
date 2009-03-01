@@ -8,6 +8,7 @@
             width: 512px;
         }
     </style>
+    <script src="../lib/Firebug/firebug.js"></script>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var map;
@@ -17,11 +18,21 @@
             var options = {numZoomLevels: 3};
 
             var graphic = new OpenLayers.Layer.Image(
-                                'City Lights',
-                                'http://earthtrends.wri.org/images/maps/4_m_citylights_lg.gif',
-                                new OpenLayers.Bounds(-180, -88.759, 180, 88.759),
-                                new OpenLayers.Size(580, 288),
-                                options);
+                'City Lights',
+                'http://earthtrends.wri.org/images/maps/4_m_citylights_lg.gif',
+                new OpenLayers.Bounds(-180, -88.759, 180, 88.759),
+                new OpenLayers.Size(580, 288),
+                options
+            );
+            
+            graphic.events.on({
+                loadstart: function() {
+                    OpenLayers.Console.log("loadstart");
+                },
+                loadend: function() {
+                    OpenLayers.Console.log("loadend");
+                }
+            });
 
             var jpl_wms = new OpenLayers.Layer.WMS( "NASA Global Mosaic",
                 "http://t1.hypercube.telascience.org/cgi-bin/landsat7", 

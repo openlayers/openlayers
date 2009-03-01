@@ -125,6 +125,36 @@
 
     }
 
+    function test_loadEvents(t) {
+        t.plan(3);
+
+        var map = new OpenLayers.Map('map');    
+        var layer = new OpenLayers.Layer.Image(
+            'Test', '../../img/blank.gif',
+            new OpenLayers.Bounds(-180, -88.759, 180, 88.759),
+            new OpenLayers.Size(580, 288)
+        );
+    
+        map.addLayer(layer);
+
+        layer.events.register('loadstart', null, function(obj) {
+            t.ok(obj.object.tile.isLoading, "loadstart triggered while tile is loading");
+        });
+
+        var delay = false;
+        layer.events.register('loadend', null, function(obj) {
+            delay = true;
+        });
+
+        t.delay_call(0.4,function() {
+            t.eq(delay, true, "registered for loadend");
+            t.eq(layer.tile.isLoading, false, "loadend triggered after tile is loaded");
+            map.destroy(); //tear down
+            return delay;
+        });
+        map.zoomToMaxExtent();
+    }
+
   </script>
 </head>
 <body>
