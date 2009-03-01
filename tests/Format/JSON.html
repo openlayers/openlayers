@@ -34,6 +34,18 @@
         t.eq(data, obj, "writing data to json works.");
     }
 
+
+    function test_keepData(t) { 
+        t.plan(2);
+
+        var options = {'keepData': true};
+        var format = new OpenLayers.Format.JSON(options); 
+        format.read('{"a":["b"], "c":1}');
+
+        t.ok(format.data != null, 'data property is not null after read with keepData=true');
+        t.eq(format.data.c,1,'keepData keeps the right data');
+    }
+
     </script> 
 </head> 
 <body> 

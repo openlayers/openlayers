@@ -668,6 +668,17 @@
         
     }
 
+    function test_keepData(t) { 
+        t.plan(2);
+
+        var options = {'keepData': true};
+        var format = new OpenLayers.Format.XML(options); 
+        format.read(text);
+
+        t.ok(format.data != null, 'data property is not null after read with keepData=true');
+        t.eq(format.data.documentElement.tagName,'ol:root','keepData keeps the right data');
+    }
+
     </script> 
 </head> 
 <body> 
