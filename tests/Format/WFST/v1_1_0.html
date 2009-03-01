@@ -32,27 +32,38 @@
             geometryName: "the_geom"
         });
 
-        t.plan(1);
-        var snippets = {
-            "Query": {
+        var cases = [{
+            id: "query0",
+            writer: "wfs:Query",
+            arg: {
                 filter: new OpenLayers.Filter.Spatial({
                     type: OpenLayers.Filter.Spatial.BBOX,
                     value: new OpenLayers.Bounds (1,2,3,4)
-                })}
-        }
-
-        var arg;
-        for(var snippet in snippets) {
-            arg = snippets[snippet]
-            var expected = readXML(snippet);
-            var got = format.writers["wfs"][snippet].apply(format, [arg]);
-            t.xml_eq(got, expected, snippet + " request created correctly");
+                })
+            }
+        }, {
+            id: "getfeature0",
+            writer: "wfs:GetFeature",
+            arg: {
+                propertyNames: ["STATE_NAME", "STATE_FIPS", "STATE_ABBR"]
+            }
+        }];
+        
+        t.plan(cases.length);
+        
+        var test, got, exp;
+        for(var i=0; i<cases.length; ++i) {
+            test = cases[i];
+            exp = readXML(test.id);
+            got = format.writeNode(test.writer, test.arg);
+            t.xml_eq(got, exp, test.id + ": correct request");
         }
     }
 
+    var xmlFormat = new OpenLayers.Format.XML();
     function readXML(id) {
         var xml = document.getElementById(id).firstChild.nodeValue;
-        return new OpenLayers.Format.XML().read(xml).documentElement;        
+        return xmlFormat.read(xml).documentElement;        
     }
 
   </script>
@@ -74,7 +85,7 @@
     </wfs:InsertResults>
 </wfs:TransactionResponse>
 --></div>
-<div id="Query"><!--
+<div id="query0"><!--
 <wfs:Query xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
     <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
         <ogc:BBOX>
@@ -86,6 +97,19 @@
         </ogc:BBOX>
     </ogc:Filter>
 </wfs:Query>
+--></div>
+<div id="getfeature0"><!--
+<wfs:GetFeature service="WFS" version="1.1.0" xmlns:topp="http://www.openplans.org/topp"
+                xmlns:wfs="http://www.opengis.net/wfs"
+                xmlns:ogc="http://www.opengis.net/ogc"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+    <wfs:Query xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
+        <wfs:PropertyName>STATE_NAME</wfs:PropertyName>
+        <wfs:PropertyName>STATE_FIPS</wfs:PropertyName>
+        <wfs:PropertyName>STATE_ABBR</wfs:PropertyName>
+    </wfs:Query>
+</wfs:GetFeature>
 --></div>
 </body>
 </html>
