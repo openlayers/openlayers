@@ -105,7 +105,7 @@
         '</StyledLayerDescriptor>';
 
     function test_read(t) {
-        t.plan(6);
+        t.plan(8);
         
         var parser = new OpenLayers.Format.SLD.v1_0_0();
         var xml = new OpenLayers.Format.XML();
@@ -131,7 +131,23 @@
         t.ok(style instanceof OpenLayers.Style, "(AAA161,0) user style is instance of OpenLayers.Style");
         t.eq(style.rules.length, 2, "(AAA161,0) user style has 2 rules");
         
-        // check the first rule
+        // check the second rule
+        rule = style.rules[1];
+        var feature = {
+            layer: {
+                map: {
+                    getScale: function(){
+                        return 40000; 
+                    }
+                }
+            },
+            attributes: {
+                CTE: "900"
+            }
+        };
+        t.ok(typeof rule.maxScaleDenominator == "number", "MaxScaleDenominator is a number");
+        t.eq(rule.evaluate(feature), true, "numeric filter comparison evaluates correctly");
+        
         // etc.  I'm convinced read works, really wanted to test write (since examples don't test that)
         // I'll add more tests here later.        
 

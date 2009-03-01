@@ -195,6 +195,42 @@
         }
         
     }
+    
+    function test_Number_numericIf(t) {
+        var cases = [
+            {value: "3", expect: 3},
+            {value: "+3", expect: 3},
+            {value: "-3", expect: -3},
+            {value: "3.0", expect: 3},
+            {value: "+3.0", expect: 3},
+            {value: "-3.0", expect: -3},
+            {value: "6.02e23", expect: 6.02e23},
+            {value: "+1.0e-100", expect: 1e-100},
+            {value: "-1.0e+100", expect: -1e100},
+            {value: "1E100", expect: 1e100},
+            {value: null, expect: null},
+            {value: true, expect: true},
+            {value: false, expect: false},
+            {value: undefined, expect: undefined},
+            {value: "", expect: ""},
+            {value: "3 ", expect: "3 "},
+            {value: " 3", expect: " 3"},
+            {value: "1e", expect: "1e"},
+            {value: "1+e", expect: "1+e"},
+            {value: "1-e", expect: "1-e"}
+        ];
+        t.plan(cases.length);
+        
+        var func = OpenLayers.String.numericIf;
+        var obj, val, got, exp;
+        for(var i=0; i<cases.length; ++i) {
+            obj = cases[i];
+            val = obj.value;
+            exp = obj.expect;
+            got = func(val);
+            t.eq(got, exp, "'" + val + "' returns " + exp);
+        }
+    }
    
    
     function test_Number_limitSigDigs(t) {
