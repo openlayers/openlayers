@@ -167,6 +167,41 @@
         t.xml_eq(node, out, "bbox correctly written");
     }
     
+    function test_Intersects(t) {
+        
+        t.plan(4);
+        
+        var str =
+            '<Filter xmlns="http://www.opengis.net/ogc">' +
+                '<Intersects>' +
+                    '<PropertyName>Geometry</PropertyName>' +
+                    '<gml:Envelope xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">' +
+                        '<gml:lowerCorner>-180 -90</gml:lowerCorner>' +
+                        '<gml:upperCorner>180 90</gml:upperCorner>' +
+                    '</gml:Envelope>' +
+                '</Intersects>' +
+            '</Filter>';
+
+        var format = new OpenLayers.Format.Filter.v1_1_0();
+        var filter = new OpenLayers.Filter.Spatial({
+            type: OpenLayers.Filter.Spatial.INTERSECTS,
+            property: "Geometry",
+            value: new OpenLayers.Bounds(-180, -90, 180, 90),
+            projection: "EPSG:4326"
+        });
+        
+        // test writing
+        var node = format.write(filter);
+        t.xml_eq(node, str, "filter correctly written");
+        
+        // test reading
+        var doc = (new OpenLayers.Format.XML).read(str);
+        var got = format.read(doc.firstChild);
+        t.eq(got.type, filter.type, "read correct type");
+        t.eq(got.property, filter.property, "read correct property");
+        t.eq(got.value.toArray(), filter.value.toArray(), "read correct value");
+
+    }
 
     </script> 
 </head> 

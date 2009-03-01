@@ -77,7 +77,81 @@
         
         t.xml_eq(node, out, "bbox correctly written");
     }
-    
+
+    function test_DWithin(t) {
+        
+        t.plan(6);
+        
+        var str =
+            '<Filter xmlns="http://www.opengis.net/ogc">' +
+                '<DWithin>' +
+                    '<PropertyName>Geometry</PropertyName>' +
+                    '<gml:Point xmlns:gml="http://www.opengis.net/gml">' +
+                        '<gml:coordinates decimal="." cs="," ts=" ">2488789,289552</gml:coordinates>' +
+                    '</gml:Point>' +
+                    '<Distance units="m">1000</Distance>' +
+                '</DWithin>' +
+            '</Filter>';
+
+        var format = new OpenLayers.Format.Filter.v1_0_0();
+        var filter = new OpenLayers.Filter.Spatial({
+            type: OpenLayers.Filter.Spatial.DWITHIN,
+            property: "Geometry",
+            value: new OpenLayers.Geometry.Point(2488789,289552),
+            distance: 1000,
+            distanceUnits: "m"
+        });
+        
+        // test writing
+        var node = format.write(filter);
+        t.xml_eq(node, str, "filter correctly written");
+        
+        // test reading
+        var doc = (new OpenLayers.Format.XML).read(str);
+        var got = format.read(doc.firstChild);
+        t.eq(got.type, filter.type, "read correct type");
+        t.eq(got.property, filter.property, "read correct property");
+        t.geom_eq(got.value, filter.value, "read correct value");
+        t.eq(got.distance, filter.distance, "read correct distance");
+        t.eq(got.distanceUnits, filter.distanceUnits, "read correct distance units");
+
+    }
+
+    function test_Intersects(t) {
+        
+        t.plan(4);
+        
+        var str =
+            '<Filter xmlns="http://www.opengis.net/ogc">' +
+                '<Intersects>' +
+                    '<PropertyName>Geometry</PropertyName>' +
+                    '<gml:Box xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">' +
+                        '<gml:coordinates decimal="." cs="," ts=" ">-180,-90 180,90</gml:coordinates>' +
+                    '</gml:Box>' +
+                '</Intersects>' +
+            '</Filter>';
+
+        var format = new OpenLayers.Format.Filter.v1_0_0();
+        var filter = new OpenLayers.Filter.Spatial({
+            type: OpenLayers.Filter.Spatial.INTERSECTS,
+            property: "Geometry",
+            value: new OpenLayers.Bounds(-180, -90, 180, 90),
+            projection: "EPSG:4326"
+        });
+        
+        // test writing
+        var node = format.write(filter);
+        t.xml_eq(node, str, "filter correctly written");
+        
+        // test reading
+        var doc = (new OpenLayers.Format.XML).read(str);
+        var got = format.read(doc.firstChild);
+        t.eq(got.type, filter.type, "read correct type");
+        t.eq(got.property, filter.property, "read correct property");
+        t.eq(got.value.toArray(), filter.value.toArray(), "read correct value");
+
+    }
+
 
     </script> 
 </head> 
