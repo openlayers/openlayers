@@ -15,6 +15,16 @@
 
     }
     
+    function test_Layer_WFS_getDataExtent(t) {
+        t.plan(1);
+
+        var layer = new OpenLayers.Layer.WFS(name, "url", {});
+        layer.addFeatures(new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0, 0)));
+        layer.addFeatures(new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0, 1)));
+        t.eq(layer.getDataExtent().toBBOX(), "0,0,0,1", "bbox is correctly pulled from vectors.");
+
+    }
+    
     function test_Layer_WFS_destroy(t) {
         t.plan(13);
         
