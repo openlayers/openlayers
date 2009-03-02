@@ -18,7 +18,7 @@
         layer.destroy();
     }
 
-    function test__Layer_TileCache_clone(t) {
+    function test_Layer_TileCache_clone(t) {
         t.plan(3);
 
         var name = 'Test Layer';
@@ -138,6 +138,29 @@
         layer.url = ["http://tilecache1/", "http://tilecache2/", "http://tilecache3/"];
         tileurl = layer.getURL(new OpenLayers.Bounds(3.515625,45,4.21875,45.703125));
         t.eq(tileurl, "http://tilecache2/basic/09/000/000/522/000/000/384.jpeg", "Tile URL is deterministic");
+        map.destroy();
+    }
+
+    function test_Layer_TileCache_serverResolutions(t) {
+        t.plan(2);
+        
+        var map = new OpenLayers.Map('map', {
+            resolutions: [13,11]
+        });
+
+        var layer = new OpenLayers.Layer.TileCache('tc layer', '', 'basic');
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0), 1);
+
+        var tileurl = layer.getURL(new OpenLayers.Bounds(0,0,0,0));
+        var level = parseInt(tileurl.split('/')[2]);
+        t.eq(map.getZoom(), level, "Tile zoom level is correct without serverResolutions");
+
+        layer.serverResolutions = [14,13,12,11,10];
+        tileurl = layer.getURL(new OpenLayers.Bounds(0,0,0,0));
+        level = parseInt(tileurl.split('/')[2]);
+        t.eq(layer.serverResolutions.indexOf(map.getResolution()), level, "Tile zoom level is correct with serverResolutions");
+        
         map.destroy();
     }
 

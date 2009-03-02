@@ -141,6 +141,28 @@
         m.destroy();
     }        
             
+    function test_Layer_TMS_serverResolutions(t) {
+        t.plan(2);
+        
+        var map = new OpenLayers.Map('map', {
+            resolutions: [13,11]
+        });
+
+        var layer = new OpenLayers.Layer.TMS('tc layer', '', options);
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0), 1);
+
+        var tileurl = layer.getURL(new OpenLayers.Bounds(0,0,0,0));
+        var level = parseInt(tileurl.split('/')[2]);
+        t.eq(map.getZoom(), level, "Tile zoom level is correct without serverResolutions");
+
+        layer.serverResolutions = [14,13,12,11,10];
+        tileurl = layer.getURL(new OpenLayers.Bounds(0,0,0,0));
+        level = parseInt(tileurl.split('/')[2]);
+        t.eq(layer.serverResolutions.indexOf(map.getResolution()), level, "Tile zoom level is correct with serverResolutions");
+        
+        map.destroy();
+    }
 
     function test_Layer_TMS_setMap(t) {
 
