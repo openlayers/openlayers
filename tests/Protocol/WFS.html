@@ -164,6 +164,29 @@
     
         OpenLayers.Request.POST = _POST;
     }
+    
+    function test_abort(t) {
+        t.plan(1);
+        var protocol = new OpenLayers.Protocol.WFS({
+            url: "http://example.com",
+            featureNS: "http://example.com#namespace",
+            featureType: "type"
+        });
+        
+        var response = {
+            priv: {
+                abort: function() {
+                    aborted = true;
+                }
+            }
+        };
+        
+        // call abort with mocked response
+        var aborted = false;
+        protocol.abort(response);
+        t.eq(aborted, true, "abort called on response.priv");
+
+    }
 
     function readXML(id) {
         var xml = document.getElementById(id).firstChild.nodeValue;
