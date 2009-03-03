@@ -22,7 +22,7 @@
     }
 
     function test_getVertices(t) {
-        t.plan(16);
+        t.plan(22);
         
         var points = [
             new OpenLayers.Geometry.Point(10, 20),
@@ -50,13 +50,23 @@
         
         // nodes only
         var nodes = multi.getVertices(true);
-        t.ok(nodes instanceof Array, "got back an array");
-        t.eq(nodes.length, 4, "of correct length length");
-        t.geom_eq(nodes[0], points[0], "0: correct geometry");
-        t.geom_eq(nodes[1], points[3], "1: correct geometry");
-        t.geom_eq(nodes[2], points[0], "2: correct geometry");
-        t.geom_eq(nodes[3], points[3], "3: correct geometry");
+        t.ok(nodes instanceof Array, "[nodes only] got back an array");
+        t.eq(nodes.length, 4, "[nodes only] of correct length length");
+        t.geom_eq(nodes[0], points[0], "[nodes only] 0: correct geometry");
+        t.geom_eq(nodes[1], points[3], "[nodes only] 1: correct geometry");
+        t.geom_eq(nodes[2], points[0], "[nodes only] 2: correct geometry");
+        t.geom_eq(nodes[3], points[3], "[nodes only] 3: correct geometry");
         
+        // no nodes
+        var nodes = multi.getVertices(false);
+        t.ok(nodes instanceof Array, "[no nodes] got back an array");
+        t.eq(nodes.length, 4, "[no nodes] of correct length length");
+        t.geom_eq(nodes[0], points[1], "[no nodes] 0: correct geometry");
+        t.geom_eq(nodes[1], points[2], "[no nodes] 1: correct geometry");
+        t.geom_eq(nodes[2], points[1], "[no nodes] 2: correct geometry");
+        t.geom_eq(nodes[3], points[2], "[no nodes] 3: correct geometry");
+
+
     }
 
 

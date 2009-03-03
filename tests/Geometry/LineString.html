@@ -202,7 +202,7 @@
 
     
     function test_getVertices(t) {
-        t.plan(10);
+        t.plan(14);
         
         var points = [
             new OpenLayers.Geometry.Point(10, 20),
@@ -226,6 +226,14 @@
         t.eq(nodes.length, 2, "[nodes only] of correct length length");
         t.geom_eq(nodes[0], points[0], "[nodes only] first: correct geometry");
         t.geom_eq(nodes[1], points[points.length-1], "[nodes only] last: correct geometry");
+
+        // no nodes
+        var nodes = line.getVertices(false);
+        t.ok(nodes instanceof Array, "[no nodes] got back an array");
+        t.eq(nodes.length, 2, "[no nodes] of correct length length");
+        t.geom_eq(nodes[0], points[1], "[no nodes] first: correct geometry");
+        t.geom_eq(nodes[1], points[2], "[no nodes] last: correct geometry");
+
     }
     
     
