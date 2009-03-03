@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # Script to provide a wrapper around the ShrinkSafe "web service"
-# <http://alex.dojotoolkit.org/shrinksafe/>
+# <http://shrinksafe.dojotoolkit.org/>
 #
 
 #
@@ -19,7 +19,7 @@ import sys
 import urllib
 import urllib2
 
-URL_SHRINK_SAFE = "http://alex.dojotoolkit.org/shrinksafe/shrinksafe.php"
+URL_SHRINK_SAFE = "http://shrinksafe.dojotoolkit.org/shrinksafe.php"
 
 # This would normally be dynamically generated:
 BOUNDARY_MARKER = "---------------------------72288400411964641492083565382"
