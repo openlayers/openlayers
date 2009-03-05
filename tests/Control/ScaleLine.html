@@ -168,6 +168,18 @@
         
         map.destroy();
     }   
+    function test_ie_oneunit(t) {
+        t.plan(2);
+        var control = new OpenLayers.Control.ScaleLine({bottomOutUnits:'',bottomInUnits:'',maxWidth:150});
+        t.ok(control instanceof OpenLayers.Control.ScaleLine, "new OpenLayers.Control returns object" );
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS('Test Layer', "bogus", {});
+        map.addLayer(layer);
+        map.zoomTo(0);
+        map.addControl(control);
+        t.ok(true, "invisible bottom scale doesn't cause scaleline failure (IE only)");
+        map.destroy();
+    }
   </script>
 </head>
 <body>
