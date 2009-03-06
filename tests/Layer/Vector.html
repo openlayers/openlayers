@@ -243,6 +243,58 @@
         layer.features = [];
     }
     
+    function test_deleted_state(t) {
+        t.plan(9);
+        
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector(null, {
+            drawn: true
+        });
+        map.addLayer(layer);
+        var feature = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(10, 10)
+        );
+        var log;
+        layer.renderer = {
+            drawFeature: function(f, s) {
+                log = {
+                    feature: f,
+                    style: s
+                };
+            }
+        };
+        
+        // draw feature with no state
+        layer.drawFeature(feature);
+        t.ok(log.feature === feature, "[no state] drawFeature called with correct feature");
+        t.ok(log.style.display !== "none", "[no state] drawFeature called with style display not none");
+
+        // draw feature with delete style
+        feature.state = OpenLayers.State.DELETE;
+        layer.drawFeature(feature);
+        t.ok(log.feature === feature, "[delete] drawFeature called with correct feature");
+        t.eq(log.style.display, "none", "[delete] drawFeature called with style display none");
+
+        // undelete the feature and redraw
+        delete feature.state;
+        delete feature.renderIntent;
+        layer.drawFeature(feature);
+        t.ok(log.feature === feature, "[undelete] drawFeature called with correct feature");
+        t.ok(log.style.display !== "none", "[undelete] drawFeature called with style display not none");
+        
+        // change deleted style
+        layer.styleMap.styles["delete"] = new OpenLayers.Style({fillOpacity: 0.1});
+
+        // draw feature with delete style
+        feature.state = OpenLayers.State.DELETE;
+        layer.drawFeature(feature);
+        t.ok(log.feature === feature, "[draw deleted] drawFeature called with correct feature");
+        t.ok(log.style.display !== "none", "[draw deleted] drawFeature called with style display not none");
+        t.eq(log.style.fillOpacity, 0.1,"[draw deleted] drawFeature called with correct fill opacity");
+
+        
+    }
+    
     function test_Layer_Vector_eraseFeatures(t) {
         t.plan(2);
         var layer = new OpenLayers.Layer.Vector("Test Layer");
