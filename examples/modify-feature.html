@@ -30,12 +30,14 @@
             map.addControl(new OpenLayers.Control.MousePosition());
             
             function report(event) {
-                OpenLayers.Console.log(event.type, event.feature.id);
+                OpenLayers.Console.log(event.type, event.feature ? event.feature.id : event.components);
             }
             vectors.events.on({
                 "beforefeaturemodified": report,
                 "featuremodified": report,
-                "afterfeaturemodified": report
+                "afterfeaturemodified": report,
+                "vertexmodified": report,
+                "sketchmodified": report
             });
             controls = {
                 point: new OpenLayers.Control.DrawFeature(vectors,
