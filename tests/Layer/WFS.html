@@ -25,6 +25,22 @@
 
     }
     
+    function test_Layer_WFS_setOpacity(t) {
+        t.plan(3);
+
+        var layer = new OpenLayers.Layer.WFS(name, "url", {});
+        layer.setOpacity(.5);
+        t.eq(layer.opacity, 0.5, "vector setOpacity didn't fail");
+        var layer = new OpenLayers.Layer.WFS(name, "url", {}, {'featureClass': OpenLayers.Feature.WFS});
+        var marker = new OpenLayers.Marker(new OpenLayers.LonLat(0,0));
+        marker.setOpacity = function() {
+            t.ok(true, "Marker setOpacity was called");
+        }    
+        layer.addMarker(marker);
+        layer.setOpacity(.6);
+        t.eq(layer.opacity, 0.6, "setOpacity didn't fail on markers");
+    }
+    
     function test_Layer_WFS_destroy(t) {
         t.plan(13);
         
