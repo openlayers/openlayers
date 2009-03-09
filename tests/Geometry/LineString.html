@@ -149,6 +149,105 @@
         
     }
     
+    function test_split(t) {
+        var wkt = OpenLayers.Geometry.fromWKT;
+        
+        var cases = [{
+            msg: "no intersection",
+            g1: "LINESTRING(0 0, 0 1)",
+            g2: "LINESTRING(1 0, 1 1)",
+            exp: null
+        } , {
+            msg: "intersection at midpoint",
+            g1: "LINESTRING(0 0, 1 1)",
+            g2: "LINESTRING(1 0, 0 1)",
+            exp: ["LINESTRING(1 0, 0.5 0.5)", "LINESTRING(0.5 0.5, 0 1)"]
+        }, {
+            msg: "intersection at midpoint (reverse source/target)",
+            g1: "LINESTRING(1 0, 0 1)",
+            g2: "LINESTRING(0 0, 1 1)",
+            exp: ["LINESTRING(0 0, 0.5 0.5)", "LINESTRING(0.5 0.5, 1 1)"]
+        }, {
+            msg: "intersection at endpoint",
+            g1: "LINESTRING(0 0, 1 1)",
+            g2: "LINESTRING(1 0, 1 1)",
+            exp: null
+        }, {
+            msg: "midpoint intersection, no options",
+            g1: "LINESTRING(0 0, 2 2)",
+            g2: "LINESTRING(0 2, 2 0)",
+            exp: ["LINESTRING(0 2, 1 1)", "LINESTRING(1 1, 2 0)"]
+        }, {
+            msg: "midpoint intersection, edge false",
+            opt: {edge: false},
+            g1: "LINESTRING(0 0, 2 2)",
+            g2: "LINESTRING(0 2, 2 0)",
+            exp: null
+        }, {
+            msg: "midpoint intersection, mutual",
+            opt: {mutual: true},
+            g1: "LINESTRING(0 0, 2 2)",
+            g2: "LINESTRING(0 2, 2 0)",
+            exp: [["LINESTRING(0 0, 1 1)", "LINESTRING(1 1, 2 2)"], ["LINESTRING(0 2, 1 1)", "LINESTRING(1 1, 2 0)"]]
+        }, {
+            msg: "close intersection, no tolerance",
+            g1: "LINESTRING(0 0, 0.9 0.9)",
+            g2: "LINESTRING(0 2, 2 0)",
+            exp: null
+        }, {
+            msg: "close intersection, within tolerance",
+            opt: {tolerance: 0.2},
+            g1: "LINESTRING(0 0, 0.9 0.9)",
+            g2: "LINESTRING(0 2, 2 0)",
+            exp: ["LINESTRING(0 2, 0.9 0.9)", "LINESTRING(0.9 0.9, 2 0)"]
+        }];
+        
+        t.plan(cases.length);
+        var c, parts, part, midparts;
+        for(var i=0; i<cases.length; ++i) {
+            c = cases[i];
+            var g1 = wkt(c.g1);
+            var g2 = wkt(c.g2);
+            var got = g1.split(g2, c.opt);
+            var exp = c.exp;
+            if(got instanceof Array) {
+                parts = [];
+                for(var j=0; j<got.length; ++j) {
+                    part = got[j];
+                    if(part instanceof Array) {
+                        midparts = [];
+                        for(var k=0; k<part.length; ++k) {
+                            midparts.push(part[k].toString());
+                        }
+                        parts.push("[" + midparts.join(", ") + "]");
+                    } else {
+                        parts.push(got[j].toString());
+                    }
+                }
+                got = parts.join(", ");
+            }
+            if(exp instanceof Array) {
+                parts = [];
+                for(var j=0; j<exp.length; ++j) {
+                    part = exp[j];
+                    if(part instanceof Array) {
+                        midparts = [];
+                        for(var k=0; k<part.length; ++k) {
+                            midparts.push(wkt(part[k]).toString());
+                        }
+                        parts.push("[" + midparts.join(", ") + "]");
+                    } else {
+                        parts.push(wkt(exp[j]).toString());
+                    }
+                }
+                exp = parts.join(", ");
+            }
+            t.eq(got, exp, "case " + i + ": " +  c.msg);
+        }
+        
+    }
+    
+
     function test_distanceTo(t) {
         var wkt = OpenLayers.Geometry.fromWKT;
         var geoms = [
