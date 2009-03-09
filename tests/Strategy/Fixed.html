@@ -60,21 +60,69 @@
                 "visibilitychanged listener unregistered");
     }
     
-    function tests_merge(t) {
+    function test_events(t) {
         
-        t.plan(4);
+        t.plan(2);
+        
+        var log = {
+            loadstart: 0,
+            loadend: 0
+        };
+        
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector(null, {
+            strategies: [new OpenLayers.Strategy.Fixed()],
+            protocol: new OpenLayers.Protocol({
+                read: function(config) {
+                    config.callback.call(config.scope, {});
+                }
+            }),
+            isBaseLayer: true,
+            eventListeners: {
+                loadstart: function() {
+                    ++log.loadstart;
+                },
+                loadend: function() {
+                    ++log.loadend;
+                }
+            }
+        });
+
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        
+        t.eq(log.loadstart, 1, "loadstart triggered");
+        t.eq(log.loadend, 1, "loadend triggered");
+        
+        map.destroy();
+        
+    }
+    
+    
+    function test_merge(t) {
+        
+        t.plan(5);
         
         var strategy = new OpenLayers.Strategy.Fixed();
         
         // create map with default projection
         var map = new OpenLayers.Map("map");
         
+        var log = {
+            loadend: 0
+        };
+        
         // create layer with custom projection
         var layer = new OpenLayers.Layer.Vector(null, {
             isBaseLayer: true,
             strategies: [strategy],
             protocol: new OpenLayers.Protocol(),
-            projection: new OpenLayers.Projection("EPSG:900913")
+            projection: new OpenLayers.Projection("EPSG:900913"),
+            eventListeners: {
+                loadend: function() {
+                    ++log.loadend;
+                }
+            }
         });
         map.addLayer(layer);
         map.zoomToMaxExtent();
@@ -91,6 +139,9 @@
 
         // call merge with a mocked up response
         strategy.merge({features: features});
+        
+        // confirm that loadend was called
+        t.eq(log.loadend, 1, "merge triggers loadend");
         
         // test that feature geometries have been transformed to map projection
         var from = layer.projection;

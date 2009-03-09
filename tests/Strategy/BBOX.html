@@ -84,6 +84,42 @@
         
 
     }
+    
+    function test_events(t) {
+        
+        t.plan(2);
+        var log = {
+            loadstart: 0,
+            loadend: 0
+        };
+
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector(null, {
+            strategies: [new OpenLayers.Strategy.BBOX()],
+            protocol: new OpenLayers.Protocol({
+                read: function(config) {
+                    config.callback.call(config.scope, {});
+                }
+            }),
+            isBaseLayer: true,
+            eventListeners: {
+                loadstart: function() {
+                    ++log.loadstart;
+                },
+                loadend: function() {
+                    ++log.loadend;
+                }
+            }            
+        });
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        
+        t.eq(log.loadstart, 1, "loadstart triggered");
+        t.eq(log.loadend, 1, "loadend triggered");
+        
+        map.destroy();
+        
+    }
 
     function test_triggerRead(t) {
         t.plan(4);
@@ -96,26 +132,38 @@
             return filter;
         };
         s.response = {"fake": "response"};
+        
+        var log = {};
 
         var protocol = new OpenLayers.Protocol({
             read: function(options) {
-                t.ok(options.filter == filter,
-                        "protocol read called with correct filter");
-                t.ok(options.callback == s.merge,
-                        "protocol read called with correct callback");
-                t.ok(options.scope == s,
-                        "protocol read called with correct scope");
+                log.options = options;
             },
             abort: function(response) {
-                t.eq(response, s.response,
-                        "protocol abort called with correct response");
+                log.abort = response.fake;
             }
         });
+        
+        var layer = new OpenLayers.Layer.Vector(null, {
+            strategies: [s],
+            protocol: protocol,
+            isBaseLayer: true
+        });
+        var map = new OpenLayers.Map("map");
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        
+        t.ok(log.options.filter == filter,
+                "protocol read called with correct filter");
+        t.ok(log.options.callback == s.merge,
+                "protocol read called with correct callback");
+        t.ok(log.options.scope == s,
+                "protocol read called with correct scope");
+        t.eq(log.abort, "response",
+                "protocol abort called with correct response");
 
-        s.setLayer({protocol: protocol});
+        map.destroy();
 
-        // 4 tests
-        s.triggerRead();
     }
 
     function test_createFilter(t) {
