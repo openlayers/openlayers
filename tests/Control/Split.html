@@ -1,0 +1,296 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+
+    function test_initialize(t) {
+        
+        t.plan(4);
+
+        var layer = new OpenLayers.Layer.Vector();
+        var control;
+        
+        // construct with nothing
+        control = new OpenLayers.Control.Split();
+        t.ok(control instanceof OpenLayers.Control, "instanceof OpenLayers.Control");
+        t.ok(control instanceof OpenLayers.Control, "instanceof OpenLayers.Control.Split")
+        control.destroy();
+        
+        // construct with a single target layer
+        control = new OpenLayers.Control.Split({
+            layer: layer
+        });        
+        t.ok(control.layer === layer, "target layer properly set");
+        control.destroy();
+        
+        // construct with same target and source
+        control = new OpenLayers.Control.Split({
+            layer: layer,
+            source: layer
+        });        
+        t.ok(control.source === layer, "source layer properly set");
+        control.destroy();
+    }
+    
+    function test_setSource(t) {
+        t.plan(5);
+        
+        var layer1 = new OpenLayers.Layer.Vector();
+        var layer2 = new OpenLayers.Layer.Vector();
+        
+        var control = new OpenLayers.Control.Split({layer: layer1});
+
+        var map = new OpenLayers.Map("map");
+        map.addLayers([layer1, layer2]);
+        map.addControl(control);
+        control.activate();
+        
+        // confirm sketch hander created
+        t.ok(control.handler, "sketch handler created");
+        t.eq(control.handler.active, true, "sketch handler active");
+        
+        control.setSource(layer1);
+        t.ok(control.source === layer1, "layer1 properly set");
+        t.ok(!control.handler, "no more sketch handler");
+        
+        // activate and switch to new source layer
+        control.setSource(layer2);
+        t.ok(control.source === layer2, "layer2 properly set");
+        
+        map.destroy();
+        
+    }
+    
+    function test_activate(t) {
+        t.plan(8);
+        
+        var layer = new OpenLayers.Layer.Vector();
+        var control = new OpenLayers.Control.Split({layer: layer});
+        var map = new OpenLayers.Map("map");
+        map.addLayer(layer);
+        map.addControl(control);
+        
+        // test activation with no source layer
+        control.activate();
+        t.eq(control.active, true, "control is active");
+        t.ok(control.handler instanceof OpenLayers.Handler.Path, "line sketch handler created");
+        t.ok(control.handler.callbacks.done, "done callback set on sketch handler");
+        t.eq(control.handler.active, true, "sketch handler is active");
+        
+        // change the source layer - this should call activate again
+        control.setSource(layer);
+        
+        t.eq(control.active, true, "control is still active");
+        t.ok(control.source === layer, "source layer set");
+        t.ok(layer.events.listeners.sketchcomplete, "sketchcomplete listener registered");
+        t.ok(layer.events.listeners.afterfeaturemodified, "afterfeaturemodified listener registered");
+        
+        map.destroy();
+        
+    }
+    
+    function test_deactivate(t) {
+        
+        t.plan(7);
+        
+        var layer = new OpenLayers.Layer.Vector();
+        var control = new OpenLayers.Control.Split({layer: layer});
+        var map = new OpenLayers.Map("map");
+        map.addLayer(layer);
+        map.addControl(control);
+        
+        // activate and check sketch handler
+        control.activate();
+        t.ok(control.handler, "sketch handler present");
+        t.eq(control.handler.active, true, "sketch handler active");
+        
+        // deactivate and check sketch handler
+        control.deactivate();
+        t.eq(control.handler.active, false, "sketch handler deactivated");
+        
+        // set a source layer
+        control.setSource(layer);
+
+        // activate and check that listeners are registered
+        control.activate();
+        t.ok(layer.events.listeners.sketchcomplete, "sketchcomplete listener registered");
+        t.ok(layer.events.listeners.afterfeaturemodified, "afterfeaturemodified listener registered");
+
+        // deactivate and confirm no draw related events
+        control.deactivate();
+        t.eq(layer.events.listeners.sketchcomplete.length, 0, "no sketchcomplete listeners");
+        t.eq(layer.events.listeners.afterfeaturemodified.length, 0, "no afterfeaturemodified listeners");
+        
+        map.destroy();
+    }
+    
+    function test_isEligible(t) {
+        
+        t.plan(9);
+        
+        var control = new OpenLayers.Control.Split();
+        var geometry = OpenLayers.Geometry.fromWKT("LINESTRING(0 1, 1 2)");
+        var feature = new OpenLayers.Feature.Vector(
+            geometry,
+            {foo: "bar"}
+        );
+        
+        t.eq(control.isEligible(feature), true, "plain old feature is eligible");
+        
+        feature.state = OpenLayers.State.DELETE;
+        t.eq(control.isEligible(feature), false, "feature slated for deletion is not eligible");
+        delete feature.state;
+        t.eq(control.isEligible(feature), true, "feature with no state is eligible");
+        
+        feature.geometry = new OpenLayers.Geometry.Point(1, 1);
+        t.eq(control.isEligible(feature), false, "feature with point geometry is not eligible");
+        feature.geometry = new OpenLayers.Geometry.MultiLineString([geometry]);
+        t.eq(control.isEligible(feature), true, "feature with multilinestring geometry is eligible");
+        
+        control.feature = feature;
+        t.eq(control.isEligible(feature), false, "source feature is not eligible as target");
+        control.feature = new OpenLayers.Feature.Vector();
+        t.eq(control.isEligible(feature), true, "feature is eligible if different than source feature");
+        
+        control.targetFilter = new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
+            property: "foo",
+            value: "bar"
+        });
+        t.eq(control.isEligible(feature), false, "feature is not eligible unless it matches filter");
+        control.targetFilter.value = "baz";
+        t.eq(control.isEligible(feature), true, "feature is eligible if it matches filter");
+        
+        control.destroy();
+        
+    }
+    
+    function test_considerSplit(t) {
+
+        var layer = new OpenLayers.Layer.Vector();
+        
+        var wkt = OpenLayers.Geometry.fromWKT;
+        var geoms = {
+            abc: wkt("LINESTRING(0 0, 2 2)"),
+            ab: wkt("LINESTRING(0 0, 1 1)"),
+            bc: wkt("LINESTRING(1 1, 2 2)"),
+            dbe: wkt("LINESTRING(2 0, 0 2)"),
+            db: wkt("LINESTRING(2 0, 1 1)"),
+            be: wkt("LINESTRING(1 1, 0 2)")
+        };
+        
+        var Feature = OpenLayers.Feature.Vector;
+        var feats = {
+            abc: new Feature(geoms.abc),
+            ab: new Feature(geoms.ab),
+            bc: new Feature(geoms.bc),
+            dbe: new Feature(geoms.dbe),
+            db: new Feature(geoms.db),
+            be: new Feature(geoms.be)
+        };
+        
+        function feature(id, options) {
+            var f = OpenLayers.Util.extend(feats[id].clone(), options);
+            // for testing, we want to check when features are destroyed
+            f.destroy = function() {
+                f.state = "destroyed";
+            }
+            return f;
+        }
+        var DELETE = OpenLayers.State.DELETE;
+        var INSERT = OpenLayers.State.INSERT;
+        var UPDATE = OpenLayers.State.UPDATE;
+        
+        var cases = [{
+            targets: [
+                feature("abc")
+            ],
+            source: feature("dbe"),
+            splits: [{
+                original: feature("abc", {state: "destroyed"}),
+                features: [feature("ab", {state: INSERT}), feature("bc", {state: INSERT})]
+            }, {
+                original: feature("dbe", {state: "destroyed"}),
+                features: [feature("db", {state: INSERT}), feature("be", {state: INSERT})]
+            }]
+        }, {
+            options: {deferDelete: true},
+            targets: [
+                feature("abc", {state: INSERT})
+            ],
+            source: feature("dbe"),
+            splits: [{
+                original: feature("abc", {state: "destroyed"}),
+                features: [feature("ab", {state: INSERT}), feature("bc", {state: INSERT})]
+            }, {
+                original: feature("dbe", {state: DELETE}),
+                features: [feature("db", {state: INSERT}), feature("be", {state: INSERT})]
+            }]
+        }, {
+            options: {deferDelete: true},
+            targets: [
+                feature("abc", {state: UPDATE})
+            ],
+            source: feature("dbe", {state: INSERT}),
+            splits: [{
+                original: feature("abc", {state: DELETE}),
+                features: [feature("ab", {state: INSERT}), feature("bc", {state: INSERT})]
+            }, {
+                original: feature("dbe", {state: "destroyed"}),
+                features: [feature("db", {state: INSERT}), feature("be", {state: INSERT})]
+            }]
+        }];
+        
+        var count = 0;
+        var c, control, options, log, event, split;
+        for(var i=0; i<cases.length; ++i) {
+            c = cases[i];
+            ++count; // test number of splits
+            for(var j=0; j<c.splits.length; ++j) {
+                split = c.splits[j];
+                ++count; // test original state
+                ++count; // test original geometry
+                ++count; // test number of parts
+                for(var k=0; k<split.features.length; ++k) {
+                    ++count; // test part state
+                    ++count; // test part geometry
+                }
+            }
+        }
+        t.plan(count);
+
+        for(var i=0; i<cases.length; ++i) {
+            c = cases[i];
+            log = {events: []};
+            options = OpenLayers.Util.extend({layer: layer, source: layer}, c.options);
+            control = new OpenLayers.Control.Split(options);
+            control.events.on({
+                split: function(e) {
+                    log.events.push(e);
+                }
+            });
+            layer.features = c.targets;
+            control.considerSplit(c.source);
+            t.eq(log.events.length, c.splits.length, "case " + i + ": correct number of split events");
+            for(var j=0; j<log.events.length; ++j) {
+                event = log.events[j];
+                split = c.splits[j];
+                t.eq(event.original.state, split.original.state, "case " + i + " split " + j + ": correct original state");
+                t.geom_eq(event.original.geometry, split.original.geometry, "case " + i + " split " + j + ": correct original geometry");
+                t.eq(event.features.length, split.features.length, "case " + i + " split " + j + ": correct number of parts");
+                for(var k=0; k<split.features.length; ++k) {
+                    t.eq(event.features[k].state, split.features[k].state, "case " + i + " split " + j + " feature " + k + ": correct state");
+                    t.geom_eq(event.features[k].geometry, split.features[k].geometry, "case " + i + " split " + j + " feature " + k + ": correct geometry");
+                }
+            }
+            control.destroy();
+        }
+        
+    }
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 100px; height: 100px;"></div>
+</body>
+</html>
