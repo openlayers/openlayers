@@ -187,6 +187,30 @@
         t.eq(aborted, true, "abort called on response.priv");
 
     }
+    
+    function test_fromWMSLayer(t) {
+        t.plan(8);
+        var map = new OpenLayers.Map("map", {
+            projection: "EPSG:1234"
+        });
+        var layer = new OpenLayers.Layer.WMS("foo", "htttp://foo/ows",
+            {layers: "topp:states"}
+        );
+        map.addLayer(layer);
+        var protocol = OpenLayers.Protocol.WFS.fromWMSLayer(layer);
+        t.eq(protocol.url, "htttp://foo/ows", "url taken from wms layer");
+        t.eq(protocol.featurePrefix, "topp", "feature prefix correctly extracted");
+        t.eq(protocol.featureType, "states", "typeName correctly extracted");
+        t.eq(protocol.srsName, "EPSG:1234", "srsName set correctly");
+        t.eq(protocol.version, "1.1.0", "version set correctly");
+        
+        layer.params["LAYERS"] = ["topp:street_centerline", "topp:states"];
+        layer.projection = new OpenLayers.Projection("EPSG:900913");
+        protocol = OpenLayers.Protocol.WFS.fromWMSLayer(layer);
+        t.eq(protocol.featurePrefix, "topp", "featurePrefix from layer param array");
+        t.eq(protocol.featureType, "street_centerline", "first layer from layer param array as featureType"); 
+        t.eq(protocol.srsName, "EPSG:900913", "projection from layer preferred"); 
+    }
 
     function readXML(id) {
         var xml = document.getElementById(id).firstChild.nodeValue;
