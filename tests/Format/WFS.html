@@ -1,0 +1,81 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script>  
+    function test_wfs_update_node(t) {
+        t.plan(2);
+        var expected = readXML("Update");
+        var updateFeature = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(1,2),
+            {foo: "bar"});
+        updateFeature.fid = "fid.42";
+        updateFeature.state = OpenLayers.State.UPDATE;
+        var format = new OpenLayers.Format.WFS({
+            'featureNS':'http://www.openplans.org/topp',
+            'featureName': 'states',
+            'geometryName': 'the_geom',
+            'featurePrefix': 'topp'
+        }, {options:{}});
+        var updateNode = format.update(updateFeature);
+        t.xml_eq(updateNode, expected, "update node matches expected XML value.");
+        var format = new OpenLayers.Format.WFS({
+            'featurePrefix': 'topp'
+        }, {options:{typename: 'states', 'featureNS': 'http://www.openplans.org/topp', 'geometry_column': 'the_geom' }});
+        var updateNode = format.update(updateFeature);
+        t.xml_eq(updateNode, expected, "update node matches expected XML value.");
+    }
+    function test_wfs_delete_node(t) {
+        t.plan(2);
+        var expected = readXML("Delete");
+        var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0));
+        feature.state = OpenLayers.State.DELETE;
+        feature.fid = "fid.37";
+        var format = new OpenLayers.Format.WFS({
+            'featureNS':'http://www.openplans.org/topp',
+            'featureName': 'states',
+            'featurePrefix': 'topp'
+        }, {options:{}});
+        var deleteNode = format.remove(feature);
+        t.xml_eq(deleteNode, expected, "delete node matches expected XML value.");
+        var format = new OpenLayers.Format.WFS({
+            'featurePrefix': 'topp'
+        }, {options:{typename: 'states', 'featureNS': 'http://www.openplans.org/topp'}});
+        var deleteNode = format.remove(feature);
+        t.xml_eq(deleteNode, expected, "delete node matches expected XML value.");
+    }
+    function readXML(id) {
+        var xml = document.getElementById(id).firstChild.nodeValue;
+        return new OpenLayers.Format.XML().read(xml).documentElement;        
+    }
+
+  </script>
+</head>
+<body>
+<div id="Update"><!--
+<wfs:Update xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
+    <wfs:Property>
+        <wfs:Name>the_geom</wfs:Name>
+        <wfs:Value>
+            <gml:Point xmlns:gml="http://www.opengis.net/gml">
+                <gml:coordinates decimal="." cs="," ts=" ">1,2</gml:coordinates>
+            </gml:Point>
+        </wfs:Value>
+    </wfs:Property>
+    <wfs:Property>
+        <wfs:Name>foo</wfs:Name>
+        <wfs:Value>bar</wfs:Value>
+    </wfs:Property>
+    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+        <ogc:FeatureId fid="fid.42"/>
+    </ogc:Filter>
+</wfs:Update>
+--></div>
+<div id="Delete"><!--
+<wfs:Delete xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
+    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+        <ogc:FeatureId fid="fid.37"/>
+    </ogc:Filter>
+</wfs:Delete>
+--></div>
+</body>
+</html>
