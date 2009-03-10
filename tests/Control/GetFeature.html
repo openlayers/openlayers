@@ -1,0 +1,104 @@
+<html>
+<head>
+    <script src="../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+    function test_Control_GetFeature_constructor(t) {
+        t.plan(2);
+        var protocol = "foo";
+        var control = new OpenLayers.Control.GetFeature({
+            protocol: protocol
+        });
+        t.ok(control instanceof OpenLayers.Control.GetFeature,
+             "new OpenLayers.Control.SelectFeature returns an instance");
+        t.eq(control.protocol, "foo",
+             "constructor sets protocol correctly");        
+    }
+    
+    function test_Control_GetFeature_select(t) {
+        t.plan(3);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.WMS("foo", "wms", {
+            layers: "foo"
+        });
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(1,2));
+        var feature1 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(1,2));
+        var feature2 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(2,3));
+        var control = new OpenLayers.Control.GetFeature({
+            protocol: new OpenLayers.Protocol({
+                read: function(obj) {
+                    obj.callback.call(obj.scope, {
+                        features: [feature1, feature2],
+                        code: 1
+                    });
+                }
+            }),
+            box: true
+        });
+        map.addControl(control);
+
+        var singleTest = function(evt) {
+            t.eq(evt.feature.id, feature1.id, "featureselected callback called with closest feature");
+        }
+        control.events.register("featureselected", this, singleTest);
+        control.selectSingle({xy: new OpenLayers.Pixel(200, 125)});
+        control.events.unregister("featureselected", this, singleTest);
+        
+        var features = []
+        var boxTest = function(evt) {
+            features.push(evt.feature);
+        }
+        control.events.register("featureselected", this, boxTest);
+        control.selectBox(new OpenLayers.Bounds(0,0,4,4));
+        control.events.unregister("featureselected", this, boxTest);
+        t.eq(features.length, 2, "2 features inside box selected");
+        t.eq(features[1].id, feature2.id, "featureselected callback called with multiple features");
+    }
+    
+    function test_Control_GetFeature_hover(t) {
+        t.plan(3);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.WMS("foo", "wms", {
+            layers: "foo"
+        });
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(1,2));
+        var feature1 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(1,2));
+        var feature2 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(2,3));
+        var control = new OpenLayers.Control.GetFeature({
+            protocol: new OpenLayers.Protocol({
+                read: function(obj){
+                    obj.callback.call(obj.scope, {
+                        features: [feature1, feature2],
+                        code: 1
+                    });
+                    return {priv: {}};
+                }
+            }),
+            hover: true
+        });
+        map.addControl(control);
+
+        var hoverFeature;
+        var hoverTest = function(evt) {
+            t.eq(evt.feature.id, hoverFeature.id, "hoverfeature callback called with closest feature");
+        }
+        var outTest = function(evt) {
+            t.eq(evt.feature.id, feature1.id, "outfeature callback called with previously hovered feature");
+        }
+        control.events.register("hoverfeature", this, hoverTest);
+        control.events.register("outfeature", this, outTest);
+        hoverFeature = feature1;
+        control.selectHover({xy: new OpenLayers.Pixel(200, 125)});
+        hoverFeature = feature2;
+        control.selectHover({xy: new OpenLayers.Pixel(400, 0)});
+        control.events.unregister("hoverfeature", this, hoverTest);
+        control.events.unregister("outfeature", this, outTest);
+    }
+    
+    </script>
+</head>
+<body>
+    <div id="map" style="width: 400px; height: 250px;"/>
+</body>
+</html>

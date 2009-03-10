@@ -321,3 +321,10 @@ div.olControlMousePosition {
  -moz-user-select: none;
 }
 
+/**
+ * Cursor styles
+ */
+
+.olCursorWait {
+    cursor: wait;
+}
