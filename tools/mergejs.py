@@ -87,9 +87,10 @@ class Config:
         3rd/prototype.js
         core/application.js
         core/params.js
+        # A comment
 
         [last]
-        core/api.js
+        core/api.js # Another comment
 
         [exclude]
         3rd/logger.js
@@ -102,6 +103,8 @@ class Config:
     order listed).
 
     The files list in the `exclude` section will not be imported.
+
+    Any text appearing after a # symbol indicates a comment.
     
     """
 
@@ -109,9 +112,9 @@ class Config:
         """
         Parses the content of the named file and stores the values.
         """
-        lines = [line.strip() # Assumes end-of-line character is present
+        lines = [re.sub("#.*?$", "", line).strip() # Assumes end-of-line character is present
                  for line in open(filename)
-                 if line.strip()] # Skip blank lines
+                 if line.strip() and not line.strip().startswith("#")] # Skip blank lines and comments
 
         self.forceFirst = lines[lines.index("[first]") + 1:lines.index("[last]")]
 
