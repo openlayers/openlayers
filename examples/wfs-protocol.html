@@ -9,7 +9,7 @@
             var map;
         
             function init() {
-                OpenLayers.ProxyHost= "/cgi-bin/proxy.cgi?url=";
+                OpenLayers.ProxyHost= "proxy.cgi?url=";
                 map = new OpenLayers.Map('map');
                 var wms = new OpenLayers.Layer.WMS(
                     "OpenLayers WMS", "http://labs.metacarta.com/wms/vmap0",
