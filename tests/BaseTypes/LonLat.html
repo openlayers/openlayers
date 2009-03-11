@@ -6,12 +6,17 @@
     var lonlat; 
 
     function test_LonLat_constructor (t) {
-        t.plan( 4 );
+        t.plan( 6 );
         lonlat = new OpenLayers.LonLat(6, 5);
         t.ok( lonlat instanceof OpenLayers.LonLat, "new OpenLayers.LonLat returns LonLat object" );
         t.eq( lonlat.CLASS_NAME, "OpenLayers.LonLat", "lonlat.CLASS_NAME is set correctly");
         t.eq( lonlat.lon, 6, "lonlat.lon is set correctly");
         t.eq( lonlat.lat, 5, "lonlat.lat is set correctly");
+
+        // possible global Mercator projection values
+        lonlat = new OpenLayers.LonLat(20037508.33999999, -20037508.33999999);
+        t.eq( lonlat.lon, 20037508.34, "lonlat.lon rounds correctly");
+        t.eq( lonlat.lat, -20037508.34, "lonlat.lat rounds correctly");
     }
     
     function test_LonLat_constructorFromStrings (t) {

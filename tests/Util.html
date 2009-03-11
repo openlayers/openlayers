@@ -806,6 +806,16 @@
         
     }
 
+    function test_toFloat(t) {
+        t.plan(2);
+        // actual possible computed Mercator tile coordinates, more or less
+        var a1=40075016.67999999, b1=-20037508.33999999,
+            a2=40075016.68, b2=-20037508.34;
+        t.eq(OpenLayers.Util.toFloat(a1), OpenLayers.Util.toFloat(a2),
+            "toFloat rounds large floats correctly #1");
+        t.eq(OpenLayers.Util.toFloat(b1), OpenLayers.Util.toFloat(b2),
+            "toFloat rounds large floats correctly #2");
+    }
   </script>
 </head>
 <body>

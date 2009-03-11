@@ -4,7 +4,7 @@
   <script type="text/javascript">
     var bounds; 
     function test_Bounds_constructor (t) {
-        t.plan( 17 );
+        t.plan( 21 );
         
         bounds = new OpenLayers.Bounds();
         t.ok( bounds instanceof OpenLayers.Bounds, "new OpenLayers.Bounds returns Bounds object" );
@@ -36,6 +36,14 @@
         var center = new OpenLayers.LonLat(5,3);
         var boundsCenter = bounds.getCenterLonLat();
         t.ok( boundsCenter.equals(center), "bounds.getCenterLonLat() has correct value" );
+
+        // This is an actual use case with Mercator projection at global scale
+        bounds = new OpenLayers.Bounds(-40075016.67999999,-20037508.339999992,
+                                        40075016.67999999,20037508.339999992);
+        t.eq( bounds.left, -40075016.68, "bounds.left adjusted for floating precision");
+        t.eq( bounds.bottom, -20037508.34, "bounds.bottom adjusted for floating precision");
+        t.eq( bounds.right, 40075016.68, "bounds.right adjusted for floating precision");
+        t.eq( bounds.top, 20037508.34, "bounds.top adjusted for floating precision");
     }
 
     function test_Bounds_constructorFromStrings(t) {
@@ -91,13 +99,13 @@
         var ring = poly.components[0];
         t.eq(ring.components.length, 5,
              "four sided polygon created");
-        t.eq(ring.components[0].x, minx,
+        t.eq(ring.components[0].x, OpenLayers.Util.toFloat(minx),
              "bounds left preserved");
-        t.eq(ring.components[0].y, miny,
+        t.eq(ring.components[0].y, OpenLayers.Util.toFloat(miny),
              "bounds bottom preserved");
-        t.eq(ring.components[2].x, maxx,
+        t.eq(ring.components[2].x, OpenLayers.Util.toFloat(maxx),
              "bounds left preserved");
-        t.eq(ring.components[2].y, maxy,
+        t.eq(ring.components[2].y, OpenLayers.Util.toFloat(maxy),
              "bounds bottom preserved");
     }
 
@@ -157,7 +165,7 @@
     }
 
     function test_Bounds_intersectsBounds(t) {
-        t.plan( 17 );
+       t.plan( 19 );
 
        var aBounds = new OpenLayers.Bounds(-180, -90, 180, 90);
 
@@ -194,6 +202,13 @@
        t.eq( aBounds.intersectsBounds(bBounds, true),  false, "(" + aBounds.toBBOX() + ") does not intersect (" + bBounds.toBBOX() + "), inclusive is true" );
        t.eq( aBounds.intersectsBounds(bBounds, false), false, "(" + aBounds.toBBOX() + ") does not intersect (" + bBounds.toBBOX() + "), inclusive is false" );
 
+        // This is an actual use case with Mercator tiles at global scale
+        var merc_aBounds = new OpenLayers.Bounds(-40075016.67999999,20037508.339999992,
+                                                 -20037508.339999992,40075016.67999999),
+            merc_bBounds = new OpenLayers.Bounds(-20037508.34,-20037508.34,
+                                                  20037508.34,20037508.34);
+        t.eq( merc_aBounds.intersectsBounds(merc_bBounds, true), true, "intersect shouldn't fall prey to floating point errors, inclusive is true");
+        t.eq( merc_aBounds.intersectsBounds(merc_bBounds, false), false, "intersect shouldn't fall prey to floating point errors, inclusive is false");
     }
     
     function test_Bounds_containsBounds(t) {
@@ -282,7 +297,7 @@
         var boundsA = new OpenLayers.Bounds(1,2,3,4);
         var boundsB = new OpenLayers.Bounds(1,2,3,4);
         var boundsC = new OpenLayers.Bounds(1,5,3,4);
-        
+
         t.ok( boundsA.equals(boundsB), "equals() returns true on two equal bounds." );
         t.ok( !boundsA.equals(boundsC), "equals() returns false on two different bounds." );
         t.ok( !boundsA.equals(null), "equals() returns false on comparison to null");
