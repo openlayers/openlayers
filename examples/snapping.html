@@ -36,6 +36,91 @@
         function initMap() {
 
             map = new OpenLayers.Map('map');
+            var styles = new OpenLayers.StyleMap({
+                "default": new OpenLayers.Style(null, {
+                    rules: [
+                        new OpenLayers.Rule({
+                            symbolizer: {
+                                "Point": {
+                                    pointRadius: 5,
+                                    graphicName: "square",
+                                    fillColor: "white",
+                                    fillOpacity: 0.25,
+                                    strokeWidth: 1,
+                                    strokeOpacity: 1,
+                                    strokeColor: "#3333aa"
+                                },
+                                "Line": {
+                                    strokeWidth: 3,
+                                    strokeOpacity: 1,
+                                    strokeColor: "#6666aa"
+                                },
+                                "Polygon": {
+                                    strokeWidth: 1,
+                                    strokeOpacity: 1,
+                                    fillColor: "#9999aa",
+                                    strokeColor: "#6666aa"
+                                }
+                            }
+                        })
+                    ]
+                }),
+                "select": new OpenLayers.Style(null, {
+                    rules: [
+                        new OpenLayers.Rule({
+                            symbolizer: {
+                                "Point": {
+                                    pointRadius: 5,
+                                    graphicName: "square",
+                                    fillColor: "white",
+                                    fillOpacity: 0.25,
+                                    strokeWidth: 2,
+                                    strokeOpacity: 1,
+                                    strokeColor: "#0000ff"
+                                },
+                                "Line": {
+                                    strokeWidth: 3,
+                                    strokeOpacity: 1,
+                                    strokeColor: "#0000ff"
+                                },
+                                "Polygon": {
+                                    strokeWidth: 2,
+                                    strokeOpacity: 1,
+                                    fillColor: "#0000ff",
+                                    strokeColor: "#0000ff"
+                                }
+                            }
+                        })
+                    ]
+                }),
+                "temporary": new OpenLayers.Style(null, {
+                    rules: [
+                        new OpenLayers.Rule({
+                            symbolizer: {
+                                "Point": {
+                                    graphicName: "square",
+                                    pointRadius: 5,
+                                    fillColor: "white",
+                                    fillOpacity: 0.25,
+                                    strokeWidth: 2,
+                                    strokeColor: "#0000ff"
+                                },
+                                "Line": {
+                                    strokeWidth: 3,
+                                    strokeOpacity: 1,
+                                    strokeColor: "#0000ff"
+                                },
+                                "Polygon": {
+                                    strokeWidth: 2,
+                                    strokeOpacity: 1,
+                                    strokeColor: "#0000ff",
+                                    fillColor: "#0000ff"
+                                }
+                            }
+                        })
+                    ]
+                })
+            });
 
             // create three vector layers
             poly = new OpenLayers.Layer.Vector("polygons", {
@@ -44,6 +129,7 @@
                     url: "data/poly.json",
                     format: new OpenLayers.Format.GeoJSON()
                 }),
+                styleMap: styles,
                 isBaseLayer: true
             });
             line = new OpenLayers.Layer.Vector("lines", {
@@ -51,14 +137,16 @@
                 protocol: new OpenLayers.Protocol.HTTP({
                     url: "data/line.json",
                     format: new OpenLayers.Format.GeoJSON()
-                })
+                }),
+                styleMap: styles
             });
             point = new OpenLayers.Layer.Vector("points", {
                 strategies: [new OpenLayers.Strategy.Fixed()],                
                 protocol: new OpenLayers.Protocol.HTTP({
                     url: "data/point.json",
                     format: new OpenLayers.Format.GeoJSON()
-                })
+                }),
+                styleMap: styles
             });
             map.addLayers([poly, line, point]);
             
