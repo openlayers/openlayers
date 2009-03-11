@@ -21,9 +21,9 @@
     <script type="text/javascript">
     
         var map, layer;
-        var url = "http://demo01.dmsolutions.ca/mapguide/mapagent/mapagent.fcgi?USERNAME=Anonymous&";
+        var url = "http://data.mapguide.com/mapguide/mapagent/mapagent.fcgi?USERNAME=Anonymous&";
         //you can use this URL when MapGuide OS is installed locally
-        //var url = "/mapguide/mapagent/mapagent.fcgi";
+        //var url = "/mapguide/mapagent/mapagent.fcgi?USERNAME=Anonymous&";
         
         //Adjust the scale assumptions for MapGuide layers
         //Tiled layers MUST use a DPI value of 96, untiled layers can use a 
@@ -83,52 +83,50 @@
           map = new OpenLayers.Map( 'map2', mapOptions );
             
           var options = {
+              isBaseLayer: true,
               buffer: 1,
+              useOverlay: false,
+              useAsyncOverlay: false,
               singleTile: true
           };
-          
+      
           var params = {
               mapdefinition: 'Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition'
           };
           /*
-                    The MapGuide layer can also be created using mapname and session as follows provided there
-                    is some wrapper code to obtain a valid session id and mapname
+          The MapGuide layer can also be created using mapname and session as follows provided there
+          is some wrapper code to obtain a valid session id and mapname */
+          /*
           var params = {
-              mapname: 'Sheboygan47b3560bf1071',
-              session: '043bb716-0000-1000-8000-0017a4e6ff5d_en_7F0000010AFC0AFB0AFA'
+              mapname: 'Sheboygan49ad9e20e7171',
+              session: '7405c17a-0000-1000-8000-0017a4e6ff5d_en_7F0000010AFC0AFB0AFA'
           };
           */
+          
           var layer = new OpenLayers.Layer.MapGuide( "MapGuide OS untiled baselayer", url, params, options );
           map.addLayer(layer);
           
           //this is how to set up the layer for transparent overlays.  Requires a valid session ID 
           //and mapName stored in that session.
-          //If the mapagent URL is on a different server than this OL layer, the OpenLayers proxy script
-          //must be used since this layer must perform an additional AJAX request before requesting the
-          //map  image
-          /* 
+          /*
             var options = {
               isBaseLayer: false,
-              transparent: true,
+              useOverlay: true,
+              useAsyncOverlay: false,
               buffer: 1,
               singleTile: true
             };
             var params = {
-              mapName: 'Sheboygan',
-              session: '0b8cb80e-0000-1000-8003-0017a4e6ff5d_en_C0A802AD0AFC0AFB0AFA',
-
-
-
-              mapName: 'Sheboygan',
-              session: '0b8cb80e-0000-1000-8003-0017a4e6ff5d_en_C0A802AD0AFC0AFB0AFA',
-              version: '2.0.0',
-              selectioncolor: '0xFF0000',
+              mapName: 'Sheboygan49aeaa04487af',
+              session: '208fd92c-0000-1000-8000-0017a4e6ff5d_en_7F0000010AFC0AFB0AFA',
+              selectioncolor: '0xFF000000',
               behavior: 7
             };
             layer = new OpenLayers.Layer.MapGuide( "MapGuide OS Overlay layer", url, params, options );
             map.addLayer(layer);
-          */ 
-          map.zoomToMaxExtent();
+            */
+            map.addControl(new OpenLayers.Control.LayerSwitcher({'div':OpenLayers.Util.getElement('layerswitcher')}));
+            map.zoomToMaxExtent();
     }
     </script>
   </head>
@@ -143,7 +141,10 @@
     </p>
 
     <p>If prompted for a password, username is Anonymous and an empty password</p>
+    
     <div id="map" class="smallmap"></div>
-    <div id="map2"></div>
+    <div id="map2">
+      <div id="layerswitcher"></div>
+    </div>
   </body>
 </html>
