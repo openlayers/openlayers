@@ -13,11 +13,12 @@
                 map = new OpenLayers.Map('map', {
                     restrictedExtent: new OpenLayers.Bounds(-180, -90, 180, 90)
                 });
-                var base = new OpenLayers.Layer.WMS("OpenLayers WMS", 
-                    ["http://t3.labs.metacarta.com/wms-c/Basic.py",
-                     "http://t2.labs.metacarta.com/wms-c/Basic.py",
-                     "http://t1.labs.metacarta.com/wms-c/Basic.py"], 
-                    {layers: 'satellite'}
+                var base = new OpenLayers.Layer.WMS("Imagery", 
+                    ["http://t1.hypercube.telascience.org/tiles?",
+		     "http://t2.hypercube.telascience.org/tiles?",
+		     "http://t3.hypercube.telascience.org/tiles?",
+		     "http://t4.hypercube.telascience.org/tiles?"], 
+                    {layers: 'landsat7'}
                 );
 
                 var style = new OpenLayers.Style({
