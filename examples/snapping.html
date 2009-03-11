@@ -76,13 +76,13 @@
             });
             draw = new OpenLayers.Control.DrawFeature(
                 poly, OpenLayers.Handler.Polygon,
-                {displayClass: "olControlDrawFeaturePoint"}
+                {displayClass: "olControlDrawFeaturePoint", title: "Draw Features"}
             );
             modify = new OpenLayers.Control.ModifyFeature(
-                poly, {displayClass: "olControlModifyFeature"}
+                poly, {displayClass: "olControlModifyFeature", title: "Modify Features"}
             );            
             panel.addControls([
-                new OpenLayers.Control.Navigation(),
+                new OpenLayers.Control.Navigation({title: "Navigate"}),
                 draw, modify
             ]);
             map.addControl(panel);
