@@ -39,19 +39,17 @@
         //tiled version
         function initTiled(){
         
-            var extent = new OpenLayers.Bounds(-3631568.75,-1293815.5,4491139.5833333321,4937122);
-            var tempScales = [50000000,23207944.16806,10772173.45016,5000000,2320794.41681,1077217.34502,500000,232079.44168,107721.7345,50000];
+            var extent = new OpenLayers.Bounds(-87.764987,43.691398,-87.695522,43.797520);
+            var tempScales = [100000,51794.74679,26826.95795,13894.95494,7196.85673,3727.59372,1930.69773,1000];
             var mapOptions = {
                 maxExtent: extent, 
-                scales: tempScales,
-                units: 'm',
-                projection: 'EPSG:42304'
+                scales: tempScales
             };
             map = new OpenLayers.Map( 'map', mapOptions );
             
             var params = {
-              mapdefinition: 'Library://Samples/Gmap/Maps/gmapTiled.MapDefinition',
-              basemaplayergroupname: "BaseLayerGroup"
+              mapdefinition: 'Library://Samples/Sheboygan/MapsTiled/Sheboygan.MapDefinition',
+              basemaplayergroupname: "Base Layer Group"
             }
             var options = {
               singleTile: false 
@@ -59,6 +57,18 @@
             var layer = new OpenLayers.Layer.MapGuide( "MapGuide OS tiled layer", url, params, options );
             map.addLayer(layer);
             
+            /**
+            The following example shows how to access an MG tile cache directly
+            through HTTP bypassing the MG mapagent.  This depends on having a
+            pre-populated tile cache
+            */
+            /*
+            options.useHttpTile = true;
+            var cacheUrl = "http://localhost:8008/sheboygan";
+            var httpLayer = new OpenLayers.Layer.MapGuide( "MapGuide HTTP cache tiled layer", cacheUrl, params, options );
+            map.addLayer(httpLayer);
+            */
+
             map.zoomToMaxExtent();
         }
 
