@@ -5,13 +5,18 @@
     <link rel="stylesheet" href="style.css" type="text/css" />
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
+        // user custom graphicname
+        
+        OpenLayers.Renderer.symbol.lightning = [0,0, 4,2, 6,0, 10,5, 6,3, 4,5, 0,0];
+        OpenLayers.Renderer.symbol.rectangle = [0,0, 10,0, 10,4, 0,4, 0,0];
+            
         var map;
 
         function init() {
             map = new OpenLayers.Map('map');
 
             // list of well-known graphic names
-            var graphics = ["star", "cross", "x", "square", "triangle", "circle"];
+            var graphics = ["star", "cross", "x", "square", "triangle", "circle", "lightning", "rectangle"];
             
             // Create one feature for each well known graphic.
             // Give features a type attribute with the graphic name.
