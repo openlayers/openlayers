@@ -15,7 +15,7 @@
                    format: 'image/jpeg'};
 
     function test_Layer_WMS_constructor (t) {
-        t.plan( 13 );
+        t.plan( 15 );
 
         var trans_format = "image/png";
         if (OpenLayers.Util.alphaHack()) { trans_format = "image/gif"; } 
@@ -52,6 +52,17 @@
         params.TRANSPARENT = false;
         var layer6 = new OpenLayers.Layer.WMS(name, url, params);
         t.eq(layer6.isBaseLayer, true, "transparency == false, wms is baselayer");
+
+        params.TRANSPARENT = true;
+        var layer7 = new OpenLayers.Layer.WMS(name, url, params, {noMagic: true});
+        t.eq(layer7.params.FORMAT, "image/jpeg", "When using noMagic true image/jpeg will not be automagically switched to image/png or image/gif if transparent");
+
+        params.TRANSPARENT = true;
+        var layer8 = new OpenLayers.Layer.WMS(name, url, params, {noMagic: true});
+        t.eq(layer8.isBaseLayer, true, "When using noMagic then transparent means the wms layer is not automagically changed to not being a baselayer");
+
+        params.TRANSPARENT = false;
+
     }
     
     function test_Layer_WMS_addtile (t) {
