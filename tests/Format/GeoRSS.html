@@ -26,6 +26,16 @@
         var data = parser.write([f]);
         t.xml_eq(data, '<rss xmlns="http://backend.userland.com/rss2"><item><title></title><description></description><georss:line xmlns:georss="http://www.georss.org/georss">45.68 -111.04 45.68 -112.04</georss:line></item></rss>', 'GeoRSS serializes a line correctly');
     }
+    function test_Format_GeoRSS_box(t) {
+        t.plan(4);
+        var xml = '<rss xmlns="http://backend.userland.com/rss2"><item><title></title><description></description><georss:box xmlns:georss="http://www.georss.org/georss">45.68 -112.04 47.68 -111.04</georss:box></item></rss>';
+        var format = new OpenLayers.Format.GeoRSS();
+        var features = format.read(xml);
+        t.eq(features.length, 1, "one feature returned");
+        t.eq(features[0].geometry.components[0].components.length, 5, "polygon returned");
+        t.eq(features[0].geometry.components[0].components[0].x, -112.04, "polygon returned with correct first x");
+        t.eq(features[0].geometry.components[0].components[0].y, 45.68, "polygon returned with correct first y");
+    }
     function test_Format_GeoRSS_w3cgeo(t) { 
         t.plan(2);
 
