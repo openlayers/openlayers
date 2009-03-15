@@ -165,7 +165,7 @@
     }
 
     function test_Bounds_intersectsBounds(t) {
-       t.plan( 19 );
+       t.plan(21);
 
        var aBounds = new OpenLayers.Bounds(-180, -90, 180, 90);
 
@@ -209,6 +209,13 @@
                                                   20037508.34,20037508.34);
         t.eq( merc_aBounds.intersectsBounds(merc_bBounds, true), true, "intersect shouldn't fall prey to floating point errors, inclusive is true");
         t.eq( merc_aBounds.intersectsBounds(merc_bBounds, false), false, "intersect shouldn't fall prey to floating point errors, inclusive is false");
+        
+        // test for bounds intersection where none of the corners are contained within the other bounds
+        var b1 = new OpenLayers.Bounds(-1, -2, 1, 2);
+        var b2 = new OpenLayers.Bounds(-2, -1, 2, 1);
+        t.eq(b1.intersectsBounds(b2), true, "vertical rectangle intersects horizontal rectangle");
+        t.eq(b2.intersectsBounds(b1), true, "horizontal rectangle intersects vertical rectangle");
+        
     }
     
     function test_Bounds_containsBounds(t) {
@@ -263,7 +270,8 @@
         t.eq( containerBounds.containsBounds(bounds, false, false), true, "(" + containerBounds.toBBOX() + ") correctly contains (" + bounds.toBBOX() + ") when partial is false, inclusive is false" );
         t.eq( containerBounds.containsBounds(bounds, true)        , true, "(" + containerBounds.toBBOX() + ") correctly contains (" + bounds.toBBOX() + ") when partial is true" );
         t.eq( containerBounds.containsBounds(bounds, true, true)  , true, "(" + containerBounds.toBBOX() + ") correctly contains (" + bounds.toBBOX() + ") when partial is true, inclusive is true" );
-        t.eq( containerBounds.containsBounds(bounds, true, false) , true, "(" + containerBounds.toBBOX() + ") correctly contains (" + bounds.toBBOX() + ") when partial is true, inclusive is false" );
+        t.eq( containerBounds.containsBounds(bounds, true, false) , true, "(" + containerBounds.toBBOX() + ") correctly contains (" + bounds.toBBOX() + ") when partial is true, inclusive is false" );        
+        
     }
     
     function test_Bounds_determineQuadrant(t) {
