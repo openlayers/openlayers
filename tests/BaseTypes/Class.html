@@ -51,7 +51,7 @@
     }
 
     function test_Class_inheritance(t) {
-        t.plan(4);
+        t.plan(5);
         
         var BaseClass = OpenLayers.Class({
             prop: "base",
@@ -81,6 +81,10 @@
         t.eq(child["CLASS_NAME"],
              "ChildClass",
              "new object is an instance of the child class");
+        
+        var F = OpenLayers.Class(Object, {});
+        t.ok(!("initialize" in Object.prototype), "no messing with non OL prototypes");
+        
     }
     
     function test_Class_multiple_inheritance(t) {
