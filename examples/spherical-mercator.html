@@ -78,16 +78,6 @@
                 {'type': YAHOO_MAP_HYB, 'sphericalMercator': true}
             );
 
-            // create OSM layer
-            var mapnik = new OpenLayers.Layer.TMS(
-                "OpenStreetMap (Mapnik)",
-                "http://tile.openstreetmap.org/",
-                {
-                    type: 'png', getURL: osm_getTileURL,
-                    displayOutsideMaxExtent: true,
-                    attribution: '<a href="http://www.openstreetmap.org/">OpenStreetMap</a>'
-                }
-            );
             // create OAM layer
             var oam = new OpenLayers.Layer.TMS(
                 "OpenAerialMap",
