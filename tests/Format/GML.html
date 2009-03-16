@@ -153,12 +153,11 @@
         t.eq(data[0].geometry.components.length, 2, "rings length correct");
     }
     function test_Format_GML_read_attributes(t) {
-        t.plan(3);
+        t.plan(2);
         var parser = new OpenLayers.Format.GML();
         data = parser.read(test_content[0]);
         t.eq(data[0].attributes['NAME'], "WY", "Simple Attribute data is read correctly.");
         t.eq(data[0].attributes['LONGNAME'], "Wyoming", "Attribute data is read from CDATA node correctly.");
-        t.ok(data[0].attributes['EMPTYATTR'] === null, "Attribute set to null for empty element.");
     }
     function test_Format_GML_read_envelope_geom(t) {
         t.plan(13);
@@ -339,7 +338,7 @@
         t.xml_eq(output, expect, "[xy true] Bounds correctly written as gml:Box");
     }
 
-    var test_content = ['<?xml version="1.0" encoding="utf-8" ?>\n<ogr:FeatureCollection\n     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n     xsi:schemaLocation="http://ogr.maptools.org/ testoutput.xsd"\n     xmlns:ogr="http://ogr.maptools.org/"\n     xmlns:gml="http://www.opengis.net/gml">\n  <gml:boundedBy>\n    <gml:Box>\n      <gml:coord><gml:X>-1254041.389711702</gml:X><gml:Y>250906.9515983529</gml:Y></gml:coord>\n      <gml:coord><gml:X>-634517.1199908922</gml:X><gml:Y>762236.2940800377</gml:Y></gml:coord>\n    </gml:Box>\n  </gml:boundedBy>                    \n  <gml:featureMember>\n    <ogr:states fid="F0">\n      <ogr:geometryProperty><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-634517.11999089224,691849.77929356066,0 -653761.64509297756,471181.53429472551,0 -673343.60852865304,250906.9515983529,0 -1088825.734430399,299284.85108220269,0 -1254041.3897117018,324729.27754874947,0 -1235750.4212498858,434167.33911316615,0 -1190777.7803201093,704392.96327195223,0 -1181607.835811228,762236.29408003774,0 -634517.11999089224,691849.77929356066,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>\n      <ogr:NAME>WY</ogr:NAME>\n    <ogr:EMPTYATTR/><ogr:LONGNAME><![CDATA[Wyoming]]></ogr:LONGNAME>\n    </ogr:states>\n  </gml:featureMember>\n</ogr:FeatureCollection>\n',
+    var test_content = ['<?xml version="1.0" encoding="utf-8" ?>\n<ogr:FeatureCollection\n     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n     xsi:schemaLocation="http://ogr.maptools.org/ testoutput.xsd"\n     xmlns:ogr="http://ogr.maptools.org/"\n     xmlns:gml="http://www.opengis.net/gml">\n  <gml:boundedBy>\n    <gml:Box>\n      <gml:coord><gml:X>-1254041.389711702</gml:X><gml:Y>250906.9515983529</gml:Y></gml:coord>\n      <gml:coord><gml:X>-634517.1199908922</gml:X><gml:Y>762236.2940800377</gml:Y></gml:coord>\n    </gml:Box>\n  </gml:boundedBy>                    \n  <gml:featureMember>\n    <ogr:states fid="F0">\n      <ogr:geometryProperty><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-634517.11999089224,691849.77929356066,0 -653761.64509297756,471181.53429472551,0 -673343.60852865304,250906.9515983529,0 -1088825.734430399,299284.85108220269,0 -1254041.3897117018,324729.27754874947,0 -1235750.4212498858,434167.33911316615,0 -1190777.7803201093,704392.96327195223,0 -1181607.835811228,762236.29408003774,0 -634517.11999089224,691849.77929356066,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>\n      <ogr:NAME>WY</ogr:NAME>\n    <ogr:LONGNAME><![CDATA[Wyoming]]></ogr:LONGNAME>\n    </ogr:states>\n  </gml:featureMember>\n</ogr:FeatureCollection>\n',
  '<wfs:FeatureCollection' + 
  '   xmlns:fs="http://example.com/featureserver"' + 
  '   xmlns:wfs="http://www.opengis.net/wfs"' + 
