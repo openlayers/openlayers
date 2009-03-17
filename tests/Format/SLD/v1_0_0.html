@@ -32,6 +32,26 @@
                                     '<CssParameter name="stroke">#000000</CssParameter>' + 
                                 '</Stroke>' + 
                             '</PolygonSymbolizer>' + 
+                            '<TextSymbolizer>' + 
+                                '<Label>' + 
+                                    '<ogc:PropertyName>FOO</ogc:PropertyName>' +
+                                '</Label>' +
+                                '<Font>' +
+                                    '<CssParameter name="font-family">Arial</CssParameter>' + 
+                                    '<CssParameter name="font-size">14</CssParameter>' + 
+                                    '<CssParameter name="font-weight">bold</CssParameter>' + 
+                                    '<CssParameter name="font-style">normal</CssParameter>' + 
+                                '</Font>' +
+                                '<Halo>' +
+                                    '<Radius>3</Radius>' +
+                                    '<Fill>' +
+                                        '<CssParameter name="fill">#ffffff</CssParameter>' + 
+                                    '</Fill>' +
+                                '</Halo>' +
+                                '<Fill>' +
+                                    '<CssParameter name="fill">#000000</CssParameter>' + 
+                                '</Fill>' +
+                            '</TextSymbolizer>' + 
                         '</Rule>' + 
                         '<Rule>' + 
                             '<Name>betonbekleding</Name>' + 
@@ -105,7 +125,7 @@
         '</StyledLayerDescriptor>';
 
     function test_read(t) {
-        t.plan(8);
+        t.plan(18);
         
         var parser = new OpenLayers.Format.SLD.v1_0_0();
         var xml = new OpenLayers.Format.XML();
@@ -125,6 +145,21 @@
         t.ok(layer, "first named layer exists");
         t.ok(layer.userStyles instanceof Array, "(AAA161) layer has array of user styles");
         t.eq(layer.userStyles.length, 1, "(AAA161) first layer has a single user style");
+        t.eq(layer.userStyles[0].rules.length, 2, "(AAA161) first style has two rules");
+        var rule = layer.userStyles[0].rules[0];
+        t.ok(rule.filter, "(AAA161) first rule has a filter");
+        var symbolizer = rule.symbolizer;
+        t.ok(symbolizer, "(AAA161) first rule has a symbolizer");
+        var poly = symbolizer["Polygon"];
+        t.eq(poly.fillColor, "#ffffff", "(AAA161) first rule has proper fill");
+        t.eq(poly.strokeColor, "#000000", "(AAA161) first rule has proper stroke");
+        var text = symbolizer["Text"];
+        t.eq(text.label, "${FOO}", "(AAA161) first rule has proper text label");
+        t.eq(text.fontFamily, "Arial", "(AAA161) first rule has proper font family");
+        t.eq(text.fillColor, "#000000", "(AAA161) first rule has proper text fill");
+        t.eq(text.haloRadius, "3", "(AAA161) first rule has proper halo radius");
+        t.eq(text.haloColor, "#ffffff", "(AAA161) first rule has proper halo color");
+        
         
         // check the first user style
         style = layer.userStyles[0];
@@ -187,7 +222,11 @@
                 "label": "This is the ${city} in ${state}.",
                 "fontFamily": "Arial",
                 "fontSize": 10,
-                "fillColor": "blue"
+                "fillColor": "blue",
+                "fontWeight": "bold",
+                "fontStyle": "normal",
+                "haloRadius": 2,
+                "haloColor": "white"
             }
         };
         var node = parser.writers["sld"]["TextSymbolizer"].apply(
@@ -206,7 +245,15 @@
                 '<Font>' +
                     '<CssParameter name="font-family">Arial</CssParameter>' +
                     '<CssParameter name="font-size">10</CssParameter>' +
+                    '<CssParameter name="font-weight">bold</CssParameter>' + 
+                    '<CssParameter name="font-style">normal</CssParameter>' + 
                 '</Font>' +
+                '<Halo>' +
+                    '<Radius>2</Radius>' +
+                    '<Fill>' +
+                        '<CssParameter name="fill">white</CssParameter>' + 
+                    '</Fill>' +
+                '</Halo>' +
                 '<Fill>' +
                     '<CssParameter name="fill">blue</CssParameter>' +
                 '</Fill>' + 
