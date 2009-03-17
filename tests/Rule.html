@@ -40,6 +40,49 @@
         t.eq(context.foobar, "world", "value returned by getContext is correct"
             + " if a context is given in constructor options"); 
     }
+    
+    function test_clone(t) {
+        
+        t.plan(7);
+        
+        var rule = new OpenLayers.Rule({
+            name: "test rule",
+            minScaleDenominator: 10,
+            maxScaleDenominator: 20,
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                property: "prop",
+                value: "value"
+            }),
+            symbolizer: {
+                fillColor: "black"
+            },
+            context: {
+                foo: "bar"
+            }
+        });
+        var clone = rule.clone();
+        t.eq(clone.name, "test rule", "name copied");
+        t.eq(clone.minScaleDenominator, 10, "minScaleDenominator copied");
+        t.eq(clone.filter.type, OpenLayers.Filter.Comparison.EQUAL_TO, "clone has correct filter type");
+        
+        // modify original
+        rule.filter.property = "new";
+        rule.symbolizer.fillColor = "white";
+        rule.context.foo = "baz";
+        
+        // confirm that clone didn't change
+        t.eq(clone.filter.property, "prop", "clone has clone of filter");
+        t.eq(clone.symbolizer.fillColor, "black", "clone has clone of symbolizer");
+        t.eq(clone.context.foo, "bar", "clone has clone of context");
+        
+        // confirm that ids are different
+        t.ok(clone.id !== rule.id, "clone has different id");
+        
+        rule.destroy();
+        clone.destroy();
+        
+    }
 
     function test_Rule_destroy(t) {
         t.plan(1);

@@ -34,6 +34,40 @@
         t.eq(filter.evaluate(feature.attributes), false,
                 "feature evaluates to false correctly.");
     }
+
+    function test_clone(t) {
+        
+        t.plan(2);
+        
+        var filter = new OpenLayers.Filter.Logical({
+            type: OpenLayers.Filter.Logical.AND,
+            filters: [
+                new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                    property: "prop1",
+                    value: "val1"
+                }),
+                new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
+                    property: "prop2",
+                    value: "val2"
+                })
+            ]
+        });
+
+        var clone = filter.clone();
+        
+        // modify the original
+        filter.type = OpenLayers.Filter.Logical.OR;
+        filter.filters[0].value = "nada";
+        
+        t.eq(clone.type, OpenLayers.Filter.Logical.AND, "clone has proper type");
+        t.eq(clone.filters[0].value, "val1", "clone has cloned child filters");
+        
+        filter.destroy();
+
+    }
+    
     </script> 
 </head> 
 <body> 

@@ -175,6 +175,29 @@
         }
         
     }
+    
+    function test_clone(t) {
+        
+        t.plan(3);
+        
+        var filter = new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.EQUAL_TO,
+            property: "prop",
+            value: "val"
+        });
+        
+        var clone = filter.clone();
+        
+        // modify the original
+        filter.type = OpenLayers.Filter.Comparison.NOT_EQUAL_TO;
+        
+        t.eq(clone.type, OpenLayers.Filter.Comparison.EQUAL_TO, "clone has proper type");
+        t.eq(clone.property, "prop", "clone has proper property");
+        t.eq(clone.value, "val", "clone has proper value");
+        
+        filter.destroy();
+
+    }
 
 
     </script> 

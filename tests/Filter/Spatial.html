@@ -71,6 +71,31 @@
         t.eq(res, false,
             "evaluates returns correct value when feature does not intersect bounds");
     }
+    
+    function test_clone(t) {
+        
+        t.plan(2);
+        
+        var bounds = new OpenLayers.Bounds(0, 0, 10, 10);
+        var filter = new OpenLayers.Filter.Spatial({
+            type: OpenLayers.Filter.Spatial.BBOX,
+            value: bounds
+        });
+        
+        var clone = filter.clone();
+        
+        // modify the original
+        filter.value.bottom = -100;
+        
+        t.eq(clone.type, OpenLayers.Filter.Spatial.BBOX, "clone has proper type");
+        t.eq(clone.value.toBBOX(), "0,0,10,10", "clone has proper value");
+        
+        filter.destroy();
+        clone.destroy();
+
+    }
+
+    
     </script> 
 </head> 
 <body> 

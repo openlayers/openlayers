@@ -40,6 +40,26 @@
             feature.destroy();
         }
     }
+
+    function test_clone(t) {
+        
+        t.plan(1);
+        
+        var filter = new OpenLayers.Filter.FeatureId({
+            fids: [1, 2, 3]
+        });
+        
+        var clone = filter.clone();
+        
+        // modify the original
+        filter.fids.push(4);
+        
+        t.eq(clone.fids.length, 3, "clone has proper fids length");
+        
+        filter.destroy();
+
+    }
+
     </script> 
 </head> 
 <body> 
