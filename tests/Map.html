@@ -34,6 +34,40 @@
         t.ok( map.getMaxExtent() instanceof OpenLayers.Bounds, "map.maxExtent is an OpenLayers.Bounds" );
         t.ok( map.getNumZoomLevels() > 0, "map has a default numZoomLevels" );
     }
+    
+    function test_Map_constructor_late_rendering(t) {
+        t.plan( 4 );
+        
+        map = new OpenLayers.Map(); 
+        var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(baseLayer);
+        
+        t.ok(map.div != null, "Map has a div even though none was specified.");
+        t.ok(map.viewPortDiv.parentNode == map.div, "Map is attached to a temporary div that holds the viewPortDiv.");
+        
+        var mapDiv = document.getElementById("map");
+        map.render(mapDiv); // Can also take a string.
+        
+        t.ok(map.div == mapDiv, "Map is now rendered to the 'map' div.")
+        t.ok( OpenLayers.Element.hasClass(map.div, "olMap"), "Map div has olMap class");
+    }
+    
+    function test_Map_constructor_renderTo(t) {
+        t.plan( 1 );
+        
+        map = new OpenLayers.Map({
+            div: "map"
+        }); 
+        var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(baseLayer);
+        
+        var mapDiv = document.getElementById("map");
+        t.ok(map.div == mapDiv, "Map is rendered to the 'map' div.")
+    }
 
     function test_Map_setOptions(t) {
         t.plan(2);
