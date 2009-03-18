@@ -1,19 +1,24 @@
 <html>
 <head>
-  <script id="script" src="../lib/OpenLayers.js"></script>
-  <script type="text/javascript">
-    function test_OpenLayers(t) {
-        t.plan(2);
-        
-        var script = document.getElementById("script");
+    <script src="bogus/1/OpenLayers.js-foo"></script>
+    <script src="bogus/2/foo-OpenLayers.js"></script>
+    <script id="script" src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        function test_OpenLayers(t) {
+            t.plan(3);
 
-        t.eq(OpenLayers._getScriptLocation(), "../", "Script location correctly detected.");
-        
-        script.setAttribute("src", "../lib/OpenLayers.js?foo");
-        t.eq(OpenLayers._getScriptLocation(), "../", "Script location with search string correctly detected.");
-    }
+            var script = document.getElementById("script");
 
-  </script>
+            t.eq(OpenLayers._getScriptLocation(), "../", "Script location correctly detected.");
+            script.setAttribute("src", "../lib/OpenLayers.js?foo");
+            t.eq(OpenLayers._getScriptLocation(), "../", "Script location with search string correctly detected.");
+
+            // now pretend we're using a built script
+            OpenLayers._scriptName = "OpenLayers.js";
+            t.eq(OpenLayers._getScriptLocation(), "../lib/", "not fooled by bogus paths");
+            
+        }
+    </script>
 </head>
 <body>
 </body>
