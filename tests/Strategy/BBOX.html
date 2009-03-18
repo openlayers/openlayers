@@ -165,6 +165,33 @@
         map.destroy();
 
     }
+    
+    function test_resFactor(t) {
+        t.plan(2);
+        
+        var map = new OpenLayers.Map("map");
+        var bbox = new OpenLayers.Strategy.BBOX();
+        var fakeProtocol = new OpenLayers.Protocol({
+            'read': function() { 
+                t.ok(true, "read called once without resfactor"); 
+            }
+        });
+        var layer = new OpenLayers.Layer.Vector("test", {
+            strategies: [bbox],
+            protocol: fakeProtocol,
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+        map.zoomIn();
+        
+        fakeProtocol.read = function() { 
+            t.ok("read called again on zooming with resFactor: 1");
+        }
+        bbox.resFactor = 1;
+        map.zoomIn();
+        
+    }
 
     function test_createFilter(t) {
         t.plan(3);
