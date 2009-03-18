@@ -152,9 +152,62 @@
         gotStyle.t = false;
         t.ok(style.t, "getStyle returns copy of style rather than reference");
     }
+    function test_Format_KML_extendedData(t) {
+        t.plan(2);
+        var f = new OpenLayers.Format.KML();
+        var features = f.read(OpenLayers.Util.getElement("kml_extendeddata").value);
+        t.eq(features[0].attributes.all_bridges.value, "3030", "read value from extendeddata correctly.");
+        t.eq(features[0].attributes.all_bridges.displayName, "all bridges", "read displayName from extendeddata correctly.");
+    }
 
     </script> 
 </head> 
 <body> 
+    <textarea id="kml_extendeddata" style="display:none">
+<kml xmlns="http://earth.google.com/kml/2.2">
+<Document>
+        <Placemark>
+            <styleUrl>#default</styleUrl>
+
+
+
+
+            <ExtendedData>
+                                    <Data name='all_bridges'>
+                        <displayName><![CDATA[all bridges]]></displayName>
+                        <value><![CDATA[3030]]></value>
+                    </Data>
+                                    <Data name='latitude'>
+                        <displayName><![CDATA[latitude]]></displayName>
+                        <value><![CDATA[43]]></value>
+                    </Data>
+                                    <Data name='longitude'>
+                        <displayName><![CDATA[longitude]]></displayName>
+                        <value><![CDATA[-107.55]]></value>
+                    </Data>
+                                    <Data name='functionally_obsolete__percent'>
+                        <displayName><![CDATA[functionally obsolete, percent]]></displayName>
+                        <value><![CDATA[8]]></value>
+                    </Data>
+                                    <Data name='structurally_deficient__percent'>
+                        <displayName><![CDATA[structurally deficient, percent]]></displayName>
+                        <value><![CDATA[13]]></value>
+                    </Data>
+                                    <Data name='state'>
+                        <displayName><![CDATA[state]]></displayName>
+                        <value><![CDATA[Wyoming]]></value>
+                    </Data>
+                            </ExtendedData>
+
+
+              <Point>
+<coordinates>-107.55,43.0</coordinates>
+</Point>
+
+
+        </Placemark>
+</Document>
+</kml>
+</textarea>
 </body> 
 </html> 
