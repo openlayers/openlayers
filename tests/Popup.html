@@ -86,6 +86,42 @@
         t.ok(true, "update position doesn't fail when getLayerPxFromLonLat fails.");
         map.destroy();
     }
+    function test_Popup_keepInMap(t) {
+        
+        var gb = OpenLayers.Util.getBrowserName;
+        OpenLayers.Util.getBrowserName = function() { return "mock"; }
+        t.plan(3);
+        var map = new OpenLayers.Map("map");
+        map.addLayer(new OpenLayers.Layer("", {isBaseLayer: true}));
+        map.zoomToMaxExtent();
+        var longString = "<div style='width: 200px; height: 200px'>Abc def</div>"; 
+        popup = new OpenLayers.Popup("chicken", 
+                                 new OpenLayers.LonLat(90, 60),
+                                 new OpenLayers.Size(100,100),
+                                 longString,
+                                 null, true);
+        popup.panMapIfOutOfView = false;
+        popup.keepInMap = true;
+        map.addPopup(popup);
+        var safeSize = popup.getSafeContentSize(new OpenLayers.Size(1000,1000));
+        popup = new OpenLayers.Popup("chicken", 
+                                 new OpenLayers.LonLat(90, 60),
+                                 new OpenLayers.Size(100,100),
+                                 longString,
+                                 null, true);
+        popup.panMapIfOutOfView = true;
+        popup.keepInMap = true;
+        map.addPopup(popup);
+        var safeSizePanKeep = popup.getSafeContentSize(new OpenLayers.Size(1000,1000));
+        popup.keepInMap = false;
+        map.addPopup(popup);
+        map.setCenter(-180, -90);
+        var safeSizePan = popup.getSafeContentSize(new OpenLayers.Size(1000,1000));
+        t.ok(safeSizePan.equals(safeSizePanKeep), "Panning means that all sizes are equal");
+        t.ok(safeSize.w < safeSizePan.w, "Width of non-panning is less");    
+        t.ok(safeSize.h < safeSizePan.h, "Height of non-panning is less");    
+        OpenLayers.Util.getBrowserName = gb; 
+    }    
     function test_Popup_draw(t) {
         t.plan( 15 );
         
