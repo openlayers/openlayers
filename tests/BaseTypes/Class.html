@@ -51,7 +51,7 @@
     }
 
     function test_Class_inheritance(t) {
-        t.plan(5);
+        t.plan(7);
         
         var BaseClass = OpenLayers.Class({
             prop: "base",
@@ -84,6 +84,31 @@
         
         var F = OpenLayers.Class(Object, {});
         t.ok(!("initialize" in Object.prototype), "no messing with non OL prototypes");
+
+        // test with an abstract class (i.e. a class that doesn't have an initialize
+        // method) as the parent class
+        var Vehicule = OpenLayers.Class({
+            numWheels: null
+        });
+        var Bike = OpenLayers.Class(Vehicule, {
+            initialize: function() {
+                this.numWheels = 2;
+            }
+        });
+        var b = new Bike();
+        t.ok(b instanceof Vehicule, "a bike is a vehicule");
+        
+        // test inheritance with something that has a non-function initialize property
+        var P = OpenLayers.Class({
+            initialize: "foo"
+        });
+        var C = OpenLayers.Class(P, {
+            initialize: function() {
+                // pass
+            }
+        });
+        var c = new C();
+        t.eq(P.prototype.initialize, "foo", "Class restores custom initialize property.");
         
     }
     
