@@ -19,7 +19,7 @@
         var lon = 5;
         var lat = 40;
         var zoom = 5;
-        var map, layer;
+        var map, select;
 
         function init(){
             var options = {
@@ -40,42 +40,62 @@
                     attribution: '<a href="http://www.openstreetmap.org/">OpenStreetMap</a>'
                 }
             );
-            map.addLayer(mapnik);
-            map.addLayer(new OpenLayers.Layer.Google("Google",{sphericalMercator:true}));
-            map.addLayer(new OpenLayers.Layer.GML("KML", "kml/sundials.kml", 
-               {
-                format: OpenLayers.Format.KML, 
+            var gmap = new OpenLayers.Layer.Google("Google", {sphericalMercator:true});
+            var sundials = new OpenLayers.Layer.Vector("KML", {
                 projection: map.displayProjection,
-                formatOptions: {
-                  extractStyles: true, 
-                  extractAttributes: true
-                }
-               }));
-             selectControl = new OpenLayers.Control.SelectFeature(map.layers[2],
-                {onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
+                strategies: [new OpenLayers.Strategy.Fixed()],
+                protocol: new OpenLayers.Protocol.HTTP({
+                    url: "kml/sundials.kml",
+                    format: new OpenLayers.Format.KML({
+                        extractStyles: true,
+                        extractAttributes: true
+                    })
+                })
+            });
+
+            map.addLayers([mapnik, gmap, sundials]);
+
+            select = new OpenLayers.Control.SelectFeature(sundials);
+            
+            sundials.events.on({
+                "featureselected": onFeatureSelect,
+                "featureunselected": onFeatureUnselect
+            });
   
-            map.addControl(selectControl);
-            selectControl.activate();   
-            map.zoomToExtent(new OpenLayers.Bounds(68.774414,11.381836,123.662109,34.628906).transform(map.displayProjection, map.projection));
+            map.addControl(select);
+            select.activate();   
+
             map.addControl(new OpenLayers.Control.LayerSwitcher());
+
+            map.zoomToExtent(
+                new OpenLayers.Bounds(
+                    68.774414, 11.381836, 123.662109, 34.628906
+                ).transform(map.displayProjection, map.projection)
+            );
         }
         function onPopupClose(evt) {
-            selectControl.unselect(selectedFeature);
+            select.unselectAll();
         }
-        function onFeatureSelect(feature) {
-            selectedFeature = feature;
-            popup = new OpenLayers.Popup.FramedCloud("chicken", 
-                                     feature.geometry.getBounds().getCenterLonLat(),
-                                     new OpenLayers.Size(100,100),
-                                     "<h2>"+feature.attributes.name + "</h2>" + feature.attributes.description,
-                                     null, true, onPopupClose);
+        function onFeatureSelect(event) {
+            var feature = event.feature;
+            var selectedFeature = feature;
+            var popup = new OpenLayers.Popup.FramedCloud("chicken", 
+                feature.geometry.getBounds().getCenterLonLat(),
+                new OpenLayers.Size(100,100),
+                "<h2>"+feature.attributes.name + "</h2>" + feature.attributes.description,
+                null, true, onPopupClose
+            );
             feature.popup = popup;
             map.addPopup(popup);
         }
-        function onFeatureUnselect(feature) {
-            map.removePopup(feature.popup);
-            feature.popup.destroy();
-            feature.popup = null;
+        function onFeatureUnselect(event) {
+            console.log(event);
+            var feature = event.feature;
+            if(feature.popup) {
+                map.removePopup(feature.popup);
+                feature.popup.destroy();
+                delete feature.popup;
+            }
         }
         function osm_getTileURL(bounds) {
             var res = this.map.getResolution();
