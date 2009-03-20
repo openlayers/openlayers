@@ -4,7 +4,7 @@
     <script type="text/javascript">
     
     function test_read_WFSDescribeFeatureType(t) {
-        t.plan(36);
+        t.plan(39);
        
         var parser = new OpenLayers.Format.WFSDescribeFeatureType();
 
@@ -281,6 +281,9 @@
             t.eq(res.featureTypes[0].properties[0].name, 'cat',
                 "The first attribute has name cat");
     
+            t.eq(res.featureTypes[0].properties[0].type.split(":")[1], 'long',
+                "The first attribute has type long with a prefix");
+
             t.eq(res.featureTypes[0].properties[0].localType, 'long',
                 "The first attribute has localType long");
     
@@ -344,8 +347,11 @@
         t.eq(res.featureTypes[0].properties[1].name, "STATE_NAME",
             "name of 2nd property of 1st featureType should be 'STATE_NAME'");
         
+        t.eq(res.featureTypes[0].properties[1].type, "xs:string",
+            "type of 2nd property of 1st featureType should be 'xs:string'");
+
         t.eq(res.featureTypes[0].properties[1].localType, "string",
-            "type of 2nd property of 1st featureType should be 'string'");
+            "localType of 2nd property of 1st featureType should be 'string'");
         
         t.eq(res.featureTypes[0].properties[1].restriction.maxLength, "25",
             "the maxLength restriction should be 25");
