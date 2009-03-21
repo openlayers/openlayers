@@ -30,6 +30,16 @@
         map.addControl(control2, new OpenLayers.Pixel(100,100));
         t.eq( control2.div.style.top, "100px", "2nd control div is located correctly");
     }
+    
+    function test_Control_PanZoom_removeButtons(t) {
+        t.plan(2);
+        map = new OpenLayers.Map("map");
+        control = new OpenLayers.Control.PanZoom();
+        map.addControl(control);
+        control.removeButtons();
+        t.eq(control.buttons.length, 0, "buttons array cleared correctly");
+        t.eq(contrl.div.childNodes.length, 0, "control div is empty");
+    }
 
     function test_Control_PanZoom_control_events (t) {
 
