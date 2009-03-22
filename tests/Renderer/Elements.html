@@ -466,7 +466,7 @@
 
         OpenLayers.Util.getElement = OpenLayers.Util._getElement;
     }
-
+    
     function test_Elements_drawAndErase(t) {
         t.plan(20);
 
@@ -542,6 +542,19 @@
 
         tearDown();
     }
+
+    function test_Elements_moveRoot(t) {
+        t.plan(2);
+        setUp();
+        var r1 = create_renderer();
+        var r2 = create_renderer();
+        r1.moveRoot(r2);
+        t.xml_eq(r1.root.parentNode, r2.root.parentNode, "root moved successfully");
+        r1.moveRoot(r1);
+        t.xml_eq(r1.root.parentNode, r1.rendererRoot, "root moved back successfully");
+        tearDown();        
+    }
+
 
 
   </script>

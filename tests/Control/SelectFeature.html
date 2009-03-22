@@ -3,7 +3,7 @@
     <script src="../../lib/OpenLayers.js"></script>
     <script type="text/javascript">
     function test_Control_SelectFeature_constructor(t) {
-        t.plan(2);
+        t.plan(3);
         var options = {
 //            geometryTypes: "foo"
         };
@@ -11,10 +11,11 @@
         var control = new OpenLayers.Control.SelectFeature(layer, options);
         t.ok(control instanceof OpenLayers.Control.SelectFeature,
              "new OpenLayers.Control.SelectFeature returns an instance");
-        t.eq(control.layer, "bar",
+        t.eq(control.layers[0], "bar",
              "constructor sets layer correctly");        
 //        t.eq(control.handlers.feature.geometryTypes, "foo",
 //             "constructor sets options correctly on feature handler");
+        t.ok(control.layer instanceof OpenLayers.Layer.Vector.RootContainer, "control has a root container layer");
     }
     
     function test_Control_SelectFeature_destroy(t) {
@@ -37,20 +38,29 @@
     }
     
     function test_Control_SelectFeature_select(t) {
-        t.plan(2);
+        t.plan(4);
         var map = new OpenLayers.Map("map");
-        var layer = new OpenLayers.Layer.Vector();
-        map.addLayer(layer);
-        var control = new OpenLayers.Control.SelectFeature(layer);
-        var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0));
-        layer.addFeatures(feature);
-        layer.drawFeature = function(feature, style) {
-            layer.styleMap.createSymbolizer(feature, style);
+        var layer1 = new OpenLayers.Layer.Vector();
+        var layer2 = new OpenLayers.Layer.Vector();
+        map.addLayers([layer1, layer2]);
+        var control = new OpenLayers.Control.SelectFeature([layer1, layer2]);
+        var feature1 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,1));
+        var feature2 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(1,0));
+        layer1.addFeatures(feature1);
+        layer2.addFeatures(feature2);
+        var drawFeature = function(feature, style) {
+            feature.layer.styleMap.createSymbolizer(feature, style);
         }
-        control.select(feature);
-        t.eq(feature.renderIntent, "select", "render intent is set to select");
-        control.unselect(feature);
-        t.eq(feature.renderIntent, "default", "render intent is set back to default");
+        layer1.drawFeature = drawFeature;
+        layer2.drawFeature = drawFeature;
+        control.select(feature1);
+        t.eq(feature1.renderIntent, "select", "render intent is set to select");
+        control.select(feature2);
+        t.eq(feature2.renderIntent, "select", "render intent is set to select");
+        control.unselect(feature1);
+        t.eq(feature1.renderIntent, "default", "render intent is set back to default");
+        control.unselect(feature2);
+        t.eq(feature2.renderIntent, "default", "render intent is set back to default");
     }
     
     function test_Control_SelectFeature_clickFeature(t) {
@@ -74,14 +84,15 @@
             features[i] = {
                 id: Math.random(),
                 tested: 0,
-                style: ""
+                style: "",
+                layer: layer
             };
         }
         
         // test that onSelect gets called properly
         control.onSelect = function(feature) {
             feature.tested += 1;
-            t.eq(feature, features[feature.index],
+            t.eq(feature.id, features[feature.index].id,
                  "onSelect called with proper feature (" + feature.index + ")");
             t.eq(feature.tested, feature.test,
                  "onSelect called only once for feature (" + feature.index + ")");
@@ -90,7 +101,7 @@
         // test that onUnselect gets called properly
         control.onUnselect = function(feature) {
             feature.tested += 1;
-            t.eq(feature, features[feature.index],
+            t.eq(feature.id, features[feature.index].id,
                  "onUnselect called with proper feature (" + feature.index + ")");
             t.eq(feature.tested, feature.test, 
                  "onUnselect called only once for feature (" + feature.index + ")");
