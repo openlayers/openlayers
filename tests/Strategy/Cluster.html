@@ -19,7 +19,7 @@
     }
 
     function test_clusters(t) {
-        t.plan(10);
+        t.plan(17);
 
         function featuresEq(got, exp) {
             var eq = false;
@@ -82,9 +82,28 @@
         map.zoomIn();
         t.eq(layer.features.length, 4, "[1] layer has four clusters");
         t.ok(featuresEq(layer.features[0].cluster, features.slice(0, 21)), "[1] first cluster includes first 21 features");
-        t.ok(featuresEq(layer.features[1].cluster, features.slice(21, 42)), "[2] second cluster includes second 21 features");
-        t.ok(featuresEq(layer.features[2].cluster, features.slice(42, 63)), "[2] third cluster includes third 21 features");
-        t.ok(featuresEq(layer.features[3].cluster, features.slice(63, 80)), "[2] fourth cluster includes last 17 features");
+        t.ok(featuresEq(layer.features[1].cluster, features.slice(21, 42)), "[1] second cluster includes second 21 features");
+        t.ok(featuresEq(layer.features[2].cluster, features.slice(42, 63)), "[1] third cluster includes third 21 features");
+        t.ok(featuresEq(layer.features[3].cluster, features.slice(63, 80)), "[1] fourth cluster includes last 17 features");
+        
+        // zoom out and back in to test threshold property (21)
+        map.zoomOut();
+        strategy.threshold = 21;
+        map.zoomIn();
+        t.eq(layer.features.length, 20, "[1-threshold 21] layer has 20 clusters");
+        t.ok(featuresEq(layer.features[0].cluster, features.slice(0, 21)), "[1-threshold 21] first cluster includes first 21 features");
+        t.ok(featuresEq(layer.features[1].cluster, features.slice(21, 42)), "[1-threshold 21] second cluster includes second 21 features");
+        t.ok(featuresEq(layer.features[2].cluster, features.slice(42, 63)), "[1-threshold 21] third cluster includes third 21 features");
+        t.ok(featuresEq(layer.features.slice(3, 20), features.slice(63, 80)), "[1-threshold 21] last 17 features are not clustered");
+        
+        // zoom out and back in to test high threshold
+        map.zoomOut();
+        strategy.threshold = 100; // clusters must contain 100 features or more
+        map.zoomIn();
+        // the one feature with no geometry is not added to the layer
+        t.eq(layer.features.length, features.length-1, "[1-threshold 100] layer has " + (features.length-1) + " clusters");
+        t.ok(featuresEq(layer.features, features.slice(0, 80)), "[1-threshold 100] layer has all features with geometry");
+        
     }
 
     function test_deactivate(t) {
