@@ -138,6 +138,56 @@
         }
     }
 
+    function test_slideRatio(t) {
+        t.plan(4);
+
+        var control = new OpenLayers.Control.PanZoom({
+            slideRatio: .5
+        });
+
+        var map = new OpenLayers.Map();
+
+        map.addControl(control);
+        control.draw();
+        control.activate();
+
+        map.getSize = function() {
+            return {
+                w: 250,
+                h: 100
+            }
+        };
+
+        var delta, dir;
+        var evt = {which: 1}; // a fake left click
+        var buttons = control.buttons;
+        map.pan = function(dx, dy){
+            t.eq([dx,dy],delta,"Panning " + dir + " sets right delta with slideRatio");
+        };
+
+        //up
+        var delta = [0, -50];
+        var dir = "up";
+        control.buttonDown.call(buttons[0], evt);
+        
+        //left
+        var delta = [-125, 0];
+        var dir = "left";
+        control.buttonDown.call(buttons[1], evt);
+        
+        //right
+        var delta = [125, 0];
+        var dir = "right";
+        control.buttonDown.call(buttons[2], evt);
+        
+        //down
+        var delta = [0, 50];
+        var dir = "down";
+        control.buttonDown.call(buttons[3], evt);
+        
+        map.destroy();
+    }
+
     function simulateClick(wnd, elem) {
       var evt = wnd.document.createEvent("MouseEvents");
       evt.initMouseEvent("mousedown", true, true, wnd, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
