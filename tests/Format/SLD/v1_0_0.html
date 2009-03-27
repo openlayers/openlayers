@@ -125,18 +125,32 @@
         '</StyledLayerDescriptor>';
 
     function test_read(t) {
-        t.plan(18);
+        t.plan(21);
         
-        var parser = new OpenLayers.Format.SLD.v1_0_0();
         var xml = new OpenLayers.Format.XML();
-        var obj = parser.read(xml.read(sld));
+        var sldxml = xml.read(sld);
         
+        // test that format options are considered in read
+        var parser = new OpenLayers.Format.SLD({
+            version: "1.0.0",
+            namedLayersAsArray: true
+        });
+        var obj = parser.read(sldxml);
+        t.ok(obj.namedLayers instanceof Array, "namedLayersAsArray option for read works");
+        
+        parser = new OpenLayers.Format.SLD.v1_0_0();
+        var obj = parser.read(sldxml, {namedLayersAsArray: true});
+        t.ok(obj.namedLayers instanceof Array, "namedLayersAsArray option for read works");
+        var arrayLen = obj.namedLayers.length;
+        
+        var obj = parser.read(sldxml);
+        t.eq(typeof obj.namedLayers, "object", "read returns a namedLayers object by default");
         // test the named layer count
         var count = 0;
         for(var key in obj.namedLayers) {
             ++count;
         }        
-        t.eq(count, 2, "correct number of named layers");
+        t.eq(count, arrayLen, "number of named layers in array equals number of named layers in object");
         
         var layer, style, rule;
         
@@ -189,15 +203,20 @@
     }
     
     function test_write(t) {
-        t.plan(2);
+        t.plan(3);
 
         // read first - testing that write produces the SLD aboce
         var parser = new OpenLayers.Format.SLD.v1_0_0();
         var xml = new OpenLayers.Format.XML();
-        var obj = parser.read(xml.read(sld));
+        var sldxml = xml.read(sld);
+        var obj = parser.read(sldxml);
         
         var node = parser.write(obj);
         t.xml_eq(node, sld, "SLD correctly written");
+        
+        obj = parser.read(sldxml, {namedLayersAsArray: true});
+        node = parser.write(obj);
+        t.xml_eq(node, sld, "SLD from namedLayers array correctly written");
         
         // test that 0 fill opacity gets written
         var symbolizer = {
