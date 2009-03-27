@@ -214,6 +214,69 @@
         t.xml_eq(got, expect, "zero fill opacity written");
     }
     
+    function test_writePointSymbolizer(t) {
+
+        t.plan(3);
+
+        var parser = new OpenLayers.Format.SLD.v1_0_0();
+        var symbolizer, node, exp;
+        
+        // test symbolizer with fill color only
+        symbolizer = {
+            "fillColor": "blue"
+        };
+        node = parser.writeNode("sld:PointSymbolizer", symbolizer);
+        exp =
+            '<PointSymbolizer xmlns="http://www.opengis.net/sld">' +
+                '<Graphic>' +
+                    '<Mark>' +
+                        '<Fill>' +
+                            '<CssParameter name="fill">blue</CssParameter>' +
+                        '</Fill>' +
+                        '<Stroke/>' +
+                    '</Mark>' +
+                '</Graphic>' +
+            '</PointSymbolizer>';        
+        t.xml_eq(node, exp, "fillColor only written");
+
+        // test symbolizer with stroke color only
+        symbolizer = {
+            "strokeColor": "blue"
+        };
+        node = parser.writeNode("sld:PointSymbolizer", symbolizer);
+        exp =
+            '<PointSymbolizer xmlns="http://www.opengis.net/sld">' +
+                '<Graphic>' +
+                    '<Mark>' +
+                        '<Fill/>' +
+                        '<Stroke>' +
+                            '<CssParameter name="stroke">blue</CssParameter>' +
+                        '</Stroke>' +
+                    '</Mark>' +
+                '</Graphic>' +
+            '</PointSymbolizer>';        
+        t.xml_eq(node, exp, "strokeColor only written");
+        
+        // test symbolizer with graphic name only
+        symbolizer = {
+            "graphicName": "star"
+        };
+        node = parser.writeNode("sld:PointSymbolizer", symbolizer);
+        exp =
+            '<PointSymbolizer xmlns="http://www.opengis.net/sld">' +
+                '<Graphic>' +
+                    '<Mark>' +
+                        '<WellKnownName>star</WellKnownName>' +
+                        '<Fill/>' +
+                        '<Stroke/>' +
+                    '</Mark>' +
+                '</Graphic>' +
+            '</PointSymbolizer>';        
+        t.xml_eq(node, exp, "graphicName only written");
+        
+
+    }
+    
     function test_writeTextSymbolizer(t) {
         t.plan(1);
         var parser = new OpenLayers.Format.SLD.v1_0_0();
