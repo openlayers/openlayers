@@ -262,6 +262,40 @@
         t.xml_eq(node, expected, "TextSymbolizer correctly written");
         
     }
+    
+    function test_writeSpatialFilter(t) {
+        
+        t.plan(1);
+        
+        var format = new OpenLayers.Format.SLD.v1_0_0();
+        
+        var rule = new OpenLayers.Rule({
+            name: "test",
+            filter: new OpenLayers.Filter.Spatial({
+                type: OpenLayers.Filter.Spatial.BBOX,
+                value: new OpenLayers.Bounds(0, 0, 10, 10)
+            })
+        });
+        
+        var sld = format.writeNode("sld:Rule", rule);
+        
+        var expect =
+            '<Rule xmlns="http://www.opengis.net/sld">' +
+                '<Name>test</Name>' +
+                '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+                    '<ogc:BBOX>' +
+                        '<ogc:PropertyName/>' +
+                        '<gml:Box xmlns:gml="http://www.opengis.net/gml">' +
+                            '<gml:coordinates decimal="." cs="," ts=" ">0,0 10,10</gml:coordinates>' +
+                        '</gml:Box>' +
+                    '</ogc:BBOX>' +
+                '</ogc:Filter>' +
+            '</Rule>';
+        
+        t.xml_eq(sld, expect, "rule with spatial filter correctly written");
+        
+        
+    }
 
     </script> 
 </head> 
