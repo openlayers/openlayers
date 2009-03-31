@@ -70,14 +70,16 @@
             var resize = document.getElementById("resize").checked;
             if(resize) {
                 controls.modify.mode |= OpenLayers.Control.ModifyFeature.RESIZE;
+                var keepAspectRatio = document.getElementById("keepAspectRatio").checked;
+                if (keepAspectRatio) {
+                    controls.modify.mode &= ~OpenLayers.Control.ModifyFeature.RESHAPE;
+                }
             }
             var drag = document.getElementById("drag").checked;
             if(drag) {
                 controls.modify.mode |= OpenLayers.Control.ModifyFeature.DRAG;
             }
-            // disable reshape mode if at least one of modes rotate, resize,
-            // drag is enabled
-            if (rotate || resize || drag) {
+            if (rotate || drag) {
                 controls.modify.mode &= ~OpenLayers.Control.ModifyFeature.RESHAPE;
             }
             var sides = parseInt(document.getElementById("sides").value);
@@ -151,6 +153,9 @@
                         <input id="resize" type="checkbox"
                                name="resize" onchange="update()" />
                         <label for="resize">allow resizing</label>
+                        (<input id="keepAspectRatio" type="checkbox"
+                               name="keepAspectRatio" onchange="update()" checked="checked" />
+                        <label for="keepAspectRatio">keep aspect ratio</label>)
                     </li>
                     <li>
                         <input id="drag" type="checkbox"

@@ -272,7 +272,7 @@
     }  
 
     function test_resetVertices(t) {
-        t.plan(18);
+        t.plan(21);
         var layer = new OpenLayers.Layer.Vector();
         var control = new OpenLayers.Control.ModifyFeature(layer);
         var point = new OpenLayers.Geometry.Point(5,6);
@@ -317,11 +317,17 @@
         t.ok(control.radiusHandle != null, "Radius handle is set");
         t.eq(control.vertices.length, 0, "Correct vertices length with polygon (RESIZE)");
 
-        control.mode = OpenLayers.Control.ModifyFeature.RESHAPE | OpenLayers.Control.ModifyFeature.RESIZE;
+        control.mode = OpenLayers.Control.ModifyFeature.RESHAPE;
         control.resetVertices();
-        t.ok(control.radiusHandle != null, "Radius handle is set");
-        t.eq(control.vertices.length, 3, "Correct vertices length with polygon (RESHAPE | RESIZE)");
-        t.eq(control.virtualVertices.length, 3, "Correct virtual vertices length (RESHAPE | RESIZE)");
+        t.ok(control.radiusHandle == null, "Radius handle is not set (RESHAPE)");
+        t.eq(control.vertices.length, 3, "Correct vertices length with polygon (RESHAPE)");
+        t.eq(control.virtualVertices.length, 3, "Correct virtual vertices length (RESHAPE)");
+        
+        control.mode = OpenLayers.Control.ModifyFeature.RESIZE | OpenLayers.Control.ModifyFeature.RESHAPE;
+        control.resetVertices();
+        t.ok(control.radiusHandle != null, "Radius handle is set (RESIZE|RESHAPE)");
+        t.eq(control.vertices.length, 0, "No vertices when both resizing and reshaping (RESIZE|RESHAPE)");
+        t.eq(control.virtualVertices.length, 0, "No virtual vertices when both resizing and reshaping (RESIZE|RESHAPE)");
         
         control.dragControl.feature = new OpenLayers.Feature.Vector(polygon);
         control.dragControl.map = {};
