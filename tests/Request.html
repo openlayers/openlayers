@@ -247,6 +247,77 @@
         OpenLayers.Request.OPTIONS();
         OpenLayers.Request.issue = _issue;
     }
+    
+    function test_events_success(t) {
+        
+        t.plan(5);
+
+        var events = [];
+        function listener(event) {
+            events.push(event);
+        }
+        
+        // set up event listeners
+        OpenLayers.Request.events.on({
+            complete: listener,
+            success: listener,
+            failure: listener
+        });
+
+        // issue a request that succeeds
+        OpenLayers.Request.GET({
+            url: ".", params: {bar: "baz"}, async: false
+        });
+        t.eq(events.length, 2, "two events logged");
+        t.eq(events[0].type, "complete", "first event is complete");
+        t.eq(events[1].type, "success", "second event is success");
+        t.ok(events[1].config, "success listener sent config");
+        t.eq(events[1].requestUrl, ".?bar=baz", "success listener sent config.url");
+
+        // remove event listeners
+        OpenLayers.Request.events.un({
+            complete: listener,
+            success: listener,
+            failure: listener
+        });
+        
+    }
+
+    function test_events_failure(t) {
+        
+        t.plan(5);
+
+        var events = [];
+        function listener(event) {
+            events.push(event);
+        }
+        
+        // set up event listeners
+        OpenLayers.Request.events.on({
+            complete: listener,
+            success: listener,
+            failure: listener
+        });
+
+        // issue a request that succeeds
+        OpenLayers.Request.GET({
+            url: "foo", params: {bar: "baz"}, async: false
+        });
+        t.eq(events.length, 2, "two events logged");
+        t.eq(events[0].type, "complete", "first event is complete");
+        t.eq(events[1].type, "failure", "second event is failure");
+        t.ok(events[1].config, "failure listener sent config");
+        t.eq(events[1].requestUrl, "foo?bar=baz", "failure listener sent requestUrl");
+
+        // remove event listeners
+        OpenLayers.Request.events.un({
+            complete: listener,
+            success: listener,
+            failure: listener
+        });
+        
+    }
+
     </script>
 </head>
 <body>
