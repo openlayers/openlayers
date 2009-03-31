@@ -73,6 +73,7 @@ Group: OpenLayers  {
       File: DragPan  (no auto-title, OpenLayers/Control/DragPan.js)
       File: DrawFeature  (no auto-title, OpenLayers/Control/DrawFeature.js)
       File: EditingToolbar  (no auto-title, OpenLayers/Control/EditingToolbar.js)
+      File: GetFeature  (no auto-title, OpenLayers/Control/GetFeature.js)
       File: KeyboardDefaults  (no auto-title, OpenLayers/Control/KeyboardDefaults.js)
       File: LayerSwitcher  (no auto-title, OpenLayers/Control/LayerSwitcher.js)
       File: Measure  (no auto-title, OpenLayers/Control/Measure.js)
@@ -93,6 +94,8 @@ Group: OpenLayers  {
       File: Scale  (no auto-title, OpenLayers/Control/Scale.js)
       File: ScaleLine  (no auto-title, OpenLayers/Control/ScaleLine.js)
       File: SelectFeature  (no auto-title, OpenLayers/Control/SelectFeature.js)
+      File: Snapping  (no auto-title, OpenLayers/Control/Snapping.js)
+      File: Split  (no auto-title, OpenLayers/Control/Split.js)
       File: ZoomBox  (no auto-title, OpenLayers/Control/ZoomBox.js)
       File: ZoomIn  (no auto-title, OpenLayers/Control/ZoomIn.js)
       File: ZoomOut  (no auto-title, OpenLayers/Control/ZoomOut.js)
@@ -127,10 +130,8 @@ Group: OpenLayers  {
          File: Filter  (no auto-title, OpenLayers/Format/Filter.js)
          File: v1  (no auto-title, OpenLayers/Format/Filter/v1.js)
          File: v1_0_0  (no auto-title, OpenLayers/Format/Filter/v1_0_0.js)
+         File: v1_1_0  (OpenLayers/Format/Filter/v1_1_0.js)
          }  # Group: Filter
-
-      File: GeoJSON  (no auto-title, OpenLayers/Format/GeoJSON.js)
-      File: GeoRSS  (no auto-title, OpenLayers/Format/GeoRSS.js)
 
       Group: GML  {
 
@@ -139,15 +140,6 @@ Group: OpenLayers  {
          File: v2  (no auto-title, OpenLayers/Format/GML/v2.js)
          File: v3  (no auto-title, OpenLayers/Format/GML/v3.js)
          }  # Group: GML
-
-      File: GPX  (no auto-title, OpenLayers/Format/GPX.js)
-      File: JSON  (no auto-title, OpenLayers/Format/JSON.js)
-      File: KML  (no auto-title, OpenLayers/Format/KML.js)
-      File: OSM  (no auto-title, OpenLayers/Format/OSM.js)
-      File: Text  (no auto-title, OpenLayers/Format/Text.js)
-      File: WFS  (no auto-title, OpenLayers/Format/WFS.js)
-      File: WKT  (no auto-title, OpenLayers/Format/WKT.js)
-      File: XML  (no auto-title, OpenLayers/Format/XML.js)
 
       Group: SLD  {
 
@@ -163,6 +155,33 @@ Group: OpenLayers  {
          File: v1_0_0  (no auto-title, OpenLayers/Format/WMC/v1_0_0.js)
          File: v1_1_0  (no auto-title, OpenLayers/Format/WMC/v1_1_0.js)
          }  # Group: WMC
+
+      Group: Format  {
+
+         File: GeoJSON  (no auto-title, OpenLayers/Format/GeoJSON.js)
+         File: GeoRSS  (no auto-title, OpenLayers/Format/GeoRSS.js)
+         File: GPX  (no auto-title, OpenLayers/Format/GPX.js)
+         File: JSON  (no auto-title, OpenLayers/Format/JSON.js)
+         File: KML  (no auto-title, OpenLayers/Format/KML.js)
+         File: OSM  (no auto-title, OpenLayers/Format/OSM.js)
+         File: Text  (no auto-title, OpenLayers/Format/Text.js)
+         File: WFS  (no auto-title, OpenLayers/Format/WFS.js)
+         File: WFSDescribeFeatureType.js  (OpenLayers/Format/WFSDescribeFeatureType.js)
+
+         Group: WFST  {
+
+            File: WFST  (no auto-title, OpenLayers/Format/WFST.js)
+            File: v1  (OpenLayers/Format/WFST/v1.js)
+            File: v1_0_0  (OpenLayers/Format/WFST/v1_0_0.js)
+            File: v1_1_0  (OpenLayers/Format/WFST/v1_1_0.js)
+            }  # Group: WFST
+
+         File: WKT  (no auto-title, OpenLayers/Format/WKT.js)
+         File: WMSDescribeLayer  (OpenLayers/Format/WMSDescribeLayer.js)
+         File: WMSDescribeLayer.v1_1  (OpenLayers/Format/WMSDescribeLayer/v1_1.js)
+         File: WMSGetFeatureInfo  (OpenLayers/Format/WMSGetFeatureInfo.js)
+         File: XML  (no auto-title, OpenLayers/Format/XML.js)
+         }  # Group: Format
 
       }  # Group: Format
 
@@ -202,10 +221,13 @@ Group: OpenLayers  {
    Group: Lang  {
 
       File: Lang  (no auto-title, OpenLayers/Lang.js)
+      File: ca  (no auto-title, OpenLayers/Lang/ca.js)
       File: cs-CZ  (no auto-title, OpenLayers/Lang/cs-CZ.js)
+      File: da-DK  (no auto-title, OpenLayers/Lang/da-DK.js)
       File: de  (no auto-title, OpenLayers/Lang/de.js)
       File: en  (no auto-title, OpenLayers/Lang/en.js)
       File: en-CA  (no auto-title, OpenLayers/Lang/en-CA.js)
+      File: es  (no auto-title, OpenLayers/Lang/es.js)
       File: fr  (no auto-title, OpenLayers/Lang/fr.js)
       File: it  (no auto-title, OpenLayers/Lang/it.js)
       File: nb  (no auto-title, OpenLayers/Lang/nb.js)
@@ -219,6 +241,7 @@ Group: OpenLayers  {
    Group: Layer  {
 
       File: Layer  (no auto-title, OpenLayers/Layer.js)
+      File: ArcGIS93Rest  (no auto-title, OpenLayers/Layer/ArcGIS93Rest.js)
       File: Boxes  (no auto-title, OpenLayers/Layer/Boxes.js)
       File: EventPane  (no auto-title, OpenLayers/Layer/EventPane.js)
       File: FixedZoomLevels  (no auto-title, OpenLayers/Layer/FixedZoomLevels.js)
@@ -241,6 +264,7 @@ Group: OpenLayers  {
       File: TileCache  (no auto-title, OpenLayers/Layer/TileCache.js)
       File: TMS  (no auto-title, OpenLayers/Layer/TMS.js)
       File: Vector  (no auto-title, OpenLayers/Layer/Vector.js)
+      File: RootContainer  (OpenLayers/Layer/Vector/RootContainer.js)
       File: VirtualEarth  (no auto-title, OpenLayers/Layer/VirtualEarth.js)
       File: WFS  (no auto-title, OpenLayers/Layer/WFS.js)
       File: WMS  (no auto-title, OpenLayers/Layer/WMS.js)
@@ -279,6 +303,14 @@ Group: OpenLayers  {
          File: Gears  (no auto-title, OpenLayers/Protocol/SQL/Gears.js)
          }  # Group: SQL
 
+      Group: WFS  {
+
+         File: WFS  (no auto-title, OpenLayers/Protocol/WFS.js)
+         File: v1  (OpenLayers/Protocol/WFS/v1.js)
+         File: v1_0_0  (OpenLayers/Protocol/WFS/v1_0_0.js)
+         File: v1_1_0  (OpenLayers/Protocol/WFS/v1_1_0.js)
+         }  # Group: WFS
+
       }  # Group: Protocol
 
    Group: Renderer  {
@@ -305,6 +337,7 @@ Group: OpenLayers  {
       File: Cluster  (no auto-title, OpenLayers/Strategy/Cluster.js)
       File: Fixed  (no auto-title, OpenLayers/Strategy/Fixed.js)
       File: Paging  (no auto-title, OpenLayers/Strategy/Paging.js)
+      File: Save  (OpenLayers/Strategy/Save.js)
       }  # Group: Strategy
 
    File: Style  (no auto-title, OpenLayers/Style.js)
