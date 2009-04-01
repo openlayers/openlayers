@@ -56,7 +56,8 @@
     }
     
     function test_Control_GetFeature_hover(t) {
-        t.plan(3);
+        t.plan(6);
+        var abortedResponse = null;
         var map = new OpenLayers.Map("map");
         var layer = new OpenLayers.Layer.WMS("foo", "wms", {
             layers: "foo"
@@ -65,6 +66,7 @@
         map.setCenter(new OpenLayers.LonLat(1,2));
         var feature1 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(1,2));
         var feature2 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(2,3));
+        var response = new OpenLayers.Protocol.Response();
         var control = new OpenLayers.Control.GetFeature({
             protocol: new OpenLayers.Protocol({
                 read: function(obj){
@@ -72,7 +74,10 @@
                         features: [feature1, feature2],
                         code: 1
                     });
-                    return {priv: {}};
+                    return response;
+                },
+                abort: function(response) {
+                    abortedResponse = response;
                 }
             }),
             hover: true
@@ -90,8 +95,17 @@
         control.events.register("outfeature", this, outTest);
         hoverFeature = feature1;
         control.selectHover({xy: new OpenLayers.Pixel(200, 125)});
+        t.ok(control.hoverResponse == response,
+             "selectHover stores the protocol response in the hoverResponse property");
+
         hoverFeature = feature2;
         control.selectHover({xy: new OpenLayers.Pixel(400, 0)});
+        control.cancelHover();
+        t.ok(abortedResponse == response,
+             "cancelHover calls protocol.abort() with the expected response");
+        t.eq(control.hoverResponse, null,
+             "cancelHover sets this.hoverResponse to null");
+
         control.events.unregister("hoverfeature", this, hoverTest);
         control.events.unregister("outfeature", this, outTest);
     }
