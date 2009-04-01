@@ -62,7 +62,7 @@
     
     function test_events(t) {
         
-        t.plan(2);
+        t.plan(3);
         
         var log = {
             loadstart: 0,
@@ -93,6 +93,13 @@
         
         t.eq(log.loadstart, 1, "loadstart triggered");
         t.eq(log.loadend, 1, "loadend triggered");
+        var log = {};
+        layer.protocol.read = function(obj) {
+            log.obj = obj;
+        }
+        layer.refresh({whee: 'chicken'});
+
+        t.eq(log.obj && log.obj.whee, "chicken", "properties passed to read on refresh correctly.");
         
         map.destroy();
         
@@ -101,7 +108,7 @@
     
     function test_merge(t) {
         
-        t.plan(5);
+        t.plan(6);
         
         var strategy = new OpenLayers.Strategy.Fixed();
         
@@ -124,6 +131,14 @@
                 }
             }
         });
+        
+        // give the layer some existing features (one)
+        layer.addFeatures([
+            new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(0, 0)
+            )
+        ]);
+        
         map.addLayer(layer);
         map.zoomToMaxExtent();
         
@@ -139,6 +154,9 @@
 
         // call merge with a mocked up response
         strategy.merge({features: features});
+        
+        // confirm that the original features were destroyed
+        t.eq(layer.features.length, 2, "old features destroyed");
         
         // confirm that loadend was called
         t.eq(log.loadend, 1, "merge triggers loadend");
