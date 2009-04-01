@@ -1,0 +1,182 @@
+<html>
+  <head>
+    <title>OpenLayers WMS Feature Info Example (GeoServer)</title>
+    <script src="../lib/OpenLayers.js"></script>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <style type="text/css">
+        ul, li { padding-left: 0px; margin-left: 0px; }
+    </style>
+  </head>
+  <body>
+      <h1 id="title">Feature Info Example</h1>
+
+      <div id="tags"></div>
+
+      <p id="shortdesc">
+        Demonstrates the WMSGetFeatureInfo control for fetching information about a position from WMS.
+      </p>
+
+    <a id="permalink" href="">Permalink</a><br />
+
+    <div style="float:right;width:28%">
+        <h1 style="font-size:1.3em;">South Africa</h1>
+        <p style="font-size:.8em;">Click on the map to get feature info.</p>
+        <div id="nodeList">
+        </div>
+    </div>
+      <div id="map" class="smallmap"></div>
+
+  <script defer="defer" type="text/javascript">
+    OpenLayers.ProxyHost = "/dev/examples/proxy.cgi?url=";
+    var map = new OpenLayers.Map('map', {
+        maxExtent: new OpenLayers.Bounds(16.154,-34.953,33.327,-22.193)
+    });
+
+    var roads = new OpenLayers.Layer.WMS("Roads",
+        "http://geo.openplans.org/geoserver/wms", 
+        {'layers': 'za:za_roads', transparent: true, format: 'image/png'},
+        {isBaseLayer: true}
+    );
+
+    var natural = new OpenLayers.Layer.WMS("Natural Features",
+        "http://geo.openplans.org/geoserver/wms", 
+        {'layers': 'za:za_natural', transparent: true, format: 'image/png'},
+        {isBaseLayer: false}
+    );
+
+    var points = new OpenLayers.Layer.WMS("Points of Interest",
+        "http://geo.openplans.org/geoserver/wms", 
+        {'layers': 'za:za_points', transparent: true, format: 'image/png'},
+        {isBaseLayer: false}
+    );
+
+    var vegetation = new OpenLayers.Layer.WMS("Vegetation",
+        "http://geo.openplans.org/geoserver/wms", 
+        {'layers': 'za:za_vegetation', transparent: true, format: 'image/png'},
+        {isBaseLayer: false}
+    );
+
+    var highlightLayer = new OpenLayers.Layer.Vector("Highlighted Features", {
+        displayInLayerSwitcher: false, 
+        isBaseLayer: false, 
+        styleMap: new OpenLayers.StyleMap({
+           "default": new OpenLayers.Style({
+               fillColor: "#0000BB",
+               strokeColor: "#000099"
+           })
+        })
+        }
+    );
+
+    var infoControls = {
+        click: new OpenLayers.Control.WMSGetFeatureInfo('http://geo.openplans.org/geoserver/wms', {
+            title: 'Identify features by clicking',
+            layers: [vegetation],
+            queryVisible: true
+        }),
+        hover: new OpenLayers.Control.WMSGetFeatureInfo('http://geo.openplans.org/geoserver/wms', {
+            title: 'Identify features by clicking',
+            layers: [vegetation],
+            hover: true,
+            // defining a custom format here
+            formats: {'application/vnd.ogc.gml': new OpenLayers.Format.GML({
+                typeName: 'vegetation', 
+                featureNS: 'http://opengeo.org/za'
+            })},
+            queryVisible: true
+        })
+    }
+
+    map.addLayers([roads, natural, points, vegetation, highlightLayer]); 
+    for (var i in infoControls) { 
+        infoControls[i].events.register("getfeatureinfo", this, showInfo);
+        map.addControl(infoControls[i]); 
+    }
+
+    map.addControl(new OpenLayers.Control.LayerSwitcher());
+
+    infoControls.click.activate();
+    map.zoomToMaxExtent();
+
+    function showInfo(evt) {
+        if (evt.features && evt.features.length) {
+             highlightLayer.destroyFeatures();
+             highlightLayer.addFeatures(evt.features);
+             highlightLayer.redraw();
+        } else {
+            $('nodeList').innerHTML = evt.text;
+        }
+    }
+
+    function toggleControl(element) {
+        for (var key in infoControls) {
+            var control = infoControls[key];
+            if (element.value == key && element.checked) {
+                control.activate();
+            } else {
+                control.deactivate();
+            }
+        }
+    }
+
+    function toggleFormat(element) {
+        for (var key in infoControls) {
+            var control = infoControls[key];
+            control.infoFormat = element.value;
+        }
+    }
+
+    function toggleLayers(element) {
+        for (var key in infoControls) {
+            var control = infoControls[key];
+            if (element.value == 'Specified') {
+                control.layers = [vegetation];
+            } else {
+                control.layers = null;
+            }
+        }
+    }
+
+    // function toggle(key
+  </script>
+    <div id="docs">
+    </div>
+        <ul id="control">
+            <li>
+                <input type="radio" name="controlType" value="click" id="click"
+                       onclick="toggleControl(this);" checked="checked" />
+                <label for="click">Click</label>
+            </li>
+            <li>
+                <input type="radio" name="controlType" value="hover" id="hover" 
+                       onclick="toggleControl(this);" />
+                <label for="hover">Hover</label>
+            </li>
+        </ul>
+        <ul id="format">
+            <li>
+                <input type="radio" name="formatType" value="text/html" id="html"
+                       onclick="toggleFormat(this);" checked="checked" />
+                <label for="html">Show HTML Description</label>
+            </li>
+            <li>
+                <input type="radio" name="formatType" value="application/vnd.ogc.gml" id="highlight" 
+                       onclick="toggleFormat(this);" />
+                <label for="highlight">Highlight Feature on Map</label>
+            </li>
+        </ul>
+        <ul id="layers">
+            <li>
+                <input type="radio" name="layerSelection" value="Specified" id="Specified"
+                       onclick="toggleLayers(this);" checked="checked" />
+                <label for="html">Get Vegetation info</label>
+            </li>
+            <li>
+                <input type="radio" name="layerSelection" value="Auto" id="Auto" 
+                       onclick="toggleLayers(this);" />
+                <label for="">Get info for visible layers</label>
+            </li>
+        </ul>
+  </body>
+</html>

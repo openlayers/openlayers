@@ -1,0 +1,293 @@
+<html>
+<head>
+    <script src="../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+    function test_WMSGetFeatureInfo_constructor(t) {
+        t.plan(5);
+        var options = {
+            layers: 'ns:type',
+            featureNS: 'http://localhost/ns',
+            featureType: 'type'
+        };
+        var layer = "bar";
+        var control = new OpenLayers.Control.WMSGetFeatureInfo('http://localhost/wms', options);
+        t.ok(control instanceof OpenLayers.Control.WMSGetFeatureInfo,
+             "new OpenLayers.Control.WMSGetFeatureInfo returns an instance");
+        t.eq(control.url, 'http://localhost/wms',
+             "constructor sets url correctly");        
+        t.eq(control.layers, "ns:type",
+             "constructor sets options correctly on feature handler"
+            );
+        t.eq(control.format.featureNS, 'http://localhost/ns', 'Feature namespace passed through properly');
+        t.eq(control.format.featureType, 'type', 'Feature type name passed through properly');
+    }
+    
+    function test_Control_WMSGetFeatureInfo_destroy(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var click = new OpenLayers.Control.WMSGetFeatureInfo('http://localhost/wms', {
+            layers: 'ns:type',
+            featureNS: 'http://localhost/ns',
+            featureType: 'type'
+        });
+
+        var hover = new OpenLayers.Control.WMSGetFeatureInfo('http://localhost/wms', {
+            layers: 'ns:type',
+            featureNS: 'http://localhost/ns',
+            featureType: 'type',
+            hover: true
+        });
+
+        click.handler.deactivate = function() {
+            t.ok(true,
+                 "control.deactivate calls deactivate on click handler");
+        }
+        hover.handler.deactivate = function() {
+            t.ok(true,
+                 "control.deactivate calls deactivate on hover handler");
+        }
+        click.destroy();
+        hover.destroy();
+    }
+    
+    function test_Control_WMSGetFeatureInfo_click(t) {
+        t.plan(4);
+        var map = new OpenLayers.Map('map');
+
+        // mock up active control
+        var control = new OpenLayers.Control.WMSGetFeatureInfo();
+        map.addControl(control);
+        control.activate();
+       
+        control.request = function(position) {
+            t.eq(position.x, 50,
+                 "x position is as expected");
+            t.eq(position.y, 50,
+                 "y position is as expected");
+        }
+
+        control.getInfoForClick({xy: {x: 50, y: 50}});
+        control.getInfoForHover({xy: {x: 50, y: 50}});
+    }
+   
+    function test_Control_WMSGetFeatureInfo_request(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map('map', {
+            getExtent: return(new OpenLayers.Bounds(-180,-90,180,90));
+        });
+
+        var _request = OpenLayers.Request.GET;
+        OpenLayers.Request.GET = function(options) {
+            t.eq(options.params.RADIUS, 5, "vendor params passed correctly");
+        }
+        // mock up active control
+        var control = new OpenLayers.Control.WMSGetFeatureInfo();
+        map.addControl(control);
+        control.activate();
+       
+        control.request({xy: {x: 50, y: 50}});
+        OpenLayers.Request.GET = _request;
+    }
+
+    function test_Control_WMSGetFeatureInfo_activate(t) {
+        t.plan(4);
+        var map = new OpenLayers.Map("map");
+        var click = new OpenLayers.Control.WMSGetFeatureInfo('http://localhost/wms', {
+            featureType: 'type',
+            featureNS: 'http://localhost/ns',
+            layers: 'ns:type',
+        });
+        var hover = new OpenLayers.Control.WMSGetFeatureInfo('http://localhost/wms', {
+            featureType: 'type',
+            featureNS: 'http://localhost/ns',
+            layers: 'ns:type',
+            hover: true
+        });
+        map.addControl(click);
+        map.addControl(hover);
+        t.ok(!click.handler.active,
+             "click handler is not active prior to activating control");
+        t.ok(!hover.handler.active,
+             "hover handler is not active prior to activating control");
+        click.activate();
+        hover.activate();
+        t.ok(click.handler.active,
+             "click handler is active after activating control");
+        t.ok(hover.handler.active,
+             "hover handler is active after activating control");
+    }
+
+    function test_Control_WMSGetFeatureInfo_deactivate(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var click = new OpenLayers.Control.WMSGetFeatureInfo("http://localhost/wms", {
+            featureType: 'type',
+            featureNS: 'http://localhost/ns',
+            layers: 'ns:type'
+        });
+        var hover = new OpenLayers.Control.WMSGetFeatureInfo("http://localhost/wms", {
+            featureType: 'type',
+            featureNS: 'http://localhost/ns',
+            layers: 'ns:type'
+        });
+        map.addControl(click);
+        map.addControl(hover);
+        click.activate();
+        hover.activate();
+
+        click.handler.deactivate = function() {
+            t.ok(true,
+                 "control.deactivate calls deactivate on click handler");
+            OpenLayers.Handler.Click.prototype.deactivate.apply(this, arguments);
+        }
+        hover.handler.deactivate = function() {
+            t.ok(true,
+                 "control.deactivate calls deactivate on hover handler");
+            OpenLayers.Handler.Hover.prototype.deactivate.apply(this, arguments);
+        }
+        click.deactivate();
+        hover.deactivate();
+    }
+
+    </script>
+</head>
+<body>
+    <div id="map" style="width: 400px; height: 250px;"/>
+</body>
+</html>
+<html>
+<head>
+    <script src="../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+    function test_WMSGetFeatureInfo_constructor(t) {
+        t.plan(4);
+        var options = {
+            layers: 'ns:type',
+            formats: {"application/vnd.ogc.gml": "foo"}
+        };
+        var layer = "bar";
+        var control = new OpenLayers.Control.WMSGetFeatureInfo('http://localhost/wms', options);
+        t.ok(control instanceof OpenLayers.Control.WMSGetFeatureInfo,
+             "new OpenLayers.Control.WMSGetFeatureInfo returns an instance");
+        t.eq(control.url, 'http://localhost/wms',
+             "constructor sets url correctly");        
+        t.eq(control.layers, "ns:type",
+             "constructor sets options correctly on feature handler"
+            );
+        t.eq(control.formats["application/vnd.ogc.gml"], "foo", 'Custom format passed through properly');
+    }
+    
+    function test_Control_WMSGetFeatureInfo_destroy(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var click = new OpenLayers.Control.WMSGetFeatureInfo('http://localhost/wms', {
+            layers: 'ns:type',
+            featureNS: 'http://localhost/ns',
+            featureType: 'type'
+        });
+
+        var hover = new OpenLayers.Control.WMSGetFeatureInfo('http://localhost/wms', {
+            layers: 'ns:type',
+            featureNS: 'http://localhost/ns',
+            featureType: 'type',
+            hover: true
+        });
+
+        click.handler.deactivate = function() {
+            t.ok(true,
+                 "control.deactivate calls deactivate on click handler");
+        }
+        hover.handler.deactivate = function() {
+            t.ok(true,
+                 "control.deactivate calls deactivate on hover handler");
+        }
+        click.destroy();
+        hover.destroy();
+    }
+    
+    function test_Control_WMSGetFeatureInfo_click(t) {
+        t.plan(4);
+        var map = new OpenLayers.Map('map');
+
+        // mock up active control
+        var control = new OpenLayers.Control.WMSGetFeatureInfo();
+        map.addControl(control);
+        control.activate();
+       
+        control.request = function(position) {
+            t.eq(position.x, 50,
+                 "x position is as expected");
+            t.eq(position.y, 50,
+                 "y position is as expected");
+        }
+
+        control.getInfoForClick({xy: {x: 50, y: 50}});
+        control.getInfoForHover({xy: {x: 50, y: 50}});
+    }
+   
+    function test_Control_WMSGetFeatureInfo_activate(t) {
+        t.plan(4);
+        var map = new OpenLayers.Map("map");
+        var click = new OpenLayers.Control.WMSGetFeatureInfo('http://localhost/wms', {
+            featureType: 'type',
+            featureNS: 'http://localhost/ns',
+            layers: 'ns:type',
+        });
+        var hover = new OpenLayers.Control.WMSGetFeatureInfo('http://localhost/wms', {
+            featureType: 'type',
+            featureNS: 'http://localhost/ns',
+            layers: 'ns:type',
+            hover: true
+        });
+        map.addControl(click);
+        map.addControl(hover);
+        t.ok(!click.handler.active,
+             "click handler is not active prior to activating control");
+        t.ok(!hover.handler.active,
+             "hover handler is not active prior to activating control");
+        click.activate();
+        hover.activate();
+        t.ok(click.handler.active,
+             "click handler is active after activating control");
+        t.ok(hover.handler.active,
+             "hover handler is active after activating control");
+    }
+
+    function test_Control_WMSGetFeatureInfo_deactivate(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var click = new OpenLayers.Control.WMSGetFeatureInfo("http://localhost/wms", {
+            featureType: 'type',
+            featureNS: 'http://localhost/ns',
+            layers: 'ns:type'
+        });
+        var hover = new OpenLayers.Control.WMSGetFeatureInfo("http://localhost/wms", {
+            featureType: 'type',
+            featureNS: 'http://localhost/ns',
+            layers: 'ns:type'
+        });
+        map.addControl(click);
+        map.addControl(hover);
+        click.activate();
+        hover.activate();
+
+        click.handler.deactivate = function() {
+            t.ok(true,
+                 "control.deactivate calls deactivate on click handler");
+            OpenLayers.Handler.Click.prototype.deactivate.apply(this, arguments);
+        }
+        hover.handler.deactivate = function() {
+            t.ok(true,
+                 "control.deactivate calls deactivate on hover handler");
+            OpenLayers.Handler.Hover.prototype.deactivate.apply(this, arguments);
+        }
+        click.deactivate();
+        hover.deactivate();
+    }
+
+    </script>
+</head>
+<body>
+    <div id="map" style="width: 400px; height: 250px;"/>
+</body>
+</html>
