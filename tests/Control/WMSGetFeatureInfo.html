@@ -73,7 +73,7 @@
     function test_Control_WMSGetFeatureInfo_request(t) {
         t.plan(1);
         var map = new OpenLayers.Map('map', {
-            getExtent: return(new OpenLayers.Bounds(-180,-90,180,90));
+            getExtent: function() {return(new OpenLayers.Bounds(-180,-90,180,90));}
         });
 
         var _request = OpenLayers.Request.GET;
@@ -81,7 +81,9 @@
             t.eq(options.params.RADIUS, 5, "vendor params passed correctly");
         }
         // mock up active control
-        var control = new OpenLayers.Control.WMSGetFeatureInfo();
+        var control = new OpenLayers.Control.WMSGetFeatureInfo('http://localhost/wms',{
+            vendorParams:{ RADIUS: 5}
+        });
         map.addControl(control);
         control.activate();
        
@@ -95,7 +97,7 @@
         var click = new OpenLayers.Control.WMSGetFeatureInfo('http://localhost/wms', {
             featureType: 'type',
             featureNS: 'http://localhost/ns',
-            layers: 'ns:type',
+            layers: 'ns:type'
         });
         var hover = new OpenLayers.Control.WMSGetFeatureInfo('http://localhost/wms', {
             featureType: 'type',
@@ -231,7 +233,7 @@
         var click = new OpenLayers.Control.WMSGetFeatureInfo('http://localhost/wms', {
             featureType: 'type',
             featureNS: 'http://localhost/ns',
-            layers: 'ns:type',
+            layers: 'ns:type'
         });
         var hover = new OpenLayers.Control.WMSGetFeatureInfo('http://localhost/wms', {
             featureType: 'type',
@@ -283,6 +285,54 @@
         }
         click.deactivate();
         hover.deactivate();
+    }
+
+    // Verify that things work all right when we combine different types for the STYLES and LAYERS 
+    // params in the WMS Layers involved
+    function test_Control_WMSGetFeatureInfo_MixedParams(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map("map", {
+            getExtent: function() {return(new OpenLayers.Bounds(-180,-90,180,90));}
+            }
+        );
+
+        var a = new OpenLayers.Layer.WMS("dummy","http://localhost/wms", {
+            layers: "a,b,c,d",
+            styles: "a,b,c,d"
+        });
+
+        var b = new OpenLayers.Layer.WMS("dummy","http://localhost/wms", {
+            layers: ["a","b","c","d"],
+            styles: ["a","b","c","d"]
+        });
+
+        var c = new OpenLayers.Layer.WMS("dummy","http://localhost/wms", {
+            layers: ["a","b","c","d"]
+        });
+
+        var d = new OpenLayers.Layer.WMS("dummy","http://localhost/wms", {
+            layers: "a,b,c,d"
+        });
+
+        var click = new OpenLayers.Control.WMSGetFeatureInfo("http://localhost/wms", {
+            featureType: 'type',
+            featureNS: 'ns',
+            layers: [a, b, c, d]
+        });
+
+        map.addControl(click);
+
+        var _request = OpenLayers.Request.GET;
+        OpenLayers.Request.GET = function(options) {
+            t.eq(
+                options.params.styles.join(","), "a,b,c,d,a,b,c,d,,,,,,,,",
+                "Styles merged correctly"
+            );
+        };
+
+        click.activate();
+        click.getInfoForClick({xy: {x: 50, y: 50}});
+        OpenLayers.Request.GET = _request;
     }
 
     </script>
