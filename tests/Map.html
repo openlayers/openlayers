@@ -1205,6 +1205,70 @@
 
         
     }
+    
+    function test_allOverlays(t) {
+        
+        t.plan(9);
+        
+        var map = new OpenLayers.Map({
+            div: "map", allOverlays: true
+        });
+        
+        var a = new OpenLayers.Layer.Vector("a");
+        var b = new OpenLayers.Layer.Image(
+            "b",
+            "http://earthtrends.wri.org/images/maps/4_m_citylights_lg.gif",
+            new OpenLayers.Bounds(-180, -88.759, 180, 88.759),
+            new OpenLayers.Size(580, 288)
+        );
+        var c = new OpenLayers.Layer.WMS(
+            "c",
+            "http://labs.metacarta.com/wms/vmap0",
+            {layers: 'basic'}
+        );
+        var d = new OpenLayers.Layer.Vector("d");
+        
+        map.addLayers([a, b, c, d]);
+
+        var moveCount = 0;
+        a.moveTo = function() {
+            moveCount++;
+            OpenLayers.Layer.Vector.prototype.moveTo.apply(this, arguments);
+        };
+
+        map.zoomToMaxExtent();
+        t.eq(moveCount, 1, "map.moveTo moves the base layer only once");
+        t.eq(map.getCenter().toString(), "lon=0,lat=0", "a map with all overlays can have a center");
+        
+        // a, b, c, d
+        t.eq(map.baseLayer.name, "a", "base layer set to first layer added");
+        
+        map.removeLayer(a);
+        // b, c, d
+        t.eq(map.baseLayer.name, "b", "if base layer is removed, lowest layer becomes base");
+        
+        map.addLayer(a);
+        // b, c, d, a
+        t.eq(map.baseLayer.name, "b", "adding a new layer doesn't change base layer");
+        
+        map.setLayerIndex(c, 1);
+        // b, d, c, a
+        t.eq(map.baseLayer.name, "b", "changing layer order above base doesn't mess with base");
+        
+        map.setLayerIndex(d, 0);
+        // d, b, c, a
+        t.eq(map.baseLayer.name, "d", "changing layer order to 0 sets base layer");
+        
+        map.raiseLayer(d, 1);
+        // b, d, c, a
+        t.eq(map.baseLayer.name, "b", "raising the base layer sets a new base layer");
+        
+        map.raiseLayer(d, -1);
+        t.eq(map.baseLayer.name, "d", "lowering a layer to lowest index sets as base");
+        
+        map.destroy();
+        
+    }
 
   </script>
 </head>
