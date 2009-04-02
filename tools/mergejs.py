@@ -152,7 +152,7 @@ def run (sourceDirectory, outputFilename = None, configFile = None):
     ## TODO: Do import when we walk the directories above?
     for filepath in allFiles:
         print "Importing: %s" % filepath
-        fullpath = os.path.join(sourceDirectory, filepath)
+        fullpath = os.path.join(sourceDirectory, filepath).strip()
         content = open(fullpath, "U").read() # TODO: Ensure end of line @ EOF?
         files[filepath] = SourceFile(filepath, content) # TODO: Chop path?
 
@@ -181,7 +181,7 @@ def run (sourceDirectory, outputFilename = None, configFile = None):
                 order.append(filepath)
                 if not files.has_key(filepath):
                     print "Importing: %s" % filepath
-                    fullpath = os.path.join(sourceDirectory, filepath)
+                    fullpath = os.path.join(sourceDirectory, filepath).strip()
                     content = open(fullpath, "U").read() # TODO: Ensure end of line @ EOF?
                     files[filepath] = SourceFile(filepath, content) # TODO: Chop path?
         
