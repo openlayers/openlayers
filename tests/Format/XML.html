@@ -679,6 +679,154 @@
         t.eq(format.data.documentElement.tagName,'ol:root','keepData keeps the right data');
     }
 
+    function test_getChildValue(t) {
+
+        t.plan(1);
+
+        var text =
+            "<?xml version='1.0' encoding='UTF-8'?>" +
+            "<root>" +
+                "x<!-- comment -->y<!-- comment 2 --><![CDATA[z]]>z<foo />&#x79;" +
+            "</root>";
+
+        var format = new OpenLayers.Format.XML();
+        var doc = format.read(text).documentElement;
+
+        t.eq(format.getChildValue(doc), "xyzzy", "child value skips comments, concatenates multiple values, reads through entities");
+
+    }
+    
+    function test_getChildEl(t) {
+
+        t.plan(3);
+
+        var text =
+            "<?xml version='1.0' encoding='UTF-8'?>" +
+            "<root>" +
+                "<!-- comment -->" +
+                "<a>x</a>" +
+                "<b>x</b>" +
+            "</root>";
+
+        var format = new OpenLayers.Format.XML();
+        var doc = format.read(text).documentElement;
+
+        var a = format.getChildEl(doc);
+        t.eq(a.nodeName, "a", "first element found correctly");
+        
+        a = format.getChildEl(doc, "a");
+        t.eq(b, null, "first child element matches the given name");
+
+        var b = format.getChildEl(doc, "b");
+        t.eq(b, null, "first child element does not match the given name");
+
+    }
+    
+    function test_getNextEl(t) {
+        t.plan(5);
+
+        var text =
+            "<?xml version='1.0' encoding='UTF-8'?>" +
+            "<root>" +
+                "<!-- comment -->" +
+                "<a>x</a>" +
+                "<!-- comment -->" +
+                "<b xmlns='urn:example'>x</b>" +
+            "</root>";
+
+        var format = new OpenLayers.Format.XML();
+        var doc = format.read(text).documentElement;
+
+        var a = format.getChildEl(doc);
+        
+        var b = format.getNextEl(a);
+        t.eq(b && b.nodeName, "b", "next element correctly found");
+        
+        b = format.getNextEl(a, "b");
+        t.eq(b && b.nodeName, "b", "next element correctly found when name supplied");
+
+        b = format.getNextEl(a, "c");
+        t.eq(b, null, "null returned when name does not match next element");
+
+        b = format.getNextEl(a, null, "urn:example");
+        t.eq(b && b.nodeName, "b", "next element correctly found when namespace supplied");
+
+        b = format.getNextEl(a, null, "foo");
+        t.eq(b, null, "null returned when namespace does not match next element");
+
+    }
+    
+    function test_isSimpleContent(t) {
+        t.plan(2);
+
+        var text =
+            "<?xml version='1.0' encoding='UTF-8'?>" +
+            "<root>" +
+                "<!-- comment -->" +
+                "<a>x<!-- comment -->y<!-- comment 2 --><![CDATA[z]]>z<foo />&#x79;</a>" +
+                "<!-- comment -->" +
+                "<b>x<!-- comment -->y<!-- comment 2 --><![CDATA[z]]>z&#x79;</b>" +
+            "</root>";
+
+        var format = new OpenLayers.Format.XML();
+        var doc = format.read(text).documentElement;
+
+        var a = format.getChildEl(doc);
+        var b = format.getNextEl(a);
+        t.ok(!format.isSimpleContent(a), "<a> content is not simple");
+        t.ok(format.isSimpleContent(b), "<b> content is simple");
+
+    }
+
+    function test_lookupNamespaceURI(t) {
+        
+        t.plan(8);
+
+        var text =
+            "<?xml version='1.0' encoding='UTF-8'?>" +
+            "<root xmlns:baz='urn:baznamespace'>" +
+                "<!-- comment -->" +
+                "<a><foo /></a>" +
+                "<!-- comment -->" +
+                "<b xmlns='urn:example'><!-- comment --><bar foo='value'/></b>" +
+            "</root>";
+
+        var format = new OpenLayers.Format.XML();
+        var doc = format.read(text).documentElement;
+
+        var a = format.getChildEl(doc);
+        t.eq(format.lookupNamespaceURI(a, "baz"), "urn:baznamespace", "prefix lookup on first child");
+
+        var foo = format.getChildEl(a);
+        t.eq(format.lookupNamespaceURI(foo, "baz"), "urn:baznamespace", "prefix lookup on child of first child");
+        
+        var b = format.getNextEl(a);
+        t.eq(format.lookupNamespaceURI(b, null), "urn:example", "default namespace lookup on element");
+        
+        var bar = format.getChildEl(b);
+        t.eq(format.lookupNamespaceURI(bar, null), "urn:example", "default namespace lookup on child");
+        t.eq(format.lookupNamespaceURI(bar, "baz"), "urn:baznamespace", "prefix lookup on child with different default");
+
+        // test that the alias behaves properly
+        var lookup = OpenLayers.Format.XML.lookupNamespaceURI;
+        t.eq(lookup(bar, "baz"), "urn:baznamespace", "(alias) prefix lookup on child with different default");
+
+        var attr = bar.attributes[0];
+        // Internet Explorer didn't have the ownerElement property until 8.
+        var supportsOwnerElement = !!attr.ownerElement;        
+        if(supportsOwnerElement) {
+            t.eq(format.lookupNamespaceURI(attr, null), "urn:example", "default namespace lookup on attribute");
+            t.eq(format.lookupNamespaceURI(attr, "baz"), "urn:baznamespace", "prefix lookup on attribute with different default");
+        } else {
+            t.debug_print("namespace lookup on attributes not supported in this browser");
+            t.ok(true, "namespace lookup on attributes not supported in this browser");
+            t.ok(true, "namespace lookup on attributes not supported in this browser");
+        }
+
+    }
+    
+
+    
     </script> 
 </head> 
 <body> 
