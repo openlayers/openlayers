@@ -52,7 +52,7 @@
     }
 
     function test_read_msGMLOutput(t) {
-        t.plan(6);
+        t.plan(7);
         
         var parser = new OpenLayers.Format.WMSGetFeatureInfo();
 
@@ -162,6 +162,38 @@
 
         t.eq((features[0].type == features[1].type), false,
              "The layer name differs for the two features");
+
+        text =
+            '<?xml version="1.0" encoding="ISO-8859-1"?>' +
+            '<msGMLOutput ' +
+            '        xmlns:gml="http://www.opengis.net/gml"' +
+            '        xmlns:xlink="http://www.w3.org/1999/xlink"' +
+            '        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' +
+            '       <wegbeheerderinfo_layer>' +
+            '               <wegbeheerderinfo_feature>' +
+            '                       <gml:boundedBy>' +
+            '                               <gml:Box srsName="EPSG:28992">' +
+            '                                       <gml:coordinates>105002.943000,490037.863000 105271.523000,490262.208000</gml:coordinates>' +
+            '                               </gml:Box>' +
+            '                       </gml:boundedBy>' +
+            '                       <geometry>' +
+            '                       <gml:MultiLineString srsName="EPSG:28992">' +
+            '                         <gml:lineStringMember>' +
+            '                           <gml:LineString>' +
+            '                             <gml:coordinates>105270.164000,490262.208000 105098.274000,490258.040000 105028.045000,490089.576000 105002.943000,490048.851000 105049.666000,490037.863000 105271.523000,490064.957000 </gml:coordinates>' +
+            '                           </gml:LineString>' +
+            '                         </gml:lineStringMember>' +
+            '                       </gml:MultiLineString>' +
+            '                       </geometry>' +
+            '                       <OGR_FID>203327</OGR_FID>' +
+            '               </wegbeheerderinfo_feature>' +
+            '       </wegbeheerderinfo_layer>' +
+            '</msGMLOutput>';
+
+        features = parser.read(text);
+
+        t.eq((features[0].geometry instanceof OpenLayers.Geometry.MultiLineString), true,
+            "Parsed geometry is of type multi line string");
 
     }
 
