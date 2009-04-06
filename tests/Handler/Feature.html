@@ -417,8 +417,63 @@
         }
         
         handler.destroy();
-        
+    }
 
+    function test_click_tolerance(t) {
+        t.plan(3);
+
+        var map, control, layer, feature, evtPx;
+        var clicks, callbacks, handler;
+
+        map = new OpenLayers.Map('map', {controls: []});
+        control = new OpenLayers.Control();
+        map.addControl(control);
+        layer = new OpenLayers.Layer();
+        map.addLayer(layer);
+ 
+        feature = new OpenLayers.Feature.Vector();
+        feature.layer = layer;
+
+        evtPx = {
+            xy: new OpenLayers.Pixel(Math.random(), Math.random()),
+            type: "click"
+        };
+ 
+        // override the layer's getFeatureFromEvent func so that it always
+        // returns newFeature
+        layer.getFeatureFromEvent = function(evt) { return feature; };
+
+        callbacks = {
+            click: function() {
+                clicks++;
+            }
+        };
+ 
+        handler = new OpenLayers.Handler.Feature(
+            control, layer, callbacks, {clickTolerance: 4});
+        handler.activate();
+        handler.down = {x: 0, y: 0};
+
+        // distance between down and up is 1, which is
+        // lower than clickTolerance so "click" should trigger
+        handler.up = {x: 1, y: 0};
+        clicks = 0;
+        map.events.triggerEvent("click", evtPx);
+        t.eq(clicks, 1, "click callback triggers when tolerance is not reached (lower than)");
+
+        // distance between down and up is 4, which is
+        // equal to clickTolerance so "click" should trigger
+        handler.up = {x: 0, y: 4};
+        clicks = 0;
+        map.events.triggerEvent("click", evtPx);
+        t.eq(clicks, 1, "click callback triggers when tolerance is not reached (equal to)");
+
+        // distance between down and up is 5, which is
+        // greater than clickTolerance so "click" should not trigger
+        handler.up = {x: 5, y: 0};
+        clicks = 0;
+        map.events.triggerEvent("click", evtPx);
+        t.eq(clicks, 0, "click callback does not trigger when tolerance is reached");
     }
 
   </script>
