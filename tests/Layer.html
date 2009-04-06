@@ -294,7 +294,7 @@
     }
     
     function test_Layer_redraw(t) {
-        t.plan(8)
+        t.plan(11)
 
         var name = 'Test Layer';
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
@@ -325,6 +325,18 @@
         t.ok(layer.redraw(),
                 "redraw returns true even if extent has not changed");
         
+        var log = {};
+        var onMoveend = function(e) {
+            log.event = e;
+        };
+        layer.events.on({"moveend": onMoveend});
+        layer.redraw();
+        layer.events.un({"moveend": onMoveend});
+        // test that the moveend event was triggered
+        t.ok(log.event, "an event was logged");
+        t.eq(log.event.type, "moveend", "moveend was triggered");
+        t.eq(log.event.zoomChanged, true, "event says zoomChanged true - poor name");
+
         layer.moveTo = function(bounds, zoomChanged, dragging) {
             var extent = layer.map.getExtent();
             t.ok(bounds.equals(extent),
@@ -335,7 +347,6 @@
                  "redraw calls moveTo with dragging false");
         }
         layer.redraw();
-        
     }
       
     function test_layer_setIsBaseLayer(t) {
