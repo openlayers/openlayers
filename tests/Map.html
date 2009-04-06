@@ -1208,7 +1208,7 @@
     
     function test_allOverlays(t) {
         
-        t.plan(9);
+        t.plan(14);
         
         var map = new OpenLayers.Map({
             div: "map", allOverlays: true
@@ -1264,7 +1264,19 @@
         t.eq(map.baseLayer.name, "b", "raising the base layer sets a new base layer");
         
         map.raiseLayer(d, -1);
+        // d, b, c, a
         t.eq(map.baseLayer.name, "d", "lowering a layer to lowest index sets as base");
+        
+        // all this switching of base layer didn't muck with layer visibility
+        t.eq(a.visibility, true, "a is visible");
+        t.eq(b.visibility, true, "b is visible");
+        t.eq(c.visibility, true, "c is visible");
+        t.eq(d.visibility, true, "d is visible");
+        
+        // test that map can have an invisible base layer
+        b.setVisibility(false);
+        map.setLayerIndex(b, 0);
+        t.eq(b.visibility, false, "changing layer order doesn't change visibility");
         
         map.destroy();
         
