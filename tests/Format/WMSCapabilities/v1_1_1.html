@@ -1,0 +1,57 @@
+<html> 
+<head> 
+    <script src="../../../lib/OpenLayers.js"></script>
+    <script src="v1_1_1.js"></script>
+    <script type="text/javascript">
+    
+    function test_read(t) {
+        
+        t.plan(13);
+        
+        var format = new OpenLayers.Format.WMSCapabilities();
+        var obj = format.read(doc);
+        
+        var capability = obj.capability;
+        t.ok(capability, "object contains capability property");
+        
+        var getmap = capability.request.getmap;
+        t.eq(getmap.formats.length, 28, "getmap formats parsed");
+        t.eq(
+            getmap.href,
+            "http://publicus.opengeo.org:80/geoserver/wms?SERVICE=WMS&",
+            "getmap href parsed"
+        );
+        
+        t.ok(capability.layers, "layers parsed");
+        t.eq(capability.layers.length, 22, "correct number of layers parsed");
+        
+        var layer = capability.layers[2];
+        t.eq(layer.name, "tiger:tiger_roads", "[2] correct layer name");
+        t.eq(layer.title, "Manhattan (NY) roads", "[2] correct layer title");
+        t.eq(
+            layer["abstract"],
+            "Highly simplified road layout of Manhattan in New York..",
+            "[2] correct layer abstract"
+        );
+        t.eq(
+            layer.llbbox,
+            [-74.08769307536667, 40.660618924633326, -73.84653192463333, 40.90178007536667],
+            "[2] correct layer bbox"
+        );
+        t.eq(layer.styles.length, 1, "[2] correct styles length");
+        t.eq(layer.styles[0].name, "tiger_roads", "[2] correct style name");
+        t.eq(
+            layer.styles[0].legend.href,
+            "http://publicus.opengeo.org:80/geoserver/wms/GetLegendGraphic?VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=tiger:tiger_roads",
+            "[2] correct legend url"
+        );
+        t.eq(layer.queryable, true, "[2] correct queryable attribute");
+        
+    }
+    
+    
+    </script> 
+</head> 
+<body>
+</body> 
+</html> 
