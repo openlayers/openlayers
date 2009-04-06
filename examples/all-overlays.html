@@ -8,7 +8,13 @@
         <script type="text/javascript">
             var map;
             function init() {
-                map = new OpenLayers.Map("map", {allOverlays: true});
+                map = new OpenLayers.Map({
+                    div: "map",
+                    allOverlays: true,
+                    maxExtent: new OpenLayers.Bounds(
+                        1549471.9221, 6403610.94, 1550001.32545, 6404015.8
+                    )
+                });
 
                 // give the features some style
                 var styles = new OpenLayers.StyleMap({
@@ -37,13 +43,9 @@
                         url: "data/roads.json",
                         format: new OpenLayers.Format.GeoJSON()
                     }),
-                    styleMap: styles,
-                    maxExtent: new OpenLayers.Bounds(
-                        1549471.9221, 6403610.94, 1550001.32545, 6404015.8
-                    )
+                    styleMap: styles
                 });
             
-
                 map.addLayer(vectors);
                 map.addControl(new OpenLayers.Control.LayerSwitcher());
                 map.zoomToMaxExtent();
