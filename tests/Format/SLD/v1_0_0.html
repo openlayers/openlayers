@@ -125,7 +125,7 @@
         '</StyledLayerDescriptor>';
 
     function test_read(t) {
-        t.plan(21);
+        t.plan(22);
         
         var xml = new OpenLayers.Format.XML();
         var sldxml = xml.read(sld);
@@ -169,6 +169,7 @@
         t.eq(poly.strokeColor, "#000000", "(AAA161) first rule has proper stroke");
         var text = symbolizer["Text"];
         t.eq(text.label, "${FOO}", "(AAA161) first rule has proper text label");
+        t.eq(layer.userStyles[0].propertyStyles["label"], true, "label added to propertyStyles");
         t.eq(text.fontFamily, "Arial", "(AAA161) first rule has proper font family");
         t.eq(text.fillColor, "#000000", "(AAA161) first rule has proper text fill");
         t.eq(text.haloRadius, "3", "(AAA161) first rule has proper halo radius");
