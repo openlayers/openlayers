@@ -23,7 +23,7 @@
         t.eq( layer.markers.length, 1, "addLayer adds marker to layer." );
     }
     function test_addMarker_removeMarker (t) {
-        t.plan( 4 );
+        t.plan( 6 );
 
         var map = new OpenLayers.Map('map');
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
@@ -38,12 +38,20 @@
         t.ok(  marker.icon.imageDiv.parentNode == layer.div, "addMarker adds marker image node into layer node." ); 
         layer.removeMarker(marker);
         t.ok(  marker.icon.imageDiv.parentNode != layer.div, "removeMarker removes marker image node from layer node." ); 
+        layer.removeMarker(marker);
+        t.ok(true, "Removing marker twice does not fail.");
         layer.addMarker(marker);
         t.ok(  marker.icon.imageDiv.parentNode == layer.div, "addMarker adds marker image node into layer node." ); 
 
         layer.markers = null;
         layer.removeMarker(marker);
         t.ok(true, "removing marker when no markers present does not script error");
+
+        var l = new OpenLayers.Layer.Markers();
+        var marker = new OpenLayers.Marker(new OpenLayers.LonLat(5,40));
+        l.addMarker(marker);
+        l.removeMarker(marker);
+        t.ok(true, "Removing marker when layer not added to map does not fail.");
 
     }
     
