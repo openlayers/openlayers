@@ -1,0 +1,75 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+
+    function test_initialze(t) {
+        
+        t.plan(1);
+        
+        var map = new OpenLayers.Map("map");
+        var control = new OpenLayers.Control.Measure(
+            OpenLayers.Handler.Path, {persist: true}
+        );
+        map.addControl(control);
+        
+        t.eq(control.persist, true, "passing persist to constructor sets persist on handler");
+        
+        map.destroy();
+        
+    }
+    
+    function test_cancel(t) {
+        
+        t.plan(4);
+        
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer(null, {
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        
+        var control = new OpenLayers.Control.Measure(
+            OpenLayers.Handler.Path, {persist: true}
+        );
+        map.addControl(control);
+        
+        control.activate();
+        
+        try {
+            control.cancel();
+            t.ok(true, "calling cancel before drawing works");
+        } catch(err) {
+            t.fail("calling cancel before drawing causes trouble: " + err);
+        }
+        t.eq(control.active, true, "control remains active after cancel");
+        
+        // create a simple measurement
+        function trigger(type, x, y) {
+            map.events.triggerEvent(type, {
+                xy: new OpenLayers.Pixel(x, y)
+            })
+        };
+        trigger("mousedown", 0, 0);
+        trigger("mouseup", 0, 0);
+        trigger("mousemove", 10, 10);
+        trigger("mousedown", 10, 10);
+        trigger("mouseup", 10, 10);
+        
+        // confirm that the sketch persists
+        t.eq(control.handler.layer.features.length, 1, "feature persists");
+        // cancel and see that sketch is gone
+        control.cancel();
+        t.eq(control.handler.layer.features.length, 0, "feature is gone after cancel");
+        
+        map.destroy();
+        
+    }
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 512px; height: 256px;"></div>
+</body>
+</html>

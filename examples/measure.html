@@ -62,18 +62,21 @@
             ]);
             var styleMap = new OpenLayers.StyleMap({"default": style});
             
-            var options = {
-                handlerOptions: {
-                    layerOptions: {styleMap: styleMap},
-                    persist: true
-                }
-            };
             measureControls = {
                 line: new OpenLayers.Control.Measure(
-                  OpenLayers.Handler.Path, options
-                ),
+                  OpenLayers.Handler.Path, {
+                    persist: true,
+                    handlerOptions: {
+                        layerOptions: {styleMap: styleMap},
+                    }
+                  }),
                 polygon: new OpenLayers.Control.Measure(
-                    OpenLayers.Handler.Polygon, options
+                    OpenLayers.Handler.Polygon, {
+                        persist: true,
+                        handlerOptions: {
+                            layerOptions: {styleMap: styleMap}
+                        }
+                    }
                 )
             };
             
