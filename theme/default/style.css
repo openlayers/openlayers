@@ -328,16 +328,3 @@ div.olControlMousePosition {
 .olCursorWait {
     cursor: wait;
 }
-.olDragDown {
-    cursor: move;
-}
-.olDrawBox {
-    cursor: crosshair;
-}
-.olControlDragFeatureOver {
-    cursor: move;
-}
-.olControlDragFeatureActive.olControlDragFeatureOver.olDragDown {
-    cursor: -moz-grabbing;
-}
-
