@@ -659,132 +659,83 @@
     }
 
     function test_callUserCallback(t) {
-        t.plan(6);
+        t.plan(1);
 
         var protocol = new OpenLayers.Protocol.HTTP();
 
-        var options, resp;
         var scope = {'fake': 'scope'};
 
         // test commit callback
-        // 1 tests
-        options = {
-            'callback': function() {
-                t.ok(this == scope, 'callback called with correct scope');
-            },
-            'scope': scope
-        };
-        resp = {'requestType': 'create', 'last': true};
-        protocol.callUserCallback(resp, options);
-        // 0 test
-        resp = {'requestType': 'create', 'last': false};
-        protocol.callUserCallback(resp, options);
-
-        // test create callback
-        // 2 tests
-        options = {
-            'create': {
-                'callback': function(r) {
-                    t.ok(this == scope, 'callback called with correct scope');
-                    t.ok(r == resp, 'callback called with correct response');
+        var log = {};
+        var options = {
+            foo: {
+                callback: function() {
+                    log.scope = this;
                 },
-                'scope': scope
+                scope: scope
             }
         };
-        resp = {'requestType': 'create'};
+        var resp = {requestType: 'foo'};
         protocol.callUserCallback(resp, options);
+        t.ok(log.scope, scope, 'correct callback called with correct scope');
 
-        // test with both callbacks set
-        // 3 tests
-        options = {
-            'create': {
-                'callback': function(r) {
-                    t.ok(this == scope, 'callback called with correct scope');
-                    t.ok(r == resp, 'callback called with correct response');
-                },
-                'scope': scope
-            },
-            'callback': function() {
-                t.ok(this == scope, 'callback called with correct scope');
-            },
-            'scope': scope
-        };
-        resp = {'requestType': 'create', 'last': true};
-        protocol.callUserCallback(resp, options);
-
-        // no callback set
-        // 0 test
-        options = {
-            'delete': {
-                'callback': function(resp) {
-                    t.fail('callback should not get called');
-                }
-            }
-        };
-        resp = {'requestType': 'create'};
-        protocol.callUserCallback(resp, options);
-
-        // cleanup
-        protocol.destroy();
     }
 
     function test_options(t) {
-        t.plan(7);
-
-        var _R = OpenLayers.Protocol.Response;
-        OpenLayers.Protocol.Response = function() {
-            this.priv = {status: 200};
-        };
+        t.plan(6);
+        
+        var log1 = {};
 
         // test that read with no options uses protocol options - 5 tests
-        var url = "foo";
+        var url = ".";
         var headers = {};
         var params = {};
         var scope = {};
         var protocol = new OpenLayers.Protocol.HTTP({
-            format: new OpenLayers.Format({read: function(){}, write: function(){}}),
+            format: new OpenLayers.Format({
+                read: function() {},
+                write: function() {}
+            }),
             url: url,
             headers: headers,
             params: params,
-            callback: function() {
-                t.ok(true, "[read] Correct callback.");
-                t.eq(this, scope, "[read] Correct scope.");
+            callback: function(resp) {
+                log1.callbackCalled = true;
+                log1.callbackScope = this;
+                log1.request = resp && resp.priv;
+                log1.requestType = resp && resp.requestType;
             },
             scope: scope
         });        
-        var _issue = OpenLayers.Request.issue;
-        OpenLayers.Request.issue = function(config) {
-            t.eq(config.url, url, "[" + config.method + "] Correct url.");
-            t.eq(config.headers, headers, "[" + config.method + "] Correct headers.");
-            t.eq(config.params, params, "[" + config.method + "] Correct params.");
-            config.callback.call(config.scope);
-        };
         protocol.read();
-        OpenLayers.Request.issue = _issue;
+        
+        t.delay_call(0.5, function() {
+            t.eq(log1.callbackCalled, true, "[read] callback called");
+            t.eq(log1.callbackScope, scope, "[read] correct scope");
+            t.ok(log1.request instanceof OpenLayers.Request.XMLHttpRequest, "[read] correct priv type");
+            t.eq(log1.requestType, "read", "[read] correct request type");
+        });
+        
 
         // test that commit with no options uses protocol options - 2 tests
-        _issue = OpenLayers.Request.issue;
-        OpenLayers.Request.issue = function(config) {
-            config.callback.call(config.scope);
-        };
-        var called = 0;
+        var log2 = {called: 0};
         protocol.options.callback = function() {
-            called++;
-            t.eq(this, scope, "[commit] Correct scope.");
+            log2.called++;
+            log2.scope = this;
         };
         protocol.commit([
             {state: OpenLayers.State.INSERT},
             {state: OpenLayers.State.INSERT},
-            {state: OpenLayers.State.UPDATE},
-            {state: OpenLayers.State.UPDATE},
-            {state: OpenLayers.State.DELETE},
-            {state: OpenLayers.State.DELETE}
+            {state: OpenLayers.State.UPDATE, url: "./1"},
+            {state: OpenLayers.State.UPDATE, url: "./2"},
+            {state: OpenLayers.State.DELETE, url: "./3"},
+            {state: OpenLayers.State.DELETE, url: "./4"}
         ]);
-        t.eq(called, 1, "[commit] Callback called once.");
+        t.delay_call(0.5, function() {
+            t.eq(log2.called, 1, "[commit] Callback called once.");
+            t.eq(log2.scope, scope, "[commit] Correct scope.");
+        });
 
-        // cleanup
-        protocol.destroy();
-        OpenLayers.Protocol.Response = _R;
     }
 
 
