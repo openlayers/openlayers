@@ -64,12 +64,13 @@
             
             measureControls = {
                 line: new OpenLayers.Control.Measure(
-                  OpenLayers.Handler.Path, {
-                    persist: true,
-                    handlerOptions: {
-                        layerOptions: {styleMap: styleMap},
+                    OpenLayers.Handler.Path, {
+                        persist: true,
+                        handlerOptions: {
+                            layerOptions: {styleMap: styleMap}
+                        }
                     }
-                  }),
+                ),
                 polygon: new OpenLayers.Control.Measure(
                     OpenLayers.Handler.Polygon, {
                         persist: true,
@@ -94,31 +95,6 @@
             
             document.getElementById('noneToggle').checked = true;
         }
-
-        function calcVincenty(geometry) {
-            /**
-             * Note: this function assumes geographic coordinates and
-             *     will fail otherwise.  OpenLayers.Util.distVincenty takes
-             *     two objects representing points with geographic coordinates
-             *     and returns the geodesic distance between them (shortest
-             *     distance between the two points on an ellipsoid) in *kilometers*.
-             *
-             * It is important to realize that the segments drawn on the map
-             *     are *not* geodesics (or "great circle" segments).  This means
-             *     that in general, the measure returned by this function
-             *     will not represent the length of segments drawn on the map.
-             */
-            var dist = 0;
-            for (var i = 1; i < geometry.components.length; i++) {
-                var first = geometry.components[i-1];
-                var second = geometry.components[i];
-                dist += OpenLayers.Util.distVincenty(
-                    {lon: first.x, lat: first.y},
-                    {lon: second.x, lat: second.y}
-                );
-            }
-            return dist;
-        }    
         
         function handleMeasurements(event) {
             var geometry = event.geometry;
@@ -129,10 +105,6 @@
             var out = "";
             if(order == 1) {
                 out += "measure: " + measure.toFixed(3) + " " + units;
-                if (map.getProjection() == "EPSG:4326") {
-                    out += "<br /> Great Circle Distance: " + 
-                        calcVincenty(geometry).toFixed(3) + " km *"; 
-                }        
             } else {
                 out += "measure: " + measure.toFixed(3) + " " + units + "<sup>2</" + "sup>";
             }
@@ -147,6 +119,13 @@
                 } else {
                     control.deactivate();
                 }
+            }
+        }
+        
+        function toggleGeodesic(element) {
+            for(key in measureControls) {
+                var control = measureControls[key];
+                control.geodesic = element.checked;
             }
         }
     </script>
@@ -174,13 +153,17 @@
                 <input type="radio" name="type" value="polygon" id="polygonToggle" onclick="toggleControl(this);" />
                 <label for="polygonToggle">measure area</label>
             </li>
+            <li>
+                <input type="checkbox" name="geodesic" id="geodesicToggle" onclick="toggleGeodesic(this);" />
+                <label for="polygonToggle">use geodesic measures</label>
+            </li>
         </ul>
-        <p>* Note that the geometries drawn are planar geometries and the
-        metrics returned by the measure control are planar measures.  The
-        "great circle" distance does not necessarily represent the length
-        of the segments drawn on the map.  Instead, it is a geodesic metric that
-        represents the cumulative shortest path between all vertices in the
-        geometry were they projected onto a sphere.</p>
+        <p>Note that the geometries drawn are planar geometries and the
+        metrics returned by the measure control are planar measures by
+        default.  If your map is in a geographic projection or you have the
+        appropriate projection definitions to transform your geometries into
+        geographic coordinates, you can set the "geodesic" property of the control
+        to true to calculate geodesic measures instead of planar measures.</p>
     </div>
   </body>
 </html>

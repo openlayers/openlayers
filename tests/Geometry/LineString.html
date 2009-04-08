@@ -351,7 +351,30 @@
              "clone() creates an OpenLayers.Geometry.LineString");
         t.ok(geometry.equals(clone), "clone has equivalent coordinates");
     }
+    
+    function test_getGeodesicLength(t) {
         
+        // expected values from http://www.movable-type.co.uk/scripts/latlong-vincenty.html
+        var cases = [{
+            wkt: "LINESTRING(0 0, -10 45)",
+            exp: 5081689.690
+        }, {
+            wkt: "LINESTRING(-10 45, 0 0)",
+            exp: 5081689.690
+        }, {
+            wkt: "LINESTRING(0 0, -10 45, -20 50)",
+            exp: 5081689.690 + 935018.062
+        }];
+        t.plan(cases.length);
+        
+        var geom, got;
+        for(var i=0; i<cases.length; ++i) {
+            geom = new OpenLayers.Geometry.fromWKT(cases[i].wkt);
+            got = geom.getGeodesicLength();
+            t.eq(Math.round(got), Math.round(cases[i].exp), "[case " + i + "] length calculated");
+        }
+        
+    }   
 
   </script>
 </head>
