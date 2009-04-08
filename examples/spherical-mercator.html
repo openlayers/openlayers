@@ -78,34 +78,21 @@
                 {'type': YAHOO_MAP_HYB, 'sphericalMercator': true}
             );
 
+            // create OSM layer
+            var mapnik = new OpenLayers.Layer.OSM();
             // create OAM layer
-            var oam = new OpenLayers.Layer.TMS(
+            var oam = new OpenLayers.Layer.XYZ(
                 "OpenAerialMap",
-                "http://tile.openaerialmap.org/tiles/1.0.0/openaerialmap-900913/",
+                "http://tile.openaerialmap.org/tiles/1.0.0/openaerialmap-900913/${z}/${x}/${y}.png",
                 {
-                    type: 'png', getURL: osm_getTileURL
+                    sphericalMercator: true
                 }
             );
 
             // create OSM layer
-            var mapnik = new OpenLayers.Layer.TMS(
-                "OpenStreetMap (Mapnik)",
-                  "http://a.tile.openstreetmap.org/",
-                {
-                    type: 'png', getURL: osm_getTileURL,
-                    displayOutsideMaxExtent: true,
-                    attribution: '<a href="http://www.openstreetmap.org/">OpenStreetMap</a>'
-                }
-            );
-            // create OSM layer
-            var osmarender = new OpenLayers.Layer.TMS(
+            var osmarender = new OpenLayers.Layer.OSM(
                 "OpenStreetMap (Tiles@Home)",
-                "http://tah.openstreetmap.org/Tiles/tile/",
-                {
-                    type: 'png', getURL: osm_getTileURL,
-                    displayOutsideMaxExtent: true,
-                    attribution: '<a href="http://www.openstreetmap.org/">OpenStreetMap</a>'
-                }
+                "http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png"
             );
 
 
@@ -131,21 +118,6 @@
             map.addControl(new OpenLayers.Control.Permalink());
             map.addControl(new OpenLayers.Control.MousePosition());
             if (!map.getCenter()) {map.zoomToMaxExtent()}
-        }
-
-        function osm_getTileURL(bounds) {
-            var res = this.map.getResolution();
-            var x = Math.round((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
-            var y = Math.round((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));
-            var z = this.map.getZoom();
-            var limit = Math.pow(2, z);
-
-            if (y < 0 || y >= limit) {
-                return OpenLayers.Util.getImagesLocation() + "404.png";
-            } else {
-                x = ((x % limit) + limit) % limit;
-                return this.url + z + "/" + x + "/" + y + "." + this.type;
-            }
         }
 
     </script>
