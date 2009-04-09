@@ -48,6 +48,10 @@
         t.ok(map.viewPortDiv.parentNode == map.div, "Map is attached to a temporary div that holds the viewPortDiv.");
         
         var mapDiv = document.getElementById("map");
+        // clean up the effects of other tests
+        while(OpenLayers.Element.hasClass(mapDiv, "olMap")) {
+            OpenLayers.Element.removeClass(mapDiv, "olMap");
+        }
         map.render(mapDiv); // Can also take a string.
         
         t.ok(map.div == mapDiv, "Map is now rendered to the 'map' div.")
