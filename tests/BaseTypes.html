@@ -35,7 +35,7 @@
     }
     
     function test_String_trim(t) {
-        t.plan(5);
+        t.plan(6);
         
         var str = "chickenHead";
         t.eq(OpenLayers.String.trim(str),
@@ -53,6 +53,9 @@
         t.eq(OpenLayers.String.trim(str),
              "chickenHead", "string with extra whitespace at beginning and end is trimmed correctly");
 
+        str = "chicken\nHead   ";
+        t.eq(OpenLayers.String.trim(str),
+             "chicken\nHead", "multi-line string with extra whitespace at end is trimmed correctly");
         str = " ";
         t.eq(OpenLayers.String.trim(str), "", "whitespace string is trimmed correctly");
     }
