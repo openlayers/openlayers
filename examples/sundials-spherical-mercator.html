@@ -89,7 +89,6 @@
             map.addPopup(popup);
         }
         function onFeatureUnselect(event) {
-            console.log(event);
             var feature = event.feature;
             if(feature.popup) {
                 map.removePopup(feature.popup);
