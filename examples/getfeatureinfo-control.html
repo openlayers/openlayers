@@ -14,59 +14,53 @@
     
     function load() {
         map = new OpenLayers.Map('map', {
-            maxExtent: new OpenLayers.Bounds(16.154,-34.953,33.327,-22.193)
+            maxExtent: new OpenLayers.Bounds(143.834,-43.648,148.479,-39.573)
         });
 
-        var roads = new OpenLayers.Layer.WMS("Roads",
-            "http://geo.openplans.org/geoserver/wms", 
-            {'layers': 'za:za_roads', transparent: true, format: 'image/png'},
+        var roads = new OpenLayers.Layer.WMS("State Boundaries",
+            "http://demo.opengeo.org/geoserver/wms", 
+            {'layers': 'topp:tasmania_state_boundaries', transparent: true, format: 'image/png'},
             {isBaseLayer: true}
         );
 
-        var natural = new OpenLayers.Layer.WMS("Natural Features",
-            "http://geo.openplans.org/geoserver/wms", 
-            {'layers': 'za:za_natural', transparent: true, format: 'image/png'},
+        var natural = new OpenLayers.Layer.WMS("Roads",
+            "http://demo.opengeo.org/geoserver/wms", 
+            {'layers': 'topp:tasmania_roads', transparent: true, format: 'image/png'},
             {isBaseLayer: false}
         );
 
-        var points = new OpenLayers.Layer.WMS("Points of Interest",
-            "http://geo.openplans.org/geoserver/wms", 
-            {'layers': 'za:za_points', transparent: true, format: 'image/png'},
+        var points = new OpenLayers.Layer.WMS("Cities",
+            "http://demo.opengeo.org/geoserver/wms", 
+            {'layers': 'topp:tasmania_cities', transparent: true, format: 'image/png'},
             {isBaseLayer: false}
         );
 
-        vegetation = new OpenLayers.Layer.WMS("Vegetation",
-            "http://geo.openplans.org/geoserver/wms", 
-            {'layers': 'za:za_vegetation', transparent: true, format: 'image/png'},
+        vegetation = new OpenLayers.Layer.WMS("Bodies of Water",
+            "http://demo.opengeo.org/geoserver/wms", 
+            {'layers': 'topp:tasmania_water_bodies', transparent: true, format: 'image/png'},
             {isBaseLayer: false}
         );
 
         highlightLayer = new OpenLayers.Layer.Vector("Highlighted Features", {
             displayInLayerSwitcher: false, 
-            isBaseLayer: false, 
-            styleMap: new OpenLayers.StyleMap({
-               "default": new OpenLayers.Style({
-                   fillColor: "#0000BB",
-                   strokeColor: "#000099"
-               })
-            })
+            isBaseLayer: false 
             }
         );
 
         infoControls = {
-            click: new OpenLayers.Control.WMSGetFeatureInfo('http://geo.openplans.org/geoserver/wms', {
+            click: new OpenLayers.Control.WMSGetFeatureInfo('http://demo.opengeo.org/geoserver/wms', {
                 title: 'Identify features by clicking',
                 layers: [vegetation],
                 queryVisible: true
             }),
-            hover: new OpenLayers.Control.WMSGetFeatureInfo('http://geo.openplans.org/geoserver/wms', {
+            hover: new OpenLayers.Control.WMSGetFeatureInfo('http://demo.opengeo.org/geoserver/wms', {
                 title: 'Identify features by clicking',
                 layers: [vegetation],
                 hover: true,
                 // defining a custom format here
                 formats: {'application/vnd.ogc.gml': new OpenLayers.Format.GML({
-                    typeName: 'vegetation', 
-                    featureNS: 'http://opengeo.org/za'
+                    typeName: 'water_bodies', 
+                    featureNS: 'http://www.openplans.org/topp'
                 })},
                 queryVisible: true
             })
@@ -138,7 +132,7 @@
     <a id="permalink" href="">Permalink</a><br />
 
     <div style="float:right;width:28%">
-        <h1 style="font-size:1.3em;">South Africa</h1>
+        <h1 style="font-size:1.3em;">Tasmania</h1>
         <p style="font-size:.8em;">Click on the map to get feature info.</p>
         <div id="nodeList">
         </div>
