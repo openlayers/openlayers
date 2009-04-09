@@ -1,0 +1,277 @@
+<html> 
+<head> 
+    <script src="../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+
+    var axl_image_response = '<?xml version="1.0" encoding="UTF-8"?><ARCXML version="1.1"><RESPONSE><IMAGE><ENVELOPE minx="-2471.42857142857" miny="0" maxx="105671.428571429" maxy="75700" /><OUTPUT url="http://localhost/output/364826560.png" /></IMAGE></RESPONSE></ARCXML>';
+    var axl_feature_response = '<?xml version="1.0" encoding="Cp1252"?><ARCXML version="1.1"><RESPONSE><FEATURES><FEATURE><FIELDS><FIELD name="UNIQUE_ID" value="514504b5-0458-461d-b540-8e18a454f619" /><FIELD name="LABEL" value="LIBRARY" /><FIELD name="Y_COORD" value="39.57" /><FIELD name="X_COORD" value="-104.24" /><FIELD name="#SHAPE#" value="[Geometry]" /><FIELD name="OBJECTID" value="1" /><FIELD name="shape.area" value="0" /><FIELD name="shape.len" value="0" /></FIELDS></FEATURE><FEATURE><FIELDS><FIELD name="UNIQUE_ID" value="514504b5-0458-461d-b540-8e81a454f619" /><FIELD name="LABEL" value="LIBRARY2" /><FIELD name="Y_COORD" value="39.75" /><FIELD name="X_COORD" value="-104.42" /><FIELD name="#SHAPE#" value="[Geometry]" /><FIELD name="OBJECTID" value="2" /><FIELD name="shape.area" value="0" /><FIELD name="shape.len" value="0" /></FIELDS></FEATURE><FEATURECOUNT count="2" hasmore="false" /><ENVELOPE minx="-678853.220047791" miny="1810.22081371862" maxx="-678853.220047791" maxy="1810.22081371862"/></FEATURES></RESPONSE></ARCXML>';
+
+    //
+    // creating a new arcxml format creates an object that has a read and write function
+    //
+    function test_Format_ArcXML_constructor1(t) {
+        t.plan(4); 
+         
+        var format = new OpenLayers.Format.ArcXML(); 
+        t.ok(format instanceof OpenLayers.Format.ArcXML, 
+             "new OpenLayers.Format.ArcXML returns object" ); 
+
+        t.ok(format.request, null, "no options creates a null request");
+
+        t.eq(typeof format.read, "function", "format has a read function"); 
+        t.eq(typeof format.write, "function", "format has a write function"); 
+    }
+
+    //
+    // creating a new arcxml format with a set of options for an image request
+    // creates a request child object, and a get_image grandchild.
+    //
+    function test_Format_ArcXML_constructor2(t) { 
+        t.plan(6); 
+        
+        var options = {
+          requesttype:'image',
+          envelope: new OpenLayers.Bounds( -180, -90, 180, 90 ).toArray(),
+          layers: [],
+          tileSize: new OpenLayers.Size( 256,256 ),
+          featureCoordSys: '4326',
+          filterCoordSys: '4326'
+        };
+        
+        var format = new OpenLayers.Format.ArcXML( options );
+        t.ok(format instanceof OpenLayers.Format.ArcXML, 
+             "new OpenLayers.Format.ArcXML returns object" ); 
+    		 
+        t.ok(format.request instanceof OpenLayers.Format.ArcXML.Request, 
+            "constructor with 'image' requesttype generates a request");
+        t.ok( format.request.get_image !== null, "get_image property exists" );
+        t.ok( format.request.get_feature === null, "get_feature property does not exists" );        
+
+        t.eq(typeof format.read, "function", "format has a read function"); 
+        t.eq(typeof format.write, "function", "format has a write function"); 
+    }
+
+    //
+    // creating a new arcxml format with a set of options for a feature request
+    // creates a request child object, and a get_feature grandchild
+    //
+    function test_Format_ArcXML_constructor3(t) { 
+        t.plan(6); 
+         
+        var options = {
+          requesttype:'feature'
+        };
+        
+        var format = new OpenLayers.Format.ArcXML( options ); 
+        t.ok(format instanceof OpenLayers.Format.ArcXML, 
+             "new OpenLayers.Format.ArcXML returns object" ); 
+    		 
+        t.ok(format.request instanceof OpenLayers.Format.ArcXML.Request, 
+            "constructor with 'feature' requesttype generates a request");
+        t.ok( format.request.get_feature !== null, "get_feature property exists" );
+        t.ok( format.request.get_image === null, "get_image property does not exists" );        
+
+        t.eq(typeof format.read, "function", "format has a read function"); 
+        t.eq(typeof format.write, "function", "format has a write function"); 
+    }
+
+    //
+    // read in a known good axl image response
+    //
+    function test_Format_ArcXML_read1(t) {
+        t.plan(4);
+        var f = new OpenLayers.Format.ArcXML();
+        var response = f.read(axl_image_response);
+        
+        t.ok(response !== null, "get_image response object is not null" );
+        t.ok(response.image !== null, "get_image image tag is not null");
+        t.ok(response.image.envelope !== null, "get_image image envelope tag is not null");
+        t.ok(response.image.output !== null, "get_image image output tag is not null");
+    }
+
+    //
+    // read in a known good axl feature response
+    //
+    function test_Format_ArcXML_read2(t) {
+        t.plan(10);
+        var f = new OpenLayers.Format.ArcXML();
+        var response = f.read(axl_feature_response);
+        
+        t.ok(response !== null, "get_feature response object is not null" );
+        t.ok(response.features !== null, "get_feature features tag is not null");
+        t.ok(response.features.envelope !== null, "get_feature envelope tag is not null");
+        t.eq(response.features.featurecount, "2", "feature count is 2" );
+        
+        // test the second feature parsed
+        // <FIELD name="UNIQUE_ID" value="514504b5-0458-461d-b540-8e81a454f619" />
+        // <FIELD name="LABEL" value="LIBRARY2" />
+        // <FIELD name="Y_COORD" value="39.75" />
+        // <FIELD name="X_COORD" value="-104.42" />
+        // <FIELD name="#SHAPE#" value="[Geometry]" />
+        // <FIELD name="OBJECTID" value="2" />
+        // <FIELD name="shape.area" value="0" />
+        // <FIELD name="shape.len" value="0" />
+        t.eq( response.features.feature[1].attributes['UNIQUE_ID'], "514504b5-0458-461d-b540-8e81a454f619", "field 1 for feature 2 is correct" );
+        t.eq( response.features.feature[1].attributes['LABEL'], "LIBRARY2", "field 2 for feature 2 is correct" );
+        t.eq( response.features.feature[1].attributes['Y_COORD'], "39.75", "field 3 for feature 2 is correct" );
+        t.eq( response.features.feature[1].attributes['X_COORD'], "-104.42", "field 4 for feature 2 is correct" );
+        t.eq( response.features.feature[1].attributes['#SHAPE#'], "[Geometry]", "field 5 for feature 2 is correct" );
+        t.eq( response.features.feature[1].attributes['OBJECTID'], "2", "field 6 for feature 2 is correct" );
+    }
+
+    //
+    // cause an error by parsing bad axl
+    //
+    function test_Format_ArcXML_parseerror(t) {
+        t.plan(1);
+        var f = new OpenLayers.Format.ArcXML();
+        
+        try {
+            f.read( '<?xml version="1.0" encoding="Cp1252"?><ARCXML version="1.1"><NO END TAG>' );
+            t.fail("parsing failed to fail")
+        } catch (ex) {
+            t.ok( true, "Exception message indicates parsing error." );
+        }
+    }
+
+    //
+    // create an arcxml image request, and verify that it matches a known image request
+    //
+    function test_format_ArcXML_write1(t) {
+        var options = {
+            requesttype:'image',
+            envelope: new OpenLayers.Bounds( -180, -90, 180, 90 ).toArray(),
+            layers: [],
+            tileSize: new OpenLayers.Size( 256,256 ),
+            featureCoordSys: '4326',
+            filterCoordSys: '4326'
+        };
+        var truth = '<ARCXML version="1.1"><REQUEST><GET_IMAGE><PROPERTIES><FEATURECOORDSYS id="4326"/><FILTERCOORDSYS id="4326"/><ENVELOPE minx="-180" miny="-90" maxx="180" maxy="90"/><IMAGESIZE height="256" width="256"/></PROPERTIES></GET_IMAGE></REQUEST></ARCXML>';
+        axl_write(t,options,truth);
+    }
+
+    //
+    // create an arcxml image request that specifies layer visibilities, and
+    // verify that it matches a known image request
+    //
+    function test_format_ArcXML_write2(t) {
+        var options = {
+            requesttype:'image',
+            envelope: new OpenLayers.Bounds( -180, -90, 180, 90 ).toArray(),
+            layers: [{
+                id: "0",
+                visible: "true"
+            }],
+            tileSize: new OpenLayers.Size( 256,256 ),
+            featureCoordSys: '4326',
+            filterCoordSys: '4326'
+        };
+        var truth = '<ARCXML version="1.1"><REQUEST><GET_IMAGE><PROPERTIES><FEATURECOORDSYS id="4326"/><FILTERCOORDSYS id="4326"/><ENVELOPE minx="-180" miny="-90" maxx="180" maxy="90"/><IMAGESIZE height="256" width="256"/><LAYERLIST><LAYERDEF id="0" visible="true"/></LAYERLIST></PROPERTIES></GET_IMAGE></REQUEST></ARCXML>';
+        axl_write(t, options, truth );
+    }
+
+    //
+    // create an arcxml image request that performs a query for thematic mapping,
+    // and verify that it matches a known image request
+    //
+    function test_format_ArcXML_write3(t) {
+        var options = {
+            requesttype:'image',
+            envelope: new OpenLayers.Bounds( -180, -90, 180, 90 ).toArray(),
+            layers: [{
+                id: "0",
+                visible: "true",
+                query: {
+                    where: "COMPANY='AVENCIA'"
+                }
+            }],
+            tileSize: new OpenLayers.Size( 256,256 ),
+            featureCoordSys: '4326',
+            filterCoordSys: '4326'
+        };
+        var truth = '<ARCXML version="1.1"><REQUEST><GET_IMAGE><PROPERTIES><FEATURECOORDSYS id="4326"/><FILTERCOORDSYS id="4326"/><ENVELOPE minx="-180" miny="-90" maxx="180" maxy="90"/><IMAGESIZE height="256" width="256"/><LAYERLIST><LAYERDEF id="0" visible="true"><QUERY where="COMPANY=\'AVENCIA\'"/></LAYERDEF></LAYERLIST></PROPERTIES></GET_IMAGE></REQUEST></ARCXML>';
+        axl_write(t, options, truth );
+    }
+
+    //
+    // create an arcxml image request that performs a spatial query for thematic mapping,
+    // and verify that it matches a known image request
+    //
+    function test_format_ArcXML_write4(t) {
+        var options = {
+            requesttype:'image',
+            envelope: new OpenLayers.Bounds( -180, -90, 180, 90 ).toArray(),
+            layers: [{
+                id: "0",
+                visible: "true",
+                query: {
+                    spatialfilter: true,
+                    where: "COMPANY='AVENCIA'"
+                }
+            }],
+            tileSize: new OpenLayers.Size( 256,256 ),
+            featureCoordSys: '4326',
+            filterCoordSys: '4326'
+        };
+        var truth = '<ARCXML version="1.1"><REQUEST><GET_IMAGE><PROPERTIES><FEATURECOORDSYS id="4326"/><FILTERCOORDSYS id="4326"/><ENVELOPE minx="-180" miny="-90" maxx="180" maxy="90"/><IMAGESIZE height="256" width="256"/><LAYERLIST><LAYERDEF id="0" visible="true"><SPATIALQUERY where="COMPANY=\'AVENCIA\'"/></LAYERDEF></LAYERLIST></PROPERTIES></GET_IMAGE></REQUEST></ARCXML>';
+        axl_write(t, options, truth );
+    }
+
+    //
+    // create an arcxml image request that performs a thematic map request, and
+    // verify that it matches a known image request.
+    //
+    function test_format_ArcXML_write5(t) {
+        var options = {
+            requesttype:'image',
+            envelope: new OpenLayers.Bounds( -180, -90, 180, 90 ).toArray(),
+            layers: [{
+                id: "0",
+                visible: "true",
+                query: {
+                    spatialfilter: true,
+                    where: "COMPANY='AVENCIA'"
+                },
+                renderer: {
+                    type: 'valuemap',
+                    lookupfield: 'lookup',
+                    ranges: [{
+                        lower: 0,
+                        upper: 10,
+                        symbol: {
+                            type: 'simplepolygon',
+                            fillcolor: '0,0,0'
+                        }
+                    },{
+                        lower: 10,
+                        upper: 20,
+                        symbol: {
+                            type: 'simplepolygon',
+                            fillcolor: '255,255,255'
+                        }
+                    }]
+                }
+            }],
+            tileSize: new OpenLayers.Size( 256,256 ),
+            featureCoordSys: '4326',
+            filterCoordSys: '4326'
+        };
+        var truth = '<ARCXML version="1.1"><REQUEST><GET_IMAGE><PROPERTIES><FEATURECOORDSYS id="4326"/><FILTERCOORDSYS id="4326"/><ENVELOPE minx="-180" miny="-90" maxx="180" maxy="90"/><IMAGESIZE height="256" width="256"/><LAYERLIST><LAYERDEF id="0" visible="true"><SPATIALQUERY where="COMPANY=\'AVENCIA\'"/><VALUEMAPRENDERER lookupfield="lookup"><RANGE lower="0" upper="10"><SIMPLEPOLYGONSYMBOL fillcolor="0,0,0"/></RANGE><RANGE lower="10" upper="20"><SIMPLEPOLYGONSYMBOL fillcolor="255,255,255"/></RANGE></VALUEMAPRENDERER></LAYERDEF></LAYERLIST></PROPERTIES></GET_IMAGE></REQUEST></ARCXML>';
+        axl_write(t, options, truth );
+    }
+
+    //
+    // helper function to write some axl, and compare it against a truth axl string
+    //
+    function axl_write(t, options, truth) {
+        t.plan(1);
+        
+        var f = new OpenLayers.Format.ArcXML( options );
+        var arcxml = f.write();
+        t.eq( arcxml, truth, "ArcXML request is correct.");
+    }
+    </script> 
+</head> 
+<body> 
+</body> 
+</html> 
