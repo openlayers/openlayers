@@ -130,7 +130,7 @@
     }
 
     function test_Layer_Vector_removeFeatures(t) {
-        t.plan(6);
+        t.plan(9);
     
         var layer = new OpenLayers.Layer.Vector(name);
 
@@ -152,7 +152,7 @@
         t.ok(layer.features.length == 0,
              "OpenLayers.Layer.Vector.removeFeatures(layer.features) removes all feature from the features array");
 
-        // 3 tests
+        // 6 tests
         layer.events.register('beforefeatureremoved', null, function(obj) {
             t.ok(pointFeature1 == obj.feature,
                  "OpenLayers.Layer.Vector.removeFeatures triggers beforefeatureremoved with correct feature passed to callback");
@@ -167,6 +167,8 @@
         });
         layer.addFeatures([pointFeature1]);
         layer.removeFeatures([pointFeature1]);
+        layer.addFeatures([pointFeature1]);
+        layer.removeFeatures(layer.features);
 
         // 0 test
         layer.events.register('beforefeatureremoved', null, function(obj) {
