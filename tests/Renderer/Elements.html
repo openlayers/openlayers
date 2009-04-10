@@ -17,9 +17,8 @@
         OpenLayers.Renderer.Elements.prototype._createRoot =
             OpenLayers.Renderer.Elements.prototype.createRoot;
         
-        var root = document.createElement("div");
         OpenLayers.Renderer.Elements.prototype.createRoot = function() {
-            return root;
+            return document.createElement("div");
         };
         
         OpenLayers.Renderer.Elements.prototype._createNode =
@@ -108,7 +107,7 @@
     }
     
     function test_Elements_clear(t) {
-        t.plan(1);
+        t.plan(2);
         
         setUp();
         
@@ -121,7 +120,8 @@
         
         r.clear();
         
-        t.ok(r.root.childNodes.length == 0, "root is correctly cleared");
+        t.ok(r.vectorRoot.childNodes.length == 0, "vector root is correctly cleared");
+        t.ok(r.textRoot.childNodes.length == 0, "text root is correctly cleared");
         
         tearDown();
     }
@@ -134,7 +134,7 @@
         var r = create_renderer();
         
         var element = document.createElement("div");
-        r.root = element;
+        r.vectorRoot = element;
 
         r.nodeFactory = function(id, type) {
             var element = document.createElement("div");
@@ -149,7 +149,7 @@
         r.redrawBackgroundNode = function(id, geometry, style, featureId) {
             b_Node = r.nodeFactory();
             b_Node.id = "foo_background";
-            r.root.appendChild(b_Node);
+            element.appendChild(b_Node);
         };
 
         r.getNodeType = function(geometry, style) {
@@ -162,8 +162,8 @@
         var style = {'backgroundGraphic': 'foo'};
         var featureId = 'dude';
         r.drawGeometry(geometry, style, featureId);
-        t.ok(g_Node.parentNode == r.root, "node is correctly appended to root");
-        t.ok(b_Node.parentNode == r.root, "redrawBackgroundNode appended background node");
+        t.ok(g_Node.parentNode == element, "node is correctly appended to root");
+        t.ok(b_Node.parentNode == element, "redrawBackgroundNode appended background node");
         t.eq(g_Node._featureId, 'dude', "_featureId is correct");
         t.eq(g_Node._style.backgroundGraphic, "foo", "_style is correct");
         t.eq(g_Node._geometryClass, 'bar', "_geometryClass is correct");
@@ -178,8 +178,8 @@
         
         style = {'display':'none'};
         r.drawGeometry(geometry, style, featureId);
-        t.ok(g_Node.parentNode != r.root, "node is correctly removed");
-        t.ok(b_Node.parentNode != r.root, "background node correctly removed")
+        t.ok(g_Node.parentNode != element, "node is correctly removed");
+        t.ok(b_Node.parentNode != element, "background node correctly removed")
         
         document.getElementById = _getElement;
             
@@ -474,7 +474,7 @@
 
         var r = create_renderer(null, {zIndexing: true});
         var element = document.createElement("div");
-        r.root = element;
+        r.vectorRoot = element;
         document.body.appendChild(element);
 
         r.createNode = function(type, id) {
@@ -505,14 +505,14 @@
             return result;
         }
 
-        t.eq(r.root.childNodes.length, 1, "root is correctly filled");
+        t.eq(element.childNodes.length, 1, "root is correctly filled");
         t.eq(r.indexer.maxZIndex, 10, "indexer.maxZIndex is correctly filled");
         t.eq(r.indexer.order.length, 1, "indexer.order is correctly filled");
         t.eq(count(r.indexer.indices), 1, "indexer.indices is correctly filled");
 
         r.eraseGeometry(geometry);
 
-        t.eq(r.root.childNodes.length, 0, "root is correctly cleared");
+        t.eq(element.childNodes.length, 0, "root is correctly cleared");
         t.eq(r.indexer.maxZIndex, 0, "indexer.maxZIndex is correctly reset");
         t.eq(r.indexer.order.length, 0, "indexer.order is correctly reset");
         t.eq(count(r.indexer.indices), 0, "indexer.indices is correctly reset");
@@ -520,14 +520,14 @@
         delete(style.graphicZIndex);
         r.drawGeometry(geometry, style, featureId);
 
-        t.eq(r.root.childNodes.length, 1, "root is correctly filled");
+        t.eq(element.childNodes.length, 1, "root is correctly filled");
         t.eq(r.indexer.maxZIndex, 0, "indexer.maxZIndex is correctly filled");
         t.eq(r.indexer.order.length, 1, "indexer.order is correctly filled");
         t.eq(count(r.indexer.indices), 1, "indexer.indices is correctly filled");
 
         r.clear();
 
-        t.eq(r.root.childNodes.length, 0, "root is correctly cleared");
+        t.eq(element.childNodes.length, 0, "root is correctly cleared");
         t.eq(r.indexer.maxZIndex, 0, "indexer.maxZIndex is correctly reset");
         t.eq(r.indexer.order.length, 0, "indexer.order is correctly reset");
         t.eq(count(r.indexer.indices), 0, "indexer.indices is correctly reset");
@@ -535,7 +535,7 @@
         style.graphicZIndex = 12;
         r.drawGeometry(geometry, style, featureId);
 
-        t.eq(r.root.childNodes.length, 1, "root is correctly filled");
+        t.eq(element.childNodes.length, 1, "root is correctly filled");
         t.eq(r.indexer.maxZIndex, 12, "indexer.maxZIndex is correctly filled");
         t.eq(r.indexer.order.length, 1, "indexer.order is correctly filled");
         t.eq(count(r.indexer.indices), 1, "indexer.indices is correctly filled");
