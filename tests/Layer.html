@@ -454,6 +454,21 @@
              "(fractionalZoom true) returns resolution for zoom beyond res length - 1");
         
     }
+    
+    function test_afterAdd(t) {
+        
+        t.plan(1);
+        
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer(null, {isBaseLayer: true});
+        var hasBase = false;
+        layer.afterAdd = function() {
+            hasBase = !!(layer.map && layer.map.baseLayer);
+        }
+        map.addLayer(layer);
+        t.eq(hasBase, true, "when afterAdd is called, map has a base layer");
+        
+    }
 
 
 
