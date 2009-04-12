@@ -112,6 +112,10 @@
         });
         var log = {};
         var handler = new OpenLayers.Handler.Point(control, {
+            create: function() {
+                log.type = "create",
+                log.args = arguments
+            },
             modify: function() {
                 log.type = "modify",
                 log.args = arguments
@@ -132,7 +136,7 @@
         // mock up feature drawing
         handler.activate();
         handler.mousedown({type: "mousedown", xy: new OpenLayers.Pixel(0, 0)});
-        t.eq(log.type, "modify", "[mousedown] modify called");
+        t.eq(log.type, "create", "[mousedown] create called");
         t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-150, 75), "[mousedown] correct point");
         t.geom_eq(log.args[1].geometry, new OpenLayers.Geometry.Point(-150, 75), "[mousedown] correct sketch feature");
         handler.mousemove({type: "mousemove", xy: new OpenLayers.Pixel(1, 0)});

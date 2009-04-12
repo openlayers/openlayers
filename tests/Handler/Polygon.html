@@ -72,7 +72,7 @@
     }
 
     function test_callbacks(t) {
-        t.plan(12);
+        t.plan(15);
         var map = new OpenLayers.Map("map", {
             resolutions: [1]
         });
@@ -85,6 +85,10 @@
         });
         var log = {};
         var handler = new OpenLayers.Handler.Polygon(control, {
+            create: function() {
+                log.type = "create",
+                log.args = arguments
+            },
             modify: function() {
                 log.type = "modify",
                 log.args = arguments
@@ -106,6 +110,9 @@
         handler.activate();
         // click at 0, 0
         handler.mousedown({type: "mousedown", xy: new OpenLayers.Pixel(0, 0)});
+        t.eq(log.type, "create", "[mousedown] create called");
+        t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-150, 75), "[mousedown] correct vertex");
+        t.ok(log.args[1] === handler.polygon, "[mousedown] correct sketch feature");
         handler.mouseup({type: "mouseup", xy: new OpenLayers.Pixel(0, 0)});
         t.eq(log.type, "modify", "[mouseup] modify called");
         t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-150, 75), "[mouseup] correct vertex");

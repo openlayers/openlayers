@@ -32,7 +32,7 @@
     }
     
     function test_sketch_events(t) {
-        t.plan(4);
+        t.plan(6);
         var map = new OpenLayers.Map("map", {
             resolutions: [1]
         });
@@ -50,6 +50,9 @@
         
         var log = {};
         layer.events.on({
+            sketchstarted: function(event) {
+                log.event = event;
+            },
             sketchmodified: function(event) {
                 log.event = event;
             },
@@ -60,6 +63,8 @@
         
         // mock up draw/modify of a point
         map.events.triggerEvent("mousedown", {xy: new OpenLayers.Pixel(0, 0)});
+        t.eq(log.event.type, "sketchstarted", "[mousedown] sketchstarted triggered");
+        t.geom_eq(log.event.vertex, new OpenLayers.Geometry.Point(-200, 125), "[mousedown] correct vertex");
         map.events.triggerEvent("mousemove", {xy: new OpenLayers.Pixel(10, 10)});
         t.eq(log.event.type, "sketchmodified", "[mousemove] sketchmodified triggered");
         t.geom_eq(log.event.vertex, new OpenLayers.Geometry.Point(-190, 115), "[mousemove] correct vertex");
