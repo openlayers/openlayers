@@ -19,6 +19,7 @@ Philip Lindsay
 Martijn van Oosterhout
 David Overstrom
 Corey Puffault
+Peter William Robins
 Gregers Rygg
 Tim Schaub
 Christopher Schmidt

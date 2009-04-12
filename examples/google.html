@@ -2,6 +2,7 @@
   <head>
     <title>OpenLayers Google Layer Example</title>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="../theme/default/google.css" type="text/css" />
     <link rel="stylesheet" href="style.css" type="text/css" />
     <!-- this gmaps key generated for http://openlayers.org/dev/ -->
     <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
@@ -49,10 +50,14 @@
     <div id="map" class="smallmap"></div>
 
     <div id="docs">
+     <p>
         For best performance, you must be using a version of the Google Maps
         API which is v2.93 or higher. In order to use this version of the API,
         it is best to simply set your application to use the string "v=2" in
-        the request, rather than tying your application to an explicit version.
+        the request, rather than tying your application to an explicit version.</p>
+     <p>
+       In order to position the Google attribution div in the default ocation,
+       you must include the extra theme/default/google.css stylesheet.</p>
     </div>
   </body>
 </html>
