@@ -3,19 +3,23 @@
     <script src="../../lib/OpenLayers.js"></script>
     <script type="text/javascript">
     function test_Control_SelectFeature_constructor(t) {
-        t.plan(3);
+        t.plan(5);
         var options = {
 //            geometryTypes: "foo"
         };
         var layer = "bar";
-        var control = new OpenLayers.Control.SelectFeature(layer, options);
+        var control = new OpenLayers.Control.SelectFeature([layer], options);
         t.ok(control instanceof OpenLayers.Control.SelectFeature,
              "new OpenLayers.Control.SelectFeature returns an instance");
         t.eq(control.layers[0], "bar",
-             "constructor sets layer correctly");        
+             "constructor with array of layers sets layer correctly");        
 //        t.eq(control.handlers.feature.geometryTypes, "foo",
 //             "constructor sets options correctly on feature handler");
-        t.ok(control.layer instanceof OpenLayers.Layer.Vector.RootContainer, "control has a root container layer");
+        t.ok(control.layer instanceof OpenLayers.Layer.Vector.RootContainer, "control has a root container layer if constructor was called with an array of layers");
+        
+        control = new OpenLayers.Control.SelectFeature(layer, options);
+        t.eq(control.layers, null, "this.layers is null if constructor called with a single layer");
+        t.eq(control.layer, layer, "this.layer holds the layer that was passed with the constructor if called with a single layer")
     }
     
     function test_Control_SelectFeature_destroy(t) {
