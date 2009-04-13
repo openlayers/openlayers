@@ -1,0 +1,34 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>OpenLayers Basic ESRI Map Cache Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map, layer;
+        function init(){
+            OpenLayers.Util.onImageLoadError = function() { this.style.display="none";}
+            var layerExtent = new OpenLayers.Bounds( -13758743.4295939,  5591455.28887228, -13531302.3472101 , 5757360.4178881)
+            map = new OpenLayers.Map( 'map', {'restrictedExtent': layerExtent} );
+            layer = new OpenLayers.Layer.XYZ( "ESRI",
+                    "http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Portland/ESRI_LandBase_WebMercator/MapServer/tile/${z}/${y}/${x}",
+                    {sphericalMercator: true} );
+            map.addLayer(layer);
+            map.zoomToExtent(map.restrictedExtent);
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Basic ESRI Map Cache Example</h1>
+
+    <div id="tags"></div>
+
+    <div id="shortdesc">Show a Simple ESRI map using the layer from <a href="http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Portland/ESRI_LandBase_WebMercator/MapServer">ESRI's server</a>. </div>
+
+    <div id="map" class="smallmap"></div>
+
+    <div id="docs">
+       Show the use of the XYZ layer to access a map cache provided in spherical mercator by ESRI.  
+    </div>
+  </body>
+</html>
