@@ -1,13 +1,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <style type="text/css">
-        #map {
-            width: 800px;
-            height: 475px;
-            border: 1px solid black;
-        }
-    </style>
-    <script src="../lib/OpenLayers.js" type="text/javascript"></script>
+    <title>OpenLayers Labeled Features Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var map;
 
@@ -97,13 +93,20 @@
             
             map.addLayer(vectorLayer);
             vectorLayer.drawFeature(multiFeature);
-            map.setCenter(new OpenLayers.LonLat(point.x, point.y), 5);
+            map.setCenter(new OpenLayers.LonLat(point.x, point.y), 3);
             vectorLayer.addFeatures([pointFeature, polygonFeature, multiFeature, nullFeature ]);
         }
     </script>
   </head>
   <body onload="init()">
-    <div id="map"></div>
-    <p>This example shows drawing simple vector features with a label</p>
+    <h1 id="title">OpenLayers Labeled features example</h1>
+    <div id="tags"></div>
+    <p id="shortdesc">
+        Label vector features with a text symbolizer.
+    </p>
+    <div id="map" class="smallmap"></div>
+    <div id="docs">
+    This example shows drawing simple vector features with a label
+    </div>
   </body>
 </html>
