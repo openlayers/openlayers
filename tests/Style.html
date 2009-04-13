@@ -151,6 +151,91 @@
         style.createSymbolizer(new OpenLayers.Feature.Vector());
     }
     
+    function test_Style_applySymbolizer(t) {
+        t.plan(15);
+
+        var feature = new OpenLayers.Feature.Vector();
+        var defaults = OpenLayers.Feature.Vector.style["default"];
+        var style, symbolizer;
+
+        style = new OpenLayers.Style();
+        symbolizer = style.createSymbolizer(feature);
+        t.eq(symbolizer.pointRadius, defaults.pointRadius, "symbolizer has the correct pointRadius");
+        t.eq(symbolizer.strokeWidth, defaults.strokeWidth, "symbolizer has the correct strokeWidth");
+        t.eq(symbolizer.fillColor, defaults.fillColor, "symbolizer has the correct fillColor");
+        t.eq(symbolizer.graphicName, defaults.graphicName, "symbolizer has the correct graphicName");
+
+        style = new OpenLayers.Style(null, {
+            defaultsPerSymbolizer: true,
+            rules: [
+                new OpenLayers.Rule({
+                    symbolizer: {
+                        stroke: true
+                    }
+                })
+            ]
+        });
+        symbolizer = style.createSymbolizer(feature);
+        t.eq(symbolizer.strokeWidth, defaults.strokeWidth, "symbolizer has the correct strokeWidth");
+        t.ok(symbolizer.fillColor == undefined, "fillColor is undefined");
+
+        style = new OpenLayers.Style(null, {
+            defaultsPerSymbolizer: true,
+            rules: [
+                new OpenLayers.Rule({
+                    symbolizer: {
+                    }
+                })
+            ]
+        });
+        symbolizer = style.createSymbolizer(feature);
+        t.eq(symbolizer.pointRadius, defaults.pointRadius, "symbolizer has the correct pointRadius");
+        t.ok(symbolizer.strokeWidth == undefined, "strokeWidth is undefined");
+        t.ok(symbolizer.fillColor == undefined, "fillColor is undefined");
+        t.ok(symbolizer.graphicName == undefined, "graphicName is undefined");
+
+        style = new OpenLayers.Style(null, {
+            defaultsPerSymbolizer: true,
+            rules: [
+                new OpenLayers.Rule({
+                    symbolizer: {
+                        stroke: true
+                    }
+                })
+            ]
+        });
+        symbolizer = style.createSymbolizer(feature);
+        t.eq(symbolizer.strokeWidth, defaults.strokeWidth, "symbolizer has the correct strokeWidth");
+        t.ok(symbolizer.fillColor == undefined, "fillColor is undefined");
+
+        style = new OpenLayers.Style(null, {
+            defaultsPerSymbolizer: true,
+            rules: [
+                new OpenLayers.Rule({
+                    symbolizer: {
+                        fill: true
+                    }
+                })
+            ]
+        });
+        symbolizer = style.createSymbolizer(feature);
+        t.eq(symbolizer.fillColor, defaults.fillColor, "symbolizer has the correct fillColor");
+        t.ok(symbolizer.strokeWidth == undefined, "strokeWidth is undefined");
+
+        style = new OpenLayers.Style(null, {
+            defaultsPerSymbolizer: true,
+            rules: [
+                new OpenLayers.Rule({
+                    symbolizer: {
+                        graphic: true
+                    }
+                })
+            ]
+        });
+        symbolizer = style.createSymbolizer(feature);
+        t.eq(symbolizer.graphicName, defaults.graphicName, "symbolizer has the correct graphicName");
+    }
+    
     function test_Style_context(t) {
         t.plan(2);
         var rule = new OpenLayers.Rule({
