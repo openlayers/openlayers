@@ -37,6 +37,7 @@ Ivan Willig
 Thomas Wood
 Bill Woodall
 Steve Woodbridge
+David Zwarg
 
 Some portions of OpenLayers are used under the Apache 2.0 license, available
 in doc/licenses/APACHE-2.0.txt.
