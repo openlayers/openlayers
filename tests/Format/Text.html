@@ -6,7 +6,7 @@
         t.plan(5);
         var format = new OpenLayers.Format.Text({extractStyles: true});
         var features = format.read(OpenLayers.Util.getElement("content").value);
-        t.eq(features[0].style, null, "style is null if no style props set");
+        t.eq(features[0].style.externalGraphic, format.defaultStyle.externalGraphic, "style is set to defaults if no style props set in text file");
         var features = format.read(OpenLayers.Util.getElement("contentMarker").value);
         t.eq(features[0].style.externalGraphic, "../../img/marker.png", "marker set correctly by default.");
         
@@ -15,9 +15,9 @@
         t.eq(features[0].style.externalGraphic, "marker.png", "marker set correctly from data.");
         // t.eq(format.defaultStyle.externalGraphic, "../../img/marker.png", "defaultStyle externalGraphic not changed by pulling from data");
 
-        var format = new OpenLayers.Format.Text();
+        var format = new OpenLayers.Format.Text({extractStyles: false});
         var features = format.read(OpenLayers.Util.getElement("content2").value);
-        t.eq(features[0].style, null, "null default style results in null style property, even with style properties used");
+        t.eq(features[0].style, null, "extractStyles: false results in null style property, even with style properties used");
     }
 	function test_extra(t) {
         t.plan(1);
