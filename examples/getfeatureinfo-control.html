@@ -5,39 +5,75 @@
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
     <link rel="stylesheet" href="style.css" type="text/css" />
     <style type="text/css">
-        ul, li { padding-left: 0px; margin-left: 0px; }
+        ul, li {
+            padding-left: 0px;
+            margin-left: 0px;
+            list-style: none;
+        }
+        #info {
+            position: absolute;
+            top: 6em;
+            left: 550px;
+        }
+        #info table td {
+            border:1px solid #ddd;
+            border-collapse: collapse;
+            margin: 0;
+            padding: 0;
+            font-size: 90%;
+            padding: .2em .1em;
+            background:#fff;
+	}
+	#info table th{
+	    padding:.2em .2em;
+            text-transform: uppercase;
+            font-weight: bold;
+            background: #eee;
+	}
+	tr.odd td {
+            background:#eee;
+	}
+	table.featureInfo caption {
+            text-align:left;
+            font-size:100%;
+            font-weight:bold;
+            text-transform:uppercase;
+            padding:.2em .2em;
+	}
+
+
     </style>
   <script defer="defer" type="text/javascript">
-    OpenLayers.ProxyHost = "/dev/examples/proxy.cgi?url=";
+    OpenLayers.ProxyHost = "/proxy/?url=";
     
-    var map, infocontrols, vegetation, highlightlayer;
+    var map, infocontrols, water, highlightlayer;
     
     function load() {
         map = new OpenLayers.Map('map', {
             maxExtent: new OpenLayers.Bounds(143.834,-43.648,148.479,-39.573)
         });
 
-        var roads = new OpenLayers.Layer.WMS("State Boundaries",
+        var political = new OpenLayers.Layer.WMS("State Boundaries",
             "http://demo.opengeo.org/geoserver/wms", 
-            {'layers': 'topp:tasmania_state_boundaries', transparent: true, format: 'image/png'},
+            {'layers': 'topp:tasmania_state_boundaries', transparent: true, format: 'image/gif'},
             {isBaseLayer: true}
         );
 
-        var natural = new OpenLayers.Layer.WMS("Roads",
+        var roads = new OpenLayers.Layer.WMS("Roads",
             "http://demo.opengeo.org/geoserver/wms", 
-            {'layers': 'topp:tasmania_roads', transparent: true, format: 'image/png'},
+            {'layers': 'topp:tasmania_roads', transparent: true, format: 'image/gif'},
             {isBaseLayer: false}
         );
 
-        var points = new OpenLayers.Layer.WMS("Cities",
+        var cities = new OpenLayers.Layer.WMS("Cities",
             "http://demo.opengeo.org/geoserver/wms", 
-            {'layers': 'topp:tasmania_cities', transparent: true, format: 'image/png'},
+            {'layers': 'topp:tasmania_cities', transparent: true, format: 'image/gif'},
             {isBaseLayer: false}
         );
 
-        vegetation = new OpenLayers.Layer.WMS("Bodies of Water",
+        water = new OpenLayers.Layer.WMS("Bodies of Water",
             "http://demo.opengeo.org/geoserver/wms", 
-            {'layers': 'topp:tasmania_water_bodies', transparent: true, format: 'image/png'},
+            {'layers': 'topp:tasmania_water_bodies', transparent: true, format: 'image/gif'},
             {isBaseLayer: false}
         );
 
@@ -48,25 +84,27 @@
         );
 
         infoControls = {
-            click: new OpenLayers.Control.WMSGetFeatureInfo('http://demo.opengeo.org/geoserver/wms', {
+            click: new OpenLayers.Control.WMSGetFeatureInfo({
+                url: 'http://demo.opengeo.org/geoserver/wms', 
                 title: 'Identify features by clicking',
-                layers: [vegetation],
+                layers: [water],
                 queryVisible: true
             }),
-            hover: new OpenLayers.Control.WMSGetFeatureInfo('http://demo.opengeo.org/geoserver/wms', {
+            hover: new OpenLayers.Control.WMSGetFeatureInfo({
+                url: 'http://demo.opengeo.org/geoserver/wms', 
                 title: 'Identify features by clicking',
-                layers: [vegetation],
+                layers: [water],
                 hover: true,
-                // defining a custom format here
-                formats: {'application/vnd.ogc.gml': new OpenLayers.Format.GML({
+                // defining a custom format options here
+                formatOptions: {
                     typeName: 'water_bodies', 
                     featureNS: 'http://www.openplans.org/topp'
-                })},
+                },
                 queryVisible: true
             })
         }
 
-        map.addLayers([roads, natural, points, vegetation, highlightLayer]); 
+        map.addLayers([political, roads, cities, water, highlightLayer]); 
         for (var i in infoControls) { 
             infoControls[i].events.register("getfeatureinfo", this, showInfo);
             map.addControl(infoControls[i]); 
@@ -84,7 +122,7 @@
              highlightLayer.addFeatures(evt.features);
              highlightLayer.redraw();
         } else {
-            $('nodeList').innerHTML = evt.text;
+            $('responseText').innerHTML = evt.text;
         }
     }
 
@@ -110,7 +148,7 @@
         for (var key in infoControls) {
             var control = infoControls[key];
             if (element.value == 'Specified') {
-                control.layers = [vegetation];
+                control.layers = [water];
             } else {
                 control.layers = null;
             }
@@ -126,15 +164,13 @@
       <div id="tags"></div>
 
       <p id="shortdesc">
-        Demonstrates the WMSGetFeatureInfo control for fetching information about a position from WMS.
+        Demonstrates the WMSGetFeatureInfo control for fetching information about a position from WMS (via GetFeatureInfo request).
       </p>
 
-    <a id="permalink" href="">Permalink</a><br />
-
-    <div style="float:right;width:28%">
-        <h1 style="font-size:1.3em;">Tasmania</h1>
-        <p style="font-size:.8em;">Click on the map to get feature info.</p>
-        <div id="nodeList">
+    <div id="info">
+        <h1>Tasmania</h1>
+        <p>Click on the map to get feature info.</p>
+        <div id="responseText">
         </div>
     </div>
       <div id="map" class="smallmap"></div>
@@ -169,12 +205,12 @@
             <li>
                 <input type="radio" name="layerSelection" value="Specified" id="Specified"
                        onclick="toggleLayers(this);" checked="checked" />
-                <label for="html">Get Vegetation info</label>
+                <label for="Specified">Get water body info</label>
             </li>
             <li>
                 <input type="radio" name="layerSelection" value="Auto" id="Auto" 
                        onclick="toggleLayers(this);" />
-                <label for="">Get info for visible layers</label>
+                <label for="Auto">Get info for visible layers</label>
             </li>
         </ul>
   </body>
