@@ -387,6 +387,31 @@
         t.eq(r.dashStyle({strokeDashstyle: "4 4 1 4"}), "dashdot", "dashdot pattern recognized correctly.");
         t.eq(r.dashStyle({strokeDashstyle: "8 4 1 4"}), "longdashdot", "longdashdot pattern recognized correctly.");
     }
+    
+    function test_vml_moveRoot(t) {
+        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        t.plan(2);
+        
+        var map = new OpenLayers.Map("map");
+        var l1 = new OpenLayers.Layer.Vector("vector");
+        map.addLayer(l1);
+        var l2 = new OpenLayers.Layer.Vector.RootContainer("rootcontainer", {layers: [l1]});
+        
+        var clear = l1.renderer.clear;
+        l1.renderer.clear = function() {
+            // this should be called twice, once when l2 is added to the map,
+            // and once when removed from the map.
+            t.ok(true, "Clearing original layer");
+        };
+        map.addLayer(l2);
+        map.removeLayer(l2);
+        l1.renderer.clear = clear;
+        
+        map.removeLayer(l1);
+    }
         
   </script>
 </head>

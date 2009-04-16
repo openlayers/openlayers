@@ -10,7 +10,7 @@
     </style>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
-        var map, drawControls;
+        var map, selectControl;
         OpenLayers.Feature.Vector.style['default']['strokeWidth'] = '2';
         function init(){
             map = new OpenLayers.Map('map');
@@ -52,7 +52,7 @@
             map.addLayers([wmsLayer, vectors1, vectors2]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             
-            var selectControl = new OpenLayers.Control.SelectFeature(
+            selectControl = new OpenLayers.Control.SelectFeature(
                 [vectors1, vectors2],
                 {
                     clickout: true, toggle: false,
