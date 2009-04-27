@@ -606,7 +606,7 @@
     }
 
     function test_Util_isEquivalentUrl(t) {
-        t.plan(8);
+        t.plan(9);
         
         var url1, url2, options;
 
@@ -663,7 +663,12 @@
         url1 = "foo.html?bar=now#go";
         url2 = "../tests/../tests/foo.html?bar=now#go";
 
-        t.ok(OpenLayers.Util.isEquivalentUrl(url1, url2), "relative vs. absolute paths works"); 
+        t.ok(OpenLayers.Util.isEquivalentUrl(url1, url2), "relative vs. absolute paths works");
+        
+        url1 = "/foo/bar";
+        url2 = new Array(window.location.pathname.split("/").length-1).join("../")+"foo/bar";
+        
+        t.ok(OpenLayers.Util.isEquivalentUrl(url1, url2), "absolute and relative path without host works for "+url2) 
     }
     
     function test_Util_createUniqueIDSeq(t) {
