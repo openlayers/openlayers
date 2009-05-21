@@ -1,9 +1,18 @@
 <html>
 <head>
+  <script>
+    var custom$ = function() {};
+    window.$ = custom$;
+  </script>
   <script src="../lib/OpenLayers.js"></script>
   <script type="text/javascript">
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var map; 
+    
+    function test_$(t) {
+        t.plan(1);
+        t.ok($ === custom$, "OpenLayers doesn't clobber existing definition of $.");
+    }
     
     function test_Util_getImagesLocation (t) {
         t.plan( 1 );
