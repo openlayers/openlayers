@@ -51,7 +51,7 @@
     
         var testBounds = new OpenLayers.Bounds(1,2,3,4);
         
-        t.ok( bounds.equals(testBounds), "getTMSBounds() returns correct bounds")
+        t.ok( bounds.equals(testBounds), "getTMSBounds() returns correct bounds");
         
         layer.grid = null;
     }
@@ -136,7 +136,7 @@
             layer = new OpenLayers.Layer.TMS( "TMS", 
                     "http://labs.metacarta.com/wms-c/Basic.py/", {layername: 'basic', type:'png', resolutions:[0.000634956337608418]} );
             m.addLayer(layer);
-            m.zoomToMaxExtent()
+            m.zoomToMaxExtent();
             t.eq(layer.getURL(layer.grid[3][3].bounds), "http://labs.metacarta.com/wms-c/Basic.py/1.0.0/basic/0/1/1.png", "TMS tiles around rounded properly.");
         m.destroy();
     }        
@@ -159,7 +159,9 @@
         layer.serverResolutions = [14,13,12,11,10];
         tileurl = layer.getURL(new OpenLayers.Bounds(0,0,0,0));
         level = parseInt(tileurl.split('/')[2]);
-        t.eq(layer.serverResolutions.indexOf(map.getResolution()), level, "Tile zoom level is correct with serverResolutions");
+        var res = map.getResolution();
+        var gotLevel = OpenLayers.Util.indexOf(layer.serverResolutions, res);
+        t.eq(gotLevel, level, "Tile zoom level is correct with serverResolutions");
         
         map.destroy();
     }
@@ -208,6 +210,6 @@
   </script>
 </head>
 <body>
-<div id="map" style="width:500px;height:550px"></div>
+<div id="map" style="width:500px;height:550px;"></div>
 </body>
 </html>

@@ -1212,24 +1212,27 @@
     
     function test_allOverlays(t) {
         
-        t.plan(14);
-        
+        t.plan(16);
+
         var map = new OpenLayers.Map({
             div: "map", allOverlays: true
         });
         
-        var a = new OpenLayers.Layer.Vector("a");
+        var a = new OpenLayers.Layer.Vector("a", {visibility: true});
+
         var b = new OpenLayers.Layer.Image(
             "b",
             "http://earthtrends.wri.org/images/maps/4_m_citylights_lg.gif",
             new OpenLayers.Bounds(-180, -88.759, 180, 88.759),
             new OpenLayers.Size(580, 288)
         );
+
         var c = new OpenLayers.Layer.WMS(
             "c",
             "http://labs.metacarta.com/wms/vmap0",
             {layers: 'basic'}
         );
+
         var d = new OpenLayers.Layer.Vector("d");
         
         map.addLayers([a, b, c, d]);
@@ -1243,6 +1246,14 @@
         map.zoomToMaxExtent();
         t.eq(moveCount, 1, "map.moveTo moves the base layer only once");
         t.eq(map.getCenter().toString(), "lon=0,lat=0", "a map with all overlays can have a center");
+
+        a.setVisibility(false);
+        var moveend = 0;
+        a.events.on({"moveend": function() { moveend++; }}); 
+        map.zoomToMaxExtent();
+        t.eq(moveCount, 1, "map.moveTo does not move the base layer if it is invisible");
+        t.eq(moveend, 0, "map.moveTo does not trigger \"moveend\" in the layer if the layer is invisible");
+        a.setVisibility(true);
         
         // a, b, c, d
         t.eq(map.baseLayer.name, "a", "base layer set to first layer added");
@@ -1281,7 +1292,8 @@
         b.setVisibility(false);
         map.setLayerIndex(b, 0);
         t.eq(b.visibility, false, "changing layer order doesn't change visibility");
-        
+
+       
         map.destroy();
         
     }
