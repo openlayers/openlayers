@@ -680,6 +680,116 @@
         t.ok(OpenLayers.Util.isEquivalentUrl(url1, url2), "absolute and relative path without host works for "+url2) 
     }
     
+    function test_createUrlObject(t) {
+        
+        var cases = [{
+            url: "http://example.com/",
+            exp: {
+                protocol: "http:",
+                host: "example.com",
+                port: "80",
+                pathname: "/",
+                args: {},
+                hash: ""
+            }
+        }, {
+            url: "http://example.com:80/",
+            opt: {ignorePort80: true},
+            exp: {
+                protocol: "http:",
+                host: "example.com",
+                port: "",
+                pathname: "/",
+                args: {},
+                hash: ""
+            }
+        }, {
+            url: "http://example.com/",
+            opt: {ignorePort80: true},
+            exp: {
+                protocol: "http:",
+                host: "example.com",
+                port: "",
+                pathname: "/",
+                args: {},
+                hash: ""
+            }
+        }, {
+            url: "http://example.com:88/",
+            exp: {
+                protocol: "http:",
+                host: "example.com",
+                port: "88",
+                pathname: "/",
+                args: {},
+                hash: ""
+            }
+        }, {
+            url: "http://example.com:88/foo#bar",
+            exp: {
+                protocol: "http:",
+                host: "example.com",
+                port: "88",
+                pathname: "/foo",
+                args: {},
+                hash: "#bar"
+            }
+        }, {
+            url: "http://example.com:88/?foo=bar",
+            exp: {
+                protocol: "http:",
+                host: "example.com",
+                port: "88",
+                pathname: "/",
+                args: {foo: "bar"},
+                hash: ""
+            }
+        }, {
+            url: "http://example.com/bogus/../bogus/../path",
+            exp: {
+                protocol: "http:",
+                host: "example.com",
+                port: "80",
+                pathname: "/path",
+                args: {},
+                hash: ""
+            }
+        }, {
+            url: "/relative#foo",
+            exp: {
+                protocol: window.location.protocol,
+                host: window.location.hostname,
+                port: window.location.port || "80",
+                pathname: "/relative",
+                args: {},
+                hash: "#foo"
+            }
+        }, {
+            url: "../foo",
+            exp: {
+                protocol: window.location.protocol,
+                host: window.location.hostname,
+                port: window.location.port || "80",
+                pathname: (function() {
+                    var parts = window.location.pathname.split("/");
+                    return parts.slice(0, parts.length -2).join("/") + "/foo";
+                })(),
+                args: {},
+                hash: ""
+            }
+        }];
+        
+        t.plan(cases.length);
+
+        var c, obj;
+        for(var i=0; i<cases.length; ++i) {
+            c = cases[i];
+            obj = OpenLayers.Util.createUrlObject(c.url, c.opt);
+            t.eq(obj, c.exp, i + ": '" + c.url + "'");
+        }
+        
+    }
+    
     function test_Util_createUniqueIDSeq(t) {
         t.plan(1);
 
