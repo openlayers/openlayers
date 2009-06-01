@@ -68,7 +68,7 @@
     }
     
     function test_Control_SelectFeature_clickFeature(t) {
-        t.plan(4);
+        t.plan(6);
         // mock up layer
         var layer = {
             selectedFeatures: [],
@@ -100,6 +100,7 @@
                  "onSelect called with proper feature (" + feature.index + ")");
             t.eq(feature.tested, feature.test,
                  "onSelect called only once for feature (" + feature.index + ")");
+            t.ok(this == control, "onSelect called in the scope of the control if control.scope is not provided");
         }
 
         // test that onUnselect gets called properly
@@ -109,9 +110,10 @@
                  "onUnselect called with proper feature (" + feature.index + ")");
             t.eq(feature.tested, feature.test, 
                  "onUnselect called only once for feature (" + feature.index + ")");
+            t.ok(this == control, "onUnselect called in the scope of the control if control.scope is not provided");
         }
         
-        // mock up first click on first feature (runs 2 tests from onSelect)
+        // mock up first click on first feature (runs 3 tests from onSelect)
         var feature = features[0];
         feature.index = 0;
         feature.test = 1;
@@ -121,7 +123,7 @@
         control.toggle = false;
         control.clickFeature(feature);
 
-        // mock up second click on first feature (runs 2 tests from onUnselect)
+        // mock up second click on first feature (runs 3 tests from onUnselect)
         control.toggle = true;
         feature.test = 2;
         control.clickFeature(feature);
