@@ -16,7 +16,7 @@
                 "http://t1.hypercube.telascience.org/cgi-bin/landsat7", 
                 {layers: "landsat7"});
 
-            ia_wms = new OpenLayers.Layer.WMS("Nexrad","http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi?",{layers:"nexrad-n0r-wmst",transparent:true,format:'image/png',time:"2005-08-29T13:00:00Z"});
+            ia_wms = new OpenLayers.Layer.WMS("Nexrad","http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r-t.cgi?",{layers:"nexrad-n0r-wmst",transparent:true,format:'image/png',time:"2005-08-29T13:00:00Z"});
 
             jpl_wms.setVisibility(false);
 
