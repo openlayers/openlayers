@@ -69,6 +69,8 @@
                 OpenLayers.Util.extend({}, gmlOptions),
                 out_options
             );
+            var kmlOptionsIn = OpenLayers.Util.extend(
+                {extractStyles: true}, in_options)
             formats = {
               'in': {
                 wkt: new OpenLayers.Format.WKT(in_options),
@@ -76,7 +78,7 @@
                 georss: new OpenLayers.Format.GeoRSS(in_options),
                 gml2: new OpenLayers.Format.GML.v2(gmlOptionsIn),
                 gml3: new OpenLayers.Format.GML.v3(gmlOptionsIn),
-                kml: new OpenLayers.Format.KML(in_options)
+                kml: new OpenLayers.Format.KML(kmlOptionsIn)
               }, 
               'out': {
                 wkt: new OpenLayers.Format.WKT(out_options),
