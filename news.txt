@@ -1,3 +1,8 @@
+OpenLayers 2.8:
+ r9043
+ Released 06/22/09
+ http://trac.openlayers.org/wiki/Release/2.8/Notes
+
 OpenLayers 2.7:
  r8063
  Released 09/29/08
