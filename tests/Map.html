@@ -1297,6 +1297,24 @@
         map.destroy();
         
     }
+    
+    function test_panTo(t) {
+        
+        t.plan(2);
+        
+        var map = new OpenLayers.Map("map");
+        map.addLayer(
+            new OpenLayers.Layer(null, {isBaseLayer: true})
+        );
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+        
+        map.panTo(new OpenLayers.LonLat(1, 0));
+        t.eq(map.panTween.playing, true, "the map pan tween is playing before destroy");
+        
+        map.destroy();
+        t.ok(!map.panTween || !map.panTween.playing, "the map pan tween is not playing after destroy");
+        
+    }
 
   </script>
 </head>
