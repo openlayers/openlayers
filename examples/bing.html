@@ -15,17 +15,17 @@
             map = new OpenLayers.Map("map");
             map.addControl(new OpenLayers.Control.LayerSwitcher());
 
-            var aerial = new OpenLayers.Layer.VirtualEarth("Aerial", {
-                type: VEMapStyle.Aerial
+            var shaded = new OpenLayers.Layer.VirtualEarth("Shaded", {
+                type: VEMapStyle.Shaded
             });
             var hybrid = new OpenLayers.Layer.VirtualEarth("Hybrid", {
                 type: VEMapStyle.Hybrid
             });
-            var shaded = new OpenLayers.Layer.VirtualEarth("Shaded", {
-                type: VEMapStyle.Shaded
+            var aerial = new OpenLayers.Layer.VirtualEarth("Aerial", {
+                type: VEMapStyle.Aerial
             });
 
-            map.addLayers([aerial, hybrid, shaded]);
+            map.addLayers([shaded, hybrid, aerial]);
 
             map.setCenter(new OpenLayers.LonLat(-110, 45), 3);
         }
