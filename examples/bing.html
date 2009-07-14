@@ -1,0 +1,49 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>OpenLayers Bing Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2&mkt=en-us"></script>
+
+    <script src="../lib/OpenLayers.js"></script>
+    <script>
+
+        var map;
+
+        function init(){
+            map = new OpenLayers.Map("map");
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+
+            var aerial = new OpenLayers.Layer.VirtualEarth("Aerial", {
+                type: VEMapStyle.Aerial
+            });
+            var hybrid = new OpenLayers.Layer.VirtualEarth("Hybrid", {
+                type: VEMapStyle.Hybrid
+            });
+            var shaded = new OpenLayers.Layer.VirtualEarth("Shaded", {
+                type: VEMapStyle.Shaded
+            });
+
+            map.addLayers([aerial, hybrid, shaded]);
+
+            map.setCenter(new OpenLayers.LonLat(-110, 45), 3);
+        }
+
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Bing Example</h1>
+
+    <div id="tags"></div>
+
+    <p id="shortdesc">
+        Demonstrates the use of Bing layers.
+    </p>
+
+    <div id="map" class="smallmap"></div>
+    <div id="docs">This example demonstrates the ability to create layers using tiles from Bing maps.</div>
+  </body>
+</html>
+
+
