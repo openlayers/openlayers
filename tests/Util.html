@@ -225,7 +225,7 @@
     }
 
     function test_Util_getParameterString(t) {
-        t.plan( 4 );
+        t.plan( 5 );
 
         var params = { 
             'foo': "bar",
@@ -242,7 +242,10 @@
         t.eq( OpenLayers.Util.getParameterString(params), "foo=bar%2Cbaz", "getParameterString encodes , correctly in arrays");    
         
         var params = { foo: ["bar","baz,"] };
-        t.eq( OpenLayers.Util.getParameterString(params), "foo=bar,baz%2C", "getParameterString returns with list of CSVs when given a list. ");    
+        t.eq( OpenLayers.Util.getParameterString(params), "foo=bar,baz%2C", "getParameterString returns with list of CSVs when given a list. ");
+        
+        var params = { foo: [null, undefined, 0, "", "bar"] }
+        t.eq( OpenLayers.Util.getParameterString(params), "foo=,,0,,bar", "getParameterString works fine with null values in array.");
     }
 
     function test_Util_createAlphaImageDiv(t) {
