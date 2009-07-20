@@ -70,7 +70,38 @@
         control.getInfoForClick({xy: {x: 50, y: 50}});
         control.getInfoForHover({xy: {x: 50, y: 50}});
     }
-   
+
+    function test_beforegetfeatureinfo_event(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map('map');
+
+        var xy, mode;
+
+        // mock up active control
+        var control = new OpenLayers.Control.WMSGetFeatureInfo({
+            request: function(position) {},
+            eventListeners: {
+                beforegetfeatureinfo: function(evt) {
+                    t.eq(evt.xy, xy,
+                         "beforegetfeatureinfo listener gets " +
+                         "expected xy (" + mode + ")");
+                }
+            }
+        });
+        map.addControl(control);
+        control.activate();
+
+        // 1 test
+        mode = "click";
+        xy = {x: 50, y: 50};
+        control.getInfoForClick({xy: xy});
+
+        // 1 test
+        mode = "hover";
+        xy = {x: 70, y: 70};
+        control.getInfoForHover({xy: xy});
+    }
+  
     function test_activate(t) {
         t.plan(4);
         var map = new OpenLayers.Map("map");
