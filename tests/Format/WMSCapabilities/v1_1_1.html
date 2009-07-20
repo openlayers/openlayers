@@ -54,13 +54,25 @@
     }
     
     function test_ogc(t) {
-        t.plan(12)
+        t.plan(14)
+
+        /*
+         * Set up
+         */
         
+        // needed for the minScale/maxScale test, see below
+        var dpi = OpenLayers.DOTS_PER_INCH;
+        OpenLayers.DOTS_PER_INCH = 90.71;
+
         var xml = document.getElementById("ogcsample").firstChild.nodeValue;
         var doc = new OpenLayers.Format.XML().read(xml);
 
         var obj = new OpenLayers.Format.WMSCapabilities().read(doc);
         var capability = obj.capability;
+
+        /*
+         * Test
+         */
         
         var attribution = capability.layers[2].attribution;
         t.eq(attribution.title, "State College University", "attribution title parsed correctly.");
@@ -79,6 +91,28 @@
         t.eq(metadataURLs[0].type, "FGDC", "type parsed correctly.");
         t.eq(metadataURLs[0].format, "text/plain", "format parsed correctly.");
         t.eq(metadataURLs[0].href, "http://www.university.edu/metadata/roads.txt", "href parsed correctly.");
+
+        /*
+        Test minScale and maxScale
+
+        For Mapserver
+
+        <ScaleHint min="0.395998292216226" max="98.9995730540565" />
+
+        corresponds to (RESOLUTION keyword in MAP file has value of 90.71):
+
+        MAXSCALE 250000
+        MINSCALE 1000
+
+        */
+        t.eq(capability.layers[0].minScale, 250000, "layer.minScale is correct");
+        t.eq(capability.layers[0].maxScale, 1000, "layer.maxScale is correct");
+
+        /*
+         * Tear down
+         */
+
+        OpenLayers.DOTS_PER_INCH = dpi;
     }
     
     </script> 
@@ -310,6 +344,7 @@ Changes:
         </LegendURL>
 
     </Style>
+      <ScaleHint min="0.395998292216226" max="98.9995730540565" />
       </Layer>
       <Layer queryable="1">
     <Name>RIVERS_1M</Name>
