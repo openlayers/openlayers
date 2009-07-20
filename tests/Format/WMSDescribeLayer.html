@@ -4,7 +4,7 @@
     <script type="text/javascript">
     
     function test_read_WMSDescribeLayer(t) {
-        t.plan(4);
+        t.plan(5);
        
         var parser = new OpenLayers.Format.WMSDescribeLayer();
 
@@ -28,6 +28,9 @@
 
         t.eq(res[0].typeName, "topp:states",
             "Properly parses typeName");
+
+        t.eq(res[0].layerName, "topp:states",
+            "Properly parses name");
 
     }
 
