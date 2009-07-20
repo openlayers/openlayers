@@ -42,11 +42,11 @@
         click.handler.deactivate = function() {
             t.ok(true,
                  "control.deactivate calls deactivate on click handler");
-        }
+        };
         hover.handler.deactivate = function() {
             t.ok(true,
                  "control.deactivate calls deactivate on hover handler");
-        }
+        };
         click.destroy();
         hover.destroy();
     }
@@ -65,7 +65,7 @@
                  "x position is as expected");
             t.eq(position.y, 50,
                  "y position is as expected");
-        }
+        };
 
         control.getInfoForClick({xy: {x: 50, y: 50}});
         control.getInfoForHover({xy: {x: 50, y: 50}});
@@ -125,12 +125,12 @@
             t.ok(true,
                  "control.deactivate calls deactivate on click handler");
             OpenLayers.Handler.Click.prototype.deactivate.apply(this, arguments);
-        }
+        };
         hover.handler.deactivate = function() {
             t.ok(true,
                  "control.deactivate calls deactivate on hover handler");
             OpenLayers.Handler.Hover.prototype.deactivate.apply(this, arguments);
-        }
+        };
         click.deactivate();
         hover.deactivate();
     }
