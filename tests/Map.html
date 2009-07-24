@@ -1313,7 +1313,39 @@
         
         map.destroy();
         t.ok(!map.panTween || !map.panTween.playing, "the map pan tween is not playing after destroy");
-        
+    }
+
+    function test_updateSize(t) {
+        t.plan(2);
+
+        var map, moveToCnt, size;
+
+        map = new OpenLayers.Map({div: "map"});
+        map.addLayer(new OpenLayers.Layer("layer", {isBaseLayer: true}));
+
+        map.moveTo = function() {
+            moveToCnt++;
+            OpenLayers.Map.prototype.moveTo.apply(this, arguments);
+        };
+
+        map.getCurrentSize = function() {
+            return size;
+        };
+
+        // map has no center
+        // 1 test
+        moveToCnt = 0;
+        size = new OpenLayers.Size(650, 350);
+        map.updateSize();
+        t.eq(moveToCnt, 0, "updateSize doesn't move the map if it doesn't have a center");
+
+        // map has a center
+        // 1 test
+        map.zoomToMaxExtent();
+        moveToCnt = 0;
+        size = new OpenLayers.Size(600, 300);
+        map.updateSize();
+        t.eq(moveToCnt, 1, "updateSize move the map if it has a center");
     }
 
   </script>
