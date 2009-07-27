@@ -155,9 +155,10 @@
         r.getNodeType = function(geometry, style) {
             return "div";
         };
-        geometry = {
+        var geometry = {
             id: 'foo',
-            CLASS_NAME: 'bar'
+            CLASS_NAME: 'bar',
+            getBounds: function() {return {bottom: 0}}
         };
         var style = {'backgroundGraphic': 'foo'};
         var featureId = 'dude';
@@ -191,6 +192,10 @@
         
         setUp();
         
+        var geometry = {
+            getBounds: function() {return {bottom: 0}}
+        }
+        
         var r = create_renderer();
         
         var element = document.createElement("div");
@@ -210,9 +215,9 @@
             properDraw = true;
             return {};
         };
-        geometry = {CLASS_NAME: 'OpenLayers.Geometry.Point'};
+        var point = OpenLayers.Util.applyDefaults({CLASS_NAME: 'OpenLayers.Geometry.Point'}, geometry);
         style = true;
-        r.drawGeometry(geometry, style);
+        r.drawGeometry(point, style);
         t.ok(properDraw, "drawGeometry called drawPoint when passed a point");
 
         // line string
@@ -221,9 +226,9 @@
             properDraw = true;
             return {};
         };
-        geometry = {id: "foo", CLASS_NAME: 'OpenLayers.Geometry.LineString'};
+        var linestring = OpenLayers.Util.applyDefaults({id: "foo", CLASS_NAME: 'OpenLayers.Geometry.LineString'}, geometry);
         style = true;
-        r.drawGeometry(geometry, style);
+        r.drawGeometry(linestring, style);
         t.ok(properDraw, "drawGeometry called drawLineString when passed a line string");
 
         // linear ring
@@ -232,9 +237,9 @@
             properDraw = true;
             return {};
         };
-        geometry = {CLASS_NAME: 'OpenLayers.Geometry.LinearRing'};
+        var linearring = OpenLayers.Util.applyDefaults({CLASS_NAME: 'OpenLayers.Geometry.LinearRing'}, geometry);
         style = true;
-        r.drawGeometry(geometry, style);
+        r.drawGeometry(linearring, style);
         t.ok(properDraw, "drawGeometry called drawLinearRing when passed a linear ring");
 
         // polygon
@@ -243,9 +248,9 @@
             properDraw = true;
             return {};
         };
-        geometry = {CLASS_NAME: 'OpenLayers.Geometry.Polygon'};
+        var polygon = OpenLayers.Util.applyDefaults({CLASS_NAME: 'OpenLayers.Geometry.Polygon'}, geometry);
         style = true;
-        r.drawGeometry(geometry, style);
+        r.drawGeometry(polygon, style);
         t.ok(properDraw, "drawGeometry called drawPolygon when passed a polygon");
 
         // surface
@@ -254,9 +259,9 @@
             properDraw = true;
             return {};
         }
-        geometry = {CLASS_NAME: 'OpenLayers.Geometry.Surface'};
+        var surface = OpenLayers.Util.applyDefaults({CLASS_NAME: 'OpenLayers.Geometry.Surface'}, geometry);
         style = true;
-        r.drawGeometry(geometry, style);
+        r.drawGeometry(surface, style);
         t.ok(properDraw, "drawGeometry called drawSurface when passed a surface");
 
         // rectangle
@@ -265,9 +270,9 @@
             properDraw = true;
             return {};
         };
-        geometry = {CLASS_NAME: 'OpenLayers.Geometry.Rectangle'};
+        var rectangle = OpenLayers.Util.applyDefaults({CLASS_NAME: 'OpenLayers.Geometry.Rectangle'}, geometry);
         style = true;
-        r.drawGeometry(geometry, style);
+        r.drawGeometry(rectangle, style);
         t.ok(properDraw, "drawGeometry called drawRectangle when passed a rectangle");
 
         // multi-point
@@ -276,12 +281,12 @@
             properDraw = true;
             return {};
         };
-        geometry = {
+        var multipoint = OpenLayers.Util.applyDefaults({
             CLASS_NAME: 'OpenLayers.Geometry.MultiPoint',
-            components: [{CLASS_NAME: 'OpenLayers.Geometry.Point'}]
-        };
+            components: [point]
+        }, geometry);
         style = true;
-        r.drawGeometry(geometry, style);
+        r.drawGeometry(multipoint, style);
         t.ok(properDraw, "drawGeometry called drawPoint when passed a multi-point");
 
         // multi-linestring
@@ -290,12 +295,12 @@
             properDraw = true;
             return {};
         };
-        geometry = {
+        var multilinestring = OpenLayers.Util.applyDefaults({
             CLASS_NAME: 'OpenLayers.Geometry.MultiLineString',
-            components: [{CLASS_NAME: 'OpenLayers.Geometry.LineString'}]
-        };
+            components: [linestring]
+        }, geometry);
         style = true;
-        r.drawGeometry(geometry, style);
+        r.drawGeometry(multilinestring, style);
         t.ok(properDraw, "drawGeometry called drawLineString when passed a multi-linestring");
 
         // multi-polygon
@@ -304,12 +309,12 @@
             properDraw = true;
             return {};
         };
-        geometry = {
+        var multipolygon = OpenLayers.Util.applyDefaults({
             CLASS_NAME: 'OpenLayers.Geometry.MultiPolygon',
-            components: [{CLASS_NAME: 'OpenLayers.Geometry.Polygon'}]
-        };
+            components: [polygon]
+        }, geometry);
         style = true;
-        r.drawGeometry(geometry, style);
+        r.drawGeometry(multipolygon, style);
         t.ok(properDraw, "drawGeometry called drawPolygon when passed a multi-polygon");
       
         tearDown();
@@ -489,7 +494,8 @@
         
         var geometry = {
             id: 'foo',
-            CLASS_NAME: 'bar'
+            CLASS_NAME: 'bar',
+            getBounds: function() {return {bottom: 0}}
         };
         var style = {
             graphicZIndex: 10
