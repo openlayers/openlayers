@@ -609,6 +609,70 @@
 
         map.destroy();
     }
+    
+    function test_standalone(t) {
+        
+        t.plan(13);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        
+        var f1 = new OpenLayers.Feature.Vector(
+            OpenLayers.Geometry.fromWKT("LINESTRING(3 4,10 50,20 25)")
+        );
+        var f2 = new OpenLayers.Feature.Vector(
+            OpenLayers.Geometry.fromWKT("POLYGON((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2))")
+        );
+        layer.addFeatures([f1, f2]);
+        
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.ModifyFeature(layer, {standalone: true});
+        map.addControl(control);
+        
+        var log = [];
+        layer.events.on({
+            beforefeaturemodified: function(evt) {
+                log.push(evt);
+            },
+            featuremodified: function(evt) {
+                log.push(evt);
+            },
+            afterfeaturemodified: function(evt) {
+                log.push(evt);
+            }
+        });
+        
+        // activate control
+        control.activate();
+        t.eq(control.active, true, "[activate] control activated");
+        t.eq(control.selectControl, null, "[activate] no select control");
+        
+        // manually select feature for editing
+        control.selectFeature(f1);
+        t.ok(control.feature === f1, "[select f1] control.feature set to f1");
+        
+        // manually unselect feature for editing
+        control.unselectFeature(f1);
+        t.eq(control.feature, null, "[unselect f1] control.feature set to null");
+        t.eq(log.length, 1, "[unselect f1] event logged");
+        t.eq(log[0].type, "afterfeaturemodified", "[unselect f1] afterfeaturemodified triggered");
+        t.ok(log[0].feature === f1, "[unselect f1] correct feature");
+        t.eq(log[0].modified, false, "[unselect f1] feature not actually modified");
+        
+        // clear log and select new feature for editing
+        log = [];
+        control.selectFeature(f2);
+        t.ok(control.feature === f2, "[select f2] control.feature set to f2");
+        
+        // deactivate control and confirm feature is unselected
+        control.deactivate();
+        t.eq(log.length, 1, "[deactivate] event logged");
+        t.eq(log[0].type, "afterfeaturemodified", "[deactivate] afterfeaturemodified triggered");
+        t.ok(log[0].feature === f2, "[deactivate] correct feature");
+        t.eq(log[0].modified, false, "[deactivate] feature not actually modified");
+        
+        map.destroy();
+        
+    }
 
 
 
