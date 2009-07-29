@@ -74,11 +74,17 @@
 
         function update() {
             var clickout = document.getElementById("clickout").checked;
-            drawControls.select.clickout = clickout;
-            drawControls.select.box = document.getElementById("box").checked;
-            if(drawControls.select.active) {
-                drawControls.select.deactivate();
-                drawControls.select.activate();
+            if(clickout != drawControls.select.clickout) {
+                drawControls.select.clickout = clickout;
+            }
+
+            var box = document.getElementById("box").checked;
+            if(box != drawControls.select.box) {
+                drawControls.select.box = box;
+                if(drawControls.select.active) {
+                    drawControls.select.deactivate();
+                    drawControls.select.activate();
+                }
             }
         }
     </script>
