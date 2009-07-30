@@ -153,7 +153,8 @@
             x: 10000000,
             y: 200000000,
             CLASS_NAME: "OpenLayers.Geometry.Point",
-            id: "foo"
+            id: "foo",
+            getBounds: function() {return {bottom: 0}}
         }
         node.id = geometry.id;
         r.root.appendChild(node);
