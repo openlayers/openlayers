@@ -612,7 +612,7 @@
     
     function test_standalone(t) {
         
-        t.plan(13);
+        t.plan(17);
         var map = new OpenLayers.Map("map");
         var layer = new OpenLayers.Layer.Vector();
         
@@ -622,7 +622,13 @@
         var f2 = new OpenLayers.Feature.Vector(
             OpenLayers.Geometry.fromWKT("POLYGON((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2))")
         );
-        layer.addFeatures([f1, f2]);
+        var f3 = new OpenLayers.Feature.Vector(
+            OpenLayers.Geometry.fromWKT("POINT(10 15)")
+        );
+        var f4 = new OpenLayers.Feature.Vector(
+            OpenLayers.Geometry.fromWKT("POINT(15 10)")
+        );
+        layer.addFeatures([f1, f2, f3, f4]);
         
         map.addLayer(layer);
         var control = new OpenLayers.Control.ModifyFeature(layer, {standalone: true});
@@ -662,13 +668,31 @@
         log = [];
         control.selectFeature(f2);
         t.ok(control.feature === f2, "[select f2] control.feature set to f2");
-        
+                
         // deactivate control and confirm feature is unselected
         control.deactivate();
         t.eq(log.length, 1, "[deactivate] event logged");
         t.eq(log[0].type, "afterfeaturemodified", "[deactivate] afterfeaturemodified triggered");
         t.ok(log[0].feature === f2, "[deactivate] correct feature");
         t.eq(log[0].modified, false, "[deactivate] feature not actually modified");
+        
+        // reactivate control and select a point feature to see if we can drag
+        // another point feature;
+        control.activate();
+        control.selectFeature(f3);
+        control.dragControl.handlers.feature.triggerCallback("mousemove", "in", [f4]);
+        t.eq(control.dragControl.handlers.drag.active, false, "cannot drag unselected feature f4");
+        control.dragControl.handlers.feature.triggerCallback("mousemove", "in", [f3]);
+        t.eq(control.dragControl.handlers.drag.active, true, "can drag selected feature f3");
+        
+        // select the polygon feature to make sure that we can drag vertices and
+        // virtual vertices
+        control.selectFeature(f2);
+        control.dragControl.handlers.feature.triggerCallback("mousemove", "in", [control.vertices[0]]);
+        t.eq(control.dragControl.handlers.drag.active, true, "can drag vertex of feature f2");
+        control.dragControl.handlers.feature.triggerCallback("mousemove", "in", [control.virtualVertices[0]]);
+        t.eq(control.dragControl.handlers.drag.active, true, "can drag virtual vertex of feature f2");
+        control.deactivate();
         
         map.destroy();
         
