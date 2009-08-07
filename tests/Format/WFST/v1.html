@@ -27,11 +27,18 @@
         
         var feature = new OpenLayers.Feature.Vector(
             new OpenLayers.Geometry.Point(1,2),
-            {foo: "bar"});
+            {foo: "bar"}
+        );
             
         var insertFeature = feature.clone();
+        // null value does not show up in insert
+        insertFeature.attributes.nul = null;
         insertFeature.state = OpenLayers.State.INSERT;
         var updateFeature = feature.clone();
+        // undefined value means don't create a Property element
+        updateFeature.attributes.unwritten = undefined;
+        // null value gets Property element with no Value
+        updateFeature.attributes.nul = null;
         updateFeature.fid = "fid.42";
         updateFeature.state = OpenLayers.State.UPDATE;
         var deleteFeature = feature.clone();
@@ -143,6 +150,9 @@
     <wfs:Property>
         <wfs:Name>foo</wfs:Name>
         <wfs:Value>bar</wfs:Value>
+    </wfs:Property>
+    <wfs:Property>
+        <wfs:Name>nul</wfs:Name>
     </wfs:Property>
     <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
         <ogc:FeatureId fid="fid.42"/>
