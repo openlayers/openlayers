@@ -469,7 +469,36 @@
         t.eq(hasBase, true, "when afterAdd is called, map has a base layer");
         
     }
+    
+    function test_setOpacity(t) {
+        t.plan(5);
 
+        var map, layer, log;
+        
+        map = new OpenLayers.Map("map");
+        layer = new OpenLayers.Layer("");
+        map.addLayer(layer);
+
+        log = [];
+        map.events.register('changelayer', t, function(event) {
+            log.push({layer: event.layer, property: event.property});
+        });
+        layer.setOpacity(0.42);
+        t.eq(layer.opacity, 0.42,
+             "setOpacity() set layer.opacity to correct value");
+        t.eq(log.length, 1,
+             "setOpacity() triggers changelayer once");
+        t.ok(log[0].layer == layer,
+             "changelayer listener called with expected layer");
+        t.eq(log[0].property, "opacity",
+             "changelayer listener called with expected property");
+
+        // This call must not trig the event because the opacity value is the same.
+        log = [];
+        layer.setOpacity(0.42);
+        t.eq(log.length, 0,
+             "setOpacity() does not trigger changelayer if the opacity value is the same");
+    }
 
 
 /******
