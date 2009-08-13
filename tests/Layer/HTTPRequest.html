@@ -65,9 +65,19 @@
     }
 
     function test_Layer_HTTPRequest_mergeNewParams (t) {
-        t.plan( 4 );
+        t.plan( 8 );
 
+        var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.HTTPRequest(name, url, params, options);
+        map.addLayer(layer);
+
+        var scope = {some: "scope"}, log = [];
+        map.events.on({
+            changelayer: function(e) {
+                log.push({layer: e.layer, property: e.property, scope: this});
+            },
+            scope: scope
+        });
         
         var newParams = { layers: 'sooper', 
                           chickpeas: 'image/png'};
@@ -76,6 +86,10 @@
         
         t.eq( layer.params.layers, "sooper", "mergeNewParams() overwrites well");
         t.eq( layer.params.chickpeas, "image/png", "mergeNewParams() adds well");
+        t.eq( log.length, 1, "mergeNewParams() triggers changelayer once");
+        t.ok( log[0].layer == layer, "mergeNewParams() passes changelayer listener the expected layer");
+        t.ok( log[0].property == "params", "mergeNewParams() passes changelayer listener the property \"params\"");
+        t.eq( log[0].scope, scope, "mergeNewParams() executes changelayer listener with expected scope");
 
         newParams.chickpeas = 151;
 
@@ -85,8 +99,6 @@
             t.ok(true, "layer.mergeNewParams calls layer.redraw");
         }
         layer.mergeNewParams();
-
-
     }
 
     function test_Layer_HTTPRequest_getFullRequestString (t) {
