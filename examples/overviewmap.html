@@ -32,13 +32,13 @@
         <div id="map2"></div>
         <p>The second map has an overview map control that is created with
         non-default options.  In this case, the mapOptions property of the
-        control has been set to use non-default projection related properties.
-        In addition, any other properties of the overview map control can be
+        control has been set to use non-default projection related properties,
+        and the layers property has been set to use a layer different from the main
+        map. In addition, any other properties of the overview map control can be
         set in this way.</p>
         <script defer="defer" type="text/javascript">
         
-        // create the top map (with default overview map control)
-        var map1 = new OpenLayers.Map('map1');
+        // set up some layers
         
         var ol = new OpenLayers.Layer.WMS(
             "OpenLayers WMS", 
@@ -51,6 +51,25 @@
             "http://t1.hypercube.telascience.org/cgi-bin/landsat7",
             {layers: "landsat7"}
         );
+        
+        // A clone of the above layer that we will use as overview for map2.
+        // We need to clone jpl before the it gets added to a map, so the
+        // clone can have its own maxExtent and maxResolution instead of
+        // getting these settings initialized from map1.
+        var jplOverview = jpl.clone();
+        
+        // A more detailled layer of Manhattan for map2
+        var ny = new OpenLayers.Layer.WMS(
+            "Manhattan", 
+            "http://demo.opengeo.org/geoserver/wms",
+            {
+                layers: 'tiger-ny', 
+                format: 'image/png'
+            }
+        );
+        
+        // create the top map (with default overview map control)
+        var map1 = new OpenLayers.Map('map1');
         
         map1.addLayers([ol, jpl]);
         map1.addControl(new OpenLayers.Control.LayerSwitcher());
@@ -67,35 +86,30 @@
         
         // create the bottom map (with advanced overview map control)
         var mapOptions = {
-            maxExtent: new OpenLayers.Bounds(33861, 717605, 330846, 1019656), 
-            maxResolution: 296985/1024,
-            projection: "EPSG:2805",
+            maxExtent: new OpenLayers.Bounds(-8242894.927728, 4965204.031195,
+                    -8227290.161511, 4994963.723637), 
+            maxResolution: 116.24879860156216,
+            projection: "EPSG:900913",
             units: "m"
         };
 
         var map2 = new OpenLayers.Map('map2', mapOptions);
         
-        var bos = new OpenLayers.Layer.WMS(
-            "Boston", 
-            "http://boston.freemap.in/cgi-bin/mapserv",
-            {
-                map: '/www/freemap.in/boston/map/gmaps.map', 
-                layers: 'border,water,roads,rapid_transit,buildings', 
-                format: 'png'
-            }
-        );
-        
-        map2.addLayers([bos]);
-        map2.addControl(new OpenLayers.Control.LayerSwitcher());
+        map2.addLayers([ny]);
         
         // create an overview map control with non-default options
         var controlOptions = {
-            mapOptions: mapOptions
+            mapOptions: OpenLayers.Util.extend(mapOptions, {
+                maxResolution: 156543.0339,
+                maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34,
+                                     20037508.34, 20037508.34)
+            }),
+            layers: [jplOverview]
         }
         var overview2 = new OpenLayers.Control.OverviewMap(controlOptions);
         map2.addControl(overview2);
         
-        map2.setCenter(new OpenLayers.LonLat(182500, 868500), 3);
+        map2.setCenter(new OpenLayers.LonLat(-8233165.3575055, 4980298.21113769), 3);
         
         // expand the overview map control
         overview2.maximizeControl();
