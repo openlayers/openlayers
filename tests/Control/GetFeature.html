@@ -29,7 +29,7 @@
                 read: function(obj) {
                     obj.callback.call(obj.scope, {
                         features: [feature1, feature2],
-                        code: 1
+                        success: function() {return true;}
                     });
                 }
             }),
@@ -72,7 +72,7 @@
                 read: function(obj){
                     obj.callback.call(obj.scope, {
                         features: [feature1, feature2],
-                        code: 1
+                        success: function() {return true;}
                     });
                     return response;
                 },
