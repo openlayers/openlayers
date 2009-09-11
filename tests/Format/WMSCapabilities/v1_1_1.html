@@ -51,8 +51,222 @@
         );
         t.eq(layer.queryable, true, "[2] correct queryable attribute");
         
+
+    }
+
+    function test_layers(t) {
+
+        t.plan(22);
+
+        var xml = document.getElementById("ogcsample").firstChild.nodeValue;
+        var doc = new OpenLayers.Format.XML().read(xml);
+
+        var obj = new OpenLayers.Format.WMSCapabilities().read(doc);
+        var capability = obj.capability;
+
+        var layers = {};
+        for (var i=0, len=capability.layers.length; i<len; i++) {
+            if ("name" in capability.layers[i]) {
+                layers[ capability.layers[i].name ] = capability.layers[i];
+            }
+        }
+
+        var rootlayer = capability.layers[ capability.layers.length - 1];
+
+        t.eq(rootlayer.srs, 
+             {"EPSG:4326": true},
+             "SRS parsed correctly for root layer");
+        t.eq(layers["ROADS_RIVERS"].srs,
+             {"EPSG:4326": true, "EPSG:26986": true},
+             "Inheritance of SRS handled correctly when adding SRSes");
+        t.eq(layers["Temperature"].srs,
+             {"EPSG:4326": true},
+             "Inheritance of SRS handled correctly when redeclaring an inherited SRS");
+
+        var bbox = layers["ROADS_RIVERS"].bbox["EPSG:26986"];
+        t.eq(bbox.bbox,
+             [189000, 834000, 285000, 962000],
+             "Correct bbox from BoundingBox");
+        t.eq(bbox.res, {x: 1, y: 1}, "Correct resolution");
+
+        bbox = layers["ROADS_1M"].bbox["EPSG:26986"];
+        t.eq(bbox.bbox,
+             [189000, 834000, 285000, 962000],
+             "Correctly inherited bbox");
+        t.eq(bbox.res, {x: 1, y: 1}, "Correctly inherited resolution");
+
+
+        var identifiers = layers["ROADS_RIVERS"].identifiers;
+        var authorities = layers["ROADS_RIVERS"].authorityURLs;
+
+        t.ok(identifiers, "got identifiers from layer ROADS_RIVERS");
+        t.ok("DIF_ID" in identifiers,
+             "authority attribute from Identifiers parsed correctly");
+        t.eq(identifiers["DIF_ID"],
+             "123456",
+             "Identifier value parsed correctly");
+        t.ok("DIF_ID" in authorities,
+             "AuthorityURLs parsed and inherited correctly");
+        t.eq(authorities["DIF_ID"],
+             "http://gcmd.gsfc.nasa.gov/difguide/whatisadif.html",
+             "OnlineResource in AuthorityURLs parsed correctly");
+
+        var featurelist = layers["ROADS_RIVERS"].featureListURL;
+        t.ok(featurelist, "layer has FeatureListURL");
+        t.eq(featurelist.format,
+             "application/vnd.ogc.se_xml",
+             "FeatureListURL format parsed correctly");
+        t.eq(featurelist.href,
+             "http://www.university.edu/data/roads_rivers.gml",
+             "FeatureListURL OnlineResource parsed correctly");
+
+        t.eq(layers["Pressure"].queryable,
+             true,
+             "queryable property inherited correctly");
+        t.eq(layers["ozone_image"].queryable,
+             false,
+             "queryable property has correct default value");
+        t.eq(layers["population"].cascaded,
+             1,
+             "cascaded property parsed correctly");
+        t.eq(layers["ozone_image"].fixedWidth,
+             512,
+             "fixedWidth property correctly parsed");
+        t.eq(layers["ozone_image"].fixedHeight,
+             256,
+             "fixedHeight property correctly parsed");
+        t.eq(layers["ozone_image"].opaque,
+             true,
+             "opaque property parsed correctly");
+        t.eq(layers["ozone_image"].noSubsets,
+             true,
+             "noSubsets property parsed correctly");
+
+
+    }
+
+    function test_dimensions(t) {
+
+        t.plan(8);
+
+        var xml = document.getElementById("ogcsample").firstChild.nodeValue;
+        var doc = new OpenLayers.Format.XML().read(xml);
+
+        var obj = new OpenLayers.Format.WMSCapabilities().read(doc);
+        var capability = obj.capability;
+
+        var layers = {};
+        for (var i=0, len=capability.layers.length; i<len; i++) {
+            if ("name" in capability.layers[i]) {
+                layers[ capability.layers[i].name ] = capability.layers[i];
+            }
+        }
+
+        var time = layers["Clouds"].dimensions.time;
+        t.eq(time["default"], "2000-08-22", "Default time value parsed correctly");
+        t.eq(time.values.length, 1, "Currect number of time extent values/periods");
+        t.eq(time.values[0], "1999-01-01/2000-08-22/P1D", "Time extent values parsed correctly");
+
+        var elevation = layers["Pressure"].dimensions.elevation;
+        t.eq(elevation.units, "EPSG:5030", "Dimension units parsed correctly");
+        t.eq(elevation["default"], "0", "Default elevation value parsed correctly");
+        t.eq(elevation.nearestVal, true, "NearestValue parsed correctly");
+        t.eq(elevation.multipleVal, false, "Absense of MultipleValues handled correctly");
+        t.eq(elevation.values,
+             ["0","1000","3000","5000","10000"],
+             "Parsing of comma-separated values done correctly");
+
+
+    }
+
+    function test_contactinfo(t) {
+        t.plan(15);
+
+        var xml = document.getElementById("ogcsample").firstChild.nodeValue;
+        var doc = new OpenLayers.Format.XML().read(xml);
+
+        var obj = new OpenLayers.Format.WMSCapabilities().read(doc);
+        var service = obj.service;
+
+        var contactinfo = service.contactInformation;
+        t.ok(contactinfo, "object contains contactInformation property");
+
+        var personPrimary = contactinfo.personPrimary;
+        t.ok(personPrimary, "object contains personPrimary property");
+
+        t.eq(personPrimary.person, "Jeff deLaBeaujardiere", "ContactPerson parsed correctly");
+        t.eq(personPrimary.organization, "NASA", "ContactOrganization parsed correctly");
+
+        t.eq(contactinfo.position,
+             "Computer Scientist",
+             "ContactPosition parsed correctly");
+
+
+        var addr = contactinfo.contactAddress;
+        t.ok(addr, "object contains contactAddress property");
+
+        t.eq(addr.type, "postal", "AddressType parsed correctly");
+        t.eq(addr.address,
+             "NASA Goddard Space Flight Center, Code 933",
+             "Address parsed correctly");
+        t.eq(addr.city, "Greenbelt", "City parsed correctly");
+        t.eq(addr.stateOrProvince, "MD", "StateOrProvince parsed correctly");
+        t.eq(addr.postcode, "20771", "PostCode parsed correctly");
+        t.eq(addr.country, "USA", "Country parsed correctly");
+
+        t.eq(contactinfo.phone,
+             "+1 301 286-1569",
+             "ContactVoiceTelephone parsed correctly");
+        t.eq(contactinfo.fax,
+             "+1 301 286-1777",
+             "ContactFacsimileTelephone parsed correctly");
+        t.eq(contactinfo.email,
+             "delabeau@iniki.gsfc.nasa.gov",
+             "ContactElectronicMailAddress parsed correctly");
     }
     
+    function test_feesAndConstraints(t) {
+        t.plan(2);
+
+        var obj = new OpenLayers.Format.WMSCapabilities().read(doc);
+        var service = obj.service;
+
+        t.ok(! ("fees" in service), "Fees=none handled correctly");
+        t.ok(! ("accessConstraints" in service), "AccessConstraints=none handled correctly");
+    }
+
+    function test_requests(t) {
+        t.plan(13);
+
+        var obj = new OpenLayers.Format.WMSCapabilities().read(doc);
+        var request = obj.capability.request;
+
+        t.ok(request, "request property exists");
+        t.ok("getmap" in request, "got GetMap request");
+
+        t.ok("getfeatureinfo" in request, "got GetFeatureInfo request");
+        t.eq(request.getfeatureinfo.formats,
+             ["text/plain", "text/html", "application/vnd.ogc.gml"],
+             "GetFeatureInfo formats correctly parsed");
+
+        t.ok("describelayer" in request, "got DescribeLayer request");
+
+        t.ok("getlegendgraphic" in request, "got GetLegendGraphic request");
+
+        var exception = obj.capability.exception;
+        t.ok(exception, "exception property exists");
+        t.eq(exception.formats,
+             ["application/vnd.ogc.se_xml"],
+             "Exception Format parsed");
+
+        var userSymbols = obj.capability.userSymbols;
+        t.ok(userSymbols, "userSymbols property exists");
+        t.eq(userSymbols.supportSLD, true, "supportSLD parsed");
+        t.eq(userSymbols.userLayer,  true, "userLayer parsed");
+        t.eq(userSymbols.userStyle,  true, "userStyle parsed");
+        t.eq(userSymbols.remoteWFS,  true, "remoteWFS parsed");
+
+    }
     function test_ogc(t) {
         t.plan(14)
 
@@ -250,14 +464,16 @@ Changes:
   <VendorSpecificCapabilities />
   <UserDefinedSymbolization SupportSLD="1" UserLayer="1" UserStyle="1"
     RemoteWFS="1" />
-  <Layer>
 
+  <Layer>
     <Title>Acme Corp. Map Server</Title>
     <SRS>EPSG:4326</SRS>
     <AuthorityURL name="DIF_ID">
       <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple"
        xlink:href="http://gcmd.gsfc.nasa.gov/difguide/whatisadif.html" />
     </AuthorityURL>
+
+
     <Layer>
       <Name>ROADS_RIVERS</Name> 
       <Title>Roads and Rivers</Title>
@@ -282,7 +498,7 @@ Changes:
       </Attribution>
       <Identifier authority="DIF_ID">123456</Identifier>
       <FeatureListURL>
-        <Format>application/vnd.ogc.se_xml"</Format>
+        <Format>application/vnd.ogc.se_xml</Format>
         <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple"
          xlink:href="http://www.university.edu/data/roads_rivers.gml" />
       </FeatureListURL>
@@ -307,6 +523,8 @@ Changes:
       </Style>
 
       <ScaleHint min="4000" max="35000"></ScaleHint>
+
+
       <Layer queryable="1">
     <Name>ROADS_1M</Name> 
     <Title>Roads at 1:1M scale</Title>
@@ -320,7 +538,6 @@ Changes:
     <Identifier authority="DIF_ID">123456</Identifier>
     <MetadataURL type="FGDC">
           <Format>text/plain</Format>
-
           <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
            xlink:type="simple"
            xlink:href="http://www.university.edu/metadata/roads.txt" />
@@ -365,41 +582,45 @@ Changes:
       <LatLonBoundingBox minx="-180" miny="-90" maxx="180" maxy="90" />
       <Dimension name="time" units="ISO8601" />
       <Extent name="time" default="2000-08-22">1999-01-01/2000-08-22/P1D</Extent>
-      <Layer>
 
+      <Layer>
     <Name>Clouds</Name> 
     <Title>Forecast cloud cover</Title>
       </Layer>
+
       <Layer>
     <Name>Temperature</Name> 
     <Title>Forecast temperature</Title>
       </Layer>
-      <Layer>
 
+      <Layer>
     <Name>Pressure</Name> 
     <Title>Forecast barometric pressure</Title>
          <Dimension name="time" units="ISO8601" />
          <Dimension name="elevation" units="EPSG:5030" />
          <Extent name="time" default="2000-08-22">1999-01-01/2000-08-22/P1D</Extent>
          <Extent name="elevation" default="0" nearestValue="1">0,1000,3000,5000,10000</Extent>
-
       </Layer>
+
     </Layer>
+
     <Layer opaque="1" noSubsets="1" fixedWidth="512" fixedHeight="256">
       <Name>ozone_image</Name>
       <Title>Global ozone distribution (1992)</Title>
       <LatLonBoundingBox minx="-180" miny="-90" maxx="180" maxy="90" />
       <Extent name="time" default="1992">1992</Extent>
-
     </Layer>
+
     <Layer cascaded="1">
       <Name>population</Name>
       <Title>World population, annual</Title>
       <LatLonBoundingBox minx="-180" miny="-90" maxx="180" maxy="90" />
       <Extent name="time" default="2000">1990/2000/P1Y</Extent>
-
     </Layer>
+
   </Layer>
+
+
 </Capability>
 </WMT_MS_Capabilities>
 --></div>
