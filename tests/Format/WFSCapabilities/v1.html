@@ -4,7 +4,7 @@
     <script type="text/javascript">
     
     function test_read(t) {
-        t.plan(11);
+        t.plan(28);
        
         var parser = new OpenLayers.Format.WFSCapabilities();
 
@@ -25,6 +25,22 @@
         t.eq(ft[0]["abstract"], "Manhattan landmarks, identifies water, lakes, parks, interesting buildilngs", "abstract of first feature type correct");
         t.eq(ft[0]["title"], "Manhattan (NY) landmarks", "title of first feature type correct");
         t.eq(ft[0]["name"], "tiger:poly_landmarks", "name of first feature type correct");
+        
+        var service = res.service;
+        t.eq(service.name, 'WFS', "service name correct");
+        t.eq(service.title, 'GeoServer Web Feature Service', "service title correct");
+        t.eq(service.abstract, 'This is the reference implementation of WFS 1.0.0 and WFS 1.1.0, supports all WFS operations including Transaction.', "service title correct");
+        t.eq(service.keywords[0], 'WFS', "service keyword [0] correct");
+        t.eq(service.keywords[2], 'GEOSERVER', "service keyword [2] correct");
+        t.eq(service.onlineResource, 'http://localhost:80/geoserver/wfs', "service onlineresource correct");
+        t.ok(typeof service.fees == 'undefined', "service fees correct");
+        t.ok(typeof service.accessConstraints == 'undefined', "service accessconstraints correct");
+        
+        t.eq(res.capability.request.getfeature.href.post, "http://localhost:80/geoserver/wfs?", "getfeature request post href correct");
+        t.eq(res.capability.request.getfeature.href.get, "http://localhost:80/geoserver/wfs?request=GetFeature", "getfeature request get href correct");
+        
+        t.eq(res.capability.request.getfeature.formats[0], "GML2", "getfeature response format [0] correct");
+        t.eq(res.capability.request.getfeature.formats[4], "GML3", "getfeature response format [4] correct");
         
         // UMN Mapserer, v1.0.0
         text =
@@ -119,6 +135,13 @@
         t.eq(ft.length, 2, "number of feature types correct");
         t.eq(ft[0]["title"], "Parks", "title of first feature type correct");
         t.eq(ft[0]["name"], "park", "name of first feature type correct");
+        
+        var service = res.service;
+        t.eq(service.name, 'MapServer WFS', "service name correct");
+        t.eq(service.title, 'GMap WMS Demo Server', "service title correct");
+        t.eq(service.onlineResource, 'http://127.0.0.1/cgi-bin/mapserv_40?map=/msroot/apache/htdocs/gmap/htdocs/gmap75_wfs.map&service=WFS&', "service onlineresource correct");
+        t.eq(res.capability.request.getfeature.href.get, "http://127.0.0.1/cgi-bin/mapserv_40?map=/msroot/apache/htdocs/gmap/htdocs/gmap75_wfs.map&service=WFS&", "getfeature request get href correct");
+        t.eq(res.capability.request.getfeature.formats[0], "GML2", "getfeature response format [0] correct");        
     }
 
     </script> 
