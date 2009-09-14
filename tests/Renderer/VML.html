@@ -360,14 +360,26 @@
             return;
         }
 
-        t.plan(2);
+        t.plan(4);
         
+        OpenLayers.Renderer.symbol.rect1 = [0,0, 10,0, 10,4, 0,4, 0,0];
+        OpenLayers.Renderer.symbol.rect2 = [0,0, 4,0, 4,10, 0,10, 0,0];
+
         var r = new OpenLayers.Renderer.VML(document.body);
 
         var cache = r.importSymbol("square");
 
         t.eq(cache.path, "m 0 0 l 0 1 1 1 1 0 0 0 x e", "Square symbol rendered correctly");
         t.ok(r.symbolCache["-square"], "Symbol has been cached correctly.");
+        
+        cache = r.importSymbol("rect1");
+        t.eq(cache.bottom, -3, "coordorigin bottom of landscape symbol set to -3 to move topmost part to the bottom (we are flipping y!)");
+        
+        cache = r.importSymbol("rect2");
+        t.eq(cache.left, -3, "coordorigin left of portrait symbol set to -3 to move leftmost part to the right");
+        
+        delete OpenLayers.Renderer.symbol.rect1;
+        delete OpenLayers.Renderer.symbol.rect2;
         
     }
     
