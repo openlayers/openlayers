@@ -25,7 +25,8 @@
                             new OpenLayers.Rule({
                                 symbolizer: {
                                     graphic: false,
-                                    label: "Label for invisible point"
+                                    label: "Label for invisible point",
+                                    labelSelect: true
                                 },
                                 filter: new OpenLayers.Filter.Comparison({
                                     type: "==",
@@ -105,6 +106,13 @@
             vectorLayer.drawFeature(multiFeature);
             map.setCenter(new OpenLayers.LonLat(point.x, point.y), 4);
             vectorLayer.addFeatures([pointFeature, polygonFeature, multiFeature]);
+            var select = new OpenLayers.Control.SelectFeature(vectorLayer, {
+                selectStyle: OpenLayers.Util.extend(
+                    {fill: true, stroke: true},
+                    OpenLayers.Feature.Vector.style["select"])
+            });
+            map.addControl(select);
+            select.activate();
         }
     </script>
   </head>
@@ -117,6 +125,8 @@
     <div id="map" class="smallmap"></div>
     <div id="docs">
     This example shows how to use symbolizers with defaults for stroke, fill, and graphic.
+    This also allows to create labels for a feature without the feature rendered. Click on
+    the label in the middle to see selection of features with labelSelect set to true.
     </div>
   </body>
 </html>
