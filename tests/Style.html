@@ -237,7 +237,7 @@
     }
     
     function test_Style_context(t) {
-        t.plan(2);
+        t.plan(4);
         var rule = new OpenLayers.Rule({
             symbolizer: {"Point": {externalGraphic: "${img1}"}},
             filter: new OpenLayers.Filter.Comparison({
@@ -265,6 +265,18 @@
                 }
             }});
         t.eq(style.createSymbolizer(feature).externalGraphic, "foo10.png", "correctly evaluated symbolizer without rule");
+        
+        style = new OpenLayers.Style(
+            {externalGraphic: "${getExternalGraphic}",
+             pointRadius: "${size}"},
+            {context: {
+                getExternalGraphic: function(feature) {
+                    return "foo" + feature.attributes.size + ".png";
+                }
+            }});
+        t.eq(style.createSymbolizer(feature).externalGraphic, "foo10.png", "correctly evaluated symbolizer from context");
+        t.eq(style.createSymbolizer(feature).pointRadius, 10, "correctly evaluated symbolizer from attributes");
+        
     };
         
     function test_Style_findPropertyStyles(t) {
