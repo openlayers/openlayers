@@ -214,12 +214,12 @@ div.olControlMousePosition {
 .olControlEditingToolbar .olControlDrawFeaturePolygonItemActive { 
   background-position: -26px -23px ;                                                                   
 }
-.olControlSaveFeaturesItemActive { 
+div.olControlSaveFeaturesItemActive { 
     background-image: url(img/save_features_on.png);
     background-repeat: no-repeat;
     background-position: 0px 1px;
 }
-.olControlSaveFeaturesItemInactive { 
+div.olControlSaveFeaturesItemInactive { 
     background-image: url(img/save_features_off.png);
     background-repeat: no-repeat;
     background-position: 0px 1px;
