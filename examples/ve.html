@@ -8,27 +8,23 @@
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
 
-        var lon = 5;
-        var lat = 40;
+        var lon = 12;
+        var lat = 41;
         var zoom = 15;
-        var map, velayer, layer;
+        var map, velayer, layer, marker;
 
         function init(){
             map = new OpenLayers.Map( 'map' ,
             {controls:[new OpenLayers.Control.MouseDefaults()]});
 
-            velayer = new OpenLayers.Layer.VirtualEarth( "VE",
-            { minZoomLevel: 4, maxZoomLevel: 6, 'type': VEMapStyle.Aerial});
+            velayer = new OpenLayers.Layer.VirtualEarth( "VE", {
+                // turn off animated zooming
+                animationEnabled: false,
+                minZoomLevel: 4,
+                maxZoomLevel: 6,
+                'type': VEMapStyle.Aerial
+            });
             map.addLayer(velayer);
-
-            var twms = new OpenLayers.Layer.WMS( "World Map",
-                        "http://world.freemap.in/cgi-bin/mapserv?",
-                        { map: '/www/freemap.in/world/map/factbooktrans.map',
-                          transparent:'true',
-                          layers: 'factbook',
-                          'format':'png'},
-                          {'reproject': true});
-            map.addLayer(twms);
 
             markers = new OpenLayers.Layer.Markers("markers");
             map.addLayer(markers);
@@ -39,13 +35,17 @@
         }
 
         function add() {
-
-            marker = new OpenLayers.Marker(new OpenLayers.LonLat(2, 41));
-            markers.addMarker(marker);
+            if(!marker) {
+                marker = new OpenLayers.Marker(new OpenLayers.LonLat(15, 47));
+                markers.addMarker(marker);
+            }
         }
 
         function remove() {
-            markers.removeMarker(marker);
+            if(marker) {
+                markers.removeMarker(marker);
+                marker = null;
+            }
         }
     </script>
   </head>
@@ -59,7 +59,7 @@
     </p>
 
     <div id="map" class="smallmap"></div>
-    <input type="button" onClick="javascript:add()"value="Add the marker from the map">
+    <input type="button" onClick="javascript:add()"value="Add the marker to the map">
     <input type="button" onClick="javascript:remove()" value="Remove the marker from the map">
     <div id="docs">This example demonstrates the ability to add VirtualEarth and the and remove markers.</div>
   </body>
