@@ -409,6 +409,18 @@
         t.eq(data[0].bounds.top, 74.0, "read top left bound is correct");
     }
 
+    function test_Format_GeoJSON_point_extradims(t) { 
+        t.plan(3);
+        var point_feature_3d = '{"geometry": {"type": "Point", "coordinates": [94.21875, 72.94921875, 0.0]}, "type": "Feature", "id": 573, "properties": {"strokeColor": "blue", "title": "Feature 5", "author": "Your Name Here"}}';
+        p = new OpenLayers.Format.GeoJSON({"ignoreExtraDims": true});
+        data = p.read(point_feature_3d);
+        t.eq(data[0].fid, 573, "Fid is correct on point feature"); 
+        t.eq(data[0].geometry.x, 94.21875, 'Reading point feature gives correct x');
+        data = p.read(point_feature_3d, "Feature");
+        t.eq(data.fid, 573, 'Reading point feature with type gives feature instead of array of features ');
+    }
+
+
     </script> 
 </head> 
 <body> 
