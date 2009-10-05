@@ -297,6 +297,36 @@
 
     }
     
+    
+    function test_writeLineSymbolizer(t) {
+
+        t.plan(1);
+
+        var parser = new OpenLayers.Format.SLD.v1_0_0();
+        var symbolizer, node, exp;
+        
+        // test symbolizer with fill color only
+        symbolizer = {
+            strokeDashstyle: "4 4",
+            strokeLinecap: "round",
+            strokeColor: "#0000ff",
+            strokeWidth: 2
+        };
+        node = parser.writeNode("sld:LineSymbolizer", symbolizer);
+        exp =
+            '<LineSymbolizer xmlns="http://www.opengis.net/sld">' +
+                '<Stroke>' +
+                    '<CssParameter name="stroke">#0000ff</CssParameter>' +
+                    '<CssParameter name="stroke-width">2</CssParameter>' +
+                    '<CssParameter name="stroke-dasharray">4 4</CssParameter>' +
+                    '<CssParameter name="stroke-linecap">round</CssParameter>' +
+                '</Stroke>' +
+            '</LineSymbolizer>';
+        t.xml_eq(node, exp, "line symbolizer correctly written");
+        
+
+    }
+    
     function test_writeTextSymbolizer(t) {
         t.plan(1);
         var parser = new OpenLayers.Format.SLD.v1_0_0();
