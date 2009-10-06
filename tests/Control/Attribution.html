@@ -35,6 +35,26 @@
 
 
     }    
+    
+    function test_Control_Attribution_Propertry_eliminateDuplicates(t) {
+        t.plan(3);
+        
+        control = new OpenLayers.Control.Attribution();
+        map = new OpenLayers.Map("map");
+        map.addControl(control);
+        map.addLayer(new OpenLayers.Layer("Company A: 1",{'attribution':'company A'}));
+        map.addLayer(new OpenLayers.Layer("Company A: 2",{'attribution':'company A'}));
+        t.eq(control.div.innerHTML, 'company A, company A', "Attribution correct with two layers and eliminateDuplicates = false.");
+        
+        control.destroy();
+        control = new OpenLayers.Control.Attribution({eliminateDuplicates:true});
+        map.addControl(control);
+        t.eq(control.div.innerHTML, 'company A', "Attribution correct with two layers and eliminateDuplicates = true.");
+        
+        map.addLayer(new OpenLayers.Layer("Company B: 1",{'attribution':'company B'}));
+        map.addLayer(new OpenLayers.Layer("Company A: 3",{'attribution':'company A'}));
+        t.eq(control.div.innerHTML, 'company A, company B', "Attribution correct with four layers (3 with same attribution) and eliminateDuplicates = true.");
+    }
   </script>
 </head>
 <body>

@@ -1,0 +1,78 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>OpenLayers Attribution Example (attribute eliminateDuplicates)</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        // making this a global variable so that it is accessible for
+        // debugging/inspecting in Firebug
+        var map = null;
+
+        function init(){
+
+            map = new OpenLayers.Map('map', {controls: []});
+            map2 = new OpenLayers.Map('map2', {controls: []});
+            
+            var ol_wms = new OpenLayers.Layer.WMS(
+                "OpenLayers WMS",
+                "http://labs.metacarta.com/wms/vmap0",
+                {layers: 'basic'},
+                {attribution: '&copy; MetaCarta'}
+            );
+            var ol_wms2 = new OpenLayers.Layer.WMS(
+                "OpenLayers WMS",
+                "http://labs.metacarta.com/wms/vmap0",
+                {layers: 'basic', transparent: 'true'},
+                {attribution: '&copy; MetaCarta'}
+            );
+            var ol_wms3 = new OpenLayers.Layer.WMS(
+                "OpenLayers WMS",
+                "http://labs.metacarta.com/wms/vmap0",
+                {layers: 'basic', transparent: 'true'},
+                {attribution: '&copy; other company'}
+            );
+            var ol_wms4 = new OpenLayers.Layer.WMS(
+                "OpenLayers WMS",
+                "http://labs.metacarta.com/wms/vmap0",
+                {layers: 'basic', transparent: 'true'},
+                {attribution: '&copy; other company'}
+            );
+            var ol_wms5 = new OpenLayers.Layer.WMS(
+                "OpenLayers WMS",
+                "http://labs.metacarta.com/wms/vmap0",
+                {layers: 'basic', transparent: 'true'},
+                {attribution: '&copy; MetaCarta'}
+            );
+            
+            map.addLayers([ol_wms, ol_wms2, ol_wms3, ol_wms4, ol_wms5]);
+            map2.addLayers([ol_wms.clone(), ol_wms2.clone(), ol_wms3.clone(), ol_wms4.clone(), ol_wms5.clone()]);
+            
+            var attrWithDuplicates = new OpenLayers.Control.Attribution();
+            var attrWithoutDuplicates = new OpenLayers.Control.Attribution( {
+                eliminateDuplicates: true
+            } );
+            
+            map.addControl(attrWithDuplicates);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.zoomToMaxExtent();
+            
+            map2.addControl(attrWithoutDuplicates);
+            map2.addControl(new OpenLayers.Control.LayerSwitcher());
+            map2.zoomToMaxExtent();
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">OpenLayers Attribution Example (attribute <code>eliminateDuplicates</code>)</h1>
+    <div id="tags"></div>
+    <p id="shortdesc">
+        Demonstrates the use of the attribute <code>eliminateDuplicates</code> for Attribution-controls
+    </p>
+    <h2>Standard Usage of the control</h2>
+    <div id="map" class="smallmap"></div>
+    <h2>Use the attribute <code>eliminateDuplicates</code> to get rid of redundant Information</h2>
+    <div id="map2" class="smallmap"></div>
+    <div id="docs"></div>
+  </body>
+</html>
