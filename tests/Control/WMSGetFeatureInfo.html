@@ -5,7 +5,7 @@
 
     function test_initialize(t) {
         t.plan(5);
-        
+
         var options = {
             url: 'http://localhost/wms',
             layers: ["foo"],
@@ -17,14 +17,14 @@
         t.ok(control instanceof OpenLayers.Control.WMSGetFeatureInfo,
              "new OpenLayers.Control.WMSGetFeatureInfo returns an instance");
         t.eq(control.url, 'http://localhost/wms',
-             "constructor sets url correctly");        
+             "constructor sets url correctly");
         t.eq(control.layers, ["foo"],
              "constructor layers"
             );
         t.ok(control.format instanceof OpenLayers.Format.WMSGetFeatureInfo, "format created");
         t.eq(control.format.foo, "bar", "format options used")
     }
-    
+
     function test_destroy(t) {
         t.plan(2);
         var map = new OpenLayers.Map("map");
@@ -50,7 +50,7 @@
         click.destroy();
         hover.destroy();
     }
-    
+
     function test_click(t) {
         t.plan(4);
         var map = new OpenLayers.Map('map');
@@ -59,7 +59,7 @@
         var control = new OpenLayers.Control.WMSGetFeatureInfo();
         map.addControl(control);
         control.activate();
-       
+
         control.request = function(position) {
             t.eq(position.x, 50,
                  "x position is as expected");
@@ -101,7 +101,7 @@
         xy = {x: 70, y: 70};
         control.getInfoForHover({xy: xy});
     }
-  
+
     function test_activate(t) {
         t.plan(4);
         var map = new OpenLayers.Map("map");
@@ -166,10 +166,10 @@
         hover.deactivate();
     }
 
-    // Verify that things work all right when we combine different types for the STYLES and LAYERS 
+    // Verify that things work all right when we combine different types for the STYLES and LAYERS
     // params in the WMS Layers involved
     function test_mixedParams(t) {
-        t.plan(2);
+        t.plan(3);
         var map = new OpenLayers.Map("map", {
             getExtent: function() {return(new OpenLayers.Bounds(-180,-90,180,90));}
             }
@@ -209,7 +209,7 @@
         click.activate();
         click.getInfoForClick({xy: {x: 50, y: 50}});
         OpenLayers.Request.GET = _request;
-        
+
         t.eq(
             log.options && log.options.url,
             "http://localhost/wms",
@@ -219,35 +219,41 @@
             log.options && log.options.params.styles.join(","),
             "a,b,c,d,a,b,c,d,,,,,,,,",
             "Styles merged correctly"
-        );        
-        
+        );
+
+        t.eq(
+            log.options && log.options.params.format,
+            "image/jpeg",
+            "Required 'format' parameter included"
+ 	    );
+
     }
-    
+
     function test_urlMatches(t) {
-        
+
         t.plan(5);
 
         var control = new OpenLayers.Control.WMSGetFeatureInfo({
             url: "http://host/wms?one=1&two=2"
         });
-        
+
         t.ok(!control.urlMatches("foo"), "doesn't match garbage");
         t.ok(control.urlMatches("http://host:80/wms?two=2&one=1"), "matches equivalent url");
-        
+
         // give the control more urls to match from
         control.layerUrls = ["http://a.host/wms", "http://b.host/wms"];
-        
+
         t.ok(control.urlMatches("http://host:80/wms?two=2&one=1"), "still matches equivalent url");
         t.ok(control.urlMatches("http://a.host:80/wms"), "matches equivalent of first of layerUrls");
         t.ok(control.urlMatches("http://b.host:80/wms"), "matches equivalent of second of layerUrls");
 
     }
-    
+
     function test_layerUrls(t) {
 
         t.plan(4);
         var map = new OpenLayers.Map({
-            div: "map", 
+            div: "map",
             getExtent: function() {
                 return new OpenLayers.Bounds(-180,-90,180,90);
             }
@@ -262,39 +268,39 @@
         var c = new OpenLayers.Layer.WMS(
             null, ["http://c.mirror/wms", "http://d.mirror/wms"], {layers: "c"}
         );
-        
+
         var control = new OpenLayers.Control.WMSGetFeatureInfo({
             url: "http://host/wms",
             layers: [a, b, c]
         });
         map.addControl(control);
         control.activate();
-        
+
         // log calls to GET
         var log;
         var _request = OpenLayers.Request.GET;
         OpenLayers.Request.GET = function(options) {
             log.options = options;
         };
-        
+
         // control url doesn't match layer urls, no request issued
         log = {};
         control.getInfoForClick({xy: {x: 50, y: 50}});
         t.ok(!log.options, "no url match, no request issued");
-        
+
         // give control a list of urls to match
         log = {};
         control.layerUrls = ["http://a.mirror/wms", "http://b.mirror/wms"];
         control.getInfoForClick({xy: {x: 50, y: 50}});
         t.eq(log.options && log.options.url, "http://host/wms", "some match, request issued");
         t.eq(log.options && log.options.params["query_layers"].join(","), "a,b", "selected layers queried");
-        
+
         // show that a layer can be matched if it has a urls array itself (first needs to be matched)
         log = {};
         control.layerUrls = ["http://c.mirror/wms"];
         control.getInfoForClick({xy: {x: 50, y: 50}});
         t.eq(log.options && log.options.params["query_layers"].join(","), "c", "layer with urls array can be queried");
-        
+
         // clean up
         OpenLayers.Request.GET = _request;
         map.destroy();
