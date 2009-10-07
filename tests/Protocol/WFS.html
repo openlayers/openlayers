@@ -23,7 +23,7 @@
         t.ok(protocol instanceof OpenLayers.Protocol.WFS.v1_1_0,
              "initialize returns instance of custom versioned protocol")
     }
-    
+
     function test_read(t) {
         t.plan(6);
 
@@ -38,7 +38,7 @@
         });
 
         var _POST = OpenLayers.Request.POST;
-        
+
         var expected, status;
         OpenLayers.Request.POST = function(obj) {
             t.xml_eq(new OpenLayers.Format.XML().read(obj.data).documentElement, expected, "GetFeature request is correct");
@@ -48,14 +48,14 @@
             t.delay_call(0.1, function() {obj.callback.call(this)});
             return obj;
         };
-        
+
         expected = readXML("GetFeature_1");
         status = 200;
         var response = protocol.read({callback: function(response) {
             t.eq(response.features, "foo", "user callback properly called with features");
             t.eq(response.code, OpenLayers.Protocol.Response.SUCCESS, "success reported properly");
         }});
-        
+
         options = {
             maxFeatures: 10,
             featureType: 'type2',
@@ -71,7 +71,7 @@
 
         OpenLayers.Request.POST = _POST;
     }
-        
+
     function test_commit(t){
         t.plan(4);
 
@@ -90,8 +90,8 @@
         };
 
         var _POST = OpenLayers.Request.POST;
-        
-        var expected;        
+
+        var expected;
         OpenLayers.Request.POST = function(obj) {
             t.xml_eq(new OpenLayers.Format.XML().read(obj.data).documentElement, expected, "Transaction XML with Insert, Update and Delete created correctly");
             obj.responseText = "foo";
@@ -99,7 +99,7 @@
             t.delay_call(0.1, function() {obj.callback.call(this)});
             return obj;
         };
-        
+
         var featureDelete = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(42, 7), {has : "cheeseburger"});
         featureDelete.fid = "fid.37";
         featureDelete.state = OpenLayers.State.DELETE;
@@ -124,7 +124,7 @@
                 t.eq(response.code, OpenLayers.Protocol.Response.SUCCESS, "success properly reported to user callback");
             }
         }
-        
+
         expected = readXML("commit");
         var response = protocol.commit([featureInsert, featureModify, featureDelete], options);
 
@@ -141,7 +141,7 @@
             featureNS: "http://namespace.org",
             featureType: "type"
         });
-        
+
         var filter = new OpenLayers.Filter.Spatial({
             type: OpenLayers.Filter.Spatial.BBOX,
             value: new OpenLayers.Bounds(-5, -5, 5, 5)
@@ -155,16 +155,16 @@
             t.delay_call(0.1, function() {obj.callback.call(this)});
             return obj;
         };
-        
+
         var response = protocol.filterDelete(filter, {
             callback: function() {
                 t.ok("user callback function called");
             }
         });
-    
+
         OpenLayers.Request.POST = _POST;
     }
-    
+
     function test_abort(t) {
         t.plan(1);
         var protocol = new OpenLayers.Protocol.WFS({
@@ -172,7 +172,7 @@
             featureNS: "http://example.com#namespace",
             featureType: "type"
         });
-        
+
         var response = {
             priv: {
                 abort: function() {
@@ -180,14 +180,14 @@
                 }
             }
         };
-        
+
         // call abort with mocked response
         var aborted = false;
         protocol.abort(response);
         t.eq(aborted, true, "abort called on response.priv");
 
     }
-    
+
     function test_fromWMSLayer(t) {
         t.plan(8);
         var map = new OpenLayers.Map("map", {
@@ -203,18 +203,35 @@
         t.eq(protocol.featureType, "states", "typeName correctly extracted");
         t.eq(protocol.srsName, "EPSG:1234", "srsName set correctly");
         t.eq(protocol.version, "1.1.0", "version set correctly");
-        
+
         layer.params["LAYERS"] = ["topp:street_centerline", "topp:states"];
         layer.projection = new OpenLayers.Projection("EPSG:900913");
         protocol = OpenLayers.Protocol.WFS.fromWMSLayer(layer);
         t.eq(protocol.featurePrefix, "topp", "featurePrefix from layer param array");
-        t.eq(protocol.featureType, "street_centerline", "first layer from layer param array as featureType"); 
-        t.eq(protocol.srsName, "EPSG:900913", "projection from layer preferred"); 
+        t.eq(protocol.featureType, "street_centerline", "first layer from layer param array as featureType");
+        t.eq(protocol.srsName, "EPSG:900913", "projection from layer preferred");
     }
+
+    function test_readFormat(t) {
+        t.plan(1);
+
+        var protocol = new OpenLayers.Protocol.WFS({
+            url: "http://some.url.org",
+            featureNS: "http://namespace.org",
+            featureType: "type",
+            formatOptions: {outputFormat: 'json'},
+            readFormat: new OpenLayers.Format.GeoJSON()
+        });
+
+        var request = {};
+        request.responseText = '{"type":"FeatureCollection","features":[{"type":"Feature","id":"V_HECTOPUNTEN.108411","geometry":{"type":"MultiPoint","coordinates":[[190659.467,349576.19]]},"geometry_name":"ORA_GEOMETRY","properties":{"WEGNUMMER":"002","HECTOMTRNG_ORG":2200,"HECTOMTRNG":"220.00","bbox":[190659.467,349576.19,190659.467,349576.19]}}]}';
+        var features = protocol.parseFeatures(request);
+        t.eq(features.length, 1, "the right format is used to read the request (GeoJSON)");
+ 	}
 
     function readXML(id) {
         var xml = document.getElementById(id).firstChild.nodeValue;
-        return new OpenLayers.Format.XML().read(xml).documentElement;        
+        return new OpenLayers.Format.XML().read(xml).documentElement;
     }
 
   </script>

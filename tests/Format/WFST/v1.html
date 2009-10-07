@@ -12,24 +12,24 @@
             featureType: "states"
         });
         var features = format.read(data);
-        
+
         t.eq(features.length, 1, "number of features read from FeatureCollection is correct");
     }
-    
+
     function test_write(t) {
-        
+
         var format = new OpenLayers.Format.WFST({
             featureNS: "http://www.openplans.org/topp",
             featureType: "states",
             featurePrefix: "topp",
             geometryName: "the_geom"
         });
-        
+
         var feature = new OpenLayers.Feature.Vector(
             new OpenLayers.Geometry.Point(1,2),
             {foo: "bar"}
         );
-            
+
         var insertFeature = feature.clone();
         // null value does not show up in insert
         insertFeature.attributes.nul = null;
@@ -44,28 +44,28 @@
         var deleteFeature = feature.clone();
         deleteFeature.state = OpenLayers.State.DELETE;
         deleteFeature.fid = "fid.37";
-        
+
         t.plan(5);
         var snippets = {
-            "GetFeature": {maxFeatures: 1},
+            "GetFeature": {maxFeatures: 1, outputFormat: 'json'},
             "Transaction": null,
             "Insert": insertFeature,
             "Update": updateFeature,
             "Delete": deleteFeature
         }
-        
+
         var arg;
         for(var snippet in snippets) {
             arg = snippets[snippet]
             var expected = readXML(snippet);
             var got = format.writers["wfs"][snippet].apply(format, [arg]);
             t.xml_eq(got, expected, snippet + " request created correctly");
-        }       
+        }
     }
-    
+
     function readXML(id) {
         var xml = document.getElementById(id).firstChild.nodeValue;
-        return new OpenLayers.Format.XML().read(xml).documentElement;        
+        return new OpenLayers.Format.XML().read(xml).documentElement;
     }
 
   </script>
@@ -118,7 +118,7 @@
 --></div>
 
 <div id="GetFeature"><!--
-<wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" service="WFS" version="1.0.0" maxFeatures="1" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-transaction.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" service="WFS" version="1.0.0" outputFormat="json" maxFeatures="1" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-transaction.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <wfs:Query typeName="topp:states" xmlns:topp="http://www.openplans.org/topp"/>
 </wfs:GetFeature>
 --></div>
