@@ -247,6 +247,49 @@
         var params = { foo: [null, undefined, 0, "", "bar"] }
         t.eq( OpenLayers.Util.getParameterString(params), "foo=,,0,,bar", "getParameterString works fine with null values in array.");
     }
+    
+    function test_Util_urlAppend(t) {
+
+        var params = "foo=bar";
+        
+        t.plan( 7 );
+
+  // without ?        
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        var str = OpenLayers.Util.urlAppend(url, params);
+        t.eq(str, url + '?' + params, "urlAppend() works for url sans ?");
+
+
+  // with ?        
+        url = "http://octo.metacarta.com/cgi-bin/mapserv?";
+        str = OpenLayers.Util.urlAppend(url, params);
+        t.eq(str, url + params, "urlAppend() works for url with ?");
+
+  // with ?param1=5
+        url = "http://octo.metacarta.com/cgi-bin/mapserv?param1=5";
+        str = OpenLayers.Util.urlAppend(url, params);
+        t.eq(str, url + '&' + params, "urlAppend() works for url with ?param1=5");
+  
+  // with ?param1=5&
+        url = "http://octo.metacarta.com/cgi-bin/mapserv?param1=5&";
+        str = OpenLayers.Util.urlAppend(url, params);
+        t.eq(str, url + params, "urlAppend() works for url with ?param1=5&");
+ 
+  // with ?param1=5&param2=6
+        url = "http://octo.metacarta.com/cgi-bin/mapserv?param1=5&param2=6";
+        str = OpenLayers.Util.urlAppend(url, params);
+        t.eq(str, url + "&" + params, "urlAppend() works for url with ?param1=5&param2=6");
+        
+  // with empty paramStr
+        url = "http://octo.metacarta.com/cgi-bin/mapserv?param1=5"
+        str = OpenLayers.Util.urlAppend(url, "");
+        t.eq(str, url, "urlAppend() works with empty paramStr")
+
+  // with null paramStr
+        url = "http://octo.metacarta.com/cgi-bin/mapserv?param1=5"
+        str = OpenLayers.Util.urlAppend(url, null);
+        t.eq(str, url, "urlAppend() works with null paramStr")
+    }
 
     function test_Util_createAlphaImageDiv(t) {
         t.plan( 19 );
