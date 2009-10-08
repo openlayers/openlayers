@@ -1,0 +1,86 @@
+<html>
+<head>
+    <script src="../../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+    var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
+    var isOpera   = (navigator.userAgent.indexOf("Opera") != -1);
+    var layer;
+
+    var name = 'Test Layer';
+    var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+    var params = { map: '/mapdata/vmap_wms.map', 
+                   layers: 'basic', 
+                   format: 'image/jpeg'};
+
+    function test_Layer_WMS_Post_constructor (t) {
+        t.plan( 2 );
+
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.WMS.Post(name, url, params);
+
+        t.ok(
+            layer.tileClass == OpenLayers.Tile.Image.IFrame,
+            "instantiate OpenLayers.Tile.Image.IFrame tiles.");
+
+        layer.destroy();
+
+        var options = { unsupportedBrowsers: [OpenLayers.Util.getBrowserName()]};
+        layer = new OpenLayers.Layer.WMS.Post(name, url, params, options);
+        t.ok(
+            layer.tileClass == OpenLayers.Tile.Image,
+            "unsupported browser instantiate Image tiles.");
+        layer.destroy();
+    }
+
+    function test_Layer_WMS_Post_addtile (t) {
+        t.plan( 3 );
+    
+        layer = new OpenLayers.Layer.WMS.Post(name, url, params);
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
+        var bounds = new OpenLayers.Bounds(1,2,3,4);
+        var pixel  = new OpenLayers.Pixel(5,6);
+        var tile   = layer.addTile(bounds, pixel);
+        
+        if(isMozilla || isOpera) {
+            t.ok(
+                tile instanceof OpenLayers.Tile.Image,
+                "tile is an instance of OpenLayers.Tile.Image");
+        }
+        else {
+            t.ok(
+                tile instanceof OpenLayers.Tile.Image.IFrame,
+                "tile is an instance of OpenLayers.Tile.Image.IFrame");
+        }
+        map.destroy();
+
+        var browserName = OpenLayers.Util.getBrowserName();
+        var options = { unsupportedBrowsers: [browserName]};
+
+        // test the unsupported browser
+        layer = new OpenLayers.Layer.WMS.Post(name, url, params, options);
+        map   = new OpenLayers.Map('map');
+        map.addLayer(layer);
+        tile  = layer.addTile(bounds, pixel);
+        t.ok(
+            tile instanceof OpenLayers.Tile.Image,
+            "unsupported browser: tile is an instance of Tile.Image");
+        layer.destroy();
+
+        // test a supported browser
+        OpenLayers.Util.getBrowserName = function () { return 'not_' + browserName };
+        layer = new OpenLayers.Layer.WMS.Post(name, url, params, options);
+        map.addLayer(layer);
+        var tile2 = layer.addTile(bounds, pixel);
+        t.ok(
+            tile2 instanceof OpenLayers.Tile.Image.IFrame,
+            "supported browser: tile is an instance of Tile.Image.IFrame");
+        map.destroy();
+    }
+
+  </script>
+</head>
+<body>
+<div id="map" style="width:500px;height:550px"></div>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<html>
+<head>
+    <script src="../../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+    var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
+    var isOpera   = (navigator.userAgent.indexOf("Opera") != -1);
+    var isIE      = (navigator.userAgent.indexOf("MSIE") != -1);
+
+    var map, layer;
+    var position = new OpenLayers.Pixel(20,30);
+    var bounds   = new OpenLayers.Bounds(1,2,3,4);
+    var url      = "http://www.openlayers.org/dev/tests/tileimage";
+    var size     = new OpenLayers.Size(5,6);
+    var name     = "OpenaLayers WMS";
+    var wmsUrl   = "http://labs.metacarta.com/wms/vmap0?";
+    
+    function test_Tile_Image_IFrame_constructor (t) {
+        t.plan( 2 );
+        var tile = new OpenLayers.Tile.Image.IFrame(layer, position, bounds, url, size);
+        
+        t.ok( tile instanceof OpenLayers.Tile.Image.IFrame, "new OpenLayers.Tile.Image.IFrame returns Tile object" );
+        t.eq( tile.layerAlphaHack, false, "layerAlphaHack is set to false.");
+    }
+
+    function test_Tile_Image_IFrame_destroy (t) {
+        t.plan( 2 );
+        map   = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.WMS.Post(name, wmsUrl, {layers: 'basic'}); 
+        map.addLayer(layer);
+
+        var tile = new OpenLayers.Tile.Image.IFrame(layer, position, bounds, null, size);
+        tile.renderTile();
+        tile.positionImage();
+        
+        tile.destroy();
+        t.eq( tile.imgDiv, null, "IFrame successfully removed from DOM");
+        t.eq( tile.frame, null, "Event div successfully removed from DOM");
+
+        map.destroy();
+    }
+
+    function test_Tile_Image_IFrame_clone (t) {
+        t.plan( 9 );
+        
+        layer = new OpenLayers.Layer.WMS.Post(name, wmsUrl, {layers: 'basic'}); 
+        tile  = new OpenLayers.Tile.Image.IFrame(layer, position, bounds, url, size);
+        tile.iFrame = {};
+        var clone = tile.clone();
+        
+        t.ok( clone instanceof OpenLayers.Tile.Image.IFrame, "clone is a Tile.Image.IFrame object" );
+        t.ok( clone.layer == layer, "clone.layer is set correctly");
+        t.ok( clone.position.equals(position), "clone.position is set correctly");
+        t.ok( clone.bounds.equals(bounds), "clone.bounds is set correctly");
+        t.eq( clone.url, url, "clone.url is set correctly");
+        t.ok( clone.size.equals(size), "clone.size is set correctly");
+        t.ok( clone.frame, "clone has a frame");
+        t.ok( clone.frame != tile.frame, "clone's frame is a new one");
+        t.ok( clone.imgDiv == null, "clone's imgDiv was not copied");
+    }
+    
+    function test_Tile_Image_IFrame_clear (t) {
+        t.plan( 1 );
+        
+        map   = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.WMS.Post(name, wmsUrl, {layers: 'basic'}); 
+        map.addLayer(layer);  
+        tile = new OpenLayers.Tile.Image.IFrame(layer, position, bounds, url, size);
+        tile.draw();
+        tile.clear();
+
+        t.ok(
+            tile.imgDiv.firstChild.nodeName != "IFRAME",
+            "IFrame successfully removed from DOM");
+        map.destroy();
+    }
+
+    function test_Tile_Image_IFrame_initImgDiv (t) {
+        t.plan( 4 );
+
+        map   = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.WMS.Post(name, wmsUrl, {layers: 'basic'}); 
+        map.addLayer(layer);  
+        tile = new OpenLayers.Tile.Image.IFrame(layer, position, bounds, url, size);
+        tile.initImgDiv();
+
+        if(isMozilla) {
+            t.ok( tile.imgDiv instanceof HTMLElement, "tile.iFrame successfully created.");
+        }
+        else {
+            t.ok( tile.imgDiv != null, "tile.iFrame successfully created.");
+        }
+        t.eq( tile.imgDiv.id, tile.id, "imgDiv id correctly set.");
+        t.eq( tile.imgDiv.className, "olTileImage", "iFrame's className correctly set.");
+        t.ok( tile.imgDiv.map == map, "map correctly added to iFrame.");
+
+        map.destroy();
+    }
+
+    function test_Tile_Image_IFrame_createImgDiv (t) {
+        t.plan( 3 );
+
+        map   = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.WMS.Post(name, wmsUrl, {layers: 'basic'}); 
+        map.addLayer(layer);  
+        var tile = new OpenLayers.Tile.Image.IFrame(layer, position, bounds, url, size);
+        var imgDiv    = tile.createImgDiv();
+        var iFrame    = imgDiv.firstChild;
+        var eventPane = imgDiv.childNodes[1];
+
+        if(isIE) {
+            t.ok(iFrame != null, "IFrame successfully created.");
+            t.eq(eventPane.style.backgroundColor, '#ffffff', "backgroundColor of overlay pane is set in InternetExplorer.");
+            t.eq(eventPane.style.filter, 'chroma(color=#FFFFFF)', "filter of overlay pane is set in InternetExplorer.");
+        }
+        else {
+            t.ok(iFrame instanceof HTMLElement, "IFrame successfully created.");
+            t.ok(true, 'Skip eventPane backgroundColor test outside IE');
+            t.ok(true, 'Skip eventPane filter test outside IE');
+        }
+        map.destroy();
+    }
+
+    function test_Tile_Image_IFrame_createIFrame (t) {
+        t.plan( 8 );
+        
+        map   = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.WMS.Post(name, wmsUrl, {layers: 'basic'}); 
+        map.addLayer(layer);  
+        var tile = new OpenLayers.Tile.Image.IFrame(layer, position, bounds, url, size);
+        var iFrame = tile.createIFrame();
+
+        var id = tile.id+'_iFrame';
+        t.eq(iFrame.id, id, "iframe id correctly set.");
+        t.eq(iFrame.name, id, "iframe name correctly set.");
+        
+        if(isIE) {
+            t.eq(iFrame.style.backgroundColor, '#ffffff', "backgroundColor correctly set.");
+            t.eq(iFrame.style.filter, 'chroma(color=#FFFFFF)', "filter correctly set.");
+        }
+        else {
+            t.eq(iFrame.style.backgroundColor, 'transparent', "backgroundColor correctly set.");
+            t.ok(true, "Skip filter test outside InternetExplorer.");
+        }
+        t.eq( iFrame.scrolling, 'no', "no scrolling");
+        t.eq( iFrame.marginWidth, '0', "no margin width");
+        t.eq( iFrame.marginHeight, '0', "no margin height");
+        t.eq( iFrame.frameBorder, '0', "no iframe border");
+    }
+
+    function test_Tile_Image_IFrame_createRequestForm (t) {
+        t.plan( 6 );
+
+        var tParams = {
+            SERVICE: "WMS", VERSION: "1.1.1",
+            REQUEST: "GetMap", STYLES: "",
+            EXCEPTIONS: "application/vnd.ogc.se_inimage", FORMAT: "image/jpeg",
+            SRS: "EPSG:4326", BBOX: [1,2,3,4],
+            WIDTH: String(size.w), HEIGHT: String(size.h)
+        };
+        var newLayer = new OpenLayers.Layer.WMS.Post("Name",
+                                         "http://labs.metacarta.com/TESTURL",
+                                         tParams,
+                                         {tileSize: size});  
+        map = new OpenLayers.Map('map'); 
+        map.addLayer(newLayer);  
+        tile = new OpenLayers.Tile.Image.IFrame(newLayer, position, bounds, url, size);
+        tile.initImgDiv();
+
+        var form = tile.createRequestForm();
+        if(isMozilla) {
+            t.ok( form instanceof HTMLElement, "created html form successfully.");
+        }
+        else {
+            t.ok( form != null, "created html form successfully.");
+        }
+
+        
+        var cacheId = newLayer.params["_OLSALT"];
+        cacheId     = (cacheId ? cacheId + "_" : "") + tile.bounds.toBBOX();
+        var url = OpenLayers.Util.urlAppend(newLayer.url, cacheId);
+
+        t.eq( form.method, 'post', "form method correctly set.");
+        t.eq( form.target, tile.id+'_iFrame', "form target correctly set.");
+        t.eq( form.action, url, "form action correctly set.");
+
+        var contain  = true;
+        var children = form.childNodes;
+        for(var par in newLayer.params) {
+            var test = false;
+            
+            for(var i=0; i<children.length; i++) {
+                if(children.item(i).name == par && children.item(i).value == newLayer.params[par]) {
+                    test = true;
+                    break;
+                }
+            }
+
+            if(test == false) {
+                contain = false;
+                break;
+            }
+
+        }
+        t.eq( contain, true, "html form elements equal layer's parameters.");
+
+        tile.draw();
+        tile.clear();
+        tile.createRequestForm();
+        t.ok(
+            tile.imgDiv.firstChild.nodeName == "IFRAME",
+            "Iframe has been reinserted properly"
+        );
+
+        map.destroy();
+    }
+</script>
+</head>
+<body>
+<div id="map" style="height:550px;width:500px"></div>
+</body>
+</html>

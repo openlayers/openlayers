@@ -1,0 +1,175 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>OpenLayers Basic WMS Example via HTTP-POST protocol</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map;
+
+        function init(){
+            var sld = '<StyledLayerDescriptor version="1.0.0">';
+                sld+= '<NamedLayer>';
+                sld+= '<Name>topp:tasmania_roads</Name>';
+                sld+= '<UserStyle>';
+                sld+= '<IsDefault>1</IsDefault>';
+                sld+= '<FeatureTypeStyle>';
+                sld+= '<Rule>';
+                sld+= '<LineSymbolizer>';
+                sld+= '<Stroke>';
+                sld+= '<CssParameter name="stroke">';
+                sld+= '<Literal>#787878</Literal>';
+                sld+= '</CssParameter>';
+                sld+= '<CssParameter name="stroke-width">';
+                sld+= '<Literal>2</Literal>';
+                sld+= '</CssParameter>';
+                sld+= '</Stroke>';
+                sld+= '</LineSymbolizer>';
+                sld+= '</Rule>';
+                sld+= '</FeatureTypeStyle>';
+                sld+= '</UserStyle>';
+                sld+= '</NamedLayer>';
+
+                sld+= '<NamedLayer>';
+                sld+= '<Name>topp:tasmania_water_bodies</Name>';
+                sld+= '<UserStyle>';
+                sld+= '<IsDefault>1</IsDefault>';
+                sld+= '<FeatureTypeStyle>';
+                sld+= '<Rule>';
+                sld+= '<LineSymbolizer>';
+                sld+= '<Stroke>';
+                sld+= '<CssParameter name="stroke">';
+                sld+= '<Literal>#4F94CD</Literal>';
+                sld+= '</CssParameter>';
+                sld+= '<CssParameter name="stroke-width">';
+                sld+= '<Literal>3</Literal>';
+                sld+= '</CssParameter>';
+                sld+= '</Stroke>';
+                sld+= '</LineSymbolizer>';
+                sld+= '<PolygonSymbolizer>';
+                sld+= '<Fill>';
+                sld+= '<CssParameter name="fill">';
+                sld+= '<Literal>#63B8FF</Literal>';
+                sld+= '</CssParameter>';
+                sld+= '</Fill>';
+                sld+= '</PolygonSymbolizer>';
+                sld+= '</Rule>';
+                sld+= '</FeatureTypeStyle>';
+                sld+= '</UserStyle>';
+                sld+= '</NamedLayer>';
+
+                sld+= '<NamedLayer>';
+                sld+= '<Name>topp:tasmania_cities</Name>';
+                sld+= '<UserStyle>';
+                sld+= '<IsDefault>1</IsDefault>';
+                sld+= '<FeatureTypeStyle>';
+                sld+= '<Rule>';
+                sld+= '<PointSymbolizer>';
+                sld+= '<Graphic>';
+                sld+= '<Mark>';
+                sld+= '<WellKnownName>cross</WellKnownName>';
+                sld+= '<Fill>';
+                sld+= '<CssParameter name="fill">';
+                sld+= '<Literal>#00FF00</Literal>';
+                sld+= '</CssParameter>';
+                sld+= '</Fill>';
+                sld+= '</Mark>';
+                sld+= '<Size>15</Size>';
+                sld+= '</Graphic>';
+                sld+= '</PointSymbolizer>';
+                sld+= '<TextSymbolizer>';
+                sld+= '<Label><PropertyName>CITY_NAME</PropertyName></Label>';
+                sld+= '<Font>';
+                sld+= '<SvgParameter name="font-size">15</SvgParameter>';
+                sld+= '</Font>';
+                sld+= '</TextSymbolizer>';
+                sld+= '</Rule>';
+                sld+= '</FeatureTypeStyle>';
+                sld+= '</UserStyle>';
+                sld+= '</NamedLayer>';
+
+                sld+= '<NamedLayer>';
+                sld+= '<Name>topp:tasmania_state_boundaries</Name>';
+                sld+= '<UserStyle>';
+                sld+= '<IsDefault>1</IsDefault>';
+                sld+= '<FeatureTypeStyle>';
+                sld+= '<Rule>';
+                sld+= '<PolygonSymbolizer>';
+                sld+= '<Fill>';
+                sld+= '<CssParameter name="fill">';
+                sld+= '<Literal>#8B8989</Literal>';
+                sld+= '</CssParameter>';
+                sld+= '<CssParameter name="fill-opacity">';
+                sld+= '<Literal>0.2</Literal>';
+                sld+= '</CssParameter>';
+                sld+= '</Fill>';
+                sld+= '<Stroke>';
+                sld+= '<CssParameter name="stroke">';
+                sld+= '<Literal>#FF4040</Literal>';
+                sld+= '</CssParameter>';
+                sld+= '<CssParameter name="stroke-width">';
+                sld+= '<Literal>2</Literal>';
+                sld+= '</CssParameter>';
+                sld+= '</Stroke>';
+                sld+= '</PolygonSymbolizer>';
+                sld+= '</Rule>';
+                sld+= '</FeatureTypeStyle>';
+                sld+= '</UserStyle>';
+                sld+= '</NamedLayer>';
+
+                sld+= '</StyledLayerDescriptor>';
+
+            map = new OpenLayers.Map('map');
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+
+            var layer = new OpenLayers.Layer.WMS(
+                "OpenLayers WMS",
+                "http://labs.metacarta.com/wms/vmap0",
+                {
+                    layers: 'basic'
+                }
+            );
+
+            var rcbw = new OpenLayers.Layer.WMS.Post("Roads, Cities, Boundaries, Water",
+                "http://demo.opengeo.org/geoserver/wms", 
+                {
+                    'layers': 'topp:tasmania_roads,topp:tasmania_water_bodies,topp:tasmania_state_boundaries,topp:tasmania_cities',
+                    transparent: true,
+                    format: 'image/jpeg',
+                    sld_body: sld
+                },
+                {
+                    isBaseLayer: false,
+                    unsupportedBrowsers: []
+                }
+            );
+            map.addLayers([layer, rcbw]);
+            map.setCenter(new OpenLayers.LonLat(146.65748632815,-42.230763671875), 7);
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Basic WMS Example via HTTP-POST protocol with a large SLD
+    included</h1>
+
+    <div id="tags"></div>
+
+    <div id="shortdesc">Creating a WMS layer with a large SLD in the sld_body</div>
+
+    <div id="map" style="width: 512; height: 256; border: 1px solid red;"></div>
+
+    <div id="docs">
+        This example uses a large SLD created on the client side to style a WMS
+        layer.  This example uses a WMS.Post layer which transfers data via the
+        HTTP-POST protocol. <br>
+        NOTE: Opera is not able to display transparent tiles with this layer,
+        and in some Firefox browsers can appear ugly viewport-shaking effects
+        while dragging arround. Use the 'unsupportedBrowsers' property to
+        control which browsers should use plain image tiles (like Layer.WMS)
+        instead. The default setting (["mozilla", "firefox", "opera"])
+        excludes problematic browsers without removing the ability to use long
+        request parameters, because all these browsers support long urls via
+        GET.
+    </div>
+  </body>
+</html>
