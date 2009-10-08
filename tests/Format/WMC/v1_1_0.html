@@ -12,8 +12,9 @@
         t.plan(12);
 
         // direct construction of a parser for a unit test
-        var wmc = new OpenLayers.Format.WMC.v1_1_0();
-        var sldNS = wmc.namespaces["sld"];
+        var format = new OpenLayers.Format.WMC();
+        var parser = format.getParser("1_1_0");
+        var sldNS = parser.namespaces["sld"];
 
         // test that Min/MaxScaleDenominator is not written out when no
         // resolution related options are set
@@ -21,10 +22,11 @@
             "test", "http://foo", {},
             {maxExtent: new OpenLayers.Bounds(1, 2, 3, 4)}
         );
-        var node = wmc.write_wmc_Layer(layer);
-        var minList = wmc.getElementsByTagNameNS(node, sldNS, "MinScaleDenominator");
+        var layerContext = format.layerToContext(layer);
+        var node = parser.write_wmc_Layer(layerContext);
+        var minList = parser.getElementsByTagNameNS(node, sldNS, "MinScaleDenominator");
         t.eq(minList.length, 0, "(none) node not written with MinScaleDenominator");
-        var maxList = wmc.getElementsByTagNameNS(node, sldNS, "MaxScaleDenominator");
+        var maxList = parser.getElementsByTagNameNS(node, sldNS, "MaxScaleDenominator");
         t.eq(maxList.length, 0, "(none) node not written with MaxScaleDenominator");
 
         // test that Min/MaxScaleDenominator is written out for explicit
@@ -35,15 +37,16 @@
         );
         layer.minScale = Math.random();
         layer.maxScale = Math.random();
-        sldNS = wmc.namespaces["sld"];
-        node = wmc.write_wmc_Layer(layer);
-        minList = wmc.getElementsByTagNameNS(node, sldNS, "MinScaleDenominator");
+        sldNS = parser.namespaces["sld"];
+        layerContext = format.layerToContext(layer);
+        node = parser.write_wmc_Layer(layerContext);
+        minList = parser.getElementsByTagNameNS(node, sldNS, "MinScaleDenominator");
         t.eq(minList.length, 1, "(resolutions) node written with MinScaleDenominator");
-        t.eq(layer.maxScale.toPrecision(16), wmc.getChildValue(minList[0]),
+        t.eq(layer.maxScale.toPrecision(16), parser.getChildValue(minList[0]),
              "(resolutions) node written with correct MinScaleDenominator value");
-        maxList = wmc.getElementsByTagNameNS(node, sldNS, "MaxScaleDenominator");
+        maxList = parser.getElementsByTagNameNS(node, sldNS, "MaxScaleDenominator");
         t.eq(maxList.length, 1, "(resolutions) node written with MaxScaleDenominator");
-        t.eq(layer.minScale.toPrecision(16), wmc.getChildValue(maxList[0]),
+        t.eq(layer.minScale.toPrecision(16), parser.getChildValue(maxList[0]),
              "(resolutions) node written with correct MaxScaleDenominator value");
 
         layer = new OpenLayers.Layer.WMS(
@@ -52,19 +55,21 @@
         );
         layer.minScale = Math.random();
         layer.maxScale = Math.random();
-        node = wmc.write_wmc_Layer(layer);
-        minList = wmc.getElementsByTagNameNS(node, sldNS, "MinScaleDenominator");
+        layerContext = format.layerToContext(layer);
+        node = parser.write_wmc_Layer(layerContext);
+        minList = parser.getElementsByTagNameNS(node, sldNS, "MinScaleDenominator");
         var f = new OpenLayers.Format.XML();
         t.eq(minList.length, 1, "(scales) node written with MinScaleDenominator");
-        t.eq(layer.maxScale.toPrecision(16), wmc.getChildValue(minList[0]),
+        t.eq(layer.maxScale.toPrecision(16), parser.getChildValue(minList[0]),
              "(scales) node written with correct MinScaleDenominator value");
-        maxList = wmc.getElementsByTagNameNS(node, sldNS, "MaxScaleDenominator");
+        maxList = parser.getElementsByTagNameNS(node, sldNS, "MaxScaleDenominator");
         t.eq(maxList.length, 1, "(scales) node written with MaxScaleDenominator");
-        t.eq(layer.minScale.toPrecision(16), wmc.getChildValue(maxList[0]),
+        t.eq(layer.minScale.toPrecision(16), parser.getChildValue(maxList[0]),
              "(scales) node written with correct MaxScaleDenominator value");
 
         layer.metadataURL = 'http://foo';
-        node = wmc.write_wmc_Layer(layer);
+        layerContext = format.layerToContext(layer);
+        node = parser.write_wmc_Layer(layerContext);
         t.eq(node.childNodes[3].localName || node.childNodes[3].nodeName.split(":").pop(),
             'MetadataURL', "MinScaleDenominator is written after MetadataURL, so third node should be MetadataURL");
         t.eq(node.childNodes[4].localName || node.childNodes[4].nodeName.split(":").pop(),

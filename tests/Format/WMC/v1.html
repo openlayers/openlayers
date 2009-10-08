@@ -6,9 +6,10 @@
     function test_write_wmc_StyleList(t) {
         t.plan(3);
         
-        var layer, got, expected;
+        var layer, layerContext, got, expected;
         
-        var parser = new OpenLayers.Format.WMC.v1();
+        var format = new OpenLayers.Format.WMC();
+        var parser = format.getParser("1");
         var name = "test";
         var url = "http://foo";
 
@@ -16,7 +17,8 @@
         layer = new OpenLayers.Layer.WMS(name, url, {
             styles: "mystyle"
         });
-        got = parser.write_wmc_StyleList(layer);
+        layerContext = format.layerToContext(layer);
+        got = parser.write_wmc_StyleList(layerContext);
         expected = 
             "<StyleList xmlns='http://www.opengis.net/context'>" +
                 "<Style current='1'>" +
@@ -31,7 +33,8 @@
         layer = new OpenLayers.Layer.WMS(name, url, {
             sld: "http://linked.sld"
         });
-        got = parser.write_wmc_StyleList(layer);
+        layerContext = format.layerToContext(layer);
+        got = parser.write_wmc_StyleList(layerContext);
         expected = 
             "<StyleList xmlns='http://www.opengis.net/context'>" +
                 "<Style current='1'>" +
@@ -39,6 +42,7 @@
                         "<OnlineResource xmlns:xlink='http://www.w3.org/1999/xlink' "+
                                         "xlink:type='simple' " +
                                         "xlink:href='http://linked.sld' />" +
+                        "<Name></Name><Title>Default</Title>" +
                     "</SLD>" + 
                 "</Style>" +
             "</StyleList>";
@@ -78,7 +82,8 @@
                 "</sld:StyledLayerDescriptor>"
         });
         
-        got = parser.write_wmc_StyleList(layer);
+        layerContext = format.layerToContext(layer);
+        got = parser.write_wmc_StyleList(layerContext);
         expected =
             "<StyleList xmlns='http://www.opengis.net/context'>" +
                 "<Style current='1'>" +
@@ -110,6 +115,7 @@
                                 "</sld:UserStyle>" +
                             "</sld:NamedLayer>" +
                         "</sld:StyledLayerDescriptor>" +
+                        "<Name></Name><Title>Default</Title>" +
                     "</SLD>" +
                 "</Style>" + 
             "</StyleList>";
@@ -122,8 +128,9 @@
         t.plan(3);
         
         var xml = new OpenLayers.Format.XML();
-        var parser = new OpenLayers.Format.WMC.v1();
-        var node, text, layerInfo;
+        var format = new OpenLayers.Format.WMC();
+        var parser = format.getParser("1");
+        var node, text, layerContext, layer;
 
         // test named style
         text = 
@@ -133,12 +140,12 @@
                 "</Style>" +
             "</StyleList>";
         node = xml.read(text).documentElement;
-        layerInfo = {
-            params: {},
+        layerContext = {
             styles: []
         };
-        parser.read_wmc_StyleList(layerInfo, node);
-        t.eq(layerInfo.params.styles, "mystyle", "named style correctly read");
+        parser.read_wmc_StyleList(layerContext, node);
+        layer = format.getLayerFromContext(layerContext);
+        t.eq(layer.params.STYLES, "mystyle", "named style correctly read");
         
         // test linked style
         text = 
@@ -152,12 +159,12 @@
                 "</Style>" +
             "</StyleList>";
         node = xml.read(text).documentElement;
-        layerInfo = {
-            params: {},
+        layerContext = {
             styles: []
         };
-        parser.read_wmc_StyleList(layerInfo, node);
-        t.eq(layerInfo.params.sld, "http://linked.sld", "linked style correctly read");        
+        parser.read_wmc_StyleList(layerContext, node);
+        layer = format.getLayerFromContext(layerContext);
+        t.eq(layer.params.SLD, "http://linked.sld", "linked style correctly read");        
         
         // test inline style
         // any valid xml under the StyledLayerDescriptor node should make the
@@ -176,11 +183,11 @@
                 "</Style>" +
             "</StyleList>";
         node = xml.read(text).documentElement;
-        layerInfo = {
-            params: {},
+        layerContext = {
             styles: []
         };
-        parser.read_wmc_StyleList(layerInfo, node);        
+        parser.read_wmc_StyleList(layerContext, node);        
+        layer = format.getLayerFromContext(layerContext);
         var expected = 
             "<sld:StyledLayerDescriptor version='1.0.0' " +
                 "xmlns:sld='http://www.opengis.net/sld' " +
@@ -188,7 +195,7 @@
                 "xsi:schemaLocation='http://www.opengis.net/sld http://schemas.opengeospatial.net/sld/1.0.0/StyledLayerDescriptor.xsd'>" +
                 "<foo xmlns='http://www.opengis.net/context'>bar<more/></foo>" + 
             "</sld:StyledLayerDescriptor>";
-        t.xml_eq(layerInfo.params.sld_body, expected, "inline style correctly read");
+        t.xml_eq(layer.params.SLD_BODY, expected, "inline style correctly read");
 
     }
     
