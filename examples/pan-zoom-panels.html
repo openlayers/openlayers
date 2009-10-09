@@ -40,6 +40,41 @@
         map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
     }
     </script>
+    <style type="text/css">
+        .olControlPanPanel {
+             width: 100%;
+             height: 100%;
+             left: 0;
+             top: 0;
+        }
+        .olControlPanPanel .olControlPanNorthItemInactive {
+             left: 50%;
+             margin-left: -9px;
+             top: 0;
+        }
+        .olControlPanPanel .olControlPanSouthItemInactive {
+             left: 50%;
+             margin-left: -9px;
+             top: auto;
+             bottom: 0;
+        }
+        .olControlPanPanel .olControlPanWestItemInactive {
+             top: 50%;
+             margin-top: -9px;
+             left: 0;
+        }
+        .olControlPanPanel .olControlPanEastItemInactive {
+             top: 50%;
+             margin-top: -9px;
+             left: auto;
+             right: 0;
+        }
+       .olControlZoomPanel {
+             left: auto;
+             right: 23px;
+             top: 8px;
+       } 
+    </style>
 </head>
 <body onload='init();'>
     <h1 id="title">Pan and Zoom Panels</h1>
