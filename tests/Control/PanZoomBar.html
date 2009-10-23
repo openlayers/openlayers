@@ -2,20 +2,20 @@
 <head>
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript">
-    var map; 
+    var map;
     function test_Control_PanZoomBar_constructor (t) {
         t.plan( 4 );
-    
+
         control = new OpenLayers.Control.PanZoomBar({position: new OpenLayers.Pixel(100,100)});
         t.ok( control instanceof OpenLayers.Control.PanZoomBar, "new OpenLayers.Control.PanZoomBar returns object" );
         t.eq( control.displayClass,  "olControlPanZoomBar", "displayClass is correct" );
-        t.eq( control.position.x, 100, "PanZoom X Set correctly."); 
-        t.eq( control.position.y, 100, "PanZoom y Set correctly."); 
+        t.eq( control.position.x, 100, "PanZoom X Set correctly.");
+        t.eq( control.position.y, 100, "PanZoom y Set correctly.");
     }
     function test_Control_PanZoomBar_addControl (t) {
         t.plan( 8 );
         map = new OpenLayers.Map('map', {controls:[]});
-        var layer = new OpenLayers.Layer.WMS("Test Layer", 
+        var layer = new OpenLayers.Layer.WMS("Test Layer",
             "http://octo.metacarta.com/cgi-bin/mapserv?",
             {map: "/mapdata/vmap_wms.map", layers: "basic"});
         map.addLayer(layer);
@@ -33,11 +33,11 @@
         map.addControl(control2, new OpenLayers.Pixel(100,100));
         t.eq( control2.div.style.top, "100px", "2nd control div is located correctly");
     }
-    
+
     function test_Control_PanZoomBar_clearDiv(t) {
         t.plan(2);
         map = new OpenLayers.Map('map', {controls:[]});
-        var layer = new OpenLayers.Layer.WMS("Test Layer", 
+        var layer = new OpenLayers.Layer.WMS("Test Layer",
             "http://octo.metacarta.com/cgi-bin/mapserv?",
             {map: "/mapdata/vmap_wms.map", layers: "basic"});
         map.addLayer(layer);
@@ -48,11 +48,11 @@
         t.eq(control.div.childNodes.length, 0, "control's div cleared.");
         t.eq(control.zoombarDiv, null, "zoombar div nullified.")
     }
-    
+
     function test_Control_PanZoomBar_divClick (t) {
         t.plan(2);
         map = new OpenLayers.Map('map', {controls:[]});
-        var layer = new OpenLayers.Layer.WMS("Test Layer", 
+        var layer = new OpenLayers.Layer.WMS("Test Layer",
             "http://octo.metacarta.com/cgi-bin/mapserv?",
             {map: "/mapdata/vmap_wms.map", layers: "basic"});
         map.addLayer(layer);
@@ -64,7 +64,21 @@
         map.fractionalZoom = true;
         control.divClick({'xy': {'x': 0, 'y': 49}, which: 1});
         t.eq(map.zoom.toFixed(3), '10.545', "zoom is correct on fractional zoom map");
-    
+
+    }
+
+    function test_Control_PanZoomBar_forceFixedZoomLevel_divClick (t) {
+        t.plan(1);
+        map = new OpenLayers.Map('map', {controls:[], fractionalZoom: true});
+        var layer = new OpenLayers.Layer.WMS("Test Layer",
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(layer);
+        control = new OpenLayers.Control.PanZoomBar({forceFixedZoomLevel: true});
+        map.addControl(control);
+
+        control.divClick({'xy': {'x': 0, 'y': 49}, which: 1});
+        t.eq(map.zoom, 11, "forceFixedZoomLevel makes sure only fixed zoom levels are used even if the map has fractionalZoom");
     }
 
   </script>
