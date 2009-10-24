@@ -33,7 +33,9 @@
                     fontSize: "12px",
                     fontFamily: "Courier New, monospace",
                     fontWeight: "bold",
-                    labelAlign: "${align}"
+                    labelAlign: "${align}",
+                    labelXOffset: "${xOffset}",
+                    labelYOffset: "${yOffset}"
                 }}),
                 renderers: renderer
             });
@@ -83,6 +85,22 @@
                     favColor: 'black',
                     align: 'rt'
                 });
+
+            // Create a point feature to show the label offset options
+            var labelOffsetPoint = new OpenLayers.Geometry.Point(-101.04, 35.68);
+            var labelOffsetFeature = new OpenLayers.Feature.Vector(labelOffsetPoint);
+            labelOffsetFeature.attributes = {
+                name: "offset",
+                age: 22,
+                favColor: 'blue',
+                align: "cm",
+                // positive value moves the label to the right
+                xOffset: 50,
+                // negative value moves the label down
+                yOffset: -15
+            };
+
+
             var nullFeature = new OpenLayers.Feature.Vector(null);
             nullFeature.attributes = {
                 name: "toto is some text about the world",
@@ -94,7 +112,7 @@
             map.addLayer(vectorLayer);
             vectorLayer.drawFeature(multiFeature);
             map.setCenter(new OpenLayers.LonLat(point.x, point.y), 3);
-            vectorLayer.addFeatures([pointFeature, polygonFeature, multiFeature, nullFeature ]);
+            vectorLayer.addFeatures([pointFeature, polygonFeature, multiFeature, labelOffsetFeature, nullFeature ]);
         }
     </script>
   </head>
