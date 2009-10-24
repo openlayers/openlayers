@@ -1,5 +1,5 @@
 div.olMap {
-	z-index: 0;
+    z-index: 0;
     padding: 0px!important;
     margin: 0px!important;
     cursor: default;
@@ -320,6 +320,13 @@ div.olControlSaveFeaturesItemInactive {
 
 .olControlNoSelect {
  -moz-user-select: none;
+}
+
+.olImageLoadError {
+    border: ridge 2px gray;
+    background: pink url("img/broken.png");
+    background-repeat: no-repeat;
+    background-position: 5px 5px;
 }
 
 /**

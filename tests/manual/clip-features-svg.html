@@ -4,21 +4,27 @@
 href="../../theme/default/style.css"
 rel="stylesheet" type="text/css">
 <style>
-       #map {
-             width: 512px;
-             height: 512px;
-             border: 1px solid #4B3624;
-             background: White;
-       }
+        #map {
+            width: 512px;
+            height: 512px;
+            border: 1px solid #4B3624;
+            background: White;
+        }
+
+        /* avoid pink tiles */
+        .olImageLoadError {
+            border: none !important;
+            background: none !important;
+        }
+
        .olControlAttribution { bottom: 0px!important }
 </style>
 <script src="../../lib/OpenLayers.js"
 type="text/javascript"></script>
 <script type="text/javascript">var map;
 
-     // avoid pink tiles
-     OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
-     OpenLayers.Util.onImageLoadErrorColor = "transparent";
+      // increase reload attempts 
+      OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 
       var vectorLayer;
       var markerLayer, boxes, newPoint;

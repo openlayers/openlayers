@@ -8,6 +8,11 @@
         #map {
             height: 512px;
         }
+
+        /* avoid pink tiles */
+        .olImageLoadError {
+            background-color: transparent !important;
+        }
     </style>
 
     <script src='http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.1'></script>
@@ -20,9 +25,8 @@
         // make map available for easy debugging
         var map;
 
-        // avoid pink tiles
+        // increase reload attempts 
         OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
-        OpenLayers.Util.onImageLoadErrorColor = "transparent";
 
         function init(){
             var options = {

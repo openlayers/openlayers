@@ -7,14 +7,18 @@
             width: 90%;
             height: 300px;
         }
+
+        /* avoid pink tiles */
+        .olImageLoadError {
+            background-color: transparent !important;
+        }
     </style>
     <script src="../lib/Firebug/firebug.js"></script>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
 
-        // no pink please
+        // increase reload attempts 
         OpenLayers.IMAGE_RELOAD_ATTEMPTS = 2;
-        OpenLayers.Util.onImageLoadErrorColor = "transparent";
         
         var format = new OpenLayers.Format.WMC({'layerOptions': {buffer: 0}});
         var doc, context, map;

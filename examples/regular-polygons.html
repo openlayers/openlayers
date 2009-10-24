@@ -28,11 +28,15 @@
             margin-left: 15em;
             position: absolute;
         }
+
+        /* avoid pink tiles */
+        .olImageLoadError {
+            background-color: transparent !important;
+        }
     </style>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var map, polygonControl;
-        OpenLayers.Util.onImageLoadErrorColor = "transparent";
         function init(){
             map = new OpenLayers.Map('map');
             
