@@ -43,7 +43,7 @@
     }
     
     function test_save(t) {
-        t.plan(5);
+        t.plan(9);
 
         var strategy = new OpenLayers.Strategy.Save();
         
@@ -54,6 +54,9 @@
                 response.reqFeatures = features;
                 response.insertIds = [];
                 for(var i=0; i<features.length; ++i) {
+                    // test feature.url first
+                    t.eq(features[i].url, "url" + i,
+                         "feature.url correctly set (url" + i + ")");
                     if(features[i].state == OpenLayers.State.INSERT) {
                         response.insertIds.push("new_" + i);
                     }
@@ -66,22 +69,39 @@
         var layer = new OpenLayers.Layer.Vector(null, {
             isBaseLayer: true,
             protocol: protocol,
-            strategies: [strategy]
+            strategies: [strategy],
+            projection: "EPSG:4326"
         });
-        var map = new OpenLayers.Map("map");
+        var map = new OpenLayers.Map("map", {
+            getProjectionObject: function() {
+                return new OpenLayers.Projection("EPSG:900913");
+            }
+        })
         map.addLayer(layer);
         map.zoomToMaxExtent();
         
         // give the layer some features
         var features = [
-            new OpenLayers.Feature.Vector(), // insert
-            new OpenLayers.Feature.Vector(), // delete
-            new OpenLayers.Feature.Vector(), // update
-            new OpenLayers.Feature.Vector()  // nothing
+            new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(5, 45)
+            ), // insert
+            new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(6, 46)
+            ), // delete
+            new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(7, 47)
+            ), // update
+            new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(8, 48)
+            )  // nothing
         ];
         features[0].state = OpenLayers.State.INSERT;
+        features[0].url = "url0";
         features[1].state = OpenLayers.State.DELETE;
+        features[1].url = "url1";
         features[2].state = OpenLayers.State.UPDATE;
+        features[2].url = "url2";
+        features[3].url = "url3";
         layer.addFeatures(features);
         
         // save feature modifications
@@ -97,7 +117,6 @@
         
         // confirm that updated feature no longer has update state
         t.ok(features[2].state == null, "updated feature no longer update state");
-        
     }
 
   </script>
