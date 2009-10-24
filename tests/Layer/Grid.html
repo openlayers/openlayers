@@ -595,7 +595,7 @@
 
     function test_Layer_Grid_destroy (t) {
 
-        t.plan( 5 );
+        t.plan( 7 );
 
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.Grid(name, url, params);
@@ -620,6 +620,15 @@
         t.eq( tile.imgDiv, null, "Tile destroyed" ); 
         
         t.ok( layer.grid == null, "tiles appropriately destroyed")
+
+        // destroy after remove from map
+        layer = new OpenLayers.Layer.WMS(name, url, params);
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0), 10);
+        map.removeLayer(layer);
+        layer.destroy();
+        t.eq( layer.grid, null, "layer.grid is null after destroy" );
+        t.eq( layer.tileSize, null, "layer.tileSize is null after destroy" );
     }
     
 
