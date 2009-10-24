@@ -1,0 +1,30 @@
+<html>
+<head>
+    <script src="../../lib/OpenLayers.js"></script>
+    <script src="http://proj4js.org/lib/proj4js-compressed.js"></script>
+    <script type="text/javascript">
+    
+    function test_initialize(t) {
+        t.plan(2);
+        var options = {};
+        map = new OpenLayers.Map("map",{projection:"EPSG:4326"});
+        var layer = new OpenLayers.Layer.WMS();
+        map.addLayers([layer]);
+        
+        var control = new OpenLayers.Control.Graticule(options);
+        map.addControl(control);
+        map.zoomToMaxExtent();
+        
+        t.ok(control.gratLayer instanceof OpenLayers.Layer.Vector,
+             "constructor sets layer correctly");
+        t.ok(control.gratLayer.features.length > 0,
+             "graticule has features");
+        control.destroy();
+    }
+
+    </script>
+</head>
+<body>
+    <div id="map" style="width: 400px; height: 250px;"/>
+</body>
+</html>
