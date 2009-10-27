@@ -4,7 +4,7 @@ var csw_request =
     '<csw:ElementSetName>brief</csw:ElementSetName>' +
     '<csw:Constraint version="1.1.0">' +
       '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
-        '<ogc:PropertyIsLike wildCard="*" singleChar="." escape="!">' +
+        '<ogc:PropertyIsLike wildCard="*" singleChar="." escapeChar="!">' +
           '<ogc:PropertyName>my_prop</ogc:PropertyName>' +
           '<ogc:Literal>my_prop_value</ogc:Literal>' +
         '</ogc:PropertyIsLike>' +
