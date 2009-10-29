@@ -348,3 +348,49 @@ div.olControlSaveFeaturesItemInactive {
 .olControlDragFeatureActive.olControlDragFeatureOver.olDragDown {
     cursor: -moz-grabbing;
 }
+
+/**
+ * Layer switcher
+ */
+.olControlLayerSwitcher {
+    position: absolute;
+    top: 25px;
+    right: 0px;
+    width: 20em;
+    font-family: sans-serif;
+    font-weight: bold;
+    margin-top: 3px;
+    margin-left: 3px;
+    margin-bottom: 3px;
+    font-size: smaller;
+    color: white;
+    background-color: transparent;
+}
+
+.olControlLayerSwitcher .layersDiv {
+    padding-top: 5px;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    padding-right: 75px;
+    background-color: darkblue;
+    width: 100%;
+    height: 100%;
+}
+
+.olControlLayerSwitcher .layersDiv .baseLbl,
+.olControlLayerSwitcher .layersDiv .dataLbl {
+    margin-top: 3px;
+    margin-left: 3px;
+    margin-bottom: 3px;
+}
+
+.olControlLayerSwitcher .layersDiv .baseLayersDiv,
+.olControlLayerSwitcher .layersDiv .dataLayersDiv {
+    padding-left: 10px;
+}
+
+.olControlLayerSwitcher .maximizeDiv,
+.olControlLayerSwitcher .minimizeDiv {
+    top: 5px;
+    right: 0px;
+}

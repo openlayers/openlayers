@@ -32,12 +32,12 @@
         t.eq(control.div.style.width, "250px", "Div is not minimized when added."); 
         control = new OpenLayers.Control.LayerSwitcher();
         map.addControl(control);
-        t.eq(control.div.style.width, "0px", "Div is minimized when added."); 
+        t.eq(control.div.style.width, "0px", "Div is minimized when added.");
     }
  
     function test_Control_LayerSwitcher_loadContents(t) {
 
-        t.plan( 5 );
+        t.plan( 10 );
 
         map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS("WMS", 
@@ -52,14 +52,20 @@
         map.addControl(control);
 
         t.ok(control.layersDiv != null, "correctly makes layers div");
+        t.ok(OpenLayers.Element.hasClass(control.layersDiv, "layersDiv"),
+             "layers div has class layersDiv");
         t.ok(control.baseLayersDiv != null, "correctly makes layers div");
+        t.ok(OpenLayers.Element.hasClass(control.baseLayersDiv, "baseLayersDiv"),
+             "base layers div has class baseLayersDiv");
         t.ok(control.dataLayersDiv != null, "correctly makes layers div");
-
+        t.ok(OpenLayers.Element.hasClass(control.dataLayersDiv, "dataLayersDiv"),
+             "data layers div has class dataLayersDiv");
         t.ok(control.maximizeDiv != null, "correctly makes resize div");
+        t.ok(OpenLayers.Element.hasClass(control.maximizeDiv, "maximizeDiv"),
+             "maximize div has class maximizeDiv");
         t.ok(control.minimizeDiv != null, "correctly makes resize div");
-
-        
-
+        t.ok(OpenLayers.Element.hasClass(control.minimizeDiv, "minimizeDiv"),
+             "minimize div has class minmizeDiv");
     }
 
 
