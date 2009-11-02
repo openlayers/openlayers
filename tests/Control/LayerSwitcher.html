@@ -88,7 +88,7 @@
         var wmsInput = OpenLayers.Util.getElement(control.id + "_input_" + layer.name);
         t.ok(wmsInput != null, "correctly makes an input for wms layer");
         t.eq(wmsInput.type, "radio", "wms correctly made a radio button");
-        t.eq(wmsInput.name, "baseLayers", "wms correctly named");
+        t.eq(wmsInput.name, control.id + "_baseLayers", "wms correctly named");
         t.eq(wmsInput.value, layer.name, "wms correctly valued");
         
         var markersInput = OpenLayers.Util.getElement(control.id + "_input_" + markers.name);
