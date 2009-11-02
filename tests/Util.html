@@ -177,15 +177,12 @@
     }
 
     function test_Util_imageLoadError(t) {
-        t.plan(2);
+        t.plan(1);
 
-        var blank_image_url = OpenLayers.Util.getImagesLocation() + "blank.gif";
-        var img = OpenLayers.Util.createImage(null, null, null, null, null, null, 
-                                              null, false);
+        var img = OpenLayers.Util.createImage(null, null, null, null, null, null, null, false);
 
         img._attempts = OpenLayers.IMAGE_RELOAD_ATTEMPTS + 1;
         OpenLayers.Util.onImageLoadError.call(img);
-        t.ok(OpenLayers.Util.isEquivalentUrl(blank_image_url, img.src), 'broken image correctly has url for blank image as src');
         t.ok(OpenLayers.Element.hasClass(img, 'olImageLoadError'), 'broken image has class olImageLoadError');
     }
 

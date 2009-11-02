@@ -323,10 +323,9 @@ div.olControlSaveFeaturesItemInactive {
 }
 
 .olImageLoadError {
-    border: ridge 2px gray;
-    background: pink url("img/broken.png");
-    background-repeat: no-repeat;
-    background-position: 5px 5px;
+    background-color: pink;
+    opacity: 0.5;
+    filter: alpha(opacity=50); /* IE */
 }
 
 /**
