@@ -3,7 +3,7 @@
     <script src="../../lib/OpenLayers.js"></script>
     <script type="text/javascript">
     function test_Control_GetFeature_constructor(t) {
-        t.plan(2);
+        t.plan(3);
         var protocol = "foo";
         var control = new OpenLayers.Control.GetFeature({
             protocol: protocol
@@ -12,6 +12,13 @@
              "new OpenLayers.Control.SelectFeature returns an instance");
         t.eq(control.protocol, "foo",
              "constructor sets protocol correctly");        
+
+        control = new OpenLayers.Control.GetFeature({
+            filterType: OpenLayers.Filter.Spatial.INTERSECTS
+        });
+        t.eq(control.filterType, OpenLayers.Filter.Spatial.INTERSECTS,
+             "constructor sets filterType correctly");        
+
     }
     
     function test_Control_GetFeature_select(t) {
