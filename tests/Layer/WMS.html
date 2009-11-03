@@ -6,20 +6,20 @@
 <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript">
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
-    var layer; 
+    var layer;
 
     var name = 'Test Layer';
     var url = "http://octo.metacarta.com/cgi-bin/mapserv";
-    var params = { map: '/mapdata/vmap_wms.map', 
-                   layers: 'basic', 
+    var params = { map: '/mapdata/vmap_wms.map',
+                   layers: 'basic',
                    format: 'image/jpeg'};
 
     function test_Layer_WMS_constructor (t) {
         t.plan( 15 );
 
         var trans_format = "image/png";
-        if (OpenLayers.Util.alphaHack()) { trans_format = "image/gif"; } 
-        
+        if (OpenLayers.Util.alphaHack()) { trans_format = "image/gif"; }
+
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
         layer = new OpenLayers.Layer.WMS(name, url, params);
         t.ok( layer instanceof OpenLayers.Layer.WMS, "new OpenLayers.Layer.WMS returns object" );
@@ -64,10 +64,10 @@
         params.TRANSPARENT = false;
 
     }
-    
+
     function test_Layer_WMS_addtile (t) {
         t.plan( 6 );
-    
+
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
         layer = new OpenLayers.Layer.WMS(name, url, params);
         var map = new OpenLayers.Map('map');
@@ -103,10 +103,10 @@
         t.eq( tile.position.toString(), "x=5,y=6", "Position of tile is set correctly." );
         map.destroy();
     }
-    
+
     function test_Layer_WMS_bboxEncoding (t) {
         t.plan( 6 );
-    
+
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
         layer = new OpenLayers.Layer.WMS(name, url, params, {encodeBBOX:true});
         var map = new OpenLayers.Map('map');
@@ -142,7 +142,7 @@
         t.eq( tile.position.toString(), "x=5,y=6", "Position of tile is set correctly." );
         map.destroy();
     }
-    
+
     function test_Layer_WMS_inittiles (t) {
         t.plan( 2 );
         var map = new OpenLayers.Map('map');
@@ -157,14 +157,14 @@
 
     function test_Layer_WMS_clone (t) {
         t.plan(4);
-        
+
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
         var options = {tileSize: new OpenLayers.Size(500,50)};
         var map = new OpenLayers.Map('map', options);
         layer = new OpenLayers.Layer.WMS(name, url, params);
         map.addLayer(layer);
 
-        layer.grid = [ [6, 7], 
+        layer.grid = [ [6, 7],
                        [8, 9]];
 
         var clone = layer.clone();
@@ -185,7 +185,7 @@
 
     function test_Layer_WMS_isBaseLayer(t) {
         t.plan(3);
-        
+
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
         layer = new OpenLayers.Layer.WMS(name, url, params);
         t.ok( layer.isBaseLayer, "baselayer is true by default");
@@ -205,8 +205,8 @@
         var map = new OpenLayers.Map("map");
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
         layer = new OpenLayers.Layer.WMS(name, url, params);
-        
-        var newParams = { layers: 'sooper', 
+
+        var newParams = { layers: 'sooper',
                           chickpeas: 'image/png'};
 
         map.addLayer(layer);
@@ -217,10 +217,10 @@
         }
 
         layer.mergeNewParams(newParams);
-        
+
         t.eq( layer.params.LAYERS, "sooper", "mergeNewParams() overwrites well");
         t.eq( layer.params.CHICKPEAS, "image/png", "mergeNewParams() adds well");
-    
+
         newParams.CHICKPEAS = 151;
 
         t.eq( layer.params.CHICKPEAS, "image/png", "mergeNewParams() makes clean copy of hashtable");
@@ -229,12 +229,12 @@
 
     function test_Layer_WMS_getFullRequestString (t) {
 
-        
+
         t.plan( 2 );
         var map = new OpenLayers.Map('map');
         map.projection = "xx";
         tUrl = "http://octo.metacarta.com/cgi-bin/mapserv";
-        tParams = { layers: 'basic', 
+        tParams = { layers: 'basic',
                    format: 'image/png'};
         var tLayer = new OpenLayers.Layer.WMS(name, tUrl, tParams);
         map.addLayer(tLayer);
@@ -247,7 +247,7 @@
         t.eq(str,
              tUrl + "?" + OpenLayers.Util.getParameterString(tParams),
              "getFullRequestString() adds SRS value");
-        
+
         map.removeLayer(tLayer);
         tLayer.projection = "none";
         map.addLayer(tLayer);
@@ -257,7 +257,7 @@
              tUrl + "?" + OpenLayers.Util.getParameterString(tParams),
              "getFullRequestString() by default does *not* add SRS value if projection is 'none'");
         map.destroy();
- 
+
     }
 
     function test_Layer_WMS_setOpacity (t) {
@@ -266,9 +266,9 @@
         var map = new OpenLayers.Map('map');
         map.projection = "xx";
         tUrl = "http://octo.metacarta.com/cgi-bin/mapserv";
-        tParams = { layers: 'basic', 
+        tParams = { layers: 'basic',
                    format: 'image/png'};
-        tOptions = { 'opacity': '0.5' };           
+        tOptions = { 'opacity': '0.5' };
         var tLayer = new OpenLayers.Layer.WMS(name, tUrl, tParams, tOptions);
         map.addLayer(tLayer);
         map.zoomToMaxExtent();
@@ -283,8 +283,8 @@
         t.eq(parseFloat(tile.imgDiv.style.opacity), 0.6, "Tile opacity is set correctly");
 
         map.destroy();
-    }    
-    
+    }
+
     function test_Layer_WMS_Reproject (t) {
         var validkey = (window.location.protocol == "file:") ||
                        (window.location.host == "localhost") ||
@@ -304,17 +304,17 @@
             map.addLayer(wmslayer);
             map.setCenter(new OpenLayers.LonLat(0,0), 5);
             var tile = wmslayer.grid[0][0];
-            t.eq( tile.bounds.left, -22.5, "left side matches" ); 
-            t.eq( tile.bounds.right, -11.25, "right side matches" ); 
-            t.eq( tile.bounds.bottom.toFixed(6), '11.178402', "bottom side matches" ); 
-            t.eq( tile.bounds.top.toFixed(6), '21.943046', "top side matches" ); 
+            t.eq( tile.bounds.left, -22.5, "left side matches" );
+            t.eq( tile.bounds.right, -11.25, "right side matches" );
+            t.eq( tile.bounds.bottom.toFixed(6), '11.178402', "bottom side matches" );
+            t.eq( tile.bounds.top.toFixed(6), '21.943046', "top side matches" );
             map.destroy();
         } else {
             t.plan(1);
             t.debug_print("can't test google layer from " +
                           window.location.host);
         }
-        
+
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS(name, url, params);
         map.addLayer(layer);
@@ -324,8 +324,8 @@
 
         map.destroy();
     }
-    
-    function test_Layer_WMS_noGutters (t) { 
+
+    function test_Layer_WMS_noGutters (t) {
         t.plan(2);
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS("no gutter layer", url, params, {gutter: 0});
@@ -340,12 +340,12 @@
         t.eq(parseInt(args['HEIGHT']),
              tile.size.h,
              "layer without gutter requests images that are as tall as the tile");
-        
+
         layer.destroy();
         map.destroy();
     }
 
-    function test_Layer_WMS_gutters (t) { 
+    function test_Layer_WMS_gutters (t) {
         t.plan(2);
         var gutter = 15;
         var map = new OpenLayers.Map('map');
@@ -368,16 +368,16 @@
     }
 
     // DEPRECATED -- REMOVE IN 3.0
-    function test_Layer_Untiled_WMS(t) { 
+    function test_Layer_Untiled_WMS(t) {
         t.plan(1);
-        
+
         var layer = new OpenLayers.Layer.WMS.Untiled();
-        
+
         var clone = layer.clone();
-        
+
         t.ok(clone.singleTile, "regression test: clone works. this is for #1013");
     }
-    
+
     function test_Layer_WMS_destroy (t) {
 
         t.plan( 1 );
@@ -389,15 +389,101 @@
         map.setCenter(new OpenLayers.LonLat(0,0), 5);
 
         //grab a reference to one of the tiles
-        var tile = layer.grid[0][0];        
+        var tile = layer.grid[0][0];
 
         layer.destroy();
-        
-    // checks to make sure superclass (grid) destroy() was called    
-        
+
+    // checks to make sure superclass (grid) destroy() was called
+
         t.ok( layer.grid == null, "grid set to null");
     }
-    
+
+    function test_Layer_WMS_v13(t) {
+
+        t.plan(5);
+
+        var lon = 5;
+        var lat = 40;
+        var zoom = 5;
+        var map = new OpenLayers.Map( 'map' );
+        var layer = new OpenLayers.Layer.WMS(
+            "OpenLayers WMS",
+            "http://myserver.org/wms?",
+            {layers: 'mylayer', version: '1.3.0'},
+            {singleTile: true}
+        );
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+
+        var url = layer.getURL(map.getExtent());
+        var params = url.split("&");
+        var bbox;
+        for (var i=0, len=params.length; i<len; i++) {
+            var param = params[i];
+            var a = param.split('=');
+            if (a[0] === 'BBOX') {
+                bbox = a[1];
+                break;
+            }
+        }
+
+        t.eq(layer.params.CRS, "EPSG:4326", "In WMS 1.3 SRS is now CRS");
+        t.eq(bbox, "27.9150390625,-5.986328125,52.0849609375,15.986328125", "Axis sequence is lat lon for EPSG:4326 in WMS 1.3.0");
+
+        var layer2 = new OpenLayers.Layer.WMS(
+            "OpenLayers WMS",
+            "http://myserver.org/wms?",
+            {layers: 'mylayer', version: '1.1.1'},
+            {singleTile: true}
+        );
+        map.addLayer(layer2);
+
+        var url = layer2.getURL(map.getExtent());
+        var params = url.split("&");
+        var bbox;
+        for (var i=0, len=params.length; i<len; i++) {
+            var param = params[i];
+            var a = param.split('=');
+            if (a[0] === 'BBOX') {
+                bbox = a[1];
+                break;
+            }
+        }
+
+        t.eq(layer2.params.SRS, "EPSG:4326", "In WMS 1.1.1 parameter is called SRS");
+        t.eq(bbox, "-5.986328125,27.9150390625,15.986328125,52.0849609375", "Axis sequence is lon lat for EPSG:4326 in WMS 1.1.1");
+
+        map.destroy();
+
+        // CRS:84 has normal axis sequence (lon lat)
+        var map = new OpenLayers.Map( 'map', {projection: 'CRS:84'} );
+        var layer = new OpenLayers.Layer.WMS(
+            "OpenLayers WMS",
+            "http://myserver.org/wms?",
+            {layers: 'mylayer', version: '1.3.0'},
+            {singleTile: true}
+        );
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+
+        var url = layer.getURL(map.getExtent());
+        var params = url.split("&");
+        var bbox;
+        for (var i=0, len=params.length; i<len; i++) {
+            var param = params[i];
+            var a = param.split('=');
+            if (a[0] === 'BBOX') {
+                bbox = a[1];
+                break;
+            }
+        }
+
+        t.eq(bbox, "-5.986328125,27.9150390625,15.986328125,52.0849609375", "Axis sequence for CRS:84 is lon lat");
+
+        map.destroy();
+
+    }
+
 
   </script>
 </head>
