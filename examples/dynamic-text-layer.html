@@ -26,7 +26,7 @@
                 map.zoomToMaxExtent();
 
                 // Interaction; not needed for initial display.
-                var selectControl = new OpenLayers.Control.SelectFeature(layer);
+                selectControl = new OpenLayers.Control.SelectFeature(layer);
                 map.addControl(selectControl);
                 selectControl.activate();
                 layer.events.on({
