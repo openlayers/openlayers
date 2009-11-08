@@ -12,16 +12,16 @@
         t.ok(control instanceof OpenLayers.Control.SelectFeature,
              "new OpenLayers.Control.SelectFeature returns an instance");
         t.eq(control.layers[0], "bar",
-             "constructor with array of layers sets layer correctly");        
+             "constructor with array of layers sets layer correctly");
 //        t.eq(control.handlers.feature.geometryTypes, "foo",
 //             "constructor sets options correctly on feature handler");
         t.ok(control.layer instanceof OpenLayers.Layer.Vector.RootContainer, "control has a root container layer if constructor was called with an array of layers");
-        
+
         control = new OpenLayers.Control.SelectFeature(layer, options);
         t.eq(control.layers, null, "this.layers is null if constructor called with a single layer");
         t.eq(control.layer, layer, "this.layer holds the layer that was passed with the constructor if called with a single layer")
     }
-    
+
     function test_Control_SelectFeature_destroy(t) {
         t.plan(2);
         var map = new OpenLayers.Map("map");
@@ -38,9 +38,9 @@
         }
 // should nullify the layer property here
         control.destroy();
-        
+
     }
-    
+
     function test_Control_SelectFeature_select(t) {
         t.plan(4);
         var map = new OpenLayers.Map("map");
@@ -66,7 +66,7 @@
         control.unselect(feature2);
         t.eq(feature2.renderIntent, "default", "render intent is set back to default");
     }
-    
+
     function test_Control_SelectFeature_clickFeature(t) {
         t.plan(6);
         // mock up layer
@@ -92,7 +92,7 @@
                 layer: layer
             };
         }
-        
+
         // test that onSelect gets called properly
         control.onSelect = function(feature) {
             feature.tested += 1;
@@ -108,11 +108,11 @@
             feature.tested += 1;
             t.eq(feature.id, features[feature.index].id,
                  "onUnselect called with proper feature (" + feature.index + ")");
-            t.eq(feature.tested, feature.test, 
+            t.eq(feature.tested, feature.test,
                  "onUnselect called only once for feature (" + feature.index + ")");
             t.ok(this == control, "onUnselect called in the scope of the control if control.scope is not provided");
         }
-        
+
         // mock up first click on first feature (runs 3 tests from onSelect)
         var feature = features[0];
         feature.index = 0;
@@ -128,9 +128,9 @@
         feature.test = 2;
         control.clickFeature(feature);
 
-        
+
     }
-    
+
     function test_box(t) {
         t.plan(5);
         var map = new OpenLayers.Map("map");
@@ -149,30 +149,30 @@
         control.setMap(map);
         map.getLonLatFromPixel = function(arg) {
             return new OpenLayers.LonLat(arg.x, arg.y);
-        }    
+        }
         control.selectBox(new OpenLayers.Bounds(-1, -1, 2, 2));
         t.eq(layer.selectedFeatures.length, 3, "box around all features selects 3 features");
-        
+
         control.selectBox(new OpenLayers.Bounds(-3, -3, -1, -1));
-        t.eq(layer.selectedFeatures.length, 4, "box around other features doesn't turn off already selected features.");        
-        
+        t.eq(layer.selectedFeatures.length, 4, "box around other features doesn't turn off already selected features.");
+
         control.multipleSelect = function() {
             return false;
         };
         control.selectBox(new OpenLayers.Bounds(-3, -3, -1, -1));
         t.eq(layer.selectedFeatures.length, 1, "box around other features correctly turns off already selected features.");
-        
+
         control.geometryTypes = null;
         control.selectBox(new OpenLayers.Bounds(-100, -100, 100, 100));
         t.eq(layer.selectedFeatures.length, layer.features.length, "all features selected with no geometryTypes filter");
-        
+
         control.geometryTypes = ["OpenLayers.Geometry.Point"];
         control.selectBox(new OpenLayers.Bounds(-100, -100, 100, 100));
         t.eq(layer.selectedFeatures.length, 3, "3 features selected with geometryTypes filter");
-        
+
 
     }
-    
+
     function test_Control_SelectFeature_activate(t) {
         t.plan(4);
         var map = new OpenLayers.Map("map");
@@ -267,9 +267,9 @@
         t.eq(feature.renderIntent, "temporary",
              "feature drawn with expected render intent after \"mouseover\"");
         t.eq(feature._lastHighlighter, ctrl2.id,
-             "feature._lastHighlighter properly set after \"mouseover\""); 
+             "feature._lastHighlighter properly set after \"mouseover\"");
         t.eq(feature._prevHighlighter, undefined,
-             "feature._prevHighlighter properly set after \"mouseover\""); 
+             "feature._prevHighlighter properly set after \"mouseover\"");
 
         // click in feature, feature is drawn with "select"
         _feature = feature;
@@ -278,9 +278,9 @@
         t.eq(feature.renderIntent, "select",
              "feature drawn with expected render intent after \"clickin\"");
         t.eq(feature._lastHighlighter, ctrl1.id,
-             "feature._lastHighlighter properly set after \"clickin\""); 
+             "feature._lastHighlighter properly set after \"clickin\"");
         t.eq(feature._prevHighlighter, ctrl2.id,
-             "feature._prevHighlighter properly set after \"clickin\""); 
+             "feature._prevHighlighter properly set after \"clickin\"");
 
         // mouse out of feature, feature is still drawn with "select"
         _feature = null;
@@ -289,9 +289,9 @@
         t.eq(feature.renderIntent, "select",
              "feature drawn with expected render intent after \"mouseout\"");
         t.eq(feature._lastHighlighter, ctrl1.id,
-             "feature._lastHighlighter properly set after \"nouseout\""); 
+             "feature._lastHighlighter properly set after \"nouseout\"");
         t.ok(feature._prevHighlighter, ctrl2.id,
-             "feature._prevHighlighter properly set after \"mouseout\""); 
+             "feature._prevHighlighter properly set after \"mouseout\"");
 
         // mouse over feature again, feature is drawn with "temporary"
         _feature = feature;
@@ -300,9 +300,9 @@
         t.eq(feature.renderIntent, "temporary",
              "feature drawn with expected render intent after \"mouseover\"");
         t.eq(feature._lastHighlighter, ctrl2.id,
-             "feature._lastHighlighter properly set after \"mouseover\""); 
+             "feature._lastHighlighter properly set after \"mouseover\"");
         t.eq(feature._prevHighlighter, ctrl1.id,
-             "feature._prevHighlighter properly set after \"mouseover\""); 
+             "feature._prevHighlighter properly set after \"mouseover\"");
 
         // mouve out of feature again, feature is still drawn with "select"
         _feature = null;
@@ -311,9 +311,9 @@
         t.eq(feature.renderIntent, "select",
              "feature drawn with expected render intent after \"mouseout\"");
         t.eq(feature._lastHighlighter, ctrl1.id,
-             "feature._lastHighlighter properly set after \"mouseout\""); 
+             "feature._lastHighlighter properly set after \"mouseout\"");
         t.eq(feature._prevHighlighter, undefined,
-             "feature._prevHighlighter properly set after \"mouseout\""); 
+             "feature._prevHighlighter properly set after \"mouseout\"");
 
         // click out of feature, feature is drawn with "default"
         _feature = null;
@@ -322,9 +322,9 @@
         t.eq(feature.renderIntent, "default",
              "feature drawn with expected render intent after \"clickout\"");
         t.eq(feature._lastHighlighter, undefined,
-             "feature._lastHighlighter properly set after \"clickout\""); 
+             "feature._lastHighlighter properly set after \"clickout\"");
         t.eq(feature._prevHighlighter, undefined,
-             "feature._prevHighlighter properly set after \"clickout\""); 
+             "feature._prevHighlighter properly set after \"clickout\"");
 
         // with selectStyle
 
@@ -371,6 +371,30 @@
         _style = "default";
         evt.type = "click";
         map.events.triggerEvent("click", evt);
+    }
+
+    function test_setLayer(t) {
+        t.plan(5);
+        var map = new OpenLayers.Map("map");
+        var layer1 = new OpenLayers.Layer.Vector();
+        var layer2 = new OpenLayers.Layer.Vector();
+        var layer3 = new OpenLayers.Layer.Vector();
+        map.addLayer(layer1, layer2, layer3);
+        // initialize it with a single layer
+        var control = new OpenLayers.Control.SelectFeature(layer1);
+        map.addControl(control);
+        control.activate();
+        control.setLayer([layer2, layer3]);
+        t.eq(control.layer instanceof OpenLayers.Layer.Vector.RootContainer, true, "Root container created correctly on setLayer with multiple layers");
+        t.eq(control.active, true, "Control should be active still after using setLayer");
+        t.eq((control.handlers.feature.layer === control.layer), true, "Feature handler layer set correctly");
+        control.destroy();
+        // initialize with an array of layers
+        control = new OpenLayers.Control.SelectFeature([layer1, layer2]);
+        t.eq((control.layers !== null), true, "Control has a layers property");
+        control.setLayer(layer3);
+        t.eq((control.layers === null), true, "When using setLayer with a single layer, the layers property is removed if present before");
+        map.destroy();
     }
 
     </script>
