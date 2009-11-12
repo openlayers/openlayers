@@ -8,6 +8,24 @@
   <script type="text/javascript">
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var map; 
+
+    function test_isElement(t) {
+        t.plan(3);
+
+        // set up
+        var o;
+
+        // tests
+        o = {};
+        t.eq(OpenLayers.Util.isElement(o), false,
+             "isElement reports that {} isn't an Element");
+        o = document.createElement("div");
+        t.eq(OpenLayers.Util.isElement(o), true,
+             "isElement reports that object returned by createElement is an Element");
+        o = OpenLayers.Util.getElement("map");
+        t.eq(OpenLayers.Util.isElement(o), true,
+             "isElement reports that object returned by getElement is an Element");
+    }
     
     function test_$(t) {
         t.plan(1);
