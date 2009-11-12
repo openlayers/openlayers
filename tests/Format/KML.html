@@ -160,6 +160,16 @@
         t.eq(features[0].attributes.all_bridges.displayName, "all bridges", "read displayName from extendeddata correctly.");
     }
 
+    function test_Format_KML_extendedData_SchemaData(t) {
+        t.plan(4);
+        var f = new OpenLayers.Format.KML();
+        var features = f.read(OpenLayers.Util.getElement("kml_extendeddata2").value);
+        t.eq(features[0].attributes.TrailHeadName.value, "Pi in the sky", "read value from extendeddata (schema data) correctly.");
+        t.eq(features[0].attributes.TrailHeadName.displayName, "TrailHeadName", "read displayName from extendeddata correctly");
+        t.eq(features[0].attributes.ElevationGain.value, "10", "read value from extendeddata (schema data) correctly.");
+        t.eq(features[0].attributes.ElevationGain.displayName, "ElevationGain", "read displayName from extendeddata correctly");
+    }
+
     </script> 
 </head> 
 <body> 
@@ -206,6 +216,38 @@
 
 
         </Placemark>
+</Document>
+</kml>
+</textarea>
+    <textarea id="kml_extendeddata2" style="display:none">
+<kml xmlns="http://earth.google.com/kml/2.2">
+<Document>
+<Placemark>
+  <name>Easy trail</name>
+  <ExtendedData>
+    <SchemaData schemaUrl="#TrailHeadTypeId">
+      <SimpleData name="TrailHeadName">Pi in the sky</SimpleData>
+      <SimpleData name="TrailLength">3.14159</SimpleData>
+      <SimpleData name="ElevationGain">10</SimpleData>
+    </SchemaData>
+    </ExtendedData>
+    <Point>
+      <coordinates>-122.000,37.002</coordinates>
+    </Point>
+</Placemark>
+<Placemark>
+  <name>Difficult trail</name>
+  <ExtendedData>
+    <SchemaData schemaUrl="#TrailHeadTypeId">
+      <SimpleData name="TrailHeadName">Mount Everest</SimpleData>
+      <SimpleData name="TrailLength">347.45</SimpleData>
+      <SimpleData name="ElevationGain">10000</SimpleData>
+    </SchemaData>
+  </ExtendedData>
+  <Point>
+    <coordinates>-122.000,37.002</coordinates>
+  </Point>
+</Placemark>
 </Document>
 </kml>
 </textarea>
