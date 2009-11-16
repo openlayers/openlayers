@@ -52,7 +52,7 @@
     }
 
     function test_read_msGMLOutput(t) {
-        t.plan(7);
+        t.plan(12);
         
         var parser = new OpenLayers.Format.WMSGetFeatureInfo();
 
@@ -96,6 +96,7 @@
             '</msGMLOutput>';
 
         features = parser.read(text);
+
         t.eq(features.length, 1,
              "Parsed 1 feature in total");
 
@@ -104,6 +105,13 @@
 
         t.eq(features[0].type, 'AAA64',
              "Parsed the layer name correctly");
+
+        var bounds = features[0].bounds;
+        t.ok(bounds instanceof OpenLayers.Bounds, "feature given a bounds");
+        t.eq(bounds.left.toFixed(3), "107397.266", "Bounds left parsed correctly");
+        t.eq(bounds.right.toFixed(3), "116568.188", "Bounds right parsed correctly");
+        t.eq(bounds.bottom.toFixed(3), "460681.063", "Bounds bottom parsed correctly");
+        t.eq(bounds.top.toFixed(3), "480609.250", "Bounds top parsed correctly");
 
         // read 2 features from 2 layers
         text = 
@@ -263,7 +271,6 @@
 
     }
     
-
     </script> 
 </head> 
 <body>
