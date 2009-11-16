@@ -62,12 +62,19 @@
     }    
     
     function test_Handler_MouseWheel_events(t) {
-        t.plan(5);
+        t.plan(6);
         
         var map = new OpenLayers.Map('map');
+        map.addLayer(new OpenLayers.Layer.WMS("","",{}));
+        map.zoomToMaxExtent();
         var control = new OpenLayers.Control();
         map.addControl(control);
-        var handler = new OpenLayers.Handler.MouseWheel(control);
+        var deltaZ;
+        var handler = new OpenLayers.Handler.MouseWheel(control, {
+            'up': function(evt, delta){
+                deltaZ = delta;
+            }
+        }, {interval: 200});
 
         // list below events that should be handled (events) and those
         // that should not be handled (nonevents) by the handler
@@ -99,6 +106,15 @@
         }
 
         var activated = handler.activate();
+        
+        var delta = 120;
+        if (window.opera && window.opera.version() < 9.2)  delta = -delta;
+        handler.onWheelEvent({'target':map.layers[0].div, wheelDelta: delta});
+        handler.onWheelEvent({'target':map.layers[0].div, wheelDelta: delta});
+        t.delay_call(1, function() {
+            t.eq(deltaZ, 2, "Multiple scroll actions triggered one event when interval is set");
+        });
+
 
     }
 

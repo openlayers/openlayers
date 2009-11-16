@@ -1,0 +1,43 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>OpenLayers Mousewheel Interval Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map, layer;
+        function init(){
+            map = new OpenLayers.Map( 'map', {controls: [
+                new OpenLayers.Control.Navigation(
+                    {mouseWheelOptions: {interval: 100}}
+                ),
+                new OpenLayers.Control.PanZoom(),
+                new OpenLayers.Control.ArgParser(),
+                new OpenLayers.Control.Attribution()
+            ]} );
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                    "http://labs.metacarta.com/wms/vmap0",
+                    {layers: 'basic'} );
+            map.addLayer(layer);
+            map.zoomToMaxExtent();
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">OpenLayers Mousewheel Interval Example</h1>
+
+    <div id="tags"></div>
+
+    <div id="shortdesc">Let OpenLayers send less tile requests to the server when wheel-zooming.</div>
+
+    <div id="map" class="smallmap"></div>
+
+    <div id="docs">
+        <p>This example shows how to configure the Navigation control to use 
+        the mousewheel in a less server resource consuming way: as long as you
+        spin the mousewheel, no request will be sent to the server. Instead,
+        the zoomlevel delta will be recorded. After a delay (in this example
+        100ms), a zoom action with the cumulated delta will be performed.</p>
+    </div>
+  </body>
+</html>
