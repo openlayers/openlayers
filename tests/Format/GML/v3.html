@@ -179,13 +179,13 @@
             xy: false
         });
         var features = format.read(doc.documentElement);
-        
-        var geom = features[0].geometry;
-        t.ok(geom.bounds instanceof OpenLayers.Bounds, "geometry given a bounds");
-        t.eq(geom.bounds.left.toFixed(2), "-91.52", "bounds left correct");
-        t.eq(geom.bounds.bottom.toFixed(2), "36.99", "bounds bottom correct");
-        t.eq(geom.bounds.right.toFixed(2), "-87.51", "bounds right correct");
-        t.eq(geom.bounds.top.toFixed(2), "42.51", "bounds top correct");
+        var bounds = features[0].bounds;
+
+        t.ok(bounds instanceof OpenLayers.Bounds, "feature given a bounds");
+        t.eq(bounds.left.toFixed(2), "-91.52", "bounds left correct");
+        t.eq(bounds.bottom.toFixed(2), "36.99", "bounds bottom correct");
+        t.eq(bounds.right.toFixed(2), "-87.51", "bounds right correct");
+        t.eq(bounds.top.toFixed(2), "42.51", "bounds top correct");
     }
 
     function test_read(t) {

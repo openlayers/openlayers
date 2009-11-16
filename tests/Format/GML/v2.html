@@ -188,12 +188,13 @@
             xy: false
         });
         var features = format.read(doc.documentElement);
-        var geom = features[0].geometry;
-        t.ok(geom.bounds instanceof OpenLayers.Bounds, "geometry given a bounds");
-        t.eq(geom.bounds.left.toFixed(2), "-91.52", "bounds left correct");
-        t.eq(geom.bounds.bottom.toFixed(2), "36.99", "bounds bottom correct");
-        t.eq(geom.bounds.right.toFixed(2), "-87.51", "bounds right correct");
-        t.eq(geom.bounds.top.toFixed(2), "42.51", "bounds top correct");
+        var bounds = features[0].bounds;
+
+        t.ok(bounds instanceof OpenLayers.Bounds, "feature given a bounds");
+        t.eq(bounds.left.toFixed(2), "-91.52", "bounds left correct");
+        t.eq(bounds.bottom.toFixed(2), "36.99", "bounds bottom correct");
+        t.eq(bounds.right.toFixed(2), "-87.51", "bounds right correct");
+        t.eq(bounds.top.toFixed(2), "42.51", "bounds top correct");
     }
     
     function test_write(t) {
@@ -229,6 +230,24 @@
         t.eq(features[0].namespace, "http://mapserver.gis.umn.edu/mapserver", "Namespace is set correctly on feature");
     }
 
+    function test_noGeom(t) {
+        t.plan(7);
+        var doc = readXML("v2/nogeom.xml");
+        var format = new OpenLayers.Format.GML.v2({
+            featureType: "DEPARTEMENT",
+            featureNS: "http://server.fr/geoserver/loc"
+        });
+        var features = format.read(doc.documentElement);
+        t.eq(features.length, 2, "Expected 2 features from GML with no geom");
+        var feature = features[0];
+        t.ok(feature.geometry == null, "feature 0 has no geometry");
+        var bounds = feature.bounds;
+        t.ok(bounds && (bounds instanceof OpenLayers.Bounds), "feature 0 has been assigned bounds");
+        t.eq(bounds.left, 209565, "bounds left correct");
+        t.eq(bounds.bottom, 6785323, "bounds bottom correct");
+        t.eq(bounds.right, 337568, "bounds right correct");
+        t.eq(bounds.top, 6885985, "bounds top correct");
+    }
    </script>
 </head>
 <body>
@@ -641,6 +660,9 @@
 --></div>
 <div id="v2/multipletypenames.xml"><!--
 <?xml version='1.0' encoding="ISO-8859-1" ?><wfs:FeatureCollection   xmlns:rws="http://mapserver.gis.umn.edu/mapserver"   xmlns:wfs="http://www.opengis.net/wfs"   xmlns:gml="http://www.opengis.net/gml"   xmlns:ogc="http://www.opengis.net/ogc"   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd                        http://mapserver.gis.umn.edu/mapserver http://intranet.rijkswaterstaat.nl/services/geoservices/kerngisnat_utre?SERVICE=WFS&amp;VERSION=1.0.0&amp;REQUEST=DescribeFeatureType&amp;TYPENAME=VKUNSTWERK,LKUNSTWERK,PKUNSTWERK&amp;OUTPUTFORMAT=XMLSCHEMA">      <gml:boundedBy>      	<gml:Box srsName="EPSG:28992">      		<gml:coordinates>134503.789000,455332.337000 135149.909000,455893.926000</gml:coordinates>      	</gml:Box>      </gml:boundedBy>    <gml:featureMember>      <rws:VKUNSTWERK fid="VKUNSTWERK.16">        <gml:boundedBy>        	<gml:Box srsName="EPSG:28992">        		<gml:coordinates>134949.571000,455438.845000 134978.799000,455471.762000</gml:coordinates>        	</gml:Box>        </gml:boundedBy>        <rws:geometry>        <gml:MultiPolygon srsName="EPSG:28992">        <gml:polygonMember>          <gml:Polygon>            <gml:outerBoundaryIs>              <gml:LinearRing>                <gml:coordinates>134974.191000,455471.587000 134973.974000,455471.762000 134973.558000,455471.248000 134973.579000,455471.230000 134963.143000,455458.768000 134962.787000,455458.653000 134960.514000,455456.003000 134960.440000,455455.539000 134950.207000,455443.320000 134950.158000,455443.360000 134949.571000,455442.638000 134949.810000,455442.462000 134951.417000,455441.223000 134951.435000,455441.209000 134954.158000,455439.108000 134954.507000,455438.845000 134955.000000,455439.420000 134954.954000,455439.458000 134965.046000,455451.520000 134965.568000,455451.606000 134968.159000,455454.642000 134968.120000,455455.195000 134978.294000,455467.355000 134978.330000,455467.326000 134978.799000,455467.881000 134978.598000,455468.042000 134975.885000,455470.224000 134974.191000,455471.587000 </gml:coordinates>              </gml:LinearRing>            </gml:outerBoundaryIs>            <gml:innerBoundaryIs>              <gml:LinearRing>                <gml:coordinates>134960.590000,455455.163000 134963.589000,455458.755000 134973.756000,455470.929000 134973.836000,455471.019000 134974.216000,455471.445000 134975.807000,455470.163000 134978.485000,455468.005000 134978.077000,455467.534000 134978.015000,455467.462000 134967.969000,455455.479000 134964.782000,455451.678000 134954.705000,455439.660000 134954.622000,455439.561000 134954.271000,455439.152000 134951.498000,455441.284000 134949.973000,455442.456000 134950.452000,455443.023000 134950.501000,455443.081000 134960.590000,455455.163000 </gml:coordinates>              </gml:LinearRing>            </gml:innerBoundaryIs>          </gml:Polygon>        </gml:polygonMember>        </gml:MultiPolygon>        </rws:geometry>        <rws:OBJECTID>16</rws:OBJECTID>        <rws:OBJECTSUBCATEGORIE>31</rws:OBJECTSUBCATEGORIE>      </rws:VKUNSTWERK>    </gml:featureMember>    <gml:featureMember>      <rws:LKUNSTWERK fid="LKUNSTWERK.14">        <gml:boundedBy>        	<gml:Box srsName="EPSG:28992">        		<gml:coordinates>135080.966000,455332.337000 135149.909000,455390.384000</gml:coordinates>        	</gml:Box>        </gml:boundedBy>        <rws:geometry>        <gml:MultiLineString srsName="EPSG:28992">          <gml:lineStringMember>            <gml:LineString>              <gml:coordinates>135080.966000,455390.384000 135096.654000,455377.009000 135109.082000,455366.755000 135122.769000,455355.276000 135141.565000,455339.633000 135149.909000,455332.337000 </gml:coordinates>            </gml:LineString>          </gml:lineStringMember>        </gml:MultiLineString>        </rws:geometry>        <rws:OBJECTID>14</rws:OBJECTID>        <rws:OBJECTSUBCATEGORIE>30</rws:OBJECTSUBCATEGORIE>      </rws:LKUNSTWERK>    </gml:featureMember>    <gml:featureMember>      <rws:PKUNSTWERK fid="PKUNSTWERK.29">        <gml:boundedBy>        	<gml:Box srsName="EPSG:28992">        		<gml:coordinates>134832.017000,455596.187000 134832.017000,455596.187000</gml:coordinates>        	</gml:Box>        </gml:boundedBy>        <rws:geometry>        <gml:MultiPoint srsName="EPSG:28992">          <gml:pointMember>            <gml:Point>              <gml:coordinates>134832.017000,455596.187000</gml:coordinates>            </gml:Point>          </gml:pointMember>        </gml:MultiPoint>        </rws:geometry>        <rws:OBJECTID>29</rws:OBJECTID>        <rws:OBJECTSUBCATEGORIE>30</rws:OBJECTSUBCATEGORIE>      </rws:PKUNSTWERK>    </gml:featureMember></wfs:FeatureCollection>
+--></div>
+<div id="v2/nogeom.xml"><!--
+<?xml version="1.0" encoding="UTF-8"?><wfs:FeatureCollection xmlns="http://www.opengis.net/wfs" xmlns:wfs="http://www.opengis.net/wfs" xmlns:gml="http://www.opengis.net/gml" xmlns:loc="http://server.fr/geoserver/loc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://server.fr:80/geoserver/schemas/wfs/1.0.0/WFS-basic.xsd http://server.fr/geoserver/loc http://server.fr:80/geoserver/wfs?service=WFS&amp;version=1.0.0&amp;request=DescribeFeatureType&amp;typeName=loc:DEPARTEMENT"><gml:boundedBy><gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#2154"><gml:coordinates xmlns:gml="http://www.opengis.net/gml" decimal="." cs="," ts=" ">199373,6704170 337568,6885985</gml:coordinates></gml:Box></gml:boundedBy><gml:featureMember><loc:DEPARTEMENT fid="DEPARTEMENT.1"><gml:boundedBy><gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#2154"><gml:coordinates xmlns:gml="http://www.opengis.net/gml" decimal="." cs="," ts=" ">209565,6785323 337568,6885985</gml:coordinates></gml:Box></gml:boundedBy><loc:NOM_DEPT>COTES-D'ARMOR</loc:NOM_DEPT></loc:DEPARTEMENT></gml:featureMember><gml:featureMember><loc:DEPARTEMENT fid="DEPARTEMENT.3"><gml:boundedBy><gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#2154"><gml:coordinates xmlns:gml="http://www.opengis.net/gml" decimal="." cs="," ts=" ">199373,6704170 323518,6807542</gml:coordinates></gml:Box></gml:boundedBy><loc:NOM_DEPT>MORBIHAN</loc:NOM_DEPT></loc:DEPARTEMENT></gml:featureMember></wfs:FeatureCollection>
 --></div>
 </body>
 </html>
