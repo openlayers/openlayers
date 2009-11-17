@@ -84,7 +84,7 @@
     }
 
     function test_Map_add_layers(t) {
-        t.plan(6);
+        t.plan(8);
         map = new OpenLayers.Map('map');
         var layer1 = new OpenLayers.Layer.WMS("Layer 1", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
@@ -101,6 +101,19 @@
                 "layer1 zIndex is set" );
         t.eq( parseInt(layer2.div.style.zIndex), map.Z_INDEX_BASE['BaseLayer'] + 5, 
                 "layer2 zIndex is set" );
+
+        map.events.register('preaddlayer', this, function(evt) {
+            return !(evt.layer.name === 'donotadd');
+        });
+        var layer3 = new OpenLayers.Layer.WMS("donotadd",
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayers([layer3]);
+        t.eq(map.layers.length, 2, "layer is not added since preaddlayer returns false");
+        layer3.name = 'pleaseadd';
+        map.addLayers([layer3]);
+        t.eq(map.layers.length, 3, "layer is added since preaddlayer returns true");
+       
     }
 
     function test_Map_options(t) {
