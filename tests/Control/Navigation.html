@@ -96,6 +96,33 @@
         t.eq(nav.zoomWheelEnabled, true, "mouse wheel activated");
         t.eq(wheel.active, true, "mouse wheel handler activated");
     }
+    
+    function test_documentDrag(t) {
+        
+        t.plan(2);
+
+        /**
+         * These tests confirm that the documentDrag property is false by 
+         * default and is passed on to the DragPan control.  Tests of panning
+         * while dragging outside the viewport should go in the DragPan tests.
+         * Tests of the document events and appropriate callbacks from the 
+         * handler should go in the Drag handler tests.
+         */
+         
+         var nav = new OpenLayers.Control.Navigation();
+         t.eq(nav.documentDrag, false, "documentDrag false by default");
+         // nav.destroy(); // fails if called before draw
+         
+         var map = new OpenLayers.Map({
+             div: document.body,
+             controls: [new OpenLayers.Control.Navigation({documentDrag: true})]
+         });
+         nav = map.controls[0];
+
+         t.eq(nav.dragPan.documentDrag, true, "documentDrag set on the DragPan control");
+         map.destroy();
+         
+    }
 
   </script>
 </head>

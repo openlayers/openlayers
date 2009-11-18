@@ -8,9 +8,7 @@
         var map, layer;
         function init(){
             map = new OpenLayers.Map( 'map', {controls: [
-                new OpenLayers.Control.Navigation(
-                    {dragPanOptions: {documentDrag: true}}
-                ),
+                new OpenLayers.Control.Navigation({documentDrag: true}),
                 new OpenLayers.Control.PanZoom(),
                 new OpenLayers.Control.ArgParser(),
                 new OpenLayers.Control.Attribution()
