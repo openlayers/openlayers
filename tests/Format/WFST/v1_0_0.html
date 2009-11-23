@@ -42,6 +42,13 @@
                 })
             }
         }, {
+            id: "query1",
+            writer: "wfs:Query",
+            arg: {
+                srsNameInQuery: true,
+                srsName: "EPSG:900913"
+            }
+        }, {
             id: "getfeature0",
             writer: "wfs:GetFeature",
             arg: {
@@ -92,6 +99,10 @@
             </gml:Box>
         </ogc:BBOX>
     </ogc:Filter>
+</wfs:Query>
+--></div>
+<div id="query1"><!--
+<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" srsName="EPSG:900913" xmlns:topp="http://www.openplans.org/topp">
 </wfs:Query>
 --></div>
 <div id="getfeature0"><!--
