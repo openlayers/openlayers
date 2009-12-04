@@ -38,6 +38,14 @@
                     "getImagesLocation()" );
     }
 
+    function test_Util_IndexOf(t) {
+        t.plan( 3 );
+        var array = new Array(1, "bar");
+        t.eq(OpenLayers.Util.indexOf(array, 1), 0);
+        t.eq(OpenLayers.Util.indexOf(array, "bar"), 1);
+        t.eq(OpenLayers.Util.indexOf(array, "foo"), -1);
+    }
+
     function test_Util_Array(t) {
         t.plan( 2 );
 
