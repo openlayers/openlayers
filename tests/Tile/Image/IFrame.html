@@ -142,9 +142,9 @@
             t.ok(true, "Skip filter test outside InternetExplorer.");
         }
         t.eq( iFrame.scrolling, 'no', "no scrolling");
-        t.eq( iFrame.marginWidth, '0', "no margin width");
-        t.eq( iFrame.marginHeight, '0', "no margin height");
-        t.eq( iFrame.frameBorder, '0', "no iframe border");
+        t.eq( parseFloat(iFrame.marginWidth), 0, "no margin width");
+        t.eq( parseFloat(iFrame.marginHeight), 0, "no margin height");
+        t.eq( parseFloat(iFrame.frameBorder), 0, "no iframe border");
     }
 
     function test_Tile_Image_IFrame_createRequestForm (t) {
