@@ -307,6 +307,51 @@
 
     }
 
+    function test_drillDown(t) {
+        t.plan(4);
+        var map = new OpenLayers.Map("map", {
+            getExtent: function() {return(new OpenLayers.Bounds(-180,-90,180,90));}
+            }
+        );
+
+        var a = new OpenLayers.Layer.WMS("dummy","http://localhost/wms", {
+            layers: "a"
+        });
+
+        var b = new OpenLayers.Layer.WMS("dummy","http://localhost/wms", {
+            layers: "c"
+        });
+
+        var c = new OpenLayers.Layer.WMS("dummy","http://myhost/wms", {
+            layers: "x"
+        });
+
+        map.addLayers([a, b, c]);
+
+        var click = new OpenLayers.Control.WMSGetFeatureInfo({
+            drillDown: true
+        });
+
+        map.addControl(click);
+
+        var count = 0;
+        var _request = OpenLayers.Request.GET;
+        OpenLayers.Request.GET = function(options) {
+            count++;
+            if (count == 1) {
+                t.eq(options.params["query_layers"].join(","), "a,c", "Layers should be grouped by service url");
+                t.eq(options.url, "http://localhost/wms", "Correct url used for first request");
+            } else if (count == 2) {
+                t.eq(options.url, "http://myhost/wms", "Correct url used for second request");
+            }
+        };
+        click.activate();
+        click.getInfoForClick({xy: {x: 50, y: 50}});
+        OpenLayers.Request.GET = _request;
+        t.eq(count, 2, "We expect 2 requests to go off");
+        map.destroy();
+    }
+
     </script>
 </head>
 <body>
