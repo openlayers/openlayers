@@ -80,3 +80,7 @@ h6 {
 #tags {
     display: none;
 }
+
+#docs p {
+    margin-bottom: 0.5em;
+}
