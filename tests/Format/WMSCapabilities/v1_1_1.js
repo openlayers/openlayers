@@ -1,6 +1,6 @@
 var doc = (new OpenLayers.Format.XML).read(
     '<?xml version="1.0" encoding="UTF-8"?>' +
-    '<!DOCTYPE WMT_MS_Capabilities SYSTEM "http://publicus.opengeo.org:80/geoserver/schemas/wms/1.1.1/WMS_MS_Capabilities.dtd">' +
+    '<!DOCTYPE WMT_MS_Capabilities SYSTEM "http://demo.opengeo.org:80/geoserver/schemas/wms/1.1.1/WMS_MS_Capabilities.dtd">' +
     '<WMT_MS_Capabilities version="1.1.1" updateSequence="57">' +
       '<Service>' +
         '<Name>OGC:WMS</Name>' +
