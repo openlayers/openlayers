@@ -179,7 +179,7 @@
         cacheId     = (cacheId ? cacheId + "_" : "") + tile.bounds.toBBOX();
         var url = OpenLayers.Util.urlAppend(newLayer.url, cacheId);
 
-        t.eq( form.method, 'POST', "form method correctly set.");
+        t.eq( form.method.toLowerCase(), 'post', "form method correctly set.");
         t.eq( form.target, tile.id+'_iFrame', "form target correctly set.");
         t.eq( form.action, url, "form action correctly set.");
 
