@@ -1,0 +1,68 @@
+<html>
+<head>
+    <script src="../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+
+    function test_read_SOSGetObservation(t) {
+        t.plan(7);
+
+        var parser = new OpenLayers.Format.SOSGetObservation();
+        var text =
+            '<?xml version="1.0" encoding="UTF-8"?>' +
+            '<om:ObservationCollection xmlns:om="http://www.opengis.net/om/1.0" xmlns:gml="http://www.opengis.net/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sa="http://www.opengis.net/sampling/1.0" gml:id="oc_0" xsi:schemaLocation="http://www.opengis.net/om/1.0 http://schemas.opengis.net/om/1.0.0/om.xsd http://www.opengis.net/sampling/1.0 http://schemas.opengis.net/sampling/1.0.0/sampling.xsd">' +
+            '<gml:boundedBy>' +
+            '<gml:Envelope srsName="urn:ogc:def:crs:EPSG:4326">' +
+            '<gml:lowerCorner>52.1524 5.3722</gml:lowerCorner>' +
+            '<gml:upperCorner>52.1524 5.3722</gml:upperCorner>' +
+            '</gml:Envelope>' +
+            '</gml:boundedBy>' +
+            '<om:member>' +
+            '<om:Measurement gml:id="o_51082">' +
+            '<om:samplingTime>' +
+            '<gml:TimeInstant xsi:type="gml:TimeInstantType">' +
+            '<gml:timePosition>2009-12-02T10:35:00.000+01:00</gml:timePosition>' +
+            '</gml:TimeInstant>' +
+            '</om:samplingTime>' +
+            '<om:procedure xlink:href="urn:ogc:object:feature:OSIRIS-HWS:4fc335bc-06d7-4d5e-a72a-1ac73b9f3b56"/>' +
+            '<om:observedProperty xlink:href="urn:x-ogc:def:property:OGC::Temperature"/>' +
+            '<om:featureOfInterest>' +
+            '<sa:SamplingPoint gml:id="urn:ogc:object:feature:OSIRIS-HWS:4fc335bc-06d7-4d5e-a72a-1ac73b9f3b56">' +
+            '<gml:name>Roof of the IfGI</gml:name>' +
+            '<sa:position>' +
+            '<gml:Point>' +
+            '<gml:pos srsName="urn:ogc:def:crs:EPSG:4326">52.1524 5.3722</gml:pos>' +
+            '</gml:Point>' +
+            '</sa:position>' +
+            '</sa:SamplingPoint>' +
+            '</om:featureOfInterest>' +
+            '<om:result uom="Cel">4.9</om:result>' +
+            '</om:Measurement>' +
+            '</om:member>' +
+            '</om:ObservationCollection>';
+
+        var res = parser.read(text);
+        t.eq(res.measurements.length, 1, "One measurement parsed");
+        t.eq(res.id, "oc_0", "Observation collection id correctly parsed");
+        var measurement = res.measurements[0];
+        t.eq(measurement.observedProperty, "urn:x-ogc:def:property:OGC::Temperature", "Observed property correctly parsed");
+        t.eq(measurement.procedure, "urn:ogc:object:feature:OSIRIS-HWS:4fc335bc-06d7-4d5e-a72a-1ac73b9f3b56", "Procedure correctly parsed");
+        t.eq(measurement.result.uom, "Cel", "Units of measurement correctly parsed");
+        t.eq(measurement.result.value, "4.9", "Value correctly parsed");
+        t.eq(measurement.samplingTime.timeInstant.timePosition, "2009-12-02T10:35:00.000+01:00", "Sampling time correctly parsed");
+    }
+
+    function test_write_SOSGetObservation(t) {
+        t.plan(1);
+        var expect = '<GetObservation xmlns="http://www.opengis.net/sos/1.0" version="1.0.0" service="SOS" xsi:schemaLocation="http://www.opengis.net/sos/1.0 http://schemas.opengis.net/sos/1.0.0/sosGetObservation.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><offering>TEMPERATURE</offering><eventTime><ogc:TM_Equals xmlns:ogc="http://www.opengis.net/ogc"><ogc:PropertyName>urn:ogc:data:time:iso8601</ogc:PropertyName><gml:TimeInstant xmlns:gml="http://www.opengis.net/gml"><gml:timePosition>latest</gml:timePosition></gml:TimeInstant></ogc:TM_Equals></eventTime><procedure>urn:ogc:object:feature:OSIRIS-HWS:4fc335bc-06d7-4d5e-a72a-1ac73b9f3b56</procedure><observedProperty>urn:x-ogc:def:property:OGC::Temperature</observedProperty><responseFormat>text/xml;subtype="om/1.0.0"</responseFormat><resultModel>Measurement</resultModel><responseMode>inline</responseMode></GetObservation>';
+        var format = new OpenLayers.Format.SOSGetObservation();
+        var output = format.write({eventTime: 'latest', resultModel: 'Measurement', responseMode: 'inline',
+            procedure: 'urn:ogc:object:feature:OSIRIS-HWS:4fc335bc-06d7-4d5e-a72a-1ac73b9f3b56', responseFormat: 'text/xml;subtype="om/1.0.0"',
+            offering: 'TEMPERATURE', observedProperty: 'urn:x-ogc:def:property:OGC::Temperature'});
+        t.xml_eq(output, expect, "Request XML is written out correctly");
+    }
+
+    </script>
+</head>
+<body>
+</body>
+</html>
