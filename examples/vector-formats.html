@@ -78,7 +78,8 @@
                 georss: new OpenLayers.Format.GeoRSS(in_options),
                 gml2: new OpenLayers.Format.GML.v2(gmlOptionsIn),
                 gml3: new OpenLayers.Format.GML.v3(gmlOptionsIn),
-                kml: new OpenLayers.Format.KML(kmlOptionsIn)
+                kml: new OpenLayers.Format.KML(kmlOptionsIn),
+                atom: new OpenLayers.Format.Atom(in_options)
               }, 
               'out': {
                 wkt: new OpenLayers.Format.WKT(out_options),
@@ -86,7 +87,8 @@
                 georss: new OpenLayers.Format.GeoRSS(out_options),
                 gml2: new OpenLayers.Format.GML.v2(gmlOptionsOut),
                 gml3: new OpenLayers.Format.GML.v3(gmlOptionsOut),
-                kml: new OpenLayers.Format.KML(out_options)
+                kml: new OpenLayers.Format.KML(out_options),
+                atom: new OpenLayers.Format.Atom(out_options)
               } 
             };
         }
@@ -183,6 +185,7 @@
             <label for="formatType">Format</label>
             <select name="formatType" id="formatType">
                 <option value="geojson" selected="selected">GeoJSON</option>
+                <option value="atom">Atom</option>
                 <option value="kml">KML</option>
                 <option value="georss">GeoRSS</option>
                 <option value="gml2">GML (v2)</option>

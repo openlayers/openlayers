@@ -1,0 +1,450 @@
+<html> 
+<head> 
+    <script src="../../lib/OpenLayers.js"></script> 
+    <script type="text/javascript">
+
+    function test_constructor(t) { 
+        t.plan(4); 
+        var options = {'foo': 'bar'}; 
+        var format = new OpenLayers.Format.Atom(options); 
+        t.ok(format instanceof OpenLayers.Format.Atom, 
+             "new OpenLayers.Format.GeoRSS returns object" ); 
+        t.eq(format.foo, "bar", "constructor sets options correctly"); 
+        t.eq(typeof format.read, "function", "format has a read function"); 
+        t.eq(typeof format.write, "function", "format has a write function"); 
+    }
+
+    /* Reading tests */
+
+    function test_reproject_null(t) { 
+        t.plan(1);
+        var parser = new OpenLayers.Format.Atom({'internalProjection':new OpenLayers.Projection("EPSG:4326"), 'externalProjection': new OpenLayers.Projection("EPSG:4326")});
+        var data = parser.read(
+          // begin document
+          '<feed xmlns="http://www.w3.org/2005/Atom">'  +
+          '<entry></entry>'                             +
+          '</feed>'
+          // end document
+          );
+        t.eq(
+          data.length, 1, 
+          "Parsing items with null geometry and reprojection doesn't fail"
+          );
+    }
+
+    // read entry 1: basic entry, no categories or persons
+    function test_readentry1(t) { 
+        t.plan(10);
+        var parser = new OpenLayers.Format.Atom();
+        var data = parser.read(
+          // begin document
+          '<entry xmlns="http://www.w3.org/2005/Atom">'                 +
+          '  <id>urn:uuid:82ede847-b31a-4e3d-b773-7471bad154ed</id>'    +
+          '  <link href="http://example.com/blog/1" rel="alternate"/>'  +
+          '  <summary>An Atom testing entry</summary>'                  +
+          '  <title>Atom test</title>'                                  +
+          '  <updated>2009-06-02T10:00:00Z</updated>'                   +
+          '</entry>'
+          // end document
+          );
+        t.ok(data instanceof Array, "Read features");
+        var fx = data[0];
+        t.ok(fx instanceof OpenLayers.Feature.Vector, "Read feature");
+        t.eq(fx.geometry, null, "Geometry is null");
+        t.eq(
+            fx.fid, 
+            "urn:uuid:82ede847-b31a-4e3d-b773-7471bad154ed", 
+            "Read fid"
+            );
+        var attrib = fx.attributes;
+        t.eq(attrib.title, "Atom test", "Correct title attribute");
+        t.eq(
+            attrib.description, 
+            "An Atom testing entry", 
+            "Correct description attribute"
+            );
+        var atomAttrib = attrib.atom;
+        t.eq(
+            atomAttrib.links, 
+            [{href: "http://example.com/blog/1", rel: "alternate"}], 
+            "Correct links in atom namespace"
+            );
+        t.eq(
+            atomAttrib.summary, 
+            "An Atom testing entry", 
+            "Correct summary in atom namespace"
+            );
+        t.eq(
+            atomAttrib.title, 
+            "Atom test", 
+            "Correct title in atom namespace"
+            );
+        t.eq(
+            atomAttrib.updated, 
+            "2009-06-02T10:00:00Z", 
+            "Correct timestamp in atom namespace"
+            );
+    }
+
+    // read entry 2: with georss:where
+    function test_readentry2(t) { 
+        t.plan(5);
+        var parser = new OpenLayers.Format.Atom();
+        var data = parser.read(
+          // begin document
+          '<entry xmlns="http://www.w3.org/2005/Atom">'                   +
+          '  <id>urn:uuid:82ede847-b31a-4e3d-b773-7471bad154ed</id>'      +
+          '  <georss:where xmlns:georss="http://www.georss.org/georss">'  +
+          '    <gml:Point xmlns:gml="http://www.opengis.net/gml">'        +
+          '      <gml:pos>45.68 -111.04</gml:pos>'                        +
+          '    </gml:Point>'                                              +
+          '  </georss:where>'                                             +
+          '</entry>'
+          // end document
+          );
+        t.ok(data instanceof Array, "Read features");
+        var fx = data[0];
+        t.ok(fx instanceof OpenLayers.Feature.Vector, "Read feature");
+        t.ok(fx.geometry instanceof OpenLayers.Geometry.Point, "Read geometry");
+        t.eq(fx.geometry.x, -111.04, "Read x");
+        t.eq(fx.geometry.y, 45.68, "Read y");
+    }
+
+    // read entry 3: with georss:point
+    function test_readentry3(t) { 
+        t.plan(5);
+        var parser = new OpenLayers.Format.Atom();
+        var data = parser.read(
+          // begin document
+          '<entry xmlns="http://www.w3.org/2005/Atom">'                   +
+          '  <id>urn:uuid:82ede847-b31a-4e3d-b773-7471bad154ed</id>'      +
+          '  <georss:point xmlns:georss="http://www.georss.org/georss">45.68 -111.04</georss:point>'                                                   +
+          '</entry>'
+          // end document
+          );
+        t.ok(data instanceof Array, "Read features");
+        var fx = data[0];
+        t.ok(fx instanceof OpenLayers.Feature.Vector, "Read feature");
+        t.ok(fx.geometry instanceof OpenLayers.Geometry.Point, "Read geometry");
+        t.eq(fx.geometry.x, -111.04, "Read x");
+        t.eq(fx.geometry.y, 45.68, "Read y");
+    }
+
+    // read entry 4: basic entry, text content
+    function test_readentry4(t) { 
+        t.plan(3);
+        var parser = new OpenLayers.Format.Atom();
+        var data = parser.read(
+          // begin document
+          '<entry xmlns="http://www.w3.org/2005/Atom">'                 +
+          '  <id>urn:uuid:82ede847-b31a-4e3d-b773-7471bad154ed</id>'    +
+          '  <link href="http://example.com/blog/1" rel="alternate"/>'  +
+          '  <summary>An Atom testing entry</summary>'                  +
+          '  <title>Atom test</title>'                                  +
+          '  <updated>2009-06-02T10:00:00Z</updated>'                   +
+          '  <content type="text">Blah, blah, blah</content>'           +
+          '</entry>'
+          // end document
+          );
+        t.ok(data instanceof Array, "Read features");
+        var fx = data[0];
+        var attrib = fx.attributes;
+        var atomAttrib = attrib.atom;
+        t.eq(
+            atomAttrib.content.type, 
+            "text", 
+            "Correct content.type in atom namespace"
+            );
+        t.eq(
+            atomAttrib.content.value, 
+            "Blah, blah, blah", 
+            "Correct content.value in atom namespace"
+            );
+    }
+
+    // read entry 5: basic entry, KML content
+    function test_readentry5(t) { 
+        t.plan(3);
+        var parser = new OpenLayers.Format.Atom();
+        var data = parser.read(
+          // begin document
+          '<entry xmlns="http://www.w3.org/2005/Atom">'                 +
+          '  <id>urn:uuid:82ede847-b31a-4e3d-b773-7471bad154ed</id>'    +
+          '  <link href="http://example.com/blog/1" rel="alternate"/>'  +
+          '  <summary>An Atom testing entry</summary>'                  +
+          '  <title>Atom test</title>'                                  +
+          '  <updated>2009-06-02T10:00:00Z</updated>'                   +
+          '  <content type="application/vnd.google-earth.kml+xml"><kml xmlns="http://earth.google.com/kml/2.0"><Folder><name>A folder</name><description>It\'s a folder</description></Folder></kml></content>'                          +
+          '</entry>'
+          // end document
+          );
+        t.ok(data instanceof Array, "Read features");
+        var fx = data[0];
+        var attrib = fx.attributes;
+        var atomAttrib = attrib.atom;
+        t.eq(
+            atomAttrib.content.type, 
+            "application/vnd.google-earth.kml+xml", 
+            "Correct content.type in atom namespace"
+            );
+        var node = atomAttrib.content.value;
+        var name = node.localName || node.nodeName.split(":").pop();
+        t.eq(
+            name, 
+            "kml", 
+            "Correct content.value in atom namespace"
+            );
+    }
+    
+    // read feed 1
+    function test_readfeed1(t) { 
+        t.plan(2);
+        var parser = new OpenLayers.Format.Atom();
+        var data = parser.read(
+          // begin document
+          '<feed xmlns="http://www.w3.org/2005/Atom">'                  +
+          '  <entry>'                                                   +
+          '    <id>urn:uuid:82ede847-b31a-4e3d-b773-7471bad154ed</id>'  +
+          '  </entry>'                                                  +
+          '</feed>'
+          // end document
+          );
+        t.ok(data instanceof Array, "Read features");
+        var fx = data[0];
+        t.ok(fx instanceof OpenLayers.Feature.Vector, "Read feature");
+    }
+    
+    /* Writing tests */
+  
+    // write entry 1: null geometry, no attributes
+    function test_writeentry1(t) { 
+        t.plan(1);
+        var writer = new OpenLayers.Format.Atom();
+        var feature = new OpenLayers.Feature.Vector(null, {});
+        feature.fid = '1';
+        var data = writer.write(feature);
+        t.xml_eq(
+          data,
+          // begin document
+          '<entry xmlns="http://www.w3.org/2005/Atom">' +
+          '<id>1</id>'                                  +
+          '<title>untitled</title>'                     +
+          '</entry>',
+          // end document 
+          'Writes an entry doc with id, no attributes'
+          );
+    }
+
+    // write entry 2: null geometry, well-known attributes
+    function test_writeentry2(t) { 
+        t.plan(1);
+        var writer = new OpenLayers.Format.Atom();
+        var feature = new OpenLayers.Feature.Vector(null, {title: "Test", description: "A testing feature"});
+        feature.fid = '1';
+        var data = writer.write(feature);
+        t.xml_eq(
+          data,
+          // begin document
+          '<entry xmlns="http://www.w3.org/2005/Atom">' +
+          '<id>1</id>'                                  +
+          '<summary>A testing feature</summary>'        +
+          '<title>Test</title>'                         +
+          '</entry>',
+          // end document
+          'Writes an entry doc with id, well-known attributes'
+          );
+    }
+
+    // write entry 3: null geometry, Atom constructs to override 
+    // well-known attributes
+    function test_writeentry3(t) { 
+        t.plan(1);
+        var writer = new OpenLayers.Format.Atom();
+        var feature = new OpenLayers.Feature.Vector(null, {title: "Test", description: "A testing feature", atom: {title: "Atom test", summary: "An Atom testing feature", updated: "2009-06-02T10:00:00Z"}});
+        feature.fid = '1';
+        var data = writer.write(feature);
+        t.xml_eq(
+          data,
+          // begin document
+          '<entry xmlns="http://www.w3.org/2005/Atom">' +
+          '<id>1</id>'                                  +
+          '<summary>An Atom testing feature</summary>'  +
+          '<title>Atom test</title>'                    +
+          '<updated>2009-06-02T10:00:00Z</updated>'     +
+          '</entry>',
+          // end document
+          'Writes an entry doc with Atom constructs overriding well-known atts'
+          );
+    }
+
+    // write entry 4: Atom categories
+    function test_writeentry4(t) { 
+        t.plan(1);
+        var writer = new OpenLayers.Format.Atom();
+        var feature = new OpenLayers.Feature.Vector(null, {title: "Test", description: "A testing feature", atom: {title: "Atom test", summary: "An Atom testing feature", updated: "2009-06-02T10:00:00Z", categories: [{term: "blog", scheme: "http://example.com/terms", label: "A blog post"}]}});
+        feature.fid = '1';
+        var data = writer.write(feature);
+        t.xml_eq(
+          data,
+          // begin document
+          '<entry xmlns="http://www.w3.org/2005/Atom">' +
+          '<category term="blog" scheme="http://example.com/terms" label="A blog post"/>'                                           +
+          '<id>1</id>'                                  +
+          '<summary>An Atom testing feature</summary>'  +
+          '<title>Atom test</title>'                    +
+          '<updated>2009-06-02T10:00:00Z</updated>'     +
+          '</entry>',
+          // end document
+          'Writes an entry doc with Atom constructs and categories'
+          );
+    }
+
+    // write entry 5: Atom authors, contributors
+    function test_writeentry5(t) { 
+        t.plan(1);
+        var writer = new OpenLayers.Format.Atom();
+        var feature = new OpenLayers.Feature.Vector(null, {title: "Test", description: "A testing feature", atom: {title: "Atom test", summary: "An Atom testing feature", updated: "2009-06-02T10:00:00Z", authors: [{name: "John Doe", uri: "http://example.com/people/jdoe", email: "jdoe@example.com"}], contributors: [{name: "Pikov Andropov", uri: "http://example.com/people/pandropov", email: "pandropov@example.com"}]}});
+        feature.fid = '1';
+        var data = writer.write(feature);
+        t.xml_eq(
+          data,
+          // begin document
+          '<entry xmlns="http://www.w3.org/2005/Atom">' +
+          '<author>'                                    +
+          '  <name>John Doe</name>'                     +
+          '  <uri>http://example.com/people/jdoe</uri>' +
+          '  <email>jdoe@example.com</email>'           +
+          '</author>'                                   +
+          '<contributor>'                               +
+          '  <name>Pikov Andropov</name>'               +
+          '  <uri>http://example.com/people/pandropov</uri>' +
+          '  <email>pandropov@example.com</email>'      +
+          '</contributor>'                              +
+          '<id>1</id>'                                  +
+          '<summary>An Atom testing feature</summary>'  +
+          '<title>Atom test</title>'                    +
+          '<updated>2009-06-02T10:00:00Z</updated>'     +
+          '</entry>',
+          // end document
+          'Writes an entry doc with Atom constructs and persons'
+          );
+    }
+
+    // write entry 6: Atom links
+    function test_writeentry6(t) { 
+        t.plan(1);
+        
+        // Feature attributes in Atom namespace
+        var atomAttrib = {
+              title: "Atom test", 
+              summary: "An Atom testing feature", 
+              updated: "2009-06-02T10:00:00Z", 
+              links: [
+                { href: "http://example.com/blog/1", rel: "alternate" }
+                ]
+              };
+        var fx = new OpenLayers.Feature.Vector(null, {atom: atomAttrib});
+        fx.fid = 'urn:uuid:82ede847-b31a-4e3d-b773-7471bad154ed';
+        
+        var writer = new OpenLayers.Format.Atom();
+        var data = writer.write(fx);
+        
+        t.xml_eq(
+          data,
+          // begin document
+          '<entry xmlns="http://www.w3.org/2005/Atom">'               +
+          '<id>urn:uuid:82ede847-b31a-4e3d-b773-7471bad154ed</id>'    +
+          '<link href="http://example.com/blog/1" rel="alternate"/>'  +
+          '<summary>An Atom testing feature</summary>'                +
+          '<title>Atom test</title>'                                  +
+          '<updated>2009-06-02T10:00:00Z</updated>'                   +
+          '</entry>',
+          // end document
+          'Writes an entry doc with Atom constructs and links'
+          );
+    }
+
+    // write out point -- just enough to see that we're getting the
+    // georss:where element with a Point. We'll trust GML.v3 to get the
+    // details right.
+    function test_writepoint(t) { 
+        t.plan(1);
+
+        var point = new OpenLayers.Geometry.Point(-111.04, 45.68);  
+        var fx = new OpenLayers.Feature.Vector(point, {});
+        fx.fid = 'urn:uuid:82ede847-b31a-4e3d-b773-7471bad154ed';
+        
+        var writer = new OpenLayers.Format.Atom();
+        var data = writer.write(fx);
+        
+        t.xml_eq(
+          data,
+          // begin document
+          '<entry xmlns="http://www.w3.org/2005/Atom">'                 +
+          '<id>urn:uuid:82ede847-b31a-4e3d-b773-7471bad154ed</id>'      +
+          '<title>untitled</title>'                                     +
+          '<georss:where xmlns:georss="http://www.georss.org/georss">'  +
+          '  <gml:Point xmlns:gml="http://www.opengis.net/gml">'        +
+          '    <gml:pos>45.68 -111.04</gml:pos>'                        +
+          '  </gml:Point>'                                              +
+          '</georss:where>'                                             +
+          '</entry>',
+          // end document
+          'Writes an entry doc with a point location'
+          );
+    }
+
+    // write entry 7: text type content
+    function test_writeentry7(t) { 
+        t.plan(1);
+        var writer = new OpenLayers.Format.Atom();
+        var feature = new OpenLayers.Feature.Vector(null, {title: "Test", description: "A testing feature", atom: {title: "Atom test", summary: "An Atom testing feature", updated: "2009-06-02T10:00:00Z", content: {type: "text", value: "Blah, blah, blah"}}});
+        feature.fid = '1';
+        var data = writer.write(feature);
+        t.xml_eq(
+          data,
+          // begin document
+          '<entry xmlns="http://www.w3.org/2005/Atom">'     +
+          '<content type="text">Blah, blah, blah</content>' +
+          '<id>1</id>'                                      +
+          '<summary>An Atom testing feature</summary>'      +
+          '<title>Atom test</title>'                        +
+          '<updated>2009-06-02T10:00:00Z</updated>'         +
+          '</entry>',
+          // end document
+          'Writes an entry doc with Atom constructs overriding well-known atts'
+          );
+    }
+
+    // write entry 8: +xml type content
+    function test_writeentry8(t) { 
+        t.plan(1);
+        var kml = new OpenLayers.Format.KML();
+        kml.foldersName = "A folder";
+        kml.foldersDesc = "It's a folder";
+        var kmlDoc = kml.createElementNS(kml.kmlns, "kml");
+        var kmlFolder = kml.createFolderXML();
+        kmlDoc.appendChild(kmlFolder);
+        var writer = new OpenLayers.Format.Atom();
+        var feature = new OpenLayers.Feature.Vector(null, {title: "Test", description: "A testing feature", atom: {title: "Atom test", summary: "An Atom testing feature", updated: "2009-06-02T10:00:00Z", content: {type: "application/vnd.google-earth.kml+xml", value: kmlDoc}}});
+        feature.fid = '1';
+        var data = writer.write(feature);
+        t.xml_eq(
+          data,
+          // begin document
+          '<entry xmlns="http://www.w3.org/2005/Atom">'     +
+          '<content type="application/vnd.google-earth.kml+xml"><kml xmlns="http://earth.google.com/kml/2.0"><Folder><name>A folder</name><description>It\'s a folder</description></Folder></kml></content>' +
+          '<id>1</id>'                                      +
+          '<summary>An Atom testing feature</summary>'      +
+          '<title>Atom test</title>'                        +
+          '<updated>2009-06-02T10:00:00Z</updated>'         +
+          '</entry>',
+          // end document
+          'Writes an entry doc with Atom constructs overriding well-known atts'
+          );
+    }
+    </script> 
+</head> 
+<body> 
+</body> 
+</html> 
