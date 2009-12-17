@@ -2,13 +2,58 @@
 <head>
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript">
-    var map; 
+    var map;
     function test_initialize(t) {
         t.plan( 2 );
     
         control = new OpenLayers.Control.OverviewMap();
         t.ok( control instanceof OpenLayers.Control.OverviewMap, "new OpenLayers.Control.OverviewMap returns object" );
         t.eq( control.displayClass,  "olControlOverviewMap", "displayClass is correct" );
+    }
+    function test_destroy(t) {
+        t.plan(6);
+
+        // set up
+
+        var log_drag = [], log_click = [], control;
+
+        map = new OpenLayers.Map('map');
+        map.addLayer(new OpenLayers.Layer("layer", {isBaseLayer: true}));
+
+        control = new OpenLayers.Control.OverviewMap();
+        map.addControl(control);
+
+        map.zoomToMaxExtent();
+
+        control.handlers.drag.destroy = function() {
+            log_drag.push({"map": !!this.map.events});
+        };
+        control.handlers.click.destroy = function() {
+            log_click.push({"map": !!this.map.events});
+        };
+
+        // test
+
+        control.destroy();
+        t.eq(log_drag.length, 2,
+             "destroy() destroys drag handler twice, expected");
+        if (log_drag.length == 2) {
+            t.eq(log_drag[0].map, true,
+                 "destroy() destroys drag handler before ovmap is destroyed (0)");
+            t.eq(log_drag[1].map, false,
+                 "destroy() destroys drag handler after ovmap is destroyed (1)");
+        }
+        t.eq(log_click.length, 2,
+             "destroy() destroys click handler twice, expected");
+        if (log_click.length == 2) {
+            t.eq(log_click[0].map, true,
+                 "destroy() destroys click handler before ovmap is destroyed (0)");
+            t.eq(log_click[1].map, false,
+                 "destroy() destroys click handler after ovmap is destroyed (1)");
+        }
+
+        // tear down
+        map.destroy();
     }
     function test_addControl (t) {
         t.plan( 6 );
