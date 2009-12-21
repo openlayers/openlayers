@@ -1,0 +1,57 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+
+    function test_constructor(t) {
+        t.plan(4);
+        var a = new OpenLayers.Protocol.SOS({
+            url: "foo",
+            fois: ["a", "b", "c"]
+        });
+
+        t.eq(a.url, "foo", "constructor sets url");
+        t.eq(a.options.url, a.url, "constructor copies url to options.url");
+        t.eq(a.fois[0], "a", "constructor sets the fois correctly");
+        t.eq((a.format instanceof OpenLayers.Format.SOSGetFeatureOfInterest), true, "Constructor sets format correctly"); 
+    }
+
+    function test_read(t) {
+        t.plan(4);
+
+        var protocol = new OpenLayers.Protocol.SOS({
+            url: "http://some.url.org/sos?",
+            fois: ["foi1", "foi2"],
+            parseFeatures: function(request) {
+                t.eq(request.responseText, "foo", "parseFeatures called properly");
+                return "foo";
+            }
+        });
+
+        var _POST = OpenLayers.Request.POST;
+
+        var expected, status;
+        OpenLayers.Request.POST = function(obj) {
+            t.xml_eq(new OpenLayers.Format.XML().read(obj.data).documentElement, expected, "GetFeatureOfInterest request is correct");
+            obj.status = status;
+            obj.responseText = "foo";
+            obj.options = {};
+            t.delay_call(0.1, function() {obj.callback.call(this)});
+            return obj;
+        };
+
+        var xml = '<GetFeatureOfInterest xmlns="http://www.opengis.net/sos/1.0" version="1.0.0" service="SOS" xsi:schemaLocation="http://www.opengis.net/sos/1.0 http://schemas.opengis.net/sos/1.0.0/sosAll.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><FeatureOfInterestId>foi1</FeatureOfInterestId><FeatureOfInterestId>foi2</FeatureOfInterestId></GetFeatureOfInterest>';
+        expected = new OpenLayers.Format.XML().read(xml).documentElement;
+        status = 200;
+        var response = protocol.read({callback: function(response) {
+            t.eq(response.features, "foo", "user callback properly called with features");
+            t.eq(response.code, OpenLayers.Protocol.Response.SUCCESS, "success reported properly");
+        }});
+
+    }
+
+  </script>
+</head>
+<body>
+</body>
+</html>
