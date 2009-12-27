@@ -133,22 +133,26 @@
         t.plan(9);
     
         var layer = new OpenLayers.Layer.Vector(name);
+        var features;
 
         var point1 = new OpenLayers.Geometry.Point(-111.04, 45.68);
         var pointFeature1 = new OpenLayers.Feature.Vector(layer, point1);
         var point2 = new OpenLayers.Geometry.Point(-111.14, 45.78);
         var pointFeature2 = new OpenLayers.Feature.Vector(layer, point2);
-      
+
+        // 1 test
         layer.addFeatures([pointFeature1, pointFeature2]);
-        var features = layer.removeFeatures([pointFeature1]);
-        
+        features = layer.removeFeatures([pointFeature1]);
         t.ok(layer.features.length == 1, "OpenLayers.Layer.Vector.removeFeatures removes a feature from the features array");
+
+        // 1 test
         layer.addFeatures([pointFeature1.clone(), pointFeature2.clone()]);
         layer.selectedFeatures.push(layer.features[0]); 
         layer.removeFeatures(layer.features[0]);
         t.eq(layer.selectedFeatures, [], "Remove features removes selected features");
-        var features = layer.removeFeatures(layer.features);
-        
+
+        // 1 test
+        features = layer.removeFeatures(layer.features);
         t.ok(layer.features.length == 0,
              "OpenLayers.Layer.Vector.removeFeatures(layer.features) removes all feature from the features array");
 
