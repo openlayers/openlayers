@@ -130,10 +130,10 @@
     }
 
     function test_Layer_Vector_removeFeatures(t) {
-        t.plan(9);
+        t.plan(13);
     
         var layer = new OpenLayers.Layer.Vector(name);
-        var features;
+        var features, log;
 
         var point1 = new OpenLayers.Geometry.Point(-111.04, 45.68);
         var pointFeature1 = new OpenLayers.Feature.Vector(layer, point1);
@@ -155,6 +155,23 @@
         features = layer.removeFeatures(layer.features);
         t.ok(layer.features.length == 0,
              "OpenLayers.Layer.Vector.removeFeatures(layer.features) removes all feature from the features array");
+
+        // 4 tests
+        log = [];
+        layer.addFeatures([pointFeature1, pointFeature2]);
+        layer.events.register("featuresremoved", null, function(obj) {
+            log.push(obj);
+        });
+        layer.removeFeatures(layer.features);
+        t.eq(log.length, 1,
+             "\"featuresremoved\" triggered once");
+        t.eq(log[0].features.length, 2,
+             "\"featuresremoved\" listener is passed two features");
+        t.ok(log[0].features[0] == pointFeature1,
+             "\"featuresremoved\" listener is passed the correct feature at index 0");
+        t.ok(log[0].features[1] == pointFeature2,
+             "\"featuresremoved\" listener is passed the correct feature at index 1");
+        layer.events.remove("featuresremoved");
 
         // 6 tests
         layer.events.register('beforefeatureremoved', null, function(obj) {
