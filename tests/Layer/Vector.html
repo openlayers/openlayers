@@ -130,7 +130,7 @@
     }
 
     function test_Layer_Vector_removeFeatures(t) {
-        t.plan(13);
+        t.plan(17);
     
         var layer = new OpenLayers.Layer.Vector(name);
         var features, log;
@@ -164,14 +164,37 @@
         });
         layer.removeFeatures(layer.features);
         t.eq(log.length, 1,
-             "\"featuresremoved\" triggered once");
+             "\"featuresremoved\" triggered once [0]");
         t.eq(log[0].features.length, 2,
-             "\"featuresremoved\" listener is passed two features");
+             "\"featuresremoved\" listener is passed two features [0]");
         t.ok(log[0].features[0] == pointFeature1,
-             "\"featuresremoved\" listener is passed the correct feature at index 0");
+             "\"featuresremoved\" listener is passed the correct feature at index 0 [0]");
         t.ok(log[0].features[1] == pointFeature2,
-             "\"featuresremoved\" listener is passed the correct feature at index 1");
+             "\"featuresremoved\" listener is passed the correct feature at index 1 [0]");
         layer.events.remove("featuresremoved");
+
+        // 4 tests
+        log = [];
+        layer.addFeatures([
+            pointFeature1, pointFeature2,
+            pointFeature1.clone(), pointFeature2.clone()
+        ]);
+        layer.selectedFeatures.push(pointFeature1);
+        layer.selectedFeatures.push(pointFeature2);
+        layer.events.register("featuresremoved", null, function(obj) {
+            log.push(obj);
+        });
+        layer.removeFeatures(layer.selectedFeatures);
+        t.eq(log.length, 1,
+             "\"featuresremoved\" triggered once [1]");
+        t.eq(log[0].features.length, 2,
+             "\"featuresremoved\" listener is passed two features [1]");
+        t.ok(log[0].features[0] == pointFeature1,
+             "\"featuresremoved\" listener is passed the correct feature at index 0 [1]");
+        t.ok(log[0].features[1] == pointFeature2,
+             "\"featuresremoved\" listener is passed the correct feature at index 1 [1]");
+        layer.events.remove("featuresremoved");
+        layer.removeFeatures(layer.features);
 
         // 6 tests
         layer.events.register('beforefeatureremoved', null, function(obj) {
