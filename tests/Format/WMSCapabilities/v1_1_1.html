@@ -5,7 +5,7 @@
     
     function test_read(t) {
         
-        t.plan(14);
+        t.plan(15);
 
         var xml = document.getElementById("gssample").firstChild.nodeValue;
         var doc = new OpenLayers.Format.XML().read(xml);
@@ -28,6 +28,7 @@
         
         var layer = capability.layers[2];
         t.eq(layer.name, "tiger:tiger_roads", "[2] correct layer name");
+        t.eq(layer.prefix, "tiger", "[2] correct layer prefix");
         t.eq(layer.title, "Manhattan (NY) roads", "[2] correct layer title");
         t.eq(
             layer["abstract"],
