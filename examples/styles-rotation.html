@@ -1,13 +1,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>OpenLayers Styles Rotation Example</title>
-    <style type="text/css">
-        #map {
-            width: 800px;
-            height: 475px;
-            border: 1px solid black;
-        }
-    </style>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
     <script src="../lib/OpenLayers.js" type="text/javascript"></script>
     <script type="text/javascript">
         
@@ -76,10 +71,16 @@
   </head>
   <body onload="init()">
     <h1 id="title">Rotation Style Example</h1>
-    <p id="shortdesc">To style point features with rotation, use the rotation
-    property of the symbolizer. The center of the rotation is the point of the
-    image specified by graphicXOffset and graphicYOffset.</p>
-    <div id="map"></div>
-    <div id="docs"/>
+    <p id="shortdesc">
+        Use the rotation property of a point symbolizer to rotate
+        point symbolizers.
+    </p>
+    <div id="map" class="smallmap"></div>
+    <div id="docs">
+        To style point features with rotation, use the rotation property of the
+        symbolizer. The center of the rotation is the point of the image
+        specified by graphicXOffset and graphicYOffset. The rotation is
+        specified in degrees clockwise.
+    </div>
   </body>
 </html>
