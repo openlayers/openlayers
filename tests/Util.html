@@ -203,13 +203,18 @@
     }
 
     function test_Util_imageLoadError(t) {
-        t.plan(1);
+        t.plan(2);
 
         var img = OpenLayers.Util.createImage(null, null, null, null, null, null, null, false);
 
+        // mock up image load failure
         img._attempts = OpenLayers.IMAGE_RELOAD_ATTEMPTS + 1;
         OpenLayers.Util.onImageLoadError.call(img);
         t.ok(OpenLayers.Element.hasClass(img, 'olImageLoadError'), 'broken image has class olImageLoadError');
+
+        // mock up image load success
+        OpenLayers.Util.onImageLoad.call(img);
+        t.ok(!OpenLayers.Element.hasClass(img, 'olImageLoadError'), 'good image does not have class olImageLoadError');
     }
 
     function test_Util_applyDefaults(t) {
