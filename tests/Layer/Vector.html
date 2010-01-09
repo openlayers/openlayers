@@ -427,6 +427,18 @@
         }
         
     }
+    
+    function test_Layer_Vector_clone(t) {
+        t.plan(5);
+        var original = new OpenLayers.Layer.Vector(name, {dummyOption: "foo"});
+        original.addFeatures([new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(1,2), {foo: "bar"})]);
+        var clone = original.clone();
+        t.ok(clone instanceof OpenLayers.Layer.Vector, "clone is an instance of OpenLayers.Layer.Vector");
+        t.ok(clone.name, original.name, "clone has the same name as the original");
+        t.ok(clone.features[0] != original.features[0], "clone's feature does not equal the original's feature");
+        t.eq(clone.features[0].attributes.foo, original.features[0].attributes.foo, "clone's feature has the same attributes as the original's feature");
+        t.eq(clone.dummyOption, original.dummyOption, "clone's dummyOption equals the original's dummy option");
+    }
 
     function test_Layer_Vector_externalGraphic(t) {
         t.plan(11);
