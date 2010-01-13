@@ -392,7 +392,7 @@
         var g = {CLASS_NAME: "OpenLayers.Geometry.Point"}
         var s = {graphicName: "square"};
         
-        t.eq(r.getNodeType(g, s), "use", "Correct node type for well known symbols");
+        t.eq(r.getNodeType(g, s), r.supportUse ? "use" : "svg", "Correct node type for well known symbols");
     }
         
     function test_svg_importsymbol(t) {
