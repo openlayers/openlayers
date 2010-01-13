@@ -16,10 +16,13 @@
     
     function test_Tile_Image_IFrame_constructor (t) {
         t.plan( 2 );
+        layer = new OpenLayers.Layer.WMS.Post(name, wmsUrl, {layers: 'basic'}); 
         var tile = new OpenLayers.Tile.Image.IFrame(layer, position, bounds, url, size);
         
         t.ok( tile instanceof OpenLayers.Tile.Image.IFrame, "new OpenLayers.Tile.Image.IFrame returns Tile object" );
         t.eq( tile.layerAlphaHack, false, "layerAlphaHack is set to false.");
+    
+        layer.destroy();
     }
 
     function test_Tile_Image_IFrame_destroy (t) {
