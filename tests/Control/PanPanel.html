@@ -1,0 +1,46 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+    function test_constructor (t) {
+        t.plan(1);
+        
+        // set up
+        var control;
+
+        // tests
+        control = new OpenLayers.Control.PanPanel({slideFactor: 200});
+        t.ok(control.controls[0].slideFactor == 200 &&
+             control.controls[1].slideFactor == 200 &&
+             control.controls[2].slideFactor == 200 &&
+             control.controls[3].slideFactor == 200,
+             "ctor sets slideFactor in all Pan controls");
+    }
+  </script>
+</head>
+<body>
+</body>
+</html>
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+    function test_constructor (t) {
+        t.plan(1);
+        
+        // set up
+        var control;
+
+        // tests
+        control = new OpenLayers.Control.PanPanel({slideFactor: 200});
+        t.ok(control.controls[0].slideFactor == 200 &&
+             control.controls[1].slideFactor == 200 &&
+             control.controls[2].slideFactor == 200 &&
+             control.controls[3].slideFactor == 200,
+             "ctor sets slideFactor in all Pan controls");
+    }
+  </script>
+</head>
+<body>
+</body>
+</html>
