@@ -66,15 +66,29 @@
         t.plan(1);
         var kmlExpected = this.test_content;
         var options = {
-            folderName: "OpenLayers export",
+            foldersName: "OpenLayers export",
             foldersDesc: "Vector geometries from OpenLayers"
-        }
+        };
 
         var format = new OpenLayers.Format.KML(options);
         var features = format.read(kmlExpected);
         var kmlOut = format.write(features);
         var kmlOut = kmlOut.replace(/<\?[^>]*\?>/, ''); // Remove XML Prolog
         t.eq(kmlOut, kmlExpected, "correctly writes an KML doc string");
+    }
+
+    function test_Format_KML_write_noNameDesc(t) {
+        t.plan(1);
+        var format = new OpenLayers.Format.KML({
+            foldersName: null,
+            foldersDesc: null
+        });
+        var geom = new OpenLayers.Geometry.Point(0, 0)
+        var feature = new OpenLayers.Feature.Vector(geom);
+        feature.id = 42;
+        var kmlOut = format.write(feature);
+        var expected = '<kml xmlns="http://earth.google.com/kml/2.0"><Folder><Placemark><name>42</name><description>No description available</description><Point><coordinates>0,0</coordinates></Point></Placemark></Folder></kml>'
+        t.eq(kmlOut, expected, "null foldersName or foldersDesc don't create elements");
     }
     
     function test_Format_KML_write_multis(t) {
