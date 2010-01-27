@@ -195,6 +195,22 @@
         t.eq(features[0].attributes.ElevationGain.displayName, "ElevationGain", "read displayName from extendeddata correctly");
     }
 
+    function test_Format_KML_placemarkName(t) {
+        t.plan(3);
+        
+        var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0));
+        var f = new OpenLayers.Format.KML();
+
+        t.eq(f.read(f.write(feature))[0].attributes.name, feature.id, "placemark name from feature.id");
+
+        feature.attributes.name = "placemark name from attributes.name";
+        t.eq(f.read(f.write(feature))[0].attributes.name, feature.attributes.name, "placemark name from attributes.name");
+        feature.style = {
+            label: "placemark name from style.label"
+        };
+        t.eq(f.read(f.write(feature))[0].attributes.name, feature.style.label, "placemark name from style.label");
+    }
+
     </script> 
 </head> 
 <body> 
