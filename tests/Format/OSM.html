@@ -5,7 +5,7 @@
     <script type="text/javascript">
     
     function test_Format_OSM_constructor(t) { 
-        t.plan(4); 
+        t.plan(5); 
          
         var options = {'foo': 'bar'}; 
         var format = new OpenLayers.Format.OSM(options); 
@@ -14,6 +14,8 @@
         t.eq(format.foo, "bar", "constructor sets options correctly"); 
         t.eq(typeof format.read, "function", "format has a read function"); 
         t.eq(typeof format.write, "function", "format has a write function"); 
+        t.eq(format.externalProjection.getCode(), "EPSG:4326", 
+             "default external projection is EPSG:4326"); 
     } 
     function test_Format_OSM_node(t) {
         t.plan(4);
