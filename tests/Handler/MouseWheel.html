@@ -114,8 +114,38 @@
         t.delay_call(1, function() {
             t.eq(deltaZ, 2, "Multiple scroll actions triggered one event when interval is set");
         });
+    }
 
+    function test_Handler_MouseWheel_cumulative(t) {
+        t.plan(1);
 
+        var deltaUp = 0;
+        var callbacks = {
+            up: function(evt, delta) {
+                deltaUp += delta;
+            }
+        };
+
+        var map = new OpenLayers.Map('map');
+        map.addLayer(new OpenLayers.Layer.WMS("","",{}));
+        map.zoomToMaxExtent();
+        var control = new OpenLayers.Control({});
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.MouseWheel(control, callbacks, {
+            interval: 150,
+            cumulative: false    
+        });
+
+        var delta = 120;
+        // generate 20 scroll up in non cumulative mode
+        if (window.opera && window.opera.version() < 9.2)  delta = -delta;
+        for (var i=0; i < 20; i++) {
+            handler.onWheelEvent({'target':map.layers[0].div, wheelDelta: delta});
+        }
+        
+        t.delay_call(1, function() {
+            t.eq(deltaUp, 1, "Non cumulative mode works");
+        });
     }
 
     function test_Handler_MouseWheel_deactivate(t) {

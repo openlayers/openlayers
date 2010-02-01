@@ -6,6 +6,13 @@
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var map, layer;
+
+        function setCumulative() {
+            var nav = map.getControlsByClass("OpenLayers.Control.Navigation")[0];
+            var cumulative = document.getElementById("cumulative");
+            nav.handlers.wheel.cumulative = cumulative.checked;
+        }
+
         function init(){
             map = new OpenLayers.Map( 'map', {controls: [
                 new OpenLayers.Control.Navigation(
@@ -38,6 +45,13 @@
         spin the mousewheel, no request will be sent to the server. Instead,
         the zoomlevel delta will be recorded. After a delay (in this example
         100ms), a zoom action with the cumulated delta will be performed.</p>
+        <div>
+          <input id="cumulative" type="checkbox" checked="checked"
+                 onchange="setCumulative()"/>
+          <label for="cumulative">Cumulative mode. If this mode is deactivated, 
+            only one zoom event will be performed after the delay.</label>
+        </div>
+
     </div>
   </body>
 </html>
