@@ -7,6 +7,7 @@
     var test_style = '<kml xmlns="http://earth.google.com/kml/2.0"> <Placemark>    <Style> <LineStyle> <color>870000ff</color> <width>10</width> </LineStyle> </Style>  <LineString> <coordinates> -112,36 -113,37 </coordinates> </LineString> </Placemark></kml>';
     var test_style_fill = '<kml xmlns="http://earth.google.com/kml/2.0"> <Placemark>    <Style> <PolyStyle> <fill>1</fill> <color>870000ff</color> <width>10</width> </PolyStyle> </Style>  <LineString> <coordinates> -112,36 -113,37 </coordinates> </LineString> </Placemark><Placemark>    <Style> <PolyStyle> <fill>0</fill> <color>870000ff</color> <width>10</width> </PolyStyle> </Style>  <LineString> <coordinates> -112,36 -113,37 </coordinates> </LineString> </Placemark></kml>';
     var test_style_outline = '<kml xmlns="http://earth.google.com/kml/2.0"> <Placemark>    <Style> <PolyStyle> <outline>0</outline> <color>870000ff</color> <width>10</width> </PolyStyle> </Style>  <LineString> <coordinates> -112,36 -113,37 </coordinates> </LineString> </Placemark></kml>';
+    var test_style_font = '<kml xmlns="http://earth.google.com/kml/2.0"> <Placemark><Style><LabelStyle><color>870000ff</color><scale>1.5</scale></LabelStyle></Style><LineString><coordinates> -112,36 -113,37 </coordinates></LineString></Placemark></kml>';
     var test_nl = '<kml xmlns="http://earth.google.com/kml/2.2"> <Document> <NetworkLink> <Link> <href>http://maker.geocommons.com/maps/1717/overlays/0</href> </Link> </NetworkLink> </Document></kml>';
 
     function test_Format_KML_constructor(t) { 
@@ -166,6 +167,13 @@
         t.eq(features[0].style.strokeWidth, "10", "default stroke is set");
         var features = f.read(test_style_outline);
         t.eq(features[0].style.strokeWidth, "0", "KML Feature has no outline");
+    } 
+    function test_Format_KML_extractStyleFont(t) {
+        t.plan(2);
+        var f = new OpenLayers.Format.KML({extractStyles: true});
+        var features = f.read(test_style_font);
+        t.eq(features[0].style.fontColor, "#ff0000", "font color is set");
+        t.eq(features[0].style.fontOpacity, parseInt('87', 16) / 255, "font opacity is set");
     } 
     function test_Format_KML_getStyle(t) {
         t.plan(1);
