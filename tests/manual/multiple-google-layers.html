@@ -37,9 +37,9 @@
                 <div id="map1" class="map"></div>
                 layers for map1
                 <ul>
-                    <li><input type="checkbox" name="streets1" id="streets1"><label for="streets1">streets</label></li>
-                    <li><input type="checkbox" name="sat1" id="sat1"><label for="sat1">imagery</label></li>
-                    <li><input type="checkbox" name="topo1" id="topo1"><label for="topo1">topography</label></li>
+                    <li><input type="checkbox" checked="checked" name="streets1" id="streets1"><label for="streets1">streets</label></li>
+                    <li><input type="checkbox" checked="checked" name="sat1" id="sat1"><label for="sat1">imagery</label></li>
+                    <li><input type="checkbox" checked="checked" name="topo1" id="topo1"><label for="topo1">topography</label></li>
                 </ul>
             </div>
         </div>
@@ -88,7 +88,7 @@
             var dummy1 = new OpenLayers.Layer("Dummy Layer", {
                 isBaseLayer: true
             });
-            map1.addLayer(dummy1);
+            map1.addLayers([streets1, sat1, topo1, dummy1]);
             map1.addControl(new OpenLayers.Control.LayerSwitcher);
             map1.zoomToMaxExtent();
         
