@@ -1,5 +1,6 @@
 var map, layer, styleMap;
-OpenLayers.ProxyHost = "/proxy/?url=";
+OpenLayers.ProxyHost = "proxy.cgi?url=";
+
 function init() {
 
     var geographic = new OpenLayers.Projection("EPSG:4326");
