@@ -96,6 +96,34 @@
         t.eq(r.root.style.width, "1px", "root width is correct");
         t.eq(r.root.style.height, "2px", "root height is correct");
     }
+    
+    function test_VML_drawText(t) {
+        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(2);
+
+        var r = new OpenLayers.Renderer.VML(document.body);
+        
+        r.LABEL_ID_SUFFIX = "";
+        r.getResolution = function() {
+            return 1;
+        };
+
+        var style = {
+            label: "myText",
+            fontColor: "blue"
+        }
+        
+        r.drawText("feature1", style, new OpenLayers.Geometry.Point(1,1));
+        
+        var textbox = document.getElementById("feature1_textbox");
+        
+        t.eq(textbox.innerText, style.label, "label set correctly");
+        t.eq(textbox.style.color, style.fontColor, "font color of label set correctly");
+    }
 
     function test_VML_drawpoint(t) {
         if (!OpenLayers.Renderer.VML.prototype.supported()) {
