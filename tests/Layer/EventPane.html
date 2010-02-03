@@ -118,8 +118,46 @@
         layer.getWarningHTML = function() { this.warning = true; return ""; };
         map.addLayer(layer);
         map.removeLayer(layer);
-        t.eq(layer.pane, null, "Layer.pane is null after being removed.");
-   }      
+        var parent = layer.pane.parentNode;
+        // IE creates a DOCUMENT_FRAGMENT_NODE for the parent
+        t.ok(!parent || parent.nodeType == 11, "Layer.pane removed from dom.");
+    }
+   
+    function test_repeat_add(t) {
+
+        t.plan(1);
+        var map = new OpenLayers.Map("map");
+        
+        layer = new OpenLayers.Layer.EventPane();
+        layer.loadMapObject = function() {};
+        layer.getWarningHTML = function() {this.warning = true; return "";};
+
+        map.addLayer(layer);
+        map.removeLayer(layer);
+        
+        // try adding the layer a second time
+        var msg = "layer successfully added after being removed";
+        var pass = true;
+        try {
+            map.addLayer(layer);
+        } catch (err) {
+            msg = "couldn't add layer after removing: " + err;
+            pass = false;
+        }
+        t.ok(pass, msg);
+
+    }
+    
+    function test_destroy(t) {
+        
+        t.plan(2);
+        layer = new OpenLayers.Layer.EventPane();
+        t.ok(layer.pane, "pane created on initialize");
+        
+        layer.destroy();
+        t.ok(!layer.pane, "pane deleted on destroy");
+        
+    }
 
 
   </script>
