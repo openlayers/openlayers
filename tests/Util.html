@@ -670,7 +670,7 @@
     }
     
     function test_Util_getScaleResolutionTranslation(t) {
-        t.plan(4); 
+        t.plan(5); 
         
         var scale = 1/150000000; 
         var resolution = OpenLayers.Util.getResolutionFromScale(scale);
@@ -687,6 +687,11 @@
         scale = 150000000; 
         resolution = OpenLayers.Util.getResolutionFromScale(scale);
         t.eq(OpenLayers.Util.getScaleFromResolution(resolution), scale, "scale->resolution->scale works");
+        
+        scale = null;
+        resolution = OpenLayers.Util.getResolutionFromScale(scale);
+        t.eq(resolution, undefined, "falsey scale results in undefined resolution");
+        
     }
     
     function test_Util_getImgLocation(t) {
