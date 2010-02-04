@@ -1360,10 +1360,31 @@
         map.updateSize();
         t.eq(moveToCnt, 1, "updateSize move the map if it has a center");
     }
+    
+    function test_invisible_map(t) {
+        /** 
+         * This test confirms that initializing a map using an element that is 
+         * not currently displayed doesn't cause any trouble.
+         */
+        t.plan(1);
+        
+        var map, msg = "initializing a map on an undisplayed element";
+        try {
+            map = new OpenLayers.Map("invisimap");
+        } catch (err) {
+            msg += ": " + err;
+        }
+        t.ok(!!map, msg);
+        
+        if (map) {
+            map.destroy();
+        }        
+    }
 
   </script>
 </head>
 <body>
     <div id="map" style="width: 600px; height: 300px;"/>
+    <div style="display: none;"><div id="invisimap"></div></div>
 </body>
 </html>
