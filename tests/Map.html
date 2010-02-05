@@ -1053,6 +1053,46 @@
         map.destroy();
     }
     
+    function test_zoomTo(t) {
+        t.plan(8);
+        
+        var map = new OpenLayers.Map("map");
+        map.addLayer(new OpenLayers.Layer(null, {
+            isBaseLayer: true
+        }));
+        
+        map.zoomToMaxExtent();
+        
+        map.zoomTo(2);
+        t.eq(map.getZoom(), 2, 'zoomTo(2)');
+
+        map.zoomTo(3.6);
+        t.eq(map.getZoom(), 4, 'zoomTo(3.6)');
+        
+        map.zoomTo("4.6");
+        t.eq(map.getZoom(), 5, 'zoomTo("4.6")');
+        
+        map.zoomTo("1.2");
+        t.eq(map.getZoom(), 1, 'zoomTo("1.2")');
+        
+        // now allow fractional zoom
+        map.fractionalZoom = true;
+        
+        map.zoomTo(2);
+        t.eq(map.getZoom(), 2, '[fractionalZoom] zoomTo(2)');
+
+        map.zoomTo(3.6);
+        t.eq(map.getZoom(), 3.6, '[fractionalZoom] zoomTo(3.6)');
+        
+        map.zoomTo("4.6");
+        t.eq(map.getZoom(), 4.6, '[fractionalZoom] zoomTo("4.6")');
+        
+        map.zoomTo("1.2");
+        t.eq(map.getZoom(), 1.2, '[fractionalZoom] zoomTo("1.2")');
+        
+        map.destroy();
+    }
+    
     function test_Map_getUnits(t) {
         t.plan(2);
         var map = new OpenLayers.Map("map");
