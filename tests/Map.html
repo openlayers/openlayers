@@ -1225,7 +1225,7 @@
     
     function test_allOverlays(t) {
         
-        t.plan(16);
+        t.plan(17);
 
         var map = new OpenLayers.Map({
             div: "map", allOverlays: true
@@ -1307,6 +1307,25 @@
         t.eq(b.visibility, false, "changing layer order doesn't change visibility");
 
        
+        map.destroy();
+        
+        // make sure setVisibility is called when adding a single layer to the map
+        map = new OpenLayers.Map({
+            div: "map", allOverlays: true
+        });
+        var count = 0;
+        var layer = new OpenLayers.Layer(null, {
+            visibility: true,
+            setVisibility: function() {
+                ++count;
+                OpenLayers.Layer.prototype.setVisibility.apply(this, arguments);
+            }
+        });
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        
+        t.eq(count, 1, "setVisibility called when visibility is true in layer config");
+
         map.destroy();
         
     }
