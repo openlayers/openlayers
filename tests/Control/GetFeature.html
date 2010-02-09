@@ -22,7 +22,7 @@
     }
     
     function test_Control_GetFeature_select(t) {
-        t.plan(3);
+        t.plan(5);
         var map = new OpenLayers.Map("map");
         var layer = new OpenLayers.Layer.WMS("foo", "wms", {
             layers: "foo"
@@ -31,11 +31,12 @@
         map.setCenter(new OpenLayers.LonLat(1,2));
         var feature1 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(1,2));
         var feature2 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(2,3));
+        var feature3 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(3,1));
         var control = new OpenLayers.Control.GetFeature({
             protocol: new OpenLayers.Protocol({
                 read: function(obj) {
                     obj.callback.call(obj.scope, {
-                        features: [feature1, feature2],
+                        features: [feature1, feature2, feature3],
                         success: function() {return true;}
                     });
                 }
@@ -51,13 +52,30 @@
         control.selectSingle({xy: new OpenLayers.Pixel(200, 125)});
         control.events.unregister("featureselected", this, singleTest);
         
-        var features = []
+        var count = 0;
+        var beforeFeatureSelected = function(evt) {
+             count++;
+             return count < 3;
+        }
+        var features = [];
         var boxTest = function(evt) {
             features.push(evt.feature);
         }
+        var beforeFeaturesSelected = function(evt) {
+            t.eq(evt.features.length, 3, "3 features passed to the beforefeaturesselected handler");
+        }
+        var featuresSelected = function(evt) {
+            t.eq(evt.features.length, 2, "2 features passed to the featuresselected handler");
+        }
+        control.events.register("beforefeatureselected", this, beforeFeatureSelected);
         control.events.register("featureselected", this, boxTest);
+        control.events.register("beforefeaturesselected", this, beforeFeaturesSelected);
+        control.events.register("featuresselected", this, featuresSelected);
         control.selectBox(new OpenLayers.Bounds(0,0,4,4));
+        control.events.unregister("beforefeatureselected", this, beforeFeatureSelected);
         control.events.unregister("featureselected", this, boxTest);
+        control.events.unregister("beforefeaturesselected", this, beforeFeaturesSelected);
+        control.events.unregister("featuresselected", this, featuresSelected);
         t.eq(features.length, 2, "2 features inside box selected");
         t.eq(features[1].id, feature2.id, "featureselected callback called with multiple features");
     }
