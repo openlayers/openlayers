@@ -63,6 +63,32 @@
         }
     }
 
+    function test_write_no_geometry(t) {
+        var format = new OpenLayers.Format.WFST({
+            featureNS: "http://www.openplans.org/topp",
+            featureType: "states",
+            featurePrefix: "topp",
+            geometryName: null
+        });
+
+        var feature = new OpenLayers.Feature.Vector(null, {foo: "bar"});
+        feature.state = OpenLayers.State.UPDATE;
+        feature.fid = "fid.36";
+
+        t.plan(1);
+        var snippets = {
+            "UpdateNoGeometry": feature
+        }
+
+        var arg;
+        for(var snippet in snippets) {
+            arg = snippets[snippet]
+            var expected = readXML(snippet);
+            var got = format.writers["wfs"]["Update"].apply(format, [arg]);
+            t.xml_eq(got, expected, snippet + " request without geometry created correctly");
+        }
+    }
+
     function readXML(id) {
         var xml = document.getElementById(id).firstChild.nodeValue;
         return new OpenLayers.Format.XML().read(xml).documentElement;
@@ -165,6 +191,17 @@
         <ogc:FeatureId fid="fid.37"/>
     </ogc:Filter>
 </wfs:Delete>
+--></div>
+<div id="UpdateNoGeometry"><!--
+<wfs:Update xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
+    <wfs:Property>
+        <wfs:Name>foo</wfs:Name>
+        <wfs:Value>bar</wfs:Value>
+    </wfs:Property>
+    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+        <ogc:FeatureId fid="fid.36"/>
+    </ogc:Filter>
+</wfs:Update>
 --></div>
 </body>
 </html>
