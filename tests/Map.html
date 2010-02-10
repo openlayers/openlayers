@@ -1493,6 +1493,101 @@
             map.destroy();
         }        
     }
+    
+    function test_layers_option(t) {
+        
+        t.plan(3);
+
+        var map = new OpenLayers.Map({
+            div: "map",
+            layers: [
+                new OpenLayers.Layer()
+            ]
+        });
+        
+        t.eq(map.layers.length, 1, "single layer from options added");
+
+        map.destroy();
+        
+        map = new OpenLayers.Map({
+            div: "map",
+            layers: [
+                new OpenLayers.Layer(null, {isBaseLayer: true}),
+                new OpenLayers.Layer(null, {isBaseLayer: false})
+            ]
+        });
+        
+        t.eq(map.layers.length, 2, "multiple layers added from options");
+        t.ok(map.baseLayer, "map has a base layer");
+        
+    }
+    
+    function test_center_option(t) {
+        t.plan(6);
+        
+        var map, msg;
+        
+        
+        // try setting center without layers, this is not supported
+        var failed = false;
+        try {
+            map = new OpenLayers.Map({
+                div: "map",
+                center: new OpenLayers.LonLat(1, 2)
+            });
+            msg = "center set with no layers";
+        } catch (err) {
+            failed = true;
+            msg = "center cannot be set without layers";
+        }
+        t.ok(failed, msg);
+        
+        if (map) {
+            map.destroy();
+        }
+        
+        
+        // set center without zoom
+        var center = new OpenLayers.LonLat(1, 2);
+        map = new OpenLayers.Map({
+            div: "map",
+            layers: [new OpenLayers.Layer(null, {isBaseLayer: true})],
+            center: center
+        });
+        
+        t.ok(center.equals(map.getCenter()), "map center set without zoom");
+        
+        map.destroy();
+        
+        // set center and zoom
+        var zoom = 3;
+        map = new OpenLayers.Map({
+            div: "map",
+            layers: [new OpenLayers.Layer(null, {isBaseLayer: true})],
+            center: center,
+            zoom: zoom
+        });
+
+        t.ok(center.equals(map.getCenter()), "map center set with center and zoom");
+        t.eq(zoom, map.getZoom(), "map zoom set with center and zoom");
+        
+        map.destroy();
+        
+        // set center and zoom with all overlays
+        map = new OpenLayers.Map({
+            div: "map",
+            allOverlays: true,
+            layers: [new OpenLayers.Layer()],
+            center: center,
+            zoom: zoom
+        });
+        
+        t.ok(center.equals(map.getCenter()), "map center set with all overlays");
+        t.eq(zoom, map.getZoom(), "map zoom set with all overlays");        
+        
+        map.destroy();
+        
+    }
 
   </script>
 </head>
