@@ -1315,7 +1315,7 @@
     
     function test_allOverlays(t) {
         
-        t.plan(17);
+        t.plan(18);
 
         var map = new OpenLayers.Map({
             div: "map", allOverlays: true
@@ -1406,6 +1406,7 @@
         var count = 0;
         var layer = new OpenLayers.Layer(null, {
             visibility: true,
+            maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
             setVisibility: function() {
                 ++count;
                 OpenLayers.Layer.prototype.setVisibility.apply(this, arguments);
@@ -1415,6 +1416,7 @@
         map.zoomToMaxExtent();
         
         t.eq(count, 1, "setVisibility called when visibility is true in layer config");
+        t.eq(layer.div.style.display, "", "layer is visible.");
 
         map.destroy();
         
