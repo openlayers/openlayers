@@ -45,7 +45,7 @@
 
         // correct bubbling up to Layer.initialize()
         t.eq( layer.name, name, "layer.name is correct" );
-        t.ok( ((layer.options["chicken"] == 151) && (layer.options["foo"] == "bar")), "layer.options correctly set" );
+        t.eq( layer.options, options, "layer.options correctly set" );
 
         // HTTPRequest-specific properties
         t.eq( layer.url, url, "layer.name is correct" );

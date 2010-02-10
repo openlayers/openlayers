@@ -36,12 +36,13 @@
     }
 
     function test_Layer_clone (t) {
-        t.plan( 8 );
+        t.plan( 9 );
         
         var mapone = new OpenLayers.Map('map'); 
-        var options = { chicken: 151, foo: "bar", maxResolution: "auto" };
+        var options = { chicken: 151, foo: "bar", maxResolution: "auto", visibility: false };
         var layer = new OpenLayers.Layer('Test Layer', options);
         mapone.addLayer(layer);
+        layer.setVisibility(true);
 
         // randomly assigned property
         layer.chocolate = 5;
@@ -58,6 +59,8 @@
         t.ok( ((clone.options["chicken"] == 151) && (clone.options["foo"] == "bar")), "clone.options correctly set" );
         t.eq(clone.chocolate, 5, "correctly copied randomly assigned property");
 
+        t.eq(clone.visibility, true, "visibility correctly cloned");
+        
         layer.addOptions({chicken:152});
         t.eq(clone.options["chicken"], 151, "made a clean copy of options");        
 
