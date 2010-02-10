@@ -48,7 +48,7 @@
             return;
         }
         
-        t.plan(3);
+        t.plan(4);
         
         OpenLayers.Renderer.Elements.prototype._setExtent =
             OpenLayers.Renderer.Elements.prototype.setExtent;
@@ -71,8 +71,9 @@
         
         t.eq(g_SetExtent, true, "Elements.setExtent() called");
         
-        t.ok(r.root.coordorigin == "2,4", "coordorigin is correct");
+        t.ok(r.root.coordorigin == "0,0", "coordorigin is correct");
         t.ok(r.root.coordsize == "4,4", "coordsize is correct");
+        t.eq(r.offset, {x:2, y:4}, "offset is correct");
         
         OpenLayers.Renderer.Elements.prototype.setExtent =
             OpenLayers.Renderer.Elements.prototype._setExtent;
@@ -106,6 +107,7 @@
         t.plan(2);
 
         var r = new OpenLayers.Renderer.VML(document.body);
+        r.offset = {x: 0, y: 0};
         
         r.LABEL_ID_SUFFIX = "";
         r.getResolution = function() {
@@ -155,6 +157,7 @@
         t.plan(4);
         
         var r = new OpenLayers.Renderer.VML(document.body);
+        r.offset = {x: 0, y: 0};
         r.resolution = 0.5;
         
         var node = document.createElement('div');
@@ -182,6 +185,7 @@
         t.plan(6);
         
         var r = new OpenLayers.Renderer.VML(document.body);
+        r.offset = {x: 0, y: 0};
         r.resolution = 1;
         
         var node = document.createElement('div');
@@ -263,6 +267,7 @@
         t.plan(8);
         
         var r = new OpenLayers.Renderer.VML(document.body);
+        r.offset = {x: 0, y: 0};
         r.resolution = 0.5;
         
         var node = document.createElement('div');
@@ -303,6 +308,7 @@
         t.plan(2);
         
         var r = new OpenLayers.Renderer.VML(document.body);
+        r.offset = {x: 0, y: 0};
         r.resolution = 0.5;
         
         g_SetNodeDimension = false;
@@ -347,6 +353,7 @@
         t.plan(4);
         
         var r = new OpenLayers.Renderer.VML(document.body);
+        r.offset = {x: 0, y: 0};
         r.resolution = 0.5;
         
         var node = document.createElement('div');
