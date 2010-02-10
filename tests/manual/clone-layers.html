@@ -1,0 +1,79 @@
+<html>
+    <head>
+        <title>Cloning Layers Acceptance Test</title>
+        <script src="../../lib/OpenLayers.js"></script>
+        <link rel="stylesheet" href="../../theme/default/style.css" type="text/css" />
+        <link rel="stylesheet" href="../../theme/default/google.css" type="text/css" />
+        <style>
+            .col {
+                position: relative;
+                width: 50%;
+            }
+            #col1 {
+                float: left;
+            }
+            #col2 {
+                float: right;
+            }
+            .map {
+                position: relative;
+                height: 300px;
+            }
+            .wrap {
+                position: relative;
+                padding: 10px;
+            }
+            ul {
+                padding: 0;
+            }
+            ul li {
+                list-style: none;
+            }
+            p.clear {
+                clear: both;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="col1" class="col">
+            <div class="wrap">
+                <div id="map1" class="map"></div>
+            </div>
+        </div>
+        <div id="col2" class="col">
+            <div class="wrap">
+                <div id="map2" class="map"></div>
+            </div>
+        </div>
+        <p class="clear">
+            This example is used to confirm that layers are cloned with their
+            current state, not with their initial options. If this works, then
+            both maps should have both layers visible (use the LayerSwitcher
+            to confirm).
+        </p>
+        <script>
+        
+            var map1 = new OpenLayers.Map("map1");
+            var layer1 = new OpenLayers.Layer.WMS( "MetaCarta - Basic",
+                    "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+            var layer2 = new OpenLayers.Layer.WMS( "MetaCarta - Labels",
+                    "http://labs.metacarta.com/wms/vmap0", {
+                        layers: 'clabel',
+                        transparent: true,
+                        format: "image/gif"
+                    },
+                    {visibility: false, isBaseLayer: false});
+
+            map1.addLayers([layer1, layer2]);
+            map1.addControl(new OpenLayers.Control.LayerSwitcher);
+            map1.zoomToMaxExtent();
+            layer2.setVisibility(true);
+        
+            var map2 = new OpenLayers.Map("map2");
+            map2.addLayers([layer1.clone(), layer2.clone()]);
+            map2.addControl(new OpenLayers.Control.LayerSwitcher);
+            map2.zoomToMaxExtent();
+            
+        </script>
+    </body>
+</html>
