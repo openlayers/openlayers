@@ -206,7 +206,7 @@
         r.drawGeometryNode(node, geometry, style);
 
         t.eq(node.childNodes[0].id, "test_fill", "fill child node correctly created");
-        t.eq(node.style.left, "-3px", "x of insertion point with calculated xOffset correct");
+        t.eq(node.style.left, "-2px", "x of insertion point with calculated xOffset correct");
         t.eq(node.style.top, "-3px", "y of insertion point with calculated yOffset correct");
         
         style.rotation = 90;
@@ -214,7 +214,7 @@
         r.drawGeometryNode(node, geometry, style);
         
         t.eq(node.childNodes[1].id, "test_image", "image child node correctly created");
-        t.eq(node.style.left, "-4px", "x of insertion point of rotated image correct");
+        t.eq(node.style.left, "-3px", "x of insertion point of rotated image correct");
         t.eq(node.style.top, "-4px", "y of insertion point of rotated image correct");
     }
 
