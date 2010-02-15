@@ -10,12 +10,18 @@
             var script = document.getElementById("script");
 
             t.eq(OpenLayers._getScriptLocation(), "../", "Script location correctly detected.");
+            
+            // create a clone of OpenLayers._getScriptLocation
+            eval("var getScriptLocation = " + OpenLayers._getScriptLocation.toString());
+            var scriptLocation;
+            
             script.setAttribute("src", "../lib/OpenLayers.js?foo");
-            t.eq(OpenLayers._getScriptLocation(), "../", "Script location with search string correctly detected.");
+            t.eq(getScriptLocation(), "../", "Script location with search string correctly detected.");
+            scriptLocation = null;
 
             // now pretend we're using a built script
             OpenLayers._scriptName = "OpenLayers.js";
-            t.eq(OpenLayers._getScriptLocation(), "../lib/", "not fooled by bogus paths");
+            t.eq(getScriptLocation(), "../lib/", "not fooled by bogus paths");
             
         }
     </script>
