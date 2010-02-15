@@ -71,6 +71,28 @@
         OpenLayers.Control.prototype.destroy = temp;
     }
 
+    function test_Control_Navigation_disableZoomBox(t) {
+        t.plan(2);
+        var nav = new OpenLayers.Control.Navigation();
+        var zb = new OpenLayers.Control.ZoomBox({});
+        nav.zoomBox = zb;
+        zb.activate();
+        nav.disableZoomBox();
+        t.eq(nav.zoomBoxEnabled, false, "zoom box deactivated");
+        t.eq(zb.active, false, "zoom box control deactivated");
+    }
+
+    function test_Control_Navigation_enableZoomBox(t) {
+        t.plan(2);
+        var nav = new OpenLayers.Control.Navigation();
+        var zb = new OpenLayers.Control.ZoomBox({});
+        nav.zoomBox = zb;
+        nav.active = true;
+        nav.enableZoomBox();
+        t.eq(nav.zoomBoxEnabled, true, "zoom box activated");
+        t.eq(zb.active, true, "zoom box control activated");
+    }
+
     function test_Control_Navigation_disableZoomWheel(t) {
         t.plan(2);
         var nav = new OpenLayers.Control.Navigation();
