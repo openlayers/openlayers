@@ -58,6 +58,40 @@
         
     }
     
+    function test_Feature_getVisibility(t) {
+        t.plan(5);
+        var feature = new OpenLayers.Feature.Vector();
+        feature.layer = {
+            getVisibility: function() {return true}
+        };
+
+        t.ok(feature.getVisibility(),
+             "returns true in a not specific case");
+
+        feature.style = {display: 'none'};
+        t.eq(feature.getVisibility(), false,
+             "returns false when feature style display property is set to 'none'");
+
+        feature.style = null;
+        feature.layer.styleMap = {
+            createSymbolizer: function() {
+                return {display: 'none'}
+            }
+        }
+        t.eq(feature.getVisibility(), false,
+             "returns false when layer styleMap is configured so that the feature" +
+              "should not be displayed");
+
+        delete feature.layer.styleMap;
+        feature.layer.getVisibility = function() {return false}
+        t.eq(feature.getVisibility(), false,
+             "returns false when layer it belongs to is not visible");
+        
+        feature.layer = null;
+        t.eq(feature.getVisibility(), false,
+             "returns false when it doesn't belong to any layer");
+    }
+    
     function test_Feature_Vector_clone(t) {
         t.plan(6);
 

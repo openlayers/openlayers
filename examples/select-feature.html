@@ -21,6 +21,15 @@
             ); 
 
             var vectors = new OpenLayers.Layer.Vector("Vector Layer");
+            vectors.events.on({
+                'featureselected': function(feature) {
+                    $('counter').innerHTML = this.selectedFeatures.length;
+                },
+                'featureunselected': function(feature) {
+                    $('counter').innerHTML = this.selectedFeatures.length;
+                },
+            });
+
             map.addLayers([wmsLayer, vectors]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             
@@ -125,7 +134,7 @@
         <li>
             <input type="radio" name="type" value="select" id="selectToggle"
                    onclick="toggleControl(this);" />
-            <label for="selectToggle">select feature</label>
+            <label for="selectToggle">select feature (<span id="counter">0</span> features selected)</label>
             <ul>
                 <li>
                     <input id="box" type="checkbox" checked="checked"
