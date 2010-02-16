@@ -209,6 +209,27 @@
         }
     }    
 
+    function test_Layer_Google_setGMapVisibility(t) {
+        if(validkey) {
+            t.plan(3);
+            var map = new OpenLayers.Map('map');
+            var gmap = new OpenLayers.Layer.Google("Google Streets");
+            var dummy = new OpenLayers.Layer("Dummy", {isBaseLayer: true});
+            map.addLayers([dummy, gmap]);
+            map.zoomToMaxExtent();
+            
+            t.delay_call(2, function() {
+                t.eq(map.baseLayer.name, "Dummy", "Dummy layer is the base layer");
+                t.ok(gmap.termsOfUse.style.display == "none" || gmap.termsOfUse.style.left == "-9999px", "termsOfUse is not visible");
+                t.eq(gmap.poweredBy.style.display, "none", "poweredBy is not visible");
+            });
+        } else {
+            t.plan(0);
+            t.debug_print("Google tests can't be run from " +
+                          window.location.host);
+        }    
+    }
+
   </script>
 </head>
 <body>
