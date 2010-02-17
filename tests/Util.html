@@ -892,7 +892,7 @@
     }
 
     function test_Util_getParameters(t) {
-        t.plan(6);
+        t.plan(8);
 
         t.eq(OpenLayers.Util.getParameters('http://www.example.com'), {},
              "getParameters works when args = ''");
@@ -907,9 +907,15 @@
         t.eq(OpenLayers.Util.getParameters('http://www.example.com?foo=bar#bugssucks'),
              {'foo': 'bar'},
              "getParameters works when using a fragment identifier");
-        t.eq(OpenLayers.Util.getParameters('http://www.example.com?foo=bar,pub,disco'),
-             {'foo': ['bar', 'pub', 'disco']},
+        t.eq(OpenLayers.Util.getParameters('http://www.example.com?foo=bar%3Aone'),
+             {'foo': 'bar:one'},
+             "getParameters works with percent encoded values");
+        t.eq(OpenLayers.Util.getParameters('http://www.example.com?foo=bar:one,pub,disco'),
+             {'foo': ['bar:one', 'pub', 'disco']},
              "getParameters works with a comma-separated value (parses into array)");
+        t.eq(OpenLayers.Util.getParameters('http://www.example.com?foo=bar%3Aone%2Cpub%2Cdisco'),
+             {'foo': ['bar:one', 'pub', 'disco']},
+             "getParameters works with a URL encoded comma-separated values (parses into array)");
     }
 
     function test_Util_getArgs(t) {
