@@ -211,18 +211,31 @@
 
     function test_Layer_Google_setGMapVisibility(t) {
         if(validkey) {
-            t.plan(3);
-            var map = new OpenLayers.Map('map');
-            var gmap = new OpenLayers.Layer.Google("Google Streets");
-            var dummy = new OpenLayers.Layer("Dummy", {isBaseLayer: true});
-            map.addLayers([dummy, gmap]);
-            map.zoomToMaxExtent();
+            t.plan(4);
+
+            var map1 = new OpenLayers.Map('map');
+            var gmap1 = new OpenLayers.Layer.Google("Google Streets");
+            var dummy1 = new OpenLayers.Layer("Dummy", {isBaseLayer: true});
+            map1.addLayers([dummy1, gmap1]);
+            map1.zoomToMaxExtent();
             
             t.delay_call(2, function() {
-                t.eq(map.baseLayer.name, "Dummy", "Dummy layer is the base layer");
-                t.ok(gmap.termsOfUse.style.display == "none" || gmap.termsOfUse.style.left == "-9999px", "termsOfUse is not visible");
-                t.eq(gmap.poweredBy.style.display, "none", "poweredBy is not visible");
-            });
+                t.ok(gmap1.termsOfUse.style.display == "none" || gmap1.termsOfUse.style.left == "-9999px", "termsOfUse is not visible");
+                t.eq(gmap1.poweredBy.style.display, "none", "poweredBy is not visible");
+                map1.destroy();
+            });            
+            
+            var map2 = new OpenLayers.Map('map', {allOverlays: true});
+            var gmap2 = new OpenLayers.Layer.Google("Google Streets", {visibility: false});
+            var dummy2 = new OpenLayers.Layer("Dummy");
+            map2.addLayers([gmap2, dummy2]);
+            map2.zoomToMaxExtent();
+            
+            t.delay_call(2, function() {
+                t.ok(gmap2.termsOfUse.style.display == "none" || gmap2.termsOfUse.style.left == "-9999px", "allOverlays:true - termsOfUse is not visible");
+                t.eq(gmap2.poweredBy.style.display, "none", "allOverlays:true - poweredBy is not visible");
+                map2.destroy();
+            });            
         } else {
             t.plan(0);
             t.debug_print("Google tests can't be run from " +
