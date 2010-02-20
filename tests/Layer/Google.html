@@ -39,6 +39,29 @@
                           window.location.host);
         }
     }
+    
+    function test_clone(t) {
+        if (validkey) {
+            t.plan(2);
+            var layer, clone;
+            
+            // test default layer
+            layer = new OpenLayers.Layer.Google();
+            clone = layer.clone();
+            t.ok(clone instanceof OpenLayers.Layer.Google, "[default] good instance");
+            
+            layer.destroy();
+            clone.destroy();
+            
+            // test with alt type
+            layer = new OpenLayers.Layer.Google(null, {type: G_SATELLITE_MAP});
+            clone = layer.clone();
+            t.ok(clone.type === G_SATELLITE_MAP, "[sat] correct type");
+            
+            layer.destroy();
+            clone.destroy();   
+        }
+    }
 
     function test_Layer_Google_isBaseLayer (t) {
         if(validkey) {
