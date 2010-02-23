@@ -106,7 +106,8 @@
         layer = new OpenLayers.Layer.WMS.Post(name, wmsUrl, {layers: 'basic'}); 
         map.addLayer(layer);  
         var tile = new OpenLayers.Tile.Image.IFrame(layer, position, bounds, url, size);
-        var imgDiv    = tile.createImgDiv();
+        tile.renderTile();
+        var imgDiv = tile.imgDiv;
         var iFrame    = imgDiv.firstChild;
         var eventPane = imgDiv.childNodes[1];
 
