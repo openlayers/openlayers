@@ -1,5 +1,5 @@
 var map, layer, styleMap;
-OpenLayers.ProxyHost = "/proxy/?url=";
+OpenLayers.ProxyHost = "proxy.cgi?url=";
 
 function init() {
     map = new OpenLayers.Map({
