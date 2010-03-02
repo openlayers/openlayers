@@ -921,6 +921,35 @@
         map.destroy();
     }
 
+    function test_Map_addControls(t) {
+        t.plan(5);
+        var map = new OpenLayers.Map('map', {
+            controls: []
+        });
+        var controls = [
+          new OpenLayers.Control({id:'firstctrl'}),
+          new OpenLayers.Control({id:'secondctrl'})
+        ];
+        map.addControls(controls);
+        t.eq(map.controls.length, 2, "two controls were added by map.addControls without a px-array");
+        t.eq(map.controls[0].id, 'firstctrl', "control with index 0 has id 'firstctrl'");
+        t.eq(map.controls[1].id, 'secondctrl', "control with index 1 has id 'secondctrl'");
+        
+        var controls2 = [
+          new OpenLayers.Control({id:'thirdctrl'}),
+          new OpenLayers.Control({id:'fourthctrl'}),
+          new OpenLayers.Control({id:'fifthctrl'})
+        ];
+        // this array is intentionally one element shorter than the above       
+        var pixels2 = [
+          null,
+          new OpenLayers.Pixel(27,11)
+        ];
+        map.addControls(controls2, pixels2);
+        t.eq(map.controls.length, 5, "three additional controls were added by map.addControls with a px-array");
+        t.eq(map.controls[3].position.toString(), pixels2[1].toString(), "control 'fourthctrl' has position set to given px");
+    }
+
     function test_Map_getControl(t) {
         t.plan(2);
         
