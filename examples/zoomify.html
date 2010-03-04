@@ -1,0 +1,70 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>OpenLayers Zoomify Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+
+        var zoomify_width = 8001;
+		var zoomify_height = 6943;
+		var zoomify_url = "http://almor.mzk.cz/moll/AA22/0103/";
+
+        var map, zoomify;
+
+        function init(){
+	       /* First we initialize the zoomify pyramid (to get number of tiers) */
+	        var zoomify = new OpenLayers.Layer.Zoomify( "Zoomify", zoomify_url, 
+		  		new OpenLayers.Size( zoomify_width, zoomify_height ) );
+
+	       /* Map with raster coordinates (pixels) from Zoomify image */
+	        var options = {
+	            controls: [],
+	            maxExtent: new OpenLayers.Bounds(0, 0, zoomify_width, zoomify_height),
+	            maxResolution: Math.pow(2, zoomify.numberOfTiers-1 ),
+	            numZoomLevels: zoomify.numberOfTiers,
+	            units: 'pixels'
+	        };
+
+	        map = new OpenLayers.Map("map", options);
+	        map.addLayer(zoomify);
+
+	        map.addControl(new OpenLayers.Control.MousePosition());
+	        map.addControl(new OpenLayers.Control.PanZoomBar());
+	        map.addControl(new OpenLayers.Control.MouseDefaults());
+	        map.addControl(new OpenLayers.Control.KeyboardDefaults());
+
+            map.setBaseLayer(zoomify);
+	        map.zoomToMaxExtent();
+        };
+    </script>
+  </head>
+  <body onload="init()">
+      <h1 id="title">Zoomify Layer Example</h1>
+
+    <div id="tags"></div>
+
+    <p id="shortdesc">
+        Demo of a layer with Zoomify tiles.
+    </p>
+
+    <div id="map" class="smallmap"></div>
+
+    <div id="docs">
+	    <p>
+	    Demonstration of the Zoomify layer in OpenLayers.<br />
+	 	You can have a look at <a href="http://almor.mzk.cz/moll/AA22/103.html">Zoomify viewer for this picture</a>, which is using the same <a href="http://almor.mzk.cz/moll/AA22/0103/">tiles</a>.
+	    </p>
+		<p>
+		For change to our own image you have to specify 'url' (zoomifyImagePath in Zoomify terminology) and 'size' ('width' and 'height' from ImageProperty.xml file).<br />
+		Custom tiles can be easily generated with original <a href="http://www.zoomify.com/">Zoomify software</a> like with freely available <a href="http://www.zoomify.com/express.htm">ZoomifyerEZ</a> or with Adobe PhotoShop CS3 (it has built in support for export into Zoomify tiles).<br />
+		There is also a <a href="http://sourceforge.net/projects/zoomifyimage/">ZoomifyImage SourceForge Project</a>, a tile cutter available under GPL license.<br />
+		Zoomify tiles can be also served dynamically on the server side from JPEG2000 masters using <a href="http://dltj.org/article/introducing-j2ktilerenderer/">J2KTileRender</a> with available integration for DSpace and soon for Fedora Digital Repository.<br/>
+		<a href="http://iipimage.sourceforge.net/">IIPImage server</a> can serve Zoomify tiles dynamically from TIFF files.
+		</p>
+		<p>
+		Development of the Zoomify support for OpenLayers was supported from the grant <a href="http://www.oldmapsonline.org/">Old Maps Online</a>.
+        </p>
+    </div>
+  </body>
+</html>
