@@ -168,6 +168,33 @@
         
     }
 
+    function test_clear(t) {
+        t.plan(7);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer(
+            "test", {isBaseLayer: true}
+        );
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+
+        var control = new OpenLayers.Control.NavigationHistory();
+        map.addControl(control);
+        
+        t.ok(!control.previous.active, "previous control not active");
+        t.ok(!control.next.active, "next control not active");
+
+        map.zoomTo(4);
+        t.ok(control.previous.active, "previous control is active after a move");
+        t.ok(!control.next.active, "next control is not active after a move");
+
+        control.clear();
+        t.eq(control.previousStack.length + control.nextStack.length, 0, "stacks are empty after a clear");
+        t.ok(!control.previous.active, "previous control not active after a clear");
+        t.ok(!control.next.active, "next control not active after a clear");
+
+        control.destroy();
+    }
+
   </script>
 </head>
 <body>
