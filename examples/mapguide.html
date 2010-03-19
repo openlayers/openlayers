@@ -84,6 +84,7 @@
             
           var options = {
               isBaseLayer: true,
+              transitionEffect: "resize",
               buffer: 1,
               useOverlay: false,
               useAsyncOverlay: false,
@@ -125,7 +126,7 @@
             layer = new OpenLayers.Layer.MapGuide( "MapGuide OS Overlay layer", url, params, options );
             map.addLayer(layer);
             */
-            map.addControl(new OpenLayers.Control.LayerSwitcher({'div':OpenLayers.Util.getElement('layerswitcher')}));
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.zoomToMaxExtent();
     }
     </script>
@@ -144,7 +145,6 @@
     
     <div id="map" class="smallmap"></div>
     <div id="map2">
-      <div id="layerswitcher"></div>
     </div>
   </body>
 </html>
