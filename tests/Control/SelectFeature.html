@@ -397,6 +397,19 @@
         map.destroy();
     }
 
+    function test_destroy(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map("map");
+        var layer1 = new OpenLayers.Layer.Vector();
+        map.addLayer(layer1);
+        var control = new OpenLayers.Control.SelectFeature([layer1]);
+        map.addControl(control);
+        control.activate();
+        control.destroy();
+        t.eq(layer1.renderer.getRenderLayerId(), layer1.id, 
+            "Root container moved correctly when control is destroyed and layers was an array parameter");
+    }   
+   
     </script>
 </head>
 <body>
