@@ -112,7 +112,24 @@
         var ring = new OpenLayers.Geometry.LinearRing(components);
         t.eq(ring.getLength(), 40, "getLength returns the correct perimiter");
     }
-    
+
+    function test_LinearRing_getCentroid(t) {
+        t.plan(2);
+        var components = [
+            new OpenLayers.Geometry.Point(0,0), 
+            new OpenLayers.Geometry.Point(0,10),
+            new OpenLayers.Geometry.Point(10,10), 
+            new OpenLayers.Geometry.Point(10,0)
+        ];
+        var ring = new OpenLayers.Geometry.LinearRing(components);
+        var centroid = ring.getCentroid();
+        t.ok(centroid.x === 5 && centroid.y === 5, "getCentroid returns the correct centroid");
+        ring.destroy();
+
+        ring = new OpenLayers.Geometry.LinearRing();
+        t.eq(ring.getCentroid(), null, "getCentroid returns null if no components");     
+    }
+
     function test_LinearRing_move(t) {
 
         var nvert = 4,
