@@ -60,6 +60,10 @@
             
             layer.destroy();
             clone.destroy();   
+        } else {
+            t.plan(0);
+            t.debug_print("Google tests can't be run from " +
+                          window.location.host);
         }
     }
 
