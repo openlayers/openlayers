@@ -64,8 +64,8 @@
         layer.addOptions({chicken:152});
         t.eq(clone.options["chicken"], 151, "made a clean copy of options");        
 
-        t.ok( (layer.maxResolution != clone.maxResolution), "maxresolution of clone reset to new map div");
-        t.ok( (layer.minResolution != clone.minResolution), "minresolution of clone reset to new map div");
+        t.ok( (layer.maxResolution == clone.maxResolution), "maxresolution of clone equals maxresolution of original");
+        t.ok( (layer.minResolution == clone.minResolution), "minresolution of clone equals minresolution of original");
         
         mapone.destroy();
         maptwo.destroy();
