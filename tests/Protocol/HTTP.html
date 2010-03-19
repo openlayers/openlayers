@@ -273,6 +273,291 @@
         t.eq(ret, null, 'parseFeatures returns expected value');
     }
 
+    function test_filterToParams(t) {
+        t.plan(30);
+
+        // setup
+
+        var protocol, filter, params;
+
+        protocol = new OpenLayers.Protocol.HTTP();
+
+        // 1 test
+        var filter = new OpenLayers.Filter.Spatial({
+            type: OpenLayers.Filter.Spatial.BBOX,
+            value: new OpenLayers.Bounds(0, 1, 2, 3)
+        });
+        params = protocol.filterToParams(filter);
+        t.eq(params.bbox, [0, 1, 2, 3],
+             "filterToParams sets correct bbox param if passed a BBOX filter");
+
+        // 3 tests
+        var lon = 100, lat = 200, tolerance = 10;
+        filter = new OpenLayers.Filter.Spatial({
+            type: OpenLayers.Filter.Spatial.DWITHIN,
+            value: new OpenLayers.Geometry.Point(lon, lat),
+            distance: tolerance
+        });
+        params = protocol.filterToParams(filter);
+        t.eq(params.lon, lon,
+             "filterToParams sets correct lon param if passed a DWITHIN filter");
+        t.eq(params.lat, lat,
+             "filterToParams sets correct lat param if passed a DWITHIN filter");
+        t.eq(params.tolerance, tolerance,
+             "filterToParams sets correct tolerance param if passed a DWITHIN filter");
+
+        // 2 tests
+        filter = new OpenLayers.Filter.Spatial({
+            type: OpenLayers.Filter.Spatial.WITHIN,
+            value: new OpenLayers.Geometry.Point(lon, lat)
+        });
+        params = protocol.filterToParams(filter);
+        t.eq(params.lon, lon,
+             "filterToParams sets correct lon param if passed a WITHIN filter");
+        t.eq(params.lat, lat,
+             "filterToParams sets correct lat param if passed a WITHIN filter");
+
+        // Some bbox filters used in the next tests.
+
+        var bboxFilter1 = new OpenLayers.Filter.Spatial({
+            type: OpenLayers.Filter.Spatial.BBOX,
+            value:  new OpenLayers.Bounds(0, 0, 10, 10)
+        });
+
+        var bboxFilter2 = new OpenLayers.Filter.Spatial({
+            type: OpenLayers.Filter.Spatial.BBOX,
+            value:  new OpenLayers.Bounds(0, 0, 20, 20)
+        });
+
+        // 1 test
+        filter = new OpenLayers.Filter.Logical({
+            type: OpenLayers.Filter.Logical.AND,
+            filters: []
+        });
+        params = protocol.filterToParams(filter);
+        t.eq(params, {},
+             "filterToParams returns empty object if given empty AND Logical filter");
+
+        // 1 test
+        filter = new OpenLayers.Filter.Logical({
+            type: OpenLayers.Filter.Logical.OR,
+            filters: [
+                bboxFilter1
+            ]
+        });
+        params = protocol.filterToParams(filter);
+        t.eq(params, {},
+             "filterToParams does not support OR Logical filter");
+
+        // 1 test
+        filter = new OpenLayers.Filter.Logical({
+            type: OpenLayers.Filter.Logical.AND,
+            filters: [
+                bboxFilter1
+            ]
+        });
+        params = protocol.filterToParams(filter);
+        t.eq(params.bbox, [0, 0, 10, 10],
+             "filterToParams sets correct bbox param if passed " +
+             "a Logical filter containing a BBOX");
+
+        // 1 test
+        filter = new OpenLayers.Filter.Logical({
+            type: OpenLayers.Filter.Logical.AND,
+            filters: [
+                bboxFilter1, bboxFilter2
+            ]
+        });
+        params = protocol.filterToParams(filter);
+        t.eq(params.bbox, [0, 0, 20, 20],
+             "filterToParams sets correct bbox param if passed " +
+             "multiple BBOX filter in a Logical filter");
+
+        // 2 tests
+        filter = new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.EQUAL_TO,
+            property: "foo",
+            value: "bar"
+        });
+        params = protocol.filterToParams(filter);
+        t.eq(params.queryable[0], "foo",
+             "filterToParams sets correct queryable param if passed an EQUAL_TO filter");
+        t.eq(params["foo__eq"], "bar",
+             "filterToParams sets correct param key and value if passed an EQUAL_TO filter");
+
+        // 2 tests
+        filter = new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
+            property: "foo",
+            value: "bar"
+        });
+        params = protocol.filterToParams(filter);
+        t.eq(params.queryable[0], "foo",
+             "filterToParams sets correct queryable param if passed an NOT_EQUAL_TO filter");
+        t.eq(params["foo__ne"], "bar",
+             "filterToParams sets correct param key and value if passed an NOT_EQUAL_TO filter");
+
+        // 2 tests
+        filter = new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.LESS_THAN,
+            property: "foo",
+            value: "bar"
+        });
+        var params = protocol.filterToParams(filter);
+        t.eq(params.queryable[0], "foo",
+             "filterToParams sets correct queryable param if passed an LESS_THAN filter");
+        t.eq(params["foo__lt"], "bar",
+             "filterToParams sets correct param key and value if passed an LESS_THAN filter");
+
+        // 2 tests
+        filter = new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.LESS_THAN_OR_EQUAL_TO,
+            property: "foo",
+            value: "bar"
+        });
+        var params = protocol.filterToParams(filter);
+        t.eq(params.queryable[0], "foo",
+             "filterToParams sets correct queryable param if passed an LESS_THAN_OR_EQUAL_TO filter");
+        t.eq(params["foo__lte"], "bar",
+             "filterToParams sets correct param key and value if passed an LESS_THAN_OR_EQUAL_TO filter");
+
+        // 2 tests
+        filter = new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.GREATER_THAN,
+            property: "foo",
+            value: "bar"
+        });
+        params = protocol.filterToParams(filter);
+        t.eq(params.queryable[0], "foo",
+             "filterToParams sets correct queryable param if passed an GREATER_THAN filter");
+        t.eq(params["foo__gt"], "bar",
+             "filterToParams sets correct param key and value if passed an GREATER_THAN filter");
+
+        // 2 tests
+        filter = new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.GREATER_THAN_OR_EQUAL_TO,
+            property: "foo",
+            value: "bar"
+        });
+        params = protocol.filterToParams(filter);
+        t.eq(params.queryable[0], "foo",
+             "filterToParams sets correct queryable param if passed an GREATER_THAN_OR_EQUAL_TO filter");
+        t.eq(params["foo__gte"], "bar",
+             "filterToParams sets correct param key and value if passed an GREATER_THAN_OR_EQUAL_TO filter");
+
+        // 2 tests
+        filter = new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.LIKE,
+            property: "foo",
+            value: "bar"
+        });
+        params = protocol.filterToParams(filter);
+        t.eq(params.queryable[0], "foo",
+             "filterToParams sets correct queryable param if passed a LIKE filter");
+        t.eq(params["foo__ilike"], "bar",
+             "filterToParams sets correct param key and value if passed an LIKE filter");
+
+        // 4 tests
+        filter = new OpenLayers.Filter.Logical({
+            type: OpenLayers.Filter.Logical.AND,
+            filters: [
+                new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                    property: "foo",
+                    value: "bar"
+                }),
+                new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.LESS_THAN,
+                    property: "foo2",
+                    value: "baz"
+                })
+            ]
+        });
+        params = protocol.filterToParams(filter);
+        t.eq(params.queryable[0], "foo",
+             "filterToParams sets correct queryable param if passed an EQUAL_TO filter within a AND filter");
+        t.eq(params["foo__eq"], "bar",
+             "filterToParams sets correct param key and value if passed an EQUAL_TO filter within a AND filter");
+        t.eq(params.queryable[1], "foo2",
+             "filterToParams sets correct queryable param if passed a LESS_THAN filter within a AND filter");
+        t.eq(params["foo2__lt"], "baz",
+             "filterToParams sets correct param key and value if passed a LESS_THAN filter within a AND filter");
+
+        // 2 tests
+        protocol = new OpenLayers.Protocol.HTTP({wildcarded: true});
+        filter = new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.LIKE,
+            property: "foo",
+            value: "bar"
+        });
+        params = protocol.filterToParams(filter);
+        t.eq(params.queryable[0], "foo",
+             "filterToParams sets correct queryable param if passed a LIKE filter (wildcarded true)");
+        t.eq(params["foo__ilike"], "%bar%",
+             "filterToParams sets correct param key and value if passed an LIKE filter (wildcarded true)");
+    }
+
+    function test_regex2value(t) {
+        t.plan(16);
+
+        // setup
+
+        var protocol = new OpenLayers.Protocol.HTTP();
+        var value;
+
+        // test
+
+        value = protocol.regex2value("foo");
+        t.eq(value, "foo", 'regex2value converts "foo" to "foo"');
+
+        value = protocol.regex2value("foo%");
+        t.eq(value, "foo\\%", 'regex2value converts "foo%" to "foo\\%"');
+
+        value = protocol.regex2value("foo.*");
+        t.eq(value, "foo%", 'regex2value converts "foo.*" to "foo%"');
+
+        value = protocol.regex2value("f.*oo.*");
+        t.eq(value, "f%oo%", 'regex2value converts "f.*oo.*" to "f%oo%"');
+
+        value = protocol.regex2value("foo.");
+        t.eq(value, "foo_", 'regex2value converts "foo." to "foo_"');
+
+        value = protocol.regex2value("f.oo.");
+        t.eq(value, "f_oo_", 'regex2value converts "f.oo." to "f_oo_"');
+
+        value = protocol.regex2value("f.oo.*");
+        t.eq(value, "f_oo%", 'regex2value converts "f.oo.*" to "f_oo%"');
+
+        value = protocol.regex2value("foo\\\\");
+        t.eq(value, "foo\\\\", 'regex2value converts "foo\\\\" to "foo\\\\"');
+
+        value = protocol.regex2value("foo\\.");
+        t.eq(value, "foo.", 'regex2value converts "foo\\." to "foo."');
+
+        value = protocol.regex2value("foo\\\\.");
+        t.eq(value, "foo\\\\_", 'regex2value converts "foo\\\\." to "foo\\\\_"');
+
+        value = protocol.regex2value("foo\\*");
+        t.eq(value, "foo*", 'regex2value converts "foo\\*" to "foo*"');
+
+        value = protocol.regex2value("foo\\\\*");
+        t.eq(value, "foo\\\\*", 'regex2value converts "foo\\\\*" to "foo\\\\*"');
+
+        value = protocol.regex2value("foo\\\\.*");
+        t.eq(value, "foo\\\\%", 'regex2value converts "foo\\\\.*" to "foo\\\\%"');
+
+        value = protocol.regex2value("fo\\.o.*");
+        t.eq(value, "fo.o%", 'regex2value converts from "fo\\.o.*" to "fo.o%"');
+
+        value = protocol.regex2value("fo.*o\\.");
+        t.eq(value, "fo%o.", 'regex2value converts from "fo.*o\\." to "to%o."');
+
+        value = protocol.regex2value("\\*\\..*.\\\\.*\\\\.%");
+        t.eq(value, "*.%_\\\\%\\\\_\\%",
+             'regex2value converts from "\\*\\..*.\\\\.*\\\\.%" ' +
+             'to "*.%_\\\\%\\\\_\\%"');
+   }
+
     function test_create(t) {
         t.plan(10);
         var protocol = new OpenLayers.Protocol.HTTP({
@@ -709,7 +994,7 @@
         });        
         protocol.read();
         
-        t.delay_call(0.5, function() {
+        t.delay_call(1, function() {
             t.eq(log1.callbackCalled, true, "[read] callback called");
             t.eq(log1.callbackScope, scope, "[read] correct scope");
             t.ok(log1.request instanceof OpenLayers.Request.XMLHttpRequest, "[read] correct priv type");
@@ -731,7 +1016,7 @@
             {state: OpenLayers.State.DELETE, url: "./3"},
             {state: OpenLayers.State.DELETE, url: "./4"}
         ]);
-        t.delay_call(0.5, function() {
+        t.delay_call(1, function() {
             t.eq(log2.called, 1, "[commit] Callback called once.");
             t.eq(log2.scope, scope, "[commit] Correct scope.");
         });
