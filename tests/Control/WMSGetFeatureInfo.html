@@ -25,6 +25,50 @@
         t.eq(control.format.foo, "bar", "format options used")
     }
 
+    function test_clickCallBack_option(t) {
+        t.plan(9);
+
+        var control;
+
+        control = new OpenLayers.Control.WMSGetFeatureInfo({
+            hover: true
+        });
+        t.ok(control.handler instanceof OpenLayers.Handler.Hover,
+             'constructor creates hover handler');
+        t.ok(control.handler.callbacks["move"] === control.cancelHover,
+             'constructor registers proper "move" callback in handler');
+        t.ok(control.handler.callbacks["pause"] === control.getInfoForHover,
+             'constructor registers proper "pause" callback in handler');
+
+        control = new OpenLayers.Control.WMSGetFeatureInfo();
+        t.ok(control.handler instanceof OpenLayers.Handler.Click,
+             'constructor creates click handler');
+        t.ok(control.handler.callbacks["click"] === control.getInfoForClick,
+             'constructor registers proper "click" callback in handler');
+
+        control = new OpenLayers.Control.WMSGetFeatureInfo({
+            clickCallback: "rightclick"
+        });
+        t.ok(control.handler.callbacks["rightclick"] === control.getInfoForClick,
+             'constructor registers proper "rightclick" callback in handler');
+
+        control = new OpenLayers.Control.WMSGetFeatureInfo({
+            clickCallback: "dblclick",
+            handlerOptions: {
+                click: {
+                    "single": false,
+                    "double": true
+                }
+            }
+        });
+        t.ok(control.handler.callbacks["dblclick"] === control.getInfoForClick,
+             'constructor registers proper "dblclick" callback in handler');
+        t.eq(control.handler["single"], false,
+             'constructor sets "single" to false in handler');
+        t.eq(control.handler["double"], true,
+             'constructor sets "double" to true in handler');
+     }
+
     function test_destroy(t) {
         t.plan(2);
         var map = new OpenLayers.Map("map");
