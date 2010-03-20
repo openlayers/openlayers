@@ -266,7 +266,7 @@
     }
 
     function test_Util_getParameterString(t) {
-        t.plan( 5 );
+        t.plan(6);
 
         var params = { 
             'foo': "bar",
@@ -275,6 +275,8 @@
 
         t.eq( OpenLayers.Util.getParameterString(params), "foo=bar&chicken=1.5", "getParameterString returns correctly");    
         t.eq( OpenLayers.Util.getParameterString({'a:':'b='}), "a%3A=b%3D", "getParameterString returns correctly with non-ascii keys/values");    
+        
+        t.eq(OpenLayers.Util.getParameterString({chars: "~!*()'"}), "chars=~!*()'", "~!*()' are unreserved or have no reserved purpose in a URI component");
         
 
         // Parameters which are a list should end up being a comma-seperated
@@ -892,7 +894,7 @@
     }
 
     function test_Util_getParameters(t) {
-        t.plan(12);
+        t.plan(13);
 
         t.eq(OpenLayers.Util.getParameters('http://www.example.com'), {},
              "getParameters works when args = ''");
@@ -937,6 +939,19 @@
         t.eq(OpenLayers.Util.getParameters('http://www.example.com?foo=bar%2Bone'),
              {'foo': 'bar+one'},
              "getParameters works with properly encoded + character");
+             
+        // Let's do some round tripping to make it harder to introduce regressions
+        var obj = {
+            "a key": "a value with spaces  (and +)",
+            "see%2B%2B": "C++",
+            "C++": "see%2B%2B",
+            "~%257E": "+%252B",
+            "who?": "me?",
+            "#yes": "#you",
+            "url": "http://example.com:80/?question=%3F&hash=%23&amp=&26#id"
+        };
+        var str = OpenLayers.Util.getParameterString(obj);
+        t.eq(OpenLayers.Util.getParameters("?" + str), obj, "round tripped parameters");
 
     }
 
