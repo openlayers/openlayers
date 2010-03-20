@@ -892,7 +892,7 @@
     }
 
     function test_Util_getParameters(t) {
-        t.plan(8);
+        t.plan(9);
 
         t.eq(OpenLayers.Util.getParameters('http://www.example.com'), {},
              "getParameters works when args = ''");
@@ -916,6 +916,12 @@
         t.eq(OpenLayers.Util.getParameters('http://www.example.com?foo=bar%3Aone%2Cpub%2Cdisco'),
              {'foo': ['bar:one', 'pub', 'disco']},
              "getParameters works with a URL encoded comma-separated values (parses into array)");
+        
+        var value = "%20";  // say you wanted to have a query string parameter value be literal "%20"
+        var encoded = encodeURIComponent(value); // this is the proper URI component encoding
+        var url = "http://example.com/path?key=" + encoded; // this is a properly encoded URL
+        var params = OpenLayers.Util.getParameters(url);
+        t.eq(params.key, value, "a properly encoded value of '%20' is properly decoded");
     }
 
     function test_Util_getArgs(t) {
