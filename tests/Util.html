@@ -892,7 +892,7 @@
     }
 
     function test_Util_getParameters(t) {
-        t.plan(9);
+        t.plan(12);
 
         t.eq(OpenLayers.Util.getParameters('http://www.example.com'), {},
              "getParameters works when args = ''");
@@ -922,6 +922,22 @@
         var url = "http://example.com/path?key=" + encoded; // this is a properly encoded URL
         var params = OpenLayers.Util.getParameters(url);
         t.eq(params.key, value, "a properly encoded value of '%20' is properly decoded");
+
+        /**
+         * IETF RFC 2396 (http://www.ietf.org/rfc/rfc2396.txt) says spaces
+         * should be encoded as "%20".  However, the "+" is used widely to
+         * indicate a space in a URL.
+         */
+        t.eq(OpenLayers.Util.getParameters('http://www.example.com?foo=bar+one'),
+             {'foo': 'bar one'},
+             "getParameters works with + instead of %20 in values");
+        t.eq(OpenLayers.Util.getParameters('http://www.example.com?foo=bar%20one'),
+             {'foo': 'bar one'},
+             "getParameters works with properly encoded space character");
+        t.eq(OpenLayers.Util.getParameters('http://www.example.com?foo=bar%2Bone'),
+             {'foo': 'bar+one'},
+             "getParameters works with properly encoded + character");
+
     }
 
     function test_Util_getArgs(t) {
