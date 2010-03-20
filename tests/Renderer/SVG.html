@@ -412,7 +412,7 @@
         var points = polygon.getAttribute("points");
  
         t.eq(points.replace(/ /g,''), "0,00,11,11,00,0", "Square symbol rendered correctly");
-        t.ok(r.symbolSize["-square"], "Symbol size cached correctly.");
+        t.ok(r.symbolMetrics["-square"], "Symbol metrics cached correctly.");
     }
         
     function test_svg_dashstyle(t) {
