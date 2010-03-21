@@ -37,7 +37,7 @@
 
     function test_Format_KML_readCdataAttributes_20(t) {
         t.plan(2);
-        var cdata = '<kml xmlns="http://earth.google.com/kml/2.0"><Document><Placemark><name><![CDATA[Pezinok]]></name><description><![CDATA[Full of text.]]></description><styleUrl>#rel1.0</styleUrl><Point> <coordinates>17.266666, 48.283333</coordinates></Point></Placemark></Document></kml>';
+        var cdata = '<kml xmlns="http://earth.google.com/kml/2.0"><Document><Placemark><name><![CDATA[Pezinok]]> </name><description><![CDATA[Full of text.]]></description><styleUrl>#rel1.0</styleUrl><Point> <coordinates>17.266666, 48.283333</coordinates></Point></Placemark></Document></kml>';
         var features = (new OpenLayers.Format.KML()).read(cdata);
         t.eq(features[0].attributes.description, "Full of text.", "Description attribute in cdata read correctly");
         t.eq(features[0].attributes.name, "Pezinok", "title attribute in cdata read correctly");
