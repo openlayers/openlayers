@@ -36,7 +36,7 @@
     }
 
     function test_Layer_clone (t) {
-        t.plan( 9 );
+        t.plan( 7 );
         
         var mapone = new OpenLayers.Map('map'); 
         var options = { chicken: 151, foo: "bar", maxResolution: "auto", visibility: false };
@@ -64,9 +64,6 @@
         layer.addOptions({chicken:152});
         t.eq(clone.options["chicken"], 151, "made a clean copy of options");        
 
-        t.ok( (layer.maxResolution == clone.maxResolution), "maxresolution of clone equals maxresolution of original");
-        t.ok( (layer.minResolution == clone.minResolution), "minresolution of clone equals minresolution of original");
-        
         mapone.destroy();
         maptwo.destroy();
     }
