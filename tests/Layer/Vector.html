@@ -568,6 +568,8 @@
                              "height is set correctly");
                 feature.style = customStyle4;
                 layer.drawFeature(feature);
+                var left = parseInt(root.firstChild.style.left);
+                var top = parseInt(root.firstChild.style.top);
                 t.eq(root.firstChild.style.height,
                              customStyle4.graphicHeight.toString()+'px',
                              "given graphicHeight and graphicWidth, both are set: height");
@@ -591,15 +593,10 @@
                              "graphicOpacity correctly set"); 
                 feature.style = customStyle6;
                 layer.drawFeature(feature);
-                var x = geometryX / renderer.getResolution();
-                var y = geometryY / renderer.getResolution();
-                t.eq(root.firstChild.style.left,
-                            (x + customStyle6.graphicXOffset).toFixed().toString()+'px',
-                            "graphicXOffset correctly set");
-                            
-                t.eq(root.firstChild.style.top,
-                            (y - (customStyle6.graphicYOffset+parseInt(root.firstChild.style.height))).toFixed().toString()+'px',
-                            "graphicYOffset correctly set");
+                var offsetLeft = parseInt(root.firstChild.style.left);
+                var offsetTop = parseInt(root.firstChild.style.top);
+                t.eq((offsetLeft-left)*2, customStyle6.graphicXOffset, "graphicXOffset correctly set");
+                t.eq((top-offsetTop)*2, customStyle6.graphicYOffset, "graphicYOffset correctly set");
 
         }
     }
