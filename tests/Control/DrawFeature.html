@@ -12,6 +12,34 @@
              "featureadded event in EVENT_TYPES");
     }
     
+    function test_multi(t) {
+        t.plan(4);
+
+        var layer = new OpenLayers.Layer.Vector();
+        var control;
+        
+        // multi false by default
+        control = new OpenLayers.Control.DrawFeature(
+            layer, OpenLayers.Handler.Polygon
+        );
+        t.ok(!control.multi, "control.multi false by default");
+        t.ok(!control.handler.multi, "handler.multi false by default");
+        
+        // set on handler
+        control = new OpenLayers.Control.DrawFeature(
+            layer, OpenLayers.Handler.Polygon, {multi: true}
+        );
+        t.ok(control.handler.multi, "handler.multi set from control options");
+        
+        // respect handlerOptions
+        control = new OpenLayers.Control.DrawFeature(
+            layer, OpenLayers.Handler.Polygon,
+            {multi: true, handlerOptions: {multi: false}}
+        );
+        t.ok(!control.handler.multi, "handlerOptions.multi respected");
+
+    }
+    
     function test_drawFeature(t) {
         t.plan(3);
         var layer = new OpenLayers.Layer.Vector();

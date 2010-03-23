@@ -77,7 +77,7 @@ function init() {
         {
             title: "Draw Feature",
             displayClass: "olControlDrawFeaturePolygon",
-            handlerOptions: {multi: true}
+            multi: true
         }
     );
     
