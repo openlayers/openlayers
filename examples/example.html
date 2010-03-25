@@ -26,7 +26,7 @@
             );
 
             var dm_wms = new OpenLayers.Layer.WMS(
-                "DM Solutions Demo",
+                "Canadian Data",
                 "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap",
                 {
                     layers: "bathymetry,land_fn,park,drain_fn,drainage," +
@@ -34,7 +34,7 @@
                     transparent: "true",
                     format: "image/png"
                 },
-                {isBaseLayer: false}
+                {isBaseLayer: false, visibility: false}
             );
 
             map.addLayers([ol_wms, jpl_wms, dm_wms]);
