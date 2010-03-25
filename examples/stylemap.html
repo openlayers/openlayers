@@ -38,18 +38,21 @@
                     pointRadius: "${type}", // sized according to type attribute
                     fillColor: "#ffcc66",
                     strokeColor: "#ff9933",
-                    strokeWidth: 2
+                    strokeWidth: 2,
+                    graphicZIndex: 1
                 }),
                 "select": new OpenLayers.Style({
                     fillColor: "#66ccff",
-                    strokeColor: "#3399ff"
+                    strokeColor: "#3399ff",
+                    graphicZIndex: 2
                 })
             });
             
             // Create a vector layer and give it your style map.
-            var points = new OpenLayers.Layer.Vector(
-                'Points', {styleMap: myStyles}
-            );
+            var points = new OpenLayers.Layer.Vector("Points", {
+                styleMap: myStyles,
+                rendererOptions: {zIndexing: true}
+            });
             points.addFeatures(features);
             map.addLayers([wms, points]);
             
