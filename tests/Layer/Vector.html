@@ -601,6 +601,48 @@
         }
     }
 
+    function test_removeLayer_drawFeature(t) {
+        // test behaviour when features are redrawn while
+        // the layer has been removed from the map
+
+        t.plan(1);
+
+        // set up
+
+        var map, layer, feature;
+
+        map = new OpenLayers.Map("map");
+        map.addLayer(new OpenLayers.Layer("base", {isBaseLayer: true}));
+
+        layer = new OpenLayers.Layer.Vector("vector");
+        map.addLayer(layer);
+
+        map.zoomToMaxExtent();
+
+        feature = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(1.0, 1.0));
+        layer.addFeatures(feature);
+
+        // test
+
+        map.removeLayer(layer);
+        layer.drawFeature(feature);
+        layer.drawFeature(feature);
+        map.addLayer(layer);
+
+        var count = 0, node;
+        while(node = document.getElementById(feature.geometry.id)) {
+            node.parentNode.removeChild(node);
+            count++;
+        }
+
+        t.eq(count, 1, "one geometry added, one geometry removed");
+
+        // tear down
+
+        map.destroy();
+    }
+
   </script>
 </head>
 <body>
