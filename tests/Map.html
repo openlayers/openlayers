@@ -1557,19 +1557,19 @@
         var map, msg;
         
         
-        // try setting center without layers, this is not supported
+        // try setting center without layers, this has no effect
         var failed = false;
         try {
             map = new OpenLayers.Map({
                 div: "map",
                 center: new OpenLayers.LonLat(1, 2)
             });
-            msg = "center set with no layers";
+            msg = "center option without layers has no effect";
         } catch (err) {
             failed = true;
-            msg = "center cannot be set without layers";
+            msg = "center option without layers throws error";
         }
-        t.ok(failed, msg);
+        t.ok(!failed, msg);
         
         if (map) {
             map.destroy();
