@@ -234,7 +234,57 @@
             t.debug_print("Google tests can't be run from " +
                           window.location.host);
         }
-    }    
+    }
+    
+    function test_setOpacity(t) {
+        
+        t.plan(6);
+        
+        var map = new OpenLayers.Map("map");
+        var gmap = new OpenLayers.Layer.Google(
+            "Google Streets", // the default
+            {numZoomLevels: 20}
+        );
+        var ghyb = new OpenLayers.Layer.Google(
+            "Google Hybrid",
+            {type: G_HYBRID_MAP, numZoomLevels: 20}
+        );
+        var gsat = new OpenLayers.Layer.Google(
+            "Google Satellite",
+            {type: G_SATELLITE_MAP, numZoomLevels: 22}
+        );
+        map.addLayers([gmap, ghyb, gsat]);
+        map.zoomToMaxExtent();
+        
+        var container = map.baseLayer.mapObject.getContainer();
+        var opacityCheck = function(opacity) {
+            var style = container.style;
+            var current = style.opacity === "" ? 1 : parseFloat(style.opacity);
+            if (style.filter && !style.opacity) {
+                current = Number(style.filter.replace(/alpha\(opacity=(.+?)\)/, "$1"));
+            }
+            return (current === opacity);
+        };
+        
+        gmap.setOpacity(0.5);
+        t.ok(opacityCheck(0.5), "container opacity set for visible layer");
+        
+        ghyb.setOpacity(0.75);
+        t.ok(opacityCheck(0.5), "container opacity not changed if layer not visible");
+        map.setBaseLayer(ghyb);
+        t.ok(opacityCheck(0.75), "container opacity changed to 0.75 when layer becomes visible");
+        
+        map.setBaseLayer(gsat);
+        t.ok(opacityCheck(1), "container opacity set to 1 by default");
+        gsat.setOpacity(0.25);
+        t.ok(opacityCheck(0.25), "container opacity changed to 0.25 for visible layer");
+        
+        map.setBaseLayer(gmap);
+        t.ok(opacityCheck(0.5), "container opacity set to layer opacity");
+        
+        map.destroy();
+        
+    }
 
     function test_Layer_Google_setGMapVisibility(t) {
         if(validkey) {
