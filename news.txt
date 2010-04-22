@@ -1,3 +1,13 @@
+OpenLayers 2.9:
+ r10251
+ Released 04/22/10
+ http://trac.openlayers.org/wiki/Release/2.9/Notes
+
+OpenLayers 2.8:
+ r9492
+ Released 06/22/09
+ http://trac.openlayers.org/wiki/Release/2.8/Notes
+
 OpenLayers 2.7:
  r8063
  Released 09/29/08
