@@ -56,6 +56,7 @@
             id: "getfeature0",
             writer: "wfs:GetFeature",
             arg: {
+                resultType: "hits",
                 propertyNames: ["STATE_NAME", "STATE_FIPS", "STATE_ABBR"]
             }
         }];
@@ -121,7 +122,7 @@
 </wfs:Query>
 --></div>
 <div id="getfeature0"><!--
-<wfs:GetFeature service="WFS" version="1.1.0" xmlns:topp="http://www.openplans.org/topp"
+<wfs:GetFeature service="WFS" version="1.1.0" resultType="hits" xmlns:topp="http://www.openplans.org/topp"
                 xmlns:wfs="http://www.opengis.net/wfs"
                 xmlns:ogc="http://www.opengis.net/ogc"
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
