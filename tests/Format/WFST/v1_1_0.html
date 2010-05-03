@@ -22,7 +22,18 @@
         t.eq(result.insertIds[0], "none", "InsertIds read correctly");
         t.eq(result.success, true, "Success read correctly");
     }
-    
+
+    function test_read_hits(t) {
+        t.plan(1);
+        var data = readXML("NumberOfFeatures");
+        var format = new OpenLayers.Format.WFST.v1_1_0({
+            featureNS: "http://mapserver.gis.umn.edu/mapserver",
+            featureType: "AAA64"
+        });
+        var result = format.read(data, {output: "object"});
+        t.eq(result.numberOfFeatures, 625, "numberOfFeatures of FeatureCollection correctly read");
+    }
+
     function test_write(t) {
 
         var format = new OpenLayers.Format.WFST.v1_1_0({
@@ -70,6 +81,17 @@
 </head>
 <body>
 <div id="map" style="width:512px; height:256px"> </div>
+<div id="NumberOfFeatures"><!--
+<?xml version='1.0' encoding="ISO-8859-1" ?>
+<wfs:FeatureCollection
+   xmlns:rws="http://mapserver.gis.umn.edu/mapserver"
+   xmlns:gml="http://www.opengis.net/gml"
+   xmlns:wfs="http://www.opengis.net/wfs"
+   xmlns:ogc="http://www.opengis.net/ogc"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://mapserver.gis.umn.edu/mapserver http://intranet.rijkswaterstaat.nl/services/geoservices/nwb_wegen?SERVICE=WFS&amp;VERSION=1.1.0&amp;REQUEST=DescribeFeatureType&amp;TYPENAME=feature:AAA64&amp;OUTPUTFORMAT=text/xml; subtype=gml/3.1.1  http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd" numberOfFeatures="625">
+</wfs:FeatureCollection>
+--></div>
 <div id="TransactionResponse"><!--
 <wfs:TransactionResponse version="1.1.0" xmlns:ogc="http://www.opengis.net/ogc" xmlns:tiger="http://www.census.gov" xmlns:wfs="http://www.opengis.net/wfs" xmlns:topp="http://www.openplans.org/topp" xmlns:sf="http://www.openplans.org/spearfish" xmlns:ows="http://www.opengis.net/ows" xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink">
     <wfs:TransactionSummary>
