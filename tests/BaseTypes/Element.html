@@ -110,6 +110,37 @@
         t.ok(OpenLayers.Element.getHeight(elem) == elem.offsetHeight, "offsetHeight returned");
     }
     
+    function test_Element_getDimensions(t) {
+        if (!t.open_window) { 
+            t.plan(0);
+            return;
+        } else {    
+            t.plan(4);
+        }    
+        
+      //shown
+        t.open_window( "BaseTypes/Element.html", function( wnd ) {
+            t.delay_call(3, function() {
+                var elem = wnd.document.getElementById("elemID");
+
+                var dims = OpenLayers.Element.getDimensions(elem);
+                t.eq(dims.width, 50, "width correct when displayed");
+                t.eq(dims.height, 100, "height correct when displayed")
+      
+                elem.style.display = "none";
+                dims = OpenLayers.Element.getDimensions(elem);
+                t.eq(dims.width, 50, "width correct when hidden");
+                t.eq(dims.height, 100, "height correct when hidden")
+      
+
+            });
+        });      
+      
+      //hidden
+        
+
+    }    
+
     function test_hasClass(t) {        
         t.plan(14);
         var has = OpenLayers.Element.hasClass;
