@@ -696,6 +696,34 @@
         OpenLayers.Request.PUT = _put;
     }
 
+    function test_update_featureurl(t) {
+
+        // test that OpenLayers.Request.PUT receives the URL
+        // set in the feature
+        // http://trac.openlayers.org/ticket/2393#comment:11
+
+        t.plan(1);
+
+        var protocol = new OpenLayers.Protocol.HTTP({
+            'url': 'foo_url',
+            'format': {'write': function() {}}
+        });
+
+        // feature to pass to update
+        var feature = {'feature':'feature', 'url': 'bar_url'};
+
+        var _put = OpenLayers.Request.PUT;
+
+        OpenLayers.Request.PUT = function(options) {
+            t.eq(options.url, feature.url,
+                'PUT called with correct url in options');
+        };
+
+        protocol.update(feature);
+
+        OpenLayers.Request.PUT = _put;
+    }
+
     function test_handleResponse(t) {
         t.plan(6);
 
@@ -813,6 +841,34 @@
         };
 
         var resp = protocol['delete'](feature, deleteOptions);
+
+        OpenLayers.Request.DELETE = _delete;
+    }
+
+    function test_delete_featureurl(t) {
+
+        // test that OpenLayers.Request.DELETE receives the URL
+        // set in the feature
+        // http://trac.openlayers.org/ticket/2393#comment:11
+
+        t.plan(1);
+
+        var protocol = new OpenLayers.Protocol.HTTP({
+            'url': 'foo_url',
+            'format': {'write': function() {}}
+        });
+
+        // feature to pass to update
+        var feature = {'feature':'feature', 'url': 'bar_url'};
+
+        var _delete = OpenLayers.Request.DELETE;
+
+        OpenLayers.Request.DELETE = function(options) {
+            t.eq(options.url, feature.url,
+                'DELETE called with correct url in options');
+        };
+
+        protocol['delete'](feature);
 
         OpenLayers.Request.DELETE = _delete;
     }
