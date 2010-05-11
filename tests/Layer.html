@@ -35,6 +35,7 @@
         t.ok( layer.options instanceof Object, "layer.options correctly initialized as a non-null Object" );
     }
 
+
     function test_Layer_clone (t) {
         t.plan( 7 );
         
@@ -144,83 +145,310 @@
         layer2.destroy();
     }
 
-    function test_Layer_initResolutions(t) {
-        t.plan(15);
-        var map = new OpenLayers.Map("map");
-        var options, layer;
-        
-        // tests for minResolution, maxResolution, and numZoomLevels
-        options = {
-            minResolution: 1.5,
-            maxResolution: 10.5,
-            numZoomLevels: 5,
-            map: map
-        };
-        layer = new OpenLayers.Layer("test", options);
-        layer.initResolutions();
-        t.eq(layer.minResolution.toPrecision(6), (1.5).toPrecision(6),
-             "(with numZoomLevels) layer minResolution preserved");
-        t.eq(layer.maxResolution.toPrecision(6), (10.5).toPrecision(6),
-             "(with numZoomLevels) layer maxResolution preserved");
-        t.eq(layer.numZoomLevels, 5, "(with numZoomLevels) layer numZoomLevels preserved");
-        t.eq(layer.alwaysInRange, false, "Always in range is set to false due to passed options.")        
+    function test_initResolutions_alwaysInRange(t) {
+        t.plan(3);
 
-        // three tests for minResolution, and maxResolution
-        options = {
-            minResolution: 1.5,
-            maxResolution: 10.5,
-            map: map
-        };
-        layer = new OpenLayers.Layer("test", options);
-        layer.initResolutions();
-        t.eq(layer.minResolution.toPrecision(6), (1.5).toPrecision(6),
-             "(without numZoomLevels) layer minResolution preserved");
-        t.eq(layer.maxResolution.toPrecision(6), (10.5).toPrecision(6),
-             "(without numZoomLevels) layer maxResolution preserved");
-        t.eq(layer.numZoomLevels, 3, "(without numZoomLevels) layer numZoomLevels calculated");
-        
-        // three tests for minScale, maxScale, and numZoomLevels
-        options = {
-            minScale: 105,
-            maxScale: 15,
-            numZoomLevels: 10,
-            map: map
-        };
-        layer = new OpenLayers.Layer("test", options);
-        layer.initResolutions();
-        t.eq(layer.minScale.toPrecision(6), (105).toPrecision(6),
-             "(with numZoomLevels) layer minScale preserved");
-        t.eq(layer.maxScale.toPrecision(6), (15).toPrecision(6),
-             "(with numZoomLevels) layer maxScale preserved");
-        t.eq(layer.numZoomLevels, 10, "(with numZoomLevels) layer numZoomLevels preserved");
-        
-        // three tests for minScale, and maxScale
-        options = {
-            minScale: 1555,
-            maxScale: 155,
-            map: map
-        };
-        layer = new OpenLayers.Layer("test", options);
-        layer.initResolutions();
-        t.eq(layer.minScale.toPrecision(6), (1555).toPrecision(6),
-             "(without numZoomLevels) layer minScale preserved");
-        t.eq(layer.maxScale.toPrecision(6), (155).toPrecision(6),
-             "(without numZoomLevels) layer maxScale preserved");
-        t.eq(layer.numZoomLevels, 4, "(without numZoomLevels) layer numZoomLevels calculated");
-        
-        layer = new OpenLayers.Layer("test", {'projection': 'EPSG:4326', 'map': map});
-        layer.initResolutions();
-        t.eq(layer.alwaysInRange, true, "always in range true if only get projection.");     
-        
-        OpenLayers.Layer.prototype.alwaysInRange = false;
-        layer = new OpenLayers.Layer("test", {'projection': 'EPSG:4326', 'map': map});
-        layer.initResolutions();
-        t.eq(layer.alwaysInRange, false, "always in range true if overridden on prototype.");     
-        OpenLayers.Layer.prototype.alwaysInRange = null;
+        var map, layer;
 
+        map = new OpenLayers.Map("map");
+        layer = new OpenLayers.Layer("test", {maxResolution: 80, minResolution: 10});
+        map.addLayer(layer);
+        t.eq(layer.alwaysInRange, false,
+             "alwaysInRange set to false due to passed options");
         map.destroy();
-        
-        
+
+        map = new OpenLayers.Map("map");
+        layer = new OpenLayers.Layer("test", {projection: "EPSG:4326"});
+        map.addLayer(layer);
+        t.eq(layer.alwaysInRange, true,
+             "alwaysInRange true if only get projection.");
+        map.destroy();
+
+        map = new OpenLayers.Map("map");
+        OpenLayers.Layer.prototype.alwaysInRange = false;
+        layer = new OpenLayers.Layer("test", {'projection': 'EPSG:4326'});
+        map.addLayer(layer);
+        t.eq(layer.alwaysInRange, false,
+             "alwaysInRange true if overridden on prototype.");
+        OpenLayers.Layer.prototype.alwaysInRange = null;
+        map.destroy();
+    }
+
+    function test_initResolutions_resolutions(t) {
+
+        function initResolutionsTest(
+            id, mapOptions, layerOptions,
+            expectedResolutions, expectedMinResolution, expectedMaxResolution) {
+
+            // setup
+            var map = new OpenLayers.Map("map", mapOptions);
+            var layer = new OpenLayers.Layer(null, layerOptions);
+            map.addLayer(layer);
+
+            // make resolution assertions
+            t.eq(
+                layer.resolutions.length, expectedResolutions.length,
+                id + ": correct resolutions length"
+            );
+            // allow for floating point imprecision
+            var got, exp, same = true;
+            for (var i=0; i<expectedResolutions.length; ++i) {
+                got = layer.resolutions[i];
+                exp = expectedResolutions[i];
+                if (got.toFixed(10) !== exp.toFixed(10)) {
+                    t.fail(id + ": bad resolutions - index " + i + " got " + got + " but expected " + exp);
+                    same = false;
+                    break;
+                }
+            }
+            if (same) {
+                t.ok(true, id + ": correct resolutions");
+            }
+            t.eq(
+                layer.maxResolution, expectedMaxResolution,
+                id + ": maxResolution set"
+            );
+            t.eq(
+                layer.minResolution, expectedMinResolution,
+                id + ": minResolution set"
+            );
+
+            // teardown
+            map.destroy();
+        }
+
+        // each case is an array of id, map options, layer options, expected resolutions,
+        // expected min resolution, and expected max resolution
+        var cases = [[
+
+        /*
+         * Batch 1: map defaults and sensible layer options
+         */
+
+            "1.0",  null, {resolutions: [400, 200, 100]},
+            [400, 200, 100], 100, 400
+        ], [
+            "1.1",  null, {resolutions: [400, 200, 100], minResolution: 150, maxResolution: 300},
+            [400, 200, 100], 150, 300
+        ], [
+            "1.2",  null, {maxResolution: 4000, numZoomLevels: 3},
+            [4000, 2000, 1000], 1000, 4000
+        ], [
+            "1.3",  null, {maxResolution: 4000, maxZoomLevel: 2},
+            [4000, 2000, 1000], 1000, 4000
+        ], [
+            "1.4",  null, {minResolution: 40, numZoomLevels: 3},
+            [160, 80, 40], 40, 160
+        ], [
+            "1.5",  null, {minResolution: 40, maxZoomLevel: 2},
+            [160, 80, 40], 40, 160
+        ], [
+            "1.6", null, {minResolution: 10, maxResolution: 40},
+            [40, 20, 10], 10, 40
+        ], [
+            "1.7", null, {minResolution: 10, maxResolution: 40, numZoomLevels: 3},
+            [40, 20, 10], 10, 40
+        ], [
+            "1.8", null, {minResolution: 10, maxResolution: 40, maxZoomLevel: 2},
+            [40, 20, 10], 10, 40
+        ], [
+            "1.9",  null, {scales: [400000, 200000, 100000]},
+            [0.0012699126752168362, 0.0006349563376084181, 0.00031747816880420905], 0.00031747816880420905, 0.0012699126752168362
+        ], [
+            "1.10",  null, {scales: [400000, 200000, 100000], minScale: 400000, maxScale: 100000},
+            [0.0012699126752168362, 0.0006349563376084181, 0.00031747816880420905], 0.00031747816880420905, 0.0012699126752168362
+        ], [
+            "1.11",  null, {minScale: 400000, numZoomLevels: 3},
+            [0.0012699126752168362, 0.0006349563376084181, 0.00031747816880420905], 0.00031747816880420905, 0.0012699126752168362
+        ], [
+            "1.12",  null, {minScale: 400000, maxZoomLevel: 2},
+            [0.0012699126752168362, 0.0006349563376084181, 0.00031747816880420905], 0.00031747816880420905, 0.0012699126752168362
+        ], [
+            "1.13",  null, {maxScale: 100000, numZoomLevels: 3},
+            [0.0012699126752168362, 0.0006349563376084181, 0.00031747816880420905], 0.00031747816880420905, 0.0012699126752168362
+        ], [
+            "1.14",  null, {maxScale: 100000, maxZoomLevel: 2},
+            [0.0012699126752168362, 0.0006349563376084181, 0.00031747816880420905], 0.00031747816880420905, 0.0012699126752168362
+        ], [
+            "1.15",  null, {maxScale: 100000, minScale: 400000},
+            [0.0012699126752168362, 0.0006349563376084181, 0.00031747816880420905], 0.00031747816880420905, 0.0012699126752168362
+        ], [
+            "1.16",  null, {maxScale: 100000, minScale: 400000, numZoomLevels: 3},
+            [0.0012699126752168362, 0.0006349563376084181, 0.00031747816880420905], 0.00031747816880420905, 0.0012699126752168362
+        ], [
+            "1.17",  null, {maxScale: 100000, minScale: 400000, maxZoomLevel: 2},
+            [0.0012699126752168362, 0.0006349563376084181, 0.00031747816880420905], 0.00031747816880420905, 0.0012699126752168362
+        ], [
+            "1.18",  null, {scales: [400000, 200000, 100000], units: "m"},
+            [141.11103491115225, 70.55551745557612, 35.27775872778806], 35.27775872778806, 141.11103491115225
+        ], [
+            "1.19",  null, {minScale: 400000, numZoomLevels: 3, units: "m"},
+            [141.11103491115225, 70.55551745557612, 35.27775872778806], 35.27775872778806, 141.11103491115225
+        ], [
+            "1.20",  null, {maxScale: 100000, numZoomLevels: 3, units: "m"},
+            [141.11103491115225, 70.55551745557612, 35.27775872778806], 35.27775872778806, 141.11103491115225
+        ], [
+
+        /*
+         * Batch 2: custom map options map and sensible layer options
+         */
+
+        /*
+         * Batch 2.1: resolutions set in the layer options
+         */
+            "2.1.0",  {resolutions: [300, 150]}, {resolutions: [400, 200, 100]},
+            [400, 200, 100], 100, 400
+        ], [
+            "2.1.1",  {numZoomLevels: 4}, {resolutions: [400, 200, 100]},
+            [400, 200, 100], 100, 400
+        ], [
+            "2.1.2",  {maxResolution: 300}, {resolutions: [400, 200, 100]},
+            [400, 200, 100], 100, 400
+        ], [
+            "2.1.3",  {minResolution: 300}, {resolutions: [400, 200, 100]},
+            [400, 200, 100], 100, 400
+        ], [
+            "2.1.4",  {scales: [4, 2, 1]}, {resolutions: [400, 200, 100]},
+            [400, 200, 100], 100, 400
+        ], [
+            "2.1.5",  {minScale: 4}, {resolutions: [400, 200, 100]},
+            [400, 200, 100], 100, 400
+        ], [
+            "2.1.6",  {maxScale: 4}, {resolutions: [400, 200, 100]},
+            [400, 200, 100], 100, 400
+        ], [
+        /*
+         * Batch 2.2: minResolution and maxResolution set in the layer options
+         */
+            "2.2.0",  {resolutions: [80, 40, 20, 10]}, {minResolution: 12, maxResolution: 48, numZoomLevels: 0},
+            [80, 40, 20, 10], 12, 48
+        ], [
+            "2.2.1",  {resolutions: [80, 40, 20, 10]}, {minResolution: 12, maxResolution: 48, numZoomLevels: -1},
+            [80, 40, 20, 10], 12, 48
+        ], [
+            "2.2.2",  {resolutions: [80, 40, 20, 10]}, {minResolution: 12, maxResolution: 48, numZoomLevels: null},
+            [80, 40, 20, 10], 12, 48
+        ], [
+            "2.2.3",  {resolutions: [80, 40, 20, 10]}, {minResolution: 12, maxResolution: 48, numZoomLevels: undefined},
+            [48, 24, 12], 12, 48
+        ], [
+            "2.2.4",  {resolutions: [80, 40, 20, 10]}, {minResolution: 12, maxResolution: 48, numZoomLevels: 3},
+            [48, 24, 12], 12, 48
+        ], [
+            "2.2.5",  {resolutions: [80, 40, 20, 10]}, {minResolution: 12, maxResolution: 48},
+            [48, 24, 12], 12, 48
+        ], [
+        /*
+         * Batch 2.3: maxResolution set in the layer options
+         */
+            "2.3.0",  {resolutions: [300, 150]}, {maxResolution: 4000, numZoomLevels: 3},
+            [4000, 2000, 1000], 1000, 4000
+        ], [
+            "2.3.1",  {numZoomLevels: 2}, {maxResolution: 4000, numZoomLevels: 3},
+            [4000, 2000, 1000], 1000, 4000
+        ], [
+            "2.3.2",  {maxResolution: 50}, {maxResolution: 4000, numZoomLevels: 3},
+            [4000, 2000, 1000], 1000, 4000
+        ], [
+            "2.3.3",  {scales: [4, 2, 1]}, {maxResolution: 4000, numZoomLevels: 3},
+            [4000, 2000, 1000], 1000, 4000
+        ], [
+            "2.3.4",  {minScale: 4}, {maxResolution: 4000, numZoomLevels: 3},
+            [4000, 2000, 1000], 1000, 4000
+        ], [
+            "2.3.5",  {resolutions: [300, 150]}, {maxResolution: 250},
+            [300, 150], 150, 250
+        ], [
+        /*
+         * Batch 2.4: minResolution set in the layer options
+         */
+            "2.4.0",  {resolutions: [300, 150]}, {minResolution: 40, numZoomLevels: 3},
+            [160, 80, 40], 40, 160
+        ], [
+            "2.4.1",  {numZoomLevels: 2}, {minResolution: 40, numZoomLevels: 3},
+            [160, 80, 40], 40, 160
+        ], [
+            "2.4.2",  {minResolution: 50}, {minResolution: 40, numZoomLevels: 3},
+            [160, 80, 40], 40, 160
+        ], [
+            "2.4.3",  {scales: [4, 2, 1]}, {minResolution: 40, numZoomLevels: 3},
+            [160, 80, 40], 40, 160
+        ], [
+            "2.4.4",  {maxScale: 1}, {minResolution: 40, numZoomLevels: 3},
+            [160, 80, 40], 40, 160
+        ], [
+            "2.4.5",  {resolutions: [300, 150]}, {minResolution: 250},
+            [300, 150], 250, 300
+        ], [
+        /*
+         * Batch 2.5: scales set in the layer options
+         */
+            "2.5.0",  {resolutions: [4, 2, 1]}, {scales: [400000, 200000, 100000]},
+            [0.0012699126752168362, 0.0006349563376084181, 0.00031747816880420905], 0.00031747816880420905, 0.0012699126752168362
+        ], [
+            "2.5.1",  {numZoomLevels: 2}, {scales: [400000, 200000, 100000]},
+            [0.0012699126752168362, 0.0006349563376084181, 0.00031747816880420905], 0.00031747816880420905, 0.0012699126752168362
+        ], [
+            "2.5.2",  {maxResolution: 4}, {scales: [400000, 200000, 100000]},
+            [0.0012699126752168362, 0.0006349563376084181, 0.00031747816880420905], 0.00031747816880420905, 0.0012699126752168362
+        ], [
+            "2.5.3",  {minResolution: 1}, {scales: [400000, 200000, 100000]},
+            [0.0012699126752168362, 0.0006349563376084181, 0.00031747816880420905], 0.00031747816880420905, 0.0012699126752168362
+        ], [
+            "2.5.4",  {units: "m"}, {scales: [400000, 200000, 100000]},
+            [141.11103491115225, 70.55551745557612, 35.27775872778806], 35.27775872778806, 141.11103491115225
+        ], [
+        /*
+         * Batch 2.6: minScale set in the layer options
+         */
+            "2.6.0",  {resolutions: [4, 2, 1]}, {minScale: 400000, numZoomLevels: 3},
+            [0.0012699126752168362, 0.0006349563376084181, 0.00031747816880420905], 0.00031747816880420905, 0.0012699126752168362
+        ], [
+            "2.6.1",  {numZoomLevels: 2}, {minScale: 400000, numZoomLevels: 3},
+            [0.0012699126752168362, 0.0006349563376084181, 0.00031747816880420905], 0.00031747816880420905, 0.0012699126752168362
+        ], [
+            "2.6.2",  {maxResolution: 4}, {minScale: 400000, numZoomLevels: 3},
+            [0.0012699126752168362, 0.0006349563376084181, 0.00031747816880420905], 0.00031747816880420905, 0.0012699126752168362
+        ], [
+            "2.6.3", {scales: [400000, 200000, 100000]}, {minScale: 200000},
+            [0.0012699126752168362, 0.0006349563376084181, 0.00031747816880420905], 0.00031747816880420905, 0.0006349563376084181
+        ], [
+        /*
+         * Batch 2.7: maxScale set in the layer options
+         */
+            "2.7.0",  {resolutions: [4, 2, 1]}, {maxScale: 100000, numZoomLevels: 3},
+            [0.0012699126752168362, 0.0006349563376084181, 0.00031747816880420905], 0.00031747816880420905, 0.0012699126752168362
+        ], [
+            "2.7.1",  {numZoomLevels: 2}, {maxScale: 100000, numZoomLevels: 3},
+            [0.0012699126752168362, 0.0006349563376084181, 0.00031747816880420905], 0.00031747816880420905, 0.0012699126752168362
+        ], [
+            "2.7.2",  {minResolution: 1}, {maxScale: 100000, numZoomLevels: 3},
+            [0.0012699126752168362, 0.0006349563376084181, 0.00031747816880420905], 0.00031747816880420905, 0.0012699126752168362
+        ], [
+            "2.7.3", {scales: [400000, 200000, 100000]}, {maxScale: 200000},
+            [0.0012699126752168362, 0.0006349563376084181, 0.00031747816880420905], 0.0006349563376084181, 0.0012699126752168362
+        ], [
+        /*
+         * Batch 2.8: numZoomLevels set in the layer options
+         */
+            "2.8.0",  {maxResolution: 80}, {numZoomLevels: 4},
+            [80, 40, 20, 10], 10, 80
+        ], [
+            "2.8.1", {maxResolution: 80, numZoomLevels: 4}, {numZoomLevels: null},
+            [80, 40, 20, 10], 10, 80
+        ], [
+            "2.8.2", {maxResolution: 80, numZoomLevels: 4}, {numZoomLevels: undefined},
+            [80, 40, 20, 10], 10, 80
+        ]];
+
+        // run all cases (4 tests each)
+        var i, num = cases.length, c;
+        t.plan(num * 4);
+        for (i=0; i<num; ++i) {
+            c = cases[i];
+            initResolutionsTest(c[0], c[1], c[2], c[3], c[4], c[5]);
+        }
+
     }
 
     function test_Layer_visibility(t) {
