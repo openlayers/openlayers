@@ -66,7 +66,7 @@
         t.eq(testRecord.title, [{value:"Sample title"}], "check value for record.title");
 
         //test bbox
-        t.eq(testRecord.BoundingBox.length, 1, "object contains 1 BoundingBox");
+        t.eq(testRecord.BoundingBox.length, 2, "object contains 2 BoundingBoxes");
         var bbox = testRecord.BoundingBox[0];
         t.ok(bbox, "object contains BoundingBox properties");
         t.eq(bbox.crs, "::Lambert Azimuthal Projection", "check value for BoundingBox.crs");

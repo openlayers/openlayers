@@ -25,6 +25,10 @@ var csw_response =
         '<ows:LowerCorner>156 -3</ows:LowerCorner>' +
         '<ows:UpperCorner>37 83</ows:UpperCorner>' +
       '</ows:BoundingBox>' +
+      '<ows:BoundingBox crs="::WGS 1984">' +
+        '<ows:LowerCorner>51.1 -34.6</ows:LowerCorner>' +
+        '<ows:UpperCorner>-17.3 38.2</ows:UpperCorner>' +
+      '</ows:BoundingBox>' +
     '</csw:BriefRecord>' +
     '<csw:BriefRecord xmlns:geonet="http://www.fao.org/geonetwork" xmlns:ows="http://www.opengis.net/ows" xmlns:dc="http://purl.org/dc/elements/1.1/">' +
       '<dc:identifier>8a7245c3-8546-42de-8e6f-8fb8b5fd1bc3</dc:identifier>' +
