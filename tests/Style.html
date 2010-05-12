@@ -341,6 +341,44 @@
 
     }
 
+    function test_clone(t) {
+        
+        t.plan(7);
+        
+        var style = new OpenLayers.Style({bar: "baz"}, {
+            name: "test style",
+            rules: [new OpenLayers.Rule({
+                name: "test rule"
+            })],
+            context: {
+                foo: "bar"
+            }
+        });
+        var clone = style.clone();
+        t.eq(clone.name, "test style", "name copied");
+        t.eq(clone.rules[0].name, "test rule", "clone has correct rule");
+        
+        // modify original
+        style.name = "new";
+        style.addRules([new OpenLayers.Rule({
+			name: "new rule"
+		})]);
+        style.context.foo = "baz";
+        
+        // confirm that clone didn't change
+        t.eq(clone.defaultStyle.bar, "baz", "clone has clone of defaultStyle");
+        t.eq(clone.name, "test style", "clone has clone of name");
+        t.eq(clone.rules.length, 1, "clone has clone of rules");
+        t.eq(clone.context.foo, "bar", "clone has clone of context");
+        
+        // confirm that ids are different
+        t.ok(clone.id !== style.id, "clone has different id");
+
+        style.destroy();
+        clone.destroy();
+        
+    }
+
     function test_Style_destroy(t) {
         t.plan(1);
         
