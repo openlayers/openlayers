@@ -69,7 +69,7 @@
             getTitleForObservedProperty: function(property) {
                 for (var name in this.SOSCapabilities.contents.offeringList) {
                     var offering = this.SOSCapabilities.contents.offeringList[name];
-                    if (offering.observedProperty === property) {
+                    if (offering.observedProperties[0] === property) {
                         return offering.name;
                     }
                 }
@@ -131,7 +131,7 @@
                         responseMode: 'inline',
                         procedure: feature.attributes.id,
                         offering: name,
-                        observedProperty: offering.observedProperty,
+                        observedProperty: offering.observedProperties[0],
                         responseFormat: this.responseFormat
                     });
                     OpenLayers.Request.POST({

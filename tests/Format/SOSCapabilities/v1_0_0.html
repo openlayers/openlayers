@@ -57,7 +57,7 @@
 
         // Contents (from SOS)
         t.eq(obj.contents.offeringList.ATMOSPHERIC_PRESSURE.name, "Pressure of the atmosphere", "Name of offering correctly parsed");
-        t.eq(obj.contents.offeringList.ATMOSPHERIC_PRESSURE.observedProperty, "urn:x-ogc:def:property:OGC::BarometricPressure", "ObservedProperty correctly parsed");
+        t.eq(obj.contents.offeringList.ATMOSPHERIC_PRESSURE.observedProperties[0], "urn:x-ogc:def:property:OGC::BarometricPressure", "ObservedProperty correctly parsed");
         t.eq(obj.contents.offeringList.ATMOSPHERIC_PRESSURE.featureOfInterestIds[0], "urn:ogc:object:feature:OSIRIS-HWS:3d3b239f-7696-4864-9d07-15447eae2b93", "Allowed value (1) for featureOfInterest correctly parsed");
         t.eq(obj.contents.offeringList.ATMOSPHERIC_PRESSURE.featureOfInterestIds[1], "urn:ogc:object:feature:OSIRIS-HWS:efeb807b-bd24-4128-a920-f6729bcdd111", "Allowed value (2) for featureOfInterest correctly parsed");
         t.eq(obj.contents.offeringList.ATMOSPHERIC_PRESSURE.procedures[0], "urn:ogc:object:feature:OSIRIS-HWS:3d3b239f-7696-4864-9d07-15447eae2b93", "Allowed value (1) for procedures correctly parsed");
