@@ -4,7 +4,7 @@
     <script type="text/javascript">
     
     function test_read(t) {
-        t.plan(32);
+        t.plan(30);
        
         var parser = new OpenLayers.Format.WFSCapabilities();
 
@@ -15,8 +15,7 @@
         t.eq(ft.length, 14, "number of feature types correct");
         t.eq(ft[0]["abstract"], "Manhattan landmarks, identifies water, lakes, parks, interesting buildilngs", "abstract of first feature type correct");
         t.eq(ft[0]["title"], "Manhattan (NY) landmarks", "title of first feature type correct");
-        t.eq(ft[0]["name"], "tiger:poly_landmarks", "name of first feature type correct");
-        t.eq(ft[0]["featurePrefix"], "tiger", "prefix of first feature type correct");
+        t.eq(ft[0]["name"], "poly_landmarks", "name of first feature type correct");
         t.eq(ft[0]["featureNS"], "http://www.census.gov", "ns of first feature type correct");
 
         // GeoServer, v1.0.0
@@ -26,8 +25,7 @@
         t.eq(ft.length, 14, "number of feature types correct");
         t.eq(ft[0]["abstract"], "Manhattan landmarks, identifies water, lakes, parks, interesting buildilngs", "abstract of first feature type correct");
         t.eq(ft[0]["title"], "Manhattan (NY) landmarks", "title of first feature type correct");
-        t.eq(ft[0]["name"], "tiger:poly_landmarks", "name of first feature type correct");
-        t.eq(ft[0]["featurePrefix"], "tiger", "prefix of first feature type correct");
+        t.eq(ft[0]["name"], "poly_landmarks", "name of first feature type correct");
         t.eq(ft[0]["featureNS"], "http://www.census.gov", "ns of first feature type correct");
 
         var service = res.service;
