@@ -407,7 +407,33 @@
         
         t.xml_eq(sld, expect, "rule with spatial filter correctly written");
         
+    }
+    
+    function test_RasterSymbolizer(t) {
+        t.plan(1);
         
+        var format = new OpenLayers.Format.SLD.v1_0_0();
+
+        var snippet =
+            '<sld:RasterSymbolizer xmlns:sld="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc">' +
+                '<sld:Geometry>' +
+                    '<ogc:PropertyName>geom</ogc:PropertyName>' +
+                '</sld:Geometry>' +
+                '<sld:Opacity>1</sld:Opacity>' +
+                '<sld:ColorMap>' +
+                    '<sld:ColorMapEntry color="#000000" opacity="0.5" quantity="0" label="nodata"/>' +
+                    '<sld:ColorMapEntry color="#00FFFF" quantity="1" label="values"/>' +
+                    '<sld:ColorMapEntry color="#FF0000" quantity="1000" label="values"/>' +
+                '</sld:ColorMap>' +
+            '</sld:RasterSymbolizer>';
+        var expected = new OpenLayers.Format.XML().read(snippet).documentElement;
+    
+        var symbolizer = {};
+        format.readNode(expected, {symbolizer: symbolizer});
+        
+        var got = format.writeNode("sld:RasterSymbolizer", symbolizer["Raster"]);
+        
+        t.xml_eq(got, expected, "Successfully round tripped RasterSymbolizer");
     }
 
     </script> 
