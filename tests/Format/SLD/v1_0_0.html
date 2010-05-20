@@ -410,7 +410,7 @@
     }
     
     function test_RasterSymbolizer(t) {
-        t.plan(1);
+        t.plan(4);
         
         var format = new OpenLayers.Format.SLD.v1_0_0();
 
@@ -430,6 +430,10 @@
     
         var symbolizer = {};
         format.readNode(expected, {symbolizer: symbolizer});
+        
+        t.eq(symbolizer.Raster.colorMap[0].quantity, 0, "quantity set correctly");
+        t.eq(symbolizer.Raster.colorMap[0].opacity, 0.5, "opacity set correctly");
+        t.eq(symbolizer.Raster.colorMap[1].opacity, undefined, "non-existent opacity results in undefined");
         
         var got = format.writeNode("sld:RasterSymbolizer", symbolizer["Raster"]);
         
