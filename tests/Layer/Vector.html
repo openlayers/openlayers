@@ -643,6 +643,52 @@
         map.destroy();
     }
 
+    function test_vectorBeforeFeatureAddedVeto(t) {
+        t.plan( 4 );
+
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.Vector("");
+        map.addLayer(layer);
+        var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry(1.0, 1.0));
+        layer.addFeatures([feature]);
+
+        var addedFeatures = [];
+        var beforefeatureadded_veto = function(evt) { return false; };
+        layer.events.register("beforefeatureadded", layer, beforefeatureadded_veto);
+        layer.events.register("featuresadded", layer, function(evt) {
+            if (evt.features) {
+                for (var i = 0; i < evt.features.length; i++) {
+                    addedFeatures.push(evt.features[i]);
+                }
+            }
+        });
+
+        var blankFeatures = [
+            new OpenLayers.Feature.Vector(new OpenLayers.Geometry(1.0, 1.0)),
+            new OpenLayers.Feature.Vector(new OpenLayers.Geometry(1.0, 1.0))];
+        layer.addFeatures(blankFeatures);
+
+        t.eq(layer.features.length, 1,
+            "features not added to layer after beforefeatureadded veto");
+        t.eq(addedFeatures.length, 0,
+            "no features sent to featuresadded on feature veto");
+
+        addedFeatures = [];
+
+        layer.events.unregister("beforefeatureadded", layer, beforefeatureadded_veto);
+        beforefeatureadded_veto = function(evt) { return true; };
+        layer.events.register("beforefeatureadded", layer, beforefeatureadded_veto);
+
+        layer.addFeatures(blankFeatures);
+
+        t.eq(layer.features.length, 3,
+            "features added to layer as expected");
+        t.eq(addedFeatures.length, 2,
+            "featuresadded event received expected number of features");
+    }
+
+
+
   </script>
 </head>
 <body>
