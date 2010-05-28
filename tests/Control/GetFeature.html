@@ -22,7 +22,7 @@
     }
     
     function test_Control_GetFeature_select(t) {
-        t.plan(5);
+        t.plan(6);
         var map = new OpenLayers.Map("map");
         var layer = new OpenLayers.Layer.WMS("foo", "wms", {
             layers: "foo"
@@ -49,9 +49,9 @@
             t.eq(evt.feature.id, feature1.id, "featureselected callback called with closest feature");
         }
         control.events.register("featureselected", this, singleTest);
-        control.selectSingle({xy: new OpenLayers.Pixel(200, 125)});
+        control.selectClick({xy: new OpenLayers.Pixel(200, 125)});
         control.events.unregister("featureselected", this, singleTest);
-        
+
         var count = 0;
         var beforeFeatureSelected = function(evt) {
              count++;
@@ -78,6 +78,15 @@
         control.events.unregister("featuresselected", this, featuresSelected);
         t.eq(features.length, 2, "2 features inside box selected");
         t.eq(features[1].id, feature2.id, "featureselected callback called with multiple features");
+
+        // allow several features even for single click 
+        control.single = false;
+        var multiplePointTest = function(evt) {
+            t.eq(evt.features.length, 3, "3 features passed to the featuresselected handler");
+        }
+        control.events.register("featuresselected", this, multiplePointTest);
+        control.selectClick({xy: new OpenLayers.Pixel(200, 125)});
+        control.events.unregister("featuresselected", this, multiplePointTest);
     }
     
     function test_Control_GetFeature_hover(t) {
