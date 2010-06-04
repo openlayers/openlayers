@@ -83,9 +83,9 @@
     function test_Map_setOptions(t) {
         t.plan(2);
         map = new OpenLayers.Map('map', {maxExtent: new OpenLayers.Bounds(100, 200, 300, 400)});
-        map.setOptions({theme: 'foo'});
+        map.setOptions({projection: 'EPSG:900913'});
         
-        t.eq(map.theme, 'foo', "theme is correctly set by setOptions");
+        t.eq(map.projection, 'EPSG:900913', "projection is correctly set by setOptions");
         t.ok(map.maxExtent.equals(new OpenLayers.Bounds(100, 200, 300, 400)), 
              "maxExtent is correct after calling setOptions");
         
@@ -128,10 +128,10 @@
 
     function test_Map_options(t) {
         t.plan(3);
-        map = new OpenLayers.Map('map', {numZoomLevels: 6, maxResolution: 3.14159, theme: 'foo'});
+        map = new OpenLayers.Map('map', {numZoomLevels: 6, maxResolution: 3.14159, projection: 'EPSG:900913'});
         t.eq( map.numZoomLevels, 6, "map.numZoomLevels set correctly via options hashtable" );
         t.eq( map.maxResolution, 3.14159, "map.maxResolution set correctly via options hashtable" );
-        t.eq( map.theme, 'foo', "map theme set correctly." );
+        t.eq( map.projection, 'EPSG:900913', "map projection set correctly." );
 
         map.destroy();
     }
@@ -851,72 +851,6 @@
         var ll = new OpenLayers.LonLat(-100,-150);
         map.moveTo(ll, 2);
         t.ok(map.getCenter().equals(new OpenLayers.LonLat(0,0)), "safely sets out-of-bounds lonlat");
-
-        map.destroy();
-    }
-
-    function test_Map_defaultTheme(t) {
-        t.plan(5);
-        
-        var links = document.getElementsByTagName('link');
-        map = new OpenLayers.Map('map');
-        var gotNodes = 0;
-        var themeNode = null;
-        for(var i=0; i<links.length; ++i) {
-            if(OpenLayers.Util.isEquivalentUrl(map.theme, links.item(i).href)) {
-                gotNodes += 1;
-                themeNode = links.item(i);
-            }
-        }
-        t.eq(gotNodes, 1, "by default, a single link node is added to document");
-        t.ok(themeNode != null, "a link node with the theme href was added");
-        t.eq(themeNode.rel, "stylesheet", "node added has rel set to stylesheet");
-        t.eq(themeNode.type, "text/css", "node added has type set to text/css");
-        
-        // reconstruct the map to prove that another link is not added
-        map = new OpenLayers.Map('map');
-        t.eq(links.length, document.getElementsByTagName('link').length,
-             "calling the map constructor twice with the same theme doesn't add duplicate link nodes");
-
-        map.destroy();
-    }
-
-    function test_Map_customTheme(t) {
-        t.plan(5);
-        
-        var customTheme = 'foo';
-        var options = {theme: customTheme};
-        map = new OpenLayers.Map('map', options);
-
-        var links = document.getElementsByTagName('link');
-        var gotNodes = 0;
-        var themeNode = null;
-        for(var i=0; i<links.length; ++i) {
-            if(OpenLayers.Util.isEquivalentUrl(map.theme, links.item(i).href)) {
-                gotNodes += 1;
-                themeNode = links.item(i);
-            }
-        }
-        
-        t.eq(map.theme, customTheme, "map theme is properly set");
-        t.eq(gotNodes, 1, "with custom theme, a single link node is added to document");
-        t.ok(themeNode != null, "a link node with the theme href was added");
-        t.eq(themeNode.rel, "stylesheet", "node added has rel set to stylesheet");
-        t.eq(themeNode.type, "text/css", "node added has type set to text/css");
-        
-        map.destroy();
-    }
-
-    function test_Map_noTheme(t) {
-        t.plan(1);
-        
-        var head = document.getElementsByTagName('head')[0];
-        var nodeCount = head.childNodes.length;
-        
-        var options = {theme: null};
-        map = new OpenLayers.Map('map', options);
-
-        t.eq(nodeCount, head.childNodes.length, "with no theme, a node is not added to document head" );
 
         map.destroy();
     }
