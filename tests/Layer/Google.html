@@ -319,6 +319,38 @@
                           window.location.host);
         }    
     }
+    
+    function test_sphericalMercator(t) {
+        
+        t.plan(4);
+        var map, layer;
+
+        map = new OpenLayers.Map("map");
+        layer = new OpenLayers.Layer.Google();
+        map.addLayer(layer);
+        t.ok(!layer.sphericalMercator, "sphericalMercator false by default");
+        t.eq(map.getProjection(), "EPSG:4326", "4326 by default without sphericalMercator");
+        map.destroy();
+        
+        map = new OpenLayers.Map("map");
+        layer = new OpenLayers.Layer.Google(null, {
+            sphericalMercator: true
+        });
+        map.addLayer(layer);
+        t.eq(map.getProjection(), "EPSG:900913", "900913 by default with sphericalMercator");
+        map.destroy();
+
+        map = new OpenLayers.Map("map");
+        layer = new OpenLayers.Layer.Google(null, {
+            sphericalMercator: true,
+            projection: "EPSG:102113"
+        });
+        map.addLayer(layer);
+        t.eq(map.getProjection(), "EPSG:102113", "custom code respected with sphericalMercator");
+        map.destroy();
+        
+    }
+    
 
   </script>
 </head>
