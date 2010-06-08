@@ -22,7 +22,8 @@
     }
     
     function test_Control_GetFeature_select(t) {
-        t.plan(6);
+        t.plan(10);
+        var cssAdded;
         var map = new OpenLayers.Map("map");
         var layer = new OpenLayers.Layer.WMS("foo", "wms", {
             layers: "foo"
@@ -35,6 +36,8 @@
         var control = new OpenLayers.Control.GetFeature({
             protocol: new OpenLayers.Protocol({
                 read: function(obj) {
+                    cssAdded = OpenLayers.Element.hasClass(map.viewPortDiv,
+                                                           "olCursorWait");
                     obj.callback.call(obj.scope, {
                         features: [feature1, feature2, feature3],
                         success: function() {return true;}
@@ -48,8 +51,13 @@
         var singleTest = function(evt) {
             t.eq(evt.feature.id, feature1.id, "featureselected callback called with closest feature");
         }
+        cssAdded = false;
         control.events.register("featureselected", this, singleTest);
         control.selectClick({xy: new OpenLayers.Pixel(200, 125)});
+        t.ok(cssAdded,
+             "select adds CSS class (click)");
+        t.ok(!OpenLayers.Element.hasClass(map.viewPortDiv, "olCursorWait"),
+             "callback removes CSS class (click)");
         control.events.unregister("featureselected", this, singleTest);
 
         var count = 0;
@@ -71,6 +79,7 @@
         control.events.register("featureselected", this, boxTest);
         control.events.register("beforefeaturesselected", this, beforeFeaturesSelected);
         control.events.register("featuresselected", this, featuresSelected);
+        cssAdded = false;
         control.selectBox(new OpenLayers.Bounds(0,0,4,4));
         control.events.unregister("beforefeatureselected", this, beforeFeatureSelected);
         control.events.unregister("featureselected", this, boxTest);
@@ -78,6 +87,10 @@
         control.events.unregister("featuresselected", this, featuresSelected);
         t.eq(features.length, 2, "2 features inside box selected");
         t.eq(features[1].id, feature2.id, "featureselected callback called with multiple features");
+        t.ok(cssAdded,
+             "select adds CSS class (box)");
+        t.ok(!OpenLayers.Element.hasClass(map.viewPortDiv, "olCursorWait"),
+             "callback removes CSS class (box)");
 
         // allow several features even for single click 
         control.single = false;
@@ -90,7 +103,8 @@
     }
     
     function test_Control_GetFeature_hover(t) {
-        t.plan(6);
+        t.plan(9);
+        var cssAdded;
         var abortedResponse = null;
         var map = new OpenLayers.Map("map");
         var layer = new OpenLayers.Layer.WMS("foo", "wms", {
@@ -104,6 +118,8 @@
         var control = new OpenLayers.Control.GetFeature({
             protocol: new OpenLayers.Protocol({
                 read: function(obj){
+                    cssAdded = OpenLayers.Element.hasClass(map.viewPortDiv,
+                                                           "olCursorWait");
                     obj.callback.call(obj.scope, {
                         features: [feature1, feature2],
                         success: function() {return true;}
@@ -133,12 +149,21 @@
              "selectHover stores the protocol response in the hoverResponse property");
 
         hoverFeature = feature2;
+        cssAdded = false;
         control.selectHover({xy: new OpenLayers.Pixel(400, 0)});
+        t.ok(cssAdded,
+             "select adds CSS class (hover)");
+        t.ok(!OpenLayers.Element.hasClass(map.viewPortDiv, "olCursorWait"),
+             "callback removes CSS class (hover)");
+
+        OpenLayers.Element.addClass(map.viewPortDiv, "olCursorWait");
         control.cancelHover();
         t.ok(abortedResponse == response,
              "cancelHover calls protocol.abort() with the expected response");
         t.eq(control.hoverResponse, null,
              "cancelHover sets this.hoverResponse to null");
+        t.ok(!OpenLayers.Element.hasClass(map.viewPortDiv, "olCursorWait"),
+             "cancelHover removes CSS class");
 
         control.events.unregister("hoverfeature", this, hoverTest);
         control.events.unregister("outfeature", this, outTest);
