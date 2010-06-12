@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>OpenLayers WMTS Capabilities Example</title>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css"/>
+        <link rel="stylesheet" href="style.css" type="text/css" />
+        <script src="../lib/Firebug/firebug.js"></script>
+        <script src="../lib/OpenLayers.js"></script>
+        <script src="wmts-capabilities.js"></script>
+        <style>
+            .olControlAttribution {
+                bottom: 5px;
+            }
+        </style>
+    </head>
+    <body onload="init();">
+        <h1 id="title">Web Map Tile Service (WMTS) Capabilities Parsing</h1>
+        
+        <p id="shortdesc">
+            The WMTS Capabilities format allows for parsing of capabilities
+            documents from OGC Web Map Tile Service (WMTS) version 1.0.0 
+            implementations.
+        </p>
+        
+        <div id="map" class="smallmap"></div>
+        
+        <div id="docs">
+            <p>
+                This example creates an OpenLayers.Layer.WMTS layer to based
+                on the results of parsing a capabilities doc with the
+                OpenLayers.Format.WMTSCapabilities parser.
+            </p><p>
+                See the <a href="wmts-capabilities.js" target="_blank">
+                wmts-capabilities.js source</a> to see how this is done.
+            </p>
+        </div>
+    </body>
+</html>
