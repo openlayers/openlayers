@@ -252,16 +252,18 @@
     }
     
     function test_Collection_destroy(t) {
-        t.plan( 1 );
+        t.plan( 3 );
         coll = new OpenLayers.Geometry.Collection();
-        coll.components = {};
-        
+        coll.addComponents(new OpenLayers.Geometry.Point(0,0));
+        coll.addComponents(new OpenLayers.Geometry.Point(10,10));
+        coll.getBounds();
         coll.destroy(); 
         
         t.ok(coll.components == null, "components array cleared");
+        t.ok(coll.getBounds() == null, "bounds is cleared");
+        t.ok(coll.id == null, "id is cleared");
 
     }
-
 
   </script>
 </head>
