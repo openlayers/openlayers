@@ -19,6 +19,7 @@
         
     }
     
+    // test for <http://trac.openlayers.org/ticket/2691>
     function test_cancel(t) {
         
         t.plan(4);
@@ -66,6 +67,52 @@
         map.destroy();
         
     }
+
+    function test_partial(t) {
+        t.plan(1);
+
+        // set up
+
+        var map, layer, control, geometry, log;
+
+        map = new OpenLayers.Map("map", {units: "m"});
+
+        layer = new OpenLayers.Layer(null, {isBaseLayer: true});
+        map.addLayer(layer);
+
+        map.zoomToMaxExtent();
+
+        control = new OpenLayers.Control.Measure(OpenLayers.Handler.Path, {
+            partialDelay: null
+        });
+
+        map.addControl(control);
+        control.activate();
+
+        control.events.on({
+            "measurepartial": function(e) {
+                log.measure = e.measure;
+            }
+        });
+
+        // test
+
+        geometry = new OpenLayers.Geometry.LineString([
+            new OpenLayers.Geometry.Point(1, 1),
+            new OpenLayers.Geometry.Point(2, 1)
+        ]);
+
+        log = {};
+        control.measurePartial(null, geometry);
+        geometry.components[1].x = 3;
+        t.delay_call(0.2, function() {
+
+            t.eq(log.measure, 1, "partial measure is correct");
+
+            // tear down
+            map.destroy
+        });
+    };
 
   </script>
 </head>
