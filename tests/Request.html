@@ -371,6 +371,22 @@
         teardown();
     }
 
+    function test_abort(t) {
+        t.plan(0);
+        var fail = false;
+        OpenLayers.Request.XMLHttpRequest.onsend = function(args) {
+            fail = true;
+        }
+        t.delay_call(0.5, function() {
+            if (fail === true) {
+                t.fail("Send should not be called because request is aborted");
+            }
+            OpenLayers.Request.XMLHttpRequest.onsend = null;
+        });
+        var protocol = new OpenLayers.Protocol.HTTP();
+        protocol.abort(protocol.read());
+    }
+
     </script>
 </head>
 <body>
