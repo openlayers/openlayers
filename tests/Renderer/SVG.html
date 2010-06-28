@@ -408,10 +408,17 @@
         r.importSymbol("square");
 
         var polygon = document.getElementById(r.container.id + "_defs").firstChild.firstChild;
-
-        var points = polygon.getAttribute("points");
- 
-        t.eq(points.replace(/ /g,''), "0,00,11,11,00,0", "Square symbol rendered correctly");
+        
+        var pass = false;
+        for (var i = 0; i < polygon.points.numberOfItems; i++) {
+            var p = polygon.points.getItem(i);
+            pass = p.x === OpenLayers.Renderer.symbol.square[2*i] && 
+                   p.y === OpenLayers.Renderer.symbol.square[2*i+1];
+            if (!pass) {
+                break;
+            }
+        }
+        t.ok(pass, "Square symbol rendered correctly");
         t.ok(r.symbolMetrics["-square"], "Symbol metrics cached correctly.");
     }
         
