@@ -6,7 +6,7 @@
     var name = "Vector Layer";
     
     function test_Layer_Vector_constructor(t) {
-        t.plan(4);
+        t.plan(5);
 
         var options = {protocol: new OpenLayers.Protocol(), 
                        strategies: [new OpenLayers.Strategy(), new OpenLayers.Strategy()]}
@@ -19,6 +19,45 @@
         t.ok((layer.name == layer.strategies[0].layer.name) &&
              (layer.strategies[0].layer.name == layer.strategies[1].layer.name), 
              "setLayer was called on strategies");
+
+       options.renderers = [OpenLayers.Renderer.SVG, OpenLayers.Renderer.VML, OpenLayers.Renderer.Canvas]; 
+       layer.destroy(); 
+       layer = new OpenLayers.Layer.Vector(name, options); 
+       t.ok(layer.renderer.CLASS_NAME, "layer has a renderer when providing a function"); 
+       layer.destroy(); 
+    }
+
+    function test_Layer_Vector_assignRenderer(t) { 
+        t.plan(2);
+ 
+        // create a dummy class in the global name space 
+        My = { 
+            Custom: { 
+                Renderer: { 
+                    Supported: OpenLayers.Class(OpenLayers.Renderer, { 
+                        supported: OpenLayers.Function.True, 
+                        CLASS_NAME: 'My.Custom.Renderer.Supported' 
+                    }), 
+                    NotSupported: OpenLayers.Class(OpenLayers.Renderer, { 
+                        supported: OpenLayers.Function.False, 
+                        CLASS_NAME: 'My.Custom.Renderer.NotSupported' 
+                    }) 
+                } 
+            } 
+        }; 
+        var layer = new OpenLayers.Layer.Vector('vector', { 
+            renderers: [My.Custom.Renderer.NotSupported, 
+                My.Custom.Renderer.Supported, 
+                OpenLayers.Renderer.Canvas] 
+        }); 
+        t.eq(layer.renderer.CLASS_NAME, 'My.Custom.Renderer.Supported',  
+            'layer has a valid renderer'); 
+ 
+        var layer = new OpenLayers.Layer.Vector('vector', { 
+            renderers: ['SVG', 'VML', 'Canvas', My.Custom.Renderer.Supported] 
+        }); 
+        t.ok(layer.renderer.CLASS_NAME != 'My.Custom.Renderer.Supported',  
+            'renderers can be strings as well'); 
     }
 
     function test_Layer_Vector_refresh(t) {
