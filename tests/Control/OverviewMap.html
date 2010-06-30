@@ -2,7 +2,7 @@
 <head>
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript">
-    var map;
+    var map, control;
     function test_initialize(t) {
         t.plan( 2 );
     
@@ -10,6 +10,36 @@
         t.ok( control instanceof OpenLayers.Control.OverviewMap, "new OpenLayers.Control.OverviewMap returns object" );
         t.eq( control.displayClass,  "olControlOverviewMap", "displayClass is correct" );
     }
+
+    function test_setMap(t) {
+        t.plan(4);
+
+        var setMapTest = function(map) {
+            t.ok(true, "Handler.setMap called for " + this.CLASS_NAME);
+            this.map = map;        
+        };
+        var drag_setMap = OpenLayers.Handler.Drag.prototype.setMap;
+        OpenLayers.Handler.Drag.prototype.setMap = setMapTest;
+        var click_setMap = OpenLayers.Handler.Click.prototype.setMap;
+        OpenLayers.Handler.Click.prototype.setMap = setMapTest;
+
+        map = new OpenLayers.Map('map', {
+            layers  : [new OpenLayers.Layer("layer", {isBaseLayer: true})],
+            controls: []
+        });
+        control = new OpenLayers.Control.OverviewMap();
+    
+        map.addControl(control);
+
+        map.zoomToMaxExtent();
+        t.eq(control.handlers.drag.map.id, control.ovmap.id, "drag.map is correct");
+        t.eq(control.handlers.click.map.id, control.ovmap.id, "click.map is correct");
+
+        map.destroy();
+        OpenLayers.Handler.Drag.prototype.setMap = drag_setMap;
+        OpenLayers.Handler.Click.prototype.setMap = click_setMap;
+    }
+
     function test_destroy(t) {
         t.plan(6);
 
