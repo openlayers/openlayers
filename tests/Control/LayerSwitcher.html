@@ -105,7 +105,7 @@
                 t.ok(true, "redraw called when setting vis");
             }
             map.addControl(control); 
-            var func = myredraw.bind(control);
+            var func = OpenLayers.Function.bind(myredraw, control);
             func();
             markers.setVisibility(false); 
             t.eq(control.checkRedraw(), true, "check redraw is true after changing layer and not letting redraw happen.");
@@ -117,7 +117,7 @@
                 t.ok(true, "redraw called when setting inRange");
             }
             map.addControl(control); 
-            var func = myredraw.bind(control);
+            var func = OpenLayers.Function.bind(myredraw, control);
             func();
             markers.inRange = false;
             t.eq(control.checkRedraw(), true, "check redraw is true after changing layer.inRange and not letting redraw happen.");
@@ -130,7 +130,7 @@
             }
             
             map.addControl(control); 
-            var func = myredraw.bind(control);
+            var func = OpenLayers.Function.bind(myredraw, control);
             func();
             map.raiseLayer(layer, 1);
             t.eq(control.checkRedraw(), true, "check redraw is true after changing layer.inRange and not letting redraw happen.");
