@@ -17,7 +17,7 @@
 function runMVS() {
     OpenLayers.ProxyHost = '/proxy/?url='; 
     if (document.location.protocol != "file:") {
-        theArgs = OpenLayers.Util.getArgs();
+        theArgs = OpenLayers.Util.getParameters();
     } else {
         theArgs = {};
         theArgs.center = "0,0";
