@@ -226,13 +226,39 @@
          gmap.repositionMapElements = function() {
              ++called;
              original.apply(gmap, arguments);
-         }
+         }    
 
          gmap.setVisibility(true);
          t.delay_call(2, function() {
              t.ok(called > 0, "repositionMapElements called");
              map.destroy();
          });            
+     }
+
+     function test_allOverlays_invisible(t) {
+
+         t.plan(1);
+
+         var map = new OpenLayers.Map('map', {allOverlays: true});
+
+         var osm = new OpenLayers.Layer.OSM();
+         var gmap = new OpenLayers.Layer.Google("Google Streets", {visibility: false});
+
+         // keep track of last argument to setGMapVisibility
+         var visible;
+         var original = gmap.setGMapVisibility;
+         gmap.setGMapVisibility = function(vis) {
+             visible = vis;
+             original.apply(gmap, arguments);
+         }
+
+         map.addLayers([osm, gmap]);
+         map.zoomToMaxExtent();
+
+         t.ok(visible === false, "setGMapVisibility last called with false");
+
+         map.destroy();
+
      }
 
   </script>

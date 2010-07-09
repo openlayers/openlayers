@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>OpenLayers All Overlays with Google and OSM</title>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="../theme/default/google.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <script src="../lib/OpenLayers.js"></script>
+        <script src="all-overlays-google.js"></script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">All Overlays with Google and OSM</h1>
+        <p id="shortdesc">
+            Using the Google and OSM layers as overlays.
+        </p>
+        <div id="map" class="smallmap"></div>
+        <div id="docs">
+            <p>
+                Using the allOverlays property on the map, the first layer added
+                must initially be visible.  This example demonstrates the use of 
+                a Google layer and an OSM layer treated as overlays.
+            </p><p>
+                See the <a href="all-overlays-google.js" target="_blank">
+                all-overlays-google.js source</a> to see how this is done.
+            </p>
+        </div>
+    </body>
+</html>
