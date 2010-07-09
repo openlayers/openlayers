@@ -175,13 +175,13 @@
     
     function test_Layer_Google_setGMapVisibility(t) {
         t.plan(4);
-
+    
         var map = new OpenLayers.Map('map');
         var gmap = new OpenLayers.Layer.Google("Google Streets");
         var dummy = new OpenLayers.Layer("Dummy", {isBaseLayer: true});
         map.addLayers([dummy, gmap]);
         map.zoomToMaxExtent();
-
+    
         // In v3, the terms of use and powered by elements are not available 
         // until the layer loads.  This can occur before the layer is visible,
         // but we don't try to access these elements until after the layer is
@@ -200,7 +200,7 @@
     }
 
     function test_Layer_Google_setGMapVisibility_allOverlays(t) {
-        t.plan(4);
+        t.plan(3);
     
         var map = new OpenLayers.Map('map', {allOverlays: true});
         var gmap = new OpenLayers.Layer.Google("Google Streets", {visibility: false});
@@ -216,11 +216,15 @@
         t.ok(!cache.termsOfUse, "termsOfUse is not yet cached");
         t.ok(!cache.poweredBy, "poweredBy is not yet cached");
     
-        gmap.setVisibility(true); 
-        t.delay_call(4, function() {
-            var cache = OpenLayers.Layer.Google.cache[map.id];
-            t.eq(cache.termsOfUse.style.display, "", "termsOfUse is visible");
-            t.eq(cache.poweredBy.style.display, "", "poweredBy is visible");
+        var called = 0;
+        var original = gmap.repositionMapElements;
+        gmap.repositionMapElements = function() {
+            ++called;
+            original.apply(gmap, arguments);
+        }
+        gmap.setVisibility(true);
+        t.delay_call(2, function() {
+            t.ok(called > 1, "repositionMapElements called");
             map.destroy();
         });            
     }
