@@ -173,6 +173,19 @@
         map.destroy();
     }
     
+    function test_clone(t) {
+        t.plan(2);
+        
+        var clone;
+        
+        layer = new OpenLayers.Layer.XYZ(name, url, options);
+        clone = layer.clone();
+        t.ok(clone instanceof OpenLayers.Layer.XYZ, "clone is a Layer.XYZ instance");
+
+        layer = new OpenLayers.Layer.OSM();
+        clone = layer.clone();
+        t.ok(clone instanceof OpenLayers.Layer.OSM, "clone is a Layer.OSM instance");
+    }
 
   </script>
 </head>
