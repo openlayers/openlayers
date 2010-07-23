@@ -23,19 +23,20 @@
         <script type="text/javascript">
             Proj4js.defs["EPSG:42304"]="+title=Atlas of Canada, LCC +proj=lcc +lat_1=49 +lat_2=77 +lat_0=49 +lon_0=-95 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m +no_defs";
             
+            var graticuleCtl1, graticuleCtl2;
             var map1, map2;
             function init(){
               initLonLat();
               initProjected();
             }
             function initLonLat(){
+                graticuleCtl1 = new OpenLayers.Control.Graticule({
+                    numPoints: 2, 
+                    labelled: true
+                });
                 map1 = new OpenLayers.Map('map', {
                     controls: [
-                    new OpenLayers.Control.Graticule({
-                          numPoints: 2, 
-                          labelled: true,
-                          visible: true
-                      }),
+                      graticuleCtl1,
                       new OpenLayers.Control.LayerSwitcher(),
                       new OpenLayers.Control.PanZoomBar(),
                       new OpenLayers.Control.Navigation()
@@ -52,12 +53,13 @@
             
             function initProjected(){
                 var extent = new OpenLayers.Bounds(-2200000,-712631,3072800,3840000);
+                graticuleCtl2 = new OpenLayers.Control.Graticule({
+                    labelled: true,
+                    targetSize: 200
+                });
                 var mapOptions = {
                       controls: [
-                      new OpenLayers.Control.Graticule({
-                          labelled: true,
-                          targetSize: 200
-                        }),
+                        graticuleCtl2,
                         new OpenLayers.Control.LayerSwitcher(),
                         new OpenLayers.Control.PanZoomBar(),
                         new OpenLayers.Control.Navigation()
@@ -98,5 +100,12 @@
         <div id="map2" class="smallmap"></div>
 
         <div id="docs"></div>
+        <br style="clear:both" />
+        <ul>
+            <li><a href="#" 
+                onclick="graticuleCtl1.activate(); graticuleCtl2.activate(); return false;">Activate graticule controls</a></li>
+            <li><a href="#" 
+                onclick="graticuleCtl1.deactivate(); graticuleCtl2.deactivate(); return false;">Deactivate graticule controls</a></li>
+        </ul>
     </body>
 </html>
