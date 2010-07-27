@@ -5,7 +5,7 @@
 svn up /osgeo/openlayers/docs/dev; 
 
 # Get current 'Last Changed Rev'
-REV=`svn info /osgeo/openlayers/docs/dev/ | grep 'Last Changed Rev' | awk '{print $4}'`
+REV=`svn info /osgeo/openlayers/docs/dev/ | grep 'Revision' | awk '{print $2}'`
 
 # Get the last svn rev
 touch /tmp/ol_svn_rev
