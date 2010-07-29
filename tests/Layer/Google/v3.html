@@ -260,6 +260,101 @@
          map.destroy();
 
      }
+     
+     function test_allOverlays_pan(t) {
+
+         t.plan(8);
+
+         var map = new OpenLayers.Map('map', {allOverlays: true});
+
+         var gmap = new OpenLayers.Layer.Google("Google Streets");
+         var osm = new OpenLayers.Layer.OSM();
+         map.addLayers([gmap, osm]);
+
+         var origin = new OpenLayers.LonLat(1000000, 6000000);
+         map.setCenter(origin, 4);
+         var resolution = map.getResolution();
+         
+         var dx, dy, center, expectedX, expectedY;
+
+         // confirm that panning works with Google visible
+         dx = 100, dy = -100;
+         map.pan(dx, dy, {animate: false});
+         center = map.getCenter();
+         expectedX = origin.lon + (resolution * dx);
+         expectedY = origin.lat - (resolution * dy);
+         t.eq(center.lon, expectedX, "x panning with Google visible " + dx + ", " + dy);
+         t.eq(center.lat, expectedY, "y panning with Google visible " + dx + ", " + dy);
+         map.pan(-dx, -dy, {animate: false});
+         center = map.getCenter();
+         t.eq(center.lon, origin.lon, "x panning with Google visible " + (-dx) + ", " + (-dy));
+         t.eq(center.lat, origin.lat, "y panning with Google visible " + (-dx) + ", " + (-dy));
+
+         // confirm that panning works with Google invisible
+         gmap.setVisibility(false);
+         dx = 100, dy = -100;
+         map.pan(dx, dy, {animate: false});
+         center = map.getCenter();
+         expectedX = origin.lon + (resolution * dx);
+         expectedY = origin.lat - (resolution * dy);
+         t.eq(center.lon, expectedX, "x panning with Google invisible " + dx + ", " + dy);
+         t.eq(center.lat, expectedY, "y panning with Google invisible " + dx + ", " + dy);
+         map.pan(-dx, -dy, {animate: false});
+         center = map.getCenter();
+         t.eq(center.lon, origin.lon, "x panning with Google invisible " + (-dx) + ", " + (-dy));
+         t.eq(center.lat, origin.lat, "y panning with Google invisible " + (-dx) + ", " + (-dy));
+         
+         map.destroy();
+
+     }
+     
+     function test_wrapDateLine(t) {
+         t.plan(2);
+
+         var map = new OpenLayers.Map("map");
+
+         var gmap = new OpenLayers.Layer.Google("Google Streets");
+         map.addLayer(gmap);
+         map.setCenter(new OpenLayers.LonLat(0, 0), 1);
+         
+         var center;
+         
+         // pan to the edge of the world
+         map.pan(256, 0, {animate: false});
+         center = map.getCenter();
+         t.eq(center.lon, 20037508.3392, "edge of the world");
+         // pan off the edge of the world
+         map.pan(100, 0, {animate: false});
+         center = map.getCenter();
+         t.eq(center.lon, -12210356.6442, "magically back in the western hemisphere");
+         
+         map.destroy();
+         
+     }
+
+     function test_respectDateLine(t) {
+         t.plan(2);
+
+         var map = new OpenLayers.Map("map");
+
+         var gmap = new OpenLayers.Layer.Google("Google Streets", {wrapDateLine: false});
+         map.addLayer(gmap);
+         map.setCenter(new OpenLayers.LonLat(0, 0), 1);
+         
+         var center;
+         
+         // pan to the edge of the world
+         map.pan(256, 0, {animate: false});
+         center = map.getCenter();
+         t.eq(center.lon, 20037508.3392, "edge of the world");
+         // pan off the edge of the world
+         map.pan(100, 0, {animate: false});
+         center = map.getCenter();
+         t.eq(center.lon, 20037508.3392, "whew, still on the edge");
+         
+         map.destroy();
+         
+     }
 
   </script>
 </head>
