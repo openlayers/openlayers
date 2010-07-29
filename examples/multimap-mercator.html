@@ -12,7 +12,8 @@
     </style>
 
 
-    <script type="text/javascript" src="http://clients.multimap.com/API/maps/1.1/metacarta_04"></script>
+    <!-- multimap api key for http://(www.)openlayers.org -->
+    <script type="text/javascript" src="http://developer.multimap.com/API/maps/1.2/OA10072915821139765"></script>
 
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
@@ -34,11 +35,9 @@
                 {'sphericalMercator': true}
             ); 
             merc = new OpenLayers.Layer.WMS("World Map",
-                                            "http://world.freemap.in/tiles/",
-                                            {'layers': 'factbook-overlay',
-                                             'format':'png'},
-                                            {'reproject': false,
-                                             'opacity': 0.4,
+                                            "http://maps.opengeo.org/geowebcache/service/wms",
+                                            {'layers': 'bluemarble'},
+                                            {'opacity': 0.4,
                                              'isBaseLayer': false,
                                              'wrapDateLine': true});
 
