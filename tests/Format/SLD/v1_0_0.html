@@ -2,6 +2,11 @@
 <head> 
     <script src="../../../lib/OpenLayers.js"></script>
     <script type="text/javascript">
+
+    var xml = new OpenLayers.Format.XML(); 
+    function readXML(id) {
+        return xml.read(document.getElementById(id).firstChild.nodeValue);
+    }
     
     var sld =
         '<StyledLayerDescriptor version="1.0.0" ' +
@@ -439,9 +444,422 @@
         
         t.xml_eq(got, expected, "Successfully round tripped RasterSymbolizer");
     }
+    
+    function test_zIndex(t) {
+        t.plan(1);
+        
+        var format = new OpenLayers.Format.SLD.v1_0_0({
+            multipleSymbolizers: true
+        });
+        
+        // three zIndex values -> three FeatureTypeStyle elements
+        var style = new OpenLayers.Style2({
+            rules: [
+                new OpenLayers.Rule({
+                    filter: new OpenLayers.Filter.Comparison({
+                        type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                        property: "foo",
+                        value: "bar"
+                    }),
+                    minScaleDenominator: 100000,
+                    maxScaleDenominator: 200000,
+                    symbolizers: [
+                        new OpenLayers.Symbolizer.Line({
+                            strokeColor: "green",
+                            strokeWidth: 2,
+                            zIndex: 2
+                        }),
+                        new OpenLayers.Symbolizer.Line({
+                            strokeColor: "red",
+                            strokeWidth: 3,
+                            zIndex: -1
+                        }),
+                        new OpenLayers.Symbolizer.Line({
+                            strokeColor: "blue",
+                            strokeWidth: 1,
+                            zIndex: 5
+                        })
+                    ]
+                }),
+                new OpenLayers.Rule({
+                    filter: new OpenLayers.Filter.Comparison({
+                        type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                        property: "foo",
+                        value: "baz"
+                    }),                    
+                    symbolizers: [
+                        new OpenLayers.Symbolizer.Line({
+                            strokeColor: "#000000",
+                            strokeWidth: 2,
+                            zIndex: 2
+                        })
+                    ]
+                })
+            ]
+        });
+        
+        var got = format.writeNode("sld:UserStyle", style);
+        var exp = readXML("zindex_test.sld").documentElement;
+        t.xml_eq(got, exp, "duplicated rules to write zIndex as FeatureTypeStyle elements");
+        
+    }
+    
+    function test_read_FeatureTypeStyles(t) {
+        
+        t.plan(13);
+        
+        var format = new OpenLayers.Format.SLD.v1_0_0({
+            multipleSymbolizers: true,
+            namedLayersAsArray: true
+        });
+        var doc = readXML("line_linewithborder.sld");
+        
+        var obj = format.read(doc);
+
+        t.eq(obj.namedLayers.length, 1, "got one named layer");
+        var namedLayer = obj.namedLayers[0];
+        
+        t.eq(namedLayer.userStyles.length, 1, "got one user style");
+        var userStyle = namedLayer.userStyles[0];
+        t.ok(userStyle instanceof OpenLayers.Style2, "user style represented with OpenLayers.Style2");
+        
+        // check rules and symbolizers
+        var rule, symbolizer;
+        
+        t.eq(userStyle.rules.length, 2, "pulled two rules (from two FeatureTypeStyle elements)");
+        rule = userStyle.rules[0];
+        t.ok(rule instanceof OpenLayers.Rule, "first rule is an OpenLayers.Rule");
+        
+        t.eq(rule.symbolizers && rule.symbolizers.length, 1, "first rule has one symbolizer");
+        symbolizer = rule.symbolizers[0];
+        t.ok(symbolizer instanceof OpenLayers.Symbolizer, "first symbolizer in first rule is an OpenLayers.Symbolizer");
+        t.ok(symbolizer instanceof OpenLayers.Symbolizer.Line, "first symbolizer in first rule is an OpenLayers.Symbolizer.Line");
+        t.eq(symbolizer.zIndex, 0, "symbolizer from first FeatureTypeStyle element has zIndex 0");
+        
+        rule = userStyle.rules[1];
+        t.eq(rule.symbolizers && rule.symbolizers.length, 1, "second rule has one symbolizer");
+        symbolizer = rule.symbolizers[0];
+        t.ok(symbolizer instanceof OpenLayers.Symbolizer, "first symbolizer in second rule is an OpenLayers.Symbolizer");
+        t.ok(symbolizer instanceof OpenLayers.Symbolizer.Line, "first symbolizer in second rule is an OpenLayers.Symbolizer.Line");
+        t.eq(symbolizer.zIndex, 1, "symbolizer from second FeatureTypeStyle element has zIndex 1");
+        
+    }
+
+    function test_roundtrip(t) {
+        
+        t.plan(5);
+        
+        var format = new OpenLayers.Format.SLD.v1_0_0({
+            multipleSymbolizers: true,
+            namedLayersAsArray: true
+        });
+        var doc, out;
+        
+        // two FeatureTypeStyle elements and line symbolizers
+        doc = readXML("line_linewithborder.sld");
+        out = format.write(format.read(doc));
+        t.xml_eq(out, doc.documentElement, "round-tripped line_linewithborder.sld");
+
+        // three FeatureTypeStyle elements and line symbolizers
+        doc = readXML("line_attributebasedline.sld");
+        out = format.write(format.read(doc));
+        t.xml_eq(out, doc.documentElement, "round-tripped line_attributebasedline.sld");
+        
+        // point symbolizer and text symbolizer
+        doc = readXML("point_pointwithdefaultlabel.sld");
+        out = format.write(format.read(doc));
+        t.xml_eq(out, doc.documentElement, "round-tripped point_pointwithdefaultlabel.sld");
+        
+        // polygon symbolizer with fill only 
+        doc = readXML("polygon_simplepolygon.sld");
+        out = format.write(format.read(doc));
+        t.xml_eq(out, doc.documentElement, "round-tripped polygon_simplepolygon.sld");
+
+        // polygon symbolizer and text symbolizer with halo
+        doc = readXML("polygon_labelhalo.sld");
+        out = format.write(format.read(doc));
+        t.xml_eq(out, doc.documentElement, "round-tripped polygon_labelhalo.sld");
+
+    }
 
     </script> 
 </head> 
 <body>
+<div id="line_linewithborder.sld"><!--
+<StyledLayerDescriptor version="1.0.0" 
+    xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd" 
+    xmlns="http://www.opengis.net/sld" 
+    xmlns:ogc="http://www.opengis.net/ogc" 
+    xmlns:xlink="http://www.w3.org/1999/xlink" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <NamedLayer>
+    <Name>Line with border</Name>
+    <UserStyle>
+    <Title>SLD Cook Book: Line w2th border</Title>
+      <FeatureTypeStyle>
+         <Rule>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#333333</CssParameter>                           
+              <CssParameter name="stroke-width">5</CssParameter>    
+              <CssParameter name="stroke-linecap">round</CssParameter>    
+            </Stroke> 
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+      <FeatureTypeStyle>
+         <Rule>
+          <LineSymbolizer>
+          <Stroke>
+              <CssParameter name="stroke">#6699FF</CssParameter>                           
+              <CssParameter name="stroke-width">3</CssParameter> 
+              <CssParameter name="stroke-linecap">round</CssParameter>  
+            </Stroke>
+          </LineSymbolizer>                                          
+         </Rule>
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>
+</StyledLayerDescriptor>
+--></div>
+<div id="line_attributebasedline.sld"><!--
+<StyledLayerDescriptor version="1.0.0" 
+    xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd" 
+    xmlns="http://www.opengis.net/sld" 
+    xmlns:ogc="http://www.opengis.net/ogc" 
+    xmlns:xlink="http://www.w3.org/1999/xlink" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <NamedLayer>
+    <Name>Attribute-based line</Name>
+    <UserStyle>
+      <Title>SLD Cook Book: Attribute-based line</Title>
+      <FeatureTypeStyle>
+        <Rule>
+          <Name>local-road</Name>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>type</ogc:PropertyName>
+              <ogc:Literal>local-road</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#009933</CssParameter>
+              <CssParameter name="stroke-width">2</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+      <FeatureTypeStyle>
+        <Rule>
+          <Name>secondary</Name>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>type</ogc:PropertyName>
+              <ogc:Literal>secondary</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#0055CC</CssParameter>
+              <CssParameter name="stroke-width">3</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+      <FeatureTypeStyle>
+        <Rule>
+        <Name>highway</Name>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>type</ogc:PropertyName>
+              <ogc:Literal>highway</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#FF0000</CssParameter>
+              <CssParameter name="stroke-width">6</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>
+</StyledLayerDescriptor> 
+--></div>
+<div id="point_pointwithdefaultlabel.sld"><!--
+<StyledLayerDescriptor version="1.0.0" 
+    xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd" 
+    xmlns="http://www.opengis.net/sld" 
+    xmlns:ogc="http://www.opengis.net/ogc" 
+    xmlns:xlink="http://www.w3.org/1999/xlink" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <NamedLayer>
+    <Name>Point with default label</Name>
+    <UserStyle>
+      <Title>GeoServer SLD Cook Book: Point with default label</Title>
+      <FeatureTypeStyle>
+        <Rule>
+          <PointSymbolizer>
+            <Graphic>
+              <Mark>
+                <WellKnownName>circle</WellKnownName>
+                <Fill>
+                  <CssParameter name="fill">#FF0000</CssParameter>
+                </Fill>
+              </Mark>
+              <Size>6</Size>
+            </Graphic>
+          </PointSymbolizer>
+          <TextSymbolizer>
+            <Label>
+              <ogc:PropertyName>name</ogc:PropertyName>
+            </Label>
+            <Fill>
+              <CssParameter name="fill">#000000</CssParameter>
+            </Fill>
+          </TextSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>
+</StyledLayerDescriptor>
+--></div>
+<div id="polygon_simplepolygon.sld"><!--
+<StyledLayerDescriptor version="1.0.0" 
+    xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd" 
+    xmlns="http://www.opengis.net/sld" 
+    xmlns:ogc="http://www.opengis.net/ogc" 
+    xmlns:xlink="http://www.w3.org/1999/xlink" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <NamedLayer>
+    <Name>Simple polygon</Name>
+    <UserStyle>
+      <Title>SLD Cook Book: Simple polygon</Title>
+      <FeatureTypeStyle>
+        <Rule>
+          <PolygonSymbolizer>
+            <Fill>
+              <CssParameter name="fill">#000080</CssParameter>
+            </Fill>
+          </PolygonSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>
+</StyledLayerDescriptor>
+--></div>
+<div id="polygon_labelhalo.sld"><!--
+<StyledLayerDescriptor version="1.0.0" 
+    xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd" 
+    xmlns="http://www.opengis.net/sld" 
+    xmlns:ogc="http://www.opengis.net/ogc" 
+    xmlns:xlink="http://www.w3.org/1999/xlink" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <NamedLayer>
+    <Name>Label halo</Name>
+    <UserStyle>
+      <Title>SLD Cook Book: Label halo</Title>
+      <FeatureTypeStyle>
+        <Rule>
+          <PolygonSymbolizer>
+            <Fill>
+              <CssParameter name="fill">#40FF40</CssParameter>
+            </Fill>
+            <Stroke>
+              <CssParameter name="stroke">#FFFFFF</CssParameter>
+              <CssParameter name="stroke-width">2</CssParameter>
+            </Stroke>
+          </PolygonSymbolizer>        
+          <TextSymbolizer>
+            <Label>
+              <ogc:PropertyName>name</ogc:PropertyName>
+            </Label>
+            <Halo>
+              <Radius>3</Radius>
+              <Fill>
+                <CssParameter name="fill">#FFFFFF</CssParameter>
+              </Fill>
+            </Halo>
+          </TextSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>
+</StyledLayerDescriptor>
+--></div>
+<div id="zindex_test.sld"><!--
+<sld:UserStyle xmlns:sld="http://www.opengis.net/sld">
+    <sld:FeatureTypeStyle>
+        <sld:Rule>
+            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+                <ogc:PropertyIsEqualTo>
+                    <ogc:PropertyName>foo</ogc:PropertyName>
+                    <ogc:Literal>bar</ogc:Literal>
+                </ogc:PropertyIsEqualTo>
+            </ogc:Filter>
+            <sld:MinScaleDenominator>100000</sld:MinScaleDenominator>
+            <sld:MaxScaleDenominator>200000</sld:MaxScaleDenominator>
+            <sld:LineSymbolizer>
+                <sld:Stroke>
+                    <sld:CssParameter name="stroke">red</sld:CssParameter>
+                    <sld:CssParameter name="stroke-width">3</sld:CssParameter>
+                </sld:Stroke>
+            </sld:LineSymbolizer>
+        </sld:Rule>
+    </sld:FeatureTypeStyle>
+    <sld:FeatureTypeStyle>
+        <sld:Rule>
+            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+                <ogc:PropertyIsEqualTo>
+                    <ogc:PropertyName>foo</ogc:PropertyName>
+                    <ogc:Literal>bar</ogc:Literal>
+                </ogc:PropertyIsEqualTo>
+            </ogc:Filter>
+            <sld:MinScaleDenominator>100000</sld:MinScaleDenominator>
+            <sld:MaxScaleDenominator>200000</sld:MaxScaleDenominator>
+            <sld:LineSymbolizer>
+                <sld:Stroke>
+                    <sld:CssParameter name="stroke">green</sld:CssParameter>
+                    <sld:CssParameter name="stroke-width">2</sld:CssParameter>
+                </sld:Stroke>
+            </sld:LineSymbolizer>
+        </sld:Rule>
+        <sld:Rule>
+            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+                <ogc:PropertyIsEqualTo>
+                    <ogc:PropertyName>foo</ogc:PropertyName>
+                    <ogc:Literal>baz</ogc:Literal>
+                </ogc:PropertyIsEqualTo>
+            </ogc:Filter>
+            <sld:LineSymbolizer>
+                <sld:Stroke>
+                    <sld:CssParameter name="stroke">#000000</sld:CssParameter>
+                    <sld:CssParameter name="stroke-width">2</sld:CssParameter>
+                </sld:Stroke>
+            </sld:LineSymbolizer>
+        </sld:Rule>
+    </sld:FeatureTypeStyle>
+    <sld:FeatureTypeStyle>
+        <sld:Rule>
+            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+                <ogc:PropertyIsEqualTo>
+                    <ogc:PropertyName>foo</ogc:PropertyName>
+                    <ogc:Literal>bar</ogc:Literal>
+                </ogc:PropertyIsEqualTo>
+            </ogc:Filter>
+            <sld:MinScaleDenominator>100000</sld:MinScaleDenominator>
+            <sld:MaxScaleDenominator>200000</sld:MaxScaleDenominator>
+            <sld:LineSymbolizer>
+                <sld:Stroke>
+                    <sld:CssParameter name="stroke">blue</sld:CssParameter>
+                    <sld:CssParameter name="stroke-width">1</sld:CssParameter>
+                </sld:Stroke>
+            </sld:LineSymbolizer>
+        </sld:Rule>
+    </sld:FeatureTypeStyle>
+</sld:UserStyle>
+--></div>
 </body> 
 </html> 

@@ -1,0 +1,32 @@
+<html> 
+<head> 
+    <script src="../../lib/OpenLayers.js"></script> 
+    <script type="text/javascript">
+
+    function test_constructor(t) { 
+        t.plan(3); 
+        
+        var symbolizer = new OpenLayers.Symbolizer.Point({foo: "bar"});
+        
+        t.ok(symbolizer instanceof OpenLayers.Symbolizer, "instance of OpenLayers.Symbolizer");
+        t.ok(symbolizer instanceof OpenLayers.Symbolizer.Point, "instance of OpenLayers.Symbolizer.Point");
+        t.eq(symbolizer.foo, "bar", "constructor applies config properties");
+
+    }
+    
+    function test_clone(t) {
+        t.plan(2);
+        
+        var symbolizer = new OpenLayers.Symbolizer.Point({foo: "bar"});
+        var clone = symbolizer.clone();
+        
+        t.ok(clone instanceof OpenLayers.Symbolizer.Point, "correct type");
+        t.eq(clone.foo, "bar", "clone copies properties");
+        
+    }
+
+
+    </script> 
+</head>
+<body></body> 
+</html> 

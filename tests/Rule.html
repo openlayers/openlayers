@@ -43,7 +43,7 @@
     
     function test_clone(t) {
         
-        t.plan(7);
+        t.plan(9);
         
         var rule = new OpenLayers.Rule({
             name: "test rule",
@@ -81,6 +81,30 @@
         
         rule.destroy();
         clone.destroy();
+
+        // test multiple symbolizers
+        rule = new OpenLayers.Rule({
+            name: "test rule",
+            minScaleDenominator: 10,
+            maxScaleDenominator: 20,
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                property: "prop",
+                value: "value"
+            }),
+            symbolizers: [
+                new OpenLayers.Symbolizer.Line({
+                    strokeColor: "black"
+                })
+            ]
+        });
+        clone = rule.clone();
+
+        t.eq(clone.symbolizers.length, 1, "clone has one symbolizer");
+        t.ok(clone.symbolizers[0] !== rule.symbolizers[0], "clone has different symbolizers than original");
+        
+        clone.destroy();
+        rule.destroy();
         
     }
 
