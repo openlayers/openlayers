@@ -18,6 +18,8 @@
                     format: "image/png",
                     isBaseLayer: false,
                     requestEncoding: "KVP",
+                    maxResolution: 0.3521969032857032,
+                    numZoomLevels: 7,
                     matrixIds: obj.contents.tileMatrixSets["arcgis-online-wgs84"].matrixIds
                 });
 
@@ -40,7 +42,7 @@
                 t.eq(layer1.tileSize.h, 512.0, "tileSize h is set correctly");
             }
 
-            function test_setMap(t) {
+            function test_moveTo(t) {
                 t.plan(9);        
                 var xml = document.getElementById("capabilities").firstChild.nodeValue;
                 var doc = new OpenLayers.Format.XML().read(xml);
@@ -54,11 +56,15 @@
                     matrixSet: "arcgis-online-wgs84",    
                     format: "image/png",
                     requestEncoding: "KVP",
+                    maxResolution: 0.3521969032857032,
+                    numZoomLevels: 7,
                     matrixIds: obj.contents.tileMatrixSets["arcgis-online-wgs84"].matrixIds
                 });   
 
                 var map = new OpenLayers.Map('map');
                 map.addLayer(layer0);
+                
+                map.setCenter(new OpenLayers.LonLat(-97, 38), 1);
                 
                 t.ok((layer0.tileOrigin instanceof OpenLayers.LonLat), "tileOrigin is an instance of OpenLayers.LonLat");
                 t.ok((layer0.tileOrigin.lon == -180 && layer0.tileOrigin.lat == 90), "tileOrigin is set correctly");
@@ -177,6 +183,8 @@
                     matrixSet: "arcgis-online-wgs84",                
                     format: "image/png",
                     requestEncoding: "KVP",
+                    maxResolution: 0.3521969032857032,
+                    numZoomLevels: 7,
                     matrixIds: obj.contents.tileMatrixSets["arcgis-online-wgs84"].matrixIds
                 }); 
                  
@@ -188,7 +196,8 @@
                     matrixSet: "arcgis_online",
                     format: "image/jpeg",
                     tileSize: new OpenLayers.Size(512, 512),            
-                    requestEncoding: "REST"            
+                    requestEncoding: "REST",
+                    isBaseLayer: false            
                 });     
 
                 var options = {

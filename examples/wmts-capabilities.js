@@ -4,7 +4,19 @@ var map, format;
 
 function init() {
     
-    format = new OpenLayers.Format.WMTSCapabilities();
+    format = new OpenLayers.Format.WMTSCapabilities({
+        /**
+         * This particular service is not in compliance with the WMTS spec and
+         * is providing coordinates in y, x order regardless of the CRS.  To
+         * work around this, we can provide the format a table of CRS URN that 
+         * should be considered y, x order.  These will extend the defaults on 
+         * the format.
+         */
+        yx: {
+            "urn:ogc:def:crs:EPSG::900913": true
+        }
+    });
+
     OpenLayers.Request.GET({
         url: "http://v2.suite.opengeo.org/geoserver/gwc/service/wmts",
         params: {
