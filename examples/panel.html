@@ -9,7 +9,7 @@
           width:  24px;
           height: 24px;
           margin: 5px;
-          background-color:red;
+          background-color:white;
         }
         
         .olControlPanel .olControlMouseDefaultsItemActive { 
@@ -78,6 +78,12 @@
                     {title:'Draw a feature'}),
                 new OpenLayers.Control.ZoomToMaxExtent({title:"Zoom to the max extent"}) 
             ]);
+            
+            nav = new OpenLayers.Control.NavigationHistory();
+            // parent control must be added to the map
+            map.addControl(nav);
+            panel.addControls([nav.next, nav.previous]);
+            
             map.addControl(panel);
 
             map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
