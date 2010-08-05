@@ -23,7 +23,7 @@
     }
     
     function test_evaluate(t) {
-        t.plan(4);
+        t.plan(8);
         
         var filer, feature, res, geom, bounds;
 
@@ -33,21 +33,25 @@
             value: bounds
         });
 
-        // 1 test
+        var not = new OpenLayers.Filter.Logical({
+            type: OpenLayers.Filter.Logical.NOT,
+            filters: [filter]
+        });
+
         feature = new OpenLayers.Feature.Vector(
             new OpenLayers.Geometry.Point(2, 2));
         res = filter.evaluate(feature);
         t.eq(res, true,
             "evaluates returns correct value when feature intersects bounds");
-
-        // 1 test
+        t.eq(not.evaluate(feature), !res, "not bbox");
+        
         feature = new OpenLayers.Feature.Vector(
             new OpenLayers.Geometry.Point(20, 20));
         res = filter.evaluate(feature);
         t.eq(res, false,
             "evaluates returns correct value when feature does not intersect bounds");
+        t.eq(not.evaluate(feature), !res, "not outside bbox");
 
-        // 1 test
         geom = bounds.toGeometry();
         feature = new OpenLayers.Feature.Vector(
             new OpenLayers.Geometry.Point(2, 2));
@@ -58,8 +62,9 @@
         res = filter.evaluate(feature);
         t.eq(res, true,
             "evaluates returns correct value when feature intersects bounds");
+        not.filters = [filter];
+        t.eq(not.evaluate(feature), !res, "not intersection");
 
-        // 1 test
         geom = bounds.toGeometry();
         feature = new OpenLayers.Feature.Vector(
             new OpenLayers.Geometry.Point(20, 20));
@@ -67,9 +72,13 @@
             type: OpenLayers.Filter.Spatial.INTERSECTS,
             value: geom
         });
+        not.filters = [filter];
         res = filter.evaluate(feature);
         t.eq(res, false,
             "evaluates returns correct value when feature does not intersect bounds");
+        t.eq(not.evaluate(feature), !res, "not non-intersection");
+
+
     }
     
     function test_clone(t) {
