@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>OpenLayers WFS Protocol with Filter</title>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="../theme/default/google.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <script src="../lib/OpenLayers.js"></script>
+        <script src="wfs-filter.js"></script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">WFS Protocol and Filter</h1>
+        <p id="shortdesc">
+            Demonstrates the use of a filter in making GetFeature requests using the WFS protocol.
+        </p>
+        <div id="map" class="smallmap"></div>
+        <div id="docs">
+            <p>
+                If a vector layer has a filter and the protocol supports server-side filtering,
+                the filter will be serialized in requests for features.  The WFS protocol can be
+                used with a vector layer to serialize a filter using OGC Filter Encoding.  This
+                example requests all features that are <code>TYPE</code> "highway" or "road".
+            </p><p>
+                See the <a href="wfs-filter.js" target="_blank">wfs-filter source</a> 
+                for details on how this is done.
+            </p>
+        </div>
+    </body>
+</html>
