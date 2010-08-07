@@ -1,7 +1,7 @@
 var map;
 
 // use proxy if requesting features cross-domain
-OpenLayers.ProxyHost= "/proxy/?url=";
+OpenLayers.ProxyHost= "proxy.cgi?url=";
 
 function init() {
 
