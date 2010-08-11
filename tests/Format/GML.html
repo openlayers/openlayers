@@ -338,6 +338,48 @@
         var expect = '<gml:Box xmlns:gml="http://www.opengis.net/gml"><gml:coordinates decimal="." cs="," ts=" ">-180,-90 180,90</gml:coordinates></gml:Box>';
         t.xml_eq(output, expect, "[xy true] Bounds correctly written as gml:Box");
     }
+    
+    function test_parseFeatureBox(t) {
+        t.plan(8); 
+        var parser = new OpenLayers.Format.GML();
+        var xmlparser = new OpenLayers.Format.XML();
+
+        var data = xmlparser.read(test_box[0]);
+        var feature = parser.parseFeature(data);
+        t.ok(feature.bounds instanceof OpenLayers.Bounds, 
+             "got bounds object for feature.bounds when with boundedBy Box, without geometry");
+        t.eq(feature.geometry, null, 'geometry is null for a feature with boundedBy Box, but no geometry');
+
+        var data = xmlparser.read(test_box[1]);
+        feature = parser.parseFeature(data);
+        t.eq(feature.bounds, null,
+             "feature is null when without boundedBy Box, with Box geometry");
+        t.ok(feature.geometry instanceof OpenLayers.Geometry.Polygon,
+             "got polygon object for feature.geometry when without boundedBy Box, with Box geometry");
+
+        data = xmlparser.read(test_box[2]);
+        feature = parser.parseFeature(data);
+        t.eq(feature.bounds, null, 
+             "feature.bounds is null when without boundedBy Box, without geometry");
+        t.eq(feature.geometry, null, 'geometry is null when without boundedBy Box, without geometry');
+
+        data = xmlparser.read(test_box[3]);
+        feature = parser.parseFeature(data);
+        t.ok(feature.bounds instanceof OpenLayers.Bounds, 
+             "got bounds object for feature.bounds when with boundedBy Box, with Box geometry");
+        t.ok(feature.geometry instanceof OpenLayers.Geometry.Polygon,
+             "got polygon object for feature.geometry when with boundedBy Box, with Box geometry");
+    }
+    
+    var test_box = [
+        // with boundedBy Box, without geometry
+        '<Sentiers_littoraux_feature><gml:boundedBy xmlns:gml="http://www.opengis.net/gml"><gml:Box srsName="EPSG:2154"><gml:coordinates>143564.081753,6817901.121957 144209.641321,6819104.781451</gml:coordinates></gml:Box></gml:boundedBy><DEPARTEMENT>Finistère</DEPARTEMENT></Sentiers_littoraux_feature>',
+        // without boundedBy Box, with Box geometry
+        '<Sentiers_littoraux_feature><msGeometry><gml:Box srsName="EPSG:2154" xmlns:gml="http://www.opengis.net/gml"><gml:coordinates>143564.081753,6817901.121957 144209.641321,6819104.781451</gml:coordinates></gml:Box></msGeometry><DEPARTEMENT>Finistère</DEPARTEMENT></Sentiers_littoraux_feature>',
+        // without boundedBy, without geometry
+        '<Sentiers_littoraux_feature><DEPARTEMENT>Finistère</DEPARTEMENT></Sentiers_littoraux_feature>',
+        // with boundedBy Box, with Box geometry
+        '<Sentiers_littoraux_feature><msGeometry><gml:Box srsName="EPSG:2154" xmlns:gml="http://www.opengis.net/gml"><gml:coordinates>143564.081753,6817901.121957 144209.641321,6819104.781451</gml:coordinates></gml:Box></msGeometry><gml:boundedBy xmlns:gml="http://www.opengis.net/gml"><gml:Box srsName="EPSG:2154"><gml:coordinates>143564.081753,6817901.121957 144209.641321,6819104.781451</gml:coordinates></gml:Box></gml:boundedBy><DEPARTEMENT>Finistère</DEPARTEMENT></Sentiers_littoraux_feature>'];
 
     var test_content = ['<?xml version="1.0" encoding="utf-8" ?>\n<ogr:FeatureCollection\n     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n     xsi:schemaLocation="http://ogr.maptools.org/ testoutput.xsd"\n     xmlns:ogr="http://ogr.maptools.org/"\n     xmlns:gml="http://www.opengis.net/gml">\n  <gml:boundedBy>\n    <gml:Box>\n      <gml:coord><gml:X>-1254041.389711702</gml:X><gml:Y>250906.9515983529</gml:Y></gml:coord>\n      <gml:coord><gml:X>-634517.1199908922</gml:X><gml:Y>762236.2940800377</gml:Y></gml:coord>\n    </gml:Box>\n  </gml:boundedBy>                    \n  <gml:featureMember>\n    <ogr:states fid="F0">\n      <ogr:geometryProperty><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-634517.11999089224,691849.77929356066,0 -653761.64509297756,471181.53429472551,0 -673343.60852865304,250906.9515983529,0 -1088825.734430399,299284.85108220269,0 -1254041.3897117018,324729.27754874947,0 -1235750.4212498858,434167.33911316615,0 -1190777.7803201093,704392.96327195223,0 -1181607.835811228,762236.29408003774,0 -634517.11999089224,691849.77929356066,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>\n      <ogr:NAME>WY</ogr:NAME>\n    <ogr:EMPTYATTR/><ogr:LONGNAME><![CDATA[Wyoming]]></ogr:LONGNAME>\n    </ogr:states>\n  </gml:featureMember>\n</ogr:FeatureCollection>\n',
  '<wfs:FeatureCollection' + 
@@ -365,7 +407,7 @@
  '</gml:featureMember> ' +
  ' <gml:featureMember><fs:scribble fid="8">    <fs:geometry>        <gml:Point><gml:coordinates>-81.38671875,27.0703125</gml:coordinates></gml:Point>         </fs:geometry> ' +
  '        <fs:down>south</fs:down><fs:title>Florida</fs:title>        </fs:scribble></gml:featureMember>' + 
- '</wfs:FeatureCollection>' 
+ '</wfs:FeatureCollection>'
  ];
    
     var shell_start = '<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs"><gml:featureMember xmlns:gml="http://www.opengis.net/gml"><feature:features xmlns:feature="http://mapserver.gis.umn.edu/mapserver" fid="221"><feature:geometry>'; 
