@@ -16,7 +16,8 @@ function init() {
                 protocol: new OpenLayers.Protocol.HTTP({
                     url: "kml-track.kml",
                     format: new OpenLayers.Format.KML({
-                        extractTracks: true
+                        extractTracks: true,
+                        trackAttributes: ["speed"]
                     })
                 }),
                 styleMap: new OpenLayers.StyleMap({

@@ -210,10 +210,10 @@
     <gx:coord>-93.2733145981662 45.010040506328 1006</gx:coord>
     <gx:coord>-93.2724700860766 45.0070495365802 975</gx:coord>
     <gx:coord>-93.2720166974715 45.0052389419128 957</gx:coord>
-    <gx:angles>30 0 0</gx:angles>
-    <gx:angles>30 0 0</gx:angles>
     <gx:angles>20 0 0</gx:angles>
     <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>10 0 0</gx:angles>
     <gx:angles>10 0 0</gx:angles>
     <gx:angles>0 0 0</gx:angles>
     <gx:angles>0 0 0</gx:angles>
@@ -222,7 +222,6 @@
     <gx:angles>0 0 0</gx:angles>
     <gx:angles>0 0 0</gx:angles>
     <gx:angles>0 0 0</gx:angles>
-    <gx:angles>360 0 0</gx:angles>
     <gx:angles>0 0 0</gx:angles>
     <gx:angles>0 0 0</gx:angles>
     <gx:angles>0 0 0</gx:angles>
@@ -232,12 +231,13 @@
     <gx:angles>0 0 0</gx:angles>
     <gx:angles>0 0 0</gx:angles>
     <gx:angles>0 0 0</gx:angles>
-    <gx:angles>360 0 0</gx:angles>
     <gx:angles>0 0 0</gx:angles>
     <gx:angles>0 0 0</gx:angles>
     <gx:angles>0 0 0</gx:angles>
     <gx:angles>0 0 0</gx:angles>
-    <gx:angles>360 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
     <gx:angles>0 0 0</gx:angles>
     <gx:angles>0 0 0</gx:angles>
     <gx:angles>10 0 0</gx:angles>
@@ -249,34 +249,100 @@
     <gx:angles>70 0 0</gx:angles>
     <gx:angles>80 0 0</gx:angles>
     <gx:angles>90 0 0</gx:angles>
-    <gx:angles>90 0 0</gx:angles>
     <gx:angles>100 0 0</gx:angles>
     <gx:angles>110 0 0</gx:angles>
     <gx:angles>120 0 0</gx:angles>
-    <gx:angles>130 0 0</gx:angles>
     <gx:angles>130 0 0</gx:angles>
     <gx:angles>140 0 0</gx:angles>
     <gx:angles>150 0 0</gx:angles>
     <gx:angles>150 0 0</gx:angles>
     <gx:angles>150 0 0</gx:angles>
-    <gx:angles>150 0 0</gx:angles>
-    <gx:angles>150 0 0</gx:angles>
     <gx:angles>160 0 0</gx:angles>
     <gx:angles>160 0 0</gx:angles>
     <gx:angles>160 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
     <gx:angles>160 0 0</gx:angles>
     <gx:angles>170 0 0</gx:angles>
     <gx:angles>170 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>  
-  </gx:Track></Placemark>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <speed>376</speed>
+    <speed>367</speed>
+    <speed>361</speed>
+    <speed>371</speed>
+    <speed>367</speed>
+    <speed>363</speed>
+    <speed>359</speed>
+    <speed>356</speed>
+    <speed>352</speed>
+    <speed>347</speed>
+    <speed>343</speed>
+    <speed>339</speed>
+    <speed>334</speed>
+    <speed>329</speed>
+    <speed>326</speed>
+    <speed>321</speed>
+    <speed>318</speed>
+    <speed>315</speed>
+    <speed>311</speed>
+    <speed>307</speed>
+    <speed>301</speed>
+    <speed>294</speed>
+    <speed>289</speed>
+    <speed>295</speed>
+    <speed>280</speed>
+    <speed>277</speed>
+    <speed>287</speed>
+    <speed>275</speed>
+    <speed>275</speed>
+    <speed>276</speed>
+    <speed>277</speed>
+    <speed>279</speed>
+    <speed>281</speed>
+    <speed>282</speed>
+    <speed>282</speed>
+    <speed>281</speed>
+    <speed>280</speed>
+    <speed>274</speed>
+    <speed>266</speed>
+    <speed>260</speed>
+    <speed>254</speed>
+    <speed>244</speed>
+    <speed>235</speed>
+    <speed>235</speed>
+    <speed>219</speed>
+    <speed>212</speed>
+    <speed>214</speed>
+    <speed>201</speed>
+    <speed>197</speed>
+    <speed>193</speed>
+    <speed>190</speed>
+    <speed>187</speed>
+    <speed>183</speed>
+    <speed>180</speed>
+    <speed>186</speed>
+    <speed>178</speed>
+    <speed>177</speed>
+    <speed>183</speed>
+    <speed>177</speed>
+    <speed>176</speed>
+    <speed>175</speed>
+    <speed>173</speed>
+    <speed>171</speed>
+    <speed>165</speed>
+    <speed>166</speed>
+    <speed>167</speed>
+</gx:Track></Placemark>
 <Placemark>
   <name>BE33</name>
   <adflag>A</adflag>
@@ -419,24 +485,10 @@
     <gx:coord>-93.2401184808953 44.7154113173173 823</gx:coord>
     <gx:coord>-93.2431805770012 44.7167484248595 792</gx:coord>
     <gx:coord>-93.2437334091088 44.7170975413723 792</gx:coord>
-    <gx:angles>290 0 0</gx:angles>
-    <gx:angles>290 0 0</gx:angles>
-    <gx:angles>290 0 0</gx:angles>
-    <gx:angles>290 0 0</gx:angles>
-    <gx:angles>290 0 0</gx:angles>
-    <gx:angles>290 0 0</gx:angles>
-    <gx:angles>290 0 0</gx:angles>
-    <gx:angles>290 0 0</gx:angles>
-    <gx:angles>290 0 0</gx:angles>
-    <gx:angles>290 0 0</gx:angles>
-    <gx:angles>290 0 0</gx:angles>
-    <gx:angles>290 0 0</gx:angles>
-    <gx:angles>290 0 0</gx:angles>
-    <gx:angles>290 0 0</gx:angles>
-    <gx:angles>290 0 0</gx:angles>
-    <gx:angles>290 0 0</gx:angles>
-    <gx:angles>290 0 0</gx:angles>
-    <gx:angles>290 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
     <gx:angles>290 0 0</gx:angles>
     <gx:angles>290 0 0</gx:angles>
     <gx:angles>300 0 0</gx:angles>
@@ -447,6 +499,23 @@
     <gx:angles>300 0 0</gx:angles>
     <gx:angles>300 0 0</gx:angles>
     <gx:angles>300 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>310 0 0</gx:angles>
+    <gx:angles>310 0 0</gx:angles>
+    <gx:angles>310 0 0</gx:angles>
+    <gx:angles>310 0 0</gx:angles>
+    <gx:angles>310 0 0</gx:angles>
+    <gx:angles>310 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>290 0 0</gx:angles>
+    <gx:angles>290 0 0</gx:angles>
     <gx:angles>290 0 0</gx:angles>
     <gx:angles>290 0 0</gx:angles>
     <gx:angles>280 0 0</gx:angles>
@@ -478,15 +547,79 @@
     <gx:angles>280 0 0</gx:angles>
     <gx:angles>280 0 0</gx:angles>
     <gx:angles>280 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
     <gx:angles>290 0 0</gx:angles>
     <gx:angles>290 0 0</gx:angles>
-    <gx:angles>300 0 0</gx:angles>  
-  </gx:Track></Placemark>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>310 0 0</gx:angles>
+    <speed>150</speed>
+    <speed>156</speed>
+    <speed>152</speed>
+    <speed>156</speed>
+    <speed>151</speed>
+    <speed>152</speed>
+    <speed>160</speed>
+    <speed>157</speed>
+    <speed>159</speed>
+    <speed>158</speed>
+    <speed>158</speed>
+    <speed>160</speed>
+    <speed>160</speed>
+    <speed>158</speed>
+    <speed>162</speed>
+    <speed>157</speed>
+    <speed>158</speed>
+    <speed>164</speed>
+    <speed>159</speed>
+    <speed>161</speed>
+    <speed>163</speed>
+    <speed>164</speed>
+    <speed>166</speed>
+    <speed>167</speed>
+    <speed>167</speed>
+    <speed>166</speed>
+    <speed>164</speed>
+    <speed>163</speed>
+    <speed>166</speed>
+    <speed>157</speed>
+    <speed>154</speed>
+    <speed>157</speed>
+    <speed>152</speed>
+    <speed>152</speed>
+    <speed>151</speed>
+    <speed>147</speed>
+    <speed>144</speed>
+    <speed>146</speed>
+    <speed>145</speed>
+    <speed>145</speed>
+    <speed>144</speed>
+    <speed>146</speed>
+    <speed>148</speed>
+    <speed>145</speed>
+    <speed>143</speed>
+    <speed>146</speed>
+    <speed>138</speed>
+    <speed>137</speed>
+    <speed>140</speed>
+    <speed>133</speed>
+    <speed>133</speed>
+    <speed>135</speed>
+    <speed>137</speed>
+    <speed>137</speed>
+    <speed>138</speed>
+    <speed>138</speed>
+    <speed>136</speed>
+    <speed>131</speed>
+    <speed>129</speed>
+    <speed>128</speed>
+    <speed>126</speed>
+    <speed>126</speed>
+    <speed>133</speed>
+    <speed>132</speed>
+    <speed>136</speed>
+    <speed>139</speed>
+    <speed>136</speed>
+</gx:Track></Placemark>
 <Placemark>
   <name>A319</name>
   <adflag>A</adflag>
@@ -627,57 +760,57 @@
     <gx:coord>-93.4405516208864 45.0150761969136 2103</gx:coord>
     <gx:coord>-93.4397025278204 45.0199965135021 2042</gx:coord>
     <gx:coord>-93.4384243921567 45.02391596133 1993.2</gx:coord>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
-    <gx:angles>80 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
     <gx:angles>70 0 0</gx:angles>
     <gx:angles>70 0 0</gx:angles>
     <gx:angles>70 0 0</gx:angles>
     <gx:angles>60 0 0</gx:angles>
+    <gx:angles>50 0 0</gx:angles>
     <gx:angles>50 0 0</gx:angles>
     <gx:angles>40 0 0</gx:angles>
     <gx:angles>30 0 0</gx:angles>
     <gx:angles>20 0 0</gx:angles>
     <gx:angles>10 0 0</gx:angles>
     <gx:angles>0 0 0</gx:angles>
+    <gx:angles>360 0 0</gx:angles>
     <gx:angles>350 0 0</gx:angles>
     <gx:angles>340 0 0</gx:angles>
+    <gx:angles>340 0 0</gx:angles>
     <gx:angles>330 0 0</gx:angles>
     <gx:angles>320 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>
-    <gx:angles>300 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>
     <gx:angles>320 0 0</gx:angles>
+    <gx:angles>320 0 0</gx:angles>
+    <gx:angles>320 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
     <gx:angles>330 0 0</gx:angles>
     <gx:angles>340 0 0</gx:angles>
+    <gx:angles>350 0 0</gx:angles>
     <gx:angles>350 0 0</gx:angles>
     <gx:angles>360 0 0</gx:angles>
     <gx:angles>0 0 0</gx:angles>
@@ -690,10 +823,76 @@
     <gx:angles>0 0 0</gx:angles>
     <gx:angles>0 0 0</gx:angles>
     <gx:angles>0 0 0</gx:angles>
-    <gx:angles>0 0 0</gx:angles>
     <gx:angles>10 0 0</gx:angles>
-    <gx:angles>20 0 0</gx:angles>  
-  </gx:Track></Placemark>
+    <gx:angles>10 0 0</gx:angles>
+    <gx:angles>10 0 0</gx:angles>
+    <speed>390</speed>
+    <speed>383</speed>
+    <speed>397</speed>
+    <speed>390</speed>
+    <speed>405</speed>
+    <speed>388</speed>
+    <speed>386</speed>
+    <speed>397</speed>
+    <speed>377</speed>
+    <speed>373</speed>
+    <speed>367</speed>
+    <speed>362</speed>
+    <speed>357</speed>
+    <speed>350</speed>
+    <speed>345</speed>
+    <speed>353</speed>
+    <speed>336</speed>
+    <speed>334</speed>
+    <speed>346</speed>
+    <speed>332</speed>
+    <speed>331</speed>
+    <speed>330</speed>
+    <speed>331</speed>
+    <speed>332</speed>
+    <speed>331</speed>
+    <speed>331</speed>
+    <speed>345</speed>
+    <speed>333</speed>
+    <speed>332</speed>
+    <speed>344</speed>
+    <speed>331</speed>
+    <speed>331</speed>
+    <speed>329</speed>
+    <speed>326</speed>
+    <speed>324</speed>
+    <speed>320</speed>
+    <speed>314</speed>
+    <speed>307</speed>
+    <speed>298</speed>
+    <speed>291</speed>
+    <speed>284</speed>
+    <speed>276</speed>
+    <speed>271</speed>
+    <speed>268</speed>
+    <speed>266</speed>
+    <speed>267</speed>
+    <speed>270</speed>
+    <speed>274</speed>
+    <speed>279</speed>
+    <speed>283</speed>
+    <speed>288</speed>
+    <speed>291</speed>
+    <speed>292</speed>
+    <speed>290</speed>
+    <speed>288</speed>
+    <speed>286</speed>
+    <speed>281</speed>
+    <speed>278</speed>
+    <speed>286</speed>
+    <speed>273</speed>
+    <speed>271</speed>
+    <speed>280</speed>
+    <speed>270</speed>
+    <speed>274</speed>
+    <speed>263</speed>
+    <speed>268</speed>
+</gx:Track></Placemark>
 <Placemark>
   <name>E145</name>
   <adflag>A</adflag>
@@ -838,14 +1037,6 @@
     <gx:coord>-92.973755360354 45.0384258824988 1508.5</gx:coord>
     <gx:angles>280 0 0</gx:angles>
     <gx:angles>280 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
     <gx:angles>280 0 0</gx:angles>
     <gx:angles>280 0 0</gx:angles>
     <gx:angles>280 0 0</gx:angles>
@@ -859,8 +1050,6 @@
     <gx:angles>280 0 0</gx:angles>
     <gx:angles>280 0 0</gx:angles>
     <gx:angles>280 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
     <gx:angles>280 0 0</gx:angles>
     <gx:angles>280 0 0</gx:angles>
     <gx:angles>280 0 0</gx:angles>
@@ -868,6 +1057,16 @@
     <gx:angles>280 0 0</gx:angles>
     <gx:angles>280 0 0</gx:angles>
     <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
     <gx:angles>270 0 0</gx:angles>
     <gx:angles>270 0 0</gx:angles>
     <gx:angles>270 0 0</gx:angles>
@@ -901,9 +1100,76 @@
     <gx:angles>270 0 0</gx:angles>
     <gx:angles>270 0 0</gx:angles>
     <gx:angles>270 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>260 0 0</gx:angles>  
-  </gx:Track></Placemark>
+    <gx:angles>260 0 0</gx:angles>
+    <gx:angles>260 0 0</gx:angles>
+    <speed>235</speed>
+    <speed>246</speed>
+    <speed>239</speed>
+    <speed>244</speed>
+    <speed>234</speed>
+    <speed>232</speed>
+    <speed>238</speed>
+    <speed>227</speed>
+    <speed>228</speed>
+    <speed>229</speed>
+    <speed>229</speed>
+    <speed>232</speed>
+    <speed>236</speed>
+    <speed>238</speed>
+    <speed>249</speed>
+    <speed>243</speed>
+    <speed>245</speed>
+    <speed>255</speed>
+    <speed>247</speed>
+    <speed>248</speed>
+    <speed>248</speed>
+    <speed>247</speed>
+    <speed>256</speed>
+    <speed>247</speed>
+    <speed>246</speed>
+    <speed>254</speed>
+    <speed>244</speed>
+    <speed>245</speed>
+    <speed>242</speed>
+    <speed>239</speed>
+    <speed>246</speed>
+    <speed>235</speed>
+    <speed>232</speed>
+    <speed>240</speed>
+    <speed>231</speed>
+    <speed>232</speed>
+    <speed>234</speed>
+    <speed>234</speed>
+    <speed>233</speed>
+    <speed>232</speed>
+    <speed>233</speed>
+    <speed>232</speed>
+    <speed>229</speed>
+    <speed>229</speed>
+    <speed>237</speed>
+    <speed>227</speed>
+    <speed>225</speed>
+    <speed>233</speed>
+    <speed>224</speed>
+    <speed>225</speed>
+    <speed>228</speed>
+    <speed>228</speed>
+    <speed>240</speed>
+    <speed>233</speed>
+    <speed>236</speed>
+    <speed>248</speed>
+    <speed>243</speed>
+    <speed>246</speed>
+    <speed>250</speed>
+    <speed>253</speed>
+    <speed>255</speed>
+    <speed>257</speed>
+    <speed>257</speed>
+    <speed>266</speed>
+    <speed>261</speed>
+    <speed>265</speed>
+    <speed>275</speed>
+</gx:Track></Placemark>
 <Placemark>
   <name>E170</name>
   <adflag>A</adflag>
@@ -1043,6 +1309,13 @@
     <gx:angles>260 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
+    <gx:angles>250 0 0</gx:angles>
+    <gx:angles>260 0 0</gx:angles>
+    <gx:angles>260 0 0</gx:angles>
+    <gx:angles>260 0 0</gx:angles>
+    <gx:angles>260 0 0</gx:angles>
+    <gx:angles>250 0 0</gx:angles>
+    <gx:angles>250 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
@@ -1065,25 +1338,6 @@
     <gx:angles>260 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
-    <gx:angles>260 0 0</gx:angles>
-    <gx:angles>260 0 0</gx:angles>
-    <gx:angles>260 0 0</gx:angles>
-    <gx:angles>260 0 0</gx:angles>
-    <gx:angles>260 0 0</gx:angles>
-    <gx:angles>260 0 0</gx:angles>
-    <gx:angles>260 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
     <gx:angles>270 0 0</gx:angles>
     <gx:angles>270 0 0</gx:angles>
     <gx:angles>280 0 0</gx:angles>
@@ -1091,20 +1345,96 @@
     <gx:angles>270 0 0</gx:angles>
     <gx:angles>270 0 0</gx:angles>
     <gx:angles>280 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
     <gx:angles>280 0 0</gx:angles>
     <gx:angles>280 0 0</gx:angles>
     <gx:angles>280 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
     <gx:angles>280 0 0</gx:angles>
     <gx:angles>280 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>  
-  </gx:Track></Placemark>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <speed>277</speed>
+    <speed>288</speed>
+    <speed>283</speed>
+    <speed>291</speed>
+    <speed>283</speed>
+    <speed>284</speed>
+    <speed>298</speed>
+    <speed>288</speed>
+    <speed>288</speed>
+    <speed>286</speed>
+    <speed>287</speed>
+    <speed>287</speed>
+    <speed>286</speed>
+    <speed>286</speed>
+    <speed>299</speed>
+    <speed>289</speed>
+    <speed>289</speed>
+    <speed>299</speed>
+    <speed>287</speed>
+    <speed>286</speed>
+    <speed>284</speed>
+    <speed>282</speed>
+    <speed>292</speed>
+    <speed>281</speed>
+    <speed>281</speed>
+    <speed>291</speed>
+    <speed>280</speed>
+    <speed>280</speed>
+    <speed>281</speed>
+    <speed>282</speed>
+    <speed>283</speed>
+    <speed>284</speed>
+    <speed>286</speed>
+    <speed>287</speed>
+    <speed>287</speed>
+    <speed>286</speed>
+    <speed>295</speed>
+    <speed>285</speed>
+    <speed>286</speed>
+    <speed>297</speed>
+    <speed>287</speed>
+    <speed>289</speed>
+    <speed>290</speed>
+    <speed>288</speed>
+    <speed>298</speed>
+    <speed>288</speed>
+    <speed>289</speed>
+    <speed>302</speed>
+    <speed>292</speed>
+    <speed>294</speed>
+    <speed>294</speed>
+    <speed>294</speed>
+    <speed>304</speed>
+    <speed>290</speed>
+    <speed>288</speed>
+    <speed>297</speed>
+    <speed>284</speed>
+    <speed>284</speed>
+    <speed>284</speed>
+    <speed>285</speed>
+    <speed>286</speed>
+    <speed>278</speed>
+    <speed>282</speed>
+    <speed>288</speed>
+</gx:Track></Placemark>
 <Placemark>
   <name>DC95</name>
   <adflag>A</adflag>
@@ -1252,69 +1582,136 @@
     <gx:angles>10 0 0</gx:angles>
     <gx:angles>10 0 0</gx:angles>
     <gx:angles>10 0 0</gx:angles>
-    <gx:angles>10 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
     <gx:angles>0 0 0</gx:angles>
     <gx:angles>0 0 0</gx:angles>
     <gx:angles>0 0 0</gx:angles>
     <gx:angles>0 0 0</gx:angles>
     <gx:angles>10 0 0</gx:angles>
-    <gx:angles>0 0 0</gx:angles>
-    <gx:angles>0 0 0</gx:angles>
     <gx:angles>10 0 0</gx:angles>
-    <gx:angles>0 0 0</gx:angles>
-    <gx:angles>0 0 0</gx:angles>
-    <gx:angles>0 0 0</gx:angles>
-    <gx:angles>0 0 0</gx:angles>
-    <gx:angles>0 0 0</gx:angles>
-    <gx:angles>0 0 0</gx:angles>
-    <gx:angles>0 0 0</gx:angles>
-    <gx:angles>0 0 0</gx:angles>
-    <gx:angles>0 0 0</gx:angles>
-    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>10 0 0</gx:angles>
     <gx:angles>10 0 0</gx:angles>
     <gx:angles>20 0 0</gx:angles>
     <gx:angles>20 0 0</gx:angles>
     <gx:angles>20 0 0</gx:angles>
-    <gx:angles>30 0 0</gx:angles>
-    <gx:angles>30 0 0</gx:angles>
-    <gx:angles>30 0 0</gx:angles>
-    <gx:angles>30 0 0</gx:angles>
-    <gx:angles>30 0 0</gx:angles>
-    <gx:angles>30 0 0</gx:angles>
-    <gx:angles>30 0 0</gx:angles>
-    <gx:angles>30 0 0</gx:angles>
-    <gx:angles>30 0 0</gx:angles>
-    <gx:angles>30 0 0</gx:angles>
-    <gx:angles>30 0 0</gx:angles>
-    <gx:angles>30 0 0</gx:angles>
-    <gx:angles>30 0 0</gx:angles>
-    <gx:angles>30 0 0</gx:angles>
-    <gx:angles>30 0 0</gx:angles>
-    <gx:angles>30 0 0</gx:angles>
-    <gx:angles>30 0 0</gx:angles>
-    <gx:angles>30 0 0</gx:angles>
-    <gx:angles>30 0 0</gx:angles>
-    <gx:angles>30 0 0</gx:angles>
-    <gx:angles>30 0 0</gx:angles>
-    <gx:angles>30 0 0</gx:angles>
     <gx:angles>20 0 0</gx:angles>
     <gx:angles>20 0 0</gx:angles>
     <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>30 0 0</gx:angles>
+    <gx:angles>30 0 0</gx:angles>
+    <gx:angles>30 0 0</gx:angles>
+    <gx:angles>40 0 0</gx:angles>
+    <gx:angles>40 0 0</gx:angles>
+    <gx:angles>40 0 0</gx:angles>
     <gx:angles>30 0 0</gx:angles>
     <gx:angles>30 0 0</gx:angles>
     <gx:angles>30 0 0</gx:angles>
     <gx:angles>30 0 0</gx:angles>
-    <gx:angles>40 0 0</gx:angles>
-    <gx:angles>40 0 0</gx:angles>
-    <gx:angles>50 0 0</gx:angles>
-    <gx:angles>50 0 0</gx:angles>
-    <gx:angles>50 0 0</gx:angles>
-    <gx:angles>40 0 0</gx:angles>
-    <gx:angles>40 0 0</gx:angles>
-    <gx:angles>40 0 0</gx:angles>
-    <gx:angles>40 0 0</gx:angles>
-    <gx:angles>40 0 0</gx:angles>  
-  </gx:Track></Placemark>
+    <gx:angles>30 0 0</gx:angles>
+    <speed>378</speed>
+    <speed>370</speed>
+    <speed>381</speed>
+    <speed>373</speed>
+    <speed>384</speed>
+    <speed>367</speed>
+    <speed>365</speed>
+    <speed>377</speed>
+    <speed>362</speed>
+    <speed>362</speed>
+    <speed>362</speed>
+    <speed>362</speed>
+    <speed>376</speed>
+    <speed>361</speed>
+    <speed>362</speed>
+    <speed>375</speed>
+    <speed>361</speed>
+    <speed>361</speed>
+    <speed>359</speed>
+    <speed>358</speed>
+    <speed>355</speed>
+    <speed>353</speed>
+    <speed>352</speed>
+    <speed>362</speed>
+    <speed>347</speed>
+    <speed>346</speed>
+    <speed>355</speed>
+    <speed>339</speed>
+    <speed>336</speed>
+    <speed>335</speed>
+    <speed>333</speed>
+    <speed>343</speed>
+    <speed>329</speed>
+    <speed>329</speed>
+    <speed>340</speed>
+    <speed>325</speed>
+    <speed>325</speed>
+    <speed>326</speed>
+    <speed>327</speed>
+    <speed>338</speed>
+    <speed>325</speed>
+    <speed>325</speed>
+    <speed>336</speed>
+    <speed>322</speed>
+    <speed>322</speed>
+    <speed>324</speed>
+    <speed>325</speed>
+    <speed>338</speed>
+    <speed>326</speed>
+    <speed>327</speed>
+    <speed>339</speed>
+    <speed>326</speed>
+    <speed>337</speed>
+    <speed>324</speed>
+    <speed>323</speed>
+    <speed>334</speed>
+    <speed>321</speed>
+    <speed>332</speed>
+    <speed>318</speed>
+    <speed>317</speed>
+    <speed>314</speed>
+    <speed>310</speed>
+    <speed>318</speed>
+    <speed>303</speed>
+    <speed>306</speed>
+    <speed>311</speed>
+    <speed>322</speed>
+</gx:Track></Placemark>
 <Placemark>
   <name>B737</name>
   <adflag>A</adflag>
@@ -1459,37 +1856,35 @@
     <gx:coord>-93.0987847859357 44.9712598545857 899</gx:coord>
     <gx:angles>280 0 0</gx:angles>
     <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
     <gx:angles>270 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
     <gx:angles>270 0 0</gx:angles>
     <gx:angles>270 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>280 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>260 0 0</gx:angles>
-    <gx:angles>260 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
@@ -1505,26 +1900,95 @@
     <gx:angles>240 0 0</gx:angles>
     <gx:angles>230 0 0</gx:angles>
     <gx:angles>230 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
     <gx:angles>230 0 0</gx:angles>
     <gx:angles>230 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
-    <gx:angles>230 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
-    <gx:angles>230 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
-    <gx:angles>230 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
     <gx:angles>230 0 0</gx:angles>
     <gx:angles>230 0 0</gx:angles>
     <gx:angles>230 0 0</gx:angles>
     <gx:angles>230 0 0</gx:angles>
     <gx:angles>230 0 0</gx:angles>
-    <gx:angles>230 0 0</gx:angles>
-    <gx:angles>230 0 0</gx:angles>  
-  </gx:Track></Placemark>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <speed>280</speed>
+    <speed>293</speed>
+    <speed>284</speed>
+    <speed>288</speed>
+    <speed>274</speed>
+    <speed>272</speed>
+    <speed>279</speed>
+    <speed>263</speed>
+    <speed>263</speed>
+    <speed>262</speed>
+    <speed>262</speed>
+    <speed>275</speed>
+    <speed>266</speed>
+    <speed>267</speed>
+    <speed>279</speed>
+    <speed>272</speed>
+    <speed>271</speed>
+    <speed>268</speed>
+    <speed>269</speed>
+    <speed>280</speed>
+    <speed>269</speed>
+    <speed>267</speed>
+    <speed>278</speed>
+    <speed>270</speed>
+    <speed>271</speed>
+    <speed>272</speed>
+    <speed>272</speed>
+    <speed>281</speed>
+    <speed>270</speed>
+    <speed>268</speed>
+    <speed>273</speed>
+    <speed>259</speed>
+    <speed>255</speed>
+    <speed>250</speed>
+    <speed>247</speed>
+    <speed>244</speed>
+    <speed>239</speed>
+    <speed>235</speed>
+    <speed>238</speed>
+    <speed>224</speed>
+    <speed>220</speed>
+    <speed>224</speed>
+    <speed>212</speed>
+    <speed>210</speed>
+    <speed>208</speed>
+    <speed>206</speed>
+    <speed>204</speed>
+    <speed>200</speed>
+    <speed>197</speed>
+    <speed>200</speed>
+    <speed>189</speed>
+    <speed>185</speed>
+    <speed>188</speed>
+    <speed>176</speed>
+    <speed>172</speed>
+    <speed>168</speed>
+    <speed>165</speed>
+    <speed>163</speed>
+    <speed>159</speed>
+    <speed>158</speed>
+    <speed>157</speed>
+    <speed>156</speed>
+    <speed>155</speed>
+    <speed>159</speed>
+    <speed>156</speed>
+    <speed>160</speed>
+    <speed>165</speed>
+</gx:Track></Placemark>
 <Placemark>
   <name>CRJ2</name>
   <adflag>A</adflag>
@@ -1614,8 +2078,12 @@
     <gx:angles>260 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
+    <gx:angles>260 0 0</gx:angles>
+    <gx:angles>260 0 0</gx:angles>
+    <gx:angles>260 0 0</gx:angles>
+    <gx:angles>250 0 0</gx:angles>
+    <gx:angles>250 0 0</gx:angles>
+    <gx:angles>250 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
@@ -1628,10 +2096,6 @@
     <gx:angles>260 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
-    <gx:angles>260 0 0</gx:angles>
-    <gx:angles>260 0 0</gx:angles>
-    <gx:angles>260 0 0</gx:angles>
-    <gx:angles>260 0 0</gx:angles>
     <gx:angles>270 0 0</gx:angles>
     <gx:angles>270 0 0</gx:angles>
     <gx:angles>270 0 0</gx:angles>
@@ -1646,8 +2110,46 @@
     <gx:angles>270 0 0</gx:angles>
     <gx:angles>270 0 0</gx:angles>
     <gx:angles>270 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>  
-  </gx:Track></Placemark>
+    <gx:angles>270 0 0</gx:angles>
+    <speed>267</speed>
+    <speed>265</speed>
+    <speed>277</speed>
+    <speed>273</speed>
+    <speed>274</speed>
+    <speed>275</speed>
+    <speed>275</speed>
+    <speed>272</speed>
+    <speed>270</speed>
+    <speed>268</speed>
+    <speed>278</speed>
+    <speed>268</speed>
+    <speed>268</speed>
+    <speed>280</speed>
+    <speed>271</speed>
+    <speed>272</speed>
+    <speed>273</speed>
+    <speed>273</speed>
+    <speed>273</speed>
+    <speed>272</speed>
+    <speed>271</speed>
+    <speed>283</speed>
+    <speed>273</speed>
+    <speed>273</speed>
+    <speed>285</speed>
+    <speed>275</speed>
+    <speed>276</speed>
+    <speed>276</speed>
+    <speed>276</speed>
+    <speed>287</speed>
+    <speed>277</speed>
+    <speed>277</speed>
+    <speed>288</speed>
+    <speed>278</speed>
+    <speed>278</speed>
+    <speed>268</speed>
+    <speed>271</speed>
+    <speed>277</speed>
+</gx:Track></Placemark>
 <Placemark>
   <name>A318</name>
   <adflag>A</adflag>
@@ -1790,74 +2292,141 @@
     <gx:coord>-93.2317272590921 44.8596791368118 853</gx:coord>
     <gx:coord>-93.2301662617953 44.8564215369107 884</gx:coord>
     <gx:coord>-93.2298549002314 44.8557795687872 884</gx:coord>
-    <gx:angles>120 0 0</gx:angles>
-    <gx:angles>120 0 0</gx:angles>
     <gx:angles>140 0 0</gx:angles>
     <gx:angles>150 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>150 0 0</gx:angles>
     <gx:angles>150 0 0</gx:angles>
     <gx:angles>160 0 0</gx:angles>
-    <gx:angles>150 0 0</gx:angles>
-    <gx:angles>150 0 0</gx:angles>  
-  </gx:Track></Placemark>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>180 0 0</gx:angles>
+    <gx:angles>180 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>160 0 0</gx:angles>
+    <gx:angles>160 0 0</gx:angles>
+    <gx:angles>160 0 0</gx:angles>
+    <gx:angles>160 0 0</gx:angles>
+    <gx:angles>160 0 0</gx:angles>
+    <gx:angles>160 0 0</gx:angles>
+    <gx:angles>160 0 0</gx:angles>
+    <speed>212</speed>
+    <speed>205</speed>
+    <speed>208</speed>
+    <speed>203</speed>
+    <speed>201</speed>
+    <speed>196</speed>
+    <speed>196</speed>
+    <speed>197</speed>
+    <speed>202</speed>
+    <speed>205</speed>
+    <speed>216</speed>
+    <speed>212</speed>
+    <speed>214</speed>
+    <speed>221</speed>
+    <speed>210</speed>
+    <speed>208</speed>
+    <speed>205</speed>
+    <speed>202</speed>
+    <speed>206</speed>
+    <speed>194</speed>
+    <speed>191</speed>
+    <speed>195</speed>
+    <speed>184</speed>
+    <speed>181</speed>
+    <speed>178</speed>
+    <speed>177</speed>
+    <speed>175</speed>
+    <speed>173</speed>
+    <speed>171</speed>
+    <speed>176</speed>
+    <speed>169</speed>
+    <speed>168</speed>
+    <speed>176</speed>
+    <speed>172</speed>
+    <speed>174</speed>
+    <speed>174</speed>
+    <speed>174</speed>
+    <speed>174</speed>
+    <speed>172</speed>
+    <speed>169</speed>
+    <speed>175</speed>
+    <speed>167</speed>
+    <speed>165</speed>
+    <speed>170</speed>
+    <speed>164</speed>
+    <speed>162</speed>
+    <speed>159</speed>
+    <speed>161</speed>
+    <speed>165</speed>
+    <speed>158</speed>
+    <speed>163</speed>
+    <speed>165</speed>
+    <speed>164</speed>
+    <speed>169</speed>
+    <speed>167</speed>
+    <speed>175</speed>
+    <speed>175</speed>
+    <speed>178</speed>
+    <speed>183</speed>
+    <speed>181</speed>
+    <speed>191</speed>
+    <speed>186</speed>
+    <speed>192</speed>
+    <speed>192</speed>
+    <speed>189</speed>
+    <speed>193</speed>
+    <speed>184</speed>
+</gx:Track></Placemark>
 <Placemark>
   <name>BE35</name>
   <adflag>A</adflag>
@@ -1964,56 +2533,105 @@
     <gx:coord>-93.0533566431572 44.4181925397398 1524</gx:coord>
     <gx:coord>-93.0556214357794 44.421167115874 1524</gx:coord>
     <gx:coord>-93.0562077996189 44.4217279400145 1524</gx:coord>
-    <gx:angles>340 0 0</gx:angles>
-    <gx:angles>340 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
     <gx:angles>320 0 0</gx:angles>
     <gx:angles>320 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
     <gx:angles>320 0 0</gx:angles>
-    <gx:angles>320 0 0</gx:angles>
-    <gx:angles>320 0 0</gx:angles>
-    <gx:angles>320 0 0</gx:angles>
-    <gx:angles>320 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>
-    <gx:angles>320 0 0</gx:angles>
-    <gx:angles>320 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>
-    <gx:angles>320 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
     <gx:angles>320 0 0</gx:angles>
     <gx:angles>320 0 0</gx:angles>
     <gx:angles>320 0 0</gx:angles>
     <gx:angles>320 0 0</gx:angles>
     <gx:angles>320 0 0</gx:angles>
-    <gx:angles>320 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>
-    <gx:angles>320 0 0</gx:angles>
-    <gx:angles>320 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
     <gx:angles>320 0 0</gx:angles>
     <gx:angles>320 0 0</gx:angles>
     <gx:angles>320 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
     <gx:angles>320 0 0</gx:angles>
     <gx:angles>320 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>
     <gx:angles>320 0 0</gx:angles>
     <gx:angles>320 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
     <gx:angles>320 0 0</gx:angles>
     <gx:angles>320 0 0</gx:angles>
-    <gx:angles>310 0 0</gx:angles>  
-  </gx:Track></Placemark>
+    <gx:angles>320 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
+    <gx:angles>320 0 0</gx:angles>
+    <gx:angles>320 0 0</gx:angles>
+    <gx:angles>320 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
+    <gx:angles>330 0 0</gx:angles>
+    <speed>169</speed>
+    <speed>166</speed>
+    <speed>171</speed>
+    <speed>169</speed>
+    <speed>171</speed>
+    <speed>178</speed>
+    <speed>171</speed>
+    <speed>172</speed>
+    <speed>173</speed>
+    <speed>173</speed>
+    <speed>173</speed>
+    <speed>174</speed>
+    <speed>175</speed>
+    <speed>181</speed>
+    <speed>174</speed>
+    <speed>174</speed>
+    <speed>180</speed>
+    <speed>172</speed>
+    <speed>171</speed>
+    <speed>172</speed>
+    <speed>174</speed>
+    <speed>174</speed>
+    <speed>174</speed>
+    <speed>175</speed>
+    <speed>181</speed>
+    <speed>176</speed>
+    <speed>177</speed>
+    <speed>186</speed>
+    <speed>179</speed>
+    <speed>179</speed>
+    <speed>179</speed>
+    <speed>179</speed>
+    <speed>178</speed>
+    <speed>177</speed>
+    <speed>177</speed>
+    <speed>184</speed>
+    <speed>178</speed>
+    <speed>177</speed>
+    <speed>186</speed>
+    <speed>182</speed>
+    <speed>184</speed>
+    <speed>184</speed>
+    <speed>185</speed>
+    <speed>186</speed>
+    <speed>185</speed>
+    <speed>184</speed>
+    <speed>187</speed>
+    <speed>184</speed>
+    <speed>187</speed>
+</gx:Track></Placemark>
 <Placemark>
   <name></name>
   <adflag>A</adflag>
@@ -2152,46 +2770,15 @@
     <gx:coord>-93.6121210225109 45.1864342009565 731</gx:coord>
     <gx:angles>200 0 0</gx:angles>
     <gx:angles>200 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
-    <gx:angles>220 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
-    <gx:angles>220 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
-    <gx:angles>220 0 0</gx:angles>
-    <gx:angles>220 0 0</gx:angles>
-    <gx:angles>220 0 0</gx:angles>
-    <gx:angles>220 0 0</gx:angles>
-    <gx:angles>200 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
-    <gx:angles>220 0 0</gx:angles>
-    <gx:angles>220 0 0</gx:angles>
-    <gx:angles>220 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
     <gx:angles>200 0 0</gx:angles>
     <gx:angles>200 0 0</gx:angles>
     <gx:angles>200 0 0</gx:angles>
     <gx:angles>200 0 0</gx:angles>
     <gx:angles>200 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
-    <gx:angles>220 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
     <gx:angles>200 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
     <gx:angles>210 0 0</gx:angles>
     <gx:angles>210 0 0</gx:angles>
     <gx:angles>210 0 0</gx:angles>
@@ -2203,18 +2790,113 @@
     <gx:angles>210 0 0</gx:angles>
     <gx:angles>210 0 0</gx:angles>
     <gx:angles>210 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
-    <gx:angles>210 0 0</gx:angles>
     <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>190 0 0</gx:angles>
+    <gx:angles>190 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>190 0 0</gx:angles>
     <gx:angles>190 0 0</gx:angles>
     <gx:angles>180 0 0</gx:angles>
     <gx:angles>180 0 0</gx:angles>
     <gx:angles>180 0 0</gx:angles>
     <gx:angles>180 0 0</gx:angles>
     <gx:angles>180 0 0</gx:angles>
-    <gx:angles>170 0 0</gx:angles>  
-  </gx:Track></Placemark>
+    <gx:angles>180 0 0</gx:angles>
+    <speed>202</speed>
+    <speed>180</speed>
+    <speed>166</speed>
+    <speed>171</speed>
+    <speed>162</speed>
+    <speed>157</speed>
+    <speed>143</speed>
+    <speed>145</speed>
+    <speed>156</speed>
+    <speed>144</speed>
+    <speed>142</speed>
+    <speed>149</speed>
+    <speed>146</speed>
+    <speed>148</speed>
+    <speed>140</speed>
+    <speed>139</speed>
+    <speed>142</speed>
+    <speed>137</speed>
+    <speed>143</speed>
+    <speed>149</speed>
+    <speed>151</speed>
+    <speed>152</speed>
+    <speed>151</speed>
+    <speed>147</speed>
+    <speed>140</speed>
+    <speed>141</speed>
+    <speed>140</speed>
+    <speed>149</speed>
+    <speed>148</speed>
+    <speed>150</speed>
+    <speed>158</speed>
+    <speed>152</speed>
+    <speed>150</speed>
+    <speed>147</speed>
+    <speed>142</speed>
+    <speed>138</speed>
+    <speed>131</speed>
+    <speed>131</speed>
+    <speed>132</speed>
+    <speed>130</speed>
+    <speed>130</speed>
+    <speed>138</speed>
+    <speed>138</speed>
+    <speed>137</speed>
+    <speed>140</speed>
+    <speed>136</speed>
+    <speed>139</speed>
+    <speed>142</speed>
+    <speed>143</speed>
+    <speed>146</speed>
+    <speed>150</speed>
+    <speed>151</speed>
+    <speed>157</speed>
+    <speed>152</speed>
+    <speed>154</speed>
+    <speed>160</speed>
+    <speed>155</speed>
+    <speed>157</speed>
+    <speed>159</speed>
+    <speed>160</speed>
+    <speed>159</speed>
+    <speed>155</speed>
+    <speed>157</speed>
+    <speed>161</speed>
+</gx:Track></Placemark>
 <Placemark>
   <name>B752</name>
   <adflag>A</adflag>
@@ -2235,13 +2917,19 @@
     <gx:coord>-92.3883643499875 45.0352118386382 2651</gx:coord>
     <gx:coord>-92.3954606917206 45.0343296776778 2621</gx:coord>
     <gx:coord>-92.3983011205325 45.0338926726637 2608.6</gx:coord>
+    <gx:angles>250 0 0</gx:angles>
+    <gx:angles>250 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
-    <gx:angles>260 0 0</gx:angles>
-    <gx:angles>260 0 0</gx:angles>  
-  </gx:Track></Placemark>
+    <speed>301</speed>
+    <speed>289</speed>
+    <speed>283</speed>
+    <speed>283</speed>
+    <speed>272</speed>
+    <speed>276</speed>
+</gx:Track></Placemark>
 <Placemark>
   <name>CRJ2</name>
   <adflag>A</adflag>
@@ -2412,58 +3100,125 @@
     <gx:angles>270 0 0</gx:angles>
     <gx:angles>270 0 0</gx:angles>
     <gx:angles>270 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
-    <gx:angles>260 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
     <gx:angles>250 0 0</gx:angles>
     <gx:angles>250 0 0</gx:angles>
     <gx:angles>240 0 0</gx:angles>
     <gx:angles>240 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
     <gx:angles>230 0 0</gx:angles>
     <gx:angles>230 0 0</gx:angles>
     <gx:angles>230 0 0</gx:angles>
     <gx:angles>230 0 0</gx:angles>
     <gx:angles>230 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
     <gx:angles>230 0 0</gx:angles>
     <gx:angles>230 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
-    <gx:angles>230 0 0</gx:angles>
-    <gx:angles>230 0 0</gx:angles>
-    <gx:angles>230 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
-    <gx:angles>230 0 0</gx:angles>
-    <gx:angles>230 0 0</gx:angles>
-    <gx:angles>230 0 0</gx:angles>
-    <gx:angles>230 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
-    <gx:angles>230 0 0</gx:angles>
-    <gx:angles>230 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
-    <gx:angles>230 0 0</gx:angles>
-    <gx:angles>230 0 0</gx:angles>
-    <gx:angles>230 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
     <gx:angles>230 0 0</gx:angles>
     <gx:angles>230 0 0</gx:angles>
     <gx:angles>230 0 0</gx:angles>
     <gx:angles>230 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
-    <gx:angles>240 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
     <gx:angles>230 0 0</gx:angles>
     <gx:angles>230 0 0</gx:angles>
-    <gx:angles>230 0 0</gx:angles>  
-  </gx:Track></Placemark>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <speed>214</speed>
+    <speed>207</speed>
+    <speed>202</speed>
+    <speed>208</speed>
+    <speed>207</speed>
+    <speed>205</speed>
+    <speed>203</speed>
+    <speed>202</speed>
+    <speed>209</speed>
+    <speed>199</speed>
+    <speed>196</speed>
+    <speed>200</speed>
+    <speed>188</speed>
+    <speed>183</speed>
+    <speed>178</speed>
+    <speed>175</speed>
+    <speed>179</speed>
+    <speed>170</speed>
+    <speed>166</speed>
+    <speed>169</speed>
+    <speed>161</speed>
+    <speed>160</speed>
+    <speed>159</speed>
+    <speed>159</speed>
+    <speed>160</speed>
+    <speed>162</speed>
+    <speed>164</speed>
+    <speed>172</speed>
+    <speed>166</speed>
+    <speed>167</speed>
+    <speed>174</speed>
+    <speed>169</speed>
+    <speed>170</speed>
+    <speed>169</speed>
+    <speed>168</speed>
+    <speed>166</speed>
+    <speed>165</speed>
+    <speed>163</speed>
+    <speed>169</speed>
+    <speed>164</speed>
+    <speed>164</speed>
+    <speed>172</speed>
+    <speed>168</speed>
+    <speed>169</speed>
+    <speed>169</speed>
+    <speed>169</speed>
+    <speed>169</speed>
+    <speed>168</speed>
+    <speed>167</speed>
+    <speed>170</speed>
+    <speed>160</speed>
+    <speed>158</speed>
+    <speed>161</speed>
+    <speed>153</speed>
+    <speed>151</speed>
+    <speed>152</speed>
+    <speed>153</speed>
+    <speed>152</speed>
+    <speed>153</speed>
+    <speed>154</speed>
+    <speed>154</speed>
+    <speed>153</speed>
+    <speed>153</speed>
+    <speed>160</speed>
+    <speed>156</speed>
+    <speed>160</speed>
+    <speed>164</speed>
+</gx:Track></Placemark>
 </Folder>
 <Folder>
   <name>Departures</name>
@@ -2535,14 +3290,14 @@
     <gx:coord>-93.3171626530446 44.8652559523285 1219</gx:coord>
     <gx:coord>-93.3221179929219 44.868582313462 1219</gx:coord>
     <gx:coord>-93.3270963865766 44.8718050975636 1219</gx:coord>
-    <gx:angles>160 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
     <gx:angles>170 0 0</gx:angles>
     <gx:angles>170 0 0</gx:angles>
     <gx:angles>170 0 0</gx:angles>
     <gx:angles>170 0 0</gx:angles>
-    <gx:angles>160 0 0</gx:angles>
     <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>180 0 0</gx:angles>
     <gx:angles>180 0 0</gx:angles>
     <gx:angles>190 0 0</gx:angles>
     <gx:angles>200 0 0</gx:angles>
@@ -2551,21 +3306,51 @@
     <gx:angles>240 0 0</gx:angles>
     <gx:angles>260 0 0</gx:angles>
     <gx:angles>270 0 0</gx:angles>
-    <gx:angles>270 0 0</gx:angles>
     <gx:angles>280 0 0</gx:angles>
     <gx:angles>290 0 0</gx:angles>
-    <gx:angles>290 0 0</gx:angles>
     <gx:angles>300 0 0</gx:angles>
     <gx:angles>300 0 0</gx:angles>
-    <gx:angles>300 0 0</gx:angles>
-    <gx:angles>300 0 0</gx:angles>
-    <gx:angles>300 0 0</gx:angles>
-    <gx:angles>300 0 0</gx:angles>
-    <gx:angles>300 0 0</gx:angles>
-    <gx:angles>300 0 0</gx:angles>
-    <gx:angles>300 0 0</gx:angles>
-    <gx:angles>300 0 0</gx:angles>  
-  </gx:Track></Placemark>
+    <gx:angles>310 0 0</gx:angles>
+    <gx:angles>310 0 0</gx:angles>
+    <gx:angles>310 0 0</gx:angles>
+    <gx:angles>310 0 0</gx:angles>
+    <gx:angles>310 0 0</gx:angles>
+    <gx:angles>310 0 0</gx:angles>
+    <gx:angles>310 0 0</gx:angles>
+    <gx:angles>310 0 0</gx:angles>
+    <gx:angles>310 0 0</gx:angles>
+    <gx:angles>310 0 0</gx:angles>
+    <speed>178</speed>
+    <speed>175</speed>
+    <speed>180</speed>
+    <speed>177</speed>
+    <speed>175</speed>
+    <speed>177</speed>
+    <speed>175</speed>
+    <speed>181</speed>
+    <speed>173</speed>
+    <speed>172</speed>
+    <speed>178</speed>
+    <speed>173</speed>
+    <speed>178</speed>
+    <speed>187</speed>
+    <speed>196</speed>
+    <speed>208</speed>
+    <speed>224</speed>
+    <speed>237</speed>
+    <speed>247</speed>
+    <speed>247</speed>
+    <speed>263</speed>
+    <speed>266</speed>
+    <speed>258</speed>
+    <speed>267</speed>
+    <speed>266</speed>
+    <speed>265</speed>
+    <speed>263</speed>
+    <speed>266</speed>
+    <speed>270</speed>
+    <speed>260</speed>
+</gx:Track></Placemark>
 </Folder>
 <Folder>
   <name>Overflights</name>
