@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>OpenLayers KLM Track Parsing Example</title>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="../theme/default/google.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <style>
+            .olControlAttribution {
+                bottom: 2px;
+            }
+        </style>
+        <script src="../lib/OpenLayers.js"></script>
+        <script src="kml-track.js"></script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">Parsing gx:Track in KML</h1>
+        <p id="shortdesc">
+            Demonstrates parsing of gx:Track elements from KML.
+        </p>
+        <div id="map" class="smallmap"></div>
+        <div id="docs">
+            <p>
+                If a KML document contains <code>&lt;gx:Track&gt;</code> 
+                elements and the extractTracks property is set true on the 
+                parer, features will be created that represent track points.
+                Each feature will have a when attribute that contains the 
+                value of the relevant <code>&lt;when&gt;</code> element from 
+                the track.
+            </p>
+            <p>
+                View the <a href="kml-track.js" target="_blank">kml-track.js</a>
+                source to see how this is done.
+        </div>
+    </body>
+</html>
