@@ -289,7 +289,7 @@
     }
 
     function test_Handler_Drag_submethods(t) {
-        t.plan(4);
+        t.plan(8);
         
         var map = new OpenLayers.Map('map', {controls: []});
 
@@ -300,6 +300,11 @@
         var handler = new OpenLayers.Handler.Drag(control, {});
         // set test events
         var events = ["down", "move", "up", "out"];
+        var onselect = {
+            "move": OpenLayers.Function.False,
+            "up": OpenLayers.Function.False,
+            "out": OpenLayers.Function.True
+        }
         var testEvents = {};
         var type, px;
         for(var i=0; i<events.length; ++i) {
@@ -313,9 +318,13 @@
                 t.ok(evt.xy.x == testEvents[type].xy.x &&
                      evt.xy.y == testEvents[type].xy.y,
                      "handler." + type + " called with the right event");
+                onselect[type] && t.ok(document.onselectstart === onselect[type], "document.onselectstart listener is correct after " + type);
             }
         }
         handler.activate();
+        
+        // pretend that we have gone through a down-move-up-out cycle before
+        handler.oldOnselectstart = OpenLayers.Function.True;
         
         // test mousedown
         handler.checkModifiers = function(evt) {
@@ -342,6 +351,8 @@
         handler.started = true;
         map.events.triggerEvent("mouseout", testEvents.out);
         OpenLayers.Util.mouseLeft = oldMouseLeft;
+        
+        t.ok(document.onselectstart === OpenLayers.Function.True, "document.onselectstart listener correct after down-move-up-out cycle");
         
     }
 
