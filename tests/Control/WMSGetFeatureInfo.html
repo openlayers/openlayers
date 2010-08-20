@@ -350,6 +350,42 @@
         map.destroy();
 
     }
+    
+    function test_hover(t) {
+        
+        t.plan(2);
+        
+        var map = new OpenLayers.Map({
+            div: "map",
+            layers: [
+                new OpenLayers.Layer.WMS(null, "/dummywms", {layers: "one"})
+            ],
+            center: new OpenLayers.LonLat(0, 0),
+            zoom: 1
+        });
+        
+        var control = new OpenLayers.Control.WMSGetFeatureInfo({
+            hover: true
+        });
+        map.addControl(control);
+        control.activate();
+        
+        // mock up a mousemove
+        control.getInfoForHover({xy: new OpenLayers.Pixel(10, 10)});
+        t.ok(!!control.hoverRequest, "hoverRequest set");
+        
+        // confirm that request is canceled on next move
+        var called = 0;
+        control.hoverRequest.abort = function() {
+            ++called;
+        };
+        control.handler.px = null;
+        control.handler.mousemove({xy: new OpenLayers.Pixel(20, 20)});
+        t.eq(called, 1, "hover request aborted");
+        
+        map.destroy();
+        
+    }
 
     function test_drillDown(t) {
         t.plan(4);
