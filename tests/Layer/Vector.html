@@ -412,12 +412,12 @@
     }
 
     function test_Layer_Vector_destroyFeatures (t) {
-        t.plan(5); 
-        layer = new OpenLayers.Layer.Vector(name);
+        t.plan(8);
+        var layer = new OpenLayers.Layer.Vector(name);
         var map = new OpenLayers.Map('map');
         map.addLayer(layer);
-        var features = [];
-        for (var i = 0; i < 5; i++) {
+        var features = [], i;
+        for (i = 0; i < 5; i++) {
             features.push(new OpenLayers.Feature.Vector(
                           new OpenLayers.Geometry.Point(0,0)));
         }
@@ -427,8 +427,15 @@
         layer.destroyFeatures();
         t.eq(layer.features.length, 0, "destroyFeatures triggers removal");
         t.eq(layer.selectedFeatures, [], "Destroy features removes selected features");
+        var allDestroyed = true;
+        for (i = 0; i < 5; i++) {
+            if(features[i].geometry) {
+                allDestroyed = false;
+            }
+        }
+        t.ok(allDestroyed, "destroyFeatures actually destroys features");
         features = [];
-        for (var i = 0; i < 5; i++) {
+        for (i = 0; i < 5; i++) {
             features.push(new OpenLayers.Feature.Vector(
                           new OpenLayers.Geometry.Point(0,0)));
         }
@@ -438,6 +445,8 @@
         layer.destroyFeatures([features[0], features[1]]);
         t.eq(layer.features.length, 3, "destroyFeatures removes appropriate features");
         t.eq(layer.selectedFeatures, [], "destroyFeatures removes appropriate selected features");
+        t.eq(features[0].geometry, null, "destroyFeatures destroys feature 0");
+        t.eq(features[1].geometry, null, "destroyFeatures destroys feature 1");
     }
 
     function test_Layer_Vector_destroy (t) {
