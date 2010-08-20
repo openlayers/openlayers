@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="../../lib/OpenLayers.js"></script>
+<script>
+
+var features = [];
+for (var i=0; i<20; ++i) {
+    features.push(
+        new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(0, 0), {index: i}
+        )
+    );
+}
+
+var filter = new OpenLayers.Filter.Comparison({
+    type: OpenLayers.Filter.Comparison.LESS_THAN,
+    property: "index",
+    value: 10
+});
+
+function test_initialize(t) {
+    
+    t.plan(3);
+    
+    var strategy = new OpenLayers.Strategy.Filter({filter: filter});
+
+    t.ok(strategy instanceof OpenLayers.Strategy, "is strategy");
+    t.ok(strategy instanceof OpenLayers.Strategy.Filter, "is filter strategy");
+    
+    t.ok(strategy.filter === filter, "has filter");
+    
+    strategy.destroy();
+
+}
+
+function test_autoActivate(t) {
+
+    t.plan(2);
+
+    var strategy = new OpenLayers.Strategy.Filter({filter: filter});
+    
+    var layer = new OpenLayers.Layer.Vector(null, {
+        strategies: [strategy]
+    });
+    
+    t.ok(!strategy.active, "strategy not active before adding to map");
+
+    var map = new OpenLayers.Map({
+        div: "map",
+        allOverlays: true,
+        layers: [layer],
+        center: new OpenLayers.LonLat(0, 0),
+        zoom: 1
+    });
+
+    t.ok(strategy.active, "strategy active after adding to map");
+    
+    map.destroy();
+    
+}
+
+function test_setFilter(t) {
+    
+    t.plan(7);
+
+    var strategy = new OpenLayers.Strategy.Filter({filter: filter});
+    var layer = new OpenLayers.Layer.Vector(null, {
+        strategies: [strategy]
+    });
+
+    var map = new OpenLayers.Map({
+        div: "map",
+        allOverlays: true,
+        layers: [layer],
+        center: new OpenLayers.LonLat(0, 0),
+        zoom: 1
+    });
+
+    // add all features
+    layer.addFeatures(features);
+    t.eq(features.length, 20, "collection of 20 features")
+    t.eq(layer.features.length, 10, "layer got 10 with filter 'index < 10'");
+    t.eq(strategy.cache.length, 10, "strategy cached 10 with filter 'index < 10'");
+
+    // update filter
+    filter.value = 5;
+    strategy.setFilter(filter);
+    t.eq(layer.features.length, 5, "layer got 5 with filter 'index < 5'");
+    t.eq(strategy.cache.length, 15, "strategy cached 15 with filter 'index < 5'");
+
+    // update filter
+    filter.value = 15;
+    strategy.setFilter(filter);
+    t.eq(layer.features.length, 15, "layer got 15 with filter 'index < 15'");
+    t.eq(strategy.cache.length, 5, "strategy cached 5 with filter 'index < 15'");
+    
+    map.destroy();
+    
+}
+
+
+
+</script></head>
+<body>
+    <div id="map" style="width: 512px; height: 256px" />
+</body>
+</html>
