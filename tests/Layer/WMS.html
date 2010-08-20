@@ -400,7 +400,7 @@
 
     function test_Layer_WMS_v13(t) {
 
-        t.plan(5);
+        t.plan(6);
 
         var lon = 5;
         var lat = 40;
@@ -468,16 +468,19 @@
 
         var url = layer.getURL(map.getExtent());
         var params = url.split("&");
-        var bbox;
+        var bbox, exceptions;
         for (var i=0, len=params.length; i<len; i++) {
             var param = params[i];
             var a = param.split('=');
+            if (a[0] === 'EXCEPTIONS') {
+                exceptions = a[1];
+            }
             if (a[0] === 'BBOX') {
                 bbox = a[1];
-                break;
             }
         }
 
+        t.eq(exceptions, "INIMAGE", "If not set, EXCEPTIONS should be INIMAGE for WMS 1.3");
         t.eq(bbox, "-5.986328125,27.9150390625,15.986328125,52.0849609375", "Axis sequence for CRS:84 is lon lat");
 
         map.destroy();
