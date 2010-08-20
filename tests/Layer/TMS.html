@@ -166,6 +166,59 @@
         map.destroy();
     }
 
+    function test_zoomOffset(t) {
+
+        t.plan(2);
+        
+        var offset, zoom;
+        
+        // test offset of 2
+        offset = 2;
+        zoom = 3;
+        
+        var map = new OpenLayers.Map({
+            div: "map",
+            maxResolution: OpenLayers.Map.prototype.maxResolution / Math.pow(2, offset)
+        });
+        var layer = new OpenLayers.Layer.TMS("TMS", "", {
+            layername: "basic",
+            type: "png",
+            zoomOffset: offset
+        });
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0, 0), zoom);
+
+        var tileurl = layer.getURL(new OpenLayers.Bounds(3.515625,45,4.21875,45.703125));
+        level = parseInt(tileurl.split("/")[2]);
+        t.eq(parseInt(tileurl.split("/")[2]), zoom + offset, "correct level for offset 2");
+
+        map.destroy();
+
+        // test offset of -1
+        offset = -1;
+        zoom = 3;
+        
+        var map = new OpenLayers.Map({
+            div: "map",
+            maxResolution: OpenLayers.Map.prototype.maxResolution / Math.pow(2, offset)
+        });
+        var layer = new OpenLayers.Layer.TMS("TMS", "", {
+            layername: "basic",
+            type: "png",
+            zoomOffset: offset
+        });
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0, 0), zoom);
+
+        var tileurl = layer.getURL(new OpenLayers.Bounds(3.515625,45,4.21875,45.703125));
+        level = parseInt(tileurl.split("/")[2]);
+        t.eq(parseInt(tileurl.split("/")[2]), zoom + offset, "correct level for offset -1");
+
+        map.destroy();
+
+
+    }
+
     function test_Layer_TMS_setMap(t) {
 
         t.plan(3);

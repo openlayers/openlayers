@@ -148,6 +148,47 @@
         map.destroy();
     }
 
+    function test_zoomOffset(t) {
+
+        t.plan(2);
+        
+        var offset;
+        
+        // test offset of 2
+        offset = 2;
+        
+        var map = new OpenLayers.Map({
+            div: "map",
+            maxResolution: OpenLayers.Map.prototype.maxResolution / Math.pow(2, offset)
+        });
+        var layer = new OpenLayers.Layer.XYZ(name, url, {zoomOffset: offset});
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0), 7);
+
+        var tileurl = layer.getURL(new OpenLayers.Bounds(3.515625,45,4.21875,45.703125));
+        t.eq(tileurl, "http://labs.metacarta.com/wms-c/Basic.py/1.0.0/basic/9/261/63.png", "correct URL for offset of 2");
+
+        map.destroy();
+
+        // test offset of -1
+        offset = -1;
+        
+        var map = new OpenLayers.Map({
+            div: "map",
+            maxResolution: OpenLayers.Map.prototype.maxResolution / Math.pow(2, offset)
+        });
+        var layer = new OpenLayers.Layer.XYZ(name, url, {zoomOffset: offset});
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0), 10);
+
+        var tileurl = layer.getURL(new OpenLayers.Bounds(3.515625,45,4.21875,45.703125));
+        t.eq(tileurl, "http://labs.metacarta.com/wms-c/Basic.py/1.0.0/basic/9/261/63.png", "correct URL for offset of -1");
+
+        map.destroy();
+
+
+    }
+
     function test_Layer_XYZ_destroy (t) {
 
         t.plan( 3 );
