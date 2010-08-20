@@ -16,13 +16,22 @@
     }
     
     function test_read_defaultFilter(t) {
-        t.plan(3);
+        t.plan(4);
+
+        var protocol = new OpenLayers.Protocol({filter: "a"});
+        var options = {};
+        protocol.read(options);
+        // the line below is what happens in Protocol.WFS.v1::read
+        OpenLayers.Util.applyDefaults(options, protocol.options);
+        t.eq(options.filter, "a", "filter from protocol.options applied to options");
+        protocol.destroy();
+
         var defaultFilter = 'a';
         var options = {
             defaultFilter: defaultFilter
         };
 
-        var protocol = new OpenLayers.Protocol(options);
+        protocol = new OpenLayers.Protocol(options);
         var readFilter = 'b';
         var options = { filter: readFilter };
 
@@ -32,6 +41,7 @@
         t.ok(filter instanceof OpenLayers.Filter.Logical, "read method merge default filter & options filter to a logical one");
         t.eq(filter.type, OpenLayers.Filter.Logical.AND, "logical filter type is OpenLayers.Filter.Logical.AND");
         t.eq(filter.filters, [defaultFilter, readFilter], "read method has merged filters");
+        protocol.destroy();
     }
 
     function test_destroy(t) {
