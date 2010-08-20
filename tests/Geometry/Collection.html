@@ -250,6 +250,148 @@
         t.eq(multipoint.bounds, null, "multipoint component bounds cleared");
 
     }
+
+    function test_getCentroid_pts_only(t) {
+        t.plan(3);
+
+        coll = new OpenLayers.Geometry.Collection();
+        coll.addComponent(new OpenLayers.Geometry.Point(0,0));
+        coll.addComponent(new OpenLayers.Geometry.Point(1,1));
+
+        centroid = coll.getCentroid(true);
+        t.ok(centroid != null, 'The centroid is not null.');
+        t.eq(centroid.x, 0.5, 'The centroid x coordinate is good.');
+        t.eq(centroid.y, 0.5, 'The centroid y coordinate is good.');
+
+        coll.destroy();
+    }
+
+    function test_getCentroid_poly_nonrecursive(t) {
+        t.plan(3);
+
+        coll = new OpenLayers.Geometry.Collection();
+        coll.addComponent(
+            new OpenLayers.Geometry.Polygon([
+                new OpenLayers.Geometry.LinearRing([
+                    new OpenLayers.Geometry.Point(0,0),
+                    new OpenLayers.Geometry.Point(0,1),
+                    new OpenLayers.Geometry.Point(1,1),
+                    new OpenLayers.Geometry.Point(1,0)
+                ])
+            ])
+        );
+        // performing non-recursive getCentroid means this next polygon
+        // is excluded from the centroid computation
+        coll.addComponent(
+            new OpenLayers.Geometry.Polygon([
+                new OpenLayers.Geometry.LinearRing([
+                    new OpenLayers.Geometry.Point(2,2),
+                    new OpenLayers.Geometry.Point(2,3),
+                    new OpenLayers.Geometry.Point(3,3),
+                    new OpenLayers.Geometry.Point(3,2)
+                ])
+            ])
+        );
+
+        centroid = coll.getCentroid();
+        t.ok(centroid != null, 'The centroid is not null.');
+        t.eq(centroid.x, 0.5, 'The centroid x coordinate is good.');
+        t.eq(centroid.y, 0.5, 'The centroid y coordinate is good.');
+
+        coll.destroy();
+    }
+
+    function test_getCentroid_poly_only(t) {
+        t.plan(3);
+
+        coll = new OpenLayers.Geometry.Collection();
+        coll.addComponent(
+            new OpenLayers.Geometry.Polygon([
+                    new OpenLayers.Geometry.LinearRing([
+                    new OpenLayers.Geometry.Point(0,0),
+                    new OpenLayers.Geometry.Point(0,1),
+                    new OpenLayers.Geometry.Point(1,1),
+                    new OpenLayers.Geometry.Point(1,0)
+                ])
+            ])
+        );
+
+        centroid = coll.getCentroid(true);
+        t.ok(centroid != null, 'The centroid is not null.');
+        t.eq(centroid.x, 0.5, 'The centroid x coordinate is good.');
+        t.eq(centroid.y, 0.5, 'The centroid y coordinate is good.');
+
+        coll.destroy();
+    }
+
+    function test_getCentroid_poly_and_pts(t) {
+        t.plan(3);
+
+        coll = new OpenLayers.Geometry.Collection();
+        coll.addComponent(
+            new OpenLayers.Geometry.Polygon([
+                new OpenLayers.Geometry.LinearRing([
+                    new OpenLayers.Geometry.Point(0,0),
+                    new OpenLayers.Geometry.Point(0,1),
+                    new OpenLayers.Geometry.Point(1,1),
+                    new OpenLayers.Geometry.Point(1,0)
+                ])
+            ])
+        );
+
+        // since the polygon above has an area of 1 and these
+        // points have an area of 0, they should not change the centroid
+        coll.addComponent( new OpenLayers.Geometry.Point(2,2) );
+        coll.addComponent( new OpenLayers.Geometry.Point(4,4) );
+
+        centroid = coll.getCentroid(true);
+        t.ok(centroid != null, 'The centroid is not null.');
+        t.eq(centroid.x, 0.5, 'The centroid x coordinate is good.');
+        t.eq(centroid.y, 0.5, 'The centroid y coordinate is good.');
+
+        coll.destroy();
+    }
+
+    function test_getCentroid_poly_big_and_small(t) {
+        t.plan(3);
+
+        coll = new OpenLayers.Geometry.Collection();
+        // polygon w/area=1, centroid=0.5,0.5
+        coll.addComponent(
+            new OpenLayers.Geometry.Polygon([
+                new OpenLayers.Geometry.LinearRing([
+                    new OpenLayers.Geometry.Point(0,0),
+                    new OpenLayers.Geometry.Point(0,1),
+                    new OpenLayers.Geometry.Point(1,1),
+                    new OpenLayers.Geometry.Point(1,0)
+                ])
+            ])
+        );
+
+        // since the polygon above has an area of 1 and this
+        // polygon has an area of 4, the center is weighted 20% toward
+        // the first polygon
+
+        // polygon w/area=4, centroid=5.5,5.5
+        coll.addComponent(
+            new OpenLayers.Geometry.Polygon([
+                new OpenLayers.Geometry.LinearRing([
+                    new OpenLayers.Geometry.Point(4.5,-0.5),
+                    new OpenLayers.Geometry.Point(4.5,1.5),
+                    new OpenLayers.Geometry.Point(6.5,1.5),
+                    new OpenLayers.Geometry.Point(6.5,-0.5)
+                ])
+            ])
+        );
+
+        centroid = coll.getCentroid(true);
+        t.ok(centroid != null, 'The centroid is not null.');
+        t.eq(centroid.x, 4.5, 'The centroid x coordinate is good.');
+        t.eq(centroid.y, 0.5, 'The centroid y coordinate is good.');
+
+        coll.destroy();
+    }
+
     
     function test_Collection_destroy(t) {
         t.plan( 3 );
