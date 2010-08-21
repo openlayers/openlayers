@@ -68,6 +68,39 @@
         var val = control.formatOutput(lonlat);
         t.eq(val, 'prefix0.757separator0.374suffix', 'formatOutput correctly formats the mouse position output');
     }
+    function test_deactivate(t) {
+        t.plan(4);         
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer(null, {isBaseLayer: true});
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        // Auxiliary function
+        function trigger(type, x, y) {
+            map.events.triggerEvent(type, {
+                xy: new OpenLayers.Pixel(x, y)
+            })
+        };        
+
+        var control = new OpenLayers.Control.MousePosition();
+        map.addControl(control);
+        trigger("mousemove", 0, 0);
+
+        trigger("mousemove", 0, 1);
+        t.ok(control.div.innerHTML != "", 
+            "Shows the position after add control (with autoActivate) and move");
+        control.deactivate();
+        t.ok(control.div.innerHTML == "", 
+            "Position is not displayed after deactivate and move");        
+        trigger("mousemove", 0, 2);
+        t.ok(control.div.innerHTML == "", 
+            "Position is not displayed after move when deactivate");
+        control.activate();
+        trigger("mousemove", 0, 3);
+        t.ok(control.div.innerHTML != "", 
+            "Shows the position after activate and move");
+        
+        map.destroy();     
+    }
   </script>
 </head>
 <body>
