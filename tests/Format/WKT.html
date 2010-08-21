@@ -108,9 +108,9 @@
  
         // test a multipoint 
         t.eq(format.write(multipoint), 
-             "MULTIPOINT(" + points[0].geometry.x + " " + points[0].geometry.y + "," + 
-                             points[1].geometry.x + " " + points[1].geometry.y + "," + 
-                             points[2].geometry.x + " " + points[2].geometry.y + ")", 
+             "MULTIPOINT((" + points[0].geometry.x + " " + points[0].geometry.y + "),(" + 
+                              points[1].geometry.x + " " + points[1].geometry.y + "),(" + 
+                              points[2].geometry.x + " " + points[2].geometry.y + "))", 
              "format correctly writes MultiPoint WKT"); 
  
         // test a linestring 
