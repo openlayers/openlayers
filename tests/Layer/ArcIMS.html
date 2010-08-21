@@ -83,7 +83,41 @@
         t.eq( typeof layer.options.layers[0].query.where, "string", "where query is a string" );
         t.eq( layer.options.layers[0].query.where, querydef.where, "where query matches" );
       }
+      function test_Layer_ArcIMS_clone (t) {
+          t.plan(5);
+  
+          var url = imsUrl;
+          var options = {
+            serviceName: serviceName,
+            async: false,
+            displayOutsideMaxExtent: true
+          };
+          var map = new OpenLayers.Map('map', {controls: []});
+          var layer = new OpenLayers.Layer.ArcIMS(name, url, options);
+          map.addLayer(layer);
+  
+          layer.grid = [ [6, 7],
+                         [8, 9]];
+  
+          var clone = layer.clone();
+  
+          t.ok( clone.grid != layer.grid, "clone does not copy grid");
+  
+          t.ok( clone.tileSize.equals(layer.tileSize), "tileSize correctly cloned");
+  
+          t.eq( clone.params.serviceName, layer.params.serviceName, "serviceName copied correctly");
+  
+          t.eq( clone.async, layer.async, "async copied correctly");
+  
+          t.eq( clone.url, layer.url, "url copied correctly");
+  
+          layer.grid = null;
+          map.destroy();
+      }
       
     </script>
   </head>
+  <body>
+    <div id="map" style="width:500px;height:550px"></div> 
+  </body>  
 </html>
