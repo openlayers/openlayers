@@ -146,6 +146,26 @@
         control.getInfoForHover({xy: xy});
     }
 
+    function test_nogetfeatureinfo_event(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map('map');
+        // mock up active control
+        var control = new OpenLayers.Control.WMSGetFeatureInfo({
+            eventListeners: {
+                nogetfeatureinfo: function(evt) {
+                    t.ok((evt.type == "nogetfeatureinfo"), "nogetfeatureinfo listener gets called when there are no queryable layers");
+                }
+            }
+        });
+        map.addControl(control);
+        control.activate();
+
+        // 1 test
+        mode = "click";
+        xy = {x: 50, y: 50};
+        control.getInfoForClick({xy: xy});
+    }
+
     function test_activate(t) {
         t.plan(4);
         var map = new OpenLayers.Map("map");
