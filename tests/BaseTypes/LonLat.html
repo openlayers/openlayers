@@ -52,7 +52,7 @@
     }
 
     function test_LonLat_add(t) {
-        t.plan( 8 );
+        t.plan(10);
 
         origLL = new OpenLayers.LonLat(10,100);
         lonlatA = origLL.clone();
@@ -76,6 +76,11 @@
         addpx = lonlatA.add(5, null);
         t.ok( lonlatA.equals(origLL), "lonlatA is not modified by erroneous add operation (null lat)");
         t.ok(addpx == null, "returns null on erroneous add operation (null lat)");
+
+        // string values
+        addpx = origLL.clone().add("5", "50");
+        t.eq(addpx.lon, 15, "addpx.lon is set correctly");
+        t.eq(addpx.lat, 150, "addpx.lat is set correctly");
     }
     
     function test_LonLat_equals(t) {
