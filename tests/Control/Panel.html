@@ -157,6 +157,59 @@
 
 
     }
+    
+    function test_Control_Panel_saveState (t) { 
+        t.plan(11); 
+        var map = new OpenLayers.Map('map');
+
+        var defaultControl = new OpenLayers.Control();
+        var panel = new OpenLayers.Control.Panel({
+            defaultControl: defaultControl
+        });
+        panel.addControls([new OpenLayers.Control(), defaultControl]);
+        map.addControl(panel);
+        t.eq(defaultControl.active, true,
+            "After panel activation default control is active.");    
+        t.ok(panel.defaultControl,
+            "defaultControl not nullified after initial panel activation");          
+        // activate the 1st control
+        panel.activateControl(panel.controls[0]);
+        panel.deactivate();      
+        t.ok(!panel.controls[0].active && !panel.controls[1].active,
+            "No controls are active after panel deactivation.");
+        panel.activate();   
+        t.eq(panel.controls[0].active, false,
+            "After panel reactivation first control is inactive.");              
+        t.eq(panel.controls[1].active, true,
+            "After panel reactivation default control is active again.");
+        panel.destroy();
+
+        defaultControl = new OpenLayers.Control();
+        panel = new OpenLayers.Control.Panel({
+            saveState: true,
+            defaultControl: defaultControl
+        });
+        panel.addControls([new OpenLayers.Control(), defaultControl]);
+        map.addControl(panel);
+        t.eq(defaultControl.active, true,
+            "After panel activation default control is active.");    
+        t.eq(panel.defaultControl, null,
+            "defaultControl nullified after initial panel activation");          
+        // activate the 1st control, which will deactivate the 2nd
+        panel.activateControl(panel.controls[0]);
+        t.eq(panel.controls[1].active, false,
+            "2nd control deactivated with activation of 1st");
+        panel.deactivate();      
+        t.ok(!panel.controls[0].active && !panel.controls[1].active,
+            "No controls are active after panel deactivation.");
+        panel.activate();   
+        t.eq(panel.controls[0].active, true,
+            "After panel reactivation first control is active.");
+        t.eq(panel.controls[1].active, false,
+            "After panel reactivation second control is inactive.");              
+        panel.destroy();
+        map.destroy();
+    } 
 
   </script>
 </head>
