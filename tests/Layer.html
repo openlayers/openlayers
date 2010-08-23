@@ -82,26 +82,92 @@
 
     function test_Layer_addOptions (t) {
         
-        t.plan( 4 );
+        t.plan( 19 );
 
+        var map = new OpenLayers.Map("map");
         var options = { chicken: 151, foo: "bar" };
         var layer = new OpenLayers.Layer('Test Layer', options);
+        map.addLayer(layer);
 
         layer.addOptions({bark:55, chicken: 171});
-
         t.eq(layer.bark, 55, "addOptions() assigns new option correctly to Layer");
         t.eq(layer.options.bark, 55, "addOptions() adds new option correctly to backup");
 
         t.eq(layer.chicken, 171, "addOptions() overwrites option correctly to Layer");
         t.eq(layer.options.chicken, 171, "addOptions() overwrites option correctly to backup");
 
+        var log;
+        layer.initResolutions = function() {
+            log++;
+        };
+        log = 0;
+        layer.addOptions({bark: 56});
+        t.eq(log, 0, "addOptions doesn't call initResolutions when not given a resolution option");
+
+        log = 0;
+        layer.addOptions({scales: [1, 2]});
+        t.eq(log, 1, "addOptions calls initResolutions when given scales");
+
+        log = 0;
+        layer.addOptions({resolutions: [1, 2]});
+        t.eq(log, 1, "addOptions calls initResolutions when given resolutions");
+
+        log = 0;
+        layer.addOptions({minScale: 4});
+        t.eq(log, 1, "addOptions calls initResolutions when given minScale");
+
+        log = 0;
+        layer.addOptions({maxScale: 4});
+        t.eq(log, 1, "addOptions calls initResolutions when given maxScale");
+
+        log = 0;
+        layer.addOptions({minResolution: 4});
+        t.eq(log, 1, "addOptions calls initResolutions when given minResolution");
+
+        log = 0;
+        layer.addOptions({maxResolution: 4});
+        t.eq(log, 1, "addOptions calls initResolutions when given maxResolution");
+
+        log = 0;
+        layer.addOptions({numZoomLevels: 4});
+        t.eq(log, 1, "addOptions calls initResolutions when given numZoomLevels");
+
+        log = 0;
+        layer.addOptions({maxZoomLevel: 4});
+        t.eq(log, 1, "addOptions calls initResolutions when given maxZoomLevel");
+
+        log = 0;
+        layer.addOptions({projection: new OpenLayers.Projection("EPSG:900913")});
+        t.eq(log, 1, "addOptions calls initResolutions when given projection");
+
+        log = 0;
+        layer.addOptions({units: "m"});
+        t.eq(log, 1, "addOptions calls initResolutions when given units");
+
+        log = 0;
+        layer.addOptions({minExtent: new OpenLayers.Bounds(0, 0, 0, 0)});
+        t.eq(log, 1, "addOptions calls initResolutions when given minExtent");
+
+        log = 0;
+        layer.addOptions({maxExtent: new OpenLayers.Bounds(0, 0, 0, 0)});
+        t.eq(log, 1, "addOptions calls initResolutions when given maxExtent");
+
+        layer.projection = null;
+        layer.addOptions({projection: "EPSG:900913"});
+        t.ok(layer.projection instanceof OpenLayers.Projection,
+             "addOptions creates a Projection object when given a projection string");
+
+        map.removeLayer(layer);
+        log = 0;
+        layer.addOptions({minExtent: new OpenLayers.Bounds(0, 0, 0, 0)});
+        t.eq(log, 0, "addOptions doesn't call initResolutions when layer is not in map");
     }
     
     function test_Layer_StandardOptionsAccessors (t) {
 
         t.plan( 4 );
 
-        var projection = "chicken";
+        var projection = "EPSG:4326";
         var maxExtent = new OpenLayers.Bounds(50,50,100,100);
         var maxResolution = 1.5726;
         var numZoomLevels = 11;
@@ -114,7 +180,7 @@
 
         var layer = new OpenLayers.Layer('Test Layer', options);
 
-        t.eq(layer.projection, projection, "projection set correctly");
+        t.eq(layer.projection.getCode(), projection, "projection set correctly");
         t.ok(layer.maxExtent.equals(maxExtent), "maxExtent set correctly");
         t.eq(layer.maxResolution, maxResolution, "maxResolution set correctly");
         t.eq(layer.numZoomLevels, numZoomLevels, "numZoomLevels set correctly");
