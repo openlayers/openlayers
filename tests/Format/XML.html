@@ -167,18 +167,38 @@
     }
 
     function test_Format_XML_createTextNode(t) {
-        t.plan(4);
+        t.plan(10);
 
         var format = new OpenLayers.Format.XML();
-        var value = Math.random().toString();
-        var node = format.createTextNode(value);
+        var value, node;
+
+        value = "string";
+        node = format.createTextNode(value);
         t.eq(node.nodeType, 3,
-             "node has correct type");
+             "[string] node has correct type");
         t.eq(node.nodeName, "#text",
-             "node has correct name");
-        t.eq(node.nodeValue, value,
-             "node has correct value");
+             "[string] node has correct name");
+        t.eq(node.nodeValue, "string",
+             "[string] node has correct value");
         
+        value = 0.42;
+        node = format.createTextNode(value);
+        t.eq(node.nodeType, 3,
+             "[number] node has correct type");
+        t.eq(node.nodeName, "#text",
+             "[number] node has correct name");
+        t.eq(node.nodeValue, "0.42",
+             "[number] node has correct value");
+
+        value = false;
+        node = format.createTextNode(value);
+        t.eq(node.nodeType, 3,
+             "[boolean] node has correct type");
+        t.eq(node.nodeName, "#text",
+             "[boolean] node has correct name");
+        t.eq(node.nodeValue, "false",
+             "[boolean] node has correct value");
+
         var doc = format.read(text);
         if (doc.importNode) {
             node = doc.importNode(node, true);
@@ -595,6 +615,10 @@
                 description: "value of 0 gets appended as a text node",
                 node: format.createElementNSPlus("foo:bar", {value: 0}),
                 expect: "<foo:bar xmlns:foo='http://example.com/foo'>0</foo:bar>"
+            }, {
+                description: "value of 0.42 gets appended as a text node",
+                node: format.createElementNSPlus("foo:bar", {value: 0.42}),
+                expect: "<foo:bar xmlns:foo='http://example.com/foo'>0.42</foo:bar>"
             }, {
                 description: "value of true gets appended as a text node",
                 node: format.createElementNSPlus("foo:bar", {value: true}),
