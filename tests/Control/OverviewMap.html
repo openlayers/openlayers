@@ -147,6 +147,32 @@
         });
     }
 
+    function test_initialize_maximized(t) {
+        t.plan(4);
+
+        control = new OpenLayers.Control.OverviewMap()
+        map = new OpenLayers.Map('map', {
+            layers  : [new OpenLayers.Layer("layer", {isBaseLayer: true})],
+            controls: [control]
+        });
+        
+        t.eq(control.maximized, false, "OverviewMap is not maximized by default");
+        t.eq(control.element.style.display, 'none', "OverviewMap.element is not visible");
+        map.destroy();
+
+        control = new OpenLayers.Control.OverviewMap({
+            maximized: true
+        })
+        map = new OpenLayers.Map('map', {
+            layers  : [new OpenLayers.Layer("layer", {isBaseLayer: true})],
+            controls: [control]
+        });
+        t.eq(control.maximized, true, "OverviewMap.maximized is set");
+        t.eq(control.element.style.display, '', "OverviewMap.element is visible");
+
+        map.destroy();
+    }
+
   </script>
 </head>
 <body>
