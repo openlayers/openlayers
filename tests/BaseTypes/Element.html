@@ -60,7 +60,7 @@
             }
         };
 
-        OpenLayers.Element.hide(elem1, elem2);
+        OpenLayers.Element.hide(elem1, elem2, "do-not-exists");
         
         t.eq(elem1.style.display, "none", "hidden element stays hidden");
         t.eq(elem2.style.display, "none", "shown element hidden");
@@ -81,7 +81,7 @@
             }
         };
 
-        OpenLayers.Element.show(elem1, elem2);
+        OpenLayers.Element.show(elem1, "do-not-exists", elem2);
         
         t.eq(elem1.style.display, "", "hidden element shown");
         t.eq(elem2.style.display, "", "shown element stays shown");
