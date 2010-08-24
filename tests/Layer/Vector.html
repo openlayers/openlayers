@@ -154,6 +154,47 @@
         t.eq(extent.toBBOX(), "-111.04,45.68,-111.04,45.68", "extent from getDataExtent is correct");
     }
 
+    function test_Layer_Vector_getFeature(t) {
+        t.plan(13);
+
+        var layer = new OpenLayers.Layer.Vector(name);
+        var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(-111.04, 45.68));
+
+        t.ok(layer.getFeatureById(feature.id) == null,
+             "OpenLayers.Layer.Vector.getFeatureById returns null while the layer is empty");
+        t.ok(layer.getFeatureByFid('my_fid') == null,
+             "OpenLayers.Layer.Vector.getFeatureByFid returns null while the layer is empty");
+
+        layer.addFeatures([feature]);
+
+        t.ok(layer.getFeatureByFid('my_fid') == null,
+             "OpenLayers.Layer.Vector.getFeatureByFid returns null on unset feature fid");
+
+        feature.fid = 'my_fid';
+
+        t.ok(layer.getFeatureById(feature.id) == feature,
+             "OpenLayers.Layer.Vector.getFeatureById returns the correct feature");
+        t.ok(layer.getFeatureByFid(feature.fid) == feature,
+             "OpenLayers.Layer.Vector.getFeatureByFid returns the correct feature");
+        t.ok(layer.getFeatureById('some_id_that_does_not_exist') == null,
+             "OpenLayers.Layer.Vector.getFeatureById returns null on non-existing feature id");
+        t.ok(layer.getFeatureByFid('some_fid_that_does_not_exist') == null,
+             "OpenLayers.Layer.Vector.getFeatureByFid returns null on non-existing feature fid");
+        t.ok(layer.getFeatureById(feature.fid) == null,
+             "OpenLayers.Layer.Vector.getFeatureById ignores the feature fid");
+        t.ok(layer.getFeatureByFid(feature.id) == null,
+             "OpenLayers.Layer.Vector.getFeatureByFid ignores the feature id");
+
+        t.ok(layer.getFeatureBy('id', feature.id) == feature,
+             "OpenLayers.Layer.Vector.getFeatureBy('id', ...) works like getFeatureById on existing feature id");
+        t.ok(layer.getFeatureBy('id', 'some_id_that_does_not_exist') == null,
+             "OpenLayers.Layer.Vector.getFeatureBy('id', ...) works like getFeatureById on non-existing feature id");
+        t.ok(layer.getFeatureBy('fid', feature.fid) == feature,
+             "OpenLayers.Layer.Vector.getFeatureBy('fid', ...) works like getFeatureByFid on existing feature fid");
+        t.ok(layer.getFeatureBy('fid', 'some_fid_that_does_not_exist') == null,
+             "OpenLayers.Layer.Vector.getFeatureBy('fid', ...) works like getFeatureByFid on non-existing feature fid");
+    }
+
     function test_Layer_Vector_getDataExtent(t) {
         t.plan(1);
         var layer = new OpenLayers.Layer.Vector(name);
