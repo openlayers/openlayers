@@ -17,11 +17,11 @@
             var markers = new OpenLayers.Layer.Markers( "Markers" );
             map.addLayer(markers);
 
-            size = new OpenLayers.Size(50,50);
+            size = new OpenLayers.Size(21, 25);
             calculateOffset = function(size) {
                         return new OpenLayers.Pixel(-(size.w/2), -size.h); };
             icon = new OpenLayers.Icon(
-                'http://boston.openguides.org/markers/AQUA.png',
+                'http://www.openlayers.org/dev/img/marker.png',
                 size, null, calculateOffset);
             markers.addMarker(
                 new OpenLayers.Marker(new OpenLayers.LonLat(-71,40), icon));
