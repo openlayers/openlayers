@@ -211,6 +211,23 @@
         map.destroy();
     } 
 
+    function test_Control_Panel_autoActivate (t) {
+        t.plan(1);
+        var map = new OpenLayers.Map('map');
+        var controlNoDeactive = new OpenLayers.Control({autoActivate:true});
+        var chkDeactivate = function () {
+            t.ok(false, "Tool control autoActivate:true was deactivated unnecessarily");
+        };
+        controlNoDeactive.events.on({deactivate: chkDeactivate});
+        var panel = new OpenLayers.Control.Panel();
+        
+        map.addControl(panel);
+        panel.addControls([controlNoDeactive]);
+        controlNoDeactive.events.un({deactivate: chkDeactivate});
+        t.ok(!controlNoDeactive.active, "Tool control autoActivate:true is not active");
+        
+    }
+
   </script>
 </head>
 <body>
