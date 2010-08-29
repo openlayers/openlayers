@@ -31,8 +31,8 @@
             url: "http://some.url.org",
             featureNS: "http://namespace.org",
             featureType: "type",
-            parseFeatures: function(request) {
-                t.eq(request.responseText, "foo", "parseFeatures called properly");
+            parseResponse: function(request) {
+                t.eq(request.responseText, "foo", "parseResponse called properly");
                 return "foo";
             }
         });
@@ -225,9 +225,40 @@
 
         var request = {};
         request.responseText = '{"type":"FeatureCollection","features":[{"type":"Feature","id":"V_HECTOPUNTEN.108411","geometry":{"type":"MultiPoint","coordinates":[[190659.467,349576.19]]},"geometry_name":"ORA_GEOMETRY","properties":{"WEGNUMMER":"002","HECTOMTRNG_ORG":2200,"HECTOMTRNG":"220.00","bbox":[190659.467,349576.19,190659.467,349576.19]}}]}';
-        var features = protocol.parseFeatures(request);
+        var features = protocol.parseResponse(request);
         t.eq(features.length, 1, "the right format is used to read the request (GeoJSON)");
  	}
+
+    function test_readOptions(t) {
+        t.plan(1);
+
+        var protocol = new OpenLayers.Protocol.WFS({
+            url: "http://some.url.org",
+            version: "1.1.0",
+            featureNS: "http://namespace.org",
+            featureType: "type",
+            readOptions: {'output': 'object'},
+            parseResponse: function(request, options) {
+                t.eq(options.output, "object", "Options object correctly set to pass on to Format's read");
+            }
+        });
+
+        var _POST = OpenLayers.Request.POST;
+
+        OpenLayers.Request.POST = function(obj) {
+            obj.status = 200;
+            obj.responseText = "foo";
+            obj.options = {};
+            t.delay_call(0.1, function() {obj.callback.call(this)});
+            return obj;
+        };
+
+        protocol.read({
+            callback: function() {}
+        });
+
+        OpenLayers.Request.POST = _POST;
+    }
 
     function readXML(id) {
         var xml = document.getElementById(id).firstChild.nodeValue;
