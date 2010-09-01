@@ -5,7 +5,7 @@ function init() {
     map = new OpenLayers.Map("map");
 
     var base = new OpenLayers.Layer.WMS("OpenLayers WMS",
-        "http://labs.metacarta.com/wms-c/Basic.py",
+        "http://tilecache.osgeo.org/wms-c/Basic.py",
         {layers: "basic"} 
     );
     map.addLayer(base);
