@@ -2,7 +2,8 @@ This license applies to all code and content in the 'branches', 'trunk', and
 'project' directories of the Openlayers code repository at svn.openlayers.org,
 and applies to all release of OpenLayers later than 2.5.
 
-Copyright (c) 2005-2008 MetaCarta, Inc.
+Copyright (c) 2005-2010 OpenLayers Contributors. See authors.txt for
+  full list.
 
 All rights reserved.
 
@@ -18,9 +19,9 @@ disclaimer below) provided that the following conditions are met:
    documentation and/or other materials provided with the
    distribution.
 
- * Neither the name of MetaCarta, Inc. nor the names of its
-   contributors may be used to endorse or promote products derived
-   from this software without specific prior written permission.
+ * Neither the name of OpenLayers nor the names of its contributors 
+   may be used to endorse or promote products derived from this 
+   software without specific prior written permission.
 
 NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE
 GRANTED BY THIS LICENSE.  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT
