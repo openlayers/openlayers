@@ -22,7 +22,7 @@
     var map = new OpenLayers.Map('map');
     var bounds = new OpenLayers.Bounds(-45,-45, 0, 45); 
     var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-        "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+        "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
     map.addLayer(wms);
     map.zoomToExtent(bounds);
     var boxes = new OpenLayers.Layer.Boxes("boxes");

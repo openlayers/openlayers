@@ -25,7 +25,7 @@
                 var options = {theme: null};
                 map = new OpenLayers.Map('map', options);
                 layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
-                        "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+                        "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
 
                 map.addControl(new OpenLayers.Control.MousePosition());
                 map.addLayer(layer);

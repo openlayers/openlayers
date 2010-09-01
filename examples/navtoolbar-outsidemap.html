@@ -22,7 +22,7 @@
         function init(){
             map = new OpenLayers.Map( 'map', { controls: [new OpenLayers.Control.PanZoom()] } );
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-                    "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+                    "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
             map.addLayer(layer);
             var panel = new OpenLayers.Control.NavToolbar({'div':OpenLayers.Util.getElement('paneldiv')});
             map.addControl(panel);

@@ -13,15 +13,15 @@
             function init(){
                 map = new OpenLayers.Map( 'map' );
                 layer = new OpenLayers.Layer.WMS( "0 buffer: OpenLayers WMS",
-                        "http://labs.metacarta.com/wms/vmap0",
+                        "http://vmap0.tiles.osgeo.org/wms/vmap0",
                         {layers: 'basic'}, {'buffer':0} );
                 map.addLayer(layer);
                 layer = new OpenLayers.Layer.WMS( "1 buffer: OpenLayers WMS",
-                        "http://labs.metacarta.com/wms/vmap0",
+                        "http://vmap0.tiles.osgeo.org/wms/vmap0",
                         {layers: 'basic'}, {'buffer':1} );
                 map.addLayer(layer);
                 layer = new OpenLayers.Layer.WMS( "4 buffer: OpenLayers WMS",
-                        "http://labs.metacarta.com/wms/vmap0",
+                        "http://vmap0.tiles.osgeo.org/wms/vmap0",
                         {layers: 'basic'}, {'buffer':4} );
                 map.addLayer(layer);
                 map.addControl(new OpenLayers.Control.LayerSwitcher())

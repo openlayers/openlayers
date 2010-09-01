@@ -13,7 +13,7 @@
             map.addControl(new OpenLayers.Control.LayerSwitcher({'div':OpenLayers.Util.getElement('layerswitcher')}));
 
             var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
-                "http://labs.metacarta.com/wms/vmap0",
+                "http://vmap0.tiles.osgeo.org/wms/vmap0",
                 {layers: 'basic'}, {'displayInLayerSwitcher':false} );
 
             var jpl_wms = new OpenLayers.Layer.WMS( "NASA Global Mosaic",

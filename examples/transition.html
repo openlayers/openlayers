@@ -10,24 +10,24 @@
 
             var single_default_effect = new OpenLayers.Layer.WMS(
                 "WMS untiled default", 
-                "http://labs.metacarta.com/wms/vmap0?",
+                "http://vmap0.tiles.osgeo.org/wms/vmap0?",
                 {layers: 'basic'}, 
                 {singleTile: true}
             );
             var single_resize_effect = new OpenLayers.Layer.WMS(
                 "WMS untiled resize", 
-                "http://labs.metacarta.com/wms/vmap0?",
+                "http://vmap0.tiles.osgeo.org/wms/vmap0?",
                 {layers: 'basic'}, 
                 {singleTile: true, transitionEffect: 'resize'}
             );
             var tiled_default_effect = new OpenLayers.Layer.WMS(
                 "WMS tiled default ", 
-                "http://labs.metacarta.com/wms/vmap0?",
+                "http://vmap0.tiles.osgeo.org/wms/vmap0?",
                 {layers: 'basic'}
             );
             var tiled_resize_effect = new OpenLayers.Layer.WMS(
                 "WMS tiled resize", 
-                "http://labs.metacarta.com/wms/vmap0?",
+                "http://vmap0.tiles.osgeo.org/wms/vmap0?",
                 {layers: 'basic'}, 
                 {transitionEffect: 'resize'}
             );

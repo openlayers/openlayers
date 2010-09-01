@@ -14,7 +14,7 @@
             map.addControl(new OpenLayers.Control.MousePosition());
 
             var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-                "http://labs.metacarta.com/wms/vmap0",
+                "http://vmap0.tiles.osgeo.org/wms/vmap0",
                 {layers: 'basic'} );
 
             map.addLayers([ol_wms]);

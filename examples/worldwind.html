@@ -9,7 +9,7 @@
             map = new OpenLayers.Map('map', {'maxResolution': .28125, tileSize: new OpenLayers.Size(512, 512)});
 
             ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
-            "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'} );
+            "http://vmap0.tiles.osgeo.org/wms/vmap0?", {layers: 'basic'} );
 
             ww = new OpenLayers.Layer.WorldWind( "Bathy",
             "http://worldwind25.arc.nasa.gov/tile/tile.aspx?", 36, 4,
