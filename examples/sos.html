@@ -127,7 +127,7 @@
                     var offering = this.SOSCapabilities.contents.offeringList[name];
                     var xml = this.obsformat.write({
                         eventTime: 'latest',
-                        resultModel: 'measurement',
+                        resultModel: 'om:Measurement',
                         responseMode: 'inline',
                         procedure: feature.attributes.id,
                         offering: name,
