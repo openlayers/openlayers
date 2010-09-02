@@ -32,28 +32,28 @@
             map.addControl(new OpenLayers.Control.LayerSwitcher());
 
             buffer0 = new OpenLayers.Layer.WMS( "WMS Buffer 0",
-                    "http://labs.metacarta.com/wms/vmap0",
+                    "http://vmap0.tiles.osgeo.org/wms/vmap0",
                     {layers: 'basic'} ,
                     { singleTile: false, buffer:0}
             );
             registerEvents(buffer0);
 
             buffer1 = new OpenLayers.Layer.WMS( "WMS Buffer 1",
-                    "http://labs.metacarta.com/wms/vmap0",
+                    "http://vmap0.tiles.osgeo.org/wms/vmap0",
                     {layers: 'basic'} ,
                     { singleTile: false, buffer:1}
             );
             registerEvents(buffer1);
 
             buffer2 = new OpenLayers.Layer.WMS( "WMS Buffer 2",
-                    "http://labs.metacarta.com/wms/vmap0",
+                    "http://vmap0.tiles.osgeo.org/wms/vmap0",
                     {layers: 'basic'} ,
                     { singleTile: false, buffer:2 }
             );
             registerEvents(buffer2);
 
             singleTileLayer = new OpenLayers.Layer.WMS( "Single Tile Layer",
-                    "http://labs.metacarta.com/wms/vmap0",
+                    "http://vmap0.tiles.osgeo.org/wms/vmap0",
                     {layers: 'basic'} ,
                     { singleTile: true}
             );

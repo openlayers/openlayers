@@ -16,7 +16,7 @@
             map.addLayer(yahooLayer);
 
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
-                "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+                "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
             map.addLayer(layer);
 
             map.setCenter(new OpenLayers.LonLat(-5, 40), 4);

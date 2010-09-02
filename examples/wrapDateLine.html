@@ -9,7 +9,7 @@
         function init(){
             map = new OpenLayers.Map( 'map', {maxResolution: 1.40625} );
             var mapserv = new OpenLayers.Layer.MapServer( "OpenLayers Basic",
-                        "http://labs.metacarta.com/wms/vmap0",
+                        "http://vmap0.tiles.osgeo.org/wms/vmap0",
                         {layers: 'basic'},
                         {wrapDateLine: true} );
 
@@ -24,11 +24,6 @@
                          "prov_bound,fedlimit,rail,road,popplace",
                  transparent: "true", format: "image/png"},
                 {wrapDateLine: true, reproject: false});
-
-            /* TMS is broken, too */
-            tms = new OpenLayers.Layer.TMS( "OpenStreetMap",
-                    "http://labs.metacarta.com/wms-c/Basic.py/",
-                    {layername: 'osm-map', type:'png', wrapDateLine: true} );
 
             /* WW doesn't quite work yet */
             ww = new OpenLayers.Layer.WorldWind( "LANDSAT",
@@ -66,7 +61,7 @@
         </p>
     <pre id="code">
     var mapserv = new OpenLayers.Layer.MapServer( "OpenLayers Basic",
-                "http://labs.metacarta.com/wms/vmap0",
+                "http://vmap0.tiles.osgeo.org/wms/vmap0",
                 {layers: 'basic'},
                 <b>{wrapDateLine: true}</b> );
     </pre>

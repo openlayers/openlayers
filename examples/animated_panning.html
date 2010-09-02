@@ -36,7 +36,7 @@
         function init(){
             map = new OpenLayers.Map('map', {numZoomLevels: 2});
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-                "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+                "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
                 
             map.addLayer(layer);
             map.zoomToMaxExtent();
@@ -47,7 +47,7 @@
 
             map2 = new OpenLayers.Map('map2', {'panMethod': null, numZoomLevels: 2} );
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-                "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+                "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
                 
             map2.addLayer(layer);
             map2.zoomToMaxExtent();

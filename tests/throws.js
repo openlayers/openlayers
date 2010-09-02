@@ -2,7 +2,7 @@
 
   throws.js -- Adds a `throws_` method to AnotherWay test objects.
 
-  Copyright 2005 MetaCarta, Inc., released under the BSD License.
+  Copyright 2005 OpenLayers Contributors. released under the BSD License.
 
 
   A reference to this file needs to be added to `run-tests.html` in the

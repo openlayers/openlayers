@@ -11,7 +11,7 @@
             map = new OpenLayers.Map('map');
             
             var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-                    "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+                    "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
             map.addLayer(layer);
             
             // allow testing of specific renderers via "?renderer=Canvas", etc

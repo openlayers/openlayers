@@ -127,7 +127,7 @@
                     var offering = this.SOSCapabilities.contents.offeringList[name];
                     var xml = this.obsformat.write({
                         eventTime: 'latest',
-                        resultModel: 'measurement',
+                        resultModel: 'om:Measurement',
                         responseMode: 'inline',
                         procedure: feature.attributes.id,
                         offering: name,
@@ -149,7 +149,7 @@
 
         function init(){
             map = new OpenLayers.Map( 'map' );
-            var baseLayer = new OpenLayers.Layer.WMS("Test Layer", "http://labs.metacarta.com/wms/vmap0?", {
+            var baseLayer = new OpenLayers.Layer.WMS("Test Layer", "http://vmap0.tiles.osgeo.org/wms/vmap0?", {
                 layers: "basic"}, {singleTile: true});
 
             var sos = new OpenLayers.SOSClient({map: map, url: 'http://v-swe.uni-muenster.de:8080/WeatherSOS/sos?'});

@@ -10,11 +10,11 @@
             map = new OpenLayers.Map('mapDiv', {maxResolution: 'auto'});
 
             var old_ol_wms = new OpenLayers.Layer.WMS.Untiled( "WMS.Untiled", 
-                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'} );
+                "http://vmap0.tiles.osgeo.org/wms/vmap0?", {layers: 'basic'} );
             old_ol_wms.addOptions({isBaseLayer: true});
             
             var new_ol_wms = new OpenLayers.Layer.WMS( "WMS w/singleTile", 
-                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}, 
+                "http://vmap0.tiles.osgeo.org/wms/vmap0?", {layers: 'basic'}, 
                 { singleTile: true, ratio: 1 } );
             new_ol_wms.addOptions({isBaseLayer: true});
 
