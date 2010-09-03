@@ -1,5 +1,6 @@
 OpenLayers
 -=-=-=-=-=-
+
 Copyright (c) 2005-2010 OpenLayers Contributors. See authors.txt for
 more details.
 
