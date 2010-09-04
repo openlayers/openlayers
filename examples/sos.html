@@ -77,11 +77,13 @@
             showPopup: function(response) {
                 this.count++;
                 var output = this.obsformat.read(response.responseXML || response.responseText);
-                this.html += '<tr>';
-                this.html += '<td width="100">'+this.getTitleForObservedProperty(output.measurements[0].observedProperty)+'</td>';
-                this.html += '<td>'+output.measurements[0].samplingTime.timeInstant.timePosition+'</td>';
-                this.html += '<td>'+output.measurements[0].result.value + ' ' + output.measurements[0].result.uom + '</td>';
-                this.html += '</tr>';
+                if (output.measurements.length > 0) {
+                    this.html += '<tr>';
+                    this.html += '<td width="100">'+this.getTitleForObservedProperty(output.measurements[0].observedProperty)+'</td>';
+                    this.html += '<td>'+output.measurements[0].samplingTime.timeInstant.timePosition+'</td>';
+                    this.html += '<td>'+output.measurements[0].result.value + ' ' + output.measurements[0].result.uom + '</td>';
+                    this.html += '</tr>';
+                }
                 // check if we are done
                 if (this.count === this.numRequests) {
                     var html = '<table cellspacing="10"><tbody>';
