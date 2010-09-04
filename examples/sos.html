@@ -139,6 +139,7 @@
                     OpenLayers.Request.POST({
                         url: this.url,
                         scope: this,
+                        failure: this.showPopup,
                         success: this.showPopup,
                         data: xml
                     });
