@@ -1,3 +1,8 @@
+OpenLayers 2.10
+  r10722
+  Released 09/09/10
+  http://trac.openlayers.org/wiki/Release/2.10/Notes
+
 OpenLayers 2.9:
  r10251
  Released 04/22/10
