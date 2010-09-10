@@ -4,38 +4,51 @@
   <script type="text/javascript" src="http://developer.multimap.com/API/maps/1.2/OA10072915821139765"></script>
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript">
-    var layer; 
-
+    var doTest = true;
     function test_Layer_MultiMap_constructor (t) {
+        // WebKit browsers fail when the API key is for a different url, so we
+        // do not test in this case.
+        try {
+            var map = new OpenLayers.Map("map");
+            var layer = new OpenLayers.Layer.MultiMap('MultiMap Layer');
+            map.addLayer(layer);
+        }
+        catch(e) {
+            doTest = false;
+        }
+
+        if (!doTest) { t.plan(0); return; }
         t.plan( 4 );
         
         var map = new OpenLayers.Map('map');
-        var layer = new OpenLayers.Layer.MultiMap('Goog Layer');
+        var layer = new OpenLayers.Layer.MultiMap('MultiMap Layer');
         map.addLayer(layer);
         
         
         t.ok( layer instanceof OpenLayers.Layer.MultiMap, "new OpenLayers.Layer.MultiMap returns object" );
         t.eq( layer.CLASS_NAME, "OpenLayers.Layer.MultiMap", "CLASS_NAME variable set correctly");
 
-        t.eq( layer.name, "Goog Layer", "layer.name is correct" );
+        t.eq( layer.name, "MultiMap Layer", "layer.name is correct" );
 
         t.ok ( layer.mapObject != null, "MultiMap Object correctly loaded");
     }
 
     function test_Layer_MultiMap_isBaseLayer (t) {
+        if (!doTest) { t.plan(0); return; }
         t.plan(1);
         
-        var layer = new OpenLayers.Layer.MultiMap('Goog Layer');
+        var layer = new OpenLayers.Layer.MultiMap('MultiMap Layer');
 
-        t.ok(layer.isBaseLayer, "a default load of google layer responds as a base layer");
+        t.ok(layer.isBaseLayer, "a default load of multimap layer responds as a base layer");
     }    
 
     function test_Layer_MultiMap_Translation_lonlat (t) {
+        if (!doTest) { t.plan(0); return; }
         
         t.plan( 4 );
         
         var map = new OpenLayers.Map('map');
-        var layer = new OpenLayers.Layer.MultiMap('Goog Layer');
+        var layer = new OpenLayers.Layer.MultiMap('MultiMap Layer');
         map.addLayer(layer);
 
      // these two lines specify an appropriate translation. 
@@ -56,11 +69,12 @@
     }
 
     function test_Layer_MultiMap_Translation_pixel (t) {
+        if (!doTest) { t.plan(0); return; }
         
         t.plan( 4 );
         
         var map = new OpenLayers.Map('map');
-        var layer = new OpenLayers.Layer.MultiMap('Goog Layer');
+        var layer = new OpenLayers.Layer.MultiMap('MultiMap Layer');
         map.addLayer(layer);
 
      // these two lines specify an appropriate translation. 
@@ -82,6 +96,7 @@
 
 
     function test_Layer_destroy (t) {
+        if (!doTest) { t.plan(0); return; }
         t.plan( 5 );    
 
         var map = new OpenLayers.Map('map');
