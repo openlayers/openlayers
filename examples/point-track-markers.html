@@ -53,7 +53,11 @@
   </head>
   <body onload="init()">
     <h1 id="title">GeoRSS PointTrack in OpenLayers</h1>
-    <p style="font-size:.9em;">This demo uses OpenLayers.Layer.GeoRSS and OpenLayers.Layer.PointTrack. The track is created by connecting the points of the GeoRSS feed.</a></p>
+    <div id="tags">
+        GeoRSS, PointTrack
+    </div>
+    <p id="shortdesc">This demo uses OpenLayers.Layer.GeoRSS and OpenLayers.Layer.PointTrack.</p>
+    <p style="font-size:.9em;">The track is created by connecting the points of the GeoRSS feed.</a></p>
     <form onsubmit="return false;">
    GeoRSS URL: <input type="text" id="url" size="50" /><input type="submit" onclick="addUrl(); return false;" value="Load Feed" onsubmit="addUrl(); return false;" />
     </form>  

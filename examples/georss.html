@@ -29,7 +29,9 @@
   <body onload="init()">
     <h1 id="title">GeoRSS Example</h1>
 
-    <div id="tags"></div>
+    <div id="tags">
+        georss, style, styling, marker
+    </div>
 
     <p id="shortdesc">
         Display a couple of locally cached georss feeds on an a basemap.
@@ -48,9 +50,9 @@
                <input type="submit" onclick="addUrl(); return false;" value="Load Feed" onsubmit="addUrl(); return false;" />
         </form>
 
-        <p>The above input box allows the input of a URL to a GeoRSS feed. This feed can be local to the HTML page --
+        <p>The above input box allows the input of a URL to a GeoRSS feed. This feed can be local to the HTML page &mdash;
         for example, entering 'georss.xml' will work by default, because there is a local file in the directory called
-        georss.xml -- or, with a properly set up ProxyHost variable (as is used here), it will be able to load any
+        georss.xml &mdash; or, with a properly set up ProxyHost variable (as is used here), it will be able to load any
         HTTP URL which contains GeoRSS and display it. Anything else will simply have no effect.</p>
     </div>
   </body>

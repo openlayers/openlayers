@@ -11,7 +11,9 @@
   <body>
       <h1 id="title">Feature Info Example</h1>
 
-      <div id="tags"></div>
+      <div id="tags">
+        WMS, GetFeatureInfo, cleanup
+      </div>
 
       <p id="shortdesc">
         Demonstrates sending a GetFeatureInfo query to an OWS. Returns information about a map feature in the side DIV.
@@ -31,6 +33,7 @@
     OpenLayers.ProxyHost = "/dev/examples/proxy.cgi?url=";
     var map = new OpenLayers.Map('map', {'maxResolution':'auto'});
 
+// cleanup: this WMS is broken
     var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
         "http://world.freemap.in/cgi-bin/mapserv?map=/www/freemap.in/world/map/factbook.map", {'layers': 'factbook'} );
     map.addLayer(wms);

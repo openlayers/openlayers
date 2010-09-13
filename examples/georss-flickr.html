@@ -94,7 +94,23 @@
   </head>
   <body onload="init()">
     <h1 id="title">GeoRSS from Flickr in OpenLayers</h1>
-    <p>The displayed GeoRSS feed has a <tt>&lt;media:thumbnail/&gt;</tt> property for each item. An extended <tt>createFeatureFromItem()</tt> function is used to add this attribute to the attributes hash of each feature read in by <tt>OpenLayers.Format.GeoRSS</tt>. The example is configured with a style to render each item with its thumbnail image. Also, to show how rules work, we defined a rule that if the title of an rss item contains "powder", it will be rendered larger than the others.</p>
+    <div id="tags">
+        georss, style, styling, marker, flickr, thumbnail, image, rule
+    </div>
+
+    <p id="shortdesc">
+        Display a flickr-feed on top of the map
+    </p>
+    
     <div id="map" class="smallmap"></div>
+    <div id="docs">
+    <p>The displayed GeoRSS feed has a <tt>&lt;media:thumbnail/&gt;</tt> 
+    property for each item. An extended <tt>createFeatureFromItem()</tt> 
+    function is used to add this attribute to the attributes hash of each 
+    feature read in by <tt>OpenLayers.Format.GeoRSS</tt>. The example is 
+    configured with a style to render each item with its thumbnail image. 
+    Also, to show how rules work, we defined a rule that if the title of an 
+    rss item contains "powder", it will be rendered larger than the others.</p>
+    </div>
   </body>
 </html>

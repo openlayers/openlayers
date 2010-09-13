@@ -27,7 +27,7 @@
                 },
                 'featureunselected': function(feature) {
                     $('counter').innerHTML = this.selectedFeatures.length;
-                },
+                }
             });
 
             map.addLayers([wmsLayer, vectors]);
@@ -100,6 +100,9 @@
   </head>
   <body onload="init()">
     <h1 id="title">OpenLayers Select Feature Example</h1>
+    <div id="tags">
+        vector, feature, selecting, selection, advanced
+    </div>        
     <p id="shortdesc">
       Select a feature on hover or click with the Control.SelectFeature on a
       vector layer.

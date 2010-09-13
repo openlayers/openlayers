@@ -17,6 +17,9 @@
                 bottom: 1em;
                 left: 1em;
                 width: 512px;
+                z-index: 20000;
+                background-color: white;
+                padding: 0 0.5em 0.5em 0.5em;
             }
         </style>
         <script src="../lib/OpenLayers.js"></script>
@@ -40,8 +43,8 @@
 
                 map.addLayers([ol_wms, jpl_wms, dm_wms]);
                 map.addControl(new OpenLayers.Control.LayerSwitcher());
-                // map.setCenter(new OpenLayers.LonLat(0, 0), 0);
-                map.zoomToMaxExtent();
+                map.setCenter(new OpenLayers.LonLat(0, 0), 6);
+                //map.zoomToMaxExtent();
             }
         </script>
     </head>
@@ -51,7 +54,9 @@
           <div id="text">
               <h1 id="title">Full Screen Example</h1>
 
-              <div id="tags"></div>
+              <div id="tags">
+                css, style, fullscreen, window, margin, padding, scrollbar
+              </div>
 
               <p id="shortdesc">
                 Demonstrate a map that fill the entire browser window.
