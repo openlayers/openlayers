@@ -135,6 +135,10 @@ def createFeed(examples):
         title = doc.createElementNS(atomuri, "title")
         title.appendChild(doc.createTextNode(example["title"] or example["example"]))
         entry.appendChild(title)
+              
+        tags = doc.createElementNS(atomuri, "tags")
+        tags.appendChild(doc.createTextNode(example["tags"] or example["example"]))
+        entry.appendChild(tags)
         
         link = doc.createElementNS(atomuri, "link")
         link.setAttribute("href", "%s%s" % (feedPath, example["example"]))
@@ -171,7 +175,7 @@ def wordIndex(examples):
     """
     index = {}
     unword = re.compile("\\W+")
-    keys = ["shortdesc", "title"]
+    keys = ["shortdesc", "title", "tags"]
     for i in range(len(examples)):
         for key in keys:
             text = examples[i][key]
@@ -204,7 +208,7 @@ if __name__ == "__main__":
     print 'Reading examples from %s and writing out to %s' % (examplesLocation, outFile.name)
    
     exampleList = []
-    docIds = ['title','shortdesc']
+    docIds = ['title','shortdesc','tags']
    
     #comment out option to create docs from online resource
     #examplesLocation = 'http://svn.openlayers.org/sandbox/docs/examples/'

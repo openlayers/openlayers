@@ -34,6 +34,12 @@
                 font-weight: bold;
                 color: #333;
             }
+            .ex_tags{
+                display: inline;
+                font-size: smaller;
+                font-style: italic;
+                color: #333;
+            }
             .ex_filename {
                 font-weight: normal;
                 font-size: 0.8em;
@@ -231,6 +237,9 @@
                         <p class="ex_classes" jugl:content="example.classes">
                             Related Classes go here
                         </p>
+                        <div class="ex_tags" jugl:content="'...tagged with ' + example.tags">
+                            
+                        </div>
                     </a>
                 </li>
             </ul>
