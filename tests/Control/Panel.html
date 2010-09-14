@@ -67,7 +67,7 @@
 
         panel.redrawsCount = 0;              
         panel.activateControl(toggleControl);
-        t.ok((panel.redrawsCount > 0),"Redraw called on activated toggle " +
+        t.eq(panel.redrawsCount, 1, "Redraw called on activated toggle " +
             panel.redrawsCount + " times.");
         t.ok(toolControl.active && !anotherToolControl.active && toggleControl.active,
               "activated the toggle control, which has no influence on the tool & togggle controls.");
