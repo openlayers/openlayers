@@ -1,57 +1,22 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <title>OpenLayers Example</title>
-    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-    <link rel="stylesheet" href="style.css" type="text/css" />
-    <script src="../lib/OpenLayers.js"></script>
-    <script type="text/javascript">
-        // making this a global variable so that it is accessible for
-        // debugging/inspecting in Firebug
-        var map = null;
-
-        function init(){
-
-            map = new OpenLayers.Map('map');
-
-            var ol_wms = new OpenLayers.Layer.WMS(
-                "OpenLayers WMS",
-                "http://vmap0.tiles.osgeo.org/wms/vmap0",
-                {layers: 'basic'}
-            );
-
-            var jpl_wms = new OpenLayers.Layer.WMS(
-                "NASA Global Mosaic",
-                "http://t1.hypercube.telascience.org/cgi-bin/landsat7", 
-                {layers: "landsat7"}
-            );
-
-            var dm_wms = new OpenLayers.Layer.WMS(
-                "Canadian Data",
-                "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap",
-                {
-                    layers: "bathymetry,land_fn,park,drain_fn,drainage," +
-                            "prov_bound,fedlimit,rail,road,popplace",
-                    transparent: "true",
-                    format: "image/png"
-                },
-                {isBaseLayer: false, visibility: false}
-            );
-
-            map.addLayers([ol_wms, jpl_wms, dm_wms]);
-            map.addControl(new OpenLayers.Control.LayerSwitcher());
-            map.zoomToMaxExtent();
-        }
-    </script>
-  </head>
-  <body onload="init()">
-    <h1 id="title">OpenLayers Example</h1>
-    <div id="tags">
-        simple, basic
-    </div>
-    <p id="shortdesc">
-        Demonstrate a simple map with an overlay that includes layer switching controls.
-    </p>
-    <div id="map" class="smallmap"></div>
-    <div id="docs"></div>
-  </body>
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>OpenLayers Example</title>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+    </head>
+    <body>
+        <h1 id="title">OpenLayers Example</h1>
+        <div id="tags">simple, basic</div>
+        <p id="shortdesc">
+            Demonstrate a simple map with an overlay that includes layer switching controls.
+        </p>
+        <div id="map" class="smallmap"></div>
+        <div id="docs">
+            <p>This is a basic example demonstrating the use of a map with two layers and a few controls.</p>
+            <p>View the <a href="example.js" target="_blank">example.js</a> source to see how this is done.</p>
+        </div>
+        <script src="../lib/OpenLayers.js"></script>
+        <script src="example.js"></script>
+    </body>
 </html>
