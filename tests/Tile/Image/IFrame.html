@@ -14,66 +14,48 @@
     var name     = "OpenaLayers WMS";
     var wmsUrl   = "http://labs.metacarta.com/wms/vmap0?";
     
-    function test_Tile_Image_IFrame_constructor (t) {
-        t.plan( 2 );
-        layer = new OpenLayers.Layer.WMS.Post(name, wmsUrl, {layers: 'basic'}); 
-        var tile = new OpenLayers.Tile.Image.IFrame(layer, position, bounds, url, size);
-        
-        t.ok( tile instanceof OpenLayers.Tile.Image.IFrame, "new OpenLayers.Tile.Image.IFrame returns Tile object" );
-        t.eq( tile.layerAlphaHack, false, "layerAlphaHack is set to false.");
-    
-        layer.destroy();
-    }
-
-    function test_Tile_Image_IFrame_destroy (t) {
-        t.plan( 2 );
+    function test_Tile_Image_IFrame_create (t) {
+        t.plan( 3 );
         map   = new OpenLayers.Map('map');
-        layer = new OpenLayers.Layer.WMS.Post(name, wmsUrl, {layers: 'basic'}); 
+        var bar = new Array(205).join("1234567890");
+        layer = new OpenLayers.Layer.WMS(name, wmsUrl, {layers: 'basic', foo: bar}, {tileOptions: {maxGetUrlLength: 2048}}); 
         map.addLayer(layer);
 
-        var tile = new OpenLayers.Tile.Image.IFrame(layer, position, bounds, null, size);
+        var tile = layer.addTile(bounds, position);
         tile.renderTile();
         tile.positionImage();
+        t.eq(tile.imgDiv.firstChild.nodeName.toLowerCase(), "iframe", "IFrame used for long URL");
+        
+        layer.mergeNewParams({foo: null});
+        tile.renderTile();
+        tile.positionImage();
+        t.eq(tile.imgDiv.nodeName.toLowerCase(), "img", "IMG used for short URL");
+        
+        tile.maxGetUrlLength = 0;
+        tile.renderTile();
+        tile.positionImage();
+        t.eq(tile.imgDiv.firstChild.nodeName.toLowerCase(), "iframe", "IFrame used when maxGetUrlLength is 0");
         
         tile.destroy();
-        t.eq( tile.imgDiv, null, "IFrame successfully removed from DOM");
-        t.eq( tile.frame, null, "Event div successfully removed from DOM");
-
+        layer.destroy();
         map.destroy();
     }
 
-    function test_Tile_Image_IFrame_clone (t) {
-        t.plan( 9 );
-        
-        layer = new OpenLayers.Layer.WMS.Post(name, wmsUrl, {layers: 'basic'}); 
-        tile  = new OpenLayers.Tile.Image.IFrame(layer, position, bounds, url, size);
-        tile.iFrame = {};
-        var clone = tile.clone();
-        
-        t.ok( clone instanceof OpenLayers.Tile.Image.IFrame, "clone is a Tile.Image.IFrame object" );
-        t.ok( clone.layer == layer, "clone.layer is set correctly");
-        t.ok( clone.position.equals(position), "clone.position is set correctly");
-        t.ok( clone.bounds.equals(bounds), "clone.bounds is set correctly");
-        t.eq( clone.url, url, "clone.url is set correctly");
-        t.ok( clone.size.equals(size), "clone.size is set correctly");
-        t.ok( clone.frame, "clone has a frame");
-        t.ok( clone.frame != tile.frame, "clone's frame is a new one");
-        t.ok( clone.imgDiv == null, "clone's imgDiv was not copied");
-    }
-    
     function test_Tile_Image_IFrame_clear (t) {
         t.plan( 1 );
         
         map   = new OpenLayers.Map('map');
-        layer = new OpenLayers.Layer.WMS.Post(name, wmsUrl, {layers: 'basic'}); 
+        layer = new OpenLayers.Layer.WMS(name, wmsUrl, {layers: 'basic'}, {tileOptions: {maxGetUrlLength: 0}}); 
         map.addLayer(layer);  
-        tile = new OpenLayers.Tile.Image.IFrame(layer, position, bounds, url, size);
+        tile = layer.addTile(bounds, position);
         tile.draw();
         tile.clear();
 
-        t.ok(
-            tile.imgDiv.firstChild.nodeName != "IFRAME",
+        t.eq(
+            tile.imgDiv.firstChild.nodeName.toLowerCase(), "div",
             "IFrame successfully removed from DOM");
+        tile.destroy();
+        layer.destroy();
         map.destroy();
     }
 
@@ -81,9 +63,10 @@
         t.plan( 4 );
 
         map   = new OpenLayers.Map('map');
-        layer = new OpenLayers.Layer.WMS.Post(name, wmsUrl, {layers: 'basic'}); 
+        layer = new OpenLayers.Layer.WMS(name, wmsUrl, {layers: 'basic'}, {tileOptions: {maxGetUrlLength: 0}}); 
         map.addLayer(layer);  
-        tile = new OpenLayers.Tile.Image.IFrame(layer, position, bounds, url, size);
+        tile = layer.addTile(bounds, position);
+        tile.url = layer.getURL(bounds);
         tile.initImgDiv();
 
         if(isMozilla) {
@@ -103,9 +86,9 @@
         t.plan( 3 );
 
         map   = new OpenLayers.Map('map');
-        layer = new OpenLayers.Layer.WMS.Post(name, wmsUrl, {layers: 'basic'}); 
+        layer = new OpenLayers.Layer.WMS(name, wmsUrl, {layers: 'basic'}, {tileOptions: {maxGetUrlLength: 0}}); 
         map.addLayer(layer);  
-        var tile = new OpenLayers.Tile.Image.IFrame(layer, position, bounds, url, size);
+        var tile = layer.addTile(bounds, position);
         tile.renderTile();
         var imgDiv = tile.imgDiv;
         var iFrame    = imgDiv.firstChild;
@@ -128,9 +111,9 @@
         t.plan( 8 );
         
         map   = new OpenLayers.Map('map');
-        layer = new OpenLayers.Layer.WMS.Post(name, wmsUrl, {layers: 'basic'}); 
+        layer = new OpenLayers.Layer.WMS(name, wmsUrl, {layers: 'basic'}, {tileOptions: {maxGetUrlLength: 0}}); 
         map.addLayer(layer);  
-        var tile = new OpenLayers.Tile.Image.IFrame(layer, position, bounds, url, size);
+        var tile = layer.addTile(bounds, position);
         var iFrame = tile.createIFrame();
 
         var id = tile.id+'_iFrame';
@@ -161,15 +144,17 @@
             SRS: "EPSG:4326", BBOX: [1,2,3,4],
             WIDTH: String(size.w), HEIGHT: String(size.h)
         };
-        var newLayer = new OpenLayers.Layer.WMS.Post("Name",
-                                         "http://labs.metacarta.com/TESTURL",
-                                         tParams,
-                                         {tileSize: size});  
+        var newLayer = new OpenLayers.Layer.WMS("Name",
+                     "http://labs.metacarta.com/TESTURL",
+                     tParams,
+                     {tileSize: size, tileOptions: {maxGetUrlLength: 0}});  
         map = new OpenLayers.Map('map'); 
         map.addLayer(newLayer);  
-        tile = new OpenLayers.Tile.Image.IFrame(newLayer, position, bounds, url, size);
+        tile = newLayer.addTile(bounds, position);
+        tile.url = newLayer.getURL(bounds);
         tile.initImgDiv();
 
+        tile.url = newLayer.getURL(bounds);
         var form = tile.createRequestForm();
         if(isMozilla) {
             t.ok( form instanceof HTMLElement, "created html form successfully.");
@@ -187,25 +172,13 @@
         t.eq( form.target, tile.id+'_iFrame', "form target correctly set.");
         t.eq( form.action, url, "form action correctly set.");
 
-        var contain  = true;
+        var formParams = {};
         var children = form.childNodes;
-        for(var par in newLayer.params) {
-            var test = false;
-            
-            for(var i=0; i<children.length; i++) {
-                if(children.item(i).name == par && children.item(i).value == newLayer.params[par]) {
-                    test = true;
-                    break;
-                }
-            }
-
-            if(test == false) {
-                contain = false;
-                break;
-            }
-
+        for(var i=0; i<form.childNodes.length; i++) {
+            formParams[children[i].name] = children[i].value
         }
-        t.eq( contain, true, "html form elements equal layer's parameters.");
+        newLayer.params.BBOX = newLayer.params.BBOX.join(",");
+        t.eq(newLayer.params, formParams, "html form elements equal layer's parameters.");
 
         tile.draw();
         tile.clear();
@@ -214,7 +187,9 @@
             tile.imgDiv.firstChild.nodeName == "IFRAME",
             "Iframe has been reinserted properly"
         );
-
+        
+        tile.destroy();
+        newLayer.destroy();
         map.destroy();
     }
 </script>

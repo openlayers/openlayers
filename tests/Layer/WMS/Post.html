@@ -16,19 +16,20 @@
         t.plan( 2 );
 
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        var options = { unsupportedBrowsers: []};
         layer = new OpenLayers.Layer.WMS.Post(name, url, params);
 
-        t.ok(
-            layer.tileClass == OpenLayers.Tile.Image.IFrame,
-            "instantiate OpenLayers.Tile.Image.IFrame tiles.");
+        t.eq(
+            layer.usePost, true,
+            "Supported browsers use IFrame tiles.");
 
         layer.destroy();
 
         var options = { unsupportedBrowsers: [OpenLayers.Util.getBrowserName()]};
         layer = new OpenLayers.Layer.WMS.Post(name, url, params, options);
-        t.ok(
-            layer.tileClass == OpenLayers.Tile.Image,
-            "unsupported browser instantiate Image tiles.");
+        t.eq(
+            layer.usePost, false,
+            "unsupported browsers use Image tiles.");
         layer.destroy();
     }
 
@@ -49,8 +50,8 @@
         }
         else {
             t.ok(
-                tile instanceof OpenLayers.Tile.Image.IFrame,
-                "tile is an instance of OpenLayers.Tile.Image.IFrame");
+                tile.useIFrame !== undefined,
+                "tile is created with the OpenLayers.Tile.Image.IFrame mixin");
         }
         map.destroy();
 
@@ -73,8 +74,8 @@
         map.addLayer(layer);
         var tile2 = layer.addTile(bounds, pixel);
         t.ok(
-            tile2 instanceof OpenLayers.Tile.Image.IFrame,
-            "supported browser: tile is an instance of Tile.Image.IFrame");
+            tile2.createIFrame,
+            "supported browser: tile is created with the Tile.Image.IFrame mixin");
         map.destroy();
     }
 
