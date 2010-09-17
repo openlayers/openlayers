@@ -1,5 +1,6 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
   <script>
     var custom$ = function() {};
     window.$ = custom$;
@@ -894,7 +895,7 @@
     }
 
     function test_Util_getParameters(t) {
-        t.plan(13);
+        t.plan(17);
 
         t.eq(OpenLayers.Util.getParameters('http://www.example.com'), {},
              "getParameters works when args = ''");
@@ -952,6 +953,18 @@
         };
         var str = OpenLayers.Util.getParameterString(obj);
         t.eq(OpenLayers.Util.getParameters("?" + str), obj, "round tripped parameters");
+        
+        // try some oddly encoded strings
+        var url = "http://example.com/?C%E9sar=C%E9sar+Ch%E1vez";
+        var obj = OpenLayers.Util.getParameters(url);
+        t.ok("César" in obj, "got proper key from C%E9sar");
+        t.eq(obj["César"], "César Chávez", "got proper value from C%E9sar+Ch%E1vez");
+        
+        // try some properly encoded strings
+        var url = "http://example.com/?C%C3%A9sar=C%C3%A9sar+Ch%C3%A1vez";
+        var obj = OpenLayers.Util.getParameters(url);
+        t.ok("César" in obj, "got proper key from C%C3%A9sar");
+        t.eq(obj["César"], "César Chávez", "got proper value from C%E9sar+Ch%E1vez");
 
     }
 
