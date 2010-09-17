@@ -24,6 +24,16 @@
         t.eq(clone.foo, "bar", "clone copies properties");
         
     }
+    
+    function test_defaults(t) {
+        t.plan(5);
+        var symbolizer = new OpenLayers.Symbolizer.Line();
+        t.ok(symbolizer.strokeColor === undefined, "no default strokeColor");
+        t.ok(symbolizer.strokeOpacity === undefined, "no default strokeOpacity");
+        t.ok(symbolizer.strokeWidth === undefined, "no default strokeWidth");
+        t.ok(symbolizer.strokeLinecap === undefined, "no default strokeLinecap");
+        t.ok(symbolizer.strokeDashstyle === undefined, "no default strokeDashstyle");
+    }
 
 
     </script> 

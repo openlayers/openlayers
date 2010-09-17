@@ -25,6 +25,26 @@
         
     }
 
+    function test_defaults(t) {
+        t.plan(16);
+        var symbolizer = new OpenLayers.Symbolizer.Point();
+        t.ok(symbolizer.strokeColor === undefined, "no default strokeColor");
+        t.ok(symbolizer.strokeOpacity === undefined, "no default strokeOpacity");
+        t.ok(symbolizer.strokeWidth === undefined, "no default strokeWidth");
+        t.ok(symbolizer.strokeLinecap === undefined, "no default strokeLinecap");
+        t.ok(symbolizer.strokeDashstyle === undefined, "no default strokeDashstyle");
+        t.ok(symbolizer.fillColor === undefined, "no default fillColor");
+        t.ok(symbolizer.fillOpacity === undefined, "no default fillOpacity");
+        t.ok(symbolizer.pointRadius === undefined, "no default pointRadius");
+        t.ok(symbolizer.externalGraphic === undefined, "no default externalGraphic");
+        t.ok(symbolizer.graphicWidth === undefined, "no default graphicWidth");
+        t.ok(symbolizer.graphicHeight === undefined, "no default graphicHeight");
+        t.ok(symbolizer.graphicOpacity === undefined, "no default graphicOpacity");
+        t.ok(symbolizer.graphicXOffset === undefined, "no default graphicXOffset");
+        t.ok(symbolizer.graphicYOffset === undefined, "no default graphicYOffset");
+        t.ok(symbolizer.rotation === undefined, "no default rotation");
+        t.ok(symbolizer.graphicName === undefined, "no default graphicName");
+    }
 
     </script> 
 </head>

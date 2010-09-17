@@ -25,6 +25,16 @@
         
     }
 
+    function test_defaults(t) {
+        t.plan(5);
+        var symbolizer = new OpenLayers.Symbolizer.Point();
+        t.ok(symbolizer.label === undefined, "no default label");
+        t.ok(symbolizer.fontFamily === undefined, "no default fontFamily");
+        t.ok(symbolizer.fontSize === undefined, "no default fontSize");
+        t.ok(symbolizer.fontWeight === undefined, "no default fontWeight");
+        t.ok(symbolizer.fontStyle === undefined, "no default fontStyle");
+    }
+
 
     </script> 
 </head>
