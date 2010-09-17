@@ -87,6 +87,29 @@
         t.ok( clone.imgDiv == null, "clone's imgDiv was not copied");
     }
     
+    function test_Tile_Image_IFrame_viewRequestID (t) {
+        t.plan( 2 );
+        var map   = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS(
+            "Name",
+            "http://labs.metacarta.com/TESTURL?",
+            {layers: 'basic'}
+        ); 
+        map.addLayer(layer);
+
+        var position = new OpenLayers.Pixel(20,30);
+        var bounds = new OpenLayers.Bounds(1,2,3,4);
+        tile = layer.addTile(bounds, position);
+        tile.renderTile();
+        t.eq(tile.imgDiv.viewRequestID, map.viewRequestID, "viewRequestID correct after renderTile");
+        map.viewRequestID++;
+        tile.renderTile();
+        t.eq(tile.imgDiv.viewRequestID, map.viewRequestID, "viewRequestID correct after subsequent renderTile");
+        tile.destroy();
+        layer.destroy();
+        map.destroy();
+    }
+
     function test_Tile_Image_draw (t) {
         t.plan( 7 );
 
