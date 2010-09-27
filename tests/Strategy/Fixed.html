@@ -153,7 +153,7 @@
         ];
 
         // call merge with a mocked up response
-        strategy.merge({features: features});
+        strategy.merge(new OpenLayers.Projection("EPSG:900913"), {features: features});
         
         // confirm that the original features were destroyed
         t.eq(layer.features.length, 2, "old features destroyed");
@@ -177,7 +177,7 @@
         ];
         
         // call merge again with mocked up response
-        strategy.merge({features: features});
+        strategy.merge(new OpenLayers.Projection("EPSG:900913"), {features: features});
 
         // test that feature geometries have not been transformed
         t.geom_eq(layer.features[0].geometry, features[0].geometry, "[same proj] feature 0 geometry not transformed");
@@ -185,6 +185,56 @@
         
     }
 
+    function test_load(t) {
+        t.plan(4);
+
+        // set up
+
+        var log;
+
+        var map = new OpenLayers.Map({
+            div: "map",
+            projection: new OpenLayers.Projection("EPSG:900913"),
+            layers: [new OpenLayers.Layer("", {isBaseLayer: true})]
+        });
+
+        var response = new OpenLayers.Protocol.Response();
+
+        var strategy = new OpenLayers.Strategy.Fixed({
+            merge: function(p, r) {
+                log = {scope: this, projection: p, response: r};
+            }
+        });
+
+        var layer = new OpenLayers.Layer.Vector("vector", {
+            strategies: [strategy],
+            protocol: {
+                read: function(o) {
+                    o.callback.call(o.scope, response);
+                }
+            }
+        });
+
+        map.addLayer(layer);
+
+        // test
+
+        strategy.load();
+
+        // verify that the callback is correctly bound
+        t.ok(log !== undefined,
+             "merge was called");
+        t.ok(log.scope == strategy,
+             "merge called with expected scope");
+        t.eq(log.projection.getCode(), map.getProjectionObject().getCode(),
+             "merge called the map projection as the first arg");
+        t.ok(log.response == response,
+             "merge called with response as the first arg");
+
+        // tear down
+
+        map.destroy();
+    }
   </script>
 </head>
 <body>
