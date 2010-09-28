@@ -68,52 +68,161 @@
         
     }
 
-    function test_partial(t) {
-        t.plan(1);
+    function test_partial(t) {        
 
-        // set up
-
-        var map, layer, control, geometry, log;
-
-        map = new OpenLayers.Map("map", {units: "m"});
-
-        layer = new OpenLayers.Layer(null, {isBaseLayer: true});
-        map.addLayer(layer);
-
-        map.zoomToMaxExtent();
-
-        control = new OpenLayers.Control.Measure(OpenLayers.Handler.Path, {
-            partialDelay: null
+        t.plan(28);        
+        
+        var map = new OpenLayers.Map({
+            div: "map",
+            units: "m",
+            resolutions: [1],
+            layers: [
+                new OpenLayers.Layer(null, {
+                    isBaseLayer: true
+                })
+            ],
+            center: new OpenLayers.LonLat(0, 0)
         });
 
+        var log = [];
+        var control = new OpenLayers.Control.Measure(
+            OpenLayers.Handler.Path, {persist: true, 
+                eventListeners: {
+                    measurepartial: function(evt) {
+                        log.push(evt);
+                    },
+                    measure: function(evt){
+                        log.push(evt);
+                    }
+                }
+            }
+        );
         map.addControl(control);
         control.activate();
+        
+        
+        // convenience function to trigger mouse events
+        function trigger(type, x, y) {
+            map.events.triggerEvent(type, {
+                xy: new OpenLayers.Pixel(x, y)
+            })
+        };
+        
+        // delay in seconds
+        var delay = control.partialDelay / 1000;
+        
+        // establish first point
+        trigger("mousedown", 0, 0);
+        trigger("mouseup", 0, 0);
 
-        control.events.on({
-            "measurepartial": function(e) {
-                log.measure = e.measure;
+        
+        // a) move 10 pixels and click
+        trigger("mousemove", 0, 10);
+        trigger("mousedown", 0, 10);
+        trigger("mouseup", 0, 10);
+        
+        // confirm measurepartial is not fired before delay
+        t.eq(log.length, 0, "a) no event fired yet")
+
+        t.delay_call( 
+            // wait for delay then confirm event was logged
+            delay, function() {
+                t.eq(log.length, 1, "a) event logged")
+                t.eq(log[0].type, "measurepartial", "a) event logged");
+                t.eq(log[0].measure, 10, "a) correct measure");
+                
+                // b) move 10 pixels and click
+                trigger("mousemove", 0, 20);
+                trigger("mousedown", 0, 20);
+                trigger("mouseup", 0, 20);
+                
+                // confirm measurepartial is not fired before delay
+                t.eq(log.length, 1, "b) no event fired yet")
+                
+            },
+            delay, function() {
+                t.eq(log.length, 2, "b) event logged");
+                t.eq(log[1].type, "measurepartial", "b) correct type");
+                t.eq(log[1].measure, 20, "b) correct measure");
+
+                // c) move 10 pixels and click
+                trigger("mousemove", 0, 30);
+                trigger("mousedown", 0, 30);
+                trigger("mouseup", 0, 30);
+            },
+            // wait for half delay and confirm event not logged
+            delay / 2, function() {
+                // confirm measurepartial is not fired before delay
+                t.eq(log.length, 2, "c) no event fired yet")
+            },
+            // wait for rest of delay and confirm event logged
+            delay / 2, function() {
+                t.eq(log.length, 3, "c) event logged");
+                t.eq(log[2].type, "measurepartial", "c) correct type");
+                t.eq(log[2].measure, 30, "c) correct measure");
+                
+                // d) move 10 pixels and click
+                trigger("mousemove", 0, 40);
+                trigger("mousedown", 0, 40);
+                trigger("mouseup", 0, 40);
+
+                // confirm measurepartial is not fired before delay
+                t.eq(log.length, 3, "d) no event fired yet")
+                
+                // e) double click to finish
+                trigger("dblclick", 0, 40);
+
+                t.eq(log.length, 4, "e) event logged");
+                t.eq(log[3].type, "measure", "e) correct type");
+                t.eq(log[3].measure, 40, "e) correct measure");                
+            },
+            // wait for rest of delay and confirm no measurepartial logged
+            delay, function() {
+                // confirm measurepartial is not fired after dblclick
+                t.eq(log.length, 4, "e) no additional event fired");
+                
+                // change to freehand mode and confirm synchronous event dispatch
+                control.handler.freehand = true;
+                // clear log
+                log = [];
+                
+                // f) establish first freehand point
+                trigger("mousedown", 0, 0);
+                t.eq(log.length, 0, "f) no event fired yet")
+                
+                // g) move 10 pixels
+                trigger("mousemove", 10, 0);
+
+                t.eq(log.length, 1, "g) event logged");
+                t.eq(log[0].type, "measurepartial", "g) correct type");
+                t.eq(log[0].measure, 10, "g) correct measure");
+                
+                // h) move 10 pixels
+                trigger("mousemove", 20, 0);
+
+                t.eq(log.length, 2, "h) event logged");
+                t.eq(log[1].type, "measurepartial", "h) correct type");
+                t.eq(log[1].measure, 20, "h) correct measure");
+                
+                // i) mouse up to finish
+                trigger("mouseup", 20, 0);
+
+                t.eq(log.length, 3, "i) event logged");
+                t.eq(log[2].type, "measure", "i) correct type");
+                t.eq(log[2].measure, 20, "i) correct measure");
+                
+                // j) clean up
+                log = [];
+                map.destroy();
+            },
+            // wait for delay and confirm event not logged
+            delay, function() {
+                t.eq(log.length, 0, "j) no event fired after destroy");
             }
-        });
-
-        // test
-
-        geometry = new OpenLayers.Geometry.LineString([
-            new OpenLayers.Geometry.Point(1, 1),
-            new OpenLayers.Geometry.Point(2, 1)
-        ]);
-
-        log = {};
-        control.measurePartial(null, geometry);
-        geometry.components[1].x = 3;
-        t.delay_call(0.2, function() {
-
-            t.eq(log.measure, 1, "partial measure is correct");
-
-            // tear down
-            map.destroy
-        });
-    };
-
+        );
+        
+    }
+    
   </script>
 </head>
 <body>
