@@ -243,7 +243,7 @@
         panel.activate();
         var div = panel.div;
         panel.destroy();
-        t.ok(panel.div.innerHTML == "", 
+        t.eq(panel.div, null, 
             "Panel is not displayed after destroy without any active control");
         map.destroy();
     }
