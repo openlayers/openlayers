@@ -94,6 +94,7 @@ class Config:
 
         [exclude]
         3rd/logger.js
+        exclude/this/dir
 
     All headings are required.
 
@@ -122,6 +123,20 @@ class Config:
         self.include =  lines[lines.index("[include]") + 1:lines.index("[exclude]")]
         self.exclude =  lines[lines.index("[exclude]") + 1:]
 
+def undesired(filepath, excludes):
+    # exclude file if listed
+    exclude = filepath in excludes
+    if not exclude:
+        # check if directory is listed
+        for excludepath in excludes:
+            if not excludepath.endswith("/"):
+                excludepath += "/"
+            if filepath.startswith(excludepath):
+                exclude = True
+                break
+    return exclude
+            
+
 def run (sourceDirectory, outputFilename = None, configFile = None):
     cfg = None
     if configFile:
@@ -138,7 +153,7 @@ def run (sourceDirectory, outputFilename = None, configFile = None):
                 if cfg and cfg.include:
                     if filepath in cfg.include or filepath in cfg.forceFirst:
                         allFiles.append(filepath)
-                elif (not cfg) or (filepath not in cfg.exclude):
+                elif (not cfg) or (not undesired(filepath, cfg.exclude)):
                     allFiles.append(filepath)
 
     ## Header inserted at the start of each file in the output
