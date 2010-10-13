@@ -98,8 +98,6 @@
         <script type="text/javascript" src="Jugl.js"></script>
         <script type="text/javascript" src="example-list.js"></script>
         <script type="text/javascript">
-            // import
-            var Jugl = window["http://jugl.tschaub.net/trunk/lib/Jugl.js"];
             var template, target;
 
             function listExamples(examples) {
@@ -201,7 +199,7 @@
                 }
             }
             window.onload = function() {
-                template = new Jugl.Template("template");
+                template = new jugl.Template("template");
                 target = document.getElementById("examples");
                 listExamples(info.examples);
                 document.getElementById("exwin").src = "../examples/example.html";

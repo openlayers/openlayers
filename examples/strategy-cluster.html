@@ -66,7 +66,6 @@
         <script src="animator.js"></script>
         <script type="text/javascript">
             var map, template;
-            var Jugl = window["http://jugl.tschaub.net/trunk/lib/Jugl.js"];
             OpenLayers.ProxyHost = (window.location.host == "localhost") ?
                 "/cgi-bin/proxy.cgi?url=" : "proxy.cgi?url=";
 
@@ -135,7 +134,7 @@
                 map.setCenter(new OpenLayers.LonLat(0, 0), 1);
                 
                 // template setup
-                template = new Jugl.Template("template");
+                template = new jugl.Template("template");
 
             }
             
