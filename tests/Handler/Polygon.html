@@ -158,6 +158,187 @@
         map.destroy();
     }        
 
+    function test_rings(t) {
+        t.plan(12);
+
+        var log = [];
+        var map = new OpenLayers.Map({
+            div: "map",
+            resolutions: [1],
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            layers: [
+                new OpenLayers.Layer.Vector(null, {
+                    isBaseLayer: true,
+                    eventListeners: {
+                        featureadded: function(event) {
+                            log.push(event);
+                        },
+                        sketchmodified: function(event) {
+                            log.push(event);
+                        },
+                        sketchcomplete: function(event) {
+                            log.push(event);
+                        }
+                    }
+                })
+            ],
+            center: new OpenLayers.LonLat(0, 0),
+            zoom: 0
+        });
+        
+        // create control for drawing polygons with holes
+        var draw = new OpenLayers.Control.DrawFeature(
+            map.layers[0],
+            OpenLayers.Handler.Polygon,
+            {handlerOptions: {holeModifier: "altKey"}}
+        );
+        map.addControl(draw);
+        draw.activate();
+        
+        var event;
+        function trigger(type, event) {
+            map.events.triggerEvent(type, OpenLayers.Util.extend({}, event));
+        }
+        
+        // a) draw a polygon
+        log = [];
+        // start at -9, 9
+        event = {xy: new OpenLayers.Pixel(-9, 9)};
+        trigger("mousedown", event);
+        trigger("mouseup", event);
+        // draw to -1, 9
+        event = {xy: new OpenLayers.Pixel(-1, 9)};
+        trigger("mousemove", event);
+        trigger("mousedown", event);
+        trigger("mouseup", event);
+        // draw to -1, 1
+        event = {xy: new OpenLayers.Pixel(-1, 1)};
+        trigger("mousemove", event);
+        trigger("mousedown", event);
+        trigger("mouseup", event);
+        // draw to -9, 1
+        event = {xy: new OpenLayers.Pixel(-9, 1)};
+        trigger("mousemove", event);
+        trigger("mousedown", event);
+        trigger("mouseup", event);
+        // finish
+        event = {xy: new OpenLayers.Pixel(-9, 1)};
+        trigger("mousedown", event);
+        trigger("mouseup", event);
+        trigger("dblclick", event);
+        
+        // make assertions
+        t.eq(log.length, 9, "a) correct number of events");
+        t.eq(log[log.length-1].type, "featureadded", "a) featureadded event last");
+        t.eq(log[log.length-1].feature.geometry.getArea(), 64, "a) correct polygon area");
+
+        // b) draw a hole
+        log = [];
+        // start at -6, 6
+        event = {xy: new OpenLayers.Pixel(-6, 6), altKey: true};
+        trigger("mousedown", event);
+        trigger("mouseup", event);
+        // draw to -3, 6
+        event = {xy: new OpenLayers.Pixel(-3, 6), altKey: true};
+        trigger("mousemove", event);
+        trigger("mousedown", event);
+        trigger("mouseup", event);
+        // draw to -3, 3
+        event = {xy: new OpenLayers.Pixel(-3, 3), altKey: true};
+        trigger("mousemove", event);
+        trigger("mousedown", event);
+        trigger("mouseup", event);
+        // draw to -6, 3
+        event = {xy: new OpenLayers.Pixel(-6, 3), altKey: true};
+        trigger("mousemove", event);
+        trigger("mousedown", event);
+        trigger("mouseup", event);
+        // finish
+        event = {xy: new OpenLayers.Pixel(-6, 3), altKey: true};
+        trigger("mousedown", event);
+        trigger("mouseup", event);
+        trigger("dblclick", event);
+        
+        // make assertions
+        t.eq(log.length, 8, "b) correct number of events");
+        t.eq(log[log.length-1].type, "sketchcomplete", "b) sketchcomplete event last");
+        t.eq(log[log.length-1].feature.geometry.getArea(), 55, "b) correct polygon area");
+        
+
+        // c) draw a polygon that overlaps the first
+        log = [];
+        // start at -2, 2
+        event = {xy: new OpenLayers.Pixel(-2, 2)};
+        trigger("mousedown", event);
+        trigger("mouseup", event);
+        // draw to 2, 2
+        event = {xy: new OpenLayers.Pixel(2, 2)};
+        trigger("mousemove", event);
+        trigger("mousedown", event);
+        trigger("mouseup", event);
+        // draw to 2, -2
+        event = {xy: new OpenLayers.Pixel(2, -2)};
+        trigger("mousemove", event);
+        trigger("mousedown", event);
+        trigger("mouseup", event);
+        // draw to -2, -2
+        event = {xy: new OpenLayers.Pixel(-2, -2)};
+        trigger("mousemove", event);
+        trigger("mousedown", event);
+        trigger("mouseup", event);
+        // finish
+        event = {xy: new OpenLayers.Pixel(-2, -2)};
+        trigger("mousedown", event);
+        trigger("mouseup", event);
+        trigger("dblclick", event);
+        
+        // make assertions
+        t.eq(log.length, 9, "c) correct number of events");
+        t.eq(log[log.length-1].type, "featureadded", "c) featureadded event last");
+        t.eq(log[log.length-1].feature.geometry.getArea(), 16, "c) correct polygon area");
+
+        // d) draw a hole that tries to go outside the exterior ring
+        log = [];
+        // start at -1, 1
+        event = {xy: new OpenLayers.Pixel(-1, 1), altKey: true};
+        trigger("mousedown", event);
+        trigger("mouseup", event);
+        // draw to 1, 1
+        event = {xy: new OpenLayers.Pixel(1, 1), altKey: true};
+        trigger("mousemove", event);
+        trigger("mousedown", event);
+        trigger("mouseup", event);
+        // try to draw to -8, 8 (ouside active polygon)
+        event = {xy: new OpenLayers.Pixel(-8, 8), altKey: true};
+        trigger("mousemove", event);
+        trigger("mousedown", event);
+        trigger("mouseup", event);
+        // draw to 1, -1
+        event = {xy: new OpenLayers.Pixel(1, -1), altKey: true};
+        trigger("mousemove", event);
+        trigger("mousedown", event);
+        trigger("mouseup", event);
+        // draw to -1, -1
+        event = {xy: new OpenLayers.Pixel(-1, -1), altKey: true};
+        trigger("mousemove", event);
+        trigger("mousedown", event);
+        trigger("mouseup", event);
+        // finish
+        event = {xy: new OpenLayers.Pixel(-1, 1), altKey: true};
+        trigger("mousedown", event);
+        trigger("mouseup", event);
+        trigger("dblclick", event);
+        
+        // make assertions
+        t.eq(log.length, 11, "d) correct number of events");
+        t.eq(log[log.length-1].type, "sketchcomplete", "d) sketchcomplete event last");
+        t.eq(log[log.length-1].feature.geometry.getArea(), 12, "d) correct polygon area");
+        
+        
+        map.destroy();
+    }        
+
+
     function test_Handler_Polygon_destroy(t) {
         t.plan(8);
         var map = new OpenLayers.Map('map');
