@@ -227,8 +227,8 @@
         t.ok(!controlNoDeactive.active, "Tool control autoActivate:true is not active");
         
     }
-    function test_Control_Panel_dectivate (t) {
-        t.plan(3);
+    function test_Control_Panel_deactivate (t) {
+        t.plan(2);
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
         var panel = new OpenLayers.Control.Panel();        
@@ -239,12 +239,7 @@
         panel.deactivate();
         t.ok(panel.div.innerHTML == "", 
             "Panel is not displayed after deactivate without any active control");
-        
-        panel.activate();
-        var div = panel.div;
-        panel.destroy();
-        t.eq(panel.div, null, 
-            "Panel is not displayed after destroy without any active control");
+
         map.destroy();
     }
   </script>
