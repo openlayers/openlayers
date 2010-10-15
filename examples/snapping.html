@@ -164,7 +164,7 @@
             });
             draw = new OpenLayers.Control.DrawFeature(
                 poly, OpenLayers.Handler.Polygon,
-                {displayClass: "olControlDrawFeaturePoint", title: "Draw Features"}
+                {displayClass: "olControlDrawFeaturePoint", title: "Draw Features", handlerOptions: {holeModifier: "altKey"}}
             );
             modify = new OpenLayers.Control.ModifyFeature(
                 poly, {displayClass: "olControlModifyFeature", title: "Modify Features"}

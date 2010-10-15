@@ -305,7 +305,7 @@
             return;
         }
         
-        t.plan(2);
+        t.plan(3);
         
         var r = new OpenLayers.Renderer.VML(document.body);
         r.offset = {x: 0, y: 0};
@@ -318,30 +318,16 @@
         
         var node = document.createElement('div');
         
-        var linearRing = {
-            components: [{
-                x: 1,
-                y: 2
-            },{
-                x: 3,
-                y: 4
-            }]
-        };
-        var linearRing2 = {
-            components: [{
-                x: 5,
-                y: 6
-            },{
-                x: 7,
-                y: 8
-            }]
-        };
-        var geometry = {
-            components: [linearRing, linearRing2]
-        };
+        var geometry = OpenLayers.Geometry.fromWKT(
+            "POLYGON((1 2, 3 4), (5 6, 7 8))"
+        );
         r.drawPolygon(node, geometry, true);
         t.ok(g_SetNodeDimension, "setNodeDimension is called");
-        t.eq(node.path, "m 2,4 l 6,8 x m 10,12 l 14,16 x e", "path attribute is correct");
+        t.eq(node.path, "m 2,4 l 6,8 2,4 x m 10,12 l 14,16 10,12 e", "path attribute is correct - inner ring has no area and is not closed");
+
+        geometry.components[1].addComponent(new OpenLayers.Geometry.Point(8, 7));
+        r.drawPolygon(node, geometry, true);
+        t.eq(node.path, "m 2,4 l 6,8 2,4 x m 10,12 l 14,16 16,14 10,12 x e", "path attribute is correct - inner ring has an area and is closed");        
     }
     
     function test_VML_drawrectangle(t) {
