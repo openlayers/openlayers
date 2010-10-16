@@ -18,8 +18,8 @@
             });
             layer = new OpenLayers.Layer.WMS(
                 "States WMS/WFS",
-                "http://demo.opengeo.org/geoserver/ows",
-                {layers: 'topp:states', format: 'image/gif'}
+                "http://v2.suite.opengeo.org/geoserver/ows",
+                {layers: 'usa:states', format: 'image/gif'}
             );
             select = new OpenLayers.Layer.Vector("Selection", {styleMap: 
                 new OpenLayers.Style(OpenLayers.Feature.Vector.style["select"])
