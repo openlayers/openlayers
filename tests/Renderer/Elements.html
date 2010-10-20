@@ -561,6 +561,61 @@
         tearDown();        
     }
 
+    function test_Elements_drawGeometry_3(t) {
+        t.plan(2);
+
+        setUp();
+
+        var r = create_renderer();
+        
+        var element = document.createElement("div");
+        r.vectorRoot = element;
+
+        r.nodeFactory = function(id, type) {
+            return document.createElement("div");
+        };
+        var g_Node = null;
+        var b_Node = null;
+        r.drawGeometryNode = function(node, geometry, style) {
+            g_Node = node;
+            return {node: node, complete: true};
+        };
+        r.redrawBackgroundNode = function(id, geometry, style, featureId) {
+            b_Node = r.nodeFactory();
+            b_Node.id = "foo_background";
+            element.appendChild(b_Node);
+        };
+
+        r.getNodeType = function(geometry, style) {
+            return "div";
+        };
+        var geometry = {
+            id: 'foo',
+            CLASS_NAME: 'bar',
+            getBounds: function() {return {bottom: 0}}
+        };
+        var style = {'backgroundGraphic': 'foo'};
+        var featureId = 'dude';
+        r.drawGeometry(geometry, style, featureId);
+        t.ok(b_Node.parentNode == element, "redrawBackgroundNode appended background node");
+
+        var returnNode = function(id) {
+        	return id == "foo_background" ? b_Node : g_Node;
+        }
+       	
+        var _getElement = document.getElementById;
+        document.getElementById = returnNode;
+        OpenLayers.Util.getElement = returnNode;
+
+        style = {};
+        r.drawGeometry(geometry, style, featureId);
+        t.ok(b_Node.parentNode != element, "background node correctly removed")
+            
+        document.getElementById = _getElement;
+
+        tearDown();
+    }
+
 
 
   </script>
