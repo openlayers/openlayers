@@ -11,6 +11,7 @@ div.olMapViewport {
 
 div.olLayerDiv {
    -moz-user-select: none;
+   -khtml-user-select: none;
 }
 
 .olLayerGoogleCopyright {
@@ -322,6 +323,7 @@ div.olControlSaveFeaturesItemInactive {
 
 .olControlNoSelect {
  -moz-user-select: none;
+ -khtml-user-select: none;
 }
 
 .olImageLoadError {
