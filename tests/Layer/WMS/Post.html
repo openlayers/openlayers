@@ -16,8 +16,8 @@
         t.plan( 2 );
 
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
-        var options = { unsupportedBrowsers: []};
-        layer = new OpenLayers.Layer.WMS.Post(name, url, params);
+        var options = {unsupportedBrowsers: []};
+        layer = new OpenLayers.Layer.WMS.Post(name, url, params, options);
 
         t.eq(
             layer.usePost, true,
@@ -55,11 +55,10 @@
         }
         map.destroy();
 
-        var browserName = OpenLayers.Util.getBrowserName();
-        var options = { unsupportedBrowsers: [browserName]};
-
         // test the unsupported browser
-        layer = new OpenLayers.Layer.WMS.Post(name, url, params, options);
+        layer = new OpenLayers.Layer.WMS.Post(name, url, params, {
+            unsupportedBrowsers: [OpenLayers.Util.getBrowserName()]
+        });
         map   = new OpenLayers.Map('map');
         map.addLayer(layer);
         tile  = layer.addTile(bounds, pixel);
@@ -69,8 +68,9 @@
         layer.destroy();
 
         // test a supported browser
-        OpenLayers.Util.getBrowserName = function () { return 'not_' + browserName };
-        layer = new OpenLayers.Layer.WMS.Post(name, url, params, options);
+        layer = new OpenLayers.Layer.WMS.Post(name, url, params, {
+            unsupportedBrowsers: []
+        });
         map.addLayer(layer);
         var tile2 = layer.addTile(bounds, pixel);
         t.ok(
