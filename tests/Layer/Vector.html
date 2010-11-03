@@ -610,7 +610,7 @@
                 feature.style = customStyle5;
                 layer.drawFeature(feature);
                 t.eq(root.firstChild.getAttributeNS(null, 'style'),
-                             'opacity: '+customStyle5.graphicOpacity.toString()+((OpenLayers.Util.getBrowserName() == "opera" || OpenLayers.Util.getBrowserName() == "safari") ? "" : ';'),
+                             'opacity: '+customStyle5.graphicOpacity.toString()+((OpenLayers.BROWSER_NAME == "opera" || OpenLayers.BROWSER_NAME == "safari") ? "" : ';'),
                              "graphicOpacity correctly set");
                 feature.style = customStyle6;
                 layer.drawFeature(feature);

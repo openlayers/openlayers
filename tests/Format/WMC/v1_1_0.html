@@ -4,7 +4,7 @@
     <script type="text/javascript">
 
     function test_write_wmc_Layer(t) {
-        if (OpenLayers.Util.getBrowserName() == "safari") {
+        if (OpenLayers.BROWSER_NAME == "safari") {
             t.plan(0);
             t.debug_print("Safari has wierd behavior with getElementsByTagNameNS: the result is that we can't run these tests there. Patches welcome.");
             return;

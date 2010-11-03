@@ -26,7 +26,7 @@
         t.ok( box.bounds.equals(bounds), "bounds object correctly set");
         t.ok( box.div != null, "div created");
         //Safari 3 separates style overflow into overflow-x and overflow-y
-        var prop = (OpenLayers.Util.getBrowserName() == 'safari') ? 'overflowX' : 'overflow';
+        var prop = (OpenLayers.BROWSER_NAME == 'safari') ? 'overflowX' : 'overflow';
         t.eq( box.div.style[prop], "hidden", "div style overflow hidden");
         t.ok( box.events != null, "events object created");
         t.eq( g_Color, borderColor, "setBorder called with correct border color");        

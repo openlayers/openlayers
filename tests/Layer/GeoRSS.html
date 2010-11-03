@@ -172,7 +172,7 @@
         });
     }
     function test_Layer_GeoRSS_loadend_Event(t) {
-        var browserCode = OpenLayers.Util.getBrowserName();
+        var browserCode = OpenLayers.BROWSER_NAME;
         if (browserCode == "msie") {
             t.plan(1);
             t.ok(true, "IE fails the GeoRSS test. This could probably be fixed by someone with enough energy to fix it.");

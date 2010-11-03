@@ -43,7 +43,7 @@
 
     function test_Control_PanZoom_control_events (t) {
 
-        if ( !window.document.createEvent || OpenLayers.Util.getBrowserName() == "opera" || !t.open_window) {
+        if ( !window.document.createEvent || OpenLayers.BROWSER_NAME == "opera" || !t.open_window) {
             //ie can't simulate mouseclicks
             t.plan(0);
             t.debug_print("FIXME: This browser does not support the PanZoom test at this time.");

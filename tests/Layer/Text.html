@@ -132,7 +132,7 @@
           layer.markers[1].events.triggerEvent('click', event);
           t.eq(map.popups.length, 1, "1st popup gone, 2nd Popup opened correctly");
           //Safari 3 separates style overflow into overflow-x and overflow-y
-          var prop = (OpenLayers.Util.getBrowserName() == 'safari') ? 'overflowX' : 'overflow';
+          var prop = (OpenLayers.BROWSER_NAME == 'safari') ? 'overflowX' : 'overflow';
           t.eq(map.popups[0].contentDiv.style[prop],"auto", "default Popup overflow correct");
         });
     }
@@ -151,12 +151,12 @@
           layer.markers[0].events.triggerEvent('click', event);
           t.eq(map.popups.length, 1, "Popup opened correctly");
           //Safari 3 separates style overflow into overflow-x and overflow-y
-          var prop = (OpenLayers.Util.getBrowserName() == 'safari') ? 'overflowX' : 'overflow';
+          var prop = (OpenLayers.BROWSER_NAME == 'safari') ? 'overflowX' : 'overflow';
           t.eq(map.popups[0].contentDiv.style[prop],"auto", "Popup overflow read from file");
           layer.markers[1].events.triggerEvent('click', event);
           t.eq(map.popups.length, 1, "1st popup gone, 2nd Popup opened correctly");
           //Safari 3 separates style overflow into overflow-x and overflow-y
-          var prop = (OpenLayers.Util.getBrowserName() == 'safari') ? 'overflowX' : 'overflow';
+          var prop = (OpenLayers.BROWSER_NAME == 'safari') ? 'overflowX' : 'overflow';
           t.eq(map.popups[0].contentDiv.style[prop],"hidden", "Popup overflow read from file");
         });
     }

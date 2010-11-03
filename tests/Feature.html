@@ -43,7 +43,7 @@
         feature = new OpenLayers.Feature(layer, lonlat, data);
         popup = feature.createPopup(); 
         //Safari 3 separates style overflow into overflow-x and overflow-y
-        var prop = (OpenLayers.Util.getBrowserName() == 'safari') ? 'overflowX' : 'overflow';
+        var prop = (OpenLayers.BROWSER_NAME == 'safari') ? 'overflowX' : 'overflow';
         t.eq(popup.contentDiv.style[prop], "auto", 'overflow on popup is correct');
     }    
     function test_Feature_createMarker (t) {

@@ -25,7 +25,7 @@
 
         layer.destroy();
 
-        var options = { unsupportedBrowsers: [OpenLayers.Util.getBrowserName()]};
+        var options = { unsupportedBrowsers: [OpenLayers.BROWSER_NAME]};
         layer = new OpenLayers.Layer.WMS.Post(name, url, params, options);
         t.eq(
             layer.usePost, false,
@@ -57,7 +57,7 @@
 
         // test the unsupported browser
         layer = new OpenLayers.Layer.WMS.Post(name, url, params, {
-            unsupportedBrowsers: [OpenLayers.Util.getBrowserName()]
+            unsupportedBrowsers: [OpenLayers.BROWSER_NAME]
         });
         map   = new OpenLayers.Map('map');
         map.addLayer(layer);

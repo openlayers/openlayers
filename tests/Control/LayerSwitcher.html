@@ -71,7 +71,7 @@
 
     function test_Control_LayerSwitcher_redraw (t) {
 
-        t.plan( (OpenLayers.Util.getBrowserName() == "opera" ? 9 : 19 ) );
+        t.plan( (OpenLayers.BROWSER_NAME == "opera" ? 9 : 19 ) );
 
         map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS("WMS", 
@@ -98,7 +98,7 @@
         t.eq(markersInput.value, markers.name, "wms correctly valued");
 
         t.eq(false, control.checkRedraw(), "check redraw is false");
-        if (OpenLayers.Util.getBrowserName() != "opera") { 
+        if (OpenLayers.BROWSER_NAME != "opera") { 
             control = new OpenLayers.Control.LayerSwitcher();
             var myredraw = control.redraw;
             control.redraw = function() { 

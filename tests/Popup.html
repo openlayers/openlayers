@@ -155,7 +155,7 @@
         t.eq(contentDiv.id, "chicken_contentDiv", "correct content div id");
         t.eq(contentDiv.style.position, "relative", "correct content div position");
         //Safari 3 separates style overflow into overflow-x and overflow-y
-        var prop = (OpenLayers.Util.getBrowserName() == 'safari') ? 'overflowX' : 'overflow';
+        var prop = (OpenLayers.BROWSER_NAME == 'safari') ? 'overflowX' : 'overflow';
         t.eq(contentDiv.style[prop], "", "correct content div overflow");
         t.eq(contentDiv.innerHTML, content, "correct content div content");
 
@@ -169,7 +169,7 @@
             t.eq(popup.div.style.filter, "alpha(opacity=" + opacity*100 + ")", "good default popup.opacity");
         }
         //Safari 3 separates the border style into separate entities when reading it
-        if (OpenLayers.Util.getBrowserName() == 'safari') {
+        if (OpenLayers.BROWSER_NAME == 'safari') {
           var s = border.split(' ');
           t.ok(popup.div.style.borderTopWidth == s[0] && popup.div.style.borderTopStyle == s[1], "good default popup.border")
         } else {
