@@ -69,7 +69,7 @@
          
         t.eq(strToFixed(point.toString()), 
              strToFixed("POINT(10.000000828446318 20.000000618997227)"), 
-             "point transforms from EPSG:4326 to Spherical Mercator"); 
+             "point transforms from Spherical Mercator to EPSG:4326"); 
     }
     
     function test_SphericalMercator_addTransform(t) {
@@ -86,6 +86,48 @@
              "from EPSG:4326 to EPSG:900913 correctly defined");
         t.ok(smerc["EPSG:4326"] === OpenLayers.Layer.SphericalMercator.projectInverse,
              "from EPSG:900913 to EPSG:4326 correctly defined");
+    }
+    
+    function test_equivalence(t) {
+
+        // list of equivalent codes for web mercator
+        var codes = ["EPSG:900913", "EPSG:3857", "EPSG:102113", "EPSG:102100"];
+        var len = codes.length;
+        
+        t.plan(len + (len * len));
+
+        var ggPoint = new OpenLayers.Geometry.Point(10, 20);
+        var smPoint = new OpenLayers.Geometry.Point(1113195, 2273031);
+        
+        var gg = new OpenLayers.Projection("EPSG:4326");
+        
+        var i, proj, forward, inverse, other, j, equiv;
+        for (i=0, len=codes.length; i<len; ++i) {
+            proj = new OpenLayers.Projection(codes[i]);
+            
+            // confirm that forward/inverse work
+            forward = ggPoint.clone().transform(gg, proj);
+            t.eq(
+                strToFixed(forward.toString()), 
+                strToFixed("POINT(1113194.9077777779 2273030.9266712805)"), 
+                "transforms from EPSG:4326 to " + proj
+            );
+            inverse = smPoint.clone().transform(proj, gg);
+            t.eq(
+                strToFixed(inverse.toString()), 
+                strToFixed("POINT(10.000000828446318 20.000000618997227)"), 
+                "transforms from " + proj + " to EPSG:4326"
+            ); 
+            
+            // confirm that null transform works
+            for (j=i+1; j<len; ++j) {
+                other = new OpenLayers.Projection(codes[j]);
+                equiv = ggPoint.clone().transform(proj, other);
+                t.ok(proj.equals(other),  proj + " and " + other + " are equivalent");
+                t.ok(ggPoint.equals(equiv), "transform from " + proj + " to " + other + " preserves geometry");                
+            }
+        }
+
     }
     
   </script> 
