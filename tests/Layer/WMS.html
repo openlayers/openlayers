@@ -230,15 +230,15 @@
     function test_Layer_WMS_getFullRequestString (t) {
 
 
-        t.plan( 2 );
+        t.plan( 3 );
         var map = new OpenLayers.Map('map');
         map.projection = "xx";
-        tUrl = "http://octo.metacarta.com/cgi-bin/mapserv";
-        tParams = { layers: 'basic',
+        var tUrl = "http://octo.metacarta.com/cgi-bin/mapserv";
+        var tParams = { layers: 'basic',
                    format: 'image/png'};
         var tLayer = new OpenLayers.Layer.WMS(name, tUrl, tParams);
         map.addLayer(tLayer);
-        str = tLayer.getFullRequestString();
+        var str = tLayer.getFullRequestString();
         var tParams = {
             LAYERS: "basic", FORMAT: "image/png", SERVICE: "WMS",
             VERSION: "1.1.1", REQUEST: "GetMap", STYLES: "",
@@ -256,6 +256,20 @@
         t.eq(str,
              tUrl + "?" + OpenLayers.Util.getParameterString(tParams),
              "getFullRequestString() by default does *not* add SRS value if projection is 'none'");
+        map.destroy();
+        
+        map = new OpenLayers.Map("map", {projection: "EPSG:4326"});
+        var layerProj = new OpenLayers.Projection("FOO", {
+            equals: function() {return true},
+            getCode: function() {return "FOO"}
+        });
+        tLayer = new OpenLayers.Layer.WMS(name, tUrl, tParams, {projection: layerProj});
+        map.addLayer(tLayer);
+        str = tLayer.getFullRequestString();
+        tParams.SRS = "FOO";
+        t.eq(str,
+             tUrl + "?" + OpenLayers.Util.getParameterString(tParams),
+             "getFullRequestString() uses the layer projection if it equals the map projection");
         map.destroy();
 
     }
