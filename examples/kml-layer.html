@@ -1,45 +1,33 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-    <link rel="stylesheet" href="style.css" type="text/css" />
-    <script src="../lib/OpenLayers.js"></script>
-    <script type="text/javascript">
-        var lon = 5;
-        var lat = 40;
-        var zoom = 5;
-        var map, layer;
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+    </head>
+    <body>
+    <h1 id="title">KML Layer Example</h1>
 
-        function init(){
-            map = new OpenLayers.Map('map');
-            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
-                    "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
-            map.addLayer(layer);
-            map.addLayer(new OpenLayers.Layer.GML("KML", "kml/lines.kml", 
-               {
-                format: OpenLayers.Format.KML, 
-                formatOptions: {
-                  extractStyles: true, 
-                  extractAttributes: true,
-                  maxDepth: 2
-                }
-               }));
-            map.zoomToExtent(new OpenLayers.Bounds(-112.306698,36.017792,-112.03204,36.18087));
-        }
-    </script>
-  </head>
-  <body onload="init()">
-      <h1 id="title">KML Layer Example</h1>
+    <div id="tags">KML</div>
 
-      <div id="tags">
-        KML
-      </div>
-
-      <p id="shortdesc">
-          Demonstrates loading and displaying a KML file on top of a basemap.
+    <p id="shortdesc">
+        Demonstrates loading and displaying a KML file on top of a basemap.
     </p>
 
     <div id="map" class="smallmap"></div>
 
-    <div id="docs"></div>
-  </body>
+    <div id="docs">
+        <p>
+            A vector layer can be populated with features from a KML document
+            by configuring the layer with an HTTP protocol that points to the 
+            KML document and is configured with a KML format for parsing features.
+            The fixed strategy is used to load all features at once.
+        </p>
+        <p>
+            View the <a href="kml-layer.js" target="_blank">kml-layer.js</a>
+            source to see how this is done.
+        </p>
+    </div>
+    <script src="../lib/OpenLayers.js"></script>
+    <script src="kml-layer.js"></script>
+    </body>
 </html>
