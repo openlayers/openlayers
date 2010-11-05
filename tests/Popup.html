@@ -88,8 +88,8 @@
     }
     function test_Popup_keepInMap(t) {
         
-        var gb = OpenLayers.Util.getBrowserName;
-        OpenLayers.Util.getBrowserName = function() { return "mock"; }
+        var bn = OpenLayers.BROWSER_NAME;
+        OpenLayers.BROWSER_NAME = "mock";
         t.plan(3);
         var map = new OpenLayers.Map("map");
         map.addLayer(new OpenLayers.Layer("", {isBaseLayer: true}));
@@ -120,7 +120,7 @@
         t.ok(safeSizePan.equals(safeSizePanKeep), "Panning means that all sizes are equal");
         t.ok(safeSize.w < safeSizePan.w, "Width of non-panning is less");    
         t.ok(safeSize.h < safeSizePan.h, "Height of non-panning is less");    
-        OpenLayers.Util.getBrowserName = gb; 
+        OpenLayers.BROWSER_NAME = bn;
     }    
     function test_Popup_draw(t) {
         t.plan( 15 );
