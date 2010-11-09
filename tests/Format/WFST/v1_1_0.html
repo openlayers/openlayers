@@ -40,6 +40,7 @@
             featureNS: "http://www.openplans.org/topp",
             featureType: "states",
             featurePrefix: "topp",
+            srsName: "urn:ogc:def:crs:EPSG::4326",
             geometryName: "the_geom"
         });
 
@@ -109,11 +110,11 @@
 </wfs:TransactionResponse>
 --></div>
 <div id="query0"><!--
-<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
+<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" xmlns:topp="http://www.openplans.org/topp">
     <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
         <ogc:BBOX>
             <ogc:PropertyName>the_geom</ogc:PropertyName>
-            <gml:Envelope xmlns:gml="http://www.opengis.net/gml">
+            <gml:Envelope xmlns:gml="http://www.opengis.net/gml" srsName="urn:ogc:def:crs:EPSG::4326">
                 <gml:lowerCorner>1 2</gml:lowerCorner>
                 <gml:upperCorner>3 4</gml:upperCorner>
             </gml:Envelope>
@@ -127,7 +128,7 @@
                 xmlns:ogc="http://www.opengis.net/ogc"
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
-    <wfs:Query xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
+    <wfs:Query xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" xmlns:topp="http://www.openplans.org/topp">
         <wfs:PropertyName>STATE_NAME</wfs:PropertyName>
         <wfs:PropertyName>STATE_FIPS</wfs:PropertyName>
         <wfs:PropertyName>STATE_ABBR</wfs:PropertyName>
