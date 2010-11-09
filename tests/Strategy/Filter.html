@@ -21,7 +21,7 @@ var filter = new OpenLayers.Filter.Comparison({
 
 function test_initialize(t) {
     
-    t.plan(3);
+    t.plan(4);
     
     var strategy = new OpenLayers.Strategy.Filter({filter: filter});
 
@@ -31,6 +31,14 @@ function test_initialize(t) {
     t.ok(strategy.filter === filter, "has filter");
     
     strategy.destroy();
+    
+    try {
+        strategy = new OpenLayers.Strategy.Filter();
+        t.ok(true, "strategy without filter works");
+    } catch (err) {
+        t.fail("strategy without filter should not throw");
+    }
+    
 
 }
 
