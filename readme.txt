@@ -31,7 +31,7 @@ To include the OpenLayers library in your web page from the root of the site, us
 
 As an example, using bash (with the release files in ~/openlayers ):
 $ cd /var/www/html
-$ cp ~/openlayers/build/OpenLayers.js ./
+$ cp ~/openlayers/OpenLayers.js ./
 $ cp -R ~/openlayers/theme ./
 $ cp -R ~/openlayers/img ./
 
