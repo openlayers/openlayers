@@ -31,7 +31,7 @@
     }
 
     function test_select(t) {
-        t.plan(8);
+        t.plan(9);
         var parser = new OpenLayers.Format.WFSDescribeFeatureType();
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS('Foo', 'http://foo', {LAYERS: 'AAA64'});
@@ -80,7 +80,8 @@
         control.select(geometry);
         control.events.unregister("selected", this, testEvent);
         t.eq(map.layers.length, 2, "Selection layer has been created and added to the map");
-        t.eq(map.layers[1] instanceof OpenLayers.Layer.WMS.Post, true, "A WMS Post layer has been created as the selection layer");
+        t.eq(map.layers[1] instanceof OpenLayers.Layer.WMS, true, "A WMS layer has been created as the selection layer");
+        t.eq(map.layers[1].tileOptions.maxGetUrlLength, 2048, "Selection layer will automatically switch to HTTP Post if content gets longer than 2048");
         var expected_sld = '<sld:StyledLayerDescriptor xmlns:sld="http://www.opengis.net/sld" version="1.0.0" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml"><sld:NamedLayer><sld:Name>AAA64</sld:Name><sld:UserStyle><sld:Name>default</sld:Name><sld:FeatureTypeStyle><sld:Rule><ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"><ogc:BBOX><ogc:PropertyName>geometry</ogc:PropertyName><gml:Box xmlns:gml="http://www.opengis.net/gml"><gml:coordinates decimal="." cs="," ts=" ">-3.5355339059327,-3.5355339059327 3.5355339059327,3.5355339059327</gml:coordinates></gml:Box></ogc:BBOX></ogc:Filter><sld:LineSymbolizer><sld:Stroke><sld:CssParameter name="stroke">#FF0000</sld:CssParameter><sld:CssParameter name="stroke-width">2</sld:CssParameter></sld:Stroke></sld:LineSymbolizer></sld:Rule></sld:FeatureTypeStyle></sld:UserStyle></sld:NamedLayer></sld:StyledLayerDescriptor>';
 
         t.xml_eq(map.layers[1].params.SLD_BODY, expected_sld, "SLD generated correctly");
