@@ -133,7 +133,7 @@
                         responseMode: 'inline',
                         procedure: feature.attributes.id,
                         offering: name,
-                        observedProperty: offering.observedProperties[0],
+                        observedProperties: offering.observedProperties,
                         responseFormat: this.responseFormat
                     });
                     OpenLayers.Request.POST({
