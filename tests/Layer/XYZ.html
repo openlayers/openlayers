@@ -148,6 +148,31 @@
         map.destroy();
     }
 
+    function test_Layer_XYZ_serverResolutions(t) {
+        t.plan(2);
+
+        var map = new OpenLayers.Map('map', {
+            resolutions: [13,11]
+        });
+
+        var layer = new OpenLayers.Layer.XYZ(name, url, options);
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0), 1);
+
+        var tileurl = layer.getURL(new OpenLayers.Bounds(0,0,0,0));
+        var level = parseInt(tileurl.split('/')[7]);
+        t.eq(map.getZoom(), level, "Tile zoom level is correct without serverResolutions");
+
+        layer.serverResolutions = [14,13,12,11,10];
+        tileurl = layer.getURL(new OpenLayers.Bounds(0,0,0,0));
+        level = parseInt(tileurl.split('/')[7]);
+        var res = map.getResolution();
+        var gotLevel = OpenLayers.Util.indexOf(layer.serverResolutions, res);
+        t.eq(gotLevel, level, "Tile zoom level is correct with serverResolutions");
+
+        map.destroy();
+    }
+
     function test_zoomOffset(t) {
 
         t.plan(2);
