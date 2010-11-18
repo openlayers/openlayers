@@ -372,19 +372,41 @@
     }
 
     function test_abort(t) {
+
         t.plan(0);
-        var fail = false;
-        OpenLayers.Request.XMLHttpRequest.onsend = function(args) {
-            fail = true;
-        }
+
+        var sendCalled;
+
+        // set up
+
+        var _open = OpenLayers.Request.XMLHttpRequest.prototype.open;
+        OpenLayers.Request.XMLHttpRequest.prototype.open = function() {
+            this.readyState = OpenLayers.Request.XMLHttpRequest.OPENED;
+        };
+
+        var _setRequestHeader = OpenLayers.Request.XMLHttpRequest.prototype.setRequestHeader;
+        OpenLayers.Request.XMLHttpRequest.prototype.setRequestHeader = function() {};
+
+        var _send = OpenLayers.Request.XMLHttpRequest.prototype.send;
+        OpenLayers.Request.XMLHttpRequest.prototype.send = function() {
+            sendCalled = true;
+        };
+
+        // test
+
+        sendCalled = false;
+        OpenLayers.Request.issue().abort();
+
         t.delay_call(0.5, function() {
-            if (fail === true) {
+            if (sendCalled) {
                 t.fail("Send should not be called because request is aborted");
             }
-            OpenLayers.Request.XMLHttpRequest.onsend = null;
+
+            // tear down
+            OpenLayers.Request.XMLHttpRequest.prototype.open = _open;
+            OpenLayers.Request.XMLHttpRequest.prototype.setRequestHeader = _setRequestHeader;
+            OpenLayers.Request.XMLHttpRequest.prototype.send = _send;
         });
-        var protocol = new OpenLayers.Protocol.HTTP();
-        protocol.abort(protocol.read());
     }
 
     </script>
