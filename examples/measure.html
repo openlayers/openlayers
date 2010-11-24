@@ -132,6 +132,13 @@
                 control.geodesic = element.checked;
             }
         }
+        
+        function toggleImmediate(element) {
+            for(key in measureControls) {
+                var control = measureControls[key];
+                control.setImmediate(element.checked);
+            }
+        }
     </script>
   </head>
   <body onload="init()">
@@ -164,13 +171,19 @@
                 <input type="checkbox" name="geodesic" id="geodesicToggle" onclick="toggleGeodesic(this);" />
                 <label for="geodesicToggle">use geodesic measures</label>
             </li>
+            <li>
+                <input type="checkbox" name="immediate" id="immediateToggle" onclick="toggleImmediate(this);" />
+                <label for="immediateToggle">use immediate measures</label>
+            </li>
         </ul>
         <p>Note that the geometries drawn are planar geometries and the
         metrics returned by the measure control are planar measures by
         default.  If your map is in a geographic projection or you have the
         appropriate projection definitions to transform your geometries into
         geographic coordinates, you can set the "geodesic" property of the control
-        to true to calculate geodesic measures instead of planar measures.</p>
+        to true to calculate geodesic measures instead of planar measures.
+        Also you have the possibility to set the "immediate" property to true
+        to get a new calculated value once the mouse has been mooved.</p>
     </div>
   </body>
 </html>
