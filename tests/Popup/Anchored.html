@@ -11,7 +11,7 @@
         popup = new OpenLayers.Popup.Anchored();
 
         t.ok( popup instanceof OpenLayers.Popup.Anchored, "new OpenLayers.Popup.Anchored returns Popup.Anchored object" );
-        t.ok(popup.id.startsWith("OpenLayers.Popup.Anchored"), "valid default popupid");
+        t.ok(OpenLayers.String.startsWith(popup.id, "OpenLayers.Popup.Anchored"), "valid default popupid");
         var firstID = popup.id;
         t.eq(popup.contentHTML, null, "good default popup.contentHTML");
 
