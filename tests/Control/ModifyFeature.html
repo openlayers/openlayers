@@ -473,9 +473,13 @@
     }
 
     function test_onModificationStart(t) {
-        t.plan(1);
+        t.plan(5);
         var map = new OpenLayers.Map("map");
-        var layer = new OpenLayers.Layer.Vector();
+        var layer = new OpenLayers.Layer.Vector(null, {
+            styleMap: new OpenLayers.StyleMap({
+                "vertex": new OpenLayers.Style({foo: "bar"})
+            }, {extendDefault: false})
+        });
         map.addLayer(layer);
         var control = new OpenLayers.Control.ModifyFeature(layer);
         map.addControl(control);
@@ -483,13 +487,37 @@
         
         // make sure onModificationStart is called on feature selection
         var testFeature = new OpenLayers.Feature.Vector(
-            new OpenLayers.Geometry.Point(Math.random(), Math.random())
+            OpenLayers.Geometry.fromWKT("LINESTRING(3 4,10 50,20 25)")
         );
+        layer.addFeatures([testFeature]);
         control.onModificationStart = function(feature) {
             t.eq(feature.id, testFeature.id,
                  "onModificationStart called with the right feature");
         };
         control.selectFeature(testFeature);
+        
+        // make sure styles are set correctly from default style
+        t.eq(control.virtualStyle, OpenLayers.Util.applyDefaults({
+            strokeOpacity: 0.3,
+            fillOpacity: 0.3
+        }, OpenLayers.Feature.Vector.style["default"]), "virtual style set correctly");
+        var vertex = layer.features[layer.features.length-1];
+        t.eq(vertex.renderIntent, null, "vertex style set correctly - uses default style");
+        control.unselectFeature(testFeature);
+        
+        // make sure styles are set correctly with vertexRenderIntent
+        control = new OpenLayers.Control.ModifyFeature(layer, {vertexRenderIntent: "vertex"});
+        map.addControl(control);
+        control.activate();
+        control.selectFeature(testFeature);
+        t.eq(control.virtualStyle, {
+            strokeOpacity: 0.3,
+            fillOpacity: 0.3,
+            foo: "bar"
+        }, "virtual style set correctly");
+        var vertex = layer.features[layer.features.length-1];
+        t.eq(vertex.renderIntent, "vertex", "vertex style set correctly - uses 'vertex' renderIntent");
+        control.unselectFeature(testFeature);
         
         map.destroy();
     }
