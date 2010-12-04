@@ -25,14 +25,15 @@
     }
 
     function test_read(t) {
-        t.plan(6);
+        t.plan(7);
 
         var protocol = new OpenLayers.Protocol.WFS({
             url: "http://some.url.org",
             featureNS: "http://namespace.org",
             featureType: "type",
-            parseResponse: function(request) {
+            parseResponse: function(request, options) {
                 t.eq(request.responseText, "foo", "parseResponse called properly");
+                t.eq(options, {foo: "bar"}, "parseResponse receives readOptions");
                 return "foo";
             }
         });
@@ -44,14 +45,13 @@
             t.xml_eq(new OpenLayers.Format.XML().read(obj.data).documentElement, expected, "GetFeature request is correct");
             obj.status = status;
             obj.responseText = "foo";
-            obj.options = {};
             t.delay_call(0.1, function() {obj.callback.call(this)});
             return obj;
         };
 
         expected = readXML("GetFeature_1");
         status = 200;
-        var response = protocol.read({callback: function(response) {
+        var response = protocol.read({readOptions: {foo: "bar"}, callback: function(response) {
             t.eq(response.features, "foo", "user callback properly called with features");
             t.eq(response.code, OpenLayers.Protocol.Response.SUCCESS, "success reported properly");
         }});
@@ -95,7 +95,6 @@
         OpenLayers.Request.POST = function(obj) {
             t.xml_eq(new OpenLayers.Format.XML().read(obj.data).documentElement, expected, "Transaction XML with Insert, Update and Delete created correctly");
             obj.responseText = "foo";
-            obj.options = {};
             t.delay_call(0.1, function() {obj.callback.call(this)});
             return obj;
         };
@@ -248,7 +247,6 @@
         OpenLayers.Request.POST = function(obj) {
             obj.status = 200;
             obj.responseText = "foo";
-            obj.options = {};
             t.delay_call(0.1, function() {obj.callback.call(this)});
             return obj;
         };
