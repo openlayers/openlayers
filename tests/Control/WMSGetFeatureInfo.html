@@ -451,6 +451,37 @@
         t.eq(count, 2, "We expect 2 requests to go off");
         map.destroy();
     }
+    
+    function test_GetFeatureInfo_buildWMSOptions(t) {
+        t.plan(3);
+        
+        var map = new OpenLayers.Map("map", {
+            getExtent: function() {return(new OpenLayers.Bounds(-180,-90,180,90));},
+            projection: "EPSG:900913"
+        });
+        var a = new OpenLayers.Layer.WMS("dummy", "http://localhost/wms", {
+            layers: "a"
+        }, {projection: "EPSG:3857"});
+        var b = new OpenLayers.Layer.WMS("dummy", "http://localhost/wms", {
+            layers: "b"
+        });
+        var c = new OpenLayers.Layer.WMS("dummy", "http://localhost/wms", {
+            layers: "c"
+        }, {projection: "EPSG:4326"});
+        map.addLayers([a, b, c]);
+        var gfi = new OpenLayers.Control.WMSGetFeatureInfo();
+        map.addControl(gfi);
+        gfi.activate();
+
+        var options = gfi.buildWMSOptions("http://localhost/wms", [a], {xy: {x: 50, y: 50}}, "text/html");
+        t.eq(options.params.SRS, "EPSG:3857", "layer projection used if provided and equal map projection");
+
+        options = gfi.buildWMSOptions("http://localhost/wms", [b], {xy: {x: 50, y: 50}}, "text/html");
+        t.eq(options.params.SRS, "EPSG:900913", "map projection used if layer has no projection configured");
+
+        options = gfi.buildWMSOptions("http://localhost/wms", [b], {xy: {x: 50, y: 50}}, "text/html");
+        t.eq(options.params.SRS, "EPSG:900913", "map projection used if layer configured with an incompatible projection");
+    }
 
     function test_GetFeatureInfo_WMS13(t) {
         t.plan(4);
