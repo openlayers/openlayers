@@ -228,6 +228,30 @@
         t.eq(features.length, 1, "the right format is used to read the request (GeoJSON)");
  	}
 
+    function test_outputFormat(t) {
+        t.plan(2);
+
+        var protocol = new OpenLayers.Protocol.WFS({
+            version: "1.1.0",
+            url: "http://some.url.org",
+            featureNS: "http://namespace.org",
+            featureType: "type",
+            outputFormat: 'json'
+        });
+
+        t.ok(protocol.readFormat instanceof OpenLayers.Format.GeoJSON, "the correct readFormat is used for outputFormat JSON");
+
+        protocol = new OpenLayers.Protocol.WFS({
+            version: "1.1.0",
+            url: "http://some.url.org",
+            featureNS: "http://namespace.org",
+            featureType: "type",
+            outputFormat: 'GML2'
+        });
+
+        t.ok(protocol.readFormat instanceof OpenLayers.Format.GML.v2, "the correct readFormat is used for outputFormat GML2");
+ 	}
+
     function test_readOptions(t) {
         t.plan(1);
 
