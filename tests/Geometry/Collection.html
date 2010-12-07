@@ -392,6 +392,23 @@
         coll.destroy();
     }
 
+    function test_avoid_infinite_recursion(t) {
+        t.plan(1);
+
+        var g = new OpenLayers.Geometry.Polygon([
+            new OpenLayers.Geometry.LinearRing(),
+            new OpenLayers.Geometry.LinearRing()
+        ]);
+        var bounds;
+        try {
+            bounds = g.getBounds();
+            t.eq(bounds, null, "Polygon with empty linear ring has null bounds");
+        } catch (err) {
+            t.fail("Failed to get bounds of polygon with empty linear ring: " + err.message);
+        }
+
+    }
+
     
     function test_Collection_destroy(t) {
         t.plan( 3 );
