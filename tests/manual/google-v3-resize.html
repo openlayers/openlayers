@@ -1,0 +1,54 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Google v3 Resize Test</title>
+    <link rel="stylesheet" href="../../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="../../examples/style.css" type="text/css" />
+    <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <script src="../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map;
+
+        function init() {
+            var mapOptions = {
+                projection: "EPSG:900913",
+                displayProjection: new OpenLayers.Projection("EPSG:4326"), //Pour afficher les coord lat long
+                units: "m",
+                maxResolution: 156543.0339,
+                maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34),
+                controls: [new OpenLayers.Control.Navigation(), new OpenLayers.Control.LayerSwitcher()],
+                numZoomLevels: 20
+            };
+            map = new OpenLayers.Map('map', mapOptions);
+
+            var dummy = new OpenLayers.Layer(
+                "Dummy",
+                {isBaseLayer: true}
+            );
+            var gmap = new OpenLayers.Layer.Google(
+                "Google Streets", {sphericalMercator: true}
+            );
+
+            map.addLayers([dummy, gmap]);
+
+            map.setCenter(new OpenLayers.LonLat(-7712190.388467473, 6567469.498697457), 6);
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Google Layer Resize Issue</h1>
+
+    <div id="tags"></div>
+
+    <p id="shortdesc">
+        <ol>
+            <li>Click
+                <button onclick="var m = document.getElementById('map').style; m.height = '400px'; m.width = '800px';map.updateSize(); return false;">Resize</button></li>
+            <li>Open the LayerSwitcher and switch to Google Streets</li>
+            <li>Confirm that the whole map area is populated with tiles</li>
+        </ol>
+    </p>
+
+    <div id="map" style="width: 350px; height: 200px"></div>
+
+  </body>
+</html>
