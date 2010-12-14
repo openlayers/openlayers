@@ -194,6 +194,83 @@
         t.ok(layer.getFeatureBy('fid', 'some_fid_that_does_not_exist') == null,
              "OpenLayers.Layer.Vector.getFeatureBy('fid', ...) works like getFeatureByFid on non-existing feature fid");
     }
+    
+    function test_Layer_Vector_getFeaturesByAttribute(t) {
+        t.plan( 9 );
+        // setup layer
+        var layer = new OpenLayers.Layer.Vector(name);
+        
+        // feature_1
+        var geometry_1 = new OpenLayers.Geometry.Point(-28.63, 153.64);
+        var attributes_1 = {
+            humpty: 'dumpty',
+            clazz: 1
+        };
+        var feature_1 = new OpenLayers.Feature.Vector(geometry_1, attributes_1);
+        feature_1.fid = 'f_01'; // to identify later
+        
+        // feature_2
+        var geometry_2 = new OpenLayers.Geometry.Point(-27.48, 153.05);
+        var attributes_2 = {
+            // this feature has attribute humpty === undefined
+            clazz: '1'
+        };
+        var feature_2 = new OpenLayers.Feature.Vector(geometry_2, attributes_2);
+        feature_2.fid = 'f_02'; // to identify later
+        
+        // feature_3
+        var geometry_3 = new OpenLayers.Geometry.Point(-33.74, 150.3);
+        var attributes_3 = {
+            humpty: 'foobar',
+            clazz: 1
+        };
+        var feature_3 = new OpenLayers.Feature.Vector(geometry_3, attributes_3);
+        feature_3.fid = 'f_03'; // to identify later
+        
+        // Tests
+        
+        // don't find anything... no features added
+        // 1 test
+        t.ok(layer.getFeaturesByAttribute('humpty', 'dumpty').length === 0,
+             "OpenLayers.Layer.Vector.getFeaturesByAttribute returns an empty array while the layer is empty");
+        
+        layer.addFeatures([feature_1, feature_2, feature_3]);
+        
+        // simple use case: find 1 feature with an attribute and matching value
+        // 2 tests
+        var dumptyResults = layer.getFeaturesByAttribute('humpty', 'dumpty');
+        t.ok(dumptyResults.length === 1,
+             "OpenLayers.Layer.Vector.getFeaturesByAttribute returns an array with one feature for attribute 'humpty' with value 'dumpty'");
+        t.ok(dumptyResults[0].fid === 'f_01',
+             "OpenLayers.Layer.Vector.getFeaturesByAttribute returns the correct feature with attribute 'humpty' set to 'dumpty'");
+        
+        // simple use case: find 1 feature with an attribute and matching value
+        //                  and respect data types
+        // 2 tests
+        var strOneResults = layer.getFeaturesByAttribute('clazz', '1');
+        t.ok(strOneResults.length === 1,
+             "OpenLayers.Layer.Vector.getFeaturesByAttribute returns an array with one feature for attribute 'clazz' with value '1' (a string)");
+        t.ok(strOneResults[0].fid === 'f_02',
+             "OpenLayers.Layer.Vector.getFeaturesByAttribute returns the correct feature with attribute 'clazz' set to the string '1'");
+        
+        // simple use case: find 2 features with an attribute and matching value
+        //                  and respect data types
+        // 2 tests    
+        var numOneResults = layer.getFeaturesByAttribute('clazz', 1);
+        t.ok(numOneResults.length === 2,
+             "OpenLayers.Layer.Vector.getFeaturesByAttribute returns an array with two features for attribute 'clazz' with value 1 (a number)");
+        var bothFound = !!((numOneResults[0].fid === 'f_01' && numOneResults[1].fid === 'f_03') || (numOneResults[0].fid === 'f_03' && numOneResults[1].fid === 'f_01')); 
+        t.ok(bothFound,
+             "OpenLayers.Layer.Vector.getFeaturesByAttribute returns the correct features with attribute 'clazz' set to the number 1");
+        
+        // advanced use case: find the 1 feature, that has an attribute not set
+        var undefined;
+        var humptyNotSet = layer.getFeaturesByAttribute('humpty', undefined);
+        t.ok(humptyNotSet.length === 1,
+             "OpenLayers.Layer.Vector.getFeaturesByAttribute can be used to find features that have certain attributes not set");
+        t.ok(humptyNotSet[0].fid === 'f_02',
+             "OpenLayers.Layer.Vector.getFeaturesByAttribute found the correct featuren that has a certain attribute not set");
+    }
 
     function test_Layer_Vector_getDataExtent(t) {
         t.plan(1);
