@@ -188,7 +188,7 @@
     }
 
     function test_Format_WKT_read(t) { 
-        t.plan(6); 
+        t.plan(12); 
 
         var format = new OpenLayers.Format.WKT(); 
          
@@ -220,7 +220,16 @@
         // test a multipolygon 
         t.ok(multipolygon.geometry.equals(format.read(format.write(multipolygon)).geometry), 
              "format correctly reads MultiPolygon WKT"); 
-         
+             
+        // test a collection
+        var wkt = format.write(collection);
+        var got = format.read(wkt);
+        t.ok(got instanceof Array, "by default, reading a collection returns an array");
+        t.eq(got.length, 2, "read two items");
+        t.ok(got[0] instanceof OpenLayers.Feature.Vector, "first item is a feature");
+        t.geom_eq(got[0].geometry, points[0].geometry, "first feature's geometry is the correct point");
+        t.ok(got[1] instanceof OpenLayers.Feature.Vector, "second item is a feature");
+        t.geom_eq(got[1].geometry, linestrings[0].geometry, "second feature's geometry is the correct linestring");
  
     }
 
