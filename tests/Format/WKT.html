@@ -80,8 +80,15 @@
             polygons[1].geometry 
         ])
     ); 
+
+    var collection = new OpenLayers.Feature.Vector(
+        new OpenLayers.Geometry.Collection([ 
+            points[0].geometry,
+            linestrings[0].geometry
+        ])
+    ); 
      
-    var collection = [points[0], linestrings[0]]; 
+    var geom_array = [points[0], linestrings[0]]; 
      
     function test_Format_WKT_constructor(t) { 
         t.plan(4); 
@@ -96,7 +103,7 @@
     }
 
     function test_Format_WKT_write(t) { 
-        t.plan(7); 
+        t.plan(8); 
 
         var format = new OpenLayers.Format.WKT(); 
 
@@ -161,19 +168,27 @@
                                  points[11].geometry.x + " " + points[11].geometry.y + "," + 
                                  points[9].geometry.x + " " + points[9].geometry.y + ")))", 
              "format correctly writes MultiPolygon WKT"); 
-         
-        // test a geometrycollection 
+
+        // test geometrycollection
         t.eq(format.write(collection), 
              "GEOMETRYCOLLECTION(POINT(" + points[0].geometry.x + " " + points[0].geometry.y + ")," + 
                                 "LINESTRING(" + points[0].geometry.x + " " + points[0].geometry.y + "," + 
                                                 points[1].geometry.x + " " + points[1].geometry.y + "," + 
                                                 points[2].geometry.x + " " + points[2].geometry.y + "))", 
              "format correctly writes GeometryCollection WKT"); 
+         
+        // test writing an array of geometries 
+        t.eq(format.write(geom_array), 
+             "GEOMETRYCOLLECTION(POINT(" + points[0].geometry.x + " " + points[0].geometry.y + ")," + 
+                                "LINESTRING(" + points[0].geometry.x + " " + points[0].geometry.y + "," + 
+                                                points[1].geometry.x + " " + points[1].geometry.y + "," + 
+                                                points[2].geometry.x + " " + points[2].geometry.y + "))", 
+             "format correctly writes WKT for an array of Geometries"); 
  
     }
 
     function test_Format_WKT_read(t) { 
-        t.plan(7); 
+        t.plan(6); 
 
         var format = new OpenLayers.Format.WKT(); 
          
@@ -206,13 +221,6 @@
         t.ok(multipolygon.geometry.equals(format.read(format.write(multipolygon)).geometry), 
              "format correctly reads MultiPolygon WKT"); 
          
-        // test a geometrycollection 
-        t.eq(format.write(collection), 
-             "GEOMETRYCOLLECTION(POINT(" + points[0].geometry.x + " " + points[0].geometry.y + ")," + 
-                                "LINESTRING(" + points[0].geometry.x + " " + points[0].geometry.y + "," + 
-                                                points[1].geometry.x + " " + points[1].geometry.y + "," + 
-                                                points[2].geometry.x + " " + points[2].geometry.y + "))", 
-             "format correctly writes GeometryCollection WKT"); 
  
     }
 
