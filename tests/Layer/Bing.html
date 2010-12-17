@@ -1,0 +1,65 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+    var layer; 
+
+    var layerType = 'Aerial';
+    var key = "AqTGBsziZHIJYYxgivLBf0hVdrAk9mWO5cQcb8Yux8sW5M8c8opEC2lZqKR1ZZXf";
+    
+    var options = {
+        type: layerType,
+        key: key
+    };
+
+    function test_constructor(t) {
+        t.plan(2);
+                       
+        var origProcessMetadata = OpenLayers.Layer.Bing.processMetadata;
+        var log = [];
+        OpenLayers.Layer.Bing.processMetadata = function(metadata) {
+            log.push(metadata);
+            origProcessMetadata.apply(this, arguments);
+        };
+        layer = new OpenLayers.Layer.Bing(options);
+        t.ok(layer instanceof OpenLayers.Layer.Bing, "returns OpenLayers.Layer.Bing object" );
+        t.delay_call(2, function() {
+            t.eq(log.length, 1, "processMetadata called");
+            OpenLayers.Layer.Bing.processMetadata = origProcessMetadata;
+            layer.destroy();
+        });
+    }
+    
+    function test_attribution(t) {
+        t.plan(3);
+        
+        var log = [];
+        var map = new OpenLayers.Map("map");
+        layer = new OpenLayers.Layer.Bing(options);
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        
+        t.delay_call(2, function() {
+            t.ok(layer.attribution.indexOf('olBingAttribution aerial') !== -1, "Attribution has the correct css class");
+            t.ok(layer.attribution.indexOf('<img src="">') == -1, "Attribution contains a logo");
+            t.ok(layer.attribution.indexOf('</img></div></a><a style=') == -1 , "Attribution contains a copyright");
+            map.destroy();
+        });
+    }
+
+    function test_clone(t) {
+        t.plan(1);
+        
+        var clone;
+        
+        layer = new OpenLayers.Layer.Bing(options);
+        clone = layer.clone();
+        t.ok(clone instanceof OpenLayers.Layer.Bing, "clone is a Layer.Bing instance");
+    }
+
+  </script>
+</head>
+<body>
+<div id="map" style="width:500px;height:550px"></div>
+</body>
+</html>
