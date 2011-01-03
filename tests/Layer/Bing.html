@@ -2,7 +2,7 @@
 <head>
   <script src="../../lib/OpenLayers.js"></script>
   <script type="text/javascript">
-    var layer; 
+    var map, layer; 
 
     var layerType = 'Aerial';
     var key = "AqTGBsziZHIJYYxgivLBf0hVdrAk9mWO5cQcb8Yux8sW5M8c8opEC2lZqKR1ZZXf";
@@ -27,6 +27,54 @@
             t.eq(log.length, 1, "processMetadata called");
             OpenLayers.Layer.Bing.processMetadata = origProcessMetadata;
             layer.destroy();
+        });
+    }
+    
+    function test_initLayer(t) {
+        t.plan(2);
+
+        var meta = [];
+        var origProcessMetadata = OpenLayers.Layer.Bing.processMetadata;
+        OpenLayers.Layer.Bing.processMetadata = function(metadata) {
+            meta.push(metadata);
+        }
+        map = new OpenLayers.Map("map");
+        layer = new OpenLayers.Layer.Bing(options);
+        var extent;
+        map.addLayers([layer, new OpenLayers.Layer(null, {
+            moveTo: function(bounds, changed) {
+                extent = bounds;
+            }
+        })]);
+        map.zoomToMaxExtent();
+        
+        var map2 = new OpenLayers.Map("map");
+        var layer2 = new OpenLayers.Layer.Bing(OpenLayers.Util.extend({
+            initLayer: function() {
+                // pretend we have a zoomMin of 2
+                this.metadata.resourceSets[0].resources[0].zoomMin = 2;
+                OpenLayers.Layer.Bing.prototype.initLayer.apply(this, arguments);
+            }
+        }, options));
+        var extent2;
+        map2.addLayers([layer2, new OpenLayers.Layer(null, {
+            moveTo: function(bounds, changed) {
+                extent2 = bounds;
+            }
+        })]);
+        map2.zoomToMaxExtent();
+        
+        t.delay_call(2.0, function() {
+            origProcessMetadata.call(layer, meta[0]);
+            t.eq(extent.toBBOX(), map.getExtent().toBBOX(), "layer extent correct for base layer with zoomMin == 1.");
+            map.destroy();
+        });
+
+        t.delay_call(2.5, function() {
+            origProcessMetadata.call(layer2, meta[1]);
+            t.eq(extent2.toBBOX(), map2.getExtent().toBBOX(), "layer extent correct for base layer with zoomMin == 2.");
+            map2.destroy();
+            OpenLayers.Layer.Bing.processMetadata = origProcessMetadata;
         });
     }
     
