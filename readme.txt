@@ -1,7 +1,7 @@
 OpenLayers
 -=-=-=-=-=-
 
-Copyright (c) 2005-2010 OpenLayers Contributors. See authors.txt for
+Copyright (c) 2005-2011 OpenLayers Contributors. See authors.txt for
 more details.
 
 OpenLayers is a JavaScript library for building map applications
