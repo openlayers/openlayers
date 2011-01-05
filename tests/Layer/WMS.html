@@ -154,7 +154,6 @@
         map.destroy();
     }
 
-
     function test_Layer_WMS_clone (t) {
         t.plan(4);
 
@@ -380,6 +379,39 @@
         map.destroy();
 
     }
+
+    function test_tileExtent(t) {
+        t.plan(4);
+        
+        var dummy = new OpenLayers.Layer(null, {isBaseLayer: true});
+        var unconstrained = new OpenLayers.Layer.WMS(
+            null, "http://example.com/wms", 
+            {layers: "unconstrained"}, 
+            {isBaseLayer: false, buffer: 0}
+        );
+        var constrained = new OpenLayers.Layer.WMS(
+            null, "http://example.com/wms-c", 
+            {layers: "constrained"}, 
+            {buffer: 0, isBaseLayer: false, tileExtent: new OpenLayers.Bounds(-180, -90, 180, 90)}
+        );
+        var map = new OpenLayers.Map({
+            div: "map",
+            maxExtent: new OpenLayers.Bounds(-185, -95, 185, 95),
+            layers: [dummy, unconstrained, constrained],
+            center: new OpenLayers.LonLat(0, 0),
+            zoom: 1
+        });
+        
+        t.eq(unconstrained.grid[1][0].bounds.bottom, -95, "unconstrained bottom correct");
+        t.eq(unconstrained.grid[1][0].bounds.left, -185, "unconstrained left correct");
+        t.eq(constrained.grid[1][0].bounds.bottom, -90, "constrained bottom correct");
+        t.eq(constrained.grid[1][0].bounds.left, -180, "constrained left correct");
+        
+        map.destroy();
+        
+    }
+
+
 
     // DEPRECATED -- REMOVE IN 3.0
     function test_Layer_Untiled_WMS(t) {
