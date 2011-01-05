@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>OpenLayers Tile Extent Example</title>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="../theme/default/google.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+    </head>
+    <body>
+        <h1 id="title">Tile Extent</h1>
+        <div id="tags">
+            grid, tileExtent
+        </div>
+        <p id="shortdesc">
+            Demonstrates the use of the tileExtent property to differentiate 
+            between the maximum extent and the tile extent for a layer.
+        </p>
+        <div id="map" class="smallmap"></div>
+        <div id="docs">
+            <p>
+                This example uses a layer that requests map tiles from a WMS
+                that only generates image responses for requests that align with
+                a particular tile lattice.  In this case, the layer's 
+                <code>maxExtent</code> does not align with that tile lattice.  
+                To configure the layer with a tile extent that conforms to the 
+                tile extent configured on the server, use the layer's 
+                <code>tileExtent</code> property.
+            </p><p>
+                View the <a href="tile-extent.js" target="_blank">tile-extent.js</a>
+                source to see how this is done
+            </p>
+        </div>
+        <script src="../lib/OpenLayers.js"></script>
+        <script src="tile-extent.js"></script>
+    </body>
+</html>
