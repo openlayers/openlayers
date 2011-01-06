@@ -199,11 +199,7 @@
     }
 
     function test_read_bbox(t) {
-        t.plan(1);
-        var protocol = new OpenLayers.Protocol.HTTP();
-
-        // fake XHR request object
-        var request = {'status': 200};
+        t.plan(6);
 
         var _get = OpenLayers.Request.GET;
 
@@ -211,16 +207,34 @@
         var filter = new OpenLayers.Filter.Spatial({
             type: OpenLayers.Filter.Spatial.BBOX,
             value: bounds,
-            projection: "foo"
+            projection: new OpenLayers.Projection("foo")
         });
         
+        // log requests
+        var log, exp;
         OpenLayers.Request.GET = function(options) {
-            t.eq(options.params['bbox'].toString(), bounds.toArray().toString(),
-                'GET called with bbox filter in params');
-            return request;
+            log.push(options.params.bbox);
+            return {status: 200};
         };
 
-        var resp = protocol.read({filter: filter});
+        // 1) issue request with default protocol
+        log = [];
+        new OpenLayers.Protocol.HTTP().read({filter: filter});
+
+        t.eq(log.length, 1, "1) GET called once");
+        t.ok(log[0] instanceof Array, "1) bbox param is array");
+        exp = bounds.toArray();
+        t.eq(log[0], exp, "1) bbox param doesn't include SRS id by default");
+        
+        // 2) issue request with default protocol
+        log = [];
+        new OpenLayers.Protocol.HTTP({srsInBBOX: true}).read({filter: filter});
+
+        t.eq(log.length, 1, "2) GET called once");
+        t.ok(log[0] instanceof Array, "2) bbox param is array");
+        exp = bounds.toArray();
+        exp.push("foo");
+        t.eq(log[0], exp, "2) bbox param includes SRS id if srsInBBOX is true");
 
         OpenLayers.Request.GET = _get;        
     }
