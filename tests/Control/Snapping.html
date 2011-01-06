@@ -173,6 +173,70 @@
         control.destroy();
     }
     
+    function test_resolution_limits(t) {
+        t.plan(7);
+
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1],
+            maxExtent: new OpenLayers.Bounds(0, 0, 100, 100)
+        });
+
+        var layer = new OpenLayers.Layer.Vector(null, {
+            isBaseLayer: true
+        });
+        layer.addFeatures([
+            new OpenLayers.Feature.Vector(OpenLayers.Geometry.fromWKT(
+                "POINT(50 50)"
+            ))
+        ]);
+
+        map.addLayer(layer);
+        map.zoomToMaxExtent();        
+        
+        var control = new OpenLayers.Control.Snapping({layer: layer});
+        
+        var result;
+        var loc = new OpenLayers.Geometry.Point(49, 49);
+
+        // 1) test a target with no constraints
+        control.setTargets([{layer: layer}]);
+        result = control.testTarget(control.targets[0], loc);
+        t.ok(result !== null, "1) target is eligible");
+        
+        // 2) test a target with minResolution < map.resolution
+        control.setTargets([{layer: layer, minResolution: 0.5}]);
+        result = control.testTarget(control.targets[0], loc);
+        t.ok(result !== null, "2) target is eligible");
+
+        // 3) test a target with minResolution === map.resolution
+        control.setTargets([{layer: layer, minResolution: 1}]);
+        result = control.testTarget(control.targets[0], loc);
+        t.ok(result !== null, "3) target is eligible");
+
+        // 4) test a target with minResolution > map.resolution
+        control.setTargets([{layer: layer, minResolution: 1.5}]);
+        result = control.testTarget(control.targets[0], loc);
+        t.ok(result === null, "4) target is not eligible");
+
+        // 5) test a target with maxResolution < map.resolution
+        control.setTargets([{layer: layer, maxResolution: 0.5}]);
+        result = control.testTarget(control.targets[0], loc);
+        t.ok(result === null, "5) target is not eligible");
+        
+        // 6) test a target with maxResolution === map.resolution
+        control.setTargets([{layer: layer, maxResolution: 1}]);
+        result = control.testTarget(control.targets[0], loc);
+        t.ok(result === null, "6) target is not eligible");
+        
+        // 7) test a target with maxResolution > map.resolution
+        control.setTargets([{layer: layer, maxResolution: 1.5}]);
+        result = control.testTarget(control.targets[0], loc);
+        t.ok(result !== null, "7) target is eligible");
+        
+        map.destroy();
+    
+    }
+    
     function test_snapping(t) {
         
         t.plan(46);
