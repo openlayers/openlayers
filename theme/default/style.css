@@ -16,17 +16,11 @@ div.olLayerDiv {
 
 .olLayerGoogleCopyright {
     left: 2px;
-    bottom: 2px;
-}
-.olLayerGoogleV3.olLayerGoogleCopyright {
-    right: auto !important;
+    bottom: 2px;  
 }
 .olLayerGooglePoweredBy {
     left: 2px;
     bottom: 15px;   
-}
-.olLayerGoogleV3.olLayerGooglePoweredBy {
-    bottom: 15px !important;
 }
 .olControlAttribution {
     font-size: smaller; 
