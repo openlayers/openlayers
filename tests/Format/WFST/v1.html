@@ -89,6 +89,32 @@
         }
     }
 
+    function test_update_null_geometry(t) {
+        var format = new OpenLayers.Format.WFST({
+            featureNS: "http://www.openplans.org/topp",
+            featureType: "states",
+            featurePrefix: "topp",
+            geometryName: "the_geom"
+        });
+
+        var feature = new OpenLayers.Feature.Vector(null, {foo: "bar"});
+        feature.state = OpenLayers.State.UPDATE;
+        feature.fid = "fid.36";
+
+        t.plan(1);
+        var snippets = {
+            "UpdateNullGeometry": feature
+        };
+
+        var arg;
+        for (var snippet in snippets) {
+            arg = snippets[snippet]
+            var expected = readXML(snippet);
+            var got = format.writers["wfs"]["Update"].apply(format, [arg]);
+            t.xml_eq(got, expected, snippet + " request with null geometry created correctly");
+        }
+    }
+
     function test_write_multiple(t) {
 
         var format = new OpenLayers.Format.WFST({
@@ -223,6 +249,21 @@
 --></div>
 <div id="UpdateNoGeometry"><!--
 <wfs:Update xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
+    <wfs:Property>
+        <wfs:Name>foo</wfs:Name>
+        <wfs:Value>bar</wfs:Value>
+    </wfs:Property>
+    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+        <ogc:FeatureId fid="fid.36"/>
+    </ogc:Filter>
+</wfs:Update>
+--></div>
+<div id="UpdateNullGeometry"><!--
+<wfs:Update xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
+    <wfs:Property>
+        <wfs:Name>the_geom</wfs:Name>
+        <wfs:Value></wfs:Value>
+    </wfs:Property>
     <wfs:Property>
         <wfs:Name>foo</wfs:Name>
         <wfs:Value>bar</wfs:Value>
