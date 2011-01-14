@@ -8,7 +8,7 @@ var map = new OpenLayers.Map({
             "Global Imagery",
             "http://maps.opengeo.org/geowebcache/service/wms",
             {layers: "bluemarble"},
-            {tileExtent: new OpenLayers.Bounds(-180, -90, 180, 90)}
+            {tileOrigin: new OpenLayers.LonLat(-180, -90)}
         )
     ],
     center: new OpenLayers.LonLat(-110, 45),

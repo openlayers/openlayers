@@ -380,7 +380,7 @@
 
     }
 
-    function test_tileExtent(t) {
+    function test_tileOrigin(t) {
         t.plan(4);
         
         var dummy = new OpenLayers.Layer(null, {isBaseLayer: true});
@@ -392,7 +392,7 @@
         var constrained = new OpenLayers.Layer.WMS(
             null, "http://example.com/wms-c", 
             {layers: "constrained"}, 
-            {buffer: 0, isBaseLayer: false, tileExtent: new OpenLayers.Bounds(-180, -90, 180, 90)}
+            {buffer: 0, isBaseLayer: false, tileOrigin: new OpenLayers.LonLat(-180, -90)}
         );
         var map = new OpenLayers.Map({
             div: "map",

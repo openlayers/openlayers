@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>OpenLayers Tile Extent Example</title>
+        <title>OpenLayers Tile Origin Example</title>
         <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
         <link rel="stylesheet" href="../theme/default/google.css" type="text/css">
         <link rel="stylesheet" href="style.css" type="text/css">
     </head>
     <body>
-        <h1 id="title">Tile Extent</h1>
+        <h1 id="title">Tile Origin</h1>
         <div id="tags">
-            grid, tileExtent
+            grid, tileOrigin
         </div>
         <p id="shortdesc">
             Demonstrates the use of the tileExtent property to differentiate 
@@ -23,14 +23,14 @@
                 a particular tile lattice.  In this case, the layer's 
                 <code>maxExtent</code> does not align with that tile lattice.  
                 To configure the layer with a tile extent that conforms to the 
-                tile extent configured on the server, use the layer's 
-                <code>tileExtent</code> property.
+                tile origin configured on the server, use the layer's 
+                <code>tileOrigin</code> property.
             </p><p>
-                View the <a href="tile-extent.js" target="_blank">tile-extent.js</a>
+                View the <a href="tile-origin.js" target="_blank">tile-origin.js</a>
                 source to see how this is done
             </p>
         </div>
         <script src="../lib/OpenLayers.js"></script>
-        <script src="tile-extent.js"></script>
+        <script src="tile-origin.js"></script>
     </body>
 </html>
