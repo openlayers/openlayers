@@ -13,18 +13,20 @@
     };
 
     function test_constructor(t) {
-        t.plan(2);
+        t.plan(3);
                        
         var origProcessMetadata = OpenLayers.Layer.Bing.processMetadata;
         var log = [];
         OpenLayers.Layer.Bing.processMetadata = function(metadata) {
-            log.push(metadata);
+            var script = document.getElementById(this._callbackId);
+            log.push(script.src);
             origProcessMetadata.apply(this, arguments);
         };
-        layer = new OpenLayers.Layer.Bing(options);
+        layer = new OpenLayers.Layer.Bing({metadataParams: {foo: "bar"}});
         t.ok(layer instanceof OpenLayers.Layer.Bing, "returns OpenLayers.Layer.Bing object" );
         t.delay_call(2, function() {
             t.eq(log.length, 1, "processMetadata called");
+            t.eq(OpenLayers.Util.getParameters(log[0]).foo, "bar", "metadataParams passed to url correctly.");
             OpenLayers.Layer.Bing.processMetadata = origProcessMetadata;
             layer.destroy();
         });

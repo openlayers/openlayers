@@ -6,7 +6,10 @@ var map = new OpenLayers.Map( 'map');
 
 var road = new OpenLayers.Layer.Bing({
     key: apiKey,
-    type: "Road"
+    type: "Road",
+    // custom metadata parameter to request the new map style - only useful
+    // before May 1st, 2011
+    metadataParams: {mapVersion: "v1"}
 });
 var aerial = new OpenLayers.Layer.Bing({
     key: apiKey,
