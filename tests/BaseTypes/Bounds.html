@@ -126,7 +126,7 @@
     }
 
     function test_Bounds_fromString(t) {
-       t.plan( 10 );
+       t.plan( 12 );
        bounds = OpenLayers.Bounds.fromString("1,2,3,4");
        t.ok( bounds instanceof OpenLayers.Bounds, "new OpenLayers.Bounds returns Bounds object" );
        t.eq( bounds.left, 1, "bounds.left is set correctly" );
@@ -134,13 +134,18 @@
        t.eq( bounds.right, 3, "bounds.right is set correctly" );
        t.eq( bounds.top, 4, "bounds.top is set correctly" );
 
+       // reverse axis order
+       var reverseBbox = bounds.toBBOX(null, true);
+       t.eq(reverseBbox, "2,1,4,3", "toBBOX with reverseAxisOrder set to true works as expected");
+       var boundsFromReverse = OpenLayers.Bounds.fromString(reverseBbox, true);
+       t.ok(bounds.equals(boundsFromReverse), "Bounds created from string with reverseAxisOrder are correct");
+
        bounds = OpenLayers.Bounds.fromString("1.1,2.2,3.3,4.4");
        t.ok( bounds instanceof OpenLayers.Bounds, "new OpenLayers.Bounds returns Bounds object" );
        t.eq( bounds.left, 1.1, "bounds.left is set correctly" );
        t.eq( bounds.bottom, 2.2, "bounds.bottom is set correctly" );
        t.eq( bounds.right, 3.3, "bounds.right is set correctly" );
        t.eq( bounds.top, 4.4, "bounds.top is set correctly" );
-
     }
 
     function test_Bounds_getSize(t) {
@@ -358,7 +363,7 @@
     }
 
     function test_Bounds_fromArray(t) {
-       t.plan( 5 );
+       t.plan( 7 );
        
        var bbox = [1,2,3,4];
        bounds = OpenLayers.Bounds.fromArray(bbox);
@@ -367,6 +372,12 @@
        t.eq( bounds.bottom, 2, "bounds.bottom is set correctly" );
        t.eq( bounds.right, 3, "bounds.right is set correctly" );
        t.eq( bounds.top, 4, "bounds.top is set correctly" );
+       
+       // reverse axis order
+       var reverseBbox = bounds.toArray(true);
+       t.eq(reverseBbox, [2,1,4,3], "toArray with reverseAxisOrder set to true works as expected");
+       var boundsFromReverse = OpenLayers.Bounds.fromArray(reverseBbox, true);
+       t.ok(bounds.equals(boundsFromReverse), "Bounds created from array with reverseAxisOrder are correct");
     }
 
     function test_Bounds_fromSize(t) {
