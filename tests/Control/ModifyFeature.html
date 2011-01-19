@@ -74,7 +74,7 @@
     }
     
     function test_handleKeypress(t) {
-        t.plan(11);
+        t.plan(14);
 
         /**
          * There are two things that we want to test here
@@ -108,9 +108,17 @@
                      "vertex deletion: removeComponent called on parent with proper geometry");
             }
         };
-        layer.events.on({"featuremodified": function(event) {
-            t.eq(event.feature.id, poly.id, "vertex deletion: featuremodifed triggered");
-        }});
+        layer.events.on({
+            "featuremodified": function(event) {
+                t.eq(event.feature.id, poly.id, "vertex deletion: featuremodifed triggered");
+            },
+            "vertexremoved": function(evt) {
+                layer.events.unregister("vertexremoved", this, arguments.callee);
+                t.eq(evt.feature.id, poly.id, "vertexremoved triggered with correct feature");
+                t.eq(evt.vertex.id, point.geometry.id, "vertexremoved triggered with correct vertex");
+                t.eq(evt.pixel, "foo", "vertexremoved triggered with correct pixel");
+            }
+        });
         layer.drawFeature = function(feature) {
             t.eq(feature.id, poly.id,
                  "vertex deletion: drawFeature called with the proper feature");
@@ -123,7 +131,7 @@
                  "vertex deletion: onModification called with the proper feature");
         };
         // run the above four tests twice
-        control.handleKeypress({keyCode:delKey});
+        control.handleKeypress({keyCode:delKey, xy: "foo"});
         control.handleKeypress({keyCode:dKey});
         t.eq(control.feature.state, OpenLayers.State.UPDATE, "feature state set to update");
 
