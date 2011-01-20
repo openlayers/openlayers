@@ -29,4 +29,12 @@ function init() {
         new OpenLayers.Projection("EPSG:4326"),
         map.getProjectionObject()
     ), 5);
+    
+    // add behavior to html
+    var animate = document.getElementById("animate");
+    animate.onclick = function() {
+        for (var i=map.layers.length-1; i>=0; --i) {
+            map.layers[i].animationEnabled = this.checked;
+        }
+    };
 }
