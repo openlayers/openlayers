@@ -233,7 +233,7 @@
     // Verify that things work all right when we combine different types for the STYLES and LAYERS
     // params in the WMS Layers involved
     function test_mixedParams(t) {
-        t.plan(3);
+        t.plan(5);
         var map = new OpenLayers.Map("map", {
             getExtent: function() {return(new OpenLayers.Bounds(-180,-90,180,90));}
             }
@@ -271,8 +271,20 @@
             log.options = options;
         };
         click.activate();
-        click.getInfoForClick({xy: {x: 50, y: 50}});
+        click.getInfoForClick({xy: {x: 50.2, y: 50.1}});
         OpenLayers.Request.GET = _request;
+
+        t.eq(
+            log.options && log.options.params.X,
+            50,
+            "X should be an integer"
+        );
+
+        t.eq(
+            log.options && log.options.params.Y,
+            50,
+            "Y should be an integer" 
+        );
 
         t.eq(
             log.options && log.options.url,
@@ -506,7 +518,7 @@
             log.options = options;
         };
         click.activate();
-        click.getInfoForClick({xy: {x: 50, y: 60}});
+        click.getInfoForClick({xy: {x: 50.1, y: 60.2}});
         OpenLayers.Request.GET = _request;
         t.eq(
             log.options && log.options.params.CRS,
