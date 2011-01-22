@@ -699,11 +699,12 @@
     function test_Map_removeLayer(t) {
         t.plan(1);
         var f = function() {};
+        var events = {triggerEvent: f};
         var layers = [
-            {name: "fee", removeMap: f},
-            {name: "fi", removeMap: f},
-            {name: "fo", removeMap: f},
-            {name: "fum", removeMap: f}
+            {name: "fee", removeMap: f, events: events},
+            {name: "fi", removeMap: f, events: events},
+            {name: "fo", removeMap: f, events: events},
+            {name: "fum", removeMap: f, events: events}
         ];
         var map = {
             layers: layers,

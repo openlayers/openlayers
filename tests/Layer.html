@@ -751,16 +751,27 @@
     
     function test_afterAdd(t) {
         
-        t.plan(1);
+        t.plan(4);
         
+        var log = [];
         var map = new OpenLayers.Map("map");
-        var layer = new OpenLayers.Layer(null, {isBaseLayer: true});
+        var layer = new OpenLayers.Layer(null, {
+            isBaseLayer: true,
+            eventListeners: {
+                "added": function(evt) {
+                    log.push(evt);
+                }
+            }
+        });
         var hasBase = false;
         layer.afterAdd = function() {
             hasBase = !!(layer.map && layer.map.baseLayer);
         }
         map.addLayer(layer);
         t.eq(hasBase, true, "when afterAdd is called, map has a base layer");
+        t.eq(log.length, 1, "added event triggered");
+        t.eq(log[0].map.id, map.id, "added listener argument with correct map");
+        t.eq(log[0].layer.id, layer.id, "added listener argument with correct layer");
         
     }
     
@@ -806,11 +817,18 @@
 
 
     function test_Layer_destroy (t) {
-        t.plan( 5 );    
+        t.plan( 8 );    
 
+        var log = [];
         var map = new OpenLayers.Map('map');
         
-        layer = new OpenLayers.Layer('Test Layer');
+        layer = new OpenLayers.Layer('Test Layer', {
+            eventListeners: {
+                "removed": function(evt) {
+                    log.push(evt);
+                }
+            }
+        });
 
         map.addLayer(layer);
 
@@ -822,6 +840,9 @@
         t.eq( layer.options, null, "layer.options is null after destroy" );
 
         t.eq(map.layers.length, 0, "layer removed from map");
+        t.eq(log.length, 1, "removed event triggered");
+        t.eq(log[0].map.id, map.id, "removed listener argument with correct map");
+        t.eq(log[0].layer.id, layer.id, "removed listener argument with correct layer");
         
         map.destroy();
 
