@@ -24,7 +24,7 @@
         };
         layer = new OpenLayers.Layer.Bing({metadataParams: {foo: "bar"}});
         t.ok(layer instanceof OpenLayers.Layer.Bing, "returns OpenLayers.Layer.Bing object" );
-        t.delay_call(2, function() {
+        t.delay_call(5, function() {
             t.eq(log.length, 1, "processMetadata called");
             t.eq(OpenLayers.Util.getParameters(log[0]).foo, "bar", "metadataParams passed to url correctly.");
             OpenLayers.Layer.Bing.processMetadata = origProcessMetadata;
@@ -66,13 +66,13 @@
         })]);
         map2.zoomToMaxExtent();
         
-        t.delay_call(2.0, function() {
+        t.delay_call(5, function() {
             origProcessMetadata.call(layer, meta[0]);
             t.eq(extent.toBBOX(), map.getExtent().toBBOX(), "layer extent correct for base layer with zoomMin == 1.");
             map.destroy();
         });
 
-        t.delay_call(2.5, function() {
+        t.delay_call(6, function() {
             origProcessMetadata.call(layer2, meta[1]);
             t.eq(extent2.toBBOX(), map2.getExtent().toBBOX(), "layer extent correct for base layer with zoomMin == 2.");
             map2.destroy();
