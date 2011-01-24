@@ -326,6 +326,34 @@
     }
  */
 
+    function test_Map_isValidZoomLevel(t) {
+        t.plan(6);
+        var map = new OpenLayers.Map("map");
+        map.addLayer(new OpenLayers.Layer(null, {
+            isBaseLayer: true, numZoomLevels: 19
+        }))
+        var valid;
+
+        valid = OpenLayers.Map.prototype.isValidZoomLevel.apply(map, [0]);
+        t.eq(valid, true, "0 is a valid zoomLevel when baseLayer has no restrictedMinZoom");
+
+        valid = OpenLayers.Map.prototype.isValidZoomLevel.apply(map, [18]);
+        t.eq(valid, true, "18 is a valid zoomLevel");
+
+        valid = OpenLayers.Map.prototype.isValidZoomLevel.apply(map, [19]);
+        t.eq(valid, false, "19 is not a valid zoomLevel");
+        
+        map.baseLayer.restrictedMinZoom = 1;
+        valid = OpenLayers.Map.prototype.isValidZoomLevel.apply(map, [0]);
+        t.eq(valid, false, "0 is not a valid zoomLevel when baseLayer has restrictedMinZoom of 1");
+
+        valid = OpenLayers.Map.prototype.isValidZoomLevel.apply(map, [1]);
+        t.eq(valid, true, "1 is a valid zoomLevel");
+
+        valid = OpenLayers.Map.prototype.isValidZoomLevel.apply(map, [19]);
+        t.eq(valid, false, "19 is not a valid zoomLevel when baseLayer has restrictedMinZoom of 1");
+    }
+    
     function test_Map_isValidLonLat(t) {
         t.plan( 3 );    
 
@@ -1234,6 +1262,27 @@
         t.ok(maxExtent == map.baseLayer.maxExtent, "null options, valid baseLayer returns map.baseLayer.maxExtent");     
     }
 
+    function test_Map_getRestrictedMinZoom(t){
+        t.plan(3);
+
+        var map = {};
+
+      //no baseLayer
+        var minZoom = OpenLayers.Map.prototype.getRestrictedMinZoom.apply(map);
+        t.eq(minZoom, null, "no baseLayer returns null");
+        
+        map.baseLayer = new OpenLayers.Layer(null, {isBaseLayer: true});
+
+      //baseLayer
+        minZoom = OpenLayers.Map.prototype.getRestrictedMinZoom.apply(map);
+        t.eq(minZoom, 0, "default baseLayer.restrictedMinZoom returns 0");     
+
+      //custom minZoomLevel on baseLayer
+        map.baseLayer.restrictedMinZoom = 1;
+        minZoom = OpenLayers.Map.prototype.getRestrictedMinZoom.apply(map);
+        t.eq(minZoom, map.baseLayer.restrictedMinZoom, "custom baseLayer.restrictedMinZoom returns map.baseLayer.restrictedMinZoom");     
+    }
+    
     function test_Map_zoomToMaxExtent(t){
         t.plan(4)
 
