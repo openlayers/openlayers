@@ -93,11 +93,13 @@ div.olControlMousePosition {
 .olControlOverviewMapMinimizeButton {
     right: 0px;
     bottom: 80px;
+    cursor: pointer;
 }    
 
 .olControlOverviewMapMaximizeButton {
     right: 0px;
     bottom: 80px;
+    cursor: pointer;
 }
 
 .olControlOverviewMapExtentRectangle {
@@ -402,6 +404,7 @@ div.olControlSaveFeaturesItemInactive {
 .olControlLayerSwitcher .minimizeDiv {
     top: 5px;
     right: 0px;
+    cursor: pointer;
 }
 
 .olBingAttribution {
