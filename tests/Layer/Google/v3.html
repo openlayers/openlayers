@@ -3,6 +3,7 @@
     <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
     <script src="../../../lib/OpenLayers.js"></script>
     <script type="text/javascript">
+
     var layer; 
                    
     function test_Layer_Google_constructor (t) {
@@ -265,6 +266,12 @@
 
          t.plan(8);
 
+         var origPrecision = OpenLayers.Util.DEFAULT_PRECISION;
+         // GMaps v3 seems to use a default precision of 13, which is lower
+         // than what we use in OpenLayers.
+         // See http://trac.osgeo.org/openlayers/ticket/3059
+         OpenLayers.Util.DEFAULT_PRECISION = 13;
+
          var map = new OpenLayers.Map('map', {allOverlays: true});
 
          var gmap = new OpenLayers.Layer.Google("Google Streets");
@@ -275,16 +282,18 @@
          map.setCenter(origin, 4);
          var resolution = map.getResolution();
          
-         var dx, dy, center, expectedX, expectedY;
+         var dx, dy, center, expected;
 
          // confirm that panning works with Google visible
          dx = 100, dy = -100;
          map.pan(dx, dy, {animate: false});
          center = map.getCenter();
-         expectedX = origin.lon + (resolution * dx);
-         expectedY = origin.lat - (resolution * dy);
-         t.eq(center.lon, expectedX, "x panning with Google visible " + dx + ", " + dy);
-         t.eq(center.lat, expectedY, "y panning with Google visible " + dx + ", " + dy);
+         expected = new OpenLayers.LonLat(
+             origin.lon + (resolution * dx),
+             origin.lat - (resolution * dy)
+         );
+         t.eq(center.lon, expected.lon, "x panning with Google visible " + dx + ", " + dy);
+         t.eq(center.lat, expected.lat, "y panning with Google visible " + dx + ", " + dy);
          map.pan(-dx, -dy, {animate: false});
          center = map.getCenter();
          t.eq(center.lon, origin.lon, "x panning with Google visible " + (-dx) + ", " + (-dy));
@@ -295,21 +304,29 @@
          dx = 100, dy = -100;
          map.pan(dx, dy, {animate: false});
          center = map.getCenter();
-         expectedX = origin.lon + (resolution * dx);
-         expectedY = origin.lat - (resolution * dy);
-         t.eq(center.lon, expectedX, "x panning with Google invisible " + dx + ", " + dy);
-         t.eq(center.lat, expectedY, "y panning with Google invisible " + dx + ", " + dy);
+         expected = new OpenLayers.LonLat(
+             origin.lon + (resolution * dx),
+             origin.lat - (resolution * dy)
+         );
+         t.eq(center.lon, expected.lon, "x panning with Google invisible " + dx + ", " + dy);
+         t.eq(center.lat, expected.lat, "y panning with Google invisible " + dx + ", " + dy);
          map.pan(-dx, -dy, {animate: false});
          center = map.getCenter();
          t.eq(center.lon, origin.lon, "x panning with Google invisible " + (-dx) + ", " + (-dy));
          t.eq(center.lat, origin.lat, "y panning with Google invisible " + (-dx) + ", " + (-dy));
-         
-         map.destroy();
 
+         map.destroy();
+         OpenLayers.Util.DEFAULT_PRECISION = origPrecision;
      }
      
      function test_wrapDateLine(t) {
          t.plan(2);
+
+         var origPrecision = OpenLayers.Util.DEFAULT_PRECISION;
+         // GMaps v3 seems to use a default precision of 13, which is lower
+         // than what we use in OpenLayers.
+         // See http://trac.osgeo.org/openlayers/ticket/3059
+         OpenLayers.Util.DEFAULT_PRECISION = 13;
 
          var map = new OpenLayers.Map("map");
 
@@ -322,14 +339,15 @@
          // pan to the edge of the world
          map.pan(256, 0, {animate: false});
          center = map.getCenter();
-         t.eq(center.lon, 20037508.3392, "edge of the world");
+         t.eq(center.lon, 20037508.34, "edge of the world");
          // pan off the edge of the world
          map.pan(100, 0, {animate: false});
          center = map.getCenter();
-         t.eq(center.lon, -12210356.6442, "magically back in the western hemisphere");
+         var expect = OpenLayers.Util.toFloat(100 * map.getResolution() - 20037508.34);
+         t.eq(center.lon, expect, "magically back in the western hemisphere");
          
          map.destroy();
-         
+         OpenLayers.Util.DEFAULT_PRECISION = origPrecision;         
      }
 
      function test_respectDateLine(t) {
@@ -346,16 +364,16 @@
          // pan to the edge of the world
          map.pan(256, 0, {animate: false});
          center = map.getCenter();
-         t.eq(center.lon, 20037508.3392, "edge of the world");
+         t.eq(center.lon, 20037508.34, "edge of the world");
          // pan off the edge of the world
          map.pan(100, 0, {animate: false});
          center = map.getCenter();
-         t.eq(center.lon, 20037508.3392, "whew, still on the edge");
+         t.eq(center.lon, 20037508.34, "whew, still on the edge");
          
          map.destroy();
          
      }
-
+     
   </script>
 </head>
 <body>
