@@ -68,16 +68,12 @@ function updatePosition(pos) {
 var log = [];
 function updateLog(message) {
     log.push(message);
-    var div = document.createElement("div");
-    div.appendChild(document.createTextNode(message));
-    document.getElementById("log").appendChild(div);
     if (window.console) {
         console.log(message);
     }
 }
 function clearLog() {
     log.length = 0;
-    document.getElementById("log").innerHTML = "";
 }    
 
 function pan(fx, fy) {
