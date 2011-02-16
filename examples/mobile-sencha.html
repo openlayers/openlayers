@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>OpenLayers with Sencha Touch</title>
+        <script src="../lib/OpenLayers.js"></script>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="http://dev.sencha.com/deploy/touch/resources/css/sencha-touch.css">
+        <script src="http://dev.sencha.com/deploy/touch/sencha-touch.js"></script>
+        <script src="mobile.js"></script>
+        <style>
+            #map {
+                width: 100%;
+                height: 100%;
+            }
+            .olControlAttribution {
+                font-size: 10px;
+                bottom: 5px;
+                right: 5px;
+            }
+        </style>
+        <script>
+        
+        new Ext.Application({
+            name: "ol",
+            launch: function() {
+                this.viewport = new Ext.Panel({
+                    fullscreen: true,
+                    dockedItems: [{
+                        dock: "top",
+                        xtype: "toolbar",
+                        ui: "light",
+                        layout: {
+                            pack: "center"
+                        },
+                        defaults: {
+                            ui: "plain",
+                            iconMask: true
+                        },
+                        items: [{
+                            iconCls: "arrow_left",
+                            handler: function() {
+                                pan(-0.25, 0);
+                            }
+                        }, {
+                            iconCls: "arrow_up",
+                            handler: function() {
+                                pan(0, -0.25);
+                            }
+                        }, {
+                            iconCls: "arrow_down",
+                            handler: function() {
+                                pan(0, 0.25);
+                            }
+                        }, {
+                            iconCls: "arrow_right",
+                            handler: function() {
+                                pan(0.25, 0);
+                            }
+                        }]
+                    }, {
+                        dock: "bottom",
+                        xtype: "toolbar",
+                        ui: "light",
+                        layout: {
+                            pack: "center"
+                        },
+                        items: [{
+                            xtype: "segmentedbutton",
+                            items: [{
+                                text: "navigate",
+                                pressed: true
+                            }, {
+                                text: "point",
+                                id: "point"
+                            }, {
+                                text: "line",
+                                id: "line"
+                            }, {
+                                text: "poly",
+                                id: "poly"
+                            }, {
+                                text: "modify",
+                                id: "mod"
+                            }],
+                            listeners: {
+                                toggle: function(container, button, pressed) {
+                                    Ext.each(map.getControlsByClass(/DrawFeature/), function(control) {
+                                        control.deactivate();
+                                    });
+                                    map.getControlsBy("id", "mod-control")[0].deactivate();
+                                    if (pressed) {
+                                        var id = button.id + "-control";
+                                        var control = map.getControlsBy("id", id)[0];
+                                        if (control) {
+                                            control.activate();
+                                        }
+                                    }
+                                }
+                            }
+                        }]
+                    }],
+                    items: [{
+                        xtype: "component",
+                        scroll: false,
+                        monitorResize: true,
+                        id: "map",
+                        listeners: {
+                            render: init,
+                            resize: function() {
+                                if (window.map) {
+                                    map.updateSize();
+                                }
+                            }
+                        }
+                    }]
+                });
+            }
+        });
+        </script>
+    </head>
+    <body></body>
+</html>
