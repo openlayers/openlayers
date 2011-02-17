@@ -5,16 +5,20 @@
     var custom$ = function() {};
     window.$ = custom$;
   </script>
-  <script src="../lib/OpenLayers/SingleFile.js"></script>
-  <script src="../lib/OpenLayers/BaseTypes/Class.js"></script>
-  <script src="../lib/OpenLayers/Util.js"></script>
-  <script src="../lib/OpenLayers/BaseTypes.js"></script>
-  <script src="../lib/OpenLayers/BaseTypes/Element.js"></script>
-  <script src="../lib/OpenLayers/BaseTypes/LonLat.js"></script>
-  <script src="../lib/OpenLayers/BaseTypes/Pixel.js"></script>
-  <script src="../lib/OpenLayers/BaseTypes/Size.js"></script>
-  <script src="../lib/OpenLayers/Lang.js"></script>
-  <script src="../lib/OpenLayers/Console.js"></script>
+  <script>
+    var OpenLayers = [
+        "OpenLayers/BaseTypes/Class.js",
+        "OpenLayers/Util.js",
+        "OpenLayers/BaseTypes.js",
+        "OpenLayers/BaseTypes/Element.js",
+        "OpenLayers/BaseTypes/LonLat.js",
+        "OpenLayers/BaseTypes/Pixel.js",
+        "OpenLayers/BaseTypes/Size.js",
+        "OpenLayers/Lang.js",
+        "OpenLayers/Console.js"
+    ];
+  </script>
+  <script src="../lib/OpenLayers.js"></script>
   <script type="text/javascript">
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var map; 
