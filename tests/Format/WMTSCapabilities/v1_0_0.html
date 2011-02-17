@@ -110,7 +110,7 @@
         }
         
         function test_createLayer(t) {
-            t.plan(6);
+            t.plan(7);
             
             var format = new OpenLayers.Format.WMTSCapabilities();
 
@@ -153,7 +153,7 @@
             
             t.eq(layer.matrixIds.length, 2, "correct matrixIds length");
             t.eq(layer.name, "Coastlines", "correct layer title");
-            
+            t.eq(layer.style, "DarkBlue", "correct style identifier");
         }
         
     </script>
