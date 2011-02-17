@@ -3,6 +3,7 @@
     <head>
         <title>OpenLayers with jQuery Mobile</title>
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0;">
+        <meta name="apple-mobile-web-app-capable" content="yes">
         <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a3/jquery.mobile-1.0a3.min.css">
         <script src="http://code.jquery.com/jquery-1.5.min.js"></script>
         <script src="http://code.jquery.com/mobile/1.0a3/jquery.mobile-1.0a3.min.js"></script>
@@ -92,6 +93,11 @@
                 
                 $("#nav").click();
                 $("#nav").click(); // jquery mobile bug forces 2 calls to refresh radio ui
+                
+                // disable scrolling from the map
+                $("#map").bind("touchstart", function(event) {
+                    event.preventDefault();
+                });
             });
 
         </script>
