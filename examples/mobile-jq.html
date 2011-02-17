@@ -14,7 +14,7 @@
             html {
                 height: 100%;
             }
-            body: {
+            body {
                 margin: 0;
                 padding: 0;
                 height: 100%;
@@ -94,10 +94,6 @@
                 $("#nav").click();
                 $("#nav").click(); // jquery mobile bug forces 2 calls to refresh radio ui
                 
-                // disable scrolling from the map
-                $("#map").bind("touchstart", function(event) {
-                    event.preventDefault();
-                });
             });
 
         </script>
