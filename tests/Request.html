@@ -20,7 +20,7 @@
     function test_issue(t) {
         setup();
 
-        t.plan(21);
+        t.plan(22);
         var request, config;
         var proto = OpenLayers.Request.XMLHttpRequest.prototype;
         var issue = OpenLayers.Function.bind(OpenLayers.Request.issue,
@@ -81,7 +81,18 @@
             t.eq(url, config.url + "&foo=bar", "existing query string gets extended with &");
         }
         request = issue(config);
-
+        
+        // test that query string doesn't get ? followed by &
+        config = {
+            method: "GET",
+            url: "http://example.com/service?",
+            params: {"foo": "bar"}
+        };
+        proto.open = function(method, url, async, user, password) {
+            t.eq(url, config.url + "foo=bar", "existing query string ending with ? gets extended without &");
+        }
+        request = issue(config);
+        
         // reset open method
         proto.open = _open;
         
