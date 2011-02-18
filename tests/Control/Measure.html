@@ -128,8 +128,8 @@
             // wait for delay then confirm event was logged
             delay, function() {
                 t.eq(log.length, 1, "a) event logged")
-                t.eq(log[0].type, "measurepartial", "a) event logged");
-                t.eq(log[0].measure, 10, "a) correct measure");
+                t.ok(log[0] && log[0].type == "measurepartial", "a) event logged");
+                t.ok(log[0] && log[0].measure == 10, "a) correct measure");
                 
                 // b) move 10 pixels and click
                 trigger("mousemove", 0, 20);
@@ -142,8 +142,8 @@
             },
             delay, function() {
                 t.eq(log.length, 2, "b) event logged");
-                t.eq(log[1].type, "measurepartial", "b) correct type");
-                t.eq(log[1].measure, 20, "b) correct measure");
+                t.ok(log[1] && log[1].type == "measurepartial", "b) correct type");
+                t.ok(log[1] && log[1].measure == 20, "b) correct measure");
 
                 // c) move 10 pixels and click
                 trigger("mousemove", 0, 30);
@@ -158,8 +158,8 @@
             // wait for rest of delay and confirm event logged
             delay / 2, function() {
                 t.eq(log.length, 3, "c) event logged");
-                t.eq(log[2].type, "measurepartial", "c) correct type");
-                t.eq(log[2].measure, 30, "c) correct measure");
+                t.ok(log[2] && log[2].type == "measurepartial", "c) correct type");
+                t.ok(log[2] && log[2].measure == 30, "c) correct measure");
                 
                 // d) move 10 pixels and click
                 trigger("mousemove", 0, 40);
@@ -173,8 +173,8 @@
                 trigger("dblclick", 0, 40);
 
                 t.eq(log.length, 4, "e) event logged");
-                t.eq(log[3].type, "measure", "e) correct type");
-                t.eq(log[3].measure, 40, "e) correct measure");                
+                t.ok(log[3] && log[3].type == "measure", "e) correct type");
+                t.ok(log[3] && log[3].measure == 40, "e) correct measure");                
             },
             // wait for rest of delay and confirm no measurepartial logged
             delay, function() {
@@ -194,22 +194,22 @@
                 trigger("mousemove", 10, 0);
 
                 t.eq(log.length, 1, "g) event logged");
-                t.eq(log[0].type, "measurepartial", "g) correct type");
-                t.eq(log[0].measure, 10, "g) correct measure");
+                t.ok(log[0] && log[0].type == "measurepartial", "g) correct type");
+                t.ok(log[0] && log[0].measure == 10, "g) correct measure");
                 
                 // h) move 10 pixels
                 trigger("mousemove", 20, 0);
 
                 t.eq(log.length, 2, "h) event logged");
-                t.eq(log[1].type, "measurepartial", "h) correct type");
-                t.eq(log[1].measure, 20, "h) correct measure");
+                t.ok(log[1] && log[1].type == "measurepartial", "h) correct type");
+                t.ok(log[1] && log[1].measure == 20, "h) correct measure");
                 
                 // i) mouse up to finish
                 trigger("mouseup", 20, 0);
 
                 t.eq(log.length, 3, "i) event logged");
-                t.eq(log[2].type, "measure", "i) correct type");
-                t.eq(log[2].measure, 20, "i) correct measure");
+                t.ok(log[2] && log[2].type == "measure", "i) correct type");
+                t.ok(log[2] && log[2].measure == 20, "i) correct measure");
                 
                 // j) clean up
                 log = [];
@@ -279,10 +279,10 @@
             delay, function() {
                 // confirm measurepartial is fired
                 t.eq(log.length, 1, "a) event logged");
-                t.eq(log[0].type, "measurepartial", "a) correct type");
+                t.ok(log[0] && log[0].type == "measurepartial", "a) correct type");
                 // mousemove within the partialDelay fires no event, so the
                 // measure below is the one of the initial point
-                t.eq(log[0].measure, 0, "a) correct measure");
+                t.ok(log[0] && log[0].measure == 0, "a) correct measure");
 
                 // b) move 10 pixels
                 trigger("mousemove", 0, 20);
@@ -291,10 +291,10 @@
 
                 // confirm measurepartial is fired 2 times
                 t.eq(log.length, 3, "b) event logged");
-                t.eq(log[1].type, "measurepartial", "b) correct type");
-                t.eq(log[1].measure, 20, "b) correct measure");
-                t.eq(log[2].type, "measurepartial", "c) correct type");
-                t.eq(log[2].measure, 30, "c) correct measure");
+                t.ok(log[1] && log[1].type == "measurepartial", "b) correct type");
+                t.ok(log[1] && log[1].measure == 20, "b) correct measure");
+                t.ok(log[2] && log[2].type == "measurepartial", "c) correct type");
+                t.ok(log[2] && log[2].measure == 30, "c) correct measure");
 
                 // d) switch immediate measurement off
                 control.setImmediate(false);
@@ -310,8 +310,8 @@
             // wait for delay then confirm event was logged
             delay, function() {
                 t.eq(log.length, 4, "e) event logged")
-                t.eq(log[3].type, "measurepartial", "e) correct type");
-                t.eq(log[3].measure, 40, "e) correct measure");
+                t.ok(log[3] && log[3].type == "measurepartial", "e) correct type");
+                t.ok(log[3] && log[3].measure == 40, "e) correct measure");
 
                 // f) switch immediate measurement on
                 control.setImmediate(true);
@@ -322,15 +322,15 @@
             },
             delay, function() {
                 t.eq(log.length, 5, "g) event logged");
-                t.eq(log[4].type, "measurepartial", "g) correct type");
-                t.eq(log[4].measure, 50, "g) correct measure");
+                t.ok(log[4] && log[4].type == "measurepartial", "g) correct type");
+                t.ok(log[4] && log[4].measure == 50, "g) correct measure");
 
                 // h) move 10 pixels
                 trigger("mousemove", 0, 60);
 
                 t.eq(log.length, 6, "h) event logged");
-                t.eq(log[5].type, "measurepartial", "h) correct type");
-                t.eq(log[5].measure, 60, "h) correct measure");
+                t.ok(log[5] && log[5].type == "measurepartial", "h) correct type");
+                t.ok(log[5] && log[5].measure == 60, "h) correct measure");
 
                 // i) double click to finish
                 trigger("mousedown", 0, 60);
@@ -339,13 +339,13 @@
             },
             delay, function() {
                 t.eq(log.length, 7, "i) event logged");
-                t.eq(log[6].type, "measurepartial", "i) correct type");
-                t.eq(log[6].measure, 60, "i) correct measure");
+                t.ok(log[6] && log[6].type == "measurepartial", "i) correct type");
+                t.ok(log[6] && log[6].measure == 60, "i) correct measure");
                 
                 trigger("dblclick", 0, 60);
                 t.eq(log.length, 8, "i) event logged");
-                t.eq(log[7].type, "measure", "i) correct type");
-                t.eq(log[7].measure, 60, "i) correct measure");
+                t.ok(log[7] && log[7].type == "measure", "i) correct type");
+                t.ok(log[7] && log[7].measure == 60, "i) correct measure");
                 // clear log
                 log = [];
 
