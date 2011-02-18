@@ -36,7 +36,7 @@
         }
     
         function test_layers(t) {
-            t.plan(21);
+            t.plan(25);
             var xml = document.getElementById("ogcsample").firstChild.nodeValue;
             var doc = new OpenLayers.Format.XML().read(xml);
     
@@ -75,7 +75,14 @@
             t.eq(wgs84Bbox.right, 180.0, "wgs84BoudingBox right is correct");
             t.eq(wgs84Bbox.bottom, -90.0, "wgs84BoudingBox bottom is correct");
             t.eq(wgs84Bbox.top, 90.0, "wgs84BoudingBox top is correct");
-            
+
+            t.eq(layer.resourceUrl.tile.format, "image/png", "resourceUrl.tile.format is correct");
+            t.eq(layer.resourceUrl.tile.template, "http://www.example.com/wmts/coastlines/{TileMatrix}/{TileRow}/{TileCol}.png", 
+                 "resourceUrl.tile.template is correct");
+
+            t.eq(layer.resourceUrl.FeatureInfo.format, "application/gml+xml; version=3.1", "resourceUrl.FeatureInfo.format is correct");
+            t.eq(layer.resourceUrl.FeatureInfo.template, "http://www.example.com/wmts/coastlines/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml", 
+                 "resourceUrl.FeatureInfo.template is correct");
         }
 
         function test_tileMatrixSets(t) {
@@ -240,6 +247,10 @@ http://schemas.opengis.net/wmts/1.0/examples/wmtsGetCapabilities_response.xml
                 <ows:UpperCorner>180 90</ows:UpperCorner>
             </ows:WGS84BoundingBox>
             <ows:Identifier>coastlines</ows:Identifier>
+            <ResourceURL format="image/png" resourceType="tile"
+                         template="http://www.example.com/wmts/coastlines/{TileMatrix}/{TileRow}/{TileCol}.png" />
+            <ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo"
+                         template="http://www.example.com/wmts/coastlines/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml" />
             <Style isDefault="true">
                 <ows:Title>Dark Blue</ows:Title>
                 <ows:Identifier>DarkBlue</ows:Identifier>
