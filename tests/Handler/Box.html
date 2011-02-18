@@ -1,0 +1,26 @@
+<html>
+<head>
+  <script src="../../lib/OpenLayers.js"></script>
+  <script type="text/javascript">
+    function test_Handler_Box_destroy(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.Box(control);
+        handler.activate();
+        try {
+            handler.destroy();
+            t.ok(true, "destroying the box handler should not raise any error");
+        } catch(err) {
+            t.fail("destroying the box handler causes trouble: " + err);
+        }
+        map.destroy();
+    }
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 300px; height: 150px;"/>
+</body>
+</html>
