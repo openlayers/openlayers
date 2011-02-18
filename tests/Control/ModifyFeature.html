@@ -648,7 +648,7 @@
     
     function test_standalone(t) {
         
-        t.plan(17);
+        t.plan(18);
         var map = new OpenLayers.Map("map");
         var layer = new OpenLayers.Layer.Vector();
         
@@ -673,6 +673,7 @@
         var log = [];
         layer.events.on({
             beforefeaturemodified: function(evt) {
+                layer.events.unregister("beforefeaturemodified", this, arguments.callee);
                 log.push(evt);
             },
             featuremodified: function(evt) {
@@ -690,7 +691,9 @@
         
         // manually select feature for editing
         control.selectFeature(f1);
+        t.eq(log.length, 1, "[select f1] beforefeaturemodified triggered");
         t.ok(control.feature === f1, "[select f1] control.feature set to f1");
+        log = []
         
         // manually unselect feature for editing
         control.unselectFeature(f1);
