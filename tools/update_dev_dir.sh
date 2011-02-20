@@ -2,7 +2,8 @@
 
 # Used to update http://openlayers.org/dev/ 
 
-svn up /osgeo/openlayers/docs/dev; 
+svn revert -R /osgeo/openlayers/docs/dev
+svn up /osgeo/openlayers/docs/dev
 
 # Get current 'Last Changed Rev'
 REV=`svn info /osgeo/openlayers/docs/dev/ | grep 'Revision' | awk '{print $2}'`
