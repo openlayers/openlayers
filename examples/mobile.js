@@ -1,9 +1,9 @@
 
 // initialize map when page ready
 var map;
+var gg = new OpenLayers.Projection("EPSG:4326");
+var sm = new OpenLayers.Projection("EPSG:900913");
 function init() {
-    var gg = new OpenLayers.Projection("EPSG:4326");
-    var sm = new OpenLayers.Projection("EPSG:900913");
     
     // layer for drawn features
     var vector = new OpenLayers.Layer.Vector();
@@ -42,7 +42,7 @@ function init() {
         navigator.geolocation.getCurrentPosition(
             updatePosition,
             function failure(error) {
-                updateLog(error.message);
+                OpenLayers.Console.log(error.message);
             },
             {
                 enableHighAccuracy: true
@@ -58,25 +58,14 @@ function updatePosition(pos) {
     position = pos;
     var lon =  position.coords.longitude;
     var lat = position.coords.latitude;
-    updateLog("position: lon " + lon + ", lat " + lat);
+    OpenLayers.Console.log("position: lon " + lon + ", lat " + lat);
     map.setCenter(
         new OpenLayers.LonLat(lon, lat).transform(gg, sm)
     );
 }
 
-// allow simple logging
-var log = [];
-function updateLog(message) {
-    log.push(message);
-    if (window.console) {
-        console.log(message);
-    }
-}
-function clearLog() {
-    log.length = 0;
-}    
-
 function pan(fx, fy) {
     var size = map.getSize();
     map.pan(size.w * fx, size.h * fy);
 }
+
