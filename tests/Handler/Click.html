@@ -43,7 +43,7 @@
     }
     
     function test_Handler_Click_events(t) {
-        t.plan(50);
+        t.plan(80);
         
         var map = new OpenLayers.Map('map');
         var control = {
@@ -72,7 +72,7 @@
 
         // list below events that should be handled (events) and those
         // that should not be handled (nonevents) by the handler
-        var events = ["click", "dblclick", "mousedown", "mouseup", "rightclick"];
+        var events = ["click", "dblclick", "mousedown", "mouseup", "rightclick", "touchstart", "touchmove", "touchend"];
         var nonevents = ["mousemove", "resize", "focus", "blur"];
         var handler = new OpenLayers.Handler.Click(control);
         // set browser event like properties on the handler
@@ -82,7 +82,7 @@
         handler.activate();
 
         // different listeners registered for pixelTolerance option
-        var events = ["click", "dblclick", "mousedown", "mouseup", "rightclick"];
+        var events = ["click", "dblclick", "mousedown", "mouseup", "rightclick", "touchstart", "touchmove", "touchend"];
         var nonevents = ["mousemove", "resize", "focus", "blur"];
         var handler = new OpenLayers.Handler.Click(control, {}, {
             pixelTolerance: 2
@@ -290,6 +290,89 @@
         OpenLayers.Event.isRightClick = temp;
     }
 
+    function test_touch_click(t) {
+        t.plan(4);
+
+        // set up
+
+        var log;
+
+        var map = new OpenLayers.Map('map');
+        var control = {map: map};
+
+        var callbacks = {
+            'click': function(e) {
+                log = {x: e.xy.x, y: e.xy.y,
+                       lastTouches: e.lastTouches};
+            }
+        };
+
+        var handler = new OpenLayers.Handler.Click(
+                control, callbacks,
+                {'single': true, pixelTolerance: null});
+
+        // test
+
+        log = null;
+        handler.touchstart({xy: {x: 1, y: 1}, touches: ["foo"]});
+        handler.touchend({});
+
+        t.delay_call(1, function() {
+            t.ok(log != null, "click callback called");
+            if(log != null) {
+                t.eq(log.x, 1, "evt.xy.x as expected");
+                t.eq(log.y, 1, "evt.xy.y as expected");
+                t.eq(log.lastTouches, ["foo"], "evt.lastTouches as expected");
+            }
+            // tear down
+            map.destroy();
+        });
+    }
+
+    function test_touch_dblclick(t) {
+        t.plan(5);
+
+        // set up
+
+        var log;
+
+        var map = new OpenLayers.Map('map');
+        var control = {map: map};
+
+        var callbacks = {
+            'click': function(e) {
+                log.click = {x: e.xy.x, y: e.xy.y,
+                   lastTouches: e.lastTouches};
+            },
+            'dblclick': function(e) {
+                log.dblclick = {x: e.xy.x, y: e.xy.y,
+                   lastTouches: e.lastTouches};
+            }
+        };
+
+        var handler = new OpenLayers.Handler.Click(
+                control, callbacks,
+                {'double': true, pixelTolerance: null});
+
+        // test
+
+        log = {};
+        handler.touchstart({xy: {x: 1, y: 1}, touches: ["foo"]});
+        handler.touchend({});
+        handler.touchstart({xy: {x: 1, y: 1}, touches: ["foo"]});
+        handler.touchend({});
+
+        t.eq(log.click, undefined, "click callback not called");
+        t.ok(log.dblclick != undefined, "dblclick callback called");
+        if(log.dblclick != undefined) {
+            t.eq(log.dblclick.x, 1, "evt.xy.x as expected");
+            t.eq(log.dblclick.y, 1, "evt.xy.y as expected");
+            t.eq(log.dblclick.lastTouches, ["foo"], "evt.lastTouches as expected");
+        }
+
+        // tear down
+        map.destroy();
+    }
 
   </script>
 </head>
