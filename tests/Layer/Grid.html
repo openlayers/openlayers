@@ -169,7 +169,7 @@
     
     function test_Layer_Grid_moveTo(t) {
 
-    t.plan(13);
+    t.plan(14);
 
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS(name, url, params);
@@ -193,9 +193,9 @@
             g_WhichFunc = "InitGridded";
             g_Bounds = bounds;
         };
-        layer.moveGriddedTiles = function(bounds) {
+        layer._moveGriddedTiles = function() {
             g_WhichFunc = "MoveGridded";
-            g_Bounds = bounds;
+            g_Bounds = layer._bounds;
         };
         var clearTestBounds = function() {
             g_WhichFunc = null;
@@ -243,13 +243,7 @@
         clearTestBounds();
         layer.singleTile = true;
         layer.moveTo(null, zoomChanged);
-        t.ok(g_Bounds.equals(b), "if layer has grid but zoomChanged is called, initSingleTile called");
-
-
-        layer.getTilesBounds = function() {
-            return tilesBounds;
-        }
-        
+        t.ok(g_Bounds.equals(b), "if layer has grid but zoomChanged is called, initSingleTile called");        
         
 
 //NO FORCE
@@ -305,9 +299,13 @@
         //regular move 
         clearTestBounds();
         tilesBounds = new OpenLayers.Bounds(10,10,120,120);
+        g_WhichFunc = null;
         layer.moveTo(null, zoomChanged);
-        t.ok(g_WhichFunc == "MoveGridded", "if tiles not drastically out of bounds, we call moveGriddedTile()");
-        t.ok(g_Bounds.equals(b), "if tiles not drastically out of bounds, we call moveGriddedTile() with correct bounds");
+        t.eq(g_WhichFunc, null, "moveGriddedTiles is delayed - not called yet");
+        t.delay_call(0.2, function() {
+            t.ok(g_WhichFunc == "MoveGridded", "if tiles not drastically out of bounds, we call moveGriddedTile()");
+            t.ok(g_Bounds.equals(b), "if tiles not drastically out of bounds, we call moveGriddedTile() with correct bounds");
+        });
     }
 
     /** THIS WOULD BE WHERE THE TESTS WOULD GO FOR 
