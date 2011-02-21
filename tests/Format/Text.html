@@ -8,7 +8,7 @@
         var features = format.read(OpenLayers.Util.getElement("content").value);
         t.eq(features[0].style.externalGraphic, format.defaultStyle.externalGraphic, "style is set to defaults if no style props set in text file");
         var features = format.read(OpenLayers.Util.getElement("contentMarker").value);
-        t.eq(features[0].style.externalGraphic, "../../img/marker.png", "marker set correctly by default.");
+        t.eq(features[0].style.externalGraphic, OpenLayers.Util.getImagesLocation() + "marker.png", "marker set correctly by default.");
         
         var features = format.read(OpenLayers.Util.getElement("content2").value);
         t.eq(features.length, 2, "two features read");
