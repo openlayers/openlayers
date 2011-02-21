@@ -2,11 +2,9 @@
 
 # Used to update http://openlayers.org/dev/ 
 
-svn revert -R /osgeo/openlayers/docs/dev
-svn up /osgeo/openlayers/docs/dev
 
 # Get current 'Last Changed Rev'
-REV=`svn info /osgeo/openlayers/docs/dev/ | grep 'Revision' | awk '{print $2}'`
+REV=`svn info http://svn.openlayers.org/ | grep 'Revision' | awk '{print $2}'`
 
 # Get the last svn rev
 touch /tmp/ol_svn_rev
@@ -14,6 +12,8 @@ OLD_REV="o`cat /tmp/ol_svn_rev`"
 
 # If they're not equal, do some work.
 if [ ! o$REV = $OLD_REV ]; then
+    svn revert -R /osgeo/openlayers/docs/dev
+    svn up /osgeo/openlayers/docs/dev
 
     cd /osgeo/openlayers/docs/dev/tools/ 
     python exampleparser.py
