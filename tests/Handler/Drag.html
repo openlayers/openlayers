@@ -45,7 +45,7 @@
     }
     
     function test_Handler_Drag_events(t) {
-        t.plan(25);
+        t.plan(40);
         
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
@@ -54,7 +54,8 @@
 
         // list below events that should be handled (events) and those
         // that should not be handled (nonevents) by the handler
-        var events = ["mousedown", "mouseup", "mousemove", "mouseout", "click"];
+        var events = ["mousedown", "mouseup", "mousemove", "mouseout", "click",
+                      "touchstart", "touchmove", "touchend"];
         var nonevents = ["dblclick", "resize", "focus", "blur"];
         map.events.registerPriority = function(type, obj, func) {
             var r = func();
