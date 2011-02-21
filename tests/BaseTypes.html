@@ -298,6 +298,13 @@
         //run again to make sure the arguments are handled correctly
         newFoo(g_Arg3, g_Arg4);
     }
+    
+    function test_Function_Void(t) {
+        
+        t.plan(1);
+        t.eq(OpenLayers.Function.Void(), undefined, "returns undefined");
+        
+    }
 
     function test_Function_bindAsEventListener(t) {
         t.plan(4);
