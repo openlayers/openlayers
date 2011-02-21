@@ -18,7 +18,7 @@ if [ ! o$REV = $OLD_REV ]; then
     cd /osgeo/openlayers/docs/dev/tools/ 
     python exampleparser.py
     cd /osgeo/openlayers/docs/dev/build
-    ./build.py
+    ./build.py tests.cfg
     
     cp OpenLayers.js ..
     cd ..
