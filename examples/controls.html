@@ -27,23 +27,29 @@
                 });
     
 
-                var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                var ol_wms = new OpenLayers.Layer.WMS(
+                    "OpenLayers WMS",
                     "http://vmap0.tiles.osgeo.org/wms/vmap0",
-                    {layers: 'basic'} );
-                var jpl_wms = new OpenLayers.Layer.WMS( "NASA Global Mosaic",
-                    "http://t1.hypercube.telascience.org/cgi-bin/landsat7", 
-                    {layers: "landsat7"});
-                var dm_wms = new OpenLayers.Layer.WMS( "DM Solutions Demo",
+                    {layers: 'basic'} 
+                );
+
+                var gwc = new OpenLayers.Layer.WMS(
+                    "Global Imagery",
+                    "http://maps.opengeo.org/geowebcache/service/wms",
+                    {layers: "bluemarble"},
+                    {tileOrigin: new OpenLayers.LonLat(-180, -90)}
+                );
+                var dm_wms = new OpenLayers.Layer.WMS(
+                    "DM Solutions Demo",
                     "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap",
                     {layers: "bathymetry,land_fn,park,drain_fn,drainage," +
                              "prov_bound,fedlimit,rail,road,popplace",
-                     transparent: "true", format: "image/png" });
+                     transparent: "true", format: "image/png"},
+                    {visibility: false}
+                );
 
-                jpl_wms.setVisibility(false);
-                dm_wms.setVisibility(false);
-
-                map.addLayers([ol_wms, jpl_wms, dm_wms]);
-                if (!map.getCenter()) map.zoomToMaxExtent();
+                map.addLayers([ol_wms, gwc, dm_wms]);
+                map.zoomToMaxExtent();
             }
         </script>
     </head>
