@@ -102,6 +102,28 @@
 
     }
 
+    function test_zoomOut(t) {
+        t.plan(1);
+
+        var map = new OpenLayers.Map(document.body);
+        var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                    "http://labs.metacarta.com/wms/vmap0",
+                    {layers: 'basic'} );
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 5);
+        var control = new OpenLayers.Control.TouchNavigation();
+        map.addControl(control);
+        var handler = control.handlers.click;
+        handler.touchstart({xy: {x: 1, y: 1}, touches: ["foo", "bar"]});
+        handler.touchend({});
+        t.delay_call(1, function() {
+            t.eq(map.getZoom(), 4, "Did we zoom out?");
+            // tear down
+            map.destroy();
+        });
+
+    }
+
   </script>
 </head>
 <body>
