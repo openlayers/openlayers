@@ -329,6 +329,43 @@
         });
     }
 
+    function test_touch_ignoresimulatedclick(t) {
+        t.plan(2);
+
+        // set up
+
+        var log;
+
+        var map = new OpenLayers.Map('map');
+        var control = {map: map};
+
+        var callbacks = {
+            'dblclick': function(e) {
+                log.dblclick = {x: e.xy.x, y: e.xy.y,
+                   lastTouches: e.lastTouches};
+            }
+        };
+
+        var handler = new OpenLayers.Handler.Click(
+                control, callbacks,
+                {'double': true, pixelTolerance: null});
+
+        // test
+
+        log = {};
+        handler.touchstart({xy: {x: 1, y: 1}, touches: ["foo"]});
+        handler.touchend({});
+        handler.touchstart({xy: {x: 1, y: 1}, touches: ["foo"]});
+        handler.touchend({type: "click"});
+
+        t.eq(handler.touch, true, "Touch property should be true");
+        
+        t.ok(log.dblclick == undefined, "dblclick callback not called with simulated click");
+
+        // tear down
+        map.destroy();
+    }
+
     function test_touch_dblclick(t) {
         t.plan(5);
 
