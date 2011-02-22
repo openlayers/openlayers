@@ -11,20 +11,36 @@
     <script type="text/javascript" src="mobile-navigation.js"></script>
   </head>
   <body onload="init()">
-    <h1 id="title">TouchNavigation Control</h1>
+    <h1 id="title">Mobile Navigation</h1>
 
     <div id="tags">
         mobile, touch, drag, move, zoom, navigate
     </div>
 
-    <div id="shortdesc">Demonstrate TouchNavigation Control features</div>
+    <div id="shortdesc">Demonstrate map navigation on mobile</div>
 
     <div id="map" class="smallmap"></div>
     <div id="docs">
+
         <p>
-            This example demonstrates a couple features of the TouchNavigation
-            control. The TouchNavigation control controls most map dragging,
-            movement, zooming, etc, optimized for mobile devices.
+            This example demonstates what OpenLayers provides for map
+            navigation on mobile.
+        </p>
+
+        <p>
+            The TouchNavigation control allows to pan the map with touch
+            gestures on the screen &ndash; "touchstart", "touchmove",
+            "touchend" sequences. It also allows to zoom in with double taps,
+            and to zoom out with two-finger single taps. The latter is only
+            available on devices supporting multi-touch. Note that in most
+            devices Android doesn't support multi-touch in the browser.
+        </p>
+
+        <p>
+            The ZoomPanel control provides + and - buttons for zooming in and
+            out. These buttons should work on any device, and the zoom out
+            button is especially needed for devices that don't support
+            multi-touch.
         </p> 
         <p>
             See the <a href="mobile-navigation.js" target="_blank">mobile-navigation.js
