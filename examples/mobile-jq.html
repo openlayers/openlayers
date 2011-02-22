@@ -37,7 +37,7 @@
                 bottom: 5px;
                 right: 5px;
             }
-            #tags {
+            #title, #tags, #shortdesc {
                 display: none;
             }
         </style>
@@ -104,9 +104,13 @@
         </script>
     </head>
     <body>
+        <h1 id="title">Basic Mobile Example</h1>
         <div id="tags">
             mobile, jquery
         </div>
+        <p id="shortdesc">
+            Using jQuery Mobile to display an OpenLayers map.
+        </p>
         <div data-role="page">
             <div data-role="header">
                 <input id="west" type="button" data-icon="arrow-l" value="west">
