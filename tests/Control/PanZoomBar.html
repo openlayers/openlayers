@@ -67,20 +67,104 @@
 
     }
 
-    function test_Control_PanZoomBar_forceFixedZoomLevel_divClick (t) {
+    function test_Control_PanZoomBar_forceFixedZoomLevel_divClick(t){
         t.plan(1);
-        map = new OpenLayers.Map('map', {controls:[], fractionalZoom: true});
-        var layer = new OpenLayers.Layer.WMS("Test Layer",
-            "http://octo.metacarta.com/cgi-bin/mapserv?",
-            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map = new OpenLayers.Map('map', {
+            controls: [],
+            fractionalZoom: true
+        });
+        var layer = new OpenLayers.Layer.WMS("Test Layer", "http://octo.metacarta.com/cgi-bin/mapserv?", {
+            map: "/mapdata/vmap_wms.map",
+            layers: "basic"
+        });
         map.addLayer(layer);
-        control = new OpenLayers.Control.PanZoomBar({forceFixedZoomLevel: true});
+        control = new OpenLayers.Control.PanZoomBar({
+            forceFixedZoomLevel: true
+        });
         map.addControl(control);
-
-        control.divClick({'xy': {'x': 0, 'y': 49}, which: 1});
-        t.eq(map.zoom, 11, "forceFixedZoomLevel makes sure only fixed zoom levels are used even if the map has fractionalZoom");
+        
+        control.divClick({
+            'xy': {
+                'x': 0,
+                'y': 49
+            },
+            which: 1
+        });
+        t.eq(map.zoom, 11, "forceFixedZoomLevel makes sure that after a div click only fixed zoom levels are used even if the map has fractionalZoom");
+    }     
+         
+    function test_Control_PanZoomBar_forceFixedZoomLevel_zoomBarUp (t) {     
+        var numRandomDrags = 25;
+        // plan one static recorded test and two for every random drag
+        t.plan(1 + (numRandomDrags * 2));
+        
+        
+        var map = new OpenLayers.Map('map', {
+            controls: [],
+            fractionalZoom: true
+        });
+        var layer = new OpenLayers.Layer.WMS("Test Layer", "http://octo.metacarta.com/cgi-bin/mapserv?", {
+            map: "/mapdata/vmap_wms.map",
+            layers: "basic"
+        });
+        map.addLayer(layer);
+        
+        // zoom to a fractional ZoomLevel initially:
+        map.setCenter(new OpenLayers.LonLat(0, 0), 9.545);
+        
+        control = new OpenLayers.Control.PanZoomBar({
+            forceFixedZoomLevel: true
+        });
+        map.addControl(control);
+        
+        // The y values come from manually recording real values in an example
+        var evt = {
+            'xy': {
+                'x': 0,
+                'y': -10.633
+            },
+            which: 1
+        };
+        control.zoomStart = {
+            'x': 0,
+            'y': 5.366
+        };
+        control.mouseDragStart = {
+            'x': 0,
+            'y': -10.633
+        };
+        control.deltaY = control.zoomStart.y - evt.xy.y
+        control.zoomBarUp(evt);
+        t.eq(map.zoom, 11, "forceFixedZoomLevel makes sure that after dragging of the handle only fixed zoom levels are used even if the map has fractionalZoom");
+        
+        // randomly drag the handle around
+        // we should never get a zoom < 0 or a non-integer zoom, regardless of
+        // captured random values for start and end of the drag.
+        for (var i = 0; i < numRandomDrags; i++) {
+            var randStartY = Math.random() * 10 * ((i % 2 === 0) ? -1 : 1);
+            var randStopY = Math.random() * 160 * ((i % 2 === 1) ? -1 : 1);
+            var evt = {
+                'xy': {
+                    'x': 0,
+                    'y': randStopY
+                },
+                which: 1
+            };
+            control.zoomStart = {
+                'x': 0,
+                'y': randStartY
+            };
+            control.mouseDragStart = {
+                'x': 0,
+                'y': randStopY
+            };
+            control.deltaY = control.zoomStart.y - evt.xy.y
+            control.zoomBarUp(evt);
+            
+            t.eq(Math.floor(map.zoom), Math.ceil(map.zoom), 'Only integer zooms after random handle drag with forceFixedZoomLevel=true and fractionalZoom=true (current zoom was ' + map.zoom + ')');
+            t.ok(map.zoom >= 0, 'map.zoom is never < 0 after random handle drag with forceFixedZoomLevel=true and fractionalZoom=true');
+        }
     }
-
   </script>
 </head>
 <body>
