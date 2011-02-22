@@ -35,7 +35,8 @@ function init() {
             new OpenLayers.Control.DrawFeature(
                 vector, OpenLayers.Handler.Polygon, {id: "poly-control"}
             ),
-            new OpenLayers.Control.ModifyFeature(vector, {id: "mod-control"})
+            new OpenLayers.Control.ModifyFeature(vector, {id: "mod-control"}),
+            new OpenLayers.Control.ZoomPanel()
         ],
         layers: [new OpenLayers.Layer.OSM(), vector],
         center: new OpenLayers.LonLat(0, 0),
