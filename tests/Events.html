@@ -305,7 +305,21 @@
         events.unregister("something", instance, listener1);
         events.unregister("something", instance, listener2);
         events.unregister("something", instance, listener3);
-        
+    }
+
+    function test_Events_handleBrowserEvent(t) {
+        t.plan(2);
+        var events = new OpenLayers.Events({}, null, ['sometouchevent']);
+        events.on({'sometouchevent': function() {}});
+
+        // this test verifies that when handling a touch event we correctly
+        // set clientX and clientY in the event object 
+        var evt = {type: 'sometouchevent',
+                   touches: [{clientX: 1, clientY: 1}, {clientX: 2, clientY: 2}]
+                  };
+        events.handleBrowserEvent(evt);
+        t.eq(evt.clientX, 1, "evt.clientX value is correct");
+        t.eq(evt.clientY, 1, "evt.clientY value is correct");
     }
 
     function test_Events_destroy (t) {
