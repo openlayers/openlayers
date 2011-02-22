@@ -19,7 +19,7 @@ function init() {
             -20037508.34, -20037508.34, 20037508.34, 20037508.34
         ),
         controls: [
-            new OpenLayers.Control.Navigation(),
+            new OpenLayers.Control.Navigation({dragPanOptions: {enableKinetic: true}}),
             new OpenLayers.Control.Attribution(),
             new OpenLayers.Control.DrawFeature(
                 vector, OpenLayers.Handler.Point, {id: "point-control"}

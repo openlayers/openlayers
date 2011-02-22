@@ -1,0 +1,81 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>OpenLayers Kinetic Dragging Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <style type="text/css">
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map, layer;
+        function init(){
+            map = new OpenLayers.Map({
+                div: "map",
+                resolutions: [0.087890625, 0.0439453125, 0.02197265625, 0.010986328125],
+                panDuration: 100,
+                controls: [
+                    new OpenLayers.Control.Navigation(
+                        {dragPanOptions: {enableKinetic: true}}
+                    )
+                ]
+            });
+            layer = new OpenLayers.Layer.TileCache("TileCache Layer",
+                ["http://c0.tilecache.osgeo.org/wms-c/cache/",
+                 "http://c1.tilecache.osgeo.org/wms-c/cache/",
+                 "http://c2.tilecache.osgeo.org/wms-c/cache/",
+                 "http://c3.tilecache.osgeo.org/wms-c/cache/",
+                 "http://c4.tilecache.osgeo.org/wms-c/cache/"],
+                "basic",
+                {
+                    serverResolutions: [0.703125, 0.3515625, 0.17578125, 0.087890625,
+                                        0.0439453125, 0.02197265625, 0.010986328125,
+                                        0.0054931640625, 0.00274658203125, 0.001373291015625,
+                                        0.0006866455078125, 0.00034332275390625, 0.000171661376953125,
+                                        0.0000858306884765625, 0.00004291534423828125, 0.000021457672119140625],
+                    buffer: 4
+                }
+            );
+            map.addLayer(layer);
+            map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+        }
+    </script>
+  </head>
+  <body onload="init()">
+      <h1 id="title">Kinetic Dragging Example</h1>
+
+      <div id="tags">
+          kinetic, dragging
+      </div>
+
+      <p id="shortdesc">
+        Demonstrates Kinetic Dragging.
+      </p>
+
+    <div id="map" class="smallmap"></div>
+
+    <div id="docs">
+
+        <p>
+        OpenLayers Kinetic Dragging inspired from <a href="http://www.tile5.org">Tile5</a>, and
+        <a href="http://code.google.com/p/kineticscrolling/">kineticscrolling</a> for Google Maps API V3.
+        </p>
+
+        <p>
+
+        As shown in this example Kinetic Dragging is enabled by setting
+        <code>enableKinetic</code> to true in the config object provided to the
+        <code>Control.DragPan</code> constructor. When using
+        <code>Control.Navigation</code> or <code>Control.TouchNavigation</code>
+        providing options to the underlying <code>Control.DragPan</code>
+        instance is done through the <code>dragPanOptions</code> config
+        property.
+
+        </p>
+
+    </div>
+  </body>
+</html>
