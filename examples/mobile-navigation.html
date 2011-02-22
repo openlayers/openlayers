@@ -6,25 +6,8 @@
     <title>OpenLayers TouchNavigation Control</title>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
     <link rel="stylesheet" href="style.css" type="text/css" />
-    <script src="../lib/OpenLayers.js"></script>
-    <script type="text/javascript">
-        var map, layer;
-        function init() {
-            map = new OpenLayers.Map( 'map', { controls: [
-                new OpenLayers.Control.TouchNavigation({
-                    dragPanOptions: {
-                        interval: 0, // non-zero kills performance on some mobile phones
-                        enableKinetic: true
-                    }
-                })
-            ] });
-            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
-                    "http://vmap0.tiles.osgeo.org/wms/vmap0",
-                    {layers: 'basic'} );
-            map.addLayer(layer);
-            map.setCenter(new OpenLayers.LonLat(5, 40), 2);
-        }
-    </script>
+    <script type="text/javascript" src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript" src="mobile-navigation.js"></script>
   </head>
   <body onload="init()">
     <h1 id="title">TouchNavigation Control</h1>
@@ -37,9 +20,15 @@
 
     <div id="map" class="smallmap"></div>
     <div id="docs">
-        This example demonstrates a couple features of the TouchNavigation
-        control. The TouchNavigation control controls most map dragging,
-        movement, zooming, etc, optimized for mobile devices.
+        <p>
+            This example demonstrates a couple features of the TouchNavigation
+            control. The TouchNavigation control controls most map dragging,
+            movement, zooming, etc, optimized for mobile devices.
+        </p> 
+        <p>
+            See the <a href="mobile-navigation.js" target="_blank">mobile-navigation.js
+            source</a> to see how this is done.
+        </p> 
     </div>
   </body>
 </html>
