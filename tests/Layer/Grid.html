@@ -195,7 +195,7 @@
         };
         layer._moveGriddedTiles = function() {
             g_WhichFunc = "MoveGridded";
-            g_Bounds = layer._bounds;
+            g_Bounds = layer.map.getExtent();
         };
         var clearTestBounds = function() {
             g_WhichFunc = null;
