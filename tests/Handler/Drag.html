@@ -289,6 +289,57 @@
         
     }
 
+    function test_Handler_Drag_touch(t) {
+        // In this test we verify that "touchstart", "touchmove", and
+        // "touchend" events set expected states in the drag handler.
+        // We also verify that we stop event bubbling as appropriate.
+
+        t.plan(12);
+
+        // set up
+
+        var m = new OpenLayers.Map('map', {controls: []});
+        var c = new OpenLayers.Control();
+        m.addControl(c);
+        var h = new OpenLayers.Handler.Drag(c, {
+            done: function(px) { log = px; }});
+        h.activate();
+
+        var _stop = OpenLayers.Event.stop;
+        OpenLayers.Event.stop = function(e) { log = e; };
+
+        var Px = OpenLayers.Pixel, e, log;
+
+        // test
+
+        e = {touches: [{}], xy: new Px(0, 0)};
+        m.events.triggerEvent('touchstart', e);
+        t.eq(h.started, true, '[touchstart] started is set');
+        t.eq(h.start.x, 0, '[touchstart] start.x is correct');
+        t.eq(h.start.y, 0, '[touchstart] start.y is correct');
+        t.eq(log, undefined, '[touchstart] event is not stopped');
+
+        e = {xy: new Px(1, 1)};
+        m.events.triggerEvent('touchmove', e);
+        t.eq(h.dragging, true, '[touchmove] dragging is set');
+        t.eq(h.last.x, 1, '[touchstart] last.x is correct');
+        t.eq(h.last.y, 1, '[touchstart] last.y is correct');
+        t.ok(log == e, '[touchmove] event is stopped');
+
+        e = {xy: new Px(2, 2)};
+        m.events.triggerEvent('touchend', e);
+        t.eq(h.started, false, '[touchend] started is reset');
+        t.eq(h.started, false, '[touchend] started is reset');
+        // the "done" callback gets the position of the last touchmove
+        t.eq(log.x, 1, '[touchend] done callback got correct x position');
+        t.eq(log.y, 1, '[touchend] done callback got correct y position');
+
+        // tear down
+
+        OpenLayers.Event.stop = _stop;
+        m.destroy();
+    }
+
     function test_Handler_Drag_submethods(t) {
         t.plan(8);
         
