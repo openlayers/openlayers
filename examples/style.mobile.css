@@ -1,0 +1,25 @@
+div.olControlZoomPanel {
+    height: 108px
+    width: 36px;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+div.olControlZoomPanel div {
+    width: 36px;
+    height: 36px;
+    background-image: url(img/mobile-zoombar.png);
+    left: 0;
+}
+div.olControlZoomPanel .olControlZoomInItemInactive {
+    top: 0;
+    background-position: 0 0;
+}
+div.olControlZoomPanel .olControlZoomToMaxExtentItemInactive {
+    top: 36px;
+    background-position: 0 -36px;
+}
+div.olControlZoomPanel .olControlZoomOutItemInactive {
+    top: 72px;
+    background-position: 0 -72px;
+}
