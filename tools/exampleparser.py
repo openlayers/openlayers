@@ -20,7 +20,14 @@ except ImportError:
 
 missing_deps = False
 try:
-    import simplejson
+    import json
+except ImportError:
+    try:
+        import simplejson as json
+    except ImportError, E:
+        missing_deps = E 
+    
+try:
     from BeautifulSoup import BeautifulSoup
 except ImportError, E:
     missing_deps = E 
@@ -196,7 +203,7 @@ def wordIndex(examples):
 if __name__ == "__main__":
 
     if missing_deps:
-        print "This script requires simplejson and BeautifulSoup. You don't have them. \n(%s)" % E
+        print "This script requires json or simplejson and BeautifulSoup. You don't have them. \n(%s)" % E
         sys.exit()
     
     if len(sys.argv) > 1:
@@ -237,7 +244,7 @@ if __name__ == "__main__":
     
     index = wordIndex(exampleList)
 
-    json = simplejson.dumps({"examples": exampleList, "index": index})
+    json = json.dumps({"examples": exampleList, "index": index})
     #give the json a global variable we can use in our js.  This should be replaced or made optional.
     json = 'var info=' + json 
     outFile.write(json)
