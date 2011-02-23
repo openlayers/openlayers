@@ -58,11 +58,11 @@
 //         t.plan( 2 );    
 
         if (OpenLayers.BROWSER_NAME != "firefox" && OpenLayers.BROWSER_NAME != "mozilla") {
-          t.plan(4);
+            t.plan(5);
         } else {
-          t.plan(0);
-          t.debug_print("Firefox gives different results for different browsers on setMap on EventPane, so just don't run it for now.") 
-          return;
+            t.plan(0);
+            t.debug_print("Firefox gives different results for different browsers on setMap on EventPane, so just don't run it for now.") 
+            return;
         }
         var map = new OpenLayers.Map('map');
         
@@ -84,19 +84,24 @@
         layer2.getWarningHTML = function() { this.warning = true; return ""; }
 
         map.addLayer(layer2);
-        t.ok( !layer2.warning, "warning not registered on mapObject load" );
+        t.ok(!layer2.warning, "warning not registered on mapObject load");
 
-        map.events.register("mousemove", map, function () {
-            t.ok(true, "got mouse move");
+        var log = [];
+        map.events.register("mousemove", map, function(event) {
+            log.push(event);
         });
         
-        if( document.createEvent ) { // Mozilla
-          var evObj = document.createEvent('MouseEvents');
-          evObj.initEvent( 'mousemove', true, false );
-          layer.pane.dispatchEvent(evObj);
-        } else if( document.createEventObject ) { // IE
-          layer.pane.fireEvent('onmousemove');
+        if (document.createEvent) { // Mozilla
+            var evObj = document.createEvent('MouseEvents');
+            evObj.initEvent('mousemove', true, false);
+            layer.pane.dispatchEvent(evObj);
+        } else if(document.createEventObject) { // IE
+            layer.pane.fireEvent('onmousemove');
         }
+        
+        t.eq(log.length, 1, "got one event");
+        t.eq(log[0] && log[0].type, "mousemove", "got mousemove event");
+        
     }
 
     function test_Layer_EventPane_setVisibility (t) {
