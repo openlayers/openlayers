@@ -58,7 +58,7 @@
 //         t.plan( 2 );    
 
         if (OpenLayers.BROWSER_NAME != "firefox" && OpenLayers.BROWSER_NAME != "mozilla") {
-            t.plan(5);
+            t.plan(4);
         } else {
             t.plan(0);
             t.debug_print("Firefox gives different results for different browsers on setMap on EventPane, so just don't run it for now.") 
@@ -100,7 +100,6 @@
         }
         
         t.eq(log.length, 1, "got one event");
-        t.eq(log[0] && log[0].type, "mousemove", "got mousemove event");
         
     }
 
