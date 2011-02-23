@@ -74,7 +74,7 @@
                     t.delay_call(2, function() {
                         t.ok( wnd.mapper.getCenter().lat > wnd.centerLL.lat, "1) Pan up works correctly" );
                         t.ok(!flag.mousedown, "1) mousedown does not get to the map");
-                        t.ok(flag.mouseup, "1) mouseup does get to the map");
+                        t.ok(!flag.mouseup, "1) mouseup does not get to the map");
                         t.ok(!flag.click, "1) click does not get to the map");
                         t.ok(!flag.dblclick, "1) dblclick does not get to the map");
                         resetFlags();
@@ -83,7 +83,7 @@
                     }, 2, function() {    
                     t.ok( wnd.mapper.getCenter().lon < wnd.centerLL.lon, "2) Pan left works correctly" );
                     t.ok(!flag.mousedown, "2) mousedown does not get to the map");
-                    t.ok(flag.mouseup, "2) mouseup does get to the map");
+                    t.ok(!flag.mouseup, "2) mouseup does not get to the map");
                     t.ok(!flag.click, "2) click does not get to the map");
                     t.ok(!flag.dblclick, "2) dblclick does not get to the map");
                     resetFlags();
@@ -92,7 +92,7 @@
                     }, 2, function() {
                     t.ok( wnd.mapper.getCenter().lon == wnd.centerLL.lon, "3) Pan right works correctly" );
                     t.ok(!flag.mousedown, "3) mousedown does not get to the map");
-                    t.ok(flag.mouseup, "3) mouseup does get to the map");
+                    t.ok(!flag.mouseup, "3) mouseup does not get to the map");
                     t.ok(!flag.click, "3) click does not get to the map");
                     t.ok(!flag.dblclick, "3) dblclick does not get to the map");
                     resetFlags();
@@ -101,7 +101,7 @@
                     }, 2, function() {
                     t.ok( wnd.mapper.getCenter().lat == wnd.centerLL.lat, "4) Pan down works correctly" );
                     t.ok(!flag.mousedown, "4) mousedown does not get to the map");
-                    t.ok(flag.mouseup, "4) mouseup does get to the map");
+                    t.ok(!flag.mouseup, "4) mouseup does not get to the map");
                     t.ok(!flag.click, "4) click does not get to the map");
                     t.ok(!flag.dblclick, "4) dblclick does not get to the map");
                     resetFlags();
@@ -110,7 +110,7 @@
                     }, 2, function() {
                     t.eq( wnd.mapper.getZoom(), 6, "5) zoomin works correctly" );
                     t.ok(!flag.mousedown, "5) mousedown does not get to the map");
-                    t.ok(flag.mouseup, "5) mouseup does get to the map");
+                    t.ok(!flag.mouseup, "5) mouseup does not get to the map");
                     t.ok(!flag.click, "5) click does not get to the map");
                     t.ok(!flag.dblclick, "5) dblclick does not get to the map");
                     resetFlags();
@@ -119,7 +119,7 @@
                     }, 2, function() {
                     t.eq( wnd.mapper.getZoom(), 5, "6) zoomout works correctly" );
                     t.ok(!flag.mousedown, "6) mousedown does not get to the map");
-                    t.ok(flag.mouseup, "6) mouseup does get to the map");
+                    t.ok(!flag.mouseup, "6) mouseup does not get to the map");
                     t.ok(!flag.click, "6) click does not get to the map");
                     t.ok(!flag.dblclick, "6) dblclick does not get to the map");
                     resetFlags();
@@ -128,7 +128,7 @@
                     }, 2, function() {
                     t.eq( wnd.mapper.getZoom(), 2, "7) zoomworld works correctly" );
                     t.ok(!flag.mousedown, "7) mousedown does not get to the map");
-                    t.ok(flag.mouseup, "7) mouseup does get to the map");
+                    t.ok(!flag.mouseup, "7) mouseup does not get to the map");
                     t.ok(!flag.click, "7) click does not get to the map");
                     t.ok(!flag.dblclick, "7) dblclick does not get to the map");
                     resetFlags();

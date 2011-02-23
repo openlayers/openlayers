@@ -294,7 +294,7 @@
         // "touchend" events set expected states in the drag handler.
         // We also verify that we stop event bubbling as appropriate.
 
-        t.plan(12);
+        t.plan(14);
 
         // set up
 
@@ -302,37 +302,44 @@
         var c = new OpenLayers.Control();
         m.addControl(c);
         var h = new OpenLayers.Handler.Drag(c, {
-            done: function(px) { log = px; }});
+            done: function(px) { 
+                log.push(px); 
+            }
+        });
         h.activate();
 
         var _stop = OpenLayers.Event.stop;
-        OpenLayers.Event.stop = function(e) { log = e; };
+        OpenLayers.Event.stop = function(e) {
+            log.push(e);
+        };
 
-        var Px = OpenLayers.Pixel, e, log;
+        var Px = OpenLayers.Pixel, e;
+        var log = [];
 
         // test
-
         e = {touches: [{}], xy: new Px(0, 0)};
         m.events.triggerEvent('touchstart', e);
         t.eq(h.started, true, '[touchstart] started is set');
         t.eq(h.start.x, 0, '[touchstart] start.x is correct');
         t.eq(h.start.y, 0, '[touchstart] start.y is correct');
-        t.eq(log, undefined, '[touchstart] event is not stopped');
+        t.eq(log.length, 1, '[touchstart] one item in log');
+        t.ok(log[0] === e, "touchstart", '[touchstart] event is stopped');
 
         e = {xy: new Px(1, 1)};
         m.events.triggerEvent('touchmove', e);
         t.eq(h.dragging, true, '[touchmove] dragging is set');
-        t.eq(h.last.x, 1, '[touchstart] last.x is correct');
-        t.eq(h.last.y, 1, '[touchstart] last.y is correct');
-        t.ok(log == e, '[touchmove] event is stopped');
+        t.eq(h.last.x, 1, '[touchmove] last.x is correct');
+        t.eq(h.last.y, 1, '[touchmove] last.y is correct');
+        t.eq(log.length, 1, '[touchmove] one item in log (event is not stopped)');
 
         e = {xy: new Px(2, 2)};
         m.events.triggerEvent('touchend', e);
         t.eq(h.started, false, '[touchend] started is reset');
         t.eq(h.started, false, '[touchend] started is reset');
         // the "done" callback gets the position of the last touchmove
-        t.eq(log.x, 1, '[touchend] done callback got correct x position');
-        t.eq(log.y, 1, '[touchend] done callback got correct y position');
+        t.eq(log.length, 2, '[touchend] two items in log');
+        t.ok(log[1] instanceof Px, '[touchend] got');
+        t.ok(log[1].equals(e.xy), '[touchend] done callback got correct position');
 
         // tear down
 
