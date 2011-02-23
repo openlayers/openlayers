@@ -121,3 +121,19 @@ h6 {
         display : none;
     }
 }
+@media only screen and (orientation: landscape) {
+    #shortdesc {
+       float: right;
+       width: 25%;
+    }
+    #map {
+        width: 70%;
+    }
+    #docs {
+        font-size: 12px;
+    }
+}
+body {
+    -webkit-text-size-adjust: none;
+}
+
