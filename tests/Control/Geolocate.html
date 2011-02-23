@@ -62,6 +62,31 @@
         map.removeControl(control);
         map.setCenter(centerLL);
     }
+    function test_getCurrentLocation(t) {
+        t.plan(5);
+        var control = new OpenLayers.Control.Geolocate({
+            geolocation: geolocation
+        });
+        map.addControl(control);
+        t.eq(control.getCurrentLocation(), false, 'getCurrentLocation return false if control hasnt been activated');
+        control.activate();
+        map.setCenter(centerLL);
+        t.eq(control.getCurrentLocation(), true, 'getCurrentLocation return true if control has been activated');
+        var center = map.getCenter();
+        t.eq(center.lon, 10, 'bound control sets the map lon when calling getCurrentLocation');
+        t.eq(center.lat, 10, 'bound control sets the map lat when calling getCurrentLocation');
+        control.deactivate();
+        map.removeControl(control);
+        map.setCenter(centerLL);
+        var control2 = new OpenLayers.Control.Geolocate({
+            geolocation: geolocation
+        });
+        map.addControl(control2);
+        t.eq(control2.getCurrentLocation(), false, 'getCurrentLocation return false if control is in watch mode');
+        control2.deactivate();
+        map.removeControl(control2);
+        map.setCenter(centerLL);
+    }
     function test_watch(t) {
         t.plan(2);
         var control = new OpenLayers.Control.Geolocate({
