@@ -121,7 +121,7 @@ h6 {
         display : none;
     }
 }
-@media only screen and (orientation: landscape) {
+@media only screen and (orientation: landscape) and (max-width: 600px) {
     #shortdesc {
        float: right;
        width: 25%;
