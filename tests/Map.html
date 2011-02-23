@@ -1667,6 +1667,25 @@
         map.destroy();
         
     }
+    function test_pixel_lonlat(t) {
+        
+        t.plan(4);
+
+        var map = new OpenLayers.Map({
+            div: "map",
+            layers: [
+                new OpenLayers.Layer("name", {isBaseLayer:true})
+            ]
+        });
+        map.zoomToMaxExtent();
+        var px = map.getPixelFromLonLat(map.getLonLatFromPixel(new OpenLayers.Pixel(100, 100)));
+        t.eq(px.x, 100, "x is the same in and ot");
+        t.eq(px.y, 100, "y is the same in and out");
+        var ll = map.getLonLatFromPixel(map.getPixelFromLonLat(new OpenLayers.LonLat(100, 100)));
+        t.ok((ll.lon > (100 -map.getResolution()) && (ll.lon < (100 + map.getResolution()))), "lon is the same in and ot");
+        t.ok((ll.lat > (100 -map.getResolution()) && (ll.lat < (100 + map.getResolution()))), "lat is the same in and ot");
+        map.destroy();
+    }    
 
   </script>
 </head>
