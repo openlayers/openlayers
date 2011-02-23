@@ -64,6 +64,7 @@
         t.ok( addpx.equals(ll), "addpx is set correctly");
         
     //null values
+        OpenLayers.Lang.setCode('en');
         var desiredMsg = "You must pass both lon and lat values to the add function.";
         OpenLayers.Console.error = function(msg) {
             t.eq(msg, desiredMsg, "error correctly reported");

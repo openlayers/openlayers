@@ -74,6 +74,7 @@
         t.ok( pixel.equals(px), "returned pixel is correct");
 
     //null values
+        OpenLayers.Lang.setCode('en');        
         var desiredMsg = "You must pass both x and y values to the add function.";
         OpenLayers.Console.error = function(msg) {
             t.eq(msg, desiredMsg, "error correctly reported");
