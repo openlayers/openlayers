@@ -72,4 +72,11 @@ if __name__ == '__main__':
   opt = optparse.OptionParser(usage="%s [options] [config_file] [output_file]\n  Default config_file is 'full.cfg', Default output_file is 'OpenLayers.js'")
   opt.add_option("-c", "--compressor", dest="compressor", help="compression method: one of 'jsmin', 'minimize', or 'none'", default="jsmin")
   (options, args) = opt.parse_args()
-  build(*args, options=options)
+  if not len(args):
+    build(options=options)
+  elif len(args) == 1:
+    build(args[0], options=options)
+  elif len(args) == 2:
+    build(args[0], args[1], options=options)
+  else:
+    print "Wrong number of arguments"
