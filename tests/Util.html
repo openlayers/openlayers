@@ -1101,6 +1101,12 @@
         t.eq(OpenLayers.Util.toFloat(b1), OpenLayers.Util.toFloat(b2),
             "toFloat rounds large floats correctly #2");
     }
+    function test_getFormattedLonLat(t) {
+        t.plan(1);
+        var z = 2 + (4/60) - 0.000002 ;
+        t.eq(OpenLayers.Util.getFormattedLonLat(z,"lon"), "02°04'00\"E",
+            "LonLat does not show 60 seconds.");
+    }
   </script>
 </head>
 <body>
