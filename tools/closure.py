@@ -2,7 +2,7 @@ import sys
 import os
 import tempfile
 
-path = os.path.join(os.path.dirname(__file__), "closure-compiler.jar")
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), "closure-compiler.jar"))
 if not os.path.exists(path):
     raise Exception("No closure-compiler.jar at %s; read README.txt!" % path)
 
