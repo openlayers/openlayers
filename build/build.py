@@ -12,6 +12,11 @@ def build(config_file = None, output_file = None, options = None):
         have_compressor.append("jsmin")
     except ImportError:
         print "No jsmin"
+    try:
+        import closure_ws
+        have_compressor.append("closure_ws")
+    except ImportError:
+        print "No closure_ws"
     
     try:
         import minimize
@@ -39,14 +44,14 @@ def build(config_file = None, output_file = None, options = None):
 
     print "Merging libraries."
     merged = mergejs.run(sourceDirectory, None, configFilename)
+    print "Compressing using %s" % use_compressor
     if use_compressor == "jsmin":
-        print "Compressing using jsmin."
         minimized = jsmin.jsmin(merged)
     elif use_compressor == "minimize":
-        print "Compressing using minimize."
         minimized = minimize.minimize(merged)
+    elif use_compressor == "closure_ws":
+        minimized = closure_ws.minimize(merged)      
     else: # fallback
-        print "Not compressing."
         minimized = merged 
     print "Adding license file."
     minimized = file("license.txt").read() + minimized
