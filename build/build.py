@@ -3,40 +3,46 @@
 import sys
 sys.path.append("../tools")
 import mergejs
+import optparse
 
-def build():
-    have_compressor = None
+def build(config_file = None, output_file = None, options = None):
+    have_compressor = []
     try:
         import jsmin
-        have_compressor = "jsmin"
+        have_compressor.append("jsmin")
     except ImportError:
-        try:
-            import minimize
-            have_compressor = "minimize"
-        except Exception, E:
-            print E
-            pass
+        print "No jsmin"
+    
+    try:
+        import minimize
+        have_compressor.append("minimize")
+    except ImportError:
+        print "No minimize"
+
+    use_compressor = None
+    if options.compressor and options.compressor in have_compressor:
+        use_compressor = options.compressor
 
     sourceDirectory = "../lib"
     configFilename = "full.cfg"
     outputFilename = "OpenLayers.js"
 
-    if len(sys.argv) > 1:
-        configFilename = sys.argv[1]
+    if config_file:
+        configFilename = config_file
         extension = configFilename[-4:]
 
         if extension  != ".cfg":
-            configFilename = sys.argv[1] + ".cfg"
+            configFilename = config_file + ".cfg"
 
-    if len(sys.argv) > 2:
-        outputFilename = sys.argv[2]
+    if output_file:
+        outputFilename = output_file
 
     print "Merging libraries."
     merged = mergejs.run(sourceDirectory, None, configFilename)
-    if have_compressor == "jsmin":
+    if use_compressor == "jsmin":
         print "Compressing using jsmin."
         minimized = jsmin.jsmin(merged)
-    elif have_compressor == "minimize":
+    elif use_compressor == "minimize":
         print "Compressing using minimize."
         minimized = minimize.minimize(merged)
     else: # fallback
@@ -51,4 +57,7 @@ def build():
     print "Done."
 
 if __name__ == '__main__':
-  build()
+  opt = optparse.OptionParser(usage="%s [options] [config_file] [output_file]\n  Default config_file is 'full.cfg', Default output_file is 'OpenLayers.js'")
+  opt.add_option("-c", "--compressor", dest="compressor", help="compression method: one of 'jsmin', 'minimize', or 'none'", default="jsmin")
+  (options, args) = opt.parse_args()
+  build(*args, options=options)
