@@ -22,5 +22,7 @@ def minimize(code):
     response = conn.getresponse()
     data = response.read()
     conn.close()
-    print "%.3f seconds to compile", time.time() - t 
+    if data.startswith("Error"):
+        raise Exception(data)
+    print "%.3f seconds to compile" % (time.time() - t) 
     return data

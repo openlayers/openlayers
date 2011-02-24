@@ -13,6 +13,11 @@ def build(config_file = None, output_file = None, options = None):
     except ImportError:
         print "No jsmin"
     try:
+        import closure
+        have_compressor.append("closure")
+    except ImportError, E:
+        print "No closure (%s) % E"
+    try:
         import closure_ws
         have_compressor.append("closure_ws")
     except ImportError:
@@ -51,6 +56,8 @@ def build(config_file = None, output_file = None, options = None):
         minimized = minimize.minimize(merged)
     elif use_compressor == "closure_ws":
         minimized = closure_ws.minimize(merged)      
+    elif use_compressor == "closure":
+        minimized = closure.minimize(merged)      
     else: # fallback
         minimized = merged 
     print "Adding license file."
