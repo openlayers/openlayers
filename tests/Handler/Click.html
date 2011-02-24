@@ -50,7 +50,8 @@
             map: map
         };
         map.events.registerPriority = function(type, obj, func) {
-            var r = func();
+            var f = OpenLayers.Function.bind(func, obj)
+            var r = f({xy:null});
             if(typeof r == "string") {
                 // this is one of the mock handler methods
                 t.eq(OpenLayers.Util.indexOf(nonevents, type), -1,
