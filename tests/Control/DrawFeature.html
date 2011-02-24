@@ -60,7 +60,7 @@
     }
     
     function test_sketch_events(t) {
-        t.plan(6);
+        t.plan(12);
         var map = new OpenLayers.Map("map", {
             resolutions: [1]
         });
@@ -69,37 +69,62 @@
             isBaseLayer: true
         });
         var control = new OpenLayers.Control.DrawFeature(
-            layer, OpenLayers.Handler.Point
+            layer, OpenLayers.Handler.Path, {
+                handlerOptions: {persist: true}
+            }
         );
         map.addLayer(layer);
         map.addControl(control);
         map.zoomToMaxExtent();
-        control.activate();
         
-        var log = {};
+        var log;
         layer.events.on({
             sketchstarted: function(event) {
-                log.event = event;
+                log['sketchstarted'] = event;
             },
             sketchmodified: function(event) {
-                log.event = event;
+                log['sketchmodified'] = event;
             },
             sketchcomplete: function(event) {
-                log.event = event;
+                log['sketchcomplete'] = event;
             }
         });
         
         // mock up draw/modify of a point
+        log = {};
+        control.activate();
+        t.eq(log.sketchstarted.type, "sketchstarted", "[activate] sketchstarted triggered");
+        t.geom_eq(log.sketchstarted.vertex, new OpenLayers.Geometry.Point(-250, 175), "[activate] correct vertex");
+
+        log = {};
+        map.events.triggerEvent("mousemove", {xy: new OpenLayers.Pixel(0, 0)});
+        t.eq(log.sketchmodified.type, "sketchmodified", "[mousemove] sketchmodified triggered");
+        t.geom_eq(log.sketchmodified.vertex, new OpenLayers.Geometry.Point(-200, 125), "[mousemove] correct vertex");
+
         map.events.triggerEvent("mousedown", {xy: new OpenLayers.Pixel(0, 0)});
-        t.eq(log.event.type, "sketchstarted", "[mousedown] sketchstarted triggered");
-        t.geom_eq(log.event.vertex, new OpenLayers.Geometry.Point(-200, 125), "[mousedown] correct vertex");
+
+        log = {};
+        map.events.triggerEvent("mouseup", {xy: new OpenLayers.Pixel(0, 0)});
+        t.eq(log.sketchmodified.type, "sketchmodified", "[mouseup] sketchmodified triggered");
+        t.geom_eq(log.sketchmodified.vertex, new OpenLayers.Geometry.Point(-200, 125), "[mouseup] correct vertex");
+
+        log = {};
         map.events.triggerEvent("mousemove", {xy: new OpenLayers.Pixel(10, 10)});
-        t.eq(log.event.type, "sketchmodified", "[mousemove] sketchmodified triggered");
-        t.geom_eq(log.event.vertex, new OpenLayers.Geometry.Point(-190, 115), "[mousemove] correct vertex");
-        map.events.triggerEvent("mouseup", {xy: new OpenLayers.Pixel(10, 10)});
-        t.eq(log.event.type, "sketchcomplete", "[mouseup] sketchcomplete triggered");
-        t.geom_eq(log.event.feature.geometry, new OpenLayers.Geometry.Point(-190, 115), "[mouseup] correct geometry");
-        
+        t.eq(log.sketchmodified.type, "sketchmodified", "[mousemove] sketchmodified triggered");
+        t.geom_eq(log.sketchmodified.vertex, new OpenLayers.Geometry.Point(-190, 115), "[mousemove] correct vertex");
+
+        log = {};
+        map.events.triggerEvent("dblclick", {xy: new OpenLayers.Pixel(10, 10)});
+        t.eq(log.sketchcomplete.type, "sketchcomplete", "[dblclick] sketchcomplete triggered");
+        t.geom_eq(log.sketchcomplete.feature.geometry,
+                  new OpenLayers.Geometry.LineString([
+                      new OpenLayers.Geometry.Point(-200, 125),
+                      new OpenLayers.Geometry.Point(-190, 115)
+                  ]),
+                  "[dblclick] correct geometry");
+        t.eq(log.sketchstarted.type, "sketchstarted", "[dblclick] sketchstarted triggered");
+        t.geom_eq(log.sketchstarted.vertex, new OpenLayers.Geometry.Point(-250, 175), "[dblclick] correct vertex");
+
         map.destroy();
     }
 

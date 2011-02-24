@@ -52,6 +52,7 @@
                 xy: new OpenLayers.Pixel(x, y)
             })
         };
+        trigger("mousemove", 0, 0);
         trigger("mousedown", 0, 0);
         trigger("mouseup", 0, 0);
         trigger("mousemove", 10, 10);
@@ -60,9 +61,10 @@
         
         // confirm that the sketch persists
         t.eq(control.handler.layer.features.length, 1, "feature persists");
-        // cancel and see that sketch is gone
+        // cancel and see that sketch is gone (do not forget that
+        // cancel will create the new feature)
         control.cancel();
-        t.eq(control.handler.layer.features.length, 0, "feature is gone after cancel");
+        t.eq(control.handler.layer.features.length, 2, "feature is gone after cancel");
         
         map.destroy();
         
@@ -112,6 +114,7 @@
         var delay = control.partialDelay / 1000;
         
         // establish first point
+        trigger("mousemove", 0, 0);
         trigger("mousedown", 0, 0);
         trigger("mouseup", 0, 0);
 
@@ -187,6 +190,7 @@
                 log = [];
                 
                 // f) establish first freehand point
+                trigger("mousemove", 0, 0);
                 trigger("mousedown", 0, 0);
                 t.eq(log.length, 0, "f) no event fired yet")
                 
@@ -203,14 +207,14 @@
                 t.eq(log.length, 2, "h) event logged");
                 t.ok(log[1] && log[1].type == "measurepartial", "h) correct type");
                 t.ok(log[1] && log[1].measure == 20, "h) correct measure");
-                
+
                 // i) mouse up to finish
                 trigger("mouseup", 20, 0);
 
                 t.eq(log.length, 3, "i) event logged");
                 t.ok(log[2] && log[2].type == "measure", "i) correct type");
                 t.ok(log[2] && log[2].measure == 20, "i) correct measure");
-                
+
                 // j) clean up
                 log = [];
                 map.destroy();
@@ -224,7 +228,7 @@
     }
 
     function test_immediate(t) {
-        t.plan(29);
+        t.plan(32);
         
         var map = new OpenLayers.Map({
             div: "map",
@@ -237,7 +241,7 @@
             ],
             center: new OpenLayers.LonLat(0, 0)
         });
-        
+
         var log = [];
         var control = new OpenLayers.Control.Measure(
             OpenLayers.Handler.Path, {
@@ -255,7 +259,7 @@
         );
         map.addControl(control);
         control.activate();
-        
+
         // convenience function to trigger mouse events
         function trigger(type, x, y) {
             map.events.triggerEvent(type, {
@@ -267,6 +271,7 @@
         var delay = control.partialDelay / 1000;
 
         // a) establish first point
+        trigger("mousemove", 0, 0);
         trigger("mousedown", 0, 0);
         trigger("mouseup", 0, 0);
 
@@ -274,7 +279,7 @@
         trigger("mousemove", 0, 10);
 
         t.eq(log.length, 0, "a) no event fired yet");
-        
+
         t.delay_call(
             delay, function() {
                 // confirm measurepartial is fired
@@ -334,18 +339,21 @@
 
                 // i) double click to finish
                 trigger("mousedown", 0, 60);
+                t.eq(log.length, 7, "i) event logged");
+                t.eq(log[6] && log[6].type, "measurepartial", "i) correct type");
+                t.eq(log[6] && log[6].measure, 60, "i) correct measure");
                 trigger("mouseup", 0, 60);
-                t.eq(log.length, 6, "i) no event fired yet");
+                t.eq(log.length, 7, "i) no event fired yet");
             },
             delay, function() {
-                t.eq(log.length, 7, "i) event logged");
-                t.ok(log[6] && log[6].type == "measurepartial", "i) correct type");
-                t.ok(log[6] && log[6].measure == 60, "i) correct measure");
-                
-                trigger("dblclick", 0, 60);
                 t.eq(log.length, 8, "i) event logged");
-                t.ok(log[7] && log[7].type == "measure", "i) correct type");
-                t.ok(log[7] && log[7].measure == 60, "i) correct measure");
+                t.eq(log[7] && log[7].type, "measurepartial", "i) correct type");
+                t.eq(log[7] && log[7].measure, 60, "i) correct measure");
+
+                trigger("dblclick", 0, 60);
+                t.eq(log.length, 9, "i) event logged");
+                t.eq(log[8] && log[8].type, "measure", "i) correct type");
+                t.eq(log[8] && log[8].measure, 60, "i) correct measure");
                 // clear log
                 log = [];
 

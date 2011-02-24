@@ -35,13 +35,20 @@
     function test_setSource(t) {
         t.plan(5);
         
-        var layer1 = new OpenLayers.Layer.Vector();
-        var layer2 = new OpenLayers.Layer.Vector();
+        var layer1 = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        var layer2 = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
         
         var control = new OpenLayers.Control.Split({layer: layer1});
 
         var map = new OpenLayers.Map("map");
         map.addLayers([layer1, layer2]);
+        map.zoomToMaxExtent();
         map.addControl(control);
         control.activate();
         
@@ -64,12 +71,16 @@
     function test_activate(t) {
         t.plan(8);
         
-        var layer = new OpenLayers.Layer.Vector();
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
         var control = new OpenLayers.Control.Split({layer: layer});
         var map = new OpenLayers.Map("map");
         map.addLayer(layer);
+        map.zoomToMaxExtent();
         map.addControl(control);
-        
+
         // test activation with no source layer
         control.activate();
         t.eq(control.active, true, "control is active");
@@ -93,12 +104,16 @@
         
         t.plan(7);
         
-        var layer = new OpenLayers.Layer.Vector();
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
         var control = new OpenLayers.Control.Split({layer: layer});
         var map = new OpenLayers.Map("map");
         map.addLayer(layer);
+        map.zoomToMaxExtent();
         map.addControl(control);
-        
+
         // activate and check sketch handler
         control.activate();
         t.ok(control.handler, "sketch handler present");
