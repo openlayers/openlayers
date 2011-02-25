@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
         <title>OpenLayers with jQuery Mobile</title>
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0;">
         <meta name="apple-mobile-web-app-capable" content="yes">
@@ -10,134 +9,66 @@
         <script src="http://code.jquery.com/jquery-1.5.min.js"></script>
         <script src="http://code.jquery.com/mobile/1.0a3/jquery.mobile-1.0a3.min.js"></script>
         <link rel="stylesheet" href="style.mobile.css" type="text/css">
-        <script src="../lib/OpenLayers.js"></script>
+        <link rel="stylesheet" href="style.mobile-jq.css" type="text/css">
+        <script src="../lib/OpenLayers.js?mobile"></script>
         <script src="mobile-base.js"></script>
-        <style>
-            html {
-                height: 100%;
-            }
-            body {
-                margin: 0;
-                padding: 0;
-                height: 100%;
-            }
-            .ui-content {
-                padding: 0;
-            }
-            .ui-footer, .ui-header {
-                text-align: center;
-                padding: 5px 0;
-            }
-            #map {
-                width: 100%;
-                height: 100%;
-            }
-            .olControlAttribution {
-                font-size: 10px;
-                bottom: 5px;
-                right: 5px;
-            }
-            #title, #tags, #shortdesc {
-                display: none;
-            }
-        </style>
-        <script>
-            $(document).ready(function() {
-                // fix height of content to allow for header & footer
-                function fixContentHeight() {
-                    var header = $("div[data-role='header']:visible");
-                    var footer = $("div[data-role='footer']:visible");
-                    var content = $("div[data-role='content']:visible:visible");
-                    var viewHeight = $(window).height();
-
-                    var contentHeight = viewHeight - header.outerHeight() - footer.outerHeight();
-                    if ((content.outerHeight() + header.outerHeight() + footer.outerHeight()) !== viewHeight) {
-                        contentHeight -= (content.outerHeight() - content.height());
-                        content.height(contentHeight);
-                    }
-                    if (window.map) {
-                        map.updateSize();
-                    } else {
-                        // initialize map
-                        init();
-                    }
-                }
-                $(window).bind("orientationchange resize pageshow", fixContentHeight);
-                fixContentHeight();
-                
-                // add behavior to navigation buttons
-                $("#west").click(function() {
-                    pan(-0.25, 0);
-                });
-                $("#north").click(function() {
-                    pan(0, -0.25);
-                });
-                $("#south").click(function() {
-                    pan(0, 0.25);
-                });
-                $("#east").click(function() {
-                    pan(0.25, 0);
-                });
-                
-                // add behavior to drawing controls
-                function deactivateControls() {
-                    $.each(map.getControlsByClass(/DrawFeature/), function(index, control) {
-                        control.deactivate();
-                    });
-                    map.getControlsBy("id", "mod-control")[0].deactivate();
-                }
-                $("#nav, #point, #line, #poly, #mod").change(function(event) {
-                    deactivateControls();
-                    // jquery mobile bug regarding change makes us go through all inputs
-                    // https://github.com/jquery/jquery-mobile/issues/issue/1088
-                    var val = $("input:radio[name=controls]:checked").val();
-                    if (val !== "nav") {
-                        map.getControlsBy("id", val + "-control")[0].activate();
-                    }
-                });
-                
-                $("#nav").click();
-                $("#nav").click(); // jquery mobile bug forces 2 calls to refresh radio ui
-                
-            });
-
-        </script>
+        <script src="mobile-jq.js"></script>
     </head>
     <body>
         <h1 id="title">OpenLayers with jQuery Mobile</h1>
         <div id="tags">
-            mobile, jquery
+          mobile, jquery
         </div>
         <p id="shortdesc">
-            Using jQuery Mobile to display an OpenLayers map.
+          Using jQuery Mobile to display an OpenLayers map.
         </p>
-        <div data-role="page">
-            <div data-role="header">
-                <input id="west" type="button" data-icon="arrow-l" value="west">
-                <input id="north" type="button" data-icon="arrow-u" value="north">
-                <input id="south" type="button" data-icon="arrow-d" value="south">
-                <input id="east" type="button" data-icon="arrow-r" value="east">
-            </div>
 
-            <div data-role="content">
-                <div id="map"></div>
-            </div>
+        <div data-role="page" id="mappage">
+          <div data-role="content">
+            <div id="map"></div>
+          </div>
 
-            <div data-role="footer">
-                <form id="controls">
-                    <fieldset data-role="controlgroup" data-type="horizontal" data-role="fieldcontain">
-                        <input id="nav" type="radio" name="controls" value="nav" checked="checked">
-                        <label for="nav">navigate</label>
-                        <input id="point" type="radio" name="controls" value="point">
-                        <label for="point">point</label>
-                        <input id="line" type="radio" name="controls" value="line">
-                        <label for="line">line</label>
-                        <input id="poly" type="radio" name="controls" value="poly">
-                        <label for="poly">poly</label>
-                        <input id="mod" type="radio" name="controls" value="mod">
-                        <label for="mod">modify</label>
-                    </fieldset>
-                </form>
+          <div data-role="footer">
+            <a href="#searchpage" data-icon="search" data-role="button">Search</a>
+            <a href="#" id="locate" data-icon="locate" data-role="button">Locate</a>
+            <a href="#layerspage" data-icon="layers" data-role="button">Layers</a>
+          </div>
+          <div id="navigation" data-role="controlgroup" data-type="vertical">
+            <a href="#" data-role="button" data-icon="plus" id="plus"
+               data-iconpos="notext"></a>
+            <a href="#" data-role="button" data-icon="minus" id="minus"
+               data-iconpos="notext"></a>
+          </div>
+        </div>
+
+        <div data-role="page" id="searchpage">
+          <div data-role="header">
+            <h1>Search</h1>
+          </div>
+          <div data-role="fieldcontain">
+            <input type="search" name="query" id="query"
+                   value="" placeholder="Search for places"
+                   autocomplete="off"/>
+          </div>
+          <ul data-role="listview" data-inset="true" id="search_results"></ul> 
+        </div>
+
+        <div data-role="page" id="layerspage">
+          <div data-role="header">
+            <h1>Layers</h1>
+          </div>
+          <div data-role="content">
+            <ul data-role="listview" data-inset="true" data-theme="d" data-dividertheme="c" id="layerslist"> 
+          </div>
+        </div>
+
+        <div id="popup" data-role="dialog">
+            <div data-position="inline" data-theme="d" data-role="header">
+                <h1>Details</h1>
+            </div>
+            <div data-theme="c" data-role="content">
+                <ul id="details-list" data-role="listview">
+                </ul>
             </div>
         </div>
     </body>
