@@ -1,17 +1,30 @@
-var map, layer;
+var map;
+
 function init() {
-    map = new OpenLayers.Map('map', { controls: [
-        new OpenLayers.Control.TouchNavigation({
-            dragPanOptions: {
-                interval: 0, // non-zero kills performance on some mobile phones
-                enableKinetic: true
-            }
-        }),
-        new OpenLayers.Control.ZoomPanel()
-    ] });
-    layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
-            "http://vmap0.tiles.osgeo.org/wms/vmap0",
-            {layers: 'basic'} );
-    map.addLayer(layer);
-    map.setCenter(new OpenLayers.LonLat(5, 40), 2);
+    map = new OpenLayers.Map({
+        div: "map",
+        theme: null,
+        projection: new OpenLayers.Projection("EPSG:900913"),
+        units: "m",
+        numZoomLevels: 18,
+        maxResolution: 156543.0339,
+        maxExtent: new OpenLayers.Bounds(
+            -20037508.34, -20037508.34, 20037508.34, 20037508.34
+        ),
+        controls: [
+            new OpenLayers.Control.TouchNavigation({
+                dragPanOptions: {
+                    interval: 0, // non-zero kills performance on some mobile phones
+                    enableKinetic: true
+                }
+            }),
+            new OpenLayers.Control.ZoomPanel()
+        ],
+        layers: [
+            new OpenLayers.Layer.OSM("OpenStreetMap", null, {
+                transitionEffect: 'resize'
+            })
+        ]
+    });
+    map.setCenter(new OpenLayers.LonLat(0, 0), 3);
 }
