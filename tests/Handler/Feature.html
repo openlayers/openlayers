@@ -53,7 +53,7 @@
         
     }
     function test_events(t) {
-        t.plan(25);
+        t.plan(30);
         
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
@@ -64,7 +64,7 @@
  
         // list below events that should be handled (events) and those
         // that should not be handled (nonevents) by the handler
-        var events = ["mousedown", "mouseup", "mousemove", "click", "dblclick"];
+        var events = ["mousedown", "mouseup", "mousemove", "click", "dblclick", "touchstart"];
         var nonevents = ["mouseout", "resize", "focus", "blur"];
         map.events.registerPriority = function(type, obj, func) {
             var output = func();
@@ -123,7 +123,7 @@
     }
 
     function test_callbacks(t) {
-        t.plan(9);
+        t.plan(13);
         
         var map = new OpenLayers.Map('map', {controls: []});
         var control = new OpenLayers.Control();
@@ -223,6 +223,36 @@
         callbacks['dblclick'] = getCallback('dblclick', newFeature);
         evtPx.type = "dblclick";
         map.events.triggerEvent('dblclick', evtPx);
+
+        // test touchstart on a feature
+        // 'click' callback should be called
+        handler.feature = null;
+        lastFeature = null;
+        newFeature = new OpenLayers.Feature.Vector();
+        newFeature.layer = layer;
+        callbacks['click'] = getCallback('click (touch)', newFeature);
+        callbacks['clickout'] = getCallback('clickout (touch)', lastFeature);
+        evtPx.type = "touchstart";
+        map.events.triggerEvent('touchstart', evtPx);
+
+        // test touchstart in new feature and out of last feature
+        // both 'click' and 'clickout' callbacks should be called
+        lastFeature = newFeature;
+        newFeature = new OpenLayers.Feature.Vector();
+        newFeature.layer = layer;
+        callbacks['click'] = getCallback('click (touch)', newFeature);
+        callbacks['clickout'] = getCallback('clickout (touch)', lastFeature);
+        evtPx.type = "touchstart";
+        map.events.triggerEvent('touchstart', evtPx);
+
+        // test touchstart out of last feature
+        // only 'clickout' callback should be called
+        lastFeature = newFeature;
+        newFeature = null;
+        callbacks['click'] = getCallback('click (touch)', newFeature);
+        callbacks['clickout'] = getCallback('clickout (touch)', lastFeature);
+        evtPx.type = "touchstart";
+        map.events.triggerEvent('touchstart', evtPx);
     }
 
     function test_deactivate(t) {
