@@ -1602,7 +1602,7 @@
     }
     
     function test_center_option(t) {
-        t.plan(6);
+        t.plan(7);
         
         var map, msg;
         
@@ -1625,6 +1625,12 @@
             map.destroy();
         }
         
+        var log = [];
+        var meth = OpenLayers.Layer.prototype.moveTo;
+        OpenLayers.Layer.prototype.moveTo = function() {
+            log.push(arguments);
+            meth.apply(this, arguments);
+        };
         
         // set center without zoom
         var center = new OpenLayers.LonLat(1, 2);
@@ -1635,8 +1641,10 @@
         });
         
         t.ok(center.equals(map.getCenter()), "map center set without zoom");
+        t.eq(log.length, 1, "moveTo called once");
         
         map.destroy();
+        OpenLayers.Layer.prototype.moveTo = meth;
         
         // set center and zoom
         var zoom = 3;
