@@ -352,6 +352,8 @@
 
         valid = OpenLayers.Map.prototype.isValidZoomLevel.apply(map, [19]);
         t.eq(valid, false, "19 is not a valid zoomLevel when baseLayer has restrictedMinZoom of 1");
+
+        map.destroy();
     }
     
     function test_Map_isValidLonLat(t) {
@@ -977,6 +979,8 @@
         map.addControls(controls2, pixels2);
         t.eq(map.controls.length, 5, "three additional controls were added by map.addControls with a px-array");
         t.eq(map.controls[3].position.toString(), pixels2[1].toString(), "control 'fourthctrl' has position set to given px");
+
+        map.destroy();
     }
 
     function test_Map_getControl(t) {
@@ -1598,6 +1602,8 @@
         
         t.eq(map.layers.length, 2, "multiple layers added from options");
         t.ok(map.baseLayer, "map has a base layer");
+
+        map.destroy();
         
     }
     
