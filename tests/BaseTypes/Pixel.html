@@ -40,11 +40,22 @@
         t.eq( pixel.x, 5, "changing oldPixel.x doesn't change pixel.x");
     }
 
+    function test_Pixel_distanceTo(t) {
+        t.plan( 2 );
+        var px = new OpenLayers.Pixel(0,-2);
+        pixel = new OpenLayers.Pixel(0,0);
+        t.eq( pixel.distanceTo(px), 2, "(0,0) distanceTo (0,-2) = 2");
+
+        px = new OpenLayers.Pixel(-4,6);
+        pixel = new OpenLayers.Pixel(4,6);
+        t.eq( pixel.distanceTo(px), 8, "(4,6) distanceTo (-4,6) = 8");
+    }
+
     function test_Pixel_equals(t) {
         t.plan( 5 );
         pixel = new OpenLayers.Pixel(5,6);
 
-        px = new OpenLayers.Pixel(5,6);
+        var px = new OpenLayers.Pixel(5,6);
         t.eq( pixel.equals(px), true, "(5,6) equals (5,6)");
 
         px = new OpenLayers.Pixel(1,6);
