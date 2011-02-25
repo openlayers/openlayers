@@ -69,7 +69,7 @@
         layer = new OpenLayers.Layer.MapGuide(name, url, paramsTiled);
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,400000),5);
-        t.eq( layer.grid.length, 6, "Grid rows is correct." );
+        t.eq( layer.grid.length, 3, "Grid rows is correct." );
         // t.eq( layer.grid[0].length, 6, "Grid cols is correct." );
         map.destroy();
     }

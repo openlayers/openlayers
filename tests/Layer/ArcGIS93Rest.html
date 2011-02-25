@@ -94,7 +94,7 @@
         var params = {layers: "show:0,2"};
         t.plan( 2 );
         var map = new OpenLayers.Map('map');
-        layer = new OpenLayers.Layer.ArcGIS93Rest(name, url, params);
+        layer = new OpenLayers.Layer.ArcGIS93Rest(name, url, params, {buffer: 2});
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,0),5);
         t.eq( layer.grid.length, 7, "Grid rows is correct." );

@@ -146,7 +146,7 @@
     function test_Layer_WMS_inittiles (t) {
         t.plan( 2 );
         var map = new OpenLayers.Map('map');
-        layer = new OpenLayers.Layer.WMS(name, url, params);
+        layer = new OpenLayers.Layer.WMS(name, url, params, {buffer:2});
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,0),5);
         t.eq( layer.grid.length, 7, "Grid rows is correct." );
@@ -312,7 +312,7 @@
             var layer = new OpenLayers.Layer.Google("Google");
             map.addLayer(layer);
             var wmslayer = new OpenLayers.Layer.WMS(name, url, params,
-                                                    {isBaseLayer: false, reproject:true});
+                                                    {isBaseLayer: false, reproject:true, buffer: 2});
             wmslayer.isBaseLayer=false;
             map.addLayer(wmslayer);
             map.setCenter(new OpenLayers.LonLat(0,0), 5);
@@ -329,7 +329,7 @@
         }
 
         var map = new OpenLayers.Map('map');
-        layer = new OpenLayers.Layer.WMS(name, url, params);
+        layer = new OpenLayers.Layer.WMS(name, url, params, {buffer: 2});
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,0), 5);
         var tile = layer.grid[0][0];

@@ -126,7 +126,7 @@
         t.plan(1);
             m = new OpenLayers.Map("map", {'maxExtent':new OpenLayers.Bounds(-122.6579,37.4901,-122.0738,37.8795)});
             layer = new OpenLayers.Layer.XYZ( "XYZ", 
-                    url, {layername: 'basic', type:'png', resolutions:[0.000634956337608418]} );
+                    url, {layername: 'basic', type:'png', resolutions:[0.000634956337608418], buffer: 2} );
             m.addLayer(layer);
             m.zoomToMaxExtent()
             t.eq(layer.getURL(layer.grid[3][3].bounds), "http://labs.metacarta.com/wms-c/Basic.py/1.0.0/basic/0/1/0.png", "XYZ tiles around rounded properly.");

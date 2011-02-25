@@ -27,7 +27,7 @@
                        
         layer = new OpenLayers.Layer.Grid(name, url, params, null);
         t.ok( layer instanceof OpenLayers.Layer.Grid, "returns OpenLayers.Layer.Grid object" );
-        t.eq( layer.buffer, 2, "buffer default is 2");
+        t.eq( layer.buffer, 0, "buffer default is 0");
         t.eq( layer.ratio, 1.5, "ratio default is 1.5");
         t.eq( layer.numLoadingTiles, 0, "numLoadingTiles starts at 0");
         t.ok( layer.events.listeners["tileloaded"] != null, "'tileloaded' event added to layer's event types");
@@ -47,7 +47,7 @@
     function test_Layer_Grid_inittiles (t) {
         t.plan( 2 );
         var map = new OpenLayers.Map('map');
-        layer = new OpenLayers.Layer.WMS(name, url, params);
+        layer = new OpenLayers.Layer.WMS(name, url, params, {buffer:2});
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,0),5);
         t.eq( layer.grid.length, 7, "Grid rows is correct." );

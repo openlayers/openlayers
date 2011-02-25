@@ -74,11 +74,11 @@
     function test_Layer_MapServer_inittiles (t) {
         t.plan( 2 );
         var map = new OpenLayers.Map('map');
-        layer = new OpenLayers.Layer.MapServer(name, url, params);
+        layer = new OpenLayers.Layer.MapServer(name, url, params, {buffer: 0});
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,0),5);
-        t.eq( layer.grid.length, 7, "Grid rows is correct." );
-        t.eq( layer.grid[0].length, 6, "Grid cols is correct." );
+        t.eq( layer.grid.length, 4, "Grid rows is correct." );
+        t.eq( layer.grid[0].length, 3, "Grid cols is correct." );
         map.destroy();
         
     }
@@ -234,7 +234,7 @@
             var map = new OpenLayers.Map('map');
             var layer = new OpenLayers.Layer.Google("Google");
             map.addLayer(layer);
-            layer = new OpenLayers.Layer.MapServer(name, url, params, {isBaseLayer: false, reproject: true});
+            layer = new OpenLayers.Layer.MapServer(name, url, params, {isBaseLayer: false, reproject: true, buffer: 2});
             layer.isBaseLayer=false;
             map.addLayer(layer);
             map.setCenter(new OpenLayers.LonLat(0,0), 5);
@@ -251,7 +251,7 @@
         }
         
         var map = new OpenLayers.Map('map');
-        layer = new OpenLayers.Layer.MapServer(name, url, params);
+        layer = new OpenLayers.Layer.MapServer(name, url, params, {buffer:2});
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,0), 5);
         var tile = layer.grid[0][0];
