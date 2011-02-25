@@ -118,6 +118,27 @@
         t.eq(nav.zoomWheelEnabled, true, "mouse wheel activated");
         t.eq(wheel.active, true, "mouse wheel handler activated");
     }
+
+    function test_touches_zoom(t) {
+        t.plan(3);
+        var nav = new OpenLayers.Control.Navigation({zoomWheelEnabled: false});
+        var map = new OpenLayers.Map({
+            div: "map",
+            controls: [nav],
+            layers: [
+                new OpenLayers.Layer(null, {isBaseLayer: true})
+            ],
+            center: new OpenLayers.LonLat(0, 0),
+            zoom: 3
+        });
+        t.eq(map.getZoom(), 3, "map zoom starts at 3");
+        nav.handlers.click.callback("click", [{lastTouches: ["foo", "bar"]}]);
+        t.eq(map.getZoom(), 2, "map zooms out with a two touch tap");
+        nav.handlers.click.callback("click", [{}]);
+        t.eq(map.getZoom(), 2, "map doesn't do anything with click");
+        
+        map.destroy();
+    }
     
     function test_documentDrag(t) {
         
@@ -149,5 +170,6 @@
   </script>
 </head>
 <body>
+    <div id="map" style="width: 256px; height: 256px"></div>
 </body>
 </html>
