@@ -195,7 +195,7 @@ function getFeatures(){
             { "type": "Feature", "geometry": {"type": "Point", "coordinates": [742941.93818208, 5861818.9477535]}, 
             "properties": {"Name": "Stéphane Brunner", "Country":"Switzerland", "City":"Paudex"}},
             { "type": "Feature", "geometry": {"type": "Point", "coordinates": [736082.61064069, 5908165.4649505]},
-            "properties": {"Name": "Frédéric Junod", "Country":"Switzerland", "City":"Montagny"}},
+            "properties": {"Name": "Frédéric Junod", "Country":"Switzerland", "City":"Montagny-près-Yverdon"}},
             { "type": "Feature", "geometry": {"type": "Point", "coordinates": [771595.97057525, 5912284.7041793]},
             "properties": {"Name": "Cédric Moullet", "Country":"Switzerland", "City":"Payerne"}},
             { "type": "Feature", "geometry": {"type": "Point", "coordinates": [744205.23922364, 5861277.319748]},
