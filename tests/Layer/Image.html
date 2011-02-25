@@ -146,7 +146,7 @@
             delay = true;
         });
 
-        t.delay_call(0.4,function() {
+        t.delay_call(5, function() {
             t.eq(delay, true, "registered for loadend");
             t.eq(layer.tile.isLoading, false, "loadend triggered after tile is loaded");
             map.destroy(); //tear down
