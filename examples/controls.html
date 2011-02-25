@@ -25,7 +25,6 @@
                     numZoomLevels: 6
                     
                 });
-    
 
                 var ol_wms = new OpenLayers.Layer.WMS(
                     "OpenLayers WMS",
@@ -49,7 +48,10 @@
                 );
 
                 map.addLayers([ol_wms, gwc, dm_wms]);
-                map.zoomToMaxExtent();
+
+                if (!map.getCenter()) {
+                    map.zoomToMaxExtent();
+                }
             }
         </script>
     </head>
