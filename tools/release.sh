@@ -4,10 +4,14 @@ VERSION=$1
 
 svn export http://svn.openlayers.org/tags/openlayers/release-$VERSION OpenLayers-$VERSION
 cd OpenLayers-$VERSION/build
-./build.py full
+./build.py -c closure full
 cp OpenLayers.js ..
 
 cd ..
+
+for i in google ie6-style style; do
+    csstidy theme/default/$i.css --template=highest theme/default/$i.tidy.css
+done    
 
 mkdir doc/devdocs
 mkdir doc/apidocs
