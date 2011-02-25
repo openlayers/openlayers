@@ -1323,7 +1323,7 @@
         var m = {
             'baseLayer': { 'units': {} },
             'getSize': function() { return {'w': 10, 'h': 15}; },
-            'getCenter': function() { return {'lon': -5, 'lat': -25}; },
+            'getCachedCenter': function() { return {'lon': -5, 'lat': -25}; },
             'zoomToExtent': function(extent, closest) {
                 t.ok(extent.equals(g_ExpectedExtent), "extent correctly calculated for zoomToExtent()");
                 t.ok(closest == g_Closest, "closest correctly passed on to zoomToExtent()");
@@ -1700,6 +1700,41 @@
         t.ok((ll.lat > (100 -map.getResolution()) && (ll.lat < (100 + map.getResolution()))), "lat is the same in and ot");
         map.destroy();
     }    
+
+    function test_moveByPx(t) {
+        t.plan(8);
+
+        var map = new OpenLayers.Map({
+            div: 'map',
+            maxExtent: new OpenLayers.Bounds(-50, -50, 50, 50),
+            restrictedExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            layers: [
+                new OpenLayers.Layer('name', {isBaseLayer: true})
+            ]
+        });
+        map.zoomToExtent(new OpenLayers.Bounds(-1, -1, 1, 1));
+
+        // check initial state
+        t.eq(map.layerContainerDiv.style.left, '0px', 'layer container left correct');
+        t.eq(map.layerContainerDiv.style.top, '0px', 'layer container top correct');
+
+        // move to a valid position
+        map.moveByPx(-455, 455);
+        t.eq(map.layerContainerDiv.style.left, '455px', 'layer container left correct');
+        t.eq(map.layerContainerDiv.style.top, '-455px', 'layer container top correct');
+
+        // move outside the max extent
+        map.moveByPx(-4500, 4500);
+        t.eq(map.layerContainerDiv.style.left, '455px', 'layer container left correct');
+        t.eq(map.layerContainerDiv.style.top, '-455px', 'layer container top correct');
+
+        // move outside the restricted extent
+        map.moveByPx(-500, 500);
+        t.eq(map.layerContainerDiv.style.left, '455px', 'layer container left correct');
+        t.eq(map.layerContainerDiv.style.top, '-455px', 'layer container top correct');
+
+        map.destroy();
+    }
 
   </script>
 </head>
