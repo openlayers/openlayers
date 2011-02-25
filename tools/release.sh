@@ -13,7 +13,9 @@ cp OpenLayers.js ..
 rm ../tools/closure-compiler.jar
 
 cd ..
-
+cd tools
+python exampleparser.py
+cd ..
 for i in google ie6-style style; do
     csstidy theme/default/$i.css --template=highest theme/default/$i.tidy.css
 done    
