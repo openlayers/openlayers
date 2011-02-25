@@ -113,6 +113,17 @@
         map.addControl(control);
         control.activate();
     }
+    function test_destroy(t) {
+        t.plan(1);
+        var control = new OpenLayers.Control.Geolocate({
+            geolocation: geolocation,
+            watch: true
+        });
+        control.activate();
+        control.destroy();
+        t.ok(control.active === false, "control deactivated before being destroyed");
+    }
+
     function loader() {
         map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS("Test Layer",
