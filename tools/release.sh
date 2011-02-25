@@ -2,10 +2,15 @@
 
 VERSION=$1
 
+wget -c http://closure-compiler.googlecode.com/files/compiler-latest.zip
+unzip compiler-latest.zip 
+
 svn export http://svn.openlayers.org/tags/openlayers/release-$VERSION OpenLayers-$VERSION
 cd OpenLayers-$VERSION/build
+mv ../../compiler.jar ../tools/closure-compiler.jar
 ./build.py -c closure full
 cp OpenLayers.js ..
+rm ../tools/closure-compiler.jar
 
 cd ..
 
