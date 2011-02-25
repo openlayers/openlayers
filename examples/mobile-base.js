@@ -34,7 +34,7 @@ var init = function () {
             new OpenLayers.Control.Attribution(),
             new OpenLayers.Control.TouchNavigation({
                 dragPanOptions: {
-                    interval: 0, // non-zero kills performance on some mobile phones
+                    interval: 100,
                     enableKinetic: true
                 }
             }),
