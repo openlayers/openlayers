@@ -19,14 +19,18 @@ if [ ! o$REV = $OLD_REV ]; then
     python exampleparser.py
     cd /osgeo/openlayers/docs/dev/build
     ./build.py -c closure tests.cfg
+    ./build.py -c closure mobile.cfg OpenLayers.mobile.js
     
     cp OpenLayers.js ..
+    cp OpenLayers.mobile.js ..
+
     cd ..
     for i in google ie6-style style; do
         csstidy theme/default/$i.css --template=highest theme/default/$i.tidy.css
         cp theme/default/$i.tidy.css theme/default/$i.css
     done
 
+    sed -i -e 's!../lib/OpenLayers.js\?mobile!../OpenLayers.mobile.js!' examples/*.html
     sed -i -e 's!../lib/OpenLayers.js!../OpenLayers.js!' examples/*.html
     naturaldocs -i /osgeo/openlayers/docs/dev/lib -o HTML /osgeo/openlayers/dev/apidocs -p /osgeo/openlayers/docs/dev/apidoc_config -s Default OL >/dev/null
     naturaldocs -i /osgeo/openlayers/docs/dev/lib -o HTML /osgeo/openlayers/dev/docs -p /osgeo/openlayers/docs/dev/doc_config -s Default OL >/dev/null
