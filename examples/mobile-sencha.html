@@ -5,12 +5,30 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>OpenLayers with Sencha Touch</title>
-        <script src="../lib/OpenLayers.js"></script>
+        <script src="../lib/OpenLayers.js?mobile"></script>
         <link rel="stylesheet" href="style.mobile.css" type="text/css">
         <link rel="stylesheet" href="http://dev.sencha.com/deploy/touch/resources/css/sencha-touch.css">
         <script src="http://dev.sencha.com/deploy/touch/sencha-touch.js"></script>
+        <script src="mobile-sencha.js"></script>
         <script src="mobile.js"></script>
         <style>
+            .searchList {
+                min-height: 150px;
+            }
+            .close-btn {
+                position: absolute;
+                right: 10px;
+                top: 10px;
+            }
+            img.minus {
+                -webkit-mask-image: url(img/minus1.png);
+            }
+            img.layers {
+                -webkit-mask-image: url(img/list.png);
+            }
+            .gx-layer-item {
+                margin-left: 10px;
+            }
             #map {
                 width: 100%;
                 height: 100%;
@@ -25,45 +43,13 @@
             }
         </style>
         <script>
-        
-        new Ext.Application({
+
+        var app = new Ext.Application({
             name: "ol",
             launch: function() {
                 this.viewport = new Ext.Panel({
                     fullscreen: true,
                     dockedItems: [{
-                        dock: "top",
-                        xtype: "toolbar",
-                        ui: "light",
-                        layout: {
-                            pack: "center"
-                        },
-                        defaults: {
-                            ui: "plain",
-                            iconMask: true
-                        },
-                        items: [{
-                            iconCls: "arrow_left",
-                            handler: function() {
-                                pan(-0.25, 0);
-                            }
-                        }, {
-                            iconCls: "arrow_up",
-                            handler: function() {
-                                pan(0, -0.25);
-                            }
-                        }, {
-                            iconCls: "arrow_down",
-                            handler: function() {
-                                pan(0, 0.25);
-                            }
-                        }, {
-                            iconCls: "arrow_right",
-                            handler: function() {
-                                pan(0.25, 0);
-                            }
-                        }]
-                    }, {
                         dock: "bottom",
                         xtype: "toolbar",
                         ui: "light",
@@ -71,54 +57,82 @@
                             pack: "center"
                         },
                         items: [{
-                            xtype: "segmentedbutton",
-                            items: [{
-                                text: "navigate",
-                                pressed: true
-                            }, {
-                                text: "point",
-                                id: "point"
-                            }, {
-                                text: "line",
-                                id: "line"
-                            }, {
-                                text: "poly",
-                                id: "poly"
-                            }, {
-                                text: "modify",
-                                id: "mod"
-                            }],
-                            listeners: {
-                                toggle: function(container, button, pressed) {
-                                    Ext.each(map.getControlsByClass(/DrawFeature/), function(control) {
-                                        control.deactivate();
+                            iconCls: "search",
+                            iconMask: true,
+                            handler: function(){
+                                // this is the app
+                                if (!app.searchFormPopupPanel) {
+                                    app.searchFormPopupPanel = new App.SearchFormPopupPanel({
+                                        map: map
                                     });
-                                    map.getControlsBy("id", "mod-control")[0].deactivate();
-                                    if (pressed) {
-                                        var id = button.id + "-control";
-                                        var control = map.getControlsBy("id", id)[0];
-                                        if (control) {
-                                            control.activate();
-                                        }
-                                    }
                                 }
+                                app.searchFormPopupPanel.show('pop');
+                            }
+                        }, {
+                            iconCls: "locate",
+                            iconMask: true,
+                            handler: function() {
+                                var geolocate = map.getControlsBy("id", "locate-control")[0];
+                                if (geolocate.active) {
+                                    geolocate.getCurrentLocation();
+                                } else {
+                                    geolocate.activate();
+                                }
+                            }
+                        }, {
+                            xtype: "spacer"
+                        }, {
+                            iconMask: true,
+                            iconCls: "add",
+                            handler: function() {
+                                map.zoomIn();
+                            }
+                        }, {
+                            iconMask: true,
+                            iconCls: "minus",
+                            handler: function() {
+                                map.zoomOut();
+                            }
+                        }, {
+                            xtype: "spacer"
+                        }, {
+                            iconMask: true,
+                            iconCls: "layers",
+                            handler: function() {
+                                if (!app.popup) {
+                                    app.popup = new Ext.Panel({
+                                        floating: true,
+                                        modal: true,
+                                        centered: true,
+                                        hideOnMaskTap: true,
+                                        width: 240,
+                                        items: [{
+                                            xtype: 'app_layerlist',
+                                            map: map
+                                        }],
+                                        scroll: 'vertical'
+                                    });
+                                }
+                                app.popup.show('pop');
                             }
                         }]
                     }],
-                    items: [{
-                        xtype: "component",
-                        scroll: false,
-                        monitorResize: true,
-                        id: "map",
-                        listeners: {
-                            render: init,
-                            resize: function() {
-                                if (window.map) {
-                                    map.updateSize();
+                    items: [
+                        {
+                            xtype: "component",
+                            scroll: false,
+                            monitorResize: true,
+                            id: "map",
+                            listeners: {
+                                render: init,
+                                resize: function() {
+                                    if (window.map) {
+                                        map.updateSize();
+                                    }
                                 }
                             }
                         }
-                    }]
+                    ]
                 });
             }
         });
