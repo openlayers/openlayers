@@ -316,14 +316,14 @@
 
         log = null;
         handler.touchstart({xy: {x: 1, y: 1}, touches: ["foo"]});
-        handler.touchend({});
+        handler.touchend({touches: ["foo"]});
 
         t.delay_call(1, function() {
             t.ok(log != null, "click callback called");
             if(log != null) {
                 t.eq(log.x, 1, "evt.xy.x as expected");
                 t.eq(log.y, 1, "evt.xy.y as expected");
-                t.eq(log.lastTouches, ["foo"], "evt.lastTouches as expected");
+                t.ok(log.lastTouches, "evt.lastTouches as expected");
             }
             // tear down
             map.destroy();
@@ -359,7 +359,7 @@
         handler.touchstart({xy: {x: 1, y: 1}, touches: ["foo"]});
         handler.touchend({type: "click"});
 
-        t.eq(handler.touch, true, "Touch property should be true");
+        t.eq(!!handler.down.touches, true, "Handler down touches property should be truthy");
         
         t.ok(log.dblclick == undefined, "dblclick callback not called with simulated click");
 
@@ -395,9 +395,9 @@
         // test
 
         log = {};
-        handler.touchstart({xy: {x: 1, y: 1}, touches: ["foo"]});
+        handler.touchstart({xy: {x: 1, y: 1}, touches: [{clientX:0, clientY:10}]});
         handler.touchend({});
-        handler.touchstart({xy: {x: 1, y: 1}, touches: ["foo"]});
+        handler.touchstart({xy: {x: 1, y: 1}, touches: [{clientX:0, clientY:10}]});
         handler.touchend({});
 
         t.eq(log.click, undefined, "click callback not called");
@@ -405,7 +405,7 @@
         if(log.dblclick != undefined) {
             t.eq(log.dblclick.x, 1, "evt.xy.x as expected");
             t.eq(log.dblclick.y, 1, "evt.xy.y as expected");
-            t.eq(log.dblclick.lastTouches, ["foo"], "evt.lastTouches as expected");
+            t.ok(log.dblclick.lastTouches, "evt.lastTouches on evt");
         }
 
         // tear down
