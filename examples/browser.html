@@ -11,6 +11,10 @@
         .olControlAttribution {
             bottom: 5px;
         }
+
+        .tester {
+            margin: 3px;
+        }
     </style>
     <script type="text/javascript">
         function init() {
@@ -79,12 +83,15 @@
 </head>
 <body onload="init()">
 <h1 id="title">Browser detection</h1>
+
 <div id="tags">
-  browser, vendor, mobile, events, HTML5, gesture, touch
-</div> 
+    browser, vendor, mobile, events, HTML5, gesture, touch
+</div>
+
 <p id="shortdesc">
     The goal of this script is to inform about the capacity of the browser used by the user.
 </p>
+
 <div id="docs">
     <p>
         See the <a href="browser.js" target="_blank">
@@ -95,7 +102,50 @@
 <h1>Your browser information</h1>
 
 <div id="result">
-
 </div>
+
+<h1>Click or touch the red square to get information about the selected events</h1>
+
+<div>
+    <div class="tester">
+        <INPUT TYPE=CHECKBOX ID="clickID" checked>click<BR>
+        <INPUT TYPE=CHECKBOX ID="dblclickID">dblclick<BR>
+        <INPUT TYPE=CHECKBOX ID="mousedownID">mousedown<BR>
+        <INPUT TYPE=CHECKBOX ID="mouseupID">mouseup<BR>
+        <INPUT TYPE=CHECKBOX ID="mouseoverID">mouseover<BR>
+        <INPUT TYPE=CHECKBOX ID="mousemoveID">mousemove<BR>
+        <INPUT TYPE=CHECKBOX ID="mouseoutID">mouseout<BR>
+        <INPUT TYPE=CHECKBOX ID="touchstartID">touchstart<BR>
+        <INPUT TYPE=CHECKBOX ID="touchendID">touchend<BR>
+        <INPUT TYPE=CHECKBOX ID="touchmoveID">touchmove<BR>
+        <INPUT TYPE=CHECKBOX ID="touchcancelID">touchcancel<BR>
+        <INPUT TYPE=CHECKBOX ID="gesturestartID">gesturestart<BR>
+        <INPUT TYPE=CHECKBOX ID="gesturechangeID">gesturechange<BR>
+        <INPUT TYPE=CHECKBOX ID="gestureendID">gestureend<BR>
+    </div>
+
+    <div style="height: 200px;width: 200px;" class="tester">
+        <div id="box" style="height: 200px; width: 200px; background: none repeat scroll 0% 0% red; "
+             onclick="click(event)"
+             ondblclick="dblclick(event)"
+             onmousedown="mousedown(event)"
+             onmouseup="mouseup(event)"
+             onmouseover="mouseover(event)"
+             onmousemove="mousemove(event)"
+             onmouseout="mouseout(event)"
+             ontouchstart="touchstart(event)"
+             ontouchend="touchend(event)"
+             ontouchmove="touchmove(event)"
+             ontouchcancel="touchcancel(event)"
+             ongesturestart="gesturestart(event)"
+             ongesturechange="gesturechange(event)"
+             ongestureend="gestureend(event)">
+        </div>
+    </div>
+
+    <div id="log" class="tester"></div>
+</div>
+
+
 </body>
 </html>
