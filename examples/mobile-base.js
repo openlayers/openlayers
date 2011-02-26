@@ -68,9 +68,10 @@ var init = function () {
                 transitionEffect: 'resize'
             }), 
             vector
-        ]
+        ],
+        center: new OpenLayers.LonLat(0, 0),
+        zoom: 1
     });
-    map.zoomToMaxExtent();
 
     var style = {
         fillOpacity: 0.1,
