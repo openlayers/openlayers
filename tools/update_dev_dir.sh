@@ -30,7 +30,7 @@ if [ ! o$REV = $OLD_REV ]; then
         cp theme/default/$i.tidy.css theme/default/$i.css
     done
 
-    sed -i -e 's!../lib/OpenLayers.js\?mobile!../OpenLayers.mobile.js!' examples/*.html
+    sed -i -e 's!../lib/OpenLayers.js?mobile!../OpenLayers.mobile.js!' examples/*.html
     sed -i -e 's!../lib/OpenLayers.js!../OpenLayers.js!' examples/*.html
     naturaldocs -i /osgeo/openlayers/docs/dev/lib -o HTML /osgeo/openlayers/dev/apidocs -p /osgeo/openlayers/docs/dev/apidoc_config -s Default OL >/dev/null
     naturaldocs -i /osgeo/openlayers/docs/dev/lib -o HTML /osgeo/openlayers/dev/docs -p /osgeo/openlayers/docs/dev/doc_config -s Default OL >/dev/null
