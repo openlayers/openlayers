@@ -302,42 +302,60 @@
     }
 
     function test_Handler_Click_mouseup(t) {
-        t.plan(4);
-        g_Propagate = {};
-        g_evt = {};
-                
-      //no modifiers, no handlerightclicks, no isrightclick        
+        t.plan(11);
+
+        var map = new OpenLayers.Map("map");
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.Click(control);
+
+        var testEvent = {id: Math.random()};
+        var propagate = true;
+        var log, got, modMatch, rightClick;
+
+        // override methods to log what is called
         var temp = OpenLayers.Event.isRightClick;
         OpenLayers.Event.isRightClick = function(e) { 
-            t.ok(e == g_evt, 'correct event passed in to checkModifiers');
-            return false; 
+            log.push({method: "isRightClick", evt: e});
+            return rightClick; 
+        };
+        handler.checkModifiers = function(e) {
+            log.push({method: "checkModifiers", evt: e});
+            return modMatch;
+        };
+        handler.rightclick = function(e) {
+            log.push({method: "rightclick", evt: e});
+            return propagate;
         };
 
-        var h = {
-            'checkModifiers': function(e) {
-                t.ok(e == g_evt, 'correct event passed in to checkModifiers');
-                return false;
-            },
-            'control': {
-                'handleRightClicks': false
-            },
-            'rightclick': function(e) {
-                t.ok(e == g_evt, 'correct event passed in to checkModifiers');
-                return g_Propagate;
-            }
-        };
-        var propagate = OpenLayers.Handler.Click.prototype.mouseup.apply(h, [g_evt]);
-        t.ok(propagate, "default propagate is true when no modifiers, no handlerightclicks, no isrightclick")
+        
+        // simulate an event with non-matching modifiers
+        log = [];
+        modMatch = false;
+        rightClick = false;
+        got = handler.mouseup(testEvent);
+        t.eq(log.length, 1, "one item logged");
+        t.eq(log[0] && log[0].method, "checkModifiers", "a) checkModifiers called first");
+        t.eq(log[0] && log[0].evt, testEvent, "a) first method called with correct event");
 
-      //modifiers, handlerightclicks, and isrightclick
-        h.checkModifiers = function() { return true; };
-        h.control.handleRightClicks = true;        
-        OpenLayers.Event.isRightClick = function(e) { return true; };
-        propagate = OpenLayers.Handler.Click.prototype.mouseup.apply(h, [g_evt]);
 
-        t.ok(propagate == g_Propagate, "return from handler's rightClick() returned from mouseup");
+        // modifiers, handlerightclicks, and isrightclick
+        log = [];
+        rightClick = true;
+        modMatch = true;
+        handler.control.handleRightClicks = true;
+        got = handler.mouseup(testEvent);
+        t.eq(log.length, 3, "three items logged");
+        t.eq(log[0] && log[0].method, "checkModifiers", "b) checkModifiers called first");
+        t.eq(log[0] && log[0].evt, testEvent, "b) first method called with correct event");
+        t.eq(log[1] && log[1].method, "isRightClick", "b) isRightClick called second");
+        t.eq(log[1] && log[1].evt, testEvent, "b) second method called with correct event");
+        t.eq(log[2] && log[2].method, "rightclick", "b) rightclick called third");
+        t.eq(log[2] && log[2].evt, testEvent, "b) third method called with correct event");
+        t.eq(got, propagate, "b) return from handler's rightclick returned from mouseup");
 
         OpenLayers.Event.isRightClick = temp;
+        map.destroy();
     }
 
     function test_touch_click(t) {
