@@ -99,140 +99,184 @@
         handler.activate();
 
     }
-
-    function test_Handler_Click_callbacks(t) {
-        t.plan(13);
-        
-        var map = new OpenLayers.Map('map', {controls: []});
+    
+    var callbackMap;
+    function callbackSetup(log, options) {
+        callbackMap = new OpenLayers.Map('map', {controls: []});
 
         var control = {
-            map: map
+            map: callbackMap
         };
 
-        var handler = new OpenLayers.Handler.Click(control, {});
+        var callbacks = {
+            "click": function(evt) {
+                log.push({callback: "click", evt: evt});
+            },
+            "dblclick": function(evt) {
+                log.push({callback: "dblclick", evt: evt});
+            }
+        };
+        var handler = new OpenLayers.Handler.Click(control, callbacks, options);
         handler.activate();
         
-        
-        // set up for single click - three tests here
         var timers = {};
-        var sto = window.setTimeout;
+        window._setTimeout = window.setTimeout;
         window.setTimeout = function(func, delay) {
-            var key = Math.random();
+            log.push({method: "setTimeout", func: func, delay: delay});
+            var key = (new Date).getTime() + "-" + Math.random();
             timers[key] = true;
-            t.ok(typeof func == "function",
-                 "setTimeout called with a function");
-            t.eq(delay, handler.delay,
-                 "setTimeout called with proper delay");
             // execute function that is supposed to be delayed
             func();
             return key;
         }
-        var cto = window.clearTimeout;
+        window._clearTimeout = window.clearTimeout;
         window.clearTimeout = function(key) {
-            if(timers[key] === true) {
-                delete timers[key];
-            } else {
-                t.fail("clearTimeout called with non-existent timerId");
-            }
+            log.push({
+                method: "clearTimeout",
+                keyExists: (key in timers)
+            });
+            delete timers[key];
         }
-        var testEvt = {id: Math.random()};
-        handler.callbacks = {
-            "click": function(evt) {
-                t.eq(evt.id, testEvt.id,
-                     "(click w/ single true) click callback called with correct evt");
-            },
-            "dblclick": function(evt) {
-                t.fail("(click w/ single true) dblclick should not be called here");
-            }
-        };
-        map.events.triggerEvent("click", testEvt);
-        
-        // set up for double click with double false - no tests here (only failures)
-        handler.callbacks = {
-            "click": function(evt) {
-                t.fail("(dblclick w/ double false) click should not be called here");
-            },
-            "dblclick": function(evt) {
-                t.fail("(dblclick w/ double false) dblclick should not be called here");
-            }
-        };
-        testEvt = Math.random();
-        map.events.triggerEvent("dblclick", testEvt);
+        return handler;    
+    }
+    
+    function callbackTeardown() {
+        window.setTimeout = window._setTimeout;
+        window.clearTimeout = window._clearTimeout;
+        callbackMap.destroy();
+        callbackMap = null;
+    }
 
-        // set up for double click with double true - one test here
-        handler["double"] = true;
-        handler.callbacks = {
-            "click": function(evt) {
-                t.fail("(dblclick w/ double true) click should not be called here");
-            },
-            "dblclick": function(evt) {
-                t.eq(evt, testEvt,
-                     "(dblclick w/ double true) dblclick called with correct evt");
-            }
-        };
-        testEvt = Math.random();
-        map.events.triggerEvent("dblclick", testEvt);
+    function test_callbacks_click_default(t) {
+        t.plan(6);
+
+        var log = [];
+        var handler = callbackSetup(log);
         
-        // set up for two clicks with double true - 6 tests here (with timeout ones from above)
-        handler["double"] = true;
-        handler.callbacks = {
-            "click": function(evt) {
-                t.ok(evt != null, "(two clicks w/ double true) click will not be called here if next three tests pass");
-            },
-            "dblclick": function(evt) {
-                t.eq(evt, testEvt,
-                     "(two clicks w/ double true) dblclick called with correct evt");
-            }
-        };
-        testEvt = Math.random();
-        map.events.triggerEvent("click", testEvt);
-        t.ok(handler.timerId != null,
-             "(two clicks w/ double true) timer is set to call click");
-        map.events.triggerEvent("click", testEvt);
-        t.ok(handler.timerId == null,
-             "(two clicks w/ double true) timer is cleared to call click");
-        map.events.triggerEvent("dblclick", testEvt);
-        handler.destroy();
+        // set up for single click - three tests here
+        var testEvt = {id: Math.random()};
+        handler.map.events.triggerEvent("click", testEvt);
+        t.eq(log.length, 2, "(click w/ single true) two items logged");
+
+        // first item logged is setTimeout call
+        t.eq(log[0].method, "setTimeout", "setTimeout called");
+        t.eq(typeof log[0].func, "function", "setTimeout called with a function");
+        t.eq(log[0].delay, handler.delay, "setTimeout called with proper delay");
         
-        // set up to tests pixelTolerance - three tests here (2 from setTimeout above)
-        handler = new OpenLayers.Handler.Click(control, {}, {
-            pixelTolerance: 2
-        });
-        handler.activate();
-        var downEvt = {
+        // second item logged is from click callback
+        t.eq(log[1].callback, "click", "click callback called");
+        t.eq(log[1].evt.id, testEvt.id, "got correct event");
+        
+        callbackTeardown();
+    }
+    
+    function test_callbacks_dblclick_default(t) {
+        t.plan(1);
+
+        var log = [];
+        var handler = callbackSetup(log);
+        var testEvt = {id: Math.random()};
+        handler.map.events.triggerEvent("dblclick", testEvt);
+        
+        t.eq(log.length, 0, "nothing happens by default with dblclick (double is false)");
+        
+        callbackTeardown();
+        
+    }
+
+    function test_callbacks_dblclick_double(t) {
+        t.plan(3);
+
+        var log = [];
+        var handler = callbackSetup(log, {"double": true});
+        var testEvt = {id: Math.random()};
+        handler.map.events.triggerEvent("dblclick", testEvt);
+        
+        t.eq(log.length, 1, "one item logged");
+        t.eq(log[0].callback, "dblclick", "dblclick callback called")
+        t.eq(log[0].evt.id, testEvt.id, "dblclick callback called with event");
+        
+        callbackTeardown();
+        
+    }
+
+    function test_callbacks_dblclick_sequence(t) {
+        t.plan(8);
+
+        var log = [];
+        var handler = callbackSetup(log, {"double": true});
+        var testEvt = {id: Math.random()};
+
+        // first click - set timer for next
+        handler.map.events.triggerEvent("click", testEvt);
+        t.ok(handler.timerId != null, "timer is set");
+        log.pop(); // because the test setTimeout is synchronous we get the click callback immediately
+        t.eq(log.length, 1, "one item logged (after pop due to synchronous setTimeout call in our tests");
+        t.eq(log[0].method, "setTimeout", "setTimeout called first");
+
+        // second click - timer cleared
+        handler.map.events.triggerEvent("click", testEvt);
+        t.ok(handler.timerId == null, "timer is cleared");
+        t.eq(log.length, 2, "two items logged after second click");
+        t.eq(log[1].method, "clearTimeout", "clearTimeout called second");
+
+        // dblclick event - callback called
+        handler.map.events.triggerEvent("dblclick", testEvt);        
+        t.eq(log.length, 3, "three items logged");
+        t.eq(log[2].callback, "dblclick", "dblclick callback called third");
+        
+        callbackTeardown();
+        
+    }
+
+    function test_callbacks_within_pixelTolerance(t) {
+        t.plan(1);
+
+        var log = [];
+        var handler = callbackSetup(log, {"double": true, pixelTolerance: 2});
+        var testEvt = {id: Math.random()};
+
+        var down = {
             xy: px(0, 0)
         };
-        map.events.triggerEvent("mousedown", downEvt);
-        var clickEvt = {
+        var up = {
             xy: px(0, 1)
         };
-        // mouse moves one pixel, click should be called
-        handler.callbacks = {
-            "click": function(evt) {
-                t.ok(evt.xy == clickEvt.xy, "(pixelTolerance met) click called");
-            }
-        };
-        map.events.triggerEvent("click", clickEvt);
-        handler.clearTimer();
-        
-        // mouse moves 3x3 pixels, click should not be called
-        map.events.triggerEvent("mousedown", downEvt);
-        var clickEvt = {
-            xy: px(3, 3)
-        };
-        // mouse moves one pixel, click should be called
-        handler.callbacks = {
-            "click": function(evt) {
-                t.fail("(pixelTolerance not met) click should not be called");
-            }
-        };
-        map.events.triggerEvent("click", clickEvt); // no test run
-        handler.clearTimer();
-        
-        window.setTimeout = sto;
-        window.clearTimeout = cto;
-        
 
+        handler.map.events.triggerEvent("mousedown", down);
+        handler.map.events.triggerEvent("mouseup", up);
+        handler.map.events.triggerEvent("click", up);
+        
+        t.eq(log[log.length-1].callback, "click", "click callback called");
+        
+        callbackTeardown();
+        
+    }
+
+    function test_callbacks_outside_pixelTolerance(t) {
+        t.plan(2);
+
+        var log = [];
+        var handler = callbackSetup(log, {"double": true, pixelTolerance: 2});
+        var testEvt = {id: Math.random()};
+
+        var down = {
+            xy: px(0, 0)
+        };
+        var up = {
+            xy: px(2, 3)
+        };
+
+        handler.map.events.triggerEvent("mousedown", down);
+        t.ok(handler.down && handler.down.xy.equals(down.xy), "down position set");
+
+        handler.map.events.triggerEvent("mouseup", up);
+        handler.map.events.triggerEvent("click", up);
+        
+        t.eq(log.length, 0, "nothing logged - event outside tolerance");
+        
+        callbackTeardown();
+        
     }
 
     function test_Handler_Click_deactivate(t) {
