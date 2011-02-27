@@ -75,7 +75,7 @@
     }
 
     function test_Handler_Point_events(t) {
-        t.plan(34);
+        t.plan(49);
         var log = [];
         var map = new OpenLayers.Map("map", {
             resolutions: [1]
@@ -97,7 +97,7 @@
 
         // list below events that should be handled (events) and those
         // that should not be handled (nonevents) by the handler
-        var events = ["click", "dblclick", "mousedown", "mouseup", "mousemove", "mouseout"];
+        var events = ["click", "dblclick", "mousedown", "mouseup", "mousemove", "mouseout", "touchstart", "touchmove", "touchend"];
         var nonevents = ["resize", "focus", "blur"];
         map.events.registerPriority = function(type, obj, func) {
             var r = func();
@@ -166,6 +166,10 @@
             cancel: function() {
                 logs.push({type: "cancel", args: arguments});
             }
+        },
+        {
+            pixelTolerance: 0,
+            dblclickTolerance: 0
         });
         control.handler = handler;
         map.addControl(control);
@@ -379,7 +383,48 @@
              "handler.point is null after destroy");
     }
     
+    function test_sequence_touch_1(t) {
+        t.plan(7);
 
+        log = [];
+        var map = new OpenLayers.Map("map", { // 300 x 150
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-100, -100, 100, 100),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var control = new OpenLayers.Control();
+        var handler = new OpenLayers.Handler.Point(control, {
+            "done": function(g, f) {
+                log.push({geometry: g, feature: f});
+            }
+        });
+        control.handler = handler;
+        map.addControl(control);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 5);
+        handler.activate();
+        
+        handler.touchstart({type: "touchstart", xy: new OpenLayers.Pixel(50, 75)});
+        t.eq(log.length, 0, "touch start 1");
+        
+        handler.touchmove({type: "touchmove", xy: new OpenLayers.Pixel(250, 75)});
+        t.eq(log.length, 0, "touch move");
+
+        handler.touchend({type: "touchend"});
+        t.eq(log.length, 0, "touch end");
+        
+        handler.touchstart({type: "touchstart", xy: new OpenLayers.Pixel(99, 75)});
+        t.eq(log.length, 0, "touch start 2");
+
+        handler.touchmove({type: "touchmove", xy: new OpenLayers.Pixel(100, 75)});
+        t.eq(log.length, 0, "touch move");
+
+        handler.touchend({type: "touchend"});
+        t.eq(log.length, 1, "touch end");
+        t.geom_eq(log[0].geometry, new OpenLayers.Geometry.Point(-50, 0), "geometry is correct");
+    }
 
   </script>
 </head>

@@ -142,6 +142,10 @@
             cancel: function() {
                 logs.push({type: "cancel", args: arguments});
             }
+        },
+        {
+            pixelTolerance: 0,
+            dblclickTolerance: 0
         });
         control.handler = handler;
         map.addControl(control);
@@ -531,7 +535,11 @@
         var draw = new OpenLayers.Control.DrawFeature(
             map.layers[0],
             OpenLayers.Handler.Polygon,
-            {handlerOptions: {holeModifier: "altKey"}}
+            {handlerOptions: {
+                holeModifier: "altKey",
+                pixelTolerance: 0,
+                dblclickTolerance: 0
+            }}
         );
         map.addControl(draw);
         draw.activate();
@@ -745,7 +753,8 @@
         var control = new OpenLayers.Control({});
         var handler = new OpenLayers.Handler.Polygon(control,
             {done: function(g) { log.geometry = g; }},
-            {stopDown: true, stopUp: true}
+            {stopDown: true, stopUp: true,
+            pixelTolerance: 0, dblclickTolerance: 0}
         );
         control.handler = handler;
         map.addControl(control);
@@ -816,7 +825,8 @@
         var control = new OpenLayers.Control({});
         var handler = new OpenLayers.Handler.Polygon(control,
             {done: function(g) { log.geometry = g; }},
-            {stopDown: false, stopUp: false}
+            {stopDown: false, stopUp: false,
+            pixelTolerance: 0, dblclickTolerance: 0}
         );
         control.handler = handler;
         map.addControl(control);
@@ -866,6 +876,105 @@
                     new OpenLayers.Geometry.Point(-140, 65)  // (10, 10)
                 ])
             ]), "geometry is correct");
+    }
+
+
+    function test_sequence_touch_1(t) {
+        t.plan(19);
+        
+        log = [];
+        var map = new OpenLayers.Map("map", { // 300 x 150
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-100, -100, 100, 100),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var control = new OpenLayers.Control({});
+        var handler = new OpenLayers.Handler.Polygon(control, {
+            "done": function(g, f) {
+                log.push({geometry: g, feature: f});
+            }
+        });
+        control.handler = handler;
+        control.layer = layer;
+        map.addControl(control);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 5);
+        handler.activate();
+        
+        handler.touchstart({type: "touchstart", xy: new OpenLayers.Pixel(49, 75)});
+        t.eq(log.length, 0, "touch start 1");
+        var expectedRing = new OpenLayers.Geometry.LinearRing([
+            new OpenLayers.Geometry.Point(-100, 0),
+            new OpenLayers.Geometry.Point(-100, 0)
+        ]);
+
+        handler.touchmove({type: "touchmove", xy: new OpenLayers.Pixel(50, 75)});
+        t.eq(log.length, 0, "touch move");
+        
+        handler.touchend({type: "touchend"});
+        t.eq(log.length, 0, "touch end");
+        expectedRing.addComponent(new OpenLayers.Geometry.Point(-100,0), 1);
+
+        t.geom_eq(handler.polygon.geometry.components[0], expectedRing, "geometry is correct");
+
+        handler.touchstart({type: "touchstart", xy: new OpenLayers.Pixel(100, 75)});
+        t.eq(log.length, 0, "touch start 2");
+        var expectedRing = new OpenLayers.Geometry.LinearRing([
+            new OpenLayers.Geometry.Point(-100, 0),
+            new OpenLayers.Geometry.Point(-100, 0)
+        ]);
+
+        handler.touchmove({type: "touchmove", xy: new OpenLayers.Pixel(250, 75)});
+        t.eq(log.length, 0, "touch move");
+
+        handler.touchend({type: "touchend"});
+        t.eq(log.length, 0, "touch end");
+        expectedRing.addComponent(new OpenLayers.Geometry.Point(-100,0), 1);
+        
+        t.geom_eq(handler.polygon.geometry.components[0], expectedRing, "geometry is correct");
+            
+        handler.touchstart({type: "touchstart", xy: new OpenLayers.Pixel(100, 75)});
+        t.eq(log.length, 0, "touch start 3");
+
+        handler.touchmove({type: "touchmove", xy: new OpenLayers.Pixel(100, 75)});
+        t.eq(log.length, 0, "touch move");
+
+        handler.touchend({type: "touchend"});
+        t.eq(log.length, 0, "touch end");
+        t.geom_eq(handler.polygon.geometry,
+            new OpenLayers.Geometry.Polygon([new OpenLayers.Geometry.LinearRing([
+                new OpenLayers.Geometry.Point(-100, 0),
+                new OpenLayers.Geometry.Point(-50, 0),
+                new OpenLayers.Geometry.Point(-50, 0),
+                new OpenLayers.Geometry.Point(-100, 0)
+            ])]), "geometry is correct");
+            
+        handler.touchstart({type: "touchstart", xy: new OpenLayers.Pixel(252, 100)});
+        t.eq(log.length, 0, "touch start 4");
+
+        handler.touchmove({type: "touchmove", xy: new OpenLayers.Pixel(252, 100)});
+        t.eq(log.length, 0, "touch move");
+
+        handler.touchend({type: "touchend"});
+        t.eq(log.length, 0, "touch end");
+            
+        handler.touchstart({type: "touchstart", xy: new OpenLayers.Pixel(250, 100)});
+        t.eq(log.length, 1, "touch start");
+
+        handler.touchmove({type: "touchmove", xy: new OpenLayers.Pixel(250, 100)});
+        t.eq(log.length, 1, "touch move");
+
+        handler.touchend({type: "touchend"});
+        t.eq(log.length, 1, "touch end");
+        t.geom_eq(log[0].geometry,
+            new OpenLayers.Geometry.Polygon([new OpenLayers.Geometry.LinearRing([
+                new OpenLayers.Geometry.Point(-100, 0),
+                new OpenLayers.Geometry.Point(-50, 0),
+                new OpenLayers.Geometry.Point(102, -25),
+                new OpenLayers.Geometry.Point(-100, 0)
+            ])]), "geometry is correct");
     }
 
   </script>
