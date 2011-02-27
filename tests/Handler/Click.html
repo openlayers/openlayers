@@ -234,7 +234,6 @@
 
         var log = [];
         var handler = callbackSetup(log, {"double": true, pixelTolerance: 2});
-        var testEvt = {id: Math.random()};
 
         var down = {
             xy: px(0, 0)
@@ -257,8 +256,7 @@
         t.plan(2);
 
         var log = [];
-        var handler = callbackSetup(log, {"double": true, pixelTolerance: 2});
-        var testEvt = {id: Math.random()};
+        var handler = callbackSetup(log, {pixelTolerance: 2});
 
         var down = {
             xy: px(0, 0)
