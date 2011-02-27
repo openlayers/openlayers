@@ -43,9 +43,9 @@ function init() {
         protocol: new OpenLayers.Protocol.WFS({
             version: "1.1.0",
             srsName: "EPSG:900913",
-            url:  "http://demo.opengeo.org/geoserver/wfs",
+            url:  "http://v2.suite.opengeo.org/geoserver/wfs",
             featureType: "states",
-            featureNS: "http://www.openplans.org/topp"
+            featureNS: "http://usa.opengeo.org"
         }),
         styleMap: styleMap,
         renderers: ["Canvas", "SVG", "VML"]
