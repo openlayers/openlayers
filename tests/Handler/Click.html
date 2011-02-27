@@ -2,6 +2,11 @@
 <head>
   <script src="../OLLoader.js"></script>
   <script type="text/javascript">
+  
+    function px(x, y) {
+        return new OpenLayers.Pixel(x, y);
+    }
+  
     function test_Handler_Click_constructor(t) {
         t.plan(3);
         var control = new OpenLayers.Control();
@@ -155,7 +160,7 @@
         map.events.triggerEvent("dblclick", testEvt);
 
         // set up for double click with double true - one test here
-        handler.double = true;
+        handler["double"] = true;
         handler.callbacks = {
             "click": function(evt) {
                 t.fail("(dblclick w/ double true) click should not be called here");
@@ -169,7 +174,7 @@
         map.events.triggerEvent("dblclick", testEvt);
         
         // set up for two clicks with double true - 6 tests here (with timeout ones from above)
-        handler.double = true;
+        handler["double"] = true;
         handler.callbacks = {
             "click": function(evt) {
                 t.ok(evt != null, "(two clicks w/ double true) click will not be called here if next three tests pass");
@@ -195,11 +200,11 @@
         });
         handler.activate();
         var downEvt = {
-            xy: new OpenLayers.Pixel(0, 0)
+            xy: px(0, 0)
         };
         map.events.triggerEvent("mousedown", downEvt);
         var clickEvt = {
-            xy: new OpenLayers.Pixel(0, 1)
+            xy: px(0, 1)
         };
         // mouse moves one pixel, click should be called
         handler.callbacks = {
@@ -213,7 +218,7 @@
         // mouse moves 3x3 pixels, click should not be called
         map.events.triggerEvent("mousedown", downEvt);
         var clickEvt = {
-            xy: new OpenLayers.Pixel(3, 3)
+            xy: px(3, 3)
         };
         // mouse moves one pixel, click should be called
         handler.callbacks = {
@@ -315,7 +320,7 @@
         // test
 
         log = null;
-        handler.touchstart({xy: {x: 1, y: 1}, touches: ["foo"]});
+        handler.touchstart({xy: px(1, 1), touches: ["foo"]});
         handler.touchend({touches: ["foo"]});
 
         t.delay_call(1, function() {
@@ -354,9 +359,9 @@
         // test
 
         log = {};
-        handler.touchstart({xy: {x: 1, y: 1}, touches: ["foo"]});
+        handler.touchstart({xy: px(1, 1), touches: ["foo"]});
         handler.touchend({});
-        handler.touchstart({xy: {x: 1, y: 1}, touches: ["foo"]});
+        handler.touchstart({xy: px(1, 1), touches: ["foo"]});
         handler.touchend({type: "click"});
 
         t.eq(!!handler.down.touches, true, "Handler down touches property should be truthy");
@@ -395,9 +400,9 @@
         // test
 
         log = {};
-        handler.touchstart({xy: {x: 1, y: 1}, touches: [{clientX:0, clientY:10}]});
+        handler.touchstart({xy: px(1, 1), touches: [{clientX:0, clientY:10}]});
         handler.touchend({});
-        handler.touchstart({xy: {x: 1, y: 1}, touches: [{clientX:0, clientY:10}]});
+        handler.touchstart({xy: px(1, 1), touches: [{clientX:0, clientY:10}]});
         handler.touchend({});
 
         t.eq(log.click, undefined, "click callback not called");
