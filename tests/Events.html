@@ -318,8 +318,8 @@
                    touches: [{clientX: 1, clientY: 1}, {clientX: 2, clientY: 2}]
                   };
         events.handleBrowserEvent(evt);
-        t.eq(evt.clientX, 1, "evt.clientX value is correct");
-        t.eq(evt.clientY, 1, "evt.clientY value is correct");
+        t.eq(evt.clientX, 1.5, "evt.clientX value is correct");
+        t.eq(evt.clientY, 1.5, "evt.clientY value is correct");
     }
 
     function test_Events_destroy (t) {
