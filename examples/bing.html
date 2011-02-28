@@ -17,12 +17,10 @@
             // setting restrictedExtent so that we can use the 
             // VirtualEarth-layers, see e.g. 
             // http://dev.openlayers.org/apidocs/files/OpenLayers/Layer/VirtualEarth-js.html
-            var restrictedExtent = new OpenLayers.Bounds(-20037508, -20037508, 
-                20037508, 20037508);
+            var restrictedExtent = new OpenLayers.Bounds(-180, -90, 
+                180, 90);
             
-            map = new OpenLayers.Map("map", {
-                restrictedExtent: restrictedExtent
-            });
+            map = new OpenLayers.Map("map");
             
             map.addControl(new OpenLayers.Control.LayerSwitcher());
 
