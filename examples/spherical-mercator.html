@@ -32,7 +32,7 @@ OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 
 function init(){
     var maxExtent = new OpenLayers.Bounds(-20037508, -20037508, 20037508, 20037508),
-        restrictedExtent = maxExtent.clone(-20037508, -20037508, 20037508, 20037508),
+        restrictedExtent = maxExtent.clone(),
         maxResolution = 156543.0339;
     
     var options = {
