@@ -270,6 +270,29 @@
         
     }
 
+    // Test fix for Ticket #3142
+    function test_layerLoadedAfterBeingAdded(t) {
+        t.plan(1);
+
+        var dummy = new OpenLayers.Layer(null, {isBaseLayer: true});
+
+        var strategy = new OpenLayers.Strategy.BBOX({
+            ratio: 1 // makes for easier comparison to map bounds
+        });
+        var layer = new OpenLayers.Layer.Vector(null, {
+            protocol: new OpenLayers.Protocol(),
+            strategies: [strategy]
+        });
+
+        var map = new OpenLayers.Map("map");
+        map.addLayer(dummy);
+        map.setCenter(new OpenLayers.LonLat(0, 0));
+        map.addLayer(layer);
+
+        // test that the strategy bounds were set
+        t.ok(map.getExtent().equals(strategy.bounds), "[set center] bounds set to map extent");
+    }
+
   </script>
 </head>
 <body>
