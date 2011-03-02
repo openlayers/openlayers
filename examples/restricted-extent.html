@@ -9,7 +9,7 @@
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var map = null;
-        var extent = new OpenLayers.Bounds(-180, -90, 180, 90);
+        var extent = new OpenLayers.Bounds(8, 44.5, 19, 50);
 
         function init() {
             var options = {
@@ -24,7 +24,7 @@
             ); 
 
             map.addLayers([wms]);
-            map.setCenter(extent, 1);
+            map.zoomToExtent(extent);
             document.getElementById("toggle").checked = true;
         }
         
@@ -68,7 +68,7 @@
         <input type="checkbox" id="toggle" checked="checked"
                onclick="toggleRestrictedExtent();" />
         <label for="toggle">
-            Toggle restricted extent (to [-180, -90, 180, 90]).
+            Toggle restricted extent (to [8, 44.5, 19, 50]).
         </label>
     
   </body>
