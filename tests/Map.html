@@ -1052,7 +1052,7 @@
     }
 
     function test_Map_restrictedExtent(t) {
-        t.plan(24);
+        t.plan(25);
         var extent = new OpenLayers.Bounds(-180, -90, 180, 90);
         var options = {
             maxResolution: "auto"
@@ -1147,8 +1147,28 @@
              "map extent not restricted with null restrictedExtent for se");
 
         map.destroy();
+
+        extent = new OpenLayers.Bounds(8, 44.5, 19, 50);
+        var options = {
+            restrictedExtent: extent
+        };
+        map = new OpenLayers.Map('map', options);
+
+        var wms = new OpenLayers.Layer.WMS(
+            "OpenLayers WMS", 
+            "http://vmap0.tiles.osgeo.org/wms/vmap0?",
+            {layers: 'basic'}
+        ); 
+
+        map.addLayers([wms]);
+        map.zoomToExtent(extent);
+        map.zoomIn();
+        map.setOptions({restrictedExtent: null});
+        map.pan(-250, -250);
+        t.ok((map.getExtent().bottom == 48.3486328125 && map.getExtent().left == 7.45751953125), "Expected extent when toggling restrictedExtent");
+        map.destroy();
     }
-    
+
     function test_Map_getResolutionForZoom(t) {
         t.plan(2);
         var map = new OpenLayers.Map("map");
