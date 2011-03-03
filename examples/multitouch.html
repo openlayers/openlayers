@@ -14,6 +14,10 @@
         box.innerHTML = evt.touches.length;
         evt.preventDefault();
     });    
+    box.addEventListener("touchmove", function(evt) {
+        box.innerHTML = evt.touches.length;
+        evt.preventDefault();
+    });    
     if (!(typeof box.ontouchstart != 'undefined')) { 
         box.style.backgroundColor = "red";
     }    
