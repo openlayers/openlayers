@@ -284,8 +284,17 @@
             strategies: [strategy]
         });
 
+        // Make sure to test the case of a vector layer needing to be 
+        // reprojected while the map is not yet centered
+        var layerReproject = new OpenLayers.Layer.Vector(null, {
+            protocol: new OpenLayers.Protocol(),
+            strategies: [new OpenLayers.Strategy.BBOX()],
+            projection: 'EPSG:900913'
+        });
+
         var map = new OpenLayers.Map("map");
         map.addLayer(dummy);
+        map.addLayer(layerReproject);
         map.setCenter(new OpenLayers.LonLat(0, 0));
         map.addLayer(layer);
 
