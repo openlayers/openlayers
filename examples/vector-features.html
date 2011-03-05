@@ -16,6 +16,10 @@
                     "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
             map.addLayer(layer);
 
+            // allow testing of specific renderers via "?renderer=Canvas", etc
+            var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+            renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+
             /*
              * Layer style
              */
@@ -68,7 +72,10 @@
             // graphicTitle only works in Firefox and Internet Explorer
             style_mark.graphicTitle = "this is a test tooltip";
 
-            var vectorLayer = new OpenLayers.Layer.Vector("Simple Geometry", {style: layer_style});
+            var vectorLayer = new OpenLayers.Layer.Vector("Simple Geometry", {
+                style: layer_style,
+                renderers: renderer
+            });
 
             // create a point feature
             var point = new OpenLayers.Geometry.Point(-111.04, 45.68);

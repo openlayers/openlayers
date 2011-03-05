@@ -32,6 +32,10 @@
         function initYOrderMap() {
             var map = new OpenLayers.Map("yorder");
             
+            // allow testing of specific renderers via "?renderer=Canvas", etc
+            var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+            renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+
             var layer = new OpenLayers.Layer.Vector(
                 "Y-Order",
                 {
@@ -41,7 +45,8 @@
                         graphicZIndex: GOLD_Z_INDEX
                     }),
                     isBaseLayer: true,
-                    rendererOptions: {yOrdering: true}
+                    rendererOptions: {yOrdering: true},
+                    renderers: renderer
                 }
             );
             

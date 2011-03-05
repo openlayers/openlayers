@@ -33,6 +33,10 @@
         function init() {
             map = new OpenLayers.Map("map");
             
+            // allow testing of specific renderers via "?renderer=Canvas", etc
+            var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+            renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+
             layer = new OpenLayers.Layer.Vector(
                 "Marker Drop Shadows",
                 {
@@ -55,7 +59,8 @@
                         pointRadius: 10
                     }),
                     isBaseLayer: true,
-                    rendererOptions: {yOrdering: true}
+                    rendererOptions: {yOrdering: true},
+                    renderers: renderer
                 }
             );
             

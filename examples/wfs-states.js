@@ -10,13 +10,18 @@ function init() {
     );
     map.addLayer(base);
 
+    // allow testing of specific renderers via "?renderer=Canvas", etc
+    var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+    renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+
     var wfs = new OpenLayers.Layer.Vector("States", {
         strategies: [new OpenLayers.Strategy.BBOX()],
         protocol: new OpenLayers.Protocol.WFS({
             url: "http://demo.opengeo.org/geoserver/wfs",
             featureType: "states",
             featureNS: "http://www.openplans.org/topp"
-        })
+        }),
+        renderers: renderer
     });
     map.addLayer(wfs);
 

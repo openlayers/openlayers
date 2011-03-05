@@ -92,6 +92,10 @@
                 })
             });
 
+            // allow testing of specific renderers via "?renderer=Canvas", etc
+            var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+            renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+
             // create three vector layers
             vectors = new OpenLayers.Layer.Vector("Lines", {
                 isBaseLayer: true,
@@ -103,7 +107,8 @@
                 styleMap: styles,
                 maxExtent: new OpenLayers.Bounds(
                     1549471.9221, 6403610.94, 1550001.32545, 6404015.8
-                )
+                ),
+                renderers: renderer
             });
             map.addLayer(vectors);
             
