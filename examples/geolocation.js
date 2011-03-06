@@ -2,7 +2,7 @@ var style = {
     fillColor: '#000',
     fillOpacity: 0.1,
     strokeWidth: 0
-}
+};
 
 var map = new OpenLayers.Map('map');
 var layer = new OpenLayers.Layer.OSM( "Simple OSM Map");
@@ -24,7 +24,9 @@ var pulsate = function(feature) {
         grow = 'up';
 
     var resize = function(){
-        if (count>16) clearInterval(window.resizeInterval);
+        if (count>16) {
+            clearInterval(window.resizeInterval);
+        }
         var interval = radius * 0.03;
         var ratio = interval/radius;
         switch(count) {
@@ -40,7 +42,7 @@ var pulsate = function(feature) {
         feature.geometry.resize(1+ratio, point);
         vector.drawFeature(feature);
         count++;
-    }
+    };
     window.resizeInterval = window.setInterval(resize, 50, point, radius);
 };
 
