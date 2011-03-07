@@ -37,8 +37,8 @@
         var map = new OpenLayers.Map("map");
         map.addLayer(layer);
         map.zoomToMaxExtent();
-        t.delay_call(1, function() { 
-            t.ok(true, "waited for 1s"); 
+        t.delay_call(3, function() { 
+            t.ok(true, "waited for 3s"); 
         });
 
     }
