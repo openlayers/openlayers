@@ -24,6 +24,22 @@
              "initialize returns instance of custom versioned protocol")
     }
 
+    function test_setFeatureType(t) {
+        t.plan(4);
+        var protocol = new OpenLayers.Protocol.WFS({
+            url: "http://some.url.org",
+            featureNS: "http://namespace.org",
+            featureType: "type"
+        });
+        t.eq(protocol.featureType, "type", "featureType set correctly by constructor");
+        t.eq(protocol.format.featureType, "type", "featureType correctly set on format by constructor");
+        // change the feature type on the fly
+        protocol.setFeatureType("foo");
+        t.eq(protocol.featureType, "foo", "featureType changed correctly by setFeatureType");
+        t.eq(protocol.format.featureType, "foo", "featureType correctly changed on format by setFeatureType");
+        protocol.destroy();
+    }
+
     function test_read(t) {
         t.plan(7);
 
