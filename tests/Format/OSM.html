@@ -95,6 +95,18 @@
             output = output.replace(/<\?[^>]*\?>/, '');
             t.eq(output, osm_serialized_data[key], key + " serialized correctly");
         }
+    }   
+    function test_Format_OSM_write_reproject(t) {
+        t.plan(1);
+        var f = new OpenLayers.Format.OSM({'internalProjection': new OpenLayers.Projection("EPSG:900913")});
+        var feat = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(100000, 100000)
+            );
+        var data = f.write([feat]);
+        var f = new OpenLayers.Format.OSM();
+        var features = f.read(data);
+
+        t.eq(OpenLayers.Util.toFloat(features[0].geometry.x, 3), .898, "exported to lonlat and re-read as lonlat correctly")
     }    
     </script> 
 </head> 
