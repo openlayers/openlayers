@@ -95,6 +95,19 @@
         t.eq(data.components[1].y, 1, "y of second component is right");    
     }
 
+    function test_Format_GeoJSON_multipoint_projected(t) {
+        t.plan(1);
+        var f = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.MultiPoint([
+            new OpenLayers.Geometry.Point(15555162, 4247484)]));
+        var format = new OpenLayers.Format.GeoJSON({
+            internalProjection: new OpenLayers.Projection("EPSG:900913"),
+            externalProjection: new OpenLayers.Projection("EPSG:4326")
+        });
+        var data = format.write(f);
+        var found = (data.search('139.734') != -1);
+        t.ok(found, "Found 139.734 (correct reprojection) in data output.");
+    }        
+
     function test_Format_GeoJSON_multiline(t) {
         t.plan(3);
 
