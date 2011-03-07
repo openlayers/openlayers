@@ -440,6 +440,158 @@
              "deactivate sets start to null");
     }
 
+    function test_interval_timer_after_mouseup(t) {
+        t.plan(5);
+
+        // set up
+
+        var map = new OpenLayers.Map('map');
+
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+
+        var moveCnt;
+
+        var handler = new OpenLayers.Handler.Drag(control, {}, {
+            interval: 1,
+            move: function() {
+                moveCnt++;
+            }
+        });
+        handler.activate();
+
+        handler.checkModifiers = function() { return true; };
+
+        var ilc = OpenLayers.Event.isLeftClick;
+        OpenLayers.Event.isLeftClick = function() { return true; };
+
+        // test
+
+        moveCnt = 0;
+
+        var xy1 = new OpenLayers.Pixel(1, 2);
+        handler.mousedown({xy: xy1});
+        t.ok(handler.last == xy1, "[mousedown] last is as expected");
+        var xy2 = new OpenLayers.Pixel(2, 3);
+        handler.mousemove({xy: xy2});
+        t.ok(handler.last == xy2, "[mousemove 1] last is as expected");
+        t.ok(handler.timeoutId != null, "[mousemove 1] timeoutId is set");
+        var xy3 = new OpenLayers.Pixel(3, 4);
+        handler.mousemove({xy: xy3});
+        t.ok(handler.last == xy2, "[mousemove 2] last is as expected");
+        var xy4 = new OpenLayers.Pixel(4, 5);
+        handler.mouseup({xy: xy4});
+
+        t.delay_call(3, function() {
+            // the timer should not cause a move
+            t.eq(moveCnt, 1, "move called once");
+            // tear down
+            OpenLayers.Event.isLeftClick = ilc;
+        });
+    }
+
+    function test_interval_timer_after_mousedown(t) {
+        t.plan(5);
+
+        // set up
+
+        var map = new OpenLayers.Map('map');
+
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+
+        var moveCnt;
+
+        var handler = new OpenLayers.Handler.Drag(control, {}, {
+            interval: 1,
+            move: function() {
+                moveCnt++;
+            }
+        });
+        handler.activate();
+
+        handler.checkModifiers = function() { return true; };
+
+        var ilc = OpenLayers.Event.isLeftClick;
+        OpenLayers.Event.isLeftClick = function() { return true; };
+
+        // test
+
+        moveCnt = 0;
+
+        var xy1 = new OpenLayers.Pixel(1, 2);
+        handler.mousedown({xy: xy1});
+        t.ok(handler.last == xy1, "[mousedown] last is as expected");
+        var xy2 = new OpenLayers.Pixel(2, 3);
+        handler.mousemove({xy: xy2});
+        t.ok(handler.last == xy2, "[mousemove 1] last is as expected");
+        t.ok(handler.timeoutId != null, "[mousemove 1] timeoutId is set");
+        var xy3 = new OpenLayers.Pixel(3, 4);
+        handler.mousemove({xy: xy3});
+        t.ok(handler.last == xy2, "[mousemove 2] last is as expected");
+        var xy4 = new OpenLayers.Pixel(4, 5);
+        handler.mouseup({xy: xy4});
+        var xy5 = new OpenLayers.Pixel(5, 6);
+        handler.mousedown({xy: xy4});
+
+        t.delay_call(3, function() {
+            // the timer should not cause a move
+            t.eq(moveCnt, 1, "move called once");
+            // tear down
+            OpenLayers.Event.isLeftClick = ilc;
+        });
+    }
+
+    function test_interval_timer_before_mouseup(t) {
+        t.plan(5);
+
+        // set up
+
+        var map = new OpenLayers.Map('map');
+
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+
+        var moveCnt;
+
+        var handler = new OpenLayers.Handler.Drag(control, {}, {
+            interval: 1,
+            move: function() {
+                moveCnt++;
+            }
+        });
+        handler.activate();
+
+        handler.checkModifiers = function() { return true; };
+
+        var ilc = OpenLayers.Event.isLeftClick;
+        OpenLayers.Event.isLeftClick = function() { return true; };
+
+        // test
+
+        moveCnt = 0;
+
+        var xy1 = new OpenLayers.Pixel(1, 2);
+        handler.mousedown({xy: xy1});
+        t.ok(handler.last == xy1, "[mousedown] last is as expected");
+        var xy2 = new OpenLayers.Pixel(2, 3);
+        handler.mousemove({xy: xy2});
+        t.ok(handler.last == xy2, "[mousemove 1] last is as expected");
+        t.ok(handler.timeoutId != null, "[mousemove 1] timeoutId is set");
+        var xy3 = new OpenLayers.Pixel(3, 4);
+        handler.mousemove({xy: xy3});
+        t.ok(handler.last == xy2, "[mousemove 2] last is as expected");
+
+        t.delay_call(3, function() {
+            // the timer should cause a move
+            t.eq(moveCnt, 2, "move called twice");
+            var xy4 = new OpenLayers.Pixel(4, 5);
+            handler.mouseup({xy: xy4});
+            // tear down
+            OpenLayers.Event.isLeftClick = ilc;
+        });
+    }
+
 
   </script>
 </head>
