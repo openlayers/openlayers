@@ -4,7 +4,7 @@
     <script type="text/javascript">
 
     function test_read_wmswfs(t) {
-        t.plan(16);
+        t.plan(17);
         // taken from http://www.ogcnetwork.net/schemas/owc/0.3.1/context_nested.xml
         // adapted: add an extra slash (roads/railways) in the Title of the WMS layer to test nesting
         var text = '<?xml version="1.0" encoding="UTF-8"?>' +
@@ -61,6 +61,7 @@
         map.zoomToExtent(new OpenLayers.Bounds(-117, 32, -116, 33));
         var owc = parser.write(map, {id: 'ows-context-ex-1-v3', title: 'OWS Context version 0.3.1 showing nested layers'});
         t.xml_eq(text, owc, "Can we roundtrip this nested OWSContext with a WMS and WFS layer?");
+        t.eq(context.layers[1].metadata.nestingPath[0], "Tiger 2005fe major roads/railways", "Nesting path is preserved even after calling write");
     }
 
     function test_write_wmswfs(t) {
