@@ -44,8 +44,9 @@
         control = new OpenLayers.Control.PanZoomBar();
         map.addControl(control);
         control.removeButtons();
+        var div = control.div;
         map.destroy();
-        t.eq(control.div.childNodes.length, 0, "control's div cleared.");
+        t.eq(div.childNodes.length, 0, "control's div cleared.");
         t.eq(control.zoombarDiv, null, "zoombar div nullified.")
     }
 

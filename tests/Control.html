@@ -60,7 +60,7 @@
     }
 
     function test_Control_destroy(t) {
-        t.plan(3);
+        t.plan(4);
     
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
@@ -70,6 +70,7 @@
         t.ok(map.controls[map.controls.length - 1] != control, "map.controls doesn't contains control");
 
         t.ok(control.map == null, "Control.map is null");
+        t.ok(control.div == null, "Control.div is null");
         t.ok(control.handler == null, "Control.handler is null");
     }
     
