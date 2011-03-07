@@ -373,6 +373,114 @@
         map.events.triggerEvent("click", evt);
     }
 
+    // test for http://trac.openlayers.org/ticket/2812
+    function test_highlightOnly_toggle(t) {
+        t.plan(8);
+
+        /*
+         * setup
+         */
+
+        var map, layer, ctrl1, ctrl2, _feature, feature, evt, _style;
+
+        map = new OpenLayers.Map("map");
+        layer = new OpenLayers.Layer.Vector("name", {isBaseLayer: true});
+        map.addLayer(layer);
+
+        ctrl1 = new OpenLayers.Control.SelectFeature(layer, {
+            highlightOnly: false,
+            hover: false,
+            clickout: false,
+            toggle: true
+        });
+        map.addControl(ctrl1);
+
+        ctrl2 = new OpenLayers.Control.SelectFeature(layer, {
+            highlightOnly: true,
+            hover: true
+        });
+        map.addControl(ctrl2);
+
+        ctrl2.activate();
+        ctrl1.activate();
+
+        feature = new OpenLayers.Feature.Vector();
+        feature.layer = layer;
+
+        // override the layer's getFeatureFromEvent func so that it always
+        // returns the feature referenced to by _feature
+        layer.getFeatureFromEvent = function(evt) { return _feature; };
+
+        evt = {xy: new OpenLayers.Pixel(Math.random(), Math.random())};
+
+        map.zoomToMaxExtent();
+
+        /*
+         * tests
+         */
+
+        // with renderIntent
+
+        ctrl1.renderIntent = "select";
+        ctrl2.renderIntent = "temporary";
+
+        // mouse over feature, feature is drawn with "temporary"
+        _feature = feature;
+        evt.type = "mousemove";
+        map.events.triggerEvent("mousemove", evt);
+        t.eq(feature.renderIntent, "temporary",
+             "feature drawn with expected render intent after \"mouseover\"");
+
+        // click in feature, feature is drawn with "select"
+        _feature = feature;
+        evt.type = "click";
+        map.events.triggerEvent("click", evt);
+        t.eq(feature.renderIntent, "select",
+             "feature drawn with expected render intent after \"clickin\"");
+
+        // mouse out of feature, feature is still drawn with "select"
+        _feature = null;
+        evt.type = "mousemove";
+        map.events.triggerEvent("mousemove", evt);
+        t.eq(feature.renderIntent, "select",
+             "feature drawn with expected render intent after \"mouseout\"");
+
+        // mouse over feature again, feature is drawn with "temporary"
+        _feature = feature;
+        evt.type = "mousemove";
+        map.events.triggerEvent("mousemove", evt);
+        t.eq(feature.renderIntent, "temporary",
+             "feature drawn with expected render intent after \"mouseover\"");
+
+        // click in feature again, feature is drawn with "default"
+        _feature = feature;
+        evt.type = "click";
+        map.events.triggerEvent("click", evt);
+        t.eq(feature.renderIntent, "default",
+             "feature drawn with expected render intent after \"clickin\"");
+
+        // mouse out of feature again, feature is still drawn with "default"
+        _feature = null;
+        evt.type = "mousemove";
+        map.events.triggerEvent("mousemove", evt);
+        t.eq(feature.renderIntent, "default",
+             "feature drawn with expected render intent after \"mouseout\"");
+
+        // mouse over feature again, feature is drawn with "temporary"
+        _feature = feature;
+        evt.type = "mousemove";
+        map.events.triggerEvent("mousemove", evt);
+        t.eq(feature.renderIntent, "temporary",
+             "feature drawn with expected render intent after \"mouseover\"");
+
+        // mouse out of feature again, feature is still drawn with "default"
+        _feature = null;
+        evt.type = "mousemove";
+        map.events.triggerEvent("mousemove", evt);
+        t.eq(feature.renderIntent, "default",
+             "feature drawn with expected render intent after \"mouseout\"");
+    }
+
     function test_setLayer(t) {
         t.plan(5);
         var map = new OpenLayers.Map("map");
