@@ -12,6 +12,18 @@
         t.eq( control.displayClass,  "olControlKeyboardDefaults", "displayClass is correct" );
     }
 
+    function test_Control_KeyboardDefaults_destroy (t) {
+        t.plan(2);
+    
+        map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control.KeyboardDefaults();
+        map.addControl(control);
+        t.ok(control.handler != null, "control.handler is created");
+        control.destroy();
+        t.ok(control.handler == null, "control.handler is null after destroy");
+        map.destroy();
+    }
+
     function test_Control_KeyboardDefaults_addControl (t) {
         t.plan( 4 );
 
