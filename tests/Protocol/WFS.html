@@ -24,6 +24,23 @@
              "initialize returns instance of custom versioned protocol")
     }
 
+    function test_setGeometryName(t) {
+        t.plan(4);
+        var protocol = new OpenLayers.Protocol.WFS({
+            url: "http://some.url.org",
+            featureNS: "http://namespace.org",
+            featureType: "type",
+            geometryName: "geom"
+        });
+        t.eq(protocol.geometryName, "geom", "geometryName set correctly by constructor");
+        t.eq(protocol.format.geometryName, "geom", "geometryName correctly set on format by constructor");
+        // change the geometryName on the fly
+        protocol.setGeometryName("SHAPE");
+        t.eq(protocol.geometryName, "SHAPE", "geometryName changed correctly by setGeometryName");
+        t.eq(protocol.format.geometryName, "SHAPE", "geometryName correctly changed on format by setGeometryName");
+        protocol.destroy();
+    }
+
     function test_setFeatureType(t) {
         t.plan(4);
         var protocol = new OpenLayers.Protocol.WFS({
