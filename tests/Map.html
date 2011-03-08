@@ -163,8 +163,15 @@
     }
 
     function test_Map_center(t) {
-        t.plan(8);
-        map = new OpenLayers.Map('map');
+        t.plan(11);
+        var log = [];
+        map = new OpenLayers.Map('map', {
+            eventListeners: {
+                "movestart": function() {log.push("movestart");},
+                "move": function() {log.push("move");},
+                "moveend": function() {log.push("moveend");}
+            }            
+        });
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
             {map: "/mapdata/vmap_wms.map", layers: "basic"} );
@@ -180,7 +187,11 @@
         map.zoomOut();
         t.eq( map.getZoom(), 0, "map.zoom is correct after calling setCenter,zoom in, zoom out");
 
+        log = [];
         map.zoomTo(5);
+        t.eq(log[0], "movestart", "zoomTo fires movestart event");
+        t.eq(log[1], "move", "zoomTo fires move event");
+        t.eq(log[2], "moveend", "zoomTo fires moveend event");
         t.eq( map.getZoom(), 5, "map.zoom is correct after calling zoomTo" );
 
     /**
@@ -1527,19 +1538,60 @@
     
     function test_panTo(t) {
         
-        t.plan(2);
+        t.plan(6);
         
-        var map = new OpenLayers.Map("map");
+        var log = [];
+        var map = new OpenLayers.Map("map", {
+            eventListeners: {
+                "movestart": function() {log.push("movestart");},
+                "move": function() {log.push("move");},
+                "moveend": function() {log.push("moveend");}
+            }            
+        });
         map.addLayer(
             new OpenLayers.Layer(null, {isBaseLayer: true})
         );
         map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+        t.eq(log[log.length-1], "moveend", "moveend fired when map center is set");
+        log = [];
         
         map.panTo(new OpenLayers.LonLat(1, 0));
         t.eq(map.panTween.playing, true, "the map pan tween is playing before destroy");
         
-        map.destroy();
-        t.ok(!map.panTween || !map.panTween.playing, "the map pan tween is not playing after destroy");
+        t.delay_call(2, function() {
+            t.eq(log[0], "movestart", "panTo starts with movestart event");
+            t.eq(log[1], "move", "move events fired while panning");
+            t.eq(log[log.length-1], "moveend", "panTo finishes with moveend event");
+            map.destroy();
+            t.ok(!map.panTween || !map.panTween.playing, "the map pan tween is not playing after destroy");
+        });
+    }
+    
+    function test_pan(t) {
+        t.plan(4);
+        
+        var log = [];
+        var map = new OpenLayers.Map("map");
+        map.addLayer(
+            new OpenLayers.Layer(null, {isBaseLayer: true})
+        );
+        map.setCenter(new OpenLayers.LonLat(0, 0), 5);
+        var log = [];
+        map.events.on({
+            "movestart": function() {log.push("movestart");},
+            "move": function() {log.push("move");},
+            "moveend": function() {log.push("moveend");}
+        });
+        
+        // simulate the drag sequence of the DragPan control;
+        map.pan(5,5, {animate: false, dragging: true});
+        map.pan(1,1, {animate: false, dragging: false});
+        
+        t.eq(log[0], "movestart", "pan sequence starts with movestart");
+        t.eq(log[1], "move", "followed by move,");
+        t.eq(log[log.length-2], "move", "move again before we stop panning,");
+        t.eq(log[log.length-1], "moveend", "and moveend when we're done.");
+        
     }
 
     function test_updateSize(t) {
