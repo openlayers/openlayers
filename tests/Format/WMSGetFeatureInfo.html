@@ -52,7 +52,7 @@
     }
 
     function test_read_msGMLOutput(t) {
-        t.plan(12);
+        t.plan(13);
         
         var parser = new OpenLayers.Format.WMSGetFeatureInfo();
 
@@ -68,6 +68,28 @@
         var features = parser.read(text);
         t.eq(features.length, 0,
              "Parsing empty msGMLOutput response succesfull");
+
+        // read empty attribute
+        text =
+            '<?xml version="1.0" encoding="ISO-8859-1"?>' +
+            '<msGMLOutput ' +
+            '    xmlns:gml="http://www.opengis.net/gml"' +
+            '    xmlns:xlink="http://www.w3.org/1999/xlink"' +
+            '    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' +
+            '   <AAA64_layer>' +
+            '           <AAA64_feature>' +
+            '                   <gml:boundedBy>' +
+            '                           <gml:Box srsName="EPSG:28992">' +
+            '                                   <gml:coordinates>107397.266000,460681.063000 116568.188000,480609.250000</gml:coordinates>' +
+            '                           </gml:Box>' +
+            '                   </gml:boundedBy>' +
+            '                   <FOO>bar</FOO>' +
+            '                   <EMPTY></EMPTY>' +
+            '           </AAA64_feature>' +
+            '   </AAA64_layer>' +
+            '</msGMLOutput>';
+        features = parser.read(text);
+        t.eq((features[0].attributes.EMPTY === null), true, "Empty attribute is parsed as null");
 
         // read 1 feature from 1 layer
         text = 
