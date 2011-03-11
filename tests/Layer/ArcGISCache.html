@@ -199,6 +199,25 @@
         t.ok('00000100' == layer.zeroPad(256, 8, 16), 'zeroPad should generate tile indexes properly ');
         t.ok('00001000' == layer.zeroPad(4096, 8, 16), 'zeroPad should generate tile indexes properly ');        
     }
+    
+    /**
+     * Check to ensure our LOD calculation will correctly avoid returning tile indexes less than zero
+     * (see http://trac.osgeo.org/openlayers/ticket/3169)
+     */
+    function test_Layer_ARCGISCACHE_tileBounds(t) {
+        t.plan(1);
+    
+        var layer = new OpenLayers.Layer.ArcGISCache('test', null, { });
+        var res = 264.583862501058;
+        layer.tileOrigin = new OpenLayers.LonLat(0.0, 650000.0);
+        layer.tileSize = new OpenLayers.Size(512, 512);
+        
+        // pick a point off the left of our tile origin  (would be a negative tile index)
+        var point = new OpenLayers.Geometry.Point(-123308.94829, 393128.85817);
+        
+        var tile = layer.getContainingTileCoords(point, res);
+        t.ok((tile.x >= 0 && tile.y >= 0), 'layer should not generate negative tile ranges for level of detail');
+    }
 
   </script>
 </head>
