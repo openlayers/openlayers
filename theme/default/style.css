@@ -188,7 +188,7 @@ div.olControlMousePosition {
   background-repeat: no-repeat;
 }
 .olControlEditingToolbar  {
-    float:right;
+    top: 0px;
     right: 0px;
     height: 30px; 
     width: 200px;
