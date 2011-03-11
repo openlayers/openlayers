@@ -102,6 +102,29 @@
 
     }
 
+    function test_clickHandlerOptions(t) {
+
+        t.plan(3);
+
+         var nav = new OpenLayers.Control.TouchNavigation();
+         t.eq(nav.clickHandlerOptions, null, "clickHandlerOptions null by default");
+
+         var map = new OpenLayers.Map({
+             div: document.body,
+             controls: [
+                 new OpenLayers.Control.TouchNavigation({
+                     clickHandlerOptions: {foo: "bar"}
+                 })
+             ]
+         });
+         nav = map.controls[0];
+
+         t.eq(nav.handlers.click.foo, "bar", "foo property is set on the click handler");
+         t.eq(nav.handlers.click.pixelTolerance, 2, "pixelTolerance is 2 by default");
+         map.destroy();
+
+    }
+
     function test_zoomOut(t) {
         t.plan(1);
 
@@ -114,7 +137,7 @@
         var control = new OpenLayers.Control.TouchNavigation();
         map.addControl(control);
         var handler = control.handlers.click;
-        handler.touchstart({xy: {x: 1, y: 1}, touches: ["foo", "bar"]});
+        handler.touchstart({xy: new OpenLayers.Pixel(1 ,1), touches: ["foo", "bar"]});
         handler.touchend({});
         t.delay_call(1, function() {
             t.eq(map.getZoom(), 4, "Did we zoom out?");
