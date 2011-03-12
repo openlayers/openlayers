@@ -25,7 +25,7 @@
     }
 
     function test_Handler_Point_activation(t) {
-        t.plan(10);
+        t.plan(11);
         var log = [];
         var map = new OpenLayers.Map("map", {
             resolutions: [1]
@@ -70,7 +70,15 @@
         activated = handler.deactivate();
         t.ok(activated,
              "deactivate returns true if the handler was active already");
-
+        var failed = false;
+        try {
+            handler.finalize();
+            msg = "finalizing after deactivation does not throw an error";
+        } catch (err) {
+            failed = true;
+            msg = "finalizing after deactivation throws an error";
+        }
+        t.ok(!failed, msg);
         map.destroy();
     }
 
