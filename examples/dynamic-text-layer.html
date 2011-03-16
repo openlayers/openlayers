@@ -41,7 +41,13 @@
             // Needed only for interaction, not for the display.
             function onPopupClose(evt) {
                 // 'this' is the popup.
-                selectControl.unselect(this.feature);
+                var feature = this.feature;
+                if (feature.layer) { // The feature is not destroyed
+                    selectControl.unselect(feature);
+                } else { // After "moveend" or "refresh" events on POIs layer all 
+                         //     features have been destroyed by the Strategy.BBOX
+                    this.destroy();
+                }
             }
             function onFeatureSelect(evt) {
                 feature = evt.feature;
@@ -53,7 +59,7 @@
                                          null, true, onPopupClose);
                 feature.popup = popup;
                 popup.feature = feature;
-                map.addPopup(popup);
+                map.addPopup(popup, true);
             }
             function onFeatureUnselect(evt) {
                 feature = evt.feature;
