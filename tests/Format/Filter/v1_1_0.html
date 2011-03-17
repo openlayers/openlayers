@@ -203,6 +203,118 @@
 
     }
 
+    function test_FilterFunctions(t) {
+        t.plan(2);
+
+        var parser = new OpenLayers.Format.Filter.v1_1_0();
+
+        //test spatial intersects with filter function
+        var filter = new OpenLayers.Filter.Spatial({
+            property: 'the_geom',
+            type: OpenLayers.Filter.Spatial.INTERSECTS,
+            value: new OpenLayers.Filter.Function({
+                name  : 'querySingle',
+                params: ['sf:restricted', 'the_geom', 'cat=3']
+            })
+        });
+
+        var out =
+            '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+                '<ogc:Intersects>' +
+                    '<ogc:PropertyName>the_geom</ogc:PropertyName>' +
+                    '<ogc:Function name="querySingle">' +
+                        '<ogc:Literal>sf:restricted</ogc:Literal>' +
+                        '<ogc:Literal>the_geom</ogc:Literal>' +
+                        '<ogc:Literal>cat=3</ogc:Literal>' +
+                    '</ogc:Function>' +
+                '</ogc:Intersects>' +
+            '</ogc:Filter>';
+
+
+        var node = parser.write(filter);
+
+        //test writer
+        t.xml_eq(node, out, "spatial intersect filter with functions correctly written");
+
+        //test logical filter with custom function
+        filter = new OpenLayers.Filter.Logical({
+            type: OpenLayers.Filter.Logical.AND,
+            filters: [
+                new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
+                    matchCase: false,
+                    property: "FOO",
+                    value: new OpenLayers.Filter.Function({
+                        name : 'customFunction',
+                        params : ['param1', 'param2']
+                    })
+                })
+            ]
+        });
+
+        out =
+            '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+                '<ogc:And>' +
+                    '<ogc:PropertyIsNotEqualTo matchCase="false">' +
+                        '<ogc:PropertyName>FOO</ogc:PropertyName>' +
+                        '<ogc:Function name="customFunction">' +
+                            '<ogc:Literal>param1</ogc:Literal>' +
+                            '<ogc:Literal>param2</ogc:Literal>' +
+                        '</ogc:Function>' +
+                    '</ogc:PropertyIsNotEqualTo>' +
+                '</ogc:And>' +
+            '</ogc:Filter>';
+
+        node = parser.write(filter);
+
+        //test writer
+        t.xml_eq(node, out, "comparison filter with filter functions correctly written");
+
+    }
+
+    function test_NestedFilterFunctions(t) {
+        t.plan(1);
+
+        //test spatial dwithin with nested filter function
+        var filter = new OpenLayers.Filter.Spatial({
+           property: 'the_geom',
+           type: OpenLayers.Filter.Spatial.DWITHIN,
+           value: new OpenLayers.Filter.Function({
+               name : 'collectGeometries',
+               params: [
+                    new OpenLayers.Filter.Function({
+                        name  : 'queryCollection',
+                        params: ['sf:roads', 'the_geom', 'INCLUDE']
+                    })
+               ]
+           }),
+           distanceUnits: "meters",
+           distance: 200
+        });
+
+        var out =
+            '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+                '<ogc:DWithin>' +
+                    '<ogc:PropertyName>the_geom</ogc:PropertyName>' +
+                    '<ogc:Function name="collectGeometries">' +
+                        '<ogc:Function name="queryCollection">' +
+                            '<ogc:Literal>sf:roads</ogc:Literal>' +
+                            '<ogc:Literal>the_geom</ogc:Literal>' +
+                            '<ogc:Literal>INCLUDE</ogc:Literal>' +
+                        '</ogc:Function>' +
+                    '</ogc:Function>' +
+                    '<ogc:Distance units="meters">200</ogc:Distance>' +
+                '</ogc:DWithin>' +
+            '</ogc:Filter>';
+
+        var parser = new OpenLayers.Format.Filter.v1_1_0();
+        var node = parser.write(filter);
+
+        //test writer
+        t.xml_eq(node, out, "spatial dwithin filter with nested functions correctly written");
+    }
+
+
     </script> 
 </head> 
 <body>
