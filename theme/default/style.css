@@ -319,6 +319,14 @@ div.olControlSaveFeaturesItemInactive {
     background-position: 0px 18px;
 }
 
+/* 
+ * When a potential text is bigger than the image it move the image
+ * with some headers (closes #3154) 
+ */
+.olControlPanZoomBar div {
+    font-size: 1px;
+}
+
 .olPopupCloseBox {
   background: url("img/close.gif") no-repeat;
   cursor: pointer;
