@@ -63,7 +63,7 @@
              "activate adds the feature to the layer");
         t.eq(log.length, 1,
              "activate calls \"create\" once");
-        t.geom_eq(log[0].geometry, handler.point.geometry,
+        t.ok(log[0].geometry == handler.point.geometry,
                   "\"create\" called with expected geometry");
         t.ok(log[0].feature == handler.point,
              "\"create\" called with expected feature");
@@ -80,6 +80,32 @@
         }
         t.ok(!failed, msg);
         map.destroy();
+    }
+
+    // http://trac.osgeo.org/openlayers/ticket/3179
+    function test_activate_before_map_is_centered(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map('map', {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var control = new OpenLayers.Control();
+        var handler = new OpenLayers.Handler.Point(control, {});
+        control.handler = handler;
+        map.addControl(control);
+
+        var error;
+        try {
+            handler.activate();
+            error = false;
+        } catch(err) {
+            error = true;
+        }
+        t.ok(!error, "no error on activate");
     }
 
     function test_Handler_Point_events(t) {
@@ -188,8 +214,8 @@
         t.eq(logs.length, 1, "[activate] called back");
         log = logs.shift();
         t.eq(log.type, "create", "[activate] create called");
-        t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-200, 125),
-                  "[activate] correct point");
+        t.ok(isNaN(log.args[0].x) && isNaN(log.args[0].y),
+             "[activate] initial point");
         // mouse down
         handler.mousedown(
             {type: "mousedown", xy: new OpenLayers.Pixel(0, 0)});
@@ -239,8 +265,8 @@
                   "[mouseup] correct point");
         log = logs.shift();
         t.eq(log.type, "create", "[mouseup] create called");
-        t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-200, 125),
-                  "[activate] correct point");
+        t.ok(isNaN(log.args[0].x) && isNaN(log.args[0].y),
+             "[mouseup] initial point");
         // mouse up on same pixel
         handler.mouseup({type: "mouseup", xy: new OpenLayers.Pixel(2, 0)});
         t.eq(logs.length, 0, "[mouseup] not called back");
@@ -249,12 +275,12 @@
         t.eq(logs.length, 2, "[cancel] called back");
         log = logs.shift();
         t.eq(log.type, "cancel", "[cancel] canced called");
-        t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-200, 125),
-                  "[cancel] correct point");
+        t.ok(isNaN(log.args[0].x) && isNaN(log.args[0].y),
+             "[cancel] initial point");
         log = logs.shift();
         t.eq(log.type, "create", "[cancel] create called");
-        t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-200, 125),
-                  "[cancel] correct point");
+        t.ok(isNaN(log.args[0].x) && isNaN(log.args[0].y),
+             "[] initial point");
 
         map.destroy();
     }
