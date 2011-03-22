@@ -87,7 +87,7 @@
     
     function test_events(t) {
         
-        t.plan(2);
+        t.plan(3);
         var log = {
             loadstart: 0,
             loadend: 0
@@ -117,6 +117,14 @@
         t.eq(log.loadstart, 1, "loadstart triggered");
         t.eq(log.loadend, 1, "loadend triggered");
         
+        log = {};
+        layer.protocol.read = function(obj) {
+            log.obj = obj;
+        }
+        layer.refresh({force: true, whee: 'chicken'});
+
+        t.eq(log.obj && log.obj.whee, "chicken", "properties passed to read on refresh correctly.");
+
         map.destroy();
         
     }
