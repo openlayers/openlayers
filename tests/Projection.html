@@ -58,7 +58,7 @@
          t.eq(proj2.equals(proj5), false, "Projection.equals() returns false for unknown projections with proj4js");
          
          if (!hasProj) {
-             delete window.Proj4js
+             window.Proj4js = undefined;
          }
          
      }
