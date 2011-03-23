@@ -81,9 +81,16 @@
         }
 
         function init(){
+            // allow testing of specific renderers via "?renderer=Canvas", etc
+            var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+            renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+
             map = new OpenLayers.Map('map');
             
-            vectorLayer = new OpenLayers.Layer.Vector("Vector Layer", {isBaseLayer: true});
+            vectorLayer = new OpenLayers.Layer.Vector("Vector Layer", {
+                isBaseLayer: true,
+                renderers: renderer
+            });
 
             map.addLayers([vectorLayer]);
             map.addControl(new OpenLayers.Control.MousePosition());
