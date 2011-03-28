@@ -1593,8 +1593,20 @@
         
     }
 
+    // test if we can call updateSize before document.body is ready. updateOk
+    // is tested in the test_updateSize function below
+    var earlyMap = new OpenLayers.Map();
+    var updateOk;
+    try {
+      earlyMap.updateSize();
+      updateOk = true;
+    } catch(e) {}
+    earlyMap.destroy();
     function test_updateSize(t) {
-        t.plan(2);
+        t.plan(3);
+
+        // checking updateSize from outside this test function (see above)
+        t.ok(updateOk, "updateSize works before document.body is ready");
 
         var map, moveToCnt, size;
 
@@ -1625,7 +1637,7 @@
         map.updateSize();
         t.eq(moveToCnt, 1, "updateSize move the map if it has a center");
 
-        map.destroy();
+        map.destroy();        
     }
     
     function test_invisible_map(t) {
