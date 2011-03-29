@@ -166,6 +166,50 @@
             t.ok(map.zoom >= 0, 'map.zoom is never < 0 after random handle drag with forceFixedZoomLevel=true and fractionalZoom=true');
         }
     }
+
+    function test_Control_PanZoomBar_shows (t) {
+        t.plan(22);
+
+        var control, map;
+
+        control = new OpenLayers.Control.PanZoomBar({panIcons: true, zoomWorldIcon: false});
+        map = new OpenLayers.Map('map', {controls: [control]});
+        t.eq(control.buttons.length, 6, "(a) pan, no world - expected number of buttons");
+        t.ok(control.buttons[0].id.match("_panup$"), "(a) pan, no world - pan up");
+        t.ok(control.buttons[1].id.match("_panleft$"), "(a) pan, no world - pan left");
+        t.ok(control.buttons[2].id.match("_panright$"), "(a) pan, no world - pan right");
+        t.ok(control.buttons[3].id.match("_pandown$"), "(a) pan, no world - pan down");
+        t.ok(control.buttons[4].id.match("_zoomin$"), "(a) pan, no world - zoom in");
+        t.ok(control.buttons[5].id.match("_zoomout$"), "(a) pan, no world - zoom out");
+        map.destroy();
+
+        control = new OpenLayers.Control.PanZoomBar({panIcons: true, zoomWorldIcon: true});
+        map = new OpenLayers.Map('map', {controls:[control]});
+        t.eq(control.buttons.length, 7, "(b) pan, world - expected number of buttons");
+        t.ok(control.buttons[0].id.match("_panup$"), "(b) pan, world - pan up");
+        t.ok(control.buttons[1].id.match("_panleft$"), "(b) pan, world - pan left");
+        t.ok(control.buttons[2].id.match("_zoomworld$"), "(b) pan, world - zoom world");
+        t.ok(control.buttons[3].id.match("_panright$"), "(b) pan, world - pan right");
+        t.ok(control.buttons[4].id.match("_pandown$"), "(b) pan, world - pan down");
+        t.ok(control.buttons[5].id.match("_zoomin$"), "(b) pan, world - zoom in");
+        t.ok(control.buttons[6].id.match("_zoomout$"), "(b) pan, world - zoom out");
+        map.destroy();
+
+        control = new OpenLayers.Control.PanZoomBar({panIcons: false, zoomWorldIcon: false});
+        map = new OpenLayers.Map('map', {controls:[control]});
+        t.eq(control.buttons.length, 2, "(c) no pan, no world - expected number of buttons");
+        t.ok(control.buttons[0].id.match("_zoomin$"), "(c) no pan, no world - zoom in");
+        t.ok(control.buttons[1].id.match("_zoomout$"), "(c) no pan, no world - zoom out");
+        map.destroy();
+
+        control = new OpenLayers.Control.PanZoomBar({panIcons: false, zoomWorldIcon: true});
+        map = new OpenLayers.Map('map', {controls:[control]});
+        t.eq(control.buttons.length, 3, "(d) no pan, world - expected number of buttons");
+        t.ok(control.buttons[0].id.match("_zoomin$"), "(d) no pan, world - zoom in");
+        t.ok(control.buttons[1].id.match("_zoomout$"), "(d) no pan, world - zoom out");
+        t.ok(control.buttons[2].id.match("_zoomworld$"), "(d) no pan, world - zoom world");
+        map.destroy();
+    }
   </script>
 </head>
 <body>
