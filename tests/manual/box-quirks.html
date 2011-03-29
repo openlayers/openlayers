@@ -1,0 +1,52 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Box Handler Quirks Mode Test</title>
+    <link rel="stylesheet" href="../../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="../../examples/style.css" type="text/css" />
+    <style type="text/css">
+    /* simulate quirks mode (traditional box model) in browsers other than IE */
+    div {
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -ms-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+    }
+    
+    .olHandlerBoxZoomBox {
+        border: 20px solid red;
+        border-left-width: 10px;
+        border-bottom-width: 30px;
+    }
+    </style>
+    <script src="../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map, layer;
+        function init(){
+            map = new OpenLayers.Map( 'map' );
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                    "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                    {layers: 'basic'} );
+            map.addLayer(layer);
+            map.zoomToMaxExtent();
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Box handler Quirks Mode Test</h1>
+
+    <div id="shortdesc">Test the correct appearance of the ZoomBox in quirks mode</div>
+
+    <div id="map" class="smallmap"></div>
+
+    <div id="docs">
+        <p>For the box to be positioned correctly, we need to know the
+            width of the borders.</p>
+        <p>Shift-click on the map. A red box should be visible around the mouse
+            cursor position, with 20 pixels to the top and right, 10 pixels to
+            the left and 30 pixels to the bottom edge of the box.</p>
+        <p>Drag the box both to the top-left and the bottom-right. The cursor
+            should always be at the top-left or bottom-right inner corner of
+            the box.</p>
+    </div>
+  </body>
+</html>
