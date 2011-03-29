@@ -9,11 +9,16 @@
     <style type="text/css">
         .olControlEditingToolbar  {
             float:left;
-            right: 0px;
-            height: 30px; 
-            width: 150px;
+            width: auto;
         }
     </style>
+    <!--[if lte IE 6]>
+        <style type="text/css">
+            .olControlEditingToolbar {
+                width: 150px;
+            }
+        </style>
+    <![endif]-->
     <script src="../lib/Firebug/firebug.js"></script>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">

@@ -137,18 +137,6 @@ div.olControlMousePosition {
     padding:5px;
     overflow: auto;
 }    
-.olControlNavToolbar { 
-    width:0px;
-    height:0px;
-}    
-.olControlNavToolbar div { 
-  display:block;
-  width:  28px;
-  height: 28px;
-  top: 300px;
-  left: 6px;
-  position: relative;
-}
 
 .olControlNavigationHistory {
    background-image: url("img/navigation_history.png");
@@ -170,61 +158,6 @@ div.olControlMousePosition {
    background-position: -24px -24px;
 }
 
-.olControlNavToolbar .olControlNavigationItemActive { 
-  background-image: url("img/panning-hand-on.png");
-  background-repeat: no-repeat;
-}
-.olControlNavToolbar .olControlNavigationItemInactive { 
-  background-image: url("img/panning-hand-off.png");
-  background-repeat: no-repeat;
-}
-.olControlNavToolbar .olControlZoomBoxItemActive { 
-  background-image: url("img/drag-rectangle-on.png");
-  background-color: orange;
-  background-repeat: no-repeat;
-}
-.olControlNavToolbar .olControlZoomBoxItemInactive { 
-  background-image: url("img/drag-rectangle-off.png");
-  background-repeat: no-repeat;
-}
-.olControlEditingToolbar  {
-    top: 0px;
-    right: 0px;
-    height: 30px; 
-    width: 200px;
-}
-.olControlEditingToolbar div { 
-  background-image: url("img/editing_tool_bar.png");
-  background-repeat: no-repeat;
-  float:right;
-  width:  24px;
-  height: 24px;
-  margin: 5px;
-}
-.olControlEditingToolbar .olControlNavigationItemActive { 
-  background-position: -103px -23px; 
-}
-.olControlEditingToolbar .olControlNavigationItemInactive { 
-  background-position: -103px -0px; 
-}
-.olControlEditingToolbar .olControlDrawFeaturePointItemActive { 
-  background-position: -77px -23px; 
-}
-.olControlEditingToolbar .olControlDrawFeaturePointItemInactive { 
-  background-position: -77px -0px; 
-}
-.olControlEditingToolbar .olControlDrawFeaturePathItemInactive { 
-  background-position: -51px 0px; 
-}
-.olControlEditingToolbar .olControlDrawFeaturePathItemActive { 
-  background-position: -51px -23px; 
-}
-.olControlEditingToolbar .olControlDrawFeaturePolygonItemInactive { 
-  background-position: -26px 0px; 
-}
-.olControlEditingToolbar .olControlDrawFeaturePolygonItemActive { 
-  background-position: -26px -23px ;                                                                   
-}
 div.olControlSaveFeaturesItemActive { 
     background-image: url(img/save_features_on.png);
     background-repeat: no-repeat;
@@ -420,4 +353,69 @@ div.olControlSaveFeaturesItemInactive {
 }
 .olBingAttribution.road {
     color: #333;
+}
+
+/**
+ * Editing and navigation icons.
+ * (using the editing_tool_bar.png sprint image)
+ */
+.olControlNavToolbar ,
+.olControlEditingToolbar {
+    margin: 5px 5px 0px 0px;
+}
+.olControlNavToolbar div,
+.olControlEditingToolbar div {
+    background-image: url("img/editing_tool_bar.png");
+    background-repeat: no-repeat;
+    margin: 0px 0px 5px 5px;
+    width: 24px;
+    height: 22px;
+    cursor: pointer
+}
+/* positions */
+.olControlEditingToolbar {
+    right: 0px;
+    top: 0px;
+    width: 200px; /* Only for IE6 or IE without DOCTYPE */
+}
+.olControlNavToolbar {
+    top: 295px;
+    left: 9px;
+}
+/* layouts */
+.olControlEditingToolbar div {
+    float: right;
+}
+/* individual controls */
+.olControlNavToolbar .olControlNavigationItemInactive,
+.olControlEditingToolbar .olControlNavigationItemInactive {
+    background-position: -103px -1px;
+}
+.olControlNavToolbar .olControlNavigationItemActive ,
+.olControlEditingToolbar .olControlNavigationItemActive  {
+    background-position: -103px -24px;
+}
+.olControlNavToolbar .olControlZoomBoxItemInactive {
+    background-position: -128px -1px;
+}
+.olControlNavToolbar .olControlZoomBoxItemActive  {
+    background-position: -128px -24px;
+}
+.olControlEditingToolbar .olControlDrawFeaturePointItemInactive {
+    background-position: -77px -1px;
+}
+.olControlEditingToolbar .olControlDrawFeaturePointItemActive {
+    background-position: -77px -24px;
+}
+.olControlEditingToolbar .olControlDrawFeaturePathItemInactive {
+    background-position: -51px -1px;
+}
+.olControlEditingToolbar .olControlDrawFeaturePathItemActive {
+    background-position: -51px -24px;
+}
+.olControlEditingToolbar .olControlDrawFeaturePolygonItemInactive{
+    background-position: -26px -1px;
+}
+.olControlEditingToolbar .olControlDrawFeaturePolygonItemActive {
+    background-position: -26px -24px;
 }
