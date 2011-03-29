@@ -94,7 +94,8 @@
         log = {};
         control.activate();
         t.eq(log.sketchstarted.type, "sketchstarted", "[activate] sketchstarted triggered");
-        t.geom_eq(log.sketchstarted.vertex, new OpenLayers.Geometry.Point(-250, 175), "[activate] correct vertex");
+        t.ok(isNaN(log.sketchstarted.vertex.x) && isNaN(log.sketchstarted.vertex.y),
+             "[activate] correct vertex (NaN)");
 
         log = {};
         map.events.triggerEvent("mousemove", {xy: new OpenLayers.Pixel(0, 0)});
@@ -123,7 +124,8 @@
                   ]),
                   "[dblclick] correct geometry");
         t.eq(log.sketchstarted.type, "sketchstarted", "[dblclick] sketchstarted triggered");
-        t.geom_eq(log.sketchstarted.vertex, new OpenLayers.Geometry.Point(-250, 175), "[dblclick] correct vertex");
+        t.ok(isNaN(log.sketchstarted.vertex.x) && isNaN(log.sketchstarted.vertex.y),
+             "[dblclick] correct vertex (NaN)");
 
         map.destroy();
     }
