@@ -43,7 +43,7 @@ import sys
 
 SUFFIX_JAVASCRIPT = ".js"
 
-RE_REQUIRE = "@requires:? (.*)\n" # TODO: Ensure in comment?
+RE_REQUIRE = "@requires?:? (.*)\n" # TODO: Ensure in comment?
 
 class MissingImport(Exception):
     """Exception raised when a listed import is not found in the lib."""
