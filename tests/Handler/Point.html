@@ -416,48 +416,119 @@
         t.eq(handler.point, null,
              "handler.point is null after destroy");
     }
-    
-    function test_sequence_touch_1(t) {
-        t.plan(7);
 
-        log = [];
-        var map = new OpenLayers.Map("map", { // 300 x 150
+    //
+    // Sequence tests
+    // 
+    // Sequence tests basically involve executing a sequence of events
+    // and testing the resulting geometry.
+    //
+    // Below are tests for various drawing sequences. Tests can be
+    // added here each a non-working sequence is found.
+    //
+
+    // tap
+    function test_touch_sequence1(t) {
+        t.plan(8);
+
+        // set up
+
+        var log;
+        var map = new OpenLayers.Map("map", {
             resolutions: [1]
         });
         var layer = new OpenLayers.Layer.Vector("foo", {
-            maxExtent: new OpenLayers.Bounds(-100, -100, 100, 100),
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
             isBaseLayer: true
         });
         map.addLayer(layer);
-        var control = new OpenLayers.Control();
+        var control = new OpenLayers.Control({});
         var handler = new OpenLayers.Handler.Point(control, {
-            "done": function(g, f) {
-                log.push({geometry: g, feature: f});
+            done: function(g, f) {
+                log = {geometry: g, feature: f};
             }
         });
         control.handler = handler;
         map.addControl(control);
-        map.setCenter(new OpenLayers.LonLat(0, 0), 5);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
         handler.activate();
-        
-        handler.touchstart({type: "touchstart", xy: new OpenLayers.Pixel(50, 75)});
-        t.eq(log.length, 0, "touch start 1");
-        
-        handler.touchmove({type: "touchmove", xy: new OpenLayers.Pixel(250, 75)});
-        t.eq(log.length, 0, "touch move");
 
-        handler.touchend({type: "touchend"});
-        t.eq(log.length, 0, "touch end");
-        
-        handler.touchstart({type: "touchstart", xy: new OpenLayers.Pixel(99, 75)});
-        t.eq(log.length, 0, "touch start 2");
+        // test
 
-        handler.touchmove({type: "touchmove", xy: new OpenLayers.Pixel(100, 75)});
-        t.eq(log.length, 0, "touch move");
+        var ret;
 
-        handler.touchend({type: "touchend"});
-        t.eq(log.length, 1, "touch end");
-        t.geom_eq(log[0].geometry, new OpenLayers.Geometry.Point(-50, 0), "geometry is correct");
+        // tap on (1, 0)
+        log = null;
+        ret = handler.touchstart({xy: new OpenLayers.Pixel(0, 0)});
+        t.ok(ret, '[touchstart] event propagates');
+        t.eq(log, null, '[touchstart] no finalization');
+        t.ok(isNaN(handler.point.geometry.x) && isNaN(handler.point.geometry.y),
+             '[touchstart] feature not modified');
+        ret = handler.touchmove({xy: new OpenLayers.Pixel(1, 0)});
+        t.ok(ret, '[touchmove] event propagates');
+        t.eq(log, null, '[touchmove] no finalization');
+        t.ok(isNaN(handler.point.geometry.x) && isNaN(handler.point.geometry.y),
+             '[touchmove] feature not modified');
+        ret = handler.touchend({});
+        t.ok(ret, '[touchend] event propagates');
+        t.geom_eq(log.geometry, new OpenLayers.Geometry.Point(-149, 75),
+                  "[touchend] correct point");
+        // tear down
+
+        map.destroy();
+    }
+
+    // tap-move
+    function test_touch_sequence2(t) {
+        t.plan(9);
+
+        // set up
+
+        var log;
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var control = new OpenLayers.Control({});
+        var handler = new OpenLayers.Handler.Point(control, {
+            done: function(g, f) {
+                log = {geometry: g, feature: f};
+            }
+        });
+        control.handler = handler;
+        map.addControl(control);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+        handler.activate();
+
+        // test
+
+        var ret;
+
+        // tap-move (0, 0) -> (9, 0)
+        log = null;
+        ret = handler.touchstart({xy: new OpenLayers.Pixel(0, 0)});
+        t.ok(ret, '[touchstart] event propagates');
+        t.eq(log, null, '[touchstart] no finalization');
+        t.ok(isNaN(handler.point.geometry.x) && isNaN(handler.point.geometry.y),
+             '[touchstart] feature not modified');
+        ret = handler.touchmove({xy: new OpenLayers.Pixel(9, 0)});
+        t.ok(ret, '[touchmove] event propagates');
+        t.eq(log, null, '[touchmove] no finalization');
+        t.ok(isNaN(handler.point.geometry.x) && isNaN(handler.point.geometry.y),
+             '[touchmove] feature not modified');
+        ret = handler.touchend({});
+        t.ok(ret, '[touchend] event propagates');
+        t.eq(log, null, '[touchend] no finalization');
+        t.ok(isNaN(handler.point.geometry.x) && isNaN(handler.point.geometry.y),
+             '[touchend] feature not modified');
+
+        // tear down
+
+        map.destroy();
     }
 
   </script>
