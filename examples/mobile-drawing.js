@@ -1,8 +1,29 @@
-
 function init() {
 
+    // create a vector layer for drawing
     var vector = new OpenLayers.Layer.Vector();
-    var toolbar = new OpenLayers.Control.EditingToolbar(vector);
+
+    // OpenLayers' EditingToolbar internally creates a Navigation control, we
+    // want a TouchNavigation control here so we create our own editing toolbar
+    var toolbar = new OpenLayers.Control.Panel({
+        displayClass: 'olControlEditingToolbar'
+    });
+    toolbar.addControls([
+        // this control is just there to be able to deactivate the drawing
+        // tools
+        new OpenLayers.Control({
+            displayClass: 'olControlNavigation'
+        }),
+        new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Point, {
+            displayClass: 'olControlDrawFeaturePoint'
+        }),
+        new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Path, {
+            displayClass: 'olControlDrawFeaturePath'
+        }),
+        new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Polygon, {
+            displayClass: 'olControlDrawFeaturePolygon'
+        })
+    ]);
 
     map = new OpenLayers.Map({
         div: 'map',
@@ -28,6 +49,7 @@ function init() {
         theme: null
     });
 
+    // activate the first control to render the "navigation icon"
+    // as active
     toolbar.controls[0].activate();
-
 };
