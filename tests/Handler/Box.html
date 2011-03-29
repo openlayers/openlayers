@@ -18,7 +18,16 @@
     }
 
     function test_Handler_Box_draw(t) {
-        t.plan(12);
+        var testAll = true;
+        if (document.defaultView && document.defaultView.getComputedStyle &&
+                    !document.defaultView.getComputedStyle(document.body)) {
+            // we don't get dimensions for hidden frames in IE4, and our test
+            // runs in a hidden frame.
+            testAll = false;
+        }
+        
+        t.plan(testAll ? 12 : 2);
+
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
         map.addControl(control);
@@ -29,18 +38,24 @@
         handler.dragHandler.start = {x: 5, y: 5};
         handler.startBox({x: 5, y: 5});
         var offset = handler.getBoxOffsets();
-        t.eq(parseInt(handler.zoomBox.style.left), 5 - offset.left, "x position of box correct");
-        t.eq(parseInt(handler.zoomBox.style.top), 5 - offset.top, "y position of box correct");
+        if (testAll) {
+            t.eq(parseInt(handler.zoomBox.style.left), 5 - offset.left, "x position of box correct");
+            t.eq(parseInt(handler.zoomBox.style.top), 5 - offset.top, "y position of box correct");
+        }
         handler.moveBox({x: 10, y: 10});
-        t.eq(parseInt(handler.zoomBox.style.left), 5 - offset.left, "x position of box still correct");
-        t.eq(parseInt(handler.zoomBox.style.top), 5 - offset.top, "y position of box still correct");
-        t.eq(parseInt(handler.zoomBox.style.width), 5 + offset.width + 1, "x dimension of box correct");
-        t.eq(parseInt(handler.zoomBox.style.height), 5 + offset.height + 1, "y dimension of box correct");
+        if (testAll) {
+            t.eq(parseInt(handler.zoomBox.style.left), 5 - offset.left, "x position of box still correct");
+            t.eq(parseInt(handler.zoomBox.style.top), 5 - offset.top, "y position of box still correct");
+            t.eq(parseInt(handler.zoomBox.style.width), 5 + offset.width + 1, "x dimension of box correct");
+            t.eq(parseInt(handler.zoomBox.style.height), 5 + offset.height + 1, "y dimension of box correct");
+        }
         handler.moveBox({x: 0, y: 0});
-        t.eq(parseInt(handler.zoomBox.style.left), 0 - offset.left, "new x position of box correct");
-        t.eq(parseInt(handler.zoomBox.style.top), 0 - offset.top, "new y position of box correct");
-        t.eq(parseInt(handler.zoomBox.style.width), 5 + offset.width + 1, "x dimension of box still correct");
-        t.eq(parseInt(handler.zoomBox.style.height), 5 + offset.height + 1, "y dimension of box still correct");
+        if (testAll) {
+            t.eq(parseInt(handler.zoomBox.style.left), 0 - offset.left, "new x position of box correct");
+            t.eq(parseInt(handler.zoomBox.style.top), 0 - offset.top, "new y position of box correct");
+            t.eq(parseInt(handler.zoomBox.style.width), 5 + offset.width + 1, "x dimension of box still correct");
+            t.eq(parseInt(handler.zoomBox.style.height), 5 + offset.height + 1, "y dimension of box still correct");
+        }
         handler.endBox({x: 11, y: 11});
         t.eq(handler.zoomBox, null, "box removed after endBox");
     }
