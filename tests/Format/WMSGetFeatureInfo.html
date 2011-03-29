@@ -4,7 +4,7 @@
     <script type="text/javascript">
     
     function test_read_FeatureInfoResponse(t) {
-        t.plan(5);
+        t.plan(7);
         
         var parser = new OpenLayers.Format.WMSGetFeatureInfo();
 
@@ -48,6 +48,25 @@
 
         t.eq(features[1].attributes.STATE_NAME, 'Wyoming',
              "Attribute STATE_NAME contains the right value");
+
+        text = '<FeatureInfoResponse>' +
+            '<FIELDS>' +
+            '<FIELD name="ID" value="B31A0154"/>' +
+            '<FIELD name="FID" value="31AL0011"/>' +
+            '</FIELDS>' +
+            '<FIELDS>' +
+            '<FIELD name="ID" value="B31A0153"/>' +
+            '<FIELD name="FID" value="31AL0011"/>' +
+            '</FIELDS>' +
+            '</FeatureInfoResponse>';
+
+        features = parser.read(text);
+
+        t.eq(features.length, 2,
+             "Parsed 2 features in total");
+
+        t.eq(features[1].attributes.FID, '31AL0011',
+             "Attribute FID contains the right value");
 
     }
 
