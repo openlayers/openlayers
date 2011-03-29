@@ -67,7 +67,7 @@
              "activate adds the line feature to the layer");
         t.eq(log.length, 1,
              "activate calls \"create\" once");
-        t.geom_eq(log[0].geometry, handler.point.geometry,
+        t.ok(log[0].geometry == handler.point.geometry,
                   "\"create\" called with expected geometry");
         t.ok(log[0].feature == handler.line,
              "\"create\" called with expected feature");
@@ -76,6 +76,32 @@
              "deactivate returns true if the handler was active already");
 
         map.destroy();
+    }
+
+    // See: http://trac.osgeo.org/openlayers/ticket/3179
+    function test_activate_before_map_is_centered(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map('map', {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var control = new OpenLayers.Control();
+        var handler = new OpenLayers.Handler.Path(control, {});
+        control.handler = handler;
+        map.addControl(control);
+
+        var error;
+        try {
+            handler.activate();
+            error = false;
+        } catch(err) {
+            error = true;
+        }
+        t.ok(!error, "no error on activate");
     }
 
     function test_bounds(t) {
@@ -159,8 +185,8 @@
         t.eq(logs.length, 1, "[activate] called back");
         log = logs.shift();
         t.eq(log.type, "create", "[activate] create called");
-        t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-200, 125),
-                  "[activate] correct point");
+        t.ok(isNaN(log.args[0].x) && isNaN(log.args[0].y),
+                  "[activate] initial point");
         t.ok(log.args[1] == handler.line,
              "[activate] correct feature");
         // mouse move
@@ -260,8 +286,8 @@
         );
         log = logs.shift();
         t.eq(log.type, "create", "[dblclick] create called");
-        t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-200, 125),
-                  "[dblclick] correct point");
+        t.ok(isNaN(log.args[0].x) && isNaN(log.args[0].y),
+                  "[dblclick] initial point");
         t.ok(log.args[1] == handler.line,
              "[dblclick] correct feature");
         // cancel
@@ -269,16 +295,13 @@
         t.eq(logs.length, 2, "[cancel] called back");
         log = logs.shift();
         t.eq(log.type, "cancel", "[cancel] canced called");
-        t.geom_eq(log.args[0],
-            new OpenLayers.Geometry.LineString([
-                new OpenLayers.Geometry.Point(-200, 125)
-            ]),
-            "[cancel] correct linestring"
+        t.ok(isNaN(log.args[0].components[0].x) && isNaN(log.args[0].components[0].y),
+            "[cancel] initial linestring"
         );
         log = logs.shift();
         t.eq(log.type, "create", "[cancel] create called");
-        t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-200, 125),
-                  "[cancel] correct point");
+        t.ok(isNaN(log.args[0].x) && isNaN(log.args[0].y),
+                  "[cancel] initial point");
  
         map.destroy();
     }
