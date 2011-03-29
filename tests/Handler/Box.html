@@ -21,7 +21,7 @@
         var testAll = true;
         if (document.defaultView && document.defaultView.getComputedStyle &&
                     !document.defaultView.getComputedStyle(document.body)) {
-            // we don't get dimensions for hidden frames in IE4, and our test
+            // we don't get dimensions for hidden frames in FF4, and our test
             // runs in a hidden frame.
             testAll = false;
         }
