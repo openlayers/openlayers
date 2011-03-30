@@ -774,7 +774,6 @@
 
  
     // a) tap
-    // b) tap
     // c) doubletap
     function test_touch_sequence1(t) {
         t.plan(17);
@@ -824,7 +823,7 @@
         t.geom_eq(log.geometry, new OpenLayers.Geometry.Point(-149, 75),
                   "[touchend] correct point");
 
-        // tap on (10, 10)
+        // doubletap on (10, 10)
         log = null;
         ret = handler.touchstart({xy: new OpenLayers.Pixel(9, 10)});
         t.ok(ret, '[touchstart] event propagates');
@@ -837,8 +836,6 @@
         t.eq(log.type, 'modify', '[touchend] feature modified');
         t.geom_eq(log.geometry, new OpenLayers.Geometry.Point(-140, 65),
                   "[touchend] correct point");
-
-        // tap on (11, 10) -> doubletap
         log = null;
         ret = handler.touchstart({xy: new OpenLayers.Pixel(11, 10)});
         t.ok(!ret, '[touchstart] event does not propagate');
@@ -856,8 +853,7 @@
 
     // a) tap
     // b) tap-move
-    // c) tap
-    // d) doubletap
+    // c) doubletap
     function test_touch_sequence2(t) {
         t.plan(23);
 
@@ -918,7 +914,7 @@
         t.ok(ret, '[touchend] event propagates');
         t.eq(log, null, '[touchend] feature not finalized or modified');
 
-        // tap on (10, 10)
+        // doubletap on (10, 10)
         log = null;
         ret = handler.touchstart({xy: new OpenLayers.Pixel(9, 10)});
         t.ok(ret, '[touchstart] event propagates');
@@ -931,8 +927,6 @@
         t.eq(log.type, 'modify', '[touchend] feature modified');
         t.geom_eq(log.geometry, new OpenLayers.Geometry.Point(-140, 65),
                   "[touchend] correct point");
-
-        // tap on (11, 10) -> doubletap
         log = null;
         ret = handler.touchstart({xy: new OpenLayers.Pixel(11, 10)});
         t.ok(!ret, '[touchstart] event does not propagate');

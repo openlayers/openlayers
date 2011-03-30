@@ -904,103 +904,209 @@
             ]), "geometry is correct");
     }
 
+    // a) tap
+    // b) tap
+    // c) doubletap
+    function test_touch_sequence1(t) {
+        t.plan(24);
 
-    function test_sequence_touch_1(t) {
-        t.plan(19);
-        
-        log = [];
-        var map = new OpenLayers.Map("map", { // 300 x 150
+        // set up
+
+        var log;
+        var map = new OpenLayers.Map("map", {
             resolutions: [1]
         });
         var layer = new OpenLayers.Layer.Vector("foo", {
-            maxExtent: new OpenLayers.Bounds(-100, -100, 100, 100),
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
             isBaseLayer: true
         });
         map.addLayer(layer);
         var control = new OpenLayers.Control({});
         var handler = new OpenLayers.Handler.Polygon(control, {
-            "done": function(g, f) {
-                log.push({geometry: g, feature: f});
+            done: function(g, f) {
+                log = {type: 'done', geometry: g, feature: f};
+            },
+            modify: function(g, f) {
+                log = {type: 'modify', geometry: g, feature: f};
             }
+        }, {
+            dblclickTolerance: 2
         });
         control.handler = handler;
-        control.layer = layer;
         map.addControl(control);
-        map.setCenter(new OpenLayers.LonLat(0, 0), 5);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
         handler.activate();
-        
-        handler.touchstart({type: "touchstart", xy: new OpenLayers.Pixel(49, 75)});
-        t.eq(log.length, 0, "touch start 1");
-        var expectedRing = new OpenLayers.Geometry.LinearRing([
-            new OpenLayers.Geometry.Point(-100, 0),
-            new OpenLayers.Geometry.Point(-100, 0)
-        ]);
 
-        handler.touchmove({type: "touchmove", xy: new OpenLayers.Pixel(50, 75)});
-        t.eq(log.length, 0, "touch move");
-        
-        handler.touchend({type: "touchend"});
-        t.eq(log.length, 0, "touch end");
-        expectedRing.addComponent(new OpenLayers.Geometry.Point(-100,0), 1);
+        // test
 
-        t.geom_eq(handler.polygon.geometry.components[0], expectedRing, "geometry is correct");
+        var ret;
 
-        handler.touchstart({type: "touchstart", xy: new OpenLayers.Pixel(100, 75)});
-        t.eq(log.length, 0, "touch start 2");
-        var expectedRing = new OpenLayers.Geometry.LinearRing([
-            new OpenLayers.Geometry.Point(-100, 0),
-            new OpenLayers.Geometry.Point(-100, 0)
-        ]);
+        // tap on (0, 0)
+        log = null;
+        ret = handler.touchstart({xy: new OpenLayers.Pixel(1, 0)});
+        t.ok(ret, '[touchstart] event propagates');
+        t.eq(log, null, '[touchstart] feature not finalized or modified');
+        ret = handler.touchmove({xy: new OpenLayers.Pixel(0, 0)});
+        t.ok(ret, '[touchmove] event propagates');
+        t.eq(log, null, '[touchmove] feature not finalized or modified');
+        ret = handler.touchend({});
+        t.ok(ret, '[touchend] event propagates');
+        t.eq(log.type, 'modify', '[touchend] feature modified');
+        t.geom_eq(log.geometry, new OpenLayers.Geometry.Point(-150, 75),
+                  "[touchend] correct point");
 
-        handler.touchmove({type: "touchmove", xy: new OpenLayers.Pixel(250, 75)});
-        t.eq(log.length, 0, "touch move");
+        // tap on (0, 10)
+        log = null;
+        ret = handler.touchstart({xy: new OpenLayers.Pixel(1, 10)});
+        t.ok(ret, '[touchstart] event propagates');
+        t.eq(log, null, '[touchstart] feature not finalized or modified');
+        ret = handler.touchmove({xy: new OpenLayers.Pixel(0, 10)});
+        t.ok(ret, '[touchmove] event propagates');
+        t.eq(log, null, '[touchmove] feature not finalized or modified');
+        ret = handler.touchend({});
+        t.ok(ret, '[touchend] event propagates');
+        t.eq(log.type, 'modify', '[touchend] feature modified');
+        t.geom_eq(log.geometry, new OpenLayers.Geometry.Point(-150, 65),
+                  "[touchend] correct point");
 
-        handler.touchend({type: "touchend"});
-        t.eq(log.length, 0, "touch end");
-        expectedRing.addComponent(new OpenLayers.Geometry.Point(-100,0), 1);
-        
-        t.geom_eq(handler.polygon.geometry.components[0], expectedRing, "geometry is correct");
-            
-        handler.touchstart({type: "touchstart", xy: new OpenLayers.Pixel(100, 75)});
-        t.eq(log.length, 0, "touch start 3");
+        // doubletap on (10, 10)
+        log = null;
+        ret = handler.touchstart({xy: new OpenLayers.Pixel(9, 10)});
+        t.ok(ret, '[touchstart] event propagates');
+        t.eq(log, null, '[touchstart] feature not finalized or modified');
+        ret = handler.touchmove({xy: new OpenLayers.Pixel(10, 10)});
+        t.ok(ret, '[touchmove] event propagates');
+        t.eq(log, null, '[touchmove] feature not finalized or modified');
+        ret = handler.touchend({});
+        t.ok(ret, '[touchend] event propagates');
+        t.eq(log.type, 'modify', '[touchend] feature modified');
+        t.geom_eq(log.geometry, new OpenLayers.Geometry.Point(-140, 65),
+                  "[touchend] correct point");
+        log = null;
+        ret = handler.touchstart({xy: new OpenLayers.Pixel(11, 10)});
+        t.ok(!ret, '[touchstart] event does not propagate');
+        t.eq(log.type, 'done', '[touchend] feature finalized');
+        t.geom_eq(log.geometry,
+            new OpenLayers.Geometry.Polygon([
+                new OpenLayers.Geometry.LinearRing([
+                    new OpenLayers.Geometry.Point(-150, 75), // (0, 0)
+                    new OpenLayers.Geometry.Point(-150, 65), // (0, 10)
+                    new OpenLayers.Geometry.Point(-140, 65)  // (10, 10)
+                ])
+            ]), "[touchstart] geometry is correct");
 
-        handler.touchmove({type: "touchmove", xy: new OpenLayers.Pixel(100, 75)});
-        t.eq(log.length, 0, "touch move");
+        // tear down
 
-        handler.touchend({type: "touchend"});
-        t.eq(log.length, 0, "touch end");
-        t.geom_eq(handler.polygon.geometry,
-            new OpenLayers.Geometry.Polygon([new OpenLayers.Geometry.LinearRing([
-                new OpenLayers.Geometry.Point(-100, 0),
-                new OpenLayers.Geometry.Point(-50, 0),
-                new OpenLayers.Geometry.Point(-50, 0),
-                new OpenLayers.Geometry.Point(-100, 0)
-            ])]), "geometry is correct");
-            
-        handler.touchstart({type: "touchstart", xy: new OpenLayers.Pixel(252, 100)});
-        t.eq(log.length, 0, "touch start 4");
+        map.destroy();
+    }
 
-        handler.touchmove({type: "touchmove", xy: new OpenLayers.Pixel(252, 100)});
-        t.eq(log.length, 0, "touch move");
+    // a) tap
+    // b) tap-move
+    // c) tap
+    // d) doubletap
+    function test_touch_sequence2(t) {
+        t.plan(30);
 
-        handler.touchend({type: "touchend"});
-        t.eq(log.length, 0, "touch end");
-            
-        handler.touchstart({type: "touchstart", xy: new OpenLayers.Pixel(250, 100)});
-        t.eq(log.length, 1, "touch start");
+        // set up
 
-        handler.touchmove({type: "touchmove", xy: new OpenLayers.Pixel(250, 100)});
-        t.eq(log.length, 1, "touch move");
+        var log;
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var control = new OpenLayers.Control({});
+        var handler = new OpenLayers.Handler.Polygon(control, {
+            done: function(g, f) {
+                log = {type: 'done', geometry: g, feature: f};
+            },
+            modify: function(g, f) {
+                log = {type: 'modify', geometry: g, feature: f};
+            }
+        }, {
+            dblclickTolerance: 2
+        });
+        control.handler = handler;
+        map.addControl(control);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+        handler.activate();
 
-        handler.touchend({type: "touchend"});
-        t.eq(log.length, 1, "touch end");
-        t.geom_eq(log[0].geometry,
-            new OpenLayers.Geometry.Polygon([new OpenLayers.Geometry.LinearRing([
-                new OpenLayers.Geometry.Point(-100, 0),
-                new OpenLayers.Geometry.Point(-50, 0),
-                new OpenLayers.Geometry.Point(102, -25),
-                new OpenLayers.Geometry.Point(-100, 0)
-            ])]), "geometry is correct");
+        // test
+
+        var ret;
+
+        // tap on (0, 0)
+        log = null;
+        ret = handler.touchstart({xy: new OpenLayers.Pixel(1, 0)});
+        t.ok(ret, '[touchstart] event propagates');
+        t.eq(log, null, '[touchstart] feature not finalized or modified');
+        ret = handler.touchmove({xy: new OpenLayers.Pixel(0, 0)});
+        t.ok(ret, '[touchmove] event propagates');
+        t.eq(log, null, '[touchmove] feature not finalized or modified');
+        ret = handler.touchend({});
+        t.ok(ret, '[touchend] event propagates');
+        t.eq(log.type, 'modify', '[touchend] feature modified');
+        t.geom_eq(log.geometry, new OpenLayers.Geometry.Point(-150, 75),
+                  "[touchend] correct point");
+
+        // tap-move
+        log = null;
+        ret = handler.touchstart({xy: new OpenLayers.Pixel(1, 10)});
+        t.ok(ret, '[touchstart] event propagates');
+        t.eq(log, null, '[touchstart] feature not finalized or modified');
+        ret = handler.touchmove({xy: new OpenLayers.Pixel(20, 20)});
+        t.ok(ret, '[touchmove] event propagates');
+        t.eq(log, null, '[touchmove] feature not finalized or modified');
+        ret = handler.touchend({});
+        t.ok(ret, '[touchend] event propagates');
+        t.eq(log, null, '[touchend] feature not finalized or modified');
+
+        // tap on (0, 10)
+        log = null;
+        ret = handler.touchstart({xy: new OpenLayers.Pixel(1, 10)});
+        t.ok(ret, '[touchstart] event propagates');
+        t.eq(log, null, '[touchstart] feature not finalized or modified');
+        ret = handler.touchmove({xy: new OpenLayers.Pixel(0, 10)});
+        t.ok(ret, '[touchmove] event propagates');
+        t.eq(log, null, '[touchmove] feature not finalized or modified');
+        ret = handler.touchend({});
+        t.ok(ret, '[touchend] event propagates');
+        t.eq(log.type, 'modify', '[touchend] feature modified');
+        t.geom_eq(log.geometry, new OpenLayers.Geometry.Point(-150, 65),
+                  "[touchend] correct point");
+
+        // doubletap on (10, 10)
+        log = null;
+        ret = handler.touchstart({xy: new OpenLayers.Pixel(9, 10)});
+        t.ok(ret, '[touchstart] event propagates');
+        t.eq(log, null, '[touchstart] feature not finalized or modified');
+        ret = handler.touchmove({xy: new OpenLayers.Pixel(10, 10)});
+        t.ok(ret, '[touchmove] event propagates');
+        t.eq(log, null, '[touchmove] feature not finalized or modified');
+        ret = handler.touchend({});
+        t.ok(ret, '[touchend] event propagates');
+        t.eq(log.type, 'modify', '[touchend] feature modified');
+        t.geom_eq(log.geometry, new OpenLayers.Geometry.Point(-140, 65),
+                  "[touchend] correct point");
+        log = null;
+        ret = handler.touchstart({xy: new OpenLayers.Pixel(11, 10)});
+        t.ok(!ret, '[touchstart] event does not propagate');
+        t.eq(log.type, 'done', '[touchend] feature finalized');
+        t.geom_eq(log.geometry,
+            new OpenLayers.Geometry.Polygon([
+                new OpenLayers.Geometry.LinearRing([
+                    new OpenLayers.Geometry.Point(-150, 75), // (0, 0)
+                    new OpenLayers.Geometry.Point(-150, 65), // (0, 10)
+                    new OpenLayers.Geometry.Point(-140, 65)  // (10, 10)
+                ])
+            ]), "[touchstart] geometry is correct");
+
+        // tear down
+
+        map.destroy();
     }
 
   </script>
