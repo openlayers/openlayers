@@ -489,7 +489,7 @@
     }
 
     function test_touch_click(t) {
-        t.plan(4);
+        t.plan(5);
 
         // set up
 
@@ -511,6 +511,7 @@
 
         // test
 
+        // the common case: a touchstart followed by a touchend
         log = null;
         handler.touchstart({xy: px(1, 1), touches: ["foo"]});
         handler.touchend({touches: ["foo"]});
@@ -522,8 +523,19 @@
                 t.eq(log.y, 1, "evt.xy.y as expected");
                 t.ok(log.lastTouches, "evt.lastTouches as expected");
             }
-            // tear down
-            map.destroy();
+
+            // now emulate a touch where touchstart doesn't propagate
+            // to the click handler, i.e. the click handler gets a
+            // touchend only
+            log = null;
+            handler.touchend({touches: ["foo"]});
+
+            t.delay_call(1, function() {
+                t.ok(log == null, "click callback not called");
+
+                // tear down
+                map.destroy();
+            });
         });
     }
 
