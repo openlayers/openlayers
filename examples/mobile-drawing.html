@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>OpenLayers Mobile Drawing</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0;">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <link rel="stylesheet" href="style.mobile.css" type="text/css">
@@ -23,6 +24,36 @@
                 font-size: 10px;
                 bottom: 5px;
                 right: 5px;
+            }
+            div.olControlZoomPanel .olControlZoomInItemInactive,
+            div.olControlZoomPanel .olControlZoomOutItemInactive {
+                background: rgba(0,0,0,0.2);
+                position: absolute;
+            }
+            div.olControlZoomPanel .olControlZoomInItemInactive {
+                border-radius: 5px 5px 0 0;
+            }
+            div.olControlZoomPanel .olControlZoomOutItemInactive {
+                border-radius: 0 0 5px 5px ;
+                top: 37px;
+            }
+            div.olControlZoomPanel .olControlZoomOutItemInactive:after,
+            div.olControlZoomPanel .olControlZoomInItemInactive:after {
+                font-weight: bold;
+                content: '+';
+                font-size: 36px;
+                padding:  7px;
+                z-index: 2000;
+                color: #fff;
+                line-height: 1em;
+            }
+            div.olControlZoomPanel .olControlZoomOutItemInactive:after {
+                content: '–';
+                line-height: 0.9em;
+                padding: 0 8px;
+            }
+            div.olControlZoomPanel .olControlZoomToMaxExtentItemInactive {
+                display: none;
             }
             #title, #tags, #shortdesc {
                 display: none;
