@@ -416,7 +416,7 @@
     }
 
     function test_Handler_Drag_deactivate(t) {
-        t.plan(6);
+        t.plan(7);
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
         map.addControl(control);
@@ -427,6 +427,7 @@
              "deactivate returns false if the handler was not already active");
         handler.active = true;
         handler.dragging = true;
+        handler.touch = true;
         deactivated = handler.deactivate();
         t.ok(deactivated,
              "deactivate returns true if the handler was active already");
@@ -437,7 +438,9 @@
         t.ok(handler.start == null,
              "deactivate sets start to null");
         t.ok(handler.last == null,
-             "deactivate sets start to null");
+             "deactivate sets last to null");
+        t.ok(!handler.touch,
+             "deactivate sets touch to false");
     }
 
     function test_interval_timer_after_mouseup(t) {
