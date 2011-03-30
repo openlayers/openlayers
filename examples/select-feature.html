@@ -22,7 +22,13 @@
                 {layers: 'basic'}
             ); 
 
-            var vectors = new OpenLayers.Layer.Vector("Vector Layer");
+            // allow testing of specific renderers via "?renderer=Canvas", etc
+            var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+            renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+
+            var vectors = new OpenLayers.Layer.Vector("Vector Layer", {
+                renderers: renderer
+            });
             vectors.events.on({
                 'featureselected': function(feature) {
                     $('counter').innerHTML = this.selectedFeatures.length;

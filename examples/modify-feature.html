@@ -25,7 +25,14 @@
             var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                 "http://vmap0.tiles.osgeo.org/wms/vmap0?", {layers: 'basic'}); 
             OpenLayers.Feature.Vector.style['default']['strokeWidth'] = '2';
-            vectors = new OpenLayers.Layer.Vector("Vector Layer");
+
+            // allow testing of specific renderers via "?renderer=Canvas", etc
+            var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+            renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+
+            vectors = new OpenLayers.Layer.Vector("Vector Layer", {
+                renderers: renderer
+            });
 
             map.addLayers([wms, vectors]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
