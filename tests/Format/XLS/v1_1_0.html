@@ -1,0 +1,98 @@
+<html>
+<head>
+    <script src="../../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+    function test_read(t) {
+        t.plan(16);
+        var response = '<xls:GeocodeResponse xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/xls http://schemas.opengis.net/ols/1.1.0/LocationUtilityService.xsd" xmlns:xls="http://www.opengis.net/xls" xmlns:gml="http://www.opengis.net/gml"><xls:GeocodeResponseList numberOfGeocodedAddresses="1"><xls:GeocodedAddress><gml:Point srsName="EPSG:28992"><gml:pos dimension="2">122650 483904</gml:pos></gml:Point><xls:Address countryCode="NL"><xls:StreetAddress><xls:Building number="1"/><xls:Street>president kennedylaan</xls:Street></xls:StreetAddress><xls:Place type="MunicipalitySubdivision">amsterdam</xls:Place><xls:Place type="Municipality">amsterdam</xls:Place><xls:Place type="CountrySubdivision">noord holland</xls:Place><xls:PostalCode>1079MB</xls:PostalCode></xls:Address></xls:GeocodedAddress></xls:GeocodeResponseList></xls:GeocodeResponse>';
+        var format = new OpenLayers.Format.XLS();
+        var output = format.read(response);
+        t.eq(output.responseLists.length, 1, "Output contains 1 responseList");
+        var responseList = output.responseLists[0];
+        t.eq(responseList.numberOfGeocodedAddresses, 1, "Responselist contains 1 geocoded address");
+        t.eq(responseList.features.length, 1, "1 feature parsed");
+        var feature = responseList.features[0];
+        var address = feature.attributes.address;
+        t.eq(address.building["number"], "1", "Building number correctly parsed");
+        t.eq(address.countryCode, "NL", "Country code correctly parsed");
+        t.eq(address.place.CountrySubdivision, "noord holland", "CountrySubDivision correctly parsed");
+        t.eq(address.place.Municipality, "amsterdam", "Municipality correctly parsed");
+        t.eq(address.place.MunicipalitySubdivision, "amsterdam", "MunicipalitySubdivision correctly parsed");
+        t.eq(address.postalCode, "1079MB", "Postalcode correctly parsed");
+        t.eq(address.street[0], "president kennedylaan", "Street correctly parsed");
+        t.eq(feature.geometry.x, 122650, "Geometry [x] correctly parsed");
+        t.eq(feature.geometry.y, 483904, "Geometry [y] correctly parsed");
+
+        var responseList = [];
+        responseList.push('<?xml version="1.0" encoding="UTF-8" ?>',
+'<XLS xmlns="http://www.opengis.net/xls" xmlns:gml="http://www.opengis.net/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/xls LocationUtilityService.xsd" version="1.1">',
+'	<ResponseHeader/>',
+'	<Response version="1.1" requestID="">',
+'		<GeocodeResponse>',
+'			<GeocodeResponseList numberOfGeocodedAddresses="2">',
+'				<GeocodedAddress>',
+'					<gml:Point>',
+'						<gml:pos>-71.4589837781615 41.8317239069808</gml:pos>',
+'					</gml:Point>',
+'					<Address countryCode="">',
+'						<StreetAddress>',
+'							<Street></Street>',
+'							<Street/>',
+'						</StreetAddress>',
+'						<Place type="Municipality"></Place>',
+'						<Place type="CountrySubdivision"></Place>',
+'						<PostalCode></PostalCode>',
+'					</Address>',
+'					<GeocodeMatchCode accuracy="100.0"/>',
+'				</GeocodedAddress>',
+'				<GeocodedAddress>',
+'					<gml:Point>',
+'						<gml:pos>-71.4087296631643 41.8269575002255</gml:pos>',
+'					</gml:Point>',
+'					<Address countryCode="">',
+'						<StreetAddress>',
+'							<Street></Street>',
+'							<Street/>',
+'						</StreetAddress>',
+'						<Place type="Municipality"></Place>',
+'						<Place type="CountrySubdivision"></Place>',
+'						<PostalCode></PostalCode>',
+'					</Address>',
+'					<GeocodeMatchCode accuracy="100.0"/>',
+'				</GeocodedAddress>',
+'			</GeocodeResponseList>',
+'		</GeocodeResponse>',
+'	</Response>',
+'</XLS>');
+        response = responseList.join("");
+        output = format.read(response);
+        t.eq(output.version, "1.1", "Version correctly parsed");
+        var responseList = output.responseLists[0];
+        t.eq(responseList.numberOfGeocodedAddresses, 2, "2 addresses parsed");
+        t.eq(responseList.features.length, 2, "2 features parsed");
+        t.eq(responseList.features[0].attributes.matchCode.accuracy, 100.0, "Accuracy correctly parsed");
+    }
+
+    function test_write(t) {
+        t.plan(1);
+
+        var format = new OpenLayers.Format.XLS();
+        var address = {
+            countryCode: 'US',
+            street: '1 Freedom Rd',
+            municipality: 'Providence',
+            countrySubdivision: 'RI',
+            postalCode: '02909'
+        };
+        var request = format.write({addresses: [address]});
+
+        var expected = '<xls:XLS xmlns:xls="http://www.opengis.net/xls" version="1.1" xsi:schemaLocation="http://www.opengis.net/xls http://schemas.opengis.net/ols/1.1.0/LocationUtilityService.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><xls:RequestHeader/><xls:Request methodName="GeocodeRequest" requestID="" version="1.1"><xls:GeocodeRequest><xls:Address countryCode="US"><xls:StreetAddress><xls:Street>1 Freedom Rd</xls:Street></xls:StreetAddress><xls:Place type="Municipality">Providence</xls:Place><xls:Place type="CountrySubdivision">RI</xls:Place><xls:PostalCode>02909</xls:PostalCode></xls:Address></xls:GeocodeRequest></xls:Request></xls:XLS>';
+
+        t.xml_eq(request, expected, "XLS geocode request correctly written");
+    }
+
+    </script>
+</head>
+<body>
+</body>
+</html>
