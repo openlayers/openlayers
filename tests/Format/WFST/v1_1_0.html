@@ -75,6 +75,13 @@
                 resultType: "hits",
                 propertyNames: ["STATE_NAME", "STATE_FIPS", "STATE_ABBR"]
             }
+        }, {
+            id: "getfeature1",
+            writer: "wfs:GetFeature",
+            arg: {
+                count: 10,
+                startIndex: 20
+            }
         }];
         
         t.plan(cases.length);
@@ -147,6 +154,16 @@
         <wfs:PropertyName>STATE_NAME</wfs:PropertyName>
         <wfs:PropertyName>STATE_FIPS</wfs:PropertyName>
         <wfs:PropertyName>STATE_ABBR</wfs:PropertyName>
+    </wfs:Query>
+</wfs:GetFeature>
+--></div>
+<div id="getfeature1"><!--
+<wfs:GetFeature service="WFS" version="1.1.0" startIndex="20" count="10" xmlns:topp="http://www.openplans.org/topp"
+                xmlns:wfs="http://www.opengis.net/wfs"
+                xmlns:ogc="http://www.opengis.net/ogc"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+    <wfs:Query xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" xmlns:topp="http://www.openplans.org/topp">
     </wfs:Query>
 </wfs:GetFeature>
 --></div>
