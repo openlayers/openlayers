@@ -410,7 +410,7 @@
     }
 
     function test_Handler_Click_deactivate(t) {
-        t.plan(4);
+        t.plan(6);
         var control = {
             map: new OpenLayers.Map('map')
         };
@@ -422,6 +422,8 @@
         handler.active = true;
         handler.down = true;
         handler.timerId = true;
+        handler.touch = true;
+        handler.last = true;
         deactivated = handler.deactivate();
         t.ok(deactivated,
              "deactivate returns true if the handler was active already");
@@ -429,6 +431,11 @@
              "deactivate sets down to null");
         t.eq(handler.timerId, null,
              "deactivate sets timerId to null");
+        t.eq(handler.touch, false,
+             "deactivate sets touch to false");
+        t.eq(handler.last, null,
+            "deactivate sets last to null");
+
     }
 
     function test_Handler_Click_mouseup(t) {
