@@ -36,7 +36,7 @@
         map.addControl(control);
         
         control.activate();
-        
+
         try {
             control.cancel();
             t.ok(true, "calling cancel before drawing works");
@@ -51,22 +51,26 @@
                 xy: new OpenLayers.Pixel(x, y)
             })
         };
+
+        // keep a reference to the line being drawn
+        var line = control.handler.line;
+
         trigger("mousemove", 0, 0);
         trigger("mousedown", 0, 0);
         trigger("mouseup", 0, 0);
         trigger("mousemove", 10, 10);
         trigger("mousedown", 10, 10);
         trigger("mouseup", 10, 10);
+        trigger("dblclick", 10, 10);
+
+        // the geometry is finalized, we first confirm that it is persisted
+        t.ok(line.layer === control.handler.layer, "feature persists");
         
-        // confirm that the sketch persists
-        t.eq(control.handler.layer.features.length, 1, "feature persists");
-        // cancel and see that sketch is gone (do not forget that
-        // cancel will create the new feature)
+        // cancel and see that sketch is gone
         control.cancel();
-        t.eq(control.handler.layer.features.length, 2, "feature is gone after cancel");
-        
+        t.eq(line.layer, null, "feature is gone after cancel");
+
         map.destroy();
-        
     }
 
     // test for <http://trac.openlayers.org/ticket/2691>
