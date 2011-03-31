@@ -1,7 +1,13 @@
 function init() {
 
     // create a vector layer for drawing
-    var vector = new OpenLayers.Layer.Vector();
+    var vector = new OpenLayers.Layer.Vector('Vector Layer', {
+        styleMap: new OpenLayers.StyleMap({
+            temporary: OpenLayers.Util.applyDefaults({
+                pointRadius: 16
+            }, OpenLayers.Feature.Vector.style.temporary)
+        })
+    });
 
     // OpenLayers' EditingToolbar internally creates a Navigation control, we
     // want a TouchNavigation control here so we create our own editing toolbar
@@ -52,4 +58,4 @@ function init() {
     // activate the first control to render the "navigation icon"
     // as active
     toolbar.controls[0].activate();
-};
+}
