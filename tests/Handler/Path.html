@@ -105,7 +105,7 @@
     }
 
     function test_bounds(t) {
-        t.plan(2);
+        t.plan(5);
         var geometry;
         var map = new OpenLayers.Map('map');
         map.addLayer(new OpenLayers.Layer.WMS("", "", {}));
@@ -115,16 +115,22 @@
         var handler = new OpenLayers.Handler.Path(control, {},
             {stopDown: true, stopUp: true});
         var activated = handler.activate();
+        t.eq(handler.layer.features.length, 2,
+            "There are two features in the layer after activation.");
         // click on (150, 75)
         var evt = {xy: new OpenLayers.Pixel(150, 75), which: 1};
         handler.mousemove(evt);
         handler.mousedown(evt);
         handler.mouseup(evt);
+        t.eq(handler.layer.features.length, 2,
+            "There are two features in the layer after first click.");
         // click on (175, 100)
         evt = {xy: new OpenLayers.Pixel(175, 100), which: 1};
         handler.mousemove(evt);
         handler.mousedown(evt);
         handler.mouseup(evt);
+        t.eq(handler.layer.features.length, 2,
+            "There are two features in the layer after second click.");
         t.ok(handler.line.geometry.getBounds().equals(
                     new OpenLayers.Bounds(0,-35.15625,35.15625,0)),
              "Correct bounds");
