@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>OpenLayers with Sencha Touch</title>
         <script src="../lib/OpenLayers.js?mobile"></script>
@@ -15,29 +15,36 @@
             .searchList {
                 min-height: 150px;
             }
+
             .close-btn {
                 position: absolute;
                 right: 10px;
                 top: 10px;
             }
+
             img.minus {
                 -webkit-mask-image: url(img/minus1.png);
             }
+
             img.layers {
                 -webkit-mask-image: url(img/list.png);
             }
+
             .gx-layer-item {
                 margin-left: 10px;
             }
+
             #map {
                 width: 100%;
                 height: 100%;
             }
+
             .olControlAttribution {
                 font-size: 10px;
                 bottom: 5px;
                 right: 5px;
             }
+
             #title, #tags, #shortdesc {
                 display: none;
             }
@@ -59,7 +66,7 @@
                         items: [{
                             iconCls: "search",
                             iconMask: true,
-                            handler: function(){
+                            handler: function() {
                                 // this is the app
                                 if (!app.searchFormPopupPanel) {
                                     app.searchFormPopupPanel = new App.SearchFormPopupPanel({
@@ -124,11 +131,37 @@
                             monitorResize: true,
                             id: "map",
                             listeners: {
-                                render: init,
+                                render: function() {
+                                    var self = this;
+                                    init(function(feature) {
+                                        var htmlContent = "";
+                                        for (var property in feature.data) {
+                                            if (feature.data[property] != 'undefined') {
+                                                htmlContent = htmlContent + feature.data[property] + "<br>";
+                                            }
+                                        }
+                                        if (self.featurePopup) {
+                                            self.featurePopup.destroy();
+                                        }
+                                        self.featurePopup = new Ext.Panel({
+                                            floating: true,
+                                            modal: true,
+                                            centered: true,
+                                            hideOnMaskTap: true,
+                                            width: 240,
+                                            html: htmlContent,
+                                            scroll: 'vertical'
+                                        });
+                                        self.featurePopup.show();
+                                    })
+                                },
                                 resize: function() {
                                     if (window.map) {
                                         map.updateSize();
                                     }
+                                },
+                                scope: {
+                                    featurePopup: null
                                 }
                             }
                         }
@@ -140,6 +173,7 @@
     </head>
     <body>
         <h1 id="title">OpenLayers with Sencha Touch</h1>
+
         <div id="tags">
             mobile, sencha touch
         </div>
