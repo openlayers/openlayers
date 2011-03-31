@@ -56,6 +56,75 @@
         t.eq(r.resolution, resolution, "resolution is correctly set");
     }
 
+    function test_featureIdToRGB(t) {
+        if (!supported) {
+            t.plan(0); 
+            return;
+        }
+        t.plan(2);
+        var el = document.body;
+        el.id = "foo";
+        var renderer = new OpenLayers.Renderer.Canvas(el.id);
+        
+        var cases = [{
+            id: "foo_0", rgb: [0, 0, 1]
+        }, {
+            id: "foo_10", rgb: [0, 0, 11]
+        }, {
+            id: "foo_100", rgb: [0, 0, 101]
+        }, {
+            id: "foo_1000000", rgb: [15, 66, 65]
+        }, {
+            id: "foo_16777214", rgb: [255, 255, 255]
+        }, {
+            id: "foo_16777215", rgb: [0, 0, 1]
+        }];
+        t.plan(cases.length);
+        
+        var c;
+        for (var i=0; i<cases.length; ++i) {
+            c = cases[i];
+            t.eq(renderer.featureIdToRGB(c.id), c.rgb, c.id);
+        }
+        
+        renderer.destroy();
+    }
+
+    function test_featureIdToHex(t) {
+        if (!supported) {
+            t.plan(0); 
+            return;
+        }
+        t.plan(2);
+        var el = document.body;
+        el.id = "foo";
+        var renderer = new OpenLayers.Renderer.Canvas(el.id);
+        
+        var cases = [{
+            id: "foo_0", hex: "#000001"
+        }, {
+            id: "foo_10", hex: "#00000b"
+        }, {
+            id: "foo_100", hex: "#000065"
+        }, {
+            id: "foo_1000000", hex: "#0f4241"
+        }, {
+            id: "foo_16777214", hex: "#ffffff"
+        }, {
+            id: "foo_16777215", hex: "#000001"
+        }];
+        t.plan(cases.length);
+        
+        var c;
+        for (var i=0; i<cases.length; ++i) {
+            c = cases[i];
+            t.eq(renderer.featureIdToHex(c.id), c.hex, c.id);
+        }
+        
+        renderer.destroy();
+    }
+
+
     function test_Renderer_Canvas_destroy(t) {
         if (!supported) { t.plan(0); return; }
         t.plan(5);
@@ -76,6 +145,85 @@
         t.eq(r.size, null, "size nullified");
         t.eq(r.resolution, null, "resolution nullified");
         t.eq(r.map, null, "map nullified");
+    }
+    
+    function test_hitDetection(t) {
+        if (!supported) {
+            t.plan(0); 
+            return; 
+        }
+        
+        var layer = new OpenLayers.Layer.Vector(null, {
+            isBaseLayer: true,
+            resolutions: [1],
+            styleMap: new OpenLayers.StyleMap({
+                pointRadius: 5,
+                strokeWidth: 3,
+                fillColor: "red",
+                fillOpacity: 0.5,
+                strokeColor: "blue",
+                strokeOpacity: 0.75
+            }),
+            renderers: ["Canvas"]
+        });
+        
+        var map = new OpenLayers.Map({
+            div: "map",
+            controls: [],
+            layers: [layer],
+            center: new OpenLayers.LonLat(0, 0),
+            zoom: 0
+        });
+        
+        layer.addFeatures([
+            new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(-100, 0)
+            ),
+            new OpenLayers.Feature.Vector(
+                OpenLayers.Geometry.fromWKT("LINESTRING(-50 0, 50 0)")
+            ),
+            new OpenLayers.Feature.Vector(
+                OpenLayers.Geometry.fromWKT("POLYGON((100 -25, 150 -25, 150 25, 100 25, 100 -25), (120 -5, 130 -5, 130 5, 120 5, 120 -5))")
+            )
+        ]);
+        
+        var cases = [{
+            msg: "center of point", x: -100, y: 0, id: layer.features[0].id
+        }, {
+            msg: "edge of point", x: -103, y: 3, id: layer.features[0].id
+        }, {
+            msg: "outside point", x: -110, y: 3, id: null
+        }, {
+            msg: "center of line", x: 0, y: 0, id: layer.features[1].id
+        }, {
+            msg: "edge of line", x: 0, y: 1, id: layer.features[1].id
+        }, {
+            msg: "outside line", x: 0, y: 5, id: null
+        }, {
+            msg: "inside polygon", x: 110, y: 0, id: layer.features[2].id
+        }, {
+            msg: "edge of polygon", x: 99, y: 0, id: layer.features[2].id
+        }, {
+            msg: "inside polygon hole", x: 125, y: 0, id: null
+        }, {
+            msg: "outside polygon", x: 155, y: 0, id: null
+        }];
+
+        function px(x, y) {
+            return map.getPixelFromLonLat(
+                new OpenLayers.LonLat(x, y)
+            );
+        }        
+        
+        var num = cases.length;
+        t.plan(num);
+        var c, feature;
+        for (var i=0; i<num; ++i) {
+            c = cases[i];
+            feature = layer.renderer.getFeatureIdFromEvent({xy: px(c.x, c.y)});
+            t.eq(feature && feature.id, c.id, c.msg);
+        }
+        
     }
 
   </script>
