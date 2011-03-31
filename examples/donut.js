@@ -1,8 +1,14 @@
+// allow testing of specific renderers via "?renderer=Canvas", etc
+var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+
 var map = new OpenLayers.Map({
     div: "map",
     layers: [
         new OpenLayers.Layer.OSM(),
-        new OpenLayers.Layer.Vector()
+        new OpenLayers.Layer.Vector("Vector Layer", {
+            renderers: renderer
+        })
     ],
     center: new OpenLayers.LonLat(0, 0),
     zoom: 1
