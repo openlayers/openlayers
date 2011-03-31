@@ -53,7 +53,7 @@
         
     }
     function test_events(t) {
-        t.plan(30);
+        t.plan(35);
         
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
@@ -64,8 +64,8 @@
  
         // list below events that should be handled (events) and those
         // that should not be handled (nonevents) by the handler
-        var events = ["mousedown", "mouseup", "mousemove", "click", "dblclick", "touchstart"];
-        var nonevents = ["mouseout", "resize", "focus", "blur"];
+        var events = ["mousedown", "mouseup", "mousemove", "click", "dblclick", "touchstart", "touchmove"];
+        var nonevents = ["mouseout", "resize", "focus", "blur", "touchend"];
         map.events.registerPriority = function(type, obj, func) {
             var output = func();
             // Don't listen for setEvent handlers (#902)
@@ -253,6 +253,82 @@
         callbacks['clickout'] = getCallback('clickout (touch)', lastFeature);
         evtPx.type = "touchstart";
         map.events.triggerEvent('touchstart', evtPx);
+    }
+
+    function test_touchstart(t) {
+        // a test to verify that the touchstart function does
+        // unregister the mouse listeners when it's called the
+        // first time
+
+        t.plan(4);
+
+        // set up
+
+        var map = new OpenLayers.Map('map', {controls: []});
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var layer = new OpenLayers.Layer();
+        map.addLayer(layer);
+
+        var handler = new OpenLayers.Handler.Feature(control, layer, {});
+        handler.mousedown = function() {}; // mock mousedown
+        handler.activate();
+
+        function allRegistered() {
+            var eventTypes = ['mousedown', 'mouseup', 'mousemove', 'click', 'dblclick'],
+                eventType,
+                listeners,
+                listener,
+                flag;
+            for(var i=0, ilen=eventTypes.length; i<ilen; i++) {
+                flag =  false;
+                eventType = eventTypes[i];
+                listeners = map.events.listeners[eventType];
+                for(var j=0, jlen=listeners.length; j<jlen; j++) {
+                    listener = listeners[j];
+                    if(listener.func === handler[eventType] && listener.obj === handler) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if(!flag) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function noneRegistered() {
+            var eventTypes = ['mousedown', 'mouseup', 'mousemove', 'click', 'dblclick'],
+                eventType,
+                listeners,
+                listener;
+            for(var i=0, ilen=eventTypes.length; i<ilen; i++) {
+                eventType = eventTypes[i];
+                listeners = map.events.listeners[eventType];
+                for(var j=0, jlen=listeners.length; j<jlen; j++) {
+                    listener = listeners[j];
+                    if(listener.func === handler[eventType] && listener.obj === handler) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        // test
+
+        t.ok(allRegistered(), 'mouse listeners are registered');
+        handler.touchstart({xy: new OpenLayers.Pixel(0, 0)});
+        t.ok(noneRegistered(), 'mouse listeners are unregistered');
+        t.ok(handler.touch, 'handler.touch is set');
+
+        handler.deactivate();
+        t.ok(!handler.touch, 'handler.touch is not set');
+
+        // tear down
+
+        map.destroy();
     }
 
     function test_deactivate(t) {
