@@ -20,6 +20,10 @@ function init() {
         new OpenLayers.Control({
             displayClass: 'olControlNavigation'
         }),
+        new OpenLayers.Control.ModifyFeature(vector, {
+            vertexRenderIntent: 'temporary',
+            displayClass: 'olControlModifyFeature'
+        }),
         new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Point, {
             displayClass: 'olControlDrawFeaturePoint'
         }),
