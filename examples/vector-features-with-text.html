@@ -29,7 +29,8 @@
                     fillOpacity: 0.5,
                     pointRadius: 6,
                     pointerEvents: "visiblePainted",
-                    label : "name: ${name}, age: ${age}",
+                    // label with \n linebreaks
+                    label : "name: ${name}\n\nage: ${age}",
                     
                     fontColor: "${favColor}",
                     fontSize: "12px",
@@ -113,7 +114,7 @@
             
             map.addLayer(vectorLayer);
             vectorLayer.drawFeature(multiFeature);
-            map.setCenter(new OpenLayers.LonLat(point.x, point.y), 3);
+            map.setCenter(new OpenLayers.LonLat(-109.370078125, 43.39484375), 4);
             vectorLayer.addFeatures([pointFeature, polygonFeature, multiFeature, labelOffsetFeature, nullFeature ]);
         }
     </script>
