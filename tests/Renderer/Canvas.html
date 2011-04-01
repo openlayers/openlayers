@@ -12,6 +12,7 @@
         
         t.ok(r instanceof OpenLayers.Renderer.Canvas, "new OpenLayers.Renderer.Canvas returns Renderer.Canvas object" );
         t.ok(r.container == el, "renderer container is correctly set");
+        r.destroy();
     }
     
     function test_Renderer_Canvas_setextent(t) {
@@ -26,6 +27,7 @@
         r.setExtent(extent, true);
         t.ok(r.extent.equals(extent), "extent is correctly set");
         t.eq(r.resolution, null, "resolution nullified");
+        r.destroy();
     }
     
     function test_Renderer_Canvas_setsize(t) {
@@ -40,6 +42,7 @@
         r.setSize(size);
         t.ok(r.size.equals(size), "size is correctly set");
         t.eq(r.resolution, null, "resolution nullified");
+        r.destroy();
     }
     
     function test_Renderer_Canvas_getresolution(t) {
@@ -54,6 +57,7 @@
         var resolution = r.getResolution();
         t.eq(resolution, map.getResolution(), "resolution matches the map resolution");
         t.eq(r.resolution, resolution, "resolution is correctly set");
+        map.destroy();
     }
 
     function test_featureIdToRGB(t) {
@@ -223,6 +227,8 @@
             feature = layer.renderer.getFeatureIdFromEvent({xy: px(c.x, c.y)});
             t.eq(feature && feature.id, c.id, c.msg);
         }
+        
+        map.destroy();
         
     }
 
