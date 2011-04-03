@@ -252,7 +252,7 @@
             t.ok(evt.xy.x == testEvents.done.xy.x &&
                  evt.xy.y == testEvents.done.xy.y,
                  "mouseout calls Util.mouseLeft with the correct event");
-            t.eq(element.id, map.viewPortDiv.id,
+            t.eq(element.id, map.eventsDiv.id,
                  "mouseout calls Util.mouseLeft with the correct element");
             return true;
         }
