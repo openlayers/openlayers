@@ -20,7 +20,7 @@
     function test_Handler_Box_draw(t) {
         var testAll = true;
         if (document.defaultView && document.defaultView.getComputedStyle &&
-                    !document.defaultView.getComputedStyle(document.body)) {
+                    !document.defaultView.getComputedStyle(document.body, null)) {
             // we don't get dimensions for hidden frames in FF4, and our test
             // runs in a hidden frame.
             testAll = false;
