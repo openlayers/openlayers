@@ -150,6 +150,68 @@
         t.eq(r.resolution, null, "resolution nullified");
         t.eq(r.map, null, "map nullified");
     }
+
+    function test_pendingRedraw(t) {
+        if (!supported) {
+            t.plan(0); 
+            return; 
+        }
+        
+        t.plan(4);
+        var layer = new OpenLayers.Layer.Vector(null, {
+            isBaseLayer: true,
+            renderers: ["Canvas"]
+        });
+        
+        var map = new OpenLayers.Map({
+            div: "map",
+            controls: [],
+            layers: [layer],
+            center: new OpenLayers.LonLat(0, 0),
+            zoom: 0
+        });
+        
+        var count = 0;
+        var redraw = layer.renderer.redraw;
+        layer.renderer.redraw = function() {
+            ++count;
+            redraw.apply(this, arguments);
+        }
+        
+        // add one point feature and confirm redraw is called once
+        count = 0;
+        layer.addFeatures([
+            new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0, 0))
+        ]);
+        t.eq(count, 1, "redraw called once after adding one point feature");
+        
+        // add one feature with no geometry and confirm redraw is not called
+        count = 0;
+        layer.addFeatures([
+            new OpenLayers.Feature.Vector()
+        ]);
+        t.eq(count, 0, "redraw is not called when adding a feature with no geometry");
+        
+        // add one point feature, one feature with no geom, and one point feature and confirm redraw is called once
+        count = 0;
+        layer.addFeatures([
+            new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(1, 0)),
+            new OpenLayers.Feature.Vector(),
+            new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0, 1))
+        ]);
+        t.eq(count, 1, "redraw called once after adding three features where middle one has no geometry");
+
+        // add two point features and one feature with no geom, and confirm redraw is called once
+        count = 0;
+        layer.addFeatures([
+            new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(1, 0)),
+            new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0, 1)),
+            new OpenLayers.Feature.Vector()
+        ]);
+        t.eq(count, 1, "redraw called once after adding three features where last one has no geometry");
+        
+        map.destroy();
+    }
     
     function test_hitDetection(t) {
         if (!supported) {
