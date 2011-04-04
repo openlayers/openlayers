@@ -35,6 +35,9 @@ function init() {
         })
     ]);
 
+    var osm = new OpenLayers.Layer.OSM();
+    osm.wrapDateLine = false;
+
     map = new OpenLayers.Map({
         div: 'map',
         projection: 'EPSG:900913',
@@ -53,7 +56,7 @@ function init() {
             new OpenLayers.Control.ZoomPanel(),
             toolbar
         ],
-        layers: [new OpenLayers.Layer.OSM(), vector],
+        layers: [osm, vector],
         center: new OpenLayers.LonLat(0, 0),
         zoom: 1,
         theme: null

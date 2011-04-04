@@ -108,7 +108,7 @@
      */
     function test_Layer_XYZ_getURL(t) {
 
-        t.plan(2);
+        t.plan(6);
         
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.XYZ(name, url);
@@ -120,6 +120,17 @@
         layer.url = ["http://tilecache1/", "http://tilecache2/", "http://tilecache3/"];
         tileurl = layer.getURL(new OpenLayers.Bounds(3.515625,45,4.21875,45.703125));
         t.eq(tileurl, "http://tilecache1/", "Tile URL is deterministic");
+
+        layer.url = url;
+        tileurl = layer.getURL(new OpenLayers.Bounds(180.515625,45,181.21875,45.703125));
+        t.eq(tileurl, "http://labs.metacarta.com/wms-c/Basic.py/1.0.0/basic/9/513/63.png", "Tile URL is correct");
+        tileurl = layer.getURL(new OpenLayers.Bounds(-181.515625,45,-180.21875,45.703125));
+        t.eq(tileurl, "http://labs.metacarta.com/wms-c/Basic.py/1.0.0/basic/9/-2/63.png", "Tile URL is correct");
+        layer.wrapDateLine = true;
+        tileurl = layer.getURL(new OpenLayers.Bounds(180.515625,45,181.21875,45.703125));
+        t.eq(tileurl, "http://labs.metacarta.com/wms-c/Basic.py/1.0.0/basic/9/1/63.png", "Tile URL is correct");
+        tileurl = layer.getURL(new OpenLayers.Bounds(-181.515625,45,-180.21875,45.703125));
+        t.eq(tileurl, "http://labs.metacarta.com/wms-c/Basic.py/1.0.0/basic/9/510/63.png", "Tile URL is correct");
         map.destroy();
     }
     function test_Layer_XYZ_Rounding(t) {
