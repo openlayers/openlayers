@@ -4,7 +4,7 @@
     <script type="text/javascript">
     
     function test_write_wmc_StyleList(t) {
-        t.plan(3);
+        t.plan(4);
         
         var layer, layerContext, got, expected;
         
@@ -39,10 +39,10 @@
             "<StyleList xmlns='http://www.opengis.net/context'>" +
                 "<Style current='1'>" +
                     "<SLD>" + 
+                        "<Title>Default</Title>" +
                         "<OnlineResource xmlns:xlink='http://www.w3.org/1999/xlink' "+
                                         "xlink:type='simple' " +
                                         "xlink:href='http://linked.sld' />" +
-                        "<Name></Name><Title>Default</Title>" +
                     "</SLD>" + 
                 "</Style>" +
             "</StyleList>";
@@ -88,6 +88,7 @@
             "<StyleList xmlns='http://www.opengis.net/context'>" +
                 "<Style current='1'>" +
                     "<SLD>" + 
+                        "<Title>Default</Title>" +
                         "<sld:StyledLayerDescriptor version='1.0.0' " +
                             "xmlns:sld='http://www.opengis.net/sld' " +
                             "xmlns:ogc='http://www.opengis.net/ogc' " +
@@ -115,12 +116,70 @@
                                 "</sld:UserStyle>" +
                             "</sld:NamedLayer>" +
                         "</sld:StyledLayerDescriptor>" +
-                        "<Name></Name><Title>Default</Title>" +
                     "</SLD>" +
                 "</Style>" + 
             "</StyleList>";
         
         t.xml_eq(got, expected, "inline style correctly written");
+        layer.destroy();
+
+        // test inline FeatureTypeStyle
+        layer = new OpenLayers.Layer.WMS(name, url, {
+            sld_body:
+                "<sld:FeatureTypeStyle version='1.0.0' " +
+                            "xmlns:sld='http://www.opengis.net/sld' " +
+                            "xmlns:ogc='http://www.opengis.net/ogc' " +
+                            "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' " +
+                            "xsi:schemaLocation='http://www.opengis.net/sld http://schemas.opengeospatial.net/sld/1.0.0/StyledLayerDescriptor.xsd'>" +
+                    "<sld:Rule>" +
+                        "<sld:TextSymbolizer>" +
+                            "<sld:Label>" +
+                                "<ogc:PropertyName>ZONENR</ogc:PropertyName>" +
+                            "</sld:Label>" +
+                            "<sld:Font>" +
+                                "<sld:CssParameter name='font-family'>Arial</sld:CssParameter>" +
+                                "<sld:CssParameter name='font-size'>10</sld:CssParameter>" +
+                            "</sld:Font>" +
+                            "<sld:Fill>" +
+                                "<sld:CssParameter name='fill'>#FF9900</sld:CssParameter>" +
+                            "</sld:Fill>" +
+                        "</sld:TextSymbolizer>" +
+                    "</sld:Rule>" +
+                "</sld:FeatureTypeStyle>"
+        });
+
+        layerContext = format.layerToContext(layer);
+        got = parser.write_wmc_StyleList(layerContext);
+        expected =
+            "<StyleList xmlns='http://www.opengis.net/context'>" +
+                "<Style current='1'>" +
+                    "<SLD>" +
+                        "<Title>Default</Title>" +
+                        "<sld:FeatureTypeStyle version='1.0.0' " +
+                            "xmlns:sld='http://www.opengis.net/sld' " +
+                            "xmlns:ogc='http://www.opengis.net/ogc' " +
+                            "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' " +
+                            "xsi:schemaLocation='http://www.opengis.net/sld http://schemas.opengeospatial.net/sld/1.0.0/StyledLayerDescriptor.xsd'>" +
+                            "<sld:Rule>" +
+                                "<sld:TextSymbolizer>" +
+                                    "<sld:Label>" +
+                                        "<ogc:PropertyName>ZONENR</ogc:PropertyName>" +
+                                    "</sld:Label>" +
+                                    "<sld:Font>" +
+                                        "<sld:CssParameter name='font-family'>Arial</sld:CssParameter>" +
+                                        "<sld:CssParameter name='font-size'>10</sld:CssParameter>" +
+                                    "</sld:Font>" +
+                                    "<sld:Fill>" +
+                                        "<sld:CssParameter name='fill'>#FF9900</sld:CssParameter>" +
+                                    "</sld:Fill>" +
+                                    "</sld:TextSymbolizer>" +
+                            "</sld:Rule>" +
+                        "</sld:FeatureTypeStyle>" +
+                    "</SLD>" +
+                "</Style>" +
+            "</StyleList>";
+
+        t.xml_eq(got, expected, "inline FeatureTypeStyle correctly written");
         layer.destroy();
     }
     
