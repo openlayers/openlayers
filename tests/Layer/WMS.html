@@ -229,7 +229,7 @@
     function test_Layer_WMS_getFullRequestString (t) {
 
 
-        t.plan( 3 );
+        t.plan( 4 );
         var map = new OpenLayers.Map('map');
         map.projection = "xx";
         var tUrl = "http://octo.metacarta.com/cgi-bin/mapserv";
@@ -269,6 +269,20 @@
         t.eq(str,
              tUrl + "?" + OpenLayers.Util.getParameterString(tParams),
              "getFullRequestString() uses the layer projection if it equals the map projection");
+        map.destroy();
+
+        map = new OpenLayers.Map("map", {projection: "EPSG:4326"});
+        map.addLayer(new OpenLayers.Layer(null, {isBaseLayer: true}));
+        tLayer = new OpenLayers.Layer.WMS(name, tUrl);
+        tLayer.map = map;
+        var error;
+        try {
+            tLayer.getFullRequestString();
+            error = false;
+        } catch(err) {
+            error = true;
+    }
+        t.ok(!error, "no error on getFullRequestString if layer has no projection");
         map.destroy();
 
     }
