@@ -29,14 +29,19 @@ var DeleteFeature = OpenLayers.Class(OpenLayers.Control, {
 });
 
 function init() {
+
+    var extent = new OpenLayers.Bounds(
+        -11593508, 5509847, -11505759, 5557774
+    );
+
+
     map = new OpenLayers.Map('map', {
         projection: new OpenLayers.Projection("EPSG:900913"),
         displayProjection: new OpenLayers.Projection("EPSG:4326"),
         units: "m",
-        maxResolution: 156543.0339,
-        maxExtent: new OpenLayers.Bounds(
-            -11593508, 5509847, -11505759, 5557774
-        ),
+        maxResolution: 20037508.34 / 128,
+        maxExtent: new OpenLayers.Bounds(-20037508, -20037508, 20037508, 20037508),
+        restrictedExtent: extent,
         controls: [
             new OpenLayers.Control.PanZoom()
         ]
@@ -47,7 +52,7 @@ function init() {
     );
 
     var saveStrategy = new OpenLayers.Strategy.Save();
-
+    
     wfs = new OpenLayers.Layer.Vector("Editable Features", {
         strategies: [new OpenLayers.Strategy.BBOX(), saveStrategy],
         projection: new OpenLayers.Projection("EPSG:4326"),
@@ -102,6 +107,6 @@ function init() {
     panel.addControls([navigate, save, del, edit, draw]);
     panel.defaultControl = navigate;
     map.addControl(panel);
-    map.zoomToMaxExtent();
+    map.zoomToExtent(extent, true);
 }
 
