@@ -31,16 +31,11 @@
             };
             map = new OpenLayers.Map("map", options);
 
-            var jpl = new OpenLayers.Layer.WMS(
-                "NASA Global Mosaic",
-                "http://t1.hypercube.telascience.org/cgi-bin/landsat7", 
-                {layers: "landsat7"},
-                {
-                    maxExtent: new OpenLayers.Bounds(-130, 14, -60, 55),
-                    maxResolution: 0.1,
-                    numZoomLevels: 4,
-                    minResolution: 0.02
-                }
+            var gwc = new OpenLayers.Layer.WMS(
+                "Global Imagery",
+                "http://maps.opengeo.org/geowebcache/service/wms",
+                {layers: "bluemarble"},
+                {tileOrigin: new OpenLayers.LonLat(-180, -90)}
             );
 
             var vmap = new OpenLayers.Layer.WMS(
@@ -90,9 +85,9 @@
                 }
             );
 
-            map.addLayers([jpl, vmap, roads, nexrad]);
+            map.addLayers([gwc, vmap, roads, nexrad]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
-            map.setCenter(new OpenLayers.LonLat(-95, 34.5), 1);
+            map.setCenter(new OpenLayers.LonLat(-95, 34.5), 4);
         };
         
         function readWMC(merge) {
