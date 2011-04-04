@@ -26,16 +26,12 @@
         var doc, context, map;
         
         function init() {
-            var options = {
-                maxExtent: new OpenLayers.Bounds(-130, 14, -60, 55)
-            };
-            map = new OpenLayers.Map("map", options);
+            map = new OpenLayers.Map("map");
 
             var gwc = new OpenLayers.Layer.WMS(
                 "Global Imagery",
                 "http://maps.opengeo.org/geowebcache/service/wms",
-                {layers: "bluemarble"},
-                {tileOrigin: new OpenLayers.LonLat(-180, -90)}
+                {layers: "bluemarble"}
             );
 
             var vmap = new OpenLayers.Layer.WMS(
