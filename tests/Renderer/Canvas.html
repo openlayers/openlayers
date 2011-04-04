@@ -60,40 +60,6 @@
         map.destroy();
     }
 
-    function test_featureIdToRGB(t) {
-        if (!supported) {
-            t.plan(0); 
-            return;
-        }
-        t.plan(2);
-        var el = document.body;
-        el.id = "foo";
-        var renderer = new OpenLayers.Renderer.Canvas(el.id);
-        
-        var cases = [{
-            id: "foo_0", rgb: [0, 0, 1]
-        }, {
-            id: "foo_10", rgb: [0, 0, 11]
-        }, {
-            id: "foo_100", rgb: [0, 0, 101]
-        }, {
-            id: "foo_1000000", rgb: [15, 66, 65]
-        }, {
-            id: "foo_16777214", rgb: [255, 255, 255]
-        }, {
-            id: "foo_16777215", rgb: [0, 0, 1]
-        }];
-        t.plan(cases.length);
-        
-        var c;
-        for (var i=0; i<cases.length; ++i) {
-            c = cases[i];
-            t.eq(renderer.featureIdToRGB(c.id), c.rgb, c.id);
-        }
-        
-        renderer.destroy();
-    }
-
     function test_featureIdToHex(t) {
         if (!supported) {
             t.plan(0); 
