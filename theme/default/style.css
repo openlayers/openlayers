@@ -376,7 +376,6 @@ div.olControlSaveFeaturesItemInactive {
 .olControlEditingToolbar {
     right: 0;
     top: 0;
-    width: 200px; /* Only for IE6 or IE without DOCTYPE */
 }
 .olControlNavToolbar {
     top: 295px;
