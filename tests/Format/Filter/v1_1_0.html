@@ -314,9 +314,39 @@
         t.xml_eq(node, out, "spatial dwithin filter with nested functions correctly written");
     }
 
+    function test_write_like_matchcase(t) {
+        t.plan(1);
+
+        var filter = new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.LIKE,
+            property: "person",
+            value: "*me*",
+            matchCase: false
+        });
+
+        var format = new OpenLayers.Format.Filter.v1_1_0();
+        
+        var got = format.write(filter);
+        var exp = readXML("LikeMatchCase");
+        t.xml_eq(got, exp, "wrote matchCase attribute on PropertyIsLike");
+    }
+
+    function readXML(id) {
+        var xml = document.getElementById(id).firstChild.nodeValue;
+        return new OpenLayers.Format.XML().read(xml).documentElement;
+    }
+
 
     </script> 
 </head> 
 <body>
+<div id="LikeMatchCase"><!--
+<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+    <ogc:PropertyIsLike wildCard="*" singleChar="." escapeChar="!" matchCase="false">
+        <ogc:PropertyName>person</ogc:PropertyName>
+        <ogc:Literal>*me*</ogc:Literal>
+    </ogc:PropertyIsLike>
+</ogc:Filter>
+--></div>
 </body> 
 </html> 
