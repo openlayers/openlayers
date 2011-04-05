@@ -10,7 +10,7 @@
         t.eq( control.displayClass,  "olControlPanel", "displayClass is correct" );
     }
     function test_Control_Panel_constructor2 (t) {
-        t.plan(16);
+        t.plan(19);
         var map = new OpenLayers.Map('map');
         var toolControl = new OpenLayers.Control.ZoomBox();
         var AnotherToolControl = OpenLayers.Class(OpenLayers.Control, {
@@ -22,53 +22,68 @@
               CLASS_NAME: 'mbControl.TestToggle',
               type: OpenLayers.Control.TYPE_TOGGLE
         });
-        
+
         var toggleControl = new ToggleControl();
         var buttonControl = new OpenLayers.Control.Button({
             trigger: function () {
-                t.ok(true, "trigger function of button is called.");     
+                t.ok(true, "trigger function of button is called.");
             }
         });
 
         var panel = new OpenLayers.Control.Panel(
             {defaultControl: anotherToolControl});
-        t.ok(panel instanceof OpenLayers.Control.Panel, 
+        t.ok(panel instanceof OpenLayers.Control.Panel,
               "new OpenLayers.Control.Panel returns object");
         panel.redraw = function(){
-            panel.redrawsCount++;            
+            panel.redrawsCount++;
+            OpenLayers.Control.Panel.prototype.redraw.apply(this, arguments);
         };
 
+        // To get length of events.listeners error-free
+        var getListenerLength= function(events,key){
+            if(!events) {
+                return -2; // events is destroyed
+            } else if(!events.listeners) {
+                return -1; // events is destroyed
+            } else if(!events.listeners[key]) {
+                return 0; // no listener in event
+            } else {
+                return events.listeners[key].length;
+            }
+        };
+        var toolEventListenerLength = getListenerLength(toolControl.events,"activate");
         panel.addControls([toolControl, anotherToolControl, toggleControl]);
         t.eq(panel.controls.length, 3,
               "added three controls to the panel");
         panel.addControls([buttonControl]);
 
-        panel.redrawsCount = 0;              
+        panel.redrawsCount = 0;
         map.addControl(panel);
-        t.ok((panel.redrawsCount > 0), "Redraw called on add panel to map " + 
-            panel.redrawsCount + " times.");        
-        t.ok((panel.active),"Panel is active after add panel to map.");        
-        
-        panel.redrawsCount = 0;              
+        t.eq(getListenerLength(toolControl.events,"activate"), toolEventListenerLength+1,
+            "toolControl additional listener for \"activate\" after adding Panel to the map.");
+        t.ok((panel.redrawsCount > 0), "Redraw called on add panel to map " +
+            panel.redrawsCount + " times.");
+        t.ok((panel.active),"Panel is active after add panel to map.");
+
+        panel.redrawsCount = 0;
         panel.addControls(new AnotherToolControl());
         t.ok((panel.redrawsCount > 0),
             "Redraw called on add control to panel after add panel to map " +
-            panel.redrawsCount + " times."); 
+            panel.redrawsCount + " times.");
 
         panel.deactivate();
-        panel.redrawsCount = 0;                      
-        panel.activate();        
+        panel.redrawsCount = 0;
+        panel.activate();
         t.ok((panel.redrawsCount > 0),"Redraw called on activate panel " +
-            panel.redrawsCount + " times."); 
+            panel.redrawsCount + " times.");
 
         panel.activateControl(toolControl);
         t.ok(toolControl.active && !anotherToolControl.active && !toggleControl.active && !buttonControl.active,
               "activated one tool control, the other one is inactive and the toggle & button controls also.");
 
-        panel.redrawsCount = 0;              
         panel.activateControl(toggleControl);
-        t.eq(panel.redrawsCount, 1, "Redraw called on activated toggle " +
-            panel.redrawsCount + " times.");
+        t.eq(toggleControl.panel_div.className,"mbControlTestToggleItemActive",
+            "className of icon div for toggle control is active.");
         t.ok(toolControl.active && !anotherToolControl.active && toggleControl.active,
               "activated the toggle control, which has no influence on the tool & togggle controls.");
         panel.activateControl(buttonControl);
@@ -79,16 +94,21 @@
         buttonControl.activate();
         t.ok(buttonControl.active && toolControl.active && !anotherToolControl.active && toggleControl.active,
               "activated the button control, which has no influence on the tool & togggle controls.");
-              
-        panel.redrawsCount = 0; 
+
         panel.activateControl(anotherToolControl);
-        t.ok((panel.redrawsCount > 0),
-            "Redraw called on activated tool control " + panel.redrawsCount + 
-            " times.");
+        t.eq(anotherToolControl.panel_div.className,"mbControlTestToolItemActive",
+            "className of icon div for anotherToolControl is active.");
+        t.eq(toolControl.panel_div.className,"olControlZoomBoxItemInactive",
+            "className of icon div for toolControl is inactive.");
         t.ok(!toolControl.active && anotherToolControl.active && toggleControl.active,
               "activated the other tool control, the first one is inactive and the toggle control still active.");
         t.ok(buttonControl.active,
               "activated the other tool control, the button control still active.");
+
+        panel.destroy();
+        t.eq(getListenerLength(toolControl.events,"activate"), toolEventListenerLength,
+            "toolControl additional listeners removed after destroy Panel.");
+        map.destroy();
     }
     function test_Control_Panel_titles (t) { 
         t.plan(2); 
