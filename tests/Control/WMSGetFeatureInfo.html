@@ -115,6 +115,61 @@
         control.getInfoForHover({xy: {x: 50, y: 50}});
     }
 
+    function test_getfeatureinfo_event(t) {
+
+        t.plan(5);
+
+        var text =
+            '<?xml version="1.0" encoding="UTF-8" ?>' +
+            '<FeatureInfoResponse>' +
+            '  <FIELDS OBJECTID="1188" HECTARES="1819.734" ZONENR="5854" NULZONES=" " AREA="18197340.1426" PERIMETER="19177.4073627" SHAPE="NULL" SE_ANNO_CAD_DATA="NULL" SHAPE.AREA="0" SHAPE.LEN="0"/>' +
+            '</FeatureInfoResponse>';
+
+        var map = new OpenLayers.Map('map');
+
+        var xy;
+        var url = "http://foo";
+
+        // mock up a control with output "object" and drillDown true
+        var control = new OpenLayers.Control.WMSGetFeatureInfo({
+            output: "object",
+            drillDown: true,
+            request: function(position) {},
+            eventListeners: {
+                getfeatureinfo: function(evt) {
+                    t.ok(evt.features[0].url === url, "features is an object with a property url when output is object");
+                    var features = evt.features[0].features;
+                    t.ok(features.length === 1, "features properties has a length of 1");
+                    t.ok(features[0] instanceof OpenLayers.Feature.Vector, "Feature array contains 1 feature");
+                }
+            }
+        });
+
+        // mock up a control with output "features" and drillDown true
+        var control2 = new OpenLayers.Control.WMSGetFeatureInfo({
+            autoActivate: true,
+            drillDown: true,
+            request: function(position) {},
+            eventListeners: {
+                getfeatureinfo: function(evt) {
+                    var features = evt.features;
+                    t.ok(features.length === 1, "features properties has a length of 1");
+                    t.ok(features[0] instanceof OpenLayers.Feature.Vector, "Feature array contains 1 feature");
+                }
+            }
+        });
+
+        map.addControls([control, control2]);
+        control.activate();
+
+        xy = {x: 50, y: 50};
+        control._requestCount = control2._requestCount = 0;
+        control._numRequests = control2._numRequests = 1;
+        control.handleResponse({xy: xy}, {responseText: text}, url);
+        control2.handleResponse({xy: xy}, {responseText: text}, url);
+        map.destroy();
+    }
+
     function test_beforegetfeatureinfo_event(t) {
         t.plan(2);
         var map = new OpenLayers.Map('map');
