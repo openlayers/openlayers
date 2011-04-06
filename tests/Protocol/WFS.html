@@ -106,7 +106,7 @@
     }
 
     function test_commit(t){
-        t.plan(4);
+        t.plan(5);
 
         var url = "http://some.url.org";
         var protocol = new OpenLayers.Protocol.WFS({
@@ -127,6 +127,7 @@
         var expected;
         OpenLayers.Request.POST = function(obj) {
             t.xml_eq(new OpenLayers.Format.XML().read(obj.data).documentElement, expected, "Transaction XML with Insert, Update and Delete created correctly");
+            t.eq(obj.headers, {foo: 'bar'}, "HTTP headers passed from commit to Request.POST");
             obj.responseText = "foo";
             t.delay_call(0.1, function() {obj.callback.call(this)});
             return obj;
@@ -151,6 +152,7 @@
         options = {
             featureNS: "http://some.namespace.org",
             featureType: "type",
+            headers: {foo: 'bar'},
             callback: function(response) {
                 t.eq(response.insertIds.length, 3, "correct response passed to user callback");
                 t.eq(response.code, OpenLayers.Protocol.Response.SUCCESS, "success properly reported to user callback");
