@@ -117,6 +117,76 @@
         t.eq(r.map, null, "map nullified");
     }
 
+    function test_drawFeature(t) {
+        if (!supported) {
+            t.plan(0); 
+            return; 
+        }
+        
+        t.plan(8);
+        var layer = new OpenLayers.Layer.Vector(null, {
+            isBaseLayer: true,
+            renderers: ["Canvas"]
+        });
+        
+        var map = new OpenLayers.Map({
+            div: "map",
+            controls: [],
+            layers: [layer],
+            center: new OpenLayers.LonLat(0, 0),
+            zoom: 0
+        });
+        
+        var renderer = layer.renderer;
+        var count = 0;
+        var redraw = layer.renderer.redraw;
+        renderer.redraw = function() {
+            ++count;
+            redraw.apply(this, arguments);
+        }
+        var exp;
+        
+        // a) draw a point feature
+        count = 0;
+        exp = renderer.drawFeature(
+            new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0, 0)), {}
+        );
+        t.eq(exp, true, "a) drawFeature returns true");
+        t.eq(count, 1, "a) redraw called once after drawing a point feature");
+        renderer.clear();
+        
+        // b) draw one feature with no geometry
+        count = 0;
+        exp = renderer.drawFeature(
+            new OpenLayers.Feature.Vector(), {}
+        );
+        t.eq(exp, undefined, "b) drawFeature returns undefined");
+        t.eq(count, 0, "b) redraw is not called when drawing a feature with no geometry");
+        renderer.clear();
+        
+        // c) draw a point feature with display "none"
+        count = 0;
+        exp = renderer.drawFeature(
+            new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(1, 0)),
+            {display: "none"}
+        );
+        t.eq(exp, false, "c) drawFeature returns false");
+        t.eq(count, 0, "c) redraw is not called when drawing a feature with display 'none'");
+        renderer.clear();
+
+        // d) draw a point feature outside renderer extent
+        count = 0;
+        exp = renderer.drawFeature(
+            new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(-1000, 0)), {}
+        );
+        t.eq(exp, false, "d) drawFeature returns false");
+        t.eq(count, 0, "d) redraw is not called when drawing a feature outside renderer extent");
+        renderer.clear();
+        
+        map.destroy();
+    }
+
+
     function test_pendingRedraw(t) {
         if (!supported) {
             t.plan(0); 
