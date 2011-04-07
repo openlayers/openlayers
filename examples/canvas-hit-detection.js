@@ -25,7 +25,7 @@ var Rule = OpenLayers.Rule;
 var Filter = OpenLayers.Filter;
 var style = new OpenLayers.Style({
     pointRadius: 10,
-    strokeWidth: 2,
+    strokeWidth: 3,
     strokeOpacity: 0.7,
     strokeColor: "navy",
     fillColor: "#ffcc66",
@@ -83,6 +83,6 @@ var map = new OpenLayers.Map({
     zoom: 0
 });
 
-var select = new OpenLayers.Control.SelectFeature(layer, {hover: true});
+var select = new OpenLayers.Control.SelectFeature(layer);
 map.addControl(select);
 select.activate();
