@@ -127,7 +127,7 @@
     }
     
     function test_Style_createSymbolizer(t) {
-        t.plan(4);
+        t.plan(5);
         var style = new OpenLayers.Style();
 
         // override applySymbolizer to log arguments
@@ -143,11 +143,17 @@
                 type: OpenLayers.Filter.Comparison.EQUAL_TO,
                 property: "foo",
                 value: "bar"
-            })
+            }),
+            symbolizer: {
+                label: "${labelValue}"
+            }
         });
         rule.id = "foo=bar rule";
         var elseRule = new OpenLayers.Rule({
-            elseFilter: true
+            elseFilter: true,
+            symbolizer: {
+                label: "${labelValue}"
+            }
         });
         elseRule.id = "else rule";
         style.addRules([rule, elseRule]);
@@ -167,6 +173,12 @@
         );
         t.eq(log.length, 1, "b) applySymbolizer called once");
         t.eq(log[0] && log[0].id, elseRule.id, "b) applySymbolizer called with correct rule");
+        
+        // c) test that label in returned symbolizer is a string even if property value is a number
+        var symbolizer = style.createSymbolizer(
+            new OpenLayers.Feature.Vector(null, {foo: "bar", labelValue: 10})
+        );
+        t.eq(symbolizer.label, "10", "c) feature property cast to string when used as symbolizer label");
 
     }
     
