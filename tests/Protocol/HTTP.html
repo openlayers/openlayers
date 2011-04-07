@@ -779,7 +779,7 @@
         });        
         protocol.read();
         
-        t.delay_call(1, function() {
+        t.delay_call(2, function() {
             t.eq(log1.callbackCalled, true, "[read] callback called");
             t.eq(log1.callbackScope, scope, "[read] correct scope");
             t.ok(log1.request instanceof OpenLayers.Request.XMLHttpRequest, "[read] correct priv type");
@@ -801,11 +801,37 @@
             {state: OpenLayers.State.DELETE, url: "./3"},
             {state: OpenLayers.State.DELETE, url: "./4"}
         ]);
-        t.delay_call(1, function() {
+        t.delay_call(2, function() {
             t.eq(log2.called, 1, "[commit] Callback called once.");
             t.eq(log2.scope, scope, "[commit] Correct scope.");
         });
+    }
 
+    function test_read_global_options(t) {
+
+        // test that calling read doesn't write params into the protocol's
+        // options object, see ticket #3237
+
+        t.plan(2);
+
+        var protocol = new OpenLayers.Protocol.HTTP({
+            url: '.',
+            callback: function() {},
+            params: {'a': 'a'}
+        });
+
+        // check initial state first
+        t.eq(protocol.options.params, {'a': 'a'},
+             'protocol params are ok at initial state');
+
+        var filter = new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.EQUAL_TO,
+            property: 'b',
+            value: 'b'
+        });
+        protocol.read({filter: filter});
+        t.eq(protocol.options.params, {'a': 'a'},
+             "protocol params are ok after read");
     }
 
 
