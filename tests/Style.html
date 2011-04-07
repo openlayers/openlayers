@@ -137,25 +137,34 @@
             OpenLayers.Style.prototype.applySymbolizer.apply(this, arguments);
         };
 
+        // rules for the style
         var rule = new OpenLayers.Rule({
-            id: Math.random()
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                property: "foo",
+                value: "bar"
+            })
         });
+        rule.id = "foo=bar rule";
         var elseRule = new OpenLayers.Rule({
-            id: Math.random(),
             elseFilter: true
         });
+        elseRule.id = "else rule";
         style.addRules([rule, elseRule]);
-
+        
         // a) test that applySymbolizer is only called with rule
         log = [];
-        style.createSymbolizer(new OpenLayers.Feature.Vector());
+        style.createSymbolizer(
+            new OpenLayers.Feature.Vector(null, {foo: "bar"})
+        );
         t.eq(log.length, 1, "a) applySymbolizer called once");
         t.eq(log[0] && log[0].id, rule.id, "a) applySymbolizer called with correct rule");
 
         // b) test that applySymbolizer is only called with elseRule
         log = [];
-        rule.evaluate = function() {return false;};
-        style.createSymbolizer(new OpenLayers.Feature.Vector());
+        style.createSymbolizer(
+            new OpenLayers.Feature.Vector(null, {foo: "baz"})
+        );
         t.eq(log.length, 1, "b) applySymbolizer called once");
         t.eq(log[0] && log[0].id, elseRule.id, "b) applySymbolizer called with correct rule");
 
