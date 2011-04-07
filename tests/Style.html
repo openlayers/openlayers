@@ -127,8 +127,16 @@
     }
     
     function test_Style_createSymbolizer(t) {
-        t.plan(2);
+        t.plan(4);
         var style = new OpenLayers.Style();
+
+        // override applySymbolizer to log arguments
+        var log = [];
+        style.applySymbolizer = function(r) {
+            log.push(r);
+            OpenLayers.Style.prototype.applySymbolizer.apply(this, arguments);
+        };
+
         var rule = new OpenLayers.Rule({
             id: Math.random()
         });
@@ -138,17 +146,19 @@
         });
         style.addRules([rule, elseRule]);
 
-        // test that applySymbolizer is only called with rule
-        style.applySymbolizer = function(r) {
-            t.eq(r.id, rule.id, "(plain) applySymbolizer called with correct rule");
-        }
+        // a) test that applySymbolizer is only called with rule
+        log = [];
         style.createSymbolizer(new OpenLayers.Feature.Vector());
+        t.eq(log.length, 1, "a) applySymbolizer called once");
+        t.eq(log[0] && log[0].id, rule.id, "a) applySymbolizer called with correct rule");
 
+        // b) test that applySymbolizer is only called with elseRule
+        log = [];
         rule.evaluate = function() {return false;};
-        style.applySymbolizer = function(r) {
-            t.eq(r.id, elseRule.id, "(else) applySymbolizer called with correct rule");
-        };
         style.createSymbolizer(new OpenLayers.Feature.Vector());
+        t.eq(log.length, 1, "b) applySymbolizer called once");
+        t.eq(log[0] && log[0].id, elseRule.id, "b) applySymbolizer called with correct rule");
+
     }
     
     function test_Style_applySymbolizer(t) {
