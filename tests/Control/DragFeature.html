@@ -357,6 +357,24 @@
              "onLeave called with expected feature");
     }
 
+    function test_Control_DragFeature_click(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var feature = new OpenLayers.Feature.Vector();
+        feature.layer = layer;
+        var control = new OpenLayers.Control.DragFeature(layer);
+        map.addControl(control);
+
+        control.activate();
+
+        control.overFeature(feature);
+        control.handlers.feature.evt = {which: 1};
+        control.clickFeature(feature);
+        t.eq(control.handlers.drag.started, false, "click after over does not start drag handler");
+    }
+
     </script>
 </head>
 <body>
