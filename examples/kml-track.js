@@ -27,7 +27,7 @@ function init() {
                         fillOpacity: 0.5,
                         fillColor: "#ffcc66",
                         strokeColor: "#666633",
-                        strokeWidth: 1,
+                        strokeWidth: 1
                     })
                 })
             })
