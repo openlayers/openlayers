@@ -82,7 +82,6 @@
         tParams = OpenLayers.Util.extend(tParams, {
             SERVICE: "WMS", VERSION: "1.1.1",
             REQUEST: "GetMap", STYLES: "",
-            EXCEPTIONS: "application/vnd.ogc.se_inimage",
             SRS: "EPSG:4326", BBOX: [1,2,3,4],
             WIDTH: "256", HEIGHT: "256"
         });
@@ -121,7 +120,6 @@
         tParams = OpenLayers.Util.extend(tParams, {
             SERVICE: "WMS", VERSION: "1.1.1",
             REQUEST: "GetMap", STYLES: "",
-            EXCEPTIONS: "application/vnd.ogc.se_inimage",
             SRS: "EPSG:4326", BBOX: "1,2,3,4",
             WIDTH: "256", HEIGHT: "256"
         });
@@ -241,7 +239,7 @@
         var tParams = {
             LAYERS: "basic", FORMAT: "image/png", SERVICE: "WMS",
             VERSION: "1.1.1", REQUEST: "GetMap", STYLES: "",
-            EXCEPTIONS: "application/vnd.ogc.se_inimage", SRS: "xx"
+            SRS: "xx"
         };
         t.eq(str,
              tUrl + "?" + OpenLayers.Util.getParameterString(tParams),
