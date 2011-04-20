@@ -15,6 +15,9 @@ if [ ! o$REV = $OLD_REV ]; then
     svn revert -R /osgeo/openlayers/docs/dev
     svn up /osgeo/openlayers/docs/dev
 
+    # Also update website
+    svn up /osgeo/openlayers/docs/
+
     cd /osgeo/openlayers/docs/dev/tools/ 
     python exampleparser.py
     cd /osgeo/openlayers/docs/dev/build
