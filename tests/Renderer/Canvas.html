@@ -330,6 +330,128 @@
         
     }
 
+    // see http://trac.osgeo.org/openlayers/ticket/3264
+    function test_externalGraphic_destroyFeatures(t) {
+        if (!supported) {
+            t.plan(0);
+            return;
+        }
+
+        t.plan(1);
+
+        // set up
+
+        var layer = new OpenLayers.Layer.Vector(null, {
+            isBaseLayer: true,
+            renderers: ["Canvas"]
+        });
+
+        var map = new OpenLayers.Map({
+            div: "map",
+            controls: [],
+            layers: [layer],
+            center: new OpenLayers.LonLat(0, 0),
+            zoom: 0
+        });
+
+        layer.addFeatures([
+            new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(0, 0),
+                null,
+                {
+                    externalGraphic: '../../img/marker.png',
+                    graphicHeight: 20,
+                    graphicWidth: 20
+                }
+            )
+        ]);
+
+        var called = false;
+        layer.renderer.canvas.drawImage = function(img, x, y, w, h) {
+            called = true;
+        };
+
+        // test
+
+        // schedule a canvas.drawImage
+        layer.renderer.redraw();
+
+        // destroy the feature before drawImage gets called
+        layer.destroyFeatures();
+
+        t.delay_call(0.1, function() {
+            t.ok(!called,
+                 'canvas.drawImage not called if feature is destroyed');
+
+            // tear down
+            map.destroy();
+        });
+    }
+
+    // see http://trac.osgeo.org/openlayers/ticket/3264
+    function test_externalGraphic_moveTo(t) {
+        if (!supported) {
+            t.plan(0);
+            return;
+        }
+
+        t.plan(2);
+
+        // set up
+
+        var layer = new OpenLayers.Layer.Vector(null, {
+            isBaseLayer: true,
+            renderers: ["Canvas"]
+        });
+
+        var map = new OpenLayers.Map({
+            div: "map",
+            controls: [],
+            layers: [layer],
+            center: new OpenLayers.LonLat(0, 0),
+            zoom: 0
+        });
+
+        var feature = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(0, 0),
+            null,
+            {
+                externalGraphic: '../../img/marker.png',
+                graphicHeight: 20,
+                graphicWidth: 20,
+                graphicXOffset: 0,
+                graphicYOffset: 0
+            }
+        );
+
+        layer.addFeatures([feature]);
+
+        // test
+
+        // delay_call to let the first drawImage (the one
+        // resulting from addFeatures) run
+        t.delay_call(0.1, function() {
+
+            var log = [];
+            layer.renderer.canvas.drawImage = function(img, x, y, w, h) {
+                log.push({x: x, y: y});
+            };
+
+            layer.renderer.redraw();
+            map.setCenter(new OpenLayers.LonLat(45, 0), 0);
+
+            t.delay_call(0.1, function() {
+                t.eq(log.length, 2,
+                     "canvas.drawImage called twice");
+                t.ok(log[0].x == log[1].x && log[0].y == log[1].y,
+                     "image drawn at the same location");
+
+                // tear down
+                map.destroy();
+            });
+        });
+    }
+
   </script>
 </head>
 <body>
