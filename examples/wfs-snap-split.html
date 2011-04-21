@@ -112,13 +112,7 @@
                 ]
             });
 
-            var wms = new OpenLayers.Layer.WMS(
-                "Base Layer", "http://demo.opengeo.org/geoserver_openstreetmap/gwc/service/wms",
-                {
-                    layers: 'openstreetmap',
-                    format: 'image/png'
-                }
-            );
+            var osm = new OpenLayers.Layer.OSM();
             var styles = new OpenLayers.StyleMap({
                 "default": new OpenLayers.Style(null, {
                     rules: [
@@ -186,7 +180,7 @@
                 })
             }); 
            
-            map.addLayers([wms, wfs]);
+            map.addLayers([osm, wfs]);
 
             // configure the snapping agent
             var snap = new OpenLayers.Control.Snapping({layer: wfs});
