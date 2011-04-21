@@ -96,17 +96,16 @@
         });
 
         function init() {
-            OpenLayers.ProxyHost= "proxy.cgi?url=";
-            map = new OpenLayers.Map('map', {
-                maxResolution: 156543.03390625,
+            OpenLayers.ProxyHost = "proxy.cgi?url=";
+            map = new OpenLayers.Map({
+                div: "map",
+                maxResolution: 156543.0339,
+                maxExtent: new OpenLayers.Bounds(-20037508, -20037508, 20037508, 20037508),
                 restrictedExtent: new OpenLayers.Bounds(
-                    -11560239, 5541115, -11560239, 5542338
-                ),
-                maxExtent: new OpenLayers.Bounds(
-                    -2.003750834E7,-2.003750834E7,
-                    2.003750834E7,2.003750834E7
+                    -11563906, 5540550, -11559015, 5542996
                 ),
                 projection: new OpenLayers.Projection("EPSG:900913"),
+                units: "m",
                 controls: [
                     new OpenLayers.Control.PanZoom()
                 ]
@@ -240,7 +239,7 @@
             
             panel.defaultControl = panel.controls[0];
             map.addControl(panel);
-            map.zoomTo(15);
+            map.setCenter(new OpenLayers.LonLat(-11561460.5, 5541773), 15);
         }
 
         function flashFeatures(features, index) {
