@@ -39,7 +39,7 @@
         map.div.removeChild(testdiv);
         var testAll = !isNaN(left);
 
-        t.plan(testAll ? 12 : 2);
+        t.plan(testAll ? 10 : 2);
 
         // we change NaN values to 0 values in the handler's
         // boxOffsets object, this is to prevent "invalid
@@ -58,14 +58,10 @@
         handler.dragHandler.start = {x: 5, y: 5};
         handler.startBox();
         offset = handler.getBoxOffsets();
+        handler.moveBox({x: 10, y: 10});
         if (testAll) {
             t.eq(parseInt(handler.zoomBox.style.left), 5 - offset.left, "x position of box correct");
             t.eq(parseInt(handler.zoomBox.style.top), 5 - offset.top, "y position of box correct");
-        }
-        handler.moveBox({x: 10, y: 10});
-        if (testAll) {
-            t.eq(parseInt(handler.zoomBox.style.left), 5 - offset.left, "x position of box still correct");
-            t.eq(parseInt(handler.zoomBox.style.top), 5 - offset.top, "y position of box still correct");
             t.eq(parseInt(handler.zoomBox.style.width), 5 + offset.width + 1, "x dimension of box correct");
             t.eq(parseInt(handler.zoomBox.style.height), 5 + offset.height + 1, "y dimension of box correct");
         }
