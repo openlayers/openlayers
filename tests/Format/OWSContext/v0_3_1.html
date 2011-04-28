@@ -34,7 +34,7 @@
             '			<Layer name="topp:gnis_pop" hidden="0">' +
             '				<ows:Title>GNIS Population</ows:Title>' +
             '				<Server service="urn:ogc:serviceType:WFS" version="1.0.0">' +
-            '					<OnlineResource xlink:href="http://sigma.openplans.org:8080/geoserver/wfs?"/>' +
+            '					<OnlineResource xlink:href="geoserver/wfs?"/>' +
             '				</Server>' +
             '			</Layer>' +
             '		</Layer>' +
@@ -54,7 +54,7 @@
         t.ok(context.layers[0].queryable, "WMS layer is queryable");
         t.eq(context.layers[0].name, "Tiger 2005fe major roads/railways", "Title correctly set");
         t.ok(context.layers[1].protocol instanceof OpenLayers.Protocol.WFS.v1_0_0, "Vector layer configured with a WFS Protocol");
-        t.eq(context.layers[1].protocol.url, "http://sigma.openplans.org:8080/geoserver/wfs?", "WFS url set correctly");
+        t.eq(context.layers[1].protocol.url, "geoserver/wfs?", "WFS url set correctly");
         t.ok(context.layers[1].strategies[0] instanceof OpenLayers.Strategy.BBOX, "BBOX strategy configured correctly");
         t.eq(context.layers[1].name, "GNIS Population", "Title of second layer correctly set");
         t.eq(context.layers[1].getVisibility(), true, "Second layer is visible");
@@ -79,7 +79,7 @@
         var wfs = new OpenLayers.Layer.Vector("myroads", {
             strategies: [new OpenLayers.Strategy.BBOX()],
             protocol: new OpenLayers.Protocol.WFS({
-                url:  "http://foo/wfs",
+                url:  "foo/wfs?",
                 featureType: "roads",
                 featureNS: "http://foo/myns"
             })
@@ -89,7 +89,7 @@
 
         var owc = new OpenLayers.Format.OWSContext();
         var output = owc.write(map, {id: 'foo'});
-        var expected = '<OWSContext xmlns="http://www.opengis.net/ows-context" version="0.3.1" id="foo" xsi:schemaLocation="http://www.opengis.net/ows-context http://www.ogcnetwork.net/schemas/owc/0.3.1/owsContext.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><General><ows:BoundingBox xmlns:ows="http://www.opengis.net/ows" crs="EPSG:4326"><ows:LowerCorner>-5.986328125 29.013671875</ows:LowerCorner><ows:UpperCorner>15.986328125 50.986328125</ows:UpperCorner></ows:BoundingBox><ows:Title xmlns:ows="http://www.opengis.net/ows">OpenLayers OWSContext</ows:Title></General><ResourceList><Layer name="basic" queryable="0" hidden="0"><ows:Title xmlns:ows="http://www.opengis.net/ows">OpenLayers WMS</ows:Title><ows:OutputFormat xmlns:ows="http://www.opengis.net/ows">image/jpeg</ows:OutputFormat><Server version="1.1.1" service="urn:ogc:serviceType:WMS"><OnlineResource xlink:href="http://labs.metacarta.com/wms/vmap0" xmlns:xlink="http://www.w3.org/1999/xlink"/></Server></Layer><Layer name="feature:roads" hidden="0"><ows:Title xmlns:ows="http://www.opengis.net/ows">myroads</ows:Title><Server version="1.0.0" service="urn:ogc:serviceType:WFS"><OnlineResource xlink:href="http://foo/wfs" xmlns:xlink="http://www.w3.org/1999/xlink"/></Server></Layer></ResourceList></OWSContext>';
+        var expected = '<OWSContext xmlns="http://www.opengis.net/ows-context" version="0.3.1" id="foo" xsi:schemaLocation="http://www.opengis.net/ows-context http://www.ogcnetwork.net/schemas/owc/0.3.1/owsContext.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><General><ows:BoundingBox xmlns:ows="http://www.opengis.net/ows" crs="EPSG:4326"><ows:LowerCorner>-5.986328125 29.013671875</ows:LowerCorner><ows:UpperCorner>15.986328125 50.986328125</ows:UpperCorner></ows:BoundingBox><ows:Title xmlns:ows="http://www.opengis.net/ows">OpenLayers OWSContext</ows:Title></General><ResourceList><Layer name="basic" queryable="0" hidden="0"><ows:Title xmlns:ows="http://www.opengis.net/ows">OpenLayers WMS</ows:Title><ows:OutputFormat xmlns:ows="http://www.opengis.net/ows">image/jpeg</ows:OutputFormat><Server version="1.1.1" service="urn:ogc:serviceType:WMS"><OnlineResource xlink:href="http://labs.metacarta.com/wms/vmap0" xmlns:xlink="http://www.w3.org/1999/xlink"/></Server></Layer><Layer name="feature:roads" hidden="0"><ows:Title xmlns:ows="http://www.opengis.net/ows">myroads</ows:Title><Server version="1.0.0" service="urn:ogc:serviceType:WFS"><OnlineResource xlink:href="foo/wfs?" xmlns:xlink="http://www.w3.org/1999/xlink"/></Server></Layer></ResourceList></OWSContext>';
         t.xml_eq(output, expected, "OWSContext with a WMS and a WFS layer generated correctly");
     }
 
@@ -139,11 +139,11 @@
 
     function test_read_gml(t) {
         t.plan(5);
-        var text = '<?xml version="1.0" encoding="UTF-8"?><OWSContext version="0.3.0" id="ows-context-ex-1-v3" xmlns="http://www.opengis.net/ows-context" xmlns:gml="http://www.opengis.net/gml" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:ogc="http://www.opengis.net/ogc" xmlns:ows="http://www.opengis.net/ows" xmlns:sld="http://www.opengis.net/sld" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/ows-context http://www.ogcnetwork.net/schemas/owc/0.3.0/owsContext.xsd"><General><ows:BoundingBox crs="urn:ogc:def:crs:EPSG:6.6:4326"><ows:LowerCorner>-117.44667178362664 32.57086210449395</ows:LowerCorner><ows:UpperCorner>-116.74066794885977 32.921986352104064</ows:UpperCorner></ows:BoundingBox><ows:Title>OWS Context version 0.3.0 examples</ows:Title></General><ResourceList><Layer name="basic" queryable="0" hidden="0" opacity="1"><ows:Title xmlns:ows="http://www.opengis.net/ows">OpenLayers WMS</ows:Title><ows:OutputFormat xmlns:ows="http://www.opengis.net/ows">image/jpeg</ows:OutputFormat><Server version="1.1.1" service="urn:ogc:serviceType:WMS"><OnlineResource xlink:href="http://labs.metacarta.com/wms/vmap0" xmlns:xlink="http://www.w3.org/1999/xlink"/></Server></Layer><!-- Referenced GML Example --><Layer name="Landuse"><ows:Title>Boston Landuse Polygons</ows:Title><Server service="urn:ogc:serviceType:GML" version="2.1.2" title="Cadcorp GeognoSIS.NET Web Feature Service"><OnlineResource xlink:href="http://www.cadcorpdev.co.uk/gml/MassGIS/LandUse.gml"/></Server><sld:MinScaleDenominator>5000</sld:MinScaleDenominator><sld:MaxScaleDenominator>50000</sld:MaxScaleDenominator><MaxFeatures>99</MaxFeatures></Layer></ResourceList></OWSContext>';
+        var text = '<?xml version="1.0" encoding="UTF-8"?><OWSContext version="0.3.0" id="ows-context-ex-1-v3" xmlns="http://www.opengis.net/ows-context" xmlns:gml="http://www.opengis.net/gml" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:ogc="http://www.opengis.net/ogc" xmlns:ows="http://www.opengis.net/ows" xmlns:sld="http://www.opengis.net/sld" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/ows-context http://www.ogcnetwork.net/schemas/owc/0.3.0/owsContext.xsd"><General><ows:BoundingBox crs="urn:ogc:def:crs:EPSG:6.6:4326"><ows:LowerCorner>-117.44667178362664 32.57086210449395</ows:LowerCorner><ows:UpperCorner>-116.74066794885977 32.921986352104064</ows:UpperCorner></ows:BoundingBox><ows:Title>OWS Context version 0.3.0 examples</ows:Title></General><ResourceList><Layer name="basic" queryable="0" hidden="0" opacity="1"><ows:Title xmlns:ows="http://www.opengis.net/ows">OpenLayers WMS</ows:Title><ows:OutputFormat xmlns:ows="http://www.opengis.net/ows">image/jpeg</ows:OutputFormat><Server version="1.1.1" service="urn:ogc:serviceType:WMS"><OnlineResource xlink:href="http://labs.metacarta.com/wms/vmap0" xmlns:xlink="http://www.w3.org/1999/xlink"/></Server></Layer><!-- Referenced GML Example --><Layer name="Landuse"><ows:Title>Boston Landuse Polygons</ows:Title><Server service="urn:ogc:serviceType:GML" version="2.1.2" title="Cadcorp GeognoSIS.NET Web Feature Service"><OnlineResource xlink:href="gml/MassGIS/LandUse.gml"/></Server><sld:MinScaleDenominator>5000</sld:MinScaleDenominator><sld:MaxScaleDenominator>50000</sld:MaxScaleDenominator><MaxFeatures>99</MaxFeatures></Layer></ResourceList></OWSContext>';
         var parser = new OpenLayers.Format.OWSContext();
         var context = parser.read(text, {map: 'map'});
         t.ok(context.layers[1].protocol instanceof OpenLayers.Protocol.HTTP, "serviceType GML is translated into an HTTP Protocol");
-        t.eq(context.layers[1].protocol.url, "http://www.cadcorpdev.co.uk/gml/MassGIS/LandUse.gml", "Url of GML file correctly set");
+        t.eq(context.layers[1].protocol.url, "gml/MassGIS/LandUse.gml", "Url of GML file correctly set");
         t.ok(context.layers[1].protocol.format instanceof OpenLayers.Format.GML, "GML Format associated with protocol");
         t.eq(Math.round(context.layers[1].minScale), 50000, "Minscale correctly read");
         t.eq(Math.round(context.layers[1].maxScale), 5000, "Maxscale correctly read");
@@ -151,11 +151,11 @@
 
     function test_read_kml(t) {
         t.plan(3);
-        var text = '<OWSContext xmlns="http://www.opengis.net/ows-context" version="0.3.1" id="foo" xsi:schemaLocation="http://www.opengis.net/ows-context http://www.ogcnetwork.net/schemas/owc/0.3.1/owsContext.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><General><ows:BoundingBox xmlns:ows="http://www.opengis.net/ows" crs="EPSG:4326"><ows:LowerCorner>-5.986328125 27.9150390625</ows:LowerCorner><ows:UpperCorner>15.986328125 52.0849609375</ows:UpperCorner></ows:BoundingBox><ows:Title xmlns:ows="http://www.opengis.net/ows">OpenLayers OWSContext</ows:Title></General><ResourceList><Layer name="basic" queryable="0" hidden="0" opacity="1"><ows:Title xmlns:ows="http://www.opengis.net/ows">OpenLayers WMS</ows:Title><ows:OutputFormat xmlns:ows="http://www.opengis.net/ows">image/jpeg</ows:OutputFormat><Server version="1.1.1" service="urn:ogc:serviceType:WMS"><OnlineResource xlink:href="http://labs.metacarta.com/wms/vmap0" xmlns:xlink="http://www.w3.org/1999/xlink"/></Server></Layer><Layer><ows:Title xmlns:ows="http://www.opengis.net/ows">KML</ows:Title><Server version="2.2" service="urn:ogc:serviceType:KML"><OnlineResource xlink:href="http://foo/sundials.kml" xmlns:xlink="http://www.w3.org/1999/xlink"/></Server></Layer></ResourceList></OWSContext>';
+        var text = '<OWSContext xmlns="http://www.opengis.net/ows-context" version="0.3.1" id="foo" xsi:schemaLocation="http://www.opengis.net/ows-context http://www.ogcnetwork.net/schemas/owc/0.3.1/owsContext.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><General><ows:BoundingBox xmlns:ows="http://www.opengis.net/ows" crs="EPSG:4326"><ows:LowerCorner>-5.986328125 27.9150390625</ows:LowerCorner><ows:UpperCorner>15.986328125 52.0849609375</ows:UpperCorner></ows:BoundingBox><ows:Title xmlns:ows="http://www.opengis.net/ows">OpenLayers OWSContext</ows:Title></General><ResourceList><Layer name="basic" queryable="0" hidden="0" opacity="1"><ows:Title xmlns:ows="http://www.opengis.net/ows">OpenLayers WMS</ows:Title><ows:OutputFormat xmlns:ows="http://www.opengis.net/ows">image/jpeg</ows:OutputFormat><Server version="1.1.1" service="urn:ogc:serviceType:WMS"><OnlineResource xlink:href="http://labs.metacarta.com/wms/vmap0" xmlns:xlink="http://www.w3.org/1999/xlink"/></Server></Layer><Layer><ows:Title xmlns:ows="http://www.opengis.net/ows">KML</ows:Title><Server version="2.2" service="urn:ogc:serviceType:KML"><OnlineResource xlink:href="foo/sundials.kml" xmlns:xlink="http://www.w3.org/1999/xlink"/></Server></Layer></ResourceList></OWSContext>';
         var parser = new OpenLayers.Format.OWSContext();
         var context = parser.read(text, {map: 'map'});
         t.ok(context.layers[1].protocol instanceof OpenLayers.Protocol.HTTP, "serviceType KML is translated into an HTTP Protocol");
-        t.eq(context.layers[1].protocol.url, "http://foo/sundials.kml", "Url of KML file correctly set");
+        t.eq(context.layers[1].protocol.url, "foo/sundials.kml", "Url of KML file correctly set");
         t.ok(context.layers[1].protocol.format instanceof OpenLayers.Format.KML, "KML Format associated with protocol");
     }
 
@@ -175,7 +175,7 @@
             projection: map.displayProjection,
             strategies: [new OpenLayers.Strategy.Fixed()],
             protocol: new OpenLayers.Protocol.HTTP({
-                url: "http://foo/sundials.gml",
+                url: "foo/sundials.gml",
                 format: new OpenLayers.Format.GML()
             })
         });
@@ -184,7 +184,7 @@
 
         var owc = new OpenLayers.Format.OWSContext();
         var output = owc.write(map, {id: 'foo'});
-        var expected = '<OWSContext xmlns="http://www.opengis.net/ows-context" version="0.3.1" id="foo" xsi:schemaLocation="http://www.opengis.net/ows-context http://www.ogcnetwork.net/schemas/owc/0.3.1/owsContext.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><General><ows:BoundingBox xmlns:ows="http://www.opengis.net/ows" crs="EPSG:4326"><ows:LowerCorner>-5.986328125 29.013671875</ows:LowerCorner><ows:UpperCorner>15.986328125 50.986328125</ows:UpperCorner></ows:BoundingBox><ows:Title xmlns:ows="http://www.opengis.net/ows">OpenLayers OWSContext</ows:Title></General><ResourceList><Layer name="basic" queryable="0" hidden="0"><ows:Title xmlns:ows="http://www.opengis.net/ows">OpenLayers WMS</ows:Title><ows:OutputFormat xmlns:ows="http://www.opengis.net/ows">image/jpeg</ows:OutputFormat><Server version="1.1.1" service="urn:ogc:serviceType:WMS"><OnlineResource xlink:href="http://labs.metacarta.com/wms/vmap0" xmlns:xlink="http://www.w3.org/1999/xlink"/></Server></Layer><Layer><ows:Title xmlns:ows="http://www.opengis.net/ows">GML</ows:Title><Server version="2.1.2" service="urn:ogc:serviceType:GML"><OnlineResource xlink:href="http://foo/sundials.gml" xmlns:xlink="http://www.w3.org/1999/xlink"/></Server></Layer></ResourceList></OWSContext>';
+        var expected = '<OWSContext xmlns="http://www.opengis.net/ows-context" version="0.3.1" id="foo" xsi:schemaLocation="http://www.opengis.net/ows-context http://www.ogcnetwork.net/schemas/owc/0.3.1/owsContext.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><General><ows:BoundingBox xmlns:ows="http://www.opengis.net/ows" crs="EPSG:4326"><ows:LowerCorner>-5.986328125 29.013671875</ows:LowerCorner><ows:UpperCorner>15.986328125 50.986328125</ows:UpperCorner></ows:BoundingBox><ows:Title xmlns:ows="http://www.opengis.net/ows">OpenLayers OWSContext</ows:Title></General><ResourceList><Layer name="basic" queryable="0" hidden="0"><ows:Title xmlns:ows="http://www.opengis.net/ows">OpenLayers WMS</ows:Title><ows:OutputFormat xmlns:ows="http://www.opengis.net/ows">image/jpeg</ows:OutputFormat><Server version="1.1.1" service="urn:ogc:serviceType:WMS"><OnlineResource xlink:href="http://labs.metacarta.com/wms/vmap0" xmlns:xlink="http://www.w3.org/1999/xlink"/></Server></Layer><Layer><ows:Title xmlns:ows="http://www.opengis.net/ows">GML</ows:Title><Server version="2.1.2" service="urn:ogc:serviceType:GML"><OnlineResource xlink:href="foo/sundials.gml" xmlns:xlink="http://www.w3.org/1999/xlink"/></Server></Layer></ResourceList></OWSContext>';
         t.xml_eq(output, expected, "OWSContext with a WMS and a GML vector layer generated correctly");
     }
 
@@ -204,7 +204,7 @@
             projection: map.displayProjection,
             strategies: [new OpenLayers.Strategy.Fixed()],
             protocol: new OpenLayers.Protocol.HTTP({
-                url: "http://foo/sundials.kml",
+                url: "foo/sundials.kml",
                 format: new OpenLayers.Format.KML({
                     extractStyles: true
                 })
@@ -215,7 +215,7 @@
 
         var owc = new OpenLayers.Format.OWSContext();
         var output = owc.write(map, {id: 'foo'});
-        var expected = '<OWSContext xmlns="http://www.opengis.net/ows-context" version="0.3.1" id="foo" xsi:schemaLocation="http://www.opengis.net/ows-context http://www.ogcnetwork.net/schemas/owc/0.3.1/owsContext.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><General><ows:BoundingBox xmlns:ows="http://www.opengis.net/ows" crs="EPSG:4326"><ows:LowerCorner>-5.986328125 29.013671875</ows:LowerCorner><ows:UpperCorner>15.986328125 50.986328125</ows:UpperCorner></ows:BoundingBox><ows:Title xmlns:ows="http://www.opengis.net/ows">OpenLayers OWSContext</ows:Title></General><ResourceList><Layer name="basic" queryable="0" hidden="0"><ows:Title xmlns:ows="http://www.opengis.net/ows">OpenLayers WMS</ows:Title><ows:OutputFormat xmlns:ows="http://www.opengis.net/ows">image/jpeg</ows:OutputFormat><Server version="1.1.1" service="urn:ogc:serviceType:WMS"><OnlineResource xlink:href="http://labs.metacarta.com/wms/vmap0" xmlns:xlink="http://www.w3.org/1999/xlink"/></Server></Layer><Layer><ows:Title xmlns:ows="http://www.opengis.net/ows">KML</ows:Title><Server version="2.2" service="urn:ogc:serviceType:KML"><OnlineResource xlink:href="http://foo/sundials.kml" xmlns:xlink="http://www.w3.org/1999/xlink"/></Server></Layer></ResourceList></OWSContext>';
+        var expected = '<OWSContext xmlns="http://www.opengis.net/ows-context" version="0.3.1" id="foo" xsi:schemaLocation="http://www.opengis.net/ows-context http://www.ogcnetwork.net/schemas/owc/0.3.1/owsContext.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><General><ows:BoundingBox xmlns:ows="http://www.opengis.net/ows" crs="EPSG:4326"><ows:LowerCorner>-5.986328125 29.013671875</ows:LowerCorner><ows:UpperCorner>15.986328125 50.986328125</ows:UpperCorner></ows:BoundingBox><ows:Title xmlns:ows="http://www.opengis.net/ows">OpenLayers OWSContext</ows:Title></General><ResourceList><Layer name="basic" queryable="0" hidden="0"><ows:Title xmlns:ows="http://www.opengis.net/ows">OpenLayers WMS</ows:Title><ows:OutputFormat xmlns:ows="http://www.opengis.net/ows">image/jpeg</ows:OutputFormat><Server version="1.1.1" service="urn:ogc:serviceType:WMS"><OnlineResource xlink:href="http://labs.metacarta.com/wms/vmap0" xmlns:xlink="http://www.w3.org/1999/xlink"/></Server></Layer><Layer><ows:Title xmlns:ows="http://www.opengis.net/ows">KML</ows:Title><Server version="2.2" service="urn:ogc:serviceType:KML"><OnlineResource xlink:href="foo/sundials.kml" xmlns:xlink="http://www.w3.org/1999/xlink"/></Server></Layer></ResourceList></OWSContext>';
         t.xml_eq(output, expected, "OWSContext with a WMS and a KML vector layer generated correctly");
     }
 
