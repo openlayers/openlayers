@@ -123,7 +123,7 @@
     }
 
     function test_callbacks(t) {
-        t.plan(13);
+        t.plan(14);
         
         var map = new OpenLayers.Map('map', {controls: []});
         var control = new OpenLayers.Control();
@@ -232,6 +232,12 @@
         newFeature.layer = layer;
         callbacks['click'] = getCallback('click (touch)', newFeature);
         callbacks['clickout'] = getCallback('clickout (touch)', lastFeature);
+        evtPx.type = "touchstart";
+        map.events.triggerEvent('touchstart', evtPx);
+
+        // test touchstart on the same feature
+        // 'click' callback should be called
+        callbacks['click'] = getCallback('click (touch)', newFeature);
         evtPx.type = "touchstart";
         map.events.triggerEvent('touchstart', evtPx);
 
