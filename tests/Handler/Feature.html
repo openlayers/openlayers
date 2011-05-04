@@ -588,6 +588,64 @@
         t.eq(clicks, 0, "click callback does not trigger when tolerance is reached");
     }
 
+    function test_multitouch_canvas(t) {
+        var supported = OpenLayers.Renderer.Canvas.prototype.supported();
+        if (!supported) { t.plan(0); return; }
+
+        t.plan(1);
+
+        // set up
+
+        var log;
+
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.Vector('vectors', {
+            renderers: ['Canvas'],
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+
+        var control = new OpenLayers.Control();
+        var handler = new OpenLayers.Handler.Feature(control, layer,
+                {click: function() { log++; }});
+        control.handler = handler;
+        map.addControl(control);
+        control.activate();
+
+        var feature = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(0, 0));
+        layer.addFeatures(feature);
+
+        map.zoomToMaxExtent();
+
+        // test
+
+        // mock getMousePosition on the events object to make
+        // sure scrolls, offsets and leftop do not interfere
+        map.events.getMousePosition = function(evt) {
+            return new OpenLayers.Pixel(evt.clientX,
+                                        evt.clientY);
+        };
+
+        log = 0;
+        var evt = {
+            type: 'touchstart',
+            touches: [{
+                clientX: 100,
+                clientY: 75
+            }, {
+                clientX: 200,
+                clientY: 75
+            }]
+        };
+        map.events.handleBrowserEvent(evt);
+        t.eq(log, 0, "no feature selection when multi-touching");
+
+        // tear down
+
+        map.destroy();
+    }
+
   </script>
 </head>
 <body>
