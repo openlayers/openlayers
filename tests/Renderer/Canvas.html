@@ -171,7 +171,7 @@
             {display: "none"}
         );
         t.eq(exp, false, "c) drawFeature returns false");
-        t.eq(count, 0, "c) redraw is not called when drawing a feature with display 'none'");
+        t.eq(count, 1, "c) redraw is called when drawing a feature with display 'none'");
         renderer.clear();
 
         // d) draw a point feature outside renderer extent
@@ -180,7 +180,7 @@
             new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(-1000, 0)), {}
         );
         t.eq(exp, false, "d) drawFeature returns false");
-        t.eq(count, 0, "d) redraw is not called when drawing a feature outside renderer extent");
+        t.eq(count, 1, "d) redraw is called when drawing a feature outside renderer extent");
         renderer.clear();
         
         map.destroy();
