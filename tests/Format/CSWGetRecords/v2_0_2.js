@@ -37,6 +37,10 @@ var csw_response =
         '<ows:LowerCorner>51.1 -34.6</ows:LowerCorner>' +
         '<ows:UpperCorner>-17.3 38.2</ows:UpperCorner>' +
       '</ows:BoundingBox>' +
+      '<geonet:info xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gts="http://www.isotc211.org/2005/gts" xmlns:gml="http://www.opengis.net/gml">' +
+        '<id>859</id>' +
+        '<schema>iso19139</schema>' +
+      '</geonet:info>' +
     '</csw:BriefRecord>' +
   '</csw:SearchResults>' +
 '</csw:GetRecordsResponse>'

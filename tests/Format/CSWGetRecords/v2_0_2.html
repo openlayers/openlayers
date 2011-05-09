@@ -41,10 +41,10 @@
     
     function test_read(t) {
         
-        t.plan(14);
+        t.plan(16);
         
         var obj = format.read(csw_response);
-        
+                
         var searchStatus = obj.SearchStatus;
         var searchResults = obj.SearchResults;
         var records = obj.records;
@@ -72,6 +72,10 @@
         t.eq(bbox.crs, "::Lambert Azimuthal Projection", "check value for BoundingBox.crs");
         t.eq(bbox.value, [156, -3, 37, 83], "check value for record.BoundingBox");
         
+        // test gninfo
+        testRecord = records[1];
+        t.ok(testRecord.gninfo, "object contains gninfo properties");
+        t.eq(testRecord.gninfo.schema, "iso19139", "check value for schema property in record.gninfo");
     }
     
     </script> 
