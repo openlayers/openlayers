@@ -54,7 +54,7 @@
     }
     
     function test_setFeature(t) {
-        t.plan(4);
+        t.plan(6);
         var map = new OpenLayers.Map("map", {allOverlays: true});
         var layer = new OpenLayers.Layer.Vector();
         var feature = new OpenLayers.Feature.Vector(
@@ -64,7 +64,15 @@
         map.setCenter(new OpenLayers.LonLat(0, 0), 18);
         var control = new OpenLayers.Control.TransformFeature(layer);
         map.addControl(control);
+        var log = [];
+        control.events.on({
+            "beforesetfeature": function(e) { log.push(e); },
+            "setfeature": function(e) { log.push(e); }
+        });
         control.setFeature(feature);
+        
+        t.eq(log[0].type, "beforesetfeature", "beforesetfeature event fired with correct event type");
+        t.eq(log[1].type, "setfeature", "setfeature event fired with correct event type");
         
         t.ok(control.active, "control activated on setFeature");
         t.ok(feature.geometry.getBounds().equals(control.box.geometry.getBounds()), "box positioned correctly");
