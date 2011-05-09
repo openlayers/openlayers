@@ -170,8 +170,7 @@
             }
         },
         {
-            pixelTolerance: 0,
-            dblclickTolerance: 0
+            pixelTolerance: 0
         });
         control.handler = handler;
         map.addControl(control);
@@ -563,8 +562,7 @@
             OpenLayers.Handler.Polygon,
             {handlerOptions: {
                 holeModifier: "altKey",
-                pixelTolerance: 0,
-                dblclickTolerance: 0
+                pixelTolerance: 0
             }}
         );
         map.addControl(draw);
@@ -780,7 +778,7 @@
         var handler = new OpenLayers.Handler.Polygon(control,
             {done: function(g) { log.geometry = g; }},
             {stopDown: true, stopUp: true,
-            pixelTolerance: 0, dblclickTolerance: 0}
+            pixelTolerance: 0}
         );
         control.handler = handler;
         map.addControl(control);
@@ -852,7 +850,7 @@
         var handler = new OpenLayers.Handler.Polygon(control,
             {done: function(g) { log.geometry = g; }},
             {stopDown: false, stopUp: false,
-            pixelTolerance: 0, dblclickTolerance: 0}
+            pixelTolerance: 0}
         );
         control.handler = handler;
         map.addControl(control);
@@ -908,7 +906,7 @@
     // b) tap
     // c) doubletap
     function test_touch_sequence1(t) {
-        t.plan(24);
+        t.plan(26);
 
         // set up
 
@@ -930,7 +928,7 @@
                 log = {type: 'modify', geometry: g, feature: f};
             }
         }, {
-            dblclickTolerance: 2
+            doubleTouchTolerance: 2
         });
         control.handler = handler;
         map.addControl(control);
@@ -994,6 +992,10 @@
                     new OpenLayers.Geometry.Point(-140, 65)  // (10, 10)
                 ])
             ]), "[touchstart] geometry is correct");
+        log = null;
+        ret = handler.touchend({});
+        t.ok(ret, '[touchend] event propagates');
+        t.eq(log, null, '[touchend] feature not finalized or modified');
 
         // tear down
 
@@ -1005,7 +1007,7 @@
     // c) tap
     // d) doubletap
     function test_touch_sequence2(t) {
-        t.plan(30);
+        t.plan(32);
 
         // set up
 
@@ -1027,7 +1029,7 @@
                 log = {type: 'modify', geometry: g, feature: f};
             }
         }, {
-            dblclickTolerance: 2
+            doubleTouchTolerance: 2
         });
         control.handler = handler;
         map.addControl(control);
@@ -1103,6 +1105,10 @@
                     new OpenLayers.Geometry.Point(-140, 65)  // (10, 10)
                 ])
             ]), "[touchstart] geometry is correct");
+        log = null;
+        ret = handler.touchend({});
+        t.ok(ret, '[touchend] event propagates');
+        t.eq(log, null, '[touchend] feature not finalized or modified');
 
         // tear down
 

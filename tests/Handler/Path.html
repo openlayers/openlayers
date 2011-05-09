@@ -179,8 +179,7 @@
             }
         },
         {
-            pixelTolerance: 0,
-            dblclickTolerance: 0
+            pixelTolerance: 0
         });
         control.handler = handler;
         map.addControl(control);
@@ -577,10 +576,10 @@
     // added here each a non-working sequence is found.
     //
 
-    // stopDown:true, stopUp:true
+    // stopDown:true, stopUp:true, pixelTolerance:1
     // a) click on (0, 0)
-    // b) mousedown on (0.5, 0.5)
-    // c) mouseup on (1, 1)
+    // b) mousedown on (1, 1)
+    // c) mouseup on (2, 2)
     // d) dblclick on (10, 10)
     function test_sequence1(t) {
         t.plan(1);
@@ -595,7 +594,7 @@
         var control = new OpenLayers.Control({});
         var handler = new OpenLayers.Handler.Path(control,
             {done: function(g) { log.geometry = g; }},
-            {stopDown: true, stopUp: true}
+            {stopDown: true, stopUp: true, pixelTolerance: 1}
         );
         control.handler = handler;
         map.addControl(control);
@@ -611,16 +610,16 @@
             {type: "mousedown", xy: new OpenLayers.Pixel(0, 0)});
         handler.mouseup(
             {type: "mouseup", xy: new OpenLayers.Pixel(0, 0)});
-        // b) mousedown on (0.5, 0.5)
-        handler.mousemove(
-            {type: "mousemove", xy: new OpenLayers.Pixel(0.5, 0.5)});
-        handler.mousedown(
-            {type: "mousedown", xy: new OpenLayers.Pixel(0.5, 0.5)});
-        // c) mouseup on (1, 1)
+        // b) mousedown on (1, 1)
         handler.mousemove(
             {type: "mousemove", xy: new OpenLayers.Pixel(1, 1)});
+        handler.mousedown(
+            {type: "mousedown", xy: new OpenLayers.Pixel(1, 1)});
+        // c) mouseup on (2, 2)
+        handler.mousemove(
+            {type: "mousemove", xy: new OpenLayers.Pixel(2, 2)});
         handler.mouseup(
-            {type: "mouseup", xy: new OpenLayers.Pixel(1, 1)});
+            {type: "mouseup", xy: new OpenLayers.Pixel(2, 2)});
         // d) dblclick on (10, 10)
         handler.mousemove(
             {type: "mousemove", xy: new OpenLayers.Pixel(10, 10)});
@@ -637,10 +636,10 @@
             ]), "geometry is correct");
     }
 
-    // stopDown:false, stopUp:false
+    // stopDown:false, stopUp:false, pixelTolerance:1
     // a) click on (0, 0)
-    // b) mousedown on (0.5, 0.5)
-    // c) mouseup on (1, 1)
+    // b) mousedown on (1, 1)
+    // c) mouseup on (2, 2)
     // d) dblclick on (10, 10)
     function test_sequence2(t) {
         t.plan(1);
@@ -655,7 +654,7 @@
         var control = new OpenLayers.Control({});
         var handler = new OpenLayers.Handler.Path(control,
             {done: function(g) { log.geometry = g; }},
-            {stopDown: false, stopUp: false}
+            {stopDown: false, stopUp: false, pixelTolerance: 1}
         );
         control.handler = handler;
         map.addControl(control);
@@ -671,16 +670,16 @@
             {type: "mousedown", xy: new OpenLayers.Pixel(0, 0)});
         handler.mouseup(
             {type: "mouseup", xy: new OpenLayers.Pixel(0, 0)});
-        // b) mousedown on (0.5, 0.5)
-        handler.mousemove(
-            {type: "mousemove", xy: new OpenLayers.Pixel(0.5, 0.5)});
-        handler.mousedown(
-            {type: "mousedown", xy: new OpenLayers.Pixel(0.5, 0.5)});
-        // c) mouseup on (1, 1)
+        // b) mousedown on (1, 1)
         handler.mousemove(
             {type: "mousemove", xy: new OpenLayers.Pixel(1, 1)});
+        handler.mousedown(
+            {type: "mousedown", xy: new OpenLayers.Pixel(1, 1)});
+        // c) mouseup on (2, 2)
+        handler.mousemove(
+            {type: "mousemove", xy: new OpenLayers.Pixel(2, 2)});
         handler.mouseup(
-            {type: "mouseup", xy: new OpenLayers.Pixel(1, 1)});
+            {type: "mouseup", xy: new OpenLayers.Pixel(2, 2)});
         // d) dblclick on (10, 10)
         handler.mousemove(
             {type: "mousemove", xy: new OpenLayers.Pixel(10, 10)});
@@ -714,8 +713,7 @@
         var control = new OpenLayers.Control({});
         var handler = new OpenLayers.Handler.Path(control, {},
         {
-            pixelTolerance: 0,
-            dblclickTolerance: 0
+            pixelTolerance: 0
         });
         control.handler = handler;
         map.addControl(control);
@@ -819,7 +817,7 @@
     // a) tap
     // c) doubletap
     function test_touch_sequence1(t) {
-        t.plan(17);
+        t.plan(19);
 
         // set up
 
@@ -841,7 +839,7 @@
                 log = {type: 'modify', geometry: g, feature: f};
             }
         }, {
-            dblclickTolerance: 2
+            doubleTouchTolerance: 2
         });
         control.handler = handler;
         map.addControl(control);
@@ -888,6 +886,10 @@
                 new OpenLayers.Geometry.Point(-149, 75),  // (1, 0)
                 new OpenLayers.Geometry.Point(-140, 65)   // (10, 10)
             ]), "[touchstart] final geometry is correct");
+        log = null;
+        ret = handler.touchend({});
+        t.ok(ret, '[touchend] event propagates');
+        t.eq(log, null, '[touchend] feature not finalized or modified');
 
         // tear down
 
@@ -898,7 +900,7 @@
     // b) tap-move
     // c) doubletap
     function test_touch_sequence2(t) {
-        t.plan(23);
+        t.plan(25);
 
         // set up
 
@@ -920,7 +922,7 @@
                 log = {type: 'modify', geometry: g, feature: f};
             }
         }, {
-            dblclickTolerance: 2
+            doubleTouchTolerance: 2
         });
         control.handler = handler;
         map.addControl(control);
@@ -979,6 +981,10 @@
                 new OpenLayers.Geometry.Point(-149, 75),  // (1, 0)
                 new OpenLayers.Geometry.Point(-140, 65)   // (10, 10)
             ]), "[touchstart] final geometry is correct");
+        log = null;
+        ret = handler.touchend({});
+        t.ok(ret, '[touchend] event propagates');
+        t.eq(log, null, '[touchend] feature not finalized or modified');
 
         // tear down
 
