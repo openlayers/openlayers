@@ -336,7 +336,32 @@
         return new OpenLayers.Format.XML().read(xml).documentElement;
     }
 
-
+    function test_SortBy(t) {
+        t.plan(1);
+    
+        var out =
+            '<ogc:SortBy xmlns:ogc="http://www.opengis.net/ogc">'+
+                '<ogc:SortProperty>'+
+                    '<ogc:PropertyName>Title</ogc:PropertyName>'+
+                    '<ogc:SortOrder>ASC</ogc:SortOrder>'+
+                '</ogc:SortProperty>'+
+                '<ogc:SortProperty>'+
+                    '<ogc:PropertyName>Relevance</ogc:PropertyName>'+
+                    '<ogc:SortOrder>DESC</ogc:SortOrder>'+
+                '</ogc:SortProperty>'+
+            '</ogc:SortBy>';
+        
+        var parser = new OpenLayers.Format.Filter.v1_1_0();
+        var node = parser.writers['ogc'].SortBy.call(parser, [{
+            "property": 'Title',
+            "order": "ASC"
+        },{
+            "property": 'Relevance',
+            "order": "DESC"
+        }]);
+        
+        t.xml_eq(node, out, "Check SortBy");
+    }
     </script> 
 </head> 
 <body>
