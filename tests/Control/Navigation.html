@@ -18,8 +18,26 @@
         OpenLayers.Control.prototype.initialize = temp;
     }
 
+    function test_draw(t) {
+        t.plan(5);
+        var map = new OpenLayers.Map({div: 'map', controls: []});
+        var control = new OpenLayers.Control.Navigation();
+        map.addControl(control);
+        t.ok(control.handlers.click instanceof OpenLayers.Handler.Click,
+             "click handler set in instance");
+        t.ok(control.dragPan instanceof OpenLayers.Control.DragPan,
+             "drag pan control set in instance");
+        t.ok(control.zoomBox instanceof OpenLayers.Control.ZoomBox,
+             "zoom box control set in instance");
+        t.ok(control.handlers.wheel instanceof OpenLayers.Handler.MouseWheel,
+             "mousewheel handler set in instance");
+        t.ok(control.pinchZoom instanceof OpenLayers.Control.PinchZoom,
+             "pinch zoom control set in instance");
+        map.destroy();
+    }
+
     function test_Control_Navigation_destroy (t) {
-        t.plan(10);
+        t.plan(12);
         
         var temp = OpenLayers.Control.prototype.destroy;
         OpenLayers.Control.prototype.destroy = function() {
@@ -46,6 +64,11 @@
                     t.ok(true, "zoomBox destroyed");
                 }
             },
+            'pinchZoom': {
+                'destroy': function() {
+                    t.ok(true, "pinchZoom destroyed");
+                }
+            },
             handlers: {
                 'wheel': {
                     'destroy': function() {
@@ -66,6 +89,7 @@
 
         t.eq(control.dragPan, null, "'dragPan' set to null");
         t.eq(control.zoomBox, null, "'zoomBox' set to null");
+        t.eq(control.pinchZoom, null, "'pinchZoom' set to null");
         t.eq(control.handlers, null, "handlers set to null");
 
         OpenLayers.Control.prototype.destroy = temp;
