@@ -247,6 +247,7 @@
         t.ok(!controlNoDeactive.active, "Tool control autoActivate:true is not active");
         
     }
+
     function test_Control_Panel_deactivate (t) {
         t.plan(2);
         var map = new OpenLayers.Map('map');
@@ -260,6 +261,31 @@
         t.ok(panel.div.innerHTML == "", 
             "Panel is not displayed after deactivate without any active control");
 
+        map.destroy();
+    }
+
+    function test_allowDepress (t) { 
+        t.plan(2); 
+        var map = new OpenLayers.Map('map');
+
+        var panel = new OpenLayers.Control.Panel();
+        panel.addControls([new OpenLayers.Control(),new OpenLayers.Control()]);
+        map.addControl(panel);
+        
+        var control1 = panel.controls[1]
+        
+        panel.activateControl(control1);
+        
+        panel.allowDepress = false;
+        panel.activateControl(control1);
+        t.eq(control1.active, true,
+            "control1 remains active after calling again activateControl when allowDepress = false");
+        panel.allowDepress = true;
+        panel.activateControl(control1);
+        t.eq(control1.active, false,
+            "control1 is inactive after calling again activateControl when allowDepress = true");
+
+        // panel.deactivate();
         map.destroy();
     }
   </script>
