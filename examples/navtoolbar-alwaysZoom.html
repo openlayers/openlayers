@@ -47,7 +47,7 @@
 				     */
 				    draw: function() {
 				        var div = OpenLayers.Control.Panel.prototype.draw.apply(this, arguments);
-				        this.activateControl(this.controls[0]);
+                        this.defaultControl = this.controls[0];
 				        return div;
 				    }
 				});
