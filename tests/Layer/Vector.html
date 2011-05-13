@@ -685,9 +685,12 @@
                              "given graphicHeight and graphicWidth, both are set: width");
                 feature.style = customStyle5;
                 layer.drawFeature(feature);
-                t.eq(root.firstChild.getAttributeNS(null, 'style'),
-                             'opacity: '+customStyle5.graphicOpacity.toString()+((OpenLayers.BROWSER_NAME == "opera" || OpenLayers.BROWSER_NAME == "safari") ? "" : ';'),
-                             "graphicOpacity correctly set");
+                // we use startsWith here as some browsers (at least Safari 3 and FireFox 4)
+                // do not append a semi-colon to the opacity string
+                t.ok(OpenLayers.String.startsWith(
+                            root.firstChild.getAttributeNS(null, 'style'),
+                            "opacity: " + customStyle5.graphicOpacity.toString()),
+                     "graphicOpacity correctly set");
                 feature.style = customStyle6;
                 layer.drawFeature(feature);
                 var x = geometryX / renderer.getResolution() + renderer.left;
