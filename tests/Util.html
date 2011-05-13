@@ -121,8 +121,10 @@
         var prop = (OpenLayers.BROWSER_NAME == 'safari') ? 'overflowX' : 'overflow';
         t.eq( div.style[prop], overflow, "div.style.overflow set correctly");    
         t.eq( parseFloat(div.style.opacity), opacity, "element.style.opacity set correctly");    
-        //Safari 3 returns null for this value, which is okay
-        var filterString = (OpenLayers.BROWSER_NAME == 'safari') ? null : 'alpha(opacity=' + (opacity * 100) + ')';
+        //Some non-IE browsers don't return the alpha string for this value, which is okay
+        var filterString = div.style.filter.match(/^alpha/) != null ? 
+                               'alpha(opacity=' + (opacity * 100) + ')' : div.style.filter;
+        alert(filterString);
         t.eq( div.style.filter, filterString, "element.style.filter set correctly");
 
         //test defaults
@@ -190,8 +192,9 @@
         t.eq( image.src, img, "image.style.backgroundImage correctly");    
         t.eq( image.style.position, position, "image.style.position set correctly");    
         t.eq( parseFloat(image.style.opacity), opacity, "image.style.opacity set correctly");    
-        //Safari 3 returns null for this value, which is okay
-        var filterString = (OpenLayers.BROWSER_NAME == 'safari') ? null : 'alpha(opacity=' + (opacity * 100) + ')';
+        //Some non-IE browsers don't return the alpha string for this value, which is okay
+        var filterString = image.style.filter.match(/^alpha/) != null ? 
+                               'alpha(opacity=' + (opacity * 100) + ')' : image.style.filter;
         t.eq( image.style.filter, filterString, "element.style.filter set correctly");
 
         //test defaults
@@ -381,8 +384,9 @@
         if (OpenLayers.Util.alphaHack()) {
             filterString = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.openlayers.org/images/OpenLayers.trac.png', sizingMethod='crop') alpha(opacity=50)";
         } else {
-            //Safari 3 returns null for this value, which is okay
-            var filterString = (OpenLayers.BROWSER_NAME == 'safari') ? null : 'alpha(opacity=' + (opacity * 100) + ')';
+            //Some non-IE browsers don't return the alpha string for this value, which is okay
+            var filterString = imageDiv.style.filter.match(/^alpha/) != null ? 
+                                   'alpha(opacity=' + (opacity * 100) + ')' : imageDiv.style.filter;
         }        
         t.eq( imageDiv.style.filter, filterString, "element.style.filter set correctly");
 
@@ -449,8 +453,9 @@
 
         t.eq(parseFloat(element.style.opacity), opacity, 
              "element.style.opacity set correctly when opacity = " + opacity);
-        //Safari 3 returns null for this value, which is okay
-        var filterString = (OpenLayers.BROWSER_NAME == 'safari') ? null : 'alpha(opacity=' + (opacity * 100) + ')';
+        //Some non-IE browsers don't return the alpha string for this value, which is okay
+        var filterString = element.style.filter.match(/^alpha/) != null ? 
+                               'alpha(opacity=' + (opacity * 100) + ')' : element.style.filter;
         t.eq(element.style.filter, filterString, 
              "element.style.filter set correctly when opacity = " + opacity);
 
@@ -459,8 +464,9 @@
     
         t.eq(parseFloat(element.style.opacity), opacity, 
              "element.style.opacity not changed if the value is incorrect");
-        //Safari 3 returns null for this value, which is okay
-        var filterString = (OpenLayers.BROWSER_NAME == 'safari') ? null : 'alpha(opacity=' + (opacity * 100) + ')';
+        //Some non-IE browsers don't return the alpha string for this value, which is okay
+        var filterString = element.style.filter.match(/^alpha/) != null ? 
+                               'alpha(opacity=' + (opacity * 100) + ')' : element.style.filter;
         t.eq(element.style.filter, filterString, 
              "element.style.filter not changed if the value is incorrect");
 
@@ -469,8 +475,9 @@
     
         t.eq(parseFloat(element.style.opacity), opacity, 
              "element.style.opacity not changed if the value is incorrect");
-        //Safari 3 returns null for this value, which is okay
-        var filterString = (OpenLayers.BROWSER_NAME == 'safari') ? null : 'alpha(opacity=' + (opacity * 100) + ')';
+        //Some non-IE browsers don't return the alpha string for this value, which is okay
+        var filterString = element.style.filter.match(/^alpha/) != null ? 
+                               'alpha(opacity=' + (opacity * 100) + ')' : element.style.filter;
         t.eq(element.style.filter, filterString, 
              "element.style.filter not changed if the value is incorrect");
 
@@ -521,8 +528,9 @@
         var prop = (OpenLayers.BROWSER_NAME == 'safari') ? 'overflowX' : 'overflow';
         t.eq( element.style[prop], overflow, "element.style.overflow set correctly");    
         t.eq( parseFloat(element.style.opacity), opacity, "element.style.opacity set correctly");    
-        //Safari 3 returns null for this value, which is okay
-        var filterString = (OpenLayers.BROWSER_NAME == 'safari') ? null : 'alpha(opacity=' + (opacity * 100) + ')';
+        //Some non-IE browsers don't return the alpha string for this value, which is okay
+        var filterString = element.style.filter.match(/^alpha/) != null ? 
+                               'alpha(opacity=' + (opacity * 100) + ')' : element.style.filter;
         t.eq( element.style.filter, filterString, "element.style.filter set correctly");
     }
 
@@ -565,8 +573,9 @@
             filterString = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.openlayers.org/images/OpenLayers.trac.png', sizingMethod='crop') alpha(opacity=50)";
             t.ok( true, "skipping element test outside of Mozilla");
         } else {
-            //Safari 3 returns null for this value, which is okay
-            var filterString = (OpenLayers.BROWSER_NAME == 'safari') ? null : 'alpha(opacity=' + (opacity * 100) + ')';
+            //Some non-IE browsers don't return the alpha string for this value, which is okay
+            var filterString = imageDiv.style.filter.match(/^alpha/) != null ? 
+                                   'alpha(opacity=' + (opacity * 100) + ')' : imageDiv.style.filter;
             t.ok( image.nodeName == "IMG", "createImage creates a valid HTMLImageElement" );
         }
         t.eq( imageDiv.style.filter, filterString, "element.style.filter set correctly");
