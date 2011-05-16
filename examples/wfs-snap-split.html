@@ -107,7 +107,8 @@
                 projection: new OpenLayers.Projection("EPSG:900913"),
                 units: "m",
                 controls: [
-                    new OpenLayers.Control.PanZoom()
+                    new OpenLayers.Control.PanZoom(),
+                    new OpenLayers.Control.Navigation()
                 ]
             });
 
@@ -203,9 +204,10 @@
             split.activate();
 
             // add some editing tools to a panel
-            var panel = new OpenLayers.Control.Panel(
-                {displayClass: 'customEditingToolbar'}
-            );
+            var panel = new OpenLayers.Control.Panel({
+                displayClass: 'customEditingToolbar',
+                allowDepress: true
+            });
             var draw = new OpenLayers.Control.DrawFeature(
                 wfs, OpenLayers.Handler.Path,
                 {
@@ -233,11 +235,9 @@
 
 
             panel.addControls([
-                new OpenLayers.Control.Navigation(),
                 save, del, modify, draw
             ]);
             
-            panel.defaultControl = panel.controls[0];
             map.addControl(panel);
             map.setCenter(new OpenLayers.LonLat(-11561460.5, 5541773), 15);
         }
@@ -280,8 +280,9 @@
         updating, or deleting of existing features.</p>
         <p>Use the tools to create, modify, and delete (in order from left
         to right) features.  Use the save tool (picture of a disk) to
-        save your changes.  Use the navigation tool (hand) to stop editing
-        and use the mouse for map navigation.</p>
+        save your changes.</p>
+        <p>To deactivate "drawing" or "modifying" depress the corresponding
+        button.</p>
     </div>
 
 </body>

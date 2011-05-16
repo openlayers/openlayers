@@ -43,7 +43,8 @@ function init() {
         maxExtent: new OpenLayers.Bounds(-20037508, -20037508, 20037508, 20037508),
         restrictedExtent: extent,
         controls: [
-            new OpenLayers.Control.PanZoom()
+            new OpenLayers.Control.PanZoom(),
+            new OpenLayers.Control.Navigation()
         ]
     });
     var gphy = new OpenLayers.Layer.Google(
@@ -69,12 +70,9 @@ function init() {
    
     map.addLayers([gphy, wfs]);
 
-    var panel = new OpenLayers.Control.Panel(
-        {'displayClass': 'customEditingToolbar'}
-    );
-    
-    var navigate = new OpenLayers.Control.Navigation({
-        title: "Pan Map"
+    var panel = new OpenLayers.Control.Panel({
+        displayClass: 'customEditingToolbar',
+        allowDepress: true
     });
     
     var draw = new OpenLayers.Control.DrawFeature(
@@ -104,8 +102,7 @@ function init() {
         displayClass: "olControlSaveFeatures"
     });
 
-    panel.addControls([navigate, save, del, edit, draw]);
-    panel.defaultControl = navigate;
+    panel.addControls([save, del, edit, draw]);
     map.addControl(panel);
     map.zoomToExtent(extent, true);
 }
