@@ -2,7 +2,7 @@
 
   OpenLayers.js -- OpenLayers Map Viewer Library
 
-  Copyright 2005-2011 OpenLayers Contributors, released under the Clear BSD
+  Copyright 2005-2011 OpenLayers Contributors, released under the FreeBSD
   license. Please see http://svn.openlayers.org/trunk/openlayers/license.txt
   for the full text of the license.
 
