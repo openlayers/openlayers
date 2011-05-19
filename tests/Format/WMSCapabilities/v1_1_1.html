@@ -5,7 +5,7 @@
     
     function test_read(t) {
         
-        t.plan(15);
+        t.plan(17);
 
         var xml = document.getElementById("gssample").firstChild.nodeValue;
         var doc = new OpenLayers.Format.XML().read(xml);
@@ -21,6 +21,16 @@
             getmap.href,
             "http://publicus.opengeo.org:80/geoserver/wms?SERVICE=WMS&",
             "getmap href parsed"
+        );
+        t.eq(
+            getmap.get.href,
+            getmap.href,
+            "getmap.get.href parsed"
+        );
+        t.eq(
+            getmap.post,
+            undefined,
+            "getmap.post not available"
         );
         
         t.ok(capability.layers, "layers parsed");
@@ -422,12 +432,16 @@ Changes:
       <Format>image/jpeg</Format>
       <DCPType>
         <HTTP>
-
           <Get>
             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
              xlink:type="simple"
-             xlink:href="http://hostname:port/path" />
+             xlink:href="http://hostname:port/path/get" />
           </Get>
+          <Post>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+             xlink:type="simple"
+             xlink:href="http://hostname:port/path/post" />
+          </Post>
         </HTTP>
       </DCPType>
     </GetMap>
