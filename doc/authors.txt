@@ -1,8 +1,11 @@
 OpenLayers contributors:
 
+Antoine Abt
 Mike Adair
 Jeff Adams
 Seb Benthall
+Bruno Binet
+Stéphane Brunner
 Howard Butler
 Bertil Chaupis                                                               
 John Cole
@@ -17,7 +20,9 @@ Sean Gilles
 Pierre Giraud
 Ivan Grcic
 Andreas Hocevar
+Marc Jansen
 Ian Johnson
+Frédéric Junod
 Eric Lemoine
 Philip Lindsay
 Martijn van Oosterhout
