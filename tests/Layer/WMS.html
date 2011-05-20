@@ -80,13 +80,11 @@
         var tParams = OpenLayers.Util.extend({},
                         OpenLayers.Util.upperCaseObject(params));
         tParams = OpenLayers.Util.extend(tParams, {
-            SERVICE: "WMS", VERSION: "1.1.1",
-            REQUEST: "GetMap", STYLES: "",
-            SRS: "EPSG:4326", BBOX: [1,2,3,4],
+            BBOX: [1,2,3,4],
             WIDTH: "256", HEIGHT: "256"
         });
         t.eq( img.src,
-             url + "?" + OpenLayers.Util.getParameterString(tParams),
+             layer.getFullRequestString(tParams),
              "image src is created correctly via addtile" );
         t.eq( tile.frame.style.top, "6px", "image top is set correctly via addtile" );
         t.eq( tile.frame.style.left, "5px", "image top is set correctly via addtile" );
@@ -97,7 +95,7 @@
         else
             t.ok( firstChild instanceof HTMLElement, "div first child is an image object" );
         t.eq( firstChild.src,
-             url + "?" + OpenLayers.Util.getParameterString(tParams),
+             layer.getFullRequestString(tParams),
              "div first child is correct image object" );
         t.eq( tile.position.toString(), "x=5,y=6", "Position of tile is set correctly." );
         map.destroy();
@@ -118,13 +116,11 @@
         var tParams = OpenLayers.Util.extend({},
                         OpenLayers.Util.upperCaseObject(params));
         tParams = OpenLayers.Util.extend(tParams, {
-            SERVICE: "WMS", VERSION: "1.1.1",
-            REQUEST: "GetMap", STYLES: "",
-            SRS: "EPSG:4326", BBOX: "1,2,3,4",
+            BBOX: "1,2,3,4",
             WIDTH: "256", HEIGHT: "256"
         });
         t.eq( img.src,
-             url + "?" + OpenLayers.Util.getParameterString(tParams),
+             layer.getFullRequestString(tParams),
              "image src is created correctly via addtile" );
         t.eq( tile.frame.style.top, "6px", "image top is set correctly via addtile" );
         t.eq( tile.frame.style.left, "5px", "image top is set correctly via addtile" );
@@ -135,7 +131,7 @@
         else
             t.ok( firstChild instanceof HTMLElement, "div first child is an image object" );
         t.eq( firstChild.src,
-             url + "?" + OpenLayers.Util.getParameterString(tParams),
+             layer.getFullRequestString(tParams),
              "div first child is correct image object" );
         t.eq( tile.position.toString(), "x=5,y=6", "Position of tile is set correctly." );
         map.destroy();
@@ -543,6 +539,28 @@
 
         map.destroy();
 
+    }
+    
+    function test_transparent(t) {
+        t.plan(5);
+        var map = new OpenLayers.Map("map", {allOverlays: true});
+        var layer = new OpenLayers.Layer.WMS(
+            "OpenLayers WMS",
+            "http://myserver.org/wms?",
+            {layers: 'mylayer', transparent: true}
+        );
+        map.addLayer(layer);
+
+        t.eq(typeof layer.params.TRANSPARENT, "boolean", "transparent param is boolean");
+        t.ok(layer.getFullRequestString({}).indexOf("TRANSPARENT=TRUE") != -1, "Boolean transparent param value is uppercase TRUE");
+        layer.mergeNewParams({transparent: false});
+        t.ok(layer.getFullRequestString({}).indexOf("TRANSPARENT=FALSE") != -1, "Boolean transparent param value is uppercase FALSE");
+
+        layer.mergeNewParams({transparent: "true"});
+        t.eq(typeof layer.params.TRANSPARENT, "string", "transparent param is string");
+        t.ok(layer.getFullRequestString({}).indexOf("TRANSPARENT=true") != -1, "transparent param value passed as provided if String");
+        
+        map.destroy();
     }
 
 
