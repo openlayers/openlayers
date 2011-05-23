@@ -355,6 +355,19 @@ div.olControlSaveFeaturesItemInactive {
     color: #333;
 }
 
+.olGoogleAttribution.hybrid, .olGoogleAttribution.satellite {
+    color: #DDD;
+}
+.olGoogleAttribution {
+    color: #333;
+}
+span.olGoogleAttribution a {
+    color: #77C;
+}
+span.olGoogleAttribution.hybrid a, span.olGoogleAttribution.satellite a {
+    color: white;
+}
+
 /**
  * Editing and navigation icons.
  * (using the editing_tool_bar.png sprint image)
