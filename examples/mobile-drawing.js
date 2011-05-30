@@ -48,11 +48,7 @@ function init() {
             -20037508.34, -20037508.34, 20037508.34, 20037508.34
         ),
         controls: [
-            new OpenLayers.Control.TouchNavigation({
-                dragPanOptions: {
-                    interval: 100
-                }
-            }),
+            new OpenLayers.Control.TouchNavigation(),
             new OpenLayers.Control.ZoomPanel(),
             toolbar
         ],
