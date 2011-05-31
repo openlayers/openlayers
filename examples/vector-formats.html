@@ -1,13 +1,15 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
   <head>
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>Vector Formats</title>
-    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
     <!--[if lte IE 6]>
         <link rel="stylesheet" href="../theme/default/ie6-style.css" type="text/css" />
     <![endif]-->
-    <link rel="stylesheet" href="style.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css">
     <style type="text/css">
         input, select, textarea {
             font: 0.9em Verdana, Arial, sans-serif;
@@ -202,18 +204,18 @@
             <label for="prettyPrint">Pretty print</label>
             <input id="prettyPrint" type="checkbox"
                    name="prettyPrint" value="1" />
-            <br />
+            <br>
             Input Projection: <select id="inproj" onchange='updateFormats()'>
               <option value="EPSG:4326" selected="selected">EPSG:4326</option>
               <option value="EPSG:900913">Spherical Mercator</option>
-            </select> <br /> 
+            </select> <br> 
             Output Projection: <select id="outproj" onchange='updateFormats()'>
               <option value="EPSG:4326" selected="selected">EPSG:4326</option>
               <option value="EPSG:900913">Spherical Mercator</option>
             </select> 
-            <br /> 
+            <br> 
             <textarea id="text">paste text here...</textarea>
-            <br />
+            <br>
             <input type="button" value="add feature" onclick="deserialize();" />
         </div>
 

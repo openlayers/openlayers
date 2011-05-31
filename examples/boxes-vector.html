@@ -1,10 +1,12 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
     <head>
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+        <meta name="apple-mobile-web-app-capable" content="yes">
         <title>OpenLayers Boxes Vector Example</title>
-        <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-        <link rel="stylesheet" href="style.css" type="text/css" />
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
         <script src="../lib/OpenLayers.js"></script>
         <script type="text/javascript">
             var box_extents = [
@@ -24,7 +26,7 @@
     
                 for (var i = 0; i < box_extents.length; i++) {
                     ext = box_extents[i];
-                    bounds = new OpenLayers.Bounds(ext[0], ext[1], ext[2], ext[3]);
+                    bounds = OpenLayers.Bounds.fromArray(ext);
                     
                     box = new OpenLayers.Feature.Vector(bounds.toGeometry());
                     boxes.addFeatures(box);

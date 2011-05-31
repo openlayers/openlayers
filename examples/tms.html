@@ -1,10 +1,12 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
   <head>
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>OpenLayers Tiled Map Service Example</title>
-    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-    <link rel="stylesheet" href="style.css" type="text/css" />
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var lon = 5;
@@ -47,9 +49,9 @@
     <div id="map" class="smallmap"></div>
 
     <div id="docs">
-        URL of TMS (Should end in /): <input type="text" id="url" size="60" value="http://tilecache.osgeo.org/wms-c/Basic.py/" /> layer_name <input type="text" id="layer" value="basic" /> <select id="type"><option>jpg</option><option>png</option></select> <input type="submit" onclick="addTMS()"/><br />
+        URL of TMS (Should end in /): <input type="text" id="url" size="60" value="http://tilecache.osgeo.org/wms-c/Basic.py/" /> layer_name <input type="text" id="layer" value="basic" /> <select id="type"><option>jpg</option><option>png</option></select> <input type="submit" onclick="addTMS()"/><br>
         <p>
-        Example: http://tilecache.osgeo.org/wms-c/Basic.py/, basic, jpg<br />
+        Example: http://tilecache.osgeo.org/wms-c/Basic.py/, basic, jpg<br>
         The first input must be an HTTP URL pointing to a TMS instance. The second
         input must be a layer name available from that instance, and the third must
         be the output format used by that layer. (Any other behavior will result in
