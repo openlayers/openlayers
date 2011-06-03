@@ -22,7 +22,9 @@
             log.push(script.src);
             origProcessMetadata.apply(this, arguments);
         };
-        layer = new OpenLayers.Layer.Bing({metadataParams: {foo: "bar"}});
+        layer = new OpenLayers.Layer.Bing(OpenLayers.Util.extend({
+            metadataParams: {foo: "bar"}
+        }, options));
         t.ok(layer instanceof OpenLayers.Layer.Bing, "returns OpenLayers.Layer.Bing object" );
         t.delay_call(5, function() {
             t.eq(log.length, 1, "processMetadata called");
