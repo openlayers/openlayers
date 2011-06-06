@@ -3,16 +3,17 @@
   <script src="../OLLoader.js"></script>
   <script type="text/javascript">
     function test_Handler_Box_constructor(t) {
-        t.plan(4);
+        t.plan(5);
         var control = new OpenLayers.Control();
         control.id = Math.random();
-        var callbacks = {done: "bar"};
+        var callbacks = {start: "foo", done: "bar"};
         var options = {bar: "foo"};
         
         var handler = new OpenLayers.Handler.Box(control, callbacks, options);
 
         t.eq(handler.control.id, control.id, "handler created with the correct control");
-        t.eq(handler.callbacks.done, "bar", "handler created with the correct callback");
+        t.eq(handler.callbacks.start, "foo", "handler created with the correct start callback");
+        t.eq(handler.callbacks.done, "bar", "handler created with the correct done callback");
         t.eq(handler.bar, "foo", "handler created with the correct options");
         t.ok(handler.dragHandler instanceof OpenLayers.Handler.Drag, "drag handler created");
     }
@@ -22,9 +23,14 @@
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
         map.addControl(control);
-        var handler = new OpenLayers.Handler.Box(control, {done: function(e) {
-            t.ok(e.equals(new OpenLayers.Bounds(5, 11, 11, 5)), "box result correct");
-        }});
+        var handler = new OpenLayers.Handler.Box(control, {
+            start: function(e) {
+                t.ok(true, "start callback called");
+            },
+            done: function(e) {
+                t.ok(e.equals(new OpenLayers.Bounds(5, 11, 11, 5)), "box result correct");
+            }
+        });
         handler.activate();
 
         // determine whether we can test the box position, the hidden frame
@@ -39,7 +45,7 @@
         map.div.removeChild(testdiv);
         var testAll = !isNaN(left);
 
-        t.plan(testAll ? 10 : 2);
+        t.plan(testAll ? 11 : 3);
 
         // we change NaN values to 0 values in the handler's
         // boxOffsets object, this is to prevent "invalid
