@@ -52,10 +52,9 @@
             })
         };
 
+        trigger("mousemove", 0, 0);
         // keep a reference to the line being drawn
         var line = control.handler.line;
-
-        trigger("mousemove", 0, 0);
         trigger("mousedown", 0, 0);
         trigger("mouseup", 0, 0);
         trigger("mousemove", 10, 10);
