@@ -5,7 +5,7 @@
     
     function test_read(t) {
         
-        t.plan(17);
+        t.plan(23);
 
         var xml = document.getElementById("gssample").firstChild.nodeValue;
         var doc = new OpenLayers.Format.XML().read(xml);
@@ -31,6 +31,40 @@
             getmap.post,
             undefined,
             "getmap.post not available"
+        );
+
+        var describelayer = capability.request.describelayer;
+        t.eq(
+            describelayer.href,
+            "http://publicus.opengeo.org:80/geoserver/wms?SERVICE=WMS&",
+            "describelayer href parsed"
+        );
+        t.eq(
+            describelayer.get.href,
+            describelayer.href,
+            "describelayer.get.href parsed"
+        );
+        t.eq(
+            describelayer.post,
+            undefined,
+            "describelayer.post not available"
+        );
+        
+        var getfeatureinfo = capability.request.getfeatureinfo;
+        t.eq(
+            getfeatureinfo.href,
+            "http://publicus.opengeo.org:80/geoserver/wms?SERVICE=WMS&",
+            "getfeatureinfo href parsed"
+        );
+        t.eq(
+            getfeatureinfo.get.href,
+            getfeatureinfo.href,
+            "getmap.get.href parsed"
+        );
+        t.eq(
+            getfeatureinfo.post.href,
+            "http://publicus.opengeo.org:80/geoserver/wms?SERVICE=WMS&",
+            "getfeatureinfo.post set correctly"
         );
         
         t.ok(capability.layers, "layers parsed");
