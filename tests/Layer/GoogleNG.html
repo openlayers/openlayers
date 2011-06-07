@@ -34,11 +34,11 @@
             numZoomLevels: 24,
             initLayer: function() {
                 log[layer2.id] = true;
-                var origMinZoom = layer2.mapObject.mapTypes[layer2.type].minZoom;
+                var origMinZoom = OpenLayers.Layer.GoogleNG.mapObject.mapTypes[layer2.type].minZoom;
                 // pretend the API reports a minZoom of 1
-                layer2.mapObject.mapTypes[layer2.type].minZoom = 1;
+                OpenLayers.Layer.GoogleNG.mapObject.mapTypes[layer2.type].minZoom = 1;
                 OpenLayers.Layer.GoogleNG.prototype.initLayer.apply(this, arguments);
-                layer2.mapObject.mapTypes[layer2.type].minZoom = origMinZoom;
+                OpenLayers.Layer.GoogleNG.mapObject.mapTypes[layer2.type].minZoom = origMinZoom;
             }
         });
         map2.addLayer(layer2);
@@ -49,7 +49,7 @@
             t.eq(log[layer2.id], true, "initLayer called for 2nd layer");
             
             t.eq(layer.numZoomLevels, 10, "numZoomLevels from configuration takes precedence if lower");
-            t.eq(layer2.numZoomLevels, layer2.mapObject.mapTypes[layer2.type].maxZoom+1, "numZoomLevels from API takes precedence if lower");
+            t.eq(layer2.numZoomLevels, OpenLayers.Layer.GoogleNG.mapObject.mapTypes[layer2.type].maxZoom+1, "numZoomLevels from API takes precedence if lower");
 
             t.eq(layer.restrictedMinZoom, 2, "restrictedMinZoom from configuration takes precedence if higher");
             t.eq(layer2.restrictedMinZoom, 1, "restrictedMinZoom from API takes precedence if higher");
@@ -60,18 +60,25 @@
     }
     
     function test_attribution(t) {
-        t.plan(3);
+        t.plan(4);
         
         var log = [];
         map = new OpenLayers.Map("map");
-        layer = new OpenLayers.Layer.GoogleNG({type: google.maps.MapTypeId.HYBRID});
+        layer = new OpenLayers.Layer.GoogleNG({
+            type: google.maps.MapTypeId.HYBRID,
+            updateAttribution: function(copyrights) {
+                log.push(copyrights);
+                OpenLayers.Layer.GoogleNG.prototype.updateAttribution.apply(this, arguments);
+            }
+        });
         map.addLayer(layer);
-        map.zoomToMaxExtent();
+        map.setCenter(new OpenLayers.LonLat(16, 48).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), 5);
         
-        t.delay_call(1, function() {
-            t.ok(layer.attribution.indexOf('olGoogleAttribution hybrid') !== -1, "Attribution has the correct css class");
-            t.ok(layer.attribution.indexOf('?ll=0,0&z=0&t=h"') != -1, "maps.google.com link has correct parameters");
-            t.ok(layer.attribution.indexOf('&center=0,0&zoom=0&size=500x550&maptype=hybrid') != -1 , "Attribution has correct map data link");
+        t.delay_call(3, function() {
+            t.eq(log.length, 1, "updateAttribution was called once");
+            t.ok(log[0]["m"].length && log[0]["k"].length, "'m' and 'k' copyrights populated for hybrid layer");
+            t.ok(layer.attribution.indexOf('olGoogleAttribution hybrid') != -1, "Attribution has the correct css class");
+            t.ok(layer.attribution.indexOf('?ll=48,16&z=5&t=h"') != -1, "maps.google.com link has correct parameters");
             map.destroy();
         });
     }

@@ -356,7 +356,7 @@ div.olControlSaveFeaturesItemInactive {
 }
 
 .olGoogleAttribution.hybrid, .olGoogleAttribution.satellite {
-    color: #DDD;
+    color: #EEE;
 }
 .olGoogleAttribution {
     color: #333;
@@ -365,7 +365,7 @@ span.olGoogleAttribution a {
     color: #77C;
 }
 span.olGoogleAttribution.hybrid a, span.olGoogleAttribution.satellite a {
-    color: white;
+    color: #EEE;
 }
 
 /**
