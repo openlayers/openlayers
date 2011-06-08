@@ -2,6 +2,23 @@
 <head> 
     <script src="../../OLLoader.js"></script>
     <script type="text/javascript">
+
+    function test_read_exception(t) {
+        t.plan(1);
+        var parser = new OpenLayers.Format.WFSCapabilities();
+        var text = '<?xml version="1.0" encoding="UTF-8"?>' +
+'<ows:ExceptionReport language="en" version="1.0.0"' +
+'    xsi:schemaLocation="http://www.opengis.net/ows http://schemas.opengis.net/ows/1.0.0/owsExceptionReport.xsd"' +
+'    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ows="http://www.opengis.net/ows">' +
+'    <ows:Exception locator="foo" exceptionCode="InvalidParameterValue">' +
+'        <ows:ExceptionText>Update error: Error occured updating features</ows:ExceptionText>' +
+'        <ows:ExceptionText>Second exception line</ows:ExceptionText>' +
+'    </ows:Exception>' +
+'</ows:ExceptionReport>';
+
+        var obj = parser.read(text);
+        t.ok(!!obj.error, "Error reported correctly");
+    }
     
     function test_read(t) {
         t.plan(33);

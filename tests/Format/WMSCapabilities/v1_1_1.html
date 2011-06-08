@@ -2,6 +2,15 @@
 <head> 
     <script src="../../OLLoader.js"></script>
     <script type="text/javascript">
+
+    function test_read_exception(t) {
+        t.plan(1);
+        var xml = document.getElementById("exceptionsample").firstChild.nodeValue;
+        var doc = new OpenLayers.Format.XML().read(xml);
+        var format = new OpenLayers.Format.WMSCapabilities();
+        var obj = format.read(doc);
+        t.ok(!!obj.error, "Error reported correctly");
+    }
     
     function test_read(t) {
         
@@ -677,6 +686,12 @@ Changes:
 
 </Capability>
 </WMT_MS_Capabilities>
+--></div>
+<div id="exceptionsample"><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE ServiceExceptionReport SYSTEM "http://schemas.opengis.net/wms/1.1.1/WMS_exception_1_1_1.dtd">
+<ServiceExceptionReport version="1.1.1"><ServiceException> Plain text message about an error. </ServiceException>
+</ServiceExceptionReport>
 --></div>
 <!--
 GeoServer example below taken from

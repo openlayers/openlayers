@@ -3,6 +3,15 @@
     <script src="../../OLLoader.js"></script>
     <script type="text/javascript">
 
+    function test_read_exception(t) {
+        t.plan(1);
+        var xml = document.getElementById("exceptionsample").firstChild.nodeValue;
+        var doc = new OpenLayers.Format.XML().read(xml);
+        var format = new OpenLayers.Format.WMSCapabilities();
+        var obj = format.read(doc);
+        t.ok(!!obj.error, "Error reported correctly");
+    }
+
     function test_layers(t) {
 
         t.plan(22);
@@ -279,6 +288,26 @@
     </script>
 </head>
 <body>
+
+<div id="exceptionsample"><!--
+<?xml version='1.0' encoding="UTF-8"?> 
+<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.opengis.net/ogc
+    http://schemas.opengis.net/wms/1.3.0/exceptions_1_3_0.xsd">
+    <ServiceException> Plain text message about an error. </ServiceException>
+    <ServiceException code="InvalidUpdateSequence"> Another error message, this one with a service
+        exception code supplied. </ServiceException>
+    <ServiceException>
+        <![CDATA[ Error in module <foo.c>, line 42
+A message that includes angle brackets in text must be enclosed in a Character Data Section as in this example. All XML-like markup is ignored except for this sequence of three closing characters:
+]]>
+    </ServiceException>
+    <ServiceException>
+        <![CDATA[ <Module>foo.c</Module> <Error>An error occurred</Error> <Explanation>Similarly, actual XML can be enclosed in a CDATA section. A generic parser will ignore that XML, but application-specific software may choose to process it.</Explanation> ]]>
+    </ServiceException>
+</ServiceExceptionReport>
+--></div>
 
 <!--
 OGC example below taken from

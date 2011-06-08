@@ -1,0 +1,100 @@
+<html>
+<head> 
+    <script src="../OLLoader.js"></script>
+    <script type="text/javascript">
+
+    function test_read_exception(t) {
+
+        t.plan(21);
+
+        // OCG WMS 1.3.0 exceptions
+        var text = '<?xml version="1.0" encoding="UTF-8"?> ' +
+'<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc"' +
+'    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+'    xsi:schemaLocation="http://www.opengis.net/ogc' +
+'    http://schemas.opengis.net/wms/1.3.0/exceptions_1_3_0.xsd">' +
+'    <ServiceException> Plain text message about an error. </ServiceException>' +
+'    <ServiceException code="InvalidUpdateSequence"> Another error message, this one with a service exception code supplied. </ServiceException>' +
+'    <ServiceException>' +
+'        <![CDATA[ Error in module <foo.c>, line 42' +
+'A message that includes angle brackets in text must be enclosed in a Character Data Section as in this example. All XML-like markup is ignored except for this sequence of three closing characters:' +
+']]>' +
+'    </ServiceException>' +
+'    <ServiceException>' +
+'        <![CDATA[ <Module>foo.c</Module> <Error>An error occurred</Error> <Explanation>Similarly, actual XML can be enclosed in a CDATA section. A generic parser will ignore that XML, but application-specific software may choose to process it.</Explanation> ]]>' +
+'    </ServiceException>' +
+'</ServiceExceptionReport>';
+
+        var parser = new OpenLayers.Format.OGCExceptionReport();
+        var result = parser.read(text);
+
+        var exceptions = result.exceptionReport.exceptions;
+
+        var testWMS = function(exceptions) {
+            t.eq(exceptions.length, 4, "We expect 4 exception messages");
+            t.eq(exceptions[0].text, " Plain text message about an error. ", "First error message correctly parsed");
+            t.eq(exceptions[1].code, "InvalidUpdateSequence", "Code of second error message correctly parsed");
+            t.eq(exceptions[1].text, " Another error message, this one with a service exception code supplied. ", "Text of second error message correctly parsed");
+            t.eq(OpenLayers.String.trim(exceptions[2].text), "Error in module <foo.c>, line 42A message that includes angle brackets in text must be enclosed in a Character Data Section as in this example. All XML-like markup is ignored except for this sequence of three closing characters:", "Third message correctly parsed");
+            t.eq(OpenLayers.String.trim(exceptions[3].text), "<Module>foo.c</Module> <Error>An error occurred</Error> <Explanation>Similarly, actual XML can be enclosed in a CDATA section. A generic parser will ignore that XML, but application-specific software may choose to process it.</Explanation>", "Fourth message correctly parsed");
+        };
+
+        testWMS(exceptions);
+
+        // OGC WMS 1.1.1 exceptions
+        text = '<?xml version="1.0" encoding="UTF-8" standalone="no" ?> <!DOCTYPE ServiceExceptionReport SYSTEM "http://schemas.opengis.net/wms/1.1.1/WMS_exception_1_1_1.dtd"> ' +
+'<ServiceExceptionReport version="1.1.1">' +
+'    <ServiceException> Plain text message about an error. </ServiceException>' +
+'    <ServiceException code="InvalidUpdateSequence"> Another error message, this one with a service exception code supplied. </ServiceException>' +
+'    <ServiceException>' +
+'        <![CDATA[ Error in module <foo.c>, line 42' +
+'A message that includes angle brackets in text must be enclosed in a Character Data Section as in this example. All XML-like markup is ignored except for this sequence of three closing characters:' +
+']]>' +
+'    </ServiceException>' +
+'    <ServiceException>' +
+'        <![CDATA[ <Module>foo.c</Module> <Error>An error occurred</Error> <Explanation>Similarly, actual XML can be enclosed in a CDATA section. A generic parser will ignore that XML, but application-specific software may choose to process it.</Explanation> ]]>' +
+'    </ServiceException>' +
+'</ServiceExceptionReport>';
+        result = parser.read(text);
+        exceptions = result.exceptionReport.exceptions;
+        testWMS(exceptions);
+
+        // OGC WFS 1.0.0 exceptions
+        text = '<?xml version="1.0" ?> ' +
+'<ServiceExceptionReport version="1.2.0" xmlns="http://www.opengis.net/ogc"' +
+'    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+'    xsi:schemaLocation="http://www.opengis.net/ogc http://schemas.opengis.net/wfs/1.0.0/OGC-exception.xsd">' +
+'    <ServiceException code="999" locator="INSERT STMT 01"> parse error: missing closing tag for element WKB_GEOM </ServiceException>' +
+'</ServiceExceptionReport>';
+        result = parser.read(text);
+        t.eq(result.exceptionReport.exceptions[0].code, "999", "code parsed correctly");
+        t.eq(result.exceptionReport.exceptions[0].locator, "INSERT STMT 01", "locator parsed correctly");
+        t.eq(result.exceptionReport.exceptions[0].text, " parse error: missing closing tag for element WKB_GEOM ", "error text parsed correctly");
+
+        // OGC WFS 1.1.0 exceptions that use OWSCommon 1.0
+        text = '<?xml version="1.0" encoding="UTF-8"?>' +
+'<ows:ExceptionReport language="en" version="1.0.0"' +
+'    xsi:schemaLocation="http://www.opengis.net/ows http://schemas.opengis.net/ows/1.0.0/owsExceptionReport.xsd"' +
+'    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ows="http://www.opengis.net/ows">' +
+'    <ows:Exception locator="foo" exceptionCode="InvalidParameterValue">' +
+'        <ows:ExceptionText>Update error: Error occured updating features</ows:ExceptionText>' +
+'        <ows:ExceptionText>Second exception line</ows:ExceptionText>' +
+'    </ows:Exception>' +
+'</ows:ExceptionReport>';
+
+        var result = parser.read(text);
+        var report = result.exceptionReport;
+        t.eq(report.version, "1.0.0", "Version parsed correctly");
+        t.eq(report.language, "en", "Language parsed correctly");
+        var exception = report.exceptions[0];
+        t.eq(exception.code, "InvalidParameterValue", "exceptionCode properly parsed");
+        t.eq(exception.locator, "foo", "locator properly parsed");
+        t.eq(exception.texts[0], "Update error: Error occured updating features", "ExceptionText correctly parsed");
+        t.eq(exception.texts[1], "Second exception line", "Second ExceptionText correctly parsed");
+    }
+
+    </script> 
+</head>
+<body>
+</body>
+</html>
