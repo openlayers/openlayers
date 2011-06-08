@@ -5,8 +5,6 @@ XMLHttpRequest = function() {
     }
 };
 
-alert = print;
-
 navigator = {
   'appName': 'mockdom',
   'userAgent': 'mockdom',
