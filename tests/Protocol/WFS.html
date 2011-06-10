@@ -105,6 +105,68 @@
         OpenLayers.Request.POST = _POST;
     }
 
+    function test_exception(t) {
+        t.plan(8);
+        var url = "http://some.url.org";
+        var protocol = new OpenLayers.Protocol.WFS({
+            url: url,
+            version: "1.1.0",
+            featureNS: "http://namespace.org",
+            featureType: "type"
+        });
+        // mock up a response
+        var response = {
+            priv: {
+                status: 200,
+                responseText: '<?xml version="1.0" encoding="UTF-8"?><ows:ExceptionReport language="en" version="1.0.0" xsi:schemaLocation="http://www.opengis.net/ows http://schemas.opengis.net/ows/1.0.0/owsExceptionReport.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ows="http://www.opengis.net/ows"><ows:Exception locator="foo" exceptionCode="InvalidParameterValue"><ows:ExceptionText>Update error: Error occurred updating features</ows:ExceptionText><ows:ExceptionText>Second exception line</ows:ExceptionText></ows:Exception></ows:ExceptionReport>'
+            }
+        };
+        var log, entry, expected;
+        
+        // test GetFeature
+        log = [];
+        protocol.handleRead(OpenLayers.Util.extend({}, response), {
+            callback: function(resp) {
+                log.push(resp);
+            }
+        });
+        expected = {
+            exceptionReport: {
+                version: "1.0.0",
+                language: "en",
+                exceptions: [{
+                    code: "InvalidParameterValue",
+                    locator: "foo",
+                    texts: [
+                        "Update error: Error occurred updating features",
+                        "Second exception line"
+                    ]
+                }]
+            },
+            success: false
+        };
+
+        t.eq(log.length, 1, "GetFeature handled");
+        entry = log[0];
+        t.eq(entry.code, OpenLayers.Protocol.Response.FAILURE, "GetFeature failure reported");
+        t.ok(!!entry.error, "GetFeature got error");
+        t.eq(entry.error, expected, "GetFeature error matches expected");
+
+        // test a commit
+        log = [];
+        protocol.handleCommit(response, {
+            callback: function(resp) {
+                log.push(resp);
+            }
+        });
+        t.eq(log.length, 1, "commit handled");
+        entry = log[0];
+        t.eq(entry.code, OpenLayers.Protocol.Response.FAILURE, "commit failure reported");
+        t.ok(!!entry.error, "commit got error");
+        t.eq(entry.error, expected, "GetFeature error matches expected");
+
+    }
+
     function test_commit(t){
         t.plan(5);
 
