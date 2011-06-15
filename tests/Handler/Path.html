@@ -959,6 +959,48 @@
         map.destroy();
     }
 
+    function test_persist_one_click_freehand(t) {
+        t.plan(3);
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var control = new OpenLayers.Control({});
+        var handler = new OpenLayers.Handler.Path(control, {}, {persist: true});
+        control.handler = handler;
+        map.addControl(control);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+
+        handler.activate();
+
+        handler.mousemove(
+            {type: "mousemove", xy: new OpenLayers.Pixel(0, 0)});
+        handler.mousedown(
+            {type: "mousedown", xy: new OpenLayers.Pixel(0, 0), shiftKey: true});
+        var feature1 = handler.line;
+        handler.mousemove(
+            {type: "mousemove", xy: new OpenLayers.Pixel(1, 1), shiftKey: true});
+        handler.mouseup(
+            {type: "mouseup", xy: new OpenLayers.Pixel(1, 1), shiftKey: true});
+        t.ok(feature1.layer != null, "a) feature1 not destroyed");
+
+        // one click freehand
+        handler.mousemove(
+            {type: "mousemove", xy: new OpenLayers.Pixel(2, 2)});
+        handler.mousedown(
+            {type: "mousedown", xy: new OpenLayers.Pixel(2, 2), shiftKey: true});
+        var feature2 = handler.line;
+        handler.mouseup(
+            {type: "mouseup", xy: new OpenLayers.Pixel(2, 2), shiftKey: true});
+        t.ok(feature2.layer != null, "b) feature2 not destroyed");
+        t.ok(feature1.layer == null, "b) feature1 destroyed");
+        
+        map.destroy();
+    }
   </script>
 </head>
 <body>
