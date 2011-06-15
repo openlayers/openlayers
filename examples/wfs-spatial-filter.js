@@ -1,4 +1,4 @@
-OpenLayers.ProxyHost= "/proxy?url=";
+OpenLayers.ProxyHost= "proxy.cgi?url=";
 var map = new OpenLayers.Map('map');
 var wms = new OpenLayers.Layer.WMS(
     "OpenLayers WMS", "http://vmap0.tiles.osgeo.org/wms/vmap0",
