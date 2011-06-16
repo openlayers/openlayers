@@ -41,6 +41,28 @@
              "isElement reports that object returned by getElement is an Element");
     }
     
+    function test_isArray(t) {
+        t.plan(5);
+        
+        var a;
+        
+        a = null;
+        t.eq(OpenLayers.Util.isArray(a), false, 
+             "isArray reports 'null' isn't an Array");
+        a = "Array";   
+        t.eq(OpenLayers.Util.isArray(a), false, 
+             "isArray reports \"Array\" isn't an Array");
+        a = {};
+        t.eq(OpenLayers.Util.isArray(a), false, 
+             "isArray reports {} isn't an Array");
+        a = [];
+        t.eq(OpenLayers.Util.isArray(a), true, 
+             "isArray reports [] is an Array");
+        a = new Array();
+        t.eq(OpenLayers.Util.isArray(a), true, 
+             "isArray reports new Array() is an Array");
+    }
+    
     function test_$(t) {
         t.plan(1);
         t.ok($ === custom$, "OpenLayers doesn't clobber existing definition of $.");
