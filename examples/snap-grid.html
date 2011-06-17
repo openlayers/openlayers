@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers Snap Grid Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <style type="text/css">
+        .olControlAttribution {
+            left: 5px;
+            bottom: 5px; 
+        }
+        .olControlEditingToolbar .olControlModifyFeatureItemInactive { 
+            background-position: -1px -1px;
+        }
+        .olControlEditingToolbar .olControlModifyFeatureItemActive { 
+            background-position: -1px -24px;
+        }
+    </style>
+  </head>
+  <body>
+    <h1 id="title">Snap Grid Example</h1>
+
+    <div id="tags">
+        snap grid
+    </div>
+
+    <div id="shortdesc">Use a PointGrid layer and a Snapping control to snap to a grid of regularly spaced points</div>
+
+    <div id="map" class="smallmap"></div>
+    
+    Grid rotation:
+    <select name="rotation" id="rotation">
+        <option value="-45">-45</option>
+        <option value="-30">-30</option>
+        <option value="-15">-15</option>
+        <option value="0">0</option>
+        <option value="15">15</option>
+        <option value="30">30</option>
+        <option value="45">45</option>
+    </select>
+
+    &nbsp;
+    Grid spacing:
+    <select name="spacing" id="spacing">
+        <option value="150">150</option>
+        <option value="300">300</option>
+        <option value="600">600</option>
+        <option value="1200">1200</option>
+        <option value="2400">2400</option>
+    </select>
+
+    &nbsp;
+    Max points:
+    <select name="max" id="max">
+        <option value="150">150</option>
+        <option value="250">250</option>
+        <option value="350">350</option>
+    </select>
+
+    <div class="docs">
+        <p>
+            This example demonstrates feature editing with snapping to a regular
+            grid.  The map is configured with a <code>OpenLayers.Layer.PointGrid</code>
+            layer and a <code>OpenLayers.Control.Snapping</code> agent.  For the
+            best performance, the point grid layer should not made visible.
+            Snapping still works with layers that are not visible.
+        </p><p>
+            See the <a href="snap-grid.js" target="_blank">
+            snap-grid.js source</a> to see how this is done.
+        </p>
+    </div>
+
+    <script src="../lib/OpenLayers.js"></script>
+    <script src="snap-grid.js"></script>
+  </body>
+</html>

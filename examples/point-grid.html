@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers Point Grid Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <style type="text/css">
+        .olControlAttribution {
+            left: 5px;
+            bottom: 5px; 
+        }
+    </style>
+  </head>
+  <body>
+    <h1 id="title">Point Grid Example</h1>
+
+    <div id="tags">
+        point grid
+    </div>
+
+    <div id="shortdesc">Use a PointGrid layer to display a grid of regularly spaced points</div>
+
+    <div id="map" class="smallmap"></div>
+    
+    Grid rotation:
+    <select name="rotation" id="rotation">
+        <option value="-45">-45</option>
+        <option value="-30">-30</option>
+        <option value="-15">-15</option>
+        <option value="0">0</option>
+        <option value="15">15</option>
+        <option value="30">30</option>
+        <option value="45">45</option>
+    </select>
+
+    &nbsp;
+    Grid spacing:
+    <select name="dx" id="dx">
+        <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+        <option value="25">25</option>
+        <option value="30">30</option>
+    </select> x
+    <select name="dy" id="dy">
+        <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+        <option value="25">25</option>
+        <option value="30">30</option>
+    </select>
+
+    &nbsp;
+    Max points:
+    <select name="max" id="max">
+        <option value="150">150</option>
+        <option value="250">250</option>
+        <option value="350">350</option>
+    </select>
+
+    <div class="docs">
+        <p>
+            This example demonstrates a <code>OpenLayers.Layer.PointGrid</code>
+            layer to render a regularly spaced grid of point features.
+        </p><p>
+            See the <a href="point-grid.js" target="_blank">
+            point-grid.js source</a> to see how this is done.
+        </p>
+    </div>
+    <script src="../lib/OpenLayers.js"></script>
+    <script src="point-grid.js"></script>
+  </body>
+</html>
