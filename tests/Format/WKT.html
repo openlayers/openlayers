@@ -232,6 +232,16 @@
         t.geom_eq(got[1].geometry, linestrings[0].geometry, "second feature's geometry is the correct linestring");
  
     }
+    
+    function test_whitespace(t) {
+        t.plan(3);
+        var wkt = "LINESTRING(7.120068\t43.583917,\n7.120154 43.583652,\n7.120385\t43.582716,\r\n7.12039 43.582568, 7.120712 43.581511,7.120873\n43.580718)";
+        var format = new OpenLayers.Format.WKT();
+        var got = format.read(wkt);
+        t.ok(got instanceof OpenLayers.Feature.Vector, "read a feature");
+        t.ok(got.geometry instanceof OpenLayers.Geometry.LineString, "read a linestring");
+        t.ok(got.geometry.components.length, 6, "read a geometry with 6 components");
+    }
 
     function test_Format_WKT_read_projection(t) {
         t.plan(1);
