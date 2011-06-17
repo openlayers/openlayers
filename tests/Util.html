@@ -63,6 +63,20 @@
              "isArray reports new Array() is an Array");
     }
     
+    function test_iframe_isArray(t) {
+        t.plan(3);
+        // create an array in an iframe
+        var iframe = document.createElement("iframe");
+        document.body.appendChild(iframe);
+        frames[frames.length-1].document.write(
+            "<script>parent.testArray = [];<\/script>"
+        );
+        
+        t.ok(!!testArray, "testArray created");
+        t.ok(!(testArray instanceof Array), "instanceof check doesn't work");
+        t.eq(OpenLayers.Util.isArray(testArray), true, "isArray works");
+    }
+    
     function test_$(t) {
         t.plan(1);
         t.ok($ === custom$, "OpenLayers doesn't clobber existing definition of $.");
