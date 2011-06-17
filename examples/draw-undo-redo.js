@@ -20,37 +20,26 @@ map.addControl(draw);
 draw.activate();
 
 OpenLayers.Event.observe(document, "keydown", function(evt) {
-    var code = evt.keyCode;
     var handled = false;
-    if (code === 90) {
-        // z
-        if ("metaKey" in evt) {
-            if (evt.metaKey) {
+    switch (evt.keyCode) {
+        case 90: // z
+            if (evt.metaKey || evt.ctrlKey) {
                 draw.undo();
                 handled = true;
             }
-        } else if (evt.ctrlKey) {
-            draw.undo();
-            handled = true;
-        }
-    }
-    if (code === 89) {
-        // y
-        if ("metaKey" in evt) {
-            if (evt.metaKey) {
+            break;
+        case 89: // y
+            if (evt.metaKey || evt.ctrlKey) {
                 draw.redo();
                 handled = true;
             }
-        } else if (evt.ctrlKey) {
-            draw.redo();
+            break;
+        case 27: // esc
+            draw.cancel();
             handled = true;
-        }
+            break;
     }
     if (handled) {
         OpenLayers.Event.stop(evt);
-    }
-    if (code === 27) {
-        // esc
-        draw.cancel();
     }
 });
