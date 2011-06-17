@@ -534,6 +534,306 @@
         map.destroy();
     }
 
+    /**
+     * Helper functions for editing method tests
+     */ 
+    function editingMethodsSetup() {
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.DrawFeature(
+            layer, OpenLayers.Handler.Path
+        );
+        map.addControl(control);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+
+        control.activate();
+        return {
+            handler: control.handler,
+            map: map
+        }
+    }
+    function userClick(handler, x, y) {
+        var px = new OpenLayers.Pixel(x, y);
+        handler.mousemove({type: "mousemove", xy: px});
+        handler.mousedown({type: "mousedown", xy: px});
+        handler.mouseup({type: "mouseup", xy: px});
+    }
+
+    /**
+     * Editing method tests: insertXY, insertDeltaXY, insertDirectionXY,
+     * insertDeflectionXY, undo, and redo
+     */
+    function test_insertXY(t) {
+        t.plan(3);
+        var obj = editingMethodsSetup();
+        var map = obj.map;
+        var handler = obj.handler;
+
+        // add points at px(0, 0) and px(10, 10)
+        userClick(handler, 0, 0);
+        userClick(handler, 10, 10);
+        handler.mousemove({type: "mousemove", xy: new OpenLayers.Pixel(50, 50)});
+
+        t.eq(handler.line.geometry.components.length, 3, "line has three points after two clicks");
+        
+        // programmatically add a point
+        handler.insertXY(5, 6);
+        t.eq(handler.line.geometry.components.length, 4, "line has four points after insertXY");
+        t.geom_eq(
+            handler.line.geometry.components[2],
+            new OpenLayers.Geometry.Point(5, 6),
+            "third point comes from insertXY"
+        );
+        
+        map.destroy();
+        
+    }
+
+    function test_insertDeltaXY(t) {
+        t.plan(3);
+        var obj = editingMethodsSetup();
+        var map = obj.map;
+        var handler = obj.handler;
+        
+        // add points at px(0, 0) and px(10, 10)
+        userClick(handler, 0, 0);
+        userClick(handler, 10, 10);
+        handler.mousemove({type: "mousemove", xy: new OpenLayers.Pixel(50, 50)});
+
+        t.eq(handler.line.geometry.components.length, 3, "line has three points after two clicks");
+        
+        // programmatically add a point
+        handler.insertDeltaXY(1, 2);
+        t.eq(handler.line.geometry.components.length, 4, "line has four points after insert");
+        // expect a point that is offset from previous point
+        var exp = handler.line.geometry.components[1].clone();
+        exp.move(1, 2);
+        t.geom_eq(
+            handler.line.geometry.components[2], exp,
+            "third point is offset by dx,dy from second point"
+        );
+        
+        map.destroy();
+    }
+
+    function test_insertDirectionLength(t) {
+        t.plan(4);
+        var obj = editingMethodsSetup();
+        var map = obj.map;
+        var handler = obj.handler;
+        
+        // add points at px(0, 0) and px(10, 10)
+        userClick(handler, 0, 0);
+        userClick(handler, 10, 10);
+        handler.mousemove({type: "mousemove", xy: new OpenLayers.Pixel(50, 50)});
+
+        t.eq(handler.line.geometry.components.length, 3, "line has three points after two clicks");
+        
+        // programmatically add a point
+        handler.insertDirectionLength(45, 2);
+        t.eq(handler.line.geometry.components.length, 4, "line has four points after insert");
+        var p1 = handler.line.geometry.components[1];
+        var p2 = handler.line.geometry.components[2];
+        
+        var direction = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
+        t.eq(direction.toFixed(4), (45).toFixed(4), "inserted point offset with correct direction");
+        var length = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+        t.eq(length.toFixed(4), (2).toFixed(4), "inserted point offset with correct length");
+        
+        map.destroy();
+    }
+
+    function test_insertDeflectionLength(t) {
+        t.plan(4);
+        var obj = editingMethodsSetup();
+        var map = obj.map;
+        var handler = obj.handler;
+
+        // add points at px(0, 0) and px(10, 10)
+        userClick(handler, 0, 0);
+        userClick(handler, 10, 10);
+        handler.mousemove({type: "mousemove", xy: new OpenLayers.Pixel(50, 50)});
+
+        t.eq(handler.line.geometry.components.length, 3, "line has three points after two clicks");
+        var p0 = handler.line.geometry.components[0];
+        var p1 = handler.line.geometry.components[1];
+        // angle of first segment
+        var dir0 = Math.atan2(p1.y - p0.y, p1.x - p0.x) * 180 / Math.PI;
+        
+        // programmatically add a point
+        handler.insertDeflectionLength(-30, 5);
+        t.eq(handler.line.geometry.components.length, 4, "line has four points after insert");
+        var p2 = handler.line.geometry.components[2];
+        // angle of second segment
+        var dir1 = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
+        
+        var deflection = dir1 - dir0;
+        t.eq(deflection.toFixed(4), (-30).toFixed(4), "inserted point offset with correct deflection");
+
+        var length = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+        t.eq(length.toFixed(4), (5).toFixed(4), "inserted point offset with correct length");
+        
+        map.destroy();
+    }
+
+    function test_undoredo1(t) {
+        t.plan(4);
+        var obj = editingMethodsSetup();
+        var map = obj.map;
+        var handler = obj.handler;
+        
+        // add points and move mouse
+        userClick(handler, 0, 0);
+        userClick(handler, 10, 10);
+        userClick(handler, 50, 10);
+        handler.mousemove({type: "mousemove", xy: new OpenLayers.Pixel(50, 50)});
+        var original = handler.line.geometry.clone();
+        var len = original.components.length;
+        t.eq(len, 4, "original has four points after three clicks");
+        
+        // one undo
+        handler.undo();
+        var currentLen = handler.line.geometry.components.length;
+        t.eq(currentLen, len-1, "one point removed on undo");
+        t.geom_eq(
+            handler.line.geometry.components[currentLen-1],
+            original.components[len-1],
+            "current point (mouse position) remains the same after undo"
+        );
+        // one redo
+        handler.redo();
+        t.geom_eq(original, handler.line.geometry, "one redo undoes one undo");
+        
+        // cleanup
+        map.destroy();
+    }
+
+    function test_undoredo2(t) {
+        t.plan(8);
+        var obj = editingMethodsSetup();
+        var map = obj.map;
+        var handler = obj.handler;
+        
+        // add points and move mouse
+        userClick(handler, 0, 0);
+        userClick(handler, 10, 10);
+        userClick(handler, 50, 10);
+        handler.mousemove({type: "mousemove", xy: new OpenLayers.Pixel(50, 50)});
+        var original = handler.line.geometry.clone();
+        var len = original.components.length;
+        t.eq(len, 4, "original has four points after three clicks");
+
+        // two undos
+        handler.undo();
+        handler.undo();
+        var currentLen = handler.line.geometry.components.length;
+        t.eq(currentLen, len-2, "two points removed on two undos");
+        t.geom_eq(
+            handler.line.geometry.components[currentLen-1],
+            original.components[len-1],
+            "current point (mouse position) remains the same after two undos"
+        );
+        // first redo
+        handler.redo();
+        currentLen = handler.line.geometry.components.length;
+        t.eq(currentLen, len-1, "point added in first redo");
+        t.geom_eq(
+            handler.line.geometry.components[currentLen-2],
+            original.components[len-3],
+            "correct point restored in first redo"
+        );
+
+        // second redo
+        handler.redo();
+        currentLen = handler.line.geometry.components.length;
+        t.eq(currentLen, len, "point added in second redo");
+        t.geom_eq(
+            handler.line.geometry.components[currentLen-2],
+            original.components[len-2],
+            "correct point restored in second redo"
+        );
+        t.geom_eq(handler.line.geometry, original, "correct geometry");
+
+        // cleanup
+        map.destroy();
+    }
+
+    function test_undoredo3(t) {
+        t.plan(3);
+        var obj = editingMethodsSetup();
+        var map = obj.map;
+        var handler = obj.handler;
+        
+        // add points and move mouse
+        userClick(handler, 0, 0);
+        userClick(handler, 10, 10);
+        userClick(handler, 50, 10);
+        handler.mousemove({type: "mousemove", xy: new OpenLayers.Pixel(50, 50)});
+        var original = handler.line.geometry.clone();
+        var len = original.components.length;
+        t.eq(len, 4, "original has four points after three clicks");
+
+        // gratuitous redos 
+        var trouble = false;
+        try {
+            handler.undo();
+            handler.undo();
+            handler.redo();
+            handler.redo();
+            handler.redo();
+            handler.redo();
+            handler.redo();
+        } catch (err) {
+            trouble = true;
+        }
+        t.ok(!trouble, "extra redos cause no ill effects");
+        t.geom_eq(handler.line.geometry, original, "correct geometry");
+        
+        // cleanup
+        map.destroy();
+    }
+        
+    function test_undoredo4(t) {
+        t.plan(3);
+        var obj = editingMethodsSetup();
+        var map = obj.map;
+        var handler = obj.handler;
+        
+        // add points and move mouse
+        userClick(handler, 0, 0);
+        userClick(handler, 10, 10);
+        userClick(handler, 50, 10);
+        handler.mousemove({type: "mousemove", xy: new OpenLayers.Pixel(50, 50)});
+        var original = handler.line.geometry.clone();
+        var len = original.components.length;
+        t.eq(len, 4, "original has four points after three clicks");
+
+        // gratuitous undos
+        var trouble = false;
+        try {
+            handler.undo();
+            handler.undo();
+            handler.undo();
+            handler.undo();
+            handler.undo();
+            handler.undo();
+            handler.undo();
+        } catch (err) {
+            trouble = true;
+        }
+        t.ok(!trouble, "extra undos cause no ill effects");
+        t.eq(handler.line.geometry.components.length, 2, "still left with two points after many undos")
+
+        // cleanup
+        map.destroy();
+    }
+
     //
     // Sequence tests
     // 

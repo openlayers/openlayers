@@ -717,6 +717,50 @@
         map.destroy();     
     }
 
+    function test_insertXY(t) {
+        t.plan(3);
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.DrawFeature(
+            layer, OpenLayers.Handler.Polygon
+        );
+        map.addControl(control);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+
+        control.activate();
+        var handler = control.handler;
+        
+        function userClick(x, y) {
+            var px = new OpenLayers.Pixel(x, y);
+            handler.mousemove({type: "mousemove", xy: px});
+            handler.mousedown({type: "mousedown", xy: px});
+            handler.mouseup({type: "mouseup", xy: px});
+        }
+
+        // add points at px(0, 0) and px(10, 10)
+        userClick(0, 0);
+        userClick(10, 10);
+        t.eq(handler.line.geometry.components.length, 4, "ring has four points after two clicks");
+        
+        // programmatically add a point
+        handler.insertXY(5, 6);
+        t.eq(handler.line.geometry.components.length, 5, "ring has five points after insertXY");
+        t.geom_eq(
+            handler.line.geometry.components[2],
+            new OpenLayers.Geometry.Point(5, 6),
+            "third point comes from insertXY"
+        );
+        
+        map.destroy();
+        
+    }
+
     //
     // Sequence tests
     // 
