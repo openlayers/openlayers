@@ -20,7 +20,7 @@
         var log = {};
         layer = new OpenLayers.Layer.GoogleNG({
             numZoomLevels: 10,
-            restrictedMinZoom: 2,
+            maxResolution: 39135.7584765625,
             initLayer: function() {
                 log[layer.id] = true;
                 OpenLayers.Layer.GoogleNG.prototype.initLayer.apply(this, arguments);
@@ -30,13 +30,14 @@
         map.zoomToMaxExtent();
         
         var map2 = new OpenLayers.Map("map2");
+        var minZoom = 1;
         var layer2 = new OpenLayers.Layer.GoogleNG({
             numZoomLevels: 24,
             initLayer: function() {
                 log[layer2.id] = true;
                 var origMinZoom = OpenLayers.Layer.GoogleNG.mapObject.mapTypes[layer2.type].minZoom;
-                // pretend the API reports a minZoom of 1
-                OpenLayers.Layer.GoogleNG.mapObject.mapTypes[layer2.type].minZoom = 1;
+                // pretend the API reports a different minZoom
+                OpenLayers.Layer.GoogleNG.mapObject.mapTypes[layer2.type].minZoom = minZoom;
                 OpenLayers.Layer.GoogleNG.prototype.initLayer.apply(this, arguments);
                 OpenLayers.Layer.GoogleNG.mapObject.mapTypes[layer2.type].minZoom = origMinZoom;
             }
@@ -49,10 +50,10 @@
             t.eq(log[layer2.id], true, "initLayer called for 2nd layer");
             
             t.eq(layer.numZoomLevels, 10, "numZoomLevels from configuration takes precedence if lower");
-            t.eq(layer2.numZoomLevels, OpenLayers.Layer.GoogleNG.mapObject.mapTypes[layer2.type].maxZoom+1, "numZoomLevels from API takes precedence if lower");
+            t.eq(layer2.numZoomLevels, OpenLayers.Layer.GoogleNG.mapObject.mapTypes[layer2.type].maxZoom + 1 - minZoom, "numZoomLevels from API takes precedence if lower");
 
-            t.eq(layer.restrictedMinZoom, 2, "restrictedMinZoom from configuration takes precedence if higher");
-            t.eq(layer2.restrictedMinZoom, 1, "restrictedMinZoom from API takes precedence if higher");
+            t.eq(layer.maxResolution, 39135.7584765625, "maxResolution from configuration takes precedence if higher");
+            t.eq(layer2.maxResolution, 78271.516953125, "maxResolution from API takes precedence if higher");
 
             map.destroy();
             map2.destroy();            
