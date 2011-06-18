@@ -849,6 +849,19 @@
 
     }
     
+    function test_getXMLDoc(t) {
+        t.plan(2);
+        var format = new OpenLayers.Format.XML();
+        var doc = format.getXMLDoc();
+        t.ok(doc !== document, "document returned from getXMLDoc is not the page's html doc");
+        var root = format.createElementNS("http://test", "root");
+        // appending CDATA created from a different document
+        var cdata = doc.createCDATASection("<foo></foo>");
+        root.appendChild(cdata);
+        var result = format.write(root);
+        var expect = '<root xmlns="http://test"><![CDATA[<foo></foo>]]></root>';
+        t.eq(result, expect, "document with CDATA section serialized correctly");
+    }
 
     
     </script> 
