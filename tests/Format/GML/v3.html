@@ -212,6 +212,26 @@
         t.eq(attributes["LAND_KM"], "143986.61", "read LAND_KM");
     }
     
+    function test_read_autoconfig(t) {
+        t.plan(7);
+        var doc = readXML("v3/topp-states-wfs.xml");
+        var format = new OpenLayers.Format.GML.v3();
+        var features = format.read(doc.documentElement);
+        
+        t.eq(features.length, 3, "read 3 features");
+        var feature = features[0];
+        t.eq(feature.fid, "states.1", "read fid");
+        t.eq(feature.geometry.CLASS_NAME, "OpenLayers.Geometry.MultiPolygon",
+             "read multipolygon geometry");
+        t.eq(format.featureType, "states", "featureType correctly auto-configured");
+        t.eq(format.featureNS, "http://www.openplans.org/topp", "featureNS correctly auto-configured");
+
+        t.eq(format.autoConfig, true, "autoConfig set to true");
+        format.autoConfig = false;
+        format.read(doc.documentElement);
+        t.eq(format.autoConfig, false, "now that featureNS is set, the format does not auto-configure again");
+    }
+    
     function test_emptyAttribute(t) {
         t.plan(4);
         var str =
