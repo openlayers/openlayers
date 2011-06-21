@@ -3,9 +3,9 @@ var longText = new Array(205).join("1234567890");
 
 var map = new OpenLayers.Map( 'map' );
 var base = new OpenLayers.Layer.WMS( "OpenLayers WMS",
-        "http://vmap0.tiles.osgeo.org/wms/vmap0",
-        {layers: 'basic', makeTheUrlLong: longText},
-        {tileOptions: {maxGetUrlLength: 2048}}
+    "http://vmap0.tiles.osgeo.org/wms/vmap0",
+    {layers: 'basic', makeTheUrlLong: longText},
+    {tileOptions: {maxGetUrlLength: 2048}}
 );
 var overlay = new OpenLayers.Layer.WMS("Overlay",
     "http://suite.opengeo.org/geoserver/wms",
