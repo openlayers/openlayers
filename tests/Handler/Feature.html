@@ -645,6 +645,20 @@
 
         map.destroy();
     }
+    
+    function test_layerorder(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var base = new OpenLayers.Layer(null, {isBaseLayer: true});
+        var vector = new OpenLayers.Layer.Vector();
+        map.addLayers([base, vector]);
+        map.addControl(new OpenLayers.Control.SelectFeature(vector, {autoActivate: true}));
+        map.zoomToMaxExtent();
+        t.eq(vector.getZIndex(), "725", "vector layer's zIndex correct");
+        map.events.triggerEvent("changelayer");
+        t.eq(vector.getZIndex(), "725", "vector layer's zIndex still correct after changelayer event");
+        
+    }
 
   </script>
 </head>
