@@ -63,6 +63,30 @@
         }
     }
 
+    function test_writeNative(t) {
+        t.plan(1);
+        var format = new OpenLayers.Format.WFST({
+            featureNS: "http://www.openplans.org/topp",
+            featureType: "states",
+            version: "1.1.0",
+            featurePrefix: "topp",
+            geometryName: null
+        });
+        var output = format.write(null, {nativeElements: [
+            {
+                vendorId: "ORACLE",
+                safeToIgnore: true,
+                value: "ALTER SESSION ENABLE PARALLEL DML"
+            }, {
+                vendorId: "ORACLE",
+                safeToIgnore: false,
+                value: "Another native line goes here"
+            }]
+        });
+        var expected = '<wfs:Transaction xmlns:wfs="http://www.opengis.net/wfs" service="WFS" version="1.1.0" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><wfs:Native vendorId="ORACLE" safeToIgnore="true">ALTER SESSION ENABLE PARALLEL DML</wfs:Native><wfs:Native vendorId="ORACLE" safeToIgnore="false">Another native line goes here</wfs:Native></wfs:Transaction>';
+        t.xml_eq(output, expected, "Native elements written out correctly");
+    }
+
     function test_write_no_geometry(t) {
         var format = new OpenLayers.Format.WFST({
             featureNS: "http://www.openplans.org/topp",
