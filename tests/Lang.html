@@ -70,19 +70,19 @@
         var keys = ['test1', 'test3', 'noKey'];
         var codes = ['en', 'en-CA', 'fr', 'fr-CA', 'sw'];
         var result = {
-            'en': {'overlays':'Overlays', 
+            'en': {'Overlays':'Overlays', 
                    'unhandledRequest':'Unhandled request return foo', 
                    'noKey':'noKey'},
-            'en-CA': {'overlays':'Overlays',
+            'en-CA': {'Overlays':'Overlays',
                    'unhandledRequest':'Unhandled request return foo', 
                       'noKey':'noKey'},
-            'fr': {'overlays':'Calques', 
+            'fr': {'Overlays':'Calques', 
                    'unhandledRequest':'Requête non gérée, retournant foo',
                   'noKey':'noKey'},
-            'fr-CA': {'overlays':'Calques', //this should result in 'fr'
+            'fr-CA': {'Overlays':'Calques', //this should result in 'fr'
                    'unhandledRequest':'Requête non gérée, retournant foo',
                   'noKey':'noKey'},
-            'sw': {'overlays':'Overlays', //this should result in 'en'
+            'sw': {'Overlays':'Overlays', //this should result in 'en'
                    'unhandledRequest':'Unhandled request return foo', 
                   'noKey':'noKey'}
         };
@@ -92,7 +92,7 @@
         for (var i=0; i<codes.length; ++i) {
             var code = codes[i];
             OpenLayers.Lang.setCode(code);
-            t.eq(OpenLayers.Lang.translate('overlays'), result[code]['overlays'], "simple key lookup in "+code);
+            t.eq(OpenLayers.Lang.translate('Overlays'), result[code]['Overlays'], "simple key lookup in "+code);
             t.eq(OpenLayers.Lang.translate('unhandledRequest',{'statusText':'foo'}), 
                         result[code]['unhandledRequest'], "lookup with argument substitution in "+code);
             t.eq(OpenLayers.Lang.translate('noKey'), result[code]['noKey'], "invalid key returns the key in "+code);
