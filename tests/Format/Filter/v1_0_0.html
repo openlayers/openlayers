@@ -78,6 +78,31 @@
         t.xml_eq(node, out, "bbox correctly written");
     }
 
+    function test_BBOX_noGeometryName(t) {
+        t.plan(1);
+        // WFS 1.0.0 does not allow BBOX filters without property, but
+        // GeoServer accepts them.
+        var filter = new OpenLayers.Filter.Spatial({
+            type: OpenLayers.Filter.Spatial.BBOX,
+            value: new OpenLayers.Bounds(-180, -90, 180, 90),
+            projection: "EPSG:4326"
+        });
+        
+        var out =
+            '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+                '<ogc:BBOX>' +
+                    '<gml:Box xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">' +
+                        '<gml:coordinates decimal="." cs="," ts=" ">-180,-90 180,90</gml:coordinates>' +
+                    '</gml:Box>' +
+                '</ogc:BBOX>' +
+            '</ogc:Filter>';
+        
+        var parser = new OpenLayers.Format.Filter.v1_0_0();
+        var node = parser.write(filter);
+        
+        t.xml_eq(node, out, "bbox correctly written");
+    }
+
     function test_DWithin(t) {
         
         t.plan(6);

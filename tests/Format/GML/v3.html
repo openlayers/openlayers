@@ -50,6 +50,19 @@
         
     }
 
+    function test_read_setGeometryName(t) {
+        t.plan(1);
+        var doc = readXML("v3/topp-states-gml.xml");
+        var format = new OpenLayers.Format.GML.v3({
+            featureType: "states",
+            featureNS: "http://www.openplans.org/topp",
+            geometryName: null
+        });
+        var features = format.read(doc.documentElement);
+
+        t.eq(format.geometryName, "the_geom", "geometryName set when parsing features");
+    }
+
     function test_readNode_bounds(t) {
         var files = ["v3/envelope.xml"];
 

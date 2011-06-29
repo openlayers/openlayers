@@ -67,6 +67,17 @@
         }
 
     }
+    
+    function test_write_poorconfig(t) {
+        t.plan(1);
+        var format = new OpenLayers.Format.WFST.v1_0_0({
+            featureType: "states",
+            featurePrefix: "topp"
+        });
+        var exp = "topp:states";
+        var got = format.writeNode("wfs:Query").getAttribute("typeName");
+        t.eq(got, exp, "Query without featureNS but with featurePrefix queries for the correct featureType");
+    }
 
     var xmlFormat = new OpenLayers.Format.XML();
     function readXML(id) {

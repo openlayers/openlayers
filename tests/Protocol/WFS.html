@@ -104,6 +104,20 @@
 
         OpenLayers.Request.POST = _POST;
     }
+    
+    function test_parseResponse_poorconfig(t) {
+        t.plan(2);
+
+        var protocol = new OpenLayers.Protocol.WFS({
+            url: "http://some.url.org",
+            featurePrefix: "topp",
+            featureType: "tasmania_roads"
+        });
+
+        protocol.parseResponse({responseText: document.getElementById("query_response").firstChild.nodeValue});
+        t.eq(protocol.geometryName, "geom", "geometryName configured correctly");
+        t.eq(protocol.featureNS, "http://www.openplans.org/topp", "featureNS configured correctly");
+    }
 
     function test_exception(t) {
         t.plan(8);
@@ -439,7 +453,6 @@
     <wfs:Delete typeName="feature:type" xmlns:feature="http://namespace.org">
         <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:BBOX>
-                <ogc:PropertyName/>
                 <gml:Box xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
                     <gml:coordinates decimal="." cs="," ts=" ">-5,-5 5,5</gml:coordinates>
                 </gml:Box>
@@ -447,6 +460,10 @@
         </ogc:Filter>
     </wfs:Delete>
 </wfs:Transaction>
+--></div>
+<div id="query_response"><!--
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:FeatureCollection xmlns:ogc="http://www.opengis.net/ogc" xmlns:wfs="http://www.opengis.net/wfs" xmlns:topp="http://www.openplans.org/topp" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ows="http://www.opengis.net/ows" xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:boundedBy><gml:Envelope srsDimension="2" srsName="urn:x-ogc:def:crs:EPSG:4326"><gml:lowerCorner>5450000.0 500000.0</gml:lowerCorner><gml:upperCorner>5450000.0 540000.0</gml:upperCorner></gml:Envelope></gml:boundedBy><gml:featureMembers><topp:tasmania_roads gml:id="tasmania_roads.1"><gml:boundedBy><gml:Envelope srsDimension="2" srsName="urn:x-ogc:def:crs:EPSG:4326"><gml:lowerCorner>5450000.0 500000.0</gml:lowerCorner><gml:upperCorner>5450000.0 540000.0</gml:upperCorner></gml:Envelope></gml:boundedBy><topp:geom><gml:MultiLineString srsDimension="2" srsName="urn:x-ogc:def:crs:EPSG:4326"><gml:lineStringMember><gml:LineString><gml:posList>5450000.0 500000.0 5450000.0 540000.0</gml:posList></gml:LineString></gml:lineStringMember></gml:MultiLineString></topp:geom><topp:TYPE>street</topp:TYPE></topp:tasmania_roads></gml:featureMembers></wfs:FeatureCollection>
 --></div>
 </body>
 </html>
