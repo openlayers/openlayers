@@ -45,7 +45,7 @@
         deleteFeature.state = OpenLayers.State.DELETE;
         deleteFeature.fid = "fid.37";
 
-        t.plan(5);
+        t.plan(7);
         var snippets = {
             "GetFeature": {maxFeatures: 1, outputFormat: 'json'},
             "Transaction": null,
@@ -61,6 +61,19 @@
             var got = format.writers["wfs"][snippet].apply(format, [arg]);
             t.xml_eq(got, expected, snippet + " request created correctly");
         }
+        
+        updateFeature.modified = {geometry: updateFeature.geometry.clone()};
+        updateFeature.geometry = new OpenLayers.Geometry.Point(2,3);
+        var expected = readXML("UpdateModified");
+        var got = format.writers["wfs"]["Update"].apply(format, [updateFeature]);
+        t.xml_eq(got, expected, "Update request for feature with modified geometry created correctly");
+        
+        updateFeature.modified.attributes = {foo: "bar"};
+        updateFeature.attributes.foo = "baz";
+        delete updateFeature.modified.geometry;
+        var expected = readXML("UpdateModifiedNoGeometry");
+        var got = format.writers["wfs"]["Update"].apply(format, [updateFeature]);
+        t.xml_eq(got, expected, "Update request for feature with no modified geometry but modified attributes created correctly");
     }
 
     function test_writeNative(t) {
@@ -258,6 +271,39 @@
     </wfs:Property>
     <wfs:Property>
         <wfs:Name>nul</wfs:Name>
+    </wfs:Property>
+    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+        <ogc:FeatureId fid="fid.42"/>
+    </ogc:Filter>
+</wfs:Update>
+--></div>
+<div id="UpdateModified"><!--
+<wfs:Update xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
+    <wfs:Property>
+        <wfs:Name>the_geom</wfs:Name>
+        <wfs:Value>
+            <gml:Point xmlns:gml="http://www.opengis.net/gml">
+                <gml:coordinates decimal="." cs="," ts=" ">2,3</gml:coordinates>
+            </gml:Point>
+        </wfs:Value>
+    </wfs:Property>
+    <wfs:Property>
+        <wfs:Name>foo</wfs:Name>
+        <wfs:Value>bar</wfs:Value>
+    </wfs:Property>
+    <wfs:Property>
+        <wfs:Name>nul</wfs:Name>
+    </wfs:Property>
+    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+        <ogc:FeatureId fid="fid.42"/>
+    </ogc:Filter>
+</wfs:Update>
+--></div>
+<div id="UpdateModifiedNoGeometry"><!--
+<wfs:Update xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
+    <wfs:Property>
+        <wfs:Name>foo</wfs:Name>
+        <wfs:Value>baz</wfs:Value>
     </wfs:Property>
     <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
         <ogc:FeatureId fid="fid.42"/>
