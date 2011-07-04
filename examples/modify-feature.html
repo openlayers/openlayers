@@ -18,7 +18,6 @@
             list-style: none;
         }
     </style>
-    <script src="../lib/Firebug/firebug.js"></script>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var map, vectors, controls;
@@ -40,18 +39,20 @@
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.addControl(new OpenLayers.Control.MousePosition());
             
-            function report(event) {
-                OpenLayers.Console.log(event.type, event.feature ? event.feature.id : event.components);
+            if (console && console.log) {
+                function report(event) {
+                    console.log(event.type, event.feature ? event.feature.id : event.components);
+                }
+                vectors.events.on({
+                    "beforefeaturemodified": report,
+                    "featuremodified": report,
+                    "afterfeaturemodified": report,
+                    "vertexmodified": report,
+                    "sketchmodified": report,
+                    "sketchstarted": report,
+                    "sketchcomplete": report
+                });
             }
-            vectors.events.on({
-                "beforefeaturemodified": report,
-                "featuremodified": report,
-                "afterfeaturemodified": report,
-                "vertexmodified": report,
-                "sketchmodified": report,
-                "sketchstarted": report,
-                "sketchcomplete": report
-            });
             controls = {
                 point: new OpenLayers.Control.DrawFeature(vectors,
                             OpenLayers.Handler.Point),
