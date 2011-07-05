@@ -802,7 +802,40 @@
 
         map.destroy();
     }
-
+    
+	function test_Map_removeLayer_preremovelayer(t) {
+        t.plan(4);
+        map = new OpenLayers.Map('map');
+		
+        map.addLayer(new OpenLayers.Layer());
+        map.removeLayer(map.layers[0]);
+        
+        // one test: standard behaviour without listener
+        t.eq(map.layers.length, 0, "without registered preremovelayer-listener layers can be removed as usual");
+        
+        var callCnt = 0;
+        
+        map.events.register('preremovelayer', this, function(evt) {
+            callCnt++;
+            return !(evt.layer.name === 'donotremove');
+        });
+        var layer1 = new OpenLayers.Layer('donotremove');
+        var layer2 = new OpenLayers.Layer('doremove');
+		
+        map.addLayers([layer1,layer2]);
+		
+        // two tests: remove action can be canceled
+        map.removeLayer(layer1);
+        t.eq(map.layers.length, 2, "layer is not removed since preremovelayer returns false");
+        map.removeLayer(layer2);
+        t.eq(map.layers.length, 1, "layer is removed since preremovelayer returns true");
+        
+        // one test: listener was called twice
+        t.eq(callCnt, 2, "preremovelayer-listener was called exactly twice");
+        
+        map.destroy();
+	}
+    
     function test_Map_setBaseLayer_after_pan (t) {
         t.plan(1);
 
