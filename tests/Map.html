@@ -1824,6 +1824,26 @@
         map.destroy();
     }
 
+    // test for http://trac.osgeo.org/openlayers/ticket/3388
+    function test_moveByPx_restrictedExtent(t) {
+        t.plan(2);
+
+        var map = new OpenLayers.Map({
+            div: 'map',
+            restrictedExtent: new OpenLayers.Bounds(-22.5,-11.25,22.5,11.25),
+            layers: [
+                new OpenLayers.Layer('name', {isBaseLayer: true})
+            ]
+        });
+
+        map.zoomToExtent(new OpenLayers.Bounds(-11.25, 0, 11.25, 11.25));
+
+        map.moveByPx(-10, -10);
+        t.eq(map.layerContainerDiv.style.left, '10px', 'layer container left correct');
+        t.eq(map.layerContainerDiv.style.top, '0px', 'layer container top correct');
+    }
+
+
   </script>
 </head>
 <body>
