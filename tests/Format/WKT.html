@@ -188,7 +188,7 @@
     }
 
     function test_Format_WKT_read(t) { 
-        t.plan(12); 
+        t.plan(13); 
 
         var format = new OpenLayers.Format.WKT(); 
          
@@ -204,7 +204,14 @@
         // test a multipoint 
         t.ok(multipoint.geometry.equals(format.read(format.write(multipoint)).geometry), 
              "format correctly reads MultiPoint WKT"); 
- 
+
+        // test a multipoint without separating parens 
+        t.ok(multipoint.geometry.equals(format.read( 
+ 	        "MULTIPOINT(" + points[0].geometry.x + " " + points[0].geometry.y + "," +  
+                            points[1].geometry.x + " " + points[1].geometry.y + "," +  
+                            points[2].geometry.x + " " + points[2].geometry.y + ")").geometry), 
+            "format correctly reads MultiPoint WKT without parens");
+
         // test a linestring 
         t.ok(linestrings[0].geometry.equals(format.read(format.write(linestrings[0])).geometry), 
              "format correctly reads LineString WKT"); 
