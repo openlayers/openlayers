@@ -48,7 +48,7 @@
             return;
         }
         
-        t.plan(5);
+        t.plan(7);
         
         OpenLayers.Renderer.SVG2.prototype._setExtent =
             OpenLayers.Renderer.SVG2.prototype.setExtent;
@@ -76,14 +76,16 @@
         
         t.eq(g_SetExtent, true, "Elements.setExtent() called");
         
-        t.eq(r.rendererRoot.getAttributeNS(null, "width"), "4", "width is correct");
-        t.eq(r.rendererRoot.getAttributeNS(null, "height"), "4", "height is correct");
-        t.eq(r.rendererRoot.getAttributeNS(null, "viewBox"), "1 -4 2 2", "rendererRoot viewBox is correct");
+        t.eq(r.extent.toString(), extent.scale(3).toString(), "renderer's extent is correct");
+        t.eq(r.rendererRoot.getAttributeNS(null, "width"), "12", "width is correct");
+        t.eq(r.rendererRoot.getAttributeNS(null, "height"), "12", "height is correct");
+        t.eq(r.rendererRoot.getAttributeNS(null, "viewBox"), "-1 -6 6 6", "rendererRoot viewBox is correct");
         
         // test extent changes
         extent = new OpenLayers.Bounds(2,3,5,6);
         r.updateDimensions();
-        t.eq(r.rendererRoot.getAttributeNS(null, "viewBox"), "2 -6 3 3", "rendererRoot viewBox is correct after a new setExtent");
+        t.eq(r.extent.toString(), extent.scale(3).toString(), "renderer's extent changed after updateDimensions");
+        t.eq(r.rendererRoot.getAttributeNS(null, "viewBox"), "-1 -9 9 9", "rendererRoot viewBox is correct after a new setExtent");
 
         OpenLayers.Renderer.SVG2.prototype.setExtent =
             OpenLayers.Renderer.SVG2.prototype._setExtent;
