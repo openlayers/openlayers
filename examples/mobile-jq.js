@@ -1,36 +1,34 @@
+// Start with the map page
+window.location.replace(window.location.href.split("#")[0] + "#mappage");
+
 var selectedFeature = null;
 
 $(document).ready(function() {
 
-    // Start with the map page
-    if (window.location.hash && window.location.hash!='#mappage') {
-        $.mobile.changePage('mappage');
-    }
-
     // fix height of content
     function fixContentHeight() {
         var footer = $("div[data-role='footer']:visible"),
-        content = $("div[data-role='content']:visible:visible"),
-        viewHeight = $(window).height(),
-        contentHeight = viewHeight - footer.outerHeight();
+            content = $("div[data-role='content']:visible:visible"),
+            viewHeight = $(window).height(),
+            contentHeight = viewHeight - footer.outerHeight();
 
         if ((content.outerHeight() + footer.outerHeight()) !== viewHeight) {
-            contentHeight -= (content.outerHeight() - content.height());
+            contentHeight -= (content.outerHeight() - content.height() + 1);
             content.height(contentHeight);
         }
+
         if (window.map) {
             map.updateSize();
         } else {
             // initialize map
             init(function(feature) { 
                 selectedFeature = feature; 
-                $.mobile.changePage($("#popup"), "pop"); 
+                $.mobile.changePage("#popup", "pop"); 
             });
+            initLayerList();
         }
     }
     $(window).bind("orientationchange resize pageshow", fixContentHeight);
-    fixContentHeight(); 
-    //init();
 
     // Map zoom  
     $("#plus").click(function(){
@@ -48,7 +46,7 @@ $(document).ready(function() {
         }
     });
     
-    $('div#popup').live('pageshow',function(event, ui){
+    $('#popup').live('pageshow',function(event, ui){
         var li = "";
         for(var attr in selectedFeature.attributes){
             li += "<li><div style='width:25%;float:left'>" + attr + "</div><div style='width:75%;float:right'>" 
@@ -83,7 +81,7 @@ $(document).ready(function() {
                         }))
                         .appendTo('#search_results')
                         .click(function() {
-                            $.mobile.changePage('mappage');
+                            $.mobile.changePage('#mappage');
                             var lonlat = new OpenLayers.LonLat(place.lng, place.lat);
                             map.setCenter(lonlat.transform(gg, sm), 10);
                         })
@@ -97,7 +95,10 @@ $(document).ready(function() {
         $('#searchpage').die('pageshow', arguments.callee);
     });
 
-    $('#layerslist').listview();
+});
+
+function initLayerList() {
+    $('#layerspage').page();
     $('<li>', {
             "data-role": "list-divider",
             text: "Base Layers"
@@ -122,7 +123,7 @@ $(document).ready(function() {
     map.events.register("addlayer", this, function(e) {
         addLayerToList(e.layer);
     });
-});
+}
 
 function addLayerToList(layer) {
     var item = $('<li>', {
@@ -133,7 +134,7 @@ function addLayerToList(layer) {
             text: layer.name
         })
             .click(function() {
-                $.mobile.changePage('mappage');
+                $.mobile.changePage('#mappage');
                 if (layer.isBaseLayer) {
                     layer.map.setBaseLayer(layer);
                 } else {
