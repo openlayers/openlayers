@@ -28,11 +28,8 @@ $(document).ready(function() {
             initLayerList();
         }
     }
-    $('#mappage').live('pageshow', function() {
-        $('#mappage').die('pageshow', arguments.callee);
-        fixContentHeight();
-    });
     $(window).bind("orientationchange resize pageshow", fixContentHeight);
+    document.body.onload = fixContentHeight;
 
     // Map zoom  
     $("#plus").click(function(){
