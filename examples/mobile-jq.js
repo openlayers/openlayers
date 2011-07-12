@@ -28,6 +28,10 @@ $(document).ready(function() {
             initLayerList();
         }
     }
+    $('#mappage').live('pageshow', function() {
+        $('#mappage').die('pageshow', arguments.callee);
+        fixContentHeight();
+    });
     $(window).bind("orientationchange resize pageshow", fixContentHeight);
 
     // Map zoom  
