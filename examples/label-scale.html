@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers Scale Dependent Labels</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="../lib/OpenLayers.js"></script>
+  </head>
+  <body>
+    <h1 id="title">Scale Dependent Labels Example</h1>
+    <div id="tags">
+        label, scale, stylemap
+    </div>
+    <p id="shortdesc">
+        Demonstrates how to use a StyleMap for displaying scale dependent labels.
+    </p>
+    <div id="map" class="smallmap"></div>
+    <div id="docs">
+        <p>
+            This example uses rule based styling to change the how features are
+            labeled at different scales.  An <code>OpenLayers.Rule</code> object
+            can have <code>minScaleDenominator</code> and 
+            <code>maxScaleDenominator</code> properties to control when the 
+            provided symbolizer should be used.
+        </p><p>
+            View the <a href="label-scale.js">source</a> to see how this is done.
+        </p>
+    </div>
+    <script src="label-scale.js"></script>
+  </body>
+</html>
