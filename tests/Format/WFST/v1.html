@@ -174,6 +174,41 @@
             t.xml_eq(got, expected, snippet + " request created correctly with multiple typenames");
         }
     }
+    
+    function test_write_multi(t) {
+        t.plan(1);
+        var format = new OpenLayers.Format.WFST({
+            featureNS: "http://www.openplans.org/topp",
+            featureType: "states",
+            featurePrefix: "topp",
+            geometryName: "the_geom"
+        });
+
+        var feature = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(1,2),
+            {foo: "bar"}
+        );
+
+        var insertFeature = feature.clone();
+        // null value does not show up in insert
+        insertFeature.attributes.nul = null;
+        insertFeature.state = OpenLayers.State.INSERT;
+        var updateFeature = feature.clone();
+        // undefined value means don't create a Property element
+        updateFeature.attributes.unwritten = undefined;
+        // null value gets Property element with no Value
+        updateFeature.attributes.nul = null;
+        updateFeature.fid = "fid.42";
+        updateFeature.state = OpenLayers.State.UPDATE;
+        var features = [insertFeature, updateFeature];
+
+        var expected = readXML("TransactionMulti");
+        var got = format.writers["wfs"]["Transaction"].apply(format, [{
+            features: features,
+            options: {multi: true}}
+        ]);
+        t.xml_eq(got, expected, "Transaction request with multi option created correctly");
+    }
 
     function readXML(id) {
         var xml = document.getElementById(id).firstChild.nodeValue;
@@ -242,6 +277,48 @@
 --></div>
 <div id="Transaction"><!--
 <wfs:Transaction xmlns:wfs="http://www.opengis.net/wfs" service="WFS" version="1.0.0"/>
+--></div>
+<div id="TransactionMulti"><!--
+<wfs:Transaction xmlns:wfs="http://www.opengis.net/wfs" service="WFS" version="1.0.0">
+    <wfs:Insert>
+        <feature:states xmlns:feature="http://www.openplans.org/topp">
+            <feature:the_geom>
+                <gml:MultiPoint xmlns:gml="http://www.opengis.net/gml">
+                    <gml:pointMember>
+                        <gml:Point>
+                            <gml:coordinates decimal="." cs="," ts=" ">1,2</gml:coordinates>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </feature:the_geom>
+            <feature:foo>bar</feature:foo>
+        </feature:states>
+    </wfs:Insert>
+    <wfs:Update xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
+        <wfs:Property>
+            <wfs:Name>the_geom</wfs:Name>
+            <wfs:Value>
+                <gml:MultiPoint xmlns:gml="http://www.opengis.net/gml">
+                    <gml:pointMember>
+                        <gml:Point>
+                            <gml:coordinates decimal="." cs="," ts=" ">1,2</gml:coordinates>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>foo</wfs:Name>
+            <wfs:Value>bar</wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>nul</wfs:Name>
+        </wfs:Property>
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+            <ogc:FeatureId fid="fid.42"/>
+        </ogc:Filter>
+    </wfs:Update>
+</wfs:Transaction>
 --></div>
 <div id="Insert"><!--
 <wfs:Insert xmlns:wfs="http://www.opengis.net/wfs">
