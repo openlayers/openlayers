@@ -47,11 +47,11 @@
 
         t.plan(7);
         var snippets = {
-            "GetFeature": {maxFeatures: 1, outputFormat: 'json'},
-            "Transaction": null,
-            "Insert": insertFeature,
-            "Update": updateFeature,
-            "Delete": deleteFeature
+            "GetFeature": {handle: "handle_g", maxFeatures: 1, outputFormat: 'json'},
+            "Transaction": {handle: "handle_t"},
+            "Insert": {feature: insertFeature, options: {handle: "handle_i"}},
+            "Update": {feature: updateFeature, options: {handle: "handle_u"}},
+            "Delete": {feature: deleteFeature, options: {handle: "handle_d"}}
         }
 
         var arg;
@@ -65,14 +65,14 @@
         updateFeature.modified = {geometry: updateFeature.geometry.clone()};
         updateFeature.geometry = new OpenLayers.Geometry.Point(2,3);
         var expected = readXML("UpdateModified");
-        var got = format.writers["wfs"]["Update"].apply(format, [updateFeature]);
+        var got = format.writers["wfs"]["Update"].apply(format, [{feature: updateFeature}]);
         t.xml_eq(got, expected, "Update request for feature with modified geometry created correctly");
         
         updateFeature.modified.attributes = {foo: "bar"};
         updateFeature.attributes.foo = "baz";
         delete updateFeature.modified.geometry;
         var expected = readXML("UpdateModifiedNoGeometry");
-        var got = format.writers["wfs"]["Update"].apply(format, [updateFeature]);
+        var got = format.writers["wfs"]["Update"].apply(format, [{feature: updateFeature}]);
         t.xml_eq(got, expected, "Update request for feature with no modified geometry but modified attributes created correctly");
     }
 
@@ -114,7 +114,7 @@
 
         t.plan(1);
         var snippets = {
-            "UpdateNoGeometry": feature
+            "UpdateNoGeometry": {feature: feature}
         }
 
         var arg;
@@ -140,7 +140,7 @@
 
         t.plan(1);
         var snippets = {
-            "UpdateNullGeometry": feature
+            "UpdateNullGeometry": {feature: feature}
         };
 
         var arg;
@@ -265,7 +265,7 @@
 --></div>
 
 <div id="GetFeature"><!--
-<wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" service="WFS" version="1.0.0" outputFormat="json" maxFeatures="1" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-transaction.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" service="WFS" version="1.0.0" handle="handle_g" outputFormat="json" maxFeatures="1" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-transaction.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <wfs:Query typeName="topp:states" xmlns:topp="http://www.openplans.org/topp"/>
 </wfs:GetFeature>
 --></div>
@@ -321,7 +321,7 @@
 </wfs:Transaction>
 --></div>
 <div id="Insert"><!--
-<wfs:Insert xmlns:wfs="http://www.opengis.net/wfs">
+<wfs:Insert xmlns:wfs="http://www.opengis.net/wfs" handle="handle_i">
     <feature:states xmlns:feature="http://www.openplans.org/topp">
         <feature:the_geom>
             <gml:Point xmlns:gml="http://www.opengis.net/gml">
@@ -333,7 +333,7 @@
 </wfs:Insert>
 --></div>
 <div id="Update"><!--
-<wfs:Update xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
+<wfs:Update xmlns:wfs="http://www.opengis.net/wfs" handle="handle_u" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
     <wfs:Property>
         <wfs:Name>the_geom</wfs:Name>
         <wfs:Value>
@@ -388,7 +388,7 @@
 </wfs:Update>
 --></div>
 <div id="Delete"><!--
-<wfs:Delete xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
+<wfs:Delete xmlns:wfs="http://www.opengis.net/wfs" handle="handle_d" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
     <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
         <ogc:FeatureId fid="fid.37"/>
     </ogc:Filter>
