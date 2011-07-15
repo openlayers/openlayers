@@ -176,7 +176,7 @@
     }
     
     function test_write_multi(t) {
-        t.plan(1);
+        t.plan(2);
         var format = new OpenLayers.Format.WFST({
             featureNS: "http://www.openplans.org/topp",
             featureType: "states",
@@ -203,11 +203,13 @@
         var features = [insertFeature, updateFeature];
 
         var expected = readXML("TransactionMulti");
+        var geomTypes = OpenLayers.Util.extend({}, format.geometryTypes);
         var got = format.writers["wfs"]["Transaction"].apply(format, [{
             features: features,
             options: {multi: true}}
         ]);
         t.xml_eq(got, expected, "Transaction request with multi option created correctly");
+        t.eq(format.geometryTypes, geomTypes, "geometry types unchanged after write with multi option");
     }
 
     function readXML(id) {
