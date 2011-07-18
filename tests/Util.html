@@ -1146,10 +1146,12 @@
             "toFloat rounds large floats correctly #2");
     }
     function test_getFormattedLonLat(t) {
-        t.plan(1);
+        t.plan(3);
         var z = 2 + (4/60) - 0.000002 ;
         t.eq(OpenLayers.Util.getFormattedLonLat(z,"lon"), "02°04'00\"E",
             "LonLat does not show 60 seconds.");
+        t.eq(OpenLayers.Util.getFormattedLonLat(-181, "lon"), "179°00'00\"E", "crossing dateline from the west results in correct east coordinate");
+        t.eq(OpenLayers.Util.getFormattedLonLat(181, "lon"), "179°00'00\"W", "crossing dateline from the east results in correct west coordinate");
     }
   </script>
 </head>
