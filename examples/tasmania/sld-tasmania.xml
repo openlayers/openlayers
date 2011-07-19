@@ -10,7 +10,7 @@
     <sld:Name>WaterBodies</sld:Name>
     <sld:UserStyle>
       <sld:Name>Default Styler</sld:Name>
-      <sld:Title>Default Styler</sld:Title>
+      <sld:Title>Default Styler (zoom in to see more objects)</sld:Title>
       <sld:Abstract></sld:Abstract>
       <sld:IsDefault>1</sld:IsDefault>
       <sld:FeatureTypeStyle>
