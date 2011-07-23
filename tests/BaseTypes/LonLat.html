@@ -107,7 +107,7 @@
     function test_LonLat_fromString(t) {
         t.plan( 2 );
         lonlat = OpenLayers.LonLat.fromString("6,5");
-        t.ok( lonlat instanceof OpenLayers.LonLat, "new OpenLayers.LonLat returns LonLat object" );
+        t.ok( lonlat instanceof OpenLayers.LonLat, "OpenLayers.LonLat.fromString() returns LonLat object" );
 
         var ll = new OpenLayers.LonLat(6, 5);
         t.ok( lonlat.equals(ll), "lonlat is set correctly");
