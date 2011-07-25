@@ -286,6 +286,14 @@
         t.ok(extent.toBBOX() != layer.features[0].geometry.getBounds().toBBOX(), "extent from getDataExtent doesn't clobber first feature");
     }
 
+    function test_Layer_Vector_getDataExtentEmpty(t) {
+        t.plan(1);
+        var layer = new OpenLayers.Layer.Vector(name);
+        layer.addFeatures([new OpenLayers.Feature.Vector(null), new OpenLayers.Feature.Vector(null)]);
+        var extent = layer.getDataExtent();
+        t.eq(extent, null, "We expect null to be returned if there are no features with a geometry");
+    }
+
     function test_Layer_Vector_removeFeatures(t) {
         t.plan(17);
     
