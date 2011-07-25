@@ -29,7 +29,7 @@
     }
     
     function test_Popup_constructor (t) {
-        t.plan( 8 );
+        t.plan(9);
 
         var id = "chicken";
         var w = 500;
@@ -63,11 +63,17 @@
         for (var i = 0; i < OpenLayers.Event.observers[cacheID].length; i++) {
             var observer = OpenLayers.Event.observers[cacheID][i];
             if (observer.element == closeImgDiv) {
-                t.ok(true, "An event was registered for the close box element");
-                t.eq(observer.name, "click", "A click event was registered for the close box element");
-                //call the registered observer to make sure it's the right one
-                observer.observer();
-                break;
+                if (observer.name == "click") {
+                    t.ok(true, "A click event was registered for the close box element");
+                    //call the registered observer to make sure it's the right one
+                    observer.observer();
+                } else if (observer.name == "touchend") {
+                    t.ok(true, "A touchend event was registered for the close box element");
+                    //call the registered observer to make sure it's the right one
+                    observer.observer();
+                } else {
+                    t.fail("A " + observer.name + " event was registered for the close box element");
+                }
             }
         }
     }
