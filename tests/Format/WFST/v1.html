@@ -45,7 +45,7 @@
         deleteFeature.state = OpenLayers.State.DELETE;
         deleteFeature.fid = "fid.37";
 
-        t.plan(7);
+        t.plan(8);
         var snippets = {
             "GetFeature": {handle: "handle_g", maxFeatures: 1, outputFormat: 'json'},
             "Transaction": {handle: "handle_t"},
@@ -74,6 +74,14 @@
         var expected = readXML("UpdateModifiedNoGeometry");
         var got = format.writers["wfs"]["Update"].apply(format, [{feature: updateFeature}]);
         t.xml_eq(got, expected, "Update request for feature with no modified geometry but modified attributes created correctly");
+
+        // test for a feature that originally had a null geometry and a null value for the attribute
+        updateFeature.modified = {attributes: {foo: null, nul: "nul"}, geometry: null};
+        updateFeature.attributes.foo = "bar";
+        updateFeature.geometry = new OpenLayers.Geometry.Point(2,3);
+        var expected = readXML("UpdateModified");
+        var got = format.writers["wfs"]["Update"].apply(format, [{feature: updateFeature}]);
+        t.xml_eq(got, expected, "Update request for feature with modified geometry created correctly even if original geometry was null");
     }
 
     function test_writeNative(t) {
