@@ -16,7 +16,7 @@ def build(config_file = None, output_file = None, options = None):
         import closure
         have_compressor.append("closure")
     except Exception, E:
-        print "No closure (%s) % E"
+        print "No closure (%s)" % E
     try:
         import closure_ws
         have_compressor.append("closure_ws")
