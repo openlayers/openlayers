@@ -112,6 +112,52 @@
         var ll = new OpenLayers.LonLat(6, 5);
         t.ok( lonlat.equals(ll), "lonlat is set correctly");
     }
+    
+    function test_LonLat_fromArray(t) {
+        t.plan( 3 );
+        
+        // (1 test) must return a OpenLayers.LonLat-instance 
+        lonlat = OpenLayers.LonLat.fromArray([6,5]);
+        t.ok( lonlat instanceof OpenLayers.LonLat, "OpenLayers.LonLat.fromArray returns LonLat object" );
+
+        var ll = new OpenLayers.LonLat(6, 5);
+        // (1 test) must return correct LonLat-object
+        t.ok( lonlat.equals(ll), "lonlat is set correctly");
+        
+        
+        // (1 test) check how function deals with illegal arguments, it should 
+        // never throw an exception and always return an instance of 
+        // OpenLayers.LonLat.
+        var unexpectedResult = false,
+            undef,
+            checkArgs = [
+                {},
+                '',
+                6,
+                false,
+                true,
+                [undef, 5],
+                [6, undef]
+            ],
+            returnedVal;
+            
+        try {
+            for(var i = 0, len = checkArgs.length; i < len; i++ ){
+                returnedVal = OpenLayers.LonLat.fromArray( checkArgs[i] );
+                if (!(returnedVal instanceof OpenLayers.LonLat) ) {
+                    unexpectedResult = true;
+                    break;
+                }
+            }
+            // no arguments at all
+            returnedVal = OpenLayers.LonLat.fromArray();
+            unexpectedResult = !(returnedVal instanceof OpenLayers.LonLat);
+        } catch(e) {
+            unexpectedResult = true;
+        } finally {
+            t.ok(!unexpectedResult, "OpenLayers.LonLat.fromArray always returns an instance of OpenLayers.LonLat and doesn't throw an exception when called with unexpected argument.");
+        }
+    }
 
     function test_LonLat_transform(t) {
         t.plan( 6 );
