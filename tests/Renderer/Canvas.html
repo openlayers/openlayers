@@ -123,7 +123,7 @@
             return; 
         }
         
-        t.plan(8);
+        t.plan(10);
         var layer = new OpenLayers.Layer.Vector(null, {
             isBaseLayer: true,
             renderers: ["Canvas"]
@@ -183,6 +183,15 @@
         t.eq(count, 1, "d) redraw is called when drawing a feature outside renderer extent");
         renderer.clear();
         
+        // e) draw a polygon feature without bounds
+        count = 0;
+        exp = renderer.drawFeature(
+            new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Polygon()), {}
+        );
+        t.eq(exp, false, "d) drawFeature returns false");
+        t.eq(count, 1, "d) redraw is called when drawing a feature without bounds");
+        renderer.clear();
+
         map.destroy();
     }
 
