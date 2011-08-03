@@ -55,6 +55,7 @@ Group: OpenLayers  {
       File: Base Types  (no auto-title, OpenLayers/BaseTypes.js)
       File: Bounds  (no auto-title, OpenLayers/BaseTypes/Bounds.js)
       File: Class  (no auto-title, OpenLayers/BaseTypes/Class.js)
+      File: Date  (no auto-title, OpenLayers/BaseTypes/Date.js)
       File: Element  (no auto-title, OpenLayers/BaseTypes/Element.js)
       File: LonLat  (no auto-title, OpenLayers/BaseTypes/LonLat.js)
       File: Pixel  (no auto-title, OpenLayers/BaseTypes/Pixel.js)
