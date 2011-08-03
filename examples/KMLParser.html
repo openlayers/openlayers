@@ -28,7 +28,10 @@
           document.getElementById('output').innerHTML = html;
         }
         function load() {
-            OpenLayers.loadURL("kml/lines.kml", "", null, parseData);
+            OpenLayers.Request.GET({
+                url: "kml/lines.kml",
+                success: parseData
+            });
         }
     </script>
   </head>

@@ -12,10 +12,13 @@ function init() {
     ));
     map.addControl(new OpenLayers.Control.LayerSwitcher());
 
-    OpenLayers.loadURL("tasmania/sld-tasmania.xml", null, null, complete);
+    OpenLayers.Request.GET({
+        url: "tasmania/sld-tasmania.xml",
+        success: complete
+    });
 }
 
-// handler for the loadURL function in the init method
+// handler for the OpenLayers.Request.GET function in the init method
 function complete(req) {
     sld = format.read(req.responseXML || req.responseText);
     buildStyleChooser();

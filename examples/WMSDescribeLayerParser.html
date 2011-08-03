@@ -9,7 +9,7 @@
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         function parseData(req) {
-          format =  new OpenLayers.Format.WMSDescribeLayer();
+          format = new OpenLayers.Format.WMSDescribeLayer();
           html = "<br>"
           resp = format.read(req.responseText);
           for(var i = 0; i < resp.length; i++) {
@@ -22,7 +22,10 @@
           document.getElementById('output').innerHTML = html;
         }
         function load() {
-            OpenLayers.loadURL("xml/wmsdescribelayer.xml", "", null, parseData);
+            OpenLayers.Request.GET({
+                url: "xml/wmsdescribelayer.xml",
+                success: parseData
+            });
         }
     </script>
   </head>

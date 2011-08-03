@@ -39,8 +39,11 @@
         var doc = null;
 
         function init() {
-            var url = "xml/features.xml";
-            OpenLayers.loadURL(url, null, null, loadSuccess, loadFailure);
+            OpenLayers.Request.GET({
+                url: "xml/features.xml",
+                success: loadSuccess,
+                failure: loadFailure
+            });
         }
 
         function loadSuccess(request) {
