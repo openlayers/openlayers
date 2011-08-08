@@ -432,27 +432,26 @@
         t.eq(b.a, "bar", "ctor overwritten");
     }
 
-    // This test doesn't currently pass.
-    /*
     function test_overwrite_5(t) {
         // overwrite constructor of parent class, which itself
         // doesn't defined "initialize"
-        t.plan(1);
+        t.plan(2);
         var A = OpenLayers.Class({
             initialize: function() {
                 this.a = "foo";
             }
         });
         var B = OpenLayers.Class(A, {});
+        var _A = A;
         A = overwrite(A, {
             initialize: function() {
                 this.a = "bar";
             }
         });
         var b = new B;
+        t.ok(A.prototype === _A.prototype, "A and _A share the prototype");
         t.eq(b.a, "bar", "ctor overwritten");
     }
-    */
 
     function test_overwrite_6(t) {
         // with static methods
