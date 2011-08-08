@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers WMSDescribeLayer Parser Example</title>
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        function parseData(req) {
+          format = new OpenLayers.Format.WMSDescribeLayer();
+          html = "<br>"
+          resp = format.read(req.responseText);
+          for(var i = 0; i < resp.length; i++) {
+            html += "Layer: typeName: "+ resp[i].typeName+",";
+                html += "<ul>";
+                html += "<li>owsURL: "+resp[i].owsURL+"</li>";
+                html += "<li>owsType: "+resp[i].owsType+"</li>";
+                html += "</ul>"
+          }
+          document.getElementById('output').innerHTML = html;
+        }
+        function load() {
+            OpenLayers.Request.GET({
+                url: "xml/wmsdescribelayer.xml",
+                success: parseData
+            });
+        }
+    </script>
+  </head>
+  <body onload="load()">
+      <h1 id="title">WMSDescribeLayer Parser Example</h1>
+
+      <div id="tags">
+          wmsdescribelayer, parser, cleanup
+      </div>
+
+      <p id="shortdesc">
+          Demonstrate the operation of the WMSDescribeLayer parser.
+      </p>
+
+      <div id="output"></div>
+
+      <div id="docs">
+          <p>This script reads data from a file and parses out the coordinates,
+          appending them to a HTML string with markup tags. This markup is
+          dumped to an element in the page.</p>
+    </div>
+  </body>
+</html>

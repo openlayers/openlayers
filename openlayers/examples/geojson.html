@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var lon = 5;
+        var lat = 40;
+        var zoom = 5;
+        var map, layer;
+
+        function init(){
+            map = new OpenLayers.Map( 'map' );
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                    "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                    {layers: 'basic'} );
+            map.addLayer(layer);
+            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+            var featurecollection = {
+              "type": "FeatureCollection", 
+              "features": [
+                {"geometry": {
+                    "type": "GeometryCollection", 
+                    "geometries": [
+                        {
+                            "type": "LineString", 
+                            "coordinates": 
+                                [[11.0878902207, 45.1602390564], 
+                                [15.01953125, 48.1298828125]]
+                        }, 
+                        {
+                            "type": "Polygon", 
+                            "coordinates": 
+                                [[[11.0878902207, 45.1602390564], 
+                                  [14.931640625, 40.9228515625], 
+                                  [0.8251953125, 41.0986328125], 
+                                  [7.63671875, 48.96484375], 
+                                  [11.0878902207, 45.1602390564]]]
+                        },
+                        {
+                            "type":"Point", 
+                            "coordinates":[15.87646484375, 44.1748046875]
+                        }
+                    ]
+                }, 
+                "type": "Feature", 
+                "properties": {}}
+              ]
+           };
+           var geojson_format = new OpenLayers.Format.GeoJSON();
+           var vector_layer = new OpenLayers.Layer.Vector(); 
+           map.addLayer(vector_layer);
+           vector_layer.addFeatures(geojson_format.read(featurecollection));
+
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">GeoJSON Example</h1>
+    
+    <div id="tags">
+       JSON, GeoJSON
+    </div>
+
+      <p id="shortdesc">
+        Demonstrate the use of the GeoJSON format.
+    </p>
+    <div id="map" class="smallmap"></div>
+    <div id="docs">
+        <p>This example uses the GeoJSON format.</p>
+    </div>
+  </body>
+</html>

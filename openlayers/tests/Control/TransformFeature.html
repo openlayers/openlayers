@@ -1,0 +1,91 @@
+<html>
+<head>
+    <script src="../OLLoader.js"></script>
+    <script type="text/javascript">
+
+    function test_initialize(t) {
+        t.plan(6);
+        var layer = "foo";
+        var control = new OpenLayers.Control.TransformFeature(layer);
+        
+        t.ok(control.layer == layer,
+             "constructor sets layer correctly");
+        t.ok(control.dragControl instanceof OpenLayers.Control.DragFeature,
+             "constructor sets the drag control correctly");
+        t.ok(control.box instanceof OpenLayers.Feature.Vector,
+             "box feature created");
+        t.eq(control.handles.length, 8, "8 handles created");
+        t.eq(control.rotationHandles.length, 4, "4 rotation handles created")
+        t.eq(typeof control.rotationHandleSymbolizer, "object",
+            "rotationHandleSymbolizer initialized");
+        control.destroy();
+    }
+
+    function test_destroy(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.TransformFeature(layer);
+        control.dragControl.destroy = function() {
+            t.ok(true,
+                 "control.destroy calls destroy on drag control");
+        };
+        control.destroy();
+        map.destroy();
+    }
+    
+    function test_activate(t) {
+        t.plan(3);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.TransformFeature(layer);
+        map.addControl(control);
+        
+        t.ok(!control.dragControl.active,
+             "drag control is not active prior to activating control");
+        control.activate();
+        t.ok(control.dragControl.active,
+             "drag control is active after activating control");
+        t.ok(control.box.layer === layer, "box added to layer");
+
+        map.destroy();
+    }
+    
+    function test_setFeature(t) {
+        t.plan(6);
+        var map = new OpenLayers.Map("map", {allOverlays: true});
+        var layer = new OpenLayers.Layer.Vector();
+        var feature = new OpenLayers.Feature.Vector(
+            OpenLayers.Geometry.fromWKT("POLYGON((-1 -1, 1 -1, 1 1, -1 1))"));
+        layer.addFeatures([feature]);
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 18);
+        var control = new OpenLayers.Control.TransformFeature(layer);
+        map.addControl(control);
+        var log = [];
+        control.events.on({
+            "beforesetfeature": function(e) { log.push(e); },
+            "setfeature": function(e) { log.push(e); }
+        });
+        control.setFeature(feature);
+        
+        t.eq(log[0].type, "beforesetfeature", "beforesetfeature event fired with correct event type");
+        t.eq(log[1].type, "setfeature", "setfeature event fired with correct event type");
+        
+        t.ok(control.active, "control activated on setFeature");
+        t.ok(feature.geometry.getBounds().equals(control.box.geometry.getBounds()), "box positioned correctly");
+        t.geom_eq(control.handles[0].geometry, control.box.geometry.components[0], "handle positioned with box");
+        
+        var center = new OpenLayers.LonLat(1, 1);
+        control.box.move(center);
+        t.geom_eq(control.handles[0].geometry, control.box.geometry.components[0], "handle moved with box");
+    }
+
+    </script>
+</head>
+<body>
+    <div id="map" style="width: 400px; height: 250px;"/>
+</body>
+</html>

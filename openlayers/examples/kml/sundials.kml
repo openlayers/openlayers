@@ -1,0 +1,2273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://earth.google.com/kml/2.2">
+<Document>
+	<name>Sundial Collection.kmz</name>
+	<StyleMap id="msn_sunny_copy70">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_sunny_copy69</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_sunny_copy70</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sh_sunny_copy69">
+		<IconStyle>
+			<scale>1.4</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/sunny.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0.5" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<color>ff00aaff</color>
+		</LabelStyle>
+	</Style>
+	<Style id="sn_sunny_copy68">
+		<IconStyle>
+			<scale>1.2</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/sunny.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0.5" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<color>ff00aaff</color>
+		</LabelStyle>
+	</Style>
+	<Style id="sn_sunny_copy69">
+		<IconStyle>
+			<scale>1.2</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/sunny.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0.5" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<color>ff00aaff</color>
+		</LabelStyle>
+	</Style>
+	<Style id="sh_sunny_copy70">
+		<IconStyle>
+			<scale>1.4</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/sunny.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0.5" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<color>ff00aaff</color>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="msn_sunny_copy69">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_sunny_copy68</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_sunny_copy69</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Folder>
+		<name>Sundial Collection</name>
+		<open>1</open>
+		<LookAt>
+			<longitude>-56.6884384968692</longitude>
+			<latitude>47.91963617483238</latitude>
+			<altitude>0</altitude>
+			<range>9958750.824018393</range>
+			<tilt>1.303827428939919e-015</tilt>
+			<heading>-16.31426621668193</heading>
+		</LookAt>
+		<Style>
+			<ListStyle>
+				<listItemType>check</listItemType>
+				<bgColor>00ffffff</bgColor>
+			</ListStyle>
+		</Style>
+		<Folder>
+			<name>High Resolution</name>
+			<Placemark>
+				<name>Sundial, Madestein, Den Haag</name>
+				<description><![CDATA[Horizontal sundial on the campus of the ‘Parnassia’ psychomedic centre in The Hague. The numbers on the left, 6,7 and 8, are wrong spelled.
+<p><img src="http://www.de-zonnewijzerkring.nl/imgs-arch/zw-07-05-02.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>4.213227700645635</longitude>
+					<latitude>52.04260288332888</latitude>
+					<altitude>0</altitude>
+					<range>24.63686803544318</range>
+					<tilt>0</tilt>
+					<heading>1.387289180270979e-005</heading>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>4.213209970684247,52.04268354765237,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Den Haag - Loosduinen</name>
+				<description><![CDATA[<p>Thanks to <b>A30</b></p>
+
+A sundial made of wooden blocks.
+The highest block in the middle is the style and casts its shadow each hour on one of the other blocks.
+
+<p><img src="http://www.dse.nl/~zonnewijzer/loosduin.jpg"></p>
+Image source:<a href="http://www.dse.nl/~zonnewijzer/loosduin.jpg">www.dse.nl</a>]]></description>
+				<LookAt>
+					<longitude>4.236038669148795</longitude>
+					<latitude>52.0499434967447</latitude>
+					<altitude>0</altitude>
+					<range>18.37312193280116</range>
+					<tilt>2.202011190893535e-011</tilt>
+					<heading>-0.3988978466888938</heading>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>4.236026636181407,52.049986562365,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial with light conductors - Paris, Les Halles</name>
+				<description><![CDATA[<p><img src="http://www.home.uni-osnabrueck.de/ahaenel/sonnuhr/paris1.jpg"></p>
+
+The sunlight falls on one of the three windows in the column (east, south, west) and over light conductors on the wall is indicated.
+
+<p><img src="http://www.home.uni-osnabrueck.de/ahaenel/sonnuhr/paris4.jpg"></p>
+
+The clock shows  16,40 o'clock.
+
+<p><img src="http://www.home.uni-osnabrueck.de/ahaenel/sonnuhr/paris5.jpg"></p>
+
+<a>Quelle:http://www.home.uni-osnabrueck.de/ahaenel/sonnuhr/paris_halles.htm</a>
+
+http://perso.orange.fr/cadrans.solaires/cadrans/cadran-halles-paris.html]]></description>
+				<LookAt>
+					<longitude>2.344185113917775</longitude>
+					<latitude>48.86294270160059</latitude>
+					<altitude>0</altitude>
+					<range>39.52787486507292</range>
+					<tilt>0</tilt>
+					<heading>-0.003533584730563007</heading>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>2.344143312335305,48.86302323987447,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Plymouth, Devon, UK</name>
+				<description><![CDATA[<p>The gnonom is 27 foot high, the pool has 21 feet diameter.  It was designed by architect Carole Vincent from Boscastle in Cornwall and was unvieled by Her Majesty the Queen on Friday July 22nd 1988 for a cost of  cost £70,000 . The sundial runs one hour and seventeen minutes behind local clocks.</p>
+<p><img src="http://www.photoready.co.uk/people-life/images/sundial-fountain.jpg"></p>
+<p>Image source:<a href="www.photoready.co.uk</a></p>]]></description>
+				<LookAt>
+					<longitude>-4.142398271107962</longitude>
+					<latitude>50.37145390235462</latitude>
+					<altitude>0</altitude>
+					<range>63.33410419881957</range>
+					<tilt>0</tilt>
+					<heading>-0.0001034131369701296</heading>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>-4.142446411782089,50.37160252809223,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial Millennium Timespace at Gosport, UK</name>
+				<description><![CDATA[<p><img src="http://www.sundials.co.uk/pix/gosport.jpg"></p>
+Image source:<a href="http://www.sundials.co.uk/pix/gosport.jpg">www.sundials.co.uk</a>]]></description>
+				<LookAt>
+					<longitude>-1.117890647596098</longitude>
+					<latitude>50.79319978711329</latitude>
+					<altitude>0</altitude>
+					<range>79.08348690288113</range>
+					<tilt>0</tilt>
+					<heading>0.02100880488328328</heading>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>-1.117887915142518,50.79336425684474,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Britzer Garten, Berlin</name>
+				<description>See photos on this page:
+http://home.arcor.de/ruth.kirsch/sonnenuhr/berlin_1xxxx/berlin_1xxxx.htm</description>
+				<LookAt>
+					<longitude>13.42078373972489</longitude>
+					<latitude>52.4366841172644</latitude>
+					<altitude>0</altitude>
+					<range>102.2086892967038</range>
+					<tilt>0</tilt>
+					<heading>-0.004885703167479627</heading>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>13.4207448482471,52.43682055829985,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Falkenplatz, Berlin</name>
+				<description><![CDATA[<p>The original reasoning event for the construction of the sundial was the UNO climate conference 1995 in Berlin. The base stone of the wall spiral was layed at a festivity at the equinox of March 1995. Until June 1995 the main construction was completed, and at another festivity at the summer solstice the gnonom and the totem ("Lebensbaum") was installed by Berlin fire fighters.</p>
+<p><img src="http://www.surveyor.in-berlin.de/sundials/imgs/Mauerpark-SD01.5.jpg"></p>
+<p>The nearly spiral sundial was planned as a "living sundial" and initiated by the groups of the "Netzwerk Klimagipfel 95", mainly by the journalist T. Römer with the "Verein zur Rettung des Regenwaldes und Naturschutzgebietes La Macarena", and the "Netzwerk Spiel/Kultur" at the Prenzlauer Berg. 
+
+
+The covering clay stones were made out of three metric tons of white and brown clay, formed by children of about 50 institutions like school classes and kindergardens of the closer region. The stones were burned and installed in the summer of 1995. Partly they are constructed out of different materials, partly especially formed or ornamented. Six detail images are showing some examples: (White near Red - MC?, Smiley with Heart Eyes, Sun-Moon-Star, Red Broken and Patterned, Rain pits and Stone Hearts in Clay, Red near White - Clay Fish and Sunshine over the Sea). 
+
+In September 1995 the sundial was completed. It was called "living sundial" because it was planned to replace the clay stones regulary when they are destroyed and to add some green to the outside wall of the clock. In December 1995 the clock got a special price of the local environmental administration.</p>
+<p><img src="http://www.surveyor.in-berlin.de/sundials/imgs/Mauerpark-Detail02.jpg">.<img src="http://www.surveyor.in-berlin.de/sundials/imgs/Mauerpark-Detail06.jpg"></p>
+
+
+<p>In September 1995 the sundial was completed. It was called "living sundial" because it was planned to replace the clay stones regulary when they are destroyed and to add some green to the outside wall of the clock. In December 1995 the clock got a special price of the local environmental administration.</p>
+<p><img src="http://www.surveyor.in-berlin.de/sundials/imgs/Mauerpark-SD02.5.jpg"></p>
+
+<p>This sundial was deconstructed at the end of 2002 or at the beginning of 2003:</p>
+<p><img src="http://www.surveyor.in-berlin.de/sundials/imgs/Mauerpark-SD03.5.jpg"></p>
+
+<p>Image source and infos:<a href="http://www.surveyor.in-berlin.de/sundials/Falkplatz-e.html">www.surveyor.in-berlin.de</a></p>]]></description>
+				<LookAt>
+					<longitude>13.40239121468946</longitude>
+					<latitude>52.54640622802566</latitude>
+					<altitude>0</altitude>
+					<range>55.75497205265645</range>
+					<tilt>1.489511345854323e-009</tilt>
+					<heading>2.6367660621925e-005</heading>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>13.40233774797299,52.54645010247089,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Halde Schwerin, Castrop-Rauxel, Germany</name>
+				<description><![CDATA[<p>Thanks to <b>htd42</b></p>
+<p><img src="http://www.ruhrgebiet.de/cgi-bin/imp?freizeit/sehenswuerdigkeiten/bindata/castrop-rauxel_halde_schwerin_RVR.jpg&articleID=5824&padding=no&thumbnailtype=jpg&width=250"></p>
+
+http://www.ruhrgebiet.de/freizeit/sehenswuerdigkeiten/cr_halde_schwerin.shtml?print]]></description>
+				<LookAt>
+					<longitude>7.337404407947669</longitude>
+					<latitude>51.54597716006042</latitude>
+					<altitude>0</altitude>
+					<range>51.28632275218226</range>
+					<tilt>2.512805793870883e-009</tilt>
+					<heading>-6.529566789930303e-005</heading>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>7.337359256982781,51.54610609965799,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Lloydminster, Canada</name>
+				<description><![CDATA[This sundial has not the longest gnomon but I think it has the biggest clock face in the world.
+
+<p><img src="http://www.mts.net/~sabanski/sundial/images/sundials%20of%20the%20world/Canada/Lloydminster/BMASP.jpg"></p>
+<p>Image source and infos:<a href="http://www.mts.net/~sabanski/sundial/sotw_canada_lloydminster.htm">www.mts.net</a></p>]]></description>
+				<LookAt>
+					<longitude>-110.0353754682919</longitude>
+					<latitude>53.26386357821667</latitude>
+					<altitude>0</altitude>
+					<range>155.9861269181855</range>
+					<tilt>0</tilt>
+					<heading>-0.01432903343453666</heading>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>-110.0355256583979,53.26413794825379,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Giant Lady&apos;s Leg Sundial, Roselawn, Indiana, USA</name>
+				<description><![CDATA[<p>The Sun Aura Nudist Resort opened in 1933. Back then it was called Club Zoro and its founder was Alois Knapp, a Chicago lawyer, German Nacktkulturist, editor of Sunshine and Health magazine, and "the father of nudism in America." </p>
+
+<p><img src="http://www.roadsideamerica.com/attract/images/in/INLAKsundialleg4_0716.jpg"></p>
+
+<p>The club eventually passed into the hands of Dale and Mary Drost. Their son, Dick, had big ideas: he renamed the place Naked City, made it the home of the Ms. Nude Teeny Bopper Contest and the "Erin Go Bra-less" Dance on St. Patrick's Day, and had built the giant lady's leg sundial, 63 feet long and properly positioned to tell time -- a useful feature for wristwatchless nudists. </p>
+
+<p>Naked City closed in 1986 when Dick was run out of Indiana on child molestation charges, but the leg remains and so does the resort, now under new management. The circular main building with the mirror gold windows is a combination office-sauna-restaurant. </p>
+
+<p>The guy who paints the leg told us that Sun Aura is a "clothing optional" camp -- in other words, you don't have to get nude to take a picture of the big lady's leg. But for those who do choose to get into the spirit of things, a helpful sign on the exit road reads, "Stop. You Must Be Dressed Beyond This Point."</p>
+
+<p><a href="http://www.roadsideamerica.com/sights/sightstory.php?tip_AttrId=%3D11825">Roadside America</a></p>]]></description>
+				<LookAt>
+					<longitude>-87.32599841452155</longitude>
+					<latitude>41.14248697221019</latitude>
+					<altitude>0</altitude>
+					<range>40.06529731982877</range>
+					<tilt>0</tilt>
+					<heading>-108.7495178792767</heading>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>-87.32608203713804,41.14242622349031,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Ingleside, San Francisco, USA</name>
+				<description><![CDATA[<p>Thanks to <b>CostaPacific</b></p>
+
+Most people in San Francsco have no idea that their city is host to the world's second largest sundial. It was built in 1913 as a gimic to attract people to a new housing development that was built arround the configuration of the old Ingleside Race Track.
+
+<p><img src="http://p.vtourist.com/2174717-Architecture-San_Francisco.jpg"></p>
+<p>Image source:<a href="www.virtualtourist.com"></a>]]></description>
+				<LookAt>
+					<longitude>-122.4687521474299</longitude>
+					<latitude>37.72475779376939</latitude>
+					<altitude>0</altitude>
+					<range>104.1096478961583</range>
+					<tilt>0</tilt>
+					<heading>-6.694029629862418e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>-122.4687727980979,37.72497790751523,59.97947112427937</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial Bridge</name>
+				<description>Located in Redding, CA.  Opened in 2004 this bridge actually acts as a sundial.  The time can be read in a garden on the North side of the bridge.
+
+http://www.turtlebay.org/sundial/sundial.shtml</description>
+				<LookAt>
+					<longitude>-122.3775376532067</longitude>
+					<latitude>40.59329504591046</latitude>
+					<altitude>0</altitude>
+					<range>160.1654912126178</range>
+					<tilt>7.884938307004504e-010</tilt>
+					<heading>0.008470312235033726</heading>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>-122.3777030796087,40.59376952663914,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Jaipur,India</name>
+				<description><![CDATA[Thanks to <b>Villaman</b>
+
+<p align="center"><table width=400><tr><td><b><br>Jaipur Observatory Sundial</b><br><br>
+</td>
+</tr>
+<tr>
+<td>
+<p align="justify"> Walk through these doors and up the stairs to begin your journey along a line from Jaipur, India toward the North Celestial Pole. Such cosmic alignments abound in marvelous Indian observatories where the architecture itself allows astronomical measurements. The structures were built in Jaipur and other cities in the eighteenth century by the Maharaja Jai Singh II (1686-1743). Rising about 90 feet high, this stairway actually forms a shadow caster or gnomon, part of what is still perhaps the largest sundial on planet Earth. Testaments to Jai Singh II's passion for astronomy, the design and large scale of his observatories' structures still provide impressively accurate measurements of shadows and sightings of celestial angles. 
+<p align="justify"><center><b>Jaipur Observatory Sundial<br><img src="http://apod.nasa.gov/apod/image/0312/02mantar_feresten.jpg" width=300></b></center></p>
+<p align="justify">More <a href="http://apod.nasa.gov/apod/ap031206.html">here.</a>
+
+</td>
+</tr>
+</table>
+<font color="white">]]></description>
+				<LookAt>
+					<longitude>75.82482649881683</longitude>
+					<latitude>26.924766672173</latitude>
+					<altitude>0</altitude>
+					<range>164.397137416247</range>
+					<tilt>0</tilt>
+					<heading>-0.02454798212483729</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>75.82474437483685,26.92504292845888,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Schothorstpark, Amersfoort, Netherlands</name>
+				<description><![CDATA[<p>A large sundial in the Schothorstpark in Amersfoort.
+Thanks to <b>Acadvice</b>]]></description>
+				<LookAt>
+					<longitude>5.385083481782106</longitude>
+					<latitude>52.17868238866643</latitude>
+					<altitude>0</altitude>
+					<range>49.70911801163624</range>
+					<tilt>5.249316070079438e-010</tilt>
+					<heading>6.699999294207586e-006</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>5.385063337537176,52.17873082332495,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Jardin de Reuilly, Paris</name>
+				<description><![CDATA[A huge horizontal sundial in Paris.
+<p><img src="http://perso.orange.fr/cadrans.solaires/cadrans/images/reuilly1-500.jpg" width="400"  hight="250"></p>
+
+<p><img src="http://perso.orange.fr/cadrans.solaires/cadrans/images/reuilly2-500.jpg" width="360"  hight="250"></p>
+Image source:<a href="http://perso.orange.fr/cadrans.solaires/cadrans/originaux-paris.html">http://perso.orange.fr</a></p>]]></description>
+				<LookAt>
+					<longitude>2.387204592843604</longitude>
+					<latitude>48.84242901629369</latitude>
+					<altitude>0</altitude>
+					<range>50.11592463998582</range>
+					<tilt>8.113900329668256e-010</tilt>
+					<heading>-0.001210217218456717</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>2.38716774037826,48.84252766103683,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Stockgrove, Soulbury, Buckinghamshire, UK</name>
+				<description><![CDATA[<p>thanks to <b>houdinia</b></p>
+Sundial with analemmatic clock face.
+<p><img src="http://www.greensandtrust.org/images/newImages/stockStrip1.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>-0.666503881371199</longitude>
+					<latitude>51.95548351688392</latitude>
+					<altitude>0</altitude>
+					<range>55.27920580004575</range>
+					<tilt>6.264058771241075e-010</tilt>
+					<heading>0.06911766261471311</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>-0.6665014664411046,51.95551857959676,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Halde Hoheward, Germany</name>
+				<description><![CDATA[<p>The Obelisk – The Sundial</p>
+
+<p>The seeming movement of the sun in the sky, resulting in the discrimination between day and night, was one of the earliest observations of nature performed by men. It enables us to experience the phenomenon “time” with our own senses. The first examples for telling the time with the help of the sun or its shadow date back to the Ancient World. The are numerous archetypes for sundials built inmany different styles, using different techniques.</p>
+
+<p>The archetype for the horizontal sundial on top of the slagheap Hoheward is the sundial of the Roman Emperor Augustus on the Campus Martius in Rome.</p>
+(It is unknown, whether this ancient obelisk was part of a complete sun dial with hour and declination lines on the morning and afternoon side or whether only a meridian line existed to measure the elevation of the sun in upper culmination. The today's scientific knowledge indicates the existence of a meridian.) The observation of the Obelisk's shadow on the sundial enables the observer to easily determine date and time. Apart from “time” one can also experience the laws of celestial mechanics. Men encounter themselves in relation to the cosmos.</p>
+
+<p>Representing the first step in the realisation of the Astronomical Theme Park the Obelisk was opened on May 17th, 2005. It is located on the already completed south-eastern plateau of the slagheap at a height of 140 m above sea level. The shadowed area is 62 m in diameter.</p>
+
+
+
+<p><img src="http://www.horizontastronomie.de/bilder/ansicht-obelisk2.jpg"></p>
+This picture shows the Obelisk after the end of the assembly on the day of the opening. Shortly before it was put on top of the readily prepared pedestal by a helicopter and then bolted. 
+
+<p><img src="http://www.horizontastronomie.de/bilder/o2.jpg" width="300" hight="360"></p>
+
+<p><a href="http://www.horizontastronomie.de/eindex.htm">http://www.horizontastronomie.de</a></p>
+
+
+
+<p>http://de.wikipedia.org/wiki/Halde_Hoheward#Sonnenuhr_mit_Obelisk</p>
+
+<p>http://www.horizontastronomie.de/animationen.htm</p>]]></description>
+				<LookAt>
+					<longitude>7.170033145228383</longitude>
+					<latitude>51.56646738931531</latitude>
+					<altitude>0</altitude>
+					<range>96.7791497847863</range>
+					<tilt>4.155528307086707e-010</tilt>
+					<heading>0.006376147752644328</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>7.169892708740022,51.56683509795316,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Fachhochschule (FH) Bielefeld</name>
+				<description><![CDATA[A sundial with analemmatic layout. 
+<p><img src="http://www.fh-bielefeld.de/ezimagecatalogue/catalogue/variations/4651-400x500.jpg"></p>
+http://www.fh-bielefeld.de/article/fh/4412/1/505?NavItemID=0&NavCatID=162]]></description>
+				<LookAt>
+					<longitude>8.555263115842216</longitude>
+					<latitude>52.02672953436973</latitude>
+					<altitude>0</altitude>
+					<range>50.10364671714684</range>
+					<tilt>0</tilt>
+					<heading>0.001255164290936946</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>8.555215193531964,52.02681111856448,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Sun City, Arizona</name>
+				<description><![CDATA[<p><img src="http://www.sundials.org/registry/regphotos/008_az_suncity.jpg"></p>
+
+<p><img src="http://www.sundials.org/registry/regphotos/008_az_suncity_2.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>-112.2739996808105</longitude>
+					<latitude>33.61902729376313</latitude>
+					<altitude>0</altitude>
+					<range>44.66059102278575</range>
+					<tilt>0</tilt>
+					<heading>0.0001994953180518285</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>-112.2740228273864,33.61913038777643,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Georgina Blach Intermediate School, Los Altos, CA</name>
+				<description><![CDATA[A corner of a roof used as sundial.
+<p><img src="http://www.sundials.org/registry/regphotos/498_ca_losaltos_blach.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>-122.083063541274</longitude>
+					<latitude>37.36394994353518</latitude>
+					<altitude>0</altitude>
+					<range>99.46493929648614</range>
+					<tilt>0</tilt>
+					<heading>-6.524992683547596e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>-122.0831077334675,37.3641379192763,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Hilltop Park, San Francisco</name>
+				<description><![CDATA[A giant sundial 70 feet in diameter with a bright yellow painted steel gnomon 78 feet long. The dial has a cement base and was designed to be used as the stage for a surrounding amphitheater.
+<p><img src="http://www.sundials.org/registry/regphotos/419_ca_sanf_hunters_ridge.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>-122.3837414260284</longitude>
+					<latitude>37.73308769461563</latitude>
+					<altitude>0</altitude>
+					<range>76.96447255875415</range>
+					<tilt>0</tilt>
+					<heading>-0.0001251047167258125</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>-122.3837885185873,37.73313852750733,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Berlin-Weißensee</name>
+				<description><![CDATA[A nice sundial made of flowers.
+<p><img src="http://www.be.schule.de/schulen/wfs/pages/sundials/Blumenuhr,Weissensee.gif"></p>
+
+http://www.be.schule.de/schulen/wfs/pages/sundials/Weissensee.html]]></description>
+				<LookAt>
+					<longitude>13.46637059089964</longitude>
+					<latitude>52.55408525446345</latitude>
+					<altitude>0</altitude>
+					<range>35.24186259647233</range>
+					<tilt>0</tilt>
+					<heading>-0.002133411261797274</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>13.46637589519183,52.55412143657096,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Olbers-Planetarium, Bremen</name>
+				<description><![CDATA[This is an armillary sphere sundial. 
+
+<p><img src="http://planetarium.hs-bremen.de/bremen/pics/suhs.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>8.806980778676786</longitude>
+					<latitude>53.06988134466393</latitude>
+					<altitude>0</altitude>
+					<range>24.09705977000565</range>
+					<tilt>0</tilt>
+					<heading>-0.001876272046377585</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>8.806963468445417,53.0698959991562,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Westbroekpark, Denn Haag</name>
+				<description><![CDATA[This sundial is located at the Rosarium in the Westbroekpark, Denn Haag.
+<p><img src="http://www.denhaag.nl/Pics/dsb/Ststr/westbroekpark/rozenconcours45/rozenbedden-met-zonnewijzer.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>4.290891177932192</longitude>
+					<latitude>52.10450647693549</latitude>
+					<altitude>0</altitude>
+					<range>20.57779559985518</range>
+					<tilt>0</tilt>
+					<heading>-0.8669355345663358</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>4.290865552422943,52.10453275113748,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Amersfoort, Netherlands</name>
+				<description><![CDATA[In the arrow are 2 digital displays, one for civil time and one for local suntime.
+<p><img src="http://sundials.org/links/local/sunpointer/sunpointer.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>5.374167244217593</longitude>
+					<latitude>52.15310253836927</latitude>
+					<altitude>0</altitude>
+					<range>31.45592479376158</range>
+					<tilt>1.426589610824431e-009</tilt>
+					<heading>-0.01164696084898205</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>5.374145665653813,52.15310809583514,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Botanical Gardens, Sydney, Australia</name>
+				<description><![CDATA[This is an armillary sphere sundial.
+
+<p><img src="http://www.sundials.co.uk/PC090189.jpg"></p>
+
+<p><img src="http://www.sundials.co.uk/PC090193.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>151.2154952669206</longitude>
+					<latitude>-33.86399908828604</latitude>
+					<altitude>0</altitude>
+					<range>16.43666728184123</range>
+					<tilt>8.675342058213797e-007</tilt>
+					<heading>-0.002067228419448193</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>151.2154882763944,-33.86398565287625,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Team Disney Sundial, Walt Disney World, Florida</name>
+				<description><![CDATA[Thanks to <b>Oftencold</b>
+
+<p><img src="http://www.sunpath-designs.com/disdial2b.gif"></p>
+
+http://www.de-zonnewijzerkring.nl/zw-arch/eng-home-zw-07-02.htm]]></description>
+				<LookAt>
+					<longitude>-81.52113085122878</longitude>
+					<latitude>28.36541360352638</latitude>
+					<altitude>0</altitude>
+					<range>167.7307771712135</range>
+					<tilt>1.015026730473625e-011</tilt>
+					<heading>-0.006287852151169638</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>-81.52134276012195,28.36559634883421,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Janskerkhof, Utrecht,  Netherlands</name>
+				<description><![CDATA[A sundial with analemmatic layout.
+<p><img src="http://www.de-zonnewijzerkring.nl/imgs-arch/zw-06-06-01.jpg"></p>
+
+<p><img src="http://www.de-zonnewijzerkring.nl/imgs-arch/zw-06-06-02.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>5.121095723583527</longitude>
+					<latitude>52.09338586502101</latitude>
+					<altitude>0</altitude>
+					<range>24.25734051739648</range>
+					<tilt>5.490226183683639e-010</tilt>
+					<heading>-0.0007122606404517594</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>5.121088800707085,52.09341776135472,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, San Jose Rep Theater, San Jose, CA</name>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/display/f96acd0f-6ad7-4b0a-a4a0-e52d14dd0015.jpg"></p>
+
+<p>Image credit:<a href="http://www.waymarking.com/waymarks/WM247Q">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>-121.8860266085782</longitude>
+					<latitude>37.33361545835343</latitude>
+					<altitude>0</altitude>
+					<range>32.31958319185324</range>
+					<tilt>0</tilt>
+					<heading>1.418565866412994e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>-121.886064353331,37.33364018615777,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Millennium Sundial, Greenwich Park, London</name>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/display/7cdcd20c-806c-4cbd-8a9c-5de27ffb115d.jpg"></p>
+
+<p>Image credit:<a href="http://www.waymarking.com/waymarks/WM273J">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>-0.001522539653513039</longitude>
+					<latitude>51.48136176862654</latitude>
+					<altitude>0</altitude>
+					<range>61.96314954770909</range>
+					<tilt>2.850197260451716e-009</tilt>
+					<heading>-0.002911073287638733</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>-0.00156808979284051,51.48142700407306,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Veterans Park, Waukesha, WI</name>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/display/0e6202ea-2b62-4491-9029-0983445e7cde.jpg"></p>
+
+<p>Image credit:<a href="http://www.waymarking.com/waymarks/WM2DTR">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>-88.2367572684424</longitude>
+					<latitude>43.00995357504599</latitude>
+					<altitude>0</altitude>
+					<range>49.0879478099675</range>
+					<tilt>0</tilt>
+					<heading>-2.769547716555237e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>-88.23678272979073,43.01004377682637,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Underground Sundial, Munich, Germany</name>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/display/6f0381f1-4c18-4d9d-95e5-2f9a79842dbe.jpg"></p>
+
+<p>Image credit:<a href="http://www.waymarking.com/waymarks/WM12X2">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>11.70480163926041</longitude>
+					<latitude>48.13338615699044</latitude>
+					<altitude>0</altitude>
+					<range>49.09160069235252</range>
+					<tilt>7.359413992305611e-011</tilt>
+					<heading>1.363313751616389e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>11.70474103166116,48.13350333174798,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Crown Hill cemetery, Indianapolis, Indiana, USA</name>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/display/d62d27fc-f175-4ac8-aab3-7ba9748d6b82.jpg"></p>
+
+<p>Image credit:<a href="http://www.waymarking.com/waymarks/WM1310">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>-86.17300915391851</longitude>
+					<latitude>39.82668935299838</latitude>
+					<altitude>0</altitude>
+					<range>35.63730089613371</range>
+					<tilt>0</tilt>
+					<heading>2.616180723282867e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>-86.17304253331795,39.82668119645058,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Coppell, TX</name>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/display/2bb0da85-d5db-44ed-ae70-d89f290ad7fd.jpg"></p>
+
+<p>Image credit:<a href="http://www.waymarking.com/waymarks/WM1WJG">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>-97.02194975520763</longitude>
+					<latitude>32.95633568822581</latitude>
+					<altitude>0</altitude>
+					<range>61.19896168864369</range>
+					<tilt>0</tilt>
+					<heading>1.826645706530163e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>-97.02199840401494,32.95643533824669,0</coordinates>
+				</Point>
+			</Placemark>
+		</Folder>
+		<Folder>
+			<name>Low Resolution</name>
+			<Placemark>
+				<name>Sundial, Kota Baru Parahyangan</name>
+				<description><![CDATA[Thanks to <b>voorburger</b>.
+<p><img src="http://www.thebiggestsundial.com/php/thebiggestsundial/images/Exhibits/13/03052007134130.gif"></p>]]></description>
+				<LookAt>
+					<longitude>107.4940550739811</longitude>
+					<latitude>-6.852038750176605</latitude>
+					<altitude>0</altitude>
+					<range>296.7282563680993</range>
+					<tilt>2.08633946131246e-011</tilt>
+					<heading>0.5509822616366601</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>107.4939718861608,-6.851748821808833,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Pajala, Sweden</name>
+				<description><![CDATA[<p>The world's biggest sundial today is in the Torne Valley, north of the Arctic Circle. The Guinness Book of Records has put Pajala, northern Sweden, on the map, and its sundial - formed as a "round square". </p>
+<p><img src="http://www.pajala.se/mun/pajala/www.nsf/($all)/A43859111165E6F2C1256EE40021DDF3/$file/soltorg23.JPG"></p>
+<p>The sundial in Pajala, 38.33 m. in diameter, holds the world record, according to the Guinness Book of Records. The previous record was held by Disney World in Orlando, Florida, with 37.18 m. </p>
+
+<p>The sundial was inaugurated by the Swedish Minister of Labour Margareta Winberg in July 1996. Pajala is situated at 23.28 ° East, 67.21 ° North, which is 70 km north of the Arctic Circle, making a circular sundial possible. This is due to the fact that the Midnight Sun describes a complete circle over the horizon. 
+
+<p>Its masts of dried fir form a unique spatiality around a circular "square". The site is especially used for local functions such as Pajala Fair, Romp Week and the Northern Lights Festival. </p>
+
+<p>The central square in Pajala, through its size and latitude, offered conditions for a sundial dedicated to the Midnight Sun. Architect Mats Winsa took his inspiration from the square in Siena, and for the sculptures in the park - astronomical instruments in India dating back to the 18th century. Naturally, it was a challenge to compete with the previous record from 1991 by the world-famous Japanese architect, Arata Isozaki. </p>
+
+<p>The sundial captures the sun's movement by allowing the shadow of the central gnomon to fall across the hour divisions of the surrounding posts. The gnomon, like the Earth's axis, points toward the Pole Star, which according to Finnish-Ugrian mythology (the region has Finnish roots) holds up the firmament. The "sun wheel" embedded in the ground here (forming a cross in the circle) is in fact a calendar. Water bubbles up from four sources corresponding to the four principal points of the compass. The water gathers in the central pond, which was designed with children in mind. </p>
+
+<p>For their survival, humans have followed the rhythm of the sun. The need to observe the changing seasons and days led to the early development of the sundial. Our lives today are characterised by obedience to mechanical and national time - inventions separate from true solar time. The sundial displays true solar time, which in Pajala is half-an-hour ahead of national time. </p>
+
+<p>The sundial in Pajala celebrates light, and acts as a reminder of its significance for all life by functioning as a biological clock in a world fettered by artificial time. The hormone rush in spring reminds us of our direct dependence on sunlight as living beings.</p>
+
+<p>Info and image source:<a href="http://www.pajala.se/mun/pajala/www.nsf/english/$first?open&mname=Menu%C2%A4menuID=2CAE%C2%A4start=1">www.pajala.se</a></p>
+
+<p><img src="http://holmers.com/Pajala/Pajala1_050709.jpg"></p>
+<p>Image source:<a href="http://holmers.com/Pajala/Pajala1_050709.jpg">http://holmers.com</a></p>]]></description>
+				<LookAt>
+					<longitude>23.36723004664742</longitude>
+					<latitude>67.21282676944374</latitude>
+					<altitude>0</altitude>
+					<range>124.9604027877409</range>
+					<tilt>3.010594647959025e-010</tilt>
+					<heading>-1.130925335798896</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>23.36716252896882,67.21299216873888,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Tenerife, Spain</name>
+				<description><![CDATA[Reloj del sol
+
+<p><img src="http://members.aon.at/mbrandn6/media/fotos/landart/watchteneriffa/tentotal1.jpg"></p>
+
+<p><img src="http://members.aon.at/mbrandn6/media/fotos/landart/watchteneriffa/tennah.jpg"></p>
+
+<p><img src="http://members.aon.at/mbrandn6/media/fotos/landart/watchteneriffa/tentotal3.jpg"></p>
+
+<p><img src="http://members.aon.at/mbrandn6/media/fotos/landart/watchteneriffa/draft.jpg"></p>
+<p>Image source:<a href="http://members.aon.at/mbrandn6/pagesgerman/framesetg/framelandart.html">http://members.aon.at</a></p>
+
+<p><a href="http://www.teneriffa.panoshot.de/de/panorama-interaktiv/gernot-huber-stiftung-reloj-del-sol-223.html
+">Interactice picture</a></p>]]></description>
+				<LookAt>
+					<longitude>-16.56926659562192</longitude>
+					<latitude>28.08256590461729</latitude>
+					<altitude>0</altitude>
+					<range>88.29371157400612</range>
+					<tilt>0</tilt>
+					<heading>8.633540737161729e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-16.5693071701084,28.08261960124695,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Perranporth, UK</name>
+				<description><![CDATA[The Millennium Sundial was designed by Stuart Thorn. It tells Cornish time which is 20 minutes ahead of GMT.
+<p><img src="http://www.cornwalls.co.uk/photos/data/media/2/perranporth_sundial.jpg" width="421" hight="280"></p>]]></description>
+				<LookAt>
+					<longitude>-5.157517535037663</longitude>
+					<latitude>50.34723421976403</latitude>
+					<altitude>0</altitude>
+					<range>65.69642310338585</range>
+					<tilt>0</tilt>
+					<heading>-0.01795551609583625</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-5.157537433789316,50.34733238709538,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Council Bluffs, Iowa, USA</name>
+				<description><![CDATA[Large sundial at Council Bluffs Public Library
+
+<p><img src="http://www.sunpath-designs.com/librarydial1b.jpg" width="400" hight="300"></p>
+<p><img src="http://www.sunpath-designs.com/librarydial2b.jpg" width="400" hight="300"></p>
+<p><img src="http://www.sunpath-designs.com/librarydial3b.jpg" width="400" hight="300"></p>]]></description>
+				<LookAt>
+					<longitude>-95.84953495410247</longitude>
+					<latitude>41.25887711431908</latitude>
+					<altitude>0</altitude>
+					<range>196.5752069699831</range>
+					<tilt>2.583166383376495e-010</tilt>
+					<heading>0.0002124063872384501</heading>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-95.84981881431206,41.25888611306795,294.4878429401121</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial. Meckhofen, Leverkusen, Germany</name>
+				<description><![CDATA[<p><img src="http://www.leverkusen.de/stadtportrait/partnerstaedte/400pxPartnerstaedteSonnenuhr01.jpg"></p>
+<p>Image source:<a href="v">www.leverkusen.de</a></p>
+
+<p><img src="http://www.lev2000.de/guide/Archiv1.jpg/39/Sonnenuhr01.jpg"></p>
+
+<p><img src="http://www.lev2000.de/guide/Archiv1.jpg/39/Sonnenuhr02.jpg"></p>
+<p>Image source:<a href="http://www.lev2000.de/guide/Archiv1.jpg/39/Sonnenuhr02.jpg">www.lev2000.de</a></p>]]></description>
+				<LookAt>
+					<longitude>7.083354426150351</longitude>
+					<latitude>51.04845387008112</latitude>
+					<altitude>0</altitude>
+					<range>66.17616066250443</range>
+					<tilt>9.735256695418331e-010</tilt>
+					<heading>0.0006924896867520876</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>7.083321386023442,51.04852440832129,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial,  Adler Planetarium, Chicago, USA</name>
+				<description><![CDATA[<p><img src="http://www.wherry.com/photos/2001-04-29-chicago/DSCN1221-m.jpg" width="500" hight="375"></p>]]></description>
+				<LookAt>
+					<longitude>-87.60711153340705</longitude>
+					<latitude>41.86674796371171</latitude>
+					<altitude>0</altitude>
+					<range>27.37440941953917</range>
+					<tilt>0</tilt>
+					<heading>0.008419825260544345</heading>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-87.60710764637246,41.86681374132155,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Rose Garden Sundial, Christchurch, New Zealand</name>
+				<description><![CDATA[<p>Thanks to <b>NormB</b></p>
+<a href="http://www.ccc.govt.nz/Parks/BotanicGardens/tour_gardens_central_rose_garden.asp">Rose Garden History</a>
+
+<p>
+<b>Photo - NormB 11th April 2006<br>
+<img src="http://img527.imageshack.us/img527/509/sundialig8.jpg" alt="Image Hosted by ImageShack.us" /><p>
+<b>Photo - NormB 11th April 2006<br>
+<img src="http://img527.imageshack.us/img527/786/sundialplaquefn9.jpg" alt="Image Hosted by ImageShack.us" />]]></description>
+				<LookAt>
+					<longitude>172.621331272394</longitude>
+					<latitude>-43.53038034442864</latitude>
+					<altitude>0</altitude>
+					<range>86.04933199573917</range>
+					<tilt>0</tilt>
+					<heading>1.801092527765711</heading>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>172.6213650004974,-43.53035465311722,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Natchez Park</name>
+				<description><![CDATA[<p>Thanks to <b>caroling</b></p>
+
+In Seaside, NW FL, USA on the Emerald Coast. Panoramic images and movies of a sundial and visions of Xtals (energy crystals) on the March equinox, 2006. See http://www.wholeo.net/Trips/Art/Web/TripsArt/Travel/Florida/borders/flBorders.htm]]></description>
+				<LookAt>
+					<longitude>-86.14177717779702</longitude>
+					<latitude>30.32184243688109</latitude>
+					<altitude>0</altitude>
+					<range>46.50596341362312</range>
+					<tilt>9.523139707563741e-010</tilt>
+					<heading>0.0925379903960088</heading>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<altitudeMode>relativeToGround</altitudeMode>
+					<coordinates>-86.14183223138707,30.32193188899003,3</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Charlotte, North Carolina, USA</name>
+				<description><![CDATA[<p>Thanks to <b>BrettHo</b></p>
+On the roof of the International Trade Center is this gigantic sundial.]]></description>
+				<LookAt>
+					<longitude>-80.84002590296151</longitude>
+					<latitude>35.22682691631484</latitude>
+					<altitude>0</altitude>
+					<range>73.21919569418378</range>
+					<tilt>0</tilt>
+					<heading>12.34188537748346</heading>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-80.84002447413604,35.22696160522812,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>KTPalmerSundial, Carefree, Arizona, USA</name>
+				<description><![CDATA[Thanks to <b>seer</b>.
+<p><img src="http://www.sundials.org/registry/regphotos/001_az_carefree_2.jpg"></p>
+http://www.bigwaste.com/photos/az/sundial/]]></description>
+				<LookAt>
+					<longitude>-111.9217799027029</longitude>
+					<latitude>33.8245907883639</latitude>
+					<altitude>0</altitude>
+					<range>119.8165563905356</range>
+					<tilt>2.774426682549449e-010</tilt>
+					<heading>-1.574999619300427e-005</heading>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-111.9218327194278,33.82468559440962,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, University of Science and Technology, Hong Kong</name>
+				<description><![CDATA[<p><img src="http://perso.orange.fr/cadrans.solaires/cadrans/images/Maes-hongkong.jpg" width="295" height="370"></p>
+
+<p>Image source:<a href="http://perso.orange.fr/cadrans.solaires/cadrans/originaux-monde.html">http://perso.orange.fr</a></p>]]></description>
+				<LookAt>
+					<longitude>114.2630116779084</longitude>
+					<latitude>22.33749401387006</latitude>
+					<altitude>0</altitude>
+					<range>111.6162130745504</range>
+					<tilt>0</tilt>
+					<heading>0.0003913059632004609</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>114.2629690669868,22.33764072332584,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial,  Pekin, Illinois</name>
+				<description><![CDATA[<p><img src="http://www.pekin.net/sundial/sundial.jpg"></p>
+<p>Image source:<a href="http://www.pekin.net/sundial/index.html">www.pekin.net</a></p>
+
+<p><img src="http://www.sundials.org/registry/regphotos/233_il_perkin_parkdial.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>-89.63076522889526</longitude>
+					<latitude>40.56267466732153</latitude>
+					<altitude>0</altitude>
+					<range>161.1716772997438</range>
+					<tilt>0</tilt>
+					<heading>0.009112399365723663</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-89.63089561079578,40.56281064339486,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Edinburg, Hidalgo, USA</name>
+				<description><![CDATA[<p><img src="http://www.sunpath-designs.com/utdial2b.GIF" width="300" hight="400"></p>
+
+<p><img src="http://www.sunpath-designs.com/utdial1b.gif"width="400" hight="300"><7p>]]></description>
+				<LookAt>
+					<longitude>-98.17095602857175</longitude>
+					<latitude>26.30618568257091</latitude>
+					<altitude>0</altitude>
+					<range>122.1950947751469</range>
+					<tilt>0</tilt>
+					<heading>-0.005400653570135644</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-98.17104492887813,26.30639237212602,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Keppel Henge,</name>
+				<description><![CDATA[<p><img src="http://www.mts.net/~sabanski/sundial/images/sundials%20of%20the%20world/Canada/Keppel%20Henge/sundial1.jpg"></p>
+<p>http://www.steveirvine.com/sundial.html</p>
+
+
+http://www.mts.net/~sabanski/sundial/sotw_canada_keppel.htm]]></description>
+				<LookAt>
+					<longitude>-80.94374423682251</longitude>
+					<latitude>44.79038599160477</latitude>
+					<altitude>0</altitude>
+					<range>164.0454159373261</range>
+					<tilt>0</tilt>
+					<heading>-0.007334046679263517</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-80.94383190841853,44.79038705635566,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial at Science North, Sudbury, Ontario</name>
+				<description><![CDATA[<p><img src="http://www.mts.net/~sabanski/sundial/images/sundials%20of%20the%20world/Canada/Science%20North/celeste1.jpg"></p>
+
+<p><img src="http://www.mts.net/~sabanski/sundial/images/sundials%20of%20the%20world/Canada/Science%20North/celeste2.jpg"></p>
+
+<p><img src="http://www.mts.net/~sabanski/sundial/images/sundials%20of%20the%20world/Canada/Science%20North/celeste3.jpg"></p>
+
+http://www.mts.net/~sabanski/sundial/sotw_canada_sn.htm]]></description>
+				<LookAt>
+					<longitude>-80.99582033913947</longitude>
+					<latitude>46.46976830028441</latitude>
+					<altitude>0</altitude>
+					<range>85.82915438648354</range>
+					<tilt>0</tilt>
+					<heading>0.0003317215281456315</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-80.99588716181201,46.46988111501548,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Amble, UK</name>
+				<description><![CDATA[<p><img src="http://ourworld.compuserve.com/homepages/Patrick_Powers/Amble.jpg"></p>
+http://ourworld.compuserve.com/homepages/Patrick_Powers/amble.htm]]></description>
+				<LookAt>
+					<longitude>-1.581634687429885</longitude>
+					<latitude>55.33514811404725</latitude>
+					<altitude>0</altitude>
+					<range>62.55005662709024</range>
+					<tilt>8.224100904372228e-010</tilt>
+					<heading>-0.008198736253532122</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-1.581720999552488,55.3352025087941,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, University of Maryland, College Park</name>
+				<description><![CDATA[<p><img src="http://www.mts.net/~sabanski/sundial/images/sundials%20of%20the%20world/USA/Maryland/Univ%20of%20Maryland%20.jpg"></p>
+http://www.mts.net/~sabanski/sundial/sotw_usa_mland.htm]]></description>
+				<LookAt>
+					<longitude>-76.94256839624576</longitude>
+					<latitude>38.98603731470438</latitude>
+					<altitude>0</altitude>
+					<range>69.47353847793947</range>
+					<tilt>0</tilt>
+					<heading>-0.00947513273561203</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-76.94253686137193,38.98616316295006,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Fort San Felipe del Morro, Puerto Rico</name>
+				<description><![CDATA[<p><img src="http://www.sundials.org/registry/regphotos/564_cuba_habana_1.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>-66.11899284422442</longitude>
+					<latitude>18.46786530709565</latitude>
+					<altitude>0</altitude>
+					<range>122.9114928009769</range>
+					<tilt>0</tilt>
+					<heading>0.001639161983653822</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-66.11900470518663,18.4679529172629,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Rose Garden, Phoenix</name>
+				<description><![CDATA[<p><img src="http://www.sundials.org/registry/regphotos/007_az_phoenix.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>-112.0911976535298</longitude>
+					<latitude>33.47007786030556</latitude>
+					<altitude>0</altitude>
+					<range>26.72933602203598</range>
+					<tilt>4.053298886062559e-011</tilt>
+					<heading>0.0001093808645832187</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-112.0912131593616,33.4701136927338,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Tucson, Arizona</name>
+				<description><![CDATA[<p><img src="http://www.sundials.org/registry/regphotos/012_az_tucson_la_pilita.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>-110.9748374101104</longitude>
+					<latitude>32.21591986778585</latitude>
+					<altitude>0</altitude>
+					<range>42.12321141209996</range>
+					<tilt>0</tilt>
+					<heading>-0.0002919115031976927</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-110.9748562940359,32.21593667064053,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Flandrau Planetarium, Tucson</name>
+				<description><![CDATA[<p><img src="http://www.sundials.org/registry/regphotos/013_az_tuscon_flandrau_planetarium.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>-110.9477979774635</longitude>
+					<latitude>32.23224398378896</latitude>
+					<altitude>0</altitude>
+					<range>33.29181342845133</range>
+					<tilt>3.6608792363658e-017</tilt>
+					<heading>0.0001605580448802178</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-110.9478231994691,32.23228861367718,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Vietnam Veterans Memorial, Kentucky</name>
+				<description><![CDATA[<p><img src="http://www.vietvet.org/images/vn/billm/rags9.gif"></p>
+
+http://www.vietvet.org/kymem.htm]]></description>
+				<LookAt>
+					<longitude>-84.8640348419774</longitude>
+					<latitude>38.17725413584271</latitude>
+					<altitude>0</altitude>
+					<range>136.9757698325458</range>
+					<tilt>1.322889725758878e-010</tilt>
+					<heading>-0.0003615314930558497</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-84.86405079639164,38.17749508752453,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Claremont, California</name>
+				<description><![CDATA[<p><img src="http://www.sundials.org/registry/regphotos/505_ca_claremont_1.jpg"></p>
+
+<p><img src="http://www.sundials.org/registry/regphotos/505_ca_claremont_2.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>-117.7288129576152</longitude>
+					<latitude>34.0992297660836</latitude>
+					<altitude>0</altitude>
+					<range>60.73786036422235</range>
+					<tilt>1.321942869740197e-009</tilt>
+					<heading>-0.002677989156069468</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-117.7288254316814,34.09928418001653,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Hoogezand, Netherlands</name>
+				<description><![CDATA[The sundial in the Gorechtpark  was built in 1994 by the artist  Chris Verbeek.
+<p><img src="http://www.hoogezand-sappemeer.nl/plaat.php?fileid=3054"></p>
+
+http://www.hoogezand-sappemeer.nl/index.php?simaction=content&mediumid=10&pagid=335&fontsize=10&stukid=2597]]></description>
+				<LookAt>
+					<longitude>6.73589462010654</longitude>
+					<latitude>53.15594584104552</latitude>
+					<altitude>0</altitude>
+					<range>139.6528910743265</range>
+					<tilt>1.45482979338997e-010</tilt>
+					<heading>0.002950231733866508</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>6.73578802230557,53.15607461082266,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Hoogeveen, Netherlands</name>
+				<description><![CDATA[Sundial at Unigarant, Hoogeveen.
+<p><img src="http://www.de-zonnewijzerkring.nl/imgs-arch/werk-07-05-01.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>6.469908327982116</longitude>
+					<latitude>52.72012840714818</latitude>
+					<altitude>0</altitude>
+					<range>73.67703044709106</range>
+					<tilt>4.200981642085038e-012</tilt>
+					<heading>-0.0001367978398152192</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>6.469803362243752,52.72017851542101,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Bicentennial Park, Homebush, Australia</name>
+				<description><![CDATA[This 'walkthrough' sundial with a gnomon 8m long is well worth a visit and is near to the Olympic Park site of the 2000 Olympics. Hour lines and declination lines are set as brass strips in a concrete base dialface.
+<p><img src="http://www.rnzih.org.nz/images/sun13.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>151.0785472180646</longitude>
+					<latitude>-33.84641177017981</latitude>
+					<altitude>0</altitude>
+					<range>163.2808310648841</range>
+					<tilt>1.201655085829064e-011</tilt>
+					<heading>4.265000695512084e-006</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>151.0784520824468,-33.84631674048389,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Heerenveen, Netherlands</name>
+				<description><![CDATA[A sundial in a roundabout.
+<p><img src="http://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Zonnewijzer_Heerenveen_16.JPG/300px-Zonnewijzer_Heerenveen_16.JPG"></p>]]></description>
+				<LookAt>
+					<longitude>5.948360581453846</longitude>
+					<latitude>52.95021342348947</latitude>
+					<altitude>0</altitude>
+					<range>125.5263208537314</range>
+					<tilt>3.779142327674902e-010</tilt>
+					<heading>2.174750871196e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>5.94828156186523,52.95041125062435,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Zoetermeer, Netherlands</name>
+				<description><![CDATA[A triangle shaped sundial.
+<p><img src="http://www.chabot.demon.nl/images/Zoetermeer03.jpg"></p>
+
+http://www.chabot.demon.nl/sundials/index3.htm]]></description>
+				<LookAt>
+					<longitude>4.48801136665803</longitude>
+					<latitude>52.03630549285332</latitude>
+					<altitude>0</altitude>
+					<range>64.63218166015471</range>
+					<tilt>0</tilt>
+					<heading>-0.0001443420778625332</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>4.48796065586356,52.03633054351467,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Lancaster, Lancashire, UK</name>
+				<description><![CDATA[A very nice analemmanic sundial made of stone.
+<p><img src="http://static2.bareka.com/photos/medium/2472257/lancaster-sundial.jpg"></p>
+
+<p><img src="http://static4.bareka.com/photos/medium/2472163/becoming-gnomon.jpg"></p>
+
+<p><img src="http://static2.bareka.com/photos/medium/2472201/telling-time.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>-2.781711751106886</longitude>
+					<latitude>54.04618182827939</latitude>
+					<altitude>0</altitude>
+					<range>59.27999100628823</range>
+					<tilt>0</tilt>
+					<heading>2.19677695423205e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-2.781728090880108,54.0462693701831,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial,  Nida, Lithuania</name>
+				<description><![CDATA[A large horizontal sundial.
+<p><img src="http://static1.bareka.com/photos/medium/47224/nida.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>20.99037235133227</longitude>
+					<latitude>55.29501544197078</latitude>
+					<altitude>0</altitude>
+					<range>177.9373429950499</range>
+					<tilt>4.620370977113893e-011</tilt>
+					<heading>0.0005344762650417512</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>20.99033020665709,55.29525661423606,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Tavel, France</name>
+				<description><![CDATA[A very large sundial, sadly in low res.
+<p><img src="http://www.de-zonnewijzerkring.nl/imgs-arch/zw-07-03-01.jpg" width="360" hight="270"></p>
+
+http://www.de-zonnewijzerkring.nl/zw-arch/eng-home-zw-07-03.htm]]></description>
+				<LookAt>
+					<longitude>4.700355808916944</longitude>
+					<latitude>44.00154771856498</latitude>
+					<altitude>0</altitude>
+					<range>254.0752666918187</range>
+					<tilt>2.46623000787332e-010</tilt>
+					<heading>-0.0002391009248289202</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>4.700351044280055,44.00172761202828,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, St. Michielsgestel, Netherlands</name>
+				<description><![CDATA[A large sundial in the gardens of the Institute for the Deaf in Sint Michielsgestel.
+
+<p><img src="http://www.de-zonnewijzerkring.nl/imgs-arch/zw-06-10-01.jpg"></p>
+
+<p><img src="http://www.de-zonnewijzerkring.nl/imgs-arch/zw-06-10-02.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>5.346086124850936</longitude>
+					<latitude>51.64327189620946</latitude>
+					<altitude>0</altitude>
+					<range>111.9437734662239</range>
+					<tilt>6.47253437341193e-010</tilt>
+					<heading>0.002375287388397793</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>5.346049636943462,51.64334209867396,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial,  Halle Saale, Germany</name>
+				<description><![CDATA[Analemmatic sundial at the Planetarium
+"Sigmund Jähn" planetarium, Halle.
+<p><img src="http://home.arcor.de/peter.lindner/sonnenuhr/h/halle_saale_061xx/5973_peissnitzinsel_planetarium_200707163002.jpg"></p>
+
+More photos:http://home.arcor.de/peter.lindner/sonnenuhr/h/halle_saale_061xx/halle_saale_061xx.htm]]></description>
+				<LookAt>
+					<longitude>11.94846541701928</longitude>
+					<latitude>51.49449346439673</latitude>
+					<altitude>0</altitude>
+					<range>51.14591828296211</range>
+					<tilt>0</tilt>
+					<heading>0.0003207363265956715</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>11.9484244247504,51.49452140024068,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Abano Terme, Italy</name>
+				<description><![CDATA[<p><img src="http://members.aon.at/sundials/images/italia/i_07207.jpg"></p>
+
+http://members.aon.at/sundials/bild43_d.htm]]></description>
+				<LookAt>
+					<longitude>11.7902588657866</longitude>
+					<latitude>45.36024293920432</latitude>
+					<altitude>0</altitude>
+					<range>88.27261765894279</range>
+					<tilt>5.645767845941023e-011</tilt>
+					<heading>0.0006214879519801648</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>11.79017178556217,45.36037512888652,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Gasworks Park, Seattle, USA</name>
+				<description><![CDATA[The sundial at Gas Works Park
+<p><img src="http://www.magnusonpark.org/images/sundial.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>-122.3362979085422</longitude>
+					<latitude>47.64532276753428</latitude>
+					<altitude>0</altitude>
+					<range>144.9142629968483</range>
+					<tilt>1.398328526418574e-010</tilt>
+					<heading>-0.002257590778485548</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-122.3363617333393,47.64542146106401,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Biarritz, France</name>
+				<description><![CDATA[<p><img src="http://www.santiago-compostela.net/pix/biar2.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>-1.554172472866423</longitude>
+					<latitude>43.49326953476108</latitude>
+					<altitude>0</altitude>
+					<range>25.2767811064234</range>
+					<tilt>1.050991544755056e-009</tilt>
+					<heading>0.004580769709390601</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-1.554180928484328,43.49329288628002,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Biarritz, France</name>
+				<description><![CDATA[This is a small analemmatic sundial painted on the ground.
+<p><img src="http://www.santiago-compostela.net/pix/biar1.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>-1.566562523529829</longitude>
+					<latitude>43.48379630381277</latitude>
+					<altitude>0</altitude>
+					<range>21.65084680450158</range>
+					<tilt>3.134801309486055e-010</tilt>
+					<heading>-0.003938809314781338</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-1.566563732160418,43.48381046528652,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Gardens of Easton Lodge, UK</name>
+				<description><![CDATA[Easton Lodge, Little Easton, Dunmow, Essex, UK
+
+<p><img src="http://www.sundials.co.uk/pix/easton1.jpg"></p>
+
+<p><img src="http://www.sundials.co.uk/pix/easton2.jpg"></p>
+
+http://www.sundials.co.uk/newdials.htm]]></description>
+				<LookAt>
+					<longitude>0.3149818536825662</longitude>
+					<latitude>51.89078052542742</latitude>
+					<altitude>0</altitude>
+					<range>55.96449646091584</range>
+					<tilt>4.648925194094304e-010</tilt>
+					<heading>0.00100690081475908</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>0.3149732952370528,51.89085713320831,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Drake University, Des Moines, Iowa, USA</name>
+				<description><![CDATA[<p><img src="http://www.sundials.org/registry/regphotos/483_io_desmoines_drake_univ.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>-93.65212284615454</longitude>
+					<latitude>41.60195541103381</latitude>
+					<altitude>0</altitude>
+					<range>78.72982107342352</range>
+					<tilt>1.765081595632672e-010</tilt>
+					<heading>0.001286572559733559</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-93.65218647671061,41.60204463077999,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, River State Park, Indianapolis, USA</name>
+				<description><![CDATA[<p><img src="http://www.sundials.org/registry/regphotos/276_in_indi_wrsp.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>-86.17152524772823</longitude>
+					<latitude>39.76773209074677</latitude>
+					<altitude>0</altitude>
+					<range>54.39844455317644</range>
+					<tilt>0</tilt>
+					<heading>0.002275213067656348</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-86.17158357583082,39.76772499391254,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Lawrence Hall of Science, Berkeley, CA, USA</name>
+				<description><![CDATA[<p><img src="http://sundials.org/conference/2000/image176.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>-122.2467934369336</longitude>
+					<latitude>37.87843955912407</latitude>
+					<altitude>0</altitude>
+					<range>75.73772829567238</range>
+					<tilt>0</tilt>
+					<heading>-0.0005027058674008065</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-122.2468395686324,37.87850249930867,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Riverwalk, Augusta, Georgia, USA</name>
+				<description><![CDATA[<p><img src="http://www.coe.uga.edu/sdpl/3hgh_res/sundial1.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>-81.96495913544699</longitude>
+					<latitude>33.47855115889769</latitude>
+					<altitude>0</altitude>
+					<range>24.10683016246917</range>
+					<tilt>0</tilt>
+					<heading>-0.004039593559848222</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-81.96497422223469,33.47856125757188,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Reggio nell&apos;Emilia, Italy</name>
+				<description><![CDATA[<p><img src="http://perso.orange.fr/cadrans.solaires/cadrans/images/cadran_righi_araign%E9e.jpg"></p>
+<p>Image source:<a href="http://perso.orange.fr/cadrans.solaires/cadrans/Cadran-brescia.html">http://perso.orange.fr</a></p>]]></description>
+				<LookAt>
+					<longitude>10.64303919389926</longitude>
+					<latitude>44.71779646338597</latitude>
+					<altitude>0</altitude>
+					<range>189.7095730357674</range>
+					<tilt>0</tilt>
+					<heading>0.0003188808607201916</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>10.64294491831197,44.71794161105381,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Rennes, France</name>
+				<description><![CDATA[<p><img src="http://perso.orange.fr/cadrans.solaires/cadrans/images/cadran_beauregard_300.jpg"></p>
+
+<p>Image source:<a href="http://perso.orange.fr/cadrans.solaires/cadrans/images/cadran_beauregard_300.jpg">http://perso.orange.fr</a></p>]]></description>
+				<LookAt>
+					<longitude>-1.701676278457902</longitude>
+					<latitude>48.13126501865703</latitude>
+					<altitude>0</altitude>
+					<range>61.61200771227915</range>
+					<tilt>0</tilt>
+					<heading>-7.297875936612596e-006</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-1.701699217745187,48.13129604209563,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Schneverdingen, Germany</name>
+				<description><![CDATA[<p><img src="http://www.schneverdingen-touristik.de/Rest/Sonnenuhr%20quer.jpg" width="320" hight ="240"></p>]]></description>
+				<LookAt>
+					<longitude>9.790867938787324</longitude>
+					<latitude>53.12943797238091</latitude>
+					<altitude>0</altitude>
+					<range>106.7617213575405</range>
+					<tilt>4.722006958129564e-010</tilt>
+					<heading>0.00116683463628678</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>9.790707601654233,53.12958381093443,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial Obelisk, Charleston, South Carolina</name>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/display/10a1f88a-71e0-4341-96f3-e8e687af05c9.jpg"></p>
+
+<p>Image credit:<a href="http://www.waymarking.com/waymarks/WM9J1">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>-79.93166502066842</longitude>
+					<latitude>32.76970334074068</latitude>
+					<altitude>0</altitude>
+					<range>75.62015855417492</range>
+					<tilt>4.052617221081382e-011</tilt>
+					<heading>1.8933011389851e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-79.93172500691688,32.76973746165206,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Morehead Planetarium, Chapel Hill, North Carolina</name>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/log/display/a71ce131-2875-4856-958f-2ca5e57a1df9.jpg"></p>
+
+<p>Image credit:<a href="http://www.waymarking.com/waymarks/WMCBZ">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>-79.050938325099</longitude>
+					<latitude>35.91448691988588</latitude>
+					<altitude>0</altitude>
+					<range>64.77863580575449</range>
+					<tilt>0</tilt>
+					<heading>1.662447442472179e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-79.05097493816135,35.91457037097104,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Berkeley,
+California</name>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/log/display/9c455a92-2816-4071-950e-91f17b6fa4bd.jpg"></p>
+
+<p>Image credit:<a href="http://www.waymarking.com/waymarks/WM988">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>-122.3174670551103</longitude>
+					<latitude>37.86291969151575</latitude>
+					<altitude>0</altitude>
+					<range>46.45520126730318</range>
+					<tilt>1.288314315217904e-009</tilt>
+					<heading>2.022127862982459e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-122.317517078111,37.86295037394118,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Forest Lawn Cemetery Sundial, Buffalo, NY</name>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/display/c6aef5f9-367d-45f2-8f8c-d01bf5d233ae.jpg"></p>
+
+<p>Image credit:<a href="http://www.waymarking.com/waymarks/WMJQ8">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>-78.85654999999994</longitude>
+					<latitude>42.92531666666667</latitude>
+					<altitude>0</altitude>
+					<range>76.25216432595194</range>
+					<tilt>0</tilt>
+					<heading>1.305178628551349e-014</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-78.85660856395873,42.92539096384056,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Ruston Way Sundial ,Tacoma, Washington</name>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/display/dd5439e7-0312-443d-9557-d4986582ef59.jpg"></p>
+
+<p>Image credit:<a href="http://www.waymarking.com/waymarks/WMXQB">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>-122.4622812282256</longitude>
+					<latitude>47.27566486193976</latitude>
+					<altitude>0</altitude>
+					<range>62.22457114364932</range>
+					<tilt>0</tilt>
+					<heading>0.0001239840172672445</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-122.4623519976878,47.27567991760397,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial ,Science Central, Fort Wayne, Indiana</name>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/display/e78d7f23-8999-47be-b678-e7140aa82ca7.jpg"></p>
+
+<p>Image credit:<a href="http://www.waymarking.com/waymarks/WMYG1">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>-85.1392719076301</longitude>
+					<latitude>41.09135262868964</latitude>
+					<altitude>0</altitude>
+					<range>39.45104173043256</range>
+					<tilt>0</tilt>
+					<heading>-1.439899387224993e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-85.13931366905783,41.09136114213859,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Berkswich Millennium Sundial, Broc Hill, Staffordshire, UK</name>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/display/3351745c-c573-4970-98ef-8ba7740c9bca.jpg"></p>
+
+<p>Image credit:<a href="http://www.waymarking.com/waymarks/WMR8X">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>-2.038136129920761</longitude>
+					<latitude>52.77711389120437</latitude>
+					<altitude>0</altitude>
+					<range>29.50351061813827</range>
+					<tilt>0</tilt>
+					<heading>3.758749562499077e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-2.038162283146562,52.77714418176907,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Tazacorte Beach ,La Palma island</name>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/display/10cced19-2b34-482d-86c5-ee72fca9ab87.jpg" width="400" height="300"></p>
+
+<p>Image credit:<a href="http://www.waymarking.com/waymarks/WM173Y">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>-17.9461489138289</longitude>
+					<latitude>28.65121498294262</latitude>
+					<altitude>0</altitude>
+					<range>64.36805201552387</range>
+					<tilt>0</tilt>
+					<heading>4.047704004228316e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-17.94620263531645,28.65124065936443,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Rochester, NY</name>
+				<description><![CDATA[Residence Hall Quad Sundial
+<p><img src="http://img.groundspeak.com/waymarking/display/86272fd4-17ae-4b5d-a120-35ba49574a1d.jpg"></p>
+
+<p>Image credit:<a href="http://www.waymarking.com/waymarks/WM13N7">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>-77.66915367541856</longitude>
+					<latitude>43.0844306339545</latitude>
+					<altitude>0</altitude>
+					<range>61.69080872372956</range>
+					<tilt>0</tilt>
+					<heading>9.994948692290747e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-77.66917908415978,43.08440844604031,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Center of the World, Felicity, CA</name>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/log/691c99be-50f7-4916-88e7-9e103d994b22.jpg"></p>
+
+<p>
+The 15 foot Sundial at Felicity is a three-dimensional bronze of Michelangelo's Arm of God painted on the Sistine Chapel ceiling. The arm was sculpted and cast in bronze in New England. The rock is local but the installation required the assistance of a mining engineer and a special drill. The bronze Roman numerals give the time. A sundial is precisely accurate once a year and this was set at noon on Christmas Day. The arm points to the Hill of Prayer, site of the Church on the Hill at Felicity.
+At the entrance to The Center of the World campus is a 25 ft. high section of the original stairway of the Eiffel Tower. In 1983, the Government of France removed approximately 500 ft. of the original stairway. Built with the technology of the 1860's, the weight of approximately 54,000 lbs. was causing sway at the top of the then 94 year old tower. The 6,600 lb. section serves no practical purpose, but is part of the spirit of Felicity.
+The idea of making Felicity the Center of the World came to Jacques-André when he'd been mayor only a few months. Somehow he convinced Imperial County, CA, to recognize his claim. Soon he had convinced the Institut Geographique National of France, General Dynamics Corporation, and The People's Republic of China to recognize it as well. "I knew I had to build something, but I didn't know what. My wife said, 'It's a desert; why not a pyramid?' So Jacques-André had built a 21-foot-tall pink marble pyramid, its interior lined with mirrors, a plaque embedded in the floor, marking the exact spot. For a dollar, tourists can now stand on the official Center Of The World and take a picture themselves at the official "Center Of The World".
+The Felicity Post Office was dedicated on 5 December 1987 at a time when thousands of small post offices were being eliminated as an economy measure. The town, whose population numbered two, saw over 2,300 letters mailed that day. The dedication ceremony was highlighted by a speech in Chinese by Consul Zhou of the People’s Republic of China who traveled 600 miles for the occasion. It is operated by the town at a cost to the Federal Government of one dollar per year. Twenty uncashed one dollar checks are on file.</p>
+
+<p>Image and info credit:<a href="http://www.waymarking.com/waymarks/WM19WB">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>-114.7654750861393</longitude>
+					<latitude>32.74988921016088</latitude>
+					<altitude>0</altitude>
+					<range>72.95555856498569</range>
+					<tilt>0</tilt>
+					<heading>3.146266385893141e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-114.7655284077745,32.74992976207647,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>University of São Paulo Sundial, Sao Paulo, Brazi</name>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/display/a5362062-9509-4022-9693-fc2a064301d8.jpg"></p>
+
+<p>Image credit:<a href="http://www.waymarking.com/waymarks/WM1DJT">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>-46.7204986760494</longitude>
+					<latitude>-23.56120553413547</latitude>
+					<altitude>0</altitude>
+					<range>122.7188487961642</range>
+					<tilt>0</tilt>
+					<heading>2.610051397350573e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-46.7205459522717,-23.56115337159118,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Slate bowl Sundial, Holker, UK</name>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/display/c6aca7e1-9221-4d8f-a0f4-e062e06346f9.jpg"></p>
+
+<p>Image credit:<a href="http://www.waymarking.com/waymarks/WM1DRW">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>-2.987191130383048</longitude>
+					<latitude>54.188865359179</latitude>
+					<altitude>0</altitude>
+					<range>98.16442365143851</range>
+					<tilt>2.595660029656298e-010</tilt>
+					<heading>0.000142350860720713</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-2.987342530279506,54.18895843924356,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Jardin des Doms, Avignon</name>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/display/46383080-d099-4450-98a9-6d15c1c16441.jpg"></p>
+
+<p>Image credit:<a href="http://www.waymarking.com/waymarks/WM1M8Z">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>4.807697613943427</longitude>
+					<latitude>43.95301885165002</latitude>
+					<altitude>0</altitude>
+					<range>32.75914708134153</range>
+					<tilt>1.205283678723288e-009</tilt>
+					<heading>2.147953504845766e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>4.807672022945837,43.95303620373285,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Rillito Riverpark Sundial, Tucson, AZ</name>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/display/6c0bf495-b4fe-4549-a1c1-af8fb4328eae.jpg"></p>
+
+<p>Image credit:<a href="http://www.waymarking.com/waymarks/WM1TC7">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>-111.0075277787534</longitude>
+					<latitude>32.30113621710221</latitude>
+					<altitude>0</altitude>
+					<range>94.15682746212195</range>
+					<tilt>0</tilt>
+					<heading>2.968664599173171e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-111.0075933392788,32.30113929573149,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Helium Monument Sundial, Amarillo, TX</name>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/display/a0b45c91-a572-4ca1-8a9d-b5ebb84c028b.jpg"></p>
+
+<p>Image credit:<a href="http://www.waymarking.com/waymarks/WM1WJY">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>-101.9132978901728</longitude>
+					<latitude>35.19956726276647</latitude>
+					<altitude>0</altitude>
+					<range>60.53404995378031</range>
+					<tilt>5.162016480480558e-011</tilt>
+					<heading>3.00374135059527e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-101.9133182362553,35.19966266329223,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Hershey, Pennsylvania</name>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/display/fbb33ffa-3867-4f28-b12c-77bf647e1d13.jpg"></p>
+
+<p>Image credit:<a href="http://www.waymarking.com/waymarks/WM1XC1">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>-76.62980321024054</longitude>
+					<latitude>40.27170452963257</latitude>
+					<altitude>0</altitude>
+					<range>72.41553799015709</range>
+					<tilt>2.798231534250927e-010</tilt>
+					<heading>6.256605840320539e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-76.6298565862236,40.2718754812139,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>King Neptune Sundial, Hilton Head Island, South Carolina</name>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/display/e48230f9-b1fd-4cf6-bc81-7f0719cc13a5.jpg"></p>
+
+<p>Image credit:<a href="http://www.waymarking.com/waymarks/WM2EY7">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>-80.72801698168738</longitude>
+					<latitude>32.18076491029077</latitude>
+					<altitude>0</altitude>
+					<range>86.36647046692004</range>
+					<tilt>2.346233297172379e-010</tilt>
+					<heading>8.72178085589082e-006</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-80.72806102317654,32.18084680335104,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Jane Larue Memorial Sundial - Ann Arbor, Michigan</name>
+				<description><![CDATA[<p><img src="http://img.groundspeak.com/waymarking/display/936cd562-a97c-44bd-8ed5-fcdf2495076d.jpg"></p>
+
+<p>Image credit:<a href="http://www.waymarking.com/waymarks/WM290J">www.groundspeak.com</a></p>]]></description>
+				<LookAt>
+					<longitude>-83.66222470201295</longitude>
+					<latitude>42.30114702626376</latitude>
+					<altitude>0</altitude>
+					<range>26.29476256996721</range>
+					<tilt>0</tilt>
+					<heading>0.0001291940559531826</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy70</styleUrl>
+				<Point>
+					<coordinates>-83.66224748552365,42.30117333470928,0</coordinates>
+				</Point>
+			</Placemark>
+		</Folder>
+		<Folder>
+			<name>Schoolyard Sundials</name>
+			<Placemark>
+				<name>Sundial, Julius-Brecht-Allee, Bremen</name>
+				<LookAt>
+					<longitude>8.8674012861685</longitude>
+					<latitude>53.07651505713779</latitude>
+					<altitude>0</altitude>
+					<range>20.6687721420542</range>
+					<tilt>9.001122528249614e-011</tilt>
+					<heading>-0.00437506724289509</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>8.867391721405184,53.07654483342672,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Drebberstraße, Bremen</name>
+				<description><![CDATA[<p><img src="http://planetarium.hs-bremen.de/planetarium/pics/drebber.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>8.898052233187912</longitude>
+					<latitude>53.0400952944841</latitude>
+					<altitude>0</altitude>
+					<range>14.44345748598086</range>
+					<tilt>0</tilt>
+					<heading>-0.001637659480767247</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>8.898047664850367,53.04011230005033,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Butjadingersrasse, Bremen</name>
+				<description><![CDATA[<p><img src="http://planetarium.hs-bremen.de/planetarium/astroinfo/sonnenuhren/sonstige/butjadinger.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>8.759747956980032</longitude>
+					<latitude>53.08143879125452</latitude>
+					<altitude>0</altitude>
+					<range>37.83897098076405</range>
+					<tilt>0</tilt>
+					<heading>-0.002629545926081431</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>8.759712018733111,53.08151322706201,0</coordinates>
+				</Point>
+			</Placemark>
+		</Folder>
+		<Folder>
+			<name>In Progress</name>
+			<Placemark>
+				<name>Sundial, Greenwich, USA</name>
+				<description><![CDATA[<p><img src="http://www.sundials.org/registry/regphotos/345_ct_greenwich.jpg"></p>]]></description>
+				<LookAt>
+					<longitude>-73.61498302559443</longitude>
+					<latitude>41.02226092221508</latitude>
+					<altitude>0</altitude>
+					<range>149.2259168633856</range>
+					<tilt>1.357926888487057e-010</tilt>
+					<heading>-0.001539166856947675</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>-73.61504279924034,41.022311140554,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sonnenuhr?</name>
+				<LookAt>
+					<longitude>11.05508326700377</longitude>
+					<latitude>49.45922489288633</latitude>
+					<altitude>0</altitude>
+					<range>50.88443884213967</range>
+					<tilt>8.335955203191607e-009</tilt>
+					<heading>0.0196675278275586</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>11.0551380716084,49.45927364486676,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Edgewood Park, New Haven, USA</name>
+				<description><![CDATA[<p><img src="http://www.sundials.org/registry/regphotos/279_ct_newha_eng.jpg"><p>
+
+<p><img src="http://www.sundials.org/registry/regphotos/279_ct_newha_eng2.jpg"><p>]]></description>
+				<LookAt>
+					<longitude>-72.95215163561284</longitude>
+					<latitude>41.31399188322968</latitude>
+					<altitude>0</altitude>
+					<range>154.2904142456261</range>
+					<tilt>0</tilt>
+					<heading>0.002187256502984029</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>-72.95224192688632,41.31401837758977,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial, Pearl City, Oahu, USA</name>
+				<description><![CDATA[<p><img src="http://www.sundials.org/registry/regphotos/535_hi_pearlcity_uofhi_1.jpg" height="300px" width="450px"></p>]]></description>
+				<LookAt>
+					<longitude>-157.975920511215</longitude>
+					<latitude>21.39370171784438</latitude>
+					<altitude>0</altitude>
+					<range>93.82906502148613</range>
+					<tilt>0</tilt>
+					<heading>-0.001426474135915891</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>-157.9759385077734,21.39376422631041,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial</name>
+				<description>http://maget.maget.free.fr/SiteMont/index.html</description>
+				<LookAt>
+					<longitude>-1.511135684750573</longitude>
+					<latitude>48.63640399624012</latitude>
+					<altitude>0</altitude>
+					<range>623.6899626138724</range>
+					<tilt>0</tilt>
+					<heading>-1.851737885201182e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>-1.511518347366319,48.63786003229999,0</coordinates>
+				</Point>
+			</Placemark>
+			<GroundOverlay>
+				<name>Mont-Saint-Michel</name>
+				<description>http://maget.maget.free.fr/SiteMont/MSpage4.htm</description>
+				<Icon>
+					<href>http://maget.maget.free.fr/SiteMont/images/le_Mont_Solaire-Land%20Art.jpg</href>
+					<viewBoundScale>0.75</viewBoundScale>
+				</Icon>
+				<LatLonBox>
+					<north>48.63770978435333</north>
+					<south>48.6344604605756</south>
+					<east>-1.5070705975067</east>
+					<west>-1.514375149320612</west>
+					<rotation>-11.46597601725745</rotation>
+				</LatLonBox>
+			</GroundOverlay>
+			<Placemark>
+				<name>Sundial Park, Ludiver park</name>
+				<description>http://perso.orange.fr/cadrans.solaires/cadrans/cadran-parc-ludiver.html</description>
+				<LookAt>
+					<longitude>-1.727863357864637</longitude>
+					<latitude>49.63119498354116</latitude>
+					<altitude>0</altitude>
+					<range>473.1060190443535</range>
+					<tilt>3.883358970183465e-011</tilt>
+					<heading>0.0005701632901766135</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>-1.728331456927833,49.63191584214422,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sonnenuhr?</name>
+				<LookAt>
+					<longitude>7.68545763101957</longitude>
+					<latitude>51.53642499090419</latitude>
+					<altitude>0</altitude>
+					<range>23.70363190324798</range>
+					<tilt>4.475657800962137e-010</tilt>
+					<heading>-0.1674345977313924</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>7.685416995069303,51.53648149450991,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Sundial at Tower of London</name>
+				<description><![CDATA[<img src="http://gallery.ontopof-theworld.com/albums/photohunt/IMG_1031_t.jpg">]]></description>
+				<LookAt>
+					<longitude>-0.07656780337525181</longitude>
+					<latitude>51.50981727675416</latitude>
+					<altitude>0</altitude>
+					<range>61.73369699893549</range>
+					<tilt>9.251491983355112e-010</tilt>
+					<heading>0.009688876514144714</heading>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>-0.07656780337525181,51.50981727675417,0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>War Veterans&apos; Memorial Park Sundial, Florida, United States</name>
+				<LookAt>
+					<longitude>-82.77333790901622</longitude>
+					<latitude>27.8036881517592</latitude>
+					<altitude>0</altitude>
+					<range>96.43655563554265</range>
+					<tilt>4.405141995417006e-010</tilt>
+					<heading>9.892674215924156e-005</heading>
+					<altitudeMode>relativeToGround</altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_sunny_copy69</styleUrl>
+				<Point>
+					<coordinates>-82.77341348054247,27.80374932310448,0</coordinates>
+				</Point>
+			</Placemark>
+		</Folder>
+	</Folder>
+</Document>
+</kml>

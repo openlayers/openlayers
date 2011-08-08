@@ -1,0 +1,327 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+
+    function test_initialize(t) {
+        t.plan(1);
+
+        var ratio = 4;
+
+        var s = new OpenLayers.Strategy.BBOX({ratio: ratio});
+        t.eq(s.ratio, ratio, "ctor sets ratio");
+    }
+
+    function test_activate(t) {
+        t.plan(5);
+
+        var l = new OpenLayers.Layer.Vector();
+        var s = new OpenLayers.Strategy.BBOX();
+        s.setLayer(l);
+
+        t.eq(s.active, false, "not active after construction");
+
+        var activated = s.activate();
+        t.eq(activated, true, "activate returns true");
+        t.eq(s.active, true, "activated after activate");
+        t.ok(l.events.listeners["moveend"][0].obj == s &&
+             l.events.listeners["moveend"][0].func == s.update,
+             "activates registers moveend listener");
+        t.ok(l.events.listeners["refresh"][0].obj == s &&
+             l.events.listeners["refresh"][0].func == s.update,
+             "activates registers refresh listener");
+    }
+
+    function test_update(t) {
+        t.plan(5);
+
+        // Create a dummy layer that can act as the map base layer.
+        // This will be unnecessary if #1921 is addressed (allowing
+        // map to have different projection than base layer).
+        var dummy = new OpenLayers.Layer(null, {isBaseLayer: true});
+
+        var strategy = new OpenLayers.Strategy.BBOX({
+            ratio: 1 // makes for easier comparison to map bounds
+        });
+        var layer = new OpenLayers.Layer.Vector(null, {
+            isBaseLayer: true,
+            protocol: new OpenLayers.Protocol(),
+            strategies: [strategy]
+        });
+
+        // create a map with the layers and a center
+        var map = new OpenLayers.Map("map");
+        map.addLayers([dummy, layer]);
+        map.zoomToMaxExtent();
+        
+        /**
+         * The setCenter call above should set strategy bounds.  I *think* this
+         * issue is captured in http://trac.openlayers.org/ticket/1835.
+         * For now, I'm going to force an update on the strategy.  This line
+         * should be removed when the issue(s) described in #1835 are addressed.
+         */
+        strategy.update({force: true});
+        
+        // test that the strategy bounds were set
+        t.ok(map.getExtent().equals(strategy.bounds), "[set center] bounds set to map extent");
+        
+        // zoom and test that bounds are not reset
+        var old = strategy.bounds.clone();
+        map.zoomIn();
+        t.ok(strategy.bounds.equals(old), "[zoom in] bounds not reset");
+        
+        // force update and check that bounds change
+        strategy.update({force: true});
+        t.ok(!strategy.bounds.equals(old), "[force update] bounds changed");
+        t.ok(strategy.bounds.equals(map.getExtent()), "[force update] bounds set to map extent");
+        
+        // change the layer projection to confirm strategy uses same
+        layer.projection = new OpenLayers.Projection("EPSG:900913");
+        strategy.update({force: true});
+        var from = map.getProjectionObject();
+        var to = layer.projection;
+        t.ok(strategy.bounds.equals(map.getExtent().transform(from, to)), "[force update different proj] bounds transformed");
+        
+
+    }
+    
+    function test_events(t) {
+        
+        t.plan(3);
+        var log = {
+            loadstart: 0,
+            loadend: 0
+        };
+
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector(null, {
+            strategies: [new OpenLayers.Strategy.BBOX()],
+            protocol: new OpenLayers.Protocol({
+                read: function(config) {
+                    config.callback.call(config.scope, {});
+                }
+            }),
+            isBaseLayer: true,
+            eventListeners: {
+                loadstart: function() {
+                    ++log.loadstart;
+                },
+                loadend: function() {
+                    ++log.loadend;
+                }
+            }            
+        });
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        
+        t.eq(log.loadstart, 1, "loadstart triggered");
+        t.eq(log.loadend, 1, "loadend triggered");
+        
+        log = {};
+        layer.protocol.read = function(obj) {
+            log.obj = obj;
+        }
+        layer.refresh({force: true, whee: 'chicken'});
+
+        t.eq(log.obj && log.obj.whee, "chicken", "properties passed to read on refresh correctly.");
+
+        map.destroy();
+        
+    }
+
+    function test_triggerRead(t) {
+        t.plan(4);
+
+        var s = new OpenLayers.Strategy.BBOX();
+
+        var filter = {"fake": "filter"};
+
+        s.createFilter = function() {
+            return filter;
+        };
+        s.response = {"fake": "response"};
+        
+        var log = {};
+
+        var protocol = new OpenLayers.Protocol({
+            read: function(options) {
+                log.options = options;
+            },
+            abort: function(response) {
+                log.abort = response.fake;
+            }
+        });
+        
+        var layer = new OpenLayers.Layer.Vector(null, {
+            strategies: [s],
+            protocol: protocol,
+            isBaseLayer: true
+        });
+        var map = new OpenLayers.Map("map");
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        
+        t.ok(log.options.filter == filter,
+                "protocol read called with correct filter");
+        t.ok(log.options.callback == s.merge,
+                "protocol read called with correct callback");
+        t.ok(log.options.scope == s,
+                "protocol read called with correct scope");
+        t.eq(log.abort, "response",
+                "protocol abort called with correct response");
+
+        map.destroy();
+
+    }
+    
+    function test_resFactor(t) {
+        t.plan(2);
+        
+        var map = new OpenLayers.Map("map");
+        var bbox = new OpenLayers.Strategy.BBOX();
+        var fakeProtocol = new OpenLayers.Protocol({
+            'read': function() { 
+                t.ok(true, "read called once without resfactor"); 
+            }
+        });
+        var layer = new OpenLayers.Layer.Vector("test", {
+            strategies: [bbox],
+            protocol: fakeProtocol,
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+        map.zoomIn();
+        
+        fakeProtocol.read = function() { 
+            t.ok("read called again on zooming with resFactor: 1");
+        }
+        bbox.resFactor = 1;
+        map.zoomIn();
+        
+    }
+
+    function test_createFilter(t) {
+        t.plan(3);
+
+        var s = new OpenLayers.Strategy.BBOX();
+
+        var f;
+
+        // 2 test
+        s.setLayer({});
+        f = s.createFilter();
+        t.ok(f.CLASS_NAME.search(/^OpenLayers.Filter.Spatial/) != -1,
+             "createFilter returns a spatial filter object");
+        t.eq(f.type, OpenLayers.Filter.Spatial.BBOX,
+             "createFilter returns a BBOX-typed filter");
+
+        // 1 test
+        s.setLayer({filter: {fake: "filter"}});
+        f = s.createFilter();
+        t.ok(f.CLASS_NAME.search(/^OpenLayers.Filter.Logical/) != -1,
+             "createFilter returns a logical filter object");
+    }
+
+    function test_merge(t) {
+        t.plan(4);
+        
+        var strategy = new OpenLayers.Strategy.BBOX();
+                
+        // create map with default projection
+        var map = new OpenLayers.Map("map");
+        
+        // create layer with custom projection
+        var layer = new OpenLayers.Layer.Vector(null, {
+            isBaseLayer: true,
+            strategies: [strategy],
+            protocol: new OpenLayers.Protocol(),
+            projection: new OpenLayers.Projection("EPSG:900913")
+        });
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        
+        // create some features
+        var geometries = [
+            new OpenLayers.Geometry.Point(100, 200),
+            new OpenLayers.Geometry.Point(1000, 2000)
+        ];
+        var features = [
+            new OpenLayers.Feature.Vector(geometries[0].clone()),
+            new OpenLayers.Feature.Vector(geometries[1].clone())
+        ];
+
+        // call merge with a mocked up response
+        strategy.merge({features: features});
+        
+        // test that feature geometries have been transformed to map projection
+        var from = layer.projection;
+        var to = map.getProjectionObject();
+        t.geom_eq(layer.features[0].geometry, features[0].geometry.transform(from, to), "[different proj] feature 0 geometry transformed");
+        t.geom_eq(layer.features[1].geometry, features[1].geometry.transform(from, to), "[different proj] feature 1 geometry transformed");
+        
+        // same as above but with same map/layer projection
+        layer.destroyFeatures();
+        layer.projection = map.getProjectionObject();
+        
+        features = [
+            new OpenLayers.Feature.Vector(geometries[0].clone()),
+            new OpenLayers.Feature.Vector(geometries[1].clone())
+        ];
+        
+        // call merge again with mocked up response
+        strategy.merge({features: features});
+
+        // test that feature geometries have not been transformed
+        t.geom_eq(layer.features[0].geometry, features[0].geometry, "[same proj] feature 0 geometry not transformed");
+        t.geom_eq(layer.features[1].geometry, features[1].geometry, "[same proj] feature 1 geometry not transformed");
+        
+    }
+
+    // Test fix for Ticket #3142
+    function test_layerLoadedAfterBeingAdded(t) {
+        t.plan(2);
+
+        var dummy = new OpenLayers.Layer(null, {isBaseLayer: true});
+
+        var strategy = new OpenLayers.Strategy.BBOX({
+            ratio: 1 // makes for easier comparison to map bounds
+        });
+        var layer = new OpenLayers.Layer.Vector(null, {
+            protocol: new OpenLayers.Protocol(),
+            strategies: [strategy]
+        });
+
+        // Make sure to test the case of a vector layer needing to be 
+        // reprojected while the map is not yet centered
+        var layerReproject = new OpenLayers.Layer.Vector(null, {
+            protocol: new OpenLayers.Protocol(),
+            strategies: [new OpenLayers.Strategy.BBOX()],
+            projection: 'EPSG:900913'
+        });
+
+        // Make sure that layers that are not in range don't request data
+        var layerOutOfRange = new OpenLayers.Layer.Vector(null, {
+            maxResolution: 1,
+            protocol: new OpenLayers.Protocol(),
+            strategies: [new OpenLayers.Strategy.BBOX()]
+        });
+
+        var map = new OpenLayers.Map("map");
+        map.addLayer(dummy);
+        map.addLayer(layerReproject);
+        map.setCenter(new OpenLayers.LonLat(0, 0));
+        map.addLayer(layer);
+        map.addLayer(layerOutOfRange);
+        // test that the strategy bounds were set
+        t.ok(map.getExtent().equals(strategy.bounds), "[set center] bounds set to map extent");
+        t.eq(layerOutOfRange.strategies[0].bounds, null, "Data not requested if layer is out of range");
+        map.destroy();
+    }
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 400px; height: 200px" />
+</body>
+</html>

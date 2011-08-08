@@ -1,0 +1,287 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
+    var layer; 
+
+    var name = 'Test Layer';
+    var url = "http://boston.freemap.in/tile.php?";
+    var params = {
+                  'map':'boston-new', 
+                  'g':'border,water,roads,openspace', 
+                  'i':'JPEG'
+                 };
+    var units = "meters";
+
+
+
+    function test_Layer_KaMap_constructor (t) {
+        t.plan( 1 );
+                       
+        layer = new OpenLayers.Layer.KaMap(name, url, params, units);
+        t.ok( layer instanceof OpenLayers.Layer.KaMap, "returns OpenLayers.Layer.KaMap object" );
+    }
+
+    function test_Layer_Grid_moveTo_buffer_calculation (t) {
+        t.plan(6);
+
+        var map = new OpenLayers.Map( 'map3' ); // odd map size
+        var layer0 = new OpenLayers.Layer.KaMap( "0 buffer: OpenLayers WMS", 
+                    "http://labs.metacarta.com/wms/vmap0",
+                    {layers: 'basic'}, {'buffer':0} );
+        map.addLayer(layer0);
+
+        var layer1 = new OpenLayers.Layer.KaMap( "1 buffer: OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0",
+                {layers: 'basic'}, {'buffer':1} );
+        map.addLayer(layer1);
+
+        var layer2 = new OpenLayers.Layer.KaMap( "2 buffer: OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0",
+                {layers: 'basic'}, {'buffer':2} );
+        map.addLayer(layer2);
+
+        map.setCenter(new OpenLayers.LonLat(0, 0), 4); 
+        t.eq( layer0.grid.length, 3, "Grid rows with buffer:0" );
+        map.setBaseLayer(layer1);
+        t.eq( layer1.grid.length, 4, "Grid rows with buffer:1" );
+        map.setBaseLayer(layer2);
+        t.eq( layer2.grid.length, 6, "Grid rows with buffer:2" );
+
+        // zooming in on Greenland exercises the bug from pre-r4313
+        map.setCenter(new OpenLayers.LonLat(0, 90), 4); 
+        t.eq( layer0.grid.length, 3, "Grid rows with buffer:0" );
+        map.setBaseLayer(layer1);
+        t.eq( layer1.grid.length, 4, "Grid rows with buffer:1" );
+        map.setBaseLayer(layer2);
+        t.eq( layer2.grid.length, 6, "Grid rows with buffer:2" );
+        map.destroy();
+    }
+
+    function test_Layer_KaMap_inittiles (t) {
+        t.plan( 2 );
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.KaMap(name, url, params, units);
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0),5);
+        t.eq( layer.grid.length, 4, "KaMap rows is correct." );
+        t.eq( layer.grid[0].length, 3, "KaMap cols is correct." );
+        map.destroy();
+        
+    }
+
+    function test_Layer_KaMap_clearTiles (t) {
+        t.plan( 1 );
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.KaMap(name, url, params, units);
+        map.addLayer(layer);
+
+        map.setCenter(new OpenLayers.LonLat(0,0));
+
+        //grab a reference to one of the tiles
+        var tile = layer.grid[0][0];        
+
+        layer.clearGrid();
+
+        t.ok( layer.grid != null, "layer.grid does not get nullified" );
+        map.destroy();
+    }
+
+
+    function test_Layer_KaMap_getKaMapBounds(t) {
+        t.plan( 1 );
+
+        layer = new OpenLayers.Layer.KaMap(name, url, params, units);
+
+        var bl = { bounds: new OpenLayers.Bounds(1,2,0,0)};
+        var tr = { bounds: new OpenLayers.Bounds(0,0,3,4)};
+        layer.grid = [ [6, tr], 
+                       [bl, 7]];
+
+        var bounds = layer.getTilesBounds();
+    
+        var testBounds = new OpenLayers.Bounds(1,2,3,4);
+        
+        t.ok( bounds.equals(testBounds), "getKaMapBounds() returns correct bounds")
+        
+        layer.grid = null;
+    }
+
+    function test_Layer_KaMap_getResolution(t) {
+        t.plan( 1 );
+
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.KaMap(name, url, params, units);
+        map.addLayer(layer);
+
+        map.zoom = 5;
+
+        t.eq( layer.getResolution(), 0.0439453125, "getResolution() returns correct value");
+        map.destroy();
+    }
+
+    function test_Layer_KaMap_getZoomForExtent(t) {
+        t.plan( 2 );
+        var bounds, zoom;
+
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.KaMap(name, url, params, units);
+        map.addLayer(layer);
+
+        bounds = new OpenLayers.Bounds(10,10,12,12);
+        zoom = layer.getZoomForExtent(bounds);
+
+        t.eq( zoom, 8, "getZoomForExtent() returns correct value");
+
+        bounds = new OpenLayers.Bounds(10,10,100,100);
+        zoom = layer.getZoomForExtent(bounds);
+
+        t.eq( zoom, 2, "getZoomForExtent() returns correct value");
+        map.destroy();
+    }   
+    
+    function test_Layer_kaMap_mergeNewParams (t) {
+        t.plan( 4 );
+
+        var map = new OpenLayers.Map("map");
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.KaMap(name, url, params);
+        
+        var newParams = { layers: 'sooper', 
+                          chickpeas: 'image/png'};
+
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        layer.redraw = function() {
+            t.ok(true, "layer is redrawn after new params merged");
+        }
+        
+        layer.mergeNewParams(newParams);
+        
+        t.eq( layer.params.layers, "sooper", "mergeNewParams() overwrites well");
+        t.eq( layer.params.chickpeas, "image/png", "mergeNewParams() adds well");
+
+        newParams.chickpeas = 151;
+
+        t.eq( layer.params.chickpeas, "image/png", "mergeNewParams() makes clean copy of hashtable");
+        map.destroy();
+    }
+
+
+    /** THIS WOULD BE WHERE THE TESTS WOULD GO FOR 
+     *     
+     *    -moveTo
+     *    -insertColumn
+     *    -insertRow
+    
+    function 07_Layer_KaMap_moveTo(t) {
+    }
+
+    function 08_Layer_KaMap_insertColumn(t) {
+    }
+
+    function 09_Layer_KaMap_insertRow(t) {
+    }
+
+     * 
+     */
+
+    function test_Layer_KaMap_clone(t) {
+        t.plan(5);
+        
+        var options = {tileSize: new OpenLayers.Size(500,50)};
+        var map = new OpenLayers.Map('map', options);
+        layer = new OpenLayers.Layer.KaMap(name, url, params, units);
+        map.addLayer(layer);
+
+        layer.grid = [ [6, 7], 
+                       [8, 9]];
+
+        var clone = layer.clone();
+
+        t.ok( clone.grid != layer.grid, "clone does not copy grid");
+
+        t.ok( clone.tileSize.equals(layer.tileSize), "tileSize correctly cloned");
+
+        layer.tileSize.w += 40;
+
+        t.eq( clone.tileSize.w, 500, "changing layer.tileSize does not change clone.tileSize -- a fresh copy was made, not just copied reference");
+
+        t.eq( clone.alpha, layer.alpha, "alpha copied correctly");
+        
+        t.eq( clone.CLASS_NAME, "OpenLayers.Layer.KaMap", "Clone is a ka-map layer");
+
+        layer.grid = null;
+        map.destroy();
+    }
+
+    function test_Layer_KaMap_setMap(t) {
+
+        t.plan(2);
+        
+        var options = {tileSize: new OpenLayers.Size(500,50)};
+        var map = new OpenLayers.Map('map', options);
+        layer = new OpenLayers.Layer.KaMap(name, url, params, units);
+
+
+        layer.setMap(map);
+        
+        t.ok( layer.tileSize != null, "tileSize has been set");
+        t.ok( (layer.tileSize.h == 50) && (layer.tileSize.w == 500), "tileSize has been set correctly");
+        map.destroy();
+    }
+    function test_Layer_KaMap_getTileBounds(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.KaMap(name, url, params);
+        
+        var newParams = { layers: 'sooper', 
+                          chickpeas: 'image/png'};
+
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        map.zoomIn();
+        var bounds = layer.getTileBounds(new OpenLayers.Pixel(200,200));
+        t.eq(bounds.toBBOX(), "-180,0,0,180", "get tile bounds returns correct bounds"); 
+        map.pan(200,0,{animate:false});
+        var bounds = layer.getTileBounds(new OpenLayers.Pixel(200,200));
+        t.eq(bounds.toBBOX(), "0,0,180,180", "get tile bounds returns correct bounds after pan"); 
+        map.destroy();
+    }
+
+    function test_Layer_KaMap_destroy (t) {
+
+        t.plan( 3 );
+
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.KaMap(name, url, params, units);
+        map.addLayer(layer);
+        layer.destroy();
+        t.eq( layer.grid, null, "layer.grid is null after destroy" );
+        t.eq( layer.tileSize, null, "layer.tileSize is null after destroy" );
+
+
+    //test with tile creation
+        layer = new OpenLayers.Layer.KaMap(name, url, params, units);
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0), 5);
+        //grab a reference to one of the tiles
+        var tile = layer.grid[0][0];        
+
+        layer.destroy();
+
+        t.ok( layer.grid == null, "tiles appropriately destroyed");
+        map.destroy();
+    }
+    
+
+  </script>
+</head>
+<body>
+<div id="map" style="width:500px;height:550px;display:none"></div>
+<div id="map2" style="width:500px;height:550px;display:none"></div>
+<div id="map3" style="width:594px;height:464px;display:none"></div>
+</body>
+</html>

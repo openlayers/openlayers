@@ -1,0 +1,41 @@
+<html> 
+<head> 
+    <script src="../OLLoader.js"></script>
+    <script type="text/javascript">
+    
+    function test_read_WMSDescribeLayer(t) {
+        t.plan(5);
+       
+        var parser = new OpenLayers.Format.WMSDescribeLayer();
+
+        var text =
+            '<WMS_DescribeLayerResponse version="1.1.1">' +
+            '  <LayerDescription name="topp:states" wfs="http://geo.openplans.org:80/geoserver/wfs/WfsDispatcher?">' +
+            '    <Query typeName="topp:states"/>' +
+            '  </LayerDescription>' +
+            '</WMS_DescribeLayerResponse>';
+
+        var res = parser.read(text);
+
+        t.eq(res.length, 1,
+            "Only one LayerDescription in data, so only one parsed");
+
+        t.eq(res[0].owsType, "WFS",
+            "Properly parses owsType as WFS");
+
+        t.eq(res[0].owsURL, "http://geo.openplans.org:80/geoserver/wfs/WfsDispatcher?",
+            "Properly parses owsURL");
+
+        t.eq(res[0].typeName, "topp:states",
+            "Properly parses typeName");
+
+        t.eq(res[0].layerName, "topp:states",
+            "Properly parses name");
+
+    }
+
+    </script> 
+</head> 
+<body>
+</body> 
+</html>

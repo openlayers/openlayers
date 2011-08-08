@@ -1,0 +1,136 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    function test_Handler_Hover_events(t) {
+        t.plan(10);
+        
+        var map = new OpenLayers.Map('map');
+        var control = {
+            map: map
+        };
+        map.events.registerPriority = function(type, obj, func) {
+            var r = func();
+            if(typeof r == "string") {
+                // this is one of the mock handler methods
+                t.eq(OpenLayers.Util.indexOf(nonevents, type), -1,
+                     "registered method is not one of the events " +
+                     "that should not be handled");
+                t.ok(OpenLayers.Util.indexOf(events, type) > -1,
+                     "activate calls registerPriority with browser event: " + type);
+                t.eq(typeof func, "function",
+                     "activate calls registerPriority with a function");
+                t.eq(func(), type,
+                     "activate calls registerPriority with the correct method");
+                t.eq(obj["CLASS_NAME"], "OpenLayers.Handler.Hover",
+                     "activate calls registerPriority with the handler");
+            }
+        }
+        function setMethod(key) {
+            handler[key] = function() {return key};
+        }
+
+        // list below events that should be handled (events) and those
+        // that should not be handled (nonevents) by the handler
+        var events = ["mousemove", "mouseout"];
+        var nonevents = ["mousedown", "mouseup", "click", "dblclick", "resize", "focus", "blur"];
+        var handler = new OpenLayers.Handler.Hover(control);
+        // set browser event like properties on the handler
+        for(var i=0; i<events.length; ++i) {
+            setMethod(events[i]);
+        }
+        handler.activate();
+    }
+
+    function test_Handler_Hover_callbacks(t) {
+        t.plan(8);
+        
+        var map = new OpenLayers.Map('map', {controls: []});
+
+        var control = {
+            map: map
+        };
+        
+        var timers = {};
+        var sto = window.setTimeout;
+        window.setTimeout = function(func, delay) {
+            var key = Math.random();
+            timers[key] = true;
+            t.ok(typeof func == "function",
+                 "setTimeout called with a function");
+            t.eq(delay, handler.delay,
+                 "setTimeout called with proper delay");
+            // execute function that is supposed to be delayed
+            func();
+            return key;
+        }
+        var cto = window.clearTimeout;
+        window.clearTimeout = function(key) {
+            if(timers[key] === true) {
+                delete timers[key];
+            } else {
+                t.fail("clearTimeout called with non-existent timerId");
+            }
+        }
+
+        var handler = new OpenLayers.Handler.Hover(control, {});
+        handler.activate();
+        var testEvt;
+
+        // test pause and move callbacks - four tests here (2 from setTimeout above)
+        testEvt = {id: Math.random()};
+        handler.callbacks = {
+            "pause": function(evt) {
+                t.eq(evt.id, testEvt.id,
+                     "pause callback called with correct evt");
+            },
+            "move": function(evt) {
+               t.eq(evt.id, testEvt.id,
+                   "move callback called with correct evt");
+            }
+        };
+        map.events.triggerEvent("mousemove", testEvt);
+        handler.clearTimer();
+
+        // test pixelTolerance - four tests here (2 from setTimeout above)
+        handler.pixelTolerance = 2;
+        handler.px = new OpenLayers.Pixel(0, 0);
+        testEvt = {
+            xy: new OpenLayers.Pixel(0, 1)
+        };
+        // mouse moves one pixel, callbacks shouldn't be called
+        handler.callbacks = {
+            "pause": function(evt) {
+                t.fail("(pixelTolerance met) pause callback shouldn't be called");
+            },
+            "move": function(evt) {
+                t.fail("(pixelTolerance met) move callback shoudln't be called");
+            }
+        };
+        map.events.triggerEvent("mousemove", testEvt);
+        handler.clearTimer();
+        handler.px = new OpenLayers.Pixel(0, 0);
+        testEvt = {
+            xy: new OpenLayers.Pixel(3, 3)
+        };
+        // mouse moves 3x3 pixels, callbacks should be called
+        handler.callbacks =  {
+            "pause": function(evt) {
+                t.ok(evt.xy == testEvt.xy, "(pixelTolerance unmet) pause callback called");
+            },
+            "move": function(evt) {
+                t.ok(evt == testEvt, "(pixelTolerance unmet) move callback called");
+            }
+        };
+        map.events.triggerEvent("mousemove", testEvt);
+        handler.clearTimer();
+
+        window.setTimeout = sto;
+        window.clearTimeout = cto;
+   }
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 300px; height: 150px;"/>
+</body>
+</html>

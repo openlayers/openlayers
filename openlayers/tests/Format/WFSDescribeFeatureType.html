@@ -1,0 +1,381 @@
+<html> 
+<head> 
+    <script src="../OLLoader.js"></script>
+    <script type="text/javascript">
+    
+    function test_read_WFSDescribeFeatureType(t) {
+        t.plan(39);
+       
+        var parser = new OpenLayers.Format.WFSDescribeFeatureType();
+
+        // single typeName from UMN Mapserver
+        var text = 
+            '<?xml version="1.0" encoding="ISO-8859-1" ?>' +
+            '<schema' +
+            '   targetNamespace="http://mapserver.gis.umn.edu/mapserver" ' +
+            '   xmlns:rws="http://mapserver.gis.umn.edu/mapserver" ' +
+            '   xmlns:ogc="http://www.opengis.net/ogc"' +
+            '   xmlns:xsd="http://www.w3.org/2001/XMLSchema"' +
+            '   xmlns="http://www.w3.org/2001/XMLSchema"' +
+            '   xmlns:gml="http://www.opengis.net/gml"' +
+            '   elementFormDefault="qualified" version="0.1" >' +
+            '  <import namespace="http://www.opengis.net/gml"' +
+            '          schemaLocation="http://schemas.opengis.net/gml/2.1.2/feature.xsd" />' +
+            '  <element name="AAA64" ' +
+            '           type="rws:AAA64Type" ' +
+            '           substitutionGroup="gml:_Feature" />' +
+            '  <complexType name="AAA64Type">' +
+            '    <complexContent>' +
+            '      <extension base="gml:AbstractFeatureType">' +
+            '        <sequence>' +
+            '          <element name="geometry" type="gml:MultiLineStringPropertyType" minOccurs="0" maxOccurs="1"/>' +
+            '          <element name="OBJECTID" type="string"/>' +
+            '          <element name="ROUTE" type="string"/>' +
+            '          <element name="ROUTE_CH" type="string"/>' +
+            '          <element name="COUNT" type="string"/>' +
+            '          <element name="BEHEERDER" type="string"/>' +
+            '          <element name="LENGTH" type="string"/>' +
+            '          <element name="SHAPE" type="string"/>' +
+            '          <element name="SE_ANNO_CAD_DATA" type="string"/>' +
+            '        </sequence>' +
+            '      </extension>' +
+            '    </complexContent>' +
+            '  </complexType>' +
+            '</schema>';
+        var res = parser.read(text);
+
+        t.eq(res.featureTypes.length, 1,
+            "There is only 1 typename, so length should be 1");
+
+        t.eq(res.featureTypes[0].properties[0].type, 'gml:MultiLineStringPropertyType',
+            "The first attribute is of type multi line string");
+
+        t.eq(res.featureTypes[0].properties[2].name, 'ROUTE',
+            "The third attribute is named ROUTE");
+
+        t.eq(res.featureTypes[0].properties[2].type, 'string',
+            "The third attribute is of type string");
+
+        // three typeNames in one response from UMN Mapserver
+        text = 
+            '<?xml version="1.0" encoding="ISO-8859-1" ?>' +
+            '<schema' +
+            '   targetNamespace="http://mapserver.gis.umn.edu/mapserver" ' +
+            '   xmlns:rws="http://mapserver.gis.umn.edu/mapserver" ' +
+            '   xmlns:ogc="http://www.opengis.net/ogc"' +
+            '   xmlns:xsd="http://www.w3.org/2001/XMLSchema"' +
+            '   xmlns="http://www.w3.org/2001/XMLSchema"' +
+            '   xmlns:gml="http://www.opengis.net/gml"' +
+            '   elementFormDefault="qualified" version="0.1" >' +
+            '  <import namespace="http://www.opengis.net/gml"' +
+            '          schemaLocation="http://schemas.opengis.net/gml/2.1.2/feature.xsd" />' +
+            '  <element name="KGNAT.VKUNSTWERK" ' +
+            '           type="rws:KGNAT.VKUNSTWERKType" ' +
+            '           substitutionGroup="gml:_Feature" />' +
+            '  <complexType name="KGNAT.VKUNSTWERKType">' +
+            '    <complexContent>' +
+            '      <extension base="gml:AbstractFeatureType">' +
+            '        <sequence>' +
+            '          <element name="geometry" type="gml:MultiPolygonPropertyType" minOccurs="0" maxOccurs="1"/>' +
+            '          <element name="OBJECTID" type="string"/>' +
+            '          <element name="OBJECTSUBCATEGORIE" type="string"/>' +
+            '          <element name="DIENSTCODE" type="string"/>' +
+            '          <element name="DISTRICTNAAM" type="string"/>' +
+            '          <element name="CODEBPN" type="string"/>' +
+            '          <element name="WSD" type="string"/>' +
+            '          <element name="SUBCAT" type="string"/>' +
+            '          <element name="ZIJDE" type="string"/>' +
+            '          <element name="KM" type="string"/>' +
+            '          <element name="ELEMENTCODE" type="string"/>' +
+            '          <element name="COMPLEXCODE" type="string"/>' +
+            '          <element name="BEHEEROBJECTCODE" type="string"/>' +
+            '          <element name="BEGINDATUM" type="string"/>' +
+            '          <element name="NAAMCONTACTPERSOON" type="string"/>' +
+            '          <element name="KMTOT" type="string"/>' +
+            '          <element name="HOOFDWATERSYSTEEM" type="string"/>' +
+            '          <element name="WATERSYSTEEMNAAM" type="string"/>' +
+            '          <element name="OBJECTNAAM" type="string"/>' +
+            '          <element name="HERKOMST" type="string"/>' +
+            '          <element name="BEHEERSREGIME" type="string"/>' +
+            '          <element name="VERSIE" type="string"/>' +
+            '          <element name="KWALITEITSNIVEAU" type="string"/>' +
+            '          <element name="STICHTINGSJAAR" type="string"/>' +
+            '          <element name="OBJECTTYPE" type="string"/>' +
+            '          <element name="OPMERKING" type="string"/>' +
+            '          <element name="OPPERVLAKTE" type="string"/>' +
+            '          <element name="SE_ANNO_CAD_DATA" type="string"/>' +
+            '          <element name="SHAPE" type="string"/>' +
+            '        </sequence>' +
+            '      </extension>' +
+            '    </complexContent>' +
+            '  </complexType>' +
+            '  <element name="KGNAT.LKUNSTWERK" ' +
+            '           type="rws:KGNAT.LKUNSTWERKType" ' +
+            '           substitutionGroup="gml:_Feature" />' +
+            '  <complexType name="KGNAT.LKUNSTWERKType">' +
+            '    <complexContent>' +
+            '      <extension base="gml:AbstractFeatureType">' +
+            '        <sequence>' +
+            '          <element name="geometry" type="gml:MultiLineStringPropertyType" minOccurs="0" maxOccurs="1"/>' +
+            '          <element name="OBJECTID" type="string"/>' +
+            '          <element name="OBJECTSUBCATEGORIE" type="string"/>' +
+            '          <element name="DIENSTCODE" type="string"/>' +
+            '          <element name="DISTRICTNAAM" type="string"/>' +
+            '          <element name="CODEBPN" type="string"/>' +
+            '          <element name="WSD" type="string"/>' +
+            '          <element name="SUBCAT" type="string"/>' +
+            '          <element name="ZIJDE" type="string"/>' +
+            '          <element name="KM" type="string"/>' +
+            '          <element name="ELEMENTCODE" type="string"/>' +
+            '          <element name="COMPLEXCODE" type="string"/>' +
+            '          <element name="BEHEEROBJECTCODE" type="string"/>' +
+            '          <element name="BEGINDATUM" type="string"/>' +
+            '          <element name="NAAMCONTACTPERSOON" type="string"/>' +
+            '          <element name="KMTOT" type="string"/>' +
+            '          <element name="HOOFDWATERSYSTEEM" type="string"/>' +
+            '          <element name="WATERSYSTEEMNAAM" type="string"/>' +
+            '          <element name="OBJECTNAAM" type="string"/>' +
+            '          <element name="HERKOMST" type="string"/>' +
+            '          <element name="BEHEERSREGIME" type="string"/>' +
+            '          <element name="VERSIE" type="string"/>' +
+            '          <element name="KWALITEITSNIVEAU" type="string"/>' +
+            '          <element name="STICHTINGSJAAR" type="string"/>' +
+            '          <element name="OBJECTTYPE" type="string"/>' +
+            '          <element name="OPMERKING" type="string"/>' +
+            '          <element name="LENGTE" type="string"/>' +
+            '          <element name="SE_ANNO_CAD_DATA" type="string"/>' +
+            '          <element name="SHAPE" type="string"/>' +
+            '        </sequence>' +
+            '      </extension>' +
+            '    </complexContent>' +
+            '  </complexType>' +
+            '  <element name="KGNAT.PKUNSTWERK" ' +
+            '           type="rws:KGNAT.PKUNSTWERKType" ' +
+            '           substitutionGroup="gml:_Feature" />' +
+            '  <complexType name="KGNAT.PKUNSTWERKType">' +
+            '    <complexContent>' +
+            '      <extension base="gml:AbstractFeatureType">' +
+            '        <sequence>' +
+            '          <element name="geometry" type="gml:MultiPointPropertyType" minOccurs="0" maxOccurs="1"/>' +
+            '          <element name="OBJECTID" type="string"/>' +
+            '          <element name="OBJECTSUBCATEGORIE" type="string"/>' +
+            '          <element name="DIENSTCODE" type="string"/>' +
+            '          <element name="DISTRICTNAAM" type="string"/>' +
+            '          <element name="CODEBPN" type="string"/>' +
+            '          <element name="WSD" type="string"/>' +
+            '          <element name="SUBCAT" type="string"/>' +
+            '          <element name="ZIJDE" type="string"/>' +
+            '          <element name="KM" type="string"/>' +
+            '          <element name="ELEMENTCODE" type="string"/>' +
+            '          <element name="COMPLEXCODE" type="string"/>' +
+            '          <element name="BEHEEROBJECTCODE" type="string"/>' +
+            '          <element name="BEGINDATUM" type="string"/>' +
+            '          <element name="NAAMCONTACTPERSOON" type="string"/>' +
+            '          <element name="KMTOT" type="string"/>' +
+            '          <element name="HOOFDWATERSYSTEEM" type="string"/>' +
+            '          <element name="WATERSYSTEEMNAAM" type="string"/>' +
+            '          <element name="OBJECTNAAM" type="string"/>' +
+            '          <element name="HERKOMST" type="string"/>' +
+            '          <element name="BEHEERSREGIME" type="string"/>' +
+            '          <element name="VERSIE" type="string"/>' +
+            '          <element name="KWALITEITSNIVEAU" type="string"/>' +
+            '          <element name="STICHTINGSJAAR" type="string"/>' +
+            '          <element name="OBJECTTYPE" type="string"/>' +
+            '          <element name="OPMERKING" type="string"/>' +
+            '          <element name="X" type="string"/>' +
+            '          <element name="Y" type="string"/>' +
+            '          <element name="SE_ANNO_CAD_DATA" type="string"/>' +
+            '          <element name="SHAPE" type="string"/>' +
+            '        </sequence>' +
+            '      </extension>' +
+            '    </complexContent>' +
+            '  </complexType>' +
+            '</schema>';
+
+        parser = new OpenLayers.Format.WFSDescribeFeatureType();
+        res = parser.read(text);
+
+        t.eq(res.featureTypes.length, 3,
+            "There are 3 typenames, so length should be 3");
+
+        t.eq(res.featureTypes[0].typeName, 'KGNAT.VKUNSTWERK',
+            "There name of the first typename is KGNAT.VKUNSTWERK");
+
+        t.eq(res.featureTypes[2].properties.length, 30,
+            "We expect 30 attributes in the third typename");
+
+        t.eq(res.featureTypes[2].properties[1].name, 'OBJECTID',
+            "The second attribute has name OBJECTID");
+
+        t.eq(res.featureTypes[2].properties[1].type, 'string',
+            "The second attribute has type string");
+
+        t.eq(res.targetNamespace, 'http://mapserver.gis.umn.edu/mapserver',
+            "The targetNamespace should be http://mapserver.gis.umn.edu/mapserver");
+
+        t.eq(res.targetPrefix, 'rws', "the targetPrefix should be rws");
+
+        // response from Ionic WFS, taken from:
+        // http://webservices.ionicsoft.com/ionicweb/wfs/BOSTON_ORA?service=WFS&request=DescribeFeatureType&version=1.0.0&typename=wfs:highways
+        text =
+            "<?xml version='1.0' encoding='utf-8' ?>" +
+            '  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml" xmlns:wfs="http://www.ionicsoft.com/wfs" targetNamespace="http://www.ionicsoft.com/wfs" xmlns:xlink="http://www.w3.org/1999/xlink" elementFormDefault="qualified" version="0.1">' +
+            '    <xsd:import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/2.1.2/feature.xsd"/>' +
+            '    <xsd:element name="highways" substitutionGroup="gml:_Feature" type="wfs:highways"/>' +
+            '    <xsd:complexType name="highways">' +
+            '      <xsd:complexContent>' +
+            '        <xsd:extension base="gml:AbstractFeatureType">' +
+            '          <xsd:sequence>' +
+            '            <xsd:element name="ROUTE_" minOccurs="0" nillable="true" type="xsd:int"/>' +
+            '            <xsd:element name="ROUTE_ID" minOccurs="0" nillable="true" type="xsd:int"/>' +
+            '            <xsd:element name="RT_NUMBER" minOccurs="0" nillable="true" type="xsd:string"/>' +
+            '            <xsd:element name="GEOMETRY" minOccurs="0" nillable="true" type="gml:GeometryAssociationType"/>' +
+            '          </xsd:sequence>' +
+            '        </xsd:extension>' +
+            '      </xsd:complexContent>' +
+            '    </xsd:complexType>' +
+            '  </xsd:schema>';
+
+        parser = new OpenLayers.Format.WFSDescribeFeatureType();
+        res = parser.read(text);
+
+        t.eq(res.featureTypes.length, 1,
+            "There is 1 typename, so length should be 1");
+
+        t.eq(res.featureTypes[0].typeName, "highways",
+            "The name of the typename is highways");
+
+        t.eq(res.featureTypes[0].properties.length, 4,
+            "We expect 4 attributes in the first typename");
+
+        t.eq(res.featureTypes[0].properties[1].name, 'ROUTE_ID',
+            "The second attribute has name ROUTE_ID");
+
+        t.eq(res.featureTypes[0].properties[1].type, 'xsd:int',
+            "The second attribute has type integer");
+
+        t.eq(parseInt(res.featureTypes[0].properties[1].minOccurs), 0,
+            "The second attribute has minOccurs 0");
+
+        t.eq(res.targetNamespace, 'http://www.ionicsoft.com/wfs',
+            "The targetNamespace should be http://www.ionicsoft.com/wfs");
+
+        t.eq(res.targetPrefix, 'wfs', "the targetPrefix should be wfs");
+
+
+        // GeoServer tests
+        
+        function geoServerTests(text) {
+            parser = new OpenLayers.Format.WFSDescribeFeatureType();
+            res = parser.read(text);
+    
+            t.eq(res.featureTypes.length, 1,
+                "There is 1 typename, so length should be 1");
+    
+            t.eq(res.featureTypes[0].typeName, "railroads",
+                "The name of the typeName is railroads");
+    
+            t.eq(res.featureTypes[0].properties.length, 2,
+                "We expect 2 attributes in the typename");
+    
+            t.eq(res.featureTypes[0].properties[0].name, 'cat',
+                "The first attribute has name cat");
+    
+            t.eq(res.featureTypes[0].properties[0].type.split(":")[1], 'long',
+                "The first attribute has type long with a prefix");
+
+            t.eq(res.featureTypes[0].properties[0].localType, 'long',
+                "The first attribute has localType long");
+    
+            t.eq(res.targetNamespace, 'http://opengeo.org',
+                "The targetNamespace should be http://opengeo.org");
+    
+            t.eq(res.targetPrefix, 'opengeo', "the targetPrefix should be opengeo");
+        }
+        
+
+        // Read Geoserver WFS 1.0.0 response
+        // Taken from: http://demo.opengeo.org/geoserver/wfs?service=WFS&request=DescribeFeatureType&typename=opengeo:railroads&version=1.0.0
+        text = 
+            '<?xml version="1.0" encoding="UTF-8"?>' +
+            '<xs:schema  targetNamespace="http://opengeo.org"  xmlns:opengeo="http://opengeo.org" xmlns:gml="http://www.opengis.net/gml" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0">' +
+            '  <xs:import namespace="http://www.opengis.net/gml" schemaLocation="http://demo.opengeo.org:80/geoserver/schemas/gml/2.1.2.1/feature.xsd"/>' + 
+            '  <xs:complexType xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="railroads_Type">' +
+            '    <xs:complexContent>' +
+            '      <xs:extension base="gml:AbstractFeatureType">' +
+            '        <xs:sequence>' +
+            '          <xs:element name="cat" minOccurs="0" nillable="true" type="xs:long"/>' +
+            '          <xs:element name="the_geom" minOccurs="0" nillable="true" type="gml:MultiLineStringPropertyType"/>' +
+            '        </xs:sequence>' +
+            '      </xs:extension>' +
+            '    </xs:complexContent>' +
+            '  </xs:complexType>' +
+            '  <xs:element name="railroads" type="opengeo:railroads_Type" substitutionGroup="gml:_Feature"/>' +
+            '</xs:schema>';
+
+        geoServerTests(text);
+        
+
+        // Read GeoServer WFS 1.1.0 response
+        // taken from http://demo.opengeo.org/geoserver/wfs?service=WFS&request=DescribeFeatureType&typename=opengeo:railroads&version=1.1.0
+        text = 
+            '<?xml version="1.0" encoding="UTF-8"?>' +
+            '   <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml" xmlns:opengeo="http://opengeo.org" elementFormDefault="qualified" targetNamespace="http://opengeo.org">' +
+            '     <xsd:import namespace="http://www.opengis.net/gml" schemaLocation="http://demo.opengeo.org:80/geoserver/wfs/schemas/gml/3.1.1/base/gml.xsd"/>' +
+            '     <xsd:complexType name="railroadsType">' +
+            '       <xsd:complexContent>' +
+            '         <xsd:extension base="gml:AbstractFeatureType">' +
+            '           <xsd:sequence>' +
+            '             <xsd:element maxOccurs="1" minOccurs="0" name="cat" nillable="true" type="xsd:long"/>' +
+            '             <xsd:element maxOccurs="1" minOccurs="0" name="the_geom" nillable="true" type="gml:MultiLineStringPropertyType"/>' +
+            '           </xsd:sequence>' +
+            '         </xsd:extension>' +
+            '       </xsd:complexContent>' +
+            '     </xsd:complexType>' +
+            '     <xsd:element name="railroads" substitutionGroup="gml:_Feature" type="opengeo:railroadsType"/>' +
+            '   </xsd:schema>';
+        
+        geoServerTests(text);
+        
+        // Another GeoServer response with type restrictions
+        // taken from http://sigma.openplans.org/geoserver/wfs?service=WFS&request=DescribeFeatureType&typename=topp:states&version=1.0.0
+        text = '<?xml version="1.0" encoding="UTF-8"?><xs:schema  targetNamespace="http://www.openplans.org/topp"  xmlns:topp="http://www.openplans.org/topp" xmlns:gml="http://www.opengis.net/gml" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0"><xs:import namespace="http://www.opengis.net/gml" schemaLocation="http://sigma.openplans.org:80/geoserver/schemas/gml/2.1.2.1/feature.xsd"/><xs:complexType xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="states_Type"><xs:complexContent><xs:extension base="gml:AbstractFeatureType"><xs:sequence><xs:element name="the_geom" minOccurs="0" nillable="true" type="gml:MultiPolygonPropertyType"/><xs:element name="STATE_NAME" minOccurs="0" nillable="true"><xs:simpleType><xs:restriction base="xs:string"><xs:maxLength value="25"/></xs:restriction></xs:simpleType></xs:element><xs:element name="STATE_FIPS" minOccurs="0" nillable="true"><xs:simpleType><xs:restriction base="xs:string"><xs:maxLength value="2"/></xs:restriction></xs:simpleType></xs:element><xs:element name="SUB_REGION" minOccurs="0" nillable="true"><xs:simpleType><xs:restriction base="xs:string"><xs:maxLength value="7"/></xs:restriction></xs:simpleType></xs:element><xs:element name="STATE_ABBR" minOccurs="0" nillable="true"><xs:simpleType><xs:restriction base="xs:string"><xs:maxLength value="2"/></xs:restriction></xs:simpleType></xs:element><xs:element name="LAND_KM" minOccurs="0" nillable="true" type="xs:double"/><xs:element name="WATER_KM" minOccurs="0" nillable="true" type="xs:double"/><xs:element name="PERSONS" minOccurs="0" nillable="true" type="xs:double"/><xs:element name="FAMILIES" minOccurs="0" nillable="true" type="xs:double"/><xs:element name="HOUSHOLD" minOccurs="0" nillable="true" type="xs:double"/><xs:element name="MALE" minOccurs="0" nillable="true" type="xs:double"/><xs:element name="FEMALE" minOccurs="0" nillable="true" type="xs:double"/><xs:element name="WORKERS" minOccurs="0" nillable="true" type="xs:double"/><xs:element name="DRVALONE" minOccurs="0" nillable="true" type="xs:double"/><xs:element name="CARPOOL" minOccurs="0" nillable="true" type="xs:double"/><xs:element name="PUBTRANS" minOccurs="0" nillable="true" type="xs:double"/><xs:element name="EMPLOYED" minOccurs="0" nillable="true" type="xs:double"/><xs:element name="UNEMPLOY" minOccurs="0" nillable="true" type="xs:double"/><xs:element name="SERVICE" minOccurs="0" nillable="true" type="xs:double"/><xs:element name="MANUAL" minOccurs="0" nillable="true" type="xs:double"/><xs:element name="P_MALE" minOccurs="0" nillable="true" type="xs:double"/><xs:element name="P_FEMALE" minOccurs="0" nillable="true" type="xs:double"/><xs:element name="SAMP_POP" minOccurs="0" nillable="true" type="xs:double"/></xs:sequence></xs:extension></xs:complexContent></xs:complexType><xs:element name="states" type="topp:states_Type" substitutionGroup="gml:_Feature"/></xs:schema>';
+
+        parser = new OpenLayers.Format.WFSDescribeFeatureType();
+        res = parser.read(text);
+
+        t.eq(res.featureTypes[0].properties[1].name, "STATE_NAME",
+            "name of 2nd property of 1st featureType should be 'STATE_NAME'");
+        
+        t.eq(res.featureTypes[0].properties[1].type, "xs:string",
+            "type of 2nd property of 1st featureType should be 'xs:string'");
+
+        t.eq(res.featureTypes[0].properties[1].localType, "string",
+            "localType of 2nd property of 1st featureType should be 'string'");
+        
+        t.eq(res.featureTypes[0].properties[1].restriction.maxLength, "25",
+            "the maxLength restriction should be 25");
+    }
+    
+    function test_readRestriction(t) {
+        t.plan(2);
+        var text =
+            '<restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">' +
+            '  <enumeration value="One"/>' +
+            '  <enumeration value="Two"/>' +
+            '</restriction>';
+        var doc = OpenLayers.Format.XML.prototype.read(text).documentElement;
+        var obj = {};
+        new OpenLayers.Format.WFSDescribeFeatureType().readRestriction(doc, obj);
+        
+        t.eq(obj.enumeration.length, 2, "enumeration has a length of 2");
+        t.eq(obj.enumeration[1], "Two", "2nd enumeration value is 'Two'");
+        // other functionality of readRestriction already tested in the last
+        // GeoServer example above
+    }
+
+    </script> 
+</head> 
+<body>
+</body> 
+</html>

@@ -1,0 +1,871 @@
+<html> 
+<head> 
+    <script src="../OLLoader.js"></script> 
+    <script type="text/javascript">
+
+    var text =
+        '<?xml version="1.0"?>' + 
+        '<ol:root xmlns="http://namespace.default.net" ' +
+                 'xmlns:ol="http://namespace.openlayers.org" ' + 
+                 'xmlns:ta="http://namespace.testattribute.net">' +
+            '<ol:child ta:attribute="value1" ' +
+                      'attribute="value2">' +
+                'junk1' +
+            '<' + '/ol:child>' +
+            '<ol:child>junk2<' + '/ol:child>' +
+            '<ol:child>junk3<' + '/ol:child>' +
+            '<element>junk4<' + '/element>' + 
+            '<ol:element>junk5<' + '/ol:element>' + 
+            '<ol:p>' +
+                '<ol:a>junk' +
+                '<' + '/ol:a>' + 
+                '<ol:b>junk' +
+                '<' + '/ol:b>' + 
+                '<ol:a>junk' +
+                '<' + '/ol:a>' + 
+            '<' + '/ol:p>' + 
+        '<' + '/ol:root>';
+
+    function test_Format_XML_constructor(t) { 
+        t.plan(13); 
+         
+        var options = {'foo': 'bar'}; 
+        var format = new OpenLayers.Format.XML(options); 
+        t.ok(format instanceof OpenLayers.Format.XML, 
+             "new OpenLayers.Format.XML returns object" ); 
+        t.eq(format.foo, "bar", "constructor sets options correctly"); 
+        t.eq(typeof format.read, "function", "format has a read function"); 
+        t.eq(typeof format.write, "function", "format has a write function");
+
+        t.ok(!window.ActiveXObject || format.xmldom, "browsers with activeX must have xmldom");
+        
+        // test namespaces
+        t.ok(format.namespaces instanceof Object, "format has namespace object");
+        var namespaces = {"foo": "bar"};
+        format = new OpenLayers.Format.XML({namespaces: namespaces});
+        t.eq(format.namespaces, namespaces, "format.namespaces correctly set in constructor");
+        
+        // test default prefix
+        t.eq(format.defaultPrefix, null, "defaultPrefix is null by default");
+        format = new OpenLayers.Format.XML({defaultPrefix: "foo"});
+        t.eq(format.defaultPrefix, "foo", "defaultPrefix correctly set in constructor");
+
+        // test readers
+        t.ok(format.readers instanceof Object, "format has readers object");
+        var readers = {"foo": "bar"};
+        format = new OpenLayers.Format.XML({readers: readers});
+        t.eq(format.readers, readers, "format.readers correctly set in constructor");
+
+        // test readers
+        t.ok(format.writers instanceof Object, "format has writers object");
+        var writers = {"foo": "bar"};
+        format = new OpenLayers.Format.XML({writers: writers});
+        t.eq(format.writers, writers, "format.writers correctly set in constructor");
+    }
+    
+    function test_destroy(t) {
+        t.plan(1);
+        var format = new OpenLayers.Format.XML();
+        format.destroy();
+        t.eq(format.xmldom, null, "xmldom set to null for all browsers");
+    }
+
+    function test_Format_XML_read(t) {
+        
+        var format = new OpenLayers.Format.XML();
+        t.plan(format.xmldom ? 10 : 9);
+
+        var doc = format.read(text);
+        t.eq(doc.nodeType, 9,
+             "doc has the correct node type");
+        t.eq(doc.nodeName, "#document",
+             "doc has the correct node name");
+        t.ok(doc.documentElement,
+             "ok to access doc.documentElement");
+        t.xml_eq(doc.documentElement, text,
+                 "doc.documentElement correctly read");
+        
+        // read can also be called on the prototype directly
+        doc = OpenLayers.Format.XML.prototype.read(text);
+        t.eq(doc.nodeType, 9,
+             "doc has the correct node type");
+        t.eq(doc.nodeName, "#document",
+             "doc has the correct node name");
+        t.ok(doc.documentElement,
+             "ok to access doc.documentElement");
+        t.xml_eq(doc.documentElement, text,
+                 "doc.documentElement correctly read");
+        
+        // where appropriate, make sure doc is loaded into xmldom property
+        if(format.xmldom) {
+            t.xml_eq(format.xmldom.documentElement, text,
+                     "xmldom.documentElement contains equivalent xml");
+        }
+        
+        // test equivalence with different namespace alias
+        var pre1 = 
+            "<pre1:parent xmlns:pre1='http://namespace'>" +
+                "<pre1:child1>value2</pre1:child1>" +
+                "<pre1:child2 pre1:attr1='foo'>value2</pre1:child2>" +
+                "<pre1:child3 chicken:attr='hot' xmlns:chicken='http://soup'/>" +
+            "</pre1:parent>";
+        var pre2 = 
+            "<pre2:parent xmlns:pre2='http://namespace'>" +
+                "<pre2:child1>value2</pre2:child1>" +
+                "<pre2:child2 pre2:attr1='foo'>value2</pre2:child2>" +
+                "<pre2:child3 pea:attr='hot' xmlns:pea='http://soup'/>" +
+            "</pre2:parent>";
+        var doc1 = format.read(pre1);
+        t.xml_eq(doc1.documentElement, pre2, "read correctly sets namespaces");
+        
+    }
+
+    function test_Format_XML_write(t) {
+        t.plan(2);
+
+        var format = new OpenLayers.Format.XML();
+        var doc = format.read(text);
+        var out = format.write(doc);
+        out = out.replace(/[\r\n]/g, '');
+        out = out.replace( /<\?.*\?>/, '')
+        var expected = text.replace(/<\?.*\?>/, '')
+        t.eq(expected, out,
+             "correctly writes an XML DOM doc");
+        var out = format.write(
+          format.getElementsByTagNameNS(doc,
+           "http://namespace.openlayers.org","root")[0]);
+        out = out.replace(/[\r\n]/g, '');
+        out = out.replace( /<\?.*\?>/, '')
+        t.eq(out, expected,
+             "correctly writes an XML DOM node");
+    }
+
+    function test_Format_XML_createElementNS(t) {
+        t.plan(5);
+
+        var format = new OpenLayers.Format.XML();
+        var uri = "http://foo.com";
+        var prefix = "foo";
+        var localName = "bar";
+        var qualifiedName = prefix + ":" + name;
+        var node = format.createElementNS(uri, qualifiedName);
+        t.eq(node.nodeType, 1,
+             "node has correct type");
+        t.eq(node.nodeName, qualifiedName,
+             "node has correct qualified name");
+        t.eq(node.prefix, prefix,
+             "node has correct prefix");
+        t.eq(node.namespaceURI, uri,
+             "node has correct namespace uri");
+        
+        var doc = format.read(text);
+        if (doc.importNode) {
+            node = doc.importNode(node, true);
+        }    
+        t.ok(doc.documentElement.appendChild(node),
+             "node can be appended to a doc root");
+    }
+
+    function test_Format_XML_createTextNode(t) {
+        t.plan(10);
+
+        var format = new OpenLayers.Format.XML();
+        var value, node;
+
+        value = "string";
+        node = format.createTextNode(value);
+        t.eq(node.nodeType, 3,
+             "[string] node has correct type");
+        t.eq(node.nodeName, "#text",
+             "[string] node has correct name");
+        t.eq(node.nodeValue, "string",
+             "[string] node has correct value");
+        
+        value = 0.42;
+        node = format.createTextNode(value);
+        t.eq(node.nodeType, 3,
+             "[number] node has correct type");
+        t.eq(node.nodeName, "#text",
+             "[number] node has correct name");
+        t.eq(node.nodeValue, "0.42",
+             "[number] node has correct value");
+
+        value = false;
+        node = format.createTextNode(value);
+        t.eq(node.nodeType, 3,
+             "[boolean] node has correct type");
+        t.eq(node.nodeName, "#text",
+             "[boolean] node has correct name");
+        t.eq(node.nodeValue, "false",
+             "[boolean] node has correct value");
+
+        var doc = format.read(text);
+        if (doc.importNode) {
+            node = doc.importNode(node, true);
+        }    
+        t.ok(doc.documentElement.appendChild(node),
+             "node can be appended to a doc root");
+    }
+
+    function test_Format_XML_getElementsByTagNameNS(t) {
+        t.plan(5);
+
+        var format = new OpenLayers.Format.XML();
+        var olUri = "http://namespace.openlayers.org";
+        var name = "child";
+        var doc = format.read(text);
+        var nodes = format.getElementsByTagNameNS(doc.documentElement,
+                                                  olUri, name);
+        t.eq(nodes.length, 3,
+             "gets correct number of nodes");
+        var qualifiedName = nodes[0].prefix + ":" + name;
+        t.eq(nodes[0].nodeName, qualifiedName,
+             "first node has correct qualified name");
+        
+        var defaultUri = "http://namespace.default.net";
+        name = "element";
+        nodes = format.getElementsByTagNameNS(doc.documentElement,
+                                                  defaultUri, name);
+        t.eq(nodes.length, 1,
+             "gets correct number of nodes in default namespace");
+        
+        var pList = format.getElementsByTagNameNS(doc.documentElement,
+                                                  olUri, "p");
+        t.eq(pList.length, 1, "got one ol:p element");
+        var p = pList[0];
+        
+        var aList = format.getElementsByTagNameNS(p, olUri, "a");
+        t.eq(aList.length, 2, "got two child ol:a elements");
+        
+        
+        
+    }
+
+    function test_Format_XML_getAttributeNodeNS(t) {
+        t.plan(5);
+
+        var format = new OpenLayers.Format.XML();
+        var doc = format.read(text);
+        var olUri = "http://namespace.openlayers.org";
+        var taUri = "http://namespace.testattribute.net";
+        var localNodeName = "child";
+        var localAttrName = "attribute";
+        var nodes = format.getElementsByTagNameNS(doc.documentElement,
+                                                  olUri, localNodeName);
+        var attributeNode = format.getAttributeNodeNS(nodes[0],
+                                                      taUri, localAttrName);
+        var qualifiedName = attributeNode.prefix + ":" + localAttrName;
+
+        t.ok(attributeNode,
+             "returns non-null value");
+        t.eq(attributeNode.nodeType, 2,
+             "attribute node has correct type");
+        t.eq(attributeNode.nodeName, qualifiedName,
+             "attribute node has correct qualified name");
+        t.eq(attributeNode.nodeValue, "value1",
+             "attribute node has correct value");
+        
+        var nullAttribute = format.getAttributeNodeNS(nodes[0],
+                                                      taUri, "nothing");
+        t.ok(nullAttribute === null,
+             "returns null for nonexistent attribute");
+    }
+
+    function test_Format_XML_getAttributeNS(t) {
+        t.plan(2);
+
+        var format = new OpenLayers.Format.XML();
+        var doc = format.read(text);
+        var olUri = "http://namespace.openlayers.org";
+        var taUri = "http://namespace.testattribute.net";
+        var localNodeName = "child";
+        var localAttrName = "attribute";
+        var nodes = format.getElementsByTagNameNS(doc.documentElement,
+                                                  olUri, localNodeName);
+        var attributeValue = format.getAttributeNS(nodes[0],
+                                                   taUri, localAttrName);
+        t.eq(attributeValue, "value1",
+             "got correct attribute value");
+        
+        var emptyValue = format.getAttributeNS(nodes[0],
+                                              taUri, "nothing");
+        t.ok(emptyValue === "",
+             "returns empty string for nonexistent attributes");
+    }
+
+    function test_Format_XML_hasAttributeNS(t) {
+        t.plan(2);
+
+        var format = new OpenLayers.Format.XML();
+        var doc = format.read(text);
+        var olUri = "http://namespace.openlayers.org";
+        var taUri = "http://namespace.testattribute.net";
+        var localNodeName = "child";
+        var localAttrName = "attribute";
+        var nodes = format.getElementsByTagNameNS(doc.documentElement,
+                                                  olUri, localNodeName);
+        var found = format.hasAttributeNS(nodes[0], taUri, localAttrName);
+        t.ok(found === true, "returns true for good attribute");
+        
+        found = format.hasAttributeNS(nodes[0], taUri, "nothing");
+        t.ok(found === false, "returns false for bad attribute");
+    }
+    
+    function test_namespaces(t) {
+        t.plan(2);
+        
+        var format = new OpenLayers.Format.XML({
+            namespaces: {
+                "def": "http://example.com/default",
+                "foo": "http://example.com/foo",
+                "bar": "http://example.com/bar"
+            },
+            defaultPrefix: "def"
+        });
+        
+        // test that prototype has not been altered
+        t.eq(OpenLayers.Format.XML.prototype.namespaces, null,
+             "setting namespaces at construction does not modify prototype");
+        
+        // test that namespaceAlias has been set
+        t.eq(format.namespaceAlias["http://example.com/foo"], "foo",
+             "namespaceAlias mapping has been set");
+        
+    }
+    
+    function test_setNamespace(t) {
+        t.plan(3);
+        
+        var format = new OpenLayers.Format.XML();
+        
+        // test that namespaces is an object
+        t.ok(format.namespaces instanceof Object, "empty namespace object set");
+        
+        format.setNamespace("foo", "http://example.com/foo");
+        t.eq(format.namespaces["foo"], "http://example.com/foo", "alias -> uri mapping set");
+        t.eq(format.namespaceAlias["http://example.com/foo"], "foo", "uri -> alias mapping set");
+
+    }
+    
+    function test_readChildNodes(t) {
+        
+        var text = "<?xml version='1.0' encoding='UTF-8'?>" +
+        "<container xmlns='http://example.com/foo'>" +
+            "<marker name='my marker 1'>" +
+                "<position>" +
+                    "<lon>-180</lon>" +
+                    "<lat>90</lat>" +
+                "</position>" +
+                "<detail>some text for first marker</detail>" +
+                "<atom:link xmlns:atom='http://www.w3.org/2005/Atom' href='http://host/path/1'/>" +
+            "</marker>" +
+            "<marker name='my marker 2'>" +
+                "<position>" +
+                    "<lon>180</lon>" +
+                    "<lat>-90</lat>" +
+                "</position>" +
+                "<detail>some text for second marker</detail>" +
+                "<atom:link xmlns:atom='http://www.w3.org/2005/Atom' href='http://host/path/2'/>" +
+            "</marker>" +
+        "</container>";
+        
+        var expect = [
+            new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(-180, 90),
+                {
+                    name: 'my marker 1',
+                    link: 'http://host/path/1',
+                    detail: 'some text for first marker'
+                }
+            ),
+            new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(180, -90),
+                {
+                    name: 'my marker 2',
+                    link: 'http://host/path/2',
+                    detail: 'some text for second marker'
+                }
+            )
+        ];
+        
+        var format = new OpenLayers.Format.XML({
+            defaultPrefix: "foo",
+            namespaces: {
+                "foo": "http://example.com/foo",
+                "atom": "http://www.w3.org/2005/Atom"
+            },
+            readers: {
+                "foo": {
+                    "container": function(node, obj) {
+                        var list = [];
+                        this.readChildNodes(node, list);
+                        obj.list = list;
+                    },
+                    "marker": function(node, list) {
+                        var feature = new OpenLayers.Feature.Vector();
+                        feature.attributes.name = node.getAttribute("name");
+                        this.readChildNodes(node, feature);
+                        list.push(feature);
+                    },
+                    "position": function(node, feature) {
+                        var obj = {};
+                        this.readChildNodes(node, obj);
+                        feature.geometry = new OpenLayers.Geometry.Point(obj.x, obj.y);
+                    },
+                    "lon": function(node, obj) {
+                        obj.x = this.getChildValue(node);
+                    },
+                    "lat": function(node, obj) {
+                        obj.y = this.getChildValue(node);
+                    },
+                    "detail": function(node, feature) {
+                        feature.attributes.detail = this.getChildValue(node);
+                    }
+                },
+                "atom": {
+                    "link": function(node, feature) {
+                        feature.attributes.link = node.getAttribute("href");
+                    }                    
+                }
+            }
+        });
+        
+        // convert text to document node
+        var doc = format.read(text);
+        // read child nodes to get back some object
+        var obj = format.readChildNodes(doc);
+        // start comparing what we got to what we expect
+        var got = obj.list;
+        
+        t.plan(11);
+        t.eq(got.length, expect.length, "correct number of items parsed");
+        t.eq(got[0].geometry.x, expect[0].geometry.x, "correct x coord parsed for marker 1");
+        t.eq(got[0].geometry.y, expect[0].geometry.y, "correct y coord parsed for marker 1");
+        t.eq(got[0].attributes.name, expect[0].attributes.name, "correct name parsed for marker 1");
+        t.eq(got[0].attributes.detail, expect[0].attributes.detail, "correct detail parsed for marker 1");
+        t.eq(got[0].attributes.link, expect[0].attributes.link, "correct link parsed for marker 1");
+        t.eq(got[1].geometry.x, expect[1].geometry.x, "correct x coord parsed for marker 2");
+        t.eq(got[1].geometry.y, expect[1].geometry.y, "correct y coord parsed for marker 2");
+        t.eq(got[1].attributes.name, expect[1].attributes.name, "correct name parsed for marker 2");
+        t.eq(got[1].attributes.detail, expect[1].attributes.detail, "correct detail parsed for marker 2");
+        t.eq(got[1].attributes.link, expect[1].attributes.link, "correct link parsed for marker 2");
+        
+    }
+    
+    function test_writeNode(t) {
+        
+        var features = [
+            new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(-180, 90),
+                {
+                    name: 'my marker 1',
+                    link: 'http://host/path/1',
+                    detail: 'some text for first marker'
+                }
+            ),
+            new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(180, -90),
+                {
+                    name: 'my marker 2',
+                    link: 'http://host/path/2',
+                    detail: 'some text for second marker'
+                }
+            )
+        ];
+
+        var expect = "<?xml version='1.0' encoding='UTF-8'?>" +
+        "<container xmlns='http://example.com/foo'>" +
+            "<marker name='my marker 1'>" +
+                "<position>" +
+                    "<lon>-180</lon>" +
+                    "<lat>90</lat>" +
+                "</position>" +
+                "<detail>some text for first marker</detail>" +
+                "<atom:link xmlns:atom='http://www.w3.org/2005/Atom' href='http://host/path/1'/>" +
+            "</marker>" +
+            "<marker name='my marker 2'>" +
+                "<position>" +
+                    "<lon>180</lon>" +
+                    "<lat>-90</lat>" +
+                "</position>" +
+                "<detail>some text for second marker</detail>" +
+                "<atom:link xmlns:atom='http://www.w3.org/2005/Atom' href='http://host/path/2'/>" +
+            "</marker>" +
+        "</container>";
+        
+        var format = new OpenLayers.Format.XML({
+            defaultPrefix: "foo",
+            namespaces: {
+                "foo": "http://example.com/foo",
+                "atom": "http://www.w3.org/2005/Atom"
+            },
+            writers: {
+                "foo": {
+                    "container": function(features) {
+                        var node = this.createElementNSPlus("container");
+                        var feature;
+                        for(var i=0; i<features.length; ++i) {
+                            feature = features[i];
+                            this.writeNode("marker", features[i], node);
+                        }
+                        return node;
+                    },
+                    "marker": function(feature) {
+                        var node = this.createElementNSPlus("marker", {
+                            attributes: {name: feature.attributes.name}
+                        });
+                        this.writeNode("position", feature.geometry, node);
+                        this.writeNode("detail", feature.attributes.detail, node);
+                        this.writeNode("atom:link", feature.attributes.link, node);
+                        return node;
+                    },
+                    "position": function(geometry) {
+                        var node = this.createElementNSPlus("position");
+                        this.writeNode("lon", geometry.x, node);
+                        this.writeNode("lat", geometry.y, node);
+                        return node;
+                    },
+                    "lon": function(x) {
+                        return this.createElementNSPlus("lon", {
+                            value: x
+                        });
+                    },
+                    "lat": function(y) {
+                        return this.createElementNSPlus("lat", {
+                            value: y
+                        });
+                    },
+                    "detail": function(text) {
+                        return this.createElementNSPlus("detail", {
+                            value: text
+                        });
+                    }
+                },
+                "atom": {
+                    "link": function(href) {
+                        return this.createElementNSPlus("atom:link", {
+                            attributes: {href: href}
+                        });
+                    }
+                }
+            }
+            
+        });
+        
+        t.plan(1);
+        // test that we get what we expect from writeNode
+        var got = format.writeNode("container", features);
+        t.xml_eq(got, expect, "features correctly written");
+    }
+    
+    function test_createElementNSPlus(t) {
+        
+        var format = new OpenLayers.Format.XML({
+            defaultPrefix: "def",
+            namespaces: {
+                "def": "http://example.com/default",
+                "foo": "http://example.com/foo",
+                "bar": "http://example.com/bar"
+            }
+        });
+        
+        var cases = [
+            {
+                description: "unprefixed name with default options",
+                node: format.createElementNSPlus("FooNode"),
+                expect: "<def:FooNode xmlns:def='http://example.com/default'/>"
+            }, {
+                description: "def prefixed name with default options",
+                node: format.createElementNSPlus("def:FooNode"),
+                expect: "<def:FooNode xmlns:def='http://example.com/default'/>"
+            }, {
+                description: "foo prefixed name with default options",
+                node: format.createElementNSPlus("foo:FooNode"),
+                expect: "<foo:FooNode xmlns:foo='http://example.com/foo'/>"
+            }, {
+                description: "unprefixed name with uri option",
+                node: format.createElementNSPlus("FooNode", {
+                    uri: "http://example.com/elsewhere"
+                }),
+                expect: "<FooNode xmlns='http://example.com/elsewhere'/>"
+            }, {
+                description: "foo prefixed name with uri option (overriding format.namespaces)",
+                node: format.createElementNSPlus("foo:FooNode", {
+                    uri: "http://example.com/elsewhere"
+                }),
+                expect: "<foo:FooNode xmlns:foo='http://example.com/elsewhere'/>"
+            }, {
+                description: "foo prefixed name with attributes option",
+                node: format.createElementNSPlus("foo:FooNode", {
+                    attributes: {
+                        "id": "123",
+                        "foo:attr1": "namespaced attribute 1",
+                        "bar:attr2": "namespaced attribute 2"
+                    }
+                }),
+                expect: "<foo:FooNode xmlns:foo='http://example.com/foo' xmlns:bar='http://example.com/bar' id='123' foo:attr1='namespaced attribute 1' bar:attr2='namespaced attribute 2'/>"
+            }, {
+                description: "foo prefixed name with attributes and value options",
+                node: format.createElementNSPlus("foo:FooNode", {
+                    attributes: {"id": "123"},
+                    value: "text value"
+                }),
+                expect: "<foo:FooNode xmlns:foo='http://example.com/foo' id='123'>text value<" + "/foo:FooNode>"
+            }, {
+                description: "value of 0 gets appended as a text node",
+                node: format.createElementNSPlus("foo:bar", {value: 0}),
+                expect: "<foo:bar xmlns:foo='http://example.com/foo'>0</foo:bar>"
+            }, {
+                description: "value of 0.42 gets appended as a text node",
+                node: format.createElementNSPlus("foo:bar", {value: 0.42}),
+                expect: "<foo:bar xmlns:foo='http://example.com/foo'>0.42</foo:bar>"
+            }, {
+                description: "value of true gets appended as a text node",
+                node: format.createElementNSPlus("foo:bar", {value: true}),
+                expect: "<foo:bar xmlns:foo='http://example.com/foo'>true</foo:bar>"
+            }, {
+                description: "value of false gets appended as a text node",
+                node: format.createElementNSPlus("foo:bar", {value: false}),
+                expect: "<foo:bar xmlns:foo='http://example.com/foo'>false</foo:bar>"
+            }, {
+                description: "null value does not get appended as a text node",
+                node: format.createElementNSPlus("foo:bar", {value: null}),
+                expect: "<foo:bar xmlns:foo='http://example.com/foo'/>"
+            }, {
+                description: "undefined value does not get appended as a text node",
+                node: format.createElementNSPlus("foo:bar"),
+                expect: "<foo:bar xmlns:foo='http://example.com/foo'/>"
+            }
+        ];
+        
+        t.plan(cases.length);
+        var test;
+        for(var i=0; i<cases.length; ++i) {
+            test = cases[i];
+            t.xml_eq(test.node, test.expect, test.description);
+        }
+        
+    }
+    
+    function test_setAttributes(t) {
+        
+        var format = new OpenLayers.Format.XML({
+            defaultPrefix: "def",
+            namespaces: {
+                "def": "http://example.com/default",
+                "foo": "http://example.com/foo",
+                "bar": "http://example.com/bar"
+            }
+        });
+        
+        var cases = [
+            {
+                description: "unprefixed attribute",
+                node: format.createElementNSPlus("foo:Node"),
+                attributes: {"id": "123"},
+                expect: "<foo:Node xmlns:foo='http://example.com/foo' id='123'/>"
+            }, {
+                description: "foo prefixed attribute",
+                node: format.createElementNSPlus("foo:Node"),
+                attributes: {"foo:id": "123"},
+                expect: "<foo:Node xmlns:foo='http://example.com/foo' foo:id='123'/>"
+            }, {
+                description: "foo prefixed attribute with def prefixed node",
+                node: format.createElementNSPlus("def:Node"),
+                attributes: {"foo:id": "123"},
+                expect: "<def:Node xmlns:def='http://example.com/default' xmlns:foo='http://example.com/foo' foo:id='123'/>"
+            }, {
+                description: "multiple attributes",
+                node: format.createElementNSPlus("def:Node"),
+                attributes: {"id": "123", "foo": "bar"},
+                expect: "<def:Node xmlns:def='http://example.com/default' id='123' foo='bar'/>"
+            }
+        ];
+        
+        t.plan(cases.length);
+        var test;
+        for(var i=0; i<cases.length; ++i) {
+            test = cases[i];
+            format.setAttributes(test.node, test.attributes);
+            t.xml_eq(test.node, test.expect, test.description);
+        }
+        
+    }
+
+    function test_keepData(t) { 
+        t.plan(2);
+
+        var options = {'keepData': true};
+        var format = new OpenLayers.Format.XML(options); 
+        format.read(text);
+
+        t.ok(format.data != null, 'data property is not null after read with keepData=true');
+        t.eq(format.data.documentElement.tagName,'ol:root','keepData keeps the right data');
+    }
+
+    function test_getChildValue(t) {
+
+        t.plan(1);
+
+        var text =
+            "<?xml version='1.0' encoding='UTF-8'?>" +
+            "<root>" +
+                "x<!-- comment -->y<!-- comment 2 --><![CDATA[z]]>z<foo />&#x79;" +
+            "</root>";
+
+        var format = new OpenLayers.Format.XML();
+        var doc = format.read(text).documentElement;
+
+        t.eq(format.getChildValue(doc), "xyzzy", "child value skips comments, concatenates multiple values, reads through entities");
+
+    }
+    
+    function test_getChildEl(t) {
+
+        t.plan(3);
+
+        var text =
+            "<?xml version='1.0' encoding='UTF-8'?>" +
+            "<root>" +
+                "<!-- comment -->" +
+                "<a>x</a>" +
+                "<b>x</b>" +
+            "</root>";
+
+        var format = new OpenLayers.Format.XML();
+        var doc = format.read(text).documentElement;
+
+        var a = format.getChildEl(doc);
+        t.eq(a.nodeName, "a", "first element found correctly");
+        
+        a = format.getChildEl(doc, "a");
+        t.eq(b, null, "first child element matches the given name");
+
+        var b = format.getChildEl(doc, "b");
+        t.eq(b, null, "first child element does not match the given name");
+
+    }
+    
+    function test_getNextEl(t) {
+        t.plan(5);
+
+        var text =
+            "<?xml version='1.0' encoding='UTF-8'?>" +
+            "<root>" +
+                "<!-- comment -->" +
+                "<a>x</a>" +
+                "<!-- comment -->" +
+                "<b xmlns='urn:example'>x</b>" +
+            "</root>";
+
+        var format = new OpenLayers.Format.XML();
+        var doc = format.read(text).documentElement;
+
+        var a = format.getChildEl(doc);
+        
+        var b = format.getNextEl(a);
+        t.eq(b && b.nodeName, "b", "next element correctly found");
+        
+        b = format.getNextEl(a, "b");
+        t.eq(b && b.nodeName, "b", "next element correctly found when name supplied");
+
+        b = format.getNextEl(a, "c");
+        t.eq(b, null, "null returned when name does not match next element");
+
+        b = format.getNextEl(a, null, "urn:example");
+        t.eq(b && b.nodeName, "b", "next element correctly found when namespace supplied");
+
+        b = format.getNextEl(a, null, "foo");
+        t.eq(b, null, "null returned when namespace does not match next element");
+
+    }
+    
+    function test_isSimpleContent(t) {
+        t.plan(2);
+
+        var text =
+            "<?xml version='1.0' encoding='UTF-8'?>" +
+            "<root>" +
+                "<!-- comment -->" +
+                "<a>x<!-- comment -->y<!-- comment 2 --><![CDATA[z]]>z<foo />&#x79;</a>" +
+                "<!-- comment -->" +
+                "<b>x<!-- comment -->y<!-- comment 2 --><![CDATA[z]]>z&#x79;</b>" +
+            "</root>";
+
+        var format = new OpenLayers.Format.XML();
+        var doc = format.read(text).documentElement;
+
+        var a = format.getChildEl(doc);
+        var b = format.getNextEl(a);
+        t.ok(!format.isSimpleContent(a), "<a> content is not simple");
+        t.ok(format.isSimpleContent(b), "<b> content is simple");
+
+    }
+
+    function test_lookupNamespaceURI(t) {
+        
+        t.plan(8);
+
+        var text =
+            "<?xml version='1.0' encoding='UTF-8'?>" +
+            "<root xmlns:baz='urn:baznamespace'>" +
+                "<!-- comment -->" +
+                "<a><foo /></a>" +
+                "<!-- comment -->" +
+                "<b xmlns='urn:example'><!-- comment --><bar foo='value'/></b>" +
+            "</root>";
+
+        var format = new OpenLayers.Format.XML();
+        var doc = format.read(text).documentElement;
+
+        var a = format.getChildEl(doc);
+        t.eq(format.lookupNamespaceURI(a, "baz"), "urn:baznamespace", "prefix lookup on first child");
+
+        var foo = format.getChildEl(a);
+        t.eq(format.lookupNamespaceURI(foo, "baz"), "urn:baznamespace", "prefix lookup on child of first child");
+        
+        var b = format.getNextEl(a);
+        t.eq(format.lookupNamespaceURI(b, null), "urn:example", "default namespace lookup on element");
+        
+        var bar = format.getChildEl(b);
+        t.eq(format.lookupNamespaceURI(bar, null), "urn:example", "default namespace lookup on child");
+        t.eq(format.lookupNamespaceURI(bar, "baz"), "urn:baznamespace", "prefix lookup on child with different default");
+
+        // test that the alias behaves properly
+        var lookup = OpenLayers.Format.XML.lookupNamespaceURI;
+        t.eq(lookup(bar, "baz"), "urn:baznamespace", "(alias) prefix lookup on child with different default");
+
+        var attr = bar.attributes[0];
+        // Internet Explorer didn't have the ownerElement property until 8.
+        var supportsOwnerElement = !!attr.ownerElement;        
+        if(supportsOwnerElement) {
+            t.eq(format.lookupNamespaceURI(attr, null), "urn:example", "default namespace lookup on attribute");
+            t.eq(format.lookupNamespaceURI(attr, "baz"), "urn:baznamespace", "prefix lookup on attribute with different default");
+        } else {
+            t.debug_print("namespace lookup on attributes not supported in this browser");
+            t.ok(true, "namespace lookup on attributes not supported in this browser");
+            t.ok(true, "namespace lookup on attributes not supported in this browser");
+        }
+
+    }
+    
+    function test_getXMLDoc(t) {
+        t.plan(2);
+        var format = new OpenLayers.Format.XML();
+        var doc = format.getXMLDoc();
+        t.ok(doc !== document, "document returned from getXMLDoc is not the page's html doc");
+        var root = format.createElementNS("http://test", "root");
+        // appending CDATA created from a different document
+        var cdata = doc.createCDATASection("<foo></foo>");
+        root.appendChild(cdata);
+        var result = format.write(root);
+        var expect = '<root xmlns="http://test"><![CDATA[<foo></foo>]]></root>';
+        t.eq(result, expect, "document with CDATA section serialized correctly");
+    }
+
+    
+    </script> 
+</head> 
+<body> 
+</body> 
+</html> 

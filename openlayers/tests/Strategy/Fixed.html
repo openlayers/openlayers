@@ -1,0 +1,243 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+
+    function test_activate(t) {
+        t.plan(5);
+
+        var featureList = ['foo', 'bar'];
+        // a fake protocol
+        var protocol = {
+            read: function(options) {
+                options.callback.call(options.scope, {features: featureList});
+            }
+        };
+        
+        // Create a dummy layer that can act as the map base layer.
+        // This will be unnecessary if #1920 is addressed or if base layer
+        // handling is changed.
+        var dummy = new OpenLayers.Layer(null, {isBaseLayer: true});
+
+        var layer = new OpenLayers.Layer.Vector("Vector Layer", {
+            strategies: [new OpenLayers.Strategy.Fixed()],
+            protocol: protocol,
+            addFeatures: function(features) {
+                t.eq(features, featureList, "Features added to the layer");
+            }
+        });
+        
+        var layerp = new OpenLayers.Layer.Vector("Hidden preload Layer", {
+            strategies: [new OpenLayers.Strategy.Fixed({preload:true})],
+            protocol: protocol,
+            visibility: false,
+            addFeatures: function(features) {
+                t.ok(!this.visibility, "Features preloaded before visible");
+            }
+        });
+
+        var s = new OpenLayers.Strategy.Fixed();
+        var layer2 = new OpenLayers.Layer.Vector("Hidden lazyload Layer", {
+            strategies: [s],
+            protocol: protocol,
+            visibility: false,
+            addFeatures: function(features) {
+                t.ok(this.visibility, "Layer visible when features added");
+            }
+        });
+
+        var map = new OpenLayers.Map('map');
+        map.addLayers([dummy, layer, layerp, layer2]);
+
+        t.ok(layer2.events.listeners["visibilitychanged"][0].obj == s &&
+                layer2.events.listeners["visibilitychanged"][0].func == s.load,
+                "activate registers visibilitychanged listener if layer hidden"+
+                " and is lazyloading");
+
+        layer2.setVisibility(true);
+        
+        t.ok(layer2.events.listeners["visibilitychanged"] == false,
+                "visibilitychanged listener unregistered");
+    }
+    
+    function test_events(t) {
+        
+        t.plan(3);
+        
+        var log = {
+            loadstart: 0,
+            loadend: 0
+        };
+        
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector(null, {
+            strategies: [new OpenLayers.Strategy.Fixed()],
+            protocol: new OpenLayers.Protocol({
+                read: function(config) {
+                    config.callback.call(config.scope, {});
+                }
+            }),
+            isBaseLayer: true,
+            eventListeners: {
+                loadstart: function() {
+                    ++log.loadstart;
+                },
+                loadend: function() {
+                    ++log.loadend;
+                }
+            }
+        });
+
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        
+        t.eq(log.loadstart, 1, "loadstart triggered");
+        t.eq(log.loadend, 1, "loadend triggered");
+        var log = {};
+        layer.protocol.read = function(obj) {
+            log.obj = obj;
+        }
+        layer.refresh({whee: 'chicken'});
+
+        t.eq(log.obj && log.obj.whee, "chicken", "properties passed to read on refresh correctly.");
+        
+        map.destroy();
+        
+    }
+    
+    
+    function test_merge(t) {
+        
+        t.plan(6);
+        
+        var strategy = new OpenLayers.Strategy.Fixed();
+        
+        // create map with default projection
+        var map = new OpenLayers.Map("map");
+        
+        var log = {
+            loadend: 0
+        };
+        
+        // create layer with custom projection
+        var layer = new OpenLayers.Layer.Vector(null, {
+            isBaseLayer: true,
+            strategies: [strategy],
+            protocol: new OpenLayers.Protocol(),
+            projection: new OpenLayers.Projection("EPSG:900913"),
+            eventListeners: {
+                loadend: function() {
+                    ++log.loadend;
+                }
+            }
+        });
+        
+        // give the layer some existing features (one)
+        layer.addFeatures([
+            new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(0, 0)
+            )
+        ]);
+        
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        
+        // create some features
+        var geometries = [
+            new OpenLayers.Geometry.Point(100, 200),
+            new OpenLayers.Geometry.Point(1000, 2000)
+        ];
+        var features = [
+            new OpenLayers.Feature.Vector(geometries[0].clone()),
+            new OpenLayers.Feature.Vector(geometries[1].clone())
+        ];
+
+        // call merge with a mocked up response
+        strategy.merge(new OpenLayers.Projection("EPSG:900913"), {features: features});
+        
+        // confirm that the original features were destroyed
+        t.eq(layer.features.length, 2, "old features destroyed");
+        
+        // confirm that loadend was called
+        t.eq(log.loadend, 1, "merge triggers loadend");
+        
+        // test that feature geometries have been transformed to map projection
+        var from = layer.projection;
+        var to = map.getProjectionObject();
+        t.geom_eq(layer.features[0].geometry, features[0].geometry.transform(from, to), "[different proj] feature 0 geometry transformed");
+        t.geom_eq(layer.features[1].geometry, features[1].geometry.transform(from, to), "[different proj] feature 1 geometry transformed");
+        
+        // same as above but with same map/layer projection
+        layer.destroyFeatures();
+        layer.projection = map.getProjectionObject();
+        
+        features = [
+            new OpenLayers.Feature.Vector(geometries[0].clone()),
+            new OpenLayers.Feature.Vector(geometries[1].clone())
+        ];
+        
+        // call merge again with mocked up response
+        strategy.merge(new OpenLayers.Projection("EPSG:900913"), {features: features});
+
+        // test that feature geometries have not been transformed
+        t.geom_eq(layer.features[0].geometry, features[0].geometry, "[same proj] feature 0 geometry not transformed");
+        t.geom_eq(layer.features[1].geometry, features[1].geometry, "[same proj] feature 1 geometry not transformed");
+        
+    }
+
+    function test_load(t) {
+        t.plan(4);
+
+        // set up
+
+        var log;
+
+        var map = new OpenLayers.Map({
+            div: "map",
+            projection: new OpenLayers.Projection("EPSG:900913"),
+            layers: [new OpenLayers.Layer("", {isBaseLayer: true})]
+        });
+
+        var response = new OpenLayers.Protocol.Response();
+
+        var strategy = new OpenLayers.Strategy.Fixed({
+            merge: function(p, r) {
+                log = {scope: this, projection: p, response: r};
+            }
+        });
+
+        var layer = new OpenLayers.Layer.Vector("vector", {
+            strategies: [strategy],
+            protocol: {
+                read: function(o) {
+                    o.callback.call(o.scope, response);
+                }
+            }
+        });
+
+        map.addLayer(layer);
+
+        // test
+
+        strategy.load();
+
+        // verify that the callback is correctly bound
+        t.ok(log !== undefined,
+             "merge was called");
+        t.ok(log.scope == strategy,
+             "merge called with expected scope");
+        t.eq(log.projection.getCode(), map.getProjectionObject().getCode(),
+             "merge called the map projection as the first arg");
+        t.ok(log.response == response,
+             "merge called with response as the first arg");
+
+        // tear down
+
+        map.destroy();
+    }
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 400px; height: 200px" />
+</body>
+</html>

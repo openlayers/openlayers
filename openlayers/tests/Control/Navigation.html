@@ -1,0 +1,199 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+
+    function test_Control_Navigation_constructor (t) {
+        t.plan( 3 );
+        var temp = OpenLayers.Control.prototype.initialize;
+        OpenLayers.Control.prototype.initialize = function() {
+            t.ok(true, "OpenLayers.Control's constructor called");
+        };
+
+        var control = new OpenLayers.Control.Navigation();
+        t.ok( control instanceof OpenLayers.Control.Navigation, "new OpenLayers.Control returns object" );
+
+        t.ok( !control.handleRightClicks, "'handleRightClicks' property is disabled by default");
+
+        OpenLayers.Control.prototype.initialize = temp;
+    }
+
+    function test_draw(t) {
+        t.plan(5);
+        var map = new OpenLayers.Map({div: 'map', controls: []});
+        var control = new OpenLayers.Control.Navigation();
+        map.addControl(control);
+        t.ok(control.handlers.click instanceof OpenLayers.Handler.Click,
+             "click handler set in instance");
+        t.ok(control.dragPan instanceof OpenLayers.Control.DragPan,
+             "drag pan control set in instance");
+        t.ok(control.zoomBox instanceof OpenLayers.Control.ZoomBox,
+             "zoom box control set in instance");
+        t.ok(control.handlers.wheel instanceof OpenLayers.Handler.MouseWheel,
+             "mousewheel handler set in instance");
+        t.ok(control.pinchZoom instanceof OpenLayers.Control.PinchZoom,
+             "pinch zoom control set in instance");
+        map.destroy();
+    }
+
+    function test_Control_Navigation_destroy (t) {
+        t.plan(12);
+        
+        var temp = OpenLayers.Control.prototype.destroy;
+        OpenLayers.Control.prototype.destroy = function() {
+            t.ok(true, "OpenLayers.Control's destroy called");
+            temp.call(this);
+        };
+
+        var control = {
+            events: {
+                destroy: function() {
+                    t.ok(true, "events destroyed");
+                }
+            },
+            'deactivate': function() {
+                t.ok(true, "navigation control deactivated before being destroyed");
+            },
+            'dragPan': {
+                'destroy': function() {
+                    t.ok(true, "dragPan destroyed");
+                }
+            },
+            'zoomBox': {
+                'destroy': function() {
+                    t.ok(true, "zoomBox destroyed");
+                }
+            },
+            'pinchZoom': {
+                'destroy': function() {
+                    t.ok(true, "pinchZoom destroyed");
+                }
+            },
+            handlers: {
+                'wheel': {
+                    'destroy': function() {
+                        t.ok(true, "wheelHandler destroyed");
+                    }
+                },
+                'click': {
+                    'destroy': function() {
+                        t.ok(true, "clickHandler destroyed");
+                    }
+                }
+            }
+        };
+
+        //this will also trigger one test by calling OpenLayers.Control's destroy
+        // and three more for the destruction of dragPan, zoomBox, and wheelHandler
+        OpenLayers.Control.Navigation.prototype.destroy.apply(control, []);
+
+        t.eq(control.dragPan, null, "'dragPan' set to null");
+        t.eq(control.zoomBox, null, "'zoomBox' set to null");
+        t.eq(control.pinchZoom, null, "'pinchZoom' set to null");
+        t.eq(control.handlers, null, "handlers set to null");
+
+        OpenLayers.Control.prototype.destroy = temp;
+    }
+
+    function test_Control_Navigation_disableZoomBox(t) {
+        t.plan(2);
+        var nav = new OpenLayers.Control.Navigation();
+        var zb = new OpenLayers.Control.ZoomBox({});
+        nav.zoomBox = zb;
+        zb.activate();
+        nav.disableZoomBox();
+        t.eq(nav.zoomBoxEnabled, false, "zoom box deactivated");
+        t.eq(zb.active, false, "zoom box control deactivated");
+    }
+
+    function test_Control_Navigation_enableZoomBox(t) {
+        t.plan(2);
+        var nav = new OpenLayers.Control.Navigation();
+        var zb = new OpenLayers.Control.ZoomBox({});
+        nav.zoomBox = zb;
+        nav.active = true;
+        nav.enableZoomBox();
+        t.eq(nav.zoomBoxEnabled, true, "zoom box activated");
+        t.eq(zb.active, true, "zoom box control activated");
+    }
+
+    function test_Control_Navigation_disableZoomWheel(t) {
+        t.plan(2);
+        var nav = new OpenLayers.Control.Navigation();
+        var wheel = new OpenLayers.Handler.MouseWheel(nav, {});
+        nav.handlers.wheel = wheel;
+        wheel.register = function() {};
+        wheel.unregister = function() {};
+        wheel.activate();
+        nav.disableZoomWheel();
+        t.eq(nav.zoomWheelEnabled, false, "mouse wheel deactivated");
+        t.eq(wheel.active, false, "mouse wheel handler deactivated");
+    }
+
+    function test_Control_Navigation_enableZoomWheel(t) {
+        t.plan(2);
+        var nav = new OpenLayers.Control.Navigation({zoomWheelEnabled: false});
+        nav.active = true;
+        var wheel = new OpenLayers.Handler.MouseWheel(nav, {});
+        wheel.register = function() {};
+        wheel.unregister = function() {};
+        nav.handlers.wheel = wheel;
+        nav.enableZoomWheel();
+        t.eq(nav.zoomWheelEnabled, true, "mouse wheel activated");
+        t.eq(wheel.active, true, "mouse wheel handler activated");
+    }
+
+    function test_touches_zoom(t) {
+        t.plan(3);
+        var nav = new OpenLayers.Control.Navigation({zoomWheelEnabled: false});
+        var map = new OpenLayers.Map({
+            div: "map",
+            controls: [nav],
+            layers: [
+                new OpenLayers.Layer(null, {isBaseLayer: true})
+            ],
+            center: new OpenLayers.LonLat(0, 0),
+            zoom: 3
+        });
+        t.eq(map.getZoom(), 3, "map zoom starts at 3");
+        nav.handlers.click.callback("click", [{lastTouches: ["foo", "bar"]}]);
+        t.eq(map.getZoom(), 2, "map zooms out with a two touch tap");
+        nav.handlers.click.callback("click", [{}]);
+        t.eq(map.getZoom(), 2, "map doesn't do anything with click");
+        
+        map.destroy();
+    }
+    
+    function test_documentDrag(t) {
+        
+        t.plan(2);
+
+        /**
+         * These tests confirm that the documentDrag property is false by 
+         * default and is passed on to the DragPan control.  Tests of panning
+         * while dragging outside the viewport should go in the DragPan tests.
+         * Tests of the document events and appropriate callbacks from the 
+         * handler should go in the Drag handler tests.
+         */
+         
+         var nav = new OpenLayers.Control.Navigation();
+         t.eq(nav.documentDrag, false, "documentDrag false by default");
+         // nav.destroy(); // fails if called before draw
+         
+         var map = new OpenLayers.Map({
+             div: document.body,
+             controls: [new OpenLayers.Control.Navigation({documentDrag: true})]
+         });
+         nav = map.controls[0];
+
+         t.eq(nav.dragPan.documentDrag, true, "documentDrag set on the DragPan control");
+         map.destroy();
+         
+    }
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 256px; height: 256px"></div>
+</body>
+</html>

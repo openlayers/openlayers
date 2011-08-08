@@ -1,0 +1,162 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+
+    var interval = 5000;
+    
+    function test_initialize(t) {
+        t.plan(2);
+
+        var s = new OpenLayers.Strategy.Refresh({interval: interval});
+        t.ok(typeof s.interval === "number", "interval must be a number");
+        t.eq(s.interval, interval, "ctor sets interval");
+    }
+
+    function test_activate(t) {
+        t.plan(4);
+
+        var l = new OpenLayers.Layer.Vector();
+        l.setVisibility(false);
+        var s = new OpenLayers.Strategy.Refresh();
+        s.setLayer(l);
+
+        t.eq(s.active, false, "not active after construction");
+
+        var activated = s.activate();
+        t.eq(activated, true, "activate returns true");
+        t.eq(s.active, true, "activated after activate");
+        t.ok(l.events.listeners.visibilitychanged[0].obj == s &&
+            l.events.listeners.visibilitychanged[0].func == s.reset,
+            "activates registers visibilitychanged listener");
+    }
+
+    function test_activateWithVisibleLayer(t) {
+        t.plan(5);
+
+        var l = new OpenLayers.Layer.Vector();
+        l.setVisibility(true);
+        var s = new OpenLayers.Strategy.Refresh({interval: interval});
+        s.setLayer(l);
+
+        t.eq(s.active, false, "not active after construction");
+
+        var activated = s.activate();
+        t.eq(activated, true, "activate returns true");
+        t.eq(s.active, true, "activated after activate");
+        t.ok(l.events.listeners.visibilitychanged[0].obj == s &&
+            l.events.listeners.visibilitychanged[0].func == s.reset,
+            "activates registers visibilitychanged listener");
+        t.ok(s.timer !== null, "timer should be set on activate if layer is visible");
+
+        // reset the timer!!
+        s.stop();
+    }
+
+    function test_events(t) {
+        
+        t.plan(1);
+        var log = {
+            visibilitychanged: 0
+        };
+
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector(null, {
+            strategies: [new OpenLayers.Strategy.Refresh({interval: interval})],
+            protocol: new OpenLayers.Protocol({
+                read: function(config) {
+                    config.callback.call(config.scope, {});
+                }
+            }),
+            isBaseLayer: true,
+            eventListeners: {
+                visibilitychanged: function() {
+                    ++log.visibilitychanged;
+                }
+            }            
+        });
+        map.addLayer(layer);
+
+        layer.setVisibility(false);
+        t.eq(log.visibilitychanged, 1, "visibilitychanged triggered");
+        
+        map.destroy();
+        
+    }
+
+    function test_refreshWithNormalProgress(t) {
+        
+        t.plan(1);
+        var log = {
+            refreshcalled: 0
+        };
+
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector(null, {
+            strategies: [new OpenLayers.Strategy.Refresh({
+                interval: interval,
+                refresh: function() {
+                    if (this.layer && this.layer.refresh) {
+                        ++log.refreshcalled;
+                    }
+                }
+            })],
+            protocol: new OpenLayers.Protocol({
+                read: function(config) {
+                    config.callback.call(config.scope, {});
+                }
+            }),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+
+        t.delay_call((5 * (interval / 1000)) + 0.5, function() { 
+            t.eq(log.refreshcalled, 5, "number of refreshes");
+            map.destroy();
+        });
+        
+    }
+
+    function test_refreshWithSwitchingVisibility(t) {
+        
+        t.plan(1);
+        var log = {
+            refreshcalled: 0
+        };
+
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector(null, {
+            strategies: [new OpenLayers.Strategy.Refresh({
+                interval: interval,
+                refresh: function() {
+                    if (this.layer && this.layer.refresh) {
+                        ++log.refreshcalled;
+                    }
+                }
+            })],
+            protocol: new OpenLayers.Protocol({
+                read: function(config) {
+                    config.callback.call(config.scope, {});
+                }
+            }),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+
+        window.setTimeout(function() {
+            layer.setVisibility(false);
+        }, 2.5 * interval);
+        
+        t.delay_call((5 * (interval / 1000)) + 0.5, function() { 
+            t.eq(log.refreshcalled, 2, "number of refreshes");
+            map.destroy();
+        });
+        
+    }
+
+    </script>
+</head>
+<body>
+    <div id="map" style="width: 400px; height: 200px;"></div>
+</body>
+</html>

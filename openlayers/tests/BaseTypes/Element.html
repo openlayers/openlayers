@@ -1,0 +1,237 @@
+<html>
+  <head>
+  
+    <script src="../OLLoader.js"></script>
+
+    <script type="text/javascript">
+
+    function test_Element_visible(t) {
+        t.plan(3);
+        
+        var elem = {
+            style: {
+                'display': ""
+            }
+        };
+        
+        elem.style.display = "";
+        t.ok(OpenLayers.Element.visible(elem), "element with style.display == '' is visible");
+            
+        elem.style.display = "block";
+        t.ok(OpenLayers.Element.visible(elem), "element with style.display == block is visible");
+            
+        elem.style.display = "none";
+        t.ok(!OpenLayers.Element.visible(elem), "element with style.display == none is not visible");
+    }
+    
+    function test_Element_toggle(t) {
+        t.plan(2);
+
+        var elem1 = {
+            style: {
+                'display': "none"
+            }
+        };
+        
+        var elem2 = {
+            style: {
+                'display': ""
+            }
+        };
+
+        OpenLayers.Element.toggle(elem1, elem2);
+        
+        t.eq(elem1.style.display, "", "hidden element toggled to display");
+        t.eq(elem2.style.display, "none", "shown element toggled to hidden");
+    }
+    
+    function test_Element_hide(t) {
+        t.plan(2);
+
+        var elem1 = {
+            style: {
+                'display': "none"
+            }
+        };
+        
+        var elem2 = {
+            style: {
+                'display': ""
+            }
+        };
+
+        OpenLayers.Element.hide(elem1, elem2, "do-not-exists");
+        
+        t.eq(elem1.style.display, "none", "hidden element stays hidden");
+        t.eq(elem2.style.display, "none", "shown element hidden");
+    }
+    
+    function test_Element_show(t) {
+        t.plan(2);
+
+        var elem1 = {
+            style: {
+                'display': "none"
+            }
+        };
+        
+        var elem2 = {
+            style: {
+                'display': ""
+            }
+        };
+
+        OpenLayers.Element.show(elem1, "do-not-exists", elem2);
+        
+        t.eq(elem1.style.display, "", "hidden element shown");
+        t.eq(elem2.style.display, "", "shown element stays shown");
+    }
+    
+    function test_Element_remove(t) {
+        t.plan(1);
+
+        var elem = {
+            parentNode: {
+                'removeChild': function(elem) {
+                    t.ok(true, "removeChild called");
+                }
+            }        
+        };
+        OpenLayers.Element.remove(elem);
+    }
+    
+    function test_Element_getHeight(t) {
+        t.plan(1);
+
+        var elem = {
+            'offsetHeight': {}
+        };
+        
+        t.ok(OpenLayers.Element.getHeight(elem) == elem.offsetHeight, "offsetHeight returned");
+    }
+    
+    function test_hasClass(t) {        
+        t.plan(14);
+        var has = OpenLayers.Element.hasClass;
+
+        var element = document.createElement("div");
+        element.className = "fe fi fo fum one.part two-part three:part four";
+        
+        t.ok(has(element, "fe"), "has fe");
+        t.ok(has(element, "fi"), "has fi");
+        t.ok(has(element, "fo"), "has fo");
+        t.ok(!has(element, "f"), "hasn't f");
+        t.ok(!has(element, "o"), "hasn't o");
+        t.ok(!has(element, "fumb"), "hasn't fumb");
+        t.ok(!has(element, "one"), "hasn't one");
+        t.ok(has(element, "one.part"), "has one.part");
+        t.ok(!has(element, "two"), "hasn't two");
+        t.ok(has(element, "two-part"), "has two-part");
+        t.ok(!has(element, "three"), "hasn't three");
+        t.ok(has(element, "three:part"), "has three:part");
+        t.ok(has(element, "four"), "has four");
+        
+        element.className = "";
+        t.ok(!has(element, "nada"), "hasn't nada");
+    }
+
+    function test_addClass(t) {        
+        t.plan(6);
+        var add = OpenLayers.Element.addClass;
+        
+        var element = document.createElement("div");
+        element.id = "foo";
+        t.eq(element.className, "", "starts with no class name");
+        
+        var mod = add(element, "first");
+        t.eq(mod.id, element.id, "returns the same element");
+        t.eq(element.className, "first", "properly adds first class name");        
+        t.eq(add(element, "second").className, "first second",
+             "properly adds second class name");
+        t.eq(add(element, "second").className, "first second",
+             "doesn't do anything for duplicated names");
+        t.eq(add(element, "third").className, "first second third",
+             "properly adds third class name");
+    }
+    
+    function test_removeClass(t) {
+        t.plan(5);
+        var remove = OpenLayers.Element.removeClass;
+        
+        var element = document.createElement("div");
+        element.id = "foo";
+        element.className = "first second middle fourth last";
+        
+        var mod = remove(element, "last");
+        t.eq(mod.id, element.id, "returns the same element");
+        t.eq(element.className, "first second middle fourth",
+             "properly removes last class name");
+        t.eq(remove(element, "first").className, "second middle fourth",
+             "properly removes first class name");
+        t.eq(remove(element, "middle").className, "second fourth",
+             "properly removes middle class name");
+        t.eq(remove(element, "nada").className, "second fourth",
+             "doesn't do anything for bogus class name");
+    }
+
+    function test_toggleClass(t) {
+        t.plan(5);
+        var toggle = OpenLayers.Element.toggleClass;
+        
+        var element = document.createElement("div");
+        element.id = "foo";
+        
+        var mod = toggle(element, "first");
+        t.eq(mod.id, element.id, "returns the same element");
+        t.eq(element.className, "first", "adds first new class name");
+        t.eq(toggle(element, "second").className, "first second",
+             "adds second new class name");
+        t.eq(toggle(element, "first").className, "second",
+             "removes first existing class name");
+        t.eq(toggle(element, "second").className, "",
+             "removes second existing class name");
+    }
+
+    function test_Element_getStyle(t) {
+        t.plan(5);
+
+    //tests for this function are not 100% complete... there is some funky
+    // business going on in there with 
+    //  * document.defaultView (moz/ff I believe)
+    // but I cant seem to find a good way to test them.
+    // 
+		t.ok(OpenLayers.Element.getStyle(null, null) == null, "passing null values in to getStyle() doesnt bomb, returns null");
+
+        var elem = document.getElementById("elemID");
+        elem.style.chickenHead = {}
+
+        var style = "chickenHead";
+        t.ok(OpenLayers.Element.getStyle(elem, style) == elem.style.chickenHead, "get style on basic stylename returns correctly");
+
+        elem.style.chickenHead = "auto";
+        style = "chickenHead";
+        t.ok(OpenLayers.Element.getStyle(elem, style) == null, "get style on 'auto' style returns null");
+
+        if (OpenLayers.BROWSER_NAME == "opera") {
+            elem.style.top = "15px";
+            style = "top";
+
+            elem.style.position = "static";
+            t.ok(OpenLayers.Element.getStyle(elem, style) == null, "in opera: get (top/left/right/bottom) style when position == 'static' returns null");
+            
+            elem.style.position = "";
+            t.ok(OpenLayers.Element.getStyle(elem, style) == null, "in opera: get (top/left/right/bottom) style when position != 'static', gets computedStyle as static and returns null");
+
+        } else {
+            t.ok(true, "browser is not opera.");
+            t.ok(true, "trust me. browser is not opera.");
+        }
+
+    }    
+
+    </script>
+  </head>
+  <body>
+    <div id="elemID" style="width:50px; height:100px; background-color:red">test</div>
+  </body>
+</html>

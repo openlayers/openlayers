@@ -1,0 +1,48 @@
+<html>
+<head>
+<style type="text/css">
+ .testDims p{
+    padding: 20px; 
+}     
+</style>
+<script src="../../lib/OpenLayers.js"></script>
+<script>
+function run() {
+    var out = document.getElementById("out");    
+    var size = OpenLayers.Util.getRenderedDimensions("<p>Content</p>");
+    var bigger = OpenLayers.Util.getRenderedDimensions("<p>Content</p>", null, {displayClass: 'testDims'});
+    var overflow = OpenLayers.Util.getRenderedDimensions("<p style='overflow:auto'>Content</p>");
+    var width = OpenLayers.Util.getRenderedDimensions("<p>Content</p>", new OpenLayers.Size(250, null));
+    var height = OpenLayers.Util.getRenderedDimensions("<p>Content</p>", new OpenLayers.Size(null, 40));
+    if ((size.w + 40) == bigger.w && (size.h + 40) == bigger.h) {
+        out.innerHTML = "bigger Pass:  " + size + ", " + bigger;
+    } else { 
+        out.innerHTML = "bigger Fail:  " + size + ", " + bigger;
+    }
+
+    if (size.w == overflow.w && size.h == overflow.h) {
+        out.innerHTML += "<br/>overflow Pass:  " + size + ", " + overflow;
+    } else {
+        out.innerHTML += "<br/>overflow Fail:  " + size + ", " + overflow;
+    }
+
+    if (width.w == 250 && width.h == size.h) {
+        out.innerHTML += "<br/>width Pass:  " + size + ", " + width;
+    }
+    else {
+        out.innerHTML += "<br/>width Fail:  " + size + ", " + width;
+    }
+
+    if (height.h == 40 && height.w == size.w) {
+        out.innerHTML += "<br/>height Pass:  " + size + ", " + height;
+    }
+    else {
+        out.innerHTML += "<br/>height Fail:  " + size + ", " + height;
+    }
+} 
+</script>
+</head>
+<body onload="run()">
+<div id="out"></div>
+</body>
+</html>

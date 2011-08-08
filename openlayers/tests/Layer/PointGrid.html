@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="../OLLoader.js"></script>
+<script type="text/javascript">
+
+    function test_initialize(t) {
+        t.plan(1);
+        var layer = new OpenLayers.Layer.PointGrid();
+        t.ok(layer instanceof OpenLayers.Layer.PointGrid, "instance created");
+        layer.destroy();
+    }
+    
+    function test_name(t) {
+        t.plan(1);
+        var layer = new OpenLayers.Layer.PointGrid({name: "foo"});
+        t.eq(layer.name, "foo", "name set like every other property");
+        layer.destroy();
+    }
+    
+    function test_spacing(t) {
+        t.plan(7);
+        
+        var layer = new OpenLayers.Layer.PointGrid({
+            isBaseLayer: true,
+            resolutions: [1],
+            maxExtent: new OpenLayers.Bounds(-100, -50, 100, 50),
+            dx: 10,
+            dy: 10,
+            ratio: 1
+        });
+        
+        var map = new OpenLayers.Map({
+            div: "map",
+            layers: [layer],
+            center: new OpenLayers.LonLat(0, 0),
+            zoom: 0
+        });
+        
+        t.eq(layer.features.length, 200, "200 features");
+        
+        // set dx/dy together
+        layer.setSpacing(20);
+        t.eq(layer.dx, 20, "dx 20");
+        t.eq(layer.dy, 20, "dy 20");
+        t.eq(layer.features.length, 50, "50 features");
+        
+        // set dx/dy independently
+        layer.setSpacing(50, 25);
+        t.eq(layer.dx, 50, "dx 50");
+        t.eq(layer.dy, 25, "dy 25");
+        t.eq(layer.features.length, 16, "16 features");
+        
+        map.destroy();
+    }
+    
+    function test_ratio(t) {
+        t.plan(3);
+        
+        var layer = new OpenLayers.Layer.PointGrid({
+            isBaseLayer: true,
+            resolutions: [1],
+            maxExtent: new OpenLayers.Bounds(-100, -50, 100, 50),
+            dx: 25,
+            dy: 25,
+            ratio: 1
+        });
+        
+        var map = new OpenLayers.Map({
+            div: "map",
+            layers: [layer],
+            center: new OpenLayers.LonLat(0, 0),
+            zoom: 0
+        });
+        
+        t.eq(layer.features.length, 32, "32 features");
+        
+        // increase ratio (1.5 -> 300 x 150)
+        layer.setRatio(1.5);
+        t.eq(layer.ratio, 1.5, "ratio 1.5");
+        t.eq(layer.features.length, 72, "72 features");
+        
+        map.destroy();
+    }
+
+    function test_maxFeatures(t) {
+        t.plan(3);
+        
+        var layer = new OpenLayers.Layer.PointGrid({
+            isBaseLayer: true,
+            resolutions: [1],
+            maxExtent: new OpenLayers.Bounds(-100, -50, 100, 50),
+            dx: 10,
+            dy: 10,
+            ratio: 1
+        });
+        
+        var map = new OpenLayers.Map({
+            div: "map",
+            layers: [layer],
+            center: new OpenLayers.LonLat(0, 0),
+            zoom: 0
+        });
+        
+        t.eq(layer.features.length, 200, "200 features");
+        
+        // limit maxFeatures
+        layer.setMaxFeatures(150);
+        t.eq(layer.maxFeatures, 150, "maxFeatures 150");
+        t.ok(layer.features.length <= 150, "<= 150 features");
+        
+        map.destroy();
+    }
+
+    function test_rotation(t) {
+        t.plan(6);
+        
+        var layer = new OpenLayers.Layer.PointGrid({
+            isBaseLayer: true,
+            resolutions: [1],
+            maxExtent: new OpenLayers.Bounds(-100, -50, 100, 50),
+            dx: 10,
+            dy: 10,
+            ratio: 1
+        });
+        
+        var map = new OpenLayers.Map({
+            div: "map",
+            layers: [layer],
+            center: new OpenLayers.LonLat(0, 0),
+            zoom: 0
+        });
+
+        function getRotation(layer) {
+            // grid starts at bottom left and goes up
+            var g0 = layer.features[0].geometry;
+            var g1 = layer.features[1].geometry;
+            // subtract 90 to get rotation of grid
+            return Math.atan2(g1.y - g0.y, g1.x - g0.x) * (180 / Math.PI) - 90;
+        }
+        
+        t.eq(layer.rotation, 0, "0 rotation");
+        t.eq(getRotation(layer).toFixed(3), (0).toFixed(3), "0 grid")
+        
+        // rotate grid 25 degrees counter-clockwise
+        layer.setRotation(25);
+        t.eq(layer.rotation, 25, "25 rotation");
+        t.eq(getRotation(layer).toFixed(3), (25).toFixed(3), "25 grid");
+
+        // rotate grid 45 degrees clockwise
+        layer.setRotation(-45);
+        t.eq(layer.rotation, -45, "-45 rotation");
+        t.eq(getRotation(layer).toFixed(3), (-45).toFixed(3), "-45 grid");
+        
+        map.destroy();
+    }
+
+    function test_origin(t) {
+        t.plan(7);
+        
+        var layer = new OpenLayers.Layer.PointGrid({
+            isBaseLayer: true,
+            resolutions: [1],
+            maxExtent: new OpenLayers.Bounds(-100, -50, 100, 50),
+            dx: 10,
+            dy: 10,
+            ratio: 1
+        });
+        
+        var map = new OpenLayers.Map({
+            div: "map",
+            layers: [layer],
+            center: new OpenLayers.LonLat(0, 0),
+            zoom: 0
+        });
+
+        var origin = layer.getOrigin();
+        t.ok(map.getExtent().getCenterLonLat().equals(origin), "default is center of map extent");
+        
+        var g0 = layer.features[0].geometry;
+        
+        t.eq((g0.x - origin.lon) % layer.dx, 0, "a) lattice aligned with origin x");
+        t.eq((g0.y - origin.lat) % layer.dy, 0, "a) lattice aligned with origin y");
+        
+        // set origin
+        layer.setOrigin(new OpenLayers.LonLat(-5, 12));
+        origin = layer.getOrigin();
+        t.eq(origin.lon, -5, "-5 origin x");
+        t.eq(origin.lat, 12, "12 origin y");
+
+        g0 = layer.features[0].geometry;        
+        t.eq((g0.x - origin.lon) % layer.dx, 0, "b) lattice aligned with origin x");
+        t.eq((g0.y - origin.lat) % layer.dy, 0, "b) lattice aligned with origin y");
+
+        map.destroy();
+    }
+
+    function test_zoom(t) {
+        t.plan(2);
+        
+        var layer = new OpenLayers.Layer.PointGrid({
+            isBaseLayer: true,
+            resolutions: [2, 1],
+            maxExtent: new OpenLayers.Bounds(-200, -100, 200, 100),
+            dx: 20,
+            dy: 20,
+            ratio: 1
+        });
+        
+        var map = new OpenLayers.Map({
+            div: "map",
+            layers: [layer],
+            center: new OpenLayers.LonLat(0, 0),
+            zoom: 1
+        });
+        
+        t.eq(layer.features.length, 50, "50 features at zoom 1");
+        
+        map.zoomTo(0);
+        t.eq(layer.features.length, 200, "200 features at zoom 0")
+
+        map.destroy();
+    }
+
+
+</script>
+</head>
+<body>
+<div id="map" style="width:200px;height:100px"></div>
+</body>
+</html>

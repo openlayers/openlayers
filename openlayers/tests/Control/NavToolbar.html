@@ -1,0 +1,45 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    var map; 
+    function test_Control_NavToolbar_constructor (t) {
+        t.plan( 4 );
+        control = new OpenLayers.Control.NavToolbar();
+        t.ok( control instanceof OpenLayers.Control.NavToolbar, "new OpenLayers.Control.NavToolbar returns object" );
+        t.eq( control.displayClass,  "olControlNavToolbar", "displayClass is correct" );
+        t.ok( control.controls[0] instanceof OpenLayers.Control.Navigation, "NavToolbar contains Control.Navigation object" );
+        t.ok( control.controls[1] instanceof OpenLayers.Control.ZoomBox, "NavToolbar contains Control.ZoomBox object" );
+    }
+    function test_Control_NavToolbar_addControl (t) {
+        t.plan( 6 );
+        map = new OpenLayers.Map('map');
+        control = new OpenLayers.Control.NavToolbar();
+        t.ok( control instanceof OpenLayers.Control.NavToolbar, "new OpenLayers.Control.NavToolbar returns object" );
+        t.ok( map instanceof OpenLayers.Map, "new OpenLayers.Map creates map" );
+        map.addControl(control);
+        t.ok( control.map === map, "Control.map is set to the map object" );
+        t.ok( map.controls[4] === control, "map.controls contains control" );
+        t.eq( parseInt(control.div.style.zIndex), map.Z_INDEX_BASE['Control'] + 7, "Control div zIndexed properly" );
+        t.eq( parseInt(map.viewPortDiv.lastChild.style.zIndex), map.Z_INDEX_BASE['Control'] + 7, "Viewport div contains control div" );
+        // t.eq( control.div.style.top, "6px", "Control div top located correctly by default");
+
+    }
+    
+    function test_Control_NavToolbar_defaultControl (t) {
+        t.plan( 1 );
+        var map = new OpenLayers.Map('map');
+
+        var nav = new OpenLayers.Control.NavToolbar();
+        map.addControl(nav);
+        
+        t.eq(nav.controls[0].active, true, "First control is active" );
+        
+        map.destroy();
+    }
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 1024px; height: 512px;"/>
+</body>
+</html>

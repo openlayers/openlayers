@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers Image Layer Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <style type="text/css">
+        p.caption {
+            width: 512px;
+        }
+    </style>
+    <script src="../lib/Firebug/firebug.js"></script>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map;
+        function init(){
+            map = new OpenLayers.Map('map');
+
+            var options = {numZoomLevels: 3};
+
+            var graphic = new OpenLayers.Layer.Image(
+                'City Lights',
+                'http://earthtrends.wri.org/images/maps/4_m_citylights_lg.gif',
+                new OpenLayers.Bounds(-180, -88.759, 180, 88.759),
+                new OpenLayers.Size(580, 288),
+                options
+            );
+            
+            graphic.events.on({
+                loadstart: function() {
+                    OpenLayers.Console.log("loadstart");
+                },
+                loadend: function() {
+                    OpenLayers.Console.log("loadend");
+                }
+            });
+
+            var jpl_wms = new OpenLayers.Layer.WMS( "NASA Global Mosaic",
+                "http://t1.hypercube.telascience.org/cgi-bin/landsat7", 
+                {layers: "landsat7"}, options);
+
+            map.addLayers([graphic, jpl_wms]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.zoomToMaxExtent();
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Image Layer Example</h1>
+
+    <div id="tags">
+        image, imagelayer
+    </div>
+
+    <p id="shortdesc">
+        Demonstrate a single non-tiled image as a selectable base layer.
+    </p>
+
+    <div id="map" class="smallmap"></div>
+
+    <div id="docs">
+        <p class="caption">
+            The "City Lights" layer above is created from a single web accessible
+            image.  If you construct it without any resolution related options,
+            the layer will be given a single resolution based on the extent/size.
+            Otherwise, it behaves much like a regular layer.  This is primarily
+            intended to be used in an overview map - where another layer type
+            might not make a good overview.
+        </p>
+    </div>
+  </body>
+</html>

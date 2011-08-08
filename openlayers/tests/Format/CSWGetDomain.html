@@ -1,0 +1,23 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+
+    function test_initialize(t) {
+        t.plan(2);
+
+        var format = new OpenLayers.Format.CSWGetDomain();
+        t.ok(format instanceof OpenLayers.Format.CSWGetDomain.v2_0_2, "constructor returns instance with default versioned format");
+
+        format = new OpenLayers.Format.CSWGetDomain({
+            version: "2.0.2"
+        });
+        t.ok(format instanceof OpenLayers.Format.CSWGetDomain.v2_0_2, "constructor returns instance with custom versioned format");
+    }
+
+  </script>
+</head>
+<body>
+<div id="map" style="width:512px; height:256px"> </div>
+</body>
+</html>

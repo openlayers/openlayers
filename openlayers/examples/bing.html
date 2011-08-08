@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers Bing Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2&amp;mkt=en-us"></script>
+
+    <script src="../lib/OpenLayers.js"></script>
+    <script>
+
+        var map;
+ 
+        function init(){
+            // setting restrictedExtent so that we can use the 
+            // VirtualEarth-layers, see e.g. 
+            // http://dev.openlayers.org/apidocs/files/OpenLayers/Layer/VirtualEarth-js.html
+            var restrictedExtent = new OpenLayers.Bounds(-180, -90, 
+                180, 90);
+            
+            map = new OpenLayers.Map("map");
+            
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+
+            var shaded = new OpenLayers.Layer.VirtualEarth("Shaded", {
+                type: VEMapStyle.Shaded
+            });
+            var hybrid = new OpenLayers.Layer.VirtualEarth("Hybrid", {
+                type: VEMapStyle.Hybrid
+            });
+            var aerial = new OpenLayers.Layer.VirtualEarth("Aerial", {
+                type: VEMapStyle.Aerial
+            });
+
+            map.addLayers([shaded, hybrid, aerial]);
+
+            map.setCenter(new OpenLayers.LonLat(-110, 45), 3);
+        }
+
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Bing Example</h1>
+
+    <div id="tags">
+        Bing, Microsoft, Virtual Earth
+    </div>
+
+    <p id="shortdesc">
+        Demonstrates the use of Bing layers.
+    </p>
+
+    <div id="map" class="smallmap"></div>
+    <div id="docs"><p>This example demonstrates the ability to create layers
+        using tiles from Bing maps.</p></div>
+  </body>
+</html>
+
+

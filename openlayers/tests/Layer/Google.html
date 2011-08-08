@@ -1,0 +1,360 @@
+<html>
+<head>
+    <script type="text/javascript">var oldAlert = window.alert, gMess; window.alert = function(message) {gMess = message; return true;};</script>
+    <!-- this gmaps key generated for http://openlayers.org/dev/ -->
+    <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAA9XNhd8q0UdwNC7YSO4YZghSPUCi5aRYVveCcVYxzezM4iaj_gxQ9t-UajFL70jfcpquH5l1IJ-Zyyw'></script>
+    <script type="text/javascript">window.alert = oldAlert;</script>
+    <script src="../OLLoader.js"></script>
+    <script type="text/javascript">
+    var layer; 
+    var validkey = (window.location.protocol == "file:") ||
+                   (window.location.host == "localhost") ||
+                   (window.location.host == "openlayers.org");
+                   
+    function test_Layer_Google_message(t) {
+        t.plan(0);
+        if(gMess) {
+            t.debug_print(gMess);
+        }
+    }
+
+    function test_Layer_Google_constructor (t) {
+        if(validkey) {
+            t.plan( 4 );
+            
+            var map = new OpenLayers.Map('map');
+            var layer = new OpenLayers.Layer.Google('Goog Layer');
+            map.addLayer(layer);
+            
+            
+            t.ok( layer instanceof OpenLayers.Layer.Google, "new OpenLayers.Layer.Google returns object" );
+            t.eq( layer.CLASS_NAME, "OpenLayers.Layer.Google", "CLASS_NAME variable set correctly");
+    
+            t.eq( layer.name, "Goog Layer", "layer.name is correct" );
+    
+            t.ok ( layer.mapObject != null, "GMap2 Object correctly loaded");
+        } else {
+            t.plan(0);
+            t.debug_print("Google tests can't be run from " +
+                          window.location.host);
+        }
+    }
+    
+    function test_clone(t) {
+        if (validkey) {
+            t.plan(2);
+            var layer, clone;
+            
+            // test default layer
+            layer = new OpenLayers.Layer.Google();
+            clone = layer.clone();
+            t.ok(clone instanceof OpenLayers.Layer.Google, "[default] good instance");
+            
+            layer.destroy();
+            clone.destroy();
+            
+            // test with alt type
+            layer = new OpenLayers.Layer.Google(null, {type: G_SATELLITE_MAP});
+            clone = layer.clone();
+            t.ok(clone.type === G_SATELLITE_MAP, "[sat] correct type");
+            
+            layer.destroy();
+            clone.destroy();   
+        } else {
+            t.plan(0);
+            t.debug_print("Google tests can't be run from " +
+                          window.location.host);
+        }
+    }
+
+    function test_Layer_Google_isBaseLayer (t) {
+        if(validkey) {
+            t.plan(1);
+            
+            var layer = new OpenLayers.Layer.Google('Goog Layer');
+    
+            t.ok(layer.isBaseLayer, "a default load of google layer responds as a base layer");
+        } else {
+            t.plan(0);
+            t.debug_print("Google tests can't be run from " +
+                          window.location.host);
+        }
+    }    
+
+    function test_Layer_Google_Translation_lonlat (t) {
+        
+        if(validkey) {
+            t.plan( 4 );
+            
+            var map = new OpenLayers.Map('map');
+            var layer = new OpenLayers.Layer.Google('Goog Layer');
+            map.addLayer(layer);
+
+        // these two lines specify an appropriate translation. 
+        //  the code afterwards works by itself to test that translation
+        //  works correctly both ways.
+           var gLatLng = new GLatLng(50,100);
+           var correspondingOLLonLat = new OpenLayers.LonLat(100,50);
+   
+   
+           olLonLat = layer.getOLLonLatFromMapObjectLonLat(gLatLng);
+           t.ok(olLonLat.equals(correspondingOLLonLat), "Translation from GLatLng to OpenLayers.LonLat works");
+   
+           var transGLatLng = layer.getMapObjectLonLatFromOLLonLat(olLonLat);
+           t.ok( transGLatLng.equals(gLatLng), "Translation from OpenLayers.LonLat to GLatLng works");
+   
+           t.ok( layer.getMapObjectLonLatFromOLLonLat(null) == null, "getGLatLngFromOLLonLat(null) returns null");
+           t.ok( layer.getOLLonLatFromMapObjectLonLat(null) == null, "getOLLonLatFromGLatLng(null) returns null");
+        } else {
+            t.plan(0);
+            t.debug_print("Google tests can't be run from " +
+                          window.location.host);
+        }
+    }
+
+    function test_Layer_Google_Translation_pixel (t) {
+        if(validkey) {
+            t.plan( 4 );
+            
+            var map = new OpenLayers.Map('map');
+            var layer = new OpenLayers.Layer.Google('Goog Layer');
+            map.addLayer(layer);
+    
+         // these two lines specify an appropriate translation. 
+         //  the code afterwards works by itself to test that translation
+         //  works correctly both ways.
+            var gPoint = new GPoint(50,100);
+            var correspondingOLPixel = new OpenLayers.Pixel(50, 100);
+    
+    
+            olPixel = layer.getOLPixelFromMapObjectPixel(gPoint);
+            t.ok( olPixel.equals(correspondingOLPixel), "Translation from GPoint to OpenLayers.Pixel works");
+    
+            var transGPoint = layer.getMapObjectPixelFromOLPixel(olPixel);
+            t.ok( transGPoint.equals(gPoint), "Translation from OpenLayers.Pixel to GPoint works");
+    
+            t.ok( layer.getMapObjectPixelFromOLPixel(null) == null, "getGPointFromOLPixel(null) returns null");
+            t.ok( layer.getOLPixelFromMapObjectPixel(null) == null, "getOLPixelFromGPoint(null) returns null");
+        } else {
+            t.plan(0);
+            t.debug_print("Google tests can't be run from " +
+                          window.location.host);
+        }
+    }
+
+    function test_Layer_destroy (t) {
+        if(validkey) {
+            t.plan( 5 );    
+    
+            var map = new OpenLayers.Map('map');
+            
+            layer = new OpenLayers.Layer.Google('Test Layer');
+            map.addLayer(layer);
+    
+            layer.destroy();
+    
+            t.eq( layer.name, null, "layer.name is null after destroy" );
+            t.eq( layer.div, null, "layer.div is null after destroy" );
+            t.eq( layer.map, null, "layer.map is null after destroy" );
+            t.eq( layer.options, null, "layer.options is null after destroy" );
+            t.eq( layer.gmap, null, "layer.gmap is null after destroy" );
+        } else {
+            t.plan(0);
+            t.debug_print("Google tests can't be run from " +
+                          window.location.host);
+        }
+    }
+
+    function test_Layer_Goole_forwardMercator(t){
+        if(validkey) {
+            t.plan(2);
+            //Just test that the fowardMercator function still exists.
+            var layer = new OpenLayers.Layer.Google('Test Layer', {'sphericalMercator': true});
+            layer.forwardMercator = function(evt) {
+                t.ok(true,
+                     "GoogleMercator.forwardMercator was called and executed." );
+                return;
+            }
+            layer.forwardMercator();
+            //Now test the fowardMercator returns the expected LonLat object
+            var layer = new OpenLayers.Layer.Google('Test Layer', {'sphericalMercator': true});
+            var lonlat2 = new OpenLayers.LonLat(Math.random(),Math.random());
+            var result = layer.forwardMercator(lonlat2.lon, lonlat2.lat);
+            t.ok(result instanceof OpenLayers.LonLat, "OpenLayers.Google.fowardMercator returns LonLat object" );
+        } else {
+            t.plan(0);
+            t.debug_print("Google tests can't be run from " +
+                          window.location.host);
+        }
+    }
+
+    function test_Layer_Google_overlay(t) {
+        // Test for #849.
+        if(validkey) {
+            t.plan(1);
+            var map = new OpenLayers.Map( 'map' , 
+            { controls: [] , 'numZoomLevels':20});
+    
+            var satellite = new OpenLayers.Layer.Google( "Google Satellite" , {type: G_SATELLITE_MAP, 'maxZoomLevel':18} );
+            var layer = new OpenLayers.Layer.WMS.Untiled( "OpenLayers WMS", 
+                    "http://labs.metacarta.com/wms/vmap0", {layers: 'basic', 'transparent':true}, 
+                      {isBaseLayer: false} );
+    
+            map.addLayers([satellite, layer]);
+            map.setCenter(new OpenLayers.LonLat(10.205188,48.857593), 5);
+            map.zoomIn();
+            var size = map.getSize();
+            var px = new OpenLayers.Pixel(size.w, size.h);
+            var br = map.getLonLatFromPixel(px);
+            t.ok(layer.grid[0][0].bounds.containsLonLat(br), "Bottom right pixel is covered by untiled WMS layer");
+        } else {
+            t.plan(0);
+            t.debug_print("Google tests can't be run from " +
+                          window.location.host);
+        }
+    }    
+    function test_Layer_Google_isBaseLayer (t) {
+        if(validkey) {
+            t.plan(3);
+            var map = new OpenLayers.Map( 'map' , 
+            { controls: [] , 'numZoomLevels':20});
+    
+            var satellite = new OpenLayers.Layer.Google( "Google Satellite" , {type: G_SATELLITE_MAP, 'maxZoomLevel':18} );
+            map.addLayers([satellite]);
+            map.zoomToMaxExtent();
+            
+            t.eq(satellite.div.style.display, "", "Satellite layer is visible.");
+            satellite.setVisibility(false);
+            t.eq(satellite.div.style.display, "none", "Satellite layer is not visible.");
+            satellite.setVisibility(true);
+            t.eq(satellite.div.style.display, "block", "Satellite layer is visible.");
+            
+        } else {
+            t.plan(0);
+            t.debug_print("Google tests can't be run from " +
+                          window.location.host);
+        }
+    }
+    
+    function test_setOpacity(t) {
+        
+        t.plan(6);
+        
+        var map = new OpenLayers.Map("map");
+        var gmap = new OpenLayers.Layer.Google(
+            "Google Streets", // the default
+            {numZoomLevels: 20}
+        );
+        var ghyb = new OpenLayers.Layer.Google(
+            "Google Hybrid",
+            {type: G_HYBRID_MAP, numZoomLevels: 20}
+        );
+        var gsat = new OpenLayers.Layer.Google(
+            "Google Satellite",
+            {type: G_SATELLITE_MAP, numZoomLevels: 22}
+        );
+        map.addLayers([gmap, ghyb, gsat]);
+        map.zoomToMaxExtent();
+        
+        var container = map.baseLayer.mapObject.getContainer();
+        var opacityCheck = function(opacity) {
+            var style = container.style;
+            var current = style.opacity === "" ? 1 : parseFloat(style.opacity);
+            if (style.filter && !style.opacity) {
+                current = Number(style.filter.replace(/alpha\(opacity=(.+?)\)/, "$1"));
+            }
+            return (current === opacity);
+        };
+        
+        gmap.setOpacity(0.5);
+        t.ok(opacityCheck(0.5), "container opacity set for visible layer");
+        
+        ghyb.setOpacity(0.75);
+        t.ok(opacityCheck(0.5), "container opacity not changed if layer not visible");
+        map.setBaseLayer(ghyb);
+        t.ok(opacityCheck(0.75), "container opacity changed to 0.75 when layer becomes visible");
+        
+        map.setBaseLayer(gsat);
+        t.ok(opacityCheck(1), "container opacity set to 1 by default");
+        gsat.setOpacity(0.25);
+        t.ok(opacityCheck(0.25), "container opacity changed to 0.25 for visible layer");
+        
+        map.setBaseLayer(gmap);
+        t.ok(opacityCheck(0.5), "container opacity set to layer opacity");
+        
+        map.destroy();
+        
+    }
+
+    function test_Layer_Google_setGMapVisibility(t) {
+        if(validkey) {
+            t.plan(4);
+
+            var map1 = new OpenLayers.Map('map');
+            var gmap1 = new OpenLayers.Layer.Google("Google Streets");
+            var dummy1 = new OpenLayers.Layer("Dummy", {isBaseLayer: true});
+            map1.addLayers([dummy1, gmap1]);
+            map1.zoomToMaxExtent();
+            
+            t.delay_call(2, function() {
+                t.ok(gmap1.termsOfUse.style.display == "none" || gmap1.termsOfUse.style.left == "-9999px", "termsOfUse is not visible");
+                t.eq(gmap1.poweredBy.style.display, "none", "poweredBy is not visible");
+                map1.destroy();
+            });            
+            
+            var map2 = new OpenLayers.Map('map', {allOverlays: true});
+            var gmap2 = new OpenLayers.Layer.Google("Google Streets", {visibility: false});
+            var dummy2 = new OpenLayers.Layer("Dummy");
+            map2.addLayers([gmap2, dummy2]);
+            map2.zoomToMaxExtent();
+            
+            t.delay_call(2, function() {
+                t.ok(gmap2.termsOfUse.style.display == "none" || gmap2.termsOfUse.style.left == "-9999px", "allOverlays:true - termsOfUse is not visible");
+                t.eq(gmap2.poweredBy.style.display, "none", "allOverlays:true - poweredBy is not visible");
+                map2.destroy();
+            });            
+        } else {
+            t.plan(0);
+            t.debug_print("Google tests can't be run from " +
+                          window.location.host);
+        }    
+    }
+    
+    function test_sphericalMercator(t) {
+        
+        t.plan(4);
+        var map, layer;
+
+        map = new OpenLayers.Map("map");
+        layer = new OpenLayers.Layer.Google();
+        map.addLayer(layer);
+        t.ok(!layer.sphericalMercator, "sphericalMercator false by default");
+        t.eq(map.getProjection(), "EPSG:4326", "4326 by default without sphericalMercator");
+        map.destroy();
+        
+        map = new OpenLayers.Map("map");
+        layer = new OpenLayers.Layer.Google(null, {
+            sphericalMercator: true
+        });
+        map.addLayer(layer);
+        t.eq(map.getProjection(), "EPSG:900913", "900913 by default with sphericalMercator");
+        map.destroy();
+
+        map = new OpenLayers.Map("map");
+        layer = new OpenLayers.Layer.Google(null, {
+            sphericalMercator: true,
+            projection: "EPSG:102113"
+        });
+        map.addLayer(layer);
+        t.eq(map.getProjection(), "EPSG:102113", "custom code respected with sphericalMercator");
+        map.destroy();
+        
+    }
+    
+
+  </script>
+</head>
+<body>
+  <div id="map" style="width:500px; height: 500px"></div>
+</body>
+</html>

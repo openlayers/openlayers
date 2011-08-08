@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Snapping</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <!--[if lte IE 6]>
+        <link rel="stylesheet" href="../theme/default/ie6-style.css" type="text/css" />
+    <![endif]-->
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <style type="text/css">
+        .olControlEditingToolbar .olControlModifyFeatureItemInactive { 
+            background-position: -1px -1px;
+        }
+        .olControlEditingToolbar .olControlModifyFeatureItemActive { 
+            background-position: -1px -24px;
+        }
+        table {
+            padding: 1em 0 1em;
+        }
+        td {
+            padding: 0.5em 1em;
+            border: 1px solid #ddd;
+        }
+        tr.head td {
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+    <script src="../lib/Firebug/firebug.js"></script>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        OpenLayers.Feature.Vector.style['default']['strokeWidth'] = '2';
+
+        function init() {
+            initMap();
+            initUI();
+        }
+        
+        var map, draw, modify, snap, point, line, poly;
+        function initMap() {
+
+            map = new OpenLayers.Map('map');
+            var styles = new OpenLayers.StyleMap({
+                "default": new OpenLayers.Style(null, {
+                    rules: [
+                        new OpenLayers.Rule({
+                            symbolizer: {
+                                "Point": {
+                                    pointRadius: 5,
+                                    graphicName: "square",
+                                    fillColor: "white",
+                                    fillOpacity: 0.25,
+                                    strokeWidth: 1,
+                                    strokeOpacity: 1,
+                                    strokeColor: "#3333aa"
+                                },
+                                "Line": {
+                                    strokeWidth: 3,
+                                    strokeOpacity: 1,
+                                    strokeColor: "#6666aa"
+                                },
+                                "Polygon": {
+                                    strokeWidth: 1,
+                                    strokeOpacity: 1,
+                                    fillColor: "#9999aa",
+                                    strokeColor: "#6666aa"
+                                }
+                            }
+                        })
+                    ]
+                }),
+                "select": new OpenLayers.Style(null, {
+                    rules: [
+                        new OpenLayers.Rule({
+                            symbolizer: {
+                                "Point": {
+                                    pointRadius: 5,
+                                    graphicName: "square",
+                                    fillColor: "white",
+                                    fillOpacity: 0.25,
+                                    strokeWidth: 2,
+                                    strokeOpacity: 1,
+                                    strokeColor: "#0000ff"
+                                },
+                                "Line": {
+                                    strokeWidth: 3,
+                                    strokeOpacity: 1,
+                                    strokeColor: "#0000ff"
+                                },
+                                "Polygon": {
+                                    strokeWidth: 2,
+                                    strokeOpacity: 1,
+                                    fillColor: "#0000ff",
+                                    strokeColor: "#0000ff"
+                                }
+                            }
+                        })
+                    ]
+                }),
+                "temporary": new OpenLayers.Style(null, {
+                    rules: [
+                        new OpenLayers.Rule({
+                            symbolizer: {
+                                "Point": {
+                                    graphicName: "square",
+                                    pointRadius: 5,
+                                    fillColor: "white",
+                                    fillOpacity: 0.25,
+                                    strokeWidth: 2,
+                                    strokeColor: "#0000ff"
+                                },
+                                "Line": {
+                                    strokeWidth: 3,
+                                    strokeOpacity: 1,
+                                    strokeColor: "#0000ff"
+                                },
+                                "Polygon": {
+                                    strokeWidth: 2,
+                                    strokeOpacity: 1,
+                                    strokeColor: "#0000ff",
+                                    fillColor: "#0000ff"
+                                }
+                            }
+                        })
+                    ]
+                })
+            });
+
+            // create three vector layers
+            poly = new OpenLayers.Layer.Vector("polygons", {
+                strategies: [new OpenLayers.Strategy.Fixed()],                
+                protocol: new OpenLayers.Protocol.HTTP({
+                    url: "data/poly.json",
+                    format: new OpenLayers.Format.GeoJSON()
+                }),
+                styleMap: styles,
+                isBaseLayer: true
+            });
+            line = new OpenLayers.Layer.Vector("lines", {
+                strategies: [new OpenLayers.Strategy.Fixed()],                
+                protocol: new OpenLayers.Protocol.HTTP({
+                    url: "data/line.json",
+                    format: new OpenLayers.Format.GeoJSON()
+                }),
+                styleMap: styles
+            });
+            point = new OpenLayers.Layer.Vector("points", {
+                strategies: [new OpenLayers.Strategy.Fixed()],                
+                protocol: new OpenLayers.Protocol.HTTP({
+                    url: "data/point.json",
+                    format: new OpenLayers.Format.GeoJSON()
+                }),
+                styleMap: styles
+            });
+            map.addLayers([poly, line, point]);
+            
+            // configure the snapping agent
+            snap = new OpenLayers.Control.Snapping({
+                layer: poly,
+                targets: [point, line, poly],
+                greedy: false
+            });
+            snap.activate();
+
+            // add some editing tools to a panel
+            var panel = new OpenLayers.Control.Panel({
+                displayClass: "olControlEditingToolbar"
+            });
+            draw = new OpenLayers.Control.DrawFeature(
+                poly, OpenLayers.Handler.Polygon,
+                {displayClass: "olControlDrawFeaturePoint", title: "Draw Features", handlerOptions: {holeModifier: "altKey"}}
+            );
+            modify = new OpenLayers.Control.ModifyFeature(
+                poly, {displayClass: "olControlModifyFeature", title: "Modify Features"}
+            );            
+            panel.addControls([
+                new OpenLayers.Control.Navigation({title: "Navigate"}),
+                draw, modify
+            ]);
+            map.addControl(panel);
+            
+            // give the map a location
+            map.setCenter(new OpenLayers.LonLat(0, 0), 1);
+        }
+        
+        /**
+         * Add behavior to page elements.  This basically lets us set snapping
+         * target properties with the checkboxes and text inputs.  The checkboxes
+         * toggle the target node, vertex, or edge (boolean) values.  The
+         * text inputs set the nodeTolerance, vertexTolerance, or edgeTolerance
+         * property values.
+         */
+        function initUI() {
+            var check = $("snapping");
+            check.checked = true;
+            check.onclick = function() {
+                if(check.checked) {
+                    snap.activate();
+                } else {
+                    snap.deactivate();
+                }
+            };
+            
+            var sel = $("editable");
+            sel.value = "poly";
+            sel.onchange = function() {
+                updateEditable(sel.value);
+            }
+            
+            var target, type, tog, tol;
+            var types = ["node", "vertex", "edge"];
+            for(var i=0; i<snap.targets.length; ++i) {
+                target = snap.targets[i];
+                for(var j=0; j<types.length; ++j) {
+                    type = types[j];
+                    tog = $(i + "_" + type);
+                    tog.checked = target[type];
+                    tog.onclick = (function(tog, type, target) {
+                        return function() {target[type] = tog.checked;}
+                    })(tog, type, target);
+                    tol = $(i + "_" + type + "Tolerance");
+                    tol.value = target[type + "Tolerance"];
+                    tol.onchange = (function(tol, type, target) {
+                        return function() {
+                            target[type + "Tolerance"] = Number(tol.value) || 0;
+                        }
+                    })(tol, type, target);
+                }
+            }
+            
+        }
+        
+        // this function allows the editable layer to be changed
+        // for the snapping control, this amounts to calling setLayer
+        function updateEditable(name) {
+
+            layer = window[name];
+            
+            // update the editable layer for the snapping control (nice)
+            snap.setLayer(layer);
+
+            // update the editable layer for the modify control (ugly)
+            var modActive = modify.active;
+            if(modActive) {
+                modify.deactivate();
+            }
+            modify.layer = layer;
+            modify.selectControl.layer = layer;
+            modify.selectControl.handlers.feature.layer = layer;
+            modify.dragControl.layer = layer;
+            modify.dragControl.handlers.drag.layer = layer;
+            modify.dragControl.handlers.feature.layer = layer;
+            if(modActive) {
+                modify.activate();
+            }
+            
+            // update the editable layer for the draw control (very ugly)
+            var drawActive = draw.active;
+            if(drawActive) {
+                draw.deactivate();
+            }
+            draw.layer = layer;
+            var handler = ({
+                point: OpenLayers.Handler.Point,
+                line: OpenLayers.Handler.Path,
+                poly: OpenLayers.Handler.Polygon
+            })[name];
+            draw.handler = new handler(draw, draw.callbacks, draw.handlerOptions);
+            if(drawActive) {
+                draw.activate();
+            }
+
+        }
+
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Snapping Example</h1>
+    <div id="tags">
+        vector, feature, snapping, stylemap, advanced
+    </div>      
+    <div id="shortdesc">A demonstration snapping while editing vector features.</div>
+    <div id="map" class="smallmap"></div>
+    <br>
+    <label for="editable">Editable Layer:</label>
+    <select id="editable" name="editable">
+        <option value="poly">polygons</option>
+        <option value="line">lines</option>
+        <option value="point">points</option>
+    </select>
+    <label for="snapping">Enable Snapping</label>
+    <input type="checkbox" name="snapping" id="snapping" checked="checked" />
+    <table>
+        <tbody>
+            <tr class="head">
+                <td>targets</td><td>node</td><td>vertex</td><td>edge</td>
+            </tr>
+            <tr>
+                <td>points</td>
+                <td><input type="checkbox" id="0_node" /><input id="0_nodeTolerance" type="text" size="3" /></td>
+                <td><input type="checkbox" id="0_vertex" /><input id="0_vertexTolerance" type="text" size="3" /></td>
+                <td><input type="checkbox" id="0_edge" /><input id="0_edgeTolerance" type="text" size="3" /></td>
+            </tr>
+            <tr>
+                <td>lines</td>
+                <td><input type="checkbox" id="1_node" /><input id="1_nodeTolerance" type="text" size="3" /></td>
+                <td><input type="checkbox" id="1_vertex" /><input id="1_vertexTolerance" type="text" size="3" /></td>
+                <td><input type="checkbox" id="1_edge" /><input id="1_edgeTolerance" type="text" size="3" /></td>
+            </tr>
+            <tr>
+                <td>polygons</td>
+                <td><input type="checkbox" id="2_node" /><input id="2_nodeTolerance" type="text" size="3" /></td>
+                <td><input type="checkbox" id="2_vertex" /><input id="2_vertexTolerance" type="text" size="3" /></td>
+                <td><input type="checkbox" id="2_edge" /><input id="2_edgeTolerance" type="text" size="3" /></td>
+            </tr>
+        </tbody>
+    </table>
+    <p>Though all snapping types are shown here for all target layers, not all are sensible.
+    Points don't have edges, for example.</p>
+  </body>
+</html>

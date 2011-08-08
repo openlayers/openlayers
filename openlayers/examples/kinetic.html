@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>OpenLayers Kinetic Dragging Example</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+  </head>
+  <body>
+      <h1 id="title">Kinetic Dragging Example</h1>
+
+      <div id="tags">
+          kinetic, dragging
+      </div>
+
+      <p id="shortdesc">
+        Demonstrates Kinetic Dragging.
+      </p>
+
+    <div id="map" class="smallmap"></div>
+
+    <div id="docs">
+        <p>
+            OpenLayers Kinetic Dragging inspired from <a href="http://www.tile5.org">Tile5</a>, and
+            <a href="http://code.google.com/p/kineticscrolling/">kineticscrolling</a> for Google Maps API V3.
+        </p><p>
+            As shown in this example Kinetic Dragging is enabled by setting
+            <code>enableKinetic</code> to true in the config object provided to the
+            <code>Control.DragPan</code> constructor. When using
+            <code>Control.Navigation</code> or <code>Control.TouchNavigation</code>
+            providing options to the underlying <code>Control.DragPan</code>
+            instance is done through the <code>dragPanOptions</code> config
+            property.
+        </p><p>
+            View the <a href="kinetic.js" target="_blank">kinetic.js source</a>
+            to see how this is done.
+        </p>
+    </div>
+    <script src="../lib/OpenLayers.js"></script>
+    <script src="kinetic.js"></script>
+  </body>
+</html>

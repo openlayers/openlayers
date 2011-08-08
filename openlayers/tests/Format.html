@@ -1,0 +1,23 @@
+<html>
+<head>
+  <script src="OLLoader.js"></script>
+  <script type="text/javascript">
+
+    function test_Format_constructor(t) {
+        t.plan(5);
+    
+        var options = {'foo': 'bar'};
+        var format = new OpenLayers.Format(options);
+        t.ok(format instanceof OpenLayers.Format,
+             "new OpenLayers.Format returns object" );
+        t.eq(format.foo, "bar", "constructor sets options correctly");
+        t.eq(typeof format.read, "function", "format has a read function");
+        t.eq(typeof format.write, "function", "format has a write function");
+        t.eq(format.options, options, "format.options correctly set");
+    }
+
+  </script>
+</head>
+<body>
+</body>
+</html>

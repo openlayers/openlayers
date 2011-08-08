@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map, ol_wms, ww, ww2;
+        function init(){
+            map = new OpenLayers.Map('map', {'maxResolution': .28125, tileSize: new OpenLayers.Size(512, 512)});
+
+            ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+            "http://vmap0.tiles.osgeo.org/wms/vmap0?", {layers: 'basic'} );
+
+            ww = new OpenLayers.Layer.WorldWind( "Bathy",
+            "http://worldwind25.arc.nasa.gov/tile/tile.aspx?", 36, 4,
+            {T:"bmng.topo.bathy.200406"});
+            ww2 = new OpenLayers.Layer.WorldWind( "LANDSAT",
+                "http://worldwind25.arc.nasa.gov/tile/tile.aspx", 2.25, 4,
+                {T:"105"});
+
+
+
+            map.addLayers([ol_wms, ww, ww2]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.setCenter(new OpenLayers.LonLat(-71.4, 42.3), 6);
+        }
+    </script>
+  </head>
+  <body onload="init()">
+        <h1 id="title">WorldWind layers Example</h1>
+
+        <div id="tags">
+            worldwind, tile
+        </div>
+        <p id="shortdesc">
+            Shows the use of the Tiled WorldWind layers.
+        </p>
+
+        <div id="map" class="smallmap"></div>
+
+        <div id="docs">
+            <p>This is a demonstration of using Tiled WorldWind layers.
+            WorldWind requires you to define a "LZTD" -- the 3rd param of the
+            constructor -- and the number of zoom levels it supports. When a
+            worldwind layer is not visible at a given tile level, and empty
+            tile is placed there instead. Note that the maxResolution of the
+            map times 512px, must be a multiple of a power of two different
+            from the LZTD -- in this case, .28125 * 512 is 144, which is 36*4,
+            and 2.25*64. This example has a 'Bathy' layer, visible as you zoom
+            out, and a 'landsat' layer, visible as you zoom in, both visible at
+            zoom level 6.</p>
+        </div>
+      </body>
+</html>
+
+

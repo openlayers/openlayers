@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers Late Rendering Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="../lib/OpenLayers.js"></script>    
+    <script type="text/javascript">
+    
+        var map, layer;
+        function init(){
+            map = new OpenLayers.Map();
+            layer = new OpenLayers.Layer.WMS(
+                "OpenLayers WMS",
+                "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                {layers: 'basic'}
+            );
+            map.addLayer(layer);
+            map.render("container_id");
+            map.zoomTo(2);
+        }
+
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Late Rendering</h1>
+
+    <div id="tags">
+        creation, render, div
+    </div>
+
+    <p id="shortdesc">
+        Demonstrates how a map can be rendered to an empty container after
+        construction by calling the render method.
+    </p>
+    <div id="container_id" class="smallmap"></div>    
+    <div id="docs">
+        <p>In cases where you need to create a map first and render it to some
+        container later, call the map constructor without a "div" argument.
+        In this case, you can provide the options object as the first argument.
+        To render your map to some container after construction, call the map's
+        render method with the container id.</p>
+    </div>
+  </body>
+</html>

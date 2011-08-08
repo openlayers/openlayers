@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers MapGuide Layer Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <style type="text/css">
+        #map {
+            width: 400px;
+            height: 400px;
+            border: 1px solid black;
+            float:left;
+        }
+        #map2 {
+            width: 400px;
+            height: 400px;
+            border: 1px solid black;
+            float:left;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+    
+        var map, layer;
+        var url = "http://data.mapguide.com/mapguide/mapagent/mapagent.fcgi?USERNAME=Anonymous&";
+        //you can use this URL when MapGuide OS is installed locally
+        //var url = "/mapguide/mapagent/mapagent.fcgi?USERNAME=Anonymous&";
+        
+        //Adjust the scale assumptions for MapGuide layers
+        //Tiled layers MUST use a DPI value of 96, untiled layers can use a 
+        //different DPI value which will be passed to the server as a parameter.
+        //Tiled and untiled layers must adjust the OL INCHES_PER_UNIT values
+        //for any degree-based projections.
+        var metersPerUnit = 111319.4908;  //value returned from mapguide
+        var inPerUnit = OpenLayers.INCHES_PER_UNIT.m * metersPerUnit;
+        OpenLayers.INCHES_PER_UNIT["dd"] = inPerUnit;
+        OpenLayers.INCHES_PER_UNIT["degrees"] = inPerUnit;
+        OpenLayers.DOTS_PER_INCH = 96;
+        
+        //tiled version
+        function initTiled(){
+        
+            var extent = new OpenLayers.Bounds(-87.764987,43.691398,-87.695522,43.797520);
+            var tempScales = [100000,51794.74679,26826.95795,13894.95494,7196.85673,3727.59372,1930.69773,1000];
+            var mapOptions = {
+                maxExtent: extent, 
+                scales: tempScales
+            };
+            map = new OpenLayers.Map( 'map', mapOptions );
+            
+            var params = {
+              mapdefinition: 'Library://Samples/Sheboygan/MapsTiled/Sheboygan.MapDefinition',
+              basemaplayergroupname: "Base Layer Group"
+            }
+            var options = {
+              singleTile: false 
+            }
+            var layer = new OpenLayers.Layer.MapGuide( "MapGuide OS tiled layer", url, params, options );
+            map.addLayer(layer);
+            
+            /**
+            The following example shows how to access an MG tile cache directly
+            through HTTP bypassing the MG mapagent.  This depends on having a
+            pre-populated tile cache
+            */
+            /*
+            options.useHttpTile = true;
+            var cacheUrl = "http://localhost:8008/sheboygan";
+            var httpLayer = new OpenLayers.Layer.MapGuide( "MapGuide HTTP cache tiled layer", cacheUrl, params, options );
+            map.addLayer(httpLayer);
+            */
+
+            map.zoomToMaxExtent();
+        }
+
+        //un-tiled version
+        function initUntiled() {
+        
+          var extent = new OpenLayers.Bounds(-87.865114442365922,43.665065564837931,-87.595394059497067,43.823852564430069);
+          var mapOptions = {
+                maxExtent: extent, 
+                maxResolution: 'auto'
+          };
+          map = new OpenLayers.Map( 'map2', mapOptions );
+            
+          var options = {
+              isBaseLayer: true,
+              transitionEffect: "resize",
+              buffer: 1,
+              useOverlay: false,
+              useAsyncOverlay: false,
+              singleTile: true
+          };
+      
+          var params = {
+              mapdefinition: 'Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition'
+          };
+          /*
+          The MapGuide layer can also be created using mapname and session as follows provided there
+          is some wrapper code to obtain a valid session id and mapname */
+          /*
+          var params = {
+              mapname: 'Sheboygan49ad9e20e7171',
+              session: '7405c17a-0000-1000-8000-0017a4e6ff5d_en_7F0000010AFC0AFB0AFA'
+          };
+          */
+          
+          var layer = new OpenLayers.Layer.MapGuide( "MapGuide OS untiled baselayer", url, params, options );
+          map.addLayer(layer);
+          
+          //this is how to set up the layer for transparent overlays.  Requires a valid session ID 
+          //and mapName stored in that session.
+          /*
+            var options = {
+              isBaseLayer: false,
+              useOverlay: true,
+              useAsyncOverlay: false,
+              buffer: 1,
+              singleTile: true
+            };
+            var params = {
+              mapName: 'Sheboygan49aeaa04487af',
+              session: '208fd92c-0000-1000-8000-0017a4e6ff5d_en_7F0000010AFC0AFB0AFA',
+              selectioncolor: '0xFF000000',
+              behavior: 7
+            };
+            layer = new OpenLayers.Layer.MapGuide( "MapGuide OS Overlay layer", url, params, options );
+            map.addLayer(layer);
+            */
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.zoomToMaxExtent();
+    }
+    </script>
+  </head>
+  <body onload="initUntiled(); initTiled()">
+    <h1 id="title">MapGuide Layer Example</h1>
+
+    <div id="tags">
+        MapGuide, basic
+    </div>
+
+    <p id="shortdesc">
+        Demonstrates how to create MapGuide tiled and untiled layers.
+    </p>
+
+    <p>If prompted for a password, username is Anonymous and an empty password</p>
+    
+    <div id="map" class="smallmap"></div>
+    <div id="map2">
+    </div>
+  </body>
+</html>

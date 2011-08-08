@@ -1,0 +1,98 @@
+<rss version="2.0" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+<channel>
+
+<title>Title for First trial track</title>
+<description>Description for first track</description>
+<category>Nelson</category>
+<item><pubDate>1995-12-12T05:00:00Z</pubDate><geo:lat>22.18628611</geo:lat><geo:long>20.30211944</geo:long><title>Phase Change</title><description>Start Phase A</description></item>
+<item><pubDate>1995-12-12T05:05:00Z</pubDate><geo:lat>22.18621944</geo:lat><geo:long>20.28514722</geo:long></item>
+<item><pubDate>1995-12-12T05:10:00Z</pubDate><geo:lat>22.18609722</geo:lat><geo:long>20.266425</geo:long></item>
+<item><pubDate>1995-12-12T05:15:00Z</pubDate><geo:lat>22.18279722</geo:lat><geo:long>20.24935</geo:long></item>
+<item><pubDate>1995-12-12T05:16:00Z</pubDate><geo:lat>22.18153889</geo:lat><geo:long>20.24605556</geo:long><title>Course Change</title><description>220 degs 4kts</description></item>
+<item><pubDate>1995-12-12T05:20:00Z</pubDate><geo:lat>22.1764</geo:lat><geo:long>20.23299444</geo:long></item>
+<item><pubDate>1995-12-12T05:25:00Z</pubDate><geo:lat>22.16996111</geo:lat><geo:long>20.21654167</geo:long></item>
+<item><pubDate>1995-12-12T05:30:00Z</pubDate><geo:lat>22.16351944</geo:lat><geo:long>20.20017222</geo:long></item>
+<item><pubDate>1995-12-12T05:35:00Z</pubDate><geo:lat>22.15710556</geo:lat><geo:long>20.18375278</geo:long></item>
+<item><pubDate>1995-12-12T05:40:00Z</pubDate><geo:lat>22.15062778</geo:lat><geo:long>20.16738889</geo:long></item>
+<item><pubDate>1995-12-12T05:42:00Z</pubDate><geo:lat>22.14803333</geo:lat><geo:long>20.16077222</geo:long><title>Comment</title><description>XO has bridge</description></item>
+<item><pubDate>1995-12-12T05:45:00Z</pubDate><geo:lat>22.14416389</geo:lat><geo:long>20.15091944</geo:long></item>
+<item><pubDate>1995-12-12T05:50:00Z</pubDate><geo:lat>22.13757778</geo:lat><geo:long>20.13483333</geo:long></item>
+<item><pubDate>1995-12-12T05:55:00Z</pubDate><geo:lat>22.12541667</geo:lat><geo:long>20.134125</geo:long></item>
+<item><pubDate>1995-12-12T06:00:00Z</pubDate><geo:lat>22.11250556</geo:lat><geo:long>20.13402778</geo:long></item>
+<item><pubDate>1995-12-12T06:05:00Z</pubDate><geo:lat>22.09960278</geo:lat><geo:long>20.13395</geo:long></item>
+<item><pubDate>1995-12-12T06:10:00Z</pubDate><geo:lat>22.08812222</geo:lat><geo:long>20.14054722</geo:long><title>Comment</title><description></description></item>
+<item><pubDate>1995-12-12T06:13:00Z</pubDate><geo:lat>22.08141389</geo:lat><geo:long>20.14618333</geo:long><title>Course Change</title><description>220 degs 4kts</description></item>
+<item><pubDate>1995-12-12T06:15:00Z</pubDate><geo:lat>22.07695278</geo:lat><geo:long>20.14992778</geo:long></item>
+<item><pubDate>1995-12-12T06:20:00Z</pubDate><geo:lat>22.06584167</geo:lat><geo:long>20.15931111</geo:long></item>
+<item><pubDate>1995-12-12T06:25:00Z</pubDate><geo:lat>22.05460278</geo:lat><geo:long>20.16871944</geo:long></item>
+<item><pubDate>1995-12-12T06:30:00Z</pubDate><geo:lat>22.04315833</geo:lat><geo:long>20.16791667</geo:long></item>
+<item><pubDate>1995-12-12T06:35:00Z</pubDate><geo:lat>22.03118611</geo:lat><geo:long>20.16143056</geo:long></item>
+<item><pubDate>1995-12-12T06:40:00Z</pubDate><geo:lat>22.01912222</geo:lat><geo:long>20.15486389</geo:long></item>
+<item><pubDate>1995-12-12T06:45:00Z</pubDate><geo:lat>22.00708333</geo:lat><geo:long>20.14833056</geo:long></item>
+<item><pubDate>1995-12-12T06:50:00Z</pubDate><geo:lat>21.99504444</geo:lat><geo:long>20.14181111</geo:long></item>
+<item><pubDate>1995-12-12T06:55:00Z</pubDate><geo:lat>21.98423889</geo:lat><geo:long>20.14733611</geo:long></item>
+<item><pubDate>1995-12-12T07:00:00Z</pubDate><geo:lat>21.97367222</geo:lat><geo:long>20.15803333</geo:long></item>
+<item><pubDate>1995-12-12T07:05:00Z</pubDate><geo:lat>21.96306111</geo:lat><geo:long>20.16874444</geo:long></item>
+<item><pubDate>1995-12-12T07:10:00Z</pubDate><geo:lat>21.95407222</geo:lat><geo:long>20.17233611</geo:long></item>
+<item><pubDate>1995-12-12T07:15:00Z</pubDate><geo:lat>21.95885556</geo:lat><geo:long>20.15766944</geo:long></item>
+<item><pubDate>1995-12-12T07:20:00Z</pubDate><geo:lat>21.96630833</geo:lat><geo:long>20.16956944</geo:long></item>
+<item><pubDate>1995-12-12T07:25:00Z</pubDate><geo:lat>21.97450556</geo:lat><geo:long>20.18388056</geo:long></item>
+<item><pubDate>1995-12-12T07:30:00Z</pubDate><geo:lat>21.98276389</geo:lat><geo:long>20.19838333</geo:long></item>
+<item><pubDate>1995-12-12T07:32:00Z</pubDate><geo:lat>21.98605278</geo:lat><geo:long>20.20413056</geo:long><title>Comment</title><description>Suspect opponent to North, slowing down</description></item>
+<item><pubDate>1995-12-12T07:33:00Z</pubDate><geo:lat>21.98691667</geo:lat><geo:long>20.20727778</geo:long><title>Comment</title><description>VIP visitors due. Helo retrieved.</description></item>
+<item><pubDate>1995-12-12T07:34:00Z</pubDate><geo:lat>21.98566944</geo:lat><geo:long>20.20985556</geo:long><title>Comment</title><description>Wind picked up. Switching off sensor Delta</description></item>
+<item><pubDate>1995-12-12T07:35:00Z</pubDate><geo:lat>21.9842</geo:lat><geo:long>20.21243611</geo:long><title>Comment</title><description>Heavenly dusk</description></item>
+<item><pubDate>1995-12-12T07:40:00Z</pubDate><geo:lat>21.97609444</geo:lat><geo:long>20.226425</geo:long></item>
+<item><pubDate>1995-12-12T07:45:00Z</pubDate><geo:lat>21.96786111</geo:lat><geo:long>20.240725</geo:long></item>
+<item><pubDate>1995-12-12T07:50:00Z</pubDate><geo:lat>21.9595</geo:lat><geo:long>20.25507778</geo:long></item>
+<item><pubDate>1995-12-12T07:55:00Z</pubDate><geo:lat>21.95118056</geo:lat><geo:long>20.26941389</geo:long></item>
+<item><pubDate>1995-12-12T08:00:00Z</pubDate><geo:lat>21.94862778</geo:lat><geo:long>20.28483056</geo:long></item>
+<item><pubDate>1995-12-12T08:05:00Z</pubDate><geo:lat>21.95295</geo:lat><geo:long>20.30239444</geo:long></item>
+<item><pubDate>1995-12-12T08:10:00Z</pubDate><geo:lat>21.957325</geo:lat><geo:long>20.32020278</geo:long></item>
+<item><pubDate>1995-12-12T08:15:00Z</pubDate><geo:lat>21.96172222</geo:lat><geo:long>20.33795278</geo:long></item>
+<item><pubDate>1995-12-12T08:20:00Z</pubDate><geo:lat>21.96616111</geo:lat><geo:long>20.35568611</geo:long></item>
+<item><pubDate>1995-12-12T08:25:00Z</pubDate><geo:lat>21.96355556</geo:lat><geo:long>20.371925</geo:long></item>
+<item><pubDate>1995-12-12T08:30:00Z</pubDate><geo:lat>21.95877778</geo:lat><geo:long>20.38858333</geo:long></item>
+<item><pubDate>1995-12-12T08:35:00Z</pubDate><geo:lat>21.95988889</geo:lat><geo:long>20.40708333</geo:long></item>
+<item><pubDate>1995-12-12T08:40:00Z</pubDate><geo:lat>21.96361944</geo:lat><geo:long>20.41884722</geo:long></item>
+<item><pubDate>1995-12-12T08:45:00Z</pubDate><geo:lat>21.96945556</geo:lat><geo:long>20.40425278</geo:long><title>Course Change</title><description>220 degs 4kts</description></item>
+<item><pubDate>1995-12-12T08:50:00Z</pubDate><geo:lat>21.9759</geo:lat><geo:long>20.38807778</geo:long></item>
+<item><pubDate>1995-12-12T08:55:00Z</pubDate><geo:lat>21.98237222</geo:lat><geo:long>20.37183889</geo:long></item>
+<item><pubDate>1995-12-12T09:00:00Z</pubDate><geo:lat>21.98880278</geo:lat><geo:long>20.35546667</geo:long></item>
+<item><pubDate>1995-12-12T09:05:00Z</pubDate><geo:lat>21.99968611</geo:lat><geo:long>20.34794722</geo:long></item>
+<item><pubDate>1995-12-12T09:10:00Z</pubDate><geo:lat>22.01179167</geo:lat><geo:long>20.34156389</geo:long></item>
+<item><pubDate>1995-12-12T09:15:00Z</pubDate><geo:lat>22.02168611</geo:lat><geo:long>20.34614444</geo:long></item>
+<item><pubDate>1995-12-12T09:20:00Z</pubDate><geo:lat>22.02811111</geo:lat><geo:long>20.36220833</geo:long></item>
+<item><pubDate>1995-12-12T09:25:00Z</pubDate><geo:lat>22.03456111</geo:lat><geo:long>20.37856389</geo:long><title>Phase Change</title><description>End Phase A</description></item>
+<item><pubDate>1995-12-12T09:30:00Z</pubDate><geo:lat>22.04145</geo:lat><geo:long>20.36952222</geo:long></item>
+<item><pubDate>1995-12-12T09:35:00Z</pubDate><geo:lat>22.04782222</geo:lat><geo:long>20.35348611</geo:long></item>
+<item><pubDate>1995-12-12T09:40:00Z</pubDate><geo:lat>22.05426389</geo:lat><geo:long>20.33713056</geo:long></item>
+<item><pubDate>1995-12-12T09:45:00Z</pubDate><geo:lat>22.06069444</geo:lat><geo:long>20.32085</geo:long></item>
+<item><pubDate>1995-12-12T09:46:00Z</pubDate><geo:lat>22.06198611</geo:lat><geo:long>20.31761111</geo:long><title>Phase Change</title><description>Start Phase B</description></item>
+<item><pubDate>1995-12-12T09:50:00Z</pubDate><geo:lat>22.06471944</geo:lat><geo:long>20.30389444</geo:long></item>
+<item><pubDate>1995-12-12T09:55:00Z</pubDate><geo:lat>22.07586667</geo:lat><geo:long>20.29758333</geo:long></item>
+<item><pubDate>1995-12-12T10:00:00Z</pubDate><geo:lat>22.08793889</geo:lat><geo:long>20.29113889</geo:long></item>
+<item><pubDate>1995-12-12T10:05:00Z</pubDate><geo:lat>22.10003333</geo:lat><geo:long>20.2848</geo:long></item>
+<item><pubDate>1995-12-12T10:10:00Z</pubDate><geo:lat>22.11219722</geo:lat><geo:long>20.27842222</geo:long></item>
+<item><pubDate>1995-12-12T10:15:00Z</pubDate><geo:lat>22.11530556</geo:lat><geo:long>20.26194167</geo:long></item>
+<item><pubDate>1995-12-12T10:20:00Z</pubDate><geo:lat>22.11756944</geo:lat><geo:long>20.24336667</geo:long></item>
+<item><pubDate>1995-12-12T10:25:00Z</pubDate><geo:lat>22.11986111</geo:lat><geo:long>20.22466944</geo:long></item>
+<item><pubDate>1995-12-12T10:30:00Z</pubDate><geo:lat>22.12238333</geo:lat><geo:long>20.20620833</geo:long></item>
+<item><pubDate>1995-12-12T10:35:00Z</pubDate><geo:lat>22.12890278</geo:lat><geo:long>20.216475</geo:long></item>
+<item><pubDate>1995-12-12T10:40:00Z</pubDate><geo:lat>22.12351944</geo:lat><geo:long>20.22643333</geo:long></item>
+<item><pubDate>1995-12-12T10:45:00Z</pubDate><geo:lat>22.12099722</geo:lat><geo:long>20.23426667</geo:long></item>
+<item><pubDate>1995-12-12T10:50:00Z</pubDate><geo:lat>22.12194167</geo:lat><geo:long>20.23018333</geo:long></item>
+<item><pubDate>1995-12-12T10:55:00Z</pubDate><geo:lat>22.11872778</geo:lat><geo:long>20.23548056</geo:long></item>
+<item><pubDate>1995-12-12T11:00:00Z</pubDate><geo:lat>22.11994167</geo:lat><geo:long>20.23541111</geo:long></item>
+<item><pubDate>1995-12-12T11:05:00Z</pubDate><geo:lat>22.11992778</geo:lat><geo:long>20.23948056</geo:long></item>
+<item><pubDate>1995-12-12T11:10:00Z</pubDate><geo:lat>22.11802222</geo:lat><geo:long>20.24473889</geo:long></item>
+<item><pubDate>1995-12-12T11:15:00Z</pubDate><geo:lat>22.11764444</geo:lat><geo:long>20.24835278</geo:long></item>
+<item><pubDate>1995-12-12T11:20:00Z</pubDate><geo:lat>22.12215556</geo:lat><geo:long>20.24788889</geo:long></item>
+<item><pubDate>1995-12-12T11:25:00Z</pubDate><geo:lat>22.11725278</geo:lat><geo:long>20.25047778</geo:long></item>
+<item><pubDate>1995-12-12T11:30:00Z</pubDate><geo:lat>22.12259722</geo:lat><geo:long>20.24290278</geo:long></item>
+<item><pubDate>1995-12-12T11:35:00Z</pubDate><geo:lat>22.12921944</geo:lat><geo:long>20.24653889</geo:long></item>
+<item><pubDate>1995-12-12T11:40:00Z</pubDate><geo:lat>22.13970833</geo:lat><geo:long>20.25221389</geo:long></item>
+<item><pubDate>1995-12-12T11:41:00Z</pubDate><geo:lat>22.14173889</geo:lat><geo:long>20.25330556</geo:long><title>Phase Change</title><description>End Phase B</description></item>
+</channel>
+</rss>
+

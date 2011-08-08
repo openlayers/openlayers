@@ -1,0 +1,106 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    function test_Handler_Keyboard_initialize(t) {
+        t.plan(3);
+        var control = new OpenLayers.Control();
+        control.id = Math.random();
+        var callbacks = {foo: "bar"};
+        var options = {bar: "foo"};
+        
+        var oldInit = OpenLayers.Handler.prototype.initialize;
+        
+        OpenLayers.Handler.prototype.initialize = function(con, call, opt) {
+            t.eq(con.id, control.id,
+                 "constructor calls parent with the correct control");
+            t.eq(call, callbacks,
+                 "constructor calls parent with the correct callbacks");
+            t.eq(opt, options,
+                 "constructor calls parent with the correct options");
+        }
+        var handler = new OpenLayers.Handler.Keyboard(control, callbacks,
+                                                      options);
+
+        OpenLayers.Handler.prototype.initialize = oldInit;
+    }
+
+    function test_Handler_Keyboard_destroy(t) {
+        t.plan(3);
+        var control = new OpenLayers.Control();        
+        var handler = new OpenLayers.Handler.Keyboard(control);
+        var old = OpenLayers.Handler.prototype.destroy;
+        t.ok(handler.eventListener != null,
+             "eventListener is not null before destroy");
+        OpenLayers.Handler.prototype.destroy = function() {
+            t.ok(true, "destroy calls destroy on correct parent");
+        };
+        handler.destroy();
+        t.ok(handler.eventListener == null,
+             "eventListeners is null after destroy");
+        OpenLayers.Handler.prototype.destroy = old;
+    }
+
+    function test_Handler_Keyboard_activate(t) {
+        t.plan(8);
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.Keyboard(control);
+        handler.active = true;
+        var activated = handler.activate();
+        t.ok(!activated,
+             "activate returns false if the handler was already active");
+        handler.active = false;
+        handler.dragging = true;
+        var old = OpenLayers.Event.stopObserving;
+        var types = ["keydown", "keyup"];
+        OpenLayers.Event.observe = function(obj, type, method) {
+            t.ok(obj == document,
+                 "activate calls observing with correct object");
+            var validType = (OpenLayers.Util.indexOf(types, type) != -1);
+            t.ok(validType, "activate calls observe for " + type);
+            t.ok(method == handler.eventListener,
+                 "activate calls observing with correct method");
+        };
+        activated = handler.activate();
+        t.ok(activated,
+             "activate returns true if the handler was not already active");
+        OpenLayers.Event.observe = old;
+        
+    }
+
+    function test_Handler_Drag_deactivate(t) {
+        t.plan(8);
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.Keyboard(control);
+        handler.active = false;
+        var deactivated = handler.deactivate();
+        t.ok(!deactivated,
+             "deactivate returns false if the handler was not already active");
+        handler.active = true;
+        var old = OpenLayers.Event.stopObserving;
+        var types = ["keydown", "keyup"];
+        OpenLayers.Event.stopObserving = function(obj, type, method) {
+            t.ok(obj == document,
+                 "deactivate calls stopObserving with correct object");
+            var validType = (OpenLayers.Util.indexOf(types, type) != -1);
+            t.ok(validType, "deactivate calls stopObserving for " + type);
+            t.ok(method == handler.eventListener,
+                 "deactivate calls stopObserving with correct method");
+        };
+        deactivated = handler.deactivate();
+        t.ok(deactivated,
+             "deactivate returns true if the handler was active already");
+        OpenLayers.Event.stopObserving = old;
+    }
+
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 300px; height: 150px;"/>
+</body>
+</html>

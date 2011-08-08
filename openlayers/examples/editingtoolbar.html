@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>OpenLayers Editing Toolbar Example</title>
+        
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <!--[if lte IE 6]>
+            <link rel="stylesheet" href="../theme/default/ie6-style.css" type="text/css">
+        <![endif]-->
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <script src="../lib/OpenLayers.js"></script>
+        <script src="../lib/Firebug/firebug.js"></script>
+        <script type="text/javascript">
+            var lon = 5;
+            var lat = 40;
+            var zoom = 5;
+            var map, layer;
+
+            function init(){
+                layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                        "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
+    
+                vlayer = new OpenLayers.Layer.Vector( "Editable" );
+                map = new OpenLayers.Map( 'map', {
+                    controls: [
+                        new OpenLayers.Control.PanZoom(),
+                        new OpenLayers.Control.EditingToolbar(vlayer)
+                    ]
+                });
+                map.addLayers([layer, vlayer]);
+    
+                map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+            }
+        </script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">Editing Toolbar Example</h1>
+
+        <div id="tags">
+            digitizing, point, line, linestring, polygon, editing
+        </div>
+
+        <p id="shortdesc">
+            Demonstrate polygon, polyline and point creation and editing tools.
+        </p>
+
+        <div id="panel"></div>
+        <div id="map" class="smallmap"></div>
+
+        <div id="docs"></div>
+    </body>
+</html>

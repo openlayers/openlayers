@@ -1,0 +1,604 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    function test_Handler_Drag_constructor(t) {
+        t.plan(3);
+        var control = new OpenLayers.Control();
+        control.id = Math.random();
+        var callbacks = {foo: "bar"};
+        var options = {bar: "foo"};
+        
+        var oldInit = OpenLayers.Handler.prototype.initialize;
+        
+        OpenLayers.Handler.prototype.initialize = function(con, call, opt) {
+            t.eq(con.id, control.id,
+                 "constructor calls parent with the correct control");
+            t.eq(call, callbacks,
+                 "constructor calls parent with the correct callbacks");
+            t.eq(opt, options,
+                 "constructor calls parent with the correct options");
+        }
+        var handler = new OpenLayers.Handler.Drag(control, callbacks, options);
+
+        OpenLayers.Handler.prototype.initialize = oldInit;
+    }
+
+    function test_Handler_Drag_activate(t) {
+        t.plan(3);
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.Drag(control);
+        handler.active = true;
+        var activated = handler.activate();
+        t.ok(!activated,
+             "activate returns false if the handler was already active");
+        handler.active = false;
+        handler.dragging = true;
+        activated = handler.activate();
+        t.ok(activated,
+             "activate returns true if the handler was not already active");
+        t.ok(!handler.dragging,
+             "activate sets dragging to false");
+        
+    }
+    
+    function test_Handler_Drag_events(t) {
+        t.plan(40);
+        
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.Drag(control);
+
+        // list below events that should be handled (events) and those
+        // that should not be handled (nonevents) by the handler
+        var events = ["mousedown", "mouseup", "mousemove", "mouseout", "click",
+                      "touchstart", "touchmove", "touchend"];
+        var nonevents = ["dblclick", "resize", "focus", "blur"];
+        map.events.registerPriority = function(type, obj, func) {
+            var r = func();
+            if(typeof r == "string") {
+                // this is one of the mock handler methods
+                t.eq(OpenLayers.Util.indexOf(nonevents, type), -1,
+                     "registered method is not one of the events " +
+                     "that should not be handled");
+                t.ok(OpenLayers.Util.indexOf(events, type) > -1,
+                     "activate calls registerPriority with browser event: " + type);
+                t.eq(typeof func, "function",
+                     "activate calls registerPriority with a function");
+                t.eq(func(), type,
+                     "activate calls registerPriority with the correct method");
+                t.eq(obj["CLASS_NAME"], "OpenLayers.Handler.Drag",
+                     "activate calls registerPriority with the handler");
+            }
+        }
+        
+        // set browser event like properties on the handler
+        for(var i=0; i<events.length; ++i) {
+            setMethod(events[i]);
+        }
+        function setMethod(key) {
+            handler[key] = function() {return key};
+        }
+
+        var activated = handler.activate();
+
+    }
+
+    function test_Handler_Drag_callbacks(t) {
+        t.plan(33);
+        
+        var map = new OpenLayers.Map('map', {controls: []});
+
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        
+        // set callback methods (out doesn't get an xy)
+        var events = ["down", "move", "up", "done"];
+        var testEvents = {};
+        var xys = {};
+        var callbacks = {};
+        for(var i=0; i<events.length; ++i) {
+            var px = new OpenLayers.Pixel(Math.random(), Math.random());
+            testEvents[events[i]] = {xy: px};
+            setCallback(events[i]);
+        }
+        function setCallback(key) {
+            callbacks[key] = function(evtxy) {
+                t.ok(evtxy.x == testEvents[key].xy.x &&
+                     evtxy.y == testEvents[key].xy.y,
+                     key + " callback called with the proper evt.xy");
+            }
+        }
+
+        var handler = new OpenLayers.Handler.Drag(control, callbacks);
+        handler.activate();
+        
+        var oldIsLeftClick = OpenLayers.Event.isLeftClick;
+        var oldStop = OpenLayers.Event.stop;
+        var oldCheckModifiers = handler.checkModifiers;
+
+        // test mousedown with right click
+        OpenLayers.Event.isLeftClick = function() {
+            return false;
+        }
+        handler.checkModifiers = function() {
+            return true;
+        }
+        handler.started = true;
+        handler.start = {x: "foo", y: "bar"};
+        handler.last = {x: "foo", y: "bar"};
+        map.events.triggerEvent("mousedown", testEvents.down);
+        t.ok(!handler.started, "right-click sets started to false");
+        t.eq(handler.start, null, "right-click sets start to null");
+        t.eq(handler.last, null, "right-click sets last to null");
+
+        // test mousedown with improper modifier
+        OpenLayers.Event.isLeftClick = function() {
+            return true;
+        }
+        handler.checkModifiers = function() {
+            return false;
+        }
+        handler.started = true;
+        handler.start = {x: "foo", y: "bar"};
+        handler.last = {x: "foo", y: "bar"};
+        map.events.triggerEvent("mousedown", testEvents.down);
+        t.ok(!handler.started, "bad modifier sets started to false");
+        t.eq(handler.start, null, "bad modifier sets start to null");
+        t.eq(handler.last, null, "bad modifier sets last to null");
+
+        // test mousedown
+        handler.checkModifiers = function(evt) {
+            t.ok(evt.xy.x == testEvents.down.xy.x &&
+                 evt.xy.y == testEvents.down.xy.y,
+                 "mousedown calls checkModifiers with the proper event");
+            return true;
+        }
+        OpenLayers.Event.isLeftClick = function(evt) {
+            t.ok(evt.xy.x == testEvents.down.xy.x &&
+                 evt.xy.y == testEvents.down.xy.y,
+                 "mousedown calls isLeftClick with the proper event");
+            return true;
+        }
+        OpenLayers.Event.stop = function(evt, allowDefault) {
+            if(!allowDefault) {
+                t.ok(evt.xy.x == testEvents.down.xy.x &&
+                     evt.xy.y == testEvents.down.xy.y,
+                     "mousedown default action is disabled");
+            } else {
+                t.fail(
+                     "mousedown is prevented from falling to other elements");
+            }
+        }
+        map.events.triggerEvent("mousedown", testEvents.down);
+        t.ok(handler.started, "mousedown sets the started flag to true");
+        t.ok(!handler.dragging, "mouse down sets the dragging flag to false");
+        t.ok(handler.start.x == testEvents.down.xy.x &&
+             handler.start.y == testEvents.down.xy.y,
+             "mouse down sets handler.start correctly");
+        t.ok(handler.last.x == testEvents.down.xy.x &&
+             handler.last.y == testEvents.down.xy.y,
+             "mouse down sets handler.last correctly");
+        
+        OpenLayers.Event.stop = oldStop;        
+        OpenLayers.Event.isLeftClick = oldIsLeftClick;
+        handler.checkModifiers = oldCheckModifiers;
+
+        // test mouseup before mousemove
+        var realUp = testEvents.up;
+        testEvents.up = testEvents.down;
+        // this will fail with notice about the done callback being called
+        // if done is called when it shouldn't be
+        map.events.triggerEvent("mouseup", testEvents.up);
+        testEvents.up = realUp;
+
+        // test mousemove
+        handler.started = false;
+        map.events.triggerEvent("mousemove", {xy: {x: null, y: null}});
+        // if the handler triggers the move callback, it will be with the
+        // incorrect evt.xy
+        t.ok(true,
+             "mousemove before the handler has started doesn't call move");
+        
+        handler.started = true;
+        map.events.triggerEvent("mousemove", testEvents.move);
+        t.ok(handler.dragging, "mousemove sets the dragging flag to true");
+        t.ok(handler.start.x == testEvents.down.xy.x &&
+             handler.start.y == testEvents.down.xy.y,
+             "mouse move leaves handler.start alone");
+        t.ok(handler.last.x == testEvents.move.xy.x &&
+             handler.last.y == testEvents.move.xy.y,
+             "mouse move sets handler.last correctly");
+        
+        // a second move with the same evt.xy should not trigger move callback
+        // if it does, the test page will complain about a bad plan number
+        var oldMove = handler.callbacks.move;
+        handler.callbacks.move = function() {
+            t.ok(false,
+                 "a second move with the same evt.xy should not trigger a move callback");
+        }
+        map.events.triggerEvent("mousemove", testEvents.move);
+        handler.callbacks.move = oldMove;
+        
+        // test mouseup
+        handler.started = false;
+        map.events.triggerEvent("mouseup", {xy: {x: null, y: null}});
+        // if the handler triggers the up callback, it will be with the
+        // incorrect evt.xy
+        t.ok(true,
+             "mouseup before the handler has started doesn't call up");
+        
+        handler.started = true;
+        // mouseup triggers the up and done callbacks
+        testEvents.done = testEvents.up;
+        map.events.triggerEvent("mouseup", testEvents.up);
+        t.ok(!this.started, "mouseup sets the started flag to false");
+        t.ok(!this.dragging, "mouseup sets the dragging flag to false");
+        
+        // test mouseout
+        handler.started = false;
+        map.events.triggerEvent("mouseout", {xy: {x: null, y: null}});
+        // if the handler triggers the out or done callback, it will be with the
+        // incorrect evt.xy
+        t.ok(true,
+             "mouseout before the handler has started doesn't call out or done");
+        
+        handler.started = true;
+        var oldMouseLeft = OpenLayers.Util.mouseLeft;
+        OpenLayers.Util.mouseLeft = function(evt, element) {
+            t.ok(evt.xy.x == testEvents.done.xy.x &&
+                 evt.xy.y == testEvents.done.xy.y,
+                 "mouseout calls Util.mouseLeft with the correct event");
+            t.eq(element.id, map.eventsDiv.id,
+                 "mouseout calls Util.mouseLeft with the correct element");
+            return true;
+        }
+        // mouseup triggers the out and done callbacks
+        // out callback gets no arguments
+        handler.callbacks.out = function() {
+            t.eq(arguments.length, 0,
+                 "mouseout calls out callback with no arguments");
+        }
+        map.events.triggerEvent("mouseout", testEvents.done);
+        t.ok(!handler.started, "mouseout sets started flag to false");
+        t.ok(!handler.dragging, "mouseout sets dragging flag to false");
+        OpenLayers.Util.mouseLeft = oldMouseLeft;
+        
+        // test click with the click.html example - the click method on the
+        // drag handler returns (handler.start == handler.last), stopping
+        // propagation of the click event if the mouse moved during a drag.
+        
+        // regression tests will assure that the drag handler doesn't mess
+        // with anything else on a click
+        function getProperties(obj) {
+            var props = {};
+            for(key in obj) {
+                if(typeof obj[key] != "function" && typeof obj[key] != "object") {
+                    props[key] = obj[key];
+                }
+            }
+            return props;
+        }
+        var before = getProperties(handler);
+        map.events.triggerEvent("click", null);
+        var after = getProperties(handler);
+        t.eq(before, after, "click doesn't mess with handler");
+        
+    }
+
+    function test_Handler_Drag_touch(t) {
+        // In this test we verify that "touchstart", "touchmove", and
+        // "touchend" events set expected states in the drag handler.
+        // We also verify that we stop event bubbling as appropriate.
+
+        t.plan(14);
+
+        // set up
+
+        var m = new OpenLayers.Map('map', {controls: []});
+        var c = new OpenLayers.Control();
+        m.addControl(c);
+        var h = new OpenLayers.Handler.Drag(c, {
+            done: function(px) { 
+                log.push(px); 
+            }
+        });
+        h.activate();
+
+        var _stop = OpenLayers.Event.stop;
+        OpenLayers.Event.stop = function(e) {
+            log.push(e);
+        };
+
+        var Px = OpenLayers.Pixel, e;
+        var log = [];
+
+        // test
+        e = {touches: [{}], xy: new Px(0, 0)};
+        m.events.triggerEvent('touchstart', e);
+        t.eq(h.started, true, '[touchstart] started is set');
+        t.eq(h.start.x, 0, '[touchstart] start.x is correct');
+        t.eq(h.start.y, 0, '[touchstart] start.y is correct');
+        t.eq(log.length, 1, '[touchstart] one item in log');
+        t.ok(log[0] === e, "touchstart", '[touchstart] event is stopped');
+
+        e = {xy: new Px(1, 1)};
+        m.events.triggerEvent('touchmove', e);
+        t.eq(h.dragging, true, '[touchmove] dragging is set');
+        t.eq(h.last.x, 1, '[touchmove] last.x is correct');
+        t.eq(h.last.y, 1, '[touchmove] last.y is correct');
+        t.eq(log.length, 1, '[touchmove] one item in log (event is not stopped)');
+
+        e = {xy: new Px(2, 2)};
+        m.events.triggerEvent('touchend', e);
+        t.eq(h.started, false, '[touchend] started is reset');
+        t.eq(h.started, false, '[touchend] started is reset');
+        // the "done" callback gets the position of the last touchmove
+        t.eq(log.length, 2, '[touchend] two items in log');
+        t.ok(log[1] instanceof Px, '[touchend] got');
+        t.ok(log[1].equals(e.xy), '[touchend] done callback got correct position');
+
+        // tear down
+
+        OpenLayers.Event.stop = _stop;
+        m.destroy();
+    }
+
+    function test_Handler_Drag_submethods(t) {
+        t.plan(8);
+        
+        var map = new OpenLayers.Map('map', {controls: []});
+
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        
+
+        var handler = new OpenLayers.Handler.Drag(control, {});
+        // set test events
+        var events = ["down", "move", "up", "out"];
+        var onselect = {
+            "move": OpenLayers.Function.False,
+            "up": OpenLayers.Function.False,
+            "out": OpenLayers.Function.True
+        }
+        var testEvents = {};
+        var type, px;
+        for(var i=0; i<events.length; ++i) {
+            type = events[i];
+            px = new OpenLayers.Pixel(Math.random(), Math.random());
+            testEvents[type] = {xy: px};
+            setMethod(type);
+        }
+        function setMethod(type) {
+            handler[type] = function(evt) {
+                t.ok(evt.xy.x == testEvents[type].xy.x &&
+                     evt.xy.y == testEvents[type].xy.y,
+                     "handler." + type + " called with the right event");
+                onselect[type] && t.ok(document.onselectstart === onselect[type], "document.onselectstart listener is correct after " + type);
+            }
+        }
+        handler.activate();
+        
+        // pretend that we have gone through a down-move-up-out cycle before
+        handler.oldOnselectstart = OpenLayers.Function.True;
+        
+        // test mousedown
+        handler.checkModifiers = function(evt) {
+            return true;
+        }
+        var oldIsLeftClick = OpenLayers.Event.isLeftClick;
+        OpenLayers.Event.isLeftClick = function(evt) {
+            return true;
+        }
+        map.events.triggerEvent("mousedown", testEvents.down);
+        OpenLayers.Event.isLeftClick = oldIsLeftClick;
+
+        // test mousemove
+        map.events.triggerEvent("mousemove", testEvents.move);
+        
+        // test mouseup
+        map.events.triggerEvent("mouseup", testEvents.up);
+        
+        // test mouseout
+        var oldMouseLeft = OpenLayers.Util.mouseLeft;
+        OpenLayers.Util.mouseLeft = function() {
+            return true;
+        };
+        handler.started = true;
+        map.events.triggerEvent("mouseout", testEvents.out);
+        OpenLayers.Util.mouseLeft = oldMouseLeft;
+        
+        t.ok(document.onselectstart === OpenLayers.Function.True, "document.onselectstart listener correct after down-move-up-out cycle");
+        
+    }
+
+    function test_Handler_Drag_deactivate(t) {
+        t.plan(7);
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.Drag(control);
+        handler.active = false;
+        var deactivated = handler.deactivate();
+        t.ok(!deactivated,
+             "deactivate returns false if the handler was not already active");
+        handler.active = true;
+        handler.dragging = true;
+        handler.touch = true;
+        deactivated = handler.deactivate();
+        t.ok(deactivated,
+             "deactivate returns true if the handler was active already");
+        t.ok(!handler.started,
+             "deactivate sets started to false");
+        t.ok(!handler.dragging,
+             "deactivate sets dragging to false");
+        t.ok(handler.start == null,
+             "deactivate sets start to null");
+        t.ok(handler.last == null,
+             "deactivate sets last to null");
+        t.ok(!handler.touch,
+             "deactivate sets touch to false");
+    }
+
+    function test_interval_timer_after_mouseup(t) {
+        t.plan(5);
+
+        // set up
+
+        var map = new OpenLayers.Map('map');
+
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+
+        var moveCnt;
+
+        var handler = new OpenLayers.Handler.Drag(control, {}, {
+            interval: 1,
+            move: function() {
+                moveCnt++;
+            }
+        });
+        handler.activate();
+
+        handler.checkModifiers = function() { return true; };
+
+        var ilc = OpenLayers.Event.isLeftClick;
+        OpenLayers.Event.isLeftClick = function() { return true; };
+
+        // test
+
+        moveCnt = 0;
+
+        var xy1 = new OpenLayers.Pixel(1, 2);
+        handler.mousedown({xy: xy1});
+        t.ok(handler.last == xy1, "[mousedown] last is as expected");
+        var xy2 = new OpenLayers.Pixel(2, 3);
+        handler.mousemove({xy: xy2});
+        t.ok(handler.last == xy2, "[mousemove 1] last is as expected");
+        t.ok(handler.timeoutId != null, "[mousemove 1] timeoutId is set");
+        var xy3 = new OpenLayers.Pixel(3, 4);
+        handler.mousemove({xy: xy3});
+        t.ok(handler.last == xy2, "[mousemove 2] last is as expected");
+        var xy4 = new OpenLayers.Pixel(4, 5);
+        handler.mouseup({xy: xy4});
+
+        t.delay_call(3, function() {
+            // the timer should not cause a move
+            t.eq(moveCnt, 1, "move called once");
+            // tear down
+            OpenLayers.Event.isLeftClick = ilc;
+        });
+    }
+
+    function test_interval_timer_after_mousedown(t) {
+        t.plan(5);
+
+        // set up
+
+        var map = new OpenLayers.Map('map');
+
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+
+        var moveCnt;
+
+        var handler = new OpenLayers.Handler.Drag(control, {}, {
+            interval: 1,
+            move: function() {
+                moveCnt++;
+            }
+        });
+        handler.activate();
+
+        handler.checkModifiers = function() { return true; };
+
+        var ilc = OpenLayers.Event.isLeftClick;
+        OpenLayers.Event.isLeftClick = function() { return true; };
+
+        // test
+
+        moveCnt = 0;
+
+        var xy1 = new OpenLayers.Pixel(1, 2);
+        handler.mousedown({xy: xy1});
+        t.ok(handler.last == xy1, "[mousedown] last is as expected");
+        var xy2 = new OpenLayers.Pixel(2, 3);
+        handler.mousemove({xy: xy2});
+        t.ok(handler.last == xy2, "[mousemove 1] last is as expected");
+        t.ok(handler.timeoutId != null, "[mousemove 1] timeoutId is set");
+        var xy3 = new OpenLayers.Pixel(3, 4);
+        handler.mousemove({xy: xy3});
+        t.ok(handler.last == xy2, "[mousemove 2] last is as expected");
+        var xy4 = new OpenLayers.Pixel(4, 5);
+        handler.mouseup({xy: xy4});
+        var xy5 = new OpenLayers.Pixel(5, 6);
+        handler.mousedown({xy: xy4});
+
+        t.delay_call(3, function() {
+            // the timer should not cause a move
+            t.eq(moveCnt, 1, "move called once");
+            // tear down
+            OpenLayers.Event.isLeftClick = ilc;
+        });
+    }
+
+    function test_interval_timer_before_mouseup(t) {
+        t.plan(5);
+
+        // set up
+
+        var map = new OpenLayers.Map('map');
+
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+
+        var moveCnt;
+
+        var handler = new OpenLayers.Handler.Drag(control, {}, {
+            interval: 1,
+            move: function() {
+                moveCnt++;
+            }
+        });
+        handler.activate();
+
+        handler.checkModifiers = function() { return true; };
+
+        var ilc = OpenLayers.Event.isLeftClick;
+        OpenLayers.Event.isLeftClick = function() { return true; };
+
+        // test
+
+        moveCnt = 0;
+
+        var xy1 = new OpenLayers.Pixel(1, 2);
+        handler.mousedown({xy: xy1});
+        t.ok(handler.last == xy1, "[mousedown] last is as expected");
+        var xy2 = new OpenLayers.Pixel(2, 3);
+        handler.mousemove({xy: xy2});
+        t.ok(handler.last == xy2, "[mousemove 1] last is as expected");
+        t.ok(handler.timeoutId != null, "[mousemove 1] timeoutId is set");
+        var xy3 = new OpenLayers.Pixel(3, 4);
+        handler.mousemove({xy: xy3});
+        t.ok(handler.last == xy2, "[mousemove 2] last is as expected");
+
+        t.delay_call(3, function() {
+            // the timer should cause a move
+            t.eq(moveCnt, 2, "move called twice");
+            var xy4 = new OpenLayers.Pixel(4, 5);
+            handler.mouseup({xy: xy4});
+            // tear down
+            OpenLayers.Event.isLeftClick = ilc;
+        });
+    }
+
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 300px; height: 150px;"/>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>MultiMap SphericalMercator</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <!--[if lte IE 6]>
+        <link rel="stylesheet" href="../theme/default/ie6-style.css" type="text/css" />
+    <![endif]-->
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <style type="text/css">
+        #map {
+            width: 100%;
+            height: 512px;
+            border: 1px solid gray;
+        }
+    </style>
+
+
+    <!-- multimap api key for http://(www.)openlayers.org -->
+    <script type="text/javascript" src="http://developer.multimap.com/API/maps/1.2/OA10072915821139765"></script>
+
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+ 
+        var map, ve, merc, vector;
+
+        function init(){
+            var options = {
+                projection: "EPSG:900913",
+                units: "m",
+                maxResolution: 156543.0339,
+                maxExtent: new OpenLayers.Bounds(-20037508, -20037508,
+                                                 20037508, 20037508)
+            };
+            map = new OpenLayers.Map('map', options);
+
+            ve = new OpenLayers.Layer.MultiMap(
+                "multimap",
+                {'sphericalMercator': true}
+            ); 
+            merc = new OpenLayers.Layer.WMS("World Map",
+                                            "http://maps.opengeo.org/geowebcache/service/wms",
+                                            {'layers': 'bluemarble'},
+                                            {'opacity': 0.4,
+                                             'isBaseLayer': false,
+                                             'wrapDateLine': true});
+
+            // create a vector layer for drawing
+            vector = new OpenLayers.Layer.Vector("Editable Vectors");
+            
+            map.addLayers([ve, merc, vector]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.addControl(new OpenLayers.Control.EditingToolbar(vector));
+            map.zoomToMaxExtent()
+        }
+        
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">MultiMap Mercator Example</h1>
+    <div id="tags">
+        MultiMap, basic, cleanup
+    </div>
+    <p id="shortdesc">
+      This sphericalMercator example using multimap demonstrates that the
+      multimap layer does not fully support the sphericalMercator projection at
+      this time.
+    </p>  
+    <div id="map" class="smallmap"></div>
+  </body>
+</html>

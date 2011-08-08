@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 12.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 51448)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [
+	<!ENTITY ns_extend "http://ns.adobe.com/Extensibility/1.0/">
+	<!ENTITY ns_ai "http://ns.adobe.com/AdobeIllustrator/10.0/">
+	<!ENTITY ns_graphs "http://ns.adobe.com/Graphs/1.0/">
+	<!ENTITY ns_vars "http://ns.adobe.com/Variables/1.0/">
+	<!ENTITY ns_imrep "http://ns.adobe.com/ImageReplacement/1.0/">
+	<!ENTITY ns_sfw "http://ns.adobe.com/SaveForWeb/1.0/">
+	<!ENTITY ns_custom "http://ns.adobe.com/GenericCustomNamespace/1.0/">
+	<!ENTITY ns_adobe_xpath "http://ns.adobe.com/XPath/1.0/">
+	<!ENTITY ns_svg "http://www.w3.org/2000/svg">
+	<!ENTITY ns_xlink "http://www.w3.org/1999/xlink">
+]>
+<svg  version="1.1" id="Layer_1" xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;"
+	 xmlns="&ns_svg;" xmlns:xlink="&ns_xlink;" width="28.375" height="28" viewBox="0 0 28.375 28"
+	 overflow="visible" enable-background="new 0 0 28.375 28" xml:space="preserve">
+	<g i:extraneous="self">
+		<path fill="none" stroke="#00008B" stroke-width="1.5" d="M27.875,1.375"/>
+		<path fill="none" stroke="#00008B" stroke-width="1.5" d="M0,1.375"/>
+		<path fill="none" stroke="#FFFFFF" d="M0,27.475"/>
+		<path fill="none" stroke="#00008B" stroke-width="1.5" d="M1,27.645"/>
+		<path fill="none" stroke="#00008B" stroke-width="1.5" d="M1,0.544"/>
+		<line fill="none" stroke="#00008B" x1="0.875" y1="27.5" x2="27.875" y2="27.475"/>
+		<rect x="0.875" y="1.045" fill="#00008B" width="27.125" height="26"/>
+		<line fill="none" stroke="#00008B" x1="27.875" y1="26.925" x2="27.875" y2="0.925"/>
+		<line fill="none" stroke="#FFFFFF" x1="1.375" y1="0.5" x2="27.375" y2="0.5"/>
+		<line fill="none" stroke="#FFFFFF" x1="0.875" y1="1" x2="0.875" y2="27"/>
+		
+			<rect x="5.252" y="11.157" transform="matrix(0.7933 -0.6088 0.6088 0.7933 -5.1621 12.1086)" fill="#FFBF00" width="20" height="5"/>
+		<line fill="#FFBF00" stroke="#000000" x1="8.376" y1="15.783" x2="10.717" y2="18.766"/>
+		<line fill="#FFBF00" stroke="#000000" x1="11.946" y1="13.043" x2="14.288" y2="16.027"/>
+		<line fill="#FFBF00" stroke="#000000" x1="15.342" y1="10.437" x2="17.684" y2="13.42"/>
+		<line fill="#FFBF00" stroke="#000000" x1="18.69" y1="7.869" x2="21.03" y2="10.852"/>
+	</g>
+</svg>

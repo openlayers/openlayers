@@ -1,0 +1,70 @@
+<html> 
+  <head> 
+    <script src="OLLoader.js"></script> 
+    <script type="text/javascript"> 
+     function test_Projection_constructor(t) { 
+         t.plan(9); 
+      
+         var options = {'foo': 'bar'}; 
+         var projection = new OpenLayers.Projection("code", options); 
+         t.ok(projection instanceof OpenLayers.Projection, 
+              "new OpenLayers.Projection returns object" ); 
+         t.eq(projection.projCode, "code", "The proj code is maintained");  
+         t.eq(projection.getCode(), "code", "The proj code is maintained.");  
+         t.eq(projection.getUnits(), null, "Null units with no proj4js library.");  
+         t.eq(projection.foo, "bar", "constructor sets options correctly"); 
+  
+         var projection2 = new OpenLayers.Projection("epsg:4325", options); 
+         out = OpenLayers.Projection.transform({'x':10,'y':12}, projection, projection2); 
+         t.eq(out.x, 10, "Null transform has no effect"); 
+         t.eq(out.y, 12, "Null transform has no effect"); 
+
+         t.eq(projection.equals(null), false, "equals on null projection returns false");
+         t.eq(projection.equals({}), false, "equals on null projection object returns false (doesn't call getCode)");
+     }
+     
+     function test_Projection_equals(t) {
+         t.plan(8);
+         var origTransforms = OpenLayers.Util.extend({}, OpenLayers.Projection.transforms);
+         OpenLayers.Projection.addTransform("EPSG:4326", "FOO", OpenLayers.Projection.nullTransform);
+         OpenLayers.Projection.addTransform("FOO", "EPSG:4326", OpenLayers.Projection.nullTransform);
+         var projection = new OpenLayers.Projection("FOO");
+         t.eq(projection.equals(new OpenLayers.Projection("EPSG:4326")), true, "EPSG:4326 and FOO are equal without proj4js");
+         t.eq(projection.equals(new OpenLayers.Projection("EPSG:900913")), false, "EPSG:900913 and FOO are not equal without proj4js");
+         t.eq(new OpenLayers.Projection("EPSG:4326").equals(new OpenLayers.Projection("EPSG:4326")), true, "EPSG:4326 and EPSG:4326 are equal without proj4js");
+         t.eq(new OpenLayers.Projection("BAR").equals(new OpenLayers.Projection("EPSG:4326")), false, "Projection.equals() returns false for unknown projections withoug proj4js");
+         OpenLayers.Projection.transforms = origTransforms;
+         
+         var proj1 = new OpenLayers.Projection("EPSG:4326");
+         var proj2 = new OpenLayers.Projection("FOO");
+         var proj3 = new OpenLayers.Projection("EPSG:900913");
+         var proj4 = new OpenLayers.Projection("EPSG:4326");
+         var proj5 = new OpenLayers.Projection("BAR");
+
+         // conditionally mock up proj4js
+         var hasProj = !!window.Proj4js;
+         if (!hasProj) {
+             window.Proj4js = true;
+         }
+         proj1.proj = {defData: "+title= WGS84 +foo=bar +x=0"};
+         proj2.proj = {defData: "+title=FOO +foo=bar +x=0", srsCode: "FOO"};
+         proj3.proj = {defData: "+title=Web Mercator +foo=bar +x=0 +I=am-different"};
+         proj4.proj = proj1.proj;
+         proj5.proj = {srsCode: "BAR"};
+
+         t.eq(proj2.equals(proj1), true, "EPSG:4326 and FOO are equal with proj4js");
+         t.eq(proj2.equals(proj3), false, "EPSG:900913 and FOO are not equal with proj4js");
+         t.eq(proj1.equals(proj4), true, "EPSG:4326 and EPSG:4326 are equal with proj4js");
+         t.eq(proj2.equals(proj5), false, "Projection.equals() returns false for unknown projections with proj4js");
+         
+         if (!hasProj) {
+             window.Proj4js = undefined;
+         }
+         
+     }
+       
+    </script> 
+  </head> 
+  <body> 
+  </body> 
+</html> 

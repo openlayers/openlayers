@@ -1,0 +1,317 @@
+<html> 
+<head> 
+    <script src="../OLLoader.js"></script> 
+    <script type="text/javascript">
+
+    function test_initialize(t) { 
+        t.plan(3); 
+         
+        var options = {'foo': 'bar'}; 
+        var filter = new OpenLayers.Filter.Comparison(options); 
+        t.ok(filter instanceof OpenLayers.Filter.Comparison, 
+             "new OpenLayers.Filter.Comparison returns object" ); 
+        t.eq(filter.foo, "bar", "constructor sets options correctly"); 
+        t.eq(typeof filter.evaluate, "function", "filter has an evaluate function"); 
+    }
+
+    function test_destroy(t) {
+        t.plan(1);
+        
+        var filter = new OpenLayers.Filter.Comparison();
+        filter.destroy();
+        t.eq(filter.symbolizer, null, "symbolizer hash nulled properly");
+    }
+    
+    function test_value2regex(t) {
+        t.plan(4);
+        
+        var filter = new OpenLayers.Filter.Comparison({
+                property: "foo",
+                value: "*b?r\\*\\?*",
+                type: OpenLayers.Filter.Comparison.LIKE});
+        filter.value2regex("*", "?", "\\");
+        t.eq(filter.value, ".*b.r\\*\\?.*", "Regular expression generated correctly.");
+        
+        filter.value = "%b.r!%!.%";
+        filter.value2regex("%", ".", "!");
+        t.eq(filter.value, ".*b.r\\%\\..*", "Regular expression with different wildcard and escape chars generated correctly.");
+    
+        filter.value = "!!";
+        filter.value2regex();
+        t.eq(filter.value, "\\!", "!! successfully unescaped to \\!");
+        
+        // Big one.
+        filter.value = "!!c!!!d!e";
+        filter.value2regex();
+        t.eq(filter.value, "\\!c\\!\\d\\e", "!!c!!!d!e successfully unescaped to \\!c\\!\\d\\e");
+    }
+    
+    function test_regex2value(t) {
+        t.plan(8);
+        
+        function r2v(regex) {
+            return OpenLayers.Filter.Comparison.prototype.regex2value.call(
+                {value: regex}
+            );
+        }
+        
+        t.eq(r2v("foo"), "foo", "doesn't change string without special chars");
+        t.eq(r2v("foo.*foo"), "foo*foo", "wildCard replaced");
+        t.eq(r2v("foo.foo"), "foo.foo", "singleChar replaced");
+        t.eq(r2v("foo\\\\foo"), "foo\\foo", "escape removed");
+        t.eq(r2v("foo!foo"), "foo!!foo", "escapes !");
+        t.eq(r2v("foo\\*foo"), "foo!*foo", "replaces escape on *");
+        t.eq(r2v("foo\\.foo"), "foo!.foo", "replaces escape on .");
+        t.eq(r2v("foo\\\\.foo"), "foo\\.foo", "unescapes only \\ before .");
+        
+    }
+    
+    function test_evaluate(t) {
+        
+        var cases = [{
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.BETWEEN,
+                property: "area",
+                lowerBoundary: 1000,
+                upperBoundary: 4999
+            }),
+            context: {area: 999},
+            expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.BETWEEN,
+                property: "area",
+                lowerBoundary: 1000,
+                upperBoundary: 4999
+            }),
+            context: {area: 1000},
+            expect: true
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.BETWEEN,
+                property: "area",
+                lowerBoundary: 1000,
+                upperBoundary: 4999
+            }),
+            context: {area: 4999},
+            expect: true
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.BETWEEN,
+                property: "area",
+                lowerBoundary: 1000,
+                upperBoundary: 4999
+            }),
+            context: {area: 5000},
+            expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.BETWEEN,
+                property: "area",
+                lowerBoundary: 1000,
+                upperBoundary: 4999
+            }),
+            context: {area: 999},
+            expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                property: "prop",
+                value: "Foo"
+            }),
+            context: {prop: "Foo"},
+            expect: true
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                property: "prop",
+                value: "Foo"
+            }),
+            context: {prop: "foo"},
+            expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                matchCase: true,
+                property: "prop",
+                value: "Foo"
+            }),
+            context: {prop: "foo"},
+            expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
+                property: "prop",
+                value: "foo"
+            }),
+            context: {prop: "FOO"},
+            expect: true
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
+                matchCase: true,
+                property: "prop",
+                value: "foo"
+            }),
+            context: {prop: "FOO"},
+            expect: true
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
+                matchCase: false,
+                property: "prop",
+                value: "foo"
+            }),
+            context: {prop: "FOO"},
+            expect: false
+        }];
+        
+        t.plan(cases.length);
+        
+        var c;
+        for(var i=0; i<cases.length; ++i) {
+            c = cases[i];
+            t.eq(c.filter.evaluate(c.context), c.expect, "case " + i + ": " + c.filter.type);
+        }
+        
+    }
+
+    function test_evaluate_feature(t) {
+        
+        var cases = [{
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.BETWEEN,
+                property: "area",
+                lowerBoundary: 1000,
+                upperBoundary: 4999
+            }),
+            context: new OpenLayers.Feature.Vector(null, {area: 999}),
+            expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.BETWEEN,
+                property: "area",
+                lowerBoundary: 1000,
+                upperBoundary: 4999
+            }),
+            context: new OpenLayers.Feature.Vector(null, {area: 1000}),
+            expect: true
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.BETWEEN,
+                property: "area",
+                lowerBoundary: 1000,
+                upperBoundary: 4999
+            }),
+            context: new OpenLayers.Feature.Vector(null, {area: 4999}),
+            expect: true
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.BETWEEN,
+                property: "area",
+                lowerBoundary: 1000,
+                upperBoundary: 4999
+            }),
+            context: new OpenLayers.Feature.Vector(null, {area: 5000}),
+            expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.BETWEEN,
+                property: "area",
+                lowerBoundary: 1000,
+                upperBoundary: 4999
+            }),
+            context: new OpenLayers.Feature.Vector(null, {area: 999}),
+            expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                property: "prop",
+                value: "Foo"
+            }),
+            context: new OpenLayers.Feature.Vector(null, {prop: "Foo"}),
+            expect: true
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                property: "prop",
+                value: "Foo"
+            }),
+            context: new OpenLayers.Feature.Vector(null, {prop: "foo"}),
+            expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                matchCase: true,
+                property: "prop",
+                value: "Foo"
+            }),
+            context: new OpenLayers.Feature.Vector(null, {prop: "foo"}),
+            expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
+                property: "prop",
+                value: "foo"
+            }),
+            context: {prop: "FOO"},
+            expect: true
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
+                matchCase: true,
+                property: "prop",
+                value: "foo"
+            }),
+            context: new OpenLayers.Feature.Vector(null, {prop: "FOO"}),
+            expect: true
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
+                matchCase: false,
+                property: "prop",
+                value: "foo"
+            }),
+            context: new OpenLayers.Feature.Vector(null, {prop: "FOO"}),
+            expect: false
+        }];
+        
+        t.plan(cases.length);
+
+        var c;
+        for(var i=0; i<cases.length; ++i) {
+            c = cases[i];
+            t.eq(c.filter.evaluate(c.context), c.expect, "case " + i + ": " + c.filter.type);
+        }
+        
+    }
+        
+    function test_clone(t) {
+        
+        t.plan(3);
+        
+        var filter = new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.EQUAL_TO,
+            property: "prop",
+            value: "val"
+        });
+        
+        var clone = filter.clone();
+        
+        // modify the original
+        filter.type = OpenLayers.Filter.Comparison.NOT_EQUAL_TO;
+        
+        t.eq(clone.type, OpenLayers.Filter.Comparison.EQUAL_TO, "clone has proper type");
+        t.eq(clone.property, "prop", "clone has proper property");
+        t.eq(clone.value, "val", "clone has proper value");
+        
+        filter.destroy();
+
+    }
+
+
+    </script> 
+</head> 
+<body> 
+</body> 
+</html> 

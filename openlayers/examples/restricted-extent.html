@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers Restricted Extent Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="../lib/Firebug/firebug.js"></script>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map = null;
+        var extent = new OpenLayers.Bounds(8, 44.5, 19, 50);
+
+        function init() {
+            var options = {
+                restrictedExtent: extent
+            }
+            map = new OpenLayers.Map('map', options);
+
+            var wms = new OpenLayers.Layer.WMS(
+                "OpenLayers WMS", 
+                "http://vmap0.tiles.osgeo.org/wms/vmap0?",
+                {layers: 'basic'}
+            ); 
+
+            map.addLayers([wms]);
+            map.zoomToExtent(extent);
+            document.getElementById("toggle").checked = true;
+        }
+        
+        function toggleRestrictedExtent() {
+            if(map.restrictedExtent == null) {
+                map.setOptions({restrictedExtent: extent});
+            } else {
+                map.setOptions({restrictedExtent: null});
+            }
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">OpenLayers Restricted Extent Example</h1>
+    <div id="tags">
+        map, restrict, restrictedextent, extent
+    </div>    
+    <p id="shortdesc">
+      Don't let users drag outside the map extent: instead, limit dragging such
+      that the extent of the layer is the maximum viewable area.
+    </p>
+    <div id="map" class="smallmap"></div>
+    <p>
+        Map navigation is limited by a combination of map and layer properties.
+        The base layer resolutions array controls the resolutions (or zoom
+        levels) available.  The resolutions can be limited by setting a
+        maxResolution property or by explicitly specifying a resolutions
+        array.
+    </p>
+    <p>
+        Navigation limited by the maxExtent property.  A map cannot be panned
+        so that the center of the viewport is outside of the bounds specified
+        in maxExtent.  If you wish to further restrict panning, use the
+        restrictedExtent property.  With restrictedExtent set, the map cannot
+        be panned beyond the given bounds.  If the maxResolution allows the
+        map to be zoomed to a resolution that displays an area bigger than
+        the restrictedExtent, the viewport will remain centered on the
+        restrictedExtent.
+    </p>
+    <p>
+        <input type="checkbox" id="toggle" checked="checked"
+               onclick="toggleRestrictedExtent();" />
+        <label for="toggle">
+            Toggle restricted extent (to [8, 44.5, 19, 50]).
+        </label>
+    
+  </body>
+</html>

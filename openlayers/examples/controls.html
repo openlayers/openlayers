@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>OpenLayers Map Controls Example</title>
+
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <script src="../lib/OpenLayers.js"></script>
+        <script type="text/javascript">
+            var map;
+            function init(){
+                map = new OpenLayers.Map('map', {
+                    controls: [
+                        new OpenLayers.Control.Navigation(),
+                        new OpenLayers.Control.PanZoomBar(),
+                        new OpenLayers.Control.LayerSwitcher({'ascending':false}),
+                        new OpenLayers.Control.Permalink(),
+                        new OpenLayers.Control.ScaleLine(),
+                        new OpenLayers.Control.Permalink('permalink'),
+                        new OpenLayers.Control.MousePosition(),
+                        new OpenLayers.Control.OverviewMap(),
+                        new OpenLayers.Control.KeyboardDefaults()
+                    ],
+                    numZoomLevels: 6
+                    
+                });
+
+                var ol_wms = new OpenLayers.Layer.WMS(
+                    "OpenLayers WMS",
+                    "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                    {layers: 'basic'} 
+                );
+
+                var gwc = new OpenLayers.Layer.WMS(
+                    "Global Imagery",
+                    "http://maps.opengeo.org/geowebcache/service/wms",
+                    {layers: "bluemarble"},
+                    {tileOrigin: new OpenLayers.LonLat(-180, -90)}
+                );
+                var dm_wms = new OpenLayers.Layer.WMS(
+                    "DM Solutions Demo",
+                    "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap",
+                    {layers: "bathymetry,land_fn,park,drain_fn,drainage," +
+                             "prov_bound,fedlimit,rail,road,popplace",
+                     transparent: "true", format: "image/png"},
+                    {visibility: false}
+                );
+
+                map.addLayers([ol_wms, gwc, dm_wms]);
+
+                if (!map.getCenter()) {
+                    map.zoomToMaxExtent();
+                }
+            }
+        </script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">Map Controls Example</h1>
+
+        <div id="tags">
+            control, basic
+        </div>
+
+        <p id="shortdesc">
+            Attach zooming, panning, layer switcher, overview map, and permalink map controls to an OpenLayers window.
+        </p>
+
+        <div id="map" class="smallmap"></div>
+        <a href="#" id="permalink">Permalink</a>
+
+        <div id="docs"></div>
+    </body>
+</html>

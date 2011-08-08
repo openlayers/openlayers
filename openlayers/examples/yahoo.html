@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers: Yahoo Layer</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=euzuro-openlayers"></script>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map, layer, velayer;
+
+        function init(){
+            map = new OpenLayers.Map('map');
+
+            yahooLayer = new OpenLayers.Layer.Yahoo( "Yahoo");
+
+            map.addLayer(yahooLayer);
+
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
+            map.addLayer(layer);
+
+            map.setCenter(new OpenLayers.LonLat(-5, 40), 4);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Yahoo Base Layer Example</h1>
+
+        <div id="tags">
+            yahoo, layer
+        </div>
+
+        <p id="shortdesc">
+            Shows how you would add a yahoo layer and add the LayerSwitcher control
+        </p>
+
+        <div id="map" class="smallmap"></div>
+
+        <div id="docs">
+            <p>This is an example of how to add a yahoo layer to the OpenLayers
+            window.  In order to enable a yahoo layer, also shown in this
+            example is the LayerSwitcher() control for toggling between both
+            the yahoo layer and the OSGeo WMS.
+        </div>
+
+  </body>
+</html>

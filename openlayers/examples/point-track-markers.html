@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers: Point Track Markers</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map, layer, rss, lineFeatures, popup;
+
+        OpenLayers.ProxyHost = "proxy.cgi?url=";
+        function init(){
+            map = new OpenLayers.Map('map', {maxResolution:'auto'});
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                    "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
+            map.addLayer(layer);
+            map.setCenter(new OpenLayers.LonLat(20.22, 22.05), 9);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+        }
+
+        function addUrl() {
+            var urlObj = OpenLayers.Util.getElement('url'); 
+            var value = urlObj.value;
+            var parts = value.split("/");
+            rss = new OpenLayers.Layer.GeoRSS(parts[parts.length-1], value);
+            rss.events.register("loadend", window, populateMap);
+            map.addLayer(rss);
+        }
+
+        function populateMap() {
+            // create the point track layer
+            var lineLayer = new OpenLayers.Layer.PointTrack(rss.name + " Track",
+                    {dataFrom: OpenLayers.Layer.PointTrack.dataFrom.SOURCE_NODE});
+            // add the features from the rss layer to the track layer. This
+            // also works with OpenLayers.Feature.Vector features.
+            lineLayer.addNodes(rss.features);
+            map.addLayer(lineLayer);
+            
+            rss.setName(rss.name + " Comments");
+            
+            var feature, marker;
+            // only show markers for features that are not "Untitled"
+            for (var i = rss.features.length-1; i>0; i--) {
+                if (rss.features[i].data.popupContentHTML.indexOf(
+                        "Untitled") != -1) {
+                    rss.removeMarker(rss.markers[i]);
+                }
+            }
+            
+            // keep markers on top of tracks
+            map.raiseLayer(rss, 1);
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">GeoRSS PointTrack in OpenLayers</h1>
+    <div id="tags">
+        GeoRSS, PointTrack
+    </div>
+    <p id="shortdesc">This demo uses OpenLayers.Layer.GeoRSS and OpenLayers.Layer.PointTrack.</p>
+    <p style="font-size:.9em;">The track is created by connecting the points of the GeoRSS feed.</a></p>
+    <form onsubmit="return false;">
+   GeoRSS URL: <input type="text" id="url" size="50" /><input type="submit" onclick="addUrl(); return false;" value="Load Feed" onsubmit="addUrl(); return false;" />
+    </form>  
+    <p>The above input box allows the input of a URL to a GeoRSS feed. This feed can be local to the HTML page -- for example, entering 'xml/track1.xml' will work by default.</p>
+    <p>The example shows a track, displayed as a line connecting the points of the feed. It also shows markers at positions that have a title tag in the rss item. If clicked, a popup will show title and description.</p>   
+    <div id="map" class="smallmap"></div>
+  </body>
+</html>

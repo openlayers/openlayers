@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>
+            OpenLayers CQL Example
+        </title>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <style>
+            #cql {
+                width: 400px;
+            }
+            #output {
+                padding-top: 1em;
+                width: 512px;
+                height: 60px;
+                border: none;
+                color: #ff3333;
+            }
+        </style>
+        <script src="../lib/OpenLayers.js"></script>
+    </head>
+    <body>
+        <h1 id="title">CQL Filter Example</h1>
+        <div id="tags">
+            CQL, filter
+        </div>
+        <p id="shortdesc">
+            Demonstrate use the CQL filter.
+        </p>
+        <div id="map" class="smallmap"></div>
+        <div id="docs">
+            <p>
+                Enter text for a CQL filter to update the features displayed.
+                <br>
+                <form name="cql_form" id="cql_form">
+                    <label for="cql">CQL</label>
+                    <input id="cql" type="text" value="STATE_ABBR >= 'B' AND STATE_ABBR <= 'O'">
+                    <input type="submit" value="update">
+                    <input type="reset" value="reset">
+                </form>
+                <textarea id="output"></textarea>
+            </p><p>
+                View the <a href="cql-format.js" target="_blank">cql-format.js source</a> 
+                to see how this is done.
+            </p>
+        </div>
+        <script src="cql-format.js"></script>
+        <script src="http://demo.opengeo.org/geoserver/wfs?service=WFS&amp;version=1.0.0&amp;request=GetFeature&amp;typename=topp:states&amp;outputFormat=json&amp;format_options=callback:loadFeatures" type="text/javascript"></script>
+    </body>
+</html>

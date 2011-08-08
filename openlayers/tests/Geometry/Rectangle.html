@@ -1,0 +1,76 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+
+    function test_Rectangle_constructor (t) {
+        t.plan( 8 );
+
+      //empty
+        var rect = new OpenLayers.Geometry.Rectangle();
+        t.ok( rect instanceof OpenLayers.Geometry.Rectangle, "new OpenLayers.Geometry.Rectangle returns Rectangle object" );
+        t.eq( rect.CLASS_NAME, "OpenLayers.Geometry.Rectangle", "Rectangle.CLASS_NAME is set correctly");
+        t.ok( rect.id != null, "rect.id is set");
+        t.ok( ! (rect.x || rect.y || rect.width || rect.height), "empty construct leaves properties empty");
+        
+      //good
+        var x = {};
+        var y = {};
+        var w = {};
+        var h = {};
+        var rect = new OpenLayers.Geometry.Rectangle(x, y, w, h);
+        t.eq( rect.x, x, "good init correctly sets x property"); 
+        t.eq( rect.y, y, "good init correctly sets y property"); 
+        t.eq( rect.width, w, "good init correctly sets width property"); 
+        t.eq( rect.height, h, "good init correctly sets height property"); 
+    }
+
+    function test_Rectangle_calculateBounds(t) {
+        t.plan(1);
+        
+        var x = 1;
+        var y = 2;
+        var w = 10;
+        var h = 20;
+        var rect = new OpenLayers.Geometry.Rectangle(x, y, w, h);
+        rect.calculateBounds();
+
+        var testBounds = new OpenLayers.Bounds(x, y, x + w, y + h)
+        
+        t.ok( rect.bounds.equals(testBounds), "calculateBounds works correctly"); 
+    }
+
+    function test_Rectangle_getLength(t) {
+        t.plan(1);
+
+        var x = 1;
+        var y = 2;
+        var w = 10;
+        var h = 20;
+        var rect = new OpenLayers.Geometry.Rectangle(x, y, w, h);
+
+        var testLength = (2 * w) + (2 * h);
+
+        t.eq(rect.getLength(), testLength, "getLength() works");
+    }
+
+    function test_Rectangle_getArea(t) {
+        t.plan(1);
+
+        var x = 1;
+        var y = 2;
+        var w = 10;
+        var h = 20;
+        var rect = new OpenLayers.Geometry.Rectangle(x, y, w, h);
+
+        var testArea = w * h;
+        t.eq(rect.getArea(), testArea, "testArea() works");
+    }
+
+
+
+  </script>
+</head>
+<body>
+</body>
+</html>

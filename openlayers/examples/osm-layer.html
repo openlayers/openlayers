@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers: OSM Layer</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <style>
+        #map {
+            height: 350px;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var lon = 5;
+        var lat = 40;
+        var zoom = 5;
+        var map, layer, gml;
+        function export_vectors() {
+            var x = new OpenLayers.Format.XML();
+            var content = x.write(gml.renderer.rendererRoot);
+            $("vectors").value = content;
+            $("vectors").style.display = "block";
+            $("vectorlink").href = "data:image/svg+xml," + escape(content);
+            $("vectorlink").style.display="block";
+        }
+        function on_feature_hover(feature) {
+            var text ="<ul>";
+            var type ="way";
+            if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.Point") {
+                type = "node";
+            }    
+            text += "<li>" + feature.osm_id + ": <a href='http://crschmidt.net/osm/attributes.html?type="+type+"&id="+feature.osm_id+"'>Edit</a>, <a href='http://www.openstreetmap.org/api/0.5/"+type + "/" + feature.osm_id + "'>API</a></li>";
+            for (var key in feature.attributes) {
+                text += "<li>" + key + ": " + feature.attributes[key] + "</li>";
+            }
+            text += "</ul>";
+            $("status").innerHTML = text;
+        }   
+        function clear_data() {
+            gml.destroyFeatures();
+        }
+        function new_data() {
+            if (!check_zoom()) { return; }
+            clear_data();
+            gml.loaded = false;
+            gml.url = "http://www.openstreetmap.org/api/0.5/map?bbox=" + map.getExtent().toBBOX();
+            $("status").innerHTML = "Loading more data...";
+            gml.loadGML();
+        }
+        function style_osm_feature(feature) {
+            feature.style = OpenLayers.Util.extend({'fill':'black'}, OpenLayers.Feature.Vector.style['default']);
+            if (feature.attributes.highway == "motorway") {
+                feature.style.strokeColor = "blue";
+                feature.style.strokeWidth = 5;
+            } else if (feature.attributes.highway == "primary") {
+                feature.style.strokeColor = "red";
+            } else if (feature.attributes.highway == "secondary") {
+                feature.style.strokeColor = "orange";
+            } else if (feature.attributes.highway) {
+                feature.style.strokeColor = "black";
+            }   
+        }
+        function check_zoom() { 
+            var zoom = map.getZoom();
+            if (zoom >= 11) { return true; }
+            if (zoom >= 9) { return confirm("Loading this amount of data may slow your browser. Are you sure you want to do this?"); }
+            $("status").innerHTML = "Area too large. Zoom in to load data. (Current zoom level: "+ zoom + ". Must be at zoom 9+.)";
+            return false;
+        }    
+        function init(){
+            OpenLayers.ProxyHost = "proxy.cgi?url=";
+            OpenLayers.Feature.Vector.style['default'].strokeWidth = 4;
+            OpenLayers.Feature.Vector.style['default'].cursor = 'pointer';
+            map = new OpenLayers.Map('map', {'maxResolution': 360/512/16, 'numZoomLevels':15, controls: [ new OpenLayers.Control.Navigation(), new OpenLayers.Control.PanZoomBar() ]});
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.addControl(new OpenLayers.Control.Permalink());
+            layer = new OpenLayers.Layer.WMS( "OSM", 
+               [
+                 "http://t1.hypercube.telascience.org/tiles?",
+                 "http://t2.hypercube.telascience.org/tiles?",
+                 "http://t3.hypercube.telascience.org/tiles?",
+                 "http://t4.hypercube.telascience.org/tiles?"
+                 ], 
+                {layers: 'osm-4326', format: 'image/png' } );
+            map.addLayer(layer);
+            if (!map.getCenter()) { 
+                gml = new OpenLayers.Layer.GML("OSM", "osm/sutton_coldfield.osm", {format: OpenLayers.Format.OSM});
+                map.zoomToExtent(new OpenLayers.Bounds(-1.819072,52.549034,-1.814341,52.551582));
+            } else {
+                if (map.getZoom() >= 11) {
+                    gml = new OpenLayers.Layer.GML("OSM", "http://www.openstreetmap.org/api/0.5/map?bbox=" + map.getExtent().toBBOX(), {format: OpenLayers.Format.OSM});
+                } else {
+                    gml = new OpenLayers.Layer.GML("OSM", "xml/cambridgeport.osm", {format: OpenLayers.Format.OSM});
+                }    
+            }    
+            gml.events.register("loadstart", null, function() { $("status").innerHTML = "Loading..."; })
+            gml.events.register("loadend", null, function() { $("status").innerHTML = ""; })
+            map.addLayer(gml);
+            gml.preFeatureInsert = style_osm_feature; 
+            var sf = new OpenLayers.Control.SelectFeature(gml, {'onSelect': on_feature_hover});
+            map.addControl(sf);
+            sf.activate();
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Advanced OSM Layer</h1>
+    <div id="tags">
+        openstreetmap advanced
+    </div>
+    <div id="map" class="smallmap"></div>
+    <div id="download">
+      <ul>
+       <li><a href="javascript:new_data();">Download current view</a></li>
+       <li><a href="javascript:clear_data();">Clear current data</a></li>
+       <li><a href="javascript:export_vectors();">Export Vector Data</a></li>
+      </ul>
+    <div id="status">Loading...</div>
+    </div>
+    <a id="vectorlink" href="" style="display:none">Display via data: URL (FF Only)</a>
+    <textarea id="vectors" style="display:none;width:100%" rows="10"></textarea>
+  </body>
+</html>

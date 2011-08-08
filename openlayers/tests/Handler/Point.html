@@ -1,0 +1,599 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    function test_Handler_Point_constructor(t) {
+        t.plan(3);
+        var control = new OpenLayers.Control();
+        control.id = Math.random();
+        var callbacks = {foo: "bar"};
+        var options = {bar: "foo"};
+        
+        var oldInit = OpenLayers.Handler.prototype.initialize;
+        
+        OpenLayers.Handler.prototype.initialize = function(con, call, opt) {
+            t.eq(con.id, control.id,
+                 "constructor calls parent with the correct control");
+            t.eq(call, callbacks,
+                 "constructor calls parent with the correct callbacks");
+            t.eq(opt, options,
+                 "constructor calls parent with the correct options");
+        }
+        var handler = new OpenLayers.Handler.Point(control, callbacks, options);
+
+        OpenLayers.Handler.prototype.initialize = oldInit;
+    }
+
+    function test_Handler_Point_activation(t) {
+        t.plan(6);
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var control = new OpenLayers.Control();
+        var handler = new OpenLayers.Handler.Point(control, {});
+        control.handler = handler;
+        map.addControl(control);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+
+        handler.active = true;
+        var activated = handler.activate();
+        t.ok(!activated,
+             "activate returns false if the handler was already active");
+        handler.active = false;
+        activated = handler.activate();
+        t.ok(activated,
+             "activate returns true if the handler was not already active");
+        t.ok(handler.layer instanceof OpenLayers.Layer.Vector,
+             "activate creates a vector layer");
+        t.ok(handler.layer.map == map,
+             "activate adds the vector layer to the map");
+        activated = handler.deactivate();
+        t.ok(activated,
+             "deactivate returns true if the handler was active already");
+        var failed = false;
+        try {
+            handler.finalize();
+            msg = "finalizing after deactivation does not throw an error";
+        } catch (err) {
+            failed = true;
+            msg = "finalizing after deactivation throws an error";
+        }
+        t.ok(!failed, msg);
+        map.destroy();
+    }
+
+    // http://trac.osgeo.org/openlayers/ticket/3179
+    function test_activate_before_map_is_centered(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map('map', {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var control = new OpenLayers.Control();
+        var handler = new OpenLayers.Handler.Point(control, {});
+        control.handler = handler;
+        map.addControl(control);
+
+        var error;
+        try {
+            handler.activate();
+            error = false;
+        } catch(err) {
+            error = true;
+        }
+        t.ok(!error, "no error on activate");
+    }
+
+    function test_Handler_Point_events(t) {
+        t.plan(49);
+        var log = [];
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var control = new OpenLayers.Control();
+        var handler = new OpenLayers.Handler.Point(control, {
+            "create": function(g, f) {
+                log.push({geometry: g, feature: f});
+            }
+        });
+        control.handler = handler;
+        map.addControl(control);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+
+        // list below events that should be handled (events) and those
+        // that should not be handled (nonevents) by the handler
+        var events = ["click", "dblclick", "mousedown", "mouseup", "mousemove", "mouseout", "touchstart", "touchmove", "touchend"];
+        var nonevents = ["resize", "focus", "blur"];
+        map.events.registerPriority = function(type, obj, func) {
+            var r = func();
+            if(typeof r == "string") {
+                // this is one of the mock handler methods
+                t.eq(OpenLayers.Util.indexOf(nonevents, type), -1,
+                     "registered method is not one of the events " +
+                     "that should not be handled");
+                t.ok(OpenLayers.Util.indexOf(events, type) > -1,
+                     "activate calls registerPriority with browser event: " + type);
+                t.eq(typeof func, "function",
+                     "activate calls registerPriority with a function");
+                t.eq(func(), type,
+                     "activate calls registerPriority with the correct method");
+                t.eq(obj["CLASS_NAME"], "OpenLayers.Handler.Point",
+                     "activate calls registerPriority with the handler");
+            }
+        }
+        
+        // set browser event like properties on the handler
+        for(var i=0; i<events.length; ++i) {
+            setMethod(events[i]);
+        }
+        function setMethod(key) {
+            handler[key] = function() {return key};
+        }
+
+        var activated = handler.activate();
+        handler.destroy();
+
+        // test that click and dblclick are stopped
+        var handler = new OpenLayers.Handler.Point(control);
+        var oldStop = OpenLayers.Event.stop;
+        OpenLayers.Event.stop = function(evt) {
+            t.ok(evt.type == "click" || evt.type == "dblclick",
+                 evt.type + " stopped");
+        }
+        t.eq(handler.click({type: "click"}), false, "click returns false");
+        t.eq(handler.dblclick({type: "dblclick"}), false, "dblclick returns false");
+        OpenLayers.Event.stop = oldStop;
+
+    }
+    
+    function test_callbacks(t) {
+        t.plan(24);
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var control = new OpenLayers.Control({});
+        var logs = [], log;
+        var handler = new OpenLayers.Handler.Point(control, {
+            create: function() {
+                logs.push({type: "create", args: arguments});
+            },
+            modify: function() {
+                logs.push({type: "modify", args: arguments});
+            },
+            done: function() {
+                logs.push({type: "done", args: arguments});
+            },
+            cancel: function() {
+                logs.push({type: "cancel", args: arguments});
+            }
+        },
+        {
+            pixelTolerance: 0,
+            dblclickTolerance: 0
+        });
+        control.handler = handler;
+        map.addControl(control);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+        
+        handler.activate();
+
+        // mouse down
+        handler.mousedown(
+            {type: "mousedown", xy: new OpenLayers.Pixel(0, 0)});
+        t.eq(logs.length, 2, "[mousedown] called back twice");
+        log = logs.shift();
+        t.eq(log.type, "create", "[mousedown] create called");
+        t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-150, 75),
+                  "[mousedown] correct point");
+        t.geom_eq(log.args[1].geometry,
+                  new OpenLayers.Geometry.Point(-150, 75),
+                  "[mousedown] correct feature");
+        log = logs.shift();
+        t.eq(log.type, "modify", "[mousedown] modify called");
+        t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-150, 75),
+                  "[mousedown] correct point");
+        t.geom_eq(log.args[1].geometry,
+                  new OpenLayers.Geometry.Point(-150, 75),
+                  "[mousedown] correct feature");
+        // mouse move
+        handler.mousemove(
+            {type: "mousemove", xy: new OpenLayers.Pixel(1, 0)});
+        t.eq(logs.length, 0, "[mousemove] not called back");
+        // mouse up (no finalize - we moved)
+        handler.mouseup({type: "mouseup", xy: new OpenLayers.Pixel(1, 0)});
+        t.eq(logs.length, 0, "[mouseup] not called back");
+        // mouse move
+        handler.mousemove(
+            {type: "mousemove", xy: new OpenLayers.Pixel(2, 0)});
+        t.eq(logs.length, 1, "[mousemove] called back");
+        log = logs.shift();
+        t.eq(log.type, "modify", "[mousemove] modify called");
+        t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-148, 75),
+                  "[mousemove] correct point");
+        t.geom_eq(log.args[1].geometry,
+                  new OpenLayers.Geometry.Point(-148, 75),
+                  "[mousemove] correct feature");
+        // mouse down
+        handler.mousedown(
+            {type: "mousedown", xy: new OpenLayers.Pixel(2, 0)});
+        t.eq(logs.length, 1, "[mousedown] called back");
+        log = logs.shift();
+        t.eq(log.type, "modify", "[mousedown] modify called");
+        t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-148, 75),
+                  "[mousedown] correct point");
+        t.geom_eq(log.args[1].geometry,
+                  new OpenLayers.Geometry.Point(-148, 75),
+                  "[mousedown] correct feature");
+        // mouse up
+        handler.mouseup({type: "mouseup", xy: new OpenLayers.Pixel(2, 0)});
+        t.eq(logs.length, 1, "[mouseup] called back");
+        log = logs.shift();
+        t.eq(log.type, "done", "[mouseup] done called");
+        t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-148, 75),
+                  "[mouseup] correct point");
+        // mouse up on same pixel
+        handler.mouseup({type: "mouseup", xy: new OpenLayers.Pixel(2, 0)});
+        t.eq(logs.length, 0, "[mouseup] not called back");
+        // cancel
+        handler.cancel();
+        t.eq(logs.length, 1, "[cancel] called back");
+        log = logs.shift();
+        t.eq(log.type, "cancel", "[cancel] cancel called");
+        t.eq(log.args[0], null, "[cancel] got null");
+
+        map.destroy();
+    }
+
+    function test_persist(t) {
+        t.plan(3);
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var control = new OpenLayers.Control({});
+        var handler = new OpenLayers.Handler.Point(control, {});
+        control.handler = handler;
+        map.addControl(control);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+        
+        handler.activate();
+
+        handler.persist = false;
+        handler.mousedown(
+            {type: "mousedown", xy: new OpenLayers.Pixel(0, 0)});
+        handler.mouseup(
+            {type: "mouseup", xy: new OpenLayers.Pixel(0, 0)});
+        t.eq(handler.layer.features.length, 0,
+             "feature destroyed on mouseup when persist is false");
+
+        handler.persist = true;
+        handler.mousedown(
+            {type: "mousedown", xy: new OpenLayers.Pixel(1, 0)});
+        handler.mouseup(
+            {type: "mouseup", xy: new OpenLayers.Pixel(1, 0)});
+        t.eq(handler.layer.features.length, 1,
+             "feature not destroyed on mouseup when persist is true");
+        var feature = handler.layer.features[0];
+        handler.mousedown(
+            {type: "mousedown", xy: new OpenLayers.Pixel(2, 0)});
+        handler.mouseup(
+            {type: "mouseup", xy: new OpenLayers.Pixel(2, 0)});
+        t.ok(handler.layer.features[0] !== feature,
+             "persisted feature destroyed on next mouseup");
+
+        map.destroy();
+    }
+
+
+    function test_Handler_Point_deactivation(t) {
+        t.plan(5);
+        var log = [];
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var control = new OpenLayers.Control();
+        var handler = new OpenLayers.Handler.Point(control, {
+            "cancel": function(g) {
+                log.push({geometry: g});
+            }
+        });
+        control.handler = handler;
+        map.addControl(control);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+
+        handler.activate();
+        handler.mousemove({xy: new OpenLayers.Pixel(0, 0)});
+        var _layer = handler.layer;
+        var _geometry = handler.point.geometry;
+        handler.deactivate();
+        t.eq(_layer.map, null,
+             "deactivates removes the layer from the map");
+        t.eq(handler.layer, null,
+             "deactivates sets its \"layer\" property to null");
+        t.eq(log.length, 1,
+             "deactivates calls \"cancel\" once");
+        t.ok(log[0].geometry.equals(_geometry),
+             "\"cancel\" called with expected geometry");
+
+        handler.activate();
+        handler.layer.destroy();
+        handler.deactivate();
+        t.eq(handler.layer, null,
+             "deactivate doesn't throw an error if layer was" +
+             " previously destroyed");
+
+        map.destroy();
+    }
+
+    function test_Handler_Point_bounds(t) {
+        t.plan(4);
+        var map = new OpenLayers.Map('map');
+        map.addLayer(new OpenLayers.Layer.WMS("", "", {}));
+        map.zoomToMaxExtent();
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.Point(control, {});
+        var activated = handler.activate();
+        var px = new OpenLayers.Pixel(150, 75);
+        var evt = {xy: px, which: 1};
+        handler.mousemove(evt);
+        var lonlat = map.getLonLatFromPixel(px);
+        t.eq(handler.point.geometry.x, lonlat.lon, "X is correct"); 
+        t.eq(handler.point.geometry.y, lonlat.lat, "Y is correct"); 
+        t.ok(handler.point.geometry.getBounds().equals(new OpenLayers.Bounds(lonlat.lon,lonlat.lat,lonlat.lon,lonlat.lat)), "Correct bounds"); 
+        var evt = {xy: new OpenLayers.Pixel(175, 100), which: 1};
+        handler.mousemove(evt);
+        t.ok(!handler.point.geometry.getBounds().equals(new OpenLayers.Bounds(0,0,0,0)), "Bounds changed after moving mouse"); 
+    }     
+        
+    function test_Handler_Point_destroy(t) {
+        t.plan(4);
+        var map = new OpenLayers.Map('map');
+        map.addLayer(new OpenLayers.Layer.WMS("", "", {}));
+        map.zoomToMaxExtent();
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.Point(control, {foo: 'bar'});
+
+        handler.activate();
+        handler.mousemove({xy: new OpenLayers.Pixel(150, 75)});
+
+        t.ok(handler.layer,
+             "handler has a layer prior to destroy");
+        t.ok(handler.point,
+             "handler has a point prior to destroy");
+        handler.destroy();
+        t.eq(handler.layer, null,
+             "handler.layer is null after destroy");
+        t.eq(handler.point, null,
+             "handler.point is null after destroy");
+    }
+
+    function test_touchstart(t) {
+        // a test to verify that the touchstart function does
+        // unregister the mouse listeners when it's called the
+        // first time
+
+        t.plan(4);
+
+        // set up
+
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var control = new OpenLayers.Control({});
+        var handler = new OpenLayers.Handler.Point(control, {});
+        control.handler = handler;
+        map.addControl(control);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+        handler.activate();
+
+        function allRegistered() {
+            var eventTypes = ['mousedown', 'mouseup', 'mousemove', 'click', 'dblclick'],
+                eventType,
+                listeners,
+                listener,
+                flag;
+            for(var i=0, ilen=eventTypes.length; i<ilen; i++) {
+                flag =  false;
+                eventType = eventTypes[i];
+                listeners = map.events.listeners[eventType];
+                for(var j=0, jlen=listeners.length; j<jlen; j++) {
+                    listener = listeners[j];
+                    if(listener.func === handler[eventType] && listener.obj === handler) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if(!flag) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function noneRegistered() {
+            var eventTypes = ['mousedown', 'mouseup', 'mousemove', 'click', 'dblclick'],
+                eventType,
+                listeners,
+                listener;
+            for(var i=0, ilen=eventTypes.length; i<ilen; i++) {
+                eventType = eventTypes[i];
+                listeners = map.events.listeners[eventType];
+                for(var j=0, jlen=listeners.length; j<jlen; j++) {
+                    listener = listeners[j];
+                    if(listener.func === handler[eventType] && listener.obj === handler) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        // test
+
+        t.ok(allRegistered(), 'mouse listeners are registered');
+        handler.touchstart({xy: new OpenLayers.Pixel(0, 0)});
+        t.ok(noneRegistered(), 'mouse listeners are unregistered');
+        t.ok(handler.touch, 'handler.touch is set');
+
+        handler.deactivate();
+        t.ok(!handler.touch, 'handler.touch is not set');
+
+        // tear down
+
+        map.destroy();
+    }
+
+
+    //
+    // Sequence tests
+    // 
+    // Sequence tests basically involve executing a sequence of events
+    // and testing the resulting geometry.
+    //
+    // Below are tests for various drawing sequences. Tests can be
+    // added here each a non-working sequence is found.
+    //
+
+    // tap
+    function test_touch_sequence1(t) {
+        t.plan(8);
+
+        // set up
+
+        var log;
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var control = new OpenLayers.Control({});
+        var handler = new OpenLayers.Handler.Point(control, {
+            done: function(g, f) {
+                log = {geometry: g, feature: f};
+            }
+        });
+        control.handler = handler;
+        map.addControl(control);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+        handler.activate();
+
+        // test
+
+        var ret;
+
+        // tap on (1, 0)
+        log = null;
+        ret = handler.touchstart({xy: new OpenLayers.Pixel(0, 0)});
+        t.ok(ret, '[touchstart] event propagates');
+        t.eq(log, null, '[touchstart] no finalization');
+        t.eq(handler.point, null, '[touchstart] feature not modified');
+        ret = handler.touchmove({xy: new OpenLayers.Pixel(1, 0)});
+        t.ok(ret, '[touchmove] event propagates');
+        t.eq(log, null, '[touchmove] no finalization');
+        t.eq(handler.point, null, '[touchmove] feature not modified');
+        ret = handler.touchend({});
+        t.ok(ret, '[touchend] event propagates');
+        t.geom_eq(log.geometry, new OpenLayers.Geometry.Point(-149, 75),
+                  "[touchend] correct point");
+        // tear down
+
+        map.destroy();
+    }
+
+    // tap-move
+    function test_touch_sequence2(t) {
+        t.plan(9);
+
+        // set up
+
+        var log;
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var control = new OpenLayers.Control({});
+        var handler = new OpenLayers.Handler.Point(control, {
+            done: function(g, f) {
+                log = {geometry: g, feature: f};
+            }
+        });
+        control.handler = handler;
+        map.addControl(control);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+        handler.activate();
+
+        // test
+
+        var ret;
+
+        // tap-move (0, 0) -> (9, 0)
+        log = null;
+        ret = handler.touchstart({xy: new OpenLayers.Pixel(0, 0)});
+        t.ok(ret, '[touchstart] event propagates');
+        t.eq(log, null, '[touchstart] no finalization');
+        t.eq(handler.point, null, null,
+             '[touchstart] feature not modified');
+        ret = handler.touchmove({xy: new OpenLayers.Pixel(9, 0)});
+        t.ok(ret, '[touchmove] event propagates');
+        t.eq(log, null, '[touchmove] no finalization');
+        t.eq(handler.point, null,
+             '[touchmove] feature not modified');
+        ret = handler.touchend({});
+        t.ok(ret, '[touchend] event propagates');
+        t.eq(log, null, '[touchend] no finalization');
+        t.eq(handler.point, null,
+             '[touchend] feature not modified');
+
+        // tear down
+
+        map.destroy();
+    }
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 300px; height: 150px;"/>
+</body>
+</html>

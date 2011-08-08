@@ -1,0 +1,80 @@
+<html>
+<head>
+<script src="OLLoader.js"></script>
+  <script type="text/javascript">
+
+    function test_Renderer_constructor(t) {
+        t.plan(2);
+        var el = document.body;
+        el.id = "foo";
+        var r = new OpenLayers.Renderer(el.id);
+        
+        t.ok(r instanceof OpenLayers.Renderer, "new OpenLayers.Renderer returns Renderer object" );
+        t.ok(r.container == el, "renderer container is correctly set");
+    }
+    
+    function test_Renderer_supported(t) {
+        t.plan(1);
+        
+        var r = new OpenLayers.Renderer();
+        t.eq(r.supported(), false, "supported returns false by default");
+    }
+    
+    function test_Renderer_setextent(t) {
+        t.plan(2);
+        
+        var r = new OpenLayers.Renderer();
+        var extent = new OpenLayers.Bounds(1,2,3,4);
+        r.resolution = 1;
+        r.setExtent(extent, true);
+        t.ok(r.extent.equals(extent), "extent is correctly set");
+        t.eq(r.resolution, null, "resolution nullified");
+    }
+    
+    function test_Renderer_setsize(t) {
+        t.plan(2);
+        
+        var r = new OpenLayers.Renderer();
+        var size = new OpenLayers.Size(1,2);
+        r.resolution = 1;
+        r.setSize(size);
+        t.ok(r.size.equals(size), "size is correctly set");
+        t.eq(r.resolution, null, "resolution nullified");
+    }
+    
+    function test_Renderer_getresolution(t) {
+        t.plan(2);
+        
+        var r = new OpenLayers.Renderer();
+        var map = new OpenLayers.Map("map");
+        r.map = map;
+        var resolution = r.getResolution();
+        t.eq(resolution, map.getResolution(), "resolution matches the map resolution");
+        t.eq(r.resolution, resolution, "resolution is correctly set");
+    }
+
+    function test_Renderer_destroy(t) {
+        t.plan(5);
+
+        var r = new OpenLayers.Renderer();
+        r.container = document.createElement("div");
+        r.extent = new OpenLayers.Bounds(1,2,3,4);
+        r.size = new OpenLayers.Size(1,2);
+        r.resolution = 1;
+        r.map = {};
+
+        r.destroy();
+
+        t.eq(r.container, null, "container nullified");
+        t.eq(r.extent, null, "extent nullified");
+        t.eq(r.size, null, "size nullified");
+        t.eq(r.resolution, null, "resolution nullified");
+        t.eq(r.map, null, "map nullified");
+    }
+
+  </script>
+</head>
+<body>
+<div id="map" style="width:500px;height:550px"></div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<html>
+    <head>
+        <title>WMS Capabilities Speed Test</title>
+        <script src="../../lib/OpenLayers.js"></script>
+        <script src="wmscaps.js"></script>
+        <script>
+            var data;
+            var stats = [];
+
+            function parseCaps(id, done) {
+                var format = new OpenLayers.Format.WMSCapabilities();
+                data = format.read(caps);
+                done(id);
+            }
+
+            function run(func, x) {
+                document.getElementById("out").innerHTML = "running ...";
+                var starts = {};
+                var elapsed = 0;
+                completed = 0;
+                function callback(id) {
+                    elapsed += new Date() - starts[id];
+                    ++completed;
+                    if (completed === x) {
+                        report(x, elapsed);
+                    }
+                }
+                var runner;
+                for (var i=0; i<x; i++) {
+                    runner = createRunner(i, starts, func, callback);
+                    window.setTimeout(runner, 0);
+                }
+            }
+            
+            function createRunner(id, starts, func, done) {
+                return function() {
+                    starts[id] = new Date();
+                    func(id, done);
+                }
+            }
+
+            function report(x, elapsed) {
+                document.getElementById("out").innerHTML = elapsed + " ms for " + x + " runs (" + elapsed/x + " ms average)";
+            }
+
+        </script>
+    </head>
+    <body>
+        <a onclick="javascript:run(parseCaps, 5); return false" href="#">Run</a>
+        <div id="out"></div>
+    </body>
+</html>

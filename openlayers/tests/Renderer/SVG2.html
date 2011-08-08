@@ -1,0 +1,426 @@
+<html>
+<head>
+<script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+
+    var geometry = null, node = null;
+    
+    function test_SVG_constructor(t) {
+        if (!OpenLayers.Renderer.SVG2.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(1);
+        var r = new OpenLayers.Renderer.SVG2(document.body);
+        t.ok(r instanceof OpenLayers.Renderer.SVG2, "new OpenLayers.Renderer.SVG2 returns SVG object" );
+    }
+    
+    function test_SVG_destroy(t) {
+        if (!OpenLayers.Renderer.SVG2.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(1);
+        
+        var g_Destroy = false;
+        
+        OpenLayers.Renderer.Elements.prototype._destroy = 
+            OpenLayers.Renderer.Elements.prototype.destroy;
+            
+        OpenLayers.Renderer.prototype.destroy = function() {
+            g_Destroy = true;
+        }
+        
+        var r = new OpenLayers.Renderer.SVG2(document.body);
+        r.destroy();
+        
+        t.eq(g_Destroy, true, "OpenLayers.Renderer.Elements.destroy() called");
+        
+        OpenLayers.Renderer.prototype.destroy = 
+            OpenLayers.Renderer.prototype._destroy;
+    }
+    
+    function test_SVG_updateDimensions(t) {
+        if (!OpenLayers.Renderer.SVG2.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(7);
+        
+        OpenLayers.Renderer.SVG2.prototype._setExtent =
+            OpenLayers.Renderer.SVG2.prototype.setExtent;
+        
+        var g_SetExtent = false;
+        OpenLayers.Renderer.SVG2.prototype.setExtent = function() {
+            g_SetExtent = true;
+            OpenLayers.Renderer.SVG2.prototype._setExtent.apply(this, arguments);
+        }
+                
+        var r = new OpenLayers.Renderer.SVG2(document.body);
+        var extent = new OpenLayers.Bounds(1,2,3,4);
+        r.map = {
+            getResolution: function() {
+                return 0.5;
+            },
+            getExtent: function() {
+                return extent;
+            },
+            getMaxExtent: function() {
+                return extent;
+            }
+        }
+        r.updateDimensions();
+        
+        t.eq(g_SetExtent, true, "Elements.setExtent() called");
+        
+        t.eq(r.extent.toString(), extent.scale(3).toString(), "renderer's extent is correct");
+        t.eq(r.rendererRoot.getAttributeNS(null, "width"), "12", "width is correct");
+        t.eq(r.rendererRoot.getAttributeNS(null, "height"), "12", "height is correct");
+        t.eq(r.rendererRoot.getAttributeNS(null, "viewBox"), "-1 -6 6 6", "rendererRoot viewBox is correct");
+        
+        // test extent changes
+        extent = new OpenLayers.Bounds(2,3,5,6);
+        r.updateDimensions();
+        t.eq(r.extent.toString(), extent.scale(3).toString(), "renderer's extent changed after updateDimensions");
+        t.eq(r.rendererRoot.getAttributeNS(null, "viewBox"), "-1 -9 9 9", "rendererRoot viewBox is correct after a new setExtent");
+
+        OpenLayers.Renderer.SVG2.prototype.setExtent =
+            OpenLayers.Renderer.SVG2.prototype._setExtent;
+    }
+    
+    function test_SVG_drawpoint(t) {
+        if (!OpenLayers.Renderer.SVG2.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+    
+        t.plan(1);
+
+        var r = new OpenLayers.Renderer.SVG2(document.body);
+        
+        var properDraw = false;
+        var g_Radius = null;
+        r.drawCircle = function(n, g, r) {
+            properDraw = true;
+            g_Radius = 1;
+        }
+        r.drawPoint();
+        
+        t.ok(properDraw && g_Radius == 1, "drawPoint called drawCircle with radius set to 1");
+    }
+    
+    function test_SVG_drawcircle(t) {
+        if (!OpenLayers.Renderer.SVG2.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(5);
+        
+        var r = new OpenLayers.Renderer.SVG2(document.body);
+        r.resolution = 0.5;
+        r.left = 0;
+        r.top = 0;
+        
+        var node = document.createElement('div');
+        
+        var geometry = {
+            x: 1,
+            y: 2
+        }
+        
+        r.drawCircle(node, geometry, 3);
+        
+        t.eq(node.getAttributeNS(null, 'cx'), '1', "cx is correct");
+        t.eq(node.getAttributeNS(null, 'cy'), '-2', "cy is correct");
+        t.eq(node._radius, 3, "radius preset is correct");
+       
+        // #1274: out of bound node fails when first added
+        var geometry = {
+            x: 10000000,
+            y: 200000000,
+            CLASS_NAME: "OpenLayers.Geometry.Point",
+            id: "foo",
+            getBounds: function() {return {bottom: 0}}
+        }
+        node.id = geometry.id;
+        r.root.appendChild(node);
+
+        var drawCircleCalled = false;
+        r.drawCircle = function() {
+            drawCircleCalled = true;
+            return OpenLayers.Renderer.SVG2.prototype.drawCircle.apply(r, arguments);
+        }
+        
+        r.drawGeometry(geometry, {pointRadius: 3}, "blah_4000");
+        t.eq(drawCircleCalled, true, "drawCircle called on drawGeometry for a point geometry.")
+        t.ok(node.parentNode != r.root, "circle will not be drawn when coordinates are outside the valid range");
+    }
+    
+    function test_SVG_drawlinestring(t) {
+        if (!OpenLayers.Renderer.SVG2.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(2);
+        
+        var r = new OpenLayers.Renderer.SVG2(document.body);
+        
+        var node = document.createElement('div');
+        
+        var geometry = {
+            components: "foo"
+        }
+        g_GetString = false;
+        g_Components = null;
+        r.getComponentsString = function(c) {
+            g_GetString = true;
+            g_Components = c;
+            return "bar";
+        }
+        
+        r.drawLineString(node, geometry);
+        
+        t.ok(g_GetString && g_Components == "foo", "getComponentString is called with valid arguments");
+        t.eq(node.getAttributeNS(null, "points"), "bar", "points attribute is correct");
+    }
+    
+    function test_SVG_drawlinearring(t) {
+        if (!OpenLayers.Renderer.SVG2.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(2);
+        
+        var r = new OpenLayers.Renderer.SVG2(document.body);
+        
+        var node = document.createElement('div');
+        
+        var geometry = {
+            components: "foo"
+        }
+        g_GetString = false;
+        g_Components = null;
+        r.getComponentsString = function(c) {
+            g_GetString = true;
+            g_Components = c;
+            return "bar";
+        }
+        
+        r.drawLinearRing(node, geometry);
+        
+        t.ok(g_GetString, "getComponentString is called with valid arguments");
+        t.eq(node.getAttributeNS(null, "points"), "bar", "points attribute is correct");
+    }
+
+    function test_SVG_drawpolygon(t) {
+        if (!OpenLayers.Renderer.SVG2.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(3);
+        
+        var r = new OpenLayers.Renderer.SVG2(document.body);
+        
+        var node = document.createElement('div');
+        
+        var linearRings = [{
+            components: ["foo"]
+        },{
+            components: ["bar"]
+        }]
+        
+        var geometry = {
+            components: linearRings
+        }
+        g_GetString = false;
+        r.getShortString = function(c) {
+            g_GetString = true;
+            return c;
+        }
+        
+        r.drawPolygon(node, geometry);
+        
+        t.ok(g_GetString, "getShortString is called");
+        t.eq(node.getAttributeNS(null, "d"), "M foo M bar z", "d attribute is correctly set");
+        t.eq(node.getAttributeNS(null, "fill-rule"), "evenodd", "fill-rule attribute is correctly set");
+    }
+
+    function test_SVG_drawrectangle(t) {
+        if (!OpenLayers.Renderer.SVG2.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(4);
+        
+        var r = new OpenLayers.Renderer.SVG2(document.body);
+        r.resolution = 0.5;
+        r.left = 0;
+        r.top = 0;
+        
+        var node = document.createElement('div');
+        
+        var geometry = {
+            x: 1,
+            y: 2,
+            width: 3,
+            height: 4
+        }
+        
+        r.drawRectangle(node, geometry);
+        
+        t.eq(node.getAttributeNS(null, "x"), "1", "x attribute is correctly set");
+        t.eq(node.getAttributeNS(null, "y"), "-2", "y attribute is correctly set");
+        t.eq(node.getAttributeNS(null, "width"), "3", "width attribute is correctly set");
+        t.eq(node.getAttributeNS(null, "height"), "4", "height attribute is correctly set");
+    }
+    
+    function test_SVG_drawsurface(t) {
+        if (!OpenLayers.Renderer.SVG2.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(2);
+        
+        var r = new OpenLayers.Renderer.SVG2(document.body);
+        
+        var node = document.createElement('div');
+        
+        var geometry = {
+            components: ['foo', 'bar', 'dude']
+        }
+        g_GetString = false;
+        r.getShortString = function(c) {
+            g_GetString = true;
+            return c;
+        }
+        
+        r.drawSurface(node, geometry);
+        
+        t.ok(g_GetString, "getShortString is called");
+        
+        t.eq(node.getAttributeNS(null, "d"), "M foo C bar dude Z", "d attribute is correctly set");
+    }
+    
+    function test_SVG_getcomponentsstring(t) {
+        if (!OpenLayers.Renderer.SVG2.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(1);
+        
+        var components = ['foo', 'bar'];
+        
+        OpenLayers.Renderer.SVG2.prototype._getShortString = 
+            OpenLayers.Renderer.SVG2.prototype.getShortString;
+            
+        OpenLayers.Renderer.SVG2.prototype.getShortString = function(p) {
+            return p;
+        };
+        
+        var string = OpenLayers.Renderer.SVG2.prototype.getComponentsString(components);
+        t.eq(string, "foo,bar", "returned string is correct");
+        
+        OpenLayers.Renderer.SVG2.prototype.getShortString = 
+            OpenLayers.Renderer.SVG2.prototype._getShortString;
+    }
+    
+    
+    
+    function test_SVG_getshortstring(t) {
+        if (!OpenLayers.Renderer.SVG2.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(1);
+        
+        var r = new OpenLayers.Renderer.SVG2(document.body);
+        r.resolution = 0.5;
+        r.left = 0;
+        r.top = 0;
+        
+        var point = {
+            x: 1,
+            y: 2
+        };
+        
+        var string = r.getShortString(point);
+        t.eq(string, "1,-2", "returned string is correct");
+    }
+    
+    function test_svg_getnodetype(t) {
+        if (!OpenLayers.Renderer.SVG2.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+
+        t.plan(1);
+         
+        var r = new OpenLayers.Renderer.SVG2(document.body);
+
+        var g = {CLASS_NAME: "OpenLayers.Geometry.Point"}
+        var s = {graphicName: "square"};
+        
+        t.eq(r.getNodeType(g, s), "svg", "Correct node type for well known symbols");
+    }
+        
+    function test_svg_importsymbol(t) {
+        if (!OpenLayers.Renderer.SVG2.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+
+        t.plan(2);
+        
+        var r = new OpenLayers.Renderer.SVG2(document.body);
+
+        r.importSymbol("square");
+
+        var polygon = document.getElementById(r.container.id + "_defs").firstChild.firstChild;
+        
+        var pass = false;
+        for (var i = 0; i < polygon.points.numberOfItems; i++) {
+            var p = polygon.points.getItem(i);
+            pass = p.x === OpenLayers.Renderer.symbol.square[2*i] && 
+                   p.y === OpenLayers.Renderer.symbol.square[2*i+1];
+            if (!pass) {
+                break;
+            }
+        }
+        t.ok(pass, "Square symbol rendered correctly");
+        t.ok(r.symbolMetrics["-square"], "Symbol metrics cached correctly.");
+    }
+        
+    function test_svg_dashstyle(t) {
+        if (!OpenLayers.Renderer.SVG2.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+
+        t.plan(5);
+        
+        var r = new OpenLayers.Renderer.SVG2(document.body);
+
+        t.eq(r.dashStyle({strokeWidth: 1, strokeDashstyle: "dot"}, 1), "1,4", "dot dasharray created correctly");
+        t.eq(r.dashStyle({strokeWidth: 1, strokeDashstyle: "dash"}, 1), "4,4", "dash dasharray created correctly");
+        t.eq(r.dashStyle({strokeWidth: 1, strokeDashstyle: "longdash"}, 1), "8,4", "longdash dasharray created correctly");
+        t.eq(r.dashStyle({strokeWidth: 1, strokeDashstyle: "dashdot"}, 1), "4,4,1,4", "dashdot dasharray created correctly");
+        t.eq(r.dashStyle({strokeWidth: 1, strokeDashstyle: "longdashdot"}, 1), "8,4,1,4", "dashdot dasharray created correctly");
+    }
+
+  </script>
+</head>
+<body>
+<div id="map" style="width:500px;height:550px"></div>
+</body>
+</html>

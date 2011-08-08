@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers Game: Bounce Ball</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="../lib/OpenLayers.js?mobile"></script>
+    <style type="text/css">
+      html, body { height: 100%; }
+      #shortdesc { display: none; }
+      #tags { display: none; }
+    </style>  
+
+    <script type="text/javascript">
+        var map, vlayer;
+        function adjustLocation(delta, feature) {
+            feature.geometry.move(delta.x, delta.y);
+            var me = map.maxExtent; 
+            var rad = 6;
+            if (feature.geometry.x > (me.right - rad)) { 
+                feature.geometry.x = me.right - rad;
+            } else if (feature.geometry.x < (me.left+rad)) {
+                feature.geometry.x = me.left+rad;
+            } 
+            if (feature.geometry.y > (me.top-rad)) {
+                feature.geometry.y = me.top-rad;
+            } else if (feature.geometry.y < (me.bottom+rad)) {
+                feature.geometry.y = me.bottom+rad;
+            }    
+            vlayer.drawFeature(feature);
+        }
+        function init() {
+            map = new OpenLayers.Map( 'map', 
+                {
+                 'maxExtent': new OpenLayers.Bounds(0, 0, $("map").clientWidth, $("map").clientHeight), 
+                 controls: [], 
+                 maxResolution: 'auto'} 
+            );
+            var layer = new OpenLayers.Layer("",
+                    {isBaseLayer: true} );
+            map.addLayer(layer);
+            map.zoomToMaxExtent();
+            vlayer = new OpenLayers.Layer.Vector();
+            var feature = new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(map.getCenter().lon, map.getCenter().lat));
+            vlayer.addFeatures(feature);    
+            map.addLayer(vlayer);
+            if (window.DeviceMotionEvent) {
+                window.addEventListener('devicemotion', function (evt) {
+                    var delta = null;
+                    if (typeof(evt.accelerationIncludingGravity) != 'undefined') {
+                        delta = {
+                            'x': evt.accelerationIncludingGravity.x * 3,
+                            'y': evt.accelerationIncludingGravity.y * 3,
+                            'z': evt.accelerationIncludingGravity.z
+                        }    
+                    }
+                    adjustLocation(delta, feature);
+                }, true);    
+            } else {
+                alert("This demo does not work on your browser.");
+            }    
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Accelerometer Example</h1>
+    <div id="tags">
+      mobile, game
+    </div>  
+    <div id="shortdesc">Simple acceleration demo; roll a vector feature around
+    on a map. (Only tested on iOS 4.)</div>
+
+    <div id="map" width="100%" height="100%" style="background-color: grey"></div>
+    <div id="docs">
+      <p>Demo works best when device is locked in portrait mode.</p> 
+    </div>
+  </body>
+</html>

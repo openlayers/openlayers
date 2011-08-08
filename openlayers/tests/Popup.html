@@ -1,0 +1,219 @@
+<html>
+<head>
+  <script src="OLLoader.js"></script>
+  <script type="text/javascript">
+
+    var popup;
+
+    function test_Popup_default_constructor(t) {
+        t.plan( 8 );
+
+        var size = new OpenLayers.Size(OpenLayers.Popup.WIDTH,
+                                       OpenLayers.Popup.HEIGHT);
+        popup = new OpenLayers.Popup();
+
+        t.ok( popup instanceof OpenLayers.Popup, "new OpenLayers.Popup returns Popup object" );
+        t.ok(OpenLayers.String.startsWith(popup.id, "OpenLayers.Popup"),
+             "valid default popupid");
+        var firstID = popup.id;
+        t.ok(popup.contentSize.equals(size), "good default popup.size");
+        t.eq(popup.contentHTML, null, "good default popup.contentHTML");
+        t.eq(popup.backgroundColor, OpenLayers.Popup.COLOR, "good default popup.backgroundColor");
+        t.eq(popup.opacity, OpenLayers.Popup.OPACITY, "good default popup.opacity");
+        t.eq(popup.border, OpenLayers.Popup.BORDER, "good default popup.border");
+
+        
+        popup = new OpenLayers.Popup();
+        var newID = popup.id;
+        t.ok(newID != firstID, "default id generator creating unique ids");
+    }
+    
+    function test_Popup_constructor (t) {
+        t.plan(9);
+
+        var id = "chicken";
+        var w = 500;
+        var h = 400;
+        var sz = new OpenLayers.Size(w,h);
+        var lon = 5;
+        var lat = 40;
+        var ll = new OpenLayers.LonLat(lon, lat);
+        var content = "foo";
+        var closePopupCallback = function(e) {
+            //this should get triggered by the "observer.observer();" call below
+            t.ok(true, "closePopupCallback called")
+        };
+
+        popup = new OpenLayers.Popup(id,
+                                     ll,
+                                     sz,
+                                     content,
+                                     true,
+                                     closePopupCallback);
+
+        t.ok( popup instanceof OpenLayers.Popup, "new OpenLayers.Popup returns Popup object" );
+        t.eq(popup.id, id, "popup.id set correctly");
+        t.ok(popup.lonlat.equals(ll), "popup.lonlat set correctly");
+        t.ok(popup.contentSize.equals(sz), "popup.size set correctly");
+        t.eq(popup.contentHTML, content, "contentHTML porpoerty of set correctly");
+
+        // test that a browser event is registered on click on popup closebox
+        var closeImgDiv = popup.groupDiv.childNodes[1];
+        var cacheID = closeImgDiv._eventCacheID;
+        for (var i = 0; i < OpenLayers.Event.observers[cacheID].length; i++) {
+            var observer = OpenLayers.Event.observers[cacheID][i];
+            if (observer.element == closeImgDiv) {
+                if (observer.name == "click") {
+                    t.ok(true, "A click event was registered for the close box element");
+                    //call the registered observer to make sure it's the right one
+                    observer.observer();
+                } else if (observer.name == "touchend") {
+                    t.ok(true, "A touchend event was registered for the close box element");
+                    //call the registered observer to make sure it's the right one
+                    observer.observer();
+                } else {
+                    t.fail("A " + observer.name + " event was registered for the close box element");
+                }
+            }
+        }
+    }
+
+    function test_Popup_updatePosition(t) {
+        t.plan(1)
+        var map = new OpenLayers.Map('map');
+        map.addLayer(new OpenLayers.Layer('name', {'isBaseLayer':true}));
+        map.zoomToMaxExtent();
+        var popup = new OpenLayers.Popup('id');
+        map.addPopup(popup);
+        map.getLayerPxFromLonLat = function () { return null; }
+        popup.moveTo=function() { t.fail("Shouldnt' call moveTo if layerpx is null"); }
+        popup.lonlat = true;
+        popup.updatePosition();
+        t.ok(true, "update position doesn't fail when getLayerPxFromLonLat fails.");
+        map.destroy();
+    }
+    function test_Popup_keepInMap(t) {
+        
+        var bn = OpenLayers.BROWSER_NAME;
+        OpenLayers.BROWSER_NAME = "mock";
+        t.plan(3);
+        var map = new OpenLayers.Map("map");
+        map.addLayer(new OpenLayers.Layer("", {isBaseLayer: true}));
+        map.zoomToMaxExtent();
+        var longString = "<div style='width: 200px; height: 200px'>Abc def</div>"; 
+        popup = new OpenLayers.Popup("chicken", 
+                                 new OpenLayers.LonLat(90, 60),
+                                 new OpenLayers.Size(100,100),
+                                 longString,
+                                 null, true);
+        popup.panMapIfOutOfView = false;
+        popup.keepInMap = true;
+        map.addPopup(popup);
+        var safeSize = popup.getSafeContentSize(new OpenLayers.Size(1000,1000));
+        popup = new OpenLayers.Popup("chicken", 
+                                 new OpenLayers.LonLat(90, 60),
+                                 new OpenLayers.Size(100,100),
+                                 longString,
+                                 null, true);
+        popup.panMapIfOutOfView = true;
+        popup.keepInMap = true;
+        map.addPopup(popup);
+        var safeSizePanKeep = popup.getSafeContentSize(new OpenLayers.Size(1000,1000));
+        popup.keepInMap = false;
+        map.addPopup(popup);
+        map.setCenter(-180, -90);
+        var safeSizePan = popup.getSafeContentSize(new OpenLayers.Size(1000,1000));
+        t.ok(safeSizePan.equals(safeSizePanKeep), "Panning means that all sizes are equal");
+        t.ok(safeSize.w < safeSizePan.w, "Width of non-panning is less");    
+        t.ok(safeSize.h < safeSizePan.h, "Height of non-panning is less");    
+        OpenLayers.BROWSER_NAME = bn;
+    }    
+    function test_Popup_draw(t) {
+        t.plan( 15 );
+        
+        var id = "chicken";
+        var x = 50;
+        var y = 100;
+        var w = 500;
+        var h = 400;
+        var content = "charlie";
+        var color = "red";
+        var hexColor = "#ff0000";
+        var opacity = 0.5;
+        var border = "1px solid";
+        map1 = new OpenLayers.Map("map");
+        popup = new OpenLayers.Popup(id);
+        popup.setSize(new OpenLayers.Size(w, h));
+        popup.setContentHTML(content);
+        popup.setBackgroundColor(color);
+        popup.setOpacity(opacity);
+        popup.setBorder(border);
+        map1.addPopup(popup);
+        popup.moveTo(new OpenLayers.Pixel(x, y));
+                                     
+        t.eq(popup.div.id, id, "popup.div.id set correctly");
+        t.eq(popup.div.style.left, x + "px", "left position of popup.div set correctly");
+        t.eq(popup.div.style.top, y + "px", "top position of popup.div set correctly");
+
+        var contentDiv = popup.div.childNodes[0].childNodes[0];
+        
+        t.eq(contentDiv.className, "olPopupContent", "correct content div className");
+        t.eq(contentDiv.id, "chicken_contentDiv", "correct content div id");
+        t.eq(contentDiv.style.position, "relative", "correct content div position");
+        //Safari 3 separates style overflow into overflow-x and overflow-y
+        var prop = (OpenLayers.BROWSER_NAME == 'safari') ? 'overflowX' : 'overflow';
+        t.eq(contentDiv.style[prop], "", "correct content div overflow");
+        t.eq(contentDiv.innerHTML, content, "correct content div content");
+
+        var bColor = popup.div.style.backgroundColor;
+        var goodColor = ( (bColor == color) || (bColor == hexColor));
+        t.ok(goodColor, "good default popup.backgroundColor");
+
+        if (navigator.appName.indexOf("Microsoft") == -1) {
+            t.eq(parseFloat(popup.div.style.opacity), opacity, "good default popup.opacity");
+        } else {
+            t.eq(popup.div.style.filter, "alpha(opacity=" + opacity*100 + ")", "good default popup.opacity");
+        }
+        //Safari 3 separates the border style into separate entities when reading it
+        if (OpenLayers.BROWSER_NAME == 'safari') {
+          var s = border.split(' ');
+          t.ok(popup.div.style.borderTopWidth == s[0] && popup.div.style.borderTopStyle == s[1], "good default popup.border")
+        } else {
+          t.ok(popup.div.style.border.indexOf(border) != -1, "good default popup.border");
+        }
+
+        x += 50;
+        popup.moveTo(new OpenLayers.Pixel(x, y));
+        t.eq(popup.div.style.left, x + "px", "moveTo updates left position of popup.div correctly");
+        t.eq(popup.div.style.top, y + "px", "moveTo updates top position of popup.div correctly");
+
+
+    //closeOnMove
+        var checkMapEvent = function(map, popup) {
+            var startListeners = map.events.listeners['movestart'];
+            for(var i=0; i < startListeners.length; i++) {
+                var listener = startListeners[i];
+                
+                if ((listener.obj == popup) && (listener.func == popup.hide)) {
+                    return true;
+                }
+            }    
+            return false;
+        };
+        var registered = checkMapEvent(map1, popup);
+        t.ok(!registered, "when not 'closeOnMove', correctly not registered hide() on map's movestart.")    
+        
+        var popup2 = new OpenLayers.Popup('test');
+        popup2.closeOnMove = true;
+        map1.addPopup(popup2);
+        
+        registered = checkMapEvent(map1, popup2);
+        t.ok(registered, "when 'closeOnMove', correctly registered hide() on map's movestart.")    
+    }
+
+  </script>
+</head>
+<body>
+<div id="map" style="width:512px; height:256px"> </div>
+</body>
+</html>

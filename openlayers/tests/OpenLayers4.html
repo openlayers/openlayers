@@ -1,0 +1,18 @@
+<html>
+<head>
+    <script type="text/javascript">
+        OpenLayers = {singleFile: true}; // just to make the test run faster
+        document.write('<scr'+'ipt src="../lib/OpenLayers.js"></scr'+'ipt>');
+        document.write('<scr'+'ipt src="bogus/foo-/OpenLayers.js"></scr'+'ipt>');
+    </script>
+    <script type="text/javascript">
+        function test_OpenLayers(t) {
+            t.plan(1);
+            t.eq(OpenLayers._getScriptLocation(), "../lib/",
+                 "Script location correctly detected, and not fooled by other scripts.");
+        }
+    </script>
+</head>
+<body>
+</body>
+</html>

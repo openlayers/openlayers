@@ -1,0 +1,63 @@
+<html>
+<head>
+  <script src="OLLoader.js"></script>
+  <script type="text/javascript">
+
+    function test_initialize(t) {
+        t.plan(4);
+        var options = {};
+        var protocol = new OpenLayers.Protocol(options);
+
+        t.ok(protocol instanceof OpenLayers.Protocol,
+             "new OpenLayers.Protocol returns object" );
+        t.eq(protocol.options, options, "constructor sets this.options");
+        t.eq(protocol.options.filter, null, "constructor sets defaultFilter to null");
+        t.eq(protocol.autoDestroy, true, "constructor does not modify this.autoDestroy");
+    }
+    
+    function test_read_defaultFilter(t) {
+        t.plan(4);
+
+        var protocol = new OpenLayers.Protocol({filter: "a"});
+        var options = {};
+        protocol.read(options);
+        // the line below is what happens in Protocol.WFS.v1::read
+        OpenLayers.Util.applyDefaults(options, protocol.options);
+        t.eq(options.filter, "a", "filter from protocol.options applied to options");
+        protocol.destroy();
+
+        var defaultFilter = 'a';
+        var options = {
+            defaultFilter: defaultFilter
+        };
+
+        protocol = new OpenLayers.Protocol(options);
+        var readFilter = 'b';
+        var options = { filter: readFilter };
+
+        protocol.read(options);
+
+        var filter = options.filter;
+        t.ok(filter instanceof OpenLayers.Filter.Logical, "read method merge default filter & options filter to a logical one");
+        t.eq(filter.type, OpenLayers.Filter.Logical.AND, "logical filter type is OpenLayers.Filter.Logical.AND");
+        t.eq(filter.filters, [defaultFilter, readFilter], "read method has merged filters");
+        protocol.destroy();
+    }
+
+    function test_destroy(t) {
+        t.plan(2);
+        var protocol = new OpenLayers.Protocol({
+            options: {foo: 'bar'},
+            format: 'foo'
+        });
+        protocol.destroy();
+
+        t.eq(protocol.format, null, "destroy nullify protocol.format");
+        t.eq(protocol.options, null, "destroy nullify protocol.options");
+    }
+
+  </script>
+</head>
+<body>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Select Feature Test</title>
+    <style type="text/css">
+        body {
+            font-size: 0.8em;
+        }
+        p {
+            padding-top: 1em;
+        }
+        #map {
+            margin: 1em;
+            width: 512px;
+            height: 512px;
+        }
+    </style>
+
+    <script src="../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map, selectControl1, selectControl2;
+
+        function init() {
+            map = new OpenLayers.Map('map');
+            var wmsLayer = new OpenLayers.Layer.WMS(
+                "OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0",
+                {layers: 'basic'}
+            ); 
+            var vectorLayer = new OpenLayers.Layer.Vector("Vector Layer");
+            var pointFeature = new OpenLayers.Feature.Vector(
+                 new OpenLayers.Geometry.Point(-50, -45)
+            );
+            var polygonFeature = new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Polygon([
+                    new OpenLayers.Geometry.LinearRing([
+                        new OpenLayers.Geometry.Point(-50,-50),
+                        new OpenLayers.Geometry.Point(-40,-50),
+                        new OpenLayers.Geometry.Point(-40,-40),
+                        new OpenLayers.Geometry.Point(-50,-50)
+                    ])
+                ])
+            );
+            vectorLayer.addFeatures([pointFeature, polygonFeature]);
+            map.addLayers([wmsLayer, vectorLayer]);
+            selectControl1 = new OpenLayers.Control.SelectFeature(
+                vectorLayer, {geometryTypes: ['OpenLayers.Geometry.Point']}
+            );
+            selectControl2 = new OpenLayers.Control.SelectFeature(
+                vectorLayer, {
+                    geometryTypes: ['OpenLayers.Geometry.Polygon'],
+                    hover: true
+            });
+            map.addControl(new OpenLayers.Control.MousePosition());
+            map.addControl(selectControl1);
+            map.addControl(selectControl2);
+            selectControl1.activate();
+            selectControl2.activate();
+            map.setCenter(new OpenLayers.LonLat(-45, -45), 4);
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Select Feature Test</h1>
+    <div id="map"></div>
+    <p>
+    
+    The map includes two select feature controls. The first one operates on
+    geometries of type OpenLayers.Geometry.Point only and works on clicks. The
+    second one operates on geometries of type OpenLayers.Geometry.Polygon and
+    works on mouseover's. If you select the point geometry by clicking on it,
+    it shouldn't be unselected when the mouse moves out if it.
+    
+    </p>
+  </body>
+</html>

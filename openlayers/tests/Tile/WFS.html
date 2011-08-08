@@ -1,0 +1,173 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    var tile; 
+    
+    function test_Tile_WFS_constructor (t) {
+        t.plan( 8 );
+     
+        var layer = {}; // bogus layer
+        var position = new OpenLayers.Pixel(10,20);
+        var bounds = new OpenLayers.Bounds(1,2,3,4);
+        var url = "bobob";
+        var size = new OpenLayers.Size(5,6);
+        
+        tile = new OpenLayers.Tile.WFS(layer, position, bounds, url, size);
+
+        t.ok( tile instanceof OpenLayers.Tile.WFS, "new OpenLayers.Tile.WFS returns Tile.WFS object" );
+        t.eq( tile.layer, layer, "tile.layer set correctly");
+        t.ok( tile.position.equals(position), "tile.position set correctly");
+        t.ok( tile.bounds.equals(bounds), "tile.bounds set correctly");
+        t.eq( tile.url, url, "tile.url set correctly");        
+        t.ok( tile.size.equals(size), "tile.size is set correctly" );
+
+        t.ok( tile.id != null, "tile is given an id");
+        t.ok( tile.events != null, "tile's events intitialized");
+    }
+
+    function test_Tile_WFS_requestSuccess(t) {
+        t.plan(2);
+
+        var tile = {
+            'request': {}
+        };
+            
+        OpenLayers.Tile.WFS.prototype.requestSuccess.apply(tile, []);
+        
+        t.ok(tile.request == null, "request property on tile set to null");
+
+        var layer = {
+            SUPPORTED_TRANSITIONS: [],
+            events: {
+                unregister: function() {}
+            }
+        }; // bogus layer
+        var position = new OpenLayers.Pixel(10,20);
+        var bounds = new OpenLayers.Bounds(1,2,3,4);
+        var url = "bobob";
+        var size = new OpenLayers.Size(5,6);
+        
+        tile = new OpenLayers.Tile.WFS(layer, position, bounds, url, size);
+        tile.destroy();
+        tile.requestSuccess({'requestText': '<xml><foo /></xml>'});
+        t.ok(true, "Didn't fail after calling requestSuccess on destroyed tile.");
+        
+    }
+    
+    function test_Tile_WFS_loadFeaturesForRegion(t) {
+        t.plan(9);
+        
+        var tile = {
+            'url': {}
+        };
+
+        var g_Success = {};        
+
+        var _get = OpenLayers.Request.GET;
+        OpenLayers.Request.GET = function(config) {
+            t.ok(config.url == tile.url, "tile's url correctly passed");
+            t.ok(config.params == null, "null params");
+            t.ok(config.scope == tile, "tile passed as scope");
+            t.ok(config.success == g_Success, "success passed");
+        };
+        
+      //no running request -- 4 tests
+        OpenLayers.Tile.WFS.prototype.loadFeaturesForRegion.apply(tile, [g_Success]);
+
+      //running request (cancelled) -- 4 tests + 1 test (for request abort)
+        tile.request = {
+            'abort': function() {
+                    t.ok(true, "request aborted");
+            }
+        };
+        OpenLayers.Tile.WFS.prototype.loadFeaturesForRegion.apply(tile, [g_Success]);
+
+        OpenLayers.Request.GET = _get;
+    }
+    
+    function test_Tile_WFS_destroy(t) {
+        t.plan(9);
+
+        var layer = {
+            SUPPORTED_TRANSITIONS: [],
+            events: {
+                unregister: function() {}
+            }
+        }; // bogus layer
+        var position = new OpenLayers.Pixel(10,20);
+        var bounds = new OpenLayers.Bounds(1,2,3,4);
+        var url = "bobob";
+        var size = new OpenLayers.Size(5,6);
+        
+        tile = new OpenLayers.Tile.WFS(layer, position, bounds, url, size);
+        tile.events.destroy = function() {
+            t.ok(true, "tile events destroy() called");
+        };
+
+ 
+        var _gAbort = false; 
+        tile.request = { 
+            abort: function() { 
+                _gAbort = true; 
+            } 
+        } 
+
+        
+        tile.destroy();
+
+        t.ok(tile.layer == null, "tile.layer set to null");
+        t.ok(tile.bounds == null, "tile.bounds set to null");
+        t.ok(tile.size == null, "tile.size set to null");
+        t.ok(tile.position == null, "tile.position set to null");
+        t.ok(_gAbort, "request transport is aborted");
+        t.ok(tile.request == null, "tile.request set to null");
+        
+        t.ok(tile.events == null, "tile.events set to null");
+        
+        tile.requestSuccess({'requestText': '<xml><foo /></xml>'});
+        t.ok(true, "Didn't fail after calling requestSuccess on destroyed tile.");
+    }
+    function test_nonxml_format(t) {
+        t.plan(1);
+        var data = '{"type":"Feature", "id":"OpenLayers.Feature.Vector_135", "properties":{}, "geometry":{"type":"Point", "coordinates":[118.125, -18.6328125]}, "crs":{"type":"OGC", "properties":{"urn":"urn:ogc:def:crs:OGC:1.3:CRS84"}}}'
+        var position = new OpenLayers.Pixel(10,20);
+        var bounds = new OpenLayers.Bounds(1,2,3,4);
+        var url = "bobob";
+        var size = new OpenLayers.Size(5,6);
+        
+        var tile = new OpenLayers.Tile.WFS({
+            vectorMode: true, 
+            formatObject: new OpenLayers.Format.GeoJSON(), 
+            addFeatures: function(features) { 
+                t.eq(features.length, 1, "GeoJSON format returned a single feature which was added.")
+            }
+        }, position, bounds, url, size);
+        tile.requestSuccess({responseText: data});
+    }  
+     
+    function test_xml_string_and_dom(t) {
+        t.plan(2);
+        var data = '<?xml version="1.0" encoding="ISO-8859-1" ?><wfs:FeatureCollection   xmlns:bsc="http://www.bsc-eoc.org/bsc"   xmlns:wfs="http://www.opengis.net/wfs"   xmlns:gml="http://www.opengis.net/gml"   xmlns:ogc="http://www.opengis.net/ogc"   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengeospatial.net//wfs/1.0.0/WFS-basic.xsd                        http://www.bsc-eoc.org/bsc http://www.bsc-eoc.org/cgi-bin/bsc_ows.asp?SERVICE=WFS&amp;VERSION=1.0.0&amp;REQUEST=DescribeFeatureType&amp;TYPENAME=OWLS&amp;OUTPUTFORMAT=XMLSCHEMA">      <gml:boundedBy>        <gml:Box srsName="EPSG:4326">            <gml:coordinates>-94.989723,43.285833 -74.755001,51.709520</gml:coordinates>        </gml:Box>      </gml:boundedBy>    <gml:featureMember>      <bsc:OWLS>        <gml:boundedBy>            <gml:Box srsName="EPSG:4326">                <gml:coordinates>-94.142500,50.992777 -94.142500,50.992777</gml:coordinates>            </gml:Box>        </gml:boundedBy>        <bsc:msGeometry>        <gml:Point srsName="EPSG:4326">          <gml:coordinates>-94.142500,50.992777</gml:coordinates>        </gml:Point>        </bsc:msGeometry>        <bsc:ROUTEID>ON_2</bsc:ROUTEID>        <bsc:ROUTE_NAME>Suffel Road</bsc:ROUTE_NAME>        <bsc:LATITUDE>50.9927770</bsc:LATITUDE>        <bsc:LONGITUDE>-94.1425000</bsc:LONGITUDE>      </bsc:OWLS>    </gml:featureMember></wfs:FeatureCollection>';
+        var position = new OpenLayers.Pixel(10,20);
+        var bounds = new OpenLayers.Bounds(1,2,3,4);
+        var url = "bobob";
+        var size = new OpenLayers.Size(5,6);
+        var tile = new OpenLayers.Tile.WFS({
+        }, position, bounds, url, size);
+        tile.addResults = function(results) {
+            t.eq(results.length, 1, "results count is correct when passing in XML as a string into non-vectormode");
+        } 
+        tile.requestSuccess({responseText: data});
+        
+        tile.addResults = function(results) {
+            t.eq(results.length, 1, "results count is correct when passing in XML as DOM into non-vectormode");
+        } 
+        tile.requestSuccess({responseXML: OpenLayers.Format.XML.prototype.read(data)}); 
+    }         
+  </script>
+</head>
+<body>
+</body>
+</html>
+

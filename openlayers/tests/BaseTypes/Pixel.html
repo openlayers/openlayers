@@ -1,0 +1,123 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    var pixel; 
+    
+    function test_Pixel_constructor (t) {
+        t.plan( 4 );
+        pixel = new OpenLayers.Pixel(5,6);
+        t.ok( pixel instanceof OpenLayers.Pixel, "new OpenLayers.Pixel returns Pixel object" );
+        t.eq( pixel.CLASS_NAME, "OpenLayers.Pixel", "pixel.CLASS_NAME is set correctly");
+        t.eq( pixel.x, 5, "pixel.x is set correctly");
+        t.eq( pixel.y, 6, "pixel.y is set correctly");
+    }
+
+    function test_Pixel_constructorFromString (t) {
+        t.plan( 4 );
+        pixel = new OpenLayers.Pixel("5","6");
+        t.ok( pixel instanceof OpenLayers.Pixel, "new OpenLayers.Pixel returns Pixel object" );
+        t.eq( pixel.CLASS_NAME, "OpenLayers.Pixel", "pixel.CLASS_NAME is set correctly");
+        t.eq( pixel.x, 5, "pixel.x is set correctly");
+        t.eq( pixel.y, 6, "pixel.y is set correctly");
+    }
+
+    function test_Pixel_toString(t) {
+        t.plan( 1 );
+        pixel = new OpenLayers.Pixel(5,6);
+        t.eq( pixel.toString(), "x=5,y=6", "pixel.toString() returns correctly");
+    }
+
+    function test_Pixel_clone(t) {
+        t.plan( 4 );
+        oldPixel = new OpenLayers.Pixel(5,6);
+        pixel = oldPixel.clone();
+        t.ok( pixel instanceof OpenLayers.Pixel, "clone returns new OpenLayers.Pixel object" );
+        t.eq( pixel.x, 5, "pixel.x is set correctly");
+        t.eq( pixel.y, 6, "pixel.y is set correctly");
+        
+        oldPixel.x = 100;
+        t.eq( pixel.x, 5, "changing oldPixel.x doesn't change pixel.x");
+    }
+
+    function test_Pixel_distanceTo(t) {
+        t.plan( 2 );
+        var px = new OpenLayers.Pixel(0,-2);
+        pixel = new OpenLayers.Pixel(0,0);
+        t.eq( pixel.distanceTo(px), 2, "(0,0) distanceTo (0,-2) = 2");
+
+        px = new OpenLayers.Pixel(-4,6);
+        pixel = new OpenLayers.Pixel(4,6);
+        t.eq( pixel.distanceTo(px), 8, "(4,6) distanceTo (-4,6) = 8");
+    }
+
+    function test_Pixel_equals(t) {
+        t.plan( 5 );
+        pixel = new OpenLayers.Pixel(5,6);
+
+        var px = new OpenLayers.Pixel(5,6);
+        t.eq( pixel.equals(px), true, "(5,6) equals (5,6)");
+
+        px = new OpenLayers.Pixel(1,6);
+        t.eq( pixel.equals(px), false, "(5,6) does not equal (1,6)");
+
+        px = new OpenLayers.Pixel(5,2);
+        t.eq( pixel.equals(px), false, "(5,6) does not equal (5,2)");
+
+        px = new OpenLayers.Pixel(1,2);
+        t.eq( pixel.equals(px), false, "(5,6) does not equal (1,2)");
+
+        t.ok( !pixel.equals(null), "equals() returns false on comparison to null");
+
+    }
+
+    function test_Pixel_add(t) {
+        t.plan( 8 );
+
+        var origPX = new OpenLayers.Pixel(5,6);
+        var oldPixel = origPX.clone();
+
+        var pixel = oldPixel.add(10,20);
+        
+        t.ok( oldPixel.equals(origPX), "oldPixel not modified by add operation");
+        
+        var px = new OpenLayers.Pixel(15,26);
+        t.ok( pixel.equals(px), "returned pixel is correct");
+
+    //null values
+        OpenLayers.Lang.setCode('en');        
+        var desiredMsg = "You must pass both x and y values to the add function.";
+        OpenLayers.Console.error = function(msg) {
+            t.eq(msg, desiredMsg, "error correctly reported");
+        }
+    
+        pixel = oldPixel.add(null, 50);
+        t.ok( oldPixel.equals(origPX), "oldPixel is not modified by erroneous add operation (null x)");
+        t.ok(pixel == null, "returns null on erroneous add operation (null x)");
+ 
+        addpx = oldPixel.add(5, null);
+        t.ok( oldPixel.equals(origPX), "oldPixel is not modified by erroneous add operation (null y)");
+        t.ok(pixel == null, "returns null on erroneous add operation (null y)");
+    }
+
+    function test_Pixel_offset(t) {
+        t.plan( 4 );
+
+        var oldPixel = new OpenLayers.Pixel(5,6);
+        var offset = new OpenLayers.Pixel(10,20);
+
+        pixel = oldPixel.offset(offset);
+
+        t.eq( oldPixel.x, 5, "oldPixel.x not modified by offset operation");
+        t.eq( oldPixel.y, 6, "oldPixel.y not modified by offset operation");
+
+        t.eq( pixel.x, 15, "pixel.x is set correctly");
+        t.eq( pixel.y, 26, "pixel.y is set correctly");
+    }
+
+
+  </script>
+</head>
+<body>
+</body>
+</html>

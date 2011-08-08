@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<wfs:FeatureCollection xmlns:ms="http://mapserver.gis.umn.edu/mapserver" xmlns:wfs="http://www.opengis.net/wfs" xmlns:gml="http://www.opengis.net/gml" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd                         http://mapserver.gis.umn.edu/mapserver http://aneto.oco/cgi-bin/worldwfs?SERVICE=WFS&amp;VERSION=1.0.0&amp;REQUEST=DescribeFeatureType&amp;TYPENAME=line&amp;OUTPUTFORMAT=XMLSCHEMA">
+      <gml:boundedBy>
+      	<gml:Box srsName="EPSG:4326">
+      		<gml:coordinates>-3.924027,46.037889 2.193186,47.897181</gml:coordinates>
+      	</gml:Box>
+      </gml:boundedBy>
+    <gml:featureMember>
+      <ms:line fid="1">
+        <gml:boundedBy>
+        	<gml:Box srsName="EPSG:4326">
+        		<gml:coordinates>-0.631235,46.037889 2.193186,46.704963</gml:coordinates>
+        	</gml:Box>
+        </gml:boundedBy>
+        <ms:msGeometry>
+        <gml:LineString srsName="EPSG:4326">
+          <gml:coordinates>-0.631235,46.307557 -0.262215,46.577225 0.106805,46.477874 0.220349,46.293364 0.475824,46.406909 0.887424,46.350136 1.029354,46.563032 1.213864,46.648191 1.526112,46.421102 1.795780,46.066275 2.108028,46.037889 2.178993,46.250785 2.193186,46.492067 2.193186,46.492067 2.051255,46.704963 2.051255,46.704963 </gml:coordinates>
+        </gml:LineString>
+        </ms:msGeometry>
+        <ms:ogc_fid>1</ms:ogc_fid>
+        <ms:name/>
+        <ms:id>0</ms:id>
+      </ms:line>
+    </gml:featureMember>
+    <gml:featureMember>
+      <ms:line fid="2">
+        <gml:boundedBy>
+        	<gml:Box srsName="EPSG:4326">
+        		<gml:coordinates>-3.924027,46.279171 -1.127992,47.897181</gml:coordinates>
+        	</gml:Box>
+        </gml:boundedBy>
+        <ms:msGeometry>
+        <gml:LineString srsName="EPSG:4326">
+          <gml:coordinates>-1.127992,46.279171 -1.369275,46.364329 -1.624750,46.406909 -1.866032,46.492067 -1.993770,46.704963 -2.178280,46.846894 -1.979577,47.059790 -2.164087,47.144948 -2.135700,47.215914 -2.093121,47.357844 -2.277631,47.258493 -2.391176,47.301072 -2.490527,47.315265 -2.476334,47.443003 -2.575686,47.599127 -2.703423,47.542354 -2.873740,47.471389 -3.285339,47.670092 -3.597587,47.769443 -3.824676,47.840409 -3.924027,47.897181 </gml:coordinates>
+        </gml:LineString>
+        </ms:msGeometry>
+        <ms:ogc_fid>2</ms:ogc_fid>
+        <ms:name/>
+        <ms:id>0</ms:id>
+      </ms:line>
+    </gml:featureMember>
+</wfs:FeatureCollection>

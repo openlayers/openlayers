@@ -1,0 +1,74 @@
+<html>
+<head>
+  <script src="http://maps.google.com/maps/api/js?sensor=false&v=3.5"></script>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    var tile; 
+    var layer = new OpenLayers.Layer.GoogleNG(); 
+    var position = new OpenLayers.Pixel(20,30);
+    var bounds = new OpenLayers.Bounds(1,2,3,4);
+
+    
+    function test_constructor (t) {
+        t.plan( 4 );
+        
+        tile = new OpenLayers.Tile.Google(layer, position, bounds);
+    
+        t.ok( tile instanceof OpenLayers.Tile.Google, "new OpenLayers.Tile.Google returns Tile object" );
+        t.ok( tile.layer == layer, "tile.layer is set correctly");
+        t.ok( tile.position.equals(position), "tile.position is set correctly");
+        t.ok( tile.bounds.equals(bounds), "tile.bounds is set correctly");
+    }
+
+    function test_clone (t) {
+        t.plan( 5 );
+        
+        tile = new OpenLayers.Tile.Google(layer, position, bounds);
+        tile.node = document.createElement("div");
+        var clone = tile.clone();
+    
+        t.ok( clone instanceof OpenLayers.Tile.Google, "OpenLayers.Tile.Google.clone returns Tile.Google object" );
+        t.ok( clone.layer == layer, "clone.layer is set correctly");
+        t.ok( clone.position.equals(position), "clone.position is set correctly");
+        t.ok( clone.bounds.equals(bounds), "clone.bounds is set correctly");
+        t.ok( !clone.node, "node not cloned");
+    }
+    
+    function test_draw (t) {
+        t.plan( 5 );
+
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);  
+
+        tile = new OpenLayers.Tile.Google(layer, position, bounds);
+
+        tile.events.register("loadstart", this, function() { 
+            t.ok(true, "loadstart triggered");
+        });
+        tile.events.register("loadend", this, function() { 
+            t.ok(true, "loadend triggered");
+        });
+
+        t.delay_call(1, function() {
+            //this should trigger a "loadstart" event
+            tile.draw();
+
+            t.ok( tile.node, "tile.draw creates a node");
+            // The two tests below will fail when getTile doesn't set the tile size
+            t.eq( tile.node.style.width, layer.tileSize.w+"px", "Image width is correct" );
+            t.eq( tile.node.style.height, layer.tileSize.h+"px", "Image height is correct" );
+        });       
+        t.delay_call(2, function() {
+            map.removeLayer(layer);
+            map.destroy();
+            /* wait until "loadend" fires */
+        });        
+        
+    }
+        
+  </script>
+</head>
+<body>
+<div id="map" style="height:550px;width:500px"></div>
+</body>
+</html>

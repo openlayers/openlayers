@@ -1,0 +1,163 @@
+<html>
+<head>
+  <script src="OLLoader.js"></script>
+  <script type="text/javascript">
+
+    var marker;
+
+    function test_Marker_constructor (t) {
+        t.plan( 4 );
+        var ll = new OpenLayers.LonLat(2,1);
+        marker = new OpenLayers.Marker(ll,new OpenLayers.Icon());
+        t.ok( marker instanceof OpenLayers.Marker, "new OpenLayers.Marker returns Marker object" );
+        t.ok( marker.icon instanceof OpenLayers.Icon, "new marker.Icon returns Icon object" );
+        t.ok( marker.lonlat instanceof OpenLayers.LonLat, "new marker.lonlat returns LonLat object" );
+        t.ok( marker.lonlat.equals(ll), "marker.lonlat returns correct" );
+    }
+
+    function test_Marker_onScreen(t) {
+        t.plan( 2 );
+
+        var map = new OpenLayers.Map("map");
+
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.WMS(name, url);
+
+        map.addLayer(layer);
+        
+        mlayer = new OpenLayers.Layer.Markers('Test Layer');
+        map.addLayer(mlayer);
+               
+        map.zoomToExtent(new OpenLayers.Bounds(-50,-50,50,50));
+
+        //onscreen marker
+        var ll = new OpenLayers.LonLat(0,0);
+        var marker = new OpenLayers.Marker(ll);
+        mlayer.addMarker(marker);
+        
+        t.ok( marker.onScreen(), "marker knows it's onscreen" );
+
+        //offscreen marker
+        var ll = new OpenLayers.LonLat(100,100);
+        var marker2 = new OpenLayers.Marker(ll);
+        mlayer.addMarker(marker2);
+
+        t.ok( !marker2.onScreen(), "marker knows it's offscreen" );
+        map.destroy();
+    }
+
+    function test_Marker_setOpacity(t) {
+        t.plan( 2 );
+        
+        var map = new OpenLayers.Map("map");
+
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.WMS(name, url);
+
+        map.addLayer(layer);
+        
+        mlayer = new OpenLayers.Layer.Markers('Test Layer');
+        map.addLayer(mlayer);
+               
+        map.zoomToExtent(new OpenLayers.Bounds(-50,-50,50,50));
+
+        //onscreen marker
+        var ll = new OpenLayers.LonLat(0,0);
+        var marker = new OpenLayers.Marker(ll);
+        mlayer.addMarker(marker);
+
+        t.ok(!marker.icon.imageDiv.style.opacity, "default marker has no opacity");
+        
+        marker.setOpacity(0.5);
+
+        t.eq(parseFloat(marker.icon.imageDiv.style.opacity), 0.5, "marker.setOpacity() works");
+        map.destroy();
+    }
+    
+    function test_Marker_setUrl(t) {
+        t.plan( 2 );
+        
+        var map = new OpenLayers.Map("map");
+
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.WMS(name, url);
+
+        map.addLayer(layer);
+        
+        mlayer = new OpenLayers.Layer.Markers('Test Layer');
+        map.addLayer(mlayer);
+               
+        map.zoomToExtent(new OpenLayers.Bounds(-50,-50,50,50));
+
+        //onscreen marker
+        var ll = new OpenLayers.LonLat(0,0);
+        var marker = new OpenLayers.Marker(ll);
+        mlayer.addMarker(marker);
+
+        t.ok(marker.icon.imageDiv.firstChild.src.contains("img/marker.png"), "Marker.png is default URL");
+        
+        marker.setUrl("http://example.com/broken.png");
+        t.eq(marker.icon.imageDiv.firstChild.src, "http://example.com/broken.png", "image source changes correctly.");
+
+        map.destroy();
+    }
+
+    function test_Marker_moveTo(t) {
+        t.plan( 6 );
+        
+        var map = new OpenLayers.Map("map");
+
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.WMS(name, url);
+
+        map.addLayer(layer);
+        
+        mlayer = new OpenLayers.Layer.Markers('Test Layer');
+        map.addLayer(mlayer);
+               
+        map.zoomToExtent(new OpenLayers.Bounds(-50,-50,50,50));
+
+        //onscreen marker
+        var ll = new OpenLayers.LonLat(0,0);
+        var marker = new OpenLayers.Marker(ll);
+        mlayer.addMarker(marker);
+        
+        t.eq(marker.lonlat.lon, 0, "marker lon okay"); 
+        t.eq(marker.lonlat.lat, 0, "marker lat okay");
+
+        marker.moveTo(new OpenLayers.Pixel(250,275));
+        t.eq(marker.lonlat.lon, 0, "marker lon no change"); 
+        t.eq(marker.lonlat.lat, 0, "marker lat no change"); 
+        
+        marker.moveTo(new OpenLayers.Pixel(0,0));
+        t.eq(marker.lonlat.lon, map.getExtent().left, "on left edge of map"); 
+        t.eq(marker.lonlat.lat, map.getExtent().top, "on top edge of map"); 
+        map.destroy();
+    }
+    
+    function test_Marker_isDrawn(t) {
+        t.plan(3);
+
+        var marker = {};
+
+        //no icon
+        var drawn = OpenLayers.Marker.prototype.isDrawn.apply(marker, []);
+        t.ok(!drawn, "marker with no icon not drawn");
+
+        //not drawn icon
+        marker.icon = { isDrawn: function() { return false; } };
+        drawn = OpenLayers.Marker.prototype.isDrawn.apply(marker, []);
+        t.ok(!drawn, "marker with not drawn icon not drawn");
+
+        //drawn icon
+        marker.icon.isDrawn = function() { return true; };
+        drawn = OpenLayers.Marker.prototype.isDrawn.apply(marker, []);
+        t.ok(drawn, "marker with drawn icon drawn");
+    }
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width:500px;height:550px"></div>
+</body>
+</html>

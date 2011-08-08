@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+      <title>OpenLayers Layer Opacity Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <style type="text/css">
+        body {
+            font-family: sans-serif;
+        }
+        p {
+            width: 512px;
+        }
+        a {
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        #opacity {
+            padding: 0;
+            text-align: center;
+            width: 2em;
+            font-family: sans-serif;
+            background: transparent;
+            color: black;
+            border: 0;
+        }
+        p.note {
+            font-style: italic;
+            font-size: 0.8em;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map = null;
+        var shade = null;
+        var maxOpacity = 0.9;
+        var minOpacity = 0.1;
+        function changeOpacity(byOpacity) {
+            var newOpacity = (parseFloat(OpenLayers.Util.getElement('opacity').value) + byOpacity).toFixed(1);
+            newOpacity = Math.min(maxOpacity,
+                                  Math.max(minOpacity, newOpacity));
+            OpenLayers.Util.getElement('opacity').value = newOpacity;
+            shade.setOpacity(newOpacity);
+        }
+        function init(){
+            var options = {
+                maxExtent: new OpenLayers.Bounds(-110.994, 45.885, -110.950, 45.929),
+                maxResolution: "auto"
+            };
+            map = new OpenLayers.Map('map', options);
+            var drg = new OpenLayers.Layer.WMS("Topo Maps",
+                "http://terraservice.net/ogcmap.ashx",
+                {layers: "DRG"});
+            shade = new OpenLayers.Layer.WMS("Shaded Relief",
+                "http://gisdata.usgs.gov/wmsconnector/com.esri.wms.Esrimap?ServiceName=USGS_EDC_Elev_NED_3",
+                {layers: "HR-NED.IMAGE", reaspect: "false", transparent: 'true'},
+                {isBaseLayer: false, opacity: 0.3});
+            map.addLayers([drg, shade]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.zoomToMaxExtent();
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Layer Opacity Example</h1>
+
+    <div id="tags">
+        opacity, transparent, transparency
+    </div>
+
+    <p id="shortdesc">
+        Demonstrate a change in the opacity for an overlay layer.
+    </p>
+
+    <div id="map" class="smallmap"></div>
+
+    <div id="docs">
+        <p>
+            Note that if you also have the setOpacity method defined on the Layer
+            class, you can tweak the layer opacity after it has been added to the map.
+        </p>
+        <p>Opacity:
+            <a title="decrease opacity" href="javascript: changeOpacity(-0.1);">&lt;&lt;</a>
+            <input id="opacity" type="text" value="0.3" size="3" disabled="true" />
+            <a title="increase opacity" href="javascript: changeOpacity(0.1);">&gt;&gt;</a>
+        </p>
+        <p class="note">IE users: Wait until the shade layer has finished loading to try this.</p>
+    </div>
+  </body>
+</html>

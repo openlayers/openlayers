@@ -1,0 +1,684 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+    <script src="../../OLLoader.js"></script>
+    <script src="cases.js"></script>
+    <script type="text/javascript">
+
+    function test_readNode_geometry(t) {
+        var files = [
+            "v2/point-coord.xml", "v2/point-coordinates.xml",
+            "v2/linestring-coord.xml", "v2/linestring-coordinates.xml",
+            "v2/polygon-coord.xml", "v2/polygon-coordinates.xml",
+            "v2/multipoint-coord.xml", "v2/multipoint-coordinates.xml",
+            "v2/multilinestring-coord.xml", "v2/multilinestring-coordinates.xml",
+            "v2/multipolygon-coord.xml", "v2/multipolygon-coordinates.xml",
+            "v2/geometrycollection-coordinates.xml"
+        ];
+
+        var len = files.length;
+        t.plan(len);
+
+        var format = new OpenLayers.Format.GML.v2({
+            featureType: "feature",
+            featureNS: "http://example.com/feature"
+        });
+        var file, doc, expect, out;
+        for(var i=0; i<len; ++i) {
+            file = files[i];
+            expect = cases[file];
+            if(expect) {
+                doc = readXML(file);
+                if(doc && doc.documentElement) {
+                    out = format.readNode(doc.documentElement);
+                    if(out.components && out.components.length == 1) {
+                        t.geom_eq(out.components[0], expect, "[" + file + "] geometry read");
+                    } else {
+                        t.fail("[" + file + "] gml parsing");
+                    }
+                } else {
+                    t.fail("[" + file + "] xml parsing");
+                }
+            } else {
+                t.fail("[" + file + "] case not found");
+            }
+        }
+        
+    }
+    
+    function test_readNode_bounds(t) {
+        var files = ["v2/box-coord.xml", "v2/box-coordinates.xml"];
+
+        var len = files.length;
+        t.plan(len);
+        
+        var file, doc, expect, got;
+        var format = new OpenLayers.Format.GML.v2({
+            featureType: "feature",
+            featureNS: "http://example.com/feature"
+        });
+        for(var i=0; i<len; ++i) {
+            file = files[i];
+            expect = cases[file];
+            if(expect) {
+                doc = readXML(file);
+                if(doc && doc.documentElement) {
+                    out = format.readNode(doc.documentElement);
+                    if(out.components && out.components.length == 1) {
+                        got = out.components[0];
+                        if(got instanceof OpenLayers.Bounds) {
+                            t.ok(out.components[0].equals(expect), "[" + file + "] bounds read")
+                        } else {
+                            t.fail("[" + file + "] expected a bounds, got " + got);
+                        }
+                    } else {
+                        t.fail("[" + file + "] gml parsing");
+                    }
+                } else {
+                    t.fail("[" + file + "] xml parsing");
+                }
+            } else {
+                t.fail("[" + file + "] case not found");
+            }
+        }
+        
+    }
+    
+    function test_writeNode_geometry(t) {
+        // we only care to write the 'coordinates' variant of GML 2
+        var files = [
+            "v2/point-coordinates.xml",
+            "v2/linestring-coordinates.xml",
+            "v2/polygon-coordinates.xml",
+            "v2/multipoint-coordinates.xml",
+            "v2/multilinestring-coordinates.xml",
+            "v2/multipolygon-coordinates.xml",
+            "v2/geometrycollection-coordinates.xml"
+        ];
+
+        var len = files.length;
+        t.plan(len);
+
+        var format = new OpenLayers.Format.GML.v2({
+            featureType: "feature",
+            featureNS: "http://example.com/feature",
+            srsName: "foo" // GML geometry collections require srsName, we only write if provided
+        });
+        var file, geom, doc, node;
+        for(var i=0; i<len; ++i) {
+            file = files[i];
+            geom = cases[file];
+            if(geom) {
+                doc = readXML(file);
+                if(doc && doc.documentElement) {
+                    node = format.writeNode("feature:_geometry", geom);
+                    t.xml_eq(node.firstChild, doc.documentElement, "[" + file + "] geometry written");
+                } else {
+                    t.fail("[" + file + "] xml parsing");
+                }
+            } else {
+                t.fail("[" + file + "] case not found");
+            }
+        }
+    }
+
+    function test_writeNode_bounds(t) {
+        // we only care to write the 'coordinates' variant of GML 2
+        var files = [
+            "v2/box-coordinates.xml"
+        ];
+
+        var len = files.length;
+        t.plan(len);
+
+        var format = new OpenLayers.Format.GML.v2({
+            featureType: "feature",
+            featureNS: "http://example.com/feature",
+            srsName: "foo" // GML box does not require srsName, we only write if provided
+        });
+        var file, bounds, doc, node;
+        for(var i=0; i<len; ++i) {
+            file = files[i];
+            bounds = cases[file];
+            if(bounds) {
+                doc = readXML(file);
+                if(doc && doc.documentElement) {
+                    node = format.writeNode("gml:Box", bounds);
+                    t.xml_eq(node, doc.documentElement, "[" + file + "] bounds written");
+                } else {
+                    t.fail("[" + file + "] xml parsing");
+                }
+            } else {
+                t.fail("[" + file + "] case not found");
+            }
+        }
+    }
+    
+    function test_read(t) {
+        t.plan(8);
+        var doc = readXML("v2/topp-states.xml");
+        var format = new OpenLayers.Format.GML.v2({
+            featureType: "states",
+            featureNS: "http://www.openplans.org/topp",
+            geometryName: "the_geom"
+        });
+        var features = format.read(doc.documentElement);
+        
+        t.eq(features.length, 3, "read 3 features");
+        var feature = features[0];
+        t.eq(feature.fid, "states.1", "read fid");
+        t.eq(feature.geometry.CLASS_NAME, "OpenLayers.Geometry.MultiPolygon",
+             "read multipolygon geometry");
+        var attributes = feature.attributes;
+        t.eq(attributes["STATE_NAME"], "Illinois", "read STATE_NAME");
+        t.eq(attributes["STATE_FIPS"], "17", "read STATE_FIPS");
+        t.eq(attributes["SUB_REGION"], "E N Cen", "read SUB_REGION");
+        t.eq(attributes["STATE_ABBR"], "IL", "read STATE_ABBR");
+        t.eq(attributes["LAND_KM"], "143986.61", "read LAND_KM");
+    }
+
+    function test_read_autoconfig(t) {
+        t.plan(5);
+        var doc = readXML("v2/topp-states.xml");
+        var format = new OpenLayers.Format.GML.v2();
+        var features = format.read(doc.documentElement);
+        
+        t.eq(features.length, 3, "read 3 features");
+        var feature = features[0];
+        t.eq(feature.fid, "states.1", "read fid");
+        t.eq(feature.geometry.CLASS_NAME, "OpenLayers.Geometry.MultiPolygon",
+             "read multipolygon geometry");
+        t.eq(format.featureType, "states", "featureType correctly auto-configured");
+        t.eq(format.featureNS, "http://www.openplans.org/topp", "featureNS correctly auto-configured");
+    }
+    
+    function test_boundedBy(t) {
+        t.plan(5);
+        
+        var doc = readXML("v2/boundedBy.xml");
+        var format = new OpenLayers.Format.GML.v2({
+            featureType: "states",
+            featureNS: "http://www.openplans.org/topp",
+            geometryName: "the_geom",
+            xy: false
+        });
+        var features = format.read(doc.documentElement);
+        var bounds = features[0].bounds;
+
+        t.ok(bounds instanceof OpenLayers.Bounds, "feature given a bounds");
+        t.eq(bounds.left.toFixed(2), "-91.52", "bounds left correct");
+        t.eq(bounds.bottom.toFixed(2), "36.99", "bounds bottom correct");
+        t.eq(bounds.right.toFixed(2), "-87.51", "bounds right correct");
+        t.eq(bounds.top.toFixed(2), "42.51", "bounds top correct");
+    }
+    
+    function test_write(t) {
+        t.plan(1);
+        var doc = readXML("v2/topp-states.xml");
+        var format = new OpenLayers.Format.GML.v2({
+            featureType: "states",
+            featureNS: "http://www.openplans.org/topp",
+            geometryName: "the_geom",
+            schemaLocation: "http://www.openplans.org/topp http://sigma.openplans.org:80/geoserver/wfs?service=WFS&version=1.0.0&request=DescribeFeatureType&typeName=topp:states http://www.opengis.net/wfs http://sigma.openplans.org:80/geoserver/schemas/wfs/1.0.0/WFS-basic.xsd",
+            srsName: "http://www.opengis.net/gml/srs/epsg.xml#4326"
+        });
+        var features = format.read(doc.documentElement);
+        
+        var got = format.write(features);
+        t.xml_eq(got, doc.documentElement, "wfs:FeatureCollection round trip");
+        
+    }
+
+    function test_multipleTypenames(t) {
+        t.plan(5);
+        var doc = readXML("v2/multipletypenames.xml");
+        var format = new OpenLayers.Format.GML.v2({
+            featureType: ["LKUNSTWERK", "PKUNSTWERK", "VKUNSTWERK"],
+            featureNS: "http://mapserver.gis.umn.edu/mapserver",
+            geometry_name: "geometry"
+        });
+        var features = format.read(doc.documentElement);
+        t.eq(features.length, 3, "Expected 3 features from GML containing multiple typenames");
+        t.eq(features[0].type, "VKUNSTWERK", "First feature type is from the VKUNSTWERK typename");
+        t.eq(features[1].type, "LKUNSTWERK", "Second feature type is from the LKUNSTWERK typename");
+        t.eq(features[2].type, "PKUNSTWERK", "Third feature type is from the PKUNSTWERK typename");
+        t.eq(features[0].namespace, "http://mapserver.gis.umn.edu/mapserver", "Namespace is set correctly on feature");
+    }
+
+    function test_noGeom(t) {
+        t.plan(7);
+        var doc = readXML("v2/nogeom.xml");
+        var format = new OpenLayers.Format.GML.v2({
+            featureType: "DEPARTEMENT",
+            featureNS: "http://server.fr/geoserver/loc"
+        });
+        var features = format.read(doc.documentElement);
+        t.eq(features.length, 2, "Expected 2 features from GML with no geom");
+        var feature = features[0];
+        t.ok(feature.geometry == null, "feature 0 has no geometry");
+        var bounds = feature.bounds;
+        t.ok(bounds && (bounds instanceof OpenLayers.Bounds), "feature 0 has been assigned bounds");
+        t.eq(bounds.left, 209565, "bounds left correct");
+        t.eq(bounds.bottom, 6785323, "bounds bottom correct");
+        t.eq(bounds.right, 337568, "bounds right correct");
+        t.eq(bounds.top, 6885985, "bounds top correct");
+    }
+
+   </script>
+</head>
+<body>
+<div id="v2/point-coord.xml"><!--
+<gml:Point xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+  <gml:coord>
+    <gml:X>1</gml:X>
+    <gml:Y>2</gml:Y>
+  </gml:coord>
+</gml:Point>
+--></div>
+<div id="v2/point-coordinates.xml"><!--
+<gml:Point xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+  <gml:coordinates decimal="." cs="," ts=" ">1,2</gml:coordinates>
+</gml:Point>
+--></div>
+<div id="v2/linestring-coord.xml"><!--
+<gml:LineString xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+  <gml:coord>
+    <gml:X>1</gml:X>
+    <gml:Y>2</gml:Y>
+  </gml:coord>
+  <gml:coord>
+    <gml:X>3</gml:X>
+    <gml:Y>4</gml:Y>
+  </gml:coord>
+</gml:LineString>
+--></div>
+<div id="v2/linestring-coordinates.xml"><!--
+<gml:LineString xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+  <gml:coordinates decimal="." cs="," ts=" ">1,2 3,4</gml:coordinates>
+</gml:LineString>
+--></div>
+<div id="v2/polygon-coord.xml"><!--
+<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+    <gml:outerBoundaryIs>
+        <gml:LinearRing>
+            <gml:coord>
+                <gml:X>1</gml:X>
+                <gml:Y>2</gml:Y>
+            </gml:coord>
+            <gml:coord>
+                <gml:X>3</gml:X>
+                <gml:Y>4</gml:Y>
+            </gml:coord>
+            <gml:coord>
+                <gml:X>5</gml:X>
+                <gml:Y>6</gml:Y>
+            </gml:coord>
+            <gml:coord>
+                <gml:X>1</gml:X>
+                <gml:Y>2</gml:Y>
+            </gml:coord>
+        </gml:LinearRing>
+    </gml:outerBoundaryIs>
+    <gml:innerBoundaryIs>
+        <gml:LinearRing>
+            <gml:coord>
+                <gml:X>2</gml:X>
+                <gml:Y>3</gml:Y>
+            </gml:coord>
+            <gml:coord>
+                <gml:X>4</gml:X>
+                <gml:Y>5</gml:Y>
+            </gml:coord>
+            <gml:coord>
+                <gml:X>6</gml:X>
+                <gml:Y>7</gml:Y>
+            </gml:coord>
+            <gml:coord>
+                <gml:X>2</gml:X>
+                <gml:Y>3</gml:Y>
+            </gml:coord>
+        </gml:LinearRing>
+    </gml:innerBoundaryIs>    
+    <gml:innerBoundaryIs>
+        <gml:LinearRing>
+            <gml:coord>
+                <gml:X>3</gml:X>
+                <gml:Y>4</gml:Y>
+            </gml:coord>
+            <gml:coord>
+                <gml:X>5</gml:X>
+                <gml:Y>6</gml:Y>
+            </gml:coord>
+            <gml:coord>
+                <gml:X>7</gml:X>
+                <gml:Y>8</gml:Y>
+            </gml:coord>
+            <gml:coord>
+                <gml:X>3</gml:X>
+                <gml:Y>4</gml:Y>
+            </gml:coord>
+        </gml:LinearRing>
+    </gml:innerBoundaryIs>    
+</gml:Polygon>
+--></div>
+<div id="v2/polygon-coordinates.xml"><!--
+<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+    <gml:outerBoundaryIs>
+        <gml:LinearRing>
+            <gml:coordinates decimal="." cs="," ts=" ">1,2 3,4 5,6 1,2</gml:coordinates>
+        </gml:LinearRing>
+    </gml:outerBoundaryIs>
+    <gml:innerBoundaryIs>
+        <gml:LinearRing>
+            <gml:coordinates decimal="." cs="," ts=" ">2,3 4,5 6,7 2,3</gml:coordinates>
+        </gml:LinearRing>
+    </gml:innerBoundaryIs>    
+    <gml:innerBoundaryIs>
+        <gml:LinearRing>
+            <gml:coordinates decimal="." cs="," ts=" ">3,4 5,6 7,8 3,4</gml:coordinates>
+        </gml:LinearRing>
+    </gml:innerBoundaryIs>    
+</gml:Polygon>
+--></div>
+<div id="v2/multipoint-coord.xml"><!--
+<gml:MultiPoint xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+    <gml:pointMember>
+        <gml:Point>
+            <gml:coord>
+                <gml:X>1</gml:X>
+                <gml:Y>2</gml:Y>
+            </gml:coord>
+        </gml:Point>
+    </gml:pointMember>
+    <gml:pointMember>
+        <gml:Point>
+            <gml:coord>
+                <gml:X>2</gml:X>
+                <gml:Y>3</gml:Y>
+            </gml:coord>
+        </gml:Point>
+    </gml:pointMember>
+    <gml:pointMember>
+        <gml:Point>
+            <gml:coord>
+                <gml:X>3</gml:X>
+                <gml:Y>4</gml:Y>
+            </gml:coord>
+        </gml:Point>
+    </gml:pointMember>
+</gml:MultiPoint>
+--></div>
+<div id="v2/multipoint-coordinates.xml"><!--
+<gml:MultiPoint xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+    <gml:pointMember>
+        <gml:Point>
+            <gml:coordinates decimal="." cs="," ts=" ">1,2</gml:coordinates>
+        </gml:Point>
+    </gml:pointMember>
+    <gml:pointMember>
+        <gml:Point>
+            <gml:coordinates decimal="." cs="," ts=" ">2,3</gml:coordinates>
+        </gml:Point>
+    </gml:pointMember>
+    <gml:pointMember>
+        <gml:Point>
+            <gml:coordinates decimal="." cs="," ts=" ">3,4</gml:coordinates>
+        </gml:Point>
+    </gml:pointMember>
+</gml:MultiPoint>
+--></div>
+<div id="v2/multilinestring-coord.xml"><!--
+<gml:MultiLineString xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+    <gml:lineStringMember>
+        <gml:LineString>
+            <gml:coord>
+                <gml:X>1</gml:X>
+                <gml:Y>2</gml:Y>
+            </gml:coord>
+            <gml:coord>
+                <gml:X>2</gml:X>
+                <gml:Y>3</gml:Y>
+            </gml:coord>
+        </gml:LineString>
+    </gml:lineStringMember>
+    <gml:lineStringMember>
+        <gml:LineString>
+            <gml:coord>
+                <gml:X>3</gml:X>
+                <gml:Y>4</gml:Y>
+            </gml:coord>
+            <gml:coord>
+                <gml:X>4</gml:X>
+                <gml:Y>5</gml:Y>
+            </gml:coord>
+        </gml:LineString>
+    </gml:lineStringMember>
+</gml:MultiLineString>
+--></div>
+<div id="v2/multilinestring-coordinates.xml"><!--
+<gml:MultiLineString xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+    <gml:lineStringMember>
+        <gml:LineString>
+            <gml:coordinates decimal="." cs="," ts=" ">1,2 2,3</gml:coordinates>
+        </gml:LineString>
+    </gml:lineStringMember>
+    <gml:lineStringMember>
+        <gml:LineString>
+            <gml:coordinates decimal="." cs="," ts=" ">3,4 4,5</gml:coordinates>
+        </gml:LineString>
+    </gml:lineStringMember>
+</gml:MultiLineString>
+--></div>
+<div id="v2/multipolygon-coord.xml"><!--
+<gml:MultiPolygon xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+    <gml:polygonMember>
+        <gml:Polygon>
+            <gml:outerBoundaryIs>
+                <gml:LinearRing>
+                    <gml:coord>
+                        <gml:X>1</gml:X>
+                        <gml:Y>2</gml:Y>
+                    </gml:coord>
+                    <gml:coord>
+                        <gml:X>3</gml:X>
+                        <gml:Y>4</gml:Y>
+                    </gml:coord>
+                    <gml:coord>
+                        <gml:X>5</gml:X>
+                        <gml:Y>6</gml:Y>
+                    </gml:coord>
+                    <gml:coord>
+                        <gml:X>1</gml:X>
+                        <gml:Y>2</gml:Y>
+                    </gml:coord>
+                </gml:LinearRing>
+            </gml:outerBoundaryIs>
+            <gml:innerBoundaryIs>
+                <gml:LinearRing>
+                    <gml:coord>
+                        <gml:X>2</gml:X>
+                        <gml:Y>3</gml:Y>
+                    </gml:coord>
+                    <gml:coord>
+                        <gml:X>4</gml:X>
+                        <gml:Y>5</gml:Y>
+                    </gml:coord>
+                    <gml:coord>
+                        <gml:X>6</gml:X>
+                        <gml:Y>7</gml:Y>
+                    </gml:coord>
+                    <gml:coord>
+                        <gml:X>2</gml:X>
+                        <gml:Y>3</gml:Y>
+                    </gml:coord>
+                </gml:LinearRing>
+            </gml:innerBoundaryIs>    
+            <gml:innerBoundaryIs>
+                <gml:LinearRing>
+                    <gml:coord>
+                        <gml:X>3</gml:X>
+                        <gml:Y>4</gml:Y>
+                    </gml:coord>
+                    <gml:coord>
+                        <gml:X>5</gml:X>
+                        <gml:Y>6</gml:Y>
+                    </gml:coord>
+                    <gml:coord>
+                        <gml:X>7</gml:X>
+                        <gml:Y>8</gml:Y>
+                    </gml:coord>
+                    <gml:coord>
+                        <gml:X>3</gml:X>
+                        <gml:Y>4</gml:Y>
+                    </gml:coord>
+                </gml:LinearRing>
+            </gml:innerBoundaryIs>    
+        </gml:Polygon>
+    </gml:polygonMember>
+    <gml:polygonMember>
+        <gml:Polygon>
+            <gml:outerBoundaryIs>
+                <gml:LinearRing>
+                    <gml:coord>
+                        <gml:X>1</gml:X>
+                        <gml:Y>2</gml:Y>
+                    </gml:coord>
+                    <gml:coord>
+                        <gml:X>3</gml:X>
+                        <gml:Y>4</gml:Y>
+                    </gml:coord>
+                    <gml:coord>
+                        <gml:X>5</gml:X>
+                        <gml:Y>6</gml:Y>
+                    </gml:coord>
+                    <gml:coord>
+                        <gml:X>1</gml:X>
+                        <gml:Y>2</gml:Y>
+                    </gml:coord>
+                </gml:LinearRing>
+            </gml:outerBoundaryIs>
+        </gml:Polygon>
+    </gml:polygonMember>
+</gml:MultiPolygon>
+--></div>
+<div id="v2/multipolygon-coordinates.xml"><!--
+<gml:MultiPolygon xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+    <gml:polygonMember>
+        <gml:Polygon>
+            <gml:outerBoundaryIs>
+                <gml:LinearRing>
+                    <gml:coordinates decimal="." cs="," ts=" ">1,2 3,4 5,6 1,2</gml:coordinates>
+                </gml:LinearRing>
+            </gml:outerBoundaryIs>
+            <gml:innerBoundaryIs>
+                <gml:LinearRing>
+                    <gml:coordinates decimal="." cs="," ts=" ">2,3 4,5 6,7 2,3</gml:coordinates>
+                </gml:LinearRing>
+            </gml:innerBoundaryIs>    
+            <gml:innerBoundaryIs>
+                <gml:LinearRing>
+                    <gml:coordinates decimal="." cs="," ts=" ">3,4 5,6 7,8 3,4</gml:coordinates>
+                </gml:LinearRing>
+            </gml:innerBoundaryIs>    
+        </gml:Polygon>
+    </gml:polygonMember>
+    <gml:polygonMember>
+        <gml:Polygon>
+            <gml:outerBoundaryIs>
+                <gml:LinearRing>
+                    <gml:coordinates decimal="." cs="," ts=" ">1,2 3,4 5,6 1,2</gml:coordinates>
+                </gml:LinearRing>
+            </gml:outerBoundaryIs>
+        </gml:Polygon>
+    </gml:polygonMember>
+</gml:MultiPolygon>
+--></div>
+<div id="v2/geometrycollection-coordinates.xml"><!--
+<gml:GeometryCollection xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+    <gml:geometryMember>
+        <gml:Point srsName="foo">
+          <gml:coordinates decimal="." cs="," ts=" ">1,2</gml:coordinates>
+        </gml:Point>
+    </gml:geometryMember>
+    <gml:geometryMember>
+        <gml:LineString srsName="foo">
+          <gml:coordinates decimal="." cs="," ts=" ">1,2 3,4</gml:coordinates>
+        </gml:LineString>
+    </gml:geometryMember>
+    <gml:geometryMember>
+        <gml:Polygon srsName="foo">
+            <gml:outerBoundaryIs>
+                <gml:LinearRing>
+                    <gml:coordinates decimal="." cs="," ts=" ">1,2 3,4 5,6 1,2</gml:coordinates>
+                </gml:LinearRing>
+            </gml:outerBoundaryIs>
+            <gml:innerBoundaryIs>
+                <gml:LinearRing>
+                    <gml:coordinates decimal="." cs="," ts=" ">2,3 4,5 6,7 2,3</gml:coordinates>
+                </gml:LinearRing>
+            </gml:innerBoundaryIs>    
+            <gml:innerBoundaryIs>
+                <gml:LinearRing>
+                    <gml:coordinates decimal="." cs="," ts=" ">3,4 5,6 7,8 3,4</gml:coordinates>
+                </gml:LinearRing>
+            </gml:innerBoundaryIs>    
+        </gml:Polygon>
+    </gml:geometryMember>
+</gml:GeometryCollection>
+--></div>
+<div id="v2/box-coord.xml"><!--
+<gml:Box xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+  <gml:coord>
+    <gml:X>1</gml:X>
+    <gml:Y>2</gml:Y>
+  </gml:coord>
+  <gml:coord>
+    <gml:X>3</gml:X>
+    <gml:Y>4</gml:Y>
+  </gml:coord>
+</gml:Box>
+--></div>
+<div id="v2/box-coordinates.xml"><!--
+<gml:Box xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+  <gml:coordinates decimal="." cs="," ts=" ">1,2 3,4</gml:coordinates>
+</gml:Box>
+--></div>
+<div id="v2/linearring-coord.xml"><!--
+<gml:LinearRing xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+    <gml:coord>
+        <gml:X>1</gml:X>
+        <gml:Y>2</gml:Y>
+    </gml:coord>
+    <gml:coord>
+        <gml:X>3</gml:X>
+        <gml:Y>4</gml:Y>
+    </gml:coord>
+    <gml:coord>
+        <gml:X>5</gml:X>
+        <gml:Y>6</gml:Y>
+    </gml:coord>
+    <gml:coord>
+        <gml:X>1</gml:X>
+        <gml:Y>2</gml:Y>
+    </gml:coord>
+</gml:LinearRing>
+--></div>
+<div id="v2/linearring-coordinates.xml"><!--
+<gml:LinearRing xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+  <gml:coordinates decimal="." cs="," ts=" ">1,2 3,4 5,6 1,2</gml:coordinates>
+</gml:LinearRing>
+--></div>
+<div id="v2/topp-states.xml"><!--
+<?xml version="1.0" encoding="UTF-8"?><wfs:FeatureCollection xmlns="http://www.opengis.net/wfs" xmlns:wfs="http://www.opengis.net/wfs" xmlns:topp="http://www.openplans.org/topp" xmlns:gml="http://www.opengis.net/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openplans.org/topp http://sigma.openplans.org:80/geoserver/wfs?service=WFS&amp;version=1.0.0&amp;request=DescribeFeatureType&amp;typeName=topp:states http://www.opengis.net/wfs http://sigma.openplans.org:80/geoserver/schemas/wfs/1.0.0/WFS-basic.xsd"><gml:featureMember><topp:states fid="states.1"><topp:the_geom><gml:MultiPolygon srsName="http://www.opengis.net/gml/srs/epsg.xml#4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates xmlns:gml="http://www.opengis.net/gml" decimal="." cs="," ts=" ">37.5101,-88.0711 37.4761,-88.0871 37.4421,-88.3111 37.4091,-88.3591 37.4201,-88.4191 37.4001,-88.4671 37.2961,-88.5111 37.2571,-88.5011 37.2051,-88.4501 37.1561,-88.4221 37.0981,-88.4501 37.0721,-88.4761 37.0681,-88.4901 37.0641,-88.5171 37.0721,-88.5591 37.1091,-88.6141 37.1351,-88.6881 37.1411,-88.7391 37.1521,-88.7461 37.2021,-88.8631 37.2181,-88.9321 37.2201,-88.9931 37.1851,-89.0651 37.1121,-89.1161 37.0931,-89.1461 37.0641,-89.1691 37.0251,-89.1741 36.9981,-89.1501 36.9881,-89.1291 36.9861,-89.1931 37.0281,-89.2101 37.0411,-89.2371 37.0871,-89.2641 37.0911,-89.2841 37.0851,-89.3031 37.0601,-89.3091 37.0271,-89.2641 37.0081,-89.2621 36.9991,-89.2821 37.0091,-89.3101 37.0491,-89.3821 37.0991,-89.3791 37.1371,-89.4231 37.1651,-89.4401 37.2241,-89.4681 37.2531,-89.4651 37.2561,-89.4891 37.2761,-89.5131 37.3041,-89.5131 37.3291,-89.5001 37.3391,-89.4681 37.3551,-89.4351 37.4111,-89.4271 37.4531,-89.4531 37.4911,-89.4941 37.5711,-89.5241 37.6151,-89.5131 37.6501,-89.5191 37.6791,-89.5131 37.6941,-89.5211 37.7061,-89.5811 37.7451,-89.6661 37.7831,-89.6751 37.8041,-89.6911 37.8401,-89.7281 37.9051,-89.8511 37.9051,-89.8611 37.8911,-89.8661 37.8751,-89.9001 37.8781,-89.9371 37.9111,-89.9781 37.9631,-89.9581 37.9691,-90.0101 37.9931,-90.0411 38.0321,-90.1191 38.0531,-90.1341 38.0881,-90.2071 38.1221,-90.2541 38.1661,-90.2891 38.1881,-90.3361 38.2341,-90.3641 38.3231,-90.3691 38.3651,-90.3581 38.3901,-90.3391 38.4271,-90.3011 38.5181,-90.2651 38.5321,-90.2611 38.5621,-90.2401 38.6101,-90.1831 38.6581,-90.1831 38.7001,-90.2021 38.7231,-90.1961 38.7731,-90.1631 38.7851,-90.1351 38.8001,-90.1211 38.8301,-90.1131 38.8531,-90.1321 38.9141,-90.2431 38.9241,-90.2781 38.9241,-90.3191 38.9621,-90.4131 38.9591,-90.4691 38.8911,-90.5301 38.8711,-90.5701 38.8801,-90.6271 38.9351,-90.6681 39.0371,-90.7061 39.0581,-90.7071 39.0931,-90.6901 39.1441,-90.7161 39.1951,-90.7181 39.2241,-90.7321 39.2471,-90.7381 39.2961,-90.7791 39.3501,-90.8501 39.4001,-90.9471 39.4441,-91.0361 39.4731,-91.0641 39.5281,-91.0931 39.5521,-91.1561 39.6001,-91.2031 39.6851,-91.3171 39.7241,-91.3671 39.7611,-91.3731 39.8031,-91.3811 39.8631,-91.4491 39.8851,-91.4501 39.9011,-91.4341 39.9211,-91.4301 39.9461,-91.4471 40.0051,-91.4871 40.0661,-91.5041 40.1341,-91.5161 40.2001,-91.5061 40.2511,-91.4981 40.3091,-91.4861 40.3711,-91.4481 40.3861,-91.4181 40.3921,-91.3851 40.4021,-91.3721 40.4471,-91.3851 40.5031,-91.3741 40.5281,-91.3821 40.5471,-91.4121 40.5721,-91.4111 40.6031,-91.3751 40.6391,-91.2621 40.6431,-91.2141 40.6561,-91.1621 40.6821,-91.1291 40.7051,-91.1191 40.7611,-91.0921 40.8331,-91.0881 40.8791,-91.0491 40.9231,-90.9831 40.9501,-90.9601 41.0701,-90.9541 41.1041,-90.9571 41.1441,-90.9901 41.1651,-91.0181 41.1761,-91.0561 41.2311,-91.1011 41.2671,-91.1021 41.3341,-91.0731 41.4011,-91.0551 41.4231,-91.0271 41.4311,-91.0001 41.4211,-90.9491 41.4441,-90.8441 41.4491,-90.7791 41.4501,-90.7081 41.4621,-90.6581 41.5091,-90.6001 41.5251,-90.5401 41.5271,-90.4541 41.5431,-90.4341 41.5671,-90.4231 41.5861,-90.3481 41.6021,-90.3391 41.6491,-90.3411 41.7221,-90.3261 41.7561,-90.3041 41.7811,-90.2551 41.8061,-90.1951 41.9301,-90.1541 41.9831,-90.1421 42.0331,-90.1501 42.0611,-90.1681 42.1031,-90.1661 42.1201,-90.1761 42.1221,-90.1911 42.1591,-90.2301 42.1971,-90.3231 42.2101,-90.3671 42.2421,-90.4071 42.2631,-90.4171 42.3401,-90.4271 42.3601,-90.4411 42.3881,-90.4911 42.4211,-90.5631 42.4601,-90.6051 42.4751,-90.6481 42.4941,-90.6511 42.5091,-90.6381 42.5081,-90.4191 42.5041,-89.9231 42.5031,-89.8341 42.4971,-89.4001 42.4971,-89.3591 42.4901,-88.9391 42.4901,-88.7641 42.4891,-88.7061 42.4911,-88.2971 42.4891,-88.1941 42.4891,-87.7971 42.3141,-87.8361 42.1561,-87.7601 42.0591,-87.6701 41.8471,-87.6121 41.7231,-87.5291 41.4691,-87.5321 41.3011,-87.5321 41.1731,-87.5311 41.0091,-87.5321 40.7451,-87.5321 40.4941,-87.5371 40.4831,-87.5351 40.1661,-87.5351 39.8871,-87.5351 39.6091,-87.5351 39.4771,-87.5381 39.3501,-87.5401 39.3381,-87.5971 39.3071,-87.6251 39.2971,-87.6101 39.2811,-87.6151 39.2581,-87.6061 39.2481,-87.5841 39.2081,-87.5881 39.1981,-87.5941 39.1961,-87.6071 39.1681,-87.6441 39.1461,-87.6701 39.1301,-87.6591 39.1131,-87.6621 39.1031,-87.6311 39.0881,-87.6301 39.0841,-87.6121 39.0621,-87.5851 38.9951,-87.5811 38.9941,-87.5911 38.9771,-87.5471 38.9631,-87.5331 38.9311,-87.5301 38.9041,-87.5391 38.8691,-87.5591 38.8571,-87.5501 38.7951,-87.5071 38.7761,-87.5191 38.7691,-87.5081 38.7361,-87.5081 38.6851,-87.5431 38.6721,-87.5881 38.6421,-87.6251 38.6221,-87.6281 38.5991,-87.6191 38.5931,-87.6401 38.5731,-87.6521 38.5471,-87.6721 38.5151,-87.6511 38.5001,-87.6531 38.5041,-87.6791 38.4811,-87.6921 38.4661,-87.7561 38.4571,-87.7581 38.4451,-87.7381 38.4171,-87.7481 38.3781,-87.7841 38.3521,-87.8341 38.2861,-87.8501 38.2851,-87.8631 38.3161,-87.8741 38.3151,-87.8831 38.3001,-87.8881 38.2811,-87.9141 38.3021,-87.9131 38.3041,-87.9251 38.2411,-87.9801 38.2341,-87.9861 38.2001,-87.9771 38.1711,-87.9321 38.1571,-87.9311 38.1361,-87.9501 38.1311,-87.9731 38.1031,-88.0181 38.0921,-88.0121 38.0961,-87.9641 38.0731,-87.9751 38.0541,-88.0341 38.0451,-88.0431 38.0381,-88.0411 38.0331,-88.0211 38.0081,-88.0291 37.9751,-88.0211 37.9561,-88.0421 37.9341,-88.0411 37.9291,-88.0641 37.944,-88.0781 37.9231,-88.084 37.9171,-88.0301 37.9051,-88.0261 37.8961,-88.0441 37.9061,-88.1001 37.8951,-88.1011 37.8671,-88.0751 37.8431,-88.0341 37.8271,-88.0421 37.8311,-88.0891 37.8171,-88.0861 37.8051,-88.0351 37.7351,-88.0721 37.7001,-88.1331 37.6601,-88.1591 37.6281,-88.1571 37.5831,-88.1341 37.5101,-88.0711</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon></topp:the_geom><topp:STATE_NAME>Illinois</topp:STATE_NAME><topp:STATE_FIPS>17</topp:STATE_FIPS><topp:SUB_REGION>E N Cen</topp:SUB_REGION><topp:STATE_ABBR>IL</topp:STATE_ABBR><topp:LAND_KM>143986.61</topp:LAND_KM><topp:WATER_KM>1993.335</topp:WATER_KM><topp:PERSONS>1.1431E7</topp:PERSONS><topp:FAMILIES>2924880.0</topp:FAMILIES><topp:HOUSHOLD>4202240.0</topp:HOUSHOLD><topp:MALE>5552233.0</topp:MALE><topp:FEMALE>5878369.0</topp:FEMALE><topp:WORKERS>4199206.0</topp:WORKERS><topp:DRVALONE>3741715.0</topp:DRVALONE><topp:CARPOOL>652603.0</topp:CARPOOL><topp:PUBTRANS>538071.0</topp:PUBTRANS><topp:EMPLOYED>5417967.0</topp:EMPLOYED><topp:UNEMPLOY>385040.0</topp:UNEMPLOY><topp:SERVICE>1360159.0</topp:SERVICE><topp:MANUAL>828906.0</topp:MANUAL><topp:P_MALE>0.486</topp:P_MALE><topp:P_FEMALE>0.514</topp:P_FEMALE><topp:SAMP_POP>1747776.0</topp:SAMP_POP></topp:states></gml:featureMember><gml:featureMember><topp:states fid="states.2"><topp:the_geom><gml:MultiPolygon srsName="http://www.opengis.net/gml/srs/epsg.xml#4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates xmlns:gml="http://www.opengis.net/gml" decimal="." cs="," ts=" ">38.9661,-77.0081 38.8891,-76.9111 38.7881,-77.0451 38.8131,-77.0351 38.8291,-77.0451 38.8381,-77.0401 38.8621,-77.0391 38.8861,-77.0671 38.9151,-77.0781 38.9321,-77.1221 38.9931,-77.0421 38.9661,-77.0081</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon></topp:the_geom><topp:STATE_NAME>District of Columbia</topp:STATE_NAME><topp:STATE_FIPS>11</topp:STATE_FIPS><topp:SUB_REGION>S Atl</topp:SUB_REGION><topp:STATE_ABBR>DC</topp:STATE_ABBR><topp:LAND_KM>159.055</topp:LAND_KM><topp:WATER_KM>17.991</topp:WATER_KM><topp:PERSONS>606900.0</topp:PERSONS><topp:FAMILIES>122087.0</topp:FAMILIES><topp:HOUSHOLD>249634.0</topp:HOUSHOLD><topp:MALE>282970.0</topp:MALE><topp:FEMALE>323930.0</topp:FEMALE><topp:WORKERS>229975.0</topp:WORKERS><topp:DRVALONE>106694.0</topp:DRVALONE><topp:CARPOOL>36621.0</topp:CARPOOL><topp:PUBTRANS>111422.0</topp:PUBTRANS><topp:EMPLOYED>303994.0</topp:EMPLOYED><topp:UNEMPLOY>23442.0</topp:UNEMPLOY><topp:SERVICE>65498.0</topp:SERVICE><topp:MANUAL>22407.0</topp:MANUAL><topp:P_MALE>0.466</topp:P_MALE><topp:P_FEMALE>0.534</topp:P_FEMALE><topp:SAMP_POP>72696.0</topp:SAMP_POP></topp:states></gml:featureMember><gml:featureMember><topp:states fid="states.3"><topp:the_geom><gml:MultiPolygon srsName="http://www.opengis.net/gml/srs/epsg.xml#4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates xmlns:gml="http://www.opengis.net/gml" decimal="." cs="," ts=" ">38.5571,-75.7071 38.6491,-75.7111 38.8301,-75.7241 39.1411,-75.7521 39.2471,-75.7611 39.2951,-75.7641 39.3831,-75.7721 39.7231,-75.7911 39.7241,-75.7751 39.7741,-75.7451 39.8201,-75.6951 39.8381,-75.6441 39.8401,-75.5831 39.8261,-75.4701 39.7981,-75.4201 39.7891,-75.4121 39.7781,-75.4281 39.7631,-75.4601 39.7411,-75.4751 39.7191,-75.4761 39.7141,-75.4891 39.6121,-75.6101 39.5661,-75.5621 39.4631,-75.5901 39.3661,-75.5151 39.2571,-75.4021 39.0731,-75.3971 39.0121,-75.3241 38.9451,-75.3071 38.8081,-75.1901 38.7991,-75.0831 38.4491,-75.0451 38.4491,-75.0681 38.4501,-75.0931 38.4551,-75.3501 38.4631,-75.6991 38.5571,-75.7071</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon></topp:the_geom><topp:STATE_NAME>Delaware</topp:STATE_NAME><topp:STATE_FIPS>10</topp:STATE_FIPS><topp:SUB_REGION>S Atl</topp:SUB_REGION><topp:STATE_ABBR>DE</topp:STATE_ABBR><topp:LAND_KM>5062.456</topp:LAND_KM><topp:WATER_KM>1385.022</topp:WATER_KM><topp:PERSONS>666168.0</topp:PERSONS><topp:FAMILIES>175867.0</topp:FAMILIES><topp:HOUSHOLD>247497.0</topp:HOUSHOLD><topp:MALE>322968.0</topp:MALE><topp:FEMALE>343200.0</topp:FEMALE><topp:WORKERS>247566.0</topp:WORKERS><topp:DRVALONE>258087.0</topp:DRVALONE><topp:CARPOOL>42968.0</topp:CARPOOL><topp:PUBTRANS>8069.0</topp:PUBTRANS><topp:EMPLOYED>335147.0</topp:EMPLOYED><topp:UNEMPLOY>13945.0</topp:UNEMPLOY><topp:SERVICE>87973.0</topp:SERVICE><topp:MANUAL>44140.0</topp:MANUAL><topp:P_MALE>0.485</topp:P_MALE><topp:P_FEMALE>0.515</topp:P_FEMALE><topp:SAMP_POP>102776.0</topp:SAMP_POP></topp:states></gml:featureMember></wfs:FeatureCollection>
+--></div>
+<div id="v2/boundedBy.xml"><!--
+<?xml version="1.0" encoding="UTF-8"?><wfs:FeatureCollection xmlns="http://www.opengis.net/wfs" xmlns:wfs="http://www.opengis.net/wfs" xmlns:topp="http://www.openplans.org/topp" xmlns:gml="http://www.opengis.net/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openplans.org/topp http://publicus.opengeo.org:80/geoserver/wfs?service=WFS&amp;version=1.0.0&amp;request=DescribeFeatureType&amp;typeName=topp:states http://www.opengis.net/wfs http://publicus.opengeo.org:80/geoserver/schemas/wfs/1.0.0/WFS-basic.xsd"><gml:featureMember><topp:states fid="states.1"><gml:boundedBy><gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#4326"><gml:coordinates xmlns:gml="http://www.opengis.net/gml" decimal="." cs="," ts=" ">36.9861,-91.5161 42.5091,-87.5071</gml:coordinates></gml:Box></gml:boundedBy><topp:the_geom><gml:MultiPolygon srsName="http://www.opengis.net/gml/srs/epsg.xml#4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates xmlns:gml="http://www.opengis.net/gml" decimal="." cs="," ts=" ">37.5101,-88.0711 37.4761,-88.0871 37.4421,-88.3111 37.4091,-88.3591 37.4201,-88.4191 37.4001,-88.4671 37.2961,-88.5111 37.2571,-88.5011 37.2051,-88.4501 37.1561,-88.4221 37.0981,-88.4501 37.0721,-88.4761 37.0681,-88.4901 37.0641,-88.5171 37.0721,-88.5591 37.1091,-88.6141 37.1351,-88.6881 37.1411,-88.7391 37.1521,-88.7461 37.2021,-88.8631 37.2181,-88.9321 37.2201,-88.9931 37.1851,-89.0651 37.1121,-89.1161 37.0931,-89.1461 37.0641,-89.1691 37.0251,-89.1741 36.9981,-89.1501 36.9881,-89.1291 36.9861,-89.1931 37.0281,-89.2101 37.0411,-89.2371 37.0871,-89.2641 37.0911,-89.2841 37.0851,-89.3031 37.0601,-89.3091 37.0271,-89.2641 37.0081,-89.2621 36.9991,-89.2821 37.0091,-89.3101 37.0491,-89.3821 37.0991,-89.3791 37.1371,-89.4231 37.1651,-89.4401 37.2241,-89.4681 37.2531,-89.4651 37.2561,-89.4891 37.2761,-89.5131 37.3041,-89.5131 37.3291,-89.5001 37.3391,-89.4681 37.3551,-89.4351 37.4111,-89.4271 37.4531,-89.4531 37.4911,-89.4941 37.5711,-89.5241 37.6151,-89.5131 37.6501,-89.5191 37.6791,-89.5131 37.6941,-89.5211 37.7061,-89.5811 37.7451,-89.6661 37.7831,-89.6751 37.8041,-89.6911 37.8401,-89.7281 37.9051,-89.8511 37.9051,-89.8611 37.8911,-89.8661 37.8751,-89.9001 37.8781,-89.9371 37.9111,-89.9781 37.9631,-89.9581 37.9691,-90.0101 37.9931,-90.0411 38.0321,-90.1191 38.0531,-90.1341 38.0881,-90.2071 38.1221,-90.2541 38.1661,-90.2891 38.1881,-90.3361 38.2341,-90.3641 38.3231,-90.3691 38.3651,-90.3581 38.3901,-90.3391 38.4271,-90.3011 38.5181,-90.2651 38.5321,-90.2611 38.5621,-90.2401 38.6101,-90.1831 38.6581,-90.1831 38.7001,-90.2021 38.7231,-90.1961 38.7731,-90.1631 38.7851,-90.1351 38.8001,-90.1211 38.8301,-90.1131 38.8531,-90.1321 38.9141,-90.2431 38.9241,-90.2781 38.9241,-90.3191 38.9621,-90.4131 38.9591,-90.4691 38.8911,-90.5301 38.8711,-90.5701 38.8801,-90.6271 38.9351,-90.6681 39.0371,-90.7061 39.0581,-90.7071 39.0931,-90.6901 39.1441,-90.7161 39.1951,-90.7181 39.2241,-90.7321 39.2471,-90.7381 39.2961,-90.7791 39.3501,-90.8501 39.4001,-90.9471 39.4441,-91.0361 39.4731,-91.0641 39.5281,-91.0931 39.5521,-91.1561 39.6001,-91.2031 39.6851,-91.3171 39.7241,-91.3671 39.7611,-91.3731 39.8031,-91.3811 39.8631,-91.4491 39.8851,-91.4501 39.9011,-91.4341 39.9211,-91.4301 39.9461,-91.4471 40.0051,-91.4871 40.0661,-91.5041 40.1341,-91.5161 40.2001,-91.5061 40.2511,-91.4981 40.3091,-91.4861 40.3711,-91.4481 40.3861,-91.4181 40.3921,-91.3851 40.4021,-91.3721 40.4471,-91.3851 40.5031,-91.3741 40.5281,-91.3821 40.5471,-91.4121 40.5721,-91.4111 40.6031,-91.3751 40.6391,-91.2621 40.6431,-91.2141 40.6561,-91.1621 40.6821,-91.1291 40.7051,-91.1191 40.7611,-91.0921 40.8331,-91.0881 40.8791,-91.0491 40.9231,-90.9831 40.9501,-90.9601 41.0701,-90.9541 41.1041,-90.9571 41.1441,-90.9901 41.1651,-91.0181 41.1761,-91.0561 41.2311,-91.1011 41.2671,-91.1021 41.3341,-91.0731 41.4011,-91.0551 41.4231,-91.0271 41.4311,-91.0001 41.4211,-90.9491 41.4441,-90.8441 41.4491,-90.7791 41.4501,-90.7081 41.4621,-90.6581 41.5091,-90.6001 41.5251,-90.5401 41.5271,-90.4541 41.5431,-90.4341 41.5671,-90.4231 41.5861,-90.3481 41.6021,-90.3391 41.6491,-90.3411 41.7221,-90.3261 41.7561,-90.3041 41.7811,-90.2551 41.8061,-90.1951 41.9301,-90.1541 41.9831,-90.1421 42.0331,-90.1501 42.0611,-90.1681 42.1031,-90.1661 42.1201,-90.1761 42.1221,-90.1911 42.1591,-90.2301 42.1971,-90.3231 42.2101,-90.3671 42.2421,-90.4071 42.2631,-90.4171 42.3401,-90.4271 42.3601,-90.4411 42.3881,-90.4911 42.4211,-90.5631 42.4601,-90.6051 42.4751,-90.6481 42.4941,-90.6511 42.5091,-90.6381 42.5081,-90.4191 42.5041,-89.9231 42.5031,-89.8341 42.4971,-89.4001 42.4971,-89.3591 42.4901,-88.9391 42.4901,-88.7641 42.4891,-88.7061 42.4911,-88.2971 42.4891,-88.1941 42.4891,-87.7971 42.3141,-87.8361 42.1561,-87.7601 42.0591,-87.6701 41.8471,-87.6121 41.7231,-87.5291 41.4691,-87.5321 41.3011,-87.5321 41.1731,-87.5311 41.0091,-87.5321 40.7451,-87.5321 40.4941,-87.5371 40.4831,-87.5351 40.1661,-87.5351 39.8871,-87.5351 39.6091,-87.5351 39.4771,-87.5381 39.3501,-87.5401 39.3381,-87.5971 39.3071,-87.6251 39.2971,-87.6101 39.2811,-87.6151 39.2581,-87.6061 39.2481,-87.5841 39.2081,-87.5881 39.1981,-87.5941 39.1961,-87.6071 39.1681,-87.6441 39.1461,-87.6701 39.1301,-87.6591 39.1131,-87.6621 39.1031,-87.6311 39.0881,-87.6301 39.0841,-87.6121 39.0621,-87.5851 38.9951,-87.5811 38.9941,-87.5911 38.9771,-87.5471 38.9631,-87.5331 38.9311,-87.5301 38.9041,-87.5391 38.8691,-87.5591 38.8571,-87.5501 38.7951,-87.5071 38.7761,-87.5191 38.7691,-87.5081 38.7361,-87.5081 38.6851,-87.5431 38.6721,-87.5881 38.6421,-87.6251 38.6221,-87.6281 38.5991,-87.6191 38.5931,-87.6401 38.5731,-87.6521 38.5471,-87.6721 38.5151,-87.6511 38.5001,-87.6531 38.5041,-87.6791 38.4811,-87.6921 38.4661,-87.7561 38.4571,-87.7581 38.4451,-87.7381 38.4171,-87.7481 38.3781,-87.7841 38.3521,-87.8341 38.2861,-87.8501 38.2851,-87.8631 38.3161,-87.8741 38.3151,-87.8831 38.3001,-87.8881 38.2811,-87.9141 38.3021,-87.9131 38.3041,-87.9251 38.2411,-87.9801 38.2341,-87.9861 38.2001,-87.9771 38.1711,-87.9321 38.1571,-87.9311 38.1361,-87.9501 38.1311,-87.9731 38.1031,-88.0181 38.0921,-88.0121 38.0961,-87.9641 38.0731,-87.9751 38.0541,-88.0341 38.0451,-88.0431 38.0381,-88.0411 38.0331,-88.0211 38.0081,-88.0291 37.9751,-88.0211 37.9561,-88.0421 37.9341,-88.0411 37.9291,-88.0641 37.944,-88.0781 37.9231,-88.084 37.9171,-88.0301 37.9051,-88.0261 37.8961,-88.0441 37.9061,-88.1001 37.8951,-88.1011 37.8671,-88.0751 37.8431,-88.0341 37.8271,-88.0421 37.8311,-88.0891 37.8171,-88.0861 37.8051,-88.0351 37.7351,-88.0721 37.7001,-88.1331 37.6601,-88.1591 37.6281,-88.1571 37.5831,-88.1341 37.5101,-88.0711</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon></topp:the_geom><topp:STATE_NAME>Illinois</topp:STATE_NAME><topp:STATE_FIPS>17</topp:STATE_FIPS><topp:SUB_REGION>E N Cen</topp:SUB_REGION><topp:STATE_ABBR>IL</topp:STATE_ABBR><topp:LAND_KM>143986.61</topp:LAND_KM><topp:WATER_KM>1993.335</topp:WATER_KM><topp:PERSONS>1.1431E7</topp:PERSONS><topp:FAMILIES>2924880.0</topp:FAMILIES><topp:HOUSHOLD>4202240.0</topp:HOUSHOLD><topp:MALE>5552233.0</topp:MALE><topp:FEMALE>5878369.0</topp:FEMALE><topp:WORKERS>4199206.0</topp:WORKERS><topp:DRVALONE>3741715.0</topp:DRVALONE><topp:CARPOOL>652603.0</topp:CARPOOL><topp:PUBTRANS>538071.0</topp:PUBTRANS><topp:EMPLOYED>5417967.0</topp:EMPLOYED><topp:UNEMPLOY>385040.0</topp:UNEMPLOY><topp:SERVICE>1360159.0</topp:SERVICE><topp:MANUAL>828906.0</topp:MANUAL><topp:P_MALE>0.486</topp:P_MALE><topp:P_FEMALE>0.514</topp:P_FEMALE><topp:SAMP_POP>1747776.0</topp:SAMP_POP></topp:states></gml:featureMember></wfs:FeatureCollection>
+--></div>
+<div id="v2/multipletypenames.xml"><!--
+<?xml version='1.0' encoding="ISO-8859-1" ?><wfs:FeatureCollection   xmlns:rws="http://mapserver.gis.umn.edu/mapserver"   xmlns:wfs="http://www.opengis.net/wfs"   xmlns:gml="http://www.opengis.net/gml"   xmlns:ogc="http://www.opengis.net/ogc"   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd                        http://mapserver.gis.umn.edu/mapserver http://intranet.rijkswaterstaat.nl/services/geoservices/kerngisnat_utre?SERVICE=WFS&amp;VERSION=1.0.0&amp;REQUEST=DescribeFeatureType&amp;TYPENAME=VKUNSTWERK,LKUNSTWERK,PKUNSTWERK&amp;OUTPUTFORMAT=XMLSCHEMA">      <gml:boundedBy>      	<gml:Box srsName="EPSG:28992">      		<gml:coordinates>134503.789000,455332.337000 135149.909000,455893.926000</gml:coordinates>      	</gml:Box>      </gml:boundedBy>    <gml:featureMember>      <rws:VKUNSTWERK fid="VKUNSTWERK.16">        <gml:boundedBy>        	<gml:Box srsName="EPSG:28992">        		<gml:coordinates>134949.571000,455438.845000 134978.799000,455471.762000</gml:coordinates>        	</gml:Box>        </gml:boundedBy>        <rws:geometry>        <gml:MultiPolygon srsName="EPSG:28992">        <gml:polygonMember>          <gml:Polygon>            <gml:outerBoundaryIs>              <gml:LinearRing>                <gml:coordinates>134974.191000,455471.587000 134973.974000,455471.762000 134973.558000,455471.248000 134973.579000,455471.230000 134963.143000,455458.768000 134962.787000,455458.653000 134960.514000,455456.003000 134960.440000,455455.539000 134950.207000,455443.320000 134950.158000,455443.360000 134949.571000,455442.638000 134949.810000,455442.462000 134951.417000,455441.223000 134951.435000,455441.209000 134954.158000,455439.108000 134954.507000,455438.845000 134955.000000,455439.420000 134954.954000,455439.458000 134965.046000,455451.520000 134965.568000,455451.606000 134968.159000,455454.642000 134968.120000,455455.195000 134978.294000,455467.355000 134978.330000,455467.326000 134978.799000,455467.881000 134978.598000,455468.042000 134975.885000,455470.224000 134974.191000,455471.587000 </gml:coordinates>              </gml:LinearRing>            </gml:outerBoundaryIs>            <gml:innerBoundaryIs>              <gml:LinearRing>                <gml:coordinates>134960.590000,455455.163000 134963.589000,455458.755000 134973.756000,455470.929000 134973.836000,455471.019000 134974.216000,455471.445000 134975.807000,455470.163000 134978.485000,455468.005000 134978.077000,455467.534000 134978.015000,455467.462000 134967.969000,455455.479000 134964.782000,455451.678000 134954.705000,455439.660000 134954.622000,455439.561000 134954.271000,455439.152000 134951.498000,455441.284000 134949.973000,455442.456000 134950.452000,455443.023000 134950.501000,455443.081000 134960.590000,455455.163000 </gml:coordinates>              </gml:LinearRing>            </gml:innerBoundaryIs>          </gml:Polygon>        </gml:polygonMember>        </gml:MultiPolygon>        </rws:geometry>        <rws:OBJECTID>16</rws:OBJECTID>        <rws:OBJECTSUBCATEGORIE>31</rws:OBJECTSUBCATEGORIE>      </rws:VKUNSTWERK>    </gml:featureMember>    <gml:featureMember>      <rws:LKUNSTWERK fid="LKUNSTWERK.14">        <gml:boundedBy>        	<gml:Box srsName="EPSG:28992">        		<gml:coordinates>135080.966000,455332.337000 135149.909000,455390.384000</gml:coordinates>        	</gml:Box>        </gml:boundedBy>        <rws:geometry>        <gml:MultiLineString srsName="EPSG:28992">          <gml:lineStringMember>            <gml:LineString>              <gml:coordinates>135080.966000,455390.384000 135096.654000,455377.009000 135109.082000,455366.755000 135122.769000,455355.276000 135141.565000,455339.633000 135149.909000,455332.337000 </gml:coordinates>            </gml:LineString>          </gml:lineStringMember>        </gml:MultiLineString>        </rws:geometry>        <rws:OBJECTID>14</rws:OBJECTID>        <rws:OBJECTSUBCATEGORIE>30</rws:OBJECTSUBCATEGORIE>      </rws:LKUNSTWERK>    </gml:featureMember>    <gml:featureMember>      <rws:PKUNSTWERK fid="PKUNSTWERK.29">        <gml:boundedBy>        	<gml:Box srsName="EPSG:28992">        		<gml:coordinates>134832.017000,455596.187000 134832.017000,455596.187000</gml:coordinates>        	</gml:Box>        </gml:boundedBy>        <rws:geometry>        <gml:MultiPoint srsName="EPSG:28992">          <gml:pointMember>            <gml:Point>              <gml:coordinates>134832.017000,455596.187000</gml:coordinates>            </gml:Point>          </gml:pointMember>        </gml:MultiPoint>        </rws:geometry>        <rws:OBJECTID>29</rws:OBJECTID>        <rws:OBJECTSUBCATEGORIE>30</rws:OBJECTSUBCATEGORIE>      </rws:PKUNSTWERK>    </gml:featureMember></wfs:FeatureCollection>
+--></div>
+<div id="v2/nogeom.xml"><!--
+<?xml version="1.0" encoding="UTF-8"?><wfs:FeatureCollection xmlns="http://www.opengis.net/wfs" xmlns:wfs="http://www.opengis.net/wfs" xmlns:gml="http://www.opengis.net/gml" xmlns:loc="http://server.fr/geoserver/loc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://server.fr:80/geoserver/schemas/wfs/1.0.0/WFS-basic.xsd http://server.fr/geoserver/loc http://server.fr:80/geoserver/wfs?service=WFS&amp;version=1.0.0&amp;request=DescribeFeatureType&amp;typeName=loc:DEPARTEMENT"><gml:boundedBy><gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#2154"><gml:coordinates xmlns:gml="http://www.opengis.net/gml" decimal="." cs="," ts=" ">199373,6704170 337568,6885985</gml:coordinates></gml:Box></gml:boundedBy><gml:featureMember><loc:DEPARTEMENT fid="DEPARTEMENT.1"><gml:boundedBy><gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#2154"><gml:coordinates xmlns:gml="http://www.opengis.net/gml" decimal="." cs="," ts=" ">209565,6785323 337568,6885985</gml:coordinates></gml:Box></gml:boundedBy><loc:NOM_DEPT>COTES-D'ARMOR</loc:NOM_DEPT></loc:DEPARTEMENT></gml:featureMember><gml:featureMember><loc:DEPARTEMENT fid="DEPARTEMENT.3"><gml:boundedBy><gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#2154"><gml:coordinates xmlns:gml="http://www.opengis.net/gml" decimal="." cs="," ts=" ">199373,6704170 323518,6807542</gml:coordinates></gml:Box></gml:boundedBy><loc:NOM_DEPT>MORBIHAN</loc:NOM_DEPT></loc:DEPARTEMENT></gml:featureMember></wfs:FeatureCollection>
+--></div>
+</body>
+</html>

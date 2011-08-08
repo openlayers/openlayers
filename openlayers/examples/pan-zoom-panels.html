@@ -1,0 +1,97 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Pan and Zoom Panels</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+
+    <!-- 
+      -- Special stylesheet inclusion for ie6, which doesn't handle the alpha 
+      -- channel of images correctly. The special ie6 stylesheet will only 
+      -- be included if the browser running is ie6. For now, the only thing it
+      -- does is load alternative, non-alpha pngs for the zoom/pan panels.
+      -->
+
+    <!--[if lte IE 6]>
+        <link rel="stylesheet" href="../theme/default/ie6-style.css" type="text/css" />
+    <![endif]-->
+
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script type="text/javascript" src="../lib/OpenLayers.js"></script>
+    <script>
+    var map;
+    var lon = 5;
+    var lat = 40;
+    var zoom = 5;
+    function init(){
+        map = new OpenLayers.Map("map", {
+            controls: [
+                new OpenLayers.Control.Navigation(),
+                new OpenLayers.Control.PanPanel(),
+                new OpenLayers.Control.ZoomPanel()
+            ]
+        });
+        
+        var wms = new OpenLayers.Layer.WMS(
+            "OpenLayers WMS",
+            "http://vmap0.tiles.osgeo.org/wms/vmap0",
+            {layers: 'basic'}
+        );
+        map.addLayers([wms]);
+        
+        map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+    }
+    </script>
+    <style type="text/css">
+        .olControlPanPanel {
+             width: 100%;
+             height: 100%;
+             left: 0;
+             top: 0;
+        }
+        .olControlPanPanel .olControlPanNorthItemInactive {
+             left: 50%;
+             margin-left: -9px;
+             top: 0;
+        }
+        .olControlPanPanel .olControlPanSouthItemInactive {
+             left: 50%;
+             margin-left: -9px;
+             top: auto;
+             bottom: 0;
+        }
+        .olControlPanPanel .olControlPanWestItemInactive {
+             top: 50%;
+             margin-top: -9px;
+             left: 0;
+        }
+        .olControlPanPanel .olControlPanEastItemInactive {
+             top: 50%;
+             margin-top: -9px;
+             left: auto;
+             right: 0;
+        }
+       .olControlZoomPanel {
+             left: auto;
+             right: 23px;
+             top: 8px;
+       } 
+    </style>
+</head>
+<body onload='init();'>
+    <h1 id="title">Pan and Zoom Panels</h1>
+    <div id="tags">
+        panning, zooming, panel, CSS, style
+    </div>
+    <p id="shortdesc">
+    Customizable pan and zoom panels
+    </p>
+    <div id="map" class="smallmap"></div>
+    <p id="docs">
+        The pan and zoom panels allow you to use CSS styling to change the
+        look and feel of the panels, including changing their position
+        and their icons without needing to change any code.
+    </p>   
+</body>
+</html>

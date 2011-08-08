@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>OpenLayers Navigation History Example</title>
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <style>
+            #panel {
+                right: 0px;
+                height: 30px; 
+                width: 200px;
+            }
+            #panel div { 
+                float: left;
+                margin: 5px;
+            }
+        </style>
+        <script src="../lib/OpenLayers.js"></script>
+        <script type="text/javascript">
+            var map, nav, panel;
+
+            function init() {
+                map = new OpenLayers.Map('map');
+
+                nav = new OpenLayers.Control.NavigationHistory();
+                // parent control must be added to the map
+                map.addControl(nav);
+
+                panel = new OpenLayers.Control.Panel(
+                    {div: document.getElementById("panel")}
+                );
+                panel.addControls([nav.next, nav.previous]);
+                map.addControl(panel);
+                
+                var layer = new OpenLayers.Layer.WMS(
+                    "OpenLayers WMS",
+                    "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                    {layers: 'basic'}
+                );
+                map.addLayer(layer);
+                map.zoomToMaxExtent();
+            }
+        </script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">Map Navigation History Example</h1>
+
+        <div id="tags">
+            history, basic
+        </div>
+
+        <p id="shortdesc">
+            A control for zooming to previous and next map extents.
+        </p>
+
+        <div id="map" class="smallmap"></div>
+        Map navigation history controls<div id="panel"></div>
+        <div id="docs"></div>
+    </body>
+</html>

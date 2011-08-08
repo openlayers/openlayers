@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+      <title>OpenLayers Layer Switcher Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map;
+        function init(){
+            map = new OpenLayers.Map('map', { controls: [] });
+            map.addControl(new OpenLayers.Control.Navigation());
+
+            map.addControl(new OpenLayers.Control.LayerSwitcher({'div':OpenLayers.Util.getElement('layerswitcher')}));
+
+            var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                {layers: 'basic'}, {'displayInLayerSwitcher':false} );
+
+            var jpl_wms = new OpenLayers.Layer.WMS( "NASA Global Mosaic",
+                "http://t1.hypercube.telascience.org/cgi-bin/landsat7", 
+                {layers: "landsat7"}, {'isBaseLayer': false});
+
+            var dm_wms = new OpenLayers.Layer.WMS( "DM Solutions Demo",
+                "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap",
+                {layers: "bathymetry,land_fn,park,drain_fn,drainage," +
+                         "prov_bound,fedlimit,rail,road,popplace",
+                 transparent: "true", format: "image/png" });
+
+            jpl_wms.setVisibility(false);
+            dm_wms.setVisibility(false);
+
+            map.addLayers([ol_wms, jpl_wms, dm_wms]);
+            if (!map.getCenter()) map.zoomToMaxExtent();
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Layer Switcher Example</h1>
+
+    <div id="tags">
+        tree, layerswitcher, reposition
+    </div>
+
+    <p id="shortdesc">
+        Demonstrates the use of the LayerSwitcher outside of the OpenLayers window.
+    </p>
+
+    <div id="layerswitcher" class="olControlLayerSwitcher"></div>
+    <div id="map" class="smallmap"></div>
+    <div id="docs">
+      <p>This demonstrates use of the LayerSwitcher outside the map div. It also shows use
+         of the displayInLayerSwitcher option on the Layer to cause it to not display in the
+         LayerSwitcher.</p>
+   </div>
+  </body>
+</html>

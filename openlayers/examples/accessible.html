@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>OpenLayers Accessible Example</title>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <style type="text/css">
+            table {
+                border: 1 px solid white;
+                padding: 0;
+            }
+            td {
+                text-align: center;
+            }
+            a {
+                text-decoration: none;
+                font-size: 1.2em;
+            }
+            a em {
+                font-style: normal;
+                font-weight: normal;
+                text-decoration: underline;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
+            a.api {
+                font-size:1em;
+                text-decoration:underline;
+            }
+        </style>
+        <script src="../lib/OpenLayers.js"></script>
+        <script type="text/javascript">
+            var map = null;
+            function init(){
+                var options = {
+                    controls: [new OpenLayers.Control.KeyboardDefaults()]
+                };
+                map = new OpenLayers.Map('map', options);
+                var wms = new OpenLayers.Layer.WMS(
+                    "OpenLayers WMS",
+                    "http://vmap0.tiles.osgeo.org/wms/vmap0?",
+                    {layers: 'basic'}
+                );
+                map.addLayer(wms);
+                map.zoomToMaxExtent();
+            }
+        </script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">Accessible Example</h1>
+
+        <div id="tags">
+            keyboard, pan, panning, zoom, zooming, accesskey
+        </div>        
+
+        <p id="shortdesc">
+            Demonstrate how to use the KeyboardDefaults option parameter for layer types.
+        </p>
+
+        <table>
+            <tbody>
+                <tr>
+                    <td>
+                        <a href="javascript: void map.zoomOut();"
+                           accesskey="o">
+                            zoom <em>o</em>ut
+                        </a>
+                    </td>
+                    <td>
+                        <a href="javascript: void map.pan(0, -map.getSize().h / 4);"
+                           accesskey="n">
+                            pan <em>n</em>orth
+                        </a>
+                    </td>
+                    <td>
+                        <a href="javascript: void map.zoomIn();"
+                           accesskey="i">
+                            zoom <em>i</em>n
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="javascript: void map.pan(-map.getSize().w / 4, 0);"
+                           accesskey="w">
+                            pan <em>w</em>est
+                        </a>
+                    </td>
+                    <td id="map" class="smallmap"></td>
+                    <td>
+                        <a href="javascript: void map.pan(map.getSize().w / 4, 0);"
+                           accesskey="e">
+                            pan <em>e</em>ast
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>
+                        <a href="javascript: void map.pan(0, map.getSize().h / 4);"
+                           accesskey="s">
+                            pan <em>s</em>outh
+                        </a>
+                    </td>
+                    <td>&nbsp;</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div id="docs">
+            <p>Navigate the map in one of three ways:</p>
+                <ul>
+                    <li>Click on the named links to zoom and pan</li>
+                    <li>Use following keys to pan and zoom:
+                        <ul>
+                            <li>+ (zoom in)</li>
+                            <li>- (zoom out)</li>
+                            <li>up-arrow (pan north)</li>
+                            <li>down-arrow (pan south)</li>
+                            <li>left-arrow (pan east)</li>
+                            <li>right-arrow (pan west)</li>
+                        </ul>
+                    </li>
+                    <li>If access keys work for links in your browser, use:
+                        <ul>
+                            <li>i (zoom in)</li>
+                            <li>o (zoom out)</li>
+                            <li>n (pan north)</li>
+                            <li>s (pan south)</li>
+                            <li>e (pan east)</li>
+                            <li>w (pan west)</li>
+                        </ul>
+                    </li>
+                </ul>
+            <p>
+
+            This is an example of using alternate methods to control panning and zooming.  This approach uses map.pan() and map.zoom().  You'll note that to pan, additional math is necessary along with map.size() in order to set the distance to pan.
+        </div>
+    </body>
+</html>

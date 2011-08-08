@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>WMS with POST Requests to Avoid Long URLs</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+  </head>
+  <body>
+    <h1 id="title">WMS with POST Requests to Avoid Long URLs</h1>
+
+    <div id="tags">
+        sld, sld_body, post, iframe, advanced
+    </div>
+
+    <div id="shortdesc">Render tiles in IMG or IFRAME elements, depending on
+        the complexity of the GetMap request</div>
+
+    <div id="map" class="smallmap"></div>
+
+    <div id="docs">
+        <p>The <code>maxGetUrlLength</code> property of the layer's
+            <code>tileOptions</code> option causes tiles to be requested using
+            HTTP POST when the length of the GET url would exceed the specified
+            length (2048 characters is recommended). In real life applications,
+            this happens often when using the SLD_BODY request parameter for
+            inline styling.
+        </p><p>
+            <input type="radio" name="group" id="longurl" checked="checked">
+            Long URL - POST requests
+            <br>
+            <input type="radio" name="group" id="shorturl">
+            Short URL - GET requests
+        </p><p>
+            View the <a href="wms-long-url.js" target="_blank">wms-long-url.js</a>
+            source to see how this is done.
+        </p>
+    </div>
+    <script src="../lib/OpenLayers.js"></script>
+    <script src="wms-long-url.js"></script>
+  </body>
+</html>

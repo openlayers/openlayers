@@ -1,0 +1,226 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    var layer; 
+
+    var name = "Test Layer";
+    var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+    var params = { map: '/mapdata/vmap_wms.map', 
+                   layers: 'basic', 
+                   format: 'image/png'};
+    var options = { chicken: 151, foo: "bar" };
+
+    function test_Layer_HTTPRequest_constructor (t) {
+        t.plan( 5 );
+
+        layer = new OpenLayers.Layer.HTTPRequest(name, url, params, options);
+        
+        t.ok( layer instanceof OpenLayers.Layer.HTTPRequest, "new OpenLayers.Layer.HTTPRequest returns correctly typed object" );
+
+        // correct bubbling up to Layer.initialize()
+        t.eq( layer.name, name, "layer.name is correct" );
+        t.ok( ((layer.options["chicken"] == 151) && (layer.options["foo"] == "bar")), "layer.options correctly set" );
+
+        // HTTPRequest-specific properties
+        t.eq( layer.url, url, "layer.name is correct" );
+        t.ok( ((layer.params["map"] == '/mapdata/vmap_wms.map') && 
+               (layer.params["layers"] == "basic") &&
+               (layer.params["format"] == "image/png")), "layer.params correctly set" );
+
+
+    }
+
+    function test_Layer_HTTPRequest_clone (t) {
+        t.plan( 6 );
+        
+        var toClone = new OpenLayers.Layer.HTTPRequest(name, url, params, options);
+        toClone.chocolate = 5;
+
+        var layer = toClone.clone();
+
+        t.eq(layer.chocolate, 5, "correctly copied randomly assigned property");
+
+        t.ok( layer instanceof OpenLayers.Layer.HTTPRequest, "new OpenLayers.Layer.HTTPRequest returns correctly typed object" );
+
+        // correct bubbling up to Layer.initialize()
+        t.eq( layer.name, name, "layer.name is correct" );
+        t.eq( layer.options, options, "layer.options correctly set" );
+
+        // HTTPRequest-specific properties
+        t.eq( layer.url, url, "layer.name is correct" );
+        t.ok( ((layer.params["map"] == '/mapdata/vmap_wms.map') && 
+               (layer.params["layers"] == "basic") &&
+               (layer.params["format"] == "image/png")), "layer.params correctly set" );
+
+    }
+
+    function test_Layer_HTTPRequest_setUrl (t) {
+        t.plan( 1 );
+
+        layer = new OpenLayers.Layer.HTTPRequest(name, url, params, options);
+        
+        layer.setUrl("foo");
+        t.eq( layer.url, "foo", "setUrl() works");
+    }
+
+    function test_Layer_HTTPRequest_mergeNewParams (t) {
+        t.plan( 8 );
+
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.HTTPRequest(name, url, params, options);
+        map.addLayer(layer);
+
+        var scope = {some: "scope"}, log = [];
+        map.events.on({
+            changelayer: function(e) {
+                log.push({layer: e.layer, property: e.property, scope: this});
+            },
+            scope: scope
+        });
+        
+        var newParams = { layers: 'sooper', 
+                          chickpeas: 'image/png'};
+
+        layer.mergeNewParams(newParams);
+        
+        t.eq( layer.params.layers, "sooper", "mergeNewParams() overwrites well");
+        t.eq( layer.params.chickpeas, "image/png", "mergeNewParams() adds well");
+        t.eq( log.length, 1, "mergeNewParams() triggers changelayer once");
+        t.ok( log[0].layer == layer, "mergeNewParams() passes changelayer listener the expected layer");
+        t.ok( log[0].property == "params", "mergeNewParams() passes changelayer listener the property \"params\"");
+        t.eq( log[0].scope, scope, "mergeNewParams() executes changelayer listener with expected scope");
+
+        newParams.chickpeas = 151;
+
+        t.eq( layer.params.chickpeas, "image/png", "mergeNewParams() makes clean copy of hash");
+        
+        layer.redraw = function() {
+            t.ok(true, "layer.mergeNewParams calls layer.redraw");
+        }
+        layer.mergeNewParams();
+    }
+
+    function test_Layer_HTTPRequest_getFullRequestString (t) {
+
+        tParams = { layers: 'basic', 
+                   format: 'image/png'};
+        
+        t.plan( 12 );
+
+  // without ?        
+        tUrl = "http://octo.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.HTTPRequest(name, tUrl, tParams, null);
+        str = layer.getFullRequestString();
+        t.eq(str, tUrl + '?' + OpenLayers.Util.getParameterString(tParams), "getFullRequestString() works for url sans ?");
+
+
+  // with ?        
+        tUrl = "http://octo.metacarta.com/cgi-bin/mapserv?";
+        layer = new OpenLayers.Layer.HTTPRequest(name, tUrl, tParams, null);
+        str = layer.getFullRequestString();
+        t.eq(str, tUrl + OpenLayers.Util.getParameterString(tParams), "getFullRequestString() works for url with ?");
+
+  // with ?param1=5
+        tUrl = "http://octo.metacarta.com/cgi-bin/mapserv?param1=5";
+        layer = new OpenLayers.Layer.HTTPRequest(name, tUrl, tParams, null);
+        str = layer.getFullRequestString();
+        t.eq(str, tUrl + '&' + OpenLayers.Util.getParameterString(tParams), "getFullRequestString() works for url with ?param1=5");
+  
+  // with ?param1=5&
+        tUrl = "http://octo.metacarta.com/cgi-bin/mapserv?param1=5&format=image/jpeg";
+        layer = new OpenLayers.Layer.HTTPRequest(name, tUrl, tParams, null);
+        str = layer.getFullRequestString();
+        t.eq(str, tUrl + '&' + OpenLayers.Util.getParameterString({'layers':'basic'}), "getFullRequestString() doesn't override already-existing params in URL");
+
+ 
+  // with ?param1=5&
+        tUrl = "http://octo.metacarta.com/cgi-bin/mapserv?param1=5&";
+        layer = new OpenLayers.Layer.HTTPRequest(name, tUrl, tParams, null);
+        str = layer.getFullRequestString();
+        t.eq(str, tUrl + OpenLayers.Util.getParameterString(tParams), "getFullRequestString() works for url with ?param1=5&");
+  
+
+
+  // passing in new params
+        layer = new OpenLayers.Layer.HTTPRequest(name, tUrl, tParams, null);
+        str = layer.getFullRequestString( { chicken: 6, 
+                                            layers:"road" } );
+        t.eq(str, tUrl + OpenLayers.Util.getParameterString({layers: 'road', format: "image/png", chicken: 6}), "getFullRequestString() works for passing in new params");
+
+  // layer with null params
+        layer = new OpenLayers.Layer.HTTPRequest(name, tUrl, null, null);
+        str = layer.getFullRequestString();
+        t.eq(str, tUrl + OpenLayers.Util.getParameterString({}), "getFullRequestString() works for layer with null params");
+
+  // layer with null params passing in new params
+        layer = new OpenLayers.Layer.HTTPRequest(name, tUrl, null, null);
+        str = layer.getFullRequestString( { chicken: 6, 
+                                            layers:"road" } );
+        t.eq(str, tUrl + OpenLayers.Util.getParameterString({chicken: 6, layers: "road"}), "getFullRequestString() works for layer with null params passing in new params");
+
+  // with specified altUrl parameter
+        tUrl = "http://octo.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.HTTPRequest(name, "chicken", tParams, null);
+        str = layer.getFullRequestString(null, tUrl);
+        t.eq(str, tUrl + '?' + OpenLayers.Util.getParameterString(tParams), "getFullRequestString() works with specified altUrl parameter");
+  
+  // single url object        
+        tUrl = ["http://octo.metacarta.com/cgi-bin/mapserv"];
+        layer = new OpenLayers.Layer.HTTPRequest(name, tUrl, tParams, null);
+        str = layer.getFullRequestString();
+        t.eq(str, tUrl[0] + '?' + OpenLayers.Util.getParameterString(tParams), "getFullRequestString() works for list of one url");
+  
+  // two url object        
+        tUrl = ["http://octo.metacarta.com/cgi-bin/mapserv","http://labs.metacarta.com/cgi-bin/mapserv"];
+        layer = new OpenLayers.Layer.HTTPRequest(name, tUrl, tParams, null);
+        str = layer.getFullRequestString();
+        t.eq(str, tUrl[1] + '?' + OpenLayers.Util.getParameterString(tParams), "getFullRequestString() works for list of two urls");
+        str = layer.getFullRequestString({'a':'b'});
+        t.eq(str, tUrl[0] + '?' + OpenLayers.Util.getParameterString(OpenLayers.Util.extend(tParams,{'a':'b'})), "getFullRequestString() works for list of two urls and is deterministic");
+
+    }
+
+    function test_Layer_HTTPRequest_selectUrl (t) { 
+        t.plan( 4 ); 
+
+        layer = new OpenLayers.Layer.HTTPRequest(name, url, params, options); 
+
+        urls = ["wms1", "wms2", "wms3", "wms4"]; 
+        t.eq( layer.selectUrl("bbox=-180,0,0,90",  urls), "wms3", "selectUrl(-90,-180) returns 4" ); 
+        t.eq( layer.selectUrl("bbox=-180,-90,0,0", urls), "wms1", "selectUrl(90,-180) returns 3" ); 
+        t.eq( layer.selectUrl("bbox=0,90,180,0",   urls), "wms1", "selectUrl(-90,180) returns 1" ); 
+        t.eq( layer.selectUrl("bbox=0,0,180,90",   urls), "wms4", "selectUrl(90,180) returns 2" ); 
+    }
+
+    function test_Layer_HTTPRequest_destroy (t) {
+        t.plan( 6 );    
+
+        var map = new OpenLayers.Map('map');
+
+        layer = new OpenLayers.Layer.HTTPRequest("Test Layer",
+                                                 "http://www.openlayers.org", 
+                                                 { foo: 2, bar: 3}, 
+                                                 { opt1: 8, opt2: 9});
+
+        map.addLayer(layer);
+        layer.destroy();
+ 
+        // Ensure Layer.destroy() is called
+        t.eq( layer.name, null, "layer.name is null after destroy" );
+        t.eq( layer.div, null, "layer.div is null after destroy" );
+        t.eq( layer.map, null, "layer.map is null after destroy" );
+        t.eq( layer.options, null, "layer.options is null after destroy" );
+ 
+ 
+        // Specific to HTTPRequest 
+        t.eq( layer.url, null, "layer.url is null after destroy" );
+        t.eq( layer.params, null, "layer.params is null after destroy" );
+    }
+
+  </script>
+</head>
+<body>
+  <div id="map"></div>
+</body>
+</html>

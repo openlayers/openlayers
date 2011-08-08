@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers Bing Tiles Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <style type="text/css">
+    .olControlAttribution {
+        left: 2px;
+        right: inherit;
+        bottom: 3px;
+        line-height: 11px; 
+    }
+    </style>
+  </head>
+  <body>
+    <h1 id="title">Basic Bing Tiles Example</h1>
+
+    <div id="tags">
+        bing tiles
+    </div>
+
+    <div id="shortdesc">Use Bing with direct tile access</div>
+
+    <div id="map" class="smallmap"></div>
+
+    <div id="docs">
+        <p>This example shows a very simple map with Bing layers that use
+        direct tile access through Bing Maps REST Services.</p><p>See
+        <a target="_blank" href="bing-tiles.js">bing-tiles.js</a> for the
+        source code.</p>
+    </div>
+    <script src="../lib/OpenLayers.js"></script>
+    <script src="bing-tiles.js"></script>
+  </body>
+</html>

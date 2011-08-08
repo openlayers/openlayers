@@ -1,0 +1,344 @@
+<html>
+<head>
+  <script src="OLLoader.js"></script>
+  <script src="data/geos_wkt_intersects.js"></script>
+  <script type="text/javascript">
+    var map; 
+
+    function test_Geometry_constructor (t) {
+        t.plan( 2 );
+        
+        var g = new OpenLayers.Geometry();
+        
+        t.eq(g.CLASS_NAME, "OpenLayers.Geometry", "correct CLASS_NAME")
+        t.ok(OpenLayers.String.startsWith(g.id, "OpenLayers.Geometry_"),
+             "id correctly set");
+    }
+
+
+    function test_Geometry_clone(t) {
+        t.plan(2);
+        var geometry = new OpenLayers.Geometry();
+        var clone = geometry.clone();
+
+        t.eq(clone.CLASS_NAME, "OpenLayers.Geometry", "correct CLASS_NAME")
+        t.ok(OpenLayers.String.startsWith(clone.id, "OpenLayers.Geometry_"),
+             "id correctly set");
+    }
+
+    function test_Geometry_setBounds(t) {
+        t.plan( 2 );
+        
+        var g = new OpenLayers.Geometry();
+        
+      //null object
+        g.setBounds(null);
+        t.ok(g.bounds == null, "setbounds with null value does not crash or set bounds");
+      
+      //no classname object
+        g_clone = {};
+        var object = {
+            'clone': function() { return g_clone; }
+        };
+        g.setBounds(object);
+        t.ok(g.bounds == g_clone, "setbounds with valid object sets bounds, calls clone");
+    }
+
+    function test_Geometry_extendBounds(t) {
+        t.plan(9);
+        
+        OpenLayers.Bounds.prototype._extend = 
+            OpenLayers.Bounds.prototype.extend;
+        OpenLayers.Bounds.prototype.extend = function(b) { 
+            g_extendBounds = b; 
+        };
+        
+        var g = new OpenLayers.Geometry();
+
+      //this.bounds null (calculateBounds(), setBounds() called)
+        g.setBounds = function(b) { g_setBounds = b; };
+        g.calculateBounds = function() { g_calculateBounds = {}; };
+        var object = {};
+        g_setBounds = null;
+        g_calculateBounds = null;
+        g_extendBounds = null;
+        g.extendBounds(object);
+        t.ok(g_calculateBounds != null, "calculateBounds() called when this.bounds is null");
+        t.ok(g_setBounds == object, "setBounds() called when this.bounds is null and calculateBounds() is null too");        
+        t.ok(g_extendBounds != object, "this.bounds.extend() not called when this.bounds is null and calculateBounds() is null too");
+        
+      //this.bounds null (calculateBounds() sets this.bounds:
+      //   -  setBounds() not called
+      //   -  this.bounds.extend() called
+        g_calcBounds = new OpenLayers.Bounds(1,2,3,4);
+        g.calculateBounds = function() { 
+            g_calculateBounds = {}; 
+            this.bounds = g_calcBounds; 
+        };
+        var object = {};
+
+        g_setBounds = null;
+        g_calculateBounds = null;
+        g_extendBounds = null;
+        g.extendBounds(object);
+        t.ok(g_calculateBounds != null, "calculateBounds() called when this.bounds is null");
+        t.ok(g_setBounds == null, "setBounds() not called when this.bounds is null and calculateBounds() sets this.bounds");        
+        t.ok(g_extendBounds == object, "this.bounds.extend() called when this.bounds is null and calculateBounds() sets this.bounds");        
+
+        
+      //this.bounds non-null thus extend()
+      //   -  setBounds() not called
+      //   -  this.bounds.extend() called
+        g_setBounds = null;
+        g_calculateBounds = null;
+        g_extendBounds = null;
+        g.extendBounds(object);
+        t.ok(g_calculateBounds == null, "calculateBounds() not called when this.bounds is non null");
+        t.ok(g_setBounds == null, "setBounds() not called when this.bounds is nonnull");        
+        t.ok(g_extendBounds == object, "this.bounds.extend() called when this.bounds is non-null");        
+
+        OpenLayers.Bounds.prototype.extend = 
+            OpenLayers.Bounds.prototype._extend;
+
+
+    }
+
+    function test_Geometry_getBounds(t) {
+        t.plan(1);
+        
+        var g = new OpenLayers.Geometry();
+        
+        var testBounds = new OpenLayers.Bounds(1,2,3,4);
+        g.bounds = testBounds.clone();
+        
+        t.ok(g.getBounds().equals(testBounds), "getBounds works");
+    }
+    
+    function test_Geometry_atPoint(t) {
+        t.plan(6);
+            
+        var g = new OpenLayers.Geometry();
+    
+        var lonlat = null;
+        var lon = 5;
+        var lat = 10;
+    
+      //null lonlat
+        g.bounds = new OpenLayers.Bounds();
+
+        var atPoint = g.atPoint(lonlat, lon, lat);
+        t.ok(!atPoint, "null lonlat")
+
+      //null this.bounds
+        g.bounds = null;
+        lonlat = new OpenLayers.LonLat(1,2);      
+      
+        atPoint = g.atPoint(lonlat, lon, lat);
+        t.ok(!atPoint, "null this.bounds")
+
+    //toleranceLon/toleranceLat
+
+      //default toleranceLon/toleranceLat
+        OpenLayers.Bounds.prototype._containsLonLat = OpenLayers.Bounds.prototype.containsLonLat;
+        g_Return = {};
+        OpenLayers.Bounds.prototype.containsLonLat = function(ll) {
+            g_bounds = this;
+            return g_Return;
+         }
+
+        var testBounds = new OpenLayers.Bounds(10,20,30,40);
+        g.bounds = testBounds.clone();
+        lonlat = new OpenLayers.LonLat(20,30);
+      
+        g_bounds = null;
+        atPoint = g.atPoint(lonlat);
+        t.ok(g_bounds.equals(testBounds), "default toleranceLon/Lat are 0");
+        t.ok(atPoint == g_Return, "default toleranceLon/Lat returns correctly");
+
+      //real toleranceLon/toleranceLat
+        var testBounds = new OpenLayers.Bounds(10,20,30,40);
+        g.bounds = testBounds.clone();
+        lonlat = new OpenLayers.LonLat(20,30);
+      
+        g_bounds = null;
+        atPoint = g.atPoint(lonlat, lon, lat);
+        testBounds.left -= lon;
+        testBounds.bottom -= lat;
+        testBounds.right += lon;
+        testBounds.top += lat;
+        t.ok(g_bounds.equals(testBounds), "real toleranceLon/Lat are 0");
+        t.ok(atPoint == g_Return, "real toleranceLon/Lat returns correctly");
+
+        OpenLayers.Bounds.prototype.containsLonLat = OpenLayers.Bounds.prototype._containsLonLat;
+    
+    }
+    
+    function test_Geometry_getLength(t) {
+        t.plan(1);
+        
+        var g = new OpenLayers.Geometry();
+        
+        t.eq(g.getLength(), 0, "getLength is 0");
+    }    
+
+    function test_Geometry_getArea(t) {
+        t.plan(1);
+        
+        var g = new OpenLayers.Geometry();
+        
+        t.eq(g.getArea(), 0, "getArea is 0");
+    }
+    
+    function test_Geometry_clearBounds(t) {
+        t.plan(2);
+        
+        var g = new OpenLayers.Geometry();
+        g.parent = new OpenLayers.Geometry();
+
+        g.bounds = "foo";
+        g.parent.bounds = "bar";
+        
+        g.clearBounds();
+        t.ok(g.bounds == null, "bounds is correctly cleared");
+        t.ok(g.parent.bounds == null, "parent geometry bounds is correctly cleared");
+    }
+
+    function test_Geometry_destroy(t) {
+        t.plan( 2 );
+
+        var g = new OpenLayers.Geometry();
+        g.bounds = new OpenLayers.Bounds();
+
+        g_style_destroy = null;
+        g.destroy();
+        
+        t.eq(g.id, null, "id nullified");
+
+        t.eq(g.bounds, null, "bounds nullified");
+
+    }
+
+    function test_Geometry_intersects_geos_wkt(t) {
+        var wkt = new OpenLayers.Format.WKT();
+        var failures = [];
+        var intersect12, intersect21, msg;
+        for (var i = 0; i < geos_test_data.length; i++) {
+            var testcase = geos_test_data[i];
+            f1 = wkt.read(testcase['wkt1']);
+            f2 = wkt.read(testcase['wkt2']);
+            intersect12 = f1.geometry.intersects(f2.geometry);
+            intersect21 = f2.geometry.intersects(f1.geometry);
+            if(intersect12 != testcase.result) {
+                msg = "f1 should " + (testcase.result ? "" : "not ") +
+                      "intersect f2: f1 = '" + testcase['wkt1'] + "' " +
+                      "f2 = '" + testcase['wkt2'] + "'";
+                failures.push(msg);
+            }
+            if(intersect21 != testcase.result) {
+                msg = "f2 should " + (testcase.result ? "" : "not ") +
+                      "intersect f1: f1 = '" + testcase['wkt1'] + "' " +
+                      "f2 = '" + testcase['wkt2'] + "'";
+                failures.push(msg);
+            }
+        }
+        if(failures.length == 0) {
+            t.plan(1);
+            t.ok(true, "all " + geos_test_data.length + " geos tests pass");
+        } else {
+            t.plan(failures.length);
+            for(var f=0; f<failures.length; ++f) {
+                t.fail(failures[f]);
+            }
+        }
+    }
+    
+    function test_distanceToSegment(t) {
+        var dist = OpenLayers.Geometry.distanceToSegment;
+
+        var cases = [{
+            got: dist({x: 0, y: 0}, {x1: 0, y1: 1, x2: 1, y2: 1}),
+            expected: {distance: 1, x: 0, y: 1}
+        }, {
+            got: dist({x: 0, y: 0}, {x1: -1, y1: -1, x2: 0, y2: -1}),
+            expected: {distance: 1, x: 0, y: -1}
+        }, {
+            got: dist({x: 0, y: 0}, {x1: -1, y1: -1, x2: 1, y2: 1}),
+            expected: {distance: 0, x: 0, y: 0}
+        }, {
+            got: dist({x: 1, y: 1}, {x1: 2, y1: 0, x2: 2, y2: 3}),
+            expected: {distance: 1, x: 2, y: 1}
+        }, {
+            got: dist({x: -1, y: -1}, {x1: -2, y1: -2, x2: -1, y2: -3}),
+            expected: {distance: Math.sqrt(2), x: -2, y: -2}
+        }, {
+            got: dist({x: -1, y: 1}, {x1: -3, y1: 1, x2: -1, y2: 3}),
+            expected: {distance: Math.sqrt(2), x: -2, y: 2}
+        }];
+        
+        t.plan(cases.length);
+        for(var i=0; i<cases.length; ++i) {
+            t.eq(cases[i].got, cases[i].expected, "case " + i);
+        }
+        
+    }
+
+    function test_fromWKT(t) {
+        
+        var cases = [{
+            wkt: "POINT(1 2)",
+            geom: new OpenLayers.Geometry.Point(1, 2)
+        }, {
+            wkt: "MULTIPOINT((3.5 5.6),(4.8 10.5))",
+            geom: new OpenLayers.Geometry.MultiPoint([
+                new OpenLayers.Geometry.Point(3.5, 5.6),
+                new OpenLayers.Geometry.Point(4.8, 10.5)
+            ])
+        }, {
+            wkt: "LINESTRING(1 2, 3 4)",
+            geom: new OpenLayers.Geometry.LineString([
+                new OpenLayers.Geometry.Point(1, 2),
+                new OpenLayers.Geometry.Point(3, 4)
+            ])
+        }, {
+            wkt: "POLYGON((0 0, 0 4, 4 4, 4 0, 0 0),(1 1, 1 3, 3 3, 3 1, 1 1))",
+            geom: new OpenLayers.Geometry.Polygon([
+                new OpenLayers.Geometry.LinearRing([
+                    new OpenLayers.Geometry.Point(0, 0),
+                    new OpenLayers.Geometry.Point(0, 4),
+                    new OpenLayers.Geometry.Point(4, 4),
+                    new OpenLayers.Geometry.Point(4, 0),
+                    new OpenLayers.Geometry.Point(0, 0)
+                ]),
+                new OpenLayers.Geometry.LinearRing([
+                    new OpenLayers.Geometry.Point(1, 1),
+                    new OpenLayers.Geometry.Point(1, 3),
+                    new OpenLayers.Geometry.Point(3, 3),
+                    new OpenLayers.Geometry.Point(3, 1),
+                    new OpenLayers.Geometry.Point(1, 1)
+                ])
+            ])
+        }, {
+            wkt: "GEOMETRYCOLLECTION(POINT(4 6),LINESTRING(4 6,7 10))",
+            geom: new OpenLayers.Geometry.Collection([
+                new OpenLayers.Geometry.Point(4, 6),
+                new OpenLayers.Geometry.LineString([
+                    new OpenLayers.Geometry.Point(4, 6),
+                    new OpenLayers.Geometry.Point(7, 10)
+                ])
+            ])
+        }];
+        
+        t.plan(cases.length);
+        var wkt = OpenLayers.Geometry.fromWKT;
+        for(var i=0; i<cases.length; ++i) {
+            t.geom_eq(wkt(cases[i].wkt), cases[i].geom, "case " + i);
+        }
+    }
+
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 1024px; height: 512px;"/>
+</body>
+</html>

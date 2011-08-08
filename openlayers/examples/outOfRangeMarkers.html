@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Using maxResolution to control overlays</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <style>
+        #map {
+            height: 350px;
+        }
+    </style>
+      <!-- this gmaps key generated for http://openlayers.org/dev/ -->
+    <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
+    <!-- Localhost key -->
+    <!-- <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhT2yXp_ZAY8_ufC3CFXhHIE1NvwkxTS6gjckBmeABOGXIUiOiZObZESPg'></script>-->
+  
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map;
+        function init(){
+            
+            // Variables
+            map = new OpenLayers.Map('map', {
+                controls: [
+                    new OpenLayers.Control.PanZoomBar(),
+                    new OpenLayers.Control.LayerSwitcher({'ascending':false}),
+                    new OpenLayers.Control.MousePosition(),
+                    new OpenLayers.Control.Navigation()
+                ]
+            });
+            var lon = 35;
+            var lat = -6;
+            var zoom = 6;
+
+
+            // Map Layers
+            var GMapsSat = new OpenLayers.Layer.Google( "Google Satellite" , {type: G_SATELLITE_MAP, 'maxZoomLevel':18} );
+            var GMapsHybr = new OpenLayers.Layer.Google( "Google Hybrid" , {type: G_HYBRID_TYPE, 'maxZoomLevel':18} );
+            var GMapsStreets = new OpenLayers.Layer.Google( "Google Steets" , {type: G_NORMAL_MAP, 'maxZoomLevel':18} );
+            var MarkersLayer2 = new OpenLayers.Layer.Text( "Region info", {location: "outOfRangeMarkers.txt", maxResolution: 0.02});
+
+            // Add Layers
+            map.addLayers([GMapsHybr, GMapsStreets, GMapsSat, MarkersLayer2]);            
+
+            // Visual
+            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+            if (!map.getCenter()) map.zoomToMaxExtent();
+        }
+    </script>
+ </head>
+
+
+ <body onload="init()">
+    <h1 id="title">Using maxResolution to control overlays</h1>
+    <div id="tags">
+        cleanup
+    </div>
+    <p id="shortdesc">
+      See how to control the maximum resolution for a markers layer, 
+      causing it to not be displayed beyond a certain point.
+    </p>  
+    <div id="map" class="smallmap"></div>
+
+  </body>
+</html>

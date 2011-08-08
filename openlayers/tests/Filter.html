@@ -1,0 +1,21 @@
+<html> 
+<head> 
+    <script src="OLLoader.js"></script> 
+    <script type="text/javascript">
+
+    function test_initialize(t) { 
+        t.plan(3); 
+         
+        var options = {'foo': 'bar'}; 
+        var filter = new OpenLayers.Filter(options); 
+        t.ok(filter instanceof OpenLayers.Filter, 
+             "new OpenLayers.Filter returns object" ); 
+        t.eq(filter.foo, "bar", "constructor sets options correctly"); 
+        t.eq(typeof filter.evaluate, "function", "filter has an evaluate function"); 
+    }
+
+    </script> 
+</head> 
+<body> 
+</body> 
+</html> 

@@ -1,0 +1,69 @@
+<html> 
+<head> 
+    <script src="../../OLLoader.js"></script>
+    <script type="text/javascript">
+    
+    var axl_feature_response = '<?xml version="1.0" encoding="Cp1252"?><ARCXML version="1.1"><RESPONSE><FEATURES><FEATURE><FIELDS><FIELD name="UNIQUE_ID" value="514504b5-0458-461d-b540-8e18a454f619" /><FIELD name="LABEL" value="LIBRARY" /><FIELD name="Y_COORD" value="39.57" /><FIELD name="X_COORD" value="-104.24" /><FIELD name="#SHAPE#" value="[Geometry]" /><FIELD name="OBJECTID" value="1" /><FIELD name="shape.area" value="0" /><FIELD name="shape.len" value="0" /></FIELDS></FEATURE><FEATURE><FIELDS><FIELD name="UNIQUE_ID" value="514504b5-0458-461d-b540-8e81a454f619" /><FIELD name="LABEL" value="LIBRARY2" /><FIELD name="Y_COORD" value="39.75" /><FIELD name="X_COORD" value="-104.42" /><FIELD name="#SHAPE#" value="[Geometry]" /><FIELD name="OBJECTID" value="2" /><FIELD name="shape.area" value="0" /><FIELD name="shape.len" value="0" /></FIELDS></FEATURE><FEATURECOUNT count="2" hasmore="false" /><ENVELOPE minx="-678853.220047791" miny="1810.22081371862" maxx="-678853.220047791" maxy="1810.22081371862"/></FEATURES></RESPONSE></ARCXML>';
+    
+    //
+    // creating a new arcxml features format creates an object that has a read and write function
+    //
+    function test_initialize(t) { 
+        t.plan(3); 
+         
+        var format = new OpenLayers.Format.ArcXML.Features(); 
+        t.ok(format instanceof OpenLayers.Format.ArcXML.Features, 
+             "new OpenLayers.Format.ArcXML.Features returns object" ); 
+						 
+        t.eq(typeof format.read, "function", "format has a read function"); 
+        t.eq(typeof format.write, "function", "format has a write function"); 
+    }
+    
+    //
+    // read in a known good axl feature response
+    //
+    function test_read1(t) {
+        t.plan(8);
+        var f = new OpenLayers.Format.ArcXML.Features();
+        var features = f.read(axl_feature_response);
+        
+        t.ok(features !== null, "features are not null" );
+        t.eq(features.length, 2, "feature count is 2" );
+        
+        // test the second feature parsed
+        // <FIELD name="UNIQUE_ID" value="514504b5-0458-461d-b540-8e81a454f619" />
+        // <FIELD name="LABEL" value="LIBRARY2" />
+        // <FIELD name="Y_COORD" value="39.75" />
+        // <FIELD name="X_COORD" value="-104.42" />
+        // <FIELD name="#SHAPE#" value="[Geometry]" />
+        // <FIELD name="OBJECTID" value="2" />
+        // <FIELD name="shape.area" value="0" />
+        // <FIELD name="shape.len" value="0" />
+        t.eq( features[1].attributes['UNIQUE_ID'], "514504b5-0458-461d-b540-8e81a454f619", "field 1 for feature 2 is correct" );
+        t.eq( features[1].attributes['LABEL'], "LIBRARY2", "field 2 for feature 2 is correct" );
+        t.eq( features[1].attributes['Y_COORD'], "39.75", "field 3 for feature 2 is correct" );
+        t.eq( features[1].attributes['X_COORD'], "-104.42", "field 4 for feature 2 is correct" );
+        t.eq( features[1].attributes['#SHAPE#'], "[Geometry]", "field 5 for feature 2 is correct" );
+        t.eq( features[1].attributes['OBJECTID'], "2", "field 6 for feature 2 is correct" );
+    }
+    
+    //
+    // cause an error by parsing bad axl
+    //
+    function test_parseerror(t) {
+        t.plan(1);
+        var f = new OpenLayers.Format.ArcXML.Features();
+        
+        try {
+            f.read( '<?xml version="1.0" encoding="Cp1252"?><ARCXML version="1.1"><NO END TAG>' );
+            t.fail("reading didn't fail");
+        }  catch (ex) {
+            t.eq( ex.message, "Error parsing the ArcXML request", "Exception message indicates parsing error." );
+        }
+    }
+    
+    </script> 
+</head> 
+<body> 
+</body> 
+</html> 

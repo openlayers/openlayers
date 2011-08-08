@@ -1,0 +1,371 @@
+<html>
+<head>
+  <script src="OLLoader.js"></script>
+  <script type="text/javascript">
+
+    function test_String_startsWith(t) {
+        t.plan(3);
+        
+        var str = "chickenHead";
+        
+        var test1 = "chicken";
+        var test2 = "beet";
+
+        t.ok(OpenLayers.String.startsWith(str, "chicken"),
+             "'chickenHead' starts with 'chicken'");
+        t.ok(!OpenLayers.String.startsWith(str, "Head"),
+             "'chickenHead' does not start with 'Head'");
+        t.ok(!OpenLayers.String.startsWith(str, "beet"),
+             "'chickenHead' doesnt start with 'beet'");
+    }
+    
+    function test_String_contains(t) {
+        t.plan(4);
+        
+        var str = "chickenHead";
+
+        t.ok(OpenLayers.String.contains(str, "chicken"),
+             "(beginning) 'chickenHead' contains with 'chicken'");
+        t.ok(OpenLayers.String.contains(str, "ick"),
+             "(middle) 'chickenHead' contains with 'ick'");
+        t.ok(OpenLayers.String.contains(str, "Head"),
+             "(end) 'chickenHead' contains with 'Head'");
+        t.ok(!OpenLayers.String.startsWith(str, "beet"),
+             "'chickenHead' doesnt start with 'beet'");
+    }
+    
+    function test_String_trim(t) {
+        t.plan(6);
+        
+        var str = "chickenHead";
+        t.eq(OpenLayers.String.trim(str),
+             "chickenHead", "string with no extra whitespace is left alone");
+
+        str = "  chickenHead";
+        t.eq(OpenLayers.String.trim(str),
+             "chickenHead", "string with extra whitespace at beginning is trimmed correctly");
+
+        str = "chickenHead    ";
+        t.eq(OpenLayers.String.trim(str),
+             "chickenHead", "string with extra whitespace at end is trimmed correctly");
+
+        str = "  chickenHead    ";
+        t.eq(OpenLayers.String.trim(str),
+             "chickenHead", "string with extra whitespace at beginning and end is trimmed correctly");
+
+        str = "chicken\nHead   ";
+        t.eq(OpenLayers.String.trim(str),
+             "chicken\nHead", "multi-line string with extra whitespace at end is trimmed correctly");
+        str = " ";
+        t.eq(OpenLayers.String.trim(str), "", "whitespace string is trimmed correctly");
+    }
+        
+    function test_String_camelize(t) {
+        t.plan(7);
+        
+        var str = "chickenhead";
+        t.eq(OpenLayers.String.camelize(str), "chickenhead", "string with no hyphens is left alone");
+
+        str = "chicken-head";
+        t.eq(OpenLayers.String.camelize(str), "chickenHead", "string with one middle hyphen is camelized correctly");
+
+        str = "chicken-head-man";
+        t.eq(OpenLayers.String.camelize(str), "chickenHeadMan", "string with multiple middle hyphens is camelized correctly");
+
+        str = "-chickenhead";
+        t.eq(OpenLayers.String.camelize(str), "Chickenhead", "string with starting hyphen is camelized correctly (capitalized)");
+
+        str = "-chicken-head-man";
+        t.eq(OpenLayers.String.camelize(str), "ChickenHeadMan", "string with starting hypen and multiple middle hyphens is camelized correctly");
+
+        str = "chicken-";
+        t.eq(OpenLayers.String.camelize(str), "chicken", "string ending in hyphen is camelized correctly (hyphen dropped)");
+
+        str = "chicken-head-man-";
+        t.eq(OpenLayers.String.camelize(str), "chickenHeadMan", "string with multiple middle hyphens and end hyphen is camelized correctly (end hyphen dropped)");
+
+
+    }
+    
+    function test_String_format(t) {
+        var unchanged = [
+            "", "${ ", "${", " ${", "${${", "${}", "${${}}", " ${ ${",
+            "}", "${${} }"
+        ]
+        t.plan(7 + unchanged.length);
+
+        var format = OpenLayers.String.format;
+        
+        var expected;
+        for(var i=0; i<unchanged.length; ++i) {
+            expected = unchanged[i];
+            t.eq(format(expected), expected,
+                 "'" + expected + "' left unchanged");
+        }
+
+        t.eq(format("${foo} none"),
+             "undefined none", "undefined properties don't bomb");
+
+        window.foo = "bar";
+        t.eq(format("${foo} none"),
+             "bar none", "window context used if none passed");
+        
+        var context = {bar: "foo"};
+        t.eq(format("${bar} foo", context), "foo foo",
+             "properties accessed from context");
+        
+        var context = {bar: "foo", foo: "bar"};
+        t.eq(format("a ${bar} is a ${foo}", context), "a foo is a bar",
+             "multiple properties replaced correctly");
+        
+        // test context with properties that are functions
+        var context = {
+            bar: "church",
+            getDrunk: function() {
+                return arguments[0];
+            }
+        };
+        t.eq(
+            format("I go to the ${bar} to ${getDrunk}.", context, ["eat pretzels"]),
+            "I go to the church to eat pretzels.",
+            "function correctly called in context with arguments"
+        );
+        
+        // test that things don't break
+        var context = {
+            meaning: function(truth) {
+                return truth;
+            }
+        };
+        t.eq(
+            format("In life, truth is ${meaning}.", context),
+            "In life, truth is undefined.",
+            "still works if arguments are not supplied"
+        );
+
+        // test contexts where attribute values can be objects
+        var context = {
+            a: {
+                b: {
+                    c: 'd',
+                    e: function() {
+                        return 'f';
+                    }
+                }
+            }
+        };
+        t.eq(
+            format("${a.b.c} ${a.b.e} ${a.b.q} ${a} ${a...b...c}", context),
+            "d f undefined [object Object] d",
+            "attribute values that are objects are supported"
+        );
+
+    }
+
+    function test_String_isNumeric(t) {
+        var cases = [
+            {value: "3", expect: true},
+            {value: "+3", expect: true},
+            {value: "-3", expect: true},
+            {value: "3.0", expect: true},
+            {value: "+3.0", expect: true},
+            {value: "-3.0", expect: true},
+            {value: "6.02e23", expect: true},
+            {value: "+1.0e-100", expect: true},
+            {value: "-1.0e+100", expect: true},
+            {value: "1E100", expect: true},
+            {value: null, expect: false},
+            {value: true, expect: false},
+            {value: false, expect: false},
+            {value: undefined, expect: false},
+            {value: "", expect: false},
+            {value: "3 ", expect: false},
+            {value: " 3", expect: false},
+            {value: "1e", expect: false},
+            {value: "1+e", expect: false},
+            {value: "1-e", expect: false}
+        ];
+        t.plan(cases.length);
+        
+        var func = OpenLayers.String.isNumeric;
+        var obj, val, got, exp;
+        for(var i=0; i<cases.length; ++i) {
+            obj = cases[i];
+            val = obj.value;
+            exp = obj.expect;
+            got = func(val);
+            t.eq(got, exp, "'" + val + "' returns " + exp);
+        }
+        
+    }
+    
+    function test_Number_numericIf(t) {
+        var cases = [
+            {value: "3", expect: 3},
+            {value: "+3", expect: 3},
+            {value: "-3", expect: -3},
+            {value: "3.0", expect: 3},
+            {value: "+3.0", expect: 3},
+            {value: "-3.0", expect: -3},
+            {value: "6.02e23", expect: 6.02e23},
+            {value: "+1.0e-100", expect: 1e-100},
+            {value: "-1.0e+100", expect: -1e100},
+            {value: "1E100", expect: 1e100},
+            {value: null, expect: null},
+            {value: true, expect: true},
+            {value: false, expect: false},
+            {value: undefined, expect: undefined},
+            {value: "", expect: ""},
+            {value: "3 ", expect: "3 "},
+            {value: " 3", expect: " 3"},
+            {value: "1e", expect: "1e"},
+            {value: "1+e", expect: "1+e"},
+            {value: "1-e", expect: "1-e"}
+        ];
+        t.plan(cases.length);
+        
+        var func = OpenLayers.String.numericIf;
+        var obj, val, got, exp;
+        for(var i=0; i<cases.length; ++i) {
+            obj = cases[i];
+            val = obj.value;
+            exp = obj.expect;
+            got = func(val);
+            t.eq(got, exp, "'" + val + "' returns " + exp);
+        }
+    }
+   
+   
+    function test_Number_limitSigDigs(t) {
+        t.plan(9);
+      
+        var num = 123456789; 
+        t.eq(OpenLayers.Number.limitSigDigs(num), 0, "passing 'null' as sig returns 0");
+        t.eq(OpenLayers.Number.limitSigDigs(num, -1), 0, "passing -1 as sig returns 0");
+        t.eq(OpenLayers.Number.limitSigDigs(num, 0), 0, "passing 0 as sig returns 0");
+        
+        t.eq(OpenLayers.Number.limitSigDigs(num, 15), 123456789, "passing sig greater than num digits in number returns number unmodified");
+        
+        t.eq(OpenLayers.Number.limitSigDigs(num, 1), 100000000, "passing sig 1 works");
+        t.eq(OpenLayers.Number.limitSigDigs(num, 3), 123000000, "passing middle sig works (rounds down)");
+        t.eq(OpenLayers.Number.limitSigDigs(num, 5), 123460000, "passing middle sig works (rounds up)");
+        t.eq(OpenLayers.Number.limitSigDigs(num, 9), 123456789, "passing sig equal to num digits in number works");
+
+        num = 1234.56789;
+        t.eq(OpenLayers.Number.limitSigDigs(num, 5), 1234.6, "running limSigDig() on a floating point number works fine");
+        
+    }
+    
+    function test_Number_format(t) {
+        t.plan(9);
+        var format = OpenLayers.Number.format;
+        t.eq(format(12345), "12,345", "formatting an integer number works");
+        t.eq(format(12345, 3), "12,345.000", "zero padding an integer works");
+        t.eq(format(12345, null, ","), "12,345", "adding thousands separator to an integer works");
+        t.eq(format(12345, 0, ","), "12,345", "adding thousands separator to an integer with defined 0 decimal places works");
+
+        var num = 12345.6789
+        t.eq(format(num, null, "", ","), "12345,6789", "only changing decimal separator and leaving everything else untouched works");
+        t.eq(format(num, 5), "12,345.67890", "filling up decimals with trailing zeroes works");
+        t.eq(format(num, 3, ".", ","), "12.345,679", "rounding and changing decimal/thousands separator in function call works");
+        t.eq(format(num, 0, ""), "12346", "empty thousands separator in function call works");
+        OpenLayers.Number.thousandsSeparator = ".";
+        OpenLayers.Number.decimalSeparator = ",";
+        t.eq(format(num, 3), "12.345,679", "changing thousands/decimal separator globally works");
+    }
+
+    function test_Function_bind(t) {
+        t.plan(12);
+
+        g_obj = {};
+        g_Arg1 = {};
+        g_Arg2 = {};
+        g_Arg3 = {};
+        g_Arg4 = {};
+        var foo = function(x,y,z,a) {
+            t.ok(this == g_obj, "context correctly set");
+            t.ok(x == g_Arg1, "arg1 passed correctly");    
+            t.ok(y == g_Arg2, "arg2 passed correctly");    
+            t.ok(z == g_Arg3, "arg3 passed correctly");    
+            t.ok(a == g_Arg4, "arg4 passed correctly");    
+            t.eq(arguments.length, 4, "correct number of arguments ((regression test for #876))");
+        };
+
+        var newFoo = OpenLayers.Function.bind(foo, g_obj, g_Arg1, g_Arg2);
+
+        newFoo(g_Arg3, g_Arg4);
+        
+        //run again to make sure the arguments are handled correctly
+        newFoo(g_Arg3, g_Arg4);
+    }
+    
+    function test_Function_Void(t) {
+        
+        t.plan(1);
+        t.eq(OpenLayers.Function.Void(), undefined, "returns undefined");
+        
+    }
+
+    function test_Function_bindAsEventListener(t) {
+        t.plan(4);
+
+        g_obj = {};
+        g_Event = {};
+        g_WindowEvent = {};
+
+        var foo = function(x) {
+            t.ok(this == g_obj, "context correctly set");
+            g_X = x;
+        };
+
+        var newFoo = OpenLayers.Function.bindAsEventListener(foo, g_obj);
+        
+
+        g_X = null;
+        newFoo(g_Event);
+        t.ok(g_X == g_Event, "event properly passed as first argument when event specified");
+    
+        g_X = null;
+        newFoo();
+        t.ok(g_X == window.event, "window.event properly passed as first argument when nothing specified");
+    }
+
+    function test_Array_filter(t) {
+        
+        t.plan(8);
+
+        OpenLayers.Array.filter(["foo"], function(item, index, array) {
+            t.eq(item, "foo", "callback called with proper item");
+            t.eq(index, 0, "callback called with proper index");
+            t.eq(array, ["foo"], "callback called with proper array");
+            t.eq(this, {"foo": "bar"}, "callback called with this set properly");
+        }, {"foo": "bar"});
+
+        var array = [0, 1, 2, 3];
+        var select = OpenLayers.Array.filter(array, function(value) {
+            return value > 1;
+        });
+        t.eq(select, [2, 3], "filter works for basic callback");
+        t.eq(array, [0, 1, 2, 3], "filter doesn't modify original");
+        
+        var obj = {
+            test: function(value) {
+                if(value > 1) {
+                    return true;
+                }
+            }
+        };
+        var select = OpenLayers.Array.filter(array, function(value) {
+            return this.test(value);
+        }, obj);
+        t.eq(select, [2, 3], "filter works for callback and caller");
+        t.eq(array, [0, 1, 2, 3], "filter doesn't modify original");
+        
+        
+    }
+
+  </script>
+</head>
+<body>
+</body>
+</html>

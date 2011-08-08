@@ -1,0 +1,80 @@
+<html>
+<head>
+    <script src="../../OLLoader.js"></script>
+    <script src="v1_0_0.js"></script>
+    <script type="text/javascript">
+
+    function test_read(t) {
+
+        t.plan(41);
+
+        var format = new OpenLayers.Format.SOSCapabilities();
+        var obj = format.read(doc);
+
+        t.eq(obj.version, "1.0.0", "Version parsed correctly");
+
+        // service identification (from OWSCommon)
+        t.eq(obj.serviceIdentification.abstract, "WeatherSOS (stable) at IfGI, Muenster, Germany. For more info: http://ifgipedia.uni-muenster.de/kms/documentation/swsl/sos/", "Abstract parsed correctly");
+        t.eq(obj.serviceIdentification.accessConstraints, "NONE", "AccessConstraints parsed correctly");
+        t.eq(obj.serviceIdentification.fees, "NONE", "Fees parsed correctly");
+        for (var key in obj.serviceIdentification.keywords) {
+            t.eq(key, "rain gauge, radiation, pressure, windspeed, winddirection, temperature", "Keywords parsed correctly");
+        }
+        t.eq(obj.serviceIdentification.serviceType.codeSpace, "http://opengeospatial.net", "codeSpace correctly parsed");
+        t.eq(obj.serviceIdentification.serviceType.value, "OGC:SOS", "ServiceType correctly parsed");
+        t.eq(obj.serviceIdentification.serviceTypeVersion, "1.0.0", "ServiceTypeVersion correctly parsed");
+        t.eq(obj.serviceIdentification.title, "IFGI WeatherSOS (stable)", "Title correctly parsed");
+
+        // service provider (from OWSCommon)
+        t.eq(obj.serviceProvider.providerName, "Institute for Geoinformatics, University of Muenster", "ProviderName correctly parsed");
+        t.eq(obj.serviceProvider.providerSite, "http://ifgi.uni-muenster.de", "ProviderSite correctly parsed");
+        t.eq(obj.serviceProvider.serviceContact.individualName, "Eike Hinderk Juerrens", "IndividualName parsed correctly");
+        t.eq(obj.serviceProvider.serviceContact.positionName, "Student Associate", "PositionName parsed correctly");
+        t.eq(obj.serviceProvider.serviceContact.role, "", "Role parsed correctly");
+        t.eq(obj.serviceProvider.serviceContact.contactInfo.address.administrativeArea, "NRW", "AdministrativeArea correctly parsed");
+        t.eq(obj.serviceProvider.serviceContact.contactInfo.address.city, "Muenster", "City correctly parsed");
+        t.eq(obj.serviceProvider.serviceContact.contactInfo.address.country, "Germany", "Country correctly parsed");
+        t.eq(obj.serviceProvider.serviceContact.contactInfo.address.deliveryPoint, "Weselerstrasse 253", "DeliveryPoint correctly parsed");
+        t.eq(obj.serviceProvider.serviceContact.contactInfo.address.electronicMailAddress, "ehjuerrens@uni-muenster.de", "ElectronicMailAddress correctly parsed");
+        t.eq(obj.serviceProvider.serviceContact.contactInfo.address.postalCode, "48149", "Postalcode correctly parsed");
+        t.eq(obj.serviceProvider.serviceContact.contactInfo.phone.voice, "+49-251-83-30088", "Voice phone correctly parsed");
+
+        // operationsMetadata (from OWSCommon)
+        t.eq(obj.operationsMetadata.DescribeSensor.dcp.http.post, "http://v-swe.uni-muenster.de:8080/WeatherSOS/sos", "POST url for DescribeSensor correctly parsed");
+        var counter = 0;
+        for (var key in obj.operationsMetadata.DescribeSensor.parameters.procedure.allowedValues) {
+            if (counter == 0) {
+                t.eq(key, "urn:ogc:object:feature:OSIRIS-HWS:efeb807b-bd24-4128-a920-f6729bcdd111", "Allowed value (1) for procedure parameter in DescribeSensor request correctly parsed");
+            } else if (counter == 1) {
+                t.eq(key, "urn:ogc:object:feature:OSIRIS-HWS:3d3b239f-7696-4864-9d07-15447eae2b93", "Allowed value (2) for procedure parameter in DescribeSensor request correctly parsed");
+            }
+            counter++;
+        }
+        t.eq(obj.operationsMetadata.GetFeatureOfInterest.parameters.location.anyValue, true, "AnyValue parsed correctly");
+
+        t.eq(obj.operationsMetadata.GetObservation.parameters.eventTime.allowedValues.range.maxValue, "2009-11-04T14:45:00+01", "Range maxValue parsed correctly");
+        t.eq(obj.operationsMetadata.GetObservation.parameters.eventTime.allowedValues.range.minValue, "2008-02-14T11:03:02+01", "Range minValue parsed correctly");
+
+        // Contents (from SOS)
+        t.eq(obj.contents.offeringList.ATMOSPHERIC_PRESSURE.name, "Pressure of the atmosphere", "Name of offering correctly parsed");
+        t.eq(obj.contents.offeringList.ATMOSPHERIC_PRESSURE.observedProperties[0], "urn:x-ogc:def:property:OGC::BarometricPressure", "ObservedProperty correctly parsed");
+        t.eq(obj.contents.offeringList.ATMOSPHERIC_PRESSURE.featureOfInterestIds[0], "urn:ogc:object:feature:OSIRIS-HWS:3d3b239f-7696-4864-9d07-15447eae2b93", "Allowed value (1) for featureOfInterest correctly parsed");
+        t.eq(obj.contents.offeringList.ATMOSPHERIC_PRESSURE.featureOfInterestIds[1], "urn:ogc:object:feature:OSIRIS-HWS:efeb807b-bd24-4128-a920-f6729bcdd111", "Allowed value (2) for featureOfInterest correctly parsed");
+        t.eq(obj.contents.offeringList.ATMOSPHERIC_PRESSURE.procedures[0], "urn:ogc:object:feature:OSIRIS-HWS:3d3b239f-7696-4864-9d07-15447eae2b93", "Allowed value (1) for procedures correctly parsed");
+        t.eq(obj.contents.offeringList.ATMOSPHERIC_PRESSURE.procedures[1], "urn:ogc:object:feature:OSIRIS-HWS:efeb807b-bd24-4128-a920-f6729bcdd111", "Allowed value (2) for procedures correctly parsed");
+        t.eq(obj.contents.offeringList.ATMOSPHERIC_PRESSURE.responseFormats[0], 'text/xml;subtype="om/1.0.0"', "Allowed value (1) for responseFormats correctly parsed");
+        t.eq(obj.contents.offeringList.ATMOSPHERIC_PRESSURE.responseFormats[1], "application/zip", "Allowed value (2) for responseFormats correctly parsed");
+        t.eq(obj.contents.offeringList.ATMOSPHERIC_PRESSURE.responseModes[0], "inline", "Allowed value (1) for responseModes correctly parsed");
+        t.eq(obj.contents.offeringList.ATMOSPHERIC_PRESSURE.responseModes[1], "resultTemplate", "Allowed value (2) for responseModes correctly parsed");
+        t.eq(obj.contents.offeringList.ATMOSPHERIC_PRESSURE.resultModels[0], "ns:Measurement", "Allowed value (1) for resultModels correctly parsed");
+        t.eq(obj.contents.offeringList.ATMOSPHERIC_PRESSURE.resultModels[1], "ns:Observation", "Allowed value (2) for resultModels correctly parsed");
+        t.eq(obj.contents.offeringList.ATMOSPHERIC_PRESSURE.time.timePeriod.beginPosition, "2008-12-20T02:29:27+01:00", "TimePeriod beginPosition correctly parsed");
+        t.eq(obj.contents.offeringList.ATMOSPHERIC_PRESSURE.time.timePeriod.endPosition, "2009-11-04T14:45:00+01:00", "TimePeriod endPosition correctly parsed");
+
+    }
+
+    </script>
+</head>
+<body>
+</body>
+</html>

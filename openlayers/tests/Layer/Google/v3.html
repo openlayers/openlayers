@@ -1,0 +1,382 @@
+<html>
+<head>
+    <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <script src="../../OLLoader.js"></script>
+    <script type="text/javascript">
+
+    var layer; 
+                   
+    function test_Layer_Google_constructor (t) {
+        t.plan( 5 );
+        
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.Google('Goog Layer');
+        map.addLayer(layer);
+        
+        
+        t.ok( layer instanceof OpenLayers.Layer.Google, "new OpenLayers.Layer.Google returns object" );
+        t.eq( layer.CLASS_NAME, "OpenLayers.Layer.Google", "CLASS_NAME variable set correctly");
+    
+        t.eq( layer.name, "Goog Layer", "layer.name is correct" );
+    
+        t.ok ( layer.mapObject != null, "GMap Object correctly loaded");
+        
+        t.eq(layer.version, "3", "API version 3 detected.");
+    }
+    
+    function test_clone(t) {
+        t.plan(2);
+        var layer, clone;
+        
+        // test default layer
+        layer = new OpenLayers.Layer.Google();
+        clone = layer.clone();
+        t.ok(clone instanceof OpenLayers.Layer.Google, "[default] good instance");
+        
+        layer.destroy();
+        clone.destroy();
+        
+        // test with alt type
+        layer = new OpenLayers.Layer.Google(null, {type: google.maps.MapTypeId.SATELLITE});
+        clone = layer.clone();
+        t.ok(clone.type === google.maps.MapTypeId.SATELLITE, "[sat] correct type");
+        
+        layer.destroy();
+        clone.destroy();   
+    }
+    
+    function test_Layer_Google_isBaseLayer (t) {
+        t.plan(1);
+        
+        var layer = new OpenLayers.Layer.Google('Goog Layer');
+    
+        t.ok(layer.isBaseLayer, "a default load of google layer responds as a base layer");
+    }    
+    
+    function test_Layer_Google_Translation_lonlat (t) {
+        t.plan( 4 );
+        
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.Google('Goog Layer');
+        map.addLayer(layer);
+    
+    // these two lines specify an appropriate translation. 
+    //  the code afterwards works by itself to test that translation
+    //  works correctly both ways.
+       var gLatLng = new google.maps.LatLng(50,100);
+       // v3 uses sphericalMercator by default
+       var correspondingOLLonLat = new OpenLayers.LonLat(100,50).transform(
+           new OpenLayers.Projection("EPSG:4326"),
+           map.getProjectionObject()
+       );
+    
+    
+       olLonLat = layer.getOLLonLatFromMapObjectLonLat(gLatLng);
+       t.ok(olLonLat.equals(correspondingOLLonLat), "Translation from GLatLng to OpenLayers.LonLat works");
+    
+       var transGLatLng = layer.getMapObjectLonLatFromOLLonLat(olLonLat);
+       t.ok( transGLatLng.equals(gLatLng), "Translation from OpenLayers.LonLat to GLatLng works");
+    
+       t.ok( layer.getMapObjectLonLatFromOLLonLat(null) == null, "getGLatLngFromOLLonLat(null) returns null");
+       t.ok( layer.getOLLonLatFromMapObjectLonLat(null) == null, "getOLLonLatFromGLatLng(null) returns null");
+    }
+    
+    function test_Layer_Google_Translation_pixel (t) {
+        t.plan( 4 );
+        
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.Google('Goog Layer');
+        map.addLayer(layer);
+    
+     // these two lines specify an appropriate translation. 
+     //  the code afterwards works by itself to test that translation
+     //  works correctly both ways.
+        var gPoint = new google.maps.Point(50,100);
+        var correspondingOLPixel = new OpenLayers.Pixel(50, 100);
+    
+    
+        olPixel = layer.getOLPixelFromMapObjectPixel(gPoint);
+        t.ok( olPixel.equals(correspondingOLPixel), "Translation from GPoint to OpenLayers.Pixel works");
+    
+        var transGPoint = layer.getMapObjectPixelFromOLPixel(olPixel);
+        t.ok( transGPoint.equals(gPoint), "Translation from OpenLayers.Pixel to GPoint works");
+    
+        t.ok( layer.getMapObjectPixelFromOLPixel(null) == null, "getGPointFromOLPixel(null) returns null");
+        t.ok( layer.getOLPixelFromMapObjectPixel(null) == null, "getOLPixelFromGPoint(null) returns null");
+    }
+    
+    function test_Layer_destroy (t) {
+        t.plan( 5 );    
+    
+        var map = new OpenLayers.Map('map');
+        
+        layer = new OpenLayers.Layer.Google('Test Layer');
+        map.addLayer(layer);
+    
+        layer.destroy();
+    
+        t.eq( layer.name, null, "layer.name is null after destroy" );
+        t.eq( layer.div, null, "layer.div is null after destroy" );
+        t.eq( layer.map, null, "layer.map is null after destroy" );
+        t.eq( layer.options, null, "layer.options is null after destroy" );
+        t.eq( layer.gmap, null, "layer.gmap is null after destroy" );
+    }
+    
+    function test_Layer_Goole_forwardMercator(t){
+        t.plan(2);
+        //Just test that the fowardMercator function still exists.
+        var layer = new OpenLayers.Layer.Google('Test Layer', {'sphericalMercator': true});
+        layer.forwardMercator = function(evt) {
+            t.ok(true,
+                 "GoogleMercator.forwardMercator was called and executed." );
+            return;
+        }
+        layer.forwardMercator();
+        //Now test the fowardMercator returns the expected LonLat object
+        var layer = new OpenLayers.Layer.Google('Test Layer', {'sphericalMercator': true});
+        var lonlat2 = new OpenLayers.LonLat(Math.random(),Math.random());
+        var result = layer.forwardMercator(lonlat2.lon, lonlat2.lat);
+        t.ok(result instanceof OpenLayers.LonLat, "OpenLayers.Google.fowardMercator returns LonLat object" );
+    }
+    
+    function test_Layer_Google_overlay(t) {
+        // Test for #849.
+        t.plan(1);
+        var map = new OpenLayers.Map( 'map' , 
+        { controls: [] , 'numZoomLevels':20});
+    
+        var satellite = new OpenLayers.Layer.Google( "Google Satellite" , {type: google.maps.MapTypeId.SATELLITE, 'maxZoomLevel':18} );
+        var layer = new OpenLayers.Layer.WMS.Untiled( "OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0", {layers: 'basic', 'transparent':true}, 
+                  {isBaseLayer: false} );
+    
+        map.addLayers([satellite, layer]);
+        map.setCenter(new OpenLayers.LonLat(10.205188,48.857593), 5);
+        map.zoomIn();
+        var size = map.getSize();
+        var px = new OpenLayers.Pixel(size.w, size.h);
+        var br = map.getLonLatFromPixel(px);
+        t.ok(layer.grid[0][0].bounds.containsLonLat(br), "Bottom right pixel is covered by untiled WMS layer");
+    }    
+    function test_Layer_Google_isBaseLayer (t) {
+        t.plan(3);
+        var map = new OpenLayers.Map( 'map' , 
+        { controls: [] , 'numZoomLevels':20});
+    
+        var satellite = new OpenLayers.Layer.Google( "Google Satellite" , {type: google.maps.MapTypeId.SATELLITE, 'maxZoomLevel':18} );
+        map.addLayers([satellite]);
+        map.zoomToMaxExtent();
+        
+        t.eq(satellite.div.style.display, "", "Satellite layer is visible.");
+        satellite.setVisibility(false);
+        t.eq(satellite.div.style.display, "none", "Satellite layer is not visible.");
+        satellite.setVisibility(true);
+        t.eq(satellite.div.style.display, "block", "Satellite layer is visible.");
+    }    
+    
+    function test_Layer_Google_setGMapVisibility(t) {
+        t.plan(3);
+    
+        var map = new OpenLayers.Map('map');
+        var gmap = new OpenLayers.Layer.Google("Google Streets");
+        var dummy = new OpenLayers.Layer("Dummy", {isBaseLayer: true});
+        map.addLayers([dummy, gmap]);
+        map.zoomToMaxExtent();
+    
+        // In v3, the terms of use and powered by elements are not available 
+        // until the layer loads.  This can occur before the layer is visible,
+        // but we don't try to access these elements until after the layer is
+        // made visible for the first time.  
+        var cache = OpenLayers.Layer.Google.cache[map.id];
+        t.ok(!cache.termsOfUse, "termsOfUse is not yet cached");
+        t.ok(!cache.poweredBy, "poweredBy is not yet cached");
+
+        var called = 0;
+        var original = gmap.repositionMapElements;
+        gmap.repositionMapElements = function() {
+            ++called;
+            original.apply(gmap, arguments);
+        }
+
+        map.setBaseLayer(gmap);
+        t.delay_call(4, function() {
+            t.ok(called > 0, "repositionMapElements called");
+            map.destroy();
+        });            
+    }
+
+    function test_Layer_Google_setGMapVisibility_allOverlays(t) {
+         t.plan(3);
+     
+         var map = new OpenLayers.Map('map', {allOverlays: true});
+         var gmap = new OpenLayers.Layer.Google("Google Streets", {visibility: false});
+         var dummy = new OpenLayers.Layer("Dummy");
+         map.addLayers([gmap, dummy]);
+         map.zoomToMaxExtent();
+         
+         // In v3, the terms of use and powered by elements are not available 
+         // until the layer loads.  This can occur before the layer is visible,
+         // but we don't try to access these elements until after the layer is
+         // made visible for the first time.
+         var cache = OpenLayers.Layer.Google.cache[map.id];
+         t.ok(!cache.termsOfUse, "termsOfUse is not yet cached");
+         t.ok(!cache.poweredBy, "poweredBy is not yet cached");
+     
+         var called = 0;
+         var original = gmap.repositionMapElements;
+         gmap.repositionMapElements = function() {
+             ++called;
+             original.apply(gmap, arguments);
+         }    
+
+         gmap.setVisibility(true);
+         t.delay_call(2, function() {
+             t.ok(called > 0, "repositionMapElements called");
+             map.destroy();
+         });            
+     }
+
+     function test_allOverlays_invisible(t) {
+
+         t.plan(1);
+
+         var map = new OpenLayers.Map('map', {allOverlays: true});
+
+         var osm = new OpenLayers.Layer.OSM();
+         var gmap = new OpenLayers.Layer.Google("Google Streets", {visibility: false});
+
+         // keep track of last argument to setGMapVisibility
+         var visible;
+         var original = gmap.setGMapVisibility;
+         gmap.setGMapVisibility = function(vis) {
+             visible = vis;
+             original.apply(gmap, arguments);
+         }
+
+         map.addLayers([osm, gmap]);
+         map.zoomToMaxExtent();
+
+         t.ok(visible === false, "setGMapVisibility last called with false");
+
+         map.destroy();
+
+     }
+     
+     function test_allOverlays_pan(t) {
+
+         t.plan(8);
+
+         var origPrecision = OpenLayers.Util.DEFAULT_PRECISION;
+         // GMaps v3 seems to use a default precision of 13, which is lower
+         // than what we use in OpenLayers.
+         // See http://trac.osgeo.org/openlayers/ticket/3059
+         OpenLayers.Util.DEFAULT_PRECISION = 13;
+
+         var map = new OpenLayers.Map('map', {allOverlays: true});
+
+         var gmap = new OpenLayers.Layer.Google("Google Streets");
+         var osm = new OpenLayers.Layer.OSM();
+         map.addLayers([gmap, osm]);
+
+         var origin = new OpenLayers.LonLat(1000000, 6000000);
+         map.setCenter(origin, 4);
+         var resolution = map.getResolution();
+         
+         var dx, dy, center, expected;
+
+         // confirm that panning works with Google visible
+         dx = 100, dy = -100;
+         map.pan(dx, dy, {animate: false});
+         center = map.getCenter();
+         expected = new OpenLayers.LonLat(
+             origin.lon + (resolution * dx),
+             origin.lat - (resolution * dy)
+         );
+         t.eq(center.lon, expected.lon, "x panning with Google visible " + dx + ", " + dy);
+         t.eq(center.lat, expected.lat, "y panning with Google visible " + dx + ", " + dy);
+         map.pan(-dx, -dy, {animate: false});
+         center = map.getCenter();
+         t.eq(center.lon, origin.lon, "x panning with Google visible " + (-dx) + ", " + (-dy));
+         t.eq(center.lat, origin.lat, "y panning with Google visible " + (-dx) + ", " + (-dy));
+
+         // confirm that panning works with Google invisible
+         gmap.setVisibility(false);
+         dx = 100, dy = -100;
+         map.pan(dx, dy, {animate: false});
+         center = map.getCenter();
+         expected = new OpenLayers.LonLat(
+             origin.lon + (resolution * dx),
+             origin.lat - (resolution * dy)
+         );
+         t.eq(center.lon, expected.lon, "x panning with Google invisible " + dx + ", " + dy);
+         t.eq(center.lat, expected.lat, "y panning with Google invisible " + dx + ", " + dy);
+         map.pan(-dx, -dy, {animate: false});
+         center = map.getCenter();
+         t.eq(center.lon, origin.lon, "x panning with Google invisible " + (-dx) + ", " + (-dy));
+         t.eq(center.lat, origin.lat, "y panning with Google invisible " + (-dx) + ", " + (-dy));
+
+         map.destroy();
+         OpenLayers.Util.DEFAULT_PRECISION = origPrecision;
+     }
+     
+     function test_wrapDateLine(t) {
+         t.plan(2);
+
+         var origPrecision = OpenLayers.Util.DEFAULT_PRECISION;
+         // GMaps v3 seems to use a default precision of 13, which is lower
+         // than what we use in OpenLayers.
+         // See http://trac.osgeo.org/openlayers/ticket/3059
+         OpenLayers.Util.DEFAULT_PRECISION = 13;
+
+         var map = new OpenLayers.Map("map");
+
+         var gmap = new OpenLayers.Layer.Google("Google Streets");
+         map.addLayer(gmap);
+         map.setCenter(new OpenLayers.LonLat(0, 0), 1);
+         
+         var center;
+         
+         // pan to the edge of the world
+         map.pan(256, 0, {animate: false});
+         center = map.getCenter();
+         t.eq(center.lon, 20037508.34, "edge of the world");
+         // pan off the edge of the world
+         map.pan(100, 0, {animate: false});
+         center = map.getCenter();
+         var expect = OpenLayers.Util.toFloat(100 * map.getResolution() - 20037508.34);
+         t.eq(center.lon, expect, "magically back in the western hemisphere");
+         
+         map.destroy();
+         OpenLayers.Util.DEFAULT_PRECISION = origPrecision;         
+     }
+
+     function test_respectDateLine(t) {
+         t.plan(2);
+
+         var map = new OpenLayers.Map("map");
+
+         var gmap = new OpenLayers.Layer.Google("Google Streets", {wrapDateLine: false});
+         map.addLayer(gmap);
+         map.setCenter(new OpenLayers.LonLat(0, 0), 1);
+         
+         var center;
+         
+         // pan to the edge of the world
+         map.pan(256, 0, {animate: false});
+         center = map.getCenter();
+         t.eq(center.lon, 20037508.34, "edge of the world");
+         // pan off the edge of the world
+         map.pan(100, 0, {animate: false});
+         center = map.getCenter();
+         t.eq(center.lon, 20037508.34, "whew, still on the edge");
+         
+         map.destroy();
+         
+     }
+     
+  </script>
+</head>
+<body>
+    <div id="map" style="width:500px; height: 500px"></div>
+</body>
+</html>

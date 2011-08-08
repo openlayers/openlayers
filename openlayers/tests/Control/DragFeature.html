@@ -1,0 +1,383 @@
+<html>
+<head>
+    <script src="../OLLoader.js"></script>
+    <script type="text/javascript">
+    function test_Control_DragFeature_constructor(t) {
+        t.plan(3);
+        
+        var options = {
+            geometryTypes: "foo"
+        };
+        var layer = "bar";
+        var control = new OpenLayers.Control.DragFeature(layer, options);
+        t.ok(control instanceof OpenLayers.Control.DragFeature,
+             "new OpenLayers.Control.DragFeature returns an instance");
+        t.eq(control.layer, "bar",
+             "constructor sets layer correctly");        
+        t.eq(control.handlers.feature.geometryTypes, "foo",
+             "constructor sets options correctly on feature handler");
+    }
+    
+    function test_Control_DragFeature_destroy(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.DragFeature(layer);
+        control.handlers.drag.destroy = function() {
+            t.ok(true,
+                 "control.destroy calls destroy on drag handler");
+        }
+        control.handlers.feature.destroy = function() {
+            t.ok(true,
+                 "control.destroy calls destroy on feature handler");
+        }
+        
+        control.destroy();
+        
+    }
+    
+    function test_Control_DragFeature_activate(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.DragFeature(layer);
+        map.addControl(control);
+        t.ok(!control.handlers.feature.active,
+             "feature handler is not active prior to activating control");
+        control.activate();
+        t.ok(control.handlers.feature.active,
+             "feature handler is active after activating control");
+    }
+
+    function test_Control_DragFeature_deactivate(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.DragFeature(layer);
+        map.addControl(control);
+        
+        control.handlers.drag.deactivate = function() {
+            t.ok(true,
+                 "control.deactivate calls deactivate on drag handler");
+        }
+        control.handlers.feature.deactivate = function() {
+            t.ok(true,
+                 "control.deactivate calls deactivate on feature handler");
+        }
+        control.deactivate();
+    }
+    
+    function test_Control_DragFeature_over(t) {
+        t.plan(5);
+        var log = [];
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.DragFeature(layer, {
+            onEnter: function(f) { log.push({feature: f}); }
+        });
+        map.addControl(control);
+        
+        control.activate();
+        t.ok(!control.handlers.drag.active,
+             "drag handler is not active before over a feature");
+        
+        // simulate a mouseover on a feature
+        var feature = new OpenLayers.Feature.Vector();
+        feature.layer = layer;
+        layer.getFeatureFromEvent = function(evt) {
+            return feature;
+        }
+        map.events.triggerEvent("mousemove", {type: "mousemove"});
+        
+        t.eq(control.feature.id, feature.id,
+             "control gets the proper feature from the feature handler");
+        t.ok(control.handlers.drag.active,
+             "drag handler activated when over a feature");
+        t.eq(log.length, 1,
+             "onEnter called exactly once");
+        t.eq(log[0].feature.id, feature.id,
+             "onEnter called with expected feature");
+    }
+
+    function test_Control_DragFeature_over_touch(t) {
+        t.plan(7);
+        var log = [];
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.DragFeature(layer, {
+            onEnter: function(f) { log.push({feature: f}); }
+        });
+        map.addControl(control);
+
+        control.activate();
+        t.ok(!control.handlers.drag.active,
+             "drag handler is not active before touch on a feature");
+
+        // simulate a touch on a feature
+        var feature = new OpenLayers.Feature.Vector();
+        feature.layer = layer;
+        layer.getFeatureFromEvent = function(evt) {
+            return feature;
+        }
+        map.events.triggerEvent("touchstart", {type: "touchstart", touches: ['foo']});
+
+        t.eq(control.feature.id, feature.id,
+             "control gets the proper feature from the feature handler");
+        t.ok(control.handlers.drag.active,
+             "drag handler activated when touch on a feature");
+        t.ok(control.handlers.drag.started, "drag handler has started");
+        t.ok(!control.handlers.drag.stopDown, "drag handler is not stopping down");
+        t.eq(log.length, 1,
+             "onEnter called exactly once");
+        t.eq(log[0].feature.id, feature.id,
+             "onEnter called with expected feature");
+    }
+
+    function test_Control_DragFeature_down(t) {
+        t.plan(3);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.DragFeature(layer);
+        map.addControl(control);
+        
+        control.activate();
+        
+        // simulate a mouseover on a feature
+        var feature = new OpenLayers.Feature.Vector();
+        feature.layer = layer;
+        layer.getFeatureFromEvent = function(evt) {
+            return feature;
+        }
+        map.events.triggerEvent("mousemove", {type: "mousemove"});
+
+        // simulate a mousedown on a feature
+        control.onStart = function(feat, pixel) {
+            t.eq(feat.id, feature.id, "onStart called with the correct feature");
+            t.eq(pixel, "bar", "onStart called with the correct pixel");
+        }
+        map.events.triggerEvent("mousedown", {xy: "bar", which: 1, type: "mousemove"});
+
+        t.eq(control.lastPixel, "bar",
+             "mousedown sets the lastPixel correctly");
+    }
+
+    function test_Control_DragFeature_move(t) {
+        t.plan(3);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.DragFeature(layer);
+        map.addControl(control);
+        map.getResolution = function() {
+            return 2;
+        }
+
+        control.activate();
+
+        // mock up a feature - for the sole purpose of testing mousemove
+        var uid = Math.random();
+        layer.getFeatureFromEvent = function() {
+            var geom = new OpenLayers.Geometry.Point(Math.random(),
+                                                     Math.random());
+            geom.move = function(x, y) {
+                t.eq(x, 2, "move called with dx * res");
+                t.eq(y, -4, "move called with -dy * res");
+            };
+            var feature = new OpenLayers.Feature.Vector(geom);
+            feature.layer = layer;
+            feature.uid = uid;
+            return feature;
+        };
+        layer.drawFeature = function(feature) {
+            t.eq(feature.uid, uid,
+                 "layer.drawFeature called with correct feature");
+        };
+
+        // simulate a mouseover on a feature
+        map.events.triggerEvent("mousemove", {type: "mousemove"});
+
+        // simulate a mousedown on a feature
+        var down = new OpenLayers.Pixel(0, 0);
+        map.events.triggerEvent("mousedown", {xy: down, which: 1, type: "mousemove"});
+
+        // simulate a mousemove on a feature
+        var move = new OpenLayers.Pixel(1, 2);
+        map.events.triggerEvent("mousemove", {xy: move, which: 1, type: "mousemove"});
+        
+    }
+
+    function test_Control_DragFeature_up(t) {
+        t.plan(6);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.DragFeature(layer);
+        map.addControl(control);
+
+        control.activate();
+
+        // simulate a mouseover on a feature
+        var feature = new OpenLayers.Feature.Vector();
+        feature.layer = layer;
+        layer.getFeatureFromEvent = function(evt) {
+            return feature;
+        }
+        map.events.triggerEvent("mousemove", {type: "mousemove"});
+        t.eq(control.over, true,
+            "mouseover on a feature sets the over property to true");
+        t.ok(OpenLayers.Element.hasClass(control.map.viewPortDiv, "olControlDragFeatureOver"),
+            "mouseover on a feature adds class name to map container");
+        t.eq(control.handlers.drag.active, true,
+            "mouseover on a feature activates drag handler");
+
+        // simulate a mouse-up on the map, with the mouse still
+        // over the dragged feature
+        control.handlers.drag.started = true;
+        map.events.triggerEvent("mouseup", {type: "mouseup"});
+        t.eq(control.handlers.drag.active, true,
+            "mouseup while still over dragged feature does not deactivate drag handler");
+
+        // simulate a mouse-up on the map, with the mouse out of
+        // the dragged feature
+        control.handlers.drag.started = true;
+        control.over = false;
+        map.events.triggerEvent("mouseup", {type: "mouseup"});
+        t.eq(control.handlers.drag.active, false,
+            "mouseup deactivates drag handler");
+
+        control.deactivate();
+        t.ok(!OpenLayers.Element.hasClass(control.map.viewPortDiv, "olControlDragFeatureOver"),
+            "deactivate removes class name from map container");
+    }
+    
+    function test_Control_DragFeature_done(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.DragFeature(layer);
+        map.addControl(control);
+
+        control.activate();
+
+
+        // simulate a mouseover on a feature
+        var feature = new OpenLayers.Feature.Vector();
+        feature.layer = layer;
+        layer.getFeatureFromEvent = function() {
+            return feature;
+        };
+        map.events.triggerEvent("mousemove", {type: "mousemove"});
+        t.eq(control.feature.id, feature.id,
+             "feature is set on mouse over");
+        control.doneDragging();
+        t.eq(control.feature.id, feature.id, 
+          "feature sticks around after doneDragging is called.");
+        
+    }
+
+    function test_Control_DragFeature_out(t) {
+        t.plan(4);
+        var log = [];
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.DragFeature(layer, {
+            onLeave: function(f) { log.push({feature: f}); }
+        });
+        map.addControl(control);
+
+        control.activate();
+
+
+        // simulate a mouseover on a feature
+        var feature = new OpenLayers.Feature.Vector();
+        feature.layer = layer;
+        layer.getFeatureFromEvent = function() {
+            return feature;
+        };
+        map.events.triggerEvent("mousemove", {type: "mousemove"});
+        t.eq(control.feature.id, feature.id,
+             "feature is set on mouse over");
+        
+        // simulate a mouseout on a feature
+        layer.getFeatureFromEvent = function() {
+            return null;
+        };
+        map.events.triggerEvent("mousemove", {type: "mousemove"});
+        t.ok(control.feature == null,
+             "feature is set to null on mouse out");
+        t.eq(log.length, 1,
+             "onLeave called exactly once");
+        t.eq(log[0].feature.id, feature.id,
+             "onLeave called with expected feature");
+    }
+
+    function test_Control_DragFeature_out_touch(t) {
+        t.plan(5);
+        var log = [];
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.DragFeature(layer, {
+            onLeave: function(f) { log.push({feature: f}); }
+        });
+        map.addControl(control);
+
+        control.activate();
+
+        // simulate a touch on a feature
+        var feature = new OpenLayers.Feature.Vector();
+        feature.layer = layer;
+        layer.getFeatureFromEvent = function() {
+            return feature;
+        };
+        map.events.triggerEvent("touchstart", {type: "touchstart", touches: ['foo']});
+        t.eq(control.feature.id, feature.id,
+             "feature is set on mouse over");
+
+        // simulate a touch outside the feature
+        layer.getFeatureFromEvent = function() {
+            return null;
+        };
+        map.events.triggerEvent("touchstart", {type: "touchstart", touches: ['foo']});
+        t.ok(control.feature == null,
+             "feature is set to null on mouse out");
+        t.ok(control.handlers.drag.stopDown,
+             "drag handler is stopping down again");
+        t.eq(log.length, 1,
+             "onLeave called exactly once");
+        t.eq(log[0].feature.id, feature.id,
+             "onLeave called with expected feature");
+    }
+
+    function test_Control_DragFeature_click(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var feature = new OpenLayers.Feature.Vector();
+        feature.layer = layer;
+        var control = new OpenLayers.Control.DragFeature(layer);
+        map.addControl(control);
+
+        control.activate();
+
+        control.overFeature(feature);
+        control.handlers.feature.evt = {which: 1};
+        control.clickFeature(feature);
+        t.eq(control.handlers.drag.started, false, "click after over does not start drag handler");
+    }
+
+    </script>
+</head>
+<body>
+    <div id="map" style="width: 400px; height: 250px;"/>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    var Size; 
+    
+    function test_Size_constructor (t) {
+        t.plan( 4 );
+        size = new OpenLayers.Size(5,6);
+        t.ok( size instanceof OpenLayers.Size, "new OpenLayers.Size returns size object" );
+        t.eq( size.CLASS_NAME, "OpenLayers.Size", "size.CLASS_NAME is set correctly");
+        t.eq( size.w, 5, "size.w is set correctly");
+        t.eq( size.h, 6, "size.h is set correctly");
+    }
+
+    function test_Size_constructorFromString (t) {
+        t.plan( 4 );
+        size = new OpenLayers.Size("5","6");
+        t.ok( size instanceof OpenLayers.Size, "new OpenLayers.Size returns size object" );
+        t.eq( size.CLASS_NAME, "OpenLayers.Size", "size.CLASS_NAME is set correctly");
+        t.eq( size.w, 5, "size.w is set correctly");
+        t.eq( size.h, 6, "size.h is set correctly");
+    }
+    
+    function test_Size_toString(t) {
+        t.plan( 1 );
+        size = new OpenLayers.Size(5,6);
+        t.eq( size.toString(), "w=5,h=6", "size.toString() returns correctly");
+    }
+
+    function test_Size_clone(t) {
+        t.plan( 3 );
+
+        oldSize = new OpenLayers.Size(5,6);
+        size = oldSize.clone();
+        t.ok( size instanceof OpenLayers.Size, "clone returns new OpenLayers.Size object" );
+        t.ok( size.equals(oldSize), "new size is equal to old size correctly");
+        
+        oldSize.w = 100;
+        t.eq( size.w, 5, "changing oldSize.w doesn't change size.w");
+    }
+
+     function test_Size_equals(t) {
+        t.plan( 5 );
+        size = new OpenLayers.Size(5,6);
+
+        sz = new OpenLayers.Size(5,6);
+        t.eq( size.equals(sz), true, "(5,6) equals (5,6)");
+
+        sz = new OpenLayers.Size(1,6);
+        t.eq( size.equals(sz), false, "(5,6) does not equal (1,6)");
+
+        sz = new OpenLayers.Size(5,2);
+        t.eq( size.equals(sz), false, "(5,6) does not equal (5,2)");
+
+        sz = new OpenLayers.Size(1,2);
+        t.eq( size.equals(sz), false, "(5,6) does not equal (1,2)");
+
+        t.ok( !size.equals(null), "equals() returns false on comparison to null");
+    }
+
+
+  </script>
+</head>
+<body>
+</body>
+</html>

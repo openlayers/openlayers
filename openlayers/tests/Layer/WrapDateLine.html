@@ -1,0 +1,182 @@
+<html>
+<head>
+<script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
+    var layer; 
+
+    var name = 'Test Layer';
+    var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+    var params = { map: '/mapdata/vmap_wms.map', 
+                   layers: 'basic', 
+                   format: 'image/png'};
+
+    
+    function test_Layer_WrapDateLine_adjustBounds(t) {
+        t.plan(10);
+        
+        
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.WMS(name, url, params, {'wrapDateLine':true});
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        var bounds = layer.adjustBounds(new OpenLayers.Bounds(-270,-90,-180,0));
+        t.ok( bounds.equals(new OpenLayers.Bounds(90,-90,180,0)), "-270,-90,-180,0 wraps to 90,-90,180,0");
+        bounds = layer.adjustBounds(new OpenLayers.Bounds(180,-90,270,0));
+        t.ok( bounds.equals(new OpenLayers.Bounds(-180,-90,-90,0)), "180,-90,270,0 wraps to -180,-90,-90,0");
+        bounds = layer.adjustBounds(new OpenLayers.Bounds(-180,-90,0,0));
+        t.ok( bounds.equals(new OpenLayers.Bounds(-180,-90,0,0)), "-180,-90,0,0 doesn't wrap");
+        bounds = layer.adjustBounds(new OpenLayers.Bounds(-181,-90,-179,0));
+        t.ok( bounds.equals(new OpenLayers.Bounds(-181,-90,-179,0)), "-181,-90,-179,0 doesn't wrap, because it straddles the dateline");
+        bounds = layer.adjustBounds(new OpenLayers.Bounds(-180,-180,-90,-90));
+        t.ok( bounds.equals(new OpenLayers.Bounds(-180,-180,-90,-90)), "-180,-180,-90,-90 doesn't wrap, because we don't wrap lats.");
+        layer = new OpenLayers.Layer.WMS(name, url, params);
+        map.addLayer(layer);
+        var testBounds = null;
+        var outBounds = null;
+        var testList = [
+          new OpenLayers.Bounds(-270,-90,-180,0),
+          new OpenLayers.Bounds(180,-90,270,0),
+          new OpenLayers.Bounds(-180,-90,0,0),
+          new OpenLayers.Bounds(-181,-90,-179,0),
+          new OpenLayers.Bounds(-180,-180,-90,-90)
+        ];          
+        for (var i = 0; i < testList.length; i++) {
+            outBounds = layer.adjustBounds(testList[i]);
+            t.ok( outBounds.equals(testList[i]), testList[i]+" doesn't wrap in non-wrapping layer.");
+        }
+        map.destroy();
+    }
+    function test_Layer_WrapDateLine_getLonLat(t) {
+        t.plan(12);
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.WMS(name, url, params, {'wrapDateLine':true});
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        var testLonLats = [
+            new OpenLayers.LonLat(-185,5),
+            new OpenLayers.LonLat(-180,-95),
+            new OpenLayers.LonLat(-180,95),
+            new OpenLayers.LonLat(180,-95),
+            new OpenLayers.LonLat(180,95),
+            new OpenLayers.LonLat(185,5)
+        ];
+        var outLonLats = [
+            new OpenLayers.LonLat(175,5),
+            new OpenLayers.LonLat(-180,-95),
+            new OpenLayers.LonLat(-180,95),
+            new OpenLayers.LonLat(180,-95),
+            new OpenLayers.LonLat(180,95),
+            new OpenLayers.LonLat(-175,5)
+        ];    
+            
+        for (var i = 0; i < testLonLats.length; i++) {
+            var pixel = layer.getViewPortPxFromLonLat(testLonLats[i]);
+            var lonlat = layer.getLonLatFromViewPortPx(pixel);
+            lonlat.lon = Math.round(lonlat.lon);
+            lonlat.lat = Math.round(lonlat.lat);
+            t.ok(outLonLats[i].equals(lonlat), testLonLats[i] + " wraps to " + outLonLats[i]+ " (what happened: " + lonlat + ")");   
+        }
+        
+        layer = new OpenLayers.Layer.WMS(name, url, params);
+        map.addLayer(layer);
+        var outLonLats = [
+            new OpenLayers.LonLat(-185,5),
+            new OpenLayers.LonLat(-180,-95),
+            new OpenLayers.LonLat(-180,95),
+            new OpenLayers.LonLat(180,-95),
+            new OpenLayers.LonLat(180,95),
+            new OpenLayers.LonLat(185,5)
+        ];    
+        for (var i = 0; i < testLonLats.length; i++) {
+            var pixel = layer.getViewPortPxFromLonLat(testLonLats[i]);
+            var lonlat = layer.getLonLatFromViewPortPx(pixel);
+            lonlat.lon = Math.round(lonlat.lon);
+            lonlat.lat = Math.round(lonlat.lat);
+            t.ok(outLonLats[i].equals(lonlat), testLonLats[i] + " wraps to " + outLonLats[i]+ " (what happened: " + lonlat + ")");   
+        }
+        map.destroy();
+        
+    }
+    function test_Layer_WrapDateLine_ZoomToExtent (t) {
+        t.plan( 4 );
+
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.WMS(name, url, params, {'wrapDateLine':true});
+        var m = new OpenLayers.Map('map');
+        m.addLayer(layer);
+        m.setCenter = function(myCenter) { this.center = myCenter; }
+        var testBounds = [
+            new OpenLayers.Bounds(-185,-90,-175,-85),
+            new OpenLayers.Bounds(0,-90,-170,-85),
+            new OpenLayers.Bounds(-270,-90,-180,-85),
+            new OpenLayers.Bounds(0,0,45,45)
+        ];
+        var outCenters = [
+            new OpenLayers.LonLat(-180,-87.5),
+            new OpenLayers.LonLat(95,-87.5),
+            new OpenLayers.LonLat(135,-87.5),
+            new OpenLayers.LonLat(22.5,22.5)
+        ];
+        for (var i = 0; i < testBounds.length; i++) {
+            m.zoomToExtent(testBounds[i]);
+            t.ok(m.center.equals(outCenters[i]), "Map center from bounds " + testBounds[i] + " should be " + outCenters[i] + ", got " + m.center);  
+        }
+        m.destroy();
+        
+    
+    }
+    function test_Layer_WrapDateLine_WMS (t) {
+        t.plan( 3 );
+
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        layer = new OpenLayers.Layer.WMS(name, url, params, {'wrapDateLine':true,encodeBBOX:true, buffer: 2});
+        var m = new OpenLayers.Map('map');
+        m.addLayer(layer);
+        m.zoomToMaxExtent();
+        t.eq(layer.grid[3][0].url, "http://octo.metacarta.com/cgi-bin/mapserv?MAP=%2Fmapdata%2Fvmap_wms.map&LAYERS=basic&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&SRS=EPSG%3A4326&BBOX=0%2C-90%2C180%2C90&WIDTH=256&HEIGHT=256", "cell [3][0] is wrapped around the world.");
+        t.eq(layer.grid[0][0].url, "http://octo.metacarta.com/cgi-bin/mapserv?MAP=%2Fmapdata%2Fvmap_wms.map&LAYERS=basic&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&SRS=EPSG%3A4326&BBOX=0%2C450%2C180%2C630&WIDTH=256&HEIGHT=256", "cell [0][0] is wrapped around the world lon, but not lat");
+        t.eq(layer.grid[0][3].url, "http://octo.metacarta.com/cgi-bin/mapserv?MAP=%2Fmapdata%2Fvmap_wms.map&LAYERS=basic&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&SRS=EPSG%3A4326&BBOX=-180%2C450%2C0%2C630&WIDTH=256&HEIGHT=256", "cell [3][0] is not wrapped at all.");
+        m.destroy();
+
+    }
+    function test_Layer_WrapDateLine_KaMap (t) {
+        t.plan( 3 );
+
+        var layer = new OpenLayers.Layer.KaMap( "Blue Marble NG",
+             "http://www.openlayers.org/world/index.php",
+             {g: "satellite", map: "world"},
+             {wrapDateLine: true, buffer: 2} ); 
+        var m = new OpenLayers.Map('map');
+        m.addLayer(layer);
+        m.zoomToMaxExtent();
+        t.eq(layer.grid[0][0].url, "http://www.openlayers.org/world/index.php?g=satellite&map=world&i=jpeg&t=-1280&l=0&s=221471921.25", "grid[0][0] kamap is okay");
+        t.eq(layer.grid[0][3].url, "http://www.openlayers.org/world/index.php?g=satellite&map=world&i=jpeg&t=-1280&l=-256&s=221471921.25", "grid[0][3] kamap is okay");
+        t.eq(layer.grid[3][0].url, "http://www.openlayers.org/world/index.php?g=satellite&map=world&i=jpeg&t=-512&l=0&s=221471921.25", "grid[3][0] is okay");
+        m.destroy();
+    }
+    function test_Layer_WrapDateLine_WMS_Overlay (t) {
+        t.plan( 3 );
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        baselayer = new OpenLayers.Layer.WMS(name, url, params, {'wrapDateLine':true, buffer: 2});
+        var layer = new OpenLayers.Layer.WMS( "DM Solutions Demo",
+            "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap",
+            {layers: "bathymetry,land_fn,park,drain_fn,drainage," +
+                     "prov_bound,fedlimit,rail,road,popplace",
+             transparent: "true", format: "image/png"},
+            {wrapDateLine: true, reproject: false,encodeBBOX:true, buffer:2});
+        var m = new OpenLayers.Map('map');
+        m.addLayers([baselayer,layer]);
+        m.zoomToMaxExtent();
+        t.eq(layer.grid[0][0].url, "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap?LAYERS=bathymetry%2Cland_fn%2Cpark%2Cdrain_fn%2Cdrainage%2Cprov_bound%2Cfedlimit%2Crail%2Croad%2Cpopplace&TRANSPARENT=true&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&SRS=EPSG%3A4326&BBOX=0%2C450%2C180%2C630&WIDTH=256&HEIGHT=256", "grid[0][0] wms overlay is okay");
+        t.eq(layer.grid[0][3].url, "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap?LAYERS=bathymetry%2Cland_fn%2Cpark%2Cdrain_fn%2Cdrainage%2Cprov_bound%2Cfedlimit%2Crail%2Croad%2Cpopplace&TRANSPARENT=true&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&SRS=EPSG%3A4326&BBOX=-180%2C450%2C0%2C630&WIDTH=256&HEIGHT=256", "grid[0][3] wms overlay is okay");
+        t.eq(layer.grid[3][0].url, "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap?LAYERS=bathymetry%2Cland_fn%2Cpark%2Cdrain_fn%2Cdrainage%2Cprov_bound%2Cfedlimit%2Crail%2Croad%2Cpopplace&TRANSPARENT=true&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&SRS=EPSG%3A4326&BBOX=0%2C-90%2C180%2C90&WIDTH=256&HEIGHT=256", "grid[3][0] wms overlay okay");
+        m.destroy();
+    }
+
+  </script>
+</head>
+<body>
+<div id="map" style="width:1000px;height:550px"></div>
+</body>
+</html>

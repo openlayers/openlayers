@@ -1,0 +1,426 @@
+<html> 
+<head> 
+    <script src="OLLoader.js"></script> 
+    <script type="text/javascript">
+
+    function test_Style_constructor(t) { 
+        t.plan(6); 
+         
+        var rules = [
+            new OpenLayers.Rule({
+                symbolizer: {fillColor: "red"},
+                filter: new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                    property: "type",
+                    value: "fire engine"
+                })
+            }),
+            new OpenLayers.Rule({
+                symbolizer: {fillColor: "yellow"},
+                filter: new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                    property: "type",
+                    value: "sports car"
+                })
+            })
+        ];
+        var style = new OpenLayers.Style(null, {
+            foo: "bar",
+            rules: rules
+        }); 
+        t.ok(style instanceof OpenLayers.Style, 
+             "new OpenLayers.Style returns object" ); 
+        t.eq(style.foo, "bar", "constructor sets options correctly");
+        t.eq(style.rules.length, 2, "correct number of rules added");
+        t.ok(style.rules[0] === rules[0], "correct first rule added");
+        t.ok(style.rules[1] === rules[1], "correct second rule added");
+        t.eq(typeof style.createSymbolizer, "function", "style has a createSymbolizer function"); 
+    }
+    
+    function test_Style_create(t) {
+        t.plan(10);
+        
+        var map = new OpenLayers.Map("map");
+        
+        var layer = new OpenLayers.Layer.Vector("layer");
+         
+        var baseStyle = OpenLayers.Util.extend(
+            OpenLayers.Feature.Vector.style["default"],
+            {externalGraphic: "bar${foo}.png"}
+        );
+        
+        var style = new OpenLayers.Style(baseStyle);
+        
+        var rule1 = new OpenLayers.Rule({
+            symbolizer: {"Point": {fillColor: "green"}},
+            maxScaleDenominator: 500000,
+            filter: new OpenLayers.Filter.FeatureId({
+                fids: ["1"]
+            })
+        });
+        var rule2 = new OpenLayers.Rule({
+            symbolizer: {"Point": {fillColor: "yellow"}},
+            minScaleDenominator: 500000,
+            maxScaleDenominator: 1000000,
+            filter: new OpenLayers.Filter.FeatureId({
+                fids: ["1"]
+            })
+        });
+        var rule3 = new OpenLayers.Rule({
+            symbolizer: {"Point": {fillColor: "red"}},
+            minScaleDenominator: 1000000,
+            maxScaleDenominator: 2500000,
+            filter: new OpenLayers.Filter.FeatureId({
+                fids: ["1"]
+            })
+        });
+        
+        var feature = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(3,5),
+            {"foo": "bar"}
+        );
+
+        feature.fid = "1";
+        // for this fid, the above rule should apply
+        
+        layer.styleMap = new OpenLayers.StyleMap(style);
+                
+        layer.addFeatures([feature]);
+        map.addLayer(layer);
+        map.setBaseLayer(layer);
+
+        map.setCenter(new OpenLayers.LonLat(3,5), 10);
+
+        var createdStyle = style.createSymbolizer(feature);
+        t.eq(createdStyle.externalGraphic, "barbar.png", "Calculated property style for default symbolizer correctly.");
+        
+        style.addRules([rule1, rule2, rule3]);
+        createdStyle = style.createSymbolizer(feature);
+        
+        // at this scale, the feature should be green
+        t.eq(createdStyle.display, undefined, "Feature is visible at scale "+map.getScale());
+        t.eq(createdStyle.fillColor, "green", "Point symbolizer from rule applied correctly.");
+
+        map.setCenter(new OpenLayers.LonLat(3,5), 9);
+        // at this scale, the feature should be red
+        createdStyle = style.createSymbolizer(feature);
+        t.eq(createdStyle.display, undefined, "Feature is visible at scale "+map.getScale());
+        t.eq(createdStyle.fillColor, "yellow", "Point symbolizer from rule applied correctly.");
+
+        map.setCenter(new OpenLayers.LonLat(3,5), 8);
+        // at this scale, the feature should be yellow
+        createdStyle = style.createSymbolizer(feature);
+        t.eq(createdStyle.display, undefined, "Feature is visible at scale "+map.getScale());
+        t.eq(createdStyle.fillColor, "red", "Point symbolizer from rule applied correctly.");
+
+        map.setCenter(new OpenLayers.LonLat(3,5), 7);
+        // at this scale, the feature should be invisible
+        createdStyle = style.createSymbolizer(feature);
+        t.eq(createdStyle.display, "none", "Feature is invisible at scale "+map.getScale());
+        t.eq(createdStyle.fillColor, baseStyle.fillColor, "Point symbolizer from base style applied correctly.");
+        
+        feature.fid = "2";
+        // now the rule should not apply
+        
+        createdStyle = style.createSymbolizer(feature);
+        t.eq(createdStyle.fillColor, baseStyle.fillColor, "Correct style for rule that does not apply to fid=\"2\".");
+    }
+    
+    function test_Style_createSymbolizer(t) {
+        t.plan(5);
+        var style = new OpenLayers.Style();
+
+        // override applySymbolizer to log arguments
+        var log = [];
+        style.applySymbolizer = function(r) {
+            log.push(r);
+            OpenLayers.Style.prototype.applySymbolizer.apply(this, arguments);
+        };
+
+        // rules for the style
+        var rule = new OpenLayers.Rule({
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                property: "foo",
+                value: "bar"
+            }),
+            symbolizer: {
+                label: "${labelValue}"
+            }
+        });
+        rule.id = "foo=bar rule";
+        var elseRule = new OpenLayers.Rule({
+            elseFilter: true,
+            symbolizer: {
+                label: "${labelValue}"
+            }
+        });
+        elseRule.id = "else rule";
+        style.addRules([rule, elseRule]);
+        
+        // a) test that applySymbolizer is only called with rule
+        log = [];
+        style.createSymbolizer(
+            new OpenLayers.Feature.Vector(null, {foo: "bar"})
+        );
+        t.eq(log.length, 1, "a) applySymbolizer called once");
+        t.eq(log[0] && log[0].id, rule.id, "a) applySymbolizer called with correct rule");
+
+        // b) test that applySymbolizer is only called with elseRule
+        log = [];
+        style.createSymbolizer(
+            new OpenLayers.Feature.Vector(null, {foo: "baz"})
+        );
+        t.eq(log.length, 1, "b) applySymbolizer called once");
+        t.eq(log[0] && log[0].id, elseRule.id, "b) applySymbolizer called with correct rule");
+        
+        // c) test that label in returned symbolizer is a string even if property value is a number
+        var symbolizer = style.createSymbolizer(
+            new OpenLayers.Feature.Vector(null, {foo: "bar", labelValue: 10})
+        );
+        t.eq(symbolizer.label, "10", "c) feature property cast to string when used as symbolizer label");
+
+    }
+    
+    function test_Style_applySymbolizer(t) {
+        t.plan(15);
+
+        var feature = new OpenLayers.Feature.Vector();
+        var defaults = OpenLayers.Feature.Vector.style["default"];
+        var style, symbolizer;
+
+        style = new OpenLayers.Style();
+        symbolizer = style.createSymbolizer(feature);
+        t.eq(symbolizer.pointRadius, defaults.pointRadius, "symbolizer has the correct pointRadius");
+        t.eq(symbolizer.strokeWidth, defaults.strokeWidth, "symbolizer has the correct strokeWidth");
+        t.eq(symbolizer.fillColor, defaults.fillColor, "symbolizer has the correct fillColor");
+        t.eq(symbolizer.graphicName, defaults.graphicName, "symbolizer has the correct graphicName");
+
+        style = new OpenLayers.Style(null, {
+            defaultsPerSymbolizer: true,
+            rules: [
+                new OpenLayers.Rule({
+                    symbolizer: {
+                        stroke: true
+                    }
+                })
+            ]
+        });
+        symbolizer = style.createSymbolizer(feature);
+        t.eq(symbolizer.strokeWidth, defaults.strokeWidth, "symbolizer has the correct strokeWidth");
+        t.ok(symbolizer.fillColor == undefined, "fillColor is undefined");
+
+        style = new OpenLayers.Style(null, {
+            defaultsPerSymbolizer: true,
+            rules: [
+                new OpenLayers.Rule({
+                    symbolizer: {
+                    }
+                })
+            ]
+        });
+        symbolizer = style.createSymbolizer(feature);
+        t.eq(symbolizer.pointRadius, defaults.pointRadius, "symbolizer has the correct pointRadius");
+        t.ok(symbolizer.strokeWidth == undefined, "strokeWidth is undefined");
+        t.ok(symbolizer.fillColor == undefined, "fillColor is undefined");
+        t.ok(symbolizer.graphicName == undefined, "graphicName is undefined");
+
+        style = new OpenLayers.Style(null, {
+            defaultsPerSymbolizer: true,
+            rules: [
+                new OpenLayers.Rule({
+                    symbolizer: {
+                        stroke: true
+                    }
+                })
+            ]
+        });
+        symbolizer = style.createSymbolizer(feature);
+        t.eq(symbolizer.strokeWidth, defaults.strokeWidth, "symbolizer has the correct strokeWidth");
+        t.ok(symbolizer.fillColor == undefined, "fillColor is undefined");
+
+        style = new OpenLayers.Style(null, {
+            defaultsPerSymbolizer: true,
+            rules: [
+                new OpenLayers.Rule({
+                    symbolizer: {
+                        fill: true
+                    }
+                })
+            ]
+        });
+        symbolizer = style.createSymbolizer(feature);
+        t.eq(symbolizer.fillColor, defaults.fillColor, "symbolizer has the correct fillColor");
+        t.ok(symbolizer.strokeWidth == undefined, "strokeWidth is undefined");
+
+        style = new OpenLayers.Style(null, {
+            defaultsPerSymbolizer: true,
+            rules: [
+                new OpenLayers.Rule({
+                    symbolizer: {
+                        graphic: true
+                    }
+                })
+            ]
+        });
+        symbolizer = style.createSymbolizer(feature);
+        t.eq(symbolizer.graphicName, defaults.graphicName, "symbolizer has the correct graphicName");
+    }
+    
+    function test_Style_context(t) {
+        t.plan(4);
+        var rule = new OpenLayers.Rule({
+            symbolizer: {"Point": {externalGraphic: "${img1}"}},
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.LESS_THAN,
+                property: "size",
+                value: 11
+            })
+        });
+        var style = new OpenLayers.Style();
+        style.context = {
+            "img1": "myImage.png"
+        };
+        style.addRules([rule]);
+        var feature = new OpenLayers.Feature.Vector();
+        feature.attributes = {size: 10};
+        var styleHash = style.createSymbolizer(feature);
+        t.eq(styleHash.externalGraphic, "myImage.png", "correctly evaluated rule and calculated property styles from a custom context");
+        
+        // same as above, but without rule (#1526)
+        style = new OpenLayers.Style(
+            {externalGraphic: "${getExternalGraphic}"},
+            {context: {
+                getExternalGraphic: function(feature) {
+                    return "foo" + feature.attributes.size + ".png";
+                }
+            }});
+        t.eq(style.createSymbolizer(feature).externalGraphic, "foo10.png", "correctly evaluated symbolizer without rule");
+        
+        style = new OpenLayers.Style(
+            {externalGraphic: "${getExternalGraphic}",
+             pointRadius: "${size}"},
+            {context: {
+                getExternalGraphic: function(feature) {
+                    return "foo" + feature.attributes.size + ".png";
+                }
+            }});
+        t.eq(style.createSymbolizer(feature).externalGraphic, "foo10.png", "correctly evaluated symbolizer from context");
+        t.eq(style.createSymbolizer(feature).pointRadius, 10, "correctly evaluated symbolizer from attributes");
+        
+    };
+        
+    function test_Style_findPropertyStyles(t) {
+        t.plan(4);
+        var rule1 = new OpenLayers.Rule({symbolizer: {
+            pointRadius: 3,
+            externalGraphic: "${foo}.bar"
+        }});
+        var rule2 = new OpenLayers.Rule({symbolizer: {"Point": {
+            strokeWidth: "${foo}"
+        }}});
+        var style = new OpenLayers.Style({
+            strokeOpacity: 1,
+            strokeColor: "${foo}"
+        });
+        style.addRules([rule1, rule2]);
+        var propertyStyles = style.findPropertyStyles();
+        t.ok(propertyStyles.externalGraphic, "detected externalGraphic from rule correctly");
+        t.ok(propertyStyles.strokeWidth, "detected strokeWidth from Point symbolizer correctly");
+        t.ok(propertyStyles.strokeColor, "detected strokeColor from style correctly");
+        t.eq(typeof propertyStyles.pointRadius, "undefined", "correctly detected pointRadius as non-property style");
+    }
+    
+    function test_createLiteral(t) {
+        t.plan(6);
+        
+        var value, context, feature, result, expected;
+        var func = OpenLayers.Style.createLiteral;
+
+        // without templates
+        value = "foo";
+        expected = value;
+        result = func(value);
+        t.eq(result, expected, "(no template) preserves literal");
+        
+        // with templates
+        value = "${foo}"
+        expected = "bar";
+        context = {foo: expected};
+        result = func(value, context);
+        t.eq(result, expected, "(template) preserves literal");
+        
+        expected = "";
+        context = {foo: expected};
+        result = func(value, context);
+        t.eq(result, expected, "(template) preserves empty string");
+        
+        expected = "16/03/2008";
+        context = {foo: expected};
+        result = func(value, context);
+        t.eq(result, expected, "(template) preserves string with numbers");
+        
+        expected = 16;
+        context = {foo: expected + ""};
+        result = func(value, context);
+        t.eq(result, expected, "(template) casts integer in a string");
+
+        expected = 16;
+        context = {foo: " " + expected + " "};
+        result = func(value, context);
+        t.eq(result, expected, "(template) casts integer in a space padded string");
+
+    }
+
+    function test_clone(t) {
+        
+        t.plan(7);
+        
+        var style = new OpenLayers.Style({bar: "baz"}, {
+            name: "test style",
+            rules: [new OpenLayers.Rule({
+                name: "test rule"
+            })],
+            context: {
+                foo: "bar"
+            }
+        });
+        var clone = style.clone();
+        t.eq(clone.name, "test style", "name copied");
+        t.eq(clone.rules[0].name, "test rule", "clone has correct rule");
+        
+        // modify original
+        style.name = "new";
+        style.addRules([new OpenLayers.Rule({
+			name: "new rule"
+		})]);
+        style.context.foo = "baz";
+        
+        // confirm that clone didn't change
+        t.eq(clone.defaultStyle.bar, "baz", "clone has clone of defaultStyle");
+        t.eq(clone.name, "test style", "clone has clone of name");
+        t.eq(clone.rules.length, 1, "clone has clone of rules");
+        t.eq(clone.context.foo, "bar", "clone has clone of context");
+        
+        // confirm that ids are different
+        t.ok(clone.id !== style.id, "clone has different id");
+
+        style.destroy();
+        clone.destroy();
+        
+    }
+
+    function test_Style_destroy(t) {
+        t.plan(1);
+        
+        var style = new OpenLayers.Style();
+        style.destroy();
+        t.eq(style.rules, null, "rules array nulled properly");
+    }
+
+    </script> 
+</head> 
+<body> 
+  <div id="map" style="width:500px;height:500px"></div>
+</body> 
+</html> 

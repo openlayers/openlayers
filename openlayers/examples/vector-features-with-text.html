@@ -1,0 +1,136 @@
+<!DOCTYPE HTML>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers Labeled Features Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map;
+
+        function init(){
+            map = new OpenLayers.Map('map');
+            
+            var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                    "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
+            map.addLayer(layer);
+            
+            // allow testing of specific renderers via "?renderer=Canvas", etc
+            var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+            renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+            
+            var vectorLayer = new OpenLayers.Layer.Vector("Simple Geometry", {
+                styleMap: new OpenLayers.StyleMap({'default':{
+                    strokeColor: "#00FF00",
+                    strokeOpacity: 1,
+                    strokeWidth: 3,
+                    fillColor: "#FF5500",
+                    fillOpacity: 0.5,
+                    pointRadius: 6,
+                    pointerEvents: "visiblePainted",
+                    // label with \n linebreaks
+                    label : "name: ${name}\n\nage: ${age}",
+                    
+                    fontColor: "${favColor}",
+                    fontSize: "12px",
+                    fontFamily: "Courier New, monospace",
+                    fontWeight: "bold",
+                    labelAlign: "${align}",
+                    labelXOffset: "${xOffset}",
+                    labelYOffset: "${yOffset}"
+                }}),
+                renderers: renderer
+            });
+            
+            // create a point feature
+            var point = new OpenLayers.Geometry.Point(-111.04, 45.68);
+            var pointFeature = new OpenLayers.Feature.Vector(point);
+            pointFeature.attributes = {
+                name: "toto",
+                age: 20,
+                favColor: 'red',
+                align: "cm"
+            };
+            
+            // create a polygon feature from a linear ring of points
+            var pointList = [];
+            for(var p=0; p<6; ++p) {
+                var a = p * (2 * Math.PI) / 7;
+                var r = Math.random(1) + 1;
+                var newPoint = new OpenLayers.Geometry.Point(point.x + 5 + (r * Math.cos(a)),
+                                                             point.y + 5 + (r * Math.sin(a)));
+                pointList.push(newPoint);
+            }
+            pointList.push(pointList[0]);
+            
+            var linearRing = new OpenLayers.Geometry.LinearRing(pointList);
+            var polygonFeature = new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Polygon([linearRing]));
+            polygonFeature.attributes = {
+                name: "dude",
+                age: 21,
+                favColor: 'purple',
+                align: 'lb'
+            };
+            
+            multiFeature = new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Collection([
+                    new OpenLayers.Geometry.LineString([
+                        new OpenLayers.Geometry.Point(-105,40),
+                        new OpenLayers.Geometry.Point(-95,45)
+                    ]),
+                    new OpenLayers.Geometry.Point(-105, 40)
+                ]),
+                {
+                    name: "ball-and-chain",
+                    age: 30,
+                    favColor: 'black',
+                    align: 'rt'
+                });
+
+            // Create a point feature to show the label offset options
+            var labelOffsetPoint = new OpenLayers.Geometry.Point(-101.04, 35.68);
+            var labelOffsetFeature = new OpenLayers.Feature.Vector(labelOffsetPoint);
+            labelOffsetFeature.attributes = {
+                name: "offset",
+                age: 22,
+                favColor: 'blue',
+                align: "cm",
+                // positive value moves the label to the right
+                xOffset: 50,
+                // negative value moves the label down
+                yOffset: -15
+            };
+
+
+            var nullFeature = new OpenLayers.Feature.Vector(null);
+            nullFeature.attributes = {
+                name: "toto is some text about the world",
+                age: 20,
+                favColor: 'red',
+                align: "cm"
+            };
+            
+            map.addLayer(vectorLayer);
+            vectorLayer.drawFeature(multiFeature);
+            map.setCenter(new OpenLayers.LonLat(-109.370078125, 43.39484375), 4);
+            vectorLayer.addFeatures([pointFeature, polygonFeature, multiFeature, labelOffsetFeature, nullFeature ]);
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">OpenLayers Labeled features example</h1>
+    <div id="tags">
+        vector, feature, labeling, symbolizer
+    </div>
+    <p id="shortdesc">
+        Label vector features with a text symbolizer.
+    </p>
+    <div id="map" class="smallmap"></div>
+    <div id="docs">
+    <p>This example shows drawing simple vector features with a label.</p>
+    </div>
+  </body>
+</html>

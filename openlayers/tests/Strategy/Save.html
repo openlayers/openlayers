@@ -1,0 +1,127 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+  
+    function test_initialize(t) {
+        t.plan(1);
+        var strategy = new OpenLayers.Strategy.Save();
+        t.eq(strategy.auto, false, "auto is false by default");
+    }
+
+    function test_activate(t) {
+        
+        t.plan(3);
+        
+        var strategy = new OpenLayers.Strategy.Save();
+        var layer = new OpenLayers.Layer.Vector(null, {
+            isBaseLayer: true,
+            protocol: new OpenLayers.Protocol(),
+            strategies: [strategy]
+        });
+        var map = new OpenLayers.Map("map");
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        
+        // check that auto true registers listeners
+        strategy.deactivate();
+        strategy.auto = true;
+        strategy.activate();
+        t.ok(layer.events.listeners["featureadded"][0].func === strategy.triggerSave,
+             "[auto true] triggerSave registered as listener for featureadded");
+        t.ok(layer.events.listeners["afterfeaturemodified"][0].func === strategy.triggerSave,
+             "[auto true] triggerSave registered as listener for afterfeaturemodified");
+
+        // check that auto can be set to interval
+        strategy.deactivate();
+        strategy.auto = 1;
+        strategy.activate();
+        t.ok(strategy.timer != null, "[auto number] timer set")
+        
+        map.destroy();
+        
+    }
+    
+    function test_save(t) {
+        t.plan(9);
+
+        var strategy = new OpenLayers.Strategy.Save();
+        
+        // mock up a protocol for synchronous and successful commits
+        var protocol = new OpenLayers.Protocol({
+            commit: function(features, options) {
+                var response = new OpenLayers.Protocol.Response();
+                response.reqFeatures = features;
+                response.insertIds = [];
+                for(var i=0; i<features.length; ++i) {
+                    // test feature.url first
+                    t.eq(features[i].url, "url" + i,
+                         "feature.url correctly set (url" + i + ")");
+                    if(features[i].state == OpenLayers.State.INSERT) {
+                        response.insertIds.push("new_" + i);
+                    }
+                }
+                response.code = OpenLayers.Protocol.Response.SUCCESS;
+                options.callback.call(options.scope, response);
+            }
+        });
+
+        var layer = new OpenLayers.Layer.Vector(null, {
+            isBaseLayer: true,
+            protocol: protocol,
+            strategies: [strategy],
+            projection: "EPSG:4326"
+        });
+        var map = new OpenLayers.Map("map", {
+            getProjectionObject: function() {
+                return new OpenLayers.Projection("EPSG:900913");
+            }
+        })
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        
+        // give the layer some features
+        var features = [
+            new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(5, 45)
+            ), // insert
+            new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(6, 46)
+            ), // delete
+            new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(7, 47)
+            ), // update
+            new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(8, 48)
+            )  // nothing
+        ];
+        features[0].state = OpenLayers.State.INSERT;
+        features[0].url = "url0";
+        features[1].state = OpenLayers.State.DELETE;
+        features[1].url = "url1";
+        features[2].state = OpenLayers.State.UPDATE;
+        features[2].url = "url2";
+        features[3].url = "url3";
+        layer.addFeatures(features);
+        
+        // save feature modifications
+        strategy.save(features);
+        
+        // confirm that newly created feature has an id and no longer has insert state
+        t.eq(features[0].fid, "new_0", "newly created feature gets fid");
+        t.ok(features[0].state == null, "newly created feature no longer insert state");
+        
+        // confirm that deleted features are not on layer
+        t.eq(layer.features.length, 3, "layer only has three features");
+        t.ok(features[1].layer == null, "deleted feature has no layer");
+        
+        // confirm that updated feature no longer has update state
+        t.ok(features[2].state == null, "updated feature no longer update state");
+    }
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 400px; height: 200px" />
+</body>
+</html>

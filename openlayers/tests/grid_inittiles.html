@@ -1,0 +1,30 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 800px;
+            height: 475px;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        function init(){
+            var map = new OpenLayers.Map('map', {'maxResolution': 1.40625/2, tileSize: new OpenLayers.Size(256,256)});
+            ww = new OpenLayers.Layer.WMS( "Basic", 
+            "http://labs.metacarta.com/wms-c/Basic.py?", 
+            {layers:"basic"});
+            map.addLayers([ww]);
+            map.zoomToMaxExtent();
+            map.zoomIn();
+            map.zoomOut();
+            map.zoomOut();
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1>Grid Test</h1>
+    <p>Map should display with two centered tiles. If there appear to be a combination of two zoom levels, then this test is failed, and something is broken in OpenLayers.</p>
+    <div id="map"></div>
+  </body>
+</html>

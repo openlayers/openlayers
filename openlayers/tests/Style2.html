@@ -1,0 +1,56 @@
+<html> 
+<head> 
+    <script src="OLLoader.js"></script> 
+    <script type="text/javascript">
+
+    function test_constructor(t) { 
+        t.plan(4); 
+
+        var rules = [
+            new OpenLayers.Rule({
+                symbolizer: {fillColor: "red"},
+                filter: new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                    property: "type",
+                    value: "fire engine"
+                })
+            }),
+            new OpenLayers.Rule({
+                symbolizer: {fillColor: "yellow"},
+                filter: new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                    property: "type",
+                    value: "sports car"
+                })
+            })
+        ];
+        var style = new OpenLayers.Style2({rules: rules}); 
+        t.ok(style instanceof OpenLayers.Style2, "correct type"); 
+        t.eq(style.rules.length, 2, "correct number of rules added");
+        t.ok(style.rules[0] === rules[0], "correct first rule added");
+        t.ok(style.rules[1] === rules[1], "correct second rule added");
+    }
+    
+    function test_destroy(t) {
+        t.plan(1);
+        
+        var style = new OpenLayers.Style2({
+            rules: [
+                new OpenLayers.Rule({
+                    symbolizers: [
+                        new OpenLayers.Symbolizer.Point({
+                            fillColor: "fuchsia"
+                        })
+                    ]
+                })
+            ]
+        });
+        style.destroy();
+        t.ok(!style.rules, "rules array gone");
+    }
+
+
+    </script> 
+</head>
+<body></body> 
+</html> 

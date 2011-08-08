@@ -1,0 +1,508 @@
+<?php
+/*
+
+This is a PHP file to be used as a backend for a ka-Map layer. It requires
+PHP with Mapscript and libgd modules installed. The top of the file
+is a configuration section: please edit the variables in this configuration
+section to meet your needs, then rename this file to tile.php or something
+similar and put it in a web accessible directory. More information
+on the OpenLayers ka-Map layer is available from:
+
+  http://trac.openlayers.org/wiki/OpenLayers.Layer.KaMap
+
+*/
+/**********************************************************************
+ *
+ * $Id: tile.php,v 1.33 2006/02/07 03:19:55 pspencer Exp $
+ *
+ * purpose: a simple phpmapscript-based tile renderer that implements
+ *          rudimentary caching for reasonable efficiency.  Note the
+ *          cache never shrinks in this version so your disk could
+ *          easily fill up!
+ *
+ * author: Paul Spencer (pspencer@dmsolutions.ca)
+ *
+ * modifications by Daniel Morissette (dmorissette@dmsolutions.ca)
+ *
+ * Modified by Christopher Schmidt for OpenLayers redistribution.
+ * 
+ **********************************************************************
+ *
+ * Copyright (c) 2005, DM Solutions Group Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+ * DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************/
+ 
+
+/****************************************************************************** 
+ * basic system configuration
+ *
+ * kaMap! uses PHP/MapScript and the PHP GD extension to
+ * render tiles, and uses PHP/MapScript to generate initialization parameters
+ * a legend, and a keymap from the selected map file.
+ *
+ * Make sure to set the correct module names for your PHP extensions.
+ *
+ * WINDOWS USERS: you will likely need to use php_gd2.dll instead of php_gd.dll
+ */
+$szPHPMapScriptModule = 'php_mapscript.'.PHP_SHLIB_SUFFIX;
+$szPHPGDModule = 'php_gd.'.PHP_SHLIB_SUFFIX;
+
+/****************************************************************************** 
+ * tile generation parameters
+ *
+ * kaMap! generates tiles to load in the client application by first rendering
+ * larger areas from the map file and then slicing them up into smaller tiles.
+ * This approach reduces the overhead of loading PHP/MapScript and PHP GD and 
+ * drawing the map file.  These larger areas are referred to as metaTiles in
+ * the code.  You can set the size of both the small tiles and the metaTiles
+ * here.  A reasonable size for the small tiles seems to be 200 pixels square.
+ * Smaller tiles seem to cause problems in client browsers by causing too many
+ * images to be created and thus slowing performance of live dragging.  Larger
+ * tiles take longer to download to the client and are inefficient.
+ *
+ * The number of smaller tiles that form a metaTile can also be configured.
+ * This parameter allows tuning of the tile generator to ensure optimal
+ * performance and for label placement.  MapServer will produce labels only
+ * within a rendered area.  If the area is too small then features may be
+ * labelled multiple times.  If the area is too large, it may exceed MapServer,s
+ * maximum map size (by default 2000x2000) or be too resource-intensive on the
+ * server, ultimately reducing performance.
+ */
+$tileWidth = 256;
+$tileHeight = 256;
+$metaWidth = 5;
+$metaHeight = 5;
+/* $metaBuffer = Buffer size in pixels to add around metatiles to avoid 
+ * rendering issues along the edge of the map image
+ */
+$metaBuffer = 10;  
+    
+/****************************************************************************** 
+ * in-image debugging information - tile location, outlines etc.
+ * to use this, you need to remove images from your cache first.  This also
+ * affects the meta tiles - if debug is on, they are not deleted.
+ */
+$bDebug = false;
+ 
+/****************************************************************************** 
+ * aszMapFiles - an array of map files available to the application.  How this
+ * is used is determined by the application.  Each map file is entered into
+ * this array as a key->value pair.
+ *
+ * The key is the name to be used by the tile caching system to store cached
+ * tiles within the base cache directory.  This key should be a single word
+ * that uniquely identifies the map.
+ *
+ * The value associated with each key is an array of three values.  The first
+ * value is a human-readable name to be presented to the user (should the
+ * application choose to do so) and the second value is the path to the map
+ * file.  It is assumed that the map file is fully configured for use with
+ * MapServer/MapScript as no error checking or setting of values is done.  The 
+ * third value is an array of scale values for zooming.
+ */
+ 
+$aszMapFiles = array(
+  "world"   => array( "World", "/path/to/your/mapfile",
+               array( 10000  ), # in openlayers, the scale array doesn't matter.
+               "PNG24")
+
+/* Add more elements to this array to offer multiple mapfiles */
+
+);
+
+/****************************************************************************** 
+ * figure out which map file to use and set up the necessary variables for
+ * the rest of the code to use.  This does need to be done on every page load
+ * unfortunately.
+ *
+ * szMap should be set to the default map file to use but can change if
+ * this script is called with map=<mapname>. 
+ */
+$szMap = 'world';
+
+/****************************************************************************** 
+ * kaMap! caching
+ * 
+ * this is the directory within which kaMap! will create its tile cache.  The
+ * directory does NOT have to be web-accessible, but it must be writable by the
+ * web-server-user and allow creation of both directories AND files.
+ *
+ * the tile caching system will create a separate subdirectory within the base
+ * cache directory for each map file.  Within the cache directory for each map
+ * file, directories will be created for each group of layers.  Within the group
+ * directories, directories will be created at each of the configured scales
+ * for the application (see mapfile configuration above.)
+ */
+$szBaseCacheDir =  "/var/cache/kamap/";
+
+/*****  END OF CONFIGURABLE STUFF - unless you know what you are doing   *****/
+/*****                                                                   *****/
+/*****                                                                   *****/
+/*****                                                                   *****/
+/*****  END OF CONFIGURABLE STUFF - unless you know what you are doing   *****/
+
+if (isset($_REQUEST['map']) && isset($aszMapFiles[$_REQUEST['map']]))
+{
+    $szMap = $_REQUEST['map'];
+}
+
+$szMapCacheDir = $szBaseCacheDir.$szMap."/";
+$szMapName = $aszMapFiles[$szMap][0];
+$szMapFile = $aszMapFiles[$szMap][1];
+$anScales = $aszMapFiles[$szMap][2];
+setOutputFormat($aszMapFiles[$szMap][3]);
+/****************************************************************************** 
+ * output format of the map and resulting tiles
+ *
+ * The output format used with MapServer can greatly affect appearance and
+ * performance.  It is recommended to use an 8 bit format such as PNG
+ *
+ * NOTE: the tile caching code in tile.php is not configurable here.  It
+ * currently assumes that it is outputting 8bit PNG files.  If you change to
+ * PNG24 here then you will need to update tile.php to use the gd function
+ * imagecreatetruecolor.  If you change the output format to jpeg then
+ * you would need to change imagepng() to imagejpeg().  A nice enhancement
+ * would be to make that fully configurable from here.
+ */
+function setOutputFormat($szFormat)
+{
+    switch($szFormat) {
+        case "PNG24":
+            $GLOBALS['szMapImageFormat'] = 'PNG24'; //mapscript format name
+            $GLOBALS['szMapImageCreateFunction'] = "imagecreatefrompng"; // appropriate GD function
+            $GLOBALS['szImageExtension'] = '.png'; //file extension
+            $GLOBALS['szImageCreateFunction'] = "imagecreatetruecolor"; //or imagecreatetruecolor if PNG24 ...
+            $GLOBALS['szImageOutputFunction'] = "imagepng"; //or imagegif, imagejpeg ...
+            $GLOBALS['szImageHeader'] = 'image/png'; //the content-type of the image        
+            break;
+        case "GIF":
+            $GLOBALS['szMapImageFormat'] = 'GIF'; //mapscript format name
+            $GLOBALS['szMapImageCreateFunction'] = "imagecreatefromgif"; // appropriate GD function
+            $GLOBALS['szImageExtension'] = '.gif'; //file extension
+            $GLOBALS['szImageCreateFunction'] = "imagecreate"; //or imagecreatetruecolor if PNG24 ...
+            $GLOBALS['szImageOutputFunction'] = "imagegif"; //or imagegif, imagejpeg ...
+            $GLOBALS['szImageHeader'] = 'image/gif'; //the content-type of the image        
+            break;
+        case "JPEG":
+            $GLOBALS['szMapImageFormat'] = 'JPEG'; //mapscript format name
+            $GLOBALS['szMapImageCreateFunction'] = "imagecreatefromjpeg"; // appropriate GD function
+            $GLOBALS['szImageExtension'] = '.jpg'; //file extension
+            $GLOBALS['szImageCreateFunction'] = "imagecreatetruecolor"; //or imagecreatetruecolor if PNG24 ...
+            $GLOBALS['szImageOutputFunction'] = "imagejpeg"; //or imagegif, imagejpeg ...
+            $GLOBALS['szImageHeader'] = 'image/jpeg'; //the content-type of the image        
+            break;
+        case "PNG":
+            $GLOBALS['szMapImageFormat'] = 'PNG'; //mapscript format name
+            $GLOBALS['szMapImageCreateFunction'] = "imagecreatefrompng"; // appropriate GD function
+            $GLOBALS['szImageExtension'] = '.png'; //file extension
+            $GLOBALS['szImageCreateFunction'] = "imagecreate"; //or imagecreatetruecolor if PNG24 ...
+            $GLOBALS['szImageOutputFunction'] = "imagepng"; //or imagegif, imagejpeg ...
+            $GLOBALS['szImageHeader'] = 'image/png'; //the content-type of the image        
+            break;
+        case "DITHERED":
+	case "PNG8":
+            $GLOBALS['szMapImageFormat'] = 'dithered';
+            $GLOBALS['szMapImageCreateFunction'] = "imagecreatefrompng";
+            $GLOBALS['szImageExtension'] = '.png';
+            $GLOBALS['szImageCreateFunction'] = "imagecreate";
+            $GLOBALS['szImageOutputFunction'] = "imagepng";
+            $GLOBALS['szImageHeader'] = 'image/png';
+            break;
+    }
+}
+
+/**
+ * create all directories in a directory tree - found on the php web site
+ * under the mkdir function ...
+ */
+function makeDirs($strPath, $mode = 0775)
+{
+   return is_dir($strPath) or ( makeDirs(dirname($strPath), $mode) and mkdir($strPath, $mode) );
+}
+
+/**
+ * This function replaces all special characters in the given string.
+ *
+ * @param szString string - The string to convert.
+ *
+ * @return string converted
+ */
+function normalizeString($szString)
+{
+    // Normalize string by replacing all special characters
+    // e.g.    "http://my.host.com/cgi-bin/mywms?"
+    // becomes "http___my_host_com_cgi_bin_mywms_"
+    return preg_replace("/(\W)/", "_", $szString);
+}
+
+/* bug 1253 - root permissions required to delete cached files */
+$orig_umask = umask(0);
+
+/* create the main cache directory if necessary */
+if (!@is_dir($szMapCacheDir))
+    makeDirs($szMapCacheDir);
+
+/* get the various request parameters 
+ * also need to make sure inputs are clean, especially those used to
+ * build paths and filenames
+ */
+ /*
+ * the tile renderer accepts several parameters and returns a tile image from
+ * the cache, creating the tile only if necessary.
+ *
+ * all requests include the pixel location of the request at a certain scale
+ * and this script figures out the geographic location of the tile from the
+ * scale assuming that 0,0 in pixels is 0,0 in geographic units
+ * 
+ * Request parameters are:
+ *
+ * map: the name of the map to use.  This is handled by config.php.
+ * 
+ * t: top pixel position
+ * l: left pixel position
+ * s: scale
+ * g: (optional) comma-delimited list of group names to draw
+ * layers: (optional) comma-delimited list of layers to draw
+ * force: optional.  If set, force redraw of the meta tile.  This was added to
+ *        help with invalid images sometimes being generated.
+ * tileid: (optional) can be used instead of t+l to specify the tile coord.,
+ *         useful in regenerating the cache
+ */
+
+$top = isset( $_REQUEST['t'] ) ? intval($_REQUEST['t']) : 0;
+$left = isset( $_REQUEST['l'] ) ? intval($_REQUEST['l']) : 0;
+$scale = isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : $anScales[0];
+$bForce = isset($_REQUEST['force'])? true : false;
+$groups = isset( $_REQUEST['g'] ) ? $_REQUEST['g'] : "";
+$layers = isset( $_REQUEST['layers'] ) ? $_REQUEST['layers'] : "";
+
+// dynamic imageformat ----------------------------------------------
+//use the function in config.php to set the output format
+if (isset($_REQUEST['i']))
+   setOutputFormat( $_REQUEST['i'] );
+//----------------------------------------------------------------
+
+/* tileid=t#####l#### can be used instead of t+l parameters. Useful in
+ * regenerating the cache for instance.
+ */
+if (isset( $_REQUEST['tileid']) &&
+    preg_match("/t(-?\d+)l(-?\d+)/", $_REQUEST['tileid'], $aMatch) )
+{
+    $top = intval($aMatch[1]);
+    $left = intval($aMatch[2]);
+}
+
+/* Calculate the metatile's top-left corner coordinates.
+ * Include the $metaBuffer around the metatile to account for various
+ * rendering issues happening around the edge of a map
+ */
+$metaLeft = floor( ($left)/($tileWidth*$metaWidth) ) * $tileWidth * $metaWidth;
+$metaTop = floor( ($top)/($tileHeight*$metaHeight) ) * $tileHeight *$metaHeight;
+$szMetaTileId = "t".$metaTop."l".$metaLeft;
+$metaLeft -= $metaBuffer;
+$metaTop -= $metaBuffer;
+
+/* caching is done by scale value, then groups and layers and finally metatile
+ * and tile id. Create a new directory if necessary
+ */
+$szGroupDir = $groups != "" ? normalizeString($groups) : "def"; 
+$szLayerDir = $layers != "" ? normalizeString($layers) : "def"; 
+
+$szCacheDir = $szMapCacheDir."/".$scale."/".$szGroupDir."/".$szLayerDir."/".$szMetaTileId;
+if (!@is_dir($szCacheDir))
+    makeDirs($szCacheDir);
+
+/* resolve cache hit - clear the os stat cache if necessary */
+$szTileId = "t".$top."l".$left;
+$szCacheFile = $szCacheDir."/".$szTileId.$szImageExtension;
+clearstatcache();
+
+$szMetaDir = $szCacheDir."/meta";
+if (!@is_Dir($szMetaDir))
+    makeDirs($szMetaDir);
+
+/* simple locking in case there are several requests for the same meta
+   tile at the same time - only draw it once to help with performance */
+$szLockFile = $szMetaDir."/lock_".$metaTop."_".$metaLeft;
+$fpLockFile = fopen($szLockFile, "a+");
+clearstatcache();
+if (!file_exists($szCacheFile) || $bForce)
+{
+    flock($fpLockFile, LOCK_EX);
+    fwrite($fpLockFile, ".");
+    
+    //check once more to see if the cache file was created while waiting for
+    //the lock
+    clearstatcache();
+    if (!file_exists($szCacheFile) || $bForce)
+    {
+        if (!extension_loaded('MapScript'))
+        {
+            dl( $szPHPMapScriptModule );
+        }
+        if (!extension_loaded('gd'))
+        {
+            dl( $szPHPGDModule);
+        }
+        
+        if (!@is_Dir($szMetaDir))
+            makeDirs($szMetaDir);    
+        
+        $oMap = ms_newMapObj($szMapFile);
+               
+        /* Metatile width/height include 2x the metaBuffer value */
+        $oMap->set('width', $tileWidth * $metaWidth + 2*$metaBuffer);
+        $oMap->set('height', $tileHeight * $metaHeight + 2*$metaBuffer);
+        
+        /* Tell MapServer to not render labels inside the metaBuffer area
+         * (new in 4.6) 
+         * TODO: Until MapServer bugs 1353/1355 are resolved, we need to
+         * pass a negative value for "labelcache_map_edge_buffer"
+         */
+        $oMap->setMetadata("labelcache_map_edge_buffer", -$metaBuffer);
+
+        $inchesPerUnit = array(1, 12, 63360.0, 39.3701, 39370.1, 4374754);
+        $geoWidth = $scale/($oMap->resolution*$inchesPerUnit[$oMap->units]);
+        $geoHeight = $scale/($oMap->resolution*$inchesPerUnit[$oMap->units]);
+        
+        /* draw the metatile */
+        $minx = $metaLeft * $geoWidth;
+        $maxx = $minx + $geoWidth * $oMap->width;
+        $maxy = -1 * $metaTop * $geoHeight;
+        $miny = $maxy - $geoHeight * $oMap->height;
+        
+        $nLayers = $oMap->numlayers;
+        $oMap->setExtent($minx,$miny,$maxx,$maxy);
+        $oMap->selectOutputFormat( $szMapImageFormat );               
+        $aszLayers = array();
+        if ($groups || $layers)
+        {
+            /* Draw only specified layers instead of default from mapfile*/
+            if ($layers)
+            {
+                $aszLayers = explode(",", $layers);
+            }
+
+            if ($groups)
+            {
+                $aszGroups = explode(",", $groups);
+            }
+
+            for($i=0;$i<$nLayers;$i++)
+            {
+                $oLayer = $oMap->getLayer($i);
+                if (($aszGroups && in_array($oLayer->group,$aszGroups)) ||
+                    ($aszLayers && in_array($oLayer->name,$aszLayers)) ||
+                    ($aszGroups && $oLayer->group == '' && 
+                     in_array( "__base__", $aszGroups)))
+                {
+                    $oLayer->set("status", MS_ON );
+                }
+                else
+                {
+                    $oLayer->set("status", MS_OFF );
+                }
+            }
+            //need transparency if groups or layers are used
+            $oMap->outputformat->set("transparent", MS_ON );
+        }
+        else
+        {
+            $oMap->outputformat->set("transparent", MS_OFF );
+        }
+
+        
+        $szMetaImg = $szMetaDir."/t".$metaTop."l".$metaLeft.$szImageExtension;
+        $oImg = $oMap->draw();
+        $oImg->saveImage($szMetaImg);
+        $oImg->free();
+        eval("\$oGDImg = ".$szMapImageCreateFunction."('".$szMetaImg."');");
+        if ($bDebug)
+        {
+            $blue = imagecolorallocate($oGDImg, 0, 0, 255);
+            imagerectangle($oGDImg, 0, 0, $tileWidth * $metaWidth - 1, $tileHeight * $metaHeight - 1, $blue );
+        }
+        for($i=0;$i<$metaWidth;$i++)
+        {
+            for ($j=0;$j<$metaHeight;$j++)
+            {
+                eval("\$oTile = ".$szImageCreateFunction."( ".$tileWidth.",".$tileHeight." );");
+                // Allocate BG color for the tile (in case the metatile has transparent BG)
+                $nTransparent = imagecolorallocate($oTile, $oMap->imagecolor->red, $oMap->imagecolor->green, $oMap->imagecolor->blue);
+                //if ($oMap->outputformat->transparent == MS_ON)
+                //{
+                    imagecolortransparent( $oTile,$nTransparent);
+                //}
+                $tileTop = $j*$tileHeight + $metaBuffer;
+                $tileLeft = $i*$tileWidth + $metaBuffer;
+                imagecopy( $oTile, $oGDImg, 0, 0, $tileLeft, $tileTop, $tileWidth, $tileHeight );
+                /* debugging stuff */
+                if ($bDebug)
+                {
+                    $black = imagecolorallocate($oTile, 1, 1, 1);
+                    $green = imagecolorallocate($oTile, 0, 128, 0 );
+                    $red = imagecolorallocate($oTile, 255, 0, 0);
+                    imagerectangle( $oTile, 1, 1, $tileWidth-2, $tileHeight-2, $green ); 
+                    imageline( $oTile, 0, $tileHeight/2, $tileWidth-1, $tileHeight/2, $red);
+                    imageline( $oTile, $tileWidth/2, 0, $tileWidth/2, $tileHeight-1, $red);
+                    imagestring ( $oTile, 3, 10, 10, ($metaLeft+$tileLeft)." x ".($metaTop+$tileTop), $black );
+                    imagestring ( $oTile, 3, 10, 30, ($minx+$i*$geoWidth)." x ".($maxy - $j*$geoHeight), $black );
+                }
+                $szTileImg = $szCacheDir."/t".($metaTop+$tileTop)."l".($metaLeft+$tileLeft).$szImageExtension;
+                eval("$szImageOutputFunction( \$oTile, '".$szTileImg."' );");
+                imagedestroy($oTile);
+                $oTile = null;
+            }
+        }
+        if ($oGDImg != null)
+        {   
+            imagedestroy($oGDImg);
+            $oGDImg = null;
+        }
+        if (!$bDebug)
+        {
+            unlink( $szMetaImg );
+        }
+    }
+    //release the exclusive lock
+    flock($fpLockFile, LOCK_UN );
+}
+
+//acquire shared lock for reading to prevent a problem that could occur
+//if a tile exists but is only partially generated.
+flock($fpLockFile, LOCK_SH);
+
+$h = fopen($szCacheFile, "r");
+header("Content-Type: ".$szImageHeader);
+header("Content-Length: " . filesize($szCacheFile));
+header("Expires: " . date( "D, d M Y H:i:s GMT", time() + 31536000 ));
+header("Cache-Control: max-age=31536000, must-revalidate" );
+fpassthru($h);
+fclose($h);
+
+//release lock
+fclose($fpLockFile);
+
+/* bug 1253 - root permissions required to delete cached files */
+umask($orig_umask);
+
+exit;
+?>

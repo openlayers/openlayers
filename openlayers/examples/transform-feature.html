@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers: Transformation Box</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="../lib/OpenLayers.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var map, control;
+
+        function init(){
+            map = new OpenLayers.Map('map', {allOverlays: true});
+
+            // context for appropriate scale/resize cursors
+            var cursors = ["sw-resize", "s-resize", "se-resize",
+                "e-resize", "ne-resize", "n-resize", "nw-resize", "w-resize"];
+            var context = {
+                getCursor: function(feature){
+                    var i = OpenLayers.Util.indexOf(control.handles, feature);
+                    var cursor = "inherit";
+                    if(i !== -1) {
+                        i = (i + 8 + Math.round(control.rotation / 90) * 2) % 8;
+                        cursor = cursors[i];
+                    }
+                    return cursor;
+                }
+            };
+            
+            // a nice style for the transformation box
+            var style = new OpenLayers.Style({
+                cursor: "${getCursor}",
+                pointRadius: 5,
+                fillColor: "white",
+                fillOpacity: 1,
+                strokeColor: "black"
+            }, {context: context});
+                                    
+            // the layer that we want to transform features on
+            var vectorLayer = new OpenLayers.Layer.Vector("Simple Geometry", {
+                styleMap: new OpenLayers.StyleMap({
+                    "transform": style
+                })
+            });
+
+            // create the TransformFeature control, using the renderIntent
+            // from above
+            control = new OpenLayers.Control.TransformFeature(vectorLayer, {
+                renderIntent: "transform"
+            });
+            map.addControl(control);
+
+            // create a polygon feature from a linear ring of points
+            var point = new OpenLayers.Geometry.Point(-111.04, 45.68);
+            var pointList = [];
+            for(var p=0; p<6; ++p) {
+                var a = p * (2 * Math.PI) / 7;
+                var r = Math.random(1) + 2;
+                var newPoint = new OpenLayers.Geometry.Point(point.x + (r * Math.cos(a)),
+                                                             point.y + (r * Math.sin(a)));
+                pointList.push(newPoint);
+            }
+            pointList.push(pointList[0]);
+
+            var linearRing = new OpenLayers.Geometry.LinearRing(pointList);
+            var polygonFeature = new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Polygon([linearRing]));
+
+
+            map.addLayer(vectorLayer);
+            map.setCenter(new OpenLayers.LonLat(point.x, point.y), 5);
+            var anotherFeature = polygonFeature.clone();
+            polygonFeature.geometry.move(-3, 0);
+            anotherFeature.geometry.move(3, 0);
+            vectorLayer.addFeatures([polygonFeature, anotherFeature]);
+            
+            // start with the transformation box on polygonFeature
+            control.setFeature(polygonFeature, {rotation: 45, scale: 0.5, ratio: 1.5});
+        }
+    </script>
+  </head>
+  <body onload="init()">
+<h1 id="title">Vector Feature Transformation Box Example</h1>
+
+<div id="tags">
+    vector, feature, transformation, stylemap
+</div>
+<p id="shortdesc">
+    Shows the use of the TransformFeature control.
+</p>
+<div style="text-align: right">
+    <div dir="rtl" id="map" class="smallmap"></div>
+</div>
+<div id="docs">
+    <p>This example shows transformation of vector features with a
+       tranformation box. Grab one of the handles to resize the feature.
+       Holding the SHIFT key will preserve the aspect ratio. Position the
+       mouse right outside one of the corner handles to rotate the feature,
+       and hold the SHIFT key to only rotate in 45° increments.</p>
+       <p>In this example, the transformation box has been set on the left
+       feature, with a rotation preset of 45°. Clicking on the right feature
+       will set it for transformation, starting with an unrotated box.
+       Dragging a feature or the box edges will move it around.</p>
+</div>
+
+  </body>
+</html>
+

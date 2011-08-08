@@ -1,0 +1,21 @@
+<html> 
+<head> 
+    <script src="../OLLoader.js"></script> 
+    <script type="text/javascript">
+
+    function test_initialize(t) { 
+        t.plan(3); 
+         
+        var options = {'foo': 'bar'}; 
+        var format = new OpenLayers.Format.Filter(options); 
+        t.ok(format instanceof OpenLayers.Format.Filter, 
+             "new OpenLayers.Format.Filter returns object" ); 
+        t.eq(format.foo, "bar", "constructor sets options correctly"); 
+        t.eq(typeof format.read, "function", "format has a read function"); 
+    }
+
+    </script> 
+</head> 
+<body> 
+</body> 
+</html> 

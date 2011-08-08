@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers: Z-Ordering and Y-Ordering of Vector Features</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <style type="text/css">
+        .smallmap {
+            width: 300px;
+        }
+        
+        .docs {
+            padding: 0px 5px;
+        }
+        
+        td {
+            vertical-align: top;
+        }
+        
+    </style>
+    <script src="../lib/OpenLayers.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        
+        var GOLD_Z_INDEX = 15;
+        var FIRST_RED_Z_INDEX = 10;
+        var SECOND_RED_Z_INDEX = 11;
+        
+        var RADIUS_FROM_CENTER = 40;
+        var POINT_DISTANCE = 10;
+            
+        function initYOrderMap() {
+            var map = new OpenLayers.Map("yorder");
+            
+            // allow testing of specific renderers via "?renderer=Canvas", etc
+            var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+            renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+
+            var layer = new OpenLayers.Layer.Vector(
+                "Y-Order",
+                {
+                    styleMap: new OpenLayers.StyleMap({
+                        externalGraphic: "../img/marker-gold.png",
+                        pointRadius: 10,
+                        graphicZIndex: GOLD_Z_INDEX
+                    }),
+                    isBaseLayer: true,
+                    rendererOptions: {yOrdering: true},
+                    renderers: renderer
+                }
+            );
+            
+            map.addLayers([layer]);
+            map.zoomToMaxExtent();
+            
+            // Add features to the layers to show off z-index/y-ordering.
+            // We do this after adding the layer so we can work in pixels.
+            var center = map.getViewPortPxFromLonLat(map.getCenter());
+            
+            var top = new OpenLayers.Pixel(center.x, center.y - RADIUS_FROM_CENTER);
+            var bottom = new OpenLayers.Pixel(center.x, center.y + RADIUS_FROM_CENTER);
+            var left = new OpenLayers.Pixel(center.x - RADIUS_FROM_CENTER, center.y - POINT_DISTANCE / 2);
+            var right = new OpenLayers.Pixel(center.x + RADIUS_FROM_CENTER, center.y - POINT_DISTANCE / 2);
+            
+            // Add the ordering features. These are the gold ones that all have the same z-index
+            // and succomb to y-ordering.
+            var orderingFeatures = [];
+            // Note: We use > here on purpose (instead of >= ), as well as subtracting the
+            // the POINT_DISTANCE in the beginning of the loop (as opposed to the end).
+            // This is purely for symmetry. Also note that the gold features are drawn
+            // from bottom to top so as to quickly signal whether or not y-ordering is working.
+            while (bottom.y > top.y) {
+                bottom.y -= POINT_DISTANCE;
+                var lonLat = map.getLonLatFromViewPortPx(bottom);
+                orderingFeatures.push(
+                    new OpenLayers.Feature.Vector(
+                        new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat)
+                    )
+                );
+            }
+          
+            layer.addFeatures(orderingFeatures);
+            
+            // Add the z-index features. Technically, these features succomb to y-ordering
+            // as well; however, since they have different z-indexes, the z-indexes take 
+            // precedence.
+            var indexFeatures = [];
+            var useFirst = true;
+            while (left.x <= right.x) {
+                var lonLat = map.getLonLatFromViewPortPx(left);
+                var point = new OpenLayers.Feature.Vector(
+                    new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat)
+                );
+                
+                // This is where the magic happens. We override the style on the layer
+                // to give our own style with alternativing z-indexes.
+                point.style = {
+                    graphicZIndex: useFirst ? FIRST_RED_Z_INDEX : SECOND_RED_Z_INDEX,
+                    externalGraphic: "../img/marker.png",
+                    pointRadius: 10
+                }
+                
+                indexFeatures.push(
+                    point
+                );
+                
+                left.x += POINT_DISTANCE;
+                useFirst = !useFirst;
+            }
+            
+            layer.addFeatures(indexFeatures);
+        }
+        
+        function initDrawingOrderMap() {
+            var map = new OpenLayers.Map("drawingorder");
+            
+            var layer = new OpenLayers.Layer.Vector(
+                "Drawing Order",
+                {
+                    // The zIndex is taken from the zIndex attribute of the features
+                    styleMap: new OpenLayers.StyleMap({
+                        graphicZIndex: "${zIndex}",
+                        externalGraphic: "../img/marker-green.png",
+                        pointRadius: 10
+                    }),
+                    isBaseLayer: true,
+                    // enable the indexer by setting zIndexing to true
+                    rendererOptions: {zIndexing: true}
+                }
+            );
+            
+            map.addLayers([layer]);
+            map.zoomToMaxExtent();
+            
+            // Add features to the layers to show off z-index/y-ordering.
+            // We do this after adding the layer so we can work in pixels.
+            var center = map.getViewPortPxFromLonLat(map.getCenter());
+            
+            var top = new OpenLayers.Pixel(center.x, center.y - RADIUS_FROM_CENTER);
+            var bottom = new OpenLayers.Pixel(center.x, center.y + RADIUS_FROM_CENTER);
+            var left = new OpenLayers.Pixel(center.x - RADIUS_FROM_CENTER, center.y);
+            var right = new OpenLayers.Pixel(center.x + RADIUS_FROM_CENTER, center.y);
+            
+            // Add the ordering features. These are the gold ones that all have the same z-index
+            // and succomb to y-ordering.
+            var orderingFeatures = [];
+            while (bottom.y > top.y && left.x < right.x) {
+                var bottomLonLat = map.getLonLatFromViewPortPx(bottom);
+                var leftLonLat = map.getLonLatFromViewPortPx(left);
+                orderingFeatures.push(
+                    new OpenLayers.Feature.Vector(
+                        new OpenLayers.Geometry.Point(leftLonLat.lon, bottomLonLat.lat),
+                        // Set the zIndex attribute of all features to 0.
+                        // This attribute will be assigned to the graphicZIndex symbolizer property by the layer's styleMap
+                        {zIndex: 0}
+                    )
+                );
+                bottom.y -= POINT_DISTANCE / 2; // Divide by 2 for better visual.
+                left.x += POINT_DISTANCE / 2;
+            }
+            // only the first feature gets a zIndex attribute of 1
+            orderingFeatures[0].attributes.zIndex = 1;
+          
+            layer.addFeatures(orderingFeatures);
+        }
+
+        function init(){
+            initYOrderMap();
+            initDrawingOrderMap();
+        };
+        
+    </script>
+  </head>
+  <body onload="init()">
+        <h1 id="title">Z-Index/Y-Order Example</h1>
+
+        <div id="tags">
+            stack, stacking, zindex, ordering
+        </div>
+
+        <p id="shortdesc">
+           This example shows the use of z-indexing and y-ordering of external graphics. Zoom in and out to see this behavior.
+        </p>
+
+        <h3>Z-Index (with Y-Ordering enabled)</h3>
+        <table>
+            <tr>
+                <td>
+                    <div id="yorder" class="smallmap"></div>
+                </td>
+                <td>
+                    <div class="docs">
+                        In this map, the gold features all have the same z-index, and the red features have alternating z-indeces. The gold features' z-index is greater than the red features' z-indeces, which is why gold features look to be drawn on top of the red features. Since each gold feature has the same z-index, gold features succomb to y-ordering: this is where features that seem closest to the viewer (lower lattitude) show up above those that seem farther away (higher lattitude).
+                        <br><br>
+                        You can enable y-ordering by passing the parameter <i>yOrdering: true</i> in the vector layer's options hash. For all configurations (with yOrdering or zIndexing set to true), if features have the same z-index -- and if y-ordering is enabled: the same latitude -- those features will succomb to drawing order, where the last feature to be drawn will appear above the rest.
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <br>
+        <h3>Z-Index and Drawing Order (Z-Indexes set, and Y-Ordering disabled)</h3>
+        <table>
+            <tr>
+                <td>
+                    <div id="drawingorder" class="smallmap"></div>
+                </td>
+                <td>
+                    <div class="docs">
+                        In this map, <i>zIndexing</i> is set to true. All features are given the same z-index (0), except for the first feature which has a z-index of 1. The layer's <i>yOrdering</i> parameter is set to the default (false). This configuration makes features succomb to z-index and drawing order (for the features with the same z-index), instead of y-order.
+                        <br><br>
+                        The features in this map were drawn from left to right and bottom to top, diagonally, to show that y-ordering is not enabled. Only the lower-left corner feature is drawn on top of the others, because it has a higher z-index (1 instead of 0).
+                    </div>
+                </td>
+            </tr>
+        </table>
+        
+        
+    </body>
+</html>

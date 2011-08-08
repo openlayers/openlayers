@@ -1,0 +1,157 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    var curve;
+    var components = [new OpenLayers.Geometry.Point(10,10), 
+                new OpenLayers.Geometry.Point(0,0)];
+        
+    function test_Curve_constructor (t) {
+        t.plan( 3 );
+        curve = new OpenLayers.Geometry.Curve();
+        t.ok( curve instanceof OpenLayers.Geometry.Curve, "new OpenLayers.Geometry.Curve returns curve object" );
+        t.eq( curve.CLASS_NAME, "OpenLayers.Geometry.Curve", "curve.CLASS_NAME is set correctly");
+        t.eq( curve.components, [], "curve.components is set correctly");
+    }
+
+    function test_Curve_constructor (t) {
+        t.plan( 2 );
+        curve = new OpenLayers.Geometry.Curve(components);
+        t.ok( curve instanceof OpenLayers.Geometry.Curve, "new OpenLayers.Geometry.Curve returns curve object" );
+        t.eq( curve.components.length, 2, "curve.components.length is set correctly");
+    }
+
+    function test_Curve_clone (t) {
+        t.plan( 2 );
+        curve = new OpenLayers.Geometry.Curve(components);
+        curve2 = curve.clone(); 
+        t.ok( curve2 instanceof OpenLayers.Geometry.Curve, "curve.clone() returns curve object" );
+        t.eq( curve2.components.length, 2, "curve2.components.length is set correctly");
+    }
+
+    function test_Curve_calculateBounds(t) {
+        t.plan( 17 );
+
+
+        var curve = new OpenLayers.Geometry.Curve();
+        curve.calculateBounds();
+        t.eq(curve.bounds, null, "bounds null when no components");
+        
+        var p1 = new OpenLayers.Geometry.Point(10,20);
+        var p2 = new OpenLayers.Geometry.Point(30,40);
+        
+        var components = [p1, p2];
+        var curve = new OpenLayers.Geometry.Curve(components);
+        
+        curve.calculateBounds();
+        
+        t.eq(curve.bounds.left, 10, "good left bounds");
+        t.eq(curve.bounds.bottom, 20, "good bottom bounds");
+        t.eq(curve.bounds.right, 30, "good right bounds");
+        t.eq(curve.bounds.top, 40, "good top bounds");
+
+        var newPoint = new OpenLayers.Geometry.Point(60,70);
+        curve.addComponent(newPoint);
+        curve.calculateBounds();
+        
+        t.eq(curve.bounds.left, 10, "good left bounds");
+        t.eq(curve.bounds.bottom, 20, "good bottom bounds");
+        t.eq(curve.bounds.right, 60, "good right bounds");
+        t.eq(curve.bounds.top, 70, "good top bounds");
+
+    //nullifying the bounds
+
+      //before calculation
+        curve = new OpenLayers.Geometry.Curve(components);
+        curve.bounds = null;        
+        curve.calculateBounds();
+        
+        t.eq(curve.bounds.left, 10, "good left bounds");
+        t.eq(curve.bounds.bottom, 20, "good bottom bounds");
+        t.eq(curve.bounds.right, 30, "good right bounds");
+        t.eq(curve.bounds.top, 40, "good top bounds");
+
+      //before addComponent
+        curve.bounds = null;
+        curve.addComponent(newPoint);
+        curve.calculateBounds();
+        
+        t.eq(curve.bounds.left, 10, "good left bounds");
+        t.eq(curve.bounds.bottom, 20, "good bottom bounds");
+        t.eq(curve.bounds.right, 60, "good right bounds");
+        t.eq(curve.bounds.top, 70, "good top bounds");
+
+    }
+
+    function test_Curve_addComponent (t) {
+        t.plan( 8 );
+        curve = new OpenLayers.Geometry.Curve(components);
+        curve.addComponent(new OpenLayers.Geometry.Point(20,30));
+        bounds = curve.getBounds();
+        t.eq( curve.components.length, 3, "new point added to array" );
+        t.eq( bounds.top, 30, "top bound is 30 after addComponent" );
+        t.eq( bounds.right, 20, "right bound is 20 after addComponent" );
+        curve.addComponent(new OpenLayers.Geometry.Point(-20,-30), 1);
+        bounds = curve.getBounds();
+        t.eq( curve.components.length, 4, "new point added to array" );
+        t.eq( bounds.bottom, -30, "bottom bound is -30 after 2nd addComponent" );
+        t.eq( bounds.left, -20, "left bound is 20 after 2nd addComponent" );
+        t.eq( curve.components[1].x, -20,  "new point.lon is -20 (index worked)" );
+        t.eq( curve.components[1].y, -30,  "new point.lat is -30 (index worked)" );
+    }
+
+    function test_Curve_removeComponent (t) {
+        t.plan( 4 );
+        curve = new OpenLayers.Geometry.Curve(components);
+        curve.removeComponent(curve.components[1]);
+        t.eq( curve.components.length, 1, "curve.components.length is smaller after removeComponent" );
+        t.eq( curve.bounds, null, "curve.bounds nullified after removeComponent (for recalculation)" );
+        bounds = curve.getBounds();
+        t.eq( bounds.left, 10, "left bound is 10 after removeComponent" );
+        t.eq( bounds.bottom, 10, "bottom bound is 10 after removeComponent" );
+    }
+
+    function test_Curve_getLength (t) {
+        t.plan( 4 );
+
+      //no components
+        curve = new OpenLayers.Geometry.Curve();
+        curve.components = null;
+        t.eq(curve.getLength(), 0, "curve with no components has length 0");
+
+      //empty components
+        curve.components = [];
+        t.eq(curve.getLength(), 0, "curve with empty components has length 0");
+
+      //single point curve
+        curve.components = [ new OpenLayers.Geometry.Point(0,0) ];        
+        t.eq(curve.getLength(), 0, "curve with only one point has length 0");
+
+      //multipoint
+        var newcomponents = [ new OpenLayers.Geometry.Point(0,0),
+                        new OpenLayers.Geometry.Point(0,10),
+                        new OpenLayers.Geometry.Point(20,10),
+                        new OpenLayers.Geometry.Point(20,-10)
+        ];
+        
+        curve = new OpenLayers.Geometry.Curve(newcomponents);
+        t.eq(curve.getLength(), 50, "curve.getLength returns a reasonably accurate length" );
+    }
+    
+    function test_Curve_destroy(t) {
+        t.plan(1);
+        
+        var curve = new OpenLayers.Geometry.Curve();
+        curve.components = {};
+        
+        curve.destroy();
+        
+        t.ok( curve.components == null, "components is cleared well in destruction");
+    }
+    
+
+  </script>
+</head>
+<body>
+</body>
+</html>

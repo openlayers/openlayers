@@ -1,0 +1,451 @@
+<html>
+<head>
+    <script src="OLLoader.js"></script>
+    <script type="text/javascript">
+    function setup() {
+        window._xhr = OpenLayers.Request.XMLHttpRequest;
+        var anon = new Function();
+        OpenLayers.Request.XMLHttpRequest = function() {};
+        OpenLayers.Request.XMLHttpRequest.prototype = {
+            open: anon,
+            setRequestHeader: anon,
+            send: anon
+        };
+        OpenLayers.Request.XMLHttpRequest.DONE = 4;
+    }
+    function teardown() {
+        OpenLayers.Request.XMLHttpRequest = window._xhr;
+    }
+    
+    function test_issue(t) {
+        setup();
+
+        t.plan(22);
+        var request, config;
+        var proto = OpenLayers.Request.XMLHttpRequest.prototype;
+        var issue = OpenLayers.Function.bind(OpenLayers.Request.issue,
+                                             OpenLayers.Request);
+
+        // test that issue returns a new XMLHttpRequest - 1 test
+        request = issue();
+        t.ok(request instanceof OpenLayers.Request.XMLHttpRequest,
+             "returns an XMLHttpRequest instance");
+        
+        // test that issue calls xhr.open with correct args from config - 5 tests
+        var _open = proto.open;
+        config = {
+            method: "foo",
+            url: "http://nowhere",
+            async: "bar",
+            user: "uncle",
+            password: "sam"
+        };
+        proto.open = function(method, url, async, user, password) {
+            t.eq(method, config.method, "open called with correct method");
+            t.eq(url, config.url, "open called with correct url");
+            t.eq(async, config.async, "open called with correct async");
+            t.eq(user, config.user, "open called with correct user");
+            t.eq(password, config.password, "open called with correct password");
+        };
+        request = issue(config);
+        
+        // test that params are serialized as query string - 1 test
+        config = {
+            method: "GET",
+            url: "http://example.com/",
+            params: {"foo": "bar"}
+        };
+        proto.open = function(method, url, async, user, password) {
+            t.eq(url, config.url + "?foo=bar", "params serialized as query string");
+        };
+        request = issue(config);
+        
+        // test that empty params object doesn't produce query string - 1 test
+        config = {
+            method: "GET",
+            url: "http://example.com/",
+            params: {}
+        };
+        proto.open = function(method, url, async, user, password) {
+            t.eq(url, config.url, "empty params doesn't produce query string");
+        }
+        request = issue(config);
+        
+        // test that query string doesn't get two ? separators
+        config = {
+            method: "GET",
+            url: "http://example.com/?existing=query",
+            params: {"foo": "bar"}
+        };
+        proto.open = function(method, url, async, user, password) {
+            t.eq(url, config.url + "&foo=bar", "existing query string gets extended with &");
+        }
+        request = issue(config);
+        
+        // test that query string doesn't get ? followed by &
+        config = {
+            method: "GET",
+            url: "http://example.com/service?",
+            params: {"foo": "bar"}
+        };
+        proto.open = function(method, url, async, user, password) {
+            t.eq(url, config.url + "foo=bar", "existing query string ending with ? gets extended without &");
+        }
+        request = issue(config);
+        
+        // reset open method
+        proto.open = _open;
+        
+        // test that headers are correctly set - 4 tests
+        var _setRequestHeader = proto.setRequestHeader;
+        config = {
+            headers: {
+                foo: "bar",
+                chicken: "soup"
+            }
+        };
+        proto.setRequestHeader = function(key, value) {
+            t.ok(key in config.headers, "setRequestHeader called with key: " + key);
+            t.eq(value, config.headers[key], "setRequestHeader called with correct value: " + value);
+        }
+        request = issue(config);
+        proto.setRequestHeader = _setRequestHeader;
+        
+        // test that callback is called (no scope) - 1 test
+        var unbound = function(request) {
+            t.ok(request instanceof OpenLayers.Request.XMLHttpRequest,
+                 "unbound callback called with xhr instance");
+        }
+        config = {
+            callback: unbound
+        };
+        request = issue(config);
+        request.readyState = OpenLayers.Request.XMLHttpRequest.DONE;
+        request.onreadystatechange();
+
+        // test that callback is called (with scope) - 2 tests
+        var obj = {};
+        var bound = function(request) {
+            t.ok(this === obj, "bound callback has correct scope");
+            t.ok(request instanceof OpenLayers.Request.XMLHttpRequest,
+                 "bound callback called with xhr instance");
+        }
+        config = {
+            callback: bound,
+            scope: obj
+        };
+        request = issue(config);
+        request.readyState = 4;
+        request.onreadystatechange();
+        
+        // test that optional success callback is only called with 200s and
+        // failure is only called with non-200s
+        var _send = proto.send;
+        proto.send = function() {};
+        
+        config = {
+            success: function(req) {
+                t.ok(!req.status || (req.status >= 200 && req.status < 300),
+                     "success callback called with " + req.status + " status");
+            },
+            failure: function(req) {
+                t.ok(req.status && (req.status < 200 || req.status >= 300),
+                     "failure callback called with " + req.status + " status");
+            }
+        };
+        request = issue(config);
+        request.readyState = 4;
+        
+        // mock up status 200 (1 test)
+        request.status = 200;
+        request.onreadystatechange();
+        
+        // mock up status 299 (1 test)
+        request.status = 299;
+        request.onreadystatechange();
+        
+        // mock up status 100 (1 test)
+        request.status = 100;
+        request.onreadystatechange();
+
+        // mock up status 300 (1 test)
+        request.status = 300;
+        request.onreadystatechange();
+        
+        // mock up a status null (1 test)
+        request.status = null;
+        request.onreadystatechange();
+
+        proto.send = _send;
+
+        teardown();
+    }
+    
+    function test_delayed_send(t) {
+        t.plan(1);
+        var proto = OpenLayers.Request.XMLHttpRequest.prototype;
+        var _send = proto.send;
+        
+        // test that send is called with data - 1 test
+        var config = {
+            method: "PUT",
+            data: "bling"
+        };
+        var got = {};
+        proto.send = function(data) {
+            got.data = data;
+        }
+        OpenLayers.Request.issue(config);
+        
+        t.delay_call(1, function() {
+            t.eq(got.data, config.data, "proper data sent");
+            proto.send = _send;
+        });        
+        
+    }
+    
+    function test_GET(t) {
+        t.plan(1);
+        var _issue = OpenLayers.Request.issue;
+        OpenLayers.Request.issue = function(config) {
+            t.eq(config.method, "GET", "calls issue with correct method");
+        }
+        OpenLayers.Request.GET();
+        OpenLayers.Request.issue = _issue;
+    }
+    function test_POST(t) {
+        t.plan(1);
+        var _issue = OpenLayers.Request.issue;
+        OpenLayers.Request.issue = function(config) {
+            t.eq(config.method, "POST", "calls issue with correct method");
+        }
+        OpenLayers.Request.POST();
+        OpenLayers.Request.issue = _issue;
+    }
+    function test_PUT(t) {
+        t.plan(1);
+        var _issue = OpenLayers.Request.issue;
+        OpenLayers.Request.issue = function(config) {
+            t.eq(config.method, "PUT", "calls issue with correct method");
+        }
+        OpenLayers.Request.PUT();
+        OpenLayers.Request.issue = _issue;
+    }
+    function test_DELETE(t) {
+        t.plan(1);
+        var _issue = OpenLayers.Request.issue;
+        OpenLayers.Request.issue = function(config) {
+            t.eq(config.method, "DELETE", "calls issue with correct method");
+        }
+        OpenLayers.Request.DELETE();
+        OpenLayers.Request.issue = _issue;
+    }
+    function test_HEAD(t) {
+        t.plan(1);
+        var _issue = OpenLayers.Request.issue;
+        OpenLayers.Request.issue = function(config) {
+            t.eq(config.method, "HEAD", "calls issue with correct method");
+        }
+        OpenLayers.Request.HEAD();
+        OpenLayers.Request.issue = _issue;
+    }
+    function test_OPTIONS(t) {
+        t.plan(1);
+        var _issue = OpenLayers.Request.issue;
+        OpenLayers.Request.issue = function(config) {
+            t.eq(config.method, "OPTIONS", "calls issue with correct method");
+        }
+        OpenLayers.Request.OPTIONS();
+        OpenLayers.Request.issue = _issue;
+    }
+    
+    function test_events_success(t) {
+        
+        t.plan(5);
+
+        var events = [];
+        function listener(event) {
+            events.push(event);
+        }
+        
+        // set up event listeners
+        OpenLayers.Request.events.on({
+            complete: listener,
+            success: listener,
+            failure: listener
+        });
+
+        // issue a request that succeeds
+        OpenLayers.Request.GET({
+            url: ".", params: {bar: "baz"}, async: false
+        });
+        t.eq(events.length, 2, "two events logged");
+        t.eq(events[0].type, "complete", "first event is complete");
+        t.eq(events[1].type, "success", "second event is success");
+        t.ok(events[1].config, "success listener sent config");
+        t.eq(events[1].requestUrl, ".?bar=baz", "success listener sent config.url");
+
+        // remove event listeners
+        OpenLayers.Request.events.un({
+            complete: listener,
+            success: listener,
+            failure: listener
+        });
+        
+    }
+
+    function test_events_failure(t) {
+        
+        t.plan(5);
+
+        var events = [];
+        function listener(event) {
+            events.push(event);
+        }
+        
+        // set up event listeners
+        OpenLayers.Request.events.on({
+            complete: listener,
+            success: listener,
+            failure: listener
+        });
+
+        // issue a request that succeeds
+        OpenLayers.Request.GET({
+            url: "foo", params: {bar: "baz"}, async: false
+        });
+        t.eq(events.length, 2, "two events logged");
+        t.eq(events[0].type, "complete", "first event is complete");
+        t.eq(events[1].type, "failure", "second event is failure");
+        t.ok(events[1].config, "failure listener sent config");
+        t.eq(events[1].requestUrl, "foo?bar=baz", "failure listener sent requestUrl");
+
+        // remove event listeners
+        OpenLayers.Request.events.un({
+            complete: listener,
+            success: listener,
+            failure: listener
+        });
+        
+    }
+
+    function test_ProxyHost(t) {
+        t.plan(5);
+
+        /*
+         * Setup
+         */
+
+        setup();
+
+        var expectedURL;
+
+        var _ProxyHost = OpenLayers.ProxyHost;
+
+        var proto = OpenLayers.Request.XMLHttpRequest.prototype;
+        var _open = proto.open;
+        var log = [];
+        var port;
+        proto.open = function(method, url, async, user, password) {
+            log.push(url);
+        };
+
+        /*
+         * Test
+         */
+
+        // 2 tests
+        log = [];
+        OpenLayers.ProxyHost = "http://fooproxy/?url=";
+        expectedURL = "http://fooproxy/?url=http%3A%2F%2Fbar%3Fk1%3Dv1%26k2%3Dv2";        
+        OpenLayers.Request.GET({url: "http://bar?k1=v1&k2=v2"});
+        t.eq(log.length, 1, "[1] XHR.open called once");
+        t.eq(log[0], expectedURL, "[1] the URL used for XHR is correct (" + log[0] + ")");
+        
+        // 1 test
+        log = [];
+        OpenLayers.ProxyHost = "http://fooproxy/?url=";
+        port = window.location.port ? ':'+window.location.port : '';
+        expectedURL = window.location.protocol+"//"+window.location.hostname+port+"/service";
+        OpenLayers.Request.GET({url: expectedURL});
+        t.eq(log[0], expectedURL, "[2] proxy is not used when requesting the same server");
+        
+        // 2 tests
+        log = [];
+        OpenLayers.ProxyHost = function(url) {
+            var p = OpenLayers.Util.getParameters(url);
+            var p = OpenLayers.Util.getParameterString(p);
+            return "http://barproxy/?" + p;
+        };
+        expectedURL = "http://barproxy/?k1=v1&k2=v2";
+        OpenLayers.Request.GET({url: "http://bar?k1=v1&k2=v2"});
+        t.eq(log.length, 1, "[3] XHR.open called once");
+        t.eq(log[0], expectedURL, "[3] the URL used for XHR is correct (" + log[0] + ")");
+
+        /*
+         * Teardown
+         */
+
+        OpenLayers.Request.XMLHttpRequest.prototype.open = _open;
+        OpenLayers.ProxyHost = _ProxyHost;
+        teardown();
+    }
+
+    function test_abort(t) {
+
+        t.plan(0);
+
+        var sendCalled;
+
+        // set up
+
+        var _open = OpenLayers.Request.XMLHttpRequest.prototype.open;
+        OpenLayers.Request.XMLHttpRequest.prototype.open = function() {
+            this.readyState = OpenLayers.Request.XMLHttpRequest.OPENED;
+        };
+
+        var _setRequestHeader = OpenLayers.Request.XMLHttpRequest.prototype.setRequestHeader;
+        OpenLayers.Request.XMLHttpRequest.prototype.setRequestHeader = function() {};
+
+        var _send = OpenLayers.Request.XMLHttpRequest.prototype.send;
+        OpenLayers.Request.XMLHttpRequest.prototype.send = function() {
+            sendCalled = true;
+        };
+
+        // test
+
+        sendCalled = false;
+        OpenLayers.Request.issue().abort();
+
+        t.delay_call(0.5, function() {
+            if (sendCalled) {
+                t.fail("Send should not be called because request is aborted");
+            }
+
+            // tear down
+            OpenLayers.Request.XMLHttpRequest.prototype.open = _open;
+            OpenLayers.Request.XMLHttpRequest.prototype.setRequestHeader = _setRequestHeader;
+            OpenLayers.Request.XMLHttpRequest.prototype.send = _send;
+        });
+    }
+
+    function test_abort2(t) {
+        t.plan(0);
+        var fail = false;
+        OpenLayers.Request.XMLHttpRequest.onsend = function(args) {
+            fail = true;
+        }
+        t.delay_call(0.5, function() {
+            if (fail === true) {
+                t.fail("Send should not be called because request is aborted");
+            }
+            OpenLayers.Request.XMLHttpRequest.onsend = null;
+        });
+        var req = OpenLayers.Request.GET();
+        req.abort();
+    }
+    </script>
+</head>
+<body>
+</body>
+</html>

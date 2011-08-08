@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map, map2;
+
+        function init(){
+            // clear array to simulate a wrong axis order request
+            map = new OpenLayers.Map( 'map' );
+            var layer = new OpenLayers.Layer.WMS(
+                "OpenLayers WMS",
+                "http://demo.cubewerx.com/demo/cubeserv/cubeserv.cgi?",
+                {layers: 'Foundation.GTOPO30', version: '1.3.0'},
+                {singleTile: true, yx: []}
+            );
+            map.addLayer(layer);
+
+            map.zoomToMaxExtent();
+
+            map2 = new OpenLayers.Map( 'map2' );
+            var layer2 = new OpenLayers.Layer.WMS(
+                "OpenLayers WMS",
+                "http://demo.cubewerx.com/demo/cubeserv/cubeserv.cgi?",
+                {layers: 'Foundation.GTOPO30', version: '1.3.0'},
+                {singleTile: true}
+            );
+            map2.addLayer(layer2);
+
+            map2.zoomToMaxExtent();
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title"> WMS version 1.3 (axis order) Example</h1>
+
+    <div id="tags">
+        axis order, wms 1.3
+    </div>
+        <p id="shortdesc">
+            Shows an example of the influence of axis order on WMS 1.3 GetMap requests.
+        </p>
+        <div id="map" class="smallmap"></div>
+        <div id="map2" class="smallmap"></div>
+        <div id="docs">
+        <p>WMS version 1.3 introduced the axis order sequence, so that for e.g. EPSG:4326 the bbox coordinate
+        values need to be flipped (LatLon instead of LonLat). The first map uses the incorrect (WMS 1.1) axis
+        order against a WMS 1.3 service, resulting in corrupted maps. The second map shows how to correctly
+        request a map in EPSG:4326 against a WMS 1.3 service.</p>
+        </div>
+  </body>
+</html>

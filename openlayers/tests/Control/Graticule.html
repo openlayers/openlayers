@@ -1,0 +1,66 @@
+<html>
+<head>
+    <script src="../OLLoader.js"></script>
+    <script src="http://proj4js.org/lib/proj4js-compressed.js"></script>
+    <script type="text/javascript">
+
+    function test_initialize(t) {
+        t.plan(2);
+        var options = {};
+        var map = new OpenLayers.Map("map",{projection:"EPSG:4326"});
+        var layer = new OpenLayers.Layer.WMS();
+        map.addLayers([layer]);
+
+        var control = new OpenLayers.Control.Graticule(options);
+        map.addControl(control);
+        map.zoomToMaxExtent();
+
+        t.ok(control.gratLayer instanceof OpenLayers.Layer.Vector,
+             "constructor sets layer correctly");
+        t.ok(control.gratLayer.features.length > 0,
+             "graticule has features");
+        control.destroy();
+    }
+    
+    function test_activate(t) {        
+        t.plan(7);
+        var map = new OpenLayers.Map("map",{projection:"EPSG:4326"});
+        var layer = new OpenLayers.Layer.WMS();
+        map.addLayers([layer]);
+
+        var control = new OpenLayers.Control.Graticule({});
+        map.addControl(control);
+        map.zoomToMaxExtent();
+        
+        t.ok(control.gratLayer.visibility, "Graticule layer is visible by default"); 
+        control.deactivate();
+        t.ok(control.gratLayer.map == null, 
+            "Graticule layer is not in map when control is deactivated"); 
+        control.destroy();
+        
+        var control2 = new OpenLayers.Control.Graticule({autoActivate:false});
+        map.addControl(control2);
+        t.ok(control2.gratLayer.map == null, 
+            "Graticule layer is not in map when autoActivate:false"); 
+        t.ok(control2.gratLayer.features.length == 0, 
+            "Graticule layer is empty when autoActivate:false");
+        control2.activate();
+        t.ok(control2.gratLayer.map != null, 
+            "Graticule layer is on map when control is activated");    
+        t.ok(control2.gratLayer.features.length > 0,
+            "Graticule features refreshed after control is activated");
+        control2.gratLayer.setVisibility(false);
+       
+        control2.destroy();
+        t.ok(control2.gratLayer == null, 
+            "Graticule layer is destroyed when control is destroyed");    
+            
+        map.destroy();        
+    }
+
+    </script>
+</head>
+<body>
+    <div id="map" style="width: 400px; height: 250px;"/>
+</body>
+</html>

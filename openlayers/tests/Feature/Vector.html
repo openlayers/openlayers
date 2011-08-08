@@ -1,0 +1,170 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    var map; 
+    var feature; 
+    
+    function test_Feature_Vector_constructor(t) {
+        t.plan(3);
+        
+        var geometry = new OpenLayers.Geometry();
+        geometry.id = Math.random();
+        var style = {foo: "bar"};
+        var attributes = {bar: "foo"};
+
+        feature = new OpenLayers.Feature.Vector(geometry, attributes, style);
+
+        t.ok(feature instanceof OpenLayers.Feature.Vector,
+             "new OpenLayers.Feature.Vector returns Feature.Vector object" );
+        t.eq(feature.attributes, attributes,
+             "attributes property set properly" );
+        t.eq(feature.geometry.id, geometry.id,
+             "geometry.property set properly" );
+    }
+    
+    function test_Feature_onScreen(t) {
+        t.plan(6);
+        var line = new OpenLayers.Geometry.LineString([
+            new OpenLayers.Geometry.Point(0, 0),
+            new OpenLayers.Geometry.Point(10, 20)
+        ]);
+        var feature = new OpenLayers.Feature.Vector(line);
+        feature.layer = {
+            map: {
+                getExtent: function() {
+                    return new OpenLayers.Bounds(5, 5, 10, 10);
+                }
+            }
+        };
+        t.eq(feature.onScreen(), true,
+             "intersecting feature returns true for intersection");
+        t.eq(feature.onScreen(true), true,
+             "intersecting feature returns true for bounds only");
+        
+        // move the line so only the bounds intersects
+        line.move(0, 5);
+        t.eq(feature.onScreen(), false,
+             "bounds-only feature returns false for intersection");
+        t.eq(feature.onScreen(true), true,
+             "bounds-only feature returns true for bounds only");
+
+        // move the line so bounds does not intersect
+        line.move(0, 10);
+        t.eq(feature.onScreen(), false,
+             "off-screen feature returns false for intersection");
+        t.eq(feature.onScreen(true), false,
+             "off-screen feature returns false for bounds only");
+        
+    }
+    
+    function test_Feature_getVisibility(t) {
+        t.plan(5);
+        var feature = new OpenLayers.Feature.Vector();
+        feature.layer = {
+            getVisibility: function() {return true}
+        };
+
+        t.ok(feature.getVisibility(),
+             "returns true in a not specific case");
+
+        feature.style = {display: 'none'};
+        t.eq(feature.getVisibility(), false,
+             "returns false when feature style display property is set to 'none'");
+
+        feature.style = null;
+        feature.layer.styleMap = {
+            createSymbolizer: function() {
+                return {display: 'none'}
+            }
+        }
+        t.eq(feature.getVisibility(), false,
+             "returns false when layer styleMap is configured so that the feature" +
+              "should not be displayed");
+
+        delete feature.layer.styleMap;
+        feature.layer.getVisibility = function() {return false}
+        t.eq(feature.getVisibility(), false,
+             "returns false when layer it belongs to is not visible");
+        
+        feature.layer = null;
+        t.eq(feature.getVisibility(), false,
+             "returns false when it doesn't belong to any layer");
+    }
+    
+    function test_Feature_Vector_clone(t) {
+        t.plan(6);
+
+        var geometry = new OpenLayers.Geometry.Point(Math.random(),
+                                                     Math.random());
+        var style = {foo: "bar"};
+        var attributes = {bar: "foo"};
+
+        feature = new OpenLayers.Feature.Vector(geometry, attributes, style);
+        var clone = feature.clone();
+
+        t.ok(clone instanceof OpenLayers.Feature.Vector,
+             "new OpenLayers.Feature.Vector returns Feature.Vector object");
+        t.eq(clone.attributes, attributes,
+             "attributes property set properly");
+        t.eq(clone.style, style,
+             "style property set properly");
+        t.eq(clone.geometry.x, geometry.x,
+             "geometry.x property set properly");
+        t.eq(clone.geometry.y, geometry.y,
+             "geometry.y property set properly");
+
+        feature = new OpenLayers.Feature.Vector();
+        clone = feature.clone();
+        t.ok(clone instanceof OpenLayers.Feature.Vector,
+             "clone can clone geometry-less features");
+    }
+        
+    function test_Feature_Vector_move(t) {
+        t.plan(3);
+
+        var oldx = 26;
+        var oldy = 14;
+        var newx = 6;
+        var newy = 4;
+        var res = 10;
+
+        var geometry = new OpenLayers.Geometry.Point(oldx,
+                                                     oldy);
+
+        var drawn = false;
+
+        feature = new OpenLayers.Feature.Vector(geometry);
+
+        feature.layer = {
+            getViewPortPxFromLonLat : function(lonlat){
+                return new OpenLayers.Pixel(lonlat.lon,lonlat.lat);
+            },
+            map: {
+                getResolution: function(){
+                    return res;
+                }
+            },
+            drawFeature: function(){
+                drawn = true;
+            }
+        }
+
+        var pixel = new OpenLayers.Pixel(newx,newy)
+
+        feature.move(pixel);
+
+        geometry = feature.geometry;
+
+        t.ok(drawn, "The feature is redrawn after the move");
+        t.eq(geometry.x, res * (newx - oldx) + oldx, "New geometry has proper x coordinate");
+        t.eq(geometry.y, res * (oldy - newy) + oldy, "New geometry has proper y coordinate");
+    }
+        
+
+  </script>
+</head>
+<body>
+  <div id="map" style="width: 500px; height: 300px;"></div>
+</body>
+</html>

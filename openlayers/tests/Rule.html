@@ -1,0 +1,123 @@
+<html> 
+<head> 
+    <script src="OLLoader.js"></script> 
+    <script type="text/javascript">
+
+    function test_Rule_constructor(t) { 
+        t.plan(3); 
+         
+        var options = {'foo': 'bar'}; 
+        var rule = new OpenLayers.Rule(options); 
+        t.ok(rule instanceof OpenLayers.Rule, 
+             "new OpenLayers.Rule returns object" ); 
+        t.eq(rule.foo, "bar", "constructor sets options correctly"); 
+        t.eq(typeof rule.evaluate, "function", "rule has an evaluate function"); 
+    }
+    
+    function test_Rule_getContext(t) { 
+        t.plan(2);
+        var rule, options;
+        
+        var feature = {
+            attributes: {
+                'dude': 'hello'
+            },
+            'foobar': 'world'
+        }
+        
+        rule = new OpenLayers.Rule();
+        var context = rule.getContext(feature);
+        t.eq(context.dude, "hello", "value returned by getContext is correct"
+            + " if no context is specified"); 
+        
+        var options = {
+            context: function(feature){
+                return feature;
+            }
+        };
+        rule = new OpenLayers.Rule(options);
+        var context = rule.getContext(feature);
+        t.eq(context.foobar, "world", "value returned by getContext is correct"
+            + " if a context is given in constructor options"); 
+    }
+    
+    function test_clone(t) {
+        
+        t.plan(9);
+        
+        var rule = new OpenLayers.Rule({
+            name: "test rule",
+            minScaleDenominator: 10,
+            maxScaleDenominator: 20,
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                property: "prop",
+                value: "value"
+            }),
+            symbolizer: {
+                fillColor: "black"
+            },
+            context: {
+                foo: "bar"
+            }
+        });
+        var clone = rule.clone();
+        t.eq(clone.name, "test rule", "name copied");
+        t.eq(clone.minScaleDenominator, 10, "minScaleDenominator copied");
+        t.eq(clone.filter.type, OpenLayers.Filter.Comparison.EQUAL_TO, "clone has correct filter type");
+        
+        // modify original
+        rule.filter.property = "new";
+        rule.symbolizer.fillColor = "white";
+        rule.context.foo = "baz";
+        
+        // confirm that clone didn't change
+        t.eq(clone.filter.property, "prop", "clone has clone of filter");
+        t.eq(clone.symbolizer.fillColor, "black", "clone has clone of symbolizer");
+        t.eq(clone.context.foo, "bar", "clone has clone of context");
+        
+        // confirm that ids are different
+        t.ok(clone.id !== rule.id, "clone has different id");
+        
+        rule.destroy();
+        clone.destroy();
+
+        // test multiple symbolizers
+        rule = new OpenLayers.Rule({
+            name: "test rule",
+            minScaleDenominator: 10,
+            maxScaleDenominator: 20,
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                property: "prop",
+                value: "value"
+            }),
+            symbolizers: [
+                new OpenLayers.Symbolizer.Line({
+                    strokeColor: "black"
+                })
+            ]
+        });
+        clone = rule.clone();
+
+        t.eq(clone.symbolizers.length, 1, "clone has one symbolizer");
+        t.ok(clone.symbolizers[0] !== rule.symbolizers[0], "clone has different symbolizers than original");
+        
+        clone.destroy();
+        rule.destroy();
+        
+    }
+
+    function test_Rule_destroy(t) {
+        t.plan(1);
+        
+        var rule = new OpenLayers.Rule();
+        rule.destroy();
+        t.eq(rule.symbolizer, null, "symbolizer hash nulled properly");
+    }
+
+    </script> 
+</head> 
+<body> 
+</body> 
+</html> 

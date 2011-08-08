@@ -1,0 +1,67 @@
+<html> 
+<head> 
+    <script src="../OLLoader.js"></script> 
+    <script type="text/javascript">
+
+    function test_initialize(t) { 
+        t.plan(3); 
+         
+        var options = {'foo': 'bar'}; 
+        var filter = new OpenLayers.Filter.FeatureId(options); 
+        t.ok(filter instanceof OpenLayers.Filter.FeatureId, 
+             "new OpenLayers.Filter.FeatureId returns object" ); 
+        t.eq(filter.foo, "bar", "constructor sets options correctly"); 
+        t.eq(typeof filter.evaluate, "function", "filter has an evaluate function"); 
+    }
+
+    function test_destroy(t) {
+        t.plan(1);
+        
+        var filter = new OpenLayers.Filter.FeatureId();
+        filter.destroy();
+        t.eq(filter.symbolizer, null, "symbolizer hash nulled properly");
+    }
+    
+    function test_evaluate(t) {
+        t.plan(3);
+        
+        var filter = new OpenLayers.Filter.FeatureId(
+                {fids: ["fid_1", "fid_3"]});
+
+        var filterResults = {
+                "fid_1" : true,
+                "fid_2" : false,
+                "fid_3" : true};
+        for (var i in filterResults) {
+            var feature = new OpenLayers.Feature.Vector();
+            feature.fid = i;
+            var result = filter.evaluate(feature);
+            t.eq(result, filterResults[i], "feature "+i+" evaluates to "+result.toString()+" correctly.");
+            feature.destroy();
+        }
+    }
+
+    function test_clone(t) {
+        
+        t.plan(1);
+        
+        var filter = new OpenLayers.Filter.FeatureId({
+            fids: [1, 2, 3]
+        });
+        
+        var clone = filter.clone();
+        
+        // modify the original
+        filter.fids.push(4);
+        
+        t.eq(clone.fids.length, 3, "clone has proper fids length");
+        
+        filter.destroy();
+
+    }
+
+    </script> 
+</head> 
+<body> 
+</body> 
+</html> 

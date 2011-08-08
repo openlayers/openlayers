@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers WorldWind Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map;
+        function init(){
+            var mapOptions = { maxResolution: 1.6, numZoomLevels: 21};
+            map = new OpenLayers.Map('map', mapOptions);
+
+            var ww = new OpenLayers.Layer.WorldWind( "Urban",
+                "http://worldwind25.arc.nasa.gov/tile/tile.aspx?", .8, 9,
+                {T:"104"}, { tileSize: new OpenLayers.Size(512,512) });
+
+
+            map.addLayers([ww]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.setCenter(new OpenLayers.LonLat(-71.446875, 41.73515625), 15);
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">WorldWind Example</h1>
+
+    <div id="tags">
+        worldwind, cleanup
+    </div>
+
+    <p id="shortdesc">
+        Demonstrate the use of a NASA WorldWind base layer.
+    </p>
+
+    <div id="map" class="smallmap"></div>
+
+    <div id="docs">
+        <p>
+        Add the Nasa WorldWind "Urban" layer to your map. The "Urban" layer contains aerial imagery for urban areas only.
+        </p>
+        <p>
+          You can do it with a ...
+        </p>
+
+    </div>
+  </body>
+</html>

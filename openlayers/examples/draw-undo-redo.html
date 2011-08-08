@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>OpenLayers Undo/Redo Drawing Methods</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0;">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <script src="../lib/OpenLayers.js"></script>
+    </head>
+    <body>
+        <h1 id="title">Undo/Redo Drawing</h1>
+        <p id="shortdesc">
+            Demonstrates the use of undo &amp; redo methods while drawing. 
+        </p>
+        <div id="map" class="smallmap"></div>
+
+        <div id="docs">
+            <p>
+                Use <code>Ctrl-Z</code> or <code>⌘-Z</code> to undo while drawing.  
+                Use <code>Ctrl-Y</code> or <code>⌘-Y</code> to redo what you have 
+                undone.  Use <code>Esc</code> to cancel the current sketch.
+            <p>
+                The <code>control.undo</code> method works on the current
+                sketch, removing the most recently added point.  
+                The <code>control.redo</code> method adds back items that were
+                removed from an undo.  To fully erase a sketch, call the 
+                <code>control.cancel</code> method.
+            </p><p>
+                View the <a href="draw-undo-redo.js" target="_blank">draw-undo-redo.js</a>
+                source to see how this is done.
+            </p>
+        </div>
+        
+        <script src="draw-undo-redo.js"></script>
+    </body>
+</html>

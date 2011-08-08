@@ -1,0 +1,22 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+
+    function test_Surface_constructor (t) {
+        t.plan( 2 );
+        
+        var g = new OpenLayers.Geometry.Surface();
+        
+        t.eq(g.CLASS_NAME, "OpenLayers.Geometry.Surface", "correct CLASS_NAME")
+        t.ok(OpenLayers.String.startsWith(g.id, "OpenLayers.Geometry.Surface_"),
+             "id correctly set");
+    }
+
+
+
+  </script>
+</head>
+<body>
+</body>
+</html>

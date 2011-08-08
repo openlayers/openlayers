@@ -1,0 +1,54 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    OpenLayers.Lang.setCode('en');
+    var map; 
+    function test_Control_Scale_constructor (t) {
+        t.plan( 2 );
+    
+        control = new OpenLayers.Control.Scale();
+        t.ok( control instanceof OpenLayers.Control.Scale, "new OpenLayers.Control returns object" );
+        t.eq( control.displayClass,  "olControlScale", "displayClass is correct" );
+    }
+    function test_Control_Scale_initwithelem (t) {
+        t.plan( 1 );
+    
+        control = new OpenLayers.Control.Scale(OpenLayers.Util.getElement('scale'));
+        t.ok(true, "If this happens, then we passed. (FF throws an error above otherwise)");
+    }
+    function test_Control_Scale_updateScale (t) {
+        t.plan( 4 );
+    
+        control = new OpenLayers.Control.Scale('scale');
+        t.ok( control instanceof OpenLayers.Control.Scale, "new OpenLayers.Control returns object" );
+        map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.WMS('Test Layer', "http://octo.metacarta.com/cgi-bin/mapserv", {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'});
+        map.addLayer(layer);
+        map.zoomTo(0);
+        map.addControl(control);
+        t.eq(OpenLayers.Util.getElement('scale').innerHTML, "Scale = 1 : 443M", "Scale set by default."  );
+        map.zoomIn();
+        t.eq(OpenLayers.Util.getElement('scale').innerHTML, "Scale = 1 : 221M", "Zooming in changes scale"  );
+        map.baseLayer.resolutions = [OpenLayers.Util.getResolutionFromScale(110)];
+        map.zoomTo(0);
+        t.eq(OpenLayers.Util.getElement('scale').innerHTML, "Scale = 1 : 110", "Scale of 100 isn't rounded"  );
+    }
+    function test_Control_Scale_internalScale (t) {
+        t.plan(2);
+        control = new OpenLayers.Control.Scale();
+        t.ok( control instanceof OpenLayers.Control.Scale, "new OpenLayers.Control returns object" );
+        map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.WMS('Test Layer', "http://octo.metacarta.com/cgi-bin/mapserv", {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'});
+        map.addLayer(layer);
+        map.zoomTo(0);
+        map.addControl(control);
+        t.eq(control.div.firstChild.innerHTML, "Scale = 1 : 443M", "Internal scale displayed properly.");
+    }    
+  </script>
+</head>
+<body>
+    <a id="scale" href="">Scale</a> <br />
+    <div id="map" style="width: 1024px; height: 512px;"/>
+</body>
+</html>

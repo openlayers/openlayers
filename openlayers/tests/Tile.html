@@ -1,0 +1,95 @@
+<html>
+<head>
+  <script src="OLLoader.js"></script>
+  <script type="text/javascript">
+    var tile; 
+    
+    function test_Tile_constructor (t) {
+        t.plan( 12 );
+     
+        var layer = {}; // bogus layer
+        var position = new OpenLayers.Pixel(10,20);
+        var bounds = new OpenLayers.Bounds(1,2,3,4);
+        var url = "bobob";
+        var size = new OpenLayers.Size(5,6);
+        
+        tile = new OpenLayers.Tile(layer, position, bounds, url, size);
+
+        t.ok( tile instanceof OpenLayers.Tile, "new OpenLayers.Tile returns Tile object" );
+        t.eq( tile.layer, layer, "tile.layer set correctly");
+        t.ok( tile.position.equals(position), "tile.position set correctly");
+        t.ok( tile.position != position, "tile.position set not by reference");
+        t.ok( tile.bounds.equals(bounds), "tile.bounds set correctly");
+        t.ok( tile.bounds != bounds, "tile.bounds set not by reference");
+        t.eq( tile.url, url, "tile.url set correctly");        
+        t.ok( tile.size.equals(size), "tile.size is set correctly" );
+        t.ok( tile.size != size, "tile.size set not by reference");
+
+        t.ok( tile.id != null, "tile is given an id");
+        t.ok(OpenLayers.String.startsWith(tile.id, "Tile_"),
+             "tile's id starts correctly");
+        t.ok( tile.events != null, "tile's events intitialized");
+    }
+
+    function test_Tile_clone (t) {
+        t.plan( 10 );
+     
+        var layer = {}; // bogus layer
+        var position = new OpenLayers.Pixel(10,20);
+        var bounds = new OpenLayers.Bounds(1,2,3,4);
+        var url = "bobob";
+        var size = new OpenLayers.Size(5,6);
+        
+        tile = new OpenLayers.Tile(layer, position, bounds, url, size);
+        var clone = tile.clone();
+        
+        t.ok( clone instanceof OpenLayers.Tile, "OpenLayers.Tile.clone returns Tile object" );
+        t.eq( clone.layer, layer, "clone.layer set correctly");
+        t.ok( clone.position.equals(position), "clone.position set correctly");
+        t.ok( clone.bounds.equals(bounds), "clone.bounds set correctly");
+        t.eq( clone.url, url, "clone.url set correctly");        
+        t.ok( clone.size.equals(size), "clone.size is set correctly" );
+
+        t.ok( clone.id != null, "clone is given an id");
+        t.ok( clone.id != tile.id, "clone is given a new id");
+        t.ok(OpenLayers.String.startsWith(clone.id, "Tile_"),
+             "clone's id starts correctly");
+        t.ok( clone.events != null, "clone's events intitialized");
+    }
+
+    function test_Tile_destroy(t) {
+        t.plan( 6 );
+
+        var layer = {
+            SUPPORTED_TRANSITIONS: [],
+            events: {
+                unregister: function() {}
+            }
+        }; // bogus layer
+        var position = new OpenLayers.Pixel(10,20);
+        var bounds = new OpenLayers.Bounds(1,2,3,4);
+        var url = "bobob";
+        var size = new OpenLayers.Size(5,6);
+        
+        tile = new OpenLayers.Tile(layer, position, bounds, url, size);
+        tile.events.destroy = function() {
+            t.ok(true, "tile events destroy() called");
+        };
+
+ 
+        tile.destroy();
+
+        t.ok(tile.layer == null, "tile.layer set to null");
+        t.ok(tile.bounds == null, "tile.bounds set to null");
+        t.ok(tile.size == null, "tile.size set to null");
+        t.ok(tile.position == null, "tile.position set to null");
+        
+        t.ok(tile.events == null, "tile.events set to null");
+    }
+
+  </script>
+</head>
+<body>
+</body>
+</html>
+

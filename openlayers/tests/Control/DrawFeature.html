@@ -1,0 +1,135 @@
+<html>
+<head>
+    <script src="../OLLoader.js"></script>
+    <script type="text/javascript">
+
+    function test_initialize(t) {
+        t.plan(2);
+        var control = new OpenLayers.Control.DrawFeature("foo", function() {});
+        t.ok(control instanceof OpenLayers.Control.DrawFeature,
+             "constructor returns an instance");
+        t.ok(OpenLayers.Util.indexOf(control.EVENT_TYPES, "featureadded") > -1,
+             "featureadded event in EVENT_TYPES");
+    }
+    
+    function test_multi(t) {
+        t.plan(4);
+
+        var layer = new OpenLayers.Layer.Vector();
+        var control;
+        
+        // multi false by default
+        control = new OpenLayers.Control.DrawFeature(
+            layer, OpenLayers.Handler.Polygon
+        );
+        t.ok(!control.multi, "control.multi false by default");
+        t.ok(!control.handler.multi, "handler.multi false by default");
+        
+        // set on handler
+        control = new OpenLayers.Control.DrawFeature(
+            layer, OpenLayers.Handler.Polygon, {multi: true}
+        );
+        t.ok(control.handler.multi, "handler.multi set from control options");
+        
+        // respect handlerOptions
+        control = new OpenLayers.Control.DrawFeature(
+            layer, OpenLayers.Handler.Polygon,
+            {multi: true, handlerOptions: {multi: false}}
+        );
+        t.ok(!control.handler.multi, "handlerOptions.multi respected");
+
+    }
+    
+    function test_drawFeature(t) {
+        t.plan(3);
+        var layer = new OpenLayers.Layer.Vector();
+        var control = new OpenLayers.Control.DrawFeature(layer, function() {});
+        var geom = {};
+        
+        layer.addFeatures = function(features) {
+            t.ok(features[0].geometry == geom, "layer.addFeatures called");
+            t.eq(features[0].state, OpenLayers.State.INSERT, "layer state set");
+        };
+        function handlefeatureadded(event) {
+            t.ok(event.feature.geometry == geom, "featureadded triggered");
+        }
+        control.events.on({"featureadded": handlefeatureadded});
+        control.drawFeature(geom);
+        control.events.un({"featureadded": handlefeatureadded});
+        
+    }
+    
+    function test_sketch_events(t) {
+        t.plan(11);
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        var control = new OpenLayers.Control.DrawFeature(
+            layer, OpenLayers.Handler.Path, {
+                handlerOptions: {persist: true}
+            }
+        );
+        map.addLayer(layer);
+        map.addControl(control);
+        map.zoomToMaxExtent();
+        
+        var log;
+        layer.events.on({
+            sketchstarted: function(event) {
+                log['sketchstarted'] = event;
+            },
+            sketchmodified: function(event) {
+                log['sketchmodified'] = event;
+            },
+            sketchcomplete: function(event) {
+                log['sketchcomplete'] = event;
+            }
+        });
+        
+        // mock up draw/modify of a point
+        log = {};
+        control.activate();
+        t.eq(log, {}, "[activate] no event triggered");
+
+        log = {};
+        map.events.triggerEvent("mousemove", {xy: new OpenLayers.Pixel(0, 0)});
+        t.eq(log.sketchstarted.type, "sketchstarted", "[mousemove] sketchstarted triggered");
+        t.geom_eq(log.sketchstarted.vertex, new OpenLayers.Geometry.Point(-200, 125), "[mousemove] correct vertex");
+        t.eq(log.sketchmodified.type, "sketchmodified", "[mousemove] sketchmodified triggered");
+        t.geom_eq(log.sketchmodified.vertex, new OpenLayers.Geometry.Point(-200, 125), "[mousemove] correct vertex");
+
+        map.events.triggerEvent("mousedown", {xy: new OpenLayers.Pixel(0, 0)});
+
+        log = {};
+        map.events.triggerEvent("mouseup", {xy: new OpenLayers.Pixel(0, 0)});
+        t.eq(log.sketchmodified.type, "sketchmodified", "[mouseup] sketchmodified triggered");
+        t.geom_eq(log.sketchmodified.vertex, new OpenLayers.Geometry.Point(-200, 125), "[mouseup] correct vertex");
+
+        log = {};
+        map.events.triggerEvent("mousemove", {xy: new OpenLayers.Pixel(10, 10)});
+        t.eq(log.sketchmodified.type, "sketchmodified", "[mousemove] sketchmodified triggered");
+        t.geom_eq(log.sketchmodified.vertex, new OpenLayers.Geometry.Point(-190, 115), "[mousemove] correct vertex");
+
+        log = {};
+        map.events.triggerEvent("dblclick", {xy: new OpenLayers.Pixel(10, 10)});
+        t.eq(log.sketchcomplete.type, "sketchcomplete", "[dblclick] sketchcomplete triggered");
+        t.geom_eq(log.sketchcomplete.feature.geometry,
+                  new OpenLayers.Geometry.LineString([
+                      new OpenLayers.Geometry.Point(-200, 125),
+                      new OpenLayers.Geometry.Point(-190, 115)
+                  ]),
+                  "[dblclick] correct geometry");
+
+        map.destroy();
+    }
+
+    </script>
+</head>
+<body>
+    <div id="map" style="width: 400px; height: 250px;"/>
+</body>
+</html>

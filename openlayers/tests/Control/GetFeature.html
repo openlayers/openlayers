@@ -1,0 +1,177 @@
+<html>
+<head>
+    <script src="../OLLoader.js"></script>
+    <script type="text/javascript">
+    function test_Control_GetFeature_constructor(t) {
+        t.plan(3);
+        var protocol = "foo";
+        var control = new OpenLayers.Control.GetFeature({
+            protocol: protocol
+        });
+        t.ok(control instanceof OpenLayers.Control.GetFeature,
+             "new OpenLayers.Control.SelectFeature returns an instance");
+        t.eq(control.protocol, "foo",
+             "constructor sets protocol correctly");        
+
+        control = new OpenLayers.Control.GetFeature({
+            filterType: OpenLayers.Filter.Spatial.INTERSECTS
+        });
+        t.eq(control.filterType, OpenLayers.Filter.Spatial.INTERSECTS,
+             "constructor sets filterType correctly");        
+
+    }
+    
+    function test_Control_GetFeature_select(t) {
+        t.plan(10);
+        var cssAdded;
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.WMS("foo", "wms", {
+            layers: "foo"
+        });
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(1,2));
+        var feature1 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(1,2));
+        var feature2 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(2,3));
+        var feature3 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(3,1));
+        var control = new OpenLayers.Control.GetFeature({
+            protocol: new OpenLayers.Protocol({
+                read: function(obj) {
+                    cssAdded = OpenLayers.Element.hasClass(map.viewPortDiv,
+                                                           "olCursorWait");
+                    obj.callback.call(obj.scope, {
+                        features: [feature1, feature2, feature3],
+                        success: function() {return true;}
+                    });
+                }
+            }),
+            box: true
+        });
+        map.addControl(control);
+
+        var singleTest = function(evt) {
+            t.eq(evt.feature.id, feature1.id, "featureselected callback called with closest feature");
+        }
+        cssAdded = false;
+        control.events.register("featureselected", this, singleTest);
+        control.selectClick({xy: new OpenLayers.Pixel(200, 125)});
+        t.ok(cssAdded,
+             "select adds CSS class (click)");
+        t.ok(!OpenLayers.Element.hasClass(map.viewPortDiv, "olCursorWait"),
+             "callback removes CSS class (click)");
+        control.events.unregister("featureselected", this, singleTest);
+
+        var count = 0;
+        var beforeFeatureSelected = function(evt) {
+             count++;
+             return count < 3;
+        }
+        var features = [];
+        var boxTest = function(evt) {
+            features.push(evt.feature);
+        }
+        var beforeFeaturesSelected = function(evt) {
+            t.eq(evt.features.length, 3, "3 features passed to the beforefeaturesselected handler");
+        }
+        var featuresSelected = function(evt) {
+            t.eq(evt.features.length, 2, "2 features passed to the featuresselected handler");
+        }
+        control.events.register("beforefeatureselected", this, beforeFeatureSelected);
+        control.events.register("featureselected", this, boxTest);
+        control.events.register("beforefeaturesselected", this, beforeFeaturesSelected);
+        control.events.register("featuresselected", this, featuresSelected);
+        cssAdded = false;
+        control.selectBox(new OpenLayers.Bounds(0,0,4,4));
+        control.events.unregister("beforefeatureselected", this, beforeFeatureSelected);
+        control.events.unregister("featureselected", this, boxTest);
+        control.events.unregister("beforefeaturesselected", this, beforeFeaturesSelected);
+        control.events.unregister("featuresselected", this, featuresSelected);
+        t.eq(features.length, 2, "2 features inside box selected");
+        t.eq(features[1].id, feature2.id, "featureselected callback called with multiple features");
+        t.ok(cssAdded,
+             "select adds CSS class (box)");
+        t.ok(!OpenLayers.Element.hasClass(map.viewPortDiv, "olCursorWait"),
+             "callback removes CSS class (box)");
+
+        // allow several features even for single click 
+        control.single = false;
+        var multiplePointTest = function(evt) {
+            t.eq(evt.features.length, 3, "3 features passed to the featuresselected handler");
+        }
+        control.events.register("featuresselected", this, multiplePointTest);
+        control.selectClick({xy: new OpenLayers.Pixel(200, 125)});
+        control.events.unregister("featuresselected", this, multiplePointTest);
+    }
+    
+    function test_Control_GetFeature_hover(t) {
+        t.plan(9);
+        var cssAdded;
+        var abortedResponse = null;
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.WMS("foo", "wms", {
+            layers: "foo"
+        });
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(1,2));
+        var feature1 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(1,2));
+        var feature2 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(2,3));
+        var response = new OpenLayers.Protocol.Response();
+        var control = new OpenLayers.Control.GetFeature({
+            protocol: new OpenLayers.Protocol({
+                read: function(obj){
+                    cssAdded = OpenLayers.Element.hasClass(map.viewPortDiv,
+                                                           "olCursorWait");
+                    obj.callback.call(obj.scope, {
+                        features: [feature1, feature2],
+                        success: function() {return true;}
+                    });
+                    return response;
+                },
+                abort: function(response) {
+                    abortedResponse = response;
+                }
+            }),
+            hover: true
+        });
+        map.addControl(control);
+
+        var hoverFeature;
+        var hoverTest = function(evt) {
+            t.eq(evt.feature.id, hoverFeature.id, "hoverfeature callback called with closest feature");
+        }
+        var outTest = function(evt) {
+            t.eq(evt.feature.id, feature1.id, "outfeature callback called with previously hovered feature");
+        }
+        control.events.register("hoverfeature", this, hoverTest);
+        control.events.register("outfeature", this, outTest);
+        hoverFeature = feature1;
+        control.selectHover({xy: new OpenLayers.Pixel(200, 125)});
+        t.ok(control.hoverResponse == response,
+             "selectHover stores the protocol response in the hoverResponse property");
+
+        hoverFeature = feature2;
+        cssAdded = false;
+        control.selectHover({xy: new OpenLayers.Pixel(400, 0)});
+        t.ok(cssAdded,
+             "select adds CSS class (hover)");
+        t.ok(!OpenLayers.Element.hasClass(map.viewPortDiv, "olCursorWait"),
+             "callback removes CSS class (hover)");
+
+        OpenLayers.Element.addClass(map.viewPortDiv, "olCursorWait");
+        control.cancelHover();
+        t.ok(abortedResponse == response,
+             "cancelHover calls protocol.abort() with the expected response");
+        t.eq(control.hoverResponse, null,
+             "cancelHover sets this.hoverResponse to null");
+        t.ok(!OpenLayers.Element.hasClass(map.viewPortDiv, "olCursorWait"),
+             "cancelHover removes CSS class");
+
+        control.events.unregister("hoverfeature", this, hoverTest);
+        control.events.unregister("outfeature", this, outTest);
+    }
+    
+    </script>
+</head>
+<body>
+    <div id="map" style="width: 400px; height: 250px;"/>
+</body>
+</html>

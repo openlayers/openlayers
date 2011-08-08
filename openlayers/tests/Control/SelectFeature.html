@@ -1,0 +1,526 @@
+<html>
+<head>
+    <script src="../OLLoader.js"></script>
+    <script type="text/javascript">
+    function test_Control_SelectFeature_constructor(t) {
+        t.plan(5);
+        var options = {
+//            geometryTypes: "foo"
+        };
+        var layer = "bar";
+        var control = new OpenLayers.Control.SelectFeature([layer], options);
+        t.ok(control instanceof OpenLayers.Control.SelectFeature,
+             "new OpenLayers.Control.SelectFeature returns an instance");
+        t.eq(control.layers[0], "bar",
+             "constructor with array of layers sets layer correctly");
+//        t.eq(control.handlers.feature.geometryTypes, "foo",
+//             "constructor sets options correctly on feature handler");
+        t.ok(control.layer instanceof OpenLayers.Layer.Vector.RootContainer, "control has a root container layer if constructor was called with an array of layers");
+
+        control = new OpenLayers.Control.SelectFeature(layer, options);
+        t.eq(control.layers, null, "this.layers is null if constructor called with a single layer");
+        t.eq(control.layer, layer, "this.layer holds the layer that was passed with the constructor if called with a single layer")
+    }
+
+    function test_Control_SelectFeature_destroy(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.SelectFeature(layer, {box: true});
+        control.handlers.feature.deactivate = function() {
+            t.ok(true,
+                 "control.deactivate calls deactivate on feature handler");
+        }
+        control.handlers.box.deactivate = function() {
+            t.ok(true,
+                 "control.deactivate calls deactivate on box handler");
+        }
+// should nullify the layer property here
+        control.destroy();
+
+    }
+
+    function test_Control_SelectFeature_select(t) {
+        t.plan(4);
+        var map = new OpenLayers.Map("map");
+        var layer1 = new OpenLayers.Layer.Vector();
+        var layer2 = new OpenLayers.Layer.Vector();
+        map.addLayers([layer1, layer2]);
+        var control = new OpenLayers.Control.SelectFeature([layer1, layer2]);
+        var feature1 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,1));
+        var feature2 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(1,0));
+        layer1.addFeatures(feature1);
+        layer2.addFeatures(feature2);
+        var drawFeature = function(feature, style) {
+            feature.layer.styleMap.createSymbolizer(feature, style);
+        }
+        layer1.drawFeature = drawFeature;
+        layer2.drawFeature = drawFeature;
+        control.select(feature1);
+        t.eq(feature1.renderIntent, "select", "render intent is set to select");
+        control.select(feature2);
+        t.eq(feature2.renderIntent, "select", "render intent is set to select");
+        control.unselect(feature1);
+        t.eq(feature1.renderIntent, "default", "render intent is set back to default");
+        control.unselect(feature2);
+        t.eq(feature2.renderIntent, "default", "render intent is set back to default");
+    }
+
+    function test_Control_SelectFeature_clickFeature(t) {
+        t.plan(6);
+        // mock up layer
+        var layer = {
+            selectedFeatures: [],
+            drawFeature: function() {},
+            events: {
+                triggerEvent: function() {}
+            }
+        };
+        // mock up active control
+        var control = new OpenLayers.Control.SelectFeature(layer);
+        control.handlers.feature = {
+            evt: {}
+        };
+        // mock up features
+        var features = new Array(4);
+        for(var i=0; i<features.length; ++i) {
+            features[i] = {
+                id: Math.random(),
+                tested: 0,
+                style: "",
+                layer: layer
+            };
+        }
+
+        // test that onSelect gets called properly
+        control.onSelect = function(feature) {
+            feature.tested += 1;
+            t.eq(feature.id, features[feature.index].id,
+                 "onSelect called with proper feature (" + feature.index + ")");
+            t.eq(feature.tested, feature.test,
+                 "onSelect called only once for feature (" + feature.index + ")");
+            t.ok(this == control, "onSelect called in the scope of the control if control.scope is not provided");
+        }
+
+        // test that onUnselect gets called properly
+        control.onUnselect = function(feature) {
+            feature.tested += 1;
+            t.eq(feature.id, features[feature.index].id,
+                 "onUnselect called with proper feature (" + feature.index + ")");
+            t.eq(feature.tested, feature.test,
+                 "onUnselect called only once for feature (" + feature.index + ")");
+            t.ok(this == control, "onUnselect called in the scope of the control if control.scope is not provided");
+        }
+
+        // mock up first click on first feature (runs 3 tests from onSelect)
+        var feature = features[0];
+        feature.index = 0;
+        feature.test = 1;
+        control.clickFeature(feature);
+
+        // mock up second click on first feature (runs no tests - already selected)
+        control.toggle = false;
+        control.clickFeature(feature);
+
+        // mock up second click on first feature (runs 3 tests from onUnselect)
+        control.toggle = true;
+        feature.test = 2;
+        control.clickFeature(feature);
+
+
+    }
+
+    function test_box(t) {
+        t.plan(5);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        map.setBaseLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(1,1));
+        var control = new OpenLayers.Control.SelectFeature(layer, {'multiple': true, box: true });
+        var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0));
+        var feature2 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(1,1));
+        var feature3 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(-2,-2));
+        var feature4 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString([
+            new OpenLayers.Geometry.Point(0, 0), new OpenLayers.Geometry.Point(1, 1)
+        ]));
+        layer.addFeatures([feature, feature2, feature3, feature4]);
+        control.setMap(map);
+        map.getLonLatFromPixel = function(arg) {
+            return new OpenLayers.LonLat(arg.x, arg.y);
+        }
+        control.selectBox(new OpenLayers.Bounds(-1, -1, 2, 2));
+        t.eq(layer.selectedFeatures.length, 3, "box around all features selects 3 features");
+
+        control.selectBox(new OpenLayers.Bounds(-3, -3, -1, -1));
+        t.eq(layer.selectedFeatures.length, 4, "box around other features doesn't turn off already selected features.");
+
+        control.multipleSelect = function() {
+            return false;
+        };
+        control.selectBox(new OpenLayers.Bounds(-3, -3, -1, -1));
+        t.eq(layer.selectedFeatures.length, 1, "box around other features correctly turns off already selected features.");
+
+        control.geometryTypes = null;
+        control.selectBox(new OpenLayers.Bounds(-100, -100, 100, 100));
+        t.eq(layer.selectedFeatures.length, layer.features.length, "all features selected with no geometryTypes filter");
+
+        control.geometryTypes = ["OpenLayers.Geometry.Point"];
+        control.selectBox(new OpenLayers.Bounds(-100, -100, 100, 100));
+        t.eq(layer.selectedFeatures.length, 3, "3 features selected with geometryTypes filter");
+
+
+    }
+
+    function test_Control_SelectFeature_activate(t) {
+        t.plan(4);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.SelectFeature(layer, {box: true});
+        map.addControl(control);
+        t.ok(!control.handlers.feature.active,
+             "feature handler is not active prior to activating control");
+        t.ok(!control.handlers.box.active,
+             "box handler is not active prior to activating control");
+        control.activate();
+        t.ok(control.handlers.feature.active,
+             "feature handler is active after activating control");
+        t.ok(control.handlers.box.active,
+             "box handler is active after activating control");
+    }
+
+    function test_Control_SelectFeature_deactivate(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.SelectFeature(layer, {box: true});
+        map.addControl(control);
+
+        control.activate();
+        control.handlers.feature.deactivate = function() {
+            t.ok(true,
+                 "control.deactivate calls deactivate on feature handler");
+            OpenLayers.Handler.Feature.prototype.deactivate.apply(this, arguments);
+        }
+        control.handlers.box.deactivate = function() {
+            t.ok(true,
+                 "control.deactivate calls deactivate on box handler");
+        }
+        control.deactivate();
+    }
+
+    function test_highlighyOnly(t) {
+        t.plan(23);
+
+        /*
+         * setup
+         */
+
+        var map, layer, ctrl1, ctrl2, _feature, feature, evt, _style;
+
+        map = new OpenLayers.Map("map");
+        layer = new OpenLayers.Layer.Vector("name", {isBaseLayer: true});
+        map.addLayer(layer);
+
+        ctrl1 = new OpenLayers.Control.SelectFeature(layer, {
+            highlightOnly: false,
+            hover: false
+        });
+        map.addControl(ctrl1);
+
+        ctrl2 = new OpenLayers.Control.SelectFeature(layer, {
+            highlightOnly: true,
+            hover: true
+        });
+        map.addControl(ctrl2);
+
+        ctrl2.activate();
+        ctrl1.activate();
+
+        feature = new OpenLayers.Feature.Vector();
+        feature.layer = layer;
+
+        // override the layer's getFeatureFromEvent func so that it always
+        // returns the feature referenced to by _feature
+        layer.getFeatureFromEvent = function(evt) { return _feature; };
+
+        evt = {xy: new OpenLayers.Pixel(Math.random(), Math.random())};
+
+        map.zoomToMaxExtent();
+
+        /*
+         * tests
+         */
+
+        // with renderIntent
+
+        ctrl1.renderIntent = "select";
+        ctrl2.renderIntent = "temporary";
+
+        // mouse over feature, feature is drawn with "temporary"
+        _feature = feature;
+        evt.type = "mousemove";
+        map.events.triggerEvent("mousemove", evt);
+        t.eq(feature.renderIntent, "temporary",
+             "feature drawn with expected render intent after \"mouseover\"");
+        t.eq(feature._lastHighlighter, ctrl2.id,
+             "feature._lastHighlighter properly set after \"mouseover\"");
+        t.eq(feature._prevHighlighter, undefined,
+             "feature._prevHighlighter properly set after \"mouseover\"");
+
+        // click in feature, feature is drawn with "select"
+        _feature = feature;
+        evt.type = "click";
+        map.events.triggerEvent("click", evt);
+        t.eq(feature.renderIntent, "select",
+             "feature drawn with expected render intent after \"clickin\"");
+        t.eq(feature._lastHighlighter, ctrl1.id,
+             "feature._lastHighlighter properly set after \"clickin\"");
+        t.eq(feature._prevHighlighter, ctrl2.id,
+             "feature._prevHighlighter properly set after \"clickin\"");
+
+        // mouse out of feature, feature is still drawn with "select"
+        _feature = null;
+        evt.type = "mousemove";
+        map.events.triggerEvent("mousemove", evt);
+        t.eq(feature.renderIntent, "select",
+             "feature drawn with expected render intent after \"mouseout\"");
+        t.eq(feature._lastHighlighter, ctrl1.id,
+             "feature._lastHighlighter properly set after \"nouseout\"");
+        t.ok(feature._prevHighlighter, ctrl2.id,
+             "feature._prevHighlighter properly set after \"mouseout\"");
+
+        // mouse over feature again, feature is drawn with "temporary"
+        _feature = feature;
+        evt.type = "mousemove";
+        map.events.triggerEvent("mousemove", evt);
+        t.eq(feature.renderIntent, "temporary",
+             "feature drawn with expected render intent after \"mouseover\"");
+        t.eq(feature._lastHighlighter, ctrl2.id,
+             "feature._lastHighlighter properly set after \"mouseover\"");
+        t.eq(feature._prevHighlighter, ctrl1.id,
+             "feature._prevHighlighter properly set after \"mouseover\"");
+
+        // mouve out of feature again, feature is still drawn with "select"
+        _feature = null;
+        evt.type = "mousemove";
+        map.events.triggerEvent("mousemove", evt);
+        t.eq(feature.renderIntent, "select",
+             "feature drawn with expected render intent after \"mouseout\"");
+        t.eq(feature._lastHighlighter, ctrl1.id,
+             "feature._lastHighlighter properly set after \"mouseout\"");
+        t.eq(feature._prevHighlighter, undefined,
+             "feature._prevHighlighter properly set after \"mouseout\"");
+
+        // click out of feature, feature is drawn with "default"
+        _feature = null;
+        evt.type = "click";
+        map.events.triggerEvent("click", evt);
+        t.eq(feature.renderIntent, "default",
+             "feature drawn with expected render intent after \"clickout\"");
+        t.eq(feature._lastHighlighter, undefined,
+             "feature._lastHighlighter properly set after \"clickout\"");
+        t.eq(feature._prevHighlighter, undefined,
+             "feature._prevHighlighter properly set after \"clickout\"");
+
+        // with selectStyle
+
+        ctrl1.selectStyle = OpenLayers.Feature.Vector.style["select"];
+        ctrl2.selectStyle = OpenLayers.Feature.Vector.style["temporary"];
+
+        layer.renderer.drawFeature = function(f, s) {
+            var style = OpenLayers.Feature.Vector.style[_style];
+            t.eq(s, style, "renderer drawFeature called with expected style obj (" + _style + ")");
+        };
+
+        // mouse over feature, feature is drawn with "temporary"
+        _feature = feature;
+        _style = "temporary";
+        evt.type = "mousemove";
+        map.events.triggerEvent("mousemove", evt);
+
+        // click in feature, feature is drawn with "select"
+        _feature = feature;
+        _style = "select";
+        evt.type = "click";
+        map.events.triggerEvent("click", evt);
+
+        // mouse out of feature, feature is still drawn with "select" and
+        // the renderer drawFeature method should not be called
+        _feature = null;
+        evt.type = "mousemove";
+        map.events.triggerEvent("mousemove", evt);
+
+        // mouse over feature again, feature is drawn with "temporary"
+        _feature = feature;
+        _style = "temporary";
+        evt.type = "mousemove";
+        map.events.triggerEvent("mousemove", evt);
+
+        // mouve out of feature again, feature is still drawn with "select"
+        _feature = null;
+        _style = "select";
+        evt.type = "mousemove";
+        map.events.triggerEvent("mousemove", evt);
+
+        // click out of feature, feature is drawn with "default"
+        _feature = null;
+        _style = "default";
+        evt.type = "click";
+        map.events.triggerEvent("click", evt);
+    }
+
+    // test for http://trac.openlayers.org/ticket/2812
+    function test_highlightOnly_toggle(t) {
+        t.plan(8);
+
+        /*
+         * setup
+         */
+
+        var map, layer, ctrl1, ctrl2, _feature, feature, evt, _style;
+
+        map = new OpenLayers.Map("map");
+        layer = new OpenLayers.Layer.Vector("name", {isBaseLayer: true});
+        map.addLayer(layer);
+
+        ctrl1 = new OpenLayers.Control.SelectFeature(layer, {
+            highlightOnly: false,
+            hover: false,
+            clickout: false,
+            toggle: true
+        });
+        map.addControl(ctrl1);
+
+        ctrl2 = new OpenLayers.Control.SelectFeature(layer, {
+            highlightOnly: true,
+            hover: true
+        });
+        map.addControl(ctrl2);
+
+        ctrl2.activate();
+        ctrl1.activate();
+
+        feature = new OpenLayers.Feature.Vector();
+        feature.layer = layer;
+
+        // override the layer's getFeatureFromEvent func so that it always
+        // returns the feature referenced to by _feature
+        layer.getFeatureFromEvent = function(evt) { return _feature; };
+
+        evt = {xy: new OpenLayers.Pixel(Math.random(), Math.random())};
+
+        map.zoomToMaxExtent();
+
+        /*
+         * tests
+         */
+
+        // with renderIntent
+
+        ctrl1.renderIntent = "select";
+        ctrl2.renderIntent = "temporary";
+
+        // mouse over feature, feature is drawn with "temporary"
+        _feature = feature;
+        evt.type = "mousemove";
+        map.events.triggerEvent("mousemove", evt);
+        t.eq(feature.renderIntent, "temporary",
+             "feature drawn with expected render intent after \"mouseover\"");
+
+        // click in feature, feature is drawn with "select"
+        _feature = feature;
+        evt.type = "click";
+        map.events.triggerEvent("click", evt);
+        t.eq(feature.renderIntent, "select",
+             "feature drawn with expected render intent after \"clickin\"");
+
+        // mouse out of feature, feature is still drawn with "select"
+        _feature = null;
+        evt.type = "mousemove";
+        map.events.triggerEvent("mousemove", evt);
+        t.eq(feature.renderIntent, "select",
+             "feature drawn with expected render intent after \"mouseout\"");
+
+        // mouse over feature again, feature is drawn with "temporary"
+        _feature = feature;
+        evt.type = "mousemove";
+        map.events.triggerEvent("mousemove", evt);
+        t.eq(feature.renderIntent, "temporary",
+             "feature drawn with expected render intent after \"mouseover\"");
+
+        // click in feature again, feature is drawn with "default"
+        _feature = feature;
+        evt.type = "click";
+        map.events.triggerEvent("click", evt);
+        t.eq(feature.renderIntent, "default",
+             "feature drawn with expected render intent after \"clickin\"");
+
+        // mouse out of feature again, feature is still drawn with "default"
+        _feature = null;
+        evt.type = "mousemove";
+        map.events.triggerEvent("mousemove", evt);
+        t.eq(feature.renderIntent, "default",
+             "feature drawn with expected render intent after \"mouseout\"");
+
+        // mouse over feature again, feature is drawn with "temporary"
+        _feature = feature;
+        evt.type = "mousemove";
+        map.events.triggerEvent("mousemove", evt);
+        t.eq(feature.renderIntent, "temporary",
+             "feature drawn with expected render intent after \"mouseover\"");
+
+        // mouse out of feature again, feature is still drawn with "default"
+        _feature = null;
+        evt.type = "mousemove";
+        map.events.triggerEvent("mousemove", evt);
+        t.eq(feature.renderIntent, "default",
+             "feature drawn with expected render intent after \"mouseout\"");
+    }
+
+    function test_setLayer(t) {
+        t.plan(5);
+        var map = new OpenLayers.Map("map");
+        var layer1 = new OpenLayers.Layer.Vector();
+        var layer2 = new OpenLayers.Layer.Vector();
+        var layer3 = new OpenLayers.Layer.Vector();
+        map.addLayer(layer1, layer2, layer3);
+        // initialize it with a single layer
+        var control = new OpenLayers.Control.SelectFeature(layer1);
+        map.addControl(control);
+        control.activate();
+        control.setLayer([layer2, layer3]);
+        t.eq(control.layer instanceof OpenLayers.Layer.Vector.RootContainer, true, "Root container created correctly on setLayer with multiple layers");
+        t.eq(control.active, true, "Control should be active still after using setLayer");
+        t.eq((control.handlers.feature.layer === control.layer), true, "Feature handler layer set correctly");
+        control.destroy();
+        // initialize with an array of layers
+        control = new OpenLayers.Control.SelectFeature([layer1, layer2]);
+        t.eq((control.layers !== null), true, "Control has a layers property");
+        control.setLayer(layer3);
+        t.eq((control.layers === null), true, "When using setLayer with a single layer, the layers property is removed if present before");
+        map.destroy();
+    }
+
+    function test_destroy(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map("map");
+        var layer1 = new OpenLayers.Layer.Vector();
+        map.addLayer(layer1);
+        var control = new OpenLayers.Control.SelectFeature([layer1]);
+        map.addControl(control);
+        control.activate();
+        control.destroy();
+        t.eq(layer1.renderer.getRenderLayerId(), layer1.id, 
+            "Root container moved correctly when control is destroyed and layers was an array parameter");
+    }   
+   
+    </script>
+</head>
+<body>
+    <div id="map" style="width: 400px; height: 250px;"/>
+</body>
+</html>

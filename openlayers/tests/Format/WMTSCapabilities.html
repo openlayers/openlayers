@@ -1,0 +1,20 @@
+<html> 
+<head> 
+    <script src="../OLLoader.js"></script>
+    <script type="text/javascript">
+    
+    function test_initialize(t) {
+        
+        t.plan(1);
+        var format = new OpenLayers.Format.WMTSCapabilities({
+            version: "foo"
+        });
+        t.eq(format.version, "foo", "version set on format");
+        
+    }
+    
+    </script> 
+</head> 
+<body>
+</body> 
+</html> 

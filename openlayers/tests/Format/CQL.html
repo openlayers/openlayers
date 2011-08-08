@@ -1,0 +1,287 @@
+<html>
+    <head>
+        <script src="../OLLoader.js"></script>
+
+        <script type="text/javascript">
+
+function test_CQL_Constructor(t) {
+    t.plan(5);
+    var options = {'foo': 'bar'};
+    var format  = new OpenLayers.Format.CQL(options);
+    t.ok(format instanceof OpenLayers.Format.CQL,
+         "new OpenLayers.Format.CQL object");
+    t.eq(format.foo, "bar", "constructor sets options correctly")
+    t.eq(typeof format.read, 'function', 'format has a read function');
+    t.eq(typeof format.write, 'function', 'format has a write function');
+    t.eq(format.options, options, "format.options correctly set");
+}
+
+function test_Comparison_string(t) {
+    t.plan(5);
+    var test_cql, format, filter;
+    test_cql = "X >= 'B'";
+    format = new OpenLayers.Format.CQL();
+    filter = format.read(test_cql);
+    t.ok(filter instanceof OpenLayers.Filter.Comparison,
+         "Parsing a simple >= filter produces a Filter.Comparison");
+    t.eq(filter.type, OpenLayers.Filter.Comparison.GREATER_THAN_OR_EQUAL_TO,
+         ">= parsed as Filter.Comparison.GREATER_THAN_OR_EQUAL_TO");
+    t.eq(filter.property, 'X',
+         "Property extracted from CQL text");
+    t.eq(filter.value, 'B',
+         "Value extracted from CQL text");
+         
+         
+    t.eq(format.write(filter), test_cql, "write returned test cql");
+}
+
+function test_Comparison_number(t) {
+    t.plan(5);
+    var test_cql, format, filter;
+    test_cql = "X >= 10";
+    format = new OpenLayers.Format.CQL();
+    filter = format.read(test_cql);
+    t.ok(filter instanceof OpenLayers.Filter.Comparison,
+         "Parsing a simple >= filter produces a Filter.Comparison");
+    t.eq(filter.type, OpenLayers.Filter.Comparison.GREATER_THAN_OR_EQUAL_TO,
+         ">= parsed as Filter.Comparison.GREATER_THAN_OR_EQUAL_TO");
+    t.eq(filter.property, 'X',
+         "Property extracted from CQL text");
+    t.eq(filter.value, 10,
+         "Value extracted from CQL text");
+         
+         
+    t.eq(format.write(filter), test_cql, "write returned test cql");
+}
+
+function test_Logical(t) {
+    t.plan(7);
+    var test_cql, format, filter;
+    test_cql = "X >= 'B' AND X < 'M'";
+    format = new OpenLayers.Format.CQL();
+    filter = format.read(test_cql);
+    t.ok(filter instanceof OpenLayers.Filter.Logical,
+         "Parsing ANDed filters produces a Filter.Logical");
+    t.eq(filter.type, OpenLayers.Filter.Logical.AND,
+         "AND parsed as Filter.Logical.AND");
+    t.eq(filter.filters.length, 2,
+         "AND Filter contains two subfilters");
+    t.ok(filter.filters[0] instanceof OpenLayers.Filter.Comparison,
+         "First sub-filter is a Filter.Comparison");
+    t.eq(filter.filters[0].type, OpenLayers.Filter.Comparison.GREATER_THAN_OR_EQUAL_TO,
+         "First sub-filter is the first filter in the CQL text");
+    t.ok(filter.filters[1] instanceof OpenLayers.Filter.Comparison,
+         "Second sub-filter is a Filter.Comparison");
+    t.eq(filter.filters[1].type, OpenLayers.Filter.Comparison.LESS_THAN,
+         "Second sub-filter is the second filter in the CQL text");
+
+}
+
+function test_Logical_write(t) {
+    t.plan(1);
+    var cql = "(X >= 'B') AND (X < 'M')";
+    var format = new OpenLayers.Format.CQL();
+    var filter = format.read(cql);
+    t.eq(format.write(filter), cql, "write returned test cql");
+}
+
+function test_Logical_spatial(t) {
+    t.plan(9);
+    var test_cql, format, filter;
+    test_cql = "INTERSECTS(the_geom, POLYGON((-111 41,-115 41,-115 45,-110 45,-111 41))) AND CONTAINS(the_geom, POINT(-111 41))";
+    format = new OpenLayers.Format.CQL();
+    filter = format.read(test_cql);
+    t.ok(filter instanceof OpenLayers.Filter.Logical,
+         "Parsing ANDed filters produces a Filter.Logical");
+    t.eq(filter.type, OpenLayers.Filter.Logical.AND,
+         "AND parsed as Filter.Logical.AND");
+    t.eq(filter.filters.length, 2,
+         "AND Filter contains two subfilters");
+    t.ok(filter.filters[0] instanceof OpenLayers.Filter.Spatial,
+         "First sub-filter is a Filter.Spatial");
+    t.eq(filter.filters[0].type, OpenLayers.Filter.Spatial.INTERSECTS,
+         "First sub-filter is the first filter in the CQL text");
+    t.geom_eq(filter.filters[0].value, OpenLayers.Geometry.fromWKT("POLYGON((-111 41,-115 41,-115 45,-110 45,-111 41))"),
+         "First sub-filter is has correct geometry");
+    t.ok(filter.filters[1] instanceof OpenLayers.Filter.Spatial,
+         "Second sub-filter is a Filter.Comparison");
+    t.eq(filter.filters[1].type, OpenLayers.Filter.Spatial.CONTAINS,
+         "Second sub-filter is the second filter in the CQL text");
+    t.geom_eq(filter.filters[1].value, OpenLayers.Geometry.fromWKT("POINT(-111 41)"),
+         "Second sub-filter is has correct geometry");
+}
+
+function test_Logical_spatial_write(t) {
+    // TODO: remove this if extra parentheses are avoided by checking logical operator precedence
+    t.plan(1);
+    var cql = "(INTERSECTS(the_geom, POLYGON((-111 41,-115 41,-115 45,-110 45,-111 41)))) AND (CONTAINS(the_geom, POINT(-111 41)))";
+    var format = new OpenLayers.Format.CQL();
+    var filter = format.read(cql);
+    t.eq(format.write(filter), cql, "write returned test cql");
+}
+
+function test_Parentheticals(t) {
+    t.plan(2);
+    var format, cqlA, filterA, cqlB, filterB;
+    format = new OpenLayers.Format.CQL();
+    cqlA = "A = '1' AND B = '2' OR C = '3'";
+    cqlB = "A = '1' AND (B = '2' OR C = '3')";
+    filterA = format.read(cqlA);
+    filterB = format.read(cqlB);
+
+    t.ok(filterA instanceof OpenLayers.Filter.Logical &&
+         filterA.filters[0] instanceof OpenLayers.Filter.Logical &&
+         filterA.filters[1] instanceof OpenLayers.Filter.Comparison,
+         "Unparenthesized expression groups left to right");
+    t.ok(filterB instanceof OpenLayers.Filter.Logical &&
+         filterB.filters[0] instanceof OpenLayers.Filter.Comparison &&
+         filterB.filters[1] instanceof OpenLayers.Filter.Logical,
+         "Parenthesized expression groups as specified by parentheses");
+}
+
+function test_Parentheticals_write(t) {
+    // TODO: remove this if extra parentheses are avoided by checking logical operator precedence
+    t.plan(1);
+    var format = new OpenLayers.Format.CQL();
+    var cql = "(A = '1') AND ((B = '2') OR (C = '3'))";
+    var filter = format.read(cql);
+    t.eq(format.write(filter), cql, "write returned test cql");
+}
+
+function test_BBOX(t) {
+    t.plan(5);
+    var format = new OpenLayers.Format.CQL(),
+        cql = "BBOX(the_geom,1,2,3,4)",
+        filter = format.read(cql);
+    t.ok(filter instanceof OpenLayers.Filter.Spatial,
+         "Parsing BBOX expression produces Filter.Spatial");
+    t.eq(filter.type, OpenLayers.Filter.Spatial.BBOX,
+         "Spatial filter is a bbox filter");
+    t.eq(filter.property, "the_geom",
+         "Property name is as specified in CQL");
+    t.eq(filter.value.toBBOX(), "1,2,3,4",
+         "Value is as specified in CQL");
+
+    t.eq(format.write(filter), cql, "write returned test cql");
+
+}
+
+function test_INTERSECTS(t) {
+    t.plan(5);
+    var format = new OpenLayers.Format.CQL(),
+        cql = "INTERSECTS(the_geom, POINT(1 2))",
+        filter = format.read(cql);
+    t.ok(filter instanceof OpenLayers.Filter.Spatial,
+         "Parsing BBOX expression produces Filter.Spatial");
+    t.eq(filter.type, OpenLayers.Filter.Spatial.INTERSECTS,
+         "Spatial filter is an intersects filter");
+    t.eq(filter.property, "the_geom",
+         "Property name is as specified in CQL");
+    t.ok(filter.value instanceof OpenLayers.Geometry,
+         "Value is a geometry");
+    
+    t.eq(format.write(filter), cql, "write returned test cql");
+
+}
+
+function test_WITHIN(t) {
+    t.plan(5);
+    var format = new OpenLayers.Format.CQL(),
+        cql = "WITHIN(the_geom, POLYGON((1 2,3 4,5 6,3 8,1 6,1 2)))",
+        filter = format.read(cql);
+    t.ok(filter instanceof OpenLayers.Filter.Spatial,
+         "Parsing BBOX expression produces Filter.Spatial");
+    t.eq(filter.type, OpenLayers.Filter.Spatial.WITHIN,
+         "Spatial filter is a within filter");
+    t.eq(filter.property, "the_geom",
+         "Property name is as specified in CQL");
+    t.ok(filter.value instanceof OpenLayers.Geometry,
+         "Value is a geometry");
+
+    t.eq(format.write(filter), cql, "write returned test cql");
+
+}
+
+function test_DWITHIN(t) {
+    t.plan(6);
+    var format = new OpenLayers.Format.CQL(),
+        cql = "DWITHIN(the_geom, POINT(1 2), 6)",
+        filter = format.read(cql);
+    t.ok(filter instanceof OpenLayers.Filter.Spatial,
+         "Parsing DWITHIN expression produces Filter.Spatial");
+    t.eq(filter.type, OpenLayers.Filter.Spatial.DWITHIN,
+         "Spatial filter is a DWITHIN filter");
+    t.eq(filter.property, "the_geom",
+         "Property name is as specified in CQL");
+    t.ok(filter.value instanceof OpenLayers.Geometry,
+         "Value is a geometry");
+    t.eq(filter.distance, 6,
+         "Distance is as specified in CQL");
+
+    t.eq(format.write(filter), cql, "write returned test cql");
+
+}
+
+function test_CONTAINS(t) {
+    t.plan(5);
+    var format = new OpenLayers.Format.CQL(),
+        cql = "CONTAINS(the_geom, POINT(1 2))",
+        filter = format.read(cql);
+    t.ok(filter instanceof OpenLayers.Filter.Spatial,
+         "Parsing BBOX expression produces Filter.Spatial");
+    t.eq(filter.type, OpenLayers.Filter.Spatial.CONTAINS,
+         "Spatial filter is a within filter");
+    t.eq(filter.property, "the_geom",
+         "Property name is as specified in CQL");
+    t.ok(filter.value instanceof OpenLayers.Geometry,
+         "Value is a geometry");
+
+    t.eq(format.write(filter), cql, "write returned test cql");
+
+}
+
+function test_NOT(t) {
+    t.plan(4);
+    var format = new OpenLayers.Format.CQL(),
+        cql = "NOT X < 12",
+        filter = format.read(cql);
+    t.ok(filter instanceof OpenLayers.Filter.Logical,
+         "Parsing NOT expression produces Logical.Not");
+    t.eq(filter.type, OpenLayers.Filter.Logical.NOT,
+         "Logical filter is a NOT filter");
+    t.eq(filter.filters[0].property, "X",
+         "Property name is as specified in CQL");
+    t.eq(filter.filters[0].value, 12, "Value is as specified in CQL");
+}
+
+function test_NOT_write(t) {
+    // TODO: remove this if extra parentheses are avoided by checking logical operator precedence
+    t.plan(1);
+    var format = new OpenLayers.Format.CQL(),
+        cql = "NOT (X < 12)",
+        filter = format.read(cql);
+    t.eq(format.write(filter), cql, "write returned test cql");
+}
+
+function test_BETWEEN(t) {
+    t.plan(6);
+    var format = new OpenLayers.Format.CQL(),
+        cql = "A BETWEEN 0 AND 5",
+        filter = format.read(cql);
+    t.ok(filter instanceof OpenLayers.Filter.Comparison,
+         "Parsing BETWEEN expression produces Filter.Comparison");
+    t.eq(filter.type, OpenLayers.Filter.Comparison.BETWEEN,
+         "Comparison filter is a between filter");
+    t.eq(filter.property, "A",
+         "Property name is as specified in CQL");
+    t.eq(filter.lowerBoundary, 0, 'Lower boundary is as specified in CQL');
+    t.eq(filter.upperBoundary, 5, 'Upper bondary is as specified in CQL');
+
+    t.eq(format.write(filter), cql, "write returned test cql");
+
+}
+
+        </script>
+    </head>
+    <body></body>
+</html>

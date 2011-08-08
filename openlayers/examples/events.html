@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>OpenLayers Event Handling</title>
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <style type="text/css">
+            #panel {
+                margin: 5px;
+                height: 30px; 
+                width: 200px;
+            }
+            #panel div { 
+                float: left;
+                margin-left: 5px;
+                width: 25px;
+                height: 25px;
+                border: 1px solid gray;
+            }
+            #output {
+                position: absolute;
+                left: 550px;
+                top: 4em;
+                width: 350px;
+                height: 400px;
+            }
+            div.blueItemInactive {
+                background-color: #aac;
+            }
+            div.blueItemActive {
+                background-color: #33c;
+            }
+            div.orangeItemInactive {
+                background-color: #ca6;
+            }
+            div.orangeItemActive {
+                background-color: #ea0;
+            }
+            div.greenItemInactive {
+                background-color: #aca;
+            }
+            div.greenItemActive {
+                background-color: #3c3;
+            }
+                
+        </style>
+        <script src="../lib/OpenLayers.js"></script>
+        <script type="text/javascript">
+            var map, panel;
+
+            function init(){
+                
+                // define custom map event listeners
+                function mapEvent(event) {
+                    log(event.type);
+                }
+                function mapBaseLayerChanged(event) {
+                    log(event.type + " " + event.layer.name);
+                }
+                function mapLayerChanged(event) {
+                    log(event.type + " " + event.layer.name + " " + event.property);
+                }
+                map = new OpenLayers.Map('map', {
+                    eventListeners: {
+                        "moveend": mapEvent,
+                        "zoomend": mapEvent,
+                        "changelayer": mapLayerChanged,
+                        "changebaselayer": mapBaseLayerChanged
+                    }
+                });
+
+                panel = new OpenLayers.Control.Panel(
+                    {div: document.getElementById("panel")}
+                );
+                
+                // define custom event listeners
+                function toolActivate(event) {
+                    log("activate " + event.object.displayClass);
+                }
+                function toolDeactivate(event) {
+                    log("deactivate " + event.object.displayClass);
+                }
+                
+                // Multiple objects can share listeners with the same scope
+                var toolListeners = {
+                    "activate": toolActivate,
+                    "deactivate": toolDeactivate
+                };
+                var blue = new OpenLayers.Control({
+                    type: OpenLayers.Control.TYPE_TOGGLE,
+                    eventListeners: toolListeners,
+                    displayClass: "blue"
+                });
+                var orange = new OpenLayers.Control({
+                    type: OpenLayers.Control.TYPE_TOGGLE,
+                    eventListeners: toolListeners,
+                    displayClass: "orange"
+                });
+                var green = new OpenLayers.Control({
+                    type: OpenLayers.Control.TYPE_TOGGLE,
+                    eventListeners: toolListeners,
+                    displayClass: "green"
+                });
+                
+                // add buttons to a panel
+                panel.addControls([blue, orange, green]);
+                map.addControl(panel);
+                
+                var vmap = new OpenLayers.Layer.WMS(
+                    "OpenLayers WMS",
+                    "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                    {layers: 'basic'}
+                );
+                var landsat = new OpenLayers.Layer.WMS(
+                    "NASA Global Mosaic",
+                    "http://t1.hypercube.telascience.org/cgi-bin/landsat7", 
+                    {layers: "landsat7"}
+                );
+                var nexrad = new OpenLayers.Layer.WMS(
+                    "Nexrad",
+                    "http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi",
+                    {layers:"nexrad-n0r-wmst", transparent: "TRUE", format: 'image/png'},
+                    {isBaseLayer: false}
+                );
+
+
+                map.addLayers([vmap, landsat, nexrad]);
+                map.addControl(new OpenLayers.Control.LayerSwitcher());
+                map.zoomToMaxExtent();
+
+            }
+            function log(msg) {
+                document.getElementById("output").innerHTML += msg + "\n";
+            }
+        </script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">Event Handling</h1>
+
+        <div id="tags">
+            event, events, handler, listener, cleanup
+        </div>
+
+        <p id="shortdesc">
+            Demonstrating various styles of event handling in OpenLayers.
+        </p>
+
+        <div id="map" class="smallmap"></div>
+        <div id="panel"></div>
+        <textarea id="output"></textarea>
+        <div id="docs"></div>
+    </body>
+</html>

@@ -1,0 +1,196 @@
+<html>
+<head>
+    <script src="../OLLoader.js"></script>
+    <script type="text/javascript">
+
+    function test_read_WPSDescribeProcess(t) {
+        t.plan(16);
+
+        var parser = new OpenLayers.Format.WPSDescribeProcess();
+        var text =
+'<?xml version="1.0" encoding="UTF-8"?>' +
+'<wps:ProcessDescriptions xml:lang="en" service="WPS" version="1.0.0" xmlns:wps="http://www.opengis.net/wps/1.0.0"' +
+'    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+'    xsi:schemaLocation="http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd"' +
+'    xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink">' +
+'    <ProcessDescription wps:processVersion="1.0.0" statusSupported="false"' +
+'        storeSupported="false">' +
+'        <ows:Identifier>JTS:buffer</ows:Identifier>' +
+'        <ows:Title>Buffers a geometry using a certain distance</ows:Title>' +
+'        <ows:Abstract>Buffers a geometry using a certain distance</ows:Abstract>' +
+'        <DataInputs>' +
+'            <Input maxOccurs="1" minOccurs="1">' +
+'                <ows:Identifier>geom</ows:Identifier>' +
+'                <ows:Title>geom</ows:Title>' +
+'                <ows:Abstract>The geometry to be buffered</ows:Abstract>' +
+'                <ComplexData>' +
+'                    <Default>' +
+'                        <Format>' +
+'                            <MimeType>text/xml; subtype=gml/3.1.1</MimeType>' +
+'                        </Format>' +
+'                    </Default>' +
+'                    <Supported>' +
+'                        <Format>' +
+'                            <MimeType>text/xml; subtype=gml/3.1.1</MimeType>' +
+'                        </Format>' +
+'                        <Format>' +
+'                            <MimeType>text/xml; subtype=gml/2.1.2</MimeType>' +
+'                        </Format>' +
+'                        <Format>' +
+'                            <MimeType>application/wkt</MimeType>' +
+'                        </Format>' +
+'                        <Format>' +
+'                            <MimeType>application/gml-3.1.1</MimeType>' +
+'                        </Format>' +
+'                        <Format>' +
+'                            <MimeType>application/gml-2.1.2</MimeType>' +
+'                        </Format>' +
+'                    </Supported>' +
+'                </ComplexData>' +
+'            </Input>' +
+'            <Input maxOccurs="1" minOccurs="1">' +
+'                <ows:Identifier>distance</ows:Identifier>' +
+'                <ows:Title>distance</ows:Title>' +
+'                <ows:Abstract>The distance (same unit of measure as the geometry)</ows:Abstract>' +
+'                <LiteralData>' +
+'                    <ows:DataType>xs:double</ows:DataType>' +
+'                    <ows:AnyValue/>' +
+'                </LiteralData>' +
+'            </Input>' +
+'            <Input maxOccurs="1" minOccurs="0">' +
+'                <ows:Identifier>quadrantSegments</ows:Identifier>' +
+'                <ows:Title>quadrantSegments</ows:Title>' +
+'                <ows:Abstract>Number of quadrant segments. Use &gt; 0 for round joins, 0 for' +
+'                    flat joins, &lt; 0 for mitred joins</ows:Abstract>' +
+'                <LiteralData>' +
+'                    <ows:DataType>xs:int</ows:DataType>' +
+'                    <ows:AnyValue/>' +
+'                </LiteralData>' +
+'            </Input>' +
+'            <Input maxOccurs="1" minOccurs="0">' +
+'                <ows:Identifier>capStyle</ows:Identifier>' +
+'                <ows:Title>capStyle</ows:Title>' +
+'                <ows:Abstract>The buffer cap style, round, flat, square</ows:Abstract>' +
+'                <LiteralData>' +
+'                    <ows:AllowedValues>' +
+'                        <ows:Value>Round</ows:Value>' +
+'                        <ows:Value>Flat</ows:Value>' +
+'                        <ows:Value>Square</ows:Value>' +
+'                    </ows:AllowedValues>' +
+'                </LiteralData>' +
+'            </Input>' +
+'        </DataInputs>' +
+'        <ProcessOutputs>' +
+'            <Output>' +
+'                <ows:Identifier>result</ows:Identifier>' +
+'                <ows:Title>result</ows:Title>' +
+'                <ComplexOutput>' +
+'                    <Default>' +
+'                        <Format>' +
+'                            <MimeType>text/xml; subtype=gml/3.1.1</MimeType>' +
+'                        </Format>' +
+'                    </Default>' +
+'                    <Supported>' +
+'                        <Format>' +
+'                            <MimeType>text/xml; subtype=gml/3.1.1</MimeType>' +
+'                        </Format>' +
+'                        <Format>' +
+'                            <MimeType>text/xml; subtype=gml/2.1.2</MimeType>' +
+'                        </Format>' +
+'                        <Format>' +
+'                            <MimeType>application/wkt</MimeType>' +
+'                        </Format>' +
+'                        <Format>' +
+'                            <MimeType>application/gml-3.1.1</MimeType>' +
+'                        </Format>' +
+'                        <Format>' +
+'                            <MimeType>application/gml-2.1.2</MimeType>' +
+'                        </Format>' +
+'                    </Supported>' +
+'                </ComplexOutput>' +
+'            </Output>' +
+'        </ProcessOutputs>' +
+'    </ProcessDescription>' +
+'</wps:ProcessDescriptions>';
+
+        var res = parser.read(text);
+        var buffer = res.processDescriptions["JTS:buffer"];
+        t.eq(buffer.statusSupported, false, "statusSupported read correctly");
+        t.eq(buffer.storeSupported, false, "storeSupported read correctly");
+        t.eq(buffer.processVersion, "1.0.0", "processVersion read correctly");
+        var capStyle = buffer.dataInputs[3];
+        t.eq(capStyle.abstract, "The buffer cap style, round, flat, square", "capStyle abstract read correctly");
+        t.eq(capStyle.minOccurs, 0, "capStyle minOccurs read correctly");
+        t.eq(capStyle.maxOccurs, 1, "maxOccurs read correctly");
+        t.eq(capStyle.literalData.allowedValues["Flat"], true, "capStyle allowedValues read correctly");
+        var distance = buffer.dataInputs[1];
+        t.eq(distance.literalData.anyValue, true, "distance anyValue read correctly");
+        t.eq(distance.literalData.dataType, "xs:double", "distance dataType read correctly");
+        var geom = buffer.dataInputs[0];
+        t.eq(geom.complexData["default"].formats["text/xml; subtype=gml/3.1.1"], true, "geom complexData default read correctly");
+        t.eq(geom.complexData["supported"].formats["application/gml-2.1.2"], true, "geom complexData supported read correctly [1/2]");
+        t.eq(geom.complexData["supported"].formats["application/gml-3.1.1"], true, "geom complexData supported read correctly [2/2]");
+        var result = buffer.processOutputs[0];
+        t.eq(result.complexOutput["default"].formats["text/xml; subtype=gml/3.1.1"], true, "processOutputs default format read correctly");
+        t.eq(result.complexOutput["supported"].formats["text/xml; subtype=gml/3.1.1"], true, "processOutputs supported format read correctly [1/2]");
+        t.eq(result.complexOutput["supported"].formats["application/wkt"], true, "processOutputs supported format read correctly [1/2]");
+
+        text = '<?xml version="1.0" encoding="UTF-8"?>' +
+'<wps:ProcessDescriptions service="WPS" version="1.0.0" xmlns:wps="http://www.opengis.net/wps/1.0.0"' +
+'    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xml:lang="en"' +
+'    xsi:schemaLocation="http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd"' +
+'    xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink">' +
+'    <ProcessDescription wps:processVersion="1.0.0" statusSupported="false"' +
+'        storeSupported="false">' +
+'        <ows:Identifier>gt:VectorToRaster</ows:Identifier>' +
+'        <ows:Title>Rasterize features</ows:Title>' +
+'        <ows:Abstract>Rasterize all or selected features in a FeatureCollection</ows:Abstract>' +
+'        <DataInputs>' +
+'            <Input maxOccurs="1" minOccurs="0">' +
+'                <ows:Identifier>bounds</ows:Identifier>' +
+'                <ows:Title>Bounds</ows:Title>' +
+'                <ows:Abstract>Bounds of the area to rasterize</ows:Abstract>' +
+'                <BoundingBoxData>' +
+'                    <Default>' +
+'                        <CRS>EPSG:4326</CRS>' +
+'                    </Default>' +
+'                    <Supported>' +
+'                        <CRS>EPSG:4326</CRS>' +
+'                    </Supported>' +
+'                </BoundingBoxData>' +
+'            </Input>' +
+'        </DataInputs>' +
+'        <ProcessOutputs>' +
+'            <Output>' +
+'                <ows:Identifier>result</ows:Identifier>' +
+'                <ows:Title>Result</ows:Title>' +
+'                <ComplexOutput>' +
+'                    <Default>' +
+'                        <Format>' +
+'                            <MimeType>image/tiff</MimeType>' +
+'                        </Format>' +
+'                    </Default>' +
+'                    <Supported>' +
+'                        <Format>' +
+'                            <MimeType>image/tiff</MimeType>' +
+'                        </Format>' +
+'                        <Format>' +
+'                            <MimeType>application/arcgrid</MimeType>' +
+'                        </Format>' +
+'                    </Supported>' +
+'                </ComplexOutput>' +
+'            </Output>' +
+'        </ProcessOutputs>' +
+'    </ProcessDescription>' +
+'</wps:ProcessDescriptions>';
+
+        res = parser.read(text);
+        var vector2Raster = res.processDescriptions["gt:VectorToRaster"];
+        t.eq(vector2Raster.dataInputs[0].boundingBoxData["default"].CRSs["EPSG:4326"], true, "BoundingBoxData CRS parsed correctly");
+    }
+
+    </script>
+</head>
+<body>
+</body>
+</html>

@@ -1,0 +1,268 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
+    var layer; 
+
+    var name = 'Test Layer';
+    var url = "http://labs.metacarta.com/wms-c/Basic.py/";
+    var options = {'layername':'basic', 'type':'png'}; 
+
+
+    function test_Layer_TMS_constructor (t) {
+        t.plan( 1 );
+                       
+        layer = new OpenLayers.Layer.TMS(name, url, options);
+        t.ok( layer instanceof OpenLayers.Layer.TMS, "returns OpenLayers.Layer.TMS object" );
+    }
+
+
+
+    function test_Layer_TMS_clearTiles (t) {
+        t.plan( 1 );
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.TMS(name, url, options);
+        map.addLayer(layer);
+
+        map.setCenter(new OpenLayers.LonLat(0,0));
+
+        //grab a reference to one of the tiles
+        var tile = layer.grid[0][0];        
+
+        layer.clearGrid();
+
+        t.ok( layer.grid != null, "layer.grid does not get nullified" );
+        map.destroy();
+    }
+
+
+    function test_Layer_TMS_getTMSBounds(t) {
+        t.plan( 1 );
+
+        layer = new OpenLayers.Layer.TMS(name, url, options);
+
+        var bl = { bounds: new OpenLayers.Bounds(1,2,0,0)};
+        var tr = { bounds: new OpenLayers.Bounds(0,0,3,4)};
+        layer.grid = [ [6, tr], 
+                       [bl, 7]];
+
+        var bounds = layer.getTilesBounds();
+    
+        var testBounds = new OpenLayers.Bounds(1,2,3,4);
+        
+        t.ok( bounds.equals(testBounds), "getTMSBounds() returns correct bounds");
+        
+        layer.grid = null;
+    }
+
+    function test_Layer_TMS_getResolution(t) {
+        t.plan( 1 );
+
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.TMS(name, url, options);
+        map.addLayer(layer);
+
+        map.zoom = 5;
+
+        t.eq( layer.getResolution(), 0.0439453125, "getResolution() returns correct value");
+        map.destroy();
+    }
+
+    function test_Layer_TMS_getZoomForExtent(t) {
+        t.plan( 2 );
+        var bounds, zoom;
+
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.TMS(name, url, options);
+        map.addLayer(layer);
+
+        bounds = new OpenLayers.Bounds(10,10,12,12);
+        zoom = layer.getZoomForExtent(bounds);
+
+        t.eq( zoom, 8, "getZoomForExtent() returns correct value");
+
+        bounds = new OpenLayers.Bounds(10,10,100,100);
+        zoom = layer.getZoomForExtent(bounds);
+
+        t.eq( zoom, 2, "getZoomForExtent() returns correct value");
+        map.destroy();
+    }   
+
+
+    /** THIS WOULD BE WHERE THE TESTS WOULD GO FOR 
+     *     
+     *    -moveTo
+     *    -insertColumn
+     *    -insertRow
+    
+    function 07_Layer_TMS_moveTo(t) {
+    }
+
+    function 08_Layer_TMS_insertColumn(t) {
+    }
+
+    function 09_Layer_TMS_insertRow(t) {
+    }
+
+     * 
+     */
+    function test_Layer_TMS_getURL(t) {
+
+        t.plan(3);
+        
+        var map = new OpenLayers.Map('map', options);
+        var options = {'layername':'basic', 'type':'png'}; 
+        layer = new OpenLayers.Layer.TMS(name, url, options);
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0), 9);
+        var tileurl = layer.getURL(new OpenLayers.Bounds(3.515625,45,4.21875,45.703125));
+        t.eq(tileurl, "http://labs.metacarta.com/wms-c/Basic.py/1.0.0/basic/9/261/192.png", "Tile URL is correct");
+    
+        var layer2 = layer.clone();
+        layer2.serviceVersion = "1.2.3";
+        map.addLayer(layer2);
+        tileurl = layer2.getURL(new OpenLayers.Bounds(3.515625,45,4.21875,45.703125));
+        t.eq(tileurl, "http://labs.metacarta.com/wms-c/Basic.py/1.2.3/basic/9/261/192.png", "TMS serviceVersion is correct");
+
+        layer.url = ["http://tilecache1/", "http://tilecache2/", "http://tilecache3/"];
+        tileurl = layer.getURL(new OpenLayers.Bounds(3.515625,45,4.21875,45.703125));
+        t.eq(tileurl, "http://tilecache1/1.0.0/basic/9/261/192.png", "Tile URL is deterministic");
+        map.destroy();
+    }
+    function test_Layer_TMS_Rounding(t) {
+        t.plan(1);
+            m = new OpenLayers.Map("map", {'maxExtent':new OpenLayers.Bounds(-122.6579,37.4901,-122.0738,37.8795)});
+            layer = new OpenLayers.Layer.TMS( "TMS", 
+                    "http://labs.metacarta.com/wms-c/Basic.py/", {layername: 'basic', type:'png', resolutions:[0.000634956337608418], buffer: 2} );
+            m.addLayer(layer);
+            m.zoomToMaxExtent();
+            t.eq(layer.getURL(layer.grid[3][3].bounds), "http://labs.metacarta.com/wms-c/Basic.py/1.0.0/basic/0/1/1.png", "TMS tiles around rounded properly.");
+        m.destroy();
+    }        
+            
+    function test_Layer_TMS_serverResolutions(t) {
+        t.plan(2);
+        
+        var map = new OpenLayers.Map('map', {
+            resolutions: [13,11]
+        });
+
+        var layer = new OpenLayers.Layer.TMS('tc layer', '', options);
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0), 1);
+
+        var tileurl = layer.getURL(new OpenLayers.Bounds(0,0,0,0));
+        var level = parseInt(tileurl.split('/')[2]);
+        t.eq(map.getZoom(), level, "Tile zoom level is correct without serverResolutions");
+
+        layer.serverResolutions = [14,13,12,11,10];
+        tileurl = layer.getURL(new OpenLayers.Bounds(0,0,0,0));
+        level = parseInt(tileurl.split('/')[2]);
+        var res = map.getResolution();
+        var gotLevel = OpenLayers.Util.indexOf(layer.serverResolutions, res);
+        t.eq(gotLevel, level, "Tile zoom level is correct with serverResolutions");
+        
+        map.destroy();
+    }
+
+    function test_zoomOffset(t) {
+
+        t.plan(2);
+        
+        var offset, zoom;
+        
+        // test offset of 2
+        offset = 2;
+        zoom = 3;
+        
+        var map = new OpenLayers.Map({
+            div: "map",
+            maxResolution: OpenLayers.Map.prototype.maxResolution / Math.pow(2, offset)
+        });
+        var layer = new OpenLayers.Layer.TMS("TMS", "", {
+            layername: "basic",
+            type: "png",
+            zoomOffset: offset
+        });
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0, 0), zoom);
+
+        var tileurl = layer.getURL(new OpenLayers.Bounds(3.515625,45,4.21875,45.703125));
+        level = parseInt(tileurl.split("/")[2]);
+        t.eq(parseInt(tileurl.split("/")[2]), zoom + offset, "correct level for offset 2");
+
+        map.destroy();
+
+        // test offset of -1
+        offset = -1;
+        zoom = 3;
+        
+        var map = new OpenLayers.Map({
+            div: "map",
+            maxResolution: OpenLayers.Map.prototype.maxResolution / Math.pow(2, offset)
+        });
+        var layer = new OpenLayers.Layer.TMS("TMS", "", {
+            layername: "basic",
+            type: "png",
+            zoomOffset: offset
+        });
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0, 0), zoom);
+
+        var tileurl = layer.getURL(new OpenLayers.Bounds(3.515625,45,4.21875,45.703125));
+        level = parseInt(tileurl.split("/")[2]);
+        t.eq(parseInt(tileurl.split("/")[2]), zoom + offset, "correct level for offset -1");
+
+        map.destroy();
+
+
+    }
+
+    function test_Layer_TMS_setMap(t) {
+
+        t.plan(3);
+        
+        var map = new OpenLayers.Map('map', options);
+        layer = new OpenLayers.Layer.TMS(name, url, options);
+
+        t.eq(layer.tileOrigin, null, "Tile origin starts out null");
+        layer.setMap(map);
+        
+        t.eq(layer.tileOrigin.lat, -90, "lat is -90");
+        t.eq(layer.tileOrigin.lon, -180, "lon is -180");
+        map.destroy();
+    }
+
+    function test_Layer_TMS_destroy (t) {
+
+        t.plan( 3 );
+
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.TMS(name, url, options);
+        map.addLayer(layer);
+        layer.destroy();
+        t.eq( layer.grid, null, "layer.grid is null after destroy" );
+        t.eq( layer.tileSize, null, "layer.tileSize is null after destroy" );
+
+
+    //test with tile creation
+        layer = new OpenLayers.Layer.TMS(name, url, options);
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0), 5);
+        //grab a reference to one of the tiles
+        var tile = layer.grid[0][0];        
+
+        layer.destroy();
+
+        t.ok( layer.grid == null, "tiles appropriately destroyed");
+        map.destroy();
+    }
+    
+
+  </script>
+</head>
+<body>
+<div id="map" style="width:500px;height:550px;"></div>
+</body>
+</html>

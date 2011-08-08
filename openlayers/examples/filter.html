@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <style>
+    #in {
+        width: 90%;
+        height: 250px;
+    }
+    #out0, #out1 {
+        height: 100px;
+        width: 90%;
+        overflow: auto;
+    }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        
+        var filter_1_0 = new OpenLayers.Format.Filter({version: "1.0.0"});
+        var filter_1_1 = new OpenLayers.Format.Filter({version: "1.1.0"});
+        var xml = new OpenLayers.Format.XML();
+        
+        var filter;
+        function write() {
+            var code = input.value;
+            try {
+                eval(code);
+            } catch(err) {
+                out0.value = err.message;
+                out1.value = "";
+            }
+            try {
+                out0.value = xml.write(filter_1_0.write(filter));
+            } catch(err) {
+                out0.value = err.message;
+                if(err.lineNumber != undefined) {
+                    out0.value += " (line " + err.lineNumber + " " +
+                                        err.fileName + ")";
+                }
+            }
+            try {
+                out1.value = xml.write(filter_1_1.write(filter));
+            } catch(err) {
+                out1.value = err.message;
+                if(err.lineNumber != undefined) {
+                    out1.value += " (line " + err.lineNumber + " " +
+                                        err.fileName + ")";
+                }
+            }
+        }
+        
+        var input, out0;
+        window.onload = function() {
+            input = document.getElementById("in");
+            out0 = document.getElementById("out0");
+            out1 = document.getElementById("out1");
+            out0.value = "";
+            out1.value = "";
+            document.getElementById("write").onclick = write;
+        };
+
+    </script>
+  </head>
+  <body>
+    <h1 id="title">Filter Encoding</h1>
+    <div id="tags">
+        filter, format, comparison, filter encoding, fe, logical, attribute,
+        attributive, spatial, advanced
+    </div>
+    <p id="shortdesc">
+        Using the filter format write out filter objects.
+    </p>
+    <textarea id="in">
+filter = new OpenLayers.Filter.Logical({
+    type: OpenLayers.Filter.Logical.AND,
+    filters: [
+        new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.LIKE,
+            property: "person",
+            value: "me"
+        }),
+        new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
+            property: "mean",
+            value: "yes"
+        }),
+        new OpenLayers.Filter.Spatial({
+            type: OpenLayers.Filter.Spatial.BBOX,
+            value: new OpenLayers.Bounds(-180, -90, 180, 90),
+            projection: "EPSG:4326"
+        })
+    ]
+});
+    </textarea>
+    <button id="write">write</button><br>
+    Filter Encoding 1.0
+    <textarea id="out0"></textarea><br>
+    Filter Encoding 1.1
+    <textarea id="out1"></textarea><br>
+    <p id="docs">
+    </p>
+  </body>
+</html>

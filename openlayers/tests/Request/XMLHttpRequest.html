@@ -1,0 +1,59 @@
+<html>
+<head>
+    <script src="../OLLoader.js"></script>
+    <script type="text/javascript">
+        function test_constructor(t) {
+            t.plan(1);
+            t.ok(new OpenLayers.Request.XMLHttpRequest(),
+                 "constructor didn't fail and we trust the code is well tested in OpenLayers.Request methods");
+        }
+        function test_readyState(t) {
+        // Verify compliance of the standard (a part) See: http://www.w3.org/TR/XMLHttpRequest/
+        t.plan(9);
+        // Case 1: Request-A: open & abort
+            var requestA = new OpenLayers.Request.XMLHttpRequest();
+            //requestA.onreadystatechange = function() {};
+            t.eq(requestA.readyState, 0, "Request-A: readyState after new is 0-UNSENT");
+            requestA.open("GET", ".", true);
+            t.eq(requestA.readyState, 1, "Request-A: readyState after open is 1-OPENED");
+            requestA.abort();
+            t.eq(requestA.readyState, 0, "Request-A: readyState after abort is 0-UNSENT");
+
+        // Case 2: Request-B: open & send
+            var requestB = new OpenLayers.Request.XMLHttpRequest();
+            requestB.onreadystatechange = function() {
+                if (requestB.readyState == 4) {
+                    t.ok(true, "Request-B: triggered the event onreadystatechange when 4-DONE");
+                }
+            };
+            t.eq(requestB.readyState, 0, "Request-B: readyState after new is 0-UNSENT");
+            requestB.open("GET", ".", true);
+            t.eq(requestB.readyState, 1, "Request-B: readyState after open is 1-OPENED");
+            requestB.send();
+
+        // Case 3: Request-C: open, send & abort
+            var requestC = new OpenLayers.Request.XMLHttpRequest();
+            requestC.onreadystatechange = function() {
+                if (requestC.readyState == 4) {
+                    t.fail("Request-C: triggered the event onreadystatechange when 4-DONE after abort");
+                }
+            };
+            t.eq(requestC.readyState, 0, "Request-C: readyState after new is 0-UNSENT");
+            requestC.open("GET", ".", true);
+            t.eq(requestC.readyState, 1, "Request-C: readyState after open is 1-OPENED");
+            requestC.send();
+            requestC.abort();
+            t.eq(requestC.readyState, 0, "Request-C: readyState after abort is 0-UNSENT");
+
+        // delay destroy
+            t.delay_call( 
+                2, function() {
+                    // to await the end of requestB and requestC
+                }
+            );
+        }
+    </script>
+</head>
+<body>
+</body>
+</html>

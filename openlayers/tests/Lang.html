@@ -1,0 +1,106 @@
+<html>
+<head>
+    <script src="OLLoader.js"></script>
+    <script src="../lib/OpenLayers/Lang/en-CA.js" type="text/javascript"></script>
+    <script src="../lib/OpenLayers/Lang/fr.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    
+    function test_setCode(t) {
+        t.plan(4);
+        OpenLayers.Lang.code = null;
+        
+        // test with no argument - this could result in the default or the
+        // browser language if a dictionary exists
+        OpenLayers.Lang.setCode();
+        t.ok(OpenLayers.Lang.code != null,
+             "code set when no argument is sent");
+        
+        var primary = "xx";
+        var subtag = "XX";
+        var code = primary + "-" + subtag;
+        OpenLayers.Lang[code] = {};
+        
+        // test code for dictionary that exists
+        OpenLayers.Lang.setCode(code);
+        t.eq(OpenLayers.Lang.code, code,
+             "code properly set for existing dictionary");
+        
+        // test code for dictionary that doesn't exist
+        OpenLayers.Lang.setCode(primary + "-YY");
+        t.eq(OpenLayers.Lang.code, OpenLayers.Lang.defaultCode,
+             "code set to default for non-existing dictionary");
+        
+        // test code for existing primary but missing subtag
+        OpenLayers.Lang[primary] = {};
+        OpenLayers.Lang.setCode(primary + "-YY");
+        t.eq(OpenLayers.Lang.code, primary,
+             "code set to primary when subtag dictionary is missing");
+        
+        // clean up
+        delete OpenLayers.Lang[code];
+        delete OpenLayers.Lang[primary];
+        OpenLayers.Lang.code = null;
+    }
+    
+    function test_getCode(t) {
+        t.plan(3);
+        OpenLayers.Lang.code = null;
+        
+        // test that a non-null value is retrieved - could be browser language
+        // or defaultCode
+        var code = OpenLayers.Lang.getCode();
+        t.ok(code != null, "returns a non-null code");
+        t.ok(OpenLayers.Lang.code != null, "sets the code to a non-null value");
+        
+        // test that the code is returned if non-null
+        OpenLayers.Lang.code = "foo";
+        t.eq(OpenLayers.Lang.getCode(), "foo", "returns the code if non-null");
+        
+        // clean up
+        OpenLayers.Lang.code = null;        
+    }
+    
+    function test_i18n(t) {
+        t.plan(1);        
+        t.ok(OpenLayers.i18n === OpenLayers.Lang.translate,
+             "i18n is an alias for OpenLayers.Lang.translate");
+    }
+    
+    function test_translate(t) {
+        var keys = ['test1', 'test3', 'noKey'];
+        var codes = ['en', 'en-CA', 'fr', 'fr-CA', 'sw'];
+        var result = {
+            'en': {'Overlays':'Overlays', 
+                   'unhandledRequest':'Unhandled request return foo', 
+                   'noKey':'noKey'},
+            'en-CA': {'Overlays':'Overlays',
+                   'unhandledRequest':'Unhandled request return foo', 
+                      'noKey':'noKey'},
+            'fr': {'Overlays':'Calques', 
+                   'unhandledRequest':'Requête non gérée, retournant foo',
+                  'noKey':'noKey'},
+            'fr-CA': {'Overlays':'Calques', //this should result in 'fr'
+                   'unhandledRequest':'Requête non gérée, retournant foo',
+                  'noKey':'noKey'},
+            'sw': {'Overlays':'Overlays', //this should result in 'en'
+                   'unhandledRequest':'Unhandled request return foo', 
+                  'noKey':'noKey'}
+        };
+        
+        t.plan(keys.length*codes.length);
+
+        for (var i=0; i<codes.length; ++i) {
+            var code = codes[i];
+            OpenLayers.Lang.setCode(code);
+            t.eq(OpenLayers.Lang.translate('Overlays'), result[code]['Overlays'], "simple key lookup in "+code);
+            t.eq(OpenLayers.Lang.translate('unhandledRequest',{'statusText':'foo'}), 
+                        result[code]['unhandledRequest'], "lookup with argument substitution in "+code);
+            t.eq(OpenLayers.Lang.translate('noKey'), result[code]['noKey'], "invalid key returns the key in "+code);
+        }
+    }
+
+  </script>
+</head>
+<body>
+</body>
+</html>

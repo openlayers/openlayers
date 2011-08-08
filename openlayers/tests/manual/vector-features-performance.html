@@ -1,0 +1,149 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Vector Features Performance Test</title>
+    <style type="text/css">
+        body {
+            font-size: 0.8em;
+        }
+        p {
+            padding-top: 1em;
+        }
+        #map {
+            width: 512px;
+            height: 512px;
+            border: 1px solid black;
+        }
+    </style>
+
+    <script src="../../lib/Firebug/firebug.js"></script>
+    <script src="../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map, vectorLayer, drawFeature, features
+        
+        var run = 0;
+        
+        function nextRun() {
+            window.setTimeout(function() {
+                if (run < 5) {
+                    vectorLayer.removeFeatures(features);
+                }
+            }, 900);
+            
+            window.setTimeout(function(){
+                run++;
+                
+                switch(run) {
+                    case 1:
+                        console.log("First run - feature bboxes will be cached");
+                        map.setCenter(new OpenLayers.LonLat(-22.5, -22.5), 3);
+                        vectorTestNew()
+                        break;
+                    case 2:
+                        console.log("Test with all features inside extent");
+                        vectorTestOld();
+                        break;
+                    case 3:
+                        vectorTestNew();
+                        break;
+                    case 4:
+                        console.log("Test with some features outside extent");
+                        map.setCenter(new OpenLayers.LonLat(-22.5, -22.5), 5);
+                        vectorTestOld();
+                        break;
+                    case 5:
+                        vectorTestNew();
+                        break;
+                }
+            }, 1000);
+        }
+        
+        function vectorTestOld(){            
+            vectorLayer.renderer.drawFeature = function(feature, style) {
+                if(style == null) {
+                    style = feature.style;
+                }
+                if (feature.geometry) {
+                    this.drawGeometry(feature.geometry, style, feature.id);
+                }
+            };
+
+            console.time("addFeaturesOld");
+            vectorLayer.addFeatures(features);
+            console.timeEnd("addFeaturesOld");
+        }
+        
+        function vectorTestNew() {
+            vectorLayer.renderer.drawFeature = OpenLayers.Renderer[vectorLayer.renderer.CLASS_NAME.split(".")[2]].prototype.drawFeature;
+            
+            console.time("addFeatures");
+            vectorLayer.addFeatures(features);
+            console.timeEnd("addFeatures");
+        }
+
+        function init(){
+            // allow testing of specific renderers via "?renderer=Canvas", etc
+            var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+            renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+
+            map = new OpenLayers.Map('map');
+            
+            vectorLayer = new OpenLayers.Layer.Vector("Vector Layer", {
+                isBaseLayer: true,
+                renderers: renderer
+            });
+
+            map.addLayers([vectorLayer]);
+            map.addControl(new OpenLayers.Control.MousePosition());
+            map.setCenter(new OpenLayers.LonLat(-22.5, -22.5), 3);
+
+            vectorLayer.events.register("featuresadded", this, nextRun);
+            
+            features = new Array(200);
+            var x, y
+            for (var i = 0; i < 200; i++) {
+                x = -Math.random()*45;
+                y = -Math.random()*45;
+                features[i] = new OpenLayers.Feature.Vector(
+                    new OpenLayers.Geometry.LinearRing([
+                        new OpenLayers.Geometry.Point(
+                            -Math.random()*5+x, -Math.random()*5+y),
+                        new OpenLayers.Geometry.Point(
+                            -Math.random()*5+x, -Math.random()*5+y),
+                        new OpenLayers.Geometry.Point(
+                            -Math.random()*5+x, -Math.random()*5+y),
+                        new OpenLayers.Geometry.Point(
+                            -Math.random()*5+x, -Math.random()*5+y),
+                        new OpenLayers.Geometry.Point(
+                            -Math.random()*5+x, -Math.random()*5+y),
+                        new OpenLayers.Geometry.Point(
+                            -Math.random()*5+x, -Math.random()*5+y),
+                        new OpenLayers.Geometry.Point(
+                            -Math.random()*5+x, -Math.random()*5+y),
+                        new OpenLayers.Geometry.Point(
+                            -Math.random()*5+x, -Math.random()*5+y),
+                        new OpenLayers.Geometry.Point(
+                            -Math.random()*5+x, -Math.random()*5+y),
+                        new OpenLayers.Geometry.Point(
+                            -Math.random()*5+x, -Math.random()*5+y)
+                    ]));
+                    
+            }
+            
+            nextRun();
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">New Rendering - Vector Features Performance Test</h1>
+    <div id="map"></div>
+    <p>
+    This test examines if checking for a feature being inside the visible
+    extent before rendering it has an impact on performance. Open the Firebug
+    console after running this test (hit F12) to see the results.
+    <br/>
+    After the performance test, you can drag around the map to see how the new
+    vector rendering feels where features get rendered only when they are visible
+    inside the map extent. 
+    </p>
+  </body>
+</html>

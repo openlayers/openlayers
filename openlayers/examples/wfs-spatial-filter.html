@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>OpenLayers WFS Protocol with Filter</title>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <script src="../lib/OpenLayers.js"></script>
+    </head>
+    <body>
+        <h1 id="title">WFS Protocol and Filter</h1>
+        <div id="tags">
+            filter, wfs, spatial
+        </div>
+        <p id="shortdesc">
+            Demonstrates the use of a spatial filter in making GetFeature requests using the WFS protocol.
+        </p>
+        <div id="map" class="smallmap"></div>
+        <div id="docs">
+            <p>
+                If a vector layer has a filter and the protocol supports server-side filtering,
+                the filter will be serialized in requests for features.  The WFS protocol can be
+                used with a vector layer to serialize a filter using OGC Filter Encoding.
+            </p><p>
+                This example has a draw control that is always active.  When you draw a polygon
+                on the map, the filter for the main vector layer will be updated, and features
+                that intersect your drawn polygon will be requested.
+            </p><p>
+                See the <a href="wfs-spatial-filter.js" target="_blank">source</a> 
+                for details on how this is done.
+            </p>
+        </div>
+        <script src="wfs-spatial-filter.js"></script>
+    </body>
+</html>

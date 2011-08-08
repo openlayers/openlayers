@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>OpenLayers Canvas Inspector</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="../theme/default/google.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <script src="../lib/OpenLayers.js"></script>
+        <script src="Jugl.js"></script>
+        <style>
+            #template {
+                display: none;
+            }
+            #inspector table {
+                border-right: 1px solid #666;
+                border-bottom: 1px solid #666;
+            }
+            #inspector table td {
+                font-size: 9px;
+                text-align: center;
+                width: 60px;
+                height: 60px;
+                border-top: 1px solid #666;
+                border-left: 1px solid #666;
+            }
+        </style>
+    </head>
+    <body>
+        <h1 id="title">Canvas Inspector</h1>
+        <p id="shortdesc">
+            Displays pixel values for canvas context.
+        </p>
+        <div id="map" class="smallmap"></div>
+        <div id="docs">
+            <p>
+                View the <a href="canvas-inspector.js" target="_blank">canvas-inspector.js</a>
+                source to see how this is done.
+            </p>
+        </div>
+        <div id="inspector">
+        </div>
+        <table id="template">
+            <tr jugl:repeat="row new Array(rows)">
+                <td jugl:repeat="col new Array(cols)" 
+                    jugl:attributes="id 'c' + repeat.col.index + 'r' + repeat.row.index">
+                    &nbsp;
+                </td>
+            </tr>
+        </table>
+        <script src="canvas-inspector.js"></script>
+    </body>
+</html>

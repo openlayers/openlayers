@@ -1,0 +1,205 @@
+<html>
+<head>
+  <script src="OLLoader.js"></script>
+  <script type="text/javascript">
+    var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
+    var map; 
+    var feature, layer; 
+    
+    function test_Feature_constructor (t) {
+        t.plan( 6 );
+
+        var layer = {};
+        var lonlat = new OpenLayers.LonLat(2,1);
+        var iconURL = 'http://boston.openguides.org/features/ORANGE.png';
+        var iconSize = new OpenLayers.Size(12, 17);
+        var data =  { iconURL: iconURL,
+                      iconSize: iconSize 
+                    };
+        
+        feature = new OpenLayers.Feature(layer, lonlat, data);
+
+        t.ok( feature instanceof OpenLayers.Feature, "new OpenLayers.Feature returns Feature object" );
+        t.eq( feature.layer, layer, "feature.layer set correctly" );
+        t.ok(OpenLayers.String.startsWith(feature.id, "OpenLayers.Feature_"),
+             "feature.id set correctly");
+        t.ok( feature.lonlat.equals(lonlat), "feature.lonlat set correctly" );
+        t.eq( feature.data.iconURL, iconURL, "feature.data.iconURL set correctly" );
+        t.ok( feature.data.iconSize.equals(iconSize), "feature.data.iconSize set correctly" );
+    }
+    
+    function test_Feature_createPopup (t) {
+        t.plan(3);
+        var layer = {};
+        var lonlat = new OpenLayers.LonLat(2,1);
+        var iconURL = 'http://boston.openguides.org/features/ORANGE.png';
+        var iconSize = new OpenLayers.Size(12, 17);
+        var data =  { iconURL: iconURL,
+                      iconSize: iconSize,
+                      'overflow':'auto'
+                    };
+        
+        feature = new OpenLayers.Feature(layer, lonlat, data);
+        popup = feature.createPopup(); 
+        //Safari 3 separates style overflow into overflow-x and overflow-y
+        var prop = (OpenLayers.BROWSER_NAME == 'safari') ? 'overflowX' : 'overflow';
+        t.eq(popup.contentDiv.style[prop], "auto", 'overflow on popup is correct');
+        t.ok( popup instanceof OpenLayers.Popup.AnchoredBubble, "popup is an AnchoredBubble by defaults");
+        feature.destroyPopup();
+        
+        feature.popupClass = OpenLayers.Popup.FramedCloud;
+        popup = feature.createPopup(); 
+        t.ok( popup instanceof OpenLayers.Popup.FramedCloud, "setting feature.popupClass works");
+    }    
+    function test_Feature_createMarker (t) {
+        t.plan(1);
+        t.ok(true);
+/*
+
+        t.plan( 11 );
+        feature = new OpenLayers.Feature("myfeature", new OpenLayers.LonLat(2,1), 
+               {
+                iconURL:'http://boston.openguides.org/features/ORANGE.png',
+                iconW: 12,
+                iconH: 17
+               });
+        layer = new OpenLayers.Layer.Markers('Marker Layer');
+        t.ok( feature instanceof OpenLayers.Feature, "new OpenLayers.Feature returns Feature object" );
+        t.ok( layer instanceof OpenLayers.Layer.Markers, "Layer is a marker layer" );
+        feature.createMarker(layer);
+        
+        t.ok( feature.marker instanceof OpenLayers.Marker, 
+              "createMarker sets a marker property to a marker" );
+        t.ok( layer.markers[0] === feature.marker, 
+              "First marker in layer is the feature marker" );
+        
+        t.ok( feature.marker.lonlat instanceof OpenLayers.LonLat, 
+              "createMarker sets a marker lontlat property to a lonlat" );
+        t.ok( layer.markers[0].lonlat === feature.lonlat, 
+              "First marker in the layer matches feature lonlat" );
+        
+        t.ok( feature.marker.icon instanceof OpenLayers.Icon, 
+              "createMarker sets a marker icon property to an icon" );
+        
+        t.eq( feature.marker.icon.url, 
+              "http://boston.openguides.org/features/ORANGE.png", 
+              "createMarker sets marker url correctly" );
+       
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0),0);
+        t.ok( map.layers[0] == layer,
+              "Marker layer added to map okay." );
+        if (!isMozilla)
+            t.ok( true, "skipping element test outside of Mozilla");
+        else
+            t.ok( map.layers[0].div.firstChild instanceof HTMLImageElement,
+                  "layer div firstChild is an image" );
+        t.eq( map.layers[0].div.firstChild.src,
+              "http://boston.openguides.org/features/ORANGE.png", 
+              "Layer div img contains correct url" );
+*/
+    }
+    
+    function test_Feature_onScreen(t) {
+        t.plan( 2 );
+
+        var map = new OpenLayers.Map("map");
+
+        var url = "http://octo.metacarta.com/cgi-bin/mapserv";
+        var wms = new OpenLayers.Layer.WMS(name, url);
+
+        map.addLayer(wms);
+
+        var layer = new OpenLayers.Layer("foo");
+        map.addLayer(layer);
+        
+        map.zoomToExtent(new OpenLayers.Bounds(-50,-50,50,50));
+
+        //onscreen feature
+        var feature1 = new OpenLayers.Feature(layer, 
+                                              new OpenLayers.LonLat(0,0));
+        t.ok( feature1.onScreen(), "feature knows it's onscreen" );
+
+        //onscreen feature
+        var feature2 = new OpenLayers.Feature(layer, 
+                                              new OpenLayers.LonLat(100,100));
+        t.ok( !feature2.onScreen(), "feature knows it's offscreen" );
+    }
+
+    function test_Feature_createPopup_2(t) {
+        t.plan(11);
+
+    //no lonlat        
+        var f = {
+            'popup': null
+        };
+        
+        var ret = OpenLayers.Feature.prototype.createPopup.apply(f, []);
+        t.ok((ret == f.popup) && (f.popup == null), "if no 'lonlat' set on feature, still returns reference to this.popup (though it is null)");
+
+
+
+        f.popupClass = OpenLayers.Class({
+            initialize: function(id, lonlat, size, contentHTML, anchor, closeBox) {
+                t.eq(id, "Campion_popup", "correctly generates new popup id from feature's id");
+                t.eq(lonlat, f.lonlat, "correctly passes feature's lonlat to popup constructor");
+                t.eq(size, f.data.popupSize, "correctly passes feature's data.popupSize to popup constructor");
+                t.eq(contentHTML, f.data.popupContentHTML, "correctly passes feature's data.popupContentHTML to popup constructor");
+                t.eq(anchor, g_ExpectedAnchor, "passes correct anchor to popup constructor");
+                t.eq(closeBox, g_CloseBox, "correctly relays closeBox argument to popup constructor");
+            }
+        });
+        
+
+    //valid lonlat but no anchor    
+        f.popup = null;
+        
+        f.id = "Campion";
+        f.lonlat = {};
+        f.data = {
+            'popupSize': {},
+            'popupContentHTML': {}
+        };
+        g_ExpectedAnchor = null;
+        g_CloseBox = {};
+
+        ret = OpenLayers.Feature.prototype.createPopup.apply(f, [g_CloseBox]);
+        
+        t.ok((ret == f.popup) && (f.popup != null), "a valid popup has been set and returned")
+        t.ok( f.popup.feature == f, "popup's 'feature' property correctly set");
+
+    
+    //valid lonlat with anchor    
+
+        f.marker = {
+            'icon': {}
+        };
+        g_ExpectedAnchor = f.marker.icon;
+        ret = OpenLayers.Feature.prototype.createPopup.apply(f, [g_CloseBox]);
+        t.ok((ret == f.popup) && (f.popup != null), "a valid popup has been set and returned")
+        t.ok( f.popup.feature == f, "popup's 'feature' property correctly set");
+    }
+
+    function test_Feature_destroyPopup(t) {
+        t.plan(2);
+
+        var f = {
+            'popup': {
+                'feature': {},
+                'destroy': function() {
+                    t.ok(true, "default destroyPopup() calls popup.destroy");
+                }
+            }
+        };
+        
+        OpenLayers.Feature.prototype.destroyPopup.apply(f, []);
+        t.ok(f.popup == null, "popup property nullified on destroy");
+    }
+
+  </script>
+</head>
+<body>
+  <div id="map" style="width: 500px; height: 300px;"></div>
+</body>
+</html>

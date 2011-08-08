@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>OpenLayers Vector Behavior Example</title>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <script src="../lib/OpenLayers.js"></script>
+        <script type="text/javascript">
+            var map;
+        
+            function init(){
+                map = new OpenLayers.Map('map');
+                var wms = new OpenLayers.Layer.WMS(
+                    "OpenLayers WMS", "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                    {layers: 'basic'}
+                );
+
+                var layer = new OpenLayers.Layer.Vector("GML", {
+                    strategies: [new OpenLayers.Strategy.Fixed()],
+                    protocol: new OpenLayers.Protocol.HTTP({
+                        url: "gml/polygon.xml",
+                        format: new OpenLayers.Format.GML()
+                    })
+                });
+
+                map.addLayers([wms, layer]);
+                map.zoomToExtent(new OpenLayers.Bounds(
+                    -3.92, 44.34, 4.87, 49.55
+                ));
+            }
+        </script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">Vector Behavior Example (Fixed/HTTP/GML)</h1>
+        <div id="tags">
+            vector, strategy, strategies, protocoll, advanced, gml, http, fixed
+        </div>
+        <p id="shortdesc">
+            Vector layer with a Fixed strategy, HTTP protocol, and GML format.
+        </p>
+        <div id="map" class="smallmap"></div>
+        <div id="docs">
+            <p>The vector layer shown uses the Fixed strategy, the HTTP protocol,
+            and the GML format.
+            The Fixed strategy is a simple strategy that fetches features once
+            and never re-requests new data.
+            The HTTP protocol makes requests using HTTP verbs.  It should be
+            constructed with a url that corresponds to a collection of features
+            (a resource on some server).
+            The GML format is used to serialize features.</p>
+        </div>
+    </body>
+</html>

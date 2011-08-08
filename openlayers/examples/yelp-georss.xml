@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="http://yelp.com/css/atom.css" type="text/css" media="screen"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"> 
+	<rights>Copyright 2007 Yelp, Inc. All rights reserved.</rights> 
+	<title>Yelp - Recent Reviews Near Ann Arbor, MI</title>
+	<link href="http://www.yelp.com/?location=Ann+Arbor%2C+MI"/>
+	<updated>2007-05-29T22:58:24-08:00</updated>
+	<author>
+		<name>Recent Reviews Near Ann Arbor, MI</name>
+	</author>
+
+	<entry>
+		<title>Sam S.&#39;s Review Of State Theatre - Ann Arbor (4/5)</title>
+		<link rel="alternate" type="text/html" href="http://www.yelp.com/biz/r-dZCCNtld2ik0QRoTwuUQ?hrid=pve0e49KrVsvgX_wXpZHYA" />
+		<id>http://www.yelp.com/biz/r-dZCCNtld2ik0QRoTwuUQ?hrid=pve0e49KrVsvgX_wXpZHYA</id>
+		<updated>2007-05-29T22:58:24-08:00</updated>
+		<summary type="html">I gotta give this place props for hosting independent movies. Man, I really tire of that Hollywood bullshit; I actually feel retarded afterwards.&lt;br /&gt;&lt;br /&gt;My main gripe is that the seats are not ergonomic at&amp;#8230;</summary>
+		<geo:long>-83.7406005859</geo:long>	
+		<geo:lat>42.2790985107</geo:lat>
+	</entry>
+	<entry>
+		<title>Sean M.&#39;s Review Of Maize N Blue Deli - Ann Arbor (5/5)</title>
+		<link rel="alternate" type="text/html" href="http://www.yelp.com/biz/GqqBWV8ysYB48_jLPMl2bA?hrid=ZZIVErEJIo-FMsxOBVX1GQ" />
+		<id>http://www.yelp.com/biz/GqqBWV8ysYB48_jLPMl2bA?hrid=ZZIVErEJIo-FMsxOBVX1GQ</id>
+		<updated>2007-05-29T16:04:19-08:00</updated>
+		<summary type="html">Maize N Blue is synonymous with huge sandwiches (lunch+dinner sized) and good but not showy ingredients. It's a much better value than certain other Ann Arbor delis, and eschews the boutique feel that&amp;#8230;</summary>
+		<geo:long>-83.7255020142</geo:long>	
+		<geo:lat>42.266998291</geo:lat>
+	</entry>
+	<entry>
+		<title>Coco C.&#39;s Review Of Tom Thompson Flowers - Ann Arbor (5/5)</title>
+		<link rel="alternate" type="text/html" href="http://www.yelp.com/biz/B_lu4c0HgyHlxOjdKxTW7w?hrid=KNa-bOGA0xltz6bHEu3-AQ" />
+		<id>http://www.yelp.com/biz/B_lu4c0HgyHlxOjdKxTW7w?hrid=KNa-bOGA0xltz6bHEu3-AQ</id>
+		<updated>2007-05-29T10:49:06-08:00</updated>
+		<summary type="html">This place isn't much to look at - you go in and there are buckets upon buckets of loose flowers laying around, and there isn't much room to walk around. However, they make kick-ass arrangements! And&amp;#8230;</summary>
+		<geo:long>-83.7490005493</geo:long>	
+		<geo:lat>42.2747993469</geo:lat>
+	</entry>
+	<entry>
+		<title>Sam S.&#39;s Review Of Mitch&#39;s Place - Ann Arbor (3/5)</title>
+		<link rel="alternate" type="text/html" href="http://www.yelp.com/biz/zlJ37GVxuy-9wfvWqpPm1Q?hrid=qK6d7BOgLoK3gLf2u2OXAQ" />
+		<id>http://www.yelp.com/biz/zlJ37GVxuy-9wfvWqpPm1Q?hrid=qK6d7BOgLoK3gLf2u2OXAQ</id>
+		<updated>2007-05-28T21:28:33-08:00</updated>
+		<summary type="html">Another generic sports bar with the generic stripe-o crowd. Cheap pitchers, but constant covers.&lt;br /&gt;&lt;br /&gt;This is where I met Dave, a.k.a. Future Guy. He's skinny, has tall, straggly hair, and wears these&amp;#8230;</summary>
+		<geo:long>-83.7329025269</geo:long>	
+		<geo:lat>42.275100708</geo:lat>
+	</entry>
+	<entry>
+		<title>Jane S.&#39;s Review Of Special Moments Photography - Plymouth (1/5)</title>
+		<link rel="alternate" type="text/html" href="http://www.yelp.com/biz/IEsTnmfhN7vFfzt724qojw?hrid=ZvALNYOlSodoOciFsmeLZA" />
+		<id>http://www.yelp.com/biz/IEsTnmfhN7vFfzt724qojw?hrid=ZvALNYOlSodoOciFsmeLZA</id>
+		<updated>2007-05-28T10:18:35-08:00</updated>
+		<summary type="html">I was very unsatisfied for several reasons. First, the photographer did not have the lighting for family portraits right at all! Two faces are almost completely obscured by shadows. Also, the backdrop&amp;#8230;</summary>
+		<geo:long>-83.4609985352</geo:long>	
+		<geo:lat>42.3588981628</geo:lat>
+	</entry>
+	<entry>
+		<title>Jacqueline D.&#39;s Review Of Embassy Hotel - Ann Arbor (4/5)</title>
+		<link rel="alternate" type="text/html" href="http://www.yelp.com/biz/Vz0hW6UhF6w4JuvgsqDmMQ?hrid=eMKcIyREDk-pFGdH0EC6jg" />
+		<id>http://www.yelp.com/biz/Vz0hW6UhF6w4JuvgsqDmMQ?hrid=eMKcIyREDk-pFGdH0EC6jg</id>
+		<updated>2007-05-27T09:23:06-08:00</updated>
+		<summary type="html">The Embassy Hotel does what it does well: It is VERY cheap ($40-50/night) and located in the heart of downtown.  It is relatively clean.  What to expect: Your bed won't be made, your sheets won't be&amp;#8230;</summary>
+		<geo:long>-83.7469024658</geo:long>	
+		<geo:lat>42.2812004089</geo:lat>
+	</entry>
+	<entry>
+		<title>Tony C.&#39;s Review Of Cafe Zola - Ann Arbor (5/5)</title>
+		<link rel="alternate" type="text/html" href="http://www.yelp.com/biz/BlUEgCOGzDwpOWnkQn3odw?hrid=X3rR29JnKIqAjEzo9nC2VQ" />
+		<id>http://www.yelp.com/biz/BlUEgCOGzDwpOWnkQn3odw?hrid=X3rR29JnKIqAjEzo9nC2VQ</id>
+		<updated>2007-05-26T07:48:01-08:00</updated>
+		<summary type="html">Zola...this is easily one of the best experiences to be had in Ann Arbor.  I'll get the negatives for this place right out in the open.  It's popular, really popular.  It's expensive, but not break&amp;#8230;</summary>
+		<geo:long>-83.7489013672</geo:long>	
+		<geo:lat>42.2806015015</geo:lat>
+	</entry>
+	<entry>
+		<title>Tony C.&#39;s Review Of Melange - Ann Arbor (4/5)</title>
+		<link rel="alternate" type="text/html" href="http://www.yelp.com/biz/aPdz29vOWj4fBlLlCBM7UQ?hrid=ETs0aMnHTjSLy1VTsGxCBg" />
+		<id>http://www.yelp.com/biz/aPdz29vOWj4fBlLlCBM7UQ?hrid=ETs0aMnHTjSLy1VTsGxCBg</id>
+		<updated>2007-05-26T07:30:59-08:00</updated>
+		<summary type="html">Melange has an excellent menu.  I've tried the scallops, the perch, and the seabass.  All were excellent.  The two dishes I'd steer clear of are the rock beef thing and the squid appetizers.&lt;br /&gt;&lt;br /&gt;The rock&amp;#8230;</summary>
+		<geo:long>-83.7481918335</geo:long>	
+		<geo:lat>42.283493042</geo:lat>
+	</entry>
+	<entry>
+		<title>Tony C.&#39;s Review Of Bennett Optometry - Ann Arbor (4/5)</title>
+		<link rel="alternate" type="text/html" href="http://www.yelp.com/biz/Oa5c1Zzr6RlkGjx-0KYr1A?hrid=vUiuwPLri6D5LTPrC76UlA" />
+		<id>http://www.yelp.com/biz/Oa5c1Zzr6RlkGjx-0KYr1A?hrid=vUiuwPLri6D5LTPrC76UlA</id>
+		<updated>2007-05-26T07:09:43-08:00</updated>
+		<summary type="html">I just got my eyes checked out here about two months ago and overall, I was satisfied with my experience.  The optometrist I got was young, but very knowledgeable and didn't seem to be in a hurry to&amp;#8230;</summary>
+		<geo:long>-83.6924972534</geo:long>	
+		<geo:lat>42.3031005859</geo:lat>
+	</entry>
+	<entry>
+		<title>Nedra B.&#39;s Review Of Star&#39;s Cafe - Ann Arbor (4/5)</title>
+		<link rel="alternate" type="text/html" href="http://www.yelp.com/biz/aNeaXyQWZ0LGH3FoNnYzmA?hrid=XUd-5ehybDuujOTinekhWA" />
+		<id>http://www.yelp.com/biz/aNeaXyQWZ0LGH3FoNnYzmA?hrid=XUd-5ehybDuujOTinekhWA</id>
+		<updated>2007-05-26T02:53:51-08:00</updated>
+		<summary type="html">As you walk in, you hear arabic music playing the background, and about 4 or 5 tables in front of the main window.  You walk up to the menu, choose from many middle eastern foods, give your order, and&amp;#8230;</summary>
+		<geo:long>-83.782539</geo:long>	
+		<geo:lat>42.281079</geo:lat>
+	</entry>
+	<entry>
+		<title>Nedra B.&#39;s Review Of Vinology - Ann Arbor (3/5)</title>
+		<link rel="alternate" type="text/html" href="http://www.yelp.com/biz/qkw4xWWgTufvBs1NcxsFnw?hrid=lFMHzQ0GwJ93Ns0kCoPWPQ" />
+		<id>http://www.yelp.com/biz/qkw4xWWgTufvBs1NcxsFnw?hrid=lFMHzQ0GwJ93Ns0kCoPWPQ</id>
+		<updated>2007-05-26T02:45:15-08:00</updated>
+		<summary type="html">I knew to expect a pricey "high class" restaurant... but in my opinion they went over the top. I went with my sister and some friends, and she ordered the little "mini burgers" and I ordered the only&amp;#8230;</summary>
+		<geo:long>-83.7487030029</geo:long>	
+		<geo:lat>42.2812004089</geo:lat>
+	</entry>
+	<entry>
+		<title>Coco C.&#39;s Review Of Eastern Accents - Ann Arbor (4/5)</title>
+		<link rel="alternate" type="text/html" href="http://www.yelp.com/biz/AztY39QdGAkoKrLy9Di2yw?hrid=HL2_XnWdZP1FO95e1q-Xjw" />
+		<id>http://www.yelp.com/biz/AztY39QdGAkoKrLy9Di2yw?hrid=HL2_XnWdZP1FO95e1q-Xjw</id>
+		<updated>2007-05-25T15:43:30-08:00</updated>
+		<summary type="html">Oooh baby, this is my dream food come to life - sweet buns with tasty meat inside of them. I'm already a big fan of WowBao in Chicago, so to find this place in Ann Arbor makes me living here a&amp;#8230;</summary>
+		<geo:long>-83.7472991943</geo:long>	
+		<geo:lat>42.2803001404</geo:lat>
+	</entry>
+	<entry>
+		<title>Liam C.&#39;s Review Of The Dartmoor - Plymouth (1/5)</title>
+		<link rel="alternate" type="text/html" href="http://www.yelp.com/biz/Q32V2uxVKKv8_fp-hGxyZQ?hrid=7zFDEW0THJGYTUPPHLZucQ" />
+		<id>http://www.yelp.com/biz/Q32V2uxVKKv8_fp-hGxyZQ?hrid=7zFDEW0THJGYTUPPHLZucQ</id>
+		<updated>2007-05-24T14:36:00-08:00</updated>
+		<summary type="html">Okay, so here is how fawked up it is in Plymouth.&lt;br /&gt;&lt;br /&gt;This place was a hotel, back in the day.  Dude converts it to offices and retail, and leases the bar and restaurant out to someone else.&lt;br /&gt;&lt;br /&gt;the tenant gets&amp;#8230;</summary>
+		<geo:long>-83.4705963135</geo:long>	
+		<geo:lat>42.3686981201</geo:lat>
+	</entry>
+	<entry>
+		<title>Liam C.&#39;s Review Of Omelette &amp; Waffle Cafe - Plymouth (2/5)</title>
+		<link rel="alternate" type="text/html" href="http://www.yelp.com/biz/a09i0TiPG4_yhl-fnzPzDA?hrid=I4ENTNhbAK8pLP_qJmivTQ" />
+		<id>http://www.yelp.com/biz/a09i0TiPG4_yhl-fnzPzDA?hrid=I4ENTNhbAK8pLP_qJmivTQ</id>
+		<updated>2007-05-24T14:32:05-08:00</updated>
+		<summary type="html">Who does this guy pay off?  Every year, he wins the Chii cook off but when you order the chili here in the restaurant, it's Hormel right out of a can!&lt;br /&gt;&lt;br /&gt;tired and uninspired boring diner egg dishes,&amp;#8230;</summary>
+		<geo:long>-83.4709014893</geo:long>	
+		<geo:lat>42.3681983948</geo:lat>
+	</entry>
+	<entry>
+		<title>Liam C.&#39;s Review Of Zack&#39;s of Plymouth - Plymouth (2/5)</title>
+		<link rel="alternate" type="text/html" href="http://www.yelp.com/biz/F0iuCrXUd_fEJ-LZh8wMFw?hrid=2VLIUcC_oI8b_aLTMjYx8w" />
+		<id>http://www.yelp.com/biz/F0iuCrXUd_fEJ-LZh8wMFw?hrid=2VLIUcC_oI8b_aLTMjYx8w</id>
+		<updated>2007-05-24T14:30:12-08:00</updated>
+		<summary type="html">If you like greasy diners with vaguely ethnic workers yelling in orgy-borgy talk back int he kitchen... you're gonna love this place.&lt;br /&gt;&lt;br /&gt;It's cleaner than it's competitors....gotta give them props on&amp;#8230;</summary>
+		<geo:long>-83.4692993164</geo:long>	
+		<geo:lat>42.3581008911</geo:lat>
+	</entry>
+</feed>

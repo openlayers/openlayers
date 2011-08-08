@@ -1,0 +1,398 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+
+    function test_initialize(t) {
+        
+        t.plan(5);
+        
+        // construct with a single layer
+        var layer = new OpenLayers.Layer.Vector();
+        var control = new OpenLayers.Control.Snapping({
+            layer: layer
+        });
+        
+        t.ok(control.layer === layer, "[a] source layer properly set");
+        t.eq(control.targets.length, 1, "[a] one target layer");
+        t.ok(control.targets[0].layer === layer, "[a] target set");
+        control.destroy();
+        
+        // construct with a different target, default target config
+        var layer2 = new OpenLayers.Layer.Vector();
+        control = new OpenLayers.Control.Snapping({
+            layer: layer,
+            targets: [layer2]
+        });
+        
+        t.eq(control.targets.length, 1, "[b] one target layer");
+        t.ok(control.targets[0].layer == layer2, "[b] target set");
+        control.destroy();
+    }
+    
+    function test_setLayer(t) {
+        
+        t.plan(4);
+        
+        var layer = new OpenLayers.Layer.Vector();
+        var control = new OpenLayers.Control.Snapping();
+        control.setLayer(layer);
+        
+        t.ok(control.layer === layer, "layer properly set");
+        
+        // confirm that the control is deactivated and reactivated when setting new layer
+        var log = {
+            activated: 0,
+            deactivated: 0
+        };
+        control.activate = function() {
+            log.activated++;
+        }
+        control.deactivate = function() {
+            log.deactivated++;
+        }
+        control.active = true;
+        
+        var layer2 = new OpenLayers.Layer.Vector();
+        control.setLayer(layer2);
+        
+        t.eq(log.deactivated, 1, "control deactivated");
+        t.ok(control.layer === layer2, "layer properly reset");
+        t.eq(log.activated, 1, "control reactivated");
+        
+        control.destroy();
+    }
+    
+    function test_setTargets(t) {
+        
+        t.plan(4);
+        
+        var layer1 = new OpenLayers.Layer.Vector();
+        var layer2 = new OpenLayers.Layer.Vector();
+        var control = new OpenLayers.Control.Snapping();
+        
+        var log = {
+            addTarget: [],
+            addTargetLayer: []
+        };
+        control.addTarget = function(target) {
+            log.addTarget.push(target);
+        };
+        control.addTargetLayer = function(target) {
+            log.addTargetLayer.push(target);
+        };
+
+        control.setTargets([layer1, {layer: layer2}]);
+        
+        t.eq(log.addTargetLayer.length, 1, "setTargetLayer called once");
+        t.ok(log.addTargetLayer[0] === layer1, "setTargetLayer called with layer1");
+        t.eq(log.addTarget.length, 1, "setTarget called once");
+        t.ok(log.addTarget[0].layer === layer2, "setTarget called with layer2");
+        
+        control.destroy();
+    }
+    
+    function test_addTarget(t) {
+        t.plan(5);
+        
+        var layer = new OpenLayers.Layer.Vector();
+
+        var control = new OpenLayers.Control.Snapping({
+            defaults: {
+                nodeTolerance: 30,
+                tolerance: 40
+            }
+        });
+        
+        var log = {};
+        control.addTarget({layer: layer});
+        
+        t.eq(control.targets.length, 1, "single target");
+        var target = control.targets[0];
+        t.ok(target.layer === layer, "correct target layer");
+        t.eq(target.nodeTolerance, 30, "correct nodeTolerance");
+        t.eq(target.edgeTolerance, 40, "correct edgeTolerance");
+        t.eq(target.vertexTolerance, 40, "correct vertexTolerance");
+        
+        control.destroy();
+    }
+    
+    function test_removeTargetLayer(t) {
+        
+        t.plan(3);
+        
+        var layer1 = new OpenLayers.Layer.Vector();
+        var layer2 = new OpenLayers.Layer.Vector();
+        var layer3 = new OpenLayers.Layer.Vector();
+        var control = new OpenLayers.Control.Snapping({
+            targets: [layer1, layer2, layer3]
+        });
+        
+        control.removeTargetLayer(layer2);
+        
+        t.eq(control.targets.length, 2, "correct targets length");
+        t.ok(control.targets[0].layer === layer1, "layer1 remains");
+        t.ok(control.targets[1].layer === layer3, "layer3 remains");
+        
+        control.destroy();
+        
+    }
+    
+    function test_activate(t) {
+        
+        t.plan(4);
+        var layer = new OpenLayers.Layer.Vector();
+        var control = new OpenLayers.Control.Snapping({
+            layer: layer
+        });
+        
+        control.activate();
+        
+        t.eq(layer.events.listeners.sketchmodified.length, 1, "one sketchmodified listener");
+        t.ok(layer.events.listeners.sketchmodified[0].func === control.onSketchModified, "correct sketchmodified listener");
+        t.eq(layer.events.listeners.vertexmodified.length, 1, "one vertexmodified listener");
+        t.ok(layer.events.listeners.vertexmodified[0].func === control.onVertexModified, "correct vertexmodified listener");
+        
+        control.destroy();
+    }
+    
+    function test_deactivate(t) {
+        
+        t.plan(2);
+        var layer = new OpenLayers.Layer.Vector();
+        var control = new OpenLayers.Control.Snapping({
+            layer: layer
+        });
+        
+        control.activate();
+        control.deactivate();
+        
+        t.eq(layer.events.listeners.sketchmodified.length, 0, "no sketchmodified listeners");
+        t.eq(layer.events.listeners.vertexmodified.length, 0, "no vertexmodified listeners");
+        
+        control.destroy();
+    }
+    
+    function test_resolution_limits(t) {
+        t.plan(7);
+
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1],
+            maxExtent: new OpenLayers.Bounds(0, 0, 100, 100)
+        });
+
+        var layer = new OpenLayers.Layer.Vector(null, {
+            isBaseLayer: true
+        });
+        layer.addFeatures([
+            new OpenLayers.Feature.Vector(OpenLayers.Geometry.fromWKT(
+                "POINT(50 50)"
+            ))
+        ]);
+
+        map.addLayer(layer);
+        map.zoomToMaxExtent();        
+        
+        var control = new OpenLayers.Control.Snapping({layer: layer});
+        
+        var result;
+        var loc = new OpenLayers.Geometry.Point(49, 49);
+
+        // 1) test a target with no constraints
+        control.setTargets([{layer: layer}]);
+        result = control.testTarget(control.targets[0], loc);
+        t.ok(result !== null, "1) target is eligible");
+        
+        // 2) test a target with minResolution < map.resolution
+        control.setTargets([{layer: layer, minResolution: 0.5}]);
+        result = control.testTarget(control.targets[0], loc);
+        t.ok(result !== null, "2) target is eligible");
+
+        // 3) test a target with minResolution === map.resolution
+        control.setTargets([{layer: layer, minResolution: 1}]);
+        result = control.testTarget(control.targets[0], loc);
+        t.ok(result !== null, "3) target is eligible");
+
+        // 4) test a target with minResolution > map.resolution
+        control.setTargets([{layer: layer, minResolution: 1.5}]);
+        result = control.testTarget(control.targets[0], loc);
+        t.ok(result === null, "4) target is not eligible");
+
+        // 5) test a target with maxResolution < map.resolution
+        control.setTargets([{layer: layer, maxResolution: 0.5}]);
+        result = control.testTarget(control.targets[0], loc);
+        t.ok(result === null, "5) target is not eligible");
+        
+        // 6) test a target with maxResolution === map.resolution
+        control.setTargets([{layer: layer, maxResolution: 1}]);
+        result = control.testTarget(control.targets[0], loc);
+        t.ok(result === null, "6) target is not eligible");
+        
+        // 7) test a target with maxResolution > map.resolution
+        control.setTargets([{layer: layer, maxResolution: 1.5}]);
+        result = control.testTarget(control.targets[0], loc);
+        t.ok(result !== null, "7) target is eligible");
+        
+        map.destroy();
+    
+    }
+    
+    function test_snapping(t) {
+        
+        t.plan(46);
+        
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1],
+            maxExtent: new OpenLayers.Bounds(0, 0, 100, 100)
+        });
+        
+        var layer1 = new OpenLayers.Layer.Vector(null, {
+            isBaseLayer: true
+        });
+        layer1.addFeatures([
+            new OpenLayers.Feature.Vector(OpenLayers.Geometry.fromWKT(
+                "LINESTRING(0 0, 10 10, 20 20, 30 30)"
+            )),
+            new OpenLayers.Feature.Vector(OpenLayers.Geometry.fromWKT(
+                "LINESTRING(11 10, 20 10, 30 10)"
+            ))
+        ]);
+
+        var layer2 = new OpenLayers.Layer.Vector();
+        layer2.addFeatures([
+            new OpenLayers.Feature.Vector(OpenLayers.Geometry.fromWKT(
+                "LINESTRING(10 10, 20 20, 30 30)"
+            )),
+            new OpenLayers.Feature.Vector(OpenLayers.Geometry.fromWKT(
+                "LINESTRING(21 10, 20 20, 20 30)"
+            ))
+        ]);
+
+        map.addLayers([layer1, layer2]);
+        map.zoomToMaxExtent();        
+        
+        var control = new OpenLayers.Control.Snapping({
+            layer: layer1,
+            targets: [layer1, layer2],
+            defaults: {tolerance: 4}
+        });
+        control.activate();
+        map.addControl(control);
+        
+        // log beforesnap, snap, and unsnap events
+        var events = [];
+        function listener(event) {
+            events.push(event);
+        }
+        control.events.on({
+            beforesnap: listener,
+            snap: listener,
+            unsnap: listener
+        });
+        
+        // create a vertex and a convenience method for mocking the drag
+        var vertex = new OpenLayers.Geometry.Point(-100, -100);
+        function drag(x, y) {
+            var px = map.getPixelFromLonLat(new OpenLayers.LonLat(x, y));
+            layer1.events.triggerEvent("vertexmodified", {
+                vertex: vertex, pixel: px
+            });
+        }
+
+        // mock up drag far from features
+        drag(-100, -100);
+        t.eq(events.length, 0, "no snapping");
+        
+        // mock up drag near first node of first feature
+        drag(0, 1);
+        t.eq(events.length, 2, "[a] 2 events triggered");
+        t.eq(events[0].type, "beforesnap", "[a] beforesnap triggered");
+        t.eq(events[0].snapType, "node", "[a] beforesnap triggered for node");
+        t.ok(events[0].point === vertex, "[a] beforesnap triggered with vertex");
+        t.eq(events[0].x, 0, "[a] beforesnap triggered correct x");
+        t.eq(events[0].y, 0, "[a] beforesnap triggered with correct y");
+        t.eq(events[1].type, "snap", "[a] snap triggered");
+        t.eq(events[1].snapType, "node", "[a] snap triggered for node");
+        t.ok(events[1].point === vertex, "[a] snap triggered with point");
+        t.eq(events[1].distance, 1, "[a] snap triggered correct distance");
+        t.ok(events[1].layer === layer1, "[a] snap triggered with correct target layer");
+        t.eq(vertex.x, 0, "[a] vertex x modified");
+        t.eq(vertex.y, 0, "[a] vertex y modified");
+        events = [];
+        
+        // mock up drag that unsnaps
+        drag(-100, -50);
+        t.eq(events.length, 1, "[b] 1 event triggered");
+        t.eq(events[0].type, "unsnap", "[b] unsnap triggered");
+        t.ok(events[0].point === vertex, "[b] unsnap triggered with vertex");
+        t.eq(vertex.x, -100, "[b] vertex x unsnapped");
+        t.eq(vertex.y, -50, "[b] vertex y unsnapped");
+        events = [];
+        
+        // drag near node of second feature in first layer to demonstrate precedence of node snapping
+        drag(9, 10);
+        t.eq(events.length, 2, "[c] 2 events triggered");
+        t.eq(events[0].type, "beforesnap", "[c] beforesnap triggered first");
+        t.eq(events[1].type, "snap", "[c] snap triggered second");
+        t.eq(events[1].snapType, "node", "[c] snap to node");
+        // unsnap & reset
+        drag(-100, -50);
+        events = [];
+        
+        // drag near node of second feature in second layer to demonstrate greedy property
+        // with greedy true (default) the best target from the first layer with eligible targets is used
+        drag(22, 10);
+        t.eq(events.length, 2, "[d] 2 events triggered");
+        t.eq(events[1].type, "snap", "[d] snap triggered second");
+        t.eq(events[1].snapType, "vertex", "[d] snap to vertex");
+        t.ok(events[1].layer === layer1, "[d] snap to vertex in first layer");
+        t.eq(vertex.x, 20, "[d] vertex x modified");
+        t.eq(vertex.y, 10, "[d] vertex y modified");
+        // unsnap & reset
+        drag(-100, -50);
+        events = [];
+        
+        // do the same drag but with greedy false - this will look for best target in all layers
+        control.greedy = false;
+        drag(22, 10);
+        t.eq(events.length, 2, "[d] 2 events triggered");
+        t.eq(events[1].type, "snap", "[d] snap triggered second");
+        t.eq(events[1].snapType, "node", "[d] snap to node");
+        t.ok(events[1].layer === layer2, "[d] snap to node in second layer");
+        // unsnap & reset        
+        drag(-100, -50);
+        control.greedy = true;
+        events = [];        
+        
+        // demonstrate snapping on sketchstarted
+        var p = new OpenLayers.Geometry.Point(0, 1);
+        layer1.events.triggerEvent("sketchstarted", {
+            vertex: p,
+            feature: new OpenLayers.Feature.Vector(p)
+        });
+        t.eq(events.length, 2, "[sketchstarted] 2 events triggered");
+        t.eq(events[0].type, "beforesnap", "[sketchstarted] beforesnap triggered");
+        t.eq(events[0].snapType, "node", "[sketchstarted] beforesnap triggered for node");
+        t.ok(events[0].point === p, "[sketchstarted] beforesnap triggered with vertex");
+        t.eq(events[0].x, 0, "[sketchstarted] beforesnap triggered correct x");
+        t.eq(events[0].y, 0, "[sketchstarted] beforesnap triggered with correct y");
+        t.eq(events[1].type, "snap", "[sketchstarted] snap triggered");
+        t.eq(events[1].snapType, "node", "[sketchstarted] snap triggered for node");
+        t.ok(events[1].point === p, "[sketchstarted] snap triggered with point");
+        t.eq(events[1].distance, 1, "[sketchstarted] snap triggered correct distance");
+        t.ok(events[1].layer === layer1, "[sketchstarted] snap triggered with correct target layer");
+        t.eq(p.x, 0, "[sketchstarted] vertex x modified");
+        t.eq(p.y, 0, "[sketchstarted] vertex y modified");
+        // reset
+        events = [];        
+        
+        map.destroy();
+
+    }
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 100px; height: 100px;"></div>
+</body>
+</html>

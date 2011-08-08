@@ -1,0 +1,228 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    function test_Handler_RegularPolygon_constructor(t) {
+        t.plan(3);
+        var control = new OpenLayers.Control();
+        control.id = Math.random();
+        var callbacks = {foo: "bar"};
+        var options = {bar: "foo"};
+        
+        var oldInit = OpenLayers.Handler.prototype.initialize;
+        
+        OpenLayers.Handler.prototype.initialize = function(con, call, opt) {
+            t.eq(con.id, control.id,
+                 "constructor calls parent with the correct control");
+            t.eq(call, callbacks,
+                 "constructor calls parent with the correct callbacks");
+            t.eq(opt, options,
+                 "regular polygon constructor calls parent with the correct options");
+        }
+        var handler = new OpenLayers.Handler.RegularPolygon(control, callbacks, options);
+
+        OpenLayers.Handler.prototype.initialize = oldInit;
+    }
+
+    function test_Handler_RegularPolygon_activation(t) {
+        t.plan(3);
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.RegularPolygon(control);
+        handler.active = true;
+        var activated = handler.activate();
+        t.ok(!activated,
+             "activate returns false if the handler was already active");
+        handler.active = false;
+        activated = handler.activate();
+        t.ok(activated,
+             "activate returns true if the handler was not already active");
+        activated = handler.deactivate();
+        t.ok(activated,
+             "deactivate returns true if the handler was active already");
+        map.destroy();     
+    }
+
+    function test_Handler_RegularPolygon_deactivation(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+             
+        var handler = new OpenLayers.Handler.RegularPolygon(control, {foo: 'bar'});
+        handler.activate();
+        handler.layer.destroy();
+        handler.deactivate();
+        t.eq(handler.layer, null,
+             "deactivate doesn't throw an error if layer was" +
+             " previously destroyed");
+        map.destroy();     
+    }
+
+    function test_Handler_RegularPolygon_four_corners(t) {
+        t.plan(7);
+        var map = new OpenLayers.Map('map');
+        map.addLayer(new OpenLayers.Layer.WMS("", "", {}));
+        map.zoomToMaxExtent();
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.RegularPolygon(control, {});
+        var activated = handler.activate();
+        var evt = {xy: new OpenLayers.Pixel(150, 75), which: 1};
+        handler.down(evt);
+        var evt = {xy: new OpenLayers.Pixel(175, 75), which: 1};
+        handler.move(evt);
+        t.eq(handler.feature.geometry.getBounds().toBBOX(),
+             "-35.15625,-35.15625,35.15625,35.15625",
+             "correct bounds after move");
+        t.eq(handler.feature.geometry.components[0].components.length, 5,
+             "geometry has 5 components");
+        t.eq(handler.feature.geometry.CLASS_NAME,
+             "OpenLayers.Geometry.Polygon",
+             "geometry is a polygon");
+        t.eq(handler.radius, 25*1.40625, "feature radius as set on handler");
+        var evt = {xy: new OpenLayers.Pixel(175, 80), which: 1};
+        handler.move(evt);
+        t.eq(handler.feature.geometry.getBounds().toBBOX(),
+             "-35.15625,-35.15625,35.15625,35.15625",
+             "correct bounds after move with a fixed radius");
+        handler.cancel();
+        handler.setOptions({radius:2 / Math.sqrt(2)});
+        var evt = {xy: new OpenLayers.Pixel(150, 75), which: 1};
+        handler.down(evt);
+        
+        t.eq(handler.feature.geometry.getBounds().toBBOX(),
+             "-1,-1,1,1",
+             "bounds with manual radius setting");
+        var evt = {xy: new OpenLayers.Pixel(175, 90), which: 1};
+        handler.move(evt);
+        t.eq(handler.feature.geometry.getBounds().toBBOX(),
+             "34.15625,-22.09375,36.15625,-20.09375",
+             "bounds with manual radius setting and mousemove");
+        map.destroy();     
+    }
+
+    function test_Handler_RegularPolygon_circle(t) {
+        t.plan(7);
+        var map = new OpenLayers.Map('map');
+        map.addLayer(new OpenLayers.Layer.WMS("", "", {}));
+        map.zoomToMaxExtent();
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.RegularPolygon(control, {}, {'sides':40});
+        var activated = handler.activate();
+        var evt = {xy: new OpenLayers.Pixel(150, 75), which: 1};
+        handler.down(evt);
+        var evt = {xy: new OpenLayers.Pixel(175, 75), which: 1};
+        handler.move(evt);
+        t.eq(handler.feature.geometry.getBounds().toBBOX(),
+             "-35.15625,-35.15625,35.15625,35.15625",
+             "correct bounds after move");
+        t.eq(handler.feature.geometry.components[0].components.length, 41,
+             "geometry has correct numbre of components");
+        t.eq(handler.feature.geometry.CLASS_NAME,
+             "OpenLayers.Geometry.Polygon",
+             "geometry is a polygon");
+        t.eq(handler.radius, 25*1.40625, "feature radius as set on handler");
+        var evt = {xy: new OpenLayers.Pixel(175, 80), which: 1};
+        handler.move(evt);
+        t.eq(handler.feature.geometry.getBounds().toBBOX(),
+             "-35.823348,-35.823348,35.823348,35.823348",
+             "correct bounds after move with fixed radius");
+        handler.cancel();
+        handler.setOptions({radius:1});
+        var evt = {xy: new OpenLayers.Pixel(150, 75), which: 1};
+        handler.down(evt);
+        
+        t.eq(handler.feature.geometry.getBounds().toBBOX(),
+             "-0.996917,-0.996917,0.996917,0.996917",
+             "bounds with manual radius setting");
+        var evt = {xy: new OpenLayers.Pixel(175, 80), which: 1};
+        handler.move(evt);
+        t.eq(handler.feature.geometry.getBounds().toBBOX(),
+             "34.159333,-8.028167,36.153167,-6.034333",
+             "bounds with manual radius setting and mousemove");
+        map.destroy();     
+    }
+
+    function test_Handler_RegularPolygon_irregular(t) {
+        t.plan(4);
+        var map = {
+            getLonLatFromPixel: function(px) {
+                return {lon: px.x, lat: px.y};
+            },
+            getResolution: function() {
+                return 1;
+            }
+        };
+        var layer = {
+            addFeatures: function() {},
+            drawFeature: function(feature, style) {
+                var ring = feature.geometry.components[0];
+                t.eq(ring.components[0].x, 20, "correct right");
+                t.eq(ring.components[0].y, 10, "correct bottom");
+                t.eq(ring.components[2].x, 10, "correct left");
+                t.eq(ring.components[2].y, 15, "correct top");
+            }
+        };
+        var control = {};
+        var options = {
+            sides: 4,
+            irregular: true,
+            layer: layer,
+            map: map
+        };
+        var handler = new OpenLayers.Handler.RegularPolygon(
+            control, null, options
+        );
+        handler.origin = new OpenLayers.Geometry.Point(10, 10);
+        handler.feature = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Polygon(
+                [new OpenLayers.Geometry.LinearRing()]
+            )
+        );
+        // should result in a 10 x 5 rectangle
+        handler.move({xy: {x: 20, y: 15}});
+    }
+
+    function test_callbacks(t) {
+        t.plan(1);
+
+        // setup
+        var map = new OpenLayers.Map("map", {
+            getLonLatFromPixel: function(px) {
+                return {lon: px.x, lat: px.y};
+            }
+        });
+
+        var control = {"map": map};
+
+        var done = function(geom) {
+            t.ok(true,
+                 "done callback called even if no move between down and up");
+        };
+
+        var handler = new OpenLayers.Handler.RegularPolygon(
+            control, {"done": done});
+        handler.activate();
+        
+        var xy = new OpenLayers.Pixel(Math.random(), Math.random());
+
+        var isLeftClick = OpenLayers.Event.isLeftClick;
+        OpenLayers.Event.isLeftClick = function() { return true; };
+
+        // test
+        map.events.triggerEvent("mousedown", {"xy": xy});
+        map.events.triggerEvent("mouseup", {"xy": xy});
+
+        // tear down
+        OpenLayers.Event.isLeftClick = isLeftClick;
+    }
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 300px; height: 150px;"/>
+</body>
+</html>

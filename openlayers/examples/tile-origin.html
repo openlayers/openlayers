@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>OpenLayers Tile Origin Example</title>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+    </head>
+    <body>
+        <h1 id="title">Tile Origin</h1>
+        <div id="tags">
+            grid, tileOrigin
+        </div>
+        <p id="shortdesc">
+            Demonstrates the use of the tileExtent property to differentiate 
+            between the maximum extent and the tile extent for a layer.
+        </p>
+        <div id="map" class="smallmap"></div>
+        <div id="docs">
+            <p>
+                This example uses a layer that requests map tiles from a WMS
+                that only generates image responses for requests that align with
+                a particular tile lattice.  In this case, the layer's 
+                <code>maxExtent</code> does not align with that tile lattice.  
+                To configure the layer with a tile extent that conforms to the 
+                tile origin configured on the server, use the layer's 
+                <code>tileOrigin</code> property.
+            </p><p>
+                View the <a href="tile-origin.js" target="_blank">tile-origin.js</a>
+                source to see how this is done
+            </p>
+        </div>
+        <script src="../lib/OpenLayers.js"></script>
+        <script src="tile-origin.js"></script>
+    </body>
+</html>

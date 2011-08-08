@@ -1,0 +1,626 @@
+<html>
+<head>
+<script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+
+    function setUp() {
+        // Stub out functions that are meant to be overridden by
+        // subclasses.
+        OpenLayers.Renderer.Elements.prototype._createRenderRoot =
+            OpenLayers.Renderer.Elements.prototype.createRenderRoot;
+        
+        var rendererRoot = document.createElement("div");
+        OpenLayers.Renderer.Elements.prototype.createRenderRoot = function() {
+            return rendererRoot;
+        };
+        
+        OpenLayers.Renderer.Elements.prototype._createRoot =
+            OpenLayers.Renderer.Elements.prototype.createRoot;
+        
+        OpenLayers.Renderer.Elements.prototype.createRoot = function() {
+            return document.createElement("div");
+        };
+        
+        OpenLayers.Renderer.Elements.prototype._createNode =
+            OpenLayers.Renderer.Elements.prototype.createNode;
+        
+        OpenLayers.Renderer.Elements.prototype.createNode = function() {
+            return document.createElement("div");
+        };
+    }
+    
+    // Create a new Elements renderer based on an id and an ordering
+    // type. For these tests, both of these parameters are optional.
+    function create_renderer(id, options) {
+        
+        rendererRoot = null;
+        
+        if (id == null) {
+            var el = document.createElement('div');
+            document.body.appendChild(el);
+            el.id = OpenLayers.Util.createUniqueID();
+            id = el.id;
+        }
+        
+        return new OpenLayers.Renderer.Elements(id, options);
+    }
+    
+    // Cleanup stubs made in the function above.
+    function tearDown() {
+        OpenLayers.Renderer.Elements.prototype.createRenderRoot =
+            OpenLayers.Renderer.Elements.prototype._createRenderRoot;
+        OpenLayers.Renderer.Elements.prototype.createRoot =
+            OpenLayers.Renderer.Elements.prototype._createRoot;
+        OpenLayers.Renderer.Elements.prototype.createNode =
+            OpenLayers.Renderer.Elements.prototype._createNode;
+    }
+
+    function test_Elements_constructor(t) {
+        t.plan(6);
+        
+        setUp();
+        
+        var r = create_renderer();
+        
+        t.ok(r instanceof OpenLayers.Renderer.Elements, "new OpenLayers.Renderer.Elements returns Elements object" );
+        t.ok(r.rendererRoot != null, "elements rendererRoot is not null");
+        t.ok(r.root != null, "elements root is not null");
+        t.ok(r.indexer == null, "indexer is null if unused.");
+        
+        t.ok(r.root.parentNode == r.rendererRoot, "elements root is correctly appended to rendererRoot");
+        t.ok(r.rendererRoot.parentNode == r.container, "elements rendererRoot is correctly appended to container");
+        
+        tearDown();
+    }
+    
+    function test_Elements_destroy(t) {
+        t.plan(5);
+        
+        var elems = {
+            'clear': function() {
+                t.ok(true, "clear called");
+            },
+            'rendererRoot': {},
+            'root': {},
+            'xmlns': {}
+        };
+
+        OpenLayers.Renderer.prototype._destroy = 
+            OpenLayers.Renderer.prototype.destroy;
+
+        var args = [{}, {}, {}];
+        OpenLayers.Renderer.prototype.destroy = function() {
+            t.ok((arguments[0] == args[0]) &&
+                 (arguments[1] == args[1]) &&
+                 (arguments[2] == args[2]), "correct arguments passed to OpenLayers.Renderer.destroy()");
+        };
+
+        OpenLayers.Renderer.Elements.prototype.destroy.apply(elems, args);
+
+        t.ok(elems.rendererRoot == null, "rendererRoot nullified");
+        t.ok(elems.root == null, "root nullified");
+        t.ok(elems.xmlns == null, "xmlns nullified");
+
+        OpenLayers.Renderer.prototype.destroy = 
+            OpenLayers.Renderer.prototype._destroy;
+
+    }
+    
+    function test_Elements_clear(t) {
+        t.plan(2);
+        
+        setUp();
+        
+        var r = create_renderer();
+        var element = document.createElement("div");
+        r.root = element;
+        
+        var node = document.createElement("div");
+        element.appendChild(node);
+        
+        r.clear();
+        
+        t.ok(r.vectorRoot.childNodes.length == 0, "vector root is correctly cleared");
+        t.ok(r.textRoot.childNodes.length == 0, "text root is correctly cleared");
+        
+        tearDown();
+    }
+    
+    function test_Elements_drawGeometry(t) {
+        t.plan(7);
+
+        setUp();
+
+        var r = create_renderer();
+        
+        var element = document.createElement("div");
+        r.vectorRoot = element;
+
+        r.nodeFactory = function(id, type) {
+            var element = document.createElement("div");
+            return element;
+        };
+        var g_Node = null;
+        var b_Node = null;
+        r.drawGeometryNode = function(node, geometry, style) {
+            g_Node = node;
+            return {node: node, complete: true};
+        };
+        r.redrawBackgroundNode = function(id, geometry, style, featureId) {
+            b_Node = r.nodeFactory();
+            b_Node.id = "foo_background";
+            element.appendChild(b_Node);
+        };
+
+        r.getNodeType = function(geometry, style) {
+            return "div";
+        };
+        var geometry = {
+            id: 'foo',
+            CLASS_NAME: 'bar',
+            getBounds: function() {return {bottom: 0}}
+        };
+        var style = {'backgroundGraphic': 'foo'};
+        var featureId = 'dude';
+        r.drawGeometry(geometry, style, featureId);
+        t.ok(g_Node.parentNode == element, "node is correctly appended to root");
+        t.ok(b_Node.parentNode == element, "redrawBackgroundNode appended background node");
+        t.eq(g_Node._featureId, 'dude', "_featureId is correct");
+        t.eq(g_Node._style.backgroundGraphic, "foo", "_style is correct");
+        t.eq(g_Node._geometryClass, 'bar', "_geometryClass is correct");
+
+        var returnNode = function(id) {
+        	return id == "foo_background" ? b_Node : g_Node;
+        }
+       	
+        var _getElement = document.getElementById;
+        document.getElementById = returnNode;
+        OpenLayers.Util.getElement = returnNode;
+        
+        style = {'display':'none'};
+        r.drawGeometry(geometry, style, featureId);
+        t.ok(g_Node.parentNode != element, "node is correctly removed");
+        t.ok(b_Node.parentNode != element, "background node correctly removed")
+        
+        document.getElementById = _getElement;
+            
+        tearDown();
+    }
+
+    function test_Elements_drawGeometry_2(t) {
+        t.plan(9);
+        
+        setUp();
+        
+        var geometry = {
+            getBounds: function() {return {bottom: 0}}
+        }
+        
+        var r = create_renderer();
+        
+        var element = document.createElement("div");
+        r.root = element;
+        
+        r.nodeFactory = function(id, type) {
+            var element = document.createElement("div");
+            return element;
+        };
+        r.setStyle = function(node, style, options, geometry) {
+            return node;
+        };
+        
+        // point
+        var properDraw = false;
+        r.drawPoint = function(node, geometry) {
+            properDraw = true;
+            return {};
+        };
+        var point = OpenLayers.Util.applyDefaults({CLASS_NAME: 'OpenLayers.Geometry.Point'}, geometry);
+        style = true;
+        r.drawGeometry(point, style);
+        t.ok(properDraw, "drawGeometry called drawPoint when passed a point");
+
+        // line string
+        var properDraw = false;
+        r.drawLineString = function(g) {
+            properDraw = true;
+            return {};
+        };
+        var linestring = OpenLayers.Util.applyDefaults({id: "foo", CLASS_NAME: 'OpenLayers.Geometry.LineString'}, geometry);
+        style = true;
+        r.drawGeometry(linestring, style);
+        t.ok(properDraw, "drawGeometry called drawLineString when passed a line string");
+
+        // linear ring
+        var properDraw = false;
+        r.drawLinearRing = function(g) {
+            properDraw = true;
+            return {};
+        };
+        var linearring = OpenLayers.Util.applyDefaults({CLASS_NAME: 'OpenLayers.Geometry.LinearRing'}, geometry);
+        style = true;
+        r.drawGeometry(linearring, style);
+        t.ok(properDraw, "drawGeometry called drawLinearRing when passed a linear ring");
+
+        // polygon
+        var properDraw = false;
+        r.drawPolygon = function(g) {
+            properDraw = true;
+            return {};
+        };
+        var polygon = OpenLayers.Util.applyDefaults({CLASS_NAME: 'OpenLayers.Geometry.Polygon'}, geometry);
+        style = true;
+        r.drawGeometry(polygon, style);
+        t.ok(properDraw, "drawGeometry called drawPolygon when passed a polygon");
+
+        // surface
+        var properDraw = false;
+        r.drawSurface = function(g) {
+            properDraw = true;
+            return {};
+        }
+        var surface = OpenLayers.Util.applyDefaults({CLASS_NAME: 'OpenLayers.Geometry.Surface'}, geometry);
+        style = true;
+        r.drawGeometry(surface, style);
+        t.ok(properDraw, "drawGeometry called drawSurface when passed a surface");
+
+        // rectangle
+        var properDraw = false;
+        r.drawRectangle = function(g) {
+            properDraw = true;
+            return {};
+        };
+        var rectangle = OpenLayers.Util.applyDefaults({CLASS_NAME: 'OpenLayers.Geometry.Rectangle'}, geometry);
+        style = true;
+        r.drawGeometry(rectangle, style);
+        t.ok(properDraw, "drawGeometry called drawRectangle when passed a rectangle");
+
+        // multi-point
+        var properDraw = false;
+        r.drawPoint = function(g) {
+            properDraw = true;
+            return {};
+        };
+        var multipoint = OpenLayers.Util.applyDefaults({
+            CLASS_NAME: 'OpenLayers.Geometry.MultiPoint',
+            components: [point]
+        }, geometry);
+        style = true;
+        r.drawGeometry(multipoint, style);
+        t.ok(properDraw, "drawGeometry called drawPoint when passed a multi-point");
+
+        // multi-linestring
+        var properDraw = false;
+        r.drawLineString = function(g) {
+            properDraw = true;
+            return {};
+        };
+        var multilinestring = OpenLayers.Util.applyDefaults({
+            CLASS_NAME: 'OpenLayers.Geometry.MultiLineString',
+            components: [linestring]
+        }, geometry);
+        style = true;
+        r.drawGeometry(multilinestring, style);
+        t.ok(properDraw, "drawGeometry called drawLineString when passed a multi-linestring");
+
+        // multi-polygon
+        var properDraw = false;
+        r.drawPolygon = function(g) {
+            properDraw = true;
+            return {};
+        };
+        var multipolygon = OpenLayers.Util.applyDefaults({
+            CLASS_NAME: 'OpenLayers.Geometry.MultiPolygon',
+            components: [polygon]
+        }, geometry);
+        style = true;
+        r.drawGeometry(multipolygon, style);
+        t.ok(properDraw, "drawGeometry called drawPolygon when passed a multi-polygon");
+      
+        tearDown();
+    }
+    
+    function test_Elements_getfeatureidfromevent(t) {
+        t.plan(2);
+        
+        var node = {
+            _featureId: 'foo'
+        };
+        var event = {
+            target: node
+        };
+        
+        var id = OpenLayers.Renderer.Elements.prototype.getFeatureIdFromEvent(event);
+        t.eq(id, 'foo', "returned id is correct when event with target is passed");
+        
+        var event = {
+            srcElement: node
+        };
+        
+        var id = OpenLayers.Renderer.Elements.prototype.getFeatureIdFromEvent(event);
+        t.eq(id, 'foo', "returned id is correct when event with srcElement is passed");
+    }
+    
+    function test_Elements_erasegeometry(t) {
+        t.plan(15);
+
+        var elements = {
+            'eraseGeometry': function(geometry) {
+                gErased.push(geometry);
+            }
+        };
+        
+        var geometry = {
+            'components': [{}, {}, {}]
+        };
+        
+      //multipoint
+        geometry.CLASS_NAME = "OpenLayers.Geometry.MultiPoint";
+        gErased = [];
+        OpenLayers.Renderer.Elements.prototype.eraseGeometry.apply(elements, [geometry]);
+        t.ok( (gErased[0] == geometry.components[0]) &&
+              (gErased[1] == geometry.components[1]) &&
+              (gErased[2] == geometry.components[2]), "multipoint all components of geometry correctly erased.");
+
+      //multilinestring
+        geometry.CLASS_NAME = "OpenLayers.Geometry.MultiLineString";
+        gErased = [];
+        OpenLayers.Renderer.Elements.prototype.eraseGeometry.apply(elements, [geometry]);
+        t.ok( (gErased[0] == geometry.components[0]) &&
+              (gErased[1] == geometry.components[1]) &&
+              (gErased[2] == geometry.components[2]), "multilinestring all components of geometry correctly erased.");
+      
+      //multipolygon
+        geometry.CLASS_NAME = "OpenLayers.Geometry.MultiPolygon";
+        gErased = [];
+        OpenLayers.Renderer.Elements.prototype.eraseGeometry.apply(elements, [geometry]);
+        t.ok( (gErased[0] == geometry.components[0]) &&
+              (gErased[1] == geometry.components[1]) &&
+              (gErased[2] == geometry.components[2]), "multipolygon all components of geometry correctly erased.");
+      
+      //collection
+        geometry.CLASS_NAME = "OpenLayers.Geometry.Collection";
+        gErased = [];
+        OpenLayers.Renderer.Elements.prototype.eraseGeometry.apply(elements, [geometry]);
+        t.ok( (gErased[0] == geometry.components[0]) &&
+              (gErased[1] == geometry.components[1]) &&
+              (gErased[2] == geometry.components[2]), "collection all components of geometry correctly erased.");
+        
+
+    // OTHERS
+    //
+        geometry.CLASS_NAME = {};
+
+        gElement = null;
+        gBackElement = null;
+
+        OpenLayers.Util._getElement = OpenLayers.Util.getElement;
+        OpenLayers.Util.getElement = function(id) {
+            var retVal = null;
+            if (id != null) {
+                var hasBack = (id.indexOf(elements.BACKGROUND_ID_SUFFIX) != -1);
+                retVal = hasBack ? gBackElement : gElement;
+            }
+            return retVal;
+        };
+
+      //element null
+        geometry.id = null;
+        OpenLayers.Renderer.Elements.prototype.eraseGeometry.apply(elements, [geometry]);
+        // (no tests here, just make sure it doesn't bomb)      
+      
+      //element.parentNode null
+        elements.BACKGROUND_ID_SUFFIX = 'BLAHBLAHBLAH';
+        geometry.id = "foo";        
+        gElement = {};
+        OpenLayers.Renderer.Elements.prototype.eraseGeometry.apply(elements, [geometry]);
+        // (no tests here, just make sure it doesn't bomb)      
+      
+      //valid element.parentNode, element.geometry
+        elements.indexer = {
+            'remove': function(elem) {
+                gIndexerRemoved = elem;
+            }
+        };
+
+        gElement = {
+            'geometry': {
+                'destroy': function() { 
+                    t.ok(true, "geometry destroyed");
+                }
+            },
+            'parentNode': {
+                'removeChild': function(elem) {
+                    gElemRemoved = elem;
+                }
+            },
+            '_style' : {backgroundGraphic: "foo"}
+        };
+        gBackElement = {
+            'parentNode': {
+                'removeChild': function(elem) {
+                    gBackRemoved = elem;
+                }
+            }
+        };
+
+        gElemRemoved = gBackRemoved =  gIndexerRemoved = null;
+        OpenLayers.Renderer.Elements.prototype.eraseGeometry.apply(elements, [geometry]);
+        t.ok( (gElement.geometry == null), "all normal: element's 'geometry' property nullified");
+        t.ok( (gElemRemoved == gElement), "all normal: main element properly removed from parent node");
+        t.ok( (gBackRemoved == gBackElement), "all normal: back element properly removed from parent node");
+        t.ok( (gIndexerRemoved == gElement), "all normal: main element properly removed from the indexer");
+
+      //valid element.parentNode, no element.geometry, no bElem
+        gBackElement = null;
+        gElement.geometry = null;
+        gElemRemoved = gBackRemoved =  gIndexerRemoved = null;
+        OpenLayers.Renderer.Elements.prototype.eraseGeometry.apply(elements, [geometry]);
+        t.ok( (gElemRemoved == gElement), "no bElem: main element properly removed from parent node");
+        t.ok( (gBackRemoved == null), "no bElem: back element not tried to remove from parent node when it doesn't exist");
+        t.ok( (gIndexerRemoved == gElement), "no bElem: main element properly removed from the indexer");
+
+      //valid element.parentNode, no element.geometry, valid bElem, no bElem.parentNode 
+        gBackElement = {};
+        gElemRemoved = gBackRemoved =  gIndexerRemoved = null;
+        OpenLayers.Renderer.Elements.prototype.eraseGeometry.apply(elements, [geometry]);
+        t.ok( (gElemRemoved == gElement), "no bElem.parentNode: main element properly removed from parent node");
+        t.ok( (gBackRemoved == null), "no bElem.parentNode: back element not tried to remove from parent node when it has no parent node");
+        t.ok( (gIndexerRemoved == gElement), "no bElem.parentNode: main element properly removed from the indexer");
+
+
+        OpenLayers.Util.getElement = OpenLayers.Util._getElement;
+    }
+    
+    function test_Elements_drawAndErase(t) {
+        t.plan(20);
+
+        setUp();
+
+        var r = create_renderer(null, {zIndexing: true});
+        var element = document.createElement("div");
+        r.vectorRoot = element;
+        document.body.appendChild(element);
+
+        r.createNode = function(type, id) {
+            var element = document.createElement("div");
+            element.id = id;
+            return element;
+        };
+        r.nodeTypeCompare = function() {return true};
+        r.setStyle = function(node, style, options, geometry) {
+            return node;
+        };
+        
+        var geometry = {
+            id: 'foo',
+            CLASS_NAME: 'bar',
+            getBounds: function() {return {bottom: 0}}
+        };
+        var style = {
+            graphicZIndex: 10
+        };
+        var featureId = 'foo';
+        r.drawGeometry(geometry, style, featureId);
+
+        function count(obj) {
+            var result = 0;
+            for (var i in obj) {
+                result++;
+            }
+            return result;
+        }
+
+        t.eq(element.childNodes.length, 1, "root is correctly filled");
+        t.eq(r.indexer.maxZIndex, 10, "indexer.maxZIndex is correctly filled");
+        t.eq(r.indexer.order.length, 1, "indexer.order is correctly filled");
+        t.eq(count(r.indexer.indices), 1, "indexer.indices is correctly filled");
+
+        r.eraseGeometry(geometry);
+
+        t.eq(element.childNodes.length, 0, "root is correctly cleared");
+        t.eq(r.indexer.maxZIndex, 0, "indexer.maxZIndex is correctly reset");
+        t.eq(r.indexer.order.length, 0, "indexer.order is correctly reset");
+        t.eq(count(r.indexer.indices), 0, "indexer.indices is correctly reset");
+
+        delete(style.graphicZIndex);
+        r.drawGeometry(geometry, style, featureId);
+
+        t.eq(element.childNodes.length, 1, "root is correctly filled");
+        t.eq(r.indexer.maxZIndex, 0, "indexer.maxZIndex is correctly filled");
+        t.eq(r.indexer.order.length, 1, "indexer.order is correctly filled");
+        t.eq(count(r.indexer.indices), 1, "indexer.indices is correctly filled");
+
+        r.clear();
+
+        t.eq(element.childNodes.length, 0, "root is correctly cleared");
+        t.eq(r.indexer.maxZIndex, 0, "indexer.maxZIndex is correctly reset");
+        t.eq(r.indexer.order.length, 0, "indexer.order is correctly reset");
+        t.eq(count(r.indexer.indices), 0, "indexer.indices is correctly reset");
+
+        style.graphicZIndex = 12;
+        r.drawGeometry(geometry, style, featureId);
+
+        t.eq(element.childNodes.length, 1, "root is correctly filled");
+        t.eq(r.indexer.maxZIndex, 12, "indexer.maxZIndex is correctly filled");
+        t.eq(r.indexer.order.length, 1, "indexer.order is correctly filled");
+        t.eq(count(r.indexer.indices), 1, "indexer.indices is correctly filled");
+
+        tearDown();
+    }
+
+    function test_Elements_moveRoot(t) {
+        t.plan(2);
+        setUp();
+        var r1 = create_renderer();
+        var r2 = create_renderer();
+        r1.moveRoot(r2);
+        t.xml_eq(r1.root.parentNode, r2.root.parentNode, "root moved successfully");
+        r1.moveRoot(r1);
+        t.xml_eq(r1.root.parentNode, r1.rendererRoot, "root moved back successfully");
+        tearDown();        
+    }
+
+    function test_Elements_drawGeometry_3(t) {
+        t.plan(2);
+
+        setUp();
+
+        var r = create_renderer();
+        
+        var element = document.createElement("div");
+        r.vectorRoot = element;
+
+        r.nodeFactory = function(id, type) {
+            return document.createElement("div");
+        };
+        var g_Node = null;
+        var b_Node = null;
+        r.drawGeometryNode = function(node, geometry, style) {
+            g_Node = node;
+            return {node: node, complete: true};
+        };
+        r.redrawBackgroundNode = function(id, geometry, style, featureId) {
+            b_Node = r.nodeFactory();
+            b_Node.id = "foo_background";
+            element.appendChild(b_Node);
+        };
+
+        r.getNodeType = function(geometry, style) {
+            return "div";
+        };
+        var geometry = {
+            id: 'foo',
+            CLASS_NAME: 'bar',
+            getBounds: function() {return {bottom: 0}}
+        };
+        var style = {'backgroundGraphic': 'foo'};
+        var featureId = 'dude';
+        r.drawGeometry(geometry, style, featureId);
+        t.ok(b_Node.parentNode == element, "redrawBackgroundNode appended background node");
+
+        var returnNode = function(id) {
+        	return id == "foo_background" ? b_Node : g_Node;
+        }
+       	
+        var _getElement = document.getElementById;
+        document.getElementById = returnNode;
+        OpenLayers.Util.getElement = returnNode;
+
+        style = {};
+        r.drawGeometry(geometry, style, featureId);
+        t.ok(b_Node.parentNode != element, "background node correctly removed")
+            
+        document.getElementById = _getElement;
+
+        tearDown();
+    }
+
+
+
+  </script>
+</head>
+<body>
+<div id="map" style="width:500px;height:550px"></div>
+</body>
+</html>

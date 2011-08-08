@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>Custom Style Example</title>
+        
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <style type="text/css">
+            p {
+                width: 500px;
+            }
+            div.olControlMousePosition {
+                font-family: Verdana;
+                font-size: 2em;
+                color: red;
+            }
+        </style>
+        <script src="../lib/OpenLayers.js"></script>
+        <script type="text/javascript">
+            var lon = 5;
+            var lat = 40;
+            var zoom = 5;
+            var map, layer;
+
+            function init(){
+                var options = {theme: null};
+                map = new OpenLayers.Map('map', options);
+                layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                        "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
+
+                map.addControl(new OpenLayers.Control.MousePosition());
+                map.addLayer(layer);
+                map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+            }
+        </script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">Custom Style Example</h1>
+
+        <div id="tags">
+            styling, css, stylesheet, theming, theme
+        </div>
+
+        <p id="shortdesc">
+            Demonstrate changing CSS styles on controls in the OpenLayers window.
+        </p>
+
+        <div id="map" class="smallmap"></div>
+
+        <div id="docs">
+           <p>If you care to modify the style of any OpenLayers element, include
+           the default stylesheet as a link and declare any style modifications
+           below that link.  These style declarations can be in other linked
+           stylesheets or in style tags.  In addition, construct your map with
+           options that include {theme: null}.  This will disable the default
+           method of loading the stylesheet and allow you to declare style rules
+           in your own linked stylesheets or style tags.</p>
+           <p>This example shows how to declare the font family, size, and color
+           for the mouse position.  Note that only the style keys that you want to
+           modify (change from the default) need to be specified.</p>
+        </div>
+    </body>
+</html>

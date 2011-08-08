@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers: Non-Geographic Projection</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <style type="text/css">
+    #map {
+    width: 100%;
+    height: 100%;
+    border: 0px;
+    padding: 0px;
+    }
+    </style>
+
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var lat = 900863; 
+        var lon = 235829;
+        var zoom = 6;
+        var map, layer;
+
+        function init(){
+            map = new OpenLayers.Map( 'map' );
+            var basemap = new OpenLayers.Layer.WMS( "Boston", 
+                "http://boston.freemap.in/cgi-bin/mapserv?",
+                {
+                 map: '/www/freemap.in/boston/map/gmaps.map', 
+                 layers: 'border,water,roads,rapid_transit,buildings', 
+                 format: 'png', 
+                 transparent: 'off'
+                },
+                // These are the important parts for creating a non-epsg:4326
+                // map: Maxextent is the boundary of the map/tile loading area,
+                // maxResolution is the units/pixel at the highest zoom, and 
+                // projection is the projection to be used in WMS/WFS Requests.
+                {
+                  maxExtent: new OpenLayers.Bounds(33861, 717605, 330846, 1019656), 
+                  maxResolution: 296985/1024, // Another alternative is 'auto', which 
+                                              // will automatically fit the map: you can 
+                                              // then check map.baseLayer.resolutions[0] for
+                                              // a reasonable value.
+                  projection:"EPSG:2805",     // Used in WMS/WFS requests.   
+                  units: "m"                  // Only neccesary for working with scales.
+                  } );
+                
+            map.addLayer(basemap);
+            
+            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.addControl(new OpenLayers.Control.ScaleLine());
+        }
+    </script>
+  </head>
+
+<body onload="init()">
+  <h1 id="title">Layer Projections</h1>
+
+  <div id="tags">
+    projection, reprojection, epsg, basic
+  </div>
+  <p id="shortdesc">
+      Use different (not default) projections with your map 
+  </p>
+    <div id="map" class="smallmap"></div>
+    <p>When using alternative projections, you still use OpenLayers.LonLat objects, even though
+       the properties are actually X/Y values at that point.</p>
+</body>
+</html>

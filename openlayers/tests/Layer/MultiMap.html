@@ -1,0 +1,121 @@
+<html>
+<head>
+  <!-- multimap api key for http://(www.)openlayers.org -->
+  <script type="text/javascript" src="http://developer.multimap.com/API/maps/1.2/OA10072915821139765"></script>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    var doTest = true;
+    function test_Layer_MultiMap_constructor (t) {
+        // WebKit browsers fail when the API key is for a different url, so we
+        // do not test in this case.
+        try {
+            var map = new OpenLayers.Map("map");
+            var layer = new OpenLayers.Layer.MultiMap('MultiMap Layer');
+            map.addLayer(layer);
+        }
+        catch(e) {
+            doTest = false;
+        }
+
+        if (!doTest) { t.plan(0); return; }
+        t.plan( 4 );
+        
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.MultiMap('MultiMap Layer');
+        map.addLayer(layer);
+        
+        
+        t.ok( layer instanceof OpenLayers.Layer.MultiMap, "new OpenLayers.Layer.MultiMap returns object" );
+        t.eq( layer.CLASS_NAME, "OpenLayers.Layer.MultiMap", "CLASS_NAME variable set correctly");
+
+        t.eq( layer.name, "MultiMap Layer", "layer.name is correct" );
+
+        t.ok ( layer.mapObject != null, "MultiMap Object correctly loaded");
+    }
+
+    function test_Layer_MultiMap_isBaseLayer (t) {
+        if (!doTest) { t.plan(0); return; }
+        t.plan(1);
+        
+        var layer = new OpenLayers.Layer.MultiMap('MultiMap Layer');
+
+        t.ok(layer.isBaseLayer, "a default load of multimap layer responds as a base layer");
+    }    
+
+    function test_Layer_MultiMap_Translation_lonlat (t) {
+        if (!doTest) { t.plan(0); return; }
+        
+        t.plan( 4 );
+        
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.MultiMap('MultiMap Layer');
+        map.addLayer(layer);
+
+     // these two lines specify an appropriate translation. 
+     //  the code afterwards works by itself to test that translation
+     //  works correctly both ways.
+        var gLatLng = new MMLatLon(50,100);
+        var correspondingOLLonLat = new OpenLayers.LonLat(100,50);
+
+
+        olLonLat = layer.getOLLonLatFromMapObjectLonLat(gLatLng);
+        t.ok(olLonLat.equals(correspondingOLLonLat), "Translation from GLatLng to OpenLayers.LonLat works");
+
+        var transGLatLng = layer.getMapObjectLonLatFromOLLonLat(olLonLat);
+        t.ok( (transGLatLng.lat == gLatLng.lat) && (transGLatLng.lon == transGLatLng.lon), "Translation from OpenLayers.LonLat to GLatLng works");
+
+        t.ok( layer.getMapObjectLonLatFromOLLonLat(null) == null, "getGLatLngFromOLLonLat(null) returns null");
+        t.ok( layer.getOLLonLatFromMapObjectLonLat(null) == null, "getOLLonLatFromGLatLng(null) returns null");
+    }
+
+    function test_Layer_MultiMap_Translation_pixel (t) {
+        if (!doTest) { t.plan(0); return; }
+        
+        t.plan( 4 );
+        
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.MultiMap('MultiMap Layer');
+        map.addLayer(layer);
+
+     // these two lines specify an appropriate translation. 
+     //  the code afterwards works by itself to test that translation
+     //  works correctly both ways.
+        var gPoint = new MMPoint(50,100);
+        var correspondingOLPixel = new OpenLayers.Pixel(50, 100);
+
+
+        olPixel = layer.getOLPixelFromMapObjectPixel(gPoint);
+        t.ok( olPixel.equals(correspondingOLPixel), "Translation from GPoint to OpenLayers.Pixel works");
+
+        var transGPoint = layer.getMapObjectPixelFromOLPixel(olPixel);
+        t.ok( ((transGPoint.x == transGPoint.x) && (transGPoint.y == transGPoint.y)), "Translation from OpenLayers.Pixel to GPoint works");
+
+        t.ok( layer.getMapObjectPixelFromOLPixel(null) == null, "getGPointFromOLPixel(null) returns null");
+        t.ok( layer.getOLPixelFromMapObjectPixel(null) == null, "getOLPixelFromGPoint(null) returns null");
+    }
+
+
+    function test_Layer_destroy (t) {
+        if (!doTest) { t.plan(0); return; }
+        t.plan( 5 );    
+
+        var map = new OpenLayers.Map('map');
+        
+        layer = new OpenLayers.Layer.MultiMap('Test Layer');
+        map.addLayer(layer);
+
+        layer.destroy();
+
+        t.eq( layer.name, null, "layer.name is null after destroy" );
+        t.eq( layer.div, null, "layer.div is null after destroy" );
+        t.eq( layer.map, null, "layer.map is null after destroy" );
+        t.eq( layer.options, null, "layer.options is null after destroy" );
+        t.eq( layer.multimap, null, "layer.gmap is null after destroy" );
+    }
+
+  </script>
+</head>
+<body>
+  <div id="map"></div>
+</body>
+</html>

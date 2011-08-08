@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var lon = 5;
+        var lat = 40;
+        var zoom = 5;
+        var map, layer;
+
+        function init(){
+            map = new OpenLayers.Map( 'map' );
+            layer = new OpenLayers.Layer.WMS(
+                "OpenLayers WMS",
+                "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                {layers: 'basic'},
+                {singleTile: true}
+            );
+            map.addLayer(layer);
+
+            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+            map.addControl( new OpenLayers.Control.LayerSwitcher() );
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title"> WMS Untiled Example</h1>
+
+    <div id="tags">
+        singletile, tile
+    </div>
+        <p id="shortdesc">
+            Shows an example of an "untiled" WMS layer, which requests a single
+            image for the entire map view.
+        </p>
+    <div id="map" class="smallmap"></div>
+        <div id="docs">
+            An untiled layer will only request a single image at a time.
+            This is equivalent to using the deprecated
+            OpenLayers.Layer.WMS.Untiled class, which will be removed at 3.0.
+        </div>
+  </body>
+</html>
+
+

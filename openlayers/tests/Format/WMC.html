@@ -1,0 +1,315 @@
+<html> 
+<head> 
+    <script src="../OLLoader.js"></script> 
+    <script type="text/javascript">
+
+    var v1_0_0 = '<ViewContext xmlns="http://www.opengis.net/context" version="1.0.0" id="OpenLayers_Context_233" xsi:schemaLocation="http://www.opengis.net/context http://schemas.opengis.net/context/1.0.0/context.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><General><Window width="512" height="256"/><BoundingBox minx="-109.9709708" miny="27.01451459" maxx="-80.02902918" maxy="41.98548541" SRS="EPSG:4326"/><Title/><Extension><ol:maxExtent xmlns:ol="http://openlayers.org/context" minx="-130.0000000" miny="14.00000000" maxx="-60.00000000" maxy="55.00000000"/></Extension></General><LayerList><Layer queryable="1" hidden="0"><Server service="OGC:WMS" version="1.1.1"><OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://t1.hypercube.telascience.org/cgi-bin/landsat7"/></Server><Name>landsat7</Name><Title>NASA Global Mosaic</Title><FormatList><Format current="1">image/jpeg</Format></FormatList><StyleList><Style current="1"><Name/><Title>Default</Title></Style></StyleList><Extension><ol:maxExtent xmlns:ol="http://openlayers.org/context" minx="-130.0000000" miny="14.00000000" maxx="-60.00000000" maxy="55.00000000"/><ol:numZoomLevels xmlns:ol="http://openlayers.org/context">4</ol:numZoomLevels><ol:units xmlns:ol="http://openlayers.org/context">degrees</ol:units><ol:isBaseLayer xmlns:ol="http://openlayers.org/context">true</ol:isBaseLayer><ol:displayInLayerSwitcher xmlns:ol="http://openlayers.org/context">true</ol:displayInLayerSwitcher><ol:singleTile xmlns:ol="http://openlayers.org/context">false</ol:singleTile><ol:tileSize xmlns:ol="http://openlayers.org/context" width="512" height="1024"/></Extension></Layer><Layer queryable="1" hidden="1"><Server service="OGC:WMS" version="1.1.1"><OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://labs.metacarta.com/wms/vmap0"/></Server><Name>basic</Name><Title>OpenLayers WMS</Title><FormatList><Format current="1">image/jpeg</Format></FormatList><StyleList><Style current="1"><Name/><Title>Default</Title></Style></StyleList><Extension><ol:maxExtent xmlns:ol="http://openlayers.org/context" minx="-130.0000000" miny="14.00000000" maxx="-60.00000000" maxy="55.00000000"/><ol:numZoomLevels xmlns:ol="http://openlayers.org/context">4</ol:numZoomLevels><ol:units xmlns:ol="http://openlayers.org/context">degrees</ol:units><ol:isBaseLayer xmlns:ol="http://openlayers.org/context">true</ol:isBaseLayer><ol:displayInLayerSwitcher xmlns:ol="http://openlayers.org/context">true</ol:displayInLayerSwitcher><ol:singleTile xmlns:ol="http://openlayers.org/context">false</ol:singleTile></Extension></Layer><Layer queryable="1" hidden="0"><Server service="OGC:WMS" version="1.1.1"><OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://lioapp.lrc.gov.on.ca/cubeserv/cubeserv.pl"/></Server><Name>na_road:CCRS</Name><Title>Transportation Network</Title><FormatList><Format current="1">image/png</Format></FormatList><StyleList><Style current="1"><Name/><Title>Default</Title></Style></StyleList><Extension><ol:maxExtent xmlns:ol="http://openlayers.org/context" minx="-166.5320000" miny="4.050460000" maxx="-0.2068180000" maxy="70.28700000"/><ol:transparent xmlns:ol="http://openlayers.org/context">TRUE</ol:transparent><ol:numZoomLevels xmlns:ol="http://openlayers.org/context">4</ol:numZoomLevels><ol:units xmlns:ol="http://openlayers.org/context">degrees</ol:units><ol:isBaseLayer xmlns:ol="http://openlayers.org/context">false</ol:isBaseLayer><ol:opacity xmlns:ol="http://openlayers.org/context">0.6</ol:opacity><ol:displayInLayerSwitcher xmlns:ol="http://openlayers.org/context">false</ol:displayInLayerSwitcher><ol:singleTile xmlns:ol="http://openlayers.org/context">false</ol:singleTile></Extension></Layer><Layer queryable="1" hidden="0"><Server service="OGC:WMS" version="1.1.1"><OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://columbo.nrlssc.navy.mil/ogcwms/servlet/WMSServlet/AccuWeather_Maps.wms"/></Server><Name>3:1</Name><Title>Radar 3:1</Title><FormatList><Format current="1">image/png</Format></FormatList><StyleList><Style current="1"><Name/><Title>Default</Title></Style></StyleList><Extension><ol:maxExtent xmlns:ol="http://openlayers.org/context" minx="-131.0294952" miny="14.56289673" maxx="-61.02950287" maxy="54.56289673"/><ol:transparent xmlns:ol="http://openlayers.org/context">TRUE</ol:transparent><ol:numZoomLevels xmlns:ol="http://openlayers.org/context">4</ol:numZoomLevels><ol:units xmlns:ol="http://openlayers.org/context">degrees</ol:units><ol:isBaseLayer xmlns:ol="http://openlayers.org/context">false</ol:isBaseLayer><ol:opacity xmlns:ol="http://openlayers.org/context">0.8</ol:opacity><ol:displayInLayerSwitcher xmlns:ol="http://openlayers.org/context">false</ol:displayInLayerSwitcher><ol:singleTile xmlns:ol="http://openlayers.org/context">true</ol:singleTile></Extension></Layer></LayerList></ViewContext>';
+    var v1_1_0 = '<ViewContext xmlns="http://www.opengis.net/context" version="1.1.0" id="OpenLayers_Context_232" xsi:schemaLocation="http://www.opengis.net/context http://schemas.opengis.net/context/1.1.0/context.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><General><Window width="512" height="256"/><BoundingBox minx="-109.9709708" miny="27.01451459" maxx="-80.02902918" maxy="41.98548541" SRS="EPSG:4326"/><Title/><Extension><ol:maxExtent xmlns:ol="http://openlayers.org/context" minx="-130.0000000" miny="14.00000000" maxx="-60.00000000" maxy="55.00000000"/></Extension></General><LayerList><Layer queryable="1" hidden="0"><Server service="OGC:WMS" version="1.1.1"><OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://t1.hypercube.telascience.org/cgi-bin/landsat7"/></Server><Name>landsat7</Name><Title>NASA Global Mosaic</Title><sld:MinScaleDenominator xmlns:sld="http://www.opengis.net/sld">6299645.760</sld:MinScaleDenominator><sld:MaxScaleDenominator xmlns:sld="http://www.opengis.net/sld">31498228.80</sld:MaxScaleDenominator><FormatList><Format current="1">image/jpeg</Format></FormatList><StyleList><Style current="1"><Name/><Title>Default</Title></Style></StyleList><Extension><ol:maxExtent xmlns:ol="http://openlayers.org/context" minx="-130.0000000" miny="14.00000000" maxx="-60.00000000" maxy="55.00000000"/><ol:tileSize xmlns:ol="http://openlayers.org/context" width="512" height="1024"/><ol:numZoomLevels xmlns:ol="http://openlayers.org/context">4</ol:numZoomLevels><ol:units xmlns:ol="http://openlayers.org/context">degrees</ol:units><ol:isBaseLayer xmlns:ol="http://openlayers.org/context">true</ol:isBaseLayer><ol:displayInLayerSwitcher xmlns:ol="http://openlayers.org/context">true</ol:displayInLayerSwitcher><ol:singleTile xmlns:ol="http://openlayers.org/context">false</ol:singleTile></Extension></Layer><Layer queryable="1" hidden="1"><Server service="OGC:WMS" version="1.1.1"><OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://labs.metacarta.com/wms/vmap0"/></Server><Name>basic</Name><Title>OpenLayers WMS</Title><sld:MinScaleDenominator xmlns:sld="http://www.opengis.net/sld">6299645.760</sld:MinScaleDenominator><sld:MaxScaleDenominator xmlns:sld="http://www.opengis.net/sld">31498228.80</sld:MaxScaleDenominator><FormatList><Format current="1">image/jpeg</Format></FormatList><StyleList><Style current="1"><Name/><Title>Default</Title></Style></StyleList><Extension><ol:maxExtent xmlns:ol="http://openlayers.org/context" minx="-130.0000000" miny="14.00000000" maxx="-60.00000000" maxy="55.00000000"/><ol:tileSize xmlns:ol="http://openlayers.org/context" width="512" height="1024"/><ol:numZoomLevels xmlns:ol="http://openlayers.org/context">4</ol:numZoomLevels><ol:units xmlns:ol="http://openlayers.org/context">degrees</ol:units><ol:isBaseLayer xmlns:ol="http://openlayers.org/context">true</ol:isBaseLayer><ol:displayInLayerSwitcher xmlns:ol="http://openlayers.org/context">true</ol:displayInLayerSwitcher><ol:singleTile xmlns:ol="http://openlayers.org/context">false</ol:singleTile></Extension></Layer><Layer queryable="1" hidden="0"><Server service="OGC:WMS" version="1.1.1"><OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://lioapp.lrc.gov.on.ca/cubeserv/cubeserv.pl"/></Server><Name>na_road:CCRS</Name><Title>Transportation Network</Title><sld:MinScaleDenominator xmlns:sld="http://www.opengis.net/sld">6200000.000</sld:MinScaleDenominator><sld:MaxScaleDenominator xmlns:sld="http://www.opengis.net/sld">32000000.00</sld:MaxScaleDenominator><FormatList><Format current="1">image/png</Format></FormatList><StyleList><Style current="1"><Name/><Title>Default</Title></Style></StyleList><Extension><ol:maxExtent xmlns:ol="http://openlayers.org/context" minx="-166.5320000" miny="4.050460000" maxx="-0.2068180000" maxy="70.28700000"/><ol:tileSize xmlns:ol="http://openlayers.org/context" width="512" height="1024"/><ol:transparent xmlns:ol="http://openlayers.org/context">TRUE</ol:transparent><ol:numZoomLevels xmlns:ol="http://openlayers.org/context">4</ol:numZoomLevels><ol:units xmlns:ol="http://openlayers.org/context">degrees</ol:units><ol:isBaseLayer xmlns:ol="http://openlayers.org/context">false</ol:isBaseLayer><ol:opacity xmlns:ol="http://openlayers.org/context">0.6</ol:opacity><ol:displayInLayerSwitcher xmlns:ol="http://openlayers.org/context">false</ol:displayInLayerSwitcher><ol:singleTile xmlns:ol="http://openlayers.org/context">false</ol:singleTile></Extension></Layer><Layer queryable="1" hidden="0"><Server service="OGC:WMS" version="1.1.1"><OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://columbo.nrlssc.navy.mil/ogcwms/servlet/WMSServlet/AccuWeather_Maps.wms"/></Server><Name>3:1</Name><Title>Radar 3:1</Title><sld:MinScaleDenominator xmlns:sld="http://www.opengis.net/sld">6299645.760</sld:MinScaleDenominator><sld:MaxScaleDenominator xmlns:sld="http://www.opengis.net/sld">31498228.80</sld:MaxScaleDenominator><FormatList><Format current="1">image/png</Format></FormatList><StyleList><Style current="1"><Name/><Title>Default</Title></Style></StyleList><Extension><ol:maxExtent xmlns:ol="http://openlayers.org/context" minx="-131.0294952" miny="14.56289673" maxx="-61.02950287" maxy="54.56289673"/><ol:transparent xmlns:ol="http://openlayers.org/context">TRUE</ol:transparent><ol:numZoomLevels xmlns:ol="http://openlayers.org/context">4</ol:numZoomLevels><ol:units xmlns:ol="http://openlayers.org/context">degrees</ol:units><ol:isBaseLayer xmlns:ol="http://openlayers.org/context">false</ol:isBaseLayer><ol:opacity xmlns:ol="http://openlayers.org/context">0.8</ol:opacity><ol:displayInLayerSwitcher xmlns:ol="http://openlayers.org/context">true</ol:displayInLayerSwitcher><ol:singleTile xmlns:ol="http://openlayers.org/context">true</ol:singleTile></Extension></Layer></LayerList></ViewContext>';
+    var polar = '<ViewContext xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:default="http://www.opengis.net/context" xmlns:ol="http://openlayers.org/context" xmlns="http://www.opengis.net/context" xmlns:wms="http://www.opengis.net/wms" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1.0" id="OpenLayers_Context_466" xsi:schemaLocation="http://www.opengis.net/context http://schemas.opengis.net/context/1.1.0/context.xsd"><General><BoundingBox minx="-3000000" miny="-3000000" maxx="7000000" maxy="7000000" SRS="EPSG:32661"/><Title>WMS viewer</Title><Extension><ol:maxExtent minx="-3000000" miny="-3000000" maxx="7000000" maxy="7000000"/><ol:units>m</ol:units></Extension></General><LayerList xmlns="http://www.opengis.net/context"><Layer queryable="0" hidden="0"><Server service="OGC:WMS" version="1.1.1" foo="bar"><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://wms.met.no/maps/northpole.map"/></Server><Name>world</Name><Title>The World</Title><FormatList><Format>image/jpeg</Format><Format current="1">image/png</Format></FormatList></Layer></LayerList></ViewContext>';
+    var fulldoc = '<ViewContext xmlns="http://www.opengis.net/context" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sld="http://www.opengis.net/sld" version="1.1.0" id="eos_data_gateways" xsi:schemaLocation="http://www.opengis.net/context context.xsd"><General><Window width="500" height="300"/><BoundingBox SRS="EPSG:4326" minx="-180.000000" miny="-90.000000" maxx="180.000000" maxy="90.000000"/><Title>EOS Data Gateways</Title><KeywordList><Keyword>EOS</Keyword><Keyword>EOSDIS</Keyword><Keyword>NASA</Keyword><Keyword>CCRS</Keyword><Keyword>CEOS</Keyword><Keyword>OGC</Keyword></KeywordList><Abstract>Map View of EOSDIS partners locations</Abstract><LogoURL width="130" height="74" format="image/gif"><OnlineResource xlink:type="simple" xlink:href="http://redhook.gsfc.nasa.gov/~imswww/pub/icons/logo.gif"/></LogoURL><DescriptionURL format="text/html"><OnlineResource xlink:type="simple" xlink:href="http://eos.nasa.gov/imswelcome"/></DescriptionURL><ContactInformation><ContactPersonPrimary><ContactPerson>Tom Kralidis</ContactPerson><ContactOrganization>Environment Canada</ContactOrganization></ContactPersonPrimary><ContactPosition>Systems Scientist</ContactPosition><ContactAddress><AddressType>postal</AddressType><Address>867 Lakeshore Road</Address><City>Burlington</City><StateOrProvince>Ontario</StateOrProvince><PostCode>L7R 4A6</PostCode><Country>Canada</Country></ContactAddress><ContactVoiceTelephone>+01-905-336-4409</ContactVoiceTelephone><ContactFacsimileTelephone>+01-905-336-4499</ContactFacsimileTelephone><ContactElectronicMailAddress>tom.kralidis@ec.gc.ca</ContactElectronicMailAddress></ContactInformation></General><LayerList><Layer queryable="1" hidden="0"><Server service="OGC:WMS" version="1.1.1" title="ESA CubeSERV"><OnlineResource xlink:type="simple" xlink:href="http://mapserv2.esrin.esa.it/cubestor/cubeserv/cubeserv.cgi"/></Server><Name>WORLD_MODIS_1KM:MapAdmin</Name><Title>WORLD_MODIS_1KM</Title><Abstract>Global maps derived from various Earth Observation sensors / WORLD_MODIS_1KM:MapAdmin</Abstract><SRS>EPSG:4326</SRS><FormatList><Format current="1">image/png</Format><Format>image/gif</Format><Format>image/jpeg</Format></FormatList><StyleList><Style current="1"><Name>default</Name><Title>default</Title><LegendURL width="16" height="16" format="image/gif"><OnlineResource xlink:type="simple" xlink:href="http://mapserv2.esrin.esa.it/cubestor/cubeserv/cubeserv.cgi?version=1.1.1&amp;request=GetLegendGraphic&amp;layer=WORLD_MODIS_1KM:MapAdmin&amp;style=default&amp;format=image/gif"/></LegendURL></Style></StyleList></Layer><Layer queryable="0" hidden="0"><Server service="OGC:WMS" version="1.1.1" title="The GLOBE Program Visualization Server"><OnlineResource xlink:type="simple" xlink:href="http://globe.digitalearth.gov/viz-bin/wmt.cgi"/></Server><Name>COASTLINES</Name><Title>Coastlines</Title><Abstract>Context layer: Coastlines</Abstract><SRS>EPSG:4326</SRS><SRS>EPSG:900913</SRS><FormatList><Format current="1">image/gif</Format><Format>image/png</Format></FormatList><StyleList><Style current="1"><Name>default</Name><Title>Default</Title><LegendURL width="180" format="image/gif" height="50"><OnlineResource xlink:type="simple" xlink:href="http://globe.digitalearth.gov/globe/en/icons/colorbars/COASTLINES.gif"/></LegendURL></Style></StyleList><DimensionList><Dimension name="time" units="ISO8601" nearestValue="1">2011-03-31,2011-04-01</Dimension></DimensionList></Layer><Layer queryable="1" hidden="0"><Server service="OGC:WMS" version="1.1.1" title="The GLOBE Program Visualization Server"><OnlineResource xlink:type="simple" xlink:href="http://globe.digitalearth.gov/viz-bin/wmt.cgi"/></Server><Name>NATIONAL</Name><Title>National Boundaries</Title><Abstract>Context layer: National Boundaries</Abstract><DataURL><OnlineResource xlink:type="simple" xlink:href="http://globe.digitalearth.gov/data/national.gml"/></DataURL><MetadataURL><OnlineResource xlink:type="simple" xlink:href="http://globe.digitalearth.gov/metadata/national.txt"/></MetadataURL><SRS>EPSG:4326</SRS><FormatList><Format current="1">image/gif</Format><Format>image/png</Format></FormatList><StyleList><Style current="1"><Name>default</Name><Title>Default</Title><LegendURL width="180" format="image/gif" height="50"><OnlineResource xlink:type="simple" xlink:href="http://globe.digitalearth.gov/globe/en/icons/colorbars/NATIONAL.gif"/></LegendURL></Style></StyleList></Layer><Layer queryable="1" hidden="0"><Server service="OGC:WMS" version="1.1.1" title="Canada Centre for Remote Sensing Web Map Service"><OnlineResource xlink:type="simple" xlink:href="http://ceoware2.ccrs.nrcan.gc.ca/cubewerx/cubeserv/cubeserv.cgi"/></Server><Name>EOS_DATA_GATEWAYS:CEOWARE2</Name><Title>EOS Data Gateways</Title><Abstract>Locations of EOS Data Gateway Locations. The same services and data are available through each gateway location.</Abstract><sld:MinScaleDenominator>1000</sld:MinScaleDenominator><sld:MaxScaleDenominator>500000</sld:MaxScaleDenominator><SRS>EPSG:4326</SRS><FormatList><Format current="1">image/gif</Format><Format>image/png</Format><Format>image/jpeg</Format></FormatList><StyleList><Style current="1"><Name>default</Name><Title>default</Title><LegendURL width="16" height="16" format="image/gif"><OnlineResource xlink:type="simple" xlink:href="http://ceoware2.ccrs.nrcan.gc.ca/cubewerx/cubeserv/cubeserv.cgi?version=1.1.1&amp;request=GetLegendGraphic&amp;layer=EOS_DATA_GATEWAYS:CEOWARE2&amp;style=default&amp;format=image/gif"/></LegendURL></Style><Style><SLD><Title>Default</Title><sld:StyledLayerDescriptor xmlns:ogc="http://www.opengis.net/ogc" xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0.0" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengeospatial.net/sld/1.0.0/StyledLayerDescriptor.xsd"><sld:NamedLayer><sld:Name>AAA212</sld:Name><sld:UserStyle><sld:FeatureTypeStyle><sld:Rule><sld:TextSymbolizer><sld:Label><ogc:PropertyName>ZONENR</ogc:PropertyName></sld:Label><sld:Font><sld:CssParameter name="font-family">Arial</sld:CssParameter><sld:CssParameter name="font-size">10</sld:CssParameter></sld:Font><sld:Fill><sld:CssParameter name="fill">#FF9900</sld:CssParameter></sld:Fill></sld:TextSymbolizer></sld:Rule></sld:FeatureTypeStyle></sld:UserStyle></sld:NamedLayer></sld:StyledLayerDescriptor></SLD></Style><Style><SLD><Title>Default</Title><sld:FeatureTypeStyle xmlns:ogc="http://www.opengis.net/ogc" xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0.0" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengeospatial.net/sld/1.0.0/StyledLayerDescriptor.xsd"><sld:Rule><sld:TextSymbolizer><sld:Label><PropertyName>ZONENR</PropertyName></sld:Label><sld:Font><sld:CssParameter name="font-family">Arial</sld:CssParameter><sld:CssParameter name="font-size">10</sld:CssParameter></sld:Font><sld:Fill><sld:CssParameter name="fill">#FF9900</sld:CssParameter></sld:Fill></sld:TextSymbolizer></sld:Rule></sld:FeatureTypeStyle></SLD></Style></StyleList></Layer></LayerList></ViewContext>';
+
+    function test_Format_WMC_read(t) {
+        t.plan(64);
+
+        var format = new OpenLayers.Format.WMC();        
+        var map, layer;
+        
+        // test v1.0.0
+        map = format.read(v1_0_0, {map: "map"});
+        t.eq(map.center.lon.toPrecision(6), (-95).toPrecision(6), "(v1.0.0) map center correctly set");
+        t.eq(map.center.lat.toPrecision(6), (34.5).toPrecision(6), "(v1.0.0) map center correctly set");
+        t.eq(map.maxExtent.left.toPrecision(6), (-130).toPrecision(6), "(v1.0.0) map maxExtent correctly set");
+        t.eq(map.layers.length, 4, "(v1.0.0) correct number of layers");
+        t.eq(map.projection, "EPSG:4326", "(v1.0.0) map projection set correctly");
+        // check out first base layer
+        layer = map.layers[0];
+        t.eq(layer.queryable, true, "(1.0.0) Layer is queryable");    
+        t.ok(layer instanceof OpenLayers.Layer.WMS,
+             "(v1.0.0) wms layer correctly instantiated");
+        t.eq(layer.url, "http://t1.hypercube.telascience.org/cgi-bin/landsat7",
+             "(v1.0.0) layer url correctly set");
+        t.eq(layer.maxExtent.right.toPrecision(6), (-60).toPrecision(6),
+             "(v1.0.0) layer maxExtent correctly set");
+        t.eq(layer.numZoomLevels, 4,
+             "(v1.0.0) layer numZoomLevels correctly set");
+        t.eq(layer.isBaseLayer, true,
+             "(v1.0.0) layer isBaseLayer correctly set for base layer");
+        t.eq(layer.tileSize.w, 512, 
+             "(v1.0.0) layer tileSize width correctly set");
+        t.eq(layer.tileSize.h, 1024, 
+             "(v1.0.0) layer tileSize height correctly set");
+        // check out layer not in switcher
+        layer = map.layers[2];
+        t.eq(layer.displayInLayerSwitcher, false, 
+             "(v1.0.0) layer displayInLayerSwitcher correctly set");
+        t.eq(layer.params["TRANSPARENT"], "TRUE", 
+             "(v1.0.0) layer param.transparent correctly set");
+        t.eq(layer.isBaseLayer, false,
+             "(v1.0.0) layer isBaseLayer correctly set for overlay");
+        // check out single tile overlay
+        layer = map.layers[3];
+        t.eq(layer.singleTile, true, 
+             "(v1.0.0) layer singleTile correctly set");
+        t.eq(layer.opacity, 0.8, 
+             "(v1.0.0) layer opacity correctly set");
+        map.destroy();
+        
+        // test v1.1.0
+        map = format.read(v1_1_0, {map: "map"});
+        t.eq(map.center.lon.toPrecision(6), (-95).toPrecision(6), "(v1.1.0) map center correctly set");
+        t.eq(map.center.lat.toPrecision(6), (34.5).toPrecision(6), "(v1.1.0) map center correctly set");
+        t.eq(map.maxExtent.left.toPrecision(6), (-130).toPrecision(6), "(v1.1.0) map maxExtent correctly set");
+        t.eq(map.layers.length, 4, "(v1.1.0) correct number of layers");
+        t.eq(map.projection, "EPSG:4326", "(v1.1.0) map projection set correctly");
+        // check out first baseLayer
+        layer = map.layers[0];
+        t.ok(layer instanceof OpenLayers.Layer.WMS,
+             "(v1.1.0) wms layer correctly instantiated");
+        t.eq(layer.url, "http://t1.hypercube.telascience.org/cgi-bin/landsat7",
+             "(v1.1.0) layer url correctly set");
+        t.eq(layer.maxExtent.right.toPrecision(6), (-60).toPrecision(6),
+             "(v1.1.0) layer maxExtent correctly set");
+        t.eq(layer.numZoomLevels, 4,
+             "(v1.1.0) layer numZoomLevels correctly set");
+        t.eq(layer.isBaseLayer, true,
+             "(v1.1.0) layer isBaseLayer correctly set for overlay");
+        // check out layer not in switcher
+        layer = map.layers[2];
+        t.eq(layer.displayInLayerSwitcher, false, 
+             "(v1.1.0) layer displayInLayerSwitcher correctly set");
+        t.eq(layer.params["TRANSPARENT"], "TRUE", 
+             "(v1.1.0) layer param.transparent correctly set");
+        t.eq(layer.isBaseLayer, false,
+             "(v1.1.0) layer isBaseLayer correctly set for overlay");
+        t.eq(layer.minScale.toPrecision(6), (32000000).toPrecision(6), 
+             "(v1.1.0) layer minScale correctly set");
+        t.eq(layer.maxScale.toPrecision(6), (6200000).toPrecision(6), 
+             "(v1.1.0) layer maxScale correctly set");
+        // check out single tile overlay
+        layer = map.layers[3];
+        t.eq(layer.singleTile, true, 
+             "(v1.1.0) layer singleTile correctly set");
+        t.eq(layer.opacity, 0.8, 
+             "(v1.1.0) layer opacity correctly set");
+        map.destroy();
+
+        // Check if maxResolution is set correctly
+        map = format.read(polar, {map: "map"});
+        t.eq(map.maxResolution, 39062.5,
+             "maxResolution correctly set");
+        map.destroy();
+
+        // test mapOptions
+        map = format.read(v1_1_0, {map: {foo: 'bar', div: 'map'}});
+        t.eq(map.foo, "bar",
+            "mapOptions correctly passed to the created map object");
+        map.destroy();
+        
+        map = format.read(fulldoc, {map: "map"});
+
+        var meta = map.metadata;
+
+        // Check if ContextInformation is set properly
+        var cinfo = meta.contactInformation;
+
+        t.eq(cinfo.personPrimary.person,       "Tom Kralidis",       "got correct person");
+        t.eq(cinfo.personPrimary.organization, "Environment Canada", "got correct organization");
+
+        t.eq(cinfo.contactAddress.address,     "867 Lakeshore Road", "got correct address");
+        t.eq(cinfo.contactAddress.city,        "Burlington",         "got correct city");
+        t.eq(cinfo.contactAddress.country,     "Canada",             "got correct country");
+        t.eq(cinfo.contactAddress.postcode,    "L7R 4A6",            "got correct postcode");
+        t.eq(cinfo.contactAddress.stateOrProvince, "Ontario",        "got correct stateOrProvince");
+        t.eq(cinfo.contactAddress.type,        "postal",             "got correct address type");
+
+        t.eq(cinfo.email,    "tom.kralidis@ec.gc.ca", "got correct email");
+        t.eq(cinfo.fax,      "+01-905-336-4499",      "got correct fax number");
+        t.eq(cinfo.phone,    "+01-905-336-4409",      "got correct phone number");
+        t.eq(cinfo.position, "Systems Scientist",     "got correct position");
+
+        // Check if LogoURL is read properly
+        var logo = meta.logo;
+        t.eq(logo, {
+                href: "http://redhook.gsfc.nasa.gov/~imswww/pub/icons/logo.gif",
+                width: "130",
+                height: "74",
+                format: "image/gif"},
+            "got currect logo");
+
+        t.eq(meta.descriptionURL, "http://eos.nasa.gov/imswelcome", "got correct descriptionURL");
+
+        t.eq(meta.keywords,
+             ["EOS", "EOSDIS", "NASA", "CCRS", "CEOS", "OGC"],
+             "got correct keywords");
+
+        layer = map.layers[1];
+
+        t.eq(layer.metadata.servertitle,
+             "The GLOBE Program Visualization Server",
+             "got correct title for server");
+
+        t.eq(layer.srs,
+             {"EPSG:4326": true, "EPSG:900913": true},
+             "SRS read correctly");
+
+        t.eq(layer.metadata.formats,
+             [{value: "image/gif", current: true},
+              {value: "image/png"}],
+             "formats read correctly");
+
+        var style = layer.metadata.styles[0];
+        t.eq(style.legend, {
+                href: "http://globe.digitalearth.gov/globe/en/icons/colorbars/COASTLINES.gif",
+                width: "180",
+                height: "50",
+                format: "image/gif"},
+            "got currect legend");
+
+
+        var dim = layer.dimensions["time"];
+        t.eq(dim.name, "time", "got correct name of dimension");
+        t.eq(dim.units, "ISO8601", "got correct units for dimension");
+        t.eq(dim.nearestValue, true, "got correct value for nearestValue");
+        t.eq(dim.values, ["2011-03-31", "2011-04-01"], "got correct values for dimension");
+
+        layer = map.layers[2];
+        t.eq(layer.metadata.dataURL,
+             "http://globe.digitalearth.gov/data/national.gml",
+             "got correct dataURL");
+        t.eq(layer.metadataURL,
+             "http://globe.digitalearth.gov/metadata/national.txt",
+             "got correct metadataURL");
+
+        layer = map.layers[3];
+        var sld_body = '<sld:StyledLayerDescriptor xmlns:ogc="http://www.opengis.net/ogc" xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0.0" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengeospatial.net/sld/1.0.0/StyledLayerDescriptor.xsd"><sld:NamedLayer><sld:Name>AAA212</sld:Name><sld:UserStyle><sld:FeatureTypeStyle><sld:Rule><sld:TextSymbolizer><sld:Label><ogc:PropertyName>ZONENR</ogc:PropertyName></sld:Label><sld:Font><sld:CssParameter name="font-family">Arial</sld:CssParameter><sld:CssParameter name="font-size">10</sld:CssParameter></sld:Font><sld:Fill><sld:CssParameter name="fill">#FF9900</sld:CssParameter></sld:Fill></sld:TextSymbolizer></sld:Rule></sld:FeatureTypeStyle></sld:UserStyle></sld:NamedLayer></sld:StyledLayerDescriptor>';
+        var styles = layer.metadata.styles;
+        t.xml_eq(styles[1].body, sld_body, "StyledLayerDescriptor body read correctly");
+
+        sld_body = '<sld:FeatureTypeStyle xmlns:ogc="http://www.opengis.net/ogc" xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0.0" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengeospatial.net/sld/1.0.0/StyledLayerDescriptor.xsd"><sld:Rule><sld:TextSymbolizer><sld:Label><PropertyName xmlns="http://www.opengis.net/context">ZONENR</PropertyName></sld:Label><sld:Font><sld:CssParameter name="font-family">Arial</sld:CssParameter><sld:CssParameter name="font-size">10</sld:CssParameter></sld:Font><sld:Fill><sld:CssParameter name="fill">#FF9900</sld:CssParameter></sld:Fill></sld:TextSymbolizer></sld:Rule></sld:FeatureTypeStyle>';
+        t.xml_eq(styles[2].body, sld_body, "FeatureTypeStyle body read correctly");
+
+    }
+    
+    function test_Format_WMC_write(t) {
+        
+        var format = new OpenLayers.Format.WMC();        
+        var map = format.read(v1_1_0, {map: "map"});
+        var wmc;
+        
+        function sanitize(str) {
+            // id is unique so we don't expect it to be the same
+            str = str.replace(/OpenLayers_Context_\d+/, "foo");
+            // FF and IE differ on ordering of attribute nodes
+            // a better way to compare xml would be nice
+            str = str.replace(/\s*xsi:schemaLocation=".*?"/, "");
+            str = str.replace(/\s*xmlns:xlink=".*?"/g, "");
+            // and of course floating point precision is an issue
+            str = str.replace(/(-?\d+\.\d+)/g, function(m) {return parseFloat(m).toPrecision(6)});
+            return str;
+        }
+
+        /**
+         * Version 1.0.0 doesn't make the round trip because min/max resolutions
+         * are not stored.  Version 1.1.0 introduced minScaleDenominator and
+         * maxScaleDenominator.  The parser still writes valid WMC v1.0.0, you
+         * just need a validator to prove it.
+         *
+         * The wmc.html example can be used to produce WMC docs for validation.
+         * Prior to validation, the Extension tags need to be removed unless someone
+         * cares to write and maintain some XSD.  Both version 1.0.0 and 1.1.0
+         * validate on http://www.validome.org/xml/.
+         */
+
+        // test v1.1.0
+        if(OpenLayers.BROWSER_NAME== "opera") {
+            t.plan(0);
+            t.debug_print("WMC writing works but is not tested in Opera");
+        } else {
+            t.plan(11);
+
+            map = format.read(v1_1_0, {map: "map"});
+            wmc = format.write(map);
+            t.eq(sanitize(wmc), sanitize(v1_1_0),
+                 "(v1.1.0) write gives what read got");
+            map.destroy();
+
+            var parser = format.getParser("1.1.0");
+            map = format.read(fulldoc, {map: "map"});
+            var context = format.toContext(map);
+
+            // KeywordList
+            var expected = '<KeywordList xmlns="http://www.opengis.net/context"><Keyword>EOS</Keyword><Keyword>EOSDIS</Keyword><Keyword>NASA</Keyword><Keyword>CCRS</Keyword><Keyword>CEOS</Keyword><Keyword>OGC</Keyword></KeywordList>';
+            t.xml_eq(parser.write_wmc_KeywordList(context.keywords),
+                     expected,
+                     "keywordlist written correctly");
+
+            // ContactInformation
+            expected = '<ContactInformation xmlns="http://www.opengis.net/context"><ContactPersonPrimary><ContactPerson>Tom Kralidis</ContactPerson><ContactOrganization>Environment Canada</ContactOrganization></ContactPersonPrimary><ContactPosition>Systems Scientist</ContactPosition><ContactAddress><AddressType>postal</AddressType><Address>867 Lakeshore Road</Address><City>Burlington</City><StateOrProvince>Ontario</StateOrProvince><PostCode>L7R 4A6</PostCode><Country>Canada</Country></ContactAddress><ContactVoiceTelephone>+01-905-336-4409</ContactVoiceTelephone><ContactFacsimileTelephone>+01-905-336-4499</ContactFacsimileTelephone><ContactElectronicMailAddress>tom.kralidis@ec.gc.ca</ContactElectronicMailAddress></ContactInformation>';
+            t.xml_eq(parser.write_wmc_ContactInformation(context.contactInformation),
+                     expected,
+                     "contactInformation written correctly");
+
+            // LogoURL
+            expected = '<LogoURL xmlns="http://www.opengis.net/context" width="130" height="74" format="image/gif"><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://redhook.gsfc.nasa.gov/~imswww/pub/icons/logo.gif"/></LogoURL>';
+            t.xml_eq(parser.write_wmc_URLType("LogoURL", context.logo.href, context.logo),
+                     expected,
+                     "LogoURL written correctly");
+
+            // DescriptionURL
+            expected = '<DescriptionURL xmlns="http://www.opengis.net/context"><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://eos.nasa.gov/imswelcome"/></DescriptionURL>';
+            t.xml_eq(parser.write_wmc_URLType("DescriptionURL", context.descriptionURL),
+                     expected,
+                     "DescriptionURL written correctly");
+
+
+            var layerContext = context.layersContext[1];
+
+            // Server
+            expected = '<Server xmlns="http://www.opengis.net/context" service="OGC:WMS" version="1.1.1" title="The GLOBE Program Visualization Server"><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://globe.digitalearth.gov/viz-bin/wmt.cgi"/></Server>';
+            t.xml_eq(parser.write_wmc_Server(layerContext),
+                     expected,
+                     "Server written correctly");
+
+            // FormatList
+            expected = '<FormatList xmlns="http://www.opengis.net/context"><Format current="1">image/gif</Format><Format>image/png</Format></FormatList>';
+            t.xml_eq(parser.write_wmc_FormatList(layerContext),
+                     expected,
+                     "FormatList written correctly");
+
+            // DimensionList
+            expected = '<DimensionList xmlns="http://www.opengis.net/context"><Dimension name="time" units="ISO8601" nearestValue="1" unitSymbol="" userValue="" multipleValues="0" current="0" default="">2011-03-31,2011-04-01</Dimension></DimensionList>';
+            t.xml_eq(parser.write_wmc_DimensionList(layerContext),
+                     expected,
+                     "DimensionList written correctly");
+
+            // LegendURL
+            var legend = layerContext.styles[0].legend;
+            expected = '<LegendURL xmlns="http://www.opengis.net/context" width="180" format="image/gif" height="50"><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://globe.digitalearth.gov/globe/en/icons/colorbars/COASTLINES.gif"/></LegendURL>';
+            t.xml_eq(parser.write_wmc_URLType("LegendURL", legend.href, legend),
+                     expected,
+                     "LegendURL written correctly");
+
+            layerContext = context.layersContext[2];
+
+            // DataURL
+            expected = '<DataURL xmlns="http://www.opengis.net/context"><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://globe.digitalearth.gov/data/national.gml" /></DataURL>';
+            t.xml_eq(parser.write_wmc_URLType("DataURL", layerContext.dataURL),
+                     expected,
+                     "DataURL written correctly");
+
+            // MetadataURL
+            expected = '<MetadataURL xmlns="http://www.opengis.net/context"><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://globe.digitalearth.gov/metadata/national.txt" /></MetadataURL>';
+            t.xml_eq(parser.write_wmc_URLType("MetadataURL", layerContext.metadataURL),
+                     expected,
+                     "MetadataURL written correctly");
+
+        }
+
+    }
+
+    </script> 
+</head> 
+<body>
+    <div id="map" style="width: 512px; height: 256px;"></div>
+</body> 
+</html> 

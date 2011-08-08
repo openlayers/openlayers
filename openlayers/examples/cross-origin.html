@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>OpenLayers Script Protocol Example</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <script src="../lib/OpenLayers.js"></script>
+    </head>
+    <body>
+        <h1 id="title">Script Protocol</h1>
+        <div id="tags">
+            protocol, script, cross origin, advanced
+        </div>
+        <p id="shortdesc">
+            Demonstrates the use of a script protocol for making feature requests 
+            cross origin.
+        </p>
+        <div id="map" class="smallmap"></div>
+        <div id="docs">
+            <p>
+                In cases where a service returns serialized features and accepts
+                a named callback (e.g. http://example.com/features.json?callback=foo),
+                the script protocol can be used to read features without being
+                restricted by the same origin policy.
+            </p>
+            <p>
+                View the <a href="cross-origin.js" target="_blank">cross-origin.js</a>
+                source to see how this is done
+            </p>
+        </div>
+        <script src="cross-origin.js"></script>
+    </body>
+</html>

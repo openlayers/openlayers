@@ -1,0 +1,86 @@
+<html>
+<head>
+    <script src="../../OLLoader.js"></script>
+    <script type="text/javascript">
+
+    function test_write_wmc_Layer(t) {
+        if (OpenLayers.BROWSER_NAME == "safari") {
+            t.plan(0);
+            t.debug_print("Safari has wierd behavior with getElementsByTagNameNS: the result is that we can't run these tests there. Patches welcome.");
+            return;
+        }
+        t.plan(12);
+
+        // direct construction of a parser for a unit test
+        var format = new OpenLayers.Format.WMC();
+        var parser = format.getParser("1_1_0");
+        var sldNS = parser.namespaces["sld"];
+
+        // test that Min/MaxScaleDenominator is not written out when no
+        // resolution related options are set
+        var layer = new OpenLayers.Layer.WMS(
+            "test", "http://foo", {},
+            {maxExtent: new OpenLayers.Bounds(1, 2, 3, 4)}
+        );
+        var layerContext = format.layerToContext(layer);
+        var node = parser.write_wmc_Layer(layerContext);
+        var minList = parser.getElementsByTagNameNS(node, sldNS, "MinScaleDenominator");
+        t.eq(minList.length, 0, "(none) node not written with MinScaleDenominator");
+        var maxList = parser.getElementsByTagNameNS(node, sldNS, "MaxScaleDenominator");
+        t.eq(maxList.length, 0, "(none) node not written with MaxScaleDenominator");
+
+        // test that Min/MaxScaleDenominator is written out for explicit
+        // resolutions array
+        layer = new OpenLayers.Layer.WMS(
+            "test", "http://foo", {},
+            {resolutions: [4, 2, 1], maxExtent: new OpenLayers.Bounds(1, 2, 3, 4)}
+        );
+        layer.minScale = Math.random();
+        layer.maxScale = Math.random();
+        sldNS = parser.namespaces["sld"];
+        layerContext = format.layerToContext(layer);
+        node = parser.write_wmc_Layer(layerContext);
+        minList = parser.getElementsByTagNameNS(node, sldNS, "MinScaleDenominator");
+        t.eq(minList.length, 1, "(resolutions) node written with MinScaleDenominator");
+        t.eq(layer.maxScale.toPrecision(16), parser.getChildValue(minList[0]),
+             "(resolutions) node written with correct MinScaleDenominator value");
+        maxList = parser.getElementsByTagNameNS(node, sldNS, "MaxScaleDenominator");
+        t.eq(maxList.length, 1, "(resolutions) node written with MaxScaleDenominator");
+        t.eq(layer.minScale.toPrecision(16), parser.getChildValue(maxList[0]),
+             "(resolutions) node written with correct MaxScaleDenominator value");
+
+        layer = new OpenLayers.Layer.WMS(
+            "test", "http://foo", {},
+            {scales: [4, 2, 1], maxExtent: new OpenLayers.Bounds(1, 2, 3, 4)}
+        );
+        layer.minScale = Math.random();
+        layer.maxScale = Math.random();
+        layerContext = format.layerToContext(layer);
+        node = parser.write_wmc_Layer(layerContext);
+        minList = parser.getElementsByTagNameNS(node, sldNS, "MinScaleDenominator");
+        var f = new OpenLayers.Format.XML();
+        t.eq(minList.length, 1, "(scales) node written with MinScaleDenominator");
+        t.eq(layer.maxScale.toPrecision(16), parser.getChildValue(minList[0]),
+             "(scales) node written with correct MinScaleDenominator value");
+        maxList = parser.getElementsByTagNameNS(node, sldNS, "MaxScaleDenominator");
+        t.eq(maxList.length, 1, "(scales) node written with MaxScaleDenominator");
+        t.eq(layer.minScale.toPrecision(16), parser.getChildValue(maxList[0]),
+             "(scales) node written with correct MaxScaleDenominator value");
+
+        layer.metadataURL = 'http://foo';
+        layerContext = format.layerToContext(layer);
+        node = parser.write_wmc_Layer(layerContext);
+        t.eq(node.childNodes[3].localName || node.childNodes[3].nodeName.split(":").pop(),
+            'MetadataURL', "MinScaleDenominator is written after MetadataURL, so third node should be MetadataURL");
+        t.eq(node.childNodes[4].localName || node.childNodes[4].nodeName.split(":").pop(),
+            'MinScaleDenominator', "MinScaleDenominator is written after MetadataURL, so fourth node should be MinScaleDenominator");
+
+    }
+
+
+    </script>
+</head>
+<body>
+    <div id="map" style="width: 512px; height: 256px;"></div>
+</body>
+</html>

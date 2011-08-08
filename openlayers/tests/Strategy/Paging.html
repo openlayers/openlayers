@@ -1,0 +1,113 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+
+    function test_activate(t) {
+        t.plan(2);
+
+        var strategy = new OpenLayers.Strategy.Paging();
+        t.eq(strategy.active, false, "not active after construction");
+
+        var layer = new OpenLayers.Layer.Vector("Vector Layer", {
+            strategies: [strategy]
+        });
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
+        
+        t.eq(strategy.active, true, "active after adding to map");
+    }
+    
+    function test_paging(t) {
+        t.plan(18);
+
+        var strategy = new OpenLayers.Strategy.Paging();
+        var layer = new OpenLayers.Layer.Vector("Vector Layer", {
+            strategies: [strategy],
+            drawFeature: function() {}
+        });
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
+        
+        var features = new Array(25);
+        for(var i=0; i<features.length; ++i) {
+            features[i] = {destroy: function() {}};
+        }
+        
+        function featuresEq(got, exp) {
+            var eq = false;
+            if(got instanceof Array && exp instanceof Array) {
+                if(got.length === exp.length) {
+                    for(var i=0; i<got.length; ++i) {
+                        if(got[i] !== exp[i]) {
+                            console.log(got[i], exp[i]);
+                            break;
+                        }
+                    }
+                    eq = (i == got.length);
+                }
+            }
+            return eq;
+        }
+        
+        var len = strategy.pageLength();
+        t.eq(len, 10, "page length defaults to 10");
+        
+        // add 25 features to the layer
+        layer.addFeatures(features);
+        t.eq(strategy.features.length, features.length, "strategy caches all features");
+        t.eq(layer.features.length, len, "layer gets one page of features");
+        t.ok(featuresEq(layer.features, features.slice(0, len)), "layer gets first page initially");
+        t.eq(strategy.pageNum(), 0, "strategy reports 0 based page number");
+        t.eq(strategy.pageCount(), Math.ceil(features.length / len), "strategy reports correct number of pages");
+        
+        // load next page of features
+        var changed = strategy.pageNext();
+        t.eq(changed, true, "(1) strategy reports change");
+        t.eq(strategy.pageNum(), 1, "second page");
+        t.ok(featuresEq(layer.features, features.slice(len, 2*len)), "layer has second page of features");
+        
+        // load next page of features (half page)
+        changed = strategy.pageNext();
+        t.eq(changed, true, "(2) strategy reports change");
+        t.eq(strategy.pageNum(), 2, "third page");
+        
+        // try to change forward again
+        changed = strategy.pageNext();
+        t.eq(changed, false, "strategy reports no change");
+        t.eq(layer.features.length, features.length % len, "layer has partial page");
+        t.ok(featuresEq(layer.features, features.slice(2*len, 3*len)), "layer has third page of features");
+        t.eq(strategy.pageNum(), 2, "still on third page");
+        
+        // change back a page
+        changed = strategy.pagePrevious();
+        t.eq(changed, true, "(3) strategy reports change");
+        t.eq(strategy.pageNum(), 1, "back on second page");
+        t.ok(featuresEq(layer.features, features.slice(len, 2*len)), "layer has second page of features again");
+        
+        layer.destroy();
+        
+    }
+
+    function test_deactivate(t) {
+        t.plan(2);
+
+        var strategy = new OpenLayers.Strategy.Paging();
+        var layer = new OpenLayers.Layer.Vector("Vector Layer", {
+            strategies: [strategy]
+        });
+        var map = new OpenLayers.Map('map');
+        map.addLayer(layer);
+        
+        t.eq(strategy.active, true, "active after adding to map");
+        
+        map.removeLayer(layer);
+        t.eq(strategy.active, false, "not active after removing from map");
+    }
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 400px; height: 200px" />
+</body>
+</html>

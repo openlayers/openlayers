@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers: WMS + Time</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map, ia_wms;
+        function init(){
+            map = new OpenLayers.Map('map');
+
+            var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                "http://vmap0.tiles.osgeo.org/wms/vmap0?", {layers: 'basic'} );
+
+            var jpl_wms = new OpenLayers.Layer.WMS( "NASA Global Mosaic",
+                "http://t1.hypercube.telascience.org/cgi-bin/landsat7", 
+                {layers: "landsat7"});
+
+            ia_wms = new OpenLayers.Layer.WMS("Nexrad","http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r-t.cgi?",{layers:"nexrad-n0r-wmst",transparent:true,format:'image/png',time:"2005-08-29T13:00:00Z"});
+
+            jpl_wms.setVisibility(false);
+
+            map.addLayers([ol_wms, jpl_wms, ia_wms]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.zoomToExtent(new OpenLayers.Bounds(-100.898437,22.148438,-78.398437,39.726563));
+        }
+        function update_date() {
+            var string = OpenLayers.Util.getElement('year').value + "-" +
+                         OpenLayers.Util.getElement('month').value + "-" +
+                         OpenLayers.Util.getElement('day').value + "T" +
+                         OpenLayers.Util.getElement('hour').value + ":" +
+                         OpenLayers.Util.getElement('minute').value + ":00";
+            ia_wms.mergeNewParams({'time':string});
+
+        }
+    </script>
+  </head>
+  <body onload="init()">
+     <h1 id="title"> WMS Time Example</h1>
+        <div id="tags">
+            wmst, wms-t
+        </div>
+        <p id="shortdesc">
+            Shows the use of the layer WMS-T (time) layer</a>
+        </p>
+    <input size="4" type='text' id='year' value="2005" onchange="update_date()"/>-<input size="2" type="text" id="month" value="08" onchange="update_date()"/>-<input size="2" type="text" id="day" value="29" onchange="update_date()" />T<input type="text" size="2" id="hour" value="13" onchange="update_date()" />:<input type="text" size="2" id="minute" value="00" onchange="update_date()" />:00
+    <div id="map" class="smallmap"></div>
+    <div id="docs">
+        <p>WMS-T example: update the times, and the radar image will change.
+        Uses Layer.mergeNewParams to update the date element with the strings
+        from the input fields every time one of them is changed. The inputs
+        above describe a timestamp: The minute increments can only be updated
+        in units of 5.</p>
+    </div>
+  </body>
+</html>
+
+
+

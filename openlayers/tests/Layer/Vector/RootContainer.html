@@ -1,0 +1,63 @@
+<html>
+<head>
+  <script src="../../OLLoader.js"></script>
+  <script type="text/javascript">
+    var layer, map; 
+
+    function test_RootContainer_collectResetRoots(t) {
+        
+        map = new OpenLayers.Map("map");
+        var layer1 = new OpenLayers.Layer.Vector("layer1");
+        var layer2 = new OpenLayers.Layer.Vector("layer2");
+        layer = new OpenLayers.Layer.Vector.RootContainer("layer_1_2", {
+            layers: [layer1, layer2]
+        });
+        
+        // we cannot test this with a renderer that does not hava a rendererRoot
+        var plan = layer.renderer.rendererRoot ? 4 : 0;
+        t.plan(plan);
+        if(plan == 0) {
+            return;
+        }
+
+        var numRoots = layer.renderer.rendererRoot.childNodes.length;
+
+        // addLayers will call setMap() for layer, which will call collectRoots()
+        map.addLayers([layer1, layer2, layer]);
+        t.eq(layer.renderer.rendererRoot.childNodes.length, numRoots * 3, "layer has correct number of renderer roots");        
+        t.eq(layer1.renderer.rendererRoot.childNodes.length, 0, "layer1 has no own renderer root");
+        
+        layer.resetRoots();
+        t.eq(layer.renderer.rendererRoot.childNodes.length, numRoots, "roots removed from container");
+        t.eq(layer1.renderer.rendererRoot.childNodes.length, numRoots, "root re-added to original layer");
+    }
+    
+    function test_RootContainer_getFeatureFromEvent(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var layer1 = new OpenLayers.Layer.Vector("layer1");
+        var layer2 = new OpenLayers.Layer.Vector("layer2");
+        layer = new OpenLayers.Layer.Vector.RootContainer("layer_1_2", {
+            layers: [layer1, layer2]
+        });
+        map.addLayers([layer1, layer2, layer]);
+        var feature1 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,1));
+        var feature2 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(1,0));
+        layer1.addFeatures(feature1);
+        layer2.addFeatures(feature2);
+        t.eq(layer.getFeatureFromEvent({
+            srcElement: {
+                _featureId: feature1.id
+            }
+        }).id, feature1.id, "feature from layer1 found");
+        t.eq(layer.getFeatureFromEvent({srcElement: {
+            _featureId: feature2.id
+        }}).id, feature2.id, "feature from layer2 found");
+    }
+
+  </script>
+</head>
+<body>
+  <div id="map" style="width:500px;height:550px"></div>
+</body>
+</html>

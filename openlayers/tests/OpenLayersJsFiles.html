@@ -1,0 +1,27 @@
+<html>
+<head>
+    <script type="text/javascript">
+        window.OpenLayers = new Array(
+            "OpenLayers/Util.js",
+            "OpenLayers/BaseTypes.js"
+        );
+    </script>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        function test_OpenLayers(t) {
+            t.plan(1);
+            var s = document.getElementsByTagName("script");
+            var src, count = 0;
+            for(var i=0, len=s.length; i<len; i++) {
+                src = s[i].getAttribute('src');
+                if(src) {
+                    count++;
+                }
+            }
+            t.eq(count, 3, "Three OpenLayers scripts loaded.");
+        }
+    </script>
+</head>
+<body>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<html> 
+<head> 
+    <script src="../../OLLoader.js"></script>
+    <script type="text/javascript">
+    
+    function test_read(t) {
+        
+        t.plan(9);
+
+        var xml = document.getElementById("wmsc").firstChild.nodeValue;
+        var doc = new OpenLayers.Format.XML().read(xml);
+        var format = new OpenLayers.Format.WMSCapabilities({profile: "WMSC"});
+        var obj = format.read(doc);
+        var tilesets = obj.capability.vendorSpecific.tileSets;
+        t.eq(tilesets.length, 2, "We expect 2 tilesets to be parsed");
+        var tileset = tilesets[0];
+        t.eq(tileset.bbox["EPSG:900913"].bbox, [-13697515.466796875, 5165920.118906248, -13619243.94984375, 5244191.635859374], "BBOX correctly parsed");
+        t.eq(tileset.format, "image/png", "Format correctly parsed");
+        t.eq(tileset.height, 256, "Height correctly parsed");
+        t.eq(tileset.width, 256, "Width correctly parsed");
+        t.eq(tileset.layers, "medford:hydro", "Layers correctly parsed");
+        t.eq(tileset.srs["EPSG:900913"], true, "SRS correctly parsed");
+        t.eq(tileset.resolutions, [156543.03390625, 78271.516953125, 39135.7584765625, 19567.87923828125, 9783.939619140625, 4891.9698095703125, 2445.9849047851562, 1222.9924523925781, 611.4962261962891, 305.74811309814453, 152.87405654907226, 76.43702827453613, 38.218514137268066, 19.109257068634033, 9.554628534317017, 4.777314267158508, 2.388657133579254, 1.194328566789627, 0.5971642833948135, 0.29858214169740677, 0.14929107084870338, 0.07464553542435169, 0.037322767712175846, 0.018661383856087923, 0.009330691928043961, 0.004665345964021981], "Resolutions correctly parsed");
+        t.eq(tileset.styles, "", "Styles correctly parsed");
+    }
+
+    </script> 
+</head> 
+<body>
+
+<div id="wmsc"><!--
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE WMT_MS_Capabilities SYSTEM "http://schemas.opengis.net/wms/1.1.1/capabilities_1_1_1.dtd"[
+<!ELEMENT VendorSpecificCapabilities (TileSet*) >
+<!ELEMENT TileSet (SRS, BoundingBox?, Resolutions, Width, Height, Format, Layers*, Styles*) >
+<!ELEMENT Resolutions (#PCDATA) >
+<!ELEMENT Width (#PCDATA) >
+<!ELEMENT Height (#PCDATA) >
+<!ELEMENT Layers (#PCDATA) >
+<!ELEMENT Styles (#PCDATA) >
+]>
+<WMT_MS_Capabilities version="1.1.1" updateSequence="57">
+  <Service>
+    <Name>OGC:WMS</Name>
+    <Title>GeoServer Web Map Service</Title>
+    <Abstract>A compliant implementation of WMS 1.1.1 plus most of the SLD 1.0 extension (dynamic styling). Can also generate PDF, SVG, KML, GeoRSS</Abstract>
+    <KeywordList>
+      <Keyword>WFS</Keyword>
+      <Keyword>WMS</Keyword>
+      <Keyword>GEOSERVER</Keyword>
+    </KeywordList>
+    <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/geoserver-suite/wms"/>
+    <ContactInformation>
+      <ContactPersonPrimary>
+        <ContactPerson>OpenGeo</ContactPerson>
+        <ContactOrganization>OpenGeo</ContactOrganization>
+      </ContactPersonPrimary>
+      <ContactPosition>Outreach</ContactPosition>
+      <ContactAddress>
+        <AddressType>Work</AddressType>
+        <Address/>
+        <City>New York</City>
+        <StateOrProvince/>
+        <PostCode/>
+        <Country>USA</Country>
+      </ContactAddress>
+      <ContactVoiceTelephone/>
+      <ContactFacsimileTelephone/>
+      <ContactElectronicMailAddress>inquiry@opengeo.org</ContactElectronicMailAddress>
+    </ContactInformation>
+    <Fees>NONE</Fees>
+    <AccessConstraints>NONE</AccessConstraints>
+  </Service>
+  <Capability>
+    <Request>
+      <GetCapabilities>
+        <Format>application/vnd.ogc.wms_xml</Format>
+        <DCPType>
+          <HTTP>
+            <Get>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/geoserver-suite/wms?SERVICE=WMS&amp;"/>
+            </Get>
+            <Post>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/geoserver-suite/wms?SERVICE=WMS&amp;"/>
+            </Post>
+          </HTTP>
+        </DCPType>
+      </GetCapabilities>
+      <GetMap>
+        <Format>image/png</Format>
+        <Format>application/atom xml</Format>
+        <Format>application/atom+xml</Format>
+        <Format>application/openlayers</Format>
+        <Format>application/pdf</Format>
+        <Format>application/rss xml</Format>
+        <Format>application/rss+xml</Format>
+        <Format>application/vnd.google-earth.kml</Format>
+        <Format>application/vnd.google-earth.kml xml</Format>
+        <Format>application/vnd.google-earth.kml+xml</Format>
+        <Format>application/vnd.google-earth.kmz</Format>
+        <Format>application/vnd.google-earth.kmz xml</Format>
+        <Format>application/vnd.google-earth.kmz+xml</Format>
+        <Format>atom</Format>
+        <Format>image/geotiff</Format>
+        <Format>image/geotiff8</Format>
+        <Format>image/gif</Format>
+        <Format>image/jpeg</Format>
+        <Format>image/png8</Format>
+        <Format>image/svg</Format>
+        <Format>image/svg xml</Format>
+        <Format>image/svg+xml</Format>
+        <Format>image/tiff</Format>
+        <Format>image/tiff8</Format>
+        <Format>kml</Format>
+        <Format>kmz</Format>
+        <Format>openlayers</Format>
+        <Format>rss</Format>
+        <DCPType>
+          <HTTP>
+            <Get>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/geoserver-suite/wms?SERVICE=WMS&amp;"/>
+            </Get>
+          </HTTP>
+        </DCPType>
+      </GetMap>
+      <GetFeatureInfo>
+        <Format>text/plain</Format>
+        <Format>application/vnd.ogc.gml</Format>
+        <Format>text/html</Format>
+        <DCPType>
+          <HTTP>
+            <Get>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/geoserver-suite/wms?SERVICE=WMS&amp;"/>
+            </Get>
+            <Post>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/geoserver-suite/wms?SERVICE=WMS&amp;"/>
+            </Post>
+          </HTTP>
+        </DCPType>
+      </GetFeatureInfo>
+      <DescribeLayer>
+        <Format>application/vnd.ogc.wms_xml</Format>
+        <DCPType>
+          <HTTP>
+            <Get>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/geoserver-suite/wms?SERVICE=WMS&amp;"/>
+            </Get>
+          </HTTP>
+        </DCPType>
+      </DescribeLayer>
+      <GetLegendGraphic>
+        <Format>image/png</Format>
+        <Format>image/jpeg</Format>
+        <Format>image/gif</Format>
+        <DCPType>
+          <HTTP>
+            <Get>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/geoserver-suite/wms?SERVICE=WMS&amp;"/>
+            </Get>
+          </HTTP>
+        </DCPType>
+      </GetLegendGraphic>
+      <GetStyles>
+        <Format>application/vnd.ogc.sld+xml</Format>
+        <DCPType>
+          <HTTP>
+            <Get>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://localhost:8080/geoserver-suite/wms?SERVICE=WMS&amp;"/>
+            </Get>
+          </HTTP>
+        </DCPType>
+      </GetStyles>
+    </Request>
+    <Exception>
+      <Format>application/vnd.ogc.se_xml</Format>
+      <Format>application/vnd.ogc.se_inimage</Format>
+    </Exception>
+    <VendorSpecificCapabilities>
+      <TileSet>
+        <SRS>EPSG:900913</SRS>
+        <BoundingBox SRS="EPSG:900913" minx="-1.3697515466796875E7" miny="5165920.118906248" maxx="-1.361924394984375E7" maxy="5244191.635859374"/>
+        <Resolutions>156543.03390625 78271.516953125 39135.7584765625 19567.87923828125 9783.939619140625 4891.9698095703125 2445.9849047851562 1222.9924523925781 611.4962261962891 305.74811309814453 152.87405654907226 76.43702827453613 38.218514137268066 19.109257068634033 9.554628534317017 4.777314267158508 2.388657133579254 1.194328566789627 0.5971642833948135 0.29858214169740677 0.14929107084870338 0.07464553542435169 0.037322767712175846 0.018661383856087923 0.009330691928043961 0.004665345964021981 </Resolutions>
+        <Width>256</Width>
+        <Height>256</Height>
+        <Format>image/png</Format>
+        <Layers>medford:hydro</Layers>
+        <Styles/>
+      </TileSet>
+      <TileSet>
+        <SRS>EPSG:4326</SRS>
+        <BoundingBox SRS="EPSG:4326" minx="-123.046875" miny="42.1875" maxx="-122.6953125" maxy="42.5390625"/>
+        <Resolutions>0.703125 0.3515625 0.17578125 0.087890625 0.0439453125 0.02197265625 0.010986328125 0.0054931640625 0.00274658203125 0.001373291015625 6.866455078125E-4 3.4332275390625E-4 1.71661376953125E-4 8.58306884765625E-5 4.291534423828125E-5 2.1457672119140625E-5 1.0728836059570312E-5 5.364418029785156E-6 2.682209014892578E-6 1.341104507446289E-6 6.705522537231445E-7 3.3527612686157227E-7 1.6763806343078613E-7 8.381903171539307E-8 4.190951585769653E-8 2.0954757928848267E-8 </Resolutions>
+        <Width>256</Width>
+        <Height>256</Height>
+        <Format>image/gif</Format>
+        <Layers>medford</Layers>
+        <Styles/>
+      </TileSet>
+    </VendorSpecificCapabilities>
+    <UserDefinedSymbolization SupportSLD="1" UserLayer="1" UserStyle="1" RemoteWFS="1"/>
+    <Layer queryable="0" opaque="0" noSubsets="0">
+      <Title>GeoServer Web Map Service</Title>
+      <Abstract>A compliant implementation of WMS 1.1.1 plus most of the SLD 1.0 extension (dynamic styling). Can also generate PDF, SVG, KML, GeoRSS</Abstract>
+      <SRS>EPSG:4326</SRS>
+      <SRS>EPSG:900913</SRS>
+      <LatLonBoundingBox minx="-180.0" miny="-90.0" maxx="180.0" maxy="83.624"/>
+    </Layer>
+  </Capability>
+</WMT_MS_Capabilities>
+--></div>
+</body> 
+</html> 

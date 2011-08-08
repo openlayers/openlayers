@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>ArcIMS Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var lon = 0;
+        var lat = 0;
+        var zoom = 1;
+        var map, layer;
+
+        function init(){
+            OpenLayers.ProxyHost = "proxy.cgi?url=";
+            
+            map = new OpenLayers.Map( 'map' );
+            
+            var options = {
+              serviceName: "OpenLayers_Sample",
+              async: true
+            };
+            
+            layer = new OpenLayers.Layer.ArcIMS( "Global Sample Map",
+                    "http://sample.azavea.com/servlet/com.esri.esrimap.Esrimap", options );
+            map.addLayer(layer);
+
+            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+            map.addControl( new OpenLayers.Control.LayerSwitcher() );
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">ArcIMS Example</h1>
+
+    <div id="tags">
+        ESRI, ArcIMS
+    </div>
+    <p id="shortdesc">
+        Shows the basic use of OpenLayers using an ArcIMS layer
+    </p>
+
+    <div id="map" class="smallmap"></div>
+
+    <div id="docs">
+        This is an example of how to add an ArcIMS layer to the OpenLayers window.
+    </div>
+
+  </body>
+</html>
+
+
+
+

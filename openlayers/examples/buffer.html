@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>OpenLayers Buffer Example</title>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <script src="../lib/OpenLayers.js"></script>
+        <script type="text/javascript">
+            var lon = 0;
+            var lat = 0;
+            var zoom = 2;
+            var map, layer;
+
+            function init(){
+                map = new OpenLayers.Map( 'map' );
+                layer = new OpenLayers.Layer.WMS( "0 buffer: OpenLayers WMS",
+                        "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                        {layers: 'basic'}, {'buffer':0} );
+                map.addLayer(layer);
+                layer = new OpenLayers.Layer.WMS( "1 buffer: OpenLayers WMS",
+                        "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                        {layers: 'basic'}, {'buffer':1} );
+                map.addLayer(layer);
+                layer = new OpenLayers.Layer.WMS( "4 buffer: OpenLayers WMS",
+                        "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                        {layers: 'basic'}, {'buffer':4} );
+                map.addLayer(layer);
+                map.addControl(new OpenLayers.Control.LayerSwitcher())
+                map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+            }
+        </script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">Buffer Example</h1>
+
+        <div id="tags">
+            buffer, performance, tile
+        </div>
+
+        <p id="shortdesc">
+            This example shows the use of the buffer layer option for any layer that inherits from OpenLayers.Layer.Grid.
+        </p>
+
+        <div id="map" class="smallmap"></div>
+
+        <div id="docs">
+            Use the buffer property to control how many tiles are included
+            outside the visible map area. Default is 2.
+        </div>
+    </body>
+</html>

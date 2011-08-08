@@ -1,0 +1,137 @@
+<html>
+<head>
+    <script src="../OLLoader.js"></script>
+    <script type="text/javascript">
+    function test_SphericalMercator_forwardMercator(t) {
+        t.plan(12);
+        var arctic = OpenLayers.Layer.SphericalMercator.forwardMercator(0, 85);
+        var antarctic = OpenLayers.Layer.SphericalMercator.forwardMercator(0, -85);
+        var hawaii = OpenLayers.Layer.SphericalMercator.forwardMercator(-180, 0);
+        var phillipines = OpenLayers.Layer.SphericalMercator.forwardMercator(180, 0);
+        var ne = OpenLayers.Layer.SphericalMercator.forwardMercator(180, 90);
+        var sw = OpenLayers.Layer.SphericalMercator.forwardMercator(-180, -90);
+        
+        t.eq(arctic.lon, 0, "Arctic longitude is correct");
+        t.eq(Math.round(arctic.lat), 19971869, "Arctic latitude is correct");
+        
+        t.eq(antarctic.lon, 0, "Antarctic longitude is correct");
+        t.eq(Math.round(antarctic.lat), -19971869, "Antarctic latitude is correct");
+        
+        t.eq(Math.round(hawaii.lat), 0, "Hawaiian lat is correct");
+        t.eq(hawaii.lon, -20037508.34, "Hawaiian lon is correct");
+        
+        t.eq(Math.round(phillipines.lat), 0, "Phillipines lat is correct");
+        t.eq(phillipines.lon, 20037508.340, "Phillipines lon is correct");
+       
+        // Rounding errors make this not infinity 
+        t.ok(ne.lat > 50000000, "NE lat is correct");
+        t.eq(ne.lon, 20037508.34, "NE lon is correct");
+        
+        t.eq(sw.lat, -Infinity, "SW lat is correct");
+        t.eq(sw.lon, -20037508.34, "SW lon is correct");
+    } 
+    
+    function test_sphericalMercator_inverseMercator(t) {
+        t.plan(4);
+        var sw =  OpenLayers.Layer.SphericalMercator.inverseMercator(-20037508.34,  -20037508.34);
+        var ne =  OpenLayers.Layer.SphericalMercator.inverseMercator(20037508.34,  20037508.34);
+        t.eq(sw.lon, -180, "Southwest lon correct");
+        t.eq(ne.lon, 180, "Northeast lon correct");
+        
+        t.eq(sw.lat, -85.051128779807, "Southwest lat correct");
+        t.eq(ne.lat, 85.051128779807, "Northeast lat correct");
+    }
+
+    function strToFixed(str, dig) { 
+        if(dig == undefined) { 
+            dig = 5; 
+        } 
+        return str.replace(/(\d+\.\d+)/g, function(match) { 
+            return parseFloat(match).toFixed(dig); 
+        }); 
+    } 
+ 
+    function test_SphericalMercator_projectForward(t) { 
+        t.plan(1);
+        var point = new OpenLayers.Geometry.Point(10, 20); 
+        OpenLayers.Layer.SphericalMercator.projectForward(point); 
+
+        t.eq(strToFixed(point.toString()), 
+             strToFixed("POINT(1113194.9077777779 2273030.9266712805)"), 
+             "point transforms from EPSG:4326 to Spherical Mercator"); 
+    } 
+         
+    function test_SphericalMercator_to4326(t) { 
+        t.plan(1);
+        var point = new OpenLayers.Geometry.Point(1113195, 2273031); 
+
+        OpenLayers.Layer.SphericalMercator.projectInverse(point); 
+         
+        t.eq(strToFixed(point.toString()), 
+             strToFixed("POINT(10.000000828446318 20.000000618997227)"), 
+             "point transforms from Spherical Mercator to EPSG:4326"); 
+    }
+    
+    function test_SphericalMercator_addTransform(t) {
+        // this class should add two methods to the
+        // OpenLayers.Projection.transforms object
+        t.plan(4);
+        var wgs84 = OpenLayers.Projection.transforms["EPSG:4326"];
+        t.ok(wgs84 instanceof Object, "EPSG:4326 exists in table");
+        
+        var smerc = OpenLayers.Projection.transforms["EPSG:900913"];
+        t.ok(smerc instanceof Object, "EPSG:900913 exists in table");
+        
+        t.ok(wgs84["EPSG:900913"] === OpenLayers.Layer.SphericalMercator.projectForward,
+             "from EPSG:4326 to EPSG:900913 correctly defined");
+        t.ok(smerc["EPSG:4326"] === OpenLayers.Layer.SphericalMercator.projectInverse,
+             "from EPSG:900913 to EPSG:4326 correctly defined");
+    }
+    
+    function test_equivalence(t) {
+
+        // list of equivalent codes for web mercator
+        var codes = ["EPSG:900913", "EPSG:3857", "EPSG:102113", "EPSG:102100"];
+        var len = codes.length;
+        
+        t.plan(len + (len * len));
+
+        var ggPoint = new OpenLayers.Geometry.Point(10, 20);
+        var smPoint = new OpenLayers.Geometry.Point(1113195, 2273031);
+        
+        var gg = new OpenLayers.Projection("EPSG:4326");
+        
+        var i, proj, forward, inverse, other, j, equiv;
+        for (i=0, len=codes.length; i<len; ++i) {
+            proj = new OpenLayers.Projection(codes[i]);
+            
+            // confirm that forward/inverse work
+            forward = ggPoint.clone().transform(gg, proj);
+            t.eq(
+                strToFixed(forward.toString()), 
+                strToFixed("POINT(1113194.9077777779 2273030.9266712805)"), 
+                "transforms from EPSG:4326 to " + proj
+            );
+            inverse = smPoint.clone().transform(proj, gg);
+            t.eq(
+                strToFixed(inverse.toString()), 
+                strToFixed("POINT(10.000000828446318 20.000000618997227)"), 
+                "transforms from " + proj + " to EPSG:4326"
+            ); 
+            
+            // confirm that null transform works
+            for (j=i+1; j<len; ++j) {
+                other = new OpenLayers.Projection(codes[j]);
+                equiv = ggPoint.clone().transform(proj, other);
+                t.ok(proj.equals(other),  proj + " and " + other + " are equivalent");
+                t.ok(ggPoint.equals(equiv), "transform from " + proj + " to " + other + " preserves geometry");                
+            }
+        }
+
+    }
+    
+  </script> 
+</head>
+<body>
+</body>
+</html>

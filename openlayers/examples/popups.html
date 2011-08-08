@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map, layer, popup;
+        var markers, feature, marker;
+        
+        function init(){
+            map = new OpenLayers.Map('map');
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
+            map.addLayer(layer);
+            layer = new OpenLayers.Layer.Google( "Google" );
+            map.addLayer(layer);
+
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.zoomToMaxExtent();
+            
+        }
+
+        function changer() {
+            popup.setBackgroundColor("red");
+            popup.setSize(new OpenLayers.Size(100,600));
+//            popup.moveTo(new OpenLayers.Pixel(120,120));
+//            popup.setOpacity(.5);
+            popup.setBorder("2px solid");    
+            popup.setContentHTML("High Chickens");            
+        }
+
+        function add() {
+            popup = new OpenLayers.Popup("chicken", 
+                                         new OpenLayers.LonLat(5,40),
+                                         new OpenLayers.Size(200,200),
+                                         "example popup",
+                                         true);
+            popup.closeOnMove = true;
+        
+            map.addPopup(popup);
+        }        
+
+        function addAnchor() {
+            popup = new OpenLayers.Popup.Anchored("chicken", 
+                                         new OpenLayers.LonLat(5,40),
+                                         new OpenLayers.Size(200,200),
+                                         "example popup", true);
+        
+            map.addPopup(popup);
+        }        
+        
+        function addMarker() {
+    
+            markers = new OpenLayers.Layer.Markers("zibo");
+            map.addLayer(markers);
+
+            feature = new OpenLayers.Feature(layer, 
+                                                 new OpenLayers.LonLat(0,0));
+
+
+            marker = feature.createMarker();
+            
+            markers.addMarker(marker);
+            marker.events.register("mousedown", marker, mousedown);
+                                                             
+        }
+        
+        function mousedown(evt) {
+            if (popup == null) {
+                popup = feature.createPopup(true);
+                popup.setContentHTML("<div style='background-color:red; width:150;height:100'><a href='http://www.somethingconstructive.net' target='_blank'>click me</a></div>");
+                popup.setBackgroundColor("yellow");
+                popup.setOpacity(0.7);
+                markers.map.addPopup(popup);
+            } else {
+                popup.toggle();
+               }
+            OpenLayers.Event.stop(evt);
+        }        
+
+        /**
+         * @param {Event} evt
+         */
+        function onPopupMouseDown(evt) {
+            markers.map.removePopup(popup);
+            popup.destroy();
+            popup = null;
+            OpenLayers.Event.stop(evt);
+        }
+
+
+        function destroy() {
+            popup.destroy();
+        }
+
+        function remove() {
+            markers.removeMarker(marker);
+        }
+
+        function removelayer() {
+            layer.destroy();
+//            map.removeLayer(markers);
+        }
+    </script>
+  </head>
+  <body onload="init()">
+  <h1 id="title">Popup Mayhem</h1>
+
+  <div id="tags">
+    popup, popups
+  </div>
+  <p id="shortdesc">
+      All kinds of ways to create and interact with Popups.
+  </p>
+
+  <div id="map" class="smallmap"></div>
+    <p>If you open an anchoredbubble and switch to google, it shouldn't crash. If it does, don't release OpenLayers.</p>  
+    <div style="background-color:purple" onclick="add()"> click to add Popup to map</div>
+    <div style="background-color:green" onclick="addMarker()"> click to add a Marker with an AnchoredBubble popup</div>
+    <div style="background-color:blue" onclick="changer()"> click to modify popup's attributes</div>
+    <div style="background-color:red" onclick="remove()"> click to remove the popup from map</div>
+    <div style="background-color:grey" onclick="removelayer()"> click to remove the markers layer</div>
+    <div style="background-color:orange" onclick="alert(marker.onScreen())"> marker.onscreen()?</div>
+    <div style="background-color:yellow" onclick="destroy()"> click to destroy the popup from map</div> 
+    <div id="docs">
+      Detailed description of this example needs to be written.
+   </div>
+  </body>
+</html>

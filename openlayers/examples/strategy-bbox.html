@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>OpenLayers BBOX Strategy Example</title>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <script src="../lib/OpenLayers.js"></script>
+        <script type="text/javascript">
+            var map, photos;
+            OpenLayers.ProxyHost = (window.location.host == "localhost") ?
+                "/cgi-bin/proxy.cgi?url=" : "proxy.cgi?url=";
+        
+            function init() {
+                map = new OpenLayers.Map('map', {
+                    restrictedExtent: new OpenLayers.Bounds(-180, -90, 180, 90)
+                });
+                var base = new OpenLayers.Layer.WMS("Imagery", 
+                    ["http://t1.hypercube.telascience.org/tiles?",
+		     "http://t2.hypercube.telascience.org/tiles?",
+		     "http://t3.hypercube.telascience.org/tiles?",
+		     "http://t4.hypercube.telascience.org/tiles?"], 
+                    {layers: 'landsat7'}
+                );
+
+                var style = new OpenLayers.Style({
+                    externalGraphic: "${img_url}",
+                    pointRadius: 30
+                });
+
+                photos = new OpenLayers.Layer.Vector("Photos", {
+                    strategies: [new OpenLayers.Strategy.BBOX()],
+                    protocol: new OpenLayers.Protocol.HTTP({
+                        url: "http://labs.metacarta.com/flickrbrowse/flickr.py/flickr",
+                        params: {
+                            format: "WFS",
+                            sort: "interestingness-desc",
+                            service: "WFS",
+                            request: "GetFeatures",
+                            srs: "EPSG:4326",
+                            maxfeatures: 10
+                        },
+                        format: new OpenLayers.Format.GML()
+                    }),
+                    styleMap: new OpenLayers.StyleMap(style)
+                });
+
+                map.addLayers([base, photos]);
+                map.setCenter(new OpenLayers.LonLat(-116.45, 35.42), 5);
+            }
+            
+        </script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">BBOX Strategy Example</h1>
+        <div id="tags">
+            vector, feature, stylemap, wfs, bbox, strategy, cleanup
+        </div>    
+        <p id="shortdesc">
+            Uses a BBOX strategy to request features within a bounding box.
+        </p>
+        <div id="map" class="smallmap"></div>
+        <div id="docs">
+            <p>The BBOX strategy requests data within a bounding box.  When the
+            previously requested data bounds are invalidated (by browsing to
+            some area not covered by those bounds), another request for data
+            is issued.</p>
+        </div>
+    </body>
+</html>

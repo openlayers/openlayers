@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>Draw Feature Example</title>
+        
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <style type="text/css">
+            #controlToggle li {
+                list-style: none;
+            }
+            p {
+                width: 512px;
+            }
+
+            /* avoid pink tiles */
+            .olImageLoadError {
+                background-color: transparent !important;
+            }
+        </style>
+        <script src="../lib/OpenLayers.js"></script>
+        <script type="text/javascript">
+            var map, drawControls;
+            function init(){
+                map = new OpenLayers.Map('map');
+
+                var wmsLayer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                    "http://vmap0.tiles.osgeo.org/wms/vmap0?", {layers: 'basic'});
+
+                var pointLayer = new OpenLayers.Layer.Vector("Point Layer");
+                var lineLayer = new OpenLayers.Layer.Vector("Line Layer");
+                var polygonLayer = new OpenLayers.Layer.Vector("Polygon Layer");
+
+                map.addLayers([wmsLayer, pointLayer, lineLayer, polygonLayer]);
+                map.addControl(new OpenLayers.Control.LayerSwitcher());
+                map.addControl(new OpenLayers.Control.MousePosition());
+
+                drawControls = {
+                    point: new OpenLayers.Control.DrawFeature(pointLayer,
+                                OpenLayers.Handler.Point),
+                    line: new OpenLayers.Control.DrawFeature(lineLayer,
+                                OpenLayers.Handler.Path),
+                    polygon: new OpenLayers.Control.DrawFeature(polygonLayer,
+                                OpenLayers.Handler.Polygon)
+                };
+
+                for(var key in drawControls) {
+                    map.addControl(drawControls[key]);
+                }
+
+                map.setCenter(new OpenLayers.LonLat(0, 0), 3);
+
+                document.getElementById('noneToggle').checked = true;
+            }
+
+            function toggleControl(element) {
+                for(key in drawControls) {
+                    var control = drawControls[key];
+                    if(element.value == key && element.checked) {
+                        control.activate();
+                    } else {
+                        control.deactivate();
+                    }
+                }
+            }
+
+            function allowPan(element) {
+                var stop = !element.checked;
+                for(var key in drawControls) {
+                    drawControls[key].handler.stopDown = stop;
+                    drawControls[key].handler.stopUp = stop;
+                }
+            }
+        </script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">OpenLayers Draw Feature Example</h1>
+
+        <div id="tags">
+            point, line, linestring, polygon, digitizing, geometry, draw, drag
+        </div>
+
+        <p id="shortdesc">
+            Demonstrate on-screen digitizing tools for point, line, and polygon creation.
+        </p>
+
+        <div id="map" class="smallmap"></div>
+    
+        <ul id="controlToggle">
+            <li>
+                <input type="radio" name="type" value="none" id="noneToggle"
+                       onclick="toggleControl(this);" checked="checked" />
+                <label for="noneToggle">navigate</label>
+            </li>
+            <li>
+                <input type="radio" name="type" value="point" id="pointToggle" onclick="toggleControl(this);" />
+                <label for="pointToggle">draw point</label>
+            </li>
+            <li>
+                <input type="radio" name="type" value="line" id="lineToggle" onclick="toggleControl(this);" />
+                <label for="lineToggle">draw line</label>
+            </li>
+            <li>
+                <input type="radio" name="type" value="polygon" id="polygonToggle" onclick="toggleControl(this);" />
+                <label for="polygonToggle">draw polygon</label>
+            </li>
+            <li>
+                <input type="checkbox" name="allow-pan" value="allow-pan" id="allowPanCheckbox" checked=true onclick="allowPan(this);" />
+                <label for="allowPanCheckbox">allow pan while drawing</label>
+            </li>
+        </ul>
+
+        <div id="docs">
+            <p>With the point drawing control active, click on the map to add a point.</p>
+            <p>With the line drawing control active, click on the map to add the points that make up your line.
+            Double-click to finish drawing.</p>
+            <p>With the polygon drawing control active, click on the map to add the points that make up your
+            polygon.  Double-click to finish drawing.</p>
+            <p>With any drawing control active, paning the map can still be achieved.  Drag the map as
+            usual for that.</p>
+            <p>Hold down the shift key while drawing to activate freehand mode.  While drawing lines or polygons
+            in freehand mode, hold the mouse down and a point will be added with every mouse movement.<p>
+        </div>
+    </body>
+</html>

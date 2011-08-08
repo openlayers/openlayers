@@ -1,0 +1,21 @@
+<html>
+<head>
+  <script src="OLLoader.js"></script>
+  <script type="text/javascript">
+
+    var map;
+    
+    // Ensure that we continue to work if silly Javascript frameworks
+    // extend object.
+    Object.prototype.foo = function() { }
+    function test_Events_Object_Extension(t) {
+        t.plan(1)
+        map = new OpenLayers.Map("map");
+        t.ok(true, "Map created if object prototype is extended.");
+    }
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 600px; height: 300px;"/>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>XHR Acceptance Test</title>
+    <script src="../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var url = "ajax.txt";
+        function sendSynchronous(){
+            var request = OpenLayers.Request.GET({
+                url: url,
+                async: false,
+                callback: function() {
+                    document.getElementById('send_sync').value += 'request completed\n';
+                }
+            });
+            document.getElementById('send_sync').value += 'other processing\n';
+        }
+        function sendAsynchronous(){
+            var request = OpenLayers.Request.GET({
+                url: url,
+                callback: function() {
+                    document.getElementById('send_sync').value += 'request completed\n';
+                }
+            });
+            document.getElementById('send_sync').value += 'other processing\n';
+        }
+        function sendAndAbort(){
+            var request = OpenLayers.Request.GET({
+                url: url,
+                callback: function() {
+                    document.getElementById('send_sync').value += 'never called\n';
+                }
+            });
+            request.abort();
+            document.getElementById('send_sync').value += 'other processing\n';
+        }
+
+        </script>
+    </head>
+    <body >
+        <button onclick="sendSynchronous()">synchronous</button>
+        expected output: "request completed" then "other processing"<br />
+        <button onclick="sendAsynchronous()">asynchronous</button>
+        expected output: "other processing" then "request completed"<br />
+        <button onclick="sendAndAbort()">send and abort</button>
+        expected output: "other processing" (and not "never called")<br />
+        <textarea id="send_sync" rows="6"></textarea><br />
+        <button onclick="document.getElementById('send_sync').value = ''">Clear</button>
+  </body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>Canvas Renderer Example</title>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <script src="../lib/OpenLayers.js"></script>
+        <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
+        <script src="canvas.js"></script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">Canvas Renderer Example</h1>
+        <div id="tags">
+            canvas, renderer, advanced,
+        </div>
+        <p id="shortdesc">
+            Demonstrates the use of the canvas renderer with a vector layer.
+        </p>
+        <div id="map" class="smallmap"></div>
+        <div id="docs">
+            <p>
+                This example shows a vector layer that uses the Canvas renderer
+                where available. The order of the renderers given in the layer
+                options is used to locate the first available renderer.
+            </p>
+            <p>
+                See the <a href="canvas.js" target="_blank">canvas.js source</a>
+                to see how this is done.
+            </p> 
+        </div>
+    </body>
+</html>

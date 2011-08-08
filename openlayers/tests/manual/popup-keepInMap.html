@@ -1,0 +1,100 @@
+<html xmlns="http://www.w3.org/1999/xhtml" debug="true">
+  <head>
+    <title>OpenLayers: Popup Mayhem</title>
+    <link rel="stylesheet" href="../../theme/default/style.css" type="text/css" />
+    <style type="text/css">
+        #map {
+            width: 900px;
+            height: 500px;
+            border: 1px solid black;
+        }
+    </style>
+
+    <script src="../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map;
+        var layer, markers;
+        
+        var currentPopup;
+        
+        
+        AutoSizeFramedCloud = OpenLayers.Class(OpenLayers.Popup.FramedCloud, {
+            'autoSize': true,
+            'panMapIfOutOfView': false
+        });
+
+        function init(){
+            map = new OpenLayers.Map('map');
+
+            markers = new OpenLayers.Layer.Markers("zibo", {isBaseLayer: true});
+            map.addLayer(markers);
+
+            addMarkers();
+            map.zoomToMaxExtent();
+        }
+        
+        function addMarkers() {
+
+            var ll, popupClass, popupContentHTML;
+
+            //anchored bubble popup small contents autosize closebox
+            ll = new OpenLayers.LonLat(-35,-15);
+            popupClass = AutoSizeFramedCloud;
+            popupContentHTML = "<div>This popup can't be panned to fit in view, so its popup text should fit inside the map. If it doens't, instead of expaning outside, it will simply make the content scroll. Scroll scroll scroll your boat, gently down the stream! Chicken chicken says the popup text is really boring to write. Did you ever see a popup a popup a popup did you ever see a popup a popup right now. With this way and that way and this way and that way did you ever see a popup a popup right now. I wonder if this is long enough. it might be, but maybe i should throw in some other content. <ul><li>one</li><li>two</li><li>three</li><li>four</li></ul>(get your booty on the floor) </div>";
+            addMarker(ll, popupClass, popupContentHTML, true, true);
+ 
+
+        }
+
+        /**
+         * Function: addMarker
+         * Add a new marker to the markers layer given the following lonlat, 
+         *     popupClass, and popup contents HTML. Also allow specifying 
+         *     whether or not to give the popup a close box.
+         * 
+         * Parameters:
+         * ll - {<OpenLayers.LonLat>} Where to place the marker
+         * popupClass - {<OpenLayers.Class>} Which class of popup to bring up 
+         *     when the marker is clicked.
+         * popupContentHTML - {String} What to put in the popup
+         * closeBox - {Boolean} Should popup have a close box?
+         * overflow - {Boolean} Let the popup overflow scrollbars?
+         */
+        function addMarker(ll, popupClass, popupContentHTML, closeBox, overflow) {
+
+            var feature = new OpenLayers.Feature(markers, ll); 
+            feature.closeBox = closeBox;
+            feature.popupClass = popupClass;
+            feature.data.popupContentHTML = popupContentHTML;
+            feature.data.overflow = (overflow) ? "auto" : "hidden";
+                    
+            var marker = feature.createMarker();
+
+            var markerClick = function (evt) {
+                if (this.popup == null) {
+                    this.popup = this.createPopup(this.closeBox);
+                    map.addPopup(this.popup);
+                    this.popup.show();
+                } else {
+                    this.popup.toggle();
+                    this.popup.updateSize();
+                }
+                currentPopup = this.popup;
+                OpenLayers.Event.stop(evt);
+            };
+            marker.events.register("mousedown", feature, markerClick);
+
+            markers.addMarker(marker);
+        }
+
+    </script>
+  </head>
+  <body onload="init()">
+  <h1 id="title">Popup KeepInMap</h1>
+
+           <div id="map" class="smallmap"></div>
+      </div>
+      Click on popup, and the content should scroll rather than expanding outside the map.  
+   </div>
+  </body>
+</html>

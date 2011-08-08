@@ -1,0 +1,85 @@
+<html> 
+<head> 
+    <script src="../../OLLoader.js"></script>
+    <script src="v2_0_2.js"></script>
+    <script type="text/javascript">
+
+    var format = new OpenLayers.Format.CSWGetRecords();
+    
+    function test_write(t) {
+
+        t.plan(1);
+
+        var filter =  new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.LIKE,
+            property: "my_prop",
+            value: "my_prop_value"
+        });
+
+        var options = {
+            "resultType": "results",
+            "startPosition": "10",
+            "maxRecords": "20",
+            "Query": {
+                "ElementSetName": {
+                    "value": "brief"
+                },
+                "Constraint": {
+                    "version": "1.1.0",
+                    "Filter": filter
+                }
+            }
+        };
+
+        var result = format.write(options);
+
+        t.eq(result, csw_request, "check value returned by format " +
+                "CSWGetRecords: write method");
+
+    }
+
+    
+    function test_read(t) {
+        
+        t.plan(16);
+        
+        var obj = format.read(csw_response);
+                
+        var searchStatus = obj.SearchStatus;
+        var searchResults = obj.SearchResults;
+        var records = obj.records;
+        // test getRecordsResponse object
+        t.ok(searchStatus, "object contains SearchStatus property");
+        t.ok(searchResults, "object contains SearchResults property");
+        t.ok(records, "object contains records property");
+
+        // test SearchResults attributes
+        t.eq(searchResults.numberOfRecordsMatched, 10, "check value for SearchResults.numberOfRecordsMatched");
+        t.eq(searchResults.numberOfRecordsReturned, 2, "check value for SearchResults.numberOfRecordsReturned");
+        t.eq(searchResults.elementSet, "brief", "check value for SearchResults.elementSet");
+        t.eq(searchResults.nextRecord, 3, "check value for SearchResults.nextRecord");
+
+        // test records
+        t.eq(records.length, 2, "object contains 10 records");
+        var testRecord = records[0];
+        t.eq(testRecord.type, "BriefRecord", "check value for record.type");
+        t.eq(testRecord.title, [{value:"Sample title"}], "check value for record.title");
+
+        //test bbox
+        t.eq(testRecord.BoundingBox.length, 2, "object contains 2 BoundingBoxes");
+        var bbox = testRecord.BoundingBox[0];
+        t.ok(bbox, "object contains BoundingBox properties");
+        t.eq(bbox.crs, "::Lambert Azimuthal Projection", "check value for BoundingBox.crs");
+        t.eq(bbox.value, [156, -3, 37, 83], "check value for record.BoundingBox");
+        
+        // test gninfo
+        testRecord = records[1];
+        t.ok(testRecord.gninfo, "object contains gninfo properties");
+        t.eq(testRecord.gninfo.schema, "iso19139", "check value for schema property in record.gninfo");
+    }
+    
+    </script> 
+</head> 
+<body>
+</body> 
+</html> 

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers Gutter Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <style type="text/css">
+        p.caption {
+            width: 512px;
+        }
+    </style>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        OpenLayers.IMAGE_RELOAD_ATTEMPTS = 2;
+        var map;
+        window.onload = function() {
+            options = {maxExtent: new OpenLayers.Bounds(-73.5295, 41.2318,
+                                                        -69.9097, 42.8883),
+                       maxResolution: 0.0003}
+            map = new OpenLayers.Map('map', options);
+            var roads15 = new OpenLayers.Layer.WMS( "Roads (15px gutter)",
+                "http://boston.freemap.in/cgi-bin/mapserv?map=/www/freemap.in/boston/map/gmaps.map&",
+                {layers: 'roads_200_40'},
+                {gutter: 15});
+            var roads = new OpenLayers.Layer.WMS( "Roads (no gutter)",
+                "http://boston.freemap.in/cgi-bin/mapserv?map=/www/freemap.in/boston/map/gmaps.map&",
+                {layers: 'roads_200_40'});
+            map.addLayers([roads, roads15]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.setCenter(new OpenLayers.LonLat(-71.848, 42.2), 0);
+        }
+    </script>
+  </head>
+  <body>
+    <h1 id="title">Gutter Example</h1>
+
+    <div id="tags">
+        gutter, quality, tile
+    </div>
+
+    <p id="shortdesc">
+        Demonstrates map tiling artifacts, and OpenLayer's facility for correcting this distortion.
+    </p>
+
+    <div id="map" class="smallmap"></div>
+
+    <div id="docs">
+        <p class="caption">
+            When you render tiles with certain types of symbols, there are artifacts
+            at tile edges that make symbology not look continuous.  In the center of
+            the above map (when it first loads), the large orange road is split
+            vertically by a tile.  Open the layer switcher and change to the layer
+            with a 15 pixel gutter to see how the symbology looks nicer.
+        </p>
+    </div>
+  </body>
+</html>

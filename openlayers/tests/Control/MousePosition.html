@@ -1,0 +1,109 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    var map, control; 
+    function test_initialize (t) {
+        t.plan( 2 );
+    
+        control = new OpenLayers.Control.MousePosition();
+        t.ok( control instanceof OpenLayers.Control.MousePosition, "new OpenLayers.Control returns object" );
+        t.eq( control.displayClass,  "olControlMousePosition", "displayClass is correct" );
+    }
+    function test_destroy(t) {
+        t.plan(1);
+    
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control.MousePosition();
+        map.addControl(control);
+
+        var listeners = map.events.listeners.mousemove.length;
+        control.destroy();
+        
+        t.eq(map.events.listeners.mousemove.length, listeners - 1, "mousemove event is unregistered");
+        map.destroy();     
+    }
+    function test_addControl(t) {
+        t.plan(4);
+
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control.MousePosition();
+        map.addControl(control);
+
+        t.ok(control.map === map, "Control.map is set to the map object");
+        t.ok(map.controls[map.controls.length - 1] === control, "map.controls contains control");
+        t.eq(parseInt(control.div.style.zIndex), map.Z_INDEX_BASE['Control'] + 5, "Control div zIndexed properly" );
+        t.eq(parseInt(map.viewPortDiv.lastChild.style.zIndex), map.Z_INDEX_BASE['Control'] + 5, "Viewport div contains control div");
+        map.destroy();     
+    }
+    function test_redraw_noLayer_displayProjection(t) {
+        t.plan(4);
+        var control = new OpenLayers.Control.MousePosition({'emptyString':''});
+        var map = new OpenLayers.Map('map');
+        map.addControl(control);
+        var control2 = new OpenLayers.Control.MousePosition();
+        map.addControl(control2);
+        t.eq(control2.emptyString, null, "Emptystring is null");
+        t.eq(control.div.innerHTML, "", "innerHTML set correctly");
+        control.redraw({'xy': new OpenLayers.Pixel(10,10)});
+        control.redraw({'xy': new OpenLayers.Pixel(12,12)});
+        t.eq(control.div.innerHTML, "", "innerHTML set correctly");
+        var l = new OpenLayers.Layer('name', {'isBaseLayer': true});
+        map.addLayer(l);
+        map.zoomToMaxExtent();
+        control.redraw({'xy': new OpenLayers.Pixel(10,10)});
+        control.redraw({'xy': new OpenLayers.Pixel(12,12)});
+        t.eq(control.div.innerHTML, "-175.78125, 85.78125", "innerHTML set correctly when triggered.");
+        map.destroy();     
+    }
+    function test_formatOutput(t) {
+        t.plan(1);
+        var control = new OpenLayers.Control.MousePosition({
+            prefix: 'prefix',
+            suffix: 'suffix',
+            separator: 'separator',
+            numDigits: 3
+        });
+        var lonlat = new OpenLayers.LonLat(0.75699, 0.37365);
+        var val = control.formatOutput(lonlat);
+        t.eq(val, 'prefix0.757separator0.374suffix', 'formatOutput correctly formats the mouse position output');
+    }
+    function test_deactivate(t) {
+        t.plan(4);         
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer(null, {isBaseLayer: true});
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        // Auxiliary function
+        function trigger(type, x, y) {
+            map.events.triggerEvent(type, {
+                xy: new OpenLayers.Pixel(x, y)
+            })
+        };        
+
+        var control = new OpenLayers.Control.MousePosition();
+        map.addControl(control);
+        trigger("mousemove", 0, 0);
+
+        trigger("mousemove", 0, 1);
+        t.ok(control.div.innerHTML != "", 
+            "Shows the position after add control (with autoActivate) and move");
+        control.deactivate();
+        t.ok(control.div.innerHTML == "", 
+            "Position is not displayed after deactivate and move");        
+        trigger("mousemove", 0, 2);
+        t.ok(control.div.innerHTML == "", 
+            "Position is not displayed after move when deactivate");
+        control.activate();
+        trigger("mousemove", 0, 3);
+        t.ok(control.div.innerHTML != "", 
+            "Shows the position after activate and move");
+        
+        map.destroy();     
+    }
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 1024px; height: 512px;"/>
+</body>
+</html>

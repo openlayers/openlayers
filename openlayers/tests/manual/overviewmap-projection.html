@@ -1,0 +1,70 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <link rel="stylesheet" href="../../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="../../examples/style.css" type="text/css" />
+    <style type="text/css">
+        .olControlAttribution { bottom: 0px!important }
+        #map {
+            height: 512px;
+        }
+    </style>
+
+    <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
+
+    <script src="../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+
+        // make map available for easy debugging
+        var map;
+
+        function init(){
+            var options = {
+                projection: new OpenLayers.Projection("EPSG:900913"),
+                displayProjection: new OpenLayers.Projection("EPSG:4326"),
+                units: "m",
+                maxResolution: 156543.0339,
+                maxExtent: new OpenLayers.Bounds(-20037508, -20037508,
+                                                 20037508, 20037508.34)
+            };
+            map = new OpenLayers.Map('map', options);
+
+            // create Google Mercator layers
+            var gmap = new OpenLayers.Layer.Google(
+                "Google Streets",
+                {'sphericalMercator': true}
+            );
+            map.addLayers([gmap]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.addControl(new OpenLayers.Control.Permalink());
+            map.addControl(new OpenLayers.Control.MousePosition());
+            var ovmap = new OpenLayers.Control.OverviewMap({
+                maxRatio: 16,
+                layers: [new OpenLayers.Layer.WMS("OpenLayers WMS", 
+                    "http://labs.metacarta.com/wms/vmap0",
+                    {layers: 'basic'})]
+            });
+            map.addControl(ovmap);
+            ovmap.maximizeControl();
+            if (!map.getCenter()) {map.zoomToMaxExtent()};
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">OpenLayers Overview Map Projection Test</h1>
+
+    <div id="tags">
+    </div>
+    <p id="shortdesc">
+        Acceptance test for different projections in map and overview map.
+        The map uses EPSG:900913, the overview map EPSG:4326. Zoom the map and
+        drag both the map and the overview map to see it in action.
+    </p>
+    <div id="map" class="smallmap"></div>
+
+    <div id="docs">
+    </div>
+  </body>
+</html>
+
+
+

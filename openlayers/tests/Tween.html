@@ -1,0 +1,68 @@
+<html> 
+<head> 
+    <script src="OLLoader.js"></script> 
+    <script type="text/javascript">
+
+    function test_Tween_constructor(t) { 
+        t.plan(3);
+        
+        var tween = new OpenLayers.Tween();
+        t.ok(tween instanceof OpenLayers.Tween, 
+             "new OpenLayers.Tween returns object" );
+        t.eq(typeof tween.easing, "function", 
+            "constructor sets easing correctly"); 
+        t.eq(typeof tween.start, "function", "tween has a start function"); 
+    }
+    
+    function test_Tween_start(t) {
+        t.plan(5);
+        
+        var tween = new OpenLayers.Tween();
+
+        var start = {foo: 0, bar: 10};
+        var finish = {foo: 10, bar: 0};
+        var _start = false;
+        var _done = false;
+        var _eachStep = false;
+        var callbacks = {
+            start: function() {
+                _start = true;
+            },
+            done: function() {
+                _done = true;
+            },
+            eachStep: function() {
+                _eachStep = true;
+            }
+        }
+        tween.start(start, finish, 10, {callbacks: callbacks});
+        t.ok(tween.interval != null, "interval correctly set");
+        t.delay_call(0.8, function() {
+            t.eq(_start, true, "start callback called");
+            t.eq(_done, true, "finish callback called");
+            t.eq(_eachStep, true, "eachStep callback called");
+            t.eq(tween.time, 11, "Number of steps reached is correct");
+        });
+    }
+
+    function test_Tween_stop(t) {
+        t.plan(2);
+        
+        var tween = new OpenLayers.Tween();
+        tween.interval = window.setInterval(function() {}, 10);
+        tween.playing = true;
+        tween.stop();
+        t.eq(tween.interval, null, "tween correctly stopped");
+        
+        tween.interval = window.setInterval(function() {}, 10);
+        tween.playing = false;
+        tween.stop();
+        t.ok(tween.interval != null, "stop method doesn't do anything if tween isn't running");
+    }
+
+    </script> 
+</head> 
+<body> 
+  <div id="map" style="width:500px;height:500px"></div>
+</body> 
+</html> 

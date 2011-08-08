@@ -1,0 +1,104 @@
+<html>
+<head>
+  <script src="http://maps.google.com/maps/api/js?sensor=false&v=3.5"></script>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    var map, layer; 
+
+    function test_constructor(t) {
+        t.plan(2);
+                       
+        layer = new OpenLayers.Layer.GoogleNG({type: google.maps.MapTypeId.HYBRID});
+        t.ok(layer instanceof OpenLayers.Layer.GoogleNG, "returns OpenLayers.Layer.GoogleNG object" );
+        t.eq(layer.type, google.maps.MapTypeId.HYBRID, "Layer type set");
+    }
+    
+    function test_initLayer(t) {
+        t.plan(6);
+
+        map = new OpenLayers.Map("map");
+        var log = {};
+        layer = new OpenLayers.Layer.GoogleNG({
+            numZoomLevels: 10,
+            maxResolution: 39135.7584765625,
+            initLayer: function() {
+                log[layer.id] = true;
+                OpenLayers.Layer.GoogleNG.prototype.initLayer.apply(this, arguments);
+            }
+        });
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        
+        var map2 = new OpenLayers.Map("map2");
+        var minZoom = 1;
+        var layer2 = new OpenLayers.Layer.GoogleNG({
+            numZoomLevels: 24,
+            initLayer: function() {
+                log[layer2.id] = true;
+                var origMinZoom = OpenLayers.Layer.GoogleNG.mapObject.mapTypes[layer2.type].minZoom;
+                // pretend the API reports a different minZoom
+                OpenLayers.Layer.GoogleNG.mapObject.mapTypes[layer2.type].minZoom = minZoom;
+                OpenLayers.Layer.GoogleNG.prototype.initLayer.apply(this, arguments);
+                OpenLayers.Layer.GoogleNG.mapObject.mapTypes[layer2.type].minZoom = origMinZoom;
+            }
+        });
+        map2.addLayer(layer2);
+        map2.zoomToMaxExtent();
+        
+        t.delay_call(1, function() {
+            t.eq(log[layer.id], true, "initLayer called for 1st layer");
+            t.eq(log[layer2.id], true, "initLayer called for 2nd layer");
+            
+            t.eq(layer.numZoomLevels, 10, "numZoomLevels from configuration takes precedence if lower");
+            t.eq(layer2.numZoomLevels, OpenLayers.Layer.GoogleNG.mapObject.mapTypes[layer2.type].maxZoom + 1 - minZoom, "numZoomLevels from API takes precedence if lower");
+
+            t.eq(layer.maxResolution, 39135.7584765625, "maxResolution from configuration takes precedence if higher");
+            t.eq(layer2.maxResolution, 78271.516953125, "maxResolution from API takes precedence if higher");
+
+            map.destroy();
+            map2.destroy();            
+        });
+    }
+    
+    function test_attribution(t) {
+        t.plan(4);
+        
+        var log = [];
+        map = new OpenLayers.Map("map");
+        layer = new OpenLayers.Layer.GoogleNG({
+            type: google.maps.MapTypeId.HYBRID,
+            updateAttribution: function(copyrights) {
+                log.push(copyrights);
+                OpenLayers.Layer.GoogleNG.prototype.updateAttribution.apply(this, arguments);
+            }
+        });
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(16, 48).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), 5);
+        
+        t.delay_call(3, function() {
+            t.eq(log.length, 1, "updateAttribution was called once");
+            t.ok(log[0]["m"].length && log[0]["k"].length, "'m' and 'k' copyrights populated for hybrid layer");
+            t.ok(layer.attribution.indexOf('olGoogleAttribution hybrid') != -1, "Attribution has the correct css class");
+            t.ok(layer.attribution.indexOf('?ll=48,16&z=5&t=h"') != -1, "maps.google.com link has correct parameters");
+            map.destroy();
+        });
+    }
+
+    function test_clone(t) {
+        t.plan(2);
+        
+        var clone;
+        
+        layer = new OpenLayers.Layer.GoogleNG({type: google.maps.MapTypeId.HYBRID});
+        clone = layer.clone();
+        t.ok(clone instanceof OpenLayers.Layer.GoogleNG, "clone is a Layer.GoogleNG instance");
+        t.eq(clone.type, google.maps.MapTypeId.HYBRID, "with the correct map type");
+    }
+
+  </script>
+</head>
+<body>
+<div id="map" style="width:500px;height:550px"></div>
+<div id="map2" style="width:500px;height:550px"></div>
+</body>
+</html>

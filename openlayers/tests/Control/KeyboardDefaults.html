@@ -1,0 +1,184 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    var map; 
+    function test_Control_KeyboardDefaults_constructor (t) {
+        t.plan( 2 );
+    
+        control = new OpenLayers.Control.KeyboardDefaults();
+        t.ok( control instanceof OpenLayers.Control.KeyboardDefaults, 
+                "new OpenLayers.Control.KeyboardDefaults returns object" );
+        t.eq( control.displayClass,  "olControlKeyboardDefaults", "displayClass is correct" );
+    }
+
+    function test_Control_KeyboardDefaults_destroy (t) {
+        t.plan(2);
+    
+        map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control.KeyboardDefaults();
+        map.addControl(control);
+        t.ok(control.handler != null, "control.handler is created");
+        control.destroy();
+        t.ok(control.handler == null, "control.handler is null after destroy");
+        map.destroy();
+    }
+
+    function test_Control_KeyboardDefaults_addControl (t) {
+        t.plan( 4 );
+
+        map = new OpenLayers.Map('map');
+        control = new OpenLayers.Control.KeyboardDefaults();
+        t.ok( control instanceof OpenLayers.Control.KeyboardDefaults, 
+                "new OpenLayers.Control.KeyboardDefaults returns object" );
+        t.ok( map instanceof OpenLayers.Map, 
+                "new OpenLayers.Map creates map" );
+        map.addControl(control);
+        t.ok( control.map === map, "Control.map is set to the map object" );
+        t.ok( OpenLayers.Util.indexOf(map.controls, control), "map.controls contains control" );
+    }
+
+    /* When interpretting
+     * the keycodes below (including the comments associated with them),
+     * consult the URL below. For instance, the Safari browser returns
+     * "IE keycodes", and so is supported by any keycode labeled "IE".
+     * 
+     * Very informative URL:
+     *    http://unixpapa.com/js/key.html
+     */
+    function test_Control_KeyboardDefaults_KeyDownEvent (t) {
+        t.plan( 16 );
+
+        var evt = {which: 1};
+        map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS("Test Layer", 
+            "http://octo.metacarta.com/cgi-bin/mapserv?",
+            {map: "/mapdata/vmap_wms.map", layers: "basic"});
+        map.addLayer(layer);
+        control = new OpenLayers.Control.KeyboardDefaults();
+        map.addControl(control);
+        
+        var STARTING_ZOOM_LEVEL = 4;
+        var DELAY = 2;
+        
+        var centerLL = new OpenLayers.LonLat(0,0);
+        map.setCenter(centerLL, STARTING_ZOOM_LEVEL);
+
+        // Start new test.
+        evt.keyCode = OpenLayers.Event.KEY_LEFT;
+        control.defaultKeyPress(evt);
+        t.delay_call( 
+            DELAY, function() {
+                t.ok( map.getCenter().lon < centerLL.lon, "key left works correctly" );
+                
+                // Start new test.
+                evt.keyCode = OpenLayers.Event.KEY_RIGHT;
+                control.defaultKeyPress(evt);
+            },
+            DELAY, function() {
+                t.eq( map.getCenter().lon, centerLL.lon, "key right works correctly" );
+                
+                // Start new test. 
+                evt.keyCode = OpenLayers.Event.KEY_UP;
+                control.defaultKeyPress(evt);
+            },
+            DELAY, function() {
+                t.ok( map.getCenter().lat > centerLL.lat, "key up works correctly" ); 
+                
+                // Start new test.
+                evt.keyCode = OpenLayers.Event.KEY_DOWN;
+                control.defaultKeyPress(evt);
+            },
+            DELAY, function() {
+                t.ok( map.getCenter().lat == centerLL.lat, "key down works correctly" ); 
+                
+                // Start new test.
+                evt.keyCode = 33; //page up
+                control.defaultKeyPress(evt);
+            },
+            DELAY, function() {
+                t.ok( map.getCenter().lat > centerLL.lat, "key page up works correctly" ); 
+                
+                // Start new test.
+                evt.keyCode = 34; //page down
+                control.defaultKeyPress(evt);
+            },
+            DELAY, function() {
+                t.ok( map.getCenter().lat == centerLL.lat, "key page down works correctly" ); 
+                
+                // Start new test.
+                evt.keyCode = 35; //end
+                control.defaultKeyPress(evt);
+            },
+            DELAY, function() {
+                t.ok( map.getCenter().lon > centerLL.lon, "key end works correctly" ); 
+                
+                // Start new test.
+                evt.keyCode = 36; //home
+                control.defaultKeyPress(evt);
+            },
+            DELAY, function() {
+                t.ok( map.getCenter().lon == centerLL.lon, "key home works correctly"); 
+                
+                // Start new test.
+                evt.keyCode = 43; //+
+                control.defaultKeyPress(evt);
+                t.eq( map.getZoom(), STARTING_ZOOM_LEVEL + 1, "key code 43 works correctly: +/= key (ASCII), keypad + (ASCII, Opera)" );
+                
+                // Start new test. 
+                evt.keyCode = 61;
+                control.defaultKeyPress(evt);
+                t.eq( map.getZoom(), STARTING_ZOOM_LEVEL + 2, "key code 61 works correctly: +/= key (Mozilla, Opera, some ASCII)"); 
+                
+                // Start new test.
+                evt.keyCode = 187;
+                control.defaultKeyPress(evt);
+                t.eq( map.getZoom(), STARTING_ZOOM_LEVEL + 3, "key code 187 works correctly: +/= key (IE)"); 
+                
+                // Start new test.
+                evt.keyCode = 107; 
+                control.defaultKeyPress(evt);
+                t.eq( map.getZoom(), STARTING_ZOOM_LEVEL + 4, "key code 107 works correctly: keypad + (IE, Mozilla)"); 
+                
+                // Start new test.
+                // set zoomanimation flag manually,
+                // reason: loadend event in layers.js will not achieved in unittests
+                map.zoomanimationActive = false;
+                evt.keyCode = 45; 
+                control.defaultKeyPress(evt);
+                t.eq( map.getZoom(), STARTING_ZOOM_LEVEL + 3, "key code 45 works correctly: -/_ key (ASCII, Opera), keypad - (ASCII, Opera)");
+                
+                // Start new test. 
+                // set zoomanimation flag manually,
+                // reason: loadend event in layers.js will not achieved in unittests
+                map.zoomanimationActive = false;
+                evt.keyCode = 109; 
+                control.defaultKeyPress(evt);
+                t.eq( map.getZoom(), STARTING_ZOOM_LEVEL + 2, "key code 109 works correctly: -/_ key (Mozilla), keypad - (Mozilla, IE)"); 
+                
+                // Start new test.
+                // set zoomanimation flag manually,
+                // reason: loadend event in layers.js will not achieved in unittests
+                map.zoomanimationActive = false;
+                evt.keyCode = 189; 
+                control.defaultKeyPress(evt);
+                t.eq( map.getZoom(), STARTING_ZOOM_LEVEL + 1, "key code 189 works correctly: -/_ key (IE)"); 
+                
+                // Start new test.
+                // set zoomanimation flag manually,
+                // reason: loadend event in layers.js will not achieved in unittests
+                map.zoomanimationActive = false;
+                evt.keyCode = 95;
+                control.defaultKeyPress(evt);
+                t.eq( map.getZoom(), STARTING_ZOOM_LEVEL, "key code 95 works correctly: -/_ key (some ASCII)"); 
+            }
+        );
+    }
+
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 1024px; height: 512px;"/>
+</body>
+</html>

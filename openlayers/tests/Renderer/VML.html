@@ -1,0 +1,454 @@
+<html>
+<head>
+<script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+
+    var geometry = null, node = null;
+
+    function test_VML_constructor(t) {
+        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(1);
+        var r = new OpenLayers.Renderer.VML(document.body);
+        t.ok(r instanceof OpenLayers.Renderer.VML, "new OpenLayers.Renderer.VML returns VML object" );
+    }
+    
+    function test_VML_destroy(t) {
+        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(1);
+        
+        var g_Destroy = false;
+        
+        OpenLayers.Renderer.Elements.prototype._destroy = 
+            OpenLayers.Renderer.Elements.prototype.destroy;
+            
+        OpenLayers.Renderer.prototype.destroy = function() {
+            g_Destroy = true;
+        }
+        
+        var r = new OpenLayers.Renderer.VML(document.body);
+        r.destroy();
+        
+        t.eq(g_Destroy, true, "OpenLayers.Renderer.Elements.destroy() called");
+        
+        OpenLayers.Renderer.prototype.destroy = 
+            OpenLayers.Renderer.prototype._destroy;
+    }
+    
+    function test_VML_setextent(t) {
+        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(4);
+        
+        OpenLayers.Renderer.Elements.prototype._setExtent =
+            OpenLayers.Renderer.Elements.prototype.setExtent;
+        
+        var g_SetExtent = false;
+        OpenLayers.Renderer.Elements.prototype.setExtent = function() {
+            g_SetExtent = true;
+        }
+                
+        var r = new OpenLayers.Renderer.VML(document.body);
+        r.setSize(new OpenLayers.Size(4,4));
+        r.map = {
+            getResolution: function() {
+                return 0.5;
+            }
+        }
+        
+        var extent = new OpenLayers.Bounds(1,2,3,4);
+        r.setExtent(extent);
+        
+        t.eq(g_SetExtent, true, "Elements.setExtent() called");
+        
+        t.ok(r.root.coordorigin == "0,0", "coordorigin is correct");
+        t.ok(r.root.coordsize == "4,4", "coordsize is correct");
+        t.eq(r.offset, {x:2, y:4}, "offset is correct");
+        
+        OpenLayers.Renderer.Elements.prototype.setExtent =
+            OpenLayers.Renderer.Elements.prototype._setExtent;
+    }
+
+    function test_VML_setsize(t) {
+        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(4);
+                
+        var r = new OpenLayers.Renderer.VML(document.body);
+        
+        var size = new OpenLayers.Size(1,2);
+        r.setSize(size);
+        t.eq(r.rendererRoot.style.width, "1px", "rendererRoot width is correct");
+        t.eq(r.rendererRoot.style.height, "2px", "rendererRoot height is correct");
+        
+        t.eq(r.root.style.width, "1px", "root width is correct");
+        t.eq(r.root.style.height, "2px", "root height is correct");
+    }
+    
+    function test_VML_drawText(t) {
+        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(2);
+
+        var r = new OpenLayers.Renderer.VML(document.body);
+        r.offset = {x: 0, y: 0};
+        
+        r.LABEL_ID_SUFFIX = "";
+        r.getResolution = function() {
+            return 1;
+        };
+
+        var style = {
+            label: "myText",
+            fontColor: "blue"
+        }
+        
+        r.drawText("feature1", style, new OpenLayers.Geometry.Point(1,1));
+        
+        var textbox = document.getElementById("feature1_textbox");
+        
+        t.eq(textbox.innerText, style.label, "label set correctly");
+        t.eq(textbox.style.color, style.fontColor, "font color of label set correctly");
+    }
+
+    function test_VML_drawpoint(t) {
+        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+    
+        t.plan(1);
+
+        var r = new OpenLayers.Renderer.VML(document.body);
+        
+        var properDraw = false;
+        var g_Radius = null;
+        r.drawCircle = function(n, g, r) {
+            properDraw = true;
+            g_Radius = 1;
+        }
+        r.drawPoint();
+        
+        t.ok(properDraw && g_Radius == 1, "drawPoint called drawCircle with radius set to 1");
+    }
+
+    function test_VML_drawcircle(t) {
+        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(4);
+        
+        var r = new OpenLayers.Renderer.VML(document.body);
+        r.offset = {x: 0, y: 0};
+        r.resolution = 0.5;
+        
+        var node = document.createElement('div');
+        
+        var geometry = {
+            x: 1,
+            y: 2
+        }
+        
+        var radius = 3;
+        r.drawCircle(node, geometry, radius);
+        
+        t.eq(node.style.left, '-1px', "left is correct");
+        t.eq(node.style.top, '1px', "top is correct");
+        t.eq(node.style.width, (2 * radius) + "px", "width is correct");
+        t.eq(node.style.height, (2 * radius) + "px", "height is correct");
+    }
+    
+    function test_VML_drawGraphic(t) {
+        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(6);
+        
+        var r = new OpenLayers.Renderer.VML(document.body);
+        r.offset = {x: 0, y: 0};
+        r.resolution = 1;
+        
+        var node = document.createElement('div');
+        node.id = "test"
+        node._geometryClass = "OpenLayers.Geometry.Point";
+        
+        var geometry = {
+            x: 1,
+            y: 2
+        }
+        
+        var style = {
+            externalGraphic: "foo.png",
+            graphicWidth: 7,
+            graphicHeight: 10
+        }
+        
+        r.drawGeometryNode(node, geometry, style);
+
+        t.eq(node.childNodes[0].id, "test_fill", "fill child node correctly created");
+        t.eq(node.style.left, "-2px", "x of insertion point with calculated xOffset correct");
+        t.eq(node.style.top, "-3px", "y of insertion point with calculated yOffset correct");
+        
+        style.rotation = 90;
+        
+        r.drawGeometryNode(node, geometry, style);
+        
+        t.eq(node.childNodes[1].id, "test_image", "image child node correctly created");
+        t.eq(node.style.left, "-3px", "x of insertion point of rotated image correct");
+        t.eq(node.style.top, "-4px", "y of insertion point of rotated image correct");
+    }
+
+    function test_VML_drawlinestring(t) {
+        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(1);
+        
+        var r = new OpenLayers.Renderer.VML(document.body);
+        
+        g_DrawLine = false;
+        r.drawLine = function(c) {
+            g_DrawLine = true;
+        }
+        
+        r.drawLineString(node, geometry);
+        
+        t.ok(g_DrawLine, "drawLine is called");
+    }
+    
+    function test_VML_drawlinearring(t) {
+        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(1);
+        
+        var r = new OpenLayers.Renderer.VML(document.body);
+        
+        g_DrawLine = false;
+        r.drawLine = function(c) {
+            g_DrawLine = true;
+        }
+        
+        r.drawLinearRing(node, geometry);
+        
+        t.ok(g_DrawLine, "drawLine is called");
+    }
+
+    function test_VML_drawline(t) {
+        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(8);
+        
+        var r = new OpenLayers.Renderer.VML(document.body);
+        r.offset = {x: 0, y: 0};
+        r.resolution = 0.5;
+        
+        var node = document.createElement('div');
+        
+        var geometry = {
+            components: [{
+                x: 1,
+                y: 2
+            },{
+                x: 3,
+                y: 4
+            }],
+            getBounds: function() {
+                return new OpenLayers.Bounds(5,6,7,8);
+            }
+        };
+        
+        r.drawLine(node, geometry, true);
+        t.ok(node.path.indexOf("x") != -1, "path attribute is correct when passed closeLine = true");
+        
+        
+        r.drawLine(node, geometry, false);
+        t.eq(node.path, "m 2,4 l  6,8 l  e", "path attribute is correct");
+        t.eq(node.style.left, "10px", "node.style.left is correct");
+        t.eq(node.style.top, "16px", "node.style.top is correct");
+        t.eq(node.style.width, "4px", "node.style.width is correct");
+        t.eq(node.style.height, "4px", "node.style.height is correct");
+        t.eq(node.coordorigin, "10 16", "node.coordorigin is correct");
+        t.eq(node.coordsize, "4 4", "node.coordsize is correct");
+    }
+    
+    function test_VML_drawpolygon(t) {
+        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(3);
+        
+        var r = new OpenLayers.Renderer.VML(document.body);
+        r.offset = {x: 0, y: 0};
+        r.resolution = 0.5;
+        
+        g_SetNodeDimension = false;
+        r.setNodeDimension = function(){
+            g_SetNodeDimension = true;
+        };
+        
+        var node = document.createElement('div');
+        
+        var geometry = OpenLayers.Geometry.fromWKT(
+            "POLYGON((1 2, 3 4), (5 6, 7 8))"
+        );
+        r.drawPolygon(node, geometry, true);
+        t.ok(g_SetNodeDimension, "setNodeDimension is called");
+        t.eq(node.path, "m 2,4 l 6,8 2,4 x m 10,12 l 14,16 10,12 e", "path attribute is correct - inner ring has no area and is not closed");
+
+        geometry.components[1].addComponent(new OpenLayers.Geometry.Point(8, 7));
+        r.drawPolygon(node, geometry, true);
+        t.eq(node.path, "m 2,4 l 6,8 2,4 x m 10,12 l 14,16 16,14 10,12 x e", "path attribute is correct - inner ring has an area and is closed");        
+    }
+    
+    function test_VML_drawrectangle(t) {
+        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(4);
+        
+        var r = new OpenLayers.Renderer.VML(document.body);
+        r.offset = {x: 0, y: 0};
+        r.resolution = 0.5;
+        
+        var node = document.createElement('div');
+        
+        var geometry = {
+            x: 1,
+            y: 2,
+            width: 3,
+            height: 4
+        }
+        
+        r.drawRectangle(node, geometry);
+        
+        t.eq(node.style.left, "2px", "node.style.left is correct");
+        t.eq(node.style.top, "4px", "node.style.top is correct");
+        t.eq(node.style.width, "6px", "node.style.width is correct");
+        t.eq(node.style.height, "8px", "node.style.height is correct");
+    }
+    
+    function test_vml_getnodetype(t) {
+        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+
+        t.plan(1);
+        
+        var r = new OpenLayers.Renderer.VML(document.body);
+
+        var g = {CLASS_NAME: "OpenLayers.Geometry.Point"}
+        var s = {graphicName: "square"};
+        
+        t.eq(r.getNodeType(g, s), "olv:shape", "Correct node type for well known symbols");
+    }
+
+    function test_vml_importsymbol(t) {
+        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+
+        t.plan(4);
+        
+        OpenLayers.Renderer.symbol.rect1 = [0,0, 10,0, 10,4, 0,4, 0,0];
+        OpenLayers.Renderer.symbol.rect2 = [0,0, 4,0, 4,10, 0,10, 0,0];
+
+        var r = new OpenLayers.Renderer.VML(document.body);
+
+        var cache = r.importSymbol("square");
+
+        t.eq(cache.path, "m 0 0 l 0 1 1 1 1 0 0 0 x e", "Square symbol rendered correctly");
+        t.ok(r.symbolCache["-square"], "Symbol has been cached correctly.");
+        
+        cache = r.importSymbol("rect1");
+        t.eq(cache.bottom, -3, "coordorigin bottom of landscape symbol set to -3 to move topmost part to the bottom (we are flipping y!)");
+        
+        cache = r.importSymbol("rect2");
+        t.eq(cache.left, -3, "coordorigin left of portrait symbol set to -3 to move leftmost part to the right");
+        
+        delete OpenLayers.Renderer.symbol.rect1;
+        delete OpenLayers.Renderer.symbol.rect2;
+        
+    }
+    
+    function test_vml_dashstyle(t) {
+        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        
+        t.plan(5);
+        
+        var r = new OpenLayers.Renderer.VML(document.body);
+        
+        t.eq(r.dashStyle({strokeDashstyle: "1 4"}), "dot", "dot pattern recognized correctly.");
+        t.eq(r.dashStyle({strokeDashstyle: "4 4"}), "dash", "dash pattern recognized correctly.");
+        t.eq(r.dashStyle({strokeDashstyle: "8 4"}), "longdash", "longdash pattern recognized correctly.");
+        t.eq(r.dashStyle({strokeDashstyle: "4 4 1 4"}), "dashdot", "dashdot pattern recognized correctly.");
+        t.eq(r.dashStyle({strokeDashstyle: "8 4 1 4"}), "longdashdot", "longdashdot pattern recognized correctly.");
+    }
+    
+    function test_vml_moveRoot(t) {
+        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+            t.plan(0);
+            return;
+        }
+        t.plan(2);
+        
+        var map = new OpenLayers.Map("map");
+        var l1 = new OpenLayers.Layer.Vector("vector");
+        map.addLayer(l1);
+        var l2 = new OpenLayers.Layer.Vector.RootContainer("rootcontainer", {layers: [l1]});
+        
+        var clear = l1.renderer.clear;
+        l1.renderer.clear = function() {
+            // this should be called twice, once when l2 is added to the map,
+            // and once when removed from the map.
+            t.ok(true, "Clearing original layer");
+        };
+        map.addLayer(l2);
+        map.removeLayer(l2);
+        l1.renderer.clear = clear;
+        
+        map.removeLayer(l1);
+    }
+        
+  </script>
+</head>
+<body>
+<div id="map" style="width:500px;height:550px"></div>
+</body>
+</html>

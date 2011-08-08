@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>OpenLayers Filter Strategy Example</title>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="../theme/default/google.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <script src="../lib/OpenLayers.js"></script>
+        <script>OpenLayers.ImgPath = "../img/";</script>
+        <style>
+            .olControlAttribution {
+                font-size: 9px;
+                bottom: 2px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1 id="title">Filter Strategy</h1>
+        <div id="tags">
+            filter, strategy, strategies, kml, advanced
+        </div>
+        <p id="shortdesc">
+            Demonstrates the filter strategy for limiting features passed to the layer.
+        </p>
+        <div id="map" class="smallmap"></div>
+        <label for="span">time span (seconds)</label>
+        <select id="span" name="span">
+            <option value="15">15</option>
+            <option value="30">30</option>
+            <option value="60" selected>60</option>
+            <option value="120">120</option>
+            <option value="240">240</option>
+        </select>
+        <input type="button" id="start" value="start">
+        <input type="button" id="stop" value="stop"><br><br>
+        <div id="docs">
+            <p>
+                This example uses a filter strategy to limit the features that are passed
+                to a layer.  Features bound for this layer have a <code>when</code> attribute
+                with date values.  A filter strategy is constructed with a between filter
+                that limits the span of dates shown.  A simple animation cycles through
+                the domain of the <code>when</code> values, calling <code>setFilter</code>
+                on the strategy with an updated filter.
+            </p><p>
+                View the <a href="filter-strategy.js" target="_blank">filter-strategy.js</a>
+                source to see how this is done
+            </p>
+        </div>
+        <script src="filter-strategy.js"></script>
+    </body>
+</html>

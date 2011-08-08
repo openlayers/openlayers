@@ -1,0 +1,18 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+
+   function test_Popup_FramedCloud_setHTML(t) { 
+        t.plan(1);
+        popup = new OpenLayers.Popup.FramedCloud();
+        popup.setContentHTML("<p></p>");
+        t.ok("setHTML on popup not yet added to map doesn't fail");
+   }
+
+  </script>
+</head>
+<body>
+<div id="map" style="width:512px; height:256px"> </div>
+</body>
+</html>

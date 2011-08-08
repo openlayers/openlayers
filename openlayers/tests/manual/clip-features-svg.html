@@ -1,0 +1,128 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SVG inValidRange Test Case</title><link
+href="../../theme/default/style.css"
+rel="stylesheet" type="text/css">
+<style>
+        #map {
+            width: 512px;
+            height: 512px;
+            border: 1px solid #4B3624;
+            background: White;
+        }
+
+        /* avoid pink tiles */
+        .olImageLoadError {
+            background-color: transparent !important;
+        }
+
+       .olControlAttribution { bottom: 0px!important }
+</style>
+<script src="../../lib/OpenLayers.js"
+type="text/javascript"></script>
+<script type="text/javascript">var map;
+
+      // increase reload attempts 
+      OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
+
+      var vectorLayer;
+      var markerLayer, boxes, newPoint;
+
+      function init(){
+              var options = {
+                  projection: new OpenLayers.Projection("EPSG:900913"),
+                  units: "m",
+                  numZoomLevels: 19,
+                  maxResolution: 156543.0339,
+                  maxExtent: new OpenLayers.Bounds(-20037508, -20037508,
+                                                   20037508, 20037508.34)
+              };
+              map = new OpenLayers.Map('map', options);
+
+              map.addControl(new OpenLayers.Control.MousePosition());
+
+              vectorLayer = new OpenLayers.Layer.Vector("Trails", {isBaseLayer: true});
+              markerLayer = new OpenLayers.Layer.Markers("WayPoints");
+
+              map.addLayers([vectorLayer,markerLayer]);
+
+              var style_trail = OpenLayers.Util.extend({},
+                  OpenLayers.Feature.Vector.style['default']);
+              style_trail.strokeColor = "green";
+              style_trail.strokeWidth = 5;
+
+              var pointList = [];
+
+              newPoint = new OpenLayers.Geometry.Point(-13653735.8487833,5726045.3578081);
+              pointList.push(newPoint);
+              newPoint = new OpenLayers.Geometry.Point(-13653731.3960036,5726056.5070679);
+              pointList.push(newPoint);
+              newPoint = new OpenLayers.Geometry.Point(-13653730.8394062,5726044.7207079);
+              pointList.push(newPoint);
+              newPoint = new OpenLayers.Geometry.Point(-13653743.1958697,5726043.9243328);
+              pointList.push(newPoint);
+              newPoint = new OpenLayers.Geometry.Point(-13653754.1051798,5726046.9505586);
+              pointList.push(newPoint);
+              newPoint = new OpenLayers.Geometry.Point(-13653760.4503907,5726056.5070679);
+              pointList.push(newPoint);
+              newPoint = new OpenLayers.Geometry.Point(-13653767.4635187,5726065.5857612);
+              pointList.push(newPoint);
+              newPoint = new OpenLayers.Geometry.Point(-13653830.136392,5726052.2066375);
+              pointList.push(newPoint);
+              newPoint = new OpenLayers.Geometry.Point(-13653846.5003571,5726042.3315828);
+              pointList.push(newPoint);
+
+              var lineFeature = new OpenLayers.Feature.Vector(
+                      new OpenLayers.Geometry.LineString(pointList));
+              lineFeature.fid = 52730;
+              vectorLayer.addFeatures(lineFeature);
+
+              pointList = [];
+              
+              newPoint = new OpenLayers.Geometry.Point(-12250153.3626406,4852001.6114048);
+              pointList.push(newPoint);
+              newPoint = new OpenLayers.Geometry.Point(-12194315.5060664,4800503.5113048);
+              pointList.push(newPoint);
+              newPoint = new OpenLayers.Geometry.Point(-12180445.0975155,4873109.008858);
+              pointList.push(newPoint);
+
+              lineFeature = new OpenLayers.Feature.Vector(
+                  new OpenLayers.Geometry.LineString(pointList),null,style_trail);
+              lineFeature.fid = 52751;
+              vectorLayer.addFeatures([lineFeature]);
+
+              var size = new OpenLayers.Size(15, 15);
+              var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+              var icon = new OpenLayers.Icon('../../img/marker.png', size, offset);
+              markerLayer.addMarker(new OpenLayers.Marker(
+                  new OpenLayers.LonLat((newPoint.x + 400), (newPoint.y - 400)), icon));
+
+              map.setCenter(new OpenLayers.LonLat(newPoint.x, newPoint.y), 13)
+      }
+
+      function zoomToScale(zoom) {
+         if (zoom == 8) map.zoomToScale(3385.5001275);
+         else if(zoom == 7) map.zoomToScale(6771.000255);
+         else if (zoom == 6) map.zoomToScale(13542);
+         else if (zoom == 5) map.zoomToScale(27084.001020);
+         else if (zoom == 4) map.zoomToScale(54168.001020);
+         else if (zoom == 3) map.zoomToScale(108337);
+         else if (zoom == 2) map.zoomToScale(3466752.1306573446);
+         else if (zoom == 1) map.zoomToScale(13867008.522629378);
+         else if (zoom == 0) map.zoomToScale(55468034.09051751);
+      }
+
+</script>
+</head>
+<body onLoad="init()">
+<h1 id="title">SVG inValidRange Clipping Test Case</h1>
+<p>Behavior before fixing #1631: Push Zoom 5.  You see lines.  Push
+Zoom 6.  No lines.</p>
+    <div id="map">
+    </div>
+    <button onClick="zoomToScale(5);">Zoom 5</button>
+    <button onClick="zoomToScale(6);">Zoom 6</button>
+    <button onClick="zoomToScale(7);">Zoom 7</button>
+    <button onClick="zoomToScale(8);">Zoom 8</button>
+</body>
+</html>

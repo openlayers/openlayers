@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>SelectFeature Control for Select and Highlight</title> 
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <!--[if lte IE 6]>
+        <link rel="stylesheet" href="../theme/default/ie6-style.css" type="text/css">
+    <![endif]-->
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <style type="text/css">
+        #controlToggle li {
+            list-style: none;
+        }
+    </style>
+    <script src="../lib/Firebug/firebug.js"></script>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+
+        var map, controls;
+
+        OpenLayers.Feature.Vector.style['default']['strokeWidth'] = '2';
+
+        function init(){
+            map = new OpenLayers.Map('map');
+
+            var vectors = new OpenLayers.Layer.Vector("vector", {isBaseLayer: true});
+            map.addLayers([vectors]);
+
+            var feature = new OpenLayers.Feature.Vector(
+                OpenLayers.Geometry.fromWKT(
+                    "POLYGON((28.828125 0.3515625, 132.1875 -13.0078125, -1.40625 -59.4140625, 28.828125 0.3515625))"
+                )
+            );
+            vectors.addFeatures([feature]);
+
+            var feature2 = new OpenLayers.Feature.Vector(
+                OpenLayers.Geometry.fromWKT(
+                    "POLYGON((-120.828125 -50.3515625, -80.1875 -80.0078125, -40.40625 -20.4140625, -120.828125 -50.3515625))"
+                )
+            );
+            vectors.addFeatures([feature2]);
+
+            var report = function(e) {
+                OpenLayers.Console.log(e.type, e.feature.id);
+            };
+            
+            var highlightCtrl = new OpenLayers.Control.SelectFeature(vectors, {
+                hover: true,
+                highlightOnly: true,
+                renderIntent: "temporary",
+                eventListeners: {
+                    beforefeaturehighlighted: report,
+                    featurehighlighted: report,
+                    featureunhighlighted: report
+                }
+            });
+
+            var selectCtrl = new OpenLayers.Control.SelectFeature(vectors,
+                {clickout: true}
+            );
+
+            map.addControl(highlightCtrl);
+            map.addControl(selectCtrl);
+
+            highlightCtrl.activate();
+            selectCtrl.activate();
+
+            map.addControl(new OpenLayers.Control.EditingToolbar(vectors));
+
+            map.setCenter(new OpenLayers.LonLat(0, 0), 1);
+
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">OpenLayers Select and Highlight Feature Example</h1>
+    <div id="tags">
+        select, highlight, hover, onmouseover, click, vector
+    </div>
+    <p id="shortdesc">
+      Select features on click, highlight features on hover.
+    </p>  
+    <div id="map" class="smallmap"></div>
+    <p>Select features by clicking on them. Just highlight features by hovering over
+    them.</p>
+  </body>
+</html>

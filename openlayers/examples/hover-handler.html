@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>OpenLayers Hover Handler Example</title>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">        
+        <style type="text/css">
+            #map {
+                width: 340px;
+                height: 170px;
+                border: 1px solid gray;
+            }
+            #west {
+                width: 350px;
+            }
+            #east {
+                position: absolute;
+                left: 370px;
+                top: 3em;
+            }
+
+            table td {
+                text-align: center;
+                margin: 0;
+                border: 1px solid gray;
+            }
+            textarea.output {
+                text-align: left;
+                font-size: 0.9em;
+                width: 250px;
+                height: 65px;
+                overflow: auto;
+            }
+        </style>
+        <script src="../lib/Firebug/firebug.js"></script>
+        <script src="../lib/OpenLayers.js"></script>
+        <script type="text/javascript">
+
+            OpenLayers.Control.Hover = OpenLayers.Class(OpenLayers.Control, {                
+                defaultHandlerOptions: {
+                    'delay': 500,
+                    'pixelTolerance': null,
+                    'stopMove': false
+                },
+
+                initialize: function(options) {
+                    this.handlerOptions = OpenLayers.Util.extend(
+                        {}, this.defaultHandlerOptions
+                    );
+                    OpenLayers.Control.prototype.initialize.apply(
+                        this, arguments
+                    ); 
+                    this.handler = new OpenLayers.Handler.Hover(
+                        this,
+                        {'pause': this.onPause, 'move': this.onMove},
+                        this.handlerOptions
+                    );
+                }, 
+
+                onPause: function(evt) {
+                    var output = document.getElementById(this.key + 'Output');
+                    var msg = 'pause ' + evt.xy;
+                    output.value = output.value + msg + "\r\n";
+                },
+
+                onMove: function(evt) {
+                    // if this control sent an Ajax request (e.g. GetFeatureInfo) when
+                    // the mouse pauses the onMove callback could be used to abort that
+                    // request.
+                }
+            });
+
+            var map, controls; 
+
+            function init(){
+        
+                map = new OpenLayers.Map('map');
+                var layer = new OpenLayers.Layer.WMS(
+                    'OpenLayers WMS',
+                    'http://vmap0.tiles.osgeo.org/wms/vmap0',
+                    {layers: 'basic'}
+                );
+                map.addLayers([layer]);
+                
+                controls = {
+                    'long': new OpenLayers.Control.Hover({
+                        handlerOptions: {
+                            'delay': 2000
+                        }
+                    }),
+                    'short': new OpenLayers.Control.Hover({
+                        handlerOptions: {
+                            'delay': 100
+                        }
+                    }),
+                    'tolerant': new OpenLayers.Control.Hover({
+                        handlerOptions: {
+                            'delay': 1000,
+                            'pixelTolerance': 6
+                        }
+                    }),
+                    'untolerant': new OpenLayers.Control.Hover({
+                        handlerOptions: {
+                            'delay': 1000,
+                            'pixelTolerance': 1
+                        }
+                    }),
+                    'stoppropag': new OpenLayers.Control.Hover({
+                        handlerOptions: {
+                            'stopMove': true
+                        }
+                    })
+                };
+
+                var props = document.getElementById("props");
+                var control;
+                for(var key in controls) {
+                    control = controls[key];
+                    // only to route output here
+                    control.key = key;
+                    map.addControl(control);
+                }
+
+                map.addControl(new OpenLayers.Control.MousePosition());
+                map.zoomToMaxExtent();
+            }
+            
+            function toggle(key) {
+                var control = controls[key];
+                if(control.active) {
+                    control.deactivate();
+                } else {
+                    control.activate();
+                }
+                var status = document.getElementById(key + "Status");
+                status.innerHTML = control.active ? "on" : "off";
+                var output = document.getElementById(key + "Output");
+                output.value = "";
+            }
+        </script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">Hover Handler Example</h1>
+        <div id="west">
+    
+            <div id="tags">
+                hover, onmouseover, handler, listener, event, events
+            </div>
+    
+            <p id="shortdesc">
+                This example shows the use of the hover handler.
+            </p>
+    
+            <div id="map" class="smallmap"></div>
+            <p>
+                The hover handler is to be used to emulate mouseovers on
+                objects on the map that aren't DOM elements. For example
+                one can use the hover hander to send WMS/GetFeatureInfo
+                requests as the user moves the mouse over the map.
+            </p>
+            <p>
+                The "delay" option specifies the number of milliseconds
+                before the event is considered a hover. Default is 500
+                milliseconds.
+            </p>
+            <p>
+                The "pixelTolerance" option specifies the maximum number
+                of pixels between mousemoves for an event to be
+                considered a hover. Default is null, which means no
+                pixel tolerance.
+            </p>
+            <p>
+                The "stopMove" option specifies whether other mousemove
+                listeners registered before the hover handler listener must
+                be notified on mousemoves or not. Default is false (meaning
+                that the other mousemove listeners will be notified on
+                mousemove).
+            </p>
+        </div>
+        <div id="east">
+            <table>
+                <caption>Controls with hover handlers (toggle on/off to clear output)</caption>
+                <tbody>
+                    <tr>
+                        <td>long delay (2 sec)</td>
+                        <td><button id="longStatus" onclick="toggle('long')">off</button></td>
+                        <td><textarea class="output" id="longOutput"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>short delay (100 msec)</td>
+                        <td><button id="shortStatus" onclick="toggle('short')">off</button></td>
+                        <td><textarea class="output" id="shortOutput"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>tolerant (6 pixels)</td>
+                        <td><button id="tolerantStatus" onclick="toggle('tolerant')">off</button></td>
+                        <td><textarea class="output" id="tolerantOutput"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>untolerant (1 pixel)</td>
+                        <td><button id="untolerantStatus" onclick="toggle('untolerant')">off</button></td>
+                        <td><textarea class="output" id="untolerantOutput"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>stop propagation</td>
+                        <td><button id="stoppropagStatus" onclick="toggle('stoppropag')">off</button></td>
+                        <td><textarea class="output" id="stoppropagOutput"></textarea></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>

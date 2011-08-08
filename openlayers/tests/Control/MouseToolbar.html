@@ -1,0 +1,59 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    var map; 
+    function test_Control_MouseToolbar_constructor (t) {
+        t.plan( 1 );
+    
+        control = new OpenLayers.Control.MouseToolbar();
+        t.ok( control instanceof OpenLayers.Control.MouseToolbar, "new OpenLayers.Control.MouseToolbar returns object" );
+    }
+    function test_Control_MouseToolbar_addControl (t) {
+        t.plan( 8 );
+        map = new OpenLayers.Map('map');
+        control = new OpenLayers.Control.MouseToolbar();
+        t.ok( control instanceof OpenLayers.Control.MouseToolbar, "new OpenLayers.Control.MouseToolbar returns object" );
+        t.ok( map instanceof OpenLayers.Map, "new OpenLayers.Map creates map" );
+        map.addControl(control);
+        t.ok( control.map === map, "Control.map is set to the map object" );
+        t.ok( map.controls[4] === control, "map.controls contains control" );
+        t.eq( parseInt(control.div.style.zIndex), map.Z_INDEX_BASE['Control'] + 5, "Control div zIndexed properly" );
+        t.eq( parseInt(map.viewPortDiv.lastChild.style.zIndex), map.Z_INDEX_BASE['Control'] + 5, "Viewport div contains control div" );
+        t.eq( control.div.style.left, "6px", "Control div left located correctly by default");
+        t.eq( control.div.style.top, "300px", "Control div top located correctly by default");
+
+    }
+    function test_Control_MouseToolbar_control_events (t) {
+        t.plan( 1 );
+        if ((navigator.userAgent.indexOf("compatible") == -1)) { 
+            var evt = {which: 1}; // control expects left-click
+            map = new OpenLayers.Map('map');
+            var layer = new OpenLayers.Layer.WMS("Test Layer", 
+                "http://octo.metacarta.com/cgi-bin/mapserv?",
+                {map: "/mapdata/vmap_wms.map", layers: "basic"});
+            map.addLayer(layer);
+
+            control = new OpenLayers.Control.MouseToolbar();
+            map.addControl(control);
+
+            var centerLL = new OpenLayers.LonLat(0,0); 
+            map.setCenter(centerLL, 5);
+
+            evt.shiftKey = true;
+            evt.xy = new OpenLayers.Size(5,5);
+            control.defaultMouseDown(evt);
+            evt.xy = new OpenLayers.Size(15,15);
+            control.defaultMouseUp(evt);
+            t.eq(map.getZoom(), 6, "Map zoom set correctly after zoombox");
+        } else {
+            t.ok(true, "IE does not run this test.") 
+        }
+    }
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 1024px; height: 512px;"/>
+</body>
+</html>

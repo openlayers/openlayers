@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
+    <script src="../lib/OpenLayers.js"></script>
+    <!--[if lte IE 6]>
+        <style>
+            .customEditingToolbar {
+                width: 200px;
+            }
+        </style>
+    <![endif]-->   
+    <style>
+        .customEditingToolbar {
+            float: right;
+            right: 0px;
+            height: 30px; 
+        }
+        .customEditingToolbar div {
+            float: right;
+            margin: 5px;
+            width: 24px;
+            height: 24px;
+        }
+        .olControlNavigationItemActive { 
+            background-image: url("../theme/default/img/editing_tool_bar.png");
+            background-repeat: no-repeat;
+            background-position: -103px -23px; 
+        }
+        .olControlNavigationItemInactive { 
+            background-image: url("../theme/default/img/editing_tool_bar.png");
+            background-repeat: no-repeat;
+            background-position: -103px -0px; 
+        }
+        .olControlDrawFeaturePolygonItemInactive { 
+            background-image: url("../theme/default/img/editing_tool_bar.png");
+            background-repeat: no-repeat;
+            background-position: -26px 0px; 
+        }
+        .olControlDrawFeaturePolygonItemActive { 
+            background-image: url("../theme/default/img/editing_tool_bar.png");
+            background-repeat: no-repeat;
+            background-position: -26px -23px ;                                                                   
+        }
+        .olControlModifyFeatureItemActive { 
+            background-image: url(../theme/default/img/move_feature_on.png);
+            background-repeat: no-repeat;
+            background-position: 0px 1px;
+        }
+        .olControlModifyFeatureItemInactive { 
+            background-image: url(../theme/default/img/move_feature_off.png);
+            background-repeat: no-repeat;
+            background-position: 0px 1px;
+        }
+        .olControlDeleteFeatureItemActive { 
+            background-image: url(../theme/default/img/remove_point_on.png);
+            background-repeat: no-repeat;
+            background-position: 0px 1px;
+        }
+        .olControlDeleteFeatureItemInactive { 
+            background-image: url(../theme/default/img/remove_point_off.png);
+            background-repeat: no-repeat;
+            background-position: 0px 1px;
+        }
+    </style>
+    <script src="wfs-protocol-transactions.js"></script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">WFS Transaction Example</h1>
+        <div id="tags">
+            wfs, wfst, wfs-t, advanced
+        </div>
+        <p id="shortdesc">
+            Shows the use of the WFS Transactions (WFS-T).
+        </p>
+        <div id="map" class="smallmap"></div>
+        <div id="docs">
+            <p>
+                The WFS protocol allows for creation of new features and
+                reading, updating, or deleting of existing features.
+            </p>
+            <p>
+                Use the tools to create, modify, and delete (in order from left
+                to right) features. Use the save tool (picture of a disk) to
+                save your changes.
+            </p>
+            <p>
+                To deactivate "drawing" or "modifying" depress the
+                corresponding button.
+            </p>
+            <p>
+                See the <a href="wfs-protocol-transactions.js" target="_blank">
+                wfs-protocol-transactions.js source</a> to see how this is done.
+            </p>        
+        </div>
+    </body>
+</html>
+
+

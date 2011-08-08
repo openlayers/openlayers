@@ -1,0 +1,292 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="../lib/OpenLayers.js"></script>
+    <!--[if lte IE 6]>
+        <style>
+            .customEditingToolbar {
+                width: 200px;
+            }
+        </style>
+    <![endif]--> 
+    <style>
+        .customEditingToolbar {
+            float: right;
+            right: 0px;
+            height: 30px; 
+        }
+        .customEditingToolbar div {
+            float: right;
+            margin: 5px;
+            width: 24px;
+            height: 24px;
+        }
+        .olControlNavigationItemActive { 
+            background-image: url("../theme/default/img/editing_tool_bar.png");
+            background-repeat: no-repeat;
+            background-position: -103px -23px; 
+        }
+        .olControlNavigationItemInactive { 
+            background-image: url("../theme/default/img/editing_tool_bar.png");
+            background-repeat: no-repeat;
+            background-position: -103px -0px; 
+        }
+        .olControlDrawFeaturePointItemInactive { 
+            background-image: url("../theme/default/img/editing_tool_bar.png");
+            background-repeat: no-repeat;
+            background-position: -77px 0px; 
+        }
+        .olControlDrawFeaturePointItemActive { 
+            background-image: url("../theme/default/img/editing_tool_bar.png");
+            background-repeat: no-repeat;
+            background-position: -77px -23px ;                                                                   
+        }
+        .olControlModifyFeatureItemActive { 
+            background-image: url(../theme/default/img/move_feature_on.png);
+            background-repeat: no-repeat;
+            background-position: 0px 1px;
+        }
+        .olControlModifyFeatureItemInactive { 
+            background-image: url(../theme/default/img/move_feature_off.png);
+            background-repeat: no-repeat;
+            background-position: 0px 1px;
+        }
+        .olControlDeleteFeatureItemActive { 
+            background-image: url(../theme/default/img/remove_point_on.png);
+            background-repeat: no-repeat;
+            background-position: 0px 1px;
+        }
+        .olControlDeleteFeatureItemInactive { 
+            background-image: url(../theme/default/img/remove_point_off.png);
+            background-repeat: no-repeat;
+            background-position: 0px 1px;
+        }
+    </style>
+    <script type="text/javascript">
+        var map, wfs;
+        
+        var DeleteFeature = OpenLayers.Class(OpenLayers.Control, {
+            initialize: function(layer, options) {
+                OpenLayers.Control.prototype.initialize.apply(this, [options]);
+                this.layer = layer;
+                this.handler = new OpenLayers.Handler.Feature(
+                    this, layer, {click: this.clickFeature}
+                );
+            },
+            clickFeature: function(feature) {
+                // if feature doesn't have a fid, destroy it
+                if(feature.fid == undefined) {
+                    this.layer.destroyFeatures([feature]);
+                } else {
+                    feature.state = OpenLayers.State.DELETE;
+                    this.layer.events.triggerEvent("afterfeaturemodified", 
+                                                   {feature: feature});
+                    feature.renderIntent = "select";
+                    this.layer.drawFeature(feature);
+                }
+            },
+            setMap: function(map) {
+                this.handler.setMap(map);
+                OpenLayers.Control.prototype.setMap.apply(this, arguments);
+            },
+            CLASS_NAME: "OpenLayers.Control.DeleteFeature"
+        });
+
+        function init() {
+            OpenLayers.ProxyHost = "proxy.cgi?url=";
+            map = new OpenLayers.Map({
+                div: "map",
+                maxResolution: 156543.0339,
+                maxExtent: new OpenLayers.Bounds(-20037508, -20037508, 20037508, 20037508),
+                restrictedExtent: new OpenLayers.Bounds(
+                    -11563906, 5540550, -11559015, 5542996
+                ),
+                projection: new OpenLayers.Projection("EPSG:900913"),
+                units: "m",
+                controls: [
+                    new OpenLayers.Control.PanZoom(),
+                    new OpenLayers.Control.Navigation()
+                ]
+            });
+
+            var osm = new OpenLayers.Layer.OSM();
+            var styles = new OpenLayers.StyleMap({
+                "default": new OpenLayers.Style(null, {
+                    rules: [
+                        new OpenLayers.Rule({
+                            symbolizer: {
+                                "Point": {
+                                    pointRadius: 5,
+                                    graphicName: "square",
+                                    fillColor: "white",
+                                    fillOpacity: 0.25,
+                                    strokeWidth: 1,
+                                    strokeOpacity: 1,
+                                    strokeColor: "#333333"
+                                },
+                                "Line": {
+                                    strokeWidth: 3,
+                                    strokeOpacity: 1,
+                                    strokeColor: "#666666"
+                                }
+                            }
+                        })
+                    ]
+                }),
+                "select": new OpenLayers.Style({
+                    strokeColor: "#00ccff",
+                    strokeWidth: 4
+                }),
+                "temporary": new OpenLayers.Style(null, {
+                    rules: [
+                        new OpenLayers.Rule({
+                            symbolizer: {
+                                "Point": {
+                                    pointRadius: 5,
+                                    graphicName: "square",
+                                    fillColor: "white",
+                                    fillOpacity: 0.25,
+                                    strokeWidth: 1,
+                                    strokeOpacity: 1,
+                                    strokeColor: "#333333"
+                                },
+                                "Line": {
+                                    strokeWidth: 3,
+                                    strokeOpacity: 1,
+                                    strokeColor: "#00ccff"
+                                }
+                            }
+                        })
+                    ]
+                })
+            });
+
+            var saveStrategy = new OpenLayers.Strategy.Save();
+            wfs = new OpenLayers.Layer.Vector("Editable Features", {
+                strategies: [new OpenLayers.Strategy.BBOX(), saveStrategy],
+                projection: new OpenLayers.Projection("EPSG:4326"),
+                styleMap: styles,
+                protocol: new OpenLayers.Protocol.WFS({
+                    version: "1.1.0",
+                    srsName: "EPSG:4326",
+                    url: "http://demo.opengeo.org/geoserver/wfs",
+                    featureNS :  "http://opengeo.org",
+                    featureType: "roads",
+                    geometryName: "the_geom",
+                    schema: "http://demo.opengeo.org/geoserver/wfs/DescribeFeatureType?version=1.1.0&typename=og:roads"
+                })
+            }); 
+           
+            map.addLayers([osm, wfs]);
+
+            // configure the snapping agent
+            var snap = new OpenLayers.Control.Snapping({layer: wfs});
+            map.addControl(snap);
+            snap.activate();
+            
+            // configure split agent
+            var split = new OpenLayers.Control.Split({
+                layer: wfs,
+                source: wfs,
+                tolerance: 0.0001,
+                deferDelete: true,
+                eventListeners: {
+                    aftersplit: function(event) {
+                        var msg = "Split resulted in " + event.features.length + " features.";
+                        flashFeatures(event.features);
+                    }
+                }
+            });
+            map.addControl(split);
+            split.activate();
+
+            // add some editing tools to a panel
+            var panel = new OpenLayers.Control.Panel({
+                displayClass: 'customEditingToolbar',
+                allowDepress: true
+            });
+            var draw = new OpenLayers.Control.DrawFeature(
+                wfs, OpenLayers.Handler.Path,
+                {
+                    title: "Draw Feature",
+                    displayClass: "olControlDrawFeaturePoint",
+                    handlerOptions: {multi: true}
+                }
+            );
+            modify = new OpenLayers.Control.ModifyFeature(
+                wfs, {displayClass: "olControlModifyFeature"}
+            );
+            var del = new DeleteFeature(wfs, {title: "Delete Feature"});
+           
+            var save = new OpenLayers.Control.Button({
+                title: "Save Changes",
+                trigger: function() {
+                    if(modify.feature) {
+                        modify.selectControl.unselectAll();
+                    }
+                    saveStrategy.save();
+                },
+                displayClass: "olControlSaveFeatures"
+            });
+
+
+
+            panel.addControls([
+                save, del, modify, draw
+            ]);
+            
+            map.addControl(panel);
+            map.setCenter(new OpenLayers.LonLat(-11561460.5, 5541773), 15);
+        }
+
+        function flashFeatures(features, index) {
+            if(!index) {
+                index = 0;
+            }
+            var current = features[index];
+            if(current && current.layer === wfs) {
+                wfs.drawFeature(features[index], "select");
+            }
+            var prev = features[index-1];
+            if(prev && prev.layer === wfs) {
+                wfs.drawFeature(prev, "default");
+            }
+            ++index;
+            if(index <= features.length) {
+                window.setTimeout(function() {flashFeatures(features, index)}, 100);
+            }
+        }
+        
+    </script>
+    </head>
+    <body onload="init()">
+    
+    <h1 id="title">Snap/Split and Persist via WFS</h1>
+    
+    <div id="tags">
+        snapping, splitting, wfs, wfst, wfs-t, advanced
+    </div>
+    <p id="shortdesc">
+        Shows snapping, splitting, and use of the WFS Transactions (WFS-T).
+    </p>
+    
+    <div id="map" class="smallmap"></div>
+
+    <div id="docs">
+        <p>The WFS protocol allows for creation of new features and reading,
+        updating, or deleting of existing features.</p>
+        <p>Use the tools to create, modify, and delete (in order from left
+        to right) features.  Use the save tool (picture of a disk) to
+        save your changes.</p>
+        <p>To deactivate "drawing" or "modifying" depress the corresponding
+        button.</p>
+    </div>
+
+</body>
+</html>
+
+

@@ -1,0 +1,56 @@
+<html> 
+<head> 
+    <script src="../../OLLoader.js"></script>
+    <script src="v2_0_2.js"></script>
+    <script type="text/javascript">
+
+    var format = new OpenLayers.Format.CSWGetDomain();
+    
+    function test_write(t) {
+
+        t.plan(1);
+
+        var options = {
+            PropertyName: "type"
+        };
+
+        var result = format.write(options);
+
+        t.eq(result, csw_request, "check value returned by format " +
+                "CSWGetDomain: write method");
+
+    }
+
+    
+    function test_read(t) {
+        
+        t.plan(9);
+        
+        var obj = format.read(csw_response);
+        
+        var domainValues = obj.DomainValues;
+        // test getRecordsResponse object
+        t.ok(domainValues, "object contains DomainValues property");
+
+        // test DomainValues
+        t.eq(domainValues.length, 1, "object contains 1 object in DomainValues");
+        var domainValue = domainValues[0];
+        t.eq(domainValue.type, "csw:Record", "check value for attribute type");
+        t.eq(domainValue.PropertyName, "type", "check value for element PropertyName");
+        t.ok(domainValue.ListOfValues, "object contains ListOfValues property");
+
+        // test ListOfValues
+        t.eq(domainValue.ListOfValues.length, 2, "object contains 2 objects " +
+                "in ListOfValues");
+        var val = domainValue.ListOfValues[0];
+        t.ok(val.Value, "object contains Value property");
+        t.eq(val.Value.my_attr, "my_value", "check value for attribute my_attr");
+        t.eq(val.Value.value, "dataset", "check value for element Value");
+        
+    }
+    
+    </script> 
+</head> 
+<body>
+</body> 
+</html> 

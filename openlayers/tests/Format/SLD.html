@@ -1,0 +1,36 @@
+<html> 
+<head> 
+    <script src="../OLLoader.js"></script> 
+    <script type="text/javascript">
+
+    var test_content = '<sld:StyledLayerDescriptor xmlns:sld="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml"><sld:NamedLayer><sld:Name>TestLayer</sld:Name><sld:UserStyle><sld:Name>foo</sld:Name><sld:FeatureTypeStyle><sld:Rule><sld:Name>bar</sld:Name><ogc:Filter></ogc:Filter><sld:PolygonSymbolizer><sld:Fill><sld:CssParameter name="fill"><ogc:Literal>blue</ogc:Literal></sld:CssParameter></sld:Fill></sld:PolygonSymbolizer></sld:Rule></sld:FeatureTypeStyle></sld:UserStyle></sld:NamedLayer></sld:StyledLayerDescriptor>';
+
+    function test_Format_SLD_constructor(t) { 
+        t.plan(3); 
+         
+        var options = {'foo': 'bar'}; 
+        var format = new OpenLayers.Format.SLD(options); 
+        t.ok(format instanceof OpenLayers.Format.SLD, 
+             "new OpenLayers.Format.SLD returns object" ); 
+        t.eq(format.foo, "bar", "constructor sets options correctly"); 
+        t.eq(typeof format.read, "function", "format has a read function"); 
+    }
+
+    function test_Format_SLD_read(t) {
+        t.plan(4);
+        var sld = new OpenLayers.Format.SLD().read(this.test_content);
+        
+        var testLayer = sld.namedLayers["TestLayer"];
+        var userStyles = testLayer.userStyles;
+        
+        t.eq(userStyles[0].name, "foo", "SLD correctly reads a UserStyle named 'foo'");
+        t.eq(userStyles[0].rules.length, 1, "The number of rules for the UserStyle is correct");
+        t.eq(userStyles[0].rules[0].name, "bar", "The first rule's name is 'bar'");
+        t.eq(userStyles[0].rules[0].symbolizer.Polygon.fillColor, "blue", "The fillColor for the Polygon symbolizer is correct");
+    }
+
+    </script> 
+</head> 
+<body> 
+</body> 
+</html> 

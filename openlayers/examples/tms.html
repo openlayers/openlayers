@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers Tiled Map Service Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var lon = 5;
+        var lat = 40;
+        var zoom = 5;
+        var map, layer;
+
+        function init(){
+            map = new OpenLayers.Map( 'map', {maxResolution:1.40625/2} );
+            layer = new OpenLayers.Layer.TMS( "TMS",
+                    "http://tilecache.osgeo.org/wms-c/Basic.py/", {layername: 'basic', type:'png'} );
+            map.addLayer(layer);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+        }
+        function addTMS() {
+            l = new OpenLayers.Layer.TMS(
+                OpenLayers.Util.getElement('layer').value,
+                OpenLayers.Util.getElement('url').value,
+                {
+                    'layername': OpenLayers.Util.getElement('layer').value,
+                    'type': OpenLayers.Util.getElement('type').value
+            });
+            map.addLayer(l);
+            map.setBaseLayer(l);
+        }
+    </script>
+  </head>
+  <body onload="init()">
+      <h1 id="title">Tiled Map Service Example</h1>
+
+    <div id="tags">
+        tile, cache, tms
+    </div>
+
+    <p id="shortdesc">
+        Demonstrate the initialization and modification of a Tiled Map Service layer.
+    </p>
+
+    <div id="map" class="smallmap"></div>
+
+    <div id="docs">
+        URL of TMS (Should end in /): <input type="text" id="url" size="60" value="http://tilecache.osgeo.org/wms-c/Basic.py/" /> layer_name <input type="text" id="layer" value="basic" /> <select id="type"><option>jpg</option><option>png</option></select> <input type="submit" onclick="addTMS()"/><br>
+        <p>
+        Example: http://tilecache.osgeo.org/wms-c/Basic.py/, basic, jpg<br>
+        The first input must be an HTTP URL pointing to a TMS instance. The second
+        input must be a layer name available from that instance, and the third must
+        be the output format used by that layer. (Any other behavior will result in
+        broken images being displayed.)
+        </p>
+    </div>
+  </body>
+</html>

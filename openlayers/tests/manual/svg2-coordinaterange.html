@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" >
+<link rel="stylesheet" href="../../theme/default/style.css" type="text/css" />
+<style type="text/css">
+    #map {
+        width: 512px;
+        height: 512px;
+        border: 1px solid gray;
+    }
+</style>
+<title>SVG2 coordinate range check</title>
+<script type="text/javascript" src="../../lib/OpenLayers.js"></script>
+<script>
+
+var WGS84 = new OpenLayers.Projection("EPSG:4326");
+var Mercator = new OpenLayers.Projection("EPSG:900913");
+var wkt = new OpenLayers.Format.WKT({ internalProjection: Mercator, externalProjection: WGS84 });
+
+function init() {
+    var externalGraphic, baseURL, baseLayer, layerOptions, hidemessenger;
+
+    var map = new OpenLayers.Map('map', {
+        controls: [
+            new OpenLayers.Control.Navigation(),
+            new OpenLayers.Control.PanZoom(),
+            new OpenLayers.Control.Attribution()
+        ],
+        theme: null
+    });
+
+    baseLayer = new OpenLayers.Layer.OSM("OSM");
+
+    var viewLayer = new OpenLayers.Layer.Vector("View Layer", {renderers: ["SVG2"]});
+    map.addLayers([baseLayer, viewLayer]);
+
+    viewLayer.addFeatures([wkt.read("LINESTRING(2.4356174739332 48.816618174539, 2.4313688548536 48.826083884311)")]);
+    var lonLat = new OpenLayers.LonLat( 2.43686, 48.81742) .transform( WGS84, Mercator);
+    map.setCenter (lonLat, 16);
+}
+</script>
+
+<body onload="init()">
+<div id="map"></div>
+<p>The map should show a line on top of the OSM layer. If it does not, then
+    either the CSS or the SVG coordinate range is exceeded.</p>
+<p>This test only works on browsers that support SVG.</p>
+</body>
+</html>

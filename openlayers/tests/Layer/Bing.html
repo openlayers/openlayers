@@ -1,0 +1,117 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    var map, layer; 
+
+    var layerType = 'Aerial';
+    var key = "AqTGBsziZHIJYYxgivLBf0hVdrAk9mWO5cQcb8Yux8sW5M8c8opEC2lZqKR1ZZXf";
+    
+    var options = {
+        type: layerType,
+        key: key
+    };
+
+    function test_constructor(t) {
+        t.plan(3);
+                       
+        var origProcessMetadata = OpenLayers.Layer.Bing.processMetadata;
+        var log = [];
+        OpenLayers.Layer.Bing.processMetadata = function(metadata) {
+            var script = document.getElementById(this._callbackId);
+            log.push(script.src);
+            origProcessMetadata.apply(this, arguments);
+        };
+        layer = new OpenLayers.Layer.Bing(OpenLayers.Util.extend({
+            metadataParams: {foo: "bar"}
+        }, options));
+        t.ok(layer instanceof OpenLayers.Layer.Bing, "returns OpenLayers.Layer.Bing object" );
+        t.delay_call(5, function() {
+            t.eq(log.length, 1, "processMetadata called");
+            t.eq(OpenLayers.Util.getParameters(log[0]).foo, "bar", "metadataParams passed to url correctly.");
+            OpenLayers.Layer.Bing.processMetadata = origProcessMetadata;
+            layer.destroy();
+        });
+    }
+    
+    function test_initLayer(t) {
+        t.plan(2);
+
+        var meta = [];
+        var origProcessMetadata = OpenLayers.Layer.Bing.processMetadata;
+        OpenLayers.Layer.Bing.processMetadata = function(metadata) {
+            meta.push(metadata);
+        }
+        map = new OpenLayers.Map("map");
+        layer = new OpenLayers.Layer.Bing(options);
+        var extent;
+        map.addLayers([layer, new OpenLayers.Layer(null, {
+            moveTo: function(bounds, changed) {
+                extent = bounds;
+            }
+        })]);
+        map.zoomToMaxExtent();
+        
+        var map2 = new OpenLayers.Map("map");
+        var layer2 = new OpenLayers.Layer.Bing(OpenLayers.Util.extend({
+            initLayer: function() {
+                // pretend we have a zoomMin of 2
+                this.metadata.resourceSets[0].resources[0].zoomMin = 2;
+                OpenLayers.Layer.Bing.prototype.initLayer.apply(this, arguments);
+            }
+        }, options));
+        var extent2;
+        map2.addLayers([layer2, new OpenLayers.Layer(null, {
+            moveTo: function(bounds, changed) {
+                extent2 = bounds;
+            }
+        })]);
+        map2.zoomToMaxExtent();
+        
+        t.delay_call(5, function() {
+            origProcessMetadata.call(layer, meta[0]);
+            t.eq(extent.toBBOX(), map.getExtent().toBBOX(), "layer extent correct for base layer with zoomMin == 1.");
+            map.destroy();
+        });
+
+        t.delay_call(6, function() {
+            origProcessMetadata.call(layer2, meta[1]);
+            t.eq(extent2.toBBOX(), map2.getExtent().toBBOX(), "layer extent correct for base layer with zoomMin == 2.");
+            map2.destroy();
+            OpenLayers.Layer.Bing.processMetadata = origProcessMetadata;
+        });
+    }
+    
+    function test_attribution(t) {
+        t.plan(3);
+        
+        var log = [];
+        var map = new OpenLayers.Map("map");
+        layer = new OpenLayers.Layer.Bing(options);
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        
+        t.delay_call(2, function() {
+            t.ok(layer.attribution.indexOf('olBingAttribution aerial') !== -1, "Attribution has the correct css class");
+            t.ok(layer.attribution.indexOf('<img src="">') == -1, "Attribution contains a logo");
+            t.ok(layer.attribution.indexOf('</img></div></a><a style=') == -1 , "Attribution contains a copyright");
+            map.destroy();
+        });
+    }
+
+    function test_clone(t) {
+        t.plan(1);
+        
+        var clone;
+        
+        layer = new OpenLayers.Layer.Bing(options);
+        clone = layer.clone();
+        t.ok(clone instanceof OpenLayers.Layer.Bing, "clone is a Layer.Bing instance");
+    }
+
+  </script>
+</head>
+<body>
+<div id="map" style="width:500px;height:550px"></div>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="../OLLoader.js"></script>
+<script>
+
+var features = [];
+for (var i=0; i<20; ++i) {
+    features.push(
+        new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(0, 0), {index: i}
+        )
+    );
+}
+
+var filter = new OpenLayers.Filter.Comparison({
+    type: OpenLayers.Filter.Comparison.LESS_THAN,
+    property: "index",
+    value: 10
+});
+
+function test_initialize(t) {
+    
+    t.plan(4);
+    
+    var strategy = new OpenLayers.Strategy.Filter({filter: filter});
+
+    t.ok(strategy instanceof OpenLayers.Strategy, "is strategy");
+    t.ok(strategy instanceof OpenLayers.Strategy.Filter, "is filter strategy");
+    
+    t.ok(strategy.filter === filter, "has filter");
+    
+    strategy.destroy();
+    
+    try {
+        strategy = new OpenLayers.Strategy.Filter();
+        t.ok(true, "strategy without filter works");
+    } catch (err) {
+        t.fail("strategy without filter should not throw");
+    }
+    
+
+}
+
+function test_autoActivate(t) {
+
+    t.plan(2);
+
+    var strategy = new OpenLayers.Strategy.Filter({filter: filter});
+    
+    var layer = new OpenLayers.Layer.Vector(null, {
+        strategies: [strategy]
+    });
+    
+    t.ok(!strategy.active, "strategy not active before adding to map");
+
+    var map = new OpenLayers.Map({
+        div: "map",
+        allOverlays: true,
+        layers: [layer],
+        center: new OpenLayers.LonLat(0, 0),
+        zoom: 1
+    });
+
+    t.ok(strategy.active, "strategy active after adding to map");
+    
+    map.destroy();
+    
+}
+
+function test_setFilter(t) {
+    
+    t.plan(13);
+
+    var strategy = new OpenLayers.Strategy.Filter({filter: filter});
+    var layer = new OpenLayers.Layer.Vector(null, {
+        strategies: [strategy]
+    });
+
+    var map = new OpenLayers.Map({
+        div: "map",
+        allOverlays: true,
+        layers: [layer],
+        center: new OpenLayers.LonLat(0, 0),
+        zoom: 1
+    });
+    
+    var log = [];
+    layer.events.on({
+        beforefeaturesadded:  function(event) {
+            log.push(event.type);
+        },
+        beforefeaturesremoved: function(event) {
+            log.push(event.type);
+        }
+    })
+
+    // a) add all features
+    log = [];
+    layer.addFeatures(features);
+    t.eq(features.length, 20, "a) collection of 20 features")
+    t.eq(layer.features.length, 10, "a) layer got 10 with filter 'index < 10'");
+    t.eq(strategy.cache.length, 10, "a) strategy cached 10 with filter 'index < 10'");
+    t.eq(log.length, 1, "a) one event logged");
+    t.eq(log[0], "beforefeaturesadded", "a) beforefeaturesadded fired");
+
+    // b) update filter
+    log = [];
+    filter.value = 5;
+    strategy.setFilter(filter);
+    t.eq(layer.features.length, 5, "b) layer got 5 with filter 'index < 5'");
+    t.eq(strategy.cache.length, 15, "b) strategy cached 15 with filter 'index < 5'");
+    t.eq(log.length, 1, "b) one event logged");
+    t.eq(log[0], "beforefeaturesremoved", "b) beforefeaturesremoved fired");
+
+    // c) update filter
+    log = [];
+    filter.value = 15;
+    strategy.setFilter(filter);
+    t.eq(layer.features.length, 15, "c) layer got 15 with filter 'index < 15'");
+    t.eq(strategy.cache.length, 5, "c) strategy cached 5 with filter 'index < 15'");
+    t.eq(log.length, 1, "c) one event logged");
+    t.eq(log[0], "beforefeaturesadded", "c) beforefeaturesadded fired");
+    
+    map.destroy();
+    
+}
+
+
+
+</script></head>
+<body>
+    <div id="map" style="width: 512px; height: 256px" />
+</body>
+</html>

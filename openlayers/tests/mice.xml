@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding="ISO-8859-1" ?>
+<wfs:FeatureCollection
+   xmlns:bsc="http://www.bsc-eoc.org/bsc"
+   xmlns:wfs="http://www.opengis.net/wfs"
+   xmlns:gml="http://www.opengis.net/gml"
+   xmlns:ogc="http://www.opengis.net/ogc"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengeospatial.net//wfs/1.0.0/WFS-basic.xsd 
+                       http://www.bsc-eoc.org/bsc http://www.bsc-eoc.org/cgi-bin/bsc_ows.asp?SERVICE=WFS&amp;VERSION=1.0.0&amp;REQUEST=DescribeFeatureType&amp;TYPENAME=OWLS&amp;OUTPUTFORMAT=XMLSCHEMA">
+      <gml:boundedBy>
+      	<gml:Box srsName="EPSG:4326">
+      		<gml:coordinates>-89.817223,45.005555 -74.755001,51.701388</gml:coordinates>
+      	</gml:Box>
+      </gml:boundedBy>
+    <gml:featureMember><bsc:OWLS>
+        <gml:boundedBy>
+        	<gml:Box srsName="EPSG:4326">
+        		<gml:coordinates>-79.771668,45.891110 -79.771668,45.891110</gml:coordinates>
+        	</gml:Box>
+        </gml:boundedBy>
+        <bsc:msGeometry>
+        <gml:Point srsName="EPSG:4326">
+          <gml:coordinates>-79.771668,45.891110</gml:coordinates>
+        </gml:Point>
+        </bsc:msGeometry>
+      </bsc:OWLS>
+    </gml:featureMember>
+    <gml:featureMember>
+      <bsc:OWLS>
+        <gml:boundedBy>
+        	<gml:Box srsName="EPSG:4326">
+        		<gml:coordinates>-83.755834,46.365277 -83.755834,46.365277</gml:coordinates>
+        	</gml:Box>
+        </gml:boundedBy>
+        <bsc:owlname>owl</bsc:owlname>
+        <bsc:msGeometry>
+        <gml:Point srsName="EPSG:4326">
+          <gml:coordinates>-83.755834,46.365277</gml:coordinates>
+        </gml:Point>
+        </bsc:msGeometry>
+      </bsc:OWLS>
+    </gml:featureMember>
+    <gml:featureMember>
+      <bsc:OWLS>
+        <gml:boundedBy>
+        	<gml:Box srsName="EPSG:4326">
+        		<gml:coordinates>-83.808612,46.175277 -83.808612,46.175277</gml:coordinates>
+        	</gml:Box>
+        </gml:boundedBy>
+        <bsc:msGeometry>
+        <gml:Point srsName="EPSG:4326">
+          <gml:coordinates>-83.808612,46.175277</gml:coordinates>
+        </gml:Point>
+        </bsc:msGeometry>
+      </bsc:OWLS>
+    </gml:featureMember>
+    <gml:featureMember>
+      <bsc:OWLS>
+        <gml:boundedBy>
+        	<gml:Box srsName="EPSG:4326">
+        		<gml:coordinates>-84.111112,46.309166 -84.111112,46.309166</gml:coordinates>
+        	</gml:Box>
+        </gml:boundedBy>
+        <bsc:msGeometry>
+        <gml:Point srsName="EPSG:4326">
+          <gml:coordinates>-84.111112,46.309166</gml:coordinates>
+        </gml:Point>
+        </bsc:msGeometry>
+      </bsc:OWLS>
+    </gml:featureMember>
+    <gml:featureMember>
+      <bsc:OWLS>
+        <gml:boundedBy>
+        	<gml:Box srsName="EPSG:4326">
+        		<gml:coordinates>-83.678612,46.821110 -83.678612,46.821110</gml:coordinates>
+        	</gml:Box>
+        </gml:boundedBy>
+        <bsc:msGeometry>
+        <gml:Point srsName="EPSG:4326">
+          <gml:coordinates>-83.678612,46.821110</gml:coordinates>
+        </gml:Point>
+        </bsc:msGeometry>
+      </bsc:OWLS>
+    </gml:featureMember>
+    <gml:featureMember>
+      <bsc:OWLS>
+        <gml:boundedBy>
+        	<gml:Box srsName="EPSG:4326">
+        		<gml:coordinates>-83.664445,46.518888 -83.664445,46.518888</gml:coordinates>
+        	</gml:Box>
+        </gml:boundedBy>
+        <bsc:msGeometry>
+        <gml:Point srsName="EPSG:4326">
+          <gml:coordinates>-83.664445,46.518888</gml:coordinates>
+        </gml:Point>
+        </bsc:msGeometry>
+      </bsc:OWLS>
+    </gml:featureMember>
+    <gml:featureMember>
+      <bsc:OWLS>
+        <gml:boundedBy>
+        	<gml:Box srsName="EPSG:4326">
+        		<gml:coordinates>-80.613334,46.730277 -80.613334,46.730277</gml:coordinates>
+        	</gml:Box>
+        </gml:boundedBy>
+        <bsc:msGeometry>
+        <gml:Point srsName="EPSG:4326">
+          <gml:coordinates>-80.613334,46.730277</gml:coordinates>
+        </gml:Point>
+        </bsc:msGeometry>
+      </bsc:OWLS>
+    </gml:featureMember>
+    <gml:featureMember>
+      <bsc:OWLS>
+        <gml:boundedBy>
+        	<gml:Box srsName="EPSG:4326">
+        		<gml:coordinates>-79.676946,45.428054 -79.676946,45.428054</gml:coordinates>
+        	</gml:Box>
+        </gml:boundedBy>
+        <bsc:msGeometry>
+        <gml:Point srsName="EPSG:4326">
+          <gml:coordinates>-79.676946,45.428054</gml:coordinates>
+        </gml:Point>
+        </bsc:msGeometry>
+      </bsc:OWLS>
+    </gml:featureMember>
+    <gml:featureMember>
+      <bsc:OWLS>
+        <gml:boundedBy>
+        	<gml:Box srsName="EPSG:4326">
+        		<gml:coordinates>-83.853056,46.236944 -83.853056,46.236944</gml:coordinates>
+        	</gml:Box>
+        </gml:boundedBy>
+        <bsc:msGeometry>
+        <gml:Point srsName="EPSG:4326">
+          <gml:coordinates>-83.853056,46.236944</gml:coordinates>
+        </gml:Point>
+        </bsc:msGeometry>
+      </bsc:OWLS>
+    </gml:featureMember>
+    <gml:featureMember>
+      <bsc:OWLS>
+        <gml:boundedBy>
+        	<gml:Box srsName="EPSG:4326">
+        		<gml:coordinates>-82.289167,45.896388 -82.289167,45.896388</gml:coordinates>
+        	</gml:Box>
+        </gml:boundedBy>
+        <bsc:msGeometry>
+        <gml:Point srsName="EPSG:4326">
+          <gml:coordinates>-82.289167,45.896388</gml:coordinates>
+        </gml:Point>
+        </bsc:msGeometry>
+      </bsc:OWLS>
+    </gml:featureMember>
+</wfs:FeatureCollection>
+

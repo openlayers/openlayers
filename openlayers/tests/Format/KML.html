@@ -1,0 +1,1240 @@
+<html> 
+<head> 
+    <script src="../OLLoader.js"></script> 
+    <script type="text/javascript">
+
+    var test_content = '<kml xmlns="http://earth.google.com/kml/2.0"><Folder><name>OpenLayers export</name><description>Vector geometries from OpenLayers</description><Placemark id="KML.Polygon"><name>OpenLayers.Feature.Vector_344</name><description>A KLM Polygon</description><Polygon><outerBoundaryIs><LinearRing><coordinates>5.001370157823406,49.26855713824488 8.214706453896161,49.630662409673505 8.397385910100951,48.45172350357396 5.001370157823406,49.26855713824488</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark><Placemark id="KML.LineString"><name>OpenLayers.Feature.Vector_402</name><description>A KML LineString</description><LineString><coordinates>5.838523393080493,49.74814616928052 5.787079558782349,48.410795432216574 8.91427702008381,49.28932499608202</coordinates></LineString></Placemark><Placemark id="KML.Point"><name>OpenLayers.Feature.Vector_451</name><description>A KML Point</description><Point><coordinates>6.985073041685488,49.8682250149058</coordinates></Point></Placemark><Placemark id="KML.MultiGeometry"><name>SF Marina Harbor Master</name><description>KML MultiGeometry</description><MultiGeometry><LineString><coordinates>-122.4425587930444,37.80666418607323 -122.4428379594768,37.80663578323093</coordinates></LineString><LineString><coordinates>-122.4425509770566,37.80662588061205 -122.4428340530617,37.8065999493009</coordinates></LineString></MultiGeometry></Placemark></Folder></kml>';
+    var test_style = '<kml xmlns="http://earth.google.com/kml/2.0"> <Placemark>    <Style> <LineStyle> <color>870000ff</color> <width>10</width> </LineStyle> </Style>  <LineString> <coordinates> -112,36 -113,37 </coordinates> </LineString> </Placemark></kml>';
+    var test_style_fill = '<kml xmlns="http://earth.google.com/kml/2.0"> <Placemark>    <Style> <PolyStyle> <fill>1</fill> <color>870000ff</color> <width>10</width> </PolyStyle> </Style>  <LineString> <coordinates> -112,36 -113,37 </coordinates> </LineString> </Placemark><Placemark>    <Style> <PolyStyle> <fill>0</fill> <color>870000ff</color> <width>10</width> </PolyStyle> </Style>  <LineString> <coordinates> -112,36 -113,37 </coordinates> </LineString> </Placemark></kml>';
+    var test_style_outline = '<kml xmlns="http://earth.google.com/kml/2.0"> <Placemark>    <Style> <PolyStyle> <outline>0</outline> <color>870000ff</color> <width>10</width> </PolyStyle> </Style>  <LineString> <coordinates> -112,36 -113,37 </coordinates> </LineString> </Placemark></kml>';
+    var test_style_font = '<kml xmlns="http://earth.google.com/kml/2.0"> <Placemark><Style><LabelStyle><color>870000ff</color><scale>1.5</scale></LabelStyle></Style><LineString><coordinates> -112,36 -113,37 </coordinates></LineString></Placemark></kml>';
+    var test_nl = '<kml xmlns="http://earth.google.com/kml/2.2"> <Document> <NetworkLink> <Link> <href>http://maker.geocommons.com/maps/1717/overlays/0</href> </Link> </NetworkLink> </Document></kml>';
+    function test_Format_KML_constructor(t) { 
+        t.plan(5); 
+         
+        var options = {'foo': 'bar'}; 
+        var format = new OpenLayers.Format.KML(options); 
+        t.ok(format instanceof OpenLayers.Format.KML, 
+             "new OpenLayers.Format.KML returns object" ); 
+        t.eq(format.foo, "bar", "constructor sets options correctly"); 
+        t.eq(typeof format.read, "function", "format has a read function"); 
+        t.eq(typeof format.write, "function", "format has a write function");
+        t.eq(format.externalProjection.getCode(), "EPSG:4326", 
+             "default external projection is EPSG:4326"); 
+    }
+    function test_Format_KML_multipoint(t) {
+        t.plan(1);
+        var f = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.MultiPoint([
+            new OpenLayers.Geometry.Point(15555162, 4247484)]));
+        var format = new OpenLayers.Format.KML({
+            extractStyles:      true, 
+            extractAttributes:  true,
+            internalProjection: new OpenLayers.Projection("EPSG:900913"),
+            externalProjection: new OpenLayers.Projection("EPSG:4326")
+        });
+        var data = format.write(f);
+        var found = (data.search('139.734') != -1);
+        t.ok(found, "Found 139.734 (correct reprojection) in data output.");
+    }        
+    function test_Format_KML_read(t) {
+        t.plan(5);
+        var features = (new OpenLayers.Format.KML()).read(this.test_content);
+        t.eq(features.length, 4, "Number of features read is correct");
+        t.ok(features[0].geometry.toString() == "POLYGON((5.001370157823406 49.26855713824488,8.214706453896161 49.630662409673505,8.397385910100951 48.45172350357396,5.001370157823406 49.26855713824488))", "polygon feature geometry correctly created");
+        t.ok(features[1].geometry.toString() == "LINESTRING(5.838523393080493 49.74814616928052,5.787079558782349 48.410795432216574,8.91427702008381 49.28932499608202)", "linestring feature geometry correctly created");
+        t.ok(features[2].geometry.toString() == "POINT(6.985073041685488 49.8682250149058)", "point feature geometry correctly created");
+        t.ok(features[3].geometry.CLASS_NAME == "OpenLayers.Geometry.Collection",
+             "read geometry collection");
+    }
+
+    
+    function test_Format_KML_readCdataAttributes_20(t) {
+        t.plan(2);
+        var cdata = '<kml xmlns="http://earth.google.com/kml/2.0"><Document><Placemark><name><![CDATA[Pezinok]]> </name><description><![CDATA[Full of text.]]></description><styleUrl>#rel1.0</styleUrl><Point> <coordinates>17.266666, 48.283333</coordinates></Point></Placemark></Document></kml>';
+        var features = (new OpenLayers.Format.KML()).read(cdata);
+        t.eq(features[0].attributes.description, "Full of text.", "Description attribute in cdata read correctly");
+        t.eq(features[0].attributes.name, "Pezinok", "title attribute in cdata read correctly");
+        
+    }
+    
+    function test_Format_KML_networklink(t) {
+        t.plan(1);
+        var f = new OpenLayers.Format.KML({'maxDepth':1});
+        f.fetchLink = function(url) {
+            t.eq(url, "http://maker.geocommons.com/maps/1717/overlays/0", "network link fetched a link correctly.");
+            return '';
+        }
+        f.read(test_nl);
+    }
+    function test_Format_KML_readCdataAttributes_21(t) {
+        t.plan(2);
+        var cdata = '<kml xmlns="http://earth.google.com/kml/2.1"><Document><Placemark><name><![CDATA[Pezinok]]></name><description><![CDATA[Full of text.]]></description><styleUrl>#rel1.0</styleUrl><Point> <coordinates>17.266666, 48.283333</coordinates></Point></Placemark></Document></kml>';
+        var features = (new OpenLayers.Format.KML()).read(cdata);
+        t.eq(features[0].attributes.description, "Full of text.", "Description attribute in cdata read correctly");
+        t.eq(features[0].attributes.name, "Pezinok", "title attribute in cdata read correctly");
+        
+    }
+    
+    function test_Format_KML_write(t) {
+        // make sure id, name, and description are preserved
+        t.plan(1);
+        var kmlExpected = this.test_content;
+        var options = {
+            foldersName: "OpenLayers export",
+            foldersDesc: "Vector geometries from OpenLayers"
+        };
+
+        var format = new OpenLayers.Format.KML(options);
+        var features = format.read(kmlExpected);
+        var kmlOut = format.write(features);
+        var kmlOut = kmlOut.replace(/<\?[^>]*\?>/, ''); // Remove XML Prolog
+        t.eq(kmlOut, kmlExpected, "correctly writes an KML doc string");
+    }
+
+    function test_Format_KML_write_noNameDesc(t) {
+        t.plan(1);
+        var format = new OpenLayers.Format.KML({
+            foldersName: null,
+            foldersDesc: null
+        });
+        var geom = new OpenLayers.Geometry.Point(0, 0)
+        var feature = new OpenLayers.Feature.Vector(geom);
+        feature.id = 42;
+        var kmlOut = format.write(feature);
+        var expected = '<kml xmlns="http://earth.google.com/kml/2.0"><Folder><Placemark><name>42</name><description>No description available</description><Point><coordinates>0,0</coordinates></Point></Placemark></Folder></kml>'
+        t.eq(kmlOut, expected, "null foldersName or foldersDesc don't create elements");
+    }
+    
+    function test_Format_KML_write_multis(t) {
+        /**
+         * KML doesn't have a representation for multi geometries of a
+         * specific type.  KML MultiGeometry maps to OL Geometry.Collection.
+         * Because of this, multi-geometries in OL can't make a round trip
+         * through KML (an OL MultiPoint maps to a KML MultiGeometry
+         * containing points, which maps back to an OL Collection containing
+         * points).  So we need to acceptance tests for the writing of
+         * multi-geometries specifically instead of relying on the round-trip
+         * write test above.
+         */
+        t.plan(3);
+        var format = new OpenLayers.Format.KML({foldersDesc: "test output"});
+        var multi, feature, output, expected;
+        
+        // test multipoint
+        var multi = new OpenLayers.Geometry.MultiPoint([
+            new OpenLayers.Geometry.Point(0, 1)
+        ]);
+        feature = new OpenLayers.Feature.Vector(multi, {name: "test name"});
+        output = format.write(feature);
+        expected = '<kml xmlns="http://earth.google.com/kml/2.0"><Folder><name>OpenLayers export</name><description>test output</description><Placemark><name>test name</name><description>No description available</description><MultiGeometry><Point><coordinates>0,1</coordinates></Point></MultiGeometry></Placemark></Folder></kml>';
+        var output = output.replace(/<\?[^>]*\?>/, ''); // Remove XML Prolog
+        t.eq(output, expected, "multipoint correctly written");
+        
+        // test multilinestring
+        var multi = new OpenLayers.Geometry.MultiLineString([
+            new OpenLayers.Geometry.LineString([
+                new OpenLayers.Geometry.Point(1, 0),
+                new OpenLayers.Geometry.Point(0, 1)
+            ])
+        ]);
+        feature = new OpenLayers.Feature.Vector(multi, {name: "test name"});
+        output = format.write(feature);
+        expected = '<kml xmlns="http://earth.google.com/kml/2.0"><Folder><name>OpenLayers export</name><description>test output</description><Placemark><name>test name</name><description>No description available</description><MultiGeometry><LineString><coordinates>1,0 0,1</coordinates></LineString></MultiGeometry></Placemark></Folder></kml>';
+        var output = output.replace(/<\?[^>]*\?>/, ''); // Remove XML Prolog
+        t.eq(output, expected, "multilinestring correctly written");
+
+        // test multipolygon
+        var multi = new OpenLayers.Geometry.MultiPolygon([
+            new OpenLayers.Geometry.Polygon([
+                new OpenLayers.Geometry.LinearRing([
+                    new OpenLayers.Geometry.Point(0, 0),
+                    new OpenLayers.Geometry.Point(1, 0),
+                    new OpenLayers.Geometry.Point(0, 1)
+                ])
+            ])
+        ]);
+        feature = new OpenLayers.Feature.Vector(multi, {name: "test name"});
+        output = format.write(feature);
+        expected = '<kml xmlns="http://earth.google.com/kml/2.0"><Folder><name>OpenLayers export</name><description>test output</description><Placemark><name>test name</name><description>No description available</description><MultiGeometry><Polygon><outerBoundaryIs><LinearRing><coordinates>0,0 1,0 0,1 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon></MultiGeometry></Placemark></Folder></kml>';
+        var output = output.replace(/<\?[^>]*\?>/, ''); // Remove XML Prolog
+        t.eq(output, expected, "multilinestring correctly written");
+
+    }
+    function test_Format_KML_extractStyle(t) {
+        t.plan(1);
+        var f = new OpenLayers.Format.KML();
+        var features = f.read(test_style);    
+        t.ok(features[0].style == undefined, "KML Feature has no style with extractStyle false");        
+    } 
+    function test_Format_KML_extractStyleFill(t) {
+        t.plan(2);
+        var f = new OpenLayers.Format.KML({extractStyles: true});
+        var features = f.read(test_style_fill);    
+        t.eq(features[0].style.fillColor, "#ff0000", "default fill is set");  
+        t.eq(features[1].style.fillColor, "none", "KML Feature has none fill");        
+    } 
+    function test_Format_KML_extractStyleOutline(t) {
+        t.plan(2);
+        var f = new OpenLayers.Format.KML({extractStyles: true});
+        var features = f.read(test_style);
+        t.eq(features[0].style.strokeWidth, "10", "default stroke is set");
+        var features = f.read(test_style_outline);
+        t.eq(features[0].style.strokeWidth, "0", "KML Feature has no outline");
+    } 
+    function test_Format_KML_extractStyleFont(t) {
+        t.plan(2);
+        var f = new OpenLayers.Format.KML({extractStyles: true});
+        var features = f.read(test_style_font);
+        t.eq(features[0].style.fontColor, "#ff0000", "font color is set");
+        t.eq(features[0].style.fontOpacity, parseInt('87', 16) / 255, "font opacity is set");
+    } 
+    function test_Format_KML_getStyle(t) {
+        t.plan(1);
+        var style = {t: true};
+        var f = new OpenLayers.Format.KML();
+        f.styles = {test: style};
+        var gotStyle = f.getStyle('test');
+        gotStyle.t = false;
+        t.ok(style.t, "getStyle returns copy of style rather than reference");
+    }
+    function test_Format_KML_extendedData(t) {
+        t.plan(2);
+        var f = new OpenLayers.Format.KML();
+        var features = f.read(OpenLayers.Util.getElement("kml_extendeddata").value);
+        t.eq(features[0].attributes.all_bridges.value, "3030", "read value from extendeddata correctly.");
+        t.eq(features[0].attributes.all_bridges.displayName, "all bridges", "read displayName from extendeddata correctly.");
+    }
+
+    function test_Format_KML_extendedData_SchemaData(t) {
+        t.plan(4);
+        var f = new OpenLayers.Format.KML();
+        var features = f.read(OpenLayers.Util.getElement("kml_extendeddata2").value);
+        t.eq(features[0].attributes.TrailHeadName.value, "Pi in the sky", "read value from extendeddata (schema data) correctly.");
+        t.eq(features[0].attributes.TrailHeadName.displayName, "TrailHeadName", "read displayName from extendeddata correctly");
+        t.eq(features[0].attributes.ElevationGain.value, "10", "read value from extendeddata (schema data) correctly.");
+        t.eq(features[0].attributes.ElevationGain.displayName, "ElevationGain", "read displayName from extendeddata correctly");
+    }
+
+    function test_Format_KML_placemarkName(t) {
+        t.plan(3);
+        
+        var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0));
+        var f = new OpenLayers.Format.KML();
+
+        t.eq(f.read(f.write(feature))[0].attributes.name, feature.id, "placemark name from feature.id");
+
+        feature.attributes.name = "placemark name from attributes.name";
+        t.eq(f.read(f.write(feature))[0].attributes.name, feature.attributes.name, "placemark name from attributes.name");
+        feature.style = {
+            label: "placemark name from style.label"
+        };
+        t.eq(f.read(f.write(feature))[0].attributes.name, feature.style.label, "placemark name from style.label");
+    }
+    function test_Format_KML_linestring_projected(t) {
+        t.plan(1);
+        var f = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString([
+            new OpenLayers.Geometry.Point(15555162, 4247484), new OpenLayers.Geometry.Point(15555163, 4247485)]));
+        var format = new OpenLayers.Format.KML({
+            internalProjection: new OpenLayers.Projection("EPSG:900913"),
+            externalProjection: new OpenLayers.Projection("EPSG:4326")
+        });
+        var data = format.write(f);
+        var found = (data.search('139.734') != -1);
+        t.ok(found, "Found 139.734 (correct reprojection) in data output.");
+    }        
+    
+    function test_extractTracks(t) {
+        
+        t.plan(12);
+        
+        var xml = new OpenLayers.Format.XML(); 
+        var doc = xml.read(document.getElementById("macnoise.kml").firstChild.nodeValue);
+        
+        var format = new OpenLayers.Format.KML({
+            extractTracks: true,
+            trackAttributes: ["speed"] // additional custom attributes
+        });
+        
+        var features = format.read(doc.documentElement);
+        t.eq(features.length, 170, "got 170 features");
+        
+        var attr = features[4].attributes;
+        
+        // standard track point attributes
+        t.ok(attr.when instanceof Date, "features have when attribute");
+        t.eq(attr.when.getTime(), 1272736815000, "correct time for fifth feature");
+        t.eq(attr.altitude, 1006, "altitude parsed");
+        t.eq(attr.heading, 230, "heading parsed");
+        t.eq(attr.tilt, 0, "tilt parsed");
+        t.eq(attr.roll, 0, "roll parsed");
+        
+        // custom track attributes (all features acquire from the placemark)
+        t.eq(attr.name, "B752", "correct name");
+        t.eq(attr.adflag, "A", "correct adflag");
+        t.eq(attr.flightid, "DAL2973", "correct flightid");
+        
+        // additional per point attributes (determined by trackAttributes property)
+        t.eq(attr.speed, "166", "correct speed");
+        
+        var exp = new OpenLayers.Geometry.Point(-93.0753620391713, 44.9879724110872);
+        exp.z = 1006;
+        t.geom_eq(features[4].geometry, exp, "correct geometry");
+        
+    }
+    
+
+    </script> 
+</head> 
+<body> 
+    <textarea id="kml_extendeddata" style="display:none">
+<kml xmlns="http://earth.google.com/kml/2.2">
+<Document>
+        <Placemark>
+            <styleUrl>#default</styleUrl>
+
+
+
+
+            <ExtendedData>
+                                    <Data name='all_bridges'>
+                        <displayName><![CDATA[all bridges]]></displayName>
+                        <value><![CDATA[3030]]></value>
+                    </Data>
+                                    <Data name='latitude'>
+                        <displayName><![CDATA[latitude]]></displayName>
+                        <value><![CDATA[43]]></value>
+                    </Data>
+                                    <Data name='longitude'>
+                        <displayName><![CDATA[longitude]]></displayName>
+                        <value><![CDATA[-107.55]]></value>
+                    </Data>
+                                    <Data name='functionally_obsolete__percent'>
+                        <displayName><![CDATA[functionally obsolete, percent]]></displayName>
+                        <value><![CDATA[8]]></value>
+                    </Data>
+                                    <Data name='structurally_deficient__percent'>
+                        <displayName><![CDATA[structurally deficient, percent]]></displayName>
+                        <value><![CDATA[13]]></value>
+                    </Data>
+                                    <Data name='state'>
+                        <displayName><![CDATA[state]]></displayName>
+                        <value><![CDATA[Wyoming]]></value>
+                    </Data>
+                            </ExtendedData>
+
+
+              <Point>
+<coordinates>-107.55,43.0</coordinates>
+</Point>
+
+
+        </Placemark>
+</Document>
+</kml>
+</textarea>
+    <textarea id="kml_extendeddata2" style="display:none">
+<kml xmlns="http://earth.google.com/kml/2.2">
+<Document>
+<Placemark>
+  <name>Easy trail</name>
+  <ExtendedData>
+    <SchemaData schemaUrl="#TrailHeadTypeId">
+      <SimpleData name="TrailHeadName">Pi in the sky</SimpleData>
+      <SimpleData name="TrailLength">3.14159</SimpleData>
+      <SimpleData name="ElevationGain">10</SimpleData>
+    </SchemaData>
+    </ExtendedData>
+    <Point>
+      <coordinates>-122.000,37.002</coordinates>
+    </Point>
+</Placemark>
+<Placemark>
+  <name>Difficult trail</name>
+  <ExtendedData>
+    <SchemaData schemaUrl="#TrailHeadTypeId">
+      <SimpleData name="TrailHeadName">Mount Everest</SimpleData>
+      <SimpleData name="TrailLength">347.45</SimpleData>
+      <SimpleData name="ElevationGain">10000</SimpleData>
+    </SchemaData>
+  </ExtendedData>
+  <Point>
+    <coordinates>-122.000,37.002</coordinates>
+  </Point>
+</Placemark>
+</Document>
+</kml>
+</textarea>
+
+<div id="macnoise.kml"><!--
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+<Document>
+<Camera>
+  <gx:TimeStamp>
+    <when>2010-05-01T13:00:00-05:00</when>
+  </gx:TimeStamp>
+  <longitude>-93.2207</longitude>
+  <latitude>44.882</latitude>
+  <altitude>50000</altitude>
+  <heading>0</heading>
+  <tilt>0</tilt>
+</Camera>
+<Style id="arrival">
+  <IconStyle>
+    <Icon>
+      <href>http://maps.macnoise.com/scripts/plane.png</href>
+    </Icon>
+  </IconStyle>
+  <LineStyle>
+    <color>ff0000ff</color>
+    <width>3</width>
+  </LineStyle>
+  <PolyStyle>
+    <color>7fffffff</color>
+  </PolyStyle>
+</Style>
+<Style id="departure">
+  <IconStyle>
+    <Icon>
+      <href>http://maps.macnoise.com/scripts/plane.png</href>
+    </Icon>
+  </IconStyle>
+  <LineStyle>
+    <color>ff00ff00</color>
+    <width>3</width>
+  </LineStyle>
+  <PolyStyle>
+    <color>7fffffff</color>
+  </PolyStyle>
+</Style>
+<Style id="overflight">
+  <IconStyle>
+    <Icon>
+      <href>http://maps.macnoise.com/scripts/plane.png</href>
+    </Icon>
+  </IconStyle>
+  <LineStyle>
+    <color>ff222222</color>
+    <width>3</width>
+  </LineStyle>
+  <PolyStyle>
+    <color>7fffffff</color>
+  </PolyStyle>
+</Style>
+<Style id='rmt'>
+  <LabelStyle>
+    <color>ff0000cc</color>
+    <colorMode>normal</colorMode>
+    <scale>1</scale>
+  </LabelStyle>
+</Style>
+
+<name>Flight Tracks</name>
+<Folder>
+  <name>Arrivals</name>
+<Placemark>
+  <name>B752</name>
+  <adflag>A</adflag>
+  <flightid>DAL2973</flightid>
+  <styleUrl>#arrival</styleUrl>
+<gx:Track>
+    <altitudeMode>absolute</altitudeMode>
+    <extrude>1</extrude>
+    <when>2010-05-01T13:00:00-05</when>
+    <when>2010-05-01T13:00:01-05</when>
+    <when>2010-05-01T13:00:06-05</when>
+    <when>2010-05-01T13:00:10-05</when>
+    <when>2010-05-01T13:00:15-05</when>
+    <when>2010-05-01T13:00:20-05</when>
+    <when>2010-05-01T13:00:24-05</when>
+    <when>2010-05-01T13:00:29-05</when>
+    <when>2010-05-01T13:00:33-05</when>
+    <when>2010-05-01T13:00:38-05</when>
+    <when>2010-05-01T13:00:43-05</when>
+    <when>2010-05-01T13:00:47-05</when>
+    <when>2010-05-01T13:00:52-05</when>
+    <when>2010-05-01T13:00:57-05</when>
+    <when>2010-05-01T13:01:00-05</when>
+    <gx:coord>-93.0658625188843 44.9949645987875 1036</gx:coord>
+    <gx:coord>-93.0664690096445 44.9945424635331 1036</gx:coord>
+    <gx:coord>-93.0694347065378 44.9923936108644 1036</gx:coord>
+    <gx:coord>-93.0722946883822 44.9901649091109 1006</gx:coord>
+    <gx:coord>-93.0753620391713 44.9879724110872 1006</gx:coord>
+    <gx:coord>-93.078638650624 44.985904678007 975</gx:coord>
+    <gx:coord>-93.0817463907976 44.9836868456013 975</gx:coord>
+    <gx:coord>-93.0847749343212 44.9813998515538 945</gx:coord>
+    <gx:coord>-93.0879207383429 44.9791066547511 914</gx:coord>
+    <gx:coord>-93.091282218058 44.976822731273 914</gx:coord>
+    <gx:coord>-93.0945882606646 44.9745372955479 884</gx:coord>
+    <gx:coord>-93.0979053364864 44.9722421846492 884</gx:coord>
+    <gx:coord>-93.1012678619471 44.9698451058525 853</gx:coord>
+    <gx:coord>-93.1044570741037 44.967424293466 853</gx:coord>
+    <gx:coord>-93.1068079756418 44.9657037851018 853</gx:coord>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <speed>162</speed>
+    <speed>160</speed>
+    <speed>159</speed>
+    <speed>165</speed>
+    <speed>166</speed>
+    <speed>174</speed>
+    <speed>170</speed>
+    <speed>172</speed>
+    <speed>180</speed>
+    <speed>176</speed>
+    <speed>177</speed>
+    <speed>177</speed>
+    <speed>180</speed>
+    <speed>184</speed>
+    <speed>177</speed>
+</gx:Track></Placemark>
+<Placemark>
+  <name>E170</name>
+  <adflag>A</adflag>
+  <flightid>TCF7521</flightid>
+  <styleUrl>#arrival</styleUrl>
+<gx:Track>
+    <altitudeMode>absolute</altitudeMode>
+    <extrude>1</extrude>
+    <when>2010-05-01T13:00:00-05</when>
+    <when>2010-05-01T13:00:04-05</when>
+    <when>2010-05-01T13:00:09-05</when>
+    <when>2010-05-01T13:00:13-05</when>
+    <when>2010-05-01T13:00:18-05</when>
+    <when>2010-05-01T13:00:23-05</when>
+    <when>2010-05-01T13:00:27-05</when>
+    <when>2010-05-01T13:00:32-05</when>
+    <when>2010-05-01T13:00:37-05</when>
+    <when>2010-05-01T13:00:41-05</when>
+    <when>2010-05-01T13:00:46-05</when>
+    <when>2010-05-01T13:00:51-05</when>
+    <when>2010-05-01T13:00:55-05</when>
+    <when>2010-05-01T13:01:00-05</when>
+    <gx:coord>-93.3806146339391 44.8823651507134 2743</gx:coord>
+    <gx:coord>-93.3773041814209 44.887531728655 2743</gx:coord>
+    <gx:coord>-93.3742856469083 44.8942041806778 2743</gx:coord>
+    <gx:coord>-93.3722375106026 44.9009231720158 2743</gx:coord>
+    <gx:coord>-93.3711934089417 44.9077495987718 2712</gx:coord>
+    <gx:coord>-93.3707288919852 44.9145219645156 2712</gx:coord>
+    <gx:coord>-93.3703882714439 44.921240089024 2682</gx:coord>
+    <gx:coord>-93.3700882719793 44.9278850664392 2682</gx:coord>
+    <gx:coord>-93.369810041597 44.934389356737 2651</gx:coord>
+    <gx:coord>-93.3696836566166 44.9408553642446 2651</gx:coord>
+    <gx:coord>-93.3695425129226 44.9473561165969 2621</gx:coord>
+    <gx:coord>-93.3693185423471 44.9537360442564 2621</gx:coord>
+    <gx:coord>-93.3693194298816 44.9599975904123 2590</gx:coord>
+    <gx:coord>-93.3694031671108 44.9661411653607 2590</gx:coord>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>20 0 0</gx:angles>
+    <gx:angles>10 0 0</gx:angles>
+    <gx:angles>10 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>360 0 0</gx:angles>
+    <speed>376</speed>
+    <speed>367</speed>
+    <speed>361</speed>
+    <speed>371</speed>
+    <speed>367</speed>
+    <speed>363</speed>
+    <speed>359</speed>
+    <speed>356</speed>
+    <speed>352</speed>
+    <speed>347</speed>
+    <speed>343</speed>
+    <speed>347</speed>
+    <speed>334</speed>
+    <speed>337</speed>
+</gx:Track></Placemark>
+<Placemark>
+  <name>BE33</name>
+  <adflag>A</adflag>
+  <flightid>N38175</flightid>
+  <styleUrl>#arrival</styleUrl>
+<gx:Track>
+    <altitudeMode>absolute</altitudeMode>
+    <extrude>1</extrude>
+    <when>2010-05-01T13:00:00-05</when>
+    <when>2010-05-01T13:00:02-05</when>
+    <when>2010-05-01T13:00:07-05</when>
+    <when>2010-05-01T13:00:12-05</when>
+    <when>2010-05-01T13:00:16-05</when>
+    <when>2010-05-01T13:00:21-05</when>
+    <when>2010-05-01T13:00:25-05</when>
+    <when>2010-05-01T13:00:30-05</when>
+    <when>2010-05-01T13:00:35-05</when>
+    <when>2010-05-01T13:00:39-05</when>
+    <when>2010-05-01T13:00:44-05</when>
+    <when>2010-05-01T13:00:49-05</when>
+    <when>2010-05-01T13:00:53-05</when>
+    <when>2010-05-01T13:00:58-05</when>
+    <when>2010-05-01T13:01:00-05</when>
+    <gx:coord>-93.0144637208028 44.6541474764804 1006</gx:coord>
+    <gx:coord>-93.0162681345228 44.6547274296664 1006</gx:coord>
+    <gx:coord>-93.0196734868835 44.6559915702004 975</gx:coord>
+    <gx:coord>-93.0231899415297 44.657188463998 945</gx:coord>
+    <gx:coord>-93.0267619421777 44.6582849847887 945</gx:coord>
+    <gx:coord>-93.0302021384369 44.6594728216183 914</gx:coord>
+    <gx:coord>-93.0338776768471 44.6606515995762 914</gx:coord>
+    <gx:coord>-93.0375866343814 44.6618806707998 884</gx:coord>
+    <gx:coord>-93.0411146687035 44.6632657982455 884</gx:coord>
+    <gx:coord>-93.0447829038862 44.6646495821585 884</gx:coord>
+    <gx:coord>-93.0486933143218 44.6659856209571 914</gx:coord>
+    <gx:coord>-93.0525604964428 44.6672664774449 884</gx:coord>
+    <gx:coord>-93.0559892061682 44.6686325276705 884</gx:coord>
+    <gx:coord>-93.0595122787868 44.6700360197293 884</gx:coord>
+    <gx:coord>-93.0610274392619 44.6706087373734 884</gx:coord>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>290 0 0</gx:angles>
+    <gx:angles>290 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <gx:angles>300 0 0</gx:angles>
+    <speed>150</speed>
+    <speed>156</speed>
+    <speed>152</speed>
+    <speed>156</speed>
+    <speed>151</speed>
+    <speed>152</speed>
+    <speed>160</speed>
+    <speed>157</speed>
+    <speed>159</speed>
+    <speed>158</speed>
+    <speed>158</speed>
+    <speed>160</speed>
+    <speed>155</speed>
+    <speed>155</speed>
+    <speed>156</speed>
+</gx:Track></Placemark>
+<Placemark>
+  <name>A319</name>
+  <adflag>A</adflag>
+  <flightid>DAL1588</flightid>
+  <styleUrl>#arrival</styleUrl>
+<gx:Track>
+    <altitudeMode>absolute</altitudeMode>
+    <extrude>1</extrude>
+    <when>2010-05-01T13:00:00-05</when>
+    <when>2010-05-01T13:00:04-05</when>
+    <when>2010-05-01T13:00:08-05</when>
+    <when>2010-05-01T13:00:13-05</when>
+    <when>2010-05-01T13:00:18-05</when>
+    <when>2010-05-01T13:00:22-05</when>
+    <when>2010-05-01T13:00:27-05</when>
+    <when>2010-05-01T13:00:31-05</when>
+    <when>2010-05-01T13:00:36-05</when>
+    <when>2010-05-01T13:00:41-05</when>
+    <when>2010-05-01T13:00:45-05</when>
+    <when>2010-05-01T13:00:50-05</when>
+    <when>2010-05-01T13:00:55-05</when>
+    <when>2010-05-01T13:00:59-05</when>
+    <when>2010-05-01T13:01:00-05</when>
+    <gx:coord>-93.6927825194056 44.7952011849485 3011</gx:coord>
+    <gx:coord>-93.6850156681578 44.7968042586582 2987</gx:coord>
+    <gx:coord>-93.6752785488692 44.7990458605003 2956</gx:coord>
+    <gx:coord>-93.6657083011645 44.8014897663497 2926</gx:coord>
+    <gx:coord>-93.6560029615388 44.803768841381 2865</gx:coord>
+    <gx:coord>-93.6462045264035 44.8058749817725 2834</gx:coord>
+    <gx:coord>-93.6365671200126 44.8080848199989 2804</gx:coord>
+    <gx:coord>-93.6269933807039 44.8102767000109 2773</gx:coord>
+    <gx:coord>-93.6175405757462 44.8123960709083 2743</gx:coord>
+    <gx:coord>-93.6082528975965 44.8146455509748 2743</gx:coord>
+    <gx:coord>-93.599077315807 44.816765612372 2743</gx:coord>
+    <gx:coord>-93.5899428762254 44.8186933623744 2743</gx:coord>
+    <gx:coord>-93.5809104439923 44.8205403457841 2743</gx:coord>
+    <gx:coord>-93.5720785209701 44.8224608846058 2743</gx:coord>
+    <gx:coord>-93.5703603013364 44.8228739543212 2743</gx:coord>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <gx:angles>70 0 0</gx:angles>
+    <speed>390</speed>
+    <speed>383</speed>
+    <speed>397</speed>
+    <speed>390</speed>
+    <speed>405</speed>
+    <speed>388</speed>
+    <speed>386</speed>
+    <speed>397</speed>
+    <speed>377</speed>
+    <speed>373</speed>
+    <speed>367</speed>
+    <speed>362</speed>
+    <speed>365</speed>
+    <speed>350</speed>
+    <speed>354</speed>
+</gx:Track></Placemark>
+<Placemark>
+  <name>E145</name>
+  <adflag>A</adflag>
+  <flightid>CHQ1453</flightid>
+  <styleUrl>#arrival</styleUrl>
+<gx:Track>
+    <altitudeMode>absolute</altitudeMode>
+    <extrude>1</extrude>
+    <when>2010-05-01T13:00:00-05</when>
+    <when>2010-05-01T13:00:01-05</when>
+    <when>2010-05-01T13:00:06-05</when>
+    <when>2010-05-01T13:00:11-05</when>
+    <when>2010-05-01T13:00:15-05</when>
+    <when>2010-05-01T13:00:20-05</when>
+    <when>2010-05-01T13:00:24-05</when>
+    <when>2010-05-01T13:00:29-05</when>
+    <when>2010-05-01T13:00:34-05</when>
+    <when>2010-05-01T13:00:38-05</when>
+    <when>2010-05-01T13:00:43-05</when>
+    <when>2010-05-01T13:00:48-05</when>
+    <when>2010-05-01T13:00:52-05</when>
+    <when>2010-05-01T13:00:57-05</when>
+    <when>2010-05-01T13:01:00-05</when>
+    <gx:coord>-92.5727580977974 45.0236058844647 2530</gx:coord>
+    <gx:coord>-92.5742776202954 45.0237913896498 2530</gx:coord>
+    <gx:coord>-92.5803397933112 45.0241784662561 2499</gx:coord>
+    <gx:coord>-92.5865075192046 45.0247891381303 2469</gx:coord>
+    <gx:coord>-92.5926877928765 45.0257073410966 2469</gx:coord>
+    <gx:coord>-92.5986546763805 45.0261844476041 2438</gx:coord>
+    <gx:coord>-92.6046737535477 45.0267206733977 2438</gx:coord>
+    <gx:coord>-92.6106885874739 45.0275061986719 2438</gx:coord>
+    <gx:coord>-92.616359210337 45.027935793162 2438</gx:coord>
+    <gx:coord>-92.6220735719954 45.028379077688 2438</gx:coord>
+    <gx:coord>-92.6280403097635 45.0290552550566 2438</gx:coord>
+    <gx:coord>-92.6341725652711 45.029824064212 2438</gx:coord>
+    <gx:coord>-92.640279209769 45.0304963952702 2438</gx:coord>
+    <gx:coord>-92.6463747377703 45.0311129317319 2438</gx:coord>
+    <gx:coord>-92.650043383232 45.0314890298388 2438</gx:coord>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <speed>235</speed>
+    <speed>246</speed>
+    <speed>239</speed>
+    <speed>244</speed>
+    <speed>234</speed>
+    <speed>232</speed>
+    <speed>238</speed>
+    <speed>227</speed>
+    <speed>228</speed>
+    <speed>229</speed>
+    <speed>229</speed>
+    <speed>232</speed>
+    <speed>228</speed>
+    <speed>232</speed>
+    <speed>236</speed>
+</gx:Track></Placemark>
+<Placemark>
+  <name>E170</name>
+  <adflag>A</adflag>
+  <flightid>CPZ5695</flightid>
+  <styleUrl>#arrival</styleUrl>
+<gx:Track>
+    <altitudeMode>absolute</altitudeMode>
+    <extrude>1</extrude>
+    <when>2010-05-01T13:00:11-05</when>
+    <when>2010-05-01T13:00:15-05</when>
+    <when>2010-05-01T13:00:20-05</when>
+    <when>2010-05-01T13:00:25-05</when>
+    <when>2010-05-01T13:00:29-05</when>
+    <when>2010-05-01T13:00:34-05</when>
+    <when>2010-05-01T13:00:38-05</when>
+    <when>2010-05-01T13:00:43-05</when>
+    <when>2010-05-01T13:00:48-05</when>
+    <when>2010-05-01T13:00:52-05</when>
+    <when>2010-05-01T13:00:57-05</when>
+    <when>2010-05-01T13:01:00-05</when>
+    <gx:coord>-92.3689380245182 45.0389467469425 2804</gx:coord>
+    <gx:coord>-92.3759530819834 45.0380951007958 2773</gx:coord>
+    <gx:coord>-92.3831159633175 45.0369957486846 2712</gx:coord>
+    <gx:coord>-92.3901362714549 45.0355238496347 2651</gx:coord>
+    <gx:coord>-92.3970814910858 45.0339385808083 2621</gx:coord>
+    <gx:coord>-92.4043121546626 45.032585906621 2560</gx:coord>
+    <gx:coord>-92.4118367565321 45.0319048652958 2499</gx:coord>
+    <gx:coord>-92.419078934653 45.030875157485 2469</gx:coord>
+    <gx:coord>-92.4262095560369 45.0291153314744 2438</gx:coord>
+    <gx:coord>-92.4335237384463 45.0273941113051 2438</gx:coord>
+    <gx:coord>-92.4408178608932 45.0260076351757 2438</gx:coord>
+    <gx:coord>-92.4451575746228 45.0254275529773 2438</gx:coord>
+    <gx:angles>260 0 0</gx:angles>
+    <gx:angles>260 0 0</gx:angles>
+    <gx:angles>260 0 0</gx:angles>
+    <gx:angles>250 0 0</gx:angles>
+    <gx:angles>260 0 0</gx:angles>
+    <gx:angles>260 0 0</gx:angles>
+    <gx:angles>260 0 0</gx:angles>
+    <gx:angles>260 0 0</gx:angles>
+    <gx:angles>250 0 0</gx:angles>
+    <gx:angles>250 0 0</gx:angles>
+    <gx:angles>250 0 0</gx:angles>
+    <gx:angles>260 0 0</gx:angles>
+    <speed>277</speed>
+    <speed>288</speed>
+    <speed>283</speed>
+    <speed>291</speed>
+    <speed>283</speed>
+    <speed>284</speed>
+    <speed>298</speed>
+    <speed>288</speed>
+    <speed>288</speed>
+    <speed>278</speed>
+    <speed>283</speed>
+    <speed>288</speed>
+</gx:Track></Placemark>
+<Placemark>
+  <name>DC95</name>
+  <adflag>A</adflag>
+  <flightid>DAL2858</flightid>
+  <styleUrl>#arrival</styleUrl>
+<gx:Track>
+    <altitudeMode>absolute</altitudeMode>
+    <extrude>1</extrude>
+    <when>2010-05-01T13:00:00-05</when>
+    <when>2010-05-01T13:00:03-05</when>
+    <when>2010-05-01T13:00:07-05</when>
+    <when>2010-05-01T13:00:12-05</when>
+    <when>2010-05-01T13:00:17-05</when>
+    <when>2010-05-01T13:00:21-05</when>
+    <when>2010-05-01T13:00:26-05</when>
+    <when>2010-05-01T13:00:30-05</when>
+    <when>2010-05-01T13:00:35-05</when>
+    <when>2010-05-01T13:00:40-05</when>
+    <when>2010-05-01T13:00:44-05</when>
+    <when>2010-05-01T13:00:49-05</when>
+    <when>2010-05-01T13:00:54-05</when>
+    <when>2010-05-01T13:00:58-05</when>
+    <when>2010-05-01T13:01:00-05</when>
+    <gx:coord>-93.1962465696187 44.4584257162471 3078</gx:coord>
+    <gx:coord>-93.1954858158128 44.462643897726 3078</gx:coord>
+    <gx:coord>-93.1945524569257 44.4696206853623 3048</gx:coord>
+    <gx:coord>-93.1935347734104 44.4765680167011 3048</gx:coord>
+    <gx:coord>-93.1921548885013 44.4834366892852 3048</gx:coord>
+    <gx:coord>-93.1912787899895 44.4902740201102 3048</gx:coord>
+    <gx:coord>-93.190869393024 44.496999598511 3048</gx:coord>
+    <gx:coord>-93.190355669541 44.503701889363 3048</gx:coord>
+    <gx:coord>-93.1899042890233 44.510392533924 3048</gx:coord>
+    <gx:coord>-93.1894352972433 44.5171043633827 3048</gx:coord>
+    <gx:coord>-93.1887272976791 44.523838031578 3017</gx:coord>
+    <gx:coord>-93.1882343860587 44.5305421014878 2987</gx:coord>
+    <gx:coord>-93.1878483537445 44.5373007218153 2987</gx:coord>
+    <gx:coord>-93.187206305476 44.5440099500882 2956</gx:coord>
+    <gx:coord>-93.1870547021374 44.5466877366242 2956</gx:coord>
+    <gx:angles>10 0 0</gx:angles>
+    <gx:angles>10 0 0</gx:angles>
+    <gx:angles>10 0 0</gx:angles>
+    <gx:angles>10 0 0</gx:angles>
+    <gx:angles>10 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <gx:angles>0 0 0</gx:angles>
+    <speed>378</speed>
+    <speed>370</speed>
+    <speed>381</speed>
+    <speed>373</speed>
+    <speed>384</speed>
+    <speed>367</speed>
+    <speed>365</speed>
+    <speed>377</speed>
+    <speed>362</speed>
+    <speed>362</speed>
+    <speed>362</speed>
+    <speed>362</speed>
+    <speed>368</speed>
+    <speed>355</speed>
+    <speed>362</speed>
+</gx:Track></Placemark>
+<Placemark>
+  <name>B737</name>
+  <adflag>A</adflag>
+  <flightid>SWA1488</flightid>
+  <styleUrl>#arrival</styleUrl>
+<gx:Track>
+    <altitudeMode>absolute</altitudeMode>
+    <extrude>1</extrude>
+    <when>2010-05-01T13:00:00-05</when>
+    <when>2010-05-01T13:00:01-05</when>
+    <when>2010-05-01T13:00:06-05</when>
+    <when>2010-05-01T13:00:11-05</when>
+    <when>2010-05-01T13:00:15-05</when>
+    <when>2010-05-01T13:00:20-05</when>
+    <when>2010-05-01T13:00:24-05</when>
+    <when>2010-05-01T13:00:29-05</when>
+    <when>2010-05-01T13:00:34-05</when>
+    <when>2010-05-01T13:00:38-05</when>
+    <when>2010-05-01T13:00:43-05</when>
+    <when>2010-05-01T13:00:48-05</when>
+    <when>2010-05-01T13:00:52-05</when>
+    <when>2010-05-01T13:00:57-05</when>
+    <when>2010-05-01T13:01:00-05</when>
+    <gx:coord>-92.7436038977339 45.0176449723009 2438</gx:coord>
+    <gx:coord>-92.745419752639 45.0178405701636 2438</gx:coord>
+    <gx:coord>-92.7525586927583 45.0181852080204 2438</gx:coord>
+    <gx:coord>-92.7599978682742 45.0189437491361 2438</gx:coord>
+    <gx:coord>-92.7673964649616 45.0200176804669 2438</gx:coord>
+    <gx:coord>-92.7743047878147 45.0206512321095 2438</gx:coord>
+    <gx:coord>-92.7812211106102 45.0212438545962 2438</gx:coord>
+    <gx:coord>-92.7880905786106 45.0219352711124 2438</gx:coord>
+    <gx:coord>-92.7948110303679 45.0225135550872 2438</gx:coord>
+    <gx:coord>-92.8016256231407 45.0231539091809 2377</gx:coord>
+    <gx:coord>-92.808436321378 45.0237782407713 2316</gx:coord>
+    <gx:coord>-92.8153060032773 45.0245123996427 2255</gx:coord>
+    <gx:coord>-92.8220950756464 45.0250388052127 2194</gx:coord>
+    <gx:coord>-92.8289929014999 45.0256725515916 2164</gx:coord>
+    <gx:coord>-92.8342709686589 45.0263726025032 2118.25</gx:coord>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <gx:angles>280 0 0</gx:angles>
+    <speed>280</speed>
+    <speed>293</speed>
+    <speed>284</speed>
+    <speed>288</speed>
+    <speed>274</speed>
+    <speed>272</speed>
+    <speed>279</speed>
+    <speed>263</speed>
+    <speed>263</speed>
+    <speed>262</speed>
+    <speed>262</speed>
+    <speed>275</speed>
+    <speed>270</speed>
+    <speed>277</speed>
+    <speed>287</speed>
+</gx:Track></Placemark>
+<Placemark>
+  <name>A318</name>
+  <adflag>A</adflag>
+  <flightid>FFT106</flightid>
+  <styleUrl>#arrival</styleUrl>
+<gx:Track>
+    <altitudeMode>absolute</altitudeMode>
+    <extrude>1</extrude>
+    <when>2010-05-01T13:00:00-05</when>
+    <when>2010-05-01T13:00:05-05</when>
+    <when>2010-05-01T13:00:09-05</when>
+    <when>2010-05-01T13:00:14-05</when>
+    <when>2010-05-01T13:00:19-05</when>
+    <when>2010-05-01T13:00:23-05</when>
+    <when>2010-05-01T13:00:28-05</when>
+    <when>2010-05-01T13:00:33-05</when>
+    <when>2010-05-01T13:00:37-05</when>
+    <when>2010-05-01T13:00:42-05</when>
+    <when>2010-05-01T13:00:47-05</when>
+    <when>2010-05-01T13:00:51-05</when>
+    <when>2010-05-01T13:00:56-05</when>
+    <when>2010-05-01T13:01:00-05</when>
+    <gx:coord>-93.2974568508014 45.0687622602847 1432</gx:coord>
+    <gx:coord>-93.2934457905393 45.0660257042941 1371</gx:coord>
+    <gx:coord>-93.2902010482642 45.0627382200457 1341</gx:coord>
+    <gx:coord>-93.2880735868205 45.0592062737728 1280</gx:coord>
+    <gx:coord>-93.2866251180089 45.0556538417996 1280</gx:coord>
+    <gx:coord>-93.2855706436895 45.0521555770546 1249</gx:coord>
+    <gx:coord>-93.2848929213344 45.0486326683558 1249</gx:coord>
+    <gx:coord>-93.284149302237 45.0450445279501 1219</gx:coord>
+    <gx:coord>-93.2832681542582 45.0414770478452 1219</gx:coord>
+    <gx:coord>-93.2822163760078 45.0378266141909 1219</gx:coord>
+    <gx:coord>-93.2810695206555 45.0339762188888 1249</gx:coord>
+    <gx:coord>-93.2800852709943 45.0300242656845 1249</gx:coord>
+    <gx:coord>-93.2789451826991 45.026165428423 1249</gx:coord>
+    <gx:coord>-93.2776553627852 45.0222881273358 1219</gx:coord>
+    <gx:angles>140 0 0</gx:angles>
+    <gx:angles>150 0 0</gx:angles>
+    <gx:angles>150 0 0</gx:angles>
+    <gx:angles>160 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <gx:angles>170 0 0</gx:angles>
+    <speed>212</speed>
+    <speed>205</speed>
+    <speed>208</speed>
+    <speed>203</speed>
+    <speed>201</speed>
+    <speed>196</speed>
+    <speed>196</speed>
+    <speed>197</speed>
+    <speed>202</speed>
+    <speed>205</speed>
+    <speed>216</speed>
+    <speed>215</speed>
+    <speed>222</speed>
+    <speed>231</speed>
+</gx:Track></Placemark>
+<Placemark>
+  <name></name>
+  <adflag>A</adflag>
+  <flightid></flightid>
+  <styleUrl>#arrival</styleUrl>
+<gx:Track>
+    <altitudeMode>absolute</altitudeMode>
+    <extrude>1</extrude>
+    <when>2010-05-01T13:00:00-05</when>
+    <when>2010-05-01T13:00:05-05</when>
+    <when>2010-05-01T13:00:10-05</when>
+    <when>2010-05-01T13:00:14-05</when>
+    <when>2010-05-01T13:00:24-05</when>
+    <when>2010-05-01T13:00:33-05</when>
+    <when>2010-05-01T13:00:37-05</when>
+    <when>2010-05-01T13:00:42-05</when>
+    <when>2010-05-01T13:00:47-05</when>
+    <when>2010-05-01T13:00:51-05</when>
+    <when>2010-05-01T13:00:56-05</when>
+    <when>2010-05-01T13:01:00-05</when>
+    <gx:coord>-93.5287325331323 45.3502794027397 731</gx:coord>
+    <gx:coord>-93.5305174337715 45.3463816209029 731</gx:coord>
+    <gx:coord>-93.532323089283 45.3433065196778 731</gx:coord>
+    <gx:coord>-93.5344374505075 45.3397938806867 731</gx:coord>
+    <gx:coord>-93.5365879669744 45.3355152994798 731</gx:coord>
+    <gx:coord>-93.538455345577 45.3317693717468 731</gx:coord>
+    <gx:coord>-93.5402440337749 45.3288175816964 731</gx:coord>
+    <gx:coord>-93.5420054353005 45.3261482119682 701</gx:coord>
+    <gx:coord>-93.5437972875724 45.3236486426325 701</gx:coord>
+    <gx:coord>-93.5449025453586 45.3213557809437 670</gx:coord>
+    <gx:coord>-93.5460939368394 45.3190373998605 670</gx:coord>
+    <gx:coord>-93.5479457332637 45.3165177805485 670</gx:coord>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <gx:angles>200 0 0</gx:angles>
+    <speed>202</speed>
+    <speed>180</speed>
+    <speed>166</speed>
+    <speed>171</speed>
+    <speed>162</speed>
+    <speed>157</speed>
+    <speed>143</speed>
+    <speed>145</speed>
+    <speed>156</speed>
+    <speed>147</speed>
+    <speed>147</speed>
+    <speed>150</speed>
+</gx:Track></Placemark>
+<Placemark>
+  <name>CRJ2</name>
+  <adflag>A</adflag>
+  <flightid>SKW4805</flightid>
+  <styleUrl>#arrival</styleUrl>
+</Placemark>
+<Placemark>
+  <name>CRJ2</name>
+  <adflag>A</adflag>
+  <flightid>FLG4092</flightid>
+  <styleUrl>#arrival</styleUrl>
+<gx:Track>
+    <altitudeMode>absolute</altitudeMode>
+    <extrude>1</extrude>
+    <when>2010-05-01T13:00:00-05</when>
+    <when>2010-05-01T13:00:01-05</when>
+    <when>2010-05-01T13:00:06-05</when>
+    <when>2010-05-01T13:00:10-05</when>
+    <when>2010-05-01T13:00:15-05</when>
+    <when>2010-05-01T13:00:20-05</when>
+    <when>2010-05-01T13:00:24-05</when>
+    <when>2010-05-01T13:00:29-05</when>
+    <when>2010-05-01T13:00:34-05</when>
+    <when>2010-05-01T13:00:38-05</when>
+    <when>2010-05-01T13:00:44-05</when>
+    <when>2010-05-01T13:00:49-05</when>
+    <when>2010-05-01T13:00:54-05</when>
+    <gx:coord>-93.1836067392297 44.9110362339843 432.2</gx:coord>
+    <gx:coord>-93.1841170614853 44.910663862492 426</gx:coord>
+    <gx:coord>-93.1867007876887 44.908842129317 426</gx:coord>
+    <gx:coord>-93.1893728799637 44.9069842219291 396</gx:coord>
+    <gx:coord>-93.1919479660705 44.9051548529609 365</gx:coord>
+    <gx:coord>-93.1944798212107 44.9032897679148 365</gx:coord>
+    <gx:coord>-93.197164452306 44.9014210542153 335</gx:coord>
+    <gx:coord>-93.1996234874761 44.8995719817206 335</gx:coord>
+    <gx:coord>-93.2021701211426 44.8975674983317 304</gx:coord>
+    <gx:coord>-93.2050345971567 44.8955942303701 304</gx:coord>
+    <gx:coord>-93.2075455037487 44.8938556558558 304</gx:coord>
+    <gx:coord>-93.2100820128846 44.8918590963212 304</gx:coord>
+    <gx:coord>-93.2127524858241 44.89000250047 256</gx:coord>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>230 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <gx:angles>220 0 0</gx:angles>
+    <speed>141</speed>
+    <speed>138</speed>
+    <speed>136</speed>
+    <speed>141</speed>
+    <speed>141</speed>
+    <speed>142</speed>
+    <speed>143</speed>
+    <speed>139</speed>
+    <speed>140</speed>
+    <speed>134</speed>
+    <speed>136</speed>
+    <speed>136</speed>
+    <speed>123</speed>
+</gx:Track></Placemark>
+<Placemark>
+  <name>E170</name>
+  <adflag>A</adflag>
+  <flightid>CPZ5667</flightid>
+  <styleUrl>#arrival</styleUrl>
+<gx:Track>
+    <altitudeMode>absolute</altitudeMode>
+    <extrude>1</extrude>
+    <when>2010-05-01T13:00:00-05</when>
+    <when>2010-05-01T13:00:01-05</when>
+    <when>2010-05-01T13:00:06-05</when>
+    <when>2010-05-01T13:00:10-05</when>
+    <when>2010-05-01T13:00:15-05</when>
+    <when>2010-05-01T13:00:20-05</when>
+    <when>2010-05-01T13:00:24-05</when>
+    <when>2010-05-01T13:00:29-05</when>
+    <when>2010-05-01T13:00:34-05</when>
+    <when>2010-05-01T13:00:38-05</when>
+    <when>2010-05-01T13:00:43-05</when>
+    <when>2010-05-01T13:00:47-05</when>
+    <when>2010-05-01T13:00:52-05</when>
+    <when>2010-05-01T13:00:57-05</when>
+    <when>2010-05-01T13:01:00-05</when>
+    <gx:coord>-92.9496238812799 45.0117549407746 1438.2</gx:coord>
+    <gx:coord>-92.9507065768732 45.0116702587604 1432</gx:coord>
+    <gx:coord>-92.9563739191926 45.0116271226204 1432</gx:coord>
+    <gx:coord>-92.9620225732021 45.0115639668496 1432</gx:coord>
+    <gx:coord>-92.9673675587699 45.0113432900049 1402</gx:coord>
+    <gx:coord>-92.9725115032188 45.0111442254373 1402</gx:coord>
+    <gx:coord>-92.9778810091229 45.0112050922639 1371</gx:coord>
+    <gx:coord>-92.9832227114571 45.0112143826731 1371</gx:coord>
+    <gx:coord>-92.9884546803523 45.0110418166788 1341</gx:coord>
+    <gx:coord>-92.9938268606229 45.0109652220709 1341</gx:coord>
+    <gx:coord>-92.9991151069756 45.010802144845 1310</gx:coord>
+    <gx:coord>-93.0041467584036 45.0105516668541 1310</gx:coord>
+    <gx:coord>-93.0090742909164 45.0105233046799 1280</gx:coord>
+    <gx:coord>-93.0139435770527 45.0106265340001 1280</gx:coord>
+    <gx:coord>-93.0174882575928 45.0106328449121 1256.75</gx:coord>
+    <gx:angles>270 0 0</gx:angles>
+    <gx:angles>270 0 0</gx:angles>
+    <gx:angles>270 0 0</gx:angles>
+    <gx:angles>270 0 0</gx:angles>
+    <gx:angles>270 0 0</gx:angles>
+    <gx:angles>270 0 0</gx:angles>
+    <gx:angles>270 0 0</gx:angles>
+    <gx:angles>270 0 0</gx:angles>
+    <gx:angles>270 0 0</gx:angles>
+    <gx:angles>270 0 0</gx:angles>
+    <gx:angles>270 0 0</gx:angles>
+    <gx:angles>270 0 0</gx:angles>
+    <gx:angles>270 0 0</gx:angles>
+    <gx:angles>270 0 0</gx:angles>
+    <gx:angles>270 0 0</gx:angles>
+    <speed>214</speed>
+    <speed>207</speed>
+    <speed>202</speed>
+    <speed>208</speed>
+    <speed>207</speed>
+    <speed>205</speed>
+    <speed>203</speed>
+    <speed>202</speed>
+    <speed>209</speed>
+    <speed>199</speed>
+    <speed>196</speed>
+    <speed>200</speed>
+    <speed>193</speed>
+    <speed>194</speed>
+    <speed>185</speed>
+</gx:Track></Placemark>
+</Folder>
+<Folder>
+  <name>Departures</name>
+</Folder>
+<Folder>
+  <name>Overflights</name>
+</Folder>
+</Document>
+</kml>
+--></div>
+
+</body> 
+</html> 

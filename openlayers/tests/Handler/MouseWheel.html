@@ -1,0 +1,182 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    function test_Handler_MouseWheel_constructor(t) {
+        t.plan(3);
+        var control = new OpenLayers.Control();
+        control.id = Math.random();
+        var callbacks = {foo: "bar"};
+        var options = {bar: "foo"};
+        
+        var oldInit = OpenLayers.Handler.prototype.initialize;
+        
+        OpenLayers.Handler.prototype.initialize = function(con, call, opt) {
+            t.eq(con.id, control.id,
+                 "constructor calls parent with the correct control");
+            t.eq(call, callbacks,
+                 "constructor calls parent with the correct callbacks");
+            t.eq(opt, options,
+                 "constructor calls parent with the correct options");
+        }
+        var handler = new OpenLayers.Handler.MouseWheel(control, callbacks, options);
+
+        OpenLayers.Handler.prototype.initialize = oldInit;
+    }
+
+    function test_Handler_MouseWheel_activate(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.MouseWheel(control);
+        handler.active = true;
+        var activated = handler.activate();
+        t.ok(!activated,
+             "activate returns false if the handler was already active");
+        handler.active = false;
+        activated = handler.activate();
+        t.ok(activated,
+             "activate returns true if the handler was not already active");
+    }
+    
+    function test_Handler_MouseWheel_mousePosition(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map('map');
+        map.addLayer(new OpenLayers.Layer.WMS("","",{}));
+        map.zoomToMaxExtent();
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var pass = false;
+        var handler = new OpenLayers.Handler.MouseWheel(control, {'up': 
+          function (evt) { 
+                if (evt.xy) { pass = true; }
+          }
+        });
+        handler.setMap(map);
+        handler.activate();
+        var delta = 120;
+        if (window.opera && window.opera.version() < 9.2)  delta = -delta;
+        handler.onWheelEvent({'target':map.layers[0].div, wheelDelta: delta});
+        t.ok(pass, "evt.xy was set even without a mouse move");
+    }    
+    
+    function test_Handler_MouseWheel_events(t) {
+        t.plan(6);
+        
+        var map = new OpenLayers.Map('map');
+        map.addLayer(new OpenLayers.Layer.WMS("","",{}));
+        map.zoomToMaxExtent();
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var deltaZ;
+        var handler = new OpenLayers.Handler.MouseWheel(control, {
+            'up': function(evt, delta){
+                deltaZ = delta;
+            }
+        }, {interval: 200});
+
+        // list below events that should be handled (events) and those
+        // that should not be handled (nonevents) by the handler
+        var events = ["mousemove"];
+        var nonevents = ["dblclick", "resize", "focus", "blur"];
+        map.events.registerPriority = function(type, obj, func) {
+            var r = func();
+            if(typeof r == "string") {
+                t.eq(OpenLayers.Util.indexOf(nonevents, type), -1,
+                     "registered method is not one of the events " +
+                     "that should not be handled");
+                t.ok(OpenLayers.Util.indexOf(events, type) > -1,
+                     "activate calls registerPriority with browser event: " + type);
+                t.eq(typeof func, "function",
+                     "activate calls registerPriority with a function");
+                t.eq(func(), type,
+                     "activate calls registerPriority with the correct method");
+                t.eq(obj["CLASS_NAME"], "OpenLayers.Handler.MouseWheel",
+                     "activate calls registerPriority with the handler");
+            }
+        }
+        
+        // set browser event like properties on the handler
+        for(var i=0; i<events.length; ++i) {
+            setMethod(events[i]);
+        }
+        function setMethod(key) {
+            handler[key] = function() {return key};
+        }
+
+        var activated = handler.activate();
+        
+        var delta = 120;
+        if (window.opera && window.opera.version() < 9.2)  delta = -delta;
+        handler.onWheelEvent({'target':map.layers[0].div, wheelDelta: delta});
+        handler.onWheelEvent({'target':map.layers[0].div, wheelDelta: delta});
+        t.delay_call(1, function() {
+            t.eq(deltaZ, 2, "Multiple scroll actions triggered one event when interval is set");
+        });
+    }
+
+    function test_Handler_MouseWheel_cumulative(t) {
+        t.plan(1);
+
+        var deltaUp = 0;
+        var callbacks = {
+            up: function(evt, delta) {
+                deltaUp += delta;
+            }
+        };
+
+        var map = new OpenLayers.Map('map');
+        map.addLayer(new OpenLayers.Layer.WMS("","",{}));
+        map.zoomToMaxExtent();
+        var control = new OpenLayers.Control({});
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.MouseWheel(control, callbacks, {
+            interval: 150,
+            cumulative: false    
+        });
+
+        var delta = 120;
+        // generate 20 scroll up in non cumulative mode
+        if (window.opera && window.opera.version() < 9.2)  delta = -delta;
+        for (var i=0; i < 20; i++) {
+            handler.onWheelEvent({'target':map.layers[0].div, wheelDelta: delta});
+        }
+        
+        t.delay_call(1, function() {
+            t.eq(deltaUp, 1, "Non cumulative mode works");
+        });
+    }
+
+    function test_Handler_MouseWheel_deactivate(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map('map');
+        var control = new OpenLayers.Control();
+        map.addControl(control);
+        var handler = new OpenLayers.Handler.MouseWheel(control);
+        handler.active = false;
+        var deactivated = handler.deactivate();
+        t.ok(!deactivated,
+             "deactivate returns false if the handler was not already active");
+        handler.active = true;
+        deactivated = handler.deactivate();
+        t.ok(deactivated,
+             "deactivate returns true if the handler was active already");
+    }
+    function test_handler_MouseWheel_destroy(t) {
+        t.plan(1);
+        var control = new OpenLayers.Control();
+        var handler = new OpenLayers.Handler.MouseWheel(control);
+        handler.deactivate = function() { 
+            t.ok(true, "Deactivate called one time.");
+        }    
+        handler.destroy();
+    }
+
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 300px; height: 150px;"/>
+</body>
+</html>

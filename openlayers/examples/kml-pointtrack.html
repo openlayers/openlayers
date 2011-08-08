@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>OpenLayers KML Track in a PointTrack Layer Example</title>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="../theme/default/google.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <style>
+            .olControlAttribution {
+                bottom: 2px;
+            }
+        </style>
+        <script src="../lib/OpenLayers.js"></script>
+        <script src="kml-pointtrack.js"></script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">Parsing gx:Track in KML</h1>
+        <p id="shortdesc">
+            Demonstrates populating a PointTrack layer with gx:Track elements from KML.
+        </p>
+        <div id="map" class="smallmap"></div>
+        <div id="docs">
+            <p>
+                If a KML document contains <code>&lt;gx:Track&gt;</code> 
+                elements and the extractTracks property is set true on the 
+                parser, features will be created that represent track points.
+                These track points can easily be visualized as track lines with
+                a <code>PointTrack</code> layer, preserving the KML's original
+                styles.
+            </p>
+            <p>
+                View the <a href="kml-pointtrack.js" target="_blank">kml-pointtrack.js</a>
+                source to see how this is done.
+            </p>
+        </div>
+    </body>
+</html>

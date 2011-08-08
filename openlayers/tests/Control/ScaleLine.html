@@ -1,0 +1,187 @@
+<html>
+<head>
+    <script type="text/javascript">var oldAlert = window.alert, gMess; window.alert = function(message) {gMess = message; return true;};</script>
+    <!-- this gmaps key generated for http://openlayers.org/dev/ -->
+    <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAA9XNhd8q0UdwNC7YSO4YZghSPUCi5aRYVveCcVYxzezM4iaj_gxQ9t-UajFL70jfcpquH5l1IJ-Zyyw'></script>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+  var validkey = (window.location.protocol == "file:") ||
+                 (window.location.host == "localhost") ||
+                 (window.location.host == "openlayers.org");
+
+    function test_initialize(t) {
+        t.plan(2);    
+        var control = new OpenLayers.Control.ScaleLine();
+        t.ok(control instanceof OpenLayers.Control.ScaleLine, "new OpenLayers.Control returns object" );
+        t.eq(control.displayClass,  "olControlScaleLine", "displayClass is correct" );
+        control.destroy();
+    }
+
+    function test_initwithelem(t) {
+        t.plan(1);
+        var control = new OpenLayers.Control.ScaleLine({"div":OpenLayers.Util.getElement('ScaleLine')});
+        t.ok(true, "If this happens, then we passed. (FF throws an error above otherwise)");
+        control.destroy();
+    }
+
+    function test_calcDegrees(t) {
+        t.plan(5);
+        var control = new OpenLayers.Control.ScaleLine();
+        t.ok(control instanceof OpenLayers.Control.ScaleLine, "new OpenLayers.Control returns object" );
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS('Test Layer', "http://octo.metacarta.com/cgi-bin/mapserv", {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'});
+        map.addLayer(layer);
+        map.zoomTo(0);
+        map.addControl(control);
+        t.eq(control.div.firstChild.style.visibility, "visible", "top scale is present.");
+        t.eq(control.div.lastChild.style.visibility, "visible", "bottom scale is present.");
+        t.eq(control.div.firstChild.innerHTML, "10000 km", "top scale has correct text.");
+        t.eq(control.div.lastChild.innerHTML, "5000 mi", "bottom scale has correct text.");
+        map.destroy();
+    }
+
+    function test_calcsOther (t) {
+        t.plan(5);
+        var control = new OpenLayers.Control.ScaleLine();
+        t.ok(control instanceof OpenLayers.Control.ScaleLine, "new OpenLayers.Control returns object" );
+        var map = new OpenLayers.Map('map');
+        map.units = "mi";
+        var layer = new OpenLayers.Layer.WMS('Test Layer', "http://octo.metacarta.com/cgi-bin/mapserv", {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'});
+        map.addLayer(layer);
+        map.zoomTo(0);
+        map.addControl(control);
+        t.eq(control.div.firstChild.style.visibility, "visible", "top scale is present.");
+        t.eq(control.div.lastChild.style.visibility, "visible", "bottom scale is present.");
+        t.eq(control.div.firstChild.innerHTML, "100 km", "top scale has correct text.");
+        t.eq(control.div.lastChild.innerHTML, "100 mi", "bottom scale has correct text.");
+        map.destroy();
+    }
+
+    function test_calcMeters (t) {        
+        t.plan(5);         
+        // this example is taken from the projected-map.html OpenLayers example
+        var lat = 900863; 
+        var lon = 235829;
+        var zoom = 6;
+        var map = new OpenLayers.Map( 'map' );
+        var basemap = new OpenLayers.Layer.WMS( "Boston", 
+          "http://boston.freemap.in/cgi-bin/mapserv?",
+                {
+                 map: '/www/freemap.in/boston/map/gmaps.map', 
+                 layers: 'border,water,roads,rapid_transit,buildings', 
+                 format: 'png', 
+                 transparent: 'off'
+                },
+        
+            {
+              maxExtent: new OpenLayers.Bounds(33861, 717605, 330846, 1019656), 
+              maxResolution: 296985/1024,  
+              projection:"EPSG:2805",     // Used in WMS/WFS requests.   
+              units: "m"                  // Only neccesary for working with scales.
+              } );
+            
+        map.addLayer(basemap);        
+        map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+        map.addControl(new OpenLayers.Control.LayerSwitcher());                
+        var control = new OpenLayers.Control.ScaleLine();
+        t.ok( control instanceof OpenLayers.Control.ScaleLine, "new OpenLayers.Control returns object" );
+        map.addControl(control);
+        t.eq(control.div.firstChild.style.visibility, "visible", "top scale is present.");
+        t.eq(control.div.lastChild.style.visibility, "visible", "bottom scale is present.");
+        t.eq(control.div.firstChild.innerHTML, "200 m", "top scale has correct text.");
+        t.eq(control.div.lastChild.innerHTML, "1000 ft", "bottom scale has correct text.");
+        map.destroy();
+    }
+    
+    function test_useArguments (t) {
+        t.plan(5);
+        var control = new OpenLayers.Control.ScaleLine({topOutUnits: 'dd'} );
+        t.ok( control instanceof OpenLayers.Control.ScaleLine, "new OpenLayers.Control returns object" );
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS('Test Layer', "http://octo.metacarta.com/cgi-bin/mapserv", {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'});
+        map.addLayer(layer);
+        map.zoomTo(0);
+        map.addControl(control);
+        t.eq(control.div.firstChild.style.visibility, "visible", "top scale is present.");
+        t.eq(control.div.lastChild.style.visibility, "visible", "bottom scale is present.");
+        t.eq(control.div.firstChild.innerHTML, "100 dd", "top scale has correct text.");
+        t.eq(control.div.lastChild.innerHTML, "5000 mi", "bottom scale has correct text.");
+        map.destroy();
+    }
+
+    function test_respectZoom (t) {
+        if(validkey) {
+            t.plan( 4 );
+        } else {
+            t.plan( 3 );
+        }
+        // ok, switch the units we use for zoomed in values.  This will test that we're both
+        //   correctly respecting all specified parameters and that we're switching to the 
+        //   "in" units when zoomed in
+        var control = new OpenLayers.Control.ScaleLine({topOutUnits : "mi", bottomOutUnits: "km", topInUnits: 'ft', bottomInUnits: 'm'});
+        t.ok( control instanceof OpenLayers.Control.ScaleLine, "new OpenLayers.Control returns object" );
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS('Test Layer', "http://octo.metacarta.com/cgi-bin/mapserv", {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'});
+        map.addLayer(layer);
+        map.zoomTo(0);
+        map.addControl(control);
+        var widthIsOk = true;
+        for (var i=0; i<map.numZoomLevels && widthIsOk; i++) {
+            map.zoomTo(i);
+            var w1 = parseInt(control.eTop.style.width);
+            var w2 = parseInt(control.eBottom.style.width);
+            widthIsOk = w1 <= control.maxWidth && w2 <= control.maxWidth;
+        }
+        t.ok(widthIsOk, "respects maxWidth at all zoom levels in dd");
+        
+        widthIsOk = true;
+        control.maxWidth = 200;
+        for (var i=0; i<map.numZoomLevels && widthIsOk; i++) {
+            map.zoomTo(i);
+            var w1 = parseInt(control.eTop.style.width);
+            var w2 = parseInt(control.eBottom.style.width);
+            widthIsOk = w1 <= control.maxWidth && w2 <= control.maxWidth;
+        }
+        t.ok(widthIsOk, "respects modified maxWidth at all zoom levels in dd");
+
+        if (validkey) {
+            var map = new OpenLayers.Map('map');
+            var layer = new OpenLayers.Layer.Google('Goog Layer');
+            var control = new OpenLayers.Control.ScaleLine({topOutUnits : "mi", bottomOutUnits: "km", topInUnits: 'ft', bottomInUnits: 'm'});
+            map.addLayer(layer);
+            map.zoomTo(0);
+            map.addControl(control);
+            var widthIsOk = true;
+            for (var i=0; i<map.numZoomLevels && widthIsOk; i++) {
+                map.zoomTo(i);
+                var w1 = parseInt(control.eTop.style.width);
+                var w2 = parseInt(control.eBottom.style.width);
+                widthIsOk = w1 <= control.maxWidth && w2 <= control.maxWidth;
+            }
+            t.ok(widthIsOk, "respects maxWidth at all zoom levels in m");
+        } else {
+            t.debug_print("Google tests can't be run from " +
+                          window.location.host);          
+        }
+
+        map.destroy();
+    }   
+    function test_ie_oneunit(t) {
+        t.plan(2);
+        var control = new OpenLayers.Control.ScaleLine({bottomOutUnits:'',bottomInUnits:'',maxWidth:150});
+        t.ok(control instanceof OpenLayers.Control.ScaleLine, "new OpenLayers.Control returns object" );
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS('Test Layer', "bogus", {});
+        map.addLayer(layer);
+        map.zoomTo(0);
+        map.addControl(control);
+        t.ok(true, "invisible bottom scale doesn't cause scaleline failure (IE only)");
+        map.destroy();
+    }
+  </script>
+</head>
+<body>
+    <a id="ScaleLine" href="">ScaleLine</a> <br/>
+    <div id="map" style="width: 1024px; height: 512px;"/>
+</body>
+</html>

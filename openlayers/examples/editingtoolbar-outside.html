@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers: Custom Editing Toolbar</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <style type="text/css">
+        .olControlEditingToolbar  {
+            float:left;
+            width: 116px;
+        }
+    </style>
+    <script src="../lib/Firebug/firebug.js"></script>
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var lon = 5;
+        var lat = 40;
+        var zoom = 5;
+        var map, layer;
+
+        function init(){
+            map = new OpenLayers.Map('map', {theme: null});
+            layer = new OpenLayers.Layer.WMS(
+                "OpenLayers WMS", 
+                "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                {layers: "basic"}
+            );
+            map.addLayer(layer);
+
+            vlayer = new OpenLayers.Layer.Vector( "Editable" );
+            map.addLayer(vlayer);
+            var container = document.getElementById("panel");
+            var panel = new OpenLayers.Control.EditingToolbar(
+                vlayer, {div: container}
+            );
+            map.addControl(panel);
+            
+            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">OpenLayers EditingToolbar Outside Viewport</h1>
+    <div id="tags">
+        digitizing, point, line, linestring, polygon, editing, positioning, style
+    </div>
+    <p id="shortdesc">
+        Display an editing toolbar panel outside the map viewport.
+    </p>
+    <div id="map" class="smallmap"></div>
+    <div id="panel" class="olControlEditingToolbar"></div>
+  </body>
+</html>
