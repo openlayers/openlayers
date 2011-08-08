@@ -111,7 +111,8 @@
         var protocol = new OpenLayers.Protocol.WFS({
             url: "http://some.url.org",
             featurePrefix: "topp",
-            featureType: "tasmania_roads"
+            featureType: "tasmania_roads",
+            geometryName: null
         });
 
         protocol.parseResponse({responseText: document.getElementById("query_response").firstChild.nodeValue});
@@ -299,7 +300,7 @@
     }
 
     function test_fromWMSLayer(t) {
-        t.plan(8);
+        t.plan(9);
         var map = new OpenLayers.Map("map", {
             projection: "EPSG:1234"
         });
@@ -313,6 +314,7 @@
         t.eq(protocol.featureType, "states", "typeName correctly extracted");
         t.eq(protocol.srsName, "EPSG:1234", "srsName set correctly");
         t.eq(protocol.version, "1.1.0", "version set correctly");
+        t.eq(protocol.format.geometryName, null, "format's geometryName set to null");
 
         layer.params["LAYERS"] = ["topp:street_centerline", "topp:states"];
         layer.projection = new OpenLayers.Projection("EPSG:900913");
