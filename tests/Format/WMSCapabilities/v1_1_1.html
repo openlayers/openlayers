@@ -111,7 +111,7 @@
 
     function test_layers(t) {
 
-        t.plan(22);
+        t.plan(24);
 
         var xml = document.getElementById("ogcsample").firstChild.nodeValue;
         var doc = new OpenLayers.Format.XML().read(xml);
@@ -143,7 +143,11 @@
              [189000, 834000, 285000, 962000],
              "Correct bbox from BoundingBox");
         t.eq(bbox.res, {x: 1, y: 1}, "Correct resolution");
-
+        bbox = layers["ROADS_RIVERS"].bbox["EPSG:4326"];
+        t.eq(bbox.bbox,
+             [-71.63, 41.75, -70.78, 42.90],
+             "Correct bbox from BoundingBox (override)");
+        t.eq(bbox.res, {x: 0.01, y: 0.01}, "Correct resolution (override)");
         bbox = layers["ROADS_1M"].bbox["EPSG:26986"];
         t.eq(bbox.bbox,
              [189000, 834000, 285000, 962000],
@@ -535,7 +539,8 @@ Changes:
       <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple"
        xlink:href="http://gcmd.gsfc.nasa.gov/difguide/whatisadif.html" />
     </AuthorityURL>
-
+    <BoundingBox SRS="EPSG:4326"
+     minx="-1" miny="-1" maxx="1" maxy="1" resx="0.0" resy="0.0"/>
 
     <Layer>
       <Name>ROADS_RIVERS</Name> 
