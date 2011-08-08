@@ -25,7 +25,7 @@
     }
 
     function test_Handler_Polygon_activation(t) {
-        t.plan(13);
+        t.plan(5);
         var log = [];
         var map = new OpenLayers.Map("map", {
             resolutions: [1]
@@ -36,11 +36,7 @@
         });
         map.addLayer(layer);
         var control = new OpenLayers.Control();
-        var handler = new OpenLayers.Handler.Polygon(control, {
-            "create": function(g, f) {
-                log.push({geometry: g, feature: f});
-            }
-        });
+        var handler = new OpenLayers.Handler.Polygon(control, {});
         control.handler = handler;
         map.addControl(control);
         map.setCenter(new OpenLayers.LonLat(0, 0), 0);
@@ -57,22 +53,6 @@
              "activate creates a vector layer");
         t.ok(handler.layer.map == map,
              "activate adds the vector layer to the map");
-        t.ok(handler.point instanceof OpenLayers.Feature.Vector,
-             "activate creates a point feature");
-        t.ok(handler.point.layer == handler.layer,
-             "activate adds the point feature to the layer");
-        t.ok(handler.line instanceof OpenLayers.Feature.Vector,
-             "activates creates a line feature");
-        t.ok(handler.polygon instanceof OpenLayers.Feature.Vector,
-             "acttivates creates a polygon feature");
-        t.ok(handler.polygon.layer == handler.layer,
-             "activate adds the polygin feature to the layer");
-        t.eq(log.length, 1,
-             "activate calls \"create\" once");
-        t.ok(log[0].geometry == handler.point.geometry,
-                  "\"create\" called with expected geometry");
-        t.ok(log[0].feature == handler.polygon,
-             "\"create\" called with expected feature");
         activated = handler.deactivate();
         t.ok(activated,
              "deactivate returns true if the handler was active already");
@@ -140,7 +120,7 @@
     }
 
     function test_callbacks(t) {
-        t.plan(45);
+        t.plan(39);
         var map = new OpenLayers.Map("map", {
             resolutions: [1]
         });
@@ -178,17 +158,16 @@
         
         // create polygon
         handler.activate();
-        handler.activate();
-        t.eq(logs.length, 1, "[activate] called back");
-        log = logs.shift();
-        t.eq(log.type, "create", "[activate] create called");
-        t.ok(isNaN(log.args[0].x) && isNaN(log.args[0].y),
-                  "[activate] initial point");
-        t.ok(log.args[1] == handler.polygon,
-             "[activate] correct feature");
+
         handler.mousemove(
             {type: "mousemove", xy: new OpenLayers.Pixel(0, 0)});
-        t.eq(logs.length, 1, "[mousemove] called back");
+        t.eq(logs.length, 2, "[mousemove] called back");
+        log = logs.shift();
+        t.eq(log.type, "create", "[activate] create called");
+        t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-150, 75),
+                  "[mousemove] correct point");
+        t.ok(log.args[1] == handler.polygon,
+             "[mousemove] correct feature");
         log = logs.shift();
         t.eq(log.type, "modify", "[mousemove] modify called");
         t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-150, 75),
@@ -287,7 +266,7 @@
         // dblclick
         handler.dblclick(
             {type: "dblclick", xy: new OpenLayers.Pixel(0, 10)});
-        t.eq(logs.length, 2, "[dblclick] called back twice");
+        t.eq(logs.length, 1, "[dblclick] called back");
         log = logs.shift();
         t.eq(log.type, "done", "[dblclick] done called");
         t.geom_eq(
@@ -302,21 +281,11 @@
             ]),
             "[dblclick] correct polygon"
         );
-        log = logs.shift();
-        t.eq(log.type, "create", "[dblclick] create called");
-        t.ok(isNaN(log.args[0].x) && isNaN(log.args[0].y),
-                  "[dblclick] initial point");
-        t.ok(log.args[1] == handler.polygon,
-             "[dblclick] correct feature");
         // cancel
         handler.cancel();
-        t.eq(logs.length, 2, "[cancel] called back");
+        t.eq(logs.length, 1, "[cancel] called back");
         log = logs.shift();
         t.eq(log.type, "cancel", "[cancel] canced called");
-        log = logs.shift();
-        t.eq(log.type, "create", "[cancel] create called");
-        t.ok(isNaN(log.args[0].x) && isNaN(log.args[0].y),
-                  "[cancel] initial point");
 
         map.destroy();
     }        
@@ -389,9 +358,9 @@
         handler.activate();
 
         handler.persist = false;
-        var feature1 = handler.polygon;
         handler.mousemove(
             {type: "mousemove", xy: new OpenLayers.Pixel(0, 0)});
+        var feature1 = handler.polygon;
         handler.mousedown(
             {type: "mousedown", xy: new OpenLayers.Pixel(0, 0)});
         handler.mouseup(
@@ -409,9 +378,9 @@
         t.ok(feature1.layer == null, "a) feature1 destroyed");
 
         handler.persist = true;
-        var feature2 = handler.polygon;
         handler.mousemove(
             {type: "mousemove", xy: new OpenLayers.Pixel(0, 0)});
+        var feature2 = handler.polygon;
         handler.mousedown(
             {type: "mousedown", xy: new OpenLayers.Pixel(0, 0)});
         handler.mouseup(
@@ -428,9 +397,9 @@
             {type: "dblclick", xy: new OpenLayers.Pixel(2, 2)});
         t.ok(feature2.layer != null, "b) feature2 not destroyed");
 
-        var feature3 = handler.polygon;
         handler.mousemove(
             {type: "mousemove", xy: new OpenLayers.Pixel(0, 0)});
+        var feature3 = handler.polygon;
         handler.mousedown(
             {type: "mousedown", xy: new OpenLayers.Pixel(0, 0)});
         handler.mouseup(
@@ -470,9 +439,9 @@
         handler.activate();
 
         handler.persist = false;
-        var feature1 = handler.polygon;
         handler.mousemove(
             {type: "mousemove", xy: new OpenLayers.Pixel(0, 0)});
+        var feature1 = handler.polygon;
         handler.mousedown(
             {type: "mousedown", xy: new OpenLayers.Pixel(0, 0), shiftKey: true});
         handler.mousemove(
@@ -484,9 +453,9 @@
         t.ok(feature1.layer == null, "a) feature1 destroyed");
 
         handler.persist = true;
-        var feature2 = handler.polygon;
         handler.mousemove(
             {type: "mousemove", xy: new OpenLayers.Pixel(0, 0)});
+        var feature2 = handler.polygon;
         handler.mousedown(
             {type: "mousedown", xy: new OpenLayers.Pixel(0, 0), shiftKey: true});
         handler.mousemove(
@@ -497,9 +466,9 @@
             {type: "mouseup", xy: new OpenLayers.Pixel(2, 2), shiftKey: true});
         t.ok(feature2.layer != null, "b) feature2 not destroyed");
 
-        var feature3 = handler.polygon;
         handler.mousemove(
             {type: "mousemove", xy: new OpenLayers.Pixel(0, 0)});
+        var feature3 = handler.polygon;
         handler.mousedown(
             {type: "mousedown", xy: new OpenLayers.Pixel(0, 0), shiftKey: true});
         handler.mousemove(
@@ -511,9 +480,9 @@
         t.ok(feature3.layer != null, "c) feature3 not destroyed");
         t.ok(feature2.layer == null, "c) feature2 destroyed");
 
-        feature4 = handler.polygon;
         handler.mousemove(
             {type: "mousemove", xy: new OpenLayers.Pixel(0, 0)});
+        feature4 = handler.polygon;
         handler.mousedown(
             {type: "mousedown", xy: new OpenLayers.Pixel(0, 0), shiftKey: false});
         handler.mousemove(
@@ -746,6 +715,50 @@
         t.eq(handler.polygon, null,
              "handler.polygon is null after destroy");
         map.destroy();     
+    }
+
+    function test_insertXY(t) {
+        t.plan(3);
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var control = new OpenLayers.Control.DrawFeature(
+            layer, OpenLayers.Handler.Polygon
+        );
+        map.addControl(control);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+
+        control.activate();
+        var handler = control.handler;
+        
+        function userClick(x, y) {
+            var px = new OpenLayers.Pixel(x, y);
+            handler.mousemove({type: "mousemove", xy: px});
+            handler.mousedown({type: "mousedown", xy: px});
+            handler.mouseup({type: "mouseup", xy: px});
+        }
+
+        // add points at px(0, 0) and px(10, 10)
+        userClick(0, 0);
+        userClick(10, 10);
+        t.eq(handler.line.geometry.components.length, 4, "ring has four points after two clicks");
+        
+        // programmatically add a point
+        handler.insertXY(5, 6);
+        t.eq(handler.line.geometry.components.length, 5, "ring has five points after insertXY");
+        t.geom_eq(
+            handler.line.geometry.components[2],
+            new OpenLayers.Geometry.Point(5, 6),
+            "third point comes from insertXY"
+        );
+        
+        map.destroy();
+        
     }
 
     //

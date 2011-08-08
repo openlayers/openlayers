@@ -1,10 +1,12 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
     <head>
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
         <title>OpenLayers Attribution Example</title>
-        <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-        <link rel="stylesheet" href="style.css" type="text/css" />
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
         <script src="../lib/OpenLayers.js"></script>
 
         <script type="text/javascript">
@@ -26,8 +28,10 @@
                 map.addLayers([ol_wms, jpl_wms, vector]);
 
                 map.addControl(new OpenLayers.Control.LayerSwitcher());
-                map.addControl(new OpenLayers.Control.Attribution());
-                // map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+                // OpenLayers.Control.Attribution is one of the default
+                // controls - only needs to be added when the map instance is
+                // created with the controls option
+                //map.addControl(new OpenLayers.Control.Attribution());
                 map.zoomToMaxExtent();
             }
         </script>
@@ -46,11 +50,11 @@
         <div id="map" class="smallmap"></div>
 
         <div id="docs">
-            This is an example of how to add an attribution block to the OpenLayers window.  In order to use an
+            <p>This is an example of how to add an attribution block to the OpenLayers window.  In order to use an
             attribution block, an attribution parameter must be set in each layer that requires attribution. In
             addition, an attribution control must be added to the map, though one is added to all OpenLayers Maps by default. 
             Be aware that this is a layer <strong>option</strong>: the options hash goes in
-            different places depending on the layer type you are using.  
+            different places depending on the layer type you are using.</p> 
         </div>
     </body>
 </html>

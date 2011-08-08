@@ -1,8 +1,0 @@
-{
-    "type": "FeatureCollection",
-    "features": [
-        {"type":"Feature", "id":"OpenLayers.Feature.Vector_1721", "properties":{}, "geometry":{"type":"Point", "coordinates":[-89.296875, -14.4140625]}, "crs":{"type":"OGC", "properties":{"urn":"urn:ogc:def:crs:OGC:1.3:CRS84"}}},
-        {"type":"Feature", "id":"OpenLayers.Feature.Vector_1715", "properties":{}, "geometry":{"type":"Point", "coordinates":[-25.3125, -54.4921875]}, "crs":{"type":"OGC", "properties":{"urn":"urn:ogc:def:crs:OGC:1.3:CRS84"}}},
-        {"type":"Feature", "id":"OpenLayers.Feature.Vector_1709", "properties":{}, "geometry":{"type":"Point", "coordinates":[73.828125, -23.5546875]}, "crs":{"type":"OGC", "properties":{"urn":"urn:ogc:def:crs:OGC:1.3:CRS84"}}}
-    ]
-}

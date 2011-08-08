@@ -45,13 +45,13 @@
         deleteFeature.state = OpenLayers.State.DELETE;
         deleteFeature.fid = "fid.37";
 
-        t.plan(5);
+        t.plan(8);
         var snippets = {
-            "GetFeature": {maxFeatures: 1, outputFormat: 'json'},
-            "Transaction": null,
-            "Insert": insertFeature,
-            "Update": updateFeature,
-            "Delete": deleteFeature
+            "GetFeature": {handle: "handle_g", maxFeatures: 1, outputFormat: 'json'},
+            "Transaction": {handle: "handle_t"},
+            "Insert": {feature: insertFeature, options: {handle: "handle_i"}},
+            "Update": {feature: updateFeature, options: {handle: "handle_u"}},
+            "Delete": {feature: deleteFeature, options: {handle: "handle_d"}}
         }
 
         var arg;
@@ -61,6 +61,51 @@
             var got = format.writers["wfs"][snippet].apply(format, [arg]);
             t.xml_eq(got, expected, snippet + " request created correctly");
         }
+        
+        updateFeature.modified = {geometry: updateFeature.geometry.clone()};
+        updateFeature.geometry = new OpenLayers.Geometry.Point(2,3);
+        var expected = readXML("UpdateModified");
+        var got = format.writers["wfs"]["Update"].apply(format, [{feature: updateFeature}]);
+        t.xml_eq(got, expected, "Update request for feature with modified geometry created correctly");
+        
+        updateFeature.modified.attributes = {foo: "bar"};
+        updateFeature.attributes.foo = "baz";
+        delete updateFeature.modified.geometry;
+        var expected = readXML("UpdateModifiedNoGeometry");
+        var got = format.writers["wfs"]["Update"].apply(format, [{feature: updateFeature}]);
+        t.xml_eq(got, expected, "Update request for feature with no modified geometry but modified attributes created correctly");
+
+        // test for a feature that originally had a null geometry and a null value for the attribute
+        updateFeature.modified = {attributes: {foo: null, nul: "nul"}, geometry: null};
+        updateFeature.attributes.foo = "bar";
+        updateFeature.geometry = new OpenLayers.Geometry.Point(2,3);
+        var expected = readXML("UpdateModified");
+        var got = format.writers["wfs"]["Update"].apply(format, [{feature: updateFeature}]);
+        t.xml_eq(got, expected, "Update request for feature with modified geometry created correctly even if original geometry was null");
+    }
+
+    function test_writeNative(t) {
+        t.plan(1);
+        var format = new OpenLayers.Format.WFST({
+            featureNS: "http://www.openplans.org/topp",
+            featureType: "states",
+            version: "1.1.0",
+            featurePrefix: "topp",
+            geometryName: null
+        });
+        var output = format.write(null, {nativeElements: [
+            {
+                vendorId: "ORACLE",
+                safeToIgnore: true,
+                value: "ALTER SESSION ENABLE PARALLEL DML"
+            }, {
+                vendorId: "ORACLE",
+                safeToIgnore: false,
+                value: "Another native line goes here"
+            }]
+        });
+        var expected = '<wfs:Transaction xmlns:wfs="http://www.opengis.net/wfs" service="WFS" version="1.1.0" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><wfs:Native vendorId="ORACLE" safeToIgnore="true">ALTER SESSION ENABLE PARALLEL DML</wfs:Native><wfs:Native vendorId="ORACLE" safeToIgnore="false">Another native line goes here</wfs:Native></wfs:Transaction>';
+        t.xml_eq(output, expected, "Native elements written out correctly");
     }
 
     function test_write_no_geometry(t) {
@@ -77,7 +122,7 @@
 
         t.plan(1);
         var snippets = {
-            "UpdateNoGeometry": feature
+            "UpdateNoGeometry": {feature: feature}
         }
 
         var arg;
@@ -103,7 +148,7 @@
 
         t.plan(1);
         var snippets = {
-            "UpdateNullGeometry": feature
+            "UpdateNullGeometry": {feature: feature}
         };
 
         var arg;
@@ -136,6 +181,43 @@
             var got = format.writers["wfs"]["GetFeature"].apply(format, [arg]);
             t.xml_eq(got, expected, snippet + " request created correctly with multiple typenames");
         }
+    }
+    
+    function test_write_multi(t) {
+        t.plan(2);
+        var format = new OpenLayers.Format.WFST({
+            featureNS: "http://www.openplans.org/topp",
+            featureType: "states",
+            featurePrefix: "topp",
+            geometryName: "the_geom"
+        });
+
+        var feature = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(1,2),
+            {foo: "bar"}
+        );
+
+        var insertFeature = feature.clone();
+        // null value does not show up in insert
+        insertFeature.attributes.nul = null;
+        insertFeature.state = OpenLayers.State.INSERT;
+        var updateFeature = feature.clone();
+        // undefined value means don't create a Property element
+        updateFeature.attributes.unwritten = undefined;
+        // null value gets Property element with no Value
+        updateFeature.attributes.nul = null;
+        updateFeature.fid = "fid.42";
+        updateFeature.state = OpenLayers.State.UPDATE;
+        var features = [insertFeature, updateFeature];
+
+        var expected = readXML("TransactionMulti");
+        var geomTypes = OpenLayers.Util.extend({}, format.geometryTypes);
+        var got = format.writers["wfs"]["Transaction"].apply(format, [{
+            features: features,
+            options: {multi: true}}
+        ]);
+        t.xml_eq(got, expected, "Transaction request with multi option created correctly");
+        t.eq(format.geometryTypes, geomTypes, "geometry types unchanged after write with multi option");
     }
 
     function readXML(id) {
@@ -193,7 +275,7 @@
 --></div>
 
 <div id="GetFeature"><!--
-<wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" service="WFS" version="1.0.0" outputFormat="json" maxFeatures="1" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-transaction.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" service="WFS" version="1.0.0" handle="handle_g" outputFormat="json" maxFeatures="1" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-transaction.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <wfs:Query typeName="topp:states" xmlns:topp="http://www.openplans.org/topp"/>
 </wfs:GetFeature>
 --></div>
@@ -206,8 +288,50 @@
 <div id="Transaction"><!--
 <wfs:Transaction xmlns:wfs="http://www.opengis.net/wfs" service="WFS" version="1.0.0"/>
 --></div>
+<div id="TransactionMulti"><!--
+<wfs:Transaction xmlns:wfs="http://www.opengis.net/wfs" service="WFS" version="1.0.0">
+    <wfs:Insert>
+        <feature:states xmlns:feature="http://www.openplans.org/topp">
+            <feature:the_geom>
+                <gml:MultiPoint xmlns:gml="http://www.opengis.net/gml">
+                    <gml:pointMember>
+                        <gml:Point>
+                            <gml:coordinates decimal="." cs="," ts=" ">1,2</gml:coordinates>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </feature:the_geom>
+            <feature:foo>bar</feature:foo>
+        </feature:states>
+    </wfs:Insert>
+    <wfs:Update xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
+        <wfs:Property>
+            <wfs:Name>the_geom</wfs:Name>
+            <wfs:Value>
+                <gml:MultiPoint xmlns:gml="http://www.opengis.net/gml">
+                    <gml:pointMember>
+                        <gml:Point>
+                            <gml:coordinates decimal="." cs="," ts=" ">1,2</gml:coordinates>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>foo</wfs:Name>
+            <wfs:Value>bar</wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>nul</wfs:Name>
+        </wfs:Property>
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+            <ogc:FeatureId fid="fid.42"/>
+        </ogc:Filter>
+    </wfs:Update>
+</wfs:Transaction>
+--></div>
 <div id="Insert"><!--
-<wfs:Insert xmlns:wfs="http://www.opengis.net/wfs">
+<wfs:Insert xmlns:wfs="http://www.opengis.net/wfs" handle="handle_i">
     <feature:states xmlns:feature="http://www.openplans.org/topp">
         <feature:the_geom>
             <gml:Point xmlns:gml="http://www.opengis.net/gml">
@@ -219,7 +343,7 @@
 </wfs:Insert>
 --></div>
 <div id="Update"><!--
-<wfs:Update xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
+<wfs:Update xmlns:wfs="http://www.opengis.net/wfs" handle="handle_u" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
     <wfs:Property>
         <wfs:Name>the_geom</wfs:Name>
         <wfs:Value>
@@ -240,8 +364,41 @@
     </ogc:Filter>
 </wfs:Update>
 --></div>
+<div id="UpdateModified"><!--
+<wfs:Update xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
+    <wfs:Property>
+        <wfs:Name>the_geom</wfs:Name>
+        <wfs:Value>
+            <gml:Point xmlns:gml="http://www.opengis.net/gml">
+                <gml:coordinates decimal="." cs="," ts=" ">2,3</gml:coordinates>
+            </gml:Point>
+        </wfs:Value>
+    </wfs:Property>
+    <wfs:Property>
+        <wfs:Name>foo</wfs:Name>
+        <wfs:Value>bar</wfs:Value>
+    </wfs:Property>
+    <wfs:Property>
+        <wfs:Name>nul</wfs:Name>
+    </wfs:Property>
+    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+        <ogc:FeatureId fid="fid.42"/>
+    </ogc:Filter>
+</wfs:Update>
+--></div>
+<div id="UpdateModifiedNoGeometry"><!--
+<wfs:Update xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
+    <wfs:Property>
+        <wfs:Name>foo</wfs:Name>
+        <wfs:Value>baz</wfs:Value>
+    </wfs:Property>
+    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+        <ogc:FeatureId fid="fid.42"/>
+    </ogc:Filter>
+</wfs:Update>
+--></div>
 <div id="Delete"><!--
-<wfs:Delete xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
+<wfs:Delete xmlns:wfs="http://www.opengis.net/wfs" handle="handle_d" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
     <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
         <ogc:FeatureId fid="fid.37"/>
     </ogc:Filter>

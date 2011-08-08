@@ -195,31 +195,6 @@
  
     }
 
-    function test_Layer_AGS93_setOpacity (t) {
-        var params = {layers: "show:0,2"};
-        t.plan( 5 );
-
-        var map = new OpenLayers.Map('map');
-        map.projection = "xx";
-        tParams = { layers: 'show:0,2', 
-                   format: 'png'};
-        tOptions = { 'opacity': '0.5' };           
-        var tLayer = new OpenLayers.Layer.ArcGIS93Rest(name, url, tParams, tOptions);
-        map.addLayer(tLayer);
-        map.zoomToMaxExtent();
-        t.eq(tLayer.opacity, "0.5", "Opacity is set correctly");
-        t.eq(parseFloat(tLayer.div.firstChild.firstChild.style.opacity), 0.5, "Opacity on tile is correct");
-        tLayer.setOpacity("0.6");
-        t.eq(tLayer.opacity, "0.6", "setOpacity works properly");
-        t.eq(parseFloat(tLayer.div.firstChild.firstChild.style.opacity), 0.6, "Opacity on tile is changed correctly");
-        var pixel = new OpenLayers.Pixel(5,6);
-        var tile = tLayer.addTile(new OpenLayers.Bounds(1,2,3,4), pixel);
-        tile.draw();
-        t.eq(parseFloat(tile.imgDiv.style.opacity), 0.6, "Tile opacity is set correctly");
-
-        map.destroy();
-    }    
-    
     function test_Layer_AGS93_noGutters (t) { 
         t.plan(2);
         var map = new OpenLayers.Map('map');

@@ -1,3 +1,0 @@
-This license information is now available at:
- 
-http://svn.openlayers.org/trunk/openlayers/license.txt

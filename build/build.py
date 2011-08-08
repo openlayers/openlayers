@@ -16,7 +16,7 @@ def build(config_file = None, output_file = None, options = None):
         import closure
         have_compressor.append("closure")
     except Exception, E:
-        print "No closure (%s) % E"
+        print "No closure (%s)" % E
     try:
         import closure_ws
         have_compressor.append("closure_ws")
@@ -70,7 +70,7 @@ def build(config_file = None, output_file = None, options = None):
 
 if __name__ == '__main__':
   opt = optparse.OptionParser(usage="%s [options] [config_file] [output_file]\n  Default config_file is 'full.cfg', Default output_file is 'OpenLayers.js'")
-  opt.add_option("-c", "--compressor", dest="compressor", help="compression method: one of 'jsmin', 'minimize', or 'none'", default="jsmin")
+  opt.add_option("-c", "--compressor", dest="compressor", help="compression method: one of 'jsmin', 'minimize', 'closure_ws', 'closure', or 'none'", default="jsmin")
   (options, args) = opt.parse_args()
   if not len(args):
     build(options=options)

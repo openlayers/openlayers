@@ -25,8 +25,7 @@
     }
 
     function test_Handler_Point_activation(t) {
-        t.plan(11);
-        var log = [];
+        t.plan(6);
         var map = new OpenLayers.Map("map", {
             resolutions: [1]
         });
@@ -36,11 +35,7 @@
         });
         map.addLayer(layer);
         var control = new OpenLayers.Control();
-        var handler = new OpenLayers.Handler.Point(control, {
-            "create": function(g, f) {
-                log.push({geometry: g, feature: f});
-            }
-        });
+        var handler = new OpenLayers.Handler.Point(control, {});
         control.handler = handler;
         map.addControl(control);
         map.setCenter(new OpenLayers.LonLat(0, 0), 0);
@@ -57,16 +52,6 @@
              "activate creates a vector layer");
         t.ok(handler.layer.map == map,
              "activate adds the vector layer to the map");
-        t.ok(handler.point instanceof OpenLayers.Feature.Vector,
-             "activate creates a feature");
-        t.ok(handler.point.layer == handler.layer,
-             "activate adds the feature to the layer");
-        t.eq(log.length, 1,
-             "activate calls \"create\" once");
-        t.ok(log[0].geometry == handler.point.geometry,
-                  "\"create\" called with expected geometry");
-        t.ok(log[0].feature == handler.point,
-             "\"create\" called with expected feature");
         activated = handler.deactivate();
         t.ok(activated,
              "deactivate returns true if the handler was active already");
@@ -176,7 +161,7 @@
     }
     
     function test_callbacks(t) {
-        t.plan(28);
+        t.plan(24);
         var map = new OpenLayers.Map("map", {
             resolutions: [1]
         });
@@ -209,17 +194,19 @@
         map.addControl(control);
         map.setCenter(new OpenLayers.LonLat(0, 0), 0);
         
-        // create point
         handler.activate();
-        t.eq(logs.length, 1, "[activate] called back");
-        log = logs.shift();
-        t.eq(log.type, "create", "[activate] create called");
-        t.ok(isNaN(log.args[0].x) && isNaN(log.args[0].y),
-             "[activate] initial point");
+
         // mouse down
         handler.mousedown(
             {type: "mousedown", xy: new OpenLayers.Pixel(0, 0)});
-        t.eq(logs.length, 1, "[mousedown] called back");
+        t.eq(logs.length, 2, "[mousedown] called back twice");
+        log = logs.shift();
+        t.eq(log.type, "create", "[mousedown] create called");
+        t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-150, 75),
+                  "[mousedown] correct point");
+        t.geom_eq(log.args[1].geometry,
+                  new OpenLayers.Geometry.Point(-150, 75),
+                  "[mousedown] correct feature");
         log = logs.shift();
         t.eq(log.type, "modify", "[mousedown] modify called");
         t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-150, 75),
@@ -258,29 +245,20 @@
                   "[mousedown] correct feature");
         // mouse up
         handler.mouseup({type: "mouseup", xy: new OpenLayers.Pixel(2, 0)});
-        t.eq(logs.length, 2, "[mouseup] called back twice");
+        t.eq(logs.length, 1, "[mouseup] called back");
         log = logs.shift();
         t.eq(log.type, "done", "[mouseup] done called");
         t.geom_eq(log.args[0], new OpenLayers.Geometry.Point(-148, 75),
                   "[mouseup] correct point");
-        log = logs.shift();
-        t.eq(log.type, "create", "[mouseup] create called");
-        t.ok(isNaN(log.args[0].x) && isNaN(log.args[0].y),
-             "[mouseup] initial point");
         // mouse up on same pixel
         handler.mouseup({type: "mouseup", xy: new OpenLayers.Pixel(2, 0)});
         t.eq(logs.length, 0, "[mouseup] not called back");
         // cancel
         handler.cancel();
-        t.eq(logs.length, 2, "[cancel] called back");
+        t.eq(logs.length, 1, "[cancel] called back");
         log = logs.shift();
-        t.eq(log.type, "cancel", "[cancel] canced called");
-        t.ok(isNaN(log.args[0].x) && isNaN(log.args[0].y),
-             "[cancel] initial point");
-        log = logs.shift();
-        t.eq(log.type, "create", "[cancel] create called");
-        t.ok(isNaN(log.args[0].x) && isNaN(log.args[0].y),
-             "[] initial point");
+        t.eq(log.type, "cancel", "[cancel] cancel called");
+        t.eq(log.args[0], null, "[cancel] got null");
 
         map.destroy();
     }
@@ -308,7 +286,7 @@
             {type: "mousedown", xy: new OpenLayers.Pixel(0, 0)});
         handler.mouseup(
             {type: "mouseup", xy: new OpenLayers.Pixel(0, 0)});
-        t.eq(handler.layer.features.length, 1,
+        t.eq(handler.layer.features.length, 0,
              "feature destroyed on mouseup when persist is false");
 
         handler.persist = true;
@@ -316,7 +294,7 @@
             {type: "mousedown", xy: new OpenLayers.Pixel(1, 0)});
         handler.mouseup(
             {type: "mouseup", xy: new OpenLayers.Pixel(1, 0)});
-        t.eq(handler.layer.features.length, 2,
+        t.eq(handler.layer.features.length, 1,
              "feature not destroyed on mouseup when persist is true");
         var feature = handler.layer.features[0];
         handler.mousedown(
@@ -352,6 +330,7 @@
         map.setCenter(new OpenLayers.LonLat(0, 0), 0);
 
         handler.activate();
+        handler.mousemove({xy: new OpenLayers.Pixel(0, 0)});
         var _layer = handler.layer;
         var _geometry = handler.point.geometry;
         handler.deactivate();
@@ -405,6 +384,7 @@
         var handler = new OpenLayers.Handler.Point(control, {foo: 'bar'});
 
         handler.activate();
+        handler.mousemove({xy: new OpenLayers.Pixel(150, 75)});
 
         t.ok(handler.layer,
              "handler has a layer prior to destroy");
@@ -544,13 +524,11 @@
         ret = handler.touchstart({xy: new OpenLayers.Pixel(0, 0)});
         t.ok(ret, '[touchstart] event propagates');
         t.eq(log, null, '[touchstart] no finalization');
-        t.ok(isNaN(handler.point.geometry.x) && isNaN(handler.point.geometry.y),
-             '[touchstart] feature not modified');
+        t.eq(handler.point, null, '[touchstart] feature not modified');
         ret = handler.touchmove({xy: new OpenLayers.Pixel(1, 0)});
         t.ok(ret, '[touchmove] event propagates');
         t.eq(log, null, '[touchmove] no finalization');
-        t.ok(isNaN(handler.point.geometry.x) && isNaN(handler.point.geometry.y),
-             '[touchmove] feature not modified');
+        t.eq(handler.point, null, '[touchmove] feature not modified');
         ret = handler.touchend({});
         t.ok(ret, '[touchend] event propagates');
         t.geom_eq(log.geometry, new OpenLayers.Geometry.Point(-149, 75),
@@ -595,17 +573,17 @@
         ret = handler.touchstart({xy: new OpenLayers.Pixel(0, 0)});
         t.ok(ret, '[touchstart] event propagates');
         t.eq(log, null, '[touchstart] no finalization');
-        t.ok(isNaN(handler.point.geometry.x) && isNaN(handler.point.geometry.y),
+        t.eq(handler.point, null, null,
              '[touchstart] feature not modified');
         ret = handler.touchmove({xy: new OpenLayers.Pixel(9, 0)});
         t.ok(ret, '[touchmove] event propagates');
         t.eq(log, null, '[touchmove] no finalization');
-        t.ok(isNaN(handler.point.geometry.x) && isNaN(handler.point.geometry.y),
+        t.eq(handler.point, null,
              '[touchmove] feature not modified');
         ret = handler.touchend({});
         t.ok(ret, '[touchend] event propagates');
         t.eq(log, null, '[touchend] no finalization');
-        t.ok(isNaN(handler.point.geometry.x) && isNaN(handler.point.geometry.y),
+        t.eq(handler.point, null,
              '[touchend] feature not modified');
 
         // tear down

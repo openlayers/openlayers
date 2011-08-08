@@ -14,7 +14,6 @@ function init() {
         controls: [
             new OpenLayers.Control.TouchNavigation({
                 dragPanOptions: {
-                    interval: 100,
                     enableKinetic: true
                 }
             }),

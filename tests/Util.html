@@ -41,6 +41,42 @@
              "isElement reports that object returned by getElement is an Element");
     }
     
+    function test_isArray(t) {
+        t.plan(5);
+        
+        var a;
+        
+        a = null;
+        t.eq(OpenLayers.Util.isArray(a), false, 
+             "isArray reports 'null' isn't an Array");
+        a = "Array";   
+        t.eq(OpenLayers.Util.isArray(a), false, 
+             "isArray reports \"Array\" isn't an Array");
+        a = {};
+        t.eq(OpenLayers.Util.isArray(a), false, 
+             "isArray reports {} isn't an Array");
+        a = [];
+        t.eq(OpenLayers.Util.isArray(a), true, 
+             "isArray reports [] is an Array");
+        a = new Array();
+        t.eq(OpenLayers.Util.isArray(a), true, 
+             "isArray reports new Array() is an Array");
+    }
+    
+    function test_iframe_isArray(t) {
+        t.plan(3);
+        // create an array in an iframe
+        var iframe = document.createElement("iframe");
+        document.body.appendChild(iframe);
+        frames[frames.length-1].document.write(
+            "<script>parent.testArray = [];<\/script>"
+        );
+        
+        t.ok(!!testArray, "testArray created");
+        t.ok(!(testArray instanceof Array), "instanceof check doesn't work");
+        t.eq(OpenLayers.Util.isArray(testArray), true, "isArray works");
+    }
+    
     function test_$(t) {
         t.plan(1);
         t.ok($ === custom$, "OpenLayers doesn't clobber existing definition of $.");
@@ -916,7 +952,16 @@
     }
 
     function test_Util_getParameters(t) {
-        t.plan(17);
+        t.plan(20);
+
+        t.eq(OpenLayers.Util.getParameters(''), {},
+                "getParameters works when the given argument is empty string");
+
+        t.eq(OpenLayers.Util.getParameters(), {},
+                "getParameters works with optional argument");
+
+        t.eq(OpenLayers.Util.getParameters(null), {},
+                "getParameters works with optional argument");
 
         t.eq(OpenLayers.Util.getParameters('http://www.example.com'), {},
              "getParameters works when args = ''");
@@ -1110,10 +1155,12 @@
             "toFloat rounds large floats correctly #2");
     }
     function test_getFormattedLonLat(t) {
-        t.plan(1);
+        t.plan(3);
         var z = 2 + (4/60) - 0.000002 ;
         t.eq(OpenLayers.Util.getFormattedLonLat(z,"lon"), "02°04'00\"E",
             "LonLat does not show 60 seconds.");
+        t.eq(OpenLayers.Util.getFormattedLonLat(-181, "lon"), "179°00'00\"E", "crossing dateline from the west results in correct east coordinate");
+        t.eq(OpenLayers.Util.getFormattedLonLat(181, "lon"), "179°00'00\"W", "crossing dateline from the east results in correct west coordinate");
     }
   </script>
 </head>

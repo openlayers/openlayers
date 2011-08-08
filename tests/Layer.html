@@ -82,9 +82,9 @@
 
     function test_Layer_addOptions (t) {
         
-        t.plan( 19 );
+        t.plan( 20 );
 
-        var map = new OpenLayers.Map("map");
+        var map = new OpenLayers.Map("map", {allOverlays: true});
         var options = { chicken: 151, foo: "bar" };
         var layer = new OpenLayers.Layer('Test Layer', options);
         map.addLayer(layer);
@@ -156,6 +156,17 @@
         layer.addOptions({projection: "EPSG:900913"});
         t.ok(layer.projection instanceof OpenLayers.Projection,
              "addOptions creates a Projection object when given a projection string");
+        
+        log = null;
+        // adding a 2nd layer to see if it gets reinitialized properly
+        var layer2 = new OpenLayers.Layer(null, {
+            moveTo: function(bounds) {
+                log = bounds;
+            }
+        });
+        map.addLayer(layer2);
+        layer.addOptions({maxResolution: 0.00034332275390625}, true);
+        t.eq(log.toBBOX(), map.getExtent().toBBOX(), "when reinitialize is set to true, changing base layer's resolution property reinitializes all layers.");
 
         map.removeLayer(layer);
         log = 0;
@@ -556,7 +567,7 @@
 
     function test_Layer_getZoomForResolution(t) {
 
-        t.plan(13);
+        t.plan(12);
 
         var layer = new OpenLayers.Layer('Test Layer');
         layer.map = {};
@@ -584,10 +595,6 @@
              "(fractionalZoom) doesn't return zoom below zero");
         t.eq(layer.getZoomForResolution(1).toPrecision(6), (layer.resolutions.length - 1).toPrecision(6),
              "(fractionalZoom) doesn't return zoom above highest index");
-        
-        layer.restrictedMinZoom = 1;
-        t.eq(layer.getZoomForResolution(200), 1, "zoom all the way out, but we have a restrictedMinZoom of 1");
-
     }
     
     function test_Layer_redraw(t) {
@@ -779,14 +786,15 @@
     }
     
     function test_setOpacity(t) {
-        t.plan(5);
+        t.plan(8);
 
         var map, layer, log;
         
         map = new OpenLayers.Map("map");
-        layer = new OpenLayers.Layer("");
+        layer = new OpenLayers.Layer("", {opacity: 0.56});
         map.addLayer(layer);
 
+        t.eq(layer.div.style.opacity, "0.56", "initial opacity correctly applied as layer.div style");
         log = [];
         map.events.register('changelayer', t, function(event) {
             log.push({layer: event.layer, property: event.property});
@@ -794,6 +802,7 @@
         layer.setOpacity(0.42);
         t.eq(layer.opacity, 0.42,
              "setOpacity() set layer.opacity to correct value");
+        t.eq(layer.div.style.opacity, "0.42", "opacity correctly applied as layer.div style");
         t.eq(log.length, 1,
              "setOpacity() triggers changelayer once");
         t.ok(log[0].layer == layer,
@@ -806,6 +815,12 @@
         layer.setOpacity(0.42);
         t.eq(log.length, 0,
              "setOpacity() does not trigger changelayer if the opacity value is the same");
+
+        // 0 as initial opacity
+        layer.destroy();
+        layer = new OpenLayers.Layer("", {opacity: 0});        
+        map.addLayer(layer);
+        t.eq(layer.div.style.opacity, "0", "initial opacity correctly applied as layer.div style");
     }
 
 

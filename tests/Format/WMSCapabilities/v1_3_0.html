@@ -3,9 +3,18 @@
     <script src="../../OLLoader.js"></script>
     <script type="text/javascript">
 
+    function test_read_exception(t) {
+        t.plan(1);
+        var xml = document.getElementById("exceptionsample").firstChild.nodeValue;
+        var doc = new OpenLayers.Format.XML().read(xml);
+        var format = new OpenLayers.Format.WMSCapabilities();
+        var obj = format.read(doc);
+        t.ok(!!obj.error, "Error reported correctly");
+    }
+
     function test_layers(t) {
 
-        t.plan(22);
+        t.plan(24);
 
         var xml = document.getElementById("ogcsample").firstChild.nodeValue;
         var doc = new OpenLayers.Format.XML().read(xml);
@@ -37,6 +46,11 @@
              [189000, 834000, 285000, 962000],
              "Correct bbox from BoundingBox");
         t.eq(bbox.res, {x: 1, y: 1}, "Correct resolution");
+        bbox = layers["ROADS_RIVERS"].bbox["CRS:84"];
+        t.eq(bbox.bbox,
+             [-71.63, 41.75, -70.78, 42.90],
+             "Correct bbox from BoundingBox (override)");
+        t.eq(bbox.res, {x: 0.01, y: 0.01}, "Correct resolution (override)");
 
         bbox = layers["ROADS_1M"].bbox["EPSG:26986"];
         t.eq(bbox.bbox,
@@ -280,6 +294,26 @@
 </head>
 <body>
 
+<div id="exceptionsample"><!--
+<?xml version='1.0' encoding="UTF-8"?> 
+<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.opengis.net/ogc
+    http://schemas.opengis.net/wms/1.3.0/exceptions_1_3_0.xsd">
+    <ServiceException> Plain text message about an error. </ServiceException>
+    <ServiceException code="InvalidUpdateSequence"> Another error message, this one with a service
+        exception code supplied. </ServiceException>
+    <ServiceException>
+        <![CDATA[ Error in module <foo.c>, line 42
+A message that includes angle brackets in text must be enclosed in a Character Data Section as in this example. All XML-like markup is ignored except for this sequence of three closing characters:
+]]>
+    </ServiceException>
+    <ServiceException>
+        <![CDATA[ <Module>foo.c</Module> <Error>An error occurred</Error> <Explanation>Similarly, actual XML can be enclosed in a CDATA section. A generic parser will ignore that XML, but application-specific software may choose to process it.</Explanation> ]]>
+    </ServiceException>
+</ServiceExceptionReport>
+--></div>
+
 <!--
 OGC example below taken from
 http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xml
@@ -403,6 +437,8 @@ Changes:
       <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple"
        xlink:href="http://gcmd.gsfc.nasa.gov/difguide/whatisadif.html" />
     </AuthorityURL>
+    <BoundingBox CRS="CRS:84"
+     minx="-1" miny="-1" maxx="1" maxy="1" resx="0.0" resy="0.0"/>
     <Layer>
 
       <Name>ROADS_RIVERS</Name>

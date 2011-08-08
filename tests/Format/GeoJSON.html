@@ -4,7 +4,7 @@
     <script type="text/javascript">
 
     var poly_content = '{"type": "FeatureCollection", "features": [{"geometry": {"type": "Polygon", "coordinates": [[[-131.484375, -5.9765625], [-112.5, -58.0078125], [-32.34375, -50.2734375], [-114.609375, 52.3828125], [-167.34375, -35.5078125], [-146.953125, -57.3046875], [-139.921875, -34.1015625], [-131.484375, -5.9765625]]]}, "type": "Feature", "id": 562, "properties": {"strokeColor": "red", "title": "Feature 2", "author": "Your Name Here"}}]}'; 
-    var null_geom_feature = '{"type":"Feature","id":573,"properties":{"strokeColor":"blue","title":"Feature 5","author":"Your Name Here"},"geometry":null}';
+    var null_geom_feature = '{"type":"Feature","properties":{"strokeColor":"blue","title":"Feature 5","author":"Your Name Here"},"geometry":null,"id":573}';
     var point_feature = '{"geometry": {"type": "Point", "coordinates": [94.21875, 72.94921875]}, "type": "Feature", "id": 573, "properties": {"strokeColor": "blue", "title": "Feature 5", "author": "Your Name Here"}}';
     var line_feature = '{"type": "FeatureCollection", "features": [{"geometry": {"type": "LineString", "coordinates": [[-27.0703125, 59.4140625], [-77.6953125, 20.7421875], [30.5859375, -36.2109375], [67.1484375, 34.8046875]]}, "type": "Feature", "id": 559, "properties": {"strokeColor": "red", "title": "Feature 1", "author": "Your Name Here"}}]}';
     var multiple_features = '{"type": "FeatureCollection", "features": [{"geometry": {"type": "Point", "coordinates": [-91.0546875, 43.9453125]}, "type": "Feature", "id": 577, "properties": {"strokeColor": "red", "title": "Feature 2", "image": "foo.gif", "author": "Your Name Here"}}, {"geometry": {"type": "LineString", "coordinates": [[91.40625, -1.40625], [116.015625, -42.890625], [153.28125, -28.125], [108.984375, 11.25], [75.234375, 8.4375], [76.640625, 9.140625], [67.5, -36.5625], [67.5, -35.859375]]}, "type": "Feature", "id": 576, "properties": {"strokeColor": "red", "title": "Feature 1", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [139.5703125, 57.48046875]}, "type": "Feature", "id": 575, "properties": {"strokeColor": "blue", "title": "Feature 7", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [107.2265625, 82.44140625]}, "type": "Feature", "id": 574, "properties": {"strokeColor": "blue", "title": "Feature 6", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [94.21875, 72.94921875]}, "type": "Feature", "id": 573, "properties": {"strokeColor": "blue", "title": "Feature 5", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [116.3671875, 61.69921875]}, "type": "Feature", "id": 572, "properties": {"strokeColor": "blue", "title": "Feature 4", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [145.8984375, 73.65234375]}, "type": "Feature", "id": 571, "properties": {"strokeColor": "blue", "title": "Feature 3", "author": "Your Name Here"}}, {"geometry": {"type": "Polygon", "coordinates": [[[32.34375, 52.20703125], [87.1875, 70.13671875], [122.6953125, 37.44140625], [75.234375, 42.36328125], [40.078125, 42.36328125], [28.828125, 48.33984375], [18.6328125, 56.77734375], [23.203125, 65.56640625], [32.34375, 52.20703125]]]}, "type": "Feature", "id": 570, "properties": {"strokeColor": "blue", "title": "Feature 2", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [62.578125, -53.4375]}, "type": "Feature", "id": 569, "properties": {"strokeColor": "red", "title": "Feature 3", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [121.640625, 16.875]}, "type": "Feature", "id": 568, "properties": {"strokeColor": "red", "title": "Feature 6", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [135.703125, 8.4375]}, "type": "Feature", "id": 567, "properties": {"strokeColor": "red", "title": "Feature 4", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [137.109375, 48.515625]}, "type": "Feature", "id": 566, "properties": {"strokeColor": "red", "title": "Feature 274", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [0, 5]}, "type": "Feature", "id": 565, "properties": {}}, {"geometry": {"type": "Point", "coordinates": [0, 5]}, "type": "Feature", "id": 564, "properties": {}}, {"geometry": {"type": "Point", "coordinates": [0, 5]}, "type": "Feature", "id": 563, "properties": {}}, {"geometry": {"type": "Polygon", "coordinates": [[[-131.484375, -5.9765625], [-112.5, -58.0078125], [-32.34375, -50.2734375], [-114.609375, 52.3828125], [-167.34375, -35.5078125], [-146.953125, -57.3046875], [-139.921875, -34.1015625], [-131.484375, -5.9765625]]]}, "type": "Feature", "id": 562, "properties": {"strokeColor": "red", "title": "Feature 2", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [48.8671875, -15.8203125]}, "type": "Feature", "id": 560, "properties": {"strokeColor": "red", "title": "Feature 2", "author": "Your Name Here"}}, {"geometry": {"type": "LineString", "coordinates": [[-27.0703125, 59.4140625], [-77.6953125, 20.7421875], [30.5859375, -36.2109375], [67.1484375, 34.8046875]]}, "type": "Feature", "id": 559, "properties": {"strokeColor": "red", "title": "Feature 1", "author": "Your Name Here"}}, {"geometry": {"type": "Point", "coordinates": [12.65625, 16.5234375]}, "type": "Feature", "id": 558, "properties": {"styleUrl": "#allstyle", "title": "Feature 1", "strokeColor": "red", "author": "Your Name Here"}}]}';
@@ -251,7 +251,7 @@
         t.plan(2);
         var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(1,2));
         feature.fid = 0;
-        var output = '{"type":"Feature","id":0,"properties":{},"geometry":{"type":"Point","coordinates":[1,2]},"crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:OGC:1.3:CRS84"}}}';
+        var output = '{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[1,2]},"id":0,"crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:OGC:1.3:CRS84"}}}';
         var layer = new OpenLayers.Layer.Vector();
         layer.projection = "EPSG:4326";
         feature.layer = layer;
@@ -259,7 +259,7 @@
         var test_out = parser.write(feature);
         t.eq(test_out, output, "Output is equal for vector with layer in EPSG:4326 ");
         feature.layer.projection = "EPSG:2805";
-        output = '{"type":"Feature","id":0,"properties":{},"geometry":{"type":"Point","coordinates":[1,2]},"crs":{"type":"name","properties":{"name":"EPSG:2805"}}}';
+        output = '{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[1,2]},"id":0,"crs":{"type":"name","properties":{"name":"EPSG:2805"}}}';
         test_out = parser.write(feature);
         t.eq(test_out, output, "Output is equal for vector with point");
     }    
@@ -292,13 +292,13 @@
         };
         data = parser.read(line_object);
         out = parser.write(data);
-        serialized = '{"type":"FeatureCollection","features":[{"type":"Feature","id":559,"properties":{"strokeColor":"red","title":"Feature 1","author":"Your Name Here"},"geometry":{"type":"LineString","coordinates":[[-27.0703125,59.4140625],[-77.6953125,20.7421875],[30.5859375,-36.2109375],[67.1484375,34.8046875]]}}]}';
+        serialized = '{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"strokeColor":"red","title":"Feature 1","author":"Your Name Here"},"geometry":{"type":"LineString","coordinates":[[-27.0703125,59.4140625],[-77.6953125,20.7421875],[30.5859375,-36.2109375],[67.1484375,34.8046875]]},"id":559}]}';
         t.eq(out, serialized, "input and output on line collections are the same");
         
         var serialize_tests = [
             [
                 new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(1,2)),
-                '{"type":"Feature","id":0,"properties":{},"geometry":{"type":"Point","coordinates":[1,2]}}'
+                '{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[1,2]},"id":0}'
             ],
             [
                 new OpenLayers.Geometry.Point(1,2), 
@@ -350,13 +350,40 @@
         serialize_tests.push([multiline, '{"type":"MultiLineString","coordinates":[[[1,2],[3,4]],[[1,2],[3,4]]]}']);
         multipolygon = new OpenLayers.Geometry.MultiPolygon([serialize_tests[4][0],  serialize_tests[4][0]]);
         serialize_tests.push([multipolygon, '{"type":"MultiPolygon","coordinates":[[[[1,2],[3,4],[5,6],[1,2]]],[[[1,2],[3,4],[5,6],[1,2]]]]}']);
-        serialize_tests.push([ [ serialize_tests[0][0] ], '{"type":"FeatureCollection","features":[{"type":"Feature","id":0,"properties":{},"geometry":{"type":"Point","coordinates":[1,2]}}]}' ]);
+        serialize_tests.push([ [ serialize_tests[0][0] ], '{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[1,2]},"id":0}]}' ]);
         for (var i = 0; i < serialize_tests.length; i++) {
             var input = serialize_tests[i][0];
             var output = serialize_tests[i][1];
             test_out = parser.write(input);
             t.eq(test_out, output, "Serializing " + input.toString() + " saved correctly.");
         }
+    }
+
+    function test_write_no_fid(t) {
+        t.plan(4);
+
+        var geojson;
+        var feature = new OpenLayers.Feature.Vector();
+
+        feature.fid = null;
+        geojson = parser.write(feature);
+        t.eq(geojson, '{"type":"Feature","properties":{},"geometry":null}',
+             "no id set in the GeoJSON string when fid is null");
+
+        feature.fid = undefined;
+        geojson = parser.write(feature);
+        t.eq(geojson, '{"type":"Feature","properties":{},"geometry":null}',
+             "no id set in the GeoJSON string when fid is undefined");
+
+        feature.fid = 0;
+        geojson = parser.write(feature);
+        t.eq(geojson, '{"type":"Feature","properties":{},"geometry":null,"id":0}',
+             "id set in the GeoJSON string when fid is 0");
+
+        delete feature.fid;
+        geojson = parser.write(feature);
+        t.eq(geojson, '{"type":"Feature","properties":{},"geometry":null}',
+             "id not set in the GeoJSON string when fid is delected");
     }
 
     function test_Format_GeoJSON_read_object(t) {

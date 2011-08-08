@@ -280,7 +280,7 @@
 
     // Test fix for Ticket #3142
     function test_layerLoadedAfterBeingAdded(t) {
-        t.plan(1);
+        t.plan(2);
 
         var dummy = new OpenLayers.Layer(null, {isBaseLayer: true});
 
@@ -300,14 +300,23 @@
             projection: 'EPSG:900913'
         });
 
+        // Make sure that layers that are not in range don't request data
+        var layerOutOfRange = new OpenLayers.Layer.Vector(null, {
+            maxResolution: 1,
+            protocol: new OpenLayers.Protocol(),
+            strategies: [new OpenLayers.Strategy.BBOX()]
+        });
+
         var map = new OpenLayers.Map("map");
         map.addLayer(dummy);
         map.addLayer(layerReproject);
         map.setCenter(new OpenLayers.LonLat(0, 0));
         map.addLayer(layer);
-
+        map.addLayer(layerOutOfRange);
         // test that the strategy bounds were set
         t.ok(map.getExtent().equals(strategy.bounds), "[set center] bounds set to map extent");
+        t.eq(layerOutOfRange.strategies[0].bounds, null, "Data not requested if layer is out of range");
+        map.destroy();
     }
 
   </script>

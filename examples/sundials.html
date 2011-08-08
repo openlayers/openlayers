@@ -1,11 +1,16 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
   <head>
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-    <link rel="stylesheet" href="style.css" type="text/css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
 
     <style type="text/css">
+        html, body {
+            height: 100%;
+        }
         #map {
             width: 100%;
             height: 80%;
@@ -64,7 +69,7 @@
             // Javascript.
             var content = "<h2>"+feature.attributes.name + "</h2>" + feature.attributes.description;
             if (content.search("<script") != -1) {
-                content = "Content contained Javascript! Escaped content below.<br />" + content.replace(/</g, "&lt;");
+                content = "Content contained Javascript! Escaped content below.<br>" + content.replace(/</g, "&lt;");
             }
             popup = new OpenLayers.Popup.FramedCloud("chicken", 
                                      feature.geometry.getBounds().getCenterLonLat(),

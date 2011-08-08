@@ -2,10 +2,19 @@
 <head> 
     <script src="../../OLLoader.js"></script>
     <script type="text/javascript">
+
+    function test_read_exception(t) {
+        t.plan(1);
+        var xml = document.getElementById("exceptionsample").firstChild.nodeValue;
+        var doc = new OpenLayers.Format.XML().read(xml);
+        var format = new OpenLayers.Format.WMSCapabilities();
+        var obj = format.read(doc);
+        t.ok(!!obj.error, "Error reported correctly");
+    }
     
     function test_read(t) {
         
-        t.plan(17);
+        t.plan(23);
 
         var xml = document.getElementById("gssample").firstChild.nodeValue;
         var doc = new OpenLayers.Format.XML().read(xml);
@@ -31,6 +40,40 @@
             getmap.post,
             undefined,
             "getmap.post not available"
+        );
+
+        var describelayer = capability.request.describelayer;
+        t.eq(
+            describelayer.href,
+            "http://publicus.opengeo.org:80/geoserver/wms?SERVICE=WMS&",
+            "describelayer href parsed"
+        );
+        t.eq(
+            describelayer.get.href,
+            describelayer.href,
+            "describelayer.get.href parsed"
+        );
+        t.eq(
+            describelayer.post,
+            undefined,
+            "describelayer.post not available"
+        );
+        
+        var getfeatureinfo = capability.request.getfeatureinfo;
+        t.eq(
+            getfeatureinfo.href,
+            "http://publicus.opengeo.org:80/geoserver/wms?SERVICE=WMS&",
+            "getfeatureinfo href parsed"
+        );
+        t.eq(
+            getfeatureinfo.get.href,
+            getfeatureinfo.href,
+            "getmap.get.href parsed"
+        );
+        t.eq(
+            getfeatureinfo.post.href,
+            "http://publicus.opengeo.org:80/geoserver/wms?SERVICE=WMS&",
+            "getfeatureinfo.post set correctly"
         );
         
         t.ok(capability.layers, "layers parsed");
@@ -68,7 +111,7 @@
 
     function test_layers(t) {
 
-        t.plan(22);
+        t.plan(24);
 
         var xml = document.getElementById("ogcsample").firstChild.nodeValue;
         var doc = new OpenLayers.Format.XML().read(xml);
@@ -100,7 +143,11 @@
              [189000, 834000, 285000, 962000],
              "Correct bbox from BoundingBox");
         t.eq(bbox.res, {x: 1, y: 1}, "Correct resolution");
-
+        bbox = layers["ROADS_RIVERS"].bbox["EPSG:4326"];
+        t.eq(bbox.bbox,
+             [-71.63, 41.75, -70.78, 42.90],
+             "Correct bbox from BoundingBox (override)");
+        t.eq(bbox.res, {x: 0.01, y: 0.01}, "Correct resolution (override)");
         bbox = layers["ROADS_1M"].bbox["EPSG:26986"];
         t.eq(bbox.bbox,
              [189000, 834000, 285000, 962000],
@@ -492,7 +539,8 @@ Changes:
       <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple"
        xlink:href="http://gcmd.gsfc.nasa.gov/difguide/whatisadif.html" />
     </AuthorityURL>
-
+    <BoundingBox SRS="EPSG:4326"
+     minx="-1" miny="-1" maxx="1" maxy="1" resx="0.0" resy="0.0"/>
 
     <Layer>
       <Name>ROADS_RIVERS</Name> 
@@ -643,6 +691,12 @@ Changes:
 
 </Capability>
 </WMT_MS_Capabilities>
+--></div>
+<div id="exceptionsample"><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE ServiceExceptionReport SYSTEM "http://schemas.opengis.net/wms/1.1.1/WMS_exception_1_1_1.dtd">
+<ServiceExceptionReport version="1.1.1"><ServiceException> Plain text message about an error. </ServiceException>
+</ServiceExceptionReport>
 --></div>
 <!--
 GeoServer example below taken from

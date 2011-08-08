@@ -1,10 +1,12 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
   <head>
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>OpenLayers GeoRSS Example</title>
-    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-    <link rel="stylesheet" href="style.css" type="text/css" />
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var map, layer;
@@ -45,11 +47,11 @@
         <p>This demo uses the OpenLayers GeoRSS parser, which supports GeoRSS Simple and W3C GeoRSS. Only points are
         currently supported.  The OpenLayers GeoRSS parser will automatically connect an information bubble to the map
         markers, similar to Google maps.  In addition, the parser can use custom PNG icons for markers.  A sample GeoRSS
-        file (georss.xml) is included.
+        file (georss.xml) is included.</p>
 
         <form onsubmit="return false;">
                GeoRSS URL: <input type="text" id="url" size="50" value="georss.xml" />
-               <input type="submit" onclick="addUrl(); return false;" value="Load Feed" onsubmit="addUrl(); return false;" />
+               <input type="submit" onclick="addUrl(); return false;" value="Load Feed" onsubmit="addUrl(); return false;">
         </form>
 
         <p>The above input box allows the input of a URL to a GeoRSS feed. This feed can be local to the HTML page &mdash;

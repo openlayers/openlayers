@@ -1,11 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
     <head>
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
         <title>OpenLayers Debug Example</title>
-        <link rel="stylesheet" href="style.css" type="text/css" />        
+        <link rel="stylesheet" href="style.css" type="text/css">        
         <script src="../lib/Firebug/firebug.js"></script>
         <script src="../lib/OpenLayers.js"></script>
         <script type="text/javascript">
@@ -39,16 +39,16 @@
 
         <div id="docs">
             <p>To run OpenLayers in debug mode, include the following script
-            tag <b>before</b> the tag that loads OpenLayers:
+            tag <b>before</b> the tag that loads OpenLayers:</p>
 
             <pre>    &lt;script src="../lib/Firebug/firebug.js"&gt;&lt;/script&gt;</pre>
 
-            The path to firebug.js must be relative to your
+            <p>The path to firebug.js must be relative to your
             html file.  With this script included calls to OpenLayers.Console
             will be displayed in the Firebug console.  For browsers without
             the Firebug extension, the script creates a Firebug Lite console.
             This console can be opened by hitting <b>F12</b> or <b>Ctrl+Shift+L</b>
-            (<b>?+Shift+L</b> on a Mac).  If you want the Firebug Lite console
+            (<b>Command+Shift+L</b> on a Mac).  If you want the Firebug Lite console
             to be open when the page loads, add <b>debug="true"</b> to the opening
             html tag of your page.  Open the console and click on the links below
             to see console calls.</p>

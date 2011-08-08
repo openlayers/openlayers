@@ -51,7 +51,6 @@ var init = function (onSelectFeatureFunction) {
             new OpenLayers.Control.Attribution(),
             new OpenLayers.Control.TouchNavigation({
                 dragPanOptions: {
-                    interval: 100,
                     enableKinetic: true
                 }
             }),

@@ -736,8 +736,30 @@
         map.destroy();
         
     }
-
-
+    
+    function test_setFeatureState(t) {
+        t.plan(4);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector("vector", {isBaseLayer: true});
+        map.addLayer(layer);
+        var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(1,2));
+        layer.addFeatures([feature]);
+        var control = new OpenLayers.Control.ModifyFeature(layer, {standalone: true});
+        map.addControl(control);
+        
+        control.selectFeature(feature);
+        var originalGeometry = feature.geometry;
+        
+        t.ok(control._originalGeometry, "original geometry stored for later use in setFeatureState");
+        
+        feature.geometry = new OpenLayers.Geometry.Point(2,3);
+        control.modified = true;
+        control.setFeatureState();
+        
+        t.eq(feature.state, OpenLayers.State.UPDATE, "feature state set to UPDATE");
+        t.geom_eq(feature.modified.geometry, originalGeometry, "original geometry stored on the modified property");
+        t.eq(control._originalGeometry, undefined, "original geometry deleted once it is set on the modified property");
+    }
 
     </script>
 </head>

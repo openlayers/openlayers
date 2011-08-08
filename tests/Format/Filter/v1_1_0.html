@@ -167,6 +167,31 @@
         t.xml_eq(node, out, "bbox correctly written");
     }
     
+    function test_BBOX_noGeometryName(t) {
+        t.plan(1);
+        var filter = new OpenLayers.Filter.Spatial({
+            type: OpenLayers.Filter.Spatial.BBOX,
+            value: new OpenLayers.Bounds(-180, -90, 180, 90),
+            projection: "EPSG:4326"
+        });
+        
+        var out =
+            '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+                '<ogc:BBOX>' +
+                    '<gml:Envelope xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">' +
+                        '<gml:lowerCorner>-180 -90</gml:lowerCorner>' +
+                        '<gml:upperCorner>180 90</gml:upperCorner>' +
+                    '</gml:Envelope>' +
+                '</ogc:BBOX>' +
+            '</ogc:Filter>';
+        
+        var parser = new OpenLayers.Format.Filter.v1_1_0();
+        var node = parser.write(filter);
+        
+        t.xml_eq(node, out, "bbox correctly written");
+    }
+
+
     function test_Intersects(t) {
         
         t.plan(4);

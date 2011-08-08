@@ -177,6 +177,21 @@
         t.eq(attributes["LAND_KM"], "143986.61", "read LAND_KM");
     }
 
+    function test_read_autoconfig(t) {
+        t.plan(5);
+        var doc = readXML("v2/topp-states.xml");
+        var format = new OpenLayers.Format.GML.v2();
+        var features = format.read(doc.documentElement);
+        
+        t.eq(features.length, 3, "read 3 features");
+        var feature = features[0];
+        t.eq(feature.fid, "states.1", "read fid");
+        t.eq(feature.geometry.CLASS_NAME, "OpenLayers.Geometry.MultiPolygon",
+             "read multipolygon geometry");
+        t.eq(format.featureType, "states", "featureType correctly auto-configured");
+        t.eq(format.featureNS, "http://www.openplans.org/topp", "featureNS correctly auto-configured");
+    }
+    
     function test_boundedBy(t) {
         t.plan(5);
         
@@ -248,6 +263,7 @@
         t.eq(bounds.right, 337568, "bounds right correct");
         t.eq(bounds.top, 6885985, "bounds top correct");
     }
+
    </script>
 </head>
 <body>

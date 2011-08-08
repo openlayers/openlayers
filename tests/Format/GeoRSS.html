@@ -80,7 +80,15 @@
         var parser = new OpenLayers.Format.GeoRSS();
         var items = parser.read('<rss version="2.0" xmlns:georss="http://www.georss.org/georss"><item><description>  <![CDATA[foo]]></description></item></rss>');
         t.eq(items.length, 1, "item created");
-        t.eq(items[0].attributes.description, "  foo", "description value is ok");
+
+        // when parsing a node composed of both spaces and a cdata section
+        // (e.g. <description>  <![DATA[foo]]></description> IE8 ignores
+        // the leading white spaces, and reports that the node does not
+        // include a text node. For that reason, we need to trim the
+        // string value resulting from the parsing.
+
+        var description = OpenLayers.String.trim(items[0].attributes.description);
+        t.eq(description, "foo", "description value is ok");
     }
              
     var shell_start = '<feed xmlns="http://www.w3.org/2005/Atom" \n              xmlns:georss="http://www.georss.org/georss">\n              <title>scribble</title>\n              <id>http://featureserver.org/featureserver.cgi/scribble?format=atom</id>\n              <author><name>FeatureServer</name></author>\n';             

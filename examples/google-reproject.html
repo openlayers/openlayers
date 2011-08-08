@@ -1,10 +1,12 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
   <head>
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>OpenLayers Google with Overlay Example</title>
-    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
-    <link rel="stylesheet" href="style.css" type="text/css" />
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
     <!-- this gmaps key generated for http://openlayers.org/dev/ -->
     <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
     <script src="../lib/OpenLayers.js"></script>
@@ -50,12 +52,12 @@
     <div id="map" class="smallmap"></div>
 
     <div id="docs">
-        An overlay in a Geographic projection can be stretched to somewhat
+        <p>An overlay in a Geographic projection can be stretched to somewhat
         line up with Google tiles (in a Mercator projection).  Results get
         worse farther from the equator.  Use the "reproject" option on a
         layer to get this behavior.  Use the sphericalMercator option on
         a Google layer to get proper overlays (with other layers in
-        Spherical Mercator).
+        Spherical Mercator).</p>
     </div>
   </body>
 </html>

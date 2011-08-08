@@ -1,14 +1,16 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
   <head>
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>OpenLayers WMSDescribeLayer Parser Example</title>
-    <link rel="stylesheet" href="style.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css">
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         function parseData(req) {
-          format =  new OpenLayers.Format.WMSDescribeLayer();
-          html = "<br />"
+          format = new OpenLayers.Format.WMSDescribeLayer();
+          html = "<br>"
           resp = format.read(req.responseText);
           for(var i = 0; i < resp.length; i++) {
             html += "Layer: typeName: "+ resp[i].typeName+",";
@@ -20,7 +22,10 @@
           document.getElementById('output').innerHTML = html;
         }
         function load() {
-            OpenLayers.loadURL("xml/wmsdescribelayer.xml", "", null, parseData);
+            OpenLayers.Request.GET({
+                url: "xml/wmsdescribelayer.xml",
+                success: parseData
+            });
         }
     </script>
   </head>
@@ -38,8 +43,9 @@
       <div id="output"></div>
 
       <div id="docs">
-          This script reads data from a file and parses out the coordinates, appending them to a HTML string with markup tags.
-          This markup is dumped to an element in the page.
+          <p>This script reads data from a file and parses out the coordinates,
+          appending them to a HTML string with markup tags. This markup is
+          dumped to an element in the page.</p>
     </div>
   </body>
 </html>

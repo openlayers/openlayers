@@ -104,6 +104,83 @@
 
         OpenLayers.Request.POST = _POST;
     }
+    
+    function test_parseResponse_poorconfig(t) {
+        t.plan(2);
+
+        var protocol = new OpenLayers.Protocol.WFS({
+            url: "http://some.url.org",
+            featurePrefix: "topp",
+            featureType: "tasmania_roads",
+            geometryName: null
+        });
+
+        protocol.parseResponse({responseText: document.getElementById("query_response").firstChild.nodeValue});
+        t.eq(protocol.geometryName, "geom", "geometryName configured correctly");
+        t.eq(protocol.featureNS, "http://www.openplans.org/topp", "featureNS configured correctly");
+    }
+
+    function test_exception(t) {
+        t.plan(8);
+        var url = "http://some.url.org";
+        var protocol = new OpenLayers.Protocol.WFS({
+            url: url,
+            version: "1.1.0",
+            featureNS: "http://namespace.org",
+            featureType: "type"
+        });
+        // mock up a response
+        var response = {
+            priv: {
+                status: 200,
+                responseText: '<?xml version="1.0" encoding="UTF-8"?><ows:ExceptionReport language="en" version="1.0.0" xsi:schemaLocation="http://www.opengis.net/ows http://schemas.opengis.net/ows/1.0.0/owsExceptionReport.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ows="http://www.opengis.net/ows"><ows:Exception locator="foo" exceptionCode="InvalidParameterValue"><ows:ExceptionText>Update error: Error occurred updating features</ows:ExceptionText><ows:ExceptionText>Second exception line</ows:ExceptionText></ows:Exception></ows:ExceptionReport>'
+            }
+        };
+        var log, entry, expected;
+        
+        // test GetFeature
+        log = [];
+        protocol.handleRead(OpenLayers.Util.extend({}, response), {
+            callback: function(resp) {
+                log.push(resp);
+            }
+        });
+        expected = {
+            exceptionReport: {
+                version: "1.0.0",
+                language: "en",
+                exceptions: [{
+                    code: "InvalidParameterValue",
+                    locator: "foo",
+                    texts: [
+                        "Update error: Error occurred updating features",
+                        "Second exception line"
+                    ]
+                }]
+            },
+            success: false
+        };
+
+        t.eq(log.length, 1, "GetFeature handled");
+        entry = log[0];
+        t.eq(entry.code, OpenLayers.Protocol.Response.FAILURE, "GetFeature failure reported");
+        t.ok(!!entry.error, "GetFeature got error");
+        t.eq(entry.error, expected, "GetFeature error matches expected");
+
+        // test a commit
+        log = [];
+        protocol.handleCommit(response, {
+            callback: function(resp) {
+                log.push(resp);
+            }
+        });
+        t.eq(log.length, 1, "commit handled");
+        entry = log[0];
+        t.eq(entry.code, OpenLayers.Protocol.Response.FAILURE, "commit failure reported");
+        t.ok(!!entry.error, "commit got error");
+        t.eq(entry.error, expected, "GetFeature error matches expected");
+
+    }
 
     function test_commit(t){
         t.plan(5);
@@ -223,7 +300,7 @@
     }
 
     function test_fromWMSLayer(t) {
-        t.plan(8);
+        t.plan(9);
         var map = new OpenLayers.Map("map", {
             projection: "EPSG:1234"
         });
@@ -237,6 +314,7 @@
         t.eq(protocol.featureType, "states", "typeName correctly extracted");
         t.eq(protocol.srsName, "EPSG:1234", "srsName set correctly");
         t.eq(protocol.version, "1.1.0", "version set correctly");
+        t.eq(protocol.format.geometryName, null, "format's geometryName set to null");
 
         layer.params["LAYERS"] = ["topp:street_centerline", "topp:states"];
         layer.projection = new OpenLayers.Projection("EPSG:900913");
@@ -377,7 +455,6 @@
     <wfs:Delete typeName="feature:type" xmlns:feature="http://namespace.org">
         <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:BBOX>
-                <ogc:PropertyName/>
                 <gml:Box xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
                     <gml:coordinates decimal="." cs="," ts=" ">-5,-5 5,5</gml:coordinates>
                 </gml:Box>
@@ -385,6 +462,10 @@
         </ogc:Filter>
     </wfs:Delete>
 </wfs:Transaction>
+--></div>
+<div id="query_response"><!--
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:FeatureCollection xmlns:ogc="http://www.opengis.net/ogc" xmlns:wfs="http://www.opengis.net/wfs" xmlns:topp="http://www.openplans.org/topp" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ows="http://www.opengis.net/ows" xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:boundedBy><gml:Envelope srsDimension="2" srsName="urn:x-ogc:def:crs:EPSG:4326"><gml:lowerCorner>5450000.0 500000.0</gml:lowerCorner><gml:upperCorner>5450000.0 540000.0</gml:upperCorner></gml:Envelope></gml:boundedBy><gml:featureMembers><topp:tasmania_roads gml:id="tasmania_roads.1"><gml:boundedBy><gml:Envelope srsDimension="2" srsName="urn:x-ogc:def:crs:EPSG:4326"><gml:lowerCorner>5450000.0 500000.0</gml:lowerCorner><gml:upperCorner>5450000.0 540000.0</gml:upperCorner></gml:Envelope></gml:boundedBy><topp:geom><gml:MultiLineString srsDimension="2" srsName="urn:x-ogc:def:crs:EPSG:4326"><gml:lineStringMember><gml:LineString><gml:posList>5450000.0 500000.0 5450000.0 540000.0</gml:posList></gml:LineString></gml:lineStringMember></gml:MultiLineString></topp:geom><topp:TYPE>street</topp:TYPE></topp:tasmania_roads></gml:featureMembers></wfs:FeatureCollection>
 --></div>
 </body>
 </html>
