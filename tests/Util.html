@@ -952,7 +952,16 @@
     }
 
     function test_Util_getParameters(t) {
-        t.plan(17);
+        t.plan(20);
+
+        t.eq(OpenLayers.Util.getParameters(''), {},
+                "getParameters works when the given argument is empty string");
+
+        t.eq(OpenLayers.Util.getParameters(), {},
+                "getParameters works with optional argument");
+
+        t.eq(OpenLayers.Util.getParameters(null), {},
+                "getParameters works with optional argument");
 
         t.eq(OpenLayers.Util.getParameters('http://www.example.com'), {},
              "getParameters works when args = ''");
