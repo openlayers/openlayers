@@ -162,6 +162,24 @@
              "inheritance doesn't mess with parents");
 
     }
+
+    function test_inheritance_chain(t) {
+        t.plan(1);
+        var A = new OpenLayers.Class({
+            initialize: function() {
+                this.a = 'foo';
+            }
+        });
+        var B = new OpenLayers.Class(A, {});
+        var C = new OpenLayers.Class(B, {
+            initialize: function() {
+                B.prototype.initialize.apply(this, arguments);
+                this.a = this.a + 'bar';
+            }
+        });
+        var c = new C;
+        t.eq(c.a, 'foobar', 'constructor at the root is called');
+    }
     
     // Remove this at 3.0
     function test_Class_backwards(t) {
