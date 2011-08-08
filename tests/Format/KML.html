@@ -230,6 +230,18 @@
         };
         t.eq(f.read(f.write(feature))[0].attributes.name, feature.style.label, "placemark name from style.label");
     }
+    function test_Format_KML_linestring_projected(t) {
+        t.plan(1);
+        var f = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString([
+            new OpenLayers.Geometry.Point(15555162, 4247484), new OpenLayers.Geometry.Point(15555163, 4247485)]));
+        var format = new OpenLayers.Format.KML({
+            internalProjection: new OpenLayers.Projection("EPSG:900913"),
+            externalProjection: new OpenLayers.Projection("EPSG:4326")
+        });
+        var data = format.write(f);
+        var found = (data.search('139.734') != -1);
+        t.ok(found, "Found 139.734 (correct reprojection) in data output.");
+    }        
     
     function test_extractTracks(t) {
         
