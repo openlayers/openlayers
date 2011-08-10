@@ -14,15 +14,6 @@ div.olLayerDiv {
    -khtml-user-select: none;
 }
 
-/* TODO remove the two style definitions below when we drop support for IE8 */
-div.olLayerDiv.ie8-opacity-hack {
-    width: 9999px !important;
-    height: 9999px !important;
-}
-div.olLayerDiv.ie8-opacity-hack div, .ie8-opacity-hack img.olTileImage {
-    filter: inherit;
-}
-
 .olLayerGoogleCopyright {
     left: 2px;
     bottom: 2px;
