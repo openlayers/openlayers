@@ -1102,7 +1102,7 @@ Test.AnotherWay._delay_continue_action=function( test_object, milliseconds_passe
 			if( finished ) {
 				try {
 					action.call_fn();
-				}catch( e ) {
+			    }catch( e ) {
 					Test.AnotherWay._handle_exception( test_object, e, "in delay_call" );
 				}
 			}

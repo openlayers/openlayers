@@ -73,8 +73,9 @@
         });
         map.addLayer(layer);
         var tile2 = layer.addTile(bounds, pixel);
-        t.ok(
-            tile2.createIFrame,
+        tile2.draw();
+        t.eq(
+            tile2.useIFrame, true,
             "supported browser: tile is created with the Tile.Image.IFrame mixin");
         map.destroy();
     }

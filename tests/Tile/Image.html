@@ -62,38 +62,16 @@
         map.destroy();
     }
 
-    function test_Tile_Image_clone (t) {
-        t.plan( 9 );
-        
-        var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-            "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
-
-        var position = new OpenLayers.Pixel(20,30);
-        var bounds = new OpenLayers.Bounds(1,2,3,4);
-        var url = "http://www.openlayers.org/dev/tests/tileimage";
-        var size = new OpenLayers.Size(5,6);
-        tile = new OpenLayers.Tile.Image(layer, position, bounds, url, size);
-        tile.imgDiv = {};
-        var clone = tile.clone();
-        
-        t.ok( clone instanceof OpenLayers.Tile.Image, "OpenLayers.Tile.clone returns Tile.Image object" );
-        t.ok( clone.layer == layer, "clone.layer is set correctly");
-        t.ok( clone.position.equals(position), "clone.position is set correctly");
-        t.ok( clone.bounds.equals(bounds), "clone.bounds is set correctly");
-        t.eq( clone.url, url, "clone.url is set correctly");
-        t.ok( clone.size.equals(size), "clone.size is set correctly");
-        t.ok( clone.frame, "clone has a frame");
-        t.ok( clone.frame != tile.frame, "clone's frame is a new one");
-        t.ok( clone.imgDiv == null, "clone's imgDiv was not copied");
-    }
-    
-    function test_Tile_Image_IFrame_viewRequestID (t) {
-        t.plan( 2 );
+    function test_Tile_Image_async (t) {
+        t.plan( 3 );
         var map   = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS(
             "Name",
             "http://labs.metacarta.com/TESTURL?",
-            {layers: 'basic'}
+            {layers: 'basic'}, {async: true, getURLasync: function(bounds, scope, url, callback) {
+                scope.url = this.getURL(bounds);
+                callback.call(scope);
+            }}
         ); 
         map.addLayer(layer);
 
@@ -101,10 +79,10 @@
         var bounds = new OpenLayers.Bounds(1,2,3,4);
         tile = layer.addTile(bounds, position);
         tile.renderTile();
-        t.eq(tile.imgDiv.viewRequestID, map.viewRequestID, "viewRequestID correct after renderTile");
-        map.viewRequestID++;
+        t.eq(tile.imgDiv.src, layer.getURL(bounds), "image src correct for async request");
+        t.eq(tile.asyncRequestId, 1, "asyncRequestId correct after renderTile");
         tile.renderTile();
-        t.eq(tile.imgDiv.viewRequestID, map.viewRequestID, "viewRequestID correct after subsequent renderTile");
+        t.eq(tile.asyncRequestId, 2, "asyncRequestId correct after subsequent renderTile");
         tile.destroy();
         layer.destroy();
         map.destroy();
@@ -156,8 +134,8 @@
         t.eq( img.src,
              "http://labs.metacarta.com/TESTURL?" + OpenLayers.Util.getParameterString(tParams),
              "tile.draw creates an image");
-        t.eq( tile.imgDiv.style.width, "5px", "Image width is correct" );
-        t.eq( tile.imgDiv.style.height, "6px", "Image height is correct" );
+        t.eq( tile.imgDiv.style.width, "100%", "Image width is correct" );
+        t.eq( tile.imgDiv.style.height, "100%", "Image height is correct" );
 
         // this should trigger a "reload" event (since the image never actually
         // loads in tests)
@@ -260,14 +238,14 @@
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-90,-85,-90,85), url, size);
         tile.draw();
         tile.moveTo(new OpenLayers.Bounds(-185,-90,-180,-80), new OpenLayers.Pixel(-180,-85), true);
-        t.delay_call( 1, function() { t.eq(tile.imgDiv, null, "Tile imgDiv is null.") } );
+        t.delay_call( 1, function() { t.eq(tile.imgDiv.style.display, "none", "Tile image is invisible.") } );
         var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
             "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}, {'reproject': true, 'alpha':true});
         map.addLayer(layer);
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-90,-85,-90,85), url, size);
         tile.draw();
         tile.moveTo(new OpenLayers.Bounds(-185,-90,-180,-80), new OpenLayers.Pixel(-180,-85), true)
-        t.delay_call( 1, function() { t.eq(tile.imgDiv, null, "Alpha tile imgDiv is null.") } );
+        t.delay_call( 1, function() { t.eq(tile.imgDiv.style.display, "none", "Alpha tile image is invisible.") } );
         
     }
 
@@ -313,6 +291,23 @@
         t.ok(tile.bounds.equals(zero_gutter_bounds),
              "gutter doesn't affect tile bounds");
 
+        map.destroy();
+    }
+    
+    function test_createBackBuffer(t) {
+        t.plan(3);
+
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+            "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'});
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0), 5);
+        var tile = layer.grid[0][0];
+        var img = tile.imgDiv;
+        var backBuffer = tile.createBackBuffer();
+        t.eq(backBuffer.style.left, tile.frame.style.left, "backBuffer tile has same left style as frame");
+        t.ok(backBuffer.firstChild === img, "image appended to backBuffer");
+        t.ok(tile.imgDiv == null, "image reference removed from tile");
         map.destroy();
     }
     

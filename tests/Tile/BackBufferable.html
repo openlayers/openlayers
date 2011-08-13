@@ -1,0 +1,114 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+    var tile;
+    var layer = new OpenLayers.Layer.WMS(
+            "WMS",
+            window.location.href + "#",
+            null,
+            {transitionEffect: "resize"}); 
+    var position = new OpenLayers.Pixel(20,30);
+    var bounds = new OpenLayers.Bounds(1,2,3,4);
+
+    
+    function test_initialize (t) {
+        t.plan(2);
+        
+        tile = new OpenLayers.Tile.Image(layer, position, bounds, null);
+        t.eq(tile.backBufferData, {}, "back buffer data initialized");
+        t.eq(tile.size.w, 256, "size object with default width created");
+    }
+    
+    function test_backBufferMode(t) {
+        t.plan(4);
+
+        var l;
+
+        l = new OpenLayers.Layer.WMS('', window.location.href + '#');
+        tile = new OpenLayers.Tile.Image(l, position, bounds, null);
+        t.eq(tile.backBufferMode, 0,
+             'backBufferMode correctly set [tiled]');
+
+        l = new OpenLayers.Layer.WMS('', window.location.href + '#',
+                                     null, {singleTile: true});
+        tile = new OpenLayers.Tile.Image(l, position, bounds, null);
+        t.eq(tile.backBufferMode, 1,
+             'backBufferMode correctly set [singleTile]');
+
+        l = new OpenLayers.Layer.WMS('', window.location.href + '#',
+                                     null, {transitionEffect: 'resize'});
+        tile = new OpenLayers.Tile.Image(l, position, bounds, null);
+        t.eq(tile.backBufferMode, 2,
+             'backBufferMode correctly set [tiled, transition]');
+
+        l = new OpenLayers.Layer.WMS('', window.location.href + '#',
+                                     null, {singleTile: true,
+                                            transitionEffect: 'resize'});
+        tile = new OpenLayers.Tile.Image(l, position, bounds, null);
+        t.eq(tile.backBufferMode, 3,
+             'backBufferMode correctly set [singleTile, transition]');
+    }
+
+    function test_setBackBufferData(t) {
+        t.plan(2);
+
+        var map = new OpenLayers.Map("map");
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        tile = new OpenLayers.Tile.Image(layer, position, bounds, null);
+        tile.draw();
+        // moveTo calls setBackBufferData
+        tile.moveTo(new OpenLayers.Bounds(1,2,3,4),
+                    new OpenLayers.Pixel(30,40), true);
+        t.eq(tile.backBufferData.bounds.toString(), bounds.toString(),
+             "bounds stored correctly");
+        t.eq(tile.backBufferData.resolution, map.getResolution(),
+             "resolution stored correctly");
+        map.removeLayer(layer);
+        map.destroy();
+    }
+    
+    function test_updateBackBuffer(t) {
+        t.plan(1);
+        
+        var map = new OpenLayers.Map("map");
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        tile = new OpenLayers.Tile.Image(layer, position, bounds, null);
+        tile.draw();
+        tile.isLoading = false;
+        map.zoomIn();
+        tile.updateBackBuffer();
+        t.eq(tile.backBufferData.tile.style.width, (layer.tileSize.w*2)+"px",
+             "backBuffer frame correctly resized");
+        map.removeLayer(layer);
+        map.destroy();
+    }
+    
+    function test_removeBackBuffer(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        tile = new OpenLayers.Tile.Image(layer, position, bounds, null);
+        tile.draw();
+        tile.isLoading = false;
+        map.zoomIn();
+        tile.updateBackBuffer();
+        var backBuffer = tile.backBufferData.tile;
+        tile.removeBackBuffer();
+        t.eq(tile.backBufferData.tile, null,
+             "backBuffer reference removed");
+        t.ok(backBuffer.parentNode !== layer.div,
+             "backBuffer removed from layer");
+        map.removeLayer(layer);
+        map.destroy();
+    }
+        
+  </script>
+</head>
+<body>
+<div id="map" style="height:550px;width:500px"></div>
+</body>
+</html>
