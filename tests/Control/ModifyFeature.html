@@ -74,7 +74,7 @@
     }
     
     function test_handleKeypress(t) {
-        t.plan(14);
+        t.plan(16);
 
         /**
          * There are two things that we want to test here
@@ -101,6 +101,8 @@
         // mock up vertex deletion
         control.dragControl.feature = point;
         control.feature = poly;
+        // we cannot use selectFeature since the control is not part of a map
+        control._originalGeometry = poly.geometry.clone();
         control.vertices = [point];
         point.geometry.parent = {
             removeComponent: function(geometry) {
@@ -110,6 +112,7 @@
         };
         layer.events.on({
             "featuremodified": function(event) {
+                t.ok(event.feature.modified !== null, "modified property of feature should have been set");
                 t.eq(event.feature.id, poly.id, "vertex deletion: featuremodifed triggered");
             },
             "vertexremoved": function(evt) {
