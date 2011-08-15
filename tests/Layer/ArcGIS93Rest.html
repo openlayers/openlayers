@@ -72,20 +72,15 @@
         tParams = OpenLayers.Util.extend(tParams, {
             FORMAT: "png", BBOX: "1,2,3,4", SIZE: "256,256", F: "image", BBOXSR: "4326", IMAGESR: "4326"
         });
-        t.eq( img.src,
+        t.eq( tile.url,
              url + "?" + OpenLayers.Util.getParameterString(tParams),
              "image src is created correctly via addtile" );
         t.eq( tile.frame.style.top, "6px", "image top is set correctly via addtile" );
         t.eq( tile.frame.style.left, "5px", "image top is set correctly via addtile" );
 
         var firstChild = layer.div.firstChild.firstChild;
-        if (!isMozilla)
-            t.ok( true, "skipping element test outside of Mozilla");
-        else
-            t.ok( firstChild instanceof HTMLElement, "div first child is an image object" );
-        t.eq( firstChild.src,
-             url + "?" + OpenLayers.Util.getParameterString(tParams),
-             "div first child is correct image object" );
+        t.eq( firstChild.nodeName.toLowerCase(), "img", "div first child is an image object" );
+        t.ok( firstChild == img, "div first child is correct image object" );
         t.eq( tile.position.toString(), "x=5,y=6", "Position of tile is set correctly." );
         map.destroy();
     }
@@ -302,55 +297,46 @@
         var encodingHack = document.createElement("img");
         
         tile.draw();
-        encodingHack.src = (url + "?" + OpenLayers.Util.getParameterString(tParams));
-        t.eq( tile.imgDiv.src, encodingHack.src, "image src no filter" );
+        t.eq( tile.url, url + "?" + OpenLayers.Util.getParameterString(tParams), "image src no filter" );
         
         layer.setLayerFilter('1', "MR_TOAD = 'FLYING'");
         tParams["LAYERDEFS"] = "1:MR_TOAD = 'FLYING';";
         tile.draw();
-        encodingHack.src = (url + "?" + OpenLayers.Util.getParameterString(tParams));
-        t.eq( tile.imgDiv.src, encodingHack.src, "image src one filter" );
+        t.eq( tile.url, url + "?" + OpenLayers.Util.getParameterString(tParams), "image src one filter" );
 
         layer.setLayerFilter('1', "MR_TOAD = 'NOT FLYING'");
         tParams["LAYERDEFS"] = "1:MR_TOAD = 'NOT FLYING';";
         tile.draw();
-        encodingHack.src = (url + "?" + OpenLayers.Util.getParameterString(tParams));
-        t.eq( tile.imgDiv.src, encodingHack.src, "image src change one filter" );
+        t.eq( tile.url, url + "?" + OpenLayers.Util.getParameterString(tParams), "image src change one filter" );
 
         layer.setLayerFilter('2', "true = false");
         tParams["LAYERDEFS"] = "1:MR_TOAD = 'NOT FLYING';2:true = false;";
         tile.draw();
-        encodingHack.src = (url + "?" + OpenLayers.Util.getParameterString(tParams));
-        t.eq( tile.imgDiv.src, encodingHack.src, "image src two filters" );
+        t.eq( tile.url, url + "?" + OpenLayers.Util.getParameterString(tParams), "image src two filters" );
 
         layer.setLayerFilter('99', "some_col > 5");
         tParams["LAYERDEFS"] = "1:MR_TOAD = 'NOT FLYING';2:true = false;99:some_col > 5;";
         tile.draw();
-        encodingHack.src = (url + "?" + OpenLayers.Util.getParameterString(tParams));
-        t.eq( tile.imgDiv.src, encodingHack.src, "image src three filters" );
+        t.eq( tile.url, url + "?" + OpenLayers.Util.getParameterString(tParams), "image src three filters" );
         
         layer.clearLayerFilter('2');
         tParams["LAYERDEFS"] = "1:MR_TOAD = 'NOT FLYING';99:some_col > 5;";
         tile.draw();
-        encodingHack.src = (url + "?" + OpenLayers.Util.getParameterString(tParams));
-        t.eq( tile.imgDiv.src, encodingHack.src, "image src removed middle filter" );
+        t.eq( tile.url, url + "?" + OpenLayers.Util.getParameterString(tParams), "image src removed middle filter" );
         
         layer.clearLayerFilter('2');
         tParams["LAYERDEFS"] = "1:MR_TOAD = 'NOT FLYING';99:some_col > 5;";
         tile.draw();
-        encodingHack.src = (url + "?" + OpenLayers.Util.getParameterString(tParams));
-        t.eq( tile.imgDiv.src, encodingHack.src, "image src removed missing filter (no change)" );
+        t.eq( tile.url, url + "?" + OpenLayers.Util.getParameterString(tParams), "image src removed missing filter (no change)" );
         
         layer.clearLayerFilter();
         delete tParams["LAYERDEFS"];
         tile.draw();
-        encodingHack.src = (url + "?" + OpenLayers.Util.getParameterString(tParams));
-        t.eq( tile.imgDiv.src, encodingHack.src, "image src removed all filters" );
+        t.eq( tile.url, url + "?" + OpenLayers.Util.getParameterString(tParams), "image src removed all filters" );
         
         layer.clearLayerFilter();
         tile.draw();
-        encodingHack.src = (url + "?" + OpenLayers.Util.getParameterString(tParams));
-        t.eq( tile.imgDiv.src, encodingHack.src, "image src removed all (no) filters" );
+        t.eq( tile.url, url + "?" + OpenLayers.Util.getParameterString(tParams), "image src removed all (no) filters" );
     }
     
     

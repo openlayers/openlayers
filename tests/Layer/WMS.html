@@ -83,20 +83,15 @@
             BBOX: [1,2,3,4],
             WIDTH: "256", HEIGHT: "256"
         });
-        t.eq( img.src,
+        t.eq( tile.url,
              layer.getFullRequestString(tParams),
              "image src is created correctly via addtile" );
         t.eq( tile.frame.style.top, "6px", "image top is set correctly via addtile" );
         t.eq( tile.frame.style.left, "5px", "image top is set correctly via addtile" );
 
         var firstChild = layer.div.firstChild.firstChild;
-        if (!isMozilla)
-            t.ok( true, "skipping element test outside of Mozilla");
-        else
-            t.ok( firstChild instanceof HTMLElement, "div first child is an image object" );
-        t.eq( firstChild.src,
-             layer.getFullRequestString(tParams),
-             "div first child is correct image object" );
+        t.eq( firstChild.nodeName.toLowerCase(), "img", "div first child is an image object" );
+        t.ok( firstChild == img, "div first child is correct image object" );
         t.eq( tile.position.toString(), "x=5,y=6", "Position of tile is set correctly." );
         map.destroy();
     }
@@ -119,20 +114,15 @@
             BBOX: "1,2,3,4",
             WIDTH: "256", HEIGHT: "256"
         });
-        t.eq( img.src,
+        t.eq( tile.url,
              layer.getFullRequestString(tParams),
              "image src is created correctly via addtile" );
         t.eq( tile.frame.style.top, "6px", "image top is set correctly via addtile" );
         t.eq( tile.frame.style.left, "5px", "image top is set correctly via addtile" );
 
         var firstChild = layer.div.firstChild.firstChild;
-        if (!isMozilla)
-            t.ok( true, "skipping element test outside of Mozilla");
-        else
-            t.ok( firstChild instanceof HTMLElement, "div first child is an image object" );
-        t.eq( firstChild.src,
-             layer.getFullRequestString(tParams),
-             "div first child is correct image object" );
+        t.eq( firstChild.nodeName.toLowerCase(), "img", "div first child is an image object" );
+        t.ok( firstChild, img, "div first child is correct image object" );
         t.eq( tile.position.toString(), "x=5,y=6", "Position of tile is set correctly." );
         map.destroy();
     }
