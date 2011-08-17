@@ -20,7 +20,15 @@
         
         // check invalid date
         date = new Date("foo");
-        str = OpenLayers.Date.toISOString(date);
+        try {
+            str = OpenLayers.Date.toISOString(date);
+        } catch (err) {
+            // some implementations throw RangeError
+            // see https://bugzilla.mozilla.org/show_bug.cgi?id=649575
+            if (err instanceof RangeError) {
+                str = "Invalid Date";
+            }
+        }
         t.eq(str, "Invalid Date", "invalid date");
 
     }
