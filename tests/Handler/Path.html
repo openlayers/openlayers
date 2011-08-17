@@ -1301,6 +1301,81 @@
         
         map.destroy();
     }
+
+    function test_set_freehand(t) {
+        t.plan(5);
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var control = new OpenLayers.Control({});
+
+        var geo, pointsCount;        
+        var handler = new OpenLayers.Handler.Path(control, {
+                done: function(g) {
+                    geo = g;
+                },
+                point: function() {
+                    pointsCount++;
+                }
+            },
+            {freehand: true}
+        );
+        control.handler = handler;
+        map.addControl(control);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+
+        handler.activate();
+
+        geo = null;
+        pointsCount = 0;
+        // Using mouse events
+        handler.mousemove(
+                {type: "mousemove", xy: new OpenLayers.Pixel(0, 0)});
+        handler.mousedown(
+                {type: "mousedown", xy: new OpenLayers.Pixel(0, 0)});
+        handler.mousemove(
+                {type: "mousemove", xy: new OpenLayers.Pixel(1, 1)});
+        handler.mousemove(
+                {type: "mousemove", xy: new OpenLayers.Pixel(2, 2)});
+        handler.mouseup(
+                {type: "mouseup", xy: new OpenLayers.Pixel(2, 2)});
+        t.ok(geo != null, "feature drawn when mouseup");
+        t.eq(pointsCount, 2, "two points have been added");
+
+        handler.deactivate();
+        var geoMouse = geo;
+        
+        handler.activate();
+        
+        geo = null;
+        pointsCount = 0;
+        // Using touch events
+        handler.touchstart(
+                {type: "touchstart", xy: new OpenLayers.Pixel(0, 0)});
+        try {
+            handler.touchmove(
+                    {type: "touchmove", xy: new OpenLayers.Pixel(1, 1)});
+            handler.touchmove(
+                    {type: "touchmove", xy: new OpenLayers.Pixel(2, 2)});
+            handler.touchend(
+                    {type: "touchend"});
+        } catch(err) {
+            t.fail("occurred errors using touch events");
+        }
+        t.ok(geo != null, "feature drawn when touchend");
+        t.eq(pointsCount, 2, "two points have been added");
+        
+        t.geom_eq(geo, geoMouse, 
+            "geometry obtained using the mouse and touch events are the same");
+
+        map.destroy();
+    }
+
   </script>
 </head>
 <body>
