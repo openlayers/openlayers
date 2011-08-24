@@ -150,7 +150,7 @@
 
         t.eq(script.type, 'text/javascript',
             'created script has a correct type');
-        t.eq(script.src, 'http://bar_url/?k=bar_param&cb_key=cb_prefix%3AOpenLayers.Protocol.Script.getCallback(bar)',
+        t.eq(script.src, 'http://bar_url/?k=bar_param&cb_key=cb_prefix%3AOpenLayers.Protocol.Script.registry%5Bbar%5D',
             'created script has a correct url');
         t.eq(script.id, 'OpenLayers_Protocol_Script_bar',
             'created script has a correct id');

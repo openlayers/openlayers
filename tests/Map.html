@@ -1790,36 +1790,76 @@
     }    
 
     function test_moveByPx(t) {
-        t.plan(8);
+        t.plan(16);
+
+        var moved;
+        var Layer = OpenLayers.Class(OpenLayers.Layer, {
+            moveByPx: function(dx, dy) {
+                moved[this.name] = true;
+            }
+        });
 
         var map = new OpenLayers.Map({
             div: 'map',
             maxExtent: new OpenLayers.Bounds(-50, -50, 50, 50),
             restrictedExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
             layers: [
-                new OpenLayers.Layer('name', {isBaseLayer: true})
+                new Layer('base',
+                    {isBaseLayer: true}),
+                new Layer('outofrange',
+                    {isBaseLayer: false, minResolution:2})
             ]
         });
+
+        moved = {};
         map.zoomToExtent(new OpenLayers.Bounds(-1, -1, 1, 1));
 
         // check initial state
-        t.eq(map.layerContainerDiv.style.left, '0px', 'layer container left correct');
-        t.eq(map.layerContainerDiv.style.top, '0px', 'layer container top correct');
+        t.eq(map.layerContainerDiv.style.left, '0px',
+             '[initial state] layer container left correct');
+        t.eq(map.layerContainerDiv.style.top, '0px',
+             '[initial state] layer container top correct');
+        t.eq(moved['base'], undefined,
+             '[initial state] base layer not moved');
+        t.eq(moved['outofrange'], undefined,
+             '[initial state] out-of-range layer not moved');
 
         // move to a valid position
+        moved = {};
         map.moveByPx(-455, 455);
-        t.eq(map.layerContainerDiv.style.left, '455px', 'layer container left correct');
-        t.eq(map.layerContainerDiv.style.top, '-455px', 'layer container top correct');
+        t.eq(map.layerContainerDiv.style.left, '455px',
+             '[valid position] layer container left correct');
+        t.eq(map.layerContainerDiv.style.top, '-455px',
+             '[valid position] layer container top correct');
+        t.eq(moved['base'], true,
+             '[valid position] base layer moved');
+        t.eq(moved['outofrange'], undefined,
+             '[valid position] out-of-range layer not moved');
 
         // move outside the max extent
+        moved = {};
         map.moveByPx(-4500, 4500);
-        t.eq(map.layerContainerDiv.style.left, '455px', 'layer container left correct');
-        t.eq(map.layerContainerDiv.style.top, '-455px', 'layer container top correct');
+        t.eq(map.layerContainerDiv.style.left, '455px',
+             '[outside max extent] layer container left correct');
+        t.eq(map.layerContainerDiv.style.top, '-455px',
+             '[outside max extent] layer container top correct');
+        t.eq(moved['base'], undefined,
+             '[outside max extent] base layer not moved');
+        t.eq(moved['outofrange'], undefined,
+             '[outside max extent] out-of-range layer not moved');
 
         // move outside the restricted extent
+        moved = {};
         map.moveByPx(-500, 500);
-        t.eq(map.layerContainerDiv.style.left, '455px', 'layer container left correct');
-        t.eq(map.layerContainerDiv.style.top, '-455px', 'layer container top correct');
+        t.eq(map.layerContainerDiv.style.left, '455px',
+             '[outside restricted extent] layer container left correct');
+        t.eq(map.layerContainerDiv.style.top, '-455px',
+             '[outside restricted extent] layer container top correct');
+        t.eq(moved['base'], undefined,
+             '[outside restricted extent] base layer not moved');
+        t.eq(moved['outofrange'], undefined,
+             '[outside restricted extent] out-of-range layer not moved');
+
 
         map.destroy();
     }
