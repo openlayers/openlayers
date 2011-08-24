@@ -219,6 +219,32 @@
         t.ok((tile.x >= 0 && tile.y >= 0), 'layer should not generate negative tile ranges for level of detail');
     }
 
+   /*  
+    * Test that functions don't end up in the lods of the layer. This messes up zooming when 
+    * resolutions are very small/scales are very large/zoomed way in. 
+    */ 
+    function test_Layer_ARCGISCACHE_lods (t) { 
+        t.plan( 2 ); 
+        var layerInfo = capabilitiesObject; 
+
+        lods = layerInfo.tileInfo.lods.length; 
+
+        // mess up the Array prototype
+        Array.prototype.foo = function() { };
+
+        t.ok( lods == layerInfo.tileInfo.lods.length, 'proper number of "Levels of Detail" before initialization' ); 
+
+        // initialize the layer using the JSON object from an arcgis server 
+        // see: ArcGISCache.json 
+        var layer = new OpenLayers.Layer.ArcGISCache(name, url, { 
+            layerInfo: layerInfo 
+        }); 
+
+        t.ok( lods == layer.lods.length, 'proper number of "Levels of Detail" after initialization.' );         
+        // restore the Array prototype
+        delete Array.prototype.foo;
+    } 
+
   </script>
 </head>
 <body>
