@@ -220,8 +220,8 @@
     }
 
    /*  
-    * Test that functions don't end up in the lods of the layer. This messes up zooming when 
-    * resolutions are very small/scales are very large/zoomed way in. 
+    * Test that messing up the Array.prototype does not mess up the lods of the layer. 
+    * This messes up zooming when resolutions are very small/scales are very large/zoomed way in. 
     */ 
     function test_Layer_ARCGISCACHE_lods (t) { 
         t.plan( 2 ); 
