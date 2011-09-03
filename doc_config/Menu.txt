@@ -352,7 +352,6 @@ Group: OpenLayers  {
       File: GML  (no auto-title, OpenLayers/Layer/GML.js)
       File: Google  (no auto-title, OpenLayers/Layer/Google.js)
       File: Google.v3  (no auto-title, OpenLayers/Layer/Google/v3.js)
-      File: GoogleNG  (no auto-title, OpenLayers/Layer/GoogleNG.js)
       File: Grid  (no auto-title, OpenLayers/Layer/Grid.js)
       File: HTTPRequest  (no auto-title, OpenLayers/Layer/HTTPRequest.js)
       File: Image  (no auto-title, OpenLayers/Layer/Image.js)
@@ -475,7 +474,6 @@ Group: OpenLayers  {
    Group: Tile  {
 
       File: Tile  (no auto-title, OpenLayers/Tile.js)
-      File: Google  (no auto-title, OpenLayers/Tile/Google.js)
       File: Image  (no auto-title, OpenLayers/Tile/Image.js)
       File: Image.IFrame  (no auto-title, OpenLayers/Tile/Image/IFrame.js)
       File: WFS  (no auto-title, OpenLayers/Tile/WFS.js)
