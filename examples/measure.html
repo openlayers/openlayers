@@ -70,12 +70,19 @@
             ]);
             var styleMap = new OpenLayers.StyleMap({"default": style});
             
+            // allow testing of specific renderers via "?renderer=Canvas", etc
+            var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+            renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+
             measureControls = {
                 line: new OpenLayers.Control.Measure(
                     OpenLayers.Handler.Path, {
                         persist: true,
                         handlerOptions: {
-                            layerOptions: {styleMap: styleMap}
+                            layerOptions: {
+                                renderers: renderer,
+                                styleMap: styleMap
+                            }
                         }
                     }
                 ),
@@ -83,7 +90,10 @@
                     OpenLayers.Handler.Polygon, {
                         persist: true,
                         handlerOptions: {
-                            layerOptions: {styleMap: styleMap}
+                            layerOptions: {
+                                renderers: renderer,
+                                styleMap: styleMap
+                            }
                         }
                     }
                 )
