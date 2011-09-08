@@ -1376,6 +1376,32 @@
         map.destroy();
     }
 
+    function test_citeComplaint(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map('map');
+        map.addLayer(new OpenLayers.Layer.OSM());
+        var layer = new OpenLayers.Layer.Vector();
+        map.addLayer(layer);
+        var control = new OpenLayers.Control({});
+        var handler = new OpenLayers.Handler.Path(control, {});
+        control.handler = handler;
+        map.addControl(control);
+        map.zoomToExtent(new OpenLayers.Bounds(-24225034.496992, -11368938.517442, -14206280.326992, -1350184.3474418));
+        handler.activate();
+        handler.createFeature(new OpenLayers.Pixel(100, 50));
+        t.ok(handler.point.geometry.x < 0, "Geometry started correctly when wrapping the dateline using citeCompliant false");
+        control.deactivate();
+
+        handler = new OpenLayers.Handler.Path(control, {}, {citeCompliant: true});
+        control.handler = handler;
+        control.activate();
+        handler.createFeature(new OpenLayers.Pixel(100, 50));
+        t.ok(handler.point.geometry.x > 0, "Geometry started correctly when wrapping the dateline using citeCompliant true");
+        
+        map.destroy();
+    }
+
+
   </script>
 </head>
 <body>

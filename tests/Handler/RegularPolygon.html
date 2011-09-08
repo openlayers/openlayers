@@ -149,9 +149,6 @@
     function test_Handler_RegularPolygon_irregular(t) {
         t.plan(4);
         var map = {
-            getLonLatFromPixel: function(px) {
-                return {lon: px.x, lat: px.y};
-            },
             getResolution: function() {
                 return 1;
             }
@@ -164,6 +161,9 @@
                 t.eq(ring.components[0].y, 10, "correct bottom");
                 t.eq(ring.components[2].x, 10, "correct left");
                 t.eq(ring.components[2].y, 15, "correct top");
+            },
+            getLonLatFromViewPortPx: function(px) {
+                return {lon: px.x, lat: px.y};
             }
         };
         var control = {};
@@ -190,11 +190,7 @@
         t.plan(1);
 
         // setup
-        var map = new OpenLayers.Map("map", {
-            getLonLatFromPixel: function(px) {
-                return {lon: px.x, lat: px.y};
-            }
-        });
+        var map = new OpenLayers.Map("map");
 
         var control = {"map": map};
 
@@ -211,6 +207,17 @@
 
         var isLeftClick = OpenLayers.Event.isLeftClick;
         OpenLayers.Event.isLeftClick = function() { return true; };
+        handler.layer = {
+            renderer: {
+                clear: OpenLayers.Function.Void
+            },
+            addFeatures: OpenLayers.Function.Void,
+            drawFeature: OpenLayers.Function.Void,
+            destroyFeatures: OpenLayers.Function.Void,
+            getLonLatFromViewPortPx: function() {
+                return xy;
+            }
+        };
 
         // test
         map.events.triggerEvent("mousedown", {"xy": xy});

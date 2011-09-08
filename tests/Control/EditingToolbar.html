@@ -3,12 +3,14 @@
   <script src="../OLLoader.js"></script>
   <script type="text/javascript">
     function test_ctor_draw(t) {
-        t.plan(4);
+        t.plan(5);
         var map = new OpenLayers.Map('map');
         var vLayer = new OpenLayers.Layer.Vector();
         map.addLayer(vLayer);
         
-        var editingToolbar = new OpenLayers.Control.EditingToolbar(vLayer);
+        var editingToolbar = new OpenLayers.Control.EditingToolbar(vLayer, {
+            citeCompliant: "foo"
+        });
         map.addControl(editingToolbar);
         
         t.ok(editingToolbar instanceof OpenLayers.Control.EditingToolbar,
@@ -19,6 +21,7 @@
                 "First control is active" );
         t.eq(editingToolbar.controls.length, 4,
                 "EditingToolbar contains 4 Controls" );
+        t.eq(editingToolbar.controls[1].handler.citeCompliant, "foo", "citeCompliant option passed to handler correctly")
         
         map.destroy();
     }
