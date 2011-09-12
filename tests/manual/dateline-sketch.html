@@ -22,18 +22,29 @@
 var map;
 
 function init(){
-    map = new OpenLayers.Map('map');
+    var maxExtent = new OpenLayers.Bounds(-20037508, -20037508, 20037508, 20037508),
+        maxResolution = 156543.0339;
+    
+    var options = {
+        projection: new OpenLayers.Projection("EPSG:900913"),
+        displayProjection: new OpenLayers.Projection("EPSG:4326"),
+        units: "m",
+        numZoomLevels: 18,
+        maxResolution: maxResolution,
+        maxExtent: maxExtent
+    };
+    map = new OpenLayers.Map('map', options);
 
-    var gmap = new OpenLayers.Layer.Google(
-        "Google Streets",
-        {sphericalMercator: true}
+    var dummy = new OpenLayers.Layer(
+        "dummy",
+        {isBaseLayer: true, wrapDateLine: true}
     );
     var vector = new OpenLayers.Layer.Vector("Editable Vectors");
 
-    map.addLayers([gmap, vector]);
+    map.addLayers([dummy, vector]);
     map.addControl(new OpenLayers.Control.EditingToolbar(vector));
 
-    var extent = new OpenLayers.Bounds(-24225034.496992, -11368938.517442, -14206280.326992, -1350184.3474418);
+    var extent = new OpenLayers.Bounds(15849982.183008, -11368938.517442, -14206280.326992, -1350184.3474418);
     map.zoomToExtent(extent);
 }
 
