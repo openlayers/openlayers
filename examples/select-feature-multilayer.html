@@ -24,7 +24,12 @@
                 {layers: 'basic'}
             ); 
 
+            // allow testing of specific renderers via "?renderer=Canvas", etc
+            var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+            renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+
             var vectors1 = new OpenLayers.Layer.Vector("Vector Layer 1", {
+                renderers: renderer,
                 styleMap: new OpenLayers.StyleMap({
                     "default": new OpenLayers.Style(OpenLayers.Util.applyDefaults({
                         externalGraphic: "../img/marker-green.png",
@@ -38,6 +43,7 @@
                 })
             });
             var vectors2 = new OpenLayers.Layer.Vector("Vector Layer 2", {
+                renderers: renderer,
                 styleMap: new OpenLayers.StyleMap({
                     "default": new OpenLayers.Style(OpenLayers.Util.applyDefaults({
                         fillColor: "red",
