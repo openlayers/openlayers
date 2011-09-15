@@ -48,7 +48,11 @@ function init() {
             -20037508.34, -20037508.34, 20037508.34, 20037508.34
         ),
         controls: [
-            new OpenLayers.Control.TouchNavigation(),
+            new OpenLayers.Control.TouchNavigation({
+                dragPanOptions: {
+                    enableKinetic: true
+                }
+            }),
             new OpenLayers.Control.ZoomPanel(),
             toolbar
         ],
