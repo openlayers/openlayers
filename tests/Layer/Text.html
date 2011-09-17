@@ -173,7 +173,7 @@
         var event = {};
         t.delay_call( 1, function() {  
           t.ok(layer.markers[0].events, "First marker has an events object");
-          t.eq(layer.markers[0].events.listeners['click'].length, 0, "Marker events has one object");
+          t.eq(layer.markers[0].events.listeners['click'], undefined, "Marker events has no object");
           layer.markers[0].events.triggerEvent('click', event);
           t.eq(map.popups.length, 0, "no popup on first marker");
           layer.markers[1].events.triggerEvent('click', event);

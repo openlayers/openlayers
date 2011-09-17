@@ -7,38 +7,22 @@
     var a;
     
     function test_Events_constructor (t) {
+        t.plan(4);
+
         var mapDiv = OpenLayers.Util.getElement('map');
         var obj = {result: 0};
-        var eventTypes = ["doThingA", "doThingB", "doThingC"];
-        var browserTypes = OpenLayers.Events.prototype.BROWSER_EVENTS;
 
-        var totalTests = 4 + 2*eventTypes.length + 2*browserTypes.length;
-
-        t.plan( totalTests );
-
-        events = new OpenLayers.Events(obj, mapDiv, eventTypes);
-
+        events = new OpenLayers.Events(obj, mapDiv);
         t.ok( events instanceof OpenLayers.Events, "new OpenLayers.Control returns object" );
-
         t.ok(events.object ==obj, " 'object' property correctly set");
         t.ok(events.element == mapDiv, " 'element' property correctly set");
-
-
-        for (var i = 0; i < browserTypes.length; i++) {
-            var type = browserTypes[i];
-            t.ok( events.listeners[type] instanceof Array, "browser event: " + type + " correctly registered" );
-            t.ok( OpenLayers.Util.indexOf(events.eventTypes, type) != -1, "browser type " + type + "' correctly added to eventTypes array");
-        }
-        for (var i = 0; i < eventTypes.length; i++) {
-            var type = eventTypes[i];
-            t.ok( events.listeners[type] instanceof Array, "custom event: " + type + " correctly registered");
-            t.ok( OpenLayers.Util.indexOf(events.eventTypes, type) != -1, "eventType " + type + "' correctly added to eventTypes array");
-        }
+        events.destroy();
 
         // default/nulls
         events = new OpenLayers.Events(null, null, null);
         t.ok( events.listeners != null,
               "init of Events with null object/element/eventTypes still creates listeners array" );
+        events.destroy();
     }
 
     function test_Events_register(t){
@@ -59,8 +43,7 @@
                                 gFuncB = options.func;
                             }
                 }
-            },
-            'eventTypes': ['listenerA', 'listenerB']
+            }
         };
 
         var type = null;
@@ -99,13 +82,12 @@
 
     function test_Events_register_unregister(t) {
  
-        t.plan( 18 );
+        t.plan(19);
  
         var mapDiv = OpenLayers.Util.getElement('map');
         var obj = {result: 0};
-        var eventTypes = ["doThingA", "doThingB", "doThingC"];
         
-        events = new OpenLayers.Events(obj, mapDiv, eventTypes);
+        events = new OpenLayers.Events(obj, mapDiv);
         
         var func = function () { this.result++ }
         events.register( "doThingA", obj, func );
@@ -136,8 +118,11 @@
         var listenerList = events.listeners["doThingA"];
         t.eq( listenerList.length, 3, "register correctly does not append null callback to event.listeners[doThingA] even when obj passed in is null" );
 
-        events.register( "chicken", obj, func);
-        t.ok( events.listeners["chicken"] == null, "register() does nothing on attempt to register un-enabled event");
+        events.register("chicken", obj, func);
+        t.eq(events.listeners["chicken"].length, 1, "register() allows listeners for any named event");
+
+        events.unregister("chicken", obj, func);
+        t.eq(events.listeners["chicken"].length, 0, "unregistering an event that is not in eventTypes list works")
 
         events.unregister("doThingA", obj, null);
         var listenerList = events.listeners["doThingA"];
@@ -174,9 +159,12 @@
         events.unregister("doThingA", obj, null);
         t.ok( (listenerList.length == 1), "unregister does not bomb if you try to remove a null callback" );
 
-        events.unregister("chicken", null, func3);
-        t.ok( events.listeners["chicken"] == null, "unregistering an event that is not enabled does not wierdly enable it -- or cause a script error")
-
+        try {
+            events.unregister("asdf", obj, func);
+            t.ok("unregistering for an event with no registered listeners works");
+        } catch (err) {
+            t.fail("unregistering for an event with no registered listeners causes trouble: " + err);
+        }
 
     }
 
@@ -186,9 +174,8 @@
  
         var mapDiv = OpenLayers.Util.getElement('map');
         var obj = {result: 0};
-        var eventTypes = ["doThingA", "doThingB", "doThingC"];
         
-        events = new OpenLayers.Events(obj, mapDiv, eventTypes);
+        events = new OpenLayers.Events(obj, mapDiv);
         
         var func = function () { this.result++ }
         var func2 = function () { this.result-- }
@@ -213,9 +200,8 @@
  
         var mapDiv = OpenLayers.Util.getElement('map');
         var obj = {result: 0};
-        var eventTypes = ["doThingA", "doThingB", "doThingC"];
         
-        events = new OpenLayers.Events(obj, mapDiv, eventTypes);
+        events = new OpenLayers.Events(obj, mapDiv);
         
         
         var func = function () { this.result++ }
@@ -248,7 +234,7 @@
         //no specific t.ok for this one, but if it breaks, you will know it.
         events.triggerEvent("chicken");
 
-        events = new OpenLayers.Events(null, mapDiv, eventTypes);
+        events = new OpenLayers.Events(null, mapDiv);
         
         // a is global variable (context-irrelevant)
         a = 0;
@@ -259,8 +245,7 @@
         t.eq(a, 5, "if Events has no object set and an event is registered also with no object, triggerEvent() calls it without trying to set the context to null");
         
         // trigger events with additional arguments
-        eventTypes = ["something"];
-        events = new OpenLayers.Events(null, null, eventTypes);
+        events = new OpenLayers.Events();
         var instance = {id: Math.random()};
         var listener = function(obj) {
             t.eq(this.id, instance.id,
@@ -309,7 +294,7 @@
 
     function test_Events_handleBrowserEvent(t) {
         t.plan(2);
-        var events = new OpenLayers.Events({}, null, ['sometouchevent']);
+        var events = new OpenLayers.Events({}, null);
         events.on({'sometouchevent': function() {}});
 
         // this test verifies that when handling a touch event we correctly
@@ -422,36 +407,6 @@
         t.ok(elementObservers == null, "stopObservingElement by elem works");
 
         
-    }
-
-    function test_Events_addEventType(t) {
-
-        t.plan( 8 );
- 
-        var mapDiv = OpenLayers.Util.getElement('map');
-        var obj = {result: 0};
-        var eventTypes = ["doThingA", "doThingB"];
-
-        events = new OpenLayers.Events(obj, mapDiv, eventTypes);
-
-
-        t.eq( events.listeners["doThingA"].length, 0, "event type passed as passed as param to OpenLayers.Events constructor correctly set up" );
-        t.eq( events.listeners["doThingB"].length, 0, "event type passed as passed as param to OpenLayers.Events constructor correctly set up" );
-
-        var newEventType = "onFoo";
-        t.ok( events.listeners[newEventType] == null, "event type not yet registered has null entry in listeners array");
-        t.ok( OpenLayers.Util.indexOf(events.eventTypes, newEventType) == -1, "event type not yet registered not in eventTypes array");
-
-        events.addEventType(newEventType);
-        t.eq( events.listeners[newEventType].length, 0, "event type passed to addEventType correctly set up" );
-        t.ok( OpenLayers.Util.indexOf(events.eventTypes, newEventType) != -1, "event type passed to addEventType in eventTypes array");
-        
-        var func = function () {};
-        events.register( "doThingA", obj, func );
-        t.eq( events.listeners["doThingA"].length, 1, "listener correctly registered" );
-
-        events.addEventType("doThingsA");
-        t.eq( events.listeners["doThingA"].length, 1, "event type passed to addEventType correctly does nothing if clashes with already defined event type" );
     }
 
     /** HACK HACK HACK Deprecated This test should be removed in 3.0 **/
