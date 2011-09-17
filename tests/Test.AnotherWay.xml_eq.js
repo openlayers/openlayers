@@ -1,5 +1,5 @@
 /**
- * File: xml_eq.js
+ * File: Test.AnotherWay.xml_eq.js 
  * Adds a xml_eq method to AnotherWay test objects.
  *
  */
