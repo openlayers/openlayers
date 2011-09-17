@@ -12,7 +12,6 @@
 #
 # $ cd openlayers
 # $ git_to_svn.sh
-# 
 
 git pull origin master
 git svn dcommit
