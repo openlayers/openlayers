@@ -1,10 +1,5 @@
 var map, layer;
 
-// if tiles are not available, hide images
-//OpenLayers.Util.onImageLoadError = function() {
-//    this.style.display = "none";
-//}
-
 // called on body load
 function init() {
 

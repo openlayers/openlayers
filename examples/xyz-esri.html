@@ -7,11 +7,15 @@
     <title>OpenLayers Basic ESRI Map Cache Example</title>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
     <link rel="stylesheet" href="style.css" type="text/css">
+    <style>
+      .olImageLoadError {
+          display: none;
+      }
+    </style>
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var map, layer;
         function init(){
-            OpenLayers.Util.onImageLoadError = function() { this.style.display="none";}
             var layerExtent = new OpenLayers.Bounds( -13758743.4295939,  5591455.28887228, -13531302.3472101 , 5757360.4178881)
             map = new OpenLayers.Map( 'map', {'restrictedExtent': layerExtent} );
             layer = new OpenLayers.Layer.XYZ( "ESRI",
