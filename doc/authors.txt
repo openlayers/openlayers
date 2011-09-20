@@ -1,4 +1,4 @@
-OpenLayers contributors: 
+OpenLayers contributors:
 
 Antoine Abt
 Mike Adair
