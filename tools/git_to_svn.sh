@@ -14,4 +14,5 @@
 # $ git_to_svn.sh
 
 git pull origin master
+git svn rebase
 git svn dcommit
