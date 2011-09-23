@@ -55,7 +55,20 @@ def build(config_file = None, output_file = None, options = None):
     elif use_compressor == "minimize":
         minimized = minimize.minimize(merged)
     elif use_compressor == "closure_ws":
-        minimized = closure_ws.minimize(merged)      
+        if len(merged) > 1000000: # The maximum file size for this web service is 1000 KB.
+            print "\nPre-compressing using jsmin"
+            merged = jsmin.jsmin(merged)
+        print "\nIs being compressed using Closure Compiler Service."
+        try:
+            minimized = closure_ws.minimize(merged)
+        except Exception, E:
+            print "\nAbnormal termination."
+            sys.exit("ERROR: Closure Compilation using Web service failed!\n%s" % E)
+        if len(minimized) <= 2:
+            print "\nAbnormal termination due to compilation errors."
+            sys.exit("ERROR: Closure Compilation using Web service failed!")
+        else:
+            print '\nClosure Compilation using Web service has completed successfully.'
     elif use_compressor == "closure":
         minimized = closure.minimize(merged)      
     else: # fallback

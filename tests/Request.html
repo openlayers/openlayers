@@ -20,7 +20,7 @@
     function test_issue(t) {
         setup();
 
-        t.plan(22);
+        t.plan(25);
         var request, config;
         var proto = OpenLayers.Request.XMLHttpRequest.prototype;
         var issue = OpenLayers.Function.bind(OpenLayers.Request.issue,
@@ -96,19 +96,35 @@
         // reset open method
         proto.open = _open;
         
-        // test that headers are correctly set - 4 tests
+        // test that headers are correctly set - 6 tests
         var _setRequestHeader = proto.setRequestHeader;
         config = {
             headers: {
                 foo: "bar",
-                chicken: "soup"
+                chicken: "soup",
+                // This checks whether the autoadded 'X-Requested-With'-header
+                // can be overridden, even though the given key here is spelled
+                // in lowercase. 
+                'x-requested-with': 'humpty'
             }
         };
+        // we also track how often setRequestHeader is being called, it should
+        // be called once for every header, even with the above defined
+        // custom 'x-requested-with' header which we usually autoadd.
+        // If the numbers match, we make sure to not send duplicate headers like
+        //   x-requested-with: humpty         AND
+        //   X-Requested-With: XMLHttpRequest
+        var actualSetHeaderCnt = 0;
+        var expectedSetHeaderCnt = 3; // and not four!
         proto.setRequestHeader = function(key, value) {
+            actualSetHeaderCnt++;
             t.ok(key in config.headers, "setRequestHeader called with key: " + key);
             t.eq(value, config.headers[key], "setRequestHeader called with correct value: " + value);
-        }
+        };
         request = issue(config);
+        
+        t.eq(actualSetHeaderCnt, expectedSetHeaderCnt, 'A custom "x-requested-with" header overrides the default "X-Requested-With" header.');
+
         proto.setRequestHeader = _setRequestHeader;
         
         // test that callback is called (no scope) - 1 test
@@ -443,6 +459,35 @@
         });
         var req = OpenLayers.Request.GET();
         req.abort();
+    }
+    
+    function test_XRequestedWithHeaderAutoadded(t) {
+        t.plan( 2 );
+        
+        var headerSet = false;
+        var headerGot = '';
+        var headerExpected = 'XMLHttpRequest';
+        
+        // save to be able to restore later
+        var _setRequestHeader = OpenLayers.Request.XMLHttpRequest.prototype.setRequestHeader;
+        
+        OpenLayers.Request.XMLHttpRequest.prototype.setRequestHeader = function(field, value) {
+            if (field === 'X-Requested-With') {
+                headerSet = true;
+                headerGot = value;
+            }
+        };
+        
+        var req = OpenLayers.Request.issue({
+            url: location.href,
+            async: false
+        });
+                
+        t.ok( headerSet, 'We call the method "setRequestHeader" to set a "X-Requested-With"-header' );
+        t.eq( headerGot, headerExpected,  'The "X-Requested-With"-header is set to "' + headerExpected + '" as expected.' );
+        
+        // restore old setRequestHeader
+        OpenLayers.Request.XMLHttpRequest.prototype.setRequestHeader = _setRequestHeader;
     }
     </script>
 </head>

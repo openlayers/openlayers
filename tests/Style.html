@@ -176,9 +176,9 @@
         
         // c) test that label in returned symbolizer is a string even if property value is a number
         var symbolizer = style.createSymbolizer(
-            new OpenLayers.Feature.Vector(null, {foo: "bar", labelValue: 10})
+            new OpenLayers.Feature.Vector(null, {foo: "bar", labelValue: 0})
         );
-        t.eq(symbolizer.label, "10", "c) feature property cast to string when used as symbolizer label");
+        t.eq(symbolizer.label, "0", "c) feature property cast to string when used as symbolizer label");
 
     }
     
