@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers: Sketch handlers crossing the dateline</title>
+    <link rel="stylesheet" href="../../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="../../examples/style.css" type="text/css">
+    <style type="text/css">
+        #map {
+            height: 512px;
+        }
+    </style>
+
+    <script src="../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+
+// make map available for easy debugging
+var map;
+
+function init(){
+    map = new OpenLayers.Map('map');
+
+    var osm = new OpenLayers.Layer.OSM(
+        "OSM", null,
+        {wrapDateLine: true}
+    );
+    var extent = new OpenLayers.Bounds(15849982.183008, -11368938.517442, -14206280.326992, -1350184.3474419);
+    var wms = new OpenLayers.Layer.WMS( "world",
+        "/geoserver/wms",
+        {layers: 'world', transparent: true},
+        {maxExtent: extent}
+    );
+
+    map.addLayers([osm, wms]);
+
+    map.zoomToExtent(extent);
+}
+
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">OpenLayers overlays crossing the dateline test</h1>
+
+    <p id="shortdesc">
+        The overlay has an extent smaller than the world extent. The base layer
+        is configured with wrapDateLine set to true. New Zealand and a part of
+        Australia should always be visible on the map.
+    </p>
+    <div id="map" class="smallmap"></div>
+  </body>
+</html>
