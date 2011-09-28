@@ -168,13 +168,9 @@
     }
 
     function test_Control_DragFeature_move(t) {
-        t.plan(5);
+        t.plan(3);
         var map = new OpenLayers.Map("map");
         var layer = new OpenLayers.Layer.Vector();
-        layer.events.on({
-            'beforefeaturemodified': function(evt) { t.ok(true, "beforefeaturemodified is triggered on the layer"); },
-            'featuremodified': function(evt) { t.ok(true, "featuremodified is triggered on the layer"); }
-        });
         map.addLayer(layer);
         var control = new OpenLayers.Control.DragFeature(layer);
         map.addControl(control);
@@ -261,13 +257,10 @@
     }
     
     function test_Control_DragFeature_done(t) {
-        t.plan(3);
+        t.plan(2);
         var map = new OpenLayers.Map("map");
         var layer = new OpenLayers.Layer.Vector();
         map.addLayer(layer);
-        layer.events.on({
-            'afterfeaturemodified': function(evt) { t.ok(true, "afterfeaturemodified is triggered on the layer"); }
-        });
         var control = new OpenLayers.Control.DragFeature(layer);
         map.addControl(control);
 
