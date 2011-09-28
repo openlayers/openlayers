@@ -28,7 +28,7 @@ function init(){
     );
     var extent = new OpenLayers.Bounds(15849982.183008, -11368938.517442, -14206280.326992, -1350184.3474419);
     var wms = new OpenLayers.Layer.WMS( "world",
-        "/geoserver/wms",
+        "http://demo.opengeo.org/geoserver/wms",
         {layers: 'world', transparent: true},
         {maxExtent: extent}
     );
