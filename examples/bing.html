@@ -7,35 +7,37 @@
     <title>OpenLayers Bing Example</title>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
     <link rel="stylesheet" href="style.css" type="text/css">
-    <script src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2&amp;mkt=en-us"></script>
 
     <script src="../lib/OpenLayers.js"></script>
     <script>
 
+        // API key for http://openlayers.org. Please get your own at
+        // http://bingmapsportal.com/ and use that instead.
+        var apiKey = "AqTGBsziZHIJYYxgivLBf0hVdrAk9mWO5cQcb8Yux8sW5M8c8opEC2lZqKR1ZZXf";
         var map;
- 
-        function init(){
-            // setting restrictedExtent so that we can use the 
-            // VirtualEarth-layers, see e.g. 
-            // http://dev.openlayers.org/apidocs/files/OpenLayers/Layer/VirtualEarth-js.html
-            var restrictedExtent = new OpenLayers.Bounds(-180, -90, 
-                180, 90);
-            
+
+        function init() {
             map = new OpenLayers.Map("map");
             
             map.addControl(new OpenLayers.Control.LayerSwitcher());
 
-            var shaded = new OpenLayers.Layer.VirtualEarth("Shaded", {
-                type: VEMapStyle.Shaded
+            var road = new OpenLayers.Layer.Bing({
+                name: "Road",
+                key: apiKey,
+                type: "Road"
             });
-            var hybrid = new OpenLayers.Layer.VirtualEarth("Hybrid", {
-                type: VEMapStyle.Hybrid
+            var hybrid = new OpenLayers.Layer.Bing({
+                name: "Hybrid",
+                key: apiKey,
+                type: "AerialWithLabels"
             });
-            var aerial = new OpenLayers.Layer.VirtualEarth("Aerial", {
-                type: VEMapStyle.Aerial
+            var aerial = new OpenLayers.Layer.Bing({
+                name: "Aerial",
+                key: apiKey,
+                type: "Aerial"
             });
 
-            map.addLayers([shaded, hybrid, aerial]);
+            map.addLayers([road, hybrid, aerial]);
 
             map.setCenter(new OpenLayers.LonLat(-110, 45), 3);
         }
