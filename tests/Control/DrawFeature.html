@@ -37,6 +37,33 @@
         t.ok(!control.handler.multi, "handlerOptions.multi respected");
 
     }
+
+    function test_rendererOptions(t) {
+        t.plan(2);
+        
+        var map = new OpenLayers.Map("map");
+        var renderers = ["Canvas", "VML"];
+
+        var layer = new OpenLayers.Layer.Vector(null, {
+            renderers: renderers,
+            rendererOptions: {zIndexing: true},
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        
+        var control = new OpenLayers.Control.DrawFeature(
+            layer, OpenLayers.Handler.Polygon, {autoActivate: true}
+        );
+        map.addControl(control);
+
+        var sketchLayer = control.handler.layer;
+
+        t.eq(sketchLayer.renderers, renderers, "Preferred renderers");
+        t.eq(sketchLayer.rendererOptions.zIndexing, true, "renderer options");
+        
+        map.destroy();
+
+    }
     
     function test_drawFeature(t) {
         t.plan(3);
