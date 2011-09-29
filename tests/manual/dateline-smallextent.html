@@ -22,19 +22,29 @@ var map;
 function init(){
     map = new OpenLayers.Map('map');
 
-    var osm = new OpenLayers.Layer.OSM(
-        "OSM", null,
+    var base = new OpenLayers.Layer.WMS("marble", 
+        "http://demo.opengeo.org/geoserver/wms",
+        {layers: "topp:naturalearth"},
         {wrapDateLine: true}
     );
-    var extent = new OpenLayers.Bounds(15849982.183008, -11368938.517442, -14206280.326992, -1350184.3474419);
+    var extent = new OpenLayers.Bounds(142.3828125,-70.902270266175,233.6171875,-12.039326531729);
     var wms = new OpenLayers.Layer.WMS( "world",
         "http://demo.opengeo.org/geoserver/wms",
         {layers: 'world', transparent: true},
         {maxExtent: extent}
     );
+    
+    var poly = extent.toGeometry();
+    var vector = new OpenLayers.Layer.Vector();
+    poly.components[0].components.forEach(function(point) {
+        vector.addFeatures([
+            new OpenLayers.Feature.Vector(point)
+        ]);
+    })
 
-    map.addLayers([osm, wms]);
+    map.addLayers([base, wms, vector]);
 
+    map.addControl(new OpenLayers.Control.LayerSwitcher());
     map.zoomToExtent(extent);
 }
 
