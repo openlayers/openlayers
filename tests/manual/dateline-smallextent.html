@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>OpenLayers: Sketch handlers crossing the dateline</title>
+    <title>OpenLayers: Overlay layer extents crossing the dateline</title>
     <link rel="stylesheet" href="../../theme/default/style.css" type="text/css">
     <link rel="stylesheet" href="../../examples/style.css" type="text/css">
     <style type="text/css">
@@ -34,13 +34,10 @@ function init(){
         {maxExtent: extent}
     );
     
-    var poly = extent.toGeometry();
     var vector = new OpenLayers.Layer.Vector();
-    poly.components[0].components.forEach(function(point) {
-        vector.addFeatures([
-            new OpenLayers.Feature.Vector(point)
-        ]);
-    })
+    vector.addFeatures([
+        new OpenLayers.Feature.Vector(extent.toGeometry())
+    ]);
 
     map.addLayers([base, wms, vector]);
 
@@ -54,9 +51,10 @@ function init(){
     <h1 id="title">OpenLayers overlays crossing the dateline test</h1>
 
     <p id="shortdesc">
-        The overlay has an extent smaller than the world extent. The base layer
-        is configured with wrapDateLine set to true. New Zealand and a part of
-        Australia should always be visible on the map.
+        The overlay has an extent smaller than the world extent, but exceeds
+        the world extent. The base layer is configured with wrapDateLine set to
+        true. The area inside the orange rectangle should always contain tiles
+        from the world layer, regardless of the zoom level.
     </p>
     <div id="map" class="smallmap"></div>
   </body>
