@@ -41,8 +41,11 @@
             {wrapDateLine: true}
         );
         
+        // allow testing of specific renderers via "?renderer=Canvas", etc
+        var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+        renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
 
-        var vector = new OpenLayers.Layer.Vector("Editable Vectors", {renderers: ["Canvas"]});
+        var vector = new OpenLayers.Layer.Vector("Editable Vectors", {renderers: renderer});
 
         map.addLayers([base, vector]);
         
