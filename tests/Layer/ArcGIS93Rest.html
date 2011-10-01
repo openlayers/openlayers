@@ -75,8 +75,8 @@
         t.eq( tile.url,
              url + "?" + OpenLayers.Util.getParameterString(tParams),
              "image src is created correctly via addtile" );
-        t.eq( tile.frame.style.top, "6px", "image top is set correctly via addtile" );
-        t.eq( tile.frame.style.left, "5px", "image top is set correctly via addtile" );
+        t.eq( tile.frame.style.top, "6%", "image top is set correctly via addtile" );
+        t.eq( tile.frame.style.left, "5%", "image top is set correctly via addtile" );
 
         var firstChild = layer.div.firstChild.firstChild;
         t.eq( firstChild.nodeName.toLowerCase(), "img", "div first child is an image object" );

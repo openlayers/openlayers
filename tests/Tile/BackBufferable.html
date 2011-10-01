@@ -80,7 +80,7 @@
         tile.isLoading = false;
         map.zoomIn();
         tile.updateBackBuffer();
-        t.eq(tile.backBufferData.tile.style.width, (layer.tileSize.w*2)+"px",
+        t.eq(tile.backBufferData.tile.style.width, (layer.tileSize.w*2)+"%",
              "backBuffer frame correctly resized");
         map.removeLayer(layer);
         map.destroy();
@@ -106,6 +106,120 @@
         map.destroy();
     }
         
+    function test_updateBackBuffer_scaled_layer(t) {
+        t.plan(16);
+
+        //
+        // set up
+        //
+
+        var backBuffer;
+
+        var map = new OpenLayers.Map('map', {
+            resolutions: [32, 16, 8, 4, 2, 1]
+        });
+
+        var serverResolitions = layer.serverResolutions;
+        layer.serverResolutions = [32, 16, 8];
+
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 2);
+
+        tile = new OpenLayers.Tile.Image(layer, position, bounds, null);
+        tile.backBufferMode = 2; // transition effect
+
+        // mock createBackBuffer to avoid removing the image
+        // div from the tile
+        tile.insertBackBuffer = function() {
+            return this.frame.cloneNode(false);
+        };
+        tile.removeBackBuffer = function() {
+        };
+
+        //
+        // test
+        //
+
+        tile.draw();
+        // check initial state
+        t.eq(tile.backBufferData.resolution, 8,
+             'resolution 8 is set in the back buffer data');
+
+        tile.isLoading = false;
+
+        // change resolution from 8 to 4
+        map.zoomTo(3);
+        backBuffer = tile.updateBackBuffer();
+        t.ok(backBuffer == undefined,
+            '[8->4] updateBackBuffer returns undefined');
+
+        // change resolution from 8 to 2
+        map.zoomTo(2); tile.setBackBufferData(); map.zoomTo(4);
+        backBuffer = tile.updateBackBuffer();
+        t.ok(backBuffer == undefined,
+            '[8->2] updateBackBuffer returns undefined');
+
+        // change resolution from 16 to 4
+        map.zoomTo(1); tile.setBackBufferData(); map.zoomTo(3);
+        backBuffer = tile.updateBackBuffer();
+        t.ok(backBuffer != undefined,
+             '[16->4] updateBackBuffer returns a back buffer tile');
+        t.eq(backBuffer.style.width, '512%',
+             '[16->4] back buffer width is as expected');
+        t.eq(backBuffer.style.width, '512%',
+             '[16->4] back buffer height is as expected');
+
+        // change resolution from 32 to 1
+        map.zoomTo(0); tile.setBackBufferData(); map.zoomTo(5);
+        backBuffer = tile.updateBackBuffer();
+        t.ok(backBuffer != undefined,
+             '[32->1] updateBackBuffer returns a back buffer tile');
+        t.eq(backBuffer.style.width, '1024%',
+             '[32->1] back buffer width is as expected');
+        t.eq(backBuffer.style.width, '1024%',
+             '[32->1] back buffer height is as expected');
+
+        // change resolution from 4 to 2
+        map.zoomTo(3); tile.setBackBufferData(); map.zoomTo(4);
+        backBuffer = tile.updateBackBuffer();
+        t.ok(backBuffer == undefined,
+            '[4->2] updateBackBuffer returns undefined');
+
+        // change resolution from 4 to 1
+        map.zoomTo(3); tile.setBackBufferData(); map.zoomTo(5);
+        backBuffer = tile.updateBackBuffer();
+        t.ok(backBuffer == undefined,
+            '[4->1] updateBackBuffer returns undefined');
+
+        // change resolution from 1 to 4
+        map.zoomTo(5); tile.setBackBufferData(); map.zoomTo(3);
+        backBuffer = tile.updateBackBuffer();
+        t.ok(backBuffer == undefined,
+             '[1->4] updateBackBuffer returns undefined');
+
+        // change resolution from 4 to 8
+        map.zoomTo(3); tile.setBackBufferData(); map.zoomTo(2);
+        backBuffer = tile.updateBackBuffer();
+        t.ok(backBuffer == undefined,
+             '[4->8] updateBackBuffer returns undefined');
+
+        // change resolution from 4 to 16
+        map.zoomTo(3); tile.setBackBufferData(); map.zoomTo(1);
+        backBuffer = tile.updateBackBuffer();
+        t.ok(backBuffer != undefined,
+             '[4->16] updateBackBuffer returns a back buffer tile');
+        t.eq(backBuffer.style.width, '128%',
+             '[4->16] back buffer width is as expected');
+        t.eq(backBuffer.style.width, '128%',
+             '[4->16] back buffer height is as expected');
+
+        //
+        // tear down
+        //
+
+        map.removeLayer(layer);
+        map.destroy();
+    }
   </script>
 </head>
 <body>

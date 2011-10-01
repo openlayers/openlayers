@@ -258,6 +258,37 @@
                 t.ok( layer2.grid == null, "tiles appropriately destroyed");
                 map.destroy();
             }    
+
+            function test_getIdentifier(t) {
+                t.plan(2);
+
+                var map = new OpenLayers.Map('map');
+                var layer, identifier;
+
+                layer = new OpenLayers.Layer.WMTS({
+                    name: "Blue Marble WMTS",
+                    url: "http://example.com/wmts/",
+                    layer: "world",
+                    style: "blue_marble",
+                    matrixSet: "arcgis_online",
+                    tileSize: new OpenLayers.Size(512, 512),
+                    requestEncoding: "REST",
+                });
+                map.addLayer(layer);
+                map.setCenter(new OpenLayers.LonLat(0,0), 5);
+
+                layer.zoomOffset = 2;
+                identifier = layer.getIdentifier();
+                t.eq(identifier, 7, '[zoomOffset] getIdentifier return value is correct');
+
+                layer.serverResolutions = ['offset', 1.40625, 0.703125, 0.3515625, 0.17578125,
+                                           0.087890625, 0.0439453125];
+                identifier = layer.getIdentifier();
+                t.eq(identifier, 6, '[serverResolutions] getIdentifier return value is correct');
+
+                map.destroy();
+            }
+
         </script>
     </head>
     <body>

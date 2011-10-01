@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>OpenLayers Client Zoom Example</title>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css"/>
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <script src="../lib/Firebug/firebug.js"></script>
+        <script src="../lib/OpenLayers.js"></script>
+        <script src="clientzoom.js"></script>
+        <style>
+            .olControlAttribution {
+                bottom: 5px;
+            }
+            #map {
+                width: 512px;
+                height: 512px;
+            }
+            #docs {
+                width: 512px;
+            }
+        </style>
+    </head>
+    <body onload="init();">
+        <h1 id="title">Client Zoom</h1>
+        <div id="tags">
+            client zoom continuous zooming
+        </div>
+        <p id="shortdesc">
+
+            This example demonstrates the <strong>"client zoom"</strong>
+            functionality, where OpenLayers stretches the layer div if the
+            current resolution isn't supported by that layer's tile server.
+
+        </p>
+
+        <div id="map"></div>
+
+        <div id="docs">
+
+            <p>
+
+                This map is configured with 22 resolutions, while the OSM tile
+                server supports only the first 19 resolutions. When the zoom
+                level is 19, 20 or 22 "client zoom" is applied on the OSM
+                layer, i.e. the OSM layer div is stretched as necessary.
+
+            </p>
+
+            <p>
+
+                The map's initial zoom is 18. So if you zoom in using the zoom
+                bar's "+" button you'll see that "client zoom" is applied.
+
+            </p>
+
+            <p>
+
+                The map is even configured with <code>fractionalZoom</code> set
+                to true. So "client zoom" also applies if you choose arbitrary
+                zoom levels using the slider of the zoom bar, or shift-drag
+                boxes to zoom to arbitrary extents.
+
+            </p>
+
+            <p>
+
+            Enabling "client zoom" on a layer is done through the
+            <code>serverResolutions</code> option. See the <a
+                href="clientzoom.js" target="_blank"> clientzoom.js source</a>
+            to see how this is done.
+
+            </p>
+        </div>
+    </body>
+</html>
