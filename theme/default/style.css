@@ -90,12 +90,7 @@ div.olControlMousePosition {
     -moz-border-radius: 1em 0 0 0;
 }
 
-.olControlOverviewMapMinimizeButton {
-    right: 0;
-    bottom: 80px;
-    cursor: pointer;
-}    
-
+.olControlOverviewMapMinimizeButton,
 .olControlOverviewMapMaximizeButton {
     right: 0;
     bottom: 80px;
