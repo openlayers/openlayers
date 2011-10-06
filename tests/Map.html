@@ -692,9 +692,12 @@
                     {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'} 
                     );
 
-        map.addLayers([layer,layer]);
-        
-        t.eq( map.layers.length, 1, "Map does not allow double adding of layers." );
+        map.addLayers([layer]);
+        try {
+            map.addLayers([layer]);
+        } catch(e) {
+            t.ok(true, "Map does not allow double adding of layers." );
+        }
     
         map.destroy();
     }
