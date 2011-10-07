@@ -15,11 +15,8 @@
                 bottom: 5px;
             }
             #map {
-                width: 512px;
-                height: 512px;
-            }
-            #docs {
-                width: 512px;
+                width: 600px;
+                height: 400px;
             }
         </style>
     </head>
@@ -31,8 +28,8 @@
         <p id="shortdesc">
 
             This example demonstrates the <strong>"client zoom"</strong>
-            functionality, where OpenLayers stretches the layer div if the
-            current resolution isn't supported by that layer's tile server.
+            functionality, where OpenLayers stretches the layer div when the
+            resolution is not supported by that layer's tile service.
 
         </p>
 
@@ -42,35 +39,32 @@
 
             <p>
 
-                This map is configured with 22 resolutions, while the OSM tile
-                server supports only the first 19 resolutions. When the zoom
-                level is 19, 20 or 22 "client zoom" is applied on the OSM
-                layer, i.e. the OSM layer div is stretched as necessary.
+            The map of this example is configured with 22 resolutions, while
+            the OSM tile server supports the first 19 resolutions only. When
+            the zoom level is 19, 20 or 21 "client zoom" is applied to the OSM
+            layer, i.e. the OSM layer div is stretched as necessary.  The map's
+            initial zoom is 18. So if you zoom in using the zoom bar's "+"
+            button you'll effectively trigger "client zoom".
 
             </p>
 
             <p>
 
-                The map's initial zoom is 18. So if you zoom in using the zoom
-                bar's "+" button you'll see that "client zoom" is applied.
+            For demonstration purpose the map of this example has
+            <code>fractionalZoom</code> set to true. So "client zoom" also
+            applies if you choose arbitrary zoom levels using the slider of the
+            zoom bar, or shift-drag boxes to zoom to arbitrary extents.
+            "client zoom" therefore allows continous zooming for tiled layers.
 
             </p>
 
             <p>
 
-                The map is even configured with <code>fractionalZoom</code> set
-                to true. So "client zoom" also applies if you choose arbitrary
-                zoom levels using the slider of the zoom bar, or shift-drag
-                boxes to zoom to arbitrary extents.
-
-            </p>
-
-            <p>
-
-            Enabling "client zoom" on a layer is done through the
-            <code>serverResolutions</code> option. See the <a
-                href="clientzoom.js" target="_blank"> clientzoom.js source</a>
-            to see how this is done.
+            Enabling "client zoom" on a layer is done by passing
+            <code>serverResolutions</code> to the layer constructor.
+            <code>serverResolutions</code> is the list of resolutions supported
+            by the tile service. See the <a href="clientzoom.js"
+                target="_blank"> clientzoom.js source</a>.
 
             </p>
         </div>
