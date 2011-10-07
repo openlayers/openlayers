@@ -35,7 +35,7 @@
     
     function test_Date_parse(t) {
         
-        t.plan(93);
+        t.plan(114);
         
         var cases = {
             "2000": {
@@ -127,6 +127,18 @@
                 minutes: 51,
                 seconds: 25,
                 milliseconds: 123
+            },
+            "2000Z": { // lenient (Chrome accepts this)
+                year: 2000
+            },
+            "2000-02Z": { // lenient (Chrome accepts this)
+                year: 2000,
+                month: 1
+            },
+            "2000-04-15Z": { // lenient (Chrome accepts this)
+                year: 2000,
+                month: 3,
+                date: 15
             }
         };
 
