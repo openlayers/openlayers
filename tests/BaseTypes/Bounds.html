@@ -594,7 +594,7 @@
     }
 
     function test_Bounds_add(t) {
-        t.plan( 8 );
+        t.plan( 6 );
 
         origBounds = new OpenLayers.Bounds(1,2,3,4);
         testBounds = origBounds.clone();
@@ -606,19 +606,19 @@
         t.ok( bounds.equals(b), "bounds is set correctly");
         
     //null values
-        OpenLayers.Lang.setCode('en');
-        var desiredMsg = "You must pass both x and y values to the add function.";
-        OpenLayers.Console.error = function(msg) {
-            t.eq(msg, desiredMsg, "error correctly reported");
+        try {
+            bounds = testBounds.add(null, 50);
+        } catch(e) {
+            t.ok("exception thrown when passing null value to add()");
         }
-    
-        bounds = testBounds.add(null, 50);
         t.ok( testBounds.equals(origBounds), "testBounds is not modified by erroneous add operation (null x)");
-        t.ok(bounds == null, "returns null on erroneous add operation (null x)");
  
-        bounds = testBounds.add(5, null);
+        try {
+            bounds = testBounds.add(5, null);
+        } catch(e) {
+            t.ok("exception thrown when passing null value to add()");
+        }            
         t.ok( testBounds.equals(origBounds), "testBounds is not modified by erroneous add operation (null y)");
-        t.ok(bounds == null, "returns null on erroneous add operation (null y)");
     }
 
     function test_Bounds_scale(t) {

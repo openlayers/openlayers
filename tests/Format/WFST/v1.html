@@ -133,6 +133,28 @@
             t.xml_eq(got, expected, snippet + " request without geometry created correctly");
         }
     }
+    
+    function test_setFilterProperty(t) {
+        t.plan(2);
+        var format = new OpenLayers.Format.WFST({
+            geometryName: "foo"
+        });
+        var filter = new OpenLayers.Filter.Logical({
+            type: OpenLayers.Filter.Logical.AND,
+            filters: [new OpenLayers.Filter.Spatial({
+                type: OpenLayers.Filter.Spatial.BBOX,
+                value: new OpenLayers.Bounds(1,2,3,4)
+            }), new OpenLayers.Filter.Spatial({
+                type: OpenLayers.Filter.Spatial.DWITHIN,
+                property: "bar",
+                value: new OpenLayers.Geometry.Point(1,2),
+                distance: 10
+            })]
+        });
+        format.setFilterProperty(filter);
+        t.eq(filter.filters[0].property, "foo", "property set if not set on filter");
+        t.eq(filter.filters[1].property, "bar", "property not set if set on filter");
+    }
 
     function test_update_null_geometry(t) {
         var format = new OpenLayers.Format.WFST({

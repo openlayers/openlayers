@@ -22,12 +22,15 @@
         }
     </style>
 
-    <script src='http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.1'></script>
     <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
     <script src="http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=euzuro-openlayers"></script>
 
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
+
+// API key for http://openlayers.org. Please get your own at
+// http://bingmapsportal.com/ and use that instead.
+var apiKey = "AqTGBsziZHIJYYxgivLBf0hVdrAk9mWO5cQcb8Yux8sW5M8c8opEC2lZqKR1ZZXf";
 
 // make map available for easy debugging
 var map;
@@ -65,19 +68,19 @@ function init(){
         {type: G_HYBRID_MAP, sphericalMercator: true}
     );
 
-    // create Virtual Earth layers
-    var veroad = new OpenLayers.Layer.VirtualEarth(
-        "Virtual Earth Roads",
-        {'type': VEMapStyle.Road, sphericalMercator: true}
-    );
-    var veaer = new OpenLayers.Layer.VirtualEarth(
-        "Virtual Earth Aerial",
-        {'type': VEMapStyle.Aerial, sphericalMercator: true}
-    );
-    var vehyb = new OpenLayers.Layer.VirtualEarth(
-        "Virtual Earth Hybrid",
-        {'type': VEMapStyle.Hybrid, sphericalMercator: true}
-    );
+    // create Bing layers
+    var veroad = new OpenLayers.Layer.Bing({
+        key: apiKey,
+        type: "Road"
+    });
+    var veaer = new OpenLayers.Layer.Bing({
+        key: apiKey,
+        type: "Aerial"
+    });
+    var vehyb = new OpenLayers.Layer.Bing({
+        key: apiKey,
+        type: "AerialWithLabels"
+    });
 
     // create Yahoo layer
     var yahoo = new OpenLayers.Layer.Yahoo(

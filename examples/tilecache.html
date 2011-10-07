@@ -32,17 +32,6 @@
             map.addLayer(layer);
             map.setCenter(new OpenLayers.LonLat(0, 0), 0);
         }
-
-        OpenLayers.Util.onImageLoadError = function() {
-            /**
-             * For images that don't exist in the cache, you can display
-             * a default image - one that looks like water for example.
-             * To show nothing at all, leave the following lines commented out.
-             */
-
-            //this.src = "../img/blank.gif";
-            //this.style.display = "";
-        };
     </script>
   </head>
   <body onload="init()">
