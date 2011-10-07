@@ -300,8 +300,8 @@
         map.destroy();
     }
     
-    function test_createBackBuffer(t) {
-        t.plan(3);
+    function test_insertBackBuffer(t) {
+        t.plan(4);
 
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
@@ -310,8 +310,9 @@
         map.setCenter(new OpenLayers.LonLat(0,0), 5);
         var tile = layer.grid[0][0];
         var img = tile.imgDiv;
-        var backBuffer = tile.createBackBuffer();
+        var backBuffer = tile.insertBackBuffer();
         t.eq(backBuffer.style.left, tile.frame.style.left, "backBuffer tile has same left style as frame");
+        t.ok(backBuffer.parentNode === layer.div, "backBuffer inserted into layer div");
         t.ok(backBuffer.firstChild === img, "image appended to backBuffer");
         t.ok(tile.imgDiv == null, "image reference removed from tile");
         map.destroy();
