@@ -348,7 +348,7 @@
         );
         t.eq(
             log.options && log.options.params.STYLES.join(","),
-            "a,b,c,d,a,b,c,d,,,,,,,,",
+            ",,,,,,,,a,b,c,d,a,b,c,d",
             "Styles merged correctly"
         );
 
@@ -424,7 +424,7 @@
         control.layerUrls = ["http://a.mirror/wms", "http://b.mirror/wms"];
         control.getInfoForClick({xy: {x: 50, y: 50}});
         t.eq(log.options && log.options.url, "http://host/wms", "some match, request issued");
-        t.eq(log.options && log.options.params["QUERY_LAYERS"].join(","), "a,b", "selected layers queried");
+        t.eq(log.options && log.options.params["QUERY_LAYERS"].join(","), "b,a", "selected layers queried");
 
         // show that a layer can be matched if it has a urls array itself (first needs to be matched)
         log = {};
@@ -508,13 +508,13 @@
         var _request = OpenLayers.Request.GET;
         OpenLayers.Request.GET = function(options) {
             count++;
-            if (count == 1) {
+            if (count == 2) {
                 t.eq(options.params["INFO_FORMAT"], "application/vnd.ogc.gml", "Default info format of the control is used");
-                t.eq(options.params["QUERY_LAYERS"].join(","), "a,c", "Layers should be grouped by service url");
-                t.eq(options.url, "http://localhost/wms", "Correct url used for first request");
-            } else if (count == 2) {
+                t.eq(options.params["QUERY_LAYERS"].join(","), "c,a", "Layers should be grouped by service url");
+                t.eq(options.url, "http://localhost/wms", "Correct url used for second request");
+            } else if (count == 1) {
                 t.eq(options.params["INFO_FORMAT"], "text/xml", "Overridden info format is used instead of the control's infoFormat");
-                t.eq(options.url, "http://myhost/wms", "Correct url used for second request");
+                t.eq(options.url, "http://myhost/wms", "Correct url used for first request");
             }
         };
         click.activate();
