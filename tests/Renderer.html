@@ -53,6 +53,21 @@
         t.eq(resolution, map.getResolution(), "resolution matches the map resolution");
         t.eq(r.resolution, resolution, "resolution is correctly set");
     }
+    
+    function test_calculateFeatureDx(t) {
+        t.plan(4);
+        var r = new OpenLayers.Renderer();
+        r.extent = new OpenLayers.Bounds(177, -2, 183, 2);
+        var worldBounds = new OpenLayers.Bounds(-180,-90,180,90);
+        r.calculateFeatureDx(new OpenLayers.Bounds(179,-1,181,1), worldBounds);
+        t.eq(r.featureDx, 0, "no offset for feature inside extent");
+        r.calculateFeatureDx(new OpenLayers.Bounds(-181,-1,-179,1), worldBounds);
+        t.eq(r.featureDx, -360, "negative offset for feature on other end of world");
+        r.calculateFeatureDx(new OpenLayers.Bounds(359,-1,361,1), worldBounds);
+        t.eq(r.featureDx, 360, "positive offset for feature that is one world away");
+        r.calculateFeatureDx(new OpenLayers.Bounds(719,-1,721,1), worldBounds);
+        t.eq(r.featureDx, 720, "correct offset for feature that is two worlds away");
+    }
 
     function test_Renderer_destroy(t) {
         t.plan(5);
