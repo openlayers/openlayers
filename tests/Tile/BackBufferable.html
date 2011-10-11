@@ -3,41 +3,67 @@
   <script src="../OLLoader.js"></script>
   <script type="text/javascript">
     var tile;
-    var layer = new OpenLayers.Layer.WMS(
+
+    var map, layer;
+    function setUp() {
+        map = new OpenLayers.Map("map");
+        layer = new OpenLayers.Layer.WMS(
             "WMS",
             window.location.href + "#",
             null,
-            {transitionEffect: "resize"}); 
+            {transitionEffect: "resize"}
+        );
+        map.addLayer(layer)
+        map.setCenter(new OpenLayers.LonLat(0, 0));
+    }
+
+    function tearDown() {
+        map.destroy();
+        map = null;
+        layer = null;
+    }
+
+
     var position = new OpenLayers.Pixel(20,30);
     var bounds = new OpenLayers.Bounds(1,2,3,4);
-
     
     function test_initialize (t) {
         t.plan(2);
-        
+        setUp();
+
         tile = new OpenLayers.Tile.Image(layer, position, bounds, null);
         t.eq(tile.backBufferData, {}, "back buffer data initialized");
         t.eq(tile.size.w, 256, "size object with default width created");
+        
+        tearDown();
     }
     
     function test_backBufferMode(t) {
         t.plan(4);
 
         var l;
-
+        
+        var map = new OpenLayers.Map("map");
         l = new OpenLayers.Layer.WMS('', window.location.href + '#');
+        map.addLayer(l);
+        map.zoomToMaxExtent();
+        
         tile = new OpenLayers.Tile.Image(l, position, bounds, null);
         t.eq(tile.backBufferMode, 0,
              'backBufferMode correctly set [tiled]');
 
         l = new OpenLayers.Layer.WMS('', window.location.href + '#',
                                      null, {singleTile: true});
+        map.addLayer(l);
+
+
         tile = new OpenLayers.Tile.Image(l, position, bounds, null);
         t.eq(tile.backBufferMode, 1,
              'backBufferMode correctly set [singleTile]');
 
         l = new OpenLayers.Layer.WMS('', window.location.href + '#',
                                      null, {transitionEffect: 'resize'});
+        map.addLayer(l);
         tile = new OpenLayers.Tile.Image(l, position, bounds, null);
         t.eq(tile.backBufferMode, 2,
              'backBufferMode correctly set [tiled, transition]');
@@ -45,17 +71,18 @@
         l = new OpenLayers.Layer.WMS('', window.location.href + '#',
                                      null, {singleTile: true,
                                             transitionEffect: 'resize'});
+        map.addLayer(l);
         tile = new OpenLayers.Tile.Image(l, position, bounds, null);
         t.eq(tile.backBufferMode, 3,
              'backBufferMode correctly set [singleTile, transition]');
+        map.destroy();
     }
 
     function test_setBackBufferData(t) {
         t.plan(2);
+        
+        setUp();
 
-        var map = new OpenLayers.Map("map");
-        map.addLayer(layer);
-        map.zoomToMaxExtent();
         tile = new OpenLayers.Tile.Image(layer, position, bounds, null);
         tile.draw();
         // moveTo calls setBackBufferData
@@ -65,16 +92,15 @@
              "bounds stored correctly");
         t.eq(tile.backBufferData.resolution, map.getResolution(),
              "resolution stored correctly");
-        map.removeLayer(layer);
-        map.destroy();
+        
+        tearDown();
+        
     }
     
     function test_updateBackBuffer(t) {
         t.plan(1);
-        
-        var map = new OpenLayers.Map("map");
-        map.addLayer(layer);
-        map.zoomToMaxExtent();
+        setUp();
+
         tile = new OpenLayers.Tile.Image(layer, position, bounds, null);
         tile.draw();
         tile.isLoading = false;
@@ -82,15 +108,14 @@
         tile.updateBackBuffer();
         t.eq(tile.backBufferData.tile.style.width, (layer.tileSize.w*2)+"%",
              "backBuffer frame correctly resized");
-        map.removeLayer(layer);
-        map.destroy();
+             
+        tearDown();
     }
     
     function test_removeBackBuffer(t) {
         t.plan(2);
-        var map = new OpenLayers.Map("map");
-        map.addLayer(layer);
-        map.zoomToMaxExtent();
+        setUp();
+
         tile = new OpenLayers.Tile.Image(layer, position, bounds, null);
         tile.draw();
         tile.isLoading = false;
@@ -102,8 +127,8 @@
              "backBuffer reference removed");
         t.ok(backBuffer.parentNode !== layer.div,
              "backBuffer removed from layer");
-        map.removeLayer(layer);
-        map.destroy();
+             
+        tearDown();
     }
         
     function test_updateBackBuffer_scaled_layer(t) {
@@ -118,6 +143,13 @@
         var map = new OpenLayers.Map('map', {
             resolutions: [32, 16, 8, 4, 2, 1]
         });
+        var layer = new OpenLayers.Layer.WMS(
+            "WMS",
+            window.location.href + "#",
+            null,
+            {transitionEffect: "resize"}
+        );
+        
 
         var serverResolitions = layer.serverResolutions;
         layer.serverResolutions = [32, 16, 8];
