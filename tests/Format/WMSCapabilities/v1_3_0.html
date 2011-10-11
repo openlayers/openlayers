@@ -14,7 +14,7 @@
 
     function test_layers(t) {
 
-        t.plan(24);
+        t.plan(25);
 
         var xml = document.getElementById("ogcsample").firstChild.nodeValue;
         var doc = new OpenLayers.Format.XML().read(xml);
@@ -40,7 +40,7 @@
         t.eq(layers["Temperature"].srs,
              {"CRS:84": true},
              "Inheritance of SRS handled correctly when redeclaring an inherited SRS");
-
+        t.eq(layers["Temperature"].infoFormats, ["text/xml", "text/plain", "text/html"], "infoFormats set correctly on layer");
         var bbox = layers["ROADS_RIVERS"].bbox["EPSG:26986"];
         t.eq(bbox.bbox,
              [189000, 834000, 285000, 962000],

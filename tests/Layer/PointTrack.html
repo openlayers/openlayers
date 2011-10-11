@@ -66,7 +66,7 @@
         t.eq(layer.map.layers.length, 1, "layer added to the map successfully");
         layer.destroy();
         t.eq(layer.map, null, "layer.map is null after destroy");
-        t.eq(layer.getFeatureFromEvent({'target':'map'}), null, "getFeatureIdFromEvent doesn't cause an error when called on layer which has been destroyed.");
+        t.ok(!layer.renderer, "layer.renderer is falsey after destroy");
     }
 
 
