@@ -3,11 +3,27 @@
   <script src="../OLLoader.js"></script>
   <script type="text/javascript">
     var tile; 
+
+    var map, layer;
+    function setUp() {
+        map = new OpenLayers.Map("map");
+        layer = new OpenLayers.Layer(null, {
+            isBaseLayer: true
+        });
+        map.addLayer(layer)
+        map.setCenter(new OpenLayers.LonLat(0, 0));
+    }
+    
+    function tearDown() {
+        map.destroy();
+        map = null;
+        layer = null;
+    }
     
     function test_Tile_WFS_constructor (t) {
         t.plan( 8 );
+        setUp();
      
-        var layer = {}; // bogus layer
         var position = new OpenLayers.Pixel(10,20);
         var bounds = new OpenLayers.Bounds(1,2,3,4);
         var url = "bobob";
@@ -16,7 +32,7 @@
         tile = new OpenLayers.Tile.WFS(layer, position, bounds, url, size);
 
         t.ok( tile instanceof OpenLayers.Tile.WFS, "new OpenLayers.Tile.WFS returns Tile.WFS object" );
-        t.eq( tile.layer, layer, "tile.layer set correctly");
+        t.ok( tile.layer === layer, "tile.layer set correctly");
         t.ok( tile.position.equals(position), "tile.position set correctly");
         t.ok( tile.bounds.equals(bounds), "tile.bounds set correctly");
         t.eq( tile.url, url, "tile.url set correctly");        
@@ -24,10 +40,13 @@
 
         t.ok( tile.id != null, "tile is given an id");
         t.ok( tile.events != null, "tile's events intitialized");
+        
+        tearDown();
     }
 
     function test_Tile_WFS_requestSuccess(t) {
         t.plan(2);
+        setUp();
 
         var tile = {
             'request': {}
@@ -37,12 +56,6 @@
         
         t.ok(tile.request == null, "request property on tile set to null");
 
-        var layer = {
-            SUPPORTED_TRANSITIONS: [],
-            events: {
-                unregister: function() {}
-            }
-        }; // bogus layer
         var position = new OpenLayers.Pixel(10,20);
         var bounds = new OpenLayers.Bounds(1,2,3,4);
         var url = "bobob";
@@ -53,6 +66,7 @@
         tile.requestSuccess({'requestText': '<xml><foo /></xml>'});
         t.ok(true, "Didn't fail after calling requestSuccess on destroyed tile.");
         
+        tearDown();
     }
     
     function test_Tile_WFS_loadFeaturesForRegion(t) {
@@ -88,13 +102,8 @@
     
     function test_Tile_WFS_destroy(t) {
         t.plan(9);
+        setUp();
 
-        var layer = {
-            SUPPORTED_TRANSITIONS: [],
-            events: {
-                unregister: function() {}
-            }
-        }; // bogus layer
         var position = new OpenLayers.Pixel(10,20);
         var bounds = new OpenLayers.Bounds(1,2,3,4);
         var url = "bobob";
@@ -127,6 +136,8 @@
         
         tile.requestSuccess({'requestText': '<xml><foo /></xml>'});
         t.ok(true, "Didn't fail after calling requestSuccess on destroyed tile.");
+        
+        tearDown();
     }
     function test_nonxml_format(t) {
         t.plan(1);
