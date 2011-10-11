@@ -575,7 +575,7 @@
     }
 
     function test_Layer_Vector_destroy (t) {
-        t.plan(5);    
+        t.plan(6);    
 
         var options = {protocol: new OpenLayers.Protocol(), 
                        strategies: [new OpenLayers.Strategy(), new OpenLayers.Strategy()]}
@@ -584,8 +584,14 @@
         map.addLayer(layer);
         layer.destroy();
         t.eq(layer.map, null, "layer.map is null after destroy");
-        t.eq(layer.getFeatureFromEvent({'target':'map'}), null, 
-            "getFeatureIdFromEvent doesn't cause an error when called on layer which has been destroyed.");
+        t.ok(!layer.renderer, "layer.renderer is falsey");
+        var err;
+        try {
+            layer.getFeatureFromEvent({target: "map"});
+        } catch (ex) {
+            err = ex;
+        }
+        t.ok(err, "Error thrown when calling getFeatureFromEvent on destroyed layer");
 
         t.eq(layer.protocol, null, "layer.protocol is null after destroy");
         t.eq(layer.strategies, null, "layer.strategies is null after destroy");
