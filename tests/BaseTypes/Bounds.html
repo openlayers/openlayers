@@ -124,6 +124,43 @@
         t.eq( bounds.containsLonLat(ll), bounds.contains(ll.lon, ll.lat), "containsLonLat works");
 
     }
+    
+    function test_containsLonLat_wraped(t) {
+        
+        var worldBounds = new OpenLayers.Bounds(-180, -90, 180, 90);
+
+        var cases = [{
+            ll: [0, 0], bbox: [-10, -10, 10, 10], contained: true
+        }, {
+            ll: [20, 0], bbox: [-10, -10, 10, 10], contained: false
+        }, {
+            ll: [360, 0], bbox: [-10, -10, 10, 10], contained: true
+        }, {
+            ll: [380, 0], bbox: [-10, -10, 10, 10], contained: false
+        }, {
+            ll: [725, 5], bbox: [-10, -10, 10, 10], contained: true
+        }, {
+            ll: [-355, -5], bbox: [-10, -10, 10, 10], contained: true
+        }, {
+            ll: [-715, 5], bbox: [-10, -10, 10, 10], contained: true
+        }, {
+            ll: [-735, 5], bbox: [-10, -10, 10, 10], contained: false
+        }, {
+            ll: [-180 * 50, 5], bbox: [-10, -10, 10, 10], contained: true
+        }];
+        
+        var len = cases.length;
+        t.plan(len);
+        
+        var c, bounds, loc;
+        for (var i=0; i<len; ++i) {
+            c = cases[i];
+            loc = new OpenLayers.LonLat(c.ll[0], c.ll[1]);
+            bounds = new OpenLayers.Bounds.fromArray(c.bbox);
+            t.eq(bounds.containsLonLat(loc, {worldBounds: worldBounds}), c.contained, "case " + i);
+        }
+        
+    }
 
     function test_Bounds_fromString(t) {
        t.plan( 12 );
@@ -555,7 +592,8 @@
     //straddling right
         testBounds = simpleBounds.add(10,0);
         wrappedBounds = testBounds.wrapDateLine(maxExtent);
-        t.ok(wrappedBounds.equals(testBounds), "wrapping a bounds that straddles the right of maxextent does nothing");
+        desiredBounds = testBounds.add(-maxExtent.getWidth(), 0)
+        t.ok(wrappedBounds.equals(desiredBounds), "wrapping a bounds that straddles the right of maxextent moves extent to left side of the world");
     
     //right leftTolerance
         testBounds = simpleBounds.add(14,0);

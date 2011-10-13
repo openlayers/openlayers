@@ -5,12 +5,27 @@
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var tile; 
     
+    var map, layer;
+    function setUp() {
+        map = new OpenLayers.Map("map");
+        layer = new OpenLayers.Layer(null, {
+            isBaseLayer: true
+        });
+        map.addLayer(layer)
+        map.setCenter(new OpenLayers.LonLat(0, 0));
+    }
+    
+    function tearDown() {
+        map.destroy();
+        map = null;
+        layer = null;
+    }
+
     function test_Tile_Image_constructor (t) {
         t.plan( 6 );
         
-        var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-            "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}); 
-
+        setUp();
+        
         var position = new OpenLayers.Pixel(20,30);
         var bounds = new OpenLayers.Bounds(1,2,3,4);
         var url = "http://www.openlayers.org/dev/tests/tileimage";
@@ -23,6 +38,8 @@
         t.ok( tile.bounds.equals(bounds), "tile.bounds is set correctly");
         t.eq( tile.url, url, "tile.url is set correctly");
         t.ok( tile.size.equals(size), "tile.size is set correctly");
+        
+        tearDown();
     }
 
     function test_destroy_observers(t) {

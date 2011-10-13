@@ -616,7 +616,40 @@
         tearDown();
     }
 
-
+    function test_setExtent(t) {
+        t.plan(10);
+        setUp();
+        var resolution = 1;
+        var r = create_renderer();
+        r.map = {
+            getMaxExtent: function() {
+                return new OpenLayers.Bounds(-180,-90,180,90);
+            },
+            getResolution: function() {
+                return resolution;
+            },
+            baseLayer: {wrapDateLine: true}
+        }
+        
+        r.setExtent(new OpenLayers.Bounds(179, -1, 182, 1), true);
+        t.eq(r.rightOfDateLine, true, "on the right side of the dateline");
+        t.eq(r.xOffset, r.map.getMaxExtent().getWidth(), "correct xOffset");
+        r.setExtent(new OpenLayers.Bounds(179.5, -1, 182.5, 1), false);
+        t.eq(r.rightOfDateLine, true, "still on the right side of the dateline");
+        t.eq(r.xOffset, r.map.getMaxExtent().getWidth(), "still correct xOffset");
+        resolution = 2;
+        r.setExtent(new OpenLayers.Bounds(178, -2, 184, 2), true);
+        t.eq(r.rightOfDateLine, true, "still on the right side of the dateline");
+        t.eq(r.xOffset, r.map.getMaxExtent().getWidth() / resolution, "xOffset adjusted for new resolution");
+        r.setExtent(new OpenLayers.Bounds(-184, -2, 178, 2), false);
+        t.eq(r.rightOfDateLine, false, "on the left side of the dateline");
+        t.eq(r.xOffset, 0, "no xOffset");
+        r.setExtent(new OpenLayers.Bounds(178, -2, 184, 2), true);
+        t.eq(r.rightOfDateLine, true, "back on the right side of the dateline");
+        t.eq(r.xOffset, r.map.getMaxExtent().getWidth() / resolution, "correct xOffset");
+        
+        tearDown();
+    }
 
   </script>
 </head>
