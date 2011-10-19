@@ -317,8 +317,8 @@
         map.destroy();
     }
     
-    function test_insertBackBuffer(t) {
-        t.plan(4);
+    function test_cloneMarkup(t) {
+        t.plan(3);
 
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
@@ -326,11 +326,11 @@
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,0), 5);
         var tile = layer.grid[0][0];
+        tile.isLoading = false;
         var img = tile.imgDiv;
-        var backBuffer = tile.insertBackBuffer();
-        t.eq(backBuffer.style.left, tile.frame.style.left, "backBuffer tile has same left style as frame");
-        t.ok(backBuffer.parentNode === layer.div, "backBuffer inserted into layer div");
-        t.ok(backBuffer.firstChild === img, "image appended to backBuffer");
+        var clone = tile.cloneMarkup();
+        t.eq(clone.style.left, tile.frame.style.left, "clone has same left style as frame");
+        t.ok(clone.firstChild === img, "image appended to clone");
         t.ok(tile.imgDiv == null, "image reference removed from tile");
         map.destroy();
     }
