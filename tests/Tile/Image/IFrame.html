@@ -15,7 +15,7 @@
     var wmsUrl   = "http://labs.metacarta.com/wms/vmap0?";
     
     function test_Tile_Image_IFrame_create (t) {
-        t.plan( 5 );
+        t.plan( 3 );
         map   = new OpenLayers.Map('map');
         var bar = new Array(205).join("1234567890");
         layer = new OpenLayers.Layer.WMS(name, wmsUrl,
@@ -25,7 +25,6 @@
         map.addLayer(layer);
 
         var tile = layer.addTile(bounds, position);
-        t.eq(tile.backBufferMode, 2, "backBufferMode is 2 after tile creation");
 
         tile.draw();
         t.eq(tile.imgDiv.nodeName.toLowerCase(), "iframe", "IFrame used for long URL");
@@ -33,7 +32,6 @@
         layer.mergeNewParams({foo: null});
         tile.draw();
         t.eq(tile.imgDiv.nodeName.toLowerCase(), "img", "IMG used for short URL");
-        t.eq(tile.backBufferMode, 2, "backBufferMode reset to 2");
         
         tile.maxGetUrlLength = 0;
         tile.draw();
