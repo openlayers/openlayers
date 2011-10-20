@@ -21,13 +21,14 @@
 
 
     function test_Layer_Grid_constructor (t) {
-        t.plan( 5 );
+        t.plan( 6 );
                        
         layer = new OpenLayers.Layer.Grid(name, url, params, null);
         t.ok( layer instanceof OpenLayers.Layer.Grid, "returns OpenLayers.Layer.Grid object" );
         t.eq( layer.buffer, 0, "buffer default is 0");
         t.eq( layer.ratio, 1.5, "ratio default is 1.5");
         t.eq( layer.numLoadingTiles, 0, "numLoadingTiles starts at 0");
+        t.eq( layer.backBufferData, {}, "backBufferData set to empty object");
 
         var obj = {};
         var func = function() {};
@@ -586,7 +587,7 @@
 
     function test_Layer_Grid_destroy (t) {
 
-        t.plan( 8 );
+        t.plan( 9 );
 
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.Grid(name, url, params);
@@ -613,6 +614,7 @@
         t.eq( layer.timerId, null, "Tile loading timeout cleared");
         
         t.ok( layer.grid == null, "tiles appropriately destroyed")
+        t.eq( layer.backBufferData, null, "backBufferData set to null");
 
         // destroy after remove from map
         layer = new OpenLayers.Layer.WMS(name, url, params);
@@ -810,6 +812,131 @@
         layer.transformDiv(2);
         var scale = layer.getResolutionScale();
         t.eq(scale, 2, 'getResolutionScale returns correct value');
+
+        map.destroy();
+    }
+
+    function test_applyBackBuffer(t) {
+        t.plan(13);
+
+        var map = new OpenLayers.Map('map2');
+        var layer = new OpenLayers.Layer.WMS('', '', {}, {
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+
+        var backBuffer;
+
+        // test #1
+        layer.createBackBuffer = function() {
+            return;
+        };
+        layer.applyBackBuffer(2);
+        t.eq(layer.backBuffer, undefined,
+             'back buffer not created if createBackBuffer returns undefined');
+
+        // test #2
+        layer.createBackBuffer = function() {
+            backBuffer = document.createElement('div');
+            return backBuffer;
+        };
+        layer.backBufferData = {resolution: 32, lonlat: map.getCenter()};
+        layer.applyBackBuffer(2);
+        t.ok(layer.backBuffer === backBuffer,
+             'back buffer set in layer');
+        t.ok(layer.div.firstChild === backBuffer,
+             'back buffer inserted as first child');
+        t.eq(layer.backBuffer.style.width, '1600%',
+             'back buffer has correct width');
+        t.eq(layer.backBuffer.style.height, '1600%',
+             'back buffer has correct height');
+        t.eq(layer.backBuffer.style.left, '250%',
+             'back buffer has correct left');
+        t.eq(layer.backBuffer.style.top, '275%',
+             'back buffer has correct top');
+
+        // test #3
+        layer.createBackBuffer = function() {
+            backBuffer = document.createElement('div');
+            return backBuffer;
+        };
+        layer.backBufferData = {resolution: 32, lonlat: map.getCenter()};
+        map.layerContainerDiv.style.left = '20px';
+        map.layerContainerDiv.style.top = '-20px';
+        layer.applyBackBuffer(2);
+        t.ok(layer.backBuffer === backBuffer,
+             'back buffer set in layer');
+        t.ok(layer.div.firstChild === backBuffer,
+             'back buffer inserted as first child');
+        t.eq(layer.backBuffer.style.width, '1600%',
+             'back buffer has correct width');
+        t.eq(layer.backBuffer.style.height, '1600%',
+             'back buffer has correct height');
+        t.eq(layer.backBuffer.style.left, '230%',
+             'back buffer has correct left');
+        t.eq(layer.backBuffer.style.top, '295%',
+             'back buffer has correct top');
+
+        map.destroy();
+    }
+
+    function test_createBackBuffer(t) {
+        t.plan(6);
+
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS('', '', {}, {
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+
+        var cloneMarkup = OpenLayers.Tile.Image.prototype.cloneMarkup;
+
+        var backBuffer;
+
+        OpenLayers.Tile.Image.prototype.cloneMarkup = function() {
+            return;
+        };
+        backBuffer = layer.createBackBuffer();
+        t.eq(backBuffer, undefined,
+             'createBackBuffer returns undefined if cloneMarkup returns undefined');
+
+        OpenLayers.Tile.Image.prototype.cloneMarkup = function() {
+            return document.createElement('div');
+        };
+        backBuffer = layer.createBackBuffer();
+        t.ok(backBuffer != undefined,
+             'createBackBuffer returns a back buffer');
+        t.eq(backBuffer.childNodes[0].style.left, '0%',
+             'first tile has correct left');
+        t.eq(backBuffer.childNodes[0].style.top, '0%',
+             'first tile has correct top');
+        t.eq(backBuffer.childNodes[1].style.left, '256%',
+             'second tile has correct left');
+        t.eq(backBuffer.childNodes[1].style.top, '0%',
+             'second tile has correct top');
+
+        map.destroy();
+        OpenLayers.Tile.Image.prototype.cloneMarkup = cloneMarkup;
+    }
+
+    function test_updateBackBufferData(t) {
+        t.plan(1);
+
+        var map = new OpenLayers.Map('map', {
+            resolutions: [32, 16]
+        });
+        var layer = new OpenLayers.Layer.WMS('', '', {}, {
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+
+        layer.backBufferData = {};
+        layer.updateBackBufferData();
+        t.eq(layer.backBufferData.resolution, 32,
+             'backBufferData has correct resolution');
 
         map.destroy();
     }
