@@ -483,6 +483,7 @@
 
 
         g_events = [];
+        layer.grid = [[{}]]; // to prevent error in updateBackBuffer
         tile.onLoadEnd.apply(layer);
         t.eq(g_events[0], "tileloaded", "tileloaded triggered when numLoadingTiles is 0");
         t.eq(g_events[1], "loadend", "loadend event triggered when numLoadingTiles is 0");
