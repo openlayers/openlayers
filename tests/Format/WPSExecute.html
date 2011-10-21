@@ -458,6 +458,65 @@
             t.xml_eq(result, expected, "WPS Execute written out correctly");
         }
 
+        function test_write_WPSExecuteFID(t) {
+            t.plan(1);
+          
+            var result,
+            expected,
+            format = ({geometryName: 'the_geom'});                    
+          
+            expected = '<?xml version="1.0" encoding="UTF-8"?>' +
+                '<wps:Execute xmlns:wps="http://www.opengis.net/wps/1.0.0" version="1.0.0" service="WPS" xsi:schemaLocation="http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' +
+                '  <ows:Identifier xmlns:ows="http://www.opengis.net/ows/1.1">gs:Bounds</ows:Identifier>' +
+                '  <wps:DataInputs>' +
+                '    <wps:Input>' +
+                '      <ows:Identifier xmlns:ows="http://www.opengis.net/ows/1.1">features</ows:Identifier>' +
+                '      <wps:Reference mimeType="text/xml" xlink:href="http://geoserver/wfs" xmlns:xlink="http://www.w3.org/1999/xlink" method="POST">' +
+                '        <wps:Body>' +
+                '          <wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" service="WFS" version="1.0.0">' +
+                '            <wfs:Query typeName="foo:bar">' +
+                '              <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+                '                <ogc:FeatureId fid="123"/>' +
+                '              </ogc:Filter>' +
+                '            </wfs:Query>' +
+                '          </wfs:GetFeature>' +
+                '        </wps:Body>' +
+                '      </wps:Reference>' +
+                '    </wps:Input>' +
+                '  </wps:DataInputs>' +
+                '  <wps:ResponseForm>' +
+                '    <wps:RawDataOutput>' +
+                '      <ows:Identifier xmlns:ows="http://www.opengis.net/ows/1.1">bounds</ows:Identifier>' +
+                '    </wps:RawDataOutput>' +
+                '  </wps:ResponseForm>' +
+                '</wps:Execute>';
+
+            result = new OpenLayers.Format.WPSExecute().write({
+                identifier: 'gs:Bounds',
+                dataInputs: [{
+                    identifier: 'features',
+                    reference: {
+                        mimeType: 'text/xml',
+                        href: 'http://geoserver/wfs',
+                        method: 'POST',
+                        body: {
+                            wfs: {
+                                featureType: 'foo:bar',
+                                version: '1.0.0',                            
+                                filter: new OpenLayers.Filter.FeatureId({fids: [123]})
+                            }
+                        }
+                    }
+                }],
+                responseForm: {
+                    rawDataOutput: {
+                        identifier: 'bounds'
+                    }
+                }
+            });
+            t.xml_eq(result, expected, 'WPS Execute written out correctly with a FID filter');
+        }
+
     </script>
 </head>
 <body>
