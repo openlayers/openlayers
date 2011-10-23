@@ -43,7 +43,7 @@ function init() {
             alert("Trouble getting capabilities doc");
             OpenLayers.Console.error.apply(OpenLayers.Console, arguments);
         }
-    })
+    });
     
     map = new OpenLayers.Map({
         div: "map",

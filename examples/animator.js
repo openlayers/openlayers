@@ -131,14 +131,14 @@ Animator.prototype = {
 		str += ">";
 		return str;
 	}
-}
+};
 // merge the properties of two objects
 Animator.applyDefaults = function(defaults, prefs) {
 	prefs = prefs || {};
 	var prop, result = {};
 	for (prop in defaults) result[prop] = prefs[prop] !== undefined ? prefs[prop] : defaults[prop];
 	return result;
-}
+};
 // make an array from any object
 Animator.makeArray = function(o) {
 	if (o == null) return [];
@@ -146,7 +146,7 @@ Animator.makeArray = function(o) {
 	var result = [];
 	for (var i=0; i<o.length; i++) result[i] = o[i];
 	return result;
-}
+};
 // convert a dash-delimited-property to a camelCaseProperty (c/o Prototype, thanks Sam!)
 Animator.camelize = function(string) {
 	var oStringList = string.split('-');
@@ -161,27 +161,27 @@ Animator.camelize = function(string) {
 		camelizedString += s.charAt(0).toUpperCase() + s.substring(1);
 	}
 	return camelizedString;
-}
+};
 // syntactic sugar for creating CSSStyleSubjects
 Animator.apply = function(el, style, options) {
 	if (style instanceof Array) {
 		return new Animator(options).addSubject(new CSSStyleSubject(el, style[0], style[1]));
 	}
 	return new Animator(options).addSubject(new CSSStyleSubject(el, style));
-}
+};
 // make a transition function that gradually accelerates. pass a=1 for smooth
 // gravitational acceleration, higher values for an exaggerated effect
 Animator.makeEaseIn = function(a) {
 	return function(state) {
 		return Math.pow(state, a*2); 
 	}
-}
+};
 // as makeEaseIn but for deceleration
 Animator.makeEaseOut = function(a) {
 	return function(state) {
 		return 1 - Math.pow(1 - state, a*2); 
 	}
-}
+};
 // make a transition function that, like an object with momentum being attracted to a point,
 // goes past the target then returns
 Animator.makeElastic = function(bounces) {
@@ -189,7 +189,7 @@ Animator.makeElastic = function(bounces) {
 		state = Animator.tx.easeInOut(state);
 		return ((1-Math.cos(state * Math.PI * bounces)) * (1 - state)) + state; 
 	}
-}
+};
 // make an Attack Decay Sustain Release envelope that starts and finishes on the same level
 // 
 Animator.makeADSR = function(attackEnd, decayEnd, sustainEnd, sustainLevel) {
@@ -206,7 +206,7 @@ Animator.makeADSR = function(attackEnd, decayEnd, sustainEnd, sustainLevel) {
 		}
 		return sustainLevel * (1 - ((state - sustainEnd) / (1 - sustainEnd)));
 	}
-}
+};
 // make a transition function that, like a ball falling to floor, reaches the target and/
 // bounces back again
 Animator.makeBounce = function(bounces) {
@@ -215,7 +215,7 @@ Animator.makeBounce = function(bounces) {
 		state = fn(state); 
 		return state <= 1 ? state : 2-state;
 	}
-}
+};
  
 // pre-made transition functions to use with the 'transition' option
 Animator.tx = {
@@ -233,7 +233,7 @@ Animator.tx = {
 	veryElastic: Animator.makeElastic(3),
 	bouncy: Animator.makeBounce(1),
 	veryBouncy: Animator.makeBounce(3)
-}
+};
 
 // animates a pixel-based style property between two integer values
 function NumericalStyleSubject(els, property, from, to, units) {
@@ -271,7 +271,7 @@ NumericalStyleSubject.prototype = {
 	inspect: function() {
 		return "\t" + this.property + "(" + this.from + this.units + " to " + this.to + this.units + ")\n";
 	}
-}
+};
 
 // animates a colour based style property between two hex values
 function ColorStyleSubject(els, property, from, to) {
@@ -313,7 +313,7 @@ ColorStyleSubject.prototype = {
 	inspect: function() {
 		return "\t" + this.property + "(" + this.origFrom + " to " + this.origTo + ")\n";
 	}
-}
+};
 
 // return a properly formatted 6-digit hex colour spec, or false
 ColorStyleSubject.parseColor = function(string) {
@@ -336,14 +336,14 @@ ColorStyleSubject.parseColor = function(string) {
 		return '#' + match[1];
 	}
 	return false;
-}
+};
 // convert a number to a 2 digit hex string
 ColorStyleSubject.toColorPart = function(number) {
 	if (number > 255) number = 255;
 	var digits = number.toString(16);
 	if (number < 16) return '0' + digits;
 	return digits;
-}
+};
 ColorStyleSubject.parseColor.rgbRe = /^rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/i;
 ColorStyleSubject.parseColor.hexRe = /^\#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 
@@ -367,7 +367,7 @@ DiscreteStyleSubject.prototype = {
 	inspect: function() {
 		return "\t" + this.property + "(" + this.from + " to " + this.to + " @ " + this.threshold + ")\n";
 	}
-}
+};
 
 // animates between two styles defined using CSS.
 // if style1 and style2 are present, animate between them, if only style1
@@ -482,7 +482,7 @@ CSSStyleSubject.prototype = {
 		}
 		return str;
 	}
-}
+};
 // get the current value of a css property, 
 CSSStyleSubject.getStyle = function(el, property){
 	var style;
@@ -497,7 +497,7 @@ CSSStyleSubject.getStyle = function(el, property){
 		style = el.currentStyle[property];
 	}
 	return style || el.style[property]
-}
+};
 
 
 CSSStyleSubject.ruleRe = /^\s*([a-zA-Z\-]+)\s*:\s*(\S(.+\S)?)\s*$/;
@@ -604,7 +604,7 @@ AnimatorChain.prototype = {
 			this.animators[this.current].seekTo(1);
 		}
 	}
-}
+};
 
 // an Accordion is a class that creates and controls a number of Animators. An array of elements is passed in,
 // and for each element an Animator and a activator button is created. When an Animator's activator button is
@@ -667,4 +667,4 @@ Accordion.prototype = {
 			document.location.hash = this.rememberanceTexts[section];
 		}
 	}
-}
+};

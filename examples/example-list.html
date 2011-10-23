@@ -169,7 +169,7 @@
                     var words = text.split(/\W+/);
                     var scores = {};
                     for(var i=0; i<words.length; ++i) {
-                        var word = words[i].toLowerCase()
+                        var word = words[i].toLowerCase();
                         var dict = info.index[word];
                         var updateScores = function() {
                             for(exIndex in dict) {
@@ -185,7 +185,7 @@
                                     scores[exIndex][word] = count;
                                 }
                             }
-                        }
+                        };
                         if(dict) {
                             updateScores();
                         } else {
@@ -255,7 +255,7 @@
                 template = new jugl.Template("template");
                 target = document.getElementById("examples");
                 listExamples(info.examples);
-                document.getElementById("keywords").onkeyup = inputChange
+                document.getElementById("keywords").onkeyup = inputChange;
                 parseQuery();
             };
         </script>

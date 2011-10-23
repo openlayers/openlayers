@@ -16,7 +16,7 @@
     <script type="text/javascript">
         var map, layer;
         function init(){
-            var layerExtent = new OpenLayers.Bounds( -13758743.4295939,  5591455.28887228, -13531302.3472101 , 5757360.4178881)
+            var layerExtent = new OpenLayers.Bounds( -13758743.4295939,  5591455.28887228, -13531302.3472101 , 5757360.4178881);
             map = new OpenLayers.Map( 'map', {'restrictedExtent': layerExtent} );
             layer = new OpenLayers.Layer.XYZ( "ESRI",
                     "http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Portland/ESRI_LandBase_WebMercator/MapServer/tile/${z}/${y}/${x}",
