@@ -24,7 +24,7 @@ function startAnimation() {
         } else {
             stopAnimation(true);
         }
-    }
+    };
     animationTimer = window.setInterval(next, interval * 1000);
 }
 

@@ -71,7 +71,7 @@
             layer.logEvent = function(event) {
                 eventsLog.innerHTML += "<br>(" + getTimeStamp() + ") " +
                                        this.name + ": " + event;
-            }
+            };
 
             layer.events.register("loadstart", layer, function() {
                 this.logEvent("Load Start");

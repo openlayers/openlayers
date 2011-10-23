@@ -29,7 +29,7 @@ $("insertXY").onclick = function() {
     if (values != null) {
         draw.insertXY(values[0], values[1]);
     }
-}
+};
 $("insertDeltaXY").onclick = function() {
     var values = parseInput(
         window.prompt(
@@ -39,7 +39,7 @@ $("insertDeltaXY").onclick = function() {
     if (values != null) {
         draw.insertDeltaXY(values[0], values[1]);
     }
-}
+};
 $("insertDirectionLength").onclick = function() {
     var values = parseInput(
         window.prompt(
@@ -49,7 +49,7 @@ $("insertDirectionLength").onclick = function() {
     if (values != null) {
         draw.insertDirectionLength(values[0], values[1]);
     }
-}
+};
 $("insertDeflectionLength").onclick = function() {
     var values = parseInput(
         window.prompt(
@@ -59,13 +59,13 @@ $("insertDeflectionLength").onclick = function() {
     if (values != null) {
         draw.insertDeflectionLength(values[0], values[1]);
     }
-}
+};
 $("cancel").onclick = function() {
     draw.cancel();
-}
+};
 $("finishSketch").onclick = function() {
     draw.finishSketch();
-}
+};
 
 function parseInput(text) {
     var values = text.split(",");

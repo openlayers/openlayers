@@ -31,7 +31,7 @@ function updateOutput(event) {
 map.layers[1].events.on({
     sketchmodified: updateOutput,
     sketchcomplete: updateOutput
-})
+});
 
 // add behavior to UI elements
 function toggleControl(element) {

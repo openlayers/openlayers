@@ -66,16 +66,16 @@ var rotation = document.getElementById("rotation");
 rotation.value = String(points.rotation);
 rotation.onchange = function() {
     points.setRotation(Number(rotation.value));
-}
+};
 
 var spacing = document.getElementById("spacing");
 spacing.value = String(points.dx);
 spacing.onchange = function() {
     points.setSpacing(Number(spacing.value));
-}
+};
 
 var max = document.getElementById("max");
 max.value = String(points.maxFeatures);
 max.onchange = function() {
     points.setMaxFeatures(Number(max.value));
-}
+};

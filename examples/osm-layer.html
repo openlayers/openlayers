@@ -95,9 +95,9 @@
                 } else {
                     gml = new OpenLayers.Layer.GML("OSM", "xml/cambridgeport.osm", {format: OpenLayers.Format.OSM});
                 }    
-            }    
-            gml.events.register("loadstart", null, function() { $("status").innerHTML = "Loading..."; })
-            gml.events.register("loadend", null, function() { $("status").innerHTML = ""; })
+            }
+            gml.events.register("loadstart", null, function() { $("status").innerHTML = "Loading..."; });
+            gml.events.register("loadend", null, function() { $("status").innerHTML = ""; });
             map.addLayer(gml);
             gml.preFeatureInsert = style_osm_feature; 
             var sf = new OpenLayers.Control.SelectFeature(gml, {'onSelect': on_feature_hover});
