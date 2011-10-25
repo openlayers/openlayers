@@ -17,7 +17,7 @@ $(document).ready(function() {
             content.height(contentHeight);
         }
 
-        if (window.map) {
+        if (window.map && window.map instanceof OpenLayers.Map) {
             map.updateSize();
         } else {
             // initialize map
