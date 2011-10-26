@@ -6,7 +6,7 @@
     var lonlat; 
 
     function test_LonLat_constructor (t) {
-        t.plan( 6 );
+        t.plan( 8 );
         lonlat = new OpenLayers.LonLat(6, 5);
         t.ok( lonlat instanceof OpenLayers.LonLat, "new OpenLayers.LonLat returns LonLat object" );
         t.eq( lonlat.CLASS_NAME, "OpenLayers.LonLat", "lonlat.CLASS_NAME is set correctly");
@@ -17,6 +17,12 @@
         lonlat = new OpenLayers.LonLat(20037508.33999999, -20037508.33999999);
         t.eq( lonlat.lon, 20037508.34, "lonlat.lon rounds correctly");
         t.eq( lonlat.lat, -20037508.34, "lonlat.lat rounds correctly");
+        
+        // allow construction from single arg
+        lonlat = new OpenLayers.LonLat([1, 2]);
+        t.eq(lonlat.lon, 1, "lon from array");
+        t.eq(lonlat.lat, 2, "lat from array");
+        
     }
     
     function test_LonLat_constructorFromStrings (t) {
