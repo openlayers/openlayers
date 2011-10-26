@@ -50,6 +50,21 @@
                         new OpenLayers.Projection("EPSG:900913"));
         t.eq(point.bounds, null, "Point bounds cleared after transform");
     }
+
+    function test_Point_transform_string(t) {
+        t.plan(4);
+
+        var x = 10;
+        var y = 20;
+        point = new OpenLayers.Geometry.Point(x, y);
+        point.calculateBounds();
+        t.ok( point.bounds != null, "bounds calculated by calcBounds" );
+        point.transform("EPSG:4326", "EPSG:900913");
+        t.eq(point.bounds, null, "Point bounds cleared after transform");
+        t.eq(point.x.toFixed(2), "1113194.91", "transformed x");
+        t.eq(point.y.toFixed(2), "2273030.93", "transformed y");
+        
+    }
     
     function test_Point_distanceTo(t) {
         t.plan(7);
