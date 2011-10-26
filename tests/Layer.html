@@ -197,6 +197,39 @@
         t.eq(layer.numZoomLevels, numZoomLevels, "numZoomLevels set correctly");
     }
     
+    function test_maxExtent(t) {
+        t.plan(5);
+        
+        var layer = new OpenLayers.Layer(
+            null, {maxExtent: [-180, 0, 0, 90]}
+        );
+        
+        t.ok(layer.maxExtent instanceof OpenLayers.Bounds, "(array) bounds instance");
+        t.eq(layer.maxExtent.left, -180, "(array) bounds left");
+        t.eq(layer.maxExtent.bottom, 0, "(array) bounds left");
+        t.eq(layer.maxExtent.right, 0, "(array) bounds right");
+        t.eq(layer.maxExtent.top, 90, "(array) bounds top");
+        
+        layer.destroy();
+    }
+
+    function test_minExtent(t) {
+        t.plan(5);
+        
+        var layer = new OpenLayers.Layer(
+            null, {minExtent: [-180, 0, 0, 90]}
+        );
+        
+        t.ok(layer.minExtent instanceof OpenLayers.Bounds, "(array) bounds instance");
+        t.eq(layer.minExtent.left, -180, "(array) bounds left");
+        t.eq(layer.minExtent.bottom, 0, "(array) bounds left");
+        t.eq(layer.minExtent.right, 0, "(array) bounds right");
+        t.eq(layer.minExtent.top, 90, "(array) bounds top");
+        
+        layer.destroy();
+    }
+
+
     function test_eventListeners(t) {
         t.plan(1);
         
