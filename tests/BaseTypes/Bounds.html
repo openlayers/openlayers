@@ -4,7 +4,7 @@
   <script type="text/javascript">
     var bounds; 
     function test_Bounds_constructor (t) {
-        t.plan( 21 );
+        t.plan( 26 );
         
         bounds = new OpenLayers.Bounds();
         t.ok( bounds instanceof OpenLayers.Bounds, "new OpenLayers.Bounds returns Bounds object" );
@@ -44,6 +44,15 @@
         t.eq( bounds.bottom, -20037508.34, "bounds.bottom adjusted for floating precision");
         t.eq( bounds.right, 40075016.68, "bounds.right adjusted for floating precision");
         t.eq( bounds.top, 20037508.34, "bounds.top adjusted for floating precision");
+        
+        // allow construction from a single arg
+        bounds = new OpenLayers.Bounds([-180, -90, 180, 90]);
+        t.ok(bounds instanceof OpenLayers.Bounds, "(array) correct instance");
+        t.eq(bounds.left, -180, "(array) left");
+        t.eq(bounds.bottom, -90, "(array) bottom");
+        t.eq(bounds.right, 180, "(array) right");
+        t.eq(bounds.top, 90, "(array) top");
+        
     }
 
     function test_Bounds_constructorFromStrings(t) {
