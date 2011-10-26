@@ -24,7 +24,7 @@
      }
      
      function test_Projection_equals(t) {
-         t.plan(8);
+         t.plan(12);
          var origTransforms = OpenLayers.Util.extend({}, OpenLayers.Projection.transforms);
          OpenLayers.Projection.addTransform("EPSG:4326", "FOO", OpenLayers.Projection.nullTransform);
          OpenLayers.Projection.addTransform("FOO", "EPSG:4326", OpenLayers.Projection.nullTransform);
@@ -56,6 +56,12 @@
          t.eq(proj2.equals(proj3), false, "EPSG:900913 and FOO are not equal with proj4js");
          t.eq(proj1.equals(proj4), true, "EPSG:4326 and EPSG:4326 are equal with proj4js");
          t.eq(proj2.equals(proj5), false, "Projection.equals() returns false for unknown projections with proj4js");
+         
+         // allow comparison with identifier
+         t.eq(proj1.equals("EPSG:4326"), true, "EPSG:4326 equality with string");
+         t.eq(proj1.equals("EPSG:4327"), false, "EPSG:4326 inequality with string");
+         t.eq(proj1.equals("EPSG:900913"), true, "EPSG:900913 equality with string");
+         t.eq(proj1.equals("EPSG:900914"), false, "EPSG:900913 inequality with string");
          
          if (!hasProj) {
              window.Proj4js = undefined;
