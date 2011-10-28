@@ -98,16 +98,8 @@ function init(){
 
     // create OSM layer
     var mapnik = new OpenLayers.Layer.OSM();
-    // create OAM layer
-    var oam = new OpenLayers.Layer.XYZ(
-        "OpenAerialMap",
-        "http://tile.openaerialmap.org/tiles/1.0.0/openaerialmap-900913/${z}/${x}/${y}.png",
-        {
-            sphericalMercator: true
-        }
-    );
 
-    // create OSM layer
+    // create another OSM layer
     var osmarender = new OpenLayers.Layer.OSM(
         "OpenStreetMap (Tiles@Home)",
         "http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png"
@@ -129,7 +121,7 @@ function init(){
     var vector = new OpenLayers.Layer.Vector("Editable Vectors");
 
     map.addLayers([gmap, gsat, ghyb, veroad, veaer, vehyb,
-                   yahoo, yahoosat, yahoohyb, oam, mapnik, osmarender,
+                   yahoo, yahoosat, yahoohyb, mapnik, osmarender,
                    wms, vector]);
     map.addControl(new OpenLayers.Control.LayerSwitcher());
     map.addControl(new OpenLayers.Control.EditingToolbar(vector));
