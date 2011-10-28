@@ -1033,6 +1033,45 @@
         map.destroy();
     }
 
+    function test_singleTile_move_and_zoom(t) {
+
+        //
+        // In single tile mode with no transition effect, we insert a non-scaled
+        // backbuffer when the layer is moved. But if a zoom occurs right after
+        // a move, i.e. before the new image is received, we need to remove the
+        // backbuffer, or an ill-positioned image will be visible during the
+        // zoom transition.
+        //
+
+        t.plan(2);
+
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS('', '', {}, {
+            isBaseLayer: true,
+            singleTile: true,
+            ratio: 1
+        });
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+
+        // pretend the image has been loaded
+        layer.updateBackBufferData();
+        layer.grid[0][0].isLoading = false; // this is to be able to create
+                                            // a back buffer
+
+        // move
+        map.setCenter(new OpenLayers.LonLat(10, 10));
+        t.ok(layer.backBuffer && layer.backBuffer.parentNode === layer.div,
+                'backbuffer inserted after map move');
+
+        // zoom
+        map.zoomTo(1);
+        t.eq(layer.backBuffer, null,
+             'back buffer removed when zooming');
+
+        map.destroy();
+    }
+
     function test_backbuffer_scaled_layer(t) {
         t.plan(15);
 
