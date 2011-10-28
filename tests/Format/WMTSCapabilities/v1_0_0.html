@@ -36,7 +36,7 @@
         }
     
         function test_layers(t) {
-            t.plan(25);
+            t.plan(37);
             var xml = document.getElementById("ogcsample").firstChild.nodeValue;
             var doc = new OpenLayers.Format.XML().read(xml);
     
@@ -61,9 +61,12 @@
             t.eq(layer.styles[0].identifier, "DarkBlue", "style 0 identifier is correct");
             t.eq(layer.styles[0].isDefault, true, "style 0 isDefault is correct");
             t.eq(layer.styles[0].title, "Dark Blue", "style 0 title is correct");
+            t.eq(layer.styles[0].legend.href, "http://www.miramon.uab.es/wmts/Coastlines/coastlines_darkBlue.png", "style 0 legend href is correct");
+            t.eq(layer.styles[0].legend.format, "image/png", "style 0 legend format is correct");
             t.eq(layer.styles[1].identifier, "thickAndRed", "style 1 identifier is correct");
             t.ok(!layer.styles[1].isDefault, "style 1 isDefault is correct");
             t.eq(layer.styles[1].title, "Thick And Red", "style 1 title is correct");
+            t.eq(layer.styles[1].legend, undefined, "style 1 legend is not set");
             //t.eq(layer.styles[1].abstract, "Specify this style if you want your maps to have thick red coastlines. ", "style 1 abstract is correct");
 
             t.eq(layer.tileMatrixSetLinks.length, 1, "correct count of tileMatrixSetLinks");
@@ -83,6 +86,17 @@
             t.eq(layer.resourceUrl.FeatureInfo.format, "application/gml+xml; version=3.1", "resourceUrl.FeatureInfo.format is correct");
             t.eq(layer.resourceUrl.FeatureInfo.template, "http://www.example.com/wmts/coastlines/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml", 
                  "resourceUrl.FeatureInfo.template is correct");
+
+            var dimensions = layer.dimensions;
+            t.eq(dimensions.length, 1, "correct count of dimensions");
+            t.eq(dimensions[0].title, "Time", "first dimension title is correct");
+            t.eq(dimensions[0].abstract, "Monthly datasets", "first dimension abstract is correct");
+            t.eq(dimensions[0].identifier, "TIME", "first dimension identifier is correct");
+            t.eq(dimensions[0]['default'], "default", "first dimension default is correct");
+            t.eq(dimensions[0].values.length, 3, "first dimension has correct count of values");
+            t.eq(dimensions[0].values[0], "2007-05", "first value is correct");
+            t.eq(dimensions[0].values[1], "2007-06", "second value is correct");
+            t.eq(dimensions[0].values[2], "2007-07", "third value is correct");
         }
 
         function test_tileMatrixSets(t) {
@@ -271,6 +285,7 @@ http://schemas.opengis.net/wmts/1.0/examples/wmtsGetCapabilities_response.xml
                 <Value>2007-05</Value>
                 <Value>2007-06</Value>
                 <Value>2007-07</Value>
+                <Default>default</Default>
             </Dimension>
             <TileMatrixSetLink>
                 <TileMatrixSet>BigWorld</TileMatrixSet>

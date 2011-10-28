@@ -40,7 +40,7 @@ function init() {
         "http://vmap0.tiles.osgeo.org/wms/vmap0",
         {layers: 'basic'},
         {isBaseLayer: true, transitionEffect: 'resize'}
-    )
+    );
 
     var kml = new OpenLayers.Layer.Vector("KML", {
         projection: map.displayProjection,

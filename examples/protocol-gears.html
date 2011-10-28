@@ -179,7 +179,7 @@
                     error = true;
                     return;
                 }
-                modify.selectControl.unselectAll()
+                modify.selectControl.unselectAll();
 
                 if (resp.reqFeatures) {
                     vector.destroyFeatures(resp.reqFeatures);
@@ -214,7 +214,7 @@
             }
             var feature = vector.selectedFeatures[0];
             if (feature) {
-                modify.selectControl.unselectAll()
+                modify.selectControl.unselectAll();
                 feature.state = OpenLayers.State.DELETE;
                 displayStatus();
             }

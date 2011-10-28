@@ -10,7 +10,7 @@
     <script type="text/javascript">
         function parseData(req) {
           format = new OpenLayers.Format.WMSDescribeLayer();
-          html = "<br>"
+          html = "<br>";
           resp = format.read(req.responseText);
           for(var i = 0; i < resp.length; i++) {
             html += "Layer: typeName: "+ resp[i].typeName+",";

@@ -28,7 +28,7 @@
                         "http://vmap0.tiles.osgeo.org/wms/vmap0",
                         {layers: 'basic'}, {'buffer':4} );
                 map.addLayer(layer);
-                map.addControl(new OpenLayers.Control.LayerSwitcher())
+                map.addControl(new OpenLayers.Control.LayerSwitcher());
                 map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
             }
         </script>
