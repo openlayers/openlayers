@@ -317,7 +317,7 @@
         map.destroy();
     }
     
-    function test_cloneMarkup(t) {
+    function test_createBackBuffer(t) {
         t.plan(3);
 
         var map = new OpenLayers.Map('map');
@@ -328,9 +328,10 @@
         var tile = layer.grid[0][0];
         tile.isLoading = false;
         var img = tile.imgDiv;
-        var clone = tile.cloneMarkup();
-        t.eq(clone.style.left, tile.frame.style.left, "clone has same left style as frame");
-        t.ok(clone.firstChild === img, "image appended to clone");
+        var bb = tile.createBackBuffer();
+        t.eq(bb.style.left, tile.frame.style.left,
+             "backbuffer has same left style as frame");
+        t.ok(bb.firstChild === img, "image appended to bb");
         t.ok(tile.imgDiv == null, "image reference removed from tile");
         map.destroy();
     }

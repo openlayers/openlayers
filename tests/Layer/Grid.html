@@ -983,18 +983,18 @@
         map.addLayer(layer);
         map.zoomToMaxExtent();
 
-        var cloneMarkup = OpenLayers.Tile.Image.prototype.cloneMarkup;
+        var createBackBuffer = OpenLayers.Tile.Image.prototype.createBackBuffer;
 
         var backBuffer;
 
-        OpenLayers.Tile.Image.prototype.cloneMarkup = function() {
+        OpenLayers.Tile.Image.prototype.createBackBuffer = function() {
             return;
         };
         backBuffer = layer.createBackBuffer();
         t.eq(backBuffer, undefined,
-             'createBackBuffer returns undefined if cloneMarkup returns undefined');
+             'createBackBuffer returns undefined if createBackBuffer returns undefined');
 
-        OpenLayers.Tile.Image.prototype.cloneMarkup = function() {
+        OpenLayers.Tile.Image.prototype.createBackBuffer = function() {
             return document.createElement('div');
         };
         backBuffer = layer.createBackBuffer();
@@ -1010,7 +1010,7 @@
              'second tile has correct top');
 
         map.destroy();
-        OpenLayers.Tile.Image.prototype.cloneMarkup = cloneMarkup;
+        OpenLayers.Tile.Image.prototype.createBackBuffer = createBackBuffer;
     }
 
     function test_updateBackBufferData(t) {
