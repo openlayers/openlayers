@@ -591,7 +591,7 @@
 
     function test_Layer_Grid_destroy (t) {
 
-        t.plan( 10 );
+        t.plan( 9 );
 
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.Grid(name, url, params);
@@ -612,17 +612,16 @@
         var tile = layer.grid[1][1];        
         t.eq( tile.imgDiv.className, "olTileImage", "Tile has an image" ); 
 
-        // add a fake back buffer to the layer
-        var backBuffer = document.createElement('div');
-        layer.backBuffer = backBuffer
-        layer.div.appendChild(backBuffer);
+        var removeBackBufferCalled = false;
+        layer.removeBackBuffer = function() {
+            removeBackBufferCalled = true;
+        };
 
         layer.destroy();
         t.eq( tile.imgDiv, null, "Tile destroyed" ); 
         t.eq( layer.timerId, null, "Tile loading timeout cleared");
         t.ok( layer.grid == null, "tiles appropriately destroyed")
-        t.ok( backBuffer.parentNode === layer.div, "back buffer removed");
-        t.eq( layer.backBuffer, null, "backBuffer set not null in the layer");
+        t.ok( removeBackBufferCalled, "destroy calls removeBackBuffer");
 
         // destroy after remove from map
         layer = new OpenLayers.Layer.WMS(name, url, params);
