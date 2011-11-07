@@ -4,14 +4,17 @@
 
 
 # Get current 'Last Changed Rev'
-REV=`svn info http://svn.openlayers.org/ | grep 'Revision' | awk '{print $2}'`
+GITREV=`svn info https://github.com/openlayers/openlayers/ | grep 'Revision' | awk '{print $2}'`
+SVNREV=`svn info http://svn.openlayers.org/ | grep 'Revision' | awk '{print $2}'`
 
 # Get the last svn rev
+touch /tmp/ol_git_rev
 touch /tmp/ol_svn_rev
-OLD_REV="o`cat /tmp/ol_svn_rev`"
+OLD_GITREV="o`cat /tmp/ol_git_rev`"
+OLD_SVNREV="o`cat /tmp/ol_svn_rev`"
 
 # If they're not equal, do some work.
-if [ ! o$REV = $OLD_REV ]; then
+if [ ! o$GITREV = $OLD_GITREV ]; then
     svn revert -R /osgeo/openlayers/docs/dev
     svn up /osgeo/openlayers/docs/dev
 
@@ -37,10 +40,14 @@ if [ ! o$REV = $OLD_REV ]; then
     sed -i -e 's!../lib/OpenLayers.js!../OpenLayers.js!' examples/*.html
     naturaldocs -i /osgeo/openlayers/docs/dev/lib -o HTML /osgeo/openlayers/dev/apidocs -p /osgeo/openlayers/docs/dev/apidoc_config -s Default OL >/dev/null
     naturaldocs -i /osgeo/openlayers/docs/dev/lib -o HTML /osgeo/openlayers/dev/docs -p /osgeo/openlayers/docs/dev/doc_config -s Default OL >/dev/null
-    
-    svn up /osgeo/openlayers/dev/sandbox/
     # Record the revision
-    echo -n $REV > /tmp/ol_svn_rev
+    echo -n $GITREV > /tmp/ol_git_rev
+fi
+if [ ! o$SVNREV = $OLD_SVNREV ]; then
+    svn up /osgeo/openlayers/dev/sandbox/
+    svn up /osgeo/openlayers/dev/addins/
+    # Record the revision
+    echo -n $SVNREV > /tmp/ol_svn_rev
 fi    
    
 svn up /osgeo/openlayers/documentation-checkout
