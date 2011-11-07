@@ -40,7 +40,7 @@
         t.eq(obj.serviceProvider.serviceContact.contactInfo.phone.voice, "+49-251-83-30088", "Voice phone correctly parsed");
 
         // operationsMetadata (from OWSCommon)
-        t.eq(obj.operationsMetadata.DescribeSensor.dcp.http.post, "http://v-swe.uni-muenster.de:8080/WeatherSOS/sos", "POST url for DescribeSensor correctly parsed");
+        t.eq(obj.operationsMetadata.DescribeSensor.dcp.http.post[0].url, "http://v-swe.uni-muenster.de:8080/WeatherSOS/sos", "POST url for DescribeSensor correctly parsed");
         var counter = 0;
         for (var key in obj.operationsMetadata.DescribeSensor.parameters.procedure.allowedValues) {
             if (counter == 0) {
