@@ -4,7 +4,7 @@
     <script type="text/javascript">
 
         function test_ows(t) {
-            t.plan(17);
+            t.plan(20);
             var xml = document.getElementById("ogcsample").firstChild.nodeValue;
             var doc = new OpenLayers.Format.XML().read(xml);
             var obj = new OpenLayers.Format.WMTSCapabilities().read(doc);
@@ -31,8 +31,17 @@
             // ows:OperationsMetadata
             var operationsMetadata = obj.operationsMetadata;
             t.eq(operationsMetadata.GetCapabilities.dcp.http.get, "http://www.miramon.uab.es/cgi-bin/MiraMon5_0.cgi?", "ows:OperationsMetadata GetCapabilities url is correct");
+            t.eq(operationsMetadata.GetCapabilities.dcp.http.constraints.get.GetEncoding.allowedValues,
+                 {'KVP': true},
+                 "ows:OperationsMetadata GetCapabilities Constraints Get is correct");
             t.eq(operationsMetadata.GetFeatureInfo.dcp.http.get, "http://www.miramon.uab.es/cgi-bin/MiraMon5_0.cgi?", "ows:OperationsMetadata GetFeatureInfo url is correct");
+            t.eq(operationsMetadata.GetFeatureInfo.dcp.http.constraints.get,
+                 undefined,
+                 "ows:OperationsMetadata GetFeatureInfo Constraints Get is correct");
             t.eq(operationsMetadata.GetTile.dcp.http.get, "http://www.miramon.uab.es/cgi-bin/MiraMon5_0.cgi?", "ows:OperationsMetadata GetTile url is correct");
+            t.eq(operationsMetadata.GetTile.dcp.http.constraints.get,
+                 undefined,
+                 "ows:OperationsMetadata GetTile Constraints Get is correct");
         }
     
         function test_layers(t) {
