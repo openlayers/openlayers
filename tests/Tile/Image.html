@@ -328,10 +328,10 @@
         var tile = layer.grid[0][0];
 
         // we're going to create a back buffer while the image
-        // is actually loading, so we call stopObserving to
-        // avoid any unexpected behavior
+        // is actually loading, so we call stopObservingElement
+        // to avoid any unexpected behavior
         tile.isLoading = false;
-        OpenLayers.Event.stopObserving(tile.imgDiv);
+        OpenLayers.Event.stopObservingElement(tile.imgDiv);
 
         var img = tile.imgDiv;
         var bb = tile.createBackBuffer();
