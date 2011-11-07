@@ -30,16 +30,16 @@
 
             // ows:OperationsMetadata
             var operationsMetadata = obj.operationsMetadata;
-            t.eq(operationsMetadata.GetCapabilities.dcp.http.get, "http://www.miramon.uab.es/cgi-bin/MiraMon5_0.cgi?", "ows:OperationsMetadata GetCapabilities url is correct");
-            t.eq(operationsMetadata.GetCapabilities.dcp.http.constraints.get.GetEncoding.allowedValues,
+            t.eq(operationsMetadata.GetCapabilities.dcp.http.get[0].url, "http://www.miramon.uab.es/cgi-bin/MiraMon5_0.cgi?", "ows:OperationsMetadata GetCapabilities url is correct");
+            t.eq(operationsMetadata.GetCapabilities.dcp.http.get[0].constraints.GetEncoding.allowedValues,
                  {'KVP': true},
                  "ows:OperationsMetadata GetCapabilities Constraints Get is correct");
-            t.eq(operationsMetadata.GetFeatureInfo.dcp.http.get, "http://www.miramon.uab.es/cgi-bin/MiraMon5_0.cgi?", "ows:OperationsMetadata GetFeatureInfo url is correct");
-            t.eq(operationsMetadata.GetFeatureInfo.dcp.http.constraints.get,
+            t.eq(operationsMetadata.GetFeatureInfo.dcp.http.get[0].url, "http://www.miramon.uab.es/cgi-bin/MiraMon5_0.cgi?", "ows:OperationsMetadata GetFeatureInfo url is correct");
+            t.eq(operationsMetadata.GetFeatureInfo.dcp.http.get[0].constraints,
                  undefined,
                  "ows:OperationsMetadata GetFeatureInfo Constraints Get is correct");
-            t.eq(operationsMetadata.GetTile.dcp.http.get, "http://www.miramon.uab.es/cgi-bin/MiraMon5_0.cgi?", "ows:OperationsMetadata GetTile url is correct");
-            t.eq(operationsMetadata.GetTile.dcp.http.constraints.get,
+            t.eq(operationsMetadata.GetTile.dcp.http.get[0].url, "http://www.miramon.uab.es/cgi-bin/MiraMon5_0.cgi?", "ows:OperationsMetadata GetTile url is correct");
+            t.eq(operationsMetadata.GetTile.dcp.http.get[0].constraints,
                  undefined,
                  "ows:OperationsMetadata GetTile Constraints Get is correct");
         }
@@ -56,7 +56,7 @@
             t.eq(numOfLayers, 1, "correct count of layers");
 
             var layer = contents.layers[0];
-            t.eq(layer.abstract, "Coastline/shorelines (BA010)", "layer abstract is correct");
+            t.eq(layer['abstract'], "Coastline/shorelines (BA010)", "layer abstract is correct");
             t.eq(layer.identifier, "coastlines", "layer identifier is correct");
             t.eq(layer.title, "Coastlines", "layer title is correct");
 
@@ -99,7 +99,7 @@
             var dimensions = layer.dimensions;
             t.eq(dimensions.length, 1, "correct count of dimensions");
             t.eq(dimensions[0].title, "Time", "first dimension title is correct");
-            t.eq(dimensions[0].abstract, "Monthly datasets", "first dimension abstract is correct");
+            t.eq(dimensions[0]['abstract'], "Monthly datasets", "first dimension abstract is correct");
             t.eq(dimensions[0].identifier, "TIME", "first dimension identifier is correct");
             t.eq(dimensions[0]['default'], "default", "first dimension default is correct");
             t.eq(dimensions[0].values.length, 3, "first dimension has correct count of values");

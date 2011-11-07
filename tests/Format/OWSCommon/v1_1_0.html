@@ -6,7 +6,7 @@
     function test_read_exception(t) {
         t.plan(6);
         var text = '<?xml version="1.0" encoding="UTF-8"?>' +
-'<ows:ExceptionReport xml:lang="en" version="1.0.0"' +
+'<ows:ExceptionReport xml:lang="en" version="1.1.0"' +
 '    xsi:schemaLocation="http://www.opengis.net/ows http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd"' +
 '    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ows="http://www.opengis.net/ows/1.1">' +
 '    <ows:Exception locator="foo" exceptionCode="InvalidParameterValue">' +
@@ -18,7 +18,7 @@
         var format = new OpenLayers.Format.OWSCommon();
         var result = format.read(text);
         var report = result.exceptionReport;
-        t.eq(report.version, "1.0.0", "Version parsed correctly");
+        t.eq(report.version, "1.1.0", "Version parsed correctly");
         t.eq(report.language, "en", "Language parsed correctly");
         var exception = report.exceptions[0];
         t.eq(exception.code, "InvalidParameterValue", "exceptionCode properly parsed");
