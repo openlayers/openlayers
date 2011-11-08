@@ -60,7 +60,24 @@
          if (!hasProj) {
              window.Proj4js = undefined;
          }
-         
+
+    }
+    
+    function test_equals_string(t) {
+
+        t.plan(7);
+        var gg = new OpenLayers.Projection("EPSG:4326");
+        var sm = new OpenLayers.Projection("EPSG:900913");
+
+        // allow comparison with identifier
+        t.eq(gg.equals("EPSG:4326"), true, "EPSG:4326 equality with string");
+        t.eq(gg.equals("EPSG:4327"), false, "EPSG:4326 inequality with string");
+        t.eq(sm.equals("EPSG:900913"), true, "EPSG:900913 equality with string");
+        t.eq(sm.equals("EPSG:900914"), false, "EPSG:900913 inequality with string");
+        t.eq(sm.equals("EPSG:3857"), true, "EPSG:900913 equality with EPSG:3857");
+        t.eq(sm.equals("EPSG:102113"), true, "EPSG:900913 equality with EPSG:102113");
+        t.eq(sm.equals("EPSG:102100"), true, "EPSG:900913 equality with EPSG:102100");
+
      }
        
     </script> 

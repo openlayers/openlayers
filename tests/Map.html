@@ -37,6 +37,41 @@
         map.destroy();
     }
     
+    function test_Map_constructor_convenience(t) {
+        t.plan(13);
+        var map = new OpenLayers.Map({
+            maxExtent: [-170, -80, 170, 80],
+            restrictedExtent: [-120, -65, 120, 65],
+            layers: [
+                new OpenLayers.Layer(null, {isBaseLayer: true})
+            ],
+            center: [-111, 45],
+            zoom: 3
+        });
+        
+        // maxExtent from array
+        t.ok(map.maxExtent instanceof OpenLayers.Bounds, "maxExtent bounds");
+        t.eq(map.maxExtent.left, -170, "maxExtent left");
+        t.eq(map.maxExtent.bottom, -80, "maxExtent bottom");
+        t.eq(map.maxExtent.right, 170, "maxExtent right");
+        t.eq(map.maxExtent.top, 80, "maxExtent top");
+
+        // restrictedExtent from array
+        t.ok(map.restrictedExtent instanceof OpenLayers.Bounds, "restrictedExtent bounds");
+        t.eq(map.restrictedExtent.left, -120, "restrictedExtent left");
+        t.eq(map.restrictedExtent.bottom, -65, "restrictedExtent bottom");
+        t.eq(map.restrictedExtent.right, 120, "restrictedExtent right");
+        t.eq(map.restrictedExtent.top, 65, "restrictedExtent top");
+        
+        var center = map.getCenter();
+        t.eq(center.lon, -111, "center lon");
+        t.eq(center.lat, 45, "center lat");
+        
+        t.eq(map.getZoom(), 3, "zoom");
+        
+        map.destroy();
+    }
+    
     function test_Map_constructor_late_rendering(t) {
         t.plan( 4 );
         
@@ -163,7 +198,7 @@
     }
 
     function test_Map_center(t) {
-        t.plan(11);
+        t.plan(14);
         var log = [];
         map = new OpenLayers.Map('map', {
             eventListeners: {
@@ -186,7 +221,7 @@
         t.ok( map.getCenter().equals(ll), "map center is correct after calling setCenter, zoom in");
         map.zoomOut();
         t.eq( map.getZoom(), 0, "map.zoom is correct after calling setCenter,zoom in, zoom out");
-
+        
         log = [];
         map.zoomTo(5);
         t.eq(log[0], "movestart", "zoomTo fires movestart event");
@@ -204,6 +239,13 @@
 
         map.getCenter().lon = 10;
         t.ok( map.getCenter().equals(ll), "map.getCenter returns a clone of map.center");
+
+        // allow calling setCenter with an array
+        map.setCenter([4, 2]);
+        var center = map.getCenter();
+        t.ok(center instanceof OpenLayers.LonLat, "(array) center is lonlat");
+        t.eq(center.lon, 4, "(array) center lon");
+        t.eq(center.lat, 2, "(array) center lat");
 
         map.destroy();
     }
@@ -1386,7 +1428,7 @@
     }
     
     function test_Map_zoomToExtent(t) {
-        t.plan(9);
+        t.plan(12);
         
         var map = new OpenLayers.Map("map");
         var layer = new OpenLayers.Layer(null, {isBaseLayer: true});
@@ -1415,6 +1457,13 @@
         t.eq(center.lon, -105, "c) correct x");
         t.eq(center.lat, 42, "c) correct y");
         t.eq(map.getZoom(), 3, "c) correct zoom");
+
+        // accept array
+        map.zoomToExtent([-160, 15, -50, 69]);
+        center = map.getCenter();
+        t.eq(center.lon, -105, "(array) correct x");
+        t.eq(center.lat, 42, "(array) correct y");
+        t.eq(map.getZoom(), 2, "(array) correct zoom");
         
         map.destroy();
     }

@@ -4,7 +4,7 @@
   <script type="text/javascript">
     var bounds; 
     function test_Bounds_constructor (t) {
-        t.plan( 21 );
+        t.plan( 26 );
         
         bounds = new OpenLayers.Bounds();
         t.ok( bounds instanceof OpenLayers.Bounds, "new OpenLayers.Bounds returns Bounds object" );
@@ -44,6 +44,15 @@
         t.eq( bounds.bottom, -20037508.34, "bounds.bottom adjusted for floating precision");
         t.eq( bounds.right, 40075016.68, "bounds.right adjusted for floating precision");
         t.eq( bounds.top, 20037508.34, "bounds.top adjusted for floating precision");
+        
+        // allow construction from a single arg
+        bounds = new OpenLayers.Bounds([-180, -90, 180, 90]);
+        t.ok(bounds instanceof OpenLayers.Bounds, "(array) correct instance");
+        t.eq(bounds.left, -180, "(array) left");
+        t.eq(bounds.bottom, -90, "(array) bottom");
+        t.eq(bounds.right, 180, "(array) right");
+        t.eq(bounds.top, 90, "(array) top");
+        
     }
 
     function test_Bounds_constructorFromStrings(t) {
@@ -621,7 +630,7 @@
 
     }
     function test_Bounds_transform(t) {
-        t.plan( 3 );
+        t.plan( 5 );
         bounds = new OpenLayers.Bounds(10, -10, 20, 10);
         bounds.transform(new OpenLayers.Projection("foo"), new OpenLayers.Projection("Bar")); 
         t.eq(bounds.toBBOX(), "10,-10,20,10", "null transform okay");
@@ -629,6 +638,14 @@
         t.eq(bounds.toBBOX(), "1113194.907778,-1118889.974702,2226389.815556,1118889.974702", "bounds for spherical mercator transform are correct");
         bounds.transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326")); 
         t.eq(bounds.toBBOX(), "10,-10,20,10", "bounds for inverse spherical mercator transform are correct");
+
+        // transform with string
+        bounds = new OpenLayers.Bounds(10, -10, 20, 10);
+        bounds.transform("EPSG:4326", "EPSG:900913"); 
+        t.eq(bounds.toBBOX(), "1113194.907778,-1118889.974702,2226389.815556,1118889.974702", "(string) bounds for spherical mercator transform are correct");
+        bounds.transform("EPSG:900913", "EPSG:4326"); 
+        t.eq(bounds.toBBOX(), "10,-10,20,10", "(string) bounds for inverse spherical mercator transform are correct");
+        
     }
 
     function test_Bounds_add(t) {

@@ -6,7 +6,7 @@
     var lonlat; 
 
     function test_LonLat_constructor (t) {
-        t.plan( 6 );
+        t.plan( 8 );
         lonlat = new OpenLayers.LonLat(6, 5);
         t.ok( lonlat instanceof OpenLayers.LonLat, "new OpenLayers.LonLat returns LonLat object" );
         t.eq( lonlat.CLASS_NAME, "OpenLayers.LonLat", "lonlat.CLASS_NAME is set correctly");
@@ -17,6 +17,12 @@
         lonlat = new OpenLayers.LonLat(20037508.33999999, -20037508.33999999);
         t.eq( lonlat.lon, 20037508.34, "lonlat.lon rounds correctly");
         t.eq( lonlat.lat, -20037508.34, "lonlat.lat rounds correctly");
+        
+        // allow construction from single arg
+        lonlat = new OpenLayers.LonLat([1, 2]);
+        t.eq(lonlat.lon, 1, "lon from array");
+        t.eq(lonlat.lat, 2, "lat from array");
+        
     }
     
     function test_LonLat_constructorFromStrings (t) {
@@ -160,7 +166,7 @@
     }
 
     function test_LonLat_transform(t) {
-        t.plan( 6 );
+        t.plan(10);
         lonlat = new OpenLayers.LonLat(10, -10);
         lonlat.transform(new OpenLayers.Projection("foo"), new OpenLayers.Projection("Bar")); 
         t.eq(lonlat.lon, 10, "lon for null transform is the same")
@@ -171,6 +177,16 @@
         lonlat.transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326")); 
         t.eq(lonlat.lon, 10, "lon for inverse spherical mercator transform is correct");
         t.eq(Math.round(lonlat.lat), -10, "lat for inverse spherical mercator correct")
+        
+        // transform with string
+        lonlat = new OpenLayers.LonLat(10, -10);
+        lonlat.transform("EPSG:4326", "EPSG:900913"); 
+        t.eq(Math.round(lonlat.lon), 1113195, "(string) lon for spherical mercator transform is correct");
+        t.eq(Math.round(lonlat.lat), -1118890, "(string) lat for spherical mercator correct")
+        lonlat.transform("EPSG:900913", "EPSG:4326"); 
+        t.eq(lonlat.lon, 10, "(string) lon for inverse spherical mercator transform is correct");
+        t.eq(Math.round(lonlat.lat), -10, "(string) lat for inverse spherical mercator correct")
+        
     }
     
     function test_LonLat_wrapDateLine(t) {
