@@ -1,0 +1,142 @@
+<html>
+<head>
+  <script src="../../OLLoader.js"></script>
+  <script src="../../../lib/deprecated.js"></script>
+  <script type="text/javascript">
+    // remove this next line at 3.0
+    var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
+    
+    // Remove this at 3.0
+    function test_Class_backwards(t) {
+        t.plan(4);
+        // test that a new style class supports old style inheritance
+        var NewClass = OpenLayers.Class({
+            newProp: "new",
+            initialize: function() {
+                t.ok(false, "the base class is never instantiated");
+            },
+            toString: function() {
+                return "new style";
+            }
+        });
+        
+        var OldClass = OpenLayers.Class.create();
+        OldClass.prototype = OpenLayers.Class.inherit(NewClass, {
+            oldProp: "old",
+            initialize: function() {
+                t.ok(true, "only the child class constructor is called");
+            }
+        });
+        
+        var oldObj = new OldClass();
+        t.eq(oldObj.oldProp, "old",
+             "old style classes can still be instantiated");
+        t.eq(oldObj.newProp, "new",
+             "old style inheritance of properties works with new style base");
+        t.eq(oldObj.toString(), "new style",
+             "toString inheritance works with backwards style");
+        
+    }
+
+    // Remove this at 3.0
+    function test_Class_create (t) {
+        t.plan( 3 );
+        var cls = OpenLayers.Class.create();
+        cls.prototype = {
+            initialize: function () {
+                if (isMozilla)
+                    t.ok(this instanceof cls,
+                                "initialize is called on the right class");
+                else
+                    t.ok(true, "initialize is called");
+            }
+        };
+        var obj = new cls();
+        t.eq(typeof obj, "object", "obj is an object");
+        if (isMozilla)
+            t.ok(obj instanceof cls,
+                        "object is of the right class");
+        else
+            t.ok(true, "this test doesn't work in IE");
+    }
+
+    // Remove this at 3.0
+    function test_Class_inherit (t) {
+        t.plan( 20 );
+        var A = OpenLayers.Class.create();
+        var initA = 0;
+        A.prototype = {
+            count: 0,
+            mixed: false,
+            initialize: function () {
+                initA++;
+                this.count++;
+            }
+        };
+
+        var B = OpenLayers.Class.create();
+        var initB = 0;
+        B.prototype = OpenLayers.Class.inherit( A, {
+            initialize: function () {
+                A.prototype.initialize.apply(this, arguments);
+                initB++;
+                this.count++;
+            }
+        });
+
+        var mixin = OpenLayers.Class.create()
+        mixin.prototype = {
+            mixed: true
+        };
+
+        t.eq( initA, 0, "class A not inited" );
+        t.eq( initB, 0, "class B not inited" );
+
+        var objA = new A();
+        t.eq( objA.count, 1, "object A init" );
+        t.eq( initA, 1, "class A init" );
+        if (isMozilla) 
+            t.ok( objA instanceof A, "obj A isa A" );
+        else
+            t.ok( true, "IE sucks" );
+
+        var objB = new B();
+        t.eq( initA, 2, "class A init" );
+        t.eq( initB, 1, "class B init" );
+        t.eq( objB.count, 2, "object B init twice" );
+        if (isMozilla) {
+            t.ok( objB instanceof A, "obj B isa A" );
+            t.ok( objB instanceof B, "obj B isa B" );
+        } else {
+            t.ok( true, "IE sucks" );
+            t.ok( true, "IE sucks" );
+        }
+
+        var C = OpenLayers.Class.create();
+        C.prototype = OpenLayers.Class.inherit( B, mixin, {count: 0} );
+        t.eq( initA, 2, "class A init unchanged" );
+        t.eq( initB, 1, "class B init unchanged" );
+        
+        var objC = new C();
+        t.eq( initA, 3, "class A init changed" );
+        t.eq( initB, 2, "class B init changed" );
+        t.eq( objC.count, 2, "object C init changed" );
+        if (isMozilla) {
+            t.ok( objC instanceof A, "obj C isa A" );
+            t.ok( objC instanceof B, "obj C isa B" );
+            t.ok( objC instanceof C, "obj C isa C" );
+            t.ok( !(objC instanceof mixin), "obj C isn'ta mixin" );
+        } else {
+            t.ok( true, "IE sucks" );
+            t.ok( true, "IE sucks" );
+            t.ok( true, "IE sucks" );
+            t.ok( true, "IE sucks" );
+        }
+        t.eq( objC.mixed, true, "class C has mixin properties" );
+    }
+
+  </script>
+</head>
+<body>
+</body>
+</html>
