@@ -1,0 +1,56 @@
+<html>
+<head>
+    <script src="../../OLLoader.js"></script>
+    <script src="../../../lib/deprecated.js"></script>
+
+    <script type="text/javascript">
+
+        function test_Element_hide(t) {
+            t.plan(2);
+
+            var elem1 = {
+                style: {
+                    'display': "none"
+                }
+            };
+        
+            var elem2 = {
+                style: {
+                    'display': ""
+                }
+            };
+
+            OpenLayers.Element.hide(elem1, elem2, "do-not-exists");
+        
+            t.eq(elem1.style.display, "none", "hidden element stays hidden");
+            t.eq(elem2.style.display, "none", "shown element hidden");
+        }
+    
+        function test_Element_show(t) {
+            t.plan(2);
+
+            var elem1 = {
+                style: {
+                    'display': "none"
+                }
+            };
+        
+            var elem2 = {
+                style: {
+                    'display': ""
+                }
+            };
+
+            OpenLayers.Element.show(elem1, "do-not-exists", elem2);
+        
+            t.eq(elem1.style.display, "", "hidden element shown");
+            t.eq(elem2.style.display, "", "shown element stays shown");
+        }
+
+    </script>
+</head>
+<body>
+    <div id="elemID" style="width:50px; height:100px; background-color:red">test</div>
+</body>
+</html>
+        
