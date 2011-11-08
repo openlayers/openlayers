@@ -30,16 +30,16 @@
 
             // ows:OperationsMetadata
             var operationsMetadata = obj.operationsMetadata;
-            t.eq(operationsMetadata.GetCapabilities.dcp.http.get, "http://www.miramon.uab.es/cgi-bin/MiraMon5_0.cgi?", "ows:OperationsMetadata GetCapabilities url is correct");
-            t.eq(operationsMetadata.GetCapabilities.dcp.http.constraints.get.GetEncoding.allowedValues,
+            t.eq(operationsMetadata.GetCapabilities.dcp.http.get[0].url, "http://www.miramon.uab.es/cgi-bin/MiraMon5_0.cgi?", "ows:OperationsMetadata GetCapabilities url is correct");
+            t.eq(operationsMetadata.GetCapabilities.dcp.http.get[0].constraints.GetEncoding.allowedValues,
                  {'KVP': true},
                  "ows:OperationsMetadata GetCapabilities Constraints Get is correct");
-            t.eq(operationsMetadata.GetFeatureInfo.dcp.http.get, "http://www.miramon.uab.es/cgi-bin/MiraMon5_0.cgi?", "ows:OperationsMetadata GetFeatureInfo url is correct");
-            t.eq(operationsMetadata.GetFeatureInfo.dcp.http.constraints.get,
+            t.eq(operationsMetadata.GetFeatureInfo.dcp.http.get[0].url, "http://www.miramon.uab.es/cgi-bin/MiraMon5_0.cgi?", "ows:OperationsMetadata GetFeatureInfo url is correct");
+            t.eq(operationsMetadata.GetFeatureInfo.dcp.http.get[0].constraints,
                  undefined,
                  "ows:OperationsMetadata GetFeatureInfo Constraints Get is correct");
-            t.eq(operationsMetadata.GetTile.dcp.http.get, "http://www.miramon.uab.es/cgi-bin/MiraMon5_0.cgi?", "ows:OperationsMetadata GetTile url is correct");
-            t.eq(operationsMetadata.GetTile.dcp.http.constraints.get,
+            t.eq(operationsMetadata.GetTile.dcp.http.get[0].url, "http://www.miramon.uab.es/cgi-bin/MiraMon5_0.cgi?", "ows:OperationsMetadata GetTile url is correct");
+            t.eq(operationsMetadata.GetTile.dcp.http.get[0].constraints,
                  undefined,
                  "ows:OperationsMetadata GetTile Constraints Get is correct");
         }
