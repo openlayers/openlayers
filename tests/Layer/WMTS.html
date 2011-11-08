@@ -220,6 +220,39 @@
                 t.eq(tileurl1, "http://example.com/wmts/1.0.0/world/blue_marble/arcgis_online/1/0/0.jpg", "layer1 getURL returns correct url");                                        
                 map.destroy();
             }
+
+            function test_getURL_resourceUrl(t) {
+                t.plan(2);
+            
+                var xml = document.getElementById("capabilities").firstChild.nodeValue;
+                var doc = new OpenLayers.Format.XML().read(xml);
+                var obj = new OpenLayers.Format.WMTSCapabilities().read(doc);
+
+                var template = "http://www.example.com/{style}/{Time}/{style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png";
+                var layer = new OpenLayers.Layer.WMTS({
+                    requestEncoding: "REST",
+                    url: template,
+                    layer: "GeoWebCache_USA_WMTS",
+                    style: "foo",
+                    matrixSet: "arcgis-online",
+                    params: {Time: "2011"},
+                    dimensions: ["Time"]
+                });   
+
+                var map = new OpenLayers.Map("map", {
+                    layers: [layer],
+                    projection: "EPSG:4326",                                    
+                    maxResolution: 0.3515625,
+                    maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90)
+                });
+                map.setCenter(new OpenLayers.LonLat(-97.0, 38.0), 1);
+                t.eq(layer.getURL(new OpenLayers.Bounds(-135.0, 0.0, -90.0, 45.0)), 
+                     "http://www.example.com/foo/2011/foo/arcgis-online/1/1/1.png", "getURL returns correct url");
+                map.zoomIn();
+                t.eq(layer.getURL(new OpenLayers.Bounds(-180.0, 0.0, -90.0, 90.0)), 
+                     "http://www.example.com/foo/2011/foo/arcgis-online/2/2/2.png", "getURL returns correct url");
+                map.destroy();
+            }
             
             function test_destroy (t) {
                 t.plan(3);

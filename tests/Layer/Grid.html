@@ -49,7 +49,7 @@
     }
 
     function test_Layer_Grid_clearTiles (t) {
-        t.plan(3);
+        t.plan(4);
 
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS(name, url, params);
@@ -85,6 +85,7 @@
         t.ok( layer.grid != null, "layer.grid does not get nullified" );
         t.eq(tilesDeleted, numTiles, "all tiles destroy()ed properly");
         t.ok(allTilesUnhooked, "all tiles unhooked before being destroyed");
+        t.eq(layer.gridResolution, null, "gridResolution set to null");
 
         OpenLayers.Tile.Image.prototype.destroy =
             OpenLayers.Tile.Image.prototype._destroy;
@@ -167,6 +168,7 @@
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS(name, url, params);
         layer.destroy = function() {}; //we're going to do funky things with the grid
+        layer.applyBackBuffer = function() {}; // backbuffering isn't under test here
         map.addLayer(layer);
 
     //make sure null bounds doesnt cause script error. 
@@ -390,6 +392,8 @@
             getLayerPxFromLonLat: function(ul) {
                 t.ok(ul.equals(desiredUL), "correct ul passed to translation");
                 return translatedPX;        
+            },
+            getResolution: function() {
             }
         }
 
@@ -482,6 +486,7 @@
 
 
         g_events = [];
+        layer.grid = [[{}]]; // to prevent error in updateBackBuffer
         tile.onLoadEnd.apply(layer);
         t.eq(g_events[0], "tileloaded", "tileloaded triggered when numLoadingTiles is 0");
         t.eq(g_events[1], "loadend", "loadend event triggered when numLoadingTiles is 0");
@@ -586,7 +591,7 @@
 
     function test_Layer_Grid_destroy (t) {
 
-        t.plan( 8 );
+        t.plan( 9 );
 
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.Grid(name, url, params);
@@ -603,16 +608,20 @@
         map.setCenter(new OpenLayers.LonLat(0,0), 10);
         map.setCenter(new OpenLayers.LonLat(1,1));
 
-         
         //grab a reference to one of the tiles
         var tile = layer.grid[1][1];        
         t.eq( tile.imgDiv.className, "olTileImage", "Tile has an image" ); 
 
+        var removeBackBufferCalled = false;
+        layer.removeBackBuffer = function() {
+            removeBackBufferCalled = true;
+        };
+
         layer.destroy();
         t.eq( tile.imgDiv, null, "Tile destroyed" ); 
         t.eq( layer.timerId, null, "Tile loading timeout cleared");
-        
         t.ok( layer.grid == null, "tiles appropriately destroyed")
+        t.ok( removeBackBufferCalled, "destroy calls removeBackBuffer");
 
         // destroy after remove from map
         layer = new OpenLayers.Layer.WMS(name, url, params);
@@ -759,6 +768,92 @@
         map.destroy();
     }
 
+    function test_moveTo_backbuffer_singletile(t) {
+        t.plan(4);
+
+        var map = new OpenLayers.Map('map', {
+            resolutions: [1, 0.5, 0.025]
+        });
+        var resolution;
+        var layer = new OpenLayers.Layer.WMS('', '', {}, {
+            singleTile: true,
+            isBaseLayer: true,
+            transitionEffect: 'resize',
+            applyBackBuffer: function(res) {
+                resolution = res;
+            }
+        });
+        map.addLayer(layer);
+
+        // initial resolution is 0.025
+        resolution = undefined;
+        map.setCenter(new OpenLayers.LonLat(0, 0), 2);
+        t.eq(resolution, 0.025,
+             'applyBackBuffer not called on first moveTo');
+
+        // move to (-90, 45)
+        resolution = undefined;
+        map.setCenter(new OpenLayers.LonLat(-90, 45));
+        t.eq(resolution, 0.025,
+             'applyBackBuffer called when map is moved');
+
+        // change to resolution 1
+        resolution = undefined;
+        map.zoomTo(0);
+        t.eq(resolution, 1,
+             'applyBackBuffer called when map is zoomed out');
+
+        // change to resolution 0.5
+        resolution = undefined;
+        map.zoomTo(1);
+        t.eq(resolution, 0.5,
+             'applyBackBuffer called when map is zoomed out');
+
+        map.destroy();
+    }
+
+    function test_moveTo_backbuffer(t) {
+        t.plan(4);
+
+        var map = new OpenLayers.Map('map', {
+            resolutions: [1, 0.5, 0.025]
+        });
+        var resolution;
+        var layer = new OpenLayers.Layer.WMS('', '', {}, {
+            isBaseLayer: true,
+            transitionEffect: 'resize',
+            applyBackBuffer: function(res) {
+                resolution = res;
+            }
+        });
+        map.addLayer(layer);
+
+        // initial resolution is 0.025
+        resolution = undefined;
+        map.setCenter(new OpenLayers.LonLat(0, 0), 2);
+        t.eq(resolution, 0.025,
+             'applyBackBuffer not called on first moveTo');
+
+        // move to (-90, 45)
+        resolution = undefined;
+        map.setCenter(new OpenLayers.LonLat(-90, 45));
+        t.eq(resolution, undefined,
+             'applyBackBuffer not called when map is moved');
+
+        // change to resolution 1
+        resolution = undefined;
+        map.zoomTo(0);
+        t.eq(resolution, 1,
+             'applyBackBuffer called when map is zoomed out');
+
+        // change to resolution 0.5
+        map.zoomTo(1);
+        t.eq(resolution, 0.5,
+             'applyBackBuffer called when map is zoomed out');
+
+        map.destroy();
+    }
+
     function test_transformDiv(t) {
 
         t.plan(8);
@@ -814,6 +909,273 @@
         map.destroy();
     }
 
+    function test_applyBackBuffer(t) {
+        t.plan(13);
+
+        var map = new OpenLayers.Map('map2');
+        var layer = new OpenLayers.Layer.WMS('', '', {}, {
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+
+        var backBuffer;
+
+        // test #1
+        layer.createBackBuffer = function() {
+            return;
+        };
+        layer.applyBackBuffer(2);
+        t.eq(layer.backBuffer, undefined,
+             'back buffer not created if createBackBuffer returns undefined');
+
+        // test #2
+        layer.createBackBuffer = function() {
+            backBuffer = document.createElement('div');
+            return backBuffer;
+        };
+        layer.gridResolution = 32;
+        layer.grid[0][0].bounds = new OpenLayers.Bounds(0, 1, 1, 0);
+        layer.applyBackBuffer(2);
+        t.ok(layer.backBuffer === backBuffer,
+             'back buffer set in layer');
+        t.ok(layer.div.firstChild === backBuffer,
+             'back buffer inserted as first child');
+        t.eq(layer.backBuffer.style.width, '1600%',
+             'back buffer has correct width');
+        t.eq(layer.backBuffer.style.height, '1600%',
+             'back buffer has correct height');
+        t.eq(layer.backBuffer.style.left, '250%',
+             'back buffer has correct left');
+        t.eq(layer.backBuffer.style.top, '275%',
+             'back buffer has correct top');
+
+        // test #3
+        layer.createBackBuffer = function() {
+            backBuffer = document.createElement('div');
+            return backBuffer;
+        };
+        layer.gridResolution = 32;
+        layer.grid[0][0].bounds = new OpenLayers.Bounds(0, 1, 1, 0);
+        map.layerContainerDiv.style.left = '20px';
+        map.layerContainerDiv.style.top = '-20px';
+        layer.applyBackBuffer(2);
+        t.ok(layer.backBuffer === backBuffer,
+             'back buffer set in layer');
+        t.ok(layer.div.firstChild === backBuffer,
+             'back buffer inserted as first child');
+        t.eq(layer.backBuffer.style.width, '1600%',
+             'back buffer has correct width');
+        t.eq(layer.backBuffer.style.height, '1600%',
+             'back buffer has correct height');
+        t.eq(layer.backBuffer.style.left, '230%',
+             'back buffer has correct left');
+        t.eq(layer.backBuffer.style.top, '295%',
+             'back buffer has correct top');
+
+        map.destroy();
+    }
+
+    function test_createBackBuffer(t) {
+        t.plan(7);
+
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS('', '', {}, {
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+
+        var createBackBuffer = OpenLayers.Tile.Image.prototype.createBackBuffer;
+
+        var backBuffer;
+
+        OpenLayers.Tile.Image.prototype.createBackBuffer = function() {
+            return;
+        };
+        backBuffer = layer.createBackBuffer();
+        t.ok(backBuffer != undefined,
+             'createBackBuffer returns a back buffer');
+        t.eq(backBuffer.childNodes.length, 0,
+             'returned back buffer has no child nodes');
+
+        OpenLayers.Tile.Image.prototype.createBackBuffer = function() {
+            return document.createElement('div');
+        };
+        backBuffer = layer.createBackBuffer();
+        t.ok(backBuffer != undefined,
+             'createBackBuffer returns a back buffer');
+        t.eq(backBuffer.childNodes[0].style.left, '0%',
+             'first tile has correct left');
+        t.eq(backBuffer.childNodes[0].style.top, '0%',
+             'first tile has correct top');
+        t.eq(backBuffer.childNodes[1].style.left, '256%',
+             'second tile has correct left');
+        t.eq(backBuffer.childNodes[1].style.top, '0%',
+             'second tile has correct top');
+
+        map.destroy();
+        OpenLayers.Tile.Image.prototype.createBackBuffer = createBackBuffer;
+    }
+
+    function test_removeBackBuffer(t) {
+        t.plan(3);
+
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS('', '', {}, {isBaseLayer: true});
+        map.addLayer(layer);
+
+        // add a fake back buffer
+        var backBuffer = document.createElement('div');
+        layer.backBuffer = backBuffer;
+        layer.div.appendChild(backBuffer);
+        layer.backBufferResolution = 32;
+
+        layer.removeBackBuffer();
+        t.eq(layer.backBuffer, null, 'backBuffer set to null in layer');
+        t.eq(layer.backBufferResolution, null,
+             'backBufferResolution set to null in layer');
+        t.ok(backBuffer.parentNode !== layer.div,
+             'back buffer removed from layer');
+
+        map.destroy();
+    }
+
+    function test_singleTile_move_and_zoom(t) {
+
+        //
+        // In single tile mode with no transition effect, we insert a non-scaled
+        // backbuffer when the layer is moved. But if a zoom occurs right after
+        // a move, i.e. before the new image is received, we need to remove the
+        // backbuffer, or an ill-positioned image will be visible during the
+        // zoom transition.
+        //
+
+        t.plan(2);
+
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS('', '', {}, {
+            isBaseLayer: true,
+            singleTile: true,
+            ratio: 1
+        });
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+
+        // move
+        map.setCenter(new OpenLayers.LonLat(10, 10));
+        t.ok(layer.backBuffer && layer.backBuffer.parentNode === layer.div,
+                'backbuffer inserted after map move');
+
+        // zoom
+        map.zoomTo(1);
+        t.eq(layer.backBuffer, null,
+             'back buffer removed when zooming');
+
+        map.destroy();
+    }
+
+    function test_backbuffer_scaled_layer(t) {
+        t.plan(12);
+
+        //
+        // set up
+        //
+
+        var map = new OpenLayers.Map('map', {
+            resolutions: [32, 16, 8, 4, 2, 1]
+        });
+        var layer = new OpenLayers.Layer.WMS(
+            "WMS",
+            window.location.href + "#",
+            null,
+            {transitionEffect: "resize"}
+        );
+        
+        layer.serverResolutions = [32, 16, 8];
+
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 2);
+
+        layer.createBackBuffer = function() {
+            return document.createElement('div');
+        };
+
+        // we want to control when the back buffer is removed
+        var removeBackBuffer = OpenLayers.Function.bind(
+                layer.removeBackBuffer, layer);
+        layer.removeBackBuffer = function() {};
+
+        //
+        // test
+        //
+
+        // change resolution from 8 to 4
+        map.zoomTo(3);
+        t.eq(layer.backBuffer.style.width, '100%',
+            '[8->4] back buffer not scaled');
+        removeBackBuffer();
+
+        // change resolution from 8 to 2
+        map.zoomTo(2); removeBackBuffer(); map.zoomTo(4);
+        t.eq(layer.backBuffer.style.width, '100%',
+            '[8->2] back buffer not scaled');
+        removeBackBuffer();
+
+        // change resolution from 16 to 4
+        map.zoomTo(1); removeBackBuffer(); map.zoomTo(3);
+        t.eq(layer.backBuffer.style.width, '200%',
+             '[16->4] back buffer width is as expected');
+        t.eq(layer.backBuffer.style.width, '200%',
+             '[16->4] back buffer height is as expected');
+        removeBackBuffer();
+
+        // change resolution from 32 to 1
+        map.zoomTo(0); removeBackBuffer(); map.zoomTo(5);
+        t.eq(layer.backBuffer.style.width, '400%',
+             '[32->1] back buffer width is as expected');
+        t.eq(layer.backBuffer.style.width, '400%',
+             '[32->1] back buffer height is as expected');
+        removeBackBuffer();
+
+        // change resolution from 4 to 2
+        map.zoomTo(3); removeBackBuffer(); map.zoomTo(4);
+        t.eq(layer.backBuffer.style.width, '100%',
+            '[4->2] back buffer not scaled');
+        removeBackBuffer();
+
+        // change resolution from 4 to 1
+        map.zoomTo(3); removeBackBuffer(); map.zoomTo(5);
+        t.eq(layer.backBuffer.style.width, '100%',
+            '[4->1] back buffer not scaled');
+        removeBackBuffer();
+
+        // change resolution from 1 to 4
+        map.zoomTo(5); removeBackBuffer(); map.zoomTo(3);
+        t.eq(layer.backBuffer.style.width, '100%',
+            '[1->4] back buffer not scaled');
+        removeBackBuffer();
+
+        // change resolution from 4 to 8
+        map.zoomTo(3); removeBackBuffer(); map.zoomTo(2);
+        t.eq(layer.backBuffer.style.width, '100%',
+            '[4->8] back buffer not scaled');
+        removeBackBuffer();
+
+        // change resolution from 4 to 16
+        map.zoomTo(3); removeBackBuffer(); map.zoomTo(1);
+        t.eq(layer.backBuffer.style.width, '50%',
+             '[4->16] back buffer width is as expected');
+        t.eq(layer.backBuffer.style.width, '50%',
+             '[4->16] back buffer height is as expected');
+        removeBackBuffer();
+
+        //
+        // tear down
+        //
+
+        map.destroy();
+    }
   </script>
 </head>
 <body>
