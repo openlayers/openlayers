@@ -196,9 +196,9 @@
             { controls: [] , 'numZoomLevels':20});
     
             var satellite = new OpenLayers.Layer.Google( "Google Satellite" , {type: G_SATELLITE_MAP, 'maxZoomLevel':18} );
-            var layer = new OpenLayers.Layer.WMS.Untiled( "OpenLayers WMS", 
+            var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                     "http://labs.metacarta.com/wms/vmap0", {layers: 'basic', 'transparent':true}, 
-                      {isBaseLayer: false} );
+                      {isBaseLayer: false, singleTile: true} );
     
             map.addLayers([satellite, layer]);
             map.setCenter(new OpenLayers.LonLat(10.205188,48.857593), 5);
