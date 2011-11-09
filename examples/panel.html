@@ -16,14 +16,6 @@
           background-color:white;
         }
         
-        .olControlPanel .olControlMouseDefaultsItemActive { 
-          background-color: blue;
-          background-image: url("../theme/default/img/pan_on.png");
-        }
-        .olControlPanel .olControlMouseDefaultsItemInactive { 
-          background-color: orange;
-          background-image: url("../theme/default/img/pan_off.png");
-        }
         .olControlPanel .olControlDrawFeatureItemActive { 
           width:  22px;  
           height: 22px;
@@ -75,8 +67,6 @@
                 {title:"Zoom box: Selecting it you can zoom on an area by clicking and dragging."});
             var panel = new OpenLayers.Control.Panel({defaultControl: zb});
             panel.addControls([
-                new OpenLayers.Control.MouseDefaults(
-                    {title:'You can use the default mouse configuration'}), 
                 zb,
                 new OpenLayers.Control.DrawFeature(vlayer, OpenLayers.Handler.Path,
                     {title:'Draw a feature'}),
