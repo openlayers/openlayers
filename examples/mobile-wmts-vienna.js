@@ -141,7 +141,6 @@ var map;
     var format = new OpenLayers.Format.WMTSCapabilities(), defaults = {
         requestEncoding: "REST",
         matrixSet: "google3857",
-        transitionEffect: "resize",
         tileLoadingDelay: 0,
         attribution: 'Datenquelle: Stadt Wien - <a href="http://data.wien.gv.at">data.wien.gv.at</a>'
     };
@@ -153,10 +152,10 @@ var map;
             var doc = request.responseText,
                 caps = format.read(doc);
             fmzk = format.createLayer(caps, OpenLayers.Util.applyDefaults(
-                {layer:"fmzk", requestEncoding:"REST"}, defaults
+                {layer:"fmzk", requestEncoding:"REST", transitionEffect: "resize"}, defaults
             ));
             aerial = format.createLayer(caps, OpenLayers.Util.applyDefaults(
-                {layer:"lb", requestEncoding:"REST"}, defaults
+                {layer:"lb", requestEncoding:"REST", transitionEffect: "resize"}, defaults
             ));
             labels = format.createLayer(caps, OpenLayers.Util.applyDefaults(
                 {layer:"beschriftung", requestEncoding:"REST", isBaseLayer: false},
