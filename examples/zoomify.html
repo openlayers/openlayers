@@ -23,7 +23,6 @@
 
 	       /* Map with raster coordinates (pixels) from Zoomify image */
 	        var options = {
-	            controls: [],
 	            maxExtent: new OpenLayers.Bounds(0, 0, zoomify_width, zoomify_height),
 	            maxResolution: Math.pow(2, zoomify.numberOfTiers-1 ),
 	            numZoomLevels: zoomify.numberOfTiers,
@@ -32,11 +31,6 @@
 
 	        map = new OpenLayers.Map("map", options);
 	        map.addLayer(zoomify);
-
-	        map.addControl(new OpenLayers.Control.MousePosition());
-	        map.addControl(new OpenLayers.Control.PanZoomBar());
-	        map.addControl(new OpenLayers.Control.MouseDefaults());
-	        map.addControl(new OpenLayers.Control.KeyboardDefaults());
 
             map.setBaseLayer(zoomify);
 	        map.zoomToMaxExtent();
