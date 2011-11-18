@@ -1967,6 +1967,23 @@
         t.eq(map.layerContainerDiv.style.top, '0px', 'layer container top correct');
     }
 
+    function test_adjustZoom(t) {
+        t.plan(3);
+        var map = new OpenLayers.Map({
+            div: 'map',
+            layers: [
+                new OpenLayers.Layer('name', {
+                    isBaseLayer: true,
+                    wrapDateLine: true
+                })
+            ]
+        });
+        map.zoomToMaxExtent();
+        t.ok(map.getResolution() <= map.getMaxExtent().getWidth() / map.getSize().w, "wrapDateLine map not wider than world");
+        
+        t.eq(map.adjustZoom(9), 9, "valid zoom maintained");
+        t.eq(map.adjustZoom(1), 2, "zoom adjusted to not exceed world width");
+    }
 
   </script>
 </head>

@@ -20,7 +20,13 @@
                     "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
             map.addLayer(layer);
             map.zoomToExtent(new OpenLayers.Bounds(-3.922119,44.335327,4.866943,49.553833));
-            map.addLayer(new OpenLayers.Layer.GML("GML", "gml/polygon.xml"));
+            map.addLayer(new OpenLayers.Layer.Vector("GML", {
+                protocol: new OpenLayers.Protocol.HTTP({
+                    url: "gml/polygon.xml",
+                    format: new OpenLayers.Format.GML()
+                }),
+                strategies: [new OpenLayers.Strategy.Fixed()]
+            }));
         }
     </script>
   </head>
