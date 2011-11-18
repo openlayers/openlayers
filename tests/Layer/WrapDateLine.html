@@ -164,7 +164,7 @@
             {layers: "bathymetry,land_fn,park,drain_fn,drainage," +
                      "prov_bound,fedlimit,rail,road,popplace",
              transparent: "true", format: "image/png"},
-            {wrapDateLine: true, reproject: false,encodeBBOX:true, buffer:2});
+            {wrapDateLine: true, encodeBBOX:true, buffer:2});
         var m = new OpenLayers.Map('map', {adjustZoom: function(z) {return z;}});
         m.addLayers([baselayer,layer]);
         m.zoomToMaxExtent();
