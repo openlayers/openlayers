@@ -16,7 +16,13 @@
                     "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
             map.addLayer(layer);
             map.zoomToExtent(new OpenLayers.Bounds(-94.617035,33.010025,-89.645401,36.492752));
-            map.addLayer(new OpenLayers.Layer.GML("GML", "arkansas.rss", {format: OpenLayers.Format.GeoRSS}));
+            map.addLayer(new OpenLayers.Layer.Vector("arkansas", {
+                protocol: new OpenLayers.Protocol.HTTP({
+                    url: "arkansas.rss",
+                    format: new OpenLayers.Format.GeoRSS()
+                }),
+                strategies: [new OpenLayers.Strategy.Fixed()]
+            }));
         }
     </script>
   </head>
