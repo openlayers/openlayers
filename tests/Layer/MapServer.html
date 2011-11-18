@@ -229,7 +229,7 @@
             var map = new OpenLayers.Map('map');
             var layer = new OpenLayers.Layer.Google("Google");
             map.addLayer(layer);
-            layer = new OpenLayers.Layer.MapServer(name, url, params, {isBaseLayer: false, reproject: true, buffer: 2});
+            layer = new OpenLayers.Layer.MapServer(name, url, params, {isBaseLayer: false, buffer: 2});
             layer.isBaseLayer=false;
             map.addLayer(layer);
             map.setCenter(new OpenLayers.LonLat(0,0), 5);
