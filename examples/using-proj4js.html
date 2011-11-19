@@ -18,7 +18,7 @@
         }
         ul li {
             list-style: none;
-            margin-bottom: .5em;
+            margin-bottom: .2em;
         }
         input {
             width: 250px;
@@ -37,13 +37,11 @@
         #mouse-position-4326 {
             float: left;
             clear: left;
-            font-size: smaller;
+            font-size: .8em;
             color: #444;
         }
-        
-        .olControlMousePosition {
-            background-color: #ededed;
-            background-color: rgba(200,200,200, 0.7);
+        .emph {
+            font-weight: bold;
         }
         </style>
     </head>
@@ -51,34 +49,53 @@
         <h1 id="title">Using Proj4JS for vector reprojection</h1>
         <div id="tags">
             projection, proj, proj4js, reprojection, reproject,
-            transform, transformation
+            transform, transformation, epsg, srs
         </div>
         <p id="shortdesc">
-            The features are reprojected with the JavaScript library 
-            <a href="http://proj4js.org/">Proj4JS</a>.
+            This example shows how to reproject vector features within 
+            OpenLayers. The baselayer shows Germany in the projection 
+            EPSG:31467 (GK 3). When one clicks on the buttons, features with
+            geometries originally in EPSG:4326 will be transformed to the 
+            projection of the map on-the-fly.
+        </p>
+        <p>
+            The features are internally reprojected with the JavaScript library 
+            <a href="http://proj4js.org/">Proj4JS</a>. Please note that usually
+            you would not inlude Proj4JS the way it is done in this example.
+            In a production environment you would furthermore have a local copy 
+            of the Proj4JS-projection definition that is hotlinked in this 
+            example.
         </p>
         <div id="map">
         </div>
         <ul>
             <li>
                 <input type="button" value="Add Cologne (~ 6.97, 50.95)" 
-                    onclick="addVector(6.966667, 50.95, this);">
+                    onclick="addVector(6.966667, 50.95, this);"
+                    id="btnCologne">
             </li>
             <li>
                 <input type="button" value="Add Berlin (~ 13.40, 52.50)" 
-                    onclick="addVector(13.398889, 52.500556, this);">
+                    onclick="addVector(13.398889, 52.500556, this);"
+                    id="btnBerlin">
             </li>
             <li>
                 <input type="button" value="Add Hamburg (~ 10.00, 53.57)" 
-                    onclick="addVector(10.001389, 53.565278, this);">
+                    onclick="addVector(10.001389, 53.565278, this);"
+                    id="btnHamburg">
             </li>
             <li>
                 <input type="button" value="Add Munich (~ 11.57, 48.13)" 
-                    onclick="addVector(11.566667, 48.133333, this);">
+                    onclick="addVector(11.566667, 48.133333, this);"
+                    id="btnMunich">
             </li>
             <li>
                 <input type="button" value="Add country outline (polygon)" 
-                    onclick="addOutline(this);">
+                    onclick="addOutline(this);" id="btnGermany">
+            </li>
+            <li>
+                <input type="button" value="...clear vector features" 
+                    onclick="clearVectors();">
             </li>
             <li>
                 <div id="status">

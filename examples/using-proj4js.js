@@ -26,7 +26,7 @@ function init(){
         maxExtent: new OpenLayers.Bounds(3146150, 5223600, 4031150, 6108600)
     });
     var germany_gk3 = new OpenLayers.Layer.WMS(
-        'Germany (Metaspatial)', 
+        'Germany (MetaSpatial)', 
         'http://www.metaspatial.net/cgi-bin/germany-wms', 
         {
             layers: 'germany'
@@ -34,7 +34,7 @@ function init(){
         {
             singleTile: true,
             ratio: 1.0,
-            attribution: 'Background WMS offered withoud restrictions by '
+            attribution: 'Background WMS offered without restrictions by '
                 + '<a href="http://www.metaspatial.net/">MetaSpatial</a>'
         }
     );
@@ -49,7 +49,7 @@ function addVector(x, y, btn){
     var status = "Transformed ",
         geometry = new OpenLayers.Geometry.Point(x, y);
     
-    status += '<br /><code style="font-weight: bold">  ' 
+    status += '<br /><code class="emph">  ' 
         + geometry.toString() + '</code> to';
     
     geometry.transform(
@@ -57,7 +57,7 @@ function addVector(x, y, btn){
         new OpenLayers.Projection('EPSG:31467')
     );
     
-    status += '<br /><code style="font-weight: bold">  ' 
+    status += '<br /><code class="emph">  ' 
         + geometry.toString() + '</code>.';
     $('status').innerHTML = status;
     
@@ -112,4 +112,20 @@ function addOutline(btn) {
     vector.addFeatures([transformedFeature]);
     $('status').innerHTML = 'Transformed polygon';
     btn.disabled = true;
+}
+
+function clearVectors(){
+    vector.removeAllFeatures();
+    var ids = [
+        'btnCologne',
+        'btnBerlin',
+        'btnHamburg',
+        'btnMunich',
+        'btnGermany'
+    ];
+    for (var i = 0, len = ids.length; i < len; i++) {
+        var elem = $(ids[i]);
+        elem.disabled = false;
+    }
+    $('status').innerHTML = '';
 }
