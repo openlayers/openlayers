@@ -30,23 +30,25 @@ To include the OpenLayers library in your web page from the root of the site, us
   <script type="text/javascript" src="/OpenLayers.js" />
 
 As an example, using bash (with the release files in ~/openlayers ):
-$ cd /var/www/html
-$ cp ~/openlayers/OpenLayers.js ./
-$ cp -R ~/openlayers/theme ./
-$ cp -R ~/openlayers/img ./
+
+    $ cd /var/www/html
+    $ cp ~/openlayers/OpenLayers.js ./
+    $ cp -R ~/openlayers/theme ./
+    $ cp -R ~/openlayers/img ./
 
 If you want to use the multiple-file version of OpenLayers (for, say,
 debugging or development purposes), copy the lib/ directory up to your
 webserver in the same directory you put the img/ folder. Then add
 the following to your web page instead:
 
-  <script type="text/javascript" src="/lib/OpenLayers.js" />
+    <script type="text/javascript" src="/lib/OpenLayers.js" />
 
 As an example, using bash (with the release files in ~/openlayers ):
-$ cd /var/www/html
-$ cp -R ~/openlayers/lib ./
-$ cp -R ~/openlayers/theme ./
-$ cp -R ~/openlayers/img ./
+
+    $ cd /var/www/html
+    $ cp -R ~/openlayers/lib ./
+    $ cp -R ~/openlayers/theme ./
+    $ cp -R ~/openlayers/img ./
 
 
 ------------------------------------
@@ -58,8 +60,9 @@ The examples/ directory is full of useful examples.
 Documentation is available at http://trac.openlayers.org/wiki/Documentation.
 You can generate the API documentation with http://www.naturaldocs.org/:
 As an example, using bash (with the release files in ~/openlayers ):
-$ cd ~/openlayers/
-$ /path/to/NaturalDocs -i lib/ -o HTML doc/ -p doc_config/ -s Default OL
+
+    $ cd ~/openlayers/
+    $ /path/to/NaturalDocs -i lib/ -o HTML doc/ -p doc_config/ -s Default OL
 
 Information on changes in the API is available in news.txt.
 
