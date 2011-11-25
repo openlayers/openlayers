@@ -104,7 +104,7 @@ var map;
         maxResolution: 156543.0339,
         numZoomLevels: 20,
         controls: [
-            new OpenLayers.Control.TouchNavigation({
+            new OpenLayers.Control.Navigation({
                 mouseWheelOptions: {
                     cumulative: false,
                     interval: 20
