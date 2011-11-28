@@ -188,7 +188,7 @@
     }
 
     function test_Elements_drawGeometry_2(t) {
-        t.plan(9);
+        t.plan(8);
         
         setUp();
         
@@ -252,17 +252,6 @@
         style = true;
         r.drawGeometry(polygon, style);
         t.ok(properDraw, "drawGeometry called drawPolygon when passed a polygon");
-
-        // surface
-        var properDraw = false;
-        r.drawSurface = function(g) {
-            properDraw = true;
-            return {};
-        }
-        var surface = OpenLayers.Util.applyDefaults({CLASS_NAME: 'OpenLayers.Geometry.Surface'}, geometry);
-        style = true;
-        r.drawGeometry(surface, style);
-        t.ok(properDraw, "drawGeometry called drawSurface when passed a surface");
 
         // rectangle
         var properDraw = false;

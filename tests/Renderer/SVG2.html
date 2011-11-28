@@ -282,34 +282,6 @@
         t.eq(node.getAttributeNS(null, "height"), "4", "height attribute is correctly set");
     }
     
-    function test_SVG_drawsurface(t) {
-        if (!OpenLayers.Renderer.SVG2.prototype.supported()) {
-            t.plan(0);
-            return;
-        }
-        
-        t.plan(2);
-        
-        var r = new OpenLayers.Renderer.SVG2(document.body);
-        
-        var node = document.createElement('div');
-        
-        var geometry = {
-            components: ['foo', 'bar', 'dude']
-        }
-        g_GetString = false;
-        r.getShortString = function(c) {
-            g_GetString = true;
-            return c;
-        }
-        
-        r.drawSurface(node, geometry);
-        
-        t.ok(g_GetString, "getShortString is called");
-        
-        t.eq(node.getAttributeNS(null, "d"), "M foo C bar dude Z", "d attribute is correctly set");
-    }
-    
     function test_SVG_getcomponentsstring(t) {
         if (!OpenLayers.Renderer.SVG2.prototype.supported()) {
             t.plan(0);
