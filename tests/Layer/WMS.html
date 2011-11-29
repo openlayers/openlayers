@@ -86,10 +86,10 @@
         t.eq( tile.url,
              layer.getFullRequestString(tParams),
              "image src is created correctly via addtile" );
-        t.eq( tile.frame.style.top, "6%", "image top is set correctly via addtile" );
-        t.eq( tile.frame.style.left, "5%", "image top is set correctly via addtile" );
+        t.eq( tile.getTile().style.top, "6%", "image top is set correctly via addtile" );
+        t.eq( tile.getTile().style.left, "5%", "image top is set correctly via addtile" );
 
-        var firstChild = layer.div.firstChild.firstChild;
+        var firstChild = layer.div.firstChild;
         t.eq( firstChild.nodeName.toLowerCase(), "img", "div first child is an image object" );
         t.ok( firstChild == img, "div first child is correct image object" );
         t.eq( tile.position.toString(), "x=5,y=6", "Position of tile is set correctly." );
@@ -117,10 +117,10 @@
         t.eq( tile.url,
              layer.getFullRequestString(tParams),
              "image src is created correctly via addtile" );
-        t.eq( tile.frame.style.top, "6%", "image top is set correctly via addtile" );
-        t.eq( tile.frame.style.left, "5%", "image top is set correctly via addtile" );
+        t.eq( tile.getTile().style.top, "6%", "image top is set correctly via addtile" );
+        t.eq( tile.getTile().style.left, "5%", "image top is set correctly via addtile" );
 
-        var firstChild = layer.div.firstChild.firstChild;
+        var firstChild = layer.div.firstChild;
         t.eq( firstChild.nodeName.toLowerCase(), "img", "div first child is an image object" );
         t.ok( firstChild, img, "div first child is correct image object" );
         t.eq( tile.position.toString(), "x=5,y=6", "Position of tile is set correctly." );
@@ -284,10 +284,10 @@
         map.addLayer(tLayer);
         map.zoomToMaxExtent();
         t.eq(tLayer.opacity, "0.5", "Opacity is set correctly");
-        t.eq(parseFloat(tLayer.div.firstChild.firstChild.style.opacity), 0.5, "Opacity on tile is correct");
+        t.eq(parseFloat(tLayer.div.firstChild.style.opacity), 0.5, "Opacity on tile is correct");
         tLayer.setOpacity("0.6");
         t.eq(tLayer.opacity, "0.6", "setOpacity works properly");
-        t.eq(parseFloat(tLayer.div.firstChild.firstChild.style.opacity), 0.6, "Opacity on tile is changed correctly");
+        t.eq(parseFloat(tLayer.div.firstChild.style.opacity), 0.6, "Opacity on tile is changed correctly");
         var pixel = new OpenLayers.Pixel(5,6);
         var tile = tLayer.addTile(new OpenLayers.Bounds(1,2,3,4), pixel);
         tile.draw();
