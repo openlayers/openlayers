@@ -1,8 +1,6 @@
 var map;
 
 (function() {
-    OpenLayers.ProxyHost = "proxy.cgi?url=";
-    
     // Set document language for css content 
     document.documentElement.lang = (navigator.userLanguage || navigator.language).split("-")[0];
 
@@ -98,9 +96,7 @@ var map;
         theme: null,
         projection: "EPSG:3857",
         units: "m",
-        maxExtent: new OpenLayers.Bounds(
-            -20037508.34, -20037508.34, 20037508.34, 20037508.34
-        ),
+        maxExtent: [-20037508.34, -20037508.34, 20037508.34, 20037508.34],
         maxResolution: 156543.0339,
         numZoomLevels: 20,
         controls: [
@@ -135,43 +131,87 @@ var map;
     var vector = new OpenLayers.Layer.Vector("Vector Layer");
 
     // The WMTS layers we're going to add
-    var fmzk, aerial, labels; 
-
-    // The WMTSCapabilities format and the default options for the layers
-    var format = new OpenLayers.Format.WMTSCapabilities(), defaults = {
-        requestEncoding: "REST",
-        matrixSet: "google3857",
-        tileLoadingDelay: 0,
-        attribution: 'Datenquelle: Stadt Wien - <a href="http://data.wien.gv.at">data.wien.gv.at</a>'
-    };
+    var fmzk, aerial, labels;
+    
+    // zoom to initial extent or restore position from permalink
+    function zoomToInitialExtent() {
+        var extent = fmzk.tileFullExtent,
+            ctr = extent.getCenterLonLat(),
+            zoom = map.getZoomForExtent(extent, true),
+            params = OpenLayers.Util.getParameters("?"+window.location.hash.substr(1));
+        OpenLayers.Util.applyDefaults(params, {x:ctr.lon, y:ctr.lat, z:zoom});
+        map.setCenter(new OpenLayers.LonLat(params.x, params.y), params.z);
+    }
 
     // Request capabilities and create layers
+    OpenLayers.ProxyHost = "proxy.cgi?url=";    
     OpenLayers.Request.GET({
         url: "http://maps.wien.gv.at/wmts/1.0.0/WMTSCapabilities.xml",
         success: function(request) {
+            var format = new OpenLayers.Format.WMTSCapabilities();
+            var defaults = {
+                requestEncoding: "REST",
+                matrixSet: "google3857",
+                tileLoadingDelay: 0,
+                attribution: 'Datenquelle: Stadt Wien - <a href="http://data.wien.gv.at">data.wien.gv.at</a>'
+            };
             var doc = request.responseText,
                 caps = format.read(doc);
             fmzk = format.createLayer(caps, OpenLayers.Util.applyDefaults(
-                {layer:"fmzk", requestEncoding:"REST", transitionEffect: "resize"}, defaults
+                {layer:"fmzk", requestEncoding:"REST", transitionEffect:"resize"}, defaults
             ));
             aerial = format.createLayer(caps, OpenLayers.Util.applyDefaults(
-                {layer:"lb", requestEncoding:"REST", transitionEffect: "resize"}, defaults
+                {layer:"lb", requestEncoding:"REST", transitionEffect:"resize"}, defaults
             ));
             labels = format.createLayer(caps, OpenLayers.Util.applyDefaults(
                 {layer:"beschriftung", requestEncoding:"REST", isBaseLayer: false},
                 defaults
             ));
             map.addLayers([fmzk, aerial, labels]);
-            
-            // zoom to initial extent or restore position from permalink
-            var extent = fmzk.tileFullExtent,
-                ctr = extent.getCenterLonLat(),
-                zoom = map.getZoomForExtent(extent, true),
-                params = OpenLayers.Util.getParameters("?"+window.location.hash.substr(1));
-            OpenLayers.Util.applyDefaults(params, {x:ctr.lon, y:ctr.lat, z:zoom});
-            map.setCenter(new OpenLayers.LonLat(params.x, params.y), params.z);
+            zoomToInitialExtent();
         }
     });
+    
+    // Instead of building the layers from the capabilities document, we could
+    // look at it ourselves and create the layers manually. If you want to try
+    // that, uncomment the following code and remove the "Request capabilities
+    // and create layers" block above.
+    /*
+    var extent = new OpenLayers.Bounds(1799448.394855, 6124949.74777, 1848250.442089, 6162571.828177);
+    var defaults = {
+        requestEncoding: "REST",
+        matrixSet: "google3857",
+        tileFullExtent: extent,
+        tileLoadingDelay: 0,
+        attribution: 'Datenquelle: Stadt Wien - <a href="http://data.wien.gv.at">data.wien.gv.at</a>'
+    };
+
+    fmzk = new OpenLayers.Layer.WMTS(OpenLayers.Util.applyDefaults({
+        url: "http://www.wien.gv.at/wmts/fmzk/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg",
+        layer: "fmzk",
+        style: "pastell",
+        transitionEffect: "resize"
+    },
+    defaults));
+    aerial = new OpenLayers.Layer.WMTS(OpenLayers.Util.applyDefaults({
+        url: "http://www.wien.gv.at/wmts/lb/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg",
+        layer: "lb",
+        style: "farbe",
+        transitionEffect: "resize"
+    },
+    defaults));
+    labels = new OpenLayers.Layer.WMTS(OpenLayers.Util.applyDefaults({
+        url: "http://www.wien.gv.at/wmts/beschriftung/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
+        layer: "beschriftung",
+        style: "normal",
+        transitionEffect: null,
+        isBaseLayer: false
+    },
+    defaults));
+    map.addLayers([fmzk, aerial, labels]);
+    zoomToInitialExtent();
+    */
+
 })();
 
 // Reliably hide the address bar on Android and iOS devices. From
