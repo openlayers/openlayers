@@ -185,7 +185,6 @@ var map;
         tileLoadingDelay: 0,
         attribution: 'Datenquelle: Stadt Wien - <a href="http://data.wien.gv.at">data.wien.gv.at</a>'
     };
-
     fmzk = new OpenLayers.Layer.WMTS(OpenLayers.Util.applyDefaults({
         url: "http://www.wien.gv.at/wmts/fmzk/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg",
         layer: "fmzk",
