@@ -119,8 +119,8 @@
                     tileSize: new OpenLayers.Size(512, 512),            
                     requestEncoding: "REST"            
                 });
-                var bl = {bounds: new OpenLayers.Bounds(1,2,0,0)};
-                var tr = {bounds: new OpenLayers.Bounds(0,0,3,4)};
+                var bl = {bounds: new OpenLayers.Bounds(1,2,2,3)};
+                var tr = {bounds: new OpenLayers.Bounds(2,3,3,4)};
                 layer1.grid = [[6, tr],[bl, 7]];
                 var bounds = layer1.getTilesBounds();            
                 var testBounds = new OpenLayers.Bounds(1,2,3,4);                
