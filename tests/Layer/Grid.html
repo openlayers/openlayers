@@ -130,7 +130,6 @@
     layer.grid = [[bl, tr]];
 
     var bounds = layer.getTilesBounds();
-    console.log(bounds);
     var testBounds = new OpenLayers.Bounds(0,-90,360,90);
     
     t.ok( bounds.equals(testBounds), "getTilesBounds() returns correct bounds");
