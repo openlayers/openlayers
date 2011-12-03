@@ -16,7 +16,6 @@ def minimize(code):
 
     os.system(("java -jar %s --js %s --js_output_file %s" +
             " --externs closure-compiler/Externs.js" +
-            " --externs closure-compiler/errors-pending-to-fix.js" +
             " --jscomp_warning checkVars" +
             " --jscomp_error checkRegExp" +
             " --jscomp_error undefinedVars") % (path, ntf.name, ntf2.name))
