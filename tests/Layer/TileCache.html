@@ -66,8 +66,8 @@
         var options = {'type':'png'}; 
         var layer = new OpenLayers.Layer.TileCache(name, url, layername, options);
 
-        var bl = { bounds: new OpenLayers.Bounds(1,2,0,0)};
-        var tr = { bounds: new OpenLayers.Bounds(0,0,3,4)};
+        var bl = { bounds: new OpenLayers.Bounds(1,2,2,3)};
+        var tr = { bounds: new OpenLayers.Bounds(2,3,3,4)};
         layer.grid = [ [6, tr], 
                        [bl, 7]];
 

@@ -94,14 +94,14 @@
 
 
     function test_Layer_Grid_getTilesBounds(t) {
-        t.plan(3);
+        t.plan(4);
 
         layer = new OpenLayers.Layer.WMS(name, url, params);
 
 
     //normal grid
-        var bl = { bounds: new OpenLayers.Bounds(1,2,0,0)};
-        var tr = { bounds: new OpenLayers.Bounds(0,0,3,4)};
+        var bl = { bounds: new OpenLayers.Bounds(1,2,2,3)};
+        var tr = { bounds: new OpenLayers.Bounds(2,3,3,4)};
         layer.grid = [ [6, tr], 
                        [bl, 7]];
 
@@ -122,6 +122,16 @@
         layer.grid = [ [ singleTile ] ];
         bounds = layer.getTilesBounds();
         
+        t.ok( bounds.equals(testBounds), "getTilesBounds() returns correct bounds");
+    
+    //world wrapped around the dateline
+        var bl = { bounds: new OpenLayers.Bounds(0,-90,180,90)};
+        var tr = { bounds: new OpenLayers.Bounds(-180,-90,0,90)};
+        layer.grid = [[bl, tr]];
+
+        var bounds = layer.getTilesBounds();
+        var testBounds = new OpenLayers.Bounds(0,-90,360,90);
+    
         t.ok( bounds.equals(testBounds), "getTilesBounds() returns correct bounds");
         
     }
@@ -159,7 +169,7 @@
     
     function test_Layer_Grid_moveTo(t) {
 
-    t.plan(14);
+    t.plan(12);
 
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS(name, url, params);
@@ -280,13 +290,6 @@
         layer.grid = [ [ {} ] ];
         layer.singleTile = false;
         
-        // drastic pan
-        clearTestBounds();
-        tilesBounds = new OpenLayers.Bounds(-150,-150,-120,-120);
-        layer.moveTo(null, zoomChanged);
-        t.ok(g_WhichFunc == "InitGridded", "if tiles drastically out of bounds, we call initGriddedTile()");
-        t.ok(g_Bounds.equals(b), "if tiles drastically out of bounds, we call initGriddedTile() with correct bounds");
-       
         //regular move 
         clearTestBounds();
         tilesBounds = new OpenLayers.Bounds(10,10,120,120);
