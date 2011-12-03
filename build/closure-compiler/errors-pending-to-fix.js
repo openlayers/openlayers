@@ -16,6 +16,7 @@ var DEFAULT_FORMAT;
 //  ../lib/OpenLayers/Layer/KaMapCache.js:121: ERROR - variable paramsString is undefined
 var paramsString;
 
-/* Ticket: http://code.google.com/p/xmlhttprequest/issues/detail?id=34 */ 
+/* Ticket: #3593 
+    see: http://code.google.com/p/xmlhttprequest/issues/detail?id=34  */ 
 // ../lib/OpenLayers/Request/XMLHttpRequest.js:252: ERROR - variable oRequest is undefined
 var oRequest;
