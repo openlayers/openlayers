@@ -125,14 +125,14 @@
         t.ok( bounds.equals(testBounds), "getTilesBounds() returns correct bounds");
     
     //world wrapped around the dateline
-    var bl = { bounds: new OpenLayers.Bounds(0,-90,180,90)};
-    var tr = { bounds: new OpenLayers.Bounds(-180,-90,0,90)};
-    layer.grid = [[bl, tr]];
+        var bl = { bounds: new OpenLayers.Bounds(0,-90,180,90)};
+        var tr = { bounds: new OpenLayers.Bounds(-180,-90,0,90)};
+        layer.grid = [[bl, tr]];
 
-    var bounds = layer.getTilesBounds();
-    var testBounds = new OpenLayers.Bounds(0,-90,360,90);
+        var bounds = layer.getTilesBounds();
+        var testBounds = new OpenLayers.Bounds(0,-90,360,90);
     
-    t.ok( bounds.equals(testBounds), "getTilesBounds() returns correct bounds");
+        t.ok( bounds.equals(testBounds), "getTilesBounds() returns correct bounds");
         
     }
 
