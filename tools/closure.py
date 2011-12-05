@@ -14,7 +14,11 @@ def minimize(code):
     ntf2 = tempfile.NamedTemporaryFile()
     ntf2.close()
 
-    os.system("java -jar %s --js %s --js_output_file %s" % (path, ntf.name, ntf2.name))
+    os.system(("java -jar %s --js %s --js_output_file %s" +
+            " --externs closure-compiler/Externs.js" +
+            " --jscomp_warning checkVars" +
+            " --jscomp_error checkRegExp" +
+            " --jscomp_error undefinedVars") % (path, ntf.name, ntf2.name))
     data = open(ntf2.name).read()
     os.unlink(ntf.name) 
     os.unlink(ntf2.name) 
