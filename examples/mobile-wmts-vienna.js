@@ -152,7 +152,7 @@ var map;
             var defaults = {
                 requestEncoding: "REST",
                 matrixSet: "google3857",
-                tileLoadingDelay: 0,
+                buffer: 4,
                 attribution: 'Datenquelle: Stadt Wien - <a href="http://data.wien.gv.at">data.wien.gv.at</a>'
             };
             var doc = request.responseText,
@@ -182,7 +182,7 @@ var map;
         requestEncoding: "REST",
         matrixSet: "google3857",
         tileFullExtent: extent,
-        tileLoadingDelay: 0,
+        buffer: 4,
         attribution: 'Datenquelle: Stadt Wien - <a href="http://data.wien.gv.at">data.wien.gv.at</a>'
     };
     fmzk = new OpenLayers.Layer.WMTS(OpenLayers.Util.applyDefaults({
