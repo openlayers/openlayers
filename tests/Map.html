@@ -726,7 +726,7 @@
     }
 
     function test_Map_double_addLayer(t) {
-        t.plan( 1 );    
+        t.plan(2);
 
         map = new OpenLayers.Map($('map'));
         layer = new OpenLayers.Layer.WMS('Test Layer', 
@@ -734,12 +734,10 @@
                     {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'} 
                     );
 
-        map.addLayers([layer]);
-        try {
-            map.addLayers([layer]);
-        } catch(e) {
-            t.ok(true, "Map does not allow double adding of layers." );
-        }
+        var added = map.addLayer(layer);
+        t.ok(added === true, "Map.addLayer returns true if the layer is added to the map.");
+        var added = map.addLayer(layer);
+        t.ok(added === false, "Map.addLayer returns false if the layer is already present.");
     
         map.destroy();
     }
