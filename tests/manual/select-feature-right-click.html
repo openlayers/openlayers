@@ -1,0 +1,86 @@
+<html>
+    <head>
+        <title>OpenLayers Ticket 3404</title>
+        <script src="../../lib/OpenLayers.js"></script>
+    </head>
+    <body>
+        <table cellpadding="10px">
+            <tr>
+                <td width="600">
+                    <p><a href="http://trac.osgeo.org/openlayers/ticket/3404">Ticket 3404</a> Test Page</p>
+                    <p>This bug is only triggered by physical right mouse clicks so it is not possible to write
+                       an automated js unit test</p>
+                    <p>When a SelectFeature control and a Navigation control are added to a map the left-click
+                       mousedown events are stopped by a Drag handler before reaching the Feature handler. However,
+                       right-click mousedown events so pass through and reach the Feature handler.</p>
+                    <p>The Feature handler records the xy of
+                       each mousedown and mouseup events so they can be compared in the click event. Because only right-click
+                       mousedown event are received the location of future left-click mouseup events are compared
+                       to the location of the 'stale' right-click mousedown event resulting in the feature not being selected.</p>
+                    <p>Steps to recreate the bug:
+                        <ol>
+                            <li>Left-click a point to select it.</li>
+                            <li>Left-click the map to deselect the point.</li>
+                            <li>Left-click a different point to select it.</li>
+                            <li>Left-click the map to deselect the second point.</li>
+                            <li>Right-click the map then left-click to close the browser context menu.</li>
+                            <li>Left-click a point.</li>
+                        </ol>
+                    </p>
+                    <p>Expected: The point is selected.</p>
+                </td>
+                <td>
+                  <div style="width:300; height:400" id="map"></div>
+                </td>
+            </tr>
+        </table>
+
+        <script defer="defer" type="text/javascript">
+        var map = new OpenLayers.Map('map');
+
+        var wmsLayer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+            "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
+
+        // allow testing of specific renderers via "?renderer=Canvas", etc
+        var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+        renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+
+        var vectorLayer = new OpenLayers.Layer.Vector("Vector Layer", {
+            renderers: renderer
+        });
+
+        map.addLayers([wmsLayer, vectorLayer]);
+        map.addControl(new OpenLayers.Control.LayerSwitcher());
+
+        var selectControl = new OpenLayers.Control.SelectFeature(
+            vectorLayer,
+            {
+                clickout: true, toggle: false,
+                multiple: false, hover: false,
+                toggleKey: "ctrlKey", // ctrl key removes from selection
+                multipleKey: "shiftKey", // shift key adds to selection
+            }
+        );
+
+        map.addControl(selectControl);
+        selectControl.activate();
+
+        map.addControl(new OpenLayers.Control.Navigation());
+        map.setCenter(new OpenLayers.LonLat(-75.1641667, 39.9522222), 10);
+
+        var createRandomFeatures = function() {
+            var extent = map.getExtent();
+            var features = [];
+            for(var i=0; i<10; ++i) {
+                features.push(new OpenLayers.Feature.Vector(
+                    new OpenLayers.Geometry.Point(extent.left + (extent.right - extent.left) * Math.random(),
+                    extent.bottom + (extent.top - extent.bottom) * Math.random()
+                )));
+            }
+            return features;
+        }
+
+        vectorLayer.addFeatures(createRandomFeatures());
+        </script>
+    </body>
+</html>
