@@ -41,7 +41,7 @@
         var origProcessMetadata = OpenLayers.Layer.Bing.processMetadata;
         OpenLayers.Layer.Bing.processMetadata = function(metadata) {
             meta.push(metadata);
-        }
+        };
         map = new OpenLayers.Map("map");
         layer = new OpenLayers.Layer.Bing(options);
         var extent;
@@ -96,6 +96,22 @@
             t.ok(layer.attribution.indexOf('<img src="">') == -1, "Attribution contains a logo");
             t.ok(layer.attribution.indexOf('</img></div></a><a style=') == -1 , "Attribution contains a copyright");
             map.destroy();
+        });
+    }
+    
+    function test_getXYZ(t) {
+        t.plan(1);
+        
+        var map = new OpenLayers.Map("map", {allOverlays: true});
+        var osm = new OpenLayers.Layer.OSM();
+        map.addLayer(osm);
+        map.zoomToExtent(new OpenLayers.Bounds(11373579,-2445208,13628777,680760));
+        layer = new OpenLayers.Layer.Bing(options);
+        map.addLayer(layer);
+        
+        t.delay_call(2, function() {
+            var xyz = layer.getXYZ(layer.getTileBounds(new OpenLayers.Pixel(1,1)));
+            t.eq(xyz.z, OpenLayers.Util.indexOf(layer.serverResolutions, map.getResolution()), "zoom level correct");
         });
     }
 
