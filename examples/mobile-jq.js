@@ -62,7 +62,7 @@ $(document).ready(function() {
             if ($('#query')[0].value === '') {
                 return;
             }
-            $.mobile.pageLoading();
+            $.mobile.showPageLoadingMsg();
 
             // Prevent form send
             e.preventDefault();
@@ -89,7 +89,7 @@ $(document).ready(function() {
                         .show();
                 });
                 $('#search_results').listview('refresh');
-                $.mobile.pageLoading(true);
+                $.mobile.hidePageLoadingMsg();
             });
         });
         // only listen to the first event triggered
