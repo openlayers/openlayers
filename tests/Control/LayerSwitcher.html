@@ -141,7 +141,7 @@
         }    
 
     }
-    function test_Control_LayerSwitcher_ascendingw (t) {
+    function test_Control_LayerSwitcher_ascending (t) {
 
         t.plan( 4 );
 
@@ -158,10 +158,10 @@
         map.addControl(control);
         control2 = new OpenLayers.Control.LayerSwitcher({'ascending':false});
         map.addControl(control2);
-        t.ok(control.div.childNodes[1].childNodes[0].innerHTML.match("Base Layer"), "Base Layers first in LayerSwitcher with ascending true");
-        t.ok(control.div.childNodes[1].childNodes[2].innerHTML.match("Overlays"), "Overlays in LayerSwitcher with ascending true");
-        t.ok(control2.div.childNodes[1].childNodes[2].innerHTML.match("Base Layer"), "Base Layers last in LayerSwitcher with ascending false");
-        t.ok(control2.div.childNodes[1].childNodes[0].innerHTML.match("Overlays"), "Base Layers last in LayerSwitcher with ascending false");
+        t.ok(control.div.childNodes[0].childNodes[0].innerHTML.match("Base Layer"), "Base Layers first in LayerSwitcher with ascending true");
+        t.ok(control.div.childNodes[0].childNodes[2].innerHTML.match("Overlays"), "Overlays in LayerSwitcher with ascending true");
+        t.ok(control2.div.childNodes[0].childNodes[2].innerHTML.match("Base Layer"), "Base Layers last in LayerSwitcher with ascending false");
+        t.ok(control2.div.childNodes[0].childNodes[0].innerHTML.match("Overlays"), "Base Layers last in LayerSwitcher with ascending false");
     }
     
     function test_Control_LayerSwitcher_displayInLayerSwitcher (t) {
@@ -176,7 +176,7 @@
 
         control = new OpenLayers.Control.LayerSwitcher();
         map.addControl(control);
-        t.eq(control.div.childNodes[1].childNodes[0].style.display, "none" , "Base layer display off when no visble base layer");
+        t.eq(control.div.childNodes[0].childNodes[0].style.display, "none" , "Base layer display off when no visble base layer");
         
         map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS("WMS", 
@@ -186,7 +186,7 @@
 
         control = new OpenLayers.Control.LayerSwitcher();
         map.addControl(control);
-        t.eq(control.div.childNodes[1].childNodes[0].style.display, "" , "Base layer display on when visble base layer");
+        t.eq(control.div.childNodes[0].childNodes[0].style.display, "" , "Base layer display on when visble base layer");
     }
 
 
