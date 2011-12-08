@@ -44,7 +44,7 @@
         //Safari 3 separates style overflow into overflow-x and overflow-y
         var prop = (OpenLayers.BROWSER_NAME == 'safari') ? 'overflowX' : 'overflow';
         t.eq(popup.contentDiv.style[prop], "auto", 'overflow on popup is correct');
-        t.ok( popup instanceof OpenLayers.Popup.AnchoredBubble, "popup is an AnchoredBubble by defaults");
+        t.ok( popup instanceof OpenLayers.Popup.Anchored, "popup is a Popup.Anchored by default");
         feature.destroyPopup();
         
         feature.popupClass = OpenLayers.Popup.FramedCloud;
