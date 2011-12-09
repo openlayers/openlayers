@@ -8,6 +8,16 @@
 
         <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
         <link rel="stylesheet" href="style.css" type="text/css">
+
+        <style>
+        /* round corners of layer switcher, and make it transparent */
+        .olControlLayerSwitcher .layersDiv {
+            border-radius: 10px 0 0 10px;
+            opacity: 0.75;
+            filter: alpha(opacity=75);
+        }
+        </style>
+
         <script src="../lib/OpenLayers.js"></script>
         <script type="text/javascript">
             var map;
