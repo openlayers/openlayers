@@ -417,7 +417,7 @@
         translatedPX = {};
         layer.map = {
             getLayerPxFromLonLat: function(ul) {
-                t.ok(ul.equals(desiredUL), "correct ul passed to translation");
+                t.ok(ul.lon === desiredUL.lon && ul.lat === desiredUL.lat, "correct ul passed to translation");
                 return translatedPX;        
             },
             getResolution: function() {
