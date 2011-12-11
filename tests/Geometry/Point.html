@@ -101,6 +101,21 @@
              "toString() returns WKT" );
         
     }
+
+    function test_Point_toString_no_wkt(t) {
+        t.plan(1);
+        
+        var WKT = OpenLayers.Format.WKT;
+        OpenLayers.Format.WKT = null;
+
+        var x = 10;
+        var y = 20;
+        point = new OpenLayers.Geometry.Point(x, y);
+        t.eq(point.toString(), "[object Object]", "default string representation");
+        
+        OpenLayers.Format.WKT = WKT;
+        
+    }
     
     function test_Point_move(t) {
         t.plan(3);
