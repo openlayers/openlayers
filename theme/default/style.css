@@ -92,6 +92,8 @@ div.olControlMousePosition {
 
 .olControlOverviewMapMinimizeButton,
 .olControlOverviewMapMaximizeButton {
+    height: 18px;
+    width: 18px;
     right: 0;
     bottom: 80px;
     cursor: pointer;
@@ -336,6 +338,8 @@ div.olControlSaveFeaturesItemInactive {
 
 .olControlLayerSwitcher .maximizeDiv,
 .olControlLayerSwitcher .minimizeDiv {
+    width: 18px;
+    height: 18px;
     top: 5px;
     right: 0;
     cursor: pointer;
