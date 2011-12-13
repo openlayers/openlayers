@@ -13,16 +13,6 @@
 
 */
 
-/* Contains portions of Prototype.js:
- *
- * Prototype JavaScript framework, version 1.4.0
- *  (c) 2005 Sam Stephenson <sam@conio.net>
- *
- *  Prototype is freely distributable under the terms of an MIT-style license.
- *  For details, see the Prototype web site: http://prototype.conio.net/
- *
- *--------------------------------------------------------------------------*/
-
 /**
  * Contains XMLHttpRequest.js <http://code.google.com/p/xmlhttprequest/>
  * Copyright 2007 Sergey Ilinsky (http://www.ilinsky.com)
