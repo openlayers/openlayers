@@ -334,6 +334,19 @@
             t.geom_eq(wkt(cases[i].wkt), cases[i].geom, "case " + i);
         }
     }
+    
+    function test_fromWKT_undefined(t) {
+        t.plan(1);
+        
+        var WKT = OpenLayers.Format.WKT;
+        OpenLayers.Format.WKT = null;
+        delete OpenLayers.Geometry.fromWKT.format;
+        
+        var geom = OpenLayers.Geometry.fromWKT("POINT(1 1)");
+        t.eq(geom, undefined, "undefined when OpenLayers.Format.WKT is not available");
+        
+        OpenLayers.Format.WKT = WKT;
+    }
 
 
   </script>
