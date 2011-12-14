@@ -288,6 +288,40 @@
         // panel.deactivate();
         map.destroy();
     }
+
+    function test_iconOn_iconOff(t) {
+        t.plan(2);
+
+        var map = new OpenLayers.Map('map');
+
+        var panel = new OpenLayers.Control.Panel();
+        var ctrl = new OpenLayers.Control({displayClass: 'ctrl'});
+        panel.addControls([ctrl]);
+
+        map.addControl(panel);
+
+        // add arbitrary classes to the panel div - we want to test
+        // than iconOn and iconOff do their jobs even when the panel
+        // div has application-specific classes.
+
+        ctrl.panel_div.className =
+            'ctrlItemInactive fooItemActive fooItemInactive';
+
+        panel.iconOn.call(ctrl);
+        t.eq(ctrl.panel_div.className,
+             'ctrlItemActive fooItemActive fooItemInactive',
+             'iconOn behaves as expected');
+
+        ctrl.panel_div.className =
+            'ctrlItemActive fooItemActive fooItemInactive';
+
+        panel.iconOff.call(ctrl);
+        t.eq(ctrl.panel_div.className,
+             'ctrlItemInactive fooItemActive fooItemInactive',
+             'iconOff behaves as expected');
+
+        map.destroy();
+    }
   </script>
 </head>
 <body>
