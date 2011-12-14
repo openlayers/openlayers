@@ -413,6 +413,13 @@
     '				<wps:ComplexData><![CDATA[<html><head></head><body></body></head>]]></wps:ComplexData>' +
     '			</wps:Data>' +
     '		</wps:Input>' +
+    '           <wps:Input>' +
+    '                   <ows:Identifier>GMLPoint</ows:Identifier>' +
+    '                   <ows:Title>Point as GML</ows:Title>' +
+    '                   <wps:Data>' +
+    '                           <wps:ComplexData><feature:geometry xmlns:feature="http://www.opengis.net/gml"><feature:Point><feature:pos>10 10</feature:pos></feature:Point></feature:geometry></wps:ComplexData>' +
+    '                   </wps:Data>' +
+    '           </wps:Input>' +
     '	</wps:DataInputs>' +
     '	<wps:ResponseForm>' +
     '		<wps:ResponseDocument storeExecuteResponse="true">' +
@@ -442,6 +449,14 @@
                             value: "<html><head></head><body></body></head>"
                         }
                     }                    
+                }, {
+                    identifier: "GMLPoint",
+                    title: "Point as GML",
+                    data: {
+                        complexData: {
+                            value: OpenLayers.Format.GML.v3.prototype.writers.feature["_geometry"].apply(new OpenLayers.Format.GML.v3({curve: true, surface: true}), [new OpenLayers.Geometry.Point(10, 10)])
+                        }
+                    }
                 }],
                 responseForm: {
                     responseDocument: {
