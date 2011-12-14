@@ -290,7 +290,7 @@
     }
 
     function test_iconOn_iconOff(t) {
-        t.plan(3);
+        t.plan(2);
 
         var map = new OpenLayers.Map('map');
 
@@ -306,10 +306,6 @@
 
         ctrl.panel_div.className =
             'ctrlItemInactive fooItemActive fooItemInactive';
-
-        t.eq(ctrl.panel_div.className,
-             'ctrlItemInactive fooItemActive fooItemInactive',
-             'initial className value is as expected');
 
         panel.iconOn.call(ctrl);
         t.eq(ctrl.panel_div.className,
