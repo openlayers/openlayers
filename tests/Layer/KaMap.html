@@ -153,7 +153,9 @@
 
         map.addLayer(layer);
         map.zoomToMaxExtent();
-        layer.redraw = function() {
+
+        var redraw = OpenLayers.Layer.prototype.redraw;
+        OpenLayers.Layer.prototype.redraw = function() {
             t.ok(true, "layer is redrawn after new params merged");
         }
         
@@ -165,6 +167,8 @@
         newParams.chickpeas = 151;
 
         t.eq( layer.params.chickpeas, "image/png", "mergeNewParams() makes clean copy of hashtable");
+
+        OpenLayers.Layer.prototype.redraw = redraw;
         map.destroy();
     }
 

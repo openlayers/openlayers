@@ -92,13 +92,14 @@
         t.eq( log[0].scope, scope, "mergeNewParams() executes changelayer listener with expected scope");
 
         newParams.chickpeas = 151;
-
         t.eq( layer.params.chickpeas, "image/png", "mergeNewParams() makes clean copy of hash");
-        
-        layer.redraw = function() {
-            t.ok(true, "layer.mergeNewParams calls layer.redraw");
-        }
+
+        var redraw = OpenLayers.Layer.prototype.redraw;
+        OpenLayers.Layer.prototype.redraw = function(forceZoomChanged) {
+            t.eq(forceZoomChanged, true, 'mergeNewParams() sends true to Layer.redraw');
+        };
         layer.mergeNewParams();
+        OpenLayers.Layer.prototype.redraw = redraw;
     }
 
     function test_Layer_HTTPRequest_getFullRequestString (t) {
