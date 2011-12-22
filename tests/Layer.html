@@ -672,18 +672,80 @@
         // test that the moveend event was triggered
         t.ok(log.event, "an event was logged");
         t.eq(log.event.type, "moveend", "moveend was triggered");
-        t.eq(log.event.zoomChanged, true, "event says zoomChanged true - poor name");
+        t.eq(log.event.zoomChanged, false, "event says zoomChanged false");
 
         layer.moveTo = function(bounds, zoomChanged, dragging) {
             var extent = layer.map.getExtent();
             t.ok(bounds.equals(extent),
                  "redraw calls moveTo with the map extent");
-            t.ok(zoomChanged,
-                 "redraw calls moveTo with zoomChanged true");
+            t.ok(!zoomChanged,
+                 "redraw calls moveTo with zoomChanged false");
             t.ok(!dragging,
                  "redraw calls moveTo with dragging false");
         }
         layer.redraw();
+    }
+
+    // This function includes integration tests to verify that the
+    // layer's moveTo function is called with the expected value
+    // for zoomChanged
+    function test_moveTo_zoomChanged(t) {
+        t.plan(6);
+
+        var log = {};
+        var map = new OpenLayers.Map('map');
+
+        var l1 = new OpenLayers.Layer('l1', {isBaseLayer: true});
+        l1.moveTo = function(bounds, zoomChanged, dragging) {
+            log.moveTo = {zoomChanged: zoomChanged};
+            OpenLayers.Layer.prototype.moveTo.apply(this, arguments);
+        };
+
+        map.addLayer(l1);
+        map.zoomToMaxExtent();
+
+        log = {};
+        l1.redraw();
+        t.eq(log.moveTo.zoomChanged, false,
+                "[a] redraw calls moveTo with zoomChanged false");
+
+        log = {};
+        l1.redraw(true);
+        t.eq(log.moveTo.zoomChanged, true,
+             "[b] redraw calls moveTo with zoomChanged true");
+
+        l1.setVisibility(false);
+        log = {};
+        l1.setVisibility(true);
+        t.eq(log.moveTo.zoomChanged, false,
+             "[c] redraw calls moveTo with zoomChanged false");
+
+        l1.setVisibility(false);
+        map.zoomIn();
+        log = {};
+        l1.setVisibility(true);
+        t.eq(log.moveTo.zoomChanged, true,
+             "[d] redraw calls moveTo with zoomChanged true");
+
+        l1.moveTo = OpenLayers.Layer.prototype.moveTo;
+
+        var l2 = new OpenLayers.Layer('l2');
+        l2.moveTo = function(bounds, zoomChanged, dragging) {
+            log.moveTo = {zoomChanged: zoomChanged};
+            OpenLayers.Layer.prototype.moveTo.apply(this, arguments);
+        };
+        log = {};
+        map.addLayer(l2);
+        t.eq(log.moveTo.zoomChanged, true,
+             "[e] redraw calls moveTo with zoomChanged true");
+
+        map.removeLayer(l2);
+        log = {};
+        map.addLayer(l2);
+        t.eq(log.moveTo.zoomChanged, true,
+             "[f] redraw calls moveTo with zoomChanged true");
+
+        map.destroy();
     }
       
     function test_layer_setIsBaseLayer(t) {
