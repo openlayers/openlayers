@@ -47,6 +47,7 @@
      *     replaced with string representations of the above arguments.
      */
     function assertFloatEqual(got, expected, msg) {
+        var OpenLayers = Test.AnotherWay._g_test_iframe.OpenLayers;
         if(got === undefined) {
             got = "undefined";
         } else if (got === null) {
@@ -57,7 +58,7 @@
         } else if (expected === null) {
             expected = "null";
         }
-        if(Math.abs(got - expected) > 0.000000001) {
+        if(Math.abs(got - expected) > Math.pow(10, -OpenLayers.Util.DEFAULT_PRECISION)) {
             throw msg + ": got '" + got + "' but expected '" + expected + "'";
         }
     }
