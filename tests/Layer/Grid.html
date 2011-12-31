@@ -639,6 +639,38 @@
         t.eq( layer.grid, null, "layer.grid is null after destroy" );
         t.eq( layer.tileSize, null, "layer.tileSize is null after destroy" );
     }
+
+    function test_setOpacity(t) {
+
+        t.plan(5);
+
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS('', '', {}, {
+            isBaseLayer: true,
+            opacity: '0.6'
+        });
+        map.addLayer(layer);
+        // setCenter adds tiles to the layer's grid
+        map.setCenter(new OpenLayers.LonLat(0, 0), 5);
+
+        var tile = layer.grid[0][0], tileImg = tile.imgDiv;
+
+        tile.onImageLoad(); // simulate an image load event
+        t.eq(layer.opacity, '0.6', 'layer opacity value is correct');
+        t.eq(parseFloat(tileImg.style.opacity), 0.6, 'tile opacity is correct');
+
+        layer.setOpacity('0.2');
+        t.eq(layer.opacity, '0.2', 'layer opacity value is correct');
+        t.eq(parseFloat(tileImg.style.opacity), 0.2, 'tile opacity is correct');
+
+        tile = layer.addTile(new OpenLayers.Bounds(1, 2, 3, 4),
+                             new OpenLayers.Pixel(5, 6));
+        tile.draw(); // add tile to the grid
+        tile.onImageLoad(); // simulate an image load event
+        t.eq(parseFloat(tile.imgDiv.style.opacity), 0.2, "tile opacity is correc");
+
+        map.destroy();
+    }
     
     function test_getServerResolution(t) {
 
