@@ -35,6 +35,35 @@
     }
     
     /**
+     * Function assertFloatEqual
+     * Test two objects for floating point equivalence.  Throw an exception
+     *     if not equivalent.
+     * 
+     * Parameters:
+     * got - {Object}
+     * expected - {Object}
+     * msg - {String} The message to be thrown.  This message will be appended
+     *     with ": got {got} but expected {expected}" where got and expected are
+     *     replaced with string representations of the above arguments.
+     */
+    function assertFloatEqual(got, expected, msg) {
+        var OpenLayers = Test.AnotherWay._g_test_iframe.OpenLayers;
+        if(got === undefined) {
+            got = "undefined";
+        } else if (got === null) {
+            got = "null";
+        }
+        if(expected === undefined) {
+            expected = "undefined";
+        } else if (expected === null) {
+            expected = "null";
+        }
+        if(Math.abs(got - expected) > Math.pow(10, -OpenLayers.Util.DEFAULT_PRECISION)) {
+            throw msg + ": got '" + got + "' but expected '" + expected + "'";
+        }
+    }
+    
+    /**
      * Function assertGeometryEqual
      * Test two geometries for equivalence.  Geometries are considered
      *     equivalent if they are of the same class, and given component
@@ -58,9 +87,9 @@
         
         if(got instanceof OpenLayers.Geometry.Point) {
             // compare points
-            assertEqual(got.x, expected.x, "x mismatch");
-            assertEqual(got.y, expected.y, "y mismatch");
-            assertEqual(got.z, expected.z, "z mismatch");
+            assertFloatEqual(got.x, expected.x, "x mismatch");
+            assertFloatEqual(got.y, expected.y, "y mismatch");
+            assertFloatEqual(got.z, expected.z, "z mismatch");
         } else {
             // compare components
             assertEqual(
