@@ -118,27 +118,6 @@
 
     }
 
-    function test_Layer_MapServer_Untiled_setOpacity (t) {
-        t.plan( 4 );
-
-        var map = new OpenLayers.Map('map');
-        map.projection = "xx";
-        tUrl = "http://labs.metacarta.com/cgi-bin/mapserv";
-        tParams = { layers: 'basic', 
-                   format: 'image/png'};
-        tOptions = { 'opacity': '0.5' };           
-        var tLayer = new OpenLayers.Layer.MapServer.Untiled(name, tUrl, tParams, tOptions);
-        map.addLayer(tLayer);
-        map.zoomToMaxExtent();
-        t.eq(tLayer.opacity, "0.5", "Opacity is set correctly");
-        t.eq(parseFloat(tLayer.div.firstChild.style.opacity), 0.5, "Opacity on tile is correct");
-        tLayer.setOpacity("0.6");
-        t.eq(tLayer.opacity, "0.6", "setOpacity works properly");
-        t.eq(parseFloat(tLayer.div.firstChild.style.opacity), 0.6, "Opacity on tile is changed correctly");
-        map.destroy();
-
-    }    
-
     // DEPRECATED -- REMOVE IN 3.0
     function test_Layer_Untiled_MapServer(t) { 
         t.plan(1);
