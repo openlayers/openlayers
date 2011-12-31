@@ -373,7 +373,7 @@
         tile.onImageLoad();
         t.eq(tile.imgDiv.style.visibility, 'inherit',
              '[a] onImageLoad makes the image visible');
-        t.eq(tile.imgDiv.style.opacity, '0.5',
+        t.eq(parseFloat(tile.imgDiv.style.opacity), 0.5,
              '[a] onImageLoad sets the expected opacity for the image');
         t.eq(log, 0,
              '[a] onImageLoad does not trigger loadend');
@@ -387,7 +387,7 @@
         tile.onImageLoad();
         t.eq(tile.imgDiv.style.visibility, 'inherit',
              '[b] onImageLoad makes the image visible');
-        t.eq(tile.imgDiv.style.opacity, '0.5',
+        t.eq(parseFloat(tile.imgDiv.style.opacity), 0.5,
              '[b] onImageLoad sets the expected opacity for the image');
         t.eq(log, 1,
              '[b] onImageLoad does trigger loadend');
@@ -401,7 +401,7 @@
         tile.onImageLoad();
         t.eq(tile.imgDiv.style.visibility, 'inherit',
              '[c] onImageLoad makes the image visible');
-        t.eq(tile.imgDiv.style.opacity, '0.5',
+        t.eq(parseFloat(tile.imgDiv.style.opacity), 0.5,
              '[c] onImageLoad sets the expected opacity for the image');
         t.eq(log, 1,
              '[c] onImageLoad does trigger loadend');
