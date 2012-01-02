@@ -357,9 +357,9 @@
         var log;
         tile.events.on({loadend: function() { log++; }});
 
-        var T = OpenLayers.TRANSITION;
-        var TE = OpenLayers.TRANSITION_END;
-        OpenLayers.TRANSITION_END = 'transitionend';
+        var T = OpenLayers.Tile.Image.TRANSITION;
+        var TE = OpenLayers.Tile.Image.TRANSITION_END;
+        OpenLayers.Tile.Image.TRANSITION_END = 'transitionend';
 
         function firstObserverName() {
             var cacheID = tile.imgDiv._eventCacheID,
@@ -367,7 +367,7 @@
             return observers && observers.length > 0 ? observers[0].name : undefined;
         }
 
-        OpenLayers.TRANSITION = true;
+        OpenLayers.Tile.Image.TRANSITION = true;
         map.tileAnimation = true;
         log = 0;
         tile.onImageLoad();
@@ -381,7 +381,7 @@
              '[a] onImageLoad registers a transitionend observer');
         OpenLayers.Event.stopObservingElement(tile.imgDiv);
 
-        OpenLayers.TRANSITION = true;
+        OpenLayers.Tile.Image.TRANSITION = true;
         map.tileAnimation = false;
         log = 0;
         tile.onImageLoad();
@@ -395,7 +395,7 @@
              '[b] onImageLoad does not register a transitionend observer');
         OpenLayers.Event.stopObservingElement(tile.imgDiv);
 
-        OpenLayers.TRANSITION = false;
+        OpenLayers.Tile.Image.TRANSITION = false;
         map.tileAnimation = true;
         log = 0;
         tile.onImageLoad();
@@ -410,8 +410,8 @@
         OpenLayers.Event.stopObservingElement(tile.imgDiv);
 
         map.destroy();
-        OpenLayers.TRANSITION = T;
-        OpenLayers.TRANSITION_END = TE;
+        OpenLayers.Tile.Image.TRANSITION = T;
+        OpenLayers.Tile.Image.TRANSITION_END = TE;
     }
     
   </script>
