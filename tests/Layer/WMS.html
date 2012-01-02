@@ -271,6 +271,25 @@
 
     }
 
+    function test_setOpacity(t) {
+        t.plan(1);
+
+        var layer = new OpenLayers.Layer.WMS(
+            null, "/bogus/wms", {layers: "mylayer"}
+        );
+        var map = new OpenLayers.Map("map");
+        map.addLayer(layer);
+        
+        map.zoomToMaxExtent();
+        
+        layer.setOpacity(0.5);
+        t.delay_call(1, function() {
+            t.eq(parseFloat(layer.div.firstChild.style.opacity), 0.5, "opacity set");
+            map.destroy();
+        });
+    }
+
+
     function test_Layer_WMS_noGutters (t) {
         t.plan(2);
         var map = new OpenLayers.Map('map');
