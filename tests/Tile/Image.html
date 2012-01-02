@@ -364,7 +364,7 @@
         t.eq(parseFloat(tile.imgDiv.style.opacity), 0.5,
              'onImageLoad sets the expected opacity for the image');
         t.eq(log, 1,
-             'onImageLoad does not trigger loadend');
+             'onImageLoad does trigger loadend');
 
         map.destroy();
     }
