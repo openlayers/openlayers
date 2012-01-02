@@ -344,7 +344,7 @@
     }
 
     function test_onImageLoad(t) {
-        t.plan(12);
+        t.plan(3);
 
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
@@ -357,61 +357,16 @@
         var log;
         tile.events.on({loadend: function() { log++; }});
 
-        var T = OpenLayers.Tile.Image.TRANSITION;
-        var TE = OpenLayers.Tile.Image.TRANSITION_END;
-        OpenLayers.Tile.Image.TRANSITION_END = 'transitionend';
-
-        function firstObserverName() {
-            var cacheID = tile.imgDiv._eventCacheID,
-                observers = OpenLayers.Event.observers[cacheID];
-            return observers && observers.length > 0 ? observers[0].name : undefined;
-        }
-
-        OpenLayers.Tile.Image.TRANSITION = true;
-        map.tileAnimation = true;
         log = 0;
         tile.onImageLoad();
         t.eq(tile.imgDiv.style.visibility, 'inherit',
-             '[a] onImageLoad makes the image visible');
+             'onImageLoad makes the image visible');
         t.eq(parseFloat(tile.imgDiv.style.opacity), 0.5,
-             '[a] onImageLoad sets the expected opacity for the image');
-        t.eq(log, 0,
-             '[a] onImageLoad does not trigger loadend');
-        t.eq(firstObserverName(), 'transitionend',
-             '[a] onImageLoad registers a transitionend observer');
-        OpenLayers.Event.stopObservingElement(tile.imgDiv);
-
-        OpenLayers.Tile.Image.TRANSITION = true;
-        map.tileAnimation = false;
-        log = 0;
-        tile.onImageLoad();
-        t.eq(tile.imgDiv.style.visibility, 'inherit',
-             '[b] onImageLoad makes the image visible');
-        t.eq(parseFloat(tile.imgDiv.style.opacity), 0.5,
-             '[b] onImageLoad sets the expected opacity for the image');
+             'onImageLoad sets the expected opacity for the image');
         t.eq(log, 1,
-             '[b] onImageLoad does trigger loadend');
-        t.eq(firstObserverName(), undefined,
-             '[b] onImageLoad does not register a transitionend observer');
-        OpenLayers.Event.stopObservingElement(tile.imgDiv);
-
-        OpenLayers.Tile.Image.TRANSITION = false;
-        map.tileAnimation = true;
-        log = 0;
-        tile.onImageLoad();
-        t.eq(tile.imgDiv.style.visibility, 'inherit',
-             '[c] onImageLoad makes the image visible');
-        t.eq(parseFloat(tile.imgDiv.style.opacity), 0.5,
-             '[c] onImageLoad sets the expected opacity for the image');
-        t.eq(log, 1,
-             '[c] onImageLoad does trigger loadend');
-        t.eq(firstObserverName(), undefined,
-             '[c] onImageLoad does not register a transitionend observer');
-        OpenLayers.Event.stopObservingElement(tile.imgDiv);
+             'onImageLoad does not trigger loadend');
 
         map.destroy();
-        OpenLayers.Tile.Image.TRANSITION = T;
-        OpenLayers.Tile.Image.TRANSITION_END = TE;
     }
     
   </script>
