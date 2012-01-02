@@ -433,7 +433,7 @@ span.olGoogleAttribution.hybrid a, span.olGoogleAttribution.satellite a {
  * Animations
  */
 
-.olMapTileAnim .olTileImage {
+.olTileImage {
     -webkit-transition: opacity 0.2s linear;
     -moz-transition: opacity 0.2s linear;
     -o-transition: opacity 0.2s linear;
