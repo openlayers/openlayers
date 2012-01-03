@@ -115,24 +115,6 @@
         map.destroy();
     }
 
-    function test_Map_constructor_tileanim(t) {
-        t.plan(4);
-        
-        map = new OpenLayers.Map("map");
-        t.eq(map.tileAnimation, true,
-             'tileAnimation is true by default');
-        t.ok(OpenLayers.Element.hasClass(map.div, 'olMapTileAnim'),
-             'map div is assigned the olMapTileAnim class by default');
-        map.destroy();
-
-        map = new OpenLayers.Map("map", {tileAnimation: false});
-        t.eq(map.tileAnimation, false,
-             'tileAnimation is false if option is false');
-        t.ok(OpenLayers.Element.hasClass(map.div, 'olMapTileAnim'),
-             'map div not assigned the olMapTileAnim class if tileAnimation is false');
-        map.destroy();
-    }
-
     function test_Map_setOptions(t) {
         t.plan(2);
         map = new OpenLayers.Map('map', {maxExtent: new OpenLayers.Bounds(100, 200, 300, 400)});
