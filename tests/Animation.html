@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Animation.js Tests</title>
+        <script>
+
+        // dependencies for tests
+        var OpenLayers = [
+            "OpenLayers/Animation.js"
+        ];
+
+        </script>
+        <script src="OLLoader.js"></script>
+
+        <script>
+
+        function test_requestFrame(t) {
+            t.plan(2);
+
+            t.eq(typeof OpenLayers.Animation.requestFrame, "function", "requestFrame is a function");
+
+            var calls = 0;
+            OpenLayers.Animation.requestFrame(function() {
+                ++calls;
+            });
+            t.delay_call(0.1, function() {
+                t.ok(calls > 0, "callback called: " + calls);
+            });
+        }
+
+        function test_start(t) {
+            t.plan(1);
+
+            var calls = 0;
+            var id = OpenLayers.Animation.start(function() {
+                ++calls;
+            });
+            t.delay_call(0.1, function() {
+                t.ok(calls > 1, "looped: " + calls);
+                OpenLayers.Animation.stop(id);
+            });
+        }
+
+        function test_start_duration(t) {
+            t.plan(2);
+
+            var calls = 0;
+            var id = OpenLayers.Animation.start(function() {
+                ++calls;
+            }, 100);
+            var first;
+            t.delay_call(0.2, function() {
+                first = calls;
+                t.ok(calls > 1, "looped: " + calls);
+            });
+            t.delay_call(0.3, function() {
+                t.eq(calls, first, "not being called any more");
+            });
+        }
+
+        function test_stop(t) {
+            t.plan(2);
+
+            var calls = 0;
+            var id = OpenLayers.Animation.start(function() {
+                ++calls;
+            });
+            var first;
+            t.delay_call(0.2, function() {
+                first = calls;
+                t.ok(calls > 1, "looped: " + calls);
+                OpenLayers.Animation.stop(id);
+            });
+            t.delay_call(0.3, function() {
+                t.eq(calls, first, "not being called any more");
+            });
+        }
+        </script>

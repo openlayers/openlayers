@@ -49,12 +49,12 @@
         t.plan(2);
         
         var tween = new OpenLayers.Tween();
-        tween.animationId = OpenLayers.Util.startAnimation(function() {});
+        tween.animationId = OpenLayers.Animation.start(function() {});
         tween.playing = true;
         tween.stop();
         t.eq(tween.animationId, null, "tween correctly stopped");
         
-        tween.animationId = OpenLayers.Util.startAnimation(function() {});
+        tween.animationId = OpenLayers.Animation.start(function() {});
         tween.playing = false;
         tween.stop();
         t.ok(tween.animationId != null, "stop method doesn't do anything if tween isn't running");

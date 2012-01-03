@@ -1121,68 +1121,6 @@
         t.eq(OpenLayers.Util.getFormattedLonLat(181, "lon"), "179°00'00\"W", "crossing dateline from the east results in correct west coordinate");
     }
     
-    function test_requestAnimationFrame(t) {
-        t.plan(2);
-        
-        t.eq(typeof OpenLayers.Util.requestAnimationFrame, "function", "requestAnimationFrame is a function");
-        
-        var calls = 0;
-        OpenLayers.Util.requestAnimationFrame(function() {
-            ++calls;
-        });
-        t.delay_call(0.1, function() {
-            t.ok(calls > 0, "callback called: " + calls);
-        });
-    }
-    
-    function test_startAnimation(t) {
-        t.plan(1);
-        
-        var calls = 0;
-        var id = OpenLayers.Util.startAnimation(function() {
-            ++calls;
-        });
-        t.delay_call(0.1, function() {
-            t.ok(calls > 1, "looped: " + calls);
-            OpenLayers.Util.stopAnimation(id);
-        });
-    }
-
-    function test_startAnimation_duration(t) {
-        t.plan(2);
-        
-        var calls = 0;
-        var id = OpenLayers.Util.startAnimation(function() {
-            ++calls;
-        }, 100);
-        var first;
-        t.delay_call(0.2, function() {
-            first = calls;
-            t.ok(calls > 1, "looped: " + calls);
-        });
-        t.delay_call(0.3, function() {
-            t.eq(calls, first, "not being called any more");
-        });
-    }
-    
-    function test_stopAnimation(t) {
-        t.plan(2);
-        
-        var calls = 0;
-        var id = OpenLayers.Util.startAnimation(function() {
-            ++calls;
-        });
-        var first;
-        t.delay_call(0.2, function() {
-            first = calls;
-            t.ok(calls > 1, "looped: " + calls);
-            OpenLayers.Util.stopAnimation(id);
-        });
-        t.delay_call(0.3, function() {
-            t.eq(calls, first, "not being called any more");
-        });
-    }
-    
   </script>
 </head>
 <body>
