@@ -14,6 +14,15 @@ var map = new OpenLayers.Map({
             transitionEffect: "resize", buffer: 0, sphericalMercator: true
         })
     ],
+    controls: [
+        new OpenLayers.Control.Navigation({
+            dragPanOptions: {
+                enableKinetic: true
+            }
+        }),
+        new OpenLayers.Control.PanZoom(),
+        new OpenLayers.Control.Attribution()
+    ],
     center: [0, 0],
     zoom: 3
 });
