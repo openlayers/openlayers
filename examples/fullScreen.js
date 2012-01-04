@@ -5,7 +5,7 @@ function init(){
     var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
         "http://vmap0.tiles.osgeo.org/wms/vmap0",
         {layers: 'basic'} );
-        var ol_wms_nobuffer = new OpenLayers.Layer.WMS( "OpenLayers WMS (no tile buffer)",
+    var ol_wms_nobuffer = new OpenLayers.Layer.WMS( "OpenLayers WMS (no tile buffer)",
         "http://vmap0.tiles.osgeo.org/wms/vmap0",
         {layers: 'basic'}, {buffer: 0});
 
