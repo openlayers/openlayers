@@ -95,8 +95,8 @@
         t.eq( layer.params.chickpeas, "image/png", "mergeNewParams() makes clean copy of hash");
 
         var redraw = OpenLayers.Layer.prototype.redraw;
-        OpenLayers.Layer.prototype.redraw = function(forceZoomChanged) {
-            t.eq(forceZoomChanged, true, 'mergeNewParams() sends true to Layer.redraw');
+        OpenLayers.Layer.prototype.redraw = function() {
+            t.eq(this.resolution, null, 'mergeNewParams sets layer resolution to null, causing redraw to call moveTo with zoomChanged set to true');
         };
         layer.mergeNewParams();
         OpenLayers.Layer.prototype.redraw = redraw;

@@ -710,7 +710,8 @@
                 "[a] redraw calls moveTo with zoomChanged false");
 
         log = {};
-        l1.redraw(true);
+        l1.resolution = null;
+        l1.redraw();
         t.eq(log.moveTo.zoomChanged, true,
              "[b] redraw calls moveTo with zoomChanged true");
 
