@@ -949,7 +949,7 @@
     }
 
     function test_applyBackBuffer(t) {
-        t.plan(13);
+        t.plan(16);
 
         var map = new OpenLayers.Map('map2');
         var layer = new OpenLayers.Layer.WMS('', '', {}, {
@@ -1012,6 +1012,24 @@
         t.eq(layer.backBuffer.style.top, '295%',
              'back buffer has correct top');
 
+        // test #4
+        // and a back buffer in the layer and do as if back buffer removal
+        // has been scheduled, and test that applyBackBuffer removes the
+        // back buffer and clears the timer
+        layer.createBackBuffer = function() {
+            return;
+        };
+        backBuffer = document.createElement('div');
+        layer.div.insertBefore(backBuffer, layer.div.firstChild);
+        layer.backBuffer = backBuffer;
+        layer.backBufferTimerId = 'fake';
+        layer.applyBackBuffer(2);
+        t.ok(backBuffer.parentNode !== layer.div,
+             'back buffer is not child node of layer div');
+        t.eq(layer.backBuffer, null,
+             'back buffer not set in layer');
+        t.eq(layer.backBufferTimerId, null,
+             'back buffer timer cleared');
         map.destroy();
     }
 
@@ -1058,7 +1076,7 @@
     }
 
     function test_removeBackBuffer(t) {
-        t.plan(3);
+        t.plan(4);
 
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS('', '', {}, {isBaseLayer: true});
@@ -1070,12 +1088,17 @@
         layer.div.appendChild(backBuffer);
         layer.backBufferResolution = 32;
 
+        // add a fake back buffer removal timer
+        layer.backBufferTimerId = 'fake';
+
         layer.removeBackBuffer();
         t.eq(layer.backBuffer, null, 'backBuffer set to null in layer');
         t.eq(layer.backBufferResolution, null,
              'backBufferResolution set to null in layer');
         t.ok(backBuffer.parentNode !== layer.div,
              'back buffer removed from layer');
+        t.eq(layer.backBufferTimerId, null,
+             'backBufferTimerId set to null in layer');
 
         map.destroy();
     }
@@ -1214,6 +1237,53 @@
         //
 
         map.destroy();
+    }
+
+    function test_delayed_back_buffer_removal(t) {
+
+        //
+        // Test that the delaying of the back buffer removal behaves
+        // as expected.
+        //
+
+        t.plan(5);
+
+        // set up
+
+        var map = new OpenLayers.Map('map', {
+            resolutions: [32, 16, 8, 4, 2, 1]
+        });
+        var layer = new OpenLayers.Layer.WMS('', '', {}, {
+            isBaseLayer: true,
+            transitionEffect: 'resize'
+        });
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+
+        map.zoomTo(1);
+
+        t.delay_call(1, function() {
+
+            t.ok(layer.backBuffer.parentNode === layer.div,
+                 '[a] back buffer is a child of layer div');
+            t.ok(layer.backBufferTimerId !== null,
+                 '[a] back buffer scheduled for removal');
+
+            var backBuffer = layer.backBuffer;
+
+            map.zoomTo(2);
+
+            t.ok(layer.backBuffer !== backBuffer,
+                 '[b] a new back buffer was created');
+            t.ok(layer.backBuffer.parentNode === layer.div,
+                 '[b] back buffer is a child of layer div');
+            t.ok(layer.backBufferTimerId === null,
+                 '[b] back buffer no longer scheduled for removal');
+
+            // tear down
+
+            map.destroy();
+        });
     }
   </script>
 </head>
