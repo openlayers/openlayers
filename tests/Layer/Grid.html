@@ -21,13 +21,14 @@
 
 
     function test_Layer_Grid_constructor (t) {
-        t.plan( 5 );
+        t.plan( 6 );
                        
         layer = new OpenLayers.Layer.Grid(name, url, params, null);
         t.ok( layer instanceof OpenLayers.Layer.Grid, "returns OpenLayers.Layer.Grid object" );
         t.eq( layer.buffer, 0, "buffer default is 0");
         t.eq( layer.ratio, 1.5, "ratio default is 1.5");
         t.eq( layer.numLoadingTiles, 0, "numLoadingTiles starts at 0");
+        t.eq( layer.tileClass, OpenLayers.Tile.Image, "tileClass default is OpenLayers.Tile.Image");
 
         var obj = {};
         var func = function() {};
@@ -46,6 +47,25 @@
         t.eq( layer.grid.length, 7, "Grid rows is correct." );
         t.eq( layer.grid[0].length, 6, "Grid cols is correct." );
         
+    }
+
+    function test_Layer_Grid_tileClass(t) {
+        t.plan(2);
+
+        var myTileClass = OpenLayers.Class(OpenLayers.Tile, {});
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.WMS(name, url, params, {
+            tileClass: myTileClass
+        });
+        map.addLayer(layer);
+
+        t.eq(layer.tileClass, myTileClass, "tileClass is set");
+        var instance = layer.addTile(new OpenLayers.Bounds(-10, 10, 50, 100),
+                                     new OpenLayers.Pixel(10, 12));
+
+        t.ok(instance instanceof myTileClass, "addTile returns type is correct");
+
+        map.destroy();
     }
 
     function test_Layer_Grid_clearTiles (t) {

@@ -2,7 +2,7 @@ This license applies to all code and content in the 'branches', 'trunk', and
 'project' directories of the Openlayers code repository at svn.openlayers.org,
 and applies to all release of OpenLayers later than 2.5.
 
-Copyright 2005-2011 OpenLayers Contributors. All rights reserved. See
+Copyright 2005-2012 OpenLayers Contributors. All rights reserved. See
 authors.txt for full list.
 
 Redistribution and use in source and binary forms, with or without modification,
