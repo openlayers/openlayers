@@ -31,7 +31,7 @@
 #
 # Note: This is a very rough initial version of this code.
 #
-# -- Copyright 2005-2011 OpenLayers contributors / OpenLayers project --
+# -- Copyright 2005-2012 OpenLayers contributors / OpenLayers project --
 #
 
 # TODO: Allow files to be excluded. e.g. `Crossbrowser/DebugMode.js`?
@@ -139,9 +139,14 @@ def undesired(filepath, excludes):
                 exclude = True
                 break
     return exclude
+
+
+def getNames (sourceDirectory, configFile = None):
+    return run(sourceDirectory, None, configFile, True)
             
 
-def run (sourceDirectory, outputFilename = None, configFile = None):
+def run (sourceDirectory, outputFilename = None, configFile = None,
+                                                returnAsListOfNames = False):
     cfg = None
     if configFile:
         cfg = Config(configFile)
@@ -219,6 +224,16 @@ def run (sourceDirectory, outputFilename = None, configFile = None):
     ## Output the files in the determined order
     result = []
 
+    # Return as a list of filenames
+    if returnAsListOfNames:
+        for fp in order:
+            fName = os.path.normpath(os.path.join(sourceDirectory, fp)).replace("\\","/")
+            print "Append: ", fName
+            result.append(fName)
+        print "\nTotal files: %d " % len(result)
+        return result
+        
+    # Return as merged source code
     for fp in order:
         f = files[fp]
         print "Exporting: ", f.filepath
