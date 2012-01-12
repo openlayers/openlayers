@@ -534,6 +534,43 @@
         map.destroy();
     }
 
+    function test_freehand_maxVertices(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var control = new OpenLayers.Control({});
+        var log = {};
+        var MAX_VERTICES = 2;
+        var doneCallback = function(geo) {
+            t.eq(geo.components.length, MAX_VERTICES,
+                'When maxVertices is reached, the geometry is finalized automatically');
+        };
+        var handler = new OpenLayers.Handler.Path(control, 
+            {'done': doneCallback}, 
+            {freehand: true, 
+             maxVertices: MAX_VERTICES});
+        control.handler = handler;
+        map.addControl(control);
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+
+        // mock up feature freehand drawing
+        handler.activate();
+        var evt = {xy: new OpenLayers.Pixel(0, 0)};
+        handler.mousemove(evt);
+        handler.mousedown(evt);
+        evt = {xy: new OpenLayers.Pixel(20, 20)};
+        handler.mousemove(evt);
+        evt = {xy: new OpenLayers.Pixel(40, 40)};
+        handler.mousemove(evt);
+        map.destroy();
+    }
+    
     /**
      * Helper functions for editing method tests
      */ 
