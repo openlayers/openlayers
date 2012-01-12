@@ -362,6 +362,7 @@ Group: OpenLayers  {
       File: MapServer.Untiled  (no auto-title, OpenLayers/Layer/MapServer/Untiled.js)
       File: Markers  (no auto-title, OpenLayers/Layer/Markers.js)
       File: MultiMap  (no auto-title, OpenLayers/Layer/MultiMap.js)
+      File: OSM  (no auto-title, OpenLayers/Layer/OSM.js)
       File: PointGrid  (no auto-title, OpenLayers/Layer/PointGrid.js)
       File: PointTrack  (no auto-title, OpenLayers/Layer/PointTrack.js)
       File: SphericalMercator  (no auto-title, OpenLayers/Layer/SphericalMercator.js)
