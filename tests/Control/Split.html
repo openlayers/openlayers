@@ -141,7 +141,7 @@
     
     function test_isEligible(t) {
         
-        t.plan(9);
+        t.plan(10);
         
         var control = new OpenLayers.Control.Split();
         var geometry = OpenLayers.Geometry.fromWKT("LINESTRING(0 1, 1 2)");
@@ -175,6 +175,9 @@
         t.eq(control.isEligible(feature), false, "feature is not eligible unless it matches filter");
         control.targetFilter.value = "baz";
         t.eq(control.isEligible(feature), true, "feature is eligible if it matches filter");
+        
+        delete feature.geometry;
+        t.eq(control.isEligible(feature), false, "feature with no geometry is not eligible");
         
         control.destroy();
         
