@@ -250,6 +250,22 @@
              "resize correctly adjusts y of component 4");
     }
 
+    function test_LinearRing_containsPoint(t) {
+        t.plan(1);
+
+        var components = [
+            new OpenLayers.Geometry.Point(-10812863.417266,3923827.912779),
+            new OpenLayers.Geometry.Point(-10812863.417264,3923951.5257855),
+            new OpenLayers.Geometry.Point(-10812309.24881,3923990.9386282),
+            new OpenLayers.Geometry.Point(-10812751.15038,3923798.0545649)
+        ];
+
+        var ring = new OpenLayers.Geometry.LinearRing(components);
+        var point = new OpenLayers.Geometry.Point(-10812964.078829, 3923856.9524225);
+
+        t.ok(!ring.containsPoint(point),
+             "containsPoint correctly returns false for point outside");
+    }
 
   </script>
 </head>
