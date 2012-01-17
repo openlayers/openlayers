@@ -15,7 +15,7 @@ var init = function (onSelectFeatureFunction) {
         styleMap: new OpenLayers.StyleMap({
             externalGraphic: "img/mobile-loc.png",
             graphicOpacity: 1.0,
-            graphicWith: 16,
+            graphicWidth: 16,
             graphicHeight: 26,
             graphicYOffset: -26
         })

@@ -280,7 +280,6 @@ Group: OpenLayers  {
       }  # Group: Handler
 
    File: Icon  (no auto-title, OpenLayers/Icon.js)
-   File: Kinetic  (no auto-title, OpenLayers/Kinetic.js)
 
    Group: Lang  {
 
