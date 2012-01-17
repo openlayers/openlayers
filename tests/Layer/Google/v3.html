@@ -65,11 +65,7 @@
     //  works correctly both ways.
        var gLatLng = new google.maps.LatLng(50,100);
        // v3 uses sphericalMercator by default
-       var correspondingOLLonLat = new OpenLayers.LonLat(100,50).transform(
-           new OpenLayers.Projection("EPSG:4326"),
-           map.getProjectionObject()
-       );
-    
+       var correspondingOLLonLat = layer.forwardMercator(100, 50);
     
        olLonLat = layer.getOLLonLatFromMapObjectLonLat(gLatLng);
        t.ok(olLonLat.equals(correspondingOLLonLat), "Translation from GLatLng to OpenLayers.LonLat works");

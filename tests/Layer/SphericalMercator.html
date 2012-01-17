@@ -38,8 +38,8 @@
         t.eq(sw.lon, -180, "Southwest lon correct");
         t.eq(ne.lon, 180, "Northeast lon correct");
         
-        t.eq(sw.lat, -85.051128779807, "Southwest lat correct");
-        t.eq(ne.lat, 85.051128779807, "Northeast lat correct");
+        t.eq(sw.lat.toFixed(10), "-85.0511287798", "Southwest lat correct");
+        t.eq(ne.lat.toFixed(10), "85.0511287798", "Northeast lat correct");
     }
 
     function strToFixed(str, dig) { 
@@ -51,22 +51,11 @@
         }); 
     } 
  
-    function test_SphericalMercator_projectForward(t) { 
-        t.plan(1);
-        var point = new OpenLayers.Geometry.Point(10, 20); 
-        OpenLayers.Layer.SphericalMercator.projectForward(point); 
-
-        t.eq(strToFixed(point.toString()), 
-             strToFixed("POINT(1113194.9077777779 2273030.9266712805)"), 
-             "point transforms from EPSG:4326 to Spherical Mercator"); 
-    } 
-         
     function test_SphericalMercator_to4326(t) { 
         t.plan(1);
-        var point = new OpenLayers.Geometry.Point(1113195, 2273031); 
+        var point = new OpenLayers.Geometry.Point(1113195, 2273031);
+        point.transform("EPSG:900913", "EPSG:4326");
 
-        OpenLayers.Layer.SphericalMercator.projectInverse(point); 
-         
         t.eq(strToFixed(point.toString()), 
              strToFixed("POINT(10.000000828446318 20.000000618997227)"), 
              "point transforms from Spherical Mercator to EPSG:4326"); 
@@ -82,9 +71,9 @@
         var smerc = OpenLayers.Projection.transforms["EPSG:900913"];
         t.ok(smerc instanceof Object, "EPSG:900913 exists in table");
         
-        t.ok(wgs84["EPSG:900913"] === OpenLayers.Layer.SphericalMercator.projectForward,
+        t.ok(typeof(wgs84["EPSG:900913"]) === "function",
              "from EPSG:4326 to EPSG:900913 correctly defined");
-        t.ok(smerc["EPSG:4326"] === OpenLayers.Layer.SphericalMercator.projectInverse,
+        t.ok(typeof(smerc["EPSG:4326"]) === "function",
              "from EPSG:900913 to EPSG:4326 correctly defined");
     }
     

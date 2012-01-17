@@ -1,14 +1,6 @@
 // make map available for easy debugging
 var map;
 
-// if your application transforms coordinates to and from EPSG:102113 then
-// you must uncomment the lines below
-
-// OpenLayers.Projection.addTransform("EPSG:4326", "EPSG:102113",
-//     OpenLayers.Layer.SphericalMercator.projectForward);
-// OpenLayers.Projection.addTransform("EPSG:102113", "EPSG:4326",
-//     OpenLayers.Layer.SphericalMercator.projectInverse);
-
 function init() {
 
     var options = {
