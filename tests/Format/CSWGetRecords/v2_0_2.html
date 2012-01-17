@@ -41,7 +41,7 @@
     
     function test_read(t) {
         
-        t.plan(16);
+        t.plan(17);
         
         var obj = format.read(csw_response);
                 
@@ -64,6 +64,9 @@
         var testRecord = records[0];
         t.eq(testRecord.type, "BriefRecord", "check value for record.type");
         t.eq(testRecord.title, [{value:"Sample title"}], "check value for record.title");
+
+        // test empty subject
+        t.eq(testRecord.subject, [], "Empty subject tags are ignored");
 
         //test bbox
         t.eq(testRecord.BoundingBox.length, 2, "object contains 2 BoundingBoxes");

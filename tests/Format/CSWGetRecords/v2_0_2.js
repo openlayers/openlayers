@@ -21,6 +21,8 @@ var csw_response =
     '<csw:BriefRecord xmlns:geonet="http://www.fao.org/geonetwork" xmlns:ows="http://www.opengis.net/ows" xmlns:dc="http://purl.org/dc/elements/1.1/">' +
       '<dc:identifier>895ac38b-7aef-4a21-b593-b35a6fc7bba9</dc:identifier>' +
       '<dc:title>Sample title</dc:title>' +
+      '<dc:subject />' +
+      '<dc:subject />' +
       '<ows:BoundingBox crs="::Lambert Azimuthal Projection">' +
         '<ows:LowerCorner>156 -3</ows:LowerCorner>' +
         '<ows:UpperCorner>37 83</ows:UpperCorner>' +

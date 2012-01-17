@@ -65,7 +65,7 @@
     }
 
     function test_Layer_HTTPRequest_mergeNewParams (t) {
-        t.plan( 8 );
+        t.plan( 9 );
 
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.HTTPRequest(name, url, params, options);
@@ -97,7 +97,9 @@
         
         layer.redraw = function() {
             t.ok(true, "layer.mergeNewParams calls layer.redraw");
-        }
+            t.ok(layer.resolution === null, "layer.mergeNewParams sets resolution to null");
+        };
+        layer.resolution = 'fake';
         layer.mergeNewParams();
     }
 

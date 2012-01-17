@@ -368,6 +368,38 @@
 
         map.destroy();
     }
+
+    // test for https://github.com/openlayers/openlayers/pull/36
+    // (more an integration test than a unit test)
+    function test_olImageLoadError(t) {
+        t.plan(2);
+
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS("invalid",  "", {layers: 'basic'});
+        map.addLayer(layer);
+
+        var size = new OpenLayers.Size(5, 6);
+        var position = new OpenLayers.Pixel(20, 30);
+        var bounds = new OpenLayers.Bounds(1, 2, 3, 4);
+
+        var tile = new OpenLayers.Tile.Image(layer, position, bounds, null, size);
+        tile.draw();
+
+        t.delay_call(0.1, function() {
+
+            // check initial state
+            t.ok(OpenLayers.Element.hasClass(tile.imgDiv, 'olImageLoadError'),
+                 'tile image has the olImageLoadError class (init state)');
+
+            layer.setVisibility(false);
+            layer.setVisibility(true);
+
+            t.ok(OpenLayers.Element.hasClass(tile.imgDiv, 'olImageLoadError'),
+                 'tile image still has the olImageLoadError class');
+
+            map.destroy();
+        });
+    }
     
   </script>
 </head>

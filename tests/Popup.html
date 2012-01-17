@@ -191,13 +191,14 @@
     //closeOnMove
         var checkMapEvent = function(map, popup) {
             var startListeners = map.events.listeners['movestart'];
-            for(var i=0; i < startListeners.length; i++) {
-                var listener = startListeners[i];
-                
-                if ((listener.obj == popup) && (listener.func == popup.hide)) {
-                    return true;
+            if (startListeners) {
+                for (var i = 0; i < startListeners.length; i++) {
+                    var listener = startListeners[i];
+                    if ((listener.obj == popup) && (listener.func == popup.hide)) {
+                        return true;
+                    }
                 }
-            }    
+            }
             return false;
         };
         var registered = checkMapEvent(map1, popup);
