@@ -16,9 +16,11 @@
 
         var originalGetTime = Date.prototype.getTime;
         Date.prototype.getTime = function() { return 0 };
+        
+        var interval = 10; // arbitrary value for tests 
 
-        var originalSetInterval = window.setInterval;
-        window.setInterval = function(callback, interval) {
+        var originalLoopAnimation = OpenLayers.Animation.start;
+        OpenLayers.Animation.start = function(callback) {
             while (!finish) {
                 var time = new Date().getTime();
                 Date.prototype.getTime = function() { return time+interval };
@@ -49,7 +51,7 @@
         });
         
         Date.prototype.getTime = originalGetTime;
-        window.setInterval = originalSetInterval;
+        OpenLayers.Animation.start = originalLoopAnimation;
     }
 
     function test_Angle (t) {

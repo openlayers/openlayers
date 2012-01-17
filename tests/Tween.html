@@ -36,7 +36,7 @@
             }
         }
         tween.start(start, finish, 10, {callbacks: callbacks});
-        t.ok(tween.interval != null, "interval correctly set");
+        t.ok(tween.animationId != null, "animationId correctly set");
         t.delay_call(0.8, function() {
             t.eq(_start, true, "start callback called");
             t.eq(_done, true, "finish callback called");
@@ -49,15 +49,15 @@
         t.plan(2);
         
         var tween = new OpenLayers.Tween();
-        tween.interval = window.setInterval(function() {}, 10);
+        tween.animationId = OpenLayers.Animation.start(function() {});
         tween.playing = true;
         tween.stop();
-        t.eq(tween.interval, null, "tween correctly stopped");
+        t.eq(tween.animationId, null, "tween correctly stopped");
         
-        tween.interval = window.setInterval(function() {}, 10);
+        tween.animationId = OpenLayers.Animation.start(function() {});
         tween.playing = false;
         tween.stop();
-        t.ok(tween.interval != null, "stop method doesn't do anything if tween isn't running");
+        t.ok(tween.animationId != null, "stop method doesn't do anything if tween isn't running");
     }
 
     </script> 

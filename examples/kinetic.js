@@ -1,7 +1,6 @@
 var map = new OpenLayers.Map({
     div: "map",
     resolutions: [0.087890625, 0.0439453125, 0.02197265625, 0.010986328125],
-    panDuration: 100,
     controls: [
         new OpenLayers.Control.Navigation(
             {dragPanOptions: {enableKinetic: true}}
