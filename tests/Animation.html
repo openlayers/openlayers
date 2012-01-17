@@ -13,9 +13,18 @@
         <script src="OLLoader.js"></script>
 
         <script>
+                
+        function test_all(t) {
+            t.plan(7);
+            t.open_window("Animation.html", function(win) {
+                win.requestFrame(t);
+                win.start(t);
+                win.startDuration(t);
+                win.stop(t);
+            });
+        }
 
-        function test_requestFrame(t) {
-            t.plan(2);
+        function requestFrame(t) {
 
             t.eq(typeof OpenLayers.Animation.requestFrame, "function", "requestFrame is a function");
 
@@ -28,8 +37,7 @@
             });
         }
 
-        function test_start(t) {
-            t.plan(1);
+        function start(t) {
 
             var calls = 0;
             var id = OpenLayers.Animation.start(function() {
@@ -41,8 +49,7 @@
             });
         }
 
-        function test_start_duration(t) {
-            t.plan(2);
+        function startDuration(t) {
 
             var calls = 0;
             var id = OpenLayers.Animation.start(function() {
@@ -58,8 +65,7 @@
             });
         }
 
-        function test_stop(t) {
-            t.plan(2);
+        function stop(t) {
 
             var calls = 0;
             var id = OpenLayers.Animation.start(function() {
