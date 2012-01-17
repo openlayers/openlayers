@@ -250,6 +250,110 @@
              "resize correctly adjusts y of component 4");
     }
 
+    function test_containsPoint(t) {
+
+        /**
+         *  The ring:
+         *                      edge 3
+         *          (5, 10)  __________ (15, 10)
+         *                 /         /
+         *        edge 4 /         / edge 2
+         *             /         /
+         *    (0, 0) /_________/ (10, 0)
+         *             edge 1
+         */
+        var components = [
+            new OpenLayers.Geometry.Point(0, 0),
+            new OpenLayers.Geometry.Point(10, 0),
+            new OpenLayers.Geometry.Point(15, 10),
+            new OpenLayers.Geometry.Point(5, 10)
+        ];
+
+        var ring = new OpenLayers.Geometry.LinearRing(components);
+        
+        function p(x, y) {
+            return new OpenLayers.Geometry.Point(x, y);
+        }
+        
+        // contains: 1 (touches), true (within), false (outside)
+        var cases = [{
+            point: p(5, 5), contains: true
+        }, {
+            point: p(20, 20), contains: false
+        }, {
+            point: p(15, 15), contains: false
+        }, {
+            point: p(0, 0), contains: 1 // lower left corner
+        }, {
+            point: p(10, 0), contains: 1 // lower right corner
+        }, {
+            point: p(15, 10), contains: 1 // upper right corner
+        }, {
+            point: p(5, 10), contains: 1 // upper left corner
+        }, {
+            point: p(5, 0), contains: 1 // on edge 1
+        }, {
+            point: p(5, -0.1), contains: false // below edge 1
+        }, {
+            point: p(5, 0.1), contains: true // above edge 1
+        }, {
+            point: p(12.5, 5), contains: 1 // on edge 2
+        }, {
+            point: p(12.4, 5), contains: true // left of edge 2
+        }, {
+            point: p(12.6, 5), contains: false // right of edge 2
+        }, {
+            point: p(10, 10), contains: 1 // on edge 3
+        }, {
+            point: p(10, 9.9), contains: true // below edge 3
+        }, {
+            point: p(10, 10.1), contains: false // above edge 3
+        }, {
+            point: p(2.5, 5), contains: 1 // on edge 4
+        }, {
+            point: p(2.4, 5), contains: false // left of edge 4
+        }, {
+            point: p(2.6, 5), contains: true // right of edge 4
+        }];
+        
+        var len = cases.length;
+        t.plan(len);
+        var c;
+        for (var i=0; i<len; ++i) {
+            c = cases[i];
+            t.eq(ring.containsPoint(c.point), c.contains, "case " + i + ": " + c.point);
+        }
+    }
+    
+    function test_containsPoint_precision(t) {
+
+        /**
+         * The test for linear ring containment was sensitive to failure when
+         * looking for ray crossings on nearly vertical edges.  With a loss
+         * of precision in calculating the x-coordinate for the crossing,
+         * the method would erronously determine that the x-coordinate was
+         * not within the (very narrow) x-range of the nearly vertical edge.
+         * 
+         * The test below creates a polygon whose first vertical edge is 
+         * nearly horizontal.  The test point lies "far" outside the polygon
+         * and we expect the containsPoint method to return false.
+         */
+        
+        t.plan(1);
+
+        var components = [
+            new OpenLayers.Geometry.Point(10000020.000001, 1000000),
+            new OpenLayers.Geometry.Point(10000020.000002, 1000010), // nearly vertical
+            new OpenLayers.Geometry.Point(10000030, 1000010),
+            new OpenLayers.Geometry.Point(10000030, 1000000)
+        ];
+
+        var ring = new OpenLayers.Geometry.LinearRing(components);
+        var point = new OpenLayers.Geometry.Point(10000000, 1000001);
+
+        t.eq(ring.containsPoint(point), false, "false for point outside polygon with nearly vertical edge");
+
+    }
 
   </script>
 </head>
