@@ -23,3 +23,9 @@ div.olControlZoomPanel .olControlZoomOutItemInactive {
     top: 72px;
     background-position: 0 -72px;
 }
+.olTileImage {
+    -webkit-transition: opacity 0.2s linear;
+    -moz-transition: opacity 0.2s linear;
+    -o-transition: opacity 0.2s linear;
+    transition: opacity 0.2s linear;
+}

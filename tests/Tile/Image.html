@@ -262,14 +262,14 @@
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-90,-85,-90,85), url, size);
         tile.draw();
         tile.moveTo(new OpenLayers.Bounds(-185,-90,-180,-80), new OpenLayers.Pixel(-180,-85), true);
-        t.delay_call( 1, function() { t.eq(tile.imgDiv.style.display, "none", "Tile image is invisible.") } );
+        t.delay_call( 1, function() { t.eq(tile.imgDiv.style.visibility, "hidden", "Tile image is invisible.") } );
         var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
             "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}, {'alpha':true});
         map.addLayer(layer);
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-90,-85,-90,85), url, size);
         tile.draw();
         tile.moveTo(new OpenLayers.Bounds(-185,-90,-180,-80), new OpenLayers.Pixel(-180,-85), true)
-        t.delay_call( 1, function() { t.eq(tile.imgDiv.style.display, "none", "Alpha tile image is invisible.") } );
+        t.delay_call( 1, function() { t.eq(tile.imgDiv.style.visibility, "hidden", "Alpha tile image is invisible.") } );
         
     }
 
@@ -340,6 +340,32 @@
         t.eq(bb.style.left, left, "backbuffer has same left style as frame");
         t.ok(bb === img, "image appended to bb");
         t.ok(tile.imgDiv == null, "image reference removed from tile");
+        map.destroy();
+    }
+
+    function test_onImageLoad(t) {
+        t.plan(3);
+
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+            "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'}, {opacity: 0.5});
+        map.addLayer(layer);
+        map.setCenter(new OpenLayers.LonLat(0,0), 5);
+
+        var tile = layer.grid[0][0];
+
+        var log;
+        tile.events.on({loadend: function() { log++; }});
+
+        log = 0;
+        tile.onImageLoad();
+        t.eq(tile.imgDiv.style.visibility, 'inherit',
+             'onImageLoad makes the image visible');
+        t.eq(parseFloat(tile.imgDiv.style.opacity), 0.5,
+             'onImageLoad sets the expected opacity for the image');
+        t.eq(log, 1,
+             'onImageLoad does trigger loadend');
+
         map.destroy();
     }
 

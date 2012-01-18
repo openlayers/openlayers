@@ -1,15 +1,30 @@
-var map;
-function init(){
-    map = new OpenLayers.Map('map');
+var urls = [
+    "http://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
+    "http://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
+    "http://c.tile.openstreetmap.org/${z}/${x}/${y}.png"
+];
 
-    var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
-        "http://vmap0.tiles.osgeo.org/wms/vmap0",
-        {layers: 'basic'} );
-    var ol_wms_nobuffer = new OpenLayers.Layer.WMS( "OpenLayers WMS (no tile buffer)",
-        "http://vmap0.tiles.osgeo.org/wms/vmap0",
-        {layers: 'basic'}, {buffer: 0});
+var map = new OpenLayers.Map({
+    div: "map",
+    layers: [
+        new OpenLayers.Layer.XYZ("OSM (with buffer)", urls, {
+            transitionEffect: "resize", buffer: 2, sphericalMercator: true
+        }),
+        new OpenLayers.Layer.XYZ("OSM (without buffer)", urls, {
+            transitionEffect: "resize", buffer: 0, sphericalMercator: true
+        })
+    ],
+    controls: [
+        new OpenLayers.Control.Navigation({
+            dragPanOptions: {
+                enableKinetic: true
+            }
+        }),
+        new OpenLayers.Control.PanZoom(),
+        new OpenLayers.Control.Attribution()
+    ],
+    center: [0, 0],
+    zoom: 3
+});
 
-    map.addLayers([ol_wms, ol_wms_nobuffer]);
-    map.addControl(new OpenLayers.Control.LayerSwitcher());
-    map.setCenter(new OpenLayers.LonLat(0, 0), 6);
-}
+map.addControl(new OpenLayers.Control.LayerSwitcher());
