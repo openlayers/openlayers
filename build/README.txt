@@ -41,3 +41,6 @@ The options available for compression are:
  * none
    None will leave the Javascript uncompressed.
 
+
+For more information on the build script and custom build profiles,
+see http://docs.openlayers.org/library/deploying.html
