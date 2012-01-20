@@ -1,5 +1,5 @@
 var csw_request = 
-'<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="CSW" version="2.0.2" resultType="results" startPosition="10" maxRecords="20">' +
+'<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="CSW" version="2.0.2" resultType="results" startPosition="10" maxRecords="20" xmlns:gmd="http://www.isotc211.org/2005/gmd">' +
   '<csw:Query typeNames="csw:Record">' +
     '<csw:ElementSetName>brief</csw:ElementSetName>' +
     '<csw:Constraint version="1.1.0">' +
