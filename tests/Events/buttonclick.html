@@ -13,7 +13,6 @@
             button: 1,
             target: button
         });
-        buttonClick._buttonClick(evt);
         events.handleBrowserEvent(evt);
     }
     function logEvent(evt) {
@@ -22,7 +21,7 @@
    
     function test_ButtonClick(t) {
         t.plan(2);
-        events = new OpenLayers.Events({}, document.getElementById("map"));
+        events = new OpenLayers.Events({}, element);
         buttonClick = new OpenLayers.Events.buttonclick({target: events});
         t.ok(buttonClick.target === events, "target set from options argument");
         buttonClick = new OpenLayers.Events.buttonclick(events);
