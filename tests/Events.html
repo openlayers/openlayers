@@ -82,7 +82,7 @@
 
     function test_Events_register_unregister(t) {
  
-        t.plan(19);
+        t.plan(20);
  
         var mapDiv = OpenLayers.Util.getElement('map');
         var obj = {result: 0};
@@ -165,6 +165,9 @@
         } catch (err) {
             t.fail("unregistering for an event with no registered listeners causes trouble: " + err);
         }
+        
+        events.register("buttonclick", obj, func);
+        t.ok(events.extensions.buttonclick, "buttonclick extension registered");
 
     }
 

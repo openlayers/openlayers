@@ -168,22 +168,26 @@
         //up
         var delta = [0, -50];
         var dir = "up";
-        control.buttonDown.call(buttons[0], evt);
+        evt.button = buttons[0];
+        control.onButtonClick.call(control, evt);
         
         //left
         var delta = [-125, 0];
         var dir = "left";
-        control.buttonDown.call(buttons[1], evt);
+        evt.button = buttons[1];
+        control.onButtonClick.call(control, evt);
         
         //right
         var delta = [125, 0];
         var dir = "right";
-        control.buttonDown.call(buttons[2], evt);
+        evt.button = buttons[2];
+        control.onButtonClick.call(control, evt);
         
         //down
         var delta = [0, 50];
         var dir = "down";
-        control.buttonDown.call(buttons[3], evt);
+        evt.button = buttons[3];
+        control.onButtonClick.call(control, evt);
         
         map.destroy();
     }
