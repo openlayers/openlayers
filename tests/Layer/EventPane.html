@@ -94,9 +94,9 @@
         if (document.createEvent) { // Mozilla
             var evObj = document.createEvent('MouseEvents');
             evObj.initEvent('mousemove', true, false);
-            map.eventsDiv.dispatchEvent(evObj);
+            map.viewPortDiv.dispatchEvent(evObj);
         } else if(document.createEventObject) { // IE
-            map.eventsDiv.fireEvent('onmousemove');
+            map.viewPortDiv.fireEvent('onmousemove');
         }
         
         t.eq(log.length, 1, "got one event");

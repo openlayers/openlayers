@@ -82,7 +82,7 @@
               "activated one tool control, the other one is inactive and the toggle & button controls also.");
 
         panel.activateControl(toggleControl);
-        t.eq(toggleControl.panel_div.className,"mbControlTestToggleItemActive",
+        t.eq(toggleControl.panel_div.className,"mbControlTestToggleItemActive olButton",
             "className of icon div for toggle control is active.");
         t.ok(toolControl.active && !anotherToolControl.active && toggleControl.active,
               "activated the toggle control, which has no influence on the tool & togggle controls.");
@@ -96,9 +96,9 @@
               "activated the button control, which has no influence on the tool & togggle controls.");
 
         panel.activateControl(anotherToolControl);
-        t.eq(anotherToolControl.panel_div.className,"mbControlTestToolItemActive",
+        t.eq(anotherToolControl.panel_div.className,"mbControlTestToolItemActive olButton",
             "className of icon div for anotherToolControl is active.");
-        t.eq(toolControl.panel_div.className,"olControlZoomBoxItemInactive",
+        t.eq(toolControl.panel_div.className,"olControlZoomBoxItemInactive olButton",
             "className of icon div for toolControl is inactive.");
         t.ok(!toolControl.active && anotherToolControl.active && toggleControl.active,
               "activated the other tool control, the first one is inactive and the toggle control still active.");
