@@ -20,10 +20,8 @@
     }
    
     function test_ButtonClick(t) {
-        t.plan(2);
+        t.plan(1);
         events = new OpenLayers.Events({}, element);
-        buttonClick = new OpenLayers.Events.buttonclick({target: events});
-        t.ok(buttonClick.target === events, "target set from options argument");
         buttonClick = new OpenLayers.Events.buttonclick(events);
         t.ok(buttonClick.target === events, "target set from constructor arg");
         buttonClick.destroy();
