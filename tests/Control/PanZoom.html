@@ -159,7 +159,6 @@
         };
 
         var delta, dir;
-        var evt = {which: 1}; // a fake left click
         var buttons = control.buttons;
         map.pan = function(dx, dy){
             t.eq([dx,dy],delta,"Panning " + dir + " sets right delta with slideRatio");
@@ -168,25 +167,25 @@
         //up
         var delta = [0, -50];
         var dir = "up";
-        evt.button = buttons[0];
+        var evt = {buttonElement: buttons[0]};
         control.onButtonClick.call(control, evt);
         
         //left
         var delta = [-125, 0];
         var dir = "left";
-        evt.button = buttons[1];
+        evt.buttonElement = buttons[1];
         control.onButtonClick.call(control, evt);
         
         //right
         var delta = [125, 0];
         var dir = "right";
-        evt.button = buttons[2];
+        evt.buttonElement = buttons[2];
         control.onButtonClick.call(control, evt);
         
         //down
         var delta = [0, 50];
         var dir = "down";
-        evt.button = buttons[3];
+        evt.buttonElement = buttons[3];
         control.onButtonClick.call(control, evt);
         
         map.destroy();
