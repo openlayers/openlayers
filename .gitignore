@@ -3,3 +3,5 @@
 /tools/*.pyc
 /apidoc_config/Data/
 /doc/apidocs/
+/examples/example-list.js
+/examples/example-list.xml
