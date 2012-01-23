@@ -412,7 +412,50 @@
 
         map.destroy();
     }
-        
+    function test_collectDragHandle(t) {
+        t.plan(4);
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(1,1));
+        layer.addFeatures([feature]);
+        var control = new OpenLayers.Control.ModifyFeature(layer);
+        map.addControl(control);
+        control.activate();
+        control.feature = feature;
+        control.collectDragHandle();
+        t.ok(control.dragHandle != null, "Drag handle created");
+        t.ok(control.dragHandle._sketch == true, "Handle has _sketch true");
+        t.ok(control.dragHandle.renderIntent == control.vertexRenderIntent,"Render intent for handle set");
+        t.ok(control.layer.getFeatureById(control.dragHandle.id) != null, "Drag handle added to layer");
+    }
+    function test_collectRadiusHandle(t) {
+        t.plan(4);
+        var map = new OpenLayers.Map("map", {
+            resolutions: [1]
+        });
+        var layer = new OpenLayers.Layer.Vector("foo", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: true
+        });
+        map.addLayer(layer);
+        var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(1,1));
+        layer.addFeatures([feature]);
+        var control = new OpenLayers.Control.ModifyFeature(layer);
+        map.addControl(control);
+        control.activate();
+        control.feature = feature;
+        control.collectRadiusHandle();
+        t.ok(control.radiusHandle != null, "Radius handle created");
+        t.ok(control.radiusHandle._sketch == true, "Radius has _sketch true");
+        t.ok(control.radiusHandle.renderIntent == control.vertexRenderIntent,"Render intent for handle set");
+        t.ok(control.layer.getFeatureById(control.radiusHandle.id) != null, "Drag radius added to layer");
+    }
     function test_onDrag(t) {
         t.plan(1);
         t.ok(true, "onDrag not tested yet.");
