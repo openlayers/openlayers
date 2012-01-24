@@ -37,12 +37,17 @@
                 fillOpacity: 1,
                 strokeColor: "black"
             }, {context: context});
-                                    
+
+            // allow testing of specific renderers via "?renderer=Canvas", etc
+            var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+            renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+
             // the layer that we want to transform features on
             var vectorLayer = new OpenLayers.Layer.Vector("Simple Geometry", {
                 styleMap: new OpenLayers.StyleMap({
                     "transform": style
-                })
+                }),
+                renderers: renderer
             });
 
             // create the TransformFeature control, using the renderIntent
