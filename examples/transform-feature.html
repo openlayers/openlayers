@@ -14,29 +14,14 @@
         function init(){
             map = new OpenLayers.Map('map', {allOverlays: true});
 
-            // context for appropriate scale/resize cursors
-            var cursors = ["sw-resize", "s-resize", "se-resize",
-                "e-resize", "ne-resize", "n-resize", "nw-resize", "w-resize"];
-            var context = {
-                getCursor: function(feature){
-                    var i = OpenLayers.Util.indexOf(control.handles, feature);
-                    var cursor = "inherit";
-                    if(i !== -1) {
-                        i = (i + 8 + Math.round(control.rotation / 90) * 2) % 8;
-                        cursor = cursors[i];
-                    }
-                    return cursor;
-                }
-            };
-            
             // a nice style for the transformation box
             var style = new OpenLayers.Style({
-                cursor: "${getCursor}",
+                cursor: "${role}",
                 pointRadius: 5,
                 fillColor: "white",
                 fillOpacity: 1,
                 strokeColor: "black"
-            }, {context: context});
+            });
 
             // allow testing of specific renderers via "?renderer=Canvas", etc
             var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
