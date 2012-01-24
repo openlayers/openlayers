@@ -313,6 +313,16 @@
         t.eq(evt.clientX, 1.5, "evt.clientX value is correct");
         t.eq(evt.clientY, 1.5, "evt.clientY value is correct");
     }
+    
+    function test_Events_attachToElement(t) {
+        t.plan(3);
+        var events = new OpenLayers.Events({}, null);
+        var element = document.createElement("div");
+        events.attachToElement(element);
+        t.ok(events.eventHandler, "eventHandler method bound");
+        t.ok(events.clearMouseListener, "clearMouseListener method bound");
+        t.ok(events.element === element, "element set");
+    }
 
     function test_Events_destroy (t) {
         t.plan(2);

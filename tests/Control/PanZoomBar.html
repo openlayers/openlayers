@@ -50,7 +50,7 @@
         t.eq(control.zoombarDiv, null, "zoombar div nullified.")
     }
 
-    function test_Control_PanZoomBar_divClick (t) {
+    function test_Control_PanZoomBar_onButtonClick (t) {
         t.plan(2);
         map = new OpenLayers.Map('map', {controls:[]});
         var layer = new OpenLayers.Layer.WMS("Test Layer",
@@ -59,16 +59,16 @@
         map.addLayer(layer);
         control = new OpenLayers.Control.PanZoomBar();
         map.addControl(control);
-        control.divClick({'xy': {'x': 0, 'y': 50}, which: 1});
+        control.onButtonClick({'buttonXY': {'x': 0, 'y': 50}, buttonElement: control.zoombarDiv});
         t.eq(map.zoom, 11, "zoom is correct on standard map");
 
         map.fractionalZoom = true;
-        control.divClick({'xy': {'x': 0, 'y': 49}, which: 1});
+        control.onButtonClick({'buttonXY': {'x': 0, 'y': 49}, buttonElement: control.zoombarDiv});
         t.eq(map.zoom.toFixed(3), '10.545', "zoom is correct on fractional zoom map");
 
     }
 
-    function test_Control_PanZoomBar_forceFixedZoomLevel_divClick(t){
+    function test_Control_PanZoomBar_forceFixedZoomLevel_onButtonClick(t){
         t.plan(1);
         map = new OpenLayers.Map('map', {
             controls: [],
@@ -84,12 +84,12 @@
         });
         map.addControl(control);
         
-        control.divClick({
-            'xy': {
+        control.onButtonClick({
+            'buttonXY': {
                 'x': 0,
                 'y': 49
             },
-            which: 1
+            buttonElement: control.zoombarDiv
         });
         t.eq(map.zoom, 11, "forceFixedZoomLevel makes sure that after a div click only fixed zoom levels are used even if the map has fractionalZoom");
     }     

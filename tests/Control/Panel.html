@@ -322,6 +322,21 @@
 
         map.destroy();
     }
+    
+    function test_buttonclick(t) {
+        t.plan(4);
+        var map = new OpenLayers.Map('map');
+        var panel1 = new OpenLayers.Control.Panel();
+        var div = document.createElement("div");
+        var panel2 = new OpenLayers.Control.Panel({div: div});
+        map.addControls([panel1, panel2]);
+        
+        t.ok(map.events.listeners.buttonclick, "buttonclick event registered on map's Events instance for panel inside map");
+        t.ok(!panel1.events.element, "Panel inside map has no element on its Events instance");
+        t.ok(panel2.events.listeners.buttonclick, "buttonclick event registered on panel's Events instance if outside map")
+        t.ok(panel2.events.element === div, "Panel outside map has the panel's div as element on its Events instance");
+        
+    }
   </script>
 </head>
 <body>
