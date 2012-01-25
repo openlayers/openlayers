@@ -56,7 +56,7 @@
         var old = OpenLayers.Event.stopObserving;
         var types = ["keydown", "keyup"];
         OpenLayers.Event.observe = function(obj, type, method) {
-            t.ok(obj == document,
+            t.ok(obj == map.div,
                  "activate calls observing with correct object");
             var validType = (OpenLayers.Util.indexOf(types, type) != -1);
             t.ok(validType, "activate calls observe for " + type);
@@ -84,7 +84,7 @@
         var old = OpenLayers.Event.stopObserving;
         var types = ["keydown", "keyup"];
         OpenLayers.Event.stopObserving = function(obj, type, method) {
-            t.ok(obj == document,
+            t.ok(obj == map.div,
                  "deactivate calls stopObserving with correct object");
             var validType = (OpenLayers.Util.indexOf(types, type) != -1);
             t.ok(validType, "deactivate calls stopObserving for " + type);
