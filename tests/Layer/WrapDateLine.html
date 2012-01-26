@@ -2,6 +2,11 @@
 <head>
 <script src="../OLLoader.js"></script>
   <script type="text/javascript">
+    // turn off animation frame handling, so we can check img urls in tests
+    OpenLayers.Layer.Grid.prototype.addTileOperation = function(fn, scope) {
+        fn.call(scope);
+    };
+
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var layer; 
 

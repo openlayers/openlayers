@@ -2,6 +2,12 @@
 <head>
   <script src="../OLLoader.js"></script>
   <script type="text/javascript">
+    // turn off animation frame handling, so we can check img urls in tests
+    var origAddTileOperation = OpenLayers.Layer.Grid.prototype.addTileOperation;
+    OpenLayers.Layer.Grid.prototype.addTileOperation = function(fn, scope) {
+        fn.call(scope);
+    };
+
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var layer; 
 
@@ -189,7 +195,7 @@
     
     function test_Layer_Grid_moveTo(t) {
 
-    t.plan(14);
+    t.plan(13);
 
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS(name, url, params);
@@ -214,7 +220,7 @@
             g_WhichFunc = "InitGridded";
             g_Bounds = bounds;
         };
-        layer._moveGriddedTiles = function() {
+        layer.moveGriddedTiles = function() {
             g_WhichFunc = "MoveGridded";
             g_Bounds = layer.map.getExtent();
         };
@@ -307,7 +313,7 @@
 
   
    //gridded
-        layer.grid = [ [ {} ] ];
+        layer.grid = [ [ {position: new OpenLayers.Pixel(0,0)} ] ];
         layer.singleTile = false;
         
         //regular move 
@@ -315,11 +321,8 @@
         tilesBounds = new OpenLayers.Bounds(10,10,120,120);
         g_WhichFunc = null;
         layer.moveTo(null, zoomChanged);
-        t.eq(g_WhichFunc, null, "moveGriddedTiles is delayed - not called yet");
-        t.delay_call(0.2, function() {
-            t.ok(g_WhichFunc == "MoveGridded", "if tiles not drastically out of bounds, we call moveGriddedTile()");
-            t.ok(g_Bounds.equals(b), "if tiles not drastically out of bounds, we call moveGriddedTile() with correct bounds");
-        });
+        t.eq(g_WhichFunc, "MoveGridded", "if tiles not drastically out of bounds, we call moveGriddedTile()");
+        t.ok(g_Bounds.equals(b), "if tiles not drastically out of bounds, we call moveGriddedTile() with correct bounds");
 
         // drastic pan
         clearTestBounds();
