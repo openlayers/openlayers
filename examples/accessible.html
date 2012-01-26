@@ -46,7 +46,11 @@
             var map = null;
             function init(){
                 var options = {
-                    controls: [new OpenLayers.Control.KeyboardDefaults()]
+                    controls: [
+                        new OpenLayers.Control.KeyboardDefaults({
+                            observeElement: 'map'
+                        })
+                    ]
                 };
                 map = new OpenLayers.Map('map', options);
                 var wms = new OpenLayers.Layer.WMS(
