@@ -14,15 +14,6 @@
         function init(){
             map = new OpenLayers.Map('map', {allOverlays: true});
 
-            // a nice style for the transformation box
-            var style = new OpenLayers.Style({
-                cursor: "${role}",
-                pointRadius: 5,
-                fillColor: "white",
-                fillOpacity: 1,
-                strokeColor: "black"
-            });
-
             // allow testing of specific renderers via "?renderer=Canvas", etc
             var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
             renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
@@ -30,7 +21,36 @@
             // the layer that we want to transform features on
             var vectorLayer = new OpenLayers.Layer.Vector("Simple Geometry", {
                 styleMap: new OpenLayers.StyleMap({
-                    "transform": style
+                    // a nice style for the transformation box
+                    "transform": new OpenLayers.Style({
+                        display: "${getDisplay}",
+                        cursor: "${role}",
+                        pointRadius: 5,
+                        fillColor: "white",
+                        fillOpacity: 1,
+                        strokeColor: "black"
+                    }, {
+                        context: {
+                            getDisplay: function(feature) {
+                                // hide the resize handle at the south-east corner
+                                return feature.attributes.role === "se-resize" ? "none" : "";
+                            }
+                        }
+                    }),
+                    "rotate": new OpenLayers.Style({
+                        display: "${getDisplay}",
+                        pointRadius: 10,
+                        fillColor: "#ddd",
+                        fillOpacity: 1,
+                        strokeColor: "black"
+                    }, {
+                        context: {
+                            getDisplay: function(feature) {
+                                // only display the rotate handle at the south-east corner
+                                return feature.attributes.role === "se-rotate" ? "" : "none";
+                            }
+                        }
+                    })
                 }),
                 renderers: renderer
             });
@@ -38,7 +58,8 @@
             // create the TransformFeature control, using the renderIntent
             // from above
             control = new OpenLayers.Control.TransformFeature(vectorLayer, {
-                renderIntent: "transform"
+                renderIntent: "transform",
+                rotationHandleSymbolizer: "rotate"
             });
             map.addControl(control);
 
@@ -86,13 +107,15 @@
 <div id="docs">
     <p>This example shows transformation of vector features with a
        tranformation box. Grab one of the handles to resize the feature.
-       Holding the SHIFT key will preserve the aspect ratio. Position the
-       mouse right outside one of the corner handles to rotate the feature,
-       and hold the SHIFT key to only rotate in 45° increments.</p>
-       <p>In this example, the transformation box has been set on the left
+       Holding the SHIFT key will preserve the aspect ratio. Use the gray 
+       handle to rotate the feature and hold the SHIFT key to only rotate 
+       in 45° increments.
+    </p>
+    <p>In this example, the transformation box has been set on the left
        feature, with a rotation preset of 45°. Clicking on the right feature
        will set it for transformation, starting with an unrotated box.
-       Dragging a feature or the box edges will move it around.</p>
+       Dragging a feature or the box edges will move it around.
+    </p>
 </div>
 
   </body>
