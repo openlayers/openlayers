@@ -2,6 +2,9 @@
 <head>
     <script src="../../OLLoader.js"></script>
     <script type="text/javascript">
+    // turn off animation frame handling, so we can check img urls in tests
+    delete OpenLayers.Layer.Grid.prototype.queueTileDraw;
+
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var isOpera   = (navigator.userAgent.indexOf("Opera") != -1);
     var isIE      = (navigator.userAgent.indexOf("MSIE") != -1);
