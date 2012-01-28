@@ -51,10 +51,14 @@ def build(config_file = None, output_file = None, options = None):
         outputFilename = output_file
 
     print "Merging libraries."
-    if use_compressor == "closure":
-        sourceFiles = mergejs.getNames(sourceDirectory, configFilename)
-    else:
-        merged = mergejs.run(sourceDirectory, None, configFilename)
+    try:
+        if use_compressor == "closure":
+            sourceFiles = mergejs.getNames(sourceDirectory, configFilename)
+        else:
+            merged = mergejs.run(sourceDirectory, None, configFilename)
+    except mergejs.MissingImport, E:
+        print "\nAbnormal termination."
+        sys.exit("ERROR: %s" % E)
 
     print "Compressing using %s" % use_compressor
     if use_compressor == "jsmin":
