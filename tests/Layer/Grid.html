@@ -71,6 +71,26 @@
 
         map.destroy();
     }
+    
+    function test_queueTileDraw(t) {
+        t.plan(3);
+        OpenLayers.Layer.Grid.prototype.queueTileDraw = origQueueTileDraw;
+
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.WMS(name, url, params);
+        map.addLayer(layer);
+        map.setCenter([0, 0], 3);
+        var queued = layer.tileQueue.length;
+        t.ok(layer.tileQueue.length, "Tiles queued for drawing");
+        map.zoomIn();
+        t.eq(layer.tileQueue.length, queued, "Tile queue has same length after immediate zoom change");
+        t.delay_call(1, function() {
+            t.eq(layer.tileQueue.length, 0, "Tiles from queue processed");
+        });
+        
+        map.destroy();
+        delete OpenLayers.Layer.Grid.prototype.queueTileDraw;
+    }
 
     function test_Layer_Grid_clearTiles (t) {
         t.plan(4);
