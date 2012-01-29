@@ -213,13 +213,35 @@
     
     function test_Layer_Grid_moveTo(t) {
 
-    t.plan(13);
+        t.plan(17);
+
+        var origIsNative = OpenLayers.Animation.isNative;
+        OpenLayers.Animation.isNative = false;
 
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS(name, url, params);
         layer.destroy = function() {}; //we're going to do funky things with the grid
         layer.applyBackBuffer = function() {}; // backbuffering isn't under test here
         map.addLayer(layer);
+        map.setCenter([-10, 0], 5);
+        
+        var log = [];
+        layer.deferMoveGriddedTiles = function() {
+            log.push("deferMoveGriddedTiles");
+            OpenLayers.Layer.WMS.prototype.deferMoveGriddedTiles.apply(this, arguments);
+        }
+        layer.moveGriddedTiles = function() {
+            log.push("moveGriddedTiles");
+            OpenLayers.Layer.WMS.prototype.moveGriddedTiles.apply(this, arguments);
+        }
+        map.moveTo([5, 0]);
+        t.eq(log[0], "moveGriddedTiles", "deferred after moveTo");
+        map.moveTo([0, 0]);
+        t.eq(log[1], "moveGriddedTiles", "deferred again after another moveTo");
+        t.eq(log.length, 2, "no tiles loaded yet");
+        t.delay_call(0.1, function() {
+            t.eq(log[2], "deferMoveGriddedTiles", "tiles moved after tileLoadingDelay");
+        });
 
     //make sure null bounds doesnt cause script error. 
     // no test necessary, just action
@@ -227,7 +249,6 @@
         layer.singleTile = false;
         layer.moveTo(); //checks to make sure null bounds doesnt break us
   
-
 
       //observing globals
         layer.initSingleTile = function(bounds) {
@@ -242,6 +263,9 @@
             g_WhichFunc = "MoveGridded";
             g_Bounds = layer.map.getExtent();
         };
+        layer.deferMoveGriddedTiles = function() {
+            g_WhichFunc = "DeferMoveGridded";
+        }
         var clearTestBounds = function() {
             g_WhichFunc = null;
             g_Bounds = null;
@@ -349,6 +373,7 @@
         t.ok(g_WhichFunc == "InitGridded", "if tiles drastically out of bounds, we call initGriddedTile()");
         t.ok(g_Bounds.equals(b), "if tiles drastically out of bounds, we call initGriddedTile() with correct bounds");
 
+        OpenLayers.Animation.isNative = origIsNative;
     }
 
     /** THIS WOULD BE WHERE THE TESTS WOULD GO FOR 
