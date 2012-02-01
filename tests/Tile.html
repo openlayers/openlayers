@@ -22,7 +22,7 @@
 
     
     function test_Tile_constructor (t) {
-        t.plan( 12 );
+        t.plan( 13 );
      
         setUp();
         
@@ -33,7 +33,11 @@
         var url = "bobob";
         var size = new OpenLayers.Size(5,6);
         
-        tile = new OpenLayers.Tile(layer, position, bounds, url, size);
+        tile = new OpenLayers.Tile(layer, position, bounds, url, size, {
+            eventListeners: {
+                loadstart: OpenLayers.Function.False
+            }
+        });
 
         t.ok(tile instanceof OpenLayers.Tile, "new OpenLayers.Tile returns Tile object");
         t.ok(tile.layer === layer, "tile.layer set correctly");
@@ -48,7 +52,9 @@
         t.ok(tile.id != null, "tile is given an id");
         t.ok(OpenLayers.String.startsWith(tile.id, "Tile_"),
              "tile's id starts correctly");
-        t.ok(tile.events != null, "tile's events intitialized");
+        t.ok(tile.events != null, "tile's events initialized");
+        t.ok(tile.events.listeners.loadstart.length == 1, 
+             "tile's events initialized from eventListeners option");
         
         tearDown();
         
