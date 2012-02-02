@@ -85,8 +85,8 @@
         var layer = new OpenLayers.Layer.WMS(
             "Name",
             "http://labs.metacarta.com/TESTURL?",
-            {layers: 'basic'}, {async: true, getURLasync: function(bounds, callback) {
-                callback(this.getURL(bounds));
+            {layers: 'basic'}, {async: true, getURLasync: function(bounds, callback, scope) {
+                callback.call(scope, this.getURL(bounds));
             }}
         ); 
         map.addLayer(layer);
