@@ -763,7 +763,7 @@
     }
 
     function test_Map_setBaseLayer(t) {
-        t.plan( 4 );
+        t.plan( 6 );
         
         map = new OpenLayers.Map('map');
 
@@ -790,6 +790,20 @@
         map.setBaseLayer(wmslayer2);
         t.ok(map.baseLayer == wmslayer2, "setbaselayer correctly sets 'baseLayer' property");
 
+        map.destroy();
+
+        var l1 = new OpenLayers.Layer(),
+            l2 = new OpenLayers.Layer(null, {maxResolution: 1.4});
+        map = new OpenLayers.Map({
+            div: 'map',
+            allOverlays: true,
+            layers: [l1, l2],
+            zoom: 0,
+            center: [0, 0]
+        });
+        t.eq(l2.div.style.display, "none", "Layer invisible because not in range");
+        map.raiseLayer(l1, 1);
+        t.eq(l2.div.style.display, "block", "Layer visible after base layer change because in range now");
         map.destroy();
     }
     
@@ -1276,10 +1290,10 @@
         t.eq(res, null, "getResolutionForZoom returns null for no base layer");
         map.fractionalZoom = true;
         var layer = new OpenLayers.Layer("test", {isBaseLayer: true});
+        map.addLayer(layer);
         layer.getResolutionForZoom = function() {
             t.ok(true, "getResolutionForZoom calls base layer getResolutionForZoom");
         }
-        map.addLayer(layer);
         var res = map.getResolutionForZoom();
         layer.destroy();
         map.destroy();
@@ -2006,7 +2020,6 @@
         map.moveTo([16, 48], 0);
         t.eq(map.getCenter().toShortString(), "0, 0", "no panning when moveTo is called with invalid zoom");
     }
-
   </script>
 </head>
 <body>

@@ -80,7 +80,7 @@
         strategy.update({force: true});
         var from = map.getProjectionObject();
         var to = layer.projection;
-        t.ok(strategy.bounds.equals(map.getExtent().transform(from, to)), "[force update different proj] bounds transformed");
+        t.eq(strategy.bounds.toString(), map.getExtent().transform(from, to).toString(), "[force update different proj] bounds transformed");
         
 
     }

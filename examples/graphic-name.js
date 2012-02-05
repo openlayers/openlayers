@@ -5,6 +5,10 @@ OpenLayers.Renderer.symbol.church = [4, 0, 6, 0, 6, 4, 10, 4, 10, 6, 6, 6, 6, 14
 var map;
 
 function init(){
+    // allow testing of specific renderers via "?renderer=Canvas", etc
+    var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+    renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+
     map = new OpenLayers.Map('map', {
         controls: []
     });
@@ -46,7 +50,8 @@ function init(){
     // Create a vector layer and give it your style map.
     var layer = new OpenLayers.Layer.Vector("Graphics", {
         styleMap: styles,
-        isBaseLayer: true
+        isBaseLayer: true,
+        renderers: renderer
     });
     layer.addFeatures(features);
     map.addLayer(layer);
