@@ -1,0 +1,115 @@
+<html>
+<head>
+    <title> OpenLayers UTFGrid Demo </title>
+    <script src='./OpenLayers.js' type='text/javascript'></script>
+    <style>
+        .olTileImage { border: 1px solid #DDD !important; }
+        #themap { width:800px; height:400px; border:1px black solid; }
+        #debugdiv { float:right; }
+    </style>
+</head>
+<body>
+    <h1> OpenLayers UTFGrid Demo </h1>
+
+    <div id="selector">
+        <ul id="controlToggle">
+            <li>
+                <input type="radio" name="type" value="move" id="moveHandler" onclick="toggleControl(this);" checked="checked" />
+                <label for="moveHandler">Move</label>
+            </li>
+            <li>
+                <input type="radio" name="type" value="hover" id="hoverHandler" onclick="toggleControl(this);" />
+                <label for="hoverHandler">Hover</label>
+            </li>
+            <li>
+                <input type="radio" name="type" value="click" id="clickHandler" onclick="toggleControl(this);" />
+                <label for="clickHandler">Click</label>
+            </li>
+            <li>
+                <input type="radio" name="type" value="click_callback" id="clickHandlerCustom" onclick="toggleControl(this);" />
+                <label for="clickHandlerCustom">Click with custom callback</label>
+            </li>
+        </ul>
+    </div>
+    <div id="themap"></div>
+    <div id="debugdiv"></div>
+    <div id="attrsdiv"></div>
+    <script>
+        /*
+         * Map
+         */
+        var map = new OpenLayers.Map('themap', {
+            projection: new OpenLayers.Projection("EPSG:900913"),
+            units: "m",
+            maxResolution: 156543.0339,
+            maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34)
+        });
+
+        /*
+         * Controls
+         */
+        var callback = function(attributes) {
+            var msg = "got it - " + attributes.NAME;
+            var element = OpenLayers.Util.getElement('attrsdiv');
+            element.innerHTML = msg;
+        }
+            
+        controls = {
+            'move': new OpenLayers.Control.UTFGrid({
+                'div': 'attrsdiv',
+                'handlerMode': 'move'
+            }),
+            'hover': new OpenLayers.Control.UTFGrid({
+                'div': 'attrsdiv',
+                'handlerMode': 'hover'
+            }),
+            'click': new OpenLayers.Control.UTFGrid({
+                'div': 'attrsdiv',
+                'handlerMode': 'click'
+            }),
+            'click_callback': new OpenLayers.Control.UTFGrid({
+                'handlerMode': 'click',
+                'callback': callback
+            }),
+        }
+        var control;
+        for(var key in controls) {
+            control = controls[key];
+            control.deactivate();
+            map.addControl(control);
+        }
+        controls['move'].activate();
+
+        function toggleControl(el) {
+            for(var c in controls) {
+                control = controls[c];
+                control.deactivate();
+            }
+            control = controls[el.value];
+            control.activate();
+        }
+        map.addControl(new OpenLayers.Control.Navigation());
+        map.addControl(new OpenLayers.Control.LayerSwitcher());
+
+        /*
+         * Layers
+         */
+
+        var layer = new OpenLayers.Layer.XYZ( 
+            'TestLayer', 
+            "http://tiles/world/${z}/${x}/${y}.png", 
+            {'type':'png', 'sphericalMercator': true}
+        );
+        map.addLayer(layer);
+
+        var layer2 = new OpenLayers.Layer.UTFGrid( 
+            'GridLayer', 
+            "http://tiles/world_utfgrid/${z}/${x}/${y}.json",
+            {'type':'json', 'sphericalMercator': true, 'visible': 'false'}
+        );
+        map.addLayer(layer2);
+
+        map.zoomTo(2);
+    </script>
+</body>
+</html>
