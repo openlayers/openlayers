@@ -29,7 +29,7 @@
     }
     
     function test_ButtonClick_buttonClick(t) {
-        t.plan(23);
+        t.plan(27);
         events = new OpenLayers.Events({}, element);
         events.on({
             "buttonclick": logEvent,
@@ -38,7 +38,8 @@
             "click": logEvent,
             "dblclick": logEvent,
             "touchstart": logEvent,
-            "touchend": logEvent
+            "touchend": logEvent,
+            "keydown": logEvent
         });
         buttonClick = events.extensions["buttonclick"];
         
@@ -111,12 +112,26 @@
         t.eq(log[1].type, "buttonclick", "buttonclick for 2nd click IE");
 
         // rightclick
-        log = []
+        log = [];
         trigger({type: "mousedown", button: 2});
         trigger({type: "mouseup", button: 2});
         t.eq(log.length, 2, "two events fired for rightclick");
         t.eq(log[0].type, "mousedown", "mousedown from rightclick goes through");
         t.eq(log[1].type, "mouseup", "mouseup from rightclick goes through");
+
+        // keydown RETURN
+        log = [];
+        trigger({type: "keydown", keyCode: OpenLayers.Event.KEY_RETURN});
+        trigger({type: "click"});
+        t.eq(log.length, 1, "one event fired for RETURN keydown");
+        t.eq(log[0].type, "buttonclick", "buttonclick for RETURN keydown");
+
+        // keydown SPACE
+        log = [];
+        trigger({type: "keydown", keyCode: OpenLayers.Event.KEY_SPACE});
+        trigger({type: "click"});
+        t.eq(log.length, 1, "one event fired for SPACE keydown");
+        t.eq(log[0].type, "buttonclick", "buttonclick for SPACE keydown");
     }
   </script>
 </head>
