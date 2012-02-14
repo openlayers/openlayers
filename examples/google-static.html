@@ -21,13 +21,17 @@
             <p>A Grid layer with a custom <code>getURL</code> method can be
                 used to request static maps for a specific extent and zoom
                 level. The Google Static Maps API is the most reliable way to
-                get Google base maps in OpenLayers. Note, however, that this is
-                limited to 1000 page views per viewer per day. Every map center
+                get Google base maps in OpenLayers. Note, however, that the
+                free version of this is limited to a map size of 640x640 pixels
+                (1280x1280 if the <code>scale=2</code> url parameter is used)
+                and 1000 page views per viewer per day. Every map center
                 or zoom level change increases the page view counter by 1.
             </p>
             <p>Look at the 
             <a href="google-static.js" target="_blank">google-static.js
-                source</a> to see how this is done.
+                source</a> to see how this is done. See the
+                <a href="http://code.google.com/apis/maps/documentation/staticmaps/">Static Maps API V2 Developer Guide</a>
+                for details on the API. 
         </div>
         <script src="../lib/OpenLayers.js"></script>
         <script src="google-static.js"></script>
