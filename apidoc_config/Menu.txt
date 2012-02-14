@@ -409,7 +409,6 @@ Group: OpenLayers  {
       File: Renderer  (no auto-title, OpenLayers/Renderer.js)
       File: Canvas  (no auto-title, OpenLayers/Renderer/Canvas.js)
       File: ElementsIndexer  (no auto-title, OpenLayers/Renderer/Elements.js)
-      File: NG  (no auto-title, OpenLayers/Renderer/NG.js)
       File: SVG  (no auto-title, OpenLayers/Renderer/SVG.js)
       File: VML  (no auto-title, OpenLayers/Renderer/VML.js)
       }  # Group: Renderer
