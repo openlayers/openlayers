@@ -669,6 +669,64 @@
         map.destroy();
     }
 
+    function test_touchstart(t) {
+        // a test to verify that the touchstart function does
+        // unregister the mouse listeners when it's called the
+        // first time
+
+        t.plan(7);
+
+        // set up
+
+        var map = new OpenLayers.Map("map", {
+            controls: []
+        });
+        var control = new OpenLayers.Control({});
+        var handler = new OpenLayers.Handler.Click(control, {});
+        control.handler = handler;
+        map.addControl(control);
+        handler.activate();
+
+        function allRegistered() {
+            var eventTypes = ['mousedown', 'mouseup', 'click', 'dblclick'],
+                eventType,
+                listeners,
+                listener,
+                flag;
+            for(var i=0, ilen=eventTypes.length; i<ilen; i++) {
+                flag =  false;
+                eventType = eventTypes[i];
+                listeners = map.events.listeners[eventType];
+                for(var j=0, jlen=listeners.length; j<jlen; j++) {
+                    listener = listeners[j];
+                    if(listener.func === handler[eventType] && listener.obj === handler) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if(!flag) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // test
+
+        t.ok(allRegistered(), 'mouse listeners are registered');
+        handler.touchstart({xy: new OpenLayers.Pixel(0, 0)});
+        t.eq(map.events.listeners.mousedown.length, 0,"mousedown is not registered");
+        t.eq(map.events.listeners.mouseup.length, 0,"mouseup is not registered");
+        t.eq(map.events.listeners.click.length, 0,"click is not registered");
+        t.eq(map.events.listeners.dblclick.length, 0,"dblclick is not registered");
+
+        t.ok(handler.touch, 'handler.touch is set');
+
+        handler.deactivate();
+        t.ok(!handler.touch, 'handler.touch is not set');
+
+        map.destroy();
+    }
   </script>
 </head>
 <body>

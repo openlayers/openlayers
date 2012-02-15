@@ -407,7 +407,8 @@
         // set up
 
         var map = new OpenLayers.Map("map", {
-            resolutions: [1]
+            resolutions: [1],
+            controls: []
         });
         var layer = new OpenLayers.Layer.Vector("foo", {
             maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
@@ -421,9 +422,11 @@
         map.setCenter(new OpenLayers.LonLat(0, 0), 0);
         handler.activate();
 
+        var eventTypes = ['mousedown', 'mouseup', 'mousemove', 'click', 'dblclick',
+                'mouseout'];
+
         function allRegistered() {
-            var eventTypes = ['mousedown', 'mouseup', 'mousemove', 'click', 'dblclick'],
-                eventType,
+            var eventType,
                 listeners,
                 listener,
                 flag;
@@ -446,22 +449,20 @@
         }
 
         function noneRegistered() {
-            var eventTypes = ['mousedown', 'mouseup', 'mousemove', 'click', 'dblclick'],
-                eventType,
-                listeners,
-                listener;
+            var eventType,
+                times,
+                flag = false;
             for(var i=0, ilen=eventTypes.length; i<ilen; i++) {
                 eventType = eventTypes[i];
-                listeners = map.events.listeners[eventType];
-                for(var j=0, jlen=listeners.length; j<jlen; j++) {
-                    listener = listeners[j];
-                    if(listener.func === handler[eventType] && listener.obj === handler) {
-                        return false;
-                    }
+                times = map.events.listeners[eventType].length;
+                if (times != 0) {
+                    t.fail(eventType + " is registered " + times + " times");
+                    flag = true;
                 }
             }
-            return true;
+            return !flag;
         }
+
 
         // test
 
