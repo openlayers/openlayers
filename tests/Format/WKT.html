@@ -283,8 +283,9 @@
             expectGeom = points["dest"].geometry,
             // we don't use geometry::toString because we might run into 
             // precision issues
-            got = gotGeom.x.toFixed(7) + ' ' + gotGeom.y.toFixed(7),
-            expected = expectGeom.x.toFixed(7) + ' ' + expectGeom.y.toFixed(7);
+            precision = 7,
+            got = gotGeom.x.toFixed(precision) + ' ' + gotGeom.y.toFixed(precision),
+            expected = expectGeom.x.toFixed(precision) + ' ' + expectGeom.y.toFixed(precision);
         
         t.eq(got, expected, 
             "Geometry collections aren't transformed twice when reprojection.");
