@@ -268,10 +268,10 @@
         map.destroy();
 
         map = new OpenLayers.Map("map");
-        layer = new OpenLayers.Layer("test", {projection: "EPSG:4326"});
+        layer = new OpenLayers.Layer("test", {projection: "unknown"});
         map.addLayer(layer);
         t.eq(layer.alwaysInRange, true,
-             "alwaysInRange true if only get projection.");
+             "alwaysInRange true if unknown projection is set.");
         map.destroy();
 
         map = new OpenLayers.Map("map");

@@ -290,19 +290,19 @@
     function test_mixedParams(t) {
         t.plan(5);
         var map = new OpenLayers.Map("map", {
-            getExtent: function() {return(new OpenLayers.Bounds(-180,-90,180,90));}
-            }
-        );
+            getExtent: function() {return(new OpenLayers.Bounds(-180,-90,180,90));},
+            getProjectionObject: function() {return new OpenLayers.Projection("EPSG:4326");}
+        });
 
         var a = new OpenLayers.Layer.WMS("dummy","http://localhost/wms", {
             layers: "a,b,c,d",
             styles: "a,b,c,d"
-        });
+        }, {map: map});
 
         var b = new OpenLayers.Layer.WMS("dummy","http://localhost/wms", {
             layers: ["a","b","c","d"],
             styles: ["a","b","c","d"]
-        });
+        }, {map: map});
 
         var c = new OpenLayers.Layer.WMS("dummy","http://localhost/wms", {
             layers: ["a","b","c","d"]
@@ -310,13 +310,13 @@
 
         var d = new OpenLayers.Layer.WMS("dummy","http://localhost/wms", {
             layers: "a,b,c,d"
-        });
+        }, {map: map});
 
         var click = new OpenLayers.Control.WMSGetFeatureInfo({
             featureType: 'type',
             featureNS: 'ns',
             layers: [a, b, c, d]
-        });
+        }, {map: map});
 
         map.addControl(click);
 
@@ -399,6 +399,7 @@
         var c = new OpenLayers.Layer.WMS(
             null, ["http://c.mirror/wms", "http://d.mirror/wms"], {layers: "c"}
         );
+        map.addLayers([a, b, c]);
 
         var control = new OpenLayers.Control.WMSGetFeatureInfo({
             url: "http://host/wms",
