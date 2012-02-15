@@ -115,33 +115,35 @@
     
     function test_control_events (t) {
         t.plan( 10 );
-        var evt = {which: 1}; // control expects left-click
-        map = new OpenLayers.Map('map');
-        var layer = new OpenLayers.Layer.WMS("Test Layer", 
-            "http://octo.metacarta.com/cgi-bin/mapserv?",
-            {map: "/mapdata/vmap_wms.map", layers: "basic"});
-        map.addLayer(layer);
+        
+        map = new OpenLayers.Map('map', {
+            // when we recenter, don't waste time animating the panning
+            // without this, the test fails in Firefox 10.0.1 on Linux
+            panMethod: null,
+            layers: [ new OpenLayers.Layer('Test Layer', {isBaseLayer: true}) ]
+        });
 
         control = new OpenLayers.Control.OverviewMap();
         map.addControl(control, new OpenLayers.Pixel(20,20));
 
         var centerLL = new OpenLayers.LonLat(-71,42); 
         map.setCenter(centerLL, 11);
+
         t.delay_call(
-            1, 
+            0.1, 
             function() {
                 var overviewCenter = control.ovmap.getCenter();
                 var overviewZoom = control.ovmap.getZoom();
                 t.eq(overviewCenter.lon, -71, 
-                    "Overviewmap center lon correct");
+                    "OverviewMap center lon correct");
                 t.eq(overviewCenter.lat, 42, 
-                    "Overviewmap center lat correct");
+                    "OverviewMap center lat correct");
                 t.eq(overviewZoom, 8, 
-                    "Overviewmap zoomcorrect");
+                    "OverviewMap zoom correct");
                 
                 control.mapDivClick({'xy':new OpenLayers.Pixel(5,5)});
             },
-            2,
+            0.1,
             function() {
                 var cent = map.getCenter();
                 t.eq(cent.lon, -71.3515625, 
@@ -156,7 +158,7 @@
                 control.rectDrag(new OpenLayers.Pixel(15, 15));
                 control.updateMapToRect();
             },
-            2,
+            0.1,
             function() {
                 var cent = map.getCenter();
                 t.eq(cent.lon, -71.2734375, 
@@ -168,11 +170,11 @@
                 var overviewCenter = control.ovmap.getCenter();
                 var overviewZoom = control.ovmap.getZoom();
                 t.eq(overviewCenter.lon, 0, 
-                    "Overviewmap center lon correct -- second zoom");
+                    "OverviewMap center lon correct -- second zoom");
                 t.eq(overviewCenter.lat, 0,
-                    "Overviewmap center lat correct -- second zoom");
+                    "OverviewMap center lat correct -- second zoom");
                 t.eq(overviewZoom, 0,
-                    "Overviewmap zoomcorrect -- second zoom");
+                    "OverviewMap zoomcorrect -- second zoom");
                 map.destroy();
             }
         );
