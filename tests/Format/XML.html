@@ -147,7 +147,7 @@
         var uri = "http://foo.com";
         var prefix = "foo";
         var localName = "bar";
-        var qualifiedName = prefix + ":" + name;
+        var qualifiedName = prefix + ":" + localName;
         var node = format.createElementNS(uri, qualifiedName);
         t.eq(node.nodeType, 1,
              "node has correct type");
