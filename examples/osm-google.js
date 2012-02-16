@@ -3,12 +3,7 @@ var map;
 function init() {
     map = new OpenLayers.Map({
         div: "map",
-        projection: new OpenLayers.Projection("EPSG:900913"),
-        units: "m",
-        maxResolution: 156543.0339,
-        maxExtent: new OpenLayers.Bounds(
-            -20037508, -20037508, 20037508, 20037508.34
-        )
+        projection: new OpenLayers.Projection("EPSG:900913")
     });
     
     var osm = new OpenLayers.Layer.OSM();            
