@@ -15,9 +15,6 @@ var options = {
 
 var map = new OpenLayers.Map({
     div: "map",
-    maxExtent: [-20037508.34, -20037508.34, 20037508.34, 20037508.34],
-    maxResolution: 156543.03390625,
-    units: "m",
     projection: "EPSG:3857",
     numZoomLevels: 22,
     layers: [
