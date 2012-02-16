@@ -505,12 +505,12 @@
     }  
      
     function test_Layer_Grid_addTileMonitoringHooks(t) {
-        t.plan(14);
+        t.plan(15);
         
         layer = new OpenLayers.Layer.Grid();
         layer.events = {
-            'triggerEvent': function(str) {
-                g_events.push(str); 
+            'triggerEvent': function(str, evt) {
+                g_events.push([str, evt]);
             }
         }
                 
@@ -536,7 +536,7 @@
         g_events = [];
         tile.onLoadStart.apply(layer);
 
-        t.eq(g_events[0], "loadstart", "loadstart event triggered when numLoadingTiles is 0");
+        t.eq(g_events[0][0], "loadstart", "loadstart event triggered when numLoadingTiles is 0");
         t.eq(layer.numLoadingTiles, 1, "numLoadingTiles incremented");
 
         g_events = [];
@@ -553,7 +553,8 @@
         layer.numLoadingTiles = 2; 
         g_events = [];
         tile.onLoadEnd.apply(layer);
-        t.eq(g_events[0], "tileloaded", "tileloaded triggered when numLoadingTiles is > 0");
+        t.eq(g_events[0][0], "tileloaded", "tileloaded triggered when numLoadingTiles is > 0");
+        t.ok(g_events[0][1].tile === tile, "tile passed as tile property to event object");
         t.eq(g_events.length, 1, "loadend event not triggered when numLoadingTiles is > 0");
         t.eq(layer.numLoadingTiles, 1, "numLoadingTiles decremented");
 
@@ -561,8 +562,8 @@
         g_events = [];
         layer.grid = [[{}]]; // to prevent error in updateBackBuffer
         tile.onLoadEnd.apply(layer);
-        t.eq(g_events[0], "tileloaded", "tileloaded triggered when numLoadingTiles is 0");
-        t.eq(g_events[1], "loadend", "loadend event triggered when numLoadingTiles is 0");
+        t.eq(g_events[0][0], "tileloaded", "tileloaded triggered when numLoadingTiles is 0");
+        t.eq(g_events[1][0], "loadend", "loadend event triggered when numLoadingTiles is 0");
         t.eq(layer.numLoadingTiles, 0, "numLoadingTiles decremented");
     }
     
