@@ -7,12 +7,7 @@ function init() {
     var mercator = new OpenLayers.Projection("EPSG:900913");
 
     map = new OpenLayers.Map('map', {
-        projection: mercator,
-        units: "m",
-        maxResolution: 156543.0339,
-        maxExtent: new OpenLayers.Bounds(
-            -20037508, -20037508, 20037508, 20037508
-        )
+        projection: mercator
     });
 
     var g = new OpenLayers.Layer.Google("Google Layer", {
