@@ -295,9 +295,6 @@
         t.ok(tile.layer.imageSize == null,
              "zero size gutter doesn't set image size"); 
 
-        t.ok(tile.layer.imageOffset == null,
-             "zero size gutter doesn't set image offset");
-        
         var zero_gutter_bounds = tile.bounds;
         
         map.destroy();
@@ -312,8 +309,12 @@
                                                              tile.size.h + (2 * gutter))),
              "gutter properly changes image size"); 
 
-        t.ok(tile.layer.imageOffset.equals(new OpenLayers.Pixel(-gutter, -gutter)),
-             "gutter properly sets image offset");
+        var offsetLeft = -(gutter / layer.tileSize.w * 100) | 0;
+        var offsetTop = -(gutter / layer.tileSize.h * 100) | 0;
+        t.eq(parseInt(tile.imgDiv.style.left, 10), offsetLeft,
+             "gutter properly sets image left style");
+        t.eq(parseInt(tile.imgDiv.style.top, 10), offsetTop,
+             "gutter properly sets image top style");
         t.ok(tile.bounds.equals(zero_gutter_bounds),
              "gutter doesn't affect tile bounds");
 
