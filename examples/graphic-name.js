@@ -34,14 +34,14 @@ function init(){
     var styles = new OpenLayers.StyleMap({
         "default": {
             graphicName: "${type}",
-            pointRadius: 10,
+            pointRadius: 40,
             strokeColor: "fuchsia",
             strokeWidth: 2,
             fillColor: "lime",
             fillOpacity: 0.6
         },
         "select": {
-            pointRadius: 20,
+            pointRadius: 50,
             fillOpacity: 1,
             rotation: 45
         }
