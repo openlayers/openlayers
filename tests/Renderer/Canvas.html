@@ -348,6 +348,92 @@
         
     }
 
+    // Extra test: hit detection on an invisible canvas should return undefined
+    function test_hitDetectionOnInvisibleLayer(t) {
+        if (!supported) {
+            t.plan(0); 
+            return; 
+        }
+        
+        var layer = new OpenLayers.Layer.Vector(null, {
+            isBaseLayer: true,
+            resolutions: [1],
+            styleMap: new OpenLayers.StyleMap({
+                pointRadius: 5,
+                strokeWidth: 3,
+                fillColor: "red",
+                fillOpacity: 0.5,
+                strokeColor: "blue",
+                strokeOpacity: 0.75
+            }),
+            renderers: ["Canvas"]
+        });
+        
+        var map = new OpenLayers.Map({
+            div: "map",
+            controls: [],
+            layers: [layer],
+            center: new OpenLayers.LonLat(0, 0),
+            zoom: 0
+        });
+        
+        layer.addFeatures([
+            new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(-100, 0)
+            ),
+            new OpenLayers.Feature.Vector(
+                OpenLayers.Geometry.fromWKT("LINESTRING(-50 0, 50 0)")
+            ),
+            new OpenLayers.Feature.Vector(
+                OpenLayers.Geometry.fromWKT("POLYGON((100 -25, 150 -25, 150 25, 100 25, 100 -25), (120 -5, 130 -5, 130 5, 120 5, 120 -5))")
+            )
+        ]);
+        
+        var cases = [{
+            msg: "center of invisible point", x: -100, y: 0, id: layer.features[0].id
+        }, {
+            msg: "edge of invisible point", x: -103, y: 3, id: layer.features[0].id
+        }, {
+            msg: "outside invisible point", x: -110, y: 3, id: null
+        }, {
+            msg: "center of invisible line", x: 0, y: 0, id: layer.features[1].id
+        }, {
+            msg: "edge of invisible line", x: 0, y: 1, id: layer.features[1].id
+        }, {
+            msg: "outside invisible line", x: 0, y: 5, id: null
+        }, {
+            msg: "inside invisible polygon", x: 110, y: 0, id: layer.features[2].id
+        }, {
+            msg: "edge of invisible polygon", x: 99, y: 0, id: layer.features[2].id
+        }, {
+            msg: "inside invisible polygon hole", x: 125, y: 0, id: null
+        }, {
+            msg: "outside invisible polygon", x: 155, y: 0, id: null
+        }];
+
+        function px(x, y) {
+            return map.getPixelFromLonLat(
+                new OpenLayers.LonLat(x, y)
+            );
+        }        
+        
+        var num = cases.length;
+        t.plan(num);
+        var c, feature;
+        
+        // Hit detection on an invisible canvas layer should always return undefined
+        layer.setVisibility(false);
+        
+        for (var i=0; i<num; ++i) {
+            c = cases[i];
+            feature = layer.renderer.getFeatureIdFromEvent({xy: px(c.x, c.y)});
+            t.eq(feature, undefined, c.msg);
+        }
+        
+        map.destroy();
+        
+    }    
+    
     // see http://trac.osgeo.org/openlayers/ticket/3264
     function test_externalGraphic_destroyFeatures(t) {
         if (!supported) {
