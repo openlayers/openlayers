@@ -522,7 +522,33 @@
         t.xml_eq(got, exp, "duplicated rules to write zIndex as FeatureTypeStyle elements");
         
     }
-    
+
+    function test_label_LinePlacement(t) {
+        t.plan(1);
+        var format = new OpenLayers.Format.SLD.v1_0_0({
+            multipleSymbolizers: true
+        });
+        var style = new OpenLayers.Style2({
+            rules: [
+                new OpenLayers.Rule({
+                    symbolizers: [
+                        new OpenLayers.Symbolizer.Line({
+                            strokeColor: "red",
+                            strokeWidth: 3
+                        }),
+                        new OpenLayers.Symbolizer.Text({
+                            label: "${FOO}",
+                            labelPerpendicularOffset: 10
+                        })
+                    ]
+                })
+            ]
+        });
+        var got = format.writeNode("sld:UserStyle", style);
+        var exp = readXML("label_lineplacement_test.sld").documentElement;
+        t.xml_eq(got, exp, "LinePlacement written out correctly");
+    }
+
     function test_read_FeatureTypeStyles(t) {
         
         t.plan(13);
@@ -598,7 +624,6 @@
         doc = readXML("polygon_labelhalo.sld");
         out = format.write(format.read(doc));
         t.xml_eq(out, doc.documentElement, "round-tripped polygon_labelhalo.sld");
-
     }
 
     </script> 
@@ -876,6 +901,28 @@
                     <sld:CssParameter name="stroke-width">1</sld:CssParameter>
                 </sld:Stroke>
             </sld:LineSymbolizer>
+        </sld:Rule>
+    </sld:FeatureTypeStyle>
+</sld:UserStyle>
+--></div>
+<div id="label_lineplacement_test.sld"><!--
+<sld:UserStyle xmlns:sld="http://www.opengis.net/sld">
+    <sld:FeatureTypeStyle>
+        <sld:Rule>
+            <sld:LineSymbolizer>
+                <sld:Stroke>
+                    <sld:CssParameter name="stroke">red</sld:CssParameter>
+                    <sld:CssParameter name="stroke-width">3</sld:CssParameter>
+                </sld:Stroke>
+            </sld:LineSymbolizer>
+            <sld:TextSymbolizer>
+                <sld:Label><ogc:PropertyName xmlns:ogc="http://www.opengis.net/ogc">FOO</ogc:PropertyName></sld:Label>
+                <sld:LabelPlacement>
+                    <sld:LinePlacement>
+                        <sld:PerpendicularOffset>10</sld:PerpendicularOffset>
+                    </sld:LinePlacement>
+                </sld:LabelPlacement>
+            </sld:TextSymbolizer>
         </sld:Rule>
     </sld:FeatureTypeStyle>
 </sld:UserStyle>
