@@ -177,7 +177,7 @@
         t.eq(text.label, "A ${FOO} label", "(AAA161) first rule has proper text label");
         t.eq(layer.userStyles[0].propertyStyles["label"], true, "label added to propertyStyles");
         t.eq(text.fontFamily, "Arial", "(AAA161) first rule has proper font family");
-        t.eq(text.fillColor, "#000000", "(AAA161) first rule has proper text fill");
+        t.eq(text.fontColor, "#000000", "(AAA161) first rule has proper text fill");
         t.eq(text.haloRadius, "3", "(AAA161) first rule has proper halo radius");
         t.eq(text.haloColor, "#ffffff", "(AAA161) first rule has proper halo color");
         
@@ -347,7 +347,7 @@
                 "label": "This is the ${city} in ${state}.",
                 "fontFamily": "Arial",
                 "fontSize": 10,
-                "fillColor": "blue",
+                "fontColor": "blue",
                 "fontWeight": "bold",
                 "fontStyle": "normal",
                 "haloRadius": 2,
