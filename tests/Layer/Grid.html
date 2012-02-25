@@ -2,6 +2,10 @@
 <head>
   <script src="../OLLoader.js"></script>
   <script type="text/javascript">
+    // turn off animation frame handling, so we can check img urls in tests
+    var origQueueTileDraw = OpenLayers.Layer.Grid.prototype.queueTileDraw;
+    delete OpenLayers.Layer.Grid.prototype.queueTileDraw;
+
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var layer; 
 
@@ -66,6 +70,26 @@
         t.ok(instance instanceof myTileClass, "addTile returns type is correct");
 
         map.destroy();
+    }
+    
+    function test_queueTileDraw(t) {
+        t.plan(3);
+        OpenLayers.Layer.Grid.prototype.queueTileDraw = origQueueTileDraw;
+
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.WMS(name, url, params);
+        map.addLayer(layer);
+        map.setCenter([0, 0], 3);
+        var queued = layer.tileQueue.length;
+        t.ok(layer.tileQueue.length, "Tiles queued for drawing");
+        map.zoomIn();
+        t.eq(layer.tileQueue.length, queued, "Tile queue has same length after immediate zoom change");
+        t.delay_call(1, function() {
+            t.eq(layer.tileQueue.length, 0, "Tiles from queue processed");
+        });
+        
+        map.destroy();
+        delete OpenLayers.Layer.Grid.prototype.queueTileDraw;
     }
 
     function test_Layer_Grid_clearTiles (t) {
@@ -189,13 +213,35 @@
     
     function test_Layer_Grid_moveTo(t) {
 
-    t.plan(14);
+        t.plan(17);
+
+        var origIsNative = OpenLayers.Animation.isNative;
+        OpenLayers.Animation.isNative = false;
 
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS(name, url, params);
         layer.destroy = function() {}; //we're going to do funky things with the grid
         layer.applyBackBuffer = function() {}; // backbuffering isn't under test here
         map.addLayer(layer);
+        map.setCenter([-10, 0], 5);
+        
+        var log = [];
+        layer.deferMoveGriddedTiles = function() {
+            log.push("deferMoveGriddedTiles");
+            OpenLayers.Layer.WMS.prototype.deferMoveGriddedTiles.apply(this, arguments);
+        }
+        layer.moveGriddedTiles = function() {
+            log.push("moveGriddedTiles");
+            OpenLayers.Layer.WMS.prototype.moveGriddedTiles.apply(this, arguments);
+        }
+        map.moveTo([5, 0]);
+        t.eq(log[0], "moveGriddedTiles", "deferred after moveTo");
+        map.moveTo([0, 0]);
+        t.eq(log[1], "moveGriddedTiles", "deferred again after another moveTo");
+        t.eq(log.length, 2, "no tiles loaded yet");
+        t.delay_call(0.1, function() {
+            t.eq(log[2], "deferMoveGriddedTiles", "tiles moved after tileLoadingDelay");
+        });
 
     //make sure null bounds doesnt cause script error. 
     // no test necessary, just action
@@ -203,7 +249,6 @@
         layer.singleTile = false;
         layer.moveTo(); //checks to make sure null bounds doesnt break us
   
-
 
       //observing globals
         layer.initSingleTile = function(bounds) {
@@ -214,10 +259,13 @@
             g_WhichFunc = "InitGridded";
             g_Bounds = bounds;
         };
-        layer._moveGriddedTiles = function() {
+        layer.moveGriddedTiles = function() {
             g_WhichFunc = "MoveGridded";
             g_Bounds = layer.map.getExtent();
         };
+        layer.deferMoveGriddedTiles = function() {
+            g_WhichFunc = "DeferMoveGridded";
+        }
         var clearTestBounds = function() {
             g_WhichFunc = null;
             g_Bounds = null;
@@ -307,7 +355,7 @@
 
   
    //gridded
-        layer.grid = [ [ {} ] ];
+        layer.grid = [ [ {position: new OpenLayers.Pixel(0,0)} ] ];
         layer.singleTile = false;
         
         //regular move 
@@ -315,11 +363,8 @@
         tilesBounds = new OpenLayers.Bounds(10,10,120,120);
         g_WhichFunc = null;
         layer.moveTo(null, zoomChanged);
-        t.eq(g_WhichFunc, null, "moveGriddedTiles is delayed - not called yet");
-        t.delay_call(0.2, function() {
-            t.ok(g_WhichFunc == "MoveGridded", "if tiles not drastically out of bounds, we call moveGriddedTile()");
-            t.ok(g_Bounds.equals(b), "if tiles not drastically out of bounds, we call moveGriddedTile() with correct bounds");
-        });
+        t.eq(g_WhichFunc, "MoveGridded", "if tiles not drastically out of bounds, we call moveGriddedTile()");
+        t.ok(g_Bounds.equals(b), "if tiles not drastically out of bounds, we call moveGriddedTile() with correct bounds");
 
         // drastic pan
         clearTestBounds();
@@ -328,6 +373,7 @@
         t.ok(g_WhichFunc == "InitGridded", "if tiles drastically out of bounds, we call initGriddedTile()");
         t.ok(g_Bounds.equals(b), "if tiles drastically out of bounds, we call initGriddedTile() with correct bounds");
 
+        OpenLayers.Animation.isNative = origIsNative;
     }
 
     /** THIS WOULD BE WHERE THE TESTS WOULD GO FOR 
@@ -459,12 +505,12 @@
     }  
      
     function test_Layer_Grid_addTileMonitoringHooks(t) {
-        t.plan(14);
+        t.plan(15);
         
         layer = new OpenLayers.Layer.Grid();
         layer.events = {
-            'triggerEvent': function(str) {
-                g_events.push(str); 
+            'triggerEvent': function(str, evt) {
+                g_events.push([str, evt]);
             }
         }
                 
@@ -490,7 +536,7 @@
         g_events = [];
         tile.onLoadStart.apply(layer);
 
-        t.eq(g_events[0], "loadstart", "loadstart event triggered when numLoadingTiles is 0");
+        t.eq(g_events[0][0], "loadstart", "loadstart event triggered when numLoadingTiles is 0");
         t.eq(layer.numLoadingTiles, 1, "numLoadingTiles incremented");
 
         g_events = [];
@@ -507,7 +553,8 @@
         layer.numLoadingTiles = 2; 
         g_events = [];
         tile.onLoadEnd.apply(layer);
-        t.eq(g_events[0], "tileloaded", "tileloaded triggered when numLoadingTiles is > 0");
+        t.eq(g_events[0][0], "tileloaded", "tileloaded triggered when numLoadingTiles is > 0");
+        t.ok(g_events[0][1].tile === tile, "tile passed as tile property to event object");
         t.eq(g_events.length, 1, "loadend event not triggered when numLoadingTiles is > 0");
         t.eq(layer.numLoadingTiles, 1, "numLoadingTiles decremented");
 
@@ -515,8 +562,8 @@
         g_events = [];
         layer.grid = [[{}]]; // to prevent error in updateBackBuffer
         tile.onLoadEnd.apply(layer);
-        t.eq(g_events[0], "tileloaded", "tileloaded triggered when numLoadingTiles is 0");
-        t.eq(g_events[1], "loadend", "loadend event triggered when numLoadingTiles is 0");
+        t.eq(g_events[0][0], "tileloaded", "tileloaded triggered when numLoadingTiles is 0");
+        t.eq(g_events[1][0], "loadend", "loadend event triggered when numLoadingTiles is 0");
         t.eq(layer.numLoadingTiles, 0, "numLoadingTiles decremented");
     }
     

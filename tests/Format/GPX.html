@@ -46,7 +46,7 @@
             new OpenLayers.Feature.Vector(point2, {name: 'foo', description: 'bar'})
         ];
         var data = parser.write(features);
-        t.xml_eq(data, '<?xml version="1.0" encoding="ISO-8859-1"?><gpx xmlns="http://www.topografix.com/GPX/1/1"><wpt lon="-111.04" lat="45.68"><name>foo</name><desc>bar</desc></wpt><wpt lon="-112.04" lat="45.68"><name>foo</name><desc>bar</desc></wpt></gpx>', 'GPX serializes points correctly');
+        t.xml_eq(data, '<gpx xmlns="http://www.topografix.com/GPX/1/1" version="1.1" creator="OpenLayers" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><wpt lon="-111.04" lat="45.68"><name>foo</name><desc>bar</desc></wpt><wpt lon="-112.04" lat="45.68"><name>foo</name><desc>bar</desc></wpt></gpx>', 'GPX serializes points correctly');
     }
     function test_Format_GPX_serialize_line(t) { 
         t.plan(1);
@@ -58,7 +58,7 @@
         var line = new OpenLayers.Geometry.LineString([point, point2]);
         var f = new OpenLayers.Feature.Vector(line, {name: 'foo', description: 'bar'});
         var data = parser.write(f);
-        t.xml_eq(data, '<?xml version="1.0" encoding="ISO-8859-1"?><gpx xmlns="http://www.topografix.com/GPX/1/1"><trk><name>foo</name><desc>bar</desc><trkseg><trkpt lon="-111.04" lat="45.68"/><trkpt lon="-112.04" lat="45.68"/></trkseg></trk></gpx>', 'GPX serializes line correctly');
+        t.xml_eq(data, '<gpx xmlns="http://www.topografix.com/GPX/1/1" version="1.1" creator="OpenLayers" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><trk><name>foo</name><desc>bar</desc><trkseg><trkpt lon="-111.04" lat="45.68"/><trkpt lon="-112.04" lat="45.68"/></trkseg></trk></gpx>', 'GPX serializes line correctly');
     }
     function test_Format_GPX_serialize_lines(t) { 
         t.plan(1);
@@ -74,7 +74,7 @@
         var f = new OpenLayers.Feature.Vector(line, {name: 'foo', description: 'bar'});
         var f2 = new OpenLayers.Feature.Vector(line2, {name: 'dude', description: 'truite'});
         var data = parser.write([f, f2]);
-        t.xml_eq(data, '<?xml version="1.0" encoding="ISO-8859-1"?><gpx xmlns="http://www.topografix.com/GPX/1/1"><trk><name>foo</name><desc>bar</desc><trkseg><trkpt lon="-111.04" lat="45.68"/><trkpt lon="-112.04" lat="45.68"/></trkseg></trk><trk><name>dude</name><desc>truite</desc><trkseg><trkpt lon="1" lat="2"/><trkpt lon="3" lat="4"/></trkseg></trk></gpx>', 'GPX serializes lines correctly');
+        t.xml_eq(data, '<gpx xmlns="http://www.topografix.com/GPX/1/1" version="1.1" creator="OpenLayers" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><trk><name>foo</name><desc>bar</desc><trkseg><trkpt lon="-111.04" lat="45.68"/><trkpt lon="-112.04" lat="45.68"/></trkseg></trk><trk><name>dude</name><desc>truite</desc><trkseg><trkpt lon="1" lat="2"/><trkpt lon="3" lat="4"/></trkseg></trk></gpx>', 'GPX serializes lines correctly');
     }
     function test_Format_GPX_serialize_multiline(t) { 
         t.plan(1);
@@ -90,7 +90,7 @@
         var multiline = new OpenLayers.Geometry.MultiLineString([line, line2]);
         var f = new OpenLayers.Feature.Vector(multiline, {name: 'foo', description: 'bar'});
         var data = parser.write([f]);
-        t.xml_eq(data, '<?xml version="1.0" encoding="ISO-8859-1"?><gpx xmlns="http://www.topografix.com/GPX/1/1"><trk><name>foo</name><desc>bar</desc><trkseg><trkpt lon="-111.04" lat="45.68"/><trkpt lon="-112.04" lat="45.68"/></trkseg><trkseg><trkpt lon="1" lat="2"/><trkpt lon="3" lat="4"/></trkseg></trk></gpx>', 'GPX serializes multiline correctly');
+        t.xml_eq(data, '<gpx xmlns="http://www.topografix.com/GPX/1/1" version="1.1" creator="OpenLayers" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><trk><name>foo</name><desc>bar</desc><trkseg><trkpt lon="-111.04" lat="45.68"/><trkpt lon="-112.04" lat="45.68"/></trkseg><trkseg><trkpt lon="1" lat="2"/><trkpt lon="3" lat="4"/></trkseg></trk></gpx>', 'GPX serializes multiline correctly');
     }
     function test_Format_GPX_serialize_polygon(t) { 
         t.plan(1);
@@ -103,7 +103,7 @@
         var polygon = new OpenLayers.Geometry.Polygon([linearRing]);
         var f = new OpenLayers.Feature.Vector(polygon, {name: 'foo', description: 'bar'});
         var data = parser.write([f]);
-        t.xml_eq(data, '<?xml version="1.0" encoding="ISO-8859-1"?><gpx xmlns="http://www.topografix.com/GPX/1/1"><trk><name>foo</name><desc>bar</desc><trkseg><trkpt lon="-111.04" lat="45.68"/><trkpt lon="-112.04" lat="45.68"/><trkpt lon="-111.04" lat="45.68"/></trkseg></trk></gpx>', 'GPX serializes polygon correctly');
+        t.xml_eq(data, '<gpx xmlns="http://www.topografix.com/GPX/1/1" version="1.1" creator="OpenLayers" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><trk><name>foo</name><desc>bar</desc><trkseg><trkpt lon="-111.04" lat="45.68"/><trkpt lon="-112.04" lat="45.68"/><trkpt lon="-111.04" lat="45.68"/></trkseg></trk></gpx>', 'GPX serializes polygon correctly');
     }
     function test_Format_GPX_serialize_metadata(t) { 
         t.plan(1);
@@ -111,7 +111,7 @@
         var parser = new OpenLayers.Format.GPX();
 
         var data = parser.write([], {name: 'foo', desc: 'bar'});
-        t.xml_eq(data, '<?xml version="1.0" encoding="ISO-8859-1"?><gpx xmlns="http://www.topografix.com/GPX/1/1"><metadata><name>foo</name><desc>bar</desc></metadata></gpx>', 'GPX serializes metadata correctly');
+        t.xml_eq(data, '<gpx xmlns="http://www.topografix.com/GPX/1/1" version="1.1" creator="OpenLayers" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><metadata><name>foo</name><desc>bar</desc></metadata></gpx>', 'GPX serializes metadata correctly');
     }
     </script> 
 </head> 

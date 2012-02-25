@@ -1,0 +1,114 @@
+<html> 
+<head> 
+    <script src="../../OLLoader.js"></script>
+    <script type="text/javascript">
+
+    var xml = new OpenLayers.Format.XML(); 
+    function readXML(id) {
+        return xml.read(document.getElementById(id).firstChild.nodeValue);
+    }
+
+    function test_VendorExtensions(t) {
+
+        var cases = [
+            "poly_label.sld"
+        ];
+        var len = cases.length;
+        t.plan(len);
+
+        var format = new OpenLayers.Format.SLD({
+            profile: "GeoServer",
+            multipleSymbolizers: true,
+            namedLayersAsArray: true,
+            schemaLocation: "http://www.opengis.net/sld StyledLayerDescriptor.xsd"
+        });
+            
+        var c, doc, data, out;
+        for (var i=0; i<len; ++i) {
+            c = cases[i];
+            doc = readXML(c);
+            data = format.read(doc);
+            out = format.write(data);
+            t.xml_eq(out, doc.documentElement, "round-tripped " + c);
+        }
+            
+    }
+    
+    </script> 
+</head> 
+<body>
+<div id="poly_label.sld"><!--
+<StyledLayerDescriptor version="1.0.0"
+    xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd"
+    xmlns="http://www.opengis.net/sld"
+    xmlns:ogc="http://www.opengis.net/ogc"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <NamedLayer>
+    <Name>Polygon with styled label</Name>
+    <UserStyle>
+      <Title>SLD Cook Book: Polygon with styled label</Title>
+      <FeatureTypeStyle>
+        <Rule>
+          <PolygonSymbolizer>
+            <Fill>
+              <CssParameter name="fill">#40FF40</CssParameter>
+            </Fill>
+            <Stroke>
+              <CssParameter name="stroke">#FFFFFF</CssParameter>
+              <CssParameter name="stroke-width">2</CssParameter>
+            </Stroke>
+          </PolygonSymbolizer>        
+          <TextSymbolizer>
+            <Label>
+              <ogc:PropertyName>name</ogc:PropertyName>
+            </Label>
+            <Font>
+              <CssParameter name="font-family">Arial</CssParameter>
+              <CssParameter name="font-size">11</CssParameter>
+              <CssParameter name="font-weight">bold</CssParameter>
+              <CssParameter name="font-style">normal</CssParameter>
+            </Font>
+            <Fill>
+              <CssParameter name="fill">#000000</CssParameter>
+              <CssParameter name="fill-opacity">0.5</CssParameter>
+            </Fill>
+            <Graphic>
+              <Mark>
+                <WellKnownName>square</WellKnownName>
+                  <Fill>
+                    <CssParameter name="fill">#59BF34</CssParameter>
+                    <CssParameter name="fill-opacity">0.8</CssParameter>
+                  </Fill>
+                  <Stroke>
+                    <CssParameter name="stroke">#2D6917</CssParameter>
+                  </Stroke>
+              </Mark>
+              <Size>24</Size>
+            </Graphic>
+            <Priority>
+                <ogc:PropertyName>population</ogc:PropertyName>
+            </Priority>
+            <VendorOption name="autoWrap">60</VendorOption>
+            <VendorOption name="followLine">true</VendorOption> 
+            <VendorOption name="repeat">300</VendorOption>
+            <VendorOption name="maxDisplacement">150</VendorOption>
+            <VendorOption name="forceLeftToRight">false</VendorOption>
+            <VendorOption name="graphic-margin">3</VendorOption>
+            <VendorOption name="graphic-resize">stretch</VendorOption>
+            <VendorOption name="group">yes</VendorOption>
+            <VendorOption name="spaceAround">10</VendorOption>
+            <VendorOption name="labelAllGroup">true</VendorOption>
+            <VendorOption name="maxAngleDelta">15</VendorOption>
+            <VendorOption name="conflictResolution">false</VendorOption>
+            <VendorOption name="goodnessOfFit">0.3</VendorOption>
+            <VendorOption name="polygonAlign">mbr</VendorOption>
+          </TextSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>
+</StyledLayerDescriptor>
+--></div>
+</body> 
+</html> 

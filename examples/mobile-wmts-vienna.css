@@ -9,6 +9,12 @@ html, body, #map {
 #title, #tags, #shortdesc {
     display: none;
 }
+.olTileImage {
+    -webkit-transition: opacity 0.2s linear;
+    -moz-transition: opacity 0.2s linear;
+    -o-transition: opacity 0.2s linear;
+    transition: opacity 0.2s linear;
+}
 div.olControlAttribution {
     position: absolute;
     font-size: 10px;

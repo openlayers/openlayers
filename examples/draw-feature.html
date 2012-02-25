@@ -33,18 +33,27 @@
                 var pointLayer = new OpenLayers.Layer.Vector("Point Layer");
                 var lineLayer = new OpenLayers.Layer.Vector("Line Layer");
                 var polygonLayer = new OpenLayers.Layer.Vector("Polygon Layer");
+                var boxLayer = new OpenLayers.Layer.Vector("Box layer");
 
-                map.addLayers([wmsLayer, pointLayer, lineLayer, polygonLayer]);
+                map.addLayers([wmsLayer, pointLayer, lineLayer, polygonLayer, boxLayer]);
                 map.addControl(new OpenLayers.Control.LayerSwitcher());
                 map.addControl(new OpenLayers.Control.MousePosition());
 
                 drawControls = {
                     point: new OpenLayers.Control.DrawFeature(pointLayer,
-                                OpenLayers.Handler.Point),
+                        OpenLayers.Handler.Point),
                     line: new OpenLayers.Control.DrawFeature(lineLayer,
-                                OpenLayers.Handler.Path),
+                        OpenLayers.Handler.Path),
                     polygon: new OpenLayers.Control.DrawFeature(polygonLayer,
-                                OpenLayers.Handler.Polygon)
+                        OpenLayers.Handler.Polygon),
+                    box: new OpenLayers.Control.DrawFeature(boxLayer,
+                        OpenLayers.Handler.RegularPolygon, {
+                            handlerOptions: {
+                                sides: 4,
+                                irregular: true
+                            }
+                        }
+                    )
                 };
 
                 for(var key in drawControls) {
@@ -80,11 +89,11 @@
         <h1 id="title">OpenLayers Draw Feature Example</h1>
 
         <div id="tags">
-            point, line, linestring, polygon, digitizing, geometry, draw, drag
+            point, line, linestring, polygon, box, digitizing, geometry, draw, drag
         </div>
 
         <p id="shortdesc">
-            Demonstrate on-screen digitizing tools for point, line, and polygon creation.
+            Demonstrate on-screen digitizing tools for point, line, polygon and box creation.
         </p>
 
         <div id="map" class="smallmap"></div>
@@ -108,6 +117,10 @@
                 <label for="polygonToggle">draw polygon</label>
             </li>
             <li>
+                <input type="radio" name="type" value="box" id="boxToggle" onclick="toggleControl(this);" />
+                <label for="boxToggle">draw box</label>
+            </li>
+            <li>
                 <input type="checkbox" name="allow-pan" value="allow-pan" id="allowPanCheckbox" checked=true onclick="allowPan(this);" />
                 <label for="allowPanCheckbox">allow pan while drawing</label>
             </li>
@@ -119,6 +132,8 @@
             Double-click to finish drawing.</p>
             <p>With the polygon drawing control active, click on the map to add the points that make up your
             polygon.  Double-click to finish drawing.</p>
+            <p>With the box drawing control active, click in the map and drag the mouse to get a rectangle. Release
+            the mouse to finish.</p>
             <p>With any drawing control active, paning the map can still be achieved.  Drag the map as
             usual for that.</p>
             <p>Hold down the shift key while drawing to activate freehand mode.  While drawing lines or polygons

@@ -12,7 +12,10 @@
     <link rel="stylesheet" href="style.css" type="text/css">
     <style type="text/css">
         .olControlAttribution { 
-            bottom: 0px 
+            bottom: 0px;
+            left: 2px;
+            right: inherit;
+            width: 400px;
         }
         #map {
             height: 512px;
@@ -42,10 +45,7 @@
         div: "map",
         projection: "EPSG:900913",
         displayProjection: "EPSG:4326",
-        units: "m",
-        numZoomLevels: 18,
-        maxResolution: 156543.0339,
-        maxExtent: [-20037508, -20037508, 20037508, 20037508],
+        numZoomLevels: 18
     });
 
     // create Google Mercator layers
