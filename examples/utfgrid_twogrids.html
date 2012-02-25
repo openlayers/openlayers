@@ -1,23 +1,26 @@
+<!DOCTYPE html>
 <html>
-<head>
-    <title> OpenLayers Multiple UTFGrid Demo </title>
-    <script src='./OpenLayers.js' type='text/javascript'></script>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers Multiple UTFGrid Demo</title>
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="../lib/OpenLayers.js"></script>
     <style>
-        #themap { width:512px; height:380px; border:1px black solid; }
         #attrsdiv { width: 300px; height: 100px; float:right; border: 1px grey dashed;}
         #controlToggle li { list-style: none; }
     </style>
 </head>
 <body>
-    <h1> OpenLayers Multiple UTFGrid Demo </h1>
+    <h1 id="title">OpenLayers Multiple UTFGrid Demo</h1>
 
-    <div id="top">
-        <div>
-            <p> 
-            This page demostrates the use of the OpenLayers <a href="http://mapbox.com/mbtiles-spec/utfgrid/">UTFGrid</a> Controls with <em>more than one UTFGrid Layer</em>.
-            </p>
+    <div>
+        <div id="shortdesc">
+            This page demonstrates the use of the OpenLayers UTFGrid Controls with more than one UTFGrid Layer.
         </div>
-        <div id="selector">
+        <div id="attrsdiv"></div>
+        <div id="themap" class="smallmap"></div>
         <ul id="controlToggle">
             <li>
                 <input type="radio" name="type" value="move_pop" id="moveHandler" 
@@ -35,51 +38,44 @@
                 <label for="clickHandler">Move (both)</label>
             </li>
         </ul>
-        </div>
     </div>
-    <div id="attrsdiv"></div>
-    <div id="themap"> </div>
     <script>
         /*
          * Map
          */
-        var map = new OpenLayers.Map('themap', {
-            projection: new OpenLayers.Projection("EPSG:900913"),
-            units: "m",
-            maxResolution: 156543.0339,
-            maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34),
+        var map = new OpenLayers.Map({
+            div: "themap",
+            projection: "EPSG:900913",
             controls: []
         });
 
         var world_utfgrid = new OpenLayers.Layer.UTFGrid( 
             'Invisible UTFGrid Layer', 
-            //"http://tiles/world_utfgrid/${z}/${x}/${y}.json"
             "./utfgrid/world_utfgrid/${z}/${x}/${y}.json"
         );
         var bio_utfgrid = new OpenLayers.Layer.UTFGrid( 
             'Invisible UTFGrid Layer of World Bioregions', 
-            //"http://tiles/bailey_utfgrid/${z}/${x}/${y}.json"
             "./utfgrid/bio_utfgrid/${z}/${x}/${y}.json"
         );
         map.addLayers([bio_utfgrid,world_utfgrid]);
 
-        controls = {
-            'move_pop': new OpenLayers.Control.UTFGrid({
-                'div': 'attrsdiv',
-                'layers': [world_utfgrid],
-                'handlerMode': 'move'
+        var controls = {
+            move_pop: new OpenLayers.Control.UTFGrid({
+                div: 'attrsdiv',
+                layers: [world_utfgrid],
+                handlerMode: 'move'
             }),
-            'move_bio': new OpenLayers.Control.UTFGrid({
-                'div': 'attrsdiv',
-                'layers': [bio_utfgrid],
-                'handlerMode': 'move'
+            move_bio: new OpenLayers.Control.UTFGrid({
+                div: 'attrsdiv',
+                layers: [bio_utfgrid],
+                handlerMode: 'move'
             }),
-            'move_both': new OpenLayers.Control.UTFGrid({
-                'div': 'attrsdiv',
-                'layers': null, // same as [bio_utfgrid,world_utfgrid]
-                'handlerMode': 'move'
+            move_both: new OpenLayers.Control.UTFGrid({
+                div: 'attrsdiv',
+                layers: null, // same as [bio_utfgrid,world_utfgrid]
+                handlerMode: 'move'
             })
-        }
+        };
         var control;
         for(var key in controls) {
             control = controls[key];
@@ -98,11 +94,8 @@
         }
 
         // Visible Layers
-        var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
-            "http://vmap0.tiles.osgeo.org/wms/vmap0",
-            {layers: 'basic'}  
-        );
-        map.addLayer(ol_wms);
+        var osm = new OpenLayers.Layer.OSM();
+        map.addLayer(osm);
         map.zoomTo(1);
     </script>
 </body>
