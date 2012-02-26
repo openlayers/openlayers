@@ -1,0 +1,168 @@
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+
+    var map, layer;
+    function setUp() {
+        layer = new OpenLayers.Layer.UTFGrid(
+            null, 
+            "../data/utfgrid/world_utfgrid/${z}/${x}/${y}.json",
+            {isBaseLayer: true}
+        );
+        map = new OpenLayers.Map({
+            div: "map",
+            projection: "EPSG:900913",
+            layers: [layer],
+            center: [0, 0],
+            zoom: 0
+        });
+    }
+    
+    function tearDown() {
+        map.destroy();
+        map = null;
+        layer = null;
+    }
+
+    function test_constructor(t) {
+        t.plan(7);
+
+        setUp();
+        
+        var position = new OpenLayers.Pixel(20, 30);
+        var bounds = new OpenLayers.Bounds(1, 2, 3, 4);
+        var url = "http://example.com/";
+        var size = new OpenLayers.Size(5, 6);
+        var tile = new OpenLayers.Tile.UTFGrid(layer, position, bounds, url, size);
+        
+        t.ok(tile instanceof OpenLayers.Tile, "tile instance");
+        t.ok(tile instanceof OpenLayers.Tile.UTFGrid, "UTFGrid tile instance");
+        t.ok(tile.layer === layer, "layer set");
+        t.ok(tile.position.equals(position), "position set");
+        t.ok(tile.bounds.equals(bounds), "bounds set");
+        t.eq(tile.url, url, "url set");
+        t.ok(tile.size.equals(size), "size set");
+        
+        tearDown();
+    }
+    
+    function test_parseData(t) {
+        t.plan(2);
+        setUp();
+
+        var tile = layer.grid[0][0];
+        
+        tile.parseData('{"foo": "bar"}');
+        t.eq(tile.json, {foo: "bar"}, "valid json parsed");
+        
+        var err;
+        try {
+            tile.parseData('foo bar');
+        } catch (e) {
+            err = e;
+        }
+        t.ok(err instanceof Error, "throws on invalid json");
+        
+        tearDown();
+    }
+    
+    function test_draw(t) {
+        t.plan(7);
+        setUp();
+        
+        var position = new OpenLayers.Pixel(20, 30);
+        var bounds = new OpenLayers.Bounds(1, 2, 3, 4);
+        var url = "../data/utfgrid/world_utfgrid/${z}/${x}/${y}.json";
+        var size = new OpenLayers.Size(256, 256);
+        var tile = new OpenLayers.Tile.UTFGrid(layer, position, bounds, url, size);
+        
+        var log = [];
+        function logger(event) {
+            log.push(event);
+        }
+        tile.events.on({
+            loadstart: logger,
+            reload: logger,
+            loadend: logger
+        });
+        
+        t.eq(log.length, 0, "no events logged");
+        
+        // start tile loading
+        tile.draw();
+        t.eq(log.length, 1, "[first draw] one event");
+        t.eq(log[0].type, "loadstart", "[first draw] loadstart");
+        
+        // restart tile loading
+        log.length = 0;
+        tile.draw();
+        t.eq(log.length, 1, "[second draw] first event");
+        t.eq(log[0].type, "reload", "[second draw] reload");
+        
+        // wait for tile loading to finish
+        t.delay_call(1, function() {
+            t.eq(log.length, 2, "[second draw] second event");
+            t.eq(log[1].type, "loadend", "[second draw] loadend");
+            tearDown();
+        });
+        
+    }
+
+    function test_abortLoading(t) {
+        t.plan(7);
+        setUp();
+        
+        var position = new OpenLayers.Pixel(20, 30);
+        var bounds = new OpenLayers.Bounds(1, 2, 3, 4);
+        var url = "../data/utfgrid/world_utfgrid/${z}/${x}/${y}.json";
+        var size = new OpenLayers.Size(256, 256);
+        var tile = new OpenLayers.Tile.UTFGrid(layer, position, bounds, url, size);
+        
+        var log = [];
+        function logger(event) {
+            log.push(event);
+        }
+        tile.events.on({
+            loadstart: logger,
+            reload: logger,
+            loadend: logger
+        });
+        
+        t.eq(log.length, 0, "no events logged");
+        
+        // start tile loading
+        tile.draw();
+        t.eq(log.length, 1, "[first draw] one event");
+        t.eq(log[0].type, "loadstart", "[first draw] loadstart");
+        
+        // abort tile loading
+        log.length = 0;
+        tile.abortLoading();
+        t.eq(log.length, 0, "[first abort] no events logged"); // TODO: does anybody need an abort event?
+        
+        // abort again for the heck of it
+        var err;
+        try {
+            tile.abortLoading();
+        } catch (e) {
+            err = e;
+        }
+        t.ok(!err, "[second abort] no trouble");
+        t.eq(log.length, 0, "[second abort] no events");
+        
+        // wait to confirm tile loading doesn't happen after abort
+        t.delay_call(1, function() {
+            t.eq(log.length, 0, "[wait] no events");
+            tearDown();
+        });
+        
+    }
+
+  </script>
+</head>
+<body>
+<div id="map" style="height:550px;width:500px"></div>
+</body>
+</html>
+
