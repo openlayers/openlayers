@@ -8,37 +8,34 @@
     <link rel="stylesheet" href="style.css" type="text/css">
     <script src="../lib/OpenLayers.js"></script>
     <style>
-        #attrsdiv { width: 300px; height: 100px; float:right; border: 1px grey dashed;}
         #controlToggle li { list-style: none; }
     </style>
 </head>
 <body>
     <h1 id="title">OpenLayers Multiple UTFGrid Demo</h1>
 
-    <div>
-        <div id="shortdesc">
-            This page demonstrates the use of the OpenLayers UTFGrid Controls with more than one UTFGrid Layer.
-        </div>
-        <div id="attrsdiv"></div>
-        <div id="themap" class="smallmap"></div>
-        <ul id="controlToggle">
-            <li>
-                <input type="radio" name="type" value="move_pop" id="moveHandler" 
-                onclick="toggleControl(this);" checked="checked" />
-                <label for="moveHandler">Move (population)</label>
-            </li>
-            <li>
-                <input type="radio" name="type" value="move_bio" id="hoverHandler" 
-                onclick="toggleControl(this);" />
-                <label for="hoverHandler">Move (bioregion)</label>
-            </li>
-            <li>
-                <input type="radio" name="type" value="move_both" id="clickHandler" 
-                onclick="toggleControl(this);" />
-                <label for="clickHandler">Move (both)</label>
-            </li>
-        </ul>
+    <div id="shortdesc">
+        This page demonstrates the use of the OpenLayers UTFGrid Controls with more than one UTFGrid Layer.
     </div>
+    <div id="themap" class="smallmap"></div>
+    <ul id="controlToggle">
+        <li>
+            <input type="radio" name="type" value="move_pop" id="moveHandler" 
+            onclick="toggleControl(this);" checked="checked" />
+            <label for="moveHandler">Move (population)</label>
+        </li>
+        <li>
+            <input type="radio" name="type" value="move_bio" id="hoverHandler" 
+            onclick="toggleControl(this);" />
+            <label for="hoverHandler">Move (bioregion)</label>
+        </li>
+        <li>
+            <input type="radio" name="type" value="move_both" id="clickHandler" 
+            onclick="toggleControl(this);" />
+            <label for="clickHandler">Move (both)</label>
+        </li>
+    </ul>
+    <div id="attrsdiv"></div>
     <script>
         /*
          * Map
@@ -50,28 +47,45 @@
         });
 
         var world_utfgrid = new OpenLayers.Layer.UTFGrid( 
-            'Invisible UTFGrid Layer', 
+            "World Population",
             "./utfgrid/world_utfgrid/${z}/${x}/${y}.json"
         );
         var bio_utfgrid = new OpenLayers.Layer.UTFGrid( 
-            'Invisible UTFGrid Layer of World Bioregions', 
+            "World Bioregions",
             "./utfgrid/bio_utfgrid/${z}/${x}/${y}.json"
         );
         map.addLayers([bio_utfgrid,world_utfgrid]);
 
+        var callback = function(dataLookup) {
+            var msg = "";
+            if (dataLookup) {
+                var layer, data;
+                for (var idx in dataLookup) {
+                    layer = map.layers[idx];
+                    data = dataLookup[idx];
+                    if (data) {
+                        msg += "<strong>" + layer.name + "</strong><br>";
+                        for (var key in data) {
+                            msg += key + ": " + data[key] + "<br>";
+                        }
+                    }
+                }
+            }
+            document.getElementById("attrsdiv").innerHTML = msg;
+        };
         var controls = {
             move_pop: new OpenLayers.Control.UTFGrid({
-                div: 'attrsdiv',
+                callback: callback,
                 layers: [world_utfgrid],
                 handlerMode: 'move'
             }),
             move_bio: new OpenLayers.Control.UTFGrid({
-                div: 'attrsdiv',
+                callback: callback,
                 layers: [bio_utfgrid],
                 handlerMode: 'move'
             }),
             move_both: new OpenLayers.Control.UTFGrid({
-                div: 'attrsdiv',
+                callback: callback,
                 layers: null, // same as [bio_utfgrid,world_utfgrid]
                 handlerMode: 'move'
             })

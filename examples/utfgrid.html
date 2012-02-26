@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="style.css" type="text/css">
     <script src="../lib/OpenLayers.js"></script>
     <style>
-        #attrsdiv { width: 300px; height: 100px; float:right; border: 1px grey dashed;}
+        #attrsdiv {
+            float: right;
+        }
         #controlToggle li { list-style: none; }
     </style>
 </head>
@@ -22,7 +24,7 @@
         <div id="attrsdiv"></div>
         <div id="themap" class="smallmap"></div>
         <p>
-            When the selected event is triggered, the underlying feature attributes are shown on the right.
+            When the selected event is triggered, the underlying feature attributes are shown below.
         </p>
         <ul id="controlToggle">
             <li>
@@ -74,36 +76,33 @@
         /*
          * Controls
          */
-        var callback = function(attributes) {
-            if (attributes) {
-                var msg  = "<strong>In 2005, " + attributes.NAME 
-                    msg += " had a population of " + attributes.POP2005 + " people.</strong>";
-                var element = OpenLayers.Util.getElement('attrsdiv');
-                element.innerHTML = msg;
-                return true;
-            } else {
-                this.element.innerHTML = '';
-                return false; 
+        var callback = function(dataLookup) {
+            var msg = "";
+            if (dataLookup) {
+                var data;
+                for (var idx in dataLookup) {
+                    // idx can be used to retrieve layer from map.layers[idx]
+                    data = dataLookup[idx];
+                    msg += "<strong>In 2005, " + data.NAME + " had a population of " +
+                        data.POP2005 + " people.</strong> ";
+                }
             }
+            document.getElementById("attrsdiv").innerHTML = msg;
         };
             
         var controls = {
             move: new OpenLayers.Control.UTFGrid({
-                div: 'attrsdiv',
+                callback: callback,
                 handlerMode: 'move'
             }),
             hover: new OpenLayers.Control.UTFGrid({
-                div: 'attrsdiv',
+                callback: callback,
                 handlerMode: 'hover'
             }),
             click: new OpenLayers.Control.UTFGrid({
-                div: 'attrsdiv',
+                callback: callback,
                 handlerMode: 'click'
-            }),
-            click_callback: new OpenLayers.Control.UTFGrid({
-                handlerMode: 'click',
-                callback: callback
-            }),
+            })
         };
         var control;
         for(var key in controls) {
