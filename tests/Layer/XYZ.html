@@ -195,7 +195,7 @@
         
         var map = new OpenLayers.Map({
             div: "map",
-            maxResolution: OpenLayers.Map.prototype.maxResolution / Math.pow(2, offset)
+            maxResolution: 1.40625 / Math.pow(2, offset)
         });
         var layer = new OpenLayers.Layer.XYZ(name, url, {zoomOffset: offset});
         map.addLayer(layer);
@@ -211,7 +211,7 @@
         
         var map = new OpenLayers.Map({
             div: "map",
-            maxResolution: OpenLayers.Map.prototype.maxResolution / Math.pow(2, offset)
+            maxResolution: 1.40625 / Math.pow(2, offset)
         });
         var layer = new OpenLayers.Layer.XYZ(name, url, {zoomOffset: offset});
         map.addLayer(layer);
