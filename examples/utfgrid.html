@@ -78,8 +78,10 @@
                 for (var idx in dataLookup) {
                     // idx can be used to retrieve layer from map.layers[idx]
                     data = dataLookup[idx];
-                    msg += "<strong>In 2005, " + data.NAME + " had a population of " +
-                        data.POP2005 + " people.</strong> ";
+                    if (data) {
+                        msg += "<strong>In 2005, " + data.NAME + " had a population of " +
+                            data.POP2005 + " people.</strong> ";
+                    }
                 }
             }
             document.getElementById("attrsdiv").innerHTML = msg;
