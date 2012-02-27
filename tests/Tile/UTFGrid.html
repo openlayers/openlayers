@@ -1,5 +1,7 @@
+<!DOCTYPE html>
 <html>
 <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-9">
   <script src="../OLLoader.js"></script>
   <script type="text/javascript">
 
@@ -193,6 +195,81 @@
 
             tearDown();
         });
+    }
+    
+    function test_getFeatureId_demo(t) {
+        /**
+         * The UTFGrid 1.2 spec (https://github.com/mapbox/utfgrid-spec/blob/master/1.2/utfgrid.md)
+         * links to a demo.json to be used for testing implementations.  This
+         * file is constructed with 256x256 data points.  Each data point maps
+         * to a "feature id" using this heuristic:
+         *
+         *     // x and y are pixel offsets from top left of 256x256 tile
+         *     if (y < 255 || x < 222) {
+         *         id = (y * 256) + x
+         *     } else {
+         *         id = 65501; // max number of ids that can be encoded
+         *     }
+         */
+        t.plan(1);
+        setUp();
+        
+        // look at this beauty of a constructor
+        var tile = new OpenLayers.Tile.UTFGrid(
+            layer, // layer
+            new OpenLayers.Pixel(0, 0), // position
+            new OpenLayers.Bounds(0, 0, 256, 256), // bounds
+            "../data/utfgrid/demo-1.1.json", // url
+            new OpenLayers.Size(256, 256), // size
+            {utfgridResolution: 1} // options
+        );
+        
+        var err;        
+        var request = new OpenLayers.Request.GET({
+            url: tile.url,
+            success: function(req) {
+                try {
+                    tile.parseData(req.responseText);
+                } catch (e) {
+                    err = e;
+                }
+            },
+            failure: function(req) {
+                err = new Error("Failed to fetch json.  Status: " + req.status);
+            }
+        });
+        
+        // wait for response and parsing, then make assertions
+        t.delay_call(1, function() {
+            if (err) {
+                t.fail(err);
+            } else {
+                var got, exp, failure;
+                outer: for (var y=0; y<256; ++y) {
+                    for (var x=0; x<256; ++x) {
+                        if (y<255 || x<222) {
+                            exp = String((y * 256) + x);
+                        } else {
+                            exp = "65501";
+                        }
+                        got = tile.getFeatureId(x, y);
+                        if (got !== exp) {
+                            failure = "Failed to get id for (" + x + ", " + y + "): " +
+                                "got " + got + " but expected " + exp;
+                            
+                            break outer;
+                        }
+                    }
+                }
+                if (!failure) {
+                    t.ok(true, "resolved feature ids for all data points");
+                } else {
+                    t.fail(failure);
+                }
+            }
+            tearDown();
+        });
+        
     }
 
   </script>
