@@ -127,7 +127,8 @@
 
         var grid_layer = new OpenLayers.Layer.UTFGrid( 
             'Invisible UTFGrid Layer', 
-            "./utfgrid/world_utfgrid/${z}/${x}/${y}.json"
+            "./utfgrid/world_utfgrid/${z}/${x}/${y}.json",
+            {utfgridResolution: 4} // default is 2
         );
         map.addLayer(grid_layer);
 

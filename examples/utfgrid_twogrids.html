@@ -48,11 +48,13 @@
 
         var world_utfgrid = new OpenLayers.Layer.UTFGrid( 
             "World Population",
-            "./utfgrid/world_utfgrid/${z}/${x}/${y}.json"
+            "./utfgrid/world_utfgrid/${z}/${x}/${y}.json",
+            {utfgridResolution: 4} // default is 2
         );
         var bio_utfgrid = new OpenLayers.Layer.UTFGrid( 
             "World Bioregions",
-            "./utfgrid/bio_utfgrid/${z}/${x}/${y}.json"
+            "./utfgrid/bio_utfgrid/${z}/${x}/${y}.json",
+            {utfgridResolution: 4} // default is 2
         );
         map.addLayers([bio_utfgrid,world_utfgrid]);
 

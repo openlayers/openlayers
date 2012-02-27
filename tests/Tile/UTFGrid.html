@@ -8,7 +8,7 @@
         layer = new OpenLayers.Layer.UTFGrid(
             null, 
             "../data/utfgrid/world_utfgrid/${z}/${x}/${y}.json",
-            {isBaseLayer: true}
+            {isBaseLayer: true, utfgridResolution: 4}
         );
         map = new OpenLayers.Map({
             div: "map",
