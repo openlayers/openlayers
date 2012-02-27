@@ -15,7 +15,7 @@
             projection: "EPSG:900913",
             layers: [layer],
             center: [0, 0],
-            zoom: 0
+            zoom: 1
         });
     }
     
@@ -157,6 +157,42 @@
             tearDown();
         });
         
+    }
+    
+    function test_getFeatureId(t) {
+        t.plan(3);
+        setUp();
+        
+        var tile = layer.grid[1][1];
+        t.delay_call(0.5, function() {
+            var id = tile.getFeatureId(16, 60);
+            t.eq(id, "238", "feature 238 at 16, 60");
+            t.eq(tile.getFeatureId(18, 63), id, "same feature at 18, 63");
+            
+            t.eq(tile.getFeatureId(300, 10), undefined, "undefined id outside tile");
+            
+            tearDown();
+        });
+    }
+
+    function test_getFeatureData(t) {
+        t.plan(3);
+        setUp();
+        
+        var tile = layer.grid[1][1];
+        t.delay_call(0.5, function() {
+            var data = tile.getFeatureData(16, 60);
+            var exp = {
+                NAME: "Svalbard",
+                POP2005: 0
+            };
+            t.eq(data, exp, "feature data at 16, 60");
+            t.eq(tile.getFeatureData(17, 62), exp, "same feature at 17, 62");
+
+            t.eq(tile.getFeatureData(300, 10), undefined, "undefined data outside tile");
+
+            tearDown();
+        });
     }
 
   </script>
