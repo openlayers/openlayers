@@ -41,7 +41,7 @@
         // Chromium 10: left is 0
         var testdiv = OpenLayers.Util.createDiv('testdiv', new OpenLayers.Pixel(5, 5));
         map.div.appendChild(testdiv);
-        var left = parseInt(OpenLayers.Element.getStyle(testdiv, 'border-left-width'));
+        var left = parseInt(OpenLayers.Element.getStyle(testdiv, 'borderLeftWidth'));
         map.div.removeChild(testdiv);
         var testAll = !isNaN(left);
 

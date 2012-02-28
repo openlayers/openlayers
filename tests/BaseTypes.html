@@ -59,34 +59,7 @@
         str = " ";
         t.eq(OpenLayers.String.trim(str), "", "whitespace string is trimmed correctly");
     }
-        
-    function test_String_camelize(t) {
-        t.plan(7);
-        
-        var str = "chickenhead";
-        t.eq(OpenLayers.String.camelize(str), "chickenhead", "string with no hyphens is left alone");
 
-        str = "chicken-head";
-        t.eq(OpenLayers.String.camelize(str), "chickenHead", "string with one middle hyphen is camelized correctly");
-
-        str = "chicken-head-man";
-        t.eq(OpenLayers.String.camelize(str), "chickenHeadMan", "string with multiple middle hyphens is camelized correctly");
-
-        str = "-chickenhead";
-        t.eq(OpenLayers.String.camelize(str), "Chickenhead", "string with starting hyphen is camelized correctly (capitalized)");
-
-        str = "-chicken-head-man";
-        t.eq(OpenLayers.String.camelize(str), "ChickenHeadMan", "string with starting hypen and multiple middle hyphens is camelized correctly");
-
-        str = "chicken-";
-        t.eq(OpenLayers.String.camelize(str), "chicken", "string ending in hyphen is camelized correctly (hyphen dropped)");
-
-        str = "chicken-head-man-";
-        t.eq(OpenLayers.String.camelize(str), "chickenHeadMan", "string with multiple middle hyphens and end hyphen is camelized correctly (end hyphen dropped)");
-
-
-    }
-    
     function test_String_format(t) {
         var unchanged = [
             "", "${ ", "${", " ${", "${${", "${}", "${${}}", " ${ ${",
