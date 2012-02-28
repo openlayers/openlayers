@@ -226,9 +226,10 @@
         map.setCenter([-10, 0], 5);
         
         var log = [];
+        var origDeferMoveGriddedTiles = layer.deferMoveGriddedTiles;
         layer.deferMoveGriddedTiles = function() {
             log.push("deferMoveGriddedTiles");
-            OpenLayers.Layer.WMS.prototype.deferMoveGriddedTiles.apply(this, arguments);
+            origDeferMoveGriddedTiles.apply(this, arguments);
         }
         layer.moveGriddedTiles = function() {
             log.push("moveGriddedTiles");
