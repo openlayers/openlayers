@@ -336,12 +336,18 @@
         }        
         
         var num = cases.length;
-        t.plan(num);
+        t.plan(2 * num);
         var c, feature;
         for (var i=0; i<num; ++i) {
             c = cases[i];
             feature = layer.renderer.getFeatureIdFromEvent({xy: px(c.x, c.y)});
             t.eq(feature && feature.id, c.id, c.msg);
+            
+            // Extra test: hit detection on an invisible canvas should return undefined
+            layer.setVisibility(false);
+            feature = layer.renderer.getFeatureIdFromEvent({xy: px(c.x, c.y)});
+            t.eq(feature, undefined, c.msg + ' (invisible)');
+            layer.setVisibility(true);
         }
         
         map.destroy();
