@@ -302,7 +302,7 @@
     function test_fromWMSLayer(t) {
         t.plan(9);
         var map = new OpenLayers.Map("map", {
-            projection: "EPSG:1234"
+            projection: "CRS:84"
         });
         var layer = new OpenLayers.Layer.WMS("foo", "htttp://foo/ows",
             {layers: "topp:states"}
@@ -312,7 +312,7 @@
         t.eq(protocol.url, "htttp://foo/ows", "url taken from wms layer");
         t.eq(protocol.featurePrefix, "topp", "feature prefix correctly extracted");
         t.eq(protocol.featureType, "states", "typeName correctly extracted");
-        t.eq(protocol.srsName, "EPSG:1234", "srsName set correctly");
+        t.eq(protocol.srsName, "CRS:84", "srsName set correctly");
         t.eq(protocol.version, "1.1.0", "version set correctly");
         t.eq(protocol.format.geometryName, null, "format's geometryName set to null");
 

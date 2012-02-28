@@ -15,7 +15,8 @@
         <script>
                 
         function test_all(t) {
-            t.plan(7);
+            t.plan(8);
+            t.ok(OpenLayers.Animation.isNative !== undefined, "isNative is set.");
             t.open_window("Animation.html", function(win) {
                 win.requestFrame(t);
                 win.start(t);

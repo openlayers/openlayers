@@ -458,6 +458,7 @@ Group: OpenLayers  {
 
    File: Tween  (no auto-title, OpenLayers/Tween.js)
    File: Util  (no auto-title, OpenLayers/Util.js)
+   File: Spherical (no auto-title, OpenLayers/Spherical.js)
    File: Deprecated  (no auto-title, deprecated.js)
    }  # Group: OpenLayers
 

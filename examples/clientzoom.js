@@ -5,10 +5,6 @@ function init() {
     map = new OpenLayers.Map({
         div: "map",
         projection: "EPSG:900913",
-        units: "m",
-        maxExtent: new OpenLayers.Bounds(
-            -20037508.34, -20037508.34, 20037508.34, 20037508.34
-        ),
         controls: [],
         fractionalZoom: true
     });

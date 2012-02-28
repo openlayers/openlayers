@@ -807,6 +807,25 @@
         t.eq(control._originalGeometry, undefined, "original geometry deleted once it is set on the modified property");
     }
 
+    function test_createVertices(t) {
+        t.plan(2);
+        var layer = new OpenLayers.Layer.Vector();
+        var control = new OpenLayers.Control.ModifyFeature(layer, {
+            createVertices: false
+        });
+        var line = new OpenLayers.Geometry.LineString([
+            new OpenLayers.Geometry.Point(5, 6),
+            new OpenLayers.Geometry.Point(7, 8),
+            new OpenLayers.Geometry.Point(9, 10)
+        ]);
+        control.feature = new OpenLayers.Feature.Vector(line);
+        control.resetVertices();
+
+        t.eq(control.vertices.length, 3, "Correct vertices length with createVertices is false");
+        t.eq(control.virtualVertices.length, 0, "Correct virtual vertices length with createVertices is false");
+        control.destroy();
+    }
+
     </script>
 </head>
 <body>

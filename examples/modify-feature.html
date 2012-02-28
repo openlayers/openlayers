@@ -96,6 +96,7 @@
             if (rotate || drag) {
                 controls.modify.mode &= ~OpenLayers.Control.ModifyFeature.RESHAPE;
             }
+            controls.modify.createVertices = document.getElementById("createVertices").checked;
             var sides = parseInt(document.getElementById("sides").value);
             sides = Math.max(3, isNaN(sides) ? 0 : sides);
             controls.regular.handler.sides = sides;
@@ -161,6 +162,11 @@
                        onclick="toggleControl(this);" />
                 <label for="modifyToggle">modify feature</label>
                 <ul>
+                    <li>
+                        <input id="createVertices" type="checkbox" checked
+                               name="createVertices" onchange="update()" />
+                        <label for="createVertices">allow vertices creation</label>
+                    </li>
                     <li>
                         <input id="rotate" type="checkbox"
                                name="rotate" onchange="update()" />

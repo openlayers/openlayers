@@ -33,7 +33,7 @@
     }
 
     function test_update(t) {
-        t.plan(5);
+        t.plan(7);
 
         // Create a dummy layer that can act as the map base layer.
         // This will be unnecessary if #1921 is addressed (allowing
@@ -43,9 +43,10 @@
         var strategy = new OpenLayers.Strategy.BBOX({
             ratio: 1 // makes for easier comparison to map bounds
         });
+        var log = [];
         var layer = new OpenLayers.Layer.Vector(null, {
             isBaseLayer: true,
-            protocol: new OpenLayers.Protocol(),
+            protocol: new OpenLayers.Protocol({abort: function(response) { log.push(response); }}),
             strategies: [strategy]
         });
 
@@ -61,7 +62,14 @@
          * should be removed when the issue(s) described in #1835 are addressed.
          */
         strategy.update({force: true});
-        
+        strategy.response = {};
+        strategy.update({force: true});
+        t.eq(log.length, 1, "Response aborted");
+        log = [];
+        strategy.update({force: true});
+        strategy.update({force: true, noAbort: true}); 
+        t.eq(log.length, 0, "Response not aborted when noAbort is true");
+
         // test that the strategy bounds were set
         t.ok(map.getExtent().equals(strategy.bounds), "[set center] bounds set to map extent");
         

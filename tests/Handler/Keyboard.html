@@ -42,59 +42,103 @@
     }
 
     function test_Handler_Keyboard_activate(t) {
-        t.plan(8);
+        t.plan(15);
+
+        var log;
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
         map.addControl(control);
         var handler = new OpenLayers.Handler.Keyboard(control);
-        handler.active = true;
-        var activated = handler.activate();
-        t.ok(!activated,
-             "activate returns false if the handler was already active");
-        handler.active = false;
-        handler.dragging = true;
+
+        // mock OpenLayers.Event.observe
         var old = OpenLayers.Event.stopObserving;
-        var types = ["keydown", "keyup"];
         OpenLayers.Event.observe = function(obj, type, method) {
-            t.ok(obj == document,
-                 "activate calls observing with correct object");
-            var validType = (OpenLayers.Util.indexOf(types, type) != -1);
+            log[type] = obj;
+            var validType = OpenLayers.Util.indexOf(["keydown", "keyup"], type) != -1;
             t.ok(validType, "activate calls observe for " + type);
             t.ok(method == handler.eventListener,
                  "activate calls observing with correct method");
         };
+
+        handler.active = true;
+        var activated = handler.activate();
+        t.ok(!activated,
+             "activate returns false if the handler was already active");
+
+        log = {};
+        handler.active = false;
+        handler.observeElement = map.div;
         activated = handler.activate();
+        t.ok(log['keydown'] == map.div,
+             "activate calls observing for keydown with correct object");
+        t.ok(log['keyup'] == map.div,
+             "activate calls observing for keyup with correct object");
         t.ok(activated,
              "activate returns true if the handler was not already active");
+
+        log = {};
+        handler.active = false;
+        handler.observeElement = null;
+        activated = handler.activate();
+        t.ok(log['keydown'] == document,
+             "activate calls observing for keydown with correct object");
+        t.ok(log['keyup'] == document,
+             "activate calls observing for keyup with correct object");
+        t.ok(activated,
+             "activate returns true if the handler was not already active");
+
         OpenLayers.Event.observe = old;
-        
+        map.destroy();
     }
 
     function test_Handler_Keyboard_deactivate(t) {
-        t.plan(8);
+        t.plan(15);
+
+        var log;
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
         map.addControl(control);
         var handler = new OpenLayers.Handler.Keyboard(control);
-        handler.active = false;
-        var deactivated = handler.deactivate();
-        t.ok(!deactivated,
-             "deactivate returns false if the handler was not already active");
-        handler.active = true;
+
+        // mock OpenLayers.Event.stopObserving
         var old = OpenLayers.Event.stopObserving;
-        var types = ["keydown", "keyup"];
         OpenLayers.Event.stopObserving = function(obj, type, method) {
-            t.ok(obj == document,
-                 "deactivate calls stopObserving with correct object");
-            var validType = (OpenLayers.Util.indexOf(types, type) != -1);
+            log[type] = obj;
+            var validType = OpenLayers.Util.indexOf(["keydown", "keyup"], type) != -1;
             t.ok(validType, "deactivate calls stopObserving for " + type);
             t.ok(method == handler.eventListener,
                  "deactivate calls stopObserving with correct method");
         };
+
+        handler.active = false;
+        var deactivated = handler.deactivate();
+        t.ok(!deactivated,
+             "deactivate returns false if the handler was not already active");
+
+        log = {};
+        handler.active = true;
+        handler.observeElement = map.div;
         deactivated = handler.deactivate();
+        t.ok(log['keydown'] == map.div,
+             "deactivate calls stopObserving for keydown with correct object");
+        t.ok(log['keyup'] == map.div,
+             "deactivate calls stopObserving for keyup with correct object");
         t.ok(deactivated,
              "deactivate returns true if the handler was active already");
+
+        log = {};
+        handler.active = true;
+        handler.observeElement = document;
+        deactivated = handler.deactivate();
+        t.ok(log['keydown'] == document,
+             "deactivate calls stopObserving for keydown with correct object");
+        t.ok(log['keyup'] == document,
+             "deactivate calls stopObserving for keyup with correct object");
+        t.ok(deactivated,
+             "deactivate returns true if the handler was active already");
+
         OpenLayers.Event.stopObserving = old;
+        map.destroy();
     }
 
 

@@ -30,8 +30,9 @@
         map.addLayer(new OpenLayers.Layer("name", {'attribution':'My layer 2!'}));
         t.eq(control.div.innerHTML, 'My layer!, My layer 2!', "Attribution correct with two layers.");
         control.separator = '|';
+        control.template = "Map Copyright (c) 2012 by Foo Bar; ${layers}";
         map.addLayer(new OpenLayers.Layer("name",{'attribution':'My layer 3!'}));
-        t.eq(control.div.innerHTML, 'My layer!|My layer 2!|My layer 3!', "Attribution correct with three layers and diff seperator.");
+        t.eq(control.div.innerHTML, 'Map Copyright (c) 2012 by Foo Bar; My layer!|My layer 2!|My layer 3!', "Attribution correct with three layers and diff seperator.");
 
 
     }    

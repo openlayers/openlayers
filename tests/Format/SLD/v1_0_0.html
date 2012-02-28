@@ -47,6 +47,19 @@
                                     '<CssParameter name="font-weight">bold</CssParameter>' + 
                                     '<CssParameter name="font-style">normal</CssParameter>' + 
                                 '</Font>' +
+                                '<LabelPlacement>' +
+                                    '<PointPlacement>' +
+                                        '<AnchorPoint>' +
+                                            '<AnchorPointX>0.5</AnchorPointX>' +
+                                            '<AnchorPointY>0.5</AnchorPointY>' +
+                                        '</AnchorPoint>' +
+                                        '<Displacement>' +
+                                            '<DisplacementX>5</DisplacementX>' +
+                                            '<DisplacementY>5</DisplacementY>' +
+                                        '</Displacement>' +
+                                        '<Rotation>45</Rotation>' +
+                                    '</PointPlacement>' +
+                                '</LabelPlacement>' + 
                                 '<Halo>' +
                                     '<Radius>3</Radius>' +
                                     '<Fill>' +
@@ -177,7 +190,7 @@
         t.eq(text.label, "A ${FOO} label", "(AAA161) first rule has proper text label");
         t.eq(layer.userStyles[0].propertyStyles["label"], true, "label added to propertyStyles");
         t.eq(text.fontFamily, "Arial", "(AAA161) first rule has proper font family");
-        t.eq(text.fillColor, "#000000", "(AAA161) first rule has proper text fill");
+        t.eq(text.fontColor, "#000000", "(AAA161) first rule has proper text fill");
         t.eq(text.haloRadius, "3", "(AAA161) first rule has proper halo radius");
         t.eq(text.haloColor, "#ffffff", "(AAA161) first rule has proper halo color");
         
@@ -347,7 +360,7 @@
                 "label": "This is the ${city} in ${state}.",
                 "fontFamily": "Arial",
                 "fontSize": 10,
-                "fillColor": "blue",
+                "fontColor": "blue",
                 "fontWeight": "bold",
                 "fontStyle": "normal",
                 "haloRadius": 2,
@@ -509,7 +522,55 @@
         t.xml_eq(got, exp, "duplicated rules to write zIndex as FeatureTypeStyle elements");
         
     }
-    
+
+    function test_label_LinePlacement(t) {
+        t.plan(1);
+        var format = new OpenLayers.Format.SLD.v1_0_0({
+            multipleSymbolizers: true
+        });
+        var style = new OpenLayers.Style2({
+            rules: [
+                new OpenLayers.Rule({
+                    symbolizers: [
+                        new OpenLayers.Symbolizer.Line({
+                            strokeColor: "red",
+                            strokeWidth: 3
+                        }),
+                        new OpenLayers.Symbolizer.Text({
+                            label: "${FOO}",
+                            labelPerpendicularOffset: 10
+                        })
+                    ]
+                })
+            ]
+        });
+        var got = format.writeNode("sld:UserStyle", style);
+        var exp = readXML("label_lineplacement_test.sld").documentElement;
+        t.xml_eq(got, exp, "LinePlacement written out correctly");
+    }
+
+    function test_labelAlignToAnchorPosition(t) {
+        t.plan(1);
+        var format = new OpenLayers.Format.SLD.v1_0_0({
+            multipleSymbolizers: true
+        });
+        var style = new OpenLayers.Style2({
+            rules: [
+                new OpenLayers.Rule({
+                    symbolizers: [
+                        new OpenLayers.Symbolizer.Text({
+                            label: "${FOO}",
+                            labelAlign: "rb"
+                        })
+                    ]
+                })
+            ]
+        });
+        var got = format.writeNode("sld:UserStyle", style);
+        var exp = readXML("label_pointplacement_test.sld").documentElement;
+        t.xml_eq(got, exp, "PointPlacement with labelAlign written out correctly");
+    }
+
     function test_read_FeatureTypeStyles(t) {
         
         t.plan(13);
@@ -585,7 +646,6 @@
         doc = readXML("polygon_labelhalo.sld");
         out = format.write(format.read(doc));
         t.xml_eq(out, doc.documentElement, "round-tripped polygon_labelhalo.sld");
-
     }
 
     </script> 
@@ -863,6 +923,47 @@
                     <sld:CssParameter name="stroke-width">1</sld:CssParameter>
                 </sld:Stroke>
             </sld:LineSymbolizer>
+        </sld:Rule>
+    </sld:FeatureTypeStyle>
+</sld:UserStyle>
+--></div>
+<div id="label_lineplacement_test.sld"><!--
+<sld:UserStyle xmlns:sld="http://www.opengis.net/sld">
+    <sld:FeatureTypeStyle>
+        <sld:Rule>
+            <sld:LineSymbolizer>
+                <sld:Stroke>
+                    <sld:CssParameter name="stroke">red</sld:CssParameter>
+                    <sld:CssParameter name="stroke-width">3</sld:CssParameter>
+                </sld:Stroke>
+            </sld:LineSymbolizer>
+            <sld:TextSymbolizer>
+                <sld:Label><ogc:PropertyName xmlns:ogc="http://www.opengis.net/ogc">FOO</ogc:PropertyName></sld:Label>
+                <sld:LabelPlacement>
+                    <sld:LinePlacement>
+                        <sld:PerpendicularOffset>10</sld:PerpendicularOffset>
+                    </sld:LinePlacement>
+                </sld:LabelPlacement>
+            </sld:TextSymbolizer>
+        </sld:Rule>
+    </sld:FeatureTypeStyle>
+</sld:UserStyle>
+--></div>
+<div id="label_pointplacement_test.sld"><!--
+<sld:UserStyle xmlns:sld="http://www.opengis.net/sld">
+    <sld:FeatureTypeStyle>
+        <sld:Rule>
+            <sld:TextSymbolizer>
+                <sld:Label><ogc:PropertyName xmlns:ogc="http://www.opengis.net/ogc">FOO</ogc:PropertyName></sld:Label>
+                <sld:LabelPlacement>
+                    <sld:PointPlacement>
+                        <sld:AnchorPoint>
+                            <sld:AnchorPointX>1</sld:AnchorPointX>
+                            <sld:AnchorPointY>0</sld:AnchorPointY>
+                        </sld:AnchorPoint>
+                    </sld:PointPlacement>
+                </sld:LabelPlacement>
+            </sld:TextSymbolizer>
         </sld:Rule>
     </sld:FeatureTypeStyle>
 </sld:UserStyle>
