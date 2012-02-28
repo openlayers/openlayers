@@ -2000,6 +2000,23 @@
         t.eq(map.layerContainerDiv.style.top, '0px', 'layer container top correct');
     }
 
+    function test_options(t) {
+        t.plan(2);
+
+        var map = new OpenLayers.Map('map');
+        t.eq(map.options, {}, 'map.options is empty with no options');
+        map.destroy();
+
+        var options = {
+            resolutions: [1,2,3,5],
+            projection: "EPSG:4326",
+            units: 'm'
+        };
+        var map = new OpenLayers.Map('map', options);
+        t.eq(map.options, options, 'map.options is a copy of the constructor option');
+        map.destroy();
+    }
+
     function test_adjustZoom(t) {
         t.plan(4);
         var map = new OpenLayers.Map({
