@@ -171,27 +171,30 @@
             t.eq(id, "238", "feature 238 at 16, 60");
             t.eq(tile.getFeatureId(18, 63), id, "same feature at 18, 63");
             
-            t.eq(tile.getFeatureId(300, 10), undefined, "undefined id outside tile");
+            t.eq(tile.getFeatureId(300, 10), null, "null id outside tile");
             
             tearDown();
         });
     }
 
-    function test_getFeatureData(t) {
+    function test_getFeatureInfo(t) {
         t.plan(3);
         setUp();
         
         var tile = layer.grid[1][1];
         t.delay_call(0.5, function() {
-            var data = tile.getFeatureData(16, 60);
+            var info = tile.getFeatureInfo(16, 60);
             var exp = {
-                NAME: "Svalbard",
-                POP2005: 0
+                id: "238",
+                data: {
+                    NAME: "Svalbard",
+                    POP2005: 0
+                }
             };
-            t.eq(data, exp, "feature data at 16, 60");
-            t.eq(tile.getFeatureData(17, 62), exp, "same feature at 17, 62");
+            t.eq(info, exp, "feature info at 16, 60");
+            t.eq(tile.getFeatureInfo(17, 62), exp, "same feature at 17, 62");
 
-            t.eq(tile.getFeatureData(300, 10), undefined, "undefined data outside tile");
+            t.eq(tile.getFeatureInfo(300, 10), null, "undefined outside tile");
 
             tearDown();
         });

@@ -58,17 +58,18 @@
         );
         map.addLayers([bio_utfgrid,world_utfgrid]);
 
-        var callback = function(dataLookup) {
+        var callback = function(infoLookup) {
             var msg = "";
-            if (dataLookup) {
-                var layer, data;
-                for (var idx in dataLookup) {
+            if (infoLookup) {
+                var layer, info;
+                for (var idx in infoLookup) {
                     layer = map.layers[idx];
-                    data = dataLookup[idx];
-                    if (data) {
+                    info = infoLookup[idx];
+                    if (info && info.data) {
                         msg += "<strong>" + layer.name + "</strong><br>";
-                        for (var key in data) {
-                            msg += key + ": " + data[key] + "<br>";
+                        msg += "feature id: " + info.id + "<br>";
+                        for (var key in info.data) {
+                            msg += key + ": " + info.data[key] + "<br>";
                         }
                     }
                 }

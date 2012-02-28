@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="style.css" type="text/css">
     <script src="../lib/OpenLayers.js"></script>
     <style>
-        #attrsdiv {
-            float: right;
+        #attrs {
+            height: 1.5em;
         }
         #controlToggle li { list-style: none; }
     </style>
@@ -21,11 +21,11 @@
         <div id="shortdesc">
             This page demonstrates the use of the OpenLayers UTFGrid Controls. 
         </div>
-        <div id="attrsdiv"></div>
         <div id="themap" class="smallmap"></div>
         <p>
             When the selected event is triggered, the underlying feature attributes are shown below.
         </p>
+        <div id="attrs">&nbsp;</div>
         <ul id="controlToggle">
             <li>
                 <input type="radio" name="type" value="move" id="moveHandler" 
@@ -71,20 +71,21 @@
         /*
          * Controls
          */
-        var callback = function(dataLookup) {
+        var callback = function(infoLookup) {
             var msg = "";
-            if (dataLookup) {
-                var data;
-                for (var idx in dataLookup) {
+            if (infoLookup) {
+                var info;
+                for (var idx in infoLookup) {
                     // idx can be used to retrieve layer from map.layers[idx]
-                    data = dataLookup[idx];
-                    if (data) {
-                        msg += "<strong>In 2005, " + data.NAME + " had a population of " +
-                            data.POP2005 + " people.</strong> ";
+                    info = infoLookup[idx];
+                    if (info && info.data) {
+                        msg += "[" + info.id + "] <strong>In 2005, " + 
+                            info.data.NAME + " had a population of " +
+                            info.data.POP2005 + " people.</strong> ";
                     }
                 }
             }
-            document.getElementById("attrsdiv").innerHTML = msg;
+            document.getElementById("attrs").innerHTML = msg;
         };
             
         var controls = {
