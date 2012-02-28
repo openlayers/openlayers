@@ -9,7 +9,7 @@ Please see license.txt in this distribution for more details.
 
 ## Getting OpenLayers
 
-OpenLayers lives at http://www.openlayers.org/.  Find details on downloading stable releases or the development version the [development site](http://trac.osgeo.org/openlayers/wiki/HowToDownload.)
+OpenLayers lives at http://www.openlayers.org/.  Find details on downloading stable releases or the development version the [development site](http://trac.osgeo.org/openlayers/wiki/HowToDownload).
 
 ## Installing OpenLayers
 
