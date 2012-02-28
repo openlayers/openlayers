@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>Accessible Custom Click Control</title>
+        
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <style type="text/css">
+        <style type="text/css">
+            a {
+                text-decoration: none;
+                font-size: 1.2em;
+            }
+            a em {
+                font-style: normal;
+                font-weight: normal;
+                text-decoration: underline;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
+            a.api {
+                font-size:1em;
+                text-decoration:underline;
+            }
+            a.accesskey {
+                color: white;
+            }
+            a.accesskey:focus {
+                color: #436976;
+            }
+            a.zoom {
+                padding-right: 20px;
+            }
+        </style>
+        <script src="../lib/Firebug/firebug.js"></script>
+        <script src="../lib/OpenLayers.js"></script>
+        <script src="accessible-click-control.js"></script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">An accessible click control implementation</h1>
+    
+        <div id="tags">
+            click, control, accessibility
+        </div>
+
+        <a class="accesskey"
+           href=""
+           accesskey="1"
+           onclick="document.getElementById('map').focus();return false;">
+           Jump to map
+        </a>
+
+        <div id="map" class="smallmap" tabindex="0"></div>
+
+        <p id="desc">
+            Demonstrate the KeyboardDefaults control as well as a control that
+            allows clicking on the map using the keyboard.
+            First focus the map (using tab key or mouse), then press the 'i'
+            key to activate the query control. You can then move the point
+            using arrow keys. Press 'RETURN' to get the coordinate. Press 'i'
+            again to deactivate the control.
+        </p>
+
+    </body>
+</html>
