@@ -528,6 +528,7 @@
         var format = new OpenLayers.Format.SLD.v1_0_0({
             multipleSymbolizers: true
         });
+        // labelPerpendicularOffset takes precedence over labelAlign
         var style = new OpenLayers.Style2({
             rules: [
                 new OpenLayers.Rule({
