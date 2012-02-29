@@ -9,7 +9,13 @@ svn export http://svn.openlayers.org/tags/openlayers/release-$VERSION OpenLayers
 cd OpenLayers-$VERSION/build
 mv ../../compiler.jar ../tools/closure-compiler.jar
 ./build.py -c closure full
+./build.py -c closure mobile OpenLayers.mobile.js
+./build.py -c closure light OpenLayers.light.js
+./build.py -c none full OpenLayers.debug.js
+./build.py -c none mobile OpenLayers.mobile.debug.js
+./build.py -c none light OpenLayers.light.debug.js
 cp OpenLayers.js ..
+cp OpenLayers.*.js ..
 rm ../tools/closure-compiler.jar
 
 cd ..
