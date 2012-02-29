@@ -27,6 +27,41 @@
         buttonClick.destroy();
         events.destroy();
     }
+
+    function test_getPressedButton(t) {
+        t.plan(4);
+
+        // set up
+
+        events = new OpenLayers.Events({}, element);
+        buttonClick = new OpenLayers.Events.buttonclick(events);
+
+        var button = document.createElement('button'),
+            span1 = document.createElement('span'),
+            span2 = document.createElement('span'),
+            span3 = document.createElement('span');
+        button.className = 'olButton';
+        button.appendChild(span1);
+        span1.appendChild(span2);
+        span2.appendChild(span3);
+
+        t.ok(buttonClick.getPressedButton(button) === button,
+             'getPressedButton returns button when element is button');
+        t.ok(buttonClick.getPressedButton(span1) === button,
+             'getPressedButton returns button when element is button descendant level 1');
+        t.ok(buttonClick.getPressedButton(span2) === button,
+             'getPressedButton returns button when element is button descendant level 2');
+        t.eq(buttonClick.getPressedButton(span3), undefined,
+             'getPressedButton returns undefined when element is button descendant level 3');
+
+        // test
+
+
+        // tear down
+
+        buttonClick.destroy();
+        events.destroy();
+    }
     
     function test_ButtonClick_buttonClick(t) {
         t.plan(27);
