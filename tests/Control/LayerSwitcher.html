@@ -25,15 +25,17 @@
         t.ok( div != null, "draw returns its div" );
     }
     function test_Control_LayerSwitcher_outsideViewport (t) {
-        t.plan( 2 );
+        t.plan( 4 );
 
         map = new OpenLayers.Map('map');
         control = new OpenLayers.Control.LayerSwitcher({'div':OpenLayers.Util.getElement('layerswitcher')});
         map.addControl(control);
-        t.eq(control.div.style.width, "250px", "Div is not minimized when added."); 
+        t.eq(control.div.style.width, "250px", "Div is not minimized when added.");
+        t.ok(control.events.element && control.events.listeners.buttonclick, "[outside] Events instance attached to div and has buttonclick event");
         control = new OpenLayers.Control.LayerSwitcher();
         map.addControl(control);
         t.eq(control.div.style.width, "0px", "Div is minimized when added.");
+        t.ok(!control.events.element && map.events.listeners.buttonclick, "[inside] Events instance not attached to div and buttonclick event registered on map");
     }
  
     function test_Control_LayerSwitcher_loadContents(t) {
