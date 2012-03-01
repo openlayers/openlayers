@@ -198,21 +198,35 @@
         t.ok(style.t, "getStyle returns copy of style rather than reference");
     }
     function test_Format_KML_extendedData(t) {
-        t.plan(2);
+        t.plan(6);
         var f = new OpenLayers.Format.KML();
         var features = f.read(OpenLayers.Util.getElement("kml_extendeddata").value);
-        t.eq(features[0].attributes.all_bridges.value, "3030", "read value from extendeddata correctly.");
-        t.eq(features[0].attributes.all_bridges.displayName, "all bridges", "read displayName from extendeddata correctly.");
+        t.eq(features[0].attributes.holeYardage.value, "234", "read value from extendeddata correctly.");
+        t.eq(features[0].attributes.holeYardage.displayName, "<b><i>The yardage is </i></b>", "read displayName from extendeddata correctly.");
+        t.eq(f.read(f.write(features[0]))[0].attributes.holeYardage.value, features[0].attributes.holeYardage.value, "attribute value written correctly");
+        t.eq(f.read(f.write(features[0]))[0].attributes.holeYardage.displayName, features[0].attributes.holeYardage.displayName, "attribute displayName written correctly");
+        f.kvpAttributes = true;
+        features = f.read(OpenLayers.Util.getElement("kml_extendeddata").value);
+        t.eq(features[0].attributes.holeYardage, "234", "read kvp value from extendeddata correctly.");
+        t.eq(f.read(f.write(features[0]))[0].attributes.holeYardage, features[0].attributes.holeYardage, "kvp attribute value written correctly");
     }
 
     function test_Format_KML_extendedData_SchemaData(t) {
-        t.plan(4);
+        t.plan(10);
         var f = new OpenLayers.Format.KML();
         var features = f.read(OpenLayers.Util.getElement("kml_extendeddata2").value);
         t.eq(features[0].attributes.TrailHeadName.value, "Pi in the sky", "read value from extendeddata (schema data) correctly.");
         t.eq(features[0].attributes.TrailHeadName.displayName, "TrailHeadName", "read displayName from extendeddata correctly");
         t.eq(features[0].attributes.ElevationGain.value, "10", "read value from extendeddata (schema data) correctly.");
         t.eq(features[0].attributes.ElevationGain.displayName, "ElevationGain", "read displayName from extendeddata correctly");
+        t.eq(f.read(f.write(features[0]))[0].attributes.TrailHeadName.value, features[0].attributes.TrailHeadName.value, "attribute value from extendeddata (schema data) written correctly");
+        t.eq(f.read(f.write(features[0]))[0].attributes.ElevationGain.value, features[0].attributes.ElevationGain.value, "attribute value from extendeddata (schema data) written correctly");
+        f.kvpAttributes = true;
+        features = f.read(OpenLayers.Util.getElement("kml_extendeddata2").value);
+        t.eq(features[0].attributes.TrailHeadName, "Pi in the sky", "read kvp value from extendeddata (schema data) correctly.");
+        t.eq(features[0].attributes.ElevationGain, "10", "read kvp value from extendeddata (schema data) correctly.");
+        t.eq(f.read(f.write(features[0]))[0].attributes.TrailHeadName, features[0].attributes.TrailHeadName, "kvp attribute value from extendeddata (schema data) written correctly");
+        t.eq(f.read(f.write(features[0]))[0].attributes.ElevationGain, features[0].attributes.ElevationGain, "kvp attribute value from extendeddata (schema data) written correctly");
     }
 
     function test_Format_KML_placemarkName(t) {
@@ -287,49 +301,61 @@
 </head> 
 <body> 
     <textarea id="kml_extendeddata" style="display:none">
-<kml xmlns="http://earth.google.com/kml/2.2">
-<Document>
-        <Placemark>
-            <styleUrl>#default</styleUrl>
-
-
-
-
-            <ExtendedData>
-                                    <Data name='all_bridges'>
-                        <displayName><![CDATA[all bridges]]></displayName>
-                        <value><![CDATA[3030]]></value>
-                    </Data>
-                                    <Data name='latitude'>
-                        <displayName><![CDATA[latitude]]></displayName>
-                        <value><![CDATA[43]]></value>
-                    </Data>
-                                    <Data name='longitude'>
-                        <displayName><![CDATA[longitude]]></displayName>
-                        <value><![CDATA[-107.55]]></value>
-                    </Data>
-                                    <Data name='functionally_obsolete__percent'>
-                        <displayName><![CDATA[functionally obsolete, percent]]></displayName>
-                        <value><![CDATA[8]]></value>
-                    </Data>
-                                    <Data name='structurally_deficient__percent'>
-                        <displayName><![CDATA[structurally deficient, percent]]></displayName>
-                        <value><![CDATA[13]]></value>
-                    </Data>
-                                    <Data name='state'>
-                        <displayName><![CDATA[state]]></displayName>
-                        <value><![CDATA[Wyoming]]></value>
-                    </Data>
-                            </ExtendedData>
-
-
-              <Point>
-<coordinates>-107.55,43.0</coordinates>
-</Point>
-
-
-        </Placemark>
-</Document>
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Entity-Replacement</name>
+    <Placemark>
+      <name>Club house</name>
+      <ExtendedData>
+        <Data name="holeNumber">
+          <displayName><![CDATA[
+            <b>This is hole </b>
+          ]]></displayName>
+          <value>1</value>
+        </Data>
+        <Data name="holePar">
+          <displayName><![CDATA[
+            <i>The par for this hole is </i>
+          ]]></displayName>
+          <value>4</value>
+        </Data>
+        <Data name="holeYardage">
+          <displayName><![CDATA[<b><i>The yardage is </i></b>]]></displayName>
+          <value>234</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>-111.956,33.5043</coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>By the lake</name>
+      <ExtendedData>
+        <Data name="holeNumber">
+          <displayName><![CDATA[
+            <b>This is hole </b>
+          ]]></displayName>
+          <value>5</value>
+        </Data>
+        <Data name="holePar">
+          <displayName><![CDATA[
+            <i>The par for this hole is </i>
+          ]]></displayName>
+          <value>5</value>
+        </Data>
+        <Data name="holeYardage">
+          <displayName><![CDATA[
+            <b><i>The yardage is </i></b>
+          ]]></displayName>
+          <value>523</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>-111.95,33.5024</coordinates>
+      </Point>
+    </Placemark>
+  </Document>
 </kml>
 </textarea>
     <textarea id="kml_extendeddata2" style="display:none">
