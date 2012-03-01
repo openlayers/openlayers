@@ -321,6 +321,29 @@
         map.layers[1].setVisibility(false);
         t.ok(OpenLayers.Util.isEquivalentUrl(OpenLayers.Util.getElement('permalink').href, location+"#zoom=2&lat=0&lon=1.75781&layers=BF"), 'setVisibility sets permalink');
     }
+    
+    function test_arrayCenter(t) {
+        t.plan(1);
+        var err;
+        try {
+            var map = new OpenLayers.Map({
+                layers: [new OpenLayers.Layer(null, {isBaseLayer: true})],
+                controls: [
+                    new OpenLayers.Control.Permalink({anchor: true})
+                ],
+                center: [0, 0],
+                zoom: 1
+            });
+        } catch (e) {
+            err = e;
+        }
+        if (err) {
+            t.fail("Map construction failure: " + err.message);
+        } else {
+            t.ok(true, "Map construction works");
+        }
+    }
+    
   </script>
 </head>
 <body>
