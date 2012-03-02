@@ -96,7 +96,7 @@
         var eventPane = tile.frame.childNodes[0];
 
         t.ok(OpenLayers.String.contains(eventPane.style.backgroundImage,
-                    tile.blankImageUrl),
+                    tile._blankImageUrl),
              "backgroundImage of eventPane is set.");
         t.eq(parseInt(eventPane.style.zIndex, 10), 1, "zIndex of eventPane is set.");
         if(isIE) {
