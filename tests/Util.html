@@ -1120,7 +1120,11 @@
         t.eq(OpenLayers.Util.getFormattedLonLat(-181, "lon"), "179°00'00\"E", "crossing dateline from the west results in correct east coordinate");
         t.eq(OpenLayers.Util.getFormattedLonLat(181, "lon"), "179°00'00\"W", "crossing dateline from the east results in correct west coordinate");
     }
-
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 1024px; height: 512px;"/>
+    <script>
     /**
      * To test that we can safely call OpenLayers.Util.extend with an Event
      * instance, we need to capture a real event.
@@ -1139,15 +1143,11 @@
             err = e;
         }
         if (err) {
-            t.fail("Failed to extend with an event: " + err.message);
+            t.fail("Failed to extend event");
         } else {
             t.eq(extended && extended.foo, "bar", "extended with event");
         }
     }
-
-  </script>
-</head>
-<body>
-    <div id="map" style="width: 1024px; height: 512px;"/>
+    </script>
 </body>
 </html>
