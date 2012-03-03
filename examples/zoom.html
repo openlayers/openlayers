@@ -12,6 +12,31 @@
                 bottom: 5px;
                 font-size: 9px;
             }
+            #customZoom {
+                z-index: 1001;
+                position: relative;
+                top: 10px;
+                left: 10px;
+            }
+            #customZoom a {
+                text-decoration: none;
+                position: absolute;
+                display: block;
+                width: 50px;
+                text-align: center;
+                font-weight: bold;
+                color: #fff;
+                background: #369;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+            }
+            #customZoom a:hover {
+                background: #036;
+            }
+            #customZoomOut {
+                top: 25px;
+            }
+            
         </style>
     </head>
     <body>
@@ -21,6 +46,14 @@
         <div id="shortdesc">Shows how to use a simple zoom control.</div>
 
         <div id="map" class="smallmap"></div>
+        <p>The map above uses the default control configuration and style.</p>
+        <p>The map below uses the custom zoom elements and styling.</p>
+        <div id="map2" class="smallmap">
+            <div id="customZoom">
+                <a href="#customZoomIn" id="customZoomIn">in</a>
+                <a href="#customZoomIn" id="customZoomOut">out</a>
+            </div>
+        </div>
 
         <div id="docs">
             <p>This example demonstrates the use of a Zoom control.</p>
