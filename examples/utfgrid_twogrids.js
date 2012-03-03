@@ -1,15 +1,15 @@
 var osm = new OpenLayers.Layer.OSM();
 
-var population = new OpenLayers.Layer.UTFGrid( 
-    "World Population",
-    "./utfgrid/world_utfgrid/${z}/${x}/${y}.json",
-    {utfgridResolution: 4} // default is 2
-);
-var bioregions = new OpenLayers.Layer.UTFGrid( 
-    "World Bioregions",
-    "./utfgrid/bio_utfgrid/${z}/${x}/${y}.json",
-    {utfgridResolution: 4} // default is 2
-);
+var population = new OpenLayers.Layer.UTFGrid({
+    name: "World Population",
+    url: "utfgrid/world_utfgrid/${z}/${x}/${y}.json",
+    utfgridResolution: 4 // default is 2
+});
+var bioregions = new OpenLayers.Layer.UTFGrid({
+    name: "World Bioregions",
+    url: "utfgrid/bio_utfgrid/${z}/${x}/${y}.json",
+    utfgridResolution: 4 // default is 2
+});
 
 var map = new OpenLayers.Map({
     div: "map",

@@ -1,10 +1,10 @@
 var osm = new OpenLayers.Layer.OSM();
 
-var utfgrid = new OpenLayers.Layer.UTFGrid( 
-    "Invisible UTFGrid Layer", 
-    "./utfgrid/world_utfgrid/${z}/${x}/${y}.json",
-    {utfgridResolution: 4} // default is 2
-);
+var utfgrid = new OpenLayers.Layer.UTFGrid({
+    url: "utfgrid/world_utfgrid/${z}/${x}/${y}.json",
+    utfgridResolution: 4, // default is 2
+    displayInLayerSwitcher: false
+});
 
 var map = new OpenLayers.Map({
     div: "map", 

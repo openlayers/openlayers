@@ -22,11 +22,11 @@
 
     var map, layer;
     function setUp() {
-        layer = new OpenLayers.Layer.UTFGrid(
-            null, 
-            "../data/utfgrid/world_utfgrid/${z}/${x}/${y}.json",
-            {isBaseLayer: true, utfgridResolution: 4}
-        );
+        layer = new OpenLayers.Layer.UTFGrid({
+            url: "../data/utfgrid/world_utfgrid/${z}/${x}/${y}.json",
+            isBaseLayer: true, 
+            utfgridResolution: 4
+        });
         map = new OpenLayers.Map({
             div: "map",
             projection: "EPSG:900913",
