@@ -6,7 +6,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <title>OpenLayers UTFGrid Demo</title>
     <link rel="stylesheet" href="style.css" type="text/css">
-    <script src="../lib/OpenLayers.js"></script>
     <style>
         #attrs {
             height: 1.5em;
@@ -21,9 +20,10 @@
         <div id="shortdesc">
             This page demonstrates the use of the OpenLayers UTFGrid Controls. 
         </div>
-        <div id="themap" class="smallmap"></div>
+        <div id="map" class="smallmap"></div>
         <p>
-            When the selected event is triggered, the underlying feature attributes are shown below.
+            When the selected event is triggered, the underlying feature 
+            attributes are shown below.
         </p>
         <div id="attrs">&nbsp;</div>
         <ul id="controlToggle">
@@ -45,95 +45,19 @@
         </ul>
     </div>
     <div id="docs">
-        <p><a href="http://mapbox.com/mbtiles-spec/utfgrid/">UTFGrids</a> can be used to 
-        output highly optimized feature "hit grids". The UTFGrid encoding scheme encodes 
-        interactivity data for a tile in a space efficient manner. It is designed to be 
-        used in browsers for interactive features like displaying tooltips without 
-        having to hit the server for an "info query".
+        <p>UTFGrids can be used to output highly optimized feature "hit grids."
+        The UTFGrid encoding scheme encodes interactivity data for a tile in a
+        space efficient manner. It is designed to be used in browsers for
+        interactive features like displaying tooltips without having to hit the
+        server for an "info query."
         </p>
         <p>
-        For more info, view the 
-        <a href="https://github.com/mapbox/utfgrid-spec"> UTFGrid Specification</a> 
-        or check out the <a href="http://mapbox.com/demo/visiblemap/">Visible Map Demo</a> 
-        (implemented in Wax and ModestMaps).  
+        See the <a href="utfgrid.js" target="_blank">utfgrid.js source</a> for 
+        detail on using UTFGrids in OpenLayers.  For more info, view the 
+        <a href="https://github.com/mapbox/utfgrid-spec">UTFGrid Specification</a>.
         </p>
     </div>
-    <script>
-        /*
-         * Map
-         */
-        var map = new OpenLayers.Map({
-            div: "themap", 
-            projection: "EPSG:900913",
-            controls: [] // No default controls; no pan zoom for demo
-        });
-
-        /*
-         * Controls
-         */
-        var callback = function(infoLookup) {
-            var msg = "";
-            if (infoLookup) {
-                var info;
-                for (var idx in infoLookup) {
-                    // idx can be used to retrieve layer from map.layers[idx]
-                    info = infoLookup[idx];
-                    if (info && info.data) {
-                        msg += "[" + info.id + "] <strong>In 2005, " + 
-                            info.data.NAME + " had a population of " +
-                            info.data.POP2005 + " people.</strong> ";
-                    }
-                }
-            }
-            document.getElementById("attrs").innerHTML = msg;
-        };
-            
-        var controls = {
-            move: new OpenLayers.Control.UTFGrid({
-                callback: callback,
-                handlerMode: 'move'
-            }),
-            hover: new OpenLayers.Control.UTFGrid({
-                callback: callback,
-                handlerMode: 'hover'
-            }),
-            click: new OpenLayers.Control.UTFGrid({
-                callback: callback,
-                handlerMode: 'click'
-            })
-        };
-        var control;
-        for(var key in controls) {
-            control = controls[key];
-            control.deactivate();
-            map.addControl(control);
-        }
-        controls['move'].activate();
-
-        function toggleControl(el) {
-            for(var c in controls) {
-                control = controls[c];
-                control.deactivate();
-            }
-            control = controls[el.value];
-            control.activate();
-        }
-
-        /*
-         * Layers
-         */
-
-        var osm = new OpenLayers.Layer.OSM();
-        map.addLayer(osm);
-
-        var grid_layer = new OpenLayers.Layer.UTFGrid( 
-            'Invisible UTFGrid Layer', 
-            "./utfgrid/world_utfgrid/${z}/${x}/${y}.json",
-            {utfgridResolution: 4} // default is 2
-        );
-        map.addLayer(grid_layer);
-
-        map.zoomTo(1);
-    </script>
+    <script src="../lib/OpenLayers.js"></script>
+    <script src="utfgrid.js"></script>
 </body>
 </html>

@@ -6,7 +6,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <title>OpenLayers Multiple UTFGrid Demo</title>
     <link rel="stylesheet" href="style.css" type="text/css">
-    <script src="../lib/OpenLayers.js"></script>
     <style>
         #controlToggle li { list-style: none; }
     </style>
@@ -15,105 +14,38 @@
     <h1 id="title">OpenLayers Multiple UTFGrid Demo</h1>
 
     <div id="shortdesc">
-        This page demonstrates the use of the OpenLayers UTFGrid Controls with more than one UTFGrid Layer.
+        This page demonstrates the use of the OpenLayers UTFGrid Controls with 
+        more than one UTFGrid Layer.
     </div>
-    <div id="themap" class="smallmap"></div>
+    <div id="map" class="smallmap"></div>
     <ul id="controlToggle">
         <li>
             <input type="radio" name="type" value="move_pop" id="moveHandler" 
             onclick="toggleControl(this);" checked="checked" />
-            <label for="moveHandler">Move (population)</label>
+            <label for="moveHandler">View population stats</label>
         </li>
         <li>
             <input type="radio" name="type" value="move_bio" id="hoverHandler" 
             onclick="toggleControl(this);" />
-            <label for="hoverHandler">Move (bioregion)</label>
+            <label for="hoverHandler">View bioregion stats</label>
         </li>
         <li>
             <input type="radio" name="type" value="move_both" id="clickHandler" 
             onclick="toggleControl(this);" />
-            <label for="clickHandler">Move (both)</label>
+            <label for="clickHandler">View all stats</label>
         </li>
     </ul>
+    <div id="docs">
+        <p>
+            This example demonstrates the use of two separate UTFGrid layers.
+            See the <a href="utfgrid_twogrids.js">utfgrid_twogrids.js source</a>
+            for detail on how this is done.
+        </p>
+    </div>
     <div id="attrsdiv"></div>
+    <script src="../lib/OpenLayers.js"></script>
+    <script src="utfgrid_twogrids.js"></script>
     <script>
-        /*
-         * Map
-         */
-        var map = new OpenLayers.Map({
-            div: "themap",
-            projection: "EPSG:900913",
-            controls: []
-        });
-
-        var world_utfgrid = new OpenLayers.Layer.UTFGrid( 
-            "World Population",
-            "./utfgrid/world_utfgrid/${z}/${x}/${y}.json",
-            {utfgridResolution: 4} // default is 2
-        );
-        var bio_utfgrid = new OpenLayers.Layer.UTFGrid( 
-            "World Bioregions",
-            "./utfgrid/bio_utfgrid/${z}/${x}/${y}.json",
-            {utfgridResolution: 4} // default is 2
-        );
-        map.addLayers([bio_utfgrid,world_utfgrid]);
-
-        var callback = function(infoLookup) {
-            var msg = "";
-            if (infoLookup) {
-                var layer, info;
-                for (var idx in infoLookup) {
-                    layer = map.layers[idx];
-                    info = infoLookup[idx];
-                    if (info && info.data) {
-                        msg += "<strong>" + layer.name + "</strong><br>";
-                        msg += "feature id: " + info.id + "<br>";
-                        for (var key in info.data) {
-                            msg += key + ": " + info.data[key] + "<br>";
-                        }
-                    }
-                }
-            }
-            document.getElementById("attrsdiv").innerHTML = msg;
-        };
-        var controls = {
-            move_pop: new OpenLayers.Control.UTFGrid({
-                callback: callback,
-                layers: [world_utfgrid],
-                handlerMode: 'move'
-            }),
-            move_bio: new OpenLayers.Control.UTFGrid({
-                callback: callback,
-                layers: [bio_utfgrid],
-                handlerMode: 'move'
-            }),
-            move_both: new OpenLayers.Control.UTFGrid({
-                callback: callback,
-                layers: null, // same as [bio_utfgrid,world_utfgrid]
-                handlerMode: 'move'
-            })
-        };
-        var control;
-        for(var key in controls) {
-            control = controls[key];
-            control.deactivate();
-            map.addControl(control);
-        }
-        controls['move_pop'].activate();
-
-        function toggleControl(el) {
-            for(var c in controls) {
-                control = controls[c];
-                control.deactivate();
-            }
-            control = controls[el.value];
-            control.activate();
-        }
-
-        // Visible Layers
-        var osm = new OpenLayers.Layer.OSM();
-        map.addLayer(osm);
-        map.zoomTo(1);
     </script>
 </body>
 </html>
