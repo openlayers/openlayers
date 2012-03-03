@@ -18,7 +18,6 @@ var streets = new OpenLayers.Layer.XYZ(
 
 var map = new OpenLayers.Map({
     div: "map",
-    projeciton: "EPSG:900913",
     layers: [streets],
     controls: [
         new OpenLayers.Control.Attribution(),
