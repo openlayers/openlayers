@@ -44,7 +44,7 @@
         map.setCenter([0, 0], 0);
         
         t.eq(map.getZoom(), 0, "initial center");
-        control.zoomInLink.onclick();
+        control.events.triggerEvent("buttonclick", {buttonElement: control.zoomInLink});
         t.eq(map.getZoom(), 1, "after zoom in");
         map.destroy();
     }
@@ -61,7 +61,7 @@
         map.setCenter([0, 0], 1);
         
         t.eq(map.getZoom(), 1, "initial center");
-        control.zoomOutLink.onclick();
+        control.events.triggerEvent("buttonclick", {buttonElement: control.zoomOutLink});
         t.eq(map.getZoom(), 0, "after zoom out");
         map.destroy();
     }
