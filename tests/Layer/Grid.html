@@ -32,7 +32,7 @@
         t.eq( layer.buffer, 0, "buffer default is 0");
         t.eq( layer.ratio, 1.5, "ratio default is 1.5");
         t.eq( layer.numLoadingTiles, 0, "numLoadingTiles starts at 0");
-        t.eq( layer.tileClass, OpenLayers.Tile.Image, "tileClass default is OpenLayers.Tile.Image");
+        t.ok( layer.tileClass === OpenLayers.Tile.Image, "tileClass default is OpenLayers.Tile.Image");
 
         var obj = {};
         var func = function() {};
@@ -63,7 +63,7 @@
         });
         map.addLayer(layer);
 
-        t.eq(layer.tileClass, myTileClass, "tileClass is set");
+        t.ok(layer.tileClass === myTileClass, "tileClass is set");
         var instance = layer.addTile(new OpenLayers.Bounds(-10, 10, 50, 100),
                                      new OpenLayers.Pixel(10, 12));
 
