@@ -11,6 +11,7 @@
         t.eq(control.displayClass, "olControlPermalink", "displayClass is correct");
         t.eq(control.base, document.location.href, "base is correct");
         t.ok(!control.anchor, "anchor is correct");
+        control.destroy();
 
         control = new OpenLayers.Control.Permalink('permalink', 'test.html');
         t.ok(control instanceof OpenLayers.Control.Permalink, "new OpenLayers.Control returns object");
@@ -18,6 +19,7 @@
         t.eq(control.base, 'test.html', "base is correct");
         t.ok(OpenLayers.Util.isElement(control.element), "element is a dom object");
         t.ok(!control.anchor, "anchor is correct");
+        control.destroy();
 
         control = new OpenLayers.Control.Permalink('permalink');
         t.ok(control instanceof OpenLayers.Control.Permalink, "new OpenLayers.Control returns object");
@@ -25,6 +27,7 @@
         t.eq(control.base, document.location.href, "base is correct");
         t.ok(OpenLayers.Util.isElement(control.element), "element is a dom object");
         t.ok(!control.anchor, "anchor is correct");
+        control.destroy();
 
         control = new OpenLayers.Control.Permalink(OpenLayers.Util.getElement('permalink'));
         t.ok(control instanceof OpenLayers.Control.Permalink, "new OpenLayers.Control returns object");
@@ -32,6 +35,7 @@
         t.eq(control.base, document.location.href, "base is correct");
         t.ok(OpenLayers.Util.isElement(control.element), "element is a dom object");
         t.ok(!control.anchor, "anchor is correct");
+        control.destroy();
 
         control = new OpenLayers.Control.Permalink({anchor: true});
         t.ok(control instanceof OpenLayers.Control.Permalink, "new OpenLayers.Control returns object");
@@ -39,18 +43,21 @@
         t.eq(control.base, document.location.href, "base is correct");
         t.ok(control.element == null, "element is null");
         t.ok(control.anchor, "anchor is correct");
+        control.destroy();
 
         control = new OpenLayers.Control.Permalink({anchor: false});
         t.ok(control instanceof OpenLayers.Control.Permalink, "new OpenLayers.Control returns object");
         t.eq(control.displayClass, "olControlPermalink", "displayClass is correct");
         t.eq(control.base, document.location.href, "base is correct");
         t.ok(!control.anchor, "anchor is correct");
+        control.destroy();
 
         control = new OpenLayers.Control.Permalink({});
         t.ok(control instanceof OpenLayers.Control.Permalink, "new OpenLayers.Control returns object");
         t.eq(control.displayClass, "olControlPermalink", "displayClass is correct");
         t.eq(control.base, document.location.href, "base is correct");
         t.ok(!control.anchor, "anchor is correct");
+        control.destroy();
 
         control = new OpenLayers.Control.Permalink({element: 'permalink', base: 'test.html'});
         t.ok(control instanceof OpenLayers.Control.Permalink, "new OpenLayers.Control returns object");
@@ -58,6 +65,7 @@
         t.eq(control.base, 'test.html', "base is correct");
         t.ok(OpenLayers.Util.isElement(control.element), "element is a dom object");
         t.ok(!control.anchor, "anchor is correct");
+        control.destroy();
 
         control = new OpenLayers.Control.Permalink({element: 'permalink', base: 'test.html', anchor: true});
         t.ok(control instanceof OpenLayers.Control.Permalink, "new OpenLayers.Control returns object");
@@ -65,6 +73,7 @@
         t.eq(control.base, 'test.html', "base is correct");
         t.ok(OpenLayers.Util.isElement(control.element), "element is a dom object");
         t.ok(control.anchor, "anchor is correct");
+        control.destroy();
     }
     function test_Control_Permalink_uncentered (t) {
         t.plan( 1 );
@@ -74,12 +83,14 @@
         map.addControl(control);
         map.events.triggerEvent("changelayer", {});
         t.ok(true, "permalink didn't bomb out.");
+        map.destroy();
     }   
     function test_Control_Permalink_initwithelem (t) {
         t.plan( 1 );
     
         control = new OpenLayers.Control.Permalink(OpenLayers.Util.getElement('permalink'));
         t.ok(true, "If the above line doesn't throw an error, we're safe."); 
+        control.destroy();
     }
     function test_Control_Permalink_updateLinks (t) {
         t.plan( 3 );
@@ -100,6 +111,7 @@
         map.layers[1].setVisibility(false);
         
         t.ok(OpenLayers.Util.isEquivalentUrl(OpenLayers.Util.getElement('permalink').href, location+"?zoom=2&lat=0&lon=1.75781&layers=BF"), 'setVisibility sets permalink');
+        map.destroy();
     }
     function test_Control_Permalink_updateLinksBase (t) {
         t.plan( 2 );
@@ -114,6 +126,7 @@
         map.pan(5, 0, {animate:false});
         OpenLayers.Util.getElement('edit_permalink').href = './edit.html?zoom=2&lat=0&lon=1.75781&layers=B';
         t.eq(OpenLayers.Util.getElement('permalink').href, OpenLayers.Util.getElement('edit_permalink').href, "Panning sets permalink with base");
+        map.destroy();
   }
   function test_Control_Permalink_noElement (t) {
         t.plan( 2 );
@@ -122,6 +135,7 @@
         map = new OpenLayers.Map('map');
         map.addControl(control);
         t.eq(map.controls[4].div.firstChild.nodeName, "A", "Permalink control creates div with 'a' inside." );
+        map.destroy();
   }
   function test_Control_Permalink_base_with_query (t) {
       t.plan( 3 );
@@ -147,6 +161,7 @@
       map.pan(5, 0, {animate:false});
       map.pan(-5, 0, {animate:false});
       t.eq(OpenLayers.Util.getElement('permalink').href, OpenLayers.Util.getElement('edit_permalink').href, "Panning sets permalink with base and querystring ending with '?'");
+      map.destroy();
 
   }
 
@@ -163,6 +178,7 @@
         map.pan(5, 0, {animate:false});
         OpenLayers.Util.getElement('edit_permalink').href = './edit.html?zoom=2&lat=0&lon=1.75781&layers=B';
         t.eq(OpenLayers.Util.getElement('permalink').href, OpenLayers.Util.getElement('edit_permalink').href, "Panning sets permalink with existing zoom in base");
+        map.destroy();
   }
   
     function test_Control_Permalink_customized(t) {
@@ -189,6 +205,7 @@
       
         t.eq(this.map.controls[this.map.controls.length-1].CLASS_NAME, "CustomArgParser", "Custom ArgParser added correctly.");
         t.eq(control.div.firstChild.getAttribute("href"), "./edit.html?zoom=2&lat=0&lon=1.75781&layers=B&customParam=foo", "Custom parameter encoded correctly.");
+        map.destroy();
     }
     
     function test_Control_Permalink_createParams(t) {
@@ -300,6 +317,7 @@
         
         map.layers[1].setVisibility(false);
         t.ok(OpenLayers.Util.isEquivalentUrl(OpenLayers.Util.getParameterString(control.createParams()), "zoom=2&lat=0&lon=1.75781&layers=BF"), 'setVisibility sets permalink');
+        map.destroy();
     }
     
     function test_Control_Permalink_AnchorBaseElement (t) {
@@ -320,10 +338,15 @@
         
         map.layers[1].setVisibility(false);
         t.ok(OpenLayers.Util.isEquivalentUrl(OpenLayers.Util.getElement('permalink').href, location+"#zoom=2&lat=0&lon=1.75781&layers=BF"), 'setVisibility sets permalink');
+        map.destroy();
     }
     
-    function test_arrayCenter(t) {
-        t.plan(1);
+    function test_center_from_map(t) {
+        t.plan(7);
+
+        var previous = window.location.hash;
+        window.location.hash = "";
+
         var err;
         try {
             var map = new OpenLayers.Map({
@@ -331,8 +354,8 @@
                 controls: [
                     new OpenLayers.Control.Permalink({anchor: true})
                 ],
-                center: [0, 0],
-                zoom: 1
+                center: [1, 2],
+                zoom: 3
             });
         } catch (e) {
             err = e;
@@ -342,6 +365,51 @@
         } else {
             t.ok(true, "Map construction works");
         }
+        
+        // confirm that map center is correctly set
+        var center = map.getCenter();
+        t.eq(center.lon, 1, "map x");
+        t.eq(center.lat, 2, "map y")
+        t.eq(map.getZoom(), 3, "map z");
+
+        // confirm that location from map options has been added to url
+        var params = OpenLayers.Util.getParameters(window.location.hash.replace("#", "?"));
+        t.eq(params.lon, "1", "url x");
+        t.eq(params.lat, "2", "url y");
+        t.eq(params.zoom, "3", "url z");
+        
+        map.destroy();
+        window.location.hash = previous;
+    }
+    
+    function test_center_from_url(t) {
+        t.plan(6);
+
+        // In cases where the location is specified in the URL and given in
+        // the map options, we respect the location in the URL.
+        var previous = window.location.hash;
+        window.location.hash = "#zoom=6&lat=5&lon=4&layers=B"
+        
+        var map = new OpenLayers.Map({
+            layers: [new OpenLayers.Layer(null, {isBaseLayer: true})],
+            controls: [new OpenLayers.Control.Permalink({anchor: true})],
+            center: [0, 0],
+            zoom: 0
+        });
+        
+        // confirm that map center is correctly set
+        var center = map.getCenter();
+        t.eq(center.lon, 4, "map x");
+        t.eq(center.lat, 5, "map y")
+        t.eq(map.getZoom(), 6, "map z");        
+        
+        var params = OpenLayers.Util.getParameters(window.location.hash.replace("#", "?"));
+        t.eq(params.lon, "4", "x set");
+        t.eq(params.lat, "5", "y set");
+        t.eq(params.zoom, "6", "z set");
+        
+        map.destroy();
+        window.location.hash = previous;
     }
     
   </script>
