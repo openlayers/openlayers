@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <script>
+      /**
+      * Because browsers that implement requestAnimationFrame may not execute
+      * animation functions while a window is not displayed (e.g. in a hidden
+      * iframe as in these tests), we mask the native implementations here.  The
+      * native requestAnimationFrame functionality is tested in Util.html and
+      * in PanZoom.html (where a popup is opened before panning).  The panTo tests
+      * here will test the fallback setTimeout implementation for animation.
+      */
+      window.requestAnimationFrame = 
+          window.webkitRequestAnimationFrame =
+          window.mozRequestAnimationFrame =
+          window.oRequestAnimationFrame =
+          window.msRequestAnimationFrame = null;
+  </script>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+
+    var map, layer;
+    function setUp() {
+        layer = new OpenLayers.Layer.UTFGrid({
+            url: "../data/utfgrid/world_utfgrid/${z}/${x}/${y}.json",
+            isBaseLayer: true, 
+            utfgridResolution: 4
+        });
+        map = new OpenLayers.Map({
+            div: "map",
+            projection: "EPSG:900913",
+            layers: [layer],
+            center: [0, 0],
+            zoom: 1
+        });
+    }
+    
+    function tearDown() {
+        map.destroy();
+        map = null;
+        layer = null;
+    }
+
+    function test_constructor(t) {
+        t.plan(4);
+        
+        var layer = new OpenLayers.Layer.UTFGrid({
+            name: "foo",
+            url: "path/to/tiles/${z}/${x}/${y}",
+            utfgridResolution: 8
+        });
+        t.ok(layer instanceof OpenLayers.Layer.UTFGrid, "utfgrid instance");
+        t.eq(layer.name, "foo", "layer name");
+        t.eq(layer.url, "path/to/tiles/${z}/${x}/${y}", "layer url");
+        t.eq(layer.utfgridResolution, 8, "layer utfgridResolution");
+
+        layer.destroy();
+
+    }
+    
+    function test_clone(t) {
+        t.plan(3);
+        setUp();
+        
+        var clone = layer.clone();
+        t.ok(layer instanceof OpenLayers.Layer.UTFGrid, "utfgrid instance");
+        t.eq(layer.url, "../data/utfgrid/world_utfgrid/${z}/${x}/${y}.json", "layer url");
+        t.eq(layer.utfgridResolution, 4, "layer utfgridResolution");
+        clone.destroy();
+        
+        tearDown();
+    }
+    
+    function test_getFeatureInfo(t) {
+        t.plan(2);
+        setUp();
+                
+        // wait for tile loading to finish
+        t.delay_call(0.5, function() {
+            var loc = new OpenLayers.LonLat(-110, 45).transform("EPSG:4326", "EPSG:900913");
+            var info = layer.getFeatureInfo(loc);
+            
+            t.eq(info.id, "207", "feature id");
+            t.eq(info.data, {POP2005: 299846449, NAME: "United States"}, "feature data");
+            
+            tearDown();
+        });
+        
+    }
+
+    function test_getFeatureId(t) {
+        t.plan(2);
+        setUp();
+
+        // wait for tile loading to finish
+        t.delay_call(0.5, function() {
+            var ca = new OpenLayers.LonLat(-110, 55).transform("EPSG:4326", "EPSG:900913");
+            var ru = new OpenLayers.LonLat(90, 75).transform("EPSG:4326", "EPSG:900913");
+            
+            t.eq(layer.getFeatureId(ca), "24", "feature id for ca");
+            t.eq(layer.getFeatureId(ru), "245", "feature id for ru");
+            
+            tearDown();
+        });
+        
+    }
+
+  </script>
+</head>
+<body>
+<div id="map" style="height: 256px; width: 512px"></div>
+</body>
+</html>
+
