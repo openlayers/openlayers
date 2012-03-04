@@ -37,8 +37,8 @@
         });
         log = [];
         control = new OpenLayers.Control.UTFGrid({
-            callback: function(infoLookup) {
-                log.push(infoLookup);
+            callback: function(infoLookup, loc, pixel) {
+                log.push([infoLookup, loc, pixel]);
             }
         });
         map.addControl(control);
@@ -68,7 +68,7 @@
         
         var cases = [{
             evt: {xy: {x: 100, y: 70}},
-            arg: {
+            lookup: {
                 "0": {
                     id: "207",
                     data: {
@@ -79,7 +79,7 @@
             }
         }, {
             evt: {xy: {x: 350, y: 20}},
-            arg: {
+            lookup: {
                 "0": {
                     id: "245",
                     data: {
@@ -91,7 +91,7 @@
         }];
         
         var len = cases.length;
-        t.plan(3*len);
+        t.plan(4*len);
                 
         // wait for tile loading to finish
         t.delay_call(0.5, function() {
@@ -101,7 +101,8 @@
                 t.eq(log.length, i, i + ": log length before");
                 control.handleEvent(c.evt);
                 t.eq(log.length, i+1, i + ": log length after");
-                t.eq(log[i], c.arg, i + ": callback arg");
+                t.eq(log[i][0], c.lookup, i + ": callback infoLookup");
+                t.eq(log[i][2], c.evt.xy, i + ": callback pixel");
             }
             
             tearDown();
