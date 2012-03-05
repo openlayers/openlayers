@@ -15,6 +15,9 @@
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         var map, drawControls;
+        
+        var $ = OpenLayers.Util.getElement;
+        
         OpenLayers.Feature.Vector.style['default']['strokeWidth'] = '2';
         function init(){
             map = new OpenLayers.Map('map');

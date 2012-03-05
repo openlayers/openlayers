@@ -92,7 +92,7 @@ geolocate.events.register("locationupdated",geolocate,function(e) {
 geolocate.events.register("locationfailed",this,function() {
     OpenLayers.Console.log('Location detection failed');
 });
-
+var $ = OpenLayers.Util.getElement;
 $('locate').onclick = function() {
     vector.removeAllFeatures();
     geolocate.deactivate();

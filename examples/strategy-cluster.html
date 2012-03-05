@@ -69,6 +69,8 @@
         <script src="Jugl.js"></script>
         <script src="animator.js"></script>
         <script type="text/javascript">
+            var $ = OpenLayers.Util.getElement;
+        
             var map, template;
             OpenLayers.ProxyHost = (window.location.host == "localhost") ?
                 "/cgi-bin/proxy.cgi?url=" : "proxy.cgi?url=";

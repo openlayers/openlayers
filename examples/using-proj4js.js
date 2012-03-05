@@ -1,4 +1,6 @@
 var map, vector;
+var $ = OpenLayers.Util.getElement;
+
 function init(){
     map = new OpenLayers.Map('map', {
         projection: 'EPSG:31467',
