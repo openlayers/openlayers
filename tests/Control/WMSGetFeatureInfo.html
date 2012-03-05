@@ -476,7 +476,7 @@
     }
 
     function test_drillDown(t) {
-        t.plan(6);
+        t.plan(7);
         var map = new OpenLayers.Map("map", {
             getExtent: function() {return(new OpenLayers.Bounds(-180,-90,180,90));}
             }
@@ -493,6 +493,7 @@
         // this service does not support application/vnd.ogc.gml for GetFeatureInfo, only text/xml
         var c = new OpenLayers.Layer.WMS("dummy","http://myhost/wms", {
             layers: "x",
+            exceptions: "text/xml",
             info_format: "text/xml"
         });
 
@@ -515,6 +516,7 @@
                 t.eq(options.url, "http://localhost/wms", "Correct url used for second request");
             } else if (count == 1) {
                 t.eq(options.params["INFO_FORMAT"], "text/xml", "Overridden info format is used instead of the control's infoFormat");
+                t.eq(options.params["EXCEPTIONS"], "text/xml", "Exceptions parameter is used from the WMS layer");
                 t.eq(options.url, "http://myhost/wms", "Correct url used for first request");
             }
         };
