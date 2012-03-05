@@ -135,7 +135,7 @@
     }
 
     function test_createRequest(t) {
-        t.plan(3);
+        t.plan(4);
         var protocol = new OpenLayers.Protocol.Script({
             callbackKey: 'cb_key',
             callbackPrefix: 'cb_prefix:'
@@ -155,7 +155,13 @@
         t.eq(script.id, 'OpenLayers_Protocol_Script_bar',
             'created script has a correct id');
 
+        protocol.callbackTemplate = "OpenLayers.Protocol.Script.registry.${id}";
+        script = protocol.createRequest('http://bar_url/', {'k': 'bar_param'}, 'bar_callback');
+        t.eq(script.src, 'http://bar_url/?k=bar_param&cb_key=cb_prefix%3AOpenLayers.Protocol.Script.registry.bar',
+            'created script has a correct url with different template');
+
         OpenLayers.Protocol.Script.register = _register;
+
     }
 
     function test_destroyRequest(t) {
