@@ -141,7 +141,7 @@ Test.AnotherWay.quicksearch = function(){
 Test.AnotherWay.filterTestList = function(str){
     Test.AnotherWay.unfilterTestList();
     var re = new RegExp(str, 'i');
-    var candidates  = document.querySelectorAll('#testtable tr td:nth-child(2) a');
+    var candidates  = document.querySelectorAll('#testtable tr a');
     for (var idx = 0, len = candidates.length; idx<len; idx++) {
         var tr = candidates[idx].parentNode.parentNode;
         var html = candidates[idx].innerHTML;
@@ -164,10 +164,10 @@ Test.AnotherWay.unfilterTestList = function() {
 };
 
 // bind our quicksearch init method to body onload.
-(function(win){
+(function(win) {
     if (win.addEventListener) {
         win.addEventListener('load', Test.AnotherWay.bindQuicksearchListener);
-    } else if (input.attachEvent) {
+    } else if (win.attachEvent) {
         win.attachEvent('onload', Test.AnotherWay.bindQuicksearchListener);
     } else {
         win.onload = function(){

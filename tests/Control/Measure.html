@@ -289,16 +289,16 @@
         // move 10 pixels
         trigger("mousemove", 0, 10);
 
-        t.eq(log.length, 0, "a) no event fired yet");
+        t.eq(log.length, 1, "a) has fired an event");
 
         t.delay_call(
             delay, function() {
                 // confirm measurepartial is fired
-                t.eq(log.length, 1, "a) event logged");
+                t.eq(log.length, 1, "a) one event logged");
                 t.ok(log[0] && log[0].type == "measurepartial", "a) correct type");
                 // mousemove within the partialDelay fires no event, so the
                 // measure below is the one of the initial point
-                t.ok(log[0] && log[0].measure == 0, "a) correct measure");
+                t.eq(log[0]?log[0].measure:-1 , 10, "a) correct measure");
 
                 // b) move 10 pixels
                 trigger("mousemove", 0, 20);

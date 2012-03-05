@@ -429,6 +429,43 @@ span.olGoogleAttribution.hybrid a, span.olGoogleAttribution.satellite a {
     background-position: -26px -24px;
 }
 
+div.olControlZoom {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+}
+div.olControlZoom a {
+    display: block;
+    margin: 2px;
+    padding: 0 4px;
+    color: white;
+    font-size: 18px;
+    font-family: 'Lucida Grande', Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif;    
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+    height: 22px;
+    width: 15px;
+    line-height: 22px;
+    background: #666666; /* fallback for IE - IE6 requires background shorthand*/
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid;
+    border-color: #ffffff; /* fallback for IE */
+    border-color: rgba(255, 255, 255, 0.6);
+    filter: alpha(opacity=60);
+}
+div.olControlZoom a:hover {
+    background: #444444; /* fallback for IE */
+    background: rgba(0, 0, 0, 0.5);
+    filter: alpha(opacity=80);
+}
+a.olControlZoomIn {
+    border-radius: 5px 5px 0 0;
+}
+a.olControlZoomOut {
+    border-radius: 0 0 5px 5px;
+}
+
 /**
  * Animations
  */

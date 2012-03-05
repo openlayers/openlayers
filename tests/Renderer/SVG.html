@@ -79,7 +79,9 @@
         // test extent changes
         var extent = new OpenLayers.Bounds(4,3,2,1);
         r.setExtent(extent);
-        t.eq(r.root.getAttributeNS(null, "transform").replace(/ /g, ""), "translate(-6,-6)", "rendererRoot viewBox is correct after a new setExtent");
+        var el = r.createNode("g");
+        el.setAttributeNS(null, "transform", "translate(-6,-6)");
+        t.eq(r.root.getAttributeNS(null, "transform"), el.getAttributeNS(null, "transform"), "rendererRoot viewBox is correct after a new setExtent");
 
         OpenLayers.Renderer.Elements.prototype.setExtent =
             OpenLayers.Renderer.Elements.prototype._setExtent;

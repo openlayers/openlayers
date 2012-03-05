@@ -17,12 +17,22 @@
         function test_all(t) {
             t.plan(8);
             t.ok(OpenLayers.Animation.isNative !== undefined, "isNative is set.");
-            t.open_window("Animation.html", function(win) {
+            
+            function doIt(win) {
                 win.requestFrame(t);
                 win.start(t);
                 win.startDuration(t);
                 win.stop(t);
-            });
+            }
+            
+            // Test in an extra window in Firefox, and directly in other browsers.
+            // This is needed because requestAnimationFrame does not work
+            // correctly in Firefox in a hidden IFrame.
+            if (window.mozRequestAnimationFrame) {
+                t.open_window("Animation.html", doIt);
+            } else {
+                doIt(window);
+            }
         }
 
         function requestFrame(t) {

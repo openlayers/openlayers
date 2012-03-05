@@ -6,7 +6,7 @@
     function test_initialize(t) {
         t.plan(3);
 
-        var protocol = new OpenLayers.Protocol.CSW({formatOptions: {foo: "bar"},});
+        var protocol = new OpenLayers.Protocol.CSW({formatOptions: {foo: "bar"}});
         t.ok(protocol instanceof OpenLayers.Protocol.CSW.v2_0_2,
              "initialize returns instance of default versioned protocol");
         var format = protocol.format;

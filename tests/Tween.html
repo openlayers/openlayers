@@ -1,5 +1,20 @@
 <html> 
 <head> 
+    <script>
+    /**
+    * Because browsers that implement requestAnimationFrame may not execute
+    * animation functions while a window is not displayed (e.g. in a hidden
+    * iframe as in these tests), we mask the native implementations here.  The
+    * native requestAnimationFrame functionality is tested in Util.html and
+    * in PanZoom.html (where a popup is opened before panning).  The panTo tests
+    * here will test the fallback setTimeout implementation for animation.
+    */
+    window.requestAnimationFrame = 
+        window.webkitRequestAnimationFrame =
+        window.mozRequestAnimationFrame =
+        window.oRequestAnimationFrame =
+        window.msRequestAnimationFrame = null;
+    </script>
     <script src="OLLoader.js"></script> 
     <script type="text/javascript">
 
