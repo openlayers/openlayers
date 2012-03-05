@@ -5,7 +5,8 @@ var osm = new OpenLayers.Layer.XYZ(
         "http://otile2.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
         "http://otile3.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
         "http://otile4.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png"
-    ]
+    ],
+    {transitionEffect: "resize"}
 );
 
 var utfgrid = new OpenLayers.Layer.UTFGrid({
