@@ -375,7 +375,7 @@
     // test for https://github.com/openlayers/openlayers/pull/36
     // (more an integration test than a unit test)
     function test_olImageLoadError(t) {
-        t.plan(2);
+        t.plan(6);
 
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS("invalid",  "", {layers: 'basic'});
@@ -386,10 +386,25 @@
         var bounds = new OpenLayers.Bounds(1, 2, 3, 4);
 
         var tile = new OpenLayers.Tile.Image(layer, position, bounds, null, size);
+        var log = [];
+        tile.events.register("loaderror", this, function(e) {
+            log.push([
+                e.object.imgDiv.style.visibility,
+                OpenLayers.Element.hasClass(e.object.imgDiv, 'olImageLoadError')
+            ]);
+        });
+        tile.events.register("loadend", this, function(e) {
+            log.push(e);
+        })
         tile.draw();
 
         t.delay_call(0.1, function() {
-
+            
+            t.eq(log.length, 2, "loaderror and loadend events triggered");
+            t.eq(log[0][0], "hidden", "tile still hidden when loaderror is triggered");
+            t.eq(log[0][1], true, "tile has olImageLoadError class already when loaderror is triggered");
+            t.ok(log[1].object === tile, "loadend event triggered after loaderror");
+            
             // check initial state
             t.ok(OpenLayers.Element.hasClass(tile.imgDiv, 'olImageLoadError'),
                  'tile image has the olImageLoadError class (init state)');
