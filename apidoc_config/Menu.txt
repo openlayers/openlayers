@@ -61,57 +61,55 @@ Group: OpenLayers  {
       File: Size  (no auto-title, OpenLayers/BaseTypes/Size.js)
       }  # Group: BaseTypes
 
+   File: Console  (no auto-title, OpenLayers/Console.js)
+
    Group: Control  {
 
       File: Control  (no auto-title, OpenLayers/Control.js)
-
-      Group: Control  {
-
-         File: ArgParser  (no auto-title, OpenLayers/Control/ArgParser.js)
-         File: Attribution  (no auto-title, OpenLayers/Control/Attribution.js)
-         File: Button  (no auto-title, OpenLayers/Control/Button.js)
-         File: DragFeature  (no auto-title, OpenLayers/Control/DragFeature.js)
-         File: DragPan  (no auto-title, OpenLayers/Control/DragPan.js)
-         File: DrawFeature  (no auto-title, OpenLayers/Control/DrawFeature.js)
-         File: EditingToolbar  (no auto-title, OpenLayers/Control/EditingToolbar.js)
-         File: Geolocate  (no auto-title, OpenLayers/Control/Geolocate.js)
-         File: GetFeature  (no auto-title, OpenLayers/Control/GetFeature.js)
-         File: Graticule  (no auto-title, OpenLayers/Control/Graticule.js)
-         File: KeyboardDefaults  (no auto-title, OpenLayers/Control/KeyboardDefaults.js)
-         File: LayerSwitcher  (no auto-title, OpenLayers/Control/LayerSwitcher.js)
-         File: Measure  (no auto-title, OpenLayers/Control/Measure.js)
-         File: ModifyFeature  (no auto-title, OpenLayers/Control/ModifyFeature.js)
-         File: MousePosition  (no auto-title, OpenLayers/Control/MousePosition.js)
-         File: Navigation  (no auto-title, OpenLayers/Control/Navigation.js)
-         File: NavigationHistory  (no auto-title, OpenLayers/Control/NavigationHistory.js)
-         File: NavToolbar  (no auto-title, OpenLayers/Control/NavToolbar.js)
-         File: OverviewMap  (no auto-title, OpenLayers/Control/OverviewMap.js)
-         File: Pan  (no auto-title, OpenLayers/Control/Pan.js)
-         File: Panel  (no auto-title, OpenLayers/Control/Panel.js)
-         File: PanPanel  (no auto-title, OpenLayers/Control/PanPanel.js)
-         File: PanZoom  (no auto-title, OpenLayers/Control/PanZoom.js)
-         File: PanZoomBar  (no auto-title, OpenLayers/Control/PanZoomBar.js)
-         File: Permalink  (no auto-title, OpenLayers/Control/Permalink.js)
-         File: PinchZoom  (no auto-title, OpenLayers/Control/PinchZoom.js)
-         File: Scale  (no auto-title, OpenLayers/Control/Scale.js)
-         File: ScaleLine  (no auto-title, OpenLayers/Control/ScaleLine.js)
-         File: SelectFeature  (no auto-title, OpenLayers/Control/SelectFeature.js)
-         File: SLDSelect  (no auto-title, OpenLayers/Control/SLDSelect.js)
-         File: Snapping  (no auto-title, OpenLayers/Control/Snapping.js)
-         File: Split  (no auto-title, OpenLayers/Control/Split.js)
-         File: TouchNavigation  (no auto-title, OpenLayers/Control/TouchNavigation.js)
-         File: TransformFeature  (no auto-title, OpenLayers/Control/TransformFeature.js)
-         File: UTFGrid  (OpenLayers/Control/UTFGrid.js)
-         File: WMSGetFeatureInfo  (no auto-title, OpenLayers/Control/WMSGetFeatureInfo.js)
-         File: WMTSGetFeatureInfo  (no auto-title, OpenLayers/Control/WMTSGetFeatureInfo.js)
-         File: ZoomBox  (no auto-title, OpenLayers/Control/ZoomBox.js)
-         File: ZoomIn  (no auto-title, OpenLayers/Control/ZoomIn.js)
-         File: ZoomOut  (no auto-title, OpenLayers/Control/ZoomOut.js)
-         File: ZoomPanel  (no auto-title, OpenLayers/Control/ZoomPanel.js)
-         File: ZoomToMaxExtent  (no auto-title, OpenLayers/Control/ZoomToMaxExtent.js)
-         }  # Group: Control
-
+      File: ArgParser  (no auto-title, OpenLayers/Control/ArgParser.js)
+      File: Attribution  (no auto-title, OpenLayers/Control/Attribution.js)
+      File: Button  (no auto-title, OpenLayers/Control/Button.js)
+      File: DragFeature  (no auto-title, OpenLayers/Control/DragFeature.js)
+      File: DragPan  (no auto-title, OpenLayers/Control/DragPan.js)
+      File: DrawFeature  (no auto-title, OpenLayers/Control/DrawFeature.js)
+      File: EditingToolbar  (no auto-title, OpenLayers/Control/EditingToolbar.js)
+      File: Geolocate  (no auto-title, OpenLayers/Control/Geolocate.js)
+      File: GetFeature  (no auto-title, OpenLayers/Control/GetFeature.js)
+      File: Graticule  (no auto-title, OpenLayers/Control/Graticule.js)
+      File: KeyboardDefaults  (no auto-title, OpenLayers/Control/KeyboardDefaults.js)
+      File: LayerSwitcher  (no auto-title, OpenLayers/Control/LayerSwitcher.js)
+      File: Measure  (no auto-title, OpenLayers/Control/Measure.js)
+      File: ModifyFeature  (no auto-title, OpenLayers/Control/ModifyFeature.js)
+      File: MousePosition  (no auto-title, OpenLayers/Control/MousePosition.js)
+      File: Navigation  (no auto-title, OpenLayers/Control/Navigation.js)
+      File: NavigationHistory  (no auto-title, OpenLayers/Control/NavigationHistory.js)
+      File: NavToolbar  (no auto-title, OpenLayers/Control/NavToolbar.js)
+      File: OverviewMap  (no auto-title, OpenLayers/Control/OverviewMap.js)
+      File: Pan  (no auto-title, OpenLayers/Control/Pan.js)
+      File: Panel  (no auto-title, OpenLayers/Control/Panel.js)
+      File: PanPanel  (no auto-title, OpenLayers/Control/PanPanel.js)
+      File: PanZoom  (no auto-title, OpenLayers/Control/PanZoom.js)
+      File: PanZoomBar  (no auto-title, OpenLayers/Control/PanZoomBar.js)
+      File: Permalink  (no auto-title, OpenLayers/Control/Permalink.js)
+      File: PinchZoom  (no auto-title, OpenLayers/Control/PinchZoom.js)
+      File: Scale  (no auto-title, OpenLayers/Control/Scale.js)
+      File: ScaleLine  (no auto-title, OpenLayers/Control/ScaleLine.js)
+      File: SelectFeature  (no auto-title, OpenLayers/Control/SelectFeature.js)
+      File: SLDSelect  (no auto-title, OpenLayers/Control/SLDSelect.js)
+      File: Snapping  (no auto-title, OpenLayers/Control/Snapping.js)
+      File: Split  (no auto-title, OpenLayers/Control/Split.js)
+      File: TouchNavigation  (no auto-title, OpenLayers/Control/TouchNavigation.js)
+      File: TransformFeature  (no auto-title, OpenLayers/Control/TransformFeature.js)
+      File: WMSGetFeatureInfo  (no auto-title, OpenLayers/Control/WMSGetFeatureInfo.js)
+      File: WMTSGetFeatureInfo  (no auto-title, OpenLayers/Control/WMTSGetFeatureInfo.js)
+      File: ZoomBox  (no auto-title, OpenLayers/Control/ZoomBox.js)
+      File: ZoomIn  (no auto-title, OpenLayers/Control/ZoomIn.js)
+      File: ZoomOut  (no auto-title, OpenLayers/Control/ZoomOut.js)
+      File: ZoomPanel  (no auto-title, OpenLayers/Control/ZoomPanel.js)
+      File: ZoomToMaxExtent  (no auto-title, OpenLayers/Control/ZoomToMaxExtent.js)
       }  # Group: Control
+
+   File: Events  (no auto-title, OpenLayers/Events.js)
 
    Group: Feature  {
 
@@ -281,6 +279,8 @@ Group: OpenLayers  {
       File: RegularPolygon  (no auto-title, OpenLayers/Handler/RegularPolygon.js)
       }  # Group: Handler
 
+   File: Icon  (no auto-title, OpenLayers/Icon.js)
+
    Group: Lang  {
 
       File: Lang  (no auto-title, OpenLayers/Lang.js)
@@ -332,45 +332,41 @@ Group: OpenLayers  {
    Group: Layer  {
 
       File: Layer  (no auto-title, OpenLayers/Layer.js)
-
-      Group: Layer  {
-
-         File: ArcGISCache.js  (no auto-title, OpenLayers/Layer/ArcGISCache.js)
-         File: ArcGIS93Rest  (no auto-title, OpenLayers/Layer/ArcGIS93Rest.js)
-         File: ArcIMS  (no auto-title, OpenLayers/Layer/ArcIMS.js)
-         File: Bing  (no auto-title, OpenLayers/Layer/Bing.js)
-         File: Boxes  (no auto-title, OpenLayers/Layer/Boxes.js)
-         File: EventPane  (no auto-title, OpenLayers/Layer/EventPane.js)
-         File: FixedZoomLevels  (no auto-title, OpenLayers/Layer/FixedZoomLevels.js)
-         File: GeoRSS  (no auto-title, OpenLayers/Layer/GeoRSS.js)
-         File: Google  (no auto-title, OpenLayers/Layer/Google.js)
-         File: Google.v3  (no auto-title, OpenLayers/Layer/Google/v3.js)
-         File: Grid  (no auto-title, OpenLayers/Layer/Grid.js)
-         File: HTTPRequest  (no auto-title, OpenLayers/Layer/HTTPRequest.js)
-         File: Image  (no auto-title, OpenLayers/Layer/Image.js)
-         File: KaMap  (no auto-title, OpenLayers/Layer/KaMap.js)
-         File: KaMapCache  (no auto-title, OpenLayers/Layer/KaMapCache.js)
-         File: MapGuide  (no auto-title, OpenLayers/Layer/MapGuide.js)
-         File: MapServer  (no auto-title, OpenLayers/Layer/MapServer.js)
-         File: Markers  (no auto-title, OpenLayers/Layer/Markers.js)
-         File: OSM  (no auto-title, OpenLayers/Layer/OSM.js)
-         File: PointGrid  (no auto-title, OpenLayers/Layer/PointGrid.js)
-         File: PointTrack  (no auto-title, OpenLayers/Layer/PointTrack.js)
-         File: SphericalMercator  (no auto-title, OpenLayers/Layer/SphericalMercator.js)
-         File: Text  (no auto-title, OpenLayers/Layer/Text.js)
-         File: TileCache  (no auto-title, OpenLayers/Layer/TileCache.js)
-         File: TMS  (no auto-title, OpenLayers/Layer/TMS.js)
-         File: Vector  (no auto-title, OpenLayers/Layer/Vector.js)
-         File: Vector.RootContainer  (no auto-title, OpenLayers/Layer/Vector/RootContainer.js)
-         File: WMS  (no auto-title, OpenLayers/Layer/WMS.js)
-         File: WMTS  (no auto-title, OpenLayers/Layer/WMTS.js)
-         File: WorldWind  (no auto-title, OpenLayers/Layer/WorldWind.js)
-         File: XYZ  (no auto-title, OpenLayers/Layer/XYZ.js)
-         File: Zoomify  (no auto-title, OpenLayers/Layer/Zoomify.js)
-         File: UTFGrid  (OpenLayers/Layer/UTFGrid.js)
-         }  # Group: Layer
-
+      File: ArcGISCache.js  (no auto-title, OpenLayers/Layer/ArcGISCache.js)
+      File: ArcGIS93Rest  (no auto-title, OpenLayers/Layer/ArcGIS93Rest.js)
+      File: ArcIMS  (no auto-title, OpenLayers/Layer/ArcIMS.js)
+      File: Bing  (no auto-title, OpenLayers/Layer/Bing.js)
+      File: Boxes  (no auto-title, OpenLayers/Layer/Boxes.js)
+      File: EventPane  (no auto-title, OpenLayers/Layer/EventPane.js)
+      File: FixedZoomLevels  (no auto-title, OpenLayers/Layer/FixedZoomLevels.js)
+      File: GeoRSS  (no auto-title, OpenLayers/Layer/GeoRSS.js)
+      File: Google  (no auto-title, OpenLayers/Layer/Google.js)
+      File: Google.v3  (no auto-title, OpenLayers/Layer/Google/v3.js)
+      File: Grid  (no auto-title, OpenLayers/Layer/Grid.js)
+      File: HTTPRequest  (no auto-title, OpenLayers/Layer/HTTPRequest.js)
+      File: Image  (no auto-title, OpenLayers/Layer/Image.js)
+      File: KaMap  (no auto-title, OpenLayers/Layer/KaMap.js)
+      File: KaMapCache  (no auto-title, OpenLayers/Layer/KaMapCache.js)
+      File: MapGuide  (no auto-title, OpenLayers/Layer/MapGuide.js)
+      File: MapServer  (no auto-title, OpenLayers/Layer/MapServer.js)
+      File: Markers  (no auto-title, OpenLayers/Layer/Markers.js)
+      File: OSM  (no auto-title, OpenLayers/Layer/OSM.js)
+      File: PointGrid  (no auto-title, OpenLayers/Layer/PointGrid.js)
+      File: PointTrack  (no auto-title, OpenLayers/Layer/PointTrack.js)
+      File: SphericalMercator  (no auto-title, OpenLayers/Layer/SphericalMercator.js)
+      File: Text  (no auto-title, OpenLayers/Layer/Text.js)
+      File: TileCache  (no auto-title, OpenLayers/Layer/TileCache.js)
+      File: TMS  (no auto-title, OpenLayers/Layer/TMS.js)
+      File: Vector  (no auto-title, OpenLayers/Layer/Vector.js)
+      File: Vector.RootContainer  (no auto-title, OpenLayers/Layer/Vector/RootContainer.js)
+      File: WMS  (no auto-title, OpenLayers/Layer/WMS.js)
+      File: WMTS  (no auto-title, OpenLayers/Layer/WMTS.js)
+      File: WorldWind  (no auto-title, OpenLayers/Layer/WorldWind.js)
+      File: XYZ  (no auto-title, OpenLayers/Layer/XYZ.js)
+      File: Zoomify  (no auto-title, OpenLayers/Layer/Zoomify.js)
       }  # Group: Layer
+
+   File: Map  (no auto-title, OpenLayers/Map.js)
 
    Group: Marker  {
 
@@ -387,19 +383,12 @@ Group: OpenLayers  {
       File: FramedCloud  (no auto-title, OpenLayers/Popup/FramedCloud.js)
       }  # Group: Popup
 
+   File: Projection  (no auto-title, OpenLayers/Projection.js)
+
    Group: Protocol  {
 
       File: Protocol  (no auto-title, OpenLayers/Protocol.js)
-
-      Group: Protocol  {
-
-         File: CSW  (OpenLayers/Protocol/CSW.js)
-         File: CSW.v2_0_2  (OpenLayers/Protocol/CSW/v2_0_2.js)
-         File: HTTP  (no auto-title, OpenLayers/Protocol/HTTP.js)
-         File: Script  (no auto-title, OpenLayers/Protocol/Script.js)
-         File: SOS.DEFAULTS  (no auto-title, OpenLayers/Protocol/SOS.js)
-         File: SOS.v1_0_0  (no auto-title, OpenLayers/Protocol/SOS/v1_0_0.js)
-         }  # Group: Protocol
+      File: HTTP  (no auto-title, OpenLayers/Protocol/HTTP.js)
 
       Group: WFS  {
 
@@ -409,6 +398,9 @@ Group: OpenLayers  {
          File: v1_1_0  (no auto-title, OpenLayers/Protocol/WFS/v1_1_0.js)
          }  # Group: WFS
 
+      File: Script  (no auto-title, OpenLayers/Protocol/Script.js)
+      File: SOS.DEFAULTS  (no auto-title, OpenLayers/Protocol/SOS.js)
+      File: SOS.v1_0_0  (no auto-title, OpenLayers/Protocol/SOS/v1_0_0.js)
       }  # Group: Protocol
 
    Group: Renderer  {
@@ -428,6 +420,9 @@ Group: OpenLayers  {
       File: XMLHttpRequest  (no auto-title, OpenLayers/Request/XMLHttpRequest.js)
       }  # Group: Request
 
+   File: Rule  (no auto-title, OpenLayers/Rule.js)
+   File: SingleFile.js  (no auto-title, OpenLayers/SingleFile.js)
+
    Group: Strategy  {
 
       File: Strategy  (no auto-title, OpenLayers/Strategy.js)
@@ -439,6 +434,10 @@ Group: OpenLayers  {
       File: Refresh  (no auto-title, OpenLayers/Strategy/Refresh.js)
       File: Save  (no auto-title, OpenLayers/Strategy/Save.js)
       }  # Group: Strategy
+
+   File: Style  (no auto-title, OpenLayers/Style.js)
+   File: Style2  (no auto-title, OpenLayers/Style2.js)
+   File: StyleMap  (no auto-title, OpenLayers/StyleMap.js)
 
    Group: Symbolizer  {
 
@@ -455,30 +454,11 @@ Group: OpenLayers  {
       File: Tile  (no auto-title, OpenLayers/Tile.js)
       File: Image  (no auto-title, OpenLayers/Tile/Image.js)
       File: Image.IFrame  (no auto-title, OpenLayers/Tile/Image/IFrame.js)
-      File: UTFGrid  (OpenLayers/Tile/UTFGrid.js)
       }  # Group: Tile
 
+   File: Tween  (no auto-title, OpenLayers/Tween.js)
+   File: Util  (no auto-title, OpenLayers/Util.js)
    File: Deprecated  (no auto-title, deprecated.js)
-
-   Group: OpenLayers  {
-
-      File: Animation  (OpenLayers/Animation.js)
-      File: Console  (no auto-title, OpenLayers/Console.js)
-      File: Events  (no auto-title, OpenLayers/Events.js)
-      File: Events.buttonclick  (OpenLayers/Events/buttonclick.js)
-      File: Icon  (no auto-title, OpenLayers/Icon.js)
-      File: Kinetic  (OpenLayers/Kinetic.js)
-      File: Map  (no auto-title, OpenLayers/Map.js)
-      File: Projection  (no auto-title, OpenLayers/Projection.js)
-      File: Rule  (no auto-title, OpenLayers/Rule.js)
-      File: SingleFile.js  (no auto-title, OpenLayers/SingleFile.js)
-      File: Style  (no auto-title, OpenLayers/Style.js)
-      File: Style2  (no auto-title, OpenLayers/Style2.js)
-      File: StyleMap  (no auto-title, OpenLayers/StyleMap.js)
-      File: Tween  (no auto-title, OpenLayers/Tween.js)
-      File: Util  (no auto-title, OpenLayers/Util.js)
-      }  # Group: OpenLayers
-
    }  # Group: OpenLayers
 
 Group: Index  {
