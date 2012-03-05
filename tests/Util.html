@@ -77,11 +77,6 @@
         t.eq(OpenLayers.Util.isArray(testArray), true, "isArray works");
     }
     
-    function test_$(t) {
-        t.plan(1);
-        t.ok($ === custom$, "OpenLayers doesn't clobber existing definition of $.");
-    }
-    
     function test_Util_getImagesLocation (t) {
         t.plan( 1 );
         t.ok( OpenLayers.Util.getImagesLocation(), "../img/",
