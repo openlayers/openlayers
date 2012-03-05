@@ -5,8 +5,6 @@
         function test_OpenLayers(t) {
             t.plan(3);
 
-            var script = document.getElementById("script");
-
             t.eq(OpenLayers._getScriptLocation(), "../", "Script location correctly detected.");
             
             t.ok(OpenLayers.ImgPath !== undefined, "An ImgPath property exists.");
