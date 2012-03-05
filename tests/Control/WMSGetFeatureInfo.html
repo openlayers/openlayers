@@ -475,8 +475,37 @@
         
     }
 
+    function test_exceptions(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map("map", {
+            getExtent: function() {return(new OpenLayers.Bounds(-180,-90,180,90));}
+            }
+        );
+
+        var a = new OpenLayers.Layer.WMS("dummy","http://myhost/wms", {
+            layers: "x",
+            exceptions: "text/xml"
+        });
+
+        map.addLayer(a);
+
+        var click = new OpenLayers.Control.WMSGetFeatureInfo({
+        });
+
+        map.addControl(click);
+
+        var _request = OpenLayers.Request.GET;
+        OpenLayers.Request.GET = function(options) {
+            t.eq(options.params["EXCEPTIONS"], "text/xml", "Exceptions parameter taken from the WMS layer if provided");
+        };
+        click.activate();
+        click.getInfoForClick({xy: {x: 50, y: 50}});
+        OpenLayers.Request.GET = _request;
+        map.destroy();
+    }
+
     function test_drillDown(t) {
-        t.plan(7);
+        t.plan(6);
         var map = new OpenLayers.Map("map", {
             getExtent: function() {return(new OpenLayers.Bounds(-180,-90,180,90));}
             }
@@ -493,7 +522,6 @@
         // this service does not support application/vnd.ogc.gml for GetFeatureInfo, only text/xml
         var c = new OpenLayers.Layer.WMS("dummy","http://myhost/wms", {
             layers: "x",
-            exceptions: "text/xml",
             info_format: "text/xml"
         });
 
@@ -516,7 +544,6 @@
                 t.eq(options.url, "http://localhost/wms", "Correct url used for second request");
             } else if (count == 1) {
                 t.eq(options.params["INFO_FORMAT"], "text/xml", "Overridden info format is used instead of the control's infoFormat");
-                t.eq(options.params["EXCEPTIONS"], "text/xml", "Exceptions parameter is used from the WMS layer");
                 t.eq(options.url, "http://myhost/wms", "Correct url used for first request");
             }
         };
