@@ -19,7 +19,7 @@ var draw = new OpenLayers.Control.DrawFeature(
 map.addControl(draw);
 draw.activate();
 
-$ = OpenLayers.Util.getElement;
+var $ = OpenLayers.Util.getElement;
 
 // handle clicks on method links
 $("insertXY").onclick = function() {
