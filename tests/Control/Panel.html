@@ -337,6 +337,43 @@
         t.ok(panel2.events.element === div, "Panel outside map has the panel's div as element on its Events instance");
         
     }
+    
+    function test_iconOniconOff (t) {
+    	t.plan(6);
+    	var map = new OpenLayers.Map("map"),
+			navControl = new OpenLayers.Control.Navigation({autoActivate: true}),
+			zbControl = new OpenLayers.Control.ZoomBox(),
+    		panel = new OpenLayers.Control.Panel({defaultControl: navControl}),
+    		navActiveClass, navInactiveClass, zbActiveClass, zbInactiveClass;
+    	
+    	panel.addControls([navControl, zbControl]);
+    	map.addControl(panel);
+    	
+     	navControl.panel_div.className += " foo";
+    	zbControl.panel_div.className = "bar " + zbControl.panel_div.className;
+    	
+    	t.eq(navControl.panel_div.className, "olControlNavigationItemActive olButton foo",
+    		"defaultControl className is set to [displayClass]Active on panel instantiation");
+    	t.eq(zbControl.panel_div.className, "bar olControlZoomBoxItemInactive olButton",
+        	"non-defaultControl className is set to [displayClass]Inactive on panel instantiation");
+    	
+    	panel.activateControl(zbControl);
+    	
+    	t.eq(zbControl.panel_div.className, "bar olControlZoomBoxItemActive olButton",
+    		"active control class name with preceding secondary class name is set to [displayClass]Active");
+    	t.eq(navControl.panel_div.className, "olControlNavigationItemInactive olButton foo",
+    		"inactive control class name with trailing secondary class name is set to [displayClass]Inactive");
+    	
+    	panel.activateControl(navControl);
+    	
+    	t.eq(navControl.panel_div.className, "olControlNavigationItemActive olButton foo",
+        		"active control class name with trailing secondary class name is set to [displayClass]Active");
+    	t.eq(zbControl.panel_div.className, "bar olControlZoomBoxItemInactive olButton",
+        		"inactive control class name with preceding secondary class name is set to [displayClass]Inactive");
+    	
+    	map.destroy();
+    }
+    
   </script>
 </head>
 <body>
