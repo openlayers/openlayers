@@ -26,9 +26,13 @@ if [ ! o$GITREV = $OLD_GITREV ]; then
     cd /osgeo/openlayers/docs/dev/build
     ./build.py -c closure tests.cfg
     ./build.py -c closure mobile.cfg OpenLayers.mobile.js
+    ./build.py -c closure light.cfg OpenLayers.light.js
+	./build.py -c none tests.cfg OpenLayers.debug.js
+	./build.py -c none mobile.cfg OpenLayers.mobile.debug.js
+	./build.py -c none light.cfg OpenLayers.light.debug.js
     
     cp OpenLayers.js ..
-    cp OpenLayers.mobile.js ..
+    cp OpenLayers.*.js ..
 
     cd ..
     for i in google ie6-style style; do
