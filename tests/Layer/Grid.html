@@ -506,7 +506,7 @@
     }  
      
     function test_Layer_Grid_addTileMonitoringHooks(t) {
-        t.plan(17);
+        t.plan(18);
         
         layer = new OpenLayers.Layer.Grid();
         layer.events = {
@@ -546,10 +546,11 @@
 
         t.eq(g_events[0][0], "loadstart", "loadstart event triggered when numLoadingTiles is 0");
         t.eq(layer.numLoadingTiles, 1, "numLoadingTiles incremented");
+        t.eq(g_events[1][0], "tileloadstart", "tileloadstart event triggered");
 
         g_events = [];
         tile.onLoadStart.apply(layer);
-        t.eq(g_events.length, 0, "loadstart event not triggered when numLoadingTiles is not 0");
+        t.eq(g_events.length, 1, "tileloadstart, but not loadstart triggered when numLoadingTiles is not 0");
         t.eq(layer.numLoadingTiles, 2, "numLoadingTiles incremented");
 
 
