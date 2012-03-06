@@ -32,7 +32,7 @@
         t.eq( layer.buffer, 0, "buffer default is 0");
         t.eq( layer.ratio, 1.5, "ratio default is 1.5");
         t.eq( layer.numLoadingTiles, 0, "numLoadingTiles starts at 0");
-        t.eq( layer.tileClass, OpenLayers.Tile.Image, "tileClass default is OpenLayers.Tile.Image");
+        t.ok( layer.tileClass === OpenLayers.Tile.Image, "tileClass default is OpenLayers.Tile.Image");
 
         var obj = {};
         var func = function() {};
@@ -63,7 +63,7 @@
         });
         map.addLayer(layer);
 
-        t.eq(layer.tileClass, myTileClass, "tileClass is set");
+        t.ok(layer.tileClass === myTileClass, "tileClass is set");
         var instance = layer.addTile(new OpenLayers.Bounds(-10, 10, 50, 100),
                                      new OpenLayers.Pixel(10, 12));
 
@@ -226,9 +226,10 @@
         map.setCenter([-10, 0], 5);
         
         var log = [];
+        var origDeferMoveGriddedTiles = layer.deferMoveGriddedTiles;
         layer.deferMoveGriddedTiles = function() {
             log.push("deferMoveGriddedTiles");
-            OpenLayers.Layer.WMS.prototype.deferMoveGriddedTiles.apply(this, arguments);
+            origDeferMoveGriddedTiles.apply(this, arguments);
         }
         layer.moveGriddedTiles = function() {
             log.push("moveGriddedTiles");
@@ -505,7 +506,7 @@
     }  
      
     function test_Layer_Grid_addTileMonitoringHooks(t) {
-        t.plan(15);
+        t.plan(17);
         
         layer = new OpenLayers.Layer.Grid();
         layer.events = {
@@ -518,6 +519,13 @@
             events: {
                 register: function(name, obj, func) {
                     g_registered[name] = [obj, func];
+                },
+                on: function(obj) {
+                    for (var o in obj) {
+                        if (obj.hasOwnProperty(o)) {
+                            tile.events.register(o, obj.scope, obj[o]);
+                        }
+                    }
                 }
             }
         }
@@ -549,6 +557,11 @@
         t.ok(tile.onLoadEnd != null, "onLoadEnd function created and added to tile");
         entry = g_registered["loadend"];
         t.ok( entry && entry[0] == layer && entry[1] == tile.onLoadEnd, "loadend correctly registered");
+        
+        g_events = [];
+        tile.onLoadError.apply(layer);
+        t.eq(g_events[0][0], "tileerror", "tileerror triggered");
+        t.ok(g_events[0][1].tile === tile, "tile passed as tile property to event object");
         
         layer.numLoadingTiles = 2; 
         g_events = [];

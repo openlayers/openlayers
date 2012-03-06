@@ -88,9 +88,26 @@
         strategy.update({force: true});
         var from = map.getProjectionObject();
         var to = layer.projection;
-        t.eq(strategy.bounds.toString(), map.getExtent().transform(from, to).toString(), "[force update different proj] bounds transformed");
         
-
+        var strategyBounds = strategy.bounds,
+            mapExtent = map.getExtent().transform(from, to),
+            // we don't use bounds::toString because we might run into 
+            // precision issues
+            precision = 7,
+            strategyBoundsGot = [
+                strategyBounds.left.toFixed( precision ),
+                strategyBounds.bottom.toFixed( precision ),
+                strategyBounds.right.toFixed( precision ),
+                strategyBounds.top.toFixed( precision )
+            ].join(','),
+            mapExtentExpected = [
+                mapExtent.left.toFixed( precision ),
+                mapExtent.bottom.toFixed( precision ),
+                mapExtent.right.toFixed( precision ),
+                mapExtent.top.toFixed( precision )
+            ].join(',');
+        t.eq(strategyBoundsGot, mapExtentExpected, 
+            "[force update different proj] bounds transformed");
     }
     
     function test_events(t) {

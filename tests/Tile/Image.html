@@ -295,9 +295,6 @@
         t.ok(tile.layer.imageSize == null,
              "zero size gutter doesn't set image size"); 
 
-        t.ok(tile.layer.imageOffset == null,
-             "zero size gutter doesn't set image offset");
-        
         var zero_gutter_bounds = tile.bounds;
         
         map.destroy();
@@ -312,8 +309,12 @@
                                                              tile.size.h + (2 * gutter))),
              "gutter properly changes image size"); 
 
-        t.ok(tile.layer.imageOffset.equals(new OpenLayers.Pixel(-gutter, -gutter)),
-             "gutter properly sets image offset");
+        var offsetLeft = -(gutter / layer.tileSize.w * 100) | 0;
+        var offsetTop = -(gutter / layer.tileSize.h * 100) | 0;
+        t.eq(parseInt(tile.imgDiv.style.left, 10), offsetLeft,
+             "gutter properly sets image left style");
+        t.eq(parseInt(tile.imgDiv.style.top, 10), offsetTop,
+             "gutter properly sets image top style");
         t.ok(tile.bounds.equals(zero_gutter_bounds),
              "gutter doesn't affect tile bounds");
 
@@ -374,7 +375,7 @@
     // test for https://github.com/openlayers/openlayers/pull/36
     // (more an integration test than a unit test)
     function test_olImageLoadError(t) {
-        t.plan(2);
+        t.plan(6);
 
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS("invalid",  "", {layers: 'basic'});
@@ -385,10 +386,25 @@
         var bounds = new OpenLayers.Bounds(1, 2, 3, 4);
 
         var tile = new OpenLayers.Tile.Image(layer, position, bounds, null, size);
+        var log = [];
+        tile.events.register("loaderror", this, function(e) {
+            log.push([
+                e.object.imgDiv.style.visibility,
+                OpenLayers.Element.hasClass(e.object.imgDiv, 'olImageLoadError')
+            ]);
+        });
+        tile.events.register("loadend", this, function(e) {
+            log.push(e);
+        })
         tile.draw();
 
         t.delay_call(0.1, function() {
-
+            
+            t.eq(log.length, 2, "loaderror and loadend events triggered");
+            t.eq(log[0][0], "hidden", "tile still hidden when loaderror is triggered");
+            t.eq(log[0][1], true, "tile has olImageLoadError class already when loaderror is triggered");
+            t.ok(log[1].object === tile, "loadend event triggered after loaderror");
+            
             // check initial state
             t.ok(OpenLayers.Element.hasClass(tile.imgDiv, 'olImageLoadError'),
                  'tile image has the olImageLoadError class (init state)');

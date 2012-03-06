@@ -9,7 +9,7 @@ Please see license.txt in this distribution for more details.
 
 ## Getting OpenLayers
 
-OpenLayers lives at http://www.openlayers.org/.  Find details on downloading stable releases or the development version the [development site](http://trac.osgeo.org/openlayers/wiki/HowToDownload.)
+OpenLayers lives at http://www.openlayers.org/.  Find details on downloading stable releases or the development version the [development site](http://trac.osgeo.org/openlayers/wiki/HowToDownload).
 
 ## Installing OpenLayers
 
@@ -48,7 +48,7 @@ As an example, using bash (with the release files in ~/openlayers):
 The [examples directory](http://openlayers.org/dev/examples/) is full of useful examples.
 
 Documentation is available at http://trac.osgeo.org/openlayers/wiki/Documentation.
-You can generate the API documentation with http://www.naturaldocs.org/:
+You can generate the API documentation with http://www.naturaldocs.org/
 As an example, using bash (with the release files in ~/openlayers):
 
     $ cd ~/openlayers/

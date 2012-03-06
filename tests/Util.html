@@ -1120,7 +1120,31 @@
         t.eq(OpenLayers.Util.getFormattedLonLat(-181, "lon"), "179°00'00\"E", "crossing dateline from the west results in correct east coordinate");
         t.eq(OpenLayers.Util.getFormattedLonLat(181, "lon"), "179°00'00\"W", "crossing dateline from the east results in correct west coordinate");
     }
-    
+
+    /**
+     * To test that we can safely call OpenLayers.Util.extend with an Event
+     * instance, we need to capture a real event.
+     */
+    var loadEvent;
+    window.onload = function(evt) {
+        loadEvent = evt || window.event;
+    }
+    function test_extend_event(t) {
+        t.plan(2);
+        t.ok(loadEvent, "loadEvent recorded");
+        var extended, err;
+        try {
+            extended = OpenLayers.Util.extend({foo: "bar"}, loadEvent);
+        } catch (e) {
+            err = e;
+        }
+        if (err) {
+            t.fail("Failed to extend with an event: " + err.message);
+        } else {
+            t.eq(extended && extended.foo, "bar", "extended with event");
+        }
+    }
+
   </script>
 </head>
 <body>

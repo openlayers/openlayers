@@ -53,7 +53,8 @@
         //initialize the layer using the JSON object from an arcgis server
         //SEE: ArcGISCache.json
         var layer = new OpenLayers.Layer.ArcGISCache(name, url, {
-            layerInfo: layerInfo
+            layerInfo: layerInfo,
+            params: {foo: "bar"}
         });
         var map = new OpenLayers.Map('map', { 
             maxExtent: layer.maxExtent,
@@ -98,14 +99,14 @@
             }
         ];
         
-        t.plan( urlSets.length );        
+        t.plan( urlSets.length );
         for(var i=0;i<urlSets.length;i++) 
         {
             var o = urlSets[i];            
             map.zoomToExtent(o.bounds, true);
             
             var resultUrl = layer.getURL(o.bounds);            
-            t.ok( resultUrl == o.url, "correct tile returned for " + o.bounds);        
+            t.ok( resultUrl == o.url + "?foo=bar", "correct tile returned for " + o.bounds);        
         }
     }    
     

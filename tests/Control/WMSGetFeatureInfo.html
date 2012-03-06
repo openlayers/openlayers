@@ -475,6 +475,35 @@
         
     }
 
+    function test_exceptions(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map("map", {
+            getExtent: function() {return(new OpenLayers.Bounds(-180,-90,180,90));}
+            }
+        );
+
+        var a = new OpenLayers.Layer.WMS("dummy","http://myhost/wms", {
+            layers: "x",
+            exceptions: "text/xml"
+        });
+
+        map.addLayer(a);
+
+        var click = new OpenLayers.Control.WMSGetFeatureInfo({
+        });
+
+        map.addControl(click);
+
+        var _request = OpenLayers.Request.GET;
+        OpenLayers.Request.GET = function(options) {
+            t.eq(options.params["EXCEPTIONS"], "text/xml", "Exceptions parameter taken from the WMS layer if provided");
+        };
+        click.activate();
+        click.getInfoForClick({xy: {x: 50, y: 50}});
+        OpenLayers.Request.GET = _request;
+        map.destroy();
+    }
+
     function test_drillDown(t) {
         t.plan(6);
         var map = new OpenLayers.Map("map", {
