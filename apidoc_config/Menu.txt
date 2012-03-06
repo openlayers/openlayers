@@ -319,6 +319,7 @@ Group: OpenLayers  {
       File: nn  (no auto-title, OpenLayers/Lang/nn.js)
       File: oc  (no auto-title, OpenLayers/Lang/oc.js)
       File: pt  (no auto-title, OpenLayers/Lang/pt.js)
+      File: pl  (no auto-title, OpenLayers/Lang/pl.js)
       File: pt-BR  (no auto-title, OpenLayers/Lang/pt-BR.js)
       File: ru  (no auto-title, OpenLayers/Lang/ru.js)
       File: sk  (no auto-title, OpenLayers/Lang/sk.js)
