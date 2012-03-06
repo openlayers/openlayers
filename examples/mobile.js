@@ -26,7 +26,7 @@ var init = function () {
                     enableKinetic: true
                 }
             }),
-            new OpenLayers.Control.ZoomPanel()
+            new OpenLayers.Control.Zoom()
         ],
         layers: [
             new OpenLayers.Layer.OSM("OpenStreetMap", null, {
