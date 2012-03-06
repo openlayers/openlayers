@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>map.div Events Acceptance Test</title>
+    <link rel="stylesheet" href="../../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="../../examples/style.css" type="text/css">
+    <script src="../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map, layer;
+        function init() {
+            map = new OpenLayers.Map('map');
+            layer = new OpenLayers.Layer.OSM( "Simple OSM Map");
+            map.addLayer(layer);
+            map.setCenter(
+                new OpenLayers.LonLat(-71.147, 42.472).transform(
+                    new OpenLayers.Projection("EPSG:4326"),
+                    map.getProjectionObject()
+                ), 12
+            );
+
+            var element = document.getElementById('map');
+            element.addEventListener('mousedown', function(evt) {
+                alert('mousedown on map div');
+            });
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">map.div Events Acceptance Test</h1>
+
+    <div id="map" class="smallmap"></div>
+
+    <p><b>Test 1</b> : mousedown the map; an alert must be displayed.</p>
+  </body>
+</html>
