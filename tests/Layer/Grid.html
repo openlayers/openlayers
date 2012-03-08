@@ -230,17 +230,17 @@
         layer.deferMoveGriddedTiles = function() {
             log.push("deferMoveGriddedTiles");
             origDeferMoveGriddedTiles.apply(this, arguments);
-        }
+        };
         layer.moveGriddedTiles = function() {
             log.push("moveGriddedTiles");
             OpenLayers.Layer.WMS.prototype.moveGriddedTiles.apply(this, arguments);
-        }
+        };
         map.moveTo([5, 0]);
         t.eq(log[0], "moveGriddedTiles", "deferred after moveTo");
         map.moveTo([0, 0]);
         t.eq(log[1], "moveGriddedTiles", "deferred again after another moveTo");
         t.eq(log.length, 2, "no tiles loaded yet");
-        t.delay_call(0.1, function() {
+        t.delay_call(1, function() {
             t.eq(log[2], "deferMoveGriddedTiles", "tiles moved after tileLoadingDelay");
         });
 
