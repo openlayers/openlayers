@@ -6,7 +6,7 @@
     var geometry = null, node = null;
 
     function test_VML_constructor(t) {
-        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+        if (!OpenLayers.Renderer.VML.prototype.supported() || OpenLayers.Renderer.SVG.prototype.supported()) {
             t.plan(0);
             return;
         }
@@ -17,7 +17,7 @@
     }
     
     function test_VML_destroy(t) {
-        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+        if (!OpenLayers.Renderer.VML.prototype.supported() || OpenLayers.Renderer.SVG.prototype.supported()) {
             t.plan(0);
             return;
         }
@@ -43,7 +43,7 @@
     }
     
     function test_VML_setextent(t) {
-        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+        if (!OpenLayers.Renderer.VML.prototype.supported() || OpenLayers.Renderer.SVG.prototype.supported()) {
             t.plan(0);
             return;
         }
@@ -80,7 +80,7 @@
     }
 
     function test_VML_setsize(t) {
-        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+        if (!OpenLayers.Renderer.VML.prototype.supported() || OpenLayers.Renderer.SVG.prototype.supported()) {
             t.plan(0);
             return;
         }
@@ -99,7 +99,7 @@
     }
     
     function test_VML_drawText(t) {
-        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+        if (!OpenLayers.Renderer.VML.prototype.supported() || OpenLayers.Renderer.SVG.prototype.supported()) {
             t.plan(0);
             return;
         }
@@ -128,7 +128,7 @@
     }
 
     function test_VML_drawpoint(t) {
-        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+        if (!OpenLayers.Renderer.VML.prototype.supported() || OpenLayers.Renderer.SVG.prototype.supported()) {
             t.plan(0);
             return;
         }
@@ -149,7 +149,7 @@
     }
 
     function test_VML_drawcircle(t) {
-        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+        if (!OpenLayers.Renderer.VML.prototype.supported() || OpenLayers.Renderer.SVG.prototype.supported()) {
             t.plan(0);
             return;
         }
@@ -177,7 +177,7 @@
     }
     
     function test_VML_drawGraphic(t) {
-        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+        if (!OpenLayers.Renderer.VML.prototype.supported() || OpenLayers.Renderer.SVG.prototype.supported()) {
             t.plan(0);
             return;
         }
@@ -219,7 +219,7 @@
     }
 
     function test_VML_drawlinestring(t) {
-        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+        if (!OpenLayers.Renderer.VML.prototype.supported() || OpenLayers.Renderer.SVG.prototype.supported()) {
             t.plan(0);
             return;
         }
@@ -239,7 +239,7 @@
     }
     
     function test_VML_drawlinearring(t) {
-        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+        if (!OpenLayers.Renderer.VML.prototype.supported() || OpenLayers.Renderer.SVG.prototype.supported()) {
             t.plan(0);
             return;
         }
@@ -259,7 +259,7 @@
     }
 
     function test_VML_drawline(t) {
-        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+        if (!OpenLayers.Renderer.VML.prototype.supported() || OpenLayers.Renderer.SVG.prototype.supported()) {
             t.plan(0);
             return;
         }
@@ -300,7 +300,7 @@
     }
     
     function test_VML_drawpolygon(t) {
-        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+        if (!OpenLayers.Renderer.VML.prototype.supported() || OpenLayers.Renderer.SVG.prototype.supported()) {
             t.plan(0);
             return;
         }
@@ -331,7 +331,7 @@
     }
     
     function test_VML_drawrectangle(t) {
-        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+        if (!OpenLayers.Renderer.VML.prototype.supported() || OpenLayers.Renderer.SVG.prototype.supported()) {
             t.plan(0);
             return;
         }
@@ -360,7 +360,7 @@
     }
     
     function test_vml_getnodetype(t) {
-        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+        if (!OpenLayers.Renderer.VML.prototype.supported() || OpenLayers.Renderer.SVG.prototype.supported()) {
             t.plan(0);
             return;
         }
@@ -376,7 +376,7 @@
     }
 
     function test_vml_importsymbol(t) {
-        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+        if (!OpenLayers.Renderer.VML.prototype.supported() || OpenLayers.Renderer.SVG.prototype.supported()) {
             t.plan(0);
             return;
         }
@@ -405,7 +405,7 @@
     }
     
     function test_vml_dashstyle(t) {
-        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+        if (!OpenLayers.Renderer.VML.prototype.supported() || OpenLayers.Renderer.SVG.prototype.supported()) {
             t.plan(0);
             return;
         }
@@ -422,7 +422,7 @@
     }
     
     function test_vml_moveRoot(t) {
-        if (!OpenLayers.Renderer.VML.prototype.supported()) {
+        if (!OpenLayers.Renderer.VML.prototype.supported() || OpenLayers.Renderer.SVG.prototype.supported()) {
             t.plan(0);
             return;
         }
