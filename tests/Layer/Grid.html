@@ -449,7 +449,7 @@
     }
     
     function test_Layer_Grid_initSingleTile(t) {
-      t.plan( 11 );
+      t.plan( 19 );
       
         layer = new OpenLayers.Layer.Grid(name, url, params, {
             singleTile: true,
@@ -501,8 +501,48 @@
             }
         }; 
         layer.grid = [[ tile ]];
-        layer.initSingleTile(bounds);       
-      
+        layer.initSingleTile(bounds);
+        
+        //test maxExtent restrictions
+        //reset grid
+        layer.grid = [];
+        //layer.buffer = 0;
+        //layer.ratio = 1;
+        //useful mocks
+        layer.map = {
+            getLayerPxFromLonLat: function(ul) {
+            	return {
+            		x:ul.lon, 
+            		y:ul.lat
+        		};
+        	},
+        	getResolution:function(){return 1;}
+    	};
+    	layer.addTile = function(tileBounds, px) {
+            t.ok(tileBounds.equals(desiredTileBounds), "correct tile bounds passed to addTile to create new tile");
+            t.ok(px.x == translatedPX.x && px.y == translatedPX.y, "correct tile px passed to addTile to create new tile");
+            return newTile;
+        };
+        tile = { 
+            moveTo: function(tileBounds, px) {
+                t.ok(tileBounds.equals(desiredTileBounds), "correct tile bounds passed to tile.moveTo()");
+                t.ok(px.x == translatedPX.x && px.y == translatedPX.y, "correct tile px passed to tile.moveTo()");
+            }
+        };
+    	//test bound fully contains the maxExtent
+    	//tile bounds -10,10,50,100
+    	layer.maxExtent = new OpenLayers.Bounds(0,20,40,90);
+    	desiredTileBounds = new OpenLayers.Bounds(0,20,40,90);
+        translatedPX = {x:0,y:90};
+    	layer.initSingleTile(bounds);       
+        
+        //test bound overlaps the maxExtent
+        bounds = new OpenLayers.Bounds(-10,10,50,100);
+        layer.maxExtent = new OpenLayers.Bounds(-30,20,40,110);
+    	desiredTileBounds = new OpenLayers.Bounds(-10,20,40,100);
+        translatedPX = {x:-10,y:100};
+        layer.grid = [[ tile ]];
+    	layer.initSingleTile(bounds);
     }  
      
     function test_Layer_Grid_addTileMonitoringHooks(t) {
