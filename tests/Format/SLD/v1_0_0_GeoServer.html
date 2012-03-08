@@ -35,7 +35,7 @@
         data = format.read(doc);
         data.namedLayers[0].userStyles[0].rules[0].symbolizers[1].graphic = false;
         out = format.write(data);
-        t.xml_eq(out, readXML("poly_label_nographic.sld").documentElement, "If graphic if false no Graphic is outputted");
+        t.xml_eq(out, readXML("poly_label_nographic.sld").documentElement, "If graphic is false no Graphic is outputted");
     }
     
     </script> 
