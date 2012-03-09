@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <script>
+      /**
+      * Because browsers that implement requestAnimationFrame may not execute
+      * animation functions while a window is not displayed (e.g. in a hidden
+      * iframe as in these tests), we mask the native implementations here.  The
+      * native requestAnimationFrame functionality is tested in Util.html and
+      * in PanZoom.html (where a popup is opened before panning).  The panTo tests
+      * here will test the fallback setTimeout implementation for animation.
+      */
+      window.requestAnimationFrame = 
+          window.webkitRequestAnimationFrame =
+          window.mozRequestAnimationFrame =
+          window.oRequestAnimationFrame =
+          window.msRequestAnimationFrame = null;
+  </script>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+
+    var map, layer;
+    function setUp() {
+        layer = new OpenLayers.Layer.UTFGrid({
+            url: "../data/utfgrid/world_utfgrid/${z}/${x}/${y}.json",
+            isBaseLayer: true, 
+            utfgridResolution: 4
+        });
+        map = new OpenLayers.Map({
+            div: "map",
+            projection: "EPSG:900913",
+            layers: [layer],
+            center: [0, 0],
+            zoom: 1
+        });
+    }
+    
+    function tearDown() {
+        map.destroy();
+        map = null;
+        layer = null;
+    }
+
+    function test_constructor(t) {
+        t.plan(7);
+
+        setUp();
+        
+        var position = new OpenLayers.Pixel(20, 30);
+        var bounds = new OpenLayers.Bounds(1, 2, 3, 4);
+        var url = "http://example.com/";
+        var size = new OpenLayers.Size(5, 6);
+        var tile = new OpenLayers.Tile.UTFGrid(layer, position, bounds, url, size);
+        
+        t.ok(tile instanceof OpenLayers.Tile, "tile instance");
+        t.ok(tile instanceof OpenLayers.Tile.UTFGrid, "UTFGrid tile instance");
+        t.ok(tile.layer === layer, "layer set");
+        t.ok(tile.position.equals(position), "position set");
+        t.ok(tile.bounds.equals(bounds), "bounds set");
+        t.eq(tile.url, url, "url set");
+        t.ok(tile.size.equals(size), "size set");
+        
+        tearDown();
+    }
+    
+    function test_parseData(t) {
+        t.plan(2);
+        setUp();
+
+        var tile = layer.grid[0][0];
+        
+        tile.parseData('{"foo": "bar"}');
+        t.eq(tile.json, {foo: "bar"}, "valid json parsed");
+        
+        var err, obj;
+        try {
+            obj = tile.parseData('foo bar');
+        } catch (e) {
+            err = e;
+        }
+        // The JSON format doesn't actually throw on IE6, so we also check
+        // for undefined here.
+        t.ok(err instanceof Error || obj === undefined, "throws on invalid json");
+        
+        tearDown();
+    }
+    
+    function test_draw(t) {
+        t.plan(7);
+        setUp();
+        
+        var position = new OpenLayers.Pixel(20, 30);
+        var bounds = new OpenLayers.Bounds(1, 2, 3, 4);
+        var url = "../data/utfgrid/world_utfgrid/${z}/${x}/${y}.json";
+        var size = new OpenLayers.Size(256, 256);
+        var tile = new OpenLayers.Tile.UTFGrid(layer, position, bounds, url, size);
+        
+        var log = [];
+        function logger(event) {
+            log.push(event);
+        }
+        tile.events.on({
+            loadstart: logger,
+            reload: logger,
+            loadend: logger
+        });
+        
+        t.eq(log.length, 0, "no events logged");
+        
+        // start tile loading
+        tile.draw();
+        t.eq(log.length, 1, "[first draw] one event");
+        t.eq(log[0].type, "loadstart", "[first draw] loadstart");
+        
+        // restart tile loading
+        log.length = 0;
+        tile.draw();
+        t.eq(log.length, 1, "[second draw] first event");
+        t.eq(log[0].type, "reload", "[second draw] reload");
+        
+        // wait for tile loading to finish
+        t.delay_call(1, function() {
+            t.eq(log.length, 2, "[second draw] second event");
+            t.eq(log[1].type, "loadend", "[second draw] loadend");
+            tearDown();
+        });
+        
+    }
+
+    function test_abortLoading(t) {
+        t.plan(7);
+        setUp();
+        
+        var position = new OpenLayers.Pixel(20, 30);
+        var bounds = new OpenLayers.Bounds(1, 2, 3, 4);
+        var url = "../data/utfgrid/world_utfgrid/${z}/${x}/${y}.json";
+        var size = new OpenLayers.Size(256, 256);
+        var tile = new OpenLayers.Tile.UTFGrid(layer, position, bounds, url, size);
+        
+        var log = [];
+        function logger(event) {
+            log.push(event);
+        }
+        tile.events.on({
+            loadstart: logger,
+            reload: logger,
+            loadend: logger
+        });
+        
+        t.eq(log.length, 0, "no events logged");
+        
+        // start tile loading
+        tile.draw();
+        t.eq(log.length, 1, "[first draw] one event");
+        t.eq(log[0].type, "loadstart", "[first draw] loadstart");
+        
+        // abort tile loading
+        log.length = 0;
+        tile.abortLoading();
+        t.eq(log.length, 0, "[first abort] no events logged"); // TODO: does anybody need an abort event?
+        
+        // abort again for the heck of it
+        var err;
+        try {
+            tile.abortLoading();
+        } catch (e) {
+            err = e;
+        }
+        t.ok(!err, "[second abort] no trouble");
+        t.eq(log.length, 0, "[second abort] no events");
+        
+        // wait to confirm tile loading doesn't happen after abort
+        t.delay_call(1, function() {
+            t.eq(log.length, 0, "[wait] no events");
+            tearDown();
+        });
+        
+    }
+    
+    function test_getFeatureId(t) {
+        t.plan(3);
+        setUp();
+        
+        var tile = layer.grid[1][1];
+        t.delay_call(0.5, function() {
+            var id = tile.getFeatureId(16, 60);
+            t.eq(id, "238", "feature 238 at 16, 60");
+            t.eq(tile.getFeatureId(18, 63), id, "same feature at 18, 63");
+            
+            t.eq(tile.getFeatureId(300, 10), null, "null id outside tile");
+            
+            tearDown();
+        });
+    }
+
+    function test_getFeatureInfo(t) {
+        t.plan(3);
+        setUp();
+        
+        var tile = layer.grid[1][1];
+        t.delay_call(0.5, function() {
+            var info = tile.getFeatureInfo(16, 60);
+            var exp = {
+                id: "238",
+                data: {
+                    NAME: "Svalbard",
+                    POP2005: 0
+                }
+            };
+            t.eq(info, exp, "feature info at 16, 60");
+            t.eq(tile.getFeatureInfo(17, 62), exp, "same feature at 17, 62");
+
+            t.eq(tile.getFeatureInfo(300, 10), null, "undefined outside tile");
+
+            tearDown();
+        });
+    }
+    
+    // While I dislike committing tests that aren't run, I'd like to make an 
+    // exception here.  This test (or something like it) should pass.  When
+    // https://github.com/mapbox/utfgrid-spec/issues/1 is resolved, we should
+    // either modify this or update demo.json and enable the test.
+    function xtest_getFeatureId_demo(t) {
+        /**
+         * The UTFGrid 1.2 spec (https://github.com/mapbox/utfgrid-spec/blob/master/1.2/utfgrid.md)
+         * links to a demo.json to be used for testing implementations.  This
+         * file is constructed with 256x256 data points.  Each data point maps
+         * to a "feature id" using this heuristic:
+         *
+         *     // x and y are pixel offsets from top left of 256x256 tile
+         *     if (y < 255 || x < 222) {
+         *         id = (y * 256) + x
+         *     } else {
+         *         id = 65501; // max number of ids that can be encoded
+         *     }
+         */
+        t.plan(1);
+        setUp();
+        
+        // look at this beauty of a constructor
+        var tile = new OpenLayers.Tile.UTFGrid(
+            layer, // layer
+            new OpenLayers.Pixel(0, 0), // position
+            new OpenLayers.Bounds(0, 0, 256, 256), // bounds
+            "../data/utfgrid/demo-1.1.json", // url
+            new OpenLayers.Size(256, 256), // size
+            {utfgridResolution: 1} // options
+        );
+        
+        var err;        
+        var request = new OpenLayers.Request.GET({
+            url: tile.url,
+            success: function(req) {
+                try {
+                    tile.parseData(req.responseText);
+                } catch (e) {
+                    err = e;
+                }
+            },
+            failure: function(req) {
+                err = new Error("Failed to fetch json.  Status: " + req.status);
+            }
+        });
+        
+        // wait for response and parsing, then make assertions
+        t.delay_call(1, function() {
+            if (err) {
+                t.fail(err);
+            } else {
+                var got, exp, failure;
+                outer: for (var y=0; y<256; ++y) {
+                    for (var x=0; x<256; ++x) {
+                        if (y<255 || x<222) {
+                            exp = String((y * 256) + x);
+                        } else {
+                            exp = "65501";
+                        }
+                        got = tile.getFeatureId(x, y);
+                        if (got !== exp) {
+                            failure = "Failed to get id for (" + x + ", " + y + "): " +
+                                "got " + got + " but expected " + exp;
+                            
+                            break outer;
+                        }
+                    }
+                }
+                if (!failure) {
+                    t.ok(true, "resolved feature ids for all data points");
+                } else {
+                    t.fail(failure);
+                }
+            }
+            tearDown();
+        });
+        
+    }
+
+  </script>
+</head>
+<body>
+<div id="map" style="height:550px;width:500px"></div>
+</body>
+</html>
+

@@ -1404,6 +1404,132 @@
             map.destroy();
         });
     }
+    
+    function test_getGridData(t) {
+        t.plan(12);
+        
+        var layer = new OpenLayers.Layer.Grid(null, null, null, {
+            isBaseLayer: true, getURL: function() {
+                return "/bogus/path/to/tile";
+            }
+        });
+        var map = new OpenLayers.Map({
+            div: "map",
+            layers: [layer],
+            controls: [],
+            center: [0, 0],
+            zoom: 1
+        });
+        
+        // get tile data for [0, 0]
+        var data = layer.getTileData({lon: 0, lat: 0});
+        t.ok(data && data.tile, "[0, 0]: got tile data");
+        t.eq(data.i, 0, "[0, 0]: i");
+        t.eq(data.j, 128, "[0, 0]: j");
+        t.ok(
+            data.tile.bounds.equals({left: 0, bottom: -90, right: 180, top: 90}),
+            "[0, 0]: tile bounds " + data.tile.bounds.toString()
+        );
+        
+        // get tile data for [-110, 45]
+        data = layer.getTileData({lon: -110, lat: 45});
+        t.ok(data && data.tile, "[-110, 45]: got tile data");
+        t.eq(data.i, 99, "[-110, 45]: i");
+        t.eq(data.j, 64, "[-110, 45]: j");
+        t.ok(
+            data.tile.bounds.equals({left: -180, bottom: -90, right: 0, top: 90}),
+            "[-110, 45]: tile bounds " + data.tile.bounds.toString()
+        );
+        
+        // get tile data for [0, 300] (north of grid)
+        data = layer.getTileData({lon: 0, lat: 300})
+        t.eq(data, null, "[0, 300]: north of grid");
+
+        // get tile data for [400, 0] (east of grid)
+        data = layer.getTileData({lon: 400, lat: 0})
+        t.eq(data, null, "[400, 0]: east of grid");
+
+        // get tile data for [0, -500] (south of grid)
+        data = layer.getTileData({lon: 0, lat: -500})
+        t.eq(data, null, "[0, -500]: south of grid");
+
+        // get tile data for [-200, 0] (west of grid)
+        data = layer.getTileData({lon: -200, lat: 0})
+        t.eq(data, null, "[-200, 0]: west of grid");
+        
+        map.destroy();
+        
+    }
+
+    function test_getGridData_wrapped(t) {
+        t.plan(18);
+        
+        var layer = new OpenLayers.Layer.Grid(null, null, null, {
+            isBaseLayer: true, getURL: function() {
+                return "/bogus/path/to/tile";
+            },
+            wrapDateLine: true
+        });
+        var map = new OpenLayers.Map({
+            div: "map",
+            layers: [layer],
+            controls: [],
+            center: [-50, 0],
+            zoom: 1
+        });
+        
+        // get tile data for [0, 0]
+        var data = layer.getTileData({lon: 0, lat: 0});
+        t.ok(data && data.tile, "[0, 0]: got tile data");
+        t.eq(data.i, 0, "[0, 0]: i");
+        t.eq(data.j, 128, "[0, 0]: j");
+        t.ok(
+            data.tile.bounds.equals({left: 0, bottom: -90, right: 180, top: 90}),
+            "[0, 0]: tile bounds " + data.tile.bounds.toString()
+        );
+        
+        // get tile data for [-110, 45]
+        data = layer.getTileData({lon: -110, lat: 45});
+        t.ok(data && data.tile, "[-110, 45]: got tile data");
+        t.eq(data.i, 99, "[-110, 45]: i");
+        t.eq(data.j, 64, "[-110, 45]: j");
+        t.ok(
+            data.tile.bounds.equals({left: -180, bottom: -90, right: 0, top: 90}),
+            "[-110, 45]: tile bounds " + data.tile.bounds.toString()
+        );
+        
+        // get tile data for [0, 300] (north of grid)
+        data = layer.getTileData({lon: 0, lat: 300})
+        t.eq(data, null, "[0, 300]: north of grid");
+
+        // get tile data for [400, 0] (equivalent to [40, 0] and visible on map)
+        data = layer.getTileData({lon: 400, lat: 0})
+        t.ok(data && data.tile, "[400, 0]: got tile data");
+        t.eq(data.i, 56, "[400, 0]: i");
+        t.eq(data.j, 128, "[400, 0]: j");
+        t.ok(
+            data.tile.bounds.equals({left: 0, bottom: -90, right: 180, top: 90}),
+            "[400, 0]: tile bounds " + data.tile.bounds.toString()
+        );
+
+        // get tile data for [0, -500] (south of grid)
+        data = layer.getTileData({lon: 0, lat: -500})
+        t.eq(data, null, "[0, -500]: south of grid");
+
+        // get tile data for [-200, 0] (equivalent to [160, 0] and wrapped to west side map)
+        data = layer.getTileData({lon: -200, lat: 0})
+        t.ok(data && data.tile, "[-200, 0]: got tile data");
+        t.eq(data.i, 227, "[-200, 0]: i");
+        t.eq(data.j, 128, "[-200, 0]: j");
+        t.ok(
+            data.tile.bounds.equals({left: 0, bottom: -90, right: 180, top: 90}),
+            "[-200, 0]: tile bounds " + data.tile.bounds.toString()
+        );
+        
+        map.destroy();
+        
+    }
+    
   </script>
 </head>
 <body>
