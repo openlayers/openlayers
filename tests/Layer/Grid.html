@@ -449,7 +449,7 @@
     }
     
     function test_Layer_Grid_initSingleTile(t) {
-      t.plan( 19 );
+      t.plan( 24 );
       
         layer = new OpenLayers.Layer.Grid(name, url, params, {
             singleTile: true,
@@ -462,13 +462,17 @@
         var desiredUL = new OpenLayers.LonLat(-40,145);
         
         translatedPX = {};
+        layer.tileSize = new OpenLayers.Size();
         layer.map = {
+            baseLayer: {wrapDateLine: true},
+            getMaxExtent: function() { return new OpenLayers.Bounds(-180,-90,180,90); },
             getLayerPxFromLonLat: function(ul) {
                 t.ok(ul.lon === desiredUL.lon && ul.lat === desiredUL.lat, "correct ul passed to translation");
                 return translatedPX;        
             },
             getResolution:function(){return 1;}
         };
+        layer.maxExtent = layer.map.getMaxExtent();
 
         var newTile = {
             draw: function() {
@@ -498,7 +502,7 @@
                 t.ok(tileBounds.equals(desiredTileBounds), "correct tile bounds passed to tile.moveTo()");
                 t.ok(px == translatedPX, "correct tile px passed to tile.moveTo()");
             }
-        }; 
+        };
         layer.grid = [[ tile ]];
         layer.initSingleTile(bounds);
         
@@ -507,13 +511,15 @@
         layer.grid = [];
         //more useful mocks
         layer.map = {
+            baseLayer: {wrapDateLine: false},
+            getMaxExtent: function() { return new OpenLayers.Bounds(-180,-90,180,90); },
             getLayerPxFromLonLat: function(ul) {
             	return {
             		x:ul.lon, 
             		y:ul.lat
         		};
         	},
-        	getResolution:function(){return 1;}
+        	getResolution: function(){return 1;}
     	};
     	layer.addTile = function(tileBounds, px) {
             t.ok(tileBounds.equals(desiredTileBounds), "correct tile bounds passed to addTile to create new tile");
@@ -541,6 +547,13 @@
         translatedPX = {x:-40,y:145};
         layer.grid = [[ tile ]];
     	layer.initSingleTile(bounds);
+    	t.ok(layer.tileSize.equals(new OpenLayers.Size(80, 125)), "tileSize correct.");
+    	
+    	//test bounds where ratio will be applied on all edges
+    	layer.displayOutsideMaxExtent = true;
+        desiredTileBounds = new OpenLayers.Bounds(-40,-35,80,145);
+    	layer.initSingleTile(bounds);
+    	t.ok(layer.tileSize.equals(new OpenLayers.Size(120, 180)), "tileSize correct.")
     }  
      
     function test_Layer_Grid_addTileMonitoringHooks(t) {
