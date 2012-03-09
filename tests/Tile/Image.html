@@ -426,8 +426,8 @@
             t.plan(1);
 
             var map = new OpenLayers.Map('map');
-            var layer = new OpenLayers.Layer.WMS("OpenLayers WMS",
-                "http://labs.metacarta.com/wms/vmap0?", {layers: 'basic'});
+            var layer = new OpenLayers.Layer.WMS("blank",
+                "blank.gif", {layers: 'fake'});
             map.addLayer(layer);
             map.setCenter(new OpenLayers.LonLat(0, 0), 5);
 
