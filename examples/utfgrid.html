@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers UTFGrid Demo</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <style>
+        #attrs {
+            height: 1.5em;
+        }
+        #controlToggle li { list-style: none; }
+    </style>
+</head>
+<body>
+    <h1 id="title">OpenLayers UTFGrid Demo</h1>
+
+    <div>
+        <div id="shortdesc">
+            This page demonstrates the use of the OpenLayers UTFGrid Controls. 
+        </div>
+        <div id="map" class="smallmap"></div>
+        <p>
+            When the selected event is triggered, the underlying feature 
+            attributes are shown below.
+        </p>
+        <div id="attrs">&nbsp;</div>
+        <ul id="controlToggle">
+            <li>
+                <input type="radio" name="type" value="move" id="moveHandler" 
+                onclick="toggleControl(this);" checked="checked" />
+                <label for="moveHandler">Move</label>
+            </li>
+            <li>
+                <input type="radio" name="type" value="hover" id="hoverHandler" 
+                onclick="toggleControl(this);" />
+                <label for="hoverHandler">Hover</label>
+            </li>
+            <li>
+                <input type="radio" name="type" value="click" id="clickHandler" 
+                onclick="toggleControl(this);" />
+                <label for="clickHandler">Click</label>
+            </li>
+        </ul>
+    </div>
+    <div id="docs">
+        <p>UTFGrids can be used to output highly optimized feature "hit grids."
+        The UTFGrid encoding scheme encodes interactivity data for a tile in a
+        space efficient manner. It is designed to be used in browsers for
+        interactive features like displaying tooltips without having to hit the
+        server for an "info query."
+        </p>
+        <p>
+        See the <a href="utfgrid.js" target="_blank">utfgrid.js source</a> for 
+        detail on using UTFGrids in OpenLayers.  For more info, view the 
+        <a href="https://github.com/mapbox/utfgrid-spec">UTFGrid Specification</a>.
+        </p>
+    </div>
+    <script src="../lib/OpenLayers.js"></script>
+    <script src="utfgrid.js"></script>
+</body>
+</html>

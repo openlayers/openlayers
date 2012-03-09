@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers UTFGrid Geography Class</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <style>
+        #flag {
+            position: relative;
+            z-index: 999;
+            height: 0px;
+            width: 0px;
+            -moz-transition: all 0.1s linear;
+            -webkit-transition: all 0.1s linear;
+        }
+        #flag img {
+            position: absolute;
+            width: 80px;
+            -moz-box-shadow: 2px 2px 1px 1px rgba(0, 0, 0, 0.3);
+            -webkit-box-shadow: 2px 2px 1px 1px rgba(0, 0, 0, 0.3);
+            box-shadow: 2px 2px 1px 1px rgba(0, 0, 0, 0.3);
+        }
+        .olControlAttribution {
+            bottom: 5px;
+            font-size: 9px;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="title">OpenLayers UTFGrid Geography Class Example</h1>
+
+    <div id="shortdesc">
+        This page demonstrates the use of the OpenLayers UTFGrid Controls. 
+    </div>
+    <div id="map" class="smallmap">
+        <div id="flag"></div>
+    </div>
+    <p>Point to a country and try to guess the name before it shows up: <strong id="output">&nbsp;</strong>
+    <div id="docs">
+        <p>
+        See the <a href="utfgrid-geography-class.js" target="_blank">utfgrid-geography-class.js</a> source for 
+        detail on using UTFGrids in OpenLayers.
+        </p>
+    </div>
+    <script src="../lib/OpenLayers.js"></script>
+    <script src="utfgrid-geography-class.js"></script>
+</body>
+</html>
