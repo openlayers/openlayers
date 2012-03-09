@@ -3,25 +3,24 @@ function init(){
     map = new OpenLayers.Map({
         div: "map",
         projection: "EPSG:900913",
-        layers: [new OpenLayers.Layer.OSM("OpenStreetMap (CORS)", null, {
-            eventListeners: {
-                loadend: updateLayerInfo,
-                tileloaded: updateTileInfo,
-                tileerror: updateTileInfo
-            }
-        }),
-        new OpenLayers.Layer.WMS("OSGeo (same origin - proxied)", "http://vmap0.tiles.osgeo.org/wms/vmap0", {
-            layers: "basic"
-        }, {
-            eventListeners: {
-                tileloadstart: function(evt) {
-                    // send requests through proxy
-                    evt.tile.url = "proxy.cgi?url=" + encodeURIComponent(evt.tile.url);
-                },
-                loadend: updateLayerInfo,
-                tileloaded: updateTileInfo
-            }
-        })
+        layers: [
+            new OpenLayers.Layer.OSM("OpenStreetMap (CORS)", null, {
+                eventListeners: {
+                    tileloaded: updateStatus,
+                    loadend: detect
+                }
+            }),
+            new OpenLayers.Layer.WMS("OSGeo (same origin - proxied)", "http://vmap0.tiles.osgeo.org/wms/vmap0", {
+                layers: "basic"
+            }, {
+                eventListeners: {
+                    tileloadstart: function(evt) {
+                        // send requests through proxy
+                        evt.tile.url = "proxy.cgi?url=" + encodeURIComponent(evt.tile.url);
+                    },
+                    tileloaded: updateStatus
+                }
+            })
         ],
         center: [0,0],
         zoom: 1
@@ -34,7 +33,6 @@ function init(){
                     stopSeeding();
                 }
                 status.innerHTML = "Cache full.";
-                cacheFull = true;
             }
         }
     });
@@ -67,9 +65,7 @@ function init(){
         hits = document.getElementById("hits"),
         previousCount = -1,
         cacheHits = 0,
-        cacheFull = false,
         seeding = false;
-    updateLayerInfo();
     var read = document.getElementById("read");
     read.checked = true;
     read.onclick = toggleRead;
@@ -82,36 +78,34 @@ function init(){
     tileloadstart.onclick = setType;
     document.getElementById("tileerror").onclick = setType;
     document.getElementById("seed").onclick = startSeeding;
-
-    // update the number of cached tiles and detect local storage support
-    function updateLayerInfo(evt) {
-        if (window.localStorage) {
-            if (previousCount !== localStorage.length) {
-                status.innerHTML = localStorage.length + " entries in cache.";
+    
+    // detect what the browser supports
+    function detect(evt) {
+        // detection is only done once, so we remove the listener.
+        evt.object.events.unregister("loadend", null, detect);
+        var tile = map.baseLayer.grid[0][0];
+        try {
+            var canvasContext = tile.getCanvasContext();
+            if (canvasContext) {
+                // will throw an exception if CORS image requests are not supported
+                canvasContext.canvas.toDataURL();
+            } else {
+                status.innerHTML = "Canvas not supported. Try a different browser.";
             }
-            previousCount = localStorage.length;
-        } else {
-            status.innerHTML = "Local storage not supported. Try a different browser.";
+        } catch(e) {
+            // we remove the OSM layer if CORS image requests are not supported.
+            map.setBaseLayer(map.layers[1]);
+            evt.object.destroy();
+            layerSwitcher.destroy();
         }
     }
-    
+
     // update the number of cache hits and detect missing CORS support
-    function updateTileInfo(evt) {
-        if (cacheWrite.active) {
-            try {
-                var canvasContext = evt.tile.getCanvasContext();
-                if (canvasContext) {
-                    // will throw an exception if CORS image requests are not supported
-                    canvasContext.canvas.toDataURL();
-                } else {
-                    status.innerHTML = "Canvas not supported. Try a different browser.";
-                }
-            } catch(e) {
-                if (seeding) {
-                    stopSeeding();
-                }
-                status.innerHTML = "CORS image requests not supported. Try a different layer.";
-            }
+    function updateStatus(evt) {
+        if (window.localStorage) {
+            status.innerHTML = localStorage.length + " entries in cache.";
+        } else {
+            status.innerHTML = "Local storage not supported. Try a different browser.";
         }
         if (evt.tile.url.substr(0, 5) === "data:") {
             cacheHits++;
@@ -137,8 +131,7 @@ function init(){
     // clear all tiles from the cache
     function clearCache() {
         OpenLayers.Control.CacheWrite.clearCache();
-        cacheFull = false;
-        updateLayerInfo();
+        updateStatus();
     }
     
     // activate the cacheRead control that matches the desired fetch strategy
@@ -185,7 +178,7 @@ function init(){
         // adjust the layer's buffer size so we don't have to pan
         layer.buffer = Math.ceil((extentWidth / tileWidth - map.getSize().w / tileWidth) / 2);
         map.zoomIn();
-        if (cacheFull || nextZoom === layer.numZoomLevels-1) {
+        if (nextZoom === layer.numZoomLevels-1) {
             stopSeeding();
         }
     }
