@@ -467,9 +467,8 @@
                 t.ok(ul.lon === desiredUL.lon && ul.lat === desiredUL.lat, "correct ul passed to translation");
                 return translatedPX;        
             },
-            getResolution: function() {
-            }
-        }
+            getResolution:function(){return 1;}
+        };
 
         var newTile = {
             draw: function() {
@@ -528,7 +527,7 @@
             }
         };
     	//test bound fully contains the maxExtent
-    	//tile bounds -10,10,50,100
+    	//tile bounds -10,10,50,100 -> apply ratio -40,-35,80,145
     	layer.maxExtent = new OpenLayers.Bounds(0,20,40,90);
     	desiredTileBounds = new OpenLayers.Bounds(0,20,40,90);
         translatedPX = {x:0,y:90};
@@ -536,9 +535,10 @@
         
         //test bound overlaps the maxExtent
         bounds = new OpenLayers.Bounds(-10,10,50,100);
-        layer.maxExtent = new OpenLayers.Bounds(-30,20,40,110);
-    	desiredTileBounds = new OpenLayers.Bounds(-10,20,40,100);
-        translatedPX = {x:-10,y:100};
+        //with ratio applied tile bounds are -40,-35,80,145
+        layer.maxExtent = new OpenLayers.Bounds(-50,20,40,150);
+    	desiredTileBounds = new OpenLayers.Bounds(-40,20,40,145);
+        translatedPX = {x:-40,y:145};
         layer.grid = [[ tile ]];
     	layer.initSingleTile(bounds);
     }  
