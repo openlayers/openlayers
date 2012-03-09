@@ -30,6 +30,9 @@ function init(){
         imageFormat: "image/jpeg",
         eventListeners: {
             cachefull: function() {
+                if (seeding) {
+                    stopSeeding();
+                }
                 status.innerHTML = "Cache full.";
                 cacheFull = true;
             }
@@ -56,13 +59,16 @@ function init(){
     var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
     map.addControls([cacheWrite, cacheRead1, cacheRead2, layerSwitcher]);
     layerSwitcher.maximizeControl();
+
+
     
     // add UI and behavior
     var status = document.getElementById("status"),
         hits = document.getElementById("hits"),
         previousCount = -1,
         cacheHits = 0,
-        cacheFull = false;
+        cacheFull = false,
+        seeding = false;
     updateLayerInfo();
     var read = document.getElementById("read");
     read.checked = true;
@@ -75,7 +81,7 @@ function init(){
     tileloadstart.checked = "checked";
     tileloadstart.onclick = setType;
     document.getElementById("tileerror").onclick = setType;
-    document.getElementById("seed").onclick = seedCache;
+    document.getElementById("seed").onclick = startSeeding;
 
     // update the number of cached tiles and detect local storage support
     function updateLayerInfo(evt) {
@@ -88,6 +94,7 @@ function init(){
             status.innerHTML = "Local storage not supported. Try a different browser.";
         }
     }
+    
     // update the number of cache hits and detect missing CORS support
     function updateTileInfo(evt) {
         if (cacheWrite.active) {
@@ -100,6 +107,9 @@ function init(){
                     status.innerHTML = "Canvas not supported. Try a different browser.";
                 }
             } catch(e) {
+                if (seeding) {
+                    stopSeeding();
+                }
                 status.innerHTML = "CORS image requests not supported. Try a different layer.";
             }
         }
@@ -140,15 +150,18 @@ function init(){
         }
     }
     
-    // seed the cache
-    function seedCache() {
-        var zoom = map.getZoom();
-        var extent = map.getExtent();
-        var center = map.getCenter();
-        var active = cacheWrite.active;
-        var tileWidth = map.baseLayer.tileSize.w;
-        var layer = map.baseLayer;
-        var buffer = layer.buffer;
+    // start seeding the cache
+    function startSeeding() {
+        var layer = map.baseLayer,
+            zoom = map.getZoom();
+        seeding = {
+            zoom: zoom,
+            extent: map.getExtent(),
+            center: map.getCenter(),
+            cacheWriteActive: cacheWrite.active,
+            buffer: layer.buffer,
+            layer: layer
+        };
         // make sure the next setCenter triggers a load
         map.zoomTo(zoom === layer.numZoomLevels-1 ? zoom - 1 : zoom + 1);
         // turn on cache writing
@@ -157,27 +170,38 @@ function init(){
         cacheRead1.deactivate();
         cacheRead2.deactivate();
         
-        layer.events.register("loadend", this, function next() {
-            var nextZoom = map.getZoom() + 1;
-            var extentWidth = extent.getWidth() / map.getResolutionForZoom(nextZoom);
-            // adjust the layer's buffer size so we don't have to pan
-            layer.buffer = Math.ceil((extentWidth / tileWidth - map.getSize().w / tileWidth) / 2);
-            map.zoomIn();
-            if (cacheFull || nextZoom === layer.numZoomLevels-1) {
-                // we're done - restore previous settings
-                layer.events.unregister("loadend", this, next);
-                layer.buffer = buffer;
-                map.setCenter(center, zoom);
-                if (!active) {
-                    cacheWrite.deactivate();
-                }
-                if (read.checked) {
-                    setType();
-                }
-            }
-        });
+        layer.events.register("loadend", null, seed);
         
         // start seeding
-        map.setCenter(center, zoom);
+        map.setCenter(seeding.center, zoom);
+    }
+    
+    // seed a zoom level based on the extent at the time startSeeding was called
+    function seed() {
+        var layer = seeding.layer;
+        var tileWidth = layer.tileSize.w;
+        var nextZoom = map.getZoom() + 1;
+        var extentWidth = seeding.extent.getWidth() / map.getResolutionForZoom(nextZoom);
+        // adjust the layer's buffer size so we don't have to pan
+        layer.buffer = Math.ceil((extentWidth / tileWidth - map.getSize().w / tileWidth) / 2);
+        map.zoomIn();
+        if (cacheFull || nextZoom === layer.numZoomLevels-1) {
+            stopSeeding();
+        }
+    }
+    
+    // stop seeding (when done or when cache is full)
+    function stopSeeding() {
+        // we're done - restore previous settings
+        seeding.layer.events.unregister("loadend", null, seed);
+        seeding.layer.buffer = seeding.buffer;
+        map.setCenter(seeding.center, seeding.zoom);
+        if (!seeding.cacheWriteActive) {
+            cacheWrite.deactivate();
+        }
+        if (read.checked) {
+            setType();
+        }
+        seeding = false;
     }
 }
