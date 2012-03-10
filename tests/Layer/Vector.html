@@ -917,7 +917,32 @@
             "featuresadded event received expected number of features");
     }
 
+    function test_redraw(t) {
+        t.plan(2);
 
+        // test that when redraw is called on a vector layer then
+        // moveTo gets called on the layer and receives zoomChanged
+        // true
+
+        var log = [];
+
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.Vector("vector", {isBaseLayer: true});
+        map.addLayer(layer);
+        map.setCenter([0, 0], 5);
+
+        layer.moveTo = function(extent, zoomChanged) {
+            log.push(zoomChanged);
+        };
+
+        layer.redraw();
+        t.eq(log.length, 1, "redraw makes moveTo be called once");
+        if (log.length == 1) {
+            t.eq(log[0], true, "redraw makes moveTo be called with zoomChanged true");
+        }
+
+        map.destroy();
+    }
 
   </script>
 </head>
