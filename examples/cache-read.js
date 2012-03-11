@@ -1,5 +1,5 @@
 var map, cacheRead;
-function init(){
+function init() {
     map = new OpenLayers.Map({
         div: "map",
         projection: "EPSG:900913",
@@ -8,15 +8,11 @@ function init(){
                 layers: "basic"
             }, {
                 eventListeners: {
-                    tileloadstart: function(evt) {
-                        // send requests through proxy
-                        evt.tile.url = "proxy.cgi?url=" + encodeURIComponent(evt.tile.url);
-                    },
                     tileloaded: updateHits
                 }
             })
         ],
-        center: [0,0],
+        center: [0, 0],
         zoom: 1
     });
     cacheRead = new OpenLayers.Control.CacheRead();
@@ -25,8 +21,8 @@ function init(){
 
 
     // User interface
-    var status = document.getElementById("status");
-    var hits = 0;
+    var status = document.getElementById("status"),
+        hits = 0;
 
     // update the number of cached tiles and detect local storage support
     function updateHits(evt) {

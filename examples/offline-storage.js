@@ -1,5 +1,9 @@
+// Use proxy to get same origin URLs for tiles that don't support CORS.
+OpenLayers.ProxyHost = "proxy.cgi?url=";
+
 var map, cacheWrite, cacheRead1, cacheRead2;
-function init(){
+
+function init() {
     map = new OpenLayers.Map({
         div: "map",
         projection: "EPSG:900913",
@@ -14,27 +18,12 @@ function init(){
                 layers: "basic"
             }, {
                 eventListeners: {
-                    tileloadstart: function(evt) {
-                        // send requests through proxy
-                        evt.tile.url = "proxy.cgi?url=" + encodeURIComponent(evt.tile.url);
-                    },
                     tileloaded: updateStatus
                 }
             })
         ],
-        center: [0,0],
+        center: [0, 0],
         zoom: 1
-    });
-    cacheWrite = new OpenLayers.Control.CacheWrite({
-        imageFormat: "image/jpeg",
-        eventListeners: {
-            cachefull: function() {
-                if (seeding) {
-                    stopSeeding();
-                }
-                status.innerHTML = "Cache full.";
-            }
-        }
     });
     // try cache before loading from remote resource
     cacheRead1 = new OpenLayers.Control.CacheRead({
@@ -54,8 +43,19 @@ function init(){
             }
         }
     });
+    cacheWrite = new OpenLayers.Control.CacheWrite({
+        imageFormat: "image/jpeg",
+        eventListeners: {
+            cachefull: function() {
+                if (seeding) {
+                    stopSeeding();
+                }
+                status.innerHTML = "Cache full.";
+            }
+        }
+    });
     var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
-    map.addControls([cacheWrite, cacheRead1, cacheRead2, layerSwitcher]);
+    map.addControls([cacheRead1, cacheRead2, cacheWrite, layerSwitcher]);
     layerSwitcher.maximizeControl();
 
 
@@ -63,7 +63,6 @@ function init(){
     // add UI and behavior
     var status = document.getElementById("status"),
         hits = document.getElementById("hits"),
-        previousCount = -1,
         cacheHits = 0,
         seeding = false;
     var read = document.getElementById("read");
@@ -107,7 +106,7 @@ function init(){
         } else {
             status.innerHTML = "Local storage not supported. Try a different browser.";
         }
-        if (evt.tile.url.substr(0, 5) === "data:") {
+        if (evt && evt.tile.url.substr(0, 5) === "data:") {
             cacheHits++;
         }
         hits.innerHTML = cacheHits + " cache hits.";

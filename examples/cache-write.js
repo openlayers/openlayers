@@ -1,5 +1,9 @@
+// Use proxy to get same origin URLs for tiles that don't support CORS.
+OpenLayers.ProxyHost = "proxy.cgi?url=";
+
 var map, cacheWrite;
-function init(){
+
+function init() {
     map = new OpenLayers.Map({
         div: "map",
         projection: "EPSG:900913",
@@ -8,15 +12,11 @@ function init(){
                 layers: "basic"
             }, {
                 eventListeners: {
-                    tileloadstart: function(evt) {
-                        // send requests through proxy
-                        evt.tile.url = "proxy.cgi?url=" + encodeURIComponent(evt.tile.url);
-                    },
                     tileloaded: updateStatus
                 }
             })
         ],
-        center: [0,0],
+        center: [0, 0],
         zoom: 1
     });
     cacheWrite = new OpenLayers.Control.CacheWrite({
