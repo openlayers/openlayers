@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers Multiple UTFGrid Demo</title>
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <style>
+        #controlToggle li { list-style: none; }
+    </style>
+</head>
+<body>
+    <h1 id="title">OpenLayers Multiple UTFGrid Demo</h1>
+
+    <div id="shortdesc">
+        This page demonstrates the use of the OpenLayers UTFGrid Controls with 
+        more than one UTFGrid Layer.
+    </div>
+    <div id="map" class="smallmap"></div>
+    <ul id="controlToggle">
+        <li>
+            <input type="radio" name="type" value="move_pop" id="moveHandler" 
+            onclick="toggleControl(this);" checked="checked" />
+            <label for="moveHandler">View population stats</label>
+        </li>
+        <li>
+            <input type="radio" name="type" value="move_bio" id="hoverHandler" 
+            onclick="toggleControl(this);" />
+            <label for="hoverHandler">View bioregion stats</label>
+        </li>
+        <li>
+            <input type="radio" name="type" value="move_both" id="clickHandler" 
+            onclick="toggleControl(this);" />
+            <label for="clickHandler">View all stats</label>
+        </li>
+    </ul>
+    <div id="docs">
+        <p>
+            This example demonstrates the use of two separate UTFGrid layers.
+            See the <a href="utfgrid_twogrids.js">utfgrid_twogrids.js source</a>
+            for detail on how this is done.
+        </p>
+    </div>
+    <div id="attrsdiv"></div>
+    <script src="../lib/OpenLayers.js"></script>
+    <script src="utfgrid_twogrids.js"></script>
+    <script>
+    </script>
+</body>
+</html>

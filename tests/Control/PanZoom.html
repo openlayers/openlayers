@@ -43,8 +43,19 @@
 
     function test_Control_PanZoom_control_events (t) {
 
-        if ( !window.document.createEvent || OpenLayers.BROWSER_NAME == "opera" || !t.open_window) {
-            //ie can't simulate mouseclicks
+        // IE 9+ does support the standard document.createEvent,
+        // event.initMouseEvent, and elem.dispatchEvent calls, so it
+        // should be possible to simulate clicks in this browser.
+        // For example it looks like jQuery UI does simulate events
+        // using document.createElement in IE 9+. See
+        // https://github.com/jquery/jquery-ui/blob/master/tests/jquery.simulate.js.
+        // I haven't been able to make it work though.
+
+        if ( !window.document.createEvent ||
+             OpenLayers.BROWSER_NAME == "msie" ||
+             OpenLayers.BROWSER_NAME == "opera" ||
+             !t.open_window) {
+
             t.plan(0);
             t.debug_print("FIXME: This browser does not support the PanZoom test at this time.");
         } else {
