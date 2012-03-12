@@ -1,0 +1,87 @@
+<html>
+<head>
+    <script src="../OLLoader.js"></script>
+    <script type="text/javascript">
+    function test_addLayer_removeLayer(t) {
+        t.plan(6);
+        var control = new OpenLayers.Control.CacheWrite();
+        var map = new OpenLayers.Map({
+            div: "map",
+            controls: [control],
+            layers: [
+                new OpenLayers.Layer.WMS("One"),
+                new OpenLayers.Layer.WMS("Two")
+            ]
+        });
+        t.ok(map.layers[0].events.listeners.tileloaded, "tileloaded listener registered on layer One");
+        t.ok(map.layers[1].events.listeners.tileloaded, "tileloaded listener registered on layer Two");        
+        control.destroy();
+        t.ok(!map.layers[1].events.listeners.tileloaded.length, "tileloaded listener unregistered");        
+        
+        control = new OpenLayers.Control.CacheWrite({
+            layers: [map.layers[0]]
+        });
+        map.addControl(control);
+        t.ok(map.layers[0].events.listeners.tileloaded.length, "tileloaded listener registered on layer One");
+        t.ok(!map.layers[1].events.listeners.tileloaded.length, "tileloaded listener not registered on layer Two");
+        control.destroy();        
+        t.ok(!map.layers[0].events.listeners.tileloaded.length, "tileloaded listener unregistered");
+        
+        map.destroy();
+    }
+    
+    function test_cache_clearCache(t) {
+
+        if (!window.localStorage) {
+            t.plan(2);
+            var scope = {active: true};
+            t.eq(OpenLayers.Control.CacheWrite.prototype.cache.call(scope), undefined, "no tiles cached when localStorage is not supported.");
+            t.ok(!OpenLayers.Control.CacheWrite.clearCache(), "clearCache does nothing when localStorage is not supported.");
+            return;
+        }
+
+        t.plan(3);
+        OpenLayers.Control.CacheWrite.clearCache();
+        var length = window.localStorage.length;
+        
+        var tiles = 0;
+        var layer = new OpenLayers.Layer.XYZ("One", "../../img/blank.gif?${x},${y},${z}", {
+            eventListeners: {
+                tileloaded: function() {
+                    tiles++;
+                }
+            }
+        });
+        var control = new OpenLayers.Control.CacheWrite({autoActivate: true});
+        var map = new OpenLayers.Map({
+            div: "map",
+            projection: "EPSG:900913",
+            controls: [control],
+            layers: [layer],
+            zoom: 1,
+            center: [0, 0]
+        });
+        t.delay_call(1, function() {
+            var canvasContext = layer.grid[1][1].getCanvasContext();
+            t.eq(window.localStorage.length, length + (canvasContext ? tiles : 0), "cache filled with tiles");
+            var url = layer.grid[1][1].url;
+            // content will be null for browsers that have localStorage but no canvas support
+            var content = canvasContext ? canvasContext.canvas.toDataURL("image/png") : null;
+            t.eq(window.localStorage.getItem("olCache_"+url), content, "localStorage contains correct image data");
+            
+            var key = Math.random();
+            window.localStorage.setItem(key, "bar");
+            OpenLayers.Control.CacheWrite.clearCache();
+            t.eq(window.localStorage.length, length + 1, "cache cleared, but foreign entries left in localStorage");
+            window.localStorage.removeItem(key);
+            
+            map.destroy();
+        });
+    }
+    
+    </script>
+</head>
+<body>
+    <div id="map" style="width: 400px; height: 250px;"/>
+</body>
+</html>
