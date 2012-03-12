@@ -304,6 +304,17 @@
             ),
             new OpenLayers.Feature.Vector(
                 OpenLayers.Geometry.fromWKT("POLYGON((100 -25, 150 -25, 150 25, 100 25, 100 -25), (120 -5, 130 -5, 130 5, 120 5, 120 -5))")
+            ),
+            new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(80, 0), {}, {
+                    graphicName: "square",
+                    pointRadius: 8,
+                    strokeWidth: 4,
+                    fillColor: "red",
+                    fillOpacity: 0.5,
+                    strokeColor: "blue",
+                    strokeOpacity: 0.75
+                } 
             )
         ]);
         
@@ -327,6 +338,12 @@
             msg: "inside polygon hole", x: 125, y: 0, id: null
         }, {
             msg: "outside polygon", x: 155, y: 0, id: null
+        }, {
+            msg: "inside symbol", x: 80, y: 0, id: layer.features[3].id
+        }, {
+            msg: "outside symbol interior, inside symbol edge", x: 90, y: 8, id: layer.features[3].id
+        }, {
+            msg: "outside symbol", x: 94, y: 0, id: null
         }];
 
         function px(x, y) {
