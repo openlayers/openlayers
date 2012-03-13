@@ -52,12 +52,12 @@ and can be used in place of OpenLayers.js in any of the above instructions:
 2. OpenLayers.mobile.js - a mobile focused build --> Includes a subset of the OpenLayers 
     library to serve common mobile web app use cases. This build provides access to 
     OpenStreetMap, Bing, WMS, WFS and vector layers; touch optimized controls; geolocation;
-    vector editing and interaction tools. The examples tagged ``mobile`` use this build.
+    vector editing and interaction tools. The examples tagged ``mobile`` can use this build.
 3. OpenLayers.light.js - a simple use case focused build --> Includes a subset of the
     OpenLayers library to serve the basic use case of displaying points and polygons
     on a map. This build provides access to OpenStreetMap, Bing, Google, WMS, and 
     vector layers; basic map controls; and vector interaction tools. The examples
-    tagged ``light`` use this build.
+    tagged ``light`` can use this build.
     
 ## Using OpenLayers in Your Own Website
 
