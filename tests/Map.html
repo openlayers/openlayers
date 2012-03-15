@@ -2037,6 +2037,27 @@
         map.moveTo([16, 48], 0);
         t.eq(map.getCenter().toShortString(), "0, 0", "no panning when moveTo is called with invalid zoom");
     }
+
+    function test_correctCenterAtZoomLevel0(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map({
+            div: 'map',
+            maxExtent: new OpenLayers.Bounds(-30, 48.00, 3.50, 64.00),
+            restrictedExtent: new OpenLayers.Bounds(-30, 48.00, 3.50, 64.00),
+            projection: "EPSG:4258",
+            units: "degrees",
+            layers: [
+                new OpenLayers.Layer('name', {
+                    isBaseLayer: true
+                })
+            ]
+        });
+        map.setCenter(new OpenLayers.LonLat(-1.3, 50.8), 4);
+        map.moveTo(null, 0);
+        var center  = map.getCenter();
+        t.ok(center.equals(new OpenLayers.LonLat(-13.25, 56)), "Center is correct and not equal to maxExtent's center");
+    }
+
   </script>
 </head>
 <body>
