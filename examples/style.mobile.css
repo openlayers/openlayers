@@ -3,27 +3,25 @@ div.olControlZoom {
     top: 8px;
     left: 8px;
 }
+* {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
 div.olControlZoom a {
     display: block;
     margin: 1px;
     padding: 0;
     color: white;
-    font-size: 26px;
-    font-family: 'Lucida Grande', Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif;
+    font-size: 28px;
+    font-family: sans-serif;
     font-weight: bold;
     text-decoration: none;
     text-align: center;
     height: 32px;
-    width:32px;
-    line-height: 24px;
+    width: 32px;
+    line-height: 28px;
     background: #666666; /* fallback for IE - IE6 requires background shorthand*/
     background: rgba(0, 0, 0, 0.3);
     filter: alpha(opacity=60);
-}
-div.olControlZoom a:hover {
-    background: #444444; /* fallback for IE */
-    background: rgba(0, 0, 0, 0.5);
-    filter: alpha(opacity=80);
 }
 a.olControlZoomIn {
     border-radius: 4px 4px 0 0;
