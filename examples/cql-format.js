@@ -37,7 +37,7 @@ var map = new OpenLayers.Map({
 function loadFeatures(data) {
     var features = new OpenLayers.Format.GeoJSON().read(data);
     states.addFeatures(features);
-};
+}
 
 // update filter and redraw when form is submitted
 var cql = document.getElementById("cql");
