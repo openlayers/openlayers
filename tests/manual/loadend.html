@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" href="../../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="../../examples/style.css" type="text/css">
+    <script src="../../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var lon = 5;
+        var lat = 40;
+        var zoom = 5;
+        var map, layer;
+
+        var numLoadingLayers = 0;
+
+        function init(){
+            map = new OpenLayers.Map( 'map' );
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                    "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'});
+
+            layer.events.register('loadstart', this, onloadstart);
+            layer.events.register('loadend', this, onloadend);
+
+            map.addLayer(layer);
+
+            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+        }
+
+        function log(msg) {
+            document.getElementById("output").innerHTML += msg + "<br />";
+        }
+
+        function onloadstart(evt) {
+            numLoadingLayers++;
+            var msg = ['loadstart', '# layers loading:', numLoadingLayers].join(' ');
+            log (msg);
+        };
+
+        function onloadend(evt) {
+            numLoadingLayers--;
+            var msg = ['loadend  ', '# layers loading:', numLoadingLayers].join(' ');
+            log (msg);
+        };
+
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">WMS loadstart/loadend events</h1>
+
+    <div id="tags">
+        wms, layer, singletile
+    </div>
+    <p id="shortdesc">
+        Shows the loadstart and loadend events of a WMS layer
+    </p>
+
+    <div id="map" class="smallmap"></div>
+   
+    <div id="docs">
+        <p>
+          This example is helpful in testing whether all loadstart events are followed
+          by a loadend event.
+          Test by using scroll-wheel up and down.
+        </p>
+    </div>
+
+    <h1>loadstart and loadend events</h1>
+    <pre id="output"></pre>
+
+  </body>
+</html>
