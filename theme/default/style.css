@@ -447,6 +447,7 @@ div.olControlZoom a {
     height: 22px;
     width:22px;
     line-height: 19px;
+    text-shadow: 0 0 3px rgba(0,0,0,0.8);
     background: #666666; /* fallback for IE - IE6 requires background shorthand*/
     background: rgba(0, 0, 0, 0.3);
     filter: alpha(opacity=60);
