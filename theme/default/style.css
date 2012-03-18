@@ -457,6 +457,11 @@ div.olControlZoom a:hover {
     background: rgba(0, 0, 0, 0.5);
     filter: alpha(opacity=80);
 }
+@media only screen and (max-width: 600px) {
+    div.olControlZoom a:hover {
+        background: rgba(0, 0, 0, 0.3);
+    }
+}
 a.olControlZoomIn {
     border-radius: 4px 4px 0 0;
 }
