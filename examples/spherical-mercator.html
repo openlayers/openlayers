@@ -91,16 +91,11 @@
     // create OSM layers
     var mapnik = new OpenLayers.Layer.OSM();
 
-    var osmarender = new OpenLayers.Layer.OSM(
-        "OpenStreetMap (Tiles@Home)",
-        "http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png"
-    );
-
     // create a vector layer for drawing
     var vector = new OpenLayers.Layer.Vector("Editable Vectors");
 
     map.addLayers([
-        gphy, gmap, gsat, ghyb, veroad, veaer, vehyb, mapnik, osmarender, vector
+        gphy, gmap, gsat, ghyb, veroad, veaer, vehyb, mapnik, vector
     ]);
     map.addControl(new OpenLayers.Control.LayerSwitcher());
     map.addControl(new OpenLayers.Control.EditingToolbar(vector));
