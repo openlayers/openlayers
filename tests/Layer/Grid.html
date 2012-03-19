@@ -1245,7 +1245,7 @@
         // zoom transition.
         //
 
-        t.plan(2);
+        t.plan(4);
 
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS('', '', {}, {
@@ -1260,7 +1260,8 @@
         map.setCenter(new OpenLayers.LonLat(10, 10));
         t.ok(layer.backBuffer && layer.backBuffer.parentNode === layer.div,
                 'backbuffer inserted after map move');
-
+        t.eq(layer.backBuffer.style.left, '121%');
+        t.eq(layer.backBuffer.style.top, '211%');
         // zoom
         map.zoomTo(1);
         t.eq(layer.backBuffer, null,
