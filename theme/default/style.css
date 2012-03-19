@@ -70,7 +70,7 @@ div.olLayerDiv {
 } 
 
 div.olControlMousePosition {
-    bottom: 0em;
+    bottom: 0;
     right: 3px;
     display: block;
     position: absolute;

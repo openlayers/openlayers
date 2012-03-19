@@ -55,7 +55,7 @@ body {
     margin: 1em;
 }
 .ui-content .ui-listview {
-    margin: 0px;
+    margin: 0;
 }
 #details-list li{
 	padding:15px 10px;
