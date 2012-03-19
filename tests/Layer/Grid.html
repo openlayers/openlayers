@@ -393,7 +393,7 @@
      */
 
     function test_Layer_Grid_clone(t) {
-        t.plan(5);
+        t.plan(7);
         
         var options = {tileSize: new OpenLayers.Size(500,50)};
         var map = new OpenLayers.Map('map', options);
@@ -407,6 +407,9 @@
 
         t.ok( clone.grid != layer.grid, "clone does not copy grid");
         t.ok( clone.grid.length == 0, "clone creates a new array instead");
+        
+        t.ok(clone.tileQueue !== layer.tileQueue, "new tileQueue for clone");
+        t.eq(clone.backBuffer, null, "no backbuffer from original");
 
         t.ok( clone.tileSize.equals(layer.tileSize), "tileSize correctly cloned");
 
