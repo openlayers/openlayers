@@ -48,7 +48,7 @@ function init() {
                     enableKinetic: true
                 }
             }),
-            new OpenLayers.Control.ZoomPanel(),
+            new OpenLayers.Control.Zoom(),
             toolbar
         ],
         layers: [osm, vector],
