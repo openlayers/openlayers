@@ -53,7 +53,7 @@ var map = new OpenLayers.Map({
                     ].join("");
                 }
             }, options)
-        ),
+        )
     ],
     center: new OpenLayers.LonLat(10.2, 48.9).transform("EPSG:4326", "EPSG:3857"),
     zoom: 5
