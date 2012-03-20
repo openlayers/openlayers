@@ -135,7 +135,7 @@
     }
 
     function test_createRequest(t) {
-        t.plan(4);
+        t.plan(5);
         var protocol = new OpenLayers.Protocol.Script({
             callbackKey: 'cb_key',
             callbackPrefix: 'cb_prefix:'
@@ -150,8 +150,11 @@
 
         t.eq(script.type, 'text/javascript',
             'created script has a correct type');
-        t.eq(script.src, 'http://bar_url/?k=bar_param&cb_key=cb_prefix%3AOpenLayers.Protocol.Script.registry%5Bbar%5D',
-            'created script has a correct url');
+
+        var params = OpenLayers.Util.getParameters(script.src);        
+        t.eq(params.k, "bar_param", "custom query string param");
+        t.eq(params.cb_key, "cb_prefix:OpenLayers.Protocol.Script.registry['bar']", "callback with prefix");
+
         t.eq(script.id, 'OpenLayers_Protocol_Script_bar',
             'created script has a correct id');
 
