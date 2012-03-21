@@ -201,28 +201,30 @@
     
     function test_Number_numericIf(t) {
         var cases = [
-            {value: "3", expect: 3},
-            {value: "+3", expect: 3},
-            {value: "-3", expect: -3},
-            {value: "3.0", expect: 3},
-            {value: "+3.0", expect: 3},
-            {value: "-3.0", expect: -3},
-            {value: "6.02e23", expect: 6.02e23},
-            {value: "+1.0e-100", expect: 1e-100},
-            {value: "-1.0e+100", expect: -1e100},
-            {value: "1E100", expect: 1e100},
-            {value: null, expect: null},
-            {value: true, expect: true},
-            {value: false, expect: false},
-            {value: undefined, expect: undefined},
-            {value: "", expect: ""},
-            {value: "3 ", expect: "3 "},
-            {value: " 3", expect: " 3"},
-            {value: "1e", expect: "1e"},
-            {value: "1+e", expect: "1+e"},
-            {value: "1-e", expect: "1-e"}
+            {value: "3", expect: 3, expectWithTrim: 3},
+            {value: "+3", expect: 3, expectWithTrim: 3},
+            {value: "-3", expect: -3, expectWithTrim: -3},
+            {value: "3.0", expect: 3, expectWithTrim: 3},
+            {value: "+3.0", expect: 3, expectWithTrim: 3},
+            {value: "-3.0", expect: -3, expectWithTrim: -3},
+            {value: "6.02e23", expect: 6.02e23, expectWithTrim: 6.02e23},
+            {value: "+1.0e-100", expect: 1e-100, expectWithTrim: 1e-100},
+            {value: "-1.0e+100", expect: -1e100, expectWithTrim: -1e100},
+            {value: "1E100", expect: 1e100, expectWithTrim: 1e100},
+            {value: null, expect: null, expectWithTrim: null},
+            {value: true, expect: true, expectWithTrim: true},
+            {value: false, expect: false, expectWithTrim: false},
+            {value: undefined, expect: undefined, expectWithTrim: undefined},
+            {value: "", expect: "", expectWithTrim: ""},
+            {value: "3 ", expect: "3 ", expectWithTrim: 3},
+            {value: " 3", expect: " 3", expectWithTrim: 3},
+            {value: "1e", expect: "1e", expectWithTrim: "1e"},
+            {value: "1+e", expect: "1+e", expectWithTrim: "1+e"},
+            {value: "1-e", expect: "1-e", expectWithTrim: "1-e"},
+            {value: " 27 ", expect: " 27 ", expectWithTrim: 27},
+            {value: " abc ", expect: " abc ", expectWithTrim: " abc "}
         ];
-        t.plan(cases.length);
+        t.plan(cases.length*2);
         
         var func = OpenLayers.String.numericIf;
         var obj, val, got, exp;
@@ -232,6 +234,9 @@
             exp = obj.expect;
             got = func(val);
             t.eq(got, exp, "'" + val + "' returns " + exp);
+            got = func(val, true);
+            exp = obj.expectWithTrim;
+            t.eq(got, exp, "'" + val + "' returns " + exp + " with trimWhitespace true");
         }
     }
    
