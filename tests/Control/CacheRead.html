@@ -55,8 +55,8 @@
             return;
         }
         
-        t.plan(4);
-
+        t.plan(5);
+        
         var data = "data:image/gif;base64,R0lGODlhAQABAIAAAP7//wAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==";
         window.localStorage.setItem("olCache_foo/1/1/1", data);
         window.localStorage.setItem("olCache_bar/1/1/1", data);
@@ -70,6 +70,7 @@
             layers: [layer2],
             fetchEvent: "tileerror"
         });
+
         var map = new OpenLayers.Map({
             div: "map",
             projection: "EPSG:900913",
@@ -78,6 +79,15 @@
             zoom: 1,
             center: [0, 0]
         });
+
+        OpenLayers.ProxyHost = "proxy?url=";
+        var tile = new OpenLayers.Tile.Image(layer1, new OpenLayers.LonLat(0, 0), new OpenLayers.Bounds(0, 0, 1, 1), "proxy?url=foo/1/1/1");
+        OpenLayers.Control.CacheWrite.urlMap[tile.url] = "foo/1/1/1";
+        
+        control1.fetch({tile: tile});
+        t.eq(tile.url, data, "proxied url replaced with data uri for original url");
+        delete OpenLayers.Control.CacheWrite.urlMap[tile.url];
+
         t.delay_call(1, function() {
             t.eq(layer1.grid[1][1].imgDiv.src, data, "[tileloadstart] tile content from cache");
             t.ok(layer1.grid[0][0].imgDiv.src !== data, "[tileloadstart] tile content from remote resource");
