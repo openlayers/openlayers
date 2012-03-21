@@ -221,9 +221,18 @@
             {value: "1e", expect: "1e"},
             {value: "1+e", expect: "1+e"},
             {value: "1-e", expect: "1-e"},
-            {value: " 27 ", expect: " 27 "}
+            {value: " 27 ", expect: " 27 ", expectWithTrim: 27},
+            {value: " abc ", expect: " abc ", expectWithTrim: " abc "}
         ];
-        t.plan(cases.length + 1);
+        var count = 0;
+        for (var i=0, ii=cases.length; i<ii; ++i) {
+            if (cases[i].expectWithTrim !== undefined) {
+                count += 2;
+            } else {
+                count++;
+            }
+        }
+        t.plan(count);
         
         var func = OpenLayers.String.numericIf;
         var obj, val, got, exp;
@@ -233,10 +242,12 @@
             exp = obj.expect;
             got = func(val);
             t.eq(got, exp, "'" + val + "' returns " + exp);
+            if (obj.expectWithTrim !== undefined) {
+                got = func(val, true);
+                exp = obj.expectWithTrim;
+                t.eq(got, exp, "'" + val + "' returns " + exp + " with trimWhitespace true");
+            }
         }
-
-        // test the trimWhitespace option
-        t.eq(OpenLayers.String.numericIf(" 27 ", true), 27, "if trimWhitespace is true, we expect to get a Number");
     }
    
    
