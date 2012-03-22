@@ -5,8 +5,11 @@ VERSION=$1
 wget -c http://closure-compiler.googlecode.com/files/compiler-latest.zip
 unzip compiler-latest.zip 
 
-svn export http://svn.openlayers.org/tags/openlayers/release-$VERSION OpenLayers-$VERSION
-cd OpenLayers-$VERSION/build
+wget -O release-${VERSION}.tar.gz https://github.com/openlayers/openlayers/tarball/release-${VERSION}
+tar xvzf release-${VERSION}.tar.gz
+mv openlayers-openlayers-* OpenLayers-${VERSION}
+cd OpenLayers-${VERSION}/build
+
 mv ../../compiler.jar ../tools/closure-compiler.jar
 ./build.py -c closure full
 ./build.py -c closure mobile OpenLayers.mobile.js
@@ -30,8 +33,8 @@ mkdir doc/devdocs
 mkdir doc/apidocs
 rm tools/*.pyc
 
-mkdir /osgeo/openlayers/docs/api/$VERSION
-cp OpenLayers.js /osgeo/openlayers/docs/api/$VERSION
+mkdir -p /osgeo/openlayers/docs/api/$VERSION
+cp OpenLayers*.js /osgeo/openlayers/docs/api/$VERSION
 cp -a img/ /osgeo/openlayers/docs/api/$VERSION
 cp -a theme/ /osgeo/openlayers/docs/api/$VERSION
 
