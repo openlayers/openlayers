@@ -385,6 +385,20 @@
         t.ok(geodesicErr < planarErr, "geodesic measure is better (" + geodesicErr.toFixed(3) + " vs. " + planarErr.toFixed(3) + ")");
         
     }
+
+    function testGetCentroid(t) {
+        t.plan(4);
+        var bounds = new OpenLayers.Bounds(5, 10, 5, 10);
+        var geometry = bounds.toGeometry();
+        var centroid = geometry.getCentroid();
+        t.eq(geometry.components[0].components.length, 2, "only two vertices since the box has left=right and bottom=top");
+        t.ok(centroid && centroid.x === 5 && centroid.y === 10, "getCentroid returns a point geometry even if the ring of the polygon has only 2 vertices");
+        bounds = new OpenLayers.Bounds(0, 0, 10, 10);
+        geometry = bounds.toGeometry();
+        centroid = geometry.getCentroid();
+        t.eq(geometry.components[0].components.length, 5, "five vertices expected");
+        t.ok(centroid && centroid.x === 5 && centroid.y === 5, "getCentroid returns the correct point geometry");
+    }
     
 
   </script>
