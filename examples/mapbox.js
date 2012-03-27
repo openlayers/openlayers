@@ -6,13 +6,14 @@ var streets = new OpenLayers.Layer.XYZ(
         "http://c.tiles.mapbox.com/v3/mapbox.mapbox-streets/${z}/${x}/${y}.png",
         "http://d.tiles.mapbox.com/v3/mapbox.mapbox-streets/${z}/${x}/${y}.png"
     ], {
-        attribution: "Tiles © <a href='http://mapbox.com/'>MapBox</a> | " + 
-            "Data © <a href='http://www.openstreetmap.org/'>OpenStreetMap</a> " +
+        attribution: "Tiles &copy; <a href='http://mapbox.com/'>MapBox</a> | " + 
+            "Data &copy; <a href='http://www.openstreetmap.org/'>OpenStreetMap</a> " +
             "and contributors, CC-BY-SA",
         sphericalMercator: true,
+        wrapDateLine: true,
         transitionEffect: "resize",
         buffer: 1,
-        numZoomLevels: 16
+        numZoomLevels: 17
     }
 );
 
@@ -26,7 +27,7 @@ var map = new OpenLayers.Map({
                 enableKinetic: true
             }
         }),
-        new OpenLayers.Control.ZoomPanel(),
+        new OpenLayers.Control.Zoom(),
         new OpenLayers.Control.Permalink({anchor: true})
     ],
     center: [0, 0],
