@@ -2,6 +2,9 @@ div.olControlZoom {
     position: absolute;
     top: 8px;
     left: 8px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 4px;
+    padding: 2px;
 }
 * {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -20,9 +23,9 @@ div.olControlZoom a {
     width: 32px;
     line-height: 28px;
     text-shadow: 0 0 3px rgba(0,0,0,0.8);
-    background: #666666; /* fallback for IE - IE6 requires background shorthand*/
-    background: rgba(0, 0, 0, 0.3);
-    filter: alpha(opacity=60);
+    background: #130085; /* fallback for IE - IE6 requires background shorthand*/
+    background: rgba(0, 60, 136, 0.5);
+    filter: alpha(opacity=80);
 }
 a.olControlZoomIn {
     border-radius: 4px 4px 0 0;
@@ -31,13 +34,13 @@ a.olControlZoomOut {
     border-radius: 0 0 4px 4px;
 }
 div.olControlZoom a:hover {
-    background: #444444; /* fallback for IE */
-    background: rgba(0, 0, 0, 0.5);
-    filter: alpha(opacity=80);
+    background: #130085; /* fallback for IE */
+    background: rgba(0, 60, 136, 0.7);
+    filter: alpha(opacity=100);
 }
 @media only screen and (max-width: 600px) {
     div.olControlZoom a:hover {
-        background: rgba(0, 0, 0, 0.3);
+        background: rgba(0, 60, 136, 0.5);
     }
 }
 .olTileImage {
