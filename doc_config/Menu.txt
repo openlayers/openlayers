@@ -379,7 +379,6 @@ Group: OpenLayers  {
 
       File: Popup  (no auto-title, OpenLayers/Popup.js)
       File: Anchored  (no auto-title, OpenLayers/Popup/Anchored.js)
-      File: AnchoredBubble  (no auto-title, OpenLayers/Popup/AnchoredBubble.js)
       File: Framed  (no auto-title, OpenLayers/Popup/Framed.js)
       File: FramedCloud  (no auto-title, OpenLayers/Popup/FramedCloud.js)
       }  # Group: Popup

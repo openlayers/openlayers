@@ -1,9 +1,10 @@
 <html>
 <head>
-  <script src="../OLLoader.js"></script>
+  <script src="../../OLLoader.js"></script>
+  <script src="../../../lib/deprecated.js"></script>
   <script type="text/javascript">
 
-   function test_Popup_Anchored_setOpacity(t) { 
+   function test_Popup_Anchored_setOpacity(t) {
         t.plan(5);
         var opacity = 0.5;
         var id = "chicken";
@@ -48,7 +49,7 @@
         } else {
             t.eq(ricoCornerDiv.style.filter, "alpha(opacity=" + opacity*100 + ")", "good default ricoCornerDiv.opacity");
         }
-        
+
    }
 
   </script>
