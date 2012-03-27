@@ -1203,17 +1203,17 @@
         var layer = new OpenLayers.Layer.WMS('', '', {}, {
             isBaseLayer: true,
             singleTile: true,
-            ratio: 1
+            ratio: 1.1
         });
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0, 0), 0);
 
         // move
-        map.setCenter(new OpenLayers.LonLat(10, 10));
+        map.setCenter(new OpenLayers.LonLat(50, 50));
         t.ok(layer.backBuffer && layer.backBuffer.parentNode === layer.div,
                 'backbuffer inserted after map move');
-        t.eq(layer.backBuffer.style.left, '121%');
-        t.eq(layer.backBuffer.style.top, '211%');
+        t.eq(layer.backBuffer.style.left, '-25%');
+        t.eq(layer.backBuffer.style.top, '-28%');
         // zoom
         map.zoomTo(1);
         t.eq(layer.backBuffer, null,
