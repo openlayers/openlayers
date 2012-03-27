@@ -17,7 +17,7 @@ var map = new OpenLayers.Map({
                             row = json.table.rows[i];
                             feature = new OpenLayers.Feature.Vector();
                             atts = {};
-                            for (var j = 1; j < row.length; j++) {
+                            for (var j = 0; j < row.length; j++) {
                                 // 'location's are json objects, other types are strings
                                 if (typeof row[j] === "object") {
                                     feature.geometry = this.parseGeometry(row[j]);
