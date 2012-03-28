@@ -70,20 +70,45 @@
         <script src="animator.js"></script>
         <script type="text/javascript">
             var map, template;
-            OpenLayers.ProxyHost = (window.location.host == "localhost") ?
-                "/cgi-bin/proxy.cgi?url=" : "proxy.cgi?url=";
+
+            /**
+             * A specific format for parsing Flickr API JSON responses.
+             */
+            OpenLayers.Format.Flickr = OpenLayers.Class(OpenLayers.Format, {
+                read: function(obj) {
+                    if(obj.stat === 'fail') {
+                        throw new Error(
+                            ['Flickr failure response (',
+                             obj.code,
+                             '): ',
+                             obj.message].join(''));
+                    }
+                    if(!obj || !obj.photos ||
+                       !OpenLayers.Util.isArray(obj.photos.photo)) {
+                        throw new Error(
+                            'Unexpected Flickr response');
+                    }
+                    var photos = obj.photos.photo, photo,
+                        x, y, point,
+                        feature, features = [];
+                    for(var i=0,l=photos.length; i<l; i++) {
+                        photo = photos[i];
+                        x = photo.longitude;
+                        y = photo.latitude;
+                        point = new OpenLayers.Geometry.Point(x, y);
+                        feature = new OpenLayers.Feature.Vector(point, {
+                            title: photo.title,
+                            img_url: photo.url_s
+                        });
+                        features.push(feature);
+                    }
+                    return features;
+                }
+            });
 
             function init() {
-                map = new OpenLayers.Map('map', {
-                    restrictedExtent: new OpenLayers.Bounds(-180, -90, 180, 90)
-                });
-                var base = new OpenLayers.Layer.WMS("Imagery", 
-                    ["http://t1.hypercube.telascience.org/tiles?",
-		     "http://t2.hypercube.telascience.org/tiles?",
-		     "http://t3.hypercube.telascience.org/tiles?",
-		     "http://t4.hypercube.telascience.org/tiles?"], 
-                    {layers: 'landsat7'}
-                );
+                map = new OpenLayers.Map('map');
+                var base = new OpenLayers.Layer.OSM();
 
                 var style = new OpenLayers.Style({
                     pointRadius: "${radius}",
@@ -101,22 +126,24 @@
                 });
 
                 var photos = new OpenLayers.Layer.Vector("Photos", {
+                    projection: "EPSG:4326",
                     strategies: [
                         new OpenLayers.Strategy.Fixed(),
                         new OpenLayers.Strategy.Cluster()
                     ],
-                    protocol: new OpenLayers.Protocol.HTTP({
-                        url: "http://labs.metacarta.com/flickrbrowse/flickr.py/flickr",
+                    protocol: new OpenLayers.Protocol.Script({
+                        url: "http://api.flickr.com/services/rest",
                         params: {
-                            format: "WFS",
-                            sort: "interestingness-desc",
-                            service: "WFS",
-                            request: "GetFeatures",
-                            srs: "EPSG:4326",
-                            maxfeatures: 150,
+                            api_key: 'b5e8c0e287e678671c3d8b2c0f3ced85',
+                            format: 'json',
+                            method: 'flickr.photos.search',
+                            extras: 'geo,url_s',
+                            per_page: 150,
+                            page: 1,
                             bbox: [-180, -90, 180, 90]
                         },
-                        format: new OpenLayers.Format.GML()
+                        callbackKey: 'jsoncallback',
+                        format: new OpenLayers.Format.Flickr()
                     }),
                     styleMap: new OpenLayers.StyleMap({
                         "default": style,
@@ -172,7 +199,7 @@
     <body onload="init()">
         <h1 id="title">Cluster Strategy Example</h1>
         <div id="tags">
-            vector, feature, stylemap, wfs, cluster, strategy, cleanup
+            vector, feature, stylemap, cluster, strategy, flickr, script
         </div>         
         <p id="shortdesc">
             Uses a cluster strategy to render points representing clusters of features.
@@ -181,6 +208,8 @@
         <div id="docs">
             <p>The Cluster strategy lets you display points representing clusters
             of features within some pixel distance.</p>
+            <p>This particular example uses the <a
+                href="http://www.flickr.com/services/api/">Flickr API.</a></p>
         </div>
         <div id="photos"></div>
         <p>Hover over a cluster on the map to see the photos it includes.</p>
