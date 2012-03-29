@@ -34,6 +34,18 @@
 
     }
 
+    function test_read_exception(t) {
+        t.plan(1);
+        var text = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>' +
+            '<!DOCTYPE ServiceExceptionReport SYSTEM "http://mapstory.dev.opengeo.org:80/geoserver/schemas/wms/1.1.1/WMS_exception_1_1_1.dtd">' +
+            '<ServiceExceptionReport version="1.1.1" >   <ServiceException code="LayerNotDefined" locator="MapLayerInfoKvpParser">' +
+            'geonode:_map_107_annotations: no such layer on this server' +
+            '</ServiceException></ServiceExceptionReport>';
+        var format = new OpenLayers.Format.WMSDescribeLayer();
+        var obj = format.read(text);
+        t.ok(!!obj.error, "Error reported correctly");
+    }
+
     </script> 
 </head> 
 <body>
