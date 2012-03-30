@@ -37,6 +37,18 @@
         out = format.write(data);
         t.xml_eq(out, readXML("poly_label_nographic.sld").documentElement, "If graphic is false no Graphic is outputted");
     }
+
+    function test_readTextSymbolizer(t) {
+        t.plan(1);
+        var format = new OpenLayers.Format.SLD({
+            profile: "GeoServer",
+            multipleSymbolizers: true,
+            namedLayersAsArray: true
+        });
+        doc = readXML("point_pointwithdefaultlabel.sld");
+        var sld = format.read(doc);
+        t.eq(sld.namedLayers[0].userStyles[0].rules[0].symbolizers[1].graphic, false, "graphic set to false on TextSymbolizer");
+    }
     
     </script> 
 </head> 
@@ -167,6 +179,44 @@
             <VendorOption name="conflictResolution">false</VendorOption>
             <VendorOption name="goodnessOfFit">0.3</VendorOption>
             <VendorOption name="polygonAlign">mbr</VendorOption>
+          </TextSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>
+</StyledLayerDescriptor>
+--></div>
+<div id="point_pointwithdefaultlabel.sld"><!--
+<StyledLayerDescriptor version="1.0.0" 
+    xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd" 
+    xmlns="http://www.opengis.net/sld" 
+    xmlns:ogc="http://www.opengis.net/ogc" 
+    xmlns:xlink="http://www.w3.org/1999/xlink" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <NamedLayer>
+    <Name>Point with default label</Name>
+    <UserStyle>
+      <Title>GeoServer SLD Cook Book: Point with default label</Title>
+      <FeatureTypeStyle>
+        <Rule>
+          <PointSymbolizer>
+            <Graphic>
+              <Mark>
+                <WellKnownName>circle</WellKnownName>
+                <Fill>
+                  <CssParameter name="fill">#FF0000</CssParameter>
+                </Fill>
+              </Mark>
+              <Size>6</Size>
+            </Graphic>
+          </PointSymbolizer>
+          <TextSymbolizer>
+            <Label>
+              <ogc:PropertyName>name</ogc:PropertyName>
+            </Label>
+            <Fill>
+              <CssParameter name="fill">#000000</CssParameter>
+            </Fill>
           </TextSymbolizer>
         </Rule>
       </FeatureTypeStyle>

@@ -622,17 +622,6 @@
         
     }
 
-    function test_readTextSymbolizer(t) {
-        t.plan(1);
-        var format = new OpenLayers.Format.SLD.v1_0_0({
-            multipleSymbolizers: true,
-            namedLayersAsArray: true
-        });
-        doc = readXML("point_pointwithdefaultlabel.sld");
-        var sld = format.read(doc);
-        t.eq(sld.namedLayers[0].userStyles[0].rules[0].symbolizers[1].graphic, false, "graphic set to false on TextSymbolizer");
-    }
-
     function test_roundtrip(t) {
         
         t.plan(5);
