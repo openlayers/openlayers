@@ -236,7 +236,7 @@
             exc = e;
         }
 
-        t.ok(exc != undefined, 'maximize and minimize do not trigger an exception');
+        t.eq(exc, undefined, 'maximize and minimize do not trigger an exception');
         
         map.destroy();
     }
