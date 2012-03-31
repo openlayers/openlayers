@@ -80,8 +80,9 @@ function buildForm() {
     document.getElementById("input").innerHTML = "<h3>Input:</h3>";
     document.getElementById("output").innerHTML = "";
 
-    var inputs = process.dataInputs, supported = true;
-    var input;
+    var inputs = process.dataInputs, supported = true,
+        sld = "text/xml; subtype=sld/1.0.0",
+        input;
     for (var i=0,ii=inputs.length; i<ii; ++i) {
         input = inputs[i];
         if (input.complexData) {
@@ -92,6 +93,8 @@ function buildForm() {
                 addWFSCollectionInput(input);
             } else if (formats["image/tiff"]) {
                 addRasterInput(input);
+            } else if (formats[sld]) {
+                addXMLInput(input, sld);
             } else {
                 supported = false;
             }
@@ -153,6 +156,22 @@ function addWKTInput(input, previousSibling) {
     previousSibling && previousSibling.nextSibling ?
         container.insertBefore(field, previousSibling.nextSibling.nextSibling) :
         container.appendChild(field);
+}
+
+function addXMLInput(input, type) {
+    var name = input.identifier;
+    var field = document.createElement("input");
+    field.title = input["abstract"];
+    field.value = name + " (" + type + ")";
+    field.onblur = function() {
+        input.data = field.value ? {
+            complexData: {
+                mimeType: type,
+                value: this.value
+            }
+        } : undefined;
+    };
+    document.getElementById("input").appendChild(field);
 }
 
 // helper function to dynamically create a WFS collection reference input
