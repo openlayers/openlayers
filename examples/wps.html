@@ -16,7 +16,7 @@
         }
         textarea {
             display: block;
-            width: 45em;
+            width: 100%;
             height: 3em;
         }
         label {
@@ -40,15 +40,11 @@
 
     <div id="shortdesc">Using WPS formats to interact with WPS</div>
 
-    <div id="map" class="smallmap"></div>
-
-    <div id="docs">
+    <div id="docs" style="top: 6em; left: 550px; position: absolute">
         <p>This example shows WPS in action by using the WPSCapabilities,
         WPSDescribeProcess and WPSExecute formats. See
         <a target="_blank" href="bing-tiles.js">wps.js</a> for the
         source code.</p>
-    </div>
-    <div>
         <ol>
             <li>Select a process from the list below. The list is populated
             with the result of a WPS GetCapabilities request, parsed using
@@ -66,10 +62,17 @@
             <code>OpenLayers.Format.WPSDescribeProcess</code> result object as
             input.</li>
         </ol>
-        <select id="processes"><option>Select a process</option></select>
-        <p id="abstract"></p>
-        <div id="input"></div>
-        <div id="output"></div>
+    </div>
+
+    <div id="example" style="width:520px">
+        <div id="map" class="smallmap"></div>
+
+        <div>
+            <select id="processes"><option>Select a process</option></select>
+            <p id="abstract"></p>
+            <div id="input"></div>
+            <div id="output"></div>
+        </div>
     </div>
     <script src="../lib/OpenLayers.js"></script>
     <script src="wps.js"></script>
