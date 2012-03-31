@@ -231,6 +231,7 @@ function addLiteralInput(input, previousSibling) {
                     value: field.value
                 }
             } : undefined;
+            createCopy(input, field, addLiteralInput);
         });
     } else {
         var option;
