@@ -1,6 +1,7 @@
 OpenLayers.ProxyHost = "proxy.cgi?url=";
 
-var capabilities, // the capabilities, read by Format.WPSCapabilities::read
+var wps = "http://suite.opengeo.org/geoserver/wps",
+    capabilities, // the capabilities, read by Format.WPSCapabilities::read
     process; // the process description from Format.WPSDescribeProcess::read
 
 // get some capabilities
@@ -30,7 +31,7 @@ document.getElementById("processes").onchange = describeProcess;
 // using OpenLayers.Format.WPSCapabilities to read the capabilities
 function getCapabilities() {
     OpenLayers.Request.GET({
-        url: "http://suite.opengeo.org/geoserver/wps/",
+        url: wps,
         params: {
             "SERVICE": "wps",
             "REQUEST": "GetCapabilities"
@@ -57,7 +58,7 @@ function getCapabilities() {
 function describeProcess() {
     var selection = this.options[this.selectedIndex].value;
     OpenLayers.Request.GET({
-        url: "http://suite.opengeo.org/geoserver/wps/",
+        url: wps,
         params: {
             "SERVICE": "wps",
             "REQUEST": "DescribeProcess",
@@ -89,13 +90,20 @@ function buildForm() {
                 addWKTInput(input);
             } else if (formats["text/xml; subtype=wfs-collection/1.0"]) {
                 addWFSCollectionInput(input);
+            } else if (formats["image/tiff"]) {
+                addRasterInput(input);
             } else {
                 supported = false;
             }
+        } else if (input.boundingBoxData) {
+            addBoundingBoxInput(input);
         } else if (input.literalData) {
             addLiteralInput(input);
         } else {
             supported = false;
+        }
+        if (input.minOccurs > 0) {
+            document.getElementById("input").appendChild(document.createTextNode("* "));
         }
     }
     
@@ -168,6 +176,38 @@ function addWFSCollectionInput(input) {
         } : undefined;
     });
     document.getElementById("input").appendChild(field);
+}
+
+// helper function to dynamically create a raster (GeoTIFF) url input
+function addRasterInput(input) {
+    var name = input.identifier;
+    var field = document.createElement("input");
+    field.title = input["abstract"];
+    var url = window.location.href.split("?")[0];
+    field.value = url.substr(0, url.lastIndexOf("/")+1) + "data/tazdem.tiff";
+    document.getElementById("input").appendChild(field);
+    (field.onblur = function() {
+        input.reference = {
+            mimeType: "image/tiff",
+            href: field.value,
+            method: "GET"
+        };
+    })();
+}
+
+// helper function to dynamically create a bounding box input
+function addBoundingBoxInput(input) {
+    var name = input.identifier;
+    var field = document.createElement("input");
+    field.title = input["abstract"];
+    field.value = "left,bottom,right,top";
+    document.getElementById("input").appendChild(field);
+    addValueHandlers(field, function() {
+        input.boundingBoxData = {
+            projection: "EPSG:4326",
+            bounds: OpenLayers.Bounds.fromString(field.value)
+        }
+    });
 }
 
 // helper function to create a literal input textfield or dropdown
@@ -251,7 +291,7 @@ function execute() {
     // remove occurrences that the user has not filled out
     for (var i=process.dataInputs.length-1; i>=0; --i) {
         input = process.dataInputs[i];
-        if (input.occurrence && !input.data && !input.reference) {
+        if ((input.minOccurs === 0 || input.occurrence) && !input.data && !input.reference) {
             OpenLayers.Util.removeItem(process.dataInputs, input);
         }
     }
@@ -264,7 +304,7 @@ function execute() {
         process.responseForm.rawDataOutput.mimeType = "application/wkt";
     }
     OpenLayers.Request.POST({
-        url: "http://suite.opengeo.org/geoserver/wps",
+        url: wps,
         data: new OpenLayers.Format.WPSExecute().write(process),
         success: showOutput
     });
