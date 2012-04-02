@@ -158,6 +158,7 @@ function addWKTInput(input, previousSibling) {
         container.appendChild(field);
 }
 
+// helper function for xml input
 function addXMLInput(input, type) {
     var name = input.identifier;
     var field = document.createElement("input");
@@ -225,7 +226,7 @@ function addBoundingBoxInput(input) {
         input.boundingBoxData = {
             projection: "EPSG:4326",
             bounds: OpenLayers.Bounds.fromString(field.value)
-        }
+        };
     });
 }
 
