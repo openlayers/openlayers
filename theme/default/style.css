@@ -476,7 +476,7 @@ a.olControlZoomOut {
  * Animations
  */
 
-.olTileImage {
+.olLayerGridTile .olTileImage {
     -webkit-transition: opacity 0.2s linear;
     -moz-transition: opacity 0.2s linear;
     -o-transition: opacity 0.2s linear;
