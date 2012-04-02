@@ -43,7 +43,7 @@ div.olControlZoom a:hover {
         background: rgba(0, 60, 136, 0.5);
     }
 }
-.olTileImage {
+.olLayerGridTile .olTileImage {
     -webkit-transition: opacity 0.2s linear;
     -moz-transition: opacity 0.2s linear;
     -o-transition: opacity 0.2s linear;
