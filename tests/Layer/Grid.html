@@ -24,8 +24,8 @@
      */
 
 
-    function test_Layer_Grid_constructor (t) {
-        t.plan( 6 );
+    function test_constructor (t) {
+        t.plan( 8 );
                        
         layer = new OpenLayers.Layer.Grid(name, url, params, null);
         t.ok( layer instanceof OpenLayers.Layer.Grid, "returns OpenLayers.Layer.Grid object" );
@@ -33,6 +33,8 @@
         t.eq( layer.ratio, 1.5, "ratio default is 1.5");
         t.eq( layer.numLoadingTiles, 0, "numLoadingTiles starts at 0");
         t.ok( layer.tileClass === OpenLayers.Tile.Image, "tileClass default is OpenLayers.Tile.Image");
+        t.eq( layer.className, 'olLayerGridTile', "className default is olLayerGridTile");
+        t.eq( layer.removeBackBufferDelay, 2500, "removeBackBufferDelay default is 2500");
 
         var obj = {};
         var func = function() {};
@@ -41,6 +43,32 @@
         t.ok( layer.events.listeners['tileloaded'].length == 1, "one listener for tileloaded after register");        
     }
 
+    function test_constructor_singleTile(t) {
+        t.plan(2);
+        layer = new OpenLayers.Layer.Grid(name, url, params, {singleTile: true});
+        t.eq( layer.className, 'olLayerGridSingleTile', "className default is olLayerGridSingleTile");
+        t.eq( layer.removeBackBufferDelay, 0, "removeBackBufferDelay default is 0");
+    }
+
+    function test_setMap(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.Grid(name, url, params, null);
+        map.addLayer(layer);
+        t.ok(OpenLayers.Element.hasClass(layer.div, "olLayerGridTile"),
+             "olLayerGridTile class assigned to layer div");
+        map.destroy();
+    }
+
+    function test_setMap_singleTile(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.Grid(name, url, params, {singleTile: true});
+        map.addLayer(layer);
+        t.ok(OpenLayers.Element.hasClass(layer.div, "olLayerGridSingleTile"),
+             "olLayerGridSingleTile class assigned to layer div");
+        map.destroy();
+    }
 
     function test_Layer_Grid_inittiles (t) {
         t.plan( 2 );
@@ -1203,17 +1231,17 @@
         var layer = new OpenLayers.Layer.WMS('', '', {}, {
             isBaseLayer: true,
             singleTile: true,
-            ratio: 1
+            ratio: 1.1
         });
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0, 0), 0);
 
         // move
-        map.setCenter(new OpenLayers.LonLat(10, 10));
+        map.setCenter(new OpenLayers.LonLat(50, 50));
         t.ok(layer.backBuffer && layer.backBuffer.parentNode === layer.div,
                 'backbuffer inserted after map move');
-        t.eq(layer.backBuffer.style.left, '121%');
-        t.eq(layer.backBuffer.style.top, '211%');
+        t.eq(layer.backBuffer.style.left, '-25%');
+        t.eq(layer.backBuffer.style.top, '-28%');
         // zoom
         map.zoomTo(1);
         t.eq(layer.backBuffer, null,
