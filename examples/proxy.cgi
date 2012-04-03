@@ -20,7 +20,7 @@ allowedHosts = ['www.openlayers.org', 'openlayers.org',
                 'prototype.openmnnd.org', 'geo.openplans.org',
                 'sigma.openplans.org', 'demo.opengeo.org',
                 'www.openstreetmap.org', 'sample.azavea.com',
-                'v2.suite.opengeo.org', 'v-swe.uni-muenster.de:8080', 
+                'v2.suite.opengeo.org', 'v-swe.uni-muenster.de:8080',
                 'vmap0.tiles.osgeo.org', 'www.openrouteservice.org',
                 'maps.wien.gv.at']
 
