@@ -8,9 +8,7 @@ var wps = "http://demo.opengeo.org/geoserver/wps",
 getCapabilities();
 
 // create the UI
-var layer = new OpenLayers.Layer.Vector("Scratchpad", {
-    isBaseLayer: true
-});
+var layer = new OpenLayers.Layer.Vector("Scratchpad");
 var toolbar = new OpenLayers.Control.EditingToolbar(layer);
 toolbar.addControls([new OpenLayers.Control.ModifyFeature(layer, {
     title: "Select feature"
