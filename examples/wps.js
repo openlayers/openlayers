@@ -21,7 +21,12 @@ var map = new OpenLayers.Map('map', {
         new OpenLayers.Control.ZoomPanel(),
         new OpenLayers.Control.PanPanel()
     ],
-    layers: [layer]
+    layers: [
+        new OpenLayers.Layer.WMS(
+            "OSM", "http://maps.opengeo.org/geowebcache/service/wms",
+            {layers: "openstreetmap", format: "image/png"}
+        ), layer
+    ]
 });
 map.zoomToMaxExtent();
 
@@ -33,7 +38,7 @@ function getCapabilities() {
     OpenLayers.Request.GET({
         url: wps,
         params: {
-            "SERVICE": "wps",
+            "SERVICE": "WPS",
             "REQUEST": "GetCapabilities"
         },
         success: function(response){
@@ -60,7 +65,7 @@ function describeProcess() {
     OpenLayers.Request.GET({
         url: wps,
         params: {
-            "SERVICE": "wps",
+            "SERVICE": "WPS",
             "REQUEST": "DescribeProcess",
             "VERSION": capabilities.version,
             "IDENTIFIER": selection
@@ -220,7 +225,7 @@ function addBoundingBoxInput(input) {
     var name = input.identifier;
     var field = document.createElement("input");
     field.title = input["abstract"];
-    field.value = "left,bottom,right,top";
+    field.value = "left,bottom,right,top (EPSG:4326)";
     document.getElementById("input").appendChild(field);
     addValueHandlers(field, function() {
         input.boundingBoxData = {

@@ -41,7 +41,7 @@
     <h1 id="title">WPS Builder Example</h1>
 
     <div id="tags">
-        wps, process
+        wps, process, advanced
     </div>
 
     <div id="shortdesc">Using WPS formats to interact with WPS</div>
@@ -49,13 +49,14 @@
     <div id="docs">
         <p>This example shows WPS in action by using the WPSCapabilities,
         WPSDescribeProcess and WPSExecute formats. See
-        <a target="_blank" href="bing-tiles.js">wps.js</a> for the
+        <a target="_blank" href="wps.js">wps.js</a> for the
         source code.</p>
         <ol>
-            <li>Select a process from the list below. The list is populated
-            with the result of a WPS GetCapabilities request, parsed using
-            <code>OpenLayers.Format.WPSCapabilities::read</code>.</li>
+            <li>Select a process from the list below the map. The list is
+            populated with the result of a WPS GetCapabilities request, parsed
+            using <code>OpenLayers.Format.WPSCapabilities::read</code>.</li>
             <li>Fill out the Input form. Hover over fields to get a description.
+            Required fields are marked with a "*".
             To use a geometry from the map as input, select the geometry on the
             map (using the pen symbol on the left of the toolbar) and just
             click the field. The form is generated from the object returned by
