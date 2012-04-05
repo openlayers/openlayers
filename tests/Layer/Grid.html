@@ -33,7 +33,7 @@
         t.eq( layer.ratio, 1.5, "ratio default is 1.5");
         t.eq( layer.numLoadingTiles, 0, "numLoadingTiles starts at 0");
         t.ok( layer.tileClass === OpenLayers.Tile.Image, "tileClass default is OpenLayers.Tile.Image");
-        t.eq( layer.className, 'olLayerGridTile', "className default is olLayerGridTile");
+        t.eq( layer.className, 'olLayerGrid', "className default is olLayerGrid");
         t.eq( layer.removeBackBufferDelay, 2500, "removeBackBufferDelay default is 2500");
 
         var obj = {};
@@ -55,8 +55,8 @@
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.Grid(name, url, params, null);
         map.addLayer(layer);
-        t.ok(OpenLayers.Element.hasClass(layer.div, "olLayerGridTile"),
-             "olLayerGridTile class assigned to layer div");
+        t.ok(OpenLayers.Element.hasClass(layer.div, "olLayerGrid"),
+             "olLayerGrid class assigned to layer div");
         map.destroy();
     }
 
