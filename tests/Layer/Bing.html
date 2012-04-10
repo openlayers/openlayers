@@ -98,6 +98,25 @@
             map.destroy();
         });
     }
+
+    function test_attribution_notempty(t) {
+        t.plan(1);
+        
+        var log = [];
+        var map = new OpenLayers.Map("map");
+        layer = new OpenLayers.Layer.Bing(OpenLayers.Util.applyDefaults({type: 'Road'}, options));
+        map.addLayer(layer);
+        var format = OpenLayers.String.format;
+        OpenLayers.String.format = function(tpl, options) {
+            log.push(options.copyrights);
+        }
+        map.zoomToExtent(new OpenLayers.Bounds(-14768652, 4492113, -12263964, 5744457));
+        t.delay_call(2, function() {
+            t.ok(log.join("") !== "", "Copyright not empty");
+            OpenLayers.String.format = format;
+            map.destroy();
+        });
+    }
     
     function test_getXYZ(t) {
         t.plan(1);
