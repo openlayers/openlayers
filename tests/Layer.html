@@ -398,6 +398,9 @@
             "1.20",  null, {maxScale: 100000, numZoomLevels: 3, units: "m"},
             [141.11103491115225, 70.55551745557612, 35.27775872778806], 35.27775872778806, 141.11103491115225
         ], [
+            "1.21", null, {numZoomLevels: 2},  // maxResolution calculated based on the projection's maxExtent here
+           [1.40625, 0.703125], 0.703125, 1.40625
+        ], [
 
         /*
          * Batch 2: custom map options map and sensible layer options
@@ -541,8 +544,8 @@
         /*
          * Batch 2.8: numZoomLevels set in the layer options
          */
-            "2.8.0",  {maxResolution: 80}, {numZoomLevels: 4},
-            [80, 40, 20, 10], 10, 80
+            "2.8.0",  {maxResolution: 80}, {numZoomLevels: 4},  // maxResolution calculated based on the projection's maxExtent here
+            [1.40625, 0.703125, 0.3515625, 0.17578125], 0.17578125, 1.40625
         ], [
             "2.8.1", {maxResolution: 80, numZoomLevels: 4}, {numZoomLevels: null},
             [80, 40, 20, 10], 10, 80
