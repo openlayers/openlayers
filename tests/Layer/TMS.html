@@ -175,10 +175,9 @@
         // test offset of 2
         offset = 2;
         zoom = 3;
-        
+
         var map = new OpenLayers.Map({
-            div: "map",
-            maxResolution: OpenLayers.Projection.defaults["EPSG:4326"].maxResolution / Math.pow(2, offset)
+            div: "map"
         });
         var layer = new OpenLayers.Layer.TMS("TMS", "", {
             layername: "basic",
@@ -189,7 +188,6 @@
         map.setCenter(new OpenLayers.LonLat(0, 0), zoom);
 
         var tileurl = layer.getURL(new OpenLayers.Bounds(3.515625,45,4.21875,45.703125));
-        level = parseInt(tileurl.split("/")[2]);
         t.eq(parseInt(tileurl.split("/")[2]), zoom + offset, "correct level for offset 2");
 
         map.destroy();
@@ -199,8 +197,7 @@
         zoom = 3;
         
         var map = new OpenLayers.Map({
-            div: "map",
-            maxResolution: OpenLayers.Projection.defaults["EPSG:4326"].maxResolution / Math.pow(2, offset)
+            div: "map"
         });
         var layer = new OpenLayers.Layer.TMS("TMS", "", {
             layername: "basic",
@@ -211,12 +208,9 @@
         map.setCenter(new OpenLayers.LonLat(0, 0), zoom);
 
         var tileurl = layer.getURL(new OpenLayers.Bounds(3.515625,45,4.21875,45.703125));
-        level = parseInt(tileurl.split("/")[2]);
         t.eq(parseInt(tileurl.split("/")[2]), zoom + offset, "correct level for offset -1");
 
         map.destroy();
-
-
     }
 
     function test_Layer_TMS_setMap(t) {
