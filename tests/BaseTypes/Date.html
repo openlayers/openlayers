@@ -35,7 +35,7 @@
     
     function test_Date_parse(t) {
         
-        t.plan(121);
+        t.plan(114);
         
         var cases = {
             "2000": {
@@ -139,11 +139,6 @@
                 year: 2000,
                 month: 3,
                 date: 15
-            },
-            "-0501-03-01T00:00:00.000Z": {
-                year: -501,
-                month: 2,
-                date: 1
             }
         };
 
@@ -178,6 +173,15 @@
         var invalid = OpenLayers.Date.parse("foo");
         t.ok(invalid instanceof Date, "invalid is a date");
         t.ok(isNaN(invalid.getTime()), "invalid has no time");
+    }
+
+    function test_regex(t) {
+        t.plan(1);
+        var regex = OpenLayers.Date.regex;
+        OpenLayers.Date.regex = /^(?:(-?\d{4})(?:-(\d{2})(?:-(\d{2}))?)?)?(?:(?:T(\d{1,2}):(\d{2}):(\d{2}(?:\.\d+)?)(Z|(?:[+-]\d{1,2}(?::(\d{2}))?)))|Z)?$/;
+        var date = OpenLayers.Date.parse("-0501-03-01T00:00:00.000Z");
+        t.ok(!isNaN(date.getTime()), "date with negative year is parsed when providing alternative regex");
+        OpenLayers.Date.regex = regex;
     }
 
   </script>
