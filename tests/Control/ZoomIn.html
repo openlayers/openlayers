@@ -25,6 +25,24 @@ function test_ZoomIn_constructor (t) {
     control.destroy();
 }
 
+function test_ZoomIn_type (t) {
+    t.plan( 1 );
+    
+    // setup
+    var control = new OpenLayers.Control.ZoomIn();
+    
+    // tests
+    //
+    t.eq( 
+        control.type, 
+        OpenLayers.Control.TYPE_BUTTON,
+        "ZoomIn control is of type OpenLayers.Control.TYPE_BUTTON"
+    );
+    
+    // tear down
+    control.destroy();
+}
+
 function test_ZoomIn_trigger (t) {
     t.plan( 2 );
     

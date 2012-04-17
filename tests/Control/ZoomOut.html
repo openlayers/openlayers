@@ -25,6 +25,24 @@ function test_ZoomOut_constructor (t) {
     control.destroy();
 }
 
+function test_ZoomOut_type (t) {
+    t.plan( 1 );
+    
+    // setup
+    var control = new OpenLayers.Control.ZoomOut();
+    
+    // tests
+    //
+    t.eq( 
+        control.type, 
+        OpenLayers.Control.TYPE_BUTTON,
+        "ZoomOut control is of type OpenLayers.Control.TYPE_BUTTON"
+    );
+    
+    // tear down
+    control.destroy();
+}
+
 function test_ZoomOut_trigger (t) {
     t.plan( 2 );
     
