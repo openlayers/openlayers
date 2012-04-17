@@ -507,9 +507,8 @@
 
         t.eq(element.style.opacity, '', 
              "element.style.opacity is removed when opacity = " + opacity);
-        //Safari 3 returns null for this value, which is okay
-        var filterString = (OpenLayers.BROWSER_NAME == 'safari') ? null : '';
-        t.eq(element.style.filter, filterString, 
+        // Some browser returns null instead of '', which is okay
+        t.ok(element.style.filter == '' || element.style.filter == null,
              "element.style.filter is removed when opacity = " + opacity);
     }
 
