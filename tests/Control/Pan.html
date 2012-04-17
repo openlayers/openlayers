@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="../OLLoader.js"></script>
+        <script type="text/javascript">
+        
+function test_Pan_constructor (t) {
+    t.plan( 2 );
+    
+    // setup
+    var control = new OpenLayers.Control.Pan(
+        "Gargoyle" // the direction, here mocked up
+    );
+    
+    // tests
+    //
+    t.ok( 
+        control instanceof OpenLayers.Control.Pan, 
+        "new OpenLayers.Control.Pan returns object"
+    );
+    t.eq( 
+        control.displayClass, "olControlPanGargoyle", 
+        "displayClass is correct"
+    );
+    
+    // tear down
+    control.destroy();
+}
+
+function test_Pan_type (t) {
+    t.plan( 1 );
+    
+    // setup
+    var control = new OpenLayers.Control.Pan();
+    
+    // tests
+    //
+    t.eq( 
+        control.type, 
+        OpenLayers.Control.TYPE_BUTTON,
+        "Pan control is of type OpenLayers.Control.TYPE_BUTTON"
+    );
+    
+    // tear down
+    control.destroy();
+}
+
+function test_Pan_constants (t) {
+    var dirs = [
+            'North',
+            'East',
+            'South',
+            'West'
+        ],
+        numDirs = dirs.length,
+        dir, uc_dir;
+    
+    t.plan(numDirs);
+    
+    for ( ; numDirs > 0; numDirs-- ) {
+        dir = dirs[numDirs - 1 ];
+        uc_dir = dir.toUpperCase();
+        
+        t.eq(
+            OpenLayers.Control.Pan[ uc_dir ],
+            dir,
+            "A constant 'OpenLayers.Control.Pan." + uc_dir + "' is defined "+
+                "and has the correct value of '" + dir + "'."
+        );
+    }
+}
+
+function test_Pan_trigger (t) {
+    t.plan( 12 );
+    
+    // set up
+    var controls = {
+            n: new OpenLayers.Control.Pan(OpenLayers.Control.Pan.NORTH),
+            e: new OpenLayers.Control.Pan(OpenLayers.Control.Pan.EAST),
+            s: new OpenLayers.Control.Pan(OpenLayers.Control.Pan.SOUTH),
+            w: new OpenLayers.Control.Pan(OpenLayers.Control.Pan.WEST)
+        },
+        controlKey, control,
+        zoomlevel = 5,
+        center = new OpenLayers.LonLat(25,25),
+        log = {
+            dx: null,
+            dy: null
+        },
+        map = new OpenLayers.Map("map", {
+            allOverlays: true,
+            layers: [
+                new OpenLayers.Layer.Vector()
+            ],
+            center: center,
+            zoom: zoomlevel
+        }),
+        oldZoom;
+    
+    // overwrite native Map::pan
+    map.pan = function(dx, dy) {
+        log = {
+            dx: dx,
+            dy: dy
+        };
+        OpenLayers.Map.prototype.pan.apply(map, arguments);
+    };
+    
+    oldCenter = map.getCenter().toString();
+    
+    for (controlKey in controls) {
+        if (controls.hasOwnProperty(controlKey)) {
+            control = controls[controlKey];
+            // trigger the control; nothing should change, we aren't added yet.
+            control.trigger();
+            
+            t.ok(
+                log.dx === null && log.dy === null, 
+                'Calling trigger on a non added control doesn\'t do anything.'
+            );
+            
+            // reset log object
+            log = {
+                dx: null,
+                dy: null
+            };
+        }
+    }
+    
+    // now lets add the controls, and trigger them again
+    for (controlKey in controls) {
+        if (controls.hasOwnProperty(controlKey)) {
+            control = controls[controlKey];
+            map.addControl(control);
+            // trigger again, now ...
+            control.trigger();
+            
+            // ... the center should change ...
+            t.ok(
+                log.dx !== null && log.dy !== null,
+                'Calling trigger on an added pan control calls map.pan()... '
+            );
+            
+            // ... with sane arguments according to the passed direction.
+            switch (control.direction) {
+                case OpenLayers.Control.Pan.NORTH: 
+                    t.ok(
+                        log.dx === 0 && log.dy < 0,
+                        '... with sane arguments: pan north only results in ' +
+                            'negative delta y'
+                    );
+                    break;
+                case OpenLayers.Control.Pan.SOUTH: 
+                    t.ok(
+                        log.dx === 0 && log.dy > 0,
+                        '... with sane arguments: pan south only results in ' +
+                            'positive delta y'
+                    );
+                    break;
+                case OpenLayers.Control.Pan.WEST: 
+                    t.ok(
+                        log.dx < 0 && log.dy === 0,
+                        '... with sane arguments: pan west only results in ' +
+                            'negative delta x'
+                    );
+                    break;
+                case OpenLayers.Control.Pan.EAST: 
+                    t.ok(
+                        log.dx > 0 && log.dy === 0,
+                        '... with sane arguments: pan east only results in ' +
+                            'positive delta x'
+                    );
+                    break;
+            }
+            
+            // reset log-object
+            log = {
+                dx: null,
+                dy: null
+            };
+            // always set to initial center and zoom:
+            map.setCenter(center, zoomlevel);
+        }
+    }
+    
+    // tear down
+    for (controlKey in controls) {
+        if (controls.hasOwnProperty(controlKey)) {
+            control = controls[controlKey];
+            control.destroy();
+        }
+    }
+    map.destroy();
+}
+    
+        </script>
+    </head>
+    <body>
+        <div id="map" style="width: 1000px; height: 1000px;"></div>
+    </body>
+</html>
