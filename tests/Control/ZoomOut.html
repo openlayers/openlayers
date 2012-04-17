@@ -25,6 +25,23 @@ function test_ZoomOut_constructor (t) {
     control.destroy();
 }
 
+function test_ZoomOut_type(t){
+    t.plan( 1 );
+    
+    // setup
+    var control = new OpenLayers.Control.ZoomOut();
+    
+    // check that the type of the control equals OpenLayers.Control.TYPE_BUTTON
+    t.eq(
+        control.type,
+        OpenLayers.Control.TYPE_BUTTON,
+        'ZoomOut-control is of type "OpenLayers.Control.TYPE_BUTTON".'
+    );
+    
+    // tear down
+    control.destroy();
+}
+
 function test_ZoomOut_trigger (t) {
     t.plan( 2 );
     
@@ -40,8 +57,6 @@ function test_ZoomOut_trigger (t) {
             zoom: zoomlevel
         }),
         oldZoom;
-    
-    alert(map.getZoom());
     
     oldZoom = map.getZoom();
     

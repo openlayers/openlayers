@@ -25,6 +25,23 @@ function test_ZoomToMaxExtent_constructor (t) {
     control.destroy();
 }
 
+function test_ZoomOut_type(t){
+    t.plan( 1 );
+    
+    // setup
+    var control = new OpenLayers.Control.ZoomToMaxExtent();
+    
+    // check that the type of the control equals OpenLayers.Control.TYPE_BUTTON
+    t.eq(
+        control.type,
+        OpenLayers.Control.TYPE_BUTTON,
+        'ZoomToMaxExtent-control is of type "OpenLayers.Control.TYPE_BUTTON".'
+    );
+    
+    // tear down
+    control.destroy();
+}
+
 function test_ZoomToMaxExtent_trigger (t) {
     t.plan( 2 );
     
