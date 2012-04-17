@@ -35,7 +35,7 @@
     
     function test_Date_parse(t) {
         
-        t.plan(114);
+        t.plan(121);
         
         var cases = {
             "2000": {
@@ -139,6 +139,11 @@
                 year: 2000,
                 month: 3,
                 date: 15
+            },
+            "-0501-03-01T00:00:00.000Z": {
+                year: -501,
+                month: 2,
+                date: 1
             }
         };
 
