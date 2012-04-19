@@ -1,5 +1,19 @@
 <html>
 <head>
+  <script>
+    /**
+    * Because browsers that implement requestAnimationFrame may not execute
+    * animation functions while a window is not displayed (e.g. in a hidden
+    * iframe as in these tests), we mask the native implementations here.  The
+    * native requestAnimationFrame functionality is tested in Util.html and
+    * in PanZoom.html (where a popup is opened before panning).
+    */
+    window.requestAnimationFrame = 
+        window.webkitRequestAnimationFrame =
+        window.mozRequestAnimationFrame =
+        window.oRequestAnimationFrame =
+        window.msRequestAnimationFrame = null;
+  </script>
   <script src="../OLLoader.js"></script>
   <script type="text/javascript">
     var map, layer; 
@@ -79,6 +93,26 @@
             t.eq(extent2.toBBOX(), map2.getExtent().toBBOX(), "layer extent correct for base layer with zoomMin == 2.");
             map2.destroy();
             OpenLayers.Layer.Bing.processMetadata = origProcessMetadata;
+        });
+    }
+    
+    function test_initLayer_notempty(t) {
+        t.plan(1);
+        
+        map = new OpenLayers.Map("map", {
+            projection: "EPSG:3857",
+            layers: [new OpenLayers.Layer("dummy", {isBaseLayer: true})]
+        });
+        map.zoomToExtent([-14768652, 4492113, -12263964, 5744457]);
+        var layer = new OpenLayers.Layer.Bing(OpenLayers.Util.extend({
+            isBaseLayer: false
+        }, options));
+        map.addLayer(layer);
+        var tile = layer.tileQueue[0];
+        
+        t.delay_call(5, function() {
+            t.ok(tile.url, "Tile not empty");
+            map.destroy();
         });
     }
     
