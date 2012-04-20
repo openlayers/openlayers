@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers Cache Read Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="../lib/OpenLayers.js"></script>
+    <script src="cache-read.js"></script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Cache Read Example</h1>
+
+    <div id="tags">
+        mobile, local storage, persistence, cache, html5
+    </div>
+
+    <div id="shortdesc">Caching viewed tiles</div>
+
+    <div id="map" class="smallmap"></div>
+    <div id="status"></div>
+    <br>
+    <div id="docs">
+        <p>This example shows how to use the CacheRead control to fetch cached
+        tiles from the browser's Local Storage. As you pan and zoom the map,
+        you can see how the number of cache hits incrases as you browse regions
+        that are available in the cache.</p>
+        <p>To fill the cache with tiles, switch to the
+        <a href="cache-write.html">cache-write.html</a> example.</p>
+        <p>See <a href="cache-read.js">cache-read.js</a> for the source
+        code.</p>
+    </div>
+  </body>
+</html>

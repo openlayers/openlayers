@@ -23,16 +23,16 @@ div.olLayerDiv {
 }
 .olLayerGooglePoweredBy {
     left: 2px;
-    bottom: 15px;   
+    bottom: 15px;
 }
 .olLayerGoogleV3.olLayerGooglePoweredBy {
     bottom: 15px !important;
 }
 .olControlAttribution {
-    font-size: smaller; 
-    right: 3px; 
-    bottom: 4.5em; 
-    position: absolute; 
+    font-size: smaller;
+    right: 3px;
+    bottom: 4.5em;
+    position: absolute;
     display: block;
 }
 .olControlScale {
@@ -67,10 +67,10 @@ div.olLayerDiv {
     display: block;
     position: absolute;
     font-size: smaller;
-} 
+}
 
 div.olControlMousePosition {
-    bottom: 0em;
+    bottom: 0;
     right: 3px;
     display: block;
     position: absolute;
@@ -133,7 +133,7 @@ div.olControlMousePosition {
 .olPopupContent {
     padding:5px;
     overflow: auto;
-}    
+}
 
 .olControlNavigationHistory {
    background-image: url("img/navigation_history.png");
@@ -142,25 +142,25 @@ div.olControlMousePosition {
    height: 24px;
 
 }
-.olControlNavigationHistoryPreviousItemActive { 
+.olControlNavigationHistoryPreviousItemActive {
   background-position: 0 0;
 }
-.olControlNavigationHistoryPreviousItemInactive { 
+.olControlNavigationHistoryPreviousItemInactive {
    background-position: 0 -24px;
 }
-.olControlNavigationHistoryNextItemActive { 
+.olControlNavigationHistoryNextItemActive {
    background-position: -24px 0;
 }
-.olControlNavigationHistoryNextItemInactive { 
+.olControlNavigationHistoryNextItemInactive {
    background-position: -24px -24px;
 }
 
-div.olControlSaveFeaturesItemActive { 
+div.olControlSaveFeaturesItemActive {
     background-image: url(img/save_features_on.png);
     background-repeat: no-repeat;
     background-position: 0 1px;
 }
-div.olControlSaveFeaturesItemInactive { 
+div.olControlSaveFeaturesItemInactive {
     background-image: url(img/save_features_off.png);
     background-repeat: no-repeat;
     background-position: 0 1px;
@@ -181,12 +181,12 @@ div.olControlSaveFeaturesItemInactive {
     opacity: 0.50;
     font-size: 1px;
     filter: alpha(opacity=50);
-}   
+}
 
 .olControlPanPanel {
     top: 10px;
     left: 5px;
-}  
+}
 
 .olControlPanPanel div {
     background-image: url(img/pan-panel.png);
@@ -221,7 +221,7 @@ div.olControlSaveFeaturesItemInactive {
 .olControlZoomPanel {
     top: 71px;
     left: 14px;
-} 
+}
 
 .olControlZoomPanel div {
     background-image: url(img/zoom-panel.png);
@@ -249,9 +249,9 @@ div.olControlSaveFeaturesItemInactive {
     background-position: 0 18px;
 }
 
-/* 
+/*
  * When a potential text is bigger than the image it move the image
- * with some headers (closes #3154) 
+ * with some headers (closes #3154)
  */
 .olControlPanZoomBar div {
     font-size: 1px;
@@ -429,11 +429,54 @@ span.olGoogleAttribution.hybrid a, span.olGoogleAttribution.satellite a {
     background-position: -26px -24px;
 }
 
+div.olControlZoom {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 4px;
+    padding: 2px;
+}
+div.olControlZoom a {
+    display: block;
+    margin: 1px;
+    padding: 0;
+    color: white;
+    font-size: 18px;
+    font-family: 'Lucida Grande', Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+    height: 22px;
+    width:22px;
+    line-height: 19px;
+    background: #130085; /* fallback for IE - IE6 requires background shorthand*/
+    background: rgba(0, 60, 136, 0.5);
+    filter: alpha(opacity=80);
+}
+div.olControlZoom a:hover {
+    background: #130085; /* fallback for IE */
+    background: rgba(0, 60, 136, 0.7);
+    filter: alpha(opacity=100);
+}
+@media only screen and (max-width: 600px) {
+    div.olControlZoom a:hover {
+        background: rgba(0, 60, 136, 0.5);
+    }
+}
+a.olControlZoomIn {
+    border-radius: 4px 4px 0 0;
+}
+a.olControlZoomOut {
+    border-radius: 0 0 4px 4px;
+}
+
+
 /**
  * Animations
  */
 
-.olTileImage {
+.olLayerGrid .olTileImage {
     -webkit-transition: opacity 0.2s linear;
     -moz-transition: opacity 0.2s linear;
     -o-transition: opacity 0.2s linear;

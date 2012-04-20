@@ -209,6 +209,37 @@
 
         map.destroy();
     }
+    
+    function test_custom_div(t) {
+        t.plan(3);
+        var div = document.createElement('div');
+        
+        control = new OpenLayers.Control.OverviewMap({
+          div: div
+        });
+        
+        map = new OpenLayers.Map('map', {
+            layers  : [new OpenLayers.Layer("layer", {isBaseLayer: true})],
+            controls: [control]
+        });
+        
+        t.eq(control.maximizeDiv, null, 
+            "OverviewMap does not create maximize div");
+        t.eq(control.minimizeDiv, null, 
+            "OverviewMap does not create minimize div");
+        
+        var exc;
+        try {
+            control.maximizeControl();
+            control.minimizeControl();
+        } catch(e) {
+            exc = e;
+        }
+
+        t.eq(exc, undefined, 'maximize and minimize do not trigger an exception');
+        
+        map.destroy();
+    }
 
   </script>
 </head>

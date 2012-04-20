@@ -1,0 +1,108 @@
+<html>
+<head>
+    <script>
+    /**
+    * Because browsers that implement requestAnimationFrame may not execute
+    * animation functions while a window is not displayed (e.g. in a hidden
+    * iframe as in these tests), we mask the native implementations here.  The
+    * native requestAnimationFrame functionality is tested in Util.html and
+    * in PanZoom.html (where a popup is opened before panning).  The tests
+    * here will test the fallback setTimeout implementation for animation.
+    */
+    window.requestAnimationFrame = 
+        window.webkitRequestAnimationFrame =
+        window.mozRequestAnimationFrame =
+        window.oRequestAnimationFrame =
+        window.msRequestAnimationFrame = null;
+    </script>
+    <script src="../OLLoader.js"></script>
+    <script type="text/javascript">
+    function test_addLayer_removeLayer(t) {
+        t.plan(6);
+        var control = new OpenLayers.Control.CacheRead();
+        var map = new OpenLayers.Map({
+            div: "map",
+            controls: [control],
+            layers: [
+                new OpenLayers.Layer.WMS("One"),
+                new OpenLayers.Layer.WMS("Two")
+            ]
+        });
+        t.ok(map.layers[0].events.listeners.tileloadstart, "tileloadstart listener registered on layer One");
+        t.ok(map.layers[1].events.listeners.tileloadstart, "tileloadstart listener registered on layer Two");        
+        control.destroy();
+        t.ok(!map.layers[1].events.listeners.tileloadstart.length, "tileloadstart listener unregistered");        
+        
+        control = new OpenLayers.Control.CacheRead({
+            fetchEvent: "tileerror",
+            layers: [map.layers[0]]
+        });
+        map.addControl(control);
+        t.ok(map.layers[0].events.listeners.tileerror, "tileerror listener registered on layer One");
+        t.ok(!map.layers[1].events.listeners.tileerror, "tileerror listener not registered on layer Two");
+        control.destroy();        
+        t.ok(!map.layers[0].events.listeners.tileerror.length, "tileerror listener unregistered");
+        
+        map.destroy();
+    }
+    
+    function test_fetch(t) {
+
+        if (!window.localStorage) {
+            t.plan(1);
+            var scope = {active: true};
+            t.eq(OpenLayers.Control.CacheRead.prototype.fetch.call(scope), undefined, "no tiles fetched when localStorage is not supported.");
+            return;
+        }
+        
+        t.plan(5);
+        
+        var data = "data:image/gif;base64,R0lGODlhAQABAIAAAP7//wAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==";
+        window.localStorage.setItem("olCache_foo/1/1/1", data);
+        window.localStorage.setItem("olCache_bar/1/1/1", data);
+
+        var layer1 = new OpenLayers.Layer.XYZ("One", "foo/${x}/${y}/${z}");
+        var layer2 = new OpenLayers.Layer.XYZ("Two", "bar/${x}/${y}/${z}", {isBaseLayer: false});
+        var control1 = new OpenLayers.Control.CacheRead({
+            layers: [layer1]
+        });
+        var control2 = new OpenLayers.Control.CacheRead({
+            layers: [layer2],
+            fetchEvent: "tileerror"
+        });
+
+        var map = new OpenLayers.Map({
+            div: "map",
+            projection: "EPSG:900913",
+            controls: [control1, control2],
+            layers: [layer1, layer2],
+            zoom: 1,
+            center: [0, 0]
+        });
+
+        OpenLayers.ProxyHost = "proxy?url=";
+        var tile = new OpenLayers.Tile.Image(layer1, new OpenLayers.LonLat(0, 0), new OpenLayers.Bounds(0, 0, 1, 1), "proxy?url=foo/1/1/1");
+        OpenLayers.Control.CacheWrite.urlMap[tile.url] = "foo/1/1/1";
+        
+        control1.fetch({tile: tile});
+        t.eq(tile.url, data, "proxied url replaced with data uri for original url");
+        delete OpenLayers.Control.CacheWrite.urlMap[tile.url];
+
+        t.delay_call(1, function() {
+            t.eq(layer1.grid[1][1].imgDiv.src, data, "[tileloadstart] tile content from cache");
+            t.ok(layer1.grid[0][0].imgDiv.src !== data, "[tileloadstart] tile content from remote resource");
+            t.eq(layer2.grid[1][1].imgDiv.src, data, "[tileerror] tile content from cache");
+            t.ok(layer2.grid[0][0].imgDiv.src !== data, "[tileerror] tile content from remote resource");
+
+            window.localStorage.removeItem("olCache_foo/1/1/1");
+            window.localStorage.removeItem("olCache_bar/1/1/1");
+            map.destroy();
+        });
+    }
+    
+    </script>
+</head>
+<body>
+    <div id="map" style="width: 400px; height: 250px;"/>
+</body>
+</html>

@@ -35,10 +35,6 @@ if [ ! o$GITREV = $OLD_GITREV ]; then
     cp OpenLayers.*.js ..
 
     cd ..
-    for i in google ie6-style style; do
-        csstidy theme/default/$i.css --template=highest theme/default/$i.tidy.css
-        cp theme/default/$i.tidy.css theme/default/$i.css
-    done
 
     sed -i -e 's!../lib/OpenLayers.js?mobile!../OpenLayers.mobile.js!' examples/*.html
     sed -i -e 's!../lib/OpenLayers.js!../OpenLayers.js!' examples/*.html

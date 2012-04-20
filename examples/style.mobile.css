@@ -1,29 +1,49 @@
-div.olControlZoomPanel {
-    height: 108px;
-    width: 36px;
+div.olControlZoom {
     position: absolute;
-    top: 20px;
-    left: 20px;
+    top: 8px;
+    left: 8px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 4px;
+    padding: 2px;
 }
-div.olControlZoomPanel div {
-    width: 36px;
-    height: 36px;
-    background-image: url(img/mobile-zoombar.png);
-    left: 0;
+* {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
-div.olControlZoomPanel .olControlZoomInItemInactive {
-    top: 0;
-    background-position: 0 0;
+div.olControlZoom a {
+    display: block;
+    margin: 1px;
+    padding: 0;
+    color: white;
+    font-size: 28px;
+    font-family: sans-serif;
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+    height: 32px;
+    width: 32px;
+    line-height: 28px;
+    text-shadow: 0 0 3px rgba(0,0,0,0.8);
+    background: #130085; /* fallback for IE - IE6 requires background shorthand*/
+    background: rgba(0, 60, 136, 0.5);
+    filter: alpha(opacity=80);
 }
-div.olControlZoomPanel .olControlZoomToMaxExtentItemInactive {
-    top: 36px;
-    background-position: 0 -36px;
+a.olControlZoomIn {
+    border-radius: 4px 4px 0 0;
 }
-div.olControlZoomPanel .olControlZoomOutItemInactive {
-    top: 72px;
-    background-position: 0 -72px;
+a.olControlZoomOut {
+    border-radius: 0 0 4px 4px;
 }
-.olTileImage {
+div.olControlZoom a:hover {
+    background: #130085; /* fallback for IE */
+    background: rgba(0, 60, 136, 0.7);
+    filter: alpha(opacity=100);
+}
+@media only screen and (max-width: 600px) {
+    div.olControlZoom a:hover {
+        background: rgba(0, 60, 136, 0.5);
+    }
+}
+.olLayerGrid .olTileImage {
     -webkit-transition: opacity 0.2s linear;
     -moz-transition: opacity 0.2s linear;
     -o-transition: opacity 0.2s linear;

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers Grayscale OSM Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map, layer;
+
+        function init() {
+            if (!OpenLayers.CANVAS_SUPPORTED) {
+                var unsupported = OpenLayers.Util.getElement('unsupported');
+                unsupported.innerHTML = 'Your browser does not support canvas, nothing to see here !';
+            }
+
+            layer = new OpenLayers.Layer.OSM('Simple OSM Map', null, {
+                eventListeners: {
+                    tileloaded: function(evt) {
+                        var ctx = evt.tile.getCanvasContext();
+                        if (ctx) {
+                            var imgd = ctx.getImageData(0, 0, evt.tile.size.w, evt.tile.size.h);
+                            var pix = imgd.data;
+                            for (var i = 0, n = pix.length; i < n; i += 4) {
+                                pix[i] = pix[i + 1] = pix[i + 2] = (3 * pix[i] + 4 * pix[i + 1] + pix[i + 2]) / 8;
+                            }
+                            ctx.putImageData(imgd, 0, 0);
+                            evt.tile.imgDiv.removeAttribute("crossorigin");
+                            evt.tile.imgDiv.src = ctx.canvas.toDataURL();
+                        }
+                    }
+                }
+            });
+
+            // If you get a security error because the tile are not
+            // from the same domain as this page, a simple Apache
+            // proxy can be created to workaround this issue:
+            //
+            // <Proxy *>
+            // Order deny,allow
+            // Allow from localhost
+            // </Proxy>
+            // ProxyPass /osm http://tile.openstreetmap.org/
+            //
+            // Then, in the layer definition above, replace null with '/osm/${z}/${x}/${y}.png'
+
+            map = new OpenLayers.Map('map', {
+                layers: [layer],
+                zoom: 3,
+                center: [-1081125, 6212801]
+            });
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Grayscale OSM Example</h1>
+
+    <div id="tags">
+        openstreetmap canvas grayscale light
+    </div>
+
+    <div id="shortdesc">Show an OSM Map in grayscale</div>
+
+    <div id="map" class="smallmap"></div>
+
+    <div id="docs">
+        <p>This example shows an OSM layer where the tiles were
+        converted to grayscale
+        with <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html">canvas</a>.</p>
+        <p style="color:red;" id="unsupported"></p>
+    </div>
+
+  </body>
+</html>

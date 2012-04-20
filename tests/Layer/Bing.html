@@ -1,5 +1,19 @@
 <html>
 <head>
+  <script>
+    /**
+    * Because browsers that implement requestAnimationFrame may not execute
+    * animation functions while a window is not displayed (e.g. in a hidden
+    * iframe as in these tests), we mask the native implementations here.  The
+    * native requestAnimationFrame functionality is tested in Util.html and
+    * in PanZoom.html (where a popup is opened before panning).
+    */
+    window.requestAnimationFrame = 
+        window.webkitRequestAnimationFrame =
+        window.mozRequestAnimationFrame =
+        window.oRequestAnimationFrame =
+        window.msRequestAnimationFrame = null;
+  </script>
   <script src="../OLLoader.js"></script>
   <script type="text/javascript">
     var map, layer; 
@@ -82,6 +96,26 @@
         });
     }
     
+    function test_initLayer_notempty(t) {
+        t.plan(1);
+        
+        map = new OpenLayers.Map("map", {
+            projection: "EPSG:3857",
+            layers: [new OpenLayers.Layer("dummy", {isBaseLayer: true})]
+        });
+        map.zoomToExtent([-14768652, 4492113, -12263964, 5744457]);
+        var layer = new OpenLayers.Layer.Bing(OpenLayers.Util.extend({
+            isBaseLayer: false
+        }, options));
+        map.addLayer(layer);
+        var tile = layer.tileQueue[0];
+        
+        t.delay_call(5, function() {
+            t.ok(tile.url, "Tile not empty");
+            map.destroy();
+        });
+    }
+    
     function test_attribution(t) {
         t.plan(3);
         
@@ -95,6 +129,25 @@
             t.ok(layer.attribution.indexOf('olBingAttribution aerial') !== -1, "Attribution has the correct css class");
             t.ok(layer.attribution.indexOf('<img src="">') == -1, "Attribution contains a logo");
             t.ok(layer.attribution.indexOf('</img></div></a><a style=') == -1 , "Attribution contains a copyright");
+            map.destroy();
+        });
+    }
+
+    function test_attribution_notempty(t) {
+        t.plan(1);
+        
+        var log = [];
+        var map = new OpenLayers.Map("map");
+        layer = new OpenLayers.Layer.Bing(OpenLayers.Util.applyDefaults({type: 'Road'}, options));
+        map.addLayer(layer);
+        var format = OpenLayers.String.format;
+        OpenLayers.String.format = function(tpl, options) {
+            log.push(options.copyrights);
+        }
+        map.zoomToExtent(new OpenLayers.Bounds(-14768652, 4492113, -12263964, 5744457));
+        t.delay_call(2, function() {
+            t.ok(log.join("") !== "", "Copyright not empty");
+            OpenLayers.String.format = format;
             map.destroy();
         });
     }

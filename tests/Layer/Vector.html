@@ -723,54 +723,6 @@
                         (-y + customStyle6.graphicYOffset).toFixed().toString(),
                         "graphicYOffset correctly set");
         }
-        if (layer.renderer.CLASS_NAME == 'OpenLayers.Renderer.SVG2') {
-                feature.style = customStyle1;
-                layer.drawFeature(feature);
-                var resolution = map.getResolution();
-                t.eq(root.firstChild.getAttributeNS(null, 'width'),
-                             (2*customStyle1.pointRadius*resolution).toString(),
-                             "given a pointRadius, width equals 2*pointRadius");
-                t.eq(root.firstChild.getAttributeNS(null, 'height'),
-                             (2*customStyle1.pointRadius*resolution).toString(),
-                             "given a pointRadius, height equals 2*pointRadius");
-                feature.style = customStyle2;
-                layer.drawFeature(feature);
-                t.eq(root.firstChild.getAttributeNS(null, 'width'),
-                             root.firstChild.getAttributeNS(null, 'height'),
-                             "given a graphicWidth, width equals height");
-                t.eq(root.firstChild.getAttributeNS(null, 'width'),
-                             (customStyle2.graphicWidth*resolution).toString(),
-                             "width is set correctly");
-                feature.style = customStyle3;
-                layer.drawFeature(feature);
-                t.eq(root.firstChild.getAttributeNS(null, 'height'),
-                             root.firstChild.getAttributeNS(null, 'width'),
-                             "given a graphicHeight, height equals width");
-                t.eq(root.firstChild.getAttributeNS(null, 'height'),
-                             (customStyle3.graphicHeight*resolution).toString(),
-                             "height is set correctly");
-                feature.style = customStyle4;
-                layer.drawFeature(feature);
-                t.eq(root.firstChild.getAttributeNS(null, 'height'),
-                             (customStyle4.graphicHeight*resolution).toString(),
-                             "given graphicHeight and graphicWidth, both are set: height");
-                t.eq(root.firstChild.getAttributeNS(null, 'width'),
-                             (customStyle4.graphicWidth*resolution).toString(),
-                             "given graphicHeight and graphicWidth, both are set: width");
-                feature.style = customStyle5;
-                layer.drawFeature(feature);
-                t.eq(root.firstChild.getAttributeNS(null, 'style'),
-                             'opacity: '+customStyle5.graphicOpacity.toString()+((OpenLayers.Util.getBrowserName() == "opera" || OpenLayers.Util.getBrowserName() == "safari") ? "" : ';'),
-                             "graphicOpacity correctly set");
-                feature.style = customStyle6;
-                layer.drawFeature(feature);
-                t.eq(root.firstChild.getAttributeNS(null, 'x'),
-                        (geometryX + customStyle6.graphicXOffset*resolution).toString(),
-                        "graphicXOffset correctly set");
-                t.eq(root.firstChild.getAttributeNS(null, 'y'),
-                        (-geometryY + customStyle6.graphicYOffset*resolution).toString(),
-                        "graphicYOffset correctly set");
-        }
         if (layer.renderer.CLASS_NAME == 'OpenLayers.Renderer.VML') {
                 feature.style = customStyle1;
                 layer.drawFeature(feature);

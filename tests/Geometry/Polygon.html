@@ -385,6 +385,32 @@
         t.ok(geodesicErr < planarErr, "geodesic measure is better (" + geodesicErr.toFixed(3) + " vs. " + planarErr.toFixed(3) + ")");
         
     }
+
+    function test_getCentroid(t) {
+        t.plan(5);
+        var bounds = new OpenLayers.Bounds(5, 10, 5, 10);
+        var geometry = bounds.toGeometry();
+        var centroid = geometry.getCentroid();
+        t.eq(geometry.components[0].components.length, 2, "only two vertices since the box has left=right and bottom=top");
+        t.ok(centroid && centroid.x === 5 && centroid.y === 10, "getCentroid returns a point geometry even if the ring of the polygon has only 2 vertices");
+        bounds = new OpenLayers.Bounds(123456789.0, 123456789.0, 123456789.1, 123456789.1);
+        geometry = bounds.toGeometry();
+        centroid = geometry.getCentroid();
+        t.eq(geometry.components[0].components.length, 5, "five vertices expected");
+        var dX = Math.abs(centroid.x - 123456789.05);
+        var dY = Math.abs(centroid.y - 123456789.05);
+        t.ok(centroid && dX < 0.0001 && dY < 0.0001, " getCentroid returns the correct point geometry dX = " + dX + ", dY = " + dY);
+        
+        var components = [
+            new OpenLayers.Geometry.Point(0,0), new OpenLayers.Geometry.Point(1,1),
+            new OpenLayers.Geometry.Point(0,1), new OpenLayers.Geometry.Point(1,0)];
+        var linearRing = new OpenLayers.Geometry.LinearRing(components);
+        polygon = new OpenLayers.Geometry.Polygon([linearRing.clone()]);
+        centroid = polygon.getCentroid();
+        var tX = centroid.x;
+        var tY = centroid.y;
+        t.ok( !isNaN(tX) && !isNaN(tY) && tX !== Infinity && tY !== Infinity, " getCentroid for wrong polygon works x = " + tX + ", y = " + tY);
+    }
     
 
   </script>

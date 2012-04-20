@@ -523,6 +523,14 @@
         
     }
 
+    function test_whitespace(t) {
+        t.plan(1);
+        var xml = readXML("propertyisbetweenwhitespace.sld");
+        var output = new OpenLayers.Format.SLD().read(xml);
+        var filter = output.namedLayers['geonode:US_Stat0'].userStyles[0].rules[0].filter;
+        t.eq(filter.lowerBoundary, 29.7, "whitespace ignored in values and value transformed to number");
+    }
+
     function test_label_LinePlacement(t) {
         t.plan(1);
         var format = new OpenLayers.Format.SLD.v1_0_0({
@@ -969,6 +977,52 @@
         </sld:Rule>
     </sld:FeatureTypeStyle>
 </sld:UserStyle>
+--></div>
+<div id="propertyisbetweenwhitespace.sld"><!--
+<sld:StyledLayerDescriptor xmlns="http://www.opengis.net/sld" xmlns:sld="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml" version="1.0.0">
+    <sld:NamedLayer>
+        <sld:Name>geonode:US_Stat0</sld:Name>
+        <sld:UserStyle>
+            <sld:Name>US_Stat0_5cbbe918</sld:Name>
+            <sld:Title>BMI&lt;25</sld:Title>
+            <sld:FeatureTypeStyle>
+                <sld:Name>name</sld:Name>
+                <sld:Rule>
+                    <sld:Title>BMI&lt;25</sld:Title>
+                    <ogc:Filter>
+                        <ogc:PropertyIsBetween>
+                            <ogc:PropertyName>Hlt_st_BMI</ogc:PropertyName>
+                            <ogc:LowerBoundary>
+                                <ogc:Literal>
+
+
+                                	29.7
+
+
+                            </ogc:Literal>
+                            </ogc:LowerBoundary>
+                            <ogc:UpperBoundary>
+                                <ogc:Literal>
+
+
+                                 36.2
+
+
+                            </ogc:Literal>
+                            </ogc:UpperBoundary>
+                        </ogc:PropertyIsBetween>
+                    </ogc:Filter>
+                    <sld:PolygonSymbolizer>
+                        <sld:Fill>
+                            <sld:CssParameter name="fill">#C0F58C</sld:CssParameter>
+                        </sld:Fill>
+                        <sld:Stroke/>
+                    </sld:PolygonSymbolizer>
+                </sld:Rule>
+            </sld:FeatureTypeStyle>
+        </sld:UserStyle>
+    </sld:NamedLayer>
+</sld:StyledLayerDescriptor>
 --></div>
 </body> 
 </html> 

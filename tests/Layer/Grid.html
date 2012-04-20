@@ -24,8 +24,8 @@
      */
 
 
-    function test_Layer_Grid_constructor (t) {
-        t.plan( 6 );
+    function test_constructor (t) {
+        t.plan( 8 );
                        
         layer = new OpenLayers.Layer.Grid(name, url, params, null);
         t.ok( layer instanceof OpenLayers.Layer.Grid, "returns OpenLayers.Layer.Grid object" );
@@ -33,6 +33,8 @@
         t.eq( layer.ratio, 1.5, "ratio default is 1.5");
         t.eq( layer.numLoadingTiles, 0, "numLoadingTiles starts at 0");
         t.ok( layer.tileClass === OpenLayers.Tile.Image, "tileClass default is OpenLayers.Tile.Image");
+        t.eq( layer.className, 'olLayerGrid', "className default is olLayerGrid");
+        t.eq( layer.removeBackBufferDelay, 2500, "removeBackBufferDelay default is 2500");
 
         var obj = {};
         var func = function() {};
@@ -41,6 +43,32 @@
         t.ok( layer.events.listeners['tileloaded'].length == 1, "one listener for tileloaded after register");        
     }
 
+    function test_constructor_singleTile(t) {
+        t.plan(2);
+        layer = new OpenLayers.Layer.Grid(name, url, params, {singleTile: true});
+        t.eq( layer.className, 'olLayerGridSingleTile', "className default is olLayerGridSingleTile");
+        t.eq( layer.removeBackBufferDelay, 0, "removeBackBufferDelay default is 0");
+    }
+
+    function test_setMap(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.Grid(name, url, params, null);
+        map.addLayer(layer);
+        t.ok(OpenLayers.Element.hasClass(layer.div, "olLayerGrid"),
+             "olLayerGrid class assigned to layer div");
+        map.destroy();
+    }
+
+    function test_setMap_singleTile(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.Grid(name, url, params, {singleTile: true});
+        map.addLayer(layer);
+        t.ok(OpenLayers.Element.hasClass(layer.div, "olLayerGridSingleTile"),
+             "olLayerGridSingleTile class assigned to layer div");
+        map.destroy();
+    }
 
     function test_Layer_Grid_inittiles (t) {
         t.plan( 2 );
@@ -230,17 +258,17 @@
         layer.deferMoveGriddedTiles = function() {
             log.push("deferMoveGriddedTiles");
             origDeferMoveGriddedTiles.apply(this, arguments);
-        }
+        };
         layer.moveGriddedTiles = function() {
             log.push("moveGriddedTiles");
             OpenLayers.Layer.WMS.prototype.moveGriddedTiles.apply(this, arguments);
-        }
+        };
         map.moveTo([5, 0]);
         t.eq(log[0], "moveGriddedTiles", "deferred after moveTo");
         map.moveTo([0, 0]);
         t.eq(log[1], "moveGriddedTiles", "deferred again after another moveTo");
         t.eq(log.length, 2, "no tiles loaded yet");
-        t.delay_call(0.1, function() {
+        t.delay_call(1, function() {
             t.eq(log[2], "deferMoveGriddedTiles", "tiles moved after tileLoadingDelay");
         });
 
@@ -393,7 +421,7 @@
      */
 
     function test_Layer_Grid_clone(t) {
-        t.plan(5);
+        t.plan(7);
         
         var options = {tileSize: new OpenLayers.Size(500,50)};
         var map = new OpenLayers.Map('map', options);
@@ -407,6 +435,9 @@
 
         t.ok( clone.grid != layer.grid, "clone does not copy grid");
         t.ok( clone.grid.length == 0, "clone creates a new array instead");
+        
+        t.ok(clone.tileQueue !== layer.tileQueue, "new tileQueue for clone");
+        t.eq(clone.backBuffer, null, "no backbuffer from original");
 
         t.ok( clone.tileSize.equals(layer.tileSize), "tileSize correctly cloned");
 
@@ -506,7 +537,7 @@
     }  
      
     function test_Layer_Grid_addTileMonitoringHooks(t) {
-        t.plan(17);
+        t.plan(18);
         
         layer = new OpenLayers.Layer.Grid();
         layer.events = {
@@ -546,10 +577,11 @@
 
         t.eq(g_events[0][0], "loadstart", "loadstart event triggered when numLoadingTiles is 0");
         t.eq(layer.numLoadingTiles, 1, "numLoadingTiles incremented");
+        t.eq(g_events[1][0], "tileloadstart", "tileloadstart event triggered");
 
         g_events = [];
         tile.onLoadStart.apply(layer);
-        t.eq(g_events.length, 0, "loadstart event not triggered when numLoadingTiles is not 0");
+        t.eq(g_events.length, 1, "tileloadstart, but not loadstart triggered when numLoadingTiles is not 0");
         t.eq(layer.numLoadingTiles, 2, "numLoadingTiles incremented");
 
 
@@ -1193,22 +1225,23 @@
         // zoom transition.
         //
 
-        t.plan(2);
+        t.plan(4);
 
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS('', '', {}, {
             isBaseLayer: true,
             singleTile: true,
-            ratio: 1
+            ratio: 1.1
         });
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0, 0), 0);
 
         // move
-        map.setCenter(new OpenLayers.LonLat(10, 10));
+        map.setCenter(new OpenLayers.LonLat(50, 50));
         t.ok(layer.backBuffer && layer.backBuffer.parentNode === layer.div,
                 'backbuffer inserted after map move');
-
+        t.eq(layer.backBuffer.style.left, '-25%');
+        t.eq(layer.backBuffer.style.top, '-28%');
         // zoom
         map.zoomTo(1);
         t.eq(layer.backBuffer, null,
@@ -1365,6 +1398,132 @@
             map.destroy();
         });
     }
+    
+    function test_getGridData(t) {
+        t.plan(12);
+        
+        var layer = new OpenLayers.Layer.Grid(null, null, null, {
+            isBaseLayer: true, getURL: function() {
+                return "/bogus/path/to/tile";
+            }
+        });
+        var map = new OpenLayers.Map({
+            div: "map",
+            layers: [layer],
+            controls: [],
+            center: [0, 0],
+            zoom: 1
+        });
+        
+        // get tile data for [0, 0]
+        var data = layer.getTileData({lon: 0, lat: 0});
+        t.ok(data && data.tile, "[0, 0]: got tile data");
+        t.eq(data.i, 0, "[0, 0]: i");
+        t.eq(data.j, 128, "[0, 0]: j");
+        t.ok(
+            data.tile.bounds.equals({left: 0, bottom: -90, right: 180, top: 90}),
+            "[0, 0]: tile bounds " + data.tile.bounds.toString()
+        );
+        
+        // get tile data for [-110, 45]
+        data = layer.getTileData({lon: -110, lat: 45});
+        t.ok(data && data.tile, "[-110, 45]: got tile data");
+        t.eq(data.i, 99, "[-110, 45]: i");
+        t.eq(data.j, 64, "[-110, 45]: j");
+        t.ok(
+            data.tile.bounds.equals({left: -180, bottom: -90, right: 0, top: 90}),
+            "[-110, 45]: tile bounds " + data.tile.bounds.toString()
+        );
+        
+        // get tile data for [0, 300] (north of grid)
+        data = layer.getTileData({lon: 0, lat: 300})
+        t.eq(data, null, "[0, 300]: north of grid");
+
+        // get tile data for [400, 0] (east of grid)
+        data = layer.getTileData({lon: 400, lat: 0})
+        t.eq(data, null, "[400, 0]: east of grid");
+
+        // get tile data for [0, -500] (south of grid)
+        data = layer.getTileData({lon: 0, lat: -500})
+        t.eq(data, null, "[0, -500]: south of grid");
+
+        // get tile data for [-200, 0] (west of grid)
+        data = layer.getTileData({lon: -200, lat: 0})
+        t.eq(data, null, "[-200, 0]: west of grid");
+        
+        map.destroy();
+        
+    }
+
+    function test_getGridData_wrapped(t) {
+        t.plan(18);
+        
+        var layer = new OpenLayers.Layer.Grid(null, null, null, {
+            isBaseLayer: true, getURL: function() {
+                return "/bogus/path/to/tile";
+            },
+            wrapDateLine: true
+        });
+        var map = new OpenLayers.Map({
+            div: "map",
+            layers: [layer],
+            controls: [],
+            center: [-50, 0],
+            zoom: 1
+        });
+        
+        // get tile data for [0, 0]
+        var data = layer.getTileData({lon: 0, lat: 0});
+        t.ok(data && data.tile, "[0, 0]: got tile data");
+        t.eq(data.i, 0, "[0, 0]: i");
+        t.eq(data.j, 128, "[0, 0]: j");
+        t.ok(
+            data.tile.bounds.equals({left: 0, bottom: -90, right: 180, top: 90}),
+            "[0, 0]: tile bounds " + data.tile.bounds.toString()
+        );
+        
+        // get tile data for [-110, 45]
+        data = layer.getTileData({lon: -110, lat: 45});
+        t.ok(data && data.tile, "[-110, 45]: got tile data");
+        t.eq(data.i, 99, "[-110, 45]: i");
+        t.eq(data.j, 64, "[-110, 45]: j");
+        t.ok(
+            data.tile.bounds.equals({left: -180, bottom: -90, right: 0, top: 90}),
+            "[-110, 45]: tile bounds " + data.tile.bounds.toString()
+        );
+        
+        // get tile data for [0, 300] (north of grid)
+        data = layer.getTileData({lon: 0, lat: 300})
+        t.eq(data, null, "[0, 300]: north of grid");
+
+        // get tile data for [400, 0] (equivalent to [40, 0] and visible on map)
+        data = layer.getTileData({lon: 400, lat: 0})
+        t.ok(data && data.tile, "[400, 0]: got tile data");
+        t.eq(data.i, 56, "[400, 0]: i");
+        t.eq(data.j, 128, "[400, 0]: j");
+        t.ok(
+            data.tile.bounds.equals({left: 0, bottom: -90, right: 180, top: 90}),
+            "[400, 0]: tile bounds " + data.tile.bounds.toString()
+        );
+
+        // get tile data for [0, -500] (south of grid)
+        data = layer.getTileData({lon: 0, lat: -500})
+        t.eq(data, null, "[0, -500]: south of grid");
+
+        // get tile data for [-200, 0] (equivalent to [160, 0] and wrapped to west side map)
+        data = layer.getTileData({lon: -200, lat: 0})
+        t.ok(data && data.tile, "[-200, 0]: got tile data");
+        t.eq(data.i, 227, "[-200, 0]: i");
+        t.eq(data.j, 128, "[-200, 0]: j");
+        t.ok(
+            data.tile.bounds.equals({left: 0, bottom: -90, right: 180, top: 90}),
+            "[-200, 0]: tile bounds " + data.tile.bounds.toString()
+        );
+        
+        map.destroy();
+        
+    }
+    
   </script>
 </head>
 <body>

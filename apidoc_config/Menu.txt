@@ -319,6 +319,7 @@ Group: OpenLayers  {
       File: nn  (no auto-title, OpenLayers/Lang/nn.js)
       File: oc  (no auto-title, OpenLayers/Lang/oc.js)
       File: pt  (no auto-title, OpenLayers/Lang/pt.js)
+      File: pl  (no auto-title, OpenLayers/Lang/pl.js)
       File: pt-BR  (no auto-title, OpenLayers/Lang/pt-BR.js)
       File: ru  (no auto-title, OpenLayers/Lang/ru.js)
       File: sk  (no auto-title, OpenLayers/Lang/sk.js)
@@ -408,9 +409,7 @@ Group: OpenLayers  {
       File: Renderer  (no auto-title, OpenLayers/Renderer.js)
       File: Canvas  (no auto-title, OpenLayers/Renderer/Canvas.js)
       File: ElementsIndexer  (no auto-title, OpenLayers/Renderer/Elements.js)
-      File: NG  (no auto-title, OpenLayers/Renderer/NG.js)
       File: SVG  (no auto-title, OpenLayers/Renderer/SVG.js)
-      File: SVG2  (no auto-title, OpenLayers/Renderer/SVG2.js)
       File: VML  (no auto-title, OpenLayers/Renderer/VML.js)
       }  # Group: Renderer
 

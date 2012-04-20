@@ -69,6 +69,10 @@ h6 {
     font-weight: bold;
 }
 
+.olControlAttribution {
+    bottom: 5px;
+}
+
 /**
  * Map Examples Specific
  */

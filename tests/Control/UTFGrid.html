@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <script>
+      /**
+      * Because browsers that implement requestAnimationFrame may not execute
+      * animation functions while a window is not displayed (e.g. in a hidden
+      * iframe as in these tests), we mask the native implementations here.  The
+      * native requestAnimationFrame functionality is tested in Util.html and
+      * in PanZoom.html (where a popup is opened before panning).  The panTo tests
+      * here will test the fallback setTimeout implementation for animation.
+      */
+      window.requestAnimationFrame = 
+          window.webkitRequestAnimationFrame =
+          window.mozRequestAnimationFrame =
+          window.oRequestAnimationFrame =
+          window.msRequestAnimationFrame = null;
+  </script>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+
+    var map, layer, control;
+    var log;
+    function setUp() {
+        layer = new OpenLayers.Layer.UTFGrid({
+            url: "../data/utfgrid/world_utfgrid/${z}/${x}/${y}.json",
+            isBaseLayer: true, 
+            utfgridResolution: 4
+        });
+        map = new OpenLayers.Map({
+            div: "map",
+            projection: "EPSG:900913",
+            layers: [layer],
+            center: [0, 0],
+            zoom: 1
+        });
+        log = [];
+        control = new OpenLayers.Control.UTFGrid({
+            callback: function(infoLookup, loc, pixel) {
+                log.push([infoLookup, loc, pixel]);
+            }
+        });
+        map.addControl(control);
+    }
+    
+    function tearDown() {
+        map.destroy();
+        map = null;
+        layer = null;
+        control = null;
+        log = [];
+    }
+
+    function test_constructor(t) {
+        t.plan(2);
+        
+        var control = new OpenLayers.Control.UTFGrid();
+        t.ok(control instanceof OpenLayers.Control.UTFGrid, "utfgrid instance");
+        t.eq(control.handlerMode, "click", "control mode");
+
+        control.destroy();
+
+    }
+    
+    function test_handleEvent(t) {
+        setUp();
+        
+        var cases = [{
+            evt: {xy: {x: 100, y: 70}},
+            lookup: {
+                "0": {
+                    id: "207",
+                    data: {
+                        NAME: "United States",
+                        POP2005: 299846449
+                    }
+                }
+            }
+        }, {
+            evt: {xy: {x: 350, y: 20}},
+            lookup: {
+                "0": {
+                    id: "245",
+                    data: {
+                        NAME: "Russia",
+                        POP2005: 143953092
+                    }
+                }
+            }
+        }];
+        
+        var len = cases.length;
+        t.plan(4*len);
+                
+        // wait for tile loading to finish
+        t.delay_call(0.5, function() {
+            var c, arg;
+            for (var i=0; i<len; ++i) {
+                c = cases[i];
+                t.eq(log.length, i, i + ": log length before");
+                control.handleEvent(c.evt);
+                t.eq(log.length, i+1, i + ": log length after");
+                t.eq(log[i][0], c.lookup, i + ": callback infoLookup");
+                t.eq(log[i][2], c.evt.xy, i + ": callback pixel");
+            }
+            
+            tearDown();
+        });
+        
+    }
+
+  </script>
+</head>
+<body>
+<div id="map" style="height: 256px; width: 512px"></div>
+</body>
+</html>
+

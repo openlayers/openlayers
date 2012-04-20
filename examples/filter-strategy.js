@@ -20,7 +20,7 @@ function startAnimation() {
             filter.lowerBoundary = currentDate;
             filter.upperBoundary = new Date(currentDate.getTime() + (span * 1000));
             filterStrategy.setFilter(filter);
-            currentDate = new Date(currentDate.getTime() + (step * 1000))
+            currentDate = new Date(currentDate.getTime() + (step * 1000));
         } else {
             stopAnimation(true);
         }
