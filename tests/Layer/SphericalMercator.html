@@ -23,11 +23,11 @@
         t.eq(Math.round(phillipines.lat), 0, "Phillipines lat is correct");
         t.eq(phillipines.lon, 20037508.340, "Phillipines lon is correct");
        
-        // Rounding errors make this not infinity 
-        t.ok(ne.lat > 50000000, "NE lat is correct");
+        // be kind and stay within the world instead of having +/- infinity lat
+        t.ok(ne.lat, 20037508.34, "NE lat is correct");
         t.eq(ne.lon, 20037508.34, "NE lon is correct");
         
-        t.eq(sw.lat, -Infinity, "SW lat is correct");
+        t.eq(sw.lat, -20037508.34, "SW lat is correct");
         t.eq(sw.lon, -20037508.34, "SW lon is correct");
     } 
     
