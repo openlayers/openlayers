@@ -139,7 +139,7 @@
   }
   function test_Control_Permalink_base_with_query (t) {
       t.plan( 3 );
-  
+	
       control = new OpenLayers.Control.Permalink('permalink', "./edit.html?foo=bar" );
       map = new OpenLayers.Map('map');
       layer = new OpenLayers.Layer.WMS('Test Layer', "http://example.com" );
@@ -162,7 +162,38 @@
       map.pan(-5, 0, {animate:false});
       t.eq(OpenLayers.Util.getElement('permalink').href, OpenLayers.Util.getElement('edit_permalink').href, "Panning sets permalink with base and querystring ending with '?'");
       map.destroy();
+  }
 
+  function test_Control_Permalink_base_with_anchor (t) {
+      t.plan( 4 );
+      control = new OpenLayers.Control.Permalink('permalink', "./edit.html#foo" );
+      map = new OpenLayers.Map('map');
+      layer = new OpenLayers.Layer.WMS('Test Layer', "http://example.com" );
+      map.addLayer(layer);
+      if (!map.getCenter())  map.zoomToMaxExtent();
+      map.addControl(control);
+      map.pan(5, 0, {animate:false});
+      OpenLayers.Util.getElement('edit_permalink').href = './edit.html?zoom=2&lat=0&lon=1.75781&layers=B#foo';
+      t.eq(OpenLayers.Util.getElement('permalink').href, OpenLayers.Util.getElement('edit_permalink').href, "Panning sets permalink with base and anchor");
+      
+      control = new OpenLayers.Control.Permalink('permalink', "./edit.html#" );
+      map.addControl(control);
+      map.pan(0, 0, {animate:false});
+      OpenLayers.Util.getElement('edit_permalink').href = './edit.html?zoom=2&lat=0&lon=1.75781&layers=B#';
+      t.eq(OpenLayers.Util.getElement('permalink').href, OpenLayers.Util.getElement('edit_permalink').href, "Panning sets permalink with base and an empty anchor");
+      
+      control = new OpenLayers.Control.Permalink('permalink', "./edit.html?foo=bar#test" );
+      OpenLayers.Util.getElement('edit_permalink').href = './edit.html?foo=bar&zoom=2&lat=0&lon=1.75781&layers=B#test';
+      map.addControl(control);
+      map.pan(5, 0, {animate:false});
+      map.pan(-5, 0, {animate:false});
+      t.eq(OpenLayers.Util.getElement('permalink').href, OpenLayers.Util.getElement('edit_permalink').href, "Panning sets permalink with base, querystring and an anchor");
+	  
+	  control = new OpenLayers.Control.Permalink('permalink', "./edit.html#foo", {anchor : true} );
+      map.addControl(control);
+      map.pan(0, 0, {animate:false});
+      OpenLayers.Util.getElement('edit_permalink').href = './edit.html#zoom=2&lat=0&lon=1.75781&layers=B';
+      t.eq(OpenLayers.Util.getElement('permalink').href, OpenLayers.Util.getElement('edit_permalink').href, "Panning sets permalink with base and an empty anchor");
   }
 
     function test_Control_Permalink_nonRepeating (t) {
