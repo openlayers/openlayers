@@ -837,12 +837,12 @@
         layer.serverResolutions = [2, 1];
         resolution = 1;
         zoom = layer.getServerZoom();
-        t.eq(zoom, 3, '[3] getServerZoom return value is correct');
+        t.eq(zoom, 1, '[3] getServerZoom return value is correct');
 
         layer.serverResolutions = [2];
         resolution = 0.5;
         zoom = layer.getServerZoom();
-        t.eq(zoom, 2, '[4] getServerZoom return value is correct');
+        t.eq(zoom, 0, '[4] getServerZoom return value is correct');
 
         var exc;
         layer.serverResolutions = [0.5];
