@@ -1712,7 +1712,36 @@
         t.eq(log[1], "move", "followed by move,");
         t.eq(log[log.length-2], "move", "move again before we stop panning,");
         t.eq(log[log.length-1], "moveend", "and moveend when we're done.");
-        
+    }
+
+    function test_pan_no_anim_event_sequence(t) {
+        t.plan(4);
+
+        var log = [];
+        var map = new OpenLayers.Map("map");
+        map.addLayer(
+            new OpenLayers.Layer(null, {isBaseLayer: true})
+        );
+        map.setCenter(new OpenLayers.LonLat(0, 0), 5);
+        map.events.on({
+            "movestart": function() {
+                log.push("movestart");
+            },
+            "move": function() {
+                log.push("move");
+            },
+            "moveend": function() {
+                log.push("moveend");
+            }
+        });
+
+        map.pan(5,5, {animate: false});
+        t.eq(log.length, 3, "no more than 3 events happen.");
+        t.eq(log[0], "movestart", "pan sequence starts with movestart");
+        t.eq(log[1], "move", "followed by move,");
+        t.eq(log[2], "moveend", "and moveend when we're done.");
+
+        map.destroy();
     }
 
     // test if we can call updateSize before document.body is ready. updateOk
