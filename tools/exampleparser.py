@@ -3,7 +3,6 @@
 import sys
 import os
 import re
-import urllib2
 import time
 from xml.dom.minidom import Document
 
@@ -35,18 +34,6 @@ except ImportError, E:
 feedName = "example-list.xml"
 feedPath = "http://openlayers.org/dev/examples/"
 
-def getListOfOnlineExamples(baseUrl):
-    """
-    useful if you want to get a list of examples a url. not used by default.
-    """
-    html = urllib2.urlopen(baseUrl)
-    soup = BeautifulSoup(html)
-    examples = soup.findAll('li')
-    examples = [example.find('a').get('href') for example in examples]
-    examples = [example for example in examples if example.endswith('.html')]
-    examples = [example for example in examples]
-    return examples
-    
 def getListOfExamples(relPath):
     """
     returns list of .html filenames within a given path - excludes example-list.html
@@ -56,18 +43,15 @@ def getListOfExamples(relPath):
     return examples
     
 
-def getExampleHtml(location):
+def getExampleHtml(path):
     """
-    returns html of a specific example that is available online or locally
+    returns html of a specific example
     """
     print '.',
-    if location.startswith('http'):
-        return urllib2.urlopen(location).read()
-    else:
-        f = open(location)
-        html = f.read()
-        f.close()
-        return html
+    f = open(path)
+    html = f.read()
+    f.close()
+    return html
         
     
 def extractById(soup, tagId, value=None):
