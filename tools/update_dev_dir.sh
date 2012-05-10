@@ -1,65 +1,112 @@
 #!/bin/sh
 
-# Used to update http://openlayers.org/dev/ 
+# check to see if the hosted examples or API docs need an update
+cd /osgeo/openlayers/repos/openlayers
+REMOTE_HEAD=`git ls-remote https://github.com/openlayers/openlayers/ | grep HEAD | awk '{print $1}'`
+OLD_REMOTE_HEAD=`git rev-parse HEAD`
 
+# if there's something different in the remote, update and build
+if [ ! o$REMOTE_HEAD = o$OLD_REMOTE_HEAD ]; then
+    
+    git checkout master
+    git clean -f
+    git pull origin master
+    
+    # copy everything over to the dev dir within the website (keep the clone clean)
+    rsync -r --exclude=.git . /osgeo/openlayers/sites/openlayers.org/dev
+    
+    # make examples use built lib
+    cd /osgeo/openlayers/sites/openlayers.org/dev/tools
 
-# Get current 'Last Changed Rev'
-GITREV=`git ls-remote https://github.com/openlayers/openlayers/ | grep HEAD | awk '{print $1}'`
-SVNREV=`svn info http://svn.openlayers.org/ | grep 'Revision' | awk '{print $2}'`
+    python exampleparser.py /osgeo/openlayers/repos/openlayers/examples /osgeo/openlayers/sites/openlayers.org/dev/examples
+    
+    if [ ! -f closure-compiler.jar ]; then
+        wget -c http://closure-compiler.googlecode.com/files/compiler-latest.zip
+        unzip compiler-latest.zip 
+        mv compiler.jar closure-compiler.jar
+    fi
 
-# Get the last svn rev
-touch /tmp/ol_git_rev
-touch /tmp/ol_svn_rev
-OLD_GITREV="o`cat /tmp/ol_git_rev`"
-OLD_SVNREV="o`cat /tmp/ol_svn_rev`"
-
-# If they're not equal, do some work.
-if [ ! o$GITREV = $OLD_GITREV ]; then
-    svn revert -R /osgeo/openlayers/docs/dev
-    svn up /osgeo/openlayers/docs/dev
-
-    # Also update website
-    svn up /osgeo/openlayers/docs/
-
-    cd /osgeo/openlayers/docs/dev/tools/ 
-    python exampleparser.py
-    cd /osgeo/openlayers/docs/dev/build
+    cd /osgeo/openlayers/sites/openlayers.org/dev/build
     ./build.py -c closure tests.cfg
     ./build.py -c closure mobile.cfg OpenLayers.mobile.js
     ./build.py -c closure light.cfg OpenLayers.light.js
-	./build.py -c none tests.cfg OpenLayers.debug.js
-	./build.py -c none mobile.cfg OpenLayers.mobile.debug.js
-	./build.py -c none light.cfg OpenLayers.light.debug.js
-    
-    cp OpenLayers.js ..
-    cp OpenLayers.*.js ..
+    ./build.py -c none tests.cfg OpenLayers.debug.js
+    ./build.py -c none mobile.cfg OpenLayers.mobile.debug.js
+    ./build.py -c none light.cfg OpenLayers.light.debug.js
+    cp OpenLayers*.js ..
 
-    cd ..
-
+    cd /osgeo/openlayers/sites/openlayers.org/dev
     sed -i -e 's!../lib/OpenLayers.js?mobile!../OpenLayers.mobile.js!' examples/*.html
     sed -i -e 's!../lib/OpenLayers.js!../OpenLayers.js!' examples/*.html
-    naturaldocs -i /osgeo/openlayers/docs/dev/lib -o HTML /osgeo/openlayers/dev/apidocs -p /osgeo/openlayers/docs/dev/apidoc_config -s Default OL >/dev/null
-    naturaldocs -i /osgeo/openlayers/docs/dev/lib -o HTML /osgeo/openlayers/dev/docs -p /osgeo/openlayers/docs/dev/doc_config -s Default OL >/dev/null
-    # Record the revision
-    echo -n $GITREV > /tmp/ol_git_rev
+
+    # update the API docs
+    if [ ! -d /osgeo/openlayers/sites/dev.openlayers.org/apidocs ]; then
+        mkdir -p /osgeo/openlayers/sites/dev.openlayers.org/apidocs
+    fi
+    if [ ! -d /osgeo/openlayers/sites/dev.openlayers.org/docs ]; then
+        mkdir -p /osgeo/openlayers/sites/dev.openlayers.org/docs
+    fi
+    naturaldocs --input lib --output HTML /osgeo/openlayers/sites/dev.openlayers.org/apidocs -p apidoc_config -s Default OL
+    naturaldocs --input lib --output HTML /osgeo/openlayers/sites/dev.openlayers.org/docs -p doc_config -s Default OL
+
 fi
+
+# check to see if the website needs an update
+cd /osgeo/openlayers/repos/website
+REMOTE_HEAD=`git ls-remote https://github.com/openlayers/website/ | grep HEAD | awk '{print $1}'`
+OLD_REMOTE_HEAD=`git rev-parse HEAD`
+
+# if there's something different in the remote, update the clone
+if [ ! o$REMOTE_HEAD = o$OLD_REMOTE_HEAD ]; then
+    
+    git checkout master
+    git clean -f
+    git pull origin master
+    
+    # copy everything over to the website dir (keep the clone clean)
+    # can't use --delete here because of nested dev dir from above
+    rsync -r --exclude=.git . /osgeo/openlayers/sites/openlayers.org
+    
+fi
+
+# check to see if prose docs need an update
+cd /osgeo/openlayers/repos/docs
+REMOTE_HEAD=`git ls-remote https://github.com/openlayers/docs/ | grep HEAD | awk '{print $1}'`
+OLD_REMOTE_HEAD=`git rev-parse HEAD`
+
+# if there's something different in the remote, update the clone
+if [ ! o$REMOTE_HEAD = o$OLD_REMOTE_HEAD ]; then
+    
+    git checkout master
+    git clean -f
+    git pull origin master
+
+    mkdir -p /tmp/ol/docs/build/html /tmp/ol/docs/build/doctrees
+    sphinx-build -b html -d /tmp/ol/docs/build/doctrees . /tmp/ol/docs/build/html
+    
+    rsync -r --delete /tmp/ol/docs/build/html/ /osgeo/openlayers/sites/docs.openlayers.org
+    
+fi    
+
+## UPDATES FROM THE OLD SVN REPO
+
+# Get current 'Last Changed Rev'
+SVNREV=`svn info http://svn.openlayers.org/ | grep 'Revision' | awk '{print $2}'`
+
+# Get the last svn rev
+touch /tmp/ol_svn_rev
+OLD_SVNREV="o`cat /tmp/ol_svn_rev`"
+
+# If they're not equal, do some work.
 if [ ! o$SVNREV = $OLD_SVNREV ]; then
-    svn up /osgeo/openlayers/dev/sandbox/
-    svn up /osgeo/openlayers/dev/addins/
+    svn up /osgeo/openlayers/repos/old_svn_repo/
     # Record the revision
     echo -n $SVNREV > /tmp/ol_svn_rev
-fi    
-   
-svn up /osgeo/openlayers/documentation-checkout
-REV=`svn info /osgeo/openlayers/documentation-checkout | grep 'Last Changed Rev' | awk '{print $4}'`
-# Get the last svn rev
-touch /tmp/ol_doc_rev
-OLD_REV="o`cat /tmp/ol_doc_rev`"
-# If they're not equal, do some work.
-if [ ! o$REV = $OLD_REV ]; then
-    cd /osgeo/openlayers/documentation-checkout
-    make html > /dev/null
-    cp -r _build/html/*  /osgeo/openlayers/documentation
     
-    echo -n $REV > /tmp/ol_doc_rev
-fi    
+    # update the hosted sandboxes
+    rsync -r --delete --exclude=.svn --delete-excluded /osgeo/openlayers/repos/old_svn_repo/sandbox /osgeo/openlayers/sites/dev.openlayers.org/
+
+    # update the hosted addins
+    rsync -r --delete --exclude=.svn --delete-excluded /osgeo/openlayers/repos/old_svn_repo/addins /osgeo/openlayers/sites/dev.openlayers.org/
+    
+fi
