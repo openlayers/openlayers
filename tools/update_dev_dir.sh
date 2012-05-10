@@ -4,7 +4,7 @@
 
 
 # Get current 'Last Changed Rev'
-GITREV=`svn info https://github.com/openlayers/openlayers/ | grep 'Revision' | awk '{print $2}'`
+GITREV=`git ls-remote https://github.com/openlayers/openlayers/ | grep HEAD | awk '{print $1}'`
 SVNREV=`svn info http://svn.openlayers.org/ | grep 'Revision' | awk '{print $2}'`
 
 # Get the last svn rev
