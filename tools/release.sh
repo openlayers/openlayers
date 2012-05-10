@@ -33,10 +33,10 @@ mkdir doc/devdocs
 mkdir doc/apidocs
 rm tools/*.pyc
 
-mkdir -p /osgeo/openlayers/docs/api/$VERSION
-cp OpenLayers*.js /osgeo/openlayers/docs/api/$VERSION
-cp -a img/ /osgeo/openlayers/docs/api/$VERSION
-cp -a theme/ /osgeo/openlayers/docs/api/$VERSION
+mkdir -p /osgeo/openlayers/sites/openlayers.org/api/$VERSION
+cp OpenLayers*.js /osgeo/openlayers/sites/openlayers.org/api/$VERSION
+cp -a img/ /osgeo/openlayers/sites/openlayers.org/api/$VERSION
+cp -a theme/ /osgeo/openlayers/sites/openlayers.org/api/$VERSION
 
 cd ..
 
@@ -46,4 +46,4 @@ naturaldocs -i OpenLayers-$VERSION/lib -o HTML OpenLayers-$VERSION/doc/apidocs -
 tar cvfz OpenLayers-$VERSION.tar.gz OpenLayers-$VERSION/
 zip -9r OpenLayers-$VERSION.zip OpenLayers-$VERSION/
 
-cp OpenLayers-$VERSION.* /osgeo/openlayers/docs/download 
+cp OpenLayers-$VERSION.* /osgeo/openlayers/sites/openlayers.org/download
