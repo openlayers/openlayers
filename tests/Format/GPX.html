@@ -20,20 +20,47 @@
     }
     function test_Format_GPX_read(t) {
         t.plan(7);
+        var expected,
+            P = OpenLayers.Geometry.Point,
+            LS = OpenLayers.Geometry.LineString;
         var f = new OpenLayers.Format.GPX();
         var features = f.read(gpx_data);
         t.eq(features.length, 3, "Number of features read is correct");
-        t.eq(features[2].geometry.toString(), "POINT(-0.1853562259 51.3697845627)", "waypoint feature correctly created");
-        t.eq(features[0].geometry.toString(), "LINESTRING(-0.1721292044 51.3768216433,-0.1649230916 51.370833767,-0.1736741378 51.3644368725,-0.166259525 51.3576354272)", "track feature correctly created");
-        t.eq(features[1].geometry.toString(), "LINESTRING(-0.1829991904 51.3761803674,-0.1758887005 51.3697894659,-0.1833202965 51.3639790884,-0.1751119509 51.3567607069)", "route feature correctly created");
+        expected = new P(-0.1853562259, 51.3697845627);
+        t.geom_eq(features[2].geometry, expected, "waypoint feature correctly created");
+        expected = new LS([
+                new P(-0.1721292044, 51.3768216433),
+                new P(-0.1649230916, 51.370833767),
+                new P(-0.1736741378, 51.3644368725),
+                new P(-0.166259525, 51.3576354272)
+        ]);
+        t.geom_eq(features[0].geometry, expected, "track feature correctly created");
+        expected = new LS([
+                new P(-0.1829991904, 51.3761803674),
+                new P(-0.1758887005, 51.3697894659),
+                new P(-0.1833202965, 51.3639790884),
+                new P(-0.1751119509, 51.3567607069)
+        ]);
+        t.geom_eq(features[1].geometry, expected, "route feature correctly created");
 
         f.internalProjection = new OpenLayers.Projection("EPSG:3857");
         features = f.read(gpx_data);
-        t.eq(features[2].geometry.toString(), "POINT(-20633.760679678744 6686966.841929403)", "transformed waypoint feature correctly created");
-        features[0].geometry.components.pop();//hack to suppress rounding errors
-        t.eq(features[0].geometry.toString(), "LINESTRING(-19161.33538179203 6688221.743275255,-18359.1545744088 6687153.931130851,-19333.316581165607 6686013.33343931)", "transformed track feature correctly created");
-        features[1].geometry.components.pop();//hack to suppress rounding errors
-        t.eq(features[1].geometry.toString(), "LINESTRING(-20371.3766880736 6688107.378491073,-19579.84057322507 6686967.716235109,-20407.12205561124 6685931.714395953)", "transformed route feature correctly created");
+        expected = new P(-20633.760679678744, 6686966.841929403);
+        t.geom_eq(features[2].geometry, expected, "transformed waypoint feature correctly created");
+        expected = new LS([
+                new P(-19161.33538179203, 6688221.743275255),
+                new P(-18359.1545744088, 6687153.931130851),
+                new P(-19333.316581165607, 6686013.33343931),
+                new P(-18507.925659955214, 6684800.777090962)
+        ]);
+        t.geom_eq(features[0].geometry, expected, "transformed track feature correctly created");
+        expected = new LS([
+                new P(-20371.3766880736, 6688107.378491073),
+                new P(-19579.84057322507, 6686967.716235109),
+                new P(-20407.12205561124, 6685931.714395953),
+                new P(-19493.373203291227, 6684644.845706556)
+        ]);
+        t.geom_eq(features[1].geometry, expected, "transformed route feature correctly created");
     }
     function test_format_GPX_read_attributes(t) {
         t.plan(2);
