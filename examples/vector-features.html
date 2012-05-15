@@ -49,7 +49,8 @@
                 strokeWidth: 3,
                 strokeDashstyle: "dashdot",
                 pointRadius: 6,
-                pointerEvents: "visiblePainted"
+                pointerEvents: "visiblePainted",
+                title: "this is a green line"
             };
 
             /*
@@ -70,8 +71,8 @@
             style_mark.graphicXOffset = 10; // default is -(style_mark.graphicWidth/2);
             style_mark.graphicYOffset = -style_mark.graphicHeight;
             style_mark.externalGraphic = "../img/marker.png";
-            // graphicTitle only works in Firefox and Internet Explorer
-            style_mark.graphicTitle = "this is a test tooltip";
+            // title only works in Firefox and Internet Explorer
+            style_mark.title = "this is a test tooltip";
 
             var vectorLayer = new OpenLayers.Layer.Vector("Simple Geometry", {
                 style: layer_style,
