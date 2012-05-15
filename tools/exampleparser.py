@@ -3,7 +3,6 @@
 import sys
 import os
 import re
-import urllib2
 import time
 from xml.dom.minidom import Document
 
@@ -35,18 +34,6 @@ except ImportError, E:
 feedName = "example-list.xml"
 feedPath = "http://openlayers.org/dev/examples/"
 
-def getListOfOnlineExamples(baseUrl):
-    """
-    useful if you want to get a list of examples a url. not used by default.
-    """
-    html = urllib2.urlopen(baseUrl)
-    soup = BeautifulSoup(html)
-    examples = soup.findAll('li')
-    examples = [example.find('a').get('href') for example in examples]
-    examples = [example for example in examples if example.endswith('.html')]
-    examples = [example for example in examples]
-    return examples
-    
 def getListOfExamples(relPath):
     """
     returns list of .html filenames within a given path - excludes example-list.html
@@ -56,18 +43,15 @@ def getListOfExamples(relPath):
     return examples
     
 
-def getExampleHtml(location):
+def getExampleHtml(path):
     """
-    returns html of a specific example that is available online or locally
+    returns html of a specific example
     """
     print '.',
-    if location.startswith('http'):
-        return urllib2.urlopen(location).read()
-    else:
-        f = open(location)
-        html = f.read()
-        f.close()
-        return html
+    f = open(path)
+    html = f.read()
+    f.close()
+    return html
         
     
 def extractById(soup, tagId, value=None):
@@ -103,15 +87,20 @@ def parseHtml(html,ids):
     d['classes'] = classes
     return d
 
-def getSvnInfo(path):
-    h = os.popen("svn info %s --xml" % path)
-    tree = ElementTree.fromstring(h.read())
+def getGitInfo(exampleDir, exampleName):
+    orig = os.getcwd()
+    os.chdir(exampleDir)
+    h = os.popen("git log -n 1 --pretty=format:'%an|%ai' " + exampleName)
+    os.chdir(orig)
+    log = h.read()
     h.close()
-    d = {
-        'url': tree.findtext('entry/url'),
-        'author': tree.findtext('entry/commit/author'),
-        'date': tree.findtext('entry/commit/date')
-    }
+    d = {}
+    parts = log.split("|")
+    d["author"] = parts[0]
+    # compensate for spaces in git log time
+    td = parts[1].split(" ")
+    td.insert(1, "T")
+    d["date"] = "".join(td)
     return d
     
 def createFeed(examples):
@@ -206,34 +195,33 @@ if __name__ == "__main__":
         print "This script requires json or simplejson and BeautifulSoup. You don't have them. \n(%s)" % E
         sys.exit()
     
-    if len(sys.argv) > 1:
-        outFile = open(sys.argv[1],'w')
+    if len(sys.argv) == 3:
+        inExampleDir = sys.argv[1]
+        outExampleDir = sys.argv[2]
     else:
-        outFile = open('../examples/example-list.js','w')
+        inExampleDir = "../examples"
+        outExampleDir = "../examples"
     
-    examplesLocation = '../examples'
-    print 'Reading examples from %s and writing out to %s' % (examplesLocation, outFile.name)
+    outFile = open(os.path.join(outExampleDir, "example-list.js"), "w")
+    
+    print 'Reading examples from %s and writing out to %s' % (inExampleDir, outFile.name)
    
     exampleList = []
     docIds = ['title','shortdesc','tags']
    
-    #comment out option to create docs from online resource
-    #examplesLocation = 'http://svn.openlayers.org/sandbox/docs/examples/'
-    #examples = getListOfOnlineExamples(examplesLocation)
-
-    examples = getListOfExamples(examplesLocation)
+    examples = getListOfExamples(inExampleDir)
 
     modtime = time.strftime("%Y-%m-%dT%I:%M:%SZ", time.gmtime())
 
     for example in examples:
-        url = os.path.join(examplesLocation,example)
-        html = getExampleHtml(url)
+        path = os.path.join(inExampleDir, example)
+        html = getExampleHtml(path)
         tagvalues = parseHtml(html,docIds)
         tagvalues['example'] = example
-        # add in svn info
-        d = getSvnInfo(url)
-        tagvalues["modified"] = d["date"] or modtime
+        # add in author/date info
+        d = getGitInfo(inExampleDir, example)
         tagvalues["author"] = d["author"] or "anonymous"
+        tagvalues["modified"] = d["date"] or modtime
         tagvalues['link'] = example
 
         exampleList.append(tagvalues)
@@ -250,8 +238,9 @@ if __name__ == "__main__":
     outFile.write(json)
     outFile.close()
 
-    print "writing feed to ../examples/%s " % feedName
-    atom = open('../examples/%s' % feedName, 'w')
+    outFeedPath = os.path.join(outExampleDir, feedName);
+    print "writing feed to %s " % outFeedPath
+    atom = open(outFeedPath, 'w')
     doc = createFeed(exampleList)
     atom.write(doc.toxml())
     atom.close()

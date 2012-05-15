@@ -174,6 +174,16 @@
         t.eq(log, 0, "addOptions doesn't call initResolutions when layer is not in map");
     }
     
+    function test_addOptionsScale(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map("map");
+        var layer = new OpenLayers.Layer.WMS();
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        layer.addOptions({maxResolution: 0.5, numZoomLevels: 15});
+        t.eq(layer.alwaysInRange, false, "alwaysInRange should not be true anymore");
+    }
+    
     function test_Layer_StandardOptionsAccessors (t) {
 
         t.plan( 4 );
@@ -398,6 +408,9 @@
             "1.20",  null, {maxScale: 100000, numZoomLevels: 3, units: "m"},
             [141.11103491115225, 70.55551745557612, 35.27775872778806], 35.27775872778806, 141.11103491115225
         ], [
+            "1.21", null, {numZoomLevels: 2},  // maxResolution calculated based on the projection's maxExtent here
+           [1.40625, 0.703125], 0.703125, 1.40625
+        ], [
 
         /*
          * Batch 2: custom map options map and sensible layer options
@@ -541,8 +554,8 @@
         /*
          * Batch 2.8: numZoomLevels set in the layer options
          */
-            "2.8.0",  {maxResolution: 80}, {numZoomLevels: 4},
-            [80, 40, 20, 10], 10, 80
+            "2.8.0",  {maxResolution: 80}, {numZoomLevels: 4},  // maxResolution calculated based on the projection's maxExtent here
+            [1.40625, 0.703125, 0.3515625, 0.17578125], 0.17578125, 1.40625
         ], [
             "2.8.1", {maxResolution: 80, numZoomLevels: 4}, {numZoomLevels: null},
             [80, 40, 20, 10], 10, 80
@@ -672,81 +685,18 @@
         // test that the moveend event was triggered
         t.ok(log.event, "an event was logged");
         t.eq(log.event.type, "moveend", "moveend was triggered");
-        t.eq(log.event.zoomChanged, false, "event says zoomChanged false");
+        t.eq(log.event.zoomChanged, true, "event says zoomChanged true - poor name");
 
         layer.moveTo = function(bounds, zoomChanged, dragging) {
             var extent = layer.map.getExtent();
             t.ok(bounds.equals(extent),
                  "redraw calls moveTo with the map extent");
-            t.ok(!zoomChanged,
-                 "redraw calls moveTo with zoomChanged false");
+            t.ok(zoomChanged,
+                 "redraw calls moveTo with zoomChanged true");
             t.ok(!dragging,
                  "redraw calls moveTo with dragging false");
         }
         layer.redraw();
-    }
-
-    // This function includes integration tests to verify that the
-    // layer's moveTo function is called with the expected value
-    // for zoomChanged
-    function test_moveTo_zoomChanged(t) {
-        t.plan(6);
-
-        var log = {};
-        var map = new OpenLayers.Map('map');
-
-        var l1 = new OpenLayers.Layer('l1', {isBaseLayer: true});
-        l1.moveTo = function(bounds, zoomChanged, dragging) {
-            log.moveTo = {zoomChanged: zoomChanged};
-            OpenLayers.Layer.prototype.moveTo.apply(this, arguments);
-        };
-
-        map.addLayer(l1);
-        map.zoomToMaxExtent();
-
-        log = {};
-        l1.redraw();
-        t.eq(log.moveTo.zoomChanged, false,
-                "[a] redraw calls moveTo with zoomChanged false");
-
-        log = {};
-        l1.resolution = null;
-        l1.redraw();
-        t.eq(log.moveTo.zoomChanged, true,
-             "[b] redraw calls moveTo with zoomChanged true");
-
-        l1.setVisibility(false);
-        log = {};
-        l1.setVisibility(true);
-        t.eq(log.moveTo.zoomChanged, false,
-             "[c] redraw calls moveTo with zoomChanged false");
-
-        l1.setVisibility(false);
-        map.zoomIn();
-        log = {};
-        l1.setVisibility(true);
-        t.eq(log.moveTo.zoomChanged, true,
-             "[d] redraw calls moveTo with zoomChanged true");
-
-        l1.moveTo = OpenLayers.Layer.prototype.moveTo;
-
-        var l2 = new OpenLayers.Layer('l2');
-        l2.moveTo = function(bounds, zoomChanged, dragging) {
-            log.moveTo = {zoomChanged: zoomChanged};
-            OpenLayers.Layer.prototype.moveTo.apply(this, arguments);
-        };
-        log = {};
-        map.addLayer(l2);
-        t.eq(log.moveTo.zoomChanged, true,
-             "[e] redraw calls moveTo with zoomChanged true");
-
-        map.removeLayer(l2);
-        log = {};
-        map.addLayer(l2);
-        t.eq(log.moveTo.zoomChanged, true,
-             "[f] redraw calls moveTo with zoomChanged true");
-
-        map.destroy();
     }
       
     function test_layer_setIsBaseLayer(t) {

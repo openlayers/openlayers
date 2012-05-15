@@ -374,53 +374,6 @@
         map.destroy();
     }
 
-    // test for https://github.com/openlayers/openlayers/pull/36
-    // (more an integration test than a unit test)
-    function test_olImageLoadError(t) {
-        t.plan(6);
-
-        var map = new OpenLayers.Map('map');
-        var layer = new OpenLayers.Layer.WMS("invalid",  "foo", {layers: 'basic'});
-        map.addLayer(layer);
-
-        var size = new OpenLayers.Size(5, 6);
-        var position = new OpenLayers.Pixel(20, 30);
-        var bounds = new OpenLayers.Bounds(1, 2, 3, 4);
-
-        var tile = new OpenLayers.Tile.Image(layer, position, bounds, null, size);
-        var log = [];
-        tile.events.register("loaderror", this, function(e) {
-            log.push([
-                e.object.imgDiv.style.visibility,
-                OpenLayers.Element.hasClass(e.object.imgDiv, 'olImageLoadError')
-            ]);
-        });
-        tile.events.register("loadend", this, function(e) {
-            log.push(e);
-        })
-        tile.draw();
-
-        t.delay_call(0.1, function() {
-            
-            t.eq(log.length, 2, "loaderror and loadend events triggered");
-            t.eq(log[0][0], "hidden", "tile still hidden when loaderror is triggered");
-            t.eq(log[0][1], true, "tile has olImageLoadError class already when loaderror is triggered");
-            t.ok(log[1].object === tile, "loadend event triggered after loaderror");
-            
-            // check initial state
-            t.ok(OpenLayers.Element.hasClass(tile.imgDiv, 'olImageLoadError'),
-                 'tile image has the olImageLoadError class (init state)');
-
-            layer.setVisibility(false);
-            layer.setVisibility(true);
-
-            t.ok(OpenLayers.Element.hasClass(tile.imgDiv, 'olImageLoadError'),
-                 'tile image still has the olImageLoadError class');
-
-            map.destroy();
-        });
-    }
-
     function test_getCanvasContext(t) {
         if (!OpenLayers.CANVAS_SUPPORTED) {
             t.plan(0);
@@ -445,7 +398,98 @@
             });
         }
     }
-    
+
+    /*
+     * A series of tests to verify the dimensions and positions
+     * of the tile frame and img after draw.
+
+     * Written for https://github.com/openlayers/openlayers/issues/441
+     */
+    function test_draw_without_gutter_without_frame(t) {
+        t.plan(5);
+
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS('blank',
+                        '../../img/blank.gif',
+                        {layers: 'fake'},
+                        {isBaseLayer: true});
+        map.addLayer(layer);
+        var tile = new OpenLayers.Tile.Image(
+                            layer,
+                            new OpenLayers.Pixel(6, 6),
+                            new OpenLayers.Bounds(5, 45, 6, 46),
+                            null,
+                            new OpenLayers.Size(256, 256));
+
+        tile.draw();
+        t.eq(tile.frame, null, 'no frame');
+        t.eq(parseInt(tile.imgDiv.style.left, 10), 6, 'correct tile img left');
+        t.eq(parseInt(tile.imgDiv.style.top, 10), 6, 'correct tile img top');
+        t.eq(parseInt(tile.imgDiv.style.width, 10), 256, 'correct tile img width');
+        t.eq(parseInt(tile.imgDiv.style.height, 10), 256, 'correct tile img height');
+
+        map.destroy();
+    }
+    function test_draw_without_gutter_with_frame(t) {
+        t.plan(8);
+
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS('blank',
+                        '../../img/blank.gif',
+                        {layers: 'fake'},
+                        {isBaseLayer: true});
+        map.addLayer(layer);
+        layer.gutter = 1; // this is just for a frame to be created for
+                          // the tile
+        var tile = new OpenLayers.Tile.Image(
+                            layer,
+                            new OpenLayers.Pixel(6, 6),
+                            new OpenLayers.Bounds(5, 45, 6, 46),
+                            null,
+                            new OpenLayers.Size(256, 256));
+        layer.gutter = null;
+
+        tile.draw();
+        t.eq(parseInt(tile.frame.style.left, 10), 6, 'correct tile frame left');
+        t.eq(parseInt(tile.frame.style.top, 10), 6, 'correct tile frame top');
+        t.eq(parseInt(tile.frame.style.width, 10), 256, 'correct tile frame width');
+        t.eq(parseInt(tile.frame.style.height, 10), 256, 'correct tile frame height');
+        t.eq(parseInt(tile.imgDiv.style.left, 10), 0, 'correct tile img left');
+        t.eq(parseInt(tile.imgDiv.style.top, 10), 0, 'correct tile img top');
+        t.eq(parseInt(tile.imgDiv.style.width, 10), 100, 'correct tile img width');
+        t.eq(parseInt(tile.imgDiv.style.height, 10), 100, 'correct tile img height');
+
+        map.destroy();
+    }
+    function test_draw_with_gutter(t) {
+        t.plan(8);
+
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS('blank',
+                        '../../img/blank.gif',
+                        {layers: 'fake'},
+                        {isBaseLayer: true, gutter: 15});
+        map.addLayer(layer);
+        var tile = new OpenLayers.Tile.Image(
+                            layer,
+                            new OpenLayers.Pixel(6, 6),
+                            new OpenLayers.Bounds(5, 45, 6, 46),
+                            null,
+                            new OpenLayers.Size(256, 256));
+
+        tile.draw();
+        t.eq(parseInt(tile.frame.style.left, 10), 6, 'correct tile frame left');
+        t.eq(parseInt(tile.frame.style.top, 10), 6, 'correct tile frame top');
+        t.eq(parseInt(tile.frame.style.width, 10), 256, 'correct tile frame width');
+        t.eq(parseInt(tile.frame.style.height, 10), 256, 'correct tile frame height');
+        t.eq(parseInt(tile.imgDiv.style.left, 10), -5, 'correct tile img left');
+        t.eq(parseInt(tile.imgDiv.style.top, 10), -5, 'correct tile img top');
+        t.eq(parseInt(tile.imgDiv.style.width, 10), 111, 'correct tile img width');
+        t.eq(parseInt(tile.imgDiv.style.height, 10), 111, 'correct tile img height');
+
+        map.destroy();
+    }
+
   </script>
 </head>
 <body>

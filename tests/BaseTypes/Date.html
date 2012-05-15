@@ -175,6 +175,15 @@
         t.ok(isNaN(invalid.getTime()), "invalid has no time");
     }
 
+    function test_regex(t) {
+        t.plan(1);
+        var regex = OpenLayers.Date.dateRegEx;
+        OpenLayers.Date.dateRegEx = /^(?:(-?\d{4})(?:-(\d{2})(?:-(\d{2}))?)?)?(?:(?:T(\d{1,2}):(\d{2}):(\d{2}(?:\.\d+)?)(Z|(?:[+-]\d{1,2}(?::(\d{2}))?)))|Z)?$/;
+        var date = OpenLayers.Date.parse("-0501-03-01T00:00:00.000Z");
+        t.ok(!isNaN(date.getTime()), "date with negative year is parsed when providing alternative regex");
+        OpenLayers.Date.dateRegEx = regex;
+    }
+
   </script>
 </head>
 <body>

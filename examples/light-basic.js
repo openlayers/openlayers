@@ -57,6 +57,7 @@ function init() {
 
     // create the select feature control
     var selector = new OpenLayers.Control.SelectFeature(vector,{
+        hover:true,
         autoActivate:true
     }); 
     
