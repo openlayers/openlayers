@@ -305,7 +305,7 @@
 
     // Test fix for Ticket #3142
     function test_layerLoadedAfterBeingAdded(t) {
-        t.plan(2);
+        t.plan(3);
 
         var dummy = new OpenLayers.Layer(null, {isBaseLayer: true});
 
@@ -341,6 +341,11 @@
         // test that the strategy bounds were set
         t.ok(map.getExtent().equals(strategy.bounds), "[set center] bounds set to map extent");
         t.eq(layerOutOfRange.strategies[0].bounds, null, "Data not requested if layer is out of range");
+
+        layerOutOfRange.setVisibility(false);
+        layerOutOfRange.setVisibility(true);
+        t.eq(layerOutOfRange.strategies[0].bounds, null, "Data not requested if layer is out of range when switching visibility");
+
         map.destroy();
     }
 
