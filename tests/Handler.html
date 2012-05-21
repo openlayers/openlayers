@@ -123,7 +123,7 @@
     }
     
     function test_Handler_setEvent(t) {
-        t.plan(4);
+        t.plan(5);
         var map = new OpenLayers.Map('map');
         var control = new OpenLayers.Control();
         map.addControl(control);
@@ -135,7 +135,8 @@
             xy: new OpenLayers.Pixel(Math.random(), Math.random()),
             altKey: (Math.random() > 0.5),
             shiftKey: (Math.random() > 0.5),
-            ctrlKey: (Math.random() > 0.5)
+            ctrlKey: (Math.random() > 0.5),
+            metaKey: (Math.random() > 0.5)
         }
         map.events.triggerEvent("click", testEvent);
         t.ok(handler.evt.xy.x == testEvent.xy.x &&
@@ -147,6 +148,8 @@
              "handler.evt.shiftKey correct");
         t.eq(handler.evt.ctrlKey, testEvent.ctrlKey,
              "handler.evt.ctrlKey correct");
+        t.eq(handler.evt.metaKey, testEvent.metaKey,
+             "handler.evt.metaKey correct");
     }
     
     function test_Handler_destroy(t) {
@@ -173,7 +176,7 @@
     }
     
     function test_Handler_checkModifiers(t) {
-        t.plan(26);
+        t.plan(62);
         var handler = new OpenLayers.Handler({});
         handler.keyMask = null;
         var proceed = handler.checkModifiers({});
@@ -192,7 +195,8 @@
             MOD_NONE: null,
             MOD_SHIFT: "shiftKey",
             MOD_CTRL: "ctrlKey",
-            MOD_ALT: "altKey"
+            MOD_ALT: "altKey",
+            MOD_META: "metaKey"
         }
         var proceed, evt, value, c, k;
         for(c in constants) {
@@ -220,8 +224,8 @@
          *     is OpenLayers.Handler.MOD_SHIFT, checkModifiers should return
          *     true.
          */
-        var constants = ["MOD_SHIFT", "MOD_CTRL", "MOD_ALT"];
-        var keys = ["shiftKey", "ctrlKey", "altKey"];
+        var constants = ["MOD_SHIFT", "MOD_CTRL", "MOD_ALT", "MOD_META"];
+        var keys = ["shiftKey", "ctrlKey", "altKey", "metaKey"];
         var proceed, evt, c1, c2, k1, k2;
         for(var i=0; i<constants.length-1; ++i) {
             c1 = constants[i];
