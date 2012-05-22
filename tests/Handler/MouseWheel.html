@@ -107,7 +107,7 @@
 
         var activated = handler.activate();
         
-        var delta = 360;
+        var delta = 120;
         if (window.opera && window.opera.version() < 9.2)  delta = -delta;
         handler.onWheelEvent({'target':map.layers[0].div, wheelDelta: delta});
         handler.onWheelEvent({'target':map.layers[0].div, wheelDelta: delta});
