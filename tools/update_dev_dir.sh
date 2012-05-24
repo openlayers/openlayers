@@ -81,12 +81,10 @@ if [ ! o$REMOTE_HEAD = o$OLD_REMOTE_HEAD ]; then
     git clean -f
     git pull origin master
 
-    mkdir -p /tmp/ol/docs/build/html /tmp/ol/docs/build/doctrees
-    sphinx-build -b html -d /tmp/ol/docs/build/doctrees . /tmp/ol/docs/build/html
+    mkdir -p /osgeo/openlayers/sites/docs.openlayers.org /tmp/ol/docs/build/doctrees
+    sphinx-build -b html -d /tmp/ol/docs/build/doctrees . /osgeo/openlayers/sites/docs.openlayers.org
     
-    rsync -r --delete /tmp/ol/docs/build/html/ /osgeo/openlayers/sites/docs.openlayers.org
-    
-fi    
+fi
 
 ## UPDATES FROM THE OLD SVN REPO
 
