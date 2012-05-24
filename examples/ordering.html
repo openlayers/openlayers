@@ -73,7 +73,7 @@
             // from bottom to top so as to quickly signal whether or not y-ordering is working.
             while (bottom.y > top.y) {
                 bottom.y -= POINT_DISTANCE;
-                var lonLat = map.getLonLatFromViewPortPx(bottom);
+                var lonLat = map.getLonLatFromPixel(bottom);
                 orderingFeatures.push(
                     new OpenLayers.Feature.Vector(
                         new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat)
@@ -89,7 +89,7 @@
             var indexFeatures = [];
             var useFirst = true;
             while (left.x <= right.x) {
-                var lonLat = map.getLonLatFromViewPortPx(left);
+                var lonLat = map.getLonLatFromPixel(left);
                 var point = new OpenLayers.Feature.Vector(
                     new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat)
                 );
@@ -147,8 +147,8 @@
             // and succomb to y-ordering.
             var orderingFeatures = [];
             while (bottom.y > top.y && left.x < right.x) {
-                var bottomLonLat = map.getLonLatFromViewPortPx(bottom);
-                var leftLonLat = map.getLonLatFromViewPortPx(left);
+                var bottomLonLat = map.getLonLatFromPixel(bottom);
+                var leftLonLat = map.getLonLatFromPixel(left);
                 orderingFeatures.push(
                     new OpenLayers.Feature.Vector(
                         new OpenLayers.Geometry.Point(leftLonLat.lon, bottomLonLat.lat),

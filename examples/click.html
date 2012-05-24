@@ -34,7 +34,7 @@
                 }, 
 
                 trigger: function(e) {
-                    var lonlat = map.getLonLatFromViewPortPx(e.xy);
+                    var lonlat = map.getLonLatFromPixel(e.xy);
                     alert("You clicked near " + lonlat.lat + " N, " +
                                               + lonlat.lon + " E");
                 }
@@ -75,7 +75,7 @@
 
         <p id="shortdesc">
             This example shows the use of the click handler and 
-            getLonLatFromViewPortPx functions to trigger events on mouse click. 
+            getLonLatFromPixel functions to trigger events on mouse click. 
         </p>
 
         <div id="map" class="smallmap"></div>
