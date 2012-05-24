@@ -102,11 +102,4 @@ if [ ! o$SVNREV = $OLD_SVNREV ]; then
     svn up /osgeo/openlayers/repos/old_svn_repo/
     # Record the revision
     echo -n $SVNREV > /tmp/ol_svn_rev
-    
-    # update the hosted sandboxes
-    rsync -r --delete --exclude=.svn --delete-excluded /osgeo/openlayers/repos/old_svn_repo/sandbox /osgeo/openlayers/sites/dev.openlayers.org/
-
-    # update the hosted addins
-    rsync -r --delete --exclude=.svn --delete-excluded /osgeo/openlayers/repos/old_svn_repo/addins /osgeo/openlayers/sites/dev.openlayers.org/
-    
 fi
