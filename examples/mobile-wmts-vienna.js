@@ -163,8 +163,8 @@ var map;
                 {layer:"lb", requestEncoding:"REST", transitionEffect:"resize"}, defaults
             ));
             labels = format.createLayer(caps, OpenLayers.Util.applyDefaults(
-                {layer:"beschriftung", requestEncoding:"REST", isBaseLayer: false},
-                OpenLayers.Util.extend({className: "nofade"}, defaults)
+                {layer:"beschriftung", requestEncoding:"REST", className:"nofade", isBaseLayer: false},
+                defaults
             ));
             map.addLayers([fmzk, aerial, labels]);
             zoomToInitialExtent();
