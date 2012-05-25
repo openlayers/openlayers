@@ -9,7 +9,7 @@ html, body, #map {
 #title, #tags, #shortdesc {
     display: none;
 }
-.olTileImage {
+.olLayerGrid .olTileImage {
     -webkit-transition: opacity 0.2s linear;
     -moz-transition: opacity 0.2s linear;
     -o-transition: opacity 0.2s linear;
