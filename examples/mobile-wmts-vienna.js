@@ -184,21 +184,21 @@ var map;
         attribution: 'Datenquelle: Stadt Wien - <a href="http://data.wien.gv.at">data.wien.gv.at</a>'
     };
     fmzk = new OpenLayers.Layer.WMTS(OpenLayers.Util.applyDefaults({
-        url: "http://www.wien.gv.at/wmts/fmzk/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg",
+        url: "http://maps.wien.gv.at/wmts/fmzk/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg",
         layer: "fmzk",
         style: "pastell",
         transitionEffect: "resize"
     },
     defaults));
     aerial = new OpenLayers.Layer.WMTS(OpenLayers.Util.applyDefaults({
-        url: "http://www.wien.gv.at/wmts/lb/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg",
+        url: "http://maps.wien.gv.at/wmts/lb/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg",
         layer: "lb",
         style: "farbe",
         transitionEffect: "resize"
     },
     defaults));
     labels = new OpenLayers.Layer.WMTS(OpenLayers.Util.applyDefaults({
-        url: "http://www.wien.gv.at/wmts/beschriftung/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
+        url: "http://maps.wien.gv.at/wmts/beschriftung/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
         layer: "beschriftung",
         style: "normal",
         transitionEffect: null,
