@@ -1523,6 +1523,70 @@
         map.destroy();
         
     }
+
+    function test_removeExcessTiles(t) {
+        t.plan(15);
+
+        /*
+         * Set up
+         */
+
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.Grid('name', '/url',
+                                              {}, {isBaseLayer: true});
+        map.addLayer(layer);
+
+        function newTile(id) {
+            var t = new OpenLayers.Tile(layer,
+                        new OpenLayers.Pixel(1, 1),
+                        new OpenLayers.Bounds(1, 1, 1, 1));
+            t._id = id;
+            return t;
+        }
+
+        layer.grid = [
+            [newTile(1), newTile(2), newTile(3)],
+            [newTile(4), newTile(5)],
+            [newTile(6), newTile(7), newTile(8)]
+        ];
+
+        // create a clone to be able to test whether
+        // tiles have been destroyed or not
+        var grid = [
+            layer.grid[0].slice(),
+            layer.grid[1].slice(),
+            layer.grid[2].slice()
+        ];
+
+        /*
+         * Test
+         */
+
+        layer.removeExcessTiles(2, 2);
+
+        t.eq(layer.grid.length, 2, 'grid has two rows');
+        t.eq(layer.grid[0].length, 2, 'row #1 has two columns');
+        t.eq(layer.grid[0][0]._id, 1, 'row #1 col #1 includes expected tile');
+        t.eq(layer.grid[0][1]._id, 2, 'row #1 col #2 includes expected tile');
+        t.eq(layer.grid[1].length, 2, 'row #2 has two columns');
+        t.eq(layer.grid[1][0]._id, 4, 'row #2 col #1 includes expected tile');
+        t.eq(layer.grid[1][1]._id, 5, 'row #2 col #2 includes expected tile');
+
+        t.ok(grid[0][0].events != null, 'tile 0,0 not destroyed');
+        t.ok(grid[0][1].events != null, 'tile 0,1 not destroyed');
+        t.ok(grid[0][2].events == null, 'tile 0,2 destroyed');
+        t.ok(grid[1][0].events != null, 'tile 1,0 not destroyed');
+        t.ok(grid[1][1].events != null, 'tile 1,1 not destroyed');
+        t.ok(grid[2][0].events == null, 'tile 2,0 destroyed');
+        t.ok(grid[2][1].events == null, 'tile 2,1 destroyed');
+        t.ok(grid[2][2].events == null, 'tile 2,2 destroyed');
+
+        /*
+         * Tear down
+         */
+
+        map.destroy();
+    }
     
   </script>
 </head>
