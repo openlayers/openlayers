@@ -236,13 +236,13 @@
         var f = new OpenLayers.Format.KML();
 
         t.eq(f.read(f.write(feature))[0].attributes.name, feature.id, "placemark name from feature.id");
-
-        feature.attributes.name = "placemark name from attributes.name";
-        t.eq(f.read(f.write(feature))[0].attributes.name, feature.attributes.name, "placemark name from attributes.name");
         feature.style = {
             label: "placemark name from style.label"
         };
         t.eq(f.read(f.write(feature))[0].attributes.name, feature.style.label, "placemark name from style.label");
+
+        feature.attributes.name = "placemark name from attributes.name";
+        t.eq(f.read(f.write(feature))[0].attributes.name, feature.attributes.name, "placemark name from attributes.name");
     }
     function test_Format_KML_linestring_projected(t) {
         t.plan(1);
