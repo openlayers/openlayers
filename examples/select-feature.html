@@ -16,8 +16,6 @@
     <script type="text/javascript">
         var map, drawControls;
         
-        var $ = OpenLayers.Util.getElement;
-        
         OpenLayers.Feature.Vector.style['default']['strokeWidth'] = '2';
         function init(){
             map = new OpenLayers.Map('map');
@@ -36,10 +34,10 @@
             });
             vectors.events.on({
                 'featureselected': function(feature) {
-                    $('counter').innerHTML = this.selectedFeatures.length;
+                    document.getElementById('counter').innerHTML = this.selectedFeatures.length;
                 },
                 'featureunselected': function(feature) {
-                    $('counter').innerHTML = this.selectedFeatures.length;
+                    document.getElementById('counter').innerHTML = this.selectedFeatures.length;
                 }
             });
 

@@ -67,8 +67,6 @@ OpenLayers.Strategy.RuleCluster = OpenLayers.Class(OpenLayers.Strategy.Cluster, 
 // global variables
 var map, vectorlayer, features, stylemap, select;
 
-var $ = OpenLayers.Util.getElement;
-
 // wrap the instanciation code in an anonymous function that gets executed
 // immeadeately
 (function(){
@@ -97,14 +95,14 @@ var $ = OpenLayers.Util.getElement;
 		} else {
 			info += '&nbsp;&nbsp;Single feature of clazz = ' + feature.attributes.clazz;
 		}
-		$('info').innerHTML = info;
+		document.getElementById('info').innerHTML = info;
     };
 
 	// The function that gets called on feature selection. Shows information 
     // about the number of "points" on the map.
 	var updateGeneralInformation = function() {
 		var info = 'Currently ' + vectorlayer.features.length + ' points are shown on the map.';
-		$('generalinfo').innerHTML = info;
+		document.getElementById('generalinfo').innerHTML = info;
 	};
 	
 	// instanciate the map
