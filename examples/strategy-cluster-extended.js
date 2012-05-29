@@ -95,14 +95,14 @@ var map, vectorlayer, features, stylemap, select;
 		} else {
 			info += '&nbsp;&nbsp;Single feature of clazz = ' + feature.attributes.clazz;
 		}
-		$('info').innerHTML = info;
+		document.getElementById('info').innerHTML = info;
     };
 
 	// The function that gets called on feature selection. Shows information 
     // about the number of "points" on the map.
 	var updateGeneralInformation = function() {
 		var info = 'Currently ' + vectorlayer.features.length + ' points are shown on the map.';
-		$('generalinfo').innerHTML = info;
+		document.getElementById('generalinfo').innerHTML = info;
 	};
 	
 	// instanciate the map
