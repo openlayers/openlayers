@@ -558,6 +558,34 @@
         t.eq(layer1.renderer.getRenderLayerId(), layer1.id, 
             "Root container moved correctly when control is destroyed and layers was an array parameter");
     }   
+
+    function test_unselectAll(t) {
+        t.plan(1);
+
+        var layer = new OpenLayers.Layer.Vector();
+
+        var control = new OpenLayers.Control.SelectFeature(layer);
+
+        var feature1 = new OpenLayers.Feature.Vector();
+        var feature2 = new OpenLayers.Feature.Vector();
+        var feature3 = new OpenLayers.Feature.Vector();
+
+        layer.addFeatures([feature1, feature2, feature3]);
+
+        control.select(feature1);
+        control.select(feature2);
+        control.select(feature3);
+
+        layer.events.on({
+            featureunselected: function(e) {
+                layer.removeFeatures([feature2]);
+            }
+        });
+
+        control.unselectAll();
+        t.eq(layer.selectedFeatures.length, 0,
+             'unselectAll unselects all features');
+    }
    
     </script>
 </head>
