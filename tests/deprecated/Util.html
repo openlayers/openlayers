@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <script>
+var custom$ = function() {};
+window.$ = custom$;
+        </script>
+        <script src="../OLLoader.js"></script>
+        <script src="../../lib/deprecated.js"></script>
+        <script>
+        
+function test_$(t) {
+    t.plan(1);
+    t.ok($ === custom$, "OpenLayers doesn't clobber existing definition of $.");
+}
+            
+        </script>
+    </head>
+    <body>
+    </body>
+</html>

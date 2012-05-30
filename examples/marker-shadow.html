@@ -99,7 +99,7 @@
                 
                 var pixel = new OpenLayers.Pixel(center.x + x, center.y + y);
                 
-                var lonLat = map.getLonLatFromViewPortPx(pixel);
+                var lonLat = map.getLonLatFromPixel(pixel);
                 features.push(
                     new OpenLayers.Feature.Vector(
                         new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat)
