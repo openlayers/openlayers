@@ -18,7 +18,6 @@
         </style>
         <script src="../lib/OpenLayers.js"></script>
         <script type="text/javascript">
-
             // create a semi-random grid of features to be clustered
             var dx = 3;
             var dy = 3;
@@ -90,24 +89,24 @@
                 map.setCenter(new OpenLayers.LonLat(0, 0), 2);
                 
                 reset();
-                $("reset").onclick = reset;
+                document.getElementById("reset").onclick = reset;
 
             }
             
             function reset() {
-                var distance = parseInt($("distance").value);
-                var threshold = parseInt($("threshold").value);
+                var distance = parseInt(document.getElementById("distance").value);
+                var threshold = parseInt(document.getElementById("threshold").value);
                 strategy.distance = distance || strategy.distance;
                 strategy.threshold = threshold || strategy.threshold;
-                $("distance").value = strategy.distance;
-                $("threshold").value = strategy.threshold || "null";
+                document.getElementById("distance").value = strategy.distance;
+                document.getElementById("threshold").value = strategy.threshold || "null";
                 clusters.removeFeatures(clusters.features);
                 clusters.addFeatures(features);
             }
             
             function display(event) {
                 var f = event.feature;
-                var el = $("output");
+                var el = document.getElementById("output");
                 if(f.cluster) {
                     el.innerHTML = "cluster of " + f.attributes.count;
                 } else {

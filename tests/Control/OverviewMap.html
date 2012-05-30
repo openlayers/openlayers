@@ -14,6 +14,23 @@
             "olControlOverviewMap", "displayClass is correct" );
     }
 
+    function test_divs_title(t) {
+        t.plan(2);
+    
+        control = new OpenLayers.Control.OverviewMap({
+            maximizeTitle: "maximize title",
+            minimizeTitle: "minimize title"
+        });
+        map = new OpenLayers.Map('map', {
+            layers: [new OpenLayers.Layer("layer", {isBaseLayer: true})],
+            controls: [control]
+        });
+        map.zoomToMaxExtent();
+        t.eq(control.maximizeDiv.title, "maximize title", "maximizeDiv.title is correct");
+        t.eq(control.minimizeDiv.title, "minimize title", "minimizeDiv.title is correct");
+        map.destroy();
+    }
+
     function test_setMap(t) {
         t.plan(4);
 

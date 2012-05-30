@@ -92,16 +92,15 @@ geolocate.events.register("locationupdated",geolocate,function(e) {
 geolocate.events.register("locationfailed",this,function() {
     OpenLayers.Console.log('Location detection failed');
 });
-
-$('locate').onclick = function() {
+document.getElementById('locate').onclick = function() {
     vector.removeAllFeatures();
     geolocate.deactivate();
-    $('track').checked = false;
+    document.getElementById('track').checked = false;
     geolocate.watch = false;
     firstGeolocation = true;
     geolocate.activate();
 };
-$('track').onclick = function() {
+document.getElementById('track').onclick = function() {
     vector.removeAllFeatures();
     geolocate.deactivate();
     if (this.checked) {
@@ -110,4 +109,4 @@ $('track').onclick = function() {
         geolocate.activate();
     }
 };
-$('track').checked = false;
+document.getElementById('track').checked = false;
