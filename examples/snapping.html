@@ -33,7 +33,7 @@
     <script src="../lib/OpenLayers.js"></script>
     <script type="text/javascript">
         OpenLayers.Feature.Vector.style['default']['strokeWidth'] = '2';
-
+        
         function init() {
             initMap();
             initUI();
@@ -194,7 +194,7 @@
          * property values.
          */
         function initUI() {
-            var check = $("snapping");
+            var check = document.getElementById("snapping");
             check.checked = true;
             check.onclick = function() {
                 if(check.checked) {
@@ -204,7 +204,7 @@
                 }
             };
             
-            var sel = $("editable");
+            var sel = document.getElementById("editable");
             sel.value = "poly";
             sel.onchange = function() {
                 updateEditable(sel.value);
@@ -216,12 +216,12 @@
                 target = snap.targets[i];
                 for(var j=0; j<types.length; ++j) {
                     type = types[j];
-                    tog = $(i + "_" + type);
+                    tog = document.getElementById(i + "_" + type);
                     tog.checked = target[type];
                     tog.onclick = (function(tog, type, target) {
                         return function() {target[type] = tog.checked;}
                     })(tog, type, target);
-                    tol = $(i + "_" + type + "Tolerance");
+                    tol = document.getElementById(i + "_" + type + "Tolerance");
                     tol.value = target[type + "Tolerance"];
                     tol.onchange = (function(tol, type, target) {
                         return function() {

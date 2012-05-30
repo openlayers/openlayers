@@ -11,7 +11,7 @@
     <script type="text/javascript">
         var map, layer;
         function init(){
-            map = new OpenLayers.Map( $('map'), {
+            map = new OpenLayers.Map( 'map', {
                 resolutions: [0.087890625, 0.0439453125, 0.02197265625, 0.010986328125]
             });
             layer = new OpenLayers.Layer.TileCache("TileCache Layer",

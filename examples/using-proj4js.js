@@ -1,4 +1,5 @@
 var map, vector;
+
 function init(){
     map = new OpenLayers.Map('map', {
         projection: 'EPSG:31467',
@@ -7,16 +8,16 @@ function init(){
         numZoomLevels: 1,
         controls: [
             new OpenLayers.Control.Attribution({
-                div: $('attribution')
+                div: document.getElementById('attribution')
             }),
             new OpenLayers.Control.MousePosition({
-                div: $('mouse-position-31467'),
+                div: document.getElementById('mouse-position-31467'),
                 prefix: 'Coordinates: ',
                 suffix: ' (in <a href="http://spatialreference.org/ref/epsg/' 
                     + '31467/">EPSG:31467</a>)'
             }),
             new OpenLayers.Control.MousePosition({
-                div: $('mouse-position-4326'),
+                div: document.getElementById('mouse-position-4326'),
                 displayProjection: new OpenLayers.Projection('EPSG:4326'),
                 prefix: 'Coordinates: ',
                 suffix: ' (in <a href="http://spatialreference.org/ref/epsg/' 
@@ -59,7 +60,7 @@ function addVector(x, y, btn){
     
     status += '<br /><code class="emph">  ' 
         + geometry.toString() + '</code>.';
-    $('status').innerHTML = status;
+    document.getElementById('status').innerHTML = status;
     
     var feature = new OpenLayers.Feature.Vector(geometry, {}, {
         strokeColor: '#333333',
@@ -110,7 +111,7 @@ function addOutline(btn) {
         transformedFeature = new OpenLayers.Feature.Vector(geometry, {}, style);
     
     vector.addFeatures([transformedFeature]);
-    $('status').innerHTML = 'Transformed polygon';
+    document.getElementById('status').innerHTML = 'Transformed polygon';
     btn.disabled = true;
 }
 
@@ -124,8 +125,8 @@ function clearVectors(){
         'btnGermany'
     ];
     for (var i = 0, len = ids.length; i < len; i++) {
-        var elem = $(ids[i]);
+        var elem = document.getElementById(ids[i]);
         elem.disabled = false;
     }
-    $('status').innerHTML = '';
+    document.getElementById('status').innerHTML = '';
 }

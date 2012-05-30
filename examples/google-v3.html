@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
         <link rel="stylesheet" href="../theme/default/google.css" type="text/css">
         <link rel="stylesheet" href="style.css" type="text/css">
-        <script src="http://maps.google.com/maps/api/js?v=3.6&amp;sensor=false"></script>
+        <script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
         <script src="../lib/OpenLayers.js"></script>
         <script src="google-v3.js"></script>
     </head>
@@ -34,6 +34,17 @@
                 In order to position the Google attribution div in the default 
                 location, you must include the extra theme/default/google.css 
                 stylesheet.
+            </p>
+            <p>
+                <strong>Note on Google Maps API versioning:</strong>
+                This example uses the "nightly" version of Google Maps
+                API. This is specified by using <code>v=3</code> in the
+                the Google Maps API URL. Production applications should use the
+                "release" or "frozen" versions of Google Maps
+                API. See the <code>OpenLayers.Layer.Google.v3</code> API
+                docs, and the
+                <a href="https://developers.google.com/maps/documentation/javascript/basics#Versioning">Versioning Section</a>
+                of the Google Maps API docs, for more details.
             </p>
         </div>
     </body>
