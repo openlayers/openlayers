@@ -109,7 +109,6 @@
         
         var delta = 120;
         if (window.opera && window.opera.version() < 9.2) { delta = -delta; }
-        if (OpenLayers.BROWSER_NAME === "safari") delta = delta / 10;
         handler.onWheelEvent({'target':map.layers[0].div, wheelDelta: delta});
         handler.onWheelEvent({'target':map.layers[0].div, wheelDelta: delta});
         t.delay_call(1, function() {
