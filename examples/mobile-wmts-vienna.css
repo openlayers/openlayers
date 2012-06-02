@@ -5,6 +5,9 @@ html, body, #map {
 }
 #map {
     cursor: move;
+    background-color: #CCCCCC;
+    /* no highlighting of the map area when tapping the map on touch devices */
+    -webkit-tap-highlight-color: transparent;
 }
 #title, #tags, #shortdesc {
     display: none;

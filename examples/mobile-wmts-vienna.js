@@ -130,6 +130,17 @@ var map;
     // Vector layer for the location cross and circle
     var vector = new OpenLayers.Layer.Vector("Vector Layer");
 
+    // Defaults for the WMTS layers
+    var defaults = {
+        requestEncoding: "REST",
+        matrixSet: "google3857",
+        attribution: 'Datenquelle: Stadt Wien - <a href="http://data.wien.gv.at">data.wien.gv.at</a>'
+    };
+    // No fade transitions on Android 4, because they are buggy
+    if (/Android 4\.0.*Safari\/.*/.test(navigator.userAgent)) {
+        defaults.className = "nofade";
+    }
+
     // The WMTS layers we're going to add
     var fmzk, aerial, labels;
     
@@ -149,11 +160,6 @@ var map;
         url: "http://maps.wien.gv.at/wmts/1.0.0/WMTSCapabilities.xml",
         success: function(request) {
             var format = new OpenLayers.Format.WMTSCapabilities();
-            var defaults = {
-                requestEncoding: "REST",
-                matrixSet: "google3857",
-                attribution: 'Datenquelle: Stadt Wien - <a href="http://data.wien.gv.at">data.wien.gv.at</a>'
-            };
             var doc = request.responseText,
                 caps = format.read(doc);
             fmzk = format.createLayer(caps, OpenLayers.Util.applyDefaults(
@@ -177,12 +183,7 @@ var map;
     // and create layers" block above.
     /*
     var extent = new OpenLayers.Bounds(1799448.394855, 6124949.74777, 1848250.442089, 6162571.828177);
-    var defaults = {
-        requestEncoding: "REST",
-        matrixSet: "google3857",
-        tileFullExtent: extent,
-        attribution: 'Datenquelle: Stadt Wien - <a href="http://data.wien.gv.at">data.wien.gv.at</a>'
-    };
+    defaults.tileFullExtent = extent;
     fmzk = new OpenLayers.Layer.WMTS(OpenLayers.Util.applyDefaults({
         url: "http://maps.wien.gv.at/wmts/fmzk/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg",
         layer: "fmzk",
