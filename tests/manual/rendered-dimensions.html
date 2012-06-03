@@ -41,7 +41,7 @@ function run() {
     }
     
     // To use the same syntax as in "\tests"
-    t = {eq: function(a, b, msg) {
+    var t = {eq: function(a, b, msg) {
             if (a == b) {
                 out.innerHTML += "<br/>ok " + msg;
             }
