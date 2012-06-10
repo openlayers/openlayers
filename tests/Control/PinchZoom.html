@@ -49,8 +49,8 @@
             log.push(transform);
         }
         
-        control.containerCenter = {
-            x: 0, y: 0
+        map.layerContainerOriginPx = {
+            x: -50, y: -50
         };
 
         control.pinchOrigin = {
@@ -60,10 +60,10 @@
         var cases = [
             {x: 100, y: 60, scale: 1, transform: "translate(0px, 10px) scale(1)"},
             {x: 150, y: 60, scale: 1, transform: "translate(50px, 10px) scale(1)"},
-            {x: 150, y: 60, scale: 2, transform: "translate(-50px, -40px) scale(2)"},
-            {x: 50, y: 20, scale: 2.5, transform: "translate(-200px, -105px) scale(2.5)"},
-            {x: 150, y: 60, scale: 2, transform: "translate(-50px, -40px) scale(2)"},
-            {x: 50, y: 20, scale: 0.25, transform: "translate(25px, 8px) scale(0.25)"}
+            {x: 150, y: 60, scale: 2, transform: "translate(-100px, -90px) scale(2)"},
+            {x: 50, y: 20, scale: 2.5, transform: "translate(-275px, -180px) scale(2.5)"},
+            {x: 150, y: 60, scale: 2, transform: "translate(-100px, -90px) scale(2)"},
+            {x: 50, y: 20, scale: 0.25, transform: "translate(63px, 45px) scale(0.25)"}
         ];
         
         var len = cases.length;
