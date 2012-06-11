@@ -40,12 +40,13 @@
         control.zoomBox(new OpenLayers.Bounds(128, 64, 256, 128));
         t.eq(map.getCenter().toShortString(), "-45, 22.5", "centered to box center");
         t.eq(map.getZoom(), 3, "zoomed to box extent");
+        
+        map.destroy();
     }
 
   </script>
 </head>
 <body>
     <div id="map" style="width: 512px; height: 256px;"/>
-    <div id="in">in</div><div id="out">out</out>
 </body>
 </html>
