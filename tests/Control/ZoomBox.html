@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="../OLLoader.js"></script>
+  <script type="text/javascript">
+
+    function test_constructor(t) {
+        t.plan(4);
+
+        var control = new OpenLayers.Control.ZoomBox();
+        t.ok(control instanceof OpenLayers.Control, "instance of Control");
+        t.ok(control instanceof OpenLayers.Control.ZoomBox, "instance of ZoomBox");
+        t.eq(control.displayClass, "olControlZoomBox", "displayClass");
+        control.destroy();
+        
+        control = new OpenLayers.Control.ZoomBox({
+            zoomOnClick: false
+        });
+        t.eq(control.zoomOnClick, false, "zoomOnClick");
+        control.destroy();        
+    }
+
+    function test_zoomBox(t) {
+        t.plan(4);
+        var map = new OpenLayers.Map("map", {
+            layers: [new OpenLayers.Layer("", {isBaseLayer: true})],
+            center: [0, 0],
+            zoom: 1
+        });
+        var control = new OpenLayers.Control.ZoomBox();
+        map.addControl(control);
+        control.zoomBox(new OpenLayers.Pixel(50, 60));
+        t.eq(map.getZoom(), 2, "zoomed on click");
+        
+        control.zoomOnClick = false;
+        control.zoomBox(new OpenLayers.Pixel(-50, -60));
+        t.eq(map.getZoom(), 2, "not zoomed with zoomOnClick set to false");
+        
+        map.zoomToMaxExtent();
+        control.zoomBox(new OpenLayers.Bounds(128, 64, 256, 128));
+        t.eq(map.getCenter().toShortString(), "-45, 22.5", "centered to box center");
+        t.eq(map.getZoom(), 3, "zoomed to box extent");
+        
+        map.destroy();
+    }
+
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 512px; height: 256px;"/>
+</body>
+</html>
