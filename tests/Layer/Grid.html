@@ -1124,7 +1124,7 @@
         layer.gridResolution = 1;
         layer.backBuffer = backBuffer;
         layer.div.appendChild(backBuffer);
-        layer.backBufferLonLat = new OpenLayers.Bounds(0, 0);
+        layer.backBufferLonLat = {lon: 0, lat: 0};
         layer.applyBackBuffer(1);
         t.ok(backBuffer != undefined,
              'createBackBuffer returns a back buffer');
