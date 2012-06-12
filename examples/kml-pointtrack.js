@@ -29,12 +29,13 @@ function init() {
                         var fid, points = [], feature;
                         for (var i=0, len=e.features.length; i<len; i++) {
                             feature = e.features[i];
-                            if (feature.fid !== fid || i === len-1) {
-                                fid = feature.fid;
+                            if ((fid && feature.fid !== fid) || i === len-1) {
                                 this.addNodes(points, {silent: true});
                                 points = [];
+                            } else {
+                                points.push(feature);
                             }
-                            points.push(feature);
+                            fid = feature.fid;
                         }
                         return false;
                     }
