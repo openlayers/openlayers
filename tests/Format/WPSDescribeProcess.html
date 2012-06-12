@@ -4,7 +4,7 @@
     <script type="text/javascript">
 
     function test_read_WPSDescribeProcess(t) {
-        t.plan(16);
+        t.plan(17);
 
         var parser = new OpenLayers.Format.WPSDescribeProcess();
         var text =
@@ -109,6 +109,13 @@
 '                    </Supported>' +
 '                </ComplexOutput>' +
 '            </Output>' +
+'            <Output>' +
+'                <ows:Identifier>literal</ows:Identifier>' +
+'                <ows:Title>literal output</ows:Title>' +
+'                <LiteralOutput>' +
+'                   <ows:DataType ows:reference="http://www.w3.org/TR/xmlschema-2/#integer">integer</ows:DataType>'+
+'                </LiteralOutput>' +
+'            </Output>' +
 '        </ProcessOutputs>' +
 '    </ProcessDescription>' +
 '</wps:ProcessDescriptions>';
@@ -134,6 +141,9 @@
         t.eq(result.complexOutput["default"].formats["text/xml; subtype=gml/3.1.1"], true, "processOutputs default format read correctly");
         t.eq(result.complexOutput["supported"].formats["text/xml; subtype=gml/3.1.1"], true, "processOutputs supported format read correctly [1/2]");
         t.eq(result.complexOutput["supported"].formats["application/wkt"], true, "processOutputs supported format read correctly [1/2]");
+
+        var literalresult = buffer.processOutputs[1];
+        t.eq(literalresult.literalOutput.dataType, "integer", "processOutputs supported data type read corectly");
 
         text = '<?xml version="1.0" encoding="UTF-8"?>' +
 '<wps:ProcessDescriptions service="WPS" version="1.0.0" xmlns:wps="http://www.opengis.net/wps/1.0.0"' +
