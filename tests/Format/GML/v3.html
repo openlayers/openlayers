@@ -10,8 +10,8 @@
             "v2/linestring-coord.xml", "v2/linestring-coordinates.xml",
             "v2/multipoint-coord.xml", "v2/multipoint-coordinates.xml",
             "v2/multilinestring-coord.xml", "v2/multilinestring-coordinates.xml",
-            "v3/point.xml", "v3/linestring.xml", "v3/curve.xml",
-            "v3/polygon.xml", "v3/surface.xml",
+            "v3/point.xml", "v3/linestring.xml", "v3/linestring3d.xml",
+            "v3/curve.xml", "v3/polygon.xml", "v3/surface.xml",
             "v3/multipoint-singular.xml", "v3/multipoint-plural.xml",
             "v3/multilinestring-singular.xml", "v3/multilinestring-plural.xml",
             "v3/multicurve-singular.xml", "v3/multicurve-curve.xml",
@@ -330,6 +330,11 @@
 <div id="v3/linestring.xml"><!--
 <gml:LineString xmlns:gml="http://www.opengis.net/gml" srsName="foo">
   <gml:posList>1 2 3 4</gml:posList>
+</gml:LineString>
+--></div>
+<div id="v3/linestring3d.xml"><!--
+<gml:LineString xmlns:gml="http://www.opengis.net/gml" srsName="foo" srsDimension="3">
+  <gml:posList>1 2 3 4 5 6</gml:posList>
 </gml:LineString>
 --></div>
 <div id="v3/curve.xml"><!--
