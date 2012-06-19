@@ -30,13 +30,13 @@ ol.Bounds = function(minX, minY, maxX, maxY, opt_projection) {
      * @private
      * @type {number}
      */
-    this.minX_ = minX;
+    this.maxX_ = maxX;
 
     /**
      * @private
      * @type {number}
      */
-    this.minY_ = minY;
+    this.maxY_ = maxY;
 
     /**
      * @private
