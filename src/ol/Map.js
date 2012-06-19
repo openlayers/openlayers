@@ -75,7 +75,7 @@ ol.Map.prototype.getCenter = function() {
 
 
 /**
- * @return {ol.Projection} Projection.
+ * @return {!ol.Projection} Projection.
  */
 ol.Map.prototype.getProjection = function() {
     if (goog.isNull(this.projection_)) {
@@ -86,7 +86,7 @@ ol.Map.prototype.getProjection = function() {
 
 
 /**
- * @return {ol.Projection} User projection.
+ * @return {!ol.Projection} User projection.
  */
 ol.Map.prototype.getUserProjection = function() {
     if (goog.isNull(this.userProjection_)) {

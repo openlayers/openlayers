@@ -65,7 +65,7 @@ ol.Projection.prototype.getUnits = function() {
 };
 
 /**
- * @param {string|undefined} units Units abbreviation.
+ * @param {string} units Units abbreviation.
  * @return {ol.Projection} This.
  */
 ol.Projection.prototype.setUnits = function(units) {
@@ -111,12 +111,13 @@ ol.Projection.prototype.units = function(opt_units){
 ol.Projection.transforms = {};
 
 /**
- * APIProperty: defaults
- * {Object} Defaults for the SRS codes known to OpenLayers (currently
- * EPSG:4326, CRS:84, urn:ogc:def:crs:EPSG:6.6:4326, EPSG:900913, EPSG:3857,
- * EPSG:102113 and EPSG:102100). Keys are the SRS code, values are units,
- * maxExtent (the validity extent for the SRS) and yx (true if this SRS is
- * known to have a reverse axis order).
+ * Defaults for the SRS codes known to OpenLayers (currently EPSG:4326, CRS:84, 
+ * urn:ogc:def:crs:EPSG:6.6:4326, EPSG:900913, EPSG:3857, EPSG:102113 and 
+ * EPSG:102100). Keys are the SRS code, values are units, maxExtent (the 
+ * validity extent for the SRS) and yx (true if this SRS is known to have a 
+ * reverse axis order).
+ *
+ * @type {Object}
  */
 ol.Projection.defaults = {
     "EPSG:4326": {
@@ -135,17 +136,16 @@ ol.Projection.defaults = {
 };
 
 /**
- * APIMethod: addTransform
  * Set a custom transform method between two projections.  Use this method in
  *     cases where the proj4js lib is not available or where custom projections
  *     need to be handled.
  *
- * Parameters:
- * from - {String} The code for the source projection
- * to - {String} the code for the destination projection
- * method - {Function} A function that takes a point as an argument and
- *     transforms that point from the source to the destination projection
- *     in place.  The original point should be modified.
+ * @param {string} from The code for the source projection.
+ * @param {string} to The code for the destination projection.
+ * @param {function(Object)} method A function that takes an object with x and
+ *     y properties as an argument and transforms that point from the source to 
+ *     the destination projection in place.  The original point should be 
+ *     modified.
  */
 ol.Projection.addTransform = function(from, to, method) {
     if (method === ol.Projection.nullTransform) {
@@ -166,7 +166,7 @@ ol.Projection.addTransform = function(from, to, method) {
  * @param {Object} point Object with x and y properties.
  * @param {!string|!ol.Projection} source Source projection.
  * @param {!string|!ol.Projection} dest Destination projection.
- * @returns {Object} Object with x and y properties.
+ * @private
  */
 ol.Projection.transform = function(point, source, dest) {
     if (!(source instanceof ol.Projection)) {
@@ -176,7 +176,7 @@ ol.Projection.transform = function(point, source, dest) {
         dest = new ol.Projection(dest);
     }
     if (source.proj_ && dest.proj_) {
-        // point = Proj4js.transform(source.proj, dest.proj, point);
+        // point = Proj4js.transform(source.proj_, dest.proj_, point);
     } else {
         var sourceCode = source.getCode();
         var destCode = dest.getCode();
@@ -185,20 +185,18 @@ ol.Projection.transform = function(point, source, dest) {
             transforms[sourceCode][destCode](point);
         }
     }
-    return point;
 };
 
 /**
- * APIFunction: nullTransform
  * A null transformation - useful for defining projection aliases when
  * proj4js is not available:
  *
- * (code)
- * ol.Projection.addTransform("EPSG:3857", "EPSG:900913",
- *     ol.Projection.nullTransform);
- * ol.Projection.addTransform("EPSG:900913", "EPSG:3857",
- *     ol.Projection.nullTransform);
- * (end)
+ *     ol.Projection.addTransform("EPSG:3857", "EPSG:900913",
+ *         ol.Projection.nullTransform);
+ *     ol.Projection.addTransform("EPSG:900913", "EPSG:3857",
+ *         ol.Projection.nullTransform);
+ *
+ * @type {function(Object)}
  */
 ol.Projection.nullTransform = function(point) {
     return point;
