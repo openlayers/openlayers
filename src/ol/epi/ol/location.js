@@ -83,27 +83,30 @@ ol.Location.prototype.setProjection = function(projection) {
 
 
 /**
- * @return {number} X.
+ * @param {number} x X.
+ * @return {ol.Location} This.
  */
-ol.Location.prototype.setX = function() {
+ol.Location.prototype.setX = function(x) {
   this.x_ = x;
   return this;
 };
 
 
 /**
- * @return {number} Y.
+ * @param {number} y Y.
+ * @return {ol.Location} This.
  */
-ol.Location.prototype.setY = function() {
+ol.Location.prototype.setY = function(y) {
   this.y_ = y;
   return this;
 };
 
 
 /**
- * @return {number} Z.
+ * @param {number} z Z.
+ * @return {ol.Location} This.
  */
-ol.Location.prototype.setZ = function() {
+ol.Location.prototype.setZ = function(z) {
   this.z_ = z;
   return this;
 };
