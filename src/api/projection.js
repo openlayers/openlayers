@@ -15,20 +15,25 @@ ol.ProjectionLike;
  * @return {ol.Projection} Projection.
  */
 ol.projection = function(opt_arg){
-    var code;
-    if (arguments.length == 1) {
+    var code, units;
+    if (arguments.length == 1 && goog.isDef(opt_arg)) {
         if (opt_arg instanceof ol.Projection) {
             return opt_arg;
         }
-        else 
-            if (goog.isString(arguments[0])) {
-                code = arguments[0];
-            }
-            else {
-                throw new Error('ol.projection');
-            }
+        else if (goog.isString(opt_arg)) {
+            code = opt_arg;
+        }
+        else if (goog.isObject(opt_arg)) {
+            code = opt_arg['code'];
+            units = opt_arg['units'];
+        }
+        else {
+            throw new Error('ol.projection');
+        }
     }
-    return new ol.Projection(code);
+    var proj = new ol.Projection();
+    proj.setCode(code);
+    return proj;
 };
 
 

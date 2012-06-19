@@ -1,13 +1,9 @@
 {
-  "id": "main",
+  "id": "ol",
 
-  "inputs": "main.js",
+  "inputs": "src/ol.js",
   "paths": [
     "."
-  ],
-
-  "externs": [
-    "//google_maps_api_v3.js"
   ],
 
   "define": {

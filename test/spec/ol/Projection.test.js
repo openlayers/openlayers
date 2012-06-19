@@ -6,7 +6,10 @@ describe("ol.Projection", function() {
         p = ol.projection("foo");
         expect(p.code()).toBe("foo");
         
-        p = ol.projection({code: "bar"});
+        p = ol.projection({
+            code: "bar",
+            units: "m"
+        });
         expect(p.code()).toBe("bar");
         
     });
