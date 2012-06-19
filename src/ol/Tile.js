@@ -1,12 +1,14 @@
 goog.provide('ol.Tile');
 
 /**
+ * The Tile class.
  * @constructor
  */
 ol.Tile = function() {
 
     /**
      * @private
+     * @type {Element}
      */
     this.img_ = ol.Tile.createImage();
 };
