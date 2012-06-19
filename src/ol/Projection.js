@@ -7,11 +7,11 @@ goog.provide('ol.Projection');
  */
 ol.Projection = function() {
 
-  /**
-   * @private
-   * @type {string|undefined}
-   */
-  this.code_ = undefined;
+    /**
+     * @private
+     * @type {string|undefined}
+     */
+    this.code_ = undefined;
 
 };
 
@@ -20,7 +20,7 @@ ol.Projection = function() {
  * @return {string|undefined} Code.
  */
 ol.Projection.prototype.getCode = function() {
-  return this.code_;
+    return this.code_;
 };
 
 
@@ -29,6 +29,6 @@ ol.Projection.prototype.getCode = function() {
  * @return {ol.Projection} This.
  */
 ol.Projection.prototype.setCode = function(code) {
-  this.code_ = code;
-  return this;
+    this.code_ = code;
+    return this;
 };
