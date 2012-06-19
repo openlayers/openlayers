@@ -49,12 +49,7 @@ ol.bounds = function(opt_arg){
         throw new Error('ol.bounds');
     }
 
-    var bounds = new ol.Bounds();
-    bounds.setMinX(minX);
-    bounds.setMinY(minY);
-    bounds.setMaxX(maxX);
-    bounds.setMaxY(maxY);
-    bounds.setProjection(projection);
+    var bounds = new ol.Bounds(minX, minY, maxX, maxY, projection);
     return bounds;
 
 };
