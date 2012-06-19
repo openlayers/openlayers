@@ -28,5 +28,5 @@
     // "undefinedVars": "ERROR"
   },
 
-  "jsdoc-html-output-path": "."
+  "jsdoc-html-output-path": "jsdoc"
 }
