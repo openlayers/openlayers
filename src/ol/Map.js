@@ -14,7 +14,13 @@ ol.Map = function() {
      * @private
      * @type {ol.Projection}
      */
-    this.projection_ = new ol.Projection();
+    this.projection_ ;
+
+    /**
+     * @private
+     * @type {ol.Projection}
+     */
+    this.userProjection_;
 
     /**
      * @private
@@ -36,6 +42,13 @@ ol.Map = function() {
 
 };
 
+ol.Map.prototype.defaults = {};
+/** 
+  @type {string} 
+*/
+ol.Map.prototype.defaults.projection = "EPSG:3857";
+ol.Map.prototype.defaults.userProjection = "EPSG:4326";
+
 
 /**
  * @return {ol.Loc} Location.
@@ -49,7 +62,21 @@ ol.Map.prototype.getCenter = function() {
  * @return {ol.Projection} Projection.
  */
 ol.Map.prototype.getProjection = function() {
+    if (!goog.isDef(this.projection_)) {
+        this.projection_ = new ol.Projection(this.defaults.projection);
+    }
     return this.projection_;
+};
+
+
+/**
+ * @return {ol.Projection} User projection.
+ */
+ol.Map.prototype.getUserProjection = function() {
+    if (!goog.isDef(this.userProjection_)) {
+        this.userProjection_ = new ol.Projection(this.defaults.userProjection_);
+    }
+    return this.userProjection_;
 };
 
 
@@ -90,6 +117,16 @@ ol.Map.prototype.setProjection = function(projection) {
 
 
 /**
+ * @param {ol.Projection} projection set the user projection.
+ * @return {ol.Map} This.
+ */
+ol.Map.prototype.setUserProjection = function(projection) {
+    this.userProjection_ = projection;
+    return this;
+};
+
+
+/**
  * @param {number} zoom Zoom.
  * @return {ol.Map} This.
  */
@@ -106,4 +143,10 @@ ol.Map.prototype.setZoom = function(zoom) {
 ol.Map.prototype.setNumZoomLevels = function(nZoom) {
     this.numZoomLevels_ = nZoom;
     return this;
+};
+
+/**
+*/
+ol.Map.prototype.destroy = function() {
+    //remove layers, etc.
 };

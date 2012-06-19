@@ -57,7 +57,7 @@ describe("ol.Map", function() {
         
         // all at once
         map = ol.map({
-            center: [1, 2],
+            center: [4, 5],
             zoom: 6
         });
 
@@ -98,6 +98,30 @@ describe("ol.Map", function() {
         
     });
     
+    it("has a default user projection in 4326", function() {
+        
+        var map = ol.map();
+        var userproj = map.userProjection();
+        
+        expect(userproj instanceof ol.Projection).toBe(true);
+        expect(userproj.code()).toBe("EPSG:4326");
+        
+    });
+
+    it("allows number of zoom levels to be set", function() {
+        
+        var map = ol.map();
+        var nzoom = map.numZoomLevels();
+        
+        expect(nzoom).toBe(22);
+        
+        map.numZoomLevels(15);
+        
+        nzoom = map.numZoomLevels();
+        expect(nzoom).toBe(15);        
+
+    });
+
     it("allows a user projection to be set", function() {
         var proj;
 
