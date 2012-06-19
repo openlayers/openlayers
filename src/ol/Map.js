@@ -10,23 +10,23 @@ goog.require('ol.Projection');
  */
 ol.Map = function() {
 
-  /**
-   * @private
-   * @type {ol.Projection}
-   */
-  this.projection_ = new ol.Projection();
+    /**
+     * @private
+     * @type {ol.Projection}
+     */
+    this.projection_ = new ol.Projection();
 
-  /**
-   * @private
-   * @type {ol.Loc}
-   */
-  this.location_ = new ol.Loc(0, 0);
+    /**
+     * @private
+     * @type {ol.Loc}
+     */
+    this.location_ = new ol.Loc(0, 0);
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.zoom_ = 0;
+    /**
+     * @private
+     * @type {number}
+     */
+    this.zoom_ = 0;
 
 };
 
@@ -35,7 +35,7 @@ ol.Map = function() {
  * @return {ol.Loc} Location.
  */
 ol.Map.prototype.getCenter = function() {
-  return this.center_;
+    return this.center_;
 };
 
 
@@ -43,7 +43,7 @@ ol.Map.prototype.getCenter = function() {
  * @return {ol.Projection} Projection.
  */
 ol.Map.prototype.getProjection = function() {
-  return this.projection_;
+    return this.projection_;
 };
 
 
@@ -51,7 +51,7 @@ ol.Map.prototype.getProjection = function() {
  * @return {number} Zoom.
  */
 ol.Map.prototype.getZoom = function() {
-  return this.zoom_;
+    return this.zoom_;
 };
 
 
@@ -60,8 +60,8 @@ ol.Map.prototype.getZoom = function() {
  * @return {ol.Map} This.
  */
 ol.Map.prototype.setCenter = function(center) {
-  this.center_ = center;
-  return this;
+    this.center_ = center;
+    return this;
 };
 
 
@@ -70,8 +70,8 @@ ol.Map.prototype.setCenter = function(center) {
  * @return {ol.Map} This.
  */
 ol.Map.prototype.setProjection = function(projection) {
-  this.projection_ = projection;
-  return this;
+    this.projection_ = projection;
+    return this;
 };
 
 
@@ -80,6 +80,6 @@ ol.Map.prototype.setProjection = function(projection) {
  * @return {ol.Map} This.
  */
 ol.Map.prototype.setZoom = function(zoom) {
-  this.zoom_ = zoom;
-  return this;
+    this.zoom_ = zoom;
+    return this;
 };
