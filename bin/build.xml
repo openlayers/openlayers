@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ol" default="usage">
+
+    <description>
+        OpenLayers Dev Utilities
+    </description>
+    
+    <property name="ol.home" location=".."/>
+    <property name="plovr.jar" location="${ol.home}/bin/plovr.jar"/>
+    <property name="main.json" location="${ol.home}/main.json"/>
+
+    <target name="usage">
+        <echo>
+        Available commands:
+        
+        serve - Run the library server
+        doc   - Build the reference docs
+        </echo>
+    </target>
+
+    <condition property="plovr.exists">
+        <available file="${plovr.jar}" type="file"/>
+    </condition>
+    
+    <target name="deps" unless="plovr.exists">
+        <get src="http://plovr.googlecode.com/files/plovr-4b3caf2b7d84.jar"
+            dest="${plovr.jar}"/>
+    </target>
+    
+    <target name="serve" depends="deps">
+        <java jar="${plovr.jar}" fork="true">
+            <arg value="serve"/>
+            <arg value="${main.json}"/>
+        </java>
+    </target>
+    
+    <target name="doc" depends="deps">
+        <java jar="${plovr.jar}" fork="true">
+            <arg value="jsdoc"/>
+            <arg value="${main.json}"/>
+        </java>
+    </target>
+
+</project>
