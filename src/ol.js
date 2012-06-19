@@ -3,6 +3,7 @@ goog.require('ol.bounds');
 goog.require("ol.map");
 goog.require("ol.loc");
 goog.require("ol.projection");
-
 goog.require("ol.Tile");
 goog.require("ol.TileSet");
+goog.require("ol.geom.geometry");
+goog.require("ol.geom.point");
