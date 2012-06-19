@@ -1,6 +1,7 @@
 goog.provide('ol.loc');
 
 goog.require('ol.Loc');
+goog.require('ol.projection');
 
 
 /**
@@ -12,13 +13,13 @@ ol.LocLike;
 
 /**
  * @export
- * @param {ol.LocLike} loc Location.
+ * @param {ol.LocLike} opt_arg Location.
  * @return {ol.Loc} Location.
  */
-ol.loc = function(loc){
+ol.loc = function(opt_arg){
 
-    if (loc instanceof ol.Loc) {
-        return loc;
+    if (opt_arg instanceof ol.Loc) {
+        return opt_arg;
     }
     
     var x = 0;
@@ -26,37 +27,32 @@ ol.loc = function(loc){
     var z;
     var projection;
     
-    if (goog.isArray(loc)) {
-        if (loc.length >= 1) {
-            x = loc[0];
-            if (loc.length >= 2) {
-                y = loc[1];
-                if (loc.length >= 3) {
-                    z = loc[2];
-                }
-            }
-        }
-    }
-    else 
-        if (goog.isObject(loc)) {
-            if (goog.isDef(loc.x)) {
-                x = loc.x;
-            }
-            if (goog.isDef(loc.y)) {
-                y = loc.y;
-            }
-            if (goog.isDef(loc.z)) {
-                z = loc.z;
-            }
-            if (goog.isDef(loc.projection)) {
-                projection = loc.projection;
-            }
-        }
-        else {
+    if (arguments.length == 1 && goog.isDef(opt_arg)) {
+        if (goog.isArray(opt_arg)) {
+            x = opt_arg[0];
+            y = opt_arg[1];
+            z = opt_arg[2];
+            projection = opt_arg[3];
+        } else if (goog.isObject(opt_arg)) {
+            x = opt_arg['x'];
+            y = opt_arg['y'];
+            z = opt_arg['z'];
+            projection = opt_arg['projection'];
+        } else {
             throw new Error('ol.loc');
         }
+    }
+
+    if (goog.isDef(projection)) {
+        projection = ol.projection(projection);
+    }
     
-    return new ol.Loc(x, y, z, projection);
+    var loc = new ol.Loc();
+    loc.setX(x);
+    loc.setY(y);
+    loc.setZ(z);
+    loc.setProjection(projection);
+    return loc;
     
 };
 
@@ -68,7 +64,7 @@ ol.loc = function(loc){
  */
 ol.Loc.prototype.projection = function(opt_arg){
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
-        return this.setProjection(opt_arg);
+        return this.setProjection(ol.projection(opt_arg));
     }
     else {
         return this.getProjection();

@@ -1,18 +1,25 @@
 describe("ol.Loc", function() {
 
-    it("allows flexible construction", function() {
+    it("allows empty construction", function() {
         var loc;
 
         // nowhere
         loc = ol.loc();
         expect(loc instanceof ol.Loc).toBe(true);
+    });
         
+    it("allows construction from an obj config", function() {
+        var loc;
+
         // obj config
         loc = ol.loc({x: 10, y: 20});
         
         expect(loc.x()).toBe(10);
         expect(loc.y()).toBe(20);
+    });
         
+    it("allows construction from an array config", function() {
+        var loc;
         // array config
         loc = ol.loc([30, 40]);
 

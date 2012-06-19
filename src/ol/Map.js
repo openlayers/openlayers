@@ -18,6 +18,12 @@ ol.Map = function() {
 
     /**
      * @private
+     * @type {ol.Projection}
+     */
+    this.userProjection_ = new ol.Projection();
+
+    /**
+     * @private
      * @type {ol.Loc}
      */
     this.location_ = new ol.Loc(0, 0);
@@ -48,6 +54,14 @@ ol.Map.prototype.getProjection = function() {
 
 
 /**
+ * @return {ol.Projection} User projection.
+ */
+ol.Map.prototype.getUserProjection = function() {
+    return this.userProjection_;
+};
+
+
+/**
  * @return {number} Zoom.
  */
 ol.Map.prototype.getZoom = function() {
@@ -71,6 +85,16 @@ ol.Map.prototype.setCenter = function(center) {
  */
 ol.Map.prototype.setProjection = function(projection) {
     this.projection_ = projection;
+    return this;
+};
+
+
+/**
+ * @param {ol.Projection} userProjection User projection.
+ * @return {ol.Map} This.
+ */
+ol.Map.prototype.setProjection = function(userProjection) {
+    this.userProjection_ = userProjection;
     return this;
 };
 
