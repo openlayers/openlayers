@@ -21,7 +21,7 @@ describe("ol.Map", function() {
         center = map.center();
         expect(center.x().toFixed(3)).toBe("-110.000");
         expect(center.y().toFixed(3)).toBe("45.000");
-        expect(center instanceof ol.Location).toBe(true);
+        expect(center instanceof ol.Loc).toBe(true);
         
         // with object literal
         map.center({x: -111, y: 46});
@@ -29,7 +29,7 @@ describe("ol.Map", function() {
         center = map.center();
         expect(center.x().toFixed(3)).toBe("-111.000");
         expect(center.y().toFixed(3)).toBe("46.000");
-        expect(center instanceof ol.Location).toBe(true);
+        expect(center instanceof ol.Loc).toBe(true);
 
         // more verbose
         map = ol.map({
@@ -39,7 +39,7 @@ describe("ol.Map", function() {
         center = map.center();
         expect(center.x().toFixed(3)).toBe("-112.000");
         expect(center.y().toFixed(3)).toBe("47.000");
-        expect(center instanceof ol.Location).toBe(true);
+        expect(center instanceof ol.Loc).toBe(true);
         
     });
     

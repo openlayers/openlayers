@@ -1,11 +1,11 @@
-describe("ol.Location", function() {
+describe("ol.Loc", function() {
 
     it("allows flexible construction", function() {
         var loc;
 
         // nowhere
         loc = ol.loc();
-        expect(loc instanceof ol.Location).toBe(true);
+        expect(loc instanceof ol.Loc).toBe(true);
         
         // obj config
         loc = ol.loc({x: 10, y: 20});
@@ -80,7 +80,7 @@ describe("ol.Location", function() {
         var loc = ol.loc({x: 10, y: 20, projection: "EPSG:4326"});
         var trans = loc.transform("EPSG:3857");
         
-        expect(trans instanceof ol.Location).toBe(true);
+        expect(trans instanceof ol.Loc).toBe(true);
         expect(trans.projection().code()).toBe("EPSG:3857");
         expect(trans.x().toFixed(3)).toBe("1113194.908");
         expect(trans.y().toFixed(3)).toBe("2273030.927");
@@ -95,7 +95,7 @@ describe("ol.Location", function() {
         var loc = ol.loc({x: 1113195, y: 2273031, projection: "EPSG:3857"});
         var trans = loc.transform("EPSG:4326");
         
-        expect(trans instanceof ol.Location).toBe(true);
+        expect(trans instanceof ol.Loc).toBe(true);
         expect(trans.projection().code()).toBe("EPSG:4326");
         expect(trans.x().toFixed(3)).toBe("10.000");
         expect(trans.y().toFixed(3)).toBe("20.000");

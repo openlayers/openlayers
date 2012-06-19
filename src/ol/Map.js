@@ -1,6 +1,6 @@
 goog.provide('ol.Map');
 
-goog.require('ol.Location');
+goog.require('ol.Loc');
 goog.require('ol.Projection');
 
 
@@ -18,9 +18,9 @@ ol.Map = function() {
 
   /**
    * @private
-   * @type {ol.Location}
+   * @type {ol.Loc}
    */
-  this.location_ = new ol.Location(0, 0);
+  this.location_ = new ol.Loc(0, 0);
 
   /**
    * @private
@@ -32,7 +32,7 @@ ol.Map = function() {
 
 
 /**
- * @return {ol.Location} Location.
+ * @return {ol.Loc} Location.
  */
 ol.Map.prototype.getCenter = function() {
   return this.center_;
@@ -56,7 +56,7 @@ ol.Map.prototype.getZoom = function() {
 
 
 /**
- * @param {ol.Location} center Center.
+ * @param {ol.Loc} center Center.
  * @return {ol.Map} This.
  */
 ol.Map.prototype.setCenter = function(center) {

@@ -1,23 +1,23 @@
 goog.provide('ol.loc');
 
-goog.require('ol.Location');
+goog.require('ol.Loc');
 
 
 /**
- * @typedef {ol.Location|Array.<number>|{{x:number, y:number, z:number=, projection: ol.Projection=}}} loc Location.
+ * @typedef {ol.Loc|Array.<number>|Object} loc Location.
  */
-ol.LocationLike;
+ol.LocLike;
 
 
 
 /**
  * @export
- * @param {ol.LocationLike} loc Location.
- * @return {ol.Location} Location.
+ * @param {ol.LocLike} loc Location.
+ * @return {ol.Loc} Location.
  */
 ol.loc = function(loc) {
 
-  if (loc instanceof ol.Location) {
+  if (loc instanceof ol.Loc) {
     return loc;
   }
 
@@ -53,7 +53,7 @@ ol.loc = function(loc) {
     throw new Error('ol.loc');
   }
 
-  return new ol.Location(x, y, z, projection);
+  return new ol.Loc(x, y, z, projection);
 
 };
 
@@ -61,10 +61,10 @@ ol.loc = function(loc) {
 /**
  * @export
  * @param {ol.Projection=} opt_arg Projection.
- * @return {ol.Location|ol.Projection} Result.
+ * @return {ol.Loc|ol.Projection|undefined} Result.
  */
-ol.Location.prototype.projection = function(opt_arg) {
-  if (arguments.length == 1) {
+ol.Loc.prototype.projection = function(opt_arg) {
+  if (arguments.length == 1 && goog.isDef(opt_arg)) {
     return this.setProjection(opt_arg);
   } else {
     return this.getProjection();
@@ -75,10 +75,10 @@ ol.Location.prototype.projection = function(opt_arg) {
 /**
  * @export
  * @param {number=} opt_arg X.
- * @return {ol.Location|number} Result.
+ * @return {ol.Loc|number} Result.
  */
-ol.Location.prototype.x = function(opt_arg) {
-  if (arguments.length == 1) {
+ol.Loc.prototype.x = function(opt_arg) {
+  if (arguments.length == 1 && goog.isDef(opt_arg)) {
     return this.setX(opt_arg);
   } else {
     return this.getX();
@@ -89,10 +89,10 @@ ol.Location.prototype.x = function(opt_arg) {
 /**
  * @export
  * @param {number=} opt_arg Y.
- * @return {ol.Location|number} Result.
+ * @return {ol.Loc|number} Result.
  */
-ol.Location.prototype.y = function(opt_arg) {
-  if (arguments.length == 1) {
+ol.Loc.prototype.y = function(opt_arg) {
+  if (arguments.length == 1 && goog.isDef(opt_arg)) {
     return this.setY(opt_arg);
   } else {
     return this.getY();
@@ -103,10 +103,10 @@ ol.Location.prototype.y = function(opt_arg) {
 /**
  * @export
  * @param {number=} opt_arg Z.
- * @return {ol.Location|number} Result.
+ * @return {ol.Loc|number|undefined} Result.
  */
-ol.Location.prototype.z = function(opt_arg) {
-  if (arguments.length == 1) {
+ol.Loc.prototype.z = function(opt_arg) {
+  if (arguments.length == 1 && goog.isDef(opt_arg)) {
     return this.setZ(opt_arg);
   } else {
     return this.getZ();

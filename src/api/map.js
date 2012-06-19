@@ -1,6 +1,6 @@
 goog.provide('ol.map');
 
-goog.require('ol.Location');
+goog.require('ol.Loc');
 goog.require('ol.Map');
 goog.require('ol.Projection');
 goog.require('ol.loc');
@@ -18,7 +18,7 @@ ol.MapLike;
  */
 ol.map = function(opt_arg) {
 
-  /** @type {ol.Location|undefined} */
+  /** @type {ol.Loc|undefined} */
   var center;
   var target;
 
@@ -42,4 +42,16 @@ ol.map = function(opt_arg) {
 
   return map;
 
+};
+
+/**
+ * @param {ol.LocLike=} opt_arg
+ * @returns {ol.Map|ol.Loc|undefined} Map center.
+ */
+ol.Map.prototype.center = function(opt_arg) {
+    if (arguments.length == 1 && goog.isDef(opt_arg)) {
+        return this.setCenter(ol.loc(opt_arg));
+    } else {
+        return this.getCenter();
+    }
 };
