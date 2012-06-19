@@ -83,7 +83,6 @@ describe("ol.Map", function() {
         var proj;
         
         // at construction
-        debugger;
         var map = ol.map({
             projection: ol.projection("EPSG:4326")
         });
@@ -173,5 +172,37 @@ describe("ol.Map", function() {
         }).toThrow();
         
     });
+    
+    it("allows setting the resolutions array", function() {
+        var map = ol.map();
+        map.resolutions([1,2,3]);
+            
+        var resolutions = map.resolutions();
+        expect(resolutions.length).toBe(3);
+        expect(resolutions[0]).toBe(1);
+        expect(resolutions[1]).toBe(2);
+        expect(resolutions[2]).toBe(3);
+    });
+    
+    it("resolutions array is mutable", function() {
+        var map = ol.map();
+        map.resolutions([1,2,3]);
+            
+        map.resolutions([10,9,8,7,6,5]);
+
+        var resolutions = map.resolutions();
+        expect(resolutions.length).toBe(6);
+        expect(resolutions[0]).toBe(10);
+        expect(resolutions[2]).toBe(8);
+        expect(resolutions[4]).toBe(6);
+    });
+    
+    it("has no layers by default", function() {
+        var map = ol.map();
+            
+        var layers = map.layers();
+        expect(layers).toBe(null);
+    });
+    
     
 });

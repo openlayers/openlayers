@@ -125,3 +125,27 @@ ol.Map.prototype.numZoomLevels = function(opt_arg) {
         return this.getNumZoomLevels();
     }
 };
+
+/**
+ * @param {Array=} opt_arg  
+ * @returns {ol.Map|Array|undefined} Map center.
+ */
+ol.Map.prototype.resolutions = function(opt_arg) {
+    if (arguments.length == 1 && goog.isDef(opt_arg)) {
+        return this.setResolutions(opt_arg);
+    } else {
+        return this.getResolutions();
+    }
+};
+
+/**
+ * @param {Array=} opt_arg  
+ * @returns {ol.Map|Array|undefined} Map center.
+ */
+ol.Map.prototype.layers = function(opt_arg) {
+    if (arguments.length == 1 && goog.isDef(opt_arg)) {
+        return this.setLayers(opt_arg);
+    } else {
+        return this.getLayers();
+    }
+};

@@ -40,6 +40,18 @@ ol.Map = function() {
      */
     this.numZoomLevels_ = 22;
 
+    /**
+     * @private
+     * @type {Array|undefined}
+     */
+    this.resolutions_ = null;
+
+    /**
+     * @private
+     * @type {Array|undefined}
+     */
+    this.layers_ = null;
+
 };
 
 /** 
@@ -101,6 +113,22 @@ ol.Map.prototype.getNumZoomLevels = function() {
 
 
 /**
+ * @return {Array|undefined} array of resolutions available for this map
+ */
+ol.Map.prototype.getResolutions = function() {
+    return this.resolutions_;
+};
+
+
+/**
+ * @return {Array|undefined} array of layers available for this map
+ */
+ol.Map.prototype.getLayers = function() {
+    return this.layers_;
+};
+
+
+/**
  * @param {ol.Loc} center Center.
  * @return {ol.Map} This.
  */
@@ -150,10 +178,28 @@ ol.Map.prototype.setNumZoomLevels = function(nZoom) {
 };
 
 /**
+ * @param {Array} resolutions the map resolutions if set on the map
+ * @return {ol.Map} This.
+ */
+ol.Map.prototype.setResolutions = function(resolutions) {
+    this.resolutions_ = resolutions;
+    return this;
+};
+
+/**
+ * @param {Array} layers the layers set on the map
+ * @return {ol.Map} This.
+ */
+ol.Map.prototype.setLayers = function(layers) {
+    this.layers_ = layers;
+    return this;
+};
+
+/**
 */
 ol.Map.prototype.destroy = function() {
     //remove layers, etc.
-    for (key in this) {
+    for (var key in this) {
         delete this[key];
     }
 };
