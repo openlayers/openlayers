@@ -4,6 +4,7 @@ goog.require('ol.Loc');
 goog.require('ol.Map');
 goog.require('ol.Projection');
 goog.require('ol.loc');
+goog.require('ol.projection');
 
 
 /**
@@ -56,5 +57,29 @@ ol.Map.prototype.center = function(opt_arg) {
         return this.setCenter(ol.loc(opt_arg));
     } else {
         return this.getCenter();
+    }
+};
+
+/**
+ * @param {ol.ProjectionLike=} opt_arg
+ * @returns {ol.Map|ol.Loc|undefined}
+ */
+ol.Map.prototype.projection = function(opt_arg) {
+    if (arguments.length == 1 && goog.isDef(opt_arg)) {
+        return this.setProjection(ol.projection(opt_arg));
+    } else {
+        return this.getProjection();
+    }
+};
+
+/**
+ * @param {ol.ProjectionLike=} opt_arg
+ * @returns {ol.Map|ol.Loc|undefined}
+ */
+ol.Map.prototype.userProjection = function(opt_arg) {
+    if (arguments.length == 1 && goog.isDef(opt_arg)) {
+        return this.setUserProjection(ol.projection(opt_arg));
+    } else {
+        return this.getUserProjection();
     }
 };
