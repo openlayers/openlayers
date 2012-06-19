@@ -14,13 +14,13 @@ ol.Map = function() {
      * @private
      * @type {ol.Projection}
      */
-    this.projection_ = new ol.Projection();
+    this.projection_ = new ol.Projection('EPSG:900913');
 
     /**
      * @private
      * @type {ol.Projection}
      */
-    this.userProjection_ = new ol.Projection();
+    this.userProjection_ = new ol.Projection('EPSG:4326');
 
     /**
      * @private
@@ -93,7 +93,7 @@ ol.Map.prototype.setProjection = function(projection) {
  * @param {ol.Projection} userProjection User projection.
  * @return {ol.Map} This.
  */
-ol.Map.prototype.setProjection = function(userProjection) {
+ol.Map.prototype.setUserProjection = function(userProjection) {
     this.userProjection_ = userProjection;
     return this;
 };
