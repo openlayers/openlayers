@@ -17,15 +17,15 @@
   "checks": {
     // "accessControls": "ERROR",
     // "visibility": "ERROR"
-    "checkTypes": "ERROR",
-    "checkRegExp": "ERROR",
-    "checkVars": "ERROR",
-    "deprecated": "ERROR",
-    "fileoverviewTags": "ERROR",
-    "invalidCasts": "ERROR",
-    "missingProperties": "ERROR",
-    "nonStandardJsDocs": "ERROR",
-    "undefinedVars": "ERROR"
+    // "checkTypes": "ERROR",
+    // "checkRegExp": "ERROR",
+    // "checkVars": "ERROR",
+    // "deprecated": "ERROR",
+    // "fileoverviewTags": "ERROR",
+    // "invalidCasts": "ERROR",
+    // "missingProperties": "ERROR",
+    // "nonStandardJsDocs": "ERROR",
+    // "undefinedVars": "ERROR"
   },
 
   "jsdoc-html-output-path": "."

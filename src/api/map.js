@@ -113,3 +113,15 @@ ol.Map.prototype.zoom = function(opt_arg) {
         return this.getZoom();
     }
 };
+
+/**
+ * @param {number=} opt_arg
+ * @returns {ol.Map|number|undefined} Map center.
+ */
+ol.Map.prototype.numZoomLevels = function(opt_arg) {
+    if (arguments.length == 1 && goog.isDef(opt_arg)) {
+        return this.setNumZoomLevels(opt_arg);
+    } else {
+        return this.getNumZoomLevels();
+    }
+};

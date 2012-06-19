@@ -42,12 +42,16 @@ ol.Map = function() {
 
 };
 
-ol.Map.prototype.defaults = {};
 /** 
+  @const
   @type {string} 
 */
-ol.Map.prototype.defaults.projection = "EPSG:3857";
-ol.Map.prototype.defaults.userProjection = "EPSG:4326";
+ol.Map.prototype.DEFAULT_PROJECTION = "EPSG:3857";
+/** 
+  @const
+  @type {string} 
+*/
+ol.Map.prototype.DEFAULT_USER_PROJECTION = "EPSG:4326";
 
 
 /**
@@ -63,7 +67,7 @@ ol.Map.prototype.getCenter = function() {
  */
 ol.Map.prototype.getProjection = function() {
     if (!goog.isDef(this.projection_)) {
-        this.projection_ = new ol.Projection(this.defaults.projection);
+        this.projection_ = new ol.Projection(this.DEFAULT_PROJECTION);
     }
     return this.projection_;
 };
@@ -74,7 +78,7 @@ ol.Map.prototype.getProjection = function() {
  */
 ol.Map.prototype.getUserProjection = function() {
     if (!goog.isDef(this.userProjection_)) {
-        this.userProjection_ = new ol.Projection(this.defaults.userProjection_);
+        this.userProjection_ = new ol.Projection(this.DEFAULT_USER_PROJECTION);
     }
     return this.userProjection_;
 };

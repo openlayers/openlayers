@@ -63,8 +63,8 @@ describe("ol.Map", function() {
 
         center = map.center();
         zoom = map.zoom();
-        expect(center.x().toFixed(3)).toBe("1.000");
-        expect(center.y().toFixed(3)).toBe("2.000");
+        expect(center.x().toFixed(3)).toBe("4.000");
+        expect(center.y().toFixed(3)).toBe("5.000");
         expect(zoom).toBe(6);
         
     });
