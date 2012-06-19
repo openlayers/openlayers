@@ -5,3 +5,4 @@ goog.require("ol.loc");
 goog.require("ol.projection");
 
 goog.require("ol.Tile");
+goog.require("ol.TileSet");
