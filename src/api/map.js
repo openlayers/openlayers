@@ -19,9 +19,16 @@ ol.MapLike;
  */
 ol.map = function(opt_arg){
 
+    /** @type {ol.Loc|undefined} */
     var center;
-    var target;
+    /** @type {number|undefined} */
     var zoom;
+    /** @type {number|undefined} */
+    var numZoomLevels;
+    /** @type {ol.Projection|undefined} */
+    var projection;
+    /** @type {ol.Projection|undefined} */
+    var userProjection;
     
     if (arguments.length == 1) {
         if (opt_arg instanceof ol.Map) {
@@ -29,8 +36,10 @@ ol.map = function(opt_arg){
         }
         else if (goog.isObject(opt_arg)) {
             center = opt_arg['center'];
-            target = opt_arg['target'];
             zoom = opt_arg['zoom'];
+            numZoomLevels = opt_arg['numZoomLevels'];
+            projection = opt_arg['projection'];
+            userProjection = opt_arg['userProjection'];
         }
         else {
             throw new Error('ol.map');
@@ -43,6 +52,15 @@ ol.map = function(opt_arg){
     }
     if (goog.isDef(zoom)) {
         map.setZoom(zoom);
+    }
+    if (goog.isDef(numZoomLevels)) {
+        map.setNumZoomLevels(numZoomLevels);
+    }
+    if (goog.isDef(projection)) {
+        map.setProjection(projection);
+    }
+    if (goog.isDef(projection)) {
+        map.setUserProjection(projection);
     }
     return map;
     

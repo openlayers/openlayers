@@ -117,7 +117,7 @@ ol.Map.prototype.setProjection = function(projection) {
 
 
 /**
- * @param {ol.Projection} projection set the user projection.
+ * @param {ol.Projection} userProjection set the user projection.
  * @return {ol.Map} This.
  */
 ol.Map.prototype.setUserProjection = function(userProjection) {
