@@ -13,29 +13,29 @@ goog.require('ol.Projection');
  */
 ol.Loc = function(x, y, opt_z, opt_projection) {
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.x_ = x;
-
-  /**
-   * @private
-   * @type {number}
-   */
-  this.y_ = y;
-
-  /**
-   * @private
-   * @type {number|undefined}
-   */
-  this.z_ = opt_z;
-
-  /**
-   * @private
-   * @type {ol.Projection|undefined}
-   */
-  this.projection_ = opt_projection;
+    /**
+     * @private
+     * @type {number}
+     */
+    this.x_ = x;
+    
+    /**
+     * @private
+     * @type {number}
+     */
+    this.y_ = y;
+    
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.z_ = opt_z;
+    
+    /**
+     * @private
+     * @type {ol.Projection|undefined}
+     */
+    this.projection_ = opt_projection;
 
 };
 
@@ -44,7 +44,7 @@ ol.Loc = function(x, y, opt_z, opt_projection) {
  * @return {ol.Projection|undefined} Projection.
  */
 ol.Loc.prototype.getProjection = function() {
-  return this.projection_;
+    return this.projection_;
 };
 
 
@@ -52,7 +52,7 @@ ol.Loc.prototype.getProjection = function() {
  * @return {number} X.
  */
 ol.Loc.prototype.getX = function() {
-  return this.x_;
+    return this.x_;
 };
 
 
@@ -60,7 +60,7 @@ ol.Loc.prototype.getX = function() {
  * @return {number} Y.
  */
 ol.Loc.prototype.getY = function() {
-  return this.y_;
+    return this.y_;
 };
 
 
@@ -68,7 +68,7 @@ ol.Loc.prototype.getY = function() {
  * @return {number|undefined} Z.
  */
 ol.Loc.prototype.getZ = function() {
-  return this.z_;
+    return this.z_;
 };
 
 
@@ -77,8 +77,8 @@ ol.Loc.prototype.getZ = function() {
  * @return {ol.Loc} This.
  */
 ol.Loc.prototype.setProjection = function(projection) {
-  this.projection_ = projection;
-  return this;
+    this.projection_ = projection;
+    return this;
 };
 
 
@@ -87,8 +87,8 @@ ol.Loc.prototype.setProjection = function(projection) {
  * @return {ol.Loc} This.
  */
 ol.Loc.prototype.setX = function(x) {
-  this.x_ = x;
-  return this;
+    this.x_ = x;
+    return this;
 };
 
 
@@ -97,8 +97,8 @@ ol.Loc.prototype.setX = function(x) {
  * @return {ol.Loc} This.
  */
 ol.Loc.prototype.setY = function(y) {
-  this.y_ = y;
-  return this;
+    this.y_ = y;
+    return this;
 };
 
 
@@ -107,8 +107,8 @@ ol.Loc.prototype.setY = function(y) {
  * @return {ol.Loc} This.
  */
 ol.Loc.prototype.setZ = function(z) {
-  this.z_ = z;
-  return this;
+    this.z_ = z;
+    return this;
 };
 
 
