@@ -111,5 +111,44 @@ ol.Loc.prototype.setZ = function(z) {
     return this;
 };
 
+/**
+ * Transform this location to another coordinate reference system.  This 
+ * requires that this location has a projection set already (if not, an error
+ * will be thrown).  Returns a new location object and does not modify this
+ * location.
+ *
+ * @param {string|!ol.Projection} proj The destination projection.  Can be 
+ *     supplied as a projection instance of a string identifier.
+ * @returns {!ol.Loc} A new location.
+ */
+ol.Loc.prototype.transform = function(proj) {
+    if (goog.isString(proj)) {
+        proj = new ol.Projection(proj);
+    }
+    return this.transform_(proj);
+};
 
+/**
+ * Transform this location to a new location given a projection object.
+ *
+ * @param {!ol.Projection} proj The destination projection.
+ * @returns {!ol.Loc}
+ */
+ol.Loc.prototype.transform_ = function(proj) {
+    var point = {x: this.x_, y: this.y_};
+    var sourceProj = this.projection_;
+    if (!goog.isDefAndNotNull(sourceProj)) {
+        throw new Error("Cannot transform a location without a source projection.");
+    }
+    ol.Projection.transform(point, sourceProj, proj);
+    return new ol.Loc(point['x'], point['y'], this.z_, proj);
+};
 
+/**
+ * Clean up.
+ */
+ol.Loc.prototype.destroy = function() {
+    for (var key in this) {
+        delete this[key];
+    }
+};

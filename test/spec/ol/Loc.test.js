@@ -121,12 +121,6 @@ describe("ol.Loc", function() {
         var loc = ol.loc([1, 2]);
         loc.destroy();
 
-        expect(loc.config).toBeUndefined();
-
-        expect(function() {
-            loc.x();
-        }).toThrow();
-        
     });
     
 });
