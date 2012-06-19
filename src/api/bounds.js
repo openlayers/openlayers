@@ -31,7 +31,6 @@ ol.bounds = function(opt_arg){
     var x = 0;
     var y = 0;
     var z;
-    var projection;
 
     if (goog.isArray(opt_arg)) {
         minX = opt_arg[0];
