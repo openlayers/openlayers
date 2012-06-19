@@ -47,11 +47,7 @@ ol.loc = function(opt_arg){
         projection = ol.projection(projection);
     }
     
-    var loc = new ol.Loc();
-    loc.setX(x);
-    loc.setY(y);
-    loc.setZ(z);
-    loc.setProjection(projection);
+    var loc = new ol.Loc(x, y, z, projection);
     return loc;
     
 };
