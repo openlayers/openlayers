@@ -39,7 +39,6 @@ ol.map = function(opt_arg) {
 
   var map = new ol.Map();
 
-  if (goog.object.) {
-  }
+  return map;
 
 };
