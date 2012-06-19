@@ -59,8 +59,8 @@ ol.map = function(opt_arg){
     if (goog.isDef(projection)) {
         map.setProjection(projection);
     }
-    if (goog.isDef(projection)) {
-        map.setUserProjection(projection);
+    if (goog.isDef(userProjection)) {
+        map.setUserProjection(userProjection);
     }
     return map;
     

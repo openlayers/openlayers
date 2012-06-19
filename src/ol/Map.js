@@ -14,13 +14,13 @@ ol.Map = function() {
      * @private
      * @type {ol.Projection}
      */
-    this.projection_ = new ol.Projection('EPSG:900913');
+    this.projection_ = null;
 
     /**
      * @private
      * @type {ol.Projection}
      */
-    this.userProjection_ = new ol.Projection('EPSG:4326');
+    this.userProjection_ = null;
 
     /**
      * @private
@@ -66,7 +66,7 @@ ol.Map.prototype.getCenter = function() {
  * @return {ol.Projection} Projection.
  */
 ol.Map.prototype.getProjection = function() {
-    if (!goog.isDef(this.projection_)) {
+    if (goog.isNull(this.projection_)) {
         this.projection_ = new ol.Projection(this.DEFAULT_PROJECTION);
     }
     return this.projection_;
@@ -77,7 +77,7 @@ ol.Map.prototype.getProjection = function() {
  * @return {ol.Projection} User projection.
  */
 ol.Map.prototype.getUserProjection = function() {
-    if (!goog.isDef(this.userProjection_)) {
+    if (goog.isNull(this.userProjection_)) {
         this.userProjection_ = new ol.Projection(this.DEFAULT_USER_PROJECTION);
     }
     return this.userProjection_;
@@ -153,4 +153,7 @@ ol.Map.prototype.setNumZoomLevels = function(nZoom) {
 */
 ol.Map.prototype.destroy = function() {
     //remove layers, etc.
+    for (key in this) {
+        delete this[key];
+    }
 };

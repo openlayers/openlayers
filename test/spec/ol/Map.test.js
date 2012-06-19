@@ -83,7 +83,10 @@ describe("ol.Map", function() {
         var proj;
         
         // at construction
-        var map = ol.map({projection: "EPSG:4326"});
+        debugger;
+        var map = ol.map({
+            projection: ol.projection("EPSG:4326")
+        });
         proj = map.projection();
         
         expect(proj instanceof ol.Projection).toBe(true);
