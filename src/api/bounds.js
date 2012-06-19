@@ -72,7 +72,7 @@ ol.Bounds.prototype.projection = function(opt_arg){
 /**
  * @export
  * @param {number=} opt_arg Minimum X.
- * @return {ol.Bounds|number} Result.
+ * @return {!ol.Bounds|number} Result.
  */
 ol.Bounds.prototype.minX = function(opt_arg){
     if (arguments.length == 1 && goog.isDef(opt_arg)) {

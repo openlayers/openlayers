@@ -29,7 +29,9 @@ describe("ol.Projection", function() {
         
         var point = {x: 10, y: 20, z: 30};
         
-        var ret = ol.Projection.transform(point, "EPSG:4326", "EPSG:900913");
+        var to = new ol.Projection("EPSG:4326");
+        var from = new ol.Projection("EPSG:900913");
+        var ret = ol.Projection.transform(point, to, from);
         
         expect(ret).toBeUndefined();
         

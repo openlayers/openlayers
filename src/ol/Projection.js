@@ -1,4 +1,5 @@
 goog.provide('ol.Projection');
+goog.require('ol.UnreferencedBounds');
 
 /**
  * @constructor
@@ -20,9 +21,15 @@ ol.Projection = function(code) {
     
     /**
      * @private
-     * @type {Object|undefined}
+     * @type {!Object|undefined}
      */
     this.proj_ = undefined;
+
+    /**
+     * @private
+     * @type {!ol.UnreferencedBounds|undefined}
+     */
+    this.extent_ = undefined;
 
 };
 
@@ -36,7 +43,7 @@ ol.Projection.prototype.getCode = function() {
 
 /**
  * @param {string} code Code.
- * @return {ol.Projection} This.
+ * @return {!ol.Projection} This.
  */
 ol.Projection.prototype.setCode = function(code) {
     this.code_ = code;
@@ -46,10 +53,10 @@ ol.Projection.prototype.setCode = function(code) {
 /**
  * @export
  * @param {string=} opt_code Code.
- * @return {ol.Projection|string} Result.
+ * @return {!ol.Projection|string} Result.
  */
 ol.Projection.prototype.code = function(opt_code){
-    if (goog.isDef(opt_code)) {
+    if (arguments.length == 1 && goog.isDef(opt_code)) {
         return this.setCode(opt_code);
     }
     else {
@@ -58,7 +65,7 @@ ol.Projection.prototype.code = function(opt_code){
 };
 
 /**
- * @return {string|undefined} Code.
+ * @return {string|undefined} Units abbreviation.
  */
 ol.Projection.prototype.getUnits = function() {
     return this.units_;
@@ -66,7 +73,7 @@ ol.Projection.prototype.getUnits = function() {
 
 /**
  * @param {string} units Units abbreviation.
- * @return {ol.Projection} This.
+ * @return {!ol.Projection} This.
  */
 ol.Projection.prototype.setUnits = function(units) {
     this.units_ = units;
@@ -74,9 +81,28 @@ ol.Projection.prototype.setUnits = function(units) {
 };
 
 /**
+ * Get the validity extent of the coordinate reference system.
+ * 
+ * @return {!ol.UnreferencedBounds|undefined} The valididty extent.
+ */
+ol.Projection.prototype.getExtent = function() {
+    return this.extent_;
+};
+
+/**
+ * @param {!ol.UnreferencedBounds} extent Validity extent.
+ * @return {ol.Projection} This.
+ */
+ol.Projection.prototype.setExtent = function(extent) {
+    this.extent_ = extent;
+    return this;
+};
+
+/**
  * @export
  * @param {string=} opt_units Units abbreviation.
- * @return {undefined|ol.Projection|string} Result.
+ * @return {undefined|!ol.Projection|string} Result.
+ * TODO: move to api folder
  */
 ol.Projection.prototype.units = function(opt_units){
     if (goog.isDef(opt_units)) {
@@ -163,18 +189,12 @@ ol.Projection.addTransform = function(from, to, method) {
 /**
  * Transform a point coordinate from one projection to another.
  * 
- * @param {Object} point Object with x and y properties.
- * @param {!string|!ol.Projection} source Source projection.
- * @param {!string|!ol.Projection} dest Destination projection.
+ * @param {!Object} point Object with x and y properties.
+ * @param {!ol.Projection} source Source projection.
+ * @param {!ol.Projection} dest Destination projection.
  * @private
  */
 ol.Projection.transform = function(point, source, dest) {
-    if (!(source instanceof ol.Projection)) {
-        source = new ol.Projection(source);
-    }
-    if (!(dest instanceof ol.Projection)) {
-        dest = new ol.Projection(dest);
-    }
     if (source.proj_ && dest.proj_) {
         // point = Proj4js.transform(source.proj_, dest.proj_, point);
     } else {
