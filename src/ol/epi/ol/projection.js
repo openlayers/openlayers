@@ -9,7 +9,7 @@ ol.Projection = function() {
 
   /**
    * @private
-   * @type {string=}
+   * @type {string|undefined}
    */
   this.code_ = undefined;
 
@@ -17,7 +17,7 @@ ol.Projection = function() {
 
 
 /**
- * @return {string} Code.
+ * @return {string|undefined} Code.
  */
 ol.Projection.prototype.getCode = function() {
   return this.code_;
@@ -25,7 +25,7 @@ ol.Projection.prototype.getCode = function() {
 
 
 /**
- * @param {string=} code Code.
+ * @param {string|undefined} code Code.
  * @return {ol.Projection} This.
  */
 ol.Projection.prototype.setCode = function(code) {

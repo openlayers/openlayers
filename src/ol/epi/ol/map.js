@@ -56,7 +56,7 @@ ol.Map.prototype.getZoom = function() {
 
 
 /**
- * @param {ol.Center} center Center.
+ * @param {ol.Location} center Center.
  * @return {ol.Map} This.
  */
 ol.Map.prototype.setCenter = function(center) {

@@ -8,10 +8,10 @@ goog.require('ol.Projection');
  * @constructor
  * @param {number} x X.
  * @param {number} y Y.
- * @param {number} z Z.
- * @param {ol.Projection|undefined} projection Projection.
+ * @param {number=} opt_z Z.
+ * @param {ol.Projection=} opt_projection Projection.
  */
-ol.Location = function(x, y, z, projection) {
+ol.Location = function(x, y, opt_z, opt_projection) {
 
   /**
    * @private
@@ -27,15 +27,15 @@ ol.Location = function(x, y, z, projection) {
 
   /**
    * @private
-   * @type {number}
+   * @type {number|undefined}
    */
-  this.z_ = z;
+  this.z_ = opt_z;
 
   /**
    * @private
    * @type {ol.Projection|undefined}
    */
-  this.projection_ = projection;
+  this.projection_ = opt_projection;
 
 };
 
@@ -65,7 +65,7 @@ ol.Location.prototype.getY = function() {
 
 
 /**
- * @return {number} Z.
+ * @return {number|undefined} Z.
  */
 ol.Location.prototype.getZ = function() {
   return this.z_;
@@ -103,7 +103,7 @@ ol.Location.prototype.setY = function(y) {
 
 
 /**
- * @param {number} z Z.
+ * @param {number|undefined} z Z.
  * @return {ol.Location} This.
  */
 ol.Location.prototype.setZ = function(z) {

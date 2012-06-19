@@ -3,6 +3,7 @@ goog.provide('ol.map');
 goog.require('ol.Location');
 goog.require('ol.Map');
 goog.require('ol.Projection');
+goog.require('ol.loc');
 
 
 /**
@@ -25,7 +26,7 @@ ol.map = function(opt_arg) {
     if (opt_arg instanceof ol.Map) {
       return opt_arg;
     } else if (goog.isObject(opt_arg)) {
-      config = opt_arg;
+      var config = opt_arg;
       if (goog.isDef(config.center)) {
         center = ol.loc(config.center);
       }
