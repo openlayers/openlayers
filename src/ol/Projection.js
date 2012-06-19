@@ -1,34 +1,261 @@
 goog.provide('ol.Projection');
 
-
-
 /**
  * @constructor
+ * @param {string} code Projection identifier.
  */
-ol.Projection = function() {
+ol.Projection = function(code) {
 
+    /**
+     * @private
+     * @type {string}
+     */
+    this.code_ = code;
+    
     /**
      * @private
      * @type {string|undefined}
      */
-    this.code_ = undefined;
+    this.units_ = undefined;
+    
+    /**
+     * @private
+     * @type {Object|undefined}
+     */
+    this.proj_ = undefined;
 
 };
 
 
 /**
- * @return {string|undefined} Code.
+ * @return {string} Code.
  */
 ol.Projection.prototype.getCode = function() {
     return this.code_;
 };
 
-
 /**
- * @param {string|undefined} code Code.
+ * @param {string} code Code.
  * @return {ol.Projection} This.
  */
 ol.Projection.prototype.setCode = function(code) {
     this.code_ = code;
     return this;
 };
+
+/**
+ * @export
+ * @param {string=} opt_code Code.
+ * @return {ol.Projection|string} Result.
+ */
+ol.Projection.prototype.code = function(opt_code){
+    if (goog.isDef(opt_code)) {
+        return this.setCode(opt_code);
+    }
+    else {
+        return this.getCode();
+    }
+};
+
+/**
+ * @return {string|undefined} Code.
+ */
+ol.Projection.prototype.getUnits = function() {
+    return this.units_;
+};
+
+/**
+ * @param {string|undefined} units Units abbreviation.
+ * @return {ol.Projection} This.
+ */
+ol.Projection.prototype.setUnits = function(units) {
+    this.units_ = units;
+    return this;
+};
+
+/**
+ * @export
+ * @param {string=} opt_units Units abbreviation.
+ * @return {undefined|ol.Projection|string} Result.
+ */
+ol.Projection.prototype.units = function(opt_units){
+    if (goog.isDef(opt_units)) {
+        return this.setUnits(opt_units);
+    }
+    else {
+        return this.getUnits();
+    }
+};
+
+/**
+ * Transforms is an object, with from properties, each of which may
+ * have a to property. This allows you to define projections without 
+ * requiring support for proj4js to be included.
+ *
+ * This object has keys which correspond to a 'source' projection object.  The
+ * keys should be strings, corresponding to the projection.getCode() value.
+ * Each source projection object should have a set of destination projection
+ * keys included in the object. 
+ * 
+ * Each value in the destination object should be a transformation function,
+ * where the function is expected to be passed an object with a .x and a .y
+ * property.  The function should return the object, with the .x and .y
+ * transformed according to the transformation function.
+ *
+ * Note - Properties on this object should not be set directly.  To add a
+ *     transform method to this object, use the <addTransform> method.  For an
+ *     example of usage, see the OpenLayers.Layer.SphericalMercator file.
+ *
+ * @type {Object}
+ */
+ol.Projection.transforms = {};
+
+/**
+ * APIProperty: defaults
+ * {Object} Defaults for the SRS codes known to OpenLayers (currently
+ * EPSG:4326, CRS:84, urn:ogc:def:crs:EPSG:6.6:4326, EPSG:900913, EPSG:3857,
+ * EPSG:102113 and EPSG:102100). Keys are the SRS code, values are units,
+ * maxExtent (the validity extent for the SRS) and yx (true if this SRS is
+ * known to have a reverse axis order).
+ */
+ol.Projection.defaults = {
+    "EPSG:4326": {
+        units: "degrees",
+        maxExtent: [-180, -90, 180, 90],
+        yx: true
+    },
+    "CRS:84": {
+        units: "degrees",
+        maxExtent: [-180, -90, 180, 90]
+    },
+    "EPSG:900913": {
+        units: "m",
+        maxExtent: [-20037508.34, -20037508.34, 20037508.34, 20037508.34]
+    }
+};
+
+/**
+ * APIMethod: addTransform
+ * Set a custom transform method between two projections.  Use this method in
+ *     cases where the proj4js lib is not available or where custom projections
+ *     need to be handled.
+ *
+ * Parameters:
+ * from - {String} The code for the source projection
+ * to - {String} the code for the destination projection
+ * method - {Function} A function that takes a point as an argument and
+ *     transforms that point from the source to the destination projection
+ *     in place.  The original point should be modified.
+ */
+ol.Projection.addTransform = function(from, to, method) {
+    if (method === ol.Projection.nullTransform) {
+        var defaults = ol.Projection.defaults[from];
+        if (defaults && !ol.Projection.defaults[to]) {
+            ol.Projection.defaults[to] = defaults;
+        }
+    }
+    if(!ol.Projection.transforms[from]) {
+        ol.Projection.transforms[from] = {};
+    }
+    ol.Projection.transforms[from][to] = method;
+};
+
+/**
+ * Transform a point coordinate from one projection to another.
+ * 
+ * @param {Object} point Object with x and y properties.
+ * @param {!string|!ol.Projection} source Source projection.
+ * @param {!string|!ol.Projection} dest Destination projection.
+ * @returns {Object} Object with x and y properties.
+ */
+ol.Projection.transform = function(point, source, dest) {
+    if (!(source instanceof ol.Projection)) {
+        source = new ol.Projection(source);
+    }
+    if (!(dest instanceof ol.Projection)) {
+        dest = new ol.Projection(dest);
+    }
+    if (source.proj_ && dest.proj_) {
+        // point = Proj4js.transform(source.proj, dest.proj, point);
+    } else {
+        var sourceCode = source.getCode();
+        var destCode = dest.getCode();
+        var transforms = ol.Projection.transforms;
+        if (transforms[sourceCode] && transforms[sourceCode][destCode]) {
+            transforms[sourceCode][destCode](point);
+        }
+    }
+    return point;
+};
+
+/**
+ * APIFunction: nullTransform
+ * A null transformation - useful for defining projection aliases when
+ * proj4js is not available:
+ *
+ * (code)
+ * ol.Projection.addTransform("EPSG:3857", "EPSG:900913",
+ *     ol.Projection.nullTransform);
+ * ol.Projection.addTransform("EPSG:900913", "EPSG:3857",
+ *     ol.Projection.nullTransform);
+ * (end)
+ */
+ol.Projection.nullTransform = function(point) {
+    return point;
+};
+
+/**
+ * Note: Transforms for web mercator <-> geographic
+ * OpenLayers recognizes EPSG:3857, EPSG:900913, EPSG:102113 and EPSG:102100.
+ * OpenLayers originally started referring to EPSG:900913 as web mercator.
+ * The EPSG has declared EPSG:3857 to be web mercator.
+ * ArcGIS 10 recognizes the EPSG:3857, EPSG:102113, and EPSG:102100 as
+ * equivalent.  See http://blogs.esri.com/Dev/blogs/arcgisserver/archive/2009/11/20/ArcGIS-Online-moving-to-Google-_2F00_-Bing-tiling-scheme_3A00_-What-does-this-mean-for-you_3F00_.aspx#12084.
+ * For geographic, OpenLayers recognizes EPSG:4326, CRS:84 and
+ * urn:ogc:def:crs:EPSG:6.6:4326. OpenLayers also knows about the reverse axis
+ * order for EPSG:4326. 
+ */
+(function() {
+
+    var pole = 20037508.34;
+
+    function inverseMercator(xy) {
+        xy.x = 180 * xy.x / pole;
+        xy.y = 180 / Math.PI * (2 * Math.atan(Math.exp((xy.y / pole) * Math.PI)) - Math.PI / 2);
+        return xy;
+    }
+
+    function forwardMercator(xy) {
+        xy.x = xy.x * pole / 180;
+        xy.y = Math.log(Math.tan((90 + xy.y) * Math.PI / 360)) / Math.PI * pole;
+        return xy;
+    }
+
+    function map(base, codes) {
+        var add = ol.Projection.addTransform;
+        var same = ol.Projection.nullTransform;
+        var i, len, code, other, j;
+        for (i=0, len=codes.length; i<len; ++i) {
+            code = codes[i];
+            add(base, code, forwardMercator);
+            add(code, base, inverseMercator);
+            for (j=i+1; j<len; ++j) {
+                other = codes[j];
+                add(code, other, same);
+                add(other, code, same);
+            }
+        }
+    }
+    
+    // list of equivalent codes for web mercator
+    var mercator = ["EPSG:900913", "EPSG:3857", "EPSG:102113", "EPSG:102100"],
+        geographic = ["CRS:84", "urn:ogc:def:crs:EPSG:6.6:4326", "EPSG:4326"],
+        i;
+    for (i=mercator.length-1; i>=0; --i) {
+        map(mercator[i], geographic);
+    }
+    for (i=geographic.length-1; i>=0; --i) {
+        map(geographic[i], mercator);
+    }
+
+})();

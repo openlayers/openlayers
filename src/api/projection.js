@@ -15,8 +15,13 @@ ol.ProjectionLike;
  * @return {ol.Projection} Projection.
  */
 ol.projection = function(opt_arg){
-    var code, units;
-    if (arguments.length == 1 && goog.isDef(opt_arg)) {
+    /** @type {string} */
+    var code;
+    
+    /** @type {undefined|number} */
+    var units;
+
+    if (arguments.length == 1 && goog.isDefAndNotNull(opt_arg)) {
         if (opt_arg instanceof ol.Projection) {
             return opt_arg;
         }
@@ -24,29 +29,19 @@ ol.projection = function(opt_arg){
             code = opt_arg;
         }
         else if (goog.isObject(opt_arg)) {
-            code = opt_arg['code'];
+            if (goog.isString(opt_arg['code'])) {
+                code = opt_arg['code'];
+            } else {
+                throw new Error('Projection requires a string code.');
+            }
             units = opt_arg['units'];
         }
         else {
             throw new Error('ol.projection');
         }
     }
-    var proj = new ol.Projection();
-    proj.setCode(code);
+    var proj = new ol.Projection(code);
+    proj.setUnits(units);
     return proj;
 };
 
-
-/**
- * @export
- * @param {string=} opt_code Code.
- * @return {ol.Projection|string} Result.
- */
-ol.Projection.prototype.code = function(opt_code){
-    if (goog.isDef(opt_code)) {
-        return this.setCode(opt_code);
-    }
-    else {
-        return this.getCode();
-    }
-};
