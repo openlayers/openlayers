@@ -42,15 +42,27 @@ ol.Map = function() {
 
     /**
      * @private
-     * @type {Array|undefined}
+     * @type {Array}
      */
     this.resolutions_ = null;
 
     /**
      * @private
-     * @type {Array|undefined}
+     * @type {Array}
      */
     this.layers_ = null;
+
+    /**
+     * @private
+     * @type {ol.UnreferencedBounds}
+     */
+    this.maxExtent_ = null;
+
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.maxRes_ = undefined;
 
 };
 
@@ -64,12 +76,23 @@ ol.Map.prototype.DEFAULT_PROJECTION = "EPSG:3857";
   @type {string}
 */
 ol.Map.prototype.DEFAULT_USER_PROJECTION = "EPSG:4326";
-
+/**
+  @const
+  @type {number}
+*/
+ol.Map.ZOOM_FACTOR = 2;
+/**
+  @const
+  @type {number}
+*/
+ol.Map.DEFAULT_TILE_SIZE = 256;
 
 /**
  * @return {ol.Loc} Location.
  */
 ol.Map.prototype.getCenter = function() {
+    var proj = this.getUserProjection();
+    this.center_ = this.center_.transform(proj);
     return this.center_;
 };
 
@@ -146,10 +169,46 @@ ol.Map.prototype.getMaxExtent = function() {
 
 
 /**
+ * @return {number} the max resolution for the map
+ */
+ol.Map.prototype.getMaxRes = function() {
+    if (goog.isDefAndNotNull(this.maxRes_)) {
+        return this.maxRes_;
+    } else {
+        var extent = this.getMaxExtent();
+        var dim = Math.max(
+            (extent.getMaxX()-extent.getMinX()),
+            (extent.getMaxY()-extent.getMinY())
+         );
+        return dim/ol.Map.DEFAULT_TILE_SIZE;
+    }
+};
+
+
+/**
+ * @param {number} zoom the zoom level being requested
+ * @return {number} the resolution for the map at the given zoom level
+ */
+ol.Map.prototype.getResolutionForZoom = function(zoom) {
+    if (goog.isDefAndNotNull(this.resolutions_)) {
+        return this.resolutions_[zoom];
+    } else {
+        var maxRes = this.getMaxRes();
+        return maxRes/Math.pow(ol.Map.ZOOM_FACTOR, zoom);
+    }
+};
+
+
+/**
  * @param {ol.Loc} center Center.
  */
 ol.Map.prototype.setCenter = function(center) {
-    this.center_ = center;
+    var proj = center.getProjection();
+    if (goog.isNull(proj)) {
+        proj = this.getUserProjection();
+        center.setProjection(proj);
+    }
+    this.center_ = center.transform(this.getProjection());
 };
 
 
@@ -199,10 +258,17 @@ ol.Map.prototype.setLayers = function(layers) {
 };
 
 /**
- * @param {ol.Bounds} extent the maxExtent for the map
+ * @param {ol.UnreferencedBounds} extent the maxExtent for the map
  */
 ol.Map.prototype.setMaxExtent = function(extent) {
     this.maxExtent_ = extent;
+};
+
+/**
+ * @param {number} res the max resolution for the map
+ */
+ol.Map.prototype.setMaxRes = function(res) {
+    this.maxRes_ = res;
 };
 
 /**

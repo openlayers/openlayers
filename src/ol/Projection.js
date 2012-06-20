@@ -22,15 +22,15 @@ ol.Projection = function(code) {
     
     /**
      * @private
-     * @type {!Object|undefined}
+     * @type {Object}
      */
-    this.proj_ = undefined;
+    this.proj_ = null;
 
     /**
      * @private
-     * @type {!ol.UnreferencedBounds|undefined}
+     * @type {ol.UnreferencedBounds}
      */
-    this.extent_ = undefined;
+    this.extent_ = null;
 
 };
 
@@ -66,9 +66,18 @@ ol.Projection.prototype.setUnits = function(units) {
 /**
  * Get the validity extent of the coordinate reference system.
  * 
- * @return {!ol.UnreferencedBounds|undefined} The valididty extent.
+ * @return {ol.UnreferencedBounds} The valididty extent.
  */
 ol.Projection.prototype.getExtent = function() {
+    if (goog.isNull(this.extent_)) {
+        var defs = ol.Projection['defaults'][this.code_];
+        if (goog.isDef(defs)) {
+            var ext = defs['maxExtent'];
+            if (goog.isDef(ext)) {
+                this.setExtent(new ol.UnreferencedBounds(ext[0],ext[1],ext[2],ext[3]));
+            }
+        }
+    }
     return this.extent_;
 };
 

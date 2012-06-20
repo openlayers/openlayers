@@ -11,21 +11,21 @@ goog.require('goog.style');
 /**
  * Determine whether event was caused by a single touch
  *
- * @param {Event} evt
+ * @param {!Event} evt
  * @return {boolean}
  */
 ol.event.isSingleTouch = function(evt) {
-    return evt.touches && evt.touches.length == 1;
+    return !!(evt.touches && evt.touches.length == 1);
 };
 
 /**
  * Determine whether event was caused by a multi touch
  *
- * @param {Event} evt
+ * @param {!Event} evt
  * @return {boolean}
  */
 ol.event.isMultiTouch = function(evt) {
-    return evt.touches && evt.touches.length > 1;
+    return !!(evt.touches && evt.touches.length > 1);
 };
 
 
@@ -83,7 +83,7 @@ ol.event.Events.prototype.getObject = function() {
  * @param {boolean} includeXY
  */
 ol.event.Events.prototype.setIncludeXY = function(includeXY) {
-    this._includeXY = includeXY;
+    this.includeXY_ = includeXY;
 };
 
 /**
@@ -215,7 +215,7 @@ ol.event.Events.prototype.un = function(object) {
 };
 
 /**
- * Unregister a listener for an egent
+ * Unregister a listener for an event
  *
  * @param {string} type Name of the event to unregister
  * @param {Function} listener The callback function.
@@ -242,6 +242,9 @@ ol.event.Events.prototype.triggerEvent = function(type, evt) {
     var returnValue,
         listeners = goog.events.getListeners(this, type, true)
             .concat(goog.events.getListeners(this, type, false));
+    if (arguments.length === 1) {
+        evt = {type: type};
+    }
     for (var i=0, ii=listeners.length; i<ii; ++i) {
         returnValue = listeners[i].handleEvent(evt);
         if (returnValue === false) {
@@ -283,7 +286,7 @@ ol.event.Events.prototype.handleBrowserEvent = function(evt) {
         evt.clientX = x / num;
         evt.clientY = y / num;
     }
-    if (this.includeXY) {
+    if (this.includeXY_) {
         var element = /** @type {!Element} */ this.element_;
         evt.xy = goog.style.getRelativePosition(evt, element);
     }
@@ -294,6 +297,7 @@ ol.event.Events.prototype.handleBrowserEvent = function(evt) {
  * Destroy this Events instance.
  */
 ol.event.Events.prototype.destroy = function() {
+    this.setElement();
     for (var p in this) {
         delete this[p];
     }

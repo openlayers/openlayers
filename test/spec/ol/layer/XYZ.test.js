@@ -51,11 +51,11 @@ describe('ol.layer.XYZ', function() {
                 expect(tile.getImg()).toBeDefined();
 
                 tile = tiles[0][1];
-                expect(tile.getUrl()).toEqual('/1/0/1');
+                expect(tile.getUrl()).toEqual('/1/1/0');
                 expect(tile.getImg()).toBeDefined();
 
                 tile = tiles[1][0];
-                expect(tile.getUrl()).toEqual('/1/1/0');
+                expect(tile.getUrl()).toEqual('/1/0/1');
                 expect(tile.getImg()).toBeDefined();
 
                 tile = tiles[1][1];
@@ -64,7 +64,6 @@ describe('ol.layer.XYZ', function() {
             });
         });
 
-        /*
         describe('extent -64,-64,64,64, resolution 0.5', function() {
 
             it('returns the expected data', function() {
@@ -82,11 +81,11 @@ describe('ol.layer.XYZ', function() {
                 expect(tile.getImg()).toBeDefined();
 
                 tile = tiles[0][1];
-                expect(tile.getUrl()).toEqual('/1/0/1');
+                expect(tile.getUrl()).toEqual('/1/1/0');
                 expect(tile.getImg()).toBeDefined();
 
                 tile = tiles[1][0];
-                expect(tile.getUrl()).toEqual('/1/1/0');
+                expect(tile.getUrl()).toEqual('/1/0/1');
                 expect(tile.getImg()).toBeDefined();
 
                 tile = tiles[1][1];
@@ -94,6 +93,69 @@ describe('ol.layer.XYZ', function() {
                 expect(tile.getImg()).toBeDefined();
             });
         });
-        */
+
+        describe('extent -96,32,-32,96, resolution 0.5', function() {
+
+            it('returns the expected data', function() {
+                var tileset = layer.getData(
+                    new ol.Bounds(-96, 32, -32, 96), 0.5);
+
+                var tiles = tileset.getTiles();
+                expect(tiles.length).toEqual(1);
+                expect(tiles[0].length).toEqual(1);
+
+                var tile;
+
+                tile = tiles[0][0];
+                expect(tile.getUrl()).toEqual('/1/0/0');
+                expect(tile.getImg()).toBeDefined();
+            });
+        });
+
+        describe('extent -32,32,32,96, resolution 0.5', function() {
+
+            it('returns the expected data', function() {
+                var tileset = layer.getData(
+                    new ol.Bounds(-32, 32, 32, 96), 0.5);
+
+                var tiles = tileset.getTiles();
+                expect(tiles.length).toEqual(1);
+                expect(tiles[0].length).toEqual(2);
+
+                var tile;
+
+                tile = tiles[0][0];
+                expect(tile.getUrl()).toEqual('/1/0/0');
+                expect(tile.getImg()).toBeDefined();
+
+                tile = tiles[0][1];
+                expect(tile.getUrl()).toEqual('/1/1/0');
+                expect(tile.getImg()).toBeDefined();
+            });
+        });
+
+        describe('extent 32,-32,96,32, resolution 0.5', function() {
+
+            it('returns the expected data', function() {
+                var tileset = layer.getData(
+                    new ol.Bounds(32, -32, 96, 32), 0.5);
+
+                var tiles = tileset.getTiles();
+                expect(tiles.length).toEqual(2);
+                expect(tiles[0].length).toEqual(1);
+                expect(tiles[1].length).toEqual(1);
+
+                var tile;
+
+                tile = tiles[0][0];
+                expect(tile.getUrl()).toEqual('/1/1/0');
+                expect(tile.getImg()).toBeDefined();
+
+                tile = tiles[1][0];
+                expect(tile.getUrl()).toEqual('/1/1/1');
+                expect(tile.getImg()).toBeDefined();
+            });
+        });
+
     });
 });

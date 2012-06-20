@@ -8,7 +8,7 @@ goog.require('ol.TileSet');
  * Class for XYZ layers.
  * @constructor
  * @param {string} url URL template. E.g.
- *     http://a.tile.openstreetmap.org/${z}/${x}/${y}.png.
+ *     http://a.tile.openstreetmap.org/{z}/{x}/{y}.png.
  */
 ol.layer.XYZ = function(url) {
 
@@ -108,9 +108,10 @@ ol.layer.XYZ.prototype.setResolutions = function(resolutions) {
  */
 ol.layer.XYZ.prototype.getData = function(bounds, resolution) {
     var me = this,
-        zoom = me.zoomForResolution_(resolution);
+        zoom = me.zoomForResolution(resolution);
     resolution = me.resolutions_[zoom];
 
+    // define some values used for the actual tiling
     var boundsMinX = bounds.getMinX(),
         boundsMaxX = bounds.getMaxX(),
         boundsMinY = bounds.getMinY(),
@@ -130,26 +131,27 @@ ol.layer.XYZ.prototype.getData = function(bounds, resolution) {
         offsetY = Math.floor(
                       (tileOriginY - boundsMaxY) / tileHeightGeo),
 
-        gridWidth = Math.ceil(
-                        (boundsMaxX - boundsMinX) / tileWidthGeo),
-        gridHeight = Math.ceil(
-                        (boundsMaxY - boundsMinY) / tileHeightGeo);
+        gridLeft = tileOriginX + tileWidthGeo * offsetX,
+        gridTop = tileOriginY - tileHeightGeo * offsetY;
 
+    // now tile
     var tiles = [],
         tile,
         url,
-        i, ii,
-        j, jj;
-
-    for (i=0, ii=gridWidth; i<ii; i++) {
-        tiles[i] = [];
-        for (j=0, jj=gridHeight; j<jj; j++) {
-            url = me.url_.replace('{x}', offsetX + i + '')
-                         .replace('{y}', offsetY + j + '')
+        x = 0,
+        y = 0;
+    while (gridTop - (y * tileHeightGeo) > boundsMinY) {
+        tiles[y] = [];
+        while (gridLeft + (x * tileWidthGeo) < boundsMaxX) {
+            url = me.url_.replace('{x}', offsetX + x + '')
+                         .replace('{y}', offsetY + y + '')
                          .replace('{z}', zoom);
             tile = new ol.Tile(url);
-            tiles[i][j] = tile;
+            tiles[y][x] = tile;
+            x++;
         }
+        y++;
+        x = 0;
     }
 
     return new ol.TileSet(tiles, tileWidth, tileHeight, resolution);
@@ -157,10 +159,9 @@ ol.layer.XYZ.prototype.getData = function(bounds, resolution) {
 
 /**
  * Get the zoom level (z) for the given resolution.
- * @private
  * @param {number} resolution
  */
-ol.layer.XYZ.prototype.zoomForResolution_ = function(resolution) {
+ol.layer.XYZ.prototype.zoomForResolution = function(resolution) {
     var delta = Number.POSITIVE_INFINITY,
         currentDelta,
         resolutions = this.resolutions_;

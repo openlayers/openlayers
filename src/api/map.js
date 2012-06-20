@@ -31,6 +31,8 @@ ol.map = function(opt_arg){
     var userProjection;
     /** @type {ol.Bounds|undefined} */
     var maxExtent;
+    /** @type {ol.Bounds|undefined} */
+    var maxRes;
     /** @type {Array.<number>|undefined} */
     var resolutions;
     /** @type {Array|undefined} */
@@ -47,6 +49,7 @@ ol.map = function(opt_arg){
             projection = opt_arg['projection'];
             userProjection = opt_arg['userProjection'];
             maxExtent = opt_arg['maxExtent'];
+            maxRes = opt_arg['maxRes'];
             resolutions = opt_arg['resolutions'];
             layers = opt_arg['layers'];
         }
@@ -73,6 +76,9 @@ ol.map = function(opt_arg){
     }
     if (goog.isDef(maxExtent)) {
         map.setMaxExtent(ol.bounds(maxExtent));
+    }
+    if (goog.isDef(maxRes)) {
+        map.setMaxRes(maxRes);
     }
     if (goog.isDef(resolutions)) {
         map.setResolutions(resolutions);
@@ -186,4 +192,25 @@ ol.Map.prototype.maxExtent = function(opt_arg) {
     } else {
         return this.getMaxExtent();
     }
+};
+
+/**
+ * @param {number=} opt_arg  
+ * @returns {ol.Map|number|undefined} Map maximum resolution
+ */
+ol.Map.prototype.maxRes = function(opt_arg) {
+    if (arguments.length == 1 && goog.isDef(opt_arg)) {
+        this.setMaxRes(opt_arg);
+        return this;
+    } else {
+        return this.getMaxRes();
+    }
+};
+
+/**
+ * @param {number} arg  
+ * @returns {number} resolution for a given zoom level
+ */
+ol.Map.prototype.getResForZoom = function(arg) {
+    return this.getResolutionForZoom(arg);
 };
