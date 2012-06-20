@@ -2,6 +2,7 @@ goog.provide('ol.Projection');
 goog.require('ol.UnreferencedBounds');
 
 /**
+ * @export
  * @constructor
  * @param {string} code Projection identifier.
  */

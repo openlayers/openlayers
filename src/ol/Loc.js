@@ -109,6 +109,7 @@ ol.Loc.prototype.setZ = function(z) {
  * will be thrown).  Returns a new location object and does not modify this
  * location.
  *
+ * @export
  * @param {string|!ol.Projection} proj The destination projection.  Can be 
  *     supplied as a projection instance of a string identifier.
  * @returns {!ol.Loc} A new location.
@@ -138,6 +139,7 @@ ol.Loc.prototype.transform_ = function(proj) {
 
 /**
  * Clean up.
+ * @export
  */
 ol.Loc.prototype.destroy = function() {
     for (var key in this) {
