@@ -11,14 +11,4 @@ describe("ol.Tile", function() {
         });
     });
 
-    describe("setting a source", function() {
-        var tile;
-        beforeEach(function() {
-            tile = new ol.Tile();
-        });
-        it("sets the image source", function() {
-            tile.setImgSrc("http://foo/img");
-            expect(tile.getImg().src).toEqual("http://foo/img");
-        });
-    });
 });
