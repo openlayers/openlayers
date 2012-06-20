@@ -117,7 +117,7 @@ ol.Loc.prototype.transform = function(proj) {
     if (goog.isString(proj)) {
         proj = new ol.Projection(proj);
     }
-    return this.transform_(proj);
+    return this._transform(proj);
 };
 
 /**
@@ -126,8 +126,8 @@ ol.Loc.prototype.transform = function(proj) {
  * @param {!ol.Projection} proj The destination projection.
  * @returns {!ol.Loc}
  */
-ol.Loc.prototype.transform_ = function(proj) {
-    var point = {x: this.x_, y: this.y_};
+ol.Loc.prototype._transform = function(proj) {
+    var point = {'x': this.x_, 'y': this.y_};
     var sourceProj = this.projection_;
     if (!goog.isDefAndNotNull(sourceProj)) {
         throw new Error("Cannot transform a location without a source projection.");
