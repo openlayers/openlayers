@@ -11,21 +11,21 @@ goog.require('goog.style');
 /**
  * Determine whether event was caused by a single touch
  *
- * @param {Event} evt
+ * @param {!Event} evt
  * @return {boolean}
  */
 ol.event.isSingleTouch = function(evt) {
-    return evt.touches && evt.touches.length == 1;
+    return !!(evt.touches && evt.touches.length == 1);
 };
 
 /**
  * Determine whether event was caused by a multi touch
  *
- * @param {Event} evt
+ * @param {!Event} evt
  * @return {boolean}
  */
 ol.event.isMultiTouch = function(evt) {
-    return evt.touches && evt.touches.length > 1;
+    return !!(evt.touches && evt.touches.length > 1);
 };
 
 

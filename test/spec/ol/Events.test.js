@@ -122,7 +122,7 @@ describe("ol.Events", function() {
         events.destroy();
     });
     
-    it("has working on() and un() convenience methods", function() {
+    it("has on() and un() convenience methods", function() {
         var scope = {}, events = new ol.event.Events("foo");
         
         log = [];
@@ -147,6 +147,18 @@ describe("ol.Events", function() {
         expect(log.length).toBe(2);
         
         events.destroy();
+    });
+    
+    it("provides an isSingleTouch() function", function() {
+        expect(ol.event.isSingleTouch({touches: [{}, {}]})).toBe(false);
+        expect(ol.event.isSingleTouch({touches: [{}]})).toBe(true);
+        expect(ol.event.isSingleTouch({})).toBe(false);        
+    });
+    
+    it("provides an isMultiTouch() function", function() {
+        expect(ol.event.isMultiTouch({touches: [{}, {}]})).toBe(true);
+        expect(ol.event.isMultiTouch({touches: [{}]})).toBe(false);
+        expect(ol.event.isMultiTouch({})).toBe(false);        
     });
     
 });
