@@ -297,6 +297,7 @@ ol.event.Events.prototype.handleBrowserEvent = function(evt) {
  * Destroy this Events instance.
  */
 ol.event.Events.prototype.destroy = function() {
+    this.setElement();
     for (var p in this) {
         delete this[p];
     }
