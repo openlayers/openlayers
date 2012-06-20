@@ -106,3 +106,37 @@ ol.geom.Point.prototype.setZ = function(z) {
     this.z_ = z;
 };
 
+/**
+ * Transform this point to another coordinate reference system.  This 
+ * requires that this point has a projection set already (if not, an error
+ * will be thrown).  Returns a new point object and does not modify this
+ * point.
+ *
+ * @param {string|!ol.Projection} proj The destination projection.  Can be 
+ *     supplied as a projection instance of a string identifier.
+ * @returns {!ol.geom.Point} A new location.
+ */
+ol.geom.Point.prototype.transform = function(proj) {
+    if (goog.isString(proj)) {
+        proj = new ol.Projection(proj);
+    }
+    return this.transform_(proj);
+};
+
+/**
+ * Transform this point to a new location given a projection object.
+ *
+ * @param {!ol.Projection} proj The destination projection.
+ * @returns {!ol.geom.Point}
+ * @private
+ */
+ol.geom.Point.prototype.transform_ = function(proj) {
+    var point = {x: this.x_, y: this.y_};
+    var sourceProj = this.projection_;
+    if (!goog.isDefAndNotNull(sourceProj)) {
+        throw new Error("Cannot transform a point without a source projection.");
+    }
+    ol.Projection.transform(point, sourceProj, proj);
+    return new ol.geom.Point(point.x, point.y, this.z_, proj);
+};
+

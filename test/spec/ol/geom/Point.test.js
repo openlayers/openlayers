@@ -2,7 +2,6 @@ describe("ol.geom.Point", function() {
     var p2Args,
         p3Args,
         p4Args,
-        p_arr,
         proj = "EPSG:4326";
         
     var instances = {
@@ -57,6 +56,7 @@ describe("ol.geom.Point", function() {
                 expect(instance.getProjection).not.toBeUndefined();
                 expect(instance.setProjection).not.toBeUndefined();
             });
+            
         }
     }
     
@@ -83,4 +83,41 @@ describe("ol.geom.Point", function() {
         expect(p4Args.getProjection()).not.toBeNull();
         expect(p4Args.getProjection()).toBeA(ol.Projection);
     });
+    
+    it("can be transformed", function(){
+        // save for later comparison
+        var old = {
+            x: p4Args.getX().toFixed(3),
+            y: p4Args.getY().toFixed(3)
+        };
+        // with code only
+        var transformedPoint = p4Args.transform("EPSG:3857");
+        
+        // is it still an instance of ol.geom.Point?
+        expect(transformedPoint).toBeA(ol.geom.Point);
+        // coordinates OK?
+        expect(transformedPoint.getX().toFixed(3)).toBe("2337709.306");
+        expect(transformedPoint.getY().toFixed(3)).toBe("445640.110");
+        
+        // with an ol.Projection
+        var retransformedPoint = transformedPoint.transform(new ol.Projection("EPSG:4326"));
+        expect(retransformedPoint).toBeA(ol.geom.Point);
+        
+        // coordinates shopulkd be the originally configured
+        expect(retransformedPoint.getX().toFixed(3)).toBe(old.x);
+        expect(retransformedPoint.getY().toFixed(3)).toBe(old.y);
+    });
+    
+    it("throws an exception when you try to transform without a source projection", function(){
+        
+        expect(function() {
+            p2Args.transform("EPSG:3857");
+        }).toThrow();
+        
+        expect(function() {
+            p3Args.transform("EPSG:3857");
+        }).toThrow();
+        
+    });
+
 });
