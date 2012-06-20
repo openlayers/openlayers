@@ -9,3 +9,4 @@ goog.require("ol.Tile");
 goog.require("ol.TileSet");
 goog.require("ol.geom.geometry");
 goog.require("ol.geom.point");
+goog.require('ol.layer.XYZ');
