@@ -67,6 +67,7 @@ ol.Tile.prototype.getImg = function() {
  */
 ol.Tile.createImage = (function() {
     var img = document.createElement("img");
+    img.className = "olTile";
     return function() {
         return img.cloneNode(false);
     };
