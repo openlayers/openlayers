@@ -1,15 +1,21 @@
 describe("ol.geom.Point", function() {  
     var pNoArgs,
-        pNoZ,
-        pWithZ,
-        p,
+        pNoZ_arr,
+        pWithZ_arr,
+        p_arr,
+        pNoZ_obj,
+        pWithZ_obj,
+        p_obj,
         proj = "EPSG:4326";
         
     var instances = {
         "no arguments passed": ol.geom.point(),
         "one argument [x,y] passed": ol.geom.point([21, 4]),
         "one argument [x,y,z] passed": ol.geom.point([21, 4, 8]),
-        "two arguments passed [x,y,z] & projection": ol.geom.point([21, 4, 8, proj])
+        "one argument [x,y,z,projection] passed": ol.geom.point([21, 4, 8, proj]),
+        "one argument {x,y} passed": ol.geom.point([21, 4]),
+        "one argument {x,y,z} passed": ol.geom.point([21, 4, 8]),
+        "one argument {x,y,z,projection} passed": ol.geom.point([21, 4, 8, proj])
     };
     
     beforeEach(function() {
@@ -18,12 +24,12 @@ describe("ol.geom.Point", function() {
             "no arguments passed": ol.geom.point(),
             "one argument [x,y] passed": ol.geom.point([21, 4]),
             "one argument [x,y,z] passed": ol.geom.point([21, 4, 8]),
-            "two arguments passed [x,y,z] & projection": ol.geom.point([21, 4, 8, proj])
+            "one argument [x,y,z,projection] passed": ol.geom.point([21, 4, 8, proj])
         };
         pNoArgs = instances['no arguments passed'];
         pNoZ = instances['one argument [x,y] passed'];
         pWithZ = instances['one argument [x,y,z] passed'];
-        p = instances['two arguments passed [x,y,z] & projection'];
+        p = instances['one argument [x,y,z,projection] passed'];
     });
     
     afterEach(function() {
@@ -32,7 +38,7 @@ describe("ol.geom.Point", function() {
             "no arguments passed": ol.geom.point(),
             "one argument [x,y] passed": ol.geom.point([21, 4]),
             "one argument [x,y,z] passed": ol.geom.point([21, 4, 8]),
-            "two arguments passed [x,y,z] & projection": ol.geom.point([21, 4, 8, proj])
+            "one argument [x,y,z,projection] passed": ol.geom.point([21, 4, 8, proj])
         };
     });
     
@@ -85,7 +91,7 @@ describe("ol.geom.Point", function() {
         expect(pWithZ.getProjection()).toBeNull();
     });
     
-    it("has functional getters (two arguments passed [x,y,z] & projection)", function(){
+    it("has functional getters (one argument [x,y,z,projection] passed)", function(){
         expect(p.getX()).toBe(21);
         expect(p.getY()).toBe(4);
         expect(p.getZ()).toBe(8);

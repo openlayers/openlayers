@@ -133,7 +133,6 @@ describe("ol.Map", function() {
         expect(proj instanceof ol.Projection).toBe(true);
         expect(proj.code()).toBe("EPSG:4326");
         
-        debugger;
         map.center([10, 20]);
         
         map.userProjection("EPSG:3857");
