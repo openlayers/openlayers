@@ -9,20 +9,20 @@ goog.require('goog.style');
 
 
 /**
+ * Determine whether event was caused by a single touch
+ *
  * @param {goog.events.BrowserEvent} evt
  * @return {boolean}
- *
- * Determine whether event was caused by a single touch
  */
 ol.event.isSingleTouch = function(evt) {
     return evt.touches && evt.touches.length == 1;
 };
 
 /**
+ * Determine whether event was caused by a multi touch
+ *
  * @param {goog.events.BrowserEvent} evt
  * @return {boolean}
- *
- * Determine whether event was caused by a multi touch
  */
 ol.event.isMultiTouch = function(evt) {
     return evt.touches && evt.touches.length > 1;
@@ -30,6 +30,8 @@ ol.event.isMultiTouch = function(evt) {
 
 
 /**
+ * Construct an ol.event.Events instance.
+ *
  * @constructor
  * @extends {goog.events.EventTarget}
  * @param {Object} object The object we are creating this instance for.
@@ -41,8 +43,6 @@ ol.event.isMultiTouch = function(evt) {
  *     property on the event object that is passed, which represents the
  *     relative position of the pointer to the {@code element}. Default is
  *     false.
- *
- * Construct an ol.event.Events instance.
  */
 ol.event.Events = function(object, opt_element, opt_includeXY) {
     
@@ -81,11 +81,11 @@ ol.event.Events.prototype.getObject = function() {
 };
 
 /**
- * @param {!EventTarget} element A DOM element to attach
- *     browser events to.
- *
  * Attach this instance to a DOM element. If this is called, all browser events
  * fired on the provided element will be relayed by this instance.
+ *
+ * @param {!EventTarget} element A DOM element to attach
+ *     browser events to.
  */
 ol.event.Events.prototype.attachToElement_ = function(element) {
     if (this.element_) {
@@ -120,8 +120,6 @@ ol.event.Events.prototype.detachFromElement_ = function() {
 };
 
 /**
- * @param {Object} object
- *
  * Convenience method for registering listeners with a common scope.
  * Internally, this method calls 'register' as shown in the examples below.
  *
@@ -141,6 +139,8 @@ ol.event.Events.prototype.detachFromElement_ = function() {
  *     // this is equivalent to the following
  *     events.register("loadstart", loadStartListener, object);
  *     events.register("loadend", loadEndListener, object);
+ *
+ * @param {Object} object
  */
 ol.event.Events.prototype.on = function(object) {
     for (var type in object) {
@@ -151,14 +151,6 @@ ol.event.Events.prototype.on = function(object) {
 };
 
 /**
- * @param {string} type Name of the event to register.
- * @param {Function} listener The callback function.
- * @param {Object=} opt_scope The object to bind the context to for the
- *     listener. If no scope is specified, default is this intance's 'object'
- *     property.
- * @param {boolean=} opt_priority Register the listener as priority listener,
- *     so it gets executed before other listeners? Default is false.
- *
  * Register a listener for an event.
  *
  * When the event is triggered, the 'listener' function will be called, in the
@@ -170,6 +162,14 @@ ol.event.Events.prototype.on = function(object) {
  * something like:
  *
  *     var leftStr = "Left: " + this.minX();
+ *
+ * @param {string} type Name of the event to register.
+ * @param {Function} listener The callback function.
+ * @param {Object=} opt_scope The object to bind the context to for the
+ *     listener. If no scope is specified, default is this intance's 'object'
+ *     property.
+ * @param {boolean=} opt_priority Register the listener as priority listener,
+ *     so it gets executed before other listeners? Default is false.
  */
 ol.event.Events.prototype.register = function(type, listener, opt_scope,
                                               opt_priority) {
@@ -179,8 +179,6 @@ ol.event.Events.prototype.register = function(type, listener, opt_scope,
 };
 
 /**
- * @param {Object} object
- *
  * Convenience method for unregistering listeners with a common scope.
  * Internally, this method calls 'unregister' as shown in the examples below.
  * 
@@ -200,6 +198,8 @@ ol.event.Events.prototype.register = function(type, listener, opt_scope,
  *     // this is equivalent to the following
  *     events.unregister("loadstart", loadStartListener, object);
  *     events.unregister("loadend", loadEndListener, object);
+ *
+ * @param {Object} object
  */
 ol.event.Events.prototype.un = function(object) {
     for (var type in object) {
@@ -210,13 +210,13 @@ ol.event.Events.prototype.un = function(object) {
 };
 
 /**
+ * Unregister a listener for an egent
+ *
  * @param {string} type Name of the event to unregister
  * @param {Function} listener The callback function.
  * @param {Object=} opt_scope The object to bind the context to for the
  *     listener. If no scope is specified, default is the event's default
  *     scope.
- *
- * Unregister a listener for an egent
  */
 ol.event.Events.prototype.unregister = function(type, listener, opt_scope) {
     goog.events.unlisten(
@@ -225,12 +225,13 @@ ol.event.Events.prototype.unregister = function(type, listener, opt_scope) {
 };
 
 /**
+ * Trigger a specified registered event.  
+ *
  * @param {string} type The type of the event to trigger.
  * @param {Object} evt The event object that will be passed to listeners.
  *
  * @return {Boolean} The last listener return.  If a listener returns false,
  *     the chain of listeners will stop getting called.
- * Trigger a specified registered event.  
  */
 ol.event.Events.prototype.triggerEvent = function(type, evt) {
     var returnValue,
@@ -246,11 +247,11 @@ ol.event.Events.prototype.triggerEvent = function(type, evt) {
 };
 
 /**
- * @private
- * @param {goog.events.BrowserEvent} evt
- * 
  * Basically just a wrapper to the triggerEvent() function, but takes 
  * care to set a property 'xy' on the event with the current mouse position.
+ * 
+ * @private
+ * @param {goog.events.BrowserEvent} evt
  */
 ol.event.Events.prototype.handleBrowserEvent_ = function(evt) {
     if (!goog.isDef(this.element_)) {
