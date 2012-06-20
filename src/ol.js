@@ -2,6 +2,7 @@ goog.provide("ol");
 goog.require('ol.bounds');
 goog.require('ol.event');
 goog.require('ol.event.Events');
+goog.require('ol.event.drag');
 goog.require("ol.map");
 goog.require("ol.loc");
 goog.require("ol.projection");
