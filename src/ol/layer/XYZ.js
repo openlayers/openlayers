@@ -130,26 +130,22 @@ ol.layer.XYZ.prototype.getData = function(bounds, resolution) {
         offsetY = Math.floor(
                       (tileOriginY - boundsMaxY) / tileHeightGeo),
 
-        gridWidth = Math.ceil(
-                        (boundsMaxX - boundsMinX) / tileWidthGeo),
-        gridHeight = Math.ceil(
-                        (boundsMaxY - boundsMinY) / tileHeightGeo);
+        gridLeft = tileOriginX + tileWidthGeo * offsetX,
+        gridTop = tileOriginY - tileHeightGeo * offsetY;
 
-    var tiles = [],
-        tile,
-        url,
-        i, ii,
-        j, jj;
-
-    for (i=0, ii=gridWidth; i<ii; i++) {
+    var tiles = [], tile, url, i = 0, j;
+    while (gridTop - (i * tileHeightGeo) > boundsMinY) {
         tiles[i] = [];
-        for (j=0, jj=gridHeight; j<jj; j++) {
+        j = 0;
+        while (gridLeft + (j * tileWidthGeo) < boundsMaxX) {
             url = me.url_.replace('{x}', offsetX + i + '')
                          .replace('{y}', offsetY + j + '')
                          .replace('{z}', zoom);
             tile = new ol.Tile(url);
             tiles[i][j] = tile;
+            j++;
         }
+        i++;
     }
 
     return new ol.TileSet(tiles, tileWidth, tileHeight, resolution);
