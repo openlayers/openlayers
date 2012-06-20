@@ -157,7 +157,6 @@ ol.Projection.addTransform = function(from, to, method) {
  * @param {!Object} point Object with x and y properties.
  * @param {!ol.Projection} source Source projection.
  * @param {!ol.Projection} dest Destination projection.
- * @private
  */
 ol.Projection.transform = function(point, source, dest) {
     if (source.proj_ && dest.proj_) {

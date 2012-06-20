@@ -14,31 +14,31 @@ goog.require('ol.Projection');
 ol.Bounds = function(minX, minY, maxX, maxY, opt_projection) {
 
     /**
-     * @private
+     * @protected
      * @type {number}
      */
     this.minX_ = minX;
 
     /**
-     * @private
+     * @protected
      * @type {number}
      */
     this.minY_ = minY;
 
     /**
-     * @private
+     * @protected
      * @type {number}
      */
     this.maxX_ = maxX;
 
     /**
-     * @private
+     * @protected
      * @type {number}
      */
     this.maxY_ = maxY;
 
     /**
-     * @private
+     * @protected
      * @type {ol.Projection|undefined}
      */
     this.projection_ = opt_projection;

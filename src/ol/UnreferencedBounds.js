@@ -10,25 +10,25 @@ goog.provide('ol.UnreferencedBounds');
 ol.UnreferencedBounds = function(minX, minY, maxX, maxY) {
 
     /**
-     * @private
+     * @protected
      * @type {number}
      */
     this.minX_ = minX;
 
     /**
-     * @private
+     * @protected
      * @type {number}
      */
     this.minY_ = minY;
 
     /**
-     * @private
+     * @protected
      * @type {number}
      */
     this.maxX_ = maxX;
 
     /**
-     * @private
+     * @protected
      * @type {number}
      */
     this.maxY_ = maxY;

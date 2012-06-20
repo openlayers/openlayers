@@ -5,10 +5,10 @@ goog.provide('ol.TileSet');
  * tiles. Tiles of a TileSet have the same resolution, width and
  * height.
  * @constructor
- * @params {Array.<Array.<ol.Tile>>} tiles
- * @params {number} tileWidth
- * @params {number} tileHeight
- * @params {number} resolution
+ * @param {Array.<Array.<ol.Tile>>} tiles
+ * @param {number} tileWidth
+ * @param {number} tileHeight
+ * @param {number} resolution
  */
 ol.TileSet = function(tiles, tileWidth, tileHeight, resolution) {
 
