@@ -6,6 +6,7 @@ goog.require('ol.Projection');
 
 
 /**
+ * @export
  * @constructor
  */
 ol.Map = function() {
@@ -272,7 +273,8 @@ ol.Map.prototype.setMaxRes = function(res) {
 };
 
 /**
-*/
+ * @export
+ */
 ol.Map.prototype.destroy = function() {
     //remove layers, etc.
     for (var key in this) {

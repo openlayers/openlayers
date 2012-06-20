@@ -14,6 +14,7 @@ ol.MapLike;
 
 
 /**
+ * @export
  * @param {ol.MapLike=} opt_arg Argument.
  * @return {ol.Map} Map.
  */
@@ -91,6 +92,7 @@ ol.map = function(opt_arg){
 };
 
 /**
+ * @export
  * @param {ol.LocLike=} opt_arg
  * @returns {ol.Map|ol.Loc|undefined} Map center.
  */
@@ -104,6 +106,7 @@ ol.Map.prototype.center = function(opt_arg) {
 };
 
 /**
+ * @export
  * @param {ol.ProjectionLike=} opt_arg
  * @returns {ol.Map|ol.Projection|undefined}
  */
@@ -117,6 +120,7 @@ ol.Map.prototype.projection = function(opt_arg) {
 };
 
 /**
+ * @export
  * @param {ol.ProjectionLike=} opt_arg
  * @returns {ol.Map|ol.Projection|undefined}
  */
@@ -130,6 +134,7 @@ ol.Map.prototype.userProjection = function(opt_arg) {
 };
 
 /**
+ * @export
  * @param {number=} opt_arg
  * @returns {ol.Map|number|undefined} Map center.
  */
@@ -143,6 +148,7 @@ ol.Map.prototype.zoom = function(opt_arg) {
 };
 
 /**
+ * @export
  * @param {number=} opt_arg
  * @returns {ol.Map|number|undefined} Map center.
  */
@@ -156,6 +162,7 @@ ol.Map.prototype.numZoomLevels = function(opt_arg) {
 };
 
 /**
+ * @export
  * @param {Array=} opt_arg  
  * @returns {ol.Map|Array|undefined} Map center.
  */
@@ -169,6 +176,7 @@ ol.Map.prototype.resolutions = function(opt_arg) {
 };
 
 /**
+ * @export
  * @param {Array=} opt_arg  
  * @returns {ol.Map|Array|undefined} Map center.
  */
@@ -182,6 +190,7 @@ ol.Map.prototype.layers = function(opt_arg) {
 };
 
 /**
+ * @export
  * @param {Array=} opt_arg  
  * @returns {ol.Map|ol.UnreferencedBounds|undefined} Map max extent.
  */
@@ -195,6 +204,7 @@ ol.Map.prototype.maxExtent = function(opt_arg) {
 };
 
 /**
+ * @export
  * @param {number=} opt_arg  
  * @returns {ol.Map|number|undefined} Map maximum resolution
  */

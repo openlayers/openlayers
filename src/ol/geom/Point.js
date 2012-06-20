@@ -8,6 +8,7 @@ goog.require('ol.coord.AccessorInterface');
 /**
  * Creates ol.geom.Point objects. 
  * 
+ * @export
  * @extends {ol.geom.Geometry}
  * @param {number} x X.
  * @param {number} y Y.

@@ -3,6 +3,7 @@ goog.require('ol.UnreferencedBounds');
 goog.require('ol.Projection');
 
 /**
+ * @export
  * @constructor
  * @param {number} minX Minimum X.
  * @param {number} minY Minimum Y.

@@ -6,6 +6,7 @@ goog.require('ol.TileSet');
 
 /**
  * Class for XYZ layers.
+ * @export
  * @constructor
  * @param {string} url URL template. E.g.
  *     http://a.tile.openstreetmap.org/{z}/{x}/{y}.png.

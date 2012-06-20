@@ -5,6 +5,7 @@ goog.require('ol.Bounds');
 /**
  * Creates ol.Geometry objects.
  * 
+ * @export
  * @constructor
  */
 ol.geom.Geometry = function() {

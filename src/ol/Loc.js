@@ -5,6 +5,7 @@ goog.require('ol.Projection');
 
 
 /**
+ * @export
  * @constructor
  * @param {number} x X.
  * @param {number} y Y.
