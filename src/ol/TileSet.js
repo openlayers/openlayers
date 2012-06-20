@@ -20,23 +20,47 @@ ol.TileSet = function(tiles, tileWidth, tileHeight, resolution) {
 
     /**
      * @private
-     * @type {number|undefined}
+     * @type {number}
      */
     this.tileWidth_ = tileWidth;
 
     /**
      * @private
-     * @type {number|undefined}
+     * @type {number}
      */
     this.tileHeight_ = tileHeight;
 
     /**
      * @private
-     * @type {number|undefined}
+     * @type {number}
      */
     this.resolution_ = resolution;
 };
 
+/**
+ * @return {Array.<Array.<ol.Tile>>}
+ */
 ol.TileSet.prototype.getTiles = function() {
     return this.tiles_;
+};
+
+/**
+ * @return {number}
+ */
+ol.TileSet.prototype.getResolution = function() {
+    return this.resolution_;
+};
+
+/**
+ * @return {number}
+ */
+ol.TileSet.prototype.getTileHeight = function() {
+    return this.tileHeight_;
+};
+
+/**
+ * @return {number}
+ */
+ol.TileSet.prototype.getTileWidth = function() {
+    return this.tileWidth_;
 };
