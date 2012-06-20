@@ -129,6 +129,24 @@ ol.Map.prototype.getLayers = function() {
 
 
 /**
+ * @return {ol.Bounds} the maxExtent for the map
+ */
+ol.Map.prototype.getMaxExtent = function() {
+    if (goog.isDefAndNotNull(this.maxExtent_)) {
+        return this.maxExtent_;
+    } else {
+        var extent = this.projection.getMaxExtent();
+        if (goog.isDefAndNotNull(extent)) {
+            return extent;
+        } else {
+            throw('maxExtent must be defined either in the map or the projection');
+        }
+    }
+        
+};
+
+
+/**
  * @param {ol.Loc} center Center.
  * @return {ol.Map} This.
  */
@@ -192,6 +210,15 @@ ol.Map.prototype.setResolutions = function(resolutions) {
  */
 ol.Map.prototype.setLayers = function(layers) {
     this.layers_ = layers;
+    return this;
+};
+
+/**
+ * @param {ol.Bounds} extent the maxExtent for the map
+ * @return {ol.Map} This.
+ */
+ol.Map.prototype.setMaxExtent = function(extent) {
+    this.maxExtent_ = extent;
     return this;
 };
 

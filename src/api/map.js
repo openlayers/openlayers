@@ -29,7 +29,13 @@ ol.map = function(opt_arg){
     var projection;
     /** @type {ol.Projection|undefined} */
     var userProjection;
-    
+    /** @type {ol.Bounds|undefined} */
+    var maxExtent;
+    /** @type {array|undefined} */
+    var resolutions;
+    /** @type {array|undefined} */
+    var layers;
+   
     if (arguments.length == 1) {
         if (opt_arg instanceof ol.Map) {
             return opt_arg;
@@ -40,6 +46,9 @@ ol.map = function(opt_arg){
             numZoomLevels = opt_arg['numZoomLevels'];
             projection = opt_arg['projection'];
             userProjection = opt_arg['userProjection'];
+            maxExtent = opt_arg['maxExtent'];
+            resolutions = opt_arg['resolutions'];
+            layers = opt_arg['layers'];
         }
         else {
             throw new Error('ol.map');
@@ -57,10 +66,19 @@ ol.map = function(opt_arg){
         map.setNumZoomLevels(numZoomLevels);
     }
     if (goog.isDef(projection)) {
-        map.setProjection(projection);
+        map.setProjection(ol.projection(projection));
     }
     if (goog.isDef(userProjection)) {
-        map.setUserProjection(userProjection);
+        map.setUserProjection(ol.projection(userProjection));
+    }
+    if (goog.isDef(maxExtent)) {
+        map.setMaxExtent(ol.bounds(maxExtent));
+    }
+    if (goog.isDef(resolutions)) {
+        map.setResolutions(resolutions);
+    }
+    if (goog.isDef(layers)) {
+        map.setLayers(layers);
     }
     return map;
     
@@ -147,5 +165,17 @@ ol.Map.prototype.layers = function(opt_arg) {
         return this.setLayers(opt_arg);
     } else {
         return this.getLayers();
+    }
+};
+
+/**
+ * @param {Array=} opt_arg  
+ * @returns {ol.Map|ol.Bounds|undefined} Map max extent.
+ */
+ol.Map.prototype.maxExtent = function(opt_arg) {
+    if (arguments.length == 1 && goog.isDef(opt_arg)) {
+        return this.setMaxExtent(ol.bounds(opt_arg));
+    } else {
+        return this.getMaxExtent();
     }
 };

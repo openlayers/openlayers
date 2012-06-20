@@ -186,15 +186,104 @@ describe("ol.Map", function() {
     
     it("resolutions array is mutable", function() {
         var map = ol.map();
+        debugger;
         map.resolutions([1,2,3]);
+        
+        var resolutions = map.resolutions();
+        expect(resolutions[0]).toBe(1);
             
         map.resolutions([10,9,8,7,6,5]);
 
-        var resolutions = map.resolutions();
+        resolutions = map.resolutions();
         expect(resolutions.length).toBe(6);
         expect(resolutions[0]).toBe(10);
         expect(resolutions[2]).toBe(8);
         expect(resolutions[4]).toBe(6);
+    });
+    
+    it("returns correct maxExtent for default map", function() {
+        var map = ol.map();
+        
+        var extent = map.maxExtent();
+        expect(extent instanceof ol.Bounds).toBe(true);
+        expect(extent.minX()).toBe(-20037508.34);
+        expect(extent.maxX()).toBe(-20037508.34);
+        expect(extent.minY()).toBe(20037508.34);
+        expect(extent.maxY()).toBe(20037508.34);
+        
+    });
+    
+    it("returns correct maxExtent for custom map extent", function() {
+        var map = ol.map();
+        map.maxExtent([-5,-4,7,9]);
+        
+        var extent = map.maxExtent();
+        expect(extent instanceof ol.Bounds).toBe(true);
+        expect(extent.minX()).toBe(-5);
+        expect(extent.maxX()).toBe(-4);
+        expect(extent.minY()).toBe(7);
+        expect(extent.maxY()).toBe(9);
+        
+    });
+    
+    it("returns correct maxExtent for custom projection extent", function() {
+        var map = ol.map();
+        map.projection("CRS:84");
+        
+        var extent = map.maxExtent();
+        expect(extent instanceof ol.Bounds).toBe(true);
+        expect(extent.minX()).toBe(-180);
+        expect(extent.maxX()).toBe(-90);
+        expect(extent.minY()).toBe(180);
+        expect(extent.maxY()).toBe(90);
+        
+    });
+    
+    it("throws an error whith no maxExtent available", function() {
+        expect(function(){
+            map({projection: ol.projection("bar")});
+            extent = map.maxExtent();                
+        }).toThrow();
+    });
+    
+    it("getMaxRes returns correct defaults", function() {
+        var map = ol.map();
+        
+        var res = map.maxRes();
+        expect(res.toFixed(5)).toBe(1.40625);
+        
+    });
+    
+    it("allows setting of maxRes", function() {
+        var map = ol.map({
+            maxRes: 67
+        });
+        
+        var res = map.maxRes();
+        expect(res).toBe(67);
+        
+    });
+    
+    it("getMaxRes returns correct for custom maxExtent", function() {
+        var map = ol.map({
+            projection: ol.projection({
+                maxExtent: [0,0,90,90]
+            })
+        });
+        
+        var res = map.maxRes();
+        expect(res.toFixed(7)).toBe(0.3515625);
+        
+    });
+    
+    it("getResForZoom returns correct defaults", function() {
+        var map = ol.map();
+        
+        res = map.getResForZoom(0);
+        expect(res.toFixed(5)).toBe(1.40625);
+        res = map.getResForZoom(5);
+        expect(res.toFixed(10)).toBe(0.0439453125);
+        
     });
     
     it("has no layers by default", function() {
