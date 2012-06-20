@@ -70,9 +70,9 @@ ol.Projection.prototype.setUnits = function(units) {
  */
 ol.Projection.prototype.getExtent = function() {
     if (goog.isNull(this.extent_)) {
-        var defs = ol.Projection['defaults'][this.code_];
+        var defs = ol.Projection.defaults[this.code_];
         if (goog.isDef(defs)) {
-            var ext = defs['maxExtent'];
+            var ext = defs.maxExtent;
             if (goog.isDef(ext)) {
                 this.setExtent(new ol.UnreferencedBounds(ext[0],ext[1],ext[2],ext[3]));
             }
