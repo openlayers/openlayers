@@ -42,19 +42,19 @@ ol.Map = function() {
 
     /**
      * @private
-     * @type {Array|undefined}
+     * @type {Array}
      */
     this.resolutions_ = null;
 
     /**
      * @private
-     * @type {Array|undefined}
+     * @type {Array}
      */
     this.layers_ = null;
 
     /**
      * @private
-     * @type {ol.UnreferencedBounds|undefined}
+     * @type {ol.UnreferencedBounds}
      */
     this.maxExtent_ = null;
 
@@ -62,7 +62,7 @@ ol.Map = function() {
      * @private
      * @type {number|undefined}
      */
-    this.maxRes_ = null;
+    this.maxRes_ = undefined;
 
 };
 
@@ -174,13 +174,11 @@ ol.Map.prototype.getMaxRes = function() {
         return this.maxRes_;
     } else {
         var extent = this.getMaxExtent();
-        if (goog.isDefAndNotNull(extent)) {
-            var dim = Math.max(
-                (extent.getMaxX()-extent.getMinX()),
-                (extent.getMaxY()-extent.getMinY())
-             );
-            return dim/ol.Map.DEFAULT_TILE_SIZE;
-        }
+        var dim = Math.max(
+            (extent.getMaxX()-extent.getMinX()),
+            (extent.getMaxY()-extent.getMinY())
+         );
+        return dim/ol.Map.DEFAULT_TILE_SIZE;
     }
 };
 
@@ -253,7 +251,7 @@ ol.Map.prototype.setLayers = function(layers) {
 };
 
 /**
- * @param {ol.Bounds} extent the maxExtent for the map
+ * @param {ol.UnreferencedBounds} extent the maxExtent for the map
  */
 ol.Map.prototype.setMaxExtent = function(extent) {
     this.maxExtent_ = extent;
