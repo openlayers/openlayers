@@ -21,6 +21,9 @@ ol.projection = function(opt_arg){
     /** @type {undefined|number} */
     var units;
 
+    /** @type {undefined|Array|ol.UnreferencedBounds} */
+    var extent;
+
     if (arguments.length == 1 && goog.isDefAndNotNull(opt_arg)) {
         if (opt_arg instanceof ol.Projection) {
             return opt_arg;
@@ -35,13 +38,21 @@ ol.projection = function(opt_arg){
                 throw new Error('Projection requires a string code.');
             }
             units = opt_arg['units'];
+            extent = opt_arg['maxExtent'];
         }
         else {
             throw new Error('ol.projection');
         }
     }
     var proj = new ol.Projection(code);
-    proj.setUnits(units);
+    if (goog.isDef(units)) {
+        proj.setUnits(units);
+    }
+    if (goog.isDef(extent)) {
+        proj.setExtent(
+            new ol.UnreferencedBounds(extent[0],extent[1],extent[2],extent[3])
+        );
+    }
     return proj;
 };
 
