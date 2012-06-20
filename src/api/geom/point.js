@@ -4,7 +4,7 @@ goog.require('ol.geom.Point');
 goog.require('ol.projection');
 
 /**
- * @typedef {ol.PointLike|Array.<number>|Object} point Point.
+ * @typedef {Array.<number>|Object} point Point.
  */
 ol.PointLike;
 
