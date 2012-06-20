@@ -58,7 +58,7 @@ describe("ol.loc", function() {
 
         var loc = ol.loc({x: 1, y: 2});
         
-        expect(loc.projection()).toBeUndefined();
+        expect(loc.projection()).toBeNull();
         
     });
     

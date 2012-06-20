@@ -164,7 +164,7 @@ describe("ol.map", function() {
         
         map.destroy();
 
-        expect(goog.isDef(map.layers)).toBe(false);
+        expect(goog.isDef(map.getLayers())).toBe(false);
         
     });
     
@@ -199,11 +199,11 @@ describe("ol.map", function() {
         var map = ol.map();
         
         var extent = map.maxExtent();
-        expect(extent).toBeA(ol.Bounds);
-        expect(extent.minX()).toBe(-20037508.34);
-        expect(extent.maxX()).toBe(-20037508.34);
-        expect(extent.minY()).toBe(20037508.34);
-        expect(extent.maxY()).toBe(20037508.34);
+        expect(extent).toBeA(ol.UnreferencedBounds);
+        expect(extent.getMinX()).toBe(-20037508.34);
+        expect(extent.getMaxX()).toBe(20037508.34);
+        expect(extent.getMinY()).toBe(-20037508.34);
+        expect(extent.getMaxY()).toBe(20037508.34);
         
     });
     
@@ -212,11 +212,11 @@ describe("ol.map", function() {
         map.maxExtent([-5,-4,7,9]);
         
         var extent = map.maxExtent();
-        expect(extent).toBeA(ol.Bounds);
-        expect(extent.minX()).toBe(-5);
-        expect(extent.maxX()).toBe(-4);
-        expect(extent.minY()).toBe(7);
-        expect(extent.maxY()).toBe(9);
+        expect(extent).toBeA(ol.UnreferencedBounds);
+        expect(extent.getMinX()).toBe(-5);
+        expect(extent.getMaxX()).toBe(7);
+        expect(extent.getMinY()).toBe(-4);
+        expect(extent.getMaxY()).toBe(9);
         
     });
     
@@ -225,11 +225,11 @@ describe("ol.map", function() {
         map.projection("CRS:84");
         
         var extent = map.maxExtent();
-        expect(extent).toBeA(ol.Bounds);
-        expect(extent.minX()).toBe(-180);
-        expect(extent.maxX()).toBe(-90);
-        expect(extent.minY()).toBe(180);
-        expect(extent.maxY()).toBe(90);
+        expect(extent).toBeA(ol.UnreferencedBounds);
+        expect(extent.getMinX()).toBe(-180);
+        expect(extent.getMaxX()).toBe(180);
+        expect(extent.getMinY()).toBe(-90);
+        expect(extent.getMaxY()).toBe(90);
         
     });
     
@@ -244,7 +244,7 @@ describe("ol.map", function() {
         var map = ol.map();
         
         var res = map.maxRes();
-        expect(res.toFixed(5)).toBe(1.40625);
+        expect(res.toFixed(5)).toBe("156543.03391");
         
     });
     
@@ -261,22 +261,35 @@ describe("ol.map", function() {
     it("getMaxRes returns correct for custom maxExtent", function() {
         var map = ol.map({
             projection: ol.projection({
+                code: 'foo',
                 maxExtent: [0,0,90,90]
             })
         });
         
         var res = map.maxRes();
-        expect(res.toFixed(7)).toBe(0.3515625);
+        expect(res.toFixed(7)).toBe("0.3515625");
         
     });
     
-    it("getResForZoom returns correct defaults", function() {
+    it("returns correct getResForZoom for default map", function() {
         var map = ol.map();
         
-        res = map.getResForZoom(0);
-        expect(res.toFixed(5)).toBe(1.40625);
+        var res = map.getResForZoom(0);
+        expect(res.toFixed(5)).toBe("156543.03391");
         res = map.getResForZoom(5);
-        expect(res.toFixed(10)).toBe(0.0439453125);
+        expect(res.toFixed(5)).toBe("4891.96981");
+        
+    });
+    
+    it("returns correct getResForZoom when resolution array is set",function() {
+        var map = ol.map({
+            resolutions: [1,4,7,9,12]
+        });
+        
+        var res = map.getResForZoom(0);
+        expect(res).toBe(1);
+        res = map.getResForZoom(3);
+        expect(res).toBe(9);
         
     });
     
