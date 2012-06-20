@@ -1,7 +1,6 @@
 goog.provide('ol.geom.Geometry'); 
 
 goog.require('ol.Bounds');
-goog.require('ol.mixins.coordinate');
 
 /**
  * Creates ol.Geometry objects.

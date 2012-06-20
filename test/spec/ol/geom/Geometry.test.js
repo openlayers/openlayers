@@ -12,13 +12,6 @@ describe("ol.geom.Geometry", function() {
     
     it("constructs instances", function() {
         expect(g).toEqual(jasmine.any(ol.geom.Geometry));
-        
-        console.log(g);
-        
-        console.log(g.foo);
-        
-        console.log(g.foo());
-        
     });
     
     it("can set bounds", function() {
