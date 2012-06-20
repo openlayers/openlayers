@@ -1,17 +1,26 @@
 goog.provide('ol.Tile');
 
+goog.require('ol.Bounds');
+
 /**
  * The Tile class.
  * @constructor
  * @param {string} url
+ * @param {ol.Bounds} bounds
  */
-ol.Tile = function(url) {
+ol.Tile = function(url, bounds) {
 
     /**
      * @private
      * @type {string}
      */
     this.url_ = url;
+
+    /**
+     * @private
+     * @type {ol.Bounds}
+     */
+    this.bounds_ = bounds;
 
     /**
      * @private
@@ -33,6 +42,14 @@ ol.Tile.prototype.load = function() {
  */
 ol.Tile.prototype.getUrl = function() {
     return this.url_;
+};
+
+/**
+ * Get the tile bounds.
+ * @return {ol.Bounds}
+ */
+ol.Tile.prototype.getBounds = function() {
+    return this.bounds_;
 };
 
 /**
