@@ -24,7 +24,7 @@ var map = new OpenLayers.Map({
                 "http://oatile4.mqcdn.com/naip/${z}/${x}/${y}.png"
             ],
             {
-                attribution: "Tiles Courtesy of <a href='http://open.mapquest.co.uk/' target='_blank'>MapQuest</a> <img src='http://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
+                attribution: "Tiles Courtesy of <a href='http://open.mapquest.co.uk/' target='_blank'>MapQuest</a>. Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency. <img src='http://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
                 transitionEffect: "resize"
             }
         )
