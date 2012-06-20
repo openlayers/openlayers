@@ -83,7 +83,7 @@ ol.event.Events.prototype.getObject = function() {
  * @param {boolean} includeXY
  */
 ol.event.Events.prototype.setIncludeXY = function(includeXY) {
-    this._includeXY = includeXY;
+    this.includeXY_ = includeXY;
 };
 
 /**
@@ -215,7 +215,7 @@ ol.event.Events.prototype.un = function(object) {
 };
 
 /**
- * Unregister a listener for an egent
+ * Unregister a listener for an event
  *
  * @param {string} type Name of the event to unregister
  * @param {Function} listener The callback function.
@@ -283,7 +283,7 @@ ol.event.Events.prototype.handleBrowserEvent = function(evt) {
         evt.clientX = x / num;
         evt.clientY = y / num;
     }
-    if (this.includeXY) {
+    if (this.includeXY_) {
         var element = /** @type {!Element} */ this.element_;
         evt.xy = goog.style.getRelativePosition(evt, element);
     }
