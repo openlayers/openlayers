@@ -3,8 +3,15 @@ goog.provide('ol.Tile');
 /**
  * The Tile class.
  * @constructor
+ * @param {string} url
  */
-ol.Tile = function() {
+ol.Tile = function(url) {
+
+    /**
+     * @private
+     * @type {string}
+     */
+    this.url_ = url;
 
     /**
      * @private
@@ -14,25 +21,22 @@ ol.Tile = function() {
 };
 
 /**
- * Load the tile for a given URL.
- * @param {string} src The src URL.
+ * Load the tile.
  */
-ol.Tile.prototype.load = function(src) {
-    this.setImgSrc(src);
+ol.Tile.prototype.load = function() {
+    this.img_.src = this.url_;
 };
 
 /**
- * Set the image src.
- * @param {string|undefined} src The src URL.
- * @return {ol.Tile}
+ * Get the tile url.
+ * @return {string}
  */
-ol.Tile.prototype.setImgSrc = function(src) {
-    this.img_.src = src;
-    return this;
+ol.Tile.prototype.getUrl = function() {
+    return this.url_;
 };
 
 /**
- * Get the image node.
+ * Get the tile image.
  * @return {Element}
  */
 ol.Tile.prototype.getImg = function() {
@@ -41,7 +45,7 @@ ol.Tile.prototype.getImg = function() {
 
 /**
  * Create an image node. This is done by cloning
- * an image template.
+ * the same image element.
  * @return {Element}
  */
 ol.Tile.createImage = (function() {
