@@ -3,24 +3,28 @@ goog.provide('ol.event.drag');
 
 /**
  * @return {Object} A drag sequence with dragstart, drag and dragend events.
+ * @export
  */
 ol.event.drag = function() {
     var previous = null;
     
+    /**
+     * @param {Event} evt
+     */
     function dragstart(evt) {
         if (!previous) {
             evt.dx = 0;
             evt.dy = 0;
             previous = {screenX: evt.screenX, screenY: evt.screenY};
-            if (evt.stopPropagation) {
-                evt.stopPropagation();
-            } else {
-                evt.cancelBubble = true;
-            }
+            // don't start a drag sequence on other elements.
+            evt.stopPropagation();
             return true;
         }
     }
     
+    /**
+     * @param {Event} evt
+     */
     function drag(evt) {
         if (previous) {
             evt.dx = evt.screenX - previous.screenX;
@@ -30,6 +34,9 @@ ol.event.drag = function() {
         }
     }
     
+    /**
+     * @param {Event} evt
+     */
     function dragend(evt) {
         if (previous) {
             previous = null;
