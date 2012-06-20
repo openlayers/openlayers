@@ -38,6 +38,8 @@ ol.map = function(opt_arg){
     var resolutions;
     /** @type {Array|undefined} */
     var layers;
+    /** @type {Array|undefined} */
+    var controls;
    
     if (arguments.length == 1) {
         if (opt_arg instanceof ol.Map) {
@@ -53,6 +55,7 @@ ol.map = function(opt_arg){
             maxRes = opt_arg['maxRes'];
             resolutions = opt_arg['resolutions'];
             layers = opt_arg['layers'];
+            controls = opt_arg['controls'];
         }
         else {
             throw new Error('ol.map');
@@ -86,6 +89,9 @@ ol.map = function(opt_arg){
     }
     if (goog.isDef(layers)) {
         map.setLayers(layers);
+    }
+    if (goog.isDef(controls)) {
+        map.setControls(controls);
     }
     return map;
     
@@ -186,6 +192,20 @@ ol.Map.prototype.layers = function(opt_arg) {
         return this;
     } else {
         return this.getLayers();
+    }
+};
+
+/**
+ * @export
+ * @param {Array=} opt_arg  
+ * @returns {ol.Map|Array|undefined} Map center.
+ */
+ol.Map.prototype.controls = function(opt_arg) {
+    if (arguments.length == 1 && goog.isDef(opt_arg)) {
+        this.setControls(opt_arg);
+        return this;
+    } else {
+        return this.getControls();
     }
 };
 

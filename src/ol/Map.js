@@ -2,6 +2,8 @@ goog.provide('ol.Map');
 
 goog.require('ol.Loc');
 goog.require('ol.Projection');
+goog.require('ol.event');
+goog.require('ol.event.Events');
 
 
 
@@ -55,6 +57,12 @@ ol.Map = function() {
 
     /**
      * @private
+     * @type {Array}
+     */
+    this.controls_ = null;
+
+    /**
+     * @private
      * @type {ol.UnreferencedBounds}
      */
     this.maxExtent_ = null;
@@ -64,7 +72,21 @@ ol.Map = function() {
      * @type {number|undefined}
      */
     this.maxRes_ = undefined;
-
+    
+    /**
+     * @private
+     * @type {ol.event.Events}
+     */
+    this.events_ = new ol.event.Events(
+        this, undefined, true, [ol.event.drag()]
+    );
+    
+    /**
+     * @private
+     * @type {Element}
+     */
+    this.container_ = null;
+    
 };
 
 /**
@@ -148,6 +170,14 @@ ol.Map.prototype.getResolutions = function() {
  */
 ol.Map.prototype.getLayers = function() {
     return this.layers_;
+};
+
+
+/**
+ * @return {Array.<ol.control.Control>}
+ */
+ol.Map.prototype.getControls = function() {
+    return this.controls_;
 };
 
 
@@ -258,6 +288,18 @@ ol.Map.prototype.setLayers = function(layers) {
 };
 
 /**
+ * @param {Array.<ol.control.Control>} controls
+ */
+ol.Map.prototype.setControls = function(controls) {
+    if (!this.controls_) {
+        for (var i=0, ii=controls.length; i<ii; ++i) {
+            controls[i].setMap(this);
+        }
+        this.controls_ = controls;
+    }
+};
+
+/**
  * @param {ol.UnreferencedBounds} extent the maxExtent for the map
  */
 ol.Map.prototype.setMaxExtent = function(extent) {
@@ -269,6 +311,29 @@ ol.Map.prototype.setMaxExtent = function(extent) {
  */
 ol.Map.prototype.setMaxRes = function(res) {
     this.maxRes_ = res;
+};
+
+/**
+ * @param {Element} container the container to render the map to
+ */
+ol.Map.prototype.setContainer = function(container) {
+    this.events_.setElement(container);
+    this.container_ = container;
+};
+
+/**
+ * @return {ol.event.Events} the events instance for this map
+ */
+ol.Map.prototype.getEvents = function() {
+    return this.events_;
+};
+
+/**
+ * @param {number} dx pixels to move in x direction
+ * @param {number} dy pixels to move in x direction
+ */
+ol.Map.prototype.moveByPx = function(dx, dy) {
+    // call moveByPx on renderers
 };
 
 /**
