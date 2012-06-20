@@ -75,7 +75,8 @@ ol.Loc.prototype.projection = function(opt_arg){
  */
 ol.Loc.prototype.x = function(opt_arg){
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
-        return this.setX(opt_arg);
+        this.setX(opt_arg);
+        return this;
     }
     else {
         return this.getX();
@@ -90,7 +91,8 @@ ol.Loc.prototype.x = function(opt_arg){
  */
 ol.Loc.prototype.y = function(opt_arg){
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
-        return this.setY(opt_arg);
+        this.setY(opt_arg);
+        return this;
     }
     else {
         return this.getY();

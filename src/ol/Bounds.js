@@ -47,42 +47,6 @@ ol.Bounds = function(minX, minY, maxX, maxY, opt_projection) {
 goog.inherits(ol.Bounds, ol.UnreferencedBounds);
 
 /**
- * @param {number} minX Minimum X.
- * @return {!ol.Bounds} This.
- */
-ol.Bounds.prototype.setMinX = function(minX) {
-    this.minX_ = minX;
-    return this;
-};
-
-/**
- * @param {number} maxX Maximum X.
- * @return {!ol.Bounds} This.
- */
-ol.Bounds.prototype.setMaxX = function(maxX) {
-    this.maxX_ = maxX;
-    return this;
-};
-
-/**
- * @param {number} minY Minimum Y.
- * @return {!ol.Bounds} This.
- */
-ol.Bounds.prototype.setMinY = function(minY) {
-    this.minY_ = minY;
-    return this;
-};
-
-/**
- * @param {number} maxY Maximum Y.
- * @return {!ol.Bounds} This.
- */
-ol.Bounds.prototype.setMaxY = function(maxY) {
-    this.maxY_ = maxY;
-    return this;
-};
-
-/**
  * @return {ol.Projection|undefined} Projection.
  */
 ol.Bounds.prototype.getProjection = function() {
@@ -91,9 +55,7 @@ ol.Bounds.prototype.getProjection = function() {
 
 /**
  * @param {ol.Projection|undefined} projection Projection.
- * @return {ol.Bounds} This.
  */
 ol.Bounds.prototype.setProjection = function(projection) {
     this.projection_ = projection;
-    return this;
 };

@@ -61,7 +61,8 @@ ol.bounds = function(opt_arg){
  */
 ol.Bounds.prototype.projection = function(opt_arg){
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
-        return this.setProjection(opt_arg);
+        this.setProjection(opt_arg);
+        return this;
     }
     else {
         return this.getProjection();
@@ -76,7 +77,8 @@ ol.Bounds.prototype.projection = function(opt_arg){
  */
 ol.Bounds.prototype.minX = function(opt_arg){
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
-        return this.setMinX(opt_arg);
+        this.setMinX(opt_arg);
+        return this;
     }
     else {
         return this.getMinX();
@@ -91,7 +93,8 @@ ol.Bounds.prototype.minX = function(opt_arg){
  */
 ol.Bounds.prototype.minY = function(opt_arg){
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
-        return this.setMinY(opt_arg);
+        this.setMinY(opt_arg);
+        return this;
     }
     else {
         return this.getMinY();
@@ -106,7 +109,8 @@ ol.Bounds.prototype.minY = function(opt_arg){
  */
 ol.Bounds.prototype.maxX = function(opt_arg){
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
-        return this.setMaxX(opt_arg);
+        this.setMaxX(opt_arg);
+        return this;
     }
     else {
         return this.getMaxX();
@@ -121,7 +125,8 @@ ol.Bounds.prototype.maxX = function(opt_arg){
  */
 ol.Bounds.prototype.maxY = function(opt_arg){
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
-        return this.setMaxY(opt_arg);
+        this.setMaxY(opt_arg);
+        return this;
     }
     else {
         return this.getMaxY();

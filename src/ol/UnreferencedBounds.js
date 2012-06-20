@@ -45,11 +45,9 @@ ol.UnreferencedBounds.prototype.getMinX = function() {
 
 /**
  * @param {number} minX Minimum X.
- * @return {ol.UnreferencedBounds} This.
  */
 ol.UnreferencedBounds.prototype.setMinX = function(minX) {
     this.minX_ = minX;
-    return this;
 };
 
 /**
@@ -61,11 +59,9 @@ ol.UnreferencedBounds.prototype.getMinY = function() {
 
 /**
  * @param {number} minY Minimum Y.
- * @return {ol.UnreferencedBounds} This.
  */
 ol.UnreferencedBounds.prototype.setMinY = function(minY) {
     this.minY_ = minY;
-    return this;
 };
 
 /**
@@ -77,11 +73,9 @@ ol.UnreferencedBounds.prototype.getMaxX = function() {
 
 /**
  * @param {number} maxX Maximum X.
- * @return {ol.UnreferencedBounds} This.
  */
 ol.UnreferencedBounds.prototype.setMaxX = function(maxX) {
     this.maxX_ = maxX;
-    return this;
 };
 
 /**
@@ -93,10 +87,8 @@ ol.UnreferencedBounds.prototype.getMaxY = function() {
 
 /**
  * @param {number} maxY Maximum Y.
- * @return {ol.UnreferencedBounds} This.
  */
 ol.UnreferencedBounds.prototype.setMaxY = function(maxY) {
     this.maxY_ = maxY;
-    return this;
 };
 
