@@ -1,4 +1,4 @@
-describe("ol.Events", function() {
+describe("ol.event.Events", function() {
     
     var log = [],
         logFn = function(e) {log.push({scope: this, evt: e});};
