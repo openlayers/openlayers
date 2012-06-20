@@ -8,7 +8,7 @@ goog.require('ol.TileSet');
  * Class for XYZ layers.
  * @constructor
  * @param {string} url URL template. E.g.
- *     http://a.tile.openstreetmap.org/${z}/${x}/${y}.png.
+ *     http://a.tile.openstreetmap.org/{z}/{x}/{y}.png.
  */
 ol.layer.XYZ = function(url) {
 
@@ -111,6 +111,7 @@ ol.layer.XYZ.prototype.getData = function(bounds, resolution) {
         zoom = me.zoomForResolution(resolution);
     resolution = me.resolutions_[zoom];
 
+    // define some values used for the actual tiling
     var boundsMinX = bounds.getMinX(),
         boundsMaxX = bounds.getMaxX(),
         boundsMinY = bounds.getMinY(),
@@ -133,6 +134,7 @@ ol.layer.XYZ.prototype.getData = function(bounds, resolution) {
         gridLeft = tileOriginX + tileWidthGeo * offsetX,
         gridTop = tileOriginY - tileHeightGeo * offsetY;
 
+    // now tile
     var tiles = [],
         tile,
         url,
