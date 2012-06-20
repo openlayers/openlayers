@@ -108,7 +108,7 @@ ol.layer.XYZ.prototype.setResolutions = function(resolutions) {
  */
 ol.layer.XYZ.prototype.getData = function(bounds, resolution) {
     var me = this,
-        zoom = me.zoomForResolution_(resolution);
+        zoom = me.zoomForResolution(resolution);
     resolution = me.resolutions_[zoom];
 
     var boundsMinX = bounds.getMinX(),
@@ -157,10 +157,9 @@ ol.layer.XYZ.prototype.getData = function(bounds, resolution) {
 
 /**
  * Get the zoom level (z) for the given resolution.
- * @private
  * @param {number} resolution
  */
-ol.layer.XYZ.prototype.zoomForResolution_ = function(resolution) {
+ol.layer.XYZ.prototype.zoomForResolution = function(resolution) {
     var delta = Number.POSITIVE_INFINITY,
         currentDelta,
         resolutions = this.resolutions_;
