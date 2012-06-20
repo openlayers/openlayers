@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="../OLLoader.js"></script>
+        <script type="text/javascript">
+        
+function test_ZoomToMaxExtent_constructor (t) {
+    t.plan( 2 );
+    
+    // setup
+    var control = new OpenLayers.Control.ZoomToMaxExtent();
+    
+    // tests
+    //
+    t.ok( 
+        control instanceof OpenLayers.Control.ZoomToMaxExtent, 
+        "new OpenLayers.Control.ZoomToMaxExtent returns object"
+    );
+    t.eq( 
+        control.displayClass, "olControlZoomToMaxExtent", 
+        "displayClass is correct"
+    );
+    
+    // tear down
+    control.destroy();
+}
+
+function test_ZoomToMaxExtent_type (t) {
+    t.plan( 1 );
+    
+    // setup
+    var control = new OpenLayers.Control.ZoomToMaxExtent();
+    
+    // check that the type of the control equals OpenLayers.Control.TYPE_BUTTON
+    t.eq(
+        control.type,
+        OpenLayers.Control.TYPE_BUTTON,
+        'ZoomToMaxExtent-control is of type "OpenLayers.Control.TYPE_BUTTON".'
+    );
+    
+    // tear down
+    control.destroy();
+}
+
+function test_ZoomToMaxExtent_trigger (t) {
+    t.plan( 2 );
+    
+    // set up
+    var mapsMaxExtent = new OpenLayers.Bounds(0, 0, 45, 45),
+        mapsInitialExtent = new OpenLayers.Bounds(5, 5, 7, 7),
+        control = new OpenLayers.Control.ZoomToMaxExtent(),
+        map = new OpenLayers.Map("map", {
+            maxExtent: mapsMaxExtent,
+            allOverlays: true,
+            fractionalZoom: true,
+            layers: [
+                new OpenLayers.Layer.Vector()
+            ]
+        }),
+        oldExtent;
+    
+    map.zoomToExtent(mapsInitialExtent);
+    
+    oldExtent = map.getExtent().toString();
+    
+    // tests
+    //
+    // trigger the control before it is being added,
+    // nothing should change
+    control.trigger();
+    t.eq(
+        oldExtent, 
+        map.getExtent().toString(),
+        'Calling trigger on a non added control doesn\'t do anything ' +
+            '(map extent is "' + oldExtent + '").'
+    );
+            
+    // now lets add the control
+    map. addControl(control);
+    
+    // trigger it again, now the map should have a different extent
+    control.trigger();
+    
+    t.eq(
+        map.getExtent().toString(),
+        mapsMaxExtent.toString(),
+        'Calling trigger on a added control changes the map extent ' +
+            '(map extent was "' + oldExtent + '"' + 
+            ' and is now "' + mapsMaxExtent.toString() + '").'
+    );
+    
+    // tear down
+    control.destroy();
+    map.destroy();
+}
+    
+        </script>
+    </head>
+    <body>
+        <div id="map" style="width: 1000px; height: 1000px;"></div>
+    </body>
+</html>

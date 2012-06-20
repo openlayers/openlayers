@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="../OLLoader.js"></script>
+        <script type="text/javascript">
+        
+function test_ZoomIn_constructor (t) {
+    t.plan( 2 );
+    
+    // setup
+    var control = new OpenLayers.Control.ZoomIn();
+    
+    // tests
+    //
+    t.ok( 
+        control instanceof OpenLayers.Control.ZoomIn, 
+        "new OpenLayers.Control.ZoomIn returns object"
+    );
+    t.eq( 
+        control.displayClass, "olControlZoomIn", 
+        "displayClass is correct"
+    );
+    
+    // tear down
+    control.destroy();
+}
+
+function test_ZoomIn_type (t) {
+    t.plan( 1 );
+    
+    // setup
+    var control = new OpenLayers.Control.ZoomIn();
+    
+    // tests
+    //
+    t.eq( 
+        control.type, 
+        OpenLayers.Control.TYPE_BUTTON,
+        "ZoomIn control is of type OpenLayers.Control.TYPE_BUTTON"
+    );
+    
+    // tear down
+    control.destroy();
+}
+
+function test_ZoomIn_trigger (t) {
+    t.plan( 2 );
+    
+    // set up
+    var control = new OpenLayers.Control.ZoomIn(),
+        zoomlevel = 5,
+        map = new OpenLayers.Map("map", {
+            allOverlays: true,
+            layers: [
+                new OpenLayers.Layer.Vector()
+            ],
+            center: new OpenLayers.LonLat(1,1),
+            zoom: zoomlevel
+        }),
+        oldZoom;
+    
+    oldZoom = map.getZoom();
+    
+    // tests
+    //
+    // trigger the control before it is being added,
+    // nothing should change
+    control.trigger();
+    
+    t.eq(
+        oldZoom, 
+        zoomlevel,
+        'Calling trigger on a non added control doesn\'t do anything ' +
+            '(map zoom is ' + oldZoom + ').'
+    );
+            
+    // now lets add the control
+    map.addControl(control);
+
+    // trigger it again, now the map should have a different extent
+    control.trigger();
+    
+    t.eq(
+        map.getZoom(),
+        zoomlevel + 1,
+        'Calling trigger on a added control changes the map zoom ' +
+            '(map zoom was ' + zoomlevel + 
+            ' and is now ' + map.getZoom() + ').'
+    );
+    
+    // tear down
+    control.destroy();
+    map.destroy();
+}
+    
+        </script>
+    </head>
+    <body>
+        <div id="map" style="width: 1000px; height: 1000px;"></div>
+    </body>
+</html>
