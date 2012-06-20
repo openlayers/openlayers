@@ -120,7 +120,7 @@ ol.geom.Point.prototype.transform = function(proj) {
     if (goog.isString(proj)) {
         proj = new ol.Projection(proj);
     }
-    return this.transform_(proj);
+    return this._transform(proj);
 };
 
 /**
@@ -130,13 +130,14 @@ ol.geom.Point.prototype.transform = function(proj) {
  * @returns {!ol.geom.Point}
  * @private
  */
-ol.geom.Point.prototype.transform_ = function(proj) {
-    var point = {x: this.x_, y: this.y_};
+ol.geom.Point.prototype._transform = function(proj) {
+    var point = {'x': this.x_, 'y': this.y_};
     var sourceProj = this.projection_;
     if (!goog.isDefAndNotNull(sourceProj)) {
         throw new Error("Cannot transform a point without a source projection.");
     }
     ol.Projection.transform(point, sourceProj, proj);
-    return new ol.geom.Point(point.x, point.y, this.z_, proj);
+    
+    return new ol.geom.Point(point['x'], point['y'], this.z_, proj);
 };
 
