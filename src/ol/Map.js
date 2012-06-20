@@ -93,8 +93,7 @@ ol.Map.DEFAULT_TILE_SIZE = 256;
  */
 ol.Map.prototype.getCenter = function() {
     var proj = this.getUserProjection();
-    this.center_ = this.center_.transform(proj);
-    return this.center_;
+    return this.center_.transform(proj);
 };
 
 

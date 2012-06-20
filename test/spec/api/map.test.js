@@ -137,6 +137,10 @@ describe("ol.map", function() {
         expect(center.x().toFixed(3)).toBe("1113194.908");
         expect(center.y().toFixed(3)).toBe("2273030.927");
         
+        //make sure the center doesn't change
+        expect(center.x().toFixed(3)).toBe("1113194.908");
+        expect(center.y().toFixed(3)).toBe("2273030.927");
+        
     });
     
     it("provides feedback when you mess up", function() {
