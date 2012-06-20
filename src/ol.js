@@ -5,6 +5,7 @@ goog.require('ol.event.Events');
 goog.require("ol.map");
 goog.require("ol.loc");
 goog.require("ol.projection");
+goog.require("ol.layer.xyz");
 goog.require("ol.Tile");
 goog.require("ol.TileSet");
 goog.require("ol.geom.geometry");
