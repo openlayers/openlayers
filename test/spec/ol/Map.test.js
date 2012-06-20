@@ -7,7 +7,7 @@ describe("ol.Map", function() {
 
         var map = ol.map();
         
-        expect(map instanceof ol.Map).toBe(true);
+        expect(map).toBeA(ol.Map);
         
     });
 
@@ -21,7 +21,7 @@ describe("ol.Map", function() {
         center = map.center();
         expect(center.x().toFixed(3)).toBe("-110.000");
         expect(center.y().toFixed(3)).toBe("45.000");
-        expect(center instanceof ol.Loc).toBe(true);
+        expect(center).toBeA(ol.Loc);
         
         // with object literal
         map.center({x: -111, y: 46});
@@ -29,7 +29,7 @@ describe("ol.Map", function() {
         center = map.center();
         expect(center.x().toFixed(3)).toBe("-111.000");
         expect(center.y().toFixed(3)).toBe("46.000");
-        expect(center instanceof ol.Loc).toBe(true);
+        expect(center).toBeA(ol.Loc);
 
         // more verbose
         map = ol.map({
@@ -39,7 +39,7 @@ describe("ol.Map", function() {
         center = map.center();
         expect(center.x().toFixed(3)).toBe("-112.000");
         expect(center.y().toFixed(3)).toBe("47.000");
-        expect(center instanceof ol.Loc).toBe(true);
+        expect(center).toBeA(ol.Loc);
         
     });
     
@@ -74,7 +74,7 @@ describe("ol.Map", function() {
         var map = ol.map();
         var proj = map.projection();
         
-        expect(proj instanceof ol.Projection).toBe(true);
+        expect(proj).toBeA(ol.Projection);
         expect(proj.code()).toBe("EPSG:3857");
         
     });
@@ -88,14 +88,14 @@ describe("ol.Map", function() {
         });
         proj = map.projection();
         
-        expect(proj instanceof ol.Projection).toBe(true);
+        expect(proj).toBeA(ol.Projection);
         expect(proj.code()).toBe("EPSG:4326");
         
         // after construction
         map.projection("EPSG:3857");
         proj = map.projection();
         
-        expect(proj instanceof ol.Projection).toBe(true);
+        expect(proj).toBeA(ol.Projection);
         expect(proj.code()).toBe("EPSG:3857");
         
     });
@@ -105,7 +105,7 @@ describe("ol.Map", function() {
         var map = ol.map();
         var userproj = map.userProjection();
         
-        expect(userproj instanceof ol.Projection).toBe(true);
+        expect(userproj).toBeA(ol.Projection);
         expect(userproj.code()).toBe("EPSG:4326");
         
     });
@@ -130,7 +130,7 @@ describe("ol.Map", function() {
         var map = ol.map();
         proj = map.userProjection();
         
-        expect(proj instanceof ol.Projection).toBe(true);
+        expect(proj).toBeA(ol.Projection);
         expect(proj.code()).toBe("EPSG:4326");
         
         map.center([10, 20]);
@@ -202,7 +202,7 @@ describe("ol.Map", function() {
         var map = ol.map();
         
         var extent = map.maxExtent();
-        expect(extent instanceof ol.Bounds).toBe(true);
+        expect(extent).toBeA(ol.Bounds);
         expect(extent.minX()).toBe(-20037508.34);
         expect(extent.maxX()).toBe(-20037508.34);
         expect(extent.minY()).toBe(20037508.34);
@@ -215,7 +215,7 @@ describe("ol.Map", function() {
         map.maxExtent([-5,-4,7,9]);
         
         var extent = map.maxExtent();
-        expect(extent instanceof ol.Bounds).toBe(true);
+        expect(extent).toBeA(ol.Bounds);
         expect(extent.minX()).toBe(-5);
         expect(extent.maxX()).toBe(-4);
         expect(extent.minY()).toBe(7);
@@ -228,7 +228,7 @@ describe("ol.Map", function() {
         map.projection("CRS:84");
         
         var extent = map.maxExtent();
-        expect(extent instanceof ol.Bounds).toBe(true);
+        expect(extent).toBeA(ol.Bounds);
         expect(extent.minX()).toBe(-180);
         expect(extent.maxX()).toBe(-90);
         expect(extent.minY()).toBe(180);

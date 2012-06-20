@@ -22,7 +22,7 @@ describe("ol.Bounds", function() {
         expect(bounds.minY()).toBe(11);
         expect(bounds.maxY()).toBe(12);
         proj = bounds.projection();
-        expect(proj instanceof ol.Projection).toBe(true);
+        expect(proj).toBeA(ol.Projection);
         expect(proj.code()).toBe("bar");
 
     });
