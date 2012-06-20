@@ -26,13 +26,13 @@ ol.Map = function() {
      * @private
      * @type {ol.Loc}
      */
-    this.center_ = new ol.Loc(0, 0);
+    this.center_ = null;
 
     /**
      * @private
      * @type {number}
      */
-    this.zoom_ = 0;
+    this.zoom_ = undefined;
 
     /**
      * @private
@@ -135,7 +135,7 @@ ol.Map.prototype.getMaxExtent = function() {
     if (goog.isDefAndNotNull(this.maxExtent_)) {
         return this.maxExtent_;
     } else {
-        var extent = this.projection.getMaxExtent();
+        var extent = this.getProjection().getExtent();
         if (goog.isDefAndNotNull(extent)) {
             return extent;
         } else {
