@@ -1,7 +1,6 @@
 describe("ol.Events", function() {
     
-    var count = 0, log = [],
-        countFn = function() {count++;},
+    var log = [],
         logFn = function(e) {log.push({scope: this, evt: e});};
 
     it("constructs instances", function() {
@@ -91,19 +90,19 @@ describe("ol.Events", function() {
     it("allows to abort the event chain", function() {
         var events = new ol.event.Events("foo");
         
-        count = 0;
+        log = [];
         // register a listener that aborts the event chain
-        events.register("bar", function() {count++; return false;});        
+        events.register("bar", function(e) {logFn(e); return false;});        
         // register a listener that just does something
-        events.register("bar", countFn);        
+        events.register("bar", logFn);        
         events.triggerEvent("bar");
-        expect(count).toBe(1);
+        expect(log.length).toBe(1);
         
-        count = 0;
+        log = [];
         // register a priority listener that just does something
-        events.register("bar", countFn, undefined, true);
+        events.register("bar", logFn, undefined, true);
         events.triggerEvent("bar");
-        expect(count).toBe(2);
+        expect(log.length).toBe(2);
         
         events.destroy();
     });
@@ -111,14 +110,14 @@ describe("ol.Events", function() {
     it("allows to unregister events", function() {
         var events = new ol.event.Events("foo");
         
-        count = 0;
-        events.register("bar", countFn);
+        log = [];
+        events.register("bar", logFn);
         events.triggerEvent("bar");
-        expect(count).toBe(1);
+        expect(log.length).toBe(1);
         
-        events.unregister("bar", countFn);
+        events.unregister("bar", logFn);
         events.triggerEvent("bar");
-        expect(count).toBe(1);
+        expect(log.length).toBe(1);
         
         events.destroy();
     });
@@ -126,27 +125,26 @@ describe("ol.Events", function() {
     it("has working on() and un() convenience methods", function() {
         var scope = {}, events = new ol.event.Events("foo");
         
-        count = 0;
         log = [];
         events.on({
-            "bar": countFn,
+            "bar": logFn,
             "baz": logFn,
             scope: scope
         });
         events.triggerEvent("bar");
-        expect(count).toBe(1);
+        expect(log[0].evt.type).toBe("bar");
         events.triggerEvent("baz");
-        expect(log[0].scope).toBe(scope);
+        expect(log[1].scope).toBe(scope);
+        expect(log[1].evt.type).toBe("baz");
         
         events.un({
-            "bar": countFn,
+            "bar": logFn,
             "baz": logFn,
             scope: scope
         });
         events.triggerEvent("bar");
         events.triggerEvent("baz");
-        expect(count).toBe(1);
-        expect(log.length).toBe(1);
+        expect(log.length).toBe(2);
         
         events.destroy();
     });
