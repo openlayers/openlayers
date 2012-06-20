@@ -43,8 +43,10 @@ ol.event.isMultiTouch = function(evt) {
  *     property on the event object that is passed, which represents the
  *     relative position of the pointer to the {@code element}. Default is
  *     false.
+ * @param {Array.<Object>=} opt_sequences Event sequences to register with this
+ *     events instance.
  */
-ol.event.Events = function(object, opt_element, opt_includeXY) {
+ol.event.Events = function(object, opt_element, opt_includeXY, opt_sequences) {
     
     goog.base(this);
 
@@ -67,6 +69,12 @@ ol.event.Events = function(object, opt_element, opt_includeXY) {
      * @type {boolean}
      */
     this.includeXY_ = goog.isDef(opt_includeXY) ? opt_includeXY : false;
+    
+    /**
+     * @private
+     * @type {Array.<Object>}
+     */
+    this.sequences_ = goog.isDef(opt_sequences) ? opt_sequences : [];
     
     this.setElement(opt_element);
 };
@@ -125,37 +133,6 @@ ol.event.Events.prototype.setElement = function(opt_element) {
 };
 
 /**
- * Convenience method for registering listeners with a common scope.
- * Internally, this method calls 'register' as shown in the examples below.
- *
- *     // register a single listener for the "loadstart" event
- *     events.on({"loadstart": loadStartListener});
- *
- *     // this is equivalent to the following
- *     events.register("loadstart", loadStartListener);
- *
- *     // register multiple listeners to be called with the same `this` object
- *     events.on({
- *         "loadstart": loadStartListener,
- *         "loadend": loadEndListener,
- *         scope: object
- *     });
- *
- *     // this is equivalent to the following
- *     events.register("loadstart", loadStartListener, object);
- *     events.register("loadend", loadEndListener, object);
- *
- * @param {Object} object
- */
-ol.event.Events.prototype.on = function(object) {
-    for (var type in object) {
-        if (type != 'scope' && object.hasOwnProperty(type)) {
-            this.register(type, object[type], object['scope']);
-        }
-    }
-};
-
-/**
  * Register a listener for an event.
  *
  * When the event is triggered, the 'listener' function will be called, in the
@@ -184,37 +161,6 @@ ol.event.Events.prototype.register = function(type, listener, opt_scope,
 };
 
 /**
- * Convenience method for unregistering listeners with a common scope.
- * Internally, this method calls 'unregister' as shown in the examples below.
- * 
- *     // unregister a single listener for the "loadstart" event
- *     events.un({"loadstart": loadStartListener});
- *
- *     // this is equivalent to the following
- *     events.unregister("loadstart", loadStartListener);
- *
- *     // unregister multiple listeners with the same `this` object
- *     events.un({
- *         "loadstart": loadStartListener,
- *         "loadend": loadEndListener,
- *         scope: object
- *     });
- *
- *     // this is equivalent to the following
- *     events.unregister("loadstart", loadStartListener, object);
- *     events.unregister("loadend", loadEndListener, object);
- *
- * @param {Object} object
- */
-ol.event.Events.prototype.un = function(object) {
-    for (var type in object) {
-        if (type != 'scope' && object.hasOwnProperty(type)) {
-            this.unregister(type, object[type], object['scope']);
-        }
-    }
-};
-
-/**
  * Unregister a listener for an event
  *
  * @param {string} type Name of the event to unregister
@@ -235,7 +181,7 @@ ol.event.Events.prototype.unregister = function(type, listener, opt_scope) {
  * @param {string} type The type of the event to trigger.
  * @param {Object} evt The event object that will be passed to listeners.
  *
- * @return {Boolean} The last listener return.  If a listener returns false,
+ * @return {boolean} The last listener return.  If a listener returns false,
  *     the chain of listeners will stop getting called.
  */
 ol.event.Events.prototype.triggerEvent = function(type, evt) {
@@ -252,6 +198,28 @@ ol.event.Events.prototype.triggerEvent = function(type, evt) {
         }
     }
     return returnValue;
+};
+
+/**
+ * @param {Event} evt
+ */
+ol.event.Events.prototype.handleSequences = function(evt) {
+    var sequences = this.sequences_,
+        type = evt.type,
+        sequenceEvt,
+        sequence, browserEvent, providedEventType;
+    for (var i=0, ii=sequences.length; i<ii; ++i) {
+        sequence = sequences[i];
+        for (providedEventType in sequence) {
+            // clone the original event
+            sequenceEvt = {}; goog.object.extend(sequenceEvt, evt);
+            browserEvent = sequence[providedEventType];
+            if (browserEvent[type] && browserEvent[type](evt)) {
+                sequenceEvt.type = providedEventType;
+                this.dispatchEvent(sequenceEvt);
+            }
+        }
+    }
 };
 
 /**
@@ -290,6 +258,7 @@ ol.event.Events.prototype.handleBrowserEvent = function(evt) {
         var element = /** @type {!Element} */ this.element_;
         evt.xy = goog.style.getRelativePosition(evt, element);
     }
+    this.handleSequences(evt);
     this.dispatchEvent(evt);
 };
 
