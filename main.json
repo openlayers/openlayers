@@ -8,11 +8,17 @@
 
   "define": {
     // "goog.dom.ASSUME_STANDARDS_MODE": true,
-    "goog.DEBUG": true
+    "goog.DEBUG": false
   },
 
   "mode": "ADVANCED",
   "level": "VERBOSE",
+  "pretty-print": true,
+  "debug": true,
+
+  "experimental-compiler-options": {
+     "generateExports": true
+  },
 
   "checks": {
     // acceptable values are "ERROR", "WARNING", and "OFF"
