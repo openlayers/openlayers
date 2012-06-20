@@ -2,6 +2,7 @@ describe("ol.Events", function() {
     
     var log = [],
         logFn = function(e) {log.push({scope: this, evt: e});};
+        
 
     it("constructs instances", function() {
         var events, element = document.createElement("div");
@@ -122,29 +123,27 @@ describe("ol.Events", function() {
         events.destroy();
     });
     
-    it("has on() and un() convenience methods", function() {
-        var scope = {}, events = new ol.event.Events("foo");
+    it("can map browser events to sequences", function() {
+        var element = document.createElement("div"),
+            events = new ol.event.Events(
+                "foo", element, false, [ol.event.drag()]
+            );
+        
+        // mock dom object
+        goog.object.extend(element, new goog.events.EventTarget());
         
         log = [];
-        events.on({
-            "bar": logFn,
-            "baz": logFn,
-            scope: scope
-        });
-        events.triggerEvent("bar");
-        expect(log[0].evt.type).toBe("bar");
-        events.triggerEvent("baz");
-        expect(log[1].scope).toBe(scope);
-        expect(log[1].evt.type).toBe("baz");
+        events.register('dragstart', logFn);
+        events.register('drag', logFn);
+        events.register('dragend', logFn);
+
+        element.dispatchEvent("mousedown");
+        element.dispatchEvent("mousemove");
+        element.dispatchEvent("mouseup");
         
-        events.un({
-            "bar": logFn,
-            "baz": logFn,
-            scope: scope
-        });
-        events.triggerEvent("bar");
-        events.triggerEvent("baz");
-        expect(log.length).toBe(2);
+        expect(log[0].evt.type).toBe("dragstart");
+        expect(log[1].evt.type).toBe("drag");
+        expect(log[2].evt.type).toBe("dragend");
         
         events.destroy();
     });
