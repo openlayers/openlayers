@@ -242,6 +242,9 @@ ol.event.Events.prototype.triggerEvent = function(type, evt) {
     var returnValue,
         listeners = goog.events.getListeners(this, type, true)
             .concat(goog.events.getListeners(this, type, false));
+    if (arguments.length === 1) {
+        evt = {type: type};
+    }
     for (var i=0, ii=listeners.length; i<ii; ++i) {
         returnValue = listeners[i].handleEvent(evt);
         if (returnValue === false) {
