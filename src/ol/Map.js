@@ -91,6 +91,8 @@ ol.Map.DEFAULT_TILE_SIZE = 256;
  * @return {ol.Loc} Location.
  */
 ol.Map.prototype.getCenter = function() {
+    var proj = this.getUserProjection();
+    this.center_ = this.center_.transform(proj);
     return this.center_;
 };
 
@@ -201,7 +203,12 @@ ol.Map.prototype.getResolutionForZoom = function(zoom) {
  * @param {ol.Loc} center Center.
  */
 ol.Map.prototype.setCenter = function(center) {
-    this.center_ = center;
+    var proj = center.getProjection();
+    if (goog.isNull(proj)) {
+        proj = this.getUserProjection();
+        center.setProjection(proj);
+    }
+    this.center_ = center.transform(this.getProjection());
 };
 
 

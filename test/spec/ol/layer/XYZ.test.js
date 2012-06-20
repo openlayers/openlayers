@@ -64,7 +64,6 @@ describe('ol.layer.XYZ', function() {
             });
         });
 
-        /*
         describe('extent -64,-64,64,64, resolution 0.5', function() {
 
             it('returns the expected data', function() {
@@ -94,6 +93,6 @@ describe('ol.layer.XYZ', function() {
                 expect(tile.getImg()).toBeDefined();
             });
         });
-        */
+
     });
 });
