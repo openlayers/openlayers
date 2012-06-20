@@ -92,3 +92,16 @@ ol.UnreferencedBounds.prototype.setMaxY = function(maxY) {
     this.maxY_ = maxY;
 };
 
+/**
+ * @return {number} Bounds width.
+ */
+ol.UnreferencedBounds.prototype.getWidth = function() {
+    return this.maxX_ - this.minX_;
+};
+
+/**
+ * @return {number} Bounds height.
+ */
+ol.UnreferencedBounds.prototype.getHeight = function() {
+    return this.maxY_ - this.minY_;
+};
