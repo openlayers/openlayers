@@ -52,7 +52,8 @@ ol.projection = function(opt_arg){
  */
 ol.Projection.prototype.code = function(opt_code){
     if (arguments.length == 1 && goog.isDef(opt_code)) {
-        return this.setCode(opt_code);
+        this.setCode(opt_code);
+        return this;
     }
     else {
         return this.getCode();

@@ -74,41 +74,33 @@ ol.Loc.prototype.getZ = function() {
 
 /**
  * @param {ol.Projection|undefined} projection Projection.
- * @return {ol.Loc} This.
  */
 ol.Loc.prototype.setProjection = function(projection) {
     this.projection_ = projection;
-    return this;
 };
 
 
 /**
  * @param {number} x X.
- * @return {ol.Loc} This.
  */
 ol.Loc.prototype.setX = function(x) {
     this.x_ = x;
-    return this;
 };
 
 
 /**
  * @param {number} y Y.
- * @return {ol.Loc} This.
  */
 ol.Loc.prototype.setY = function(y) {
     this.y_ = y;
-    return this;
 };
 
 
 /**
  * @param {number|undefined} z Z.
- * @return {ol.Loc} This.
  */
 ol.Loc.prototype.setZ = function(z) {
     this.z_ = z;
-    return this;
 };
 
 /**

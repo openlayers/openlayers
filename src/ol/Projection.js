@@ -43,11 +43,9 @@ ol.Projection.prototype.getCode = function() {
 
 /**
  * @param {string} code Code.
- * @return {!ol.Projection} This.
  */
 ol.Projection.prototype.setCode = function(code) {
     this.code_ = code;
-    return this;
 };
 
 /**
@@ -59,11 +57,9 @@ ol.Projection.prototype.getUnits = function() {
 
 /**
  * @param {string} units Units abbreviation.
- * @return {!ol.Projection} This.
  */
 ol.Projection.prototype.setUnits = function(units) {
     this.units_ = units;
-    return this;
 };
 
 /**
@@ -77,11 +73,9 @@ ol.Projection.prototype.getExtent = function() {
 
 /**
  * @param {!ol.UnreferencedBounds} extent Validity extent.
- * @return {ol.Projection} This.
  */
 ol.Projection.prototype.setExtent = function(extent) {
     this.extent_ = extent;
-    return this;
 };
 
 /**

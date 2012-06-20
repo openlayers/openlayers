@@ -31,9 +31,9 @@ ol.map = function(opt_arg){
     var userProjection;
     /** @type {ol.Bounds|undefined} */
     var maxExtent;
-    /** @type {array|undefined} */
+    /** @type {Array.<number>|undefined} */
     var resolutions;
-    /** @type {array|undefined} */
+    /** @type {Array|undefined} */
     var layers;
    
     if (arguments.length == 1) {
@@ -90,7 +90,8 @@ ol.map = function(opt_arg){
  */
 ol.Map.prototype.center = function(opt_arg) {
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
-        return this.setCenter(ol.loc(opt_arg));
+        this.setCenter(ol.loc(opt_arg));
+        return this;
     } else {
         return this.getCenter();
     }
@@ -102,7 +103,8 @@ ol.Map.prototype.center = function(opt_arg) {
  */
 ol.Map.prototype.projection = function(opt_arg) {
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
-        return this.setProjection(ol.projection(opt_arg));
+        this.setProjection(ol.projection(opt_arg));
+        return this;
     } else {
         return this.getProjection();
     }
@@ -114,7 +116,8 @@ ol.Map.prototype.projection = function(opt_arg) {
  */
 ol.Map.prototype.userProjection = function(opt_arg) {
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
-        return this.setUserProjection(ol.projection(opt_arg));
+        this.setUserProjection(ol.projection(opt_arg));
+        return this;
     } else {
         return this.getUserProjection();
     }
@@ -126,7 +129,8 @@ ol.Map.prototype.userProjection = function(opt_arg) {
  */
 ol.Map.prototype.zoom = function(opt_arg) {
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
-        return this.setZoom(opt_arg);
+        this.setZoom(opt_arg);
+        return this;
     } else {
         return this.getZoom();
     }
@@ -138,7 +142,8 @@ ol.Map.prototype.zoom = function(opt_arg) {
  */
 ol.Map.prototype.numZoomLevels = function(opt_arg) {
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
-        return this.setNumZoomLevels(opt_arg);
+        this.setNumZoomLevels(opt_arg);
+        return this;
     } else {
         return this.getNumZoomLevels();
     }
@@ -150,7 +155,8 @@ ol.Map.prototype.numZoomLevels = function(opt_arg) {
  */
 ol.Map.prototype.resolutions = function(opt_arg) {
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
-        return this.setResolutions(opt_arg);
+        this.setResolutions(opt_arg);
+        return this;
     } else {
         return this.getResolutions();
     }
@@ -162,7 +168,8 @@ ol.Map.prototype.resolutions = function(opt_arg) {
  */
 ol.Map.prototype.layers = function(opt_arg) {
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
-        return this.setLayers(opt_arg);
+        this.setLayers(opt_arg);
+        return this;
     } else {
         return this.getLayers();
     }
@@ -170,11 +177,12 @@ ol.Map.prototype.layers = function(opt_arg) {
 
 /**
  * @param {Array=} opt_arg  
- * @returns {ol.Map|ol.Bounds|undefined} Map max extent.
+ * @returns {ol.Map|ol.UnreferencedBounds|undefined} Map max extent.
  */
 ol.Map.prototype.maxExtent = function(opt_arg) {
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
-        return this.setMaxExtent(ol.bounds(opt_arg));
+        this.setMaxExtent(ol.bounds(opt_arg));
+        return this;
     } else {
         return this.getMaxExtent();
     }

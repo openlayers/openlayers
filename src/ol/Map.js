@@ -30,7 +30,7 @@ ol.Map = function() {
 
     /**
      * @private
-     * @type {number}
+     * @type {number|undefined}
      */
     this.zoom_ = undefined;
 
@@ -54,14 +54,14 @@ ol.Map = function() {
 
 };
 
-/** 
+/**
   @const
-  @type {string} 
+  @type {string}
 */
 ol.Map.prototype.DEFAULT_PROJECTION = "EPSG:3857";
-/** 
+/**
   @const
-  @type {string} 
+  @type {string}
 */
 ol.Map.prototype.DEFAULT_USER_PROJECTION = "EPSG:4326";
 
@@ -97,7 +97,7 @@ ol.Map.prototype.getUserProjection = function() {
 
 
 /**
- * @return {number} Zoom.
+ * @return {number|undefined} Zoom.
  */
 ol.Map.prototype.getZoom = function() {
     return this.zoom_;
@@ -129,7 +129,7 @@ ol.Map.prototype.getLayers = function() {
 
 
 /**
- * @return {ol.Bounds} the maxExtent for the map
+ * @return {ol.UnreferencedBounds} the maxExtent for the map
  */
 ol.Map.prototype.getMaxExtent = function() {
     if (goog.isDefAndNotNull(this.maxExtent_)) {
@@ -142,84 +142,67 @@ ol.Map.prototype.getMaxExtent = function() {
             throw('maxExtent must be defined either in the map or the projection');
         }
     }
-        
 };
 
 
 /**
  * @param {ol.Loc} center Center.
- * @return {ol.Map} This.
  */
 ol.Map.prototype.setCenter = function(center) {
     this.center_ = center;
-    return this;
 };
 
 
 /**
  * @param {ol.Projection} projection Projection.
- * @return {ol.Map} This.
  */
 ol.Map.prototype.setProjection = function(projection) {
     this.projection_ = projection;
-    return this;
 };
 
 
 /**
  * @param {ol.Projection} userProjection set the user projection.
- * @return {ol.Map} This.
  */
 ol.Map.prototype.setUserProjection = function(userProjection) {
     this.userProjection_ = userProjection;
-    return this;
 };
 
 
 /**
  * @param {number} zoom Zoom.
- * @return {ol.Map} This.
  */
 ol.Map.prototype.setZoom = function(zoom) {
     this.zoom_ = zoom;
-    return this;
 };
 
 
 /**
  * @param {number} nZoom Zoom.
- * @return {ol.Map} This.
  */
 ol.Map.prototype.setNumZoomLevels = function(nZoom) {
     this.numZoomLevels_ = nZoom;
-    return this;
 };
 
 /**
  * @param {Array} resolutions the map resolutions if set on the map
- * @return {ol.Map} This.
  */
 ol.Map.prototype.setResolutions = function(resolutions) {
     this.resolutions_ = resolutions;
-    return this;
 };
 
 /**
  * @param {Array} layers the layers set on the map
- * @return {ol.Map} This.
  */
 ol.Map.prototype.setLayers = function(layers) {
     this.layers_ = layers;
-    return this;
 };
 
 /**
  * @param {ol.Bounds} extent the maxExtent for the map
- * @return {ol.Map} This.
  */
 ol.Map.prototype.setMaxExtent = function(extent) {
     this.maxExtent_ = extent;
-    return this;
 };
 
 /**

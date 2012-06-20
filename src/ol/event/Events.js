@@ -11,7 +11,7 @@ goog.require('goog.style');
 /**
  * Determine whether event was caused by a single touch
  *
- * @param {goog.events.BrowserEvent} evt
+ * @param {Event} evt
  * @return {boolean}
  */
 ol.event.isSingleTouch = function(evt) {
@@ -21,7 +21,7 @@ ol.event.isSingleTouch = function(evt) {
 /**
  * Determine whether event was caused by a multi touch
  *
- * @param {goog.events.BrowserEvent} evt
+ * @param {Event} evt
  * @return {boolean}
  */
 ol.event.isMultiTouch = function(evt) {
@@ -49,27 +49,26 @@ ol.event.Events = function(object, opt_element, opt_includeXY) {
     goog.base(this);
 
     /**
+     * @private
      * @type {Object}
      * The object that this instance is bound to.
      */
     this.object_ = object;
 
     /**
-     * @type {EventTarget|undefined}
+     * @private
+     * @type {EventTarget}
      * The element that this instance listens to mouse events on.
      */
-    this.element_ = opt_element;
+    this.element_ = null;
 
-    /** 
+    /**
+     * @private
      * @type {boolean}
      */
     this.includeXY_ = goog.isDef(opt_includeXY) ? opt_includeXY : false;
     
-    // if a dom element is specified, add a listeners list 
-    // for browser events on the element and register them
-    if (goog.isDef(opt_element)) {
-        this.attachToElement_(opt_element);
-    }
+    this.setElement(opt_element);
 };
 goog.inherits(ol.event.Events, goog.events.EventTarget);
 
@@ -81,41 +80,47 @@ ol.event.Events.prototype.getObject = function() {
 };
 
 /**
- * Attach this instance to a DOM element. If this is called, all browser events
- * fired on the provided element will be relayed by this instance.
- *
- * @param {!EventTarget} element A DOM element to attach
- *     browser events to.
+ * @param {boolean} includeXY
  */
-ol.event.Events.prototype.attachToElement_ = function(element) {
-    if (this.element_) {
-        this.detachFromElement_();
-    }
-    this.element_ = element;
-    var t, types = goog.events.EventType;
-    for (t in types) {
-        // register the event cross-browser
-        goog.events.listen(
-            element, types[t], this.handleBrowserEvent_, false, this
-        );
-    }
+ol.event.Events.prototype.setIncludeXY = function(includeXY) {
+    this._includeXY = includeXY;
 };
 
 /**
- * Detach this instance from a DOM element.
+ * @return {EventTarget} The element that this instance currently
+ *     listens to browser events on.
  */
-ol.event.Events.prototype.detachFromElement_ = function() {
-    var t, types = goog.events.EventType,
-        element = this.element_;
-    if (goog.isDef(element)) {
+ol.event.Events.prototype.getElement = function() {
+    return this.element_;
+};
+
+/**
+ * Attach this instance to a DOM element. When called, all browser events fired
+ * on the provided element will be relayed by this instance.
+ *
+ * @param {EventTarget=} opt_element A DOM element to attach
+ *     browser events to. If called without this argument, all browser events
+ *     will be detached from the element they are currently attached to.
+ */
+ol.event.Events.prototype.setElement = function(opt_element) {
+    var t, types = goog.events.EventType;
+    if (this.element_) {
         for (t in types) {
             // register the event cross-browser
             goog.events.unlisten(
-                element, types[t], this.handleBrowserEvent_, false, this
+                this.element_, types[t], this.handleBrowserEvent, false, this
             );
         }
         delete this.element_;
-        
+    }
+    if (goog.isDef(opt_element)) {
+        this.element_ = opt_element;
+        for (t in types) {
+            // register the event cross-browser
+            goog.events.listen(
+                opt_element, types[t], this.handleBrowserEvent, false, this
+            );
+        }
     }
 };
 
@@ -250,10 +255,9 @@ ol.event.Events.prototype.triggerEvent = function(type, evt) {
  * Basically just a wrapper to the triggerEvent() function, but takes 
  * care to set a property 'xy' on the event with the current mouse position.
  * 
- * @private
- * @param {goog.events.BrowserEvent} evt
+ * @param {Event} evt
  */
-ol.event.Events.prototype.handleBrowserEvent_ = function(evt) {
+ol.event.Events.prototype.handleBrowserEvent = function(evt) {
     if (!goog.isDef(this.element_)) {
         return;
     }
@@ -279,10 +283,10 @@ ol.event.Events.prototype.handleBrowserEvent_ = function(evt) {
         evt.clientX = x / num;
         evt.clientY = y / num;
     }
-    var element = /** @type {!Element} */ this._element;
     if (this.includeXY) {
+        var element = /** @type {!Element} */ this.element_;
         evt.xy = goog.style.getRelativePosition(evt, element);
-    } 
+    }
     this.dispatchEvent(evt);
 };
 
