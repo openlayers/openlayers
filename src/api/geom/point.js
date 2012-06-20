@@ -48,3 +48,66 @@ ol.geom.point = function(opt_arg){
     return p;
 };
 goog.inherits(ol.geom.point, ol.geom.geometry);
+
+
+/**
+ * @export
+ * @param {number=} opt_arg X.
+ * @return {ol.geom.Point|number} Result.
+ */
+ol.geom.Point.prototype.x = function(opt_arg){
+    if (arguments.length == 1 && goog.isDef(opt_arg)) {
+        this.setX(opt_arg);
+        return this;
+    }
+    else {
+        return this.getX();
+    }
+};
+
+
+/**
+ * @export
+ * @param {number=} opt_arg Y.
+ * @return {ol.geom.Point|number} Result.
+ */
+ol.geom.Point.prototype.y = function(opt_arg){
+    if (arguments.length == 1 && goog.isDef(opt_arg)) {
+        this.setY(opt_arg);
+        return this;
+    }
+    else {
+        return this.getY();
+    }
+};
+
+
+/**
+ * @export
+ * @param {number=} opt_arg Z.
+ * @return {ol.geom.Point|number|undefined} Result.
+ */
+ol.geom.Point.prototype.z = function(opt_arg){
+    if (arguments.length == 1 && goog.isDef(opt_arg)) {
+        this.setZ(opt_arg);
+        return this;
+    }
+    else {
+        return this.getZ();
+    }
+};
+
+/**
+ * @export
+ * @param {ol.Projection=} opt_arg Projection.
+ * @return {ol.geom.Point|ol.Projection|undefined} Result.
+ */
+ol.geom.Point.prototype.projection = function(opt_arg){
+    if (arguments.length == 1 && goog.isDef(opt_arg)) {
+        this.setProjection(ol.projection(opt_arg));
+        return this;
+    }
+    else {
+        return this.getProjection();
+    }
+};

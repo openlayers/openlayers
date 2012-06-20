@@ -65,70 +65,98 @@ describe("ol.geom.point", function() {
                 expect(instance).toEqual(jasmine.any(ol.geom.Geometry));
             });
             
-            it("has the coordinate accessor methods (" + instancesDesc + ")", function() {
-                expect(instance.getX).not.toBeUndefined();
-                expect(instance.getY).not.toBeUndefined();
-                expect(instance.getZ).not.toBeUndefined();
-                expect(instance.setX).not.toBeUndefined();
-                expect(instance.setY).not.toBeUndefined();
-                expect(instance.setZ).not.toBeUndefined();
+            it("has coordinate getter/setter methods (" + instancesDesc + ")", function() {
+                expect(instance.x).not.toBeUndefined();
+                expect(instance.y).not.toBeUndefined();
+                expect(instance.z).not.toBeUndefined();
+                
+                // always a number
+                expect( !isNaN( instance.x() ) ).toBe(true); 
+                // setter returns self
+                expect(instance.x(47)).toBeA(ol.geom.Point); 
+                // getter returns correct number
+                expect(instance.x()).toBe(47);
+                
+                // always a number
+                expect( !isNaN( instance.y() ) ).toBe(true); 
+                // setter returns self
+                expect(instance.y(74)).toBeA(ol.geom.Point);
+                // getter returns correct number
+                expect(instance.y()).toBe(74);
+                
+                // always number or undefined
+                expect(instance.z() === undefined || !isNaN(instance.z()) ).toBe(true); 
+                // setter returns self
+                expect(instance.z(0.074)).toBeA(ol.geom.Point);
+                // getter returns correct number
+                expect(instance.z()).toBe(0.074);
+                
             });
             
-            it("has the projection accessor methods (" + instancesDesc + ")", function() {
-                expect(instance.getProjection).not.toBeUndefined();
-                expect(instance.setProjection).not.toBeUndefined();
+            it("has projection getter/setter methods (" + instancesDesc + ")", function() {
+                expect(instance.projection).not.toBeUndefined();
+                
+                var getRes = instance.projection();
+                expect(getRes === null || getRes instanceof ol.Projection).toBe(true);
+                
+                var setRes = instance.projection("EPSG:12345");
+                expect(setRes instanceof ol.geom.Point).toBe(true);
+                
+                getRes = instance.projection();
+                expect(getRes).toBeA(ol.Projection);
+                expect(getRes.code()).toEqual("EPSG:12345");
             });
         }
     }
     
     it("has functional getters (no arguments passed)", function(){
-        expect(pNoArgs.getX()).toBe(0);
-        expect(pNoArgs.getY()).toBe(0);
-        expect(pNoArgs.getZ()).toBeUndefined();
-        expect(pNoArgs.getProjection()).toBeNull();
+        expect(pNoArgs.x()).toBe(0);
+        expect(pNoArgs.y()).toBe(0);
+        expect(pNoArgs.z()).toBeUndefined();
+        expect(pNoArgs.projection()).toBeNull();
     });
     
     it("has functional getters (one argument <Array[x,y]> passed)", function(){
-        expect(pNoZ_arr.getX()).toBe(21);
-        expect(pNoZ_arr.getY()).toBe(4);
-        expect(pNoZ_arr.getZ()).toBeUndefined();
-        expect(pNoZ_arr.getProjection()).toBeNull();
+        expect(pNoZ_arr.x()).toBe(21);
+        expect(pNoZ_arr.y()).toBe(4);
+        expect(pNoZ_arr.z()).toBeUndefined();
+        expect(pNoZ_arr.projection()).toBeNull();
     });
     
     it("has functional getters (one argument <Array[x,y,z]> passed)", function(){
-        expect(pWithZ_arr.getX()).toBe(21);
-        expect(pWithZ_arr.getY()).toBe(4);
-        expect(pWithZ_arr.getZ()).toBe(8);
-        expect(pWithZ_arr.getProjection()).toBeNull();
+        expect(pWithZ_arr.x()).toBe(21);
+        expect(pWithZ_arr.y()).toBe(4);
+        expect(pWithZ_arr.z()).toBe(8);
+        expect(pWithZ_arr.projection()).toBeNull();
     });
     
     it("has functional getters (one argument <Array[x,y,z,projection]> passed)", function(){
-        expect(p_arr.getX()).toBe(21);
-        expect(p_arr.getY()).toBe(4);
-        expect(p_arr.getZ()).toBe(8);
-        expect(p_arr.getProjection()).not.toBeNull();
-        expect(p_arr.getProjection()).toEqual(jasmine.any(ol.Projection));
+        expect(p_arr.x()).toBe(21);
+        expect(p_arr.y()).toBe(4);
+        expect(p_arr.z()).toBe(8);
+        expect(p_arr.projection()).not.toBeNull();
+        expect(p_arr.projection()).toBeA(ol.Projection);
     });
     
     it("has functional getters (one argument <Object{x,y}> passed)", function(){
-        expect(pNoZ_obj.getX()).toBe(21);
-        expect(pNoZ_obj.getY()).toBe(4);
-        expect(pNoZ_obj.getZ()).toBeUndefined();
-        expect(pNoZ_obj.getProjection()).toBeNull();
+        expect(pNoZ_obj.x()).toBe(21);
+        expect(pNoZ_obj.y()).toBe(4);
+        expect(pNoZ_obj.z()).toBeUndefined();
+        expect(pNoZ_obj.projection()).toBeNull();
     });
     
     it("has functional getters (one argument <Object{x,y,z}> passed)", function(){
-        expect(pWithZ_obj.getX()).toBe(21);
-        expect(pWithZ_obj.getY()).toBe(4);
-        expect(pWithZ_obj.getZ()).toBe(8);
-        expect(pWithZ_obj.getProjection()).toBeNull();
+        expect(pWithZ_obj.x()).toBe(21);
+        expect(pWithZ_obj.y()).toBe(4);
+        expect(pWithZ_obj.z()).toBe(8);
+        expect(pWithZ_obj.projection()).toBeNull();
     });
     
     it("has functional getters (one argument <Object{x,y,z,projection}> passed)", function(){
-        expect(p_obj.getX()).toBe(21);
-        expect(p_obj.getY()).toBe(4);
-        expect(p_obj.getZ()).toBe(8);
-        expect(p_obj.getProjection()).not.toBeNull();
-        expect(p_obj.getProjection()).toEqual(jasmine.any(ol.Projection));
+        expect(p_obj.x()).toBe(21);
+        expect(p_obj.y()).toBe(4);
+        expect(p_obj.z()).toBe(8);
+        expect(p_obj.projection()).not.toBeNull();
+        expect(p_obj.projection()).toEqual(jasmine.any(ol.Projection));
     });
 });
