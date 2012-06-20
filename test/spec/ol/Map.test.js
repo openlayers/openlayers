@@ -133,6 +133,7 @@ describe("ol.Map", function() {
         expect(proj instanceof ol.Projection).toBe(true);
         expect(proj.code()).toBe("EPSG:4326");
         
+        debugger;
         map.center([10, 20]);
         
         map.userProjection("EPSG:3857");
@@ -167,9 +168,7 @@ describe("ol.Map", function() {
         
         map.destroy();
 
-        expect(function() {
-            map.center([3, 4]);
-        }).toThrow();
+        expect(goog.isDef(map.layers)).toBe(false);
         
     });
     
@@ -186,7 +185,6 @@ describe("ol.Map", function() {
     
     it("resolutions array is mutable", function() {
         var map = ol.map();
-        debugger;
         map.resolutions([1,2,3]);
         
         var resolutions = map.resolutions();
