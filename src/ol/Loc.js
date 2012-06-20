@@ -33,9 +33,9 @@ ol.Loc = function(x, y, opt_z, opt_projection) {
     
     /**
      * @private
-     * @type {ol.Projection|undefined}
+     * @type {ol.Projection}
      */
-    this.projection_ = opt_projection;
+    this.projection_ = goog.isDef(opt_projection) ? opt_projection : null;
 
 };
 
@@ -73,7 +73,7 @@ ol.Loc.prototype.getZ = function() {
 
 
 /**
- * @param {ol.Projection|undefined} projection Projection.
+ * @param {ol.Projection} projection Projection.
  */
 ol.Loc.prototype.setProjection = function(projection) {
     this.projection_ = projection;
