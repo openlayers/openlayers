@@ -54,14 +54,14 @@ ol.Map = function() {
 
 };
 
-/** 
+/**
   @const
-  @type {string} 
+  @type {string}
 */
 ol.Map.prototype.DEFAULT_PROJECTION = "EPSG:3857";
-/** 
+/**
   @const
-  @type {string} 
+  @type {string}
 */
 ol.Map.prototype.DEFAULT_USER_PROJECTION = "EPSG:4326";
 
@@ -142,7 +142,6 @@ ol.Map.prototype.getMaxExtent = function() {
             throw('maxExtent must be defined either in the map or the projection');
         }
     }
-        
 };
 
 
