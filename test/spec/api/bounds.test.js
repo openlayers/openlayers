@@ -1,4 +1,4 @@
-describe("ol.Bounds", function() {
+describe("ol.bounds", function() {
     
     it("allows flexible construction", function() {
         var bounds, proj;

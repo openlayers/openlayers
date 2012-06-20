@@ -1,4 +1,4 @@
-describe("ol.geom.Geometry", function() { 
+describe("ol.geom.geometry", function() { 
     var g;
     
     beforeEach(function() {

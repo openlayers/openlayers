@@ -1,7 +1,4 @@
-describe("ol.Map", function() {
-    
-    // HPI - Hipster Programming Interface
-    // EPI - Enterprise Programming Interface
+describe("ol.map", function() {
     
     it("should be easy to make a map", function() {
 

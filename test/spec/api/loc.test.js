@@ -1,4 +1,4 @@
-describe("ol.Loc", function() {
+describe("ol.loc", function() {
 
     it("allows empty construction", function() {
         var loc;
@@ -69,7 +69,7 @@ describe("ol.Loc", function() {
         var loc = ol.loc({x: 1, y: 2, projection: "EPSG:4326"});
 
         proj = loc.projection();
-        expect(proj).toBe(ol.Projection);
+        expect(proj).toBeA(ol.Projection);
         expect(proj.code()).toBe("EPSG:4326");
         
         // after construction
