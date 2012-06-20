@@ -51,20 +51,6 @@ ol.Projection.prototype.setCode = function(code) {
 };
 
 /**
- * @export
- * @param {string=} opt_code Code.
- * @return {!ol.Projection|string} Result.
- */
-ol.Projection.prototype.code = function(opt_code){
-    if (arguments.length == 1 && goog.isDef(opt_code)) {
-        return this.setCode(opt_code);
-    }
-    else {
-        return this.getCode();
-    }
-};
-
-/**
  * @return {string|undefined} Units abbreviation.
  */
 ol.Projection.prototype.getUnits = function() {
@@ -96,21 +82,6 @@ ol.Projection.prototype.getExtent = function() {
 ol.Projection.prototype.setExtent = function(extent) {
     this.extent_ = extent;
     return this;
-};
-
-/**
- * @export
- * @param {string=} opt_units Units abbreviation.
- * @return {undefined|!ol.Projection|string} Result.
- * TODO: move to api folder
- */
-ol.Projection.prototype.units = function(opt_units){
-    if (goog.isDef(opt_units)) {
-        return this.setUnits(opt_units);
-    }
-    else {
-        return this.getUnits();
-    }
 };
 
 /**

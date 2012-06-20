@@ -45,3 +45,30 @@ ol.projection = function(opt_arg){
     return proj;
 };
 
+/**
+ * @export
+ * @param {string=} opt_code Code.
+ * @return {!ol.Projection|string} Result.
+ */
+ol.Projection.prototype.code = function(opt_code){
+    if (arguments.length == 1 && goog.isDef(opt_code)) {
+        return this.setCode(opt_code);
+    }
+    else {
+        return this.getCode();
+    }
+};
+
+/**
+ * @export
+ * @param {string=} opt_units Units abbreviation.
+ * @return {undefined|!ol.Projection|string} Result.
+ */
+ol.Projection.prototype.units = function(opt_units){
+    if (goog.isDef(opt_units)) {
+        return this.setUnits(opt_units);
+    }
+    else {
+        return this.getUnits();
+    }
+};
