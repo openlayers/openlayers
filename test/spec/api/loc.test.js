@@ -1,11 +1,12 @@
 describe("ol.loc", function() {
 
-    it("allows empty construction", function() {
-        var loc;
+    it("doesn't allow empty construction", function() {
 
-        // nowhere
-        loc = ol.loc();
-        expect(loc).toBeA(ol.Loc);
+        expect(function() {
+            // nowhere
+            var loc = ol.loc();
+        }).toThrow();
+
     });
         
     it("allows construction from an obj config", function() {

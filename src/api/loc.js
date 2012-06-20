@@ -22,11 +22,20 @@ ol.loc = function(opt_arg){
         return opt_arg;
     }
     
-    var x = 0;
-    var y = 0;
+    /** @type {number|undefined} */
+    var x;
+
+    /** @type {number|undefined} */
+    var y;
+
+    /** @type {number|undefined} */
     var z;
+
+    /** @type {Object|undefined} */
     var projection;
     
+    var usage = 'ol.loc accepts a coordinate array or an object with x, y, and (optional) z properties';
+
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
         if (goog.isArray(opt_arg)) {
             x = opt_arg[0];
@@ -39,8 +48,12 @@ ol.loc = function(opt_arg){
             z = opt_arg['z'];
             projection = opt_arg['projection'];
         } else {
-            throw new Error('ol.loc');
+            throw new Error(usage);
         }
+    }
+    
+    if (!goog.isNumber(x) || !goog.isNumber(y)) {
+        throw new Error(usage);
     }
 
     if (goog.isDef(projection)) {
