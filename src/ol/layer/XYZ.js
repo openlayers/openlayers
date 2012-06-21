@@ -22,41 +22,9 @@ ol.layer.XYZ = function(url) {
      */
     this.url_ = url;
 
-    /**
-     * @private
-     * @type {number}
-     */
-    this.tileWidth_ = 256;
+    goog.base(this);
 
-    /**
-     * @private
-     * @type {number}
-     */
-    this.tileHeight_ = 256;
-
-    /**
-     * @private
-     * @type {number}
-     */
-    this.tileOriginX_ = -20037508.34;
-
-    /**
-     * @private
-     * @type {number}
-     */
-    this.tileOriginY_ = 20037508.34;
-
-    /**
-     * @private
-     * @type {ol.Projection}
-     */
-    this.projection_ = new ol.Projection('EPSG:900913');
-
-    /**
-     * @private
-     * @type {Array.<number>}
-     */
-    this.resolutions_ = [
+    this.setResolutions([
         156543.03390625, 78271.516953125, 39135.7584765625,
         19567.87923828125, 9783.939619140625, 4891.9698095703125,
         2445.9849047851562, 1222.9924523925781, 611.4962261962891,
@@ -65,47 +33,10 @@ ol.layer.XYZ = function(url) {
         4.777314267158508, 2.388657133579254, 1.194328566789627,
         0.5971642833948135, 0.29858214169740677, 0.14929107084870338,
         0.07464553542435169
-    ];
-
+    ]);
 };
 
 goog.inherits(ol.layer.XYZ, ol.layer.TileLayer);
-
-/**
- * Set tile width and height.
- * @param {number} width
- * @param {number} height
- */
-ol.layer.XYZ.prototype.setTileSize = function(width, height) {
-    this.tileWidth_ = width;
-    this.tileHeight_ = height;
-};
-
-/**
- * Set the layer max extent.
- * @param {ol.Bounds} maxExtent
- */
-ol.layer.XYZ.prototype.setMaxExtent = function(maxExtent) {
-    this.maxExtent_ = maxExtent;
-};
-
-/**
- * Set tile origin.
- * @param {number} tileOriginX
- * @param {number} tileOriginY
- */
-ol.layer.XYZ.prototype.setTileOrigin = function(tileOriginX, tileOriginY) {
-    this.tileOriginX_ = tileOriginX;
-    this.tileOriginY_ = tileOriginY;
-};
-
-/**
- * Set resolutions for the layer.
- * @param {Array.<number>} resolutions
- */
-ol.layer.XYZ.prototype.setResolutions = function(resolutions) {
-    this.resolutions_ = resolutions;
-};
 
 /**
  * Get data from the layer. This is the layer's main API function.
@@ -126,8 +57,9 @@ ol.layer.XYZ.prototype.getData = function(bounds, resolution) {
         tileWidth = me.tileWidth_,
         tileHeight = me.tileHeight_,
 
-        tileOriginX = me.tileOriginX_,
-        tileOriginY = me.tileOriginY_,
+        tileOrigin = me.getTileOrigin(),
+        tileOriginX = tileOrigin[0],
+        tileOriginY = tileOrigin[1],
 
         tileWidthGeo = tileWidth * resolution,
         tileHeightGeo = tileHeight * resolution,
