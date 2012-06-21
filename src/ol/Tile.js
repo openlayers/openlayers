@@ -26,7 +26,7 @@ ol.Tile = function(url, bounds) {
 
     /**
      * @private
-     * @type {Element}
+     * @type {HTMLImageElement}
      */
     this.img_ = ol.Tile.createImage();
     goog.events.listenOnce(this.img_, goog.events.EventType.LOAD,
@@ -66,7 +66,7 @@ ol.Tile.prototype.getBounds = function() {
 
 /**
  * Get the tile image.
- * @return {Element}
+ * @return {HTMLImageElement}
  */
 ol.Tile.prototype.getImg = function() {
     return this.img_;
@@ -98,7 +98,7 @@ ol.Tile.prototype.destroy = function() {
 /**
  * Create an image node. This is done by cloning
  * the same image element.
- * @return {Element}
+ * @return {HTMLImageElement}
  */
 ol.Tile.createImage = (function() {
     var img = document.createElement("img");
