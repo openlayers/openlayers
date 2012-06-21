@@ -8,6 +8,7 @@ goog.require('ol.renderer.MapRenderer');
 goog.require('ol.layer.Layer');
 goog.require('ol.Loc');
 
+
 /**
  * Initialization of the native WebGL renderer (canvas, context, layers)
  * @constructor
@@ -16,28 +17,33 @@ goog.require('ol.Loc');
  */
 ol.renderer.WebGL = function(target) {
     
-    /** @type {!Element} */
-    var canvasEl = goog.dom.createDom('canvas',
-        {style: 'width:100%;height:100%;'});
-
-
-    var upgradeRedirector = function() {
-      /** @type {!Element} */
-      var upgradeLinkEl = goog.dom.createDom('a',
-          {style: 'font-size:110%;display:block;width:100%;top:50%;' +
-                'position:relative;text-align:center;color:#800000;' +
-                'text-shadow:rgba(0,0,0,0.4) 0 0 6px;',
-            href: 'http://get.webgl.org/'
-          }, 'You need a WebGL-enabled browser to run this application.');
-      goog.dom.append(/** @type {!Element} */ (divEl), upgradeLinkEl);
-    };
-
     /**
-     * @type {!we.gl.Context}
+     * @private
+     * @type {!Element}
      */
-    this.context = new we.gl.Context(canvasEl, null, upgradeRedirector);
+    this.canvas_ = goog.dom.createDom('canvas', 'ol-renderer-webgl-canvas'}); // Suppose to have: style: 'width:100%;height:100%;'
+    
+    /**
+     * @private
+     * @type {WebGLRenderingContext}
+     */
+    this.gl_ = (canvas.getContext('experimental-webgl', {
+        'alpha': false,
+        'depth': false,
+        'antialias': true,
+        'stencil': false,
+        'preserveDrawingBuffer': false
+    }));
+    goog.asserts.assert(!goog.isNull(this.gl_), "The WebGL is not supported on your browser. Check http://get.webgl.org/");
+    var gl = this.gl_;
 
-    if (!goog.isDefAndNotNull(this.context)) return;
+    goog.dom.append(target, this.canvas_);
+
+    var clearColor = opt_bgColor || [0, 0, 0];
+    gl.clearColor(clearColor[0], clearColor[1], clearColor[2], 1);
+    gl.disable(goog.webgl.DEPTH_TEST);
+    gl.disable(goog.webgl.SCISSOR_TEST);
+    gl.disable(goog.webgl.CULL_FACE);
     
     goog.base(this, target);
     
@@ -46,10 +52,18 @@ ol.renderer.WebGL = function(target) {
      * @private
      */
     this.renderers_ = [];
-    
 };
 
 goog.inherits(ol.renderer.WebGL, ol.renderer.MapRenderer);
+
+/** 
+ * Determine if this renderer type is supported in this environment.
+ * A static method.
+ * @returns {boolean} This renderer is supported.
+ */
+ol.renderer.WebGL.isSupported = function() {
+    return true;
+};
 
 /**
  * @param {Array.<ol.layer.Layer>} layers
