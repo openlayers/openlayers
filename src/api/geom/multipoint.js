@@ -2,12 +2,8 @@ goog.provide('ol.geom.multipoint');
 
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.point'); 
+goog.require('ol.geom.collection'); 
 goog.require('ol.projection');
-
-///**
-// * @typedef {ol.MultiPointLike|Array.<number>|Object} point Point.
-// */
-//ol.PointLike;
 
 /**
  * @export
@@ -45,7 +41,7 @@ ol.geom.multipoint = function(opt_arg){
     var mp = new ol.geom.MultiPoint(points);
     return mp;
 };
-goog.inherits(ol.geom.multipoint, ol.geom.geometry);
+goog.inherits(ol.geom.multipoint, ol.geom.collection);
 
 /**
  * @export
@@ -56,7 +52,7 @@ ol.geom.MultiPoint.prototype.points = function(opt_arg){
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
         var points = [],
             allValid = false;
-        goog.array.every(opt_arg, function(spec){
+        allValid = goog.array.every(opt_arg, function(spec){
             var p = ol.geom.point(spec);
             if (p instanceof ol.geom.Point) {
                 points.push(p);
@@ -68,11 +64,11 @@ ol.geom.MultiPoint.prototype.points = function(opt_arg){
         if (!allValid) {
             points = [];
         }
-        this.setPoints(points);
+        this.setComponents(points);
         return this;
     }
     else {
-        return this.getPoints();
+        return this.getComponents();
     }
 };
 
@@ -84,8 +80,7 @@ ol.geom.MultiPoint.prototype.points = function(opt_arg){
  * @return {ol.geom.MultiPoint} The MultiPoint instance.
  */
 ol.geom.MultiPoint.prototype.add = function(point, opt_index){
-    var index = this.points_.length,
-        allValid = false,
+    var index = this.getPoints().length,
         p = ol.geom.point(point);
     if (arguments.length == 2 && goog.isDef(opt_index)) {
         index = opt_index;
@@ -102,7 +97,7 @@ ol.geom.MultiPoint.prototype.add = function(point, opt_index){
  * @return {ol.geom.MultiPoint} The MultiPoint instance.
  */
 ol.geom.MultiPoint.prototype.addAll = function(points, opt_index){
-    var index = this.points_.length,
+    var index = this.getPoints().length,
         p;
     
     if (arguments.length == 2 && goog.isDef(opt_index)) {
@@ -126,8 +121,7 @@ ol.geom.MultiPoint.prototype.addAll = function(points, opt_index){
  * @return {ol.geom.MultiPoint} The MultiPoint instance.
  */
 ol.geom.MultiPoint.prototype.remove = function(points){
-    var pointArr = [],
-        allValid = false;
+    var pointArr = [];
     if (!goog.isArray(points)) {
         pointArr.push(points);
     } else {
