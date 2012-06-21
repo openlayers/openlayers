@@ -65,6 +65,23 @@ ol.loc = function(opt_arg){
     
 };
 
+/**
+ * Transform this location to another coordinate reference system.  This 
+ * requires that this location has a projection set already (if not, an error
+ * will be thrown).  Returns a new location object and does not modify this
+ * location.
+ *
+ * @export
+ * @param {string|ol.Projection} proj The destination projection.  Can be 
+ *     supplied as a projection instance of a string identifier.
+ * @returns {ol.Loc} A new location.
+ */
+ol.Loc.prototype.transform = function(proj) {
+    if (goog.isString(proj)) {
+        proj = new ol.Projection(proj);
+    }
+    return this.doTransform(proj);
+};
 
 /**
  * @export

@@ -105,30 +105,12 @@ ol.Loc.prototype.setZ = function(z) {
 };
 
 /**
- * Transform this location to another coordinate reference system.  This 
- * requires that this location has a projection set already (if not, an error
- * will be thrown).  Returns a new location object and does not modify this
- * location.
- *
- * @export
- * @param {string|!ol.Projection} proj The destination projection.  Can be 
- *     supplied as a projection instance of a string identifier.
- * @returns {!ol.Loc} A new location.
- */
-ol.Loc.prototype.transform = function(proj) {
-    if (goog.isString(proj)) {
-        proj = new ol.Projection(proj);
-    }
-    return this._transform(proj);
-};
-
-/**
  * Transform this location to a new location given a projection object.
  *
- * @param {!ol.Projection} proj The destination projection.
- * @returns {!ol.Loc}
+ * @param {ol.Projection} proj The destination projection.
+ * @returns {ol.Loc}
  */
-ol.Loc.prototype._transform = function(proj) {
+ol.Loc.prototype.doTransform = function(proj) {
     var point = {'x': this.x_, 'y': this.y_};
     var sourceProj = this.projection_;
     if (!goog.isDefAndNotNull(sourceProj)) {

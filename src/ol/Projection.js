@@ -164,12 +164,16 @@ ol.Projection.addTransform = function(from, to, method) {
 /**
  * Transform a point coordinate from one projection to another.
  * 
- * @param {!Object} point Object with x and y properties.
- * @param {!ol.Projection} source Source projection.
- * @param {!ol.Projection} dest Destination projection.
+ * @param {Object} point Object with x and y properties.
+ * @param {ol.Projection} source Source projection.
+ * @param {ol.Projection} dest Destination projection.
  */
 ol.Projection.transform = function(point, source, dest) {
+    goog.asserts.assertObject(point);
+    goog.asserts.assertObject(source);
+    goog.asserts.assertObject(dest);
     if (source.proj_ && dest.proj_) {
+        // TODO: implement Proj4js handling
         // point = Proj4js.transform(source.proj_, dest.proj_, point);
     } else {
         var sourceCode = source.getCode();
