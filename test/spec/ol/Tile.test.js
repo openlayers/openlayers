@@ -24,6 +24,10 @@ describe("ol.Tile", function() {
             tile.handleImageLoad();
             expect(spy).toHaveBeenCalled();
         });
+        it("sets the loaded flag", function() {
+            tile.handleImageLoad();
+            expect(tile.isLoaded()).toBeTruthy();
+        });
     });
 
     describe("handle image error", function() {

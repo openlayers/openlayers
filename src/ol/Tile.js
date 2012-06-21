@@ -26,6 +26,12 @@ ol.Tile = function(url, bounds) {
 
     /**
      * @private
+     * @type {boolean}
+     */
+    this.loaded_ = false;
+
+    /**
+     * @private
      * @type {HTMLImageElement}
      */
     this.img_ = ol.Tile.createImage();
@@ -77,6 +83,7 @@ ol.Tile.prototype.getImg = function() {
  * @param {goog.events.BrowserEvent} evt Event.
  */
 ol.Tile.prototype.handleImageLoad = function(evt) {
+    this.loaded_ = true;
     this.events_.triggerEvent('load');
 };
 
@@ -86,6 +93,14 @@ ol.Tile.prototype.handleImageLoad = function(evt) {
  */
 ol.Tile.prototype.handleImageError = function(evt) {
     this.events_.triggerEvent('error');
+};
+
+/**
+ * Is the tile loaded already?
+ * @return {boolean}
+ */
+ol.Tile.prototype.isLoaded = function() {
+    return this.loaded_;
 };
 
 /**
