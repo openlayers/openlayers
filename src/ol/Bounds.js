@@ -18,23 +18,24 @@ ol.Bounds = function(minX, minY, maxX, maxY, opt_projection) {
 
     /**
      * @protected
-     * @type {ol.Projection|undefined}
+     * @type {ol.Projection}
      */
-    this.projection_ = opt_projection;
+    this.projection_ = goog.isDef(opt_projection) ? opt_projection : null;
 
 };
 goog.inherits(ol.Bounds, ol.UnreferencedBounds);
 
 /**
- * @return {ol.Projection|undefined} Projection.
+ * @return {ol.Projection} Projection.
  */
 ol.Bounds.prototype.getProjection = function() {
     return this.projection_;
 };
 
 /**
- * @param {ol.Projection|undefined} projection Projection.
+ * @param {ol.Projection} projection Projection.
  */
 ol.Bounds.prototype.setProjection = function(projection) {
     this.projection_ = projection;
 };
+
