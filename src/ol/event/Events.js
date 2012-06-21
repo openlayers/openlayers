@@ -8,11 +8,23 @@ goog.require('goog.events.Listener');
 goog.require('goog.style');
 
 /**
+ * @enum {Object}
+ */
+ol.event.SEQUENCE_PROVIDER_MAP = {};
+
+/**
+ * @param {string} name
+ * @param {Function} obj
+ */
+ol.event.addSequenceProvider = function(name, obj) {
+    ol.event.SEQUENCE_PROVIDER_MAP[name] = obj;
+};
+
+/**
  * Determine whether event was caused by a single touch
  *
  * @param {!Event} evt
  * @return {boolean}
- * @export
  */
 ol.event.isSingleTouch = function(evt) {
     return !!(evt.touches && evt.touches.length == 1);
@@ -23,7 +35,6 @@ ol.event.isSingleTouch = function(evt) {
  *
  * @param {!Event} evt
  * @return {boolean}
- * @export
  */
 ol.event.isMultiTouch = function(evt) {
     return !!(evt.touches && evt.touches.length > 1);
@@ -46,7 +57,6 @@ ol.event.isMultiTouch = function(evt) {
  *     false.
  * @param {Array.<String>=} opt_sequences Event sequences to register with
  *     this Events instance.
- * @export
  */
 ol.event.Events = function(object, opt_element, opt_includeXY, opt_sequences) {
     
@@ -92,7 +102,6 @@ goog.inherits(ol.event.Events, goog.events.EventTarget);
 
 /**
  * @return {Object} The object that this instance is bound to.
- * @export
  */
 ol.event.Events.prototype.getObject = function() {
     return this.object_;
@@ -100,7 +109,6 @@ ol.event.Events.prototype.getObject = function() {
 
 /**
  * @param {boolean} includeXY
- * @export
  */
 ol.event.Events.prototype.setIncludeXY = function(includeXY) {
     this.includeXY_ = includeXY;
@@ -109,7 +117,6 @@ ol.event.Events.prototype.setIncludeXY = function(includeXY) {
 /**
  * @return {EventTarget} The element that this instance currently
  *     listens to browser events on.
- * @export
  */
 ol.event.Events.prototype.getElement = function() {
     return this.element_;
@@ -122,7 +129,6 @@ ol.event.Events.prototype.getElement = function() {
  * @param {EventTarget} element A DOM element to attach
  *     browser events to. If called without this argument, all browser events
  *     will be detached from the element they are currently attached to.
- * @export
  */
 ol.event.Events.prototype.setElement = function(element) {
     var types, t;    
@@ -155,7 +161,11 @@ ol.event.Events.prototype.setElement = function(element) {
  */
 ol.event.Events.prototype.createSequences = function(target) {
     for (var i=0, ii=this.sequenceProviders_.length; i<ii; ++i) {
-        this.sequences_.push(new ol.event[this.sequenceProviders_[i]](target));
+        this.sequences_.push(
+            new ol.event.SEQUENCE_PROVIDER_MAP[this.sequenceProviders_[i]](
+                target
+            )
+        );
     }
 };
 
@@ -198,7 +208,6 @@ ol.event.Events.prototype.getBrowserEventTypes = function() {
  *     property.
  * @param {boolean=} opt_priority Register the listener as priority listener,
  *     so it gets executed before other listeners? Default is false.
- * @export
  */
 ol.event.Events.prototype.register = function(type, listener, opt_scope,
                                               opt_priority) {
@@ -215,7 +224,6 @@ ol.event.Events.prototype.register = function(type, listener, opt_scope,
  * @param {Object=} opt_scope The object to bind the context to for the
  *     listener. If no scope is specified, default is the event's default
  *     scope.
- * @export
  */
 ol.event.Events.prototype.unregister = function(type, listener, opt_scope) {
     goog.events.unlisten(
@@ -231,7 +239,6 @@ ol.event.Events.prototype.unregister = function(type, listener, opt_scope) {
  *
  * @return {boolean} The last listener return.  If a listener returns false,
  *     the chain of listeners will stop getting called.
- * @export
  */
 ol.event.Events.prototype.triggerEvent = function(type, opt_evt) {
     var returnValue,
@@ -290,7 +297,6 @@ ol.event.Events.prototype.handleBrowserEvent = function(evt) {
 
 /**
  * Destroy this Events instance.
- * @export
  */
 ol.event.Events.prototype.destroy = function() {
     this.setElement(null);

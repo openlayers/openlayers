@@ -2,6 +2,7 @@ goog.provide('ol.event.Drag');
 goog.provide('ol.event.DragEvent');
 
 goog.require('ol.event.ISequence');
+goog.require('ol.event.Events');
 goog.require('goog.functions');
 goog.require('goog.fx.Dragger');
 goog.require('goog.fx.DragEvent');
@@ -73,6 +74,8 @@ ol.event.Drag.prototype.getEventTypes = function() {
 
 /** @inheritDoc */
 ol.event.Drag.prototype.destroy = ol.event.Drag.prototype.dispose;
+
+ol.event.addSequenceProvider('drag', ol.event.Drag);
 
 
 /**

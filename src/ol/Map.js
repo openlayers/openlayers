@@ -82,10 +82,22 @@ ol.Map = function() {
     
     /**
      * @private
+     * @type {Element}
+     */
+    this.mapOverlay_ = null;
+    
+    /**
+     * @private
+     * @type {Element}
+     */
+    this.staticOverlay_ = null;
+    
+    /**
+     * @private
      * @type {ol.event.Events}
      */
     this.events_ = new ol.event.Events(
-        this, undefined, false, ['Drag']
+        this, undefined, false, ['drag']
     );
     
     /**

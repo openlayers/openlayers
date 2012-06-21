@@ -125,7 +125,7 @@ describe("ol.event.Events", function() {
     
     it("can be extended with event sequences", function() {
         var element = document.createElement("div"),
-            events = new ol.event.Events("foo", element, false, ["Drag"]),
+            events = new ol.event.Events("foo", element, false, ["drag"]),
             mockEvt;
         
         // mock dom object
