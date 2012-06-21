@@ -27,8 +27,9 @@ goog.inherits(ol.renderer.Composite, ol.renderer.MapRenderer);
  * @param {Array.<ol.layer.Layer>} layers
  * @param {ol.Loc} center
  * @param {number} resolution
+ * @param {boolean} animate
  */
-ol.renderer.Composite.prototype.draw = function(layers, center, resolution) {
+ol.renderer.Composite.prototype.draw = function(layers, center, resolution, animate) {
 };
 
 /**

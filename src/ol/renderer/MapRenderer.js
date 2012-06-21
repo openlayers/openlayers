@@ -18,6 +18,7 @@ ol.renderer.MapRenderer = function(container) {
  * @param {Array.<ol.layer.Layer>} layers
  * @param {ol.Loc} center
  * @param {number} resolution
+ * @param {boolean} animate
  */
-ol.renderer.MapRenderer.prototype.draw = function(layers, center, resolution) {
+ol.renderer.MapRenderer.prototype.draw = function(layers, center, resolution, animate) {
 };
