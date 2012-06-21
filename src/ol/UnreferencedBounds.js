@@ -105,3 +105,26 @@ ol.UnreferencedBounds.prototype.getWidth = function() {
 ol.UnreferencedBounds.prototype.getHeight = function() {
     return this.maxY_ - this.minY_;
 };
+
+/**
+ * Determine if this bounds intersects the target bounds (bounds that only
+ * touch are considered intersecting).
+ *
+ * @param {ol.UnreferencedBounds} bounds Target bounds.
+ * @return {boolean} The provided bounds intersects this bounds.
+ */
+ol.UnreferencedBounds.prototype.intersects = function(bounds) {
+    return !(
+        // this is left
+        (this.minX_ > bounds.getMaxX()) ||
+
+        // this is right
+        (this.maxX_ < bounds.getMinX()) ||
+        
+        // this is above
+        (this.minY_ > bounds.getMaxY()) ||
+        
+        // this is below
+        (this.maxY_ < bounds.getMinY())
+    );
+};

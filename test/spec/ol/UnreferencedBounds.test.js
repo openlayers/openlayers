@@ -18,4 +18,40 @@ describe("ol.UnreferencedBounds", function() {
         });
     });
 
+    describe("intersection", function() {
+
+        var aBounds = new ol.UnreferencedBounds(-180, -90, 180, 90);
+
+        it("works when within", function() {
+            var bBounds = new ol.UnreferencedBounds(-20, -10, 20, 10);
+            expect(aBounds.intersects(bBounds)).toBe(true);
+            expect(bBounds.intersects(aBounds)).toBe(true);
+        });
+
+        it("works when contains", function() {
+            var bBounds = new ol.UnreferencedBounds(-181, -91, 181, 91);
+            expect(aBounds.intersects(bBounds)).toBe(true);
+            expect(bBounds.intersects(aBounds)).toBe(true);
+        });
+
+        it("works when total intersect", function() {
+            var bBounds = new ol.UnreferencedBounds(-185, -100, 20, 50);
+            expect(aBounds.intersects(bBounds)).toBe(true);
+            expect(bBounds.intersects(aBounds)).toBe(true);
+        });
+
+        it("works when borders intersect", function() {
+            var bBounds = new ol.UnreferencedBounds(-360, -180, -180, -90);
+            expect(aBounds.intersects(bBounds)).toBe(true);
+            expect(bBounds.intersects(aBounds)).toBe(true);
+        });
+
+        it("works when no intersect", function() {
+            var bBounds = new ol.UnreferencedBounds(-360, -180, -185, -95);
+            expect(aBounds.intersects(bBounds)).toBe(false);
+            expect(bBounds.intersects(aBounds)).toBe(false);
+        });
+
+    });
+
 });
