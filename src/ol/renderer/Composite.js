@@ -6,15 +6,15 @@ goog.require('ol.Loc');
 
 /**
  * @constructor
- * @param {string|Element} target
+ * @param {!Element} target
  */
 ol.renderer.Composite = function(target) {
     
     /**
-     * @type Element
+     * @type !Element
      * @private
      */
-    this.target_ = goog.dom.getElement(target);
+    this.target_ = target;
     
     /**
      * @type Array.<ol.renderer.LayerRenderer>
