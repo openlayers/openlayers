@@ -6,7 +6,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.Listener');
 goog.require('goog.style');
-
+goog.require('goog.fx.Dragger');
 
 /**
  * Determine whether event was caused by a single touch

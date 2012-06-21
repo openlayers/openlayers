@@ -4,7 +4,6 @@ goog.require('ol.Loc');
 goog.require('ol.Projection');
 goog.require('ol.event');
 goog.require('ol.event.Events');
-goog.require('ol.event.Drag');
 goog.require('ol.control.Control');
 
 
@@ -79,15 +78,15 @@ ol.Map = function() {
      * @private
      * @type {ol.event.Events}
      */
-    this.events_ = new ol.event.Events(
-        this, undefined, true, [new ol.event.Drag()]
-    );
+    this.events_ = new ol.event.Events(this);
     
     /**
      * @private
      * @type {Element}
      */
     this.container_ = null;
+    
+    this.setControls(ol.Map.DEFAULT_CONTROLS);
     
 };
 
@@ -115,7 +114,7 @@ ol.Map.DEFAULT_TILE_SIZE = 256;
   @const
   @type {Array.<string>}
  */
-ol.Map.DEFAULT_CONTROLS = ["Navigation", "Zoom"];
+ol.Map.DEFAULT_CONTROLS = ["Navigation"];
 
 /**
  * @return {ol.Loc} Location.

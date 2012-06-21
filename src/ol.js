@@ -3,7 +3,6 @@ goog.require('ol.bounds');
 goog.require('ol.control.Control');
 goog.require('ol.control.Navigation');
 goog.require('ol.event');
-goog.require('ol.event.Drag');
 goog.require('ol.event.Events');
 goog.require('ol.event.Sequence');
 goog.require("ol.map");

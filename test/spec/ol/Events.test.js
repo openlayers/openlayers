@@ -125,9 +125,7 @@ describe("ol.event.Events", function() {
     
     it("can map browser events to sequences", function() {
         var element = document.createElement("div"),
-            events = new ol.event.Events(
-                "foo", element, false, [new ol.event.Drag()]
-            ),
+            events = new ol.event.Events("foo", element),
             mockEvt;
         
         // mock dom object
