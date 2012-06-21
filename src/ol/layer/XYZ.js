@@ -24,16 +24,7 @@ ol.layer.XYZ = function(url) {
 
     goog.base(this);
 
-    this.setResolutions([
-        156543.03390625, 78271.516953125, 39135.7584765625,
-        19567.87923828125, 9783.939619140625, 4891.9698095703125,
-        2445.9849047851562, 1222.9924523925781, 611.4962261962891,
-        305.74811309814453, 152.87405654907226, 76.43702827453613,
-        38.218514137268066, 19.109257068634033, 9.554628534317017,
-        4.777314267158508, 2.388657133579254, 1.194328566789627,
-        0.5971642833948135, 0.29858214169740677, 0.14929107084870338,
-        0.07464553542435169
-    ]);
+    this.setMaxResolution(156543.03390625);
 };
 
 goog.inherits(ol.layer.XYZ, ol.layer.TileLayer);
@@ -45,8 +36,9 @@ goog.inherits(ol.layer.XYZ, ol.layer.TileLayer);
  */
 ol.layer.XYZ.prototype.getData = function(bounds, resolution) {
     var me = this,
-        zoom = me.zoomForResolution(resolution);
-    resolution = me.resolutions_[zoom];
+        zoomAndRes = me.getZoomAndRes(resolution),
+        zoom = zoomAndRes[0];
+    resolution = zoomAndRes[1];
 
     // define some values used for the actual tiling
     var boundsMinX = bounds.getMinX(),
@@ -88,7 +80,7 @@ ol.layer.XYZ.prototype.getData = function(bounds, resolution) {
                                        tileRight, tileTop, this.projection_);
             url = me.url_.replace('{x}', offsetX + x + '')
                          .replace('{y}', offsetY + y + '')
-                         .replace('{z}', zoom);
+                         .replace('{z}', zoom + '');
             tile = new ol.Tile(url, tileBounds);
             tiles[y][x] = tile;
         }
@@ -98,13 +90,15 @@ ol.layer.XYZ.prototype.getData = function(bounds, resolution) {
 };
 
 /**
- * Get the zoom level (z) for the given resolution.
+ * Get the zoom level (z) and layer resolution for the given resolution.
  * @param {number} resolution
+ * @return {Array.<number>}
  */
-ol.layer.XYZ.prototype.zoomForResolution = function(resolution) {
+ol.layer.XYZ.prototype.getZoomAndRes = function(resolution) {
     var delta = Number.POSITIVE_INFINITY,
         currentDelta,
-        resolutions = this.resolutions_;
+        resolutions = this.getResolutions(),
+        zoom;
     for (var i=resolutions.length-1; i>=0; --i) {
         currentDelta = Math.abs(resolutions[i] - resolution);
         if (currentDelta > delta) {
@@ -112,5 +106,6 @@ ol.layer.XYZ.prototype.zoomForResolution = function(resolution) {
         }
         delta = currentDelta;
     }
-    return i + 1;
+    zoom = i + 1;
+    return [zoom, resolutions[zoom]];
 };

@@ -51,6 +51,18 @@ ol.layer.TileLayer = function() {
     this.tileOriginCorner_ = 'bl';
 
     /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.maxResolution_ = undefined;
+
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.numZoomLevels_ = undefined;
+
+    /**
      * @protected
      * @type {Array.<number>}
      */
@@ -122,6 +134,20 @@ ol.layer.TileLayer.prototype.getTileOrigin = function() {
 };
 
 /**
+ * Get layer resolutions. Return null if the layer has no resolutions.
+ * @return {Array.<number>}
+ */
+ol.layer.TileLayer.prototype.getResolutions = function() {
+    if (goog.isNull(this.resolutions_) && goog.isDef(this.maxResolution_)) {
+        this.resolutions_ = [];
+        for (var i = 0; i < this.numZoomLevels_; i++) {
+            this.resolutions_[i] = this.maxResolution_ / Math.pow(2, i);
+        }
+    }
+    return this.resolutions_;
+};
+
+/**
  * Set layer projection.
  * @param {ol.Projection} projection
  */
@@ -163,6 +189,22 @@ ol.layer.TileLayer.prototype.setTileOrigin = function(tileOriginX, tileOriginY) 
  */
 ol.layer.TileLayer.prototype.setTileOriginCorner = function(tileOriginCorner) {
     this.tileOriginCorner_ = tileOriginCorner;
+};
+
+/**
+ * Set maximum resolution.
+ * @param {number} maxResolution
+ */
+ol.layer.TileLayer.prototype.setMaxResolution = function(maxResolution) {
+    this.maxResolution_ = maxResolution;
+};
+
+/**
+ * Set the number of zoom levels.
+ * @param {number} numZoomLevels
+ */
+ol.layer.TileLayer.prototype.setNumZoomLevels = function(numZoomLevels) {
+    this.numZoomLevels_ = numZoomLevels;
 };
 
 /**

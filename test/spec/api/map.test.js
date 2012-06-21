@@ -145,7 +145,7 @@ describe("ol.map", function() {
     
     it("provides feedback when you mess up", function() {
         var map;
-        if (ol.DEBUG) {
+        if (goog.DEBUG) {
             // misspelling
             expect(function() {
                 map = ol.map({
