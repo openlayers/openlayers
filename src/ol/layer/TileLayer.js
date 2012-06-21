@@ -1,6 +1,7 @@
 goog.provide('ol.layer.TileLayer');
 
 goog.require('ol.layer.Layer');
+goog.require('ol.TileCache');
 
 /**
  * @constructor
@@ -67,6 +68,12 @@ ol.layer.TileLayer = function() {
      * @type {Array.<number>}
      */
     this.resolutions_ = null;
+
+    /**
+     * @private
+     * @type {ol.TileCache}
+     */
+    this.cache_ = new ol.TileCache();
 
 };
 
@@ -213,4 +220,19 @@ ol.layer.TileLayer.prototype.setNumZoomLevels = function(numZoomLevels) {
  */
 ol.layer.TileLayer.prototype.setResolutions = function(resolutions) {
     this.resolutions_ = resolutions;
+};
+
+/**
+ * Get a tile from the cache, or create a tile and add to
+ * the cache.
+ * @param url {string}
+ * @param bounds {ol.Bounds}
+ */
+ol.layer.TileLayer.prototype.getTile = function(url, bounds) {
+    var tile = this.cache_.get(url);
+    if (!goog.isDef(tile)) {
+        tile = new ol.Tile(url, bounds);
+        this.cache_.set(tile.getUrl(), tile);
+    }
+    return tile;
 };

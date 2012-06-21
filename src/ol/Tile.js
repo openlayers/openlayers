@@ -89,6 +89,13 @@ ol.Tile.prototype.handleImageError = function(evt) {
 };
 
 /**
+ *
+ */
+ol.Tile.prototype.destroy = function() {
+    this.events_.triggerEvent('destroy');
+};
+
+/**
  * Create an image node. This is done by cloning
  * the same image element.
  * @return {Element}

@@ -12,6 +12,7 @@ goog.require("ol.layer.xyz");
 goog.require("ol.layer.osm");
 goog.require("ol.Tile");
 goog.require("ol.TileSet");
+goog.require("ol.TileCache");
 goog.require("ol.geom.geometry");
 goog.require("ol.geom.point");
 goog.require("ol.geom.multipoint");
