@@ -8,7 +8,7 @@ ol.renderer.MapRenderer = function(target) {
     
     /**
      * @type !Element
-     * @private
+     * @protected
      */
     this.target_ = target;
     
