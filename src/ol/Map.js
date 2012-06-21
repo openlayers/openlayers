@@ -76,6 +76,12 @@ ol.Map = function() {
     
     /**
      * @private
+     * @type {Element}
+     */
+    this.viewport_ = null;
+    
+    /**
+     * @private
      * @type {ol.event.Events}
      */
     this.events_ = new ol.event.Events(
@@ -332,6 +338,16 @@ ol.Map.prototype.setMaxRes = function(res) {
 ol.Map.prototype.setContainer = function(container) {
     this.events_.setElement(container);
     this.container_ = container;
+    this.setViewport();
+};
+
+ol.Map.prototype.setViewport = function() {
+    if (!this.viewport_) {
+        this.viewport_ = goog.dom.createDom(
+            'div', 'ol-viewport'
+        );
+        goog.dom.appendChild(this.container_, this.viewport_);
+    }
 };
 
 /**

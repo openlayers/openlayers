@@ -18,7 +18,7 @@ ol.MapLike;
  * @param {ol.MapLike=} opt_arg Argument.
  * @return {ol.Map} Map.
  */
-ol.map = function(opt_arg){
+ol.map = function(opt_arg) {
 
     /** @type {ol.Loc|undefined} */
     var center;
@@ -36,6 +36,8 @@ ol.map = function(opt_arg){
     var maxRes;
     /** @type {Array.<number>|undefined} */
     var resolutions;
+    /** @type {Element|string|undefined} */
+    var el;
     /** @type {Array|undefined} */
     var layers;
     /** @type {Array|undefined} */
@@ -54,6 +56,7 @@ ol.map = function(opt_arg){
             maxExtent = opt_arg['maxExtent'];
             maxRes = opt_arg['maxRes'];
             resolutions = opt_arg['resolutions'];
+            el = opt_arg['el'];
             layers = opt_arg['layers'];
             controls = opt_arg['controls'];
         }
@@ -63,6 +66,9 @@ ol.map = function(opt_arg){
     }
     
     var map = new ol.Map();
+    if (goog.isDef(el)) {
+        map.el(el);
+    }
     if (goog.isDef(center)) {
         map.setCenter(ol.loc(center));
     }
@@ -243,4 +249,13 @@ ol.Map.prototype.maxRes = function(opt_arg) {
  */
 ol.Map.prototype.getResForZoom = function(arg) {
     return this.getResolutionForZoom(arg);
+};
+
+/**
+ * @param {string|Element} arg Render the map to a container
+ * @returns {ol.Map}
+ */
+ol.Map.prototype.el = function(arg) {
+    this.setContainer(goog.dom.getElement(arg));
+    return this;
 };
