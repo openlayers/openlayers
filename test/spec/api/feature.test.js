@@ -38,13 +38,13 @@ describe("ol.feature", function() {
     it("should be easy to create a feature from object literals", function() {
 
         var feat = ol.feature({
-            attrs: {
+            properties: {
                 foo: 'bar',
                 two: 'deux',
                 size: 3,
                 flag: true
             },
-            geom: ol.geom.point([56, 22])
+            geometry: ol.geom.point([56, 22])
         });
         
         var geom = feat.geometry();

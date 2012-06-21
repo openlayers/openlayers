@@ -18,9 +18,9 @@ ol.FeatureLike;
 ol.feature = function(opt_arg){
 
     /** @type {Object|undefined} */
-    var attrs;
+    var properties;
     /** @type {ol.geom.Geometry|undefined} */
-    var geom;
+    var geometry;
     /** @type {string|undefined} */
     var type;
    
@@ -29,8 +29,8 @@ ol.feature = function(opt_arg){
             return opt_arg;
         }
         else if (goog.isObject(opt_arg)) {
-            attrs = opt_arg['attrs'];
-            geom = opt_arg['geom'];
+            properties = opt_arg['properties'];
+            geometry = opt_arg['geometry'];
             type = opt_arg['type'];
         }
         else {
@@ -44,11 +44,11 @@ ol.feature = function(opt_arg){
         //format.read(opt_arg);
         
     } else {
-        if (goog.isDef(attrs)) {
-            feature.setAttributes(attrs);
+        if (goog.isDef(properties)) {
+            feature.setAttributes(properties);
         }
-        if (goog.isDef(geom)) {
-            feature.setGeometry(geom);
+        if (goog.isDef(geometry)) {
+            feature.setGeometry(geometry);
         }
     }
     return feature;
