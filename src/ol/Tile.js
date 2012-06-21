@@ -66,15 +66,17 @@ ol.Tile.prototype.getImg = function() {
 };
 
 /**
- *
+ * Handle load event on the image.
+ * @param {goog.events.BrowserEvent} evt Event.
  */
-ol.Tile.prototype.handleImageLoad = function() {
+ol.Tile.prototype.handleImageLoad = function(evt) {
 };
 
 /**
- *
+ * Handle load error event on the image.
+ * @param {goog.events.BrowserEvent} evt Event.
  */
-ol.Tile.prototype.handleImageError = function() {
+ol.Tile.prototype.handleImageError = function(evt) {
 };
 
 /**
