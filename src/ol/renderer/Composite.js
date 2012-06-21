@@ -1,8 +1,10 @@
 goog.provide('ol.renderer.Composite');
 
 goog.require('ol.renderer.MapRenderer');
+goog.require('ol.renderer.LayerRenderer');
 goog.require('ol.layer.Layer');
 goog.require('ol.Loc');
+goog.require('goog.array');
 
 /**
  * @constructor
@@ -14,10 +16,19 @@ ol.renderer.Composite = function(container) {
     goog.base(this, container);
     
     /**
-     * @type Array.<ol.renderer.LayerRenderer>
+     * @type {Array.<ol.renderer.LayerRenderer>}
      * @private
      */
     this.renderers_ = [];
+    
+    var target = document.createElement("div");
+    target.className = "ol-renderer-composite";
+
+    /**
+     * @type Element
+     * @private
+     */
+    this.target_ = target;
     
 };
 
@@ -30,6 +41,23 @@ goog.inherits(ol.renderer.Composite, ol.renderer.MapRenderer);
  * @param {boolean} animate
  */
 ol.renderer.Composite.prototype.draw = function(layers, center, resolution, animate) {
+    // TODO: deal with layer order and removal
+    for (var i=0, ii=layers.length; i<ii; ++i) {
+        this.getOrCreateRenderer(layers[i], i).draw(center, resolution);
+    }
+};
+
+/**
+ * @param {ol.layer.Layer} layer
+ * @param {number} index
+ */
+ol.renderer.Composite.prototype.getOrCreateRenderer = function(layer, index) {
+    var renderer = this.getRenderer(layer);
+    if (goog.isNull(renderer)) {
+        renderer = this.createRenderer(layer);
+        goog.array.insertAt(this.renderers_, renderer, index);
+    }
+    return renderer;
 };
 
 /**
@@ -46,6 +74,9 @@ ol.renderer.Composite.prototype.getRenderer = function(layer) {
  * @param {ol.layer.Layer} layer
  */
 ol.renderer.Composite.prototype.createRenderer = function(layer) {
+    var Renderer = this.pickRendererType(layer);
+    goog.asserts.assert(Renderer, "No supported renderer for layer: " + layer);
+    return new Renderer(layer, this.target_);
 };
 
 /**
