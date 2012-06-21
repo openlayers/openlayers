@@ -12,16 +12,16 @@ goog.require('ol.Bounds');
  *
  * @constructor
  * @implements {ol.renderer.LayerRenderer}
- * @param {!Element} target
+ * @param {!Element} container
  * @param {!ol.layer.Layer} layer
  */
-ol.renderer.TileLayerRenderer = function(target, layer) {
+ol.renderer.TileLayerRenderer = function(container, layer) {
     
     /** 
      * @type {!Element} 
      * @private
      */
-    this.target_ = target;
+    this.container_ = container;
     
     /** 
      * @type {!ol.layer.Layer}
@@ -44,7 +44,7 @@ ol.renderer.TileLayerRenderer = function(target, layer) {
  * @param {number} resolution
  */
 ol.renderer.TileLayerRenderer.prototype.draw = function(center, resolution) {
-    var mapSize = goog.style.getSize(this.target_);
+    var mapSize = goog.style.getSize(this.container_);
     var halfMapWidth = (resolution * mapSize.width) / 2;
     var halfMapHeight = (resolution * mapSize.height) / 2;
     var x = center.getX();
@@ -86,7 +86,7 @@ ol.renderer.TileLayerRenderer.prototype.draw = function(center, resolution) {
                 fragment.appendChild(img);
             }
         }
-        this.target_.appendChild(fragment);
+        this.container_.appendChild(fragment);
     }
 };
 

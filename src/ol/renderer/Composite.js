@@ -6,12 +6,12 @@ goog.require('ol.Loc');
 
 /**
  * @constructor
- * @param {!Element} target
+ * @param {!Element} container
  * @extends {ol.renderer.MapRenderer}
  */
-ol.renderer.Composite = function(target) {
+ol.renderer.Composite = function(container) {
     
-    goog.base(this, target);
+    goog.base(this, container);
     
     /**
      * @type Array.<ol.renderer.LayerRenderer>

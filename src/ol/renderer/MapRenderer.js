@@ -2,15 +2,15 @@ goog.provide('ol.renderer.MapRenderer');
 
 /**
  * @constructor
- * @param {!Element} target
+ * @param {!Element} container
  */
-ol.renderer.MapRenderer = function(target) {
+ol.renderer.MapRenderer = function(container) {
     
     /**
      * @type !Element
      * @protected
      */
-    this.target_ = target;
+    this.container_ = container;
     
 };
 
