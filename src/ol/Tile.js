@@ -30,7 +30,8 @@ ol.Tile = function(url, bounds) {
     this.img_ = ol.Tile.createImage();
     goog.events.listenOnce(this.img_, goog.events.EventType.LOAD,
                            this.handleImageLoad, false, this);
-
+    goog.events.listenOnce(this.img_, goog.events.EventType.ERROR,
+                           this.handleImageError, false, this);
 };
 
 /**
@@ -68,6 +69,12 @@ ol.Tile.prototype.getImg = function() {
  *
  */
 ol.Tile.prototype.handleImageLoad = function() {
+};
+
+/**
+ *
+ */
+ol.Tile.prototype.handleImageError = function() {
 };
 
 /**
