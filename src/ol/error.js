@@ -1,13 +1,5 @@
 goog.provide('ol.error');
 
-
-/**
- * @define
- * @type {boolean}
- */
-ol.error.VERBOSE_ERRORS = true;
-
-
 /**
  * @param {string} message Message.
  */
@@ -18,3 +10,8 @@ ol.error = function(message) {
         throw null;
     }
 };
+
+/**
+ * @define {boolean}
+ */
+ol.error.VERBOSE_ERRORS = true;
