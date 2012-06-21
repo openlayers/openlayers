@@ -11,6 +11,10 @@
     "goog.DEBUG": false
   },
 
+  "externs": [
+    "externs/geojson.js"
+  ],
+
   "mode": "ADVANCED",
   "level": "VERBOSE",
   "pretty-print": true,
