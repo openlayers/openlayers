@@ -144,21 +144,11 @@ describe("ol.map", function() {
     });
     
     it("provides feedback when you mess up", function() {
-        var map;
-        if (goog.DEBUG) {
-            // misspelling
-            expect(function() {
-                map = ol.map({
-                    centre: [1, 2]
-                });
-            }).toThrow(new Error("Unsupported config property: centre"));
-        } else {
-            expect(function() {
-                map = ol.map({
-                    centre: [1, 2]
-                });
-            }).not.toThrow();
-        }
+        expect(function() {
+            var map = ol.map({
+                centre: [1, 2]
+            });
+        }).toThrow();
     });
     
     it("is destroyable", function() {

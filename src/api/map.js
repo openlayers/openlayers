@@ -5,6 +5,7 @@ goog.require('ol.Map');
 goog.require('ol.Projection');
 goog.require('ol.loc');
 goog.require('ol.projection');
+goog.require('ol.error');
 
 
 /**
@@ -49,21 +50,38 @@ ol.map = function(opt_arg) {
         }
         else if (goog.isObject(opt_arg)) {
             center = opt_arg['center'];
+            delete opt_arg['center'];
             zoom = opt_arg['zoom'];
+            delete opt_arg['zoom'];
             numZoomLevels = opt_arg['numZoomLevels'];
+            delete opt_arg['numZoomLevels'];
             projection = opt_arg['projection'];
+            delete opt_arg['projection'];
             userProjection = opt_arg['userProjection'];
+            delete opt_arg['userProjection'];
             maxExtent = opt_arg['maxExtent'];
+            delete opt_arg['maxExtent'];
             maxRes = opt_arg['maxRes'];
+            delete opt_arg['maxRes'];
             resolutions = opt_arg['resolutions'];
+            delete opt_arg['resolutions'];
             el = opt_arg['el'];
+            delete opt_arg['el'];
             layers = opt_arg['layers'];
+            delete opt_arg['layers'];
             controls = opt_arg['controls'];
+            delete opt_arg['controls'];
+            var k = goog.object.getAnyKey(opt_arg);
+            if (goog.isDef(k)) {
+                ol.error(k + ' is not a map option');
+            }
+
         }
         else {
             throw new Error('ol.map');
         }
     }
+
     
     var map = new ol.Map();
     if (goog.isDef(el)) {
