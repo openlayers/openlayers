@@ -15,6 +15,7 @@ goog.require("ol.Tile");
 goog.require("ol.TileSet");
 goog.require("ol.geom.geometry");
 goog.require("ol.geom.point");
+goog.require("ol.geom.multipoint");
 goog.require('ol.layer.XYZ');
 goog.require('ol.layer.OSM');
 goog.require('ol.renderer.TileLayerRenderer');
