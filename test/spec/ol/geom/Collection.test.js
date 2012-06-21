@@ -29,6 +29,16 @@ describe("ol.geom.Collection", function() {
         expect( c ).toBeA( ol.geom.Collection );
     });
     
+    it("cannot construct instances when passed illegal components", function() {
+        // collection cannot contain collections
+        expect(function(){
+            c = new ol.geom.Collection([
+                new ol.geom.Collection()
+            ]);
+        }).toThrow();
+        
+    });
+    
     it("inherits from ol.geom.Geometry", function() {
         expect( c ).toBeA( ol.geom.Geometry );
     });
@@ -81,7 +91,7 @@ describe("ol.geom.Collection", function() {
             ]),
             0
         );
-      
+        
         var components = c.getComponents();
         
         expect( components.length ).toBe( 4 );
@@ -90,6 +100,17 @@ describe("ol.geom.Collection", function() {
         expect( components[2].getX() + ',' + components[2].getY()).toBe( '30,40' );
         expect( components[3].getVertices()[0].getX() + ',' + components[3].getVertices()[0].getY()).toBe( '47,11' );
         
+    });
+    
+    it("cannot add instances of 'ol.geom.Collection'", function(){
+        expect(function(){
+            c.addComponent(
+                new ol.geom.Collection([
+                    new ol.geom.Point(5,25),
+                    new ol.geom.Point(6,36)
+                ])
+            );
+        }).toThrow();
     });
     
     it("has a method to remove components", function() {
