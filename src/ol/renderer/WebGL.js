@@ -16,10 +16,10 @@ goog.require('goog.webgl');
 /**
  * Initialization of the native WebGL renderer (canvas, context, layers)
  * @constructor
- * @param {!Element} target
+ * @param {!Element} container
  * @extends {ol.renderer.MapRenderer}
  */
-ol.renderer.WebGL = function(target) {
+ol.renderer.WebGL = function(container) {
 
     /**
      * @private
@@ -40,9 +40,9 @@ ol.renderer.WebGL = function(target) {
     }));
     goog.asserts.assert(!goog.isNull(this.gl_), "The WebGL is not supported on your browser. Check http://get.webgl.org/");
 
-    goog.dom.append(target, this.canvas_);
+    goog.dom.append(container, this.canvas_);
 
-    goog.base(this, target);
+    goog.base(this, container);
 
     /**
      * @private
