@@ -1,5 +1,6 @@
 goog.provide('ol.Tile');
 
+goog.require('goog.events');
 goog.require('ol.Bounds');
 
 /**
@@ -27,6 +28,9 @@ ol.Tile = function(url, bounds) {
      * @type {Element}
      */
     this.img_ = ol.Tile.createImage();
+    goog.events.listenOnce(this.img_, goog.events.EventType.LOAD,
+                           this.handleImageLoad, false, this);
+
 };
 
 /**
@@ -58,6 +62,12 @@ ol.Tile.prototype.getBounds = function() {
  */
 ol.Tile.prototype.getImg = function() {
     return this.img_;
+};
+
+/**
+ *
+ */
+ol.Tile.prototype.handleImageLoad = function() {
 };
 
 /**
