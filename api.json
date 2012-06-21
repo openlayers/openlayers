@@ -1,0 +1,43 @@
+{
+  "id": "api",
+
+  "output-file": "api.js",
+
+  "inputs": "src/ol.export.js",
+  "paths": [
+    "src"
+  ],
+
+  "define": {
+    // "goog.dom.ASSUME_STANDARDS_MODE": true,
+    // "goog.userAgent.ASSUME_MOBILE_WEBKIT": true,
+    "goog.DEBUG": false
+  },
+
+  "mode": "ADVANCED",
+  "level": "VERBOSE",
+  // "pretty-print": true,
+  // "debug": true,
+
+  // "experimental-compiler-options": {
+  //    "generateExports": true
+  // },
+
+
+  "checks": {
+    // acceptable values are "ERROR", "WARNING", and "OFF"
+    "accessControls": "WARNING",
+    "visibility": "WARNING",
+    "checkTypes": "WARNING",
+    "checkRegExp": "WARNING",
+    "checkVars": "WARNING",
+    "deprecated": "WARNING",
+    "fileoverviewTags": "WARNING",
+    "invalidCasts": "WARNING",
+    "missingProperties": "WARNING",
+    "nonStandardJsDocs": "WARNING",
+    "undefinedVars": "WARNING"
+  },
+
+  "jsdoc-html-output-path": "jsdoc"
+}
