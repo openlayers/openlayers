@@ -19,4 +19,4 @@ goog.require("ol.geom.multipoint");
 goog.require('ol.layer.XYZ');
 goog.require('ol.layer.OSM');
 goog.require('ol.renderer.TileLayerRenderer');
-
+goog.require('ol.renderer.WebGL');

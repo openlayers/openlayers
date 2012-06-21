@@ -8,6 +8,7 @@ goog.require('ol.renderer.MapRenderer');
 goog.require('ol.layer.Layer');
 goog.require('ol.Loc');
 
+goog.require('goog.webgl');
 
 /**
  * Initialization of the native WebGL renderer (canvas, context, layers)
@@ -21,13 +22,13 @@ ol.renderer.WebGL = function(target) {
      * @private
      * @type {!Element}
      */
-    this.canvas_ = goog.dom.createDom('canvas', 'ol-renderer-webgl-canvas'}); // Suppose to have: style: 'width:100%;height:100%;'
+    this.canvas_ = goog.dom.createDom('canvas', 'ol-renderer-webgl-canvas'); // Suppose to have: style: 'width:100%;height:100%;'
     
     /**
      * @private
      * @type {WebGLRenderingContext}
      */
-    this.gl_ = (canvas.getContext('experimental-webgl', {
+    this.gl_ = (this.canvas_.getContext('experimental-webgl', {
         'alpha': false,
         'depth': false,
         'antialias': true,
@@ -39,7 +40,7 @@ ol.renderer.WebGL = function(target) {
 
     goog.dom.append(target, this.canvas_);
 
-    var clearColor = opt_bgColor || [0, 0, 0];
+    var clearColor = [0, 0, 0]; // hardcoded background color
     gl.clearColor(clearColor[0], clearColor[1], clearColor[2], 1);
     gl.disable(goog.webgl.DEPTH_TEST);
     gl.disable(goog.webgl.SCISSOR_TEST);
@@ -62,7 +63,7 @@ goog.inherits(ol.renderer.WebGL, ol.renderer.MapRenderer);
  * @returns {boolean} This renderer is supported.
  */
 ol.renderer.WebGL.isSupported = function() {
-    return true;
+    return !goog.isNull( goog.dom.createDom('canvas').getContext('experimental-webgl') );
 };
 
 /**
