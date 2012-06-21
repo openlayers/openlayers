@@ -6,7 +6,6 @@ goog.require('goog.events.EventType');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.Listener');
 goog.require('goog.style');
-goog.require('goog.fx.Dragger');
 
 /**
  * Determine whether event was caused by a single touch
@@ -45,8 +44,8 @@ ol.event.isMultiTouch = function(evt) {
  *     property on the event object that is passed, which represents the
  *     relative position of the pointer to the {@code element}. Default is
  *     false.
- * @param {Array.<Object>=} opt_sequences Event sequences to register with this
- *     events instance.
+ * @param {Array.<String>=} opt_sequences Event sequences to register with
+ *     this Events instance.
  * @export
  */
 ol.event.Events = function(object, opt_element, opt_includeXY, opt_sequences) {
@@ -75,24 +74,21 @@ ol.event.Events = function(object, opt_element, opt_includeXY, opt_sequences) {
     
     /**
      * @private
-     * @type {!Array.<Object>}
+     * @type {Array.<String>}
+     */
+    this.sequenceProviders_ = goog.isDef(opt_sequences) ? opt_sequences : [];
+    
+    /**
+     * @private
+     * @type {Array.<ol.event.ISequence>}
      */
     this.sequences_ = [];
     
-    this.setElement(opt_element);
-    this.setSequences(opt_sequences);
-};
-goog.inherits(ol.event.Events, goog.events.EventTarget);
-
-/**
- * @param {Array.<ol.event.Sequence>} sequences
- */
-ol.event.Events.prototype.setSequences = function(sequences) {
-    this.sequences_ = sequences || [];
-    for (var i=0, ii=this.sequences_.length; i<ii; ++i) {
-        this.sequences_[i].setElement(this.element_);
+    if (goog.isDef(opt_element)) {
+        this.setElement(opt_element);
     }
 };
+goog.inherits(ol.event.Events, goog.events.EventTarget);
 
 /**
  * @return {Object} The object that this instance is bound to.
@@ -129,20 +125,22 @@ ol.event.Events.prototype.getElement = function() {
  * @export
  */
 ol.event.Events.prototype.setElement = function(element) {
-    var t, types = {};
-    goog.object.extend(types, goog.events.EventType);
-    goog.object.extend(types, goog.fx.Dragger.EventType);
+    var types, t;    
     if (this.element_) {
+        types = this.getBrowserEventTypes();
         for (t in types) {
             // register the event cross-browser
             goog.events.unlisten(
                 this.element_, types[t], this.handleBrowserEvent, false, this
             );
         }
+        this.destroySequences();
         delete this.element_;
     }
     this.element_ = element || null;
     if (goog.isDefAndNotNull(element)) {
+        this.createSequences(element);
+        types = this.getBrowserEventTypes();
         for (t in types) {
             // register the event cross-browser
             goog.events.listen(
@@ -150,7 +148,34 @@ ol.event.Events.prototype.setElement = function(element) {
             );
         }
     }
-    this.setSequences(this.sequences_);
+};
+
+/**
+ * @param {EventTarget} target
+ */
+ol.event.Events.prototype.createSequences = function(target) {
+    for (var i=0, ii=this.sequenceProviders_.length; i<ii; ++i) {
+        this.sequences_.push(new ol.event[this.sequenceProviders_[i]](target));
+    }
+};
+
+ol.event.Events.prototype.destroySequences = function() {
+    for (var i=this.sequences_.length-1; i>=0; --i) {
+        this.sequences_[i].destroy();
+    }
+    this.sequences_ = [];
+};
+
+/**
+ * @return {Object.<string, string>}
+ */
+ol.event.Events.prototype.getBrowserEventTypes = function() {
+    var types = {};
+    goog.object.extend(types, goog.events.EventType);
+    for (var i=this.sequences_.length-1; i>=0; --i) {
+        goog.object.extend(types, this.sequences_[i].getEventTypes());
+    }
+    return types;
 };
 
 /**
@@ -202,51 +227,26 @@ ol.event.Events.prototype.unregister = function(type, listener, opt_scope) {
  * Trigger a specified registered event.  
  *
  * @param {string} type The type of the event to trigger.
- * @param {Object} evt The event object that will be passed to listeners.
+ * @param {Object=} opt_evt The event object that will be passed to listeners.
  *
  * @return {boolean} The last listener return.  If a listener returns false,
  *     the chain of listeners will stop getting called.
  * @export
  */
-ol.event.Events.prototype.triggerEvent = function(type, evt) {
+ol.event.Events.prototype.triggerEvent = function(type, opt_evt) {
     var returnValue,
         listeners = goog.events.getListeners(this, type, true)
             .concat(goog.events.getListeners(this, type, false));
     if (arguments.length === 1) {
-        evt = {type: type};
+        opt_evt = {type: type};
     }
     for (var i=0, ii=listeners.length; i<ii; ++i) {
-        returnValue = listeners[i].handleEvent(evt);
+        returnValue = listeners[i].handleEvent(opt_evt);
         if (returnValue === false) {
             break;
         }
     }
     return returnValue;
-};
-
-/**
- * @param {Event} evt
- */
-ol.event.Events.prototype.handleSequences = function(evt) {
-    var sequences = this.sequences_,
-        type = evt.type,
-        sequenceEvt, browserEvent, handled, providedEvents, providedEventType;
-    for (var i=0, ii=sequences.length; i<ii; ++i) {
-        providedEvents = sequences[i].getProvidedEvents();
-        for (providedEventType in providedEvents) {
-            // clone the original event
-            sequenceEvt = {}; goog.object.extend(sequenceEvt, evt);
-            browserEvent = providedEvents[providedEventType];
-            handled = browserEvent[type];
-            if (goog.typeOf(handled) === "function") {
-                handled = handled(evt);
-            }
-            if (handled) {
-                sequenceEvt.type = providedEventType;
-                this.dispatchEvent(sequenceEvt);
-            }
-        }
-    }
 };
 
 /**
@@ -285,7 +285,6 @@ ol.event.Events.prototype.handleBrowserEvent = function(evt) {
         var element = /** @type {!Element} */ this.element_;
         evt.xy = goog.style.getRelativePosition(evt, element);
     }
-    this.handleSequences(evt);
     this.dispatchEvent(evt);
 };
 
@@ -294,7 +293,7 @@ ol.event.Events.prototype.handleBrowserEvent = function(evt) {
  * @export
  */
 ol.event.Events.prototype.destroy = function() {
-    this.setElement();
+    this.setElement(null);
     for (var p in this) {
         delete this[p];
     }

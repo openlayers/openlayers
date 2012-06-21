@@ -1,57 +1,119 @@
 goog.provide('ol.event.Drag');
+goog.provide('ol.event.DragEvent');
 
-goog.require('ol.event.Sequence');
+goog.require('ol.event.ISequence');
+goog.require('goog.functions');
 goog.require('goog.fx.Dragger');
+goog.require('goog.fx.DragEvent');
 goog.require('goog.fx.Dragger.EventType');
+goog.require('goog.functions');
 
 
 /**
  * @constructor
- * @extends {ol.event.Sequence}
+ * @param {Element} target The element that will be dragged.
+ * @extends {goog.fx.Dragger}
+ * @implements {ol.event.ISequence}
  * @export
  */
-ol.event.Drag = function() {
+ol.event.Drag = function(target) {
+    goog.base(this, target);
     
-    goog.base(this);
+    /**
+     * @private
+     * @type {number} clientX of the previous event
+     */
+    this.previousX_ = 0;
     
-    /** @inheritDoc */
-    this.eventType_ = {
-        DRAGSTART: 'dragstart',
-        DRAG: 'drag',
-        DRAGEND: 'dragend'
-    };
-    
-    var providedEvents = this.getProvidedEvents(),
-        oldX, oldY;
-
-    providedEvents[this.eventType_.DRAGSTART] = {};
-    providedEvents[this.eventType_.DRAGSTART]
-        [goog.fx.Dragger.EventType.START] = function(evt) {
-            oldX = evt.screenX;
-            oldY = evt.screenY;
-        };
-
-    providedEvents[this.eventType_.DRAG] = {};
-    providedEvents[this.eventType_.DRAG]
-        [goog.fx.Dragger.EventType.DRAG] = function(evt) {
-            evt.dx = evt.screenX - oldX;
-            evt.dy = evt.screenY - oldY;
-            oldX = evt.screenX;
-            oldY = evt.screenY;
-        };
-
-    providedEvents[this.eventType_.DRAGEND] = {};
-    providedEvents[this.eventType_.DRAGEND]
-        [goog.fx.Dragger.EventType.END] = true;
+    /**
+     * @private
+     * @type {number}  clientY of the previous event
+     */
+    this.previousY_ = 0;
 };
-goog.inherits(ol.event.Drag, ol.event.Sequence);
+goog.inherits(ol.event.Drag, goog.fx.Dragger);
+
+/**
+ * @param {string|goog.fx.DragEvent} e
+ * @return {boolean} If anyone called preventDefault on the event object (or
+ *     if any of the handlers returns false this will also return false.
+ */
+ol.event.Drag.prototype.dispatchEvent = function(e) {
+    if (e instanceof goog.fx.DragEvent) {
+        if (e.type === goog.fx.Dragger.EventType.START) {
+            e.type = ol.event.Drag.EventType.DRAGSTART;
+        } else if (e.type === goog.fx.Dragger.EventType.END) {
+            e.type = ol.event.Drag.EventType.DRAGEND;
+        }
+    }
+    return goog.base(this, 'dispatchEvent', e);
+};
 
 /** @inheritDoc */
-ol.event.Drag.prototype.setElement = function(element) {
-    goog.base(this, 'setElement', element);
-    if (goog.isDefAndNotNull(element)) {
-        this.dragger_ = new goog.fx.Dragger(element);
-    } else if (this.dragger_) {
-        this.dragger_.dispose();
-    }
+ol.event.Drag.prototype.startDrag = function(e) {
+    this.previousX_ = e.clientX;
+    this.previousY_ = e.clientY;
+    e.type = ol.event.Drag.EventType.DRAGSTART;
+    goog.base(this, 'startDrag', e);
+};
+
+/** @inheritDoc */
+ol.event.Drag.prototype.doDrag = function(e, x, y, dragFromScroll) {
+    e.dx = e.clientX - this.previousX_;
+    e.dy = e.clientX - this.previousY_;
+    goog.base(this, 'doDrag', e, x, y, dragFromScroll);
+};
+
+/** @override */
+ol.event.Drag.prototype.defaultAction = function(x, y) {};
+
+/** @inheritDoc */
+ol.event.Drag.prototype.getEventTypes = function() {
+    return ol.event.Drag.EventType;
+};
+
+/** @inheritDoc */
+ol.event.Drag.prototype.destroy = ol.event.Drag.prototype.dispose;
+
+
+/**
+ * Object representing a drag event
+ *
+ * @param {string} type Event type.
+ * @param {goog.fx.Dragger} dragobj Drag object initiating event.
+ * @param {number} clientX X-coordinate relative to the viewport.
+ * @param {number} clientY Y-coordinate relative to the viewport.
+ * @param {goog.events.BrowserEvent} browserEvent Object representing the
+ *     browser event that caused this drag event.
+ * @constructor
+ * @extends {goog.fx.DragEvent}
+ */
+ol.event.DragEvent = function(type, dragobj, clientX, clientY, browserEvent) {
+    
+    goog.base(this, type, dragobj, clientX, clientY, browserEvent);
+    
+    /**
+     * The move delta in X direction since the previous drag event
+     *
+     * @type {number}
+     */
+    this.dx = 0;
+    
+    /**
+     * The move delta in Y direction since the previous drag event
+     *
+     * @type {number}
+     */
+    this.dy = 0;
+};
+goog.inherits(ol.event.DragEvent, goog.fx.DragEvent);
+
+
+/**
+ * @type {Object.<string, string>}
+ */
+ol.event.Drag.EventType = {
+    DRAGSTART: 'dragstart',
+    DRAG: goog.fx.Dragger.EventType.DRAG,
+    DRAGEND: 'dragend'
 };

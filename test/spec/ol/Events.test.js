@@ -123,29 +123,36 @@ describe("ol.event.Events", function() {
         events.destroy();
     });
     
-    it("can map browser events to sequences", function() {
+    it("can be extended with event sequences", function() {
         var element = document.createElement("div"),
-            events = new ol.event.Events("foo", element),
+            events = new ol.event.Events("foo", element, false, ["Drag"]),
             mockEvt;
         
         // mock dom object
         goog.object.extend(element, new goog.events.EventTarget());
         
         log = [];
-        events.register('start', logFn);
+        events.register('dragstart', logFn);
         events.register('drag', logFn);
-        events.register('end', logFn);
+        events.register('dragend', logFn);
 
-        mockEvt = new goog.events.BrowserEvent({type: "start", button: null});
+        mockEvt = new goog.events.BrowserEvent({
+            type: "dragstart", button: null
+        });
         element.dispatchEvent(mockEvt);
-        mockEvt = new goog.events.BrowserEvent({type: "drag", button: null});
+        mockEvt = new goog.events.BrowserEvent({
+            type: "drag", button: null
+        });
         element.dispatchEvent(mockEvt);
-        mockEvt = new goog.events.BrowserEvent({type: "end", button: null});
+        mockEvt = new goog.events.BrowserEvent({
+            type: "dragend", button: null
+        });
         element.dispatchEvent(mockEvt);
         
-        expect(log[0].evt.type).toBe("start");
+        expect(log.length).toBe(3);
+        expect(log[0].evt.type).toBe("dragstart");
         expect(log[1].evt.type).toBe("drag");
-        expect(log[2].evt.type).toBe("end");
+        expect(log[2].evt.type).toBe("dragend");
         
         events.destroy();
     });

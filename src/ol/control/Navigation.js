@@ -20,18 +20,6 @@ ol.control.Navigation = function(opt_autoActivate) {
     this.autoActivate_ =
         goog.isDef(opt_autoActivate) ? opt_autoActivate : true;
     
-    /**
-     * type {number}
-     * @private
-     */
-    this.oldX = undefined;
-
-    /**
-     * type {number}
-     * @private
-     */
-    this.oldY = undefined;
-
 };
 goog.inherits(ol.control.Navigation, ol.control.Control);
 
@@ -54,10 +42,8 @@ ol.control.Navigation.prototype.deactivate = function() {
 };
 
 /**
- * @param {Event} evt
+ * @param {ol.event.DragEvent} evt
  */
 ol.control.Navigation.prototype.moveMap = function(evt) {
-    this.getMap().moveByPx(evt.clientX - oldX, evt.clientY - oldY);
-    oldX = evt.clientX;
-    oldY = evt.clientY;
+    this.getMap().moveByPx(evt.dx, evt.dy);
 };

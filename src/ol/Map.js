@@ -78,7 +78,9 @@ ol.Map = function() {
      * @private
      * @type {ol.event.Events}
      */
-    this.events_ = new ol.event.Events(this);
+    this.events_ = new ol.event.Events(
+        this, undefined, false, ['Drag']
+    );
     
     /**
      * @private
