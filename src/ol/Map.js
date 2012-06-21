@@ -5,6 +5,7 @@ goog.require('ol.Projection');
 goog.require('ol.event');
 goog.require('ol.event.Events');
 goog.require('ol.control.Control');
+goog.require('goog.dom');
 
 
 
@@ -134,7 +135,7 @@ ol.Map.DEFAULT_TILE_SIZE = 256;
   @const
   @type {Array.<string>}
  */
-ol.Map.DEFAULT_CONTROLS = ["Navigation"];
+ol.Map.DEFAULT_CONTROLS = ["navigation"];
 
 /**
  * @return {ol.Loc} Location.
@@ -355,11 +356,12 @@ ol.Map.prototype.setContainer = function(container) {
 
 ol.Map.prototype.setViewport = function() {
     if (!this.viewport_) {
-        this.viewport_ = goog.dom.createDom(
-            'div', 'ol-viewport'
-        );
-        goog.dom.appendChild(this.container_, this.viewport_);
+        this.viewport_ = goog.dom.createDom('div', 'ol-viewport');
+        this.mapOverlay_ = goog.dom.createDom('div', 'ol-overlay-map');
+        this.staticOverlay_ = goog.dom.createDom('div', 'ol-overlay-static');
+        goog.dom.append(this.viewport_, this.mapOverlay_, this.staticOverlay_);
     }
+    goog.dom.appendChild(this.container_, this.viewport_);
 };
 
 /**
