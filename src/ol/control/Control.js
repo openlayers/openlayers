@@ -12,7 +12,7 @@ ol.control.CONTROL_MAP = {};
  * @param {Function} Control
  */
 ol.control.addControl = function(name, Control) {
-    ol.control.CONTROL_MAP = Control;
+    ol.control.CONTROL_MAP[name] = Control;
 };
 
 /**

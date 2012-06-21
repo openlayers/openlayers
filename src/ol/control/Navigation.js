@@ -48,4 +48,4 @@ ol.control.Navigation.prototype.moveMap = function(evt) {
     this.getMap().moveByPx(evt.dx, evt.dy);
 };
 
-ol.control.addControl('navigation', ol.Control.Navigation);
+ol.control.addControl('navigation', ol.control.Navigation);
