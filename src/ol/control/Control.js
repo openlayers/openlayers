@@ -3,21 +3,16 @@ goog.provide('ol.control.Control');
 
 
 /**
- * @type {Object}
- * @private
+ * @enum {Object}
  */
-ol.control.registry_ = {};
+ol.control.CONTROL_MAP = {};
 
 /**
+ * @param {string} name
  * @param {Function} Control
- * @param {string} id
  */
-ol.control.register = function(Control, id) {
-    ol.control.registry_[id] = Control;
-};
-
-ol.control.fromRegistry = function(id) {
-    return ol.control.registry_[id];
+ol.control.addControl = function(name, Control) {
+    ol.control.CONTROL_MAP = Control;
 };
 
 /**

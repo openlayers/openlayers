@@ -14,10 +14,10 @@ ol.event.SEQUENCE_PROVIDER_MAP = {};
 
 /**
  * @param {string} name
- * @param {Function} obj
+ * @param {Function} Sequence
  */
-ol.event.addSequenceProvider = function(name, obj) {
-    ol.event.SEQUENCE_PROVIDER_MAP[name] = obj;
+ol.event.addSequenceProvider = function(name, Sequence) {
+    ol.event.SEQUENCE_PROVIDER_MAP[name] = Sequence;
 };
 
 /**

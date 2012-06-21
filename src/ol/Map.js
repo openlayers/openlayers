@@ -322,7 +322,7 @@ ol.Map.prototype.setControls = function(opt_controls) {
         for (var i=0, ii=opt_controls.length; i<ii; ++i) {
             control = opt_controls[i];
             if (!(control instanceof ol.control.Control)) {
-                control = new ol.control[control]();
+                control = new ol.control.CONTROL_MAP[control]();
             }
             control.setMap(this);
         }
