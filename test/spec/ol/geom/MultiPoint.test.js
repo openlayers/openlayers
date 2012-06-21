@@ -25,6 +25,14 @@ describe("ol.geom.MultiPoint", function() {
         expect( mp ).toBeA( ol.geom.MultiPoint );
     });
     
+    it("cannot be constructed with component-types other than 'ol.geom.Point'", function() {
+        expect(function(){
+            mp = new ol.geom.MultiPoint([
+                new ol.geom.LineString()
+            ]);
+        }).toThrow();
+    });
+    
     it("inherits from ol.geom.Geometry", function() {
         expect( mp ).toBeA( ol.geom.Geometry );
     });
@@ -82,6 +90,17 @@ describe("ol.geom.MultiPoint", function() {
         expect( points[2].getX() + ',' + points[2].getY()).toBe( '30,40' );
         expect( points[3].getX() + ',' + points[3].getY()).toBe( '50,60' );
         
+    });
+    
+    it("can only add ol.geom.Point as components", function() {
+        expect(function(){
+            mp.addComponent(
+                new ol.geom.LineString([
+                    new ol.geom.Point(30,40),
+                    new ol.geom.Point(50,60)
+                ])
+            );
+        }).toThrow();
     });
     
     it("has a method to remove points", function() {

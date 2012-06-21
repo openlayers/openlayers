@@ -12,7 +12,12 @@ goog.require('ol.geom.Collection');
  * @constructor
  */
 ol.geom.MultiPoint = function(points) {
-    this.setComponents(points);
+    this.setTypeWhitelist([ol.geom.Point]);
+    this.setTypeBlacklist([ol.geom.Geometry]);
+    if (arguments.length === 1 && goog.isDef(points)) {
+        this.setPoints(points);
+    }
+    
 };
 
 goog.inherits(ol.geom.MultiPoint, ol.geom.Collection);
