@@ -1,5 +1,7 @@
 goog.provide('ol.layer.xyz');
 
+goog.require('ol.layer.XYZ');
+
 /**
  * @export
  * @param {Object} opt_arg Config object.
