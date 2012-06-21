@@ -2,6 +2,7 @@ goog.provide('ol.Tile');
 
 goog.require('goog.events');
 goog.require('ol.Bounds');
+goog.require('ol.event.Events');
 
 /**
  * The Tile class.
@@ -32,6 +33,12 @@ ol.Tile = function(url, bounds) {
                            this.handleImageLoad, false, this);
     goog.events.listenOnce(this.img_, goog.events.EventType.ERROR,
                            this.handleImageError, false, this);
+
+    /**
+     * @private
+     * @type {ol.event.Events}
+     */
+    this.events_ = new ol.event.Events(this);
 };
 
 /**
@@ -70,6 +77,7 @@ ol.Tile.prototype.getImg = function() {
  * @param {goog.events.BrowserEvent} evt Event.
  */
 ol.Tile.prototype.handleImageLoad = function(evt) {
+    this.events_.triggerEvent('load');
 };
 
 /**
@@ -77,6 +85,7 @@ ol.Tile.prototype.handleImageLoad = function(evt) {
  * @param {goog.events.BrowserEvent} evt Event.
  */
 ol.Tile.prototype.handleImageError = function(evt) {
+    this.events_.triggerEvent('error');
 };
 
 /**

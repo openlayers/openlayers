@@ -1,14 +1,41 @@
 describe("ol.Tile", function() {
 
-    describe("creating a tile", function() {
+    describe("create a tile", function() {
+        var tile;
+        beforeEach(function() {
+            tile = new ol.Tile('http://a.url');
+        });
         it("creates a tile instance", function() {
-            var tile = new ol.Tile();
             expect(tile).toBeA(ol.Tile);
         });
         it("sets an image node in the instance", function() {
-            var tile = new ol.Tile();
             expect(tile.getImg()).toBeDefined();
         });
     });
 
+    describe("handle image load", function() {
+        var tile;
+        beforeEach(function() {
+            tile = new ol.Tile('http://a.url');
+        });
+        it("fires a load event", function() {
+            var spy = jasmine.createSpy();
+            tile.events_.register('load', spy);
+            tile.handleImageLoad();
+            expect(spy).toHaveBeenCalled();
+        });
+    });
+
+    describe("handle image error", function() {
+        var tile;
+        beforeEach(function() {
+            tile = new ol.Tile('http://a.url');
+        });
+        it("fires a load event", function() {
+            var spy = jasmine.createSpy();
+            tile.events_.register('error', spy);
+            tile.handleImageError();
+            expect(spy).toHaveBeenCalled();
+        });
+    });
 });
