@@ -1,20 +1,17 @@
 goog.provide('ol.renderer.Composite');
 
-goog.require('goog.dom');
+goog.require('ol.renderer.MapRenderer');
 goog.require('ol.layer.Layer');
 goog.require('ol.Loc');
 
 /**
  * @constructor
  * @param {!Element} target
+ * @extends {ol.renderer.MapRenderer}
  */
 ol.renderer.Composite = function(target) {
     
-    /**
-     * @type !Element
-     * @private
-     */
-    this.target_ = target;
+    goog.base(this, target);
     
     /**
      * @type Array.<ol.renderer.LayerRenderer>
@@ -23,6 +20,8 @@ ol.renderer.Composite = function(target) {
     this.renderers_ = [];
     
 };
+
+goog.inherits(ol.renderer.Composite, ol.renderer.MapRenderer);
 
 /**
  * @param {Array.<ol.layer.Layer>} layers
