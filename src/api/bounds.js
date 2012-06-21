@@ -132,3 +132,17 @@ ol.Bounds.prototype.maxY = function(opt_arg){
         return this.getMaxY();
     }
 };
+
+/**
+ * Transform this node into another coordinate reference system.  Returns a new
+ * bounds instead of modifying this bounds.
+ *
+ * @param {ol.Projection|string} proj Target projection (or string identifier).
+ * @return {ol.Bounds} A new bounds in the target projection.
+ */
+ol.Bounds.prototype.transform = function(proj) {
+    if (goog.isString(proj)) {
+        proj = new ol.Projection(proj);
+    }
+    return this.doTransform(proj);
+};

@@ -29,5 +29,41 @@ describe("ol.Bounds", function() {
         });
         
     });
+    
+    describe("transforming bounds", function() {
+        
+        var gg = new ol.Projection("EPSG:4326");
+        var sm = new ol.Projection("EPSG:900913");
+
+        var bounds = new ol.Bounds(10, -10, 20, 10, gg);
+        
+        // approximate bbox array
+        function bbox(bounds) {
+            var mult = Math.pow(10, 6); // six figs
+            return [
+                Math.round(bounds.getMinX() * mult) / mult,
+                Math.round(bounds.getMinY() * mult) / mult,
+                Math.round(bounds.getMaxX() * mult) / mult,
+                Math.round(bounds.getMaxY() * mult) / mult
+            ];
+        }
+        
+        it("doesn't mind a null transform", function() {
+            var trans = bounds.transform(new ol.Projection("foo")); 
+            expect(bbox(bounds)).toEqual([10, -10, 20, 10]);
+        });
+        
+        it("transforms from geographic to spherical mercator", function() {
+            var trans = bounds.transform(sm);
+            expect(bbox(trans)).toEqual([1113194.907778, -1118889.974702, 2226389.815556, 1118889.974702]);
+        });
+
+        it("transforms from spherical mercator to geographic", function() {
+            var trans = bounds.transform(sm);
+            var back = trans.transform(gg);
+            expect(bbox(back)).toEqual([10, -10, 20, 10]);
+        });
+        
+    });
 
 });
