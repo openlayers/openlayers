@@ -4,6 +4,8 @@ goog.require('ol.Loc');
 goog.require('ol.Projection');
 goog.require('ol.event');
 goog.require('ol.event.Events');
+goog.require('ol.event.Drag');
+goog.require('ol.control.Control');
 
 
 
@@ -78,7 +80,7 @@ ol.Map = function() {
      * @type {ol.event.Events}
      */
     this.events_ = new ol.event.Events(
-        this, undefined, true, [ol.event.drag()]
+        this, undefined, true, [new ol.event.Drag()]
     );
     
     /**
@@ -109,6 +111,11 @@ ol.Map.ZOOM_FACTOR = 2;
   @type {number}
 */
 ol.Map.DEFAULT_TILE_SIZE = 256;
+/**
+  @const
+  @type {Array.<string>}
+ */
+ol.Map.DEFAULT_CONTROLS = ["Navigation", "Zoom"];
 
 /**
  * @return {ol.Loc} Location.
@@ -288,14 +295,19 @@ ol.Map.prototype.setLayers = function(layers) {
 };
 
 /**
- * @param {Array.<ol.control.Control>} controls
+ * @param {Array.<ol.control.Control>|undefined} opt_controls
  */
-ol.Map.prototype.setControls = function(controls) {
+ol.Map.prototype.setControls = function(opt_controls) {
     if (!this.controls_) {
-        for (var i=0, ii=controls.length; i<ii; ++i) {
-            controls[i].setMap(this);
+        var control;
+        for (var i=0, ii=opt_controls.length; i<ii; ++i) {
+            control = opt_controls[i];
+            if (!(control instanceof ol.control.Control)) {
+                control = new ol.control[control]();
+            }
+            control.setMap(this);
         }
-        this.controls_ = controls;
+        this.controls_ = opt_controls;
     }
 };
 

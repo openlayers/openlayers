@@ -42,7 +42,7 @@ describe("ol.event.Events", function() {
         expect(log.length).toBe(1);
         
         // detach from the element
-        events.setElement();
+        events.setElement(null);
         element.dispatchEvent("click");
         expect(log.length).toBe(1);
         
@@ -126,24 +126,28 @@ describe("ol.event.Events", function() {
     it("can map browser events to sequences", function() {
         var element = document.createElement("div"),
             events = new ol.event.Events(
-                "foo", element, false, [ol.event.drag()]
-            );
+                "foo", element, false, [new ol.event.Drag()]
+            ),
+            mockEvt;
         
         // mock dom object
         goog.object.extend(element, new goog.events.EventTarget());
         
         log = [];
-        events.register('dragstart', logFn);
+        events.register('start', logFn);
         events.register('drag', logFn);
-        events.register('dragend', logFn);
+        events.register('end', logFn);
 
-        element.dispatchEvent("mousedown");
-        element.dispatchEvent("mousemove");
-        element.dispatchEvent("mouseup");
+        mockEvt = new goog.events.BrowserEvent({type: "start", button: null});
+        element.dispatchEvent(mockEvt);
+        mockEvt = new goog.events.BrowserEvent({type: "drag", button: null});
+        element.dispatchEvent(mockEvt);
+        mockEvt = new goog.events.BrowserEvent({type: "end", button: null});
+        element.dispatchEvent(mockEvt);
         
-        expect(log[0].evt.type).toBe("dragstart");
+        expect(log[0].evt.type).toBe("start");
         expect(log[1].evt.type).toBe("drag");
-        expect(log[2].evt.type).toBe("dragend");
+        expect(log[2].evt.type).toBe("end");
         
         events.destroy();
     });

@@ -37,8 +37,8 @@ ol.event.isMultiTouch = function(evt) {
  * @constructor
  * @extends {goog.events.EventTarget}
  * @param {Object} object The object we are creating this instance for.
- * @param {!EventTarget=} opt_element An optional element that we want to listen to
- *     browser events on.
+ * @param {!EventTarget=} opt_element An optional element that we want to
+ *     listen to browser events on.
  * @param {boolean=} opt_includeXY Should the 'xy' property automatically be
  *     created for browser pointer events? In general, this should be false. If
  *     it is true, then pointer events will automatically generate an 'xy'
@@ -75,13 +75,24 @@ ol.event.Events = function(object, opt_element, opt_includeXY, opt_sequences) {
     
     /**
      * @private
-     * @type {Array.<Object>}
+     * @type {!Array.<Object>}
      */
-    this.sequences_ = goog.isDef(opt_sequences) ? opt_sequences : [];
+    this.sequences_ = [];
     
     this.setElement(opt_element);
+    this.setSequences(opt_sequences);
 };
 goog.inherits(ol.event.Events, goog.events.EventTarget);
+
+/**
+ * @param {Array.<ol.event.Sequence>} sequences
+ */
+ol.event.Events.prototype.setSequences = function(sequences) {
+    this.sequences_ = sequences || [];
+    for (var i=0, ii=this.sequences_.length; i<ii; ++i) {
+        this.sequences_[i].setElement(this.element_);
+    }
+};
 
 /**
  * @return {Object} The object that this instance is bound to.
@@ -112,13 +123,15 @@ ol.event.Events.prototype.getElement = function() {
  * Attach this instance to a DOM element. When called, all browser events fired
  * on the provided element will be relayed by this instance.
  *
- * @param {EventTarget=} opt_element A DOM element to attach
+ * @param {EventTarget} element A DOM element to attach
  *     browser events to. If called without this argument, all browser events
  *     will be detached from the element they are currently attached to.
  * @export
  */
-ol.event.Events.prototype.setElement = function(opt_element) {
-    var t, types = goog.events.EventType;
+ol.event.Events.prototype.setElement = function(element) {
+    var t, types = {};
+    goog.object.extend(types, goog.events.EventType);
+    goog.object.extend(types, goog.fx.Dragger.EventType);
     if (this.element_) {
         for (t in types) {
             // register the event cross-browser
@@ -128,15 +141,16 @@ ol.event.Events.prototype.setElement = function(opt_element) {
         }
         delete this.element_;
     }
-    if (goog.isDef(opt_element)) {
-        this.element_ = opt_element;
+    this.element_ = element || null;
+    if (goog.isDefAndNotNull(element)) {
         for (t in types) {
             // register the event cross-browser
             goog.events.listen(
-                opt_element, types[t], this.handleBrowserEvent, false, this
+                element, types[t], this.handleBrowserEvent, false, this
             );
         }
     }
+    this.setSequences(this.sequences_);
 };
 
 /**
@@ -216,15 +230,18 @@ ol.event.Events.prototype.triggerEvent = function(type, evt) {
 ol.event.Events.prototype.handleSequences = function(evt) {
     var sequences = this.sequences_,
         type = evt.type,
-        sequenceEvt,
-        sequence, browserEvent, providedEventType;
+        sequenceEvt, browserEvent, handled, providedEvents, providedEventType;
     for (var i=0, ii=sequences.length; i<ii; ++i) {
-        sequence = sequences[i];
-        for (providedEventType in sequence) {
+        providedEvents = sequences[i].getProvidedEvents();
+        for (providedEventType in providedEvents) {
             // clone the original event
             sequenceEvt = {}; goog.object.extend(sequenceEvt, evt);
-            browserEvent = sequence[providedEventType];
-            if (browserEvent[type] && browserEvent[type](evt)) {
+            browserEvent = providedEvents[providedEventType];
+            handled = browserEvent[type];
+            if (goog.typeOf(handled) === "function") {
+                handled = handled(evt);
+            }
+            if (handled) {
                 sequenceEvt.type = providedEventType;
                 this.dispatchEvent(sequenceEvt);
             }

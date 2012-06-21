@@ -1,7 +1,24 @@
+goog.provide('ol.control');
 goog.provide('ol.control.Control');
 
-goog.require('ol.Map');
 
+/**
+ * @type {Object}
+ * @private
+ */
+ol.control.registry_ = {};
+
+/**
+ * @param {Function} Control
+ * @param {string} id
+ */
+ol.control.register = function(Control, id) {
+    ol.control.registry_[id] = Control;
+};
+
+ol.control.fromRegistry = function(id) {
+    return ol.control.registry_[id];
+};
 
 /**
  * @constructor
