@@ -53,7 +53,6 @@ ol.event.Drag.prototype.dispatchEvent = function(e) {
 ol.event.Drag.prototype.startDrag = function(e) {
     this.previousX_ = e.clientX;
     this.previousY_ = e.clientY;
-    e.type = ol.event.Drag.EventType.DRAGSTART;
     goog.base(this, 'startDrag', e);
 };
 
