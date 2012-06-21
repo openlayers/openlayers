@@ -3,7 +3,7 @@
 
   "inputs": "src/ol.js",
   "paths": [
-    "."
+    "src"
   ],
 
   "define": {
