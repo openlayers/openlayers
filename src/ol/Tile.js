@@ -1,6 +1,7 @@
 goog.provide('ol.Tile');
 
 goog.require('goog.events');
+goog.require('goog.asserts');
 goog.require('ol.Bounds');
 goog.require('ol.event.Events');
 
@@ -32,6 +33,12 @@ ol.Tile = function(url, bounds) {
 
     /**
      * @private
+     * @type {boolean}
+     */
+    this.loading_ = false;
+
+    /**
+     * @private
      * @type {HTMLImageElement}
      */
     this.img_ = ol.Tile.createImage();
@@ -48,9 +55,11 @@ ol.Tile = function(url, bounds) {
 };
 
 /**
- * Load the tile.
+ * Load the tile. A tile should loaded only once.
  */
 ol.Tile.prototype.load = function() {
+    goog.asserts.assert(!this.loaded && this.loading_);
+    this.loading_ = true;
     this.img_.src = this.url_;
 };
 
