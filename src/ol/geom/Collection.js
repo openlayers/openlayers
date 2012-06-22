@@ -160,9 +160,30 @@ ol.geom.Collection.prototype.isAllowedComponent = function(component){
 
 /**
  * Removes the given component from the list of components.
- * 
+ *
  * @param {ol.geom.Geometry} component A component to be removed.
  */
 ol.geom.Collection.prototype.removeComponent = function(component) {
     goog.array.remove(this.components_, component);
+};
+
+/**
+ * Compute the centroid for this geometry collection.
+ *
+ * @returns {ol.geom.Point} The centroid of the collection.
+ */
+ol.geom.Collection.prototype.getCentroid = function() {
+    var components = this.getComponents(),
+        len = components.length,
+        sum_x = 0, sum_y = 0,
+        centroid = null;
+    if (len > 0) {
+        goog.array.forEach(components, function(component){
+            var singleCentroid = component.getCentroid();
+            sum_x += singleCentroid.getX();
+            sum_y += singleCentroid.getX();
+        });
+        centroid = new ol.geom.Point(sum_x / len, sum_y / len);
+    }
+    return centroid;
 };
