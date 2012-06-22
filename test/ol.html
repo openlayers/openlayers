@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OL Spec Runner</title>
+
+  <link rel="shortcut icon" type="image/png" href="jasmine-1.2.0/jasmine_favicon.png">
+  <link rel="stylesheet" type="text/css" href="jasmine-1.2.0/jasmine.css">
+  <script type="text/javascript" src="jasmine-1.2.0/jasmine.js"></script>
+  <script type="text/javascript" src="jasmine-1.2.0/jasmine-html.js"></script>
+
+  <!-- include source files here... -->
+  <script type="text/javascript">
+// the following code includes the source-files of OpenLayers as they are
+// defined in ol.js.
+//
+// You can control in which form the source will be loaded by passing
+// URL-parameters:
+//
+//   - host
+//     where the plovr compiler is running, if not passed this defaults to the
+//     current host on port 9810
+//
+//   - mode
+//     which mode of compilation should be applied. Common values for this are
+//     RAW, SIMPLE or ADVANCED. If not provided, SIMPLE is used.
+(function(doc, l){
+    var hostRegex = /[\\?&]host=([^&#]*)/,
+        modeRegex = /[\\?&]mode=([^&#]*)/,
+        hostResult = hostRegex.exec(l.href),
+        modeResult = modeRegex.exec(l.href),
+        host = (hostResult && hostResult[1])
+            ? hostResult[1]
+            : (l.host)
+                ? l.host + ':9810'
+                : 'localhost:9810',
+        mode = (modeResult && modeResult[1])
+            ? modeResult[1]
+            : 'SIMPLE',
+
+        // Create the script tag which includes the derived variables from above
+        script = '<sc' + 'ript type="text/javascript" '
+            + 'src="http://' + host + '/compile?id=ol&amp;mode=' + mode + '">'
+            + '</scr' + 'ipt>',
+
+        // this function will fix the links of the result to also include
+        // the once defined URL Parametrs passed to the testsuite.
+        fixLinks = function() {
+            if (doc.getElementsByTagName) {
+                var candidates = doc.getElementsByTagName('a'),
+                    link,
+                    hrefExpression = /\?spec/,
+                    i = 0, len = candidates.length;
+                for(; i < len; i++){
+                    link = candidates[i];
+                    if (hrefExpression.test(link.href)) {
+                        link.href += '&host=' + encodeURIComponent(host)
+                            + '&mode=' + encodeURIComponent(mode);
+                    }
+                }
+            }
+        };
+
+    // write out the script-tag to load the compiled result
+    doc.write(script);
+
+    // overwrite jasmines finishCallback to run the fixLinks method afterwards
+    jasmine.Runner.prototype.finishCallback = function() {
+        jasmine.getEnv().reporter.reportRunnerResults(this);
+        fixLinks();
+    };
+})(document, location);
+  </script>
+  <!-- common jasmine extensions -->
+  <script type="text/javascript" src="jasmine-extensions.js"></script>
+
+  <!-- include spec files here... -->
+  <script type="text/javascript" src="spec/ol/Events.test.js"></script>
+  <script type="text/javascript" src="spec/ol/UnreferencedBounds.test.js"></script>
+  <script type="text/javascript" src="spec/ol/Projection.test.js"></script>
+  <script type="text/javascript" src="spec/ol/Bounds.test.js"></script>
+  <script type="text/javascript" src="spec/ol/Tile.test.js"></script>
+  <script type="text/javascript" src="spec/ol/TileSet.test.js"></script>
+  <script type="text/javascript" src="spec/ol/TileCache.test.js"></script>
+  <script type="text/javascript" src="spec/ol/geom/Point.test.js"></script>
+  <script type="text/javascript" src="spec/ol/geom/MultiPoint.test.js"></script>
+  <script type="text/javascript" src="spec/ol/geom/LineString.test.js"></script>
+  <script type="text/javascript" src="spec/ol/geom/Collection.test.js"></script>
+  <script type="text/javascript" src="spec/ol/layer/TileLayer.test.js"></script>
+  <script type="text/javascript" src="spec/ol/layer/XYZ.test.js"></script>
+  <script type="text/javascript" src="spec/ol/Feature.test.js"></script>
+  <script type="text/javascript" src="spec/ol/renderer/WebGL.test.js"></script>
+
+
+  <script type="text/javascript">
+    (function() {
+      var jasmineEnv = jasmine.getEnv();
+      jasmineEnv.updateInterval = 1000;
+
+      var htmlReporter = new jasmine.HtmlReporter();
+
+      jasmineEnv.addReporter(htmlReporter);
+
+      jasmineEnv.specFilter = function(spec) {
+        return htmlReporter.specFilter(spec);
+      };
+
+      var currentWindowOnload = window.onload;
+
+      window.onload = function() {
+        if (currentWindowOnload) {
+          currentWindowOnload();
+        }
+        execJasmine();
+      };
+
+      function execJasmine() {
+        jasmineEnv.execute();
+      }
+
+    })();
+  </script>
+
+</head>
+
+<body>
+</body>
+</html>

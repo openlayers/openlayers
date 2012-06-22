@@ -10,7 +10,7 @@
 
   <!-- include source files here... -->
   <script type="text/javascript">
-// the following code includes the source-files of OpenLayers as they are
+// the following code includes the sourc-files of OpenLayers as they are
 // defined in ol.js.
 //
 // You can control in which form the source will be loaded by passing
@@ -36,38 +36,10 @@
         mode = (modeResult && modeResult[1])
             ? modeResult[1]
             : 'SIMPLE',
-
-        // Create the script tag which includes the derived variables from above
         script = '<sc' + 'ript type="text/javascript" '
             + 'src="http://' + host + '/compile?id=ol&amp;mode=' + mode + '">'
-            + '</scr' + 'ipt>',
-
-        // this function will fix the links of the result to also include
-        // the once defined URL Parametrs passed to the testsuite.
-        fixLinks = function() {
-            if (doc.getElementsByTagName) {
-                var candidates = doc.getElementsByTagName('a'),
-                    link,
-                    hrefExpression = /\?spec/,
-                    i = 0, len = candidates.length;
-                for(; i < len; i++){
-                    link = candidates[i];
-                    if (hrefExpression.test(link.href)) {
-                        link.href += '&host=' + encodeURIComponent(host)
-                            + '&mode=' + encodeURIComponent(mode);
-                    }
-                }
-            }
-        };
-
-    // write out the script-tag to load the compiled result
+            + '</scr' + 'ipt>';
     doc.write(script);
-
-    // overwrite jasmines finishCallback to run the fixLinks method afterwards
-    jasmine.Runner.prototype.finishCallback = function() {
-        jasmine.getEnv().reporter.reportRunnerResults(this);
-        fixLinks();
-    };
 })(document, location);
   </script>
   <!-- common jasmine extensions -->
@@ -86,21 +58,6 @@
   <script type="text/javascript" src="spec/api/layer/xyz.test.js"></script>
   <script type="text/javascript" src="spec/api/layer/osm.test.js"></script>
   <script type="text/javascript" src="spec/api/feature.test.js"></script>
-  <script type="text/javascript" src="spec/ol/Events.test.js"></script>
-  <script type="text/javascript" src="spec/ol/UnreferencedBounds.test.js"></script>
-  <script type="text/javascript" src="spec/ol/Projection.test.js"></script>
-  <script type="text/javascript" src="spec/ol/Bounds.test.js"></script>
-  <script type="text/javascript" src="spec/ol/Tile.test.js"></script>
-  <script type="text/javascript" src="spec/ol/TileSet.test.js"></script>
-  <script type="text/javascript" src="spec/ol/TileCache.test.js"></script>
-  <script type="text/javascript" src="spec/ol/geom/Point.test.js"></script>
-  <script type="text/javascript" src="spec/ol/geom/MultiPoint.test.js"></script>
-  <script type="text/javascript" src="spec/ol/geom/LineString.test.js"></script>
-  <script type="text/javascript" src="spec/ol/geom/Collection.test.js"></script>
-  <script type="text/javascript" src="spec/ol/layer/TileLayer.test.js"></script>
-  <script type="text/javascript" src="spec/ol/layer/XYZ.test.js"></script>
-  <script type="text/javascript" src="spec/ol/Feature.test.js"></script>
-  <script type="text/javascript" src="spec/ol/renderer/WebGL.test.js"></script>
 
 
   <script type="text/javascript">
