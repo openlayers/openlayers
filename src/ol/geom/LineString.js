@@ -2,17 +2,18 @@ goog.provide('ol.geom.LineString');
 
 goog.require('goog.array');
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.Collection');
 goog.require('ol.geom.Point');
 goog.require('ol.Projection');
 
 /**
- * Creates ol.geom.LineString objects. 
- * 
+ * Creates ol.geom.LineString objects.
+ *
  * @export
  * @extends {ol.geom.Geometry}
- * @param {Array.<ol.geom.Point>} vertices An array of points building the 
+ * @param {Array.<ol.geom.Point>} vertices An array of points building the
  *     linestrings vertices.
- * 
+ *
  * @constructor
  */
 ol.geom.LineString = function(vertices) {
@@ -21,14 +22,14 @@ ol.geom.LineString = function(vertices) {
      * @type {Array.<ol.geom.Point>}
      */
     this.vertices_ = vertices;
-    
+
 };
 
 goog.inherits(ol.geom.LineString, ol.geom.Geometry);
 
 /**
  * Sets the LineString's points.
- * 
+ *
  * @return {Array.<ol.geom.Point>} An array of points.
  */
 ol.geom.LineString.prototype.getVertices = function() {
@@ -37,7 +38,7 @@ ol.geom.LineString.prototype.getVertices = function() {
 
 /**
  * Gets the LineString's points.
- * 
+ *
  * @param {Array.<ol.geom.Point>} vertices An array of points.
  */
 ol.geom.LineString.prototype.setVertices = function(vertices) {
@@ -46,7 +47,7 @@ ol.geom.LineString.prototype.setVertices = function(vertices) {
 
 /**
  * Adds the given vertex to the list of vertices at the specified index.
- * 
+ *
  * @param {ol.geom.Point} vertex A point to be added.
  * @param {number} index The index where to add.
  */

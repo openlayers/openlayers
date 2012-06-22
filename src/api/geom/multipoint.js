@@ -1,8 +1,8 @@
-goog.provide('ol.geom.multipoint'); 
+goog.provide('ol.geom.multipoint');
 
 goog.require('ol.geom.MultiPoint');
-goog.require('ol.geom.point'); 
-goog.require('ol.geom.collection'); 
+goog.require('ol.geom.point');
+goog.require('ol.geom.collection');
 goog.require('ol.projection');
 
 /**
@@ -11,11 +11,11 @@ goog.require('ol.projection');
  * @return {ol.geom.MultiPoint} MultiPoint.
  */
 ol.geom.multipoint = function(opt_arg){
-    
+
     if (opt_arg instanceof ol.geom.MultiPoint) {
         return opt_arg;
     }
-    
+
     var points = [];
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
         if (goog.isArray(opt_arg)) {
@@ -37,7 +37,7 @@ ol.geom.multipoint = function(opt_arg){
             throw new Error('ol.geom.multipoint');
         }
     }
-    
+
     var mp = new ol.geom.MultiPoint(points);
     return mp;
 };
@@ -99,18 +99,18 @@ ol.geom.MultiPoint.prototype.add = function(point, opt_index){
 ol.geom.MultiPoint.prototype.addAll = function(points, opt_index){
     var index = this.getPoints().length,
         p;
-    
+
     if (arguments.length == 2 && goog.isDef(opt_index)) {
         index = opt_index;
     }
-    
+
     goog.array.every(points, function(pointSpec){
         p = ol.geom.point(pointSpec);
         this.addPoint(p, index);
         index++;
         return true;
     }, this);
-    
+
     return this;
 };
 
@@ -132,6 +132,6 @@ ol.geom.MultiPoint.prototype.remove = function(points){
         this.removePoint(p);
         return true;
     }, this);
-    
+
     return this;
 };

@@ -1,7 +1,7 @@
-goog.provide('ol.geom.linestring'); 
+goog.provide('ol.geom.linestring');
 
 goog.require('ol.geom.LineString');
-goog.require('ol.geom.point'); 
+goog.require('ol.geom.point');
 goog.require('ol.projection');
 
 /**
@@ -10,11 +10,11 @@ goog.require('ol.projection');
  * @return {ol.geom.LineString} LineString.
  */
 ol.geom.linestring = function(opt_arg){
-    
+
     if (opt_arg instanceof ol.geom.LineString) {
         return opt_arg;
     }
-    
+
     var vertices = [];
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
         if (goog.isArray(opt_arg)) {
@@ -36,7 +36,7 @@ ol.geom.linestring = function(opt_arg){
             throw new Error('ol.geom.linestring');
         }
     }
-    
+
     var ls = new ol.geom.LineString(vertices);
     return ls;
 };
@@ -99,18 +99,18 @@ ol.geom.LineString.prototype.add = function(vertex, opt_index){
 ol.geom.LineString.prototype.addAll = function(vertices, opt_index){
     var index = this.vertices_.length,
         v;
-    
+
     if (arguments.length == 2 && goog.isDef(opt_index)) {
         index = opt_index;
     }
-    
+
     goog.array.every(vertices, function(vertexSpec){
         v = ol.geom.point(vertexSpec);
         this.addVertex(v, index);
         index++;
         return true;
     }, this);
-    
+
     return this;
 };
 

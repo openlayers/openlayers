@@ -4,12 +4,12 @@ goog.require('goog.array');
 goog.require('ol.geom.Collection');
 
 /**
- * Creates ol.geom.MultiPoint objects. 
- * 
+ * Creates ol.geom.MultiPoint objects.
+ *
  * @export
  * @extends {ol.geom.Collection}
  * @param {Array.<ol.geom.Point>} points An array of points.
- * 
+ *
  * @constructor
  */
 ol.geom.MultiPoint = function(points) {
@@ -18,14 +18,14 @@ ol.geom.MultiPoint = function(points) {
     if (arguments.length === 1 && goog.isDef(points)) {
         this.setPoints(points);
     }
-    
+
 };
 
 goog.inherits(ol.geom.MultiPoint, ol.geom.Collection);
 
 /**
  * Sets the MultiPoint's points.
- * 
+ *
  * @return {Array.<ol.geom.Point>} An array of points.
  */
 ol.geom.MultiPoint.prototype.getPoints = function() {
@@ -34,7 +34,7 @@ ol.geom.MultiPoint.prototype.getPoints = function() {
 
 /**
  * Gets the MultiPoint's points.
- * 
+ *
  * @param {Array.<ol.geom.Point>} points An array of points.
  */
 ol.geom.MultiPoint.prototype.setPoints = function(points) {
@@ -43,7 +43,7 @@ ol.geom.MultiPoint.prototype.setPoints = function(points) {
 
 /**
  * Adds the given point to the list of points at the specified index.
- * 
+ *
  * @param {ol.geom.Point} point A point to be added.
  * @param {number} index The index where to add.
  */
@@ -53,7 +53,7 @@ ol.geom.MultiPoint.prototype.addPoint = function(point, index) {
 
 /**
  * Removes the given point from the list of points.
- * 
+ *
  * @param {ol.geom.Point} point A point to be removed.
  */
 ol.geom.MultiPoint.prototype.removePoint = function(point) {

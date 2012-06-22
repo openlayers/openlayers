@@ -6,16 +6,16 @@ goog.require('ol.Projection');
 goog.require('ol.base');
 
 /**
- * Creates ol.geom.Collection objects. 
- * 
+ * Creates ol.geom.Collection objects.
+ *
  * @export
  * @extends {ol.geom.Geometry}
  * @param {Array.<ol.geom.Geometry>} components An array of components.
- * 
+ *
  * @constructor
  */
 ol.geom.Collection = function(components) {
-    
+
     /**
      * @private
      * @type {Array.<Function>}
@@ -23,19 +23,19 @@ ol.geom.Collection = function(components) {
     this.typeBlacklist_ = [
         ol.geom.Collection
     ];
-    
+
     /**
      * @private
      * @type {Array.<Function>}
      */
     this.typeWhitelist_ = [];
-    
+
     /**
      * @private
      * @type {Array.<ol.geom.Geometry>}
      */
     this.components_ = [];
-    
+
     if (arguments.length === 1 && goog.isDef(components)) {
         this.setComponents(components);
     }
@@ -44,14 +44,14 @@ ol.geom.Collection = function(components) {
 goog.inherits(ol.geom.Collection, ol.geom.Geometry);
 
 /**
- * Sets the list of disallowed types for the collection. 
+ * Sets the list of disallowed types for the collection.
  * @param {Array.<Function>} typeBlacklist Array of constructors to disallow.
  */
 ol.geom.Collection.prototype.setTypeBlacklist = function(typeBlacklist){
     this.typeBlacklist_ = typeBlacklist;
 };
 /**
- * Gets the list of disallowed types for the collection. 
+ * Gets the list of disallowed types for the collection.
  * @return {Array.<Function>} Array of constructors to disallow.
  */
 ol.geom.Collection.prototype.getTypeBlacklist = function(){
@@ -59,14 +59,14 @@ ol.geom.Collection.prototype.getTypeBlacklist = function(){
 };
 
 /**
- * Sets the list of always allowed types for the collection. 
+ * Sets the list of always allowed types for the collection.
  * @param {Array.<Function>} typeWhitelist Array of constructors to allow.
  */
 ol.geom.Collection.prototype.setTypeWhitelist = function(typeWhitelist){
     this.typeWhitelist_ = typeWhitelist;
 };
 /**
- * Gets the list of always allowed types for the collection. 
+ * Gets the list of always allowed types for the collection.
  * @return {Array.<Function>} Array of constructors to allow.
  */
 ol.geom.Collection.prototype.getTypeWhitelist = function(){
@@ -76,7 +76,7 @@ ol.geom.Collection.prototype.getTypeWhitelist = function(){
 
 /**
  * Sets the Collection's components.
- * 
+ *
  * @return {Array.<ol.geom.Geometry>} An array of components.
  */
 ol.geom.Collection.prototype.getComponents = function() {
@@ -85,12 +85,12 @@ ol.geom.Collection.prototype.getComponents = function() {
 
 /**
  * Gets the Collection's components.
- * 
+ *
  * @param {Array.<ol.geom.Geometry>} components An array of components.
  */
 ol.geom.Collection.prototype.setComponents = function(components) {
     var allValidTypes = goog.array.every(
-        components, 
+        components,
         this.isAllowedComponent,
         this
     );
@@ -105,7 +105,7 @@ ol.geom.Collection.prototype.setComponents = function(components) {
 
 /**
  * Adds the given component to the list of components at the specified index.
- * 
+ *
  * @param {ol.geom.Geometry} component A component to be added.
  * @param {number} index The index where to add.
  */
@@ -121,14 +121,14 @@ ol.geom.Collection.prototype.addComponent = function(component, index) {
 /**
  * Checks whether the passed component is an instance of any of the constructors
  * listed in the passed list.
- * 
+ *
  * @param {ol.geom.Geometry} component The component to check.
- * @param {Array.<Function>} list The List of constructors to check the 
+ * @param {Array.<Function>} list The List of constructors to check the
  *     component against.
- * 
- * @return {boolean} Whether the passed component is an instance of any of the 
+ *
+ * @return {boolean} Whether the passed component is an instance of any of the
  *     constructors listed in the passed list.
- * 
+ *
  * @private
  */
 ol.geom.Collection.prototype.isOnList = function(component, list) {
@@ -143,9 +143,9 @@ ol.geom.Collection.prototype.isOnList = function(component, list) {
 };
 
 /**
- * Checks whether the passed component is allowed according to the black and 
+ * Checks whether the passed component is allowed according to the black and
  * whitelists.
- * 
+ *
  * @param {ol.geom.Geometry} component The component to check.
  * @return {boolean} Whether the passed component is allowed as part of this
  *     collection according to black- and whitelist.
