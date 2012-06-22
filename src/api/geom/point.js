@@ -32,10 +32,10 @@ ol.geom.point = function(opt_arg){
             projection = opt_arg[3];
             
         } else if (goog.isObject(opt_arg)) {
-            x = opt_arg.x;
-            y = opt_arg.y;
-            z = opt_arg.z;
-            projection = opt_arg.projection;
+            x = opt_arg['x'];
+            y = opt_arg['y'];
+            z = opt_arg['z'];
+            projection = opt_arg['projection'];
         } else {
             throw new Error('ol.geom.point');
         }
