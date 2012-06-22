@@ -40,6 +40,14 @@ goog.exportProperty( ol.Bounds.prototype, 'minY', ol.Bounds.prototype.minY );
 goog.exportProperty( ol.Bounds.prototype, 'maxX', ol.Bounds.prototype.maxX );
 goog.exportProperty( ol.Bounds.prototype, 'maxY', ol.Bounds.prototype.maxY );
 
+// ol.layer.xyz
+goog.exportSymbol('ol.layer.xyz', ol.layer.xyz);
+goog.exportSymbol('ol.layer.XYZ', ol.layer.XYZ);
+
+// ol.layer.osm
+goog.exportSymbol('ol.layer.osm', ol.layer.osm);
+goog.exportSymbol('ol.layer.OSM', ol.layer.OSM);
+
 // ol.feature
 goog.exportSymbol('ol.feature', ol.feature);
 goog.exportSymbol('ol.Feature', ol.Feature);
