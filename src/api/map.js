@@ -38,7 +38,7 @@ ol.map = function(opt_arg) {
     /** @type {Array.<number>|undefined} */
     var resolutions;
     /** @type {Element|string|undefined} */
-    var el;
+    var renderTo;
     /** @type {Array|undefined} */
     var layers;
     /** @type {Array|undefined} */
@@ -65,8 +65,8 @@ ol.map = function(opt_arg) {
             delete opt_arg['maxRes'];
             resolutions = opt_arg['resolutions'];
             delete opt_arg['resolutions'];
-            el = opt_arg['el'];
-            delete opt_arg['el'];
+            renderTo = opt_arg['renderTo'];
+            delete opt_arg['renderTo'];
             layers = opt_arg['layers'];
             delete opt_arg['layers'];
             controls = opt_arg['controls'];
@@ -84,8 +84,8 @@ ol.map = function(opt_arg) {
 
     
     var map = new ol.Map();
-    if (goog.isDef(el)) {
-        map.el(el);
+    if (goog.isDef(renderTo)) {
+        map.renderTo(renderTo);
     }
     if (goog.isDef(center)) {
         map.setCenter(ol.loc(center));
@@ -273,7 +273,7 @@ ol.Map.prototype.getResForZoom = function(arg) {
  * @param {string|Element} arg Render the map to a container
  * @returns {ol.Map}
  */
-ol.Map.prototype.el = function(arg) {
+ol.Map.prototype.renderTo = function(arg) {
     this.setContainer(goog.dom.getElement(arg));
     return this;
 };
