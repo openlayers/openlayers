@@ -24,3 +24,12 @@ ol.layer.XYZ = function(url) {
 
 goog.inherits(ol.layer.XYZ, ol.layer.TileLayer);
 
+/**
+ * @inheritDoc
+ */
+ol.layer.XYZ.prototype.getTileUrl = function(x, y, z) {
+    var base = this.getUrl();
+    return base.replace('{x}', x + '')
+               .replace('{y}', y + '')
+               .replace('{z}', z + '');
+};

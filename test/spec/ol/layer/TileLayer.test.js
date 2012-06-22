@@ -208,6 +208,13 @@ describe('ol.layer.TileLayer', function() {
             layer.setResolutions([1, 0.5, 0.25]);
             layer.setTileOrigin(-128, 128);
             layer.setExtent(new ol.Bounds(-128, -128, 128, 128));
+            // we need a TileLayer implementation, just
+            // use duck-typing on the layer instance
+            layer.getTileUrl = function(x, y, z) {
+                return this.getUrl().replace('{x}', x + '')
+                                    .replace('{y}', y + '')
+                                    .replace('{z}', z + '');
+            };
         });
 
         describe('extent -128,-128,128,128, resolution 1', function() {
@@ -375,16 +382,18 @@ describe('ol.layer.TileLayer', function() {
             layer.setUrl('/{z}/{x}/{y}');
             layer.setResolutions([1, 0.5, 0.25]);
             layer.setTileOrigin(-128, 128);
+            // we need a TileLayer implementation, just
+            // use duck-typing on the layer instance
+            layer.getTileUrl = function(x, y, z) {
+                return this.getUrl().replace('{x}', x + '')
+                                    .replace('{y}', y + '')
+                                    .replace('{z}', z + '');
+            };
         });
 
         it('returns the expected tile', function() {
             var tile = layer.getTileForXYZ(1, 2, 2);
             expect(tile.getUrl()).toEqual('/2/1/2');
-            //var bounds = tile.getBounds();
-            //expect(bounds.getMinX()).toEqual(-64);
-            //expect(bounds.getMinY()).toEqual(0);
-            //expect(bounds.getMaxX()).toEqual(0);
-            //expect(bounds.getMaxY()).toEqual(64);
         });
 
     });

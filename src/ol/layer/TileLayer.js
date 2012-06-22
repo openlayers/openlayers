@@ -105,6 +105,24 @@ ol.layer.TileLayer = function() {
 goog.inherits(ol.layer.TileLayer, ol.layer.Layer);
 
 /**
+ * @protected
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ * @return {string}
+ */
+ol.layer.TileLayer.prototype.getTileUrl = function(x, y, z) {
+    // overridden by subclasses
+};
+
+/**
+ * @return {string|undefined} The layer URL.
+ */
+ol.layer.TileLayer.prototype.getUrl = function() {
+    return this.url_;
+};
+
+/**
  * @return {boolean} The tile index increases from left to right.
  */
 ol.layer.TileLayer.prototype.getXRight = function() {
@@ -332,24 +350,11 @@ ol.layer.TileLayer.prototype.getTile = function(url, bounds) {
  * @param {number} z
  */
 ol.layer.TileLayer.prototype.getTileForXYZ = function(x, y, z) {
-    var url = this.url_.replace('{x}', x + '')
-                       .replace('{y}', y + '')
-                       .replace('{z}', z + '');
-    var tile = this.cache_.get(url);
+    var tileUrl = this.getTileUrl(x, y, z);
+    var tile = this.cache_.get(tileUrl);
     if (!goog.isDef(tile)) {
-        var tileOrigin = this.getTileOrigin(),
-            tileOriginX = tileOrigin[0],
-            tileOriginY = tileOrigin[1];
-        var resolution = this.getResolutions()[z];
-        var tileWidth = this.tileWidth_ * resolution,
-            tileHeight = this.tileHeight_ * resolution;
-        var minX = tileOriginX + (x * tileWidth),
-            minY = tileOriginY - (y * tileHeight),
-            maxX = minX + tileWidth,
-            maxY = minY + tileHeight;
-        var tileBounds = new ol.Bounds(minX, minY, maxX, maxY);
-        tile = new this.Tile(url, tileBounds);
-        this.cache_.set(tile.getUrl(), tile);
+        tile = new this.Tile(tileUrl);
+        this.cache_.set(tileUrl, tile);
     }
     return tile;
 };
@@ -370,17 +375,15 @@ ol.layer.TileLayer.prototype.getData = function(bounds, resolution) {
         boundsMaxX = bounds.getMaxX(),
         boundsMinY = bounds.getMinY(),
         boundsMaxY = bounds.getMaxY(),
-
         tileWidth = me.tileWidth_,
         tileHeight = me.tileHeight_,
-
         tileOrigin = me.getTileOrigin(),
         tileOriginX = tileOrigin[0],
         tileOriginY = tileOrigin[1],
-
         tileWidthGeo = tileWidth * resolution,
         tileHeightGeo = tileHeight * resolution;
 
+    // make sure we don't create tiles outside the layer extent
     var extent = this.getExtent();
     if (extent) {
         boundsMinX = Math.max(boundsMinX, extent.getMinX());
@@ -410,9 +413,7 @@ ol.layer.TileLayer.prototype.getData = function(bounds, resolution) {
             tileRight = tileLeft + tileWidthGeo;
             tileBounds = new ol.Bounds(tileLeft, tileBottom,
                                        tileRight, tileTop, this.projection_);
-            url = me.url_.replace('{x}', offsetX + x + '')
-                         .replace('{y}', offsetY + y + '')
-                         .replace('{z}', zoom + '');
+            url = this.getTileUrl(offsetX + x, offsetY + y, zoom);
             tile = this.getTile(url, tileBounds);
             tiles[y][x] = tile;
         }
