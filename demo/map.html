@@ -18,6 +18,6 @@
             layers: [ol.layer.osm()],
             center: [45, 5],
             zoom: 10
-        });
+        }).getEvents().register("click", function() {console.log("mapclick")})
     </script>
 </html>

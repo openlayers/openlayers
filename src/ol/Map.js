@@ -108,8 +108,6 @@ ol.Map = function() {
      */
     this.container_ = null;
     
-    this.setControls(ol.Map.DEFAULT_CONTROLS);
-    
 };
 
 /**
@@ -136,7 +134,7 @@ ol.Map.DEFAULT_TILE_SIZE = 256;
   @const
   @type {Array.<string>}
  */
-ol.Map.DEFAULT_CONTROLS = ["navigation"];
+ol.Map.DEFAULT_CONTROLS = ["navigation", "zoom"];
 
 /**
  * @return {ol.Loc} Location.
@@ -355,9 +353,19 @@ ol.Map.prototype.setMaxRes = function(res) {
  * @param {Element} container the container to render the map to
  */
 ol.Map.prototype.setContainer = function(container) {
-    this.events_.setElement(container);
     this.container_ = container;
     this.setViewport();
+    this.createRenderer();
+    //TODO Controls could be set earlier, but we need to deal with content that
+    // controls place on overlays.
+    this.setControls(ol.Map.DEFAULT_CONTROLS);
+};
+
+/**
+ * @return {Element}
+ */
+ol.Map.prototype.getViewport = function() {
+    return this.viewport_;
 };
 
 ol.Map.prototype.setViewport = function() {
@@ -367,7 +375,19 @@ ol.Map.prototype.setViewport = function() {
         this.staticOverlay_ = goog.dom.createDom('div', 'ol-overlay-static');
         goog.dom.append(this.viewport_, this.mapOverlay_, this.staticOverlay_);
     }
+    this.events_.setElement(this.viewport_);
     goog.dom.appendChild(this.container_, this.viewport_);
+};
+
+ol.Map.prototype.createRenderer = function() {
+    /*var registeredRenderers = ol.renderer.RENDERER_MAP,
+        candidate;
+    for (var r in registeredRenderers) {
+        if (registeredRenderers[r].isSupported()) {
+            break;
+        }
+    }
+    this.renderer_ = new registeredRenderers[r](this.viewport_);*/
 };
 
 /**
@@ -383,6 +403,14 @@ ol.Map.prototype.getEvents = function() {
  */
 ol.Map.prototype.moveByPx = function(dx, dy) {
     // call moveByPx on renderers
+};
+
+ol.Map.prototype.zoomIn = function() {
+    this.setZoom(this.zoom_++);
+};
+
+ol.Map.prototype.zoomOut = function() {
+    this.setZoom(this.zoom_--);
 };
 
 /**

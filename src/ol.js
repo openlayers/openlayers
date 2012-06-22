@@ -2,8 +2,8 @@ goog.provide("ol");
 
 goog.require('ol.base');
 goog.require('ol.bounds');
-goog.require('ol.control.Control');
 goog.require('ol.control.Navigation');
+goog.require('ol.control.Zoom');
 goog.require('ol.event.Drag');
 goog.require('ol.event.Events');
 goog.require("ol.map");
