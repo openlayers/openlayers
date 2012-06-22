@@ -66,7 +66,15 @@ ol.Popup = function(map, opt_anchor, opt_placement, opt_close) {
      * @private
      * @type {number}
      */
-    this.arrowOffset_ = 32; //FIXME: set this from CSS dynamically somehow?
+    this.arrowOffset_ = 30; //FIXME: set this from CSS dynamically somehow?
+    
+    /**
+     * if the CSS sets either width or height assume the app is specifying the
+     * size of the popup, if not auto size the popup.
+     * @private
+     * @type {boolean}
+     */
+    this.autoSize_ = true;
     
 };
 
@@ -190,6 +198,12 @@ ol.Popup.prototype.open = function(opt_arg) {
         goog.dom.classes.add(this.container_, 
             ol.Popup.CLASS_NAME, ol.Popup.CLASS_NAME+'-'+this.placement_);
         
+        //see if the style class sets width or height
+        if (goog.style.getStyle(this.container_, 'width').length>0 ||
+            goog.style.getStyle(this.container_, 'height').length>0 ) {
+            this.autoSize_ = false;
+        }
+        
         if (this.closeButton_) {
             var closeButton = goog.dom.createElement('div');
             goog.dom.appendChild(this.container_, closeButton);
@@ -201,6 +215,21 @@ ol.Popup.prototype.open = function(opt_arg) {
     
     this.childContent_=goog.dom.htmlToDocumentFragment(this.generateContent_());
     goog.dom.appendChild(this.container_, this.childContent_);
+
+    if (this.autoSize_) {
+        this.registerImageListeners();
+    }
+    
+    this.setAnchorOffset_();
+};
+
+ol.Popup.prototype.setAnchorOffset_ = function() {
+    
+    if (goog.isNull(this.container_.parentNode)) {
+        //this means the popup has already been closed, nothing to do here
+        //which might happen while waiting for images to load
+        return;
+    }
     
     //position the element
     if (this.anchor_ instanceof ol.Feature) {
@@ -208,6 +237,7 @@ ol.Popup.prototype.open = function(opt_arg) {
     } else {
         this.pos_ = this.anchor_;
     }
+    
     var popupPosPx = this.map_.getViewportPosition(this.pos_);
     var popupSize = goog.style.getSize(this.container_);
     
@@ -218,22 +248,22 @@ ol.Popup.prototype.open = function(opt_arg) {
             break;
         case 'top':
         case 'bottom':
-            popupPosPx.x -= popupSize.width / 2.0;
+            popupPosPx[0] -= popupSize.width / 2.0;
 
             if (this.placement_ == "bottom") {
-                popupPosPx.y -= popupSize.height + this.arrowOffset_;
+                popupPosPx[1] -= popupSize.height + this.arrowOffset_;
             } else {
-                popupPosPx.y += this.arrowOffset_;
+                popupPosPx[1] += this.arrowOffset_;
             }
             break;
         case 'left':
         case 'right':
-            popupPosPx.y -= popupSize.height / 2.0;
+            popupPosPx[1] -= popupSize.height / 2.0;
 
             if (this.placement_ == "right") {
-                popupPosPx.x -= popupSize.width + this.arrowOffset_;
+                popupPosPx[0] -= popupSize.width + this.arrowOffset_;
             } else {
-                popupPosPx.x += this.arrowOffset_;
+                popupPosPx[0] += this.arrowOffset_;
             }
             break;
     };
@@ -242,11 +272,37 @@ ol.Popup.prototype.open = function(opt_arg) {
 };
 
 /**
+ * registerImageListeners
+ * Called when an image contained by the popup loaded. this function
+ *     updates the popup size, then unregisters the image load listener.
+ */   
+ol.Popup.prototype.registerImageListeners = function() {
+
+    // As the images load, this function will call setAnchorOffset_() to 
+    // resize the popup to fit the content div (which presumably is now
+    // bigger than when the image was not loaded).
+    // 
+    //cycle through the images and if their size is 0x0, that means that 
+    // they haven't been loaded yet, so we attach the listener, which 
+    // will fire when the images finish loading and will resize the 
+    // popup accordingly to its new size.
+    var images = this.container_.getElementsByTagName("img");
+    for (var i = 0, len = images.length; i < len; i++) {
+        var img = images[i];
+        if (img.width == 0 || img.height == 0) {
+            goog.events.listenOnce(img, 'load', 
+                                goog.bind(this.setAnchorOffset_, this));
+        }    
+    } 
+};
+
+
+/**
  * @param px - {goog.} the top and left position of the popup div. 
  */
 ol.Popup.prototype.moveTo_ = function(px) {
     if (goog.isDefAndNotNull(px)) {
-        goog.style.setPosition(this.container_, px.x, px.y);
+        goog.style.setPosition(this.container_, px[0], px[1]);
     }
 };
 

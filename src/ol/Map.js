@@ -386,21 +386,19 @@ ol.Map.prototype.moveByPx = function(dx, dy) {
 };
 
 /**
- * @param {ol.Loc} loc the location being requested 
+ * @param {ol.geom.Point} loc the location being requested 
  * @returns {Object} the 
  */
 ol.Map.prototype.getViewportPosition = function(loc) {
     //TODO: delegate this to the renderers
     //stub for now to get popups working
-    return {x: 200, y: 300};
+    return [200, 300];
 };
 
 /**
  * @returns {Element} the map overlay element
  */
 ol.Map.prototype.getMapOverlay = function() {
-    //TODO: delegate this to the renderers
-    //stub for now to get popups working
     return this.mapOverlay_
 };
 
