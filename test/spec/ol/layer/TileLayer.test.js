@@ -97,7 +97,7 @@ describe('ol.layer.TileLayer', function() {
 
             it('throws an error or return null', function() {
                 var origin;
-                if (goog.DEBUG) {
+                if (ol.error.VERBOSE_ERRORS) {
                     expect(function() {
                         origin = layer.getTileOrigin();
                     }).toThrow();
@@ -118,7 +118,7 @@ describe('ol.layer.TileLayer', function() {
             });
 
             it('returns the expected origin', function() {
-                if (goog.DEBUG) {
+                if (ol.error.VERBOSE_ERRORS) {
                     expect(function() {
                         var origin = layer.getTileOrigin();
                     }).toThrow();

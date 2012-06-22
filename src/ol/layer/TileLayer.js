@@ -1,5 +1,6 @@
 goog.provide('ol.layer.TileLayer');
 
+goog.require('ol.error');
 goog.require('ol.layer.Layer');
 goog.require('ol.Tile');
 goog.require('ol.TileCache');
@@ -182,7 +183,7 @@ ol.layer.TileLayer.prototype.getTileOrigin = function() {
         goog.isDef(this.tileOriginY_)) {
         return [this.tileOriginX_, this.tileOriginY_];
     }
-    var errmsg;
+    var errmsg = 'Cannot calculate tile origin; ';
     if (goog.isDef(this.tileOriginCorner_)) {
         var extent = this.getExtent();
         if (!goog.isNull(extent)) {
@@ -205,16 +206,16 @@ ol.layer.TileLayer.prototype.getTileOrigin = function() {
                     tileOriginY = extent.getMinY();
                     break;
                 default:
-                    // FIXME user error
-                    goog.asserts.assert(false);
+                    errmsg += 'tileOriginCorner value is incorrect.';
+                    ol.error(errmsg);
             }
             return [tileOriginX, tileOriginY];
         }
-        // FIXME user error
-        goog.asserts.assert(false);
+        errmsg += 'layer has no extent.';
+        ol.error(errmsg);
     }
-    // FIXME user error
-    goog.asserts.assert(false);
+    errmsg += 'layer has no tileOriginCorner.';
+    ol.error(errmsg);
     return null;
 };
 
