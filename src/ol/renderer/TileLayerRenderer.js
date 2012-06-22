@@ -32,6 +32,25 @@ ol.renderer.TileLayerRenderer = function(container, layer) {
      */
     this.layerResolutions_ = layer.getResolutions();
 
+    /**
+     * @type {Array.<number>}
+     */
+    this.tileOrigin_ = layer.getTileOrigin();
+
+    /**
+     * @type {Array.<number>}
+     */
+    this.tileSize_ = layer.getTileSize();
+
+    /**
+     * @type {number}
+     */
+    this.xRight_ = layer.getXRight() ? 1 : -1;
+
+    /**
+     * @type {number}
+     */
+    this.yDown_ = layer.getYDown() ? 1 : -1;
 
     /**
      * @type {number|undefined}
@@ -75,6 +94,8 @@ ol.renderer.TileLayerRenderer.prototype.getPreferredResAndZ_ = function(resoluti
  * @return {goog.math.Size}
  */
 ol.renderer.TileLayerRenderer.prototype.getContainerSize_ = function() {
+    // TODO: listen for resize and set this.constainerSize_ null
+    // https://github.com/openlayers/ol3/issues/2
     if (goog.isNull(this.containerSize_)) {
         this.containerSize_ = goog.style.getSize(this.container_);
     }
@@ -97,61 +118,89 @@ ol.renderer.TileLayerRenderer.prototype.draw = function(center, resolution) {
     if (resolution !== this.renderedResolution_) {
         this.renderedTiles_ = {};
     }
-    var mapSize = this.getContainerSize_();
-    var halfMapWidth = (resolution * mapSize.width) / 2;
-    var halfMapHeight = (resolution * mapSize.height) / 2;
-    var x = center.getX();
-    var y = center.getY();
-    var mapMinX = x - halfMapWidth;
-    var mapMaxY = y + halfMapHeight;
-    var projection = center.getProjection();
-    var bounds = new ol.Bounds(
-        mapMinX, y - halfMapHeight, x + halfMapWidth, mapMaxY, projection);
-    var tileSet = this.layer_.getData(bounds, resolution);
-    var tiles = tileSet.getTiles();
-    var rows = tiles.length;
-    var first = rows > 0 ? tiles[0][0] : null;
-    if (first) {
-        var cols = tiles[0].length;
-        var tileResolution = tileSet.getResolution();
-        var scale = resolution / tileResolution;
-        // TODO: implement ol.TileSet#getBounds
-        var firstBounds = first.getBounds();
-        var tileMinX = firstBounds.getMinX();
-        var tileMaxX = tileMinX;
-        var tileMaxY = firstBounds.getMaxY();
-        var tileMinY = tileMaxY;
-        var pxOriginX = (tileMinX - mapMinX) / resolution;
-        var pxOriginY = (mapMaxY - tileMaxY) / resolution;
-        var pxTileHeight = tileSet.getTileHeight();
-        var pxTileWidth = tileSet.getTileWidth();
-        var tileHeight = tileResolution * pxTileHeight;
-        var tileWidth = tileResolution * pxTileWidth;
-        var fragment = document.createDocumentFragment();
-        var tile, img;
-        for (var j=0, pxTileTop=pxOriginY; j<rows; ++j, pxTileTop+=pxTileHeight) {
-            tileMinY -= tileHeight;
-            for (var i=0, pxTileLeft=pxOriginX; i<cols; ++i, pxTileLeft+=pxTileWidth) {
-                tileMaxX += tileWidth;
-                tile = tiles[j][i];
-                img = tile.getImg();
-                // TODO: scale is almost always 1, set size on the archetype img
-                img.style.height = Math.round(pxTileHeight * scale) + "px";
-                img.style.width = Math.round(pxTileWidth * scale) + "px";
-                img.style.top = pxTileTop + "px";
-                img.style.left = pxTileLeft + "px";
-                tile.load();
-                this.renderedTiles_[tile.getUrl()] = tile;
-                fragment.appendChild(img);
-            }
-        }
-        var renderedBounds =  new ol.Bounds(
-            tileMinX, tileMinY, tileMaxX, tileMaxY, projection);
-        this.pruneUnrenderedTiles_(renderedBounds);
-        this.renderedBounds_ = renderedBounds;
-        this.renderedResolution_ = resolution;
-        this.container_.appendChild(fragment);
+    var pair = this.getPreferredResAndZ_(resolution);
+    var tileResolution = pair[0];
+    var tileZ = pair[1];
+    var scale = resolution / tileResolution;
+    
+    var pxMapSize = this.getContainerSize_();
+    var xRight = this.xRight_;
+    var yDown = this.yDown_;
+
+    var halfMapWidth = (resolution * pxMapSize.width) / 2;
+    var halfMapHeight = (resolution * pxMapSize.height) / 2;
+    var centerX = center.getX();
+    var centerY = center.getY();
+    var mapMinX = centerX - halfMapWidth;
+    var mapMaxY = centerY + halfMapHeight;
+    var pxOffsetX = (mapMinX - this.tileOrigin_[0]) / resolution;
+    var pxOffsetY = (this.tileOrigin_[1] - mapMaxY) / resolution;
+    
+    // this gives us the desired size in fractional pixels
+    var pxTileWidth = this.tileSize_[0] / scale;
+    var pxTileHeight = this.tileSize_[1] / scale;
+    
+    // this is the index of the top left tile
+    var leftTileX = Math.floor(xRight * pxOffsetX / pxTileWidth);
+    var topTileY = Math.floor(yDown * pxOffsetY / pxTileHeight);
+
+    var pxMinX;
+    if (xRight > 0) {
+        pxMinX = Math.round(leftTileX * pxTileWidth) - pxOffsetX;
+    } else {
+        pxMinX = Math.round((-leftTileX-1) * pxTileWidth) - pxOffsetX;
     }
+    var pxMinY;
+    if (yDown > 0) {
+        pxMinY = Math.round(topTileY * pxTileHeight) - pxOffsetY;
+    } else {
+        pxMinY = Math.round((-topTileY-1) * pxTileHeight) - pxOffsetY;
+    }
+
+    var pxTileLeft = pxMinX;
+    var pxTileTop = pxMinY;
+
+    var numTilesWide = Math.ceil(pxMapSize.width / pxTileWidth);
+    var numTilesHigh = Math.ceil(pxMapSize.height / pxTileHeight);
+    
+    // assume a buffer of zero for now
+    if (pxMinX < 0) {
+        numTilesWide += 1;
+    }
+    if (pxMinY < 0) {
+        numTilesHigh += 1;
+    }
+
+    var tileX, tileY, tile, img, pxTileRight, pxTileBottom;
+    var fragment = document.createDocumentFragment();
+    for (var i=0; i<numTilesWide; ++i) {
+        pxTileTop = pxMinY;
+        tileX = leftTileX + (i * xRight);
+        if (scale !== 1) {
+            pxTileRight = Math.round(pxMinX + ((i+1) * pxTileWidth));
+        } else {
+            pxTileRight = pxTileLeft + pxTileWidth;
+        }
+        for (var j=0; j<numTilesHigh; ++j) {
+            tileY = topTileY + (j * yDown);
+            tile = this.layer_.getTileForXYZ(tileX, tileY, tileZ);
+            img = tile.getImg();
+            img.style.top = pxTileTop + "px";
+            img.style.left = pxTileLeft + "px";
+            if (scale !== 1) {
+                pxTileBottom = Math.round(pxMinY + ((j+1) * pxTileHeight));
+                img.style.height = (pxTileRight - pxTileLeft) + "px";
+                img.style.width = (pxTileBottom - pxTileTop) + "px";
+            } else {
+                pxTileBottom = pxTileTop + pxTileHeight;
+            }
+            tile.load();
+            fragment.appendChild(img);
+            pxTileTop = pxTileBottom;
+        }
+        pxTileLeft = pxTileRight;
+    }    
+    this.container_.appendChild(fragment);
 };
 
 /**
