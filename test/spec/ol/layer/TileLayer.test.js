@@ -9,6 +9,19 @@ describe('ol.layer.TileLayer', function() {
 
     });
 
+    describe('get tile size', function() {
+        var layer;
+
+        beforeEach(function() {
+            layer = new ol.layer.TileLayer();
+        });
+
+        it('returns tile size', function() {
+            var tilesize = layer.getTileSize();
+            expect(tilesize).toEqual([256, 256]);
+        });
+    });
+
     describe('get tile origin', function() {
         var layer;
 

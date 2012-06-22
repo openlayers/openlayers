@@ -109,6 +109,14 @@ ol.layer.TileLayer.prototype.getExtent = function() {
 };
 
 /**
+ * Get tile size.
+ * @return {Array.<number>}
+ */
+ol.layer.TileLayer.prototype.getTileSize = function() {
+    return [this.tileWidth_, this.tileHeight_];
+};
+
+/**
  * Get tile origin.
  * @return {Array.<number>}
  */
