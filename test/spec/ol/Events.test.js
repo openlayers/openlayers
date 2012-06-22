@@ -71,6 +71,7 @@ describe("ol.event.Events", function() {
         events.triggerEvent("bar", evt);
         expect(log[0].scope).toBe(scope);
         expect(log[0].evt).toBe(evt);
+        expect(log[0].evt.object).toBe("foo");
     });
     
     it("respects event priority", function() {

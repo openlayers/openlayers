@@ -136,7 +136,7 @@ ol.event.Events.prototype.setElement = function(element) {
         for (t in types) {
             // register the event cross-browser
             goog.events.unlisten(
-                this.element_, types[t], this.dispatchEvent, true, this
+                this.element_, types[t], this.handleBrowserEvent, true, this
             );
         }
         this.destroySequences();
@@ -148,7 +148,7 @@ ol.event.Events.prototype.setElement = function(element) {
         for (t in types) {
             // register the event cross-browser
             goog.events.listen(
-                element, types[t], this.dispatchEvent, true, this
+                element, types[t], this.handleBrowserEvent, true, this
             );
         }
     }
@@ -243,15 +243,14 @@ ol.event.Events.prototype.triggerEvent = function(type, opt_evt) {
 };
 
 /**
- * Basically just a wrapper to the parent's dispatchEvent() function, but takes 
- * care to set a property 'xy' on the event with the current mouse position and
- * normalize clientX and clientY for multi-touch events.
+ * Prepares browser events before they are dispatched. This takes care to set a
+ * property 'xy' on the event with the current pointer position (if 
+ * {@code includeXY} is set to true), and normalizes clientX and clientY for
+ * multi-touch events.
  * 
  * @param {Event} evt Event object.
- * @return {boolean} If anyone called preventDefault on the event object (or
- *     if any of the handlers returns false this will also return false.
  */
-ol.event.Events.prototype.dispatchEvent = function(evt) {
+ol.event.Events.prototype.handleBrowserEvent = function(evt) {
     var type = evt.type,
         listeners = goog.events.getListeners(this.element_, type, false)
             .concat(goog.events.getListeners(this.element_, type, true));
@@ -276,7 +275,7 @@ ol.event.Events.prototype.dispatchEvent = function(evt) {
             evt.xy = goog.style.getRelativePosition(evt, this.element_);
         }
     }
-    return goog.base(this, 'dispatchEvent', evt);
+    this.triggerEvent(evt.type, evt);
 };
 
 /**

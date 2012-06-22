@@ -42,10 +42,11 @@ ol.control.Navigation.prototype.deactivate = function() {
 };
 
 /**
- * @param {ol.event.DragEvent} evt
+ * @param {Object} evt
  */
 ol.control.Navigation.prototype.moveMap = function(evt) {
     this.getMap().moveByPx(evt.dx, evt.dy);
+    return false;
 };
 
 ol.control.addControl('navigation', ol.control.Navigation);

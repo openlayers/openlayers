@@ -109,4 +109,23 @@ describe("ol.geom.LineString", function() {
         expect( vertices[1].getX() + ',' + vertices[1].getY()).toBe( '10,20' );
         expect( vertices[2].getX() + ',' + vertices[2].getY()).toBe( '30,40' );
     });
+
+    describe("the getCentroid method is functional", function(){
+        it("returns an instance of ol.geom.Point", function(){
+            expect(ls.getCentroid()).toBeA(ol.geom.Point);
+        });
+
+        it("has the expected coordinates", function(){
+
+            ls.setVertices([
+                new ol.geom.Point(0.5, 1),
+                new ol.geom.Point(1, 1.5),
+                new ol.geom.Point(1.5, 1),
+                new ol.geom.Point(1, 0.5)
+            ]);
+            var c = ls.getCentroid();
+
+            expect(c.getX() + ',' + c.getY()).toBe('1,1');
+        });
+    });
 });
