@@ -1,14 +1,9 @@
-goog.require("ol.loc");
-goog.require("ol.feature");
-goog.require("ol.projection");
-goog.require('ol.bounds');
-goog.require("ol.map");
-goog.require("ol.layer.xyz");
-goog.require("ol.layer.osm");
+goog.require("ol");
 
 // ol.map
 goog.exportSymbol('ol.map', ol.map );
 goog.exportSymbol('ol.Map', ol.Map );
+goog.exportProperty( ol.Map.prototype, 'renderTo', ol.Map.prototype.renderTo );
 goog.exportProperty( ol.Map.prototype, 'center', ol.Map.prototype.center );
 goog.exportProperty( ol.Map.prototype, 'projection', ol.Map.prototype.projection );
 goog.exportProperty( ol.Map.prototype, 'userProjection', ol.Map.prototype.userProjection );
@@ -18,7 +13,6 @@ goog.exportProperty( ol.Map.prototype, 'resolutions', ol.Map.prototype.resolutio
 goog.exportProperty( ol.Map.prototype, 'layers', ol.Map.prototype.layers );
 goog.exportProperty( ol.Map.prototype, 'controls', ol.Map.prototype.controls );
 goog.exportProperty( ol.Map.prototype, 'maxExtent', ol.Map.prototype.maxExtent );
-goog.exportProperty( ol.Map.prototype, 'maxRes', ol.Map.prototype.maxRes );
 goog.exportProperty( ol.Map.prototype, 'destroy', ol.Map.prototype.destroy );
 
 // ol.loc
@@ -46,6 +40,14 @@ goog.exportProperty( ol.Bounds.prototype, 'minY', ol.Bounds.prototype.minY );
 goog.exportProperty( ol.Bounds.prototype, 'maxX', ol.Bounds.prototype.maxX );
 goog.exportProperty( ol.Bounds.prototype, 'maxY', ol.Bounds.prototype.maxY );
 
+// ol.layer.xyz
+goog.exportSymbol('ol.layer.xyz', ol.layer.xyz);
+goog.exportSymbol('ol.layer.XYZ', ol.layer.XYZ);
+
+// ol.layer.osm
+goog.exportSymbol('ol.layer.osm', ol.layer.osm);
+goog.exportSymbol('ol.layer.OSM', ol.layer.OSM);
+
 // ol.feature
 goog.exportSymbol('ol.feature', ol.feature);
 goog.exportSymbol('ol.Feature', ol.Feature);
@@ -53,10 +55,27 @@ goog.exportProperty(ol.Feature.prototype, 'set', ol.Feature.prototype.set);
 goog.exportProperty(ol.Feature.prototype, 'get', ol.Feature.prototype.get);
 goog.exportProperty(ol.Feature.prototype, 'geometry', ol.Feature.prototype.geometry);
 
+// ol.geometry
+goog.exportSymbol('ol.geom.geometry', ol.geom.geometry);
+goog.exportSymbol('ol.geom.Geometry', ol.geom.Geometry);
+goog.exportProperty(ol.geom.Geometry.prototype, 'bounds', ol.geom.Geometry.prototype.bounds);
+
+// ol.geom.collection
+goog.exportSymbol('ol.geom.collection', ol.geom.collection);
+goog.exportSymbol('ol.geom.Collection', ol.geom.Collection);
+goog.exportProperty(ol.geom.Collection.prototype, 'components', ol.geom.Collection.prototype.components);
+goog.exportProperty(ol.geom.Collection.prototype, 'add', ol.geom.Collection.prototype.add);
+goog.exportProperty(ol.geom.Collection.prototype, 'addAll', ol.geom.Collection.prototype.addAll);
+goog.exportProperty(ol.geom.Collection.prototype, 'remove', ol.geom.Collection.prototype.remove);
+
 // ol.geom.point
 goog.exportSymbol('ol.geom.point', ol.geom.point);
 goog.exportSymbol('ol.geom.Point', ol.geom.Point);
 goog.exportProperty(ol.geom.Point.prototype, 'x', ol.geom.Point.prototype.x);
 goog.exportProperty(ol.geom.Point.prototype, 'y', ol.geom.Point.prototype.y);
-goog.exportPropertz(ol.geom.Point.prototzpe, 'z', ol.geom.Point.prototzpe.z);
+goog.exportProperty(ol.geom.Point.prototype, 'z', ol.geom.Point.prototype.z);
 goog.exportProperty(ol.geom.Point.prototype, 'projection', ol.geom.Point.prototype.projection);
+
+// LOOKUP FOR DYNMICALLY REGISTERED CONTROLS DOES NOT RUN WELL NOW IN THE ADVANCED MODE
+// HACK TO PUSH COMPILER TO NOT STRIP THE NAVIGATION CONTROL. TO BE FIXED.
+ol.control.addControl('navigation', ol.control.Navigation);

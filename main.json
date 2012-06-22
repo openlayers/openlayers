@@ -1,7 +1,10 @@
 {
   "id": "ol",
 
-  "inputs": "src/ol.js",
+  "inputs": [
+    "src/ol.js",
+    "src/ol.export.js"
+  ],
   "paths": [
     "src"
   ],
@@ -20,9 +23,9 @@
   "pretty-print": true,
   "debug": true,
 
-  "experimental-compiler-options": {
-     "generateExports": true
-  },
+  // "experimental-compiler-options": {
+  //    "generateExports": true
+  // },
 
   "checks": {
     // acceptable values are "ERROR", "WARNING", and "OFF"
