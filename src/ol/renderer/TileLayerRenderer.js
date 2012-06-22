@@ -183,19 +183,23 @@ ol.renderer.TileLayerRenderer.prototype.draw = function(center, resolution) {
         }
         for (var j=0; j<numTilesHigh; ++j) {
             tileY = topTileY + (j * yDown);
-            tile = this.layer_.getTileForXYZ(tileX, tileY, tileZ);
-            img = tile.getImg();
-            img.style.top = pxTileTop + "px";
-            img.style.left = pxTileLeft + "px";
             if (scale !== 1) {
                 pxTileBottom = Math.round(pxMinY + ((j+1) * pxTileHeight));
-                img.style.height = (pxTileRight - pxTileLeft) + "px";
-                img.style.width = (pxTileBottom - pxTileTop) + "px";
             } else {
                 pxTileBottom = pxTileTop + pxTileHeight;
             }
-            tile.load();
-            fragment.appendChild(img);
+            tile = this.layer_.getTileForXYZ(tileX, tileY, tileZ);
+            if (tile != null) {
+                img = tile.getImg();
+                img.style.top = pxTileTop + "px";
+                img.style.left = pxTileLeft + "px";
+                if (scale !== 1) {
+                    img.style.height = (pxTileRight - pxTileLeft) + "px";
+                    img.style.width = (pxTileBottom - pxTileTop) + "px";
+                }
+                tile.load();
+                fragment.appendChild(img);
+            }
             pxTileTop = pxTileBottom;
         }
         pxTileLeft = pxTileRight;
