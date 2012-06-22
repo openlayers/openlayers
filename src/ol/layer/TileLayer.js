@@ -42,7 +42,7 @@ ol.layer.TileLayer = function() {
 
     /**
      * @protected
-     * @type {function(new:ol.Tile, string, ol.Bounds)}
+     * @type {function(new:ol.Tile, string, ol.Bounds=)}
      */
     this.Tile = ol.Tile.createConstructor(this.tileWidth_, this.tileHeight_);
 
@@ -280,6 +280,25 @@ ol.layer.TileLayer.prototype.getTile = function(url, bounds) {
     var tile = this.cache_.get(url);
     if (!goog.isDef(tile)) {
         tile = new this.Tile(url, bounds);
+        this.cache_.set(tile.getUrl(), tile);
+    }
+    return tile;
+};
+
+/**
+ * Get a tile from the cache, or create a tile and add to
+ * the cache.
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ */
+ol.layer.TileLayer.prototype.getTileForXYZ = function(x, y, z) {
+    var url = this.url_.replace('{x}', x + '')
+                       .replace('{y}', y + '')
+                       .replace('{z}', z + '');
+    var tile = this.cache_.get(url);
+    if (!goog.isDef(tile)) {
+        tile = new this.Tile(url);
         this.cache_.set(tile.getUrl(), tile);
     }
     return tile;

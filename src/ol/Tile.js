@@ -9,9 +9,9 @@ goog.require('ol.event.Events');
  * The Tile class.
  * @constructor
  * @param {string} url
- * @param {ol.Bounds} bounds
+ * @param {ol.Bounds|undefined} opt_bounds
  */
-ol.Tile = function(url, bounds) {
+ol.Tile = function(url, opt_bounds) {
 
     /**
      * @private
@@ -21,9 +21,9 @@ ol.Tile = function(url, bounds) {
 
     /**
      * @private
-     * @type {ol.Bounds}
+     * @type {ol.Bounds|undefined}
      */
-    this.bounds_ = bounds;
+    this.bounds_ = opt_bounds;
 
     /**
      * @private
@@ -66,7 +66,7 @@ ol.Tile.prototype.createImage = function() {
  * Load the tile. A tile should loaded only once.
  */
 ol.Tile.prototype.load = function() {
-    goog.asserts.assert(!this.loaded && this.loading_);
+    goog.asserts.assert(!this.loaded && !this.loading_);
     this.loading_ = true;
     this.img_.src = this.url_;
 };
@@ -81,7 +81,7 @@ ol.Tile.prototype.getUrl = function() {
 
 /**
  * Get the tile bounds.
- * @return {ol.Bounds}
+ * @return {ol.Bounds|undefined}
  */
 ol.Tile.prototype.getBounds = function() {
     return this.bounds_;
@@ -155,15 +155,15 @@ ol.Tile.createImage = (function() {
  * for the tiles.
  * @param {number} width
  * @param {number} height
- * @return {function(new:ol.Tile, string, ol.Bounds)}
+ * @return {function(new:ol.Tile, string, ol.Bounds=)}
  */
 ol.Tile.createConstructor = function(width, height) {
     /**
      * @constructor
      * @extends {ol.Tile}
      */
-    var Tile = function(url, bounds) {
-        goog.base(this, url, bounds);
+    var Tile = function(url, opt_bounds) {
+        goog.base(this, url, opt_bounds);
     };
     goog.inherits(Tile, ol.Tile);
     /** @inheritDoc */

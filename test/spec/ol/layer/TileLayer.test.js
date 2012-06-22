@@ -329,4 +329,26 @@ describe('ol.layer.TileLayer', function() {
         });
 
     });
+
+    describe('get a tile', function() {
+        var layer;
+
+        beforeEach(function() {
+            layer = new ol.layer.TileLayer();
+            layer.setUrl('/{z}/{x}/{y}');
+            layer.setResolutions([1, 0.5, 0.25]);
+            layer.setTileOrigin(-128, 128);
+        });
+
+        it('returns the expected tile', function() {
+            var tile = layer.getTileForXYZ(1, 2, 2);
+            expect(tile.getUrl()).toEqual('/2/1/2');
+            //var bounds = tile.getBounds();
+            //expect(bounds.getMinX()).toEqual(-64);
+            //expect(bounds.getMinY()).toEqual(0);
+            //expect(bounds.getMaxX()).toEqual(0);
+            //expect(bounds.getMaxY()).toEqual(64);
+        });
+
+    });
 });
