@@ -137,11 +137,10 @@ ol.Map.DEFAULT_TILE_SIZE = 256;
 ol.Map.DEFAULT_CONTROLS = ["navigation", "zoom"];
 
 /**
- * @return {ol.Loc} Location.
+ * @return {ol.Loc} Map center in map projection.
  */
 ol.Map.prototype.getCenter = function() {
-    var proj = this.getUserProjection();
-    return this.center_.doTransform(proj);
+    return this.center_;
 };
 
 
@@ -261,15 +260,11 @@ ol.Map.prototype.getResolutionForZoom = function(zoom) {
 
 
 /**
- * @param {ol.Loc} center Center.
+ * @param {ol.Loc} center Center in map projection.
  */
 ol.Map.prototype.setCenter = function(center) {
-    var proj = center.getProjection();
-    if (goog.isNull(proj)) {
-        proj = this.getUserProjection();
-        center.setProjection(proj);
-    }
-    this.center_ = center.doTransform(this.getProjection());
+    this.center_ = center;
+    this.conditionallyRender();
 };
 
 
@@ -414,7 +409,14 @@ ol.Map.prototype.getEvents = function() {
  * @param {number} dy pixels to move in x direction
  */
 ol.Map.prototype.moveByPx = function(dx, dy) {
-    // call moveByPx on renderers
+    if (goog.isDef(this.zoom_)) {
+        var resolution = this.getResolutionForZoom(this.zoom_),
+            center = new ol.Loc(
+                this.center_.getX() + dx * resolution,
+                this.center_.getY() + dy * resolution
+            );
+        this.setCenter(center);
+    }
 };
 
 ol.Map.prototype.zoomIn = function() {

@@ -113,10 +113,17 @@ ol.map = function(opt_arg) {
  */
 ol.Map.prototype.center = function(opt_arg) {
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
-        this.setCenter(ol.loc(opt_arg));
+        var loc = ol.loc(opt_arg);
+        var proj = loc.getProjection();
+        if (goog.isNull(proj)) {
+            proj = this.getUserProjection();
+            loc.setProjection(proj);
+        }
+        this.setCenter(loc);
         return this;
     } else {
-        return this.getCenter();
+        var proj = this.getUserProjection();
+        return this.getCenter().doTransform(proj);
     }
 };
 
