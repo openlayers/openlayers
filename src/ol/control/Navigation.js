@@ -61,7 +61,6 @@ ol.control.Navigation.prototype.zoomMap = function(evt) {
         delta = ((evt.deltaY / 3) | 0);
     if (Math.abs(delta) > 0) {
         map.setZoom(map.getZoom() - delta);
-        console.log(map.getZoom());
     }
     evt.preventDefault();
     return false;
