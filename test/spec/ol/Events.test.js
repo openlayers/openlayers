@@ -123,38 +123,35 @@ describe("ol.event.Events", function() {
         events.destroy();
     });
     
-    it("can be extended with event sequences", function() {
-        var element = document.createElement("div"),
-            events = new ol.event.Events("foo", element, false, ["drag"]),
-            mockEvt;
+    it("can be extended with sequences implementing ol.event.ISequence", function() {
+        var sequence;
+        var Sequence = function(target) {
+            sequence = this;
+            this.target = target;
+        };
+        Sequence.prototype.fire = function() {
+            this.target.dispatchEvent("myevent");
+        };
+        Sequence.prototype.destroy = function() {
+            this.destroyed = true;
+        };
+        ol.event.addSequenceProvider("myseq", Sequence);
+
+        var element = document.createElement("div");
+            events = new ol.event.Events("foo", undefined, false, ["myseq"]);
         
-        // mock dom object
-        goog.object.extend(element, new goog.events.EventTarget());
+        expect(sequence).toBeUndefined();
         
         log = [];
-        events.register('dragstart', logFn);
-        events.register('drag', logFn);
-        events.register('dragend', logFn);
+        events.setElement(element);
+        events.register('myevent', logFn);
+        sequence.fire();
 
-        mockEvt = new goog.events.BrowserEvent({
-            type: "dragstart", button: null
-        });
-        element.dispatchEvent(mockEvt);
-        mockEvt = new goog.events.BrowserEvent({
-            type: "drag", button: null
-        });
-        element.dispatchEvent(mockEvt);
-        mockEvt = new goog.events.BrowserEvent({
-            type: "dragend", button: null
-        });
-        element.dispatchEvent(mockEvt);
-        
-        expect(log.length).toBe(3);
-        expect(log[0].evt.type).toBe("dragstart");
-        expect(log[1].evt.type).toBe("drag");
-        expect(log[2].evt.type).toBe("dragend");
+        expect(log.length).toBe(1);
+        expect(log[0].evt.type).toBe("myevent");
         
         events.destroy();
+        expect(sequence.destroyed).toBe(true);
     });
     
     it("provides an isSingleTouch() function", function() {

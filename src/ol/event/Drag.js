@@ -12,13 +12,19 @@ goog.require('goog.functions');
 
 /**
  * @constructor
- * @param {Element} target The element that will be dragged.
+ * @param {ol.event.Events} target The Events instance that handles events.
  * @extends {goog.fx.Dragger}
  * @implements {ol.event.ISequence}
  * @export
  */
 ol.event.Drag = function(target) {
-    goog.base(this, target);
+    goog.base(this, target.getElement());
+    
+    /**
+     * @private
+     * @type {ol.event.Events}
+     */
+    this.target_ = target;
     
     /**
      * @private
@@ -47,6 +53,7 @@ ol.event.Drag.prototype.dispatchEvent = function(e) {
             e.type = ol.event.Drag.EventType.DRAGEND;
         }
     }
+    this.target_.dispatchEvent(/** @type {Event} */ (e));
     return goog.base(this, 'dispatchEvent', e);
 };
 
@@ -66,11 +73,6 @@ ol.event.Drag.prototype.doDrag = function(e, x, y, dragFromScroll) {
 
 /** @override */
 ol.event.Drag.prototype.defaultAction = function(x, y) {};
-
-/** @inheritDoc */
-ol.event.Drag.prototype.getEventTypes = function() {
-    return ol.event.Drag.EventType;
-};
 
 /** @inheritDoc */
 ol.event.Drag.prototype.destroy = ol.event.Drag.prototype.dispose;
