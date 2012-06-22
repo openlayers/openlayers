@@ -418,11 +418,11 @@ ol.Map.prototype.moveByPx = function(dx, dy) {
 };
 
 ol.Map.prototype.zoomIn = function() {
-    this.setZoom(++this.zoom_);
+    this.setZoom(this.zoom_+1);
 };
 
 ol.Map.prototype.zoomOut = function() {
-    this.setZoom(--this.zoom_);
+    this.setZoom(this.zoom_-1);
 };
 
 /**
