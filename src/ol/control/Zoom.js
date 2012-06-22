@@ -76,7 +76,7 @@ ol.control.Zoom.prototype.deactivate = function() {
  * @param {Event} evt
  */
 ol.control.Zoom.prototype.handle = function(evt) {
-    var target = /** @type {Node} */ evt.target,
+    var target = /** @type {Node} */ (evt.target),
         handled = false;
     if (goog.dom.getAncestorByClass(target, ol.control.Zoom.RES.IN_CLS)) {
         this.getMap().zoomIn();
