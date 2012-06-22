@@ -24,5 +24,6 @@ goog.require("ol.geom.linestring");
 goog.require("ol.geom.collection");
 goog.require('ol.layer.XYZ');
 goog.require('ol.layer.OSM');
+goog.require('ol.layer.WMS');
 goog.require('ol.renderer.TileLayerRenderer');
 goog.require('ol.renderer.WebGL');
