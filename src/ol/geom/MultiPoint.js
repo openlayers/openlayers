@@ -6,6 +6,7 @@ goog.require('ol.geom.Collection');
 /**
  * Creates ol.geom.MultiPoint objects. 
  * 
+ * @export
  * @extends {ol.geom.Collection}
  * @param {Array.<ol.geom.Point>} points An array of points.
  * 
