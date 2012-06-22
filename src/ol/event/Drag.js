@@ -1,93 +1,56 @@
 goog.provide('ol.event.Drag');
 
 goog.require('ol.event.ISequence');
-goog.require('ol.event.Events');
-goog.require('goog.functions');
+goog.require('ol.event');
 goog.require('goog.fx.Dragger');
 goog.require('goog.fx.DragEvent');
 goog.require('goog.fx.Dragger.EventType');
-goog.require('goog.functions');
 
 
 /**
  * @constructor
  * @param {ol.event.Events} target The Events instance that handles events.
- * @extends {goog.fx.Dragger}
  * @implements {ol.event.ISequence}
  * @export
  */
-ol.event.Drag = function(target) {
-    goog.base(this, target.getElement());
-    
-    /**
-     * @private
-     * @type {ol.event.Events}
-     */
-    this.target_ = target;
-    
-    /**
-     * @private
-     * @type {number} clientX of the previous event
-     */
-    this.previousX_ = 0;
-    
-    /**
-     * @private
-     * @type {number}  clientY of the previous event
-     */
-    this.previousY_ = 0;
-};
-goog.inherits(ol.event.Drag, goog.fx.Dragger);
+ol.event.Drag = function(target) {    
+    var previousX = 0, previousY = 0,
+        element = target.getElement(),
+        dragger = new goog.fx.Dragger(element);
 
-/**
- * @param {string|goog.fx.DragEvent} e
- * @return {boolean} If anyone called preventDefault on the event object (or
- *     if any of the handlers returns false this will also return false.
- */
-ol.event.Drag.prototype.dispatchEvent = function(e) {
-    if (e instanceof goog.fx.DragEvent) {
-        if (e.type === goog.fx.Dragger.EventType.START) {
-            e.type = ol.event.Drag.EventType.DRAGSTART;
-        } else if (e.type === goog.fx.Dragger.EventType.END) {
-            e.type = ol.event.Drag.EventType.DRAGEND;
-        }
-        e.target = e.browserEvent.target;
-        e.dx = e.clientX - this.previousX_;
-        e.dy = e.clientY - this.previousY_;
-    }
-    this.target_.triggerEvent(e.type, /** @type {Object} (e.type) */ (e));
-    return goog.base(this, 'dispatchEvent', e);
+    /**
+     * @private
+     * @type {goog.fx.Dragger}
+     */
+    this.dragger_ = dragger;
+    
+    dragger.defaultAction = function(x, y) {};                
+    dragger.addEventListener(goog.fx.Dragger.EventType.START, function(evt) {
+        evt.target = element;
+        evt.type = 'dragstart';
+        previousX = evt.clientX;
+        previousY = evt.clientY;
+        target.triggerEvent(evt.type, evt);
+    });
+    dragger.addEventListener(goog.fx.Dragger.EventType.DRAG, function(evt) {
+        evt.target = element;
+        evt.dx = evt.clientX - previousX;
+        evt.dy = evt.clientY - previousY;
+        previousX = evt.clientX;
+        previousY = evt.clientY;
+        target.triggerEvent(evt.type, evt);
+    });
+    dragger.addEventListener(goog.fx.Dragger.EventType.END, function(evt) {
+        evt.target = element;
+        evt.type = 'dragend';
+        target.triggerEvent(evt.type, evt);
+    });    
 };
 
 /** @inheritDoc */
-ol.event.Drag.prototype.startDrag = function(e) {
-    goog.base(this, 'startDrag', e);
-    this.previousX_ = e.clientX;
-    this.previousY_ = e.clientY;
+ol.event.Drag.prototype.destroy = function() {
+    this.dragger_.dispose();
 };
-
-/** @override */
-ol.event.Drag.prototype.doDrag = function(e, x, y, dragFromScroll) {
-    goog.base(this, 'doDrag', e, x, y, dragFromScroll);
-    this.previousX_ = e.clientX;
-    this.previousY_ = e.clientY;
-};
-
-/** @inheritDoc */
-ol.event.Drag.prototype.defaultAction = function(x, y) {};
-
-/** @inheritDoc */
-ol.event.Drag.prototype.destroy = ol.event.Drag.prototype.dispose;
 
 
 ol.event.addSequenceProvider('drag', ol.event.Drag);
-
-
-/**
- * @type {Object.<string, string>}
- */
-ol.event.Drag.EventType = {
-    DRAGSTART: 'dragstart',
-    DRAG: goog.fx.Dragger.EventType.DRAG,
-    DRAGEND: 'dragend'
-};
