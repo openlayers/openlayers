@@ -158,7 +158,7 @@ describe("ol.map", function() {
         
         map.destroy();
 
-        expect(goog.isDef(map.getLayers())).toBe(false);
+        expect(map.layers()).not.toBeDefined();
         
     });
     
