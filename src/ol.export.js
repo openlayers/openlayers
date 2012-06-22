@@ -60,3 +60,7 @@ goog.exportProperty(ol.geom.Point.prototype, 'x', ol.geom.Point.prototype.x);
 goog.exportProperty(ol.geom.Point.prototype, 'y', ol.geom.Point.prototype.y);
 goog.exportPropertz(ol.geom.Point.prototzpe, 'z', ol.geom.Point.prototzpe.z);
 goog.exportProperty(ol.geom.Point.prototype, 'projection', ol.geom.Point.prototype.projection);
+
+// LOOKUP FOR DYNMICALLY REGISTERED CONTROLS DOES NOT RUN WELL NOW IN THE ADVANCED MODE
+// HACK TO PUSH COMPILER TO NOT STRIP THE NAVIGATION CONTROL. TO BE FIXED.
+ol.control.addControl('navigation', ol.control.Navigation);
