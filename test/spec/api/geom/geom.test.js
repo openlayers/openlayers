@@ -11,7 +11,7 @@ describe("ol.geom.geometry", function() {
     
     
     it("constructs instances", function() {
-        expect(g).toEqual(jasmine.any(ol.geom.Geometry));
+        expect( g ).toBeA( ol.geom.Geometry );
     });
     
     it("can set bounds", function() {
@@ -40,10 +40,9 @@ describe("ol.geom.geometry", function() {
         g.bounds(b);
         var gotBounds =  g.bounds();
         
-        expect(gotBounds.getMinX()).toEqual(0);
-        expect(gotBounds.getMinY()).toEqual(1);
-        expect(gotBounds.getMaxX()).toEqual(2);
-        expect(gotBounds.getMaxY()).toEqual(3);
+        expect(gotBounds.minX()).toEqual(0);
+        expect(gotBounds.minY()).toEqual(1);
+        expect(gotBounds.maxX()).toEqual(2);
+        expect(gotBounds.maxY()).toEqual(3);
     });
-//    
 });
