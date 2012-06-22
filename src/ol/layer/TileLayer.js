@@ -211,7 +211,7 @@ ol.layer.TileLayer.prototype.getMaxResolution = function() {
         if (!goog.isNull(extent)) {
             this.maxResolution_ = Math.max(
                 (extent.getMaxX() - extent.getMinX()) / this.tileWidth_,
-                (extent.getMaxY() - extent.getMaxX()) / this.tileHeight_);
+                (extent.getMaxY() - extent.getMinY()) / this.tileHeight_);
         }
     }
     return this.maxResolution_;
