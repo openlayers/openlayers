@@ -170,6 +170,7 @@ ol.Tile.createConstructor = function(width, height) {
     Tile.prototype.createImage = (function() {
         var img = document.createElement("img");
         img.className = "olTile";
+        img.style.position = "absolute";
         img.style.width = width + "px";
         img.style.height = height + "px";
         return function() {
