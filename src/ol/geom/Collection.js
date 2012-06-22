@@ -7,6 +7,7 @@ goog.require('ol.Projection');
 /**
  * Creates ol.geom.Collection objects. 
  * 
+ * @export
  * @extends {ol.geom.Geometry}
  * @param {Array.<ol.geom.Geometry>} components An array of components.
  * 
