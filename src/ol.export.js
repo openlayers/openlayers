@@ -84,6 +84,14 @@ goog.exportProperty(ol.geom.LineString.prototype, 'add', ol.geom.LineString.prot
 goog.exportProperty(ol.geom.LineString.prototype, 'addAll', ol.geom.LineString.prototype.addAll);
 goog.exportProperty(ol.geom.LineString.prototype, 'remove', ol.geom.LineString.prototype.remove);
 
+// ol.geom.multipoint
+goog.exportSymbol('ol.geom.multipoint', ol.geom.multipoint);
+goog.exportSymbol('ol.geom.MultiPoint', ol.geom.MultiPoint);
+goog.exportProperty(ol.geom.MultiPoint.prototype, 'points', ol.geom.MultiPoint.prototype.points);
+goog.exportProperty(ol.geom.MultiPoint.prototype, 'add', ol.geom.MultiPoint.prototype.add);
+goog.exportProperty(ol.geom.MultiPoint.prototype, 'addAll', ol.geom.MultiPoint.prototype.addAll);
+goog.exportProperty(ol.geom.MultiPoint.prototype, 'remove', ol.geom.MultiPoint.prototype.remove);
+
 // LOOKUP FOR DYNMICALLY REGISTERED CONTROLS DOES NOT RUN WELL NOW IN THE ADVANCED MODE
 // HACK TO PUSH COMPILER TO NOT STRIP THE NAVIGATION CONTROL. TO BE FIXED.
 ol.control.addControl('navigation', ol.control.Navigation);
