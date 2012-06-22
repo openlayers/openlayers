@@ -59,6 +59,7 @@ goog.exportProperty(ol.Feature.prototype, 'geometry', ol.Feature.prototype.geome
 goog.exportSymbol('ol.geom.geometry', ol.geom.geometry);
 goog.exportSymbol('ol.geom.Geometry', ol.geom.Geometry);
 goog.exportProperty(ol.geom.Geometry.prototype, 'bounds', ol.geom.Geometry.prototype.bounds);
+goog.exportProperty(ol.geom.Geometry.prototype, 'centroid', ol.geom.Geometry.prototype.centroid);
 
 // ol.geom.collection
 goog.exportSymbol('ol.geom.collection', ol.geom.collection);
@@ -67,6 +68,7 @@ goog.exportProperty(ol.geom.Collection.prototype, 'components', ol.geom.Collecti
 goog.exportProperty(ol.geom.Collection.prototype, 'add', ol.geom.Collection.prototype.add);
 goog.exportProperty(ol.geom.Collection.prototype, 'addAll', ol.geom.Collection.prototype.addAll);
 goog.exportProperty(ol.geom.Collection.prototype, 'remove', ol.geom.Collection.prototype.remove);
+goog.exportProperty(ol.geom.Collection.prototype, 'centroid', ol.geom.Collection.prototype.centroid);
 
 // ol.geom.point
 goog.exportSymbol('ol.geom.point', ol.geom.point);
@@ -75,6 +77,7 @@ goog.exportProperty(ol.geom.Point.prototype, 'x', ol.geom.Point.prototype.x);
 goog.exportProperty(ol.geom.Point.prototype, 'y', ol.geom.Point.prototype.y);
 goog.exportProperty(ol.geom.Point.prototype, 'z', ol.geom.Point.prototype.z);
 goog.exportProperty(ol.geom.Point.prototype, 'projection', ol.geom.Point.prototype.projection);
+goog.exportProperty(ol.geom.Point.prototype, 'centroid', ol.geom.Point.prototype.centroid);
 
 // ol.geom.linestring
 goog.exportSymbol('ol.geom.linestring', ol.geom.linestring);
@@ -83,6 +86,7 @@ goog.exportProperty(ol.geom.LineString.prototype, 'vertices', ol.geom.LineString
 goog.exportProperty(ol.geom.LineString.prototype, 'add', ol.geom.LineString.prototype.add);
 goog.exportProperty(ol.geom.LineString.prototype, 'addAll', ol.geom.LineString.prototype.addAll);
 goog.exportProperty(ol.geom.LineString.prototype, 'remove', ol.geom.LineString.prototype.remove);
+goog.exportProperty(ol.geom.LineString.prototype, 'centroid', ol.geom.LineString.prototype.centroid);
 
 // ol.geom.multipoint
 goog.exportSymbol('ol.geom.multipoint', ol.geom.multipoint);
@@ -91,6 +95,7 @@ goog.exportProperty(ol.geom.MultiPoint.prototype, 'points', ol.geom.MultiPoint.p
 goog.exportProperty(ol.geom.MultiPoint.prototype, 'add', ol.geom.MultiPoint.prototype.add);
 goog.exportProperty(ol.geom.MultiPoint.prototype, 'addAll', ol.geom.MultiPoint.prototype.addAll);
 goog.exportProperty(ol.geom.MultiPoint.prototype, 'remove', ol.geom.MultiPoint.prototype.remove);
+goog.exportProperty(ol.geom.MultiPoint.prototype, 'centroid', ol.geom.MultiPoint.prototype.centroid);
 
 // LOOKUP FOR DYNMICALLY REGISTERED CONTROLS DOES NOT RUN WELL NOW IN THE ADVANCED MODE
 // HACK TO PUSH COMPILER TO NOT STRIP THE NAVIGATION CONTROL. TO BE FIXED.
