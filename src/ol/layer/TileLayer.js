@@ -42,7 +42,7 @@ ol.layer.TileLayer = function() {
 
     /**
      * @protected
-     * @type {function(new:ol.Tile, string, ol.Bounds)}
+     * @type {function(new:ol.Tile, string, ol.Bounds=)}
      */
     this.Tile = ol.Tile.createConstructor(this.tileWidth_, this.tileHeight_);
 
@@ -62,13 +62,25 @@ ol.layer.TileLayer = function() {
      * @private
      * @type {string}
      */
-    this.tileOriginCorner_ = 'bl';
+    this.tileOriginCorner_ = 'tl';
 
     /**
      * @private
      * @type {number|undefined}
      */
     this.maxResolution_ = undefined;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.xRight_ = true;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.yDown_ = true;
 
     /**
      * @private
@@ -92,6 +104,33 @@ ol.layer.TileLayer = function() {
 
 goog.inherits(ol.layer.TileLayer, ol.layer.Layer);
 
+/**
+ * @return {boolean} The tile index increases from left to right.
+ */
+ol.layer.TileLayer.prototype.getXRight = function() {
+    return this.xRight_;
+};
+
+/**
+ * @return {boolean} The tile index increases from top to bottom.
+ */
+ol.layer.TileLayer.prototype.getYDown = function() {
+    return this.yDown_;
+};
+
+/**
+ * @param {boolean} right The tile index increases from left to right.
+ */
+ol.layer.TileLayer.prototype.setXRight = function(right) {
+    this.xRight_ = right;
+};
+
+/**
+ * @param {boolean} down The tile index increases from top to bottom.
+ */
+ol.layer.TileLayer.prototype.setYDown = function(down) {
+    this.yDown_ = down;
+};
 
 /**
  * Get layer extent. Return null if the layer has no extent
@@ -172,7 +211,7 @@ ol.layer.TileLayer.prototype.getMaxResolution = function() {
         if (!goog.isNull(extent)) {
             this.maxResolution_ = Math.max(
                 (extent.getMaxX() - extent.getMinX()) / this.tileWidth_,
-                (extent.getMaxY() - extent.getMaxX()) / this.tileHeight_);
+                (extent.getMaxY() - extent.getMinY()) / this.tileHeight_);
         }
     }
     return this.maxResolution_;
@@ -280,6 +319,25 @@ ol.layer.TileLayer.prototype.getTile = function(url, bounds) {
     var tile = this.cache_.get(url);
     if (!goog.isDef(tile)) {
         tile = new this.Tile(url, bounds);
+        this.cache_.set(tile.getUrl(), tile);
+    }
+    return tile;
+};
+
+/**
+ * Get a tile from the cache, or create a tile and add to
+ * the cache.
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ */
+ol.layer.TileLayer.prototype.getTileForXYZ = function(x, y, z) {
+    var url = this.url_.replace('{x}', x + '')
+                       .replace('{y}', y + '')
+                       .replace('{z}', z + '');
+    var tile = this.cache_.get(url);
+    if (!goog.isDef(tile)) {
+        tile = new this.Tile(url);
         this.cache_.set(tile.getUrl(), tile);
     }
     return tile;

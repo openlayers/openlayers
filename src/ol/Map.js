@@ -143,7 +143,7 @@ ol.Map.DEFAULT_CONTROLS = ["navigation"];
  */
 ol.Map.prototype.getCenter = function() {
     var proj = this.getUserProjection();
-    return this.center_.transform(proj);
+    return this.center_.doTransform(proj);
 };
 
 
@@ -271,7 +271,7 @@ ol.Map.prototype.setCenter = function(center) {
         proj = this.getUserProjection();
         center.setProjection(proj);
     }
-    this.center_ = center.transform(this.getProjection());
+    this.center_ = center.doTransform(this.getProjection());
 };
 
 

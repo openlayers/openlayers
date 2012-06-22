@@ -4,8 +4,7 @@
   "output-file": "hello-epi-compiled.js",
 
   "inputs": [
-    "hello-epi.js",
-    "../src/ol.js"
+    "hello-epi.js"
   ],
   "paths": [
     "../src"

@@ -166,4 +166,47 @@ describe("ol.geom.point", function() {
             expect(p_obj.projection()).toEqual(jasmine.any(ol.Projection));
         });
     });
+
+    describe("the centroid method is functional", function(){
+        it("returns an instance of ol.geom.Point", function(){
+            expect(pNoZ_arr.centroid()).toBeA(ol.geom.Point);
+            expect(pWithZ_arr.centroid()).toBeA(ol.geom.Point);
+            expect(p_arr.centroid()).toBeA(ol.geom.Point);
+
+            expect(pNoZ_obj.centroid()).toBeA(ol.geom.Point);
+            expect(pWithZ_obj.centroid()).toBeA(ol.geom.Point);
+            expect(p_obj.centroid()).toBeA(ol.geom.Point);
+        });
+
+        it("does return a clone and not the point itself", function(){
+            expect(pNoZ_arr.centroid()).not.toBe(pNoZ_arr);
+            expect(pWithZ_arr.centroid()).not.toBe(pWithZ_arr);
+            expect(p_arr.centroid()).not.toBe(p_arr);
+
+            expect(pNoZ_obj.centroid()).not.toBe(pNoZ_obj);
+            expect(pWithZ_obj.centroid()).not.toBe(pWithZ_obj);
+            expect(p_obj.centroid()).not.toBe(p_obj);
+        });
+
+        it("has the expected coordinates", function(){
+            var c1 = pNoZ_arr.centroid(),
+                c2 = pWithZ_arr.centroid(),
+                c3 = p_arr.centroid(),
+                c4 = pNoZ_obj.centroid(),
+                c5 = pWithZ_obj.centroid(),
+                c6 = p_obj.centroid();
+
+            expect(c1.x() + ',' + c1.y()).toBe('21,4');
+            expect(c2.x() + ',' + c2.y()).toBe('21,4');
+            expect(c3.x() + ',' + c3.y()).toBe('21,4');
+            expect(c4.x() + ',' + c4.y()).toBe('21,4');
+            expect(c5.x() + ',' + c5.y()).toBe('21,4');
+            expect(c6.x() + ',' + c6.y()).toBe('21,4');
+        });
+
+        it("returns point(0,0) when the point was constructed without args", function(){
+            var c = pNoArgs.centroid();
+            expect(c.x() + ',' + c.y()).toBe('0,0');
+        });
+    });
 });

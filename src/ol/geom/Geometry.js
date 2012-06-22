@@ -1,15 +1,17 @@
-goog.provide('ol.geom.Geometry'); 
+goog.provide('ol.geom.Geometry');
 
+goog.require('ol.geom.IGeometry');
 goog.require('ol.Bounds');
 
 /**
  * Creates ol.Geometry objects.
- * 
+ *
  * @export
+ * @implements {ol.geom.IGeometry}
  * @constructor
  */
 ol.geom.Geometry = function() {
-    
+
     /**
      * @private
      * @type {ol.Bounds|undefined}
@@ -34,10 +36,23 @@ ol.geom.Geometry.prototype.setBounds = function(bounds) {
 };
 
 /**
- * @returns ol.Loc
+ * Returns the centroid of the geometry.
+ *
+ * @returns {ol.geom.Point} The centroid of the geometry.
  */
 ol.geom.Geometry.prototype.getCentroid = function() {
-    //FIXME: stub only to get popups working
-    return new ol.Loc(-76,45);
+    // throw an error to enforce subclasses to implement it properly
+    ol.error('ol.geom.Geometry: getCentroid must be implemented by subclasses');
+    return null;
 };
 
+/**
+ * Returns the area of the geometry.
+ *
+ * @returns {number}  The area of the geometry.
+ */
+ol.geom.Geometry.prototype.getArea = function() {
+    // throw an error to enforce subclasses to implement it properly
+    ol.error('ol.geom.Geometry: getArea must be implemented by subclasses');
+    return 0;
+};

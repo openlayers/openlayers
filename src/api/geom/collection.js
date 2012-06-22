@@ -1,7 +1,7 @@
-goog.provide('ol.geom.collection'); 
+goog.provide('ol.geom.collection');
 
 goog.require('ol.geom.Collection');
-goog.require('ol.geom.point'); 
+goog.require('ol.geom.point');
 goog.require('ol.projection');
 
 /**
@@ -10,11 +10,11 @@ goog.require('ol.projection');
  * @return {ol.geom.Collection} Collection.
  */
 ol.geom.collection = function(opt_arg){
-    
+
     if (opt_arg instanceof ol.geom.Collection) {
         return opt_arg;
     }
-    
+
     var components = [];
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
         if (goog.isArray(opt_arg)) {
@@ -35,7 +35,7 @@ ol.geom.collection = function(opt_arg){
             throw new Error('ol.geom.collection');
         }
     }
-    
+
     var c = new ol.geom.Collection(components);
     return c;
 };
@@ -50,7 +50,7 @@ ol.geom.Collection.prototype.components = function(opt_arg){
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
         var components = [],
             allValid = false;
-            
+
         allValid = goog.array.every(opt_arg, function(geom){
             if (geom instanceof ol.geom.Geometry) {
                 components.push(geom);
@@ -90,23 +90,23 @@ ol.geom.Collection.prototype.add = function(geom, opt_index){
  * @export
  * @param {Array.<ol.geom.Geometry>} components Some point specifications.
  * @param {number=} opt_index An optional index to add the components at. If not
- *     provided, the components will be added to the end of the list of 
+ *     provided, the components will be added to the end of the list of
  *     components.
  * @return {ol.geom.Collection} The Collection instance.
  */
 ol.geom.Collection.prototype.addAll = function(components, opt_index){
     var index = this.components_.length;
-    
+
     if (arguments.length == 2 && goog.isDef(opt_index)) {
         index = opt_index;
     }
-    
+
     goog.array.every(components, function(c){
         this.addComponent(c, index);
         index++;
         return true;
     }, this);
-    
+
     return this;
 };
 
@@ -128,6 +128,6 @@ ol.geom.Collection.prototype.remove = function(components){
         this.removeComponent(c);
         return true;
     }, this);
-    
+
     return this;
 };

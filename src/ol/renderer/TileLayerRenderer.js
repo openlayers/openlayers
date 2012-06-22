@@ -26,6 +26,12 @@ ol.renderer.TileLayerRenderer = function(container, layer) {
      * @private
      */
     this.rendererdBounds_ = null;
+    
+    /**
+     * @type {Array.<number>}
+     */
+    this.layerResolutions_ = layer.getResolutions();
+
 
     /**
      * @type {number|undefined}
@@ -43,7 +49,27 @@ ol.renderer.TileLayerRenderer = function(container, layer) {
 
 goog.inherits(ol.renderer.TileLayerRenderer, ol.renderer.LayerRenderer);
 
-
+/**
+ * @param {number} resolution
+ * @return {Array.<number>}
+ */
+ol.renderer.TileLayerRenderer.prototype.getPreferredResAndZ_ = function(resolution) {
+    var minDiff = Number.POSITIVE_INFINITY;
+    var candidate, diff, z, r;
+    for (var i=0, ii=this.layerResolutions_.length; i<ii; ++i) {
+        // assumes sorted resolutions
+        candidate = this.layerResolutions_[i];
+        diff = Math.abs(resolution - candidate);
+        if (diff < minDiff) {
+            z = i;
+            r = candidate;
+            minDiff = diff;
+        } else {
+            break;
+        }
+    }
+    return [r, z];
+};
 
 /**
  * @return {goog.math.Size}

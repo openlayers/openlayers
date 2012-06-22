@@ -22,6 +22,26 @@ describe('ol.layer.TileLayer', function() {
         });
     });
 
+    describe('axis orientation', function() {
+        var layer = new ol.layer.TileLayer();
+
+        it('increases from left to right by default', function() {
+            expect(layer.getXRight()).toBe(true);
+        });
+        it('increases from top to bottom by default', function() {
+            expect(layer.getYDown()).toBe(true);
+        });
+        
+        it('allows people to set things backwards', function() {
+            var backwards = new ol.layer.TileLayer();
+            backwards.setXRight(false);
+            expect(backwards.getXRight()).toBe(false);
+            backwards.setYDown(false);
+            expect(backwards.getYDown()).toBe(false);            
+        });
+
+    });
+
     describe('get tile origin', function() {
         var layer;
 
@@ -50,7 +70,7 @@ describe('ol.layer.TileLayer', function() {
 
             it('returns the expected origin', function() {
                 var origin = layer.getTileOrigin();
-                expect(origin).toEqual([-180, -90]);
+                expect(origin).toEqual([-180, 90]);
             });
 
         });
@@ -326,6 +346,28 @@ describe('ol.layer.TileLayer', function() {
                 expect(tile.getUrl()).toEqual('/1/1/1');
                 expect(tile.getImg()).toBeDefined();
             });
+        });
+
+    });
+
+    describe('get a tile', function() {
+        var layer;
+
+        beforeEach(function() {
+            layer = new ol.layer.TileLayer();
+            layer.setUrl('/{z}/{x}/{y}');
+            layer.setResolutions([1, 0.5, 0.25]);
+            layer.setTileOrigin(-128, 128);
+        });
+
+        it('returns the expected tile', function() {
+            var tile = layer.getTileForXYZ(1, 2, 2);
+            expect(tile.getUrl()).toEqual('/2/1/2');
+            //var bounds = tile.getBounds();
+            //expect(bounds.getMinX()).toEqual(-64);
+            //expect(bounds.getMinY()).toEqual(0);
+            //expect(bounds.getMaxX()).toEqual(0);
+            //expect(bounds.getMaxY()).toEqual(64);
         });
 
     });

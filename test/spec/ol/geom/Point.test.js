@@ -123,4 +123,27 @@ describe("ol.geom.Point", function() {
         });
     });
 
+    describe("the getCentroid method is functional", function(){
+        it("returns an instance of ol.geom.Point", function(){
+            expect(p2Args.getCentroid()).toBeA(ol.geom.Point);
+            expect(p3Args.getCentroid()).toBeA(ol.geom.Point);
+            expect(p4Args.getCentroid()).toBeA(ol.geom.Point);
+        });
+
+        it("does return a clone and not the point itself", function(){
+            expect(p2Args.getCentroid()).not.toBe(p2Args);
+            expect(p3Args.getCentroid()).not.toBe(p3Args);
+            expect(p4Args.getCentroid()).not.toBe(p4Args);
+        });
+
+        it("has the expected coordinates", function(){
+            var c2 = p2Args.getCentroid(),
+                c3 = p3Args.getCentroid(),
+                c4 = p4Args.getCentroid();
+
+            expect(c2.getX() + ',' + c2.getY()).toBe('21,4');
+            expect(c3.getX() + ',' + c3.getY()).toBe('21,4');
+            expect(c4.getX() + ',' + c4.getY()).toBe('21,4');
+        });
+    });
 });
