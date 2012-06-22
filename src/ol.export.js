@@ -1,14 +1,9 @@
-goog.require("ol.loc");
-goog.require("ol.feature");
-goog.require("ol.projection");
-goog.require('ol.bounds');
-goog.require("ol.map");
-goog.require("ol.layer.xyz");
-goog.require("ol.layer.osm");
+goog.require("ol");
 
 // ol.map
 goog.exportSymbol('ol.map', ol.map );
 goog.exportSymbol('ol.Map', ol.Map );
+goog.exportProperty( ol.Map.prototype, 'renderTo', ol.Map.prototype.renderTo );
 goog.exportProperty( ol.Map.prototype, 'center', ol.Map.prototype.center );
 goog.exportProperty( ol.Map.prototype, 'projection', ol.Map.prototype.projection );
 goog.exportProperty( ol.Map.prototype, 'userProjection', ol.Map.prototype.userProjection );
@@ -18,7 +13,6 @@ goog.exportProperty( ol.Map.prototype, 'resolutions', ol.Map.prototype.resolutio
 goog.exportProperty( ol.Map.prototype, 'layers', ol.Map.prototype.layers );
 goog.exportProperty( ol.Map.prototype, 'controls', ol.Map.prototype.controls );
 goog.exportProperty( ol.Map.prototype, 'maxExtent', ol.Map.prototype.maxExtent );
-goog.exportProperty( ol.Map.prototype, 'maxRes', ol.Map.prototype.maxRes );
 goog.exportProperty( ol.Map.prototype, 'destroy', ol.Map.prototype.destroy );
 
 // ol.loc
