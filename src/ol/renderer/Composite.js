@@ -23,6 +23,10 @@ ol.renderer.Composite = function(container) {
     
     var target = document.createElement("div");
     target.className = "ol-renderer-composite";
+    target.style.position = "absolute";
+    target.style.height = "100%";
+    target.style.width = "100%";
+    container.appendChild(target);
 
     /**
      * @type Element
@@ -76,7 +80,7 @@ ol.renderer.Composite.prototype.getRenderer = function(layer) {
 ol.renderer.Composite.prototype.createRenderer = function(layer) {
     var Renderer = this.pickRendererType(layer);
     goog.asserts.assert(Renderer, "No supported renderer for layer: " + layer);
-    return new Renderer(layer, this.target_);
+    return new Renderer(this.target_, layer);
 };
 
 /**
@@ -103,14 +107,14 @@ ol.renderer.Composite.prototype.pickRendererType = function(layer) {
         }
         return supports;
     }
-    var Candidates = goog.array.some(ol.renderer.Composite.registry_, picker);
+    var Candidates = goog.array.filter(ol.renderer.Composite.registry_, picker);
     
     // check to see if any preferred renderers are available
     var preferences = ol.renderer.Composite.preferredRenderers;
 
     var Renderer;
     for (var i=0, ii=preferences.length; i<ii; ++i) {
-        Renderer = preferences[i];
+        Renderer = types[preferences[i]];
         if (Renderer) {
             break;
         }
@@ -132,3 +136,20 @@ ol.renderer.Composite.registry_ = [];
 ol.renderer.Composite.register = function(Renderer) {
     ol.renderer.Composite.registry_.push(Renderer);
 };
+
+/**
+ * return {string}
+ */
+ol.renderer.Composite.getType = function() {
+    // TODO: revisit
+    return "composite";
+};
+
+/**
+ * return {boolean}
+ */
+ol.renderer.Composite.isSupported = function() {
+    return true;
+};
+
+ol.renderer.MapRenderer.register(ol.renderer.Composite);
