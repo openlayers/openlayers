@@ -263,9 +263,6 @@ ol.event.Events.prototype.triggerEvent = function(type, opt_evt) {
  * @param {Event} evt
  */
 ol.event.Events.prototype.handleBrowserEvent = function(evt) {
-    if (!goog.isDef(this.element_)) {
-        return;
-    }
     var type = evt.type,
         listeners = goog.events.getListeners(this.element_, type, false)
             .concat(goog.events.getListeners(this.element_, type, true));
