@@ -1,9 +1,22 @@
 describe("ol.Tile", function() {
 
+    describe("create a tile constructor", function() {
+        it("returns a constructor than can create tiles with expected properties", function() {
+            var Tile = ol.Tile.createConstructor(100, 100);
+            expect(typeof Tile).toEqual("function");
+            var tile = new Tile('url');
+            expect(tile).toBeA(ol.Tile);
+            expect(tile.getImg().className).toEqual('olTile');
+            expect(tile.getImg().style.width).toEqual("100px");
+            expect(tile.getImg().style.height).toEqual("100px");
+        });
+    });
+
     describe("create a tile", function() {
         var tile;
         beforeEach(function() {
-            tile = new ol.Tile('http://a.url');
+            var Tile = ol.Tile.createConstructor(200, 200);
+            tile = new Tile('http://a.url');
         });
         it("creates a tile instance", function() {
             expect(tile).toBeA(ol.Tile);
@@ -16,7 +29,8 @@ describe("ol.Tile", function() {
     describe("handle image load", function() {
         var tile;
         beforeEach(function() {
-            tile = new ol.Tile('http://a.url');
+            var Tile = ol.Tile.createConstructor(200, 200);
+            tile = new Tile('http://a.url');
         });
         it("fires a load event", function() {
             var spy = jasmine.createSpy();
@@ -33,7 +47,8 @@ describe("ol.Tile", function() {
     describe("handle image error", function() {
         var tile;
         beforeEach(function() {
-            tile = new ol.Tile('http://a.url');
+            var Tile = ol.Tile.createConstructor(200, 200);
+            tile = new Tile('http://a.url');
         });
         it("fires a load event", function() {
             var spy = jasmine.createSpy();

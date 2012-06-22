@@ -8,6 +8,7 @@ goog.require('ol.Projection');
 /**
  * Creates ol.geom.LineString objects. 
  * 
+ * @export
  * @extends {ol.geom.Geometry}
  * @param {Array.<ol.geom.Point>} vertices An array of points building the 
  *     linestrings vertices.

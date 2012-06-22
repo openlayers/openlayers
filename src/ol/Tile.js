@@ -41,7 +41,7 @@ ol.Tile = function(url, bounds) {
      * @private
      * @type {HTMLImageElement}
      */
-    this.img_ = ol.Tile.createImage();
+    this.img_ = this.createImage();
     goog.events.listenOnce(this.img_, goog.events.EventType.LOAD,
                            this.handleImageLoad, false, this);
     goog.events.listenOnce(this.img_, goog.events.EventType.ERROR,
@@ -52,6 +52,14 @@ ol.Tile = function(url, bounds) {
      * @type {ol.event.Events}
      */
     this.events_ = new ol.event.Events(this);
+};
+
+/**
+ * @protected
+ * @return {HTMLImageElement}
+ */
+ol.Tile.prototype.createImage = function() {
+    // overriden by subclasses
 };
 
 /**
@@ -131,3 +139,32 @@ ol.Tile.createImage = (function() {
         return img.cloneNode(false);
     };
 })();
+
+/**
+ * Create a tile constructor, for specific width and height values
+ * for the tiles.
+ * @param {number} width
+ * @param {number} height
+ * @return {function(new:ol.Tile, string, ol.Bounds)}
+ */
+ol.Tile.createConstructor = function(width, height) {
+    /**
+     * @constructor
+     * @extends {ol.Tile}
+     */
+    var Tile = function(url, bounds) {
+        goog.base(this, url, bounds);
+    };
+    goog.inherits(Tile, ol.Tile);
+    /** @inheritDoc */
+    Tile.prototype.createImage = (function() {
+        var img = document.createElement("img");
+        img.className = "olTile";
+        img.style.width = width + "px";
+        img.style.height = height + "px";
+        return function() {
+            return img.cloneNode(false);
+        };
+    })();
+    return Tile;
+};
