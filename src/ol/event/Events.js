@@ -47,7 +47,7 @@ ol.event.isMultiTouch = function(evt) {
  * @constructor
  * @extends {goog.events.EventTarget}
  * @param {Object} object The object we are creating this instance for.
- * @param {!EventTarget=} opt_element An optional element that we want to
+ * @param {!Element=} opt_element An optional element that we want to
  *     listen to browser events on.
  * @param {boolean=} opt_includeXY Should the 'xy' property automatically be
  *     created for browser pointer events? In general, this should be false. If
@@ -71,7 +71,7 @@ ol.event.Events = function(object, opt_element, opt_includeXY, opt_sequences) {
 
     /**
      * @private
-     * @type {EventTarget}
+     * @type {Element}
      * The element that this instance listens to mouse events on.
      */
     this.element_ = null;
@@ -115,7 +115,7 @@ ol.event.Events.prototype.setIncludeXY = function(includeXY) {
 };
 
 /**
- * @return {EventTarget} The element that this instance currently
+ * @return {Element} The element that this instance currently
  *     listens to browser events on.
  */
 ol.event.Events.prototype.getElement = function() {
@@ -126,18 +126,17 @@ ol.event.Events.prototype.getElement = function() {
  * Attach this instance to a DOM element. When called, all browser events fired
  * on the provided element will be relayed by this instance.
  *
- * @param {EventTarget} element A DOM element to attach
+ * @param {Element} element A DOM element to attach
  *     browser events to. If called without this argument, all browser events
  *     will be detached from the element they are currently attached to.
  */
 ol.event.Events.prototype.setElement = function(element) {
-    var types, t;    
+    var types = goog.events.EventType, t;    
     if (this.element_) {
-        types = this.getBrowserEventTypes();
         for (t in types) {
             // register the event cross-browser
             goog.events.unlisten(
-                this.element_, types[t], this.handleBrowserEvent, false, this
+                this.element_, types[t], this.dispatchEvent, true, this
             );
         }
         this.destroySequences();
@@ -145,25 +144,21 @@ ol.event.Events.prototype.setElement = function(element) {
     }
     this.element_ = element || null;
     if (goog.isDefAndNotNull(element)) {
-        this.createSequences(element);
-        types = this.getBrowserEventTypes();
+        this.createSequences();
         for (t in types) {
             // register the event cross-browser
             goog.events.listen(
-                element, types[t], this.handleBrowserEvent, false, this
+                element, types[t], this.dispatchEvent, true, this
             );
         }
     }
 };
 
-/**
- * @param {EventTarget} target
- */
-ol.event.Events.prototype.createSequences = function(target) {
+ol.event.Events.prototype.createSequences = function() {
     for (var i=0, ii=this.sequenceProviders_.length; i<ii; ++i) {
         this.sequences_.push(
             new ol.event.SEQUENCE_PROVIDER_MAP[this.sequenceProviders_[i]](
-                target
+                this
             )
         );
     }
@@ -174,18 +169,6 @@ ol.event.Events.prototype.destroySequences = function() {
         this.sequences_[i].destroy();
     }
     this.sequences_ = [];
-};
-
-/**
- * @return {Object.<string, string>}
- */
-ol.event.Events.prototype.getBrowserEventTypes = function() {
-    var types = {};
-    goog.object.extend(types, goog.events.EventType);
-    for (var i=this.sequences_.length-1; i>=0; --i) {
-        goog.object.extend(types, this.sequences_[i].getEventTypes());
-    }
-    return types;
 };
 
 /**
@@ -257,39 +240,40 @@ ol.event.Events.prototype.triggerEvent = function(type, opt_evt) {
 };
 
 /**
- * Basically just a wrapper to the triggerEvent() function, but takes 
- * care to set a property 'xy' on the event with the current mouse position.
+ * Basically just a wrapper to the parent's dispatchEvent() function, but takes 
+ * care to set a property 'xy' on the event with the current mouse position and
+ * normalize clientX and clientY for multi-touch events.
  * 
- * @param {Event} evt
+ * @param {Event} evt Event object.
+ * @return {boolean} If anyone called preventDefault on the event object (or
+ *     if any of the handlers returns false this will also return false.
  */
-ol.event.Events.prototype.handleBrowserEvent = function(evt) {
+ol.event.Events.prototype.dispatchEvent = function(evt) {
     var type = evt.type,
         listeners = goog.events.getListeners(this.element_, type, false)
             .concat(goog.events.getListeners(this.element_, type, true));
-    if (!listeners || listeners.length === 0) {
+    if (listeners && listeners.length > 0) {
         // noone's listening, bail out
-        return;
-    }
-    // add clientX & clientY to all events - corresponds to average x, y
-    var touches = evt.touches;
-    if (touches && touches[0]) {
-        var x = 0;
-        var y = 0;
-        var num = touches.length;
-        var touch;
-        for (var i=0; i<num; ++i) {
-            touch = touches[i];
-            x += touch.clientX;
-            y += touch.clientY;
+        // add clientX & clientY to all events - corresponds to average x, y
+        var touches = evt.touches;
+        if (touches && touches[0]) {
+            var x = 0;
+            var y = 0;
+            var num = touches.length;
+            var touch;
+            for (var i=0; i<num; ++i) {
+                touch = touches[i];
+                x += touch.clientX;
+                y += touch.clientY;
+            }
+            evt.clientX = x / num;
+            evt.clientY = y / num;
         }
-        evt.clientX = x / num;
-        evt.clientY = y / num;
+        if (this.includeXY_) {
+            evt.xy = goog.style.getRelativePosition(evt, this.element_);
+        }
     }
-    if (this.includeXY_) {
-        var element = /** @type {!Element} */ this.element_;
-        evt.xy = goog.style.getRelativePosition(evt, element);
-    }
-    this.dispatchEvent(evt);
+    return goog.base(this, 'dispatchEvent', evt);
 };
 
 /**
