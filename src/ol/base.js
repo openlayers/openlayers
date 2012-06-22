@@ -1,3 +1,4 @@
+goog.provide('ol.base');
 goog.provide('ol.error');
 
 /**

@@ -1,4 +1,6 @@
 goog.provide("ol");
+
+goog.require('ol.base');
 goog.require('ol.bounds');
 goog.require('ol.control.Control');
 goog.require('ol.control.Navigation');
