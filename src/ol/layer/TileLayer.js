@@ -178,16 +178,6 @@ ol.layer.TileLayer.prototype.setExtent = function(extent) {
 };
 
 /**
- * Set tile width and height.
- * @param {number} width
- * @param {number} height
- */
-ol.layer.TileLayer.prototype.setTileSize = function(width, height) {
-    this.tileWidth_ = width;
-    this.tileHeight_ = height;
-};
-
-/**
  * Set tile origin.
  * @param {number} tileOriginX
  * @param {number} tileOriginY
