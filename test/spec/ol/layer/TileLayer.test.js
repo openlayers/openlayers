@@ -22,6 +22,26 @@ describe('ol.layer.TileLayer', function() {
         });
     });
 
+    describe('axis orientation', function() {
+        var layer = new ol.layer.TileLayer();
+
+        it('increases from left to right by default', function() {
+            expect(layer.getXRight()).toBe(true);
+        });
+        it('increases from top to bottom by default', function() {
+            expect(layer.getYDown()).toBe(true);
+        });
+        
+        it('allows people to set things backwards', function() {
+            var backwards = new ol.layer.TileLayer();
+            backwards.setXRight(false);
+            expect(backwards.getXRight()).toBe(false);
+            backwards.setYDown(false);
+            expect(backwards.getYDown()).toBe(false);            
+        });
+
+    });
+
     describe('get tile origin', function() {
         var layer;
 

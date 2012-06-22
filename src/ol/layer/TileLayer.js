@@ -72,6 +72,18 @@ ol.layer.TileLayer = function() {
 
     /**
      * @private
+     * @type {boolean}
+     */
+    this.xRight_ = true;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.yDown_ = true;
+
+    /**
+     * @private
      * @type {number|undefined}
      */
     this.numZoomLevels_ = undefined;
@@ -92,6 +104,33 @@ ol.layer.TileLayer = function() {
 
 goog.inherits(ol.layer.TileLayer, ol.layer.Layer);
 
+/**
+ * @return {boolean} The tile index increases from left to right.
+ */
+ol.layer.TileLayer.prototype.getXRight = function() {
+    return this.xRight_;
+};
+
+/**
+ * @return {boolean} The tile index increases from top to bottom.
+ */
+ol.layer.TileLayer.prototype.getYDown = function() {
+    return this.yDown_;
+};
+
+/**
+ * @param {boolean} right The tile index increases from left to right.
+ */
+ol.layer.TileLayer.prototype.setXRight = function(right) {
+    this.xRight_ = right;
+};
+
+/**
+ * @param {boolean} down The tile index increases from top to bottom.
+ */
+ol.layer.TileLayer.prototype.setYDown = function(down) {
+    this.yDown_ = down;
+};
 
 /**
  * Get layer extent. Return null if the layer has no extent
