@@ -42,6 +42,11 @@ describe("ol.Tile", function() {
             tile.handleImageLoad();
             expect(tile.isLoaded()).toBeTruthy();
         });
+        it("unsets the loading flag", function() {
+            tile.loading_ = true;
+            tile.handleImageLoad();
+            expect(tile.isLoading()).toBeFalsy();
+        });
     });
 
     describe("handle image error", function() {
@@ -55,6 +60,11 @@ describe("ol.Tile", function() {
             tile.events_.register('error', spy);
             tile.handleImageError();
             expect(spy).toHaveBeenCalled();
+        });
+        it("unsets the loading flag", function() {
+            tile.loading_ = true;
+            tile.handleImageError();
+            expect(tile.isLoading()).toBeFalsy();
         });
     });
 });

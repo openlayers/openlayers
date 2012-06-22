@@ -100,6 +100,7 @@ ol.Tile.prototype.getImg = function() {
  * @param {goog.events.BrowserEvent} evt Event.
  */
 ol.Tile.prototype.handleImageLoad = function(evt) {
+    this.loading_ = false;
     this.loaded_ = true;
     this.events_.triggerEvent('load');
 };
@@ -109,6 +110,7 @@ ol.Tile.prototype.handleImageLoad = function(evt) {
  * @param {goog.events.BrowserEvent} evt Event.
  */
 ol.Tile.prototype.handleImageError = function(evt) {
+    this.loading_ = false;
     this.events_.triggerEvent('error');
 };
 
@@ -118,6 +120,14 @@ ol.Tile.prototype.handleImageError = function(evt) {
  */
 ol.Tile.prototype.isLoaded = function() {
     return this.loaded_;
+};
+
+/**
+ * Is the tile being loaded?
+ * @return {boolean}
+ */
+ol.Tile.prototype.isLoading = function() {
+    return this.loading_;
 };
 
 /**
