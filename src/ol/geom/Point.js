@@ -4,6 +4,7 @@ goog.require('ol.geom.Geometry');
 
 goog.require('ol.Projection');
 goog.require('ol.coord.AccessorInterface');
+goog.require('ol.base');
 
 /**
  * Creates ol.geom.Point objects. 
@@ -135,7 +136,8 @@ ol.geom.Point.prototype._transform = function(proj) {
     var point = {'x': this.x_, 'y': this.y_};
     var sourceProj = this.projection_;
     if (!goog.isDefAndNotNull(sourceProj)) {
-        throw new Error("Cannot transform a point without a source projection.");
+        var msg = 'Cannot transform a point without a source projection.';
+        ol.error(msg);
     }
     ol.Projection.transform(point, sourceProj, proj);
     

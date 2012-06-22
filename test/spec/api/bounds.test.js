@@ -27,5 +27,16 @@ describe("ol.bounds", function() {
 
     });
 
+    it("raises an error on invalid keys", function() {
+        expect(function() {
+            ol.bounds({
+                minX: 9,
+                minY: 10,
+                maxX: 11,
+                maxWhy: 12
+            });
+        }).toThrow();
+    });
+
 }); 
        

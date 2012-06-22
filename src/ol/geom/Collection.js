@@ -3,6 +3,7 @@ goog.provide('ol.geom.Collection');
 goog.require('goog.array');
 goog.require('ol.geom.Geometry');
 goog.require('ol.Projection');
+goog.require('ol.base');
 
 /**
  * Creates ol.geom.Collection objects. 
@@ -96,8 +97,9 @@ ol.geom.Collection.prototype.setComponents = function(components) {
     if (allValidTypes) {
         this.components_ = components;
     } else {
-        throw new Error('ol.geom.Collection: at least one component passed to '
-            + 'setComponents is not allowed.');
+        var msg = 'ol.geom.Collection: at least one component passed to '
+            + 'setComponents is not allowed.';
+        ol.error(msg);
     }
 };
 
@@ -111,8 +113,8 @@ ol.geom.Collection.prototype.addComponent = function(component, index) {
     if (this.isAllowedComponent(component)) {
         goog.array.insertAt(this.components_, component, index);
     } else {
-        throw new Error("ol.geom.Collection: The component is not allowed " 
-            + "to be added.");
+        var msg = 'ol.geom.Collection: component is not allowed to be added.';
+        ol.error(msg);
     }
 };
 

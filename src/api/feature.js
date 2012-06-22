@@ -1,5 +1,6 @@
 goog.provide('ol.feature');
 
+goog.require('ol.base');
 goog.require('ol.Feature');
 goog.require('ol.geom.Geometry');
 
@@ -29,6 +30,7 @@ ol.feature = function(opt_arg){
             return opt_arg;
         }
         else if (goog.isObject(opt_arg)) {
+            ol.base.checkKeys(opt_arg, ['geometry', 'properties', 'type']);
             properties = opt_arg['properties'];
             geometry = opt_arg['geometry'];
             type = opt_arg['type'];
@@ -56,6 +58,7 @@ ol.feature = function(opt_arg){
 };
 
 /**
+ * @export
  * @param {!string} attr The name of the attribute to be set.
  * @param {string|number|boolean} value The value of the attribute to be set.
  * @returns {ol.Feature} The feature so calls can be chained
@@ -66,6 +69,7 @@ ol.Feature.prototype.set = function(attr, value) {
 };
 
 /**
+ * @export
  * @param {!string} attr The name of the attribute to be set.
  * @returns {string|number|boolean|undefined} The attribute value requested.
  */
@@ -74,6 +78,7 @@ ol.Feature.prototype.get = function(attr) {
 };
 
 /**
+ * @export
  * @param {ol.geom.Geometry=} opt_arg
  * @returns {ol.Feature|ol.geom.Geometry|undefined} get or set the geometry on a feature
  */
@@ -85,5 +90,3 @@ ol.Feature.prototype.geometry = function(opt_arg) {
         return this.getGeometry();
     }
 };
-
-

@@ -5,6 +5,7 @@ goog.require('ol.geom.Geometry');
 
 
 /**
+ * @export
  * @constructor
  */
 ol.Feature = function() {

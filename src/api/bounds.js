@@ -38,6 +38,7 @@ ol.bounds = function(opt_arg){
         maxX = opt_arg[2];
         maxY = opt_arg[3];
     } else if (goog.isObject(opt_arg)) {
+        ol.base.checkKeys(opt_arg, ['minX', 'minY', 'maxX', 'maxY', 'projection']);
         minX = opt_arg['minX'];
         minY = opt_arg['minY'];
         maxX = opt_arg['maxX'];

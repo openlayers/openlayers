@@ -43,6 +43,7 @@ ol.loc = function(opt_arg){
             z = opt_arg[2];
             projection = opt_arg[3];
         } else if (goog.isObject(opt_arg)) {
+            ol.base.checkKeys(opt_arg, ['projection', 'x', 'y', 'z']);
             x = opt_arg['x'];
             y = opt_arg['y'];
             z = opt_arg['z'];
