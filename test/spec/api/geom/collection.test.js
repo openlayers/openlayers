@@ -207,7 +207,6 @@ describe("ol.geom.collection", function() {
                     ol.geom.point([30,10])
                 ])
             ]);
-            debugger;
             var centroid = c.centroid();
             expect(centroid.x() + ',' + centroid.y()).toBe('20,20');
         });
