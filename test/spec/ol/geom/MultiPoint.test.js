@@ -122,4 +122,20 @@ describe("ol.geom.MultiPoint", function() {
         expect( points[1].getX() + ',' + points[1].getY()).toBe( '10,20' );
         expect( points[2].getX() + ',' + points[2].getY()).toBe( '30,40' );
     });
+
+    describe("the getCentroid method is functional", function(){
+        it("returns an instance of ol.geom.Point", function(){
+            expect(mp.getCentroid()).toBeA(ol.geom.Point);
+        });
+
+        it("has the expected coordinates", function(){
+            mp.setPoints([
+                new ol.geom.Point(10,10),
+                new ol.geom.Point(20,20),
+                new ol.geom.Point(30,30)
+            ]);
+            var c = mp.getCentroid();
+            expect(c.getX() + ',' + c.getY()).toBe('20,20');
+        });
+    });
 });

@@ -217,6 +217,22 @@ describe("ol.geom.multipoint", function() {
             expect(mp.points().length).toBe(0);
         });
     });
+
+    describe("the centroid method is functional", function(){
+        it("returns an instance of ol.geom.Point", function(){
+            expect(mp.centroid()).toBeA(ol.geom.Point);
+        });
+
+        it("has the expected coordinates", function(){
+            mp.points([
+                new ol.geom.Point(10,10),
+                new ol.geom.Point(20,20),
+                new ol.geom.Point(30,30)
+            ]);
+            var c = mp.centroid();
+            expect(c.x() + ',' + c.y()).toBe('20,20');
+        });
+    });
 });
 
 
