@@ -57,9 +57,20 @@ ol.geom.LineString.prototype.addVertex = function(vertex, index) {
 
 /**
  * Removes the given vertex from the list of vertices.
- * 
+ *
  * @param {ol.geom.Point} vertex A point to be removed.
  */
 ol.geom.LineString.prototype.removeVertex = function(vertex) {
     goog.array.remove(this.vertices_, vertex);
+};
+
+/**
+ * Compute the centroid for this linestring.
+ *
+ * @returns {ol.geom.Point} The centroid of the linestring.
+ */
+ol.geom.LineString.prototype.getCentroid = function() {
+    var vertices = this.getVertices(),
+        collection = new ol.geom.Collection(vertices);
+    return collection.getCentroid();
 };
