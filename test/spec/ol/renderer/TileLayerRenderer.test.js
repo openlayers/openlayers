@@ -14,6 +14,10 @@ describe("ol.renderer.TileLayerRenderer", function() {
         var layer = new ol.layer.Layer();
         expect(ol.renderer.TileLayerRenderer.canRender(layer)).toBe(false);
     });
+
+    it("returns a string type", function() {
+        expect(ol.renderer.TileLayerRenderer.getType()).toBe("tile");
+    });
     
     describe("getPreferredResAndZ_", function() {
         var layer = new ol.layer.TileLayer();

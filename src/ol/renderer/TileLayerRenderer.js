@@ -220,10 +220,14 @@ ol.renderer.TileLayerRenderer.prototype.pruneUnrenderedTiles_ = function(newBoun
 };
 
 
-/** @inheritDoc */
-ol.renderer.TileLayerRenderer.prototype.getType = function() {
+/**
+ * Get an identifying string for this renderer.
+ *
+ * @returns {string}
+ */
+ol.renderer.TileLayerRenderer.getType = function() {
     // TODO: revisit
-    return "img";
+    return "tile";
 };
 
 /** 
