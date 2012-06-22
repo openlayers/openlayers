@@ -47,6 +47,19 @@ goog.exportProperty(ol.Feature.prototype, 'set', ol.Feature.prototype.set);
 goog.exportProperty(ol.Feature.prototype, 'get', ol.Feature.prototype.get);
 goog.exportProperty(ol.Feature.prototype, 'geometry', ol.Feature.prototype.geometry);
 
+// ol.geometry
+goog.exportSymbol('ol.geom.geometry', ol.geom.geometry);
+goog.exportSymbol('ol.geom.Geometry', ol.geom.Geometry);
+goog.exportProperty(ol.geom.Geometry.prototype, 'bounds', ol.geom.Geometry.prototype.bounds);
+
+// ol.geom.collection
+goog.exportSymbol('ol.geom.collection', ol.geom.collection);
+goog.exportSymbol('ol.geom.Collection', ol.geom.Collection);
+goog.exportProperty(ol.geom.Collection.prototype, 'components', ol.geom.Collection.prototype.components);
+goog.exportProperty(ol.geom.Collection.prototype, 'add', ol.geom.Collection.prototype.add);
+goog.exportProperty(ol.geom.Collection.prototype, 'addAll', ol.geom.Collection.prototype.addAll);
+goog.exportProperty(ol.geom.Collection.prototype, 'remove', ol.geom.Collection.prototype.remove);
+
 // ol.geom.point
 goog.exportSymbol('ol.geom.point', ol.geom.point);
 goog.exportSymbol('ol.geom.Point', ol.geom.Point);
