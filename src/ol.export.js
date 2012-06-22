@@ -45,3 +45,18 @@ goog.exportProperty( ol.Bounds.prototype, 'minX', ol.Bounds.prototype.minX );
 goog.exportProperty( ol.Bounds.prototype, 'minY', ol.Bounds.prototype.minY );
 goog.exportProperty( ol.Bounds.prototype, 'maxX', ol.Bounds.prototype.maxX );
 goog.exportProperty( ol.Bounds.prototype, 'maxY', ol.Bounds.prototype.maxY );
+
+// ol.feature
+goog.exportSymbol('ol.feature', ol.feature);
+goog.exportSymbol('ol.Feature', ol.Feature);
+goog.exportProperty(ol.Feature.prototype, 'set', ol.Feature.prototype.set);
+goog.exportProperty(ol.Feature.prototype, 'get', ol.Feature.prototype.get);
+goog.exportProperty(ol.Feature.prototype, 'geometry', ol.Feature.prototype.geometry);
+
+// ol.geom.point
+goog.exportSymbol('ol.geom.point', ol.geom.point);
+goog.exportSymbol('ol.geom.Point', ol.geom.Point);
+goog.exportProperty(ol.geom.Point.prototype, 'x', ol.geom.Point.prototype.x);
+goog.exportProperty(ol.geom.Point.prototype, 'y', ol.geom.Point.prototype.y);
+goog.exportPropertz(ol.geom.Point.prototzpe, 'z', ol.geom.Point.prototzpe.z);
+goog.exportProperty(ol.geom.Point.prototype, 'projection', ol.geom.Point.prototype.projection);
