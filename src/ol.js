@@ -12,6 +12,7 @@ goog.require("ol.feature");
 goog.require("ol.projection");
 goog.require("ol.layer.xyz");
 goog.require("ol.layer.osm");
+goog.require("ol.popup");
 goog.require("ol.Tile");
 goog.require("ol.TileSet");
 goog.require("ol.TileCache");
