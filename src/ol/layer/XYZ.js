@@ -18,7 +18,8 @@ ol.layer.XYZ = function(url) {
     goog.base(this);
 
     this.setUrl(url);
-    this.setMaxResolution(156543.03390625);
+    this.setProjection(new ol.Projection("EPSG:3857"));
+    this.setNumZoomLevels(22);
 };
 
 goog.inherits(ol.layer.XYZ, ol.layer.TileLayer);

@@ -154,14 +154,43 @@ ol.layer.TileLayer.prototype.getTileOrigin = function() {
 };
 
 /**
+ * Get max resolution. Return undefined if the layer has no maxResolution,
+ * and no extent from which maxResolution could be derived.
+ * @return {number|undefined}
+ */
+ol.layer.TileLayer.prototype.getMaxResolution = function() {
+    if (!goog.isDef(this.maxResolution_)) {
+        var extent = this.getExtent();
+        if (!goog.isNull(extent)) {
+            this.maxResolution_ = Math.max(
+                (extent.getMaxX() - extent.getMinX()) / this.tileWidth_,
+                (extent.getMaxY() - extent.getMaxX()) / this.tileHeight_);
+        }
+    }
+    return this.maxResolution_;
+};
+
+/**
+ * Get the number of the zoom levels.
+ * @return {number|undefined}
+ */
+ol.layer.TileLayer.prototype.getNumZoomLevels = function() {
+    return this.numZoomLevels_;
+};
+
+/**
  * Get layer resolutions. Return null if the layer has no resolutions.
  * @return {Array.<number>}
  */
 ol.layer.TileLayer.prototype.getResolutions = function() {
-    if (goog.isNull(this.resolutions_) && goog.isDef(this.maxResolution_)) {
-        this.resolutions_ = [];
-        for (var i = 0; i < this.numZoomLevels_; i++) {
-            this.resolutions_[i] = this.maxResolution_ / Math.pow(2, i);
+    if (goog.isNull(this.resolutions_)) {
+        var maxResolution = this.getMaxResolution(),
+            numZoomLevels = this.getNumZoomLevels();
+        if (goog.isDef(maxResolution) && goog.isDef(numZoomLevels)) {
+            this.resolutions_ = [];
+            for (var i = 0; i < numZoomLevels; i++) {
+                this.resolutions_[i] = maxResolution / Math.pow(2, i);
+            }
         }
     }
     return this.resolutions_;

@@ -1,5 +1,6 @@
 goog.provide('ol.feature');
 
+goog.require('ol.base');
 goog.require('ol.Feature');
 goog.require('ol.geom.Geometry');
 
@@ -29,6 +30,7 @@ ol.feature = function(opt_arg){
             return opt_arg;
         }
         else if (goog.isObject(opt_arg)) {
+            ol.base.checkKeys(opt_arg, ['geometry', 'properties', 'type']);
             properties = opt_arg['properties'];
             geometry = opt_arg['geometry'];
             type = opt_arg['type'];

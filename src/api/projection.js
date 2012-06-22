@@ -1,10 +1,11 @@
 goog.provide('ol.projection');
 
+goog.require('ol.base');
 goog.require('ol.Projection');
 
 
 /**
- * @typedef {ol.Projection|string}
+ * @typedef {ol.Projection|Object|string}
  */
 ol.ProjectionLike;
 
@@ -32,6 +33,7 @@ ol.projection = function(opt_arg){
             code = opt_arg;
         }
         else if (goog.isObject(opt_arg)) {
+            ol.base.checkKeys(opt_arg, ['code', 'maxExtent', 'units']);
             if (goog.isString(opt_arg['code'])) {
                 code = opt_arg['code'];
             } else {

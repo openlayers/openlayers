@@ -49,33 +49,18 @@ ol.map = function(opt_arg) {
             return opt_arg;
         }
         else if (goog.isObject(opt_arg)) {
+            ol.base.checkKeys(opt_arg, ['center', 'zoom', 'numZoomLevels', 'projection', 'userProjection', 'maxExtent', 'maxRes', 'resolutions', 'renderTo', 'layers', 'controls']);
             center = opt_arg['center'];
-            delete opt_arg['center'];
             zoom = opt_arg['zoom'];
-            delete opt_arg['zoom'];
             numZoomLevels = opt_arg['numZoomLevels'];
-            delete opt_arg['numZoomLevels'];
             projection = opt_arg['projection'];
-            delete opt_arg['projection'];
             userProjection = opt_arg['userProjection'];
-            delete opt_arg['userProjection'];
             maxExtent = opt_arg['maxExtent'];
-            delete opt_arg['maxExtent'];
             maxRes = opt_arg['maxRes'];
-            delete opt_arg['maxRes'];
             resolutions = opt_arg['resolutions'];
-            delete opt_arg['resolutions'];
             renderTo = opt_arg['renderTo'];
-            delete opt_arg['renderTo'];
             layers = opt_arg['layers'];
-            delete opt_arg['layers'];
             controls = opt_arg['controls'];
-            delete opt_arg['controls'];
-            var k = goog.object.getAnyKey(opt_arg);
-            if (goog.isDef(k)) {
-                ol.error(k + ' is not a map option');
-            }
-
         }
         else {
             throw new Error('ol.map');
@@ -236,7 +221,7 @@ ol.Map.prototype.controls = function(opt_arg) {
 /**
  * @export
  * @param {Array=} opt_arg  
- * @returns {ol.Map|ol.UnreferencedBounds|undefined} Map max extent.
+ * @returns {ol.Map|ol.Bounds|undefined} Map max extent.
  */
 ol.Map.prototype.maxExtent = function(opt_arg) {
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
@@ -245,28 +230,6 @@ ol.Map.prototype.maxExtent = function(opt_arg) {
     } else {
         return this.getMaxExtent();
     }
-};
-
-/**
- * @export
- * @param {number=} opt_arg  
- * @returns {ol.Map|number|undefined} Map maximum resolution
- */
-ol.Map.prototype.maxRes = function(opt_arg) {
-    if (arguments.length == 1 && goog.isDef(opt_arg)) {
-        this.setMaxRes(opt_arg);
-        return this;
-    } else {
-        return this.getMaxRes();
-    }
-};
-
-/**
- * @param {number} arg  
- * @returns {number} resolution for a given zoom level
- */
-ol.Map.prototype.getResForZoom = function(arg) {
-    return this.getResolutionForZoom(arg);
 };
 
 /**
