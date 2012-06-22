@@ -293,7 +293,10 @@ ol.Map.prototype.setUserProjection = function(userProjection) {
  * @param {number} zoom Zoom.
  */
 ol.Map.prototype.setZoom = function(zoom) {
-    this.zoom_ = zoom;
+    if (zoom !== this.zoom_) {
+        this.zoom_ = zoom;
+        this.conditionallyRender();
+    }
 };
 
 
@@ -360,6 +363,13 @@ ol.Map.prototype.setContainer = function(container) {
     // controls place on overlays.
     this.setControls(ol.Map.DEFAULT_CONTROLS);
     // conditionally render
+    this.conditionallyRender();
+};
+
+/**
+ * Check if everything is ready.  Render if so.
+ */
+ol.Map.prototype.conditionallyRender = function() {
     if (!goog.isNull(this.layers_) && goog.isDef(this.zoom_) && !goog.isNull(this.center_)) {
         this.renderer_.draw(this.layers_, this.center_, this.getResolutionForZoom(this.zoom_));
     }
