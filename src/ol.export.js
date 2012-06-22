@@ -58,7 +58,7 @@ goog.exportSymbol('ol.geom.point', ol.geom.point);
 goog.exportSymbol('ol.geom.Point', ol.geom.Point);
 goog.exportProperty(ol.geom.Point.prototype, 'x', ol.geom.Point.prototype.x);
 goog.exportProperty(ol.geom.Point.prototype, 'y', ol.geom.Point.prototype.y);
-goog.exportPropertz(ol.geom.Point.prototzpe, 'z', ol.geom.Point.prototzpe.z);
+goog.exportPropertz(ol.geom.Point.prototype, 'z', ol.geom.Point.prototype.z);
 goog.exportProperty(ol.geom.Point.prototype, 'projection', ol.geom.Point.prototype.projection);
 
 // LOOKUP FOR DYNMICALLY REGISTERED CONTROLS DOES NOT RUN WELL NOW IN THE ADVANCED MODE
