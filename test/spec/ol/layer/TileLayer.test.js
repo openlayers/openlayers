@@ -363,11 +363,11 @@ describe('ol.layer.TileLayer', function() {
         it('returns the expected tile', function() {
             var tile = layer.getTileForXYZ(1, 2, 2);
             expect(tile.getUrl()).toEqual('/2/1/2');
-            //var bounds = tile.getBounds();
-            //expect(bounds.getMinX()).toEqual(-64);
-            //expect(bounds.getMinY()).toEqual(0);
-            //expect(bounds.getMaxX()).toEqual(0);
-            //expect(bounds.getMaxY()).toEqual(64);
+            var bounds = tile.getBounds();
+            expect(bounds.getMinX()).toEqual(-64);
+            expect(bounds.getMinY()).toEqual(0);
+            expect(bounds.getMaxX()).toEqual(0);
+            expect(bounds.getMaxY()).toEqual(64);
         });
 
     });
