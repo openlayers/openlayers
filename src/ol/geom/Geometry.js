@@ -1,17 +1,17 @@
-goog.provide('ol.geom.Geometry'); 
+goog.provide('ol.geom.Geometry');
 
 goog.require('ol.geom.IGeometry');
 goog.require('ol.Bounds');
 
 /**
  * Creates ol.Geometry objects.
- * 
+ *
  * @export
  * @implements {ol.geom.IGeometry}
  * @constructor
  */
 ol.geom.Geometry = function() {
-    
+
     /**
      * @private
      * @type {ol.Bounds|undefined}
@@ -37,7 +37,7 @@ ol.geom.Geometry.prototype.setBounds = function(bounds) {
 
 /**
  * Returns the centroid of the geometry.
- * 
+ *
  * @returns {ol.geom.Point} The centroid of the geometry.
  */
 ol.geom.Geometry.prototype.getCentroid = function() {
@@ -48,7 +48,7 @@ ol.geom.Geometry.prototype.getCentroid = function() {
 
 /**
  * Returns the area of the geometry.
- * 
+ *
  * @returns {number}  The area of the geometry.
  */
 ol.geom.Geometry.prototype.getArea = function() {

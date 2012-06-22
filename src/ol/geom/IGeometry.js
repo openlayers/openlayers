@@ -4,9 +4,9 @@ goog.provide('ol.geom.IGeometry');
 //goog.require('ol.Bounds');
 
 /**
- * Interface for geometry classes forcing ol.geom.* classes to implement 
+ * Interface for geometry classes forcing ol.geom.* classes to implement
  * expected functionality.
- * 
+ *
  * @interface
  */
 ol.geom.IGeometry = function(){};
