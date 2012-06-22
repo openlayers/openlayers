@@ -2,7 +2,7 @@
 
 function init() {
     var map = ol.map()
-        .render('map')
+        .renderTo('map')
         .layers([ol.layer.osm()])
         .center([45, 5])
         .zoom(10);

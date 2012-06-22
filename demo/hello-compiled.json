@@ -25,7 +25,6 @@
   //    "generateExports": true
   // },
 
-
   "checks": {
     // acceptable values are "ERROR", "WARNING", and "OFF"
     "accessControls": "WARNING",
