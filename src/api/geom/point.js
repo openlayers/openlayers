@@ -1,4 +1,4 @@
-goog.provide('ol.geom.point'); 
+goog.provide('ol.geom.point');
 
 goog.require('ol.geom.Point');
 goog.require('ol.projection');
@@ -14,23 +14,23 @@ ol.PointLike;
  * @return {ol.geom.Point} Point.
  */
 ol.geom.point = function(opt_arg){
-    
+
     if (opt_arg instanceof ol.geom.Point) {
         return opt_arg;
     }
-    
+
     var x = 0;
     var y = 0;
     var z;
     var projection;
-    
+
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
         if (goog.isArray(opt_arg)) {
             x = opt_arg[0];
             y = opt_arg[1];
             z = opt_arg[2];
             projection = opt_arg[3];
-            
+
         } else if (goog.isObject(opt_arg)) {
             x = opt_arg['x'];
             y = opt_arg['y'];
@@ -43,7 +43,7 @@ ol.geom.point = function(opt_arg){
     if (goog.isDef(projection)) {
         projection = ol.projection(projection);
     }
-    
+
     var p = new ol.geom.Point(x,y,z,projection);
     return p;
 };
@@ -110,4 +110,13 @@ ol.geom.Point.prototype.projection = function(opt_arg){
     else {
         return this.getProjection();
     }
+};
+
+/**
+ * Returns the centroid of this point; which is a clone of the point itself.
+ *
+ * @return {ol.geom.Point} The centroid.
+ */
+ol.geom.Point.prototype.centroid = function() {
+    return this.getCentroid();
 };

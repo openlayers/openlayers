@@ -7,17 +7,17 @@ goog.require('ol.coord.AccessorInterface');
 goog.require('ol.base');
 
 /**
- * Creates ol.geom.Point objects. 
- * 
+ * Creates ol.geom.Point objects.
+ *
  * @export
  * @extends {ol.geom.Geometry}
  * @param {number} x X.
  * @param {number} y Y.
  * @param {number=} opt_z Z.
  * @param {ol.Projection=} opt_projection Projection.
- * 
+ *
  * @implements {ol.coord.AccessorInterface}
- * 
+ *
  * @constructor
  */
 ol.geom.Point = function(x, y, opt_z, opt_projection) {
@@ -26,19 +26,19 @@ ol.geom.Point = function(x, y, opt_z, opt_projection) {
      * @type {number}
      */
     this.x_ = x;
-    
+
     /**
      * @private
      * @type {number}
      */
     this.y_ = y;
-    
+
     /**
      * @private
      * @type {number|undefined}
      */
     this.z_ = opt_z;
-    
+
     /**
      * @private
      * @type {ol.Projection}
@@ -109,12 +109,12 @@ ol.geom.Point.prototype.setZ = function(z) {
 };
 
 /**
- * Transform this point to another coordinate reference system.  This 
+ * Transform this point to another coordinate reference system.  This
  * requires that this point has a projection set already (if not, an error
  * will be thrown).  Returns a new point object and does not modify this
  * point.
  *
- * @param {string|!ol.Projection} proj The destination projection.  Can be 
+ * @param {string|!ol.Projection} proj The destination projection.  Can be
  *     supplied as a projection instance of a string identifier.
  * @returns {!ol.geom.Point} A new location.
  */
@@ -140,7 +140,24 @@ ol.geom.Point.prototype._transform = function(proj) {
         ol.error(msg);
     }
     ol.Projection.transform(point, sourceProj, proj);
-    
+
     return new ol.geom.Point(point['x'], point['y'], this.z_, proj);
 };
 
+/**
+ * Returns the centroid of the point.
+ *
+ * @returns {ol.geom.Point} The centroid of the point.
+ */
+ol.geom.Point.prototype.getCentroid = function() {
+    return new ol.geom.Point(this.x_, this.y_, this.z_, this.projection_);
+};
+
+/**
+ * Returns the area of the geometry whcih is always 0.
+ *
+ * @returns {number} The area of the point (always 0).
+ */
+ol.geom.Point.prototype.getArea = function() {
+    return 0;
+};
