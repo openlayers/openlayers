@@ -49,33 +49,18 @@ ol.map = function(opt_arg) {
             return opt_arg;
         }
         else if (goog.isObject(opt_arg)) {
+            ol.base.checkKeys(opt_arg, ['center', 'zoom', 'numZoomLevels', 'projection', 'userProjection', 'maxExtent', 'maxRes', 'resolutions', 'renderTo', 'layers', 'controls']);
             center = opt_arg['center'];
-            delete opt_arg['center'];
             zoom = opt_arg['zoom'];
-            delete opt_arg['zoom'];
             numZoomLevels = opt_arg['numZoomLevels'];
-            delete opt_arg['numZoomLevels'];
             projection = opt_arg['projection'];
-            delete opt_arg['projection'];
             userProjection = opt_arg['userProjection'];
-            delete opt_arg['userProjection'];
             maxExtent = opt_arg['maxExtent'];
-            delete opt_arg['maxExtent'];
             maxRes = opt_arg['maxRes'];
-            delete opt_arg['maxRes'];
             resolutions = opt_arg['resolutions'];
-            delete opt_arg['resolutions'];
             renderTo = opt_arg['renderTo'];
-            delete opt_arg['renderTo'];
             layers = opt_arg['layers'];
-            delete opt_arg['layers'];
             controls = opt_arg['controls'];
-            delete opt_arg['controls'];
-            var k = goog.object.getAnyKey(opt_arg);
-            if (goog.isDef(k)) {
-                ol.error(k + ' is not a map option');
-            }
-
         }
         else {
             throw new Error('ol.map');
