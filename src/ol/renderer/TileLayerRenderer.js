@@ -116,7 +116,7 @@ ol.renderer.TileLayerRenderer.prototype.renderedTiles_ = {};
  */
 ol.renderer.TileLayerRenderer.prototype.draw = function(center, resolution) {
     if (resolution !== this.renderedResolution_) {
-        this.renderedTiles_ = {};
+        this.changeResolution_(center, resolution);
     }
     var pair = this.getPreferredResAndZ_(resolution);
     var tileResolution = pair[0];
@@ -171,7 +171,7 @@ ol.renderer.TileLayerRenderer.prototype.draw = function(center, resolution) {
         numTilesHigh += 1;
     }
 
-    var tileX, tileY, tile, img, pxTileRight, pxTileBottom;
+    var tileX, tileY, tile, img, pxTileRight, pxTileBottom, xyz, append;
     var fragment = document.createDocumentFragment();
     for (var i=0; i<numTilesWide; ++i) {
         pxTileTop = pxMinY;
@@ -182,40 +182,88 @@ ol.renderer.TileLayerRenderer.prototype.draw = function(center, resolution) {
             pxTileRight = pxTileLeft + pxTileWidth;
         }
         for (var j=0; j<numTilesHigh; ++j) {
+            append = false;
             tileY = topTileY + (j * yDown);
+            xyz = tileX + "," + tileY + "," + tileZ;
             if (scale !== 1) {
                 pxTileBottom = Math.round(pxMinY + ((j+1) * pxTileHeight));
             } else {
                 pxTileBottom = pxTileTop + pxTileHeight;
             }
-            tile = this.layer_.getTileForXYZ(tileX, tileY, tileZ);
-            if (tile != null) {
-                img = tile.getImg();
-                img.style.top = pxTileTop + "px";
-                img.style.left = pxTileLeft + "px";
-                if (scale !== 1) {
-                    img.style.height = (pxTileRight - pxTileLeft) + "px";
-                    img.style.width = (pxTileBottom - pxTileTop) + "px";
+            if (!(xyz in this.renderedTiles_)) {
+                tile = this.layer_.getTileForXYZ(tileX, tileY, tileZ);
+                if (tile != null) {
+                    img = tile.getImg();
+                    img.style.top = pxTileTop + "px";
+                    img.style.left = pxTileLeft + "px";
+                    if (scale !== 1) {
+                        img.style.height = (pxTileRight - pxTileLeft) + "px";
+                        img.style.width = (pxTileBottom - pxTileTop) + "px";
+                    }
+                    tile.load();
+                    fragment.appendChild(img);
+                    this.renderedTiles_[xyz] = tile;
                 }
-                tile.load();
-                fragment.appendChild(img);
             }
             pxTileTop = pxTileBottom;
         }
         pxTileLeft = pxTileRight;
     }    
     this.container_.appendChild(fragment);
+    this.removeInvisibleTiles_(leftTileX, topTileY, tileX, tileY, tileZ);
 };
+
+
 
 /**
  * Get rid of tiles outside the newly rendered extent.
  *
- * @param {ol.Bounds} newBounds Newly rendered bounds.
+ * @param {number|undefined} left The far left tile x coord.
+ * @param {number|undefined} top The far top tile y coord.
+ * @param {number|undefined} right The far right tile x coord.
+ * @param {number|undefined} bottom The far bottom tile y coord.
+ * @param {number|undefined} renderedZ The z coord for the newly rendered tiles.
  * @private
  */
-ol.renderer.TileLayerRenderer.prototype.pruneUnrenderedTiles_ = function(newBounds) {
-    for (var url in this.renderedTiles_) {
-        var tile = this.renderedTiles_[url];
+ol.renderer.TileLayerRenderer.prototype.removeInvisibleTiles_ = function(left, top, right, bottom, renderedZ) {
+    var index, prune, x, y, z, tile;
+    var xRight = (this.xRight_ > 0);
+    var yDown = (this.yDown_ > 0);
+    for (var xyz in this.renderedTiles_) {
+        index = xyz.split(",");
+        x = +index[0];
+        y = +index[1];
+        z = +index[2];
+        prune = renderedZ !== z || 
+            // beyond on the left side
+            (xRight ? x < left : x > left) ||
+            // beyond on the right side
+            (xRight ? x > right : x < right) ||
+            // above
+            (yDown ? y < top : y > top) ||
+            // below
+            (yDown ? y > bottom : y < bottom);
+        if (prune) {
+            tile = this.renderedTiles_[xyz];
+            this.container_.removeChild(tile.getImg());
+            delete this.renderedTiles_[xyz];
+        }
+    }
+};
+
+/**
+ * Deal with changes in resolution.
+ * TODO: implement the animation
+ *
+ * @param {ol.Loc} center New center.
+ * @param {number} resolution New resolution.
+ */
+ol.renderer.TileLayerRenderer.prototype.changeResolution_ = function(center, resolution) {
+    var tile;
+    for (var xyz in this.renderedTiles_) {
+        tile = this.renderedTiles_[xyz];
+        this.container_.removeChild(tile.getImg());
+        delete this.renderedTiles_[xyz];
     }
 };
 
