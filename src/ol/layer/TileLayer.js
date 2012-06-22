@@ -1,6 +1,7 @@
 goog.provide('ol.layer.TileLayer');
 
 goog.require('ol.layer.Layer');
+goog.require('ol.Tile');
 goog.require('ol.TileCache');
 
 /**
@@ -32,6 +33,12 @@ ol.layer.TileLayer = function() {
      * @type {number}
      */
     this.tileHeight_ = 256;
+
+    /**
+     * @protected
+     * @type {function(new:ol.Tile, string, ol.Bounds)}
+     */
+    this.Tile = ol.Tile.createConstructor(this.tileWidth_, this.tileHeight_);
 
     /**
      * @protected
@@ -231,7 +238,7 @@ ol.layer.TileLayer.prototype.setResolutions = function(resolutions) {
 ol.layer.TileLayer.prototype.getTile = function(url, bounds) {
     var tile = this.cache_.get(url);
     if (!goog.isDef(tile)) {
-        tile = new ol.Tile(url, bounds);
+        tile = new this.Tile(url, bounds);
         this.cache_.set(tile.getUrl(), tile);
     }
     return tile;
