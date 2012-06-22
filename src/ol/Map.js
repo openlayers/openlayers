@@ -1,6 +1,7 @@
 goog.provide('ol.Map');
 
 goog.require('ol.Loc');
+goog.require('ol.Bounds');
 goog.require('ol.Projection');
 goog.require('ol.event');
 goog.require('ol.event.Events');
@@ -65,7 +66,7 @@ ol.Map = function() {
 
     /**
      * @private
-     * @type {ol.UnreferencedBounds}
+     * @type {ol.Bounds}
      */
     this.maxExtent_ = null;
 
@@ -209,14 +210,19 @@ ol.Map.prototype.getControls = function() {
 
 
 /**
- * @return {ol.UnreferencedBounds} the maxExtent for the map
+ * @return {ol.Bounds} the maxExtent for the map
  */
 ol.Map.prototype.getMaxExtent = function() {
     if (goog.isDefAndNotNull(this.maxExtent_)) {
         return this.maxExtent_;
     } else {
-        var extent = this.getProjection().getExtent();
+        var projection = this.getProjection();
+        var extent = projection.getExtent();
         if (goog.isDefAndNotNull(extent)) {
+            extent = new ol.Bounds(
+                extent.getMinX(), extent.getMinY(),
+                extent.getMaxX(), extent.getMaxY());
+            extent.setProjection(projection);
             return extent;
         } else {
             throw('maxExtent must be defined either in the map or the projection');
@@ -332,7 +338,7 @@ ol.Map.prototype.setControls = function(opt_controls) {
 };
 
 /**
- * @param {ol.UnreferencedBounds} extent the maxExtent for the map
+ * @param {ol.Bounds} extent the maxExtent for the map
  */
 ol.Map.prototype.setMaxExtent = function(extent) {
     this.maxExtent_ = extent;

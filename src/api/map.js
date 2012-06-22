@@ -221,7 +221,7 @@ ol.Map.prototype.controls = function(opt_arg) {
 /**
  * @export
  * @param {Array=} opt_arg  
- * @returns {ol.Map|ol.UnreferencedBounds|undefined} Map max extent.
+ * @returns {ol.Map|ol.Bounds|undefined} Map max extent.
  */
 ol.Map.prototype.maxExtent = function(opt_arg) {
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
@@ -230,28 +230,6 @@ ol.Map.prototype.maxExtent = function(opt_arg) {
     } else {
         return this.getMaxExtent();
     }
-};
-
-/**
- * @export
- * @param {number=} opt_arg  
- * @returns {ol.Map|number|undefined} Map maximum resolution
- */
-ol.Map.prototype.maxRes = function(opt_arg) {
-    if (arguments.length == 1 && goog.isDef(opt_arg)) {
-        this.setMaxRes(opt_arg);
-        return this;
-    } else {
-        return this.getMaxRes();
-    }
-};
-
-/**
- * @param {number} arg  
- * @returns {number} resolution for a given zoom level
- */
-ol.Map.prototype.getResForZoom = function(arg) {
-    return this.getResolutionForZoom(arg);
 };
 
 /**

@@ -193,11 +193,11 @@ describe("ol.map", function() {
         var map = ol.map();
         
         var extent = map.maxExtent();
-        expect(extent).toBeA(ol.UnreferencedBounds);
-        expect(extent.getMinX()).toBe(-20037508.34);
-        expect(extent.getMaxX()).toBe(20037508.34);
-        expect(extent.getMinY()).toBe(-20037508.34);
-        expect(extent.getMaxY()).toBe(20037508.34);
+        expect(extent).toBeA(ol.Bounds);
+        expect(extent.minX()).toBe(-20037508.34);
+        expect(extent.maxX()).toBe(20037508.34);
+        expect(extent.minY()).toBe(-20037508.34);
+        expect(extent.maxY()).toBe(20037508.34);
         
     });
     
@@ -206,11 +206,11 @@ describe("ol.map", function() {
         map.maxExtent([-5,-4,7,9]);
         
         var extent = map.maxExtent();
-        expect(extent).toBeA(ol.UnreferencedBounds);
-        expect(extent.getMinX()).toBe(-5);
-        expect(extent.getMaxX()).toBe(7);
-        expect(extent.getMinY()).toBe(-4);
-        expect(extent.getMaxY()).toBe(9);
+        expect(extent).toBeA(ol.Bounds);
+        expect(extent.minX()).toBe(-5);
+        expect(extent.maxX()).toBe(7);
+        expect(extent.minY()).toBe(-4);
+        expect(extent.maxY()).toBe(9);
         
     });
     
@@ -219,11 +219,11 @@ describe("ol.map", function() {
         map.projection("CRS:84");
         
         var extent = map.maxExtent();
-        expect(extent).toBeA(ol.UnreferencedBounds);
-        expect(extent.getMinX()).toBe(-180);
-        expect(extent.getMaxX()).toBe(180);
-        expect(extent.getMinY()).toBe(-90);
-        expect(extent.getMaxY()).toBe(90);
+        expect(extent).toBeA(ol.Bounds);
+        expect(extent.minX()).toBe(-180);
+        expect(extent.maxX()).toBe(180);
+        expect(extent.minY()).toBe(-90);
+        expect(extent.maxY()).toBe(90);
         
     });
     
@@ -233,60 +233,7 @@ describe("ol.map", function() {
             extent = map.maxExtent();                
         }).toThrow();
     });
-    
-    it("getMaxRes returns correct defaults", function() {
-        var map = ol.map();
-        
-        var res = map.maxRes();
-        expect(res.toFixed(5)).toBe("156543.03391");
-        
-    });
-    
-    it("allows setting of maxRes", function() {
-        var map = ol.map({
-            maxRes: 67
-        });
-        
-        var res = map.maxRes();
-        expect(res).toBe(67);
-        
-    });
-    
-    it("getMaxRes returns correct for custom maxExtent", function() {
-        var map = ol.map({
-            projection: ol.projection({
-                code: 'foo',
-                maxExtent: [0,0,90,90]
-            })
-        });
-        
-        var res = map.maxRes();
-        expect(res.toFixed(7)).toBe("0.3515625");
-        
-    });
-    
-    it("returns correct getResForZoom for default map", function() {
-        var map = ol.map();
-        
-        var res = map.getResForZoom(0);
-        expect(res.toFixed(5)).toBe("156543.03391");
-        res = map.getResForZoom(5);
-        expect(res.toFixed(5)).toBe("4891.96981");
-        
-    });
-    
-    it("returns correct getResForZoom when resolution array is set",function() {
-        var map = ol.map({
-            resolutions: [1,4,7,9,12]
-        });
-        
-        var res = map.getResForZoom(0);
-        expect(res).toBe(1);
-        res = map.getResForZoom(3);
-        expect(res).toBe(9);
-        
-    });
-    
+
     it("has no layers by default", function() {
         var map = ol.map();
             
