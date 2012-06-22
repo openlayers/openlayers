@@ -99,7 +99,7 @@ ol.Map = function() {
      * @type {ol.event.Events}
      */
     this.events_ = new ol.event.Events(
-        this, undefined, false, ['drag']
+        this, undefined, false, ['drag', 'scroll']
     );
     
     /**
@@ -427,7 +427,7 @@ ol.Map.prototype.getViewportPosition = function(loc) {
  * @returns {Element} the map overlay element
  */
 ol.Map.prototype.getMapOverlay = function() {
-    return this.mapOverlay_
+    return this.mapOverlay_;
 };
 
 /**

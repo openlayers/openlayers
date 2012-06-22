@@ -27,7 +27,9 @@ goog.inherits(ol.control.Navigation, ol.control.Control);
 ol.control.Navigation.prototype.activate = function() {
     var active = goog.base(this, 'activate');
     if (active) {
-        this.getMap().getEvents().register("drag", this.moveMap, this);
+        var events = this.getMap().getEvents();
+        events.register("drag", this.moveMap, this);
+        events.register("scroll", this.zoomMap, this);
     }
     return active;
 };
@@ -36,7 +38,9 @@ ol.control.Navigation.prototype.activate = function() {
 ol.control.Navigation.prototype.deactivate = function() {
     var inactive = goog.base(this, 'deactivate');
     if (inactive) {
-        this.getMap().getEvents().unregister("drag", this.moveMap, this);
+        var events = this.getMap().getEvents();
+        events.unregister("drag", this.moveMap, this);
+        events.unregister("scroll", this.zoomMap, this);
     }
     return inactive;
 };
@@ -45,7 +49,21 @@ ol.control.Navigation.prototype.deactivate = function() {
  * @param {Object} evt
  */
 ol.control.Navigation.prototype.moveMap = function(evt) {
-    this.getMap().moveByPx(evt.dx, evt.dy);
+    this.getMap().moveByPx(evt.deltaX, evt.deltaY);
+    return false;
+};
+
+/**
+ * @param {Object} evt
+ */
+ol.control.Navigation.prototype.zoomMap = function(evt) {
+    var map = this.getMap(),
+        delta = ((evt.deltaY / 3) | 0);
+    if (Math.abs(delta) > 0) {
+        map.setZoom(map.getZoom() - delta);
+        console.log(map.getZoom());
+    }
+    evt.preventDefault();
     return false;
 };
 

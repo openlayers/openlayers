@@ -6,6 +6,7 @@ goog.require('ol.control.Navigation');
 goog.require('ol.control.Zoom');
 goog.require('ol.event.Drag');
 goog.require('ol.event.Events');
+goog.require('ol.event.Scroll');
 goog.require("ol.map");
 goog.require("ol.loc");
 goog.require("ol.feature");

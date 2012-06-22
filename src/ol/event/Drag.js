@@ -8,6 +8,10 @@ goog.require('goog.fx.Dragger.EventType');
 
 
 /**
+ * Event sequence that provides a 'dragstart', 'drag' and 'dragend' events.
+ * Event objects of the 'drag' events have 'deltaX' and 'deltaY' values with
+ * the relative pixel movement since the previous 'drag' or 'dragstart' event.
+ *
  * @constructor
  * @param {ol.event.Events} target The Events instance that handles events.
  * @implements {ol.event.ISequence}
@@ -34,8 +38,8 @@ ol.event.Drag = function(target) {
     });
     dragger.addEventListener(goog.fx.Dragger.EventType.DRAG, function(evt) {
         evt.target = element;
-        evt.dx = evt.clientX - previousX;
-        evt.dy = evt.clientY - previousY;
+        evt.deltaX = evt.clientX - previousX;
+        evt.deltaY = evt.clientY - previousY;
         previousX = evt.clientX;
         previousY = evt.clientY;
         target.triggerEvent(evt.type, evt);
