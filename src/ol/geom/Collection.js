@@ -180,8 +180,12 @@ ol.geom.Collection.prototype.getCentroid = function() {
     if (len > 0) {
         goog.array.forEach(components, function(component){
             var singleCentroid = component.getCentroid();
-            sum_x += singleCentroid.getX();
-            sum_y += singleCentroid.getX();
+            if (goog.isDefAndNotNull(singleCentroid)) {
+                sum_x += singleCentroid.getX();
+                sum_y += singleCentroid.getX();
+            } else {
+                len--;
+            }
         });
         centroid = new ol.geom.Point(sum_x / len, sum_y / len);
     }

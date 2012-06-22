@@ -132,4 +132,37 @@ describe("ol.geom.Collection", function() {
         expect( components[1].getX() + ',' + components[1].getY()).toBe( '10,20' );
         expect( components[2].getX() + ',' + components[2].getY()).toBe( '30,40' );
     });
+
+    describe("the getCentroid method is functional", function(){
+        it("returns an instance of ol.geom.Point", function(){
+            expect(c.getCentroid()).toBeA(ol.geom.Point);
+        });
+
+        it("does not choke when components returns a null centroid", function(){
+            var centroid;
+            expect(
+                function(){
+                    c.addComponent(new ol.geom.LineString([]));
+                    centroid = c.getCentroid();
+                }
+            ).not.toThrow();
+
+            expect(centroid).toBeA(ol.geom.Point);
+        });
+
+        it("has the expected coordinates", function(){
+            c = new ol.geom.Collection([
+                new ol.geom.Point(10,10),
+                new ol.geom.Point(30,30),
+                new ol.geom.LineString([
+                    new ol.geom.Point(10,10),
+                    new ol.geom.Point(10,30),
+                    new ol.geom.Point(30,30),
+                    new ol.geom.Point(30,10)
+                ])
+            ]);
+            var centroid = c.getCentroid();
+            expect(centroid.getX() + ',' + centroid.getY()).toBe('20,20');
+        });
+    });
 });

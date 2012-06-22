@@ -178,6 +178,40 @@ describe("ol.geom.collection", function() {
             expect(c.components().length).toBe(0);
         });
     });
+
+    describe("the centroid method is functional", function(){
+        it("returns an instance of ol.geom.Point", function(){
+            expect(c.centroid()).toBeA(ol.geom.Point);
+        });
+
+        it("does not choke when components returns a null centroid", function(){
+            var centroid;
+            expect(
+                function(){
+                    c.add(new ol.geom.linestring([]));
+                    centroid = c.centroid();
+                }
+            ).not.toThrow();
+
+            expect(centroid).toBeA(ol.geom.Point);
+        });
+
+        it("has the expected coordinates", function(){
+            c = ol.geom.collection([
+                ol.geom.point([10,10]),
+                ol.geom.point([30,30]),
+                ol.geom.linestring([
+                    ol.geom.point([10,10]),
+                    ol.geom.point([10,30]),
+                    ol.geom.point([30,30]),
+                    ol.geom.point([30,10])
+                ])
+            ]);
+            debugger;
+            var centroid = c.centroid();
+            expect(centroid.x() + ',' + centroid.y()).toBe('20,20');
+        });
+    });
 });
 
 
