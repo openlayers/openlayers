@@ -1,18 +1,20 @@
 goog.provide('ol.event.ISequence');
 
 /**
- * Interface for event sequences
+ * Interface for event sequences. Event sequences map sequences of native
+ * browser events to high level events that the sequence provides.
+ *
+ * Implementations are expected to call dispatchEvent on the {@code target} to
+ * to fire their high level events. 
+ *
+ * Implementations can expect the {@code target}'s {@code getElement()} method
+ * to return an {Element} at construction time.
  *
  * @interface
- * @param {Element} target The element that will be listened to for browser
- *     events.
+ * @param {ol.event.Events} target The Events instance that receives the
+ *     sequence's events.
  */
 ol.event.ISequence = function(target) {};
-
-/**
- * @return {Object.<string, string>} element
- */
-ol.event.ISequence.prototype.getEventTypes = function() {};
 
 /**
  * Destroys the sequence

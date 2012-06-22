@@ -1,2 +1,120 @@
 .ol-viewport { width:100%; height:100%; position:relative; left:0; top:0; }
-.ol-renderer-webgl-canvas { width:100%; height:100%; }
+.ol-renderer-webgl-canvas { width:100%;height:100%; }
+
+/**
+ * arrow implementation from http://cssarrowplease.com/ for ol-popup
+ */
+
+.ol-popup {
+    position: absolute;
+    background: #88b7d5;
+    border: 4px solid #c2e1f5;
+}
+
+/**
+ * FIXME
+ */
+.ol-popup-close {
+    background: url("img/close.gif") no-repeat;
+    cursor: pointer;
+    position: absolute;
+    width: 17px;
+    height: 17px;
+    right: 0;
+}
+
+.ol-popup-top {}
+.ol-popup-top:after, .ol-popup-top:before {
+    bottom: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.ol-popup-top:after {
+    border-bottom-color: #88b7d5;
+    border-width: 30px;
+    left: 50%;
+    margin-left: -30px;
+}
+
+.ol-popup-top:before {
+    border-bottom-color: #c2e1f5;
+    border-width: 36px;
+    left: 50%;
+    margin-left: -36px;
+}
+
+.ol-popup-bottom {}
+.ol-popup-bottom:after, .ol-popup-bottom:before {
+    top: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.ol-popup-bottom:after {
+    border-top-color: #88b7d5;
+    border-width: 30px;
+    left: 50%;
+    margin-left: -30px;
+}
+.ol-popup-bottom:before {
+    border-top-color: #c2e1f5;
+    border-width: 36px;
+    left: 50%;
+    margin-left: -36px;
+}
+.ol-popup-right {}
+.ol-popup-right:after, .ol-popup-right:before {
+    left: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.ol-popup-right:after {
+    border-left-color: #88b7d5;
+    border-width: 30px;
+    top: 50%;
+    margin-top: -30px;
+}
+.ol-popup-right:before {
+    border-left-color: #c2e1f5;
+    border-width: 36px;
+    top: 50%;
+    margin-top: -36px;
+}
+.ol-popup-left {}
+.ol-popup-left:after, .ol-popup-left:before {
+    right: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.ol-popup-left:after {
+    border-right-color: #88b7d5;
+    border-width: 30px;
+    top: 50%;
+    margin-top: -30px;
+}
+.ol-popup-left:before {
+    border-right-color: #c2e1f5;
+    border-width: 36px;
+    top: 50%;
+    margin-top: -36px;
+}
+

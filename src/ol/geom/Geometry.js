@@ -32,3 +32,12 @@ ol.geom.Geometry.prototype.setBounds = function(bounds) {
     this.bounds_ = bounds;
     return this;
 };
+
+/**
+ * @returns ol.Loc
+ */
+ol.geom.Geometry.prototype.getCentroid = function() {
+    //FIXME: stub only to get popups working
+    return new ol.Loc(-76,45);
+};
+
