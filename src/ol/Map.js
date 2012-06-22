@@ -387,7 +387,7 @@ ol.Map.prototype.moveByPx = function(dx, dy) {
 
 /**
  * @param {ol.geom.Point} loc the location being requested 
- * @returns {Object} the 
+ * @returns {Array} the position of the location in pixel space
  */
 ol.Map.prototype.getViewportPosition = function(loc) {
     //TODO: delegate this to the renderers

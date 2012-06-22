@@ -3,8 +3,6 @@ goog.provide('ol.Popup');
 goog.require('ol.Map');
 goog.require('ol.Loc');
 goog.require('ol.Feature');
-//goog.require('goog.dom');
-//goog.require('goog.style');
 
 
 /**
@@ -235,7 +233,7 @@ ol.Popup.prototype.setAnchorOffset_ = function() {
     if (this.anchor_ instanceof ol.Feature) {
         this.pos_ = this.anchor_.getGeometry().getCentroid();
     } else {
-        this.pos_ = this.anchor_;
+        this.pos_ = new ol.geom.Point(this.anchor_.getX(), this.anchor_.getY());
     }
     
     var popupPosPx = this.map_.getViewportPosition(this.pos_);
