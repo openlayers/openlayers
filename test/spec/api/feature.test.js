@@ -31,8 +31,8 @@ describe("ol.feature", function() {
         
         var geom = feat.geometry();
         expect(feat).toBeA(ol.Feature);
-        expect(geom.getX()).toBe(21);
-        expect(geom.getY()).toBe(4);
+        expect(geom.x()).toBe(21);
+        expect(geom.y()).toBe(4);
     });
 
     it("should be easy to create a feature from object literals", function() {
@@ -49,8 +49,8 @@ describe("ol.feature", function() {
         
         var geom = feat.geometry();
         expect(feat).toBeA(ol.Feature);
-        expect(geom.getX()).toBe(56);
-        expect(geom.getY()).toBe(22);
+        expect(geom.x()).toBe(56);
+        expect(geom.y()).toBe(22);
         expect(feat.get('foo')).toBe('bar');
         expect(feat.get('two')).toBe('deux');
         expect(feat.get('size')).toBe(3);
@@ -69,8 +69,8 @@ describe("ol.feature", function() {
         
         var geom = feat.geometry();
         expect(feat).toBeA(ol.Feature);
-        expect(geom.getX()).toBe(102.0);
-        expect(geom.getY()).toBe(0.5);
+        expect(geom.x()).toBe(102.0);
+        expect(geom.y()).toBe(0.5);
         expect(feat.get('prop0')).toBe('value0');
     });
     */

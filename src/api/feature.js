@@ -58,6 +58,7 @@ ol.feature = function(opt_arg){
 };
 
 /**
+ * @export
  * @param {!string} attr The name of the attribute to be set.
  * @param {string|number|boolean} value The value of the attribute to be set.
  * @returns {ol.Feature} The feature so calls can be chained
@@ -68,6 +69,7 @@ ol.Feature.prototype.set = function(attr, value) {
 };
 
 /**
+ * @export
  * @param {!string} attr The name of the attribute to be set.
  * @returns {string|number|boolean|undefined} The attribute value requested.
  */
@@ -76,6 +78,7 @@ ol.Feature.prototype.get = function(attr) {
 };
 
 /**
+ * @export
  * @param {ol.geom.Geometry=} opt_arg
  * @returns {ol.Feature|ol.geom.Geometry|undefined} get or set the geometry on a feature
  */
@@ -87,5 +90,3 @@ ol.Feature.prototype.geometry = function(opt_arg) {
         return this.getGeometry();
     }
 };
-
-
