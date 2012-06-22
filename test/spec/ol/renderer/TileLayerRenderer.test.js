@@ -20,7 +20,7 @@ describe("ol.renderer.TileLayerRenderer", function() {
     });
     
     describe("getPreferredResAndZ_", function() {
-        var layer = new ol.layer.TileLayer();
+        var layer = new ol.layer.XYZ();
         var resolutions = [100, 80, 50, 10, 1, 0.1];
         layer.setResolutions(resolutions);
         
