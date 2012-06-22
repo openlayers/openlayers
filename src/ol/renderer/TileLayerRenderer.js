@@ -118,6 +118,7 @@ ol.renderer.TileLayerRenderer.prototype.draw = function(center, resolution) {
     if (resolution !== this.renderedResolution_) {
         this.changeResolution_(center, resolution);
     }
+    this.renderedResolution_ = resolution;
     var pair = this.getPreferredResAndZ_(resolution);
     var tileResolution = pair[0];
     var tileZ = pair[1];
@@ -190,20 +191,21 @@ ol.renderer.TileLayerRenderer.prototype.draw = function(center, resolution) {
             } else {
                 pxTileBottom = pxTileTop + pxTileHeight;
             }
-            if (!(xyz in this.renderedTiles_)) {
+            tile = this.renderedTiles_[xyz];
+            if (!tile) {
                 tile = this.layer_.getTileForXYZ(tileX, tileY, tileZ);
-                if (tile != null) {
-                    img = tile.getImg();
-                    img.style.top = pxTileTop + "px";
-                    img.style.left = pxTileLeft + "px";
-                    if (scale !== 1) {
-                        img.style.height = (pxTileRight - pxTileLeft) + "px";
-                        img.style.width = (pxTileBottom - pxTileTop) + "px";
-                    }
-                    tile.load();
-                    fragment.appendChild(img);
-                    this.renderedTiles_[xyz] = tile;
-                }
+                tile.load();
+                this.renderedTiles_[xyz] = tile;
+                img = tile.getImg();
+                fragment.appendChild(img);
+            } else {
+                img = tile.getImg();
+            }
+            img.style.top = pxTileTop + "px";
+            img.style.left = pxTileLeft + "px";
+            if (scale !== 1) {
+                img.style.height = (pxTileRight - pxTileLeft) + "px";
+                img.style.width = (pxTileBottom - pxTileTop) + "px";
             }
             pxTileTop = pxTileBottom;
         }
