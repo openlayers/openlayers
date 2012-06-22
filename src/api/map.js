@@ -69,9 +69,6 @@ ol.map = function(opt_arg) {
 
     
     var map = new ol.Map();
-    if (goog.isDef(renderTo)) {
-        map.renderTo(renderTo);
-    }
     if (goog.isDef(center)) {
         map.setCenter(ol.loc(center));
     }
@@ -101,6 +98,9 @@ ol.map = function(opt_arg) {
     }
     if (goog.isDef(controls)) {
         map.setControls(controls);
+    }
+    if (goog.isDef(renderTo)) {
+        map.renderTo(renderTo);
     }
     return map;
     
