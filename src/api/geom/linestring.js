@@ -132,6 +132,6 @@ ol.geom.LineString.prototype.remove = function(vertices){
         this.removeVertex(v);
         return true;
     }, this);
-    
+
     return this;
 };
