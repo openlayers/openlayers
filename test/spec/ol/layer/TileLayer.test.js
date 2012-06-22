@@ -134,6 +134,38 @@ describe('ol.layer.TileLayer', function() {
         });
     });
 
+    describe('get max resolution', function() {
+        var layer;
+
+        beforeEach(function() {
+            layer = new ol.layer.TileLayer();
+        });
+
+        describe('with max resolution', function() {
+
+            beforeEach(function() {
+                layer.setMaxResolution(156543.03390625);
+            });
+
+            it('returns the expected maxResolution', function() {
+                var maxResolution = layer.getMaxResolution();
+                expect(maxResolution).toEqual(156543.03390625);
+            });
+        });
+
+        describe('with projection', function() {
+
+            beforeEach(function() {
+                layer.setProjection(new ol.Projection("EPSG:3857"));
+            });
+
+            it('returns the expected maxResolution', function() {
+                var maxResolution = layer.getMaxResolution();
+                expect(maxResolution).toEqual(156543.03390625);
+            });
+        });
+    });
+
     describe('get data from the layer', function() {
         var layer;
 
