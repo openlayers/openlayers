@@ -24,3 +24,12 @@ ol.geom.Geometry.prototype.bounds = function(opt_arg) {
         return this.getBounds();
     }
 };
+
+/**
+ * Returns the centroid of the geometry.
+ *
+ * @returns {ol.geom.Point} The centroid of the geometry.
+ */
+ol.geom.Geometry.prototype.centroid = function() {
+    return this.getCentroid();
+};

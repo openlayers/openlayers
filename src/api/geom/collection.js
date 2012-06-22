@@ -128,6 +128,6 @@ ol.geom.Collection.prototype.remove = function(components){
         this.removeComponent(c);
         return true;
     }, this);
-    
+
     return this;
 };
