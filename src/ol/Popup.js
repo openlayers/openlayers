@@ -155,12 +155,14 @@ ol.Popup.prototype.generateContent_ = function() {
         return this.content_;
     } else {
         if ( goog.isDefAndNotNull(this.template_) && 
+             goog.isDefAndNotNull(this.anchor_) &&
             (this.anchor_ instanceof ol.Feature)) {
             //set content from feature attributes on the template
-            //TODO: this.setContent(template.apply(this.anchor.getAttributes()));
+            //TODO: this.setContent(template.apply(this.anchor_.getAttributes()));
             return this.template_; //stub to return something
         } else {
-            return '<br>';
+            ol.error('ol.Popup unabale to generate any content');
+            return '<p>no content</p>'
         }
     }
 };
@@ -226,6 +228,12 @@ ol.Popup.prototype.setAnchorOffset_ = function() {
     if (goog.isNull(this.container_.parentNode)) {
         //this means the popup has already been closed, nothing to do here
         //which might happen while waiting for images to load
+        return;
+    }
+    
+    if (!goog.isDefAndNotNull(this.anchor_)) {
+        //must have an anchor when trying to set the position
+        ol.error("ol.Popup must have an anchor to set the position");
         return;
     }
     

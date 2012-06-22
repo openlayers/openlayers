@@ -95,56 +95,90 @@ describe("ol.popup", function() {
 
     it("should be able to set the placement top of the location", function() {
 
-        var map = ol.map();
+        var container = document.createElement('div');
+        container.setAttribute('id', 'map');
+        document.documentElement.appendChild(container);
+        var map = ol.map({renderTo: 'map'});
         var popup = ol.popup({
             map: map,
             anchor: ol.loc([10,20]),
-            placement: 'top'
-        });
-        
-        expect(popup).toBeA(ol.Popup);
-        //expect?
-    });
-
-    it("should be able to set the placement right of the location", function() {
-
-        var map = ol.map();
-        var popup = ol.popup({
-            map: map,
-            anchor: ol.loc([10,20]),
-            placement: 'right'
-        });
-        
-        expect(popup).toBeA(ol.Popup);
-        //expect?
-    });
-
-    /*
-    it("should be able to open and close a popup", function() {
-
-        var map = ol.map();
-        var popup = ol.popup({
-            map: map,
-            anchor: ol.loc([10,20]),
-            content: 'test'
+            placement: 'top',
+            content: 'foo bar'
         });
         
         expect(popup).toBeA(ol.Popup);
         popup.open();
-        var elems = goog.dom.getElementsByClass('ol-popup');
+        var elems = document.getElementsByClassName('ol-popup-top');
         expect(elems.length).toBe(1);
-        expect(elems[0].innerHTML.indexOf('test')).toBe(0);
         
         popup.close();
-        //expect(popup.container()).toBeNull();
+        elems = document.getElementsByClassName('ol-popup-top');
+        expect(elems.length).toBe(0);       
+        
+        map.destroy();
+        document.documentElement.removeChild(container);
+    });
 
+
+    it("should be able to open and close a popup", function() {
+
+        var container = document.createElement('div');
+        container.setAttribute('id', 'map');
+        document.documentElement.appendChild(container);
+        var map = ol.map({renderTo: 'map'});
+        var popup = ol.popup({
+            map: map,
+            anchor: ol.loc([10,20]),
+            content: 'foo bar'
+        });
+        
+        expect(popup).toBeA(ol.Popup);
+        popup.open();
+        var elems = document.getElementsByClassName('ol-popup');
+        expect(elems.length).toBe(1);
+        
+        popup.close();
+        elems = document.getElementsByClassName('ol-popup');
+        expect(elems.length).toBe(0);       
+        
+        map.destroy();
+        document.documentElement.removeChild(container);
+    });
+
+
+    it("should result in an error to open a popup without an anchor or content", function() {
+
+        var container = document.createElement('div');
+        container.setAttribute('id', 'map');
+        document.documentElement.appendChild(container);
+        var map = ol.map({renderTo: 'map'});
+        var popup = ol.popup({
+            map: map
+        });
+        
+        expect(popup).toBeA(ol.Popup);
+        expect(function(){popup.open()}).toThrow();
+        
+        popup.content('foo = bar');
+        expect(function(){popup.open()}).toThrow();
+        
+        popup.anchor(ol.loc([10,20]));
+        expect(function(){popup.open()}).not.toThrow();
+        
+        popup.close();
+        map.destroy();
+        document.documentElement.removeChild(container);
     });
 
     it("should be able to open and close a popup with a feature argument", function() {
 
+        var container = document.createElement('div');
+        container.setAttribute('id', 'map');
+        document.documentElement.appendChild(container);
+        var map = ol.map({renderTo: 'map'});
         var point = ol.geom.point([21, 4]);
         var feat = ol.feature().geometry(point).set('name','foo');
-        var map = ol.map();
+        
         var popup = ol.popup({
             map: map,
             template: '<p>{{name}}</p>'
@@ -156,13 +190,25 @@ describe("ol.popup", function() {
         expect(popup.anchor()).toBeA(ol.Feature);
         expect(popup.anchor().geometry().x()).toBe(21);
         expect(popup.anchor().geometry().y()).toBe(4);
-        //expect?
+        var elems = document.getElementsByClassName('ol-popup');
+        expect(elems.length).toBe(1);
+        expect(elems[0].innerHTML).toContain('name'); //TODO check for template replacement when implemented
+        
+        feat.set('name','bar');
+        popup.open(feat)
+        expect(elems[0].innerHTML).toContain('name'); //TODO check for template replacement when implemented
+        
+        popup.content('testing');
+        popup.open(feat)
+        expect(elems[0].innerHTML).toContain('testing'); //TODO check for template replacement when implemented
         
         popup.close();
-        //expect?
+        map.destroy();
+        document.documentElement.removeChild(container);
 
     });
 
+    /*
     it("should be able to open with a new feature and the popup updates", function() {
 
         var point = ol.geom.point([21, 4]);
