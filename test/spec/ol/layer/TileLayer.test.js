@@ -207,6 +207,7 @@ describe('ol.layer.TileLayer', function() {
             layer.setUrl('/{z}/{x}/{y}');
             layer.setResolutions([1, 0.5, 0.25]);
             layer.setTileOrigin(-128, 128);
+            layer.setExtent(new ol.Bounds(-128, -128, 128, 128));
         });
 
         describe('extent -128,-128,128,128, resolution 1', function() {
@@ -214,6 +215,22 @@ describe('ol.layer.TileLayer', function() {
             it('returns the expected data', function() {
                 var tileset = layer.getData(
                     new ol.Bounds(-128, -128, 128, 128), 1);
+
+                var tiles = tileset.getTiles();
+                expect(tiles.length).toEqual(1);
+                expect(tiles[0].length).toEqual(1);
+
+                var tile = tiles[0][0];
+                expect(tile.getUrl()).toEqual('/0/0/0');
+                expect(tile.getImg()).toBeDefined();
+            });
+        });
+
+        describe('extent -192,-192,192,192, resolution 1', function() {
+
+            it('returns the expected data', function() {
+                var tileset = layer.getData(
+                    new ol.Bounds(-192, -192, 192, 192), 1);
 
                 var tiles = tileset.getTiles();
                 expect(tiles.length).toEqual(1);

@@ -337,7 +337,18 @@ ol.layer.TileLayer.prototype.getTileForXYZ = function(x, y, z) {
                        .replace('{z}', z + '');
     var tile = this.cache_.get(url);
     if (!goog.isDef(tile)) {
-        tile = new this.Tile(url);
+        var tileOrigin = this.getTileOrigin(),
+            tileOriginX = tileOrigin[0],
+            tileOriginY = tileOrigin[1];
+        var resolution = this.getResolutions()[z];
+        var tileWidth = this.tileWidth_ * resolution,
+            tileHeight = this.tileHeight_ * resolution;
+        var minX = tileOriginX + (x * tileWidth),
+            minY = tileOriginY - (y * tileHeight),
+            maxX = minX + tileWidth,
+            maxY = minY + tileHeight;
+        var tileBounds = new ol.Bounds(minX, minY, maxX, maxY);
+        tile = new this.Tile(url, tileBounds);
         this.cache_.set(tile.getUrl(), tile);
     }
     return tile;
@@ -368,13 +379,20 @@ ol.layer.TileLayer.prototype.getData = function(bounds, resolution) {
         tileOriginY = tileOrigin[1],
 
         tileWidthGeo = tileWidth * resolution,
-        tileHeightGeo = tileHeight * resolution,
+        tileHeightGeo = tileHeight * resolution;
 
-        offsetX = Math.floor(
+    var extent = this.getExtent();
+    if (extent) {
+        boundsMinX = Math.max(boundsMinX, extent.getMinX());
+        boundsMaxX = Math.min(boundsMaxX, extent.getMaxX());
+        boundsMinY = Math.max(boundsMinY, extent.getMinY());
+        boundsMaxY = Math.min(boundsMaxY, extent.getMaxY());
+    }
+
+    var offsetX = Math.floor(
                       (boundsMinX - tileOriginX) / tileWidthGeo),
         offsetY = Math.floor(
                       (tileOriginY - boundsMaxY) / tileHeightGeo),
-
         gridLeft = tileOriginX + tileWidthGeo * offsetX,
         gridTop = tileOriginY - tileHeightGeo * offsetY;
 
