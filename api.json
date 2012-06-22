@@ -3,6 +3,11 @@
 
   "output-file": "api.js",
 
+  "output-wrapper": [
+    "// Copyright 2012 ...\n",
+    "(function(){%output%})();"
+  ],
+
   "inputs": "src/ol.export.js",
   "paths": [
     "src"
