@@ -134,7 +134,6 @@ ol.event.Events.prototype.setElement = function(element) {
     var types = goog.events.EventType, t;    
     if (this.element_) {
         for (t in types) {
-            // register the event cross-browser
             goog.events.unlisten(
                 this.element_, types[t], this.handleBrowserEvent, true, this
             );
@@ -146,7 +145,6 @@ ol.event.Events.prototype.setElement = function(element) {
     if (goog.isDefAndNotNull(element)) {
         this.createSequences();
         for (t in types) {
-            // register the event cross-browser
             goog.events.listen(
                 element, types[t], this.handleBrowserEvent, true, this
             );
