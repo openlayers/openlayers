@@ -2,7 +2,6 @@ goog.provide('ol.layer.XYZ');
 
 goog.require('ol.layer.TileLayer');
 goog.require('ol.Projection');
-goog.require('ol.Tile');
 goog.require('ol.TileSet');
 
 /**
