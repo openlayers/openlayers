@@ -70,7 +70,7 @@ describe('ol.layer.TileLayer', function() {
 
             it('returns the expected origin', function() {
                 var origin = layer.getTileOrigin();
-                expect(origin).toEqual([-180, -90]);
+                expect(origin).toEqual([-180, 90]);
             });
 
         });

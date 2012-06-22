@@ -62,7 +62,7 @@ ol.layer.TileLayer = function() {
      * @private
      * @type {string}
      */
-    this.tileOriginCorner_ = 'bl';
+    this.tileOriginCorner_ = 'tl';
 
     /**
      * @private
