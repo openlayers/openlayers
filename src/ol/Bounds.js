@@ -53,7 +53,7 @@ ol.Bounds.prototype.setProjection = function(projection) {
 ol.Bounds.prototype.intersects = function(bounds) {
     var otherProj = bounds.getProjection();
     if (!goog.isNull(otherProj) && !goog.isNull(this.projection_)) {
-        bounds = bounds.transform(this.projection_);
+        bounds = bounds.doTransform(this.projection_);
     }
     return goog.base(this, "intersects", bounds.toUnreferencedBounds());
 };
@@ -70,13 +70,13 @@ ol.Bounds.prototype.doTransform = function(proj) {
         throw new Error("Bounds must have a projection before transforming.");
     }
     var tl = new ol.Loc(
-        this.minX_, this.maxY_, undefined, this.projection_).transform(proj);
+        this.minX_, this.maxY_, undefined, this.projection_).doTransform(proj);
     var tr = new ol.Loc(
-        this.maxX_, this.maxY_, undefined, this.projection_).transform(proj);
+        this.maxX_, this.maxY_, undefined, this.projection_).doTransform(proj);
     var bl = new ol.Loc(
-        this.minX_, this.minY_, undefined, this.projection_).transform(proj);
+        this.minX_, this.minY_, undefined, this.projection_).doTransform(proj);
     var br = new ol.Loc(
-        this.maxX_, this.minY_, undefined, this.projection_).transform(proj);
+        this.maxX_, this.minY_, undefined, this.projection_).doTransform(proj);
         
     var x = [tl.getX(), tr.getX(), bl.getX(), br.getX()].sort();
     var y = [tl.getY(), tr.getY(), bl.getY(), br.getY()].sort();
