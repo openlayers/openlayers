@@ -216,6 +216,26 @@ describe("ol.geom.linestring", function() {
             expect(ls.vertices().length).toBe(0);
         });
     });
+
+    describe("the centroid method is functional", function(){
+        it("returns an instance of ol.geom.Point", function(){
+            expect(ls.centroid()).toBeA(ol.geom.Point);
+        });
+
+        it("has the expected coordinates", function(){
+
+            ls = ol.geom.linestring([
+                ol.geom.point([0.5, 1]),
+                ol.geom.point([1, 1.5]),
+                ol.geom.point([1.5, 1]),
+                ol.geom.point([1, 0.5])
+            ]);
+
+            var c = ls.centroid();
+
+            expect(c.x() + ',' + c.y()).toBe('1,1');
+        });
+    });
 });
 
 
