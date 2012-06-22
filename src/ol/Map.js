@@ -6,9 +6,9 @@ goog.require('ol.Projection');
 goog.require('ol.event');
 goog.require('ol.event.Events');
 goog.require('ol.control.Control');
+goog.require('ol.renderer.MapRenderer');
+
 goog.require('goog.dom');
-
-
 
 /**
  * @export
@@ -107,7 +107,7 @@ ol.Map = function() {
      * @type {Element}
      */
     this.container_ = null;
-    
+
 };
 
 /**
@@ -359,6 +359,10 @@ ol.Map.prototype.setContainer = function(container) {
     //TODO Controls could be set earlier, but we need to deal with content that
     // controls place on overlays.
     this.setControls(ol.Map.DEFAULT_CONTROLS);
+    // conditionally render
+    if (!goog.isNull(this.layers_) && goog.isDef(this.zoom_) && !goog.isNull(this.center_)) {
+        this.renderer_.draw(this.layers_, this.center_, this.getResolutionForZoom(this.zoom_));
+    }
 };
 
 /**
@@ -370,7 +374,10 @@ ol.Map.prototype.getViewport = function() {
 
 ol.Map.prototype.setViewport = function() {
     if (!this.viewport_) {
-        this.viewport_ = goog.dom.createDom('div', 'ol-viewport');
+        this.viewport_ = goog.dom.createDom('div', {
+            'class': 'ol-viewport',
+            'style': 'height:100%;width:100%;position:relative;top:0;left:0;overflow:hidden'
+        });
         this.mapOverlay_ = goog.dom.createDom('div', 'ol-overlay-map');
         this.staticOverlay_ = goog.dom.createDom('div', 'ol-overlay-static');
         goog.dom.append(this.viewport_, this.mapOverlay_, this.staticOverlay_);
@@ -380,14 +387,9 @@ ol.Map.prototype.setViewport = function() {
 };
 
 ol.Map.prototype.createRenderer = function() {
-    /*var registeredRenderers = ol.renderer.RENDERER_MAP,
-        candidate;
-    for (var r in registeredRenderers) {
-        if (registeredRenderers[r].isSupported()) {
-            break;
-        }
-    }
-    this.renderer_ = new registeredRenderers[r](this.viewport_);*/
+    var Renderer = ol.renderer.MapRenderer.pickRendererType(
+        ol.Map.preferredRenderers);
+    this.renderer_ = new Renderer(this.viewport_);
 };
 
 /**
@@ -439,3 +441,14 @@ ol.Map.prototype.destroy = function() {
         delete this[key];
     }
 };
+
+
+/**
+ * List of preferred renderer types.  Map renderers have a getType method
+ * that returns a string describing their type.  This list determines the 
+ * preferences for picking a layer renderer.
+ *
+ * @type {Array.<string>}
+ */
+ol.Map.preferredRenderers = ["webgl", "canvas"];
+
