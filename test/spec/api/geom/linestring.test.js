@@ -194,10 +194,9 @@ describe("ol.geom.linestring", function() {
         });
     });
 
-
     describe("the method 'remove'", function() {
         it("exists", function(){
-            expect( ls.add ).toBeA( Function );
+            expect( ls.remove ).toBeA( Function );
         });
 
         it("works with a single point", function(){
