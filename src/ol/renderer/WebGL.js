@@ -236,6 +236,11 @@ ol.renderer.WebGL.prototype.draw = function(layers, center, resolution, animate)
             for (j = 0; j < row.length; ++j) {
                 tile = row[j];
                 if (!tile.isLoaded()) {
+                    if (!tile.isLoading()) {
+                        tile.register('load', this.handleTileLoad, this);
+                        tile.register('destroy', this.handleTileDestroy, this);
+                        tile.load();
+                    }
                     continue;
                 }
                 tileBounds = tile.getBounds();
