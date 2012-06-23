@@ -103,9 +103,9 @@ ol.renderer.Composite.prototype.pickRendererType = function(layer) {
     var types = {};
 
     function picker(Candidate) {
-        var supports = Candidate.isSupported() && Candidate.canRender(layer);
+        var supports = Candidate['isSupported']() && Candidate['canRender'](layer);
         if (supports) {
-            types[Candidate.getType()] = Candidate;
+            types[Candidate['getType']()] = Candidate;
         }
         return supports;
     }
@@ -148,7 +148,10 @@ ol.renderer.Composite.getType = function() {
 };
 
 /**
- * return {boolean}
+ * TODO: determine if there is a better way to register these renderers
+ *
+ * @export
+ * @return {boolean}
  */
 ol.renderer.Composite.isSupported = function() {
     return true;

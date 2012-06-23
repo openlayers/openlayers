@@ -97,6 +97,14 @@ goog.exportProperty(ol.geom.MultiPoint.prototype, 'addAll', ol.geom.MultiPoint.p
 goog.exportProperty(ol.geom.MultiPoint.prototype, 'remove', ol.geom.MultiPoint.prototype.remove);
 goog.exportProperty(ol.geom.MultiPoint.prototype, 'centroid', ol.geom.MultiPoint.prototype.centroid);
 
-// LOOKUP FOR DYNMICALLY REGISTERED CONTROLS DOES NOT RUN WELL NOW IN THE ADVANCED MODE
-// HACK TO PUSH COMPILER TO NOT STRIP THE NAVIGATION CONTROL. TO BE FIXED.
+/**
+ * Lookup for dynamically registered controls and renderers does not work in
+ * advanced compiled mode.  For now, we duplicate the registration calls here.
+ *
+ * TODO: determine a good way for plugins to register
+ */
+goog.exportProperty(ol.renderer.Composite, 'isSupported', ol.renderer.Composite.isSupported);
+goog.exportProperty(ol.renderer.TileLayerRenderer, 'isSupported', ol.renderer.TileLayerRenderer.isSupported);
+goog.exportProperty(ol.renderer.TileLayerRenderer, 'canRender', ol.renderer.TileLayerRenderer.canRender);
+goog.exportProperty(ol.renderer.TileLayerRenderer, 'getType', ol.renderer.TileLayerRenderer.getType);
 ol.control.addControl('navigation', ol.control.Navigation);

@@ -301,6 +301,7 @@ ol.renderer.TileLayerRenderer.prototype.changeResolution_ = function(center, res
 /**
  * Get an identifying string for this renderer.
  *
+ * @export
  * @returns {string}
  */
 ol.renderer.TileLayerRenderer.getType = function() {
@@ -311,6 +312,7 @@ ol.renderer.TileLayerRenderer.getType = function() {
 /** 
  * Determine if this renderer type is supported in this environment.
  *
+ * @export
  * @return {boolean} This renderer is supported.
  */
 ol.renderer.TileLayerRenderer.isSupported = function() {
@@ -320,6 +322,7 @@ ol.renderer.TileLayerRenderer.isSupported = function() {
 /** 
  * Determine if this renderer can render the given layer.
  *
+ * @export
  * @param {ol.layer.Layer} layer The candidate layer.
  * @return {boolean} This renderer is capable of rendering the layer.
  */
