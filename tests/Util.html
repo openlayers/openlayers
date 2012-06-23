@@ -1124,7 +1124,7 @@
      * Test vendor prefixing
      */
     function test_vendor_prefixes(t) {
-        t.plan(12);
+        t.plan(17);
         var o = {}, err;
         var orgCreateElement = document.createElement;
         // wrap document.createElement to control property values
@@ -1153,7 +1153,7 @@
                     }
             };
         }
-        var testDomPrefix = curryTestPrefix("Dom"),
+        var testDomPrefix = curryTestPrefix("Obj"),
             testCssPrefix = curryTestPrefix("Css");
         
         o.prop = "test";
@@ -1165,8 +1165,8 @@
         testDomPrefix("testMultiWord", "testMultiWord", "DOM vendor prefix - multiple words");
         testCssPrefix("test-multi-word", "test-multi-word", "CSS vendor prefix - multiple words");
         
-        o.prop = "WebkitMultiWord";
-        testDomPrefix("multiWord", "WebkitMultiWord", "DOM vendor prefix - multiple words for WebKit");
+        o.prop = "webkitMultiWord";
+        testDomPrefix("multiWord", "webkitMultiWord", "DOM vendor prefix - multiple words for WebKit");
         testCssPrefix("multi-word", "-webkit-multi-word", "CSS vendor prefix - multiple words for WebKit");
         
         o.prop = "MozMultiWord";
@@ -1180,6 +1180,22 @@
         o.prop = "msMultiWord";
         testDomPrefix("multiWord", "msMultiWord", "DOM vendor prefix - multiple words for Internet Explorer");
         testCssPrefix("multi-word", "-ms-multi-word", "CSS vendor prefix - multiple words for Internet Explorer");
+        
+        // test vendor prefix on object
+        OpenLayers.Util.getVendorPrefixedObj({}, "clear cache");
+        t.eq( OpenLayers.Util.getVendorPrefixedObj( { "test": true }, "test" ), "test", "Standard object property");
+        
+        OpenLayers.Util.getVendorPrefixedObj({}, "clear cache");
+        t.eq( OpenLayers.Util.getVendorPrefixedObj( { "OTest": true }, "test" ), "OTest", "Standard object property");
+        
+        OpenLayers.Util.getVendorPrefixedObj({}, "clear cache");
+        t.eq( OpenLayers.Util.getVendorPrefixedObj( { "msTest": true }, "test" ), "msTest", "Standard object property");
+        
+        OpenLayers.Util.getVendorPrefixedObj({}, "clear cache");
+        t.eq( OpenLayers.Util.getVendorPrefixedObj( { "MozTest": true }, "test" ), "MozTest", "Standard object property");
+        
+        OpenLayers.Util.getVendorPrefixedObj({}, "clear cache");
+        t.eq( OpenLayers.Util.getVendorPrefixedObj( { "webkitTest": true }, "test" ), "webkitTest", "Standard object property");
         
         // unwrap document.createElement
         document.createElement = orgCreateElement;
