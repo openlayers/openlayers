@@ -70,7 +70,7 @@ ol.map = function(opt_arg) {
     
     var map = new ol.Map();
     if (goog.isDef(center)) {
-        map.setCenter(ol.loc(center));
+        map.center(center);
     }
     if (goog.isDef(zoom)) {
         map.setZoom(zoom);
