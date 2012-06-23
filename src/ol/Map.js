@@ -9,6 +9,8 @@ goog.require('ol.control.Control');
 goog.require('ol.renderer.MapRenderer');
 
 goog.require('goog.dom');
+goog.require('goog.math');
+
 
 /**
  * @export
@@ -260,9 +262,37 @@ ol.Map.prototype.getResolutionForZoom = function(zoom) {
 
 
 /**
+ * @param {goog.math.Coordinate|{x: number, y: number}} pixel
+ * @return {ol.Loc}
+ */
+ol.Map.prototype.getLocForPixel = function(pixel) {
+    return this.renderer_.getLocForPixel(pixel);
+};
+
+
+/**
+ * @return {goog.math.Size} The currently rendered map size in pixels.
+ */
+ol.Map.prototype.getSize = function() {
+    return this.renderer_.getSize();
+};
+
+
+/**
  * @param {ol.Loc} center Center in map projection.
  */
 ol.Map.prototype.setCenter = function(center) {
+    this.center_ = center;
+    this.conditionallyRender();
+};
+
+
+/**
+ * @param {number} zoom
+ * @param {ol.Loc} center
+ */
+ol.Map.prototype.zoomTo = function(zoom, center) {
+    this.zoom_ = this.limitZoom(zoom);
     this.center_ = center;
     this.conditionallyRender();
 };
@@ -288,10 +318,20 @@ ol.Map.prototype.setUserProjection = function(userProjection) {
  * @param {number} zoom Zoom.
  */
 ol.Map.prototype.setZoom = function(zoom) {
-    if (zoom !== this.zoom_ && zoom >= 0 && zoom < this.getNumZoomLevels()) {
+    zoom = this.limitZoom(zoom);
+    if (zoom !== this.zoom_) {
         this.zoom_ = zoom;
         this.conditionallyRender();
     }
+};
+
+
+/**
+ * @param {number} zoom
+ * @return {number} zoom clamped to the range of available zoom levels.
+ */
+ol.Map.prototype.limitZoom = function(zoom) {
+    return goog.math.clamp(zoom, 0, this.getNumZoomLevels()-1);
 };
 
 

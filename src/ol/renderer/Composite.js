@@ -49,6 +49,8 @@ ol.renderer.Composite.prototype.draw = function(layers, center, resolution, anim
     for (var i=0, ii=layers.length; i<ii; ++i) {
         this.getOrCreateRenderer(layers[i], i).draw(center, resolution);
     }
+    this.renderedCenter_ = center;
+    this.renderedResolution_ = resolution;
 };
 
 /**

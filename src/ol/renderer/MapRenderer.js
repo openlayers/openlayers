@@ -1,5 +1,7 @@
 goog.provide('ol.renderer.MapRenderer');
 
+goog.require('goog.style');
+
 /**
  * @constructor
  * @param {!Element} container
@@ -11,6 +13,18 @@ ol.renderer.MapRenderer = function(container) {
      * @protected
      */
     this.container_ = container;
+    
+    /**
+     * @type {ol.Loc}
+     * @protected
+     */
+    this.renderedCenter_;
+    
+    /**
+     * @type {number}
+     * @protected
+     */
+    this.renderedResolution_;
     
 };
 
@@ -67,3 +81,23 @@ ol.renderer.MapRenderer.pickRendererType = function(preferences) {
     return Renderer || Candidates[0] || null;
 };
 
+/**
+ * @param {goog.math.Coordinate|{x: number, y: number}} pixel
+ * @return {ol.Loc}
+ */
+ol.renderer.MapRenderer.prototype.getLocForPixel = function(pixel) {
+    var center = this.renderedCenter_,
+        resolution = this.renderedResolution_,
+        size = goog.style.getSize(this.container_);
+    return new ol.Loc(
+        center.getX() - (size.width/2 - pixel.x) * resolution,
+        center.getY() + (size.height/2 - pixel.y) * resolution
+    );
+};
+
+/**
+ * @return {goog.math.Size} The currently rendered map size in pixels.
+ */
+ol.renderer.MapRenderer.prototype.getSize = function() {
+    return goog.style.getSize(this.container_);
+};
