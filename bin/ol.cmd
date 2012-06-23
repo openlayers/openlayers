@@ -15,4 +15,7 @@ popd
 set COMMAND="%~1"
 if "%~1" == "" set COMMAND="usage"
 
-ant -e -f %OL_HOME%\bin\build.xml -Dol.home=%OL_HOME% -Dbasedir=. %COMMAND%
+set ANT_ARGS=
+if "%~2" == "" set ANT_ARGS="-Dbuild.json=%~2"
+
+ant -e -f %OL_HOME%\bin\build.xml -Dol.home=%OL_HOME% -Dbasedir=. %COMMAND% %ANT_ARGS%

@@ -8,15 +8,15 @@
     <property name="ol.home" location=".."/>
     <property name="plovr.jar" location="${ol.home}/bin/plovr.jar"/>
     <property name="main.json" location="${ol.home}/main.json"/>
-    <property name="api.json" location="${ol.home}/api.json"/>
+    <property name="build.json" location="${ol.home}/api.json"/>
 
     <target name="usage">
         <echo>
         Available commands:
         
         serve - Run the library server
-        api   - Builds the optimized file with public api
-        doc   - Build the reference docs
+        build - Builds a minified version of the library or an application
+        doc   - Generate the reference docs
         </echo>
     </target>
 
@@ -36,10 +36,22 @@
         </java>
     </target>
 
-    <target name="api" depends="deps">
+    <target name="checkpath">
+        <condition property="build.json.set">
+            <isset property="build.json"/>
+        </condition>
+        <fail message="Missing build config." unless="build.json.set"/>
+        <property name="build.json.fullpath" location="${build.json}"/>
+        <condition property="build.json.exists">
+            <available file="${build.json.fullpath}" type="file"/>
+        </condition>
+    </target>
+
+    <target name="build" depends="deps, checkpath">
+        <fail message="Build config '${build.json.fullpath}' doesn't exist." unless="build.json.exists"/>
         <java jar="${plovr.jar}" fork="true">
             <arg value="build"/>
-            <arg value="${api.json}"/>
+            <arg value="${build.json}"/>
         </java>
     </target>
     

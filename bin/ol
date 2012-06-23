@@ -36,4 +36,9 @@ else
 
 fi
 
-ant -e -f "$OL_HOME/bin/build.xml" -Dol.home="$OL_HOME" $1
+ANT_ARGS=""
+if [ $# -gt 1 ]; then
+    ANT_ARGS=-Dbuild.json="$2"
+fi
+
+ant -e -f "$OL_HOME/bin/build.xml" -Dbasedir=. -Dol.home="$OL_HOME" $1 $ANT_ARGS
