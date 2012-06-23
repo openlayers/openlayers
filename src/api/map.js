@@ -88,7 +88,7 @@ ol.map = function(opt_arg) {
         map.setMaxExtent(ol.bounds(maxExtent));
     }
     if (goog.isDef(maxRes)) {
-        map.setMaxRes(maxRes);
+        map.setMaxResolution(maxRes);
     }
     if (goog.isDef(resolutions)) {
         map.setResolutions(resolutions);

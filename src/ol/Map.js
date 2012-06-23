@@ -231,7 +231,7 @@ ol.Map.prototype.getMaxExtent = function() {
 /**
  * @return {number} the max resolution for the map
  */
-ol.Map.prototype.getMaxRes = function() {
+ol.Map.prototype.getMaxResolution = function() {
     if (goog.isDefAndNotNull(this.maxRes_)) {
         return this.maxRes_;
     } else {
@@ -253,7 +253,7 @@ ol.Map.prototype.getResolutionForZoom = function(zoom) {
     if (goog.isDefAndNotNull(this.resolutions_)) {
         return this.resolutions_[zoom];
     } else {
-        var maxRes = this.getMaxRes();
+        var maxRes = this.getMaxResolution();
         return maxRes/Math.pow(ol.Map.ZOOM_FACTOR, zoom);
     }
 };
@@ -343,7 +343,7 @@ ol.Map.prototype.setMaxExtent = function(extent) {
 /**
  * @param {number} res the max resolution for the map
  */
-ol.Map.prototype.setMaxRes = function(res) {
+ol.Map.prototype.setMaxResolution = function(res) {
     this.maxRes_ = res;
 };
 
