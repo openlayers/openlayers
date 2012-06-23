@@ -329,7 +329,8 @@ ol.Map.prototype.setZoom = function(zoom, opt_anchor) {
             newRes = this.getResolutionForZoom(newZoom);
         newCenter = new ol.Loc(
             anchorLoc.getX() + (size.width/2 - opt_anchor.x) * newRes,
-            anchorLoc.getY() - (size.height/2 - opt_anchor.y) * newRes
+            anchorLoc.getY() - (size.height/2 - opt_anchor.y) * newRes,
+            undefined, this.getProjection()
         );
     } else {
         newCenter = this.center_;
