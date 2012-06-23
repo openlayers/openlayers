@@ -14,8 +14,10 @@
 (function(doc, l){
     var hostRegex = /[\\?&]host=([^&#]*)/,
         modeRegex = /[\\?&]mode=([^&#]*)/,
+        idRegex = /[\\?&]id=([^&#]*)/,
         hostResult = hostRegex.exec(l.href),
         modeResult = modeRegex.exec(l.href),
+        idResult = idRegex.exec(l.href),
         host = (hostResult && hostResult[1])
             ? hostResult[1]
             : (l.host)
@@ -24,8 +26,11 @@
         mode = (modeResult && modeResult[1])
             ? modeResult[1]
             : 'SIMPLE',
+        id = (idResult && idResult[1])
+            ? idResult[1]
+            : 'ol',
         script = '<sc' + 'ript type="text/javascript" '
-            + 'src="http://' + host + '/compile?id=ol&amp;mode=' + mode + '">'
+            + 'src="http://' + host + '/compile?id=' + id + '&amp;mode=' + mode + '">'
             + '</scr' + 'ipt>';
     doc.write(script);
 })(document, location);
