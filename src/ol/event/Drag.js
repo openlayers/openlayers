@@ -28,6 +28,14 @@ ol.event.Drag = function(target) {
      */
     this.dragger_ = dragger;
     
+    // We want to swallow the click event that gets fired after dragging.
+    var stopClickRegistered = false;
+    function stopClick() {
+        target.unregister('click', stopClick, undefined, true);
+        stopClickRegistered = false;
+        return false;
+    }
+    
     dragger.defaultAction = function(x, y) {};                
     dragger.addEventListener(goog.fx.Dragger.EventType.START, function(evt) {
         evt.target = element;
@@ -42,13 +50,24 @@ ol.event.Drag = function(target) {
         evt.deltaY = evt.clientY - previousY;
         previousX = evt.clientX;
         previousY = evt.clientY;
+        if (!stopClickRegistered) {
+            // Once we are in the drag sequence, we know that we need to
+            // get rid of the click event that gets fired when we are done
+            // dragging.
+            target.register('click', stopClick, undefined, true);
+            stopClickRegistered = true;
+        }
         target.triggerEvent(evt.type, evt);
     });
     dragger.addEventListener(goog.fx.Dragger.EventType.END, function(evt) {
         evt.target = element;
         evt.type = 'dragend';
         target.triggerEvent(evt.type, evt);
-    });    
+    });
+    // Don't swallow the click event if our sequence cancels early.
+    dragger.addEventListener(
+        goog.fx.Dragger.EventType.EARLY_CANCEL, stopClick
+    );  
 };
 
 /** @inheritDoc */
