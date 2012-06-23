@@ -483,6 +483,7 @@ ol.Map.prototype.moveByPx = function(dx, dy) {
                 this.center_.getX() - dx * resolution,
                 this.center_.getY() + dy * resolution
             );
+            center.setProjection(this.getProjection());
         this.setCenter(center);
     }
 };
