@@ -288,7 +288,7 @@ ol.Map.prototype.setUserProjection = function(userProjection) {
  * @param {number} zoom Zoom.
  */
 ol.Map.prototype.setZoom = function(zoom) {
-    if (zoom !== this.zoom_) {
+    if (zoom !== this.zoom_ && zoom >= 0 && zoom < this.getNumZoomLevels()) {
         this.zoom_ = zoom;
         this.conditionallyRender();
     }

@@ -102,6 +102,8 @@ ol.Tile.prototype.getImg = function() {
 ol.Tile.prototype.handleImageLoad = function(evt) {
     this.loading_ = false;
     this.loaded_ = true;
+    this.img_.style.visibility = "inherit";
+    this.img_.style.opacity = 1; // TODO: allow for layer opacity
     this.events_.triggerEvent('load');
 };
 
@@ -138,19 +140,6 @@ ol.Tile.prototype.destroy = function() {
 };
 
 /**
- * Create an image node. This is done by cloning
- * the same image element.
- * @return {HTMLImageElement}
- */
-ol.Tile.createImage = (function() {
-    var img = document.createElement("img");
-    img.className = "olTile";
-    return function() {
-        return img.cloneNode(false);
-    };
-})();
-
-/**
  * Create a tile constructor, for specific width and height values
  * for the tiles.
  * @param {number} width
@@ -173,6 +162,8 @@ ol.Tile.createConstructor = function(width, height) {
         img.style.position = "absolute";
         img.style.width = width + "px";
         img.style.height = height + "px";
+        img.style.opacity = 0;
+        img.src = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
         return function() {
             return img.cloneNode(false);
         };
