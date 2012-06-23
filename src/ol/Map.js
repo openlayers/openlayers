@@ -409,10 +409,10 @@ ol.Map.prototype.getEvents = function() {
  * @param {number} dy pixels to move in x direction
  */
 ol.Map.prototype.moveByPx = function(dx, dy) {
-    if (goog.isDef(this.zoom_)) {
+    if (!goog.isNull(this.center_) && goog.isDef(this.zoom_)) {
         var resolution = this.getResolutionForZoom(this.zoom_),
             center = new ol.Loc(
-                this.center_.getX() + dx * resolution,
+                this.center_.getX() - dx * resolution,
                 this.center_.getY() + dy * resolution
             );
         this.setCenter(center);
