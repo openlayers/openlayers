@@ -1,0 +1,39 @@
+/**
+ * Build configuration for the map.js example.  Use following syntax:
+ * 
+ *     ol build map.json
+ *
+ * The output will be named map-compiled.js.
+ */
+
+{
+    "id": "hello",
+
+    "output-file": "map-compiled.js",
+
+    "inputs": ["../src/ol.js", "map.js"],
+
+    "paths": ["../src"],
+
+    "define": {
+        "goog.DEBUG": false
+    },
+
+    "mode": "ADVANCED",
+    "level": "VERBOSE",
+
+    // acceptable values are "ERROR", "WARNING", and "OFF"
+    "checks": {
+        "accessControls": "WARNING",
+        "visibility": "WARNING",
+        "checkTypes": "WARNING",
+        "checkRegExp": "WARNING",
+        "checkVars": "WARNING",
+        "deprecated": "WARNING",
+        "fileoverviewTags": "WARNING",
+        "invalidCasts": "WARNING",
+        "missingProperties": "WARNING",
+        "nonStandardJsDocs": "WARNING",
+        "undefinedVars": "WARNING"
+    }
+}
