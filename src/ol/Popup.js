@@ -184,10 +184,9 @@ ol.Popup.prototype.setTemplate = function(template) {
 
 /**
  * Open the popup.
- * @export
  * @param {ol.Feature|ol.Loc} opt_arg feature or location for the anchor
  */
-ol.Popup.prototype.open = function(opt_arg) {
+ol.Popup.prototype.doOpen = function(opt_arg) {
     if (goog.isDef(opt_arg)) {
         this.setAnchor(opt_arg);
     }

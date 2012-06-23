@@ -97,6 +97,15 @@ goog.exportProperty(ol.geom.MultiPoint.prototype, 'addAll', ol.geom.MultiPoint.p
 goog.exportProperty(ol.geom.MultiPoint.prototype, 'remove', ol.geom.MultiPoint.prototype.remove);
 goog.exportProperty(ol.geom.MultiPoint.prototype, 'centroid', ol.geom.MultiPoint.prototype.centroid);
 
+// ol.popup
+goog.exportSymbol('ol.popup', ol.popup);
+goog.exportSymbol('ol.Popup', ol.Popup);
+goog.exportProperty(ol.Popup.prototype, 'anchor', ol.Popup.prototype.anchor);
+goog.exportProperty(ol.Popup.prototype, 'map', ol.Popup.prototype.map);
+goog.exportProperty(ol.Popup.prototype, 'content', ol.Popup.prototype.content);
+goog.exportProperty(ol.Popup.prototype, 'template', ol.Popup.prototype.template);
+goog.exportProperty(ol.Popup.prototype, 'open', ol.Popup.prototype.open);
+
 /**
  * Lookup for dynamically registered controls and renderers does not work in
  * advanced compiled mode.  For now, we duplicate the registration calls here.

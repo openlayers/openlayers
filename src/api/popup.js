@@ -128,3 +128,11 @@ ol.Popup.prototype.template = function(opt_arg){
     }
 };
 
+/**
+ * Open the popup.
+ * @export
+ * @param {ol.Feature|ol.Loc} opt_arg feature or location for the anchor
+ */
+ol.Popup.prototype.open = function(opt_arg) {
+    this.doOpen(opt_arg);
+};
