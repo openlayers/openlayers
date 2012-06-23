@@ -205,10 +205,13 @@ ol.event.Events.prototype.register = function(type, listener, opt_scope,
  * @param {Object=} opt_scope The object to bind the context to for the
  *     listener. If no scope is specified, default is the event's default
  *     scope.
+ * @param {boolean=} opt_priority Listener was registered as priority listener,
+ *     so it gets executed before other listeners. Default is false.
  */
-ol.event.Events.prototype.unregister = function(type, listener, opt_scope) {
+ol.event.Events.prototype.unregister = function(type, listener, opt_scope,
+                                                opt_priority) {
     goog.events.unlisten(
-        this, type, listener, false, opt_scope || this.object_
+        this, type, listener, opt_priority, opt_scope || this.object_
     );
 };
 
@@ -270,10 +273,20 @@ ol.event.Events.prototype.handleBrowserEvent = function(evt) {
             evt.clientY = y / num;
         }
         if (this.includeXY_) {
-            evt.xy = goog.style.getRelativePosition(evt, this.element_);
+            evt.xy = this.getPointerPosition(evt);
         }
     }
     this.triggerEvent(evt.type, evt);
+};
+
+/**
+ * Get the mouse position relative to this Event instance's target element for
+ * the provided event.
+ *
+ * @param {Event} evt Event object
+ */
+ol.event.Events.prototype.getPointerPosition = function(evt) {
+    return goog.style.getRelativePosition(evt, this.element_);
 };
 
 /**
