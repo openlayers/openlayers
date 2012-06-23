@@ -194,7 +194,9 @@ ol.renderer.TileLayerRenderer.prototype.draw = function(center, resolution) {
             tile = this.renderedTiles_[xyz];
             if (!tile) {
                 tile = this.layer_.getTileForXYZ(tileX, tileY, tileZ);
-                tile.load();
+                if (!tile.isLoaded() && !tile.isLoading()) {
+                    tile.load();
+                }
                 this.renderedTiles_[xyz] = tile;
                 img = tile.getImg();
                 fragment.appendChild(img);
