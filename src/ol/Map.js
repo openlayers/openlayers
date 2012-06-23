@@ -298,13 +298,40 @@ ol.Map.prototype.setCenter = function(center) {
 
 
 /**
- * @param {number} zoom
  * @param {ol.Loc} center
+ * @param {number} zoom
  */
-ol.Map.prototype.zoomTo = function(zoom, center) {
+ol.Map.prototype.setCenterAndZoom = function(center, zoom) {
     this.zoom_ = this.limitZoom(zoom);
     this.center_ = center;
     this.conditionallyRender();
+};
+
+
+/**
+ * @param {number} zoom The zoom level to zoom to
+ * @param {goog.math.Coordinate|{x: number, y: number}=} opt_anchor
+ *     Optional anchor pixel for the zoom origin.
+ */
+ol.Map.prototype.setZoom = function(zoom, opt_anchor) {
+    var currentZoom = this.zoom_,
+        newZoom = this.limitZoom(zoom),
+        newCenter;
+    if (newZoom === currentZoom) {
+        return;
+    }
+    if (goog.isDef(opt_anchor)) {
+        var size = this.getSize(),
+            anchorLoc = this.getLocForPixel(opt_anchor),
+            newRes = this.getResolutionForZoom(newZoom);
+        newCenter = new ol.Loc(
+            anchorLoc.getX() + (size.width/2 - opt_anchor.x) * newRes,
+            anchorLoc.getY() - (size.height/2 - opt_anchor.y) * newRes
+        );
+    } else {
+        newCenter = this.center_;
+    }
+    this.setCenterAndZoom(newCenter, newZoom);
 };
 
 
@@ -321,18 +348,6 @@ ol.Map.prototype.setProjection = function(projection) {
  */
 ol.Map.prototype.setUserProjection = function(userProjection) {
     this.userProjection_ = userProjection;
-};
-
-
-/**
- * @param {number} zoom Zoom.
- */
-ol.Map.prototype.setZoom = function(zoom) {
-    zoom = this.limitZoom(zoom);
-    if (zoom !== this.zoom_) {
-        this.zoom_ = zoom;
-        this.conditionallyRender();
-    }
 };
 
 
