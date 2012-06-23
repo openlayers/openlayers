@@ -10,6 +10,7 @@ goog.require('ol.renderer.MapRenderer');
 
 goog.require('goog.dom');
 goog.require('goog.math');
+goog.require('goog.asserts');
 
 
 /**
@@ -292,7 +293,8 @@ ol.Map.prototype.getSize = function() {
  * @param {ol.Loc} center Center in map projection.
  */
 ol.Map.prototype.setCenter = function(center) {
-    this.center_ = center;
+    goog.asserts.assert(!goog.isNull(center.getProjection()));
+    this.center_ = center.doTransform(this.getProjection());
     this.conditionallyRender();
 };
 
@@ -302,8 +304,9 @@ ol.Map.prototype.setCenter = function(center) {
  * @param {number} zoom
  */
 ol.Map.prototype.setCenterAndZoom = function(center, zoom) {
+    goog.asserts.assert(!goog.isNull(center.getProjection()));
+    this.center_ = center.doTransform(this.getProjection());
     this.zoom_ = this.limitZoom(zoom);
-    this.center_ = center;
     this.conditionallyRender();
 };
 
