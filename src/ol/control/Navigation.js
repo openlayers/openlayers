@@ -63,22 +63,7 @@ ol.control.Navigation.prototype.zoomMap = function(evt) {
         return;
     }
 
-    var currentZoom = /** @type {number} */ (map.getZoom()),
-        newZoom = currentZoom - delta;
-    newZoom = Math.max(newZoom, 0);
-    newZoom = Math.min(newZoom, map.getNumZoomLevels());
-    if (newZoom === currentZoom) {
-        return;
-    }
-    var xy = map.getEvents().getPointerPosition(evt),
-        size = map.getSize(),
-        newRes  = map.getResolutionForZoom(newZoom),
-        zoomPoint = map.getLocForPixel(xy),
-        newCenter = new ol.Loc(
-            zoomPoint.getX() + (size.width/2 - xy.x) * newRes,
-            zoomPoint.getY() - (size.height/2 - xy.y) * newRes
-        );
-    map.zoomTo(newZoom, newCenter);
+    map.setZoom(map.getZoom()-delta, map.getEvents().getPointerPosition(evt));
 
     evt.preventDefault();
     return false;
