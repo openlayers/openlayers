@@ -54,14 +54,32 @@ ol.control.Navigation.prototype.moveMap = function(evt) {
 };
 
 /**
- * @param {Object} evt
+ * @param {Event} evt
  */
 ol.control.Navigation.prototype.zoomMap = function(evt) {
     var map = this.getMap(),
         delta = ((evt.deltaY / 3) | 0);
-    if (Math.abs(delta) > 0) {
-        map.setZoom(map.getZoom() - delta);
+    if (Math.abs(delta) === 0) {
+        return;
     }
+
+    var currentZoom = /** @type {number} */ (map.getZoom()),
+        newZoom = currentZoom - delta;
+    newZoom = Math.max(newZoom, 0);
+    newZoom = Math.min(newZoom, map.getNumZoomLevels());
+    if (newZoom === currentZoom) {
+        return;
+    }
+    var xy = map.getEvents().getPointerPosition(evt),
+        size = map.getSize(),
+        newRes  = map.getResolutionForZoom(newZoom),
+        zoomPoint = map.getLocForPixel(xy),
+        newCenter = new ol.Loc(
+            zoomPoint.getX() + (size.width/2 - xy.x) * newRes,
+            zoomPoint.getY() - (size.height/2 - xy.y) * newRes
+        );
+    map.zoomTo(newZoom, newCenter);
+
     evt.preventDefault();
     return false;
 };
