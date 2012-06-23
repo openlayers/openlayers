@@ -16,7 +16,8 @@
   "define": {
     // "goog.dom.ASSUME_STANDARDS_MODE": true,
     // "goog.userAgent.ASSUME_MOBILE_WEBKIT": true,
-    "goog.DEBUG": false
+    "goog.DEBUG": false,
+    "ol.API" : true
   },
 
   "mode": "ADVANCED",

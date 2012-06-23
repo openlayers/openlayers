@@ -31,9 +31,9 @@ ol.feature = function(opt_arg){
         }
         else if (goog.isObject(opt_arg)) {
             ol.base.checkKeys(opt_arg, ['geometry', 'properties', 'type']);
-            properties = opt_arg['properties'];
-            geometry = opt_arg['geometry'];
-            type = opt_arg['type'];
+            properties = ol.API ? opt_arg['properties'] : opt_arg.properties;
+            geometry = ol.API ? opt_arg['geometry'] : opt_arg.geometry;
+            type = ol.API ? opt_arg['type'] : opt_arg.type;
         }
         else {
             throw new Error('ol.feature');

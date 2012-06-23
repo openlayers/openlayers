@@ -50,17 +50,17 @@ ol.map = function(opt_arg) {
         }
         else if (goog.isObject(opt_arg)) {
             ol.base.checkKeys(opt_arg, ['center', 'zoom', 'numZoomLevels', 'projection', 'userProjection', 'maxExtent', 'maxResolution', 'resolutions', 'renderTo', 'layers', 'controls']);
-            center = opt_arg['center'];
-            zoom = opt_arg['zoom'];
-            numZoomLevels = opt_arg['numZoomLevels'];
-            projection = opt_arg['projection'];
-            userProjection = opt_arg['userProjection'];
-            maxExtent = opt_arg['maxExtent'];
-            maxResolution = opt_arg['maxResolution'];
-            resolutions = opt_arg['resolutions'];
-            renderTo = opt_arg['renderTo'];
-            layers = opt_arg['layers'];
-            controls = opt_arg['controls'];
+            center = ol.API ? opt_arg['center'] : opt_arg.center;
+            zoom = ol.API ? opt_arg['zoom'] : opt_arg.zoom;
+            numZoomLevels = ol.API ? opt_arg['numZoomLevels'] : opt_arg.numZoomLevels;
+            projection = ol.API ? opt_arg['projection'] : opt_arg.projection;
+            userProjection = ol.API ? opt_arg['userProjection'] : opt_arg.userProjection;
+            maxExtent = ol.API ? opt_arg['maxExtent'] : opt_arg.maxExtent;
+            maxResolution = ol.API ? opt_arg['maxResolution'] : opt_arg.maxResolution;
+            resolutions = ol.API ? opt_arg['resolutions'] : opt_arg.resolutions;
+            renderTo = ol.API ? opt_arg['renderTo'] : opt_arg.renderTo;
+            layers = ol.API ? opt_arg['layers'] : opt_arg.layers;
+            controls = ol.API ? opt_arg['controls'] : opt_arg.controls;
         }
         else {
             throw new Error('ol.map');

@@ -44,10 +44,10 @@ ol.loc = function(opt_arg){
             projection = opt_arg[3];
         } else if (goog.isObject(opt_arg)) {
             ol.base.checkKeys(opt_arg, ['projection', 'x', 'y', 'z']);
-            x = opt_arg['x'];
-            y = opt_arg['y'];
-            z = opt_arg['z'];
-            projection = opt_arg['projection'];
+            x = ol.API ? opt_arg['x'] : opt_arg.x;
+            y = ol.API ? opt_arg['y'] : opt_arg.y;
+            z = ol.API ? opt_arg['z'] : opt_arg.z;
+            projection = ol.API ? opt_arg['projection'] : opt_arg.projection;
         } else {
             throw new Error(usage);
         }

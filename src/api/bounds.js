@@ -39,11 +39,11 @@ ol.bounds = function(opt_arg){
         maxY = opt_arg[3];
     } else if (goog.isObject(opt_arg)) {
         ol.base.checkKeys(opt_arg, ['minX', 'minY', 'maxX', 'maxY', 'projection']);
-        minX = opt_arg['minX'];
-        minY = opt_arg['minY'];
-        maxX = opt_arg['maxX'];
-        maxY = opt_arg['maxY'];
-        projection = ol.projection(opt_arg['projection']);
+        minX = ol.API ? opt_arg['minX'] : opt_arg.minX;
+        minY = ol.API ? opt_arg['minY'] : opt_arg.minY;
+        maxX = ol.API ? opt_arg['maxX'] : opt_arg.maxX;
+        maxY = ol.API ? opt_arg['maxY'] : opt_arg.maxY;
+        projection = ol.projection(ol.API ? opt_arg['projection'] : opt_arg.projection);
     }
     else {
         throw new Error('ol.bounds');

@@ -21,9 +21,9 @@ ol.layer.wms = function(opt_arg) {
 
     if (goog.isObject(opt_arg)) {
         ol.base.checkKeys(opt_arg, ['url', 'layers', 'format']);
-        url = opt_arg['url'];
-        layers = opt_arg['layers'];
-        format = opt_arg['format'];
+        url = ol.API ? opt_arg['url'] : opt_arg.url;
+        layers = ol.API ? opt_arg['layers'] : opt_arg.layers;
+        format = ol.API ? opt_arg['format'] : opt_arg.format;
     }
 
     var msg;

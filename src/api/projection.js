@@ -34,13 +34,13 @@ ol.projection = function(opt_arg){
         }
         else if (goog.isObject(opt_arg)) {
             ol.base.checkKeys(opt_arg, ['code', 'maxExtent', 'units']);
-            if (goog.isString(opt_arg['code'])) {
-                code = opt_arg['code'];
+            if (goog.isString(ol.API ? opt_arg['code'] : opt_arg.code)) {
+                code = ol.API ? opt_arg['code'] : opt_arg.code;
             } else {
                 throw new Error('Projection requires a string code.');
             }
-            units = opt_arg['units'];
-            extent = opt_arg['maxExtent'];
+            units = ol.API ? opt_arg['units'] : opt_arg.units;
+            extent = ol.API ? opt_arg['maxExtent'] : opt_arg.maxExtent;
         }
         else {
             throw new Error('ol.projection');

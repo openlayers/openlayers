@@ -39,11 +39,11 @@ ol.popup = function(opt_arg){
 
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
         if (goog.isObject(opt_arg)) {
-            map = opt_arg['map'];
-            anchor = opt_arg['anchor'];
-            placement = opt_arg['placement'];
-            content = opt_arg['content'];
-            template = opt_arg['template'];
+            map = ol.API ? opt_arg['map'] : opt_arg.map;
+            anchor = ol.API ? opt_arg['anchor'] : opt_arg.anchor;
+            placement = ol.API ? opt_arg['placement'] : opt_arg.placement;
+            content = ol.API ? opt_arg['content'] : opt_arg.content;
+            template = ol.API ? opt_arg['template'] : opt_arg.template;
         }
     }
 

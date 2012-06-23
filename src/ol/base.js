@@ -13,11 +13,18 @@ ol.error = function(message) {
 };
 
 /**
+ * Compilation with public API, let's accept options from external world
+ * @define {boolean}
+ */
+ol.API = true;
+
+/**
  * @define {boolean}
  */
 ol.error.VERBOSE_ERRORS = true;
 
 /**
+ * Options passed in the API from external world are checked for wrong keys
  * @define {boolean}
  */
 ol.CHECK_KEYS = true;

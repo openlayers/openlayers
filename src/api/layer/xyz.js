@@ -18,7 +18,7 @@ ol.layer.xyz = function(opt_arg) {
     var usage = 'ol.layer.xyz accepts an object with a "url" property';
 
     if (goog.isObject(opt_arg)) {
-        url = opt_arg['url'];
+        url = ol.API ? opt_arg['url'] : opt_arg.url;
     } else {
         throw new Error(usage);
     }
