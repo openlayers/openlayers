@@ -66,7 +66,7 @@ ol.Tile.prototype.createImage = function() {
  * Load the tile. A tile should loaded only once.
  */
 ol.Tile.prototype.load = function() {
-    goog.asserts.assert(!this.loaded && !this.loading_);
+    goog.asserts.assert(!this.loaded_ && !this.loading_);
     this.loading_ = true;
     this.img_.src = this.url_;
 };
