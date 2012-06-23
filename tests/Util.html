@@ -1165,8 +1165,8 @@
         testDomPrefix("testMultiWord", "testMultiWord", "DOM vendor prefix - multiple words");
         testCssPrefix("test-multi-word", "test-multi-word", "CSS vendor prefix - multiple words");
         
-        o.prop = "webkitMultiWord";
-        testDomPrefix("multiWord", "webkitMultiWord", "DOM vendor prefix - multiple words for WebKit");
+        o.prop = "WebkitMultiWord";
+        testDomPrefix("multiWord", "WebkitMultiWord", "DOM vendor prefix - multiple words for WebKit");
         testCssPrefix("multi-word", "-webkit-multi-word", "CSS vendor prefix - multiple words for WebKit");
         
         o.prop = "MozMultiWord";
@@ -1186,13 +1186,13 @@
         t.eq( OpenLayers.Util.getVendorPrefixedObj( { "test": true }, "test" ), "test", "Standard object property");
         
         OpenLayers.Util.getVendorPrefixedObj({}, "clear cache");
-        t.eq( OpenLayers.Util.getVendorPrefixedObj( { "OTest": true }, "test" ), "OTest", "Standard object property");
+        t.eq( OpenLayers.Util.getVendorPrefixedObj( { "oTest": true }, "test" ), "oTest", "Standard object property");
         
         OpenLayers.Util.getVendorPrefixedObj({}, "clear cache");
         t.eq( OpenLayers.Util.getVendorPrefixedObj( { "msTest": true }, "test" ), "msTest", "Standard object property");
         
         OpenLayers.Util.getVendorPrefixedObj({}, "clear cache");
-        t.eq( OpenLayers.Util.getVendorPrefixedObj( { "MozTest": true }, "test" ), "MozTest", "Standard object property");
+        t.eq( OpenLayers.Util.getVendorPrefixedObj( { "mozTest": true }, "test" ), "mozTest", "Standard object property");
         
         OpenLayers.Util.getVendorPrefixedObj({}, "clear cache");
         t.eq( OpenLayers.Util.getVendorPrefixedObj( { "webkitTest": true }, "test" ), "webkitTest", "Standard object property");
