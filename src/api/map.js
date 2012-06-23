@@ -34,7 +34,7 @@ ol.map = function(opt_arg) {
     /** @type {ol.Bounds|undefined} */
     var maxExtent;
     /** @type {ol.Bounds|undefined} */
-    var maxRes;
+    var maxResolution;
     /** @type {Array.<number>|undefined} */
     var resolutions;
     /** @type {Element|string|undefined} */
@@ -49,14 +49,14 @@ ol.map = function(opt_arg) {
             return opt_arg;
         }
         else if (goog.isObject(opt_arg)) {
-            ol.base.checkKeys(opt_arg, ['center', 'zoom', 'numZoomLevels', 'projection', 'userProjection', 'maxExtent', 'maxRes', 'resolutions', 'renderTo', 'layers', 'controls']);
+            ol.base.checkKeys(opt_arg, ['center', 'zoom', 'numZoomLevels', 'projection', 'userProjection', 'maxExtent', 'maxResolution', 'resolutions', 'renderTo', 'layers', 'controls']);
             center = opt_arg['center'];
             zoom = opt_arg['zoom'];
             numZoomLevels = opt_arg['numZoomLevels'];
             projection = opt_arg['projection'];
             userProjection = opt_arg['userProjection'];
             maxExtent = opt_arg['maxExtent'];
-            maxRes = opt_arg['maxRes'];
+            maxResolution = opt_arg['maxResolution'];
             resolutions = opt_arg['resolutions'];
             renderTo = opt_arg['renderTo'];
             layers = opt_arg['layers'];
@@ -87,8 +87,8 @@ ol.map = function(opt_arg) {
     if (goog.isDef(maxExtent)) {
         map.setMaxExtent(ol.bounds(maxExtent));
     }
-    if (goog.isDef(maxRes)) {
-        map.setMaxResolution(maxRes);
+    if (goog.isDef(maxResolution)) {
+        map.setMaxResolution(maxResolution);
     }
     if (goog.isDef(resolutions)) {
         map.setResolutions(resolutions);
