@@ -266,15 +266,25 @@ ol.Map.prototype.getResolutionForZoom = function(zoom) {
  * @return {ol.Loc}
  */
 ol.Map.prototype.getLocForPixel = function(pixel) {
-    return this.renderer_.getLocForPixel(pixel);
+    return goog.isDef(this.renderer_) ?
+        this.renderer_.getLocForPixel(pixel) : null;
 };
 
+/**
+ * @param {ol.Loc} loc
+ * @return {{x: number, y: number}}
+ */
+ol.Map.prototype.getPixelForLoc = function(loc) {
+    return goog.isDef(this.renderer_) ?
+        this.renderer_.getPixelForLoc(loc) : null;
+};
 
 /**
  * @return {goog.math.Size} The currently rendered map size in pixels.
  */
 ol.Map.prototype.getSize = function() {
-    return this.renderer_.getSize();
+    //TODO consider caching this when we have something like updateSize
+    return goog.isDef(this.renderer_) ? this.renderer_.getSize() : null;
 };
 
 
