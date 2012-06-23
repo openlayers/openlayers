@@ -22,12 +22,6 @@ ol.renderer.TileLayerRenderer = function(container, layer) {
     goog.base(this, container, layer);
 
     /**
-     * @type {ol.Bounds}
-     * @private
-     */
-    this.rendererdBounds_ = null;
-    
-    /**
      * @type {Array.<number>}
      */
     this.layerResolutions_ = layer.getResolutions();
@@ -57,6 +51,36 @@ ol.renderer.TileLayerRenderer = function(container, layer) {
      * @private
      */
     this.renderedResolution_ = undefined;
+
+    /**
+     * @type {number|undefined}
+     * @private
+     */
+    this.renderedTop_ = undefined;
+
+    /**
+     * @type {number|undefined}
+     * @private
+     */
+    this.renderedRight_ = undefined;
+
+    /**
+     * @type {number|undefined}
+     * @private
+     */
+    this.renderedBottom_ = undefined;
+
+    /**
+     * @type {number|undefined}
+     * @private
+     */
+    this.renderedLeft_ = undefined;
+
+    /**
+     * @type {number|undefined}
+     * @private
+     */
+    this.renderedZ_ = undefined;
     
     /**
      * @type {goog.math.Size}
@@ -118,7 +142,6 @@ ol.renderer.TileLayerRenderer.prototype.draw = function(center, resolution) {
     if (resolution !== this.renderedResolution_) {
         this.changeResolution_(center, resolution);
     }
-    this.renderedResolution_ = resolution;
     var pair = this.getPreferredResAndZ_(resolution);
     var tileResolution = pair[0];
     var tileZ = pair[1];
@@ -134,8 +157,8 @@ ol.renderer.TileLayerRenderer.prototype.draw = function(center, resolution) {
     var centerY = center.getY();
     var mapMinX = centerX - halfMapWidth;
     var mapMaxY = centerY + halfMapHeight;
-    var pxOffsetX = (mapMinX - this.tileOrigin_[0]) / resolution;
-    var pxOffsetY = (this.tileOrigin_[1] - mapMaxY) / resolution;
+    var pxOffsetX = Math.round((mapMinX - this.tileOrigin_[0]) / resolution);
+    var pxOffsetY = Math.round((this.tileOrigin_[1] - mapMaxY) / resolution);
     
     // this gives us the desired size in fractional pixels
     var pxTileWidth = this.tileSize_[0] / scale;
@@ -174,6 +197,7 @@ ol.renderer.TileLayerRenderer.prototype.draw = function(center, resolution) {
 
     var tileX, tileY, tile, img, pxTileRight, pxTileBottom, xyz, append;
     var fragment = document.createDocumentFragment();
+    var newTiles = false;
     for (var i=0; i<numTilesWide; ++i) {
         pxTileTop = pxMinY;
         tileX = leftTileX + (i * xRight);
@@ -199,7 +223,8 @@ ol.renderer.TileLayerRenderer.prototype.draw = function(center, resolution) {
                 }
                 this.renderedTiles_[xyz] = tile;
                 img = tile.getImg();
-                fragment.appendChild(img);
+                goog.dom.appendChild(fragment, img);
+                newTiles = true;
             } else {
                 img = tile.getImg();
             }
@@ -212,33 +237,38 @@ ol.renderer.TileLayerRenderer.prototype.draw = function(center, resolution) {
             pxTileTop = pxTileBottom;
         }
         pxTileLeft = pxTileRight;
-    }    
-    this.container_.appendChild(fragment);
-    this.removeInvisibleTiles_(leftTileX, topTileY, tileX, tileY, tileZ);
+    }
+    if (newTiles) {
+        this.target_.appendChild(fragment);
+    }
+    this.renderedResolution_ = resolution;
+    this.renderedTop_ = topTileY;
+    this.renderedRight_ = tileX;
+    this.renderedBottom_ = tileY;
+    this.renderedLeft_ = leftTileX;
+    this.renderedZ_ = tileZ;
+    this.removeInvisibleTiles_();
 };
 
 
 
 /**
- * Get rid of tiles outside the newly rendered extent.
- *
- * @param {number|undefined} left The far left tile x coord.
- * @param {number|undefined} top The far top tile y coord.
- * @param {number|undefined} right The far right tile x coord.
- * @param {number|undefined} bottom The far bottom tile y coord.
- * @param {number|undefined} renderedZ The z coord for the newly rendered tiles.
- * @private
+ * Get rid of tiles outside the rendered extent.
  */
-ol.renderer.TileLayerRenderer.prototype.removeInvisibleTiles_ = function(left, top, right, bottom, renderedZ) {
+ol.renderer.TileLayerRenderer.prototype.removeInvisibleTiles_ = function() {
     var index, prune, x, y, z, tile;
     var xRight = (this.xRight_ > 0);
     var yDown = (this.yDown_ > 0);
+    var top = this.renderedTop_;
+    var right = this.renderedRight_;
+    var bottom = this.renderedBottom_;
+    var left = this.renderedLeft_;
     for (var xyz in this.renderedTiles_) {
         index = xyz.split(",");
         x = +index[0];
         y = +index[1];
         z = +index[2];
-        prune = renderedZ !== z || 
+        prune = this.renderedZ_ !== z || 
             // beyond on the left side
             (xRight ? x < left : x > left) ||
             // beyond on the right side
@@ -249,8 +279,8 @@ ol.renderer.TileLayerRenderer.prototype.removeInvisibleTiles_ = function(left, t
             (yDown ? y > bottom : y < bottom);
         if (prune) {
             tile = this.renderedTiles_[xyz];
-            this.container_.removeChild(tile.getImg());
             delete this.renderedTiles_[xyz];
+            this.target_.removeChild(tile.getImg());
         }
     }
 };
@@ -263,12 +293,8 @@ ol.renderer.TileLayerRenderer.prototype.removeInvisibleTiles_ = function(left, t
  * @param {number} resolution New resolution.
  */
 ol.renderer.TileLayerRenderer.prototype.changeResolution_ = function(center, resolution) {
-    var tile;
-    for (var xyz in this.renderedTiles_) {
-        tile = this.renderedTiles_[xyz];
-        this.container_.removeChild(tile.getImg());
-        delete this.renderedTiles_[xyz];
-    }
+    this.renderedTiles_ = {};
+    goog.dom.removeChildren(this.target_);
 };
 
 
