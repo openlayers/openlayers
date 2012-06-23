@@ -98,7 +98,12 @@ describe("ol.popup", function() {
         var container = document.createElement('div');
         container.setAttribute('id', 'map');
         document.documentElement.appendChild(container);
-        var map = ol.map({renderTo: 'map'});
+        var map = ol.map({
+            renderTo: 'map',
+            layers: [ol.layer.osm()],
+            center: [0, 0],
+            zoom: 1
+        });
         var popup = ol.popup({
             map: map,
             anchor: ol.loc([10,20]),
@@ -125,7 +130,12 @@ describe("ol.popup", function() {
         var container = document.createElement('div');
         container.setAttribute('id', 'map');
         document.documentElement.appendChild(container);
-        var map = ol.map({renderTo: 'map'});
+        var map = ol.map({
+            renderTo: 'map',
+            layers: [ol.layer.osm()],
+            center: [0, 0],
+            zoom: 1
+        });
         var popup = ol.popup({
             map: map,
             anchor: ol.loc([10,20]),
@@ -151,7 +161,12 @@ describe("ol.popup", function() {
         var container = document.createElement('div');
         container.setAttribute('id', 'map');
         document.documentElement.appendChild(container);
-        var map = ol.map({renderTo: 'map'});
+        var map = ol.map({
+            renderTo: 'map',
+            layers: [ol.layer.osm()],
+            center: [0, 0],
+            zoom: 1
+        });
         var popup = ol.popup({
             map: map
         });
@@ -175,7 +190,12 @@ describe("ol.popup", function() {
         var container = document.createElement('div');
         container.setAttribute('id', 'map');
         document.documentElement.appendChild(container);
-        var map = ol.map({renderTo: 'map'});
+        var map = ol.map({
+            renderTo: 'map',
+            layers: [ol.layer.osm()],
+            center: [0, 0],
+            zoom: 1
+        });
         var point = ol.geom.point([21, 4]);
         var feat = ol.feature().geometry(point).set('name','foo');
         
