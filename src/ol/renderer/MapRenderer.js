@@ -90,9 +90,23 @@ ol.renderer.MapRenderer.prototype.getLocForPixel = function(pixel) {
         resolution = this.renderedResolution_,
         size = goog.style.getSize(this.container_);
     return new ol.Loc(
-        center.getX() - (size.width/2 - pixel.x) * resolution,
-        center.getY() + (size.height/2 - pixel.y) * resolution
+        center.getX() - (size.width/2 - pixel.x)*resolution,
+        center.getY() + (size.height/2 - pixel.y)*resolution
     );
+};
+
+/**
+ * @param {ol.Loc} loc
+ * @return {{x: number, y: number}}
+ */
+ol.renderer.MapRenderer.prototype.getPixelForLoc = function(loc) {
+    var center = this.renderedCenter_,
+        resolution = this.renderedResolution_,
+        size = this.getSize();
+    return {
+        x: (size.width*resolution/2 + loc.getX() - center.getX())/resolution,
+        y: (size.height*resolution/2 - loc.getY() + center.getY())/resolution
+    };
 };
 
 /**

@@ -493,16 +493,6 @@ ol.Map.prototype.zoomOut = function() {
 };
 
 /**
- * @param {ol.geom.Point} loc the location being requested 
- * @returns {Array} the position of the location in pixel space
- */
-ol.Map.prototype.getViewportPosition = function(loc) {
-    //TODO: delegate this to the renderers
-    //stub for now to get popups working
-    return [200, 300];
-};
-
-/**
  * @returns {Element} the map overlay element
  */
 ol.Map.prototype.getMapOverlay = function() {

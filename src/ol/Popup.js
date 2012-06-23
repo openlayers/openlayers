@@ -162,7 +162,7 @@ ol.Popup.prototype.generateContent_ = function() {
             return this.template_; //stub to return something
         } else {
             ol.error('ol.Popup unabale to generate any content');
-            return '<p>no content</p>'
+            return '<p>no content</p>';
         }
     }
 };
@@ -243,8 +243,8 @@ ol.Popup.prototype.setAnchorOffset_ = function() {
     } else {
         this.pos_ = new ol.geom.Point(this.anchor_.getX(), this.anchor_.getY());
     }
-    
-    var popupPosPx = this.map_.getViewportPosition(this.pos_);
+    var pos = /** @type {ol.Loc} */ (this.pos_);
+    var popupPosPx = this.map_.getPixelForLoc(pos);
     var popupSize = goog.style.getSize(this.container_);
     
     switch(this.placement_) {
@@ -272,7 +272,7 @@ ol.Popup.prototype.setAnchorOffset_ = function() {
                 popupPosPx[0] += this.arrowOffset_;
             }
             break;
-    };
+    }
     this.moveTo_(popupPosPx);
     
 };
