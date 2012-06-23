@@ -48,6 +48,10 @@ goog.exportSymbol('ol.layer.XYZ', ol.layer.XYZ);
 goog.exportSymbol('ol.layer.osm', ol.layer.osm);
 goog.exportSymbol('ol.layer.OSM', ol.layer.OSM);
 
+// ol.layer.wms
+goog.exportSymbol('ol.layer.wms', ol.layer.wms);
+goog.exportSymbol('ol.layer.WMS', ol.layer.WMS);
+
 // ol.feature
 goog.exportSymbol('ol.feature', ol.feature);
 goog.exportSymbol('ol.Feature', ol.Feature);
