@@ -1,10 +1,10 @@
 goog.provide('ol.event');
 goog.provide('ol.event.Events');
 
+goog.require('goog.object');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.events.EventTarget');
-goog.require('goog.events.Listener');
 goog.require('goog.style');
 
 /**
@@ -294,7 +294,5 @@ ol.event.Events.prototype.getPointerPosition = function(evt) {
  */
 ol.event.Events.prototype.destroy = function() {
     this.setElement(null);
-    for (var p in this) {
-        delete this[p];
-    }
+    goog.object.clear(this);
 };
