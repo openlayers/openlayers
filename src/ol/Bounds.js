@@ -4,7 +4,7 @@ goog.require('ol.UnreferencedBounds');
 goog.require('ol.Loc');
 goog.require('ol.Projection');
 
-goog.require('goog.string.format')
+goog.require('goog.string.format');
 
 /**
  * @export
