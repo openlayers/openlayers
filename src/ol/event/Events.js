@@ -146,7 +146,7 @@ ol.event.Events.prototype.getElement = function() {
  * Attach this instance to a DOM element. When called, all browser events fired
  * on the provided element will be relayed by this instance.
  *
- * @param {Element} element A DOM element to attach
+ * @param {Element|Node} element A DOM element to attach
  *     browser events to. If called without this argument, all browser events
  *     will be detached from the element they are currently attached to.
  */
@@ -161,7 +161,7 @@ ol.event.Events.prototype.setElement = function(element) {
         this.destroySequences();
         delete this.element_;
     }
-    this.element_ = element || null;
+    this.element_ = /** @type {Element} */ (element) || null;
     if (goog.isDefAndNotNull(element)) {
         this.createSequences();
         for (t in types) {

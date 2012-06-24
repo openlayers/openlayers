@@ -87,13 +87,13 @@ ol.Map = function() {
     
     /**
      * @private
-     * @type {Element}
+     * @type {Node}
      */
     this.mapOverlay_ = null;
     
     /**
      * @private
-     * @type {Element}
+     * @type {Node}
      */
     this.staticOverlay_ = null;
     
@@ -433,8 +433,11 @@ ol.Map.prototype.setContainer = function(container) {
  * Check if everything is ready.  Render if so.
  */
 ol.Map.prototype.conditionallyRender = function() {
-    if (!goog.isNull(this.layers_) && goog.isDef(this.zoom_) && !goog.isNull(this.center_)) {
-        this.renderer_.draw(this.layers_, this.center_, this.getResolutionForZoom(this.zoom_));
+    if (goog.isDef(this.renderer_) && !goog.isNull(this.layers_) &&
+       goog.isDef(this.zoom_) && !goog.isNull(this.center_)) {
+        this.renderer_.draw(this.layers_, this.center_,
+            this.getResolutionForZoom(this.zoom_)
+        );
     }
 };
 
@@ -447,13 +450,10 @@ ol.Map.prototype.getViewport = function() {
 
 ol.Map.prototype.setViewport = function() {
     if (!this.viewport_) {
-        this.viewport_ = goog.dom.createDom('div', {
+        this.viewport_ = /** @type {Element} */ (goog.dom.createDom('div', {
             'class': 'ol-viewport',
-            'style': 'height:100%;width:100%;position:relative;top:0;left:0;overflow:hidden'
-        });
-        this.mapOverlay_ = goog.dom.createDom('div', 'ol-overlay-map');
-        this.staticOverlay_ = goog.dom.createDom('div', 'ol-overlay-static');
-        goog.dom.append(this.viewport_, this.mapOverlay_, this.staticOverlay_);
+            'style': 'width:100%;height:100%;top:0;left:0;position:relative;overflow:hidden'
+        }));
     }
     this.events_.setElement(this.viewport_);
     goog.dom.appendChild(this.container_, this.viewport_);
@@ -463,6 +463,28 @@ ol.Map.prototype.createRenderer = function() {
     var Renderer = ol.renderer.MapRenderer.pickRendererType(
         ol.Map.preferredRenderers);
     this.renderer_ = new Renderer(this.viewport_);
+    
+    //TODO Consider making a renderer responsible for managing the overlays
+    var viewport = this.viewport_;
+    if (!this.mapOverlay_ && !this.staticOverlay_) {
+        var staticCls = 'ol-overlay-static';
+        this.mapOverlay_ = goog.dom.createDom('div', 'ol-overlay-map');
+        this.staticOverlay_ = goog.dom.createDom('div', {
+            'class': staticCls,
+            'style': 'width:100%;height:100%;top:0;left:0;position:absolute'
+        });
+        // Prevent click events on links in the static overlay from getting 
+        // through to listeners. This is not registered as priority listener,
+        // so priority listeners can still get the click event.
+        this.events_.register('click', function(evt) {
+            var node = evt.target;
+            return !(node.nodeName === 'A' &&
+                goog.dom.getAncestorByClass(node, staticCls));
+        });
+    }
+    if (!goog.isNull(viewport)) {
+        goog.dom.append(viewport, this.mapOverlay_, this.staticOverlay_);
+    } 
 };
 
 /**
@@ -497,14 +519,14 @@ ol.Map.prototype.zoomOut = function() {
 };
 
 /**
- * @returns {Element} the map overlay element
+ * @returns {Node} the map overlay element
  */
 ol.Map.prototype.getMapOverlay = function() {
     return this.mapOverlay_;
 };
 
 /**
- * @returns {Element} the static overlay element
+ * @returns {Node} the static overlay element
  */
 ol.Map.prototype.getStaticOverlay = function() {
     return this.staticOverlay_;
