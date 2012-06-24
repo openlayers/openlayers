@@ -2,6 +2,7 @@ goog.provide("ol");
 
 goog.require('ol.base');
 goog.require('ol.bounds');
+goog.require('ol.control.Attribution');
 goog.require('ol.control.Navigation');
 goog.require('ol.control.Zoom');
 goog.require('ol.event.Drag');

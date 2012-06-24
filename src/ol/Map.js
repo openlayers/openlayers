@@ -140,7 +140,7 @@ ol.Map.DEFAULT_TILE_SIZE = 256;
   @const
   @type {Array.<string>}
  */
-ol.Map.DEFAULT_CONTROLS = ["navigation", "zoom"];
+ol.Map.DEFAULT_CONTROLS = ["attribution", "navigation", "zoom"];
 
 /**
  * @return {ol.Loc} Map center in map projection.

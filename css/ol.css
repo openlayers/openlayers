@@ -117,7 +117,7 @@
     margin-top: -36px;
 }
 
-div.ol-control-zoom {
+.ol-control-zoom {
     position: absolute;
     top: 8px;
     left: 8px;
@@ -125,7 +125,7 @@ div.ol-control-zoom {
     border-radius: 4px;
     padding: 2px;
 }
-div.ol-control-zoom a {
+.ol-control-zoom a {
     display: block;
     margin: 1px;
     padding: 0;
@@ -142,19 +142,36 @@ div.ol-control-zoom a {
     background: rgba(0, 60, 136, 0.5);
     filter: alpha(opacity=80);
 }
-div.ol-control-zoom a:hover {
+.ol-control-zoom a:hover {
     background: #130085; /* fallback for IE */
     background: rgba(0, 60, 136, 0.7);
     filter: alpha(opacity=100);
 }
 @media only screen and (max-width: 600px) {
-    div.ol-control-zoom a:hover {
+    .ol-control-zoom a:hover {
         background: rgba(0, 60, 136, 0.5);
     }
 }
-a.ol-control-zoom-in {
+.ol-control-zoom-in {
     border-radius: 4px 4px 0 0;
 }
-a.ol-control-zoom-out {
+.ol-control-zoom-out {
     border-radius: 0 0 4px 4px;
+}
+.ol-control-attribution {
+    position: absolute;
+    font-size: 10px;
+    text-align: right;
+    color: #eeeeee;
+    bottom: 0;
+    right: 0;
+    background: #130085; /* fallback for IE - IE6 requires background shorthand*/
+    background: rgba(0, 60, 136, 0.3);
+    filter: alpha(opacity=30);
+    font-family: 'Lucida Grande', Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif;
+    padding: 2px 4px;
+}
+.ol-control-attribution a {
+    color: white;
+    text-decoration: none;
 }

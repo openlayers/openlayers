@@ -9,7 +9,12 @@ goog.require('ol.layer.XYZ');
  * @constructor
  * @extends {ol.layer.XYZ}
  */
-ol.layer.OSM = function() { 
+ol.layer.OSM = function() {
+    
+    //TODO Is this attribution still correct?
+    /** @inheritDoc */
+    this.attribution_ = "Data CC-By-SA by <a target='_blank' href='http://openstreetmap.org/'>OpenStreetMap</a>";
+    
     goog.base(this, 'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png');
 };
 
