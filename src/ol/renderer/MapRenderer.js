@@ -89,10 +89,9 @@ ol.renderer.MapRenderer.prototype.getLocForPixel = function(pixel) {
     var center = this.renderedCenter_,
         resolution = this.renderedResolution_,
         size = goog.style.getSize(this.container_);
-    return new ol.Loc(
-        center.getX() - (size.width/2 - pixel.x)*resolution,
-        center.getY() + (size.height/2 - pixel.y)*resolution,
-        undefined, this.renderedCenter_.getProjection()
+    return center.add(
+        (pixel.x - size.width/2) * resolution,
+        (size.height/2 - pixel.y) * resolution
     );
 };
 

@@ -121,6 +121,22 @@ ol.Loc.prototype.doTransform = function(proj) {
 };
 
 /**
+ * Adds the passed x, y(, z) delta to a new location.
+ *
+ * @param {number} x
+ * @param {number} y
+ * @param {number=} opt_z
+ * @returns {ol.Loc}
+ */
+ol.Loc.prototype.add = function(x, y, opt_z) {
+    var newZ;
+    if (goog.isDef(this.z_)) {
+        newZ = (opt_z || 0) + this.z_;
+    }
+    return new ol.Loc(this.x_ + x, this.y_ + y, newZ, this.projection_);
+};
+
+/**
  * Clean up.
  * @export
  */
