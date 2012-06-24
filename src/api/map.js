@@ -33,7 +33,7 @@ ol.map = function(opt_arg) {
     var userProjection;
     /** @type {ol.Bounds|undefined} */
     var maxExtent;
-    /** @type {ol.Bounds|undefined} */
+    /** @type {number|undefined} */
     var maxResolution;
     /** @type {Array.<number>|undefined} */
     var resolutions;
