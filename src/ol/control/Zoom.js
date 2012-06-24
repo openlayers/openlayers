@@ -1,6 +1,8 @@
 goog.provide('ol.control.Zoom');
 
+goog.require('ol.event');
 goog.require('ol.control.Control');
+
 goog.require('goog.dom');
 
 
@@ -58,7 +60,8 @@ ol.control.Zoom.prototype.setMap = function(map) {
 ol.control.Zoom.prototype.activate = function() {
     var active = goog.base(this, 'activate');
     if (active) {
-        this.map_.getEvents().register("click", this.handle, this);
+        this.map_.getEvents().register('click', this.handle, this);
+        this.map_.getEvents().register('keypress', this.handle, this);
     }
     return active;
 };
@@ -67,7 +70,8 @@ ol.control.Zoom.prototype.activate = function() {
 ol.control.Zoom.prototype.deactivate = function() {
     var inactive = goog.base(this, 'deactivate');
     if (inactive) {
-        this.map_.getEvents().unregister("click", this.handle, this);
+        this.map_.getEvents().unregister('click', this.handle, this);
+        this.map_.getEvents().unregister('keypress', this.handle, this);
     }
     return inactive;
 };
@@ -78,16 +82,15 @@ ol.control.Zoom.prototype.deactivate = function() {
 ol.control.Zoom.prototype.handle = function(evt) {
     var target = /** @type {Node} */ (evt.target),
         handled = false;
-    if (goog.dom.getAncestorByClass(target, ol.control.Zoom.RES.IN_CLS)) {
-        this.map_.zoomIn();
-        handled = true;
-    } else
-    if (goog.dom.getAncestorByClass(target, ol.control.Zoom.RES.OUT_CLS)) {
-        this.map_.zoomOut();
-        handled = true;
-    }
-    if (handled) {
-        evt.preventDefault();
+    if (evt.type === 'click' || ol.event.isEnterOrSpace(evt)) {
+        if (goog.dom.getAncestorByClass(target, ol.control.Zoom.RES.IN_CLS)) {
+            this.map_.zoomIn();
+            handled = true;
+        } else
+        if (goog.dom.getAncestorByClass(target, ol.control.Zoom.RES.OUT_CLS)) {
+            this.map_.zoomOut();
+            handled = true;
+        }
     }
     return !handled;
 };
