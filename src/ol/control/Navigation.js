@@ -62,10 +62,7 @@ ol.control.Navigation.prototype.zoomMap = function(evt) {
     if (Math.abs(delta) === 0) {
         return;
     }
-
     map.setZoom(map.getZoom()-delta, map.getEvents().getPointerPosition(evt));
-
-    evt.preventDefault();
     return false;
 };
 
