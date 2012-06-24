@@ -2,6 +2,7 @@ goog.provide('ol.event.Scroll');
 
 goog.require('ol.event.ISequence');
 goog.require('ol.event');
+
 goog.require('goog.events.MouseWheelHandler');
 
 
@@ -37,6 +38,7 @@ ol.event.Scroll = function(target) {
 /** @inheritDoc */
 ol.event.Scroll.prototype.destroy = function() {
     this.handler_.dispose();
+    delete this.handler_;
 };
 
 

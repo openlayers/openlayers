@@ -1,6 +1,8 @@
 goog.provide('ol.control');
 goog.provide('ol.control.Control');
 
+goog.require('goog.object');
+
 
 /**
  * @enum {Object}
@@ -75,4 +77,9 @@ ol.control.Control.prototype.deactivate = function() {
     var returnValue = this.active_;
     this.active_ = true;
     return returnValue;
+};
+
+ol.control.Control.prototype.destroy = function() {
+    this.deactivate();
+    goog.object.clear(this);
 };
