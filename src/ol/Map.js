@@ -504,6 +504,13 @@ ol.Map.prototype.getMapOverlay = function() {
 };
 
 /**
+ * @returns {Element} the static overlay element
+ */
+ol.Map.prototype.getStaticOverlay = function() {
+    return this.staticOverlay_;
+};
+
+/**
  * @export
  */
 ol.Map.prototype.destroy = function() {
