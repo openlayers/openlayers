@@ -351,6 +351,9 @@ ol.layer.TileLayer.prototype.getTile = function(url, bounds) {
  * @param {number} z
  */
 ol.layer.TileLayer.prototype.getTileForXYZ = function(x, y, z) {
+    if (!this.validXY(x, y, z)) {
+        return null;
+    }
     var tileUrl = this.getTileUrl(x, y, z);
     var tile = this.cache_.get(tileUrl);
     if (!goog.isDef(tile)) {
@@ -358,6 +361,48 @@ ol.layer.TileLayer.prototype.getTileForXYZ = function(x, y, z) {
         this.cache_.set(tileUrl, tile);
     }
     return tile;
+};
+
+/**
+ * Determine if the tile x/y/z is with the layer extent. Return
+ * true if the layer has no extent.
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ * @return {boolean}
+ */
+ol.layer.TileLayer.prototype.validXY = function(x, y, z) {
+    var extent = this.getExtent();
+    if (goog.isNull(extent)) {
+        return true;
+    }
+    var extentMinX = extent.getMinX(),
+        extentMinY = extent.getMinY(),
+        extentMaxX = extent.getMaxX(),
+        extentMaxY = extent.getMaxY();
+    var tileOrigin = this.getTileOrigin(),
+        tileOriginX = tileOrigin[0],
+        tileOriginY = tileOrigin[1];
+    var resolution = this.getResolutions()[z];
+    var tileWidth = this.tileWidth_ * resolution,
+        tileHeight = this.tileHeight_ * resolution;
+    var minX, maxX;
+    if (this.xRight_) {
+        minX = Math.floor((extentMinX - tileOriginX) / tileWidth);
+        maxX = Math.ceil((extentMaxX - tileOriginX) / tileWidth) - 1;
+    } else {
+        minX = Math.floor((tileOriginX - extentMaxX) / tileWidth);
+        maxX = Math.ceil((tileOriginX - extentMinX) / tileWidth) - 1;
+    }
+    var minY, maxY;
+    if (this.yDown_) {
+        minY = Math.floor((tileOriginY - extentMaxY) / tileHeight);
+        maxY = Math.ceil((tileOriginY - extentMinY) / tileHeight) - 1;
+    } else {
+        minY = Math.floor((extentMinY - tileOriginY) / tileHeight);
+        maxY = Math.ceil((extentMaxY - tileOriginY) / tileHeight) - 1;
+    }
+    return x >= minX && x <= maxX && y >= minY && y <= maxY;
 };
 
 /**

@@ -215,24 +215,29 @@ ol.renderer.TileLayerRenderer.prototype.draw = function(center, resolution) {
             } else {
                 pxTileBottom = pxTileTop + pxTileHeight;
             }
+            img = null;
             tile = this.renderedTiles_[xyz];
             if (!tile) {
                 tile = this.layer_.getTileForXYZ(tileX, tileY, tileZ);
-                if (!tile.isLoaded() && !tile.isLoading()) {
-                    tile.load();
+                if (tile) {
+                    if (!tile.isLoaded() && !tile.isLoading()) {
+                        tile.load();
+                    }
+                    this.renderedTiles_[xyz] = tile;
+                    img = tile.getImg();
+                    goog.dom.appendChild(fragment, img);
+                    newTiles = true;
                 }
-                this.renderedTiles_[xyz] = tile;
-                img = tile.getImg();
-                goog.dom.appendChild(fragment, img);
-                newTiles = true;
             } else {
                 img = tile.getImg();
             }
-            img.style.top = pxTileTop + "px";
-            img.style.left = pxTileLeft + "px";
-            if (scale !== 1) {
-                img.style.height = (pxTileRight - pxTileLeft) + "px";
-                img.style.width = (pxTileBottom - pxTileTop) + "px";
+            if (img) {
+                img.style.top = pxTileTop + "px";
+                img.style.left = pxTileLeft + "px";
+                if (scale !== 1) {
+                    img.style.height = (pxTileRight - pxTileLeft) + "px";
+                    img.style.width = (pxTileBottom - pxTileTop) + "px";
+                }
             }
             pxTileTop = pxTileBottom;
         }

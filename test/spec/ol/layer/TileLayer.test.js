@@ -397,4 +397,487 @@ describe('ol.layer.TileLayer', function() {
         });
 
     });
+
+    describe('test x y validity', function() {
+        var layer;
+
+        beforeEach(function() {
+            layer = new ol.layer.TileLayer();
+            layer.setTileOrigin(0, 0);
+            layer.setResolutions([1, 0.5, 0.25]);
+        });
+
+        describe('tile index goes right/down', function() {
+
+            beforeEach(function() {
+                layer.setXRight(true);
+                layer.setYDown(true);
+            });
+
+            describe('extent is right/down of origin', function() {
+
+                describe('extent and tile boundaries match', function() {
+
+                    beforeEach(function() {
+                        layer.setExtent(new ol.Bounds(128, -384, 384, -128));
+                    });
+
+                    it('detects valid x y', function() {
+                        var v;
+                        v = layer.validXY(0, 0, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(1, 0, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(2, 0, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(3, 0, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(0, 1, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(1, 1, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(2, 1, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(3, 1, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(0, 2, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(1, 2, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(2, 2, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(3, 2, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(0, 3, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(1, 3, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(2, 3, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(3, 3, 1);
+                        expect(v).toBeFalsy();
+                    });
+                });
+
+                describe('extent and tile boundaries do not match', function() {
+
+                    beforeEach(function() {
+                        layer.setExtent(new ol.Bounds(192, -448, 448, -192));
+                    });
+
+                    it('detects valid x y', function() {
+                        var v;
+                        v = layer.validXY(0, 0, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(1, 0, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(2, 0, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(3, 0, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(4, 0, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(0, 1, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(1, 1, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(2, 1, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(3, 1, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(4, 1, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(0, 2, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(1, 2, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(2, 2, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(3, 2, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(4, 2, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(0, 3, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(1, 3, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(2, 3, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(3, 3, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(4, 3, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(0, 4, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(1, 4, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(2, 4, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(3, 4, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(4, 4, 1);
+                        expect(v).toBeFalsy();
+                    });
+                });
+
+            });
+
+            describe('extent is left/up of origin', function() {
+
+                describe('extent and tile boundaries match', function() {
+
+                    beforeEach(function() {
+                        layer.setExtent(new ol.Bounds(-384, 128, -128, 384));
+                    });
+
+                    it('detects valid x y', function() {
+                        var v;
+                        v = layer.validXY(-1, -1, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-2, -1, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-3, -1, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-4, -1, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(-1, -2, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-2, -2, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-3, -2, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-4, -2, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(-1, -3, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-2, -3, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-3, -3, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-4, -3, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(-1, -4, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-2, -4, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-3, -4, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-4, -4, 1);
+                        expect(v).toBeFalsy();
+                    });
+                });
+
+                describe('extent and tile boundaries do not match', function() {
+
+                    beforeEach(function() {
+                        layer.setExtent(new ol.Bounds(-448, 192, -192, 448));
+                    });
+
+                    it('detects valid x y', function() {
+                        var v;
+                        v = layer.validXY(-1, -1, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-2, -1, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-3, -1, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-4, -1, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-5, -1, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(-1, -2, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-2, -2, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-3, -2, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-4, -2, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-5, -2, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(-1, -3, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-2, -3, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-3, -3, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-4, -3, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-5, -3, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(-1, -4, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-2, -4, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-3, -4, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-4, -4, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-5, -4, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(-1, -5, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-2, -5, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-3, -5, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-4, -5, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-5, -5, 1);
+                        expect(v).toBeFalsy();
+                    });
+                });
+            });
+        });
+
+        describe('tile index goes left/up', function() {
+
+            beforeEach(function() {
+                layer.setXRight(false);
+                layer.setYDown(false);
+            });
+
+            describe('extent is right/down of origin', function() {
+
+                describe('extent and tile boundaries match', function() {
+
+                    beforeEach(function() {
+                        layer.setExtent(new ol.Bounds(128, -384, 384, -128));
+                    });
+
+                    it('detects valid x y', function() {
+                        var v;
+                        v = layer.validXY(-1, -1, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-2, -1, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-3, -1, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-4, -1, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(-1, -2, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-2, -2, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-3, -2, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-4, -2, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(-1, -3, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-2, -3, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-3, -3, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-4, -3, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(-1, -4, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-2, -4, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-3, -4, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-4, -4, 1);
+                        expect(v).toBeFalsy();
+                    });
+                });
+
+                describe('extent and tile boundaries do not match', function() {
+
+                    beforeEach(function() {
+                        layer.setExtent(new ol.Bounds(192, -448, 448, -192));
+                    });
+
+                    it('detects valid x y', function() {
+                        var v;
+                        v = layer.validXY(-1, -1, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-2, -1, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-3, -1, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-4, -1, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-5, -1, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(-1, -2, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-2, -2, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-3, -2, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-4, -2, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-5, -2, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(-1, -3, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-2, -3, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-3, -3, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-4, -3, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-5, -3, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(-1, -4, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-2, -4, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-3, -4, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-4, -4, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(-5, -4, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(-1, -5, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-2, -5, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-3, -5, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-4, -5, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(-5, -5, 1);
+                        expect(v).toBeFalsy();
+                    });
+                });
+            });
+
+            describe('extent is left/up of origin', function() {
+
+                describe('extent and tile boundaries match', function() {
+
+                    beforeEach(function() {
+                        layer.setExtent(new ol.Bounds(-384, 128, -128, 384));
+                    });
+
+                    it('detects valid x y', function() {
+                        var v;
+                        v = layer.validXY(0, 0, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(1, 0, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(2, 0, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(3, 0, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(0, 1, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(1, 1, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(2, 1, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(3, 1, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(0, 2, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(1, 2, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(2, 2, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(3, 2, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(0, 3, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(1, 3, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(2, 3, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(3, 3, 1);
+                        expect(v).toBeFalsy();
+                    });
+                });
+
+                describe('extent and tile boundaries do not match', function() {
+
+                    beforeEach(function() {
+                        layer.setExtent(new ol.Bounds(-448, 192, -192, 448));
+                    });
+
+                    it('detects valid x y', function() {
+                        var v;
+                        v = layer.validXY(0, 0, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(1, 0, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(2, 0, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(3, 0, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(4, 0, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(0, 1, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(1, 1, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(2, 1, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(3, 1, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(4, 1, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(0, 2, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(1, 2, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(2, 2, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(3, 2, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(4, 2, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(0, 3, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(1, 3, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(2, 3, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(3, 3, 1);
+                        expect(v).toBeTruthy();
+                        v = layer.validXY(4, 3, 1);
+                        expect(v).toBeFalsy();
+
+                        v = layer.validXY(0, 4, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(1, 4, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(2, 4, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(3, 4, 1);
+                        expect(v).toBeFalsy();
+                        v = layer.validXY(4, 4, 1);
+                        expect(v).toBeFalsy();
+                    });
+                });
+            });
+        });
+    });
 });
