@@ -3,6 +3,7 @@ goog.provide('ol.event.Drag');
 goog.require('ol.event');
 goog.require('ol.event.ISequence');
 
+goog.require('goog.functions');
 goog.require('goog.fx.Dragger');
 goog.require('goog.fx.DragEvent');
 goog.require('goog.fx.Dragger.EventType');
@@ -30,11 +31,9 @@ ol.event.Drag = function(target) {
     this.dragger_ = dragger;
     
     // We want to swallow the click event that gets fired after dragging.
-    var stopClickRegistered = false;
-    function stopClick() {
-        target.unregister('click', stopClick, undefined, true);
-        stopClickRegistered = false;
-        return false;
+    var newSequence;
+    function unregisterClickStopper() {
+        target.unregister('click', goog.functions.FALSE, undefined, true);
     }
     
     dragger.defaultAction = function(x, y) {};                
@@ -43,6 +42,7 @@ ol.event.Drag = function(target) {
         evt.type = 'dragstart';
         previousX = evt.clientX;
         previousY = evt.clientY;
+        newSequence = true;
         target.triggerEvent(evt.type, evt);
     });
     dragger.addEventListener(goog.fx.Dragger.EventType.DRAG, function(evt) {
@@ -51,12 +51,12 @@ ol.event.Drag = function(target) {
         evt.deltaY = evt.clientY - previousY;
         previousX = evt.clientX;
         previousY = evt.clientY;
-        if (!stopClickRegistered) {
+        if (newSequence) {
             // Once we are in the drag sequence, we know that we need to
             // get rid of the click event that gets fired when we are done
             // dragging.
-            target.register('click', stopClick, undefined, true);
-            stopClickRegistered = true;
+            target.register('click', goog.functions.FALSE, undefined, true);
+            newSequence = false;
         }
         target.triggerEvent(evt.type, evt);
     });
@@ -64,10 +64,12 @@ ol.event.Drag = function(target) {
         evt.target = element;
         evt.type = 'dragend';
         target.triggerEvent(evt.type, evt);
+        // Unregister the click stopper in the next cycle
+        window.setTimeout(unregisterClickStopper, 0);
     });
     // Don't swallow the click event if our sequence cancels early.
     dragger.addEventListener(
-        goog.fx.Dragger.EventType.EARLY_CANCEL, stopClick
+        goog.fx.Dragger.EventType.EARLY_CANCEL, unregisterClickStopper
     );  
 };
 
