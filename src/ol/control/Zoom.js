@@ -78,6 +78,7 @@ ol.control.Zoom.prototype.deactivate = function() {
 
 /**
  * @param {Event} evt
+ * @return {boolean}
  */
 ol.control.Zoom.prototype.handle = function(evt) {
     var target = /** @type {Node} */ (evt.target),
