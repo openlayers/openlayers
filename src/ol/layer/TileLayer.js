@@ -364,8 +364,8 @@ ol.layer.TileLayer.prototype.getTileForXYZ = function(x, y, z) {
 };
 
 /**
- * Determine if the tile x/y/z is with the layer extent. Return
- * true if the layer has no extent.
+ * Determine if the tile x/y/z intersects the layer extent. Always
+ * return true if the layer has no extent.
  * @param {number} x
  * @param {number} y
  * @param {number} z
