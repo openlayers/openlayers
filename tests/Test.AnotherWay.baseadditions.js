@@ -30,6 +30,7 @@ Test.AnotherWay._run_one_onclick = function(){
 // test page loading
 Test.AnotherWay.old_load_next_page = Test.AnotherWay._load_next_page;
 Test.AnotherWay._load_next_page = function(){
+    document.getElementById("test_iframe_el").style.display = "none";
     Test.AnotherWay.update_running_time();    
     Test.AnotherWay.old_load_next_page.apply(this, arguments);
 };
@@ -94,6 +95,19 @@ Test.AnotherWay._add_test_page_url = function(test_url, convention){
     record_select.appendChild(option);
 };
 
+Test.AnotherWay.old_set_iframe_location = Test.AnotherWay._set_iframe_location;
+Test.AnotherWay._set_iframe_location = function(iframe, loc, outside_path_correction){
+    var optionPos = loc.indexOf( "?" ),
+        option;
+    if (optionPos != -1) {
+        option = loc.substring(optionPos+1);
+        loc = loc.substring(0, optionPos);
+    }
+    if (option === "visible") {
+        document.getElementById("test_iframe_el").style.display = "";
+    }
+    return Test.AnotherWay.old_set_iframe_location.call(this, iframe, loc, outside_path_correction);
+};
 
 // new methods
 Test.AnotherWay.update_running_time = function() {

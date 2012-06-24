@@ -92,10 +92,12 @@
                 </div>
             </div>
         </div>
+        <span>
+            <iframe id="test_iframe_el" style="display:none" name="test_iframe" onload="Test.AnotherWay._test_page_onload();">
+            </iframe>
+        </span>
         <span style="display:none">
             <iframe name="list_iframe" onload="Test.AnotherWay._list_iframe_onload();">
-            </iframe>
-            <iframe name="test_iframe" onload="Test.AnotherWay._test_page_onload();">
             </iframe>
             <!-- record_control div is to be imported into other documents, so all its styles are inline -->-
             <div id="record_control" style="position:absolute;bottom:0;left:0;margin:0;padding:0.5em;width:22em;height:22em;border:1px solid;background:#ffd;font: normal normal 8pt sans-serif; color:#000; text-align: left">
