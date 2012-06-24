@@ -25,7 +25,7 @@ ol.event.Scroll = function(target) {
      */
     this.handler_ = handler;
     
-    goog.events.listen(handler,
+    handler.addEventListener(
         goog.events.MouseWheelHandler.EventType.MOUSEWHEEL,
         function(evt) {
             evt.type = 'scroll';
