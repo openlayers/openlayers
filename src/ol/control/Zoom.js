@@ -95,6 +95,13 @@ ol.control.Zoom.prototype.handle = function(evt) {
     return !handled;
 };
 
+ol.control.Zoom.prototype.destroy = function() {
+    goog.dom.removeNode(goog.dom.getElementByClass(
+        ol.control.Zoom.RES.CLS, this.map_.getViewport()
+    ));
+    goog.base(this, 'destroy');
+};
+
 ol.control.addControl('zoom', ol.control.Zoom);
 
 ol.control.Zoom.RES = {
