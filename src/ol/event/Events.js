@@ -108,6 +108,12 @@ ol.event.Events = function(object, opt_element, opt_includeXY, opt_sequences) {
      */
     this.sequences_ = [];
     
+    /**
+     * @private
+     * @type {Object}
+     */
+    this.listenerCount_ = {};
+    
     if (goog.isDef(opt_element)) {
         this.setElement(opt_element);
     }
@@ -209,6 +215,7 @@ ol.event.Events.prototype.register = function(type, listener, opt_scope,
     goog.events.listen(
         this, type, listener, opt_priority, opt_scope || this.object_
     );
+    this.listenerCount_[type] = (this.listenerCount_[type] || 0) + 1;
 };
 
 /**
@@ -224,9 +231,12 @@ ol.event.Events.prototype.register = function(type, listener, opt_scope,
  */
 ol.event.Events.prototype.unregister = function(type, listener, opt_scope,
                                                 opt_priority) {
-    goog.events.unlisten(
+    var removed = goog.events.unlisten(
         this, type, listener, opt_priority, opt_scope || this.object_
     );
+    if (removed) {
+        this.listenerCount_[type] = (this.listenerCount_[type] || 1) - 1;
+    }
 };
 
 /**
@@ -266,10 +276,9 @@ ol.event.Events.prototype.triggerEvent = function(type, opt_evt) {
  * @param {Event} evt Event object.
  */
 ol.event.Events.prototype.handleBrowserEvent = function(evt) {
-    var type = evt.type,
-        listeners = goog.events.getListeners(this.element_, type, false)
-            .concat(goog.events.getListeners(this.element_, type, true));
-    if (listeners && listeners.length > 0) {
+    var me = ol.event.Events.prototype.handleBrowserEvent,
+        type = evt.type;
+    if (this.listenerCount_[type] > 0) {
         // add clientX & clientY to all events - corresponds to average x, y
         var touches = evt.touches;
         if (touches && touches[0]) {

@@ -114,12 +114,17 @@ describe("ol.event.Events", function() {
         
         log = [];
         events.register("bar", logFn);
+        expect(events.listenerCount_["bar"]).toBe(1);
+
         events.triggerEvent("bar");
         expect(log.length).toBe(1);
         
         events.unregister("bar", logFn);
         events.triggerEvent("bar");
         expect(log.length).toBe(1);
+        
+        events.unregister("bar", logFn);
+        expect(events.listenerCount_["bar"]).toBe(0);
         
         events.destroy();
     });
