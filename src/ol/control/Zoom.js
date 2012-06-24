@@ -91,6 +91,13 @@ ol.control.Zoom.prototype.handle = function(evt) {
             this.map_.zoomOut();
             handled = true;
         }
+        if (handled) {
+            // Stop default behavior (i.e. don't follow link to anchor)
+            evt.preventDefault();
+            // On Android 2.3, the above does not prevent the link from being
+            // followed, but stopPropagation does.
+            evt.stopPropagation();
+        }
     }
     return !handled;
 };

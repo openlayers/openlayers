@@ -63,6 +63,8 @@ ol.control.Navigation.prototype.zoomMap = function(evt) {
         return;
     }
     map.setZoom(map.getZoom()-delta, map.getEvents().getPointerPosition(evt));
+    // We don't want the page to scroll.
+    evt.preventDefault();
     return false;
 };
 

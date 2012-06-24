@@ -288,10 +288,7 @@ ol.event.Events.prototype.handleBrowserEvent = function(evt) {
         if (this.includeXY_) {
             evt.xy = this.getPointerPosition(evt);
         }
-        if (this.triggerEvent(evt.type, evt) === false) {
-            evt.stopPropagation();
-            evt.preventDefault();
-        }
+        this.triggerEvent(evt.type, evt);
     }
 };
 
