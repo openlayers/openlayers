@@ -5,6 +5,7 @@ goog.require('goog.object');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.events.EventTarget');
+goog.require('goog.events.KeyCodes');
 goog.require('goog.style');
 
 /**
@@ -38,6 +39,19 @@ ol.event.isSingleTouch = function(evt) {
  */
 ol.event.isMultiTouch = function(evt) {
     return !!(evt.touches && evt.touches.length > 1);
+};
+
+/**
+ * Is the event a keyboard event with Enter or Space pressed?
+ *
+ * @param {!Event} evt
+ * @return {boolean}
+ */
+ol.event.isEnterOrSpace = function(evt) {
+    return evt.type === "keypress" &&
+        (evt.keyCode === goog.events.KeyCodes.ENTER ||
+        evt.keyCode === goog.events.KeyCodes.SPACE ||
+        evt.keyCode === goog.events.KeyCodes.MAC_ENTER);
 };
 
 
