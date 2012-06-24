@@ -270,7 +270,6 @@ ol.event.Events.prototype.handleBrowserEvent = function(evt) {
         listeners = goog.events.getListeners(this.element_, type, false)
             .concat(goog.events.getListeners(this.element_, type, true));
     if (listeners && listeners.length > 0) {
-        // noone's listening, bail out
         // add clientX & clientY to all events - corresponds to average x, y
         var touches = evt.touches;
         if (touches && touches[0]) {
@@ -289,8 +288,11 @@ ol.event.Events.prototype.handleBrowserEvent = function(evt) {
         if (this.includeXY_) {
             evt.xy = this.getPointerPosition(evt);
         }
+        if (this.triggerEvent(evt.type, evt) === false) {
+            evt.stopPropagation();
+            evt.preventDefault();
+        }
     }
-    this.triggerEvent(evt.type, evt);
 };
 
 /**
