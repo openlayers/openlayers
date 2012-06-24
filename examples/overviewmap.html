@@ -80,7 +80,9 @@
         
         // create an overview map control with the default options
         var overview1 = new OpenLayers.Control.OverviewMap({
-            maximized: true
+            maximized: true,
+            maximizeTitle: 'Show the overview map',
+            minimizeTitle: 'Hide the overview map'
         });
         map1.addControl(overview1);
         

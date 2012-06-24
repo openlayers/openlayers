@@ -558,6 +558,46 @@
         t.eq(layer1.renderer.getRenderLayerId(), layer1.id, 
             "Root container moved correctly when control is destroyed and layers was an array parameter");
     }   
+
+    function test_unselectAll(t) {
+        t.plan(2);
+
+        var layer = new OpenLayers.Layer.Vector();
+
+        var control = new OpenLayers.Control.SelectFeature(layer);
+
+        var feature1 = new OpenLayers.Feature.Vector();
+        feature1.id = 1;
+        var feature2 = new OpenLayers.Feature.Vector();
+        feature2.id = 2;
+        var feature3 = new OpenLayers.Feature.Vector();
+        feature3.id = 3;
+        var feature4 = new OpenLayers.Feature.Vector();
+        feature4.id = 4;
+
+        layer.addFeatures([feature1, feature2, feature3, feature4]);
+
+        control.select(feature1);
+        control.select(feature2);
+        control.select(feature3);
+        control.select(feature4);
+
+        layer.events.on({
+            featureunselected: function(e) {
+                // we change the selectedFeatures array while
+                // unselectAll is iterating over that array.
+                if(feature2.layer) {
+                    layer.removeFeatures([feature2]);
+                }
+            }
+        });
+
+        control.unselectAll({except: feature3});
+        t.eq(layer.selectedFeatures.length, 1,
+             'unselectAll unselected all but one');
+        t.eq(layer.selectedFeatures[0].id, 3,
+             'the remaining selected features is the one expected');
+    }
    
     </script>
 </head>

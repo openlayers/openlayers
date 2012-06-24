@@ -35,7 +35,7 @@
         function init() {
             map = new OpenLayers.Map( 'map', 
                 {
-                 'maxExtent': new OpenLayers.Bounds(0, 0, $("map").clientWidth, $("map").clientHeight), 
+                 'maxExtent': new OpenLayers.Bounds(0, 0, document.getElementById("map").clientWidth, document.getElementById("map").clientHeight), 
                  controls: [], 
                  maxResolution: 'auto'} 
             );

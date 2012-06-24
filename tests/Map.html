@@ -748,7 +748,7 @@
     function test_Map_double_addLayer(t) {
         t.plan(2);
 
-        map = new OpenLayers.Map($('map'));
+        map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS('Test Layer', 
                     "http://octo.metacarta.com/cgi-bin/mapserv", 
                     {map: '/mapdata/vmap_wms.map', layers: 'basic', format: 'image/jpeg'} 
@@ -2047,7 +2047,7 @@
     }
 
     function test_adjustZoom(t) {
-        t.plan(4);
+        t.plan(5);
         var map = new OpenLayers.Map({
             div: 'map',
             layers: [
@@ -2062,6 +2062,9 @@
         
         t.eq(map.adjustZoom(9), 9, "valid zoom maintained");
         t.eq(map.adjustZoom(1), 2, "zoom adjusted to not exceed world width");
+        
+        map.fractionalZoom = true;
+        t.eq(map.adjustZoom(1).toPrecision(3), "1.29", "zoom adjusted to match world width");
 
         map.moveTo([16, 48], 0);
         t.eq(map.getCenter().toShortString(), "0, 0", "no panning when moveTo is called with invalid zoom");

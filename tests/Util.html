@@ -2,10 +2,6 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
   <script>
-    var custom$ = function() {};
-    window.$ = custom$;
-  </script>
-  <script>
     var OpenLayers = [
         "OpenLayers/BaseTypes/Class.js",
         "OpenLayers/Util.js",
@@ -75,11 +71,6 @@
         t.ok(!!testArray, "testArray created");
         t.ok(!(testArray instanceof Array), "instanceof check doesn't work");
         t.eq(OpenLayers.Util.isArray(testArray), true, "isArray works");
-    }
-    
-    function test_$(t) {
-        t.plan(1);
-        t.ok($ === custom$, "OpenLayers doesn't clobber existing definition of $.");
     }
     
     function test_Util_getImagesLocation (t) {

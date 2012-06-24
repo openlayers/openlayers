@@ -3,10 +3,10 @@
 # check to see if the hosted examples or API docs need an update
 cd /osgeo/openlayers/repos/openlayers
 REMOTE_HEAD=`git ls-remote https://github.com/openlayers/openlayers/ | grep HEAD | awk '{print $1}'`
-OLD_REMOTE_HEAD=`git rev-parse HEAD`
+LOCAL_HEAD=`git rev-parse HEAD`
 
 # if there's something different in the remote, update and build
-if [ ! o$REMOTE_HEAD = o$OLD_REMOTE_HEAD ]; then
+if [ ! o$REMOTE_HEAD = o$LOCAL_HEAD ]; then
     
     git checkout master
     git clean -f
@@ -54,10 +54,10 @@ fi
 # check to see if the website needs an update
 cd /osgeo/openlayers/repos/website
 REMOTE_HEAD=`git ls-remote https://github.com/openlayers/website/ | grep HEAD | awk '{print $1}'`
-OLD_REMOTE_HEAD=`git rev-parse HEAD`
+LOCAL_HEAD=`git rev-parse HEAD`
 
 # if there's something different in the remote, update the clone
-if [ ! o$REMOTE_HEAD = o$OLD_REMOTE_HEAD ]; then
+if [ ! o$REMOTE_HEAD = o$LOCAL_HEAD ]; then
     
     git checkout master
     git clean -f
@@ -72,21 +72,19 @@ fi
 # check to see if prose docs need an update
 cd /osgeo/openlayers/repos/docs
 REMOTE_HEAD=`git ls-remote https://github.com/openlayers/docs/ | grep HEAD | awk '{print $1}'`
-OLD_REMOTE_HEAD=`git rev-parse HEAD`
+LOCAL_HEAD=`git rev-parse HEAD`
 
 # if there's something different in the remote, update the clone
-if [ ! o$REMOTE_HEAD = o$OLD_REMOTE_HEAD ]; then
+if [ ! o$REMOTE_HEAD = o$LOCAL_HEAD ]; then
     
     git checkout master
     git clean -f
     git pull origin master
 
-    mkdir -p /tmp/ol/docs/build/html /tmp/ol/docs/build/doctrees
-    sphinx-build -b html -d /tmp/ol/docs/build/doctrees . /tmp/ol/docs/build/html
+    mkdir -p /osgeo/openlayers/sites/docs.openlayers.org /tmp/ol/docs/build/doctrees
+    sphinx-build -b html -d /tmp/ol/docs/build/doctrees . /osgeo/openlayers/sites/docs.openlayers.org
     
-    rsync -r --delete /tmp/ol/docs/build/html/ /osgeo/openlayers/sites/docs.openlayers.org
-    
-fi    
+fi
 
 ## UPDATES FROM THE OLD SVN REPO
 
@@ -102,11 +100,4 @@ if [ ! o$SVNREV = $OLD_SVNREV ]; then
     svn up /osgeo/openlayers/repos/old_svn_repo/
     # Record the revision
     echo -n $SVNREV > /tmp/ol_svn_rev
-    
-    # update the hosted sandboxes
-    rsync -r --delete --exclude=.svn --delete-excluded /osgeo/openlayers/repos/old_svn_repo/sandbox /osgeo/openlayers/sites/dev.openlayers.org/
-
-    # update the hosted addins
-    rsync -r --delete --exclude=.svn --delete-excluded /osgeo/openlayers/repos/old_svn_repo/addins /osgeo/openlayers/sites/dev.openlayers.org/
-    
 fi

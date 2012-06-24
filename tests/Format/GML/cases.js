@@ -198,14 +198,19 @@ var cases = {
             ])
         ])
     ]),
-
+    
     "v2/box-coord.xml": new OpenLayers.Bounds(1, 2, 3, 4),
     
-    "v2/box-coordinates.xml": new OpenLayers.Bounds(1, 2, 3, 4)
+    "v2/box-coordinates.xml": new OpenLayers.Bounds(1, 2, 3, 4),
+    
+    "v3/linestring3d.xml": new OpenLayers.Geometry.LineString([
+        new OpenLayers.Geometry.Point(1, 2, 3),
+        new OpenLayers.Geometry.Point(4, 5, 6)
+    ])
     
 };
 
-// cases for v3 use the same geometries
+// some cases for v3 use the same geometries
 OpenLayers.Util.extend(cases, {
     "v3/point.xml": cases["v2/point-coordinates.xml"],
     "v3/linestring.xml": cases["v2/linestring-coordinates.xml"],

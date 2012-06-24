@@ -114,7 +114,7 @@
     }
 
     function test_Tile_Image_draw (t) {
-        t.plan(8);
+        t.plan(7);
 
         var map = new OpenLayers.Map('map');
         
@@ -139,16 +139,10 @@
         //this should trigger a "loadstart" event
         tile.draw();
         
-        var img = tile.imgDiv;
-        
         if (!isMozilla)
             t.ok( true, "skipping element test outside of Mozilla");
         else
             t.ok( tile.imgDiv instanceof HTMLElement, "tile.draw creates an image");
-        if (!isMozilla)
-            t.ok( true, "skipping element test outside of Mozilla");
-        else
-            t.ok( img instanceof HTMLImageElement, "tile.draw creates an image");
         var tParams = {
             SERVICE: "WMS", VERSION: "1.1.1",
             REQUEST: "GetMap", STYLES: "",
@@ -159,7 +153,7 @@
         var expected = new Image();
         expected.src =  "../../img/blank.gif?" + OpenLayers.Util.getParameterString(tParams)
         t.delay_call(0.1, function() {
-            t.eq( img.src, expected.src, "tile.draw creates an image");
+            t.eq( tile.imgDiv.src, expected.src, "tile.draw creates an image");
         });
         t.eq( tile.imgDiv.style.width, "5%", "Image width is correct" );
         t.eq( tile.imgDiv.style.height, "6%", "Image height is correct" );
@@ -178,7 +172,7 @@
         var size = new OpenLayers.Size(5,6);
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
-            "../../img/blank.gif", {layers: 'basic'}, {reproject:false, encodeBBOX: true}); 
+            "../../img/blank.gif", {layers: 'basic'}, {encodeBBOX: true});
         map.addLayer(layer);
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-185,-90,-180,90), url, size);
         tile.draw()
@@ -266,14 +260,14 @@
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-90,-85,-90,85), url, size);
         tile.draw();
         tile.moveTo(new OpenLayers.Bounds(-185,-90,-180,-80), new OpenLayers.Pixel(-180,-85), true);
-        t.delay_call( 1, function() { t.eq(tile.imgDiv.style.visibility, "hidden", "Tile image is invisible.") } );
+        t.delay_call( 1, function() { t.ok(!tile.imgDiv, "Reference to tile image removed.") } );
         var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
             "../../img/blank.gif", {layers: 'basic'}, {'alpha':true});
         map.addLayer(layer);
         tile = new OpenLayers.Tile.Image(layer, position, new OpenLayers.Bounds(-90,-85,-90,85), url, size);
         tile.draw();
         tile.moveTo(new OpenLayers.Bounds(-185,-90,-180,-80), new OpenLayers.Pixel(-180,-85), true)
-        t.delay_call( 1, function() { t.eq(tile.imgDiv.style.visibility, "hidden", "Alpha tile image is invisible.") } );
+        t.delay_call( 1, function() { t.ok(!tile.imgDiv, "Reference to alpha tile image removed.") } );
         
     }
 
