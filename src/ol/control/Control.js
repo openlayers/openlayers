@@ -23,7 +23,7 @@ ol.control.Control = function(opt_autoActivate) {
     
     /**
      * @type {ol.Map} map
-     * @private
+     * @protected
      */
     this.map_ = null;
 
