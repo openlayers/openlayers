@@ -16,6 +16,9 @@ goog.require('goog.asserts');
 /**
  * @export
  * @constructor
+ *
+ * @event addlayer Fires when a layer is added to the map. The event object
+ *     contains a 'layer' property referencing the added layer.
  */
 ol.Map = function() {
 
@@ -381,8 +384,21 @@ ol.Map.prototype.setResolutions = function(resolutions) {
  * @param {Array} layers the layers set on the map
  */
 ol.Map.prototype.setLayers = function(layers) {
-    this.layers_ = layers;
+    //TODO remove layers properly if there are layers already
+    this.layers_ = [];
+    this.addLayers(layers);
 };
+
+ol.Map.prototype.addLayers = function(layers) {
+    var layer;
+    for (var i=0, ii=layers.length; i<ii; ++i) {
+        layer = layers[i];
+        this.layers_.push(layer);
+        this.events_.triggerEvent('addlayer', {'layer': layer});
+    }
+    this.conditionallyRender();
+};
+
 
 /**
  * @param {Array.<ol.control.Control>|undefined} opt_controls
