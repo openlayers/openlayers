@@ -136,7 +136,7 @@ describe("ol.event.Events", function() {
             this.target = target;
         };
         Sequence.prototype.fire = function() {
-            this.target.dispatchEvent("myevent");
+            this.target.triggerEvent("myevent");
         };
         Sequence.prototype.destroy = function() {
             this.destroyed = true;
@@ -170,6 +170,12 @@ describe("ol.event.Events", function() {
         expect(ol.event.isMultiTouch({touches: [{}, {}]})).toBe(true);
         expect(ol.event.isMultiTouch({touches: [{}]})).toBe(false);
         expect(ol.event.isMultiTouch({})).toBe(false);        
+    });
+    
+    it("provides an isEnterOrSpace() function", function() {
+        expect(ol.event.isEnterOrSpace({type: 'keypress', keyCode: 13})).toBe(true);
+        expect(ol.event.isEnterOrSpace({type: 'keypress', keyCode: 32})).toBe(true);
+        expect(ol.event.isEnterOrSpace({type: 'keypress', keyCode: 3})).toBe(true);
     });
     
 });
