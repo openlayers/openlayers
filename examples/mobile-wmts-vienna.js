@@ -163,13 +163,13 @@ var map;
             var doc = request.responseText,
                 caps = format.read(doc);
             fmzk = format.createLayer(caps, OpenLayers.Util.applyDefaults(
-                {layer:"fmzk", requestEncoding:"REST", transitionEffect:"resize"}, defaults
+                {layer:"fmzk", transitionEffect:"resize"}, defaults
             ));
             aerial = format.createLayer(caps, OpenLayers.Util.applyDefaults(
-                {layer:"lb", requestEncoding:"REST", transitionEffect:"resize"}, defaults
+                {layer:"lb", transitionEffect:"resize"}, defaults
             ));
             labels = format.createLayer(caps, OpenLayers.Util.applyDefaults(
-                {layer:"beschriftung", requestEncoding:"REST", className:"nofade", isBaseLayer: false},
+                {layer:"beschriftung", className:"nofade", isBaseLayer: false},
                 defaults
             ));
             map.addLayers([fmzk, aerial, labels]);
