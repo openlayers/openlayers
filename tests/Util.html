@@ -1199,7 +1199,7 @@
     var loadEvent;
     window.onload = function(evt) {
         loadEvent = evt || window.event;
-    };
+    }
     function test_extend_event(t) {
         t.plan(2);
         t.ok(loadEvent, "loadEvent recorded");
@@ -1215,7 +1215,6 @@
             t.eq(extended && extended.foo, "bar", "extended with event");
         }
     }
-    
 
   </script>
 </head>
