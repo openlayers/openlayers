@@ -1,13 +1,8 @@
 OpenLayers.ProxyHost = "/proxy/?url=";
 
 var map, format;
-var map2, format2;
 
 function init() {
-
-    /*
-     * KVP version
-     */
 
     format = new OpenLayers.Format.WMTSCapabilities({
         /**
@@ -60,36 +55,4 @@ function init() {
     map.addLayer(osm);
     map.addControl(new OpenLayers.Control.LayerSwitcher());
     map.setCenter(new OpenLayers.LonLat(-13677832, 5213272), 13);
-
-
-    /*
-     * REST version
-     */
-    format2 = new OpenLayers.Format.WMTSCapabilities();
-
-    OpenLayers.Request.GET({
-        url: "http://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml",
-        success: function(request) {
-            var doc = request.responseXML;
-            if (!doc || !doc.documentElement) {
-                doc = request.responseText;
-            }
-            var capabilities = format2.read(doc);
-            var layer = format2.createLayer(capabilities, {
-                layer: "ch.are.gemeindetyp-1990-9klassen",
-                // not avalable in the WMTS Capabilities in native projection
-                maxExtent: [485869.5728, 76443.1884, 837076.5648, 299941.7864]
-            });
-            map2.addLayer(layer);
-            map2.setCenter(new OpenLayers.LonLat(540000, 160000), 17);
-        },
-        failure: function() {
-            alert("Trouble getting capabilities doc");
-            OpenLayers.Console.error.apply(OpenLayers.Console, arguments);
-        }
-    });
-
-    map2 = new OpenLayers.Map({
-        div: "map2"
-    });
 }
