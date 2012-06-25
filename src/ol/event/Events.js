@@ -248,20 +248,23 @@ ol.event.Events.prototype.unregister = function(type, listener, opt_scope,
  *      an 'object' property referencing this Events instance.
  *
  * @return {boolean} The last listener return.  If a listener returns false,
- *     the chain of listeners will stop getting called.
+ *     the chain of listeners will stop getting called. Returns undefined if
+ *     called for an event type that has no listeners.
  */
 ol.event.Events.prototype.triggerEvent = function(type, opt_evt) {
-    var returnValue,
-        listeners = goog.events.getListeners(this, type, true)
+    var returnValue;
+    if (this.listenerCount_[type] > 0) {
+        var listeners = goog.events.getListeners(this, type, true)
             .concat(goog.events.getListeners(this, type, false));
-    if (arguments.length === 1) {
-        opt_evt = {'type': type};
-    }
-    opt_evt['object'] = this.object_;
-    for (var i=0, ii=listeners.length; i<ii; ++i) {
-        returnValue = listeners[i].handleEvent(opt_evt);
-        if (returnValue === false) {
-            break;
+        if (arguments.length === 1) {
+            opt_evt = {'type': type};
+        }
+        opt_evt['object'] = this.object_;
+        for (var i=0, ii=listeners.length; i<ii; ++i) {
+            returnValue = listeners[i].handleEvent(opt_evt);
+            if (returnValue === false) {
+                break;
+            }
         }
     }
     return returnValue;
