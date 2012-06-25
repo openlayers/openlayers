@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>OpenLayers OSM and Google Example</title>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <script src="../lib/OpenLayers.js"></script>
+        <script src="osm-marker-popup.js"></script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">OSM with Marker and Popup</h1>
+        <p id="shortdesc">
+            Demonstrate use of an OSM layer with a marker and a popup.
+        </p>
+        <div id="tags">
+            openstreetmap osm marker popup
+        </div>
+        <div id="map" class="smallmap"></div>
+        <div id="docs">
+            <p>
+                A common use case for OpenLayers is to display a marker at a
+                location on the map, and add some information in a popup. It
+                is also easy to add a tooltip with a short description.
+                See the <a href="osm-marker-popup.js" target="_blank">
+                osm-marker-popup.js source</a> to see how this is done.
+            </p>
+        </div>
+    </body>
+</html>
