@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Vendor.js Tests</title>
+        <script>
+
+        // dependencies for tests
+        var OpenLayers = [
+            "OpenLayers/Vendor.js"
+        ];
+
+        </script>
+        <script src="OLLoader.js"></script>
+
+        <script>
+        
+        /**
+         * Test vendor prefixing
+         */
+        function test_vendor_prefixes(t) {
+            t.plan(20);
+            var o = {
+                prop: null,
+                val: null
+            }, err;
+            
+            /*var orgCreateElement = document.createElement;
+            // wrap document.createElement to control property values
+            document.createElement = function(type) {
+                var el = orgCreateElement.call(document, type);
+                // Since o is an object we can change prop for each test
+                if(o.prop) {
+                    el.style[o.prop] = o.val;
+                }
+                return el;
+            };*/
+
+            function curryTestPrefix(type) {
+                return function(standardProp, expectedPrefix, msg) {
+                        var prefixedProp, err, method = type + "Prefix";
+                        try {
+                            OpenLayers.Vendor._clearCache();
+                            var fakeStyle = { cssText: "" };
+                            if (o.prop != null) {
+                                fakeStyle[o.prop] = o.val;
+                            }
+                            OpenLayers.Vendor._mockStyle(fakeStyle);
+                            prefixedProp = OpenLayers.Vendor[method](standardProp);
+                        } catch(e) {
+                            err = e;
+                        }
+                        if(!err) {
+                            t.eq(prefixedProp, expectedPrefix, msg);
+                        } else {
+                            t.fail("Error when testing " + type.toUpperCase() + " vendor prefix: " + err.message);
+                        }
+                };
+            }
+            var testDomPrefix = curryTestPrefix("style"),
+                testCssPrefix = curryTestPrefix("css");
+
+            o.prop = undefined;
+            o.val  = undefined;
+            testDomPrefix("unsupported", null, "DOM vendor prefix - unsupported");
+            testCssPrefix("unsupported", null, "CSS vendor prefix - unsupported");
+
+            o.prop = "test";
+            o.val = "";
+            testDomPrefix("test", "test", "DOM vendor prefix - single word");
+            testCssPrefix("test", "test", "CSS vendor prefix - single word");
+
+            o.prop = "testMultiWord";
+            testDomPrefix("testMultiWord", "testMultiWord", "DOM vendor prefix - multiple words");
+            testCssPrefix("test-multi-word", "test-multi-word", "CSS vendor prefix - multiple words");
+
+            o.prop = "WebkitMultiWord";
+            testDomPrefix("multiWord", "WebkitMultiWord", "DOM vendor prefix - multiple words for WebKit");
+            testCssPrefix("multi-word", "-webkit-multi-word", "CSS vendor prefix - multiple words for WebKit");
+
+            o.prop = "MozMultiWord";
+            testDomPrefix("multiWord", "MozMultiWord", "DOM vendor prefix - multiple words for Mozilla");
+            testCssPrefix("multi-word", "-moz-multi-word", "CSS vendor prefix - multiple words for Mozilla");
+
+            o.prop = "OMultiWord";
+            testDomPrefix("multiWord", "OMultiWord", "DOM vendor prefix - multiple words for Opera");
+            testCssPrefix("multi-word", "-o-multi-word", "CSS vendor prefix - multiple words for Opera");
+
+            o.prop = "msMultiWord";
+            testDomPrefix("multiWord", "msMultiWord", "DOM vendor prefix - multiple words for Internet Explorer");
+            testCssPrefix("multi-word", "-ms-multi-word", "CSS vendor prefix - multiple words for Internet Explorer");
+
+            // test vendor prefix on object
+            OpenLayers.Vendor._clearCache();
+            t.eq( OpenLayers.Vendor.jsPrefix( {}, "unsupported" ), null, "Standard object property - unsupported");
+
+            OpenLayers.Vendor._clearCache();
+            t.eq( OpenLayers.Vendor.jsPrefix( { "test": true }, "test" ), "test", "Standard object property");
+
+            OpenLayers.Vendor._clearCache();
+            t.eq( OpenLayers.Vendor.jsPrefix( { "oTest": true }, "test" ), "oTest", "Standard object property");
+
+            OpenLayers.Vendor._clearCache();
+            t.eq( OpenLayers.Vendor.jsPrefix( { "msTest": true }, "test" ), "msTest", "Standard object property");
+
+            OpenLayers.Vendor._clearCache();
+            t.eq( OpenLayers.Vendor.jsPrefix( { "mozTest": true }, "test" ), "mozTest", "Standard object property");
+
+            OpenLayers.Vendor._clearCache();
+            t.eq( OpenLayers.Vendor.jsPrefix( { "webkitTest": true }, "test" ), "webkitTest", "Standard object property");
+
+            // unwrap document.createElement
+            //document.createElement = orgCreateElement;
+        }
+        
+        </script>
+    </head>
+    <body></body>
+</html>
