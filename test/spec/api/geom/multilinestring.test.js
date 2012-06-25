@@ -1,7 +1,7 @@
 describe("ol.geom.multilinestring", function() {
     var mls,
         formatPoint = function(p){
-            return p.getX() + ',' + p.getY();
+            return p.x() + ',' + p.y();
         },
         linestringNPointN = function(mls, i, j) {
             return formatPoint(mls.linestrings()[i].vertices()[j]);
