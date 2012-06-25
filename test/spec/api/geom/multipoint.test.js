@@ -197,7 +197,7 @@ describe("ol.geom.multipoint", function() {
 
     describe("the method 'remove'", function() {
         it("exists", function(){
-            expect( mp.add ).toBeA( Function );
+            expect( mp.remove ).toBeA( Function );
         });
 
         it("works with a single point", function(){
