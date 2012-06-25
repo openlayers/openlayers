@@ -75,7 +75,7 @@ ol.control.Control.prototype.activate = function() {
  */
 ol.control.Control.prototype.deactivate = function() {
     var returnValue = this.active_;
-    this.active_ = true;
+    this.active_ = false;
     return returnValue;
 };
 
