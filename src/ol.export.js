@@ -101,6 +101,16 @@ goog.exportProperty(ol.geom.MultiPoint.prototype, 'addAll', ol.geom.MultiPoint.p
 goog.exportProperty(ol.geom.MultiPoint.prototype, 'remove', ol.geom.MultiPoint.prototype.remove);
 goog.exportProperty(ol.geom.MultiPoint.prototype, 'centroid', ol.geom.MultiPoint.prototype.centroid);
 
+// ol.geom.multilinestring
+goog.exportSymbol('ol.geom.multilinestring', ol.geom.multilinestring);
+goog.exportSymbol('ol.geom.MultiLineString', ol.geom.MultiLineString);
+goog.exportProperty(ol.geom.MultiLineString.prototype, 'linestrings', ol.geom.MultiLineString.prototype.linestrings);
+goog.exportProperty(ol.geom.MultiLineString.prototype, 'add', ol.geom.MultiLineString.prototype.add);
+goog.exportProperty(ol.geom.MultiLineString.prototype, 'addAll', ol.geom.MultiLineString.prototype.addAll);
+goog.exportProperty(ol.geom.MultiLineString.prototype, 'remove', ol.geom.MultiLineString.prototype.remove);
+goog.exportProperty(ol.geom.MultiLineString.prototype, 'centroid', ol.geom.MultiLineString.prototype.centroid);
+
+
 // ol.popup
 goog.exportSymbol('ol.popup', ol.popup);
 goog.exportSymbol('ol.Popup', ol.Popup);
