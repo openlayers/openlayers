@@ -276,8 +276,7 @@ ol.event.Events.prototype.triggerEvent = function(type, opt_evt) {
  * @param {Event} evt Event object.
  */
 ol.event.Events.prototype.handleBrowserEvent = function(evt) {
-    var me = ol.event.Events.prototype.handleBrowserEvent,
-        type = evt.type;
+    var type = evt.type;
     if (this.listenerCount_[type] > 0) {
         // add clientX & clientY to all events - corresponds to average x, y
         var touches = evt.touches;
