@@ -62,7 +62,7 @@ describe("ol.geom.collection", function() {
                 }).toThrow();
             });
 
-            it("allows 'ol.geom.multi*' (even though these are technically of ol.geom.collections)", function(){
+            it("allows 'ol.geom.multi*' (even though these are technically ol.geom.collections)", function(){
                 expect(function(){
                     c.add(
                         ol.geom.multipoint([
