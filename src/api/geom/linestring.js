@@ -5,8 +5,13 @@ goog.require('ol.geom.point');
 goog.require('ol.projection');
 
 /**
+ * @typedef {Array.<ol.PointLike>} linestring LineString.
+ */
+ol.LineStringLike;
+
+/**
  * @export
- * @param {Array.<ol.PointLike>} opt_arg Point.
+ * @param {ol.LineStringLike} opt_arg Points.
  * @return {ol.geom.LineString} LineString.
  */
 ol.geom.linestring = function(opt_arg){
