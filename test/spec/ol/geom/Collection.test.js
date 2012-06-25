@@ -113,6 +113,17 @@ describe("ol.geom.Collection", function() {
         }).toThrow();
     });
 
+    it("allows instances of 'ol.geom.Multi*' (even though these are subclasses of ol.geom.Collection)", function(){
+        expect(function(){
+            c.addComponent(
+                new ol.geom.MultiPoint([
+                    new ol.geom.Point(5,25),
+                    new ol.geom.Point(6,36)
+                ])
+            );
+        }).not.toThrow();
+    });
+
     it("has a method to remove components", function() {
         c.setComponents([
             new ol.geom.Point(0,10),

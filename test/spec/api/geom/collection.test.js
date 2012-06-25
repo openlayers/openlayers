@@ -51,6 +51,28 @@ describe("ol.geom.collection", function() {
                 expect( firstComponent.x() + ',' + firstComponent.y() ).toBe( '24,7' );
             });
 
+            it("cannot add 'ol.geom.collection'", function(){
+                expect(function(){
+                    c.add(
+                        ol.geom.collection([
+                            ol.geom.point([5,25]),
+                            ol.geom.point([6,36])
+                        ])
+                    );
+                }).toThrow();
+            });
+
+            it("allows 'ol.geom.multi*' (even though these are technically of ol.geom.collections)", function(){
+                expect(function(){
+                    c.add(
+                        ol.geom.multipoint([
+                            ol.geom.point([5,25]),
+                            ol.geom.point([6,36])
+                        ])
+                    );
+                }).not.toThrow();
+            });
+
             it("the index is functional", function(){
                 var p = ol.geom.point([24,7]);
                 c.add(p, 1);

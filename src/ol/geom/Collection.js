@@ -28,7 +28,12 @@ ol.geom.Collection = function(components) {
      * @private
      * @type {Array.<Function>}
      */
-    this.typeWhitelist_ = [];
+    this.typeWhitelist_ = [
+        ol.geom.MultiPoint,
+        ol.geom.MultiLineString
+        // TODO uncomment when implemented
+        // ,ol.geom.MultiPolygon
+    ];
 
     /**
      * @private
