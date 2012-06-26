@@ -256,7 +256,7 @@ ol.Map.prototype.getMaxResolution = function() {
  * @return {number} the resolution for the map at the given zoom level
  */
 ol.Map.prototype.getResolutionForZoom = function(zoom) {
-    if (goog.isDefAndNotNull(this.resolutions_)) {
+    if (goog.isDefAndNotNull(this.resolutions_) && goog.isDefAndNotNull(this.resolutions_[zoom])) {
         return this.resolutions_[zoom];
     } else {
         var maxResolution = this.getMaxResolution();
