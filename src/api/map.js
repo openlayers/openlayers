@@ -9,7 +9,7 @@ goog.require('ol.error');
 
 
 /**
- * @typedef {ol.Map|Object|string}
+ * @typedef {ol.Map|{center, zoom, numZoomLevels, projection, userProjection, maxExtent, maxResolution, resolutions, renderTo, layers, controls}|string}
  */
 ol.MapLike;
 

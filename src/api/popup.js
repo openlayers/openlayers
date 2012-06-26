@@ -5,7 +5,7 @@ goog.require('ol.map');
 
 
 /**
- * @typedef {ol.Popup|Object} popup
+ * @typedef {ol.Popup|{map, anchor, placement, content, template}} popup
  */
 ol.PopupLike;
 
@@ -39,6 +39,7 @@ ol.popup = function(opt_arg){
 
     if (arguments.length == 1 && goog.isDef(opt_arg)) {
         if (goog.isObject(opt_arg)) {
+            ol.base.checkKeys(opt_arg, ['map', 'anchor', 'placement', 'content', 'template']);
             map = ol.API ? opt_arg['map'] : opt_arg.map;
             anchor = ol.API ? opt_arg['anchor'] : opt_arg.anchor;
             placement = ol.API ? opt_arg['placement'] : opt_arg.placement;
