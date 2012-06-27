@@ -37,10 +37,8 @@
             function init() {
                 map = new OpenLayers.Map('map');
                 var base = new OpenLayers.Layer.WMS("OpenLayers WMS", 
-                    ["http://t3.tilecache.osgeo.org/wms-c/Basic.py",
-                     "http://t2.tilecache.osgeo.org/wms-c/Basic.py",
-                     "http://t1.tilecache.osgeo.org/wms-c/Basic.py"], 
-                    {layers: 'satellite'}
+                     "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                    {layers: 'basic'}
                 );
 
                 var style = new OpenLayers.Style({
