@@ -35,11 +35,18 @@
                 return el;
             };*/
 
+            function clearCache(type) {
+                var cache = OpenLayers.Vendor[type.replace("style", "js") + "Cache"];
+                for (var key in cache) {
+                    delete cache[key];
+                }
+            }
+            
             function curryTestPrefix(type) {
                 return function(standardProp, expectedPrefix, msg) {
                         var prefixedProp, err, method = type + "Prefix";
                         try {
-                            OpenLayers.Vendor._clearCache();
+                            clearCache(type);
                             var fakeStyle = { cssText: "" };
                             if (o.prop != null) {
                                 fakeStyle[o.prop] = o.val;
@@ -90,22 +97,22 @@
             testCssPrefix("multi-word", "-ms-multi-word", "CSS vendor prefix - multiple words for Internet Explorer");
 
             // test vendor prefix on object
-            OpenLayers.Vendor._clearCache();
+            clearCache("js");
             t.eq( OpenLayers.Vendor.jsPrefix( {}, "unsupported" ), null, "Standard object property - unsupported");
 
-            OpenLayers.Vendor._clearCache();
+            clearCache("js");
             t.eq( OpenLayers.Vendor.jsPrefix( { "test": true }, "test" ), "test", "Standard object property");
 
-            OpenLayers.Vendor._clearCache();
+            clearCache("js");
             t.eq( OpenLayers.Vendor.jsPrefix( { "oTest": true }, "test" ), "oTest", "Standard object property");
 
-            OpenLayers.Vendor._clearCache();
+            clearCache("js");
             t.eq( OpenLayers.Vendor.jsPrefix( { "msTest": true }, "test" ), "msTest", "Standard object property");
 
-            OpenLayers.Vendor._clearCache();
+            clearCache("js");
             t.eq( OpenLayers.Vendor.jsPrefix( { "mozTest": true }, "test" ), "mozTest", "Standard object property");
 
-            OpenLayers.Vendor._clearCache();
+            clearCache("js");
             t.eq( OpenLayers.Vendor.jsPrefix( { "webkitTest": true }, "test" ), "webkitTest", "Standard object property");
 
             // unwrap document.createElement
