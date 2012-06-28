@@ -27,9 +27,9 @@ goog.inherits(ol.control.Navigation, ol.control.Control);
 ol.control.Navigation.prototype.activate = function() {
     var active = goog.base(this, 'activate');
     if (active) {
-        var events = this.map_.getEvents();
-        events.register("drag", this.moveMap, this);
-        events.register("scroll", this.zoomMap, this);
+        var map = this.map_;
+        goog.events.listen(map, 'drag', this.moveMap, false, this);
+        goog.events.listen(map, 'scroll', this.zoomMap, false, this);
     }
     return active;
 };
@@ -38,9 +38,9 @@ ol.control.Navigation.prototype.activate = function() {
 ol.control.Navigation.prototype.deactivate = function() {
     var inactive = goog.base(this, 'deactivate');
     if (inactive) {
-        var events = this.map_.getEvents();
-        events.unregister("drag", this.moveMap, this);
-        events.unregister("scroll", this.zoomMap, this);
+        var map = this.map_;
+        goog.events.unlisten(map, 'drag', this.moveMap, false, this);
+        goog.events.unlisten(map, 'scroll', this.zoomMap, false, this);
     }
     return inactive;
 };
