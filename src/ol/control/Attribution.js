@@ -32,15 +32,35 @@ ol.control.Attribution = function(opt_autoActivate) {
 goog.inherits(ol.control.Attribution, ol.control.Control);
 
 /**
+ * @const {string}
+ */
+ol.control.Attribution.prototype.CLS = 'ol-control-attribution';
+
+/**
  * @param {ol.Map} map
  */
 ol.control.Attribution.prototype.setMap = function(map) {
-    this.container_ = goog.dom.createDom('div', 'ol-control-attribution');
     var staticOverlay = map.getStaticOverlay();
-    if (!goog.isNull(this.container_) && !goog.isNull(staticOverlay)) {
+    if (goog.isNull(this.container_)) {
+        this.container_ = goog.dom.createDom('div', this.CLS);
+        // This is not registered as priority listener, so priority listeners
+        // can still get the click event.
+        map.getEvents().register('click', this.stopLinkClick, this);
+    }
+    if (!goog.isNull(staticOverlay)) {
         goog.dom.append(staticOverlay, this.container_);
     }
     goog.base(this, 'setMap', map);
+};
+
+/**
+ * Prevent clicks on links in the attribution from getting through to
+ * listeners.
+ */
+ol.control.Attribution.prototype.stopLinkClick = function(evt) {
+    var node = evt.target;
+    return node.nodeName !== 'A' ||
+        !goog.dom.getAncestorByClass(node, this.CLS);
 };
 
 /** @inheritDoc */

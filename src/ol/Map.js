@@ -489,14 +489,6 @@ ol.Map.prototype.createRenderer = function() {
             'class': staticCls,
             'style': 'width:100%;height:100%;top:0;left:0;position:absolute'
         });
-        // Prevent click events on links in the static overlay from getting 
-        // through to listeners. This is not registered as priority listener,
-        // so priority listeners can still get the click event.
-        this.events_.register('click', function(evt) {
-            var node = evt.target;
-            return !(node.nodeName === 'A' &&
-                goog.dom.getAncestorByClass(node, staticCls));
-        });
     }
     if (!goog.isNull(viewport)) {
         goog.dom.append(viewport, this.mapOverlay_, this.staticOverlay_);

@@ -50,9 +50,9 @@ ol.control.Zoom.prototype.setMap = function(map) {
     );
     goog.dom.append(container, inButton, outButton);
 
-    var viewport = /** @type {Node} */ map.getViewport();
-    if (goog.isDefAndNotNull(viewport)) {
-        goog.dom.append(viewport, container);
+    var overlay = map.getStaticOverlay();
+    if (goog.isDefAndNotNull(overlay)) {
+        goog.dom.append(overlay, container);
     }
 };
 
@@ -106,7 +106,7 @@ ol.control.Zoom.prototype.handle = function(evt) {
 ol.control.Zoom.prototype.destroy = function() {
     goog.dom.removeNode(goog.dom.getElementByClass(
         ol.control.Zoom.RES.CLS,
-        /** @type {Element} */ (this.map_.getViewport())
+        /** @type {Element} */ (this.map_.getStaticOverlay())
     ));
     goog.base(this, 'destroy');
 };
