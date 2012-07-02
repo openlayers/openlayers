@@ -12,8 +12,10 @@ goog.require('goog.Disposable');
  */
 ol.handler.Drag = function(map, elt) {
 
-    this.dragger_ = new goog.fx.Dragger(elt);
-    this.dragger_.defaultAction = function() {};
+    var dragger = new goog.fx.Dragger(elt);
+    this.registerDisposable(dragger);
+
+    dragger.defaultAction = function() {};
 
     var prevX = 0, prevY = 0;
 
@@ -44,11 +46,11 @@ ol.handler.Drag = function(map, elt) {
         goog.events.dispatchEvent(map, newE);
     };
 
-    goog.events.listen(this.dragger_, goog.fx.Dragger.EventType.START,
+    goog.events.listen(dragger, goog.fx.Dragger.EventType.START,
                        handleDragStart, false, this);
-    goog.events.listen(this.dragger_, goog.fx.Dragger.EventType.DRAG,
+    goog.events.listen(dragger, goog.fx.Dragger.EventType.DRAG,
                        handleDrag, false, this);
-    goog.events.listen(this.dragger_, goog.fx.Dragger.EventType.END,
+    goog.events.listen(dragger, goog.fx.Dragger.EventType.END,
                        handleDragEnd, false, this);
 };
 goog.inherits(ol.handler.Drag, goog.Disposable);

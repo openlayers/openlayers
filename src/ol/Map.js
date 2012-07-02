@@ -108,13 +108,6 @@ ol.Map = function() {
      * @type {Element}
      */
     this.container_ = null;
-
-    /**
-     * @private
-     * @type {ol.handler.Drag}
-     */
-    this.dragHandler_ = null;
-
 };
 goog.inherits(ol.Map, goog.events.EventTarget);
 
@@ -472,7 +465,8 @@ ol.Map.prototype.setViewport = function() {
             'class': 'ol-viewport',
             'style': 'width:100%;height:100%;top:0;left:0;position:relative;overflow:hidden'
         }));
-        this.dragHandler_ = new ol.handler.Drag(this, this.viewport_);
+        var dragHandler = new ol.handler.Drag(this, this.viewport_);
+        this.registerDisposable(dragHandler);
     }
     goog.dom.appendChild(this.container_, this.viewport_);
 };
@@ -545,7 +539,6 @@ ol.Map.prototype.disposeInternal = function() {
     for (var key in this) {
         delete this[key];
     }
-    this.dragHandler_.dispose();
 };
 
 
