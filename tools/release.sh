@@ -41,8 +41,6 @@ mv ../../compiler.jar ../tools/closure-compiler.jar
 ./build.py -c none mobile OpenLayers.mobile.debug.js
 ./build.py -c none light OpenLayers.light.debug.js
 mv OpenLayers*.js ../
-rm -rf closure-compiler
-rm closure*.py
 rm ../tools/closure-compiler.jar
 
 cd ..
