@@ -135,7 +135,7 @@ Tile
   fires 'aborted'  // when loading is aborted
 
 Camera
-   center goog.math.Coordinate
+   position goog.math.Coordinate
    resolution number
    rotation number
 
