@@ -5,3 +5,4 @@ goog.require('ol.MVCArray');
 goog.require('ol.MVCObject');
 goog.require('ol.TileBounds');
 goog.require('ol.TileCoord');
+goog.require('ol.TileUrl');
