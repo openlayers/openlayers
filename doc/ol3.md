@@ -141,7 +141,7 @@ Camera
 
 Layer
    projections Array.<Projection>
-   extent Extent ?
+   extent Extent
    getResolutions() -> Array.<number>|null
    fires 'change' // when data changes
 
