@@ -1,13 +1,13 @@
 CLASS HIERARCHY
 ===============
 
+```
 goog.math.Coordinate  // Simple 2D point
 
 
 goog.math.Coordinate3
 |
 +- TileCoord
-
 
 goog.math.Box
 |
@@ -66,11 +66,13 @@ goog.events.EventTarget
 |  +- TileQueue
 |
 +- Tile
+```
 
 
 Layer renderer hierarchy
 ------------------------
 
+```
 goog.events.EventTarget
 |
 +- MVCObject
@@ -100,25 +102,26 @@ goog.events.EventTarget
       |  |  +- VMLHTMLVectorLayerRenderer
       |  |
       |  +- WebGLVectorLayerRenderer
+```
 
 
 OBJECT PROPERTIES AND METHODS
 =============================
 
 Notation:
-   property type  // property with type, trailing ? indicates unsure
-                  // getters and setters are assumed to exist
-   f(args) -> type  // function taking args returning type
-   f(args) -> type = something  // f is a trivial wrapper around something
-   fires 'x'  // fires events of type 'x'
 
+- `property type`  property with type, trailing ? indicates unsure, getters and setters are assumed to exist.
+- `f(args) -> type`  function taking args returning type.
+- `f(args) -> type = something`  f is a trivial wrapper around something.
+- `fires 'x'`  fires events of type 'x'.
 
 Principles:
-   All non-trivial objects inherit from MVCObject
-   All non-trivial collections are either MVCArrays or a child class thereof
-   Resolutions are Array.<number>, infinitely scalable resoueces (e.g. vectore layers) have resolutions == null
 
+- All non-trivial objects inherit from `MVCObject`.
+- All non-trivial collections are either `MVCArrays` or a child class thereof.
+- Resolutions are `Array.<number>`, infinitely scalable resources (e.g. vectore layers) have resolutions == null.
 
+```
 MVCObject
   as Google Maps MVCObject
   freeze()
@@ -198,13 +201,16 @@ Renderer
    map Map
    camera Camera
    getCapabilities() -> Array.<string>  // maybe ?
+```
+
+Questions:
+
+- Store tile layer extent in TileLayer or in TileGrid?  (not clear)
+- Who determines "best" resolution?  (static function?)
 
 
-Question: store tile layer extent in TileLayer or in TileGrid?  (not clear)
-Question: who determines "best" resolution?  (static function?)
-
-
-Todo: if tile layer extent stored in TileLayer rather than TileGrid then extent will occasionally need to be passed to TileGrid functions for cropping
+Todo: if tile layer extent stored in TileLayer rather than TileGrid then extent
+will occasionally need to be passed to TileGrid functions for cropping.
 
 DESIGN ASSERTIONS
 =================
