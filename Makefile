@@ -50,7 +50,6 @@ GSLINT_EXCLUDES= \
 	src/ol/renderer/WebGL.js \
 	src/ol/Tile.js \
 	src/ol/TileCache.js \
-	src/ol/TileSet.js \
 	src/ol.export.js \
 	src/ol.js
 
