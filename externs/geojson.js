@@ -1,3 +1,4 @@
+
 /**
  * @fileoverview Externs for GeoJSON.
  * @see http://geojson.org/geojson-spec.html
