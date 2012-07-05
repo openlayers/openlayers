@@ -3,9 +3,6 @@ CLASS HIERARCHY
 
 ```
 goog.math.Coordinate  // Simple 2D point
-
-
-goog.math.Coordinate3
 |
 +- TileCoord
 
