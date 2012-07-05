@@ -215,10 +215,20 @@ will occasionally need to be passed to TileGrid functions for cropping.
 DESIGN ASSERTIONS
 =================
 
+Map
+
 - A map has a renderer (the map renderer).
 - A map has a camera.
 - Multiple maps can share the same camera.
 - A map has a layer list.
+
+Layer 
+
+- A layer can have multiple projections (the supported projections).
+- A layer advertizes the projections it supports.
+- A layer returns no data if asked data for an unsupported projection.
+
+LayerView
 
 - A layer view stores view-related states for a layer.
 - View-related states include visibility, opacity, saturation, hue, etc.
@@ -226,17 +236,19 @@ DESIGN ASSERTIONS
 - Multiple layer views can share the same layer.
 - In other words a layer can be viewed in different manners.
 
+Renderer
+
 - The map renderer responds to events.
 - The map renderer receives events from the camera.
 - The map renderer creates layer renderers.
 
-- A layer can have multiple projections (the supported projections).
-- A layer advertizes the projections it supports.
-- A layer returns no data if asked data for an unsupported projection.
+Control
 
 - A control may listen to map events.
 - A control may listen to camera events.
 - A map navigation control acts on the camera.
+
+MVC
 
 - Types can be described in MVC terms.
 - Models don't know what rendering means.
