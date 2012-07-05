@@ -8,11 +8,9 @@ goog.math.Coordinate  // Simple 2D point
 
 goog.math.Box
 |
++- Extent // The extent of a single object in two dimensions, projection not stored
+|
 +- TileBounds  // A range of tiles in two dimensions, integer coordinates, z not stored
-|
-+- Extent  // The extent of a single object in two dimensions, projection not stored
-|
-+- Bounds  // A range of objects in two dimensions
 
 
 Projection
@@ -168,14 +166,14 @@ Map
 
 TileGrid
    resolutions Array.<number>
-   extent Extent
+   extent ol.Extent
    corner TOP_LEFT | BOTTOM_LEFT
    origin(s) Coord|Array.<Coord>
    tileSize goog.math.Size
    getTileBounds(z, extent) -> TileBounds
    getTileCoordCenter(tileCoord) -> goog.math.Coordinate
    getTileCoord(coordinate) -> TileCoord
-   getTileCoordExtent(tileCoord) -> Extent
+   getTileCoordExtent(tileCoord) -> ol.Extent
    getZForResolution(resolution) -> number
    yieldTileCoordChildren(tileCoord, function(z, TileBounds))
    yieldTileCoordParents(tileCoord, function(z, TileBounds))
