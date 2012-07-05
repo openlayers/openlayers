@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Drag Handler.
+ *
+ * A drag handler uses a goog.fx.Dragger object to receive dragstart, drag, dragend
+ * events for a DOM element, and re-dispatches these events to the map.
+ *
+ */
+
 goog.provide('ol.handler.Drag');
 
 goog.require('goog.fx.Dragger');
