@@ -63,7 +63,7 @@ serve: $(PLOVR_JAR)
 
 .PHONY: lint
 lint: $(CLOSURE_LINTER)
-	gjslint --strict $(filter-out $(GSLINT_EXCLUDES),$(shell find src -name \*.js))
+	gjslint --strict $(filter-out $(GSLINT_EXCLUDES),$(shell find externs src -name \*.js))
 
 $(PLOVR_JAR):
 	curl http://plovr.googlecode.com/files/$(PLOVR_JAR) > $@
