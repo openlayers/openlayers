@@ -8,7 +8,7 @@
     "(function(){%output%})();"
   ],
 
-  "inputs": "src/ol.export.js",
+  "inputs": "exports/ol.js",
   "paths": [
     "src"
   ],
