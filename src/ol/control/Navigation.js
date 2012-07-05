@@ -27,9 +27,12 @@ goog.inherits(ol.control.Navigation, ol.control.Control);
 ol.control.Navigation.prototype.activate = function() {
     var active = goog.base(this, 'activate');
     if (active) {
-        var map = this.map_;
-        goog.events.listen(map, 'drag', this.moveMap, false, this);
-        goog.events.listen(map, 'scroll', this.zoomMap, false, this);
+        // Listen to the map's parent EventTarget here. This is to
+        // give other, higher-level, controls a chance to stop the
+        // navigation control.
+        var target = this.map_.getParentEventTarget();
+        goog.events.listen(target, 'drag', this.moveMap, false, this);
+        goog.events.listen(target, 'scroll', this.zoomMap, false, this);
     }
     return active;
 };
@@ -38,9 +41,9 @@ ol.control.Navigation.prototype.activate = function() {
 ol.control.Navigation.prototype.deactivate = function() {
     var inactive = goog.base(this, 'deactivate');
     if (inactive) {
-        var map = this.map_;
-        goog.events.unlisten(map, 'drag', this.moveMap, false, this);
-        goog.events.unlisten(map, 'scroll', this.zoomMap, false, this);
+        var target = this.map_.getParentEventTarget();
+        goog.events.unlisten(target, 'drag', this.moveMap, false, this);
+        goog.events.unlisten(target, 'scroll', this.zoomMap, false, this);
     }
     return inactive;
 };
