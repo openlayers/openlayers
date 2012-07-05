@@ -6,7 +6,8 @@
     </description>
     
     <property name="ol.home" location=".."/>
-    <property name="plovr.jar" location="${ol.home}/bin/plovr.jar"/>
+    <property name="plovr.version" value="4b3caf2b7d84"/>
+    <property name="plovr.jar" location="${ol.home}/bin/plovr-${plovr.version}.jar"/>
     <property name="main.json" location="${ol.home}/main.json"/>
     <property name="build.json" location="${ol.home}/api.json"/>
 
@@ -25,7 +26,7 @@
     </condition>
     
     <target name="deps" unless="plovr.exists">
-        <get src="http://plovr.googlecode.com/files/plovr-4b3caf2b7d84.jar"
+        <get src="http://plovr.googlecode.com/files/plovr-${plovr.version}.jar"
             dest="${plovr.jar}"/>
     </target>
     
