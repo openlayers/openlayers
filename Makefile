@@ -16,7 +16,6 @@ GSLINT_EXCLUDES= \
 	src/api/popup.js \
 	src/api/projection.js \
 	src/ol/base.js \
-	src/ol/Bounds.js \
 	src/ol/control/Attribution.js \
 	src/ol/control/Control.js \
 	src/ol/control/Navigation.js \
@@ -52,7 +51,6 @@ GSLINT_EXCLUDES= \
 	src/ol/Tile.js \
 	src/ol/TileCache.js \
 	src/ol/TileSet.js \
-	src/ol/UnreferencedBounds.js \
 	src/ol.export.js \
 	src/ol.js
 
