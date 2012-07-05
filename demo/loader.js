@@ -1,36 +1,36 @@
-// the following code includes the sourc-files of OpenLayers as they are
-// defined in ol.js.
-//
-// You can control in which form the source will be loaded by passing
-// URL-parameters:
-//
-//   - host
-//     where the plovr compiler is running, if not passed this defaults to the
-//     current host on port 9810
-//
-//   - mode
-//     which mode of compilation should be applied. Common values for this are
-//     RAW, SIMPLE or ADVANCED. If not provided, SIMPLE is used.
-(function(doc, l){
-    var hostRegex = /[\\?&]host=([^&#]*)/,
-        modeRegex = /[\\?&]mode=([^&#]*)/,
-        idRegex = /[\\?&]id=([^&#]*)/,
-        hostResult = hostRegex.exec(l.href),
-        modeResult = modeRegex.exec(l.href),
-        idResult = idRegex.exec(l.href),
-        host = (hostResult && hostResult[1])
-            ? hostResult[1]
-            : (l.host)
-                ? l.host + ':9810'
-                : 'localhost:9810',
-        mode = (modeResult && modeResult[1])
-            ? modeResult[1]
-            : 'SIMPLE',
-        id = (idResult && idResult[1])
-            ? idResult[1]
-            : 'ol',
-        script = '<sc' + 'ript type="text/javascript" '
-            + 'src="http://' + host + '/compile?id=' + id + '&amp;mode=' + mode + '">'
-            + '</scr' + 'ipt>';
-    doc.write(script);
-})(document, location);
+/**
+    Adds the plovr generated script to the document.  The following default 
+    values may be overridden with query string parameters:
+    
+     * hostname - localhost
+     * port - 9810
+     * mode - SIMPLE
+     * id - ol
+ */
+(function() {
+    var search = window.location.search.substring(1);
+    var params = {
+        hostname: "localhost",
+        port: "9810",
+        mode: "SIMPLE",
+        id: "ol"
+    };
+    var chunks = search.split("&");
+    var pair;
+    for (var i=chunks.length-1; i>=0; --i) {
+        pair = chunks[i].split("=");
+        params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+    }
+    
+    var host = params.hostname + ":" + params.port;
+    delete params.hostname;
+    delete params.port;
+    
+    var pairs = [];
+    for (var key in params) {
+        pairs.push(encodeURIComponent(key) + "=" + encodeURIComponent(params[key]));
+    }
+
+    var url = "http://" + host + "/compile?" + pairs.join("&");
+    document.write("<script type='text/javascript' src='" + url + "'></script>");
+})();
