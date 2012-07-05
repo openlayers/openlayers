@@ -54,12 +54,3 @@ ol.handler.Drag = function(map, elt) {
                        handleDragEnd, false, this);
 };
 goog.inherits(ol.handler.Drag, goog.Disposable);
-
-/**
- * @inheritDoc
- */
-ol.handler.Drag.prototype.disposeInternal = function() {
-    goog.base(this, 'disposeInternal');
-    this.dragger_.dispose();
-    delete this.dragger_;
-};
