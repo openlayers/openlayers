@@ -244,7 +244,7 @@ ol.renderer.TileLayerRenderer.prototype.draw = function(center, resolution) {
         pxTileLeft = pxTileRight;
     }
     if (newTiles) {
-        this.target_.appendChild(fragment);
+        this.container_.appendChild(fragment);
     }
     this.renderedResolution_ = resolution;
     this.renderedTop_ = topTileY;
@@ -285,7 +285,7 @@ ol.renderer.TileLayerRenderer.prototype.removeInvisibleTiles_ = function() {
         if (prune) {
             tile = this.renderedTiles_[xyz];
             delete this.renderedTiles_[xyz];
-            this.target_.removeChild(tile.getImg());
+            this.container_.removeChild(tile.getImg());
         }
     }
 };
@@ -299,7 +299,7 @@ ol.renderer.TileLayerRenderer.prototype.removeInvisibleTiles_ = function() {
  */
 ol.renderer.TileLayerRenderer.prototype.changeResolution_ = function(center, resolution) {
     this.renderedTiles_ = {};
-    goog.dom.removeChildren(this.target_);
+    goog.dom.removeChildren(this.container_);
 };
 
 

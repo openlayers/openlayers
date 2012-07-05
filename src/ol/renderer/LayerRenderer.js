@@ -21,18 +21,6 @@ ol.renderer.LayerRenderer = function(container, layer) {
      */
     this.layer_ = layer;
 
-    var target = goog.dom.createDom('div', {
-        'class': 'ol-renderer-layer',
-        'style': 'position:absolute;height:1px:width:1px'
-    });
-    goog.dom.appendChild(container, target);
-
-    /**
-     * @type Element
-     * @protected
-     */
-    this.target_ = target;
-    
 };
 
 /**
