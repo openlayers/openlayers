@@ -2,7 +2,7 @@
   "id": "ol",
 
   "inputs": [
-    "exports/ol.js"
+    "src/all.js"
   ],
   "paths": [
     "src"
