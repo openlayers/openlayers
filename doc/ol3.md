@@ -201,6 +201,15 @@ Renderer
 Questions:
 
 - Store tile layer extent in TileLayer or in TileGrid?  (not clear)
+
+Two concepts: tile coordinate system range and and available data extent.
+TileGrid extent is range (or validity extent) of the tile coordinate system.
+TileLayer extent is the available data extent. A particular TileGrid may range
+from 0,0 to 10,10. My cache may conform to that grid but I may only have tiles
+ranging from 2,2 to 8,8. When you need to wrap multiple worlds, you pay
+attention to the TileGrid extent. When you need to decide whether or not to
+bother requesting a tile, you pay attention to the TileLayer extent.
+
 - Who determines "best" resolution?  (static function?)
 
 
