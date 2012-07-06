@@ -70,4 +70,6 @@ Proj4js.Proj.prototype.units;
  * @param {Proj4js.Point|{x:number, y:number}} point Point.
  * @return {Proj4js.Point} Point.
  */
-Proj4js.transform = function(source, dest, point) {};
+Proj4js.transform = function(source, dest, point) {
+  return new Proj4js.Point(0, 0);
+};
