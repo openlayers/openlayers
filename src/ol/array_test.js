@@ -158,5 +158,37 @@ function testCreateFromArray() {
   var array1 = new ol.Array();
   var array2 = ol.Array.create(array1);
   assertTrue(array1 === array2);
+}
 
+
+function testLengthChangeInsertAt() {
+  var array = ol.Array.create([0, 1, 2]);
+  var lengthChangedCalled;
+  array.length_changed = function() {
+    lengthChangedCalled = true;
+  };
+  array.insertAt(2, 3);
+  assertTrue(lengthChangedCalled);
+}
+
+
+function testLengthChangeRemoveAt() {
+  var array = ol.Array.create([0, 1, 2]);
+  var lengthChangedCalled;
+  array.length_changed = function() {
+    lengthChangedCalled = true;
+  };
+  array.removeAt(0);
+  assertTrue(lengthChangedCalled);
+}
+
+
+function testLengthChangeSetAt() {
+  var array = ol.Array.create([0, 1, 2]);
+  var lengthChangedCalled;
+  array.length_changed = function() {
+    lengthChangedCalled = true;
+  };
+  array.setAt(1, 1);
+  assertUndefined(lengthChangedCalled);
 }
