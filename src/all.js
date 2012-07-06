@@ -12,3 +12,4 @@ goog.require('ol.TileBounds');
 goog.require('ol.TileCoord');
 goog.require('ol.TileGrid');
 goog.require('ol.TileUrl');
+goog.require('ol.TransformFunction');

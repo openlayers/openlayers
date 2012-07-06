@@ -5,12 +5,7 @@ goog.require('goog.asserts');
 goog.require('goog.math.Coordinate');
 goog.require('goog.object');
 goog.require('ol.Extent');
-
-
-/**
- * @typedef {function(goog.math.Coordinate): goog.math.Coordinate}
- */
-ol.TransformFunction;
+goog.require('ol.TransformFunction');
 
 
 /**
