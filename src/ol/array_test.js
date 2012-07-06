@@ -1,11 +1,11 @@
 goog.require('goog.array');
 goog.require('goog.testing.jsunit');
-goog.require('ol.MVCArray');
-goog.require('ol.MVCArrayEventType');
+goog.require('ol.Array');
+goog.require('ol.ArrayEventType');
 
 
 function testEmpty() {
-  var a = new ol.MVCArray();
+  var a = new ol.Array();
   assertEquals(0, a.getLength());
   assertTrue(goog.array.equals(a.getArray(), []));
   assertUndefined(a.getAt(0));
@@ -14,7 +14,7 @@ function testEmpty() {
 
 function testConstruct() {
   var array = [0, 1, 2];
-  var a = new ol.MVCArray(array);
+  var a = new ol.Array(array);
   assertEquals(0, a.getAt(0));
   assertEquals(1, a.getAt(1));
   assertEquals(2, a.getAt(2));
@@ -22,7 +22,7 @@ function testConstruct() {
 
 
 function testPush() {
-  var a = new ol.MVCArray();
+  var a = new ol.Array();
   a.push(1);
   assertEquals(1, a.getLength());
   assertTrue(goog.array.equals(a.getArray(), [1]));
@@ -31,7 +31,7 @@ function testPush() {
 
 
 function testPushPop() {
-  var a = new ol.MVCArray();
+  var a = new ol.Array();
   a.push(1);
   a.pop();
   assertEquals(0, a.getLength());
@@ -41,7 +41,7 @@ function testPushPop() {
 
 
 function testInsertAt() {
-  var a = new ol.MVCArray([0, 2]);
+  var a = new ol.Array([0, 2]);
   a.insertAt(1, 1);
   assertEquals(0, a.getAt(0));
   assertEquals(1, a.getAt(1));
@@ -50,7 +50,7 @@ function testInsertAt() {
 
 
 function testSetAt() {
-  var a = new ol.MVCArray();
+  var a = new ol.Array();
   a.setAt(1, 1);
   assertEquals(2, a.getLength());
   assertUndefined(a.getAt(0));
@@ -59,7 +59,7 @@ function testSetAt() {
 
 
 function testRemoveAt() {
-  var a = new ol.MVCArray([0, 1, 2]);
+  var a = new ol.Array([0, 1, 2]);
   a.removeAt(1);
   assertEquals(0, a.getAt(0));
   assertEquals(2, a.getAt(1));
@@ -67,7 +67,7 @@ function testRemoveAt() {
 
 
 function testForEachEmpty() {
-  var a = new ol.MVCArray();
+  var a = new ol.Array();
   var forEachCalled = false;
   a.forEach(function() {
     forEachCalled = true;
@@ -77,7 +77,7 @@ function testForEachEmpty() {
 
 
 function testForEachPopulated() {
-  var a = new ol.MVCArray();
+  var a = new ol.Array();
   a.push(1);
   a.push(2);
   var forEachCount = 0;
@@ -89,9 +89,9 @@ function testForEachPopulated() {
 
 
 function testSetAtEvent() {
-  var a = new ol.MVCArray(['a', 'b']);
+  var a = new ol.Array(['a', 'b']);
   var index, prev;
-  goog.events.listen(a, ol.MVCArrayEventType.SET_AT, function(e) {
+  goog.events.listen(a, ol.ArrayEventType.SET_AT, function(e) {
     index = e.index;
     prev = e.prev;
   });
@@ -102,9 +102,9 @@ function testSetAtEvent() {
 
 
 function testRemoveAtEvent() {
-  var a = new ol.MVCArray(['a']);
+  var a = new ol.Array(['a']);
   var index, prev;
-  goog.events.listen(a, ol.MVCArrayEventType.REMOVE_AT, function(e) {
+  goog.events.listen(a, ol.ArrayEventType.REMOVE_AT, function(e) {
     index = e.index;
     prev = e.prev;
   });
@@ -115,9 +115,9 @@ function testRemoveAtEvent() {
 
 
 function testInsertAtEvent() {
-  var a = new ol.MVCArray([0, 2]);
+  var a = new ol.Array([0, 2]);
   var index;
-  goog.events.listen(a, ol.MVCArrayEventType.INSERT_AT, function(e) {
+  goog.events.listen(a, ol.ArrayEventType.INSERT_AT, function(e) {
     index = e.index;
   });
   a.insertAt(1, 1);
@@ -126,7 +126,7 @@ function testInsertAtEvent() {
 
 
 function testSetAtBeyondEnd() {
-  var a = new ol.MVCArray();
+  var a = new ol.Array();
   var inserts = [];
   a.insert_at = function(index) {
     inserts.push(index);
@@ -145,18 +145,18 @@ function testSetAtBeyondEnd() {
 
 function testCreateFromArray() {
   var a = [0, 1, 2];
-  var mvcArray = ol.MVCArray.create(a);
-  assertTrue(mvcArray instanceof ol.MVCArray);
-  assertEquals(3, mvcArray.getLength());
-  assertEquals(0, mvcArray.getAt(0));
-  assertEquals(1, mvcArray.getAt(1));
-  assertEquals(2, mvcArray.getAt(2));
+  var array = ol.Array.create(a);
+  assertTrue(array instanceof ol.Array);
+  assertEquals(3, array.getLength());
+  assertEquals(0, array.getAt(0));
+  assertEquals(1, array.getAt(1));
+  assertEquals(2, array.getAt(2));
 }
 
 
-function testCreateFromMVCArray() {
-  var mvcArray1 = new ol.MVCArray();
-  var mvcArray2 = ol.MVCArray.create(mvcArray1);
-  assertTrue(mvcArray1 === mvcArray2);
+function testCreateFromArray() {
+  var array1 = new ol.Array();
+  var array2 = ol.Array.create(array1);
+  assertTrue(array1 === array2);
 
 }

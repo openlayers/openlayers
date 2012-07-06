@@ -4,9 +4,9 @@
  * @see https://developers.google.com/maps/documentation/javascript/reference
  */
 
-goog.provide('ol.MVCArray');
-goog.provide('ol.MVCArrayEvent');
-goog.provide('ol.MVCArrayEventType');
+goog.provide('ol.Array');
+goog.provide('ol.ArrayEvent');
+goog.provide('ol.ArrayEventType');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -17,7 +17,7 @@ goog.require('ol.Object');
 /**
  * @enum {string}
  */
-ol.MVCArrayEventType = {
+ol.ArrayEventType = {
   INSERT_AT: 'insert_at',
   REMOVE_AT: 'remove_at',
   SET_AT: 'set_at'
@@ -28,12 +28,12 @@ ol.MVCArrayEventType = {
 /**
  * @constructor
  * @extends {goog.events.Event}
- * @param {ol.MVCArrayEventType} type Type.
+ * @param {ol.ArrayEventType} type Type.
  * @param {number} index Index.
  * @param {*=} opt_prev Value.
  * @param {Object=} opt_target Target.
  */
-ol.MVCArrayEvent = function(type, index, opt_prev, opt_target) {
+ol.ArrayEvent = function(type, index, opt_prev, opt_target) {
 
   goog.base(this, type, opt_target);
 
@@ -48,7 +48,7 @@ ol.MVCArrayEvent = function(type, index, opt_prev, opt_target) {
   this.prev = opt_prev;
 
 };
-goog.inherits(ol.MVCArrayEvent, goog.events.Event);
+goog.inherits(ol.ArrayEvent, goog.events.Event);
 
 
 
@@ -57,7 +57,7 @@ goog.inherits(ol.MVCArrayEvent, goog.events.Event);
  * @extends {ol.Object}
  * @param {Array=} opt_array Array.
  */
-ol.MVCArray = function(opt_array) {
+ol.Array = function(opt_array) {
 
   goog.base(this);
 
@@ -70,33 +70,33 @@ ol.MVCArray = function(opt_array) {
   this.updateLength_();
 
 };
-goog.inherits(ol.MVCArray, ol.Object);
+goog.inherits(ol.Array, ol.Object);
 
 
 /**
  * @const
  * @type {string}
  */
-ol.MVCArray.LENGTH = 'length';
+ol.Array.LENGTH = 'length';
 
 
 /**
- * @param {ol.MVCArray|Array} arg Argument.
- * @return {ol.MVCArray} MVCArray.
+ * @param {ol.Array|Array} arg Argument.
+ * @return {ol.Array} Array.
  */
-ol.MVCArray.create = function(arg) {
-  if (arg instanceof ol.MVCArray) {
+ol.Array.create = function(arg) {
+  if (arg instanceof ol.Array) {
     return arg;
   } else {
-    return new ol.MVCArray(arg);
+    return new ol.Array(arg);
   }
 };
 
 
 /**
  */
-ol.MVCArray.prototype.clear = function() {
-  while (this[ol.MVCArray.LENGTH]) {
+ol.Array.prototype.clear = function() {
+  while (this[ol.Array.LENGTH]) {
     this.pop();
   }
 };
@@ -105,7 +105,7 @@ ol.MVCArray.prototype.clear = function() {
 /**
  * @param {function(*, number)} callback Callback.
  */
-ol.MVCArray.prototype.forEach = function(callback) {
+ol.Array.prototype.forEach = function(callback) {
   goog.array.forEach(this.array_, callback);
 };
 
@@ -113,7 +113,7 @@ ol.MVCArray.prototype.forEach = function(callback) {
 /**
  * @return {Array} Array.
  */
-ol.MVCArray.prototype.getArray = function() {
+ol.Array.prototype.getArray = function() {
   return this.array_;
 };
 
@@ -122,7 +122,7 @@ ol.MVCArray.prototype.getArray = function() {
  * @param {number} index Index.
  * @return {*} Element.
  */
-ol.MVCArray.prototype.getAt = function(index) {
+ol.Array.prototype.getAt = function(index) {
   return this.array_[index];
 };
 
@@ -130,8 +130,8 @@ ol.MVCArray.prototype.getAt = function(index) {
 /**
  * @return {number} Length.
  */
-ol.MVCArray.prototype.getLength = function() {
-  return /** @type {number} */ (this.get(ol.MVCArray.LENGTH));
+ol.Array.prototype.getLength = function() {
+  return /** @type {number} */ (this.get(ol.Array.LENGTH));
 };
 
 
@@ -139,13 +139,13 @@ ol.MVCArray.prototype.getLength = function() {
  * @param {number} index Index.
  * @param {*} elem Element.
  */
-ol.MVCArray.prototype.insertAt = function(index, elem) {
+ol.Array.prototype.insertAt = function(index, elem) {
   goog.array.insertAt(this.array_, elem, index);
   this.updateLength_();
-  this.dispatchEvent(new ol.MVCArrayEvent(
-      ol.MVCArrayEventType.INSERT_AT, index, undefined, this));
-  if (this[ol.MVCArrayEventType.INSERT_AT]) {
-    this[ol.MVCArrayEventType.INSERT_AT](index);
+  this.dispatchEvent(new ol.ArrayEvent(
+      ol.ArrayEventType.INSERT_AT, index, undefined, this));
+  if (this[ol.ArrayEventType.INSERT_AT]) {
+    this[ol.ArrayEventType.INSERT_AT](index);
   }
 };
 
@@ -153,7 +153,7 @@ ol.MVCArray.prototype.insertAt = function(index, elem) {
 /**
  * @return {*} Element.
  */
-ol.MVCArray.prototype.pop = function() {
+ol.Array.prototype.pop = function() {
   return this.removeAt(this.getLength() - 1);
 };
 
@@ -162,7 +162,7 @@ ol.MVCArray.prototype.pop = function() {
  * @param {*} elem Element.
  * @return {number} Length.
  */
-ol.MVCArray.prototype.push = function(elem) {
+ol.Array.prototype.push = function(elem) {
   var n = this.array_.length;
   this.insertAt(n, elem);
   return n;
@@ -173,14 +173,14 @@ ol.MVCArray.prototype.push = function(elem) {
  * @param {number} index Index.
  * @return {*} Value.
  */
-ol.MVCArray.prototype.removeAt = function(index) {
+ol.Array.prototype.removeAt = function(index) {
   var prev = this.array_[index];
   goog.array.removeAt(this.array_, index);
   this.updateLength_();
-  this.dispatchEvent(new ol.MVCArrayEvent(ol.MVCArrayEventType.REMOVE_AT,
+  this.dispatchEvent(new ol.ArrayEvent(ol.ArrayEventType.REMOVE_AT,
       index, prev, this));
-  if (this[ol.MVCArrayEventType.REMOVE_AT]) {
-    this[ol.MVCArrayEventType.REMOVE_AT](index);
+  if (this[ol.ArrayEventType.REMOVE_AT]) {
+    this[ol.ArrayEventType.REMOVE_AT](index);
   }
   return prev;
 };
@@ -190,15 +190,15 @@ ol.MVCArray.prototype.removeAt = function(index) {
  * @param {number} index Index.
  * @param {*} elem Element.
  */
-ol.MVCArray.prototype.setAt = function(index, elem) {
-  var n = this[ol.MVCArray.LENGTH];
+ol.Array.prototype.setAt = function(index, elem) {
+  var n = this[ol.Array.LENGTH];
   if (index < n) {
     var prev = this.array_[index];
     this.array_[index] = elem;
-    this.dispatchEvent(new ol.MVCArrayEvent(ol.MVCArrayEventType.SET_AT,
+    this.dispatchEvent(new ol.ArrayEvent(ol.ArrayEventType.SET_AT,
         index, prev, this));
-    if (this[ol.MVCArrayEventType.SET_AT]) {
-      this[ol.MVCArrayEventType.SET_AT](index, prev);
+    if (this[ol.ArrayEventType.SET_AT]) {
+      this[ol.ArrayEventType.SET_AT](index, prev);
     }
   } else {
     var j;
@@ -213,6 +213,6 @@ ol.MVCArray.prototype.setAt = function(index, elem) {
 /**
  * @private
  */
-ol.MVCArray.prototype.updateLength_ = function() {
+ol.Array.prototype.updateLength_ = function() {
   this.set('length', this.array_.length);
 };
