@@ -19,6 +19,15 @@ goog.require('goog.object');
 ol.ObjectAccessor;
 
 
+/**
+ * @enum {string}
+ */
+ol.ObjectProperty = {
+  ACCESSORS: 'ol_accessors_',
+  BINDINGS: 'ol_bindings_'
+};
+
+
 
 /**
  * @constructor
@@ -95,7 +104,8 @@ ol.Object.getSetterName_ = function(str) {
  * @return {Object.<string, ol.ObjectAccessor>} Accessors.
  */
 ol.Object.getAccessors = function(obj) {
-  return obj['ol_accessors_'] || (obj['ol_accessors_'] = {});
+  return obj[ol.ObjectProperty.ACCESSORS] ||
+      (obj[ol.ObjectProperty.ACCESSORS] = {});
 };
 
 
@@ -104,7 +114,8 @@ ol.Object.getAccessors = function(obj) {
  * @return {Object.<string, ?number>} Listeners.
  */
 ol.Object.getListeners = function(obj) {
-  return obj['ol_bindings_'] || (obj['ol_bindings_'] = {});
+  return obj[ol.ObjectProperty.BINDINGS] ||
+      (obj[ol.ObjectProperty.BINDINGS] = {});
 };
 
 
