@@ -34,7 +34,6 @@ GSLINT_EXCLUDES= \
 	src/ol/geom/MultiPoint.js \
 	src/ol/geom/Point.js \
 	src/ol/handler/Drag.js \
-	src/ol/layer/Layer.js \
 	src/ol/layer/OSM.js \
 	src/ol/layer/TileLayer.js \
 	src/ol/layer/WMS.js \
