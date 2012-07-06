@@ -11,7 +11,7 @@ goog.provide('ol.MVCArrayEventType');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events.Event');
-goog.require('ol.MVCObject');
+goog.require('ol.Object');
 
 
 /**
@@ -54,7 +54,7 @@ goog.inherits(ol.MVCArrayEvent, goog.events.Event);
 
 /**
  * @constructor
- * @extends {ol.MVCObject}
+ * @extends {ol.Object}
  * @param {Array=} opt_array Array.
  */
 ol.MVCArray = function(opt_array) {
@@ -70,7 +70,7 @@ ol.MVCArray = function(opt_array) {
   this.updateLength_();
 
 };
-goog.inherits(ol.MVCArray, ol.MVCObject);
+goog.inherits(ol.MVCArray, ol.Object);
 
 
 /**

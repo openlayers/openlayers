@@ -1,7 +1,7 @@
 goog.provide('ol.Camera');
 
 goog.require('goog.math.Coordinate');
-goog.require('ol.MVCObject');
+goog.require('ol.Object');
 
 
 /**
@@ -18,14 +18,14 @@ ol.CameraProperty_ = {
 
 /**
  * @constructor
- * @extends {ol.MVCObject}
+ * @extends {ol.Object}
  */
 ol.Camera = function() {
 
   goog.base(this);
 
 };
-goog.inherits(ol.Camera, ol.MVCObject);
+goog.inherits(ol.Camera, ol.Object);
 
 
 /**

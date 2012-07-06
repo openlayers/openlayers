@@ -5,7 +5,7 @@
  * @see https://developers.google.com/maps/documentation/javascript/reference
  */
 
-goog.provide('ol.MVCObject');
+goog.provide('ol.Object');
 
 goog.require('goog.array');
 goog.require('goog.events');
@@ -14,9 +14,9 @@ goog.require('goog.object');
 
 
 /**
- * @typedef {{target: ol.MVCObject, key: string}}
+ * @typedef {{target: ol.Object, key: string}}
  */
-ol.MVCObjectAccessor;
+ol.ObjectAccessor;
 
 
 
@@ -24,32 +24,32 @@ ol.MVCObjectAccessor;
  * @constructor
  * @extends {goog.events.EventTarget}
  */
-ol.MVCObject = function() {
+ol.Object = function() {
   goog.base(this);
 };
-goog.inherits(ol.MVCObject, goog.events.EventTarget);
+goog.inherits(ol.Object, goog.events.EventTarget);
 
 
 /**
  * @param {string} str String.
  * @return {string} Capitalized string.
  */
-ol.MVCObject.capitalize = function(str) {
+ol.Object.capitalize = function(str) {
   return str.substr(0, 1).toUpperCase() + str.substr(1);
 };
 
 
 /**
- * @param {ol.MVCObject|Object} arg Argument.
- * @return {ol.MVCObject} MVCObject.
+ * @param {ol.Object|Object} arg Argument.
+ * @return {ol.Object} Object.
  */
-ol.MVCObject.create = function(arg) {
-  if (arg instanceof ol.MVCObject) {
+ol.Object.create = function(arg) {
+  if (arg instanceof ol.Object) {
     return arg;
   } else {
-    var mvcObject = new ol.MVCObject();
-    mvcObject.setOptions(arg);
-    return mvcObject;
+    var object = new ol.Object();
+    object.setOptions(arg);
+    return object;
   }
 };
 
@@ -58,7 +58,7 @@ ol.MVCObject.create = function(arg) {
  * @private
  * @type {Object.<string, string>}
  */
-ol.MVCObject.getterNameCache_ = {};
+ol.Object.getterNameCache_ = {};
 
 
 /**
@@ -66,10 +66,9 @@ ol.MVCObject.getterNameCache_ = {};
  * @private
  * @return {string} Capitalized string.
  */
-ol.MVCObject.getGetterName_ = function(str) {
-  return ol.MVCObject.getterNameCache_[str] ||
-      (ol.MVCObject.getterNameCache_[str] =
-          'get' + ol.MVCObject.capitalize(str));
+ol.Object.getGetterName_ = function(str) {
+  return ol.Object.getterNameCache_[str] ||
+      (ol.Object.getterNameCache_[str] = 'get' + ol.Object.capitalize(str));
 };
 
 
@@ -77,7 +76,7 @@ ol.MVCObject.getGetterName_ = function(str) {
  * @private
  * @type {Object.<string, string>}
  */
-ol.MVCObject.setterNameCache_ = {};
+ol.Object.setterNameCache_ = {};
 
 
 /**
@@ -85,47 +84,46 @@ ol.MVCObject.setterNameCache_ = {};
  * @private
  * @return {string} Capitalized string.
  */
-ol.MVCObject.getSetterName_ = function(str) {
-  return ol.MVCObject.setterNameCache_[str] ||
-      (ol.MVCObject.setterNameCache_[str] =
-          'set' + ol.MVCObject.capitalize(str));
+ol.Object.getSetterName_ = function(str) {
+  return ol.Object.setterNameCache_[str] ||
+      (ol.Object.setterNameCache_[str] = 'set' + ol.Object.capitalize(str));
 };
 
 
 /**
- * @param {ol.MVCObject} obj Object.
- * @return {Object.<string, ol.MVCObjectAccessor>} Accessors.
+ * @param {ol.Object} obj Object.
+ * @return {Object.<string, ol.ObjectAccessor>} Accessors.
  */
-ol.MVCObject.getAccessors = function(obj) {
-  return obj['gm_accessors_'] || (obj['gm_accessors_'] = {});
+ol.Object.getAccessors = function(obj) {
+  return obj['ol_accessors_'] || (obj['ol_accessors_'] = {});
 };
 
 
 /**
- * @param {ol.MVCObject} obj Object.
+ * @param {ol.Object} obj Object.
  * @return {Object.<string, ?number>} Listeners.
  */
-ol.MVCObject.getListeners = function(obj) {
-  return obj['gm_bindings_'] || (obj['gm_bindings_'] = {});
+ol.Object.getListeners = function(obj) {
+  return obj['ol_bindings_'] || (obj['ol_bindings_'] = {});
 };
 
 
 /**
  * @param {string} key Key.
- * @param {ol.MVCObject} target Target.
+ * @param {ol.Object} target Target.
  * @param {string=} opt_targetKey Target key.
  * @param {boolean=} opt_noNotify No notify.
  */
-ol.MVCObject.prototype.bindTo =
+ol.Object.prototype.bindTo =
     function(key, target, opt_targetKey, opt_noNotify) {
   var targetKey = goog.isDef(opt_targetKey) ? opt_targetKey : key;
   this.unbind(key);
   var eventType = targetKey.toLowerCase() + '_changed';
-  var listeners = ol.MVCObject.getListeners(this);
+  var listeners = ol.Object.getListeners(this);
   listeners[key] = goog.events.listen(target, eventType, function() {
     this.notifyInternal_(key);
   }, undefined, this);
-  var accessors = ol.MVCObject.getAccessors(this);
+  var accessors = ol.Object.getAccessors(this);
   accessors[key] = {target: target, key: targetKey};
   var noNotify = goog.isDef(opt_noNotify) ? opt_noNotify : false;
   if (!noNotify) {
@@ -137,7 +135,7 @@ ol.MVCObject.prototype.bindTo =
 /**
  * @param {string} key Key.
  */
-ol.MVCObject.prototype.changed = function(key) {
+ol.Object.prototype.changed = function(key) {
 };
 
 
@@ -145,13 +143,13 @@ ol.MVCObject.prototype.changed = function(key) {
  * @param {string} key Key.
  * @return {*} Value.
  */
-ol.MVCObject.prototype.get = function(key) {
-  var accessors = ol.MVCObject.getAccessors(this);
+ol.Object.prototype.get = function(key) {
+  var accessors = ol.Object.getAccessors(this);
   if (goog.object.containsKey(accessors, key)) {
     var accessor = accessors[key];
     var target = accessor.target;
     var targetKey = accessor.key;
-    var getterName = ol.MVCObject.getGetterName_(targetKey);
+    var getterName = ol.Object.getGetterName_(targetKey);
     if (target[getterName]) {
       return target[getterName]();
     } else {
@@ -166,8 +164,8 @@ ol.MVCObject.prototype.get = function(key) {
 /**
  * @param {string} key Key.
  */
-ol.MVCObject.prototype.notify = function(key) {
-  var accessors = ol.MVCObject.getAccessors(this);
+ol.Object.prototype.notify = function(key) {
+  var accessors = ol.Object.getAccessors(this);
   if (goog.object.containsKey(accessors, key)) {
     var accessor = accessors[key];
     var target = accessor.target;
@@ -183,7 +181,7 @@ ol.MVCObject.prototype.notify = function(key) {
  * @param {string} key Key.
  * @private
  */
-ol.MVCObject.prototype.notifyInternal_ = function(key) {
+ol.Object.prototype.notifyInternal_ = function(key) {
   var changedMethodName = key + '_changed';
   if (this[changedMethodName]) {
     this[changedMethodName]();
@@ -199,13 +197,13 @@ ol.MVCObject.prototype.notifyInternal_ = function(key) {
  * @param {string} key Key.
  * @param {*} value Value.
  */
-ol.MVCObject.prototype.set = function(key, value) {
-  var accessors = ol.MVCObject.getAccessors(this);
+ol.Object.prototype.set = function(key, value) {
+  var accessors = ol.Object.getAccessors(this);
   if (goog.object.containsKey(accessors, key)) {
     var accessor = accessors[key];
     var target = accessor.target;
     var targetKey = accessor.key;
-    var setterName = ol.MVCObject.getSetterName_(targetKey);
+    var setterName = ol.Object.getSetterName_(targetKey);
     if (target[setterName]) {
       target[setterName](value);
     } else {
@@ -221,9 +219,9 @@ ol.MVCObject.prototype.set = function(key, value) {
 /**
  * @param {Object.<string, *>} options Options.
  */
-ol.MVCObject.prototype.setOptions = function(options) {
+ol.Object.prototype.setOptions = function(options) {
   goog.object.forEach(options, function(value, key) {
-    var setterName = ol.MVCObject.getSetterName_(key);
+    var setterName = ol.Object.getSetterName_(key);
     if (this[setterName]) {
       this[setterName](value);
     } else {
@@ -236,20 +234,20 @@ ol.MVCObject.prototype.setOptions = function(options) {
 /**
  * @param {Object.<string, *>} values Values.
  */
-ol.MVCObject.prototype.setValues = ol.MVCObject.prototype.setOptions;
+ol.Object.prototype.setValues = ol.Object.prototype.setOptions;
 
 
 /**
  * @param {string} key Key.
  */
-ol.MVCObject.prototype.unbind = function(key) {
-  var listeners = ol.MVCObject.getListeners(this);
+ol.Object.prototype.unbind = function(key) {
+  var listeners = ol.Object.getListeners(this);
   var listener = listeners[key];
   if (listener) {
     delete listeners[key];
     goog.events.unlistenByKey(listener);
     var value = this.get(key);
-    var accessors = ol.MVCObject.getAccessors(this);
+    var accessors = ol.Object.getAccessors(this);
     delete accessors[key];
     this[key] = value;
   }
@@ -258,8 +256,8 @@ ol.MVCObject.prototype.unbind = function(key) {
 
 /**
  */
-ol.MVCObject.prototype.unbindAll = function() {
-  var listeners = ol.MVCObject.getListeners(this);
+ol.Object.prototype.unbindAll = function() {
+  var listeners = ol.Object.getListeners(this);
   var keys = goog.object.getKeys(listeners);
   goog.array.forEach(keys, function(key) {
     this.unbind(key);

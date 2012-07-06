@@ -6,7 +6,7 @@ goog.require('ol.Extent');
 goog.require('ol.Layer');
 goog.require('ol.LayerView');
 goog.require('ol.MVCArray');
-goog.require('ol.MVCObject');
+goog.require('ol.Object');
 goog.require('ol.Projection');
 goog.require('ol.TileBounds');
 goog.require('ol.TileCoord');

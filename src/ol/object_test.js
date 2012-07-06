@@ -1,21 +1,21 @@
 goog.require('goog.testing.jsunit');
-goog.require('ol.MVCObject');
+goog.require('ol.Object');
 
 
 function testModel() {
-  var m = new ol.MVCObject();
+  var m = new ol.Object();
   assertNotNullNorUndefined(m);
 }
 
 
 function testGetUndefined() {
-  var m = new ol.MVCObject();
+  var m = new ol.Object();
   assertUndefined(m.get('k'));
 }
 
 
 function testGetSetGet() {
-  var m = new ol.MVCObject();
+  var m = new ol.Object();
   assertUndefined(m.get('k'));
   m.set('k', 1);
   assertEquals(1, m.get('k'));
@@ -23,7 +23,7 @@ function testGetSetGet() {
 
 
 function testSetValues() {
-  var m = new ol.MVCObject();
+  var m = new ol.Object();
   m.setValues({
     k1: 1,
     k2: 2
@@ -33,7 +33,7 @@ function testSetValues() {
 }
 
 function testNotifyCallback() {
-  var m = new ol.MVCObject();
+  var m = new ol.Object();
   var callbackCalled;
   m.changed = function() {
     callbackCalled = true;
@@ -44,7 +44,7 @@ function testNotifyCallback() {
 
 
 function testNotifyKeyCallback() {
-  var m = new ol.MVCObject();
+  var m = new ol.Object();
   var callbackCalled = false;
   m.k_changed = function() {
     callbackCalled = true;
@@ -55,7 +55,7 @@ function testNotifyKeyCallback() {
 
 
 function testNotifyKeyEvent() {
-  var m = new ol.MVCObject();
+  var m = new ol.Object();
   var eventDispatched = false;
   goog.events.listen(m, 'k_changed', function() {
     eventDispatched = true;
@@ -66,7 +66,7 @@ function testNotifyKeyEvent() {
 
 
 function testSetNotifyCallback() {
-  var m = new ol.MVCObject();
+  var m = new ol.Object();
   var callbackCalled;
   m.changed = function() {
     callbackCalled = true;
@@ -77,7 +77,7 @@ function testSetNotifyCallback() {
 
 
 function testSetNotifyKeyCallback() {
-  var m = new ol.MVCObject();
+  var m = new ol.Object();
   var callbackCalled = false;
   m.k_changed = function(v) {
     callbackCalled = true;
@@ -88,8 +88,8 @@ function testSetNotifyKeyCallback() {
 
 
 function testBindSetNotifyKeyCallback() {
-  var m = new ol.MVCObject();
-  var n = new ol.MVCObject();
+  var m = new ol.Object();
+  var n = new ol.Object();
   var callbackCalled = false;
   n.k_changed = function(v) {
     callbackCalled = true;
@@ -101,7 +101,7 @@ function testBindSetNotifyKeyCallback() {
 
 
 function testSetNotifyKeyEvent() {
-  var m = new ol.MVCObject();
+  var m = new ol.Object();
   var eventDispatched = false;
   goog.events.listen(m, 'k_changed', function() {
     eventDispatched = true;
@@ -112,8 +112,8 @@ function testSetNotifyKeyEvent() {
 
 
 function testSetBind() {
-  var m = new ol.MVCObject();
-  var n = new ol.MVCObject();
+  var m = new ol.Object();
+  var n = new ol.Object();
   m.set('k', 1);
   assertEquals(1, m.get('k'));
   assertUndefined(n.get('k'));
@@ -124,8 +124,8 @@ function testSetBind() {
 
 
 function testBindSet() {
-  var m = new ol.MVCObject();
-  var n = new ol.MVCObject();
+  var m = new ol.Object();
+  var n = new ol.Object();
   n.bindTo('k', m);
   m.set('k', 1);
   assertEquals(1, m.get('k'));
@@ -134,8 +134,8 @@ function testBindSet() {
 
 
 function testBindSetBackwards() {
-  var m = new ol.MVCObject();
-  var n = new ol.MVCObject();
+  var m = new ol.Object();
+  var n = new ol.Object();
   n.bindTo('k', m);
   n.set('k', 1);
   assertEquals(1, m.get('k'));
@@ -144,8 +144,8 @@ function testBindSetBackwards() {
 
 
 function testSetBindBackwards() {
-  var m = new ol.MVCObject();
-  var n = new ol.MVCObject();
+  var m = new ol.Object();
+  var n = new ol.Object();
   n.set('k', 1);
   n.bindTo('k', m);
   assertUndefined(m.get('k'));
@@ -154,8 +154,8 @@ function testSetBindBackwards() {
 
 
 function testBindSetUnbind() {
-  var m = new ol.MVCObject();
-  var n = new ol.MVCObject();
+  var m = new ol.Object();
+  var n = new ol.Object();
   n.bindTo('k', m);
   n.set('k', 1);
   assertEquals(1, m.get('k'));
@@ -170,8 +170,8 @@ function testBindSetUnbind() {
 
 
 function testUnbindAll() {
-  var m = new ol.MVCObject();
-  var n = new ol.MVCObject();
+  var m = new ol.Object();
+  var n = new ol.Object();
   n.bindTo('k', m);
   n.set('k', 1);
   assertEquals(m.get('k'), 1);
@@ -186,8 +186,8 @@ function testUnbindAll() {
 
 
 function testBindNotify() {
-  var m = new ol.MVCObject();
-  var n = new ol.MVCObject();
+  var m = new ol.Object();
+  var n = new ol.Object();
   m.bindTo('k', n);
   mCallbackCalled = false;
   m.k_changed = function() {
@@ -204,8 +204,8 @@ function testBindNotify() {
 
 
 function testBindBackwardsNotify() {
-  var m = new ol.MVCObject();
-  var n = new ol.MVCObject();
+  var m = new ol.Object();
+  var n = new ol.Object();
   n.bindTo('k', m);
   mCallbackCalled = false;
   m.k_changed = function() {
@@ -222,8 +222,8 @@ function testBindBackwardsNotify() {
 
 
 function testBindRename() {
-  var m = new ol.MVCObject();
-  var n = new ol.MVCObject();
+  var m = new ol.Object();
+  var n = new ol.Object();
   n.bindTo('kn', m, 'km');
   m.set('km', 1);
   assertEquals(m.get('km'), 1);
@@ -232,8 +232,8 @@ function testBindRename() {
 
 
 function testBindRenameCallbacks() {
-  var m = new ol.MVCObject();
-  var n = new ol.MVCObject();
+  var m = new ol.Object();
+  var n = new ol.Object();
   var kmCallbackCalled = false;
   m.km_changed = function() {
     kmCallbackCalled = true;
@@ -252,9 +252,9 @@ function testBindRenameCallbacks() {
 
 
 function testTransitiveBindForwards() {
-  var m = new ol.MVCObject();
-  var n = new ol.MVCObject();
-  var o = new ol.MVCObject();
+  var m = new ol.Object();
+  var n = new ol.Object();
+  var o = new ol.Object();
   n.bindTo('kn', m, 'km');
   o.bindTo('ko', n, 'kn');
   m.set('km', 1);
@@ -265,9 +265,9 @@ function testTransitiveBindForwards() {
 
 
 function testTransitiveBindBackwards() {
-  var m = new ol.MVCObject();
-  var n = new ol.MVCObject();
-  var o = new ol.MVCObject();
+  var m = new ol.Object();
+  var n = new ol.Object();
+  var o = new ol.Object();
   n.bindTo('kn', m, 'km');
   o.bindTo('ko', n, 'kn');
   o.set('ko', 1);
@@ -279,7 +279,7 @@ function testTransitiveBindBackwards() {
 
 function testInheritance() {
   var C = function() {};
-  C.prototype = new ol.MVCObject();
+  C.prototype = new ol.Object();
   var callbackCalled;
   C.prototype.k_changed = function() {
     callbackCalled = true;
@@ -293,10 +293,10 @@ function testInheritance() {
 
 function testMrideyAccessors() {
   // http://blog.mridey.com/2010/03/maps-javascript-api-v3-more-about.html
-  var a = new ol.MVCObject();
+  var a = new ol.Object();
   a.set('level', 2);
   assertEquals(2, a.get('level'));
-  var b = new ol.MVCObject();
+  var b = new ol.Object();
   b.setValues({
     level: 2,
     index: 3,
@@ -308,16 +308,16 @@ function testMrideyAccessors() {
 
 function testMrideyBinding() {
   // http://blog.mridey.com/2010/03/maps-javascript-api-v3-more-about.html
-  var a = new ol.MVCObject();
+  var a = new ol.Object();
   a.set('level', 2);
-  var b = new ol.MVCObject();
+  var b = new ol.Object();
   b.bindTo('index', a, 'level');
   assertEquals(2, b.get('index'));
   a.set('level', 3);
   assertEquals(3, b.get('index'));
   b.set('index', 4);
   assertEquals(4, a.get('level'));
-  var c = new ol.MVCObject();
+  var c = new ol.Object();
   c.bindTo('zoom', a, 'level');
   assertEquals(4, c.get('zoom'));
   b.unbind('index');
@@ -329,8 +329,8 @@ function testMrideyBinding() {
 
 
 function testCircularBind() {
-  var a = new ol.MVCObject();
-  var b = new ol.MVCObject();
+  var a = new ol.Object();
+  var b = new ol.Object();
   a.bindTo('k', b);
   assertThrows(function() {
     b.bindTo('k', a);
@@ -339,8 +339,8 @@ function testCircularBind() {
 
 
 function testPriority() {
-  var a = new ol.MVCObject();
-  var b = new ol.MVCObject();
+  var a = new ol.Object();
+  var b = new ol.Object();
   a.set('k', 1);
   b.set('k', 2);
   a.bindTo('k', b);
@@ -350,8 +350,8 @@ function testPriority() {
 
 
 function testPriorityUndefined() {
-  var a = new ol.MVCObject();
-  var b = new ol.MVCObject();
+  var a = new ol.Object();
+  var b = new ol.Object();
   a.set('k', 1);
   a.bindTo('k', b);
   assertUndefined(a.get('k'));
@@ -360,7 +360,7 @@ function testPriorityUndefined() {
 
 
 function testSetter() {
-  var a = new ol.MVCObject();
+  var a = new ol.Object();
   var x;
   var setterCalled;
   a.setX = function(value) {
@@ -374,14 +374,14 @@ function testSetter() {
 
 
 function testSetterBind() {
-  var a = new ol.MVCObject();
+  var a = new ol.Object();
   var x;
   var setterCalled;
   a.setX = function(value) {
     this.x = value;
     setterCalled = true;
   };
-  var b = new ol.MVCObject();
+  var b = new ol.Object();
   b.bindTo('x', a);
   b.set('x', 1);
   assertEquals(1, a.get('x'));
@@ -391,7 +391,7 @@ function testSetterBind() {
 
 
 function testGetter() {
-  var a = new ol.MVCObject();
+  var a = new ol.Object();
   var getterCalled;
   a.getX = function() {
     getterCalled = true;
@@ -403,13 +403,13 @@ function testGetter() {
 
 
 function testGetterBind() {
-  var a = new ol.MVCObject();
+  var a = new ol.Object();
   var getterCalled;
   a.getX = function() {
     getterCalled = true;
     return 1;
   };
-  var b = new ol.MVCObject();
+  var b = new ol.Object();
   b.bindTo('x', a);
   assertEquals(1, b.get('x'));
   assertTrue(getterCalled);
@@ -417,7 +417,7 @@ function testGetterBind() {
 
 
 function testBindSelf() {
-  var a = new ol.MVCObject();
+  var a = new ol.Object();
   assertThrows(function() {
     a.bindTo('k', a);
   });
@@ -425,7 +425,7 @@ function testBindSelf() {
 
 
 function testChangedKey() {
-  var a = new ol.MVCObject();
+  var a = new ol.Object();
   var changedKey;
   a.changed = function(key) {
     changedKey = key;
@@ -437,14 +437,14 @@ function testChangedKey() {
 
 function testCreateFromObject() {
   var obj = {k: 1};
-  var mvcObject = ol.MVCObject.create(obj);
-  assertTrue(mvcObject instanceof ol.MVCObject);
-  assertEquals(1, mvcObject.get('k'));
+  var obj = ol.Object.create(obj);
+  assertTrue(obj instanceof ol.Object);
+  assertEquals(1, obj.get('k'));
 }
 
 
-function testCreateFromMVCObject() {
-  var mvcObject1 = new ol.MVCObject();
-  var mvcObject2 = ol.MVCObject.create(mvcObject1);
-  assertTrue(mvcObject2 === mvcObject1);
+function testCreateFromObject() {
+  var obj1 = new ol.Object();
+  var obj2 = ol.Object.create(obj1);
+  assertTrue(obj2 === obj1);
 }

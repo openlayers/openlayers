@@ -1,6 +1,6 @@
 goog.provide('ol.LayerView');
 
-goog.require('ol.MVCObject');
+goog.require('ol.Object');
 
 
 /**
@@ -16,7 +16,7 @@ ol.LayerViewProperty_ = {
 
 /**
  * @constructor
- * @extends {ol.MVCObject}
+ * @extends {ol.Object}
  */
 ol.LayerView = function() {
 
@@ -26,7 +26,7 @@ ol.LayerView = function() {
   this.setOpacity(1);
 
 };
-goog.inherits(ol.LayerView, ol.MVCObject);
+goog.inherits(ol.LayerView, ol.Object);
 
 
 /**

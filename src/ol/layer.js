@@ -1,7 +1,7 @@
 goog.provide('ol.Layer');
 
 goog.require('ol.Extent');
-goog.require('ol.MVCObject');
+goog.require('ol.Object');
 goog.require('ol.Projection');
 
 
@@ -19,14 +19,14 @@ ol.LayerProperty_ = {
 
 /**
  * @constructor
- * @extends {ol.MVCObject}
+ * @extends {ol.Object}
  */
 ol.Layer = function() {
 
   goog.base(this);
 
 };
-goog.inherits(ol.Layer, ol.MVCObject);
+goog.inherits(ol.Layer, ol.Object);
 
 
 /**
