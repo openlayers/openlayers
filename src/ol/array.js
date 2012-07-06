@@ -51,6 +51,14 @@ ol.ArrayEvent = function(type, index, opt_prev, opt_target) {
 goog.inherits(ol.ArrayEvent, goog.events.Event);
 
 
+/**
+ * @enum {string}
+ */
+ol.ArrayProperty = {
+  LENGTH: 'length'
+};
+
+
 
 /**
  * @constructor
@@ -74,13 +82,6 @@ goog.inherits(ol.Array, ol.Object);
 
 
 /**
- * @const
- * @type {string}
- */
-ol.Array.LENGTH = 'length';
-
-
-/**
  * @param {ol.Array|Array} arg Argument.
  * @return {ol.Array} Array.
  */
@@ -96,7 +97,7 @@ ol.Array.create = function(arg) {
 /**
  */
 ol.Array.prototype.clear = function() {
-  while (this[ol.Array.LENGTH]) {
+  while (this[ol.ArrayProperty.LENGTH]) {
     this.pop();
   }
 };
@@ -131,7 +132,7 @@ ol.Array.prototype.getAt = function(index) {
  * @return {number} Length.
  */
 ol.Array.prototype.getLength = function() {
-  return /** @type {number} */ (this.get(ol.Array.LENGTH));
+  return /** @type {number} */ (this.get(ol.ArrayProperty.LENGTH));
 };
 
 
@@ -191,7 +192,7 @@ ol.Array.prototype.removeAt = function(index) {
  * @param {*} elem Element.
  */
 ol.Array.prototype.setAt = function(index, elem) {
-  var n = this[ol.Array.LENGTH];
+  var n = this[ol.ArrayProperty.LENGTH];
   if (index < n) {
     var prev = this.array_[index];
     this.array_[index] = elem;
