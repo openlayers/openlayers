@@ -42,7 +42,6 @@ GSLINT_EXCLUDES= \
 	src/ol/Loc.js \
 	src/ol/Map.js \
 	src/ol/Popup.js \
-	src/ol/Projection.js \
 	src/ol/renderer/Composite.js \
 	src/ol/renderer/LayerRenderer.js \
 	src/ol/renderer/MapRenderer.js \
