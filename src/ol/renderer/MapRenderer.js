@@ -1,6 +1,7 @@
 goog.provide('ol.renderer.MapRenderer');
 
 goog.require('goog.style');
+goog.require('goog.math.Size');
 
 /**
  * @constructor
@@ -13,6 +14,12 @@ ol.renderer.MapRenderer = function(container) {
      * @protected
      */
     this.container_ = container;
+
+    /**
+     * @type {goog.math.Size}
+     * @private
+     */
+    this.containerSize_ = null;
     
     /**
      * @type {ol.Loc}
@@ -27,6 +34,20 @@ ol.renderer.MapRenderer = function(container) {
     this.renderedResolution_;
     
 };
+
+/**
+ * @return {goog.math.Size}
+ * @protected
+ */
+ol.renderer.MapRenderer.prototype.getContainerSize = function() {
+    // TODO: listen for resize and set this.constainerSize_ null
+    // https://github.com/openlayers/ol3/issues/2
+    if (goog.isNull(this.containerSize_)) {
+        this.containerSize_ = goog.style.getSize(this.container_);
+    }
+    return this.containerSize_;
+};
+
 
 /**
  * @param {Array.<ol.layer.Layer>} layers
