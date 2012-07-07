@@ -15,7 +15,7 @@ goog.require('ol.TileCoord');
  * @param {!Array.<number>} resolutions Resolutions.
  * @param {ol.Extent} extent Extent.
  * @param {goog.positioning.Corner} corner Corner.
- * @param {goog.math.Coordinate|Array.<goog.math.Coordinate>} origin Origin.
+ * @param {goog.math.Coordinate|!Array.<goog.math.Coordinate>} origin Origin.
  * @param {goog.math.Size=} opt_tileSize Tile size.
  */
 ol.TileGrid = function(resolutions, extent, corner, origin, opt_tileSize) {
