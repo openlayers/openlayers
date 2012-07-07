@@ -222,13 +222,13 @@ function testGetExtentTileBounds() {
 }
 
 
-function testYieldTileCoordParents() {
+function testForEachTileCoordParent() {
 
   var tileGrid =
       new ol.TileGrid(resolutions, extent, corner, origin, tileSize);
   var zs = [], tileBoundss = [];
 
-  tileGrid.yieldTileCoordParents(
+  tileGrid.forEachTileCoordParent(
       new ol.TileCoord(3, 7, 3),
       function(z, tileBounds) {
         zs.push(z);

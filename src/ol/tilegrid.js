@@ -239,7 +239,7 @@ ol.TileGrid.prototype.getTileResolution = function(tileCoord) {
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {function(number, ol.TileBounds): boolean} callback Callback.
  */
-ol.TileGrid.prototype.yieldTileCoordParents = function(tileCoord, callback) {
+ol.TileGrid.prototype.forEachTileCoordParent = function(tileCoord, callback) {
   var tileCoordExtent = this.getTileCoordExtent(tileCoord);
   var z = tileCoord.z - 1;
   while (z >= 0) {

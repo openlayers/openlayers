@@ -179,8 +179,8 @@ TileGrid
    getTileCoord(coordinate) -> TileCoord
    getTileCoordExtent(tileCoord) -> ol.Extent
    getZForResolution(resolution) -> number
-   yieldTileCoordChildren(tileCoord, function(z, TileBounds))
-   yieldTileCoordParents(tileCoord, function(z, TileBounds))
+   forEachTileCoordChild(tileCoord, function(z, TileBounds))
+   forEachTileCoordParent(tileCoord, function(z, TileBounds))
 
 TileLayer
    tileGrid TileGrid
@@ -193,7 +193,7 @@ TileQueue
    enqueueTile(Tile)
 
 VectorLayer
-   yieldFeatures(resolution, extent, projection, function(Feature))
+   forEachFeature(resolution, extent, projection, function(Feature))
 
 Renderer
    target HTMLDivElement
