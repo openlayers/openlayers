@@ -226,10 +226,14 @@ ol.renderer.TileLayerRenderer.prototype.draw = function(center, resolution) {
                     img = tile.getImg();
                     img.style.top = pxTileTop + "px";
                     img.style.left = pxTileLeft + "px";
-                    if (scale !== 1) {
-                        img.style.height = (pxTileRight - pxTileLeft) + "px";
-                        img.style.width = (pxTileBottom - pxTileTop) + "px";
-                    }
+                    /**
+                     * We need to set the size here even if the scale is 1 
+                     * because the image may have been scaled previously.  If
+                     * we want to avoid setting size unnecessarily, the tile
+                     * should keep track of the scale.
+                     */
+                    img.style.height = (pxTileRight - pxTileLeft) + "px";
+                    img.style.width = (pxTileBottom - pxTileTop) + "px";
                     goog.dom.appendChild(fragment, img);
                     newTiles = true;
                 }
