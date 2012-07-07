@@ -1,5 +1,6 @@
 goog.provide('ol.TileGrid');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.math.Size');
 goog.require('goog.positioning.Corner');
@@ -11,7 +12,7 @@ goog.require('ol.TileCoord');
 
 /**
  * @constructor
- * @param {Array.<number>} resolutions Resolutions.
+ * @param {!Array.<number>} resolutions Resolutions.
  * @param {ol.Extent} extent Extent.
  * @param {goog.positioning.Corner} corner Corner.
  * @param {goog.math.Coordinate|Array.<goog.math.Coordinate>} origin Origin.
@@ -24,6 +25,9 @@ ol.TileGrid = function(resolutions, extent, corner, origin, opt_tileSize) {
    * @type {Array.<number>}
    */
   this.resolutions_ = resolutions;
+  goog.asserts.assert(goog.array.isSorted(resolutions, function(a, b) {
+    return -goog.array.defaultCompare(a, b);
+  }, true));
 
   /**
    * @private
