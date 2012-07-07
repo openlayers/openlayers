@@ -149,9 +149,6 @@ ol.TileGrid.prototype.getTileBounds = function(z, extent) {
  * @return {ol.TileCoord} Tile coordinate.
  */
 ol.TileGrid.prototype.getTileCoord = function(z, coordinate) {
-  if (!this.extent_.contains(coordinate)) {
-    return null;
-  }
   var corner = this.corner_;
   var origin = this.getOrigin(z);
   var resolution = this.getResolution(z);
