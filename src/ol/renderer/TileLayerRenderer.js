@@ -156,37 +156,37 @@ ol.renderer.TileLayerRenderer.prototype.draw = function(center, resolution) {
     var centerX = center.getX();
     var centerY = center.getY();
 
-    // calculate vector from tile origin to map top-left (in pixel space)
+    // calculate vector from tile origin to map top-left (in integer pixel space)
     var tileOrigin = this.tileOrigin_;
     var mapOrigin = [centerX - halfMapWidth, centerY + halfMapHeight];
     var pxMap = [
-        (mapOrigin[0] - tileOrigin[0]) / resolution,
-        (tileOrigin[1] - mapOrigin[1]) / resolution
+        Math.round((mapOrigin[0] - tileOrigin[0]) / resolution),
+        Math.round((tileOrigin[1] - mapOrigin[1]) / resolution)
     ];
 
     // desired tile size in fractional pixels
-    var pxTileWidth = this.tileSize_[0] / scale;
-    var pxTileHeight = this.tileSize_[1] / scale;
+    var fpxTileWidth = this.tileSize_[0] / scale;
+    var fpxTileHeight = this.tileSize_[1] / scale;
     
-    // calculate vector from tile origin to top-left tile (in pixel space)
-    var colsLeft = Math.floor(pxMap[0] / pxTileWidth);
-    var rowsAbove = Math.floor(pxMap[1] / pxTileHeight);
-    var pxTile = [colsLeft * pxTileWidth, rowsAbove * pxTileHeight];
+    // calculate vector from tile origin to top-left tile (in integer pixel space)
+    var colsLeft = Math.floor(pxMap[0] / fpxTileWidth);
+    var rowsAbove = Math.floor(pxMap[1] / fpxTileHeight);
+    var pxTile = [Math.round(colsLeft * fpxTileWidth), Math.round(rowsAbove * fpxTileHeight)];
     
-    // offset vector from container origin to top-left tile (in pixel space)
-    var pxOffsetX = pxTile[0] - pxMap[0] - this.containerOffset_.x;
-    var pxOffsetY = pxTile[1] - pxMap[1] - this.containerOffset_.y;
+    // offset vector from container origin to top-left tile (in integer pixel space)
+    var pxOffsetX = Math.round(pxTile[0] - pxMap[0] - this.containerOffset_.x);
+    var pxOffsetY = Math.round(pxTile[1] - pxMap[1] - this.containerOffset_.y);
     
     // index of the top left tile
     var leftTileX = xRight ? colsLeft : (-colsLeft - 1);
     var topTileY = yDown ? rowsAbove : (-rowsAbove - 1);
 
-    var numTilesWide = Math.ceil(containerSize.width / pxTileWidth);
-    var numTilesHigh = Math.ceil(containerSize.height / pxTileHeight);
-    if (pxOffsetX !== 0) {
+    var numTilesWide = Math.ceil(containerSize.width / fpxTileWidth);
+    var numTilesHigh = Math.ceil(containerSize.height / fpxTileHeight);
+    if (this.containerOffset_.x !== -pxOffsetX) {
         numTilesWide += 1;
     }
-    if (pxOffsetY !== 0) {
+    if (this.containerOffset_.y !== -pxOffsetY) {
         numTilesHigh += 1;
     }
     
@@ -201,18 +201,18 @@ ol.renderer.TileLayerRenderer.prototype.draw = function(center, resolution) {
         pxTileTop = pxMinY;
         tileX = xRight ? leftTileX + i : leftTileX - i;
         if (scale !== 1) {
-            pxTileRight = Math.round(pxMinX + ((i+1) * pxTileWidth));
+            pxTileRight = Math.round(pxMinX + ((i+1) * fpxTileWidth));
         } else {
-            pxTileRight = pxTileLeft + pxTileWidth;
+            pxTileRight = pxTileLeft + fpxTileWidth;
         }
         for (var j=0; j<numTilesHigh; ++j) {
             append = false;
             tileY = yDown ? topTileY + j : topTile - j;
             xyz = tileX + "," + tileY + "," + tileZ;
             if (scale !== 1) {
-                pxTileBottom = Math.round(pxMinY + ((j+1) * pxTileHeight));
+                pxTileBottom = Math.round(pxMinY + ((j+1) * fpxTileHeight));
             } else {
-                pxTileBottom = pxTileTop + pxTileHeight;
+                pxTileBottom = pxTileTop + fpxTileHeight;
             }
             img = null;
             tile = this.renderedTiles_[xyz];
