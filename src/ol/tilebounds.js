@@ -29,6 +29,7 @@ goog.inherits(ol.TileBounds, goog.math.Box);
  * @param {number} z Z.
  * @param {function(this: T, ol.TileCoord): boolean} f Callback.
  * @param {T=} opt_obj The object to be used for the value of 'this' within f.
+ * @template T
  */
 ol.TileBounds.prototype.forEachTileCoord = function(z, f, opt_obj) {
   var tileCoord = new ol.TileCoord(z, 0, 0);
