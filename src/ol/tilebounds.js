@@ -16,6 +16,9 @@ goog.require('ol.TileCoord');
  */
 ol.TileBounds = function(top, right, bottom, left) {
 
+  goog.asserts.assert(top <= bottom);
+  goog.asserts.assert(left <= right);
+
   goog.base(this, top, right, bottom, left);
 
 };

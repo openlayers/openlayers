@@ -214,9 +214,9 @@ function testGetExtentTileBounds() {
 
   tileBounds = tileGrid.getExtentTileBounds(3, e);
   window.console.log(tileBounds);
-  assertEquals(9, tileBounds.top);
+  assertEquals(8, tileBounds.top);
   assertEquals(5, tileBounds.right);
-  assertEquals(8, tileBounds.bottom);
+  assertEquals(9, tileBounds.bottom);
   assertEquals(4, tileBounds.left);
 
 }
