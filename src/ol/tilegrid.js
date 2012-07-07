@@ -232,13 +232,13 @@ ol.TileGrid.prototype.getTileResolution = function(tileCoord) {
 
 /**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {function(ol.TileBounds): boolean} callback Callback.
+ * @param {function(number, ol.TileBounds): boolean} callback Callback.
  */
 ol.TileGrid.prototype.yieldTileCoordParents = function(tileCoord, callback) {
   var extent = this.getTileCoordExtent(tileCoord);
   var z = tileCoord.z - 1;
   while (z >= 0) {
-    if (callback(this.getTileBounds(z, extent))) {
+    if (callback(z, this.getTileBounds(z, extent))) {
       return;
     }
     --z;
