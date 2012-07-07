@@ -7,6 +7,8 @@ goog.require('ol.Loc');
 
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.style');
+goog.require('goog.math.Coordinate');
 
 /**
  * @constructor
@@ -30,19 +32,25 @@ ol.renderer.Composite = function(container) {
     goog.dom.appendChild(container, target);
 
     /**
-     * @type Element
+     * @type {Element}
      * @private
      */
     this.target_ = target;
+
+    /**
+     * @type {goog.math.Coordinate}
+     * @private
+     */
+    this.targetOffset_ = new goog.math.Coordinate(0, 0);
     
     /**
-     * @type Object
+     * @type {Object}
      * @private
      */
     this.layerContainers_ = {};
+
     
 };
-
 goog.inherits(ol.renderer.Composite, ol.renderer.MapRenderer);
 
 /**
@@ -53,12 +61,37 @@ goog.inherits(ol.renderer.Composite, ol.renderer.MapRenderer);
  */
 ol.renderer.Composite.prototype.draw = function(layers, center, resolution, animate) {
     // TODO: deal with layer order and removal
-    for (var i=0, ii=layers.length; i<ii; ++i) {
-        this.getOrCreateRenderer(layers[i], i).draw(center, resolution);
+
+    if (this.renderedResolution_) {
+        if (resolution !== this.renderedResolution_) {
+            // TODO: apply transition to old target
+            this.targetOffset_ = new goog.math.Coordinate(0, 0);
+            goog.style.setPosition(this.target_, this.targetOffset_);
+        }
+    }
+    this.renderedResolution_ = resolution;
+    
+    // shift target element to account for center change
+    if (this.renderedCenter_) {
+        this.targetOffset_ = new goog.math.Coordinate(
+            this.targetOffset_.x + Math.round((this.renderedCenter_.getX() - center.getX()) / resolution),
+            this.targetOffset_.y + Math.round((center.getY() - this.renderedCenter_.getY()) / resolution)
+        );
+        goog.style.setPosition(this.target_, this.targetOffset_);
     }
     this.renderedCenter_ = center;
-    this.renderedResolution_ = resolution;
+
+    // update each layer renderer
+    var renderer, container;
+    for (var i=0, ii=layers.length; i<ii; ++i) {
+        renderer = this.getOrCreateRenderer(layers[i]);
+        renderer.setContainerOffset(this.targetOffset_);
+        renderer.draw(center, resolution);
+    }
+
 };
+
+
 
 /**
  * @param {ol.layer.Layer} layer
@@ -75,12 +108,23 @@ ol.renderer.Composite.prototype.getOrCreateRenderer = function(layer, index) {
 
 /**
  * @param {ol.layer.Layer} layer
+ * @return {ol.renderer.LayerRenderer}
  */
 ol.renderer.Composite.prototype.getRenderer = function(layer) {
     function finder(candidate) {
         return candidate.getLayer() === layer;
     }
     return goog.array.find(this.renderers_, finder);
+};
+
+/**
+ * @param {ol.renderer.LayerRenderer}
+ * @return {Element}
+ */
+ol.renderer.Composite.prototype.getRendererContainer = function(renderer) {
+    var container = this.layerContainers_[goog.getUid(renderer)];
+    goog.asserts.assert(goog.isDef(container));
+    return container;
 };
 
 /**
