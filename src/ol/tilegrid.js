@@ -31,6 +31,12 @@ ol.TileGrid = function(resolutions, extent, corner, origin, opt_tileSize) {
 
   /**
    * @private
+   * @type {number}
+   */
+  this.numResolutions_ = this.resolutions_.length;
+
+  /**
+   * @private
    * @type {ol.Extent}
    */
   this.extent_ = extent;
@@ -56,7 +62,7 @@ ol.TileGrid = function(resolutions, extent, corner, origin, opt_tileSize) {
   if (origin instanceof goog.math.Coordinate) {
     this.origin_ = origin;
   } else if (goog.isArray(origin)) {
-    goog.asserts.assert(origin.length == this.resolutions_.length);
+    goog.asserts.assert(origin.length == this.numResolutions_);
     this.origins_ = origin;
   } else {
     goog.asserts.assert(false);
@@ -116,7 +122,7 @@ ol.TileGrid.prototype.getOrigin = function(z) {
  * @return {number} Resolution.
  */
 ol.TileGrid.prototype.getResolution = function(z) {
-  goog.asserts.assert(0 <= z && z < this.resolutions_.length);
+  goog.asserts.assert(0 <= z && z < this.numResolutions_);
   return this.resolutions_[z];
 };
 
@@ -224,8 +230,7 @@ ol.TileGrid.prototype.getTileSize = function() {
  * @return {number} Tile resolution.
  */
 ol.TileGrid.prototype.getTileResolution = function(tileCoord) {
-  goog.asserts.assert(
-      0 <= tileCoord.z && tileCoord.z < this.resolutions_.length);
+  goog.asserts.assert(0 <= tileCoord.z && tileCoord.z < this.numResolutions_);
   return this.resolutions_[tileCoord.z];
 };
 
