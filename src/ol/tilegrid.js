@@ -134,7 +134,7 @@ ol.TileGrid.prototype.getResolutions = function() {
  * @param {ol.Extent} extent Extent.
  * @return {ol.TileBounds} Tile bounds.
  */
-ol.TileGrid.prototype.getTileBounds = function(z, extent) {
+ol.TileGrid.prototype.getExtentTileBounds = function(z, extent) {
   var topRight = new goog.math.Coordinate(extent.right, extent.top);
   var bottomLeft = new goog.math.Coordinate(extent.left, extent.bottom);
   return ol.TileBounds.boundingTileBounds(
@@ -235,10 +235,10 @@ ol.TileGrid.prototype.getTileResolution = function(tileCoord) {
  * @param {function(number, ol.TileBounds): boolean} callback Callback.
  */
 ol.TileGrid.prototype.yieldTileCoordParents = function(tileCoord, callback) {
-  var extent = this.getTileCoordExtent(tileCoord);
+  var tileCoordExtent = this.getTileCoordExtent(tileCoord);
   var z = tileCoord.z - 1;
   while (z >= 0) {
-    if (callback(z, this.getTileBounds(z, extent))) {
+    if (callback(z, this.getExtentTileBounds(z, tileCoordExtent))) {
       return;
     }
     --z;

@@ -170,7 +170,7 @@ TileGrid
    corner TOP_LEFT | BOTTOM_LEFT
    origin(s) Coord|Array.<Coord>
    tileSize goog.math.Size
-   getTileBounds(z, extent) -> TileBounds
+   getExtentTileBounds(z, extent) -> TileBounds
    getTileCoordCenter(tileCoord) -> goog.math.Coordinate
    getTileCoord(coordinate) -> TileCoord
    getTileCoordExtent(tileCoord) -> ol.Extent
