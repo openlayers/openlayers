@@ -144,27 +144,6 @@ ol.TileGrid.prototype.getTileBounds = function(z, extent) {
 
 
 /**
- * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @return {goog.math.Coordinate} Tile center.
- */
-ol.TileGrid.prototype.getTileCenter = function(tileCoord) {
-  var corner = this.corner_;
-  var origin = this.getOrigin(tileCoord.z);
-  var resolution = this.getResolution(tileCoord.z);
-  var tileSize = this.tileSize_;
-  var x = origin.x + (tileCoord.x + 0.5) * tileSize.width * resolution;
-  var y;
-  if (corner == goog.positioning.Corner.TOP_LEFT) {
-    y = origin.y - (tileCoord.y + 0.5) * tileSize.height * resolution;
-  } else {
-    goog.asserts.assert(corner == goog.positioning.Corner.TOP_RIGHT);
-    y = origin.y + (tileCoord.y + 0.5) * tileSize.height * resolution;
-  }
-  return new goog.math.Coordinate(x, y);
-};
-
-
-/**
  * @param {number} z Z.
  * @param {goog.math.Coordinate} coordinate Coordinate.
  * @return {ol.TileCoord} Tile coordinate.
@@ -187,6 +166,27 @@ ol.TileGrid.prototype.getTileCoord = function(z, coordinate) {
     y = Math.floor((coordinate.y - origin.y) / (tileSize.height * resolution));
   }
   return new ol.TileCoord(z, x, y);
+};
+
+
+/**
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @return {goog.math.Coordinate} Tile center.
+ */
+ol.TileGrid.prototype.getTileCoordCenter = function(tileCoord) {
+  var corner = this.corner_;
+  var origin = this.getOrigin(tileCoord.z);
+  var resolution = this.getResolution(tileCoord.z);
+  var tileSize = this.tileSize_;
+  var x = origin.x + (tileCoord.x + 0.5) * tileSize.width * resolution;
+  var y;
+  if (corner == goog.positioning.Corner.TOP_LEFT) {
+    y = origin.y - (tileCoord.y + 0.5) * tileSize.height * resolution;
+  } else {
+    goog.asserts.assert(corner == goog.positioning.Corner.TOP_RIGHT);
+    y = origin.y + (tileCoord.y + 0.5) * tileSize.height * resolution;
+  }
+  return new goog.math.Coordinate(x, y);
 };
 
 
