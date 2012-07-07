@@ -25,6 +25,14 @@ goog.inherits(ol.TileCoord, goog.math.Coordinate);
 
 
 /**
+ * @return {ol.TileCoord} Clone.
+ */
+ol.TileCoord.prototype.clone = function() {
+  return new ol.TileCoord(this.z, this.x, this.y);
+};
+
+
+/**
  * @return {number} Hash.
  */
 ol.TileCoord.prototype.hash = function() {

@@ -123,6 +123,7 @@ MVCObject
   unfreeze()
 
 TileCoord
+  clone() -> TileCoord
   getHash() -> number
 
 Tile
