@@ -126,6 +126,9 @@ TileCoord
   clone() -> TileCoord
   getHash() -> number
 
+TileBounds
+  forEachTileCoord(z, function(tileCoord))
+
 Tile
   tileCoord TileCoord
   url string

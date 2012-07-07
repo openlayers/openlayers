@@ -26,6 +26,29 @@ goog.inherits(ol.TileBounds, goog.math.Box);
 
 
 /**
+ * @param {number} z Z.
+ * @param {function(this: T, ol.TileCoord): boolean} f Callback.
+ * @param {T=} opt_obj The object to be used for the value of 'this' within f.
+ */
+ol.TileBounds.prototype.forEachTileCoord = function(z, f, opt_obj) {
+  var tileCoord = new ol.TileCoord(z, 0, 0);
+  var x, y;
+  for (x = this.left; x <= this.right; ++x) {
+    tileCoord.x = x;
+    for (y = this.top; y <= this.bottom; ++y) {
+      tileCoord.y = y;
+      if (f.call(opt_obj, tileCoord)) {
+        return;
+      }
+      goog.asserts.assert(tileCoord.z == z);
+      goog.asserts.assert(tileCoord.x == x);
+      goog.asserts.assert(tileCoord.y == y);
+    }
+  }
+};
+
+
+/**
  * @param {...ol.TileCoord} var_args Tile coordinates.
  * @return {!ol.TileBounds} Bounding tile box.
  */

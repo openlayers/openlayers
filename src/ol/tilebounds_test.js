@@ -34,3 +34,33 @@ function testBoundingTileBoundsMixedZ() {
         new ol.TileCoord(4, 2, 0));
   });
 }
+
+
+function testForEachTileCoord() {
+
+  var tileBounds = new ol.TileBounds(2, 1, 3, 0);
+
+  var tileCoords = [];
+  tileBounds.forEachTileCoord(5, function(tileCoord) {
+    tileCoords.push(tileCoord.clone());
+  });
+
+  assertEquals(4, tileCoords.length);
+
+  assertEquals(5, tileCoords[0].z);
+  assertEquals(0, tileCoords[0].x);
+  assertEquals(2, tileCoords[0].y);
+
+  assertEquals(5, tileCoords[1].z);
+  assertEquals(0, tileCoords[1].x);
+  assertEquals(3, tileCoords[1].y);
+
+  assertEquals(5, tileCoords[2].z);
+  assertEquals(1, tileCoords[2].x);
+  assertEquals(2, tileCoords[2].y);
+
+  assertEquals(5, tileCoords[3].z);
+  assertEquals(1, tileCoords[3].x);
+  assertEquals(3, tileCoords[3].y);
+
+}
