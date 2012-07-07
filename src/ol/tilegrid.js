@@ -3,7 +3,6 @@ goog.provide('ol.TileGrid');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.math.Size');
-goog.require('goog.positioning.Corner');
 goog.require('ol.Extent');
 goog.require('ol.TileBounds');
 goog.require('ol.TileCoord');
@@ -14,11 +13,13 @@ goog.require('ol.TileCoord');
  * @constructor
  * @param {!Array.<number>} resolutions Resolutions.
  * @param {ol.Extent} extent Extent.
- * @param {goog.positioning.Corner} corner Corner.
  * @param {goog.math.Coordinate|!Array.<goog.math.Coordinate>} origin Origin.
+ * @param {boolean=} opt_xEast Tile coordinates increase eastwards.
+ * @param {boolean=} opt_ySouth Tile coordinates increas southwards.
  * @param {goog.math.Size=} opt_tileSize Tile size.
  */
-ol.TileGrid = function(resolutions, extent, corner, origin, opt_tileSize) {
+ol.TileGrid =
+    function(resolutions, extent, origin, opt_xEast, opt_ySouth, opt_tileSize) {
 
   /**
    * @private
@@ -43,9 +44,15 @@ ol.TileGrid = function(resolutions, extent, corner, origin, opt_tileSize) {
 
   /**
    * @private
-   * @type {goog.positioning.Corner}
+   * @type {boolean}
    */
-  this.corner_ = corner;
+  this.xEast_ = goog.isDef(opt_xEast) ? opt_xEast : true;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.ySouth_ = goog.isDef(opt_ySouth) ? opt_ySouth : true;
 
   /**
    * @private
@@ -79,10 +86,18 @@ ol.TileGrid = function(resolutions, extent, corner, origin, opt_tileSize) {
 
 
 /**
- * @return {goog.positioning.Corner} Corner.
+ * @return {boolean} X East.
  */
-ol.TileGrid.prototype.getCorner = function() {
-  return this.corner_;
+ol.TileGrid.prototype.getXEast = function() {
+  return this.xEast_;
+};
+
+
+/**
+ * @return {boolean} Y South.
+ */
+ol.TileGrid.prototype.getYSouth = function() {
+  return this.ySouth_;
 };
 
 
@@ -155,17 +170,19 @@ ol.TileGrid.prototype.getExtentTileBounds = function(z, extent) {
  * @return {ol.TileCoord} Tile coordinate.
  */
 ol.TileGrid.prototype.getTileCoord = function(z, coordinate) {
-  var corner = this.corner_;
   var origin = this.getOrigin(z);
   var resolution = this.getResolution(z);
   var tileSize = this.getTileSize();
-  var x =
-      Math.floor((coordinate.x - origin.x) / (tileSize.width * resolution));
+  var x;
+  if (this.xEast_) {
+    x = Math.floor((coordinate.x - origin.x) / (tileSize.width * resolution));
+  } else {
+    x = Math.floor((origin.x - coordinate.x) / (tileSize.width * resolution));
+  }
   var y;
-  if (corner == goog.positioning.Corner.TOP_LEFT) {
+  if (this.ySouth_) {
     y = Math.floor((origin.y - coordinate.y) / (tileSize.height * resolution));
   } else {
-    goog.asserts.assert(corner == goog.positioning.Corner.BOTTOM_LEFT);
     y = Math.floor((coordinate.y - origin.y) / (tileSize.height * resolution));
   }
   return new ol.TileCoord(z, x, y);
@@ -177,16 +194,19 @@ ol.TileGrid.prototype.getTileCoord = function(z, coordinate) {
  * @return {goog.math.Coordinate} Tile center.
  */
 ol.TileGrid.prototype.getTileCoordCenter = function(tileCoord) {
-  var corner = this.corner_;
   var origin = this.getOrigin(tileCoord.z);
   var resolution = this.getResolution(tileCoord.z);
   var tileSize = this.tileSize_;
-  var x = origin.x + (tileCoord.x + 0.5) * tileSize.width * resolution;
+  var x;
+  if (this.xEast_) {
+    x = origin.x + (tileCoord.x + 0.5) * tileSize.width * resolution;
+  } else {
+    x = origin.x - (tileCoord.x + 0.5) * tileSize.width * resolution;
+  }
   var y;
-  if (corner == goog.positioning.Corner.TOP_LEFT) {
+  if (this.ySouth_) {
     y = origin.y - (tileCoord.y + 0.5) * tileSize.height * resolution;
   } else {
-    goog.asserts.assert(corner == goog.positioning.Corner.TOP_RIGHT);
     y = origin.y + (tileCoord.y + 0.5) * tileSize.height * resolution;
   }
   return new goog.math.Coordinate(x, y);
@@ -198,18 +218,22 @@ ol.TileGrid.prototype.getTileCoordCenter = function(tileCoord) {
  * @return {ol.Extent} Extent.
  */
 ol.TileGrid.prototype.getTileCoordExtent = function(tileCoord) {
-  var corner = this.corner_;
   var origin = this.getOrigin(tileCoord.z);
   var resolution = this.getResolution(tileCoord.z);
   var tileSize = this.tileSize_;
-  var left = origin.x + tileCoord.x * tileSize.width * resolution;
-  var right = left + tileSize.width * resolution;
+  var left, right;
+  if (this.xEast_) {
+    left = origin.x + tileCoord.x * tileSize.width * resolution;
+    right = left + tileSize.width * resolution;
+  } else {
+    right = origin.x - tileCoord.x * tileSize.width * resolution;
+    left = right - tileSize.height * resolution;
+  }
   var top, bottom;
-  if (corner == goog.positioning.Corner.TOP_LEFT) {
+  if (this.ySouth_) {
     top = origin.y - tileCoord.y * tileSize.height * resolution;
     bottom = top - tileSize.height * resolution;
   } else {
-    goog.asserts.assert(corner == goog.positioning.Corner.BOTTOM_LEFT);
     bottom = origin.y + tileCoord.y * tileSize.height * resolution;
     top = bottom + tileSize.height * resolution;
   }

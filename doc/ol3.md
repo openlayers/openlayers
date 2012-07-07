@@ -171,7 +171,8 @@ Map
 TileGrid
    resolutions Array.<number>
    extent ol.Extent
-   corner TOP_LEFT | BOTTOM_LEFT
+   xEast boolean
+   ySouth boolean
    origin(s) Coord|Array.<Coord>
    tileSize goog.math.Size
    getExtentTileBounds(z, extent) -> TileBounds
