@@ -82,12 +82,6 @@ ol.renderer.TileLayerRenderer = function(container, layer) {
      */
     this.renderedZ_ = undefined;
     
-    /**
-     * @type {goog.math.Size}
-     * @private
-     */
-    this.containerSize_ = null;
-    
 };
 
 goog.inherits(ol.renderer.TileLayerRenderer, ol.renderer.LayerRenderer);
@@ -115,18 +109,6 @@ ol.renderer.TileLayerRenderer.prototype.getPreferredResAndZ_ = function(resoluti
 };
 
 /**
- * @return {goog.math.Size}
- */
-ol.renderer.TileLayerRenderer.prototype.getContainerSize_ = function() {
-    // TODO: listen for resize and set this.constainerSize_ null
-    // https://github.com/openlayers/ol3/issues/2
-    if (goog.isNull(this.containerSize_)) {
-        this.containerSize_ = goog.style.getSize(this.container_);
-    }
-    return this.containerSize_;
-};
-
-/**
  * Tiles rendered at the current resolution;
  * @type {Object}
  */
@@ -147,7 +129,7 @@ ol.renderer.TileLayerRenderer.prototype.draw = function(center, resolution) {
     var tileZ = pair[1];
     var scale = resolution / tileResolution;
     
-    var containerSize = this.getContainerSize_();
+    var containerSize = this.getContainerSize();
     var xRight = this.xRight_;
     var yDown = this.yDown_;
 
@@ -155,7 +137,7 @@ ol.renderer.TileLayerRenderer.prototype.draw = function(center, resolution) {
     var halfMapHeight = (resolution * containerSize.height) / 2;
     var centerX = center.getX();
     var centerY = center.getY();
-
+    
     // calculate vector from tile origin to map top-left (in integer pixel space)
     var tileOrigin = this.tileOrigin_;
     var mapOrigin = [centerX - halfMapWidth, centerY + halfMapHeight];

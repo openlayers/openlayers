@@ -1,6 +1,7 @@
 goog.provide('ol.renderer.LayerRenderer');
 
 goog.require('goog.math.Coordinate');
+goog.require('goog.math.Size');
 
 /**
  * A single layer renderer that will be created by the composite map renderer.
@@ -18,6 +19,12 @@ ol.renderer.LayerRenderer = function(container, layer) {
     this.container_ = container;
 
     /**
+     * @type {goog.math.Size}
+     * @private
+     */
+    this.containerSize_ = null;
+
+    /**
      * Pixel offset between the layer renderer container and the composite
      * renderer container.  These will always be integer values.
      * 
@@ -32,6 +39,19 @@ ol.renderer.LayerRenderer = function(container, layer) {
      */
     this.layer_ = layer;
 
+};
+
+/**
+ * @return {goog.math.Size}
+ * @protected
+ */
+ol.renderer.LayerRenderer.prototype.getContainerSize = function() {
+    // TODO: listen for resize and set this.constainerSize_ null
+    // https://github.com/openlayers/ol3/issues/2
+    if (goog.isNull(this.containerSize_)) {
+        this.containerSize_ = goog.style.getSize(this.container_);
+    }
+    return this.containerSize_;
 };
 
 /**

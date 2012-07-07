@@ -24,10 +24,24 @@ ol.renderer.Composite = function(container) {
      * @private
      */
     this.renderers_ = [];
+    
+    /**
+     * Pixel buffer for renderer container.
+     *
+     * @type {number}
+     * @private
+     */
+    this.buffer_ = 128;
+    
+    var containerSize = this.getContainerSize();
+    var width = containerSize.width + (2 * this.buffer_);
+    var height = containerSize.height + (2 * this.buffer_);
 
     var target = goog.dom.createDom('div', {
         'class': 'ol-renderer-composite',
-        'style': 'width:100%;height:100%;top:0;left:0;position:absolute'
+        'style': 'width:' + width + 'px;height:' + height + 'px;' +
+            'top:-' + this.buffer_ + 'px;left:-' + this.buffer_ + 'px;' +
+            'position:absolute'
     });
     goog.dom.appendChild(container, target);
 
@@ -38,6 +52,8 @@ ol.renderer.Composite = function(container) {
     this.target_ = target;
 
     /**
+     * The cumulative offset from the original position of the target element.
+     *
      * @type {goog.math.Coordinate}
      * @private
      */
@@ -48,10 +64,22 @@ ol.renderer.Composite = function(container) {
      * @private
      */
     this.layerContainers_ = {};
-
     
 };
 goog.inherits(ol.renderer.Composite, ol.renderer.MapRenderer);
+
+/**
+ * Adjust the position of the renderer target by some offset.
+ *
+ * @param {number} x The x-offset (in pixel space)
+ * @param {number} y The y-offset (in pixel space)
+ */
+ol.renderer.Composite.prototype.shiftTarget = function(x, y) {
+    var newX = this.targetOffset_.x + x;
+    var newY = this.targetOffset_.y + y;
+    this.targetOffset_ = new goog.math.Coordinate(newX, newY);
+    goog.style.setPosition(this.target_, newX-this.buffer_, newY-this.buffer_);
+};
 
 /**
  * @param {Array.<ol.layer.Layer>} layers
@@ -65,24 +93,23 @@ ol.renderer.Composite.prototype.draw = function(layers, center, resolution, anim
     if (this.renderedResolution_) {
         if (resolution !== this.renderedResolution_) {
             // TODO: apply transition to old target
-            this.targetOffset_ = new goog.math.Coordinate(0, 0);
-            goog.style.setPosition(this.target_, this.targetOffset_);
+            this.shiftTarget(0, 0);
         }
     }
     this.renderedResolution_ = resolution;
     
     // shift target element to account for center change
     if (this.renderedCenter_) {
-        this.targetOffset_ = new goog.math.Coordinate(
-            this.targetOffset_.x + Math.round((this.renderedCenter_.getX() - center.getX()) / resolution),
-            this.targetOffset_.y + Math.round((center.getY() - this.renderedCenter_.getY()) / resolution)
+        this.shiftTarget(
+            Math.round((this.renderedCenter_.getX() - center.getX()) / resolution),
+            Math.round((center.getY() - this.renderedCenter_.getY()) / resolution)
         );
-        goog.style.setPosition(this.target_, this.targetOffset_);
     }
     this.renderedCenter_ = center;
 
     // update each layer renderer
     var renderer, container;
+
     for (var i=0, ii=layers.length; i<ii; ++i) {
         renderer = this.getOrCreateRenderer(layers[i]);
         renderer.setContainerOffset(this.targetOffset_);
