@@ -185,3 +185,38 @@ function testGetTileCoordExtent() {
   assertEquals(tileCoordExtent.left, 0);
 
 }
+
+
+function testGetExtentTileBounds() {
+
+  var tileGrid =
+      new ol.TileGrid(resolutions, extent, corner, origin, tileSize);
+  var e = new ol.Extent(15000, 55000, 5000, 45000);
+  var tileBounds;
+
+  tileBounds = tileGrid.getExtentTileBounds(0, e);
+  assertEquals(0, tileBounds.top);
+  assertEquals(0, tileBounds.right);
+  assertEquals(0, tileBounds.bottom);
+  assertEquals(0, tileBounds.left);
+
+  tileBounds = tileGrid.getExtentTileBounds(1, e);
+  assertEquals(1, tileBounds.top);
+  assertEquals(1, tileBounds.right);
+  assertEquals(1, tileBounds.bottom);
+  assertEquals(0, tileBounds.left);
+
+  tileBounds = tileGrid.getExtentTileBounds(2, e);
+  assertEquals(3, tileBounds.top);
+  assertEquals(2, tileBounds.right);
+  assertEquals(3, tileBounds.bottom);
+  assertEquals(1, tileBounds.left);
+
+  tileBounds = tileGrid.getExtentTileBounds(3, e);
+  window.console.log(tileBounds);
+  assertEquals(9, tileBounds.top);
+  assertEquals(5, tileBounds.right);
+  assertEquals(8, tileBounds.bottom);
+  assertEquals(4, tileBounds.left);
+
+}
