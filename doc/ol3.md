@@ -179,6 +179,7 @@ TileGrid
    getTileCoordCenter(tileCoord) -> goog.math.Coordinate
    getTileCoord(coordinate) -> TileCoord
    getTileCoordExtent(tileCoord) -> ol.Extent
+   getTileCoordResolution(tileCoord) -> number
    getZForResolution(resolution) -> number
    forEachTileCoordChild(tileCoord, function(z, TileBounds))
    forEachTileCoordParent(tileCoord, function(z, TileBounds))

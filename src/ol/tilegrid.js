@@ -253,7 +253,7 @@ ol.TileGrid.prototype.getTileSize = function() {
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @return {number} Tile resolution.
  */
-ol.TileGrid.prototype.getTileResolution = function(tileCoord) {
+ol.TileGrid.prototype.getTileCoordResolution = function(tileCoord) {
   goog.asserts.assert(0 <= tileCoord.z && tileCoord.z < this.numResolutions_);
   return this.resolutions_[tileCoord.z];
 };
