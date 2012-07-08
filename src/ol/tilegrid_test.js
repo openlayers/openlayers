@@ -264,3 +264,38 @@ function testForEachTileCoordParent() {
   assertEquals(0, tileBoundss[2].left);
 
 }
+
+
+function testGetZForResolutionExact() {
+
+  var tileGrid =
+      new ol.TileGrid(resolutions, extent, origin, xEast, ySouth, tileSize);
+
+  assertEquals(0, tileGrid.getZForResolution(1000));
+  assertEquals(1, tileGrid.getZForResolution(500));
+  assertEquals(2, tileGrid.getZForResolution(250));
+  assertEquals(3, tileGrid.getZForResolution(100));
+
+}
+
+
+function testGetZForResolutionApproximate() {
+
+  var tileGrid =
+      new ol.TileGrid(resolutions, extent, origin, xEast, ySouth, tileSize);
+
+  assertEquals(0, tileGrid.getZForResolution(2000));
+  assertEquals(0, tileGrid.getZForResolution(1000));
+  assertEquals(0, tileGrid.getZForResolution(900));
+  assertEquals(1, tileGrid.getZForResolution(750));
+  assertEquals(1, tileGrid.getZForResolution(625));
+  assertEquals(1, tileGrid.getZForResolution(500));
+  assertEquals(1, tileGrid.getZForResolution(475));
+  assertEquals(2, tileGrid.getZForResolution(375));
+  assertEquals(2, tileGrid.getZForResolution(250));
+  assertEquals(2, tileGrid.getZForResolution(200));
+  assertEquals(3, tileGrid.getZForResolution(125));
+  assertEquals(3, tileGrid.getZForResolution(100));
+  assertEquals(3, tileGrid.getZForResolution(50));
+
+}
