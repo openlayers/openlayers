@@ -30,11 +30,21 @@ ol.event.Drag = function(target) {
      */
     this.dragger_ = dragger;
     
+    /**
+     * @private
+     * @type {ol.event.Events}
+     */
+    this.target_ = target;
+    
     // We want to swallow the click event that gets fired after dragging.
     var newSequence;
     function unregisterClickStopper() {
         target.unregister('click', goog.functions.FALSE, undefined, true);
     }
+
+    // no default for mousemove and touchmove events to avoid page scrolling.
+    target.register('mousemove', this.preventDefault);
+    target.register('touchmove', this.preventDefault);
     
     dragger.defaultAction = function(x, y) {};                
     dragger.addEventListener(goog.fx.Dragger.EventType.START, function(evt) {
@@ -73,10 +83,19 @@ ol.event.Drag = function(target) {
     );  
 };
 
+/**
+ * @private
+ */
+ol.event.Drag.prototype.preventDefault = function(evt) {
+    evt.preventDefault();
+};
+
 /** @inheritDoc */
 ol.event.Drag.prototype.destroy = function() {
+    this.target_.unregister('mousemove', this.preventDefault);
+    this.target_.unregister('touchmove', this.preventDefault);
     this.dragger_.dispose();
-    delete this.dragger_;
+    goog.object.clear(this);
 };
 
 
