@@ -11,6 +11,7 @@ goog.require('ol.Projection');
 goog.require('ol.TileBounds');
 goog.require('ol.TileCoord');
 goog.require('ol.TileGrid');
+goog.require('ol.TileLayer');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
 goog.require('ol.TransformFunction');
