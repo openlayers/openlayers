@@ -20,6 +20,12 @@ ol.control.Navigation = function(opt_autoActivate) {
     this.autoActivate_ =
         goog.isDef(opt_autoActivate) ? opt_autoActivate : true;
     
+    /**
+     * @type {number?}
+     * @private
+     */
+    this.zoomBlocked_ = null;
+    
 };
 goog.inherits(ol.control.Navigation, ol.control.Control);
 
@@ -57,12 +63,17 @@ ol.control.Navigation.prototype.moveMap = function(evt) {
  * @param {Event} evt
  */
 ol.control.Navigation.prototype.zoomMap = function(evt) {
-    var map = this.map_,
-        delta = ((evt.deltaY / 3) | 0);
-    if (Math.abs(delta) === 0) {
-        return;
-    }
-    map.setZoom(map.getZoom()-delta, map.getEvents().getPointerPosition(evt));
+	var me = this;
+	if (evt.deltaY === 0 || me.zoomBlocked_) {
+		return;
+	}
+    me.zoomBlocked_ = window.setTimeout(function() {
+        me.zoomBlocked_ = null;
+    }, 200);
+    
+    var map = me.map_,
+        step = evt.deltaY / Math.abs(evt.deltaY);
+    map.setZoom(map.getZoom()-step, map.getEvents().getPointerPosition(evt));
     // We don't want the page to scroll.
     evt.preventDefault();
     return false;
