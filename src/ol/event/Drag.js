@@ -43,8 +43,8 @@ ol.event.Drag = function(target) {
     }
 
     // no default for mousemove and touchmove events to avoid page scrolling.
-    target.register('mousemove', this.preventDefault);
-    target.register('touchmove', this.preventDefault);
+    target.register('mousemove', ol.event.preventDefault);
+    target.register('touchmove', ol.event.preventDefault);
     
     dragger.defaultAction = function(x, y) {};                
     dragger.addEventListener(goog.fx.Dragger.EventType.START, function(evt) {
@@ -83,17 +83,10 @@ ol.event.Drag = function(target) {
     );  
 };
 
-/**
- * @private
- */
-ol.event.Drag.prototype.preventDefault = function(evt) {
-    evt.preventDefault();
-};
-
 /** @inheritDoc */
 ol.event.Drag.prototype.destroy = function() {
-    this.target_.unregister('mousemove', this.preventDefault);
-    this.target_.unregister('touchmove', this.preventDefault);
+    this.target_.unregister('mousemove', ol.event.preventDefault);
+    this.target_.unregister('touchmove', ol.event.preventDefault);
     this.dragger_.dispose();
     goog.object.clear(this);
 };

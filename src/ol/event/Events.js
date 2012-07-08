@@ -42,16 +42,21 @@ ol.event.isMultiTouch = function(evt) {
 };
 
 /**
- * Is the event a keyboard event with Enter or Space pressed?
+ * Call preventDefault on the provided event.
  *
  * @param {!Event} evt
- * @return {boolean}
  */
-ol.event.isEnterOrSpace = function(evt) {
-    return evt.type === "keypress" &&
-        (evt.keyCode === goog.events.KeyCodes.ENTER ||
-        evt.keyCode === goog.events.KeyCodes.SPACE ||
-        evt.keyCode === goog.events.KeyCodes.MAC_ENTER);
+ol.event.preventDefault = function(evt) {
+    evt.preventDefault();
+};
+
+/**
+ * Call stopPropagation on the provided event.
+ *
+ * @param {!Event} evt
+ */
+ol.event.stopPropagation = function(evt) {
+    evt.stopPropagation();
 };
 
 
