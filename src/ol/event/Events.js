@@ -160,7 +160,7 @@ ol.event.Events.prototype.setElement = function(element) {
     if (this.element_) {
         for (t in types) {
             goog.events.unlisten(
-                this.element_, types[t], this.handleBrowserEvent, true, this
+                this.element_, types[t], this.handleBrowserEvent, false, this
             );
         }
         this.destroySequences();
@@ -171,7 +171,7 @@ ol.event.Events.prototype.setElement = function(element) {
         this.createSequences();
         for (t in types) {
             goog.events.listen(
-                element, types[t], this.handleBrowserEvent, true, this
+                element, types[t], this.handleBrowserEvent, false, this
             );
         }
     }
