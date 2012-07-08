@@ -175,14 +175,14 @@ TileGrid
    ySouth boolean
    origin(s) Coord|Array.<Coord>
    tileSize goog.math.Size
+   forEachTileCoordChild(tileCoord, function(z, TileBounds))
+   forEachTileCoordParent(tileCoord, function(z, TileBounds))
    getExtentTileBounds(z, extent) -> TileBounds
-   getTileCoordCenter(tileCoord) -> goog.math.Coordinate
    getTileCoord(coordinate) -> TileCoord
+   getTileCoordCenter(tileCoord) -> goog.math.Coordinate
    getTileCoordExtent(tileCoord) -> ol.Extent
    getTileCoordResolution(tileCoord) -> number
    getZForResolution(resolution) -> number
-   forEachTileCoordChild(tileCoord, function(z, TileBounds))
-   forEachTileCoordParent(tileCoord, function(z, TileBounds))
 
 TileLayer
    tileGrid TileGrid
