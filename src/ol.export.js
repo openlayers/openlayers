@@ -13,6 +13,7 @@ goog.exportProperty( ol.Map.prototype, 'resolutions', ol.Map.prototype.resolutio
 goog.exportProperty( ol.Map.prototype, 'layers', ol.Map.prototype.layers );
 goog.exportProperty( ol.Map.prototype, 'controls', ol.Map.prototype.controls );
 goog.exportProperty( ol.Map.prototype, 'maxExtent', ol.Map.prototype.maxExtent );
+goog.exportProperty( ol.Map.prototype, 'destroy', ol.Map.prototype.destroy );
 
 // ol.loc
 goog.exportSymbol('ol.loc', ol.loc );
