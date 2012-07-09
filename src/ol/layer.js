@@ -25,12 +25,15 @@ ol.Layer = function() {
 
   goog.base(this);
 
+  this.setExtent(null);
+  this.setProjection(null);
+
 };
 goog.inherits(ol.Layer, ol.Object);
 
 
 /**
- * @return {string} Attribution.
+ * @return {string|undefined} Attribution.
  */
 ol.Layer.prototype.getAttribution = function() {
   return /** @type {string} */ (this.get(ol.LayerProperty_.ATTRIBUTION));
@@ -54,7 +57,7 @@ ol.Layer.prototype.getProjection = function() {
 
 
 /**
- * @param {string} attribution Attribution.
+ * @param {string|undefined} attribution Attribution.
  */
 ol.Layer.prototype.setAttribution = function(attribution) {
   this.set(ol.LayerProperty_.ATTRIBUTION, attribution);
