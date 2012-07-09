@@ -1,9 +1,8 @@
 /**
  * @fileoverview Drag Handler.
  *
- * A drag handler uses a goog.fx.Dragger object to receive dragstart, drag, dragend
- * events for a DOM element, and re-dispatches these events to the map.
- *
+ * Provides a class for listening to drag events on a DOM element and
+ * re-dispatching to a map instance.
  */
 
 goog.provide('ol.handler.Drag');
@@ -22,11 +21,16 @@ goog.require('goog.Disposable');
 ol.handler.Drag = function(map, elt) {
 
     var dragger = new goog.fx.Dragger(elt);
-    this.registerDisposable(dragger);
-
     dragger.defaultAction = function() {};
 
+    this.registerDisposable(dragger);
+
+    var touchmove = goog.events.EventType.TOUCHMOVE,
+        mousemove = goog.events.EventType.MOUSEMOVE;
+
     var prevX = 0, prevY = 0;
+
+    var preventDefault = function(e) { e.preventDefault(); };
 
     var handleDragStart = function(e) {
         prevX = e.clientX;
@@ -35,6 +39,8 @@ ol.handler.Drag = function(map, elt) {
             type: 'dragstart'
         };
         goog.events.dispatchEvent(map, newE);
+        // this to prevent page scrolling
+        goog.events.listen(elt, [touchmove, mousemove], preventDefault);
     };
 
     var handleDrag = function(e) {
@@ -53,6 +59,11 @@ ol.handler.Drag = function(map, elt) {
             type: 'dragend'
         };
         goog.events.dispatchEvent(map, newE);
+        goog.events.unlisten(elt, [touchmove, mousemove], preventDefault);
+    };
+
+    var handleDragEarlyCancel = function(e) {
+        goog.events.unlisten(elt, [touchmove, mousemove], preventDefault);
     };
 
     goog.events.listen(dragger, goog.fx.Dragger.EventType.START,
@@ -61,20 +72,7 @@ ol.handler.Drag = function(map, elt) {
                        handleDrag, false, this);
     goog.events.listen(dragger, goog.fx.Dragger.EventType.END,
                        handleDragEnd, false, this);
-
-
-    // prevent page scrolling
-    this.moveListenerKey_ = goog.events.listen(
-                                elt,
-                                [goog.events.EventType.TOUCHMOVE,
-                                 goog.events.EventType.MOUSEMOVE],
-                                function(e) { e.preventDefault(); });
+    goog.events.listen(dragger, goog.fx.Dragger.EventType.EARLY_CANCEL,
+                       handleDragEarlyCancel, false, this);
 };
 goog.inherits(ol.handler.Drag, goog.Disposable);
-
-/**
- * @inheritDoc
- */
-ol.handler.Drag.prototype.disposeInternal = function() {
-    goog.events.unlistenByKey(this.moveListenerKey_);
-};
