@@ -59,6 +59,13 @@ ol.renderer.MapRenderer.prototype.draw = function(layers, center, resolution, an
 };
 
 /**
+ * @return {number} The rendered resolution.
+ */
+ol.renderer.MapRenderer.prototype.getResolution = function() {
+    return this.renderedResolution_;
+};
+
+/**
  * TODO: determine a closure friendly way to register map renderers.
  * @type {Array}
  * @private

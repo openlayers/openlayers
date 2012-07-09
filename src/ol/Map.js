@@ -264,6 +264,14 @@ ol.Map.prototype.getResolutionForZoom = function(zoom) {
     }
 };
 
+/**
+ * @return {number} the resolution for the map at the given zoom level
+ */
+ol.Map.prototype.getResolution = function() {
+    goog.asserts.assert(goog.isDef(this.renderer_));
+    return this.renderer_.getResolution();
+};
+
 
 /**
  * @param {goog.math.Coordinate|{x: number, y: number}} pixel
