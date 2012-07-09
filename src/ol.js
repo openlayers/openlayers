@@ -5,8 +5,6 @@ goog.require('ol.bounds');
 goog.require('ol.control.Attribution');
 goog.require('ol.control.Navigation');
 goog.require('ol.control.Zoom');
-goog.require('ol.event.Events');
-goog.require('ol.event.Scroll');
 goog.require('ol.handler.Drag');
 goog.require('ol.handler.MouseWheel');
 goog.require("ol.map");
