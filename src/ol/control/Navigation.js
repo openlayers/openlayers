@@ -55,7 +55,7 @@ ol.control.Navigation.prototype.deactivate = function() {
 };
 
 /**
- * @param {Object} evt
+ * @param {{deltaX, deltaY}} evt
  */
 ol.control.Navigation.prototype.moveMap = function(evt) {
     this.map_.moveByViewportPx(evt.deltaX, evt.deltaY);
@@ -63,7 +63,7 @@ ol.control.Navigation.prototype.moveMap = function(evt) {
 };
 
 /**
- * @param {Event} evt
+ * @param {goog.events.MouseWheelEvent} evt
  */
 ol.control.Navigation.prototype.zoomMap = function(evt) {
     var me = this;

@@ -23,6 +23,9 @@ ol.handler.MouseWheel = function(map, elt) {
     var handler = new goog.events.MouseWheelHandler(elt);
     this.registerDisposable(handler);
 
+    /**
+     * @param {goog.events.MouseWheelEvent} e
+     */
     var handleMouseWheel = function(e) {
         e.position = goog.style.getRelativePosition(e, elt);
         e.type = 'mousewheel';
