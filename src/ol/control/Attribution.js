@@ -1,6 +1,5 @@
 goog.provide('ol.control.Attribution');
 
-goog.require('ol.event');
 goog.require('ol.control.Control');
 
 goog.require('goog.dom');
@@ -43,7 +42,7 @@ ol.control.Attribution.prototype.setMap = function(map) {
     var staticOverlay = map.getStaticOverlay();
     if (goog.isNull(this.container_)) {
         this.container_ = goog.dom.createDom('div', this.CLS);
-        goog.events.listen(this.container_, 'click', ol.event.stopPropagation);
+        goog.events.listen(this.container_, 'click', this.stopEventPropagation);
     }
     if (!goog.isNull(staticOverlay)) {
         goog.dom.append(staticOverlay, this.container_);
@@ -55,8 +54,7 @@ ol.control.Attribution.prototype.setMap = function(map) {
 ol.control.Attribution.prototype.activate = function() {
     var active = goog.base(this, 'activate');
     if (active) {
-        goog.events.listen(this.map_, 'layeradd', this.update,
-                           undefined, this);
+        goog.events.listen(this.map_, 'layeradd', this.update, undefined, this);
         this.update();
     }
     return active;
@@ -66,8 +64,7 @@ ol.control.Attribution.prototype.activate = function() {
 ol.control.Attribution.prototype.deactivate = function() {
     var inactive = goog.base(this, 'deactivate');
     if (inactive) {
-        goog.events.unlisten(this.map_, 'layeradd', this.update,
-                             undefined, this);
+        goog.events.unlisten(this.map_, 'layeradd', this.update, undefined, this);
     }
     return inactive;
 };
@@ -86,9 +83,16 @@ ol.control.Attribution.prototype.update = function() {
 };
 
 ol.control.Attribution.prototype.destroy = function() {
-    goog.events.unlisten(this.container_, 'click', ol.event.stopPropagation);
+    goog.events.unlisten(this.container_, 'click', this.stopEventPropagation);
     goog.dom.removeNode(this.container_);
     goog.base(this, 'destroy');
+};
+
+/**
+ * @param {goog.events.BrowserEvent} e
+ */
+ol.control.Attribution.prototype.stopEventPropagation = function(e) {
+    e.stopPropagation();
 };
 
 ol.control.addControl('attribution', ol.control.Attribution);
