@@ -157,10 +157,14 @@ ol.renderer.Composite.prototype.getOriginForCenterAndRes_ = function(center, res
  */
 ol.renderer.Composite.prototype.shiftTarget_ = function(center, resolution) {
     var oldCenter = this.renderedCenter_;
-    var offset = this.targetOffset_;
-    offset.x += Math.round((oldCenter.getX() - center.getX()) / resolution);
-    offset.y += Math.round((center.getY() - oldCenter.getY()) / resolution);
-    goog.style.setPosition(this.target_, offset);
+    var dx = Math.round((oldCenter.getX() - center.getX()) / resolution);
+    var dy = Math.round((center.getY() - oldCenter.getY()) / resolution);
+    if (!(dx == 0 && dy == 0)) {
+        var offset = this.targetOffset_;
+        offset.x += Math.round((oldCenter.getX() - center.getX()) / resolution);
+        offset.y += Math.round((center.getY() - oldCenter.getY()) / resolution);
+        goog.style.setPosition(this.target_, offset);
+    }
 };
 
 /**
@@ -176,6 +180,7 @@ ol.renderer.Composite.prototype.resetTarget_ = function(center, resolution) {
     }
     var offset = new goog.math.Coordinate(-this.buffer_, -this.buffer_);
     this.targetOffset_ = offset;
+    this.renderedCenter_ = center;
     goog.style.setPosition(this.target_, offset);
 };
 
