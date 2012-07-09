@@ -5,7 +5,7 @@ goog.require('ol.Bounds');
 goog.require('ol.Camera');
 goog.require('ol.Extent');
 goog.require('ol.Layer');
-goog.require('ol.LayerView');
+goog.require('ol.LayerRendererOptions');
 goog.require('ol.Object');
 goog.require('ol.Projection');
 goog.require('ol.TileBounds');

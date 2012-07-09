@@ -42,7 +42,7 @@ goog.events.EventTarget
 |  |
 |  +- LayerRenderer
 |  |
-|  +- LayerView
+|  +- LayerRendererOptions
 |  |
 |  +- Map
 |  |
@@ -151,7 +151,7 @@ LayerArray
    getResolutions() -> Array.<number>|null
    getMaxResolution() = this.getResolutions()[0] | null
 
-LayerView
+LayerRendererOptions
    layer Layer
    visible boolean
    opacity number
@@ -238,12 +238,12 @@ Layer
 - A layer advertizes the projections it supports.
 - A layer returns no data if asked data for an unsupported projection.
 
-LayerView
+LayerRendererOptions
 
-- A layer view stores view-related states for a layer.
-- View-related states include visibility, opacity, saturation, hue, etc.
-- A layer view has a layer.
-- Multiple layer views can share the same layer.
+- A layer renderer options object stores view-related states for a layer.
+- Options include visibility, opacity, saturation, hue, etc.
+- A layer renderer options object has a layer.
+- Multiple layer renderer options can share the same layer.
 - In other words a layer can be viewed in different manners.
 
 Renderer
