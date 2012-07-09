@@ -1,5 +1,6 @@
 goog.provide('ol.LayerRendererOptions');
 
+goog.require('ol.Layer');
 goog.require('ol.Object');
 
 
@@ -17,16 +18,31 @@ ol.LayerRendererOptionsProperty_ = {
 /**
  * @constructor
  * @extends {ol.Object}
+ * @param {ol.Layer} layer Layer.
  */
-ol.LayerRendererOptions = function() {
+ol.LayerRendererOptions = function(layer) {
 
   goog.base(this);
+
+  /**
+   * @private
+   * @type {ol.Layer}
+   */
+  this.layer_ = layer;
 
   this.setVisible(true);
   this.setOpacity(1);
 
 };
 goog.inherits(ol.LayerRendererOptions, ol.Object);
+
+
+/**
+ * @return {ol.Layer} Layer.
+ */
+ol.LayerRendererOptions.prototype.getLayer = function() {
+  return this.layer_;
+};
 
 
 /**
