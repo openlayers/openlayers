@@ -63,10 +63,10 @@ ol.control.Navigation.prototype.moveMap = function(evt) {
  * @param {Event} evt
  */
 ol.control.Navigation.prototype.zoomMap = function(evt) {
-	var me = this;
-	if (evt.deltaY === 0 || me.zoomBlocked_) {
-		return;
-	}
+    var me = this;
+    if (evt.deltaY === 0 || me.zoomBlocked_) {
+        return;
+    }
     me.zoomBlocked_ = window.setTimeout(function() {
         me.zoomBlocked_ = null;
     }, 200);
