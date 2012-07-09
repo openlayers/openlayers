@@ -10,6 +10,7 @@ goog.provide('ol.handler.Drag');
 
 goog.require('goog.fx.Dragger');
 goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.Disposable');
 
 /**
@@ -60,5 +61,20 @@ ol.handler.Drag = function(map, elt) {
                        handleDrag, false, this);
     goog.events.listen(dragger, goog.fx.Dragger.EventType.END,
                        handleDragEnd, false, this);
+
+
+    // prevent page scrolling
+    this.moveListenerKey_ = goog.events.listen(
+                                elt,
+                                [goog.events.EventType.TOUCHMOVE,
+                                 goog.events.EventType.MOUSEMOVE],
+                                function(e) { e.preventDefault(); });
 };
 goog.inherits(ol.handler.Drag, goog.Disposable);
+
+/**
+ * @inheritDoc
+ */
+ol.handler.Drag.prototype.disposeInternal = function() {
+    goog.events.unlistenByKey(this.moveListenerKey_);
+};
