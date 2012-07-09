@@ -428,7 +428,7 @@ ol.Map.prototype.addLayers = function(layers) {
     for (var i=0, ii=layers.length; i<ii; ++i) {
         layer = layers[i];
         this.layers_.push(layer);
-        this.dispatchEvent({type: 'layeradd', 'layer': layer});
+        goog.events.dispatchEvent(this, {type: 'layeradd', 'layer': layer});
     }
     this.conditionallyRender();
 };
