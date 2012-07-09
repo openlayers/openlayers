@@ -172,10 +172,4 @@ describe("ol.event.Events", function() {
         expect(ol.event.isMultiTouch({})).toBe(false);        
     });
     
-    it("provides an isEnterOrSpace() function", function() {
-        expect(ol.event.isEnterOrSpace({type: 'keypress', keyCode: 13})).toBe(true);
-        expect(ol.event.isEnterOrSpace({type: 'keypress', keyCode: 32})).toBe(true);
-        expect(ol.event.isEnterOrSpace({type: 'keypress', keyCode: 3})).toBe(true);
-    });
-    
 });
