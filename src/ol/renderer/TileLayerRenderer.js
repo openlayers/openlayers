@@ -172,8 +172,8 @@ ol.renderer.TileLayerRenderer.prototype.getNormalizedTileCoord_ = function(loc, 
     var scale = resolution / tileResolution;
 
     // offset from tile origin in pixel space
-    var dx = Math.round((loc.getX() - tileOrigin[0]) / resolution);
-    var dy = Math.round((tileOrigin[1] - loc.getY()) / resolution);
+    var dx = Math.floor((loc.getX() - tileOrigin[0]) / resolution);
+    var dy = Math.floor((tileOrigin[1] - loc.getY()) / resolution);
 
     // desired tile size (in fractional pixels)
     var fpxTileWidth = tileSize[0] / scale;
