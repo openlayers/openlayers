@@ -487,7 +487,7 @@ ol.Map.prototype.createRenderer = function() {
         this.mapOverlay_ = goog.dom.createDom('div', 'ol-overlay-map');
         this.staticOverlay_ = goog.dom.createDom('div', {
             'class': staticCls,
-            'style': 'width:100%;height:100%;top:0;left:0;position:absolute'
+            'style': 'width:100%;height:100%;top:0;left:0;position:absolute;z-index:1'
         });
     }
     if (!goog.isNull(viewport)) {
