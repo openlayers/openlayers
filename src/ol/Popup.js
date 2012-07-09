@@ -243,7 +243,7 @@ ol.Popup.prototype.setAnchorOffset_ = function() {
         this.pos_ = new ol.geom.Point(this.anchor_.getX(), this.anchor_.getY());
     }
     var pos = /** @type {ol.Loc} */ (this.pos_);
-    var popupPosPx = this.map_.getPixelForLoc(pos);
+    var popupPosPx = this.map_.getViewportPixelForLoc(pos);
     var popupSize = goog.style.getSize(this.container_);
     
     switch(this.placement_) {

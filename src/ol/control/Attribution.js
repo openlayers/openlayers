@@ -43,24 +43,12 @@ ol.control.Attribution.prototype.setMap = function(map) {
     var staticOverlay = map.getStaticOverlay();
     if (goog.isNull(this.container_)) {
         this.container_ = goog.dom.createDom('div', this.CLS);
-        // This is not registered as priority listener, so priority listeners
-        // can still get the click event.
-        map.getEvents().register('click', this.stopLinkClick, this);
+        goog.events.listen(this.container_, 'click', ol.event.stopPropagation);
     }
     if (!goog.isNull(staticOverlay)) {
         goog.dom.append(staticOverlay, this.container_);
     }
     goog.base(this, 'setMap', map);
-};
-
-/**
- * Prevent clicks on links in the attribution from getting through to
- * listeners.
- */
-ol.control.Attribution.prototype.stopLinkClick = function(evt) {
-    var node = evt.target;
-    return node.nodeName !== 'A' ||
-        !goog.dom.getAncestorByClass(node, this.CLS);
 };
 
 /** @inheritDoc */
@@ -96,6 +84,7 @@ ol.control.Attribution.prototype.update = function() {
 };
 
 ol.control.Attribution.prototype.destroy = function() {
+    goog.events.unlisten(this.container_, 'click', ol.event.stopPropagation);
     goog.dom.removeNode(this.container_);
     goog.base(this, 'destroy');
 };

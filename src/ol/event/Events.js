@@ -42,16 +42,21 @@ ol.event.isMultiTouch = function(evt) {
 };
 
 /**
- * Is the event a keyboard event with Enter or Space pressed?
+ * Call preventDefault on the provided event.
  *
  * @param {!Event} evt
- * @return {boolean}
  */
-ol.event.isEnterOrSpace = function(evt) {
-    return evt.type === "keypress" &&
-        (evt.keyCode === goog.events.KeyCodes.ENTER ||
-        evt.keyCode === goog.events.KeyCodes.SPACE ||
-        evt.keyCode === goog.events.KeyCodes.MAC_ENTER);
+ol.event.preventDefault = function(evt) {
+    evt.preventDefault();
+};
+
+/**
+ * Call stopPropagation on the provided event.
+ *
+ * @param {!Event} evt
+ */
+ol.event.stopPropagation = function(evt) {
+    evt.stopPropagation();
 };
 
 
@@ -155,7 +160,7 @@ ol.event.Events.prototype.setElement = function(element) {
     if (this.element_) {
         for (t in types) {
             goog.events.unlisten(
-                this.element_, types[t], this.handleBrowserEvent, true, this
+                this.element_, types[t], this.handleBrowserEvent, false, this
             );
         }
         this.destroySequences();
@@ -166,7 +171,7 @@ ol.event.Events.prototype.setElement = function(element) {
         this.createSequences();
         for (t in types) {
             goog.events.listen(
-                element, types[t], this.handleBrowserEvent, true, this
+                element, types[t], this.handleBrowserEvent, false, this
             );
         }
     }
