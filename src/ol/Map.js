@@ -504,10 +504,22 @@ ol.Map.prototype.setViewport = function() {
             'class': 'ol-viewport',
             'style': 'width:100%;height:100%;top:0;left:0;position:relative;overflow:hidden'
         }));
-        var dragHandler = new ol.handler.Drag(this, this.viewport_);
-        this.registerDisposable(dragHandler);
+        this.initHandlers();
     }
     goog.dom.appendChild(this.container_, this.viewport_);
+};
+
+/**
+ * Init the map event handlers.
+ */
+ol.Map.prototype.initHandlers = function() {
+    goog.asserts.assert(!goog.isNull(this.viewport_));
+
+    var dragHandler = new ol.handler.Drag(this, this.viewport_);
+    this.registerDisposable(dragHandler);
+
+    var mouseWheelHandler = new ol.handler.MouseWheel(this, this.viewport_);
+    this.registerDisposable(mouseWheelHandler);
 };
 
 

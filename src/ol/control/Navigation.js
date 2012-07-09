@@ -38,7 +38,7 @@ ol.control.Navigation.prototype.activate = function() {
         // navigation control.
         var target = this.map_.getParentEventTarget();
         goog.events.listen(target, 'drag', this.moveMap, false, this);
-        goog.events.listen(target, 'scroll', this.zoomMap, false, this);
+        goog.events.listen(target, 'mousewheel', this.zoomMap, false, this);
     }
     return active;
 };
@@ -49,7 +49,7 @@ ol.control.Navigation.prototype.deactivate = function() {
     if (inactive) {
         var target = this.map_.getParentEventTarget();
         goog.events.unlisten(target, 'drag', this.moveMap, false, this);
-        goog.events.unlisten(target, 'scroll', this.zoomMap, false, this);
+        goog.events.unlisten(target, 'mousewheel', this.zoomMap, false, this);
     }
     return inactive;
 };
@@ -76,7 +76,7 @@ ol.control.Navigation.prototype.zoomMap = function(evt) {
     
     var map = me.map_,
         step = evt.deltaY / Math.abs(evt.deltaY);
-    map.setZoom(map.getZoom()-step, map.getEvents().getPointerPosition(evt));
+    map.setZoom(map.getZoom()-step, evt.position);
     // We don't want the page to scroll.
     evt.preventDefault();
     return false;
