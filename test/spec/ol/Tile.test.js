@@ -34,7 +34,7 @@ describe("ol.Tile", function() {
         });
         it("fires a load event", function() {
             var spy = jasmine.createSpy();
-            tile.events_.register('load', spy);
+            goog.events.listen(tile, 'load', spy);
             tile.handleImageLoad();
             expect(spy).toHaveBeenCalled();
         });
@@ -57,7 +57,7 @@ describe("ol.Tile", function() {
         });
         it("fires a load event", function() {
             var spy = jasmine.createSpy();
-            tile.events_.register('error', spy);
+            goog.events.listen(tile, 'error', spy);
             tile.handleImageError();
             expect(spy).toHaveBeenCalled();
         });
