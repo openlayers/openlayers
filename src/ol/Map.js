@@ -6,6 +6,7 @@ goog.require('ol.Projection');
 goog.require('ol.control.Control');
 goog.require('ol.renderer.MapRenderer');
 goog.require('ol.handler.Drag');
+goog.require('ol.handler.MouseWheel');
 
 goog.require('goog.dom');
 goog.require('goog.math');
