@@ -1935,12 +1935,12 @@
         map.destroy();
     }    
 
-    function test_moveByPx(t) {
+    function test_moveByViewportPx(t) {
         t.plan(16);
 
         var moved;
         var Layer = OpenLayers.Class(OpenLayers.Layer, {
-            moveByPx: function(dx, dy) {
+            moveByViewportPx: function(dx, dy) {
                 moved[this.name] = true;
             }
         });
@@ -1972,7 +1972,7 @@
 
         // move to a valid position
         moved = {};
-        map.moveByPx(-455, 455);
+        map.moveByViewportPx(-455, 455);
         t.eq(map.layerContainerDiv.style.left, '455px',
              '[valid position] layer container left correct');
         t.eq(map.layerContainerDiv.style.top, '-455px',
@@ -1984,7 +1984,7 @@
 
         // move outside the max extent
         moved = {};
-        map.moveByPx(-4500, 4500);
+        map.moveByViewportPx(-4500, 4500);
         t.eq(map.layerContainerDiv.style.left, '455px',
              '[outside max extent] layer container left correct');
         t.eq(map.layerContainerDiv.style.top, '-455px',
@@ -1996,7 +1996,7 @@
 
         // move outside the restricted extent
         moved = {};
-        map.moveByPx(-500, 500);
+        map.moveByViewportPx(-500, 500);
         t.eq(map.layerContainerDiv.style.left, '455px',
              '[outside restricted extent] layer container left correct');
         t.eq(map.layerContainerDiv.style.top, '-455px',
@@ -2011,7 +2011,7 @@
     }
 
     // test for http://trac.osgeo.org/openlayers/ticket/3388
-    function test_moveByPx_restrictedExtent(t) {
+    function test_moveByViewportPx_restrictedExtent(t) {
         t.plan(2);
 
         var map = new OpenLayers.Map({
@@ -2024,7 +2024,7 @@
 
         map.zoomToExtent(new OpenLayers.Bounds(-11.25, 0, 11.25, 11.25));
 
-        map.moveByPx(-10, -10);
+        map.moveByViewportPx(-10, -10);
         t.eq(map.layerContainerDiv.style.left, '10px', 'layer container left correct');
         t.eq(map.layerContainerDiv.style.top, '0px', 'layer container top correct');
     }

@@ -87,6 +87,12 @@ ol.Map = function() {
      * @type {Element}
      */
     this.viewport_ = null;
+
+    /**
+     * @private
+     * @type {goog.math.Size}
+     */
+    this.viewportSize_ = null;
     
     /**
      * @private
@@ -274,31 +280,49 @@ ol.Map.prototype.getResolution = function() {
 
 
 /**
+ * TODO: We'll have to ask the map overlay renderer for this.  This method will
+ * not work once map space is not aligned with pixel space.
+ *
  * @param {goog.math.Coordinate|{x: number, y: number}} pixel
  * @return {ol.Loc}
  */
-ol.Map.prototype.getLocForPixel = function(pixel) {
-    return goog.isDef(this.renderer_) ?
-        this.renderer_.getLocForPixel(pixel) : null;
+ol.Map.prototype.getLocForViewportPixel = function(pixel) {
+    var size = this.getViewportSize();
+    var center = this.center_;
+    var resolution = this.getResolution();
+    var x = center.getX() + (resolution * (pixel.x - (size.width / 2)));
+    var y = center.getY() - (resolution * (pixel.y - (size.height / 2)));
+    return new ol.Loc(x, y, undefined, this.getProjection());
 };
 
 /**
+ * TODO: We'll have to ask the map overlay renderer for this.  This method will
+ * not work once map space is not aligned with pixel space.
+ *
  * @param {ol.Loc} loc
  * @return {{x: number, y: number}}
  */
-ol.Map.prototype.getPixelForLoc = function(loc) {
-    return goog.isDef(this.renderer_) ?
-        this.renderer_.getPixelForLoc(loc) : null;
+ol.Map.prototype.getViewportPixelForLoc = function(loc) {
+    var size = this.getViewportSize();
+    var center = this.center_;
+    var resolution = this.getResolution();
+    return {
+        x: ((loc.getX() - center.getX()) / resolution) + (size.width / 2),
+        y: ((center.getY() - loc.getY()) / resolution) + (size.height / 2)
+    };
 };
 
 /**
- * @return {goog.math.Size} The currently rendered map size in pixels.
+ * @return {goog.math.Size}
  */
-ol.Map.prototype.getSize = function() {
-    //TODO consider caching this when we have something like updateSize
-    return goog.isDef(this.renderer_) ? this.renderer_.getSize() : null;
+ol.Map.prototype.getViewportSize = function() {
+    // TODO: listen for resize and set this.viewportSize_ null
+    // https://github.com/openlayers/ol3/issues/2
+    if (goog.isNull(this.viewportSize_)) {
+        this.viewportSize_ = goog.style.getSize(this.viewport_);
+    }
+    return this.viewportSize_;
 };
-
 
 /**
  * @param {ol.Loc} center Center in map projection.
@@ -335,8 +359,8 @@ ol.Map.prototype.setZoom = function(zoom, opt_anchor) {
         return;
     }
     if (goog.isDef(opt_anchor)) {
-        var size = this.getSize(),
-            anchorLoc = this.getLocForPixel(opt_anchor),
+        var size = this.getViewportSize(),
+            anchorLoc = this.getLocForViewportPixel(opt_anchor),
             newRes = this.getResolutionForZoom(newZoom);
         newCenter = anchorLoc.add(
             (size.width/2 - opt_anchor.x) * newRes,
@@ -511,10 +535,13 @@ ol.Map.prototype.getEvents = function() {
 };
 
 /**
+ * TODO: This method will need to be reworked/revisited when renderers can
+ * display a map that is rotated or otherwise not aligned with pixel space.
+ *
  * @param {number} dx pixels to move in x direction
  * @param {number} dy pixels to move in x direction
  */
-ol.Map.prototype.moveByPx = function(dx, dy) {
+ol.Map.prototype.moveByViewportPx = function(dx, dy) {
     if (!goog.isNull(this.center_) && goog.isDef(this.zoom_)) {
         var resolution = this.getResolutionForZoom(this.zoom_),
             center = new ol.Loc(

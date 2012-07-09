@@ -55,7 +55,7 @@ ol.control.Navigation.prototype.deactivate = function() {
  * @param {Object} evt
  */
 ol.control.Navigation.prototype.moveMap = function(evt) {
-    this.map_.moveByPx(evt.deltaX, evt.deltaY);
+    this.map_.moveByViewportPx(evt.deltaX, evt.deltaY);
     return false;
 };
 
