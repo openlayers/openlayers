@@ -25,13 +25,12 @@ ol.renderer.LayerRenderer = function(container, layer) {
     this.containerSize_ = null;
 
     /**
-     * Pixel offset between the layer renderer container and the composite
-     * renderer container.  These will always be integer values.
+     * Location of the top-left corner of the renderer container in map coords.
      * 
-     * @type {goog.math.Coordinate}
+     * @type {ol.Loc}
      * @protected
      */
-    this.containerOffset_ = new goog.math.Coordinate(0, 0);
+    this.containerOrigin_ = null;
 
     /**
      * @type {!ol.layer.Layer}
@@ -55,13 +54,12 @@ ol.renderer.LayerRenderer.prototype.getContainerSize = function() {
 };
 
 /**
- * Set the pixel offset between the layer renderer container and the composite
- * renderer container.
+ * Set the location of the top-left corner of the renderer container.
  *
- * @param {goog.math.Coordinate} offset Integer pixel offset.
+ * @param {ol.Loc} origin The container origin.
  */
-ol.renderer.LayerRenderer.prototype.setContainerOffset = function(offset) {
-    this.containerOffset_ = offset;
+ol.renderer.LayerRenderer.prototype.setContainerOrigin = function(origin) {
+    this.containerOrigin_ = origin;
 };
 
 /**

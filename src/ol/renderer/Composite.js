@@ -33,31 +33,27 @@ ol.renderer.Composite = function(container) {
      */
     this.buffer_ = 128;
     
-    var containerSize = this.getContainerSize();
-    var width = containerSize.width + (2 * this.buffer_);
-    var height = containerSize.height + (2 * this.buffer_);
-
-    var target = goog.dom.createDom('div', {
-        'class': 'ol-renderer-composite',
-        'style': 'width:' + width + 'px;height:' + height + 'px;' +
-            'top:-' + this.buffer_ + 'px;left:-' + this.buffer_ + 'px;' +
-            'position:absolute'
-    });
-    goog.dom.appendChild(container, target);
-
     /**
      * @type {Element}
      * @private
      */
-    this.target_ = target;
+    this.target_ = null;
 
     /**
-     * The cumulative offset from the original position of the target element.
+     * The current top left corner location of the target element (map coords).
+     *
+     * @type {ol.Loc}
+     * @private
+     */
+    this.targetOrigin_ = null;
+
+    /**
+     * The pixel offset of the target element with respect to its container.
      *
      * @type {goog.math.Coordinate}
      * @private
      */
-    this.targetOffset_ = new goog.math.Coordinate(0, 0);
+    this.targetOffset_ = null;
     
     /**
      * @type {Object}
@@ -69,53 +65,118 @@ ol.renderer.Composite = function(container) {
 goog.inherits(ol.renderer.Composite, ol.renderer.MapRenderer);
 
 /**
- * Adjust the position of the renderer target by some offset.
- *
- * @param {number} x The x-offset (in pixel space)
- * @param {number} y The y-offset (in pixel space)
- */
-ol.renderer.Composite.prototype.shiftTarget = function(x, y) {
-    var newX = this.targetOffset_.x + x;
-    var newY = this.targetOffset_.y + y;
-    this.targetOffset_ = new goog.math.Coordinate(newX, newY);
-    goog.style.setPosition(this.target_, newX-this.buffer_, newY-this.buffer_);
-};
-
-/**
  * @param {Array.<ol.layer.Layer>} layers
  * @param {ol.Loc} center
  * @param {number} resolution
  * @param {boolean} animate
  */
 ol.renderer.Composite.prototype.draw = function(layers, center, resolution, animate) {
+    if (goog.isNull(this.target_)) {
+        // first rendering
+        this.createTarget_(center, resolution);
+    }
+    
     // TODO: deal with layer order and removal
 
     if (this.renderedResolution_) {
         if (resolution !== this.renderedResolution_) {
             // TODO: apply transition to old target
-            this.shiftTarget(0, 0);
+            this.resetTarget_(center, resolution);
         }
     }
     this.renderedResolution_ = resolution;
     
     // shift target element to account for center change
     if (this.renderedCenter_) {
-        this.shiftTarget(
-            Math.round((this.renderedCenter_.getX() - center.getX()) / resolution),
-            Math.round((center.getY() - this.renderedCenter_.getY()) / resolution)
-        );
+        this.shiftTarget_(center, resolution);
     }
     this.renderedCenter_ = center;
 
     // update each layer renderer
-    var renderer, container;
-
+    var renderer;
     for (var i=0, ii=layers.length; i<ii; ++i) {
-        renderer = this.getOrCreateRenderer(layers[i]);
-        renderer.setContainerOffset(this.targetOffset_);
+        renderer = this.getOrCreateRenderer_(layers[i], i);
         renderer.draw(center, resolution);
     }
 
+};
+
+/**
+ * Create a new target element for layer renderer containers.
+ *
+ * @param {ol.Loc} center
+ * @param {number} resolution
+ */
+ol.renderer.Composite.prototype.createTarget_ = function(center, resolution) {
+    this.targetOrigin_ = this.getOriginForCenterAndRes_(center, resolution);
+    
+    var containerSize = this.getContainerSize();
+    var containerWidth = containerSize.width;
+    var containerHeight = containerSize.height;
+    var buffer = this.buffer_;
+    
+    var targetWidth = containerWidth + (2 * buffer);
+    var targetHeight = containerHeight + (2 * buffer);
+    var offset = new goog.math.Coordinate(-buffer, -buffer);
+
+    var target = goog.dom.createDom('div', {
+        'class': 'ol-renderer-composite',
+        'style': 'width:' + targetWidth + 'px;height:' + targetHeight + 'px;' +
+            'top:' + offset.y + 'px;left:' + offset.x + 'px;' +
+            'position:absolute'
+    });
+    this.target_ = target;
+    this.targetOffset_ = offset;
+    this.renderedCenter_ = center;
+    goog.dom.appendChild(this.container_, target);
+};
+
+/**
+ * @param {ol.Loc} center
+ * @param {number} resolution
+ * @return {ol.Loc}
+ */
+ol.renderer.Composite.prototype.getOriginForCenterAndRes_ = function(center, resolution) {
+    var containerSize = this.getContainerSize();
+    var containerWidth = containerSize.width;
+    var containerHeight = containerSize.height;
+    var buffer = this.buffer_;
+    var targetWidth = containerWidth + (2 * buffer);
+    var targetHeight = containerHeight + (2 * buffer);
+    return new ol.Loc(
+        center.getX() - (resolution * targetWidth / 2),
+        center.getY() + (resolution * targetHeight / 2)
+    );
+};
+
+/**
+ * Adjust the position of the renderer target given the new center.
+ *
+ * @param {ol.Loc} center
+ * @param {number} resolution
+ */
+ol.renderer.Composite.prototype.shiftTarget_ = function(center, resolution) {
+    var oldCenter = this.renderedCenter_;
+    var offset = this.targetOffset_;
+    offset.x += Math.round((oldCenter.getX() - center.getX()) / resolution);
+    offset.y += Math.round((center.getY() - oldCenter.getY()) / resolution);
+    goog.style.setPosition(this.target_, offset);
+};
+
+/**
+ * Reposition the target element back to the original offset.
+ *
+ * @param {ol.Loc} center
+ * @param {number} resolution
+ */
+ol.renderer.Composite.prototype.resetTarget_ = function(center, resolution) {
+    this.targetOrigin_ = this.getOriginForCenterAndRes_(center, resolution);
+    for (var i=0, ii=this.renderers_.length; i<ii; ++i) {
+        this.renderers_[i].setContainerOrigin(this.targetOrigin_);
+    }
+    var offset = new goog.math.Coordinate(-this.buffer_, -this.buffer_);
+    this.targetOffset_ = offset;
+    goog.style.setPosition(this.target_, offset);
 };
 
 
@@ -124,10 +185,10 @@ ol.renderer.Composite.prototype.draw = function(layers, center, resolution, anim
  * @param {ol.layer.Layer} layer
  * @param {number} index
  */
-ol.renderer.Composite.prototype.getOrCreateRenderer = function(layer, index) {
-    var renderer = this.getRenderer(layer);
+ol.renderer.Composite.prototype.getOrCreateRenderer_ = function(layer, index) {
+    var renderer = this.getRenderer_(layer);
     if (goog.isNull(renderer)) {
-        renderer = this.createRenderer(layer);
+        renderer = this.createRenderer_(layer);
         goog.array.insertAt(this.renderers_, renderer, index);
     }
     return renderer;
@@ -137,27 +198,18 @@ ol.renderer.Composite.prototype.getOrCreateRenderer = function(layer, index) {
  * @param {ol.layer.Layer} layer
  * @return {ol.renderer.LayerRenderer}
  */
-ol.renderer.Composite.prototype.getRenderer = function(layer) {
+ol.renderer.Composite.prototype.getRenderer_ = function(layer) {
     function finder(candidate) {
         return candidate.getLayer() === layer;
     }
-    return goog.array.find(this.renderers_, finder);
-};
-
-/**
- * @param {ol.renderer.LayerRenderer}
- * @return {Element}
- */
-ol.renderer.Composite.prototype.getRendererContainer = function(renderer) {
-    var container = this.layerContainers_[goog.getUid(renderer)];
-    goog.asserts.assert(goog.isDef(container));
-    return container;
+    var renderer = goog.array.find(this.renderers_, finder);
+    return /** @type {ol.renderer.LayerRenderer} */ renderer;
 };
 
 /**
  * @param {ol.layer.Layer} layer
  */
-ol.renderer.Composite.prototype.createRenderer = function(layer) {
+ol.renderer.Composite.prototype.createRenderer_ = function(layer) {
     var Renderer = this.pickRendererType(layer);
     goog.asserts.assert(Renderer, "No supported renderer for layer: " + layer);
 
@@ -167,8 +219,19 @@ ol.renderer.Composite.prototype.createRenderer = function(layer) {
     });
     goog.dom.appendChild(this.target_, container);
     var renderer = new Renderer(container, layer);
+    renderer.setContainerOrigin(this.targetOrigin_);
     this.layerContainers_[goog.getUid(renderer)] = container;
     return renderer;
+};
+
+/**
+ * @param {ol.renderer.LayerRenderer} renderer
+ * @return {Element}
+ */
+ol.renderer.Composite.prototype.getRendererContainer_ = function(renderer) {
+    var container = this.layerContainers_[goog.getUid(renderer)];
+    goog.asserts.assert(goog.isDef(container));
+    return container;
 };
 
 /**

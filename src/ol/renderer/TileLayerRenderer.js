@@ -7,6 +7,7 @@ goog.require('ol.TileSet');
 goog.require('ol.Bounds');
 
 goog.require('goog.style');
+goog.require('goog.math.Box');
 
 
 /**
@@ -56,63 +57,10 @@ ol.renderer.TileLayerRenderer = function(container, layer) {
      * @type {number|undefined}
      * @private
      */
-    this.renderedTop_ = undefined;
-
-    /**
-     * @type {number|undefined}
-     * @private
-     */
-    this.renderedRight_ = undefined;
-
-    /**
-     * @type {number|undefined}
-     * @private
-     */
-    this.renderedBottom_ = undefined;
-
-    /**
-     * @type {number|undefined}
-     * @private
-     */
-    this.renderedLeft_ = undefined;
-
-    /**
-     * @type {number|undefined}
-     * @private
-     */
     this.renderedZ_ = undefined;
     
 };
-
 goog.inherits(ol.renderer.TileLayerRenderer, ol.renderer.LayerRenderer);
-
-/**
- * @param {number} resolution
- * @return {Array.<number>}
- */
-ol.renderer.TileLayerRenderer.prototype.getPreferredResAndZ_ = function(resolution) {
-    var minDiff = Number.POSITIVE_INFINITY;
-    var candidate, diff, z, r;
-    for (var i=0, ii=this.layerResolutions_.length; i<ii; ++i) {
-        // assumes sorted resolutions
-        candidate = this.layerResolutions_[i];
-        diff = Math.abs(resolution - candidate);
-        if (diff < minDiff) {
-            z = i;
-            r = candidate;
-            minDiff = diff;
-        } else {
-            break;
-        }
-    }
-    return [r, z];
-};
-
-/**
- * Tiles rendered at the current resolution;
- * @type {Object}
- */
-ol.renderer.TileLayerRenderer.prototype.renderedTiles_ = {};
 
 /**
  * Render the layer.
@@ -122,150 +70,233 @@ ol.renderer.TileLayerRenderer.prototype.renderedTiles_ = {};
  */
 ol.renderer.TileLayerRenderer.prototype.draw = function(center, resolution) {
     if (resolution !== this.renderedResolution_) {
-        this.changeResolution_(center, resolution);
+        this.changeResolution_(resolution);
     }
-    var pair = this.getPreferredResAndZ_(resolution);
-    var tileResolution = pair[0];
-    var tileZ = pair[1];
-    var scale = resolution / tileResolution;
-    
-    var containerSize = this.getContainerSize();
-    var xRight = this.xRight_;
-    var yDown = this.yDown_;
-
-    var halfMapWidth = (resolution * containerSize.width) / 2;
-    var halfMapHeight = (resolution * containerSize.height) / 2;
-    var centerX = center.getX();
-    var centerY = center.getY();
-    
-    // calculate vector from tile origin to map top-left (in integer pixel space)
+    var z = this.renderedZ_;
     var tileOrigin = this.tileOrigin_;
-    var mapOrigin = [centerX - halfMapWidth, centerY + halfMapHeight];
-    var pxMap = [
-        Math.round((mapOrigin[0] - tileOrigin[0]) / resolution),
-        Math.round((tileOrigin[1] - mapOrigin[1]) / resolution)
-    ];
 
-    // desired tile size in fractional pixels
-    var fpxTileWidth = this.tileSize_[0] / scale;
-    var fpxTileHeight = this.tileSize_[1] / scale;
-    
-    // calculate vector from tile origin to top-left tile (in integer pixel space)
-    var colsLeft = Math.floor(pxMap[0] / fpxTileWidth);
-    var rowsAbove = Math.floor(pxMap[1] / fpxTileHeight);
-    var pxTile = [Math.round(colsLeft * fpxTileWidth), Math.round(rowsAbove * fpxTileHeight)];
-    
-    // offset vector from container origin to top-left tile (in integer pixel space)
-    var pxOffsetX = Math.round(pxTile[0] - pxMap[0] - this.containerOffset_.x);
-    var pxOffsetY = Math.round(pxTile[1] - pxMap[1] - this.containerOffset_.y);
-    
-    // index of the top left tile
-    var leftTileX = xRight ? colsLeft : (-colsLeft - 1);
-    var topTileY = yDown ? rowsAbove : (-rowsAbove - 1);
+    var offset = this.getTileOffset_();
+    var tileBox = this.getTileBox_(center, resolution);
 
-    var numTilesWide = Math.ceil(containerSize.width / fpxTileWidth);
-    var numTilesHigh = Math.ceil(containerSize.height / fpxTileHeight);
-    if (this.containerOffset_.x !== -pxOffsetX) {
-        numTilesWide += 1;
-    }
-    if (this.containerOffset_.y !== -pxOffsetY) {
-        numTilesHigh += 1;
-    }
-    
-    var pxMinX = pxOffsetX;
-    var pxMinY = pxOffsetY;
-    var pxTileLeft = pxMinX;
-
-    var tileX, tileY, tile, img, pxTileBottom, pxTileRight, pxTileTop, xyz, append;
     var fragment = document.createDocumentFragment();
-    var newTiles = false;
-    for (var i=0; i<numTilesWide; ++i) {
-        pxTileTop = pxMinY;
-        tileX = xRight ? leftTileX + i : leftTileX - i;
-        if (scale !== 1) {
-            pxTileRight = Math.round(pxMinX + ((i+1) * fpxTileWidth));
-        } else {
-            pxTileRight = pxTileLeft + fpxTileWidth;
-        }
-        for (var j=0; j<numTilesHigh; ++j) {
-            append = false;
-            tileY = yDown ? topTileY + j : topTile - j;
-            xyz = tileX + "," + tileY + "," + tileZ;
-            if (scale !== 1) {
-                pxTileBottom = Math.round(pxMinY + ((j+1) * fpxTileHeight));
-            } else {
-                pxTileBottom = pxTileTop + fpxTileHeight;
-            }
-            img = null;
-            tile = this.renderedTiles_[xyz];
+    var ijz, key, tile, xyz, box, img, newTiles = false;
+    for (var i=tileBox.left; i<tileBox.right; ++i) {
+        for (var j=tileBox.top; j<tileBox.bottom; ++j) {
+            ijz = [i, j, z];
+            key = ijz.join(",");
+            tile = this.renderedTiles_[key];
             if (!tile) {
-                tile = this.layer_.getTileForXYZ(tileX, tileY, tileZ);
+                xyz = this.getTileCoordsFromNormalizedCoords_(ijz);
+                tile = this.layer_.getTileForXYZ(xyz[0], xyz[1], xyz[2]);
                 if (tile) {
                     if (!tile.isLoaded() && !tile.isLoading()) {
                         tile.load();
                     }
-                    this.renderedTiles_[xyz] = tile;
+                    this.renderedTiles_[key] = tile;
+                    box = this.getTilePixelBox_(ijz, resolution);
                     img = tile.getImg();
-                    img.style.top = pxTileTop + "px";
-                    img.style.left = pxTileLeft + "px";
+                    img.style.top = (box.top - offset.y) + "px";
+                    img.style.left = (box.left - offset.x) + "px";
                     /**
                      * We need to set the size here even if the scale is 1 
                      * because the image may have been scaled previously.  If
                      * we want to avoid setting size unnecessarily, the tile
                      * should keep track of the scale.
                      */
-                    img.style.height = (pxTileRight - pxTileLeft) + "px";
-                    img.style.width = (pxTileBottom - pxTileTop) + "px";
+                    img.style.height = (box.bottom - box.top) + "px";
+                    img.style.width = (box.right - box.left) + "px";
                     goog.dom.appendChild(fragment, img);
                     newTiles = true;
                 }
             }
-            pxTileTop = pxTileBottom;
         }
-        pxTileLeft = pxTileRight;
     }
     if (newTiles) {
         this.container_.appendChild(fragment);
     }
-    this.renderedResolution_ = resolution;
-    this.renderedTop_ = topTileY;
-    this.renderedRight_ = tileX;
-    this.renderedBottom_ = tileY;
-    this.renderedLeft_ = leftTileX;
-    this.renderedZ_ = tileZ;
+
+    this.renderedTileBox_ = tileBox;
     this.removeInvisibleTiles_();
 };
 
+/**
+ * Get the pixel offset between the tile origin and the container origin.
+ * TODO: cache this and invalidate it with changes to the container origin.
+ *
+ * @return {goog.math.Coordinate}
+ */
+ol.renderer.TileLayerRenderer.prototype.getTileOffset_ = function() {
+    var resolution = this.renderedResolution_;
+    return new goog.math.Coordinate(
+        Math.round((this.containerOrigin_.getX() - this.tileOrigin_[0]) / resolution),
+        Math.round((this.tileOrigin_[1] - this.containerOrigin_.getY()) / resolution)
+    );    
+};
 
+/**
+ * @param {Array.<number>} ijz
+ * @param {number} resolution
+ * @return {goog.math.Box}
+ */
+ol.renderer.TileLayerRenderer.prototype.getTilePixelBox_ = function(ijz, resolution) {
+    var tileResolution = this.layerResolutions_[ijz[2]];
+    var scale = resolution / tileResolution;
+    var tileSize = this.tileSize_;
+
+    // desired tile size (in fractional pixels)
+    var fpxTileWidth = tileSize[0] / scale;
+    var fpxTileHeight = tileSize[1] / scale;
+    
+    var col = ijz[0];
+    var left = Math.round(col * fpxTileWidth); // inclusive
+    var right = Math.round((col + 1) * fpxTileWidth); // exclusive
+    
+    var row = ijz[1];
+    var top = Math.round(row * fpxTileHeight); // inclusive
+    var bottom = Math.round((row + 1) * fpxTileWidth); // exclusive
+    
+    return new goog.math.Box(top, right, bottom, left);
+};
+
+/**
+ * @param {ol.Loc} loc
+ * @param {number} resolution
+ * @return {goog.math.Coordinate}
+ */
+ol.renderer.TileLayerRenderer.prototype.getNormalizedTileCoord_ = function(loc, resolution) {
+    var tileOrigin = this.tileOrigin_;
+    var tileSize = this.tileSize_;
+    var pair = this.getPreferredResAndZ_(resolution);
+    var tileResolution = pair[0];
+    var z = pair[1];
+    var scale = resolution / tileResolution;
+
+    // offset from tile origin in pixel space
+    var dx = Math.round((loc.getX() - tileOrigin[0]) / resolution);
+    var dy = Math.round((tileOrigin[1] - loc.getY()) / resolution);
+
+    // desired tile size (in fractional pixels)
+    var fpxTileWidth = tileSize[0] / scale;
+    var fpxTileHeight = tileSize[1] / scale;
+    
+    // determine normalized col number (0 based, ascending right)
+    var col = Math.floor(dx / fpxTileWidth);
+    // determine normalized row number (0 based, ascending down)
+    var row = Math.floor(dy / fpxTileHeight);
+    
+    var box = this.getTilePixelBox_([col, row, z], resolution);
+
+    // adjust col to allow for stretched tiles
+    if (dx < box.left) {
+        col -= 1;
+    } else if (dx >= box.right) {
+        col += 1;
+    }
+    
+    // adjust row to allow for stretched tiles
+    if (dy < box.top) {
+        row -= 1;
+    } else if (dy >= box.bottom) {
+        row += 1;
+    }
+    
+    return new goog.math.Coordinate(col, row);
+};
+
+/**
+ * @param {number} resolution
+ * @return {Array.<number>}
+ */
+ol.renderer.TileLayerRenderer.prototype.getPreferredResAndZ_ = (function() {
+    var cache = {};
+    return function(resolution) {
+        if (resolution in cache) {
+            return cache[resolution];
+        }
+        var minDiff = Number.POSITIVE_INFINITY;
+        var candidate, diff, z, r;
+        for (var i=0, ii=this.layerResolutions_.length; i<ii; ++i) {
+            // assumes sorted resolutions
+            candidate = this.layerResolutions_[i];
+            diff = Math.abs(resolution - candidate);
+            if (diff < minDiff) {
+                z = i;
+                r = candidate;
+                minDiff = diff;
+            } else {
+                break;
+            }
+        }
+        var pair = cache[resolution] = [r, z];
+        return pair;
+    };
+})();
+
+/**
+ * Tiles rendered at the current resolution;
+ * @type {Object}
+ */
+ol.renderer.TileLayerRenderer.prototype.renderedTiles_ = {};
+
+/**
+ * @param {Array.<number>} ijz
+ * @return {Array.<number>}
+ */
+ol.renderer.TileLayerRenderer.prototype.getTileCoordsFromNormalizedCoords_ = function(ijz) {
+    return [
+        this.xRight_ ? ijz[0] : -ijz[0] - 1,
+        this.yDown_ ? ijz[1] : -ijz[1] - 1,
+        ijz[2]
+    ];
+};
+
+/**
+ * @param {ol.Loc} center
+ * @param {number} resolution
+ * @return {goog.math.Box}
+ */
+ol.renderer.TileLayerRenderer.prototype.getTileBox_ = function(center, resolution) {
+    var size = this.getContainerSize();
+    var halfWidth = size.width / 2;
+    var halfHeight = size.height / 2;
+
+    var leftTop = new ol.Loc(
+        center.getX() - (resolution * halfWidth),
+        center.getY() + (resolution * halfHeight));
+
+    var rightBottom = new ol.Loc(
+        center.getX() + (resolution * halfWidth),
+        center.getY() - (resolution * halfHeight));
+
+    var ltCoord = this.getNormalizedTileCoord_(leftTop, resolution);
+    var rbCoord = this.getNormalizedTileCoord_(rightBottom, resolution);
+
+    // right and bottom are treated as excluded, so we increment for the box
+    rbCoord.x += 1;
+    rbCoord.y += 1;
+
+    return goog.math.Box.boundingBox(ltCoord, rbCoord);
+};
 
 /**
  * Get rid of tiles outside the rendered extent.
  */
 ol.renderer.TileLayerRenderer.prototype.removeInvisibleTiles_ = function() {
-    var index, prune, x, y, z, tile;
-    var xRight = this.xRight_;
-    var yDown = this.yDown_;
-    var top = this.renderedTop_;
-    var right = this.renderedRight_;
-    var bottom = this.renderedBottom_;
-    var left = this.renderedLeft_;
-    for (var xyz in this.renderedTiles_) {
-        index = xyz.split(",");
-        x = +index[0];
-        y = +index[1];
+    var index, prune, i, j, z, tile;
+    var box = this.renderedTileBox_;
+    for (var ijz in this.renderedTiles_) {
+        index = ijz.split(",");
+        i = +index[0];
+        j = +index[1];
         z = +index[2];
         prune = this.renderedZ_ !== z || 
-            // beyond on the left side
-            (xRight ? x < left : x > left) ||
-            // beyond on the right side
-            (xRight ? x > right : x < right) ||
-            // above
-            (yDown ? y < top : y > top) ||
-            // below
-            (yDown ? y > bottom : y < bottom);
+            i < box.left || // beyond on the left side
+            i >= box.right || // beyond on the right side
+            j < box.top || // above
+            j >= box.bottom; // below
         if (prune) {
-            tile = this.renderedTiles_[xyz];
-            delete this.renderedTiles_[xyz];
+            tile = this.renderedTiles_[ijz];
+            delete this.renderedTiles_[ijz];
             this.container_.removeChild(tile.getImg());
         }
     }
@@ -275,10 +306,12 @@ ol.renderer.TileLayerRenderer.prototype.removeInvisibleTiles_ = function() {
  * Deal with changes in resolution.
  * TODO: implement the animation
  *
- * @param {ol.Loc} center New center.
  * @param {number} resolution New resolution.
  */
-ol.renderer.TileLayerRenderer.prototype.changeResolution_ = function(center, resolution) {
+ol.renderer.TileLayerRenderer.prototype.changeResolution_ = function(resolution) {
+    var pair = this.getPreferredResAndZ_(resolution);
+    this.renderedZ_ = pair[1];
+    this.renderedResolution_ = resolution;
     this.renderedTiles_ = {};
     goog.dom.removeChildren(this.container_);
 };
