@@ -8,6 +8,7 @@ goog.require('ol.Layer');
 goog.require('ol.Object');
 goog.require('ol.Projection');
 goog.require('ol.Store');
+goog.require('ol.Tile');
 goog.require('ol.TileBounds');
 goog.require('ol.TileCoord');
 goog.require('ol.TileGrid');
