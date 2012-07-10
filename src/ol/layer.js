@@ -19,7 +19,7 @@ ol.LayerRendererOptionsProperty_ = {
  * @constructor
  * @extends {ol.Object}
  * @param {ol.Store} store Store.
- * @param {Object.<string, *>} opt_values Values.
+ * @param {Object.<string, *>=} opt_values Values.
  */
 ol.Layer = function(store, opt_values) {
 
