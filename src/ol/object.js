@@ -76,10 +76,9 @@ ol.Object.changedEventTypeCache_ = {};
 
 /**
  * @param {string} key Key.
- * @private
  * @return {string} Changed name.
  */
-ol.Object.getChangedEventType_ = function(key) {
+ol.Object.getChangedEventType = function(key) {
   return ol.Object.changedEventTypeCache_[key] ||
       (ol.Object.changedEventTypeCache_[key] = key.toLowerCase() + '_changed');
 };
@@ -94,10 +93,9 @@ ol.Object.getterNameCache_ = {};
 
 /**
  * @param {string} key String.
- * @private
  * @return {string} Getter name.
  */
-ol.Object.getGetterName_ = function(key) {
+ol.Object.getGetterName = function(key) {
   return ol.Object.getterNameCache_[key] ||
       (ol.Object.getterNameCache_[key] = 'get' + ol.Object.capitalize(key));
 };
@@ -112,10 +110,9 @@ ol.Object.changedMethodNameCache_ = {};
 
 /**
  * @param {string} key String.
- * @private
  * @return {string} Changed method name.
  */
-ol.Object.getChangedMethodName_ = function(key) {
+ol.Object.getChangedMethodName = function(key) {
   return ol.Object.changedMethodNameCache_[key] ||
       (ol.Object.changedMethodNameCache_[key] = key + '_changed');
 };
@@ -130,10 +127,9 @@ ol.Object.setterNameCache_ = {};
 
 /**
  * @param {string} key String.
- * @private
  * @return {string} Setter name.
  */
-ol.Object.getSetterName_ = function(key) {
+ol.Object.getSetterName = function(key) {
   return ol.Object.setterNameCache_[key] ||
       (ol.Object.setterNameCache_[key] = 'set' + ol.Object.capitalize(key));
 };
@@ -169,7 +165,7 @@ ol.Object.prototype.bindTo =
     function(key, target, opt_targetKey, opt_noNotify) {
   var targetKey = goog.isDef(opt_targetKey) ? opt_targetKey : key;
   this.unbind(key);
-  var eventType = ol.Object.getChangedEventType_(targetKey);
+  var eventType = ol.Object.getChangedEventType(targetKey);
   var listeners = ol.Object.getListeners(this);
   listeners[key] = goog.events.listen(target, eventType, function() {
     this.notifyInternal_(key);
@@ -200,7 +196,7 @@ ol.Object.prototype.get = function(key) {
     var accessor = accessors[key];
     var target = accessor.target;
     var targetKey = accessor.key;
-    var getterName = ol.Object.getGetterName_(targetKey);
+    var getterName = ol.Object.getGetterName(targetKey);
     if (target[getterName]) {
       return target[getterName]();
     } else {
@@ -233,13 +229,13 @@ ol.Object.prototype.notify = function(key) {
  * @private
  */
 ol.Object.prototype.notifyInternal_ = function(key) {
-  var changedMethodName = ol.Object.getChangedMethodName_(key);
+  var changedMethodName = ol.Object.getChangedMethodName(key);
   if (this[changedMethodName]) {
     this[changedMethodName]();
   } else {
     this.changed(key);
   }
-  var eventType = ol.Object.getChangedEventType_(key);
+  var eventType = ol.Object.getChangedEventType(key);
   this.dispatchEvent(eventType);
 };
 
@@ -254,7 +250,7 @@ ol.Object.prototype.set = function(key, value) {
     var accessor = accessors[key];
     var target = accessor.target;
     var targetKey = accessor.key;
-    var setterName = ol.Object.getSetterName_(targetKey);
+    var setterName = ol.Object.getSetterName(targetKey);
     if (target[setterName]) {
       target[setterName](value);
     } else {
@@ -272,7 +268,7 @@ ol.Object.prototype.set = function(key, value) {
  */
 ol.Object.prototype.setOptions = function(options) {
   goog.object.forEach(options, function(value, key) {
-    var setterName = ol.Object.getSetterName_(key);
+    var setterName = ol.Object.getSetterName(key);
     if (this[setterName]) {
       this[setterName](value);
     } else {
