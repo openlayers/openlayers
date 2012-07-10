@@ -6,6 +6,7 @@ goog.require('ol.Camera');
 goog.require('ol.Extent');
 goog.require('ol.Layer');
 goog.require('ol.LayerRenderer');
+goog.require('ol.MapRenderer');
 goog.require('ol.Object');
 goog.require('ol.Projection');
 goog.require('ol.Store');
