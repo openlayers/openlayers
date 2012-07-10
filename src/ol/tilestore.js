@@ -56,9 +56,9 @@ ol.TileStore.createOpenStreetMap = function() {
 
   var tileGrid = ol.TileGrid.createOpenStreetMap(18);
   var tileUrlFunction = ol.TileUrlFunction.createFromTemplates([
-      'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      'http://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      'http://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
+    'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    'http://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    'http://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
   ]);
   var crossOrigin = '';
 

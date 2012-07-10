@@ -38,6 +38,7 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
 
 /**
  * @param {Array.<string>} templates Templates.
+ * @return {ol.TileUrlFunctionType} Tile URL function.
  */
 ol.TileUrlFunction.createFromTemplates = function(templates) {
   return ol.TileUrlFunction.createFromTileUrlFunctions(

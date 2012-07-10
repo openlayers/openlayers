@@ -78,7 +78,8 @@ ol.Map = function(target, opt_values) {
     values[ol.MapProperty.LAYERS] = new ol.Array();
   }
   if (!(ol.MapProperty.PROJECTION in values)) {
-    values[ol.MapProperty.PROJECTION] = ol.Projection.createFromCode('EPSG:3857');
+    values[ol.MapProperty.PROJECTION] =
+        ol.Projection.createFromCode('EPSG:3857');
   }
 
   this.setValues(values);
