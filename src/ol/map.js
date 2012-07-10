@@ -1,5 +1,6 @@
 goog.provide('ol.Map');
 
+goog.require('goog.object');
 goog.require('ol.Array');
 goog.require('ol.Camera');
 goog.require('ol.DOMMapRenderer');
@@ -68,9 +69,19 @@ ol.Map = function(target, opt_values) {
 
   goog.asserts.assert(!goog.isNull(this.mapRenderer_));
 
-  if (goog.isDef(opt_values)) {
-    this.setValues(opt_values);
+  var values = goog.isDef(opt_values) ? goog.object.clone(opt_values) : {};
+
+  if (!(ol.MapProperty.CAMERA in values)) {
+    values[ol.MapProperty.CAMERA] = new ol.Camera();
   }
+  if (!(ol.MapProperty.LAYERS in values)) {
+    values[ol.MapProperty.LAYERS] = new ol.Array();
+  }
+  if (!(ol.MapProperty.PROJECTION in values)) {
+    values[ol.MapProperty.PROJECTION] = ol.Projection.createFromCode('EPSG:3857');
+  }
+
+  this.setValues(values);
 
 };
 goog.inherits(ol.Map, ol.Object);
