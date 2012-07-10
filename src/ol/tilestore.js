@@ -1,6 +1,7 @@
 goog.provide('ol.TileStore');
 
 goog.require('ol.Store');
+goog.require('ol.Tile');
 goog.require('ol.TileCoord');
 goog.require('ol.TileGrid');
 goog.require('ol.TileUrlFunctionType');
@@ -12,8 +13,9 @@ goog.require('ol.TileUrlFunctionType');
  * @extends {ol.Store}
  * @param {ol.TileGrid} tileGrid Tile grid.
  * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL.
+ * @param {string=} opt_crossOrigin Cross origin.
  */
-ol.TileStore = function(tileGrid, tileUrlFunction) {
+ol.TileStore = function(tileGrid, tileUrlFunction, opt_crossOrigin) {
 
   goog.base(this);
 
@@ -29,8 +31,39 @@ ol.TileStore = function(tileGrid, tileUrlFunction) {
    */
   this.tileUrlFunction_ = tileUrlFunction;
 
+  /**
+   * @private
+   * @type {string|undefined}
+   */
+  this.crossOrigin_ = opt_crossOrigin;
+
+  /**
+   * @private
+   * @type {Object.<string, ol.Tile>}
+   * FIXME will need to expire elements from this cache
+   * FIXME see elemoine's work with goog.structs.LinkedMap
+   */
+  this.tileCache_ = {};
+
 };
 goog.inherits(ol.TileStore, ol.Store);
+
+
+/**
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @return {ol.Tile} Tile.
+ */
+ol.TileStore.prototype.getTile = function(tileCoord) {
+  var key = tileCoord.toString();
+  if (goog.object.containsKey(this.tileCache_, key)) {
+    return this.tileCache_[key];
+  } else {
+    var tileUrl = this.getTileCoordUrl(tileCoord);
+    var tile = new ol.Tile(tileCoord, tileUrl, this.crossOrigin_);
+    this.tileCache_[key] = tile;
+    return tile;
+  }
+};
 
 
 /**
