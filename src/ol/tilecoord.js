@@ -38,3 +38,11 @@ ol.TileCoord.prototype.clone = function() {
 ol.TileCoord.prototype.hash = function() {
   return (this.x << this.z) + this.y;
 };
+
+
+/**
+ * @return {string} String.
+ */
+ol.TileCoord.prototype.toString = function() {
+  return [this.z, this.x, this.y].join('/');
+};
