@@ -14,12 +14,6 @@ goog.require('goog.object');
 
 
 /**
- * @typedef {{target: ol.Object, key: string}}
- */
-ol.ObjectAccessor;
-
-
-/**
  * @enum {string}
  */
 ol.ObjectProperty = {
@@ -137,7 +131,7 @@ ol.Object.getSetterName = function(key) {
 
 /**
  * @param {ol.Object} obj Object.
- * @return {Object.<string, ol.ObjectAccessor>} Accessors.
+ * @return {Object.<string, {target: ol.Object, key: string}>} Accessors.
  */
 ol.Object.getAccessors = function(obj) {
   return obj[ol.ObjectProperty.ACCESSORS] ||
