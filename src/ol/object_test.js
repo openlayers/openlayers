@@ -448,3 +448,9 @@ function testCreateFromObject() {
   var obj2 = ol.Object.create(obj1);
   assertTrue(obj2 === obj1);
 }
+
+
+function testCreateWithOptions() {
+  var obj = new ol.Object({k: 1});
+  assertEquals(1, obj.get('k'));
+}

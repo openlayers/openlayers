@@ -32,9 +32,13 @@ ol.ObjectProperty = {
 /**
  * @constructor
  * @extends {goog.events.EventTarget}
+ * @param {Object.<string, *>=} opt_values Values.
  */
-ol.Object = function() {
+ol.Object = function(opt_values) {
   goog.base(this);
+  if (goog.isDef(opt_values)) {
+    this.setValues(opt_values);
+  }
 };
 goog.inherits(ol.Object, goog.events.EventTarget);
 
