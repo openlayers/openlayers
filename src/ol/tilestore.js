@@ -50,6 +50,24 @@ goog.inherits(ol.TileStore, ol.Store);
 
 
 /**
+ * @return {ol.TileStore} Tile store.
+ */
+ol.TileStore.createOpenStreetMap = function() {
+
+  var tileGrid = ol.TileGrid.createOpenStreetMap(18);
+  var tileUrlFunction = ol.TileUrlFunction.createFromTemplates([
+      'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      'http://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      'http://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
+  ]);
+  var crossOrigin = '';
+
+  return new ol.TileStore(tileGrid, tileUrlFunction, crossOrigin);
+
+};
+
+
+/**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @return {ol.Tile} Tile.
  */
