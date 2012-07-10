@@ -75,13 +75,13 @@ ol.Object.getterNameCache_ = {};
 
 
 /**
- * @param {string} str String.
+ * @param {string} key String.
  * @private
- * @return {string} Capitalized string.
+ * @return {string} Getter name.
  */
-ol.Object.getGetterName_ = function(str) {
-  return ol.Object.getterNameCache_[str] ||
-      (ol.Object.getterNameCache_[str] = 'get' + ol.Object.capitalize(str));
+ol.Object.getGetterName_ = function(key) {
+  return ol.Object.getterNameCache_[key] ||
+      (ol.Object.getterNameCache_[key] = 'get' + ol.Object.capitalize(key));
 };
 
 
@@ -93,13 +93,13 @@ ol.Object.setterNameCache_ = {};
 
 
 /**
- * @param {string} str String.
+ * @param {string} key String.
  * @private
- * @return {string} Capitalized string.
+ * @return {string} Setter name.
  */
-ol.Object.getSetterName_ = function(str) {
-  return ol.Object.setterNameCache_[str] ||
-      (ol.Object.setterNameCache_[str] = 'set' + ol.Object.capitalize(str));
+ol.Object.getSetterName_ = function(key) {
+  return ol.Object.setterNameCache_[key] ||
+      (ol.Object.setterNameCache_[key] = 'set' + ol.Object.capitalize(key));
 };
 
 
