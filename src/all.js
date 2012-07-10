@@ -18,3 +18,4 @@ goog.require('ol.TileStore');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
 goog.require('ol.TransformFunction');
+goog.require('ol.WebGLMapRenderer');
