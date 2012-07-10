@@ -19,8 +19,9 @@ ol.LayerRendererOptionsProperty_ = {
  * @constructor
  * @extends {ol.Object}
  * @param {ol.Store} store Store.
+ * @param {Object.<string, *>} opt_values Values.
  */
-ol.Layer = function(store) {
+ol.Layer = function(store, opt_values) {
 
   goog.base(this);
 
@@ -32,6 +33,10 @@ ol.Layer = function(store) {
 
   this.setVisible(true);
   this.setOpacity(1);
+
+  if (goog.isDef(opt_values)) {
+    this.setValues(opt_values);
+  }
 
 };
 goog.inherits(ol.Layer, ol.Object);
