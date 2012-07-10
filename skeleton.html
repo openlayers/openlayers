@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+        <head>
+        </head>
+	<body>
+		<div id="map"></div>
+                <script src="http://localhost:9810/compile?id=ol&mode=RAW" type="text/javascript"></script>
+		<script>
+
+			var projection = ol.Projection.createFromCode('EPSG:3857');
+
+			var layer = ol.TileLayer.createOpenStreetMap({
+				'opacity': 0.5,
+				'visible': true
+			});
+
+			var layers = new ol.Array([layer]);
+
+			var camera = new ol.Camera();
+
+			var target = document.getElementById('map');
+			var map = new ol.Map(target, {
+				'camera': camera,
+				'layers': layers,
+				'projection': projection
+			});
+
+		</script>
+	</body>
+</html>
