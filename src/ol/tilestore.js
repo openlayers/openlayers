@@ -1,6 +1,6 @@
-goog.provide('ol.TileLayer');
+goog.provide('ol.TileStore');
 
-goog.require('ol.Layer');
+goog.require('ol.Store');
 goog.require('ol.TileCoord');
 goog.require('ol.TileGrid');
 goog.require('ol.TileUrlFunctionType');
@@ -9,11 +9,11 @@ goog.require('ol.TileUrlFunctionType');
 
 /**
  * @constructor
- * @extends {ol.Layer}
+ * @extends {ol.Store}
  * @param {ol.TileGrid} tileGrid Tile grid.
  * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL.
  */
-ol.TileLayer = function(tileGrid, tileUrlFunction) {
+ol.TileStore = function(tileGrid, tileUrlFunction) {
 
   goog.base(this);
 
@@ -30,14 +30,14 @@ ol.TileLayer = function(tileGrid, tileUrlFunction) {
   this.tileUrlFunction_ = tileUrlFunction;
 
 };
-goog.inherits(ol.TileLayer, ol.Layer);
+goog.inherits(ol.TileStore, ol.Store);
 
 
 /**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @return {string} Tile coord URL.
  */
-ol.TileLayer.prototype.getTileCoordUrl = function(tileCoord) {
+ol.TileStore.prototype.getTileCoordUrl = function(tileCoord) {
   // FIXME maybe wrap x and y
   return this.tileUrlFunction_(tileCoord);
 };
@@ -46,6 +46,6 @@ ol.TileLayer.prototype.getTileCoordUrl = function(tileCoord) {
 /**
  * @return {ol.TileGrid} Tile grid.
  */
-ol.TileLayer.prototype.getTileGrid = function() {
+ol.TileStore.prototype.getTileGrid = function() {
   return this.tileGrid_;
 };

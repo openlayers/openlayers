@@ -1,18 +1,16 @@
 goog.provide('ol.Layer');
 
-goog.require('ol.Extent');
 goog.require('ol.Object');
-goog.require('ol.Projection');
+goog.require('ol.Store');
 
 
 /**
  * @enum {string}
  * @private
  */
-ol.LayerProperty_ = {
-  ATTRIBUTION: 'attribution',
-  EXTENT: 'extent',
-  PROJECTION: 'projection'
+ol.LayerRendererOptionsProperty_ = {
+  OPACITY: 'opacity',
+  VISIBLE: 'visible'
 };
 
 
@@ -20,61 +18,62 @@ ol.LayerProperty_ = {
 /**
  * @constructor
  * @extends {ol.Object}
+ * @param {ol.Store} store Store.
  */
-ol.Layer = function() {
+ol.Layer = function(store) {
 
   goog.base(this);
 
-  this.setExtent(null);
-  this.setProjection(null);
+  /**
+   * @private
+   * @type {ol.Store}
+   */
+  this.store_ = store;
+
+  this.setVisible(true);
+  this.setOpacity(1);
 
 };
 goog.inherits(ol.Layer, ol.Object);
 
 
 /**
- * @return {string|undefined} Attribution.
+ * @return {number} Opacity.
  */
-ol.Layer.prototype.getAttribution = function() {
-  return /** @type {string} */ (this.get(ol.LayerProperty_.ATTRIBUTION));
+ol.Layer.prototype.getOpacity = function() {
+  return /** @type {number} */ (
+      this.get(ol.LayerRendererOptionsProperty_.OPACITY));
 };
 
 
 /**
- * @return {ol.Extent} Extent.
+ * @return {ol.Store} Store.
  */
-ol.Layer.prototype.getExtent = function() {
-  return /** @type {ol.Extent} */ (this.get(ol.LayerProperty_.EXTENT));
+ol.Layer.prototype.getStore = function() {
+  return this.store_;
 };
 
 
 /**
- * @return {ol.Projection} Projection.
+ * @return {boolean} Visible.
  */
-ol.Layer.prototype.getProjection = function() {
-  return /** @type {ol.Projection} */ (this.get(ol.LayerProperty_.PROJECTION));
+ol.Layer.prototype.getVisible = function() {
+  return /** @type {boolean} */ (
+      this.get(ol.LayerRendererOptionsProperty_.VISIBLE));
 };
 
 
 /**
- * @param {string|undefined} attribution Attribution.
+ * @param {number} opacity Opacity.
  */
-ol.Layer.prototype.setAttribution = function(attribution) {
-  this.set(ol.LayerProperty_.ATTRIBUTION, attribution);
+ol.Layer.prototype.setOpacity = function(opacity) {
+  this.set(ol.LayerRendererOptionsProperty_.OPACITY, opacity);
 };
 
 
 /**
- * @param {ol.Extent} extent Extent.
+ * @param {boolean} visible Visible.
  */
-ol.Layer.prototype.setExtent = function(extent) {
-  this.set(ol.LayerProperty_.EXTENT, extent);
-};
-
-
-/**
- * @param {ol.Projection} projection Projetion.
- */
-ol.Layer.prototype.setProjection = function(projection) {
-  this.set(ol.LayerProperty_.PROJECTION, projection);
+ol.Layer.prototype.setVisible = function(visible) {
+  this.set(ol.LayerRendererOptionsProperty_.VISIBLE, visible);
 };
