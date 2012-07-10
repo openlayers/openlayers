@@ -71,6 +71,24 @@ ol.Object.create = function(arg) {
  * @private
  * @type {Object.<string, string>}
  */
+ol.Object.changedEventTypeCache_ = {};
+
+
+/**
+ * @param {string} key Key.
+ * @private
+ * @return {string} Changed name.
+ */
+ol.Object.getChangedEventType_ = function(key) {
+  return ol.Object.changedEventTypeCache_[key] ||
+      (ol.Object.changedEventTypeCache_[key] = key.toLowerCase() + '_changed');
+};
+
+
+/**
+ * @private
+ * @type {Object.<string, string>}
+ */
 ol.Object.getterNameCache_ = {};
 
 
@@ -82,6 +100,24 @@ ol.Object.getterNameCache_ = {};
 ol.Object.getGetterName_ = function(key) {
   return ol.Object.getterNameCache_[key] ||
       (ol.Object.getterNameCache_[key] = 'get' + ol.Object.capitalize(key));
+};
+
+
+/**
+ * @private
+ * @type {Object.<string, string>}
+ */
+ol.Object.changedMethodNameCache_ = {};
+
+
+/**
+ * @param {string} key String.
+ * @private
+ * @return {string} Changed method name.
+ */
+ol.Object.getChangedMethodName_ = function(key) {
+  return ol.Object.changedMethodNameCache_[key] ||
+      (ol.Object.changedMethodNameCache_[key] = key + '_changed');
 };
 
 
@@ -133,7 +169,7 @@ ol.Object.prototype.bindTo =
     function(key, target, opt_targetKey, opt_noNotify) {
   var targetKey = goog.isDef(opt_targetKey) ? opt_targetKey : key;
   this.unbind(key);
-  var eventType = targetKey.toLowerCase() + '_changed';
+  var eventType = ol.Object.getChangedEventType_(targetKey);
   var listeners = ol.Object.getListeners(this);
   listeners[key] = goog.events.listen(target, eventType, function() {
     this.notifyInternal_(key);
@@ -197,13 +233,13 @@ ol.Object.prototype.notify = function(key) {
  * @private
  */
 ol.Object.prototype.notifyInternal_ = function(key) {
-  var changedMethodName = key + '_changed';
+  var changedMethodName = ol.Object.getChangedMethodName_(key);
   if (this[changedMethodName]) {
     this[changedMethodName]();
   } else {
     this.changed(key);
   }
-  var eventType = key.toLowerCase() + '_changed';
+  var eventType = ol.Object.getChangedEventType_(key);
   this.dispatchEvent(eventType);
 };
 

@@ -454,3 +454,29 @@ function testCreateWithOptions() {
   var obj = new ol.Object({k: 1});
   assertEquals(1, obj.get('k'));
 }
+
+
+function testEventTypeCaseSensitivity() {
+  var obj = new ol.Object();
+  var lowercaseChangedMethodCalled = false;
+  obj.k_changed = function() {
+    lowercaseChangedMethodCalled = true;
+  };
+  var uppercaseChangedMethodCalled = false;
+  obj.K_changed = function() {
+    uppercaseChangedMethodCalled = true;
+  };
+  var lowercaseEventDispatched = false;
+  goog.events.listen(obj, 'k_changed', function() {
+    lowercaseEventDispatched = true;
+  });
+  var uppercaseEventDispatched = false;
+  goog.events.listen(obj, 'K_changed', function() {
+    uppercaseEventDispatched = true;
+  });
+  obj.set('K', 1);
+  assertTrue(lowercaseEventDispatched);
+  assertFalse(uppercaseEventDispatched);
+  assertFalse(lowercaseChangedMethodCalled);
+  assertTrue(uppercaseChangedMethodCalled);
+}
