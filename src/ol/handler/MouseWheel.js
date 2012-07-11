@@ -27,12 +27,18 @@ goog.require('goog.events.MouseWheelHandler.EventType');
 ol.handler.MouseWheel = function(map, elt, states) {
     goog.base(this);
 
-    var handler = new goog.events.MouseWheelHandler(elt);
-    this.registerDisposable(handler);
+    /**
+     * @type {ol.Map}
+     */
+    this.map_ = map;
 
     /**
-     * @param {goog.events.MouseWheelEvent} e
+     * @type {Element}
      */
+    this.elt_ = elt;
+
+    var handler = new goog.events.MouseWheelHandler(elt);
+    this.registerDisposable(handler);
 
     goog.events.listen(handler,
                        goog.events.MouseWheelHandler.EventType.MOUSEWHEEL,
