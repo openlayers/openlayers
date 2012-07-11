@@ -9,8 +9,12 @@
 
 goog.provide('ol.handler.MouseWheel');
 
+goog.require('goog.asserts');
+goog.require('goog.events');
+goog.require('goog.style');
 goog.require('goog.Disposable');
 goog.require('goog.events.MouseWheelHandler');
+goog.require('goog.events.MouseWheelHandler.EventType');
 
 
 /**
