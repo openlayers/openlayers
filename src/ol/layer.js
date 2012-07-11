@@ -1,4 +1,5 @@
 goog.provide('ol.Layer');
+goog.provide('ol.LayerProperty');
 
 goog.require('ol.Object');
 goog.require('ol.Store');
@@ -6,9 +7,8 @@ goog.require('ol.Store');
 
 /**
  * @enum {string}
- * @private
  */
-ol.LayerRendererOptionsProperty_ = {
+ol.LayerProperty = {
   OPACITY: 'opacity',
   VISIBLE: 'visible'
 };
@@ -47,7 +47,7 @@ goog.inherits(ol.Layer, ol.Object);
  */
 ol.Layer.prototype.getOpacity = function() {
   return /** @type {number} */ (
-      this.get(ol.LayerRendererOptionsProperty_.OPACITY));
+      this.get(ol.LayerProperty.OPACITY));
 };
 
 
@@ -64,7 +64,7 @@ ol.Layer.prototype.getStore = function() {
  */
 ol.Layer.prototype.getVisible = function() {
   return /** @type {boolean} */ (
-      this.get(ol.LayerRendererOptionsProperty_.VISIBLE));
+      this.get(ol.LayerProperty.VISIBLE));
 };
 
 
@@ -72,7 +72,7 @@ ol.Layer.prototype.getVisible = function() {
  * @param {number} opacity Opacity.
  */
 ol.Layer.prototype.setOpacity = function(opacity) {
-  this.set(ol.LayerRendererOptionsProperty_.OPACITY, opacity);
+  this.set(ol.LayerProperty.OPACITY, opacity);
 };
 
 
@@ -80,5 +80,5 @@ ol.Layer.prototype.setOpacity = function(opacity) {
  * @param {boolean} visible Visible.
  */
 ol.Layer.prototype.setVisible = function(visible) {
-  this.set(ol.LayerRendererOptionsProperty_.VISIBLE, visible);
+  this.set(ol.LayerProperty.VISIBLE, visible);
 };
