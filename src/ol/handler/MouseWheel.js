@@ -33,11 +33,6 @@ ol.handler.MouseWheel = function(map, elt, states) {
     /**
      * @param {goog.events.MouseWheelEvent} e
      */
-    var handleMouseWheel = function(e) {
-        e.position = goog.style.getRelativePosition(e, elt);
-        e.type = 'mousewheel';
-        goog.events.dispatchEvent(map, e);
-    };
 
     goog.events.listen(handler,
                        goog.events.MouseWheelHandler.EventType.MOUSEWHEEL,
