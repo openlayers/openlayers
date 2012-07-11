@@ -37,7 +37,7 @@ ol.control.Navigation.prototype.activate = function() {
         // give other, higher-level, controls a chance to stop the
         // navigation control.
         var target = this.map_.getParentEventTarget();
-        goog.events.listen(target, 'drag', this.moveMap, false, this);
+        //goog.events.listen(target, 'drag', this.moveMap, false, this);
         goog.events.listen(target, 'mousewheel', this.zoomMap, false, this);
     }
     return active;
@@ -48,7 +48,7 @@ ol.control.Navigation.prototype.deactivate = function() {
     var inactive = goog.base(this, 'deactivate');
     if (inactive) {
         var target = this.map_.getParentEventTarget();
-        goog.events.unlisten(target, 'drag', this.moveMap, false, this);
+        //goog.events.unlisten(target, 'drag', this.moveMap, false, this);
         goog.events.unlisten(target, 'mousewheel', this.zoomMap, false, this);
     }
     return inactive;

@@ -7,10 +7,12 @@
 
 goog.provide('ol.handler.Drag');
 
-goog.require('goog.fx.Dragger');
+goog.require('goog.asserts');
 goog.require('goog.events');
+goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.Disposable');
+goog.require('goog.fx.Dragger');
 
 /**
  * @constructor
@@ -20,59 +22,106 @@ goog.require('goog.Disposable');
  */
 ol.handler.Drag = function(map, elt) {
 
-    var dragger = new goog.fx.Dragger(elt);
+    /** */
+    this.map_ = map;
+
+    /** */
+    this.elt_ = elt;
+
+    /** */
+    var dragger = this.dragger_ = new goog.fx.Dragger(elt);
     dragger.defaultAction = function() {};
 
-    this.registerDisposable(dragger);
+    /** */
+    this.prevX_ = 0;
 
-    var touchmove = goog.events.EventType.TOUCHMOVE,
-        mousemove = goog.events.EventType.MOUSEMOVE;
-
-    var prevX = 0, prevY = 0;
-
-    var preventDefault = function(e) { e.preventDefault(); };
-
-    var handleDragStart = function(e) {
-        prevX = e.clientX;
-        prevY = e.clientY;
-        var newE = {
-            type: 'dragstart'
-        };
-        goog.events.dispatchEvent(map, newE);
-        // this to prevent page scrolling
-        goog.events.listen(elt, [touchmove, mousemove], preventDefault);
-    };
-
-    var handleDrag = function(e) {
-        var newE = {
-            type: 'drag',
-            deltaX: e.clientX - prevX,
-            deltaY: e.clientY - prevY
-        };
-        prevX = e.clientX;
-        prevY = e.clientY;
-        goog.events.dispatchEvent(map, newE);
-    };
-
-    var handleDragEnd = function(e) {
-        var newE = {
-            type: 'dragend'
-        };
-        goog.events.dispatchEvent(map, newE);
-        goog.events.unlisten(elt, [touchmove, mousemove], preventDefault);
-    };
-
-    var handleDragEarlyCancel = function(e) {
-        goog.events.unlisten(elt, [touchmove, mousemove], preventDefault);
-    };
+    /** */
+    this.prevY_ = 0;
 
     goog.events.listen(dragger, goog.fx.Dragger.EventType.START,
-                       handleDragStart, false, this);
+                       this.handleDragStart, false, this);
     goog.events.listen(dragger, goog.fx.Dragger.EventType.DRAG,
-                       handleDrag, false, this);
+                       this.handleDrag, false, this);
     goog.events.listen(dragger, goog.fx.Dragger.EventType.END,
-                       handleDragEnd, false, this);
+                       this.handleDragEnd, false, this);
     goog.events.listen(dragger, goog.fx.Dragger.EventType.EARLY_CANCEL,
-                       handleDragEarlyCancel, false, this);
+                       this.handleDragEarlyCancel, false, this);
+
 };
 goog.inherits(ol.handler.Drag, goog.Disposable);
+
+/**
+ */
+ol.handler.Drag.prototype.disposeInternal = function() {
+    goog.base(this, 'disposeInternal');
+    goog.dispose(this.dragger_);
+    goog.events.unlisten(this.elt_,
+                         [goog.events.EventType.TOUCHMOVE,
+                          goog.events.EventType.MOUSEMOVE],
+                         goog.events.Event.preventDefault, false, this);
+
+};
+
+/**
+ */
+ol.handler.Drag.prototype.handleDragStart = function(e) {
+    this.dragged_ = false;
+    this.prevX_ = e.clientX;
+    this.prevY_ = e.clientY;
+    var newE = {
+        type: 'dragstart'
+    };
+    goog.events.dispatchEvent(this.map_, newE);
+
+    // this is to prevent page scrolling
+    goog.events.listen(this.elt_,
+                       [goog.events.EventType.TOUCHMOVE,
+                        goog.events.EventType.MOUSEMOVE],
+                       goog.events.Event.preventDefault, false, this);
+
+};
+
+/**
+ */
+ol.handler.Drag.prototype.handleDrag = function(e) {
+    this.dragged_ = true;
+    var newE = {
+        type: 'drag',
+        deltaX: e.clientX - this.prevX_,
+        deltaY: e.clientY - this.prevY_
+    };
+    this.prevX_ = e.clientX;
+    this.prevY_ = e.clientY;
+    var rt = goog.events.dispatchEvent(this.map_, newE);
+    if (rt) {
+        this.defaultBehavior(newE);
+    }
+};
+
+/**
+ */
+ol.handler.Drag.prototype.handleDragEnd = function(e) {
+    var newE = {
+        type: 'dragend'
+    };
+    goog.events.dispatchEvent(this.map_, newE);
+    goog.events.unlisten(this.elt_,
+                         [goog.events.EventType.TOUCHMOVE,
+                          goog.events.EventType.MOUSEMOVE],
+                         goog.events.Event.preventDefault, false, this);
+};
+
+/**
+ */
+ol.handler.Drag.prototype.handleDragEarlyCancel = function(e) {
+    goog.events.unlisten(this.elt_,
+                         [goog.events.EventType.TOUCHMOVE,
+                          goog.events.EventType.MOUSEMOVE],
+                         goog.events.Event.preventDefault, false, this);
+};
+
+/**
+ */
+ol.handler.Drag.prototype.defaultBehavior = function(e) {
+    this.map_.moveByViewportPx(e.deltaX, e.deltaY);
+};
