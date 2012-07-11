@@ -2,7 +2,9 @@
  * @fileoverview Drag Handler.
  *
  * Provides a class for listening to drag events on a DOM element and
- * re-dispatching to a map instance.
+ * re-dispatching to a map object.
+ *
+ * The default behavior is moving the map.
  */
 
 goog.provide('ol.handler.Drag');
@@ -23,10 +25,14 @@ goog.require('goog.fx.Dragger');
  */
 ol.handler.Drag = function(map, elt, states) {
 
-    /** */
+    /**
+     * @type {ol.Map}
+     */
     this.map_ = map;
 
-    /** */
+    /**
+     * @type {Element}
+     */
     this.elt_ = elt;
 
     /**
@@ -34,12 +40,22 @@ ol.handler.Drag = function(map, elt, states) {
      */
     this.states_ = states;
 
+    /**
+     * @type {goog.fx.Dragger}
+     */
+    this.dragger_ = new goog.fx.Dragger(elt);
+
+    var dragger = this.dragger_;
     dragger.defaultAction = function() {};
 
-    /** */
+    /**
+     * @type {number}
+     */
     this.prevX_ = 0;
 
-    /** */
+    /**
+     * @type {number}
+     **/
     this.prevY_ = 0;
 
     goog.events.listen(dragger, goog.fx.Dragger.EventType.START,
@@ -55,6 +71,7 @@ ol.handler.Drag = function(map, elt, states) {
 goog.inherits(ol.handler.Drag, goog.Disposable);
 
 /**
+ * @inheritDoc
  */
 ol.handler.Drag.prototype.disposeInternal = function() {
     goog.base(this, 'disposeInternal');
@@ -67,6 +84,7 @@ ol.handler.Drag.prototype.disposeInternal = function() {
 };
 
 /**
+ * @param {goog.fx.DragEvent} e
  */
 ol.handler.Drag.prototype.handleDragStart = function(e) {
     this.states_.dragged = false;
@@ -86,6 +104,7 @@ ol.handler.Drag.prototype.handleDragStart = function(e) {
 };
 
 /**
+ * @param {goog.fx.DragEvent} e
  */
 ol.handler.Drag.prototype.handleDrag = function(e) {
     this.states_.dragged = true;
@@ -103,6 +122,14 @@ ol.handler.Drag.prototype.handleDrag = function(e) {
 };
 
 /**
+ * @param {{type, deltaX, deltaY}} e
+ */
+ol.handler.Drag.prototype.defaultBehavior = function(e) {
+    this.map_.moveByViewportPx(e.deltaX, e.deltaY);
+};
+
+/**
+ * @param {goog.fx.DragEvent} e
  */
 ol.handler.Drag.prototype.handleDragEnd = function(e) {
     var newE = {
@@ -116,16 +143,11 @@ ol.handler.Drag.prototype.handleDragEnd = function(e) {
 };
 
 /**
+ * @param {goog.fx.DragEvent} e
  */
 ol.handler.Drag.prototype.handleDragEarlyCancel = function(e) {
     goog.events.unlisten(this.elt_,
                          [goog.events.EventType.TOUCHMOVE,
                           goog.events.EventType.MOUSEMOVE],
                          goog.events.Event.preventDefault, false, this);
-};
-
-/**
- */
-ol.handler.Drag.prototype.defaultBehavior = function(e) {
-    this.map_.moveByViewportPx(e.deltaX, e.deltaY);
 };
