@@ -7,6 +7,7 @@ goog.require('ol.control.Control');
 goog.require('ol.renderer.MapRenderer');
 goog.require('ol.handler.Drag');
 goog.require('ol.handler.MouseWheel');
+goog.require('ol.handler.Click');
 
 goog.require('goog.dom');
 goog.require('goog.math');
@@ -22,6 +23,11 @@ ol.ENABLE_DRAG_HANDLER = true;
  * @define {boolean} Whether to enable the mousewheel handler.
  */
 ol.ENABLE_MOUSEWHEEL_HANDLER = true;
+
+/**
+ * @define {boolean} Whether to enable the click handler.
+ */
+ol.ENABLE_CLICK_HANDLER = true;
 
 /**
  * @export
@@ -527,6 +533,10 @@ ol.Map.prototype.initHandlers = function() {
     }
     if (ol.ENABLE_MOUSEWHEEL_HANDLER) {
         handler = new ol.handler.MouseWheel(this, this.viewport_, states);
+        this.registerDisposable(handler);
+    }
+    if (ol.ENABLE_CLICK_HANDLER) {
+        handler = new ol.handler.Click(this, this.viewport_, states);
         this.registerDisposable(handler);
     }
 };
