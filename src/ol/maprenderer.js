@@ -2,6 +2,8 @@ goog.provide('ol.MapRenderer');
 
 goog.require('goog.array');
 goog.require('goog.events');
+goog.require('goog.events.Event');
+goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('ol.Array');
 goog.require('ol.Camera');
@@ -40,6 +42,12 @@ ol.MapRenderer = function(target, opt_values) {
 
   /**
    * @private
+   * @type {goog.math.Size}
+   */
+  this.size_ = new goog.math.Size(target.clientWidth, target.clientHeight);
+
+  /**
+   * @private
    * @type {Array.<number>}
    */
   this.cameraListenerKeys_ = null;
@@ -55,6 +63,9 @@ ol.MapRenderer = function(target, opt_values) {
    * @type {Object.<number, ol.LayerRenderer>}
    */
   this.layerRenderers_ = {};
+
+  goog.events.listen(target, goog.events.EventType.RESIZE,
+      this.handleTargetResize, false, this);
 
   goog.events.listen(
       this, ol.Object.getChangedEventType(ol.MapRendererProperty.CAMERA),
@@ -102,6 +113,15 @@ ol.MapRenderer.prototype.getLayers = function() {
 ol.MapRenderer.prototype.getProjection = function() {
   return /** @type {ol.Projection} */ (
       this.get(ol.MapRendererProperty.PROJECTION));
+};
+
+
+/**
+ * @protected
+ * @return {goog.math.Size} Size.
+ */
+ol.MapRenderer.prototype.getSize = function() {
+  return this.size_;
 };
 
 
@@ -216,6 +236,17 @@ ol.MapRenderer.prototype.handleLayersChanged = function() {
           this.handleLayersSetAt, false, this)
     ];
   }
+};
+
+
+/**
+ * @param {goog.events.Event} event Event.
+ * @protected
+ */
+ol.MapRenderer.prototype.handleTargetResize = function(event) {
+  goog.asserts.assert(event.target == this.target_);
+  this.size_.width = this.target_.clientWidth;
+  this.size_.height = this.target_.clientHeight;
 };
 
 
