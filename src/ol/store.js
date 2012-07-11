@@ -1,4 +1,5 @@
 goog.provide('ol.Store');
+goog.provide('ol.StoreProperty');
 
 goog.require('ol.Extent');
 goog.require('ol.Object');
@@ -7,9 +8,8 @@ goog.require('ol.Projection');
 
 /**
  * @enum {string}
- * @private
  */
-ol.StoreProperty_ = {
+ol.StoreProperty = {
   ATTRIBUTION: 'attribution',
   EXTENT: 'extent',
   PROJECTION: 'projection'
@@ -36,7 +36,7 @@ goog.inherits(ol.Store, ol.Object);
  * @return {string|undefined} Attribution.
  */
 ol.Store.prototype.getAttribution = function() {
-  return /** @type {string} */ (this.get(ol.StoreProperty_.ATTRIBUTION));
+  return /** @type {string} */ (this.get(ol.StoreProperty.ATTRIBUTION));
 };
 
 
@@ -44,7 +44,7 @@ ol.Store.prototype.getAttribution = function() {
  * @return {ol.Extent} Extent.
  */
 ol.Store.prototype.getExtent = function() {
-  return /** @type {ol.Extent} */ (this.get(ol.StoreProperty_.EXTENT));
+  return /** @type {ol.Extent} */ (this.get(ol.StoreProperty.EXTENT));
 };
 
 
@@ -52,7 +52,7 @@ ol.Store.prototype.getExtent = function() {
  * @return {ol.Projection} Projection.
  */
 ol.Store.prototype.getProjection = function() {
-  return /** @type {ol.Projection} */ (this.get(ol.StoreProperty_.PROJECTION));
+  return /** @type {ol.Projection} */ (this.get(ol.StoreProperty.PROJECTION));
 };
 
 
@@ -60,7 +60,7 @@ ol.Store.prototype.getProjection = function() {
  * @param {string|undefined} attribution Attribution.
  */
 ol.Store.prototype.setAttribution = function(attribution) {
-  this.set(ol.StoreProperty_.ATTRIBUTION, attribution);
+  this.set(ol.StoreProperty.ATTRIBUTION, attribution);
 };
 
 
@@ -68,7 +68,7 @@ ol.Store.prototype.setAttribution = function(attribution) {
  * @param {ol.Extent} extent Extent.
  */
 ol.Store.prototype.setExtent = function(extent) {
-  this.set(ol.StoreProperty_.EXTENT, extent);
+  this.set(ol.StoreProperty.EXTENT, extent);
 };
 
 
@@ -76,5 +76,5 @@ ol.Store.prototype.setExtent = function(extent) {
  * @param {ol.Projection} projection Projetion.
  */
 ol.Store.prototype.setProjection = function(projection) {
-  this.set(ol.StoreProperty_.PROJECTION, projection);
+  this.set(ol.StoreProperty.PROJECTION, projection);
 };
