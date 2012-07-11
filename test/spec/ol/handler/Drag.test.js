@@ -9,7 +9,7 @@ describe('ol.handler.Drag', function() {
     describe('create a drag handler', function() {
 
         it('returns an ol.handler.Drag instance', function() {
-            var handler = new ol.handler.Drag(map, elt);
+            var handler = new ol.handler.Drag(map, elt, {});
             expect(handler).toBeA(ol.handler.Drag);
         });
 

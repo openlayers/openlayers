@@ -18,8 +18,9 @@ goog.require('goog.events.MouseWheelHandler');
  * @extends {goog.Disposable}
  * @param {ol.Map} map The map instance.
  * @param {Element} elt The element we listen to mousewheel on.
+ * @param {Object} states An object for the handlers to share states.
  */
-ol.handler.MouseWheel = function(map, elt) {
+ol.handler.MouseWheel = function(map, elt, states) {
     goog.base(this);
 
     var handler = new goog.events.MouseWheelHandler(elt);

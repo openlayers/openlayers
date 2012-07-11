@@ -19,8 +19,9 @@ goog.require('goog.fx.Dragger');
  * @extends {goog.Disposable}
  * @param {ol.Map} map The map instance.
  * @param {Element} elt The element that will be dragged.
+ * @param {Object} states An object for the handlers to share states.
  */
-ol.handler.Drag = function(map, elt) {
+ol.handler.Drag = function(map, elt, states) {
 
     /** */
     this.map_ = map;
@@ -28,8 +29,11 @@ ol.handler.Drag = function(map, elt) {
     /** */
     this.elt_ = elt;
 
-    /** */
-    var dragger = this.dragger_ = new goog.fx.Dragger(elt);
+    /**
+     * @type {Object}
+     */
+    this.states_ = states;
+
     dragger.defaultAction = function() {};
 
     /** */
@@ -65,7 +69,7 @@ ol.handler.Drag.prototype.disposeInternal = function() {
 /**
  */
 ol.handler.Drag.prototype.handleDragStart = function(e) {
-    this.dragged_ = false;
+    this.states_.dragged = false;
     this.prevX_ = e.clientX;
     this.prevY_ = e.clientY;
     var newE = {
@@ -84,7 +88,7 @@ ol.handler.Drag.prototype.handleDragStart = function(e) {
 /**
  */
 ol.handler.Drag.prototype.handleDrag = function(e) {
-    this.dragged_ = true;
+    this.states_.dragged = true;
     var newE = {
         type: 'drag',
         deltaX: e.clientX - this.prevX_,

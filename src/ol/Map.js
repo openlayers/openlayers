@@ -13,6 +13,15 @@ goog.require('goog.math');
 goog.require('goog.asserts');
 goog.require('goog.events.EventTarget');
 
+/**
+ * @define {boolean} Whether to enable the drag handler.
+ */
+ol.ENABLE_DRAG_HANDLER = true;
+
+/**
+ * @define {boolean} Whether to enable the mousewheel handler.
+ */
+ol.ENABLE_MOUSEWHEEL_HANDLER = true;
 
 /**
  * @export
@@ -509,13 +518,18 @@ ol.Map.prototype.setViewport = function() {
 ol.Map.prototype.initHandlers = function() {
     goog.asserts.assert(!goog.isNull(this.viewport_));
 
-    var dragHandler = new ol.handler.Drag(this, this.viewport_);
-    this.registerDisposable(dragHandler);
+    var handler,
+        states = {};
 
-    var mouseWheelHandler = new ol.handler.MouseWheel(this, this.viewport_);
-    this.registerDisposable(mouseWheelHandler);
+    if (ol.ENABLE_DRAG_HANDLER) {
+        handler = new ol.handler.Drag(this, this.viewport_, states);
+        this.registerDisposable(handler);
+    }
+    if (ol.ENABLE_MOUSEWHEEL_HANDLER) {
+        handler = new ol.handler.MouseWheel(this, this.viewport_, states);
+        this.registerDisposable(handler);
+    }
 };
-
 
 ol.Map.prototype.createRenderer = function() {
     var Renderer = ol.renderer.MapRenderer.pickRendererType(

@@ -9,7 +9,7 @@ describe('ol.handler.MouseWheel', function() {
     describe('create a mouse wheel handler', function() {
 
         it('returns an ol.handler.MouseWheel instance', function() {
-            var handler = new ol.handler.MouseWheel(map, elt);
+            var handler = new ol.handler.MouseWheel(map, elt, {});
             expect(handler).toBeA(ol.handler.MouseWheel);
         });
 
