@@ -9,7 +9,7 @@ goog.require('ol.TileStore');
 /**
  * @constructor
  * @extends {ol.MapRenderer}
- * @param {HTMLDivElement} target Target.
+ * @param {!HTMLDivElement} target Target.
  * @param {Object.<string, *>=} opt_values Values.
  */
 ol.DOMMapRenderer = function(target, opt_values) {

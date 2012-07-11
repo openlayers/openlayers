@@ -36,7 +36,7 @@ ol.MapProperty = {
 /**
  * @constructor
  * @extends {ol.Object}
- * @param {HTMLDivElement} target Target.
+ * @param {!HTMLDivElement} target Target.
  * @param {Object.<string, *>=} opt_values Values.
  */
 ol.Map = function(target, opt_values) {
