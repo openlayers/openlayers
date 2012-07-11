@@ -115,13 +115,6 @@ ol.Map = function() {
      * @type {Element}
      */
     this.container_ = null;
-
-    // Create an EventTarget and set it as the map's parent EventTarget. With
-    // this we can have two groups of listeners: "map listeners" and "map
-    // parent listeners". And map listeners can stop event propagation, and
-    // thereby prevent map parent listeners from receiving events.
-    this.setParentEventTarget(new goog.events.EventTarget());
-
 };
 goog.inherits(ol.Map, goog.events.EventTarget);
 
@@ -149,7 +142,7 @@ ol.Map.DEFAULT_TILE_SIZE = 256;
   @const
   @type {Array.<string>}
  */
-ol.Map.DEFAULT_CONTROLS = ["attribution", "navigation", "zoom"];
+ol.Map.DEFAULT_CONTROLS = ["attribution", "zoom"];
 
 /**
  * @return {ol.Loc} Map center in map projection.
