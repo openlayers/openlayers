@@ -24,6 +24,7 @@ goog.require('goog.fx.Dragger');
  * @param {Object} states An object for the handlers to share states.
  */
 ol.handler.Drag = function(map, elt, states) {
+    goog.base(this);
 
     /**
      * @type {ol.Map}
