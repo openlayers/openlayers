@@ -1,4 +1,5 @@
 goog.provide('ol.Camera');
+goog.provide('ol.CameraProperty');
 
 goog.require('goog.math.Coordinate');
 goog.require('ol.Object');
@@ -6,9 +7,8 @@ goog.require('ol.Object');
 
 /**
  * @enum {string}
- * @private
  */
-ol.CameraProperty_ = {
+ol.CameraProperty = {
   POSITION: 'center',
   RESOLUTION: 'resolution',
   ROTATION: 'rotation'
@@ -33,7 +33,7 @@ goog.inherits(ol.Camera, ol.Object);
  */
 ol.Camera.prototype.getPosition = function() {
   return /** @type {goog.math.Coordinate} */ (
-      this.get(ol.CameraProperty_.POSITION));
+      this.get(ol.CameraProperty.POSITION));
 };
 
 
@@ -41,7 +41,7 @@ ol.Camera.prototype.getPosition = function() {
  * @return {number} Resolution.
  */
 ol.Camera.prototype.getResolution = function() {
-  return /** @type {number} */ (this.get(ol.CameraProperty_.RESOLUTION));
+  return /** @type {number} */ (this.get(ol.CameraProperty.RESOLUTION));
 };
 
 
@@ -49,7 +49,7 @@ ol.Camera.prototype.getResolution = function() {
  * @return {number} Rotation.
  */
 ol.Camera.prototype.getRotation = function() {
-  return /** @type {number} */ (this.get(ol.CameraProperty_.ROTATION));
+  return /** @type {number} */ (this.get(ol.CameraProperty.ROTATION));
 };
 
 
@@ -57,7 +57,7 @@ ol.Camera.prototype.getRotation = function() {
  * @param {goog.math.Coordinate} position Position.
  */
 ol.Camera.prototype.setPosition = function(position) {
-  this.set(ol.CameraProperty_.POSITION, position.clone());
+  this.set(ol.CameraProperty.POSITION, position.clone());
 };
 
 
@@ -65,7 +65,7 @@ ol.Camera.prototype.setPosition = function(position) {
  * @param {number} resolution Resolution.
  */
 ol.Camera.prototype.setResolution = function(resolution) {
-  this.set(ol.CameraProperty_.RESOLUTION, resolution);
+  this.set(ol.CameraProperty.RESOLUTION, resolution);
 };
 
 
@@ -73,5 +73,5 @@ ol.Camera.prototype.setResolution = function(resolution) {
  * @param {number} rotation Rotation.
  */
 ol.Camera.prototype.setRotation = function(rotation) {
-  this.set(ol.CameraProperty_.ROTATION, rotation);
+  this.set(ol.CameraProperty.ROTATION, rotation);
 };
