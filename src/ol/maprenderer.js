@@ -2,8 +2,10 @@ goog.provide('ol.MapRenderer');
 
 goog.require('goog.array');
 goog.require('goog.events');
+goog.require('goog.object');
 goog.require('ol.Array');
 goog.require('ol.Camera');
+goog.require('ol.CameraProperty');
 goog.require('ol.LayerRenderer');
 goog.require('ol.Object');
 goog.require('ol.Projection');
@@ -35,6 +37,12 @@ ol.MapRenderer = function(target, opt_values) {
    * @type {HTMLDivElement}
    */
   this.target_ = target;
+
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.cameraListenerKeys_ = null;
 
   /**
    * @private
@@ -109,6 +117,26 @@ ol.MapRenderer.prototype.getTarget = function() {
  * @protected
  */
 ol.MapRenderer.prototype.handleCameraChanged = function() {
+  if (!goog.isNull(this.cameraListenerKeys_)) {
+    goog.array.forEach(this.cameraListenerKeys_, goog.events.unlistenByKey);
+    this.cameraListenerKeys_ = null;
+  }
+  var camera = this.getCamera();
+  if (!goog.isNull(camera)) {
+    this.cameraListenerKeys_ = goog.array.map(
+        goog.object.getValues(ol.CameraProperty),
+        function(cameraProperty) {
+          return goog.events.listen(camera, cameraProperty,
+              this.handleCameraPropertyChanged, false, this);
+        });
+  }
+};
+
+
+/**
+ * @protected
+ */
+ol.MapRenderer.prototype.handleCameraPropertyChanged = function() {
 };
 
 
