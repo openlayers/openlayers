@@ -28,7 +28,7 @@ ol.handler.Click = function(map, states) {
     goog.base(this, map, states);
 
     goog.events.listen(this.element_, goog.events.EventType.CLICK,
-                       this.handleClick, undefined, this);
+                       this.handleClick, false, this);
 };
 goog.inherits(ol.handler.Click, ol.handler.MapHandler);
 
@@ -37,7 +37,7 @@ goog.inherits(ol.handler.Click, ol.handler.MapHandler);
  */
 ol.handler.Click.prototype.disposeInternal = function() {
     goog.events.unlisten(this.element_, goog.events.EventType.CLICK,
-                         this.handleClick, undefined, this);
+                         this.handleClick, false, this);
 };
 
 /**
