@@ -9,8 +9,9 @@
 
 goog.provide('ol.handler.Drag');
 
-goog.require('ol.MapEvent');
-goog.require('ol.MapEventType');
+goog.require('ol.handler.states');
+goog.require('ol.events.MapEvent');
+goog.require('ol.events.MapEventType');
 
 goog.require('goog.asserts');
 goog.require('goog.events');
@@ -23,10 +24,10 @@ goog.require('goog.fx.Dragger');
  * @constructor
  * @extends {goog.Disposable}
  * @param {ol.Map} map The map instance.
- * @param {Element} elt The element that will be dragged.
+ * @param {Element} element The element that will be dragged.
  * @param {Object} states An object for the handlers to share states.
  */
-ol.handler.Drag = function(map, elt, states) {
+ol.handler.Drag = function(map, element, states) {
     goog.base(this);
 
     /**
@@ -37,7 +38,7 @@ ol.handler.Drag = function(map, elt, states) {
     /**
      * @type {Element}
      */
-    this.elt_ = elt;
+    this.element_ = element;
 
     /**
      * @type {Object}
@@ -47,7 +48,7 @@ ol.handler.Drag = function(map, elt, states) {
     /**
      * @type {goog.fx.Dragger}
      */
-    this.dragger_ = new goog.fx.Dragger(elt);
+    this.dragger_ = new goog.fx.Dragger(element);
 
     var dragger = this.dragger_;
     dragger.defaultAction = function() {};
@@ -80,7 +81,7 @@ goog.inherits(ol.handler.Drag, goog.Disposable);
 ol.handler.Drag.prototype.disposeInternal = function() {
     goog.base(this, 'disposeInternal');
     goog.dispose(this.dragger_);
-    goog.events.unlisten(this.elt_,
+    goog.events.unlisten(this.element_,
                          [goog.events.EventType.TOUCHMOVE,
                           goog.events.EventType.MOUSEMOVE],
                          goog.events.Event.preventDefault, false, this);
@@ -94,11 +95,11 @@ ol.handler.Drag.prototype.handleDragStart = function(e) {
     this.states_.dragged = false;
     this.prevX_ = e.clientX;
     this.prevY_ = e.clientY;
-    var newE = new ol.MapEvent(ol.MapEventType.DRAGSTART, e);
+    var newE = new ol.events.MapEvent(ol.events.MapEventType.DRAGSTART, e);
     goog.events.dispatchEvent(this.map_, newE);
 
     // this is to prevent page scrolling
-    goog.events.listen(this.elt_,
+    goog.events.listen(this.element_,
                        [goog.events.EventType.TOUCHMOVE,
                         goog.events.EventType.MOUSEMOVE],
                        goog.events.Event.preventDefault, false, this);
@@ -110,9 +111,9 @@ ol.handler.Drag.prototype.handleDragStart = function(e) {
  */
 ol.handler.Drag.prototype.handleDrag = function(e) {
     this.states_.dragged = true;
-    var newE = new ol.MapEvent(ol.MapEventType.DRAG, e);
-    newE.deltaX = e.clientX - this.prevX_;
-    newE.deltaY = e.clientY - this.prevY_;
+    var newE = new ol.events.MapEvent(ol.events.MapEventType.DRAG, e);
+    newE.delementaX = e.clientX - this.prevX_;
+    newE.delementaY = e.clientY - this.prevY_;
     this.prevX_ = e.clientX;
     this.prevY_ = e.clientY;
     var rt = goog.events.dispatchEvent(this.map_, newE);
@@ -122,21 +123,21 @@ ol.handler.Drag.prototype.handleDrag = function(e) {
 };
 
 /**
- * @param {ol.MapEvent} e
+ * @param {ol.events.MapEvent} e
  */
 ol.handler.Drag.prototype.defaultBehavior = function(e) {
-    var deltaX = /** @type {number} */ e.deltaX;
-    var deltaY = /** @type {number} */ e.deltaY;
-    this.map_.moveByViewportPx(deltaX, deltaY);
+    var delementaX = /** @type {number} */ e.delementaX;
+    var delementaY = /** @type {number} */ e.delementaY;
+    this.map_.moveByViewportPx(delementaX, delementaY);
 };
 
 /**
  * @param {goog.fx.DragEvent} e
  */
 ol.handler.Drag.prototype.handleDragEnd = function(e) {
-    var newE = new ol.MapEvent(ol.MapEventType.DRAGEND, e);
+    var newE = new ol.events.MapEvent(ol.events.MapEventType.DRAGEND, e);
     goog.events.dispatchEvent(this.map_, newE);
-    goog.events.unlisten(this.elt_,
+    goog.events.unlisten(this.element_,
                          [goog.events.EventType.TOUCHMOVE,
                           goog.events.EventType.MOUSEMOVE],
                          goog.events.Event.preventDefault, false, this);
@@ -146,7 +147,7 @@ ol.handler.Drag.prototype.handleDragEnd = function(e) {
  * @param {goog.fx.DragEvent} e
  */
 ol.handler.Drag.prototype.handleDragEarlyCancel = function(e) {
-    goog.events.unlisten(this.elt_,
+    goog.events.unlisten(this.element_,
                          [goog.events.EventType.TOUCHMOVE,
                           goog.events.EventType.MOUSEMOVE],
                          goog.events.Event.preventDefault, false, this);

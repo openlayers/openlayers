@@ -9,8 +9,9 @@
 
 goog.provide('ol.handler.MouseWheel');
 
-goog.require('ol.MapEvent');
-goog.require('ol.MapEventType');
+goog.require('ol.handler.states');
+goog.require('ol.events.MapEvent');
+goog.require('ol.events.MapEventType');
 
 goog.require('goog.asserts');
 goog.require('goog.events');
@@ -24,10 +25,10 @@ goog.require('goog.events.MouseWheelHandler.EventType');
  * @constructor
  * @extends {goog.Disposable}
  * @param {ol.Map} map The map instance.
- * @param {Element} elt The element we listen to mousewheel on.
+ * @param {Element} element The element we listen to mousewheel on.
  * @param {Object} states An object for the handlers to share states.
  */
-ol.handler.MouseWheel = function(map, elt, states) {
+ol.handler.MouseWheel = function(map, element, states) {
     goog.base(this);
 
     /**
@@ -38,9 +39,9 @@ ol.handler.MouseWheel = function(map, elt, states) {
     /**
      * @type {Element}
      */
-    this.elt_ = elt;
+    this.element_ = element;
 
-    var handler = new goog.events.MouseWheelHandler(elt);
+    var handler = new goog.events.MouseWheelHandler(element);
     this.registerDisposable(handler);
 
     goog.events.listen(handler,
@@ -54,8 +55,8 @@ goog.inherits(ol.handler.MouseWheel, goog.Disposable);
  * @param {goog.events.MouseWheelEvent} e
  */
 ol.handler.MouseWheel.prototype.handleMouseWheel = function(e) {
-    var newE = new ol.MapEvent(ol.MapEventType.MOUSEWHEEL, e);
-    var rt = goog.events.dispatchEvent(this.map_, e);
+    var newE = new ol.events.MapEvent(ol.events.MapEventType.MOUSEWHEEL, e);
+    var rt = goog.events.dispatchEvent(this.map_, newE);
     if (rt) {
         this.defaultBehavior(e);
     }
@@ -76,7 +77,7 @@ ol.handler.MouseWheel.prototype.defaultBehavior = function(e) {
     var map = me.map_,
         step = e.deltaY / Math.abs(e.deltaY);
     map.setZoom(map.getZoom() - step,
-                goog.style.getRelativePosition(e, this.elt_));
+                goog.style.getRelativePosition(e, this.element_));
 
     // We don't want the page to scroll.
     // (MouseWheelEvent is a BrowserEvent)
