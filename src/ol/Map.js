@@ -525,7 +525,7 @@ ol.Map.prototype.initHandlers = function() {
     goog.asserts.assert(!goog.isNull(this.viewport_));
 
     var handler,
-        states = {};
+        states = /** @type {ol.handler.states} */ ({});
 
     if (ol.ENABLE_DRAG_HANDLER) {
         handler = new ol.handler.Drag(this, this.viewport_, states);

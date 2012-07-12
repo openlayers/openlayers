@@ -1,49 +1,33 @@
 /**
  * @fileoverview Drag Handler.
  *
- * Provides a class for listening to drag events on a DOM element and
- * re-dispatching to a map object.
+ * Provides a class for listening to drag sequences on a DOM element and
+ * dispatching dragstart, drag and dragend events to a map object.
  *
- * The default behavior is moving the map.
+ * The default behavior for the drag event is moving the map.
  */
 
 goog.provide('ol.handler.Drag');
 
-goog.require('ol.handler.states');
+goog.require('ol.handler.MapHandler');
 goog.require('ol.events.MapEvent');
 goog.require('ol.events.MapEventType');
 
-goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
-goog.require('goog.Disposable');
 goog.require('goog.fx.Dragger');
 
 /**
  * @constructor
- * @extends {goog.Disposable}
+ * @extends {ol.handler.MapHandler}
  * @param {ol.Map} map The map instance.
- * @param {Element} element The element that will be dragged.
- * @param {Object} states An object for the handlers to share states.
+ * @param {Element} element The element we listen for click on.
+ * @param {ol.handler.states} states An object for the handlers to share
+ *     states.
  */
 ol.handler.Drag = function(map, element, states) {
-    goog.base(this);
-
-    /**
-     * @type {ol.Map}
-     */
-    this.map_ = map;
-
-    /**
-     * @type {Element}
-     */
-    this.element_ = element;
-
-    /**
-     * @type {Object}
-     */
-    this.states_ = states;
+    goog.base(this, map, element, states);
 
     /**
      * @type {goog.fx.Dragger}
@@ -73,7 +57,7 @@ ol.handler.Drag = function(map, element, states) {
                        this.handleDragEarlyCancel, false, this);
 
 };
-goog.inherits(ol.handler.Drag, goog.Disposable);
+goog.inherits(ol.handler.Drag, ol.handler.MapHandler);
 
 /**
  * @inheritDoc
@@ -118,14 +102,14 @@ ol.handler.Drag.prototype.handleDrag = function(e) {
     this.prevY_ = e.clientY;
     var rt = goog.events.dispatchEvent(this.map_, newE);
     if (rt) {
-        this.defaultBehavior(newE);
+        this.defaultDrag(newE);
     }
 };
 
 /**
  * @param {ol.events.MapEvent} e
  */
-ol.handler.Drag.prototype.defaultBehavior = function(e) {
+ol.handler.Drag.prototype.defaultDrag = function(e) {
     var delementaX = /** @type {number} */ e.delementaX;
     var delementaY = /** @type {number} */ e.delementaY;
     this.map_.moveByViewportPx(delementaX, delementaY);
