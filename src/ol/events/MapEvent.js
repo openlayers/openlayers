@@ -24,9 +24,9 @@ ol.events.MapEventType = {
  * @constructor
  * @extends {goog.events.Event}
  * @param {string} type Event type.
- * @param {goog.events.Event} evt The wrapped event.
+ * @param {goog.events.Event=} opt_evt The underlying event.
  */
-ol.events.MapEvent = function(type, evt) {
+ol.events.MapEvent = function(type, opt_evt) {
     goog.base(this, type);
 
     /**
@@ -42,13 +42,12 @@ ol.events.MapEvent = function(type, evt) {
      * @type {number|undefined}
      */
     this.deltaY = undefined;
-
+    
     /**
-     * The browser event or closure event (e.g. goog.fx.DragEvent} wrapped
-     * by this event.
+     * The underlying event.
      *
      * @type {goog.events.Event}
      */
-    this.event_ = evt;
+    this.originalEvent = goog.isDef(opt_evt) ? opt_evt : null;
 };
 goog.inherits(ol.events.MapEvent, goog.events.Event);
