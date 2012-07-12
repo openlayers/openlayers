@@ -192,3 +192,24 @@ function testLengthChangeSetAt() {
   array.setAt(1, 1);
   assertUndefined(lengthChangedCalled);
 }
+
+
+function testForEach() {
+  var array = ol.Array.create([1, 2, 4]);
+  var sum = 0;
+  array.forEach(function(elem) {
+    sum += elem;
+  });
+  assertEquals(7, sum);
+}
+
+
+function testForEachScope() {
+  var array = ol.Array.create([0]);
+  var that;
+  var uniqueObj = {};
+  array.forEach(function(elem) {
+    that = this;
+  }, uniqueObj);
+  assertTrue(that === uniqueObj);
+}

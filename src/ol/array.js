@@ -104,10 +104,12 @@ ol.Array.prototype.clear = function() {
 
 
 /**
- * @param {function(*, number)} callback Callback.
+ * @param {function(this: T, *, number)} f Function.
+ * @param {T=} opt_obj The object to be used for the value of 'this' within f.
+ * @template T
  */
-ol.Array.prototype.forEach = function(callback) {
-  goog.array.forEach(this.array_, callback);
+ol.Array.prototype.forEach = function(f, opt_obj) {
+  goog.array.forEach(this.array_, f, opt_obj);
 };
 
 
