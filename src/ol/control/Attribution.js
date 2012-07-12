@@ -3,6 +3,8 @@ goog.provide('ol.control.Attribution');
 goog.require('ol.control.Control');
 
 goog.require('goog.dom');
+goog.require('goog.events');
+goog.require('goog.events.Event');
 
 
 /**
@@ -42,7 +44,8 @@ ol.control.Attribution.prototype.setMap = function(map) {
     var staticOverlay = map.getStaticOverlay();
     if (goog.isNull(this.container_)) {
         this.container_ = goog.dom.createDom('div', this.CLS);
-        goog.events.listen(this.container_, 'click', this.stopEventPropagation);
+        goog.events.listen(this.container_, 'click',
+                           goog.events.Event.stopPropagation);
     }
     if (!goog.isNull(staticOverlay)) {
         goog.dom.append(staticOverlay, this.container_);
@@ -83,16 +86,10 @@ ol.control.Attribution.prototype.update = function() {
 };
 
 ol.control.Attribution.prototype.destroy = function() {
-    goog.events.unlisten(this.container_, 'click', this.stopEventPropagation);
+    goog.events.unlisten(this.container_, 'click',
+                         goog.events.Event.stopPropagation);
     goog.dom.removeNode(this.container_);
     goog.base(this, 'destroy');
-};
-
-/**
- * @param {goog.events.BrowserEvent} e
- */
-ol.control.Attribution.prototype.stopEventPropagation = function(e) {
-    e.stopPropagation();
 };
 
 ol.control.addControl('attribution', ol.control.Attribution);
