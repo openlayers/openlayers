@@ -57,6 +57,7 @@ ol.handler.Click.prototype.disposeInternal = function() {
  * @param {goog.events.BrowserEvent} e
  */
 ol.handler.Click.prototype.handleClick = function(e) {
+    // do not emit a map click event after a drag
     if (!this.states_.dragged) {
         goog.events.dispatchEvent(this.map_, e);
     }

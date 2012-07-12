@@ -76,5 +76,6 @@ ol.handler.MouseWheel.prototype.defaultBehavior = function(e) {
     map.setZoom(map.getZoom() - step, e.position);
 
     // We don't want the page to scroll.
+    // (MouseWheelEvent is a BrowserEvent)
     e.preventDefault();
 };
