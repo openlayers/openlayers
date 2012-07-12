@@ -47,28 +47,9 @@ ol.handler.MouseWheel.prototype.handleMouseWheel = function(e) {
     var newE = new ol.events.MapEvent(ol.events.MapEventType.MOUSEWHEEL, e);
     var rt = goog.events.dispatchEvent(this.map_, newE);
     if (rt) {
-        this.defaultMouseWheel(e);
+        var defaultControl = this.map_.getDefaultControl();
+        if (defaultControl) {
+            defaultControl.defaultMouseWheel(newE);
+        }
     }
-};
-
-/**
- * @param {goog.events.MouseWheelEvent} e
- */
-ol.handler.MouseWheel.prototype.defaultMouseWheel = function(e) {
-    var me = this;
-    if (e.deltaY === 0 || me.zoomBlocked_) {
-        return;
-    }
-    me.zoomBlocked_ = window.setTimeout(function() {
-        me.zoomBlocked_ = null;
-    }, 200);
-
-    var map = me.map_,
-        step = e.deltaY / Math.abs(e.deltaY);
-    map.setZoom(map.getZoom() - step,
-                goog.style.getRelativePosition(e, this.element_));
-
-    // We don't want the page to scroll.
-    // (MouseWheelEvent is a BrowserEvent)
-    e.preventDefault();
 };

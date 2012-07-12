@@ -4,7 +4,7 @@
  * Type definitions and base class for map event handlers that share states,
  * listen for events on a map related dom element (usually the map's viewport),
  * dispatch events to an ol.Map instance, and optionally perform default
- * actions on an ol.Map instance.
+ * actions on the map's default control.
  */
 
 goog.provide('ol.handler.states');

@@ -88,6 +88,12 @@ ol.Map = function() {
      * @type {Array}
      */
     this.controls_ = null;
+    
+    /**
+     * @private
+     * @type {ol.control.DefaultControl}
+     */
+    this.defaultControl_ = null;
 
     /**
      * @private
@@ -157,7 +163,7 @@ ol.Map.DEFAULT_TILE_SIZE = 256;
   @const
   @type {Array.<string>}
  */
-ol.Map.DEFAULT_CONTROLS = ["attribution", "zoom"];
+ol.Map.CONTROLS = ["navigation", "attribution", "zoom"];
 
 /**
  * @return {ol.Loc} Map center in map projection.
@@ -444,6 +450,20 @@ ol.Map.prototype.addLayers = function(layers) {
 
 
 /**
+ * @returns {ol.control.DefaultControl}
+ */
+ol.Map.prototype.getDefaultControl = function() {
+    return this.defaultControl_;
+};
+
+/**
+ * @param {ol.control.DefaultControl} control
+ */
+ol.Map.prototype.setDefaultControl = function(control) {
+    this.defaultControl_ = control;
+};
+
+/**
  * @param {Array.<ol.control.Control>|undefined} opt_controls
  */
 ol.Map.prototype.setControls = function(opt_controls) {
@@ -483,7 +503,7 @@ ol.Map.prototype.setContainer = function(container) {
     this.createRenderer();
     //TODO Controls could be set earlier, but we need to deal with content that
     // controls place on overlays.
-    this.setControls(ol.Map.DEFAULT_CONTROLS);
+    this.setControls(ol.Map.CONTROLS);
     // conditionally render
     this.conditionallyRender();
 };
