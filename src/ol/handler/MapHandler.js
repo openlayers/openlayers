@@ -28,25 +28,27 @@ ol.handler.states;
  * @constructor
  * @extends {goog.Disposable}
  * @param {ol.Map} map The map instance.
- * @param {Element} element The element we listen for browser events on.
  * @param {ol.handler.states} states An object for the handlers to share
  *     states.
  */
-ol.handler.MapHandler = function(map, element, states) {
+ol.handler.MapHandler = function(map, states) {
     goog.base(this);
 
     /**
      * @type {ol.Map}
+     * @protected
      */
     this.map_ = map;
 
     /**
      * @type {Element}
+     * @protected
      */
-    this.element_ = element;
+    this.element_ = map.getViewport();
 
     /**
      * @type {ol.handler.states}
+     * @protected
      */
     this.states_ = states;
 

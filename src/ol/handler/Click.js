@@ -21,12 +21,11 @@ goog.require('goog.events.EventType');
  * @constructor
  * @extends {ol.handler.MapHandler}
  * @param {ol.Map} map The map instance.
- * @param {Element} element The element we listen for click on.
  * @param {ol.handler.states} states An object for the handlers to share
  *     states.
  */
-ol.handler.Click = function(map, element, states) {
-    goog.base(this, map, element, states);
+ol.handler.Click = function(map, states) {
+    goog.base(this, map, states);
 
     goog.events.listen(this.element_, goog.events.EventType.CLICK,
                        this.handleClick, undefined, this);

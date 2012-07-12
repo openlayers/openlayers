@@ -528,15 +528,15 @@ ol.Map.prototype.initHandlers = function() {
         states = /** @type {ol.handler.states} */ ({});
 
     if (ol.ENABLE_DRAG_HANDLER) {
-        handler = new ol.handler.Drag(this, this.viewport_, states);
+        handler = new ol.handler.Drag(this, states);
         this.registerDisposable(handler);
     }
     if (ol.ENABLE_MOUSEWHEEL_HANDLER) {
-        handler = new ol.handler.MouseWheel(this, this.viewport_, states);
+        handler = new ol.handler.MouseWheel(this, states);
         this.registerDisposable(handler);
     }
     if (ol.ENABLE_CLICK_HANDLER) {
-        handler = new ol.handler.Click(this, this.viewport_, states);
+        handler = new ol.handler.Click(this, states);
         this.registerDisposable(handler);
     }
 };

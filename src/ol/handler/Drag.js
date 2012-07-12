@@ -22,17 +22,16 @@ goog.require('goog.fx.Dragger');
  * @constructor
  * @extends {ol.handler.MapHandler}
  * @param {ol.Map} map The map instance.
- * @param {Element} element The element we listen for click on.
  * @param {ol.handler.states} states An object for the handlers to share
  *     states.
  */
-ol.handler.Drag = function(map, element, states) {
-    goog.base(this, map, element, states);
+ol.handler.Drag = function(map, states) {
+    goog.base(this, map, states);
 
     /**
      * @type {goog.fx.Dragger}
      */
-    this.dragger_ = new goog.fx.Dragger(element);
+    this.dragger_ = new goog.fx.Dragger(this.element_);
 
     var dragger = this.dragger_;
     dragger.defaultAction = function() {};
