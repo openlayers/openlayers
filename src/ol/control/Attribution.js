@@ -57,7 +57,7 @@ ol.control.Attribution.prototype.setMap = function(map) {
 ol.control.Attribution.prototype.activate = function() {
     var active = goog.base(this, 'activate');
     if (active) {
-        goog.events.listen(this.map_, 'layeradd', this.update, undefined, this);
+        goog.events.listen(this.map_, 'layeradd', this.update, false, this);
         this.update();
     }
     return active;
@@ -67,7 +67,7 @@ ol.control.Attribution.prototype.activate = function() {
 ol.control.Attribution.prototype.deactivate = function() {
     var inactive = goog.base(this, 'deactivate');
     if (inactive) {
-        goog.events.unlisten(this.map_, 'layeradd', this.update, undefined, this);
+        goog.events.unlisten(this.map_, 'layeradd', this.update, false, this);
     }
     return inactive;
 };
