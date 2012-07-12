@@ -9,6 +9,9 @@
 
 goog.provide('ol.handler.Click');
 
+goog.require('ol.MapEvent');
+goog.require('ol.MapEventType');
+
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
@@ -59,6 +62,7 @@ ol.handler.Click.prototype.disposeInternal = function() {
 ol.handler.Click.prototype.handleClick = function(e) {
     // do not emit a map click event after a drag
     if (!this.states_.dragged) {
-        goog.events.dispatchEvent(this.map_, e);
+        var newE = new ol.MapEvent(ol.MapEventType.CLICK, e);
+        goog.events.dispatchEvent(this.map_, newE);
     }
 };

@@ -9,6 +9,9 @@
 
 goog.provide('ol.handler.Drag');
 
+goog.require('ol.MapEvent');
+goog.require('ol.MapEventType');
+
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.Event');
@@ -91,9 +94,7 @@ ol.handler.Drag.prototype.handleDragStart = function(e) {
     this.states_.dragged = false;
     this.prevX_ = e.clientX;
     this.prevY_ = e.clientY;
-    var newE = {
-        type: 'dragstart'
-    };
+    var newE = new ol.MapEvent(ol.MapEventType.DRAGSTART, e);
     goog.events.dispatchEvent(this.map_, newE);
 
     // this is to prevent page scrolling
@@ -109,11 +110,9 @@ ol.handler.Drag.prototype.handleDragStart = function(e) {
  */
 ol.handler.Drag.prototype.handleDrag = function(e) {
     this.states_.dragged = true;
-    var newE = {
-        type: 'drag',
-        deltaX: e.clientX - this.prevX_,
-        deltaY: e.clientY - this.prevY_
-    };
+    var newE = new ol.MapEvent(ol.MapEventType.DRAG, e);
+    newE.deltaX = e.clientX - this.prevX_;
+    newE.deltaY = e.clientY - this.prevY_;
     this.prevX_ = e.clientX;
     this.prevY_ = e.clientY;
     var rt = goog.events.dispatchEvent(this.map_, newE);
@@ -123,19 +122,19 @@ ol.handler.Drag.prototype.handleDrag = function(e) {
 };
 
 /**
- * @param {{type, deltaX, deltaY}} e
+ * @param {ol.MapEvent} e
  */
 ol.handler.Drag.prototype.defaultBehavior = function(e) {
-    this.map_.moveByViewportPx(e.deltaX, e.deltaY);
+    var deltaX = /** @type {number} */ e.deltaX;
+    var deltaY = /** @type {number} */ e.deltaY;
+    this.map_.moveByViewportPx(deltaX, deltaY);
 };
 
 /**
  * @param {goog.fx.DragEvent} e
  */
 ol.handler.Drag.prototype.handleDragEnd = function(e) {
-    var newE = {
-        type: 'dragend'
-    };
+    var newE = new ol.MapEvent(ol.MapEventType.DRAGEND, e);
     goog.events.dispatchEvent(this.map_, newE);
     goog.events.unlisten(this.elt_,
                          [goog.events.EventType.TOUCHMOVE,

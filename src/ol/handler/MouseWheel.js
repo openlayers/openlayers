@@ -9,6 +9,9 @@
 
 goog.provide('ol.handler.MouseWheel');
 
+goog.require('ol.MapEvent');
+goog.require('ol.MapEventType');
+
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.style');
@@ -51,8 +54,7 @@ goog.inherits(ol.handler.MouseWheel, goog.Disposable);
  * @param {goog.events.MouseWheelEvent} e
  */
 ol.handler.MouseWheel.prototype.handleMouseWheel = function(e) {
-    e.position = goog.style.getRelativePosition(e, this.elt_);
-    e.type = 'mousewheel';
+    var newE = new ol.MapEvent(ol.MapEventType.MOUSEWHEEL, e);
     var rt = goog.events.dispatchEvent(this.map_, e);
     if (rt) {
         this.defaultBehavior(e);
@@ -73,7 +75,8 @@ ol.handler.MouseWheel.prototype.defaultBehavior = function(e) {
 
     var map = me.map_,
         step = e.deltaY / Math.abs(e.deltaY);
-    map.setZoom(map.getZoom() - step, e.position);
+    map.setZoom(map.getZoom() - step,
+                goog.style.getRelativePosition(e, this.elt_));
 
     // We don't want the page to scroll.
     // (MouseWheelEvent is a BrowserEvent)
