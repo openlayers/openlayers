@@ -60,14 +60,12 @@ describe('ol.handler.Drag', function() {
             expect(listener.fn.calls[1].args[0].deltaY).toBe(2);
         });
 
-        it('calls the default action on the default control', function() {
-            var control = new ol.control.DefaultControl();
-            spyOn(control, 'defaultDrag');
-            map.setDefaultControl(control);
+        it('calls the default action', function() {
             var handler = new ol.handler.Drag(map, {});
+            spyOn(handler, 'defaultDrag');
 
             handler.dragger_.dispatchEvent({type: 'drag'});
-            expect(control.defaultDrag).toHaveBeenCalled();
+            expect(handler.defaultDrag).toHaveBeenCalled();
         });
     });
 });
