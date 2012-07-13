@@ -31,7 +31,7 @@ ol.control.Control = function(opt_autoActivate) {
 
     /**
      * @type {boolean} active
-     * @protected
+     * @private
      */
     this.active_ = false;
     
@@ -42,7 +42,6 @@ ol.control.Control = function(opt_autoActivate) {
      */
     this.autoActivate_ =
         goog.isDef(opt_autoActivate) ? opt_autoActivate : false;
-
 };
 
 /**
