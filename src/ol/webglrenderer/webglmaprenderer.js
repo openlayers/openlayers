@@ -1,12 +1,14 @@
 goog.provide('ol.WebGLMapRenderer');
 
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.style');
 goog.require('goog.webgl');
 goog.require('ol.Layer');
 goog.require('ol.MapRenderer');
 goog.require('ol.TileStore');
 goog.require('ol.webglrenderer.IGLObject');
+goog.require('ol.webglrenderer.TileLayerRenderer');
 
 
 
@@ -25,7 +27,10 @@ ol.WebGLMapRenderer = function(target, opt_values) {
    * @private
    * @type {Element}
    */
-  this.canvas_ = goog.dom.createElement('canvas');
+  this.canvas_ = goog.dom.createElement(goog.dom.TagName.CANVAS);
+  this.canvas_.height = target.clientHeight;
+  this.canvas_.width = target.clientWidth;
+  this.canvas_.style.overflow = 'hidden';
   target.appendChild(this.canvas_);
 
   /**
@@ -37,10 +42,10 @@ ol.WebGLMapRenderer = function(target, opt_values) {
   /** @type {WebGLRenderingContext} */
   var gl = this.canvas_.getContext('experimental-webgl', {
     alpha: false,
-    depth: false,
     antialias: true,
-    stencil: false,
-    preserveDrawingBuffer: false
+    depth: false,
+    preserveDrawingBuffer: false,
+    stencil: false
   });
   goog.asserts.assert(!goog.isNull(gl));
   this.setGL(gl);
@@ -66,10 +71,12 @@ ol.WebGLMapRenderer.isSupported = function() {
  */
 ol.WebGLMapRenderer.prototype.createLayerRenderer = function(layer) {
   var store = layer.getStore();
-  if (layer instanceof ol.TileStore) {
-    // FIXME create WebGLTileLayerRenderer
+  if (store instanceof ol.TileStore) {
+    return new ol.webglrenderer.TileLayerRenderer(layer, this.getGL());
+  } else {
+    goog.asserts.assert(false);
+    return null;
   }
-  return null;
 };
 
 
@@ -152,6 +159,9 @@ ol.WebGLMapRenderer.prototype.setGL = function(gl) {
     gl.disable(goog.webgl.CULL_FACE);
     gl.disable(goog.webgl.DEPTH_TEST);
     gl.disable(goog.webgl.SCISSOR_TEST);
+    this.forEachLayerRenderer(function(layerRenderer) {
+      layerRenderer.setGL(gl);
+    });
     this.updateSize_();
     this.redraw_();
   }
