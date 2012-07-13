@@ -5,6 +5,7 @@ goog.require('ol.Array');
 goog.require('ol.Camera');
 goog.require('ol.DOMMapRenderer');
 goog.require('ol.MapRenderer');
+goog.require('ol.MapRendererProperty');
 goog.require('ol.Object');
 goog.require('ol.Projection');
 goog.require('ol.WebGLMapRenderer');
@@ -68,6 +69,11 @@ ol.Map = function(target, opt_values) {
   }
 
   goog.asserts.assert(!goog.isNull(this.mapRenderer_));
+
+  this.mapRenderer_.bindTo(
+      ol.MapRendererProperty.CAMERA, this, ol.MapProperty.CAMERA);
+  this.mapRenderer_.bindTo(
+      ol.MapRendererProperty.LAYERS, this, ol.MapProperty.LAYERS);
 
   var values = goog.isDef(opt_values) ? goog.object.clone(opt_values) : {};
 
