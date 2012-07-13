@@ -30,7 +30,12 @@ goog.require('goog.events.MouseWheelHandler.EventType');
 ol.handler.MouseWheel = function(map, states) {
     goog.base(this, map, states);
 
-    var handler = new goog.events.MouseWheelHandler(this.element_);
+    /**
+     * @type {goog.events.MouseWheelHandler}
+     */
+    this.handler_ = new goog.events.MouseWheelHandler(this.element_);
+
+    var handler = this.handler_;
     this.registerDisposable(handler);
 
     goog.events.listen(handler,

@@ -1,12 +1,10 @@
 describe('ol.handler.MouseWheel', function() {
-    var map, elt;
+    var map;
 
     beforeEach(function() {
         map = new ol.Map();
-        elt = new goog.events.EventTarget();
+        var elt = new goog.events.EventTarget();
         map.viewport_ = elt;
-        listener = {fn: function() {}};
-        spyOn(listener, 'fn');
     });
 
     describe('create a mouse wheel handler', function() {
@@ -20,25 +18,31 @@ describe('ol.handler.MouseWheel', function() {
 
     describe('dispatching events', function() {
 
-        it('dispatches a mousewheel event', function() {
-            var handler = new ol.handler.MouseWheel(map, {});
-            goog.events.listen(map, 'mousewheel', listener.fn);
+        var handler;
 
-            var evt = new goog.events.MouseWheelEvent(1, 'foo', 0, 1);
-            handler.handleMouseWheel(evt);
-
-            expect(listener.fn.calls[0].args[0].type).toBe('mousewheel');
-            expect(listener.fn.calls[0].args[0].originalEvent).toBe(evt);
+        beforeEach(function() {
+            handler = new ol.handler.MouseWheel(map, {});
         });
 
-        it('calls the default action on the default control', function() {
-            var control = new ol.control.DefaultControl();
-            spyOn(control, 'defaultMouseWheel');
-            map.setDefaultControl(control);
-            var handler = new ol.handler.MouseWheel(map, {});
+        it('dispatches a mousewheel event', function() {
+            var spy = spyOn(goog.events.Event, 'preventDefault').andCallThrough();
+            goog.events.listen(map, ol.events.MapEventType.MOUSEWHEEL, spy);
 
-            handler.handleMouseWheel(new goog.events.MouseWheelEvent(1, 'foo', 0, 1));
-            expect(control.defaultMouseWheel).toHaveBeenCalled();
+            var evt = new goog.events.MouseWheelEvent(1, 'foo', 0, 1);
+            handler.handler_.dispatchEvent(evt);
+
+            expect(spy).toHaveBeenCalled();
+            expect(spy.argsForCall[0][0].type).toEqual(ol.events.MapEventType.MOUSEWHEEL);
+        });
+
+        it('calls the default action', function() {
+            var handler = new ol.handler.MouseWheel(map, {});
+            spyOn(handler, 'defaultMouseWheel');
+
+            var evt = new goog.events.MouseWheelEvent(1, 'foo', 0, 1);
+            handler.handler_.dispatchEvent(evt);
+
+            expect(handler.defaultMouseWheel).toHaveBeenCalled();
         });
 
     });
