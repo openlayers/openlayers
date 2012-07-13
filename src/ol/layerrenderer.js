@@ -1,6 +1,8 @@
 goog.provide('ol.LayerRenderer');
 
+goog.require('goog.events');
 goog.require('ol.Layer');
+goog.require('ol.LayerProperty');
 goog.require('ol.Object');
 
 
@@ -20,6 +22,14 @@ ol.LayerRenderer = function(layer) {
    */
   this.layer_ = layer;
 
+  goog.events.listen(this.layer_,
+      ol.Object.getChangedEventType(ol.LayerProperty.OPACITY),
+      this.handleLayerOpacityChange, false, this);
+
+  goog.events.listen(this.layer_,
+      ol.Object.getChangedEventType(ol.LayerProperty.VISIBLE),
+      this.handleLayerVisibleChange, false, this);
+
 };
 goog.inherits(ol.LayerRenderer, ol.Object);
 
@@ -30,3 +40,15 @@ goog.inherits(ol.LayerRenderer, ol.Object);
 ol.LayerRenderer.prototype.getLayer = function() {
   return this.layer_;
 };
+
+
+/**
+ * @protected
+ */
+ol.LayerRenderer.prototype.handleLayerOpacityChange = goog.nullFunction;
+
+
+/**
+ * @protected
+ */
+ol.LayerRenderer.prototype.handleLayerVisibleChange = goog.nullFunction;
