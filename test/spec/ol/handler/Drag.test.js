@@ -1,12 +1,10 @@
 describe('ol.handler.Drag', function() {
-    var map, elt;
+    var map;
 
     beforeEach(function() {
         map = new ol.Map();
-        elt = new goog.events.EventTarget();
+        var elt = new goog.events.EventTarget();
         map.viewport_ = elt;
-        listener = {fn: function() {}};
-        spyOn(listener, 'fn');
     });
 
     describe('creating a drag handler', function() {
@@ -19,53 +17,61 @@ describe('ol.handler.Drag', function() {
     });
 
     describe('dispatching events', function() {
+        var handler, states;
+
+        beforeEach(function() {
+            states = {};
+            handler = new ol.handler.Drag(map, states);
+        });
 
         it('dragstart, drag and dragend events', function() {
-            var handler = new ol.handler.Drag(map, {});
-            goog.events.listen(map, 'dragstart', listener.fn);
-            goog.events.listen(map, 'drag', listener.fn);
-            goog.events.listen(map, 'dragend', listener.fn);
+            var spy = spyOn(goog.events.Event, 'preventDefault').andCallThrough();
+            goog.events.listen(map, ol.events.MapEventType.DRAGSTART, spy);
+            goog.events.listen(map, ol.events.MapEventType.DRAG, spy);
+            goog.events.listen(map, ol.events.MapEventType.DRAGEND, spy);
 
-            handler.dragger_.dispatchEvent({type: 'start'});
-            handler.dragger_.dispatchEvent({type: 'drag'});
-            handler.dragger_.dispatchEvent({type: 'end'});
+            handler.dragger_.dispatchEvent({type: goog.fx.Dragger.EventType.START});
+            handler.dragger_.dispatchEvent({type: goog.fx.Dragger.EventType.DRAG});
+            handler.dragger_.dispatchEvent({type: goog.fx.Dragger.EventType.END});
 
-            expect(listener.fn.calls[0].args[0].type).toBe('dragstart');
-            expect(listener.fn.calls[1].args[0].type).toBe('drag');
-            expect(listener.fn.calls[2].args[0].type).toBe('dragend');
+            expect(spy.callCount).toEqual(3);
+            expect(spy.argsForCall[0][0].type).toEqual(ol.events.MapEventType.DRAGSTART);
+            expect(spy.argsForCall[1][0].type).toEqual(ol.events.MapEventType.DRAG);
+            expect(spy.argsForCall[2][0].type).toEqual(ol.events.MapEventType.DRAGEND);
         });
 
         it('sets the dragged state during a drag sequence', function() {
-            var states = {};
-            var handler = new ol.handler.Drag(map, states);
+            handler.dragger_.dispatchEvent({type: goog.fx.Dragger.EventType.DRAG});
+            expect(states.dragged).toBeTruthy();
 
-            handler.dragger_.dispatchEvent({type: 'drag'});
-            expect(states.dragged).toBe(true);
-
-            handler.dragger_.dispatchEvent({type: 'start'});
-            expect(states.dragged).toBe(false);
+            handler.dragger_.dispatchEvent({type: goog.fx.Dragger.EventType.START});
+            expect(states.dragged).toBeFalsy();
         });
 
         it('sets deltaX and deltaY on the ol.event.MapEvent', function() {
-            var handler = new ol.handler.Drag(map, {});
-            goog.events.listen(map, 'drag', listener.fn);
+            var spy = spyOn(goog.events.Event, 'preventDefault').andCallThrough();
+            goog.events.listen(map, ol.events.MapEventType.DRAG, spy);
 
-            handler.dragger_.dispatchEvent({type: 'start', clientX: 2, clientY: 4});
-            handler.dragger_.dispatchEvent({type: 'drag', clientX: 1, clientY: 2});
-            handler.dragger_.dispatchEvent({type: 'drag', clientX: 2, clientY: 4});
+            handler.dragger_.dispatchEvent({type: goog.fx.Dragger.EventType.START,
+                                            clientX: 2, clientY: 4});
+            handler.dragger_.dispatchEvent({type: goog.fx.Dragger.EventType.DRAG,
+                                            clientX: 1, clientY: 2});
+            handler.dragger_.dispatchEvent({type: goog.fx.Dragger.EventType.DRAG,
+                                            clientX: 2, clientY: 4});
 
-            expect(listener.fn.calls[0].args[0].deltaX).toBe(-1);
-            expect(listener.fn.calls[0].args[0].deltaY).toBe(-2);
-            expect(listener.fn.calls[1].args[0].deltaX).toBe(1);
-            expect(listener.fn.calls[1].args[0].deltaY).toBe(2);
+            expect(spy.callCount).toEqual(2);
+            expect(spy.argsForCall[0][0].deltaX).toEqual(-1);
+            expect(spy.argsForCall[0][0].deltaY).toEqual(-2);
+            expect(spy.argsForCall[1][0].deltaX).toEqual(1);
+            expect(spy.argsForCall[1][0].deltaY).toEqual(2);
         });
 
         it('calls the default action', function() {
             var handler = new ol.handler.Drag(map, {});
-            spyOn(handler, 'defaultDrag');
+            var spy spyOn(handler, 'defaultDrag');
 
-            handler.dragger_.dispatchEvent({type: 'drag'});
-            expect(handler.defaultDrag).toHaveBeenCalled();
+            handler.dragger_.dispatchEvent({type: goog.fx.Dragger.EventType.DRAG});
+            expect(spy).toHaveBeenCalled();
         });
     });
 });
