@@ -93,6 +93,24 @@ ol.MapRenderer.prototype.createLayerRenderer = goog.abstractMethod;
 
 
 /**
+ * @protected
+ * @param {function(this: T, ol.LayerRenderer)} f Function.
+ * @param {T=} opt_obj The object to be used for the value of 'this' within f.
+ * @template T
+ */
+ol.MapRenderer.prototype.forEachLayerRenderer = function(f, opt_obj) {
+  var layers = this.getLayers();
+  if (goog.isDefAndNotNull(layers)) {
+    layers.forEach(function(layer) {
+      var key = goog.getUid(layer);
+      var layerRenderer = this.layerRenderers_[key];
+      f.call(opt_obj, layerRenderer);
+    }, this);
+  }
+};
+
+
+/**
  * @return {ol.Camera} Camera.
  */
 ol.MapRenderer.prototype.getCamera = function() {
