@@ -176,8 +176,7 @@ ol.MapRenderer.prototype.handleCameraChanged = function() {
 /**
  * @protected
  */
-ol.MapRenderer.prototype.handleCameraPropertyChanged = function() {
-};
+ol.MapRenderer.prototype.handleCameraPropertyChanged = goog.nullFunction;
 
 
 /**
