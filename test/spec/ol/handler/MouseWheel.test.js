@@ -32,12 +32,13 @@ describe('ol.handler.MouseWheel', function() {
         });
 
         it('calls the default action on the default control', function() {
-            var control = {handleEvent: jasmine.createSpy()};
-            map.setDefaultMouseWheelControl(control);
+            var control = new ol.control.DefaultControl();
+            spyOn(control, 'defaultMouseWheel');
+            map.setDefaultControl(control);
             var handler = new ol.handler.MouseWheel(map, {});
 
             handler.handleMouseWheel(new goog.events.MouseWheelEvent(1, 'foo', 0, 1));
-            expect(control.handleEvent).toHaveBeenCalled();
+            expect(control.defaultMouseWheel).toHaveBeenCalled();
         });
 
     });

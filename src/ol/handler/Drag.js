@@ -4,8 +4,7 @@
  * Provides a class for listening to drag sequences on a DOM element and
  * dispatching dragstart, drag and dragend events to a map object.
  *
- * Calls handleDragEvent on the map if default is not prevented by
- * listeners.
+ * The default behavior for the drag event is moving the map.
  */
 
 goog.provide('ol.handler.Drag');
@@ -102,7 +101,10 @@ ol.handler.Drag.prototype.handleDrag = function(e) {
     this.prevY_ = e.clientY;
     var rt = goog.events.dispatchEvent(this.map_, newE);
     if (rt) {
-        this.map_.handleDragEvent(newE);
+        var defaultControl = this.map_.getDefaultControl();
+        if (defaultControl) {
+            defaultControl.defaultDrag(newE);
+        }
     }
 };
 

@@ -4,8 +4,7 @@
  * Provides a class for listening to mousewheel events on a DOM element
  * and dispatching mousewheel events to a map instance.
  *
- * Calls handleMouseWheelEvent on the map if default is not prevented by
- * listeners.
+ * The default behavior for the mousewheel event is zooming the map.
  */
 
 goog.provide('ol.handler.MouseWheel');
@@ -48,6 +47,9 @@ ol.handler.MouseWheel.prototype.handleMouseWheel = function(e) {
     var newE = new ol.events.MapEvent(ol.events.MapEventType.MOUSEWHEEL, e);
     var rt = goog.events.dispatchEvent(this.map_, newE);
     if (rt) {
-        this.map_.handleMouseWheelEvent(newE);
+        var defaultControl = this.map_.getDefaultControl();
+        if (defaultControl) {
+            defaultControl.defaultMouseWheel(newE);
+        }
     }
 };
