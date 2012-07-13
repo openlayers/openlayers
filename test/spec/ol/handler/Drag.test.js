@@ -17,35 +17,35 @@ describe('ol.handler.Drag', function() {
         });
 
     });
-    
+
     describe('dispatching events', function() {
-        
+
         it('dragstart, drag and dragend events', function() {
             var handler = new ol.handler.Drag(map, {});
             goog.events.listen(map, 'dragstart', listener.fn);
             goog.events.listen(map, 'drag', listener.fn);
             goog.events.listen(map, 'dragend', listener.fn);
-            
+
             handler.dragger_.dispatchEvent({type: 'start'});
             handler.dragger_.dispatchEvent({type: 'drag'});
             handler.dragger_.dispatchEvent({type: 'end'});
-            
+
             expect(listener.fn.calls[0].args[0].type).toBe('dragstart');
             expect(listener.fn.calls[1].args[0].type).toBe('drag');
             expect(listener.fn.calls[2].args[0].type).toBe('dragend');
         });
-        
+
         it('sets the dragged state during a drag sequence', function() {
             var states = {};
             var handler = new ol.handler.Drag(map, states);
-            
+
             handler.dragger_.dispatchEvent({type: 'drag'});
             expect(states.dragged).toBe(true);
-            
+
             handler.dragger_.dispatchEvent({type: 'start'});
             expect(states.dragged).toBe(false);
         });
-        
+
         it('sets deltaX and deltaY on the ol.event.MapEvent', function() {
             var handler = new ol.handler.Drag(map, {});
             goog.events.listen(map, 'drag', listener.fn);
@@ -64,7 +64,7 @@ describe('ol.handler.Drag', function() {
             var control = {handleEvent: jasmine.createSpy()};
             map.setDefaultDragControl(control);
             var handler = new ol.handler.Drag(map, {});
-            
+
             handler.dragger_.dispatchEvent({type: 'drag'});
             expect(control.handleEvent).toHaveBeenCalled();
         });
