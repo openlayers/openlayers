@@ -1,4 +1,5 @@
 goog.provide('ol.MapRenderer');
+goog.provide('ol.MapRendererProperty');
 
 goog.require('goog.array');
 goog.require('goog.events');
