@@ -61,13 +61,12 @@ describe('ol.handler.Drag', function() {
         });
 
         it('calls the default action on the default control', function() {
-            var control = new ol.control.DefaultControl();
-            spyOn(control, 'defaultDrag');
-            map.setDefaultControl(control);
+            var control = {handleEvent: jasmine.createSpy()};
+            map.setDefaultDragControl(control);
             var handler = new ol.handler.Drag(map, {});
             
             handler.dragger_.dispatchEvent({type: 'drag'});
-            expect(control.defaultDrag).toHaveBeenCalled();
+            expect(control.handleEvent).toHaveBeenCalled();
         });
     });
 });

@@ -1,34 +1,36 @@
-goog.provide('ol.control.Navigation');
+/**
+ * @fileoverview Mouse Wheel Zoom Control.
+ *
+ * This control registers itself in the map as the default mouse wheel control.
+ */
 
-goog.require('ol.control.DefaultControl');
-goog.require('ol.Map');
+goog.provide('ol.control.MouseWheelZoom');
+
+goog.require('ol.control.Control');
 
 /**
  * @constructor
- * @extends {ol.control.DefaultControl}
+ * @extends {ol.control.Control}
  * @param {boolean|undefined} opt_autoActivate
  */
-ol.control.Navigation = function(opt_autoActivate) {
+ol.control.MouseWheelZoom = function(opt_autoActivate) {
     goog.base(this, opt_autoActivate);
 };
-goog.inherits(ol.control.Navigation, ol.control.DefaultControl);
-
+goog.inherits(ol.control.MouseWheelZoom, ol.control.Control);
 
 /**
- * @inheritDoc
+ * @param {ol.Map} map
  */
-ol.control.Navigation.prototype.defaultDrag = function(e) {
-    if (ol.ENABLE_DRAG_HANDLER) {
-        var deltaX = /** @type {number} */ e.deltaX;
-        var deltaY = /** @type {number} */ e.deltaY;
-        this.map_.moveByViewportPx(deltaX, deltaY);
-    }
+ol.control.MouseWheelZoom.prototype.setMap = function(map) {
+    goog.base(this, 'setMap', map);
+    this.map_.setDefaultMouseWheelControl(this);
 };
 
 /**
- * @inheritDoc
+ * @param {ol.events.MapEvent} e
  */
-ol.control.Navigation.prototype.defaultMouseWheel = function(e) {
+ol.control.MouseWheelZoom.prototype.handleEvent = function(e) {
+    // FIXME do we want to test ENABLE_DRAG_HANDLER here?
     if (ol.ENABLE_MOUSEWHEEL_HANDLER) {
         var me = this,
             originalE = e.originalEvent;
@@ -51,4 +53,4 @@ ol.control.Navigation.prototype.defaultMouseWheel = function(e) {
     }
 };
 
-ol.control.addControl('navigation', ol.control.Navigation);
+ol.control.addControl('mousewheelzoom', ol.control.MouseWheelZoom);

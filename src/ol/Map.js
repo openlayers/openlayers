@@ -91,9 +91,15 @@ ol.Map = function() {
     
     /**
      * @private
-     * @type {ol.control.DefaultControl}
+     * @type {ol.control.Control}
      */
-    this.defaultControl_ = null;
+    this.defaultDragControl_ = null;
+
+    /**
+     * @private
+     * @type {ol.control.Control}
+     */
+    this.defaultMouseWheelControl_ = null;
 
     /**
      * @private
@@ -163,7 +169,7 @@ ol.Map.DEFAULT_TILE_SIZE = 256;
   @const
   @type {Array.<string>}
  */
-ol.Map.CONTROLS = ["navigation", "attribution", "zoom"];
+ol.Map.CONTROLS = ["dragpan", "mousewheelzoom", "attribution", "zoom"];
 
 /**
  * @return {ol.Loc} Map center in map projection.
@@ -450,17 +456,35 @@ ol.Map.prototype.addLayers = function(layers) {
 
 
 /**
- * @returns {ol.control.DefaultControl}
+ * @param {ol.control.Control} control
  */
-ol.Map.prototype.getDefaultControl = function() {
-    return this.defaultControl_;
+ol.Map.prototype.setDefaultDragControl = function(control) {
+    this.defaultDragControl_ = control;
 };
 
 /**
- * @param {ol.control.DefaultControl} control
+ * @param {ol.events.MapEvent} e
  */
-ol.Map.prototype.setDefaultControl = function(control) {
-    this.defaultControl_ = control;
+ol.Map.prototype.handleDragEvent = function(e) {
+    if (!goog.isNull(this.defaultDragControl_)) {
+        this.defaultDragControl_.handleEvent(e);
+    }
+};
+
+/**
+ * @param {ol.control.Control} control
+ */
+ol.Map.prototype.setDefaultMouseWheelControl = function(control) {
+    this.defaultMouseWheelControl_ = control;
+};
+
+/**
+ * @param {ol.events.MapEvent} e
+ */
+ol.Map.prototype.handleMouseWheelEvent = function(e) {
+    if (!goog.isNull(this.defaultMouseWheelControl_)) {
+        this.defaultMouseWheelControl_.handleEvent(e);
+    }
 };
 
 /**
