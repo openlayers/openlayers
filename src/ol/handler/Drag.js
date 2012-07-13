@@ -95,8 +95,8 @@ ol.handler.Drag.prototype.handleDragStart = function(e) {
 ol.handler.Drag.prototype.handleDrag = function(e) {
     this.states_.dragged = true;
     var newE = new ol.events.MapEvent(ol.events.MapEventType.DRAG, e);
-    newE.delementaX = e.clientX - this.prevX_;
-    newE.delementaY = e.clientY - this.prevY_;
+    newE.deltaX = e.clientX - this.prevX_;
+    newE.deltaY = e.clientY - this.prevY_;
     this.prevX_ = e.clientX;
     this.prevY_ = e.clientY;
     var rt = goog.events.dispatchEvent(this.map_, newE);
@@ -109,9 +109,9 @@ ol.handler.Drag.prototype.handleDrag = function(e) {
  * @param {ol.events.MapEvent} e
  */
 ol.handler.Drag.prototype.defaultDrag = function(e) {
-    var delementaX = /** @type {number} */ e.delementaX;
-    var delementaY = /** @type {number} */ e.delementaY;
-    this.map_.moveByViewportPx(delementaX, delementaY);
+    var deltaX = /** @type {number} */ e.deltaX;
+    var deltaY = /** @type {number} */ e.deltaY;
+    this.map_.moveByViewportPx(deltaX, deltaY);
 };
 
 /**
