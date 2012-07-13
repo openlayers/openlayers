@@ -161,13 +161,14 @@ ol.MapRenderer.prototype.handleCameraChanged = function() {
     this.cameraListenerKeys_ = null;
   }
   var camera = this.getCamera();
-  if (!goog.isNull(camera)) {
+  if (goog.isDefAndNotNull(camera)) {
     this.cameraListenerKeys_ = goog.array.map(
         goog.object.getValues(ol.CameraProperty),
         function(cameraProperty) {
           return goog.events.listen(camera, cameraProperty,
               this.handleCameraPropertyChanged, false, this);
-        });
+        },
+        this);
   }
 };
 
@@ -245,7 +246,7 @@ ol.MapRenderer.prototype.handleLayersChanged = function() {
     this.layersListenerKeys_ = null;
   }
   var layers = this.getLayers();
-  if (!goog.isNull(layers)) {
+  if (goog.isDefAndNotNull(layers)) {
     this.layersListenerKeys_ = [
       goog.events.listen(layers, ol.ArrayEventType.INSERT_AT,
           this.handleLayersInsertAt, false, this),
