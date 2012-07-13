@@ -3,24 +3,43 @@ goog.provide('ol.Map');
 goog.require('ol.Loc');
 goog.require('ol.Bounds');
 goog.require('ol.Projection');
-goog.require('ol.event');
-goog.require('ol.event.Events');
 goog.require('ol.control.Control');
 goog.require('ol.renderer.MapRenderer');
+goog.require('ol.handler.Drag');
+goog.require('ol.handler.MouseWheel');
+goog.require('ol.handler.Click');
 
 goog.require('goog.dom');
 goog.require('goog.math');
 goog.require('goog.asserts');
+goog.require('goog.events.EventTarget');
 
+/**
+ * @define {boolean} Whether to enable the drag handler.
+ */
+ol.ENABLE_DRAG_HANDLER = true;
+
+/**
+ * @define {boolean} Whether to enable the mousewheel handler.
+ */
+ol.ENABLE_MOUSEWHEEL_HANDLER = true;
+
+/**
+ * @define {boolean} Whether to enable the click handler.
+ */
+ol.ENABLE_CLICK_HANDLER = true;
 
 /**
  * @export
  * @constructor
+ * @extends {goog.events.EventTarget}
  *
  * @event layeradd Fires when a layer is added to the map. The event object
  *     contains a 'layer' property referencing the added layer.
  */
 ol.Map = function() {
+
+    goog.base(this);
 
     /**
      * @private
@@ -108,19 +127,11 @@ ol.Map = function() {
     
     /**
      * @private
-     * @type {ol.event.Events}
-     */
-    this.events_ = new ol.event.Events(
-        this, undefined, false, ['drag', 'scroll']
-    );
-    
-    /**
-     * @private
      * @type {Element}
      */
     this.container_ = null;
-
 };
+goog.inherits(ol.Map, goog.events.EventTarget);
 
 /**
   @const
@@ -146,7 +157,7 @@ ol.Map.DEFAULT_TILE_SIZE = 256;
   @const
   @type {Array.<string>}
  */
-ol.Map.DEFAULT_CONTROLS = ["attribution", "navigation", "zoom"];
+ol.Map.DEFAULT_CONTROLS = ["attribution", "zoom"];
 
 /**
  * @return {ol.Loc} Map center in map projection.
@@ -426,7 +437,7 @@ ol.Map.prototype.addLayers = function(layers) {
     for (var i=0, ii=layers.length; i<ii; ++i) {
         layer = layers[i];
         this.layers_.push(layer);
-        this.events_.triggerEvent('layeradd', {'layer': layer});
+        goog.events.dispatchEvent(this, {type: 'layeradd', 'layer': layer});
     }
     this.conditionallyRender();
 };
@@ -502,9 +513,32 @@ ol.Map.prototype.setViewport = function() {
             'class': 'ol-viewport',
             'style': 'width:100%;height:100%;top:0;left:0;position:relative;overflow:hidden'
         }));
+        this.initHandlers();
     }
-    this.events_.setElement(this.viewport_);
     goog.dom.appendChild(this.container_, this.viewport_);
+};
+
+/**
+ * Init the map event handlers.
+ */
+ol.Map.prototype.initHandlers = function() {
+    goog.asserts.assert(!goog.isNull(this.viewport_));
+
+    var handler,
+        states = /** @type {ol.handler.states} */ ({});
+
+    if (ol.ENABLE_DRAG_HANDLER) {
+        handler = new ol.handler.Drag(this, states);
+        this.registerDisposable(handler);
+    }
+    if (ol.ENABLE_MOUSEWHEEL_HANDLER) {
+        handler = new ol.handler.MouseWheel(this, states);
+        this.registerDisposable(handler);
+    }
+    if (ol.ENABLE_CLICK_HANDLER) {
+        handler = new ol.handler.Click(this, states);
+        this.registerDisposable(handler);
+    }
 };
 
 ol.Map.prototype.createRenderer = function() {
@@ -525,13 +559,6 @@ ol.Map.prototype.createRenderer = function() {
     if (!goog.isNull(viewport)) {
         goog.dom.append(viewport, this.mapOverlay_, this.staticOverlay_);
     } 
-};
-
-/**
- * @return {ol.event.Events} the events instance for this map
- */
-ol.Map.prototype.getEvents = function() {
-    return this.events_;
 };
 
 /**
@@ -576,9 +603,10 @@ ol.Map.prototype.getStaticOverlay = function() {
 };
 
 /**
- * @export
+ * @inheritDoc
  */
-ol.Map.prototype.destroy = function() {
+ol.Map.prototype.disposeInternal = function() {
+    goog.base(this, 'disposeInternal');
     //remove layers, etc.
     for (var key in this) {
         delete this[key];

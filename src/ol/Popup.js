@@ -208,7 +208,8 @@ ol.Popup.prototype.doOpen = function(opt_arg) {
             goog.dom.appendChild(this.container_, closeButton);
             goog.dom.classes.add(closeButton,  ol.Popup.CLASS_NAME+'-close');
         }
-        this.map_.getEvents().register('click', this.clickHandler, this);
+        goog.events.listen(this.map_.getViewport(), 'click', this.clickHandler,
+                           undefined, this);
         goog.dom.appendChild(this.map_.getMapOverlay(), this.container_);
     }
     

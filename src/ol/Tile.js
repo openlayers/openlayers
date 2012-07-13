@@ -1,13 +1,15 @@
 goog.provide('ol.Tile');
 
+goog.require('ol.Bounds');
+
+goog.require('goog.events.EventTarget');
 goog.require('goog.events');
 goog.require('goog.asserts');
-goog.require('ol.Bounds');
-goog.require('ol.event.Events');
 
 /**
  * The Tile class.
  * @constructor
+ * @extends {goog.events.EventTarget}
  * @param {string} url
  * @param {ol.Bounds|undefined} opt_bounds
  */
@@ -46,13 +48,8 @@ ol.Tile = function(url, opt_bounds) {
                            this.handleImageLoad, false, this);
     goog.events.listenOnce(this.img_, goog.events.EventType.ERROR,
                            this.handleImageError, false, this);
-
-    /**
-     * @private
-     * @type {ol.event.Events}
-     */
-    this.events_ = new ol.event.Events(this);
 };
+goog.inherits(ol.Tile, goog.events.EventTarget);
 
 /**
  * @protected
@@ -104,7 +101,7 @@ ol.Tile.prototype.handleImageLoad = function(evt) {
     this.loaded_ = true;
     this.img_.style.visibility = "inherit";
     this.img_.style.opacity = 1; // TODO: allow for layer opacity
-    this.events_.triggerEvent('load');
+    goog.events.dispatchEvent(this, 'load');
 };
 
 /**
@@ -113,7 +110,7 @@ ol.Tile.prototype.handleImageLoad = function(evt) {
  */
 ol.Tile.prototype.handleImageError = function(evt) {
     this.loading_ = false;
-    this.events_.triggerEvent('error');
+    goog.events.dispatchEvent(this, 'error');
 };
 
 /**
@@ -136,7 +133,7 @@ ol.Tile.prototype.isLoading = function() {
  *
  */
 ol.Tile.prototype.destroy = function() {
-    this.events_.triggerEvent('destroy');
+    goog.events.dispatchEvent(this, 'destroy');
 };
 
 /**
