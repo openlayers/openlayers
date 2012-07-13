@@ -7,6 +7,7 @@ goog.require('ol.loc');
 goog.require('ol.projection');
 goog.require('ol.error');
 
+goog.require('goog.dispose');
 
 /**
  * @typedef {ol.Map|{center, zoom, numZoomLevels, projection, userProjection, maxExtent, maxResolution, resolutions, renderTo, layers, controls}|string}
@@ -246,4 +247,10 @@ ol.Map.prototype.maxExtent = function(opt_arg) {
 ol.Map.prototype.renderTo = function(arg) {
     this.setContainer(goog.dom.getElement(arg));
     return this;
+};
+
+/**
+ */
+ol.Map.prototype.destroy = function() {
+    goog.dispose(this);
 };

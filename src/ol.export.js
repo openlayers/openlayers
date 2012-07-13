@@ -130,4 +130,3 @@ goog.exportProperty(ol.renderer.Composite, 'isSupported', ol.renderer.Composite.
 goog.exportProperty(ol.renderer.TileLayerRenderer, 'isSupported', ol.renderer.TileLayerRenderer.isSupported);
 goog.exportProperty(ol.renderer.TileLayerRenderer, 'canRender', ol.renderer.TileLayerRenderer.canRender);
 goog.exportProperty(ol.renderer.TileLayerRenderer, 'getType', ol.renderer.TileLayerRenderer.getType);
-ol.control.addControl('navigation', ol.control.Navigation);

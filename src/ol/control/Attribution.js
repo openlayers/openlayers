@@ -1,9 +1,10 @@
 goog.provide('ol.control.Attribution');
 
-goog.require('ol.event');
 goog.require('ol.control.Control');
 
 goog.require('goog.dom');
+goog.require('goog.events');
+goog.require('goog.events.Event');
 
 
 /**
@@ -43,7 +44,8 @@ ol.control.Attribution.prototype.setMap = function(map) {
     var staticOverlay = map.getStaticOverlay();
     if (goog.isNull(this.container_)) {
         this.container_ = goog.dom.createDom('div', this.CLS);
-        goog.events.listen(this.container_, 'click', ol.event.stopPropagation);
+        goog.events.listen(this.container_, 'click',
+                           goog.events.Event.stopPropagation);
     }
     if (!goog.isNull(staticOverlay)) {
         goog.dom.append(staticOverlay, this.container_);
@@ -55,7 +57,7 @@ ol.control.Attribution.prototype.setMap = function(map) {
 ol.control.Attribution.prototype.activate = function() {
     var active = goog.base(this, 'activate');
     if (active) {
-        this.map_.getEvents().register('layeradd', this.update, this);
+        goog.events.listen(this.map_, 'layeradd', this.update, false, this);
         this.update();
     }
     return active;
@@ -65,7 +67,7 @@ ol.control.Attribution.prototype.activate = function() {
 ol.control.Attribution.prototype.deactivate = function() {
     var inactive = goog.base(this, 'deactivate');
     if (inactive) {
-        this.map_.getEvents().unregister('layeradd', this.update, this);
+        goog.events.unlisten(this.map_, 'layeradd', this.update, false, this);
     }
     return inactive;
 };
@@ -84,7 +86,8 @@ ol.control.Attribution.prototype.update = function() {
 };
 
 ol.control.Attribution.prototype.destroy = function() {
-    goog.events.unlisten(this.container_, 'click', ol.event.stopPropagation);
+    goog.events.unlisten(this.container_, 'click',
+                         goog.events.Event.stopPropagation);
     goog.dom.removeNode(this.container_);
     goog.base(this, 'destroy');
 };

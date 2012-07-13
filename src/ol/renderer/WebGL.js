@@ -8,6 +8,7 @@ goog.require('ol.renderer.MapRenderer');
 goog.require('ol.layer.Layer');
 goog.require('ol.Loc');
 
+goog.require('goog.events');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.vec.Mat4');
@@ -237,8 +238,10 @@ ol.renderer.WebGL.prototype.draw = function(layers, center, resolution, animate)
                 tile = row[j];
                 if (!tile.isLoaded()) {
                     if (!tile.isLoading()) {
-                        tile.register('load', this.handleTileLoad, this);
-                        tile.register('destroy', this.handleTileDestroy, this);
+                        goog.events.listen(tile, 'load', this.handleTileLoad,
+                                           undefined, this);
+                        goog.events.listen(tile, 'destroy', this.handleTileDestroy,
+                                           undefined, this);
                         tile.load();
                     }
                     continue;
