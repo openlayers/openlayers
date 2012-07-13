@@ -118,5 +118,5 @@ ol.control.Zoom.RES = {
     IN_CLS: 'ol-control-zoom-in',
     OUT_CLS: 'ol-control-zoom-out',
     IN_TEXT: '+',
-    OUT_TEXT: '\u2013'
+    OUT_TEXT: '−'
 };
