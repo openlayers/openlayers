@@ -9,6 +9,7 @@ goog.require('goog.object');
 goog.require('ol.Array');
 goog.require('ol.Camera');
 goog.require('ol.CameraProperty');
+goog.require('ol.Extent');
 goog.require('ol.LayerRenderer');
 goog.require('ol.Object');
 goog.require('ol.Projection');
@@ -46,6 +47,12 @@ ol.Map = function(target, opt_values) {
    * @type {goog.math.Size}
    */
   this.size_ = new goog.math.Size(target.clientWidth, target.clientHeight);
+
+  /**
+   * @private
+   * @type {ol.Extent}
+   */
+  this.extent_ = null;
 
   /**
    * @private
@@ -119,6 +126,14 @@ ol.Map.prototype.getCamera = function() {
 
 
 /**
+ * @return {ol.Extent} Extent.
+ */
+ol.Map.prototype.getExtent = function() {
+  return this.extent_.clone();
+};
+
+
+/**
  * @return {ol.Array} Layers.
  */
 ol.Map.prototype.getLayers = function() {
@@ -131,6 +146,19 @@ ol.Map.prototype.getLayers = function() {
  */
 ol.Map.prototype.getProjection = function() {
   return /** @type {ol.Projection} */ (this.get(ol.MapProperty.PROJECTION));
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @return {number} Resolution.
+ */
+ol.Map.prototype.getResolutionForExtent = function(extent) {
+  var size = this.size_;
+  var xResolution = (extent.right - extent.left) / size.width;
+  var yResolution = (extent.top - extent.bottom) / size.height;
+  // FIXME support discrete resolutions
+  return Math.max(xResolution, yResolution);
 };
 
 
@@ -273,6 +301,18 @@ ol.Map.prototype.handleTargetResize = function(event) {
  */
 ol.Map.prototype.setCamera = function(camera) {
   this.set(ol.MapProperty.CAMERA, camera);
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ */
+ol.Map.prototype.setExtent = function(extent) {
+  var camera = this.getCamera();
+  var position = extent.getCenter();
+  camera.setPosition(position);
+  var resolution = this.getResolutionForExtent(extent);
+  camera.setResolution(resolution);
 };
 
 
