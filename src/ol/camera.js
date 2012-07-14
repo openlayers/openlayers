@@ -54,6 +54,15 @@ ol.Camera.prototype.getRotation = function() {
 
 
 /**
+ * @return {boolean} Is fully defined.
+ */
+ol.Camera.prototype.isFullyDefined = function() {
+  return goog.isDef(this.getPosition()) && goog.isDef(this.getResolution()) &&
+      goog.isDef(this.getRotation());
+};
+
+
+/**
  * @param {goog.math.Coordinate} position Position.
  */
 ol.Camera.prototype.setPosition = function(position) {
