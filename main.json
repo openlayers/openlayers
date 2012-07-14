@@ -10,6 +10,8 @@
 
   "define": {
     // "goog.dom.ASSUME_STANDARDS_MODE": true,
+    // "ol.ENABLE_DOM": false,
+    // "ol.ENABLE_WEBGL": false,
     "goog.DEBUG": false
   },
 
