@@ -124,9 +124,7 @@ ol.Map.prototype.forEachLayerRenderer = function(f, opt_obj) {
  * @return {goog.math.Coordinate|undefined} Center.
  */
 ol.Map.prototype.getCenter = function() {
-  var center = /** @type {goog.math.Coordinate} */ (
-      this.get(ol.MapProperty.CENTER));
-  return goog.isDef(center) ? center.clone() : undefined;
+  return /** @type {goog.math.Coordinate} */ (this.get(ol.MapProperty.CENTER));
 };
 
 
@@ -134,8 +132,7 @@ ol.Map.prototype.getCenter = function() {
  * @return {ol.Extent|undefined} Extent.
  */
 ol.Map.prototype.getExtent = function() {
-  var extent = /** @type {ol.Extent} */ (this.get(ol.MapProperty.EXTENT));
-  return goog.isDef(extent) ? extent.clone() : undefined;
+  return /** @type {ol.Extent} */ (this.get(ol.MapProperty.EXTENT));
 };
 
 
