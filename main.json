@@ -28,17 +28,17 @@
 
   "checks": {
     // acceptable values are "ERROR", "WARNING", and "OFF"
-    "accessControls": "WARNING",
-    "visibility": "WARNING",
-    "checkTypes": "WARNING",
-    "checkRegExp": "WARNING",
-    "checkVars": "WARNING",
-    "deprecated": "WARNING",
-    "fileoverviewTags": "WARNING",
-    "invalidCasts": "WARNING",
-    "missingProperties": "WARNING",
-    "nonStandardJsDocs": "WARNING",
-    "undefinedVars": "WARNING"
+    "accessControls": "ERROR",
+    "visibility": "ERROR",
+    "checkTypes": "ERROR",
+    "checkRegExp": "ERROR",
+    "checkVars": "ERROR",
+    "deprecated": "ERROR",
+    "fileoverviewTags": "ERROR",
+    "invalidCasts": "ERROR",
+    "missingProperties": "ERROR",
+    "nonStandardJsDocs": "ERROR",
+    "undefinedVars": "ERROR"
   },
 
   "jsdoc-html-output-path": "jsdoc"
