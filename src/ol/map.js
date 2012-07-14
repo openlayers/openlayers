@@ -44,6 +44,18 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
 
   /**
    * @private
+   * @type {boolean}
+   */
+  this.animating_ = false;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.freezeCount_ = 0;
+
+  /**
+   * @private
    * @type {HTMLDivElement}
    */
   this.target_ = target;
@@ -117,6 +129,13 @@ ol.Map.prototype.forEachLayerRenderer = function(f, opt_obj) {
       f.call(opt_obj, layerRenderer);
     }, this);
   }
+};
+
+
+/**
+ */
+ol.Map.prototype.freeze = function() {
+  ++this.freezeCount_;
 };
 
 
@@ -366,6 +385,28 @@ ol.Map.prototype.recalculateExtent_ = function() {
 
 
 /**
+ * @protected
+ */
+ol.Map.prototype.redraw = function() {
+  if (!this.animating_) {
+    if (this.freezeCount_ === 0) {
+      this.redrawInternal();
+    } else {
+      this.dirty_ = true;
+    }
+  }
+};
+
+
+/**
+ * @protected
+ */
+ol.Map.prototype.redrawInternal = function() {
+  this.dirty_ = false;
+};
+
+
+/**
  * @param {goog.math.Coordinate} center Center.
  */
 ol.Map.prototype.setCenter = function(center) {
@@ -394,8 +435,10 @@ ol.Map.prototype.setDefaultCenterAndResolution_ = function() {
  * @param {ol.Extent} extent Extent.
  */
 ol.Map.prototype.setExtent = function(extent) {
-  this.setCenter(extent.getCenter());
-  this.setResolution(this.getResolutionForExtent(extent));
+  this.whileFrozen(function() {
+    this.setCenter(extent.getCenter());
+    this.setResolution(this.getResolutionForExtent(extent));
+  }, this);
 };
 
 
@@ -432,4 +475,31 @@ ol.Map.prototype.setSize = function(size) {
  */
 ol.Map.prototype.setProjection = function(projection) {
   this.set(ol.MapProperty.PROJECTION, projection);
+};
+
+
+/**
+ * @param {function(this: T)} f Function.
+ * @param {T=} opt_obj Object.
+ * @template T
+ */
+ol.Map.prototype.whileFrozen = function(f, opt_obj) {
+  this.freeze();
+  try {
+    f.call(opt_obj);
+  } finally {
+    this.thaw();
+  }
+};
+
+
+/**
+ */
+ol.Map.prototype.thaw = function() {
+  goog.asserts.assert(this.freezeCount_ > 0);
+  if (--this.freezeCount_ === 0) {
+    if (!this.animating_ && !this.dirty_) {
+      this.redrawInternal();
+    }
+  }
 };

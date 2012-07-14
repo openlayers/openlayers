@@ -110,7 +110,7 @@ ol.webgl.Map.prototype.getGL = function() {
  */
 ol.webgl.Map.prototype.handleCenterChanged = function() {
   goog.base(this, 'handleCenterChanged');
-  this.redraw_();
+  this.redraw();
 };
 
 
@@ -120,7 +120,7 @@ ol.webgl.Map.prototype.handleCenterChanged = function() {
 ol.webgl.Map.prototype.handleLayerAdd = function(layer) {
   goog.base(this, 'handleLayerAdd', layer);
   if (layer.getVisible()) {
-    this.redraw_();
+    this.redraw();
   }
 };
 
@@ -131,7 +131,7 @@ ol.webgl.Map.prototype.handleLayerAdd = function(layer) {
 ol.webgl.Map.prototype.handleLayerRemove = function(layer) {
   goog.base(this, 'handleLayerRemove', layer);
   if (layer.getVisible()) {
-    this.redraw_();
+    this.redraw();
   }
 };
 
@@ -141,7 +141,7 @@ ol.webgl.Map.prototype.handleLayerRemove = function(layer) {
  */
 ol.webgl.Map.prototype.handleResolutionChanged = function() {
   goog.base(this, 'handleResolutionChanged');
-  this.redraw_();
+  this.redraw();
 };
 
 
@@ -159,7 +159,7 @@ ol.webgl.Map.prototype.handleSizeChanged = function() {
   var gl = this.gl_;
   if (!goog.isNull(gl)) {
     gl.viewport(0, 0, size.width, size.height);
-    this.redraw_();
+    this.redraw();
   }
 };
 
@@ -194,9 +194,11 @@ ol.webgl.Map.prototype.handleWebGLContextRestored = function() {
 
 
 /**
- * @private
+ * @protected
  */
-ol.webgl.Map.prototype.redraw_ = function() {
+ol.webgl.Map.prototype.redraw = function() {
+
+  goog.base(this, 'redraw');
 
   var gl = this.getGL();
 
