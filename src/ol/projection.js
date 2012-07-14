@@ -175,7 +175,9 @@ ol.Projection.createFromCode = function(code) {
  * @return {boolean} Equivalent.
  */
 ol.Projection.equivalent = function(projection1, projection2) {
-  if (projection1.getUnits() != projection2.getUnits()) {
+  if (projection1 === projection2) {
+    return true;
+  } else if (projection1.getUnits() != projection2.getUnits()) {
     return false;
   } else {
     var transform = ol.Projection.getTransform(projection1, projection2);
