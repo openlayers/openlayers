@@ -107,7 +107,9 @@ ol.webgl.Map.prototype.handleCenterChanged = function() {
  */
 ol.webgl.Map.prototype.handleLayerAdd = function(layer) {
   goog.base(this, 'handleLayerAdd', layer);
-  this.redraw_();
+  if (layer.getVisible()) {
+    this.redraw_();
+  }
 };
 
 
@@ -116,7 +118,9 @@ ol.webgl.Map.prototype.handleLayerAdd = function(layer) {
  */
 ol.webgl.Map.prototype.handleLayerRemove = function(layer) {
   goog.base(this, 'handleLayerRemove', layer);
-  this.redraw_();
+  if (layer.getVisible()) {
+    this.redraw_();
+  }
 };
 
 
