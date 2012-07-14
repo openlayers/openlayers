@@ -21,8 +21,8 @@
 
   "mode": "ADVANCED",
   "level": "VERBOSE",
-  "pretty-print": true,
-  "debug": true,
+  // "pretty-print": true,
+  // "debug": true,
 
   // "experimental-compiler-options": {
   //    "generateExports": true
