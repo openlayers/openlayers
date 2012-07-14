@@ -8,7 +8,6 @@ goog.require('goog.webgl');
 goog.require('ol.Layer');
 goog.require('ol.Map');
 goog.require('ol.TileLayer');
-goog.require('ol.webgl.IGLObject');
 goog.require('ol.webgl.TileLayerRenderer');
 
 
@@ -25,7 +24,6 @@ ol.webgl.WebGLContextEventType = {
 /**
  * @constructor
  * @extends {ol.Map}
- * @implements {ol.webgl.IGLObject}
  * @param {!HTMLDivElement} target Target.
  * @param {Object.<string, *>=} opt_values Values.
  */
@@ -100,12 +98,10 @@ ol.webgl.Map.prototype.disposeInternal = function() {
 
 
 /**
- * @inheritDoc
+ * @return {WebGLRenderingContext} GL.
  */
 ol.webgl.Map.prototype.getGL = function() {
-  var gl = this.gl_;
-  goog.asserts.assert(!goog.isNull(gl));
-  return gl;
+  return this.gl_;
 };
 
 
@@ -183,6 +179,10 @@ ol.webgl.Map.prototype.handleWebGLContextLost = function(event) {
  * @protected
  */
 ol.webgl.Map.prototype.handleWebGLContextRestored = function() {
+  var gl = this.gl_;
+  gl.clearColor(1, 0, 0, 1);
+  gl.disable(goog.webgl.CULL_FACE);
+  gl.disable(goog.webgl.SCISSOR_TEST);
   var layers = this.getLayers();
   layers.forEach(function(layer) {
     var layerRenderer = this.createLayerRenderer(layer);
@@ -202,25 +202,4 @@ ol.webgl.Map.prototype.redraw_ = function() {
 
   gl.clear(goog.webgl.COLOR_BUFFER_BIT);
 
-};
-
-
-/**
- * @inheritDoc
- */
-ol.webgl.Map.prototype.setGL = function(gl) {
-  if (!goog.isNull(this.gl_)) {
-    this.gl_ = null;
-  }
-  this.gl_ = gl;
-  if (!goog.isNull(gl)) {
-    gl.clearColor(1, 0, 0, 1);
-    gl.disable(goog.webgl.CULL_FACE);
-    gl.disable(goog.webgl.DEPTH_TEST);
-    gl.disable(goog.webgl.SCISSOR_TEST);
-    this.forEachLayerRenderer(function(layerRenderer) {
-      layerRenderer.setGL(gl);
-    });
-    this.redraw_();
-  }
 };
