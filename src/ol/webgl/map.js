@@ -54,6 +54,8 @@ ol.webgl.Map = function(target, opt_values) {
     this.setValues(opt_values);
   }
 
+  this.handleViewportResize();
+
 };
 goog.inherits(ol.webgl.Map, ol.Map);
 
@@ -130,9 +132,19 @@ ol.webgl.Map.prototype.handleResolutionChanged = function() {
 /**
  * @inheritDoc
  */
-ol.webgl.Map.prototype.handleTargetResize = function(event) {
-  goog.base(this, 'handleTargetResize', event);
-  this.updateSize_();
+ol.webgl.Map.prototype.handleSizeChanged = function() {
+  goog.base(this, 'handleSizeChanged');
+  var size = this.getSize();
+  if (!goog.isDef(size)) {
+    return;
+  }
+  this.canvas_.width = size.width;
+  this.canvas_.height = size.height;
+  var gl = this.gl_;
+  if (!goog.isNull(gl)) {
+    gl.viewport(0, 0, size.width, size.height);
+    this.redraw_();
+  }
 };
 
 
@@ -164,22 +176,6 @@ ol.webgl.Map.prototype.setGL = function(gl) {
     this.forEachLayerRenderer(function(layerRenderer) {
       layerRenderer.setGL(gl);
     });
-    this.updateSize_();
-    this.redraw_();
-  }
-};
-
-
-/**
- * @private
- */
-ol.webgl.Map.prototype.updateSize_ = function() {
-  var size = this.getSize();
-  this.canvas_.width = size.width;
-  this.canvas_.height = size.height;
-  var gl = this.gl_;
-  if (!goog.isNull(gl)) {
-    gl.viewport(0, 0, size.width, size.height);
     this.redraw_();
   }
 };

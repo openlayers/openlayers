@@ -2,10 +2,12 @@ goog.provide('ol.Map');
 goog.provide('ol.MapProperty');
 
 goog.require('goog.array');
+goog.require('goog.dom.ViewportSizeMonitor');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.math.Coordinate');
+goog.require('goog.math.Size');
 goog.require('goog.object');
 goog.require('ol.Array');
 goog.require('ol.Extent');
@@ -22,7 +24,8 @@ ol.MapProperty = {
   EXTENT: 'extent',
   LAYERS: 'layers',
   PROJECTION: 'projection',
-  RESOLUTION: 'resolution'
+  RESOLUTION: 'resolution',
+  SIZE: 'size'
 };
 
 
@@ -32,8 +35,10 @@ ol.MapProperty = {
  * @extends {ol.Object}
  * @param {HTMLDivElement} target Target.
  * @param {Object=} opt_values Values.
+ * @param {goog.dom.ViewportSizeMonitor=} opt_viewportSizeMonitor
+ *     Viewport size monitor.
  */
-ol.Map = function(target, opt_values) {
+ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
 
   goog.base(this);
 
@@ -42,12 +47,6 @@ ol.Map = function(target, opt_values) {
    * @type {HTMLDivElement}
    */
   this.target_ = target;
-
-  /**
-   * @private
-   * @type {goog.math.Size}
-   */
-  this.size_ = new goog.math.Size(target.clientWidth, target.clientHeight);
 
   /**
    * @private
@@ -61,8 +60,15 @@ ol.Map = function(target, opt_values) {
    */
   this.layerRenderers_ = {};
 
-  goog.events.listen(target, goog.events.EventType.RESIZE,
-      this.handleTargetResize, false, this);
+  /**
+   * @private
+   * @type {goog.dom.ViewportSizeMonitor}
+   */
+  this.viewportSizeMonitor_ = goog.isDef(opt_viewportSizeMonitor) ?
+      opt_viewportSizeMonitor : new goog.dom.ViewportSizeMonitor();
+
+  goog.events.listen(this.viewportSizeMonitor_, goog.events.EventType.RESIZE,
+      this.handleViewportResize, false, this);
 
   goog.events.listen(
       this, ol.Object.getChangedEventType(ol.MapProperty.CENTER),
@@ -75,6 +81,10 @@ ol.Map = function(target, opt_values) {
   goog.events.listen(
       this, ol.Object.getChangedEventType(ol.MapProperty.RESOLUTION),
       this.handleResolutionChanged, false, this);
+
+  goog.events.listen(
+      this, ol.Object.getChangedEventType(ol.MapProperty.SIZE),
+      this.handleSizeChanged, false, this);
 
   if (goog.isDef(opt_values)) {
     this.setValues(opt_values);
@@ -158,7 +168,8 @@ ol.Map.prototype.getResolution = function() {
  * @return {number} Resolution.
  */
 ol.Map.prototype.getResolutionForExtent = function(extent) {
-  var size = this.size_;
+  var size = this.getSize();
+  goog.asserts.assert(goog.isDef(size));
   var xResolution = (extent.right - extent.left) / size.width;
   var yResolution = (extent.top - extent.bottom) / size.height;
   return Math.max(xResolution, yResolution);
@@ -167,10 +178,11 @@ ol.Map.prototype.getResolutionForExtent = function(extent) {
 
 /**
  * @protected
- * @return {goog.math.Size} Size.
+ * @return {goog.math.Size|undefined} Size.
  */
 ol.Map.prototype.getSize = function() {
-  return this.size_;
+  return /** @type {goog.math.Size|undefined} */ (
+      this.get(ol.MapProperty.SIZE));
 };
 
 
@@ -283,14 +295,20 @@ ol.Map.prototype.handleResolutionChanged = function() {
 
 
 /**
- * @param {goog.events.Event} event Event.
  * @protected
  */
-ol.Map.prototype.handleTargetResize = function(event) {
-  goog.asserts.assert(event.target == this.target_);
-  this.size_.width = this.target_.clientWidth;
-  this.size_.height = this.target_.clientHeight;
+ol.Map.prototype.handleSizeChanged = function() {
   this.recalculateExtent_();
+};
+
+
+/**
+ * @protected
+ */
+ol.Map.prototype.handleViewportResize = function() {
+  var size = new goog.math.Size(
+      this.target_.clientWidth, this.target_.clientHeight);
+  this.setSize(size);
 };
 
 
@@ -298,12 +316,12 @@ ol.Map.prototype.handleTargetResize = function(event) {
  * @private
  */
 ol.Map.prototype.recalculateExtent_ = function() {
+  var size = this.getSize();
   var center = this.getCenter();
   var resolution = this.getResolution();
-  if (!goog.isDef(center) || !goog.isDef(resolution)) {
+  if (!goog.isDef(size) || !goog.isDef(center) || !goog.isDef(resolution)) {
     return;
   }
-  var size = this.size_;
   var left = center.x - resolution * size.width / 2;
   var right = center.x + resolution * size.width / 2;
   var bottom = center.y - resolution * size.height / 2;
@@ -361,6 +379,17 @@ ol.Map.prototype.setLayers = function(layers) {
 ol.Map.prototype.setResolution = function(resolution) {
   // FIXME support discrete resolutions
   this.set(ol.MapProperty.RESOLUTION, resolution);
+};
+
+
+/**
+ * @param {goog.math.Size} size Size.
+ */
+ol.Map.prototype.setSize = function(size) {
+  var currentSize = this.getSize();
+  if (!goog.isDef(currentSize) || !goog.math.Size.equals(size, currentSize)) {
+    this.set(ol.MapProperty.SIZE, size);
+  }
 };
 
 
