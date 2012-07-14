@@ -195,6 +195,9 @@ ol.Map.prototype.handleCenterChanged = function() {
  * @protected
  */
 ol.Map.prototype.handleLayerAdd = function(layer) {
+  var projection = this.getProjection();
+  var storeProjection = layer.getStore().getProjection();
+  goog.asserts.assert(ol.Projection.equivalent(projection, storeProjection));
   var key = goog.getUid(layer);
   var layerRenderer = this.createLayerRenderer(layer);
   this.layerRenderers_[key] = layerRenderer;
