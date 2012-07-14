@@ -1,42 +1,44 @@
 goog.provide('ol.Store');
-goog.provide('ol.StoreProperty');
 
 goog.require('ol.Extent');
-goog.require('ol.Object');
 goog.require('ol.Projection');
-
-
-/**
- * @enum {string}
- */
-ol.StoreProperty = {
-  ATTRIBUTION: 'attribution',
-  EXTENT: 'extent',
-  PROJECTION: 'projection'
-};
 
 
 
 /**
  * @constructor
- * @extends {ol.Object}
+ * @param {ol.Projection} projection Projection.
+ * @param {ol.Extent=} opt_extent Extent.
+ * @param {string=} opt_attribution Attribution.
  */
-ol.Store = function() {
+ol.Store = function(projection, opt_extent, opt_attribution) {
 
-  goog.base(this);
+  /**
+   * @private
+   * @type {ol.Projection}
+   */
+  this.projection_ = projection;
 
-  this.setExtent(null);
-  this.setProjection(null);
+  /**
+   * @private
+   * @type {ol.Extent}
+   */
+  this.extent_ = goog.isDef(opt_extent) ? opt_extent : projection.getExtent();
+
+  /**
+   * @private
+   * @type {string|undefined}
+   */
+  this.attribution_ = opt_attribution;
 
 };
-goog.inherits(ol.Store, ol.Object);
 
 
 /**
  * @return {string|undefined} Attribution.
  */
 ol.Store.prototype.getAttribution = function() {
-  return /** @type {string} */ (this.get(ol.StoreProperty.ATTRIBUTION));
+  return this.attribution_;
 };
 
 
@@ -44,7 +46,7 @@ ol.Store.prototype.getAttribution = function() {
  * @return {ol.Extent} Extent.
  */
 ol.Store.prototype.getExtent = function() {
-  return /** @type {ol.Extent} */ (this.get(ol.StoreProperty.EXTENT));
+  return this.extent_;
 };
 
 
@@ -52,15 +54,21 @@ ol.Store.prototype.getExtent = function() {
  * @return {ol.Projection} Projection.
  */
 ol.Store.prototype.getProjection = function() {
-  return /** @type {ol.Projection} */ (this.get(ol.StoreProperty.PROJECTION));
+  return this.projection_;
 };
+
+
+/**
+ * @return {Array.<number>|undefined} Resolutions.
+ */
+ol.Store.prototype.getResolutions = goog.abstractMethod;
 
 
 /**
  * @param {string|undefined} attribution Attribution.
  */
 ol.Store.prototype.setAttribution = function(attribution) {
-  this.set(ol.StoreProperty.ATTRIBUTION, attribution);
+  this.attribution_ = attribution;
 };
 
 
@@ -68,7 +76,7 @@ ol.Store.prototype.setAttribution = function(attribution) {
  * @param {ol.Extent} extent Extent.
  */
 ol.Store.prototype.setExtent = function(extent) {
-  this.set(ol.StoreProperty.EXTENT, extent);
+  this.extent_ = extent;
 };
 
 
@@ -76,5 +84,5 @@ ol.Store.prototype.setExtent = function(extent) {
  * @param {ol.Projection} projection Projetion.
  */
 ol.Store.prototype.setProjection = function(projection) {
-  this.set(ol.StoreProperty.PROJECTION, projection);
+  this.projection_ = projection;
 };

@@ -11,13 +11,17 @@ goog.require('ol.TileUrlFunctionType');
 /**
  * @constructor
  * @extends {ol.Store}
+ * @param {ol.Projection} projection Projection.
  * @param {ol.TileGrid} tileGrid Tile grid.
  * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL.
+ * @param {ol.Extent=} opt_extent Extent.
+ * @param {string=} opt_attribution Attribution.
  * @param {string=} opt_crossOrigin Cross origin.
  */
-ol.TileStore = function(tileGrid, tileUrlFunction, opt_crossOrigin) {
+ol.TileStore = function(projection, tileGrid, tileUrlFunction, opt_extent,
+    opt_attribution, opt_crossOrigin) {
 
-  goog.base(this);
+  goog.base(this, projection, opt_extent, opt_attribution);
 
   /**
    * @private
@@ -54,16 +58,32 @@ goog.inherits(ol.TileStore, ol.Store);
  */
 ol.TileStore.createOpenStreetMap = function() {
 
+  var projection = ol.Projection.createFromCode('EPSG:3857');
   var tileGrid = ol.TileGrid.createOpenStreetMap(18);
   var tileUrlFunction = ol.TileUrlFunction.createFromTemplates([
     'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
     'http://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
     'http://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
   ]);
+  var extent = projection.getExtent();
+  var attribution =
+      '&copy; ' +
+      '<a href="http://www.openstreetmap.org">OpenStreetMap</a> ' +
+      'contributors, ' +
+      '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA</a>';
   var crossOrigin = '';
 
-  return new ol.TileStore(tileGrid, tileUrlFunction, crossOrigin);
+  return new ol.TileStore(
+      projection, tileGrid, tileUrlFunction, extent, attribution, crossOrigin);
 
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.TileStore.prototype.getResolutions = function() {
+  return this.tileGrid_.getResolutions();
 };
 
 
