@@ -192,10 +192,12 @@ ol.Map.prototype.handleCameraChanged = function() {
     this.cameraListenerKeys_ = goog.array.map(
         goog.object.getValues(ol.CameraProperty),
         function(cameraProperty) {
-          return goog.events.listen(camera, cameraProperty,
+          return goog.events.listen(camera,
+              ol.Object.getChangedEventType(cameraProperty),
               this.handleCameraPropertyChanged, false, this);
         },
         this);
+    this.handleCameraPropertyChanged();
   }
 };
 

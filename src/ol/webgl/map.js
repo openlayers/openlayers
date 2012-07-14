@@ -95,6 +95,7 @@ ol.webgl.Map.prototype.getGL = function() {
  * @inheritDoc
  */
 ol.webgl.Map.prototype.handleCameraPropertyChanged = function() {
+  goog.base(this, 'handleCameraPropertyChanged');
   this.redraw_();
 };
 
