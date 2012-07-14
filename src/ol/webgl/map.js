@@ -1,14 +1,24 @@
 goog.provide('ol.webgl.Map');
 
+goog.require('goog.dispose');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.style');
 goog.require('goog.webgl');
 goog.require('ol.Layer');
 goog.require('ol.Map');
-goog.require('ol.TileStore');
+goog.require('ol.TileLayer');
 goog.require('ol.webgl.IGLObject');
 goog.require('ol.webgl.TileLayerRenderer');
+
+
+/**
+ * @enum {string}
+ */
+ol.webgl.WebGLContextEventType = {
+  LOST: 'webglcontextlost',
+  RESTORED: 'webglcontextrestored'
+};
 
 
 
@@ -37,24 +47,26 @@ ol.webgl.Map = function(target, opt_values) {
    * @private
    * @type {WebGLRenderingContext}
    */
-  this.gl_ = null;
-
-  /** @type {WebGLRenderingContext} */
-  var gl = this.canvas_.getContext('experimental-webgl', {
+  this.gl_ = this.canvas_.getContext('experimental-webgl', {
     alpha: false,
     antialias: true,
     depth: false,
     preserveDrawingBuffer: false,
     stencil: false
   });
-  goog.asserts.assert(!goog.isNull(gl));
-  this.setGL(gl);
+  goog.asserts.assert(!goog.isNull(this.gl_));
+
+  goog.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.LOST,
+      this.handleWebGLContextLost, false, this);
+  goog.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.RESTORED,
+      this.handleWebGLContextRestored, false, this);
 
   if (goog.isDef(opt_values)) {
     this.setValues(opt_values);
   }
 
   this.handleViewportResize();
+  this.handleWebGLContextRestored();
 
 };
 goog.inherits(ol.webgl.Map, ol.Map);
@@ -64,9 +76,12 @@ goog.inherits(ol.webgl.Map, ol.Map);
  * @inheritDoc
  */
 ol.webgl.Map.prototype.createLayerRenderer = function(layer) {
-  var store = layer.getStore();
-  if (store instanceof ol.TileStore) {
-    return new ol.webgl.TileLayerRenderer(layer, this.getGL());
+  var gl = this.getGL();
+  if (gl.isContextLost()) {
+    return null;
+  }
+  if (layer instanceof ol.TileLayer) {
+    return new ol.webgl.TileLayerRenderer(this, layer);
   } else {
     goog.asserts.assert(false);
     return null;
@@ -78,7 +93,8 @@ ol.webgl.Map.prototype.createLayerRenderer = function(layer) {
  * @inheritDoc
  */
 ol.webgl.Map.prototype.disposeInternal = function() {
-  this.setGL(null);
+  this.forEachLayerRenderer(goog.dispose);
+  this.layerRenderers = {};
   goog.base(this, 'disposeInternal');
 };
 
@@ -149,6 +165,31 @@ ol.webgl.Map.prototype.handleSizeChanged = function() {
     gl.viewport(0, 0, size.width, size.height);
     this.redraw_();
   }
+};
+
+
+/**
+ * @param {goog.events.Event} event Event.
+ * @protected
+ */
+ol.webgl.Map.prototype.handleWebGLContextLost = function(event) {
+  event.preventDefault();
+  this.forEachLayerRenderer(goog.dispose);
+  this.layerRenderers = {};
+};
+
+
+/**
+ * @protected
+ */
+ol.webgl.Map.prototype.handleWebGLContextRestored = function() {
+  var layers = this.getLayers();
+  layers.forEach(function(layer) {
+    var layerRenderer = this.createLayerRenderer(layer);
+    var key = goog.getUid(layer);
+    goog.asserts.assert(!(key in this.layerRenderers));
+    this.layerRenderers[key] = layerRenderer;
+  }, this);
 };
 
 
