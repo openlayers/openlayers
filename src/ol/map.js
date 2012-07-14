@@ -129,6 +129,23 @@ ol.Map.prototype.getCenter = function() {
 
 
 /**
+ * @param {goog.math.Coordinate} pixel Pixel.
+ * @return {goog.math.Coordinate} Coordinate.
+ */
+ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
+  var center = this.getCenter();
+  goog.asserts.assert(goog.isDef(center));
+  var resolution = this.getResolution();
+  goog.asserts.assert(goog.isDef(resolution));
+  var size = this.getSize();
+  goog.asserts.assert(goog.isDef(size));
+  var x = center.x + resolution * (pixel.x - size.width / 2);
+  var y = center.y - resolution * (pixel.y - size.height / 2);
+  return new goog.math.Coordinate(x, y);
+};
+
+
+/**
  * @return {ol.Extent|undefined} Extent.
  */
 ol.Map.prototype.getExtent = function() {
@@ -141,6 +158,23 @@ ol.Map.prototype.getExtent = function() {
  */
 ol.Map.prototype.getLayers = function() {
   return /** @type {ol.Array} */ (this.get(ol.MapProperty.LAYERS));
+};
+
+
+/**
+ * @param {goog.math.Coordinate} coordinate Coordinate.
+ * @return {goog.math.Coordinate} Pixel.
+ */
+ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
+  var center = this.getCenter();
+  goog.asserts.assert(goog.isDef(center));
+  var resolution = this.getResolution();
+  goog.asserts.assert(goog.isDef(resolution));
+  var size = this.getSize();
+  goog.asserts.assert(goog.isDef(size));
+  var x = (coordinate.x - center.x) / resolution + size.width / 2;
+  var y = (center.y - coordinate.y) / resolution + size.height / 2;
+  return new goog.math.Coordinate(x, y);
 };
 
 
