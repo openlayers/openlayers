@@ -167,7 +167,7 @@ ol.Map.prototype.getResolutionForExtent = function(extent) {
  * @return {goog.math.Size} Size.
  */
 ol.Map.prototype.getSize = function() {
-  return this.size_;
+  return this.size_.clone();
 };
 
 
