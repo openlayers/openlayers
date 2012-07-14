@@ -147,14 +147,6 @@ ol.TileGrid.prototype.getExtentTileBounds = function(z, extent) {
 
 
 /**
- * @return {number} Maximum resolution.
- */
-ol.TileGrid.prototype.getMaxResolution = function() {
-  return this.getResolutions()[0];
-};
-
-
-/**
  * @param {number} z Z.
  * @return {goog.math.Coordinate} Origin.
  */
