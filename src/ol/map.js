@@ -216,11 +216,18 @@ ol.Map.prototype.handleCameraPropertyChanged = function() {
     return;
   }
   var size = this.size_;
-  var extent = this.extent_;
-  extent.left = position.x - resolution * size.width / 2;
-  extent.right = position.x + resolution * size.width / 2;
-  extent.bottom = position.y - resolution * size.height / 2;
-  extent.top = position.y + resolution * size.height / 2;
+  var left = position.x - resolution * size.width / 2;
+  var right = position.x + resolution * size.width / 2;
+  var bottom = position.y - resolution * size.height / 2;
+  var top = position.y + resolution * size.height / 2;
+  if (goog.isNull(this.extent_)) {
+    this.extent_ = new ol.Extent(top, right, bottom, left);
+  } else {
+    this.extent_.top = top;
+    this.extent_.right = right;
+    this.extent_.bottom = bottom;
+    this.extent_.left = left;
+  }
 };
 
 
