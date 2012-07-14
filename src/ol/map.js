@@ -6,6 +6,8 @@ goog.require('goog.dom.ViewportSizeMonitor');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
+goog.require('goog.fx.anim');
+goog.require('goog.fx.anim.Animated');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
 goog.require('goog.object');
@@ -41,6 +43,12 @@ ol.MapProperty = {
 ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
 
   goog.base(this);
+
+  /**
+   * @private
+   * @type {goog.fx.anim.Animated}
+   */
+  this.animation_ = new ol.MapAnimation(this);
 
   /**
    * @private
@@ -104,6 +112,16 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
 
 };
 goog.inherits(ol.Map, ol.Object);
+
+
+/**
+ * @private
+ */
+ol.Map.prototype.animate_ = function() {
+  goog.asserts.assert(!this.animating_);
+  goog.fx.anim.registerAnimation(this.animation_);
+  this.animating_ = true;
+};
 
 
 /**
@@ -385,12 +403,13 @@ ol.Map.prototype.recalculateExtent_ = function() {
 
 
 /**
- * @protected
  */
 ol.Map.prototype.redraw = function() {
   if (!this.animating_) {
     if (this.freezeCount_ === 0) {
-      this.redrawInternal();
+      if (this.redrawInternal()) {
+        this.animate_();
+      }
     } else {
       this.dirty_ = true;
     }
@@ -400,9 +419,11 @@ ol.Map.prototype.redraw = function() {
 
 /**
  * @protected
+ * @return {boolean} Animating.
  */
 ol.Map.prototype.redrawInternal = function() {
   this.dirty_ = false;
+  return false;
 };
 
 
@@ -498,8 +519,37 @@ ol.Map.prototype.whileFrozen = function(f, opt_obj) {
 ol.Map.prototype.thaw = function() {
   goog.asserts.assert(this.freezeCount_ > 0);
   if (--this.freezeCount_ === 0) {
-    if (!this.animating_ && !this.dirty_) {
-      this.redrawInternal();
+    if (!this.animating_ && this.dirty_) {
+      if (this.redrawInternal()) {
+        this.animate_();
+      }
     }
+  }
+};
+
+
+
+/**
+ * @constructor
+ * @implements {goog.fx.anim.Animated}
+ * @param {!ol.Map} map Map.
+ */
+ol.MapAnimation = function(map) {
+
+  /**
+   * @private
+   * @type {ol.Map}
+   */
+  this.map_ = map;
+
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.MapAnimation.prototype.onAnimationFrame = function() {
+  if (!this.map_.redrawInternal()) {
+    goog.fx.anim.unregisterAnimation(this);
   }
 };
