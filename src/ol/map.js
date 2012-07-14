@@ -205,7 +205,23 @@ ol.Map.prototype.handleCameraChanged = function() {
 /**
  * @protected
  */
-ol.Map.prototype.handleCameraPropertyChanged = goog.nullFunction;
+ol.Map.prototype.handleCameraPropertyChanged = function() {
+  var camera = this.getCamera();
+  var position = camera.getPosition();
+  if (!goog.isDef(position)) {
+    return;
+  }
+  var resolution = camera.getResolution();
+  if (!goog.isDef(resolution)) {
+    return;
+  }
+  var size = this.size_;
+  var extent = this.extent_;
+  extent.left = position.x - resolution * size.width / 2;
+  extent.right = position.x + resolution * size.width / 2;
+  extent.bottom = position.y - resolution * size.height / 2;
+  extent.top = position.y + resolution * size.height / 2;
+};
 
 
 /**
