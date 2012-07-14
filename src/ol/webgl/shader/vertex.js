@@ -1,6 +1,5 @@
 goog.provide('ol.webgl.shader.Vertex');
 
-goog.require('goog.asserts');
 goog.require('ol.webgl.Shader');
 
 

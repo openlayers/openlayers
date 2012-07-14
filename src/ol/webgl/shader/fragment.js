@@ -1,6 +1,5 @@
 goog.provide('ol.webgl.shader.Fragment');
 
-goog.require('goog.asserts');
 goog.require('ol.webgl.Shader');
 
 
