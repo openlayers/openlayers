@@ -55,10 +55,10 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
   this.layersListenerKeys_ = null;
 
   /**
-   * @private
+   * @protected
    * @type {Object.<number, ol.LayerRenderer>}
    */
-  this.layerRenderers_ = {};
+  this.layerRenderers = {};
 
   /**
    * @private
@@ -113,7 +113,7 @@ ol.Map.prototype.forEachLayerRenderer = function(f, opt_obj) {
   if (goog.isDefAndNotNull(layers)) {
     layers.forEach(function(layer) {
       var key = goog.getUid(layer);
-      var layerRenderer = this.layerRenderers_[key];
+      var layerRenderer = this.layerRenderers[key];
       f.call(opt_obj, layerRenderer);
     }, this);
   }
@@ -243,7 +243,9 @@ ol.Map.prototype.handleLayerAdd = function(layer) {
   goog.asserts.assert(ol.Projection.equivalent(projection, storeProjection));
   var key = goog.getUid(layer);
   var layerRenderer = this.createLayerRenderer(layer);
-  this.layerRenderers_[key] = layerRenderer;
+  if (!goog.isNull(layerRenderer)) {
+    this.layerRenderers[key] = layerRenderer;
+  }
 };
 
 
@@ -253,10 +255,11 @@ ol.Map.prototype.handleLayerAdd = function(layer) {
  */
 ol.Map.prototype.handleLayerRemove = function(layer) {
   var key = goog.getUid(layer);
-  goog.asserts.assert(key in this.layerRenderers_);
-  var layerRenderer = this.layerRenderers_[key];
-  delete this.layerRenderers_[key];
-  goog.dispose(layerRenderer);
+  if (key in this.layerRenderers) {
+    var layerRenderer = this.layerRenderers[key];
+    delete this.layerRenderers[key];
+    goog.dispose(layerRenderer);
+  }
 };
 
 
