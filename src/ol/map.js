@@ -229,9 +229,25 @@ ol.Map.prototype.handleCameraPropertyChanged = function() {
  * @protected
  */
 ol.Map.prototype.handleLayerAdd = function(layer) {
+
   var key = goog.getUid(layer);
   var layerRenderer = this.createLayerRenderer(layer);
   this.layerRenderers_[key] = layerRenderer;
+
+  var camera = this.getCamera();
+  var storeExtent = layer.getStore().getExtent();
+  if (!goog.isDef(camera.getPosition())) {
+    var position = storeExtent.getCenter();
+    camera.setPosition(position);
+  }
+  if (!goog.isDef(camera.getResolution())) {
+    var resolution = this.getResolutionForExtent(storeExtent);
+    camera.setResolution(resolution);
+  }
+  if (!goog.isDef(camera.getRotation())) {
+    camera.setRotation(0);
+  }
+
 };
 
 
