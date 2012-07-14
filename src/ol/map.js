@@ -236,25 +236,9 @@ ol.Map.prototype.handleCameraPropertyChanged = function() {
  * @protected
  */
 ol.Map.prototype.handleLayerAdd = function(layer) {
-
   var key = goog.getUid(layer);
   var layerRenderer = this.createLayerRenderer(layer);
   this.layerRenderers_[key] = layerRenderer;
-
-  var camera = this.getCamera();
-  var storeExtent = layer.getStore().getExtent();
-  if (!goog.isDef(camera.getPosition())) {
-    var position = storeExtent.getCenter();
-    camera.setPosition(position);
-  }
-  if (!goog.isDef(camera.getResolution())) {
-    var resolution = this.getResolutionForExtent(storeExtent);
-    camera.setResolution(resolution);
-  }
-  if (!goog.isDef(camera.getRotation())) {
-    camera.setRotation(0);
-  }
-
 };
 
 
@@ -279,6 +263,7 @@ ol.Map.prototype.handleLayersInsertAt = function(event) {
   var layers = /** @type {ol.Array} */ (event.target);
   var layer = /** @type {ol.Layer} */ layers.getAt(event.index);
   this.handleLayerAdd(layer);
+  this.setCameraDefaults_();
 };
 
 
@@ -322,6 +307,7 @@ ol.Map.prototype.handleLayersChanged = function() {
       goog.events.listen(layers, ol.ArrayEventType.SET_AT,
           this.handleLayersSetAt, false, this)
     ];
+    this.setCameraDefaults_();
   }
 };
 
@@ -342,6 +328,37 @@ ol.Map.prototype.handleTargetResize = function(event) {
  */
 ol.Map.prototype.setCamera = function(camera) {
   this.set(ol.MapProperty.CAMERA, camera);
+};
+
+
+/**
+ * @private
+ */
+ol.Map.prototype.setCameraDefaults_ = function() {
+  var camera = this.getCamera();
+  if (camera.isFullyDefined()) {
+    return;
+  }
+  var layers = this.getLayers();
+  if (!goog.isDefAndNotNull(layers)) {
+    return;
+  }
+  if (layers.getLength() < 1) {
+    return;
+  }
+  var layer = /** @type {ol.Layer} */ (layers.getAt(0));
+  var storeExtent = layer.getStore().getExtent();
+  if (!goog.isDef(camera.getPosition())) {
+    var position = storeExtent.getCenter();
+    camera.setPosition(position);
+  }
+  if (!goog.isDef(camera.getResolution())) {
+    var resolution = this.getResolutionForExtent(storeExtent);
+    camera.setResolution(resolution);
+  }
+  if (!goog.isDef(camera.getRotation())) {
+    camera.setRotation(0);
+  }
 };
 
 
