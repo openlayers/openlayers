@@ -30,6 +30,15 @@ ol.Extent.prototype.clone = function() {
 
 
 /**
+ * @return {goog.math.Coordinate} Center.
+ */
+ol.Extent.prototype.getCenter = function() {
+  return new goog.math.Coordinate(
+      (this.left + this.right) / 2, (this.top + this.bottom) / 2);
+};
+
+
+/**
  * @param {ol.TransformFunction} transform Transform.
  * @return {ol.Extent} Extent.
  */
