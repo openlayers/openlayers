@@ -1,19 +1,19 @@
-goog.provide('ol.webglrenderer.TileLayerRenderer');
+goog.provide('ol.webgl.TileLayerRenderer');
 
 goog.require('goog.events.EventType');
 goog.require('ol.LayerRenderer');
-goog.require('ol.webglrenderer.IGLObject');
+goog.require('ol.webgl.IGLObject');
 
 
 
 /**
  * @constructor
  * @extends {ol.LayerRenderer}
- * @implements {ol.webglrenderer.IGLObject}
+ * @implements {ol.webgl.IGLObject}
  * @param {ol.Layer} layer Layer.
  * @param {WebGLRenderingContext} gl GL.
  */
-ol.webglrenderer.TileLayerRenderer = function(layer, gl) {
+ol.webgl.TileLayerRenderer = function(layer, gl) {
 
   goog.base(this, layer);
 
@@ -26,13 +26,13 @@ ol.webglrenderer.TileLayerRenderer = function(layer, gl) {
   this.setGL(gl);
 
 };
-goog.inherits(ol.webglrenderer.TileLayerRenderer, ol.LayerRenderer);
+goog.inherits(ol.webgl.TileLayerRenderer, ol.LayerRenderer);
 
 
 /**
  * @protected
  */
-ol.webglrenderer.TileLayerRenderer.prototype.dispatchChangeEvent = function() {
+ol.webgl.TileLayerRenderer.prototype.dispatchChangeEvent = function() {
   this.dispatchEvent(goog.events.EventType.CHANGE);
 };
 
@@ -40,7 +40,7 @@ ol.webglrenderer.TileLayerRenderer.prototype.dispatchChangeEvent = function() {
 /**
  * @inheritDoc
  */
-ol.webglrenderer.TileLayerRenderer.prototype.getGL = function() {
+ol.webgl.TileLayerRenderer.prototype.getGL = function() {
   return this.gl_;
 };
 
@@ -48,7 +48,7 @@ ol.webglrenderer.TileLayerRenderer.prototype.getGL = function() {
 /**
  * @inheritDoc
  */
-ol.webglrenderer.TileLayerRenderer.prototype.handleLayerOpacityChange =
+ol.webgl.TileLayerRenderer.prototype.handleLayerOpacityChange =
     function() {
   this.dispatchChangeEvent();
 };
@@ -57,7 +57,7 @@ ol.webglrenderer.TileLayerRenderer.prototype.handleLayerOpacityChange =
 /**
  * @inheritDoc
  */
-ol.webglrenderer.TileLayerRenderer.prototype.handleLayerVisibleChange =
+ol.webgl.TileLayerRenderer.prototype.handleLayerVisibleChange =
     function() {
   this.dispatchChangeEvent();
 };
@@ -66,6 +66,6 @@ ol.webglrenderer.TileLayerRenderer.prototype.handleLayerVisibleChange =
 /**
  * @inheritDoc
  */
-ol.webglrenderer.TileLayerRenderer.prototype.setGL = function(gl) {
+ol.webgl.TileLayerRenderer.prototype.setGL = function(gl) {
   this.gl_ = gl;
 };

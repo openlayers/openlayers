@@ -1,16 +1,16 @@
-goog.provide('ol.webglrenderer.Texture');
+goog.provide('ol.webgl.Texture');
 
 goog.require('goog.asserts');
-goog.require('ol.webglrenderer.GLObject');
+goog.require('ol.webgl.GLObject');
 
 
 
 /**
  * @constructor
- * @extends {ol.webglrenderer.GLObject}
+ * @extends {ol.webgl.GLObject}
  * @param {Image} image Image.
  */
-ol.webglrenderer.Texture = function(image) {
+ol.webgl.Texture = function(image) {
 
   goog.base(this);
 
@@ -27,12 +27,12 @@ ol.webglrenderer.Texture = function(image) {
   this.image_ = image;
 
 };
-goog.inherits(ol.webglrenderer.Texture, ol.webglrenderer.GLObject);
+goog.inherits(ol.webgl.Texture, ol.webgl.GLObject);
 
 
 /**
  */
-ol.webglrenderer.Texture.prototype.bind = function() {
+ol.webgl.Texture.prototype.bind = function() {
   var gl = this.getGL();
   if (goog.isNull(this.texture_)) {
     var texture = gl.createTexture();
@@ -53,7 +53,7 @@ ol.webglrenderer.Texture.prototype.bind = function() {
 /**
  * @inheritDoc
  */
-ol.webglrenderer.Texture.prototype.setGL = function(gl) {
+ol.webgl.Texture.prototype.setGL = function(gl) {
   if (!goog.isNull(this.gl)) {
     if (!goog.isNull(this.texture_)) {
       this.gl.deleteTexture(this.texture_);

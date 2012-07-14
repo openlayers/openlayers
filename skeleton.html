@@ -16,7 +16,7 @@
 		<script>
 
 			var target = document.getElementById('map');
-			var map = new ol.Map(target);
+			var map = ol.createMap(target);
 
 			var layer = ol.TileLayer.createOpenStreetMap({
 				'opacity': 0.5,

@@ -1,17 +1,17 @@
-goog.provide('ol.webglrenderer.Uniform');
+goog.provide('ol.webgl.Uniform');
 
 goog.require('goog.asserts');
 goog.require('goog.vec.Mat4');
-goog.require('ol.webglrenderer.GLObject');
+goog.require('ol.webgl.GLObject');
 
 
 
 /**
  * @constructor
- * @extends {ol.webglrenderer.GLObject}
+ * @extends {ol.webgl.GLObject}
  * @param {string} name Name.
  */
-ol.webglrenderer.Uniform = function(name) {
+ol.webgl.Uniform = function(name) {
 
   goog.base(this);
 
@@ -34,13 +34,13 @@ ol.webglrenderer.Uniform = function(name) {
   this.location_ = null;
 
 };
-goog.inherits(ol.webglrenderer.Uniform, ol.webglrenderer.GLObject);
+goog.inherits(ol.webgl.Uniform, ol.webgl.GLObject);
 
 
 /**
  * @return {string} Name.
  */
-ol.webglrenderer.Uniform.prototype.getName = function() {
+ol.webgl.Uniform.prototype.getName = function() {
   return this.name_;
 };
 
@@ -48,7 +48,7 @@ ol.webglrenderer.Uniform.prototype.getName = function() {
 /**
  * @param {WebGLRenderingContext} gl GL.
  */
-ol.webglrenderer.Uniform.prototype.setGL = function(gl) {
+ol.webgl.Uniform.prototype.setGL = function(gl) {
   this.location_ = null;
   goog.base(this, 'setGL', gl);
 };
@@ -57,7 +57,7 @@ ol.webglrenderer.Uniform.prototype.setGL = function(gl) {
 /**
  * @param {number} value Value.
  */
-ol.webglrenderer.Uniform.prototype.set1f = function(value) {
+ol.webgl.Uniform.prototype.set1f = function(value) {
   var gl = this.getGL();
   if (!goog.isNull(this.location_)) {
     gl.uniform1f(this.location_, value);
@@ -68,7 +68,7 @@ ol.webglrenderer.Uniform.prototype.set1f = function(value) {
 /**
  * @param {number} value Value.
  */
-ol.webglrenderer.Uniform.prototype.set1i = function(value) {
+ol.webgl.Uniform.prototype.set1i = function(value) {
   var gl = this.getGL();
   if (!goog.isNull(this.location_)) {
     gl.uniform1i(this.location_, value);
@@ -80,7 +80,7 @@ ol.webglrenderer.Uniform.prototype.set1i = function(value) {
  * @param {boolean} transpose Transpose.
  * @param {goog.vec.Mat4.Mat4Like} value Value.
  */
-ol.webglrenderer.Uniform.prototype.setMatrix4fv = function(transpose, value) {
+ol.webgl.Uniform.prototype.setMatrix4fv = function(transpose, value) {
   var gl = this.getGL();
   if (!goog.isNull(this.location_)) {
     gl.uniformMatrix4fv(this.location_, transpose, value);
@@ -91,7 +91,7 @@ ol.webglrenderer.Uniform.prototype.setMatrix4fv = function(transpose, value) {
 /**
  * @param {WebGLProgram} program Program.
  */
-ol.webglrenderer.Uniform.prototype.setProgram = function(program) {
+ol.webgl.Uniform.prototype.setProgram = function(program) {
   if (goog.isNull(program)) {
     this.location_ = null;
   } else {

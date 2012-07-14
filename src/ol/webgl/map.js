@@ -1,25 +1,25 @@
-goog.provide('ol.WebGLMapRenderer');
+goog.provide('ol.webgl.Map');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.style');
 goog.require('goog.webgl');
 goog.require('ol.Layer');
-goog.require('ol.MapRenderer');
+goog.require('ol.Map');
 goog.require('ol.TileStore');
-goog.require('ol.webglrenderer.IGLObject');
-goog.require('ol.webglrenderer.TileLayerRenderer');
+goog.require('ol.webgl.IGLObject');
+goog.require('ol.webgl.TileLayerRenderer');
 
 
 
 /**
  * @constructor
- * @extends {ol.MapRenderer}
- * @implements {ol.webglrenderer.IGLObject}
+ * @extends {ol.Map}
+ * @implements {ol.webgl.IGLObject}
  * @param {!HTMLDivElement} target Target.
  * @param {Object.<string, *>=} opt_values Values.
  */
-ol.WebGLMapRenderer = function(target, opt_values) {
+ol.webgl.Map = function(target, opt_values) {
 
   goog.base(this, target);
 
@@ -55,24 +55,16 @@ ol.WebGLMapRenderer = function(target, opt_values) {
   }
 
 };
-goog.inherits(ol.WebGLMapRenderer, ol.MapRenderer);
-
-
-/**
- * @return {boolean} Is supported.
- */
-ol.WebGLMapRenderer.isSupported = function() {
-  return 'WebGLRenderingContext' in goog.global;
-};
+goog.inherits(ol.webgl.Map, ol.Map);
 
 
 /**
  * @inheritDoc
  */
-ol.WebGLMapRenderer.prototype.createLayerRenderer = function(layer) {
+ol.webgl.Map.prototype.createLayerRenderer = function(layer) {
   var store = layer.getStore();
   if (store instanceof ol.TileStore) {
-    return new ol.webglrenderer.TileLayerRenderer(layer, this.getGL());
+    return new ol.webgl.TileLayerRenderer(layer, this.getGL());
   } else {
     goog.asserts.assert(false);
     return null;
@@ -83,7 +75,7 @@ ol.WebGLMapRenderer.prototype.createLayerRenderer = function(layer) {
 /**
  * @inheritDoc
  */
-ol.WebGLMapRenderer.prototype.disposeInternal = function() {
+ol.webgl.Map.prototype.disposeInternal = function() {
   this.setGL(null);
   goog.base(this, 'disposeInternal');
 };
@@ -92,7 +84,7 @@ ol.WebGLMapRenderer.prototype.disposeInternal = function() {
 /**
  * @inheritDoc
  */
-ol.WebGLMapRenderer.prototype.getGL = function() {
+ol.webgl.Map.prototype.getGL = function() {
   var gl = this.gl_;
   goog.asserts.assert(!goog.isNull(gl));
   return gl;
@@ -102,7 +94,7 @@ ol.WebGLMapRenderer.prototype.getGL = function() {
 /**
  * @inheritDoc
  */
-ol.WebGLMapRenderer.prototype.handleCameraPropertyChanged = function() {
+ol.webgl.Map.prototype.handleCameraPropertyChanged = function() {
   this.redraw_();
 };
 
@@ -110,7 +102,7 @@ ol.WebGLMapRenderer.prototype.handleCameraPropertyChanged = function() {
 /**
  * @inheritDoc
  */
-ol.WebGLMapRenderer.prototype.handleLayerAdd = function(layer) {
+ol.webgl.Map.prototype.handleLayerAdd = function(layer) {
   goog.base(this, 'handleLayerAdd', layer);
   this.redraw_();
 };
@@ -119,7 +111,7 @@ ol.WebGLMapRenderer.prototype.handleLayerAdd = function(layer) {
 /**
  * @inheritDoc
  */
-ol.WebGLMapRenderer.prototype.handleLayerRemove = function(layer) {
+ol.webgl.Map.prototype.handleLayerRemove = function(layer) {
   goog.base(this, 'handleLayerRemove', layer);
   this.redraw_();
 };
@@ -128,7 +120,7 @@ ol.WebGLMapRenderer.prototype.handleLayerRemove = function(layer) {
 /**
  * @inheritDoc
  */
-ol.WebGLMapRenderer.prototype.handleTargetResize = function(event) {
+ol.webgl.Map.prototype.handleTargetResize = function(event) {
   goog.base(this, 'handleTargetResize', event);
   this.updateSize_();
 };
@@ -137,7 +129,7 @@ ol.WebGLMapRenderer.prototype.handleTargetResize = function(event) {
 /**
  * @private
  */
-ol.WebGLMapRenderer.prototype.redraw_ = function() {
+ol.webgl.Map.prototype.redraw_ = function() {
 
   var gl = this.getGL();
 
@@ -149,7 +141,7 @@ ol.WebGLMapRenderer.prototype.redraw_ = function() {
 /**
  * @inheritDoc
  */
-ol.WebGLMapRenderer.prototype.setGL = function(gl) {
+ol.webgl.Map.prototype.setGL = function(gl) {
   if (!goog.isNull(this.gl_)) {
     this.gl_ = null;
   }
@@ -171,7 +163,7 @@ ol.WebGLMapRenderer.prototype.setGL = function(gl) {
 /**
  * @private
  */
-ol.WebGLMapRenderer.prototype.updateSize_ = function() {
+ol.webgl.Map.prototype.updateSize_ = function() {
   var size = this.getSize();
   this.canvas_.width = size.width;
   this.canvas_.height = size.height;

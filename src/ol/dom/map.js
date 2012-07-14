@@ -1,18 +1,18 @@
-goog.provide('ol.DOMMapRenderer');
+goog.provide('ol.dom.Map');
 
 goog.require('ol.Layer');
-goog.require('ol.MapRenderer');
+goog.require('ol.Map');
 goog.require('ol.TileStore');
 
 
 
 /**
  * @constructor
- * @extends {ol.MapRenderer}
+ * @extends {ol.Map}
  * @param {!HTMLDivElement} target Target.
  * @param {Object.<string, *>=} opt_values Values.
  */
-ol.DOMMapRenderer = function(target, opt_values) {
+ol.dom.Map = function(target, opt_values) {
 
   goog.base(this, target);
 
@@ -23,24 +23,16 @@ ol.DOMMapRenderer = function(target, opt_values) {
   }
 
 };
-goog.inherits(ol.DOMMapRenderer, ol.MapRenderer);
-
-
-/**
- * @return {boolean} Is supported.
- */
-ol.DOMMapRenderer.isSupported = function() {
-  return true;
-};
+goog.inherits(ol.dom.Map, ol.Map);
 
 
 /**
  * @inheritDoc
  */
-ol.DOMMapRenderer.prototype.createLayerRenderer = function(layer) {
+ol.dom.Map.prototype.createLayerRenderer = function(layer) {
   var store = layer.getStore();
   if (layer instanceof ol.TileStore) {
-    // FIXME create DOMTileLayerRenderer
+    // FIXME create ol.dom.TileLayerRenderer
   }
   return null;
 };

@@ -1,38 +1,38 @@
-goog.provide('ol.webglrenderer.ProgramCache');
+goog.provide('ol.webgl.ProgramCache');
 
 goog.require('goog.dispose');
 goog.require('goog.object');
-goog.require('ol.webglrenderer.GLObject');
-goog.require('ol.webglrenderer.Program');
-goog.require('ol.webglrenderer.shader.Fragment');
-goog.require('ol.webglrenderer.shader.Vertex');
+goog.require('ol.webgl.GLObject');
+goog.require('ol.webgl.Program');
+goog.require('ol.webgl.shader.Fragment');
+goog.require('ol.webgl.shader.Vertex');
 
 
 
 /**
  * @constructor
- * @extends {ol.webglrenderer.GLObject}
+ * @extends {ol.webgl.GLObject}
  */
-ol.webglrenderer.ProgramCache = function() {
+ol.webgl.ProgramCache = function() {
 
   goog.base(this);
 
   /**
    * @private
-   * @type {Object.<string, Object.<string, ol.webglrenderer.Program>>}
+   * @type {Object.<string, Object.<string, ol.webgl.Program>>}
    */
   this.programss_ = {};
 
 };
-goog.inherits(ol.webglrenderer.ProgramCache, ol.webglrenderer.GLObject);
+goog.inherits(ol.webgl.ProgramCache, ol.webgl.GLObject);
 
 
 /**
- * @param {ol.webglrenderer.shader.Fragment} fragmentShader Fragment shader.
- * @param {ol.webglrenderer.shader.Vertex} vertexShader Vertex shader.
- * @return {ol.webglrenderer.Program} Program.
+ * @param {ol.webgl.shader.Fragment} fragmentShader Fragment shader.
+ * @param {ol.webgl.shader.Vertex} vertexShader Vertex shader.
+ * @return {ol.webgl.Program} Program.
  */
-ol.webglrenderer.ProgramCache.prototype.get =
+ol.webgl.ProgramCache.prototype.get =
     function(fragmentShader, vertexShader) {
   var program, programs;
   var fragmentShaderKey = goog.getUid(fragmentShader);
@@ -46,7 +46,7 @@ ol.webglrenderer.ProgramCache.prototype.get =
   if (vertexShaderKey in programs) {
     program = programs[vertexShaderKey];
   } else {
-    program = new ol.webglrenderer.Program(fragmentShader, vertexShader);
+    program = new ol.webgl.Program(fragmentShader, vertexShader);
     programs[vertexShaderKey] = program;
   }
   return program;
@@ -56,7 +56,7 @@ ol.webglrenderer.ProgramCache.prototype.get =
 /**
  * @inheritDoc
  */
-ol.webglrenderer.ProgramCache.prototype.setGL = function(gl) {
+ol.webgl.ProgramCache.prototype.setGL = function(gl) {
   goog.object.forEach(this.programss_, function(programs) {
     goog.disposeAll(goog.object.getValues(programs));
   });

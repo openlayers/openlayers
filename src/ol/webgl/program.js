@@ -1,33 +1,33 @@
-goog.provide('ol.webglrenderer.Program');
+goog.provide('ol.webgl.Program');
 
 goog.require('goog.asserts');
 goog.require('goog.webgl');
-goog.require('ol.webglrenderer.GLObject');
-goog.require('ol.webglrenderer.VertexAttrib');
-goog.require('ol.webglrenderer.shader.Fragment');
-goog.require('ol.webglrenderer.shader.Vertex');
+goog.require('ol.webgl.GLObject');
+goog.require('ol.webgl.VertexAttrib');
+goog.require('ol.webgl.shader.Fragment');
+goog.require('ol.webgl.shader.Vertex');
 
 
 
 /**
  * @constructor
- * @extends {ol.webglrenderer.GLObject}
- * @param {ol.webglrenderer.shader.Fragment} fragmentShader Fragment shader.
- * @param {ol.webglrenderer.shader.Vertex} vertexShader Vertex shader.
+ * @extends {ol.webgl.GLObject}
+ * @param {ol.webgl.shader.Fragment} fragmentShader Fragment shader.
+ * @param {ol.webgl.shader.Vertex} vertexShader Vertex shader.
  */
-ol.webglrenderer.Program = function(fragmentShader, vertexShader) {
+ol.webgl.Program = function(fragmentShader, vertexShader) {
 
   goog.base(this);
 
   /**
    * @private
-   * @type {ol.webglrenderer.shader.Fragment}
+   * @type {ol.webgl.shader.Fragment}
    */
   this.fragmentShader_ = fragmentShader;
 
   /**
    * @private
-   * @type {ol.webglrenderer.shader.Vertex}
+   * @type {ol.webgl.shader.Vertex}
    */
   this.vertexShader_ = vertexShader;
 
@@ -38,13 +38,13 @@ ol.webglrenderer.Program = function(fragmentShader, vertexShader) {
   this.program_ = null;
 
 };
-goog.inherits(ol.webglrenderer.Program, ol.webglrenderer.GLObject);
+goog.inherits(ol.webgl.Program, ol.webgl.GLObject);
 
 
 /**
  * @inheritDoc
  */
-ol.webglrenderer.Program.prototype.setGL = function(gl) {
+ol.webgl.Program.prototype.setGL = function(gl) {
   if (!goog.isNull(this.gl)) {
     if (!goog.isNull(this.program_)) {
       this.gl.deleteProgram(this.program_);
@@ -73,7 +73,7 @@ ol.webglrenderer.Program.prototype.setGL = function(gl) {
 
 /**
  */
-ol.webglrenderer.Program.prototype.use = function() {
+ol.webgl.Program.prototype.use = function() {
   var gl = this.getGL();
   gl.useProgram(this.program_);
 };

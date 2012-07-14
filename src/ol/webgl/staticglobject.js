@@ -1,4 +1,4 @@
-goog.provide('ol.webglrenderer.StaticGLObject');
+goog.provide('ol.webgl.StaticGLObject');
 
 goog.require('goog.Disposable');
 
@@ -9,7 +9,7 @@ goog.require('goog.Disposable');
  * @extends {goog.Disposable}
  * @param {WebGLRenderingContext} gl GL.
  */
-ol.webglrenderer.StaticGLObject = function(gl) {
+ol.webgl.StaticGLObject = function(gl) {
 
   goog.asserts.assert(!goog.isNull(gl));
 
@@ -20,13 +20,13 @@ ol.webglrenderer.StaticGLObject = function(gl) {
   this.gl = gl;
 
 };
-goog.inherits(ol.webglrenderer.StaticGLObject, goog.Disposable);
+goog.inherits(ol.webgl.StaticGLObject, goog.Disposable);
 
 
 /**
  * @inheritDoc
  */
-ol.webglrenderer.StaticGLObject.prototype.disposeInternal = function() {
+ol.webgl.StaticGLObject.prototype.disposeInternal = function() {
   this.gl = null;
   goog.base(this, 'disposeInternal');
 };
@@ -35,7 +35,7 @@ ol.webglrenderer.StaticGLObject.prototype.disposeInternal = function() {
 /**
  * @return {!WebGLRenderingContext} GL.
  */
-ol.webglrenderer.StaticGLObject.prototype.getGL = function() {
+ol.webgl.StaticGLObject.prototype.getGL = function() {
   goog.asserts.assert(!goog.isNull(this.gl));
   return this.gl;
 };
@@ -44,6 +44,6 @@ ol.webglrenderer.StaticGLObject.prototype.getGL = function() {
 /**
  * @return {WebGLRenderingContext} GL.
  */
-ol.webglrenderer.StaticGLObject.prototype.unsafeGetGL = function() {
+ol.webgl.StaticGLObject.prototype.unsafeGetGL = function() {
   return this.gl;
 };

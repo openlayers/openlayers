@@ -1,16 +1,16 @@
-goog.provide('ol.webglrenderer.VertexAttrib');
+goog.provide('ol.webgl.VertexAttrib');
 
 goog.require('goog.asserts');
-goog.require('ol.webglrenderer.GLObject');
+goog.require('ol.webgl.GLObject');
 
 
 
 /**
  * @constructor
- * @extends {ol.webglrenderer.GLObject}
+ * @extends {ol.webgl.GLObject}
  * @param {string} name Name.
  */
-ol.webglrenderer.VertexAttrib = function(name) {
+ol.webgl.VertexAttrib = function(name) {
 
   goog.base(this);
 
@@ -27,12 +27,12 @@ ol.webglrenderer.VertexAttrib = function(name) {
   this.location_ = -1;
 
 };
-goog.inherits(ol.webglrenderer.VertexAttrib, ol.webglrenderer.GLObject);
+goog.inherits(ol.webgl.VertexAttrib, ol.webgl.GLObject);
 
 
 /**
  */
-ol.webglrenderer.VertexAttrib.prototype.enableArray = function() {
+ol.webgl.VertexAttrib.prototype.enableArray = function() {
   var gl = this.getGL();
   goog.asserts.assert(this.location_ != -1);
   gl.enableVertexAttribArray(this.location_);
@@ -46,7 +46,7 @@ ol.webglrenderer.VertexAttrib.prototype.enableArray = function() {
  * @param {number} stride Stride.
  * @param {number} offset Offset.
  */
-ol.webglrenderer.VertexAttrib.prototype.pointer =
+ol.webgl.VertexAttrib.prototype.pointer =
     function(size, type, normalize, stride, offset) {
   var gl = this.getGL();
   goog.asserts.assert(this.location_ != -1);
@@ -58,7 +58,7 @@ ol.webglrenderer.VertexAttrib.prototype.pointer =
 /**
  * @param {WebGLRenderingContext} gl GL.
  */
-ol.webglrenderer.VertexAttrib.prototype.setGL = function(gl) {
+ol.webgl.VertexAttrib.prototype.setGL = function(gl) {
   this.location_ = -1;
   goog.base(this, 'setGL', gl);
 };
@@ -67,7 +67,7 @@ ol.webglrenderer.VertexAttrib.prototype.setGL = function(gl) {
 /**
  * @param {WebGLProgram} program Program.
  */
-ol.webglrenderer.VertexAttrib.prototype.setProgram = function(program) {
+ol.webgl.VertexAttrib.prototype.setProgram = function(program) {
   if (goog.isNull(program)) {
     this.location_ = -1;
   } else {

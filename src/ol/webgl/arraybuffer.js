@@ -1,18 +1,18 @@
-goog.provide('ol.webglrenderer.ArrayBuffer');
+goog.provide('ol.webgl.ArrayBuffer');
 
 goog.require('goog.webgl');
-goog.require('ol.webglrenderer.StaticGLObject');
+goog.require('ol.webgl.StaticGLObject');
 
 
 
 /**
  * @constructor
- * @extends {ol.webglrenderer.StaticGLObject}
+ * @extends {ol.webgl.StaticGLObject}
  * @param {WebGLRenderingContext} gl GL.
  * @param {ArrayBuffer|ArrayBufferView|null|number} data Data.
  * @param {number} usage Usage.
  */
-ol.webglrenderer.ArrayBuffer = function(gl, data, usage) {
+ol.webgl.ArrayBuffer = function(gl, data, usage) {
 
   goog.base(this, gl);
 
@@ -25,12 +25,12 @@ ol.webglrenderer.ArrayBuffer = function(gl, data, usage) {
   gl.bufferData(goog.webgl.ARRAY_BUFFER, data, usage);
 
 };
-goog.inherits(ol.webglrenderer.ArrayBuffer, ol.webglrenderer.StaticGLObject);
+goog.inherits(ol.webgl.ArrayBuffer, ol.webgl.StaticGLObject);
 
 
 /**
  */
-ol.webglrenderer.ArrayBuffer.prototype.bind = function() {
+ol.webgl.ArrayBuffer.prototype.bind = function() {
   var gl = this.getGL();
   gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.buffer_);
 };
@@ -39,7 +39,7 @@ ol.webglrenderer.ArrayBuffer.prototype.bind = function() {
 /**
  * @inheritDoc
  */
-ol.webglrenderer.ArrayBuffer.prototype.disposeInternal = function() {
+ol.webgl.ArrayBuffer.prototype.disposeInternal = function() {
   var gl = this.getGL();
   gl.deleteBuffer(this.buffer_);
   this.buffer_ = null;

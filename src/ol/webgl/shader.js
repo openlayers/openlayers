@@ -1,20 +1,20 @@
-goog.provide('ol.webglrenderer.Shader');
+goog.provide('ol.webgl.Shader');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.webgl');
-goog.require('ol.webglrenderer.GLObject');
-goog.require('ol.webglrenderer.Uniform');
+goog.require('ol.webgl.GLObject');
+goog.require('ol.webgl.Uniform');
 
 
 
 /**
  * @constructor
- * @extends {ol.webglrenderer.GLObject}
+ * @extends {ol.webgl.GLObject}
  * @param {string} source Source.
- * @param {Array.<ol.webglrenderer.Uniform>=} opt_uniforms Uniforms.
+ * @param {Array.<ol.webgl.Uniform>=} opt_uniforms Uniforms.
  */
-ol.webglrenderer.Shader = function(source, opt_uniforms) {
+ol.webgl.Shader = function(source, opt_uniforms) {
 
   goog.base(this);
 
@@ -32,17 +32,17 @@ ol.webglrenderer.Shader = function(source, opt_uniforms) {
 
   /**
    * @private
-   * @type {Array.<ol.webglrenderer.Uniform>}
+   * @type {Array.<ol.webgl.Uniform>}
    */
   this.uniforms_ = opt_uniforms || [];
 
 };
-goog.inherits(ol.webglrenderer.Shader, ol.webglrenderer.GLObject);
+goog.inherits(ol.webgl.Shader, ol.webgl.GLObject);
 
 
 /**
  */
-ol.webglrenderer.Shader.prototype.compile = function() {
+ol.webgl.Shader.prototype.compile = function() {
   var gl = this.getGL();
   this.shader_ = this.create();
   gl.shaderSource(this.shader_, this.source_);
@@ -59,13 +59,13 @@ ol.webglrenderer.Shader.prototype.compile = function() {
  * @protected
  * @return {WebGLShader} Shader.
  */
-ol.webglrenderer.Shader.prototype.create = goog.abstractMethod;
+ol.webgl.Shader.prototype.create = goog.abstractMethod;
 
 
 /**
  * @return {WebGLShader} Shader.
  */
-ol.webglrenderer.Shader.prototype.get = function() {
+ol.webgl.Shader.prototype.get = function() {
   return this.shader_;
 };
 
@@ -73,7 +73,7 @@ ol.webglrenderer.Shader.prototype.get = function() {
 /**
  * @return {boolean} Is animated?
  */
-ol.webglrenderer.Shader.prototype.isAnimated = function() {
+ol.webgl.Shader.prototype.isAnimated = function() {
   return false;
 };
 
@@ -81,7 +81,7 @@ ol.webglrenderer.Shader.prototype.isAnimated = function() {
 /**
  * @inheritDoc
  */
-ol.webglrenderer.Shader.prototype.setGL = function(gl) {
+ol.webgl.Shader.prototype.setGL = function(gl) {
   if (!goog.isNull(this.gl)) {
     goog.array.forEach(this.uniforms_, function(uniform) {
       uniform.setGL(null);
@@ -104,7 +104,7 @@ ol.webglrenderer.Shader.prototype.setGL = function(gl) {
 /**
  * @param {WebGLProgram} program Program.
  */
-ol.webglrenderer.Shader.prototype.setProgram = function(program) {
+ol.webgl.Shader.prototype.setProgram = function(program) {
   goog.array.forEach(this.uniforms_, function(uniform) {
     uniform.setProgram(program);
   });
@@ -113,5 +113,5 @@ ol.webglrenderer.Shader.prototype.setProgram = function(program) {
 
 /**
  */
-ol.webglrenderer.Shader.prototype.setUniforms = function() {
+ol.webgl.Shader.prototype.setUniforms = function() {
 };
