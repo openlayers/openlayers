@@ -5,10 +5,9 @@ goog.require('goog.array');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
+goog.require('goog.math.Coordinate');
 goog.require('goog.object');
 goog.require('ol.Array');
-goog.require('ol.Camera');
-goog.require('ol.CameraProperty');
 goog.require('ol.Extent');
 goog.require('ol.LayerRenderer');
 goog.require('ol.Object');
@@ -19,9 +18,11 @@ goog.require('ol.Projection');
  * @enum {string}
  */
 ol.MapProperty = {
-  CAMERA: 'camera',
+  CENTER: 'center',
+  EXTENT: 'extent',
   LAYERS: 'layers',
-  PROJECTION: 'projection'
+  PROJECTION: 'projection',
+  RESOLUTION: 'resolution'
 };
 
 
@@ -50,18 +51,6 @@ ol.Map = function(target, opt_values) {
 
   /**
    * @private
-   * @type {ol.Extent}
-   */
-  this.extent_ = null;
-
-  /**
-   * @private
-   * @type {Array.<number>}
-   */
-  this.cameraListenerKeys_ = null;
-
-  /**
-   * @private
    * @type {Array.<number>}
    */
   this.layersListenerKeys_ = null;
@@ -76,12 +65,16 @@ ol.Map = function(target, opt_values) {
       this.handleTargetResize, false, this);
 
   goog.events.listen(
-      this, ol.Object.getChangedEventType(ol.MapProperty.CAMERA),
-      this.handleCameraChanged, false, this);
+      this, ol.Object.getChangedEventType(ol.MapProperty.CENTER),
+      this.handleCenterChanged, false, this);
 
   goog.events.listen(
       this, ol.Object.getChangedEventType(ol.MapProperty.LAYERS),
       this.handleLayersChanged, false, this);
+
+  goog.events.listen(
+      this, ol.Object.getChangedEventType(ol.MapProperty.RESOLUTION),
+      this.handleResolutionChanged, false, this);
 
   if (goog.isDef(opt_values)) {
     this.setValues(opt_values);
@@ -118,18 +111,21 @@ ol.Map.prototype.forEachLayerRenderer = function(f, opt_obj) {
 
 
 /**
- * @return {ol.Camera} Camera.
+ * @return {goog.math.Coordinate|undefined} Center.
  */
-ol.Map.prototype.getCamera = function() {
-  return /** @type {ol.Camera} */ (this.get(ol.MapProperty.CAMERA));
+ol.Map.prototype.getCenter = function() {
+  var center = /** @type {goog.math.Coordinate} */ (
+      this.get(ol.MapProperty.CENTER));
+  return goog.isDef(center) ? center.clone() : undefined;
 };
 
 
 /**
- * @return {ol.Extent} Extent.
+ * @return {ol.Extent|undefined} Extent.
  */
 ol.Map.prototype.getExtent = function() {
-  return this.extent_.clone();
+  var extent = /** @type {ol.Extent} */ (this.get(ol.MapProperty.EXTENT));
+  return goog.isDef(extent) ? extent.clone() : undefined;
 };
 
 
@@ -150,6 +146,14 @@ ol.Map.prototype.getProjection = function() {
 
 
 /**
+ * @return {number|undefined} Resolution.
+ */
+ol.Map.prototype.getResolution = function() {
+  return /** @type {number} */ (this.get(ol.MapProperty.RESOLUTION));
+};
+
+
+/**
  * @param {ol.Extent} extent Extent.
  * @return {number} Resolution.
  */
@@ -157,7 +161,6 @@ ol.Map.prototype.getResolutionForExtent = function(extent) {
   var size = this.size_;
   var xResolution = (extent.right - extent.left) / size.width;
   var yResolution = (extent.top - extent.bottom) / size.height;
-  // FIXME support discrete resolutions
   return Math.max(xResolution, yResolution);
 };
 
@@ -167,7 +170,7 @@ ol.Map.prototype.getResolutionForExtent = function(extent) {
  * @return {goog.math.Size} Size.
  */
 ol.Map.prototype.getSize = function() {
-  return this.size_.clone();
+  return this.size_;
 };
 
 
@@ -182,52 +185,8 @@ ol.Map.prototype.getTarget = function() {
 /**
  * @protected
  */
-ol.Map.prototype.handleCameraChanged = function() {
-  if (!goog.isNull(this.cameraListenerKeys_)) {
-    goog.array.forEach(this.cameraListenerKeys_, goog.events.unlistenByKey);
-    this.cameraListenerKeys_ = null;
-  }
-  var camera = this.getCamera();
-  if (goog.isDefAndNotNull(camera)) {
-    this.cameraListenerKeys_ = goog.array.map(
-        goog.object.getValues(ol.CameraProperty),
-        function(cameraProperty) {
-          return goog.events.listen(camera,
-              ol.Object.getChangedEventType(cameraProperty),
-              this.handleCameraPropertyChanged, false, this);
-        },
-        this);
-    this.handleCameraPropertyChanged();
-  }
-};
-
-
-/**
- * @protected
- */
-ol.Map.prototype.handleCameraPropertyChanged = function() {
-  var camera = this.getCamera();
-  var position = camera.getPosition();
-  if (!goog.isDef(position)) {
-    return;
-  }
-  var resolution = camera.getResolution();
-  if (!goog.isDef(resolution)) {
-    return;
-  }
-  var size = this.size_;
-  var left = position.x - resolution * size.width / 2;
-  var right = position.x + resolution * size.width / 2;
-  var bottom = position.y - resolution * size.height / 2;
-  var top = position.y + resolution * size.height / 2;
-  if (goog.isNull(this.extent_)) {
-    this.extent_ = new ol.Extent(top, right, bottom, left);
-  } else {
-    this.extent_.top = top;
-    this.extent_.right = right;
-    this.extent_.bottom = bottom;
-    this.extent_.left = left;
-  }
+ol.Map.prototype.handleCenterChanged = function() {
+  this.recalculateExtent_();
 };
 
 
@@ -263,7 +222,7 @@ ol.Map.prototype.handleLayersInsertAt = function(event) {
   var layers = /** @type {ol.Array} */ (event.target);
   var layer = /** @type {ol.Layer} */ layers.getAt(event.index);
   this.handleLayerAdd(layer);
-  this.setCameraDefaults_();
+  this.setDefaultCenterAndResolution_();
 };
 
 
@@ -307,8 +266,16 @@ ol.Map.prototype.handleLayersChanged = function() {
       goog.events.listen(layers, ol.ArrayEventType.SET_AT,
           this.handleLayersSetAt, false, this)
     ];
-    this.setCameraDefaults_();
+    this.setDefaultCenterAndResolution_();
   }
+};
+
+
+/**
+ * @protected
+ */
+ol.Map.prototype.handleResolutionChanged = function() {
+  this.recalculateExtent_();
 };
 
 
@@ -320,45 +287,51 @@ ol.Map.prototype.handleTargetResize = function(event) {
   goog.asserts.assert(event.target == this.target_);
   this.size_.width = this.target_.clientWidth;
   this.size_.height = this.target_.clientHeight;
-};
-
-
-/**
- * @param {ol.Camera} camera Camera.
- */
-ol.Map.prototype.setCamera = function(camera) {
-  this.set(ol.MapProperty.CAMERA, camera);
+  this.recalculateExtent_();
 };
 
 
 /**
  * @private
  */
-ol.Map.prototype.setCameraDefaults_ = function() {
-  var camera = this.getCamera();
-  if (camera.isFullyDefined()) {
+ol.Map.prototype.recalculateExtent_ = function() {
+  var center = this.getCenter();
+  var resolution = this.getResolution();
+  if (!goog.isDef(center) || !goog.isDef(resolution)) {
+    return;
+  }
+  var size = this.size_;
+  var left = center.x - resolution * size.width / 2;
+  var right = center.x + resolution * size.width / 2;
+  var bottom = center.y - resolution * size.height / 2;
+  var top = center.y + resolution * size.height / 2;
+  var extent = new ol.Extent(top, right, bottom, left);
+  this.set(ol.MapProperty.EXTENT, extent);
+};
+
+
+/**
+ * @param {goog.math.Coordinate} center Center.
+ */
+ol.Map.prototype.setCenter = function(center) {
+  this.set(ol.MapProperty.CENTER, center);
+};
+
+
+/**
+ * @private
+ */
+ol.Map.prototype.setDefaultCenterAndResolution_ = function() {
+  if (goog.isDef(this.getCenter()) && goog.isDef(this.getResolution())) {
     return;
   }
   var layers = this.getLayers();
-  if (!goog.isDefAndNotNull(layers)) {
-    return;
-  }
   if (layers.getLength() < 1) {
     return;
   }
   var layer = /** @type {ol.Layer} */ (layers.getAt(0));
   var storeExtent = layer.getStore().getExtent();
-  if (!goog.isDef(camera.getPosition())) {
-    var position = storeExtent.getCenter();
-    camera.setPosition(position);
-  }
-  if (!goog.isDef(camera.getResolution())) {
-    var resolution = this.getResolutionForExtent(storeExtent);
-    camera.setResolution(resolution);
-  }
-  if (!goog.isDef(camera.getRotation())) {
-    camera.setRotation(0);
-  }
+  this.setExtent(storeExtent);
 };
 
 
@@ -366,11 +339,8 @@ ol.Map.prototype.setCameraDefaults_ = function() {
  * @param {ol.Extent} extent Extent.
  */
 ol.Map.prototype.setExtent = function(extent) {
-  var camera = this.getCamera();
-  var position = extent.getCenter();
-  camera.setPosition(position);
-  var resolution = this.getResolutionForExtent(extent);
-  camera.setResolution(resolution);
+  this.setCenter(extent.getCenter());
+  this.setResolution(this.getResolutionForExtent(extent));
 };
 
 
@@ -379,6 +349,15 @@ ol.Map.prototype.setExtent = function(extent) {
  */
 ol.Map.prototype.setLayers = function(layers) {
   this.set(ol.MapProperty.LAYERS, layers);
+};
+
+
+/**
+ * @param {number} resolution Resolution.
+ */
+ol.Map.prototype.setResolution = function(resolution) {
+  // FIXME support discrete resolutions
+  this.set(ol.MapProperty.RESOLUTION, resolution);
 };
 
 

@@ -2,7 +2,6 @@ goog.provide('ol.createMap');
 
 goog.require('goog.object');
 goog.require('ol.Array');
-goog.require('ol.Camera');
 goog.require('ol.Projection');
 goog.require('ol.dom');
 goog.require('ol.dom.Map');
@@ -38,10 +37,6 @@ ol.createMap = function(target, opt_values) {
   var values = {};
   if (goog.isDef(opt_values)) {
     goog.object.extend(values, opt_values);
-  }
-
-  if (!goog.object.containsKey(values, ol.MapProperty.CAMERA)) {
-    values[ol.MapProperty.CAMERA] = new ol.Camera();
   }
 
   if (!goog.object.containsKey(values, ol.MapProperty.LAYERS)) {

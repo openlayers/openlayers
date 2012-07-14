@@ -94,8 +94,8 @@ ol.webgl.Map.prototype.getGL = function() {
 /**
  * @inheritDoc
  */
-ol.webgl.Map.prototype.handleCameraPropertyChanged = function() {
-  goog.base(this, 'handleCameraPropertyChanged');
+ol.webgl.Map.prototype.handleCenterChanged = function() {
+  goog.base(this, 'handleCenterChanged');
   this.redraw_();
 };
 
@@ -114,6 +114,15 @@ ol.webgl.Map.prototype.handleLayerAdd = function(layer) {
  */
 ol.webgl.Map.prototype.handleLayerRemove = function(layer) {
   goog.base(this, 'handleLayerRemove', layer);
+  this.redraw_();
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.webgl.Map.prototype.handleResolutionChanged = function() {
+  goog.base(this, 'handleResolutionChanged');
   this.redraw_();
 };
 
