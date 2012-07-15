@@ -210,7 +210,8 @@ ol.webgl.TileLayerRenderer.prototype.redraw = function() {
 
   tileBounds.forEachTileCoord(z, function(tileCoord) {
     var tile = tileStore.getTile(tileCoord);
-    if (tile.isLoaded()) {
+    if (goog.isNull(tile)) {
+    } else if (tile.isLoaded()) {
       var x = tileSize.width * (tileCoord.x - tileBounds.minX);
       var y = tileSize.height * (tileCoord.y - tileBounds.minY);
       gl.texSubImage2D(goog.webgl.TEXTURE_2D, 0,

@@ -102,7 +102,12 @@ ol.TileStore.prototype.getTile = function(tileCoord) {
     return this.tileCache_[key];
   } else {
     var tileUrl = this.getTileCoordUrl(tileCoord);
-    var tile = new ol.Tile(tileCoord, tileUrl, this.crossOrigin_);
+    var tile;
+    if (goog.isDef(tileUrl)) {
+      tile = new ol.Tile(tileCoord, tileUrl, this.crossOrigin_);
+    } else {
+      tile = null;
+    }
     this.tileCache_[key] = tile;
     return tile;
   }
