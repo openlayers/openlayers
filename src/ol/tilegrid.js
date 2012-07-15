@@ -124,11 +124,11 @@ ol.TileGrid.prototype.getExtent = function() {
  * @return {ol.TileBounds} Tile bounds.
  */
 ol.TileGrid.prototype.getExtentTileBounds = function(z, extent) {
-  var topRight = new goog.math.Coordinate(extent.right, extent.top);
-  var bottomLeft = new goog.math.Coordinate(extent.left, extent.bottom);
-  return ol.TileBounds.boundingTileBounds(
-      this.getTileCoord(z, topRight),
-      this.getTileCoord(z, bottomLeft));
+  var min =
+      this.getTileCoord(z, new goog.math.Coordinate(extent.minX, extent.minY));
+  var max =
+      this.getTileCoord(z, new goog.math.Coordinate(extent.maxX, extent.maxY));
+  return new ol.TileBounds(min.x, min.y, max.x, max.y);
 };
 
 
@@ -203,11 +203,11 @@ ol.TileGrid.prototype.getTileCoordExtent = function(tileCoord) {
   var origin = this.getOrigin(tileCoord.z);
   var resolution = this.getResolution(tileCoord.z);
   var tileSize = this.tileSize_;
-  var left = origin.x + tileCoord.x * tileSize.width * resolution;
-  var right = left + tileSize.width * resolution;
-  var bottom = origin.y + tileCoord.y * tileSize.height * resolution;
-  var top = bottom + tileSize.height * resolution;
-  return new ol.Extent(top, right, bottom, left);
+  var minX = origin.x + tileCoord.x * tileSize.width * resolution;
+  var minY = origin.y + tileCoord.y * tileSize.height * resolution;
+  var maxX = minX + tileSize.width * resolution;
+  var maxY = minY + tileSize.height * resolution;
+  return new ol.Extent(minX, minY, maxX, maxY);
 };
 
 

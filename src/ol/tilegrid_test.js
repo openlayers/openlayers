@@ -15,7 +15,7 @@ var tileSize;
 
 function setUp() {
   resolutions = [1000, 500, 250, 100];
-  extent = new ol.Extent(100000, 100000, 0, 0);
+  extent = new ol.Extent(0, 0, 100000, 100000);
   origin = new goog.math.Coordinate(0, 0);
   origins = [];
   tileSize = new goog.math.Size(100, 100);
@@ -158,22 +158,22 @@ function testGetTileCoordExtent() {
   var tileCoordExtent;
 
   tileCoordExtent = tileGrid.getTileCoordExtent(new ol.TileCoord(0, 0, 0));
-  assertEquals(100000, tileCoordExtent.top);
-  assertEquals(100000, tileCoordExtent.right);
-  assertEquals(0, tileCoordExtent.bottom);
-  assertEquals(0, tileCoordExtent.left);
+  assertEquals(0, tileCoordExtent.minX);
+  assertEquals(0, tileCoordExtent.minY);
+  assertEquals(100000, tileCoordExtent.maxX);
+  assertEquals(100000, tileCoordExtent.maxY);
 
   tileCoordExtent = tileGrid.getTileCoordExtent(new ol.TileCoord(3, 9, 0));
-  assertEquals(10000, tileCoordExtent.top);
-  assertEquals(100000, tileCoordExtent.right);
-  assertEquals(0, tileCoordExtent.bottom);
-  assertEquals(90000, tileCoordExtent.left);
+  assertEquals(90000, tileCoordExtent.minX);
+  assertEquals(0, tileCoordExtent.minY);
+  assertEquals(100000, tileCoordExtent.maxX);
+  assertEquals(10000, tileCoordExtent.maxY);
 
   tileCoordExtent = tileGrid.getTileCoordExtent(new ol.TileCoord(3, 0, 9));
-  assertEquals(100000, tileCoordExtent.top);
-  assertEquals(10000, tileCoordExtent.right);
-  assertEquals(90000, tileCoordExtent.bottom);
-  assertEquals(0, tileCoordExtent.left);
+  assertEquals(0, tileCoordExtent.minX);
+  assertEquals(90000, tileCoordExtent.minY);
+  assertEquals(10000, tileCoordExtent.maxX);
+  assertEquals(100000, tileCoordExtent.maxY);
 
 }
 
@@ -181,33 +181,32 @@ function testGetTileCoordExtent() {
 function testGetExtentTileBounds() {
 
   var tileGrid = new ol.TileGrid(resolutions, extent, origin, tileSize);
-  var e = new ol.Extent(15000, 55000, 5000, 45000);
+  var e = new ol.Extent(45000, 5000, 55000, 15000);
   var tileBounds;
 
   tileBounds = tileGrid.getExtentTileBounds(0, e);
-  assertEquals(0, tileBounds.top);
-  assertEquals(0, tileBounds.right);
-  assertEquals(0, tileBounds.bottom);
-  assertEquals(0, tileBounds.left);
+  assertEquals(0, tileBounds.minY);
+  assertEquals(0, tileBounds.minX);
+  assertEquals(0, tileBounds.maxX);
+  assertEquals(0, tileBounds.maxY);
 
   tileBounds = tileGrid.getExtentTileBounds(1, e);
-  assertEquals(0, tileBounds.top);
-  assertEquals(1, tileBounds.right);
-  assertEquals(0, tileBounds.bottom);
-  assertEquals(0, tileBounds.left);
+  assertEquals(0, tileBounds.minX);
+  assertEquals(0, tileBounds.minY);
+  assertEquals(1, tileBounds.maxX);
+  assertEquals(0, tileBounds.maxY);
 
   tileBounds = tileGrid.getExtentTileBounds(2, e);
-  assertEquals(0, tileBounds.top);
-  assertEquals(2, tileBounds.right);
-  assertEquals(0, tileBounds.bottom);
-  assertEquals(1, tileBounds.left);
+  assertEquals(1, tileBounds.minX);
+  assertEquals(0, tileBounds.minY);
+  assertEquals(2, tileBounds.maxX);
+  assertEquals(0, tileBounds.maxY);
 
   tileBounds = tileGrid.getExtentTileBounds(3, e);
-  window.console.log(tileBounds);
-  assertEquals(0, tileBounds.top);
-  assertEquals(5, tileBounds.right);
-  assertEquals(1, tileBounds.bottom);
-  assertEquals(4, tileBounds.left);
+  assertEquals(4, tileBounds.minX);
+  assertEquals(0, tileBounds.minY);
+  assertEquals(5, tileBounds.maxX);
+  assertEquals(1, tileBounds.maxY);
 
 }
 
@@ -229,22 +228,22 @@ function testForEachTileCoordParent() {
   assertEquals(3, tileBoundss.length);
 
   assertEquals(2, zs[0]);
-  assertEquals(1, tileBoundss[0].top);
-  assertEquals(3, tileBoundss[0].right);
-  assertEquals(1, tileBoundss[0].bottom);
-  assertEquals(2, tileBoundss[0].left);
+  assertEquals(2, tileBoundss[0].minX);
+  assertEquals(1, tileBoundss[0].minY);
+  assertEquals(3, tileBoundss[0].maxX);
+  assertEquals(1, tileBoundss[0].maxY);
 
   assertEquals(1, zs[1]);
-  assertEquals(0, tileBoundss[1].top);
-  assertEquals(1, tileBoundss[1].right);
-  assertEquals(0, tileBoundss[1].bottom);
-  assertEquals(1, tileBoundss[1].left);
+  assertEquals(1, tileBoundss[1].minX);
+  assertEquals(0, tileBoundss[1].minY);
+  assertEquals(1, tileBoundss[1].maxX);
+  assertEquals(0, tileBoundss[1].maxY);
 
   assertEquals(0, zs[2]);
-  assertEquals(0, tileBoundss[2].top);
-  assertEquals(0, tileBoundss[2].right);
-  assertEquals(0, tileBoundss[2].bottom);
-  assertEquals(0, tileBoundss[2].left);
+  assertEquals(0, tileBoundss[2].minX);
+  assertEquals(0, tileBoundss[2].minY);
+  assertEquals(0, tileBoundss[2].maxX);
+  assertEquals(0, tileBoundss[2].maxY);
 
 }
 
