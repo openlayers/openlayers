@@ -1,7 +1,6 @@
 goog.provide('ol');
 
 goog.require('ol.Array');
-goog.require('ol.Bounds');
 goog.require('ol.Extent');
 goog.require('ol.Layer');
 goog.require('ol.LayerRenderer');
