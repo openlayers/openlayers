@@ -255,8 +255,8 @@ ol.Map.prototype.getResolution = function() {
 ol.Map.prototype.getResolutionForExtent = function(extent) {
   var size = this.getSize();
   goog.asserts.assert(goog.isDef(size));
-  var xResolution = (extent.right - extent.left) / size.width;
-  var yResolution = (extent.top - extent.bottom) / size.height;
+  var xResolution = (extent.maxX - extent.minX) / size.width;
+  var yResolution = (extent.maxY - extent.minY) / size.height;
   return Math.max(xResolution, yResolution);
 };
 
@@ -404,11 +404,11 @@ ol.Map.prototype.recalculateExtent_ = function() {
       this.set(ol.MapProperty.EXTENT, undefined);
     }
   } else {
-    var left = center.x - resolution * size.width / 2;
-    var right = center.x + resolution * size.width / 2;
-    var bottom = center.y - resolution * size.height / 2;
-    var top = center.y + resolution * size.height / 2;
-    var extent = new ol.Extent(top, right, bottom, left);
+    var minX = center.x - resolution * size.width / 2;
+    var minY = center.y - resolution * size.height / 2;
+    var maxX = center.x + resolution * size.width / 2;
+    var maxY = center.y + resolution * size.height / 2;
+    var extent = new ol.Extent(minX, minY, maxX, maxY);
     this.set(ol.MapProperty.EXTENT, extent);
   }
 };
