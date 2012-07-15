@@ -151,17 +151,16 @@ ol.webgl.TileLayerRenderer.prototype.redraw = function() {
   var tileGrid = tileStore.getTileGrid();
   var z = tileGrid.getZForResolution(resolution);
   var tileBounds = tileGrid.getExtentTileBounds(z, extent);
-  var tileCoordOrigin = new ol.TileCoord(z, tileBounds.left, tileBounds.bottom);
   var tileSize = tileGrid.getTileSize();
   this.size_ = new goog.math.Size(
-      tileSize.width * (tileBounds.right - tileBounds.left),
-      tileSize.height * (tileBounds.top - tileBounds.bottom));
+      tileSize.width * (tileBounds.maxX - tileBounds.minX),
+      tileSize.height * (tileBounds.maxY - tileBounds.minY));
   this.bindFramebuffer_();
   tileBounds.forEachTileCoord(z, function(tileCoord) {
     var x = tileCoord.x;
     var y = tileCoord.y;
-    var deltaX = tileCoord.x - tileCoordOrigin.x;
-    var deltaY = tileCoord.y - tileCoordOrigin.y;
+    var deltaX = tileCoord.x - tileBounds.minX;
+    var deltaY = tileCoord.y - tileBounds.minY;
     return false;
   }, this);
 };
