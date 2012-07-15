@@ -16,7 +16,8 @@
   },
 
   "externs": [
-    "externs/geojson.js"
+    "externs/geojson.js",
+    "externs/webgl-debug.js"
   ],
 
   "mode": "ADVANCED",
