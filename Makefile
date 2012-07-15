@@ -45,6 +45,9 @@ GSLINT_EXCLUDES= \
 	src/ol/renderer/MapRenderer.js \
 	src/ol/renderer/TileLayerRenderer.js \
 	src/ol/renderer/WebGL.js
+comma := ,
+empty :=
+space := $(empty) $(empty)
 
 .PHONY: all
 all: build webgl-debug.js
@@ -59,7 +62,7 @@ serve: $(PLOVR_JAR)
 
 .PHONY: lint
 lint: $(CLOSURE_LINTER)
-	gjslint --strict $(filter-out $(GSLINT_EXCLUDES),$(shell find externs src -name \*.js))
+	gjslint --strict --limited_doc_files=$(subst $(space),$(comma),$(shell find externs -name \*.js)) $(filter-out $(GSLINT_EXCLUDES),$(shell find externs src -name \*.js))
 
 webgl-debug.js:
 	curl https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/sdk/debug/webgl-debug.js > $@
