@@ -446,10 +446,13 @@ ol.Map.prototype.redrawInternal = function() {
  */
 ol.Map.prototype.removeLayerRenderer = function(layer) {
   var key = goog.getUid(layer);
-  goog.asserts.assert(key in this.layerRenderers);
-  var layerRenderer = this.layerRenderers[key];
-  delete this.layerRenderers[key];
-  return layerRenderer;
+  if (key in this.layerRenderers) {
+    var layerRenderer = this.layerRenderers[key];
+    delete this.layerRenderers[key];
+    return layerRenderer;
+  } else {
+    return null;
+  }
 };
 
 
