@@ -67,6 +67,14 @@ goog.inherits(ol.Tile, goog.events.EventTarget);
 
 
 /**
+ * @protected
+ */
+ol.Tile.prototype.dispatchChangeEvent = function() {
+  this.dispatchEvent(goog.events.EventType.CHANGE);
+};
+
+
+/**
  * @return {Image} Image.
  */
 ol.Tile.prototype.getImage = function() {
@@ -89,6 +97,7 @@ ol.Tile.prototype.handleImageError_ = function() {
 ol.Tile.prototype.handleImageLoad_ = function() {
   this.state_ = ol.TileLoadState.LOADED;
   this.unlistenImage_();
+  this.dispatchChangeEvent();
 };
 
 
@@ -101,7 +110,6 @@ ol.Tile.prototype.isLoaded = function() {
 
 
 /**
- * @return {EventTarget} Event target.
  */
 ol.Tile.prototype.load = function() {
   if (this.state_ == ol.TileLoadState.IDLE) {
@@ -115,7 +123,6 @@ ol.Tile.prototype.load = function() {
     ];
     this.image_.src = this.src_;
   }
-  return this.image_;
 };
 
 
