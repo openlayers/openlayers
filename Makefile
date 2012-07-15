@@ -46,6 +46,9 @@ GSLINT_EXCLUDES= \
 	src/ol/renderer/TileLayerRenderer.js \
 	src/ol/renderer/WebGL.js
 
+.PHONY: all
+all: build webgl-debug.js
+
 .PHONY: build
 build: $(PLOVR_JAR)
 	java -jar $(PLOVR_JAR) build main.json >api.js
@@ -57,6 +60,9 @@ serve: $(PLOVR_JAR)
 .PHONY: lint
 lint: $(CLOSURE_LINTER)
 	gjslint --strict $(filter-out $(GSLINT_EXCLUDES),$(shell find externs src -name \*.js))
+
+webgl-debug.js:
+	curl https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/sdk/debug/webgl-debug.js > $@
 
 $(PLOVR_JAR):
 	curl http://plovr.googlecode.com/files/$(PLOVR_JAR) > $@
