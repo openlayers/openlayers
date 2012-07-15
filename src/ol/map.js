@@ -400,14 +400,17 @@ ol.Map.prototype.recalculateExtent_ = function() {
   var center = this.getCenter();
   var resolution = this.getResolution();
   if (!goog.isDef(size) || !goog.isDef(center) || !goog.isDef(resolution)) {
-    return;
+    if (goog.isDef(this.getExtent())) {
+      this.set(ol.MapProperty.EXTENT, undefined);
+    }
+  } else {
+    var left = center.x - resolution * size.width / 2;
+    var right = center.x + resolution * size.width / 2;
+    var bottom = center.y - resolution * size.height / 2;
+    var top = center.y + resolution * size.height / 2;
+    var extent = new ol.Extent(top, right, bottom, left);
+    this.set(ol.MapProperty.EXTENT, extent);
   }
-  var left = center.x - resolution * size.width / 2;
-  var right = center.x + resolution * size.width / 2;
-  var bottom = center.y - resolution * size.height / 2;
-  var top = center.y + resolution * size.height / 2;
-  var extent = new ol.Extent(top, right, bottom, left);
-  this.set(ol.MapProperty.EXTENT, extent);
 };
 
 
