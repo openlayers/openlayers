@@ -9,6 +9,16 @@ function testCreateFromTemplate() {
 }
 
 
+function testWithTileCoordTransform() {
+  var tileUrl = ol.TileUrlFunction.withTileCoordTransform(
+      function(tileCoord) {
+        return new ol.TileCoord(tileCoord.z, tileCoord.x, -tileCoord.y);
+      },
+      ol.TileUrlFunction.createFromTemplate('{z}/{x}/{y}'));
+  assertEquals('3/2/1', tileUrl(new ol.TileCoord(3, 2, -1)));
+}
+
+
 function testCreateFromTileUrlFunctions() {
   var tileUrl = ol.TileUrlFunction.createFromTileUrlFunctions([
     ol.TileUrlFunction.createFromTemplate('a'),

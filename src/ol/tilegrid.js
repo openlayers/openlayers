@@ -1,4 +1,5 @@
 goog.provide('ol.TileGrid');
+goog.provide('ol.TileGrid.createOpenStreetMap');
 
 goog.require('goog.array');
 goog.require('goog.asserts');

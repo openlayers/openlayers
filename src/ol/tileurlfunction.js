@@ -44,3 +44,16 @@ ol.TileUrlFunction.createFromTemplates = function(templates) {
   return ol.TileUrlFunction.createFromTileUrlFunctions(
       goog.array.map(templates, ol.TileUrlFunction.createFromTemplate));
 };
+
+
+/**
+ * @param {function(ol.TileCoord): ol.TileCoord} transform Transform.
+ * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
+ * @return {ol.TileUrlFunctionType} Tile URL function.
+ */
+ol.TileUrlFunction.withTileCoordTransform =
+    function(transform, tileUrlFunction) {
+  return function(tileCoord) {
+    return tileUrlFunction(transform(tileCoord));
+  };
+};

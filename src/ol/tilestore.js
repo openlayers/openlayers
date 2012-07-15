@@ -1,4 +1,5 @@
 goog.provide('ol.TileStore');
+goog.provide('ol.TileStore.createOpenStreetMap');
 
 goog.require('ol.Store');
 goog.require('ol.Tile');
@@ -60,11 +61,15 @@ ol.TileStore.createOpenStreetMap = function() {
 
   var projection = ol.Projection.createFromCode('EPSG:3857');
   var tileGrid = ol.TileGrid.createOpenStreetMap(18);
-  var tileUrlFunction = ol.TileUrlFunction.createFromTemplates([
-    'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    'http://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    'http://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
-  ]);
+  var tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
+      function(tileCoord) {
+        return new ol.TileCoord(tileCoord.z, tileCoord.x, -tileCoord.y - 1);
+      },
+      ol.TileUrlFunction.createFromTemplates([
+        'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        'http://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        'http://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
+      ]));
   var extent = projection.getExtent();
   var attribution =
       '&copy; ' +
@@ -109,7 +114,6 @@ ol.TileStore.prototype.getTile = function(tileCoord) {
  * @return {string} Tile coord URL.
  */
 ol.TileStore.prototype.getTileCoordUrl = function(tileCoord) {
-  // FIXME maybe wrap x and y
   return this.tileUrlFunction_(tileCoord);
 };
 
