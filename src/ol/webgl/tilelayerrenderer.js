@@ -19,34 +19,46 @@ ol.webgl.TileLayerRenderer = function(map, tileLayer) {
   goog.base(this, map, tileLayer);
 
   /**
-   * @type {goog.math.Size}
    * @private
+   * @type {goog.math.Size}
    */
   this.size_ = null;
 
   /**
-   * @type {WebGLTexture}
    * @private
+   * @type {WebGLTexture}
    */
   this.texture_ = null;
 
   /**
-   * @type {WebGLRenderbuffer}
    * @private
+   * @type {goog.math.Size}
+   */
+  this.textureSize_ = null;
+
+  /**
+   * @private
+   * @type {WebGLRenderbuffer}
    */
   this.renderbuffer_ = null;
 
   /**
-   * @type {WebGLFramebuffer}
    * @private
+   * @type {WebGLFramebuffer}
    */
   this.framebuffer_ = null;
 
   /**
-   * @type {goog.math.Size}
    * @private
+   * @type {goog.math.Size}
    */
   this.framebufferSize_ = null;
+
+  /**
+   * @private
+   * @type {Object.<number, number>}
+   */
+  this.tileChangeListenerKeys_ = {};
 
 };
 goog.inherits(ol.webgl.TileLayerRenderer, ol.webgl.LayerRenderer);
@@ -137,32 +149,85 @@ ol.webgl.TileLayerRenderer.prototype.disposeInternal = function() {
 
 
 /**
+ * @protected
+ */
+ol.webgl.TileLayerRenderer.prototype.handleTileChange = function() {
+  this.dispatchChangeEvent();
+};
+
+
+/**
  * @inheritDoc
  */
 ol.webgl.TileLayerRenderer.prototype.redraw = function() {
+
+  var gl = this.getGL();
+
   var map = /** @type {ol.webgl.Map} */ (this.getMap());
   var extent = map.getExtent();
   var resolution = map.getResolution();
   if (!goog.isDef(extent) || !goog.isDef(resolution)) {
     return;
   }
+
   var tileLayer = /** @type {ol.TileLayer} */ (this.getLayer());
   var tileStore = tileLayer.getTileStore();
   var tileGrid = tileStore.getTileGrid();
   var z = tileGrid.getZForResolution(resolution);
   var tileBounds = tileGrid.getExtentTileBounds(z, extent);
   var tileSize = tileGrid.getTileSize();
-  this.size_ = new goog.math.Size(
-      tileSize.width * (tileBounds.maxX - tileBounds.minX),
-      tileSize.height * (tileBounds.maxY - tileBounds.minY));
-  this.bindFramebuffer_();
+
+  var size = new goog.math.Size(
+      tileSize.width * (tileBounds.maxX - tileBounds.minX + 1),
+      tileSize.height * (tileBounds.maxY - tileBounds.minY + 1));
+
+  if (goog.isNull(this.textureSize_) ||
+      !goog.math.Size.equals(this.textureSize_, size)) {
+
+    if (!goog.isNull(this.texture_)) {
+      gl.deleteTexture(this.texture_);
+    }
+
+    var texture = gl.createTexture();
+    gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
+    gl.texImage2D(goog.webgl.TEXTURE_2D, 0, gl.RGBA, size.width, size.height,
+        0, goog.webgl.RGBA, goog.webgl.UNSIGNED_BYTE, null);
+    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MAG_FILTER,
+        goog.webgl.NEAREST);
+    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MIN_FILTER,
+        goog.webgl.NEAREST);
+    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_S,
+        goog.webgl.REPEAT);
+    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_T,
+        goog.webgl.REPEAT);
+
+    this.texture_ = texture;
+    this.textureSize_ = size;
+
+  } else {
+    gl.bindTexture(goog.webgl.TEXTURE_2D, this.texture_);
+  }
+
   tileBounds.forEachTileCoord(z, function(tileCoord) {
-    var x = tileCoord.x;
-    var y = tileCoord.y;
-    var deltaX = tileCoord.x - tileBounds.minX;
-    var deltaY = tileCoord.y - tileBounds.minY;
+    var tile = tileStore.getTile(tileCoord);
+    if (tile.isLoaded()) {
+      var x = tileSize.width * (tileCoord.x - tileBounds.minX);
+      var y = tileSize.height * (tileCoord.y - tileBounds.minY);
+      gl.texSubImage2D(goog.webgl.TEXTURE_2D, 0,
+          x, y, tileSize.width, tileSize.height,
+          goog.webgl.RGBA, goog.webgl.UNSIGNED_BYTE, tile.getImage());
+    } else {
+      var key = goog.getUid(tile);
+      if (!(key in this.tileChangeListenerKeys_)) {
+        tile.load();
+        // FIXME will need to handle aborts as well
+        this.tileChangeListenerKeys_[key] = goog.events.listen(tile,
+            goog.events.EventType.CHANGE, this.handleTileChange, false, this);
+      }
+    }
     return false;
   }, this);
+
 };
 
 
