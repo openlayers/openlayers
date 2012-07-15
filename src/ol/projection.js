@@ -292,10 +292,10 @@ ol.Projection.EPSG_3857_HALF_SIZE = Math.PI * ol.Projection.EPSG_3857_RADIUS;
  * @type {ol.Extent}
  */
 ol.Projection.EPSG_3857_EXTENT = new ol.Extent(
-    ol.Projection.EPSG_3857_HALF_SIZE,
-    ol.Projection.EPSG_3857_HALF_SIZE,
     -ol.Projection.EPSG_3857_HALF_SIZE,
-    -ol.Projection.EPSG_3857_HALF_SIZE);
+    -ol.Projection.EPSG_3857_HALF_SIZE,
+    ol.Projection.EPSG_3857_HALF_SIZE,
+    ol.Projection.EPSG_3857_HALF_SIZE);
 
 
 /**
@@ -327,7 +327,7 @@ ol.Projection.EPSG_3857_LIKE_PROJECTIONS = goog.array.map(
  * @const
  * @type {ol.Extent}
  */
-ol.Projection.EPSG_4326_EXTENT = new ol.Extent(180, 90, -180, -90);
+ol.Projection.EPSG_4326_EXTENT = new ol.Extent(-180, -90, 180, 90);
 
 
 /**
