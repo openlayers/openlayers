@@ -378,7 +378,7 @@ ol.webgl.Map.prototype.redrawInternal = function() {
         this.getLayerRenderer(layer));
     goog.asserts.assert(goog.isDefAndNotNull(layerRenderer));
     layerRenderer.redraw();
-    gl.bindTexture(goog.webgl.TEXTURE0, layerRenderer.getTexture());
+    gl.bindTexture(goog.webgl.TEXTURE_2D, layerRenderer.getTexture());
   }, this);
 
   return animate;
