@@ -1,40 +1,29 @@
 goog.provide('ol.Extent');
 
-goog.require('goog.math.Box');
+goog.require('ol.Rectangle');
 goog.require('ol.TransformFunction');
 
 
 
 /**
  * @constructor
- * @extends {goog.math.Box}
- * @param {number} top Top.
- * @param {number} right Right.
- * @param {number} bottom Bottom.
- * @param {number} left Left.
+ * @extends {ol.Rectangle}
+ * @param {number} minX Minimum X.
+ * @param {number} minY Minimum Y.
+ * @param {number} maxX Maximum X.
+ * @param {number} maxY Maximum Y.
  */
-ol.Extent = function(top, right, bottom, left) {
-
-  goog.base(this, top, right, bottom, left);
-
+ol.Extent = function(minX, minY, maxX, maxY) {
+  goog.base(this, minX, minY, maxX, maxY);
 };
-goog.inherits(ol.Extent, goog.math.Box);
+goog.inherits(ol.Extent, ol.Rectangle);
 
 
 /**
  * @return {ol.Extent} Extent.
  */
 ol.Extent.prototype.clone = function() {
-  return new ol.Extent(this.top, this.right, this.bottom, this.left);
-};
-
-
-/**
- * @return {goog.math.Coordinate} Center.
- */
-ol.Extent.prototype.getCenter = function() {
-  return new goog.math.Coordinate(
-      (this.left + this.right) / 2, (this.top + this.bottom) / 2);
+  return new ol.Extent(this.minX, this.minY, this.maxX, this.maxY);
 };
 
 
@@ -43,7 +32,7 @@ ol.Extent.prototype.getCenter = function() {
  * @return {ol.Extent} Extent.
  */
 ol.Extent.prototype.transform = function(transform) {
-  var topRight = transform(new goog.math.Coordinate(this.right, this.top));
-  var bottomLeft = transform(new goog.math.Coordinate(this.left, this.bottom));
-  return new ol.Extent(topRight.y, topRight.x, bottomLeft.y, bottomLeft.x);
+  var min = transform(new goog.math.Coordinate(this.minX, this.minY));
+  var max = transform(new goog.math.Coordinate(this.maxX, this.maxY));
+  return new ol.Extent(min.x, min.y, max.x, max.y);
 };
