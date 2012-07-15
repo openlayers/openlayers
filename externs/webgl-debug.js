@@ -21,9 +21,7 @@ var WebGLDebugUtils = {};
  * @param {number} glEnum GL enum.
  * @return {string} String.
  */
-WebGLDebugUtils.glEnumToString = function(glEnum) {
-  return '';
-};
+WebGLDebugUtils.glEnumToString = function(glEnum) {};
 
 
 /**
@@ -31,9 +29,7 @@ WebGLDebugUtils.glEnumToString = function(glEnum) {
  * @param {Array} args Args.
  * @return {string} String.
  */
-WebGLDebugUtils.glFunctionArgsToString = function(functionName, args) {
-  return '';
-};
+WebGLDebugUtils.glFunctionArgsToString = function(functionName, args) {};
 
 
 /**
@@ -49,7 +45,5 @@ WebGLDebugUtils.init = function(context) {
  * @param {Function=} opt_onFunc On function.
  * @return {WebGLDebugRenderingContext} Context.
  */
-WebGLDebugUtils.makeDebugContext = function(
-    context, opt_onErrorFunc, opt_onFunc) {
-  return null;
-};
+WebGLDebugUtils.makeDebugContext =
+    function(context, opt_onErrorFunc, opt_onFunc) {};
