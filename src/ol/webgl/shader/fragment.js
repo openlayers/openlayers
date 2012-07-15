@@ -1,5 +1,6 @@
 goog.provide('ol.webgl.shader.Fragment');
 
+goog.require('goog.webgl');
 goog.require('ol.webgl.Shader');
 
 
@@ -8,19 +9,16 @@ goog.require('ol.webgl.Shader');
  * @constructor
  * @extends {ol.webgl.Shader}
  * @param {string} source Source.
- * @param {Array.<ol.webgl.Uniform>=} opt_uniforms Uniforms.
  */
-ol.webgl.shader.Fragment = function(source, opt_uniforms) {
-  goog.base(this, source, opt_uniforms);
+ol.webgl.shader.Fragment = function(source) {
+  goog.base(this, source);
 };
 goog.inherits(ol.webgl.shader.Fragment, ol.webgl.Shader);
 
 
 /**
- * @protected
- * @return {WebGLShader} Shader.
+ * @inheritDoc
  */
-ol.webgl.shader.Fragment.prototype.create = function() {
-  var gl = this.getGL();
-  return gl.createShader(gl.FRAGMENT_SHADER);
+ol.webgl.shader.Fragment.prototype.getType = function() {
+  return goog.webgl.FRAGMENT_SHADER;
 };

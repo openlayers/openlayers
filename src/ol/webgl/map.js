@@ -8,7 +8,10 @@ goog.require('goog.webgl');
 goog.require('ol.Layer');
 goog.require('ol.Map');
 goog.require('ol.TileLayer');
+goog.require('ol.webgl.Shader');
 goog.require('ol.webgl.TileLayerRenderer');
+goog.require('ol.webgl.shader.Fragment');
+goog.require('ol.webgl.shader.Vertex');
 
 
 /**
@@ -59,6 +62,30 @@ ol.webgl.Map = function(target, opt_values) {
   goog.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.RESTORED,
       this.handleWebGLContextRestored, false, this);
 
+  /**
+   * @private
+   * @type {Object.<number, WebGLShader>}
+   */
+  this.shaderCache_ = {};
+
+  /**
+   * @private
+   * @type {Object.<string, WebGLProgram>}
+   */
+  this.programCache_ = {};
+
+  /**
+   * @private
+   * @type {ol.webgl.shader.Fragment}
+   */
+  this.fragmentShader_ = ol.webgl.Map.createFragmentShader_();
+
+  /**
+   * @private
+   * @type {ol.webgl.shader.Vertex}
+   */
+  this.vertexShader_ = ol.webgl.Map.createVertexShader_();
+
   if (goog.isDef(opt_values)) {
     this.setValues(opt_values);
   }
@@ -68,6 +95,45 @@ ol.webgl.Map = function(target, opt_values) {
 
 };
 goog.inherits(ol.webgl.Map, ol.Map);
+
+
+/**
+ * @private
+ * @return {ol.webgl.shader.Fragment} Fragment shader.
+ */
+ol.webgl.Map.createFragmentShader_ = function() {
+  return new ol.webgl.shader.Fragment([
+    'precision mediump float;',
+    '',
+    'uniform float uAlpha;',
+    'uniform sampler2D uTexture;',
+    '',
+    'varying vec2 vTexCoord;',
+    '',
+    'void main(void) {',
+    '  gl_FragColor = vec4(texture2D(uTexture, vTexCoord).rgb, uAlpha);',
+    '}'
+  ].join('\n'));
+};
+
+
+/**
+ * @private
+ * @return {ol.webgl.shader.Vertex} Vertex shader.
+ */
+ol.webgl.Map.createVertexShader_ = function() {
+  return new ol.webgl.shader.Vertex([
+    'attribute vec2 aPosition;',
+    'attribute vec2 aTexCoord;',
+    '',
+    'varying vec2 vTexCoord;',
+    '',
+    'void main(void) {',
+    '  gl_Position = vec4(aPosition, 0., 1.);',
+    '  vTexCoord = aTexCoord;',
+    '}'
+  ].join('\n'));
+};
 
 
 /**
@@ -88,10 +154,81 @@ ol.webgl.Map.prototype.createLayerRenderer = function(layer) {
 
 
 /**
+ * @inheritDoc
+ */
+ol.webgl.Map.prototype.disposeInternal = function() {
+  var gl = this.getGL();
+  if (!gl.isContextLost()) {
+    goog.object.forEach(this.programCache_, function(program) {
+      gl.deleteProgram(program);
+    });
+    goog.object.forEach(this.shaderCache_, function(shader) {
+      gl.deleteShader(shader);
+    });
+  }
+  goog.base(this, 'disposeInternal');
+};
+
+
+/**
  * @return {WebGLRenderingContext} GL.
  */
 ol.webgl.Map.prototype.getGL = function() {
   return this.gl_;
+};
+
+
+/**
+ * @param {ol.webgl.shader.Fragment} fragmentShaderObject Fragment shader.
+ * @param {ol.webgl.shader.Vertex} vertexShaderObject Vertex shader.
+ * @return {WebGLProgram} Program.
+ */
+ol.webgl.Map.prototype.getProgram = function(
+    fragmentShaderObject, vertexShaderObject) {
+  var key =
+      goog.getUid(fragmentShaderObject) + '/' + goog.getUid(vertexShaderObject);
+  if (key in this.programCache_) {
+    return this.programCache_[key];
+  } else {
+    var gl = this.getGL();
+    var program = gl.createProgram();
+    gl.attachShader(program, this.getShader(fragmentShaderObject));
+    gl.attachShader(program, this.getShader(vertexShaderObject));
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, goog.webgl.LINK_STATUS) &&
+        !gl.isContextLost()) {
+      window.console.log(gl.getProgramInfoLog(program));
+      goog.asserts.assert(
+          gl.getProgramParameter(program, goog.webgl.LINK_STATUS));
+    }
+    this.programCache_[key] = program;
+    return program;
+  }
+};
+
+
+/**
+ * @param {ol.webgl.Shader} shaderObject Shader object.
+ * @return {WebGLShader} Shader.
+ */
+ol.webgl.Map.prototype.getShader = function(shaderObject) {
+  var key = goog.getUid(shaderObject);
+  if (key in this.shaderCache_) {
+    return this.shaderCache_[key];
+  } else {
+    var gl = this.getGL();
+    var shader = gl.createShader(shaderObject.getType());
+    gl.shaderSource(shader, shaderObject.getSource());
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, goog.webgl.COMPILE_STATUS) &&
+        !gl.isContextLost()) {
+      window.console.log(gl.getShaderInfoLog(shader));
+      goog.asserts.assert(
+          gl.getShaderParameter(shader, goog.webgl.COMPILE_STATUS));
+    }
+    this.shaderCache_[key] = shader;
+    return shader;
+  }
 };
 
 
@@ -165,6 +302,8 @@ ol.webgl.Map.prototype.handleWebGLContextLost = function(event) {
     goog.dispose(layerRenderer);
   }, this);
   goog.asserts.assert(goog.object.isEmpty(this.layerRenderers));
+  this.shaderCache_ = {};
+  this.programCache_ = {};
 };
 
 

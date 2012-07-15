@@ -8,9 +8,8 @@ goog.require('ol.webgl.GLObject');
 /**
  * @constructor
  * @extends {ol.webgl.GLObject}
- * @param {Image} image Image.
  */
-ol.webgl.Texture = function(image) {
+ol.webgl.Texture = function() {
 
   goog.base(this);
 
