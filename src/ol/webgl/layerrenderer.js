@@ -17,6 +17,12 @@ goog.inherits(ol.webgl.LayerRenderer, ol.LayerRenderer);
 
 
 /**
+ * @return {WebGLTexture} Texture.
+ */
+ol.webgl.LayerRenderer.prototype.getTexture = goog.abstractMethod;
+
+
+/**
  * @return {WebGLRenderingContext} GL.
  */
 ol.webgl.LayerRenderer.prototype.getGL = function() {
