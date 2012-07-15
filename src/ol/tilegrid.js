@@ -15,12 +15,9 @@ goog.require('ol.TileCoord');
  * @param {!Array.<number>} resolutions Resolutions.
  * @param {ol.Extent} extent Extent.
  * @param {goog.math.Coordinate|!Array.<goog.math.Coordinate>} origin Origin.
- * @param {boolean=} opt_xEast Tile coordinates increase eastwards.
- * @param {boolean=} opt_ySouth Tile coordinates increas southwards.
  * @param {goog.math.Size=} opt_tileSize Tile size.
  */
-ol.TileGrid =
-    function(resolutions, extent, origin, opt_xEast, opt_ySouth, opt_tileSize) {
+ol.TileGrid = function(resolutions, extent, origin, opt_tileSize) {
 
   /**
    * @private
@@ -42,18 +39,6 @@ ol.TileGrid =
    * @type {ol.Extent}
    */
   this.extent_ = extent;
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.xEast_ = goog.isDef(opt_xEast) ? opt_xEast : true;
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.ySouth_ = goog.isDef(opt_ySouth) ? opt_ySouth : true;
 
   /**
    * @private
@@ -103,7 +88,7 @@ ol.TileGrid.createOpenStreetMap = function(maxZoom) {
       -ol.Projection.EPSG_3857_HALF_SIZE, ol.Projection.EPSG_3857_HALF_SIZE);
   var tileSize = new goog.math.Size(256, 256);
 
-  return new ol.TileGrid(resolutions, extent, origin, true, true, tileSize);
+  return new ol.TileGrid(resolutions, extent, origin, tileSize);
 
 };
 
@@ -188,18 +173,9 @@ ol.TileGrid.prototype.getTileCoord = function(z, coordinate) {
   var origin = this.getOrigin(z);
   var resolution = this.getResolution(z);
   var tileSize = this.getTileSize();
-  var x;
-  if (this.xEast_) {
-    x = Math.floor((coordinate.x - origin.x) / (tileSize.width * resolution));
-  } else {
-    x = Math.floor((origin.x - coordinate.x) / (tileSize.width * resolution));
-  }
-  var y;
-  if (this.ySouth_) {
-    y = Math.floor((origin.y - coordinate.y) / (tileSize.height * resolution));
-  } else {
-    y = Math.floor((coordinate.y - origin.y) / (tileSize.height * resolution));
-  }
+  var x, y;
+  x = Math.floor((coordinate.x - origin.x) / (tileSize.width * resolution));
+  y = Math.floor((coordinate.y - origin.y) / (tileSize.height * resolution));
   return new ol.TileCoord(z, x, y);
 };
 
@@ -212,18 +188,8 @@ ol.TileGrid.prototype.getTileCoordCenter = function(tileCoord) {
   var origin = this.getOrigin(tileCoord.z);
   var resolution = this.getResolution(tileCoord.z);
   var tileSize = this.tileSize_;
-  var x;
-  if (this.xEast_) {
-    x = origin.x + (tileCoord.x + 0.5) * tileSize.width * resolution;
-  } else {
-    x = origin.x - (tileCoord.x + 0.5) * tileSize.width * resolution;
-  }
-  var y;
-  if (this.ySouth_) {
-    y = origin.y - (tileCoord.y + 0.5) * tileSize.height * resolution;
-  } else {
-    y = origin.y + (tileCoord.y + 0.5) * tileSize.height * resolution;
-  }
+  var x = origin.x + (tileCoord.x + 0.5) * tileSize.width * resolution;
+  var y = origin.y + (tileCoord.y + 0.5) * tileSize.height * resolution;
   return new goog.math.Coordinate(x, y);
 };
 
@@ -236,22 +202,10 @@ ol.TileGrid.prototype.getTileCoordExtent = function(tileCoord) {
   var origin = this.getOrigin(tileCoord.z);
   var resolution = this.getResolution(tileCoord.z);
   var tileSize = this.tileSize_;
-  var left, right;
-  if (this.xEast_) {
-    left = origin.x + tileCoord.x * tileSize.width * resolution;
-    right = left + tileSize.width * resolution;
-  } else {
-    right = origin.x - tileCoord.x * tileSize.width * resolution;
-    left = right - tileSize.height * resolution;
-  }
-  var top, bottom;
-  if (this.ySouth_) {
-    top = origin.y - tileCoord.y * tileSize.height * resolution;
-    bottom = top - tileSize.height * resolution;
-  } else {
-    bottom = origin.y + tileCoord.y * tileSize.height * resolution;
-    top = bottom + tileSize.height * resolution;
-  }
+  var left = origin.x + tileCoord.x * tileSize.width * resolution;
+  var right = left + tileSize.width * resolution;
+  var bottom = origin.y + tileCoord.y * tileSize.height * resolution;
+  var top = bottom + tileSize.height * resolution;
   return new ol.Extent(top, right, bottom, left);
 };
 
@@ -271,22 +225,6 @@ ol.TileGrid.prototype.getTileCoordResolution = function(tileCoord) {
  */
 ol.TileGrid.prototype.getTileSize = function() {
   return this.tileSize_;
-};
-
-
-/**
- * @return {boolean} X East.
- */
-ol.TileGrid.prototype.getXEast = function() {
-  return this.xEast_;
-};
-
-
-/**
- * @return {boolean} Y South.
- */
-ol.TileGrid.prototype.getYSouth = function() {
-  return this.ySouth_;
 };
 
 
