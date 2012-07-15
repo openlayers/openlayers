@@ -3,6 +3,9 @@ goog.provide('ol.webgl.Map');
 goog.require('goog.dispose');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.events');
+goog.require('goog.events.Event');
+goog.require('goog.events.EventType');
 goog.require('goog.style');
 goog.require('goog.webgl');
 goog.require('ol.Layer');
@@ -95,6 +98,12 @@ ol.webgl.Map = function(target, opt_values) {
    * @type {ol.webgl.shader.Vertex}
    */
   this.vertexShader_ = ol.webgl.Map.createVertexShader_();
+
+  /**
+   * @private
+   * @type {Object.<number, null|number>}
+   */
+  this.layerRendererChangeListenKeys_ = {};
 
   if (goog.isDef(opt_values)) {
     this.setValues(opt_values);
@@ -263,6 +272,18 @@ ol.webgl.Map.prototype.handleLayerAdd = function(layer) {
 
 
 /**
+ * @param {goog.events.Event} event Event.
+ * @protected
+ */
+ol.webgl.Map.prototype.handleLayerRendererChange = function(event) {
+  var layerRenderer = /** @type {ol.LayerRenderer} */ (event.target);
+  if (layerRenderer.getLayer().getVisible()) {
+    this.redraw();
+  }
+};
+
+
+/**
  * @inheritDoc
  */
 ol.webgl.Map.prototype.handleLayerRemove = function(layer) {
@@ -362,4 +383,30 @@ ol.webgl.Map.prototype.redrawInternal = function() {
 
   return animate;
 
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.webgl.Map.prototype.removeLayerRenderer = function(layer) {
+  var layerRenderer = goog.base(this, 'removeLayerRenderer', layer);
+  if (!goog.isNull(layerRenderer)) {
+    var key = goog.getUid(layer);
+    goog.events.unlistenByKey(this.layerRendererChangeListenKeys_[key]);
+    delete this.layerRendererChangeListenKeys_[key];
+  }
+  return layerRenderer;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.webgl.Map.prototype.setLayerRenderer = function(layer, layerRenderer) {
+  goog.base(this, 'setLayerRenderer', layer, layerRenderer);
+  var key = goog.getUid(layer);
+  this.layerRendererChangeListenKeys_[key] = goog.events.listen(layerRenderer,
+      goog.events.EventType.CHANGE, this.handleLayerRendererChange, false,
+      this);
 };
