@@ -133,27 +133,31 @@ ol.Map.prototype.createLayerRenderer = goog.abstractMethod;
 
 
 /**
- * @protected
- * @param {function(this: T, ol.LayerRenderer)} f Function.
- * @param {T=} opt_obj The object to be used for the value of 'this' within f.
- * @template T
  */
-ol.Map.prototype.forEachLayerRenderer = function(f, opt_obj) {
-  var layers = this.getLayers();
-  if (goog.isDefAndNotNull(layers)) {
-    layers.forEach(function(layer) {
-      var key = goog.getUid(layer);
-      var layerRenderer = this.layerRenderers[key];
-      f.call(opt_obj, layerRenderer);
-    }, this);
-  }
+ol.Map.prototype.freeze = function() {
+  ++this.freezeCount_;
 };
 
 
 /**
+ * @inheritDoc
  */
-ol.Map.prototype.freeze = function() {
-  ++this.freezeCount_;
+ol.Map.prototype.disposeInternal = function() {
+  goog.object.forEach(this.layerRenderers, function(layerRenderer) {
+    goog.dispose(layerRenderer);
+  });
+  goog.base(this, 'disposeInternal');
+};
+
+
+/**
+ * @param {function(this: T, *, number)} f Function.
+ * @param {T=} opt_obj Object.
+ * @template T
+ */
+ol.Map.prototype.forEachLayer = function(f, opt_obj) {
+  var layers = this.getLayers();
+  layers.forEach(f, opt_obj);
 };
 
 
@@ -187,6 +191,19 @@ ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
  */
 ol.Map.prototype.getExtent = function() {
   return /** @type {ol.Extent} */ (this.get(ol.MapProperty.EXTENT));
+};
+
+
+/**
+ * @param {ol.Layer} layer Layer.
+ * @protected
+ * @return {ol.LayerRenderer} Layer renderer.
+ */
+ol.Map.prototype.getLayerRenderer = function(layer) {
+  var key = goog.getUid(layer);
+  var layerRenderer = this.layerRenderers[key];
+  goog.asserts.assert(goog.isDef(layerRenderer));
+  return layerRenderer;
 };
 
 
@@ -278,11 +295,8 @@ ol.Map.prototype.handleLayerAdd = function(layer) {
   var projection = this.getProjection();
   var storeProjection = layer.getStore().getProjection();
   goog.asserts.assert(ol.Projection.equivalent(projection, storeProjection));
-  var key = goog.getUid(layer);
   var layerRenderer = this.createLayerRenderer(layer);
-  if (!goog.isNull(layerRenderer)) {
-    this.layerRenderers[key] = layerRenderer;
-  }
+  this.setLayerRenderer(layer, layerRenderer);
 };
 
 
@@ -291,12 +305,7 @@ ol.Map.prototype.handleLayerAdd = function(layer) {
  * @protected
  */
 ol.Map.prototype.handleLayerRemove = function(layer) {
-  var key = goog.getUid(layer);
-  if (key in this.layerRenderers) {
-    var layerRenderer = this.layerRenderers[key];
-    delete this.layerRenderers[key];
-    goog.dispose(layerRenderer);
-  }
+  this.removeLayerRenderer(layer);
 };
 
 
@@ -428,6 +437,20 @@ ol.Map.prototype.redrawInternal = function() {
 
 
 /**
+ * @param {ol.Layer} layer Layer.
+ * @return {ol.LayerRenderer} Layer renderer.
+ * @protected
+ */
+ol.Map.prototype.removeLayerRenderer = function(layer) {
+  var key = goog.getUid(layer);
+  goog.asserts.assert(key in this.layerRenderers);
+  var layerRenderer = this.layerRenderers[key];
+  delete this.layerRenderers[key];
+  return layerRenderer;
+};
+
+
+/**
  * @param {goog.math.Coordinate} center Center.
  */
 ol.Map.prototype.setCenter = function(center) {
@@ -460,6 +483,18 @@ ol.Map.prototype.setExtent = function(extent) {
     this.setCenter(extent.getCenter());
     this.setResolution(this.getResolutionForExtent(extent));
   }, this);
+};
+
+
+/**
+ * @param {ol.Layer} layer Layer.
+ * @param {ol.LayerRenderer} layerRenderer Layer renderer.
+ * @protected
+ */
+ol.Map.prototype.setLayerRenderer = function(layer, layerRenderer) {
+  var key = goog.getUid(layer);
+  goog.asserts.assert(!(key in this.layerRenderers));
+  this.layerRenderers[key] = layerRenderer;
 };
 
 

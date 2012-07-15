@@ -88,16 +88,6 @@ ol.webgl.Map.prototype.createLayerRenderer = function(layer) {
 
 
 /**
- * @inheritDoc
- */
-ol.webgl.Map.prototype.disposeInternal = function() {
-  this.forEachLayerRenderer(goog.dispose);
-  this.layerRenderers = {};
-  goog.base(this, 'disposeInternal');
-};
-
-
-/**
  * @return {WebGLRenderingContext} GL.
  */
 ol.webgl.Map.prototype.getGL = function() {
@@ -170,8 +160,11 @@ ol.webgl.Map.prototype.handleSizeChanged = function() {
  */
 ol.webgl.Map.prototype.handleWebGLContextLost = function(event) {
   event.preventDefault();
-  this.forEachLayerRenderer(goog.dispose);
-  this.layerRenderers = {};
+  this.forEachLayer(function(layer) {
+    var layerRenderer = this.removeLayerRenderer(layer);
+    goog.dispose(layerRenderer);
+  }, this);
+  goog.asserts.assert(goog.object.isEmpty(this.layerRenderers));
 };
 
 
@@ -186,9 +179,7 @@ ol.webgl.Map.prototype.handleWebGLContextRestored = function() {
   var layers = this.getLayers();
   layers.forEach(function(layer) {
     var layerRenderer = this.createLayerRenderer(layer);
-    var key = goog.getUid(layer);
-    goog.asserts.assert(!(key in this.layerRenderers));
-    this.layerRenderers[key] = layerRenderer;
+    this.setLayerRenderer(layer, layerRenderer);
   }, this);
 };
 
