@@ -1,6 +1,7 @@
 goog.provide('ol.TileStore');
 goog.provide('ol.TileStore.createOpenStreetMap');
 
+goog.require('goog.math');
 goog.require('ol.Store');
 goog.require('ol.Tile');
 goog.require('ol.TileCoord');
@@ -63,7 +64,14 @@ ol.TileStore.createOpenStreetMap = function() {
   var tileGrid = ol.TileGrid.createOpenStreetMap(18);
   var tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
       function(tileCoord) {
-        return new ol.TileCoord(tileCoord.z, tileCoord.x, -tileCoord.y - 1);
+        var n = 1 << tileCoord.z;
+        var y = -tileCoord.y - 1;
+        if (y < 0 || n <= y) {
+          return null;
+        } else {
+          var x = goog.math.modulo(tileCoord.x, n);
+          return new ol.TileCoord(tileCoord.z, x, y);
+        }
       },
       ol.TileUrlFunction.createFromTemplates([
         'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
