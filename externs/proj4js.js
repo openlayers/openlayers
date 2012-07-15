@@ -71,5 +71,5 @@ Proj4js.Proj.prototype.units;
  * @return {Proj4js.Point} Point.
  */
 Proj4js.transform = function(source, dest, point) {
-  return new Proj4js.Point(0, 0);
+  return null;
 };
