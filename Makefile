@@ -39,17 +39,12 @@ GSLINT_EXCLUDES= \
 	src/ol/layer/WMS.js \
 	src/ol/layer/XYZ.js \
 	src/ol/Loc.js \
-	src/ol/Map.js \
 	src/ol/Popup.js \
 	src/ol/renderer/Composite.js \
 	src/ol/renderer/LayerRenderer.js \
 	src/ol/renderer/MapRenderer.js \
 	src/ol/renderer/TileLayerRenderer.js \
-	src/ol/renderer/WebGL.js \
-	src/ol/Tile.js \
-	src/ol/TileCache.js \
-	src/ol.export.js \
-	src/ol.js
+	src/ol/renderer/WebGL.js
 
 .PHONY: build
 build: $(PLOVR_JAR)
