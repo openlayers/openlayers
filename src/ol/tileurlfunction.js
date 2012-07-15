@@ -6,7 +6,7 @@ goog.require('ol.TileCoord');
 
 
 /**
- * @typedef {function(ol.TileCoord): string}
+ * @typedef {function(ol.TileCoord): string|undefined}
  */
 ol.TileUrlFunctionType;
 
@@ -17,9 +17,13 @@ ol.TileUrlFunctionType;
  */
 ol.TileUrlFunction.createFromTemplate = function(template) {
   return function(tileCoord) {
-    return template.replace(/\{z\}/, tileCoord.z)
-                   .replace(/\{x\}/, tileCoord.x)
-                   .replace(/\{y\}/, tileCoord.y);
+    if (goog.isNull(tileCoord)) {
+      return undefined;
+    } else {
+      return template.replace(/\{z\}/, tileCoord.z)
+                     .replace(/\{x\}/, tileCoord.x)
+                     .replace(/\{y\}/, tileCoord.y);
+    }
   };
 };
 
@@ -30,8 +34,12 @@ ol.TileUrlFunction.createFromTemplate = function(template) {
  */
 ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
   return function(tileCoord) {
-    var index = goog.math.modulo(tileCoord.hash(), tileUrlFunctions.length);
-    return tileUrlFunctions[index](tileCoord);
+    if (goog.isNull(tileCoord)) {
+      return undefined;
+    } else {
+      var index = goog.math.modulo(tileCoord.hash(), tileUrlFunctions.length);
+      return tileUrlFunctions[index](tileCoord);
+    }
   };
 };
 
@@ -54,6 +62,10 @@ ol.TileUrlFunction.createFromTemplates = function(templates) {
 ol.TileUrlFunction.withTileCoordTransform =
     function(transform, tileUrlFunction) {
   return function(tileCoord) {
-    return tileUrlFunction(transform(tileCoord));
+    if (goog.isNull(tileCoord)) {
+      return undefined;
+    } else {
+      return tileUrlFunction(transform(tileCoord));
+    }
   };
 };
