@@ -2,34 +2,46 @@ goog.require('goog.testing.jsunit');
 goog.require('ol.TileBounds');
 
 
+function testClone() {
+  var tileBounds = new ol.TileBounds(1, 2, 3, 4);
+  var clonedTileBounds = tileBounds.clone();
+  assertTrue(clonedTileBounds instanceof ol.TileBounds);
+  assertFalse(clonedTileBounds === tileBounds);
+  assertEquals(tileBounds.minX, clonedTileBounds.minX);
+  assertEquals(tileBounds.minY, clonedTileBounds.minY);
+  assertEquals(tileBounds.maxX, clonedTileBounds.maxX);
+  assertEquals(tileBounds.maxY, clonedTileBounds.maxY);
+}
+
+
 function testContainsPositive() {
-  var tb = new ol.TileBounds(0, 2, 2, 0);
-  var tc = new ol.TileCoord(3, 1, 1);
-  assertTrue(tb.contains(tc));
+  var tileBounds = new ol.TileBounds(0, 0, 2, 2);
+  var tileCoord = new ol.TileCoord(3, 1, 1);
+  assertTrue(tileBounds.contains(tileCoord));
 }
 
 
 function testContainsNegative() {
-  var tb = new ol.TileBounds(0, 2, 2, 0);
-  var tc = new ol.TileCoord(3, 1, 3);
-  assertFalse(tb.contains(tc));
+  var tileBounds = new ol.TileBounds(0, 0, 2, 2);
+  var tileCoord = new ol.TileCoord(3, 1, 3);
+  assertFalse(tileBounds.contains(tileCoord));
 }
 
 
 function testBoundingTileBounds() {
-  var tb = new ol.TileBounds.boundingTileBounds(
+  var tileBounds = new ol.TileBounds.boundingTileBounds(
       new ol.TileCoord(3, 1, 3),
       new ol.TileCoord(3, 2, 0));
-  assertEquals(tb.top, 0);
-  assertEquals(tb.right, 2);
-  assertEquals(tb.bottom, 3);
-  assertEquals(tb.left, 1);
+  assertEquals(1, tileBounds.minX);
+  assertEquals(0, tileBounds.minY);
+  assertEquals(2, tileBounds.maxX);
+  assertEquals(3, tileBounds.maxY);
 }
 
 
 function testBoundingTileBoundsMixedZ() {
   assertThrows(function() {
-    var tb = new ol.TileBounds.boundingTileBounds(
+    var tileBounds = new ol.TileBounds.boundingTileBounds(
         new ol.TileCoord(3, 1, 3),
         new ol.TileCoord(4, 2, 0));
   });
@@ -38,7 +50,7 @@ function testBoundingTileBoundsMixedZ() {
 
 function testForEachTileCoord() {
 
-  var tileBounds = new ol.TileBounds(2, 1, 3, 0);
+  var tileBounds = new ol.TileBounds(0, 2, 1, 3);
 
   var tileCoords = [];
   tileBounds.forEachTileCoord(5, function(tileCoord) {
