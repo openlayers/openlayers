@@ -324,14 +324,32 @@ ol.webgl.Map.prototype.handleWebGLContextRestored = function() {
 
 
 /**
- * @protected
+ * @inheritDoc
  */
-ol.webgl.Map.prototype.redraw = function() {
+ol.webgl.Map.prototype.redrawInternal = function() {
 
-  goog.base(this, 'redraw');
+  var animate = goog.base(this, 'redrawInternal');
 
   var gl = this.getGL();
 
   gl.clear(goog.webgl.COLOR_BUFFER_BIT);
+
+  gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, null);
+
+  var program = this.getProgram(this.fragmentShader_, this.vertexShader_);
+  gl.useProgram(program);
+
+  this.forEachLayer(function(layer) {
+    if (!layer.getVisible()) {
+      return;
+    }
+    var layerRenderer = /** @type {ol.webgl.LayerRenderer} */ (
+        this.getLayerRenderer(layer));
+    goog.asserts.assert(goog.isDefAndNotNull(layerRenderer));
+    layerRenderer.redraw();
+    gl.bindTexture(goog.webgl.TEXTURE0, layerRenderer.getTexture());
+  }, this);
+
+  return animate;
 
 };

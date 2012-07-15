@@ -29,3 +29,8 @@ ol.webgl.LayerRenderer.prototype.getGL = function() {
   var map = /** @type {ol.webgl.Map} */ this.getMap();
   return map.getGL();
 };
+
+
+/**
+ */
+ol.webgl.LayerRenderer.prototype.redraw = goog.abstractMethod;
