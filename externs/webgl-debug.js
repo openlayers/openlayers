@@ -1,5 +1,7 @@
 /**
  * @externs
+ * @see http://www.khronos.org/webgl/wiki/Debugging
+ * @see http://www.khronos.org/webgl/wiki/HandlingContextLost
  */
 
 
@@ -11,6 +13,44 @@
 var WebGLDebugRenderingContext = function() {};
 
 
+
+/**
+ * @constructor
+ * @extends {HTMLCanvasElement}
+ */
+var WebGLDebugLostContextSimulatingCanvas = function() {};
+
+
+/**
+ * @return {number}
+ */
+WebGLDebugLostContextSimulatingCanvas.prototype.getNumCalls = function() {};
+
+
+/**
+ */
+WebGLDebugLostContextSimulatingCanvas.prototype.loseContext = function() {};
+
+
+/**
+ * @param {number} numCalls
+ */
+WebGLDebugLostContextSimulatingCanvas.prototype.loseContextInNCalls =
+    function(numCalls) {};
+
+
+/**
+ */
+WebGLDebugLostContextSimulatingCanvas.prototype.restoreContext = function() {};
+
+
+/**
+ * @param {number} timeout
+ */
+WebGLDebugLostContextSimulatingCanvas.prototype.setRestoreTimeout =
+    function(timeout) {};
+
+
 /**
  * @type {Object}
  */
@@ -18,14 +58,14 @@ var WebGLDebugUtils = {};
 
 
 /**
- * @param {number} glEnum GL enum.
- * @return {string} String.
+ * @param {number} value
+ * @return {string}
  */
-WebGLDebugUtils.glEnumToString = function(glEnum) {};
+WebGLDebugUtils.glEnumToString = function(value) {};
 
 
 /**
- * @param {string} functionName Function name.
+ * @param {string} functionName
  * @param {Array} args Args.
  * @return {string} String.
  */
@@ -33,17 +73,23 @@ WebGLDebugUtils.glFunctionArgsToString = function(functionName, args) {};
 
 
 /**
- * @param {WebGLRenderingContext} context Context.
+ * @param {WebGLRenderingContext} ctx
  */
-WebGLDebugUtils.init = function(context) {
-};
+WebGLDebugUtils.init = function(ctx) {};
 
 
 /**
- * @param {WebGLRenderingContext} context Context.
- * @param {Function=} opt_onErrorFunc On error function.
- * @param {Function=} opt_onFunc On function.
- * @return {WebGLDebugRenderingContext} Context.
+ * @param {HTMLCanvasElement} canvas
+ * @return {WebGLDebugLostContextSimulatingCanvas}
+ */
+WebGLDebugUtils.makeLostContextSimulatingCanvas = function(canvas) {};
+
+
+/**
+ * @param {WebGLRenderingContext} context
+ * @param {Function=} opt_onErrorFunc
+ * @param {Function=} opt_onFunc
+ * @return {WebGLDebugRenderingContext}
  */
 WebGLDebugUtils.makeDebugContext =
     function(context, opt_onErrorFunc, opt_onFunc) {};
