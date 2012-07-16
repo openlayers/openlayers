@@ -25,8 +25,8 @@ Proj4js.reportError;
 
 /**
  * @constructor
- * @param {number} x X.
- * @param {number} y Y.
+ * @param {number} x
+ * @param {number} y
  */
 Proj4js.Point = function(x, y) {};
 
@@ -46,8 +46,8 @@ Proj4js.Point.prototype.y;
 
 /**
  * @constructor
- * @param {string} srsCode SRS code.
- * @param {Function=} callback Callback.
+ * @param {string} srsCode
+ * @param {Function=} callback
  */
 Proj4js.Proj = function(srsCode, callback) {};
 
@@ -65,9 +65,9 @@ Proj4js.Proj.prototype.units;
 
 
 /**
- * @param {Proj4js.Proj} source Source projection.
- * @param {Proj4js.Proj} dest Destination projection.
- * @param {Proj4js.Point|{x:number, y:number}} point Point.
- * @return {Proj4js.Point} Point.
+ * @param {Proj4js.Proj} source
+ * @param {Proj4js.Proj} dest
+ * @param {Proj4js.Point|{x:number, y:number}} point
+ * @return {Proj4js.Point}
  */
 Proj4js.transform = function(source, dest, point) {};
