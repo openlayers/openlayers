@@ -380,9 +380,13 @@ ol.webgl.Map.prototype.handleWebGLContextRestored = function() {
  */
 ol.webgl.Map.prototype.redrawInternal = function() {
 
-  var animate = goog.base(this, 'redrawInternal');
+  var center = this.getCenter();
+  var resolution = this.getResolution();
+  if (!goog.isDef(center) || !goog.isDef(resolution)) {
+    return false;
+  }
 
-  var gl = this.getGL();
+  var animate = goog.base(this, 'redrawInternal');
 
   this.forEachVisibleLayer(function(layer, layerRenderer) {
     if (layerRenderer.redraw()) {
