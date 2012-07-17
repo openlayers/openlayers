@@ -159,9 +159,6 @@ ol.webgl.Map.createVertexShader_ = function() {
  */
 ol.webgl.Map.prototype.createLayerRenderer = function(layer) {
   var gl = this.getGL();
-  if (gl.isContextLost()) {
-    return null;
-  }
   if (layer instanceof ol.TileLayer) {
     return new ol.webgl.TileLayerRenderer(this, layer);
   } else {
@@ -353,13 +350,12 @@ ol.webgl.Map.prototype.handleSizeChanged = function() {
  */
 ol.webgl.Map.prototype.handleWebGLContextLost = function(event) {
   event.preventDefault();
-  this.forEachLayer(function(layer) {
-    var layerRenderer = this.removeLayerRenderer(layer);
-    goog.dispose(layerRenderer);
-  }, this);
-  goog.asserts.assert(goog.object.isEmpty(this.layerRenderers));
   this.shaderCache_ = {};
   this.programCache_ = {};
+  this.textureCache_ = {};
+  goog.object.forEach(this.layerRenderers, function(layerRenderer) {
+    layerRenderer.handleContextLost();
+  });
 };
 
 
@@ -371,11 +367,6 @@ ol.webgl.Map.prototype.handleWebGLContextRestored = function() {
   gl.clearColor(1, 0, 0, 1);
   gl.disable(goog.webgl.CULL_FACE);
   gl.disable(goog.webgl.SCISSOR_TEST);
-  var layers = this.getLayers();
-  layers.forEach(function(layer) {
-    var layerRenderer = this.createLayerRenderer(layer);
-    this.setLayerRenderer(layer, layerRenderer);
-  }, this);
 };
 
 

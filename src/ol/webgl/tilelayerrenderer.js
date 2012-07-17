@@ -149,6 +149,16 @@ ol.webgl.TileLayerRenderer.prototype.disposeInternal = function() {
 
 
 /**
+ */
+ol.webgl.TileLayerRenderer.prototype.handleContextLost = function() {
+  this.texture_ = null;
+  this.renderbuffer_ = null;
+  this.framebuffer_ = null;
+  this.framebufferSize_ = null;
+};
+
+
+/**
  * @protected
  */
 ol.webgl.TileLayerRenderer.prototype.handleTileChange = function() {

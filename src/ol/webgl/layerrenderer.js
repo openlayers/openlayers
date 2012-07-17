@@ -33,4 +33,9 @@ ol.webgl.LayerRenderer.prototype.getGL = function() {
 
 /**
  */
+ol.webgl.LayerRenderer.prototype.handleContextLost = goog.nullFunction;
+
+
+/**
+ */
 ol.webgl.LayerRenderer.prototype.redraw = goog.abstractMethod;
