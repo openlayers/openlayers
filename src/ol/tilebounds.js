@@ -1,6 +1,7 @@
 goog.provide('ol.TileBounds');
 
 goog.require('goog.asserts');
+goog.require('goog.math.Size');
 goog.require('ol.Rectangle');
 goog.require('ol.TileCoord');
 
@@ -70,4 +71,13 @@ ol.TileBounds.prototype.forEachTileCoord = function(z, f, opt_obj) {
       goog.asserts.assert(tileCoord.y == y);
     }
   }
+};
+
+
+/**
+ * @return {goog.math.Size} Size.
+ */
+ol.TileBounds.prototype.getSize = function() {
+  return new goog.math.Size(
+      this.maxX - this.minX + 1, this.maxY - this.minY + 1);
 };

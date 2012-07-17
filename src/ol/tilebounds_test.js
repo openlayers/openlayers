@@ -76,3 +76,11 @@ function testForEachTileCoord() {
   assertEquals(3, tileCoords[3].y);
 
 }
+
+
+function testSize() {
+  var tileBounds = new ol.TileBounds(0, 1, 2, 4);
+  var size = tileBounds.getSize();
+  assertEquals(3, size.width);
+  assertEquals(4, size.height);
+}
