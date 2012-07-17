@@ -107,3 +107,30 @@ function testSize() {
   assertEquals(2, size.width);
   assertEquals(3, size.height);
 }
+
+
+function testNormalize() {
+  var rectangle = new ol.Rectangle(0, 1, 2, 3);
+  var coordinate;
+
+  coordinate = rectangle.normalize(new goog.math.Coordinate(1, 2));
+  assertEquals(0.5, coordinate.x);
+  assertEquals(0.5, coordinate.y);
+
+  coordinate = rectangle.normalize(new goog.math.Coordinate(0, 3));
+  assertEquals(0, coordinate.x);
+  assertEquals(1, coordinate.y);
+
+  coordinate = rectangle.normalize(new goog.math.Coordinate(2, 1));
+  assertEquals(1, coordinate.x);
+  assertEquals(0, coordinate.y);
+
+  coordinate = rectangle.normalize(new goog.math.Coordinate(0, 0));
+  assertEquals(0, coordinate.x);
+  assertEquals(-0.5, coordinate.y);
+
+  coordinate = rectangle.normalize(new goog.math.Coordinate(-1, 1));
+  assertEquals(-0.5, coordinate.x);
+  assertEquals(0, coordinate.y);
+
+}

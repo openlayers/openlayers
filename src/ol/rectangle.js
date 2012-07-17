@@ -103,3 +103,14 @@ ol.Rectangle.prototype.getSize = function() {
 ol.Rectangle.prototype.getWidth = function() {
   return this.maxX - this.minX;
 };
+
+
+/**
+ * @param {goog.math.Coordinate} coordinate Coordinate.
+ * @return {goog.math.Coordinate} Coordinate.
+ */
+ol.Rectangle.prototype.normalize = function(coordinate) {
+  return new goog.math.Coordinate(
+      (coordinate.x - this.minX) / this.getWidth(),
+      (coordinate.y - this.minY) / this.getHeight());
+};
