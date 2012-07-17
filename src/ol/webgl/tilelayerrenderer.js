@@ -32,12 +32,6 @@ ol.webgl.TileLayerRenderer = function(map, tileLayer) {
 
   /**
    * @private
-   * @type {goog.math.Size}
-   */
-  this.textureSize_ = null;
-
-  /**
-   * @private
    * @type {WebGLRenderbuffer}
    */
   this.renderbuffer_ = null;
@@ -69,60 +63,6 @@ goog.inherits(ol.webgl.TileLayerRenderer, ol.webgl.LayerRenderer);
  */
 ol.webgl.TileLayerRenderer.prototype.getTexture = function() {
   return this.texture_;
-};
-
-
-/**
- * @private
- */
-ol.webgl.TileLayerRenderer.prototype.bindFramebuffer_ = function() {
-
-  var gl = this.getGL();
-
-  goog.asserts.assert(!goog.isNull(this.size_));
-
-  if (!goog.isNull(this.framebufferSize_) &&
-      goog.math.Size.equals(this.framebufferSize_, this.size_)) {
-    gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, this.framebuffer_);
-  } else {
-
-    var size = this.size_;
-
-    var texture = gl.createTexture();
-    gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
-    gl.texImage2D(goog.webgl.TEXTURE_2D, 0, gl.RGBA, size.width, size.height,
-        0, goog.webgl.RGBA, goog.webgl.UNSIGNED_BYTE, null);
-    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MAG_FILTER,
-        goog.webgl.NEAREST);
-    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MIN_FILTER,
-        goog.webgl.NEAREST);
-    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_S,
-        goog.webgl.REPEAT);
-    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_T,
-        goog.webgl.REPEAT);
-
-    var renderbuffer = gl.createRenderbuffer();
-    gl.bindRenderbuffer(goog.webgl.RENDERBUFFER, renderbuffer);
-    gl.renderbufferStorage(goog.webgl.RENDERBUFFER,
-        goog.webgl.DEPTH_COMPONENT16, size.width, size.height);
-
-    var framebuffer = gl.createFramebuffer();
-    gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, framebuffer);
-    gl.framebufferTexture2D(goog.webgl.FRAMEBUFFER,
-        goog.webgl.COLOR_ATTACHMENT0, goog.webgl.TEXTURE_2D, texture, 0);
-    gl.framebufferRenderbuffer(goog.webgl.FRAMEBUFFER,
-        goog.webgl.DEPTH_ATTACHMENT, goog.webgl.RENDERBUFFER, renderbuffer);
-
-    gl.deleteFramebuffer(this.framebuffer_);
-    gl.deleteRenderbuffer(this.renderbuffer_);
-    gl.deleteTexture(this.texture_);
-
-    this.texture_ = texture;
-    this.renderbuffer_ = renderbuffer;
-    this.framebuffer_ = framebuffer;
-
-  }
-
 };
 
 
@@ -187,21 +127,22 @@ ol.webgl.TileLayerRenderer.prototype.redraw = function() {
   var tileBounds = tileGrid.getExtentTileBounds(z, extent);
   var tileSize = tileGrid.getTileSize();
 
-  var size = new goog.math.Size(
+  var framebufferSize = new goog.math.Size(
       tileSize.width * (tileBounds.maxX - tileBounds.minX + 1),
       tileSize.height * (tileBounds.maxY - tileBounds.minY + 1));
 
-  if (goog.isNull(this.textureSize_) ||
-      !goog.math.Size.equals(this.textureSize_, size)) {
+  if (goog.isNull(this.framebufferSize_) ||
+      !goog.math.Size.equals(this.framebufferSize_, framebufferSize)) {
 
-    if (!goog.isNull(this.texture_)) {
-      gl.deleteTexture(this.texture_);
-    }
+    gl.deleteFramebuffer(this.framebuffer_);
+    gl.deleteRenderbuffer(this.renderbuffer_);
+    gl.deleteTexture(this.texture_);
 
     var texture = gl.createTexture();
     gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
-    gl.texImage2D(goog.webgl.TEXTURE_2D, 0, gl.RGBA, size.width, size.height,
-        0, goog.webgl.RGBA, goog.webgl.UNSIGNED_BYTE, null);
+    gl.texImage2D(goog.webgl.TEXTURE_2D, 0, gl.RGBA, framebufferSize.width,
+        framebufferSize.height, 0, goog.webgl.RGBA, goog.webgl.UNSIGNED_BYTE,
+        null);
     gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MAG_FILTER,
         goog.webgl.NEAREST);
     gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MIN_FILTER,
@@ -211,11 +152,26 @@ ol.webgl.TileLayerRenderer.prototype.redraw = function() {
     gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_T,
         goog.webgl.REPEAT);
 
+    var renderbuffer = gl.createRenderbuffer();
+    gl.bindRenderbuffer(goog.webgl.RENDERBUFFER, renderbuffer);
+    gl.renderbufferStorage(goog.webgl.RENDERBUFFER,
+        goog.webgl.DEPTH_COMPONENT16, framebufferSize.width,
+        framebufferSize.height);
+
+    var framebuffer = gl.createFramebuffer();
+    gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, framebuffer);
+    gl.framebufferTexture2D(goog.webgl.FRAMEBUFFER,
+        goog.webgl.COLOR_ATTACHMENT0, goog.webgl.TEXTURE_2D, texture, 0);
+    gl.framebufferRenderbuffer(goog.webgl.FRAMEBUFFER,
+        goog.webgl.DEPTH_ATTACHMENT, goog.webgl.RENDERBUFFER, renderbuffer);
+
     this.texture_ = texture;
-    this.textureSize_ = size;
+    this.renderbuffer_ = renderbuffer;
+    this.framebuffer_ = framebuffer;
+    this.framebufferSize_ = framebufferSize;
 
   } else {
-    gl.bindTexture(goog.webgl.TEXTURE_2D, this.texture_);
+    gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, this.framebuffer_);
   }
 
   tileBounds.forEachTileCoord(z, function(tileCoord) {
@@ -224,9 +180,7 @@ ol.webgl.TileLayerRenderer.prototype.redraw = function() {
     } else if (tile.isLoaded()) {
       var x = tileSize.width * (tileCoord.x - tileBounds.minX);
       var y = tileSize.height * (tileCoord.y - tileBounds.minY);
-      gl.texSubImage2D(goog.webgl.TEXTURE_2D, 0,
-          x, y, tileSize.width, tileSize.height,
-          goog.webgl.RGBA, goog.webgl.UNSIGNED_BYTE, tile.getImage());
+      gl.bindTexture(goog.webgl.TEXTURE_2D, map.getTexture(tile.getImage()));
     } else {
       var key = goog.getUid(tile);
       if (!(key in this.tileChangeListenerKeys_)) {
