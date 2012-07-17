@@ -47,9 +47,9 @@ Proj4js.Point.prototype.y;
 /**
  * @constructor
  * @param {string} srsCode
- * @param {Function=} callback
+ * @param {Function=} opt_callback
  */
-Proj4js.Proj = function(srsCode, callback) {};
+Proj4js.Proj = function(srsCode, opt_callback) {};
 
 
 /**
