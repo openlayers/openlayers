@@ -13,23 +13,16 @@ goog.require('ol.Map');
 goog.require('ol.TileLayer');
 goog.require('ol.webgl.Shader');
 goog.require('ol.webgl.TileLayerRenderer');
+goog.require('ol.webgl.WebGLContextEventType');
 goog.require('ol.webgl.shader.Fragment');
 goog.require('ol.webgl.shader.Vertex');
+
 
 
 /**
  * @define {boolean} Enable WebGL debugging.
  */
 ol.DEBUG_WEBGL = false;
-
-
-/**
- * @enum {string}
- */
-ol.webgl.WebGLContextEventType = {
-  LOST: 'webglcontextlost',
-  RESTORED: 'webglcontextrestored'
-};
 
 
 
