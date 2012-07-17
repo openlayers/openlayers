@@ -42,7 +42,7 @@ ol.webgl.LayerRenderer.prototype.getMap = function() {
 
 /**
  */
-ol.webgl.LayerRenderer.prototype.handleContextLost = goog.nullFunction;
+ol.webgl.LayerRenderer.prototype.handleWebGLContextLost = goog.nullFunction;
 
 
 /**

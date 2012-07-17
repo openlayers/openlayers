@@ -359,7 +359,7 @@ ol.webgl.Map.prototype.handleWebGLContextLost = function(event) {
   this.programCache_ = {};
   this.textureCache_ = {};
   goog.object.forEach(this.layerRenderers, function(layerRenderer) {
-    layerRenderer.handleContextLost();
+    layerRenderer.handleWebGLContextLost();
   });
 };
 

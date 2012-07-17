@@ -90,7 +90,7 @@ ol.webgl.TileLayerRenderer.prototype.disposeInternal = function() {
 
 /**
  */
-ol.webgl.TileLayerRenderer.prototype.handleContextLost = function() {
+ol.webgl.TileLayerRenderer.prototype.handleWebGLContextLost = function() {
   this.texture_ = null;
   this.renderbuffer_ = null;
   this.framebuffer_ = null;
