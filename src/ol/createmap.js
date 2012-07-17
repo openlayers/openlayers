@@ -2,6 +2,8 @@ goog.provide('ol.createMap');
 
 goog.require('goog.object');
 goog.require('ol.Array');
+goog.require('ol.Map');
+goog.require('ol.MapProperty');
 goog.require('ol.Projection');
 goog.require('ol.dom');
 goog.require('ol.dom.Map');
