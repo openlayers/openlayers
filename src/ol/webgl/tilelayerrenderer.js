@@ -200,8 +200,8 @@ ol.webgl.TileLayerRenderer.prototype.redraw = function() {
   var gl = this.getGL();
 
   var map = this.getMap();
-  var extent = map.getExtent();
-  var resolution = map.getResolution();
+  var extent = /** @type {!ol.Extent} */ map.getExtent();
+  var resolution = /** @type {number} */ map.getResolution();
 
   var tileLayer = this.getLayer();
   var tileStore = tileLayer.getStore();
