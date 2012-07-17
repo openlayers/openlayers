@@ -1,5 +1,6 @@
 goog.provide('ol.webgl.LayerRenderer');
 
+goog.require('ol.Layer');
 goog.require('ol.LayerRenderer');
 
 
