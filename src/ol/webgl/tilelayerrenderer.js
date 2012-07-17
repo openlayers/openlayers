@@ -214,6 +214,7 @@ ol.webgl.TileLayerRenderer.prototype.redraw = function() {
   var gl = this.getGL();
 
   var map = this.getMap();
+  var center = /** @type {!goog.math.Coordinate} */ map.getCenter();
   var extent = /** @type {!ol.Extent} */ map.getExtent();
   var resolution = /** @type {number} */ map.getResolution();
 
