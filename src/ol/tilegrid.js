@@ -196,6 +196,23 @@ ol.TileGrid.prototype.getTileCoordCenter = function(tileCoord) {
 
 
 /**
+ * @param {number} z Z.
+ * @param {ol.TileBounds} tileBounds Tile bounds.
+ * @return {ol.Extent} Extent.
+ */
+ol.TileGrid.prototype.getTileBoundsExtent = function(z, tileBounds) {
+  var origin = this.getOrigin(z);
+  var resolution = this.getResolution(z);
+  var tileSize = this.tileSize_;
+  var minX = origin.x + tileBounds.minX * tileSize.width * resolution;
+  var minY = origin.y + tileBounds.minY * tileSize.height * resolution;
+  var maxX = origin.x + (tileBounds.maxX + 1) * tileSize.width * resolution;
+  var maxY = origin.y + (tileBounds.maxY + 1) * tileSize.height * resolution;
+  return new ol.Extent(minX, minY, maxX, maxY);
+};
+
+
+/**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @return {ol.Extent} Extent.
  */
