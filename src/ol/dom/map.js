@@ -199,15 +199,3 @@ ol.dom.Map.prototype.handleResolutionChanged = function() {
 ol.dom.Map.prototype.handleSizeChanged = function() {
   goog.base(this, 'handleSizeChanged');
 };
-
-
-/**
- * @inheritDoc
- */
-ol.dom.Map.prototype.redrawInternal = function() {
-  goog.base(this, 'redrawInternal');
-  this.forEachVisibleLayer(function(layer, layerRenderer) {
-    layerRenderer.redraw();
-  }, this);
-  return false;
-};

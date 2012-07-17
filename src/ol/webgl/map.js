@@ -413,12 +413,6 @@ ol.webgl.Map.prototype.redrawInternal = function() {
 
   var animate = goog.base(this, 'redrawInternal');
 
-  this.forEachVisibleLayer(function(layer, layerRenderer) {
-    if (layerRenderer.redraw()) {
-      animate = true;
-    }
-  });
-
   var gl = this.getGL();
 
   gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, null);

@@ -436,7 +436,16 @@ ol.Map.prototype.redraw = function() {
  */
 ol.Map.prototype.redrawInternal = function() {
   this.dirty_ = false;
-  return false;
+
+  var animate = false;
+
+  this.forEachVisibleLayer(function(layer, layerRenderer) {
+    if (layerRenderer.redraw()) {
+      animate = true;
+    }
+  });
+
+  return animate;
 };
 
 
