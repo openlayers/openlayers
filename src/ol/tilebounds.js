@@ -76,9 +76,17 @@ ol.TileBounds.prototype.forEachTileCoord = function(z, f, opt_obj) {
 
 /**
  * @override
- * @return {goog.math.Size} Size.
+ * @return {number} Height.
  */
-ol.TileBounds.prototype.getSize = function() {
-  return new goog.math.Size(
-      this.maxX - this.minX + 1, this.maxY - this.minY + 1);
+ol.TileBounds.prototype.getHeight = function() {
+  return this.maxY - this.minY + 1;
+};
+
+
+/**
+ * @override
+ * @return {number} Width.
+ */
+ol.TileBounds.prototype.getWidth = function() {
+  return this.maxX - this.minX + 1;
 };

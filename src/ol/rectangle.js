@@ -82,8 +82,24 @@ ol.Rectangle.prototype.getCenter = function() {
 
 
 /**
+ * @return {number} Height.
+ */
+ol.Rectangle.prototype.getHeight = function() {
+  return this.maxY - this.minY;
+};
+
+
+/**
  * @return {goog.math.Size} Size.
  */
 ol.Rectangle.prototype.getSize = function() {
-  return new goog.math.Size(this.maxX - this.minX, this.maxY - this.minY);
+  return new goog.math.Size(this.getWidth(), this.getHeight());
+};
+
+
+/**
+ * @return {number} Width.
+ */
+ol.Rectangle.prototype.getWidth = function() {
+  return this.maxX - this.minX;
 };
