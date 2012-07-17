@@ -128,6 +128,12 @@ ol.webgl.TileLayerRenderer = function(map, tileLayer) {
    */
   this.tileChangeListenerKeys_ = {};
 
+  /**
+   * @private
+   * @type {goog.vec.Mat4.AnyType}
+   */
+  this.matrix_ = goog.vec.Mat4.createFloat32();
+
 };
 goog.inherits(ol.webgl.TileLayerRenderer, ol.webgl.LayerRenderer);
 
@@ -169,6 +175,14 @@ ol.webgl.TileLayerRenderer.prototype.disposeInternal = function() {
     gl.deleteTexture(this.texture_);
   }
   goog.base(this, 'disposeInternal');
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.webgl.TileLayerRenderer.prototype.getMatrix = function() {
+  return this.matrix_;
 };
 
 
