@@ -181,7 +181,7 @@ ol.webgl.TileLayerRenderer.prototype.redraw = function() {
   }
 
   var tileLayer = /** @type {ol.TileLayer} */ (this.getLayer());
-  var tileStore = tileLayer.getTileStore();
+  var tileStore = tileLayer.getStore();
   var tileGrid = tileStore.getTileGrid();
   var z = tileGrid.getZForResolution(resolution);
   var tileBounds = tileGrid.getExtentTileBounds(z, extent);

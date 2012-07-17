@@ -18,10 +18,11 @@ goog.inherits(ol.TileLayer, ol.Layer);
 
 
 /**
- * @return {ol.TileStore} Tile store.
+ * @override
+ * @return {ol.TileStore} Store.
  */
-ol.TileLayer.prototype.getTileStore = function() {
-  return /** @type {ol.TileStore} */ (this.getStore());
+ol.TileLayer.prototype.getStore = function() {
+  return /** @type {ol.TileStore} */ goog.base(this, 'getStore');
 };
 
 
