@@ -3,8 +3,8 @@ goog.provide('ol.webgl.tilelayerrenderer.shader');
 
 goog.require('goog.asserts');
 goog.require('goog.events.EventType');
-goog.require('goog.webgl');
 goog.require('goog.vec.Mat4');
+goog.require('goog.webgl');
 goog.require('ol.TileLayer');
 goog.require('ol.webgl.LayerRenderer');
 goog.require('ol.webgl.shader.Fragment');
