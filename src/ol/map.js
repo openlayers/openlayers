@@ -320,7 +320,6 @@ ol.Map.prototype.handleLayersInsertAt = function(event) {
   var layers = /** @type {ol.Array} */ (event.target);
   var layer = /** @type {ol.Layer} */ layers.getAt(event.index);
   this.handleLayerAdd(layer);
-  this.setDefaultCenterAndResolution_();
 };
 
 
@@ -364,7 +363,6 @@ ol.Map.prototype.handleLayersChanged = function() {
       goog.events.listen(layers, ol.ArrayEventType.SET_AT,
           this.handleLayersSetAt, false, this)
     ];
-    this.setDefaultCenterAndResolution_();
   }
 };
 
@@ -464,23 +462,6 @@ ol.Map.prototype.removeLayerRenderer = function(layer) {
  */
 ol.Map.prototype.setCenter = function(center) {
   this.set(ol.MapProperty.CENTER, center);
-};
-
-
-/**
- * @private
- */
-ol.Map.prototype.setDefaultCenterAndResolution_ = function() {
-  if (goog.isDef(this.getCenter()) && goog.isDef(this.getResolution())) {
-    return;
-  }
-  var layers = this.getLayers();
-  if (layers.getLength() < 1) {
-    return;
-  }
-  var layer = /** @type {ol.Layer} */ (layers.getAt(0));
-  var storeExtent = layer.getStore().getExtent();
-  this.setExtent(storeExtent);
 };
 
 

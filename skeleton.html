@@ -25,6 +25,11 @@
 			});
 			map.getLayers().push(layer);
 
+                        var maxResolution = layer.getStore().getResolutions()[0];
+
+                        map.setCenter(new goog.math.Coordinate(0, 0));
+                        map.setResolution(maxResolution);
+
 		</script>
 	</body>
 </html>
