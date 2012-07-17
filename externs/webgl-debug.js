@@ -22,6 +22,7 @@ var WebGLDebugLostContextSimulatingCanvas = function() {};
 
 
 /**
+ * @nosideeffects
  * @return {number}
  */
 WebGLDebugLostContextSimulatingCanvas.prototype.getNumCalls = function() {};
@@ -58,6 +59,7 @@ var WebGLDebugUtils = {};
 
 
 /**
+ * @nosideeffects
  * @param {number} value
  * @return {string}
  */
@@ -65,6 +67,7 @@ WebGLDebugUtils.glEnumToString = function(value) {};
 
 
 /**
+ * @nosideeffects
  * @param {string} functionName
  * @param {Array} args Args.
  * @return {string} String.
