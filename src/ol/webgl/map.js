@@ -1,4 +1,5 @@
 goog.provide('ol.webgl.Map');
+goog.provide('ol.webgl.map.shader');
 
 goog.require('goog.dispose');
 goog.require('goog.dom');
@@ -18,11 +19,55 @@ goog.require('ol.webgl.shader.Fragment');
 goog.require('ol.webgl.shader.Vertex');
 
 
-
 /**
  * @define {boolean} Enable WebGL debugging.
  */
 ol.DEBUG_WEBGL = false;
+
+
+
+/**
+ * @constructor
+ * @extends {ol.webgl.shader.Fragment}
+ */
+ol.webgl.map.shader.Fragment = function() {
+  goog.base(this, [
+    'precision mediump float;',
+    '',
+    'uniform float uAlpha;',
+    'uniform sampler2D uTexture;',
+    '',
+    'varying vec2 vTexCoord;',
+    '',
+    'void main(void) {',
+    '  gl_FragColor = vec4(texture2D(uTexture, vTexCoord).rgb, uAlpha);',
+    '}'
+  ].join('\n'));
+};
+goog.inherits(ol.webgl.map.shader.Fragment, ol.webgl.shader.Fragment);
+goog.addSingletonGetter(ol.webgl.map.shader.Fragment);
+
+
+
+/**
+ * @constructor
+ * @extends {ol.webgl.shader.Vertex}
+ */
+ol.webgl.map.shader.Vertex = function() {
+  goog.base(this, [
+    'attribute vec2 aPosition;',
+    'attribute vec2 aTexCoord;',
+    '',
+    'varying vec2 vTexCoord;',
+    '',
+    'void main(void) {',
+    '  gl_Position = vec4(aPosition, 0., 1.);',
+    '  vTexCoord = aTexCoord;',
+    '}'
+  ].join('\n'));
+};
+goog.inherits(ol.webgl.map.shader.Vertex, ol.webgl.shader.Vertex);
+goog.addSingletonGetter(ol.webgl.map.shader.Vertex);
 
 
 
@@ -90,13 +135,13 @@ ol.webgl.Map = function(target, opt_values) {
    * @private
    * @type {ol.webgl.shader.Fragment}
    */
-  this.fragmentShader_ = ol.webgl.Map.createFragmentShader_();
+  this.fragmentShader_ = ol.webgl.map.shader.Fragment.getInstance();
 
   /**
    * @private
    * @type {ol.webgl.shader.Vertex}
    */
-  this.vertexShader_ = ol.webgl.Map.createVertexShader_();
+  this.vertexShader_ = ol.webgl.map.shader.Vertex.getInstance();
 
   /**
    * @private
@@ -113,45 +158,6 @@ ol.webgl.Map = function(target, opt_values) {
 
 };
 goog.inherits(ol.webgl.Map, ol.Map);
-
-
-/**
- * @private
- * @return {ol.webgl.shader.Fragment} Fragment shader.
- */
-ol.webgl.Map.createFragmentShader_ = function() {
-  return new ol.webgl.shader.Fragment([
-    'precision mediump float;',
-    '',
-    'uniform float uAlpha;',
-    'uniform sampler2D uTexture;',
-    '',
-    'varying vec2 vTexCoord;',
-    '',
-    'void main(void) {',
-    '  gl_FragColor = vec4(texture2D(uTexture, vTexCoord).rgb, uAlpha);',
-    '}'
-  ].join('\n'));
-};
-
-
-/**
- * @private
- * @return {ol.webgl.shader.Vertex} Vertex shader.
- */
-ol.webgl.Map.createVertexShader_ = function() {
-  return new ol.webgl.shader.Vertex([
-    'attribute vec2 aPosition;',
-    'attribute vec2 aTexCoord;',
-    '',
-    'varying vec2 vTexCoord;',
-    '',
-    'void main(void) {',
-    '  gl_Position = vec4(aPosition, 0., 1.);',
-    '  vTexCoord = aTexCoord;',
-    '}'
-  ].join('\n'));
-};
 
 
 /**
