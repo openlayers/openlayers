@@ -115,6 +115,15 @@ goog.inherits(ol.webgl.TileLayerRenderer, ol.webgl.LayerRenderer);
 
 
 /**
+ * @return {ol.TileLayer} Layer.
+ * @override
+ */
+ol.webgl.TileLayerRenderer.prototype.getLayer = function() {
+  return /** @type {ol.TileLayer} */ goog.base(this, 'getLayer');
+};
+
+
+/**
  * @inheritDoc
  */
 ol.webgl.TileLayerRenderer.prototype.getTexture = function() {
@@ -176,7 +185,7 @@ ol.webgl.TileLayerRenderer.prototype.redraw = function() {
     return;
   }
 
-  var tileLayer = /** @type {ol.TileLayer} */ (this.getLayer());
+  var tileLayer = this.getLayer();
   var tileStore = tileLayer.getStore();
   var tileGrid = tileStore.getTileGrid();
   var z = tileGrid.getZForResolution(resolution);
