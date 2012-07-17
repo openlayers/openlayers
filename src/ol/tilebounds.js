@@ -75,6 +75,7 @@ ol.TileBounds.prototype.forEachTileCoord = function(z, f, opt_obj) {
 
 
 /**
+ * @override
  * @return {goog.math.Size} Size.
  */
 ol.TileBounds.prototype.getSize = function() {

@@ -99,3 +99,11 @@ function testIntersects() {
   assertNotIntersects(new ol.Rectangle(80, 120, 120, 140));
   assertNotIntersects(new ol.Rectangle(120, 120, 140, 140));
 }
+
+
+function testSize() {
+  var rectangle = new ol.Rectangle(0, 1, 2, 4);
+  var size = rectangle.getSize();
+  assertEquals(2, size.width);
+  assertEquals(3, size.height);
+}

@@ -2,6 +2,7 @@ goog.provide('ol.Rectangle');
 
 goog.require('goog.asserts');
 goog.require('goog.math.Coordinate');
+goog.require('goog.math.Size');
 
 
 
@@ -77,4 +78,12 @@ ol.Rectangle.prototype.contains = function(coordinate) {
 ol.Rectangle.prototype.getCenter = function() {
   return new goog.math.Coordinate(
       (this.minX + this.maxX) / 2, (this.minY + this.maxY) / 2);
+};
+
+
+/**
+ * @return {goog.math.Size} Size.
+ */
+ol.Rectangle.prototype.getSize = function() {
+  return new goog.math.Size(this.maxX - this.minX, this.maxY - this.minY);
 };
