@@ -1,5 +1,6 @@
 goog.provide('ol.webgl.LayerRenderer');
 
+goog.require('goog.vec.Mat4');
 goog.require('ol.Layer');
 goog.require('ol.LayerRenderer');
 
@@ -39,6 +40,12 @@ ol.webgl.LayerRenderer.prototype.getGL = function() {
 ol.webgl.LayerRenderer.prototype.getMap = function() {
   return /** @type {ol.webgl.Map} */ goog.base(this, 'getMap');
 };
+
+
+/**
+ * @return {goog.vec.Mat4.AnyType} Matrix.
+ */
+ol.webgl.LayerRenderer.prototype.getMatrix = goog.abstractMethod;
 
 
 /**
