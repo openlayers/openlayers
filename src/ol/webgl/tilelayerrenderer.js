@@ -1,10 +1,59 @@
 goog.provide('ol.webgl.TileLayerRenderer');
+goog.provide('ol.webgl.tilelayerrenderer.shader');
 
 goog.require('goog.asserts');
 goog.require('goog.events.EventType');
 goog.require('goog.webgl');
 goog.require('ol.TileLayer');
 goog.require('ol.webgl.LayerRenderer');
+goog.require('ol.webgl.shader.Fragment');
+goog.require('ol.webgl.shader.Vertex');
+
+
+
+/**
+ * @constructor
+ * @extends {ol.webgl.shader.Fragment}
+ */
+ol.webgl.tilelayerrenderer.shader.Fragment = function() {
+  goog.base(this, [
+    'precision mediump float;',
+    '',
+    'uniform sampler2D uTexture;',
+    '',
+    'varying vec2 vTexCoord;',
+    '',
+    'void main(void) {',
+    ' gl_FragColor = vec4(texture2D(uTexture, vTexCoord).rgb, 1.);',
+    '}'
+  ].join('\n'));
+};
+goog.inherits(
+    ol.webgl.tilelayerrenderer.shader.Fragment, ol.webgl.shader.Fragment);
+goog.addSingletonGetter(ol.webgl.tilelayerrenderer.shader.Fragment);
+
+
+
+/**
+ * @constructor
+ * @extends {ol.webgl.shader.Vertex}
+ */
+ol.webgl.tilelayerrenderer.shader.Vertex = function() {
+  goog.base(this, [
+    'attribute vec2 aPosition;',
+    'attribute vec2 aTexCoord;',
+    '',
+    'varying vec2 vTexCoord;',
+    '',
+    'void main(void) {',
+    '  gl_Position = vec4(aPosition, 0., 1.);',
+    '  vTexCoord = aTexCoord;',
+    '}'
+  ].join('\n'));
+};
+goog.inherits(
+    ol.webgl.tilelayerrenderer.shader.Vertex, ol.webgl.shader.Vertex);
+goog.addSingletonGetter(ol.webgl.tilelayerrenderer.shader.Vertex);
 
 
 
@@ -20,9 +69,16 @@ ol.webgl.TileLayerRenderer = function(map, tileLayer) {
 
   /**
    * @private
-   * @type {goog.math.Size}
+   * @type {ol.webgl.shader.Fragment}
    */
-  this.size_ = null;
+  this.fragmentShader_ =
+      ol.webgl.tilelayerrenderer.shader.Fragment.getInstance();
+
+  /**
+   * @private
+   * @type {ol.webgl.shader.Vertex}
+   */
+  this.vertexShader_ = ol.webgl.tilelayerrenderer.shader.Vertex.getInstance();
 
   /**
    * @private
@@ -173,6 +229,8 @@ ol.webgl.TileLayerRenderer.prototype.redraw = function() {
   } else {
     gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, this.framebuffer_);
   }
+
+  gl.useProgram(map.getProgram(this.fragmentShader_, this.vertexShader_));
 
   tileBounds.forEachTileCoord(z, function(tileCoord) {
     var tile = tileStore.getTile(tileCoord);
