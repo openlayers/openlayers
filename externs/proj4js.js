@@ -65,6 +65,7 @@ Proj4js.Proj.prototype.units;
 
 
 /**
+ * @nosideeffects
  * @param {Proj4js.Proj} source
  * @param {Proj4js.Proj} dest
  * @param {Proj4js.Point|{x:number, y:number}} point
