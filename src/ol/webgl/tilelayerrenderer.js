@@ -269,6 +269,8 @@ ol.webgl.TileLayerRenderer.prototype.redraw = function() {
     gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, this.framebuffer_);
   }
 
+  gl.clearColor(0, 0, 0, 0);
+  gl.clear(goog.webgl.COLOR_BUFFER_BIT);
   gl.disable(goog.webgl.BLEND);
 
   var program = map.getProgram(this.fragmentShader_, this.vertexShader_);
