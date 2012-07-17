@@ -203,10 +203,6 @@ ol.webgl.TileLayerRenderer.prototype.redraw = function() {
         goog.webgl.NEAREST);
     gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MIN_FILTER,
         goog.webgl.NEAREST);
-    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_S,
-        goog.webgl.REPEAT);
-    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_T,
-        goog.webgl.REPEAT);
 
     var renderbuffer = gl.createRenderbuffer();
     gl.bindRenderbuffer(goog.webgl.RENDERBUFFER, renderbuffer);
