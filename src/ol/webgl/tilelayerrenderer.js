@@ -305,7 +305,7 @@ ol.webgl.TileLayerRenderer.prototype.redraw = function() {
           2 / tileBoundsSize.height,
           1);
       gl.uniformMatrix4fv(this.locations_.uMatrix, false, uMatrix);
-      gl.bindTexture(goog.webgl.TEXTURE_2D, map.getTexture(tile.getImage()));
+      gl.bindTexture(goog.webgl.TEXTURE_2D, map.getTileTexture(tile));
       gl.activeTexture(goog.webgl.TEXTURE0);
       gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
     } else {

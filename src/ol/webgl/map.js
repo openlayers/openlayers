@@ -128,7 +128,7 @@ ol.webgl.Map = function(target, opt_values) {
    * @private
    * @type {Object.<string, WebGLTexture>}
    */
-  this.textureCache_ = {};
+  this.tileTextureCache_ = {};
 
   /**
    * @private
@@ -185,7 +185,7 @@ ol.webgl.Map.prototype.disposeInternal = function() {
     goog.object.forEach(this.shaderCache_, function(shader) {
       gl.deleteShader(shader);
     });
-    goog.object.forEach(this.textureCache_, function(texture) {
+    goog.object.forEach(this.tileTextureCache_, function(texture) {
       gl.deleteTexture(texture);
     });
   }
@@ -256,12 +256,13 @@ ol.webgl.Map.prototype.getShader = function(shaderObject) {
 
 
 /**
- * @param {Image} image Image.
+ * @param {ol.Tile} tile Tile.
  * @return {WebGLTexture} Texture.
  */
-ol.webgl.Map.prototype.getTexture = function(image) {
-  if (image.src in this.textureCache_) {
-    return this.textureCache_[image.src];
+ol.webgl.Map.prototype.getTileTexture = function(tile) {
+  var image = tile.getImage();
+  if (image.src in this.tileTextureCache_) {
+    return this.tileTextureCache_[image.src];
   } else {
     var gl = this.getGL();
     var texture = gl.createTexture();
@@ -276,7 +277,7 @@ ol.webgl.Map.prototype.getTexture = function(image) {
         goog.webgl.CLAMP_TO_EDGE);
     gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_T,
         goog.webgl.CLAMP_TO_EDGE);
-    this.textureCache_[image.src] = texture;
+    this.tileTextureCache_[image.src] = texture;
     return texture;
   }
 };
@@ -361,7 +362,7 @@ ol.webgl.Map.prototype.handleWebGLContextLost = function(event) {
   event.preventDefault();
   this.shaderCache_ = {};
   this.programCache_ = {};
-  this.textureCache_ = {};
+  this.tileTextureCache_ = {};
   goog.object.forEach(this.layerRenderers, function(layerRenderer) {
     layerRenderer.handleWebGLContextLost();
   });
