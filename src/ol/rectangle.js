@@ -41,6 +41,19 @@ ol.Rectangle = function(minX, minY, maxX, maxY) {
 
 
 /**
+ * @param {ol.Rectangle} rectangle1 Rectangle.
+ * @param {ol.Rectangle} rectangle2 Rectangle.
+ * @return {boolean} Intersects.
+ */
+ol.Rectangle.intersects = function(rectangle1, rectangle2) {
+  return rectangle1.minX <= rectangle2.maxX &&
+      rectangle1.maxX >= rectangle2.minX &&
+      rectangle1.minY <= rectangle2.maxY &&
+      rectangle1.maxY >= rectangle2.minY;
+};
+
+
+/**
  * @return {ol.Rectangle} Clone.
  */
 ol.Rectangle.prototype.clone = function() {

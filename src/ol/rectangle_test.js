@@ -56,3 +56,46 @@ function testContainsNegative() {
   assertFalse(rectangle.contains(new goog.math.Coordinate(4, 4)));
   assertFalse(rectangle.contains(new goog.math.Coordinate(4, 5)));
 }
+
+
+function testIntersects() {
+
+  var rectangle1 = new ol.Rectangle(50, 50, 100, 100);
+
+  function assertIntersects(rectangle2) {
+    assertTrue(rectangle1 + ' expected to intersect ' + rectangle2,
+        ol.Rectangle.intersects(rectangle1, rectangle2));
+  }
+  function assertNotIntersects(rectangle2) {
+    assertFalse(rectangle1 + ' expected to not intersect ' + rectangle2,
+        ol.Rectangle.intersects(rectangle1, rectangle2));
+  }
+
+  assertIntersects(rectangle1);
+  assertIntersects(new ol.Rectangle(20, 20, 80, 80));
+  assertIntersects(new ol.Rectangle(20, 50, 80, 100));
+  assertIntersects(new ol.Rectangle(20, 80, 80, 120));
+  assertIntersects(new ol.Rectangle(50, 20, 100, 80));
+  assertIntersects(new ol.Rectangle(50, 80, 100, 120));
+  assertIntersects(new ol.Rectangle(80, 20, 120, 80));
+  assertIntersects(new ol.Rectangle(80, 50, 120, 100));
+  assertIntersects(new ol.Rectangle(80, 80, 120, 120));
+  assertIntersects(new ol.Rectangle(20, 20, 120, 120));
+  assertIntersects(new ol.Rectangle(70, 70, 80, 80));
+  assertNotIntersects(new ol.Rectangle(10, 10, 30, 30));
+  assertNotIntersects(new ol.Rectangle(30, 10, 70, 30));
+  assertNotIntersects(new ol.Rectangle(50, 10, 100, 30));
+  assertNotIntersects(new ol.Rectangle(80, 10, 120, 30));
+  assertNotIntersects(new ol.Rectangle(120, 10, 140, 30));
+  assertNotIntersects(new ol.Rectangle(10, 30, 30, 70));
+  assertNotIntersects(new ol.Rectangle(120, 30, 140, 70));
+  assertNotIntersects(new ol.Rectangle(10, 50, 30, 100));
+  assertNotIntersects(new ol.Rectangle(120, 50, 140, 100));
+  assertNotIntersects(new ol.Rectangle(10, 80, 30, 120));
+  assertNotIntersects(new ol.Rectangle(120, 80, 140, 120));
+  assertNotIntersects(new ol.Rectangle(10, 120, 30, 140));
+  assertNotIntersects(new ol.Rectangle(30, 120, 70, 140));
+  assertNotIntersects(new ol.Rectangle(50, 120, 100, 140));
+  assertNotIntersects(new ol.Rectangle(80, 120, 120, 140));
+  assertNotIntersects(new ol.Rectangle(120, 120, 140, 140));
+}
