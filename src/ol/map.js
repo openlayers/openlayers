@@ -151,13 +151,16 @@ ol.Map.prototype.disposeInternal = function() {
 
 
 /**
- * @param {function(this: T, *, number)} f Function.
+ * @param {function(this: T, ol.Layer, ol.LayerRenderer, number)} f Function.
  * @param {T=} opt_obj Object.
  * @template T
  */
-ol.Map.prototype.forEachLayer = function(f, opt_obj) {
+ol.Map.prototype.forEachVisibleLayer = function(f, opt_obj) {
   var layers = this.getLayers();
-  layers.forEach(f, opt_obj);
+  layers.forEach(function(layer, index) {
+    var layerRenderer = this.getLayerRenderer(layer);
+    f.call(opt_obj, layer, layerRenderer, index);
+  }, this);
 };
 
 
