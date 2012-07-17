@@ -4,6 +4,7 @@ goog.require('ol.base');
 goog.require('ol.bounds');
 goog.require('ol.control.Attribution');
 goog.require('ol.control.Zoom');
+goog.require('ol.control.ZoomBox');
 goog.require('ol.handler.Drag');
 goog.require('ol.handler.MouseWheel');
 goog.require('ol.handler.Click');

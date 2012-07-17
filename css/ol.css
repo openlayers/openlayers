@@ -158,6 +158,9 @@
 .ol-control-zoom-out {
     border-radius: 0 0 4px 4px;
 }
+.ol-control-zoombox-box {
+    border: 2px solid red;
+}
 .ol-control-attribution {
     position: absolute;
     font-size: 10px;
