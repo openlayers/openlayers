@@ -384,21 +384,16 @@ ol.webgl.Map.prototype.redrawInternal = function() {
 
   var gl = this.getGL();
 
-  gl.clear(goog.webgl.COLOR_BUFFER_BIT);
-
-  gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, null);
-
-  var program = this.getProgram(this.fragmentShader_, this.vertexShader_);
-  gl.useProgram(program);
-
-  this.forEachLayer(function(layer) {
-    if (!layer.getVisible()) {
-      return;
+  this.forEachVisibleLayer(function(layer, layerRenderer) {
+    if (layerRenderer.redraw()) {
+      animate = true;
     }
-    var layerRenderer = /** @type {ol.webgl.LayerRenderer} */ (
-        this.getLayerRenderer(layer));
-    goog.asserts.assert(goog.isDefAndNotNull(layerRenderer));
-    layerRenderer.redraw();
+  });
+
+  gl.clear(goog.webgl.COLOR_BUFFER_BIT);
+  gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, null);
+  gl.useProgram(this.getProgram(this.fragmentShader_, this.vertexShader_));
+  this.forEachVisibleLayer(function(layer, layerRenderer) {
     gl.bindTexture(goog.webgl.TEXTURE_2D, layerRenderer.getTexture());
   }, this);
 
