@@ -270,11 +270,13 @@ ol.webgl.TileLayerRenderer.prototype.redraw = function() {
   if (goog.isNull(this.arrayBuffer_)) {
     var arrayBuffer = gl.createBuffer();
     gl.bindBuffer(goog.webgl.ARRAY_BUFFER, arrayBuffer);
+    var textureOffsetX = 0.5 / tileSize.width;
+    var textureOffsetY = 0.5 / tileSize.height;
     gl.bufferData(goog.webgl.ARRAY_BUFFER, new Float32Array([
-      0, 0, 0, 1,
-      1, 0, 1, 1,
-      0, 1, 0, 0,
-      1, 1, 1, 0
+      0, 0, 0 + textureOffsetX, 1 + textureOffsetY,
+      1, 0, 1 + textureOffsetX, 1 + textureOffsetY,
+      0, 1, 0 + textureOffsetX, 0 + textureOffsetY,
+      1, 1, 1 + textureOffsetX, 0 + textureOffsetY
     ]), goog.webgl.STATIC_DRAW);
     this.arrayBuffer_ = arrayBuffer;
   } else {

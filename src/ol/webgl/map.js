@@ -269,9 +269,13 @@ ol.webgl.Map.prototype.getTexture = function(image) {
     gl.texImage2D(goog.webgl.TEXTURE_2D, 0, goog.webgl.RGBA, goog.webgl.RGBA,
         goog.webgl.UNSIGNED_BYTE, image);
     gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MAG_FILTER,
-        goog.webgl.LINEAR);
+        goog.webgl.NEAREST);
     gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MIN_FILTER,
-        goog.webgl.LINEAR);
+        goog.webgl.NEAREST);
+    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_S,
+        goog.webgl.CLAMP_TO_EDGE);
+    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_T,
+        goog.webgl.CLAMP_TO_EDGE);
     this.textureCache_[image.src] = texture;
     return texture;
   }
