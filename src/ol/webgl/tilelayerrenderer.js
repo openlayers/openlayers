@@ -1,3 +1,5 @@
+// FIXME animated shaders! check in redraw
+
 goog.provide('ol.webgl.TileLayerRenderer');
 goog.provide('ol.webgl.tilelayerrenderer.shader');
 

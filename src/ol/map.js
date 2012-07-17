@@ -410,6 +410,7 @@ ol.Map.prototype.recalculateExtent_ = function() {
     var maxX = center.x + resolution * size.width / 2;
     var maxY = center.y + resolution * size.height / 2;
     var extent = new ol.Extent(minX, minY, maxX, maxY);
+    // FIXME check whether this causes an infinite loop!
     this.set(ol.MapProperty.EXTENT, extent);
   }
 };
@@ -509,7 +510,6 @@ ol.Map.prototype.setLayers = function(layers) {
  * @param {number} resolution Resolution.
  */
 ol.Map.prototype.setResolution = function(resolution) {
-  // FIXME support discrete resolutions
   this.set(ol.MapProperty.RESOLUTION, resolution);
 };
 

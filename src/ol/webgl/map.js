@@ -1,3 +1,9 @@
+// FIXME clear tileTextureCache
+// FIXME defer texture loads until after redraw when animating
+// FIXME generational tile texture garbage collector newFrame/get
+// FIXME defer cleanup until post-render
+// FIXME check against gl.getParameter(webgl.MAX_TEXTURE_SIZE)
+
 goog.provide('ol.webgl.Map');
 goog.provide('ol.webgl.map.shader');
 
