@@ -33,13 +33,13 @@ ol.webgl.map.shader.Fragment = function() {
   goog.base(this, [
     'precision mediump float;',
     '',
-    'uniform float uAlpha;',
+    'uniform float uOpacity;',
     'uniform sampler2D uTexture;',
     '',
     'varying vec2 vTexCoord;',
     '',
     'void main(void) {',
-    '  gl_FragColor = vec4(texture2D(uTexture, vTexCoord).rgb, uAlpha);',
+    '  gl_FragColor = vec4(texture2D(uTexture, vTexCoord).rgb, uOpacity);',
     '}'
   ].join('\n'));
 };
@@ -59,8 +59,10 @@ ol.webgl.map.shader.Vertex = function() {
     '',
     'varying vec2 vTexCoord;',
     '',
+    'uniform mat4 uMatrix;',
+    '',
     'void main(void) {',
-    '  gl_Position = vec4(aPosition, 0., 1.);',
+    '  gl_Position = uMatrix * vec4(aPosition, 0., 1.);',
     '  vTexCoord = aTexCoord;',
     '}'
   ].join('\n'));
@@ -111,6 +113,22 @@ ol.webgl.Map = function(target, opt_values) {
       this.handleWebGLContextLost, false, this);
   goog.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.RESTORED,
       this.handleWebGLContextRestored, false, this);
+
+  /**
+   * @private
+   * @type {{aPosition: number,
+   *         aTexCoord: number,
+   *         uMatrix: WebGLUniformLocation,
+   *         uOpacity: WebGLUniformLocation,
+   *         uTexture: WebGLUniformLocation}|null}
+   */
+  this.locations_ = null;
+
+  /**
+   * @private
+   * @type {WebGLBuffer}
+   */
+  this.arrayBuffer_ = null;
 
   /**
    * @private
@@ -360,6 +378,8 @@ ol.webgl.Map.prototype.handleSizeChanged = function() {
  */
 ol.webgl.Map.prototype.handleWebGLContextLost = function(event) {
   event.preventDefault();
+  this.locations_ = null;
+  this.arrayBuffer_ = null;
   this.shaderCache_ = {};
   this.programCache_ = {};
   this.tileTextureCache_ = {};
@@ -399,11 +419,55 @@ ol.webgl.Map.prototype.redrawInternal = function() {
     }
   });
 
-  gl.clear(goog.webgl.COLOR_BUFFER_BIT);
+  var gl = this.getGL();
+
   gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, null);
-  gl.useProgram(this.getProgram(this.fragmentShader_, this.vertexShader_));
+  gl.clearColor(0, 0, 0, 0);
+  gl.clear(goog.webgl.COLOR_BUFFER_BIT);
+  gl.enable(goog.webgl.BLEND);
+  gl.blendFunc(goog.webgl.SRC_ALPHA, goog.webgl.ONE_MINUS_SRC_ALPHA);
+
+  var program = this.getProgram(this.fragmentShader_, this.vertexShader_);
+  gl.useProgram(program);
+  if (goog.isNull(this.locations_)) {
+    this.locations_ = {
+      aPosition: gl.getAttribLocation(program, 'aPosition'),
+      aTexCoord: gl.getAttribLocation(program, 'aTexCoord'),
+      uMatrix: gl.getUniformLocation(program, 'uMatrix'),
+      uOpacity: gl.getUniformLocation(program, 'uOpacity'),
+      uTexture: gl.getUniformLocation(program, 'uTexture')
+    };
+  }
+
+  if (goog.isNull(this.arrayBuffer_)) {
+    var arrayBuffer = gl.createBuffer();
+    gl.bindBuffer(goog.webgl.ARRAY_BUFFER, arrayBuffer);
+    gl.bufferData(goog.webgl.ARRAY_BUFFER, new Float32Array([
+      0, 0, 0, 0,
+      1, 0, 1, 0,
+      0, 1, 0, 1,
+      1, 1, 1, 1
+    ]), goog.webgl.STATIC_DRAW);
+    this.arrayBuffer_ = arrayBuffer;
+  } else {
+    gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.arrayBuffer_);
+  }
+
+  gl.enableVertexAttribArray(this.locations_.aPosition);
+  gl.vertexAttribPointer(
+      this.locations_.aPosition, 2, goog.webgl.FLOAT, false, 16, 0);
+  gl.enableVertexAttribArray(this.locations_.aTexCoord);
+  gl.vertexAttribPointer(
+      this.locations_.aTexCoord, 2, goog.webgl.FLOAT, false, 16, 8);
+  gl.uniform1i(this.locations_.uTexture, 0);
+
   this.forEachVisibleLayer(function(layer, layerRenderer) {
+    gl.uniformMatrix4fv(
+        this.locations_.uMatrix, false, layerRenderer.getMatrix());
+    gl.uniform1f(this.locations_.uOpacity, layer.getOpacity());
     gl.bindTexture(goog.webgl.TEXTURE_2D, layerRenderer.getTexture());
+    gl.activeTexture(goog.webgl.TEXTURE0);
+    gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
   }, this);
 
   return animate;
