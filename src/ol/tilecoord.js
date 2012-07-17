@@ -1,5 +1,6 @@
 goog.provide('ol.TileCoord');
 
+goog.require('goog.array');
 goog.require('goog.math.Coordinate');
 
 
@@ -45,4 +46,17 @@ ol.TileCoord.prototype.hash = function() {
  */
 ol.TileCoord.prototype.toString = function() {
   return [this.z, this.x, this.y].join('/');
+};
+
+
+/**
+ * @param {string} str String.
+ * @return {ol.TileCoord} Tile coord.
+ */
+ol.TileCoord.fromString = function(str) {
+  var v = str.split('/');
+  v = goog.array.map(v, function(e, i, a) {
+    return parseInt(e);
+  });
+  return new ol.TileCoord(v[0], v[1], v[2]);
 };

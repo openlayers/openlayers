@@ -15,3 +15,12 @@ function testHashX() {
   var tc2 = new ol.TileCoord(3, 1, 1);
   assertTrue(tc1.hash() != tc2.hash());
 }
+
+
+function testFromString() {
+  var str = '1/2/3';
+  var tc = ol.TileCoord.fromString(str);
+  assertEquals(1, tc.z);
+  assertEquals(2, tc.x);
+  assertEquals(3, tc.y);
+}
