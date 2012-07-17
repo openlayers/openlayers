@@ -32,6 +32,15 @@ ol.webgl.LayerRenderer.prototype.getGL = function() {
 
 
 /**
+ * @override
+ * @return {ol.webgl.Map} Map.
+ */
+ol.webgl.LayerRenderer.prototype.getMap = function() {
+  return /** @type {ol.webgl.Map} */ goog.base(this, 'getMap');
+};
+
+
+/**
  */
 ol.webgl.LayerRenderer.prototype.handleContextLost = goog.nullFunction;
 

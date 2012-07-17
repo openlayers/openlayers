@@ -173,7 +173,7 @@ ol.webgl.TileLayerRenderer.prototype.redraw = function() {
 
   var gl = this.getGL();
 
-  var map = /** @type {ol.webgl.Map} */ (this.getMap());
+  var map = this.getMap();
   var extent = map.getExtent();
   var resolution = map.getResolution();
   if (!goog.isDef(extent) || !goog.isDef(resolution)) {
