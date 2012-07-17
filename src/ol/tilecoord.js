@@ -56,7 +56,7 @@ ol.TileCoord.prototype.toString = function() {
 ol.TileCoord.fromString = function(str) {
   var v = str.split('/');
   v = goog.array.map(v, function(e, i, a) {
-    return parseInt(e);
+    return parseInt(e, 10);
   });
   return new ol.TileCoord(v[0], v[1], v[2]);
 };
