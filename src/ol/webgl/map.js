@@ -332,10 +332,7 @@ ol.webgl.Map.prototype.handleLayerAdd = function(layer) {
  * @protected
  */
 ol.webgl.Map.prototype.handleLayerRendererChange = function(event) {
-  var layerRenderer = /** @type {ol.LayerRenderer} */ (event.target);
-  if (layerRenderer.getLayer().getVisible()) {
-    this.redraw();
-  }
+  this.redraw();
 };
 
 
