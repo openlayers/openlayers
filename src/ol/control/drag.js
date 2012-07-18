@@ -84,6 +84,11 @@ ol.control.Drag.prototype.handleDragEnd = goog.nullFunction;
  * @inheritDoc
  */
 ol.control.Drag.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
+  var center = mapBrowserEvent.map.getCenter();
+  var resolution = mapBrowserEvent.map.getResolution();
+  if (!goog.isDef(center) || !goog.isDef(resolution)) {
+    return;
+  }
   var browserEventObject;
   if (this.dragging_) {
     if (mapBrowserEvent.type == goog.events.EventType.MOUSEMOVE ||
@@ -107,7 +112,7 @@ ol.control.Drag.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
       this.startY = browserEventObject.offsetY;
       this.deltaX = 0;
       this.deltaY = 0;
-      this.startCenter = mapBrowserEvent.map.getCenter();
+      this.startCenter = center;
       this.startCoordinate = mapBrowserEvent.getCoordinate();
       if (this.handleDragStart(mapBrowserEvent)) {
         this.dragging_ = true;
