@@ -1,7 +1,8 @@
 // FIXME animated shaders! check in redraw
 
 goog.provide('ol.webgl.TileLayerRenderer');
-goog.provide('ol.webgl.tilelayerrenderer.shader');
+goog.provide('ol.webgl.tilelayerrenderer.shader.Fragment');
+goog.provide('ol.webgl.tilelayerrenderer.shader.Vertex');
 
 goog.require('goog.asserts');
 goog.require('goog.events.EventType');

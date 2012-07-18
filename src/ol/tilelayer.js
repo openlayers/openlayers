@@ -24,13 +24,3 @@ goog.inherits(ol.TileLayer, ol.Layer);
 ol.TileLayer.prototype.getStore = function() {
   return /** @type {ol.TileStore} */ goog.base(this, 'getStore');
 };
-
-
-/**
- * @param {Object.<string, *>=} opt_values Values.
- * @return {ol.Layer} Layer.
- */
-ol.TileLayer.createOpenStreetMap = function(opt_values) {
-  var store = ol.TileStore.createOpenStreetMap();
-  return new ol.TileLayer(store, opt_values);
-};

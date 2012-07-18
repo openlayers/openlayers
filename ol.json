@@ -1,0 +1,36 @@
+{
+  "id": "ol",
+
+  "inputs": "src/ol/ol.js",
+
+  "paths": [
+    "src"
+  ],
+
+  "define": {
+    "goog.dom.ASSUME_STANDARDS_MODE": true,
+    "goog.DEBUG": false
+  },
+
+  "externs": [
+    "externs/webgl-debug.js"
+  ],
+
+  "mode": "ADVANCED",
+  "level": "VERBOSE",
+
+  "checks": {
+    "accessControls": "ERROR",
+    "visibility": "ERROR",
+    "checkTypes": "ERROR",
+    "checkRegExp": "ERROR",
+    "checkVars": "ERROR",
+    "deprecated": "ERROR",
+    "fileoverviewTags": "ERROR",
+    "invalidCasts": "ERROR",
+    "missingProperties": "ERROR",
+    "nonStandardJsDocs": "ERROR",
+    "undefinedVars": "ERROR"
+  }
+
+}

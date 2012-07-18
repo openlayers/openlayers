@@ -1,6 +1,6 @@
 goog.require('goog.testing.jsunit');
 goog.require('ol.TileCoord');
-goog.require('ol.TileStore.createOpenStreetMap');
+goog.require('ol.tilestore.createOpenStreetMap');
 
 
 function getTileCoordPart(tileUrl) {
@@ -10,7 +10,7 @@ function getTileCoordPart(tileUrl) {
 
 function testOpenStreetMap() {
 
-  var tileStore = ol.TileStore.createOpenStreetMap(8);
+  var tileStore = ol.tilestore.createOpenStreetMap(8);
   var tileGrid = tileStore.getTileGrid();
 
   var coordinate =
@@ -43,7 +43,7 @@ function testOpenStreetMap() {
 
 function testOpenStreetMapWrapX() {
 
-  var tileStore = ol.TileStore.createOpenStreetMap(8);
+  var tileStore = ol.tilestore.createOpenStreetMap(8);
 
   tileUrl = tileStore.getTileCoordUrl(new ol.TileCoord(6, -31, -23));
   assertEquals('6/33/22', getTileCoordPart(tileUrl));
@@ -59,7 +59,7 @@ function testOpenStreetMapWrapX() {
 
 function testOpenStreetMapCropY() {
 
-  var tileStore = ol.TileStore.createOpenStreetMap(8);
+  var tileStore = ol.tilestore.createOpenStreetMap(8);
 
   tileUrl = tileStore.getTileCoordUrl(new ol.TileCoord(6, 33, -87));
   assertUndefined(tileUrl);

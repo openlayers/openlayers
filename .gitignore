@@ -8,5 +8,7 @@
 /examples/example-list.xml
 /bin/plovr*.jar
 /jsdoc/
+/ol.js
+/ol-skeleton*.js
 /plovr*.jar
 /webgl-debug.js

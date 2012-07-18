@@ -12,23 +12,6 @@
 	</head>
 	<body>
 		<div id="map"></div>
-		<script src="http://localhost:9810/compile?id=ol&mode=RAW" type="text/javascript"></script>
-		<script>
-
-			var target = document.getElementById('map');
-			var map = ol.createMap(target);
-
-			var layer = ol.TileLayer.createOpenStreetMap({
-				'opacity': 0.5,
-				'visible': true
-			});
-			map.getLayers().push(layer);
-
-                        var maxResolution = layer.getStore().getResolutions()[0];
-
-                        map.setCenter(new goog.math.Coordinate(0, 0));
-                        map.setResolution(maxResolution);
-
-		</script>
+		<script src="http://localhost:9810/compile?id=ol-skeleton" type="text/javascript"></script>
 	</body>
 </html>

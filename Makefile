@@ -53,19 +53,58 @@ space := $(empty) $(empty)
 all: build webgl-debug.js
 
 .PHONY: build
-build: $(PLOVR_JAR)
-	java -jar $(PLOVR_JAR) build main.json >api.js
+build: ol.js ol-skeleton.js ol-skeleton-debug.js ol-skeleton-dom.js ol-skeleton-webgl.js
+
+.PHONY: ol.js
+ol.js: $(PLOVR_JAR)
+	java -jar $(PLOVR_JAR) build $(basename $@).json >$@
+	@echo $@ "uncompressed:" $(shell wc -c <$@) bytes
+	@echo $@ "  compressed:" $(shell gzip -9 -c <$@ | wc -c) bytes
+
+.PHONY: ol-skeleton.js
+ol-skeleton.js: $(PLOVR_JAR)
+	java -jar $(PLOVR_JAR) build $(basename $@).json >$@
+	@echo $@ "uncompressed:" $(shell wc -c <$@) bytes
+	@echo $@ "  compressed:" $(shell gzip -9 -c <$@ | wc -c) bytes
+
+.PHONY: ol-skeleton-debug.js
+ol-skeleton-debug.js: $(PLOVR_JAR)
+	java -jar $(PLOVR_JAR) build $(basename $@).json >$@
+	@echo $@ "uncompressed:" $(shell wc -c <$@) bytes
+	@echo $@ "  compressed:" $(shell gzip -9 -c <$@ | wc -c) bytes
+
+.PHONY: ol-skeleton-dom.js
+ol-skeleton-dom.js: $(PLOVR_JAR)
+	java -jar $(PLOVR_JAR) build $(basename $@).json >$@
+	@echo $@ "uncompressed:" $(shell wc -c <$@) bytes
+	@echo $@ "  compressed:" $(shell gzip -9 -c <$@ | wc -c) bytes
+
+.PHONY: ol-skeleton-webgl.js
+ol-skeleton-webgl.js: $(PLOVR_JAR)
+	java -jar $(PLOVR_JAR) build $(basename $@).json >$@
+	@echo $@ "uncompressed:" $(shell wc -c <$@) bytes
+	@echo $@ "  compressed:" $(shell gzip -9 -c <$@ | wc -c) bytes
 
 .PHONY: serve
 serve: $(PLOVR_JAR)
-	java -jar $(PLOVR_JAR) serve main.json
+	java -jar $(PLOVR_JAR) serve *.json
 
 .PHONY: lint
-lint: $(CLOSURE_LINTER)
-	gjslint --strict --limited_doc_files=$(subst $(space),$(comma),$(shell find externs -name \*.js)) $(filter-out $(GSLINT_EXCLUDES),$(shell find externs src -name \*.js))
+lint:
+	gjslint --strict --limited_doc_files=$(subst $(space),$(comma),$(shell find externs -name \*.js)) $(filter-out $(GSLINT_EXCLUDES),$(shell find externs src -name \*.js)) skeleton.js
 
 webgl-debug.js:
 	curl https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/sdk/debug/webgl-debug.js > $@
 
 $(PLOVR_JAR):
 	curl http://plovr.googlecode.com/files/$(PLOVR_JAR) > $@
+
+clean:
+	rm -f ol-skeleton.js
+	rm -f ol-skeleton-debug.js
+	rm -f ol-skeleton-dom.js
+	rm -f ol-skeleton-webgl.js
+
+reallyclean: clean
+	rm -f $(PLOVR_JAR)
+	rm -f webgl-debug.js
