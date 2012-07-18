@@ -133,10 +133,8 @@ ol.dom.Map.prototype.createLayerRenderer = function(layer) {
   if (layer instanceof ol.TileLayer) {
 
     var layerPane = goog.dom.createElement(goog.dom.TagName.DIV);
-    layerPane.className = 'ol-renderer-dom-layer';
+    layerPane.className = 'ol-layer';
     layerPane.style.position = 'absolute';
-    layerPane.style.width = '100%';
-    layerPane.style.height = '100%';
     this.layersPane_.appendChild(layerPane);
 
     var layerRenderer = new ol.dom.TileLayerRenderer(this, layer, layerPane);
