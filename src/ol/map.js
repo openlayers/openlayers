@@ -73,7 +73,10 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
 
   goog.events.listen(this.eventsPane_, [
     goog.events.EventType.DBLCLICK,
-    goog.events.EventType.CLICK
+    goog.events.EventType.MOUSEDOWN,
+    goog.events.EventType.MOUSEMOVE,
+    goog.events.EventType.MOUSEOUT,
+    goog.events.EventType.MOUSEUP
   ], this.handleBrowserEvent, false, this);
 
   var mouseWheelHandler = new goog.events.MouseWheelHandler(this.eventsPane_);
