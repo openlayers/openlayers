@@ -21,13 +21,25 @@ ol.dom.Map = function(target, opt_values) {
   goog.base(this, target);
 
   /**
-   * @type {Element}
+   * @type {!Element}
+   * @private
+   */
+  this.viewport_ = goog.dom.createElement(goog.dom.TagName.DIV);
+  this.viewport_.className = 'ol-viewport';
+  this.viewport_.style.position = 'relative';
+  this.viewport_.style.overflow = 'hidden';
+  this.viewport_.style.width = '100%';
+  this.viewport_.style.height = '100%';
+  target.appendChild(this.viewport_);
+
+  /**
+   * @type {!Element}
    * @private
    */
   this.layersPane_ = goog.dom.createElement(goog.dom.TagName.DIV);
+  this.layersPane_.className = 'ol-layers-pane';
   this.layersPane_.style.position = 'absolute';
-  this.layersPane_.className = 'ol-renderer-dom';
-  target.appendChild(this.layersPane_);
+  this.viewport_.appendChild(this.layersPane_);
 
   /**
    * @type {Object}
