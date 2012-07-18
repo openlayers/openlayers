@@ -58,6 +58,12 @@ ol.Tile = function(tileCoord, src, opt_crossOrigin) {
 
   /**
    * @private
+   * @type {Object.<number, Image>}
+   */
+  this.imageByContext_ = {};
+
+  /**
+   * @private
    * @type {Array.<number>}
    */
   this.imageListenerKeys_ = null;
@@ -75,10 +81,25 @@ ol.Tile.prototype.dispatchChangeEvent = function() {
 
 
 /**
+ * @param {Object=} opt_context Object.
  * @return {Image} Image.
  */
-ol.Tile.prototype.getImage = function() {
-  return this.image_;
+ol.Tile.prototype.getImage = function(opt_context) {
+  if (goog.isDef(opt_context)) {
+    var image;
+    var key = goog.getUid(opt_context);
+    if (key in this.imageByContext_) {
+      return this.imageByContext_[key];
+    } else if (goog.object.isEmpty(this.imageByContext_)) {
+      image = this.image_;
+    } else {
+      image = /** @type {Image} */ this.image_.cloneNode(false);
+    }
+    this.imageByContext_[key] = image;
+    return image;
+  } else {
+    return this.image_;
+  }
 };
 
 
