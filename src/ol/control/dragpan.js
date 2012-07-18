@@ -1,5 +1,7 @@
 goog.provide('ol.control.DragPan');
 
+goog.require('goog.functions');
+goog.require('goog.math.Coordinate');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.control.Drag');
 
@@ -19,31 +21,16 @@ goog.inherits(ol.control.DragPan, ol.control.Drag);
  * @inheritDoc
  */
 ol.control.DragPan.prototype.handleDrag = function(event) {
-  window.console.log(
-      'drag delta (' + this.deltaX + ', ' + this.deltaY + ')');
+  var map = event.map;
+  var resolution = map.getResolution();
+  var center = new goog.math.Coordinate(
+      this.startCenter.x - resolution * this.deltaX,
+      this.startCenter.y + resolution * this.deltaY);
+  map.setCenter(center);
 };
 
 
 /**
  * @inheritDoc
  */
-ol.control.DragPan.prototype.handleDragEnd = function(event) {
-  window.console.log(
-      'drag end at delta (' + this.deltaX + ', ' + this.deltaY + ')');
-};
-
-
-/**
- * @inheritDoc
- */
-ol.control.DragPan.prototype.handleDragStart = function(event) {
-  var browserEventObject = event.getBrowserEventObject();
-  if (browserEventObject.shiftKey) {
-    window.console.log('not starting drag while shift key is pressed');
-    return false;
-  } else {
-    window.console.log(
-        'drag start at (' + this.startX + ', ' + this.startY + ')');
-    return true;
-  }
-};
+ol.control.DragPan.prototype.handleDragStart = goog.functions.TRUE;
