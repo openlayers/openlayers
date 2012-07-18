@@ -134,3 +134,9 @@ function testNormalize() {
   assertEquals(0, coordinate.y);
 
 }
+
+
+function testToString() {
+  var rectangle = new ol.Rectangle(0, 1, 2, 3);
+  assertEquals('(0, 1, 2, 3)', rectangle.toString());
+}

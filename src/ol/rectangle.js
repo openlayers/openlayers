@@ -114,3 +114,11 @@ ol.Rectangle.prototype.normalize = function(coordinate) {
       (coordinate.x - this.minX) / this.getWidth(),
       (coordinate.y - this.minY) / this.getHeight());
 };
+
+
+/**
+ * @return {string} String.
+ */
+ol.Rectangle.prototype.toString = function() {
+  return '(' + [this.minX, this.minY, this.maxX, this.maxY].join(', ') + ')';
+};
