@@ -151,6 +151,17 @@ ol.Map.prototype.disposeInternal = function() {
 
 
 /**
+ * @param {ol.Extent} extent Extent.
+ */
+ol.Map.prototype.fitExtent = function(extent) {
+  this.whileFrozen(function() {
+    this.setCenter(extent.getCenter());
+    this.setResolution(this.getResolutionForExtent(extent));
+  }, this);
+};
+
+
+/**
  * @param {function(this: T, ol.Layer, ol.LayerRenderer, number)} f Function.
  * @param {T=} opt_obj Object.
  * @template T
@@ -410,7 +421,6 @@ ol.Map.prototype.recalculateExtent_ = function() {
     var maxX = center.x + resolution * size.width / 2;
     var maxY = center.y + resolution * size.height / 2;
     var extent = new ol.Extent(minX, minY, maxX, maxY);
-    // FIXME check whether this causes an infinite loop!
     this.set(ol.MapProperty.EXTENT, extent);
   }
 };
@@ -472,17 +482,6 @@ ol.Map.prototype.removeLayerRenderer = function(layer) {
  */
 ol.Map.prototype.setCenter = function(center) {
   this.set(ol.MapProperty.CENTER, center);
-};
-
-
-/**
- * @param {ol.Extent} extent Extent.
- */
-ol.Map.prototype.setExtent = function(extent) {
-  this.whileFrozen(function() {
-    this.setCenter(extent.getCenter());
-    this.setResolution(this.getResolutionForExtent(extent));
-  }, this);
 };
 
 
