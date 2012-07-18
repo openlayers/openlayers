@@ -2,6 +2,7 @@ goog.provide('ol.Map');
 goog.provide('ol.MapProperty');
 
 goog.require('goog.array');
+goog.require('goog.color');
 goog.require('goog.dom.ViewportSizeMonitor');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
@@ -27,6 +28,7 @@ goog.require('ol.Projection');
  * @enum {string}
  */
 ol.MapProperty = {
+  BACKGROUND_COLOR: 'backgroundColor',
   CENTER: 'center',
   CONTROLS: 'controls',
   EXTENT: 'extent',
@@ -131,6 +133,10 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
   goog.events.listen(this.viewportSizeMonitor_, goog.events.EventType.RESIZE,
       this.handleViewportResize, false, this);
 
+  goog.events.listen(this,
+      ol.Object.getChangedEventType(ol.MapProperty.BACKGROUND_COLOR),
+      this.handleBackgroundColorChanged, false, this);
+
   goog.events.listen(
       this, ol.Object.getChangedEventType(ol.MapProperty.CENTER),
       this.handleCenterChanged, false, this);
@@ -213,6 +219,15 @@ ol.Map.prototype.forEachVisibleLayer = function(f, opt_obj) {
     var layerRenderer = this.getLayerRenderer(layer);
     f.call(opt_obj, layer, layerRenderer, index);
   }, this);
+};
+
+
+/**
+ * @return {string|undefined} Background color.
+ */
+ol.Map.prototype.getBackgroundColor = function() {
+  return /** @type {string|undefined} */ (
+      this.get(ol.MapProperty.BACKGROUND_COLOR));
 };
 
 
@@ -339,6 +354,11 @@ ol.Map.prototype.getSize = function() {
 ol.Map.prototype.getTarget = function() {
   return this.target_;
 };
+
+
+/**
+ */
+ol.Map.prototype.handleBackgroundColorChanged = goog.nullFunction;
 
 
 /**
@@ -536,6 +556,15 @@ ol.Map.prototype.removeLayerRenderer = function(layer) {
   } else {
     return null;
   }
+};
+
+
+/**
+ * @param {string} backgroundColor Background color.
+ */
+ol.Map.prototype.setBackgroundColor = function(backgroundColor) {
+  goog.color.parse(backgroundColor);
+  this.set(ol.MapProperty.BACKGROUND_COLOR, backgroundColor);
 };
 
 
