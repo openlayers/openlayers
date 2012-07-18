@@ -442,12 +442,21 @@ ol.Map.prototype.handleLayersSetAt = function(event) {
 /**
  */
 ol.Map.prototype.handleLayersChanged = function() {
+  var layerRenderers = goog.object.getValues(this.layerRenderers);
+  goog.array.forEach(layerRenderers, function(layerRenderer) {
+    this.removeLayerRenderer(layerRenderer);
+  }, this);
+  this.layerRenderers = {};
   if (!goog.isNull(this.layersListenerKeys_)) {
     goog.array.forEach(this.layersListenerKeys_, goog.events.unlistenByKey);
     this.layersListenerKeys_ = null;
   }
   var layers = this.getLayers();
   if (goog.isDefAndNotNull(layers)) {
+    goog.array.forEach(layers.getArray(), function(layer) {
+      var layerRenderer = this.createLayerRenderer(layer);
+      this.setLayerRenderer(layer, layerRenderer);
+    }, this);
     this.layersListenerKeys_ = [
       goog.events.listen(layers, ol.ArrayEventType.INSERT_AT,
           this.handleLayersInsertAt, false, this),
