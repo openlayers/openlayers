@@ -59,14 +59,14 @@ goog.inherits(ol.control.Drag, ol.Control);
 
 
 /**
- * @param {ol.MapBrowserEvent} event Event.
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
  * @protected
  */
 ol.control.Drag.prototype.handleDrag = goog.nullFunction;
 
 
 /**
- * @param {ol.MapBrowserEvent} event Event.
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
  * @protected
  * @return {boolean} Capture dragging.
  */
@@ -74,7 +74,7 @@ ol.control.Drag.prototype.handleDragStart = goog.functions.FALSE;
 
 
 /**
- * @param {ol.MapBrowserEvent} event Event.
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
  * @protected
  */
 ol.control.Drag.prototype.handleDragEnd = goog.nullFunction;
@@ -83,35 +83,35 @@ ol.control.Drag.prototype.handleDragEnd = goog.nullFunction;
 /**
  * @inheritDoc
  */
-ol.control.Drag.prototype.handleMapBrowserEvent = function(event) {
+ol.control.Drag.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
   var browserEventObject;
   if (this.dragging_) {
-    if (event.type == goog.events.EventType.MOUSEMOVE ||
-        event.type == goog.events.EventType.MOUSEOUT ||
-        event.type == goog.events.EventType.MOUSEUP) {
-      browserEventObject = event.getBrowserEventObject();
+    if (mapBrowserEvent.type == goog.events.EventType.MOUSEMOVE ||
+        mapBrowserEvent.type == goog.events.EventType.MOUSEOUT ||
+        mapBrowserEvent.type == goog.events.EventType.MOUSEUP) {
+      browserEventObject = mapBrowserEvent.getBrowserEventObject();
       this.deltaX = browserEventObject.offsetX - this.startX;
       this.deltaY = browserEventObject.offsetY - this.startY;
-      if (event.type == goog.events.EventType.MOUSEMOVE) {
-        this.handleDrag(event);
+      if (mapBrowserEvent.type == goog.events.EventType.MOUSEMOVE) {
+        this.handleDrag(mapBrowserEvent);
       } else {
-        this.handleDragEnd(event);
+        this.handleDragEnd(mapBrowserEvent);
         this.dragging_ = false;
       }
-      event.preventDefault();
+      mapBrowserEvent.preventDefault();
     }
   } else {
-    if (event.type == goog.events.EventType.MOUSEDOWN) {
-      browserEventObject = event.getBrowserEventObject();
+    if (mapBrowserEvent.type == goog.events.EventType.MOUSEDOWN) {
+      browserEventObject = mapBrowserEvent.getBrowserEventObject();
       this.startX = browserEventObject.offsetX;
       this.startY = browserEventObject.offsetY;
       this.deltaX = 0;
       this.deltaY = 0;
-      this.startCenter = event.map.getCenter();
-      this.startCoordinate = event.getCoordinate();
-      if (this.handleDragStart(event)) {
+      this.startCenter = mapBrowserEvent.map.getCenter();
+      this.startCoordinate = mapBrowserEvent.getCoordinate();
+      if (this.handleDragStart(mapBrowserEvent)) {
         this.dragging_ = true;
-        event.preventDefault();
+        mapBrowserEvent.preventDefault();
       }
     }
   }

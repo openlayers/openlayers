@@ -19,16 +19,17 @@ goog.inherits(ol.control.DblClickZoom, ol.Control);
 /**
  * @inheritDoc
  */
-ol.control.DblClickZoom.prototype.handleMapBrowserEvent = function(event) {
-  if (event.type == goog.events.EventType.DBLCLICK) {
-    var map = event.map;
+ol.control.DblClickZoom.prototype.handleMapBrowserEvent =
+    function(mapBrowserEvent) {
+  if (mapBrowserEvent.type == goog.events.EventType.DBLCLICK) {
+    var map = mapBrowserEvent.map;
     map.whileFrozen(function() {
       // FIXME compute correct center for zoom
-      map.setCenter(event.getCoordinate());
-      var browserEventObject = event.getBrowserEventObject();
+      map.setCenter(mapBrowserEvent.getCoordinate());
+      var browserEventObject = mapBrowserEvent.getBrowserEventObject();
       var scale = browserEventObject.shiftKey ? 2 : 0.5;
       map.setResolution(scale * map.getResolution());
     });
-    event.preventDefault();
+    mapBrowserEvent.preventDefault();
   }
 };

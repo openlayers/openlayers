@@ -12,6 +12,6 @@ ol.Control = function() {
 
 
 /**
- * @param {ol.MapBrowserEvent} event Map browser event.
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  */
 ol.Control.prototype.handleMapBrowserEvent = goog.abstractMethod;

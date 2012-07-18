@@ -20,8 +20,8 @@ goog.inherits(ol.control.DragPan, ol.control.Drag);
 /**
  * @inheritDoc
  */
-ol.control.DragPan.prototype.handleDrag = function(event) {
-  var map = event.map;
+ol.control.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
+  var map = mapBrowserEvent.map;
   var resolution = map.getResolution();
   var center = new goog.math.Coordinate(
       this.startCenter.x - resolution * this.deltaX,

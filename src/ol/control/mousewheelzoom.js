@@ -19,20 +19,22 @@ goog.inherits(ol.control.MouseWheelZoom, ol.Control);
 /**
  * @inheritDoc
  */
-ol.control.MouseWheelZoom.prototype.handleMapBrowserEvent = function(event) {
-  if (event.type == goog.events.MouseWheelHandler.EventType.MOUSEWHEEL) {
-    var map = event.map;
+ol.control.MouseWheelZoom.prototype.handleMapBrowserEvent =
+    function(mapBrowserEvent) {
+  if (mapBrowserEvent.type ==
+      goog.events.MouseWheelHandler.EventType.MOUSEWHEEL) {
+    var map = mapBrowserEvent.map;
     var mouseWheelEvent = /** @type {goog.events.MouseWheelEvent} */
-        event.getBrowserEventObject();
+        mapBrowserEvent.getBrowserEventObject();
     goog.asserts.assert(mouseWheelEvent instanceof goog.events.MouseWheelEvent);
     if (mouseWheelEvent.deltaY !== 0) {
       map.whileFrozen(function() {
         // FIXME compute correct center for zoom
-        map.setCenter(event.getCoordinate());
+        map.setCenter(mapBrowserEvent.getCoordinate());
         var scale = mouseWheelEvent.deltaY < 0 ? 0.5 : 2;
         map.setResolution(scale * map.getResolution());
       });
-      event.preventDefault();
+      mapBrowserEvent.preventDefault();
       mouseWheelEvent.preventDefault();
     }
   }
