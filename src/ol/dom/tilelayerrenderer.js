@@ -62,7 +62,7 @@ ol.dom.TileLayerRenderer.prototype.redraw = function() {
         this.renderedTiles_[key] = tile;
         x = tileSize.width * (tileCoord.x - tileBounds.minX);
         y = tileSize.height * (tileBounds.maxY - tileCoord.y);
-        img = tile.getImage();
+        img = tile.getImage(this);
         img.style.position = 'absolute';
         img.style.top = (y - offset.y) + 'px';
         img.style.left = (x - offset.x) + 'px';
@@ -130,7 +130,7 @@ ol.dom.TileLayerRenderer.prototype.removeInvisibleTiles_ = function(
     if (prune) {
       tile = this.renderedTiles_[key];
       delete this.renderedTiles_[key];
-      this.target.removeChild(tile.getImage());
+      this.target.removeChild(tile.getImage(this));
     }
   }
 };
