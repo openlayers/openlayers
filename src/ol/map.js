@@ -325,7 +325,6 @@ ol.Map.prototype.getResolutionForExtent = function(extent) {
 
 
 /**
- * @protected
  * @return {goog.math.Size|undefined} Size.
  */
 ol.Map.prototype.getSize = function() {
