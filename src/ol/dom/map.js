@@ -61,6 +61,7 @@ ol.dom.Map = function(target, opt_values) {
    */
   this.layersPaneOffset_ = null;
 
+
   if (goog.isDef(opt_values)) {
     this.setValues(opt_values);
   }
