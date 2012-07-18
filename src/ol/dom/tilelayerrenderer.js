@@ -29,8 +29,12 @@ goog.inherits(ol.dom.TileLayerRenderer, ol.dom.LayerRenderer);
 ol.dom.TileLayerRenderer.prototype.redraw = function() {
 
   var map = this.getMap();
-  var extent = /** @type {ol.Extent} */ (map.getExtent());
-  var resolution = /** @type {number} */ (map.getResolution());
+  var extent = map.getExtent();
+  var resolution = map.getResolution();
+
+  if (!goog.isDef(extent) || !goog.isDef(resolution)) {
+    return;
+  }
 
   var tileLayer = /** @type {ol.TileLayer} */ (this.getLayer());
   var tileStore = tileLayer.getStore();

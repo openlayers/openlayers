@@ -105,7 +105,8 @@ ol.dom.Map.prototype.createLayerRenderer = function(layer) {
  */
 ol.dom.Map.prototype.handleCenterChanged = function() {
   goog.base(this, 'handleCenterChanged');
-  //this.shiftLayersPane_();
+  this.resetLayersPane_();
+  this.redraw();
 };
 
 
