@@ -1,3 +1,4 @@
+goog.provide('ol.RendererHint');
 goog.provide('ol.createMap');
 
 goog.require('goog.object');
@@ -30,11 +31,31 @@ ol.ENABLE_WEBGL = true;
 
 
 /**
+ * @enum {string}
+ */
+ol.RendererHint = {
+  DOM: 'dom',
+  WEBGL: 'webgl'
+};
+
+
+/**
+ * @type {Array.<ol.RendererHint>}}
+ */
+ol.DEFAULT_RENDERER_HINT = [
+  ol.RendererHint.WEBGL,
+  ol.RendererHint.DOM
+];
+
+
+/**
  * @param {!HTMLDivElement} target Target.
  * @param {Object.<string, *>=} opt_values Values.
+ * @param {ol.RendererHint|Array.<ol.RendererHint>=} opt_rendererHints
+ *     Renderer hints.
  * @return {ol.Map} Map.
  */
-ol.createMap = function(target, opt_values) {
+ol.createMap = function(target, opt_values, opt_rendererHints) {
 
   var values = {};
   if (goog.isDef(opt_values)) {
@@ -50,12 +71,32 @@ ol.createMap = function(target, opt_values) {
         ol.Projection.createFromCode(ol.DEFAULT_PROJECTION_CODE);
   }
 
-  if (ol.ENABLE_WEBGL && ol.webgl.isSupported()) {
-    return new ol.webgl.Map(target, values);
+  /**
+   * @type {Array.<ol.RendererHint>}
+   */
+  var rendererHints;
+  if (goog.isDef(opt_rendererHints)) {
+    if (goog.isArray(opt_rendererHints)) {
+      rendererHints = opt_rendererHints;
+    } else {
+      rendererHints = [opt_rendererHints];
+    }
+  } else {
+    rendererHints = ol.DEFAULT_RENDERER_HINT;
   }
 
-  if (ol.ENABLE_DOM && ol.dom.isSupported()) {
-    return new ol.dom.Map(target, values);
+  var i, rendererHint;
+  for (i = 0; i < rendererHints.length; ++i) {
+    rendererHint = rendererHints[i];
+    if (rendererHint == ol.RendererHint.DOM) {
+      if (ol.ENABLE_DOM && ol.dom.isSupported()) {
+        return new ol.dom.Map(target, values);
+      }
+    } else if (rendererHint == ol.RendererHint.WEBGL) {
+      if (ol.ENABLE_WEBGL && ol.webgl.isSupported()) {
+        return new ol.webgl.Map(target, values);
+      }
+    }
   }
 
   return null;
