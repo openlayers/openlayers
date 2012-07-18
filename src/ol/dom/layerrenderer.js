@@ -52,5 +52,21 @@ ol.dom.LayerRenderer.prototype.setOrigin = function(origin) {
 
 
 /**
+ * @inheritDoc
+ */
+ol.dom.LayerRenderer.prototype.handleLayerOpacityChange = function() {
+  goog.style.setOpacity(this.target, this.layer_.getOpacity());
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.dom.LayerRenderer.prototype.handleLayerVisibleChange = function() {
+  goog.style.showElement(this.target, this.layer_.getVisible());
+};
+
+
+/**
  */
 ol.dom.LayerRenderer.prototype.redraw = goog.abstractMethod;
