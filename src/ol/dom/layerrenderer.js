@@ -19,6 +19,15 @@ ol.dom.LayerRenderer = function(map, layer, target) {
    * @protected
    */
   this.target = target;
+
+  /**
+   * Top left corner of the target in map coords.
+   *
+   * @type {goog.math.Coordinate}
+   * @protected
+   */
+  this.origin = null;
+
 };
 goog.inherits(ol.dom.LayerRenderer, ol.LayerRenderer);
 
@@ -29,6 +38,15 @@ goog.inherits(ol.dom.LayerRenderer, ol.LayerRenderer);
  */
 ol.dom.LayerRenderer.prototype.getMap = function() {
   return /** @type {ol.dom.Map} */ (goog.base(this, 'getMap'));
+};
+
+/**
+ * Set the location of the top left corner of the target.
+ *
+ * @param {goog.math.Coordinate} origin Origin.
+ */
+ol.dom.LayerRenderer.prototype.setOrigin = function(origin) {
+  this.origin = origin;
 };
 
 
