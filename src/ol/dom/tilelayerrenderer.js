@@ -104,8 +104,8 @@ ol.dom.TileLayerRenderer.prototype.getTilesMapOffset_ = function(
   var tileCoordExtent = tileGrid.getTileCoordExtent(tileCoord);
 
   var offset = new goog.math.Coordinate(
-      Math.round((extent.minX - tileCoordExtent.minX) / resolution),
-      Math.round((tileCoordExtent.maxY - extent.maxY) / resolution));
+      Math.round((this.origin.x - tileCoordExtent.minX) / resolution),
+      Math.round((tileCoordExtent.maxY - this.origin.y) / resolution));
 
   return offset;
 };

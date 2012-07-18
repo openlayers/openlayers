@@ -47,6 +47,20 @@ ol.dom.Map = function(target, opt_values) {
    */
   this.layerPanes_ = {};
 
+  /**
+   * @type {goog.math.Coordinate|undefined}
+   * @private
+   */
+  this.renderedCenter_ = undefined;
+
+  /**
+   * The pixel offset of the layers pane with respect to its container.
+   *
+   * @type {goog.math.Coordinate}
+   * @private
+   */
+  this.layersPaneOffset_ = null;
+
   if (goog.isDef(opt_values)) {
     this.setValues(opt_values);
   }
@@ -64,6 +78,30 @@ goog.inherits(ol.dom.Map, ol.Map);
 ol.dom.Map.prototype.resetLayersPane_ = function() {
   var offset = new goog.math.Coordinate(0, 0);
   goog.style.setPosition(this.layersPane_, offset);
+
+  this.layersPaneOffset_ = offset;
+  this.renderedCenter_ = this.getCenter();
+
+  this.setOrigin_();
+};
+
+
+/**
+ * Set the origin for each layer renderer.
+ * @private
+ */
+ol.dom.Map.prototype.setOrigin_ = function() {
+  var center = this.getCenter();
+  var resolution = this.getResolution();
+  var targetSize = this.getSize();
+  var targetWidth = targetSize.width;
+  var targetHeight = targetSize.height;
+  var origin = new goog.math.Coordinate(
+      center.x - resolution * targetWidth / 2,
+      center.y + resolution * targetHeight / 2);
+  goog.object.forEach(this.layerRenderers, function(layerRenderer) {
+    layerRenderer.setOrigin(origin);
+  });
 };
 
 
@@ -72,17 +110,18 @@ ol.dom.Map.prototype.resetLayersPane_ = function() {
  * @private
  */
 ol.dom.Map.prototype.shiftLayersPane_ = function() {
-  //var center = this.getCenter();
-  //var oldCenter = this.renderedCenter_;
-  //var resolution = this.getResolution();
-  //var dx = Math.round((oldCenter.x - center.x) / resolution);
-  //var dy = Math.round((center.y - oldCenter.y) / resolution);
-  //if (!(dx === 0 && dy === 0)) {
-  //var offset = this.layersPaneOffset_;
-  //offset.x += Math.round((oldCenter.x - center.x) / resolution);
-  //offset.y += Math.round((center.y - oldCenter.y) / resolution);
-  //goog.style.setPosition(this.layersPane_, offset);
-  //}
+  var center = this.getCenter();
+  var oldCenter = this.renderedCenter_;
+  var resolution = this.getResolution();
+  var dx = Math.round((oldCenter.x - center.x) / resolution);
+  var dy = Math.round((center.y - oldCenter.y) / resolution);
+  if (!(dx === 0 && dy === 0)) {
+    var offset = this.layersPaneOffset_;
+    offset.x += Math.round((oldCenter.x - center.x) / resolution);
+    offset.y += Math.round((center.y - oldCenter.y) / resolution);
+    goog.style.setPosition(this.layersPane_, offset);
+    this.renderedCenter_ = center;
+  }
 };
 
 
@@ -118,7 +157,11 @@ ol.dom.Map.prototype.createLayerRenderer = function(layer) {
  */
 ol.dom.Map.prototype.handleCenterChanged = function() {
   goog.base(this, 'handleCenterChanged');
-  this.resetLayersPane_();
+  if (goog.isDef(this.renderedCenter_)) {
+    this.shiftLayersPane_();
+  } else {
+    this.resetLayersPane_();
+  }
   this.redraw();
 };
 
