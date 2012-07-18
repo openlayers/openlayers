@@ -1,5 +1,6 @@
 goog.provide('ol.dom.Map');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.math.Coordinate');
