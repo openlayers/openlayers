@@ -24,11 +24,8 @@ map1.setResolution(resolutions[0]);
 if (twoMaps) {
   target = /** @type {!HTMLDivElement} */ document.getElementById('map2');
   map2 = ol.createMap(target, undefined, ol.RendererHint.DOM);
-  layer = ol.tilelayer.createOpenStreetMap({
-    'opacity': 0.5
-  });
-  map2.getLayers().push(layer);
   map2.bindTo('center', map1);
+  map2.bindTo('layers', map1);
   map2.bindTo('resolution', map1);
 }
 
