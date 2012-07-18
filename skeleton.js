@@ -1,11 +1,12 @@
 goog.require('goog.math.Coordinate');
 goog.require('goog.object');
+goog.require('ol.RendererHint');
 goog.require('ol.createMap');
 goog.require('ol.tilelayer.createOpenStreetMap');
 
 
 var target = /** @type {!HTMLDivElement} */ document.getElementById('map');
-var map = ol.createMap(target);
+var map = ol.createMap(target, undefined, ol.RendererHint.DOM);
 
 var layer = ol.tilelayer.createOpenStreetMap({
   'opacity': 0.5
