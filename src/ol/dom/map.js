@@ -155,6 +155,8 @@ ol.dom.Map.prototype.createLayerRenderer = function(layer) {
  */
 ol.dom.Map.prototype.handleCenterChanged = function() {
   goog.base(this, 'handleCenterChanged');
+  // FIXME: shiftLayersPane_ and resetLayersPane_ should be called
+  // elsewhere as we may be frozen here
   if (goog.isDef(this.renderedCenter_)) {
     this.shiftLayersPane_();
   } else {
@@ -185,6 +187,8 @@ ol.dom.Map.prototype.handleLayerRemove = function(layer) {
  */
 ol.dom.Map.prototype.handleResolutionChanged = function() {
   goog.base(this, 'handleResolutionChanged');
+  // FIXME: resetLayersPane_ should be called
+  // elsewhere as we may be frozen here
   this.resetLayersPane_();
   this.redraw();
 };
