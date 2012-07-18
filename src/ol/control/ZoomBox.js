@@ -52,7 +52,7 @@ ol.control.ZoomBox.prototype.activate = function() {
     var active = goog.base(this, 'activate');
     if (active) {
         goog.events.listen(this.map_, 'dragstart', this.createBox, false, this);
-        goog.events.listen(this.map_, 'dragend', this.removeBox, false, this);
+        goog.events.listen(this.map_, 'dragend', this.zoom, false, this);
     }
     return active;
 };
@@ -62,11 +62,14 @@ ol.control.ZoomBox.prototype.deactivate = function() {
     var inactive = goog.base(this, 'deactivate');
     if (inactive) {
         goog.events.unlisten(this.map_, 'dragstart', this.createBox, false, this);
-        goog.events.unlisten(this.map_, 'dragend', this.removeBox, false, this);
+        goog.events.unlisten(this.map_, 'dragend', this.zoom, false, this);
     }
     return inactive;
 };
 
+/**
+ * @param {ol.events.MapEvent} evt
+ */
 ol.control.ZoomBox.prototype.createBox = function(evt) {
     if (!evt.originalEvent.browserEvent.shiftKey) {
         return;
@@ -75,6 +78,7 @@ ol.control.ZoomBox.prototype.createBox = function(evt) {
         'class': 'ol-control-zoombox-box',
         'style': 'position:absolute;z-index:1'
     });
+    goog.asserts.assert(this.map_.getMapOverlay());
     goog.dom.append(/** @type {!Node} */ (this.map_.getMapOverlay()), this.box_);
     var borderBox = goog.style.getBorderBox(this.box_);
     this.pos_ = goog.math.Coordinate.sum(
@@ -85,38 +89,49 @@ ol.control.ZoomBox.prototype.createBox = function(evt) {
     goog.events.listen(this.map_, 'drag', this.updateBox, false, this);
 };
 
+/**
+ * @param {ol.events.MapEvent} evt
+ */
 ol.control.ZoomBox.prototype.updateBox = function(evt) {
     this.width_ += (evt.deltaX || 0);
     this.height_ += (evt.deltaY || 0);
-    this.box_.style.left = (this.pos_.x + (this.width_ > 0 ? 0 : this.width_)) + 'px';
-    this.box_.style.top = (this.pos_.y + (this.height_ > 0 ? 0 : this.height_)) + 'px';
-    this.box_.style.width = Math.abs(this.width_) + 'px';
-    this.box_.style.height = Math.abs(this.height_) + 'px';
+    var style = this.box_.style, w = this.width_, h = this.height_, px = 'px';
+    style.left = (this.pos_.x + (w > 0 ? 0 : w)) + px;
+    style.top = (this.pos_.y + (h > 0 ? 0 : h)) + px;
+    style.width = Math.abs(w) + px;
+    style.height = Math.abs(h) + px;
     evt.preventDefault();
 };
 
-ol.control.ZoomBox.prototype.removeBox = function(evt) {
+/**
+ */
+ol.control.ZoomBox.prototype.removeBox = function() {
     goog.events.unlisten(this.map_, 'drag', this.updateBox, false, this);
     goog.dom.removeNode(this.box_);
-    if (this.width_ && this.height_) {
-        var resolution = this.map_.getResolution(),
-            size = this.map_.getViewportSize(),
-            xRes = resolution * this.width_/size.width,
-            yRes = resolution * this.height_/size.height;
-        goog.asserts.assert(this.pos_);
-        this.map_.setCenterAndZoom(
-            this.map_.getLocForViewportPixel(
-                goog.math.Coordinate.sum(
-                    this.pos_,
-                    new goog.math.Coordinate(this.width_ / 2, this.height_ / 2)
-                )
-            ),
-            Math.floor(this.map_.getZoomForResolution(Math.max(xRes, yRes)))
-        );
-    }
     this.box_ = null;
     this.width_ = 0;
     this.height_ = 0;
+};
+
+/**
+ * @param {ol.events.MapEvent} evt
+ */
+ol.control.ZoomBox.prototype.zoom = function(evt) {
+    goog.asserts.assert(this.pos_);
+    var w = this.width_, h = this.height_;
+    if (w && h) {
+        var resolution = this.map_.getResolution(),
+            size = this.map_.getViewportSize();
+        this.map_.setCenterAndZoom(this.map_.getLocForViewportPixel(
+            goog.math.Coordinate.sum(
+                this.pos_, new goog.math.Coordinate(w / 2, h / 2)
+            )),
+            Math.floor(this.map_.getZoomForResolution(Math.max(
+                resolution * w / size.width, resolution * h / size.height
+            )))
+        );
+    }
+    this.removeBox();
 };
 
 ol.control.addControl('zoombox', ol.control.ZoomBox);

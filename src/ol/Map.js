@@ -281,6 +281,10 @@ ol.Map.prototype.getResolutionForZoom = function(zoom) {
     }
 };
 
+/**
+ * @param {number} resolution the resolution being requested
+ * @return {number} the zoom level for the map at the given resolution
+ */
 ol.Map.prototype.getZoomForResolution = function(resolution) {
     if (goog.isDefAndNotNull(this.resolutions_)) {
         return goog.array.indexOf(this.resolutions_, resolution);
