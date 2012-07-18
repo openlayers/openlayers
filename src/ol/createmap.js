@@ -7,6 +7,7 @@ goog.require('ol.Map');
 goog.require('ol.MapProperty');
 goog.require('ol.Projection');
 goog.require('ol.control.DblClickZoom');
+goog.require('ol.control.MouseWheelZoom');
 goog.require('ol.dom');
 goog.require('ol.dom.Map');
 goog.require('ol.webgl');
@@ -66,6 +67,7 @@ ol.createMap = function(target, opt_values, opt_rendererHints) {
   if (!goog.object.containsKey(values, ol.MapProperty.CONTROLS)) {
     var controls = new ol.Array();
     controls.push(new ol.control.DblClickZoom());
+    controls.push(new ol.control.MouseWheelZoom());
     values[ol.MapProperty.CONTROLS] = controls;
   }
 

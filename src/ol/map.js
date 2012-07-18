@@ -7,6 +7,9 @@ goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
+goog.require('goog.events.MouseWheelEvent');
+goog.require('goog.events.MouseWheelHandler');
+goog.require('goog.events.MouseWheelHandler.EventType');
 goog.require('goog.fx.anim');
 goog.require('goog.fx.anim.Animated');
 goog.require('goog.math.Coordinate');
@@ -72,6 +75,12 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
     goog.events.EventType.DBLCLICK,
     goog.events.EventType.CLICK
   ], this.handleBrowserEvent, false, this);
+
+  var mouseWheelHandler = new goog.events.MouseWheelHandler(this.eventsPane_);
+  goog.events.listen(mouseWheelHandler,
+      goog.events.MouseWheelHandler.EventType.MOUSEWHEEL,
+      this.handleBrowserEvent, false, this);
+  this.registerDisposable(mouseWheelHandler);
 
   /**
    * @private
