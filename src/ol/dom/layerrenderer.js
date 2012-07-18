@@ -40,6 +40,7 @@ ol.dom.LayerRenderer.prototype.getMap = function() {
   return /** @type {ol.dom.Map} */ (goog.base(this, 'getMap'));
 };
 
+
 /**
  * Set the location of the top left corner of the target.
  *
