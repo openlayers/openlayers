@@ -27,6 +27,7 @@ goog.require('ol.TransformFunction');
 goog.require('ol.control.DblClickZoom');
 goog.require('ol.control.Drag');
 goog.require('ol.control.DragPan');
+goog.require('ol.control.DragZoom');
 goog.require('ol.control.MouseWheelZoom');
 goog.require('ol.createMap');
 goog.require('ol.dom');
