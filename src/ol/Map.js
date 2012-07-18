@@ -157,7 +157,7 @@ ol.Map.DEFAULT_TILE_SIZE = 256;
   @const
   @type {Array.<string>}
  */
-ol.Map.DEFAULT_CONTROLS = ["attribution", "zoom"];
+ol.Map.DEFAULT_CONTROLS = ["attribution", "zoom", "zoombox"];
 
 /**
  * @return {ol.Loc} Map center in map projection.
@@ -278,6 +278,19 @@ ol.Map.prototype.getResolutionForZoom = function(zoom) {
     } else {
         var maxResolution = this.getMaxResolution();
         return maxResolution/Math.pow(ol.Map.ZOOM_FACTOR, zoom);
+    }
+};
+
+/**
+ * @param {number} resolution the resolution being requested
+ * @return {number} the zoom level for the map at the given resolution
+ */
+ol.Map.prototype.getZoomForResolution = function(resolution) {
+    if (goog.isDefAndNotNull(this.resolutions_)) {
+        return goog.array.indexOf(this.resolutions_, resolution);
+    } else {
+        var maxResolution = this.getMaxResolution();
+        return Math.log(maxResolution/resolution) / Math.log(ol.Map.ZOOM_FACTOR);
     }
 };
 
@@ -550,7 +563,10 @@ ol.Map.prototype.createRenderer = function() {
     var viewport = this.viewport_;
     if (!this.mapOverlay_ && !this.staticOverlay_) {
         var staticCls = 'ol-overlay-static';
-        this.mapOverlay_ = goog.dom.createDom('div', 'ol-overlay-map');
+        this.mapOverlay_ = goog.dom.createDom('div', {
+            'class': 'ol-overlay-map',
+            'style': 'position: absolute;left:0;top:0'
+        });
         this.staticOverlay_ = goog.dom.createDom('div', {
             'class': staticCls,
             'style': 'width:100%;height:100%;top:0;left:0;position:absolute;z-index:1'
