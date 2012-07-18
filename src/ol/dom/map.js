@@ -29,36 +29,6 @@ ol.dom.Map = function(target, opt_values) {
   target.appendChild(this.layersPane_);
 
   /**
-   * The current top left corner location of the layersPane element
-   * (map coords).
-   *
-   * @type {goog.math.Coordinate}
-   * @private
-   */
-  this.layersPaneOrigin_ = null;
-
-  /**
-   * The pixel offset of the layersPane element with respect to its
-   * container.
-   *
-   * @type {goog.math.Coordinate}
-   * @private
-   */
-  this.layersPaneOffset_ = null;
-
-  /**
-   * @type {goog.math.Coordinate|undefined}
-   * @private
-   */
-  this.renderedCenter_ = undefined;
-
-  /**
-   * @type {number|undefined}
-   * @private
-   */
-  this.renderedResolution_ = undefined;
-
-  /**
    * @type {Object}
    * @private
    */
@@ -79,30 +49,8 @@ goog.inherits(ol.dom.Map, ol.Map);
  * @private
  */
 ol.dom.Map.prototype.resetLayersPane_ = function() {
-  this.layersPaneOrigin_ = this.getOrigin_();
-  goog.object.forEach(this.layerRenderers, function(layerRenderer) {
-    layerRenderer.setContainerOrigin(this.layersPaneOrigin_);
-  });
   var offset = new goog.math.Coordinate(0, 0);
   goog.style.setPosition(this.layersPane_, offset);
-  this.renderedCenter_ = this.getCenter();
-};
-
-
-/**
- * Get the position of the top-left corner of the layers pane.
- * @private
- * @return {goog.math.Coordinate} Origin.
- */
-ol.dom.Map.prototype.getOrigin_ = function() {
-  var center = this.getCenter();
-  var resolution = this.getResolution();
-  var targetSize = this.getSize();
-  var targetWidth = targetSize.width;
-  var targetHeight = targetSize.height;
-  return new goog.math.Coordinate(
-      center.x - resolution * targetWidth / 2,
-      center.y + resolution * targetHeight / 2);
 };
 
 
@@ -111,17 +59,17 @@ ol.dom.Map.prototype.getOrigin_ = function() {
  * @private
  */
 ol.dom.Map.prototype.shiftLayersPane_ = function() {
-  var center = this.getCenter();
-  var oldCenter = this.renderedCenter_;
-  var resolution = this.getResolution();
-  var dx = Math.round((oldCenter.x - center.x) / resolution);
-  var dy = Math.round((center.y - oldCenter.y) / resolution);
-  if (!(dx === 0 && dy === 0)) {
-    var offset = this.layersPaneOffset_;
-    offset.x += Math.round((oldCenter.x - center.x) / resolution);
-    offset.y += Math.round((center.y - oldCenter.y) / resolution);
-    goog.style.setPosition(this.layersPane_, offset);
-  }
+  //var center = this.getCenter();
+  //var oldCenter = this.renderedCenter_;
+  //var resolution = this.getResolution();
+  //var dx = Math.round((oldCenter.x - center.x) / resolution);
+  //var dy = Math.round((center.y - oldCenter.y) / resolution);
+  //if (!(dx === 0 && dy === 0)) {
+  //var offset = this.layersPaneOffset_;
+  //offset.x += Math.round((oldCenter.x - center.x) / resolution);
+  //offset.y += Math.round((center.y - oldCenter.y) / resolution);
+  //goog.style.setPosition(this.layersPane_, offset);
+  //}
 };
 
 
@@ -142,7 +90,6 @@ ol.dom.Map.prototype.createLayerRenderer = function(layer) {
     this.layersPane_.appendChild(layerPane);
 
     var layerRenderer = new ol.dom.TileLayerRenderer(this, layer, layerPane);
-    layerRenderer.setContainerOrigin(this.layersPaneOrigin_);
 
     this.layerPanes_[goog.getUid(layerRenderer)] = layerPane;
 
@@ -185,11 +132,8 @@ ol.dom.Map.prototype.handleLayerRemove = function(layer) {
  */
 ol.dom.Map.prototype.handleResolutionChanged = function() {
   goog.base(this, 'handleResolutionChanged');
-  var resolution = this.getResolution();
-  if (resolution != this.renderedResolution_) {
-    this.resetLayersPane_();
-    this.redraw();
-  }
+  this.resetLayersPane_();
+  this.redraw();
 };
 
 
