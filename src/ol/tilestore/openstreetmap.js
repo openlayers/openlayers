@@ -14,7 +14,7 @@ goog.require('ol.tilegrid.createOpenStreetMap');
  */
 ol.tilestore.createOpenStreetMap = function() {
 
-  var projection = ol.Projection.createFromCode('EPSG:3857');
+  var projection = ol.Projection.getFromCode('EPSG:3857');
   var tileGrid = ol.tilegrid.createOpenStreetMap(18);
   var tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
       function(tileCoord) {

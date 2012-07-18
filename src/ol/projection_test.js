@@ -5,7 +5,7 @@ goog.require('ol.Projection');
 
 
 function _testAllEquivalent(codes) {
-  var projections = goog.array.map(codes, ol.Projection.createFromCode);
+  var projections = goog.array.map(codes, ol.Projection.getFromCode);
   goog.array.forEach(projections, function(source) {
     goog.array.forEach(projections, function(destination) {
       assertTrue(ol.Projection.equivalent(source, destination));
@@ -34,7 +34,7 @@ function testEpsg4326Equivalence() {
 
 
 function testIdentityTransform() {
-  var epsg4326 = ol.Projection.createFromCode('EPSG:4326');
+  var epsg4326 = ol.Projection.getFromCode('EPSG:4326');
   var uniqueObject = {};
   var sourcePoint = new goog.math.Coordinate(uniqueObject, uniqueObject);
   var destinationPoint = ol.Projection.transform(

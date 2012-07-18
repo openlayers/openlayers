@@ -162,7 +162,7 @@ ol.Projection.addTransform = function(source, destination, transform) {
  * @param {string} code Code.
  * @return {ol.Projection} Projection.
  */
-ol.Projection.createFromCode = function(code) {
+ol.Projection.getFromCode = function(code) {
   var projections = ol.Projection.projections_;
   goog.asserts.assert(goog.object.containsKey(projections, code));
   return projections[code];
@@ -208,8 +208,8 @@ ol.Projection.getTransform = function(source, destination) {
  * @return {ol.TransformFunction} Transform.
  */
 ol.Projection.getTransformFromCodes = function(sourceCode, destinationCode) {
-  var source = ol.Projection.createFromCode(sourceCode);
-  var destination = ol.Projection.createFromCode(destinationCode);
+  var source = ol.Projection.getFromCode(sourceCode);
+  var destination = ol.Projection.getFromCode(destinationCode);
   return ol.Projection.getTransform(source, destination);
 };
 

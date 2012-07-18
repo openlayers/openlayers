@@ -79,7 +79,7 @@ ol.createMap = function(target, opt_values, opt_rendererHints) {
 
   if (!goog.object.containsKey(values, ol.MapProperty.PROJECTION)) {
     values[ol.MapProperty.PROJECTION] =
-        ol.Projection.createFromCode(ol.DEFAULT_PROJECTION_CODE);
+        ol.Projection.getFromCode(ol.DEFAULT_PROJECTION_CODE);
   }
 
   /**
