@@ -85,8 +85,6 @@ ol.dom.Map.prototype.createLayerRenderer = function(layer) {
     layerPane.style.position = 'absolute';
     layerPane.style.width = '100%';
     layerPane.style.height = '100%';
-    layerPane.style.top = 0 + 'px';
-    layerPane.style.left = 0 + 'px';
     this.layersPane_.appendChild(layerPane);
 
     var layerRenderer = new ol.dom.TileLayerRenderer(this, layer, layerPane);
