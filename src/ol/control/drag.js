@@ -44,6 +44,16 @@ ol.control.Drag = function() {
    */
   this.offsetY = 0;
 
+  /**
+   * @type {goog.math.Coordinate}
+   */
+  this.startCenter = null;
+
+  /**
+   * @type {goog.math.Coordinate}
+   */
+  this.startCoordinate = null;
+
 };
 goog.inherits(ol.control.Drag, ol.Control);
 
@@ -97,6 +107,8 @@ ol.control.Drag.prototype.handleMapBrowserEvent = function(event) {
       this.startY = browserEventObject.offsetY;
       this.deltaX = 0;
       this.deltaY = 0;
+      this.startCenter = event.map.getCenter();
+      this.startCoordinate = event.getCoordinate();
       if (this.handleDragStart(event)) {
         this.dragging_ = true;
         event.preventDefault();
