@@ -68,7 +68,7 @@ describe('ol.handler.Drag', function() {
 
         it('calls the default action', function() {
             var handler = new ol.handler.Drag(map, {});
-            var spy spyOn(handler, 'defaultDrag');
+            var spy = spyOn(handler, 'defaultDrag');
 
             handler.dragger_.dispatchEvent({type: goog.fx.Dragger.EventType.DRAG});
             expect(spy).toHaveBeenCalled();
