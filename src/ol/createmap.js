@@ -6,6 +6,7 @@ goog.require('ol.Array');
 goog.require('ol.Map');
 goog.require('ol.MapProperty');
 goog.require('ol.Projection');
+goog.require('ol.control.DblClickZoom');
 goog.require('ol.dom');
 goog.require('ol.dom.Map');
 goog.require('ol.webgl');
@@ -60,6 +61,12 @@ ol.createMap = function(target, opt_values, opt_rendererHints) {
   var values = {};
   if (goog.isDef(opt_values)) {
     goog.object.extend(values, opt_values);
+  }
+
+  if (!goog.object.containsKey(values, ol.MapProperty.CONTROLS)) {
+    var controls = new ol.Array();
+    controls.push(new ol.control.DblClickZoom());
+    values[ol.MapProperty.CONTROLS] = controls;
   }
 
   if (!goog.object.containsKey(values, ol.MapProperty.LAYERS)) {

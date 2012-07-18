@@ -4,6 +4,7 @@ goog.provide('ol.MapProperty');
 goog.require('goog.array');
 goog.require('goog.dom.ViewportSizeMonitor');
 goog.require('goog.events');
+goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.fx.anim');
@@ -12,6 +13,7 @@ goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
 goog.require('goog.object');
 goog.require('ol.Array');
+goog.require('ol.Control');
 goog.require('ol.Extent');
 goog.require('ol.LayerRenderer');
 goog.require('ol.Object');
@@ -23,11 +25,20 @@ goog.require('ol.Projection');
  */
 ol.MapProperty = {
   CENTER: 'center',
+  CONTROLS: 'controls',
   EXTENT: 'extent',
   LAYERS: 'layers',
   PROJECTION: 'projection',
   RESOLUTION: 'resolution',
   SIZE: 'size'
+};
+
+
+/**
+ * @enum {number}
+ */
+ol.MapPaneZIndex = {
+  EVENTS: 1000
 };
 
 
@@ -43,6 +54,24 @@ ol.MapProperty = {
 ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
 
   goog.base(this);
+
+  /**
+   * @private
+   * @type {HTMLDivElement}
+   */
+  this.eventsPane_ = /** @type {HTMLDivElement} */ (
+      goog.dom.createElement(goog.dom.TagName.DIV));
+  this.eventsPane_.className = 'ol-pane-events';
+  this.eventsPane_.style.position = 'absolute';
+  this.eventsPane_.style.width = '100%';
+  this.eventsPane_.style.height = '100%';
+  this.eventsPane_.style.zIndex = ol.MapPaneZIndex.EVENTS;
+  target.appendChild(this.eventsPane_);
+
+  goog.events.listen(this.eventsPane_, [
+    goog.events.EventType.DBLCLICK,
+    goog.events.EventType.CLICK
+  ], this.handleBrowserEvent, false, this);
 
   /**
    * @private
@@ -184,6 +213,14 @@ ol.Map.prototype.getCenter = function() {
 
 
 /**
+ * @return {ol.Array} Controls.
+ */
+ol.Map.prototype.getControls = function() {
+  return /** @type {ol.Array} */ this.get(ol.MapProperty.CONTROLS);
+};
+
+
+/**
  * @param {goog.math.Coordinate} pixel Pixel.
  * @return {goog.math.Coordinate} Coordinate.
  */
@@ -290,6 +327,20 @@ ol.Map.prototype.getSize = function() {
  */
 ol.Map.prototype.getTarget = function() {
   return this.target_;
+};
+
+
+/**
+ * @param {goog.events.BrowserEvent} event Event.
+ */
+ol.Map.prototype.handleBrowserEvent = function(event) {
+  var mapBrowserEvent = new ol.MapBrowserEvent(event.type, this, event);
+  var controls = this.getControls();
+  var controlsArray = /** @type {Array.<ol.Control>} */ controls.getArray();
+  goog.array.every(controlsArray, function(control) {
+    control.handleMapBrowserEvent(mapBrowserEvent);
+    return !mapBrowserEvent.defaultPrevented;
+  });
 };
 
 
@@ -482,6 +533,14 @@ ol.Map.prototype.removeLayerRenderer = function(layer) {
  */
 ol.Map.prototype.setCenter = function(center) {
   this.set(ol.MapProperty.CENTER, center);
+};
+
+
+/**
+ * @param {ol.Array} controls Controls.
+ */
+ol.Map.prototype.setControls = function(controls) {
+  this.set(ol.MapProperty.CONTROLS, controls);
 };
 
 
