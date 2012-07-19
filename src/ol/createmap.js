@@ -75,8 +75,8 @@ ol.createMap = function(target, opt_values, opt_rendererHints) {
   if (!goog.object.containsKey(values, ol.MapProperty.CONTROLS)) {
     var controls = new ol.Array();
     controls.push(new ol.control.DblClickZoom());
-    controls.push(new ol.control.DragZoom());
     controls.push(new ol.control.DragPan());
+    controls.push(new ol.control.DragZoom());
     controls.push(new ol.control.MouseWheelZoom());
     values[ol.MapProperty.CONTROLS] = controls;
   }
