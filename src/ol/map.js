@@ -24,6 +24,7 @@ goog.require('ol.Extent');
 goog.require('ol.LayerRenderer');
 goog.require('ol.Object');
 goog.require('ol.Projection');
+goog.require('ol.TransformFunction');
 
 
 /**
@@ -37,7 +38,8 @@ ol.MapProperty = {
   LAYERS: 'layers',
   PROJECTION: 'projection',
   RESOLUTION: 'resolution',
-  SIZE: 'size'
+  SIZE: 'size',
+  USER_PROJECTION: 'userProjection'
 };
 
 
@@ -61,6 +63,18 @@ ol.MapPaneZIndex = {
 ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
 
   goog.base(this);
+
+  /**
+   * @type {ol.TransformFunction}
+   * @private
+   */
+  this.userToMapTransform_ = ol.Projection.identityTransform;
+
+  /**
+   * @type {ol.TransformFunction}
+   * @private
+   */
+  this.mapToUserTransform_ = ol.Projection.cloneTransform;
 
   /**
    * @private
@@ -148,12 +162,20 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
       this.handleLayersChanged, false, this);
 
   goog.events.listen(
+      this, ol.Object.getChangedEventType(ol.MapProperty.PROJECTION),
+      this.handleProjectionChanged, false, this);
+
+  goog.events.listen(
       this, ol.Object.getChangedEventType(ol.MapProperty.RESOLUTION),
       this.handleResolutionChanged, false, this);
 
   goog.events.listen(
       this, ol.Object.getChangedEventType(ol.MapProperty.SIZE),
       this.handleSizeChanged, false, this);
+
+  goog.events.listen(
+      this, ol.Object.getChangedEventType(ol.MapProperty.USER_PROJECTION),
+      this.handleUserProjectionChanged, false, this);
 
   if (goog.isDef(opt_values)) {
     this.setValues(opt_values);
@@ -207,6 +229,14 @@ ol.Map.prototype.fitExtent = function(extent) {
     this.setCenter(extent.getCenter());
     this.setResolution(this.getResolutionForExtent(extent));
   }, this);
+};
+
+
+/**
+ * @param {ol.Extent} userExtent Extent in user projection.
+ */
+ol.Map.prototype.fitUserExtent = function(userExtent) {
+  this.fitExtent(userExtent.transform(this.userToMapTransform_));
 };
 
 
@@ -359,6 +389,40 @@ ol.Map.prototype.getTarget = function() {
 
 
 /**
+ * @return {goog.math.Coordinate|undefined} Center in user projection.
+ */
+ol.Map.prototype.getUserCenter = function() {
+  var center = this.getCenter();
+  if (goog.isDef(center)) {
+    return this.mapToUserTransform_(center);
+  } else {
+    return undefined;
+  }
+};
+
+
+/**
+ * @return {ol.Extent|undefined} Extent in user projection.
+ */
+ol.Map.prototype.getUserExtent = function() {
+  var extent = this.getExtent();
+  if (goog.isDef(extent)) {
+    return extent.transform(this.mapToUserTransform_);
+  } else {
+    return undefined;
+  }
+};
+
+
+/**
+ * @return {ol.Projection|undefined} Projection.
+ */
+ol.Map.prototype.getUserProjection = function() {
+  return /** @type {ol.Projection} */ this.get(ol.MapProperty.USER_PROJECTION);
+};
+
+
+/**
  */
 ol.Map.prototype.handleBackgroundColorChanged = goog.nullFunction;
 
@@ -476,6 +540,14 @@ ol.Map.prototype.handleLayersChanged = function() {
 /**
  * @protected
  */
+ol.Map.prototype.handleProjectionChanged = function() {
+  this.recalculateTransforms_();
+};
+
+
+/**
+ * @protected
+ */
 ol.Map.prototype.handleResolutionChanged = function() {
   this.recalculateExtent_();
 };
@@ -486,6 +558,14 @@ ol.Map.prototype.handleResolutionChanged = function() {
  */
 ol.Map.prototype.handleSizeChanged = function() {
   this.recalculateExtent_();
+};
+
+
+/**
+ * @protected
+ */
+ol.Map.prototype.handleUserProjectionChanged = function() {
+  this.recalculateTransforms_();
 };
 
 
@@ -517,6 +597,25 @@ ol.Map.prototype.recalculateExtent_ = function() {
     var maxY = center.y + resolution * size.height / 2;
     var extent = new ol.Extent(minX, minY, maxX, maxY);
     this.set(ol.MapProperty.EXTENT, extent);
+  }
+};
+
+
+/**
+ * @private
+ */
+ol.Map.prototype.recalculateTransforms_ = function() {
+  var projection = this.getProjection();
+  var userProjection = this.getUserProjection();
+  if (goog.isDefAndNotNull(projection) &&
+      goog.isDefAndNotNull(userProjection)) {
+    this.mapToUserTransform_ = ol.Projection.getTransform(
+        projection, userProjection);
+    this.userToMapTransform_ = ol.Projection.getTransform(
+        userProjection, projection);
+  } else {
+    this.mapToUserTransform_ = ol.Projection.cloneTransform;
+    this.userToMapTransform_ = ol.Projection.identityTransform;
   }
 };
 
@@ -641,6 +740,22 @@ ol.Map.prototype.setSize = function(size) {
  */
 ol.Map.prototype.setProjection = function(projection) {
   this.set(ol.MapProperty.PROJECTION, projection);
+};
+
+
+/**
+ * @param {goog.math.Coordinate} userCenter Center in user projection.
+ */
+ol.Map.prototype.setUserCenter = function(userCenter) {
+  this.setCenter(this.userToMapTransform_(userCenter));
+};
+
+
+/**
+ * @param {ol.Projection} userProjection User projection.
+ */
+ol.Map.prototype.setUserProjection = function(userProjection) {
+  this.set(ol.MapProperty.USER_PROJECTION, userProjection);
 };
 
 
