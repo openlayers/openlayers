@@ -408,6 +408,7 @@ ol.webgl.Map.prototype.handleWebGLContextRestored = function() {
   var gl = this.gl_;
   gl.disable(goog.webgl.CULL_FACE);
   gl.disable(goog.webgl.SCISSOR_TEST);
+  this.redraw();
 };
 
 
