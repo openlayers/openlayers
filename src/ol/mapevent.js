@@ -31,5 +31,6 @@ goog.inherits(ol.MapEvent, goog.events.Event);
 /**
  */
 ol.MapEvent.prototype.preventDefault = function() {
+  goog.base(this, 'preventDefault');
   this.defaultPrevented = true;
 };
