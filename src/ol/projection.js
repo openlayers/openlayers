@@ -93,7 +93,7 @@ ol.Projection.addEquivalentProjections = function(projections) {
   goog.array.forEach(projections, function(source) {
     goog.array.forEach(projections, function(destination) {
       ol.Projection.addTransform(
-          source, destination, ol.Projection.identityTransform);
+          source, destination, ol.Projection.cloneTransform);
     });
   });
 };
@@ -181,7 +181,7 @@ ol.Projection.equivalent = function(projection1, projection2) {
     return false;
   } else {
     var transform = ol.Projection.getTransform(projection1, projection2);
-    return transform === ol.Projection.identityTransform;
+    return transform === ol.Projection.cloneTransform;
   }
 };
 
@@ -219,6 +219,15 @@ ol.Projection.getTransformFromCodes = function(sourceCode, destinationCode) {
  * @return {goog.math.Coordinate} Point.
  */
 ol.Projection.identityTransform = function(point) {
+  return point;
+};
+
+
+/**
+ * @param {goog.math.Coordinate} point Point.
+ * @return {goog.math.Coordinate} Point.
+ */
+ol.Projection.cloneTransform = function(point) {
   return point.clone();
 };
 
