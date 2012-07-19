@@ -1,6 +1,5 @@
 goog.provide('ol.control.DragPan');
 
-goog.require('goog.functions');
 goog.require('goog.math.Coordinate');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.control.Drag');
@@ -33,4 +32,12 @@ ol.control.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-ol.control.DragPan.prototype.handleDragStart = goog.functions.TRUE;
+ol.control.DragPan.prototype.handleDragStart = function(mapBrowserEvent) {
+  var browserEventObject = mapBrowserEvent.getBrowserEventObject();
+  if (!browserEventObject.shiftKey) {
+    browserEventObject.preventDefault();
+    return true;
+  } else {
+    return false;
+  }
+};
