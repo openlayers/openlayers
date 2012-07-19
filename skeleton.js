@@ -13,7 +13,7 @@ var layer;
 target = /** @type {!HTMLDivElement} */ document.getElementById('map1');
 map = map1 = ol.createMap(target, undefined, ol.RendererHint.DOM);
 layer = ol.tilelayer.createOpenStreetMap({
-  'opacity': 0.5
+  'opacity': 0.9
 });
 map.getLayers().push(layer);
 
