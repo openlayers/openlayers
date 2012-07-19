@@ -22,7 +22,7 @@ goog.inherits(ol.Extent, ol.Rectangle);
 
 /**
  * @param {...ol.Coordinate} var_args Coordinates.
- * @return {!ol.Extent} Boundin extent.
+ * @return {!ol.Extent} Bounding extent.
  */
 ol.Extent.boundingExtent = function(var_args) {
   var coordinate0 = arguments[0];
