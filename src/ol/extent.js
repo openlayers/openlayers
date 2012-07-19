@@ -1,5 +1,6 @@
 goog.provide('ol.Extent');
 
+goog.require('ol.Coordinate');
 goog.require('ol.Rectangle');
 goog.require('ol.TransformFunction');
 
@@ -20,7 +21,7 @@ goog.inherits(ol.Extent, ol.Rectangle);
 
 
 /**
- * @param {...goog.math.Coordinate} var_args Coordinates.
+ * @param {...ol.Coordinate} var_args Coordinates.
  * @return {!ol.Extent} Boundin extent.
  */
 ol.Extent.boundingExtent = function(var_args) {
@@ -52,7 +53,7 @@ ol.Extent.prototype.clone = function() {
  * @return {ol.Extent} Extent.
  */
 ol.Extent.prototype.transform = function(transform) {
-  var min = transform(new goog.math.Coordinate(this.minX, this.minY));
-  var max = transform(new goog.math.Coordinate(this.maxX, this.maxY));
+  var min = transform(new ol.Coordinate(this.minX, this.minY));
+  var max = transform(new ol.Coordinate(this.maxX, this.maxY));
   return new ol.Extent(min.x, min.y, max.x, max.y);
 };

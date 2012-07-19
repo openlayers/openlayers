@@ -1,5 +1,6 @@
 goog.provide('ol.dom.TileLayerRenderer');
 
+goog.require('ol.Coordinate');
 goog.require('ol.dom.LayerRenderer');
 
 
@@ -91,7 +92,7 @@ ol.dom.TileLayerRenderer.prototype.redraw = function() {
  * @param {ol.Extent} extent Map extent.
  * @param {ol.TileBounds} tileBounds Tile bounds.
  * @param {number} resolution Resolution.
- * @return {goog.math.Coordinate} Offset.
+ * @return {ol.Coordinate} Offset.
  */
 ol.dom.TileLayerRenderer.prototype.getTilesMapOffset_ = function(
     extent, tileBounds, resolution) {
@@ -103,7 +104,7 @@ ol.dom.TileLayerRenderer.prototype.getTilesMapOffset_ = function(
   var tileCoord = new ol.TileCoord(z, tileBounds.minX, tileBounds.maxY);
   var tileCoordExtent = tileGrid.getTileCoordExtent(tileCoord);
 
-  var offset = new goog.math.Coordinate(
+  var offset = new ol.Coordinate(
       Math.round((this.origin.x - tileCoordExtent.minX) / resolution),
       Math.round((tileCoordExtent.maxY - this.origin.y) / resolution));
 

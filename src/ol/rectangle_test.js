@@ -1,5 +1,5 @@
-goog.require('goog.math.Coordinate');
 goog.require('goog.testing.jsunit');
+goog.require('ol.Coordinate');
 goog.require('ol.Rectangle');
 
 
@@ -25,36 +25,36 @@ function testClone() {
 
 function testContainsPositive() {
   var rectangle = new ol.Rectangle(1, 2, 3, 4);
-  assertTrue(rectangle.contains(new goog.math.Coordinate(1, 2)));
-  assertTrue(rectangle.contains(new goog.math.Coordinate(1, 3)));
-  assertTrue(rectangle.contains(new goog.math.Coordinate(1, 4)));
-  assertTrue(rectangle.contains(new goog.math.Coordinate(2, 2)));
-  assertTrue(rectangle.contains(new goog.math.Coordinate(2, 3)));
-  assertTrue(rectangle.contains(new goog.math.Coordinate(2, 4)));
-  assertTrue(rectangle.contains(new goog.math.Coordinate(3, 2)));
-  assertTrue(rectangle.contains(new goog.math.Coordinate(3, 3)));
-  assertTrue(rectangle.contains(new goog.math.Coordinate(3, 4)));
+  assertTrue(rectangle.contains(new ol.Coordinate(1, 2)));
+  assertTrue(rectangle.contains(new ol.Coordinate(1, 3)));
+  assertTrue(rectangle.contains(new ol.Coordinate(1, 4)));
+  assertTrue(rectangle.contains(new ol.Coordinate(2, 2)));
+  assertTrue(rectangle.contains(new ol.Coordinate(2, 3)));
+  assertTrue(rectangle.contains(new ol.Coordinate(2, 4)));
+  assertTrue(rectangle.contains(new ol.Coordinate(3, 2)));
+  assertTrue(rectangle.contains(new ol.Coordinate(3, 3)));
+  assertTrue(rectangle.contains(new ol.Coordinate(3, 4)));
 }
 
 
 function testContainsNegative() {
   var rectangle = new ol.Rectangle(1, 2, 3, 4);
-  assertFalse(rectangle.contains(new goog.math.Coordinate(0, 1)));
-  assertFalse(rectangle.contains(new goog.math.Coordinate(0, 2)));
-  assertFalse(rectangle.contains(new goog.math.Coordinate(0, 3)));
-  assertFalse(rectangle.contains(new goog.math.Coordinate(0, 4)));
-  assertFalse(rectangle.contains(new goog.math.Coordinate(0, 5)));
-  assertFalse(rectangle.contains(new goog.math.Coordinate(1, 1)));
-  assertFalse(rectangle.contains(new goog.math.Coordinate(1, 5)));
-  assertFalse(rectangle.contains(new goog.math.Coordinate(2, 1)));
-  assertFalse(rectangle.contains(new goog.math.Coordinate(2, 5)));
-  assertFalse(rectangle.contains(new goog.math.Coordinate(3, 1)));
-  assertFalse(rectangle.contains(new goog.math.Coordinate(3, 5)));
-  assertFalse(rectangle.contains(new goog.math.Coordinate(4, 1)));
-  assertFalse(rectangle.contains(new goog.math.Coordinate(4, 2)));
-  assertFalse(rectangle.contains(new goog.math.Coordinate(4, 3)));
-  assertFalse(rectangle.contains(new goog.math.Coordinate(4, 4)));
-  assertFalse(rectangle.contains(new goog.math.Coordinate(4, 5)));
+  assertFalse(rectangle.contains(new ol.Coordinate(0, 1)));
+  assertFalse(rectangle.contains(new ol.Coordinate(0, 2)));
+  assertFalse(rectangle.contains(new ol.Coordinate(0, 3)));
+  assertFalse(rectangle.contains(new ol.Coordinate(0, 4)));
+  assertFalse(rectangle.contains(new ol.Coordinate(0, 5)));
+  assertFalse(rectangle.contains(new ol.Coordinate(1, 1)));
+  assertFalse(rectangle.contains(new ol.Coordinate(1, 5)));
+  assertFalse(rectangle.contains(new ol.Coordinate(2, 1)));
+  assertFalse(rectangle.contains(new ol.Coordinate(2, 5)));
+  assertFalse(rectangle.contains(new ol.Coordinate(3, 1)));
+  assertFalse(rectangle.contains(new ol.Coordinate(3, 5)));
+  assertFalse(rectangle.contains(new ol.Coordinate(4, 1)));
+  assertFalse(rectangle.contains(new ol.Coordinate(4, 2)));
+  assertFalse(rectangle.contains(new ol.Coordinate(4, 3)));
+  assertFalse(rectangle.contains(new ol.Coordinate(4, 4)));
+  assertFalse(rectangle.contains(new ol.Coordinate(4, 5)));
 }
 
 
@@ -113,23 +113,23 @@ function testNormalize() {
   var rectangle = new ol.Rectangle(0, 1, 2, 3);
   var coordinate;
 
-  coordinate = rectangle.normalize(new goog.math.Coordinate(1, 2));
+  coordinate = rectangle.normalize(new ol.Coordinate(1, 2));
   assertEquals(0.5, coordinate.x);
   assertEquals(0.5, coordinate.y);
 
-  coordinate = rectangle.normalize(new goog.math.Coordinate(0, 3));
+  coordinate = rectangle.normalize(new ol.Coordinate(0, 3));
   assertEquals(0, coordinate.x);
   assertEquals(1, coordinate.y);
 
-  coordinate = rectangle.normalize(new goog.math.Coordinate(2, 1));
+  coordinate = rectangle.normalize(new ol.Coordinate(2, 1));
   assertEquals(1, coordinate.x);
   assertEquals(0, coordinate.y);
 
-  coordinate = rectangle.normalize(new goog.math.Coordinate(0, 0));
+  coordinate = rectangle.normalize(new ol.Coordinate(0, 0));
   assertEquals(0, coordinate.x);
   assertEquals(-0.5, coordinate.y);
 
-  coordinate = rectangle.normalize(new goog.math.Coordinate(-1, 1));
+  coordinate = rectangle.normalize(new ol.Coordinate(-1, 1));
   assertEquals(-0.5, coordinate.x);
   assertEquals(0, coordinate.y);
 

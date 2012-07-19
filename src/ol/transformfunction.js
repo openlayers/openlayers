@@ -1,9 +1,9 @@
 goog.provide('ol.TransformFunction');
 
-goog.require('goog.math.Coordinate');
+goog.require('ol.Coordinate');
 
 
 /**
- * @typedef {function(goog.math.Coordinate): goog.math.Coordinate}
+ * @typedef {function(ol.Coordinate): ol.Coordinate}
  */
 ol.TransformFunction;

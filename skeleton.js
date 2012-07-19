@@ -1,5 +1,5 @@
-goog.require('goog.math.Coordinate');
 goog.require('goog.object');
+goog.require('ol.Coordinate');
 goog.require('ol.RendererHint');
 goog.require('ol.createMap');
 goog.require('ol.tilelayer.createOpenStreetMap');
@@ -18,7 +18,7 @@ layer = ol.tilelayer.createOpenStreetMap({
 map.getLayers().push(layer);
 
 var resolutions = layer.getStore().getResolutions();
-map1.setCenter(new goog.math.Coordinate(0, 0));
+map1.setCenter(new ol.Coordinate(0, 0));
 map1.setResolution(resolutions[0]);
 
 if (twoMaps) {

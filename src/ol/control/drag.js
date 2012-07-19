@@ -6,6 +6,7 @@ goog.provide('ol.control.Drag');
 goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('ol.Control');
+goog.require('ol.Coordinate');
 goog.require('ol.MapBrowserEvent');
 
 
@@ -45,12 +46,12 @@ ol.control.Drag = function() {
   this.offsetY = 0;
 
   /**
-   * @type {goog.math.Coordinate}
+   * @type {ol.Coordinate}
    */
   this.startCenter = null;
 
   /**
-   * @type {goog.math.Coordinate}
+   * @type {ol.Coordinate}
    */
   this.startCoordinate = null;
 

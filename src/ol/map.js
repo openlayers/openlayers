@@ -15,11 +15,11 @@ goog.require('goog.events.MouseWheelHandler');
 goog.require('goog.events.MouseWheelHandler.EventType');
 goog.require('goog.fx.anim');
 goog.require('goog.fx.anim.Animated');
-goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
 goog.require('goog.object');
 goog.require('ol.Array');
 goog.require('ol.Control');
+goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.LayerRenderer');
 goog.require('ol.Object');
@@ -264,10 +264,10 @@ ol.Map.prototype.getBackgroundColor = function() {
 
 
 /**
- * @return {goog.math.Coordinate|undefined} Center.
+ * @return {ol.Coordinate|undefined} Center.
  */
 ol.Map.prototype.getCenter = function() {
-  return /** @type {goog.math.Coordinate} */ (this.get(ol.MapProperty.CENTER));
+  return /** @type {ol.Coordinate} */ (this.get(ol.MapProperty.CENTER));
 };
 
 
@@ -280,8 +280,8 @@ ol.Map.prototype.getControls = function() {
 
 
 /**
- * @param {goog.math.Coordinate} pixel Pixel.
- * @return {goog.math.Coordinate} Coordinate.
+ * @param {ol.Coordinate} pixel Pixel.
+ * @return {ol.Coordinate} Coordinate.
  */
 ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
   var center = this.getCenter();
@@ -292,7 +292,7 @@ ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
   goog.asserts.assert(goog.isDef(size));
   var x = center.x + resolution * (pixel.x - size.width / 2);
   var y = center.y - resolution * (pixel.y - size.height / 2);
-  return new goog.math.Coordinate(x, y);
+  return new ol.Coordinate(x, y);
 };
 
 
@@ -326,8 +326,8 @@ ol.Map.prototype.getLayers = function() {
 
 
 /**
- * @param {goog.math.Coordinate} coordinate Coordinate.
- * @return {goog.math.Coordinate} Pixel.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @return {ol.Coordinate} Pixel.
  */
 ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
   var center = this.getCenter();
@@ -338,7 +338,7 @@ ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
   goog.asserts.assert(goog.isDef(size));
   var x = (coordinate.x - center.x) / resolution + size.width / 2;
   var y = (center.y - coordinate.y) / resolution + size.height / 2;
-  return new goog.math.Coordinate(x, y);
+  return new ol.Coordinate(x, y);
 };
 
 
@@ -389,7 +389,7 @@ ol.Map.prototype.getTarget = function() {
 
 
 /**
- * @return {goog.math.Coordinate|undefined} Center in user projection.
+ * @return {ol.Coordinate|undefined} Center in user projection.
  */
 ol.Map.prototype.getUserCenter = function() {
   var center = this.getCenter();
@@ -681,7 +681,7 @@ ol.Map.prototype.setBackgroundColor = function(backgroundColor) {
 
 
 /**
- * @param {goog.math.Coordinate} center Center.
+ * @param {ol.Coordinate} center Center.
  */
 ol.Map.prototype.setCenter = function(center) {
   this.set(ol.MapProperty.CENTER, center);
@@ -744,7 +744,7 @@ ol.Map.prototype.setProjection = function(projection) {
 
 
 /**
- * @param {goog.math.Coordinate} userCenter Center in user projection.
+ * @param {ol.Coordinate} userCenter Center in user projection.
  */
 ol.Map.prototype.setUserCenter = function(userCenter) {
   this.setCenter(this.userToMapTransform_(userCenter));

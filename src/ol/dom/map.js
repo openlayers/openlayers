@@ -3,8 +3,8 @@ goog.provide('ol.dom.Map');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
-goog.require('goog.math.Coordinate');
 goog.require('goog.style');
+goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.TileLayer');
 goog.require('ol.dom.TileLayerRenderer');
@@ -48,7 +48,7 @@ ol.dom.Map = function(target, opt_values) {
   this.layerPanes_ = {};
 
   /**
-   * @type {goog.math.Coordinate|undefined}
+   * @type {ol.Coordinate|undefined}
    * @private
    */
   this.renderedCenter_ = undefined;
@@ -56,7 +56,7 @@ ol.dom.Map = function(target, opt_values) {
   /**
    * The pixel offset of the layers pane with respect to its container.
    *
-   * @type {goog.math.Coordinate}
+   * @type {ol.Coordinate}
    * @private
    */
   this.layersPaneOffset_ = null;
@@ -77,7 +77,7 @@ goog.inherits(ol.dom.Map, ol.Map);
  * @private
  */
 ol.dom.Map.prototype.resetLayersPane_ = function() {
-  var offset = new goog.math.Coordinate(0, 0);
+  var offset = new ol.Coordinate(0, 0);
   goog.style.setPosition(this.layersPane_, offset);
 
   this.layersPaneOffset_ = offset;
@@ -97,7 +97,7 @@ ol.dom.Map.prototype.setOrigin_ = function() {
   var targetSize = this.getSize();
   var targetWidth = targetSize.width;
   var targetHeight = targetSize.height;
-  var origin = new goog.math.Coordinate(
+  var origin = new ol.Coordinate(
       center.x - resolution * targetWidth / 2,
       center.y + resolution * targetHeight / 2);
   goog.object.forEach(this.layerRenderers, function(layerRenderer) {

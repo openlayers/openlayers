@@ -1,7 +1,7 @@
 goog.provide('ol.tilegrid.createOpenStreetMap');
 
-goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
+goog.require('ol.Coordinate');
 goog.require('ol.Projection');
 goog.require('ol.TileGrid');
 
@@ -19,7 +19,7 @@ ol.tilegrid.createOpenStreetMap = function(maxZoom) {
   }
 
   var extent = ol.Projection.EPSG_3857_EXTENT;
-  var origin = new goog.math.Coordinate(
+  var origin = new ol.Coordinate(
       -ol.Projection.EPSG_3857_HALF_SIZE, ol.Projection.EPSG_3857_HALF_SIZE);
   var tileSize = new goog.math.Size(256, 256);
 

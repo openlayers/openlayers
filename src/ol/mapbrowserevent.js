@@ -1,7 +1,7 @@
 goog.provide('ol.MapBrowserEvent');
 
 goog.require('goog.events.BrowserEvent');
-goog.require('goog.math.Coordinate');
+goog.require('ol.Coordinate');
 goog.require('ol.MapEvent');
 
 
@@ -29,20 +29,20 @@ goog.inherits(ol.MapBrowserEvent, ol.MapEvent);
 
 /**
  * @private
- * @type {goog.math.Coordinate}
+ * @type {ol.Coordinate}
  */
 ol.MapBrowserEvent.prototype.coordinate_;
 
 
 /**
- * @return {goog.math.Coordinate} Coordinate.
+ * @return {ol.Coordinate} Coordinate.
  */
 ol.MapBrowserEvent.prototype.getCoordinate = function() {
   if (goog.isDef(this.coordinate_)) {
     return this.coordinate_;
   } else {
     var browserEventObject = this.getBrowserEventObject();
-    var pixel = new goog.math.Coordinate(
+    var pixel = new ol.Coordinate(
         browserEventObject.offsetX, browserEventObject.offsetY);
     var coordinate = this.map.getCoordinateFromPixel(pixel);
     this.coordinate_ = coordinate;

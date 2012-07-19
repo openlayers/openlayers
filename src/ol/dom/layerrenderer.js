@@ -1,5 +1,6 @@
 goog.provide('ol.dom.LayerRenderer');
 
+goog.require('ol.Coordinate');
 goog.require('ol.LayerRenderer');
 
 
@@ -23,7 +24,7 @@ ol.dom.LayerRenderer = function(map, layer, target) {
   /**
    * Top left corner of the target in map coords.
    *
-   * @type {goog.math.Coordinate}
+   * @type {ol.Coordinate}
    * @protected
    */
   this.origin = null;
@@ -44,7 +45,7 @@ ol.dom.LayerRenderer.prototype.getMap = function() {
 /**
  * Set the location of the top left corner of the target.
  *
- * @param {goog.math.Coordinate} origin Origin.
+ * @param {ol.Coordinate} origin Origin.
  */
 ol.dom.LayerRenderer.prototype.setOrigin = function(origin) {
   this.origin = origin;

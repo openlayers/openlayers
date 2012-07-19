@@ -1,6 +1,6 @@
 goog.provide('ol.control.DragPan');
 
-goog.require('goog.math.Coordinate');
+goog.require('ol.Coordinate');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.control.Drag');
 
@@ -22,7 +22,7 @@ goog.inherits(ol.control.DragPan, ol.control.Drag);
 ol.control.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   var resolution = map.getResolution();
-  var center = new goog.math.Coordinate(
+  var center = new ol.Coordinate(
       this.startCenter.x - resolution * this.deltaX,
       this.startCenter.y + resolution * this.deltaY);
   map.setCenter(center);

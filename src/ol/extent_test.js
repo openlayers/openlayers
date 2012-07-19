@@ -1,4 +1,3 @@
-goog.require('goog.math.Coordinate');
 goog.require('goog.testing.jsunit');
 goog.require('ol.Extent');
 goog.require('ol.Projection');

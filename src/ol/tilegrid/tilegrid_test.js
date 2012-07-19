@@ -1,6 +1,6 @@
-goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
 goog.require('goog.testing.jsunit');
+goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.TileCoord');
 goog.require('ol.TileGrid');
@@ -16,7 +16,7 @@ var tileSize;
 function setUp() {
   resolutions = [1000, 500, 250, 100];
   extent = new ol.Extent(0, 0, 100000, 100000);
-  origin = new goog.math.Coordinate(0, 0);
+  origin = new ol.Coordinate(0, 0);
   origins = [];
   tileSize = new goog.math.Size(100, 100);
 }
@@ -74,27 +74,26 @@ function testCreateTooManyOrigins() {
 
 function testGetTileCoord() {
 
-  origin = new goog.math.Coordinate(0, 0);
+  origin = new ol.Coordinate(0, 0);
   var tileGrid = new ol.TileGrid(resolutions, extent, origin, tileSize);
   var tileCoord;
 
-  tileCoord = tileGrid.getTileCoord(3, new goog.math.Coordinate(0, 0));
+  tileCoord = tileGrid.getTileCoord(3, new ol.Coordinate(0, 0));
   assertEquals(3, tileCoord.z);
   assertEquals(0, tileCoord.x);
   assertEquals(0, tileCoord.y);
 
-  tileCoord = tileGrid.getTileCoord(3, new goog.math.Coordinate(0, 100000));
+  tileCoord = tileGrid.getTileCoord(3, new ol.Coordinate(0, 100000));
   assertEquals(3, tileCoord.z);
   assertEquals(0, tileCoord.x);
   assertEquals(10, tileCoord.y);
 
-  tileCoord = tileGrid.getTileCoord(3, new goog.math.Coordinate(100000, 0));
+  tileCoord = tileGrid.getTileCoord(3, new ol.Coordinate(100000, 0));
   assertEquals(3, tileCoord.z);
   assertEquals(10, tileCoord.x);
   assertEquals(0, tileCoord.y);
 
-  tileCoord =
-      tileGrid.getTileCoord(3, new goog.math.Coordinate(100000, 100000));
+  tileCoord = tileGrid.getTileCoord(3, new ol.Coordinate(100000, 100000));
   assertEquals(3, tileCoord.z);
   assertEquals(10, tileCoord.x);
   assertEquals(10, tileCoord.y);
@@ -104,27 +103,26 @@ function testGetTileCoord() {
 
 function testGetTileCoordYSouth() {
 
-  origin = new goog.math.Coordinate(0, 100000);
+  origin = new ol.Coordinate(0, 100000);
   var tileGrid = new ol.TileGrid(resolutions, extent, origin, tileSize);
   var tileCoord;
 
-  tileCoord = tileGrid.getTileCoord(3, new goog.math.Coordinate(0, 0));
+  tileCoord = tileGrid.getTileCoord(3, new ol.Coordinate(0, 0));
   assertEquals(3, tileCoord.z);
   assertEquals(0, tileCoord.x);
   assertEquals(-10, tileCoord.y);
 
-  tileCoord = tileGrid.getTileCoord(3, new goog.math.Coordinate(0, 100000));
+  tileCoord = tileGrid.getTileCoord(3, new ol.Coordinate(0, 100000));
   assertEquals(3, tileCoord.z);
   assertEquals(0, tileCoord.x);
   assertEquals(0, tileCoord.y);
 
-  tileCoord = tileGrid.getTileCoord(3, new goog.math.Coordinate(100000, 0));
+  tileCoord = tileGrid.getTileCoord(3, new ol.Coordinate(100000, 0));
   assertEquals(3, tileCoord.z);
   assertEquals(10, tileCoord.x);
   assertEquals(-10, tileCoord.y);
 
-  tileCoord =
-      tileGrid.getTileCoord(3, new goog.math.Coordinate(100000, 100000));
+  tileCoord = tileGrid.getTileCoord(3, new ol.Coordinate(100000, 100000));
   assertEquals(3, tileCoord.z);
   assertEquals(10, tileCoord.x);
   assertEquals(0, tileCoord.y);

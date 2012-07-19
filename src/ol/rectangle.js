@@ -1,8 +1,8 @@
 goog.provide('ol.Rectangle');
 
 goog.require('goog.asserts');
-goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
+goog.require('ol.Coordinate');
 
 
 
@@ -63,7 +63,7 @@ ol.Rectangle.prototype.clone = function() {
 
 
 /**
- * @param {goog.math.Coordinate} coordinate Coordinate.
+ * @param {ol.Coordinate} coordinate Coordinate.
  * @return {boolean} Contains.
  */
 ol.Rectangle.prototype.contains = function(coordinate) {
@@ -73,10 +73,10 @@ ol.Rectangle.prototype.contains = function(coordinate) {
 
 
 /**
- * @return {goog.math.Coordinate} Center.
+ * @return {ol.Coordinate} Center.
  */
 ol.Rectangle.prototype.getCenter = function() {
-  return new goog.math.Coordinate(
+  return new ol.Coordinate(
       (this.minX + this.maxX) / 2, (this.minY + this.maxY) / 2);
 };
 
@@ -106,11 +106,11 @@ ol.Rectangle.prototype.getWidth = function() {
 
 
 /**
- * @param {goog.math.Coordinate} coordinate Coordinate.
- * @return {goog.math.Coordinate} Coordinate.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @return {ol.Coordinate} Coordinate.
  */
 ol.Rectangle.prototype.normalize = function(coordinate) {
-  return new goog.math.Coordinate(
+  return new ol.Coordinate(
       (coordinate.x - this.minX) / this.getWidth(),
       (coordinate.y - this.minY) / this.getHeight());
 };

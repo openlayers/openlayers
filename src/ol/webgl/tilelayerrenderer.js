@@ -8,6 +8,7 @@ goog.require('goog.asserts');
 goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
 goog.require('goog.webgl');
+goog.require('ol.Coordinate');
 goog.require('ol.TileLayer');
 goog.require('ol.webgl.LayerRenderer');
 goog.require('ol.webgl.shader.Fragment');
@@ -217,7 +218,7 @@ ol.webgl.TileLayerRenderer.prototype.redraw = function() {
   var gl = this.getGL();
 
   var map = this.getMap();
-  var center = /** @type {!goog.math.Coordinate} */ map.getCenter();
+  var center = /** @type {!ol.Coordinate} */ map.getCenter();
   var extent = /** @type {!ol.Extent} */ map.getExtent();
   var resolution = /** @type {number} */ map.getResolution();
 

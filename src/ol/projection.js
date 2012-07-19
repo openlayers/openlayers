@@ -2,8 +2,8 @@ goog.provide('ol.Projection');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.math.Coordinate');
 goog.require('goog.object');
+goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.TransformFunction');
 
@@ -215,8 +215,8 @@ ol.Projection.getTransformFromCodes = function(sourceCode, destinationCode) {
 
 
 /**
- * @param {goog.math.Coordinate} point Point.
- * @return {goog.math.Coordinate} Point.
+ * @param {ol.Coordinate} point Point.
+ * @return {ol.Coordinate} Point.
  */
 ol.Projection.identityTransform = function(point) {
   return point;
@@ -224,8 +224,8 @@ ol.Projection.identityTransform = function(point) {
 
 
 /**
- * @param {goog.math.Coordinate} point Point.
- * @return {goog.math.Coordinate} Point.
+ * @param {ol.Coordinate} point Point.
+ * @return {ol.Coordinate} Point.
  */
 ol.Projection.cloneTransform = function(point) {
   return point.clone();
@@ -233,10 +233,10 @@ ol.Projection.cloneTransform = function(point) {
 
 
 /**
- * @param {goog.math.Coordinate} point Point.
+ * @param {ol.Coordinate} point Point.
  * @param {ol.Projection} source Source.
  * @param {ol.Projection} destination Destination.
- * @return {goog.math.Coordinate} Point.
+ * @return {ol.Coordinate} Point.
  */
 ol.Projection.transform = function(point, source, destination) {
   var transform = ol.Projection.getTransform(source, destination);
@@ -245,10 +245,10 @@ ol.Projection.transform = function(point, source, destination) {
 
 
 /**
- * @param {goog.math.Coordinate} point Point.
+ * @param {ol.Coordinate} point Point.
  * @param {string} sourceCode Source code.
  * @param {string} destinationCode Destination code.
- * @return {goog.math.Coordinate} Point.
+ * @return {ol.Coordinate} Point.
  */
 ol.Projection.transformWithCodes =
     function(point, sourceCode, destinationCode) {
@@ -266,26 +266,26 @@ ol.Projection.EPSG_3857_RADIUS = 6378137;
 
 
 /**
- * @param {goog.math.Coordinate} point Point.
- * @return {goog.math.Coordinate} Point.
+ * @param {ol.Coordinate} point Point.
+ * @return {ol.Coordinate} Point.
  */
 ol.Projection.forwardSphericalMercator = function(point) {
   var x = ol.Projection.EPSG_3857_RADIUS * Math.PI * point.x / 180;
   var y = ol.Projection.EPSG_3857_RADIUS *
       Math.log(Math.tan(Math.PI * (point.y + 90) / 360));
-  return new goog.math.Coordinate(x, y);
+  return new ol.Coordinate(x, y);
 };
 
 
 /**
- * @param {goog.math.Coordinate} point Point.
- * @return {goog.math.Coordinate} Point.
+ * @param {ol.Coordinate} point Point.
+ * @return {ol.Coordinate} Point.
  */
 ol.Projection.inverseSphericalMercator = function(point) {
   var x = 180 * point.x / (ol.Projection.EPSG_3857_RADIUS * Math.PI);
   var y = 360 * Math.atan(
       Math.exp(point.y / ol.Projection.EPSG_3857_RADIUS)) / Math.PI - 90;
-  return new goog.math.Coordinate(x, y);
+  return new ol.Coordinate(x, y);
 };
 
 

@@ -1,4 +1,5 @@
 goog.require('goog.testing.jsunit');
+goog.require('ol.Coordinate');
 goog.require('ol.TileCoord');
 goog.require('ol.tilestore.createOpenStreetMap');
 
@@ -13,8 +14,7 @@ function testOpenStreetMap() {
   var tileStore = ol.tilestore.createOpenStreetMap(8);
   var tileGrid = tileStore.getTileGrid();
 
-  var coordinate =
-      new goog.math.Coordinate(829330.2064098881, 5933916.615134273);
+  var coordinate = new ol.Coordinate(829330.2064098881, 5933916.615134273);
   var tileUrl;
 
   tileUrl = tileStore.getTileCoordUrl(tileGrid.getTileCoord(0, coordinate));

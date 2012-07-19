@@ -1,13 +1,13 @@
 goog.provide('ol.TileCoord');
 
 goog.require('goog.array');
-goog.require('goog.math.Coordinate');
+goog.require('ol.Coordinate');
 
 
 
 /**
  * @constructor
- * @extends {goog.math.Coordinate}
+ * @extends {ol.Coordinate}
  * @param {number} z Z.
  * @param {number} x X.
  * @param {number} y Y.
@@ -22,7 +22,7 @@ ol.TileCoord = function(z, x, y) {
   this.z = z;
 
 };
-goog.inherits(ol.TileCoord, goog.math.Coordinate);
+goog.inherits(ol.TileCoord, ol.Coordinate);
 
 
 /**
