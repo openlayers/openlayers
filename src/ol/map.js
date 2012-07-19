@@ -15,7 +15,6 @@ goog.require('goog.events.MouseWheelHandler');
 goog.require('goog.events.MouseWheelHandler.EventType');
 goog.require('goog.fx.anim');
 goog.require('goog.fx.anim.Animated');
-goog.require('goog.math.Size');
 goog.require('goog.object');
 goog.require('ol.Array');
 goog.require('ol.Control');
@@ -24,6 +23,7 @@ goog.require('ol.Extent');
 goog.require('ol.LayerRenderer');
 goog.require('ol.Object');
 goog.require('ol.Projection');
+goog.require('ol.Size');
 goog.require('ol.TransformFunction');
 
 
@@ -372,11 +372,10 @@ ol.Map.prototype.getResolutionForExtent = function(extent) {
 
 
 /**
- * @return {goog.math.Size|undefined} Size.
+ * @return {ol.Size|undefined} Size.
  */
 ol.Map.prototype.getSize = function() {
-  return /** @type {goog.math.Size|undefined} */ (
-      this.get(ol.MapProperty.SIZE));
+  return /** @type {ol.Size|undefined} */ this.get(ol.MapProperty.SIZE);
 };
 
 
@@ -573,8 +572,7 @@ ol.Map.prototype.handleUserProjectionChanged = function() {
  * @protected
  */
 ol.Map.prototype.handleViewportResize = function() {
-  var size = new goog.math.Size(
-      this.target_.clientWidth, this.target_.clientHeight);
+  var size = new ol.Size(this.target_.clientWidth, this.target_.clientHeight);
   this.setSize(size);
 };
 
@@ -725,11 +723,11 @@ ol.Map.prototype.setResolution = function(resolution) {
 
 
 /**
- * @param {goog.math.Size} size Size.
+ * @param {ol.Size} size Size.
  */
 ol.Map.prototype.setSize = function(size) {
   var currentSize = this.getSize();
-  if (!goog.isDef(currentSize) || !goog.math.Size.equals(size, currentSize)) {
+  if (!goog.isDef(currentSize) || !currentSize.equals(size)) {
     this.set(ol.MapProperty.SIZE, size);
   }
 };

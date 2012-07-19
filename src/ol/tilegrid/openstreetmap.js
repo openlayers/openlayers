@@ -1,8 +1,8 @@
 goog.provide('ol.tilegrid.createOpenStreetMap');
 
-goog.require('goog.math.Size');
 goog.require('ol.Coordinate');
 goog.require('ol.Projection');
+goog.require('ol.Size');
 goog.require('ol.TileGrid');
 
 
@@ -21,7 +21,7 @@ ol.tilegrid.createOpenStreetMap = function(maxZoom) {
   var extent = ol.Projection.EPSG_3857_EXTENT;
   var origin = new ol.Coordinate(
       -ol.Projection.EPSG_3857_HALF_SIZE, ol.Projection.EPSG_3857_HALF_SIZE);
-  var tileSize = new goog.math.Size(256, 256);
+  var tileSize = new ol.Size(256, 256);
 
   return new ol.TileGrid(resolutions, extent, origin, tileSize);
 

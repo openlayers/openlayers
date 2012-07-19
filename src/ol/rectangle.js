@@ -1,8 +1,8 @@
 goog.provide('ol.Rectangle');
 
 goog.require('goog.asserts');
-goog.require('goog.math.Size');
 goog.require('ol.Coordinate');
+goog.require('ol.Size');
 
 
 
@@ -90,10 +90,10 @@ ol.Rectangle.prototype.getHeight = function() {
 
 
 /**
- * @return {goog.math.Size} Size.
+ * @return {ol.Size} Size.
  */
 ol.Rectangle.prototype.getSize = function() {
-  return new goog.math.Size(this.getWidth(), this.getHeight());
+  return new ol.Size(this.getWidth(), this.getHeight());
 };
 
 

@@ -2,9 +2,9 @@ goog.provide('ol.TileGrid');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.math.Size');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
+goog.require('ol.Size');
 goog.require('ol.TileBounds');
 goog.require('ol.TileCoord');
 
@@ -15,7 +15,7 @@ goog.require('ol.TileCoord');
  * @param {!Array.<number>} resolutions Resolutions.
  * @param {ol.Extent} extent Extent.
  * @param {ol.Coordinate|!Array.<ol.Coordinate>} origin Origin.
- * @param {goog.math.Size=} opt_tileSize Tile size.
+ * @param {ol.Size=} opt_tileSize Tile size.
  */
 ol.TileGrid = function(resolutions, extent, origin, opt_tileSize) {
 
@@ -63,10 +63,10 @@ ol.TileGrid = function(resolutions, extent, origin, opt_tileSize) {
 
   /**
    * @private
-   * @type {goog.math.Size}
+   * @type {ol.Size}
    */
   this.tileSize_ = goog.isDef(opt_tileSize) ?
-      opt_tileSize : new goog.math.Size(256, 256);
+      opt_tileSize : new ol.Size(256, 256);
 
 };
 
@@ -214,7 +214,7 @@ ol.TileGrid.prototype.getTileCoordResolution = function(tileCoord) {
 
 
 /**
- * @return {goog.math.Size} Tile size.
+ * @return {ol.Size} Tile size.
  */
 ol.TileGrid.prototype.getTileSize = function() {
   return this.tileSize_;

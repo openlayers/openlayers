@@ -1,7 +1,7 @@
-goog.require('goog.math.Size');
 goog.require('goog.testing.jsunit');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
+goog.require('ol.Size');
 goog.require('ol.TileCoord');
 goog.require('ol.TileGrid');
 
@@ -18,7 +18,7 @@ function setUp() {
   extent = new ol.Extent(0, 0, 100000, 100000);
   origin = new ol.Coordinate(0, 0);
   origins = [];
-  tileSize = new goog.math.Size(100, 100);
+  tileSize = new ol.Size(100, 100);
 }
 
 

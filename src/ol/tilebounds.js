@@ -1,7 +1,6 @@
 goog.provide('ol.TileBounds');
 
 goog.require('goog.asserts');
-goog.require('goog.math.Size');
 goog.require('ol.Rectangle');
 goog.require('ol.TileCoord');
 

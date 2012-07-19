@@ -9,6 +9,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
 goog.require('goog.webgl');
 goog.require('ol.Coordinate');
+goog.require('ol.Size');
 goog.require('ol.TileLayer');
 goog.require('ol.webgl.LayerRenderer');
 goog.require('ol.webgl.shader.Fragment');
@@ -122,7 +123,7 @@ ol.webgl.TileLayerRenderer = function(map, tileLayer) {
 
   /**
    * @private
-   * @type {goog.math.Size}
+   * @type {ol.Size}
    */
   this.framebufferSize_ = null;
 
@@ -230,12 +231,12 @@ ol.webgl.TileLayerRenderer.prototype.redraw = function() {
   var tileBoundsSize = tileBounds.getSize();
   var tileSize = tileGrid.getTileSize();
 
-  var framebufferSize = new goog.math.Size(
+  var framebufferSize = new ol.Size(
       tileSize.width * tileBoundsSize.width,
       tileSize.height * tileBoundsSize.height);
 
   if (goog.isNull(this.framebufferSize_) ||
-      !goog.math.Size.equals(this.framebufferSize_, framebufferSize)) {
+      !this.framebufferSize_.equals(framebufferSize)) {
 
     gl.deleteFramebuffer(this.framebuffer_);
     gl.deleteRenderbuffer(this.renderbuffer_);
