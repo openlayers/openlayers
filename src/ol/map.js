@@ -1,3 +1,5 @@
+// FIXME recheck layer/map projection compatability when projection changes
+
 goog.provide('ol.Map');
 goog.provide('ol.MapProperty');
 
@@ -311,7 +313,7 @@ ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
 
 
 /**
- * @return {ol.Projection} Projection.
+ * @return {ol.Projection|undefined} Projection.
  */
 ol.Map.prototype.getProjection = function() {
   return /** @type {ol.Projection} */ (this.get(ol.MapProperty.PROJECTION));
@@ -390,7 +392,9 @@ ol.Map.prototype.handleCenterChanged = function() {
 ol.Map.prototype.handleLayerAdd = function(layer) {
   var projection = this.getProjection();
   var storeProjection = layer.getStore().getProjection();
-  goog.asserts.assert(ol.Projection.equivalent(projection, storeProjection));
+  if (goog.isDef(projection)) {
+    goog.asserts.assert(ol.Projection.equivalent(projection, storeProjection));
+  }
   var layerRenderer = this.createLayerRenderer(layer);
   this.setLayerRenderer(layer, layerRenderer);
 };
