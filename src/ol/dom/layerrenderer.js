@@ -29,6 +29,9 @@ ol.dom.LayerRenderer = function(map, layer, target) {
    */
   this.origin = null;
 
+  this.handleLayerOpacityChange();
+  this.handleLayerVisibleChange();
+
 };
 goog.inherits(ol.dom.LayerRenderer, ol.LayerRenderer);
 
