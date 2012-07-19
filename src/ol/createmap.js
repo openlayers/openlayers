@@ -23,6 +23,12 @@ ol.DEFAULT_PROJECTION_CODE = 'EPSG:3857';
 
 
 /**
+ * @define {string} Default user projection code.
+ */
+ol.DEFAULT_USER_PROJECTION_CODE = 'EPSG:4326';
+
+
+/**
  * @define {boolean} Whether to enable DOM.
  */
 ol.ENABLE_DOM = true;
@@ -82,6 +88,11 @@ ol.createMap = function(target, opt_values, opt_rendererHints) {
   if (!goog.object.containsKey(values, ol.MapProperty.PROJECTION)) {
     values[ol.MapProperty.PROJECTION] =
         ol.Projection.getFromCode(ol.DEFAULT_PROJECTION_CODE);
+  }
+
+  if (!goog.object.containsKey(values, ol.MapProperty.USER_PROJECTION)) {
+    values[ol.MapProperty.USER_PROJECTION] =
+        ol.Projection.getFromCode(ol.DEFAULT_USER_PROJECTION_CODE);
   }
 
   /**
