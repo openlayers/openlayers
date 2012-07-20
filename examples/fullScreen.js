@@ -8,10 +8,12 @@ var map = new OpenLayers.Map({
     div: "map",
     layers: [
         new OpenLayers.Layer.XYZ("OSM (with buffer)", urls, {
-            transitionEffect: "resize", buffer: 2, sphericalMercator: true
+            transitionEffect: "resize", buffer: 2, sphericalMercator: true,
+            attribution: "Data CC-By-SA by <a href='http://openstreetmap.org/'>OpenStreetMap</a>"
         }),
         new OpenLayers.Layer.XYZ("OSM (without buffer)", urls, {
-            transitionEffect: "resize", buffer: 0, sphericalMercator: true
+            transitionEffect: "resize", buffer: 0, sphericalMercator: true,
+            attribution: "Data CC-By-SA by <a href='http://openstreetmap.org/'>OpenStreetMap</a>"
         })
     ],
     controls: [
