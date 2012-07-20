@@ -1,4 +1,4 @@
-goog.provide('ol.tilegrid.createOpenStreetMap');
+goog.provide('ol.tilegrid.createXYZ');
 
 goog.require('ol.Coordinate');
 goog.require('ol.Projection');
@@ -10,7 +10,7 @@ goog.require('ol.TileGrid');
  * @param {number} maxZoom Maximum zoom.
  * @return {ol.TileGrid} Tile grid.
  */
-ol.tilegrid.createOpenStreetMap = function(maxZoom) {
+ol.tilegrid.createXYZ = function(maxZoom) {
 
   var resolutions = new Array(maxZoom + 1);
   var z;
