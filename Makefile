@@ -97,7 +97,7 @@ webgl-debug.js:
 	curl https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/sdk/debug/webgl-debug.js > $@
 
 $(PLOVR_JAR):
-	curl http://plovr.googlecode.com/files/$(PLOVR_JAR) > $@
+	curl http://plovr.googlecode.com/files/$(notdir $@) > $@
 
 clean:
 	rm -f ol-skeleton.js
