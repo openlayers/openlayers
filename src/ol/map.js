@@ -4,7 +4,6 @@ goog.provide('ol.Map');
 goog.provide('ol.MapProperty');
 
 goog.require('goog.array');
-goog.require('goog.color');
 goog.require('goog.dom.ViewportSizeMonitor');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
@@ -17,6 +16,7 @@ goog.require('goog.fx.anim');
 goog.require('goog.fx.anim.Animated');
 goog.require('goog.object');
 goog.require('ol.Array');
+goog.require('ol.Color');
 goog.require('ol.Control');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
@@ -257,10 +257,10 @@ ol.Map.prototype.forEachVisibleLayer = function(f, opt_obj) {
 
 
 /**
- * @return {string|undefined} Background color.
+ * @return {ol.Color|undefined} Background color.
  */
 ol.Map.prototype.getBackgroundColor = function() {
-  return /** @type {string|undefined} */ (
+  return /** @type {ol.Color|undefined} */ (
       this.get(ol.MapProperty.BACKGROUND_COLOR));
 };
 
@@ -672,10 +672,9 @@ ol.Map.prototype.removeLayerRenderer = function(layer) {
 
 
 /**
- * @param {string} backgroundColor Background color.
+ * @param {ol.Color} backgroundColor Background color.
  */
 ol.Map.prototype.setBackgroundColor = function(backgroundColor) {
-  goog.color.parse(backgroundColor);
   this.set(ol.MapProperty.BACKGROUND_COLOR, backgroundColor);
 };
 

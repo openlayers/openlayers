@@ -7,7 +7,6 @@
 goog.provide('ol.webgl.Map');
 goog.provide('ol.webgl.map.shader');
 
-goog.require('goog.color');
 goog.require('goog.dispose');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -120,6 +119,12 @@ ol.webgl.Map = function(target, opt_values) {
       this.handleWebGLContextLost, false, this);
   goog.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.RESTORED,
       this.handleWebGLContextRestored, false, this);
+
+  /**
+   * @private
+   * @type {ol.Color}
+   */
+  this.clearColor_ = new ol.Color(1, 1, 1, 1);
 
   /**
    * @private
@@ -312,6 +317,12 @@ ol.webgl.Map.prototype.getTileTexture = function(tile) {
  * @inheritDoc
  */
 ol.webgl.Map.prototype.handleBackgroundColorChanged = function() {
+  var backgroundColor = this.getBackgroundColor();
+  this.clearColor_ = new ol.Color(
+      backgroundColor.r / 255,
+      backgroundColor.g / 255,
+      backgroundColor.b / 255,
+      backgroundColor.a / 255);
   this.redraw();
 };
 
@@ -429,17 +440,8 @@ ol.webgl.Map.prototype.redrawInternal = function() {
 
   gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, null);
 
-  var red, green, blue;
-  var backgroundColor = this.getBackgroundColor();
-  if (goog.isDef(backgroundColor)) {
-    var rgb = goog.color.hexToRgb(goog.color.parse(backgroundColor).hex);
-    red = rgb[0] / 255;
-    green = rgb[1] / 255;
-    blue = rgb[2] / 255;
-  } else {
-    red = green = blue = 1;
-  }
-  gl.clearColor(red, green, blue, 1);
+  gl.clearColor(this.clearColor_.r, this.clearColor_.g, this.clearColor_.b,
+      this.clearColor_.a);
   gl.clear(goog.webgl.COLOR_BUFFER_BIT);
   gl.enable(goog.webgl.BLEND);
   gl.blendFunc(goog.webgl.SRC_ALPHA, goog.webgl.ONE_MINUS_SRC_ALPHA);
