@@ -248,8 +248,10 @@ ol.Map.prototype.fitUserExtent = function(userExtent) {
 ol.Map.prototype.forEachVisibleLayer = function(f, opt_obj) {
   var layers = this.getLayers();
   layers.forEach(function(layer, index) {
-    var layerRenderer = this.getLayerRenderer(layer);
-    f.call(opt_obj, layer, layerRenderer, index);
+    if (layer.getVisible()) {
+      var layerRenderer = this.getLayerRenderer(layer);
+      f.call(opt_obj, layer, layerRenderer, index);
+    }
   }, this);
 };
 
