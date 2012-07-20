@@ -339,7 +339,6 @@ ol.webgl.TileLayerRenderer.prototype.redraw = function() {
             goog.events.EventType.CHANGE, this.handleTileChange, false, this);
       }
     }
-    return false;
   }, this);
 
 };

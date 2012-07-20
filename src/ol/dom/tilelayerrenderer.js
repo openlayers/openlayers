@@ -73,7 +73,6 @@ ol.dom.TileLayerRenderer.prototype.redraw = function() {
         newTiles = true;
       }
     }
-    return false;
   }, this);
 
   if (newTiles) {

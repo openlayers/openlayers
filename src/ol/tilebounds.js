@@ -51,7 +51,7 @@ ol.TileBounds.prototype.clone = function() {
 
 /**
  * @param {number} z Z.
- * @param {function(this: T, ol.TileCoord): boolean} f Callback.
+ * @param {function(this: T, ol.TileCoord)} f Callback.
  * @param {T=} opt_obj The object to be used for the value of 'this' within f.
  * @template T
  */
@@ -62,9 +62,7 @@ ol.TileBounds.prototype.forEachTileCoord = function(z, f, opt_obj) {
     tileCoord.x = x;
     for (y = this.minY; y <= this.maxY; ++y) {
       tileCoord.y = y;
-      if (f.call(opt_obj, tileCoord)) {
-        return;
-      }
+      f.call(opt_obj, tileCoord);
       goog.asserts.assert(tileCoord.z == z);
       goog.asserts.assert(tileCoord.x == x);
       goog.asserts.assert(tileCoord.y == y);
