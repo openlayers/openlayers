@@ -50,6 +50,16 @@ ol.TileBounds.prototype.clone = function() {
 
 
 /**
+ * @param {ol.TileBounds} tileBounds Tile bounds.
+ * @return {boolean} Contains.
+ */
+ol.TileBounds.prototype.contains = function(tileBounds) {
+  return this.minX <= tileBounds.minX && tileBounds.maxX <= this.maxX &&
+      this.minY <= tileBounds.minY && tileBounds.minY <= this.minY;
+};
+
+
+/**
  * @param {number} z Z.
  * @param {function(this: T, ol.TileCoord)} f Callback.
  * @param {T=} opt_obj The object to be used for the value of 'this' within f.
