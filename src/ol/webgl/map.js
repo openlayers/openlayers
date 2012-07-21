@@ -39,13 +39,17 @@ ol.webgl.map.shader.Fragment = function() {
   goog.base(this, [
     'precision mediump float;',
     '',
+    'uniform mat4 uMatrix;',
     'uniform float uOpacity;',
     'uniform sampler2D uTexture;',
     '',
     'varying vec2 vTexCoord;',
     '',
     'void main(void) {',
-    '  gl_FragColor = vec4(texture2D(uTexture, vTexCoord).rgb, uOpacity);',
+    '  vec4 texCoord = uMatrix * vec4(vTexCoord, 0., 1.);',
+    '  vec4 srcColor = texture2D(uTexture, texCoord.st);',
+    '  gl_FragColor.rgb = srcColor.rgb;',
+    '  gl_FragColor.a = srcColor.a * uOpacity;',
     '}'
   ].join('\n'));
 };
@@ -65,10 +69,8 @@ ol.webgl.map.shader.Vertex = function() {
     '',
     'varying vec2 vTexCoord;',
     '',
-    'uniform mat4 uMatrix;',
-    '',
     'void main(void) {',
-    '  gl_Position = uMatrix * vec4(aPosition, 0., 1.);',
+    '  gl_Position = vec4(aPosition, 0., 1.);',
     '  vTexCoord = aTexCoord;',
     '}'
   ].join('\n'));
@@ -417,7 +419,10 @@ ol.webgl.Map.prototype.handleWebGLContextLost = function(event) {
  */
 ol.webgl.Map.prototype.handleWebGLContextRestored = function() {
   var gl = this.gl_;
+  gl.activeTexture(goog.webgl.TEXTURE0);
+  gl.blendFunc(goog.webgl.SRC_ALPHA, goog.webgl.ONE_MINUS_SRC_ALPHA);
   gl.disable(goog.webgl.CULL_FACE);
+  gl.disable(goog.webgl.DEPTH_TEST);
   gl.disable(goog.webgl.SCISSOR_TEST);
   this.redraw();
 };
@@ -433,6 +438,7 @@ ol.webgl.Map.prototype.redrawInternal = function() {
   if (!goog.isDef(center) || !goog.isDef(resolution)) {
     return false;
   }
+  var size = this.getSize();
 
   var animate = goog.base(this, 'redrawInternal');
 
@@ -444,7 +450,7 @@ ol.webgl.Map.prototype.redrawInternal = function() {
       this.clearColor_.a);
   gl.clear(goog.webgl.COLOR_BUFFER_BIT);
   gl.enable(goog.webgl.BLEND);
-  gl.blendFunc(goog.webgl.SRC_ALPHA, goog.webgl.ONE_MINUS_SRC_ALPHA);
+  gl.viewport(0, 0, size.width, size.height);
 
   var program = this.getProgram(this.fragmentShader_, this.vertexShader_);
   gl.useProgram(program);
@@ -462,9 +468,9 @@ ol.webgl.Map.prototype.redrawInternal = function() {
     var arrayBuffer = gl.createBuffer();
     gl.bindBuffer(goog.webgl.ARRAY_BUFFER, arrayBuffer);
     gl.bufferData(goog.webgl.ARRAY_BUFFER, new Float32Array([
-      0, 0, 0, 0,
-      1, 0, 1, 0,
-      0, 1, 0, 1,
+      -1, -1, 0, 0,
+      1, -1, 1, 0,
+      -1, 1, 0, 1,
       1, 1, 1, 1
     ]), goog.webgl.STATIC_DRAW);
     this.arrayBuffer_ = arrayBuffer;
@@ -485,7 +491,6 @@ ol.webgl.Map.prototype.redrawInternal = function() {
         this.locations_.uMatrix, false, layerRenderer.getMatrix());
     gl.uniform1f(this.locations_.uOpacity, layer.getOpacity());
     gl.bindTexture(goog.webgl.TEXTURE_2D, layerRenderer.getTexture());
-    gl.activeTexture(goog.webgl.TEXTURE0);
     gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
   }, this);
 
