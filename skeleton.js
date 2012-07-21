@@ -23,7 +23,7 @@ map1.setResolution(resolutions[0]);
 
 if (twoMaps) {
   target = /** @type {!HTMLDivElement} */ document.getElementById('map2');
-  map2 = ol.createMap(target, undefined, ol.RendererHint.DOM);
+  map2 = ol.createMap(target, undefined, ol.RendererHint.WEBGL);
   map2.bindTo('center', map1);
   map2.bindTo('layers', map1);
   map2.bindTo('resolution', map1);
