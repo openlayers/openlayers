@@ -55,4 +55,4 @@ ol.webgl.LayerRenderer.prototype.handleWebGLContextLost = goog.nullFunction;
 
 /**
  */
-ol.webgl.LayerRenderer.prototype.redraw = goog.abstractMethod;
+ol.webgl.LayerRenderer.prototype.render = goog.abstractMethod;

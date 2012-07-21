@@ -73,4 +73,4 @@ ol.dom.LayerRenderer.prototype.handleLayerVisibleChange = function() {
 
 /**
  */
-ol.dom.LayerRenderer.prototype.redraw = goog.abstractMethod;
+ol.dom.LayerRenderer.prototype.render = goog.abstractMethod;

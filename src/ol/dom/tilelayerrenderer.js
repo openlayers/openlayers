@@ -35,7 +35,7 @@ goog.inherits(ol.dom.TileLayerRenderer, ol.dom.LayerRenderer);
 /**
  * @inheritDoc
  */
-ol.dom.TileLayerRenderer.prototype.redraw = function() {
+ol.dom.TileLayerRenderer.prototype.render = function() {
 
   var map = this.getMap();
   var center = map.getCenter();

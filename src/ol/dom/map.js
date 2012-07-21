@@ -163,7 +163,7 @@ ol.dom.Map.prototype.handleCenterChanged = function() {
   } else {
     this.resetLayersPane_();
   }
-  this.redraw();
+  this.render();
 };
 
 
@@ -191,7 +191,7 @@ ol.dom.Map.prototype.handleResolutionChanged = function() {
   // FIXME: resetLayersPane_ should be called
   // elsewhere as we may be frozen here
   this.resetLayersPane_();
-  this.redraw();
+  this.render();
 };
 
 

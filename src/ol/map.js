@@ -1,4 +1,3 @@
-// FIXME rename redraw to render
 // FIXME rename freeze/thaw to freezeRendering/unfreezeRendering
 // FIXME add change resolution by zoom step function
 // FIXME recheck layer/map projection compatability when projection changes
@@ -626,10 +625,10 @@ ol.Map.prototype.recalculateTransforms_ = function() {
 
 /**
  */
-ol.Map.prototype.redraw = function() {
+ol.Map.prototype.render = function() {
   if (!this.animating_) {
     if (this.freezeCount_ === 0) {
-      if (this.redrawInternal()) {
+      if (this.renderInternal()) {
         this.animate_();
       }
     } else {
@@ -643,13 +642,14 @@ ol.Map.prototype.redraw = function() {
  * @protected
  * @return {boolean} Animating.
  */
-ol.Map.prototype.redrawInternal = function() {
+ol.Map.prototype.renderInternal = function() {
+
   this.dirty_ = false;
 
   var animate = false;
 
   this.forEachVisibleLayer(function(layer, layerRenderer) {
-    if (layerRenderer.redraw()) {
+    if (layerRenderer.render()) {
       animate = true;
     }
   });
@@ -783,7 +783,7 @@ ol.Map.prototype.thaw = function() {
   goog.asserts.assert(this.freezeCount_ > 0);
   if (--this.freezeCount_ === 0) {
     if (!this.animating_ && this.dirty_) {
-      if (this.redrawInternal()) {
+      if (this.renderInternal()) {
         this.animate_();
       }
     }
@@ -812,7 +812,7 @@ ol.MapAnimation = function(map) {
  * @inheritDoc
  */
 ol.MapAnimation.prototype.onAnimationFrame = function() {
-  if (!this.map_.redrawInternal()) {
+  if (!this.map_.renderInternal()) {
     goog.fx.anim.unregisterAnimation(this);
   }
 };

@@ -266,7 +266,7 @@ ol.webgl.TileLayerRenderer.prototype.handleTileChange = function() {
 /**
  * @inheritDoc
  */
-ol.webgl.TileLayerRenderer.prototype.redraw = function() {
+ol.webgl.TileLayerRenderer.prototype.render = function() {
 
   var gl = this.getGL();
 

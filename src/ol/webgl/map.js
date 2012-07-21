@@ -1,5 +1,5 @@
 // FIXME clear tileTextureCache
-// FIXME defer texture loads until after redraw when animating
+// FIXME defer texture loads until after render when animating
 // FIXME generational tile texture garbage collector newFrame/get
 // FIXME defer cleanup until post-render
 // FIXME check against gl.getParameter(webgl.MAX_TEXTURE_SIZE)
@@ -325,7 +325,7 @@ ol.webgl.Map.prototype.handleBackgroundColorChanged = function() {
       backgroundColor.g / 255,
       backgroundColor.b / 255,
       backgroundColor.a / 255);
-  this.redraw();
+  this.render();
 };
 
 
@@ -334,7 +334,7 @@ ol.webgl.Map.prototype.handleBackgroundColorChanged = function() {
  */
 ol.webgl.Map.prototype.handleCenterChanged = function() {
   goog.base(this, 'handleCenterChanged');
-  this.redraw();
+  this.render();
 };
 
 
@@ -344,7 +344,7 @@ ol.webgl.Map.prototype.handleCenterChanged = function() {
 ol.webgl.Map.prototype.handleLayerAdd = function(layer) {
   goog.base(this, 'handleLayerAdd', layer);
   if (layer.getVisible()) {
-    this.redraw();
+    this.render();
   }
 };
 
@@ -354,7 +354,7 @@ ol.webgl.Map.prototype.handleLayerAdd = function(layer) {
  * @protected
  */
 ol.webgl.Map.prototype.handleLayerRendererChange = function(event) {
-  this.redraw();
+  this.render();
 };
 
 
@@ -364,7 +364,7 @@ ol.webgl.Map.prototype.handleLayerRendererChange = function(event) {
 ol.webgl.Map.prototype.handleLayerRemove = function(layer) {
   goog.base(this, 'handleLayerRemove', layer);
   if (layer.getVisible()) {
-    this.redraw();
+    this.render();
   }
 };
 
@@ -374,7 +374,7 @@ ol.webgl.Map.prototype.handleLayerRemove = function(layer) {
  */
 ol.webgl.Map.prototype.handleResolutionChanged = function() {
   goog.base(this, 'handleResolutionChanged');
-  this.redraw();
+  this.render();
 };
 
 
@@ -392,7 +392,7 @@ ol.webgl.Map.prototype.handleSizeChanged = function() {
   var gl = this.gl_;
   if (!goog.isNull(gl)) {
     gl.viewport(0, 0, size.width, size.height);
-    this.redraw();
+    this.render();
   }
 };
 
@@ -424,14 +424,14 @@ ol.webgl.Map.prototype.handleWebGLContextRestored = function() {
   gl.disable(goog.webgl.CULL_FACE);
   gl.disable(goog.webgl.DEPTH_TEST);
   gl.disable(goog.webgl.SCISSOR_TEST);
-  this.redraw();
+  this.render();
 };
 
 
 /**
  * @inheritDoc
  */
-ol.webgl.Map.prototype.redrawInternal = function() {
+ol.webgl.Map.prototype.renderInternal = function() {
 
   var center = this.getCenter();
   var resolution = this.getResolution();
@@ -440,7 +440,7 @@ ol.webgl.Map.prototype.redrawInternal = function() {
   }
   var size = this.getSize();
 
-  var animate = goog.base(this, 'redrawInternal');
+  var animate = goog.base(this, 'renderInternal');
 
   var gl = this.getGL();
 
