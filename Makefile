@@ -20,7 +20,6 @@ GSLINT_EXCLUDES= \
 	src/ol/control/Control.js \
 	src/ol/control/Navigation.js \
 	src/ol/control/Zoom.js \
-	src/ol/coord/AccessorInterface.js \
 	src/ol/event/Drag.js \
 	src/ol/event/Events.js \
 	src/ol/event/ISequence.js \
@@ -34,17 +33,12 @@ GSLINT_EXCLUDES= \
 	src/ol/geom/MultiPoint.js \
 	src/ol/geom/Point.js \
 	src/ol/handler/Drag.js \
-	src/ol/layer/OSM.js \
-	src/ol/layer/TileLayer.js \
 	src/ol/layer/WMS.js \
-	src/ol/layer/XYZ.js \
-	src/ol/Loc.js \
 	src/ol/Popup.js \
 	src/ol/renderer/Composite.js \
 	src/ol/renderer/LayerRenderer.js \
 	src/ol/renderer/MapRenderer.js \
-	src/ol/renderer/TileLayerRenderer.js \
-	src/ol/renderer/WebGL.js
+	src/ol/renderer/TileLayerRenderer.js
 comma := ,
 empty :=
 space := $(empty) $(empty)
