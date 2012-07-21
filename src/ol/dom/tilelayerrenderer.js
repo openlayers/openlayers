@@ -1,6 +1,8 @@
 goog.provide('ol.dom.TileLayerRenderer');
 
+goog.require('goog.dom');
 goog.require('ol.Coordinate');
+goog.require('ol.Extent');
 goog.require('ol.dom.LayerRenderer');
 
 
@@ -20,6 +22,12 @@ ol.dom.TileLayerRenderer = function(map, tileLayer, target) {
    * @private
    */
   this.renderedTiles_ = {};
+
+  /**
+   * @type {number|undefined}
+   * @private
+   */
+  this.renderedResolution_ = undefined;
 };
 goog.inherits(ol.dom.TileLayerRenderer, ol.dom.LayerRenderer);
 
@@ -30,26 +38,30 @@ goog.inherits(ol.dom.TileLayerRenderer, ol.dom.LayerRenderer);
 ol.dom.TileLayerRenderer.prototype.redraw = function() {
 
   var map = this.getMap();
-  var extent = map.getExtent();
+  var center = map.getCenter();
   var resolution = map.getResolution();
 
-  if (!goog.isDef(extent) || !goog.isDef(resolution)) {
+  if (!goog.isDef(center) || !goog.isDef(resolution)) {
     return;
   }
 
-  var tileLayer = /** @type {ol.TileLayer} */ (this.getLayer());
-  var tileStore = tileLayer.getStore();
+  var tileStore = this.getTileStore_();
   var tileGrid = tileStore.getTileGrid();
+
+  if (resolution != this.renderedResolution_) {
+    this.renderedTiles_ = {};
+    goog.dom.removeChildren(this.target);
+  }
+
+  // z represents the "best" resolution
   var z = tileGrid.getZForResolution(resolution);
 
-  var tileBounds = tileGrid.getExtentTileBounds(z, extent);
-  var tileSize = tileGrid.getTileSize();
-
-  var offset = this.getTilesMapOffset_(extent, tileBounds, resolution);
+  var tileBounds = this.getTileBounds_(center, resolution);
+  var tileOffset = this.getTileOffset_(z, resolution);
 
   var fragment = document.createDocumentFragment();
 
-  var key, tile, x, y, img, newTiles = false;
+  var key, tile, pixelBounds, img, newTiles = false;
   tileBounds.forEachTileCoord(z, function(tileCoord) {
     key = tileCoord.toString();
     tile = this.renderedTiles_[key];
@@ -61,14 +73,14 @@ ol.dom.TileLayerRenderer.prototype.redraw = function() {
           tile.load();
         }
         this.renderedTiles_[key] = tile;
-        x = tileSize.width * (tileCoord.x - tileBounds.minX);
-        y = tileSize.height * (tileBounds.maxY - tileCoord.y);
+        pixelBounds = tileGrid.getPixelBoundsForTileCoordAndResolution(
+            tileCoord, resolution);
         img = tile.getImage(this);
         img.style.position = 'absolute';
-        img.style.top = (y - offset.y) + 'px';
-        img.style.left = (x - offset.x) + 'px';
-        img.style.width = tileSize.width + 'px';
-        img.style.height = tileSize.height + 'px';
+        img.style.left = (pixelBounds.minX - tileOffset.x) + 'px';
+        img.style.top = (-pixelBounds.maxY - tileOffset.y) + 'px';
+        img.style.width = pixelBounds.getWidth() + 'px';
+        img.style.height = pixelBounds.getHeight() + 'px';
         goog.dom.appendChild(fragment, img);
         newTiles = true;
       }
@@ -80,34 +92,47 @@ ol.dom.TileLayerRenderer.prototype.redraw = function() {
   }
 
   this.removeInvisibleTiles_(tileBounds, z);
+  this.renderedResolution_ = resolution;
 };
 
 
 /**
- * Get the pixel offset between top-left corner of tiles and top-left
- * corner of map. Return positive values.
- *
+ * Get the pixel offset between the tile origin and the container origin.
  * @private
- * @param {ol.Extent} extent Map extent.
- * @param {ol.TileBounds} tileBounds Tile bounds.
+ * @param {number} z Z.
  * @param {number} resolution Resolution.
  * @return {ol.Coordinate} Offset.
  */
-ol.dom.TileLayerRenderer.prototype.getTilesMapOffset_ = function(
-    extent, tileBounds, resolution) {
-
-  var tileLayer = /** @type {ol.TileLayer} */ (this.getLayer());
-  var tileStore = tileLayer.getStore();
-  var tileGrid = tileStore.getTileGrid();
-  var z = tileGrid.getZForResolution(resolution);
-  var tileCoord = new ol.TileCoord(z, tileBounds.minX, tileBounds.maxY);
-  var tileCoordExtent = tileGrid.getTileCoordExtent(tileCoord);
-
+ol.dom.TileLayerRenderer.prototype.getTileOffset_ = function(z, resolution) {
+  var tileGrid = this.getTileGrid_();
+  var tileOrigin = tileGrid.getOrigin(z);
   var offset = new ol.Coordinate(
-      Math.round((this.origin.x - tileCoordExtent.minX) / resolution),
-      Math.round((tileCoordExtent.maxY - this.origin.y) / resolution));
-
+      Math.round((this.origin.x - tileOrigin.x) / resolution),
+      Math.round((tileOrigin.y - this.origin.y) / resolution));
   return offset;
+};
+
+
+/**
+ * @private
+ * @param {ol.Coordinate} center Center.
+ * @param {number} resolution Resolution.
+ * @return {ol.TileBounds} Tile bounds.
+ */
+ol.dom.TileLayerRenderer.prototype.getTileBounds_ = function(
+    center, resolution) {
+  var map = this.getMap();
+  var size = map.getSize();
+  var halfSize = new ol.Size(size.width / 2, size.height / 2);
+  var leftTop = new ol.Coordinate(
+      center.x - (resolution * halfSize.width),
+      center.y + (resolution * halfSize.height));
+  var rightBottom = new ol.Coordinate(
+      center.x + (resolution * halfSize.width),
+      center.y - (resolution * halfSize.height));
+  var extent = ol.Extent.boundingExtent(leftTop, rightBottom);
+  var tileGrid = this.getTileGrid_();
+  return tileGrid.getTileBoundsForExtentAndResolution(extent, resolution);
 };
 
 
@@ -133,4 +158,25 @@ ol.dom.TileLayerRenderer.prototype.removeInvisibleTiles_ = function(
       this.target.removeChild(tile.getImage(this));
     }
   }
+};
+
+
+/**
+ * Get the tile grid.
+ * @private
+ * @return {ol.TileGrid} Tile grid.
+ */
+ol.dom.TileLayerRenderer.prototype.getTileGrid_ = function() {
+  return this.getTileStore_().getTileGrid();
+};
+
+
+/**
+ * Get the tile store.
+ * @private
+ * @return {ol.TileStore} Tile store.
+ */
+ol.dom.TileLayerRenderer.prototype.getTileStore_ = function() {
+  var tileLayer = /** @type {ol.TileLayer} */ (this.getLayer());
+  return tileLayer.getStore();
 };
