@@ -1,4 +1,8 @@
+// FIXME rename redraw to render
+// FIXME rename freeze/thaw to freezeRendering/unfreezeRendering
+// FIXME add change resolution by zoom step function
 // FIXME recheck layer/map projection compatability when projection changes
+// FIXME layer renderers should skip when they can't reproject
 
 goog.provide('ol.Map');
 goog.provide('ol.MapProperty');

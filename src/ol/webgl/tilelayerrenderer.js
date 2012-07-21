@@ -1,4 +1,6 @@
+// FIXME large resolutions lead to too large framebuffers :-(
 // FIXME animated shaders! check in redraw
+// FIXME out-by-one error in texture alignment?
 
 goog.provide('ol.webgl.TileLayerRenderer');
 goog.provide('ol.webgl.tilelayerrenderer.shader.Fragment');
