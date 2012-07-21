@@ -134,39 +134,3 @@ ol.dom.TileLayerRenderer.prototype.removeInvisibleTiles_ = function(
     }
   }
 };
-
-
-/**
- * Get the best/preferred z for an arbitrary resolution.
- * @private
- * @param {number} resolution Resolution.
- * @return {number} Z.
- * TODO: this should probably be shared with the WebGL TileLayerRenderer,
- * but our current class hierarchy does not allow this sharing.
-*/
-ol.dom.TileLayerRenderer.prototype.getPreferredZ_ = (function() {
-  var cache = {};
-  return function(resolution) {
-    if (resolution in cache) {
-      return cache[resolution];
-    }
-    var tileLayer = /** @type {ol.TileLayer} */ (this.getLayer());
-    var tileStore = tileLayer.getStore();
-    var tileGrid = tileStore.getTileGrid();
-    var gridResolutions = tileGrid.getResolutions();
-    var minDiff = Number.POSITIVE_INFINITY;
-    var candidate, diff, z, r;
-    for (var i = 0, ii = gridResolutions.length; i < ii; ++i) {
-      // assumes sorted resolutions
-      diff = Math.abs(resolution - gridResolutions[i]);
-      if (diff < minDiff) {
-        z = i;
-        minDiff = diff;
-      } else {
-        break;
-      }
-    }
-    cache[resolution] = z;
-    return z;
-  };
-})();
