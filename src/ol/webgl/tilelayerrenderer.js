@@ -227,7 +227,7 @@ ol.webgl.TileLayerRenderer.prototype.redraw = function() {
   var tileStore = tileLayer.getStore();
   var tileGrid = tileStore.getTileGrid();
   var z = tileGrid.getZForResolution(resolution);
-  var tileBounds = tileGrid.getExtentTileBounds(z, extent);
+  var tileBounds = tileGrid.getTileBoundsForExtentAndZ(extent, z);
   var tileBoundsSize = tileBounds.getSize();
   var tileSize = tileGrid.getTileSize();
 

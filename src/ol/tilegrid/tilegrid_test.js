@@ -78,22 +78,26 @@ function testGetTileCoord() {
   var tileGrid = new ol.TileGrid(resolutions, extent, origin, tileSize);
   var tileCoord;
 
-  tileCoord = tileGrid.getTileCoord(3, new ol.Coordinate(0, 0));
+  tileCoord = tileGrid.getTileCoordForCoordAndZ(
+      new ol.Coordinate(0, 0), 3);
   assertEquals(3, tileCoord.z);
   assertEquals(0, tileCoord.x);
   assertEquals(0, tileCoord.y);
 
-  tileCoord = tileGrid.getTileCoord(3, new ol.Coordinate(0, 100000));
+  tileCoord = tileGrid.getTileCoordForCoordAndZ(
+      new ol.Coordinate(0, 100000), 3);
   assertEquals(3, tileCoord.z);
   assertEquals(0, tileCoord.x);
   assertEquals(10, tileCoord.y);
 
-  tileCoord = tileGrid.getTileCoord(3, new ol.Coordinate(100000, 0));
+  tileCoord = tileGrid.getTileCoordForCoordAndZ(
+      new ol.Coordinate(100000, 0), 3);
   assertEquals(3, tileCoord.z);
   assertEquals(10, tileCoord.x);
   assertEquals(0, tileCoord.y);
 
-  tileCoord = tileGrid.getTileCoord(3, new ol.Coordinate(100000, 100000));
+  tileCoord = tileGrid.getTileCoordForCoordAndZ(
+      new ol.Coordinate(100000, 100000), 3);
   assertEquals(3, tileCoord.z);
   assertEquals(10, tileCoord.x);
   assertEquals(10, tileCoord.y);
@@ -107,29 +111,33 @@ function testGetTileCoordYSouth() {
   var tileGrid = new ol.TileGrid(resolutions, extent, origin, tileSize);
   var tileCoord;
 
-  tileCoord = tileGrid.getTileCoord(3, new ol.Coordinate(0, 0));
+  tileCoord = tileGrid.getTileCoordForCoordAndZ(
+      new ol.Coordinate(0, 0), 3);
   assertEquals(3, tileCoord.z);
   assertEquals(0, tileCoord.x);
   assertEquals(-10, tileCoord.y);
 
-  tileCoord = tileGrid.getTileCoord(3, new ol.Coordinate(0, 100000));
+  tileCoord = tileGrid.getTileCoordForCoordAndZ(
+      new ol.Coordinate(0, 100000), 3);
   assertEquals(3, tileCoord.z);
   assertEquals(0, tileCoord.x);
   assertEquals(0, tileCoord.y);
 
-  tileCoord = tileGrid.getTileCoord(3, new ol.Coordinate(100000, 0));
+  tileCoord = tileGrid.getTileCoordForCoordAndZ(
+      new ol.Coordinate(100000, 0), 3);
   assertEquals(3, tileCoord.z);
   assertEquals(10, tileCoord.x);
   assertEquals(-10, tileCoord.y);
 
-  tileCoord = tileGrid.getTileCoord(3, new ol.Coordinate(100000, 100000));
+  tileCoord = tileGrid.getTileCoordForCoordAndZ(
+      new ol.Coordinate(100000, 100000), 3);
   assertEquals(3, tileCoord.z);
   assertEquals(10, tileCoord.x);
   assertEquals(0, tileCoord.y);
 
 }
 
-function testGetTileCoordForArbitraryResolution() {
+function testGetTileCoordForCoordAndResolution() {
 
   var tileSize = new ol.Size(256, 256);
   var tileGrid = new ol.TileGrid([10], extent, origin, tileSize);
@@ -139,78 +147,78 @@ function testGetTileCoordForArbitraryResolution() {
 
   // gets the first tile at the origin
   coordinate = new ol.Coordinate(0, 0);
-  tileCoord = tileGrid.getTileCoordForArbitraryResolution(
-      0, 10, coordinate);
+  tileCoord = tileGrid.getTileCoordForCoordAndResolution(
+      coordinate, 10);
   assertEquals(0, tileCoord.z);
   assertEquals(0, tileCoord.x);
   assertEquals(0, tileCoord.y);
 
   // gets one tile northwest of the origin
   coordinate = new ol.Coordinate(-1280, 1280);
-  tileCoord = tileGrid.getTileCoordForArbitraryResolution(
-      0, 10, coordinate);
+  tileCoord = tileGrid.getTileCoordForCoordAndResolution(
+      coordinate, 10);
   assertEquals(0, tileCoord.z);
   assertEquals(-1, tileCoord.x);
   assertEquals(0, tileCoord.y);
 
   // gets one tile northeast of the origin
   coordinate = new ol.Coordinate(1280, 1280);
-  tileCoord = tileGrid.getTileCoordForArbitraryResolution(
-      0, 10, coordinate);
+  tileCoord = tileGrid.getTileCoordForCoordAndResolution(
+      coordinate, 10);
   assertEquals(0, tileCoord.z);
   assertEquals(0, tileCoord.x);
   assertEquals(0, tileCoord.y);
 
   // gets one tile southeast of the origin
   coordinate = new ol.Coordinate(1280, -1280);
-  tileCoord = tileGrid.getTileCoordForArbitraryResolution(
-      0, 10, coordinate);
+  tileCoord = tileGrid.getTileCoordForCoordAndResolution(
+      coordinate, 10);
   assertEquals(0, tileCoord.z);
   assertEquals(0, tileCoord.x);
   assertEquals(-1, tileCoord.y);
 
   // gets one tile southwest of the origin
   coordinate = new ol.Coordinate(-1280, -1280);
-  tileCoord = tileGrid.getTileCoordForArbitraryResolution(
-      0, 10, coordinate);
+  tileCoord = tileGrid.getTileCoordForCoordAndResolution(
+      coordinate, 10);
   assertEquals(0, tileCoord.z);
   assertEquals(-1, tileCoord.x);
   assertEquals(-1, tileCoord.y);
 
   // gets the tile to the east when on the edge
   coordinate = new ol.Coordinate(2560, -1280);
-  tileCoord = tileGrid.getTileCoordForArbitraryResolution(
-      0, 10, coordinate);
+  tileCoord = tileGrid.getTileCoordForCoordAndResolution(
+      coordinate, 10);
   assertEquals(0, tileCoord.z);
   assertEquals(1, tileCoord.x);
   assertEquals(-1, tileCoord.y);
 
   // gets the tile to the north when on the edge
   coordinate = new ol.Coordinate(1280, -2560);
-  tileCoord = tileGrid.getTileCoordForArbitraryResolution(
-      0, 10, coordinate);
+  tileCoord = tileGrid.getTileCoordForCoordAndResolution(
+      coordinate, 10);
   assertEquals(0, tileCoord.z);
   assertEquals(0, tileCoord.x);
   assertEquals(-1, tileCoord.y);
 
   // pixels are top aligned to the origin
   coordinate = new ol.Coordinate(1280, -2559.999);
-  tileCoord = tileGrid.getTileCoordForArbitraryResolution(
-      0, 10, coordinate);
+  tileCoord = tileGrid.getTileCoordForCoordAndResolution(
+      coordinate, 10);
   assertEquals(0, tileCoord.z);
   assertEquals(0, tileCoord.x);
   assertEquals(-1, tileCoord.y);
 
   // pixels are left aligned to the origin
   coordinate = new ol.Coordinate(2559.999, -1280);
-  tileCoord = tileGrid.getTileCoordForArbitraryResolution(
-      0, 10, coordinate);
+  tileCoord = tileGrid.getTileCoordForCoordAndResolution(
+      coordinate, 10);
   assertEquals(0, tileCoord.z);
   assertEquals(0, tileCoord.x);
   assertEquals(-1, tileCoord.y);
 }
 
-function testGetTileCoordForArbitraryResolutionFractional() {
+function testGetTileCoordForCoordAndResolutionFractional() {
 
   var tileSize = new ol.Size(256, 256);
   var tileGrid = new ol.TileGrid([1 / 3], extent, origin, tileSize);
@@ -225,80 +233,80 @@ function testGetTileCoordForArbitraryResolutionFractional() {
 
   // gets the first tile at the origin
   coordinate = new ol.Coordinate(0, 0);
-  tileCoord = tileGrid.getTileCoordForArbitraryResolution(
-      0, 1, coordinate);
+  tileCoord = tileGrid.getTileCoordForCoordAndResolution(
+      coordinate, 1);
   assertEquals(0, tileCoord.z);
   assertEquals(0, tileCoord.x);
   assertEquals(0, tileCoord.y);
 
   // gets the 1,0 tile at 256/3,0
   coordinate = new ol.Coordinate(256 / 3, 0);
-  tileCoord = tileGrid.getTileCoordForArbitraryResolution(
-      0, 1, coordinate);
+  tileCoord = tileGrid.getTileCoordForCoordAndResolution(
+      coordinate, 1);
   assertEquals(0, tileCoord.z);
   assertEquals(1, tileCoord.x);
   assertEquals(0, tileCoord.y);
 
   // still gets the 1,0 tile at 512/3,0 - wider tile
   coordinate = new ol.Coordinate(512 / 3, 0);
-  tileCoord = tileGrid.getTileCoordForArbitraryResolution(
-      0, 1, coordinate);
+  tileCoord = tileGrid.getTileCoordForCoordAndResolution(
+      coordinate, 1);
   assertEquals(0, tileCoord.z);
   assertEquals(1, tileCoord.x);
   assertEquals(0, tileCoord.y);
 
   // gets the 2,0 tile at 513/3,0
   coordinate = new ol.Coordinate(513 / 3, 0);
-  tileCoord = tileGrid.getTileCoordForArbitraryResolution(
-      0, 1, coordinate);
+  tileCoord = tileGrid.getTileCoordForCoordAndResolution(
+      coordinate, 1);
   assertEquals(0, tileCoord.z);
   assertEquals(2, tileCoord.x);
   assertEquals(0, tileCoord.y);
 
   // gets the 3,0 tile at 768/3,0
   coordinate = new ol.Coordinate(768 / 3, 0);
-  tileCoord = tileGrid.getTileCoordForArbitraryResolution(
-      0, 1, coordinate);
+  tileCoord = tileGrid.getTileCoordForCoordAndResolution(
+      coordinate, 1);
   assertEquals(0, tileCoord.z);
   assertEquals(3, tileCoord.x);
   assertEquals(0, tileCoord.y);
 
   // gets the 4,0 tile at 1024/3,0
   coordinate = new ol.Coordinate(1024 / 3, 0);
-  tileCoord = tileGrid.getTileCoordForArbitraryResolution(
-      0, 1, coordinate);
+  tileCoord = tileGrid.getTileCoordForCoordAndResolution(
+      coordinate, 1);
   assertEquals(0, tileCoord.z);
   assertEquals(4, tileCoord.x);
   assertEquals(0, tileCoord.y);
 
   // still gets the 4,0 tile at 1280/3,0 - wider tile
   coordinate = new ol.Coordinate(1280 / 3, 0);
-  tileCoord = tileGrid.getTileCoordForArbitraryResolution(
-      0, 1, coordinate);
+  tileCoord = tileGrid.getTileCoordForCoordAndResolution(
+      coordinate, 1);
   assertEquals(0, tileCoord.z);
   assertEquals(4, tileCoord.x);
   assertEquals(0, tileCoord.y);
 
   // gets the 5,0 tile at 1281/3,0
   coordinate = new ol.Coordinate(1281 / 3, 0);
-  tileCoord = tileGrid.getTileCoordForArbitraryResolution(
-      0, 1, coordinate);
+  tileCoord = tileGrid.getTileCoordForCoordAndResolution(
+      coordinate, 1);
   assertEquals(0, tileCoord.z);
   assertEquals(5, tileCoord.x);
   assertEquals(0, tileCoord.y);
 
   // gets the 0,1 tile at 0,-256/3
   coordinate = new ol.Coordinate(0, -256 / 3);
-  tileCoord = tileGrid.getTileCoordForArbitraryResolution(
-      0, 1, coordinate);
+  tileCoord = tileGrid.getTileCoordForCoordAndResolution(
+      coordinate, 1);
   assertEquals(0, tileCoord.z);
   assertEquals(0, tileCoord.x);
   assertEquals(-2, tileCoord.y);
 
   // still gets the 0,1 tile at 0,-512/3 - taller tile
   coordinate = new ol.Coordinate(0, -512 / 3);
-  tileCoord = tileGrid.getTileCoordForArbitraryResolution(
-      0, 1, coordinate);
+  tileCoord = tileGrid.getTileCoordForCoordAndResolution(
+      coordinate, 1);
   assertEquals(0, tileCoord.z);
   assertEquals(0, tileCoord.x);
   assertEquals(-2, tileCoord.y);
@@ -358,25 +366,25 @@ function testGetExtentTileBounds() {
   var e = new ol.Extent(45000, 5000, 55000, 15000);
   var tileBounds;
 
-  tileBounds = tileGrid.getExtentTileBounds(0, e);
+  tileBounds = tileGrid.getTileBoundsForExtentAndZ(e, 0);
   assertEquals(0, tileBounds.minY);
   assertEquals(0, tileBounds.minX);
   assertEquals(0, tileBounds.maxX);
   assertEquals(0, tileBounds.maxY);
 
-  tileBounds = tileGrid.getExtentTileBounds(1, e);
+  tileBounds = tileGrid.getTileBoundsForExtentAndZ(e, 1);
   assertEquals(0, tileBounds.minX);
   assertEquals(0, tileBounds.minY);
   assertEquals(1, tileBounds.maxX);
   assertEquals(0, tileBounds.maxY);
 
-  tileBounds = tileGrid.getExtentTileBounds(2, e);
+  tileBounds = tileGrid.getTileBoundsForExtentAndZ(e, 2);
   assertEquals(1, tileBounds.minX);
   assertEquals(0, tileBounds.minY);
   assertEquals(2, tileBounds.maxX);
   assertEquals(0, tileBounds.maxY);
 
-  tileBounds = tileGrid.getExtentTileBounds(3, e);
+  tileBounds = tileGrid.getTileBoundsForExtentAndZ(e, 3);
   assertEquals(4, tileBounds.minX);
   assertEquals(0, tileBounds.minY);
   assertEquals(5, tileBounds.maxX);

@@ -12,25 +12,32 @@ function testXYZ() {
   var coordinate = new ol.Coordinate(829330.2064098881, 5933916.615134273);
   var tileUrl;
 
-  tileUrl = tileStore.getTileCoordUrl(tileGrid.getTileCoord(0, coordinate));
+  tileUrl = tileStore.getTileCoordUrl(
+      tileGrid.getTileCoordForCoordAndZ(coordinate, 0));
   assertEquals('0/0/0', tileUrl);
 
-  tileUrl = tileStore.getTileCoordUrl(tileGrid.getTileCoord(1, coordinate));
+  tileUrl = tileStore.getTileCoordUrl(
+      tileGrid.getTileCoordForCoordAndZ(coordinate, 1));
   assertEquals('1/1/0', tileUrl);
 
-  tileUrl = tileStore.getTileCoordUrl(tileGrid.getTileCoord(2, coordinate));
+  tileUrl = tileStore.getTileCoordUrl(
+      tileGrid.getTileCoordForCoordAndZ(coordinate, 2));
   assertEquals('2/2/1', tileUrl);
 
-  tileUrl = tileStore.getTileCoordUrl(tileGrid.getTileCoord(3, coordinate));
+  tileUrl = tileStore.getTileCoordUrl(
+      tileGrid.getTileCoordForCoordAndZ(coordinate, 3));
   assertEquals('3/4/2', tileUrl);
 
-  tileUrl = tileStore.getTileCoordUrl(tileGrid.getTileCoord(4, coordinate));
+  tileUrl = tileStore.getTileCoordUrl(
+      tileGrid.getTileCoordForCoordAndZ(coordinate, 4));
   assertEquals('4/8/5', tileUrl);
 
-  tileUrl = tileStore.getTileCoordUrl(tileGrid.getTileCoord(5, coordinate));
+  tileUrl = tileStore.getTileCoordUrl(
+      tileGrid.getTileCoordForCoordAndZ(coordinate, 5));
   assertEquals('5/16/11', tileUrl);
 
-  tileUrl = tileStore.getTileCoordUrl(tileGrid.getTileCoord(6, coordinate));
+  tileUrl = tileStore.getTileCoordUrl(
+      tileGrid.getTileCoordForCoordAndZ(coordinate, 6));
   assertEquals('6/33/22', tileUrl);
 
 }
