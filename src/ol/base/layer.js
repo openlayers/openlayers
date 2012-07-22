@@ -33,10 +33,10 @@ ol.Layer = function(store, opt_values) {
    */
   this.store_ = store;
 
-  this.setVisible(true);
   this.setHue(0);
   this.setOpacity(1);
   this.setSaturation(0);
+  this.setVisible(true);
 
   if (goog.isDef(opt_values)) {
     this.setValues(opt_values);
