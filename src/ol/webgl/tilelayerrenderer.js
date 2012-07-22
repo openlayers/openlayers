@@ -215,14 +215,6 @@ ol.webgl.TileLayerRenderer.prototype.getTexture = function() {
 /**
  * @protected
  */
-ol.webgl.TileLayerRenderer.prototype.dispatchChangeEvent = function() {
-  this.dispatchEvent(goog.events.EventType.CHANGE);
-};
-
-
-/**
- * @protected
- */
 ol.webgl.TileLayerRenderer.prototype.disposeInternal = function() {
   var gl = this.getGL();
   if (!gl.isContextLost()) {
@@ -385,20 +377,4 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
       mapSize.height / framebufferDimension,
       1);
 
-};
-
-
-/**
- * @inheritDoc
- */
-ol.webgl.TileLayerRenderer.prototype.handleLayerOpacityChange = function() {
-  this.dispatchChangeEvent();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.webgl.TileLayerRenderer.prototype.handleLayerVisibleChange = function() {
-  this.dispatchChangeEvent();
 };

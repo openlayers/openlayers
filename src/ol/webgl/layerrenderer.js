@@ -19,6 +19,14 @@ goog.inherits(ol.webgl.LayerRenderer, ol.LayerRenderer);
 
 
 /**
+ * @protected
+ */
+ol.webgl.LayerRenderer.prototype.dispatchChangeEvent = function() {
+  this.dispatchEvent(goog.events.EventType.CHANGE);
+};
+
+
+/**
  * @return {WebGLTexture} Texture.
  */
 ol.webgl.LayerRenderer.prototype.getTexture = goog.abstractMethod;
@@ -46,6 +54,22 @@ ol.webgl.LayerRenderer.prototype.getMap = function() {
  * @return {goog.vec.Mat4.AnyType} Matrix.
  */
 ol.webgl.LayerRenderer.prototype.getMatrix = goog.abstractMethod;
+
+
+/**
+ * @inheritDoc
+ */
+ol.webgl.LayerRenderer.prototype.handleLayerOpacityChange = function() {
+  this.dispatchChangeEvent();
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.webgl.LayerRenderer.prototype.handleLayerVisibleChange = function() {
+  this.dispatchChangeEvent();
+};
 
 
 /**
