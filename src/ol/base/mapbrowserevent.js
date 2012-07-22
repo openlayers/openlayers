@@ -11,17 +11,16 @@ goog.require('ol.MapEvent');
  * @extends {ol.MapEvent}
  * @param {string} type Event type.
  * @param {ol.Map} map Map.
- * @param {goog.events.BrowserEvent} browserEventObject Browser event object.
+ * @param {goog.events.BrowserEvent} browserEvent Browser event.
  */
-ol.MapBrowserEvent = function(type, map, browserEventObject) {
+ol.MapBrowserEvent = function(type, map, browserEvent) {
 
   goog.base(this, type, map);
 
   /**
-   * @private
    * @type {goog.events.BrowserEvent}
    */
-  this.browserEventObject_ = browserEventObject;
+  this.browserEvent = browserEvent;
 
 };
 goog.inherits(ol.MapBrowserEvent, ol.MapEvent);
@@ -41,19 +40,10 @@ ol.MapBrowserEvent.prototype.getCoordinate = function() {
   if (goog.isDef(this.coordinate_)) {
     return this.coordinate_;
   } else {
-    var browserEventObject = this.getBrowserEventObject();
-    var pixel = new ol.Coordinate(
-        browserEventObject.offsetX, browserEventObject.offsetY);
+    var browserEvent = this.browserEvent;
+    var pixel = new ol.Coordinate(browserEvent.offsetX, browserEvent.offsetY);
     var coordinate = this.map.getCoordinateFromPixel(pixel);
     this.coordinate_ = coordinate;
     return coordinate;
   }
-};
-
-
-/**
- * @return {goog.events.BrowserEvent} Browser event object.
- */
-ol.MapBrowserEvent.prototype.getBrowserEventObject = function() {
-  return this.browserEventObject_;
 };

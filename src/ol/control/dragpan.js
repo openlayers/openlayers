@@ -33,9 +33,9 @@ ol.control.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
  * @inheritDoc
  */
 ol.control.DragPan.prototype.handleDragStart = function(mapBrowserEvent) {
-  var browserEventObject = mapBrowserEvent.getBrowserEventObject();
-  if (!browserEventObject.shiftKey) {
-    browserEventObject.preventDefault();
+  var browserEvent = mapBrowserEvent.browserEvent;
+  if (!browserEvent.shiftKey) {
+    browserEvent.preventDefault();
     return true;
   } else {
     return false;

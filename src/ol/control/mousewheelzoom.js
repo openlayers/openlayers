@@ -25,7 +25,7 @@ ol.control.MouseWheelZoom.prototype.handleMapBrowserEvent =
       goog.events.MouseWheelHandler.EventType.MOUSEWHEEL) {
     var map = mapBrowserEvent.map;
     var mouseWheelEvent = /** @type {goog.events.MouseWheelEvent} */
-        mapBrowserEvent.getBrowserEventObject();
+        mapBrowserEvent.browserEvent;
     goog.asserts.assert(mouseWheelEvent instanceof goog.events.MouseWheelEvent);
     if (mouseWheelEvent.deltaY !== 0) {
       map.whileFrozen(function() {

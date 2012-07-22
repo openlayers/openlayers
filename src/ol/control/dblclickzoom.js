@@ -26,8 +26,8 @@ ol.control.DblClickZoom.prototype.handleMapBrowserEvent =
     map.whileFrozen(function() {
       // FIXME compute correct center for zoom
       map.setCenter(mapBrowserEvent.getCoordinate());
-      var browserEventObject = mapBrowserEvent.getBrowserEventObject();
-      var scale = browserEventObject.shiftKey ? 2 : 0.5;
+      var browserEvent = mapBrowserEvent.browserEvent;
+      var scale = browserEvent.shiftKey ? 2 : 0.5;
       map.setResolution(scale * map.getResolution());
     });
     mapBrowserEvent.preventDefault();

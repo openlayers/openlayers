@@ -90,14 +90,14 @@ ol.control.Drag.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
   if (!goog.isDef(center) || !goog.isDef(resolution)) {
     return;
   }
-  var browserEventObject;
+  var browserEvent;
   if (this.dragging_) {
     if (mapBrowserEvent.type == goog.events.EventType.MOUSEMOVE ||
         mapBrowserEvent.type == goog.events.EventType.MOUSEOUT ||
         mapBrowserEvent.type == goog.events.EventType.MOUSEUP) {
-      browserEventObject = mapBrowserEvent.getBrowserEventObject();
-      this.deltaX = browserEventObject.offsetX - this.startX;
-      this.deltaY = browserEventObject.offsetY - this.startY;
+      browserEvent = mapBrowserEvent.browserEvent;
+      this.deltaX = browserEvent.offsetX - this.startX;
+      this.deltaY = browserEvent.offsetY - this.startY;
       if (mapBrowserEvent.type == goog.events.EventType.MOUSEMOVE) {
         this.handleDrag(mapBrowserEvent);
       } else {
@@ -108,9 +108,9 @@ ol.control.Drag.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
     }
   } else {
     if (mapBrowserEvent.type == goog.events.EventType.MOUSEDOWN) {
-      browserEventObject = mapBrowserEvent.getBrowserEventObject();
-      this.startX = browserEventObject.offsetX;
-      this.startY = browserEventObject.offsetY;
+      browserEvent = mapBrowserEvent.browserEvent;
+      this.startX = browserEvent.offsetX;
+      this.startY = browserEvent.offsetY;
       this.deltaX = 0;
       this.deltaY = 0;
       this.startCenter = center;
