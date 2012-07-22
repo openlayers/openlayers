@@ -28,7 +28,7 @@ ol.control.MouseWheelZoom.prototype.handleMapBrowserEvent =
         mapBrowserEvent.browserEvent;
     goog.asserts.assert(mouseWheelEvent instanceof goog.events.MouseWheelEvent);
     if (mouseWheelEvent.deltaY !== 0) {
-      map.whileFrozen(function() {
+      map.withFrozenRendering(function() {
         // FIXME compute correct center for zoom
         map.setCenter(mapBrowserEvent.getCoordinate());
         var scale = mouseWheelEvent.deltaY < 0 ? 0.5 : 2;

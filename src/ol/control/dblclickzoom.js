@@ -23,7 +23,7 @@ ol.control.DblClickZoom.prototype.handleMapBrowserEvent =
     function(mapBrowserEvent) {
   if (mapBrowserEvent.type == goog.events.EventType.DBLCLICK) {
     var map = mapBrowserEvent.map;
-    map.whileFrozen(function() {
+    map.withFrozenRendering(function() {
       // FIXME compute correct center for zoom
       map.setCenter(mapBrowserEvent.getCoordinate());
       var browserEvent = mapBrowserEvent.browserEvent;

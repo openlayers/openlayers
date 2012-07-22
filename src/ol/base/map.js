@@ -1,4 +1,3 @@
-// FIXME rename freeze/thaw to freezeRendering/unfreezeRendering
 // FIXME add change resolution by zoom step function
 // FIXME recheck layer/map projection compatability when projection changes
 // FIXME layer renderers should skip when they can't reproject
@@ -135,7 +134,7 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
    * @private
    * @type {number}
    */
-  this.freezeCount_ = 0;
+  this.freezeRenderingCount_ = 0;
 
   /**
    * @private
@@ -220,13 +219,6 @@ ol.Map.prototype.createLayerRenderer = goog.abstractMethod;
 
 
 /**
- */
-ol.Map.prototype.freeze = function() {
-  ++this.freezeCount_;
-};
-
-
-/**
  * @inheritDoc
  */
 ol.Map.prototype.disposeInternal = function() {
@@ -241,7 +233,7 @@ ol.Map.prototype.disposeInternal = function() {
  * @param {ol.Extent} extent Extent.
  */
 ol.Map.prototype.fitExtent = function(extent) {
-  this.whileFrozen(function() {
+  this.withFrozenRendering(function() {
     this.setCenter(extent.getCenter());
     this.setResolution(this.getResolutionForExtent(extent));
   }, this);
@@ -269,6 +261,13 @@ ol.Map.prototype.forEachVisibleLayer = function(f, opt_obj) {
       f.call(opt_obj, layer, layerRenderer, index);
     }
   }, this);
+};
+
+
+/**
+ */
+ol.Map.prototype.freezeRendering = function() {
+  ++this.freezeRenderingCount_;
 };
 
 
@@ -640,7 +639,7 @@ ol.Map.prototype.recalculateTransforms_ = function() {
  */
 ol.Map.prototype.render = function() {
   if (!this.animating_) {
-    if (this.freezeCount_ === 0) {
+    if (this.freezeRenderingCount_ === 0) {
       if (this.renderInternal()) {
         this.animate_();
       }
@@ -776,30 +775,30 @@ ol.Map.prototype.setUserProjection = function(userProjection) {
 
 
 /**
- * @param {function(this: T)} f Function.
- * @param {T=} opt_obj Object.
- * @template T
  */
-ol.Map.prototype.whileFrozen = function(f, opt_obj) {
-  this.freeze();
-  try {
-    f.call(opt_obj);
-  } finally {
-    this.thaw();
-  }
-};
-
-
-/**
- */
-ol.Map.prototype.thaw = function() {
-  goog.asserts.assert(this.freezeCount_ > 0);
-  if (--this.freezeCount_ === 0) {
+ol.Map.prototype.unfreezeRendering = function() {
+  goog.asserts.assert(this.freezeRenderingCount_ > 0);
+  if (--this.freezeRenderingCount_ === 0) {
     if (!this.animating_ && this.dirty_) {
       if (this.renderInternal()) {
         this.animate_();
       }
     }
+  }
+};
+
+
+/**
+ * @param {function(this: T)} f Function.
+ * @param {T=} opt_obj Object.
+ * @template T
+ */
+ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
+  this.freezeRendering();
+  try {
+    f.call(opt_obj);
+  } finally {
+    this.unfreezeRendering();
   }
 };
 
