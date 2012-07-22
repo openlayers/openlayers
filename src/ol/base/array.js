@@ -134,7 +134,7 @@ ol.Array.prototype.getAt = function(index) {
  * @return {number} Length.
  */
 ol.Array.prototype.getLength = function() {
-  return /** @type {number} */ (this.get(ol.ArrayProperty.LENGTH));
+  return /** @type {number} */ this.get(ol.ArrayProperty.LENGTH);
 };
 
 

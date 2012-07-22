@@ -79,8 +79,7 @@ ol.Layer.prototype.getHue = function() {
  * @return {number} Opacity.
  */
 ol.Layer.prototype.getOpacity = function() {
-  return /** @type {number} */ (
-      this.get(ol.LayerProperty.OPACITY));
+  return /** @type {number} */ this.get(ol.LayerProperty.OPACITY);
 };
 
 
@@ -104,8 +103,7 @@ ol.Layer.prototype.getStore = function() {
  * @return {boolean} Visible.
  */
 ol.Layer.prototype.getVisible = function() {
-  return /** @type {boolean} */ (
-      this.get(ol.LayerProperty.VISIBLE));
+  return /** @type {boolean} */ this.get(ol.LayerProperty.VISIBLE);
 };
 
 

@@ -89,8 +89,8 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
    * @private
    * @type {HTMLDivElement}
    */
-  this.eventsPane_ = /** @type {HTMLDivElement} */ (
-      goog.dom.createElement(goog.dom.TagName.DIV));
+  this.eventsPane_ = /** @type {HTMLDivElement} */
+      goog.dom.createElement(goog.dom.TagName.DIV);
   this.eventsPane_.className = 'ol-pane-events';
   this.eventsPane_.style.position = 'absolute';
   this.eventsPane_.style.width = '100%';
@@ -284,7 +284,7 @@ ol.Map.prototype.getBackgroundColor = function() {
  * @return {ol.Coordinate|undefined} Center.
  */
 ol.Map.prototype.getCenter = function() {
-  return /** @type {ol.Coordinate} */ (this.get(ol.MapProperty.CENTER));
+  return /** @type {ol.Coordinate} */ this.get(ol.MapProperty.CENTER);
 };
 
 
@@ -317,7 +317,7 @@ ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
  * @return {ol.Extent|undefined} Extent.
  */
 ol.Map.prototype.getExtent = function() {
-  return /** @type {ol.Extent} */ (this.get(ol.MapProperty.EXTENT));
+  return /** @type {ol.Extent} */ this.get(ol.MapProperty.EXTENT);
 };
 
 
@@ -363,7 +363,7 @@ ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
  * @return {ol.Projection|undefined} Projection.
  */
 ol.Map.prototype.getProjection = function() {
-  return /** @type {ol.Projection} */ (this.get(ol.MapProperty.PROJECTION));
+  return /** @type {ol.Projection} */ this.get(ol.MapProperty.PROJECTION);
 };
 
 
@@ -371,7 +371,7 @@ ol.Map.prototype.getProjection = function() {
  * @return {number|undefined} Resolution.
  */
 ol.Map.prototype.getResolution = function() {
-  return /** @type {number} */ (this.get(ol.MapProperty.RESOLUTION));
+  return /** @type {number} */ this.get(ol.MapProperty.RESOLUTION);
 };
 
 
@@ -494,7 +494,7 @@ ol.Map.prototype.handleLayerRemove = function(layer) {
  * @protected
  */
 ol.Map.prototype.handleLayersInsertAt = function(event) {
-  var layers = /** @type {ol.Array} */ (event.target);
+  var layers = /** @type {ol.Array} */ event.target;
   var layer = /** @type {ol.Layer} */ layers.getAt(event.index);
   this.handleLayerAdd(layer);
 };
@@ -505,7 +505,7 @@ ol.Map.prototype.handleLayersInsertAt = function(event) {
  * @protected
  */
 ol.Map.prototype.handleLayersRemoveAt = function(event) {
-  var layer = /** @type {ol.Layer} */ (event.prev);
+  var layer = /** @type {ol.Layer} */ event.prev;
   this.handleLayerRemove(layer);
 };
 
@@ -515,9 +515,9 @@ ol.Map.prototype.handleLayersRemoveAt = function(event) {
  * @protected
  */
 ol.Map.prototype.handleLayersSetAt = function(event) {
-  var prevLayer = /** @type {ol.Layer} */ (event.prev);
+  var prevLayer = /** @type {ol.Layer} */ event.prev;
   this.handleLayerRemove(prevLayer);
-  var layers = /** @type {ol.Array} */ (event.target);
+  var layers = /** @type {ol.Array} */ event.target;
   var layer = /** @type {ol.Layer} */ layers.getAt(event.index);
   this.handleLayerAdd(layer);
 };

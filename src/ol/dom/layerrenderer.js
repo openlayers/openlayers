@@ -41,7 +41,7 @@ goog.inherits(ol.dom.LayerRenderer, ol.LayerRenderer);
  * @return {ol.dom.Map} Map.
  */
 ol.dom.LayerRenderer.prototype.getMap = function() {
-  return /** @type {ol.dom.Map} */ (goog.base(this, 'getMap'));
+  return /** @type {ol.dom.Map} */ goog.base(this, 'getMap');
 };
 
 

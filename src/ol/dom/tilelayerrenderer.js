@@ -177,6 +177,6 @@ ol.dom.TileLayerRenderer.prototype.getTileGrid_ = function() {
  * @return {ol.TileStore} Tile store.
  */
 ol.dom.TileLayerRenderer.prototype.getTileStore_ = function() {
-  var tileLayer = /** @type {ol.TileLayer} */ (this.getLayer());
+  var tileLayer = /** @type {ol.TileLayer} */ this.getLayer();
   return tileLayer.getStore();
 };
