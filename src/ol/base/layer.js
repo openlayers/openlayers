@@ -1,6 +1,7 @@
 goog.provide('ol.Layer');
 goog.provide('ol.LayerProperty');
 
+goog.require('goog.math');
 goog.require('ol.Object');
 goog.require('ol.Store');
 
@@ -112,7 +113,10 @@ ol.Layer.prototype.getVisible = function() {
  * @param {number} brightness Brightness.
  */
 ol.Layer.prototype.setBrightness = function(brightness) {
-  this.set(ol.LayerProperty.BRIGHTNESS, brightness);
+  brightness = goog.math.clamp(brightness, -1, 1);
+  if (brightness != this.getBrightness()) {
+    this.set(ol.LayerProperty.BRIGHTNESS, brightness);
+  }
 };
 
 
@@ -120,7 +124,10 @@ ol.Layer.prototype.setBrightness = function(brightness) {
  * @param {number} contrast Contrast.
  */
 ol.Layer.prototype.setContrast = function(contrast) {
-  this.set(ol.LayerProperty.CONTRAST, contrast);
+  contrast = goog.math.clamp(contrast, -1, 1);
+  if (contrast != this.getContrast()) {
+    this.set(ol.LayerProperty.CONTRAST, contrast);
+  }
 };
 
 
@@ -128,7 +135,9 @@ ol.Layer.prototype.setContrast = function(contrast) {
  * @param {number} hue Hue.
  */
 ol.Layer.prototype.setHue = function(hue) {
-  this.set(ol.LayerProperty.HUE, hue);
+  if (hue != this.getHue()) {
+    this.set(ol.LayerProperty.HUE, hue);
+  }
 };
 
 
@@ -136,7 +145,10 @@ ol.Layer.prototype.setHue = function(hue) {
  * @param {number} opacity Opacity.
  */
 ol.Layer.prototype.setOpacity = function(opacity) {
-  this.set(ol.LayerProperty.OPACITY, opacity);
+  opacity = goog.math.clamp(opacity, 0, 1);
+  if (opacity != this.getOpacity()) {
+    this.set(ol.LayerProperty.OPACITY, opacity);
+  }
 };
 
 
@@ -144,7 +156,10 @@ ol.Layer.prototype.setOpacity = function(opacity) {
  * @param {number} saturation Saturation.
  */
 ol.Layer.prototype.setSaturation = function(saturation) {
-  this.set(ol.LayerProperty.SATURATION, saturation);
+  saturation = goog.math.clamp(saturation, -1, 1);
+  if (saturation != this.getSaturation()) {
+    this.set(ol.LayerProperty.SATURATION, saturation);
+  }
 };
 
 
@@ -152,5 +167,8 @@ ol.Layer.prototype.setSaturation = function(saturation) {
  * @param {boolean} visible Visible.
  */
 ol.Layer.prototype.setVisible = function(visible) {
-  this.set(ol.LayerProperty.VISIBLE, visible);
+  visible = !!visible;
+  if (visible != this.getVisible()) {
+    this.set(ol.LayerProperty.VISIBLE, visible);
+  }
 };
