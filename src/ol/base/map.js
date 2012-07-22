@@ -16,6 +16,8 @@ goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
+goog.require('goog.events.KeyHandler');
+goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.events.MouseWheelEvent');
 goog.require('goog.events.MouseWheelHandler');
 goog.require('goog.events.MouseWheelHandler.EventType');
@@ -104,6 +106,12 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
     goog.events.EventType.MOUSEOUT,
     goog.events.EventType.MOUSEUP
   ], this.handleBrowserEvent, false, this);
+
+  // FIXME we probably shouldn't listen on document...
+  var keyHandler = new goog.events.KeyHandler(document);
+  goog.events.listen(keyHandler, goog.events.KeyHandler.EventType.KEY,
+      this.handleBrowserEvent, false, this);
+  this.registerDisposable(keyHandler);
 
   var mouseWheelHandler = new goog.events.MouseWheelHandler(this.eventsPane_);
   goog.events.listen(mouseWheelHandler,
