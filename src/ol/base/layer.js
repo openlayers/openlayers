@@ -9,6 +9,8 @@ goog.require('ol.Store');
  * @enum {string}
  */
 ol.LayerProperty = {
+  BRIGHTNESS: 'brightness',
+  CONTRAST: 'contrast',
   HUE: 'hue',
   OPACITY: 'opacity',
   SATURATION: 'saturation',
@@ -33,6 +35,8 @@ ol.Layer = function(store, opt_values) {
    */
   this.store_ = store;
 
+  this.setBrightness(0);
+  this.setContrast(0);
   this.setHue(0);
   this.setOpacity(1);
   this.setSaturation(0);
@@ -44,6 +48,22 @@ ol.Layer = function(store, opt_values) {
 
 };
 goog.inherits(ol.Layer, ol.Object);
+
+
+/**
+ * @return {number} Brightness.
+ */
+ol.Layer.prototype.getBrightness = function() {
+  return /** @type {number} */ this.get(ol.LayerProperty.BRIGHTNESS);
+};
+
+
+/**
+ * @return {number} Contrast.
+ */
+ol.Layer.prototype.getContrast = function() {
+  return /** @type {number} */ this.get(ol.LayerProperty.CONTRAST);
+};
 
 
 /**
@@ -85,6 +105,22 @@ ol.Layer.prototype.getStore = function() {
 ol.Layer.prototype.getVisible = function() {
   return /** @type {boolean} */ (
       this.get(ol.LayerProperty.VISIBLE));
+};
+
+
+/**
+ * @param {number} brightness Brightness.
+ */
+ol.Layer.prototype.setBrightness = function(brightness) {
+  this.set(ol.LayerProperty.BRIGHTNESS, brightness);
+};
+
+
+/**
+ * @param {number} contrast Contrast.
+ */
+ol.Layer.prototype.setContrast = function(contrast) {
+  this.set(ol.LayerProperty.CONTRAST, contrast);
 };
 
 

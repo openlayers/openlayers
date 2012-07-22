@@ -30,6 +30,14 @@ ol.LayerRenderer = function(map, layer) {
   this.layer_ = layer;
 
   goog.events.listen(this.layer_,
+      ol.Object.getChangedEventType(ol.LayerProperty.BRIGHTNESS),
+      this.handleLayerBrightnessChange, false, this);
+
+  goog.events.listen(this.layer_,
+      ol.Object.getChangedEventType(ol.LayerProperty.CONTRAST),
+      this.handleLayerContrastChange, false, this);
+
+  goog.events.listen(this.layer_,
       ol.Object.getChangedEventType(ol.LayerProperty.HUE),
       this.handleLayerHueChange, false, this);
 
@@ -63,6 +71,18 @@ ol.LayerRenderer.prototype.getLayer = function() {
 ol.LayerRenderer.prototype.getMap = function() {
   return this.map_;
 };
+
+
+/**
+ * @protected
+ */
+ol.LayerRenderer.prototype.handleLayerBrightnessChange = goog.nullFunction;
+
+
+/**
+ * @protected
+ */
+ol.LayerRenderer.prototype.handleLayerContrastChange = goog.nullFunction;
 
 
 /**

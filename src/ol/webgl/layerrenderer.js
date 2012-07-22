@@ -59,6 +59,22 @@ ol.webgl.LayerRenderer.prototype.getMatrix = goog.abstractMethod;
 /**
  * @inheritDoc
  */
+ol.webgl.LayerRenderer.prototype.handleLayerBrightnessChange = function() {
+  this.dispatchChangeEvent();
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.webgl.LayerRenderer.prototype.handleLayerContrastChange = function() {
+  this.dispatchChangeEvent();
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.webgl.LayerRenderer.prototype.handleLayerHueChange = function() {
   this.dispatchChangeEvent();
 };
