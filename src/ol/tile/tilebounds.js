@@ -50,12 +50,22 @@ ol.TileBounds.prototype.clone = function() {
 
 
 /**
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @return {boolean} Contains tile coordinate.
+ */
+ol.TileBounds.prototype.contains = function(tileCoord) {
+  return this.minX <= tileCoord.x && tileCoord.x <= this.maxX &&
+      this.minY <= tileCoord.y && tileCoord.y <= this.maxY;
+};
+
+
+/**
  * @param {ol.TileBounds} tileBounds Tile bounds.
  * @return {boolean} Contains.
  */
-ol.TileBounds.prototype.contains = function(tileBounds) {
+ol.TileBounds.prototype.containsTileBounds = function(tileBounds) {
   return this.minX <= tileBounds.minX && tileBounds.maxX <= this.maxX &&
-      this.minY <= tileBounds.minY && tileBounds.minY <= this.minY;
+      this.minY <= tileBounds.minY && tileBounds.minY <= this.maxY;
 };
 
 

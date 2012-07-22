@@ -291,7 +291,7 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
       tileBounds.minY,
       tileBounds.minX + nTilesX - 1,
       tileBounds.minY + nTilesY - 1);
-  goog.asserts.assert(framebufferTileBounds.contains(tileBounds));
+  goog.asserts.assert(framebufferTileBounds.containsTileBounds(tileBounds));
 
   this.bindFramebuffer_(framebufferDimension);
   gl.viewport(0, 0, framebufferDimension, framebufferDimension);
