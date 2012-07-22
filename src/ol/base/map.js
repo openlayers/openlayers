@@ -28,6 +28,7 @@ goog.require('ol.Control');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.LayerRenderer');
+goog.require('ol.MapBrowserEvent');
 goog.require('ol.Object');
 goog.require('ol.Projection');
 goog.require('ol.Size');
