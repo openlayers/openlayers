@@ -34,22 +34,46 @@ ol.DEBUG_WEBGL = false;
 /**
  * @constructor
  * @extends {ol.webgl.shader.Fragment}
+ * @see https://github.com/evanw/glfx.js/blob/master/src/filters/adjust/huesaturation.js
  */
 ol.webgl.map.shader.Fragment = function() {
   goog.base(this, [
     'precision mediump float;',
     '',
     'uniform mat4 uMatrix;',
+    'uniform float uHue;',
     'uniform float uOpacity;',
+    'uniform float uSaturation;',
     'uniform sampler2D uTexture;',
     '',
     'varying vec2 vTexCoord;',
     '',
     'void main(void) {',
     '  vec4 texCoord = uMatrix * vec4(vTexCoord, 0., 1.);',
-    '  vec4 srcColor = texture2D(uTexture, texCoord.st);',
-    '  gl_FragColor.rgb = srcColor.rgb;',
-    '  gl_FragColor.a = srcColor.a * uOpacity;',
+    '  vec4 color = texture2D(uTexture, texCoord.st);',
+    '',
+    '  float angle = uHue * 3.14159265;',
+    '  float s = sin(angle), c = cos(angle);',
+    '  vec3 weights = (vec3(2.0 * c, -sqrt(3.0) * s - c, sqrt(3.0) * s - c)',
+    '                  + 1.0) / 3.0;',
+    '  float len = length(color.rgb);',
+    '  color.rgb = vec3(',
+    '    dot(color.rgb, weights.xyz),',
+    '    dot(color.rgb, weights.zxy),',
+    '    dot(color.rgb, weights.yzx)',
+    '  );',
+    '  ',
+    '  float average = (color.r + color.g + color.b) / 3.0;',
+    '  if (uSaturation > 0.0) {',
+    '    color.rgb += (average - color.rgb)',
+    '                 * (1.0 - 1.0 / (1.001 - uSaturation));',
+    '  } else if (uSaturation < 0.0) {',
+    '    color.rgb += (average - color.rgb) * (-uSaturation);',
+    '  }',
+    '',
+    '  color.a = color.a * uOpacity;',
+    '',
+    '  gl_FragColor = color;',
     '}'
   ].join('\n'));
 };
@@ -132,8 +156,10 @@ ol.webgl.Map = function(target, opt_values) {
    * @private
    * @type {{aPosition: number,
    *         aTexCoord: number,
+   *         uHue: WebGLUniformLocation,
    *         uMatrix: WebGLUniformLocation,
    *         uOpacity: WebGLUniformLocation,
+   *         uSaturation: WebGLUniformLocation,
    *         uTexture: WebGLUniformLocation}|null}
    */
   this.locations_ = null;
@@ -458,8 +484,10 @@ ol.webgl.Map.prototype.renderInternal = function() {
     this.locations_ = {
       aPosition: gl.getAttribLocation(program, 'aPosition'),
       aTexCoord: gl.getAttribLocation(program, 'aTexCoord'),
+      uHue: gl.getUniformLocation(program, 'uHue'),
       uMatrix: gl.getUniformLocation(program, 'uMatrix'),
       uOpacity: gl.getUniformLocation(program, 'uOpacity'),
+      uSaturation: gl.getUniformLocation(program, 'uSaturation'),
       uTexture: gl.getUniformLocation(program, 'uTexture')
     };
   }
@@ -489,7 +517,9 @@ ol.webgl.Map.prototype.renderInternal = function() {
   this.forEachVisibleLayer(function(layer, layerRenderer) {
     gl.uniformMatrix4fv(
         this.locations_.uMatrix, false, layerRenderer.getMatrix());
+    gl.uniform1f(this.locations_.uHue, layer.getHue());
     gl.uniform1f(this.locations_.uOpacity, layer.getOpacity());
+    gl.uniform1f(this.locations_.uSaturation, layer.getSaturation());
     gl.bindTexture(goog.webgl.TEXTURE_2D, layerRenderer.getTexture());
     gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
   }, this);

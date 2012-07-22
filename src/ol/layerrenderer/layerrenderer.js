@@ -30,8 +30,16 @@ ol.LayerRenderer = function(map, layer) {
   this.layer_ = layer;
 
   goog.events.listen(this.layer_,
+      ol.Object.getChangedEventType(ol.LayerProperty.HUE),
+      this.handleLayerHueChange, false, this);
+
+  goog.events.listen(this.layer_,
       ol.Object.getChangedEventType(ol.LayerProperty.OPACITY),
       this.handleLayerOpacityChange, false, this);
+
+  goog.events.listen(this.layer_,
+      ol.Object.getChangedEventType(ol.LayerProperty.SATURATION),
+      this.handleLayerSaturationChange, false, this);
 
   goog.events.listen(this.layer_,
       ol.Object.getChangedEventType(ol.LayerProperty.VISIBLE),
@@ -60,7 +68,19 @@ ol.LayerRenderer.prototype.getMap = function() {
 /**
  * @protected
  */
+ol.LayerRenderer.prototype.handleLayerHueChange = goog.nullFunction;
+
+
+/**
+ * @protected
+ */
 ol.LayerRenderer.prototype.handleLayerOpacityChange = goog.nullFunction;
+
+
+/**
+ * @protected
+ */
+ol.LayerRenderer.prototype.handleLayerSaturationChange = goog.nullFunction;
 
 
 /**

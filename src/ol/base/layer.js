@@ -9,7 +9,9 @@ goog.require('ol.Store');
  * @enum {string}
  */
 ol.LayerProperty = {
+  HUE: 'hue',
   OPACITY: 'opacity',
+  SATURATION: 'saturation',
   VISIBLE: 'visible'
 };
 
@@ -32,7 +34,9 @@ ol.Layer = function(store, opt_values) {
   this.store_ = store;
 
   this.setVisible(true);
+  this.setHue(0);
   this.setOpacity(1);
+  this.setSaturation(0);
 
   if (goog.isDef(opt_values)) {
     this.setValues(opt_values);
@@ -43,11 +47,27 @@ goog.inherits(ol.Layer, ol.Object);
 
 
 /**
+ * @return {number} Hue.
+ */
+ol.Layer.prototype.getHue = function() {
+  return /** @type {number} */ this.get(ol.LayerProperty.HUE);
+};
+
+
+/**
  * @return {number} Opacity.
  */
 ol.Layer.prototype.getOpacity = function() {
   return /** @type {number} */ (
       this.get(ol.LayerProperty.OPACITY));
+};
+
+
+/**
+ * @return {number} Saturation.
+ */
+ol.Layer.prototype.getSaturation = function() {
+  return /** @type {number} */ this.get(ol.LayerProperty.SATURATION);
 };
 
 
@@ -69,10 +89,26 @@ ol.Layer.prototype.getVisible = function() {
 
 
 /**
+ * @param {number} hue Hue.
+ */
+ol.Layer.prototype.setHue = function(hue) {
+  this.set(ol.LayerProperty.HUE, hue);
+};
+
+
+/**
  * @param {number} opacity Opacity.
  */
 ol.Layer.prototype.setOpacity = function(opacity) {
   this.set(ol.LayerProperty.OPACITY, opacity);
+};
+
+
+/**
+ * @param {number} saturation Saturation.
+ */
+ol.Layer.prototype.setSaturation = function(saturation) {
+  this.set(ol.LayerProperty.SATURATION, saturation);
 };
 
 
