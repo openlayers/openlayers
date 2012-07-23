@@ -1,8 +1,7 @@
-// FIXME support touch events?
-// FIXME use goog.fx.Dragger in ol.Map instead?
 
 goog.provide('ol.control.Drag');
 
+goog.require('goog.asserts');
 goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('ol.Control');
@@ -85,40 +84,37 @@ ol.control.Drag.prototype.handleDragEnd = goog.nullFunction;
  * @inheritDoc
  */
 ol.control.Drag.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
-  var center = mapBrowserEvent.map.getCenter();
-  var resolution = mapBrowserEvent.map.getResolution();
+  var map = mapBrowserEvent.map;
+  var center = map.getCenter();
+  var resolution = map.getResolution();
   if (!goog.isDef(center) || !goog.isDef(resolution)) {
     return;
   }
-  var browserEvent;
+  var browserEvent = mapBrowserEvent.browserEvent;
   if (this.dragging_) {
-    if (mapBrowserEvent.type == goog.events.EventType.MOUSEMOVE ||
-        mapBrowserEvent.type == goog.events.EventType.MOUSEOUT ||
-        mapBrowserEvent.type == goog.events.EventType.MOUSEUP) {
-      browserEvent = mapBrowserEvent.browserEvent;
-      this.deltaX = browserEvent.offsetX - this.startX;
-      this.deltaY = browserEvent.offsetY - this.startY;
-      if (mapBrowserEvent.type == goog.events.EventType.MOUSEMOVE) {
-        this.handleDrag(mapBrowserEvent);
-      } else {
-        this.handleDragEnd(mapBrowserEvent);
-        this.dragging_ = false;
-      }
-      mapBrowserEvent.preventDefault();
+    if (mapBrowserEvent.type == goog.fx.Dragger.EventType.DRAG) {
+      goog.asserts.assert(browserEvent instanceof goog.events.BrowserEvent);
+      this.deltaX = browserEvent.clientX - this.startX;
+      this.deltaY = browserEvent.clientY - this.startY;
+      this.handleDrag(mapBrowserEvent);
+    } else if (mapBrowserEvent.type == goog.fx.Dragger.EventType.END) {
+      goog.asserts.assert(browserEvent instanceof goog.events.BrowserEvent);
+      this.deltaX = browserEvent.clientX - this.startX;
+      this.deltaY = browserEvent.clientY - this.startY;
+      this.handleDragEnd(mapBrowserEvent);
+      this.dragging_ = false;
     }
-  } else {
-    if (mapBrowserEvent.type == goog.events.EventType.MOUSEDOWN) {
-      browserEvent = mapBrowserEvent.browserEvent;
-      this.startX = browserEvent.offsetX;
-      this.startY = browserEvent.offsetY;
-      this.deltaX = 0;
-      this.deltaY = 0;
-      this.startCenter = center;
-      this.startCoordinate = mapBrowserEvent.getCoordinate();
-      if (this.handleDragStart(mapBrowserEvent)) {
-        this.dragging_ = true;
-        mapBrowserEvent.preventDefault();
-      }
+  } else if (mapBrowserEvent.type == goog.fx.Dragger.EventType.START) {
+    goog.asserts.assert(browserEvent instanceof goog.events.BrowserEvent);
+    this.startX = browserEvent.clientX;
+    this.startY = browserEvent.clientY;
+    this.deltaX = 0;
+    this.deltaY = 0;
+    this.startCenter = center;
+    this.startCoordinate = mapBrowserEvent.getCoordinate();
+    if (this.handleDragStart(mapBrowserEvent)) {
+      this.dragging_ = true;
+      mapBrowserEvent.preventDefault();
     }
   }
 };

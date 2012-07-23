@@ -20,6 +20,8 @@ goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.events.MouseWheelEvent');
 goog.require('goog.events.MouseWheelHandler');
 goog.require('goog.events.MouseWheelHandler.EventType');
+goog.require('goog.fx.DragEvent');
+goog.require('goog.fx.Dragger');
 goog.require('goog.fx.anim');
 goog.require('goog.fx.anim.Animated');
 goog.require('goog.object');
@@ -99,11 +101,7 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
   target.appendChild(this.eventsPane_);
 
   goog.events.listen(this.eventsPane_, [
-    goog.events.EventType.DBLCLICK,
-    goog.events.EventType.MOUSEDOWN,
-    goog.events.EventType.MOUSEMOVE,
-    goog.events.EventType.MOUSEOUT,
-    goog.events.EventType.MOUSEUP
+    goog.events.EventType.DBLCLICK
   ], this.handleBrowserEvent, false, this);
 
   // FIXME we probably shouldn't listen on document...
@@ -117,6 +115,16 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
       goog.events.MouseWheelHandler.EventType.MOUSEWHEEL,
       this.handleBrowserEvent, false, this);
   this.registerDisposable(mouseWheelHandler);
+
+  var dragger = new goog.fx.Dragger(this.eventsPane_);
+  dragger.defaultAction = function() {};
+  goog.events.listen(dragger, [
+    goog.fx.Dragger.EventType.START,
+    goog.fx.Dragger.EventType.DRAG,
+    goog.fx.Dragger.EventType.END,
+    goog.fx.Dragger.EventType.EARLY_CANCEL
+  ], this.handleDraggerEvent, false, this);
+  this.registerDisposable(dragger);
 
   /**
    * @private
@@ -445,15 +453,26 @@ ol.Map.prototype.handleBackgroundColorChanged = goog.nullFunction;
 
 /**
  * @param {goog.events.BrowserEvent} event Event.
+ * @param {string=} opt_type Type.
  */
-ol.Map.prototype.handleBrowserEvent = function(event) {
-  var mapBrowserEvent = new ol.MapBrowserEvent(event.type, this, event);
+ol.Map.prototype.handleBrowserEvent = function(event, opt_type) {
+  var type = goog.isDef(opt_type) ? opt_type : event.type;
+  var mapBrowserEvent = new ol.MapBrowserEvent(type, this, event);
   var controls = this.getControls();
   var controlsArray = /** @type {Array.<ol.Control>} */ controls.getArray();
   goog.array.every(controlsArray, function(control) {
     control.handleMapBrowserEvent(mapBrowserEvent);
     return !mapBrowserEvent.defaultPrevented;
   });
+};
+
+
+/**
+ * @param {goog.fx.DragEvent} event Event.
+ */
+ol.Map.prototype.handleDraggerEvent = function(event) {
+  var browserEvent = event.browserEvent;
+  this.handleBrowserEvent(browserEvent, event.type);
 };
 
 
