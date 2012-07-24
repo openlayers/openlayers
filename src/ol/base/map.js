@@ -318,7 +318,7 @@ ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
     var y = center.y - resolution * (pixel.y - size.height / 2);
     return new ol.Coordinate(x, y);
   } else {
-    return null;
+    return undefined;
   }
 };
 
