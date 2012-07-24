@@ -20,8 +20,6 @@ ol.tilelayer.createOpenStreetMap = function(opt_values) {
       '&copy; ' +
       '<a href="http://www.openstreetmap.org">OpenStreetMap</a> ' +
       'contributors, ' +
-      '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA</a>',
-      ''
-      );
+      '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA</a>');
   return new ol.TileLayer(store, opt_values);
 };

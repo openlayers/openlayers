@@ -24,9 +24,9 @@ ol.TileLoadState = {
  * @extends {goog.events.EventTarget}
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {string} src Source.
- * @param {string=} opt_crossOrigin Cross origin.
+ * @param {?string} crossOrigin Cross origin.
  */
-ol.Tile = function(tileCoord, src, opt_crossOrigin) {
+ol.Tile = function(tileCoord, src, crossOrigin) {
 
   goog.base(this);
 
@@ -52,8 +52,8 @@ ol.Tile = function(tileCoord, src, opt_crossOrigin) {
    * @type {Image}
    */
   this.image_ = new Image();
-  if (goog.isDef(opt_crossOrigin)) {
-    this.image_.crossOrigin = opt_crossOrigin;
+  if (!goog.isNull(crossOrigin)) {
+    this.image_.crossOrigin = crossOrigin;
   }
 
   /**

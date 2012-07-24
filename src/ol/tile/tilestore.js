@@ -16,7 +16,7 @@ goog.require('ol.TileUrlFunctionType');
  * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL.
  * @param {ol.Extent=} opt_extent Extent.
  * @param {string=} opt_attribution Attribution.
- * @param {string=} opt_crossOrigin Cross origin.
+ * @param {?string=} opt_crossOrigin Cross origin.
  */
 ol.TileStore = function(projection, tileGrid, tileUrlFunction, opt_extent,
     opt_attribution, opt_crossOrigin) {
@@ -37,9 +37,10 @@ ol.TileStore = function(projection, tileGrid, tileUrlFunction, opt_extent,
 
   /**
    * @private
-   * @type {string|undefined}
+   * @type {?string}
    */
-  this.crossOrigin_ = opt_crossOrigin;
+  this.crossOrigin_ =
+      goog.isDef(opt_crossOrigin) ? opt_crossOrigin : 'anonymous';
 
   /**
    * @private
