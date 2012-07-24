@@ -47,7 +47,6 @@ ol.MapProperty = {
   BACKGROUND_COLOR: 'backgroundColor',
   CENTER: 'center',
   CONTROLS: 'controls',
-  EXTENT: 'extent',
   LAYERS: 'layers',
   PROJECTION: 'projection',
   RESOLUTION: 'resolution',
@@ -327,7 +326,18 @@ ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
  * @return {ol.Extent|undefined} Extent.
  */
 ol.Map.prototype.getExtent = function() {
-  return /** @type {ol.Extent} */ this.get(ol.MapProperty.EXTENT);
+  var size = this.getSize();
+  var center = this.getCenter();
+  var resolution = this.getResolution();
+  if (!goog.isDef(size) || !goog.isDef(center) || !goog.isDef(resolution)) {
+    return undefined;
+  } else {
+    var minX = center.x - resolution * size.width / 2;
+    var minY = center.y - resolution * size.height / 2;
+    var maxX = center.x + resolution * size.width / 2;
+    var maxY = center.y + resolution * size.height / 2;
+    return new ol.Extent(minX, minY, maxX, maxY);
+  }
 };
 
 
@@ -481,9 +491,7 @@ ol.Map.prototype.handleDraggerEvent = function(event) {
 /**
  * @protected
  */
-ol.Map.prototype.handleCenterChanged = function() {
-  this.recalculateExtent_();
-};
+ol.Map.prototype.handleCenterChanged = goog.nullFunction;
 
 
 /**
@@ -585,17 +593,13 @@ ol.Map.prototype.handleProjectionChanged = function() {
 /**
  * @protected
  */
-ol.Map.prototype.handleResolutionChanged = function() {
-  this.recalculateExtent_();
-};
+ol.Map.prototype.handleResolutionChanged = goog.nullFunction;
 
 
 /**
  * @protected
  */
-ol.Map.prototype.handleSizeChanged = function() {
-  this.recalculateExtent_();
-};
+ol.Map.prototype.handleSizeChanged = goog.nullFunction;
 
 
 /**
@@ -612,28 +616,6 @@ ol.Map.prototype.handleUserProjectionChanged = function() {
 ol.Map.prototype.handleViewportResize = function() {
   var size = new ol.Size(this.target_.clientWidth, this.target_.clientHeight);
   this.setSize(size);
-};
-
-
-/**
- * @private
- */
-ol.Map.prototype.recalculateExtent_ = function() {
-  var size = this.getSize();
-  var center = this.getCenter();
-  var resolution = this.getResolution();
-  if (!goog.isDef(size) || !goog.isDef(center) || !goog.isDef(resolution)) {
-    if (goog.isDef(this.getExtent())) {
-      this.set(ol.MapProperty.EXTENT, undefined);
-    }
-  } else {
-    var minX = center.x - resolution * size.width / 2;
-    var minY = center.y - resolution * size.height / 2;
-    var maxX = center.x + resolution * size.width / 2;
-    var maxY = center.y + resolution * size.height / 2;
-    var extent = new ol.Extent(minX, minY, maxX, maxY);
-    this.set(ol.MapProperty.EXTENT, extent);
-  }
 };
 
 
