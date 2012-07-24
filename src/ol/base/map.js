@@ -307,18 +307,19 @@ ol.Map.prototype.getControls = function() {
 
 /**
  * @param {ol.Coordinate} pixel Pixel.
- * @return {ol.Coordinate} Coordinate.
+ * @return {ol.Coordinate|undefined} Coordinate.
  */
 ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
-  var center = this.getCenter();
-  goog.asserts.assert(goog.isDef(center));
-  var resolution = this.getResolution();
-  goog.asserts.assert(goog.isDef(resolution));
-  var size = this.getSize();
-  goog.asserts.assert(goog.isDef(size));
-  var x = center.x + resolution * (pixel.x - size.width / 2);
-  var y = center.y - resolution * (pixel.y - size.height / 2);
-  return new ol.Coordinate(x, y);
+  if (this.isDef()) {
+    var center = this.getCenter();
+    var resolution = this.getResolution();
+    var size = this.getSize();
+    var x = center.x + resolution * (pixel.x - size.width / 2);
+    var y = center.y - resolution * (pixel.y - size.height / 2);
+    return new ol.Coordinate(x, y);
+  } else {
+    return null;
+  }
 };
 
 
@@ -326,17 +327,17 @@ ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
  * @return {ol.Extent|undefined} Extent.
  */
 ol.Map.prototype.getExtent = function() {
-  var size = this.getSize();
-  var center = this.getCenter();
-  var resolution = this.getResolution();
-  if (!goog.isDef(size) || !goog.isDef(center) || !goog.isDef(resolution)) {
-    return undefined;
-  } else {
+  if (this.isDef()) {
+    var size = this.getSize();
+    var center = this.getCenter();
+    var resolution = this.getResolution();
     var minX = center.x - resolution * size.width / 2;
     var minY = center.y - resolution * size.height / 2;
     var maxX = center.x + resolution * size.width / 2;
     var maxY = center.y + resolution * size.height / 2;
     return new ol.Extent(minX, minY, maxX, maxY);
+  } else {
+    return undefined;
   }
 };
 
@@ -364,18 +365,19 @@ ol.Map.prototype.getLayers = function() {
 
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
- * @return {ol.Coordinate} Pixel.
+ * @return {ol.Coordinate|undefined} Pixel.
  */
 ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
-  var center = this.getCenter();
-  goog.asserts.assert(goog.isDef(center));
-  var resolution = this.getResolution();
-  goog.asserts.assert(goog.isDef(resolution));
-  var size = this.getSize();
-  goog.asserts.assert(goog.isDef(size));
-  var x = (coordinate.x - center.x) / resolution + size.width / 2;
-  var y = (center.y - coordinate.y) / resolution + size.height / 2;
-  return new ol.Coordinate(x, y);
+  if (this.isDef()) {
+    var center = /** @type {ol.Coordinate} */ this.getCenter();
+    var resolution = /** @type {number} */ this.getResolution();
+    var size = /** @type {ol.Size} */ this.getSize();
+    var x = (coordinate.x - center.x) / resolution + size.width / 2;
+    var y = (center.y - coordinate.y) / resolution + size.height / 2;
+    return new ol.Coordinate(x, y);
+  } else {
+    return undefined;
+  }
 };
 
 
@@ -397,14 +399,17 @@ ol.Map.prototype.getResolution = function() {
 
 /**
  * @param {ol.Extent} extent Extent.
- * @return {number} Resolution.
+ * @return {number|undefined} Resolution.
  */
 ol.Map.prototype.getResolutionForExtent = function(extent) {
   var size = this.getSize();
-  goog.asserts.assert(goog.isDef(size));
-  var xResolution = (extent.maxX - extent.minX) / size.width;
-  var yResolution = (extent.maxY - extent.minY) / size.height;
-  return Math.max(xResolution, yResolution);
+  if (goog.isDef(size)) {
+    var xResolution = (extent.maxX - extent.minX) / size.width;
+    var yResolution = (extent.maxY - extent.minY) / size.height;
+    return Math.max(xResolution, yResolution);
+  } else {
+    return undefined;
+  }
 };
 
 
@@ -616,6 +621,15 @@ ol.Map.prototype.handleUserProjectionChanged = function() {
 ol.Map.prototype.handleViewportResize = function() {
   var size = new ol.Size(this.target_.clientWidth, this.target_.clientHeight);
   this.setSize(size);
+};
+
+
+/**
+ * @return {boolean} Is defined.
+ */
+ol.Map.prototype.isDef = function() {
+  return goog.isDef(this.getCenter()) && goog.isDef(this.getResolution()) &&
+      goog.isDef(this.getSize());
 };
 
 

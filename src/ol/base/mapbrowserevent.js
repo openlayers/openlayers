@@ -28,13 +28,13 @@ goog.inherits(ol.MapBrowserEvent, ol.MapEvent);
 
 /**
  * @private
- * @type {ol.Coordinate}
+ * @type {ol.Coordinate|undefined}
  */
 ol.MapBrowserEvent.prototype.coordinate_;
 
 
 /**
- * @return {ol.Coordinate} Coordinate.
+ * @return {ol.Coordinate|undefined} Coordinate.
  */
 ol.MapBrowserEvent.prototype.getCoordinate = function() {
   if (goog.isDef(this.coordinate_)) {

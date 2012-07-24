@@ -479,11 +479,12 @@ ol.webgl.Map.prototype.handleWebGLContextRestored = function() {
  */
 ol.webgl.Map.prototype.renderInternal = function() {
 
-  var center = this.getCenter();
-  var resolution = this.getResolution();
-  if (!goog.isDef(center) || !goog.isDef(resolution)) {
+  if (!this.isDef()) {
     return false;
   }
+
+  var center = this.getCenter();
+  var resolution = this.getResolution();
   var size = this.getSize();
 
   var animate = goog.base(this, 'renderInternal');

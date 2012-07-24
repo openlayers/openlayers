@@ -38,12 +38,11 @@ goog.inherits(ol.dom.TileLayerRenderer, ol.dom.LayerRenderer);
 ol.dom.TileLayerRenderer.prototype.render = function() {
 
   var map = this.getMap();
-  var center = map.getCenter();
-  var resolution = map.getResolution();
-
-  if (!goog.isDef(center) || !goog.isDef(resolution)) {
+  if (!map.isDef()) {
     return;
   }
+  var center = /** @type {ol.Coordinate} */ map.getCenter();
+  var resolution = /** @type {number} */ map.getResolution();
 
   var tileStore = this.getTileStore_();
   var tileGrid = tileStore.getTileGrid();
