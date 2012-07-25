@@ -9,9 +9,8 @@ goog.require('ol.Projection');
  * @constructor
  * @param {ol.Projection} projection Projection.
  * @param {ol.Extent=} opt_extent Extent.
- * @param {string=} opt_attribution Attribution.
  */
-ol.Store = function(projection, opt_extent, opt_attribution) {
+ol.Store = function(projection, opt_extent) {
 
   /**
    * @private
@@ -25,20 +24,16 @@ ol.Store = function(projection, opt_extent, opt_attribution) {
    */
   this.extent_ = goog.isDef(opt_extent) ? opt_extent : projection.getExtent();
 
-  /**
-   * @private
-   * @type {string|undefined}
-   */
-  this.attribution_ = opt_attribution;
-
 };
 
 
 /**
+ * @param {ol.Extent} extent Extent.
+ * @param {number} resolution Resolution.
  * @return {string|undefined} Attribution.
  */
-ol.Store.prototype.getAttribution = function() {
-  return this.attribution_;
+ol.Store.prototype.getAttribution = function(extent, resolution) {
+  return undefined;
 };
 
 

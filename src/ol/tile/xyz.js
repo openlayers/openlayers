@@ -1,6 +1,6 @@
-goog.provide('ol.tilegrid.createXYZ');
-goog.provide('ol.tilelayer.createXYZ');
-goog.provide('ol.tilestore.createXYZ');
+goog.provide('ol.layer.XYZ');
+goog.provide('ol.tilegrid.XYZ');
+goog.provide('ol.tilestore.XYZ');
 
 goog.require('goog.math');
 goog.require('ol.Coordinate');
@@ -14,11 +14,13 @@ goog.require('ol.TileStore');
 goog.require('ol.TileUrlFunction');
 
 
+
 /**
+ * @constructor
+ * @extends {ol.TileGrid}
  * @param {number} maxZoom Maximum zoom.
- * @return {ol.TileGrid} Tile grid.
  */
-ol.tilegrid.createXYZ = function(maxZoom) {
+ol.tilegrid.XYZ = function(maxZoom) {
 
   var resolutions = new Array(maxZoom + 1);
   var z;
@@ -31,40 +33,44 @@ ol.tilegrid.createXYZ = function(maxZoom) {
       -ol.Projection.EPSG_3857_HALF_SIZE, ol.Projection.EPSG_3857_HALF_SIZE);
   var tileSize = new ol.Size(256, 256);
 
-  return new ol.TileGrid(resolutions, extent, origin, tileSize);
+  goog.base(this, resolutions, extent, origin, tileSize);
 
 };
+goog.inherits(ol.tilegrid.XYZ, ol.TileGrid);
+
 
 
 /**
+ * @constructor
+ * @extends {ol.TileLayer}
  * @param {number} maxZoom Maximum zoom.
- * @param {Array.<string>} templates Templates.
- * @param {string=} opt_attribution Attribution.
+ * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
  * @param {string=} opt_crossOrigin Cross origin.
  * @param {Object.<string, *>=} opt_values Values.
- * @return {ol.Layer} Layer.
  */
-ol.tilelayer.createXYZ =
-    function(maxZoom, templates, opt_attribution, opt_crossOrigin, opt_values) {
-  var store = ol.tilestore.createXYZ(
-      maxZoom, templates, opt_attribution, opt_crossOrigin);
-  return new ol.TileLayer(store, opt_values);
+ol.layer.XYZ = function(maxZoom, tileUrlFunction, opt_crossOrigin, opt_values) {
+  var tileStore = new ol.tilestore.XYZ(
+      maxZoom, tileUrlFunction, opt_crossOrigin);
+  goog.base(this, tileStore, opt_values);
 };
+goog.inherits(ol.layer.XYZ, ol.TileLayer);
+
 
 
 /**
+ * @constructor
+ * @extends {ol.TileStore}
  * @param {number} maxZoom Maximum zoom.
- * @param {Array.<string>} templates Templates.
+ * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
  * @param {string=} opt_attribution Attribution.
  * @param {string=} opt_crossOrigin Cross origin.
- * @return {ol.TileStore} Tile store.
  */
-ol.tilestore.createXYZ =
-    function(maxZoom, templates, opt_attribution, opt_crossOrigin) {
+ol.tilestore.XYZ =
+    function(maxZoom, tileUrlFunction, opt_attribution, opt_crossOrigin) {
 
   var projection = ol.Projection.getFromCode('EPSG:3857');
-  var tileGrid = ol.tilegrid.createXYZ(maxZoom);
-  var tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
+  var tileGrid = new ol.tilegrid.XYZ(maxZoom);
+  var tileUrlFunction2 = ol.TileUrlFunction.withTileCoordTransform(
       function(tileCoord) {
         var n = 1 << tileCoord.z;
         var y = -tileCoord.y - 1;
@@ -75,10 +81,11 @@ ol.tilestore.createXYZ =
           return new ol.TileCoord(tileCoord.z, x, y);
         }
       },
-      ol.TileUrlFunction.createFromTemplates(templates));
+      tileUrlFunction);
   var extent = projection.getExtent();
 
-  return new ol.TileStore(projection, tileGrid, tileUrlFunction, extent,
-      opt_attribution, opt_crossOrigin);
+  goog.base(
+      this, projection, tileGrid, tileUrlFunction2, extent, opt_crossOrigin);
 
 };
+goog.inherits(ol.tilestore.XYZ, ol.TileStore);

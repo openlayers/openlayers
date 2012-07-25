@@ -2,7 +2,7 @@ goog.require('goog.object');
 goog.require('ol.Coordinate');
 goog.require('ol.RendererHint');
 goog.require('ol.createMap');
-goog.require('ol.tilelayer.createOpenStreetMap');
+goog.require('ol.layer.OpenStreetMap');
 
 var twoMaps = true;
 
@@ -12,7 +12,7 @@ var layer;
 
 target = /** @type {!HTMLDivElement} */ document.getElementById('map1');
 map = map1 = ol.createMap(target, undefined, ol.RendererHint.DOM);
-layer = ol.tilelayer.createOpenStreetMap({
+layer = new ol.layer.OpenStreetMap({
   'opacity': 0.9
 });
 map.getLayers().push(layer);
