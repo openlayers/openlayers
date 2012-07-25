@@ -27,8 +27,8 @@ function testCreateFromString() {
 }
 
 
-function testToQuadKey() {
-  assertEquals('213', (new ol.TileCoord(3, 3, 5)).toQuadKey());
+function testQuadKey() {
+  assertEquals('213', (new ol.TileCoord(3, 3, 5)).quadKey());
 }
 
 

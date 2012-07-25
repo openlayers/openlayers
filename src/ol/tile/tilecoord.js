@@ -95,7 +95,7 @@ ol.TileCoord.prototype.hash = function() {
 /**
  * @return {string} Quad key.
  */
-ol.TileCoord.prototype.toQuadKey = function() {
+ol.TileCoord.prototype.quadKey = function() {
   var digits = new Array(this.z);
   var mask = 1 << (this.z - 1);
   var i, charCode;
