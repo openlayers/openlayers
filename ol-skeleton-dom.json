@@ -15,6 +15,7 @@
   },
 
   "externs": [
+    "externs/bingmaps.js",
     "externs/webgl-debug.js"
   ],
 
