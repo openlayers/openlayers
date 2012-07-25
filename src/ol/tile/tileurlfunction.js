@@ -6,7 +6,7 @@ goog.require('ol.TileCoord');
 
 
 /**
- * @typedef {function(ol.TileCoord): string|undefined}
+ * @typedef {function(ol.TileCoord): (string|undefined)}
  */
 ol.TileUrlFunctionType;
 

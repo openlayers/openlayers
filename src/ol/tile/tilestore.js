@@ -85,7 +85,7 @@ ol.TileStore.prototype.getTile = function(tileCoord) {
 
 /**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @return {string} Tile coord URL.
+ * @return {string|undefined} Tile URL.
  */
 ol.TileStore.prototype.getTileCoordUrl = function(tileCoord) {
   return this.tileUrlFunction_(tileCoord);
