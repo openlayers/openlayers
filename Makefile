@@ -10,7 +10,7 @@ all: build webgl-debug.js
 build: ol.js ol-skeleton.js ol-skeleton-debug.js ol-skeleton-dom.js ol-skeleton-webgl.js
 
 .PHONY: ol.js
-ol.js: $(PLOVR_JAR)
+ol.js: $(PLOVR_JAR) src/ol/ol.js
 	java -jar $(PLOVR_JAR) build $(basename $@).json >$@
 	@echo $@ "uncompressed:" $(shell wc -c <$@) bytes
 	@echo $@ "  compressed:" $(shell gzip -9 -c <$@ | wc -c) bytes
@@ -43,6 +43,11 @@ ol-skeleton-webgl.js: $(PLOVR_JAR)
 serve: $(PLOVR_JAR)
 	java -jar $(PLOVR_JAR) serve *.json
 
+src/ol/ol.js: $(shell find src/ol -name \*.js | grep -v src/ol/ol.js)
+	echo "goog.provide('ol');" >$@
+	echo >>$@
+	find src/ol -name \*.js | grep -v src/ol/ol.js | xargs grep -rh ^goog.provide | sort | uniq | sed -e 's/provide/require/g' >>$@
+
 .PHONY: lint
 lint:
 	gjslint --strict --limited_doc_files=$(subst $(space),$(comma),$(shell find externs -name \*.js)) $(shell find externs src/ol -name \*.js) skeleton.js
@@ -54,6 +59,7 @@ $(PLOVR_JAR):
 	curl http://plovr.googlecode.com/files/$(notdir $@) > $@
 
 clean:
+	rm -f src/ol/ol.js
 	rm -f ol-skeleton.js
 	rm -f ol-skeleton-debug.js
 	rm -f ol-skeleton-dom.js
