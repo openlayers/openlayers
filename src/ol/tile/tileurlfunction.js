@@ -55,6 +55,15 @@ ol.TileUrlFunction.createFromTemplates = function(templates) {
 
 
 /**
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @return {string|undefined} Tile URL.
+ */
+ol.TileUrlFunction.nullTileUrlFunction = function(tileCoord) {
+  return undefined;
+};
+
+
+/**
  * @param {function(ol.TileCoord): ol.TileCoord} transform Transform.
  * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
  * @return {ol.TileUrlFunctionType} Tile URL function.
