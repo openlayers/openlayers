@@ -145,7 +145,7 @@ ol.dom.TileLayerRenderer.prototype.removeInvisibleTiles_ = function(
     tileBounds, z) {
   var key, tileCoord, prune, tile;
   for (key in this.renderedTiles_) {
-    tileCoord = ol.TileCoord.fromString(key);
+    tileCoord = ol.TileCoord.createFromString(key);
     prune = z !== tileCoord.z ||
             tileCoord.x < tileBounds.minX ||
             tileCoord.x > tileBounds.maxX ||

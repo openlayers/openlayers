@@ -64,6 +64,19 @@ ol.TileCoord.createFromQuadKey = function(quadKey) {
 
 
 /**
+ * @param {string} str String.
+ * @return {ol.TileCoord} Tile coord.
+ */
+ol.TileCoord.createFromString = function(str) {
+  var v = str.split('/');
+  v = goog.array.map(v, function(e, i, a) {
+    return parseInt(e, 10);
+  });
+  return new ol.TileCoord(v[0], v[1], v[2]);
+};
+
+
+/**
  * @return {ol.TileCoord} Clone.
  */
 ol.TileCoord.prototype.clone = function() {
@@ -106,17 +119,4 @@ ol.TileCoord.prototype.toQuadKey = function() {
  */
 ol.TileCoord.prototype.toString = function() {
   return [this.z, this.x, this.y].join('/');
-};
-
-
-/**
- * @param {string} str String.
- * @return {ol.TileCoord} Tile coord.
- */
-ol.TileCoord.fromString = function(str) {
-  var v = str.split('/');
-  v = goog.array.map(v, function(e, i, a) {
-    return parseInt(e, 10);
-  });
-  return new ol.TileCoord(v[0], v[1], v[2]);
 };
