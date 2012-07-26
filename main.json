@@ -11,7 +11,10 @@
 
   "define": {
     // "goog.dom.ASSUME_STANDARDS_MODE": true,
-    "goog.DEBUG": false
+
+    // The tests require goog.DEBUG to be true, as some test
+    // that exceptions are thrown on user errors.
+    "goog.DEBUG": true
   },
 
   "externs": [
