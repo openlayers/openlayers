@@ -19,8 +19,9 @@ goog.require('ol.TileUrlFunction');
  * @constructor
  * @extends {ol.TileGrid}
  * @param {number} maxZoom Maximum zoom.
+ * @param {ol.Size=} opt_tileSize Tile size.
  */
-ol.tilegrid.XYZ = function(maxZoom) {
+ol.tilegrid.XYZ = function(maxZoom, opt_tileSize) {
 
   var resolutions = new Array(maxZoom + 1);
   var z;
@@ -31,9 +32,8 @@ ol.tilegrid.XYZ = function(maxZoom) {
   var extent = ol.Projection.EPSG_3857_EXTENT;
   var origin = new ol.Coordinate(
       -ol.Projection.EPSG_3857_HALF_SIZE, ol.Projection.EPSG_3857_HALF_SIZE);
-  var tileSize = new ol.Size(256, 256);
 
-  goog.base(this, resolutions, extent, origin, tileSize);
+  goog.base(this, resolutions, extent, origin, opt_tileSize);
 
 };
 goog.inherits(ol.tilegrid.XYZ, ol.TileGrid);
