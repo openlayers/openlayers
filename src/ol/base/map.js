@@ -262,10 +262,10 @@ ol.Map.prototype.fitUserExtent = function(userExtent) {
  * @param {T=} opt_obj Object.
  * @template T
  */
-ol.Map.prototype.forEachVisibleLayer = function(f, opt_obj) {
+ol.Map.prototype.forEachReadyVisibleLayer = function(f, opt_obj) {
   var layers = this.getLayers();
   layers.forEach(function(layer, index) {
-    if (layer.getVisible()) {
+    if (layer.isReady() && layer.getVisible()) {
       var layerRenderer = this.getLayerRenderer(layer);
       f.call(opt_obj, layer, layerRenderer, index);
     }
@@ -677,7 +677,7 @@ ol.Map.prototype.renderInternal = function() {
 
   var animate = false;
 
-  this.forEachVisibleLayer(function(layer, layerRenderer) {
+  this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
     if (layerRenderer.render()) {
       animate = true;
     }

@@ -537,7 +537,7 @@ ol.webgl.Map.prototype.renderInternal = function() {
       this.locations_.aTexCoord, 2, goog.webgl.FLOAT, false, 16, 8);
   gl.uniform1i(this.locations_.uTexture, 0);
 
-  this.forEachVisibleLayer(function(layer, layerRenderer) {
+  this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
     gl.uniformMatrix4fv(
         this.locations_.uMatrix, false, layerRenderer.getMatrix());
     gl.uniform1f(this.locations_.uBrightness, layer.getBrightness());
