@@ -23,16 +23,16 @@ ol.TileStore = function(
   goog.base(this, projection, opt_extent);
 
   /**
-   * @private
+   * @protected
    * @type {ol.TileGrid}
    */
-  this.tileGrid_ = tileGrid;
+  this.tileGrid = tileGrid;
 
   /**
-   * @private
+   * @protected
    * @type {ol.TileUrlFunctionType}
    */
-  this.tileUrlFunction_ = tileUrlFunction;
+  this.tileUrlFunction = tileUrlFunction;
 
   /**
    * @private
@@ -57,7 +57,7 @@ goog.inherits(ol.TileStore, ol.Store);
  * @inheritDoc
  */
 ol.TileStore.prototype.getResolutions = function() {
-  return this.tileGrid_.getResolutions();
+  return this.tileGrid.getResolutions();
 };
 
 
@@ -88,7 +88,7 @@ ol.TileStore.prototype.getTile = function(tileCoord) {
  * @return {string|undefined} Tile URL.
  */
 ol.TileStore.prototype.getTileCoordUrl = function(tileCoord) {
-  return this.tileUrlFunction_(tileCoord);
+  return this.tileUrlFunction(tileCoord);
 };
 
 
@@ -96,5 +96,5 @@ ol.TileStore.prototype.getTileCoordUrl = function(tileCoord) {
  * @return {ol.TileGrid} Tile grid.
  */
 ol.TileStore.prototype.getTileGrid = function() {
-  return this.tileGrid_;
+  return this.tileGrid;
 };
