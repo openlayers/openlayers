@@ -1,4 +1,6 @@
 PLOVR_JAR=bin/plovr-4b3caf2b7d84.jar
+SRC = $(filter-out $(TARGETS),$(shell find externs src/ol -name \*.js))
+TARGETS = src/ol/ol.js
 comma := ,
 empty :=
 space := $(empty) $(empty)
@@ -9,32 +11,27 @@ all: build webgl-debug.js
 .PHONY: build
 build: ol.js ol-skeleton.js ol-skeleton-debug.js ol-skeleton-dom.js ol-skeleton-webgl.js
 
-.PHONY: ol.js
-ol.js: $(PLOVR_JAR) src/ol/ol.js
+ol.js: $(PLOVR_JAR) $(SRC) src/ol/ol.js
 	java -jar $(PLOVR_JAR) build $(basename $@).json >$@
 	@echo $@ "uncompressed:" $(shell wc -c <$@) bytes
 	@echo $@ "  compressed:" $(shell gzip -9 -c <$@ | wc -c) bytes
 
-.PHONY: ol-skeleton.js
-ol-skeleton.js: $(PLOVR_JAR)
+ol-skeleton.js: $(PLOVR_JAR) $(SRC)
 	java -jar $(PLOVR_JAR) build $(basename $@).json >$@
 	@echo $@ "uncompressed:" $(shell wc -c <$@) bytes
 	@echo $@ "  compressed:" $(shell gzip -9 -c <$@ | wc -c) bytes
 
-.PHONY: ol-skeleton-debug.js
-ol-skeleton-debug.js: $(PLOVR_JAR)
+ol-skeleton-debug.js: $(PLOVR_JAR) $(SRC)
 	java -jar $(PLOVR_JAR) build $(basename $@).json >$@
 	@echo $@ "uncompressed:" $(shell wc -c <$@) bytes
 	@echo $@ "  compressed:" $(shell gzip -9 -c <$@ | wc -c) bytes
 
-.PHONY: ol-skeleton-dom.js
-ol-skeleton-dom.js: $(PLOVR_JAR)
+ol-skeleton-dom.js: $(PLOVR_JAR) $(SRC)
 	java -jar $(PLOVR_JAR) build $(basename $@).json >$@
 	@echo $@ "uncompressed:" $(shell wc -c <$@) bytes
 	@echo $@ "  compressed:" $(shell gzip -9 -c <$@ | wc -c) bytes
 
-.PHONY: ol-skeleton-webgl.js
-ol-skeleton-webgl.js: $(PLOVR_JAR)
+ol-skeleton-webgl.js: $(PLOVR_JAR) $(SRC)
 	java -jar $(PLOVR_JAR) build $(basename $@).json >$@
 	@echo $@ "uncompressed:" $(shell wc -c <$@) bytes
 	@echo $@ "  compressed:" $(shell gzip -9 -c <$@ | wc -c) bytes
@@ -43,14 +40,14 @@ ol-skeleton-webgl.js: $(PLOVR_JAR)
 serve: $(PLOVR_JAR)
 	java -jar $(PLOVR_JAR) serve *.json
 
-src/ol/ol.js: $(shell find src/ol -name \*.js | grep -v src/ol/ol.js)
+src/ol/ol.js: $(SRC)
 	echo "goog.provide('ol');" >$@
 	echo >>$@
 	find src/ol -name \*.js | grep -v src/ol/ol.js | xargs grep -rh ^goog.provide | sort | uniq | sed -e 's/provide/require/g' >>$@
 
 .PHONY: lint
 lint:
-	gjslint --strict --limited_doc_files=$(subst $(space),$(comma),$(shell find externs -name \*.js)) $(shell find externs src/ol -name \*.js) skeleton.js
+	gjslint --strict --limited_doc_files=$(subst $(space),$(comma),$(shell find externs -name \*.js)) $(SRC) skeleton.js
 
 webgl-debug.js:
 	curl https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/sdk/debug/webgl-debug.js > $@
