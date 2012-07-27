@@ -108,6 +108,14 @@ ol.Layer.prototype.getVisible = function() {
 
 
 /**
+ * @return {boolean} Is ready.
+ */
+ol.Layer.prototype.isReady = function() {
+  return this.getStore().isReady();
+};
+
+
+/**
  * @param {number} brightness Brightness.
  */
 ol.Layer.prototype.setBrightness = function(brightness) {
