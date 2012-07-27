@@ -67,14 +67,6 @@ ol.Store.prototype.isReady = goog.functions.TRUE;
 
 
 /**
- * @param {string|undefined} attribution Attribution.
- */
-ol.Store.prototype.setAttribution = function(attribution) {
-  this.attribution_ = attribution;
-};
-
-
-/**
  * @param {ol.Extent} extent Extent.
  */
 ol.Store.prototype.setExtent = function(extent) {
