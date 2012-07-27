@@ -25,21 +25,16 @@ goog.inherits(ol.layer.OpenStreetMap, ol.TileLayer);
  * @extends {ol.tilestore.XYZ}
  */
 ol.store.OpenStreetMap = function() {
+
   goog.base(this, 18, ol.TileUrlFunction.createFromTemplates([
     'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
     'http://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
     'http://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
-  ]));
+  ]), [
+    '&copy; <a href="http://www.openstreetmap.org">OpenStreetMap</a> ' +
+        'contributors, ' +
+        '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA</a>'
+  ]);
+
 };
 goog.inherits(ol.store.OpenStreetMap, ol.tilestore.XYZ);
-
-
-/**
- * @inheritDoc
- */
-ol.store.OpenStreetMap.prototype.getAttribution =
-    function(extent, resolution) {
-  return '&copy; <a href="http://www.openstreetmap.org">OpenStreetMap</a> ' +
-      'contributors, ' +
-      '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA</a>';
-};

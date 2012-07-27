@@ -31,10 +31,10 @@ ol.Store = function(projection, opt_extent) {
 /**
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
- * @return {string|undefined} Attribution.
+ * @return {Array.<string>} Attributions.
  */
-ol.Store.prototype.getAttribution = function(extent, resolution) {
-  return undefined;
+ol.Store.prototype.getAttributions = function(extent, resolution) {
+  return [];
 };
 
 

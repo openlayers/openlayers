@@ -50,7 +50,7 @@ goog.inherits(ol.tilegrid.XYZ, ol.TileGrid);
  */
 ol.layer.XYZ = function(maxZoom, tileUrlFunction, opt_crossOrigin, opt_values) {
   var tileStore = new ol.tilestore.XYZ(
-      maxZoom, tileUrlFunction, opt_crossOrigin);
+      maxZoom, tileUrlFunction, undefined, opt_crossOrigin);
   goog.base(this, tileStore, opt_values);
 };
 goog.inherits(ol.layer.XYZ, ol.TileLayer);
@@ -62,11 +62,11 @@ goog.inherits(ol.layer.XYZ, ol.TileLayer);
  * @extends {ol.TileStore}
  * @param {number} maxZoom Maximum zoom.
  * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
- * @param {string=} opt_attribution Attribution.
+ * @param {Array.<string>=} opt_attributions Attributions.
  * @param {string=} opt_crossOrigin Cross origin.
  */
 ol.tilestore.XYZ =
-    function(maxZoom, tileUrlFunction, opt_attribution, opt_crossOrigin) {
+    function(maxZoom, tileUrlFunction, opt_attributions, opt_crossOrigin) {
 
   var projection = ol.Projection.getFromCode('EPSG:3857');
   var tileGrid = new ol.tilegrid.XYZ(maxZoom);
@@ -87,5 +87,20 @@ ol.tilestore.XYZ =
   goog.base(
       this, projection, tileGrid, tileUrlFunction2, extent, opt_crossOrigin);
 
+
+  /**
+   * @private
+   * @type {Array.<string>}
+   */
+  this.attributions_ = goog.isDef(opt_attributions) ? opt_attributions : [];
+
 };
 goog.inherits(ol.tilestore.XYZ, ol.TileStore);
+
+
+/**
+ * @inheritDoc
+ */
+ol.tilestore.XYZ.prototype.getAttributions = function(extent, resolution) {
+  return this.attributions_;
+};
