@@ -1,3 +1,5 @@
+// FIXME cope with tile grids whose minium zoom is not zero
+
 goog.provide('ol.TileGrid');
 
 goog.require('goog.array');
