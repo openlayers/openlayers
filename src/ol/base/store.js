@@ -1,5 +1,6 @@
 goog.provide('ol.Store');
 
+goog.require('goog.functions');
 goog.require('ol.Extent');
 goog.require('ol.Projection');
 
@@ -57,6 +58,12 @@ ol.Store.prototype.getProjection = function() {
  * @return {Array.<number>|undefined} Resolutions.
  */
 ol.Store.prototype.getResolutions = goog.abstractMethod;
+
+
+/**
+ * @return {boolean} Is ready.
+ */
+ol.Store.prototype.isReady = goog.functions.TRUE;
 
 
 /**
