@@ -64,11 +64,11 @@ function testIntersects() {
 
   function assertIntersects(rectangle2) {
     assertTrue(rectangle1 + ' expected to intersect ' + rectangle2,
-        ol.Rectangle.intersects(rectangle1, rectangle2));
+        rectangle1.intersects(rectangle2));
   }
   function assertNotIntersects(rectangle2) {
     assertFalse(rectangle1 + ' expected to not intersect ' + rectangle2,
-        ol.Rectangle.intersects(rectangle1, rectangle2));
+        rectangle1.intersects(rectangle2));
   }
 
   assertIntersects(rectangle1);
