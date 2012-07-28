@@ -36,6 +36,15 @@ goog.inherits(ol.dom.TileLayerRenderer, ol.dom.LayerRenderer);
 
 
 /**
+ * @override
+ * @return {ol.TileLayer} Layer.
+ */
+ol.dom.TileLayerRenderer.prototype.getLayer = function() {
+  return /** @type {ol.TileLayer} */ goog.base(this, 'getLayer');
+};
+
+
+/**
  * @inheritDoc
  */
 ol.dom.TileLayerRenderer.prototype.render = function() {
@@ -47,7 +56,8 @@ ol.dom.TileLayerRenderer.prototype.render = function() {
   var center = /** @type {ol.Coordinate} */ map.getCenter();
   var resolution = /** @type {number} */ map.getResolution();
 
-  var tileStore = this.getTileStore_();
+  var tileLayer = this.getLayer();
+  var tileStore = tileLayer.getStore();
   var tileGrid = tileStore.getTileGrid();
 
   if (resolution != this.renderedResolution_) {
@@ -106,7 +116,9 @@ ol.dom.TileLayerRenderer.prototype.render = function() {
  * @return {ol.Coordinate} Offset.
  */
 ol.dom.TileLayerRenderer.prototype.getTileOffset_ = function(z, resolution) {
-  var tileGrid = this.getTileGrid_();
+  var tileLayer = this.getLayer();
+  var tileStore = tileLayer.getStore();
+  var tileGrid = tileStore.getTileGrid();
   var tileOrigin = tileGrid.getOrigin(z);
   var offset = new ol.Coordinate(
       Math.round((this.origin.x - tileOrigin.x) / resolution),
@@ -133,7 +145,9 @@ ol.dom.TileLayerRenderer.prototype.getTileBounds_ = function(
       center.x + (resolution * halfSize.width),
       center.y - (resolution * halfSize.height));
   var extent = ol.Extent.boundingExtent(leftTop, rightBottom);
-  var tileGrid = this.getTileGrid_();
+  var tileLayer = this.getLayer();
+  var tileStore = tileLayer.getStore();
+  var tileGrid = tileStore.getTileGrid();
   return tileGrid.getTileBoundsForExtentAndResolution(extent, resolution);
 };
 
@@ -160,25 +174,4 @@ ol.dom.TileLayerRenderer.prototype.removeInvisibleTiles_ = function(
       this.target.removeChild(tile.getImage(this));
     }
   }
-};
-
-
-/**
- * Get the tile grid.
- * @private
- * @return {ol.TileGrid} Tile grid.
- */
-ol.dom.TileLayerRenderer.prototype.getTileGrid_ = function() {
-  return this.getTileStore_().getTileGrid();
-};
-
-
-/**
- * Get the tile store.
- * @private
- * @return {ol.TileStore} Tile store.
- */
-ol.dom.TileLayerRenderer.prototype.getTileStore_ = function() {
-  var tileLayer = /** @type {ol.TileLayer} */ this.getLayer();
-  return tileLayer.getStore();
 };
