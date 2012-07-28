@@ -30,7 +30,7 @@ ol.dom.TileLayerRenderer = function(map, tileLayer, target) {
    * @type {number|undefined}
    * @private
    */
-  this.renderedResolution_ = undefined;
+  this.renderedMapResolution_ = undefined;
 };
 goog.inherits(ol.dom.TileLayerRenderer, ol.dom.LayerRenderer);
 
@@ -53,25 +53,24 @@ ol.dom.TileLayerRenderer.prototype.render = function() {
   if (!map.isDef()) {
     return;
   }
-  var center = /** @type {ol.Coordinate} */ map.getCenter();
-  var resolution = /** @type {number} */ map.getResolution();
-  var extent = /** @type {ol.Extent} */ map.getExtent();
+  var mapExtent = /** @type {ol.Extent} */ map.getExtent();
+  var mapResolution = /** @type {number} */ map.getResolution();
 
   var tileLayer = this.getLayer();
   var tileStore = tileLayer.getStore();
   var tileGrid = tileStore.getTileGrid();
 
-  if (resolution != this.renderedResolution_) {
+  if (mapResolution != this.renderedMapResolution_) {
     this.renderedTiles_ = {};
     goog.dom.removeChildren(this.target);
   }
 
   // z represents the "best" resolution
-  var z = tileGrid.getZForResolution(resolution);
+  var z = tileGrid.getZForResolution(mapResolution);
 
   var tileBounds =
-      tileGrid.getTileBoundsForExtentAndResolution(extent, resolution);
-  var tileOffset = this.getTileOffset_(z, resolution);
+      tileGrid.getTileBoundsForExtentAndResolution(mapExtent, mapResolution);
+  var tileOffset = this.getTileOffset_(z, mapResolution);
 
   var fragment = document.createDocumentFragment();
 
@@ -88,7 +87,7 @@ ol.dom.TileLayerRenderer.prototype.render = function() {
         }
         this.renderedTiles_[key] = tile;
         pixelBounds = tileGrid.getPixelBoundsForTileCoordAndResolution(
-            tileCoord, resolution);
+            tileCoord, mapResolution);
         img = tile.getImage(this);
         img.style.position = 'absolute';
         img.style.left = (pixelBounds.minX - tileOffset.x) + 'px';
@@ -106,7 +105,7 @@ ol.dom.TileLayerRenderer.prototype.render = function() {
   }
 
   this.removeInvisibleTiles_(tileBounds, z);
-  this.renderedResolution_ = resolution;
+  this.renderedMapResolution_ = mapResolution;
 };
 
 
