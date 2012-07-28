@@ -7,6 +7,7 @@
 goog.provide('ol.webgl.Map');
 goog.provide('ol.webgl.map.shader');
 
+goog.require('goog.debug.Logger');
 goog.require('goog.dispose');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -22,6 +23,14 @@ goog.require('ol.webgl.TileLayerRenderer');
 goog.require('ol.webgl.WebGLContextEventType');
 goog.require('ol.webgl.shader.Fragment');
 goog.require('ol.webgl.shader.Vertex');
+
+
+if (goog.DEBUG) {
+  /**
+   * @type {goog.debug.Logger}
+   */
+  ol.webgl.map.logger = goog.debug.Logger.getLogger('ol.webgl.map');
+}
 
 
 
@@ -286,11 +295,13 @@ ol.webgl.Map.prototype.getProgram = function(
     gl.attachShader(program, this.getShader(fragmentShaderObject));
     gl.attachShader(program, this.getShader(vertexShaderObject));
     gl.linkProgram(program);
-    if (!gl.getProgramParameter(program, goog.webgl.LINK_STATUS) &&
-        !gl.isContextLost()) {
-      window.console.log(gl.getProgramInfoLog(program));
-      goog.asserts.assert(
-          gl.getProgramParameter(program, goog.webgl.LINK_STATUS));
+    if (goog.DEBUG) {
+      if (!gl.getProgramParameter(program, goog.webgl.LINK_STATUS) &&
+          !gl.isContextLost()) {
+        ol.webgl.map.logger.severe(gl.getProgramInfoLog(program));
+        goog.asserts.assert(
+            gl.getProgramParameter(program, goog.webgl.LINK_STATUS));
+      }
     }
     this.programCache_[key] = program;
     return program;
@@ -311,11 +322,13 @@ ol.webgl.Map.prototype.getShader = function(shaderObject) {
     var shader = gl.createShader(shaderObject.getType());
     gl.shaderSource(shader, shaderObject.getSource());
     gl.compileShader(shader);
-    if (!gl.getShaderParameter(shader, goog.webgl.COMPILE_STATUS) &&
-        !gl.isContextLost()) {
-      window.console.log(gl.getShaderInfoLog(shader));
-      goog.asserts.assert(
-          gl.getShaderParameter(shader, goog.webgl.COMPILE_STATUS));
+    if (goog.DEBUG) {
+      if (!gl.getShaderParameter(shader, goog.webgl.COMPILE_STATUS) &&
+          !gl.isContextLost()) {
+        ol.webgl.map.logger.severe(gl.getShaderInfoLog(shader));
+        goog.asserts.assert(
+            gl.getShaderParameter(shader, goog.webgl.COMPILE_STATUS));
+      }
     }
     this.shaderCache_[key] = shader;
     return shader;
