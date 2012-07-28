@@ -683,17 +683,13 @@ ol.Map.prototype.render = function() {
  * @return {boolean} Animating.
  */
 ol.Map.prototype.renderInternal = function() {
-
   this.dirty_ = false;
-
   var animate = false;
-
   this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
     if (layerRenderer.render()) {
       animate = true;
     }
   });
-
   return animate;
 };
 
