@@ -2,6 +2,7 @@
 // FIXME animated shaders! check in redraw
 // FIXME out-by-one error in texture alignment?
 // FIXME bad things happen when we go outside the zoom levels
+// FIXME bad things happen when the resolution does not match the zoom levels
 
 goog.provide('ol.webgl.TileLayerRenderer');
 goog.provide('ol.webgl.tilelayerrenderer.shader.Fragment');
