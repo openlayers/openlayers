@@ -1,6 +1,7 @@
 goog.provide('ol.LayerRenderer');
 
 goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('ol.Layer');
 goog.require('ol.LayerProperty');
 goog.require('ol.Object');
@@ -40,6 +41,9 @@ ol.LayerRenderer = function(map, layer) {
   goog.events.listen(this.layer_,
       ol.Object.getChangedEventType(ol.LayerProperty.HUE),
       this.handleLayerHueChange, false, this);
+
+  goog.events.listen(this.layer_, goog.events.EventType.LOAD,
+      this.handleLayerLoad, false, this);
 
   goog.events.listen(this.layer_,
       ol.Object.getChangedEventType(ol.LayerProperty.OPACITY),
@@ -95,6 +99,12 @@ ol.LayerRenderer.prototype.handleLayerHueChange = goog.nullFunction;
  * @protected
  */
 ol.LayerRenderer.prototype.handleLayerOpacityChange = goog.nullFunction;
+
+
+/**
+ * @protected
+ */
+ol.LayerRenderer.prototype.handleLayerLoad = goog.nullFunction;
 
 
 /**

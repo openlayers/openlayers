@@ -83,6 +83,14 @@ ol.webgl.LayerRenderer.prototype.handleLayerHueChange = function() {
 /**
  * @inheritDoc
  */
+ol.webgl.LayerRenderer.prototype.handleLayerLoad = function() {
+  this.dispatchChangeEvent();
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.webgl.LayerRenderer.prototype.handleLayerOpacityChange = function() {
   this.dispatchChangeEvent();
 };

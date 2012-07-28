@@ -511,15 +511,6 @@ ol.Map.prototype.handleLayerAdd = function(layer) {
   }
   var layerRenderer = this.createLayerRenderer(layer);
   this.setLayerRenderer(layer, layerRenderer);
-  goog.events.listen(layer, goog.events.EventType.LOAD, this.handleLayerLoad,
-      false, this);
-};
-
-
-/**
- */
-ol.Map.prototype.handleLayerLoad = function() {
-  this.render();
 };
 
 
@@ -528,8 +519,6 @@ ol.Map.prototype.handleLayerLoad = function() {
  * @protected
  */
 ol.Map.prototype.handleLayerRemove = function(layer) {
-  goog.events.unlisten(layer, goog.events.EventType.LOAD, this.handleLayerLoad,
-      false, this);
   this.removeLayerRenderer(layer);
 };
 
