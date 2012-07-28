@@ -1,8 +1,12 @@
+goog.require('goog.debug.Console');
 goog.require('goog.object');
 goog.require('ol.Coordinate');
 goog.require('ol.RendererHint');
 goog.require('ol.createMap');
 goog.require('ol.layer.OpenStreetMap');
+
+goog.debug.Console.autoInstall();
+goog.debug.Console.instance.setCapturing(true);
 
 var twoMaps = true;
 
