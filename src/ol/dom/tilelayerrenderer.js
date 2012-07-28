@@ -55,6 +55,7 @@ ol.dom.TileLayerRenderer.prototype.render = function() {
   }
   var center = /** @type {ol.Coordinate} */ map.getCenter();
   var resolution = /** @type {number} */ map.getResolution();
+  var extent = /** @type {ol.Extent} */ map.getExtent();
 
   var tileLayer = this.getLayer();
   var tileStore = tileLayer.getStore();
@@ -68,7 +69,8 @@ ol.dom.TileLayerRenderer.prototype.render = function() {
   // z represents the "best" resolution
   var z = tileGrid.getZForResolution(resolution);
 
-  var tileBounds = this.getTileBounds_(center, resolution);
+  var tileBounds =
+      tileGrid.getTileBoundsForExtentAndResolution(extent, resolution);
   var tileOffset = this.getTileOffset_(z, resolution);
 
   var fragment = document.createDocumentFragment();
@@ -124,31 +126,6 @@ ol.dom.TileLayerRenderer.prototype.getTileOffset_ = function(z, resolution) {
       Math.round((this.origin.x - tileOrigin.x) / resolution),
       Math.round((tileOrigin.y - this.origin.y) / resolution));
   return offset;
-};
-
-
-/**
- * @private
- * @param {ol.Coordinate} center Center.
- * @param {number} resolution Resolution.
- * @return {ol.TileBounds} Tile bounds.
- */
-ol.dom.TileLayerRenderer.prototype.getTileBounds_ = function(
-    center, resolution) {
-  var map = this.getMap();
-  var size = map.getSize();
-  var halfSize = new ol.Size(size.width / 2, size.height / 2);
-  var leftTop = new ol.Coordinate(
-      center.x - (resolution * halfSize.width),
-      center.y + (resolution * halfSize.height));
-  var rightBottom = new ol.Coordinate(
-      center.x + (resolution * halfSize.width),
-      center.y - (resolution * halfSize.height));
-  var extent = ol.Extent.boundingExtent(leftTop, rightBottom);
-  var tileLayer = this.getLayer();
-  var tileStore = tileLayer.getStore();
-  var tileGrid = tileStore.getTileGrid();
-  return tileGrid.getTileBoundsForExtentAndResolution(extent, resolution);
 };
 
 
