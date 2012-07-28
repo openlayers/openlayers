@@ -16,22 +16,22 @@ ol.js: $(PLOVR_JAR) $(SRC) src/ol/ol.js
 	@echo $@ "uncompressed:" $(shell wc -c <$@) bytes
 	@echo $@ "  compressed:" $(shell gzip -9 -c <$@ | wc -c) bytes
 
-ol-skeleton.js: $(PLOVR_JAR) $(SRC)
+ol-skeleton.js: $(PLOVR_JAR) $(SRC) skeleton.js
 	java -jar $(PLOVR_JAR) build $(basename $@).json >$@
 	@echo $@ "uncompressed:" $(shell wc -c <$@) bytes
 	@echo $@ "  compressed:" $(shell gzip -9 -c <$@ | wc -c) bytes
 
-ol-skeleton-debug.js: $(PLOVR_JAR) $(SRC)
+ol-skeleton-debug.js: $(PLOVR_JAR) $(SRC) skeleton.js
 	java -jar $(PLOVR_JAR) build $(basename $@).json >$@
 	@echo $@ "uncompressed:" $(shell wc -c <$@) bytes
 	@echo $@ "  compressed:" $(shell gzip -9 -c <$@ | wc -c) bytes
 
-ol-skeleton-dom.js: $(PLOVR_JAR) $(SRC)
+ol-skeleton-dom.js: $(PLOVR_JAR) $(SRC) skeleton.js
 	java -jar $(PLOVR_JAR) build $(basename $@).json >$@
 	@echo $@ "uncompressed:" $(shell wc -c <$@) bytes
 	@echo $@ "  compressed:" $(shell gzip -9 -c <$@ | wc -c) bytes
 
-ol-skeleton-webgl.js: $(PLOVR_JAR) $(SRC)
+ol-skeleton-webgl.js: $(PLOVR_JAR) $(SRC) skeleton.js
 	java -jar $(PLOVR_JAR) build $(basename $@).json >$@
 	@echo $@ "uncompressed:" $(shell wc -c <$@) bytes
 	@echo $@ "  compressed:" $(shell gzip -9 -c <$@ | wc -c) bytes
