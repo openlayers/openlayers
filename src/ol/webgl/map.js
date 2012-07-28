@@ -24,12 +24,6 @@ goog.require('ol.webgl.shader.Fragment');
 goog.require('ol.webgl.shader.Vertex');
 
 
-/**
- * @define {boolean} Enable WebGL debugging.
- */
-ol.DEBUG_WEBGL = false;
-
-
 
 /**
  * @constructor
@@ -154,10 +148,6 @@ ol.webgl.Map = function(target, opt_values) {
     stencil: false
   });
   goog.asserts.assert(!goog.isNull(this.gl_));
-
-  if (ol.DEBUG_WEBGL) {
-    this.gl_ = WebGLDebugUtils.makeDebugContext(this.gl_);
-  }
 
   goog.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.LOST,
       this.handleWebGLContextLost, false, this);
