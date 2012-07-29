@@ -170,34 +170,10 @@ ol.dom.Map.prototype.handleCenterChanged = function() {
 /**
  * @inheritDoc
  */
-ol.dom.Map.prototype.handleLayerAdd = function(layer) {
-  goog.base(this, 'handleLayerAdd', layer);
-};
-
-
-/**
- * @inheritDoc
- */
-ol.dom.Map.prototype.handleLayerRemove = function(layer) {
-  goog.base(this, 'handleLayerRemove', layer);
-};
-
-
-/**
- * @inheritDoc
- */
 ol.dom.Map.prototype.handleResolutionChanged = function() {
   goog.base(this, 'handleResolutionChanged');
   // FIXME: resetLayersPane_ should be called
   // elsewhere as we may be frozen here
   this.resetLayersPane_();
   this.render();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.dom.Map.prototype.handleSizeChanged = function() {
-  goog.base(this, 'handleSizeChanged');
 };
