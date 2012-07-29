@@ -31,6 +31,7 @@ if (twoMaps) {
   map2.bindTo('center', map1);
   map2.bindTo('layers', map1);
   map2.bindTo('resolution', map1);
+  map2.bindTo('rotation', map1);
 }
 
 goog.exportSymbol('layer', layer);

@@ -50,6 +50,7 @@ ol.MapProperty = {
   LAYERS: 'layers',
   PROJECTION: 'projection',
   RESOLUTION: 'resolution',
+  ROTATION: 'rotation',
   SIZE: 'size',
   USER_PROJECTION: 'userProjection'
 };
@@ -192,6 +193,10 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
   goog.events.listen(
       this, ol.Object.getChangedEventType(ol.MapProperty.RESOLUTION),
       this.handleResolutionChanged, false, this);
+
+  goog.events.listen(
+      this, ol.Object.getChangedEventType(ol.MapProperty.ROTATION),
+      this.handleRotationChanged, false, this);
 
   goog.events.listen(
       this, ol.Object.getChangedEventType(ol.MapProperty.SIZE),
@@ -414,6 +419,14 @@ ol.Map.prototype.getResolutionForExtent = function(extent) {
 
 
 /**
+ * @return {number|undefined} Rotation.
+ */
+ol.Map.prototype.getRotation = function() {
+  return /** @type {number|undefined} */ this.get(ol.MapProperty.ROTATION);
+};
+
+
+/**
  * @return {ol.Size|undefined} Size.
  */
 ol.Map.prototype.getSize = function() {
@@ -604,6 +617,12 @@ ol.Map.prototype.handleResolutionChanged = goog.nullFunction;
 /**
  * @protected
  */
+ol.Map.prototype.handleRotationChanged = goog.nullFunction;
+
+
+/**
+ * @protected
+ */
 ol.Map.prototype.handleSizeChanged = goog.nullFunction;
 
 
@@ -749,6 +768,14 @@ ol.Map.prototype.setLayers = function(layers) {
  */
 ol.Map.prototype.setResolution = function(resolution) {
   this.set(ol.MapProperty.RESOLUTION, resolution);
+};
+
+
+/**
+ * @param {number} rotation Rotation.
+ */
+ol.Map.prototype.setRotation = function(rotation) {
+  this.set(ol.MapProperty.ROTATION, rotation);
 };
 
 
