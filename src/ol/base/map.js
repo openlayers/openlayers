@@ -671,8 +671,9 @@ ol.Map.prototype.handleViewportResize = function() {
  * @return {boolean} Is defined.
  */
 ol.Map.prototype.isDef = function() {
-  return goog.isDef(this.getCenter()) && goog.isDef(this.getResolution()) &&
-      goog.isDef(this.getSize());
+  return goog.isDefAndNotNull(this.getCenter()) &&
+      goog.isDef(this.getResolution()) &&
+      goog.isDefAndNotNull(this.getSize());
 };
 
 
@@ -845,10 +846,10 @@ ol.Map.prototype.updateMatrices_ = function() {
 
   if (this.matriciesDirty_) {
 
-    var center = /** @type {ol.Coordinate} */ this.getCenter();
+    var center = /** @type {!ol.Coordinate} */ this.getCenter();
     var resolution = /** @type {number} */ this.getResolution();
-    var rotation = /** @type {number} */ this.getRotation();
-    var size = /** @type {ol.Size} */ this.getSize();
+    var rotation = this.getRotation();
+    var size = /** @type {!ol.Size} */ this.getSize();
 
     goog.vec.Mat4.makeIdentity(this.coordinateToPixelMatrix_);
     goog.vec.Mat4.translate(this.coordinateToPixelMatrix_,

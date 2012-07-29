@@ -108,7 +108,7 @@ ol.control.Drag.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
     this.startY = browserEvent.clientY;
     this.deltaX = 0;
     this.deltaY = 0;
-    this.startCenter = /** @type {ol.Coordinate} */ map.getCenter();
+    this.startCenter = /** @type {!ol.Coordinate} */ map.getCenter();
     this.startCoordinate = /** @type {ol.Coordinate} */
         mapBrowserEvent.getCoordinate();
     if (this.handleDragStart(mapBrowserEvent)) {

@@ -263,6 +263,7 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
   var gl = this.getGL();
 
   var map = this.getMap();
+  goog.asserts.assert(map.isDef());
   var mapExtent = /** @type {!ol.Extent} */ map.getExtent();
   var mapResolution = /** @type {number} */ map.getResolution();
   var mapSize = map.getSize();

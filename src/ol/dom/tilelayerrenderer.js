@@ -53,7 +53,7 @@ ol.dom.TileLayerRenderer.prototype.render = function() {
   if (!map.isDef()) {
     return;
   }
-  var mapExtent = /** @type {ol.Extent} */ map.getExtent();
+  var mapExtent = /** @type {!ol.Extent} */ map.getExtent();
   var mapResolution = /** @type {number} */ map.getResolution();
 
   var tileLayer = this.getLayer();
