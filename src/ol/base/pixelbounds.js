@@ -1,6 +1,5 @@
 goog.provide('ol.PixelBounds');
 
-goog.require('goog.asserts');
 goog.require('ol.Rectangle');
 
 
