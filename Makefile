@@ -41,9 +41,7 @@ serve: $(PLOVR_JAR)
 	java -jar $(PLOVR_JAR) serve *.json
 
 src/ol/ol.js: $(SRC)
-	echo "goog.provide('ol');" >$@
-	echo >>$@
-	find src/ol -name \*.js | grep -v src/ol/ol.js | xargs grep -rh ^goog.provide | sort | uniq | sed -e 's/provide/require/g' >>$@
+	( echo "goog.provide('ol');" && echo && find src/ol -name \*.js -not -path $@ | xargs grep -rh ^goog.provide | sort | uniq | sed -e 's/provide/require/g' ) > $@
 
 .PHONY: lint
 lint:
