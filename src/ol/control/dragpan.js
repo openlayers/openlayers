@@ -1,3 +1,5 @@
+// FIXME cope with rotation
+
 goog.provide('ol.control.DragPan');
 
 goog.require('ol.Coordinate');
