@@ -1,19 +1,19 @@
 goog.provide('ol.Coordinate');
 
-goog.require('goog.math.Coordinate');
+goog.require('goog.math.Vec2');
 
 
 
 /**
  * @constructor
- * @extends {goog.math.Coordinate}
+ * @extends {goog.math.Vec2}
  * @param {number} x X.
  * @param {number} y Y.
  */
 ol.Coordinate = function(x, y) {
   goog.base(this, x, y);
 };
-goog.inherits(ol.Coordinate, goog.math.Coordinate);
+goog.inherits(ol.Coordinate, goog.math.Vec2);
 
 
 /**
