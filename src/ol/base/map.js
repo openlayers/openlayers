@@ -3,7 +3,6 @@
 // FIXME add change resolution by zoom step function
 // FIXME recheck layer/map projection compatability when projection changes
 // FIXME layer renderers should skip when they can't reproject
-// FIXME add rotation
 // FIXME add tilt and height?
 // FIXME split out renderer
 // FIXME add renderer selection strategy
@@ -22,6 +21,7 @@ goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.events.MouseWheelEvent');
 goog.require('goog.events.MouseWheelHandler');
 goog.require('goog.events.MouseWheelHandler.EventType');
+goog.require('goog.functions');
 goog.require('goog.fx.DragEvent');
 goog.require('goog.fx.Dragger');
 goog.require('goog.fx.anim');
@@ -245,6 +245,12 @@ ol.Map.prototype.animate_ = function() {
 
 
 /**
+ * @return {boolean} Can rotate.
+ */
+ol.Map.prototype.canRotate = goog.functions.FALSE;
+
+
+/**
  * @param {ol.Layer} layer Layer.
  * @protected
  * @return {ol.LayerRenderer} layerRenderer Layer renderer.
@@ -270,6 +276,9 @@ ol.Map.prototype.fitExtent = function(extent) {
   this.withFrozenRendering(function() {
     this.setCenter(extent.getCenter());
     this.setResolution(this.getResolutionForExtent(extent));
+    if (this.canRotate()) {
+      this.setRotation(0);
+    }
   }, this);
 };
 
@@ -431,6 +440,31 @@ ol.Map.prototype.getResolutionForExtent = function(extent) {
   } else {
     return undefined;
   }
+};
+
+
+/**
+ * @return {ol.Extent} Rotated extent.
+ */
+ol.Map.prototype.getRotatedExtent = function() {
+  goog.asserts.assert(this.isDef());
+  var center = /** @type {!ol.Coordinate} */ this.getCenter();
+  var resolution = this.getResolution();
+  var rotation = this.getRotation() || 0;
+  var size = this.getSize();
+  var xScale = resolution * size.width / 2;
+  var yScale = resolution * size.height / 2;
+  var corners = [
+    new ol.Coordinate(-xScale, -yScale),
+    new ol.Coordinate(-xScale, yScale),
+    new ol.Coordinate(xScale, -yScale),
+    new ol.Coordinate(xScale, yScale)
+  ];
+  goog.array.forEach(corners, function(corner) {
+    corner.rotate(rotation);
+    corner.add(center);
+  });
+  return ol.Extent.boundingExtent.apply(null, corners);
 };
 
 
@@ -797,7 +831,7 @@ ol.Map.prototype.setResolution = function(resolution) {
 
 
 /**
- * @param {number} rotation Rotation.
+ * @param {number|undefined} rotation Rotation.
  */
 ol.Map.prototype.setRotation = function(rotation) {
   this.set(ol.MapProperty.ROTATION, rotation);
@@ -860,6 +894,13 @@ ol.Map.prototype.updateMatrices_ = function() {
         1 / resolution,
         -1 / resolution,
         1);
+    if (this.canRotate() && goog.isDef(rotation)) {
+      goog.vec.Mat4.rotate(this.coordinateToPixelMatrix_,
+          rotation,
+          0,
+          0,
+          1);
+    }
     goog.vec.Mat4.translate(this.coordinateToPixelMatrix_,
         -center.x,
         -center.y,
@@ -870,6 +911,13 @@ ol.Map.prototype.updateMatrices_ = function() {
         center.x,
         center.y,
         0);
+    if (this.canRotate() && goog.isDef(rotation)) {
+      goog.vec.Mat4.rotate(this.coordinateToPixelMatrix_,
+          -rotation,
+          0,
+          0,
+          1);
+    }
     goog.vec.Mat4.scale(this.pixelToCoordinateMatrix_,
         resolution,
         -resolution,
