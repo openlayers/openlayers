@@ -1,8 +1,6 @@
 // FIXME large resolutions lead to too large framebuffers :-(
 // FIXME animated shaders! check in redraw
 // FIXME out-by-one error in texture alignment?
-// FIXME bad things happen when we go outside the zoom levels
-// FIXME bad things happen when the resolution does not match the zoom levels
 
 goog.provide('ol.webgl.TileLayerRenderer');
 goog.provide('ol.webgl.tilelayerrenderer.shader.Fragment');
@@ -273,7 +271,8 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
   var tileStore = tileLayer.getStore();
   var tileGrid = tileStore.getTileGrid();
   var z = tileGrid.getZForResolution(mapResolution);
-  var tileBounds = tileGrid.getTileBoundsForExtentAndZ(mapExtent, z);
+  var tileBounds =
+      tileGrid.getTileBoundsForExtentAndResolution(mapExtent, mapResolution);
   var tileBoundsSize = tileBounds.getSize();
   var tileSize = tileGrid.getTileSize();
 
@@ -375,8 +374,10 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
           (framebufferTileBoundsExtent.maxY - framebufferTileBoundsExtent.minY),
       0);
   goog.vec.Mat4.scale(this.matrix_,
-      mapSize.width / framebufferDimension,
-      mapSize.height / framebufferDimension,
+      (mapExtent.maxX - mapExtent.minX) /
+          (framebufferTileBoundsExtent.maxX - framebufferTileBoundsExtent.minX),
+      (mapExtent.maxY - mapExtent.minY) /
+          (framebufferTileBoundsExtent.maxY - framebufferTileBoundsExtent.minY),
       1);
 
 };
