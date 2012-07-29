@@ -36,6 +36,7 @@ goog.require('ol.Extent');
 goog.require('ol.LayerRenderer');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.Object');
+goog.require('ol.Pixel');
 goog.require('ol.Projection');
 goog.require('ol.Size');
 goog.require('ol.TransformFunction');
@@ -330,7 +331,7 @@ ol.Map.prototype.getControls = function() {
 
 
 /**
- * @param {ol.Coordinate} pixel Pixel.
+ * @param {ol.Pixel} pixel Pixel.
  * @return {ol.Coordinate|undefined} Coordinate.
  */
 ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
@@ -387,14 +388,14 @@ ol.Map.prototype.getLayers = function() {
 
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
- * @return {ol.Coordinate|undefined} Pixel.
+ * @return {ol.Pixel|undefined} Pixel.
  */
 ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
   if (this.isDef()) {
     this.updateMatrices_();
     var vec3 = [coordinate.x, coordinate.y, 0];
     goog.vec.Mat4.multVec3(this.coordinateToPixelMatrix_, vec3, vec3);
-    return new ol.Coordinate(vec3[0], vec3[1]);
+    return new ol.Pixel(vec3[0], vec3[1]);
   } else {
     return undefined;
   }

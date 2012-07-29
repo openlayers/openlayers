@@ -3,6 +3,7 @@ goog.provide('ol.MapBrowserEvent');
 goog.require('goog.events.BrowserEvent');
 goog.require('ol.Coordinate');
 goog.require('ol.MapEvent');
+goog.require('ol.Pixel');
 
 
 
@@ -41,7 +42,7 @@ ol.MapBrowserEvent.prototype.getCoordinate = function() {
     return this.coordinate_;
   } else {
     var browserEvent = this.browserEvent;
-    var pixel = new ol.Coordinate(browserEvent.offsetX, browserEvent.offsetY);
+    var pixel = new ol.Pixel(browserEvent.offsetX, browserEvent.offsetY);
     var coordinate = this.map.getCoordinateFromPixel(pixel);
     this.coordinate_ = coordinate;
     return coordinate;
