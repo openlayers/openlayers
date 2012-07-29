@@ -351,9 +351,9 @@ ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
  */
 ol.Map.prototype.getExtent = function() {
   if (this.isDef()) {
-    var size = this.getSize();
     var center = this.getCenter();
     var resolution = this.getResolution();
+    var size = this.getSize();
     var minX = center.x - resolution * size.width / 2;
     var minY = center.y - resolution * size.height / 2;
     var maxX = center.x + resolution * size.width / 2;
