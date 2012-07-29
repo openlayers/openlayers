@@ -11,6 +11,7 @@ goog.require('ol.control.DragPan');
 goog.require('ol.control.KeyboardPan');
 goog.require('ol.control.KeyboardZoom');
 goog.require('ol.control.MouseWheelZoom');
+goog.require('ol.control.ShiftDragRotate');
 goog.require('ol.control.ShiftDragZoom');
 goog.require('ol.dom');
 goog.require('ol.dom.Map');
@@ -81,6 +82,7 @@ ol.createMap = function(target, opt_values, opt_rendererHints) {
     controls.push(new ol.control.KeyboardPan());
     controls.push(new ol.control.KeyboardZoom());
     controls.push(new ol.control.MouseWheelZoom());
+    controls.push(new ol.control.ShiftDragRotate());
     controls.push(new ol.control.ShiftDragZoom());
     values[ol.MapProperty.CONTROLS] = controls;
   }
