@@ -264,16 +264,19 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
 
   var map = this.getMap();
   goog.asserts.assert(map.isDef());
-  var mapExtent = /** @type {!ol.Extent} */ map.getExtent();
+  var mapCenter = map.getCenter();
+  var mapExtent = map.getExtent();
   var mapResolution = /** @type {number} */ map.getResolution();
+  var mapRotatedExtent = map.getRotatedExtent();
+  var mapRotation = map.getRotation();
   var mapSize = map.getSize();
 
   var tileLayer = this.getLayer();
   var tileStore = tileLayer.getStore();
   var tileGrid = tileStore.getTileGrid();
   var z = tileGrid.getZForResolution(mapResolution);
-  var tileBounds =
-      tileGrid.getTileBoundsForExtentAndResolution(mapExtent, mapResolution);
+  var tileBounds = tileGrid.getTileBoundsForExtentAndResolution(
+      mapRotatedExtent, mapResolution);
   var tileBoundsSize = tileBounds.getSize();
   var tileSize = tileGrid.getTileSize();
 
@@ -369,9 +372,9 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
       tileGrid.getTileBoundsExtent(z, framebufferTileBounds);
   goog.vec.Mat4.makeIdentity(this.matrix_);
   goog.vec.Mat4.translate(this.matrix_,
-      (mapExtent.minX - framebufferTileBoundsExtent.minX) /
+      (mapCenter.x - framebufferTileBoundsExtent.minX) /
           (framebufferTileBoundsExtent.maxX - framebufferTileBoundsExtent.minX),
-      (mapExtent.minY - framebufferTileBoundsExtent.minY) /
+      (mapCenter.y - framebufferTileBoundsExtent.minY) /
           (framebufferTileBoundsExtent.maxY - framebufferTileBoundsExtent.minY),
       0);
   goog.vec.Mat4.scale(this.matrix_,
@@ -380,5 +383,16 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
       (mapExtent.maxY - mapExtent.minY) /
           (framebufferTileBoundsExtent.maxY - framebufferTileBoundsExtent.minY),
       1);
+  if (goog.isDef(mapRotation)) {
+    goog.vec.Mat4.rotate(this.matrix_,
+        mapRotation,
+        0,
+        0,
+        1);
+  }
+  goog.vec.Mat4.translate(this.matrix_,
+      -0.5,
+      -0.5,
+      0);
 
 };

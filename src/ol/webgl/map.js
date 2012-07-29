@@ -14,6 +14,7 @@ goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
+goog.require('goog.functions');
 goog.require('goog.style');
 goog.require('goog.webgl');
 goog.require('ol.Layer');
@@ -239,6 +240,12 @@ goog.inherits(ol.webgl.Map, ol.Map);
 /**
  * @inheritDoc
  */
+ol.webgl.Map.prototype.canRotate = goog.functions.TRUE;
+
+
+/**
+ * @inheritDoc
+ */
 ol.webgl.Map.prototype.createLayerRenderer = function(layer) {
   var gl = this.getGL();
   if (layer instanceof ol.TileLayer) {
@@ -423,6 +430,15 @@ ol.webgl.Map.prototype.handleLayerRemove = function(layer) {
  */
 ol.webgl.Map.prototype.handleResolutionChanged = function() {
   goog.base(this, 'handleResolutionChanged');
+  this.render();
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.webgl.Map.prototype.handleRotationChanged = function() {
+  goog.base(this, 'handleRotationChanged');
   this.render();
 };
 
