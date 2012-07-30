@@ -1,6 +1,7 @@
 goog.provide('ol.Store');
 
 goog.require('goog.functions');
+goog.require('ol.Attribution');
 goog.require('ol.Extent');
 goog.require('ol.Projection');
 
@@ -10,8 +11,9 @@ goog.require('ol.Projection');
  * @constructor
  * @param {ol.Projection} projection Projection.
  * @param {ol.Extent=} opt_extent Extent.
+ * @param {Array.<ol.Attribution>=} opt_attributions Attributions.
  */
-ol.Store = function(projection, opt_extent) {
+ol.Store = function(projection, opt_extent, opt_attributions) {
 
   /**
    * @private
@@ -25,16 +27,20 @@ ol.Store = function(projection, opt_extent) {
    */
   this.extent_ = goog.isDef(opt_extent) ? opt_extent : projection.getExtent();
 
+  /**
+   * @private
+   * @type {Array.<ol.Attribution>}
+   */
+  this.attributions_ = goog.isDef(opt_attributions) ? opt_attributions : null;
+
 };
 
 
 /**
- * @param {ol.Extent} extent Extent.
- * @param {number} resolution Resolution.
- * @return {Array.<string>} Attributions.
+ * @return {Array.<ol.Attribution>} Attributions.
  */
-ol.Store.prototype.getAttributions = function(extent, resolution) {
-  return [];
+ol.Store.prototype.getAttributions = function() {
+  return this.attributions_;
 };
 
 
@@ -64,6 +70,14 @@ ol.Store.prototype.getResolutions = goog.abstractMethod;
  * @return {boolean} Is ready.
  */
 ol.Store.prototype.isReady = goog.functions.TRUE;
+
+
+/**
+ * @param {Array.<ol.Attribution>} attributions Attributions.
+ */
+ol.Store.prototype.setAttributions = function(attributions) {
+  this.attributions_ = attributions;
+};
 
 
 /**
