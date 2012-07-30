@@ -5,6 +5,7 @@ goog.provide('ol.control.ShiftDragZoom');
 goog.require('ol.Extent');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.control.Drag');
+goog.require('ol.control.ZoomFunctionType');
 
 
 /**
@@ -24,9 +25,18 @@ ol.SHIFT_DRAG_ZOOM_HYSTERESIS_PIXELS_SQUARED =
 /**
  * @constructor
  * @extends {ol.control.Drag}
+ * @param {ol.control.ZoomFunctionType=} opt_zoomFunction Zoom function.
  */
-ol.control.ShiftDragZoom = function() {
+ol.control.ShiftDragZoom = function(opt_zoomFunction) {
+
   goog.base(this);
+
+  /**
+   * @private
+   * @type {ol.control.ZoomFunctionType|undefined}
+   */
+  this.zoomFunction_ = opt_zoomFunction;
+
 };
 goog.inherits(ol.control.ShiftDragZoom, ol.control.Drag);
 
@@ -37,10 +47,18 @@ goog.inherits(ol.control.ShiftDragZoom, ol.control.Drag);
 ol.control.ShiftDragZoom.prototype.handleDragEnd = function(mapBrowserEvent) {
   if (this.deltaX * this.deltaX + this.deltaY * this.deltaY >=
       ol.SHIFT_DRAG_ZOOM_HYSTERESIS_PIXELS_SQUARED) {
+    var map = mapBrowserEvent.map;
     var extent = ol.Extent.boundingExtent(
         this.startCoordinate,
         mapBrowserEvent.getCoordinate());
-    mapBrowserEvent.map.fitExtent(extent);
+    var resolution = map.getResolutionForExtent(extent);
+    if (goog.isDef(this.zoomFunction_)) {
+      resolution = this.zoomFunction_(resolution, 0);
+    }
+    map.withFrozenRendering(function() {
+      map.setCenter(extent.getCenter());
+      map.setResolution(resolution);
+    });
   }
 };
 

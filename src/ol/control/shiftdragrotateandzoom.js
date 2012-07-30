@@ -3,15 +3,25 @@ goog.provide('ol.control.ShiftDragRotateAndZoom');
 goog.require('goog.math.Vec2');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.control.Drag');
+goog.require('ol.control.ZoomFunctionType');
 
 
 
 /**
  * @constructor
  * @extends {ol.control.Drag}
+ * @param {ol.control.ZoomFunctionType=} opt_zoomFunction Zoom function.
  */
-ol.control.ShiftDragRotateAndZoom = function() {
+ol.control.ShiftDragRotateAndZoom = function(opt_zoomFunction) {
+
   goog.base(this);
+
+  /**
+   * @private
+   * @type {ol.control.ZoomFunctionType|undefined}
+   */
+  this.zoomFunction_ = opt_zoomFunction;
+
 };
 goog.inherits(ol.control.ShiftDragRotateAndZoom, ol.control.Drag);
 
@@ -37,7 +47,6 @@ ol.control.ShiftDragRotateAndZoom.prototype.handleDrag =
     function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   var map = mapBrowserEvent.map;
-  var resolution = map.getResolution();
   var size = map.getSize();
   var delta = new goog.math.Vec2(
       browserEvent.offsetX - size.width / 2,
@@ -45,7 +54,11 @@ ol.control.ShiftDragRotateAndZoom.prototype.handleDrag =
   var theta = Math.atan2(delta.y, delta.x);
   // FIXME this should use map.withFrozenRendering but an assertion fails :-(
   map.setRotation(this.startRotation_ - theta);
-  map.setResolution(this.startRatio_ * delta.magnitude());
+  var resolution = this.startRatio_ * delta.magnitude();
+  if (goog.isDef(this.zoomFunction_)) {
+    resolution = this.zoomFunction_(resolution, 0);
+  }
+  map.setResolution(resolution);
 };
 
 

@@ -3,15 +3,25 @@ goog.provide('ol.control.DblClickZoom');
 goog.require('goog.events.EventType');
 goog.require('ol.Control');
 goog.require('ol.MapBrowserEvent');
+goog.require('ol.control.ZoomFunctionType');
 
 
 
 /**
  * @constructor
  * @extends {ol.Control}
+ * @param {ol.control.ZoomFunctionType} zoomFunction Zoom function.
  */
-ol.control.DblClickZoom = function() {
+ol.control.DblClickZoom = function(zoomFunction) {
+
   goog.base(this);
+
+  /**
+   * @private
+   * @type {ol.control.ZoomFunctionType}
+   */
+  this.zoomFunction_ = zoomFunction;
+
 };
 goog.inherits(ol.control.DblClickZoom, ol.Control);
 
@@ -27,9 +37,10 @@ ol.control.DblClickZoom.prototype.handleMapBrowserEvent =
       // FIXME compute correct center for zoom
       map.setCenter(mapBrowserEvent.getCoordinate());
       var browserEvent = mapBrowserEvent.browserEvent;
-      var scale = browserEvent.shiftKey ? 2 : 0.5;
-      map.setResolution(scale * map.getResolution());
-    });
+      var delta = browserEvent.shiftKey ? -1 : 1;
+      var resolution = this.zoomFunction_(map.getResolution(), delta);
+      map.setResolution(resolution);
+    }, this);
     mapBrowserEvent.preventDefault();
   }
 };

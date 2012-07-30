@@ -13,6 +13,7 @@ goog.require('ol.control.KeyboardZoom');
 goog.require('ol.control.MouseWheelZoom');
 goog.require('ol.control.ShiftDragRotateAndZoom');
 goog.require('ol.control.ShiftDragZoom');
+goog.require('ol.control.ZoomFunction');
 goog.require('ol.dom');
 goog.require('ol.dom.Map');
 goog.require('ol.webgl');
@@ -75,15 +76,19 @@ ol.createMap = function(target, opt_values, opt_rendererHints) {
     goog.object.extend(values, opt_values);
   }
 
+  // FIXME this should be a configuration option
+  var zoomFunction = ol.control.ZoomFunction.createSnapToPower(
+      2, ol.Projection.EPSG_3857_HALF_SIZE / 128);
+
   if (!goog.object.containsKey(values, ol.MapProperty.CONTROLS)) {
     var controls = new ol.Collection();
-    controls.push(new ol.control.DblClickZoom());
+    controls.push(new ol.control.DblClickZoom(zoomFunction));
     controls.push(new ol.control.DragPan());
     controls.push(new ol.control.KeyboardPan());
-    controls.push(new ol.control.KeyboardZoom());
-    controls.push(new ol.control.MouseWheelZoom());
-    controls.push(new ol.control.ShiftDragRotateAndZoom());
-    controls.push(new ol.control.ShiftDragZoom());
+    controls.push(new ol.control.KeyboardZoom(zoomFunction));
+    controls.push(new ol.control.MouseWheelZoom(zoomFunction));
+    controls.push(new ol.control.ShiftDragRotateAndZoom(zoomFunction));
+    controls.push(new ol.control.ShiftDragZoom(zoomFunction));
     values[ol.MapProperty.CONTROLS] = controls;
   }
 
