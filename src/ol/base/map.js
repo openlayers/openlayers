@@ -787,7 +787,7 @@ ol.Map.prototype.setBackgroundColor = function(backgroundColor) {
 
 
 /**
- * @param {ol.Coordinate} center Center.
+ * @param {ol.Coordinate|undefined} center Center.
  */
 ol.Map.prototype.setCenter = function(center) {
   this.set(ol.MapProperty.CENTER, center);
@@ -823,7 +823,7 @@ ol.Map.prototype.setLayers = function(layers) {
 
 
 /**
- * @param {number} resolution Resolution.
+ * @param {number|undefined} resolution Resolution.
  */
 ol.Map.prototype.setResolution = function(resolution) {
   this.set(ol.MapProperty.RESOLUTION, resolution);
