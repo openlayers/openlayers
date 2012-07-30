@@ -10,6 +10,7 @@ goog.require('ol.PixelBounds');
 goog.require('ol.Size');
 goog.require('ol.TileBounds');
 goog.require('ol.TileCoord');
+goog.require('ol.array');
 
 
 
@@ -302,20 +303,5 @@ ol.TileGrid.prototype.getTileSize = function() {
  * @return {number} Z.
  */
 ol.TileGrid.prototype.getZForResolution = function(resolution) {
-  var z;
-  for (z = 0; z < this.numResolutions_; ++z) {
-    if (this.resolutions_[z] == resolution) {
-      return z;
-    } else if (this.resolutions_[z] < resolution) {
-      if (z === 0) {
-        return z;
-      } else if (resolution - this.resolutions_[z] <=
-          this.resolutions_[z - 1] - resolution) {
-        return z;
-      } else {
-        return z - 1;
-      }
-    }
-  }
-  return this.numResolutions_ - 1;
+  return ol.array.linearFindNearest(this.resolutions_, resolution);
 };
