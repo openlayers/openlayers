@@ -16,9 +16,10 @@ function testClone() {
 
 
 function testTransform() {
-  var transform = ol.Projection.getTransformFromCodes('EPSG:4326', 'EPSG:3857');
+  var transformFn =
+      ol.Projection.getTransformFromCodes('EPSG:4326', 'EPSG:3857');
   var sourceExtent = new ol.Extent(-15, -30, 45, 60);
-  var destinationExtent = sourceExtent.transform(transform);
+  var destinationExtent = sourceExtent.transform(transformFn);
   assertNotNullNorUndefined(destinationExtent);
   // FIXME check values with third-party tool
   assertRoughlyEquals(-1669792.3618991037, destinationExtent.minX, 1e-9);

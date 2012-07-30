@@ -140,9 +140,9 @@ ol.Projection.addProjections = function(projections) {
 /**
  * @param {ol.Projection} source Source.
  * @param {ol.Projection} destination Destination.
- * @param {ol.TransformFunction} transform Transform.
+ * @param {ol.TransformFunction} transformFn Transform.
  */
-ol.Projection.addTransform = function(source, destination, transform) {
+ol.Projection.addTransform = function(source, destination, transformFn) {
   var projections = ol.Projection.projections_;
   var sourceCode = source.getCode();
   goog.asserts.assert(goog.object.containsKey(projections, sourceCode));
@@ -154,7 +154,7 @@ ol.Projection.addTransform = function(source, destination, transform) {
   }
   goog.asserts.assert(
       !goog.object.containsKey(transforms[sourceCode], destinationCode));
-  transforms[sourceCode][destinationCode] = transform;
+  transforms[sourceCode][destinationCode] = transformFn;
 };
 
 
@@ -180,8 +180,8 @@ ol.Projection.equivalent = function(projection1, projection2) {
   } else if (projection1.getUnits() != projection2.getUnits()) {
     return false;
   } else {
-    var transform = ol.Projection.getTransform(projection1, projection2);
-    return transform === ol.Projection.cloneTransform;
+    var transformFn = ol.Projection.getTransform(projection1, projection2);
+    return transformFn === ol.Projection.cloneTransform;
   }
 };
 
@@ -239,8 +239,8 @@ ol.Projection.cloneTransform = function(point) {
  * @return {ol.Coordinate} Point.
  */
 ol.Projection.transform = function(point, source, destination) {
-  var transform = ol.Projection.getTransform(source, destination);
-  return transform(point);
+  var transformFn = ol.Projection.getTransform(source, destination);
+  return transformFn(point);
 };
 
 
@@ -252,9 +252,9 @@ ol.Projection.transform = function(point, source, destination) {
  */
 ol.Projection.transformWithCodes =
     function(point, sourceCode, destinationCode) {
-  var transform = ol.Projection.getTransformFromCodes(
+  var transformFn = ol.Projection.getTransformFromCodes(
       sourceCode, destinationCode);
-  return transform(point);
+  return transformFn(point);
 };
 
 

@@ -64,17 +64,17 @@ ol.TileUrlFunction.nullTileUrlFunction = function(tileCoord) {
 
 
 /**
- * @param {function(ol.TileCoord): ol.TileCoord} transform Transform.
+ * @param {function(ol.TileCoord): ol.TileCoord} transformFn Transform.function.
  * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
 ol.TileUrlFunction.withTileCoordTransform =
-    function(transform, tileUrlFunction) {
+    function(transformFn, tileUrlFunction) {
   return function(tileCoord) {
     if (goog.isNull(tileCoord)) {
       return undefined;
     } else {
-      return tileUrlFunction(transform(tileCoord));
+      return tileUrlFunction(transformFn(tileCoord));
     }
   };
 };

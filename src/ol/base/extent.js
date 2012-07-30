@@ -49,11 +49,11 @@ ol.Extent.prototype.clone = function() {
 
 
 /**
- * @param {ol.TransformFunction} transform Transform.
+ * @param {ol.TransformFunction} transformFn Transform function.
  * @return {ol.Extent} Extent.
  */
-ol.Extent.prototype.transform = function(transform) {
-  var min = transform(new ol.Coordinate(this.minX, this.minY));
-  var max = transform(new ol.Coordinate(this.maxX, this.maxY));
+ol.Extent.prototype.transform = function(transformFn) {
+  var min = transformFn(new ol.Coordinate(this.minX, this.minY));
+  var max = transformFn(new ol.Coordinate(this.maxX, this.maxY));
   return new ol.Extent(min.x, min.y, max.x, max.y);
 };
