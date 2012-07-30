@@ -4,9 +4,9 @@
  * @see https://developers.google.com/maps/documentation/javascript/reference
  */
 
-goog.provide('ol.Array');
-goog.provide('ol.ArrayEvent');
-goog.provide('ol.ArrayEventType');
+goog.provide('ol.Collection');
+goog.provide('ol.CollectionEvent');
+goog.provide('ol.CollectionEventType');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -17,7 +17,7 @@ goog.require('ol.Object');
 /**
  * @enum {string}
  */
-ol.ArrayEventType = {
+ol.CollectionEventType = {
   INSERT_AT: 'insert_at',
   REMOVE_AT: 'remove_at',
   SET_AT: 'set_at'
@@ -28,12 +28,12 @@ ol.ArrayEventType = {
 /**
  * @constructor
  * @extends {goog.events.Event}
- * @param {ol.ArrayEventType} type Type.
+ * @param {ol.CollectionEventType} type Type.
  * @param {number} index Index.
  * @param {*=} opt_prev Value.
  * @param {Object=} opt_target Target.
  */
-ol.ArrayEvent = function(type, index, opt_prev, opt_target) {
+ol.CollectionEvent = function(type, index, opt_prev, opt_target) {
 
   goog.base(this, type, opt_target);
 
@@ -48,13 +48,13 @@ ol.ArrayEvent = function(type, index, opt_prev, opt_target) {
   this.prev = opt_prev;
 
 };
-goog.inherits(ol.ArrayEvent, goog.events.Event);
+goog.inherits(ol.CollectionEvent, goog.events.Event);
 
 
 /**
  * @enum {string}
  */
-ol.ArrayProperty = {
+ol.CollectionProperty = {
   LENGTH: 'length'
 };
 
@@ -65,7 +65,7 @@ ol.ArrayProperty = {
  * @extends {ol.Object}
  * @param {Array=} opt_array Array.
  */
-ol.Array = function(opt_array) {
+ol.Collection = function(opt_array) {
 
   goog.base(this);
 
@@ -78,26 +78,26 @@ ol.Array = function(opt_array) {
   this.updateLength_();
 
 };
-goog.inherits(ol.Array, ol.Object);
+goog.inherits(ol.Collection, ol.Object);
 
 
 /**
- * @param {ol.Array|Array} arg Argument.
- * @return {ol.Array} Array.
+ * @param {ol.Collection|Array} arg Argument.
+ * @return {ol.Collection} Collection.
  */
-ol.Array.create = function(arg) {
-  if (arg instanceof ol.Array) {
+ol.Collection.create = function(arg) {
+  if (arg instanceof ol.Collection) {
     return arg;
   } else {
-    return new ol.Array(arg);
+    return new ol.Collection(arg);
   }
 };
 
 
 /**
  */
-ol.Array.prototype.clear = function() {
-  while (this[ol.ArrayProperty.LENGTH]) {
+ol.Collection.prototype.clear = function() {
+  while (this[ol.CollectionProperty.LENGTH]) {
     this.pop();
   }
 };
@@ -108,7 +108,7 @@ ol.Array.prototype.clear = function() {
  * @param {T=} opt_obj The object to be used for the value of 'this' within f.
  * @template T
  */
-ol.Array.prototype.forEach = function(f, opt_obj) {
+ol.Collection.prototype.forEach = function(f, opt_obj) {
   goog.array.forEach(this.array_, f, opt_obj);
 };
 
@@ -116,7 +116,7 @@ ol.Array.prototype.forEach = function(f, opt_obj) {
 /**
  * @return {Array} Array.
  */
-ol.Array.prototype.getArray = function() {
+ol.Collection.prototype.getArray = function() {
   return this.array_;
 };
 
@@ -125,7 +125,7 @@ ol.Array.prototype.getArray = function() {
  * @param {number} index Index.
  * @return {*} Element.
  */
-ol.Array.prototype.getAt = function(index) {
+ol.Collection.prototype.getAt = function(index) {
   return this.array_[index];
 };
 
@@ -133,8 +133,8 @@ ol.Array.prototype.getAt = function(index) {
 /**
  * @return {number} Length.
  */
-ol.Array.prototype.getLength = function() {
-  return /** @type {number} */ this.get(ol.ArrayProperty.LENGTH);
+ol.Collection.prototype.getLength = function() {
+  return /** @type {number} */ this.get(ol.CollectionProperty.LENGTH);
 };
 
 
@@ -142,13 +142,13 @@ ol.Array.prototype.getLength = function() {
  * @param {number} index Index.
  * @param {*} elem Element.
  */
-ol.Array.prototype.insertAt = function(index, elem) {
+ol.Collection.prototype.insertAt = function(index, elem) {
   goog.array.insertAt(this.array_, elem, index);
   this.updateLength_();
-  this.dispatchEvent(new ol.ArrayEvent(
-      ol.ArrayEventType.INSERT_AT, index, undefined, this));
-  if (this[ol.ArrayEventType.INSERT_AT]) {
-    this[ol.ArrayEventType.INSERT_AT](index);
+  this.dispatchEvent(new ol.CollectionEvent(
+      ol.CollectionEventType.INSERT_AT, index, undefined, this));
+  if (this[ol.CollectionEventType.INSERT_AT]) {
+    this[ol.CollectionEventType.INSERT_AT](index);
   }
 };
 
@@ -156,7 +156,7 @@ ol.Array.prototype.insertAt = function(index, elem) {
 /**
  * @return {*} Element.
  */
-ol.Array.prototype.pop = function() {
+ol.Collection.prototype.pop = function() {
   return this.removeAt(this.getLength() - 1);
 };
 
@@ -165,7 +165,7 @@ ol.Array.prototype.pop = function() {
  * @param {*} elem Element.
  * @return {number} Length.
  */
-ol.Array.prototype.push = function(elem) {
+ol.Collection.prototype.push = function(elem) {
   var n = this.array_.length;
   this.insertAt(n, elem);
   return n;
@@ -176,14 +176,14 @@ ol.Array.prototype.push = function(elem) {
  * @param {number} index Index.
  * @return {*} Value.
  */
-ol.Array.prototype.removeAt = function(index) {
+ol.Collection.prototype.removeAt = function(index) {
   var prev = this.array_[index];
   goog.array.removeAt(this.array_, index);
   this.updateLength_();
-  this.dispatchEvent(new ol.ArrayEvent(ol.ArrayEventType.REMOVE_AT,
+  this.dispatchEvent(new ol.CollectionEvent(ol.CollectionEventType.REMOVE_AT,
       index, prev, this));
-  if (this[ol.ArrayEventType.REMOVE_AT]) {
-    this[ol.ArrayEventType.REMOVE_AT](index);
+  if (this[ol.CollectionEventType.REMOVE_AT]) {
+    this[ol.CollectionEventType.REMOVE_AT](index);
   }
   return prev;
 };
@@ -193,15 +193,15 @@ ol.Array.prototype.removeAt = function(index) {
  * @param {number} index Index.
  * @param {*} elem Element.
  */
-ol.Array.prototype.setAt = function(index, elem) {
-  var n = this[ol.ArrayProperty.LENGTH];
+ol.Collection.prototype.setAt = function(index, elem) {
+  var n = this[ol.CollectionProperty.LENGTH];
   if (index < n) {
     var prev = this.array_[index];
     this.array_[index] = elem;
-    this.dispatchEvent(new ol.ArrayEvent(ol.ArrayEventType.SET_AT,
+    this.dispatchEvent(new ol.CollectionEvent(ol.CollectionEventType.SET_AT,
         index, prev, this));
-    if (this[ol.ArrayEventType.SET_AT]) {
-      this[ol.ArrayEventType.SET_AT](index, prev);
+    if (this[ol.CollectionEventType.SET_AT]) {
+      this[ol.CollectionEventType.SET_AT](index, prev);
     }
   } else {
     var j;
@@ -216,6 +216,6 @@ ol.Array.prototype.setAt = function(index, elem) {
 /**
  * @private
  */
-ol.Array.prototype.updateLength_ = function() {
+ol.Collection.prototype.updateLength_ = function() {
   this.set('length', this.array_.length);
 };

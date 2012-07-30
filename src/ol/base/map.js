@@ -28,7 +28,7 @@ goog.require('goog.fx.anim');
 goog.require('goog.fx.anim.Animated');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
-goog.require('ol.Array');
+goog.require('ol.Collection');
 goog.require('ol.Color');
 goog.require('ol.Control');
 goog.require('ol.Coordinate');
@@ -332,10 +332,10 @@ ol.Map.prototype.getCenter = function() {
 
 
 /**
- * @return {ol.Array} Controls.
+ * @return {ol.Collection} Controls.
  */
 ol.Map.prototype.getControls = function() {
-  return /** @type {ol.Array} */ this.get(ol.MapProperty.CONTROLS);
+  return /** @type {ol.Collection} */ this.get(ol.MapProperty.CONTROLS);
 };
 
 
@@ -388,10 +388,10 @@ ol.Map.prototype.getLayerRenderer = function(layer) {
 
 
 /**
- * @return {ol.Array} Layers.
+ * @return {ol.Collection} Layers.
  */
 ol.Map.prototype.getLayers = function() {
-  return /** @type {ol.Array} */ (this.get(ol.MapProperty.LAYERS));
+  return /** @type {ol.Collection} */ (this.get(ol.MapProperty.LAYERS));
 };
 
 
@@ -589,18 +589,18 @@ ol.Map.prototype.handleLayerRemove = function(layer) {
 
 
 /**
- * @param {ol.ArrayEvent} event Event.
+ * @param {ol.CollectionEvent} event Event.
  * @protected
  */
 ol.Map.prototype.handleLayersInsertAt = function(event) {
-  var layers = /** @type {ol.Array} */ event.target;
+  var layers = /** @type {ol.Collection} */ event.target;
   var layer = /** @type {ol.Layer} */ layers.getAt(event.index);
   this.handleLayerAdd(layer);
 };
 
 
 /**
- * @param {ol.ArrayEvent} event Event.
+ * @param {ol.CollectionEvent} event Event.
  * @protected
  */
 ol.Map.prototype.handleLayersRemoveAt = function(event) {
@@ -610,13 +610,13 @@ ol.Map.prototype.handleLayersRemoveAt = function(event) {
 
 
 /**
- * @param {ol.ArrayEvent} event Event.
+ * @param {ol.CollectionEvent} event Event.
  * @protected
  */
 ol.Map.prototype.handleLayersSetAt = function(event) {
   var prevLayer = /** @type {ol.Layer} */ event.prev;
   this.handleLayerRemove(prevLayer);
-  var layers = /** @type {ol.Array} */ event.target;
+  var layers = /** @type {ol.Collection} */ event.target;
   var layer = /** @type {ol.Layer} */ layers.getAt(event.index);
   this.handleLayerAdd(layer);
 };
@@ -641,11 +641,11 @@ ol.Map.prototype.handleLayersChanged = function() {
       this.setLayerRenderer(layer, layerRenderer);
     }, this);
     this.layersListenerKeys_ = [
-      goog.events.listen(layers, ol.ArrayEventType.INSERT_AT,
+      goog.events.listen(layers, ol.CollectionEventType.INSERT_AT,
           this.handleLayersInsertAt, false, this),
-      goog.events.listen(layers, ol.ArrayEventType.REMOVE_AT,
+      goog.events.listen(layers, ol.CollectionEventType.REMOVE_AT,
           this.handleLayersRemoveAt, false, this),
-      goog.events.listen(layers, ol.ArrayEventType.SET_AT,
+      goog.events.listen(layers, ol.CollectionEventType.SET_AT,
           this.handleLayersSetAt, false, this)
     ];
   }
@@ -795,7 +795,7 @@ ol.Map.prototype.setCenter = function(center) {
 
 
 /**
- * @param {ol.Array} controls Controls.
+ * @param {ol.Collection} controls Controls.
  */
 ol.Map.prototype.setControls = function(controls) {
   this.set(ol.MapProperty.CONTROLS, controls);
@@ -815,7 +815,7 @@ ol.Map.prototype.setLayerRenderer = function(layer, layerRenderer) {
 
 
 /**
- * @param {ol.Array} layers Layers.
+ * @param {ol.Collection} layers Layers.
  */
 ol.Map.prototype.setLayers = function(layers) {
   this.set(ol.MapProperty.LAYERS, layers);

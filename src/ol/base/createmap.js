@@ -2,7 +2,7 @@ goog.provide('ol.RendererHint');
 goog.provide('ol.createMap');
 
 goog.require('goog.object');
-goog.require('ol.Array');
+goog.require('ol.Collection');
 goog.require('ol.Map');
 goog.require('ol.MapProperty');
 goog.require('ol.Projection');
@@ -76,7 +76,7 @@ ol.createMap = function(target, opt_values, opt_rendererHints) {
   }
 
   if (!goog.object.containsKey(values, ol.MapProperty.CONTROLS)) {
-    var controls = new ol.Array();
+    var controls = new ol.Collection();
     controls.push(new ol.control.DblClickZoom());
     controls.push(new ol.control.DragPan());
     controls.push(new ol.control.KeyboardPan());
@@ -88,7 +88,7 @@ ol.createMap = function(target, opt_values, opt_rendererHints) {
   }
 
   if (!goog.object.containsKey(values, ol.MapProperty.LAYERS)) {
-    values[ol.MapProperty.LAYERS] = new ol.Array();
+    values[ol.MapProperty.LAYERS] = new ol.Collection();
   }
 
   if (!goog.object.containsKey(values, ol.MapProperty.PROJECTION)) {
