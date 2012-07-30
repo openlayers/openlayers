@@ -28,7 +28,7 @@ ol.TileGrid = function(resolutions, extent, origin, opt_tileSize) {
    */
   this.resolutions_ = resolutions;
   goog.asserts.assert(goog.array.isSorted(resolutions, function(a, b) {
-    return -goog.array.defaultCompare(a, b);
+    return b - a;
   }, true));
 
   /**
