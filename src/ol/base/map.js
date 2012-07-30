@@ -636,10 +636,7 @@ ol.Map.prototype.handleLayersChanged = function() {
   }
   var layers = this.getLayers();
   if (goog.isDefAndNotNull(layers)) {
-    goog.array.forEach(layers.getArray(), function(layer) {
-      var layerRenderer = this.createLayerRenderer(layer);
-      this.setLayerRenderer(layer, layerRenderer);
-    }, this);
+    layers.forEach(this.handleLayerAdd, this);
     this.layersListenerKeys_ = [
       goog.events.listen(layers, ol.CollectionEventType.INSERT_AT,
           this.handleLayersInsertAt, false, this),
