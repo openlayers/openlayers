@@ -65,12 +65,6 @@ ol.tilestore.BingMaps =
 
   /**
    * @private
-   * @type {Array.<BingMapsImageryProvider>}
-   */
-  this.imageryProviders_ = null;
-
-  /**
-   * @private
    * @type {boolean}
    */
   this.ready_ = false;
@@ -98,46 +92,11 @@ ol.tilestore.BingMaps =
   var projection = ol.Projection.getFromCode('EPSG:3857');
   var extent = projection.getExtent();
 
-  /**
-   * @private
-   * @type {ol.TransformFunction}
-   */
-  this.attributionTransform_ = ol.Projection.getTransform(
-      ol.Projection.getFromCode('EPSG:4326'), projection);
-
   goog.base(
       this, projection, null, ol.TileUrlFunction.nullTileUrlFunction, extent);
 
 };
 goog.inherits(ol.tilestore.BingMaps, ol.TileStore);
-
-
-/**
- * @inheritDoc
- */
-ol.tilestore.BingMaps.prototype.getAttributions = function(extent, resolution) {
-  if (this.isReady()) {
-    var attributions = [];
-    goog.array.forEach(this.imageryProviders_, function(imageryProvider) {
-      var include = goog.array.some(
-          imageryProvider.coverageAreas,
-          function(coverageArea) {
-            var epsg4326CoverageAreaExtent = new ol.Extent(
-                coverageArea.bbox[0], coverageArea.bbox[1],
-                coverageArea.bbox[2], coverageArea.bbox[3]);
-            var coverageAreaExtent = epsg4326CoverageAreaExtent.transform(
-                this.attributionTransform_);
-            return coverageAreaExtent.intersects(extent);
-          });
-      if (include) {
-        attributions.push(imageryProvider.attribution);
-      }
-    });
-    return attributions;
-  } else {
-    return [];
-  }
-};
 
 
 /**
@@ -194,7 +153,23 @@ ol.tilestore.BingMaps.prototype.handleImageryMetadataResponse =
                 };
               })));
 
-  this.imageryProviders_ = resource.imageryProviders;
+  var projection = ol.Projection.getFromCode('EPSG:4326');
+  var attributions = goog.array.map(
+      resource.imageryProviders,
+      function(imageryProvider) {
+        var html = imageryProvider.attribution;
+        var coverageAreas = goog.array.map(
+            imageryProvider.coverageAreas,
+            function(coverageArea) {
+              var bbox = coverageArea.bbox;
+              var minZ = coverageArea.zoomMin;
+              var maxZ = coverageArea.zoomMax;
+              return new ol.CoverageArea(
+                  bbox[0], bbox[1], bbox[2], bbox[3], minZ, maxZ);
+            });
+        return new ol.Attribution(html, coverageAreas, projection);
+      });
+  this.setAttributions(attributions);
 
   this.ready_ = true;
 

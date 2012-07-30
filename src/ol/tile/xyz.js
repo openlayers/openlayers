@@ -3,6 +3,7 @@ goog.provide('ol.tilegrid.XYZ');
 goog.provide('ol.tilestore.XYZ');
 
 goog.require('goog.math');
+goog.require('ol.Attribution');
 goog.require('ol.Coordinate');
 goog.require('ol.Layer');
 goog.require('ol.Projection');
@@ -45,12 +46,14 @@ goog.inherits(ol.tilegrid.XYZ, ol.TileGrid);
  * @extends {ol.TileLayer}
  * @param {number} maxZoom Maximum zoom.
  * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
+ * @param {Array.<ol.Attribution>=} opt_attributions Attributions.
  * @param {string=} opt_crossOrigin Cross origin.
  * @param {Object.<string, *>=} opt_values Values.
  */
-ol.layer.XYZ = function(maxZoom, tileUrlFunction, opt_crossOrigin, opt_values) {
+ol.layer.XYZ = function(
+    maxZoom, tileUrlFunction, opt_attributions, opt_crossOrigin, opt_values) {
   var tileStore = new ol.tilestore.XYZ(
-      maxZoom, tileUrlFunction, undefined, opt_crossOrigin);
+      maxZoom, tileUrlFunction, opt_attributions, opt_crossOrigin);
   goog.base(this, tileStore, opt_values);
 };
 goog.inherits(ol.layer.XYZ, ol.TileLayer);
@@ -62,7 +65,7 @@ goog.inherits(ol.layer.XYZ, ol.TileLayer);
  * @extends {ol.TileStore}
  * @param {number} maxZoom Maximum zoom.
  * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
- * @param {Array.<string>=} opt_attributions Attributions.
+ * @param {Array.<ol.Attribution>=} opt_attributions Attributions.
  * @param {string=} opt_crossOrigin Cross origin.
  */
 ol.tilestore.XYZ =
@@ -84,23 +87,8 @@ ol.tilestore.XYZ =
       tileUrlFunction);
   var extent = projection.getExtent();
 
-  goog.base(
-      this, projection, tileGrid, tileUrlFunction2, extent, opt_crossOrigin);
-
-
-  /**
-   * @private
-   * @type {Array.<string>}
-   */
-  this.attributions_ = goog.isDef(opt_attributions) ? opt_attributions : [];
+  goog.base(this, projection, tileGrid, tileUrlFunction2, extent,
+      opt_attributions, opt_crossOrigin);
 
 };
 goog.inherits(ol.tilestore.XYZ, ol.TileStore);
-
-
-/**
- * @inheritDoc
- */
-ol.tilestore.XYZ.prototype.getAttributions = function(extent, resolution) {
-  return this.attributions_;
-};

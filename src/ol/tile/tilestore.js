@@ -1,5 +1,6 @@
 goog.provide('ol.TileStore');
 
+goog.require('ol.Attribution');
 goog.require('ol.Store');
 goog.require('ol.Tile');
 goog.require('ol.TileCoord');
@@ -15,12 +16,13 @@ goog.require('ol.TileUrlFunctionType');
  * @param {ol.TileGrid} tileGrid Tile grid.
  * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL.
  * @param {ol.Extent=} opt_extent Extent.
+ * @param {Array.<string>=} opt_attributions Attributions.
  * @param {?string=} opt_crossOrigin Cross origin.
  */
-ol.TileStore = function(
-    projection, tileGrid, tileUrlFunction, opt_extent, opt_crossOrigin) {
+ol.TileStore = function(projection, tileGrid, tileUrlFunction, opt_extent,
+    opt_attributions, opt_crossOrigin) {
 
-  goog.base(this, projection, opt_extent);
+  goog.base(this, projection, opt_extent, opt_attributions);
 
   /**
    * @protected
