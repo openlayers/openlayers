@@ -532,12 +532,12 @@ ol.Map.prototype.handleBackgroundColorChanged = goog.nullFunction;
 
 
 /**
- * @param {goog.events.BrowserEvent} event Event.
+ * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @param {string=} opt_type Type.
  */
-ol.Map.prototype.handleBrowserEvent = function(event, opt_type) {
-  var type = goog.isDef(opt_type) ? opt_type : event.type;
-  var mapBrowserEvent = new ol.MapBrowserEvent(type, this, event);
+ol.Map.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
+  var type = goog.isDef(opt_type) ? opt_type : browserEvent.type;
+  var mapBrowserEvent = new ol.MapBrowserEvent(type, this, browserEvent);
   var controls = this.getControls();
   var controlsArray = /** @type {Array.<ol.Control>} */ controls.getArray();
   goog.array.every(controlsArray, function(control) {
@@ -548,11 +548,11 @@ ol.Map.prototype.handleBrowserEvent = function(event, opt_type) {
 
 
 /**
- * @param {goog.fx.DragEvent} event Event.
+ * @param {goog.fx.DragEvent} dragEvent Drag event.
  */
-ol.Map.prototype.handleDraggerEvent = function(event) {
-  var browserEvent = event.browserEvent;
-  this.handleBrowserEvent(browserEvent, event.type);
+ol.Map.prototype.handleDraggerEvent = function(dragEvent) {
+  var browserEvent = dragEvent.browserEvent;
+  this.handleBrowserEvent(browserEvent, dragEvent.type);
 };
 
 
@@ -589,35 +589,35 @@ ol.Map.prototype.handleLayerRemove = function(layer) {
 
 
 /**
- * @param {ol.CollectionEvent} event Event.
+ * @param {ol.CollectionEvent} collectionEvent Collection event.
  * @protected
  */
-ol.Map.prototype.handleLayersInsertAt = function(event) {
-  var layers = /** @type {ol.Collection} */ event.target;
-  var layer = /** @type {ol.Layer} */ layers.getAt(event.index);
+ol.Map.prototype.handleLayersInsertAt = function(collectionEvent) {
+  var layers = /** @type {ol.Collection} */ collectionEvent.target;
+  var layer = /** @type {ol.Layer} */ layers.getAt(collectionEvent.index);
   this.handleLayerAdd(layer);
 };
 
 
 /**
- * @param {ol.CollectionEvent} event Event.
+ * @param {ol.CollectionEvent} collectionEvent Collection event.
  * @protected
  */
-ol.Map.prototype.handleLayersRemoveAt = function(event) {
-  var layer = /** @type {ol.Layer} */ event.prev;
+ol.Map.prototype.handleLayersRemoveAt = function(collectionEvent) {
+  var layer = /** @type {ol.Layer} */ collectionEvent.prev;
   this.handleLayerRemove(layer);
 };
 
 
 /**
- * @param {ol.CollectionEvent} event Event.
+ * @param {ol.CollectionEvent} collectionEvent Collection event.
  * @protected
  */
-ol.Map.prototype.handleLayersSetAt = function(event) {
-  var prevLayer = /** @type {ol.Layer} */ event.prev;
+ol.Map.prototype.handleLayersSetAt = function(collectionEvent) {
+  var prevLayer = /** @type {ol.Layer} */ collectionEvent.prev;
   this.handleLayerRemove(prevLayer);
-  var layers = /** @type {ol.Collection} */ event.target;
-  var layer = /** @type {ol.Layer} */ layers.getAt(event.index);
+  var layers = /** @type {ol.Collection} */ collectionEvent.target;
+  var layer = /** @type {ol.Layer} */ layers.getAt(collectionEvent.index);
   this.handleLayerAdd(layer);
 };
 
