@@ -63,6 +63,40 @@
         events.destroy();
     }
     
+    function test_ignore(t) {
+        t.plan(5);
+
+        // set up
+
+        events = new OpenLayers.Events({}, element);
+        buttonClick = new OpenLayers.Events.buttonclick(events);
+
+        var link = document.createElement('a'),
+            span1 = document.createElement('span'),
+            span2 = document.createElement('span'),
+            span3 = document.createElement('span');
+        link.appendChild(span1);
+        span1.appendChild(span2);
+        span2.appendChild(span3);
+
+        t.eq(buttonClick.ignore(link), true,
+             'ignore returns true when element is a link');
+        t.eq(buttonClick.ignore(span1), true,
+             'ignore returns true when element is link descendant level 1');
+        t.eq(buttonClick.ignore(span2), true,
+             'ignore returns true when element is link descendant level 2');
+        t.eq(buttonClick.ignore(span3), false,
+             'ignore returns false when element is link descendant level 3');
+        t.eq(buttonClick.ignore(element), false,
+             'ignore returns false when element is not a link');
+
+
+        // tear down
+
+        buttonClick.destroy();
+        events.destroy();
+    }
+    
     function test_ButtonClick_buttonClick(t) {
         t.plan(27);
         events = new OpenLayers.Events({}, element);
