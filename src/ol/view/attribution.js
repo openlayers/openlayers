@@ -264,10 +264,12 @@ ol.view.Attribution.prototype.getAttributionVisiblity_ =
   if (attributionKey in this.coverageAreass_) {
     coverageAreas = this.coverageAreass_[attributionKey];
   } else {
+    var attributionProjection = attribution.getProjection();
     coverageAreas = attribution.getCoverageAreas();
-    if (!goog.isNull(coverageAreas)) {
+    if (!goog.isNull(coverageAreas) &&
+        !ol.Projection.equivalent(attributionProjection, mapProjection)) {
       var transformFn = ol.Projection.getTransform(
-          attribution.getProjection(), mapProjection);
+          attributionProjection, mapProjection);
       if (transformFn !== ol.Projection.cloneTransform) {
         coverageAreas = goog.array.map(coverageAreas, function(coverageArea) {
           return coverageArea.transform(transformFn);
