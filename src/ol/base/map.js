@@ -1,11 +1,9 @@
 // FIXME dragger - prevent page scrolling
 // FIXME better map browser event types
-// FIXME add change resolution by zoom step function
 // FIXME recheck layer/map projection compatability when projection changes
 // FIXME layer renderers should skip when they can't reproject
 // FIXME add tilt and height?
 // FIXME split out renderer
-// FIXME add renderer selection strategy
 
 goog.provide('ol.Map');
 goog.provide('ol.MapProperty');

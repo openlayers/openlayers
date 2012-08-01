@@ -1,6 +1,3 @@
-// FIXME handle minZoom/maxZoom in getAttributions
-// FIXME optimize getAttributions (precalculate transformed coverage areas)
-
 goog.provide('ol.layer.BingMaps');
 goog.provide('ol.tilestore.BingMaps');
 
