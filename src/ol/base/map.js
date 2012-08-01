@@ -571,9 +571,6 @@ ol.Map.prototype.handleCenterChanged = function() {
 ol.Map.prototype.handleLayerAdd = function(layer) {
   var projection = this.getProjection();
   var storeProjection = layer.getStore().getProjection();
-  if (goog.isDef(projection)) {
-    goog.asserts.assert(ol.Projection.equivalent(projection, storeProjection));
-  }
   var layerRenderer = this.createLayerRenderer(layer);
   this.setLayerRenderer(layer, layerRenderer);
 };
