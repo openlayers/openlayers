@@ -1,7 +1,7 @@
 // FIXME handle rotation
 // FIXME handle date line wrap
-// FIXME probably need to abstract out a "layers listener"
 // FIXME handle layer order
+// FIXME check clean-up code
 
 goog.provide('ol.view.Attribution');
 
