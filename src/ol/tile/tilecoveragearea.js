@@ -25,14 +25,16 @@ ol.TileCoverageArea = function(tileGrid, extent, minZ, maxZ) {
   this.tileGrid_ = tileGrid;
 
   /**
+   * @private
    * @type {number}
    */
-  this.minZ = minZ;
+  this.minZ_ = minZ;
 
   /**
+   * @private
    * @type {number}
    */
-  this.maxZ = maxZ;
+  this.maxZ_ = maxZ;
 
 };
 goog.inherits(ol.TileCoverageArea, ol.CoverageArea);
@@ -44,8 +46,17 @@ goog.inherits(ol.TileCoverageArea, ol.CoverageArea);
 ol.TileCoverageArea.prototype.intersectsExtentAndResolution =
     function(extent, resolution) {
   var z = this.tileGrid_.getZForResolution(resolution);
-  return this.minZ <= z && z <= this.maxZ &&
-      goog.base(this, 'intersectsExtentAndResolution', extent, resolution);
+  return this.intersectsExtentAndZ(extent, z);
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @param {number} z Z.
+ * @return {boolean} Intersects.
+ */
+ol.TileCoverageArea.prototype.intersectsExtentAndZ = function(extent, z) {
+  return this.minZ_ <= z && z <= this.maxZ_ && this.intersectsExtent(extent);
 };
 
 
@@ -55,5 +66,6 @@ ol.TileCoverageArea.prototype.intersectsExtentAndResolution =
  */
 ol.TileCoverageArea.prototype.transform = function(transformFn) {
   var extent = this.extent.transform(transformFn);
-  return new ol.TileCoverageArea(this.tileGrid_, extent, this.minZ, this.maxZ);
+  return new ol.TileCoverageArea(
+      this.tileGrid_, extent, this.minZ_, this.maxZ_);
 };

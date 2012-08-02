@@ -20,13 +20,19 @@ ol.CoverageArea = function(extent) {
 
 /**
  * @param {ol.Extent} extent Extent.
+ * @return {boolean} Intersects.
+ */
+ol.CoverageArea.prototype.intersectsExtent = function(extent) {
+  return this.extent.intersects(extent);
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @return {boolean} Intersects.
  */
-ol.CoverageArea.prototype.intersectsExtentAndResolution =
-    function(extent, resolution) {
-  return this.extent.intersects(extent);
-};
+ol.CoverageArea.prototype.intersectsExtentAndResolution = goog.abstractMethod;
 
 
 /**
