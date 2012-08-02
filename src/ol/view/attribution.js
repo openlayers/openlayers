@@ -278,7 +278,7 @@ ol.view.Attribution.prototype.handleMapLayersChanged = function() {
       goog.events.listen(layers, ol.CollectionEventType.INSERT_AT,
           this.handleLayersInsertAt, false, this),
       goog.events.listen(layers, ol.CollectionEventType.REMOVE_AT,
-          this.handleLayersInsertAt, false, this),
+          this.handleLayersRemoveAt, false, this),
       goog.events.listen(layers, ol.CollectionEventType.SET_AT,
           this.handleLayersSetAt, false, this)
     ];
