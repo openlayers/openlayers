@@ -18,6 +18,7 @@ goog.require('ol.dom.TileLayerRenderer');
  * @param {Object.<string, *>=} opt_values Values.
  */
 ol.dom.Map = function(target, opt_values) {
+
   goog.base(this, target);
 
   /**
@@ -60,7 +61,6 @@ ol.dom.Map = function(target, opt_values) {
    * @private
    */
   this.layersPaneOffset_ = null;
-
 
   if (goog.isDef(opt_values)) {
     this.setValues(opt_values);
