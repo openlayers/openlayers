@@ -157,9 +157,6 @@ ol.Collection.prototype.insertAt = function(index, elem) {
       ol.CollectionEventType.ADD, elem, undefined, undefined, this));
   this.dispatchEvent(new ol.CollectionEvent(
       ol.CollectionEventType.INSERT_AT, elem, index, undefined, this));
-  if (this[ol.CollectionEventType.INSERT_AT]) {
-    this[ol.CollectionEventType.INSERT_AT](index);
-  }
 };
 
 
@@ -194,9 +191,6 @@ ol.Collection.prototype.removeAt = function(index) {
       ol.CollectionEventType.REMOVE, prev, undefined, undefined, this));
   this.dispatchEvent(new ol.CollectionEvent(ol.CollectionEventType.REMOVE_AT,
       undefined, index, prev, this));
-  if (this[ol.CollectionEventType.REMOVE_AT]) {
-    this[ol.CollectionEventType.REMOVE_AT](index);
-  }
   return prev;
 };
 
@@ -216,9 +210,6 @@ ol.Collection.prototype.setAt = function(index, elem) {
         prev, undefined, undefined, this));
     this.dispatchEvent(new ol.CollectionEvent(ol.CollectionEventType.ADD,
         elem, undefined, undefined, this));
-    if (this[ol.CollectionEventType.SET_AT]) {
-      this[ol.CollectionEventType.SET_AT](index, prev);
-    }
   } else {
     var j;
     for (j = n; j < index; ++j) {

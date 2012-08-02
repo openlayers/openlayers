@@ -128,9 +128,9 @@ function testInsertAtEvent() {
 function testSetAtBeyondEnd() {
   var collection = new ol.Collection();
   var inserts = [];
-  collection.insert_at = function(index) {
-    inserts.push(index);
-  };
+  goog.events.listen(collection, ol.CollectionEventType.INSERT_AT, function(e) {
+    inserts.push(e.index);
+  });
   collection.setAt(2, 0);
   assertEquals(3, collection.getLength());
   assertUndefined(collection.getAt(0));
