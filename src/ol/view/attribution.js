@@ -119,7 +119,7 @@ ol.view.Attribution.prototype.createAttributionElementsForLayer_ =
       goog.style.showElement(attributionElement, false);
     }
 
-    this.ulElement_.appendChild(attributionElement);
+    goog.dom.appendChild(this.ulElement_, attributionElement);
 
     this.attributionElements_[attributionKey] = attributionElement;
 
@@ -182,7 +182,7 @@ ol.view.Attribution.prototype.removeLayer = function(layer) {
     var attributionKey = goog.getUid(attribution);
     delete this.coverageAreass_[attributionKey];
     var attributionElement = this.attributionElements_[attributionKey];
-    this.ulElement_.removeChild(attributionElement);
+    goog.dom.removeNode(attributionElement);
     delete this.attributionElements_[attributionKey];
   }, this);
 
@@ -257,6 +257,11 @@ ol.view.Attribution.prototype.handleMapLayersChanged = function() {
     goog.array.forEach(this.layersListenerKeys_, goog.events.unlistenByKey);
     this.layersListenerKeys_ = null;
   }
+  goog.object.forEach(this.attributionElements_, function(attributionElement) {
+    goog.dom.removeNode(attributionElement);
+  }, this);
+  this.attributionElements_ = {};
+  this.coverageAreass_ = {};
   var map = this.getMap();
   var layers = map.getLayers();
   if (goog.isDefAndNotNull(layers)) {
