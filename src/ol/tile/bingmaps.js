@@ -5,6 +5,7 @@ goog.require('goog.Uri');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.net.Jsonp');
+goog.require('ol.TileCoverageArea');
 goog.require('ol.TileLayer');
 goog.require('ol.TileStore');
 goog.require('ol.tilegrid.XYZ');
@@ -117,7 +118,8 @@ ol.tilestore.BingMaps.prototype.handleImageryMetadataResponse =
   var zoomMin = resource.zoomMin;
   var zoomMax = resource.zoomMax;
   var tileSize = new ol.Size(resource.imageWidth, resource.imageHeight);
-  this.tileGrid = new ol.tilegrid.XYZ(zoomMax, tileSize);
+  var tileGrid = new ol.tilegrid.XYZ(zoomMax, tileSize);
+  this.tileGrid = tileGrid;
 
   this.tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
       function(tileCoord) {
@@ -162,7 +164,7 @@ ol.tilestore.BingMaps.prototype.handleImageryMetadataResponse =
               var extent = new ol.Extent(bbox[1], bbox[0], bbox[3], bbox[2]);
               var minZ = coverageArea.zoomMin;
               var maxZ = coverageArea.zoomMax;
-              return new ol.CoverageArea(extent, minZ, maxZ);
+              return new ol.TileCoverageArea(tileGrid, extent, minZ, maxZ);
             });
         return new ol.Attribution(html, coverageAreas, projection);
       });

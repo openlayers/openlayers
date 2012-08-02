@@ -86,7 +86,7 @@ ol.view.Attribution.prototype.createAttributionElementsForLayer_ =
   var mapIsDef = map.isDef();
   var mapExtent = /** @type {ol.Extent} */ map.getExtent();
   var mapProjection = /** @type {ol.Projection} */ map.getProjection();
-  var mapZ = 10; // FIXME
+  var mapResolution = map.getResolution();
 
   var layerVisible = layer.getVisible();
 
@@ -103,7 +103,7 @@ ol.view.Attribution.prototype.createAttributionElementsForLayer_ =
 
       var attributionVisible = mapIsDef && layerVisible &&
           this.getAttributionVisiblity_(
-              attribution, mapExtent, mapZ, mapProjection);
+              attribution, mapExtent, mapResolution, mapProjection);
       goog.style.showElement(attributionElement, attributionVisible);
 
       this.ulElement_.appendChild(attributionElement);
@@ -188,12 +188,12 @@ ol.view.Attribution.prototype.handleLayerVisibleChanged = function(event) {
   var mapIsDef = map.isDef();
   var mapExtent = /** @type {ol.Extent} */ map.getExtent();
   var mapProjection = /** @type {ol.Projection} */ map.getProjection();
-  var mapZ = 10; // FIXME
+  var mapResolution = /** @type {number} */ map.getResolution();
 
   var layer = /** @type {ol.Layer} */ event.target;
 
   this.updateLayerAttributionsVisibility_(
-      layer, mapIsDef, mapExtent, mapZ, mapProjection);
+      layer, mapIsDef, mapExtent, mapResolution, mapProjection);
 
 };
 
@@ -241,12 +241,12 @@ ol.view.Attribution.prototype.handleMapChanged = function() {
   var mapIsDef = map.isDef();
   var mapExtent = /** @type {ol.Extent} */ map.getExtent();
   var mapProjection = /** @type {ol.Projection} */ map.getProjection();
-  var mapZ = 10; // FIXME
+  var mapResolution = /** @type {number} */ map.getResolution();
 
   var layers = map.getLayers();
   layers.forEach(function(layer) {
     this.updateLayerAttributionsVisibility_(
-        layer, mapIsDef, mapExtent, mapZ, mapProjection);
+        layer, mapIsDef, mapExtent, mapResolution, mapProjection);
   }, this);
 
 };
@@ -279,13 +279,13 @@ ol.view.Attribution.prototype.handleMapLayersChanged = function() {
 /**
  * @param {ol.Attribution} attribution Attribution.
  * @param {ol.Extent} mapExtent Map extent.
- * @param {number} mapZ Map Z.
+ * @param {number} mapResolution Map resolution.
  * @param {ol.Projection} mapProjection Map projection.
  * @return {boolean} Attribution visibility.
  * @private
  */
 ol.view.Attribution.prototype.getAttributionVisiblity_ =
-    function(attribution, mapExtent, mapZ, mapProjection) {
+    function(attribution, mapExtent, mapResolution, mapProjection) {
 
   var attributionKey = goog.getUid(attribution);
 
@@ -314,7 +314,8 @@ ol.view.Attribution.prototype.getAttributionVisiblity_ =
     attributionVisible = goog.array.some(
         coverageAreas,
         function(coverageArea) {
-          return coverageArea.intersectsWithZ(mapExtent, mapZ);
+          return coverageArea.intersectsExtentAndResolution(
+              mapExtent, mapResolution);
         });
   }
 
@@ -327,18 +328,18 @@ ol.view.Attribution.prototype.getAttributionVisiblity_ =
  * @param {ol.Layer} layer Layer.
  * @param {boolean} mapIsDef Map is defined.
  * @param {ol.Extent} mapExtent Map extent.
- * @param {number} mapZ Map Z.
+ * @param {number} mapResolution Map resolution.
  * @param {ol.Projection} mapProjection Map projection.
  * @private
  */
 ol.view.Attribution.prototype.updateLayerAttributionsVisibility_ =
-    function(layer, mapIsDef, mapExtent, mapZ, mapProjection) {
+    function(layer, mapIsDef, mapExtent, mapResolution, mapProjection) {
   var layerVisible = layer.getVisible();
   goog.array.forEach(layer.getStore().getAttributions(), function(attribution) {
     var attributionKey = goog.getUid(attribution);
     var attributionVisible = mapIsDef && layerVisible &&
         this.getAttributionVisiblity_(
-            attribution, mapExtent, mapZ, mapProjection);
+            attribution, mapExtent, mapResolution, mapProjection);
     var attributionElement = this.attributionElements_[attributionKey];
     goog.style.showElement(attributionElement, attributionVisible);
   }, this);
