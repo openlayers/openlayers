@@ -1,7 +1,6 @@
 // FIXME handle rotation
 // FIXME probably need to abstract out a "layers listener"
 // FIXME handle layer order
-// FIXME handle not-ready layers
 
 goog.provide('ol.view.Attribution');
 
@@ -77,6 +76,48 @@ goog.inherits(ol.view.Attribution, ol.View);
 
 
 /**
+ * @param {ol.Layer} layer Layer.
+ * @private
+ */
+ol.view.Attribution.prototype.createAttributionElementsForLayer_ =
+    function(layer) {
+
+  var map = this.getMap();
+  var mapIsDef = map.isDef();
+  var mapExtent = /** @type {ol.Extent} */ map.getExtent();
+  var mapProjection = /** @type {ol.Projection} */ map.getProjection();
+  var mapZ = 10; // FIXME
+
+  var layerVisible = layer.getVisible();
+
+  var store = layer.getStore();
+  var attributions = store.getAttributions();
+  if (!goog.isNull(attributions)) {
+
+    goog.array.forEach(attributions, function(attribution) {
+
+      var attributionKey = goog.getUid(attribution);
+
+      var attributionElement = goog.dom.createElement(goog.dom.TagName.LI);
+      attributionElement.innerHTML = attribution.getHtml();
+
+      var attributionVisible = mapIsDef && layerVisible &&
+          this.getAttributionVisiblity_(
+              attribution, mapExtent, mapZ, mapProjection);
+      goog.style.showElement(attributionElement, attributionVisible);
+
+      this.ulElement_.appendChild(attributionElement);
+
+      this.attributionElements_[attributionKey] = attributionElement;
+
+    }, this);
+
+  }
+
+};
+
+
+/**
  * @inheritDoc
  */
 ol.view.Attribution.prototype.getElement = function() {
@@ -92,36 +133,26 @@ ol.view.Attribution.prototype.handleLayerAdd = function(layer) {
 
   var layerKey = goog.getUid(layer);
 
-  var map = this.getMap();
-  var mapIsDef = map.isDef();
-  var mapExtent = /** @type {ol.Extent} */ map.getExtent();
-  var mapProjection = /** @type {ol.Projection} */ map.getProjection();
-  var mapZ = 10; // FIXME
-
-  var layerVisible = layer.getVisible();
-
   this.layerVisibleChangeListenerKeys_[layerKey] = goog.events.listen(
       layer, ol.Object.getChangedEventType(ol.LayerProperty.VISIBLE),
       this.handleLayerVisibleChanged, false, this);
 
-  goog.array.forEach(layer.getStore().getAttributions(), function(attribution) {
+  if (layer.getStore().isReady()) {
+    this.createAttributionElementsForLayer_(layer);
+  } else {
+    goog.events.listenOnce(layer, goog.events.EventType.LOAD,
+        this.handleLayerLoad, false, this);
+  }
 
-    var attributionKey = goog.getUid(attribution);
+};
 
-    var attributionElement = goog.dom.createElement(goog.dom.TagName.LI);
-    attributionElement.innerHTML = attribution.getHtml();
 
-    var attributionVisible = mapIsDef && layerVisible &&
-        this.getAttributionVisiblity_(
-            attribution, mapExtent, mapZ, mapProjection);
-    goog.style.showElement(attributionElement, attributionVisible);
-
-    this.ulElement_.appendChild(attributionElement);
-
-    this.attributionElements_[attributionKey] = attributionElement;
-
-  }, this);
-
+/**
+ * @param {goog.events.Event} event Event.
+ */
+ol.view.Attribution.prototype.handleLayerLoad = function(event) {
+  var layer = /** @type {ol.Layer} */ event.target;
+  this.createAttributionElementsForLayer_(layer);
 };
 
 
