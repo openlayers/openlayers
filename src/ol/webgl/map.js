@@ -240,6 +240,17 @@ goog.inherits(ol.webgl.Map, ol.Map);
 /**
  * @inheritDoc
  */
+ol.webgl.Map.prototype.addLayer = function(layer) {
+  goog.base(this, 'addLayer', layer);
+  if (layer.getVisible()) {
+    this.render();
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.webgl.Map.prototype.canRotate = goog.functions.TRUE;
 
 
@@ -395,33 +406,11 @@ ol.webgl.Map.prototype.handleCenterChanged = function() {
 
 
 /**
- * @inheritDoc
- */
-ol.webgl.Map.prototype.handleLayerAdd = function(layer) {
-  goog.base(this, 'handleLayerAdd', layer);
-  if (layer.getVisible()) {
-    this.render();
-  }
-};
-
-
-/**
  * @param {goog.events.Event} event Event.
  * @protected
  */
 ol.webgl.Map.prototype.handleLayerRendererChange = function(event) {
   this.render();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.webgl.Map.prototype.handleLayerRemove = function(layer) {
-  goog.base(this, 'handleLayerRemove', layer);
-  if (layer.getVisible()) {
-    this.render();
-  }
 };
 
 
@@ -570,6 +559,17 @@ ol.webgl.Map.prototype.renderInternal = function() {
 
   return animate;
 
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.webgl.Map.prototype.removeLayer = function(layer) {
+  goog.base(this, 'removeLayer', layer);
+  if (layer.getVisible()) {
+    this.render();
+  }
 };
 
 

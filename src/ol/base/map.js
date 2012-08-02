@@ -9,6 +9,7 @@ goog.provide('ol.Map');
 goog.provide('ol.MapProperty');
 
 goog.require('goog.array');
+goog.require('goog.dispose');
 goog.require('goog.dom.ViewportSizeMonitor');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
@@ -230,6 +231,16 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
 
 };
 goog.inherits(ol.Map, ol.Object);
+
+
+/**
+ * @param {ol.Layer} layer Layer.
+ * @protected
+ */
+ol.Map.prototype.addLayer = function(layer) {
+  var layerRenderer = this.createLayerRenderer(layer);
+  this.setLayerRenderer(layer, layerRenderer);
+};
 
 
 /**
@@ -563,23 +574,12 @@ ol.Map.prototype.handleCenterChanged = function() {
 
 
 /**
- * @param {ol.Layer} layer Layer.
+ * @param {ol.CollectionEvent} collectionEvent Collection event.
  * @protected
  */
-ol.Map.prototype.handleLayerAdd = function(layer) {
-  var projection = this.getProjection();
-  var storeProjection = layer.getStore().getProjection();
-  var layerRenderer = this.createLayerRenderer(layer);
-  this.setLayerRenderer(layer, layerRenderer);
-};
-
-
-/**
- * @param {ol.Layer} layer Layer.
- * @protected
- */
-ol.Map.prototype.handleLayerRemove = function(layer) {
-  this.removeLayerRenderer(layer);
+ol.Map.prototype.handleLayersAdd = function(collectionEvent) {
+  var layer = /** @type {ol.Layer} */ collectionEvent.elem;
+  this.addLayer(layer);
 };
 
 
@@ -587,33 +587,9 @@ ol.Map.prototype.handleLayerRemove = function(layer) {
  * @param {ol.CollectionEvent} collectionEvent Collection event.
  * @protected
  */
-ol.Map.prototype.handleLayersInsertAt = function(collectionEvent) {
-  var layers = /** @type {ol.Collection} */ collectionEvent.target;
-  var layer = /** @type {ol.Layer} */ layers.getAt(collectionEvent.index);
-  this.handleLayerAdd(layer);
-};
-
-
-/**
- * @param {ol.CollectionEvent} collectionEvent Collection event.
- * @protected
- */
-ol.Map.prototype.handleLayersRemoveAt = function(collectionEvent) {
-  var layer = /** @type {ol.Layer} */ collectionEvent.prev;
-  this.handleLayerRemove(layer);
-};
-
-
-/**
- * @param {ol.CollectionEvent} collectionEvent Collection event.
- * @protected
- */
-ol.Map.prototype.handleLayersSetAt = function(collectionEvent) {
-  var prevLayer = /** @type {ol.Layer} */ collectionEvent.prev;
-  this.handleLayerRemove(prevLayer);
-  var layers = /** @type {ol.Collection} */ collectionEvent.target;
-  var layer = /** @type {ol.Layer} */ layers.getAt(collectionEvent.index);
-  this.handleLayerAdd(layer);
+ol.Map.prototype.handleLayersRemove = function(collectionEvent) {
+  var layer = /** @type {ol.Layer} */ collectionEvent.elem;
+  this.removeLayer(layer);
 };
 
 
@@ -631,14 +607,12 @@ ol.Map.prototype.handleLayersChanged = function() {
   }
   var layers = this.getLayers();
   if (goog.isDefAndNotNull(layers)) {
-    layers.forEach(this.handleLayerAdd, this);
+    layers.forEach(this.addLayer, this);
     this.layersListenerKeys_ = [
-      goog.events.listen(layers, ol.CollectionEventType.INSERT_AT,
-          this.handleLayersInsertAt, false, this),
-      goog.events.listen(layers, ol.CollectionEventType.REMOVE_AT,
-          this.handleLayersRemoveAt, false, this),
-      goog.events.listen(layers, ol.CollectionEventType.SET_AT,
-          this.handleLayersSetAt, false, this)
+      goog.events.listen(layers, ol.CollectionEventType.ADD,
+          this.handleLayersAdd, false, this),
+      goog.events.listen(layers, ol.CollectionEventType.REMOVE,
+          this.handleLayersRemove, false, this)
     ];
   }
 };
@@ -750,6 +724,15 @@ ol.Map.prototype.renderInternal = function() {
     }
   });
   return animate;
+};
+
+
+/**
+ * @param {ol.Layer} layer Layer.
+ * @protected
+ */
+ol.Map.prototype.removeLayer = function(layer) {
+  goog.dispose(this.removeLayerRenderer(layer));
 };
 
 

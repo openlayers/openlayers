@@ -140,7 +140,7 @@ ol.view.Attribution.prototype.getElement = function() {
  * @param {ol.Layer} layer Layer.
  * @protected
  */
-ol.view.Attribution.prototype.handleLayerAdd = function(layer) {
+ol.view.Attribution.prototype.addLayer = function(layer) {
 
   var layerKey = goog.getUid(layer);
 
@@ -171,7 +171,7 @@ ol.view.Attribution.prototype.handleLayerLoad = function(event) {
  * @param {ol.Layer} layer Layer.
  * @protected
  */
-ol.view.Attribution.prototype.handleLayerRemove = function(layer) {
+ol.view.Attribution.prototype.removeLayer = function(layer) {
 
   var layerKey = goog.getUid(layer);
 
@@ -213,10 +213,9 @@ ol.view.Attribution.prototype.handleLayerVisibleChanged = function(event) {
  * @param {ol.CollectionEvent} collectionEvent Collection event.
  * @protected
  */
-ol.view.Attribution.prototype.handleLayersInsertAt = function(collectionEvent) {
-  var layers = /** @type {ol.Collection} */ collectionEvent.target;
-  var layer = /** @type {ol.Layer} */ layers.getAt(collectionEvent.index);
-  this.handleLayerAdd(layer);
+ol.view.Attribution.prototype.handleLayersAdd = function(collectionEvent) {
+  var layer = /** @type {ol.Layer} */ collectionEvent.elem;
+  this.addLayer(layer);
 };
 
 
@@ -224,22 +223,9 @@ ol.view.Attribution.prototype.handleLayersInsertAt = function(collectionEvent) {
  * @param {ol.CollectionEvent} collectionEvent Collection event.
  * @protected
  */
-ol.view.Attribution.prototype.handleLayersRemoveAt = function(collectionEvent) {
-  var layer = /** @type {ol.Layer} */ collectionEvent.prev;
-  this.handleLayerRemove(layer);
-};
-
-
-/**
- * @param {ol.CollectionEvent} collectionEvent Collection event.
- * @protected
- */
-ol.view.Attribution.prototype.handleLayersSetAt = function(collectionEvent) {
-  var prevLayer = /** @type {ol.Layer} */ collectionEvent.prev;
-  this.handleLayerRemove(prevLayer);
-  var layers = /** @type {ol.Collection} */ collectionEvent.target;
-  var layer = /** @type {ol.Layer} */ layers.getAt(collectionEvent.index);
-  this.handleLayerAdd(layer);
+ol.view.Attribution.prototype.handleLayersRemove = function(collectionEvent) {
+  var layer = /** @type {ol.Layer} */ collectionEvent.elem;
+  this.removeLayer(layer);
 };
 
 
@@ -274,14 +260,12 @@ ol.view.Attribution.prototype.handleMapLayersChanged = function() {
   var map = this.getMap();
   var layers = map.getLayers();
   if (goog.isDefAndNotNull(layers)) {
-    layers.forEach(this.handleLayerAdd, this);
+    layers.forEach(this.addLayer, this);
     this.layersListenerKeys_ = [
-      goog.events.listen(layers, ol.CollectionEventType.INSERT_AT,
-          this.handleLayersInsertAt, false, this),
-      goog.events.listen(layers, ol.CollectionEventType.REMOVE_AT,
-          this.handleLayersRemoveAt, false, this),
-      goog.events.listen(layers, ol.CollectionEventType.SET_AT,
-          this.handleLayersSetAt, false, this)
+      goog.events.listen(layers, ol.CollectionEventType.ADD,
+          this.handleLayersAdd, false, this),
+      goog.events.listen(layers, ol.CollectionEventType.REMOVE,
+          this.handleLayersRemove, false, this)
     ];
   }
 };
