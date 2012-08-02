@@ -1,18 +1,24 @@
 # OpenLayers 3
 
-## Run Tests
+## Build it
+
+Run make:
+
+    $ make
+
+## Run the example
 
 Run the [plovr](http://plovr.com/) web server with:
 
     $ make serve
 
-Open http://localhost:9810/ in the browser, and select *List of tests* or *Test
-runner*.
+Then open skeleton.html in the browser (e.g.
+<http://localhost/~elemoine/ol3/skeleton.html>).
 
-## Run the example
+## Run tests
 
-Run the plovr web server (see above), and open skeleton.html in the browser
-(e.g. http://localhost/~elemoine/ol3/skeleton.html).
+Run the plovr web server (see above), then open <http://localhost:9810/> in
+your browser and select *List of tests* or *Test runner*.
 
 ## Run the linter
 
