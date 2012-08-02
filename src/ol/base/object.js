@@ -176,8 +176,7 @@ ol.Object.prototype.bindTo =
 /**
  * @param {string} key Key.
  */
-ol.Object.prototype.changed = function(key) {
-};
+ol.Object.prototype.changed = goog.nullFunction;
 
 
 /**
