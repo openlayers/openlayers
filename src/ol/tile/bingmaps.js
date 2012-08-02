@@ -159,7 +159,7 @@ ol.tilestore.BingMaps.prototype.handleImageryMetadataResponse =
             imageryProvider.coverageAreas,
             function(coverageArea) {
               var bbox = coverageArea.bbox;
-              var extent = new ol.Extent(bbox[0], bbox[1], bbox[2], bbox[3]);
+              var extent = new ol.Extent(bbox[1], bbox[0], bbox[3], bbox[2]);
               var minZ = coverageArea.zoomMin;
               var maxZ = coverageArea.zoomMax;
               return new ol.CoverageArea(extent, minZ, maxZ);
