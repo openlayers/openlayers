@@ -1,6 +1,5 @@
 PLOVR_JAR=bin/plovr-4b3caf2b7d84.jar
-SRC = $(filter-out $(TARGETS),$(shell find externs src/ol -name \*.js))
-TARGETS = src/ol/ol.js
+SRC = $(shell find externs src/ol -name \*.js)
 comma := ,
 empty :=
 space := $(empty) $(empty)
@@ -9,39 +8,24 @@ space := $(empty) $(empty)
 all: build webgl-debug.js
 
 .PHONY: build
-build: ol.js ol-skeleton.js ol-skeleton-debug.js ol-skeleton-dom.js ol-skeleton-webgl.js
+build: ol-api.js ol-skeleton.js
 
-ol.js: $(PLOVR_JAR) $(SRC) src/ol/ol.js
+ol-api.js: $(PLOVR_JAR) $(SRC) ol-base.json ol-api.json ol.js
 	java -jar $(PLOVR_JAR) build $(basename $@).json >$@
-	@echo $@ "uncompressed:" $(shell wc -c <$@) bytes
-	@echo $@ "  compressed:" $(shell gzip -9 -c <$@ | wc -c) bytes
+	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
+	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
 
-ol-skeleton.js: $(PLOVR_JAR) $(SRC) skeleton.js
+ol-skeleton.js: $(PLOVR_JAR) $(SRC) ol-base.json ol-skeleton.json skeleton.js
 	java -jar $(PLOVR_JAR) build $(basename $@).json >$@
-	@echo $@ "uncompressed:" $(shell wc -c <$@) bytes
-	@echo $@ "  compressed:" $(shell gzip -9 -c <$@ | wc -c) bytes
-
-ol-skeleton-debug.js: $(PLOVR_JAR) $(SRC) skeleton.js
-	java -jar $(PLOVR_JAR) build $(basename $@).json >$@
-	@echo $@ "uncompressed:" $(shell wc -c <$@) bytes
-	@echo $@ "  compressed:" $(shell gzip -9 -c <$@ | wc -c) bytes
-
-ol-skeleton-dom.js: $(PLOVR_JAR) $(SRC) skeleton.js
-	java -jar $(PLOVR_JAR) build $(basename $@).json >$@
-	@echo $@ "uncompressed:" $(shell wc -c <$@) bytes
-	@echo $@ "  compressed:" $(shell gzip -9 -c <$@ | wc -c) bytes
-
-ol-skeleton-webgl.js: $(PLOVR_JAR) $(SRC) skeleton.js
-	java -jar $(PLOVR_JAR) build $(basename $@).json >$@
-	@echo $@ "uncompressed:" $(shell wc -c <$@) bytes
-	@echo $@ "  compressed:" $(shell gzip -9 -c <$@ | wc -c) bytes
+	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
+	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
 
 .PHONY: serve
 serve: $(PLOVR_JAR)
-	java -jar $(PLOVR_JAR) serve *.json
+	java -jar $(PLOVR_JAR) serve ol-api.json ol-skeleton.json
 
-src/ol/ol.js: $(SRC)
-	( echo "goog.provide('ol');" && echo && find src/ol -name \*.js -not -path $@ | xargs grep -rh ^goog.provide | sort | uniq | sed -e 's/provide/require/g' ) > $@
+ol.js: $(SRC)
+	( find src/ol -name \*.js | xargs grep -rh ^goog.provide | sort | uniq | sed -e 's/provide/require/g' ) > $@
 
 .PHONY: lint
 lint:
@@ -54,11 +38,9 @@ $(PLOVR_JAR):
 	curl http://plovr.googlecode.com/files/$(notdir $@) > $@
 
 clean:
-	rm -f src/ol/ol.js
+	rm -f ol.js
+	rm -f ol-api.js
 	rm -f ol-skeleton.js
-	rm -f ol-skeleton-debug.js
-	rm -f ol-skeleton-dom.js
-	rm -f ol-skeleton-webgl.js
 
 reallyclean: clean
 	rm -f $(PLOVR_JAR)

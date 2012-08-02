@@ -1,24 +1,4 @@
 {
-  "id": "ol-skeleton-debug",
-
-  "inputs": "skeleton.js",
-
-  "paths": [
-    "src"
-  ],
-
-  "define": {
-    "goog.dom.ASSUME_STANDARDS_MODE": true,
-    "goog.DEBUG": true
-  },
-
-  "externs": [
-    "externs/bingmaps.js",
-    "externs/webgl-debug.js"
-  ],
-
-  "mode": "ADVANCED",
-  "level": "VERBOSE",
 
   "checks": {
     "accessControls": "ERROR",
@@ -32,6 +12,22 @@
     "missingProperties": "ERROR",
     "nonStandardJsDocs": "ERROR",
     "undefinedVars": "ERROR"
-  }
+  },
+
+  "define": {
+    "goog.dom.ASSUME_STANDARDS_MODE": true,
+    "goog.DEBUG": false
+  },
+
+  "externs": [
+    "externs/bingmaps.js",
+    "externs/webgl-debug.js"
+  ],
+
+  "level": "VERBOSE",
+
+  "mode": "ADVANCED",
+
+  "paths": "src"
 
 }

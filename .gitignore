@@ -6,10 +6,10 @@
 /examples/example-list.js
 /examples/example-list.xml
 /jsdoc/
-/ol-skeleton*.js
 /ol.js
+/ol-api.js
+/ol-skeleton.js
 /plovr*.jar
-/src/ol/ol.js
 /tools/*.pyc
 /tools/closure-compiler.jar
 /webgl-debug.js
