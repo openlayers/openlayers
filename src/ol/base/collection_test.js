@@ -213,3 +213,41 @@ function testForEachScope() {
   }, uniqueObj);
   assertTrue(that === uniqueObj);
 }
+
+
+function testAddEvent() {
+  var collection = new ol.Collection();
+  var elem;
+  goog.events.listen(collection, ol.CollectionEventType.ADD, function(e) {
+    elem = e.elem;
+  });
+  collection.push(1);
+  assertEquals(1, elem);
+}
+
+
+function testAddRemoveEvent() {
+  var collection = new ol.Collection([1]);
+  var addedElem;
+  goog.events.listen(collection, ol.CollectionEventType.ADD, function(e) {
+    addedElem = e.elem;
+  });
+  var removedElem;
+  goog.events.listen(collection, ol.CollectionEventType.REMOVE, function(e) {
+    removedElem = e.elem;
+  });
+  collection.setAt(0, 2);
+  assertEquals(1, removedElem);
+  assertEquals(2, addedElem);
+}
+
+
+function testRemove() {
+  var collection = new ol.Collection([1]);
+  var elem;
+  goog.events.listen(collection, ol.CollectionEventType.REMOVE, function(e) {
+    elem = e.elem;
+  });
+  collection.pop();
+  assertEquals(1, elem);
+}
