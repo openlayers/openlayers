@@ -140,7 +140,7 @@
         }
 
         function test_createLayer(t) {
-            t.plan(27);
+            t.plan(34);
 
             var format = new OpenLayers.Format.WMTSCapabilities();
 
@@ -230,6 +230,37 @@
             t.eq(layer.dimensions.length, 1, "correct dimensions length");
             t.eq(layer.dimensions[0], "Time", "correct dimensions");
             t.eq(layer.params['TIME'], "2012", "correct params");
+
+            // test projection and units
+            layer = format.createLayer(caps, {
+                layer: "ch.are.agglomerationen_isolierte_staedte-2000",
+                matrixSet: "21781",
+                units: 'degrees'
+            });
+            t.eq(layer.units, "degrees", "correct units");
+            layer = format.createLayer(caps, {
+                layer: "ch.are.agglomerationen_isolierte_staedte-2000",
+                matrixSet: "21781",
+                projection: "EPSG:4326"
+            });
+            t.eq(layer.projection.getCode(), "EPSG:4326", "correct projection");
+            t.eq(layer.units, "degrees", "correct units");
+            layer = format.createLayer(caps, {
+                layer: "ch.are.agglomerationen_isolierte_staedte-2000",
+                matrixSet: "21781",
+                projection: "EPSG:4326",
+                units: 'm'
+            });
+            t.eq(layer.projection.getCode(), "EPSG:4326", "correct projection");
+            t.eq(layer.units, "m", "correct units");
+            layer = format.createLayer(caps, {
+                layer: "ch.are.agglomerationen_isolierte_staedte-2000",
+                matrixSet: "21781",
+                projection: "EPSG:900913",
+                units: 'degrees'
+            });
+            t.eq(layer.projection.getCode(), "EPSG:900913", "correct projection");
+            t.eq(layer.units, "degrees", "correct units");
         }
 
         function test_parse_projection(t) {
