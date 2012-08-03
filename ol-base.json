@@ -28,6 +28,8 @@
 
   "mode": "ADVANCED",
 
-  "paths": "src"
+  "paths": "src",
+
+  "treat-warnings-as-errors": true
 
 }
