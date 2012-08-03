@@ -57,6 +57,10 @@ goog.inherits(ol.Layer, ol.Object);
 ol.Layer.prototype.getBrightness = function() {
   return /** @type {number} */ this.get(ol.LayerProperty.BRIGHTNESS);
 };
+goog.exportProperty(
+    ol.Layer.prototype,
+    'getBrightness',
+    ol.Layer.prototype.getBrightness);
 
 
 /**
@@ -65,6 +69,11 @@ ol.Layer.prototype.getBrightness = function() {
 ol.Layer.prototype.getContrast = function() {
   return /** @type {number} */ this.get(ol.LayerProperty.CONTRAST);
 };
+goog.exportProperty(
+    ol.Layer.prototype,
+    'getContrast',
+    ol.Layer.prototype.getContrast);
+
 
 
 /**
@@ -73,6 +82,10 @@ ol.Layer.prototype.getContrast = function() {
 ol.Layer.prototype.getHue = function() {
   return /** @type {number} */ this.get(ol.LayerProperty.HUE);
 };
+goog.exportProperty(
+    ol.Layer.prototype,
+    'getHue',
+    ol.Layer.prototype.getHue);
 
 
 /**
@@ -81,6 +94,10 @@ ol.Layer.prototype.getHue = function() {
 ol.Layer.prototype.getOpacity = function() {
   return /** @type {number} */ this.get(ol.LayerProperty.OPACITY);
 };
+goog.exportProperty(
+    ol.Layer.prototype,
+    'getOpacity',
+    ol.Layer.prototype.getOpacity);
 
 
 /**
@@ -89,6 +106,10 @@ ol.Layer.prototype.getOpacity = function() {
 ol.Layer.prototype.getSaturation = function() {
   return /** @type {number} */ this.get(ol.LayerProperty.SATURATION);
 };
+goog.exportProperty(
+    ol.Layer.prototype,
+    'getSaturation',
+    ol.Layer.prototype.getSaturation);
 
 
 /**
@@ -105,6 +126,10 @@ ol.Layer.prototype.getStore = function() {
 ol.Layer.prototype.getVisible = function() {
   return /** @type {boolean} */ this.get(ol.LayerProperty.VISIBLE);
 };
+goog.exportProperty(
+    ol.Layer.prototype,
+    'getVisible',
+    ol.Layer.prototype.getVisible);
 
 
 /**
@@ -124,6 +149,10 @@ ol.Layer.prototype.setBrightness = function(brightness) {
     this.set(ol.LayerProperty.BRIGHTNESS, brightness);
   }
 };
+goog.exportProperty(
+    ol.Layer.prototype,
+    'setBrightness',
+    ol.Layer.prototype.setBrightness);
 
 
 /**
@@ -135,6 +164,10 @@ ol.Layer.prototype.setContrast = function(contrast) {
     this.set(ol.LayerProperty.CONTRAST, contrast);
   }
 };
+goog.exportProperty(
+    ol.Layer.prototype,
+    'setContrast',
+    ol.Layer.prototype.setContrast);
 
 
 /**
@@ -145,6 +178,10 @@ ol.Layer.prototype.setHue = function(hue) {
     this.set(ol.LayerProperty.HUE, hue);
   }
 };
+goog.exportProperty(
+    ol.Layer.prototype,
+    'setHue',
+    ol.Layer.prototype.setHue);
 
 
 /**
@@ -156,6 +193,10 @@ ol.Layer.prototype.setOpacity = function(opacity) {
     this.set(ol.LayerProperty.OPACITY, opacity);
   }
 };
+goog.exportProperty(
+    ol.Layer.prototype,
+    'setOpacity',
+    ol.Layer.prototype.setOpacity);
 
 
 /**
@@ -167,6 +208,10 @@ ol.Layer.prototype.setSaturation = function(saturation) {
     this.set(ol.LayerProperty.SATURATION, saturation);
   }
 };
+goog.exportProperty(
+    ol.Layer.prototype,
+    'setSaturation',
+    ol.Layer.prototype.setSaturation);
 
 
 /**
@@ -178,3 +223,7 @@ ol.Layer.prototype.setVisible = function(visible) {
     this.set(ol.LayerProperty.VISIBLE, visible);
   }
 };
+goog.exportProperty(
+    ol.Layer.prototype,
+    'setVisible',
+    ol.Layer.prototype.setVisible);

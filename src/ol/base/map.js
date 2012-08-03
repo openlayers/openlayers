@@ -330,6 +330,10 @@ ol.Map.prototype.getBackgroundColor = function() {
   return /** @type {ol.Color|undefined} */ (
       this.get(ol.MapProperty.BACKGROUND_COLOR));
 };
+goog.exportProperty(
+    ol.Map.prototype,
+    'getBackgroundColor',
+    ol.Map.prototype.getBackgroundColor);
 
 
 /**
@@ -338,6 +342,10 @@ ol.Map.prototype.getBackgroundColor = function() {
 ol.Map.prototype.getCenter = function() {
   return /** @type {ol.Coordinate} */ this.get(ol.MapProperty.CENTER);
 };
+goog.exportProperty(
+    ol.Map.prototype,
+    'getCenter',
+    ol.Map.prototype.getCenter);
 
 
 /**
@@ -346,6 +354,10 @@ ol.Map.prototype.getCenter = function() {
 ol.Map.prototype.getControls = function() {
   return /** @type {ol.Collection} */ this.get(ol.MapProperty.CONTROLS);
 };
+goog.exportProperty(
+    ol.Map.prototype,
+    'getControls',
+    ol.Map.prototype.getControls);
 
 
 /**
@@ -426,6 +438,10 @@ ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
 ol.Map.prototype.getProjection = function() {
   return /** @type {ol.Projection} */ this.get(ol.MapProperty.PROJECTION);
 };
+goog.exportProperty(
+    ol.Map.prototype,
+    'getProjection',
+    ol.Map.prototype.getProjection);
 
 
 /**
@@ -434,6 +450,10 @@ ol.Map.prototype.getProjection = function() {
 ol.Map.prototype.getResolution = function() {
   return /** @type {number} */ this.get(ol.MapProperty.RESOLUTION);
 };
+goog.exportProperty(
+    ol.Map.prototype,
+    'getResolution',
+    ol.Map.prototype.getResolution);
 
 
 /**
@@ -483,6 +503,10 @@ ol.Map.prototype.getRotatedExtent = function() {
 ol.Map.prototype.getRotation = function() {
   return /** @type {number|undefined} */ this.get(ol.MapProperty.ROTATION);
 };
+goog.exportProperty(
+    ol.Map.prototype,
+    'getRotation',
+    ol.Map.prototype.getRotation);
 
 
 /**
@@ -491,6 +515,10 @@ ol.Map.prototype.getRotation = function() {
 ol.Map.prototype.getSize = function() {
   return /** @type {ol.Size|undefined} */ this.get(ol.MapProperty.SIZE);
 };
+goog.exportProperty(
+    ol.Map.prototype,
+    'getSize',
+    ol.Map.prototype.getSize);
 
 
 /**
@@ -528,11 +556,16 @@ ol.Map.prototype.getUserExtent = function() {
 
 
 /**
+ * @export
  * @return {ol.Projection|undefined} Projection.
  */
 ol.Map.prototype.getUserProjection = function() {
   return /** @type {ol.Projection} */ this.get(ol.MapProperty.USER_PROJECTION);
 };
+goog.exportProperty(
+    ol.Map.prototype,
+    'getUserProjection',
+    ol.Map.prototype.getUserProjection);
 
 
 /**
@@ -759,6 +792,10 @@ ol.Map.prototype.removeLayerRenderer = function(layer) {
 ol.Map.prototype.setBackgroundColor = function(backgroundColor) {
   this.set(ol.MapProperty.BACKGROUND_COLOR, backgroundColor);
 };
+goog.exportProperty(
+    ol.Map.prototype,
+    'setBackgroundColor',
+    ol.Map.prototype.setBackgroundColor);
 
 
 /**
@@ -767,6 +804,10 @@ ol.Map.prototype.setBackgroundColor = function(backgroundColor) {
 ol.Map.prototype.setCenter = function(center) {
   this.set(ol.MapProperty.CENTER, center);
 };
+goog.exportProperty(
+    ol.Map.prototype,
+    'setCenter',
+    ol.Map.prototype.setCenter);
 
 
 /**
@@ -775,6 +816,10 @@ ol.Map.prototype.setCenter = function(center) {
 ol.Map.prototype.setControls = function(controls) {
   this.set(ol.MapProperty.CONTROLS, controls);
 };
+goog.exportProperty(
+    ol.Map.prototype,
+    'setControls',
+    ol.Map.prototype.setControls);
 
 
 /**
@@ -790,27 +835,42 @@ ol.Map.prototype.setLayerRenderer = function(layer, layerRenderer) {
 
 
 /**
+ * @export
  * @param {ol.Collection} layers Layers.
  */
 ol.Map.prototype.setLayers = function(layers) {
   this.set(ol.MapProperty.LAYERS, layers);
 };
+goog.exportProperty(
+    ol.Map.prototype,
+    'setLayers',
+    ol.Map.prototype.setLayers);
 
 
 /**
+ * @export
  * @param {number|undefined} resolution Resolution.
  */
 ol.Map.prototype.setResolution = function(resolution) {
   this.set(ol.MapProperty.RESOLUTION, resolution);
 };
+goog.exportProperty(
+    ol.Map.prototype,
+    'setResolution',
+    ol.Map.prototype.setResolution);
 
 
 /**
+ * @export
  * @param {number|undefined} rotation Rotation.
  */
 ol.Map.prototype.setRotation = function(rotation) {
   this.set(ol.MapProperty.ROTATION, rotation);
 };
+goog.exportProperty(
+    ol.Map.prototype,
+    'setRotation',
+    ol.Map.prototype.setRotation);
 
 
 /**
@@ -822,30 +882,49 @@ ol.Map.prototype.setSize = function(size) {
     this.set(ol.MapProperty.SIZE, size);
   }
 };
+goog.exportProperty(
+    ol.Map.prototype,
+    'setSize',
+    ol.Map.prototype.setSize);
 
 
 /**
+ * @export
  * @param {ol.Projection} projection Projection.
  */
 ol.Map.prototype.setProjection = function(projection) {
   this.set(ol.MapProperty.PROJECTION, projection);
 };
+goog.exportProperty(
+    ol.Map.prototype,
+    'setProjection',
+    ol.Map.prototype.setProjection);
 
 
 /**
+ * @export
  * @param {ol.Coordinate} userCenter Center in user projection.
  */
 ol.Map.prototype.setUserCenter = function(userCenter) {
   this.setCenter(this.userToMapTransform_(userCenter));
 };
+goog.exportProperty(
+    ol.Map.prototype,
+    'setUserCenter',
+    ol.Map.prototype.setUserCenter);
 
 
 /**
+ * @export
  * @param {ol.Projection} userProjection User projection.
  */
 ol.Map.prototype.setUserProjection = function(userProjection) {
   this.set(ol.MapProperty.USER_PROJECTION, userProjection);
 };
+goog.exportProperty(
+    ol.Map.prototype,
+    'setUserProjection',
+    ol.Map.prototype.setUserProjection);
 
 
 /**
