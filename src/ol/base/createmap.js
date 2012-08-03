@@ -77,7 +77,7 @@ ol.createMap = function(target, opt_values, opt_rendererHints) {
     goog.object.extend(values, opt_values);
   }
 
-  var panFunction = ol.control.CenterConstraint.snapToPixel;
+  var centerConstraint = ol.control.CenterConstraint.snapToPixel;
 
   // FIXME this should be a configuration option
   var resolutionConstraint = ol.control.ResolutionConstraint.createSnapToPower(
@@ -86,8 +86,8 @@ ol.createMap = function(target, opt_values, opt_rendererHints) {
   if (!goog.object.containsKey(values, ol.MapProperty.CONTROLS)) {
     var controls = new ol.Collection();
     controls.push(new ol.control.DblClickZoom(resolutionConstraint));
-    controls.push(new ol.control.DragPan(panFunction));
-    controls.push(new ol.control.KeyboardPan(panFunction));
+    controls.push(new ol.control.DragPan(centerConstraint));
+    controls.push(new ol.control.KeyboardPan(centerConstraint));
     controls.push(new ol.control.KeyboardZoom(resolutionConstraint));
     controls.push(new ol.control.MouseWheelZoom(resolutionConstraint));
     controls.push(new ol.control.ShiftDragRotateAndZoom(resolutionConstraint));
