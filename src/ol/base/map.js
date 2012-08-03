@@ -628,6 +628,7 @@ ol.Map.prototype.handleLayersRemove = function(collectionEvent) {
 
 
 /**
+ * @protected
  */
 ol.Map.prototype.handleLayersChanged = function() {
   var layerRenderers = goog.object.getValues(this.layerRenderers);
