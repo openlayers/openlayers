@@ -75,7 +75,6 @@ goog.exportProperty(
     ol.Layer.prototype.getContrast);
 
 
-
 /**
  * @return {number} Hue.
  */
