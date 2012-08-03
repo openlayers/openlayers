@@ -3,24 +3,25 @@ goog.provide('ol.control.KeyboardZoom');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler.EventType');
 goog.require('ol.Control');
-goog.require('ol.control.ZoomFunctionType');
+goog.require('ol.control.ResolutionConstraintType');
 
 
 
 /**
  * @constructor
  * @extends {ol.Control}
- * @param {ol.control.ZoomFunctionType} zoomFunction Zoom function.
+ * @param {ol.control.ResolutionConstraintType} resolutionConstraint
+ *     Resolution constraint.
  */
-ol.control.KeyboardZoom = function(zoomFunction) {
+ol.control.KeyboardZoom = function(resolutionConstraint) {
 
   goog.base(this);
 
   /**
    * @private
-   * @type {ol.control.ZoomFunctionType}
+   * @type {ol.control.ResolutionConstraintType}
    */
-  this.zoomFunction_ = zoomFunction;
+  this.resolutionConstraint_ = resolutionConstraint;
 
 };
 goog.inherits(ol.control.KeyboardZoom, ol.Control);
@@ -38,7 +39,7 @@ ol.control.KeyboardZoom.prototype.handleMapBrowserEvent =
     if (charCode == '+'.charCodeAt(0) || charCode == '-'.charCodeAt(0)) {
       var map = mapBrowserEvent.map;
       var delta = charCode == '+'.charCodeAt(0) ? 1 : -1;
-      var resolution = this.zoomFunction_(map.getResolution(), delta);
+      var resolution = this.resolutionConstraint_(map.getResolution(), delta);
       map.setResolution(resolution);
       keyEvent.preventDefault();
       mapBrowserEvent.preventDefault();

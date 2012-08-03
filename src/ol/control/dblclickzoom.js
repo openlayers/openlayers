@@ -3,24 +3,25 @@ goog.provide('ol.control.DblClickZoom');
 goog.require('goog.events.EventType');
 goog.require('ol.Control');
 goog.require('ol.MapBrowserEvent');
-goog.require('ol.control.ZoomFunctionType');
+goog.require('ol.control.ResolutionConstraintType');
 
 
 
 /**
  * @constructor
  * @extends {ol.Control}
- * @param {ol.control.ZoomFunctionType} zoomFunction Zoom function.
+ * @param {ol.control.ResolutionConstraintType} resolutionConstraint
+ *     Resolution constraint.
  */
-ol.control.DblClickZoom = function(zoomFunction) {
+ol.control.DblClickZoom = function(resolutionConstraint) {
 
   goog.base(this);
 
   /**
    * @private
-   * @type {ol.control.ZoomFunctionType}
+   * @type {ol.control.ResolutionConstraintType}
    */
-  this.zoomFunction_ = zoomFunction;
+  this.resolutionConstraint_ = resolutionConstraint;
 
 };
 goog.inherits(ol.control.DblClickZoom, ol.Control);
@@ -38,7 +39,7 @@ ol.control.DblClickZoom.prototype.handleMapBrowserEvent =
       map.setCenter(mapBrowserEvent.getCoordinate());
       var browserEvent = mapBrowserEvent.browserEvent;
       var delta = browserEvent.shiftKey ? -1 : 1;
-      var resolution = this.zoomFunction_(map.getResolution(), delta);
+      var resolution = this.resolutionConstraint_(map.getResolution(), delta);
       map.setResolution(resolution);
     }, this);
     mapBrowserEvent.preventDefault();

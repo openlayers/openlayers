@@ -3,24 +3,25 @@ goog.provide('ol.control.MouseWheelZoom');
 goog.require('goog.events.MouseWheelEvent');
 goog.require('goog.events.MouseWheelHandler.EventType');
 goog.require('ol.MapBrowserEvent');
-goog.require('ol.control.ZoomFunctionType');
+goog.require('ol.control.ResolutionConstraintType');
 
 
 
 /**
  * @constructor
  * @extends {ol.Control}
- * @param {ol.control.ZoomFunctionType} zoomFunction Zoom function.
+ * @param {ol.control.ResolutionConstraintType} resolutionConstraint
+ *     Resolution constraint.
  */
-ol.control.MouseWheelZoom = function(zoomFunction) {
+ol.control.MouseWheelZoom = function(resolutionConstraint) {
 
   goog.base(this);
 
   /**
    * @private
-   * @type {ol.control.ZoomFunctionType}
+   * @type {ol.control.ResolutionConstraintType}
    */
-  this.zoomFunction_ = zoomFunction;
+  this.resolutionConstraint_ = resolutionConstraint;
 
 };
 goog.inherits(ol.control.MouseWheelZoom, ol.Control);
@@ -42,7 +43,7 @@ ol.control.MouseWheelZoom.prototype.handleMapBrowserEvent =
         // FIXME compute correct center for zoom
         map.setCenter(mapBrowserEvent.getCoordinate());
         var delta = mouseWheelEvent.deltaY < 0 ? 1 : -1;
-        var resolution = this.zoomFunction_(map.getResolution(), delta);
+        var resolution = this.resolutionConstraint_(map.getResolution(), delta);
         map.setResolution(resolution);
       }, this);
       mapBrowserEvent.preventDefault();

@@ -1,5 +1,5 @@
-goog.provide('ol.control.ZoomFunction');
-goog.provide('ol.control.ZoomFunctionType');
+goog.provide('ol.control.ResolutionConstraint');
+goog.provide('ol.control.ResolutionConstraintType');
 
 goog.require('goog.math');
 goog.require('ol.array');
@@ -8,14 +8,15 @@ goog.require('ol.array');
 /**
  * @typedef {function((number|undefined), number): (number|undefined)}
  */
-ol.control.ZoomFunctionType;
+ol.control.ResolutionConstraintType;
 
 
 /**
  * @param {Array.<number>} resolutions Resolutions.
- * @return {ol.control.ZoomFunctionType} Zoom function.
+ * @return {ol.control.ResolutionConstraintType} Zoom function.
  */
-ol.control.ZoomFunction.createSnapToResolutions = function(resolutions) {
+ol.control.ResolutionConstraint.createSnapToResolutions =
+    function(resolutions) {
   return function(resolution, delta) {
     if (goog.isDef(resolution)) {
       var oldLevel = ol.array.linearFindNearest(resolutions, resolution);
@@ -33,9 +34,9 @@ ol.control.ZoomFunction.createSnapToResolutions = function(resolutions) {
  * @param {number} power Power.
  * @param {number} maxResolution Maximum resolution.
  * @param {number=} opt_maxLevel Maixmum level.
- * @return {ol.control.ZoomFunctionType} Zoom function.
+ * @return {ol.control.ResolutionConstraintType} Zoom function.
  */
-ol.control.ZoomFunction.createSnapToPower =
+ol.control.ResolutionConstraint.createSnapToPower =
     function(power, maxResolution, opt_maxLevel) {
   return function(resolution, delta) {
     if (goog.isDef(resolution)) {
