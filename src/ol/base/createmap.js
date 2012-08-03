@@ -54,7 +54,7 @@ ol.RendererHint = {
 
 
 /**
- * @type {Array.<ol.RendererHint>}}
+ * @type {Array.<ol.RendererHint>}
  */
 ol.DEFAULT_RENDERER_HINT = [
   ol.RendererHint.WEBGL,
