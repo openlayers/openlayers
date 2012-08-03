@@ -17,6 +17,13 @@ goog.inherits(ol.Coordinate, goog.math.Vec2);
 
 
 /**
+ * @const
+ * @type {ol.Coordinate}
+ */
+ol.Coordinate.ZERO = new ol.Coordinate(0, 0);
+
+
+/**
  * @return {ol.Coordinate} Clone.
  */
 ol.Coordinate.prototype.clone = function() {
