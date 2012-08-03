@@ -31,7 +31,7 @@ ol.dom.Map = function(target, opt_values) {
   this.viewport_.style.overflow = 'hidden';
   this.viewport_.style.width = '100%';
   this.viewport_.style.height = '100%';
-  target.appendChild(this.viewport_);
+  goog.dom.appendChild(target, this.viewport_);
 
   /**
    * @type {!Element}
@@ -40,7 +40,7 @@ ol.dom.Map = function(target, opt_values) {
   this.layersPane_ = goog.dom.createElement(goog.dom.TagName.DIV);
   this.layersPane_.className = 'ol-layers-pane';
   this.layersPane_.style.position = 'absolute';
-  this.viewport_.appendChild(this.layersPane_);
+  goog.dom.appendChild(this.viewport_, this.layersPane_);
 
   /**
    * @type {Object}
@@ -136,7 +136,7 @@ ol.dom.Map.prototype.createLayerRenderer = function(layer) {
     var layerPane = goog.dom.createElement(goog.dom.TagName.DIV);
     layerPane.className = 'ol-layer';
     layerPane.style.position = 'absolute';
-    this.layersPane_.appendChild(layerPane);
+    goog.dom.appendChild(this.layersPane_, layerPane);
 
     var layerRenderer = new ol.dom.TileLayerRenderer(this, layer, layerPane);
 

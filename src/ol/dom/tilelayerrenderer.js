@@ -101,7 +101,7 @@ ol.dom.TileLayerRenderer.prototype.render = function() {
   }, this);
 
   if (newTiles) {
-    this.target.appendChild(fragment);
+    goog.dom.appendChild(this.target, fragment);
   }
 
   this.removeInvisibleTiles_(tileBounds, z);
@@ -147,7 +147,7 @@ ol.dom.TileLayerRenderer.prototype.removeInvisibleTiles_ = function(
     if (prune) {
       tile = this.renderedTiles_[key];
       delete this.renderedTiles_[key];
-      this.target.removeChild(tile.getImage(this));
+      goog.dom.removeNode(tile.getImage(this));
     }
   }
 };

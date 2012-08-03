@@ -144,7 +144,7 @@ ol.webgl.Map = function(target, opt_values) {
   this.canvas_.height = target.clientHeight;
   this.canvas_.width = target.clientWidth;
   this.canvas_.style.overflow = 'hidden';
-  target.appendChild(this.canvas_);
+  goog.dom.appendChild(target, this.canvas_);
 
   /**
    * @private

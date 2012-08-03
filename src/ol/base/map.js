@@ -10,6 +10,7 @@ goog.provide('ol.MapProperty');
 
 goog.require('goog.array');
 goog.require('goog.dispose');
+goog.require('goog.dom');
 goog.require('goog.dom.ViewportSizeMonitor');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
@@ -119,7 +120,7 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
   this.eventsPane_.style.width = '100%';
   this.eventsPane_.style.height = '100%';
   this.eventsPane_.style.zIndex = ol.MapPaneZIndex.EVENTS;
-  target.appendChild(this.eventsPane_);
+  goog.dom.appendChild(target, this.eventsPane_);
 
   goog.events.listen(this.eventsPane_, [
     goog.events.EventType.DBLCLICK
