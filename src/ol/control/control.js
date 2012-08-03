@@ -1,4 +1,3 @@
-// FIXME add snap-to-pixel pan strategy
 // FIXME factor out key precondition (shift et. al)
 
 goog.provide('ol.Control');
