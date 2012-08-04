@@ -19,10 +19,9 @@ ol.control.ResolutionConstraint.createSnapToResolutions =
     function(resolutions) {
   return function(resolution, delta) {
     if (goog.isDef(resolution)) {
-      var oldLevel = ol.array.linearFindNearest(resolutions, resolution);
-      var newLevel = goog.math.clamp(
-          oldLevel + delta, 0, resolutions.length - 1);
-      return resolutions[newLevel];
+      var z = ol.array.linearFindNearest(resolutions, resolution);
+      z = goog.math.clamp(z + delta, 0, resolutions.length - 1);
+      return resolutions[z];
     } else {
       return undefined;
     }

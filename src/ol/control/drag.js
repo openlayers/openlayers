@@ -7,16 +7,18 @@ goog.require('goog.functions');
 goog.require('ol.Control');
 goog.require('ol.Coordinate');
 goog.require('ol.MapBrowserEvent');
+goog.require('ol.control.Constraints');
 
 
 
 /**
  * @constructor
  * @extends {ol.Control}
+ * @param {ol.control.Constraints} constraints Constraints.
  */
-ol.control.Drag = function() {
+ol.control.Drag = function(constraints) {
 
-  goog.base(this);
+  goog.base(this, constraints);
 
   /**
    * @private

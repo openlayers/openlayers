@@ -3,28 +3,17 @@ goog.provide('ol.control.KeyboardPan');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler.EventType');
 goog.require('ol.Control');
-goog.require('ol.control.CenterConstraint');
-goog.require('ol.control.CenterConstraintType');
+goog.require('ol.control.Constraints');
 
 
 
 /**
  * @constructor
  * @extends {ol.Control}
- * @param {ol.control.CenterConstraintType=} opt_centerConstraint
- *     Center constraint.
+ * @param {ol.control.Constraints} constraints Constraints.
  */
-ol.control.KeyboardPan = function(opt_centerConstraint) {
-
-  goog.base(this);
-
-  /**
-   * @private
-   * @type {ol.control.CenterConstraintType}
-   */
-  this.centerConstraint_ = opt_centerConstraint ||
-      ol.control.CenterConstraint.none;
-
+ol.control.KeyboardPan = function(constraints) {
+  goog.base(this, constraints);
 };
 goog.inherits(ol.control.KeyboardPan, ol.Control);
 
@@ -43,7 +32,6 @@ ol.control.KeyboardPan.prototype.handleMapBrowserEvent =
         keyCode == goog.events.KeyCodes.RIGHT ||
         keyCode == goog.events.KeyCodes.UP) {
       var map = mapBrowserEvent.map;
-      var center = map.getCenter().clone();
       var resolution = map.getResolution();
       var delta;
       if (keyCode == goog.events.KeyCodes.DOWN) {
@@ -56,8 +44,7 @@ ol.control.KeyboardPan.prototype.handleMapBrowserEvent =
         goog.asserts.assert(keyCode == goog.events.KeyCodes.UP);
         delta = new ol.Coordinate(0, 16 * resolution);
       }
-      center = this.centerConstraint_(center, resolution, delta);
-      map.setCenter(center);
+      this.pan(map, delta);
       keyEvent.preventDefault();
       mapBrowserEvent.preventDefault();
     }

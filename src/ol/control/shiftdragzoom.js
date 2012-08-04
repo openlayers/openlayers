@@ -4,8 +4,8 @@ goog.provide('ol.control.ShiftDragZoom');
 
 goog.require('ol.Extent');
 goog.require('ol.MapBrowserEvent');
+goog.require('ol.control.Constraints');
 goog.require('ol.control.Drag');
-goog.require('ol.control.ResolutionConstraintType');
 
 
 /**
@@ -25,19 +25,10 @@ ol.SHIFT_DRAG_ZOOM_HYSTERESIS_PIXELS_SQUARED =
 /**
  * @constructor
  * @extends {ol.control.Drag}
- * @param {ol.control.ResolutionConstraintType=} opt_resolutionConstraint
- *     Resolution constraint.
+ * @param {ol.control.Constraints} constraints Constraints.
  */
-ol.control.ShiftDragZoom = function(opt_resolutionConstraint) {
-
-  goog.base(this);
-
-  /**
-   * @private
-   * @type {ol.control.ResolutionConstraintType|undefined}
-   */
-  this.resolutionConstraint_ = opt_resolutionConstraint;
-
+ol.control.ShiftDragZoom = function(constraints) {
+  goog.base(this, constraints);
 };
 goog.inherits(ol.control.ShiftDragZoom, ol.control.Drag);
 
@@ -52,14 +43,7 @@ ol.control.ShiftDragZoom.prototype.handleDragEnd = function(mapBrowserEvent) {
     var extent = ol.Extent.boundingExtent(
         this.startCoordinate,
         mapBrowserEvent.getCoordinate());
-    var resolution = map.getResolutionForExtent(extent);
-    if (goog.isDef(this.resolutionConstraint_)) {
-      resolution = this.resolutionConstraint_(resolution, 0);
-    }
-    map.withFrozenRendering(function() {
-      map.setCenter(extent.getCenter());
-      map.setResolution(resolution);
-    });
+    this.fitExtent(map, extent);
   }
 };
 

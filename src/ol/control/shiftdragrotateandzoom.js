@@ -2,27 +2,18 @@ goog.provide('ol.control.ShiftDragRotateAndZoom');
 
 goog.require('goog.math.Vec2');
 goog.require('ol.MapBrowserEvent');
+goog.require('ol.control.Constraints');
 goog.require('ol.control.Drag');
-goog.require('ol.control.ResolutionConstraintType');
 
 
 
 /**
  * @constructor
  * @extends {ol.control.Drag}
- * @param {ol.control.ResolutionConstraintType=} opt_resolutionConstraint
- *     Resolution constraint.
+ * @param {ol.control.Constraints} constraints Constraints.
  */
-ol.control.ShiftDragRotateAndZoom = function(opt_resolutionConstraint) {
-
-  goog.base(this);
-
-  /**
-   * @private
-   * @type {ol.control.ResolutionConstraintType|undefined}
-   */
-  this.resolutionConstraint_ = opt_resolutionConstraint;
-
+ol.control.ShiftDragRotateAndZoom = function(constraints) {
+  goog.base(this, constraints);
 };
 goog.inherits(ol.control.ShiftDragRotateAndZoom, ol.control.Drag);
 
@@ -54,12 +45,9 @@ ol.control.ShiftDragRotateAndZoom.prototype.handleDrag =
       size.height / 2 - browserEvent.offsetY);
   var theta = Math.atan2(delta.y, delta.x);
   // FIXME this should use map.withFrozenRendering but an assertion fails :-(
-  map.setRotation(this.startRotation_ - theta);
+  this.setRotation(map, this.startRotation_ - theta);
   var resolution = this.startRatio_ * delta.magnitude();
-  if (goog.isDef(this.resolutionConstraint_)) {
-    resolution = this.resolutionConstraint_(resolution, 0);
-  }
-  map.setResolution(resolution);
+  this.setResolution(map, resolution);
 };
 
 

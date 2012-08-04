@@ -10,19 +10,10 @@ goog.require('ol.control.ResolutionConstraintType');
 /**
  * @constructor
  * @extends {ol.Control}
- * @param {ol.control.ResolutionConstraintType} resolutionConstraint
- *     Resolution constraint.
+ * @param {ol.control.Constraints} constraints Constraints.
  */
-ol.control.KeyboardZoom = function(resolutionConstraint) {
-
-  goog.base(this);
-
-  /**
-   * @private
-   * @type {ol.control.ResolutionConstraintType}
-   */
-  this.resolutionConstraint_ = resolutionConstraint;
-
+ol.control.KeyboardZoom = function(constraints) {
+  goog.base(this, constraints);
 };
 goog.inherits(ol.control.KeyboardZoom, ol.Control);
 
@@ -39,8 +30,7 @@ ol.control.KeyboardZoom.prototype.handleMapBrowserEvent =
     if (charCode == '+'.charCodeAt(0) || charCode == '-'.charCodeAt(0)) {
       var map = mapBrowserEvent.map;
       var delta = charCode == '+'.charCodeAt(0) ? 1 : -1;
-      var resolution = this.resolutionConstraint_(map.getResolution(), delta);
-      map.setResolution(resolution);
+      this.zoom(map, delta);
       keyEvent.preventDefault();
       mapBrowserEvent.preventDefault();
     }

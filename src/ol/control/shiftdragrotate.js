@@ -8,9 +8,10 @@ goog.require('ol.control.Drag');
 /**
  * @constructor
  * @extends {ol.control.Drag}
+ * @param {ol.control.Constraints} constraints Constraints.
  */
-ol.control.ShiftDragRotate = function() {
-  goog.base(this);
+ol.control.ShiftDragRotate = function(constraints) {
+  goog.base(this, constraints);
 };
 goog.inherits(ol.control.ShiftDragRotate, ol.control.Drag);
 
