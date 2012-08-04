@@ -303,10 +303,10 @@ ol.webgl.Map.prototype.getGL = function() {
  */
 ol.webgl.Map.prototype.getProgram = function(
     fragmentShaderObject, vertexShaderObject) {
-  var key =
+  var programKey =
       goog.getUid(fragmentShaderObject) + '/' + goog.getUid(vertexShaderObject);
-  if (key in this.programCache_) {
-    return this.programCache_[key];
+  if (programKey in this.programCache_) {
+    return this.programCache_[programKey];
   } else {
     var gl = this.getGL();
     var program = gl.createProgram();
@@ -321,7 +321,7 @@ ol.webgl.Map.prototype.getProgram = function(
             gl.getProgramParameter(program, goog.webgl.LINK_STATUS));
       }
     }
-    this.programCache_[key] = program;
+    this.programCache_[programKey] = program;
     return program;
   }
 };
@@ -332,9 +332,9 @@ ol.webgl.Map.prototype.getProgram = function(
  * @return {WebGLShader} Shader.
  */
 ol.webgl.Map.prototype.getShader = function(shaderObject) {
-  var key = goog.getUid(shaderObject);
-  if (key in this.shaderCache_) {
-    return this.shaderCache_[key];
+  var shaderKey = goog.getUid(shaderObject);
+  if (shaderKey in this.shaderCache_) {
+    return this.shaderCache_[shaderKey];
   } else {
     var gl = this.getGL();
     var shader = gl.createShader(shaderObject.getType());
@@ -348,7 +348,7 @@ ol.webgl.Map.prototype.getShader = function(shaderObject) {
             gl.getShaderParameter(shader, goog.webgl.COMPILE_STATUS));
       }
     }
-    this.shaderCache_[key] = shader;
+    this.shaderCache_[shaderKey] = shader;
     return shader;
   }
 };
@@ -579,9 +579,9 @@ ol.webgl.Map.prototype.removeLayer = function(layer) {
 ol.webgl.Map.prototype.removeLayerRenderer = function(layer) {
   var layerRenderer = goog.base(this, 'removeLayerRenderer', layer);
   if (!goog.isNull(layerRenderer)) {
-    var key = goog.getUid(layer);
-    goog.events.unlistenByKey(this.layerRendererChangeListenKeys_[key]);
-    delete this.layerRendererChangeListenKeys_[key];
+    var layerKey = goog.getUid(layer);
+    goog.events.unlistenByKey(this.layerRendererChangeListenKeys_[layerKey]);
+    delete this.layerRendererChangeListenKeys_[layerKey];
   }
   return layerRenderer;
 };
@@ -592,8 +592,8 @@ ol.webgl.Map.prototype.removeLayerRenderer = function(layer) {
  */
 ol.webgl.Map.prototype.setLayerRenderer = function(layer, layerRenderer) {
   goog.base(this, 'setLayerRenderer', layer, layerRenderer);
-  var key = goog.getUid(layer);
-  this.layerRendererChangeListenKeys_[key] = goog.events.listen(layerRenderer,
-      goog.events.EventType.CHANGE, this.handleLayerRendererChange, false,
-      this);
+  var layerKey = goog.getUid(layer);
+  this.layerRendererChangeListenKeys_[layerKey] = goog.events.listen(
+      layerRenderer, goog.events.EventType.CHANGE,
+      this.handleLayerRendererChange, false, this);
 };

@@ -358,11 +358,11 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
       gl.bindTexture(goog.webgl.TEXTURE_2D, map.getTileTexture(tile));
       gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
     } else {
-      var key = goog.getUid(tile);
-      if (!(key in this.tileChangeListenerKeys_)) {
+      var tileKey = goog.getUid(tile);
+      if (!(tileKey in this.tileChangeListenerKeys_)) {
         tile.load();
         // FIXME will need to handle aborts as well
-        this.tileChangeListenerKeys_[key] = goog.events.listen(tile,
+        this.tileChangeListenerKeys_[tileKey] = goog.events.listen(tile,
             goog.events.EventType.CHANGE, this.handleTileChange, false, this);
       }
     }
