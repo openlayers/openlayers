@@ -1,4 +1,4 @@
-// FIXME clear tileTextureCache
+// FIXME clear textureCache
 // FIXME defer texture loads until after render when animating
 // FIXME generational tile texture garbage collector newFrame/get
 // FIXME defer cleanup until post-render
@@ -32,6 +32,12 @@ if (goog.DEBUG) {
    */
   ol.webgl.map.logger = goog.debug.Logger.getLogger('ol.webgl.map');
 }
+
+
+/**
+ * @typedef {{magFilter: number, minFilter: number, texture: WebGLTexture}}
+ */
+ol.webgl.TextureCacheEntry;
 
 
 
@@ -204,9 +210,9 @@ ol.webgl.Map = function(target, opt_values) {
 
   /**
    * @private
-   * @type {Object.<string, WebGLTexture>}
+   * @type {Object.<string, ol.webgl.TextureCacheEntry>}
    */
-  this.tileTextureCache_ = {};
+  this.textureCache_ = {};
 
   /**
    * @private
@@ -249,6 +255,50 @@ ol.webgl.Map.prototype.addLayer = function(layer) {
 
 
 /**
+ * @param {Image} image Image.
+ * @param {number} magFilter Mag filter.
+ * @param {number} minFilter Min filter.
+ */
+ol.webgl.Map.prototype.bindImageTexture =
+    function(image, magFilter, minFilter) {
+  var gl = this.getGL();
+  var imageKey = image.src;
+  var textureCacheEntry = this.textureCache_[imageKey];
+  if (goog.isDef(textureCacheEntry)) {
+    gl.bindTexture(goog.webgl.TEXTURE_2D, textureCacheEntry.texture);
+    if (textureCacheEntry.magFilter != magFilter) {
+      gl.texParameteri(
+          goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MAG_FILTER, magFilter);
+      textureCacheEntry.magFilter = magFilter;
+    }
+    if (textureCacheEntry.minFilter != minFilter) {
+      gl.texParameteri(
+          goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MAG_FILTER, minFilter);
+      textureCacheEntry.minFilter = minFilter;
+    }
+  } else {
+    var texture = gl.createTexture();
+    gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
+    gl.texImage2D(goog.webgl.TEXTURE_2D, 0, goog.webgl.RGBA, goog.webgl.RGBA,
+        goog.webgl.UNSIGNED_BYTE, image);
+    gl.texParameteri(
+        goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MAG_FILTER, magFilter);
+    gl.texParameteri(
+        goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MIN_FILTER, minFilter);
+    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_S,
+        goog.webgl.CLAMP_TO_EDGE);
+    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_T,
+        goog.webgl.CLAMP_TO_EDGE);
+    this.textureCache_[imageKey] = {
+      texture: texture,
+      magFilter: magFilter,
+      minFilter: minFilter
+    };
+  }
+};
+
+
+/**
  * @inheritDoc
  */
 ol.webgl.Map.prototype.canRotate = goog.functions.TRUE;
@@ -280,8 +330,8 @@ ol.webgl.Map.prototype.disposeInternal = function() {
     goog.object.forEach(this.shaderCache_, function(shader) {
       gl.deleteShader(shader);
     });
-    goog.object.forEach(this.tileTextureCache_, function(texture) {
-      gl.deleteTexture(texture);
+    goog.object.forEach(this.textureCache_, function(textureCacheEntry) {
+      gl.deleteTexture(textureCacheEntry.texture);
     });
   }
   goog.base(this, 'disposeInternal');
@@ -350,34 +400,6 @@ ol.webgl.Map.prototype.getShader = function(shaderObject) {
     }
     this.shaderCache_[shaderKey] = shader;
     return shader;
-  }
-};
-
-
-/**
- * @param {ol.Tile} tile Tile.
- * @return {WebGLTexture} Texture.
- */
-ol.webgl.Map.prototype.getTileTexture = function(tile) {
-  var image = tile.getImage();
-  if (image.src in this.tileTextureCache_) {
-    return this.tileTextureCache_[image.src];
-  } else {
-    var gl = this.getGL();
-    var texture = gl.createTexture();
-    gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
-    gl.texImage2D(goog.webgl.TEXTURE_2D, 0, goog.webgl.RGBA, goog.webgl.RGBA,
-        goog.webgl.UNSIGNED_BYTE, image);
-    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MAG_FILTER,
-        goog.webgl.NEAREST);
-    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MIN_FILTER,
-        goog.webgl.NEAREST);
-    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_S,
-        goog.webgl.CLAMP_TO_EDGE);
-    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_T,
-        goog.webgl.CLAMP_TO_EDGE);
-    this.tileTextureCache_[image.src] = texture;
-    return texture;
   }
 };
 
@@ -461,7 +483,7 @@ ol.webgl.Map.prototype.handleWebGLContextLost = function(event) {
   this.arrayBuffer_ = null;
   this.shaderCache_ = {};
   this.programCache_ = {};
-  this.tileTextureCache_ = {};
+  this.textureCache_ = {};
   goog.object.forEach(this.layerRenderers, function(layerRenderer) {
     layerRenderer.handleWebGLContextLost();
   });
