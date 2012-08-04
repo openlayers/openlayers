@@ -86,16 +86,10 @@ ol.TileBounds.prototype.equals = function(tileBounds) {
  * @template T
  */
 ol.TileBounds.prototype.forEachTileCoord = function(z, f, opt_obj) {
-  var tileCoord = new ol.TileCoord(z, 0, 0);
   var x, y;
   for (x = this.minX; x <= this.maxX; ++x) {
-    tileCoord.x = x;
     for (y = this.minY; y <= this.maxY; ++y) {
-      tileCoord.y = y;
-      f.call(opt_obj, tileCoord);
-      goog.asserts.assert(tileCoord.z == z);
-      goog.asserts.assert(tileCoord.x == x);
-      goog.asserts.assert(tileCoord.y == y);
+      f.call(opt_obj, new ol.TileCoord(z, x, y));
     }
   }
 };
