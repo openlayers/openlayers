@@ -61,8 +61,10 @@ ol.Control.prototype.pan = function(map, delta, opt_anchor) {
  * @param {ol.Map} map Map.
  * @param {number|undefined} rotation Rotation.
  * @param {number} delta Delta.
+ * @param {ol.Coordinate=} opt_anchor Anchor.
  */
-ol.Control.prototype.rotate = function(map, rotation, delta) {
+ol.Control.prototype.rotate = function(map, rotation, delta, opt_anchor) {
+  // FIXME handle rotation about anchor
   rotation = this.constraints.rotation(rotation, delta);
   map.setRotation(rotation);
 };
