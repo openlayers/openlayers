@@ -77,13 +77,17 @@ ol.TileGrid = function(resolutions, extent, origin, opt_tileSize) {
 
 /**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {function(number, ol.TileBounds): boolean} callback Callback.
+ * @param {function(this: T, number, ol.TileBounds): boolean} callback Callback.
+ * @param {T=} opt_obj Object.
+ * @template T
  */
-ol.TileGrid.prototype.forEachTileCoordParent = function(tileCoord, callback) {
+ol.TileGrid.prototype.forEachTileCoordParentTileBounds =
+    function(tileCoord, callback, opt_obj) {
   var tileCoordExtent = this.getTileCoordExtent(tileCoord);
   var z = tileCoord.z - 1;
   while (z >= 0) {
-    if (callback(z, this.getTileBoundsForExtentAndZ(tileCoordExtent, z))) {
+    if (callback.call(
+        opt_obj, z, this.getTileBoundsForExtentAndZ(tileCoordExtent, z))) {
       return;
     }
     --z;

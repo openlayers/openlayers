@@ -398,7 +398,7 @@ function testForEachTileCoordParent() {
   var tileGrid = new ol.TileGrid(resolutions, extent, origin, tileSize);
   var zs = [], tileBoundss = [];
 
-  tileGrid.forEachTileCoordParent(
+  tileGrid.forEachTileCoordParentTileBounds(
       new ol.TileCoord(3, 7, 3),
       function(z, tileBounds) {
         zs.push(z);
