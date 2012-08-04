@@ -91,7 +91,7 @@ ol.createMap = function(target, opt_values, opt_rendererHints) {
     var controls = new ol.Collection();
     controls.push(new ol.control.DblClickZoom(constraints));
     controls.push(new ol.control.DragPan(constraints));
-    controls.push(new ol.control.KeyboardPan(constraints));
+    controls.push(new ol.control.KeyboardPan(constraints, 16));
     controls.push(new ol.control.KeyboardZoom(constraints));
     controls.push(new ol.control.MouseWheelZoom(constraints));
     controls.push(new ol.control.ShiftDragRotateAndZoom(constraints));
