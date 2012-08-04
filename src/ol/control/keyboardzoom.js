@@ -29,8 +29,9 @@ ol.control.KeyboardZoom.prototype.handleMapBrowserEvent =
     var charCode = keyEvent.charCode;
     if (charCode == '+'.charCodeAt(0) || charCode == '-'.charCodeAt(0)) {
       var map = mapBrowserEvent.map;
+      var resolution = map.getResolution();
       var delta = charCode == '+'.charCodeAt(0) ? 1 : -1;
-      this.zoom(map, delta);
+      this.zoom(map, resolution, delta);
       keyEvent.preventDefault();
       mapBrowserEvent.preventDefault();
     }

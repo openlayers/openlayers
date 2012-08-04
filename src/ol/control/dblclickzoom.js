@@ -25,9 +25,10 @@ ol.control.DblClickZoom.prototype.handleMapBrowserEvent =
     function(mapBrowserEvent) {
   if (mapBrowserEvent.type == goog.events.EventType.DBLCLICK) {
     var map = mapBrowserEvent.map;
+    var resolution = map.getResolution();
     var delta = mapBrowserEvent.browserEvent.shiftKey ? -1 : 1;
     var anchor = mapBrowserEvent.getCoordinate();
-    this.zoom(map, delta, anchor);
+    this.zoom(map, resolution, delta, anchor);
     mapBrowserEvent.preventDefault();
   }
 };

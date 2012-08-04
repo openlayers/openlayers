@@ -80,15 +80,36 @@ ol.Control.prototype.setResolution = function(map, resolution) {
 
 /**
  * @param {ol.Map} map Map.
+ * @param {number|undefined} resolution Resolution.
  * @param {number} delta Delta.
  * @param {ol.Coordinate=} opt_anchor Anchor.
  */
-ol.Control.prototype.zoom = function(map, delta, opt_anchor) {
-  //if (false && goog.isDef(opt_anchor)) {
-    // FIXME
-  //} else {
-    var resolution = map.getResolution();
+ol.Control.prototype.zoom = function(map, resolution, delta, opt_anchor) {
+  if (goog.isDefAndNotNull(opt_anchor)) {
+    var mapCenter = /** @type {!ol.Coordinate} */ map.getCenter();
+    var mapResolution = map.getResolution();
+    resolution = this.constraints.resolution(resolution, delta);
+    var center;
+    if (resolution < mapResolution) {
+      center = opt_anchor.clone();
+      center.subtract(mapCenter);
+      center.scale(resolution / mapResolution);
+      center.add(mapCenter);
+    } else if (resolution == mapResolution) {
+      center = mapCenter;
+    } else {
+      center = mapCenter.clone();
+      center.subtract(opt_anchor);
+      center.scale(resolution / mapResolution);
+      center.add(opt_anchor);
+    }
+    center = this.constraints.center(center, resolution, ol.Coordinate.ZERO);
+    map.withFrozenRendering(function() {
+      map.setCenter(center);
+      map.setResolution(resolution);
+    });
+  } else {
     resolution = this.constraints.resolution(resolution, delta);
     map.setResolution(resolution);
-  //}
+  }
 };

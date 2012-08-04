@@ -31,8 +31,9 @@ ol.control.MouseWheelZoom.prototype.handleMapBrowserEvent =
     goog.asserts.assert(mouseWheelEvent instanceof goog.events.MouseWheelEvent);
     if (mouseWheelEvent.deltaY !== 0) {
       var delta = mouseWheelEvent.deltaY < 0 ? 1 : -1;
+      var resolution = map.getResolution();
       var anchor = mapBrowserEvent.getCoordinate();
-      this.zoom(map, delta, anchor);
+      this.zoom(map, resolution, delta, anchor);
       mapBrowserEvent.preventDefault();
       mouseWheelEvent.preventDefault();
     }
