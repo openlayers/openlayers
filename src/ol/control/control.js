@@ -59,21 +59,22 @@ ol.Control.prototype.pan = function(map, delta, opt_anchor) {
 
 /**
  * @param {ol.Map} map Map.
- * @param {number|undefined} resolution Resolution.
+ * @param {number|undefined} rotation Rotation.
+ * @param {number} delta Delta.
  */
-ol.Control.prototype.setResolution = function(map, resolution) {
-  resolution = this.constraints.resolution(resolution, 0);
-  map.setResolution(resolution);
+ol.Control.prototype.rotate = function(map, rotation, delta) {
+  rotation = this.constraints.rotation(rotation, delta);
+  map.setRotation(rotation);
 };
 
 
 /**
  * @param {ol.Map} map Map.
- * @param {number} rotation Rotation.
+ * @param {number|undefined} resolution Resolution.
  */
-ol.Control.prototype.setRotation = function(map, rotation) {
-  // FIXME use a constraint
-  map.setRotation(rotation);
+ol.Control.prototype.setResolution = function(map, resolution) {
+  resolution = this.constraints.resolution(resolution, 0);
+  map.setResolution(resolution);
 };
 
 

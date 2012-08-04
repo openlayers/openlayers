@@ -45,7 +45,7 @@ ol.control.ShiftDragRotateAndZoom.prototype.handleDrag =
       size.height / 2 - browserEvent.offsetY);
   var theta = Math.atan2(delta.y, delta.x);
   // FIXME this should use map.withFrozenRendering but an assertion fails :-(
-  this.setRotation(map, this.startRotation_ - theta);
+  this.rotate(map, this.startRotation_, -theta);
   var resolution = this.startRatio_ * delta.magnitude();
   this.setResolution(map, resolution);
 };

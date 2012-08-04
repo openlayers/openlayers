@@ -1,9 +1,8 @@
-// FIXME add rotation constraint
-
 goog.provide('ol.control.Constraints');
 
 goog.require('ol.control.CenterConstraintType');
 goog.require('ol.control.ResolutionConstraintType');
+goog.require('ol.control.RotationConstraintType');
 
 
 
@@ -12,8 +11,11 @@ goog.require('ol.control.ResolutionConstraintType');
  * @param {ol.control.CenterConstraintType} centerConstraint Center constraint.
  * @param {ol.control.ResolutionConstraintType} resolutionConstraint
  *     Resolution constraint.
+ * @param {ol.control.RotationConstraintType} rotationConstraint
+ *     Rotation constraint.
  */
-ol.control.Constraints = function(centerConstraint, resolutionConstraint) {
+ol.control.Constraints =
+    function(centerConstraint, resolutionConstraint, rotationConstraint) {
 
   /**
    * @type {ol.control.CenterConstraintType}
@@ -24,5 +26,10 @@ ol.control.Constraints = function(centerConstraint, resolutionConstraint) {
    * @type {ol.control.ResolutionConstraintType}
    */
   this.resolution = resolutionConstraint;
+
+  /**
+   * @type {ol.control.RotationConstraintType}
+   */
+  this.rotation = rotationConstraint;
 
 };

@@ -14,6 +14,7 @@ goog.require('ol.control.KeyboardPan');
 goog.require('ol.control.KeyboardZoom');
 goog.require('ol.control.MouseWheelZoom');
 goog.require('ol.control.ResolutionConstraint');
+goog.require('ol.control.RotationConstraint');
 goog.require('ol.control.ShiftDragRotateAndZoom');
 goog.require('ol.control.ShiftDragZoom');
 goog.require('ol.dom');
@@ -82,8 +83,9 @@ ol.createMap = function(target, opt_values, opt_rendererHints) {
   var centerConstraint = ol.control.CenterConstraint.snapToPixel;
   var resolutionConstraint = ol.control.ResolutionConstraint.createSnapToPower(
       2, ol.Projection.EPSG_3857_HALF_SIZE / 128);
+  var rotationConstraint = ol.control.RotationConstraint.none;
   var constraints = new ol.control.Constraints(
-      centerConstraint, resolutionConstraint);
+      centerConstraint, resolutionConstraint, rotationConstraint);
 
   if (!goog.object.containsKey(values, ol.MapProperty.CONTROLS)) {
     var controls = new ol.Collection();

@@ -33,7 +33,7 @@ ol.control.ShiftDragRotate.prototype.handleDrag = function(mapBrowserEvent) {
   var theta = Math.atan2(
       size.height / 2 - browserEvent.offsetY,
       browserEvent.offsetX - size.width / 2);
-  map.setRotation(this.startRotation_ - theta);
+  this.rotate(map, this.startRotation_, -theta);
 };
 
 
