@@ -368,20 +368,20 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
     }
   }, this);
 
-  var framebufferTileBoundsExtent =
+  var framebufferExtent =
       tileGrid.getTileBoundsExtent(z, framebufferTileBounds);
   goog.vec.Mat4.makeIdentity(this.matrix_);
   goog.vec.Mat4.translate(this.matrix_,
-      (mapCenter.x - framebufferTileBoundsExtent.minX) /
-          (framebufferTileBoundsExtent.maxX - framebufferTileBoundsExtent.minX),
-      (mapCenter.y - framebufferTileBoundsExtent.minY) /
-          (framebufferTileBoundsExtent.maxY - framebufferTileBoundsExtent.minY),
+      (mapCenter.x - framebufferExtent.minX) /
+          (framebufferExtent.maxX - framebufferExtent.minX),
+      (mapCenter.y - framebufferExtent.minY) /
+          (framebufferExtent.maxY - framebufferExtent.minY),
       0);
   goog.vec.Mat4.scale(this.matrix_,
       (mapExtent.maxX - mapExtent.minX) /
-          (framebufferTileBoundsExtent.maxX - framebufferTileBoundsExtent.minX),
+          (framebufferExtent.maxX - framebufferExtent.minX),
       (mapExtent.maxY - mapExtent.minY) /
-          (framebufferTileBoundsExtent.maxY - framebufferTileBoundsExtent.minY),
+          (framebufferExtent.maxY - framebufferExtent.minY),
       1);
   if (goog.isDef(mapRotation)) {
     goog.vec.Mat4.rotate(this.matrix_,
