@@ -6,8 +6,10 @@ goog.provide('ol.webgl.TileLayerRenderer');
 goog.provide('ol.webgl.tilelayerrenderer.shader.Fragment');
 goog.provide('ol.webgl.tilelayerrenderer.shader.Vertex');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events.EventType');
+goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('goog.webgl');
 goog.require('ol.Coordinate');
@@ -296,6 +298,8 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
       tileBounds.minX + nTilesX - 1,
       tileBounds.minY + nTilesY - 1);
   goog.asserts.assert(framebufferTileBounds.containsTileBounds(tileBounds));
+  var framebufferExtent =
+      tileGrid.getTileBoundsExtent(z, framebufferTileBounds);
 
   this.bindFramebuffer_(framebufferDimension);
   gl.viewport(0, 0, framebufferDimension, framebufferDimension);
@@ -319,9 +323,9 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
     var arrayBuffer = gl.createBuffer();
     gl.bindBuffer(goog.webgl.ARRAY_BUFFER, arrayBuffer);
     gl.bufferData(goog.webgl.ARRAY_BUFFER, new Float32Array([
-      -1, -1, 0, 1,
-      1, -1, 1, 1,
-      -1, 1, 0, 0,
+      0, 0, 0, 1,
+      1, 0, 1, 1,
+      0, 1, 0, 0,
       1, 1, 1, 0
     ]), goog.webgl.STATIC_DRAW);
     this.arrayBuffer_ = arrayBuffer;
@@ -337,26 +341,17 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
       this.locations_.aTexCoord, 2, goog.webgl.FLOAT, false, 16, 8);
   gl.uniform1i(this.locations_.uTexture, 0);
 
+  /**
+   * @type {Object.<number, Object.<string, ol.TileCoord>>}
+   */
+  var tilesToDrawByZ = {};
+
+  tilesToDrawByZ[z] = {};
   tileBounds.forEachTileCoord(z, function(tileCoord) {
     var tile = tileStore.getTile(tileCoord);
     if (goog.isNull(tile)) {
     } else if (tile.isLoaded()) {
-      var uMatrix = goog.vec.Mat4.createFloat32Identity();
-      goog.vec.Mat4.translate(uMatrix,
-          0.5 / tileSize.width,
-          0.5 / tileSize.height,
-          0);
-      goog.vec.Mat4.translate(uMatrix,
-          2 * (tileCoord.x - framebufferTileBounds.minX + 0.5) / nTilesX - 1,
-          2 * (tileCoord.y - framebufferTileBounds.minY + 0.5) / nTilesY - 1,
-          0);
-      goog.vec.Mat4.scale(uMatrix,
-          1 / nTilesX,
-          1 / nTilesY,
-          1);
-      gl.uniformMatrix4fv(this.locations_.uMatrix, false, uMatrix);
-      gl.bindTexture(goog.webgl.TEXTURE_2D, map.getTileTexture(tile));
-      gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
+      tilesToDrawByZ[z][tileCoord.toString()] = tile;
     } else {
       var tileKey = goog.getUid(tile);
       if (!(tileKey in this.tileChangeListenerKeys_)) {
@@ -365,11 +360,61 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
         this.tileChangeListenerKeys_[tileKey] = goog.events.listen(tile,
             goog.events.EventType.CHANGE, this.handleTileChange, false, this);
       }
+      // FIXME this could be more efficient about filling partial holes
+      tileGrid.forEachTileCoordParentTileBounds(
+          tileCoord,
+          function(z, tileBounds) {
+            var fullyCovered = true;
+            tileBounds.forEachTileCoord(z, function(tileCoord) {
+              var tileCoordKey = tileCoord.toString();
+              if (tilesToDrawByZ[z] && tilesToDrawByZ[z][tileCoordKey]) {
+                return;
+              }
+              var tile = tileStore.getTile(tileCoord);
+              if (!goog.isNull(tile) && tile.isLoaded()) {
+                if (!tilesToDrawByZ[z]) {
+                  tilesToDrawByZ[z] = {};
+                }
+                tilesToDrawByZ[z][tileCoordKey] = tile;
+              } else {
+                fullyCovered = false;
+              }
+            });
+            return fullyCovered;
+          });
     }
   }, this);
 
-  var framebufferExtent =
-      tileGrid.getTileBoundsExtent(z, framebufferTileBounds);
+  var zs = goog.object.getKeys(tilesToDrawByZ);
+  goog.array.sort(zs);
+  var uMatrix = goog.vec.Mat4.createFloat32();
+  goog.array.forEach(zs, function(z) {
+    goog.object.forEach(tilesToDrawByZ[z], function(tile) {
+      var tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord);
+      goog.vec.Mat4.makeIdentity(uMatrix);
+      goog.vec.Mat4.translate(uMatrix,
+          -1,
+          -1,
+          0);
+      goog.vec.Mat4.scale(uMatrix,
+          2 / framebufferExtent.getWidth(),
+          2 / framebufferExtent.getHeight(),
+          1);
+      goog.vec.Mat4.translate(uMatrix,
+          tileExtent.minX - framebufferExtent.minX,
+          tileExtent.minY - framebufferExtent.minY,
+          0);
+      goog.vec.Mat4.scale(uMatrix,
+          tileExtent.getWidth(),
+          tileExtent.getHeight(),
+          1);
+      gl.uniformMatrix4fv(this.locations_.uMatrix, false, uMatrix);
+      map.bindImageTexture(
+          tile.getImage(), goog.webgl.LINEAR, goog.webgl.LINEAR);
+      gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
+    }, this);
+  }, this);
+
   goog.vec.Mat4.makeIdentity(this.matrix_);
   goog.vec.Mat4.translate(this.matrix_,
       (mapCenter.x - framebufferExtent.minX) /
