@@ -81,8 +81,8 @@ ol.createMap = function(target, opt_values, opt_rendererHints) {
 
   // FIXME this should be a configuration option
   var centerConstraint = ol.control.CenterConstraint.snapToPixel;
-  var resolutionConstraint = ol.control.ResolutionConstraint.createSnapToPower(
-      2, ol.Projection.EPSG_3857_HALF_SIZE / 128);
+  var resolutionConstraint = ol.control.ResolutionConstraint.createContinuous(
+      1.125, ol.Projection.EPSG_3857_HALF_SIZE / 128);
   var rotationConstraint = ol.control.RotationConstraint.none;
   var constraints = new ol.control.Constraints(
       centerConstraint, resolutionConstraint, rotationConstraint);
