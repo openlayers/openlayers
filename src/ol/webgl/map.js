@@ -505,6 +505,15 @@ ol.webgl.Map.prototype.handleWebGLContextRestored = function() {
 
 
 /**
+ * @param {Image} image Image.
+ * @return {boolean} Is image texture loaded.
+ */
+ol.webgl.Map.prototype.isImageTextureLoaded = function(image) {
+  return image.src in this.textureCache_[image.src];
+};
+
+
+/**
  * @inheritDoc
  */
 ol.webgl.Map.prototype.renderInternal = function() {
