@@ -144,6 +144,20 @@ goog.inherits(ol.webgl.TileLayerRenderer, ol.webgl.LayerRenderer);
 
 
 /**
+ * @protected
+ */
+ol.webgl.TileLayerRenderer.prototype.disposeInternal = function() {
+  var gl = this.getGL();
+  if (!gl.isContextLost()) {
+    gl.deleteBuffer(this.arrayBuffer_);
+    gl.deleteFramebuffer(this.framebuffer_);
+    gl.deleteTexture(this.texture_);
+  }
+  goog.base(this, 'disposeInternal');
+};
+
+
+/**
  * @param {number} framebufferDimension Framebuffer dimension.
  * @private
  */
@@ -180,6 +194,7 @@ ol.webgl.TileLayerRenderer.prototype.bindFramebuffer_ =
   } else {
     gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, this.framebuffer_);
   }
+
 };
 
 
@@ -195,6 +210,14 @@ ol.webgl.TileLayerRenderer.prototype.getLayer = function() {
 /**
  * @inheritDoc
  */
+ol.webgl.TileLayerRenderer.prototype.getMatrix = function() {
+  return this.matrix_;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.webgl.TileLayerRenderer.prototype.getTexture = function() {
   return this.texture_;
 };
@@ -203,22 +226,8 @@ ol.webgl.TileLayerRenderer.prototype.getTexture = function() {
 /**
  * @protected
  */
-ol.webgl.TileLayerRenderer.prototype.disposeInternal = function() {
-  var gl = this.getGL();
-  if (!gl.isContextLost()) {
-    gl.deleteBuffer(this.arrayBuffer_);
-    gl.deleteFramebuffer(this.framebuffer_);
-    gl.deleteTexture(this.texture_);
-  }
-  goog.base(this, 'disposeInternal');
-};
-
-
-/**
- * @inheritDoc
- */
-ol.webgl.TileLayerRenderer.prototype.getMatrix = function() {
-  return this.matrix_;
+ol.webgl.TileLayerRenderer.prototype.handleTileChange = function() {
+  this.dispatchChangeEvent();
 };
 
 
@@ -230,14 +239,6 @@ ol.webgl.TileLayerRenderer.prototype.handleWebGLContextLost = function() {
   this.texture_ = null;
   this.framebuffer_ = null;
   this.framebufferDimension_ = undefined;
-};
-
-
-/**
- * @protected
- */
-ol.webgl.TileLayerRenderer.prototype.handleTileChange = function() {
-  this.dispatchChangeEvent();
 };
 
 
