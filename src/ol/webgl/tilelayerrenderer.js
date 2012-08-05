@@ -269,11 +269,8 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
   var maxDimension = Math.max(
       tileBoundsSize.width * tileSize.width,
       tileBoundsSize.height * tileSize.height);
-  // FIXME find a better algorithms for rounding up to the next power of two
-  var framebufferDimension = Math.max(tileSize.width, tileSize.height);
-  while (framebufferDimension < maxDimension) {
-    framebufferDimension *= 2;
-  }
+  var framebufferDimension =
+      Math.pow(2, Math.ceil(Math.log(maxDimension) / Math.log(2)));
   var nTilesX = framebufferDimension / tileSize.width;
   var nTilesY = framebufferDimension / tileSize.height;
   var framebufferTileBounds = new ol.TileBounds(
