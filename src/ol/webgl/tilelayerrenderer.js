@@ -1,7 +1,7 @@
 // FIXME large resolutions lead to too large framebuffers :-(
 // FIXME animated shaders! check in redraw
 // FIXME defer texture uploads and delete* calls
-// FIXME this now breaks for intermediate resolutions :-(
+// FIXME strange things happen at very large zooms
 
 goog.provide('ol.webgl.TileLayerRenderer');
 goog.provide('ol.webgl.tilelayerrenderer.shader.Fragment');
@@ -272,17 +272,18 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
       tileBoundsSize.height * tileSize.height);
   var framebufferDimension =
       Math.pow(2, Math.ceil(Math.log(maxDimension) / Math.log(2)));
-  var nTilesX = framebufferDimension / tileSize.width;
-  var nTilesY = framebufferDimension / tileSize.height;
-  var framebufferTileBounds = new ol.TileBounds(
-      tileBounds.minX,
-      tileBounds.minY,
-      tileBounds.minX + nTilesX - 1,
-      tileBounds.minY + nTilesY - 1);
-  goog.asserts.assert(framebufferTileBounds.containsTileBounds(tileBounds));
-  var framebufferExtent =
-      tileGrid.getTileBoundsExtent(z, framebufferTileBounds);
-  var framebufferExtentSize = framebufferExtent.getSize();
+  var framebufferExtentSize = new ol.Size(
+      mapResolution * framebufferDimension,
+      mapResolution * framebufferDimension);
+  var origin = tileGrid.getOrigin(z);
+  var tileResolution = tileGrid.getResolution(z);
+  var minX = origin.x + tileBounds.minX * tileSize.width * tileResolution;
+  var minY = origin.y + tileBounds.minY * tileSize.height * tileResolution;
+  var framebufferExtent = new ol.Extent(
+      minX,
+      minY,
+      minX + framebufferExtentSize.width,
+      minY + framebufferExtentSize.height);
 
   this.bindFramebuffer_(framebufferDimension);
   gl.viewport(0, 0, framebufferDimension, framebufferDimension);
