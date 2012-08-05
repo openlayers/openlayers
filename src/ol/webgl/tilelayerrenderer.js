@@ -55,10 +55,12 @@ ol.webgl.tilelayerrenderer.shader.Vertex = function() {
     '',
     'varying vec2 vTexCoord;',
     '',
-    'uniform mat4 uMatrix;',
+    'uniform vec4 uTileOffset;',
     '',
     'void main(void) {',
-    '  gl_Position = uMatrix * vec4(aPosition, 0., 1.);',
+    '  gl_Position.xy = aPosition * uTileOffset.xy + uTileOffset.zw;',
+    '  gl_Position.z = 0.;',
+    '  gl_Position.w = 1.;',
     '  vTexCoord = aTexCoord;',
     '}'
   ].join('\n'));
@@ -96,7 +98,7 @@ ol.webgl.TileLayerRenderer = function(map, tileLayer) {
    * @private
    * @type {{aPosition: number,
    *         aTexCoord: number,
-   *         uMatrix: WebGLUniformLocation,
+   *         uTileOffset: WebGLUniformLocation,
    *         uTexture: WebGLUniformLocation}|null}
    */
   this.locations_ = null;
@@ -300,6 +302,7 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
   goog.asserts.assert(framebufferTileBounds.containsTileBounds(tileBounds));
   var framebufferExtent =
       tileGrid.getTileBoundsExtent(z, framebufferTileBounds);
+  var framebufferExtentSize = framebufferExtent.getSize();
 
   this.bindFramebuffer_(framebufferDimension);
   gl.viewport(0, 0, framebufferDimension, framebufferDimension);
@@ -314,7 +317,7 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
     this.locations_ = {
       aPosition: gl.getAttribLocation(program, 'aPosition'),
       aTexCoord: gl.getAttribLocation(program, 'aTexCoord'),
-      uMatrix: gl.getUniformLocation(program, 'uMatrix'),
+      uTileOffset: gl.getUniformLocation(program, 'uTileOffset'),
       uTexture: gl.getUniformLocation(program, 'uTexture')
     };
   }
@@ -387,28 +390,18 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
 
   var zs = goog.object.getKeys(tilesToDrawByZ);
   goog.array.sort(zs);
-  var uMatrix = goog.vec.Mat4.createFloat32();
+  var uTileOffset = goog.vec.Vec4.createFloat32();
   goog.array.forEach(zs, function(z) {
     goog.object.forEach(tilesToDrawByZ[z], function(tile) {
       var tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord);
-      goog.vec.Mat4.makeIdentity(uMatrix);
-      goog.vec.Mat4.translate(uMatrix,
-          -1,
-          -1,
-          0);
-      goog.vec.Mat4.scale(uMatrix,
-          2 / framebufferExtent.getWidth(),
-          2 / framebufferExtent.getHeight(),
-          1);
-      goog.vec.Mat4.translate(uMatrix,
-          tileExtent.minX - framebufferExtent.minX,
-          tileExtent.minY - framebufferExtent.minY,
-          0);
-      goog.vec.Mat4.scale(uMatrix,
-          tileExtent.getWidth(),
-          tileExtent.getHeight(),
-          1);
-      gl.uniformMatrix4fv(this.locations_.uMatrix, false, uMatrix);
+      var sx = 2 * tileExtent.getWidth() / framebufferExtentSize.width;
+      var sy = 2 * tileExtent.getHeight() / framebufferExtentSize.height;
+      var tx = 2 * (tileExtent.minX - framebufferExtent.minX) /
+          framebufferExtentSize.width - 1;
+      var ty = 2 * (tileExtent.minY - framebufferExtent.minY) /
+          framebufferExtentSize.height - 1;
+      goog.vec.Vec4.setFromValues(uTileOffset, sx, sy, tx, ty);
+      gl.uniform4fv(this.locations_.uTileOffset, uTileOffset);
       map.bindImageTexture(
           tile.getImage(), goog.webgl.LINEAR, goog.webgl.LINEAR);
       gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
