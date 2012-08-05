@@ -12,6 +12,26 @@ ol.control.ResolutionConstraintType;
 
 
 /**
+ * @param {number} power Power.
+ * @param {number} maxResolution Maximum resolution.
+ * @param {number=} opt_minResolution Minimum resolution.
+ * @return {ol.control.ResolutionConstraintType} Zoom function.
+ */
+ol.control.ResolutionConstraint.createContinuous =
+    function(power, maxResolution, opt_minResolution) {
+  var minResolution = opt_minResolution || 0;
+  return function(resolution, delta) {
+    if (goog.isDef(resolution)) {
+      resolution /= Math.pow(power, delta);
+      return goog.math.clamp(resolution, minResolution, maxResolution);
+    } else {
+      return undefined;
+    }
+  };
+};
+
+
+/**
  * @param {Array.<number>} resolutions Resolutions.
  * @return {ol.control.ResolutionConstraintType} Zoom function.
  */
