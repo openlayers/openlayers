@@ -32,7 +32,7 @@ ol.control.ResolutionConstraint.createSnapToResolutions =
 /**
  * @param {number} power Power.
  * @param {number} maxResolution Maximum resolution.
- * @param {number=} opt_maxLevel Maixmum level.
+ * @param {number=} opt_maxLevel Maximum level.
  * @return {ol.control.ResolutionConstraintType} Zoom function.
  */
 ol.control.ResolutionConstraint.createSnapToPower =
