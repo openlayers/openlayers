@@ -117,12 +117,6 @@ ol.webgl.TileLayerRenderer = function(map, tileLayer) {
 
   /**
    * @private
-   * @type {WebGLRenderbuffer}
-   */
-  this.renderbuffer_ = null;
-
-  /**
-   * @private
    * @type {WebGLFramebuffer}
    */
   this.framebuffer_ = null;
@@ -162,7 +156,6 @@ ol.webgl.TileLayerRenderer.prototype.bindFramebuffer_ =
       this.framebufferDimension_ != framebufferDimension) {
 
     gl.deleteFramebuffer(this.framebuffer_);
-    gl.deleteRenderbuffer(this.renderbuffer_);
     gl.deleteTexture(this.texture_);
 
     var texture = gl.createTexture();
@@ -175,21 +168,12 @@ ol.webgl.TileLayerRenderer.prototype.bindFramebuffer_ =
     gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MIN_FILTER,
         goog.webgl.LINEAR);
 
-    var renderbuffer = gl.createRenderbuffer();
-    gl.bindRenderbuffer(goog.webgl.RENDERBUFFER, renderbuffer);
-    gl.renderbufferStorage(goog.webgl.RENDERBUFFER,
-        goog.webgl.DEPTH_COMPONENT16, framebufferDimension,
-        framebufferDimension);
-
     var framebuffer = gl.createFramebuffer();
     gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, framebuffer);
     gl.framebufferTexture2D(goog.webgl.FRAMEBUFFER,
         goog.webgl.COLOR_ATTACHMENT0, goog.webgl.TEXTURE_2D, texture, 0);
-    gl.framebufferRenderbuffer(goog.webgl.FRAMEBUFFER,
-        goog.webgl.DEPTH_ATTACHMENT, goog.webgl.RENDERBUFFER, renderbuffer);
 
     this.texture_ = texture;
-    this.renderbuffer_ = renderbuffer;
     this.framebuffer_ = framebuffer;
     this.framebufferDimension_ = framebufferDimension;
 
@@ -224,7 +208,6 @@ ol.webgl.TileLayerRenderer.prototype.disposeInternal = function() {
   if (!gl.isContextLost()) {
     gl.deleteBuffer(this.arrayBuffer_);
     gl.deleteFramebuffer(this.framebuffer_);
-    gl.deleteRenderbuffer(this.renderbuffer_);
     gl.deleteTexture(this.texture_);
   }
   goog.base(this, 'disposeInternal');
@@ -245,7 +228,6 @@ ol.webgl.TileLayerRenderer.prototype.handleWebGLContextLost = function() {
   this.locations_ = null;
   this.arrayBuffer_ = null;
   this.texture_ = null;
-  this.renderbuffer_ = null;
   this.framebuffer_ = null;
   this.framebufferDimension_ = undefined;
 };
