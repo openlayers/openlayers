@@ -591,19 +591,19 @@ ol.Map.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
 
 
 /**
+ * @protected
+ */
+ol.Map.prototype.handleCenterChanged = function() {
+  this.matriciesDirty_ = true;
+};
+
+
+/**
  * @param {goog.fx.DragEvent} dragEvent Drag event.
  */
 ol.Map.prototype.handleDraggerEvent = function(dragEvent) {
   var browserEvent = dragEvent.browserEvent;
   this.handleBrowserEvent(browserEvent, dragEvent.type);
-};
-
-
-/**
- * @protected
- */
-ol.Map.prototype.handleCenterChanged = function() {
-  this.matriciesDirty_ = true;
 };
 
 
@@ -614,16 +614,6 @@ ol.Map.prototype.handleCenterChanged = function() {
 ol.Map.prototype.handleLayersAdd = function(collectionEvent) {
   var layer = /** @type {ol.Layer} */ collectionEvent.elem;
   this.addLayer(layer);
-};
-
-
-/**
- * @param {ol.CollectionEvent} collectionEvent Collection event.
- * @protected
- */
-ol.Map.prototype.handleLayersRemove = function(collectionEvent) {
-  var layer = /** @type {ol.Layer} */ collectionEvent.elem;
-  this.removeLayer(layer);
 };
 
 
@@ -650,6 +640,16 @@ ol.Map.prototype.handleLayersChanged = function() {
           this.handleLayersRemove, false, this)
     ];
   }
+};
+
+
+/**
+ * @param {ol.CollectionEvent} collectionEvent Collection event.
+ * @protected
+ */
+ol.Map.prototype.handleLayersRemove = function(collectionEvent) {
+  var layer = /** @type {ol.Layer} */ collectionEvent.elem;
+  this.removeLayer(layer);
 };
 
 
@@ -732,6 +732,32 @@ ol.Map.prototype.recalculateTransforms_ = function() {
 
 
 /**
+ * @param {ol.Layer} layer Layer.
+ * @protected
+ */
+ol.Map.prototype.removeLayer = function(layer) {
+  goog.dispose(this.removeLayerRenderer(layer));
+};
+
+
+/**
+ * @param {ol.Layer} layer Layer.
+ * @return {ol.LayerRenderer} Layer renderer.
+ * @protected
+ */
+ol.Map.prototype.removeLayerRenderer = function(layer) {
+  var key = goog.getUid(layer);
+  if (key in this.layerRenderers) {
+    var layerRenderer = this.layerRenderers[key];
+    delete this.layerRenderers[key];
+    return layerRenderer;
+  } else {
+    return null;
+  }
+};
+
+
+/**
  */
 ol.Map.prototype.render = function() {
   if (!this.animating_) {
@@ -759,32 +785,6 @@ ol.Map.prototype.renderInternal = function() {
     }
   });
   return animate;
-};
-
-
-/**
- * @param {ol.Layer} layer Layer.
- * @protected
- */
-ol.Map.prototype.removeLayer = function(layer) {
-  goog.dispose(this.removeLayerRenderer(layer));
-};
-
-
-/**
- * @param {ol.Layer} layer Layer.
- * @return {ol.LayerRenderer} Layer renderer.
- * @protected
- */
-ol.Map.prototype.removeLayerRenderer = function(layer) {
-  var key = goog.getUid(layer);
-  if (key in this.layerRenderers) {
-    var layerRenderer = this.layerRenderers[key];
-    delete this.layerRenderers[key];
-    return layerRenderer;
-  } else {
-    return null;
-  }
 };
 
 
@@ -851,6 +851,19 @@ goog.exportProperty(
 
 /**
  * @export
+ * @param {ol.Projection} projection Projection.
+ */
+ol.Map.prototype.setProjection = function(projection) {
+  this.set(ol.MapProperty.PROJECTION, projection);
+};
+goog.exportProperty(
+    ol.Map.prototype,
+    'setProjection',
+    ol.Map.prototype.setProjection);
+
+
+/**
+ * @export
  * @param {number|undefined} resolution Resolution.
  */
 ol.Map.prototype.setResolution = function(resolution) {
@@ -892,19 +905,6 @@ goog.exportProperty(
 
 /**
  * @export
- * @param {ol.Projection} projection Projection.
- */
-ol.Map.prototype.setProjection = function(projection) {
-  this.set(ol.MapProperty.PROJECTION, projection);
-};
-goog.exportProperty(
-    ol.Map.prototype,
-    'setProjection',
-    ol.Map.prototype.setProjection);
-
-
-/**
- * @export
  * @param {ol.Coordinate} userCenter Center in user projection.
  */
 ol.Map.prototype.setUserCenter = function(userCenter) {
@@ -927,6 +927,20 @@ goog.exportProperty(
     ol.Map.prototype,
     'setUserProjection',
     ol.Map.prototype.setUserProjection);
+
+
+/**
+ */
+ol.Map.prototype.unfreezeRendering = function() {
+  goog.asserts.assert(this.freezeRenderingCount_ > 0);
+  if (--this.freezeRenderingCount_ === 0) {
+    if (!this.animating_ && this.dirty_) {
+      if (this.renderInternal()) {
+        this.animate_();
+      }
+    }
+  }
+};
 
 
 /**
@@ -987,20 +1001,6 @@ ol.Map.prototype.updateMatrices_ = function() {
 
   }
 
-};
-
-
-/**
- */
-ol.Map.prototype.unfreezeRendering = function() {
-  goog.asserts.assert(this.freezeRenderingCount_ > 0);
-  if (--this.freezeRenderingCount_ === 0) {
-    if (!this.animating_ && this.dirty_) {
-      if (this.renderInternal()) {
-        this.animate_();
-      }
-    }
-  }
 };
 
 
