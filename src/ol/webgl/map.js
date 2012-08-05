@@ -513,8 +513,6 @@ ol.webgl.Map.prototype.renderInternal = function() {
     return false;
   }
 
-  var center = this.getCenter();
-  var resolution = this.getResolution();
   var size = this.getSize();
 
   var animate = goog.base(this, 'renderInternal');
