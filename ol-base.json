@@ -21,6 +21,7 @@
 
   "externs": [
     "externs/bingmaps.js",
+    "externs/tilejson.js",
     "externs/webgl-debug.js"
   ],
 
