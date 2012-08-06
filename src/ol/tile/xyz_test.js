@@ -77,3 +77,53 @@ function testXYZCropY() {
   assertUndefined(tileUrl);
 
 }
+
+
+function testXYZTileGridForEachTileCoordParentTileBounds() {
+
+  var xyzTileGrid = new ol.tilegrid.XYZ(6);
+
+  var tileCoord = new ol.TileCoord(5, 11, 21);
+  var zs = [], tileBoundss = [];
+  xyzTileGrid.forEachTileCoordParentTileBounds(
+      tileCoord,
+      function(z, tileBounds) {
+        zs.push(z);
+        tileBoundss.push(tileBounds);
+        return false;
+      });
+
+  assertEquals(5, zs.length);
+  assertEquals(5, tileBoundss.length);
+
+  assertEquals(4, zs[0]);
+  assertEquals(5, tileBoundss[0].minX);
+  assertEquals(10, tileBoundss[0].minY);
+  assertEquals(5, tileBoundss[0].maxX);
+  assertEquals(10, tileBoundss[0].maxY);
+
+  assertEquals(3, zs[1]);
+  assertEquals(2, tileBoundss[1].minX);
+  assertEquals(5, tileBoundss[1].minY);
+  assertEquals(2, tileBoundss[1].maxX);
+  assertEquals(5, tileBoundss[1].maxY);
+
+  assertEquals(2, zs[2]);
+  assertEquals(1, tileBoundss[2].minX);
+  assertEquals(2, tileBoundss[2].minY);
+  assertEquals(1, tileBoundss[2].maxX);
+  assertEquals(2, tileBoundss[2].maxY);
+
+  assertEquals(1, zs[3]);
+  assertEquals(0, tileBoundss[3].minX);
+  assertEquals(1, tileBoundss[3].minY);
+  assertEquals(0, tileBoundss[3].maxX);
+  assertEquals(1, tileBoundss[3].maxY);
+
+  assertEquals(0, zs[4]);
+  assertEquals(0, tileBoundss[4].minX);
+  assertEquals(0, tileBoundss[4].minY);
+  assertEquals(0, tileBoundss[4].maxX);
+  assertEquals(0, tileBoundss[4].maxY);
+
+}

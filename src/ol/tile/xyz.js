@@ -40,6 +40,30 @@ ol.tilegrid.XYZ = function(maxZoom, opt_tileSize) {
 goog.inherits(ol.tilegrid.XYZ, ol.TileGrid);
 
 
+/**
+ * @inheritDoc
+ */
+ol.tilegrid.XYZ.prototype.forEachTileCoordParentTileBounds =
+    function(tileCoord, callback, opt_obj) {
+  var x = tileCoord.x;
+  var y = tileCoord.y;
+  var z = tileCoord.z;
+  var tileBounds;
+  while (true) {
+    z -= 1;
+    if (z < 0) {
+      break;
+    }
+    x = Math.floor(x / 2);
+    y = Math.floor(y / 2);
+    tileBounds = new ol.TileBounds(x, y, x, y);
+    if (callback.call(opt_obj, z, tileBounds)) {
+      break;
+    }
+  }
+};
+
+
 
 /**
  * @constructor
