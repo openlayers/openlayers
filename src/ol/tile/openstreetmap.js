@@ -26,16 +26,15 @@ goog.inherits(ol.layer.OpenStreetMap, ol.TileLayer);
  */
 ol.store.OpenStreetMap = function() {
 
+  var tileUrlFunction = ol.TileUrlFunction.createFromTemplate(
+      'http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+
   var attribution = new ol.Attribution(
       '&copy; <a href="http://www.openstreetmap.org">OpenStreetMap</a> ' +
       'contributors, ' +
       '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA</a>');
 
-  goog.base(this, 18, ol.TileUrlFunction.createFromTemplates([
-    'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    'http://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    'http://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
-  ]), [attribution]);
+  goog.base(this, 18, tileUrlFunction, [attribution]);
 
 };
 goog.inherits(ol.store.OpenStreetMap, ol.tilestore.XYZ);
