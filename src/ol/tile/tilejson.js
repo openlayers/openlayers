@@ -71,7 +71,7 @@ ol.tilestore.TileJSON = function(uri, opt_callback, opt_obj) {
    * @private
    * @type {?function(ol.tilestore.TileJSON)}
    */
-  this.callback_ = goog.isDef(opt_callback) ? opt_callback : null;
+  this.callback_ = opt_callback || null;
 
   /**
    * @private

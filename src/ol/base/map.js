@@ -189,8 +189,8 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
    * @private
    * @type {goog.dom.ViewportSizeMonitor}
    */
-  this.viewportSizeMonitor_ = goog.isDef(opt_viewportSizeMonitor) ?
-      opt_viewportSizeMonitor : new goog.dom.ViewportSizeMonitor();
+  this.viewportSizeMonitor_ =
+      opt_viewportSizeMonitor || new goog.dom.ViewportSizeMonitor();
 
   goog.events.listen(this.viewportSizeMonitor_, goog.events.EventType.RESIZE,
       this.handleViewportResize, false, this);
@@ -580,7 +580,7 @@ ol.Map.prototype.handleBackgroundColorChanged = goog.nullFunction;
  * @param {string=} opt_type Type.
  */
 ol.Map.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
-  var type = goog.isDef(opt_type) ? opt_type : browserEvent.type;
+  var type = opt_type || browserEvent.type;
   var mapBrowserEvent = new ol.MapBrowserEvent(type, this, browserEvent);
   var controls = this.getControls();
   var controlsArray = /** @type {Array.<ol.Control>} */ controls.getArray();

@@ -69,8 +69,7 @@ ol.TileGrid = function(resolutions, extent, origin, opt_tileSize) {
    * @private
    * @type {ol.Size}
    */
-  this.tileSize_ = goog.isDef(opt_tileSize) ?
-      opt_tileSize : new ol.Size(256, 256);
+  this.tileSize_ = opt_tileSize || new ol.Size(256, 256);
 
 };
 

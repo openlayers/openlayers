@@ -59,7 +59,7 @@ ol.tilestore.BingMaps =
    * @private
    * @type {string}
    */
-  this.culture_ = goog.isDef(opt_culture) ? opt_culture : 'en-us';
+  this.culture_ = opt_culture || 'en-us';
 
   /**
    * @private
@@ -71,7 +71,7 @@ ol.tilestore.BingMaps =
    * @private
    * @type {?function(ol.tilestore.BingMaps)}
    */
-  this.callback_ = goog.isDef(opt_callback) ? opt_callback : null;
+  this.callback_ = opt_callback || null;
 
   /**
    * @private

@@ -25,13 +25,13 @@ ol.Store = function(projection, opt_extent, opt_attributions) {
    * @private
    * @type {ol.Extent}
    */
-  this.extent_ = goog.isDef(opt_extent) ? opt_extent : projection.getExtent();
+  this.extent_ = opt_extent || projection.getExtent();
 
   /**
    * @private
    * @type {Array.<ol.Attribution>}
    */
-  this.attributions_ = goog.isDef(opt_attributions) ? opt_attributions : null;
+  this.attributions_ = opt_attributions || null;
 
 };
 

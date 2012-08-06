@@ -157,7 +157,7 @@ ol.Object.getListeners = function(obj) {
  */
 ol.Object.prototype.bindTo =
     function(key, target, opt_targetKey, opt_noNotify) {
-  var targetKey = goog.isDef(opt_targetKey) ? opt_targetKey : key;
+  var targetKey = opt_targetKey || key;
   this.unbind(key);
   var eventType = ol.Object.getChangedEventType(targetKey);
   var listeners = ol.Object.getListeners(this);
@@ -166,7 +166,7 @@ ol.Object.prototype.bindTo =
   }, undefined, this);
   var accessors = ol.Object.getAccessors(this);
   accessors[key] = {target: target, key: targetKey};
-  var noNotify = goog.isDef(opt_noNotify) ? opt_noNotify : false;
+  var noNotify = opt_noNotify || false;
   if (!noNotify) {
     this.notifyInternal_(key);
   }

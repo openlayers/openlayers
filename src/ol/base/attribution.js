@@ -23,14 +23,13 @@ ol.Attribution = function(html, opt_coverageAreas, opt_projection) {
    * @private
    * @type {Array.<ol.CoverageArea>}
    */
-  this.coverageAreas_ =
-      goog.isDef(opt_coverageAreas) ? opt_coverageAreas : null;
+  this.coverageAreas_ = opt_coverageAreas || null;
 
   /**
    * @private
    * @type {ol.Projection}
    */
-  this.projection_ = goog.isDef(opt_projection) ? opt_projection : null;
+  this.projection_ = opt_projection || null;
 
 };
 

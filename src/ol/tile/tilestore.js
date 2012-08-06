@@ -40,8 +40,7 @@ ol.TileStore = function(projection, tileGrid, tileUrlFunction, opt_extent,
    * @private
    * @type {?string}
    */
-  this.crossOrigin_ =
-      goog.isDef(opt_crossOrigin) ? opt_crossOrigin : 'anonymous';
+  this.crossOrigin_ = opt_crossOrigin || 'anonymous';
 
   /**
    * @private
