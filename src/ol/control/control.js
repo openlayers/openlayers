@@ -92,8 +92,8 @@ ol.Control.prototype.zoom = function(map, resolution, delta, opt_anchor) {
     var mapCenter = /** @type {!ol.Coordinate} */ map.getCenter();
     var mapResolution = map.getResolution();
     resolution = this.constraints.resolution(resolution, delta);
-    var x = anchor.x - resolution *  (anchor.x - mapCenter.x) / mapResolution;
-    var y = anchor.y - resolution *  (anchor.y - mapCenter.y) / mapResolution;
+    var x = anchor.x - resolution * (anchor.x - mapCenter.x) / mapResolution;
+    var y = anchor.y - resolution * (anchor.y - mapCenter.y) / mapResolution;
     var center = new ol.Coordinate(x, y);
     center = this.constraints.center(center, resolution, ol.Coordinate.ZERO);
     map.withFrozenRendering(function() {
