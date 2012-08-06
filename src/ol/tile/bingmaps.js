@@ -174,6 +174,8 @@ ol.tilestore.BingMaps.prototype.handleImageryMetadataResponse =
 
   if (!goog.isNull(this.callback_)) {
     this.callback_.call(this.object_, this);
+    this.callback_ = null;
+    this.object_ = null;
   }
 
 };
