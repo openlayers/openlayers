@@ -1,3 +1,5 @@
+OpenLayers.ProxyHost = 'proxy.cgi?url=';
+
 var map, client, process;
 
 function init() {
@@ -21,7 +23,7 @@ function init() {
     
     client = new OpenLayers.WPSClient({
         servers: {
-            local: "/geoserver/wps"
+            local: "http://demo.opengeo.org/geoserver/wps"
         }
     });
     
