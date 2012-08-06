@@ -1,7 +1,6 @@
 // FIXME large resolutions lead to too large framebuffers :-(
 // FIXME animated shaders! check in redraw
 // FIXME defer texture uploads and delete* calls
-// FIXME strange things happen at very large zooms
 
 goog.provide('ol.webgl.TileLayerRenderer');
 goog.provide('ol.webgl.tilelayerrenderer.shader.Fragment');
@@ -263,8 +262,9 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
   var tileStore = tileLayer.getStore();
   var tileGrid = tileStore.getTileGrid();
   var z = tileGrid.getZForResolution(mapResolution);
+  var tileResolution = tileGrid.getResolution(z);
   var tileBounds = tileGrid.getTileBoundsForExtentAndResolution(
-      mapRotatedExtent, mapResolution);
+      mapRotatedExtent, tileResolution);
   var tileBoundsSize = tileBounds.getSize();
   var tileSize = tileGrid.getTileSize();
 
@@ -274,10 +274,9 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
   var framebufferDimension =
       Math.pow(2, Math.ceil(Math.log(maxDimension) / Math.log(2)));
   var framebufferExtentSize = new ol.Size(
-      mapResolution * framebufferDimension,
-      mapResolution * framebufferDimension);
+      tileResolution * framebufferDimension,
+      tileResolution * framebufferDimension);
   var origin = tileGrid.getOrigin(z);
-  var tileResolution = tileGrid.getResolution(z);
   var minX = origin.x + tileBounds.minX * tileSize.width * tileResolution;
   var minY = origin.y + tileBounds.minY * tileSize.height * tileResolution;
   var framebufferExtent = new ol.Extent(
