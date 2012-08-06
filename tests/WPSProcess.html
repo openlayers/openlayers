@@ -1,0 +1,107 @@
+<html>
+<head>
+  <script src="OLLoader.js"></script>
+  <script type="text/javascript">
+
+  var process;
+  var client = new OpenLayers.WPSClient({
+      servers: {
+          local: 'geoserver/wps'
+      }
+  });
+  
+  function test_initialize(t) {
+      t.plan(2);
+      
+      process = new OpenLayers.WPSProcess();
+      
+      t.ok(process instanceof OpenLayers.WPSProcess, 'creates an instance');
+      t.ok(process.events, 'has an events instance');
+  }
+  
+  function test_describe(t) {
+      t.plan(6);
+      var log = {request: [], event: []};
+      var originalGET = OpenLayers.Request.GET;
+      OpenLayers.Request.GET = function(cfg) {
+          log.request.push(cfg);
+      }
+      
+      process = client.getProcess('local', 'gs:splitPolygon');
+      process.events.register('describeprocess', this, function(evt) {
+          log.event.push(evt);
+      });
+      t.eq(client.servers.local.describeProcessResponse['gs:splitPolyon'], null, 'describeProcess pending'); 
+      process.describe();
+      t.eq(log.request.length, 1, 'describeProcess request only sent once');
+      log.request[0].success.call(process, {
+          responseText: '<wps:ProcessDescriptions></wps:ProcessDescriptions>'
+      });
+      t.eq(log.event[0].type, 'describeprocess', 'describeprocess event triggered');
+      t.ok(client.servers.local.describeProcessResponse['gs:splitPolygon'], 'We have a process description!');
+      process.describe();
+      t.eq(log.request.length, 1, 'describeProcess request only sent once');
+      t.eq(log.event.length, 1, 'describeprocess event only triggered once');
+      
+      OpenLayers.Request.GET = originalGET;
+  }
+  
+  function test_execute(t) {
+      t.plan(5);
+      
+      var log = [];
+      var originalPOST = OpenLayers.Request.POST;
+      OpenLayers.Request.POST = function(cfg) {
+          log.push(cfg);
+      }
+      
+      process = client.getProcess('local', 'gs:splitPolygon');
+      process.description = {
+          dataInputs: [{
+              identifier: 'line',
+              complexData: {
+                  supported: {
+                      formats: {'application/wkt': true}
+                  }
+              }
+          }, {
+              identifier: 'polygon',
+              complexData: {
+                  supported: {
+                      formats: {'application/wkt': true}
+                  }
+              }
+          }],
+          processOutputs: [{
+              identifier: 'result',
+              complexOutput: {
+                  supported: {
+                      formats: {'application/wkt': true}
+                  }
+              }
+          }]
+      };
+      var line = 'LINESTRING(117 22,112 18,118 13,115 8)';
+      process.execute({
+          inputs: {
+              line: new OpenLayers.Format.WKT().read(line),
+              polygon: new OpenLayers.Format.WKT().read(
+                  'POLYGON((110 20,120 20,120 10,110 10,110 20),(112 17,118 18,118 16,112 15,112 17))'
+              )
+          }
+      });
+      
+      t.eq(log.length, 1, 'execute request sent');
+      t.eq(process.description.dataInputs[0].data.complexData.value, line, 'data for first input correct');
+      t.eq(process.description.dataInputs[0].data.complexData.mimeType, 'application/wkt', 'format for first input correct');
+      t.eq(process.description.responseForm.rawDataOutput.identifier, 'result', 'correct identifier for responseForm');
+      t.eq(process.description.responseForm.rawDataOutput.mimeType, 'application/wkt', 'correct format for responseForm');
+      
+      OpenLayers.Request.POST = originalPOST;
+  }
+
+  </script>
+</head>
+<body>
+</body>
+</html>
