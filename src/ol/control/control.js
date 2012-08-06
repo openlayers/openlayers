@@ -88,23 +88,13 @@ ol.Control.prototype.setResolution = function(map, resolution) {
  */
 ol.Control.prototype.zoom = function(map, resolution, delta, opt_anchor) {
   if (goog.isDefAndNotNull(opt_anchor)) {
+    var anchor = opt_anchor;
     var mapCenter = /** @type {!ol.Coordinate} */ map.getCenter();
     var mapResolution = map.getResolution();
     resolution = this.constraints.resolution(resolution, delta);
-    var center;
-    if (resolution < mapResolution) {
-      center = opt_anchor.clone();
-      center.subtract(mapCenter);
-      center.scale(resolution / mapResolution);
-      center.add(mapCenter);
-    } else if (resolution == mapResolution) {
-      center = mapCenter;
-    } else {
-      center = mapCenter.clone();
-      center.subtract(opt_anchor);
-      center.scale(resolution / mapResolution);
-      center.add(opt_anchor);
-    }
+    var x = anchor.x - resolution *  (anchor.x - mapCenter.x) / mapResolution;
+    var y = anchor.y - resolution *  (anchor.y - mapCenter.y) / mapResolution;
+    var center = new ol.Coordinate(x, y);
     center = this.constraints.center(center, resolution, ol.Coordinate.ZERO);
     map.withFrozenRendering(function() {
       map.setCenter(center);
