@@ -1,4 +1,3 @@
-/api.js
 /apidoc_config/Data/
 /bin/plovr*.jar
 /build/OpenLayers.js
@@ -9,7 +8,6 @@
 /ol.js
 /ol-api.js
 /ol-skeleton.js
-/plovr*.jar
 /tools/*.pyc
 /tools/closure-compiler.jar
 /webgl-debug.js
