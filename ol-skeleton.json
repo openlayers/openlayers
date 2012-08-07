@@ -1,9 +1,0 @@
-{
-
-  "id": "ol-skeleton",
-
-  "inherits": "ol-base.json",
-
-  "inputs": "skeleton.js"
-
-}

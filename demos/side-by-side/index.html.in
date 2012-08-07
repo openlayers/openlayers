@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+    <head>
+        <style type="text/css">
+            .map {
+                width: 400px;
+                height: 400px;
+                border: thin solid;
+            }
+        </style>
+        <title>ol3 side-by-side demo</title>
+    </head>
+    <body>
+        <h1>ol3 side-by-side demo</h1>
+        <table>
+            <tr>
+                <th>DOM</th>
+                <th>WebGL</th>
+            </tr>
+            <tr>
+                <td><div id="domMap" class="map"></div></td>
+                <td><div id="webglMap" class="map"></div></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div id="attribution" class="attribution"></div>
+                </td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td>Pan:</td>
+                <td>drag, arrow keys</td>
+            </tr>
+            <tr>
+                <td>Zoom:</td>
+                <td>double-click, shift+double-click, mouse wheel, +/- keys, shift+drag (DOM only)</td>
+            </tr>
+            <tr>
+                <td>Rotate:</td>
+                <td>shift+drag (WebGL only)</td>
+            </tr>
+        </table>
+        <script src="@SRC@" type="text/javascript"></script>
+    </body>
+</html>

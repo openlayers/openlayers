@@ -1,9 +1,0 @@
-{
-
-  "id": "ol-api",
-
-  "inherits": "ol-base.json",
-
-  "inputs": "ol.js"
-
-}
