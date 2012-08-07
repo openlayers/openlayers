@@ -9,6 +9,12 @@ goog.require('ol.TransformFunction');
 
 
 /**
+ * @define {boolean} Enable Proj4js.
+ */
+ol.ENABLE_PROJ4JS = true;
+
+
+/**
  * @enum {string}
  */
 ol.ProjectionUnits = {
@@ -71,6 +77,44 @@ ol.Projection.prototype.getUnits = function() {
 };
 
 
+
+/**
+ * @constructor
+ * @extends {ol.Projection}
+ * @param {string} code Code.
+ * @param {Proj4js.Proj} proj4jsProj Proj4js projection.
+ */
+ol.Proj4jsProjection = function(code, proj4jsProj) {
+
+  var units = /** @type {ol.ProjectionUnits} */ proj4jsProj.units;
+
+  goog.base(this, code, units, null);
+
+  /**
+   * @private
+   * @type {Proj4js.Proj}
+   */
+  this.proj4jsProj_ = proj4jsProj;
+
+};
+goog.inherits(ol.Proj4jsProjection, ol.Projection);
+
+
+/**
+ * @return {Proj4js.Proj} Proj4js projection.
+ */
+ol.Proj4jsProjection.prototype.getProj4jsProj = function() {
+  return this.proj4jsProj_;
+};
+
+
+/**
+ * @private
+ * @type {Object.<string, ol.Proj4jsProjection>}
+ */
+ol.Projection.proj4jsProjections_ = {};
+
+
 /**
  * @private
  * @type {Object.<string, ol.Projection>}
@@ -117,6 +161,17 @@ ol.Projection.addEquivalentTransforms =
 
 
 /**
+ * @param {ol.Proj4jsProjection} proj4jsProjection Proj4js projection.
+ */
+ol.Projection.addProj4jsProjection = function(proj4jsProjection) {
+  var proj4jsProjections = ol.Projection.proj4jsProjections_;
+  var code = proj4jsProjection.getCode();
+  goog.asserts.assert(!goog.object.containsKey(proj4jsProjections, code));
+  proj4jsProjections[code] = proj4jsProjection;
+};
+
+
+/**
  * @param {ol.Projection} projection Projection.
  */
 ol.Projection.addProjection = function(projection) {
@@ -145,9 +200,7 @@ ol.Projection.addProjections = function(projections) {
 ol.Projection.addTransform = function(source, destination, transformFn) {
   var projections = ol.Projection.projections_;
   var sourceCode = source.getCode();
-  goog.asserts.assert(goog.object.containsKey(projections, sourceCode));
   var destinationCode = destination.getCode();
-  goog.asserts.assert(goog.object.containsKey(projections, destinationCode));
   var transforms = ol.Projection.transforms_;
   if (!goog.object.containsKey(transforms, sourceCode)) {
     transforms[sourceCode] = {};
@@ -163,9 +216,32 @@ ol.Projection.addTransform = function(source, destination, transformFn) {
  * @return {ol.Projection} Projection.
  */
 ol.Projection.getFromCode = function(code) {
-  var projections = ol.Projection.projections_;
-  goog.asserts.assert(goog.object.containsKey(projections, code));
-  return projections[code];
+  var projection = ol.Projection.projections_[code];
+  if (ol.Projection.isProj4jsSupported() && !goog.isDef(projection)) {
+    projection = ol.Projection.getProj4jsProjectionFromCode_(code);
+  }
+  if (!goog.isDef(projection)) {
+    goog.asserts.assert(goog.isDef(projection));
+    projection = null;
+  }
+  return projection;
+};
+
+
+/**
+ * @param {string} code Code.
+ * @private
+ * @return {ol.Proj4jsProjection} Proj4js projection.
+ */
+ol.Projection.getProj4jsProjectionFromCode_ = function(code) {
+  var proj4jsProjections = ol.Projection.proj4jsProjections_;
+  var proj4jsProjection = proj4jsProjections[code];
+  if (!goog.isDef(proj4jsProjection)) {
+    var proj4jsProj = new Proj4js.Proj(code);
+    proj4jsProjection = new ol.Proj4jsProjection(code, proj4jsProj);
+    proj4jsProjections[code] = proj4jsProjection;
+  }
+  return proj4jsProjection;
 };
 
 
@@ -195,10 +271,46 @@ ol.Projection.getTransform = function(source, destination) {
   var transforms = ol.Projection.transforms_;
   var sourceCode = source.getCode();
   var destinationCode = destination.getCode();
-  goog.asserts.assert(goog.object.containsKey(transforms, sourceCode));
-  goog.asserts.assert(
-      goog.object.containsKey(transforms[sourceCode], destinationCode));
-  return transforms[sourceCode][destinationCode];
+  var transform;
+  if (goog.object.containsKey(transforms, sourceCode) &&
+      goog.object.containsKey(transforms[sourceCode], destinationCode)) {
+    transform = transforms[sourceCode][destinationCode];
+  }
+  if (ol.Projection.isProj4jsSupported() && !goog.isDef(transform)) {
+    var proj4jsSource;
+    if (source instanceof ol.Proj4jsProjection) {
+      proj4jsSource = source;
+    } else {
+      proj4jsSource =
+          ol.Projection.getProj4jsProjectionFromCode_(source.getCode());
+    }
+    var sourceProj4jsProj = proj4jsSource.getProj4jsProj();
+    var proj4jsDestination;
+    if (destination instanceof ol.Proj4jsProjection) {
+      proj4jsDestination = destination;
+    } else {
+      proj4jsDestination =
+          ol.Projection.getProj4jsProjectionFromCode_(source.getCode());
+    }
+    var destinationProj4jsProj = proj4jsDestination.getProj4jsProj();
+    transform =
+        /**
+         * @param {ol.Coordinate} coordinate Coordinate.
+         * @return {ol.Coordinate} Coordinate.
+         */
+        function(coordinate) {
+      var proj4jsPoint = new Proj4js.Point(coordinate.x, coordinate.y);
+      proj4jsPoint = Proj4js.transform(
+          sourceProj4jsProj, destinationProj4jsProj, proj4jsPoint);
+      return new ol.Coordinate(proj4jsPoint.x, proj4jsPoint.y);
+    };
+    ol.Projection.addTransform(source, destination, transform);
+  }
+  if (!goog.isDef(transform)) {
+    goog.asserts.assert(goog.isDef(transform));
+    transform = ol.Projection.identityTransform;
+  }
+  return transform;
 };
 
 
@@ -211,6 +323,14 @@ ol.Projection.getTransformFromCodes = function(sourceCode, destinationCode) {
   var source = ol.Projection.getFromCode(sourceCode);
   var destination = ol.Projection.getFromCode(destinationCode);
   return ol.Projection.getTransform(source, destination);
+};
+
+
+/**
+ * @return {boolean} Has Proj4js.
+ */
+ol.Projection.isProj4jsSupported = function() {
+  return ol.ENABLE_PROJ4JS && 'Proj4js' in goog.global;
 };
 
 

@@ -12,6 +12,7 @@
 /examples/example-list.js
 /examples/example-list.xml
 /jsdoc/
+/proj4js-combined.js
 /tools/*.pyc
 /tools/closure-compiler.jar
 /webgl-debug.js
