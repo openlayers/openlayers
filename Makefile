@@ -1,5 +1,6 @@
 PLOVR_JAR=bin/plovr-4b3caf2b7d84.jar
 SRC = $(shell find externs src/ol -name \*.js)
+API = $(shell find src/api -name \*.js)
 TARGETS = $(shell find demos -name advanced-optimizations.js -o -name simple-optimizations.js)
 comma := ,
 empty :=
@@ -9,7 +10,13 @@ space := $(empty) $(empty)
 all: build demos webgl-debug.js
 
 .PHONY: build
-build: build/ol3-compiled.js
+build: build/ol3-api.js build/ol3-compiled.js
+
+build/ol3-api.js: $(PLOVR_JAR) $(SRC) base.json \
+	build/ol3-api.json src/api/api.js
+	java -jar $(PLOVR_JAR) build build/ol3-api.json >$@
+	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
+	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
 
 build/ol3-compiled.js: $(PLOVR_JAR) $(SRC) base.json \
 	build/ol3.json build/ol3.js
@@ -55,11 +62,11 @@ demos/side-by-side/simple-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
 
 .PHONY: serve
 serve: $(PLOVR_JAR)
-	java -jar $(PLOVR_JAR) serve build/ol3.json demos/*/*.json
+	java -jar $(PLOVR_JAR) serve build/ol3.json build/ol3-api.json demos/*/*.json
 
 .PHONY: lint
 lint:
-	gjslint --strict --limited_doc_files=$(subst $(space),$(comma),$(shell find externs -name \*.js)) $(SRC) $(filter-out $(TARGETS),$(shell find demos -name \*.js))
+	gjslint --strict --limited_doc_files=$(subst $(space),$(comma),$(shell find externs -name \*.js)) $(SRC) $(API) $(filter-out $(TARGETS),$(shell find demos -name \*.js))
 
 webgl-debug.js:
 	curl https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/sdk/debug/webgl-debug.js > $@

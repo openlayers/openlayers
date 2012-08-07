@@ -2,6 +2,7 @@
 /bin/plovr*.jar
 /build/OpenLayers.js
 /build/ol3.js
+/build/ol3-api.js
 /build/ol3-compiled.js
 /demos/*/advanced-optimizations.*
 /demos/*/debug.html
