@@ -430,9 +430,10 @@ ol.Projection.EPSG_3857_EXTENT = new ol.Extent(
 
 
 /**
+ * @private
  * @type {Array.<string>}
  */
-ol.Projection.EPSG_3857_LIKE_CODES = [
+ol.Projection.EPSG_3857_LIKE_CODES_ = [
   'EPSG:3857',
   'EPSG:102113',
   'EPSG:102100',
@@ -442,10 +443,11 @@ ol.Projection.EPSG_3857_LIKE_CODES = [
 
 /**
  * @const
+ * @private
  * @type {Array.<ol.Projection>}
  */
-ol.Projection.EPSG_3857_LIKE_PROJECTIONS = goog.array.map(
-    ol.Projection.EPSG_3857_LIKE_CODES,
+ol.Projection.EPSG_3857_LIKE_PROJECTIONS_ = goog.array.map(
+    ol.Projection.EPSG_3857_LIKE_CODES_,
     function(code) {
       return new ol.Projection(
           code,
@@ -456,15 +458,17 @@ ol.Projection.EPSG_3857_LIKE_PROJECTIONS = goog.array.map(
 
 /**
  * @const
+ * @private
  * @type {ol.Extent}
  */
-ol.Projection.EPSG_4326_EXTENT = new ol.Extent(-180, -90, 180, 90);
+ol.Projection.EPSG_4326_EXTENT_ = new ol.Extent(-180, -90, 180, 90);
 
 
 /**
+ * @private
  * @type {Array.<string>}
  */
-ol.Projection.EPSG_4326_LIKE_CODES = [
+ol.Projection.EPSG_4326_LIKE_CODES_ = [
   'EPSG:4326',
   'CRS:84',
   'urn:ogc:def:crs:EPSG:6.6:4326'
@@ -476,21 +480,21 @@ ol.Projection.EPSG_4326_LIKE_CODES = [
  * @type {Array.<ol.Projection>}
  */
 ol.Projection.EPSG_4326_LIKE_PROJECTIONS = goog.array.map(
-    ol.Projection.EPSG_4326_LIKE_CODES,
+    ol.Projection.EPSG_4326_LIKE_CODES_,
     function(code) {
       return new ol.Projection(
           code,
           ol.ProjectionUnits.DEGREES,
-          ol.Projection.EPSG_4326_EXTENT);
+          ol.Projection.EPSG_4326_EXTENT_);
     });
 
 
 ol.Projection.addEquivalentProjections_(
-    ol.Projection.EPSG_3857_LIKE_PROJECTIONS);
+    ol.Projection.EPSG_3857_LIKE_PROJECTIONS_);
 ol.Projection.addEquivalentProjections_(
     ol.Projection.EPSG_4326_LIKE_PROJECTIONS);
 ol.Projection.addEquivalentTransforms_(
     ol.Projection.EPSG_4326_LIKE_PROJECTIONS,
-    ol.Projection.EPSG_3857_LIKE_PROJECTIONS,
+    ol.Projection.EPSG_3857_LIKE_PROJECTIONS_,
     ol.Projection.forwardSphericalMercator,
     ol.Projection.inverseSphericalMercator);
