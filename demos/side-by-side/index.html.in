@@ -34,11 +34,11 @@
             </tr>
             <tr>
                 <td>Zoom:</td>
-                <td>double-click, shift+double-click, mouse wheel, <code>+</code>/<code>-</code> keys; shift+drag (DOM only)</td>
+                <td>double-click, <code>Shift</code>+double-click, mouse wheel, <code>+</code>/<code>-</code> keys; <code>Shift</code>+drag</td>
             </tr>
             <tr>
                 <td>Rotate:</td>
-                <td>shift+drag (WebGL only)</td>
+                <td><code>Alt</code>+drag (WebGL only)</td>
             </tr>
             <tr>
                 <td>Brightness/contrast:</td>

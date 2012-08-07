@@ -1,4 +1,4 @@
-goog.provide('ol.control.ShiftDragRotate');
+goog.provide('ol.control.AltDragRotate');
 
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.control.Drag');
@@ -10,23 +10,23 @@ goog.require('ol.control.Drag');
  * @extends {ol.control.Drag}
  * @param {ol.control.Constraints} constraints Constraints.
  */
-ol.control.ShiftDragRotate = function(constraints) {
+ol.control.AltDragRotate = function(constraints) {
   goog.base(this, constraints);
 };
-goog.inherits(ol.control.ShiftDragRotate, ol.control.Drag);
+goog.inherits(ol.control.AltDragRotate, ol.control.Drag);
 
 
 /**
  * @private
  * @type {number}
  */
-ol.control.ShiftDragRotate.prototype.startRotation_;
+ol.control.AltDragRotate.prototype.startRotation_;
 
 
 /**
  * @inheritDoc
  */
-ol.control.ShiftDragRotate.prototype.handleDrag = function(mapBrowserEvent) {
+ol.control.AltDragRotate.prototype.handleDrag = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   var map = mapBrowserEvent.map;
   var size = map.getSize();
@@ -40,11 +40,11 @@ ol.control.ShiftDragRotate.prototype.handleDrag = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-ol.control.ShiftDragRotate.prototype.handleDragStart =
+ol.control.AltDragRotate.prototype.handleDragStart =
     function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   var map = mapBrowserEvent.map;
-  if (map.canRotate() && browserEvent.shiftKey) {
+  if (map.canRotate() && browserEvent.altKey) {
     var size = map.getSize();
     var theta = Math.atan2(
         size.height / 2 - browserEvent.offsetY,
