@@ -3,9 +3,9 @@
 /build/OpenLayers.js
 /build/ol3.js
 /build/ol3-compiled.js
-/demos/*/*.html
-/demos/*/advanced-optimizations.js
-/demos/*/whitespace-only.js
+/demos/*/advanced-optimizations.*
+/demos/*/debug.html
+/demos/*/simple-optimizations.*
 /doc/apidocs/
 /examples/example-list.js
 /examples/example-list.xml

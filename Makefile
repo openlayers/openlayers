@@ -1,6 +1,6 @@
 PLOVR_JAR=bin/plovr-4b3caf2b7d84.jar
 SRC = $(shell find externs src/ol -name \*.js)
-TARGETS = $(shell find demos -name advanced-optimizations.js -o -name whitespace-only.js)
+TARGETS = $(shell find demos -name advanced-optimizations.js -o -name simple-optimizations.js)
 comma := ,
 empty :=
 space := $(empty) $(empty)
@@ -28,8 +28,8 @@ demos/side-by-side: \
 	demos/side-by-side/advanced-optimizations.html \
 	demos/side-by-side/advanced-optimizations.js \
 	demos/side-by-side/debug.html \
-	demos/side-by-side/whitespace-only.html \
-	demos/side-by-side/whitespace-only.js
+	demos/side-by-side/simple-optimizations.html \
+	demos/side-by-side/simple-optimizations.js
 
 demos/side-by-side/advanced-optimizations.html: demos/side-by-side/index.html.in
 	sed -e 's|@SRC@|advanced-optimizations.js|' $< > $@
@@ -43,13 +43,13 @@ demos/side-by-side/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
 demos/side-by-side/debug.html: demos/side-by-side/index.html.in
 	sed -e 's|@SRC@|http://localhost:9810/compile?id=demo-side-by-side|' $< > $@
 
-demos/side-by-side/whitespace-only.html: demos/side-by-side/index.html.in
-	sed -e 's|@SRC@|whitespace-only.js|' $< > $@
+demos/side-by-side/simple-optimizations.html: demos/side-by-side/index.html.in
+	sed -e 's|@SRC@|simple-optimizations.js|' $< > $@
 
 # FIXME invoke plovr directly, rather than assuming that the server is running
-demos/side-by-side/whitespace-only.js: $(PLOVR_JAR) $(SRC) base.json \
+demos/side-by-side/simple-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
 	demos/side-by-side/side-by-side.json demos/side-by-side/side-by-side.js
-	curl 'http://localhost:9810/compile?id=demo-side-by-side&mode=WHITESPACE' > $@
+	curl 'http://localhost:9810/compile?id=demo-side-by-side&mode=SIMPLE' > $@
 	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
 
@@ -70,7 +70,9 @@ $(PLOVR_JAR):
 clean:
 	rm -f build/all.js
 	rm -f build/ol3.js
-	rm -f demos/*/compiled.js
+	rm -f demos/*/advanced-optimizations.*
+	rm -f demos/*/debug.html
+	rm -f demos/*/simple-optimizations.*
 
 reallyclean: clean
 	rm -f $(PLOVR_JAR)
