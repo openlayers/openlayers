@@ -131,8 +131,9 @@ ol.Projection.transforms_ = {};
 
 /**
  * @param {Array.<ol.Projection>} projections Projections.
+ * @private
  */
-ol.Projection.addEquivalentProjections = function(projections) {
+ol.Projection.addEquivalentProjections_ = function(projections) {
   ol.Projection.addProjections(projections);
   goog.array.forEach(projections, function(source) {
     goog.array.forEach(projections, function(destination) {
@@ -148,8 +149,9 @@ ol.Projection.addEquivalentProjections = function(projections) {
  * @param {Array.<ol.Projection>} projections2 Projections.
  * @param {ol.TransformFunction} forwardTransform Forward transform.
  * @param {ol.TransformFunction} inverseTransform Inverse transform.
+ * @private
  */
-ol.Projection.addEquivalentTransforms =
+ol.Projection.addEquivalentTransforms_ =
     function(projections1, projections2, forwardTransform, inverseTransform) {
   goog.array.forEach(projections1, function(projection1) {
     goog.array.forEach(projections2, function(projection2) {
@@ -483,11 +485,11 @@ ol.Projection.EPSG_4326_LIKE_PROJECTIONS = goog.array.map(
     });
 
 
-ol.Projection.addEquivalentProjections(
+ol.Projection.addEquivalentProjections_(
     ol.Projection.EPSG_3857_LIKE_PROJECTIONS);
-ol.Projection.addEquivalentProjections(
+ol.Projection.addEquivalentProjections_(
     ol.Projection.EPSG_4326_LIKE_PROJECTIONS);
-ol.Projection.addEquivalentTransforms(
+ol.Projection.addEquivalentTransforms_(
     ol.Projection.EPSG_4326_LIKE_PROJECTIONS,
     ol.Projection.EPSG_3857_LIKE_PROJECTIONS,
     ol.Projection.forwardSphericalMercator,
