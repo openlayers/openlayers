@@ -3,7 +3,7 @@ goog.require('ol.Coordinate');
 goog.require('ol.Projection');
 
 
-var outputElement = document.getElementById('output'), p;
+var outputElement = document.getElementById('output');
 
 var point, transformedPoint;
 
