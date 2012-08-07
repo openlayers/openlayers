@@ -89,8 +89,8 @@ $(PLOVR_JAR):
 clean:
 	rm -f build/all.js
 	rm -f build/ol3.js
+	rm -f demos/*/*.html
 	rm -f demos/*/advanced-optimizations.*
-	rm -f demos/*/debug.html
 	rm -f demos/*/simple-optimizations.*
 
 reallyclean: clean
