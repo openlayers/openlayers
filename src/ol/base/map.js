@@ -1,4 +1,3 @@
-// FIXME dragger - prevent page scrolling
 // FIXME better map browser event types
 // FIXME recheck layer/map projection compatability when projection changes
 // FIXME layer renderers should skip when they can't reproject
@@ -117,8 +116,9 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
   this.eventsPane_ = goog.dom.createElement(goog.dom.TagName.DIV);
   this.eventsPane_.className = 'ol-pane-events';
   this.eventsPane_.style.position = 'absolute';
-  this.eventsPane_.style.width = '100%';
-  this.eventsPane_.style.height = '100%';
+  // FIXME why can't we use width and height 100% here?
+  this.eventsPane_.style.width = target.clientWidth + 'px';
+  this.eventsPane_.style.height = target.clientHeight + 'px';
   this.eventsPane_.style.zIndex = ol.MapPaneZIndex.EVENTS;
   goog.dom.appendChild(target, this.eventsPane_);
 
