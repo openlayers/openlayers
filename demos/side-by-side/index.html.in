@@ -34,7 +34,7 @@
             </tr>
             <tr>
                 <td>Zoom:</td>
-                <td>double-click, shift+double-click, mouse wheel, +/- keys, shift+drag (DOM only)</td>
+                <td>double-click, shift+double-click, mouse wheel, <code>+</code>/<code>-</code> keys; shift+drag (DOM only)</td>
             </tr>
             <tr>
                 <td>Rotate:</td>
