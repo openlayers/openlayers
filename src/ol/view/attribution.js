@@ -15,6 +15,7 @@ goog.require('ol.Collection');
 goog.require('ol.CoverageArea');
 goog.require('ol.Layer');
 goog.require('ol.MapProperty');
+goog.require('ol.TileCoverageArea');
 goog.require('ol.View');
 
 
