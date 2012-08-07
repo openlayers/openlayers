@@ -1,4 +1,5 @@
 goog.provide('ol.Tile');
+goog.provide('ol.TileState');
 
 goog.require('goog.array');
 goog.require('goog.events');
@@ -10,7 +11,7 @@ goog.require('ol.TileCoord');
 /**
  * @enum {number}
  */
-ol.TileLoadState = {
+ol.TileState = {
   IDLE: 0,
   LOADING: 1,
   LOADED: 2,
@@ -43,9 +44,9 @@ ol.Tile = function(tileCoord, src, crossOrigin) {
 
   /**
    * @private
-   * @type {ol.TileLoadState}
+   * @type {ol.TileState}
    */
-  this.state_ = ol.TileLoadState.IDLE;
+  this.state_ = ol.TileState.IDLE;
 
   /**
    * @private
@@ -104,10 +105,18 @@ ol.Tile.prototype.getImage = function(opt_context) {
 
 
 /**
+ * @return {ol.TileState} State.
+ */
+ol.Tile.prototype.getState = function() {
+  return this.state_;
+};
+
+
+/**
  * @private
  */
 ol.Tile.prototype.handleImageError_ = function() {
-  this.state_ = ol.TileLoadState.ERROR;
+  this.state_ = ol.TileState.ERROR;
   this.unlistenImage_();
 };
 
@@ -116,25 +125,17 @@ ol.Tile.prototype.handleImageError_ = function() {
  * @private
  */
 ol.Tile.prototype.handleImageLoad_ = function() {
-  this.state_ = ol.TileLoadState.LOADED;
+  this.state_ = ol.TileState.LOADED;
   this.unlistenImage_();
   this.dispatchChangeEvent();
 };
 
 
 /**
- * @return {boolean} Is loaded.
- */
-ol.Tile.prototype.isLoaded = function() {
-  return this.state_ == ol.TileLoadState.LOADED;
-};
-
-
-/**
  */
 ol.Tile.prototype.load = function() {
-  if (this.state_ == ol.TileLoadState.IDLE) {
-    this.state_ = ol.TileLoadState.LOADING;
+  if (this.state_ == ol.TileState.IDLE) {
+    this.state_ = ol.TileState.LOADING;
     goog.asserts.assert(goog.isNull(this.imageListenerKeys_));
     this.imageListenerKeys_ = [
       goog.events.listenOnce(this.image_, goog.events.EventType.ERROR,

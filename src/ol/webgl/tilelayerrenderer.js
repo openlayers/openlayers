@@ -16,6 +16,7 @@ goog.require('goog.webgl');
 goog.require('ol.Coordinate');
 goog.require('ol.Size');
 goog.require('ol.TileLayer');
+goog.require('ol.TileState');
 goog.require('ol.webgl.LayerRenderer');
 goog.require('ol.webgl.shader.Fragment');
 goog.require('ol.webgl.shader.Vertex');
@@ -334,7 +335,7 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
   tileBounds.forEachTileCoord(z, function(tileCoord) {
     var tile = tileStore.getTile(tileCoord);
     if (goog.isNull(tile)) {
-    } else if (tile.isLoaded()) {
+    } else if (tile.getState() == ol.TileState.LOADED) {
       tilesToDrawByZ[z][tileCoord.toString()] = tile;
     } else {
       var tileKey = goog.getUid(tile);
@@ -355,7 +356,8 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
                 return;
               }
               var tile = tileStore.getTile(tileCoord);
-              if (!goog.isNull(tile) && tile.isLoaded()) {
+              if (!goog.isNull(tile) &&
+                  tile.getState() == ol.TileState.LOADED) {
                 if (!tilesToDrawByZ[z]) {
                   tilesToDrawByZ[z] = {};
                 }
