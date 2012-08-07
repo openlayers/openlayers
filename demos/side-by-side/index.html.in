@@ -61,6 +61,9 @@
                 <td><code>0</code> key</td>
             </tr>
         </table>
+        <p><b>Notes:</b> the two maps share the same center, resolution, rotation and layers.  Currently the DOM map does not support rotation.</p>
+        <p><b>Console tips:</b> If you want to play around with the API in the console, first make sure that you're using the <a href="whitespace-only.html">whitespace only version</a> of this demo, then open a console and experiment with the <code>domMap</code>, <code>webglMap</code> and <code>layer</code> variables in the console. The source code is in <a href="side-by-side.js">side-by-side.js</a>.</p>
+        <p><b>Known bugs:</b> Dragging is captured on the entire page, not just on the maps. When the map is rotated, panning on the WebGL map doesn't work as expected.</p>
         <script src="@SRC@" type="text/javascript"></script>
     </body>
 </html>
