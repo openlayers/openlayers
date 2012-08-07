@@ -66,7 +66,7 @@ ol.DEFAULT_RENDERER_HINT = [
 
 
 /**
- * @param {!HTMLDivElement} target Target.
+ * @param {Element} target Target.
  * @param {Object.<string, *>=} opt_values Values.
  * @param {ol.RendererHint|Array.<ol.RendererHint>=} opt_rendererHints
  *     Renderer hints.

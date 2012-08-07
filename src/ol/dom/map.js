@@ -14,7 +14,7 @@ goog.require('ol.dom.TileLayerRenderer');
 /**
  * @constructor
  * @extends {ol.Map}
- * @param {!HTMLDivElement} target Target.
+ * @param {Element} target Target.
  * @param {Object.<string, *>=} opt_values Values.
  */
 ol.dom.Map = function(target, opt_values) {

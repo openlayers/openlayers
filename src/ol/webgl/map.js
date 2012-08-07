@@ -135,7 +135,7 @@ goog.addSingletonGetter(ol.webgl.map.shader.Vertex);
 /**
  * @constructor
  * @extends {ol.Map}
- * @param {!HTMLDivElement} target Target.
+ * @param {Element} target Target.
  * @param {Object.<string, *>=} opt_values Values.
  */
 ol.webgl.Map = function(target, opt_values) {

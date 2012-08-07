@@ -71,7 +71,7 @@ ol.MapPaneZIndex = {
 /**
  * @constructor
  * @extends {ol.Object}
- * @param {HTMLDivElement} target Target.
+ * @param {Element} target Target.
  * @param {Object=} opt_values Values.
  * @param {goog.dom.ViewportSizeMonitor=} opt_viewportSizeMonitor
  *     Viewport size monitor.
@@ -112,10 +112,9 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
 
   /**
    * @private
-   * @type {HTMLDivElement}
+   * @type {Element}
    */
-  this.eventsPane_ = /** @type {HTMLDivElement} */
-      goog.dom.createElement(goog.dom.TagName.DIV);
+  this.eventsPane_ = goog.dom.createElement(goog.dom.TagName.DIV);
   this.eventsPane_.className = 'ol-pane-events';
   this.eventsPane_.style.position = 'absolute';
   this.eventsPane_.style.width = '100%';
@@ -169,7 +168,7 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
 
   /**
    * @private
-   * @type {HTMLDivElement}
+   * @type {Element}
    */
   this.target_ = target;
 
@@ -524,7 +523,7 @@ goog.exportProperty(
 
 
 /**
- * @return {HTMLDivElement} Target.
+ * @return {Element} Target.
  */
 ol.Map.prototype.getTarget = function() {
   return this.target_;
