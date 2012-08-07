@@ -21,10 +21,12 @@ var webglMap = ol.createMap(
     document.getElementById('webglMap'),
     {},
     ol.RendererHint.WEBGL);
-webglMap.bindTo('center', domMap);
-webglMap.bindTo('layers', domMap);
-webglMap.bindTo('resolution', domMap);
-webglMap.bindTo('rotation', domMap);
+if (!goog.isNull(webglMap)) {
+  webglMap.bindTo('center', domMap);
+  webglMap.bindTo('layers', domMap);
+  webglMap.bindTo('resolution', domMap);
+  webglMap.bindTo('rotation', domMap);
+}
 
 var attributionView = new ol.view.Attribution(domMap);
 document.getElementById('attribution').appendChild(
