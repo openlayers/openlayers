@@ -65,6 +65,9 @@ keyboardControl.addCallback('o', function() {
 keyboardControl.addCallback('O', function() {
   layer.setOpacity(layer.getOpacity() + 0.1);
 });
+keyboardControl.addCallback('r', function() {
+  webglMap.setRotation(0);
+});
 keyboardControl.addCallback('s', function() {
   layer.setSaturation(layer.getSaturation() - 0.1);
 });

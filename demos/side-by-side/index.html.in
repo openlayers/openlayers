@@ -38,7 +38,7 @@
             </tr>
             <tr>
                 <td>Rotate:</td>
-                <td><code>Alt</code>+drag (WebGL only)</td>
+                <td><code>Alt</code>+drag, <code>r</code> to reset (WebGL only)</td>
             </tr>
             <tr>
                 <td>Brightness/contrast:</td>
