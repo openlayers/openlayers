@@ -28,7 +28,7 @@ build/ol3.js: $(SRC)
 	( echo "goog.require('goog.dom');" ; find src/ol -name \*.js | xargs grep -rh ^goog.provide | sort | uniq | sed -e 's/provide/require/g' ) > $@
 
 .PHONY: demos
-demos: demos/api1 demos/side-by-side
+demos: demos/api1 demos/proj4js demos/side-by-side
 
 .PHONY: demos/api1
 demos/api1: \
@@ -40,6 +40,18 @@ demos/api1/build.html: demos/api1/index.html.in
 	sed -e 's|@SRC@|../../build/ol3-api.js|' $< > $@
 
 demos/api1/debug.html: demos/api1/index.html.in
+	sed -e 's|@SRC@|http://localhost:9810/compile?id=ol3-api|' $< > $@
+
+.PHONY: demos/proj4js
+demos/proj4js: \
+	build/ol3-api.js \
+	demos/proj4js/build.html \
+	demos/proj4js/debug.html
+
+demos/proj4js/build.html: demos/proj4js/index.html.in
+	sed -e 's|@SRC@|../../build/ol3-api.js|' $< > $@
+
+demos/proj4js/debug.html: demos/proj4js/index.html.in
 	sed -e 's|@SRC@|http://localhost:9810/compile?id=ol3-api|' $< > $@
 
 .PHONY: demos/side-by-side
