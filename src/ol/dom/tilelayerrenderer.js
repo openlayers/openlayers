@@ -82,9 +82,7 @@ ol.dom.TileLayerRenderer.prototype.render = function() {
       tile = tileStore.getTile(tileCoord);
       if (goog.isNull(tile)) {
       } else {
-        if (!tile.isLoaded()) {
-          tile.load();
-        }
+        tile.load();
         this.renderedTiles_[key] = tile;
         pixelBounds = tileGrid.getPixelBoundsForTileCoordAndResolution(
             tileCoord, mapResolution);
