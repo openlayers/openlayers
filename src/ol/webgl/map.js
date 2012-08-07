@@ -478,6 +478,9 @@ ol.webgl.Map.prototype.handleSizeChanged = function() {
  * @protected
  */
 ol.webgl.Map.prototype.handleWebGLContextLost = function(event) {
+  if (goog.DEBUG) {
+    ol.webgl.map.logger.info('WebGLContextLost');
+  }
   event.preventDefault();
   this.locations_ = null;
   this.arrayBuffer_ = null;
@@ -494,6 +497,9 @@ ol.webgl.Map.prototype.handleWebGLContextLost = function(event) {
  * @protected
  */
 ol.webgl.Map.prototype.handleWebGLContextRestored = function() {
+  if (goog.DEBUG) {
+    ol.webgl.map.logger.info('WebGLContextRestored');
+  }
   var gl = this.gl_;
   gl.activeTexture(goog.webgl.TEXTURE0);
   gl.blendFunc(goog.webgl.SRC_ALPHA, goog.webgl.ONE_MINUS_SRC_ALPHA);
