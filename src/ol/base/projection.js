@@ -435,8 +435,8 @@ ol.Projection.EPSG_3857_EXTENT = new ol.Extent(
  */
 ol.Projection.EPSG_3857_LIKE_CODES_ = [
   'EPSG:3857',
-  'EPSG:102113',
   'EPSG:102100',
+  'EPSG:102113',
   'EPSG:900913'
 ];
 
@@ -469,8 +469,8 @@ ol.Projection.EPSG_4326_EXTENT_ = new ol.Extent(-180, -90, 180, 90);
  * @type {Array.<string>}
  */
 ol.Projection.EPSG_4326_LIKE_CODES_ = [
-  'EPSG:4326',
   'CRS:84',
+  'EPSG:4326',
   'urn:ogc:def:crs:EPSG:6.6:4326'
 ];
 
