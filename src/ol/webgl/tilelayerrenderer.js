@@ -374,8 +374,8 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
   var zs = goog.object.getKeys(tilesToDrawByZ);
   goog.array.sort(zs);
   var uTileOffset = goog.vec.Vec4.createFloat32();
-  goog.array.forEach(zs, function(tileZ) {
-    goog.object.forEach(tilesToDrawByZ[tileZ], function(tile) {
+  goog.array.forEach(zs, function(z) {
+    goog.object.forEach(tilesToDrawByZ[z], function(tile) {
       var tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord);
       var sx = 2 * tileExtent.getWidth() / framebufferExtentSize.width;
       var sy = 2 * tileExtent.getHeight() / framebufferExtentSize.height;
@@ -383,17 +383,10 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
           framebufferExtentSize.width - 1;
       var ty = 2 * (tileExtent.minY - framebufferExtent.minY) /
           framebufferExtentSize.height - 1;
-      var filter;
-      if (tileZ == z) {
-        tx += 0.5 * sx / tileSize.width;
-        ty += 0.5 * sy / tileSize.height;
-        filter = goog.webgl.NEAREST;
-      } else {
-        filter = goog.webgl.LINEAR;
-      }
       goog.vec.Vec4.setFromValues(uTileOffset, sx, sy, tx, ty);
       gl.uniform4fv(this.locations_.uTileOffset, uTileOffset);
-      map.bindImageTexture(tile.getImage(), filter, filter);
+      map.bindImageTexture(
+          tile.getImage(), goog.webgl.LINEAR, goog.webgl.LINEAR);
       gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
     }, this);
   }, this);
@@ -419,8 +412,8 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
         1);
   }
   goog.vec.Mat4.translate(this.matrix_,
-      -0.5 - 0.5 / framebufferDimension,
-      -0.5 - 0.5 / framebufferDimension,
+      -0.5,
+      -0.5,
       0);
 
 };
