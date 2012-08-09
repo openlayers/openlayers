@@ -1,6 +1,6 @@
 OpenLayers.ProxyHost = 'proxy.cgi?url=';
 
-var map, client, process;
+var map, client, intersect, buffer;
 
 function init() {
     
@@ -23,18 +23,27 @@ function init() {
     
     client = new OpenLayers.WPSClient({
         servers: {
-            local: "http://demo.opengeo.org/geoserver/wps"
+            opengeo: 'http://demo.opengeo.org/geoserver/wps'
         }
     });
     
-    // Create a process and execute it
-    process = client.getProcess("local", "JTS:intersection");    
-    process.execute({
+    // Create a process and configure it
+    intersect = client.getProcess('opengeo', 'JTS:intersection');    
+    intersect.configure({
         // spatial input can be a feature or a geometry or an array of
         // features or geometries
         inputs: {
             a: features,
             b: geometry
+        }
+    });
+    
+    // Create another process which chains the previous one and execute it
+    buffer = client.getProcess('opengeo', 'JTS:buffer');
+    buffer.execute({
+        inputs: {
+            geom: intersect.output(),
+            distance: 1
         },
         success: function(outputs) {
             // outputs.result is a feature or an array of features for spatial
