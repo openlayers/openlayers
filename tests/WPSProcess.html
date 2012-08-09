@@ -55,7 +55,11 @@
           log.push(cfg);
       }
       
-      process = client.getProcess('local', 'gs:splitPolygon');
+      process = new OpenLayers.WPSProcess({
+          client: client,
+          server: 'local',
+          identifier: 'gs:splitPolygon'
+      });
       process.description = {
           dataInputs: [{
               identifier: 'line',
