@@ -39,7 +39,7 @@
       process.describe();
       t.eq(log.request.length, 1, 'describeProcess request only sent once');
       log.request[0].success.call(process, {
-          responseText: '<?xml version="1.0" encoding="UTF-8"?><wps:ProcessDescriptions></wps:ProcessDescriptions>'
+          responseText: '<?xml version="1.0" encoding="UTF-8"?><wps:ProcessDescriptions xmlns:wps="http://www.opengis.net/wps/1.0.0"></wps:ProcessDescriptions>'
       });
       t.eq(log.event[0].type, 'describeprocess', 'describeprocess event triggered');
       t.ok(client.servers.local.describeProcessResponse['gs:splitPolygon'], 'We have a process description!');
