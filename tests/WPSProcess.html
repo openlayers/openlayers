@@ -9,6 +9,10 @@
           local: 'geoserver/wps'
       }
   });
+  client.servers.local.describeProcessResponse = {
+      'JTS:intersection': '<?xml version="1.0" encoding="UTF-8"?>' +
+          '<wps:ProcessDescriptions xml:lang="en" service="WPS" version="1.0.0" xsi:schemaLocation="http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd" xmlns:wps="http://www.opengis.net/wps/1.0.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink"><ProcessDescription wps:processVersion="1.0.0" statusSupported="true" storeSupported="true"><ows:Identifier>JTS:intersection</ows:Identifier><ows:Title>Returns the intersectoin between a and b (eventually an empty collection if there is no intersection)</ows:Title><ows:Abstract>Returns the intersectoin between a and b (eventually an empty collection if there is no intersection)</ows:Abstract><DataInputs><Input maxOccurs="1" minOccurs="1"><ows:Identifier>a</ows:Identifier><ows:Title>a</ows:Title><ows:Abstract>[undescribed]</ows:Abstract><ComplexData><Default><Format><MimeType>text/xml; subtype=gml/3.1.1</MimeType></Format></Default><Supported><Format><MimeType>text/xml; subtype=gml/3.1.1</MimeType></Format><Format><MimeType>text/xml; subtype=gml/2.1.2</MimeType></Format><Format><MimeType>application/wkt</MimeType></Format><Format><MimeType>application/gml-3.1.1</MimeType></Format><Format><MimeType>application/gml-2.1.2</MimeType></Format></Supported></ComplexData></Input><Input maxOccurs="1" minOccurs="1"><ows:Identifier>b</ows:Identifier><ows:Title>b</ows:Title><ows:Abstract>[undescribed]</ows:Abstract><ComplexData><Default><Format><MimeType>text/xml; subtype=gml/3.1.1</MimeType></Format></Default><Supported><Format><MimeType>text/xml; subtype=gml/3.1.1</MimeType></Format><Format><MimeType>text/xml; subtype=gml/2.1.2</MimeType></Format><Format><MimeType>application/wkt</MimeType></Format><Format><MimeType>application/gml-3.1.1</MimeType></Format><Format><MimeType>application/gml-2.1.2</MimeType></Format></Supported></ComplexData></Input></DataInputs><ProcessOutputs><Output><ows:Identifier>result</ows:Identifier><ows:Title>Process result</ows:Title><ComplexOutput><Default><Format><MimeType>text/xml; subtype=gml/3.1.1</MimeType></Format></Default><Supported><Format><MimeType>text/xml; subtype=gml/3.1.1</MimeType></Format><Format><MimeType>text/xml; subtype=gml/2.1.2</MimeType></Format><Format><MimeType>application/wkt</MimeType></Format><Format><MimeType>application/gml-3.1.1</MimeType></Format><Format><MimeType>application/gml-2.1.2</MimeType></Format></Supported></ComplexOutput></Output></ProcessOutputs></ProcessDescription></wps:ProcessDescriptions>' 
+  };
   
   function test_initialize(t) {
       t.plan(2);
@@ -35,7 +39,7 @@
       process.describe();
       t.eq(log.request.length, 1, 'describeProcess request only sent once');
       log.request[0].success.call(process, {
-          responseText: '<wps:ProcessDescriptions></wps:ProcessDescriptions>'
+          responseText: '<?xml version="1.0" encoding="UTF-8"?><wps:ProcessDescriptions></wps:ProcessDescriptions>'
       });
       t.eq(log.event[0].type, 'describeprocess', 'describeprocess event triggered');
       t.ok(client.servers.local.describeProcessResponse['gs:splitPolygon'], 'We have a process description!');
@@ -102,6 +106,62 @@
       t.eq(process.description.responseForm.rawDataOutput.mimeType, 'application/wkt', 'correct format for responseForm');
       
       OpenLayers.Request.POST = originalPOST;
+  }
+  
+  function test_chainProcess(t) {
+      t.plan(3);
+      
+      var originalGET = OpenLayers.Request.GET;
+      OpenLayers.Request.GET = function(cfg) {
+          window.setTimeout(function() {
+              cfg.success.call(cfg.scope, {
+                  responseText: '<?xml version="1.0" encoding="UTF-8"?>' +
+                      '<wps:ProcessDescriptions xml:lang="en" service="WPS" version="1.0.0" xsi:schemaLocation="http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd" xmlns:wps="http://www.opengis.net/wps/1.0.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink"><ProcessDescription wps:processVersion="1.0.0" statusSupported="true" storeSupported="true"><ows:Identifier>JTS:buffer</ows:Identifier><ows:Title>Buffers a geometry using a certain distance</ows:Title><ows:Abstract>Buffers a geometry using a certain distance</ows:Abstract><DataInputs><Input maxOccurs="1" minOccurs="1"><ows:Identifier>geom</ows:Identifier><ows:Title>geom</ows:Title><ows:Abstract>The geometry to be buffered</ows:Abstract><ComplexData><Default><Format><MimeType>text/xml; subtype=gml/3.1.1</MimeType></Format></Default><Supported><Format><MimeType>text/xml; subtype=gml/3.1.1</MimeType></Format><Format><MimeType>text/xml; subtype=gml/2.1.2</MimeType></Format><Format><MimeType>application/wkt</MimeType></Format><Format><MimeType>application/gml-3.1.1</MimeType></Format><Format><MimeType>application/gml-2.1.2</MimeType></Format></Supported></ComplexData></Input><Input maxOccurs="1" minOccurs="1"><ows:Identifier>distance</ows:Identifier><ows:Title>distance</ows:Title><ows:Abstract>The distance (same unit of measure as the geometry)</ows:Abstract><LiteralData><ows:DataType>xs:double</ows:DataType><ows:AnyValue/></LiteralData></Input><Input maxOccurs="1" minOccurs="0"><ows:Identifier>quadrantSegments</ows:Identifier><ows:Title>quadrantSegments</ows:Title><ows:Abstract>Number of quadrant segments. Use &gt; 0 for round joins, 0 for flat joins, &lt; 0 for mitred joins</ows:Abstract><LiteralData><ows:DataType>xs:int</ows:DataType><ows:AnyValue/></LiteralData></Input><Input maxOccurs="1" minOccurs="0"><ows:Identifier>capStyle</ows:Identifier><ows:Title>capStyle</ows:Title><ows:Abstract>The buffer cap style, round, flat, square</ows:Abstract><LiteralData><ows:AllowedValues><ows:Value>Round</ows:Value><ows:Value>Flat</ows:Value><ows:Value>Square</ows:Value></ows:AllowedValues></LiteralData></Input></DataInputs><ProcessOutputs><Output><ows:Identifier>result</ows:Identifier><ows:Title>result</ows:Title><ComplexOutput><Default><Format><MimeType>text/xml; subtype=gml/3.1.1</MimeType></Format></Default><Supported><Format><MimeType>text/xml; subtype=gml/3.1.1</MimeType></Format><Format><MimeType>text/xml; subtype=gml/2.1.2</MimeType></Format><Format><MimeType>application/wkt</MimeType></Format><Format><MimeType>application/gml-3.1.1</MimeType></Format><Format><MimeType>application/gml-2.1.2</MimeType></Format></Supported></ComplexOutput></Output></ProcessOutputs></ProcessDescription></wps:ProcessDescriptions>'
+              });
+          }, 100);
+      }
+      var originalPOST = OpenLayers.Request.POST;
+      OpenLayers.Request.POST = function(cfg) {
+          cfg.success.call(cfg.scope, {responseText: ''});
+      };
+
+      var intersect = client.getProcess('local', 'JTS:intersection');    
+      intersect.configure({
+          inputs: {
+              a: new OpenLayers.Format.WKT().read(
+                     'LINESTRING(117 22,112 18,118 13,115 8)'
+                 ),
+              b: new OpenLayers.Format.WKT().read(
+                     'POLYGON((110 20,120 20,120 10,110 10,110 20),(112 17,118 18,118 16,112 15,112 17))'
+                 )
+          }
+      });
+
+      var buffer = client.getProcess('local', 'JTS:buffer');
+      var log = [];
+      buffer.chainProcess = function() {
+          log.push(this.executeCallbacks.length);
+          OpenLayers.WPSProcess.prototype.chainProcess.apply(this, arguments);
+      };
+      var done = false;
+      buffer.execute({
+          inputs: {
+              geom: intersect.output(),
+              distance: 1
+          },
+          success: function(outputs) {
+              done = true;
+          }
+      });
+      
+      t.delay_call(0.2, function() {
+          t.eq(log.length, 1, 'chainProcess called');
+          t.eq(log[0], 1, 'executeCallback queued to wait for 1 chained process');
+          t.eq(done, true, 'execute successfully completed');
+
+          OpenLayers.Request.GET = originalGET;
+          OpenLayers.Request.POST = originalPOST;
+      });
   }
 
   </script>
