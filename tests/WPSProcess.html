@@ -154,7 +154,7 @@
           }
       });
       
-      t.delay_call(0.2, function() {
+      t.delay_call(0.5, function() {
           t.eq(log.length, 1, 'chainProcess called');
           t.eq(log[0], 1, 'executeCallback queued to wait for 1 chained process');
           t.eq(done, true, 'execute successfully completed');
