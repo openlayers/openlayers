@@ -116,6 +116,7 @@ ol.control.Attribution.prototype.createAttributionElementsForLayer_ =
 
     if (!map.isDef ||
         !layerVisible ||
+        goog.isNull(attributionVisibilities) ||
         !attributionVisibilities[attributionKey]) {
       goog.style.showElement(attributionElement, false);
     }
