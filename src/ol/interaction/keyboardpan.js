@@ -1,19 +1,19 @@
-goog.provide('ol.control.KeyboardPan');
+goog.provide('ol.interaction.KeyboardPan');
 
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler.EventType');
-goog.require('ol.Control');
-goog.require('ol.control.Constraints');
+goog.require('ol.Interaction');
+goog.require('ol.interaction.Constraints');
 
 
 
 /**
  * @constructor
- * @extends {ol.Control}
- * @param {ol.control.Constraints} constraints Constraints.
+ * @extends {ol.Interaction}
+ * @param {ol.interaction.Constraints} constraints Constraints.
  * @param {number} pixelDelta Pixel delta.
  */
-ol.control.KeyboardPan = function(constraints, pixelDelta) {
+ol.interaction.KeyboardPan = function(constraints, pixelDelta) {
 
   goog.base(this, constraints);
 
@@ -24,13 +24,13 @@ ol.control.KeyboardPan = function(constraints, pixelDelta) {
   this.pixelDelta_ = pixelDelta;
 
 };
-goog.inherits(ol.control.KeyboardPan, ol.Control);
+goog.inherits(ol.interaction.KeyboardPan, ol.Interaction);
 
 
 /**
  * @inheritDoc
  */
-ol.control.KeyboardPan.prototype.handleMapBrowserEvent =
+ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
     function(mapBrowserEvent) {
   if (mapBrowserEvent.type == goog.events.KeyHandler.EventType.KEY) {
     var keyEvent = /** @type {goog.events.KeyEvent} */

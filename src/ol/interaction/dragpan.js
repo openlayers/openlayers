@@ -1,29 +1,29 @@
 // FIXME cope with rotation
 
-goog.provide('ol.control.DragPan');
+goog.provide('ol.interaction.DragPan');
 
 goog.require('ol.Coordinate');
 goog.require('ol.MapBrowserEvent');
-goog.require('ol.control.Constraints');
-goog.require('ol.control.Drag');
+goog.require('ol.interaction.Constraints');
+goog.require('ol.interaction.Drag');
 
 
 
 /**
  * @constructor
- * @extends {ol.control.Drag}
- * @param {ol.control.Constraints} constraints Constraints.
+ * @extends {ol.interaction.Drag}
+ * @param {ol.interaction.Constraints} constraints Constraints.
  */
-ol.control.DragPan = function(constraints) {
+ol.interaction.DragPan = function(constraints) {
   goog.base(this, constraints);
 };
-goog.inherits(ol.control.DragPan, ol.control.Drag);
+goog.inherits(ol.interaction.DragPan, ol.interaction.Drag);
 
 
 /**
  * @inheritDoc
  */
-ol.control.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
+ol.interaction.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   var resolution = map.getResolution();
   var delta =
@@ -35,7 +35,7 @@ ol.control.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-ol.control.DragPan.prototype.handleDragStart = function(mapBrowserEvent) {
+ol.interaction.DragPan.prototype.handleDragStart = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   if (!browserEvent.shiftKey) {
     browserEvent.preventDefault();

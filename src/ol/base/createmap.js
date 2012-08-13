@@ -6,19 +6,19 @@ goog.require('ol.Collection');
 goog.require('ol.Map');
 goog.require('ol.MapProperty');
 goog.require('ol.Projection');
-goog.require('ol.control.AltDragRotate');
-goog.require('ol.control.CenterConstraint');
-goog.require('ol.control.Constraints');
-goog.require('ol.control.DblClickZoom');
-goog.require('ol.control.DragPan');
-goog.require('ol.control.KeyboardPan');
-goog.require('ol.control.KeyboardZoom');
-goog.require('ol.control.MouseWheelZoom');
-goog.require('ol.control.ResolutionConstraint');
-goog.require('ol.control.RotationConstraint');
-goog.require('ol.control.ShiftDragZoom');
 goog.require('ol.dom');
 goog.require('ol.dom.Map');
+goog.require('ol.interaction.AltDragRotate');
+goog.require('ol.interaction.CenterConstraint');
+goog.require('ol.interaction.Constraints');
+goog.require('ol.interaction.DblClickZoom');
+goog.require('ol.interaction.DragPan');
+goog.require('ol.interaction.KeyboardPan');
+goog.require('ol.interaction.KeyboardZoom');
+goog.require('ol.interaction.MouseWheelZoom');
+goog.require('ol.interaction.ResolutionConstraint');
+goog.require('ol.interaction.RotationConstraint');
+goog.require('ol.interaction.ShiftDragZoom');
 goog.require('ol.webgl');
 goog.require('ol.webgl.Map');
 
@@ -80,23 +80,24 @@ ol.createMap = function(target, opt_values, opt_rendererHints) {
   }
 
   // FIXME this should be a configuration option
-  var centerConstraint = ol.control.CenterConstraint.snapToPixel;
-  var resolutionConstraint = ol.control.ResolutionConstraint.createSnapToPower(
-      Math.exp(Math.log(2) / 8), ol.Projection.EPSG_3857_HALF_SIZE / 128);
-  var rotationConstraint = ol.control.RotationConstraint.none;
-  var constraints = new ol.control.Constraints(
+  var centerConstraint = ol.interaction.CenterConstraint.snapToPixel;
+  var resolutionConstraint =
+      ol.interaction.ResolutionConstraint.createSnapToPower(
+          Math.exp(Math.log(2) / 8), ol.Projection.EPSG_3857_HALF_SIZE / 128);
+  var rotationConstraint = ol.interaction.RotationConstraint.none;
+  var constraints = new ol.interaction.Constraints(
       centerConstraint, resolutionConstraint, rotationConstraint);
 
-  if (!goog.object.containsKey(values, ol.MapProperty.CONTROLS)) {
-    var controls = new ol.Collection();
-    controls.push(new ol.control.AltDragRotate(constraints));
-    controls.push(new ol.control.DblClickZoom(constraints));
-    controls.push(new ol.control.DragPan(constraints));
-    controls.push(new ol.control.KeyboardPan(constraints, 16));
-    controls.push(new ol.control.KeyboardZoom(constraints));
-    controls.push(new ol.control.MouseWheelZoom(constraints));
-    controls.push(new ol.control.ShiftDragZoom(constraints));
-    values[ol.MapProperty.CONTROLS] = controls;
+  if (!goog.object.containsKey(values, ol.MapProperty.INTERACTIONS)) {
+    var interactions = new ol.Collection();
+    interactions.push(new ol.interaction.AltDragRotate(constraints));
+    interactions.push(new ol.interaction.DblClickZoom(constraints));
+    interactions.push(new ol.interaction.DragPan(constraints));
+    interactions.push(new ol.interaction.KeyboardPan(constraints, 16));
+    interactions.push(new ol.interaction.KeyboardZoom(constraints));
+    interactions.push(new ol.interaction.MouseWheelZoom(constraints));
+    interactions.push(new ol.interaction.ShiftDragZoom(constraints));
+    values[ol.MapProperty.INTERACTIONS] = interactions;
   }
 
   if (!goog.object.containsKey(values, ol.MapProperty.LAYERS)) {

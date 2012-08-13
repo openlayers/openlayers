@@ -1,6 +1,6 @@
 goog.require('ol.RendererHint');
-goog.require('ol.control.Keyboard');
 goog.require('ol.createMap');
+goog.require('ol.interaction.Keyboard');
 goog.require('ol.layer.MapQuestOpenAerial');
 goog.require('ol.view.Attribution');
 
@@ -32,8 +32,8 @@ var attributionView = new ol.view.Attribution(domMap);
 document.getElementById('attribution').appendChild(
     attributionView.getElement());
 
-var keyboardControl = new ol.control.Keyboard();
-keyboardControl.addCallback('0', function() {
+var keyboardInteraction = new ol.interaction.Keyboard();
+keyboardInteraction.addCallback('0', function() {
   layer.setBrightness(0);
   layer.setContrast(0);
   layer.setHue(0);
@@ -41,43 +41,43 @@ keyboardControl.addCallback('0', function() {
   layer.setOpacity(1);
   layer.setVisible(true);
 });
-keyboardControl.addCallback('b', function() {
+keyboardInteraction.addCallback('b', function() {
   layer.setBrightness(layer.getBrightness() - 0.1);
 });
-keyboardControl.addCallback('B', function() {
+keyboardInteraction.addCallback('B', function() {
   layer.setBrightness(layer.getBrightness() + 0.1);
 });
-keyboardControl.addCallback('c', function() {
+keyboardInteraction.addCallback('c', function() {
   layer.setContrast(layer.getContrast() - 0.1);
 });
-keyboardControl.addCallback('C', function() {
+keyboardInteraction.addCallback('C', function() {
   layer.setContrast(layer.getContrast() + 0.1);
 });
-keyboardControl.addCallback('h', function() {
+keyboardInteraction.addCallback('h', function() {
   layer.setHue(layer.getHue() - 0.1);
 });
-keyboardControl.addCallback('H', function() {
+keyboardInteraction.addCallback('H', function() {
   layer.setHue(layer.getHue() + 0.1);
 });
-keyboardControl.addCallback('o', function() {
+keyboardInteraction.addCallback('o', function() {
   layer.setOpacity(layer.getOpacity() - 0.1);
 });
-keyboardControl.addCallback('O', function() {
+keyboardInteraction.addCallback('O', function() {
   layer.setOpacity(layer.getOpacity() + 0.1);
 });
-keyboardControl.addCallback('r', function() {
+keyboardInteraction.addCallback('r', function() {
   webglMap.setRotation(0);
 });
-keyboardControl.addCallback('s', function() {
+keyboardInteraction.addCallback('s', function() {
   layer.setSaturation(layer.getSaturation() - 0.1);
 });
-keyboardControl.addCallback('S', function() {
+keyboardInteraction.addCallback('S', function() {
   layer.setSaturation(layer.getSaturation() + 0.1);
 });
-keyboardControl.addCallback('vV', function() {
+keyboardInteraction.addCallback('vV', function() {
   layer.setVisible(!layer.getVisible());
 });
-domMap.getControls().push(keyboardControl);
+domMap.getInteractions().push(keyboardInteraction);
 
 goog.exportSymbol('layer', layer);
 goog.exportSymbol('layers', layers);

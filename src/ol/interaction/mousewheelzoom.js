@@ -1,27 +1,27 @@
-goog.provide('ol.control.MouseWheelZoom');
+goog.provide('ol.interaction.MouseWheelZoom');
 
 goog.require('goog.events.MouseWheelEvent');
 goog.require('goog.events.MouseWheelHandler.EventType');
 goog.require('ol.MapBrowserEvent');
-goog.require('ol.control.Constraints');
+goog.require('ol.interaction.Constraints');
 
 
 
 /**
  * @constructor
- * @extends {ol.Control}
- * @param {ol.control.Constraints} constraints Constraints.
+ * @extends {ol.Interaction}
+ * @param {ol.interaction.Constraints} constraints Constraints.
  */
-ol.control.MouseWheelZoom = function(constraints) {
+ol.interaction.MouseWheelZoom = function(constraints) {
   goog.base(this, constraints);
 };
-goog.inherits(ol.control.MouseWheelZoom, ol.Control);
+goog.inherits(ol.interaction.MouseWheelZoom, ol.Interaction);
 
 
 /**
  * @inheritDoc
  */
-ol.control.MouseWheelZoom.prototype.handleMapBrowserEvent =
+ol.interaction.MouseWheelZoom.prototype.handleMapBrowserEvent =
     function(mapBrowserEvent) {
   if (mapBrowserEvent.type ==
       goog.events.MouseWheelHandler.EventType.MOUSEWHEEL) {

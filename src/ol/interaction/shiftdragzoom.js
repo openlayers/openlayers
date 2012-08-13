@@ -1,11 +1,11 @@
 // FIXME draw drag box
 
-goog.provide('ol.control.ShiftDragZoom');
+goog.provide('ol.interaction.ShiftDragZoom');
 
 goog.require('ol.Extent');
 goog.require('ol.MapBrowserEvent');
-goog.require('ol.control.Constraints');
-goog.require('ol.control.Drag');
+goog.require('ol.interaction.Constraints');
+goog.require('ol.interaction.Drag');
 
 
 /**
@@ -24,19 +24,20 @@ ol.SHIFT_DRAG_ZOOM_HYSTERESIS_PIXELS_SQUARED =
 
 /**
  * @constructor
- * @extends {ol.control.Drag}
- * @param {ol.control.Constraints} constraints Constraints.
+ * @extends {ol.interaction.Drag}
+ * @param {ol.interaction.Constraints} constraints Constraints.
  */
-ol.control.ShiftDragZoom = function(constraints) {
+ol.interaction.ShiftDragZoom = function(constraints) {
   goog.base(this, constraints);
 };
-goog.inherits(ol.control.ShiftDragZoom, ol.control.Drag);
+goog.inherits(ol.interaction.ShiftDragZoom, ol.interaction.Drag);
 
 
 /**
  * @inheritDoc
  */
-ol.control.ShiftDragZoom.prototype.handleDragEnd = function(mapBrowserEvent) {
+ol.interaction.ShiftDragZoom.prototype.handleDragEnd =
+    function(mapBrowserEvent) {
   if (this.deltaX * this.deltaX + this.deltaY * this.deltaY >=
       ol.SHIFT_DRAG_ZOOM_HYSTERESIS_PIXELS_SQUARED) {
     var map = mapBrowserEvent.map;
@@ -51,7 +52,8 @@ ol.control.ShiftDragZoom.prototype.handleDragEnd = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-ol.control.ShiftDragZoom.prototype.handleDragStart = function(mapBrowserEvent) {
+ol.interaction.ShiftDragZoom.prototype.handleDragStart =
+    function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   if (browserEvent.shiftKey) {
     browserEvent.preventDefault();

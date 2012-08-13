@@ -1,5 +1,5 @@
-goog.provide('ol.control.ResolutionConstraint');
-goog.provide('ol.control.ResolutionConstraintType');
+goog.provide('ol.interaction.ResolutionConstraint');
+goog.provide('ol.interaction.ResolutionConstraintType');
 
 goog.require('goog.math');
 goog.require('ol.array');
@@ -8,16 +8,16 @@ goog.require('ol.array');
 /**
  * @typedef {function((number|undefined), number): (number|undefined)}
  */
-ol.control.ResolutionConstraintType;
+ol.interaction.ResolutionConstraintType;
 
 
 /**
  * @param {number} power Power.
  * @param {number} maxResolution Maximum resolution.
  * @param {number=} opt_minResolution Minimum resolution.
- * @return {ol.control.ResolutionConstraintType} Zoom function.
+ * @return {ol.interaction.ResolutionConstraintType} Zoom function.
  */
-ol.control.ResolutionConstraint.createContinuous =
+ol.interaction.ResolutionConstraint.createContinuous =
     function(power, maxResolution, opt_minResolution) {
   var minResolution = opt_minResolution || 0;
   return function(resolution, delta) {
@@ -33,9 +33,9 @@ ol.control.ResolutionConstraint.createContinuous =
 
 /**
  * @param {Array.<number>} resolutions Resolutions.
- * @return {ol.control.ResolutionConstraintType} Zoom function.
+ * @return {ol.interaction.ResolutionConstraintType} Zoom function.
  */
-ol.control.ResolutionConstraint.createSnapToResolutions =
+ol.interaction.ResolutionConstraint.createSnapToResolutions =
     function(resolutions) {
   return function(resolution, delta) {
     if (goog.isDef(resolution)) {
@@ -53,9 +53,9 @@ ol.control.ResolutionConstraint.createSnapToResolutions =
  * @param {number} power Power.
  * @param {number} maxResolution Maximum resolution.
  * @param {number=} opt_maxLevel Maximum level.
- * @return {ol.control.ResolutionConstraintType} Zoom function.
+ * @return {ol.interaction.ResolutionConstraintType} Zoom function.
  */
-ol.control.ResolutionConstraint.createSnapToPower =
+ol.interaction.ResolutionConstraint.createSnapToPower =
     function(power, maxResolution, opt_maxLevel) {
   return function(resolution, delta) {
     if (goog.isDef(resolution)) {

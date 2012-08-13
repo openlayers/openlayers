@@ -1,10 +1,10 @@
 goog.require('goog.testing.jsunit');
-goog.require('ol.control.ResolutionConstraint');
+goog.require('ol.interaction.ResolutionConstraint');
 
 
 function testSnapToResolutionsZero() {
   var resolutionConstraint =
-      ol.control.ResolutionConstraint.createSnapToResolutions(
+      ol.interaction.ResolutionConstraint.createSnapToResolutions(
           [1000, 500, 250, 100]);
   assertEquals(1000, resolutionConstraint(1000, 0));
   assertEquals(500, resolutionConstraint(500, 0));
@@ -15,7 +15,7 @@ function testSnapToResolutionsZero() {
 
 function testSnapToResolutionsZoomIn() {
   var resolutionConstraint =
-      ol.control.ResolutionConstraint.createSnapToResolutions(
+      ol.interaction.ResolutionConstraint.createSnapToResolutions(
           [1000, 500, 250, 100]);
   assertEquals(500, resolutionConstraint(1000, 1));
   assertEquals(250, resolutionConstraint(500, 1));
@@ -26,7 +26,7 @@ function testSnapToResolutionsZoomIn() {
 
 function testSnapToResolutionsZoomOut() {
   var resolutionConstraint =
-      ol.control.ResolutionConstraint.createSnapToResolutions(
+      ol.interaction.ResolutionConstraint.createSnapToResolutions(
           [1000, 500, 250, 100]);
   assertEquals(1000, resolutionConstraint(1000, -1));
   assertEquals(1000, resolutionConstraint(500, -1));
@@ -37,7 +37,7 @@ function testSnapToResolutionsZoomOut() {
 
 function testSnapToResolutionsNearestZero() {
   var resolutionConstraint =
-      ol.control.ResolutionConstraint.createSnapToResolutions(
+      ol.interaction.ResolutionConstraint.createSnapToResolutions(
           [1000, 500, 250, 100]);
   assertEquals(1000, resolutionConstraint(1050, 0));
   assertEquals(1000, resolutionConstraint(950, 0));
@@ -52,7 +52,7 @@ function testSnapToResolutionsNearestZero() {
 
 function testSnapToResolutionsNearestZoomIn() {
   var resolutionConstraint =
-      ol.control.ResolutionConstraint.createSnapToResolutions(
+      ol.interaction.ResolutionConstraint.createSnapToResolutions(
           [1000, 500, 250, 100]);
   assertEquals(500, resolutionConstraint(1050, 1));
   assertEquals(500, resolutionConstraint(950, 1));
@@ -67,7 +67,7 @@ function testSnapToResolutionsNearestZoomIn() {
 
 function testSnapToResolutionsNearestZoomOut() {
   var resolutionConstraint =
-      ol.control.ResolutionConstraint.createSnapToResolutions(
+      ol.interaction.ResolutionConstraint.createSnapToResolutions(
           [1000, 500, 250, 100]);
   assertEquals(1000, resolutionConstraint(1050, -1));
   assertEquals(1000, resolutionConstraint(950, -1));
@@ -82,7 +82,7 @@ function testSnapToResolutionsNearestZoomOut() {
 
 function testSnapToPowerZero() {
   var resolutionConstraint =
-      ol.control.ResolutionConstraint.createSnapToPower(2, 1024, 10);
+      ol.interaction.ResolutionConstraint.createSnapToPower(2, 1024, 10);
   assertEquals(1024, resolutionConstraint(1024, 0));
   assertEquals(512, resolutionConstraint(512, 0));
   assertEquals(256, resolutionConstraint(256, 0));
@@ -99,7 +99,7 @@ function testSnapToPowerZero() {
 
 function testSnapToPowerZoomIn() {
   var resolutionConstraint =
-      ol.control.ResolutionConstraint.createSnapToPower(2, 1024, 10);
+      ol.interaction.ResolutionConstraint.createSnapToPower(2, 1024, 10);
   assertEquals(512, resolutionConstraint(1024, 1));
   assertEquals(256, resolutionConstraint(512, 1));
   assertEquals(128, resolutionConstraint(256, 1));
@@ -116,7 +116,7 @@ function testSnapToPowerZoomIn() {
 
 function testSnapToPowerZoomOut() {
   var resolutionConstraint =
-      ol.control.ResolutionConstraint.createSnapToPower(2, 1024, 10);
+      ol.interaction.ResolutionConstraint.createSnapToPower(2, 1024, 10);
   assertEquals(1024, resolutionConstraint(1024, -1));
   assertEquals(1024, resolutionConstraint(512, -1));
   assertEquals(512, resolutionConstraint(256, -1));
@@ -133,7 +133,7 @@ function testSnapToPowerZoomOut() {
 
 function testSnapToPowerNearestZero() {
   var resolutionConstraint =
-      ol.control.ResolutionConstraint.createSnapToPower(2, 1024, 10);
+      ol.interaction.ResolutionConstraint.createSnapToPower(2, 1024, 10);
   assertEquals(1024, resolutionConstraint(1050, 0));
   assertEquals(1024, resolutionConstraint(9050, 0));
   assertEquals(512, resolutionConstraint(550, 0));

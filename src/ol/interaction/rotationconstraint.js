@@ -1,11 +1,11 @@
-goog.provide('ol.control.RotationConstraint');
-goog.provide('ol.control.RotationConstraintType');
+goog.provide('ol.interaction.RotationConstraint');
+goog.provide('ol.interaction.RotationConstraintType');
 
 
 /**
  * @typedef {function((number|undefined), number): (number|undefined)}
  */
-ol.control.RotationConstraintType;
+ol.interaction.RotationConstraintType;
 
 
 /**
@@ -13,7 +13,7 @@ ol.control.RotationConstraintType;
  * @param {number} delta Delta.
  * @return {number|undefined} Rotation.
  */
-ol.control.RotationConstraint.none = function(rotation, delta) {
+ol.interaction.RotationConstraint.none = function(rotation, delta) {
   if (goog.isDef(rotation)) {
     return rotation + delta;
   } else {
@@ -24,9 +24,9 @@ ol.control.RotationConstraint.none = function(rotation, delta) {
 
 /**
  * @param {number} n N.
- * @return {ol.control.RotationConstraintType} Rotation constraint.
+ * @return {ol.interaction.RotationConstraintType} Rotation constraint.
  */
-ol.control.RotationConstraint.createSnapToN = function(n) {
+ol.interaction.RotationConstraint.createSnapToN = function(n) {
   var theta = 2 * Math.PI / n;
   return function(rotation, delta) {
     if (goog.isDef(rotation)) {

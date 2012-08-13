@@ -1,22 +1,22 @@
 
-goog.provide('ol.control.Drag');
+goog.provide('ol.interaction.Drag');
 
 goog.require('goog.asserts');
 goog.require('goog.events.EventType');
 goog.require('goog.functions');
-goog.require('ol.Control');
 goog.require('ol.Coordinate');
+goog.require('ol.Interaction');
 goog.require('ol.MapBrowserEvent');
-goog.require('ol.control.Constraints');
+goog.require('ol.interaction.Constraints');
 
 
 
 /**
  * @constructor
- * @extends {ol.Control}
- * @param {ol.control.Constraints} constraints Constraints.
+ * @extends {ol.Interaction}
+ * @param {ol.interaction.Constraints} constraints Constraints.
  */
-ol.control.Drag = function(constraints) {
+ol.interaction.Drag = function(constraints) {
 
   goog.base(this, constraints);
 
@@ -57,14 +57,14 @@ ol.control.Drag = function(constraints) {
   this.startCoordinate = null;
 
 };
-goog.inherits(ol.control.Drag, ol.Control);
+goog.inherits(ol.interaction.Drag, ol.Interaction);
 
 
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
  * @protected
  */
-ol.control.Drag.prototype.handleDrag = goog.nullFunction;
+ol.interaction.Drag.prototype.handleDrag = goog.nullFunction;
 
 
 /**
@@ -72,20 +72,21 @@ ol.control.Drag.prototype.handleDrag = goog.nullFunction;
  * @protected
  * @return {boolean} Capture dragging.
  */
-ol.control.Drag.prototype.handleDragStart = goog.functions.FALSE;
+ol.interaction.Drag.prototype.handleDragStart = goog.functions.FALSE;
 
 
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
  * @protected
  */
-ol.control.Drag.prototype.handleDragEnd = goog.nullFunction;
+ol.interaction.Drag.prototype.handleDragEnd = goog.nullFunction;
 
 
 /**
  * @inheritDoc
  */
-ol.control.Drag.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
+ol.interaction.Drag.prototype.handleMapBrowserEvent =
+    function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   if (!map.isDef()) {
     return;

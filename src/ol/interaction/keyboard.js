@@ -1,16 +1,16 @@
 // FIXME this class is ugly and should be removed
 
-goog.provide('ol.control.Keyboard');
+goog.provide('ol.interaction.Keyboard');
 
-goog.require('ol.Control');
+goog.require('ol.Interaction');
 
 
 
 /**
  * @constructor
- * @extends {ol.Control}
+ * @extends {ol.Interaction}
  */
-ol.control.Keyboard = function() {
+ol.interaction.Keyboard = function() {
 
   goog.base(this, null);
 
@@ -21,14 +21,14 @@ ol.control.Keyboard = function() {
   this.charCodeCallbacks_ = {};
 
 };
-goog.inherits(ol.control.Keyboard, ol.Control);
+goog.inherits(ol.interaction.Keyboard, ol.Interaction);
 
 
 /**
  * @param {string} s String.
  * @param {Function} callback Callback.
  */
-ol.control.Keyboard.prototype.addCallback = function(s, callback) {
+ol.interaction.Keyboard.prototype.addCallback = function(s, callback) {
   var i;
   for (i = 0; i < s.length; ++i) {
     this.charCodeCallbacks_[s.charCodeAt(i)] = callback;
@@ -39,7 +39,7 @@ ol.control.Keyboard.prototype.addCallback = function(s, callback) {
 /**
  * @inheritDoc
  */
-ol.control.Keyboard.prototype.handleMapBrowserEvent =
+ol.interaction.Keyboard.prototype.handleMapBrowserEvent =
     function(mapBrowserEvent) {
   if (mapBrowserEvent.type == goog.events.KeyHandler.EventType.KEY) {
     var keyEvent = /** @type {goog.events.KeyEvent} */

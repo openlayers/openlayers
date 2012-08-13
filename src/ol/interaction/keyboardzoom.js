@@ -1,27 +1,27 @@
-goog.provide('ol.control.KeyboardZoom');
+goog.provide('ol.interaction.KeyboardZoom');
 
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler.EventType');
-goog.require('ol.Control');
-goog.require('ol.control.ResolutionConstraintType');
+goog.require('ol.Interaction');
+goog.require('ol.interaction.ResolutionConstraintType');
 
 
 
 /**
  * @constructor
- * @extends {ol.Control}
- * @param {ol.control.Constraints} constraints Constraints.
+ * @extends {ol.Interaction}
+ * @param {ol.interaction.Constraints} constraints Constraints.
  */
-ol.control.KeyboardZoom = function(constraints) {
+ol.interaction.KeyboardZoom = function(constraints) {
   goog.base(this, constraints);
 };
-goog.inherits(ol.control.KeyboardZoom, ol.Control);
+goog.inherits(ol.interaction.KeyboardZoom, ol.Interaction);
 
 
 /**
  * @inheritDoc
  */
-ol.control.KeyboardZoom.prototype.handleMapBrowserEvent =
+ol.interaction.KeyboardZoom.prototype.handleMapBrowserEvent =
     function(mapBrowserEvent) {
   if (mapBrowserEvent.type == goog.events.KeyHandler.EventType.KEY) {
     var keyEvent = /** @type {goog.events.KeyEvent} */

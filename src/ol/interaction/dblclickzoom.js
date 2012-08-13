@@ -1,27 +1,27 @@
-goog.provide('ol.control.DblClickZoom');
+goog.provide('ol.interaction.DblClickZoom');
 
 goog.require('goog.events.EventType');
-goog.require('ol.Control');
+goog.require('ol.Interaction');
 goog.require('ol.MapBrowserEvent');
-goog.require('ol.control.Constraints');
+goog.require('ol.interaction.Constraints');
 
 
 
 /**
  * @constructor
- * @extends {ol.Control}
- * @param {ol.control.Constraints} constraints Constraints.
+ * @extends {ol.Interaction}
+ * @param {ol.interaction.Constraints} constraints Constraints.
  */
-ol.control.DblClickZoom = function(constraints) {
+ol.interaction.DblClickZoom = function(constraints) {
   goog.base(this, constraints);
 };
-goog.inherits(ol.control.DblClickZoom, ol.Control);
+goog.inherits(ol.interaction.DblClickZoom, ol.Interaction);
 
 
 /**
  * @inheritDoc
  */
-ol.control.DblClickZoom.prototype.handleMapBrowserEvent =
+ol.interaction.DblClickZoom.prototype.handleMapBrowserEvent =
     function(mapBrowserEvent) {
   if (mapBrowserEvent.type == goog.events.EventType.DBLCLICK) {
     var map = mapBrowserEvent.map;

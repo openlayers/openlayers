@@ -1,21 +1,21 @@
 // FIXME factor out key precondition (shift et. al)
 
-goog.provide('ol.Control');
+goog.provide('ol.Interaction');
 
 goog.require('ol.MapBrowserEvent');
-goog.require('ol.control.Constraints');
+goog.require('ol.interaction.Constraints');
 
 
 
 /**
  * @constructor
- * @param {ol.control.Constraints} constraints Constraints.
+ * @param {ol.interaction.Constraints} constraints Constraints.
  */
-ol.Control = function(constraints) {
+ol.Interaction = function(constraints) {
 
   /**
    * @protected
-   * @type {ol.control.Constraints}
+   * @type {ol.interaction.Constraints}
    */
   this.constraints = constraints;
 
@@ -25,14 +25,14 @@ ol.Control = function(constraints) {
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  */
-ol.Control.prototype.handleMapBrowserEvent = goog.abstractMethod;
+ol.Interaction.prototype.handleMapBrowserEvent = goog.abstractMethod;
 
 
 /**
  * @param {ol.Map} map Map.
  * @param {ol.Extent} extent Extent.
  */
-ol.Control.prototype.fitExtent = function(map, extent) {
+ol.Interaction.prototype.fitExtent = function(map, extent) {
   var resolution = map.getResolutionForExtent(extent);
   resolution = this.constraints.resolution(resolution, 0);
   var center = extent.getCenter();
@@ -49,7 +49,7 @@ ol.Control.prototype.fitExtent = function(map, extent) {
  * @param {ol.Coordinate} delta Delta.
  * @param {ol.Coordinate=} opt_anchor Anchor.
  */
-ol.Control.prototype.pan = function(map, delta, opt_anchor) {
+ol.Interaction.prototype.pan = function(map, delta, opt_anchor) {
   var center = opt_anchor ? opt_anchor : map.getCenter();
   var resolution = map.getResolution();
   center = this.constraints.center(center, resolution, delta);
@@ -63,7 +63,7 @@ ol.Control.prototype.pan = function(map, delta, opt_anchor) {
  * @param {number} delta Delta.
  * @param {ol.Coordinate=} opt_anchor Anchor.
  */
-ol.Control.prototype.rotate = function(map, rotation, delta, opt_anchor) {
+ol.Interaction.prototype.rotate = function(map, rotation, delta, opt_anchor) {
   // FIXME handle rotation about anchor
   rotation = this.constraints.rotation(rotation, delta);
   map.setRotation(rotation);
@@ -74,7 +74,7 @@ ol.Control.prototype.rotate = function(map, rotation, delta, opt_anchor) {
  * @param {ol.Map} map Map.
  * @param {number|undefined} resolution Resolution.
  */
-ol.Control.prototype.setResolution = function(map, resolution) {
+ol.Interaction.prototype.setResolution = function(map, resolution) {
   resolution = this.constraints.resolution(resolution, 0);
   map.setResolution(resolution);
 };
@@ -86,7 +86,7 @@ ol.Control.prototype.setResolution = function(map, resolution) {
  * @param {number} delta Delta.
  * @param {ol.Coordinate=} opt_anchor Anchor.
  */
-ol.Control.prototype.zoom = function(map, resolution, delta, opt_anchor) {
+ol.Interaction.prototype.zoom = function(map, resolution, delta, opt_anchor) {
   if (goog.isDefAndNotNull(opt_anchor)) {
     var anchor = opt_anchor;
     var mapCenter = /** @type {!ol.Coordinate} */ map.getCenter();

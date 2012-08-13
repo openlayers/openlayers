@@ -30,9 +30,9 @@ goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Collection');
 goog.require('ol.Color');
-goog.require('ol.Control');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
+goog.require('ol.Interaction');
 goog.require('ol.LayerRenderer');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.Object');
@@ -48,7 +48,7 @@ goog.require('ol.TransformFunction');
 ol.MapProperty = {
   BACKGROUND_COLOR: 'backgroundColor',
   CENTER: 'center',
-  CONTROLS: 'controls',
+  INTERACTIONS: 'interactions',
   LAYERS: 'layers',
   PROJECTION: 'projection',
   RESOLUTION: 'resolution',
@@ -350,18 +350,6 @@ goog.exportProperty(
 
 
 /**
- * @return {ol.Collection} Controls.
- */
-ol.Map.prototype.getControls = function() {
-  return /** @type {ol.Collection} */ this.get(ol.MapProperty.CONTROLS);
-};
-goog.exportProperty(
-    ol.Map.prototype,
-    'getControls',
-    ol.Map.prototype.getControls);
-
-
-/**
  * @param {ol.Pixel} pixel Pixel.
  * @return {ol.Coordinate|undefined} Coordinate.
  */
@@ -394,6 +382,18 @@ ol.Map.prototype.getExtent = function() {
     return undefined;
   }
 };
+
+
+/**
+ * @return {ol.Collection} Interactions.
+ */
+ol.Map.prototype.getInteractions = function() {
+  return /** @type {ol.Collection} */ this.get(ol.MapProperty.INTERACTIONS);
+};
+goog.exportProperty(
+    ol.Map.prototype,
+    'getInteractions',
+    ol.Map.prototype.getInteractions);
 
 
 /**
@@ -581,10 +581,11 @@ ol.Map.prototype.handleBackgroundColorChanged = goog.nullFunction;
 ol.Map.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
   var type = opt_type || browserEvent.type;
   var mapBrowserEvent = new ol.MapBrowserEvent(type, this, browserEvent);
-  var controls = this.getControls();
-  var controlsArray = /** @type {Array.<ol.Control>} */ controls.getArray();
-  goog.array.every(controlsArray, function(control) {
-    control.handleMapBrowserEvent(mapBrowserEvent);
+  var interactions = this.getInteractions();
+  var interactionsArray = /** @type {Array.<ol.Interaction>} */
+      interactions.getArray();
+  goog.array.every(interactionsArray, function(interaction) {
+    interaction.handleMapBrowserEvent(mapBrowserEvent);
     return !mapBrowserEvent.defaultPrevented;
   });
 };
@@ -813,15 +814,15 @@ goog.exportProperty(
 
 
 /**
- * @param {ol.Collection} controls Controls.
+ * @param {ol.Collection} interactions Interactions.
  */
-ol.Map.prototype.setControls = function(controls) {
-  this.set(ol.MapProperty.CONTROLS, controls);
+ol.Map.prototype.setInteractions = function(interactions) {
+  this.set(ol.MapProperty.INTERACTIONS, interactions);
 };
 goog.exportProperty(
     ol.Map.prototype,
-    'setControls',
-    ol.Map.prototype.setControls);
+    'setInteractions',
+    ol.Map.prototype.setInteractions);
 
 
 /**

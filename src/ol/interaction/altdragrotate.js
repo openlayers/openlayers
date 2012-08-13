@@ -1,32 +1,32 @@
-goog.provide('ol.control.AltDragRotate');
+goog.provide('ol.interaction.AltDragRotate');
 
 goog.require('ol.MapBrowserEvent');
-goog.require('ol.control.Drag');
+goog.require('ol.interaction.Drag');
 
 
 
 /**
  * @constructor
- * @extends {ol.control.Drag}
- * @param {ol.control.Constraints} constraints Constraints.
+ * @extends {ol.interaction.Drag}
+ * @param {ol.interaction.Constraints} constraints Constraints.
  */
-ol.control.AltDragRotate = function(constraints) {
+ol.interaction.AltDragRotate = function(constraints) {
   goog.base(this, constraints);
 };
-goog.inherits(ol.control.AltDragRotate, ol.control.Drag);
+goog.inherits(ol.interaction.AltDragRotate, ol.interaction.Drag);
 
 
 /**
  * @private
  * @type {number}
  */
-ol.control.AltDragRotate.prototype.startRotation_;
+ol.interaction.AltDragRotate.prototype.startRotation_;
 
 
 /**
  * @inheritDoc
  */
-ol.control.AltDragRotate.prototype.handleDrag = function(mapBrowserEvent) {
+ol.interaction.AltDragRotate.prototype.handleDrag = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   var map = mapBrowserEvent.map;
   var size = map.getSize();
@@ -40,7 +40,7 @@ ol.control.AltDragRotate.prototype.handleDrag = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-ol.control.AltDragRotate.prototype.handleDragStart =
+ol.interaction.AltDragRotate.prototype.handleDragStart =
     function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   var map = mapBrowserEvent.map;
