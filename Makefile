@@ -28,7 +28,7 @@ build/ol3.js: $(SRC)
 	( echo "goog.require('goog.dom');" ; find src/ol -name \*.js | xargs grep -rh ^goog.provide | sort | uniq | sed -e 's/provide/require/g' ) > $@
 
 .PHONY: demos
-demos: demos/api1 demos/proj4js demos/side-by-side
+demos: demos/api1 demos/proj4js demos/side-by-side demos/two-layers
 
 .PHONY: demos/api1
 demos/api1: \
@@ -81,6 +81,36 @@ demos/side-by-side/simple-optimizations.html: demos/side-by-side/index.html.in
 demos/side-by-side/simple-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
 	demos/side-by-side/side-by-side.json demos/side-by-side/side-by-side.js
 	curl 'http://localhost:9810/compile?id=demo-side-by-side&mode=SIMPLE' > $@
+	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
+	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
+
+.PHONY: demos/two-layers
+demos/two-layers: \
+	demos/two-layers/advanced-optimizations.html \
+	demos/two-layers/advanced-optimizations.js \
+	demos/two-layers/debug.html \
+	demos/two-layers/simple-optimizations.html \
+	demos/two-layers/simple-optimizations.js
+
+demos/two-layers/advanced-optimizations.html: demos/two-layers/index.html.in
+	sed -e 's|@SRC@|advanced-optimizations.js|' $< > $@
+
+demos/two-layers/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
+	demos/two-layers/two-layers.json demos/two-layers/two-layers.js
+	java -jar $(PLOVR_JAR) build demos/two-layers/two-layers.json >$@
+	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
+	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
+
+demos/two-layers/debug.html: demos/two-layers/index.html.in
+	sed -e 's|@SRC@|http://localhost:9810/compile?id=demo-two-layers|' $< > $@
+
+demos/two-layers/simple-optimizations.html: demos/two-layers/index.html.in
+	sed -e 's|@SRC@|simple-optimizations.js|' $< > $@
+
+# FIXME invoke plovr directly, rather than assuming that the server is running
+demos/two-layers/simple-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
+	demos/two-layers/two-layers.json demos/two-layers/two-layers.js
+	curl 'http://localhost:9810/compile?id=demo-two-layers&mode=SIMPLE' > $@
 	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
 
