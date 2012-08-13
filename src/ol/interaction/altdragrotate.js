@@ -44,7 +44,8 @@ ol.interaction.AltDragRotate.prototype.handleDragStart =
     function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   var map = mapBrowserEvent.map;
-  if (map.canRotate() && browserEvent.altKey) {
+  if (browserEvent.isMouseActionButton() && browserEvent.altKey &&
+      map.canRotate()) {
     var size = map.getSize();
     var theta = Math.atan2(
         size.height / 2 - browserEvent.offsetY,

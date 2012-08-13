@@ -55,7 +55,7 @@ ol.interaction.ShiftDragZoom.prototype.handleDragEnd =
 ol.interaction.ShiftDragZoom.prototype.handleDragStart =
     function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
-  if (browserEvent.shiftKey) {
+  if (browserEvent.isMouseActionButton() && browserEvent.shiftKey) {
     browserEvent.preventDefault();
     return true;
   } else {
