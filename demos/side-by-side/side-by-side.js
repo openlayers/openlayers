@@ -1,8 +1,8 @@
 goog.require('ol.RendererHint');
+goog.require('ol.control.Attribution');
 goog.require('ol.createMap');
 goog.require('ol.interaction.Keyboard');
 goog.require('ol.layer.MapQuestOpenAerial');
-goog.require('ol.view.Attribution');
 
 
 var layer = new ol.layer.MapQuestOpenAerial();
@@ -28,9 +28,9 @@ if (!goog.isNull(webglMap)) {
   webglMap.bindTo('rotation', domMap);
 }
 
-var attributionView = new ol.view.Attribution(domMap);
+var attributionControl = new ol.control.Attribution(domMap);
 document.getElementById('attribution').appendChild(
-    attributionView.getElement());
+    attributionControl.getElement());
 
 var keyboardInteraction = new ol.interaction.Keyboard();
 keyboardInteraction.addCallback('0', function() {

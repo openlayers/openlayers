@@ -3,7 +3,7 @@
 // FIXME handle layer order
 // FIXME check clean-up code
 
-goog.provide('ol.view.Attribution');
+goog.provide('ol.control.Attribution');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -12,20 +12,20 @@ goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('goog.style');
 goog.require('ol.Collection');
+goog.require('ol.Control');
 goog.require('ol.CoverageArea');
 goog.require('ol.Layer');
 goog.require('ol.MapProperty');
 goog.require('ol.TileCoverageArea');
-goog.require('ol.View');
 
 
 
 /**
  * @constructor
- * @extends {ol.View}
+ * @extends {ol.Control}
  * @param {ol.Map} map Map.
  */
-ol.view.Attribution = function(map) {
+ol.control.Attribution = function(map) {
 
   goog.base(this, map);
 
@@ -75,14 +75,14 @@ ol.view.Attribution = function(map) {
   this.handleMapLayersChanged();
 
 };
-goog.inherits(ol.view.Attribution, ol.View);
+goog.inherits(ol.control.Attribution, ol.Control);
 
 
 /**
  * @param {ol.Layer} layer Layer.
  * @private
  */
-ol.view.Attribution.prototype.createAttributionElementsForLayer_ =
+ol.control.Attribution.prototype.createAttributionElementsForLayer_ =
     function(layer) {
 
   var store = layer.getStore();
@@ -132,7 +132,7 @@ ol.view.Attribution.prototype.createAttributionElementsForLayer_ =
 /**
  * @inheritDoc
  */
-ol.view.Attribution.prototype.getElement = function() {
+ol.control.Attribution.prototype.getElement = function() {
   return this.ulElement_;
 };
 
@@ -141,7 +141,7 @@ ol.view.Attribution.prototype.getElement = function() {
  * @param {ol.Layer} layer Layer.
  * @protected
  */
-ol.view.Attribution.prototype.addLayer = function(layer) {
+ol.control.Attribution.prototype.addLayer = function(layer) {
 
   var layerKey = goog.getUid(layer);
 
@@ -162,7 +162,7 @@ ol.view.Attribution.prototype.addLayer = function(layer) {
 /**
  * @param {goog.events.Event} event Event.
  */
-ol.view.Attribution.prototype.handleLayerLoad = function(event) {
+ol.control.Attribution.prototype.handleLayerLoad = function(event) {
   var layer = /** @type {ol.Layer} */ event.target;
   this.createAttributionElementsForLayer_(layer);
 };
@@ -172,7 +172,7 @@ ol.view.Attribution.prototype.handleLayerLoad = function(event) {
  * @param {ol.Layer} layer Layer.
  * @protected
  */
-ol.view.Attribution.prototype.removeLayer = function(layer) {
+ol.control.Attribution.prototype.removeLayer = function(layer) {
 
   var layerKey = goog.getUid(layer);
 
@@ -194,7 +194,7 @@ ol.view.Attribution.prototype.removeLayer = function(layer) {
  * @param {goog.events.Event} event Eveny.
  * @protected
  */
-ol.view.Attribution.prototype.handleLayerVisibleChanged = function(event) {
+ol.control.Attribution.prototype.handleLayerVisibleChanged = function(event) {
 
   var map = this.getMap();
   var mapIsDef = map.isDef();
@@ -214,7 +214,7 @@ ol.view.Attribution.prototype.handleLayerVisibleChanged = function(event) {
  * @param {ol.CollectionEvent} collectionEvent Collection event.
  * @protected
  */
-ol.view.Attribution.prototype.handleLayersAdd = function(collectionEvent) {
+ol.control.Attribution.prototype.handleLayersAdd = function(collectionEvent) {
   var layer = /** @type {ol.Layer} */ collectionEvent.elem;
   this.addLayer(layer);
 };
@@ -224,7 +224,8 @@ ol.view.Attribution.prototype.handleLayersAdd = function(collectionEvent) {
  * @param {ol.CollectionEvent} collectionEvent Collection event.
  * @protected
  */
-ol.view.Attribution.prototype.handleLayersRemove = function(collectionEvent) {
+ol.control.Attribution.prototype.handleLayersRemove =
+    function(collectionEvent) {
   var layer = /** @type {ol.Layer} */ collectionEvent.elem;
   this.removeLayer(layer);
 };
@@ -233,7 +234,7 @@ ol.view.Attribution.prototype.handleLayersRemove = function(collectionEvent) {
 /**
  * @protected
  */
-ol.view.Attribution.prototype.handleMapChanged = function() {
+ol.control.Attribution.prototype.handleMapChanged = function() {
 
   var map = this.getMap();
   var mapIsDef = map.isDef();
@@ -253,7 +254,7 @@ ol.view.Attribution.prototype.handleMapChanged = function() {
 /**
  * @protected
  */
-ol.view.Attribution.prototype.handleMapLayersChanged = function() {
+ol.control.Attribution.prototype.handleMapLayersChanged = function() {
   if (!goog.isNull(this.layersListenerKeys_)) {
     goog.array.forEach(this.layersListenerKeys_, goog.events.unlistenByKey);
     this.layersListenerKeys_ = null;
@@ -285,7 +286,7 @@ ol.view.Attribution.prototype.handleMapLayersChanged = function() {
  * @return {Object.<number, boolean>} Attribution visibilities.
  * @private
  */
-ol.view.Attribution.prototype.getLayerAttributionVisiblities_ =
+ol.control.Attribution.prototype.getLayerAttributionVisiblities_ =
     function(layer, mapExtent, mapResolution, mapProjection) {
 
   var store = layer.getStore();
@@ -367,7 +368,7 @@ ol.view.Attribution.prototype.getLayerAttributionVisiblities_ =
  * @param {ol.Projection} mapProjection Map projection.
  * @private
  */
-ol.view.Attribution.prototype.updateLayerAttributionsVisibility_ =
+ol.control.Attribution.prototype.updateLayerAttributionsVisibility_ =
     function(layer, mapIsDef, mapExtent, mapResolution, mapProjection) {
   if (mapIsDef && layer.getVisible()) {
     var attributionVisibilities = this.getLayerAttributionVisiblities_(
