@@ -1,4 +1,4 @@
-goog.provide('ol.dom.Map');
+goog.provide('ol.dom.MapRenderer');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
@@ -6,6 +6,7 @@ goog.require('goog.dom.TagName');
 goog.require('goog.style');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
+goog.require('ol.MapRenderer');
 goog.require('ol.TileLayer');
 goog.require('ol.dom.TileLayerRenderer');
 
@@ -13,13 +14,13 @@ goog.require('ol.dom.TileLayerRenderer');
 
 /**
  * @constructor
- * @extends {ol.Map}
+ * @extends {ol.MapRenderer}
  * @param {Element} target Target.
- * @param {Object.<string, *>=} opt_values Values.
+ * @param {ol.Map} map Map.
  */
-ol.dom.Map = function(target, opt_values) {
+ol.dom.MapRenderer = function(target, map) {
 
-  goog.base(this, target);
+  goog.base(this, target, map);
 
   /**
    * @type {!Element}
@@ -61,27 +62,20 @@ ol.dom.Map = function(target, opt_values) {
    * @private
    */
   this.layersPaneOffset_ = null;
-
-  if (goog.isDef(opt_values)) {
-    this.setValues(opt_values);
-  }
-
-  this.handleViewportResize();
-
 };
-goog.inherits(ol.dom.Map, ol.Map);
+goog.inherits(ol.dom.MapRenderer, ol.MapRenderer);
 
 
 /**
  * Reset the layers pane to its initial position.
  * @private
  */
-ol.dom.Map.prototype.resetLayersPane_ = function() {
+ol.dom.MapRenderer.prototype.resetLayersPane_ = function() {
   var offset = new ol.Coordinate(0, 0);
   goog.style.setPosition(this.layersPane_, offset);
 
   this.layersPaneOffset_ = offset;
-  this.renderedCenter_ = this.getCenter();
+  this.renderedCenter_ = this.map.getCenter();
 
   this.setOrigin_();
 };
@@ -91,10 +85,10 @@ ol.dom.Map.prototype.resetLayersPane_ = function() {
  * Set the origin for each layer renderer.
  * @private
  */
-ol.dom.Map.prototype.setOrigin_ = function() {
-  var center = this.getCenter();
-  var resolution = this.getResolution();
-  var targetSize = this.getSize();
+ol.dom.MapRenderer.prototype.setOrigin_ = function() {
+  var center = this.map.getCenter();
+  var resolution = this.map.getResolution();
+  var targetSize = this.map.getSize();
   var targetWidth = targetSize.width;
   var targetHeight = targetSize.height;
   var origin = new ol.Coordinate(
@@ -110,10 +104,10 @@ ol.dom.Map.prototype.setOrigin_ = function() {
  * Move the layers pane.
  * @private
  */
-ol.dom.Map.prototype.shiftLayersPane_ = function() {
-  var center = this.getCenter();
+ol.dom.MapRenderer.prototype.shiftLayersPane_ = function() {
+  var center = this.map.getCenter();
   var oldCenter = this.renderedCenter_;
-  var resolution = this.getResolution();
+  var resolution = this.map.getResolution();
   var dx = Math.round((oldCenter.x - center.x) / resolution);
   var dy = Math.round((center.y - oldCenter.y) / resolution);
   if (!(dx === 0 && dy === 0)) {
@@ -129,7 +123,7 @@ ol.dom.Map.prototype.shiftLayersPane_ = function() {
 /**
  * @inheritDoc
  */
-ol.dom.Map.prototype.createLayerRenderer = function(layer) {
+ol.dom.MapRenderer.prototype.createLayerRenderer = function(layer) {
 
   if (layer instanceof ol.TileLayer) {
 
@@ -154,7 +148,7 @@ ol.dom.Map.prototype.createLayerRenderer = function(layer) {
 /**
  * @inheritDoc
  */
-ol.dom.Map.prototype.handleCenterChanged = function() {
+ol.dom.MapRenderer.prototype.handleCenterChanged = function() {
   goog.base(this, 'handleCenterChanged');
   // FIXME: shiftLayersPane_ and resetLayersPane_ should be called
   // elsewhere as we may be frozen here
@@ -170,7 +164,7 @@ ol.dom.Map.prototype.handleCenterChanged = function() {
 /**
  * @inheritDoc
  */
-ol.dom.Map.prototype.handleResolutionChanged = function() {
+ol.dom.MapRenderer.prototype.handleResolutionChanged = function() {
   goog.base(this, 'handleResolutionChanged');
   // FIXME: resetLayersPane_ should be called
   // elsewhere as we may be frozen here

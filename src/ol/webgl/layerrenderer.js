@@ -9,11 +9,11 @@ goog.require('ol.LayerRenderer');
 /**
  * @constructor
  * @extends {ol.LayerRenderer}
- * @param {ol.webgl.Map} map Map.
+ * @param {ol.MapRenderer} mapRenderer Map renderer.
  * @param {ol.Layer} layer Layer.
  */
-ol.webgl.LayerRenderer = function(map, layer) {
-  goog.base(this, map, layer);
+ol.webgl.LayerRenderer = function(mapRenderer, layer) {
+  goog.base(this, mapRenderer, layer);
 };
 goog.inherits(ol.webgl.LayerRenderer, ol.LayerRenderer);
 
@@ -36,17 +36,16 @@ ol.webgl.LayerRenderer.prototype.getTexture = goog.abstractMethod;
  * @return {WebGLRenderingContext} GL.
  */
 ol.webgl.LayerRenderer.prototype.getGL = function() {
-  var map = /** @type {ol.webgl.Map} */ this.getMap();
-  return map.getGL();
+  return this.getMapRenderer().getGL();
 };
 
 
 /**
  * @override
- * @return {ol.webgl.Map} Map.
+ * @return {ol.MapRenderer} MapRenderer.
  */
-ol.webgl.LayerRenderer.prototype.getMap = function() {
-  return /** @type {ol.webgl.Map} */ goog.base(this, 'getMap');
+ol.webgl.LayerRenderer.prototype.getMapRenderer = function() {
+  return /** @type {ol.webgl.MapRenderer} */ goog.base(this, 'getMapRenderer');
 };
 
 

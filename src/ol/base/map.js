@@ -71,11 +71,13 @@ ol.MapPaneZIndex = {
  * @constructor
  * @extends {ol.Object}
  * @param {Element} target Target.
+ * @param {Function} rendererConstructor Renderer constructor.
  * @param {Object=} opt_values Values.
  * @param {goog.dom.ViewportSizeMonitor=} opt_viewportSizeMonitor
  *     Viewport size monitor.
  */
-ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
+ol.Map = function(
+    target, rendererConstructor, opt_values, opt_viewportSizeMonitor) {
 
   goog.base(this);
 
@@ -148,40 +150,17 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
   this.registerDisposable(dragger);
 
   /**
+   * @type {ol.MapRenderer}
    * @private
-   * @type {goog.fx.anim.Animated}
    */
-  this.animation_ = new ol.MapAnimation(this);
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.animating_ = false;
-
-  /**
-   * @private
-   * @type {number}
-   */
-  this.freezeRenderingCount_ = 0;
+  this.renderer_ = new rendererConstructor(target, this);
+  this.registerDisposable(this.renderer_);
 
   /**
    * @private
    * @type {Element}
    */
   this.target_ = target;
-
-  /**
-   * @private
-   * @type {Array.<number>}
-   */
-  this.layersListenerKeys_ = null;
-
-  /**
-   * @protected
-   * @type {Object.<number, ol.LayerRenderer>}
-   */
-  this.layerRenderers = {};
 
   /**
    * @private
@@ -193,17 +172,9 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
   goog.events.listen(this.viewportSizeMonitor_, goog.events.EventType.RESIZE,
       this.handleViewportResize, false, this);
 
-  goog.events.listen(this,
-      ol.Object.getChangedEventType(ol.MapProperty.BACKGROUND_COLOR),
-      this.handleBackgroundColorChanged, false, this);
-
   goog.events.listen(
       this, ol.Object.getChangedEventType(ol.MapProperty.CENTER),
       this.handleCenterChanged, false, this);
-
-  goog.events.listen(
-      this, ol.Object.getChangedEventType(ol.MapProperty.LAYERS),
-      this.handleLayersChanged, false, this);
 
   goog.events.listen(
       this, ol.Object.getChangedEventType(ol.MapProperty.PROJECTION),
@@ -229,52 +200,17 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
     this.setValues(opt_values);
   }
 
+  this.handleViewportResize();
+
 };
 goog.inherits(ol.Map, ol.Object);
 
 
 /**
- * @param {ol.Layer} layer Layer.
- * @protected
- */
-ol.Map.prototype.addLayer = function(layer) {
-  var layerRenderer = this.createLayerRenderer(layer);
-  this.setLayerRenderer(layer, layerRenderer);
-};
-
-
-/**
- * @private
- */
-ol.Map.prototype.animate_ = function() {
-  goog.asserts.assert(!this.animating_);
-  goog.fx.anim.registerAnimation(this.animation_);
-  this.animating_ = true;
-};
-
-
-/**
  * @return {boolean} Can rotate.
  */
-ol.Map.prototype.canRotate = goog.functions.FALSE;
-
-
-/**
- * @param {ol.Layer} layer Layer.
- * @protected
- * @return {ol.LayerRenderer} layerRenderer Layer renderer.
- */
-ol.Map.prototype.createLayerRenderer = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.Map.prototype.disposeInternal = function() {
-  goog.object.forEach(this.layerRenderers, function(layerRenderer) {
-    goog.dispose(layerRenderer);
-  });
-  goog.base(this, 'disposeInternal');
+ol.Map.prototype.canRotate = function() {
+  return this.renderer_.canRotate();
 };
 
 
@@ -297,29 +233,6 @@ ol.Map.prototype.fitExtent = function(extent) {
  */
 ol.Map.prototype.fitUserExtent = function(userExtent) {
   this.fitExtent(userExtent.transform(this.userToMapTransform_));
-};
-
-
-/**
- * @param {function(this: T, ol.Layer, ol.LayerRenderer, number)} f Function.
- * @param {T=} opt_obj Object.
- * @template T
- */
-ol.Map.prototype.forEachReadyVisibleLayer = function(f, opt_obj) {
-  var layers = this.getLayers();
-  layers.forEach(function(layer, index) {
-    if (layer.isReady() && layer.getVisible()) {
-      var layerRenderer = this.getLayerRenderer(layer);
-      f.call(opt_obj, layer, layerRenderer, index);
-    }
-  }, this);
-};
-
-
-/**
- */
-ol.Map.prototype.freezeRendering = function() {
-  ++this.freezeRenderingCount_;
 };
 
 
@@ -393,19 +306,6 @@ goog.exportProperty(
     ol.Map.prototype,
     'getInteractions',
     ol.Map.prototype.getInteractions);
-
-
-/**
- * @param {ol.Layer} layer Layer.
- * @protected
- * @return {ol.LayerRenderer} Layer renderer.
- */
-ol.Map.prototype.getLayerRenderer = function(layer) {
-  var key = goog.getUid(layer);
-  var layerRenderer = this.layerRenderers[key];
-  goog.asserts.assert(goog.isDef(layerRenderer));
-  return layerRenderer;
-};
 
 
 /**
@@ -569,11 +469,6 @@ goog.exportProperty(
 
 
 /**
- */
-ol.Map.prototype.handleBackgroundColorChanged = goog.nullFunction;
-
-
-/**
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @param {string=} opt_type Type.
  */
@@ -604,52 +499,6 @@ ol.Map.prototype.handleCenterChanged = function() {
 ol.Map.prototype.handleDraggerEvent = function(dragEvent) {
   var browserEvent = dragEvent.browserEvent;
   this.handleBrowserEvent(browserEvent, dragEvent.type);
-};
-
-
-/**
- * @param {ol.CollectionEvent} collectionEvent Collection event.
- * @protected
- */
-ol.Map.prototype.handleLayersAdd = function(collectionEvent) {
-  var layer = /** @type {ol.Layer} */ collectionEvent.elem;
-  this.addLayer(layer);
-};
-
-
-/**
- * @protected
- */
-ol.Map.prototype.handleLayersChanged = function() {
-  var layerRenderers = goog.object.getValues(this.layerRenderers);
-  goog.array.forEach(layerRenderers, function(layerRenderer) {
-    this.removeLayerRenderer(layerRenderer);
-  }, this);
-  this.layerRenderers = {};
-  if (!goog.isNull(this.layersListenerKeys_)) {
-    goog.array.forEach(this.layersListenerKeys_, goog.events.unlistenByKey);
-    this.layersListenerKeys_ = null;
-  }
-  var layers = this.getLayers();
-  if (goog.isDefAndNotNull(layers)) {
-    layers.forEach(this.addLayer, this);
-    this.layersListenerKeys_ = [
-      goog.events.listen(layers, ol.CollectionEventType.ADD,
-          this.handleLayersAdd, false, this),
-      goog.events.listen(layers, ol.CollectionEventType.REMOVE,
-          this.handleLayersRemove, false, this)
-    ];
-  }
-};
-
-
-/**
- * @param {ol.CollectionEvent} collectionEvent Collection event.
- * @protected
- */
-ol.Map.prototype.handleLayersRemove = function(collectionEvent) {
-  var layer = /** @type {ol.Layer} */ collectionEvent.elem;
-  this.removeLayer(layer);
 };
 
 
@@ -732,63 +581,6 @@ ol.Map.prototype.recalculateTransforms_ = function() {
 
 
 /**
- * @param {ol.Layer} layer Layer.
- * @protected
- */
-ol.Map.prototype.removeLayer = function(layer) {
-  goog.dispose(this.removeLayerRenderer(layer));
-};
-
-
-/**
- * @param {ol.Layer} layer Layer.
- * @return {ol.LayerRenderer} Layer renderer.
- * @protected
- */
-ol.Map.prototype.removeLayerRenderer = function(layer) {
-  var key = goog.getUid(layer);
-  if (key in this.layerRenderers) {
-    var layerRenderer = this.layerRenderers[key];
-    delete this.layerRenderers[key];
-    return layerRenderer;
-  } else {
-    return null;
-  }
-};
-
-
-/**
- */
-ol.Map.prototype.render = function() {
-  if (!this.animating_) {
-    if (this.freezeRenderingCount_ === 0) {
-      if (this.renderInternal()) {
-        this.animate_();
-      }
-    } else {
-      this.dirty_ = true;
-    }
-  }
-};
-
-
-/**
- * @protected
- * @return {boolean} Animating.
- */
-ol.Map.prototype.renderInternal = function() {
-  this.dirty_ = false;
-  var animate = false;
-  this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
-    if (layerRenderer.render()) {
-      animate = true;
-    }
-  });
-  return animate;
-};
-
-
-/**
  * @param {ol.Color} backgroundColor Background color.
  */
 ol.Map.prototype.setBackgroundColor = function(backgroundColor) {
@@ -822,18 +614,6 @@ goog.exportProperty(
     ol.Map.prototype,
     'setInteractions',
     ol.Map.prototype.setInteractions);
-
-
-/**
- * @param {ol.Layer} layer Layer.
- * @param {ol.LayerRenderer} layerRenderer Layer renderer.
- * @protected
- */
-ol.Map.prototype.setLayerRenderer = function(layer, layerRenderer) {
-  var key = goog.getUid(layer);
-  goog.asserts.assert(!(key in this.layerRenderers));
-  this.layerRenderers[key] = layerRenderer;
-};
 
 
 /**
@@ -930,20 +710,6 @@ goog.exportProperty(
 
 
 /**
- */
-ol.Map.prototype.unfreezeRendering = function() {
-  goog.asserts.assert(this.freezeRenderingCount_ > 0);
-  if (--this.freezeRenderingCount_ === 0) {
-    if (!this.animating_ && this.dirty_) {
-      if (this.renderInternal()) {
-        this.animate_();
-      }
-    }
-  }
-};
-
-
-/**
  * @private
  */
 ol.Map.prototype.updateMatrices_ = function() {
@@ -1010,37 +776,10 @@ ol.Map.prototype.updateMatrices_ = function() {
  * @template T
  */
 ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
-  this.freezeRendering();
+  this.renderer_.freezeRendering();
   try {
     f.call(opt_obj);
   } finally {
-    this.unfreezeRendering();
-  }
-};
-
-
-
-/**
- * @constructor
- * @implements {goog.fx.anim.Animated}
- * @param {!ol.Map} map Map.
- */
-ol.MapAnimation = function(map) {
-
-  /**
-   * @private
-   * @type {ol.Map}
-   */
-  this.map_ = map;
-
-};
-
-
-/**
- * @inheritDoc
- */
-ol.MapAnimation.prototype.onAnimationFrame = function() {
-  if (!this.map_.renderInternal()) {
-    goog.fx.anim.unregisterAnimation(this);
+    this.renderer_.unfreezeRendering();
   }
 };
