@@ -1,3 +1,5 @@
+// FIXME should listen on appropriate pane, once it is defined
+
 goog.provide('ol.control.MousePosition');
 
 goog.require('goog.events');
@@ -90,6 +92,7 @@ ol.control.MousePosition.prototype.handleMapProjectionChanged = function() {
     this.transform_ =
         ol.Projection.getTransform(mapProjection, this.projection_);
   }
+  // FIXME should we instead re-calculate using the last known mouse position?
   this.divElement_.innerHTML = this.undefinedHTML_;
 };
 
