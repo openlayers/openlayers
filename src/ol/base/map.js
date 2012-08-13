@@ -143,8 +143,7 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
   goog.events.listen(dragger, [
     goog.fx.Dragger.EventType.START,
     goog.fx.Dragger.EventType.DRAG,
-    goog.fx.Dragger.EventType.END,
-    goog.fx.Dragger.EventType.EARLY_CANCEL
+    goog.fx.Dragger.EventType.END
   ], this.handleDraggerEvent, false, this);
   this.registerDisposable(dragger);
 
