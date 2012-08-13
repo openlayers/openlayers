@@ -22,6 +22,9 @@
                 <td><div id="webglMap" class="map"></div></td>
             </tr>
             <tr>
+                <td><div id="domMousePosition" class="mouseposition"></div></td>
+                <td><div id="webglMousePosition" class="mouseposition"></div></td>
+            <tr>
                 <td colspan="2">
                     <div id="attribution" class="attribution"></div>
                 </td>

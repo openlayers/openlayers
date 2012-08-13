@@ -1,5 +1,7 @@
+goog.require('ol.CoordinateFormat');
 goog.require('ol.RendererHint');
 goog.require('ol.control.Attribution');
+goog.require('ol.control.MousePosition');
 goog.require('ol.createMap');
 goog.require('ol.interaction.Keyboard');
 goog.require('ol.layer.MapQuestOpenAerial');
@@ -31,6 +33,16 @@ if (!goog.isNull(webglMap)) {
 var attributionControl = new ol.control.Attribution(domMap);
 document.getElementById('attribution').appendChild(
     attributionControl.getElement());
+
+var domMousePositionControl = new ol.control.MousePosition(domMap,
+    ol.Projection.getFromCode('EPSG:4326'), ol.CoordinateFormat.hdms, '&nbsp;');
+document.getElementById('domMousePosition').appendChild(
+    domMousePositionControl.getElement());
+
+var webglMousePositionControl = new ol.control.MousePosition(webglMap,
+    ol.Projection.getFromCode('EPSG:4326'), ol.CoordinateFormat.hdms, '&nbsp;');
+document.getElementById('webglMousePosition').appendChild(
+    webglMousePositionControl.getElement());
 
 var keyboardInteraction = new ol.interaction.Keyboard();
 keyboardInteraction.addCallback('0', function() {
