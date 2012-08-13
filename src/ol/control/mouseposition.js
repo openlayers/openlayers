@@ -111,14 +111,16 @@ ol.control.MousePosition.prototype.handleMouseMove = function(browserEvent) {
   var map = this.getMap();
   var pixel = new ol.Pixel(browserEvent.offsetX, browserEvent.offsetY);
   var coordinate = map.getCoordinateFromPixel(pixel);
+  var html;
   if (goog.isDef(coordinate)) {
     coordinate = this.transform_(coordinate);
-  }
-  var html;
-  if (goog.isDef(this.coordinateFormat_)) {
-    html = this.coordinateFormat_(coordinate);
+    if (goog.isDef(this.coordinateFormat_)) {
+      html = this.coordinateFormat_(coordinate);
+    } else {
+      html = coordinate.toString();
+    }
   } else {
-    html = coordinate.toString();
+    html = this.undefinedHTML_;
   }
   this.divElement_.innerHTML = html;
 };
