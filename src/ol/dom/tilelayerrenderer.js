@@ -13,7 +13,7 @@ goog.require('ol.dom.LayerRenderer');
 /**
  * @constructor
  * @extends {ol.dom.LayerRenderer}
- * @param {ol.MapRenderer} mapRenderer Map renderer..
+ * @param {ol.MapRenderer} mapRenderer Map renderer.
  * @param {ol.TileLayer} tileLayer Tile layer.
  * @param {!Element} target Target.
  */
