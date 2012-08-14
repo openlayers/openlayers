@@ -32,27 +32,6 @@ function testSetValues() {
   assertEquals(2, m.get('k2'));
 }
 
-function testNotifyCallback() {
-  var m = new ol.Object();
-  var callbackCalled;
-  m.changed = function() {
-    callbackCalled = true;
-  };
-  m.notify('k');
-  assertTrue(callbackCalled);
-}
-
-
-function testNotifyKeyCallback() {
-  var m = new ol.Object();
-  var callbackCalled = false;
-  m.k_changed = function() {
-    callbackCalled = true;
-  };
-  m.notify('k');
-  assertTrue(callbackCalled);
-}
-
 
 function testNotifyKeyEvent() {
   var m = new ol.Object();
@@ -65,38 +44,16 @@ function testNotifyKeyEvent() {
 }
 
 
-function testSetNotifyCallback() {
-  var m = new ol.Object();
-  var callbackCalled;
-  m.changed = function() {
-    callbackCalled = true;
-  };
-  m.set('k', 1);
-  assertTrue(callbackCalled);
-}
-
-
-function testSetNotifyKeyCallback() {
-  var m = new ol.Object();
-  var callbackCalled = false;
-  m.k_changed = function(v) {
-    callbackCalled = true;
-  };
-  m.set('k', 1);
-  assertTrue(callbackCalled);
-}
-
-
-function testBindSetNotifyKeyCallback() {
+function testBindSetNotifyKeyEvent() {
   var m = new ol.Object();
   var n = new ol.Object();
   var callbackCalled = false;
-  n.k_changed = function(v) {
-    callbackCalled = true;
-  };
+  goog.events.listen(n, 'k_changed', function() {
+    eventDispatched = true;
+  });
   n.bindTo('k', m);
   m.set('k', 1);
-  assertTrue(callbackCalled);
+  assertTrue(eventDispatched);
 }
 
 
@@ -189,17 +146,17 @@ function testBindNotify() {
   var m = new ol.Object();
   var n = new ol.Object();
   m.bindTo('k', n);
-  mCallbackCalled = false;
-  m.k_changed = function() {
-    mCallbackCalled = true;
-  };
-  nCallbackCalled = false;
-  n.k_changed = function() {
-    nCallbackCalled = true;
-  };
+  mEventDispatched = false;
+  goog.events.listen(m, 'k_changed', function() {
+    mEventDispatched = true;
+  });
+  nEventDispatched = false;
+  goog.events.listen(n, 'k_changed', function() {
+    nEventDispatched = true;
+  });
   n.set('k', 1);
-  assertTrue(mCallbackCalled);
-  assertTrue(nCallbackCalled);
+  assertTrue(mEventDispatched);
+  assertTrue(nEventDispatched);
 }
 
 
@@ -207,17 +164,17 @@ function testBindBackwardsNotify() {
   var m = new ol.Object();
   var n = new ol.Object();
   n.bindTo('k', m);
-  mCallbackCalled = false;
-  m.k_changed = function() {
-    mCallbackCalled = true;
-  };
-  nCallbackCalled = false;
-  n.k_changed = function() {
-    nCallbackCalled = true;
-  };
+  mEventDispatched = false;
+  goog.events.listen(m, 'k_changed', function() {
+    mEventDispatched = true;
+  });
+  nEventDispatched = false;
+  goog.events.listen(n, 'k_changed', function() {
+    nEventDispatched = true;
+  });
   n.set('k', 1);
-  assertTrue(mCallbackCalled);
-  assertTrue(nCallbackCalled);
+  assertTrue(mEventDispatched);
+  assertTrue(nEventDispatched);
 }
 
 
@@ -231,23 +188,23 @@ function testBindRename() {
 }
 
 
-function testBindRenameCallbacks() {
+function testBindRenameEvents() {
   var m = new ol.Object();
   var n = new ol.Object();
-  var kmCallbackCalled = false;
-  m.km_changed = function() {
-    kmCallbackCalled = true;
-  };
-  var knCallbackCalled = false;
-  n.kn_changed = function() {
-    knCallbackCalled = true;
-  };
+  kmEventDispatched = false;
+  goog.events.listen(m, 'km_changed', function() {
+    kmEventDispatched = true;
+  });
+  knEventDispatched = false;
+  goog.events.listen(n, 'kn_changed', function() {
+    knEventDispatched = true;
+  });
   n.bindTo('kn', m, 'km');
   m.set('km', 1);
   assertEquals(m.get('km'), 1);
   assertEquals(n.get('kn'), 1);
-  assertTrue(kmCallbackCalled);
-  assertTrue(knCallbackCalled);
+  assertTrue(kmEventDispatched);
+  assertTrue(knEventDispatched);
 }
 
 
@@ -274,20 +231,6 @@ function testTransitiveBindBackwards() {
   assertEquals(1, m.get('km'));
   assertEquals(1, n.get('kn'));
   assertEquals(1, o.get('ko'));
-}
-
-
-function testInheritance() {
-  var C = function() {};
-  C.prototype = new ol.Object();
-  var callbackCalled;
-  C.prototype.k_changed = function() {
-    callbackCalled = true;
-  };
-  var c = new C();
-  c.set('k', 1);
-  assertEquals(1, c.get('k'));
-  assertTrue(callbackCalled);
 }
 
 
@@ -424,20 +367,9 @@ function testBindSelf() {
 }
 
 
-function testChangedKey() {
-  var a = new ol.Object();
-  var changedKey;
-  a.changed = function(key) {
-    changedKey = key;
-  };
-  a.set('k', 1);
-  assertEquals('k', changedKey);
-}
-
-
 function testCreateFromObject() {
   var obj = {k: 1};
-  var obj = ol.Object.create(obj);
+  obj = ol.Object.create(obj);
   assertTrue(obj instanceof ol.Object);
   assertEquals(1, obj.get('k'));
 }
@@ -458,14 +390,6 @@ function testCreateWithOptions() {
 
 function testEventTypeCaseSensitivity() {
   var obj = new ol.Object();
-  var lowercaseChangedMethodCalled = false;
-  obj.k_changed = function() {
-    lowercaseChangedMethodCalled = true;
-  };
-  var uppercaseChangedMethodCalled = false;
-  obj.K_changed = function() {
-    uppercaseChangedMethodCalled = true;
-  };
   var lowercaseEventDispatched = false;
   goog.events.listen(obj, 'k_changed', function() {
     lowercaseEventDispatched = true;
@@ -477,6 +401,4 @@ function testEventTypeCaseSensitivity() {
   obj.set('K', 1);
   assertTrue(lowercaseEventDispatched);
   assertFalse(uppercaseEventDispatched);
-  assertFalse(lowercaseChangedMethodCalled);
-  assertTrue(uppercaseChangedMethodCalled);
 }
