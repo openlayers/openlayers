@@ -976,26 +976,9 @@ ol.Map.prototype.updateMatrices_ = function() {
         -center.y,
         0);
 
-    goog.vec.Mat4.makeIdentity(this.pixelToCoordinateMatrix_);
-    goog.vec.Mat4.translate(this.pixelToCoordinateMatrix_,
-        center.x,
-        center.y,
-        0);
-    if (this.canRotate() && goog.isDef(rotation)) {
-      goog.vec.Mat4.rotate(this.coordinateToPixelMatrix_,
-          -rotation,
-          0,
-          0,
-          1);
-    }
-    goog.vec.Mat4.scale(this.pixelToCoordinateMatrix_,
-        resolution,
-        -resolution,
-        1);
-    goog.vec.Mat4.translate(this.pixelToCoordinateMatrix_,
-        -size.width / 2,
-        -size.height / 2,
-        0);
+    var inverted = goog.vec.Mat4.invert(
+        this.coordinateToPixelMatrix_, this.pixelToCoordinateMatrix_);
+    goog.asserts.assert(inverted);
 
     this.matriciesDirty_ = false;
 
