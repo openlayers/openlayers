@@ -7,9 +7,9 @@ goog.require('ol.layer.TileJSON');
 
 
 /**
- * @define {boolean} Enable DOM map.
  * FIXME The DOM renderer doesn't support partially-loaded layers yet
  * FIXME Remove this define when it does
+ * @define {boolean} Enable DOM map.
  */
 ol.TWO_LAYERS_DEMO_ENABLE_DOM = false;
 
