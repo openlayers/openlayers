@@ -4,6 +4,7 @@
 // FIXME add tilt and height?
 // FIXME split out renderer
 // FIXME add postrender event
+// FIXME does the map really need to listen to itself (for center, etc.)?
 
 goog.provide('ol.Map');
 goog.provide('ol.MapProperty');
