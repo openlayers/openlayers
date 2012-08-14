@@ -23,15 +23,14 @@ ol.MapBrowserEvent = function(type, map, browserEvent) {
    */
   this.browserEvent = browserEvent;
 
+  /**
+   * @private
+   * @type {ol.Coordinate|undefined}
+   */
+  this.coordinate_ = undefined;
+
 };
 goog.inherits(ol.MapBrowserEvent, ol.MapEvent);
-
-
-/**
- * @private
- * @type {ol.Coordinate|undefined}
- */
-ol.MapBrowserEvent.prototype.coordinate_;
 
 
 /**

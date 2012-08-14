@@ -49,6 +49,12 @@ ol.control.MousePosition =
    */
   this.undefinedHTML_ = opt_undefinedHTML || '';
 
+  /**
+   * @private
+   * @type {ol.TransformFunction}
+   */
+  this.transform_ = ol.Projection.identityTransform;
+
   goog.events.listen(map,
       ol.Object.getChangedEventType(ol.MapProperty.PROJECTION),
       this.handleMapProjectionChanged, false, this);
@@ -63,13 +69,6 @@ ol.control.MousePosition =
 
 };
 goog.inherits(ol.control.MousePosition, ol.Control);
-
-
-/**
- * @private
- * @type {ol.TransformFunction}
- */
-ol.control.MousePosition.prototype.transform_;
 
 
 /**

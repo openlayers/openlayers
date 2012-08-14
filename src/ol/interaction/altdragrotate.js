@@ -11,16 +11,17 @@ goog.require('ol.interaction.Drag');
  * @param {ol.interaction.Constraints} constraints Constraints.
  */
 ol.interaction.AltDragRotate = function(constraints) {
+
   goog.base(this, constraints);
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.startRotation_ = 0;
+
 };
 goog.inherits(ol.interaction.AltDragRotate, ol.interaction.Drag);
-
-
-/**
- * @private
- * @type {number}
- */
-ol.interaction.AltDragRotate.prototype.startRotation_;
 
 
 /**

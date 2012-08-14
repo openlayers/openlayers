@@ -13,23 +13,23 @@ goog.require('ol.interaction.Drag');
  * @param {ol.interaction.Constraints} constraints Constraints.
  */
 ol.interaction.ShiftDragRotateAndZoom = function(constraints) {
+
   goog.base(this, constraints);
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.startRatio_ = 0;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.startRotation_ = 0;
+
 };
 goog.inherits(ol.interaction.ShiftDragRotateAndZoom, ol.interaction.Drag);
-
-
-/**
- * @private
- * @type {number}
- */
-ol.interaction.ShiftDragRotateAndZoom.prototype.startRatio_;
-
-
-/**
- * @private
- * @type {number}
- */
-ol.interaction.ShiftDragRotateAndZoom.prototype.startRotation_;
 
 
 /**
