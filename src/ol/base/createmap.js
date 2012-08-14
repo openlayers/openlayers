@@ -134,10 +134,12 @@ ol.createMap = function(target, opt_values, opt_rendererHints) {
     if (rendererHint == ol.RendererHint.DOM) {
       if (ol.ENABLE_DOM && ol.dom.isSupported()) {
         rendererConstructor = ol.dom.MapRenderer;
+        break;
       }
     } else if (rendererHint == ol.RendererHint.WEBGL) {
       if (ol.ENABLE_WEBGL && ol.webgl.isSupported()) {
         rendererConstructor = ol.webgl.MapRenderer;
+        break;
       }
     }
   }
