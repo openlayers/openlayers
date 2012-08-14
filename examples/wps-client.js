@@ -56,7 +56,7 @@ function init() {
     // the client directly if we are only dealing with a single process:
     /*
     client.execute({
-        server: "local",
+        server: "opengeo",
         process: "JTS:intersection",
         // spatial input can be a feature or a geometry or an array of
         // features or geometries

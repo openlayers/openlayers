@@ -9,54 +9,38 @@
           local: 'geoserver/wps'
       }
   });
-  client.servers.local.describeProcessResponse = {
+  client.servers.local.processDescription = {
       'JTS:intersection': '<?xml version="1.0" encoding="UTF-8"?>' +
           '<wps:ProcessDescriptions xml:lang="en" service="WPS" version="1.0.0" xsi:schemaLocation="http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd" xmlns:wps="http://www.opengis.net/wps/1.0.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink"><ProcessDescription wps:processVersion="1.0.0" statusSupported="true" storeSupported="true"><ows:Identifier>JTS:intersection</ows:Identifier><ows:Title>Returns the intersectoin between a and b (eventually an empty collection if there is no intersection)</ows:Title><ows:Abstract>Returns the intersectoin between a and b (eventually an empty collection if there is no intersection)</ows:Abstract><DataInputs><Input maxOccurs="1" minOccurs="1"><ows:Identifier>a</ows:Identifier><ows:Title>a</ows:Title><ows:Abstract>[undescribed]</ows:Abstract><ComplexData><Default><Format><MimeType>text/xml; subtype=gml/3.1.1</MimeType></Format></Default><Supported><Format><MimeType>text/xml; subtype=gml/3.1.1</MimeType></Format><Format><MimeType>text/xml; subtype=gml/2.1.2</MimeType></Format><Format><MimeType>application/wkt</MimeType></Format><Format><MimeType>application/gml-3.1.1</MimeType></Format><Format><MimeType>application/gml-2.1.2</MimeType></Format></Supported></ComplexData></Input><Input maxOccurs="1" minOccurs="1"><ows:Identifier>b</ows:Identifier><ows:Title>b</ows:Title><ows:Abstract>[undescribed]</ows:Abstract><ComplexData><Default><Format><MimeType>text/xml; subtype=gml/3.1.1</MimeType></Format></Default><Supported><Format><MimeType>text/xml; subtype=gml/3.1.1</MimeType></Format><Format><MimeType>text/xml; subtype=gml/2.1.2</MimeType></Format><Format><MimeType>application/wkt</MimeType></Format><Format><MimeType>application/gml-3.1.1</MimeType></Format><Format><MimeType>application/gml-2.1.2</MimeType></Format></Supported></ComplexData></Input></DataInputs><ProcessOutputs><Output><ows:Identifier>result</ows:Identifier><ows:Title>Process result</ows:Title><ComplexOutput><Default><Format><MimeType>text/xml; subtype=gml/3.1.1</MimeType></Format></Default><Supported><Format><MimeType>text/xml; subtype=gml/3.1.1</MimeType></Format><Format><MimeType>text/xml; subtype=gml/2.1.2</MimeType></Format><Format><MimeType>application/wkt</MimeType></Format><Format><MimeType>application/gml-3.1.1</MimeType></Format><Format><MimeType>application/gml-2.1.2</MimeType></Format></Supported></ComplexOutput></Output></ProcessOutputs></ProcessDescription></wps:ProcessDescriptions>' 
   };
   
   function test_initialize(t) {
-      t.plan(2);
-      
+      t.plan(1);
       process = new OpenLayers.WPSProcess();
-      
       t.ok(process instanceof OpenLayers.WPSProcess, 'creates an instance');
-      t.ok(process.events, 'has an events instance');
   }
   
   function test_describe(t) {
-      t.plan(6);
-      var log = {request: [], event: []};
-      var originalGET = OpenLayers.Request.GET;
-      OpenLayers.Request.GET = function(cfg) {
-          log.request.push(cfg);
-      }
-      
-      process = client.getProcess('local', 'gs:splitPolygon');
-      process.events.register('describeprocess', this, function(evt) {
-          log.event.push(evt);
+      t.plan(2);
+      process = client.getProcess('local', 'JTS:intersection');
+      var log = [];
+      process.describe({
+          callback: function(description) { log.push(description); }
       });
-      t.eq(client.servers.local.describeProcessResponse['gs:splitPolyon'], null, 'describeProcess pending'); 
-      process.describe();
-      t.eq(log.request.length, 1, 'describeProcess request only sent once');
-      log.request[0].success.call(process, {
-          responseText: '<?xml version="1.0" encoding="UTF-8"?><wps:ProcessDescriptions xmlns:wps="http://www.opengis.net/wps/1.0.0"></wps:ProcessDescriptions>'
+      t.delay_call(0.1, function() {
+          t.eq(log.length, 1, 'callback called');
+          t.eq(log[0].identifier, 'JTS:intersection', 'callback called with correct description');
       });
-      t.eq(log.event[0].type, 'describeprocess', 'describeprocess event triggered');
-      t.ok(client.servers.local.describeProcessResponse['gs:splitPolygon'], 'We have a process description!');
-      process.describe();
-      t.eq(log.request.length, 1, 'describeProcess request only sent once');
-      t.eq(log.event.length, 1, 'describeprocess event only triggered once');
-      
-      OpenLayers.Request.GET = originalGET;
   }
   
   function test_execute(t) {
-      t.plan(5);
+      t.plan(7);
       
       var log = [];
       var originalPOST = OpenLayers.Request.POST;
       OpenLayers.Request.POST = function(cfg) {
           log.push(cfg);
+          cfg.success.call(cfg.scope, {responseText: ''});
       }
       
       process = new OpenLayers.WPSProcess({
@@ -81,7 +65,7 @@
               }
           }],
           processOutputs: [{
-              identifier: 'result',
+              identifier: 'foo',
               complexOutput: {
                   supported: {
                       formats: {'application/wkt': true}
@@ -90,26 +74,44 @@
           }]
       };
       var line = 'LINESTRING(117 22,112 18,118 13,115 8)';
+      var polygon = 'POLYGON((110 20,120 20,120 10,110 10,110 20),(112 17,118 18,118 16,112 15,112 17))';
+      var output = [];
+      function success(result) {
+          output.push(result);
+      }
+      // configured with output identifier
       process.execute({
           inputs: {
               line: new OpenLayers.Format.WKT().read(line),
-              polygon: new OpenLayers.Format.WKT().read(
-                  'POLYGON((110 20,120 20,120 10,110 10,110 20),(112 17,118 18,118 16,112 15,112 17))'
-              )
-          }
+              polygon: new OpenLayers.Format.WKT().read(polygon)
+          },
+          output: 'foo',
+          success: success
+      });
+      // configured without output identifier
+      process.execute({
+          inputs: {
+              line: new OpenLayers.Format.WKT().read(line),
+              polygon: new OpenLayers.Format.WKT().read(polygon)
+          },
+          success: success
       });
       
-      t.eq(log.length, 1, 'execute request sent');
-      t.eq(process.description.dataInputs[0].data.complexData.value, line, 'data for first input correct');
-      t.eq(process.description.dataInputs[0].data.complexData.mimeType, 'application/wkt', 'format for first input correct');
-      t.eq(process.description.responseForm.rawDataOutput.identifier, 'result', 'correct identifier for responseForm');
-      t.eq(process.description.responseForm.rawDataOutput.mimeType, 'application/wkt', 'correct format for responseForm');
-      
-      OpenLayers.Request.POST = originalPOST;
+      t.delay_call(0.1, function() {
+          t.eq(log.length, 2, 'Two execute requests sent');
+          t.eq(process.description.dataInputs[0].data.complexData.value, line, 'data for first input correct');
+          t.eq(process.description.dataInputs[0].data.complexData.mimeType, 'application/wkt', 'format for first input correct');
+          t.eq(process.description.responseForm.rawDataOutput.identifier, 'foo', 'correct identifier for responseForm');
+          t.eq(process.description.responseForm.rawDataOutput.mimeType, 'application/wkt', 'correct format for responseForm');
+          t.ok('foo' in output[0], 'process result contains output with correct identifier when configured with output');
+          t.ok('result' in output[1], 'process result contains output with correct identifier when configured without output');
+
+          OpenLayers.Request.POST = originalPOST;
+      });      
   }
   
   function test_chainProcess(t) {
-      t.plan(3);
+      t.plan(5);
       
       var originalGET = OpenLayers.Request.GET;
       OpenLayers.Request.GET = function(cfg) {
@@ -137,27 +139,41 @@
           }
       });
 
-      var buffer = client.getProcess('local', 'JTS:buffer');
+      // one buffer process to make sure chaining works
+      var buffer1 = client.getProcess('local', 'JTS:buffer');
+      // another buffer process to make sure that things work asynchronously
+      var buffer2 = client.getProcess('local', 'JTS:buffer');
       var log = [];
-      buffer.chainProcess = function() {
+      buffer1.chainProcess = buffer2.chainProcess = function() {
           log.push(this.executeCallbacks.length);
           OpenLayers.WPSProcess.prototype.chainProcess.apply(this, arguments);
       };
-      var done = false;
-      buffer.execute({
+      var done1 = done2 = false;
+      buffer1.execute({
           inputs: {
               geom: intersect.output(),
               distance: 1
           },
           success: function(outputs) {
-              done = true;
+              done1 = true;
+          }
+      });
+      buffer2.execute({
+          inputs: {
+              geom: intersect.output(),
+              distance: 2
+          },
+          success: function(outputs) {
+              done2 = true;
           }
       });
       
       t.delay_call(0.5, function() {
-          t.eq(log.length, 1, 'chainProcess called');
+          t.eq(log.length, 2, 'chainProcess called once for each process');
           t.eq(log[0], 1, 'executeCallback queued to wait for 1 chained process');
-          t.eq(done, true, 'execute successfully completed');
+          t.eq(log[1], 1, 'executeCallback queued to wait for 1 chained process');
+          t.eq(done1, true, 'execute for buffer1 process successfully completed');
+          t.eq(done2, true, 'execute for buffer2 process successfully completed');
 
           OpenLayers.Request.GET = originalGET;
           OpenLayers.Request.POST = originalPOST;
