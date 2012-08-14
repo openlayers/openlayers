@@ -966,7 +966,7 @@ ol.Map.prototype.updateMatrices_ = function() {
         1);
     if (this.canRotate() && goog.isDef(rotation)) {
       goog.vec.Mat4.rotate(this.coordinateToPixelMatrix_,
-          rotation,
+          -rotation,
           0,
           0,
           1);
