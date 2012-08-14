@@ -3,6 +3,7 @@
   <script src="OLLoader.js"></script>
   <script type="text/javascript">
 
+  var wkt = new OpenLayers.Format.WKT();
   var process;
   var client = new OpenLayers.WPSClient({
       servers: {
@@ -82,8 +83,8 @@
       // configured with output identifier
       process.execute({
           inputs: {
-              line: new OpenLayers.Format.WKT().read(line),
-              polygon: new OpenLayers.Format.WKT().read(polygon)
+              line: wkt.read(line),
+              polygon: wkt.read(polygon)
           },
           output: 'foo',
           success: success
@@ -91,8 +92,8 @@
       // configured without output identifier
       process.execute({
           inputs: {
-              line: new OpenLayers.Format.WKT().read(line),
-              polygon: new OpenLayers.Format.WKT().read(polygon)
+              line: wkt.read(line),
+              polygon: wkt.read(polygon)
           },
           success: success
       });
@@ -130,10 +131,10 @@
       var intersect = client.getProcess('local', 'JTS:intersection');    
       intersect.configure({
           inputs: {
-              a: new OpenLayers.Format.WKT().read(
+              a: wkt.read(
                      'LINESTRING(117 22,112 18,118 13,115 8)'
                  ),
-              b: new OpenLayers.Format.WKT().read(
+              b: wkt.read(
                      'POLYGON((110 20,120 20,120 10,110 10,110 20),(112 17,118 18,118 16,112 15,112 17))'
                  )
           }

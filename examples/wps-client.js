@@ -11,12 +11,12 @@ function init() {
         layers: [new OpenLayers.Layer.Vector()]
     });
 
-    var features = [new OpenLayers.Format.WKT().read(
+    var features = [new OpenLayers.Feature.Vector(OpenLayers.Geometry.fromWKT(
         'LINESTRING(117 22,112 18,118 13, 115 8)'
-    )];
-    var geometry = (new OpenLayers.Format.WKT().read(
+    ))];
+    var geometry = OpenLayers.Geometry.fromWKT(
         'POLYGON((110 20,120 20,120 10,110 10,110 20),(112 17,118 18,118 16,112 15,112 17))'
-    )).geometry;
+    );
 
     map.baseLayer.addFeatures(features);
     map.baseLayer.addFeatures([new OpenLayers.Feature.Vector(geometry)]);
