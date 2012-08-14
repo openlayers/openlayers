@@ -110,7 +110,9 @@ ol.MapRenderer.prototype.disposeInternal = function() {
     goog.dispose(layerRenderer);
   });
   goog.array.forEach(this.mapListenerKeys_, goog.events.unlistenByKey);
-  goog.array.forEach(this.layersListenerKeys_, goog.events.unlistenByKey);
+  if (!goog.isNull(this.layersListenerKeys_)) {
+    goog.array.forEach(this.layersListenerKeys_, goog.events.unlistenByKey);
+  }
   goog.base(this, 'disposeInternal');
 };
 
