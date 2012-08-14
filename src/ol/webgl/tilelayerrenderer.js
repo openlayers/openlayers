@@ -176,9 +176,9 @@ ol.webgl.TileLayerRenderer.prototype.bindFramebuffer_ =
 
     var texture = gl.createTexture();
     gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
-    gl.texImage2D(goog.webgl.TEXTURE_2D, 0, gl.RGBA, framebufferDimension,
-        framebufferDimension, 0, goog.webgl.RGBA, goog.webgl.UNSIGNED_BYTE,
-        null);
+    gl.texImage2D(goog.webgl.TEXTURE_2D, 0, goog.webgl.RGBA,
+        framebufferDimension, framebufferDimension, 0, goog.webgl.RGBA,
+        goog.webgl.UNSIGNED_BYTE, null);
     gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MAG_FILTER,
         goog.webgl.LINEAR);
     gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MIN_FILTER,
