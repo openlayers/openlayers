@@ -71,7 +71,8 @@ ol.MapPaneZIndex = {
  * @constructor
  * @extends {ol.Object}
  * @param {Element} target Target.
- * @param {Function} rendererConstructor Renderer constructor.
+ * @param {function(new: ol.MapRenderer, Element, ol.Map)} rendererConstructor
+ *     Renderer constructor.
  * @param {Object=} opt_values Values.
  * @param {goog.dom.ViewportSizeMonitor=} opt_viewportSizeMonitor
  *     Viewport size monitor.
