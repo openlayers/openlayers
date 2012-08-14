@@ -2,12 +2,14 @@
 
 goog.provide('ol.MapRenderer');
 
-goog.require('goog.events');
 goog.require('goog.Disposable');
+goog.require('goog.events');
 goog.require('goog.fx.anim');
 goog.require('goog.fx.anim.Animated');
 goog.require('ol.Map');
 goog.require('ol.MapProperty');
+
+
 
 /**
  * @constructor
@@ -122,7 +124,7 @@ ol.MapRenderer.prototype.forEachReadyVisibleLayer = function(f, opt_obj) {
 
 
 /**
- * @return {ol.Map}
+ * @return {ol.Map} Map.
  */
 ol.MapRenderer.prototype.getMap = function() {
   return this.map;
@@ -339,6 +341,7 @@ ol.MapRenderer.prototype.unfreezeRendering = function() {
     }
   }
 };
+
 
 
 /**

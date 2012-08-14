@@ -620,7 +620,8 @@ ol.webgl.MapRenderer.prototype.removeLayerRenderer = function(layer) {
 /**
  * @inheritDoc
  */
-ol.webgl.MapRenderer.prototype.setLayerRenderer = function(layer, layerRenderer) {
+ol.webgl.MapRenderer.prototype.setLayerRenderer = function(
+    layer, layerRenderer) {
   goog.base(this, 'setLayerRenderer', layer, layerRenderer);
   var layerKey = goog.getUid(layer);
   this.layerRendererChangeListenKeys_[layerKey] = goog.events.listen(
