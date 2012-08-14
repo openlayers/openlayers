@@ -1,5 +1,3 @@
-// FIXME unregister listeners when disposed
-
 goog.provide('ol.MapRenderer');
 
 goog.require('goog.Disposable');
@@ -57,11 +55,6 @@ ol.MapRenderer = function(target, map) {
    */
   this.freezeRenderingCount_ = 0;
 
-  /**
-   * @private
-   * @type {Array.<number>}
-   */
-  this.layersListenerKeys_ = null;
 
   /**
    * @protected
@@ -69,29 +62,42 @@ ol.MapRenderer = function(target, map) {
    */
   this.layerRenderers = {};
 
-  goog.events.listen(map,
-      ol.Object.getChangedEventType(ol.MapProperty.BACKGROUND_COLOR),
-      this.handleBackgroundColorChanged, false, this);
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.layersListenerKeys_ = null;
 
-  goog.events.listen(
-      map, ol.Object.getChangedEventType(ol.MapProperty.CENTER),
-      this.handleCenterChanged, false, this);
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.mapListenerKeys_ = [
+    goog.events.listen(
+        map, ol.Object.getChangedEventType(ol.MapProperty.BACKGROUND_COLOR),
+        this.handleBackgroundColorChanged, false, this),
 
-  goog.events.listen(
-      map, ol.Object.getChangedEventType(ol.MapProperty.LAYERS),
-      this.handleLayersChanged, false, this);
+    goog.events.listen(
+        map, ol.Object.getChangedEventType(ol.MapProperty.CENTER),
+        this.handleCenterChanged, false, this),
 
-  goog.events.listen(
-      map, ol.Object.getChangedEventType(ol.MapProperty.RESOLUTION),
-      this.handleResolutionChanged, false, this);
+    goog.events.listen(
+        map, ol.Object.getChangedEventType(ol.MapProperty.LAYERS),
+        this.handleLayersChanged, false, this),
 
-  goog.events.listen(
-      map, ol.Object.getChangedEventType(ol.MapProperty.ROTATION),
-      this.handleRotationChanged, false, this);
+    goog.events.listen(
+        map, ol.Object.getChangedEventType(ol.MapProperty.RESOLUTION),
+        this.handleResolutionChanged, false, this),
 
-  goog.events.listen(
-      map, ol.Object.getChangedEventType(ol.MapProperty.SIZE),
-      this.handleSizeChanged, false, this);
+    goog.events.listen(
+        map, ol.Object.getChangedEventType(ol.MapProperty.ROTATION),
+        this.handleRotationChanged, false, this),
+
+    goog.events.listen(
+        map, ol.Object.getChangedEventType(ol.MapProperty.SIZE),
+        this.handleSizeChanged, false, this)
+  ];
+
 };
 goog.inherits(ol.MapRenderer, goog.Disposable);
 
@@ -103,6 +109,8 @@ ol.MapRenderer.prototype.disposeInternal = function() {
   goog.object.forEach(this.layerRenderers, function(layerRenderer) {
     goog.dispose(layerRenderer);
   });
+  goog.array.forEach(this.mapListenerKeys_, goog.events.unlistenByKey);
+  goog.array.forEach(this.layersListenerKeys_, goog.events.unlistenByKey);
   goog.base(this, 'disposeInternal');
 };
 
