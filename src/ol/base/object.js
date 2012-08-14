@@ -99,23 +99,6 @@ ol.Object.getGetterName = function(key) {
  * @private
  * @type {Object.<string, string>}
  */
-ol.Object.changedMethodNameCache_ = {};
-
-
-/**
- * @param {string} key String.
- * @return {string} Changed method name.
- */
-ol.Object.getChangedMethodName = function(key) {
-  return ol.Object.changedMethodNameCache_[key] ||
-      (ol.Object.changedMethodNameCache_[key] = key + '_changed');
-};
-
-
-/**
- * @private
- * @type {Object.<string, string>}
- */
 ol.Object.setterNameCache_ = {};
 
 
@@ -222,12 +205,6 @@ ol.Object.prototype.notify = function(key) {
  * @private
  */
 ol.Object.prototype.notifyInternal_ = function(key) {
-  var changedMethodName = ol.Object.getChangedMethodName(key);
-  if (this[changedMethodName]) {
-    this[changedMethodName]();
-  } else {
-    this.changed(key);
-  }
   var eventType = ol.Object.getChangedEventType(key);
   this.dispatchEvent(eventType);
 };
