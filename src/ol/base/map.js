@@ -2,7 +2,6 @@
 // FIXME recheck layer/map projection compatability when projection changes
 // FIXME layer renderers should skip when they can't reproject
 // FIXME add tilt and height?
-// FIXME split out renderer
 // FIXME add postrender event
 // FIXME does the map really need to listen to itself (for center, etc.)?
 
