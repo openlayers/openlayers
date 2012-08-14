@@ -163,34 +163,34 @@ function testCreateFromCollection() {
 
 function testLengthChangeInsertAt() {
   var collection = ol.Collection.create([0, 1, 2]);
-  var lengthChangedCalled;
-  collection.length_changed = function() {
-    lengthChangedCalled = true;
-  };
+  var lengthEventDispatched;
+  goog.events.listen(collection, 'length_changed', function() {
+    lengthEventDispatched = true;
+  });
   collection.insertAt(2, 3);
-  assertTrue(lengthChangedCalled);
+  assertTrue(lengthEventDispatched);
 }
 
 
 function testLengthChangeRemoveAt() {
   var collection = ol.Collection.create([0, 1, 2]);
-  var lengthChangedCalled;
-  collection.length_changed = function() {
-    lengthChangedCalled = true;
-  };
+  var lengthEventDispatched;
+  goog.events.listen(collection, 'length_changed', function() {
+    lengthEventDispatched = true;
+  });
   collection.removeAt(0);
-  assertTrue(lengthChangedCalled);
+  assertTrue(lengthEventDispatched);
 }
 
 
 function testLengthChangeSetAt() {
   var collection = ol.Collection.create([0, 1, 2]);
-  var lengthChangedCalled;
-  collection.length_changed = function() {
-    lengthChangedCalled = true;
-  };
+  var lengthEventDispatched;
+  goog.events.listen(collection, 'length_changed', function() {
+    lengthEventDispatched = true;
+  });
   collection.setAt(1, 1);
-  assertUndefined(lengthChangedCalled);
+  assertUndefined(lengthEventDispatched);
 }
 
 
