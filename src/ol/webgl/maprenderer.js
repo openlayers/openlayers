@@ -232,7 +232,7 @@ ol.webgl.MapRenderer = function(target, map) {
    */
   this.layerRendererChangeListenKeys_ = {};
 
-  this.handleWebGLContextRestored();
+  this.initializeGL_();
 
 };
 goog.inherits(ol.webgl.MapRenderer, ol.MapRenderer);
@@ -495,13 +495,21 @@ ol.webgl.MapRenderer.prototype.handleWebGLContextRestored = function() {
   if (goog.DEBUG) {
     ol.webgl.map.logger.info('WebGLContextRestored');
   }
+  this.initializeGL_();
+  this.getMap().render();
+};
+
+
+/**
+ * @private
+ */
+ol.webgl.MapRenderer.prototype.initializeGL_ = function() {
   var gl = this.gl_;
   gl.activeTexture(goog.webgl.TEXTURE0);
   gl.blendFunc(goog.webgl.SRC_ALPHA, goog.webgl.ONE_MINUS_SRC_ALPHA);
   gl.disable(goog.webgl.CULL_FACE);
   gl.disable(goog.webgl.DEPTH_TEST);
   gl.disable(goog.webgl.SCISSOR_TEST);
-  this.render();
 };
 
 
