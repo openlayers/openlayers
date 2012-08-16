@@ -1,6 +1,6 @@
 // FIXME large resolutions lead to too large framebuffers :-(
 // FIXME animated shaders! check in redraw
-// FIXME defer texture uploads and delete* calls
+// FIXME defer texture uploads
 
 goog.provide('ol.webgl.TileLayerRenderer');
 goog.provide('ol.webgl.tilelayerrenderer');
@@ -9,12 +9,14 @@ goog.provide('ol.webgl.tilelayerrenderer.shader.Vertex');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.debug.Logger');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('goog.vec.Vec4');
 goog.require('goog.webgl');
 goog.require('ol.Coordinate');
+goog.require('ol.MapEventType');
 goog.require('ol.Size');
 goog.require('ol.TileLayer');
 goog.require('ol.TileState');
@@ -165,8 +167,30 @@ ol.webgl.TileLayerRenderer.prototype.bindFramebuffer_ =
   if (!goog.isDef(this.framebufferDimension_) ||
       this.framebufferDimension_ != framebufferDimension) {
 
-    gl.deleteFramebuffer(this.framebuffer_);
-    gl.deleteTexture(this.texture_);
+    if (goog.DEBUG) {
+      ol.webgl.tilelayerrenderer.logger.info('re-sizing framebuffer');
+    }
+
+    if (ol.webgl.FREE_RESOURCES_IMMEDIATELY) {
+      if (goog.DEBUG) {
+        ol.webgl.tilelayerrenderer.logger.info('freeing WebGL resources');
+      }
+      gl.deleteFramebuffer(this.framebuffer_);
+      gl.deleteTexture(this.texture_);
+    } else {
+      var map = this.getMap();
+      goog.events.listenOnce(
+          map,
+          ol.MapEventType.POST_RENDER,
+          goog.partial(function(gl, framebuffer, texture) {
+            if (goog.DEBUG) {
+              ol.webgl.tilelayerrenderer.logger.info(
+                  'freeing WebGL resources on postrender');
+            }
+            gl.deleteFramebuffer(framebuffer);
+            gl.deleteTexture(texture);
+          }, gl, this.framebuffer_, this.texture_));
+    }
 
     var texture = gl.createTexture();
     gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
