@@ -244,7 +244,7 @@ goog.inherits(ol.webgl.MapRenderer, ol.MapRenderer);
 ol.webgl.MapRenderer.prototype.addLayer = function(layer) {
   goog.base(this, 'addLayer', layer);
   if (layer.getVisible()) {
-    this.render();
+    this.getMap().render();
   }
 };
 
@@ -409,7 +409,7 @@ ol.webgl.MapRenderer.prototype.handleBackgroundColorChanged = function() {
       backgroundColor.g / 255,
       backgroundColor.b / 255,
       backgroundColor.a / 255);
-  this.render();
+  this.getMap().render();
 };
 
 
@@ -418,7 +418,7 @@ ol.webgl.MapRenderer.prototype.handleBackgroundColorChanged = function() {
  */
 ol.webgl.MapRenderer.prototype.handleCenterChanged = function() {
   goog.base(this, 'handleCenterChanged');
-  this.render();
+  this.getMap().render();
 };
 
 
@@ -427,7 +427,7 @@ ol.webgl.MapRenderer.prototype.handleCenterChanged = function() {
  * @protected
  */
 ol.webgl.MapRenderer.prototype.handleLayerRendererChange = function(event) {
-  this.render();
+  this.getMap().render();
 };
 
 
@@ -436,7 +436,7 @@ ol.webgl.MapRenderer.prototype.handleLayerRendererChange = function(event) {
  */
 ol.webgl.MapRenderer.prototype.handleResolutionChanged = function() {
   goog.base(this, 'handleResolutionChanged');
-  this.render();
+  this.getMap().render();
 };
 
 
@@ -445,7 +445,7 @@ ol.webgl.MapRenderer.prototype.handleResolutionChanged = function() {
  */
 ol.webgl.MapRenderer.prototype.handleRotationChanged = function() {
   goog.base(this, 'handleRotationChanged');
-  this.render();
+  this.getMap().render();
 };
 
 
@@ -463,7 +463,7 @@ ol.webgl.MapRenderer.prototype.handleSizeChanged = function() {
   var gl = this.gl_;
   if (!goog.isNull(gl)) {
     gl.viewport(0, 0, size.width, size.height);
-    this.render();
+    this.getMap().render();
   }
 };
 
@@ -528,7 +528,7 @@ ol.webgl.MapRenderer.prototype.isImageTextureLoaded = function(image) {
 ol.webgl.MapRenderer.prototype.removeLayer = function(layer) {
   goog.base(this, 'removeLayer', layer);
   if (layer.getVisible()) {
-    this.render();
+    this.getMap().render();
   }
 };
 
