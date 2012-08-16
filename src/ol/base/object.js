@@ -68,21 +68,6 @@ ol.Object.capitalize = function(str) {
 
 
 /**
- * @param {ol.Object|Object} arg Argument.
- * @return {ol.Object} Object.
- */
-ol.Object.create = function(arg) {
-  if (arg instanceof ol.Object) {
-    return arg;
-  } else {
-    var object = new ol.Object();
-    object.setOptions(arg);
-    return object;
-  }
-};
-
-
-/**
  * @param {ol.Object} obj Object.
  * @return {Object.<string, {target: ol.Object, key: string}>} Accessors.
  */

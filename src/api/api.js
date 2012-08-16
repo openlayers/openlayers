@@ -5,6 +5,7 @@ goog.require('goog.dom');
 goog.require('ol.Coordinate');
 goog.require('ol.Layer');
 goog.require('ol.Map');
+goog.require('ol.Object');
 goog.require('ol.Projection');
 goog.require('ol.createMap');
 goog.require('ol.layer.OpenStreetMap');
@@ -33,6 +34,12 @@ ol3.Layers;
  *            zoom: (number|undefined)}}
  */
 ol3.MapOptions;
+
+
+/**
+ * @typedef {Object|ol.Object}
+ */
+ol3.Object;
 
 
 /**
@@ -123,6 +130,23 @@ ol3.map = function(opt_mapOptions) {
   return map;
 };
 goog.exportProperty(ol3, 'map', ol3.map);
+
+
+/**
+ * @param {ol3.Object} object Object.
+ * @return {ol.Object} Object.
+ */
+ol3.object = function(object) {
+  if (object instanceof ol.Object) {
+    return object;
+  } else if (goog.isObject(object)) {
+    var values = /** @type {Object} */ object;
+    return new ol.Object(values);
+  } else {
+    return null;
+  }
+};
+goog.exportProperty(ol3, 'object', ol3.object);
 
 
 /**

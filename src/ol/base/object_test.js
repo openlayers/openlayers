@@ -367,21 +367,6 @@ function testBindSelf() {
 }
 
 
-function testCreateFromObject() {
-  var obj = {k: 1};
-  obj = ol.Object.create(obj);
-  assertTrue(obj instanceof ol.Object);
-  assertEquals(1, obj.get('k'));
-}
-
-
-function testCreateFromObject() {
-  var obj1 = new ol.Object();
-  var obj2 = ol.Object.create(obj1);
-  assertTrue(obj2 === obj1);
-}
-
-
 function testCreateWithOptions() {
   var obj = new ol.Object({k: 1});
   assertEquals(1, obj.get('k'));
