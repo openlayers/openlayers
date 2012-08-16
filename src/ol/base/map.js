@@ -196,6 +196,16 @@ goog.inherits(ol.Map, ol.Object);
 
 
 /**
+ * @private
+ */
+ol.Map.prototype.animate_ = function() {
+  goog.asserts.assert(!this.animating_);
+  goog.fx.anim.registerAnimation(this.animation_);
+  this.animating_ = true;
+};
+
+
+/**
  * @return {boolean} Can rotate.
  */
 ol.Map.prototype.canRotate = function() {
@@ -222,6 +232,13 @@ ol.Map.prototype.fitExtent = function(extent) {
  */
 ol.Map.prototype.fitUserExtent = function(userExtent) {
   this.fitExtent(userExtent.transform(this.userToMapTransform_));
+};
+
+
+/**
+ */
+ol.Map.prototype.freezeRendering = function() {
+  ++this.freezeRenderingCount_;
 };
 
 
@@ -532,6 +549,21 @@ ol.Map.prototype.recalculateTransforms_ = function() {
 
 
 /**
+ */
+ol.Map.prototype.render = function() {
+  if (!this.animating_) {
+    if (this.freezeRenderingCount_ === 0) {
+      if (this.renderer_.render()) {
+        this.animate_();
+      }
+    } else {
+      this.dirty_ = true;
+    }
+  }
+};
+
+
+/**
  * @param {ol.Color} backgroundColor Background color.
  */
 ol.Map.prototype.setBackgroundColor = function(backgroundColor) {
@@ -662,26 +694,15 @@ goog.exportProperty(
 
 /**
  */
-ol.Map.prototype.render = function() {
-  if (!this.animating_) {
-    if (this.freezeRenderingCount_ === 0) {
+ol.Map.prototype.unfreezeRendering = function() {
+  goog.asserts.assert(this.freezeRenderingCount_ > 0);
+  if (--this.freezeRenderingCount_ === 0) {
+    if (!this.animating_ && this.dirty_) {
       if (this.renderer_.render()) {
         this.animate_();
       }
-    } else {
-      this.dirty_ = true;
     }
   }
-};
-
-
-/**
- * @private
- */
-ol.Map.prototype.animate_ = function() {
-  goog.asserts.assert(!this.animating_);
-  goog.fx.anim.registerAnimation(this.animation_);
-  this.animating_ = true;
 };
 
 
@@ -696,27 +717,6 @@ ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
     f.call(opt_obj);
   } finally {
     this.unfreezeRendering();
-  }
-};
-
-
-/**
- */
-ol.Map.prototype.freezeRendering = function() {
-  ++this.freezeRenderingCount_;
-};
-
-
-/**
- */
-ol.Map.prototype.unfreezeRendering = function() {
-  goog.asserts.assert(this.freezeRenderingCount_ > 0);
-  if (--this.freezeRenderingCount_ === 0) {
-    if (!this.animating_ && this.dirty_) {
-      if (this.renderer_.render()) {
-        this.animate_();
-      }
-    }
   }
 };
 
