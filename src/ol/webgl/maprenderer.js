@@ -517,6 +517,31 @@ ol.webgl.MapRenderer.prototype.isImageTextureLoaded = function(image) {
 /**
  * @inheritDoc
  */
+ol.webgl.MapRenderer.prototype.removeLayer = function(layer) {
+  goog.base(this, 'removeLayer', layer);
+  if (layer.getVisible()) {
+    this.render();
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.webgl.MapRenderer.prototype.removeLayerRenderer = function(layer) {
+  var layerRenderer = goog.base(this, 'removeLayerRenderer', layer);
+  if (!goog.isNull(layerRenderer)) {
+    var layerKey = goog.getUid(layer);
+    goog.events.unlistenByKey(this.layerRendererChangeListenKeys_[layerKey]);
+    delete this.layerRendererChangeListenKeys_[layerKey];
+  }
+  return layerRenderer;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.webgl.MapRenderer.prototype.render = function() {
 
   if (!this.getMap().isDef()) {
@@ -589,31 +614,6 @@ ol.webgl.MapRenderer.prototype.render = function() {
 
   return animate;
 
-};
-
-
-/**
- * @inheritDoc
- */
-ol.webgl.MapRenderer.prototype.removeLayer = function(layer) {
-  goog.base(this, 'removeLayer', layer);
-  if (layer.getVisible()) {
-    this.render();
-  }
-};
-
-
-/**
- * @inheritDoc
- */
-ol.webgl.MapRenderer.prototype.removeLayerRenderer = function(layer) {
-  var layerRenderer = goog.base(this, 'removeLayerRenderer', layer);
-  if (!goog.isNull(layerRenderer)) {
-    var layerKey = goog.getUid(layer);
-    goog.events.unlistenByKey(this.layerRendererChangeListenKeys_[layerKey]);
-    delete this.layerRendererChangeListenKeys_[layerKey];
-  }
-  return layerRenderer;
 };
 
 

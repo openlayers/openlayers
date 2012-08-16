@@ -97,6 +97,30 @@ goog.inherits(ol.MapRenderer, goog.Disposable);
 
 
 /**
+ * @param {ol.Layer} layer Layer.
+ * @protected
+ */
+ol.MapRenderer.prototype.addLayer = function(layer) {
+  var layerRenderer = this.createLayerRenderer(layer);
+  this.setLayerRenderer(layer, layerRenderer);
+};
+
+
+/**
+ * @return {boolean} Can rotate.
+ */
+ol.MapRenderer.prototype.canRotate = goog.functions.FALSE;
+
+
+/**
+ * @param {ol.Layer} layer Layer.
+ * @protected
+ * @return {ol.LayerRenderer} layerRenderer Layer renderer.
+ */
+ol.MapRenderer.prototype.createLayerRenderer = goog.abstractMethod;
+
+
+/**
  * @inheritDoc
  */
 ol.MapRenderer.prototype.disposeInternal = function() {
@@ -128,10 +152,14 @@ ol.MapRenderer.prototype.forEachReadyVisibleLayer = function(f, opt_obj) {
 
 
 /**
- * @return {ol.Map} Map.
+ * @param {ol.Pixel} pixel Pixel.
+ * @return {ol.Coordinate} Coordinate.
  */
-ol.MapRenderer.prototype.getMap = function() {
-  return this.map;
+ol.MapRenderer.prototype.getCoordinateFromPixel = function(pixel) {
+  this.updateMatrices_();
+  var vec3 = [pixel.x, pixel.y, 0];
+  goog.vec.Mat4.multVec3(this.pixelToCoordinateMatrix_, vec3, vec3);
+  return new ol.Coordinate(vec3[0], vec3[1]);
 };
 
 
@@ -149,21 +177,23 @@ ol.MapRenderer.prototype.getLayerRenderer = function(layer) {
 
 
 /**
- * @param {ol.Layer} layer Layer.
- * @param {ol.LayerRenderer} layerRenderer Layer renderer.
- * @protected
+ * @return {ol.Map} Map.
  */
-ol.MapRenderer.prototype.setLayerRenderer = function(layer, layerRenderer) {
-  var key = goog.getUid(layer);
-  goog.asserts.assert(!(key in this.layerRenderers));
-  this.layerRenderers[key] = layerRenderer;
+ol.MapRenderer.prototype.getMap = function() {
+  return this.map;
 };
 
 
 /**
- * @return {boolean} Can rotate.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @return {ol.Pixel} Pixel.
  */
-ol.MapRenderer.prototype.canRotate = goog.functions.FALSE;
+ol.MapRenderer.prototype.getPixelFromCoordinate = function(coordinate) {
+  this.updateMatrices_();
+  var vec3 = [coordinate.x, coordinate.y, 0];
+  goog.vec.Mat4.multVec3(this.coordinateToPixelMatrix_, vec3, vec3);
+  return new ol.Pixel(vec3[0], vec3[1]);
+};
 
 
 /**
@@ -176,6 +206,16 @@ ol.MapRenderer.prototype.handleBackgroundColorChanged = goog.nullFunction;
  */
 ol.MapRenderer.prototype.handleCenterChanged = function() {
   this.matricesDirty_ = true;
+};
+
+
+/**
+ * @param {ol.CollectionEvent} collectionEvent Collection event.
+ * @protected
+ */
+ol.MapRenderer.prototype.handleLayersAdd = function(collectionEvent) {
+  var layer = /** @type {ol.Layer} */ collectionEvent.elem;
+  this.addLayer(layer);
 };
 
 
@@ -209,37 +249,33 @@ ol.MapRenderer.prototype.handleLayersChanged = function() {
  * @param {ol.CollectionEvent} collectionEvent Collection event.
  * @protected
  */
-ol.MapRenderer.prototype.handleLayersAdd = function(collectionEvent) {
-  var layer = /** @type {ol.Layer} */ collectionEvent.elem;
-  this.addLayer(layer);
-};
-
-
-/**
- * @param {ol.Layer} layer Layer.
- * @protected
- */
-ol.MapRenderer.prototype.addLayer = function(layer) {
-  var layerRenderer = this.createLayerRenderer(layer);
-  this.setLayerRenderer(layer, layerRenderer);
-};
-
-
-/**
- * @param {ol.Layer} layer Layer.
- * @protected
- * @return {ol.LayerRenderer} layerRenderer Layer renderer.
- */
-ol.MapRenderer.prototype.createLayerRenderer = goog.abstractMethod;
-
-
-/**
- * @param {ol.CollectionEvent} collectionEvent Collection event.
- * @protected
- */
 ol.MapRenderer.prototype.handleLayersRemove = function(collectionEvent) {
   var layer = /** @type {ol.Layer} */ collectionEvent.elem;
   this.removeLayer(layer);
+};
+
+
+/**
+ * @protected
+ */
+ol.MapRenderer.prototype.handleResolutionChanged = function() {
+  this.matricesDirty_ = true;
+};
+
+
+/**
+ * @protected
+ */
+ol.MapRenderer.prototype.handleRotationChanged = function() {
+  this.matricesDirty_ = true;
+};
+
+
+/**
+ * @protected
+ */
+ol.MapRenderer.prototype.handleSizeChanged = function() {
+  this.matricesDirty_ = true;
 };
 
 
@@ -270,30 +306,6 @@ ol.MapRenderer.prototype.removeLayerRenderer = function(layer) {
 
 
 /**
- * @protected
- */
-ol.MapRenderer.prototype.handleResolutionChanged = function() {
-  this.matricesDirty_ = true;
-};
-
-
-/**
- * @protected
- */
-ol.MapRenderer.prototype.handleRotationChanged = function() {
-  this.matricesDirty_ = true;
-};
-
-
-/**
- * @protected
- */
-ol.MapRenderer.prototype.handleSizeChanged = function() {
-  this.matricesDirty_ = true;
-};
-
-
-/**
  * @return {boolean} Animating.
  */
 ol.MapRenderer.prototype.render = function() {
@@ -304,6 +316,18 @@ ol.MapRenderer.prototype.render = function() {
     }
   });
   return animate;
+};
+
+
+/**
+ * @param {ol.Layer} layer Layer.
+ * @param {ol.LayerRenderer} layerRenderer Layer renderer.
+ * @protected
+ */
+ol.MapRenderer.prototype.setLayerRenderer = function(layer, layerRenderer) {
+  var key = goog.getUid(layer);
+  goog.asserts.assert(!(key in this.layerRenderers));
+  this.layerRenderers[key] = layerRenderer;
 };
 
 
@@ -349,28 +373,4 @@ ol.MapRenderer.prototype.updateMatrices_ = function() {
 
   }
 
-};
-
-
-/**
- * @param {ol.Pixel} pixel Pixel.
- * @return {ol.Coordinate} Coordinate.
- */
-ol.MapRenderer.prototype.getCoordinateFromPixel = function(pixel) {
-  this.updateMatrices_();
-  var vec3 = [pixel.x, pixel.y, 0];
-  goog.vec.Mat4.multVec3(this.pixelToCoordinateMatrix_, vec3, vec3);
-  return new ol.Coordinate(vec3[0], vec3[1]);
-};
-
-
-/**
- * @param {ol.Coordinate} coordinate Coordinate.
- * @return {ol.Pixel} Pixel.
- */
-ol.MapRenderer.prototype.getPixelFromCoordinate = function(coordinate) {
-  this.updateMatrices_();
-  var vec3 = [coordinate.x, coordinate.y, 0];
-  goog.vec.Mat4.multVec3(this.coordinateToPixelMatrix_, vec3, vec3);
-  return new ol.Pixel(vec3[0], vec3[1]);
 };

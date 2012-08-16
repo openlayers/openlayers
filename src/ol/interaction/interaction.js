@@ -23,12 +23,6 @@ ol.Interaction = function(constraints) {
 
 
 /**
- * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
- */
-ol.Interaction.prototype.handleMapBrowserEvent = goog.abstractMethod;
-
-
-/**
  * @param {ol.Map} map Map.
  * @param {ol.Extent} extent Extent.
  */
@@ -42,6 +36,12 @@ ol.Interaction.prototype.fitExtent = function(map, extent) {
     map.setResolution(resolution);
   });
 };
+
+
+/**
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ */
+ol.Interaction.prototype.handleMapBrowserEvent = goog.abstractMethod;
 
 
 /**

@@ -46,16 +46,6 @@ ol.dom.LayerRenderer.prototype.getMapRenderer = function() {
 
 
 /**
- * Set the location of the top left corner of the target.
- *
- * @param {ol.Coordinate} origin Origin.
- */
-ol.dom.LayerRenderer.prototype.setOrigin = function(origin) {
-  this.origin = origin;
-};
-
-
-/**
  * @inheritDoc
  */
 ol.dom.LayerRenderer.prototype.handleLayerOpacityChange = function() {
@@ -74,3 +64,13 @@ ol.dom.LayerRenderer.prototype.handleLayerVisibleChange = function() {
 /**
  */
 ol.dom.LayerRenderer.prototype.render = goog.abstractMethod;
+
+
+/**
+ * Set the location of the top left corner of the target.
+ *
+ * @param {ol.Coordinate} origin Origin.
+ */
+ol.dom.LayerRenderer.prototype.setOrigin = function(origin) {
+  this.origin = origin;
+};

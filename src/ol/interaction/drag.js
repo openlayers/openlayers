@@ -70,16 +70,16 @@ ol.interaction.Drag.prototype.handleDrag = goog.nullFunction;
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
  * @protected
- * @return {boolean} Capture dragging.
  */
-ol.interaction.Drag.prototype.handleDragStart = goog.functions.FALSE;
+ol.interaction.Drag.prototype.handleDragEnd = goog.nullFunction;
 
 
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
  * @protected
+ * @return {boolean} Capture dragging.
  */
-ol.interaction.Drag.prototype.handleDragEnd = goog.nullFunction;
+ol.interaction.Drag.prototype.handleDragStart = goog.functions.FALSE;
 
 
 /**

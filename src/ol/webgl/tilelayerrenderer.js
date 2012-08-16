@@ -146,21 +146,6 @@ goog.inherits(ol.webgl.TileLayerRenderer, ol.webgl.LayerRenderer);
 
 
 /**
- * @protected
- */
-ol.webgl.TileLayerRenderer.prototype.disposeInternal = function() {
-  var mapRenderer = this.getMapRenderer();
-  var gl = mapRenderer.getGL();
-  if (!gl.isContextLost()) {
-    gl.deleteBuffer(this.arrayBuffer_);
-    gl.deleteFramebuffer(this.framebuffer_);
-    gl.deleteTexture(this.texture_);
-  }
-  goog.base(this, 'disposeInternal');
-};
-
-
-/**
  * @param {number} framebufferDimension Framebuffer dimension.
  * @private
  */
@@ -199,6 +184,21 @@ ol.webgl.TileLayerRenderer.prototype.bindFramebuffer_ =
     gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, this.framebuffer_);
   }
 
+};
+
+
+/**
+ * @protected
+ */
+ol.webgl.TileLayerRenderer.prototype.disposeInternal = function() {
+  var mapRenderer = this.getMapRenderer();
+  var gl = mapRenderer.getGL();
+  if (!gl.isContextLost()) {
+    gl.deleteBuffer(this.arrayBuffer_);
+    gl.deleteFramebuffer(this.framebuffer_);
+    gl.deleteTexture(this.texture_);
+  }
+  goog.base(this, 'disposeInternal');
 };
 
 

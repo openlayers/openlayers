@@ -42,6 +42,16 @@ ol.TileUrlFunction.createFromTemplate = function(template) {
 
 
 /**
+ * @param {Array.<string>} templates Templates.
+ * @return {ol.TileUrlFunctionType} Tile URL function.
+ */
+ol.TileUrlFunction.createFromTemplates = function(templates) {
+  return ol.TileUrlFunction.createFromTileUrlFunctions(
+      goog.array.map(templates, ol.TileUrlFunction.createFromTemplate));
+};
+
+
+/**
  * @param {Array.<ol.TileUrlFunctionType>} tileUrlFunctions Tile URL Functions.
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
@@ -54,16 +64,6 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
       return tileUrlFunctions[index](tileCoord);
     }
   };
-};
-
-
-/**
- * @param {Array.<string>} templates Templates.
- * @return {ol.TileUrlFunctionType} Tile URL function.
- */
-ol.TileUrlFunction.createFromTemplates = function(templates) {
-  return ol.TileUrlFunction.createFromTileUrlFunctions(
-      goog.array.map(templates, ol.TileUrlFunction.createFromTemplate));
 };
 
 

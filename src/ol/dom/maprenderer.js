@@ -67,6 +67,59 @@ goog.inherits(ol.dom.MapRenderer, ol.MapRenderer);
 
 
 /**
+ * @inheritDoc
+ */
+ol.dom.MapRenderer.prototype.createLayerRenderer = function(layer) {
+
+  if (layer instanceof ol.TileLayer) {
+
+    var layerPane = goog.dom.createElement(goog.dom.TagName.DIV);
+    layerPane.className = 'ol-layer';
+    layerPane.style.position = 'absolute';
+    goog.dom.appendChild(this.layersPane_, layerPane);
+
+    var layerRenderer = new ol.dom.TileLayerRenderer(this, layer, layerPane);
+
+    this.layerPanes_[goog.getUid(layerRenderer)] = layerPane;
+
+    return layerRenderer;
+
+  } else {
+    goog.asserts.assert(false);
+    return null;
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.dom.MapRenderer.prototype.handleCenterChanged = function() {
+  goog.base(this, 'handleCenterChanged');
+  // FIXME: shiftLayersPane_ and resetLayersPane_ should be called
+  // elsewhere as we may be frozen here
+  if (goog.isDef(this.renderedCenter_)) {
+    this.shiftLayersPane_();
+  } else {
+    this.resetLayersPane_();
+  }
+  this.render();
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.dom.MapRenderer.prototype.handleResolutionChanged = function() {
+  goog.base(this, 'handleResolutionChanged');
+  // FIXME: resetLayersPane_ should be called
+  // elsewhere as we may be frozen here
+  this.resetLayersPane_();
+  this.render();
+};
+
+
+/**
  * Reset the layers pane to its initial position.
  * @private
  */
@@ -117,57 +170,4 @@ ol.dom.MapRenderer.prototype.shiftLayersPane_ = function() {
     goog.style.setPosition(this.layersPane_, offset);
     this.renderedCenter_ = center;
   }
-};
-
-
-/**
- * @inheritDoc
- */
-ol.dom.MapRenderer.prototype.createLayerRenderer = function(layer) {
-
-  if (layer instanceof ol.TileLayer) {
-
-    var layerPane = goog.dom.createElement(goog.dom.TagName.DIV);
-    layerPane.className = 'ol-layer';
-    layerPane.style.position = 'absolute';
-    goog.dom.appendChild(this.layersPane_, layerPane);
-
-    var layerRenderer = new ol.dom.TileLayerRenderer(this, layer, layerPane);
-
-    this.layerPanes_[goog.getUid(layerRenderer)] = layerPane;
-
-    return layerRenderer;
-
-  } else {
-    goog.asserts.assert(false);
-    return null;
-  }
-};
-
-
-/**
- * @inheritDoc
- */
-ol.dom.MapRenderer.prototype.handleCenterChanged = function() {
-  goog.base(this, 'handleCenterChanged');
-  // FIXME: shiftLayersPane_ and resetLayersPane_ should be called
-  // elsewhere as we may be frozen here
-  if (goog.isDef(this.renderedCenter_)) {
-    this.shiftLayersPane_();
-  } else {
-    this.resetLayersPane_();
-  }
-  this.render();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.dom.MapRenderer.prototype.handleResolutionChanged = function() {
-  goog.base(this, 'handleResolutionChanged');
-  // FIXME: resetLayersPane_ should be called
-  // elsewhere as we may be frozen here
-  this.resetLayersPane_();
-  this.render();
 };

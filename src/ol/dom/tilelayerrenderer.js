@@ -45,6 +45,50 @@ ol.dom.TileLayerRenderer.prototype.getLayer = function() {
 
 
 /**
+ * Get the pixel offset between the tile origin and the container origin.
+ * @private
+ * @param {number} z Z.
+ * @param {number} resolution Resolution.
+ * @return {ol.Coordinate} Offset.
+ */
+ol.dom.TileLayerRenderer.prototype.getTileOffset_ = function(z, resolution) {
+  var tileLayer = this.getLayer();
+  var tileStore = tileLayer.getStore();
+  var tileGrid = tileStore.getTileGrid();
+  var tileOrigin = tileGrid.getOrigin(z);
+  var offset = new ol.Coordinate(
+      Math.round((this.origin.x - tileOrigin.x) / resolution),
+      Math.round((tileOrigin.y - this.origin.y) / resolution));
+  return offset;
+};
+
+
+/**
+ * Get rid of tiles outside the rendered extent.
+ * @private
+ * @param {ol.TileBounds} tileBounds Tile bounds.
+ * @param {number} z Z.
+ */
+ol.dom.TileLayerRenderer.prototype.removeInvisibleTiles_ = function(
+    tileBounds, z) {
+  var key, tileCoord, prune, tile;
+  for (key in this.renderedTiles_) {
+    tileCoord = ol.TileCoord.createFromString(key);
+    prune = z !== tileCoord.z ||
+            tileCoord.x < tileBounds.minX ||
+            tileCoord.x > tileBounds.maxX ||
+            tileCoord.y < tileBounds.minY ||
+            tileCoord.y > tileBounds.maxY;
+    if (prune) {
+      tile = this.renderedTiles_[key];
+      delete this.renderedTiles_[key];
+      goog.dom.removeNode(tile.getImage(this));
+    }
+  }
+};
+
+
+/**
  * @inheritDoc
  */
 ol.dom.TileLayerRenderer.prototype.render = function() {
@@ -104,48 +148,4 @@ ol.dom.TileLayerRenderer.prototype.render = function() {
 
   this.removeInvisibleTiles_(tileBounds, z);
   this.renderedMapResolution_ = mapResolution;
-};
-
-
-/**
- * Get the pixel offset between the tile origin and the container origin.
- * @private
- * @param {number} z Z.
- * @param {number} resolution Resolution.
- * @return {ol.Coordinate} Offset.
- */
-ol.dom.TileLayerRenderer.prototype.getTileOffset_ = function(z, resolution) {
-  var tileLayer = this.getLayer();
-  var tileStore = tileLayer.getStore();
-  var tileGrid = tileStore.getTileGrid();
-  var tileOrigin = tileGrid.getOrigin(z);
-  var offset = new ol.Coordinate(
-      Math.round((this.origin.x - tileOrigin.x) / resolution),
-      Math.round((tileOrigin.y - this.origin.y) / resolution));
-  return offset;
-};
-
-
-/**
- * Get rid of tiles outside the rendered extent.
- * @private
- * @param {ol.TileBounds} tileBounds Tile bounds.
- * @param {number} z Z.
- */
-ol.dom.TileLayerRenderer.prototype.removeInvisibleTiles_ = function(
-    tileBounds, z) {
-  var key, tileCoord, prune, tile;
-  for (key in this.renderedTiles_) {
-    tileCoord = ol.TileCoord.createFromString(key);
-    prune = z !== tileCoord.z ||
-            tileCoord.x < tileBounds.minX ||
-            tileCoord.x > tileBounds.maxX ||
-            tileCoord.y < tileBounds.minY ||
-            tileCoord.y > tileBounds.maxY;
-    if (prune) {
-      tile = this.renderedTiles_[key];
-      delete this.renderedTiles_[key];
-      goog.dom.removeNode(tile.getImage(this));
-    }
-  }
 };

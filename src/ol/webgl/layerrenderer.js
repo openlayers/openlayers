@@ -27,12 +27,6 @@ ol.webgl.LayerRenderer.prototype.dispatchChangeEvent = function() {
 
 
 /**
- * @return {WebGLTexture} Texture.
- */
-ol.webgl.LayerRenderer.prototype.getTexture = goog.abstractMethod;
-
-
-/**
  * @override
  * @return {ol.MapRenderer} MapRenderer.
  */
@@ -45,6 +39,12 @@ ol.webgl.LayerRenderer.prototype.getMapRenderer = function() {
  * @return {goog.vec.Mat4.AnyType} Matrix.
  */
 ol.webgl.LayerRenderer.prototype.getMatrix = goog.abstractMethod;
+
+
+/**
+ * @return {WebGLTexture} Texture.
+ */
+ol.webgl.LayerRenderer.prototype.getTexture = goog.abstractMethod;
 
 
 /**

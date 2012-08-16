@@ -70,18 +70,18 @@ ol.LayerRenderer.prototype.getLayer = function() {
 
 
 /**
- * @return {ol.MapRenderer} Map renderer.
- */
-ol.LayerRenderer.prototype.getMapRenderer = function() {
-  return this.mapRenderer_;
-};
-
-
-/**
  * @return {ol.Map} Map.
  */
 ol.LayerRenderer.prototype.getMap = function() {
   return this.mapRenderer_.getMap();
+};
+
+
+/**
+ * @return {ol.MapRenderer} Map renderer.
+ */
+ol.LayerRenderer.prototype.getMapRenderer = function() {
+  return this.mapRenderer_;
 };
 
 
@@ -106,13 +106,13 @@ ol.LayerRenderer.prototype.handleLayerHueChange = goog.nullFunction;
 /**
  * @protected
  */
-ol.LayerRenderer.prototype.handleLayerOpacityChange = goog.nullFunction;
+ol.LayerRenderer.prototype.handleLayerLoad = goog.nullFunction;
 
 
 /**
  * @protected
  */
-ol.LayerRenderer.prototype.handleLayerLoad = goog.nullFunction;
+ol.LayerRenderer.prototype.handleLayerOpacityChange = goog.nullFunction;
 
 
 /**

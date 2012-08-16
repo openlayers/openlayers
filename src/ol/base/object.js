@@ -38,6 +38,27 @@ goog.inherits(ol.Object, goog.events.EventTarget);
 
 
 /**
+ * @private
+ * @type {Object.<string, string>}
+ */
+ol.Object.changedEventTypeCache_ = {};
+
+
+/**
+ * @private
+ * @type {Object.<string, string>}
+ */
+ol.Object.getterNameCache_ = {};
+
+
+/**
+ * @private
+ * @type {Object.<string, string>}
+ */
+ol.Object.setterNameCache_ = {};
+
+
+/**
  * @param {string} str String.
  * @return {string} Capitalized string.
  */
@@ -62,10 +83,13 @@ ol.Object.create = function(arg) {
 
 
 /**
- * @private
- * @type {Object.<string, string>}
+ * @param {ol.Object} obj Object.
+ * @return {Object.<string, {target: ol.Object, key: string}>} Accessors.
  */
-ol.Object.changedEventTypeCache_ = {};
+ol.Object.getAccessors = function(obj) {
+  return obj[ol.ObjectProperty.ACCESSORS] ||
+      (obj[ol.ObjectProperty.ACCESSORS] = {});
+};
 
 
 /**
@@ -79,13 +103,6 @@ ol.Object.getChangedEventType = function(key) {
 
 
 /**
- * @private
- * @type {Object.<string, string>}
- */
-ol.Object.getterNameCache_ = {};
-
-
-/**
  * @param {string} key String.
  * @return {string} Getter name.
  */
@@ -96,10 +113,13 @@ ol.Object.getGetterName = function(key) {
 
 
 /**
- * @private
- * @type {Object.<string, string>}
+ * @param {ol.Object} obj Object.
+ * @return {Object.<string, ?number>} Listeners.
  */
-ol.Object.setterNameCache_ = {};
+ol.Object.getListeners = function(obj) {
+  return obj[ol.ObjectProperty.BINDINGS] ||
+      (obj[ol.ObjectProperty.BINDINGS] = {});
+};
 
 
 /**
@@ -109,26 +129,6 @@ ol.Object.setterNameCache_ = {};
 ol.Object.getSetterName = function(key) {
   return ol.Object.setterNameCache_[key] ||
       (ol.Object.setterNameCache_[key] = 'set' + ol.Object.capitalize(key));
-};
-
-
-/**
- * @param {ol.Object} obj Object.
- * @return {Object.<string, {target: ol.Object, key: string}>} Accessors.
- */
-ol.Object.getAccessors = function(obj) {
-  return obj[ol.ObjectProperty.ACCESSORS] ||
-      (obj[ol.ObjectProperty.ACCESSORS] = {});
-};
-
-
-/**
- * @param {ol.Object} obj Object.
- * @return {Object.<string, ?number>} Listeners.
- */
-ol.Object.getListeners = function(obj) {
-  return obj[ol.ObjectProperty.BINDINGS] ||
-      (obj[ol.ObjectProperty.BINDINGS] = {});
 };
 
 

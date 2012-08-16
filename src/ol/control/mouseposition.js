@@ -100,15 +100,6 @@ ol.control.MousePosition.prototype.handleMapProjectionChanged = function() {
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @protected
  */
-ol.control.MousePosition.prototype.handleMouseOut = function(browserEvent) {
-  this.divElement_.innerHTML = this.undefinedHTML_;
-};
-
-
-/**
- * @param {goog.events.BrowserEvent} browserEvent Browser event.
- * @protected
- */
 ol.control.MousePosition.prototype.handleMouseMove = function(browserEvent) {
   var map = this.getMap();
   var pixel = new ol.Pixel(browserEvent.offsetX, browserEvent.offsetY);
@@ -125,4 +116,13 @@ ol.control.MousePosition.prototype.handleMouseMove = function(browserEvent) {
     html = this.undefinedHTML_;
   }
   this.divElement_.innerHTML = html;
+};
+
+
+/**
+ * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @protected
+ */
+ol.control.MousePosition.prototype.handleMouseOut = function(browserEvent) {
+  this.divElement_.innerHTML = this.undefinedHTML_;
 };

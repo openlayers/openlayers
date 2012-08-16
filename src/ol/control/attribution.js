@@ -80,6 +80,28 @@ goog.inherits(ol.control.Attribution, ol.Control);
 
 /**
  * @param {ol.Layer} layer Layer.
+ * @protected
+ */
+ol.control.Attribution.prototype.addLayer = function(layer) {
+
+  var layerKey = goog.getUid(layer);
+
+  this.layerVisibleChangeListenerKeys_[layerKey] = goog.events.listen(
+      layer, ol.Object.getChangedEventType(ol.LayerProperty.VISIBLE),
+      this.handleLayerVisibleChanged, false, this);
+
+  if (layer.getStore().isReady()) {
+    this.createAttributionElementsForLayer_(layer);
+  } else {
+    goog.events.listenOnce(layer, goog.events.EventType.LOAD,
+        this.handleLayerLoad, false, this);
+  }
+
+};
+
+
+/**
+ * @param {ol.Layer} layer Layer.
  * @private
  */
 ol.control.Attribution.prototype.createAttributionElementsForLayer_ =
@@ -140,22 +162,82 @@ ol.control.Attribution.prototype.getElement = function() {
 
 /**
  * @param {ol.Layer} layer Layer.
- * @protected
+ * @param {ol.Extent} mapExtent Map extent.
+ * @param {number} mapResolution Map resolution.
+ * @param {ol.Projection} mapProjection Map projection.
+ * @return {Object.<number, boolean>} Attribution visibilities.
+ * @private
  */
-ol.control.Attribution.prototype.addLayer = function(layer) {
+ol.control.Attribution.prototype.getLayerAttributionVisiblities_ =
+    function(layer, mapExtent, mapResolution, mapProjection) {
 
-  var layerKey = goog.getUid(layer);
+  var store = layer.getStore();
+  var attributions = store.getAttributions();
 
-  this.layerVisibleChangeListenerKeys_[layerKey] = goog.events.listen(
-      layer, ol.Object.getChangedEventType(ol.LayerProperty.VISIBLE),
-      this.handleLayerVisibleChanged, false, this);
-
-  if (layer.getStore().isReady()) {
-    this.createAttributionElementsForLayer_(layer);
-  } else {
-    goog.events.listenOnce(layer, goog.events.EventType.LOAD,
-        this.handleLayerLoad, false, this);
+  if (goog.isNull(attributions)) {
+    return null;
   }
+
+  var mapZ;
+  if (store instanceof ol.TileStore) {
+    var tileStore = /** @type {ol.TileStore} */ store;
+    var tileGrid = tileStore.getTileGrid();
+    mapZ = tileGrid.getZForResolution(mapResolution);
+  }
+
+  var attributionVisibilities = {};
+  goog.array.forEach(attributions, function(attribution) {
+
+    var attributionKey = goog.getUid(attribution);
+
+    var attributionVisible = true;
+
+    var coverageAreas;
+    if (attributionKey in this.coverageAreass_) {
+      coverageAreas = this.coverageAreass_[attributionKey];
+    } else {
+      var attributionProjection = attribution.getProjection();
+      coverageAreas = attribution.getCoverageAreas();
+      if (!goog.isNull(coverageAreas) &&
+          !ol.Projection.equivalent(attributionProjection, mapProjection)) {
+        var transformFn = ol.Projection.getTransform(
+            attributionProjection, mapProjection);
+        if (transformFn !== ol.Projection.cloneTransform) {
+          coverageAreas = goog.array.map(coverageAreas, function(coverageArea) {
+            return coverageArea.transform(transformFn);
+          });
+        }
+      }
+      this.coverageAreass_[attributionKey] = coverageAreas;
+    }
+
+    if (!goog.isNull(coverageAreas)) {
+      if (store instanceof ol.TileStore) {
+        attributionVisible = goog.array.some(
+            coverageAreas,
+            /**
+             * @param {ol.TileCoverageArea} tileCoverageArea Tile coverage area.
+             */
+            function(tileCoverageArea) {
+              goog.asserts.assert(
+                  tileCoverageArea instanceof ol.TileCoverageArea);
+              return tileCoverageArea.intersectsExtentAndZ(mapExtent, mapZ);
+            });
+      } else {
+        attributionVisible = goog.array.some(
+            coverageAreas,
+            function(coverageArea) {
+              return coverageArea.intersectsExtentAndResolution(
+                  mapExtent, mapResolution);
+            });
+      }
+    }
+
+    attributionVisibilities[attributionKey] = attributionVisible;
+
+  }, this);
+
+  return attributionVisibilities;
 
 };
 
@@ -170,29 +252,7 @@ ol.control.Attribution.prototype.handleLayerLoad = function(event) {
 
 
 /**
- * @param {ol.Layer} layer Layer.
- * @protected
- */
-ol.control.Attribution.prototype.removeLayer = function(layer) {
-
-  var layerKey = goog.getUid(layer);
-
-  goog.events.unlistenByKey(this.layerVisibleChangeListenerKeys_[layerKey]);
-  delete this.layerVisibleChangeListenerKeys_[layerKey];
-
-  goog.array.forEach(layer.getStore().getAttributions(), function(attribution) {
-    var attributionKey = goog.getUid(attribution);
-    delete this.coverageAreass_[attributionKey];
-    var attributionElement = this.attributionElements_[attributionKey];
-    goog.dom.removeNode(attributionElement);
-    delete this.attributionElements_[attributionKey];
-  }, this);
-
-};
-
-
-/**
- * @param {goog.events.Event} event Eveny.
+ * @param {goog.events.Event} event Event.
  * @protected
  */
 ol.control.Attribution.prototype.handleLayerVisibleChanged = function(event) {
@@ -281,82 +341,22 @@ ol.control.Attribution.prototype.handleMapLayersChanged = function() {
 
 /**
  * @param {ol.Layer} layer Layer.
- * @param {ol.Extent} mapExtent Map extent.
- * @param {number} mapResolution Map resolution.
- * @param {ol.Projection} mapProjection Map projection.
- * @return {Object.<number, boolean>} Attribution visibilities.
- * @private
+ * @protected
  */
-ol.control.Attribution.prototype.getLayerAttributionVisiblities_ =
-    function(layer, mapExtent, mapResolution, mapProjection) {
+ol.control.Attribution.prototype.removeLayer = function(layer) {
 
-  var store = layer.getStore();
-  var attributions = store.getAttributions();
+  var layerKey = goog.getUid(layer);
 
-  if (goog.isNull(attributions)) {
-    return null;
-  }
+  goog.events.unlistenByKey(this.layerVisibleChangeListenerKeys_[layerKey]);
+  delete this.layerVisibleChangeListenerKeys_[layerKey];
 
-  var mapZ;
-  if (store instanceof ol.TileStore) {
-    var tileStore = /** @type {ol.TileStore} */ store;
-    var tileGrid = tileStore.getTileGrid();
-    mapZ = tileGrid.getZForResolution(mapResolution);
-  }
-
-  var attributionVisibilities = {};
-  goog.array.forEach(attributions, function(attribution) {
-
+  goog.array.forEach(layer.getStore().getAttributions(), function(attribution) {
     var attributionKey = goog.getUid(attribution);
-
-    var attributionVisible = true;
-
-    var coverageAreas;
-    if (attributionKey in this.coverageAreass_) {
-      coverageAreas = this.coverageAreass_[attributionKey];
-    } else {
-      var attributionProjection = attribution.getProjection();
-      coverageAreas = attribution.getCoverageAreas();
-      if (!goog.isNull(coverageAreas) &&
-          !ol.Projection.equivalent(attributionProjection, mapProjection)) {
-        var transformFn = ol.Projection.getTransform(
-            attributionProjection, mapProjection);
-        if (transformFn !== ol.Projection.cloneTransform) {
-          coverageAreas = goog.array.map(coverageAreas, function(coverageArea) {
-            return coverageArea.transform(transformFn);
-          });
-        }
-      }
-      this.coverageAreass_[attributionKey] = coverageAreas;
-    }
-
-    if (!goog.isNull(coverageAreas)) {
-      if (store instanceof ol.TileStore) {
-        attributionVisible = goog.array.some(
-            coverageAreas,
-            /**
-             * @param {ol.TileCoverageArea} tileCoverageArea Tile coverage area.
-             */
-            function(tileCoverageArea) {
-              goog.asserts.assert(
-                  tileCoverageArea instanceof ol.TileCoverageArea);
-              return tileCoverageArea.intersectsExtentAndZ(mapExtent, mapZ);
-            });
-      } else {
-        attributionVisible = goog.array.some(
-            coverageAreas,
-            function(coverageArea) {
-              return coverageArea.intersectsExtentAndResolution(
-                  mapExtent, mapResolution);
-            });
-      }
-    }
-
-    attributionVisibilities[attributionKey] = attributionVisible;
-
+    delete this.coverageAreass_[attributionKey];
+    var attributionElement = this.attributionElements_[attributionKey];
+    goog.dom.removeNode(attributionElement);
+    delete this.attributionElements_[attributionKey];
   }, this);
-
-  return attributionVisibilities;
 
 };
 

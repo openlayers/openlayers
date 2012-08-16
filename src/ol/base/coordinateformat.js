@@ -12,22 +12,6 @@ ol.CoordinateFormatType;
 
 
 /**
- * @private
- * @param {number} degrees Degrees.
- * @param {string} hemispheres Hemispheres.
- * @return {string} String.
- */
-ol.CoordinateFormat.degreesToHDMS_ = function(degrees, hemispheres) {
-  var normalizedDegrees = goog.math.modulo(degrees + 180, 360) - 180;
-  var x = Math.abs(Math.round(3600 * normalizedDegrees));
-  return Math.floor(x / 3600) + '\u00b0 ' +
-      Math.floor((x / 60) % 60) + '\u2032 ' +
-      Math.floor(x % 60) + '\u2033 ' +
-      hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
-};
-
-
-/**
  * @param {number} precision Precision.
  * @return {ol.CoordinateFormatType} Coordinate format.
  */
@@ -40,6 +24,22 @@ ol.CoordinateFormat.createXY = function(precision) {
       return '';
     }
   };
+};
+
+
+/**
+ * @private
+ * @param {number} degrees Degrees.
+ * @param {string} hemispheres Hemispheres.
+ * @return {string} String.
+ */
+ol.CoordinateFormat.degreesToHDMS_ = function(degrees, hemispheres) {
+  var normalizedDegrees = goog.math.modulo(degrees + 180, 360) - 180;
+  var x = Math.abs(Math.round(3600 * normalizedDegrees));
+  return Math.floor(x / 3600) + '\u00b0 ' +
+      Math.floor((x / 60) % 60) + '\u2032 ' +
+      Math.floor(x % 60) + '\u2033 ' +
+      hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
 };
 
 
