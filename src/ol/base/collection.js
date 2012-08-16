@@ -91,19 +91,6 @@ goog.inherits(ol.Collection, ol.Object);
 
 
 /**
- * @param {ol.Collection|Array} arg Argument.
- * @return {ol.Collection} Collection.
- */
-ol.Collection.create = function(arg) {
-  if (arg instanceof ol.Collection) {
-    return arg;
-  } else {
-    return new ol.Collection(arg);
-  }
-};
-
-
-/**
  */
 ol.Collection.prototype.clear = function() {
   while (this[ol.CollectionProperty.LENGTH]) {

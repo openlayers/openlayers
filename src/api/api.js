@@ -2,6 +2,7 @@ goog.provide('ol3');
 goog.provide('ol3.layer');
 
 goog.require('goog.dom');
+goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Layer');
 goog.require('ol.Map');
@@ -15,20 +16,20 @@ goog.exportSymbol('ol3', ol3);
 
 
 /**
+ * @typedef {Array|ol.Collection}
+ */
+ol3.Collection;
+
+
+/**
  * @typedef {Array.<number>|ol.Coordinate|{x: number, y: number}}
  */
 ol3.Coordinate;
 
 
 /**
- * @typedef {Array.<ol.Layer>|ol.Collection}
- */
-ol3.Layers;
-
-
-/**
  * @typedef {{center: (ol3.Coordinate|undefined),
- *            layers: (ol3.Layers|undefined),
+ *            layers: (ol3.Collection|undefined),
  *            renderTo: (Element|string|undefined),
  *            resolution: (number|undefined),
  *            zoom: (number|undefined)}}
@@ -46,6 +47,23 @@ ol3.Object;
  * @typedef {ol.Projection|string}
  */
 ol3.Projection;
+
+
+/**
+ * @param {ol3.Collection} collection Collection.
+ * @return {ol.Collection} Collection.
+ */
+ol3.collection = function(collection) {
+  if (collection instanceof ol.Collection) {
+    return collection;
+  } else if (goog.isArray(collection)) {
+    var array = /** @type {Array} */ collection;
+    return new ol.Collection(collection);
+  } else {
+    return null;
+  }
+};
+goog.exportProperty(ol3, 'collection', ol3.collection);
 
 
 /**
@@ -81,22 +99,6 @@ goog.exportProperty(ol3.layer, 'osm', ol3.layer.osm);
 
 
 /**
- * @param {ol3.Layers} layers Layers.
- * @return {ol.Collection} Layers.
- */
-ol3.layers = function(layers) {
-  if (layers instanceof ol.Collection) {
-    return layers;
-  } else if (goog.isArray(layers)) {
-    return new ol.Collection(layers);
-  } else {
-    return null;
-  }
-};
-goog.exportProperty(ol3, 'layers', ol3.layers);
-
-
-/**
  * @param {ol3.MapOptions=} opt_mapOptions Options.
  * @return {ol.Map} Map.
  */
@@ -104,7 +106,7 @@ ol3.map = function(opt_mapOptions) {
   var options = opt_mapOptions || {};
   var center = ol3.coordinate(/** @type {ol3.Coordinate} */
       (goog.object.get(options, 'center', null)));
-  var layers = ol3.layers(/** @type {ol3.Layers} */
+  var layers = ol3.collection(/** @type {ol3.Collection} */
       (goog.object.get(options, 'layers', null)));
   var projection = ol3.projection(/** @type {ol3.Projection} */
       (goog.object.get(options, 'projection', 'EPSG:3857')));

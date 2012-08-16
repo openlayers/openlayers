@@ -143,26 +143,8 @@ function testSetAtBeyondEnd() {
 }
 
 
-function testCreateFromArray() {
-  var array = [0, 1, 2];
-  var collection = ol.Collection.create(array);
-  assertTrue(collection instanceof ol.Collection);
-  assertEquals(3, collection.getLength());
-  assertEquals(0, collection.getAt(0));
-  assertEquals(1, collection.getAt(1));
-  assertEquals(2, collection.getAt(2));
-}
-
-
-function testCreateFromCollection() {
-  var collection1 = new ol.Collection();
-  var collection2 = ol.Collection.create(collection1);
-  assertTrue(collection1 === collection2);
-}
-
-
 function testLengthChangeInsertAt() {
-  var collection = ol.Collection.create([0, 1, 2]);
+  var collection = new ol.Collection([0, 1, 2]);
   var lengthEventDispatched;
   goog.events.listen(collection, 'length_changed', function() {
     lengthEventDispatched = true;
@@ -173,7 +155,7 @@ function testLengthChangeInsertAt() {
 
 
 function testLengthChangeRemoveAt() {
-  var collection = ol.Collection.create([0, 1, 2]);
+  var collection = new ol.Collection([0, 1, 2]);
   var lengthEventDispatched;
   goog.events.listen(collection, 'length_changed', function() {
     lengthEventDispatched = true;
@@ -184,7 +166,7 @@ function testLengthChangeRemoveAt() {
 
 
 function testLengthChangeSetAt() {
-  var collection = ol.Collection.create([0, 1, 2]);
+  var collection = new ol.Collection([0, 1, 2]);
   var lengthEventDispatched;
   goog.events.listen(collection, 'length_changed', function() {
     lengthEventDispatched = true;
@@ -195,7 +177,7 @@ function testLengthChangeSetAt() {
 
 
 function testForEach() {
-  var collection = ol.Collection.create([1, 2, 4]);
+  var collection = new ol.Collection([1, 2, 4]);
   var sum = 0;
   collection.forEach(function(elem) {
     sum += elem;
@@ -205,7 +187,7 @@ function testForEach() {
 
 
 function testForEachScope() {
-  var collection = ol.Collection.create([0]);
+  var collection = new ol.Collection([0]);
   var that;
   var uniqueObj = {};
   collection.forEach(function(elem) {
