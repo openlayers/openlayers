@@ -76,6 +76,7 @@ ol.MapPaneZIndex = {
 /**
  * @constructor
  * @extends {ol.Object}
+ * @implements {goog.fx.anim.Animated}
  * @param {Element} target Target.
  * @param {function(new: ol.MapRenderer, Element, ol.Map)} rendererConstructor
  *     Renderer constructor.
@@ -104,19 +105,25 @@ ol.Map = function(
    * @private
    * @type {boolean}
    */
-  this.animating_ = false;
+  this.animatedRenderer_ = false;
 
   /**
    * @private
-   * @type {boolean}
+   * @type {number}
    */
-  this.dirty_ = false;
+  this.animatingCount_ = 0;
 
   /**
    * @private
    * @type {number}
    */
   this.freezeRenderingCount_ = 0;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.dirty_ = false;
 
   /**
    * @private
@@ -165,12 +172,6 @@ ol.Map = function(
 
   /**
    * @private
-   * @type {ol.MapAnimation}
-   */
-  this.animation_ = new ol.MapAnimation(this.renderer_);
-
-  /**
-   * @private
    * @type {Element}
    */
   this.target_ = target;
@@ -201,16 +202,6 @@ ol.Map = function(
 
 };
 goog.inherits(ol.Map, ol.Object);
-
-
-/**
- * @private
- */
-ol.Map.prototype.animate_ = function() {
-  goog.asserts.assert(!this.animating_);
-  goog.fx.anim.registerAnimation(this.animation_);
-  this.animating_ = true;
-};
 
 
 /**
@@ -538,6 +529,14 @@ ol.Map.prototype.isDef = function() {
 
 
 /**
+ * @inheritDoc
+ */
+ol.Map.prototype.onAnimationFrame = function() {
+  this.renderFrame_();
+};
+
+
+/**
  * @private
  */
 ol.Map.prototype.recalculateTransforms_ = function() {
@@ -559,15 +558,31 @@ ol.Map.prototype.recalculateTransforms_ = function() {
 /**
  */
 ol.Map.prototype.render = function() {
-  if (!this.animating_) {
+  if (this.animatingCount_ < 1) {
     if (this.freezeRenderingCount_ === 0) {
-      if (this.renderer_.render()) {
-        this.animate_();
-      }
+      this.renderFrame_();
     } else {
       this.dirty_ = true;
     }
   }
+};
+
+
+/**
+ * @private
+ */
+ol.Map.prototype.renderFrame_ = function() {
+  var animatedRenderer = this.renderer_.render();
+  this.dirty_ = false;
+  if (animatedRenderer != this.animatedRenderer_) {
+    if (animatedRenderer) {
+      this.startAnimating();
+    } else {
+      this.stopAnimating();
+    }
+    this.animatedRenderer_ = animatedRenderer;
+  }
+  this.dispatchEvent(ol.MapEventType.POST_RENDER);
 };
 
 
@@ -702,14 +717,31 @@ goog.exportProperty(
 
 /**
  */
+ol.Map.prototype.startAnimating = function() {
+  if (++this.animatingCount_ == 1) {
+    goog.fx.anim.registerAnimation(this);
+  }
+};
+
+
+/**
+ */
+ol.Map.prototype.stopAnimating = function() {
+  goog.asserts.assert(this.animatingCount_ > 0);
+  if (--this.animatingCount_ === 0) {
+    goog.fx.anim.unregisterAnimation(this);
+  }
+};
+
+
+/**
+ */
 ol.Map.prototype.unfreezeRendering = function() {
   goog.asserts.assert(this.freezeRenderingCount_ > 0);
-  if (--this.freezeRenderingCount_ === 0) {
-    if (!this.animating_ && this.dirty_) {
-      if (this.renderer_.render()) {
-        this.animate_();
-      }
-    }
+  if (--this.freezeRenderingCount_ === 0 &&
+      this.animatingCount_ < 1 &&
+      this.dirty_) {
+    this.renderFrame_();
   }
 };
 
@@ -725,32 +757,5 @@ ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
     f.call(opt_obj);
   } finally {
     this.unfreezeRendering();
-  }
-};
-
-
-
-/**
- * @constructor
- * @implements {goog.fx.anim.Animated}
- * @param {!ol.MapRenderer} renderer Map renderer.
- */
-ol.MapAnimation = function(renderer) {
-
-  /**
-   * @private
-   * @type {ol.MapRenderer}
-   */
-  this.renderer_ = renderer;
-
-};
-
-
-/**
- * @inheritDoc
- */
-ol.MapAnimation.prototype.onAnimationFrame = function() {
-  if (!this.renderer_.render()) {
-    goog.fx.anim.unregisterAnimation(this);
   }
 };
