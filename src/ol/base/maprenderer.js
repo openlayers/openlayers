@@ -4,6 +4,7 @@ goog.require('goog.Disposable');
 goog.require('goog.events');
 goog.require('goog.fx.anim');
 goog.require('goog.fx.anim.Animated');
+goog.require('goog.vec.Mat4');
 goog.require('ol.Map');
 goog.require('ol.MapProperty');
 
@@ -42,6 +43,24 @@ ol.MapRenderer = function(target, map) {
    * @type {Array.<number>}
    */
   this.layersListenerKeys_ = null;
+
+  /**
+   * @private
+   * @type {goog.vec.Mat4.Number}
+   */
+  this.coordinateToPixelMatrix_ = goog.vec.Mat4.createNumber();
+
+  /**
+   * @private
+   * @type {goog.vec.Mat4.Number}
+   */
+  this.pixelToCoordinateMatrix_ = goog.vec.Mat4.createNumber();
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.matricesDirty_ = true;
 
   /**
    * @private
@@ -155,7 +174,9 @@ ol.MapRenderer.prototype.handleBackgroundColorChanged = goog.nullFunction;
 /**
  * @protected
  */
-ol.MapRenderer.prototype.handleCenterChanged = goog.nullFunction;
+ol.MapRenderer.prototype.handleCenterChanged = function() {
+  this.matricesDirty_ = true;
+};
 
 
 /**
@@ -251,19 +272,25 @@ ol.MapRenderer.prototype.removeLayerRenderer = function(layer) {
 /**
  * @protected
  */
-ol.MapRenderer.prototype.handleResolutionChanged = goog.nullFunction;
+ol.MapRenderer.prototype.handleResolutionChanged = function() {
+  this.matricesDirty_ = true;
+};
 
 
 /**
  * @protected
  */
-ol.MapRenderer.prototype.handleRotationChanged = goog.nullFunction;
+ol.MapRenderer.prototype.handleRotationChanged = function() {
+  this.matricesDirty_ = true;
+};
 
 
 /**
  * @protected
  */
-ol.MapRenderer.prototype.handleSizeChanged = goog.nullFunction;
+ol.MapRenderer.prototype.handleSizeChanged = function() {
+  this.matricesDirty_ = true;
+};
 
 
 /**
@@ -277,4 +304,73 @@ ol.MapRenderer.prototype.render = function() {
     }
   });
   return animate;
+};
+
+
+/**
+ * @private
+ */
+ol.MapRenderer.prototype.updateMatrices_ = function() {
+
+  if (this.matricesDirty_) {
+
+    var map = this.map;
+    var center = /** @type {!ol.Coordinate} */ map.getCenter();
+    var resolution = /** @type {number} */ map.getResolution();
+    var rotation = map.getRotation();
+    var size = /** @type {!ol.Size} */ map.getSize();
+
+    goog.vec.Mat4.makeIdentity(this.coordinateToPixelMatrix_);
+    goog.vec.Mat4.translate(this.coordinateToPixelMatrix_,
+        size.width / 2,
+        size.height / 2,
+        0);
+    goog.vec.Mat4.scale(this.coordinateToPixelMatrix_,
+        1 / resolution,
+        -1 / resolution,
+        1);
+    if (this.canRotate() && goog.isDef(rotation)) {
+      goog.vec.Mat4.rotate(this.coordinateToPixelMatrix_,
+          -rotation,
+          0,
+          0,
+          1);
+    }
+    goog.vec.Mat4.translate(this.coordinateToPixelMatrix_,
+        -center.x,
+        -center.y,
+        0);
+
+    var inverted = goog.vec.Mat4.invert(
+        this.coordinateToPixelMatrix_, this.pixelToCoordinateMatrix_);
+    goog.asserts.assert(inverted);
+
+    this.matricesDirty_ = false;
+
+  }
+
+};
+
+
+/**
+ * @param {ol.Pixel} pixel Pixel.
+ * @return {ol.Coordinate} Coordinate.
+ */
+ol.MapRenderer.prototype.getCoordinateFromPixel = function(pixel) {
+  this.updateMatrices_();
+  var vec3 = [pixel.x, pixel.y, 0];
+  goog.vec.Mat4.multVec3(this.pixelToCoordinateMatrix_, vec3, vec3);
+  return new ol.Coordinate(vec3[0], vec3[1]);
+};
+
+
+/**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @return {ol.Pixel} Pixel.
+ */
+ol.MapRenderer.prototype.getPixelFromCoordinate = function(coordinate) {
+  this.updateMatrices_();
+  var vec3 = [coordinate.x, coordinate.y, 0];
+  goog.vec.Mat4.multVec3(this.coordinateToPixelMatrix_, vec3, vec3);
+  return new ol.Pixel(vec3[0], vec3[1]);
 };
