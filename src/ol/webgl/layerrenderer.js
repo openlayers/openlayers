@@ -33,14 +33,6 @@ ol.webgl.LayerRenderer.prototype.getTexture = goog.abstractMethod;
 
 
 /**
- * @return {WebGLRenderingContext} GL.
- */
-ol.webgl.LayerRenderer.prototype.getGL = function() {
-  return this.getMapRenderer().getGL();
-};
-
-
-/**
  * @override
  * @return {ol.MapRenderer} MapRenderer.
  */

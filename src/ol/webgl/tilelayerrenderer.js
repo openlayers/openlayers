@@ -149,7 +149,8 @@ goog.inherits(ol.webgl.TileLayerRenderer, ol.webgl.LayerRenderer);
  * @protected
  */
 ol.webgl.TileLayerRenderer.prototype.disposeInternal = function() {
-  var gl = this.getGL();
+  var mapRenderer = this.getMapRenderer();
+  var gl = mapRenderer.getGL();
   if (!gl.isContextLost()) {
     gl.deleteBuffer(this.arrayBuffer_);
     gl.deleteFramebuffer(this.framebuffer_);
@@ -166,7 +167,8 @@ ol.webgl.TileLayerRenderer.prototype.disposeInternal = function() {
 ol.webgl.TileLayerRenderer.prototype.bindFramebuffer_ =
     function(framebufferDimension) {
 
-  var gl = this.getGL();
+  var mapRenderer = this.getMapRenderer();
+  var gl = mapRenderer.getGL();
 
   if (!goog.isDef(this.framebufferDimension_) ||
       this.framebufferDimension_ != framebufferDimension) {
@@ -249,9 +251,9 @@ ol.webgl.TileLayerRenderer.prototype.handleWebGLContextLost = function() {
  */
 ol.webgl.TileLayerRenderer.prototype.render = function() {
 
-  var gl = this.getGL();
-  var map = this.getMap();
   var mapRenderer = this.getMapRenderer();
+  var map = this.getMap();
+  var gl = mapRenderer.getGL();
 
   goog.asserts.assert(map.isDef());
   var mapCenter = map.getCenter();
