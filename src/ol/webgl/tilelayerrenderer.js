@@ -76,12 +76,12 @@ goog.addSingletonGetter(ol.webgl.tilelayerrenderer.shader.Vertex);
 /**
  * @constructor
  * @extends {ol.webgl.LayerRenderer}
- * @param {ol.webgl.Map} map Map.
+ * @param {ol.MapRenderer} mapRenderer Map renderer.
  * @param {ol.TileLayer} tileLayer Tile layer.
  */
-ol.webgl.TileLayerRenderer = function(map, tileLayer) {
+ol.webgl.TileLayerRenderer = function(mapRenderer, tileLayer) {
 
-  goog.base(this, map, tileLayer);
+  goog.base(this, mapRenderer, tileLayer);
 
   /**
    * @private
@@ -149,7 +149,8 @@ goog.inherits(ol.webgl.TileLayerRenderer, ol.webgl.LayerRenderer);
  * @protected
  */
 ol.webgl.TileLayerRenderer.prototype.disposeInternal = function() {
-  var gl = this.getGL();
+  var mapRenderer = this.getMapRenderer();
+  var gl = mapRenderer.getGL();
   if (!gl.isContextLost()) {
     gl.deleteBuffer(this.arrayBuffer_);
     gl.deleteFramebuffer(this.framebuffer_);
@@ -166,7 +167,8 @@ ol.webgl.TileLayerRenderer.prototype.disposeInternal = function() {
 ol.webgl.TileLayerRenderer.prototype.bindFramebuffer_ =
     function(framebufferDimension) {
 
-  var gl = this.getGL();
+  var mapRenderer = this.getMapRenderer();
+  var gl = mapRenderer.getGL();
 
   if (!goog.isDef(this.framebufferDimension_) ||
       this.framebufferDimension_ != framebufferDimension) {
@@ -249,9 +251,10 @@ ol.webgl.TileLayerRenderer.prototype.handleWebGLContextLost = function() {
  */
 ol.webgl.TileLayerRenderer.prototype.render = function() {
 
-  var gl = this.getGL();
-
+  var mapRenderer = this.getMapRenderer();
   var map = this.getMap();
+  var gl = mapRenderer.getGL();
+
   goog.asserts.assert(map.isDef());
   var mapCenter = map.getCenter();
   var mapExtent = map.getExtent();
@@ -293,7 +296,8 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
   gl.clear(goog.webgl.COLOR_BUFFER_BIT);
   gl.disable(goog.webgl.BLEND);
 
-  var program = map.getProgram(this.fragmentShader_, this.vertexShader_);
+  var program = mapRenderer.getProgram(
+      this.fragmentShader_, this.vertexShader_);
   gl.useProgram(program);
   if (goog.isNull(this.locations_)) {
     this.locations_ = {
@@ -385,7 +389,7 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
           framebufferExtentSize.height - 1;
       goog.vec.Vec4.setFromValues(uTileOffset, sx, sy, tx, ty);
       gl.uniform4fv(this.locations_.uTileOffset, uTileOffset);
-      map.bindImageTexture(
+      mapRenderer.bindImageTexture(
           tile.getImage(), goog.webgl.LINEAR, goog.webgl.LINEAR);
       gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
     }, this);

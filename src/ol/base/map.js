@@ -2,7 +2,6 @@
 // FIXME recheck layer/map projection compatability when projection changes
 // FIXME layer renderers should skip when they can't reproject
 // FIXME add tilt and height?
-// FIXME split out renderer
 // FIXME add postrender event
 
 goog.provide('ol.Map');
@@ -27,7 +26,6 @@ goog.require('goog.fx.Dragger');
 goog.require('goog.fx.anim');
 goog.require('goog.fx.anim.Animated');
 goog.require('goog.object');
-goog.require('goog.vec.Mat4');
 goog.require('ol.Collection');
 goog.require('ol.Color');
 goog.require('ol.Coordinate');
@@ -71,11 +69,14 @@ ol.MapPaneZIndex = {
  * @constructor
  * @extends {ol.Object}
  * @param {Element} target Target.
+ * @param {function(new: ol.MapRenderer, Element, ol.Map)} rendererConstructor
+ *     Renderer constructor.
  * @param {Object=} opt_values Values.
  * @param {goog.dom.ViewportSizeMonitor=} opt_viewportSizeMonitor
  *     Viewport size monitor.
  */
-ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
+ol.Map = function(
+    target, rendererConstructor, opt_values, opt_viewportSizeMonitor) {
 
   goog.base(this);
 
@@ -93,21 +94,21 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
 
   /**
    * @private
-   * @type {goog.vec.Mat4.Number}
+   * @type {boolean}
    */
-  this.coordinateToPixelMatrix_ = goog.vec.Mat4.createNumber();
-
-  /**
-   * @private
-   * @type {goog.vec.Mat4.Number}
-   */
-  this.pixelToCoordinateMatrix_ = goog.vec.Mat4.createNumber();
+  this.animating_ = false;
 
   /**
    * @private
    * @type {boolean}
    */
-  this.matriciesDirty_ = true;
+  this.dirty_ = false;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.freezeRenderingCount_ = 0;
 
   /**
    * @private
@@ -148,40 +149,23 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
   this.registerDisposable(dragger);
 
   /**
+   * @type {ol.MapRenderer}
    * @private
-   * @type {goog.fx.anim.Animated}
    */
-  this.animation_ = new ol.MapAnimation(this);
+  this.renderer_ = new rendererConstructor(target, this);
+  this.registerDisposable(this.renderer_);
 
   /**
    * @private
-   * @type {boolean}
+   * @type {ol.MapAnimation}
    */
-  this.animating_ = false;
-
-  /**
-   * @private
-   * @type {number}
-   */
-  this.freezeRenderingCount_ = 0;
+  this.animation_ = new ol.MapAnimation(this.renderer_);
 
   /**
    * @private
    * @type {Element}
    */
   this.target_ = target;
-
-  /**
-   * @private
-   * @type {Array.<number>}
-   */
-  this.layersListenerKeys_ = null;
-
-  /**
-   * @protected
-   * @type {Object.<number, ol.LayerRenderer>}
-   */
-  this.layerRenderers = {};
 
   /**
    * @private
@@ -193,33 +177,9 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
   goog.events.listen(this.viewportSizeMonitor_, goog.events.EventType.RESIZE,
       this.handleViewportResize, false, this);
 
-  goog.events.listen(this,
-      ol.Object.getChangedEventType(ol.MapProperty.BACKGROUND_COLOR),
-      this.handleBackgroundColorChanged, false, this);
-
-  goog.events.listen(
-      this, ol.Object.getChangedEventType(ol.MapProperty.CENTER),
-      this.handleCenterChanged, false, this);
-
-  goog.events.listen(
-      this, ol.Object.getChangedEventType(ol.MapProperty.LAYERS),
-      this.handleLayersChanged, false, this);
-
   goog.events.listen(
       this, ol.Object.getChangedEventType(ol.MapProperty.PROJECTION),
       this.handleProjectionChanged, false, this);
-
-  goog.events.listen(
-      this, ol.Object.getChangedEventType(ol.MapProperty.RESOLUTION),
-      this.handleResolutionChanged, false, this);
-
-  goog.events.listen(
-      this, ol.Object.getChangedEventType(ol.MapProperty.ROTATION),
-      this.handleRotationChanged, false, this);
-
-  goog.events.listen(
-      this, ol.Object.getChangedEventType(ol.MapProperty.SIZE),
-      this.handleSizeChanged, false, this);
 
   goog.events.listen(
       this, ol.Object.getChangedEventType(ol.MapProperty.USER_PROJECTION),
@@ -229,18 +189,10 @@ ol.Map = function(target, opt_values, opt_viewportSizeMonitor) {
     this.setValues(opt_values);
   }
 
+  this.handleViewportResize();
+
 };
 goog.inherits(ol.Map, ol.Object);
-
-
-/**
- * @param {ol.Layer} layer Layer.
- * @protected
- */
-ol.Map.prototype.addLayer = function(layer) {
-  var layerRenderer = this.createLayerRenderer(layer);
-  this.setLayerRenderer(layer, layerRenderer);
-};
 
 
 /**
@@ -256,25 +208,8 @@ ol.Map.prototype.animate_ = function() {
 /**
  * @return {boolean} Can rotate.
  */
-ol.Map.prototype.canRotate = goog.functions.FALSE;
-
-
-/**
- * @param {ol.Layer} layer Layer.
- * @protected
- * @return {ol.LayerRenderer} layerRenderer Layer renderer.
- */
-ol.Map.prototype.createLayerRenderer = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.Map.prototype.disposeInternal = function() {
-  goog.object.forEach(this.layerRenderers, function(layerRenderer) {
-    goog.dispose(layerRenderer);
-  });
-  goog.base(this, 'disposeInternal');
+ol.Map.prototype.canRotate = function() {
+  return this.renderer_.canRotate();
 };
 
 
@@ -297,22 +232,6 @@ ol.Map.prototype.fitExtent = function(extent) {
  */
 ol.Map.prototype.fitUserExtent = function(userExtent) {
   this.fitExtent(userExtent.transform(this.userToMapTransform_));
-};
-
-
-/**
- * @param {function(this: T, ol.Layer, ol.LayerRenderer, number)} f Function.
- * @param {T=} opt_obj Object.
- * @template T
- */
-ol.Map.prototype.forEachReadyVisibleLayer = function(f, opt_obj) {
-  var layers = this.getLayers();
-  layers.forEach(function(layer, index) {
-    if (layer.isReady() && layer.getVisible()) {
-      var layerRenderer = this.getLayerRenderer(layer);
-      f.call(opt_obj, layer, layerRenderer, index);
-    }
-  }, this);
 };
 
 
@@ -354,10 +273,7 @@ goog.exportProperty(
  */
 ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
   if (this.isDef()) {
-    this.updateMatrices_();
-    var vec3 = [pixel.x, pixel.y, 0];
-    goog.vec.Mat4.multVec3(this.pixelToCoordinateMatrix_, vec3, vec3);
-    return new ol.Coordinate(vec3[0], vec3[1]);
+    return this.renderer_.getCoordinateFromPixel(pixel);
   } else {
     return undefined;
   }
@@ -396,19 +312,6 @@ goog.exportProperty(
 
 
 /**
- * @param {ol.Layer} layer Layer.
- * @protected
- * @return {ol.LayerRenderer} Layer renderer.
- */
-ol.Map.prototype.getLayerRenderer = function(layer) {
-  var key = goog.getUid(layer);
-  var layerRenderer = this.layerRenderers[key];
-  goog.asserts.assert(goog.isDef(layerRenderer));
-  return layerRenderer;
-};
-
-
-/**
  * @return {ol.Collection} Layers.
  */
 ol.Map.prototype.getLayers = function() {
@@ -422,10 +325,7 @@ ol.Map.prototype.getLayers = function() {
  */
 ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
   if (this.isDef()) {
-    this.updateMatrices_();
-    var vec3 = [coordinate.x, coordinate.y, 0];
-    goog.vec.Mat4.multVec3(this.coordinateToPixelMatrix_, vec3, vec3);
-    return new ol.Pixel(vec3[0], vec3[1]);
+    return this.renderer_.getPixelFromCoordinate(coordinate);
   } else {
     return undefined;
   }
@@ -569,11 +469,6 @@ goog.exportProperty(
 
 
 /**
- */
-ol.Map.prototype.handleBackgroundColorChanged = goog.nullFunction;
-
-
-/**
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @param {string=} opt_type Type.
  */
@@ -591,14 +486,6 @@ ol.Map.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
 
 
 /**
- * @protected
- */
-ol.Map.prototype.handleCenterChanged = function() {
-  this.matriciesDirty_ = true;
-};
-
-
-/**
  * @param {goog.fx.DragEvent} dragEvent Drag event.
  */
 ol.Map.prototype.handleDraggerEvent = function(dragEvent) {
@@ -608,80 +495,10 @@ ol.Map.prototype.handleDraggerEvent = function(dragEvent) {
 
 
 /**
- * @param {ol.CollectionEvent} collectionEvent Collection event.
- * @protected
- */
-ol.Map.prototype.handleLayersAdd = function(collectionEvent) {
-  var layer = /** @type {ol.Layer} */ collectionEvent.elem;
-  this.addLayer(layer);
-};
-
-
-/**
- * @protected
- */
-ol.Map.prototype.handleLayersChanged = function() {
-  var layerRenderers = goog.object.getValues(this.layerRenderers);
-  goog.array.forEach(layerRenderers, function(layerRenderer) {
-    this.removeLayerRenderer(layerRenderer);
-  }, this);
-  this.layerRenderers = {};
-  if (!goog.isNull(this.layersListenerKeys_)) {
-    goog.array.forEach(this.layersListenerKeys_, goog.events.unlistenByKey);
-    this.layersListenerKeys_ = null;
-  }
-  var layers = this.getLayers();
-  if (goog.isDefAndNotNull(layers)) {
-    layers.forEach(this.addLayer, this);
-    this.layersListenerKeys_ = [
-      goog.events.listen(layers, ol.CollectionEventType.ADD,
-          this.handleLayersAdd, false, this),
-      goog.events.listen(layers, ol.CollectionEventType.REMOVE,
-          this.handleLayersRemove, false, this)
-    ];
-  }
-};
-
-
-/**
- * @param {ol.CollectionEvent} collectionEvent Collection event.
- * @protected
- */
-ol.Map.prototype.handleLayersRemove = function(collectionEvent) {
-  var layer = /** @type {ol.Layer} */ collectionEvent.elem;
-  this.removeLayer(layer);
-};
-
-
-/**
  * @protected
  */
 ol.Map.prototype.handleProjectionChanged = function() {
   this.recalculateTransforms_();
-};
-
-
-/**
- * @protected
- */
-ol.Map.prototype.handleResolutionChanged = function() {
-  this.matriciesDirty_ = true;
-};
-
-
-/**
- * @protected
- */
-ol.Map.prototype.handleRotationChanged = function() {
-  this.matriciesDirty_ = true;
-};
-
-
-/**
- * @protected
- */
-ol.Map.prototype.handleSizeChanged = function() {
-  this.matriciesDirty_ = true;
 };
 
 
@@ -732,59 +549,17 @@ ol.Map.prototype.recalculateTransforms_ = function() {
 
 
 /**
- * @param {ol.Layer} layer Layer.
- * @protected
- */
-ol.Map.prototype.removeLayer = function(layer) {
-  goog.dispose(this.removeLayerRenderer(layer));
-};
-
-
-/**
- * @param {ol.Layer} layer Layer.
- * @return {ol.LayerRenderer} Layer renderer.
- * @protected
- */
-ol.Map.prototype.removeLayerRenderer = function(layer) {
-  var key = goog.getUid(layer);
-  if (key in this.layerRenderers) {
-    var layerRenderer = this.layerRenderers[key];
-    delete this.layerRenderers[key];
-    return layerRenderer;
-  } else {
-    return null;
-  }
-};
-
-
-/**
  */
 ol.Map.prototype.render = function() {
   if (!this.animating_) {
     if (this.freezeRenderingCount_ === 0) {
-      if (this.renderInternal()) {
+      if (this.renderer_.render()) {
         this.animate_();
       }
     } else {
       this.dirty_ = true;
     }
   }
-};
-
-
-/**
- * @protected
- * @return {boolean} Animating.
- */
-ol.Map.prototype.renderInternal = function() {
-  this.dirty_ = false;
-  var animate = false;
-  this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
-    if (layerRenderer.render()) {
-      animate = true;
-    }
-  });
-  return animate;
 };
 
 
@@ -822,18 +597,6 @@ goog.exportProperty(
     ol.Map.prototype,
     'setInteractions',
     ol.Map.prototype.setInteractions);
-
-
-/**
- * @param {ol.Layer} layer Layer.
- * @param {ol.LayerRenderer} layerRenderer Layer renderer.
- * @protected
- */
-ol.Map.prototype.setLayerRenderer = function(layer, layerRenderer) {
-  var key = goog.getUid(layer);
-  goog.asserts.assert(!(key in this.layerRenderers));
-  this.layerRenderers[key] = layerRenderer;
-};
 
 
 /**
@@ -935,55 +698,11 @@ ol.Map.prototype.unfreezeRendering = function() {
   goog.asserts.assert(this.freezeRenderingCount_ > 0);
   if (--this.freezeRenderingCount_ === 0) {
     if (!this.animating_ && this.dirty_) {
-      if (this.renderInternal()) {
+      if (this.renderer_.render()) {
         this.animate_();
       }
     }
   }
-};
-
-
-/**
- * @private
- */
-ol.Map.prototype.updateMatrices_ = function() {
-
-  if (this.matriciesDirty_) {
-
-    var center = /** @type {!ol.Coordinate} */ this.getCenter();
-    var resolution = /** @type {number} */ this.getResolution();
-    var rotation = this.getRotation();
-    var size = /** @type {!ol.Size} */ this.getSize();
-
-    goog.vec.Mat4.makeIdentity(this.coordinateToPixelMatrix_);
-    goog.vec.Mat4.translate(this.coordinateToPixelMatrix_,
-        size.width / 2,
-        size.height / 2,
-        0);
-    goog.vec.Mat4.scale(this.coordinateToPixelMatrix_,
-        1 / resolution,
-        -1 / resolution,
-        1);
-    if (this.canRotate() && goog.isDef(rotation)) {
-      goog.vec.Mat4.rotate(this.coordinateToPixelMatrix_,
-          -rotation,
-          0,
-          0,
-          1);
-    }
-    goog.vec.Mat4.translate(this.coordinateToPixelMatrix_,
-        -center.x,
-        -center.y,
-        0);
-
-    var inverted = goog.vec.Mat4.invert(
-        this.coordinateToPixelMatrix_, this.pixelToCoordinateMatrix_);
-    goog.asserts.assert(inverted);
-
-    this.matriciesDirty_ = false;
-
-  }
-
 };
 
 
@@ -1006,15 +725,15 @@ ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
 /**
  * @constructor
  * @implements {goog.fx.anim.Animated}
- * @param {!ol.Map} map Map.
+ * @param {!ol.MapRenderer} renderer Map renderer.
  */
-ol.MapAnimation = function(map) {
+ol.MapAnimation = function(renderer) {
 
   /**
    * @private
-   * @type {ol.Map}
+   * @type {ol.MapRenderer}
    */
-  this.map_ = map;
+  this.renderer_ = renderer;
 
 };
 
@@ -1023,7 +742,7 @@ ol.MapAnimation = function(map) {
  * @inheritDoc
  */
 ol.MapAnimation.prototype.onAnimationFrame = function() {
-  if (!this.map_.renderInternal()) {
+  if (!this.renderer_.render()) {
     goog.fx.anim.unregisterAnimation(this);
   }
 };
