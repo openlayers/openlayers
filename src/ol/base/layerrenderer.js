@@ -11,18 +11,18 @@ goog.require('ol.Object');
 /**
  * @constructor
  * @extends {ol.Object}
- * @param {ol.Map} map Map.
+ * @param {ol.MapRenderer} mapRenderer Map renderer.
  * @param {ol.Layer} layer Layer.
  */
-ol.LayerRenderer = function(map, layer) {
+ol.LayerRenderer = function(mapRenderer, layer) {
 
   goog.base(this);
 
   /**
    * @private
-   * @type {ol.Map}
+   * @type {ol.MapRenderer}
    */
-  this.map_ = map;
+  this.mapRenderer_ = mapRenderer;
 
   /**
    * @private
@@ -70,10 +70,18 @@ ol.LayerRenderer.prototype.getLayer = function() {
 
 
 /**
+ * @return {ol.MapRenderer} Map renderer.
+ */
+ol.LayerRenderer.prototype.getMapRenderer = function() {
+  return this.mapRenderer_;
+};
+
+
+/**
  * @return {ol.Map} Map.
  */
 ol.LayerRenderer.prototype.getMap = function() {
-  return this.map_;
+  return this.mapRenderer_.getMap();
 };
 
 

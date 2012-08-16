@@ -8,12 +8,12 @@ goog.require('ol.LayerRenderer');
 /**
  * @constructor
  * @extends {ol.LayerRenderer}
- * @param {ol.dom.Map} map Map.
+ * @param {ol.MapRenderer} mapRenderer Map renderer.
  * @param {ol.Layer} layer Layer.
  * @param {!Element} target Target.
  */
-ol.dom.LayerRenderer = function(map, layer, target) {
-  goog.base(this, map, layer);
+ol.dom.LayerRenderer = function(mapRenderer, layer, target) {
+  goog.base(this, mapRenderer, layer);
 
   /**
    * @type {!Element}
@@ -38,10 +38,10 @@ goog.inherits(ol.dom.LayerRenderer, ol.LayerRenderer);
 
 /**
  * @override
- * @return {ol.dom.Map} Map.
+ * @return {ol.MapRenderer} Map renderer.
  */
-ol.dom.LayerRenderer.prototype.getMap = function() {
-  return /** @type {ol.dom.Map} */ goog.base(this, 'getMap');
+ol.dom.LayerRenderer.prototype.getMapRenderer = function() {
+  return /** @type {ol.dom.MapRenderer} */ goog.base(this, 'getMapRenderer');
 };
 
 

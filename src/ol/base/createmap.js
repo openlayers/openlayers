@@ -7,7 +7,7 @@ goog.require('ol.Map');
 goog.require('ol.MapProperty');
 goog.require('ol.Projection');
 goog.require('ol.dom');
-goog.require('ol.dom.Map');
+goog.require('ol.dom.MapRenderer');
 goog.require('ol.interaction.AltDragRotate');
 goog.require('ol.interaction.CenterConstraint');
 goog.require('ol.interaction.Constraints');
@@ -20,7 +20,7 @@ goog.require('ol.interaction.ResolutionConstraint');
 goog.require('ol.interaction.RotationConstraint');
 goog.require('ol.interaction.ShiftDragZoom');
 goog.require('ol.webgl');
-goog.require('ol.webgl.Map');
+goog.require('ol.webgl.MapRenderer');
 
 
 /**
@@ -128,20 +128,26 @@ ol.createMap = function(target, opt_values, opt_rendererHints) {
     rendererHints = ol.DEFAULT_RENDERER_HINT;
   }
 
-  var i, rendererHint;
+  var i, rendererHint, rendererConstructor;
   for (i = 0; i < rendererHints.length; ++i) {
     rendererHint = rendererHints[i];
     if (rendererHint == ol.RendererHint.DOM) {
       if (ol.ENABLE_DOM && ol.dom.isSupported()) {
-        return new ol.dom.Map(target, values);
+        rendererConstructor = ol.dom.MapRenderer;
+        break;
       }
     } else if (rendererHint == ol.RendererHint.WEBGL) {
       if (ol.ENABLE_WEBGL && ol.webgl.isSupported()) {
-        return new ol.webgl.Map(target, values);
+        rendererConstructor = ol.webgl.MapRenderer;
+        break;
       }
     }
   }
 
-  return null;
+  if (goog.isDef(rendererConstructor)) {
+    return new ol.Map(target, rendererConstructor, values);
+  } else {
+    return null;
+  }
 
 };
