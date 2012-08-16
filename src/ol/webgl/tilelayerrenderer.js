@@ -26,6 +26,9 @@ goog.require('ol.webgl.shader.Vertex');
 
 
 if (goog.DEBUG) {
+  /**
+   * @type {goog.debug.Logger}
+   */
   ol.webgl.tilelayerrenderer.logger =
       goog.debug.Logger.getLogger('ol.webgl.tilelayerrenderer');
 }
