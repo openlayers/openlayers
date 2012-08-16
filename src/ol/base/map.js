@@ -2,9 +2,9 @@
 // FIXME recheck layer/map projection compatability when projection changes
 // FIXME layer renderers should skip when they can't reproject
 // FIXME add tilt and height?
-// FIXME add postrender event
 
 goog.provide('ol.Map');
+goog.provide('ol.MapEventType');
 goog.provide('ol.MapProperty');
 
 goog.require('goog.array');
@@ -38,6 +38,14 @@ goog.require('ol.Pixel');
 goog.require('ol.Projection');
 goog.require('ol.Size');
 goog.require('ol.TransformFunction');
+
+
+/**
+ * @enum {string}
+ */
+ol.MapEventType = {
+  POST_RENDER: 'postrender'
+};
 
 
 /**
