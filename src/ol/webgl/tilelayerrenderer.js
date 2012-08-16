@@ -3,6 +3,7 @@
 // FIXME defer texture uploads and delete* calls
 
 goog.provide('ol.webgl.TileLayerRenderer');
+goog.provide('ol.webgl.tilelayerrenderer');
 goog.provide('ol.webgl.tilelayerrenderer.shader.Fragment');
 goog.provide('ol.webgl.tilelayerrenderer.shader.Vertex');
 
@@ -20,6 +21,12 @@ goog.require('ol.TileState');
 goog.require('ol.webgl.LayerRenderer');
 goog.require('ol.webgl.shader.Fragment');
 goog.require('ol.webgl.shader.Vertex');
+
+
+if (goog.DEBUG) {
+  ol.webgl.tilelayerrenderer.logger =
+      goog.debug.Logger.getLogger('ol.webgl.tilelayerrenderer');
+}
 
 
 

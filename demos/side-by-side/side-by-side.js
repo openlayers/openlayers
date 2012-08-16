@@ -1,3 +1,4 @@
+goog.require('goog.debug.Console');
 goog.require('ol.CoordinateFormat');
 goog.require('ol.RendererHint');
 goog.require('ol.control.Attribution');
@@ -5,6 +6,12 @@ goog.require('ol.control.MousePosition');
 goog.require('ol.createMap');
 goog.require('ol.interaction.Keyboard');
 goog.require('ol.layer.MapQuestOpenAerial');
+
+
+if (goog.DEBUG) {
+  goog.debug.Console.autoInstall();
+}
+
 
 
 var layer = new ol.layer.MapQuestOpenAerial();
