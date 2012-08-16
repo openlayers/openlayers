@@ -3,7 +3,6 @@
 // FIXME layer renderers should skip when they can't reproject
 // FIXME add tilt and height?
 // FIXME add postrender event
-// FIXME does the map really need to listen to itself (for center, etc.)?
 
 goog.provide('ol.Map');
 goog.provide('ol.MapProperty');
