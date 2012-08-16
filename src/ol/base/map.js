@@ -109,6 +109,24 @@ ol.Map = function(
    * @private
    * @type {boolean}
    */
+  this.animating_ = false;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.dirty_ = false;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.freezeRenderingCount_ = 0;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
   this.matriciesDirty_ = true;
 
   /**
@@ -155,6 +173,12 @@ ol.Map = function(
    */
   this.renderer_ = new rendererConstructor(target, this);
   this.registerDisposable(this.renderer_);
+
+  /**
+   * @private
+   * @type {ol.MapAnimation}
+   */
+  this.animation_ = new ol.MapAnimation(this.renderer_);
 
   /**
    * @private
@@ -754,15 +778,88 @@ ol.Map.prototype.updateMatrices_ = function() {
 
 
 /**
+ */
+ol.Map.prototype.render = function() {
+  if (!this.animating_) {
+    if (this.freezeRenderingCount_ === 0) {
+      if (this.renderer_.render()) {
+        this.animate_();
+      }
+    } else {
+      this.dirty_ = true;
+    }
+  }
+};
+
+
+/**
+ * @private
+ */
+ol.Map.prototype.animate_ = function() {
+  goog.asserts.assert(!this.animating_);
+  goog.fx.anim.registerAnimation(this.animation_);
+  this.animating_ = true;
+};
+
+
+/**
  * @param {function(this: T)} f Function.
  * @param {T=} opt_obj Object.
  * @template T
  */
 ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
-  this.renderer_.freezeRendering();
+  this.freezeRendering();
   try {
     f.call(opt_obj);
   } finally {
-    this.renderer_.unfreezeRendering();
+    this.unfreezeRendering();
+  }
+};
+
+
+/**
+ */
+ol.Map.prototype.freezeRendering = function() {
+  ++this.freezeRenderingCount_;
+};
+
+
+/**
+ */
+ol.Map.prototype.unfreezeRendering = function() {
+  goog.asserts.assert(this.freezeRenderingCount_ > 0);
+  if (--this.freezeRenderingCount_ === 0) {
+    if (!this.animating_ && this.dirty_) {
+      if (this.renderer_.render()) {
+        this.animate_();
+      }
+    }
+  }
+};
+
+
+
+/**
+ * @constructor
+ * @implements {goog.fx.anim.Animated}
+ * @param {!ol.MapRenderer} renderer Map renderer.
+ */
+ol.MapAnimation = function(renderer) {
+
+  /**
+   * @private
+   * @type {ol.MapRenderer}
+   */
+  this.renderer_ = renderer;
+
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.MapAnimation.prototype.onAnimationFrame = function() {
+  if (!this.renderer_.render()) {
+    goog.fx.anim.unregisterAnimation(this);
   }
 };

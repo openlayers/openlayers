@@ -517,7 +517,7 @@ ol.webgl.MapRenderer.prototype.isImageTextureLoaded = function(image) {
 /**
  * @inheritDoc
  */
-ol.webgl.MapRenderer.prototype.renderInternal = function() {
+ol.webgl.MapRenderer.prototype.render = function() {
 
   if (!this.getMap().isDef()) {
     return false;
@@ -525,7 +525,7 @@ ol.webgl.MapRenderer.prototype.renderInternal = function() {
 
   var size = this.getMap().getSize();
 
-  var animate = goog.base(this, 'renderInternal');
+  var animate = goog.base(this, 'render');
 
   var gl = this.getGL();
 
