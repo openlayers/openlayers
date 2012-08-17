@@ -2090,6 +2090,48 @@
         t.ok(center.equals(new OpenLayers.LonLat(-13.25, 56)), "Center is correct and not equal to maxExtent's center");
     }
 
+    function test_autoUpdateSize(t) {
+        t.plan(1);
+        OpenLayers.Event.unloadCache();
+        var resizeListener = false;
+        var register = OpenLayers.Events.prototype.register;
+        OpenLayers.Events.prototype.register = function(name, el , func) {
+            if (name === 'resize') {
+                resizeListener = true;
+            }
+        };
+        var map = new OpenLayers.Map({
+            events: {
+                register: function(name, el, func) {
+                    if (name === 'resize') {
+                        resizeListener = true;
+                    }
+                }
+            },
+            autoUpdateSize: false,
+            div: 'map',
+            layers: [
+                new OpenLayers.Layer('name', {
+                    isBaseLayer: true,
+                    wrapDateLine: true
+                })
+            ]
+        });
+        map.setCenter(new OpenLayers.LonLat(-1.3, 50.8), 4);
+        for (var key in OpenLayers.Event.observers) {
+            var obj = OpenLayers.Event.observers[key];
+            for (var i=0, ii=obj.length; i<ii; ++i) {
+                var listener = obj[i];
+                if (listener.name === 'resize' && listener.element === window) {
+                    resizeListener = true;
+                }
+            }
+        }
+        t.eq(resizeListener, map.autoUpdateSize, "resize listener not registered when autoUpdateSize is false");
+        map.destroy();
+        OpenLayers.Events.prototype.register = register;
+    }
+
   </script>
 </head>
 <body>
