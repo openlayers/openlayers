@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" debug="true">
+<html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -7,41 +7,61 @@
     <title>MousePosition Control</title>
     <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
     <link rel="stylesheet" href="style.css" type="text/css">
-    <script src="../lib/OpenLayers.js"></script>
+    <script src="../lib/OpenLayers.js" type="text/javascript"></script>
     <script type="text/javascript">
         var map;
         function init(){
             var map = new OpenLayers.Map('map');
 
-            map.addControl(new OpenLayers.Control.MousePosition());
+            map.addControl(
+                new OpenLayers.Control.MousePosition({
+                    prefix: '<a target="_blank" ' +
+                        'href="http://spatialreference.org/ref/epsg/4326/">' +
+                        'EPSG:4326</a> coordinates: ',
+                    separator: ' | ',
+                    numDigits: 2,
+                    emptyString: 'Mouse is not over map.'
+                })
+            );
 
-            var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+            var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
                 "http://vmap0.tiles.osgeo.org/wms/vmap0",
                 {layers: 'basic'} );
 
             map.addLayers([ol_wms]);
-            if (!map.getCenter()) map.zoomToMaxExtent();
+            if (!map.getCenter()) {
+                map.zoomToMaxExtent();
+            }
             
-            map.events.register("mousemove", map, function(e) { 
+            map.events.register("mousemove", map, function(e) {
                 var position = this.events.getMousePosition(e);
                 OpenLayers.Util.getElement("coords").innerHTML = position;
             });
         }
     </script>
   </head>
-  <body onload="init()">
+  <body onload="init();">
     <h1 id="title">MousePosition Control</h1>
     <div id="tags">
-        coordinate
+      coordinate
     </div>
     <p id="shortdesc">
       Use the MousePosition Control to display the coordinates of the cursor
       inside or outside the map div.
     </p>  
     <div id="map" class="smallmap"></div>
-    <div id="coords"></div>
-    <p>Moving your mouse to the upper left corner of this map should return
-    'x=0,y=0' -- in the past, it didn't in IE. If it returns 2,2, consider it a
-    bug, and report it.</p> 
+    <div id="coords" style="height: 1.5em;"></div>
+    <p>
+      This example also shows how to use the the "prefix", "separator" and
+      "numDigits" options to customize the output of the MousePosition-Control.
+      By also setting the "emptyString"-property, the contents of the controls
+      element are resetted to the given string when the mouse isn't above the
+      map.
+    </p>
+    <p>
+      Moving your mouse to the upper left corner of this map should return
+      'x=0,y=0' (pixel coordinates) -- in the past, it didn't in IE. If it
+      returns 'x=2,y=2', consider it a bug, and report it.
+    </p>
   </body>
 </html>
