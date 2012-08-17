@@ -117,7 +117,7 @@
         handler.activate();
         
         var oldIsLeftClick = OpenLayers.Event.isLeftClick;
-        var oldStop = OpenLayers.Event.stop;
+        var oldPreventDefault = OpenLayers.Event.preventDefault;
         var oldCheckModifiers = handler.checkModifiers;
 
         // test mousedown with right click
@@ -163,15 +163,9 @@
                  "mousedown calls isLeftClick with the proper event");
             return true;
         }
-        OpenLayers.Event.stop = function(evt, allowDefault) {
-            if(!allowDefault) {
-                t.ok(evt.xy.x == testEvents.down.xy.x &&
-                     evt.xy.y == testEvents.down.xy.y,
-                     "mousedown default action is disabled");
-            } else {
-                t.fail(
-                     "mousedown is prevented from falling to other elements");
-            }
+        OpenLayers.Event.preventDefault = function(evt) {
+            t.ok(evt.xy.x == testEvents.down.xy.x && evt.xy.y == testEvents.down.xy.y,
+                 "mousedown default action is disabled");
         }
         map.events.triggerEvent("mousedown", testEvents.down);
         t.ok(handler.started, "mousedown sets the started flag to true");
@@ -183,7 +177,7 @@
              handler.last.y == testEvents.down.xy.y,
              "mouse down sets handler.last correctly");
         
-        OpenLayers.Event.stop = oldStop;        
+        OpenLayers.Event.preventDefault = oldPreventDefault;
         OpenLayers.Event.isLeftClick = oldIsLeftClick;
         handler.checkModifiers = oldCheckModifiers;
 
@@ -292,7 +286,7 @@
     function test_Handler_Drag_touch(t) {
         // In this test we verify that "touchstart", "touchmove", and
         // "touchend" events set expected states in the drag handler.
-        // We also verify that we stop event bubbling as appropriate.
+        // We also verify that we prevent the default as appropriate.
 
         t.plan(14);
 
@@ -308,8 +302,8 @@
         });
         h.activate();
 
-        var _stop = OpenLayers.Event.stop;
-        OpenLayers.Event.stop = function(e) {
+        var _preventDefault = OpenLayers.Event.preventDefault;
+        OpenLayers.Event.preventDefault = function(e) {
             log.push(e);
         };
 
@@ -343,7 +337,7 @@
 
         // tear down
 
-        OpenLayers.Event.stop = _stop;
+        OpenLayers.Event.preventDefault = _preventDefault;
         m.destroy();
     }
 

@@ -20,6 +20,10 @@
     }
     function test_Format_GPX_read(t) {
         t.plan(7);
+        
+        var origDefaultPrecision = OpenLayers.Util.DEFAULT_PRECISION;
+        OpenLayers.Util.DEFAULT_PRECISION = 9;
+        
         var expected,
             P = OpenLayers.Geometry.Point,
             LS = OpenLayers.Geometry.LineString;
@@ -61,6 +65,8 @@
                 new P(-19493.373203291227, 6684644.845706556)
         ]);
         t.geom_eq(features[1].geometry, expected, "transformed route feature correctly created");
+
+        OpenLayers.Util.DEFAULT_PRECISION = origDefaultPrecision;
     }
     function test_format_GPX_read_attributes(t) {
         t.plan(2);

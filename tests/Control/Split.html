@@ -104,13 +104,18 @@
         
         t.plan(7);
         
-        var layer = new OpenLayers.Layer.Vector("foo", {
+        var layer1 = new OpenLayers.Layer.Vector("foo", {
             maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
             isBaseLayer: true
         });
-        var control = new OpenLayers.Control.Split({layer: layer});
+        var layer2 = new OpenLayers.Layer.Vector("bar", {
+            maxExtent: new OpenLayers.Bounds(-10, -10, 10, 10),
+            isBaseLayer: false
+        });
+        var control = new OpenLayers.Control.Split({layer: layer1});
         var map = new OpenLayers.Map("map");
-        map.addLayer(layer);
+        map.addLayer(layer1);
+        map.addLayer(layer2);
         map.zoomToMaxExtent();
         map.addControl(control);
 
@@ -124,17 +129,17 @@
         t.eq(control.handler.active, false, "sketch handler deactivated");
         
         // set a source layer
-        control.setSource(layer);
+        control.setSource(layer2);
 
         // activate and check that listeners are registered
         control.activate();
-        t.ok(layer.events.listeners.sketchcomplete, "sketchcomplete listener registered");
-        t.ok(layer.events.listeners.afterfeaturemodified, "afterfeaturemodified listener registered");
+        t.ok(layer2.events.listeners.sketchcomplete, "sketchcomplete listener registered");
+        t.ok(layer2.events.listeners.afterfeaturemodified, "afterfeaturemodified listener registered");
 
         // deactivate and confirm no draw related events
         control.deactivate();
-        t.eq(layer.events.listeners.sketchcomplete.length, 0, "no sketchcomplete listeners");
-        t.eq(layer.events.listeners.afterfeaturemodified.length, 0, "no afterfeaturemodified listeners");
+        t.eq(layer2.events.listeners.sketchcomplete.length, 0, "no sketchcomplete listeners");
+        t.eq(layer2.events.listeners.afterfeaturemodified.length, 0, "no afterfeaturemodified listeners");
         
         map.destroy();
     }

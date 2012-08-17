@@ -309,12 +309,12 @@
             responseForm: {
                 responseDocument: {
                     storeExecuteResponse: true,
-                    output: {
+                    outputs: [{
                         asReference: true,
                         identifier: 'BufferedPolygon',
                         title: 'Area serviced by playground.',
                         'abstract': 'Area within which most users of this playground will live.'
-                    }
+                    }]
                 }
             }
         });
@@ -349,6 +349,11 @@
 '				<ows:Title>Area serviced by playground.</ows:Title>' +
 '				<ows:Abstract>Area within which most users of this playground will live.</ows:Abstract>' +
 '			</wps:Output>' +
+'			<wps:Output>' +
+'				<ows:Identifier>literal</ows:Identifier>' +
+'                               <ows:Title/>' +
+'                               <ows:Abstract/>' +
+'			</wps:Output>' +
 '		</wps:ResponseDocument>' +
 '	</wps:ResponseForm>' +
 '</wps:Execute>';
@@ -381,12 +386,17 @@
                     storeExecuteResponse: true,
                     lineage: true,
                     status: true,
-                    output: {
-                        asReference: true,
-                        identifier: 'BufferedPolygon',
-                        title: 'Area serviced by playground.',
-                        'abstract': 'Area within which most users of this playground will live.'
-                    }
+                    outputs: [
+                        {
+                            asReference: true,
+                            identifier: 'BufferedPolygon',
+                            title: 'Area serviced by playground.',
+                            'abstract': 'Area within which most users of this playground will live.'
+                        },
+                        {
+                            identifier: 'literal'
+                        }
+                    ]
                 }
             }
         });
@@ -461,12 +471,12 @@
                 responseForm: {
                     responseDocument: {
                         storeExecuteResponse: true,
-                        output: {
+                        outputs: [{
                             asReference: true,
                             identifier: 'BufferedPolygon',
                             title: 'Area serviced by playground.',
                             'abstract': 'Area within which most users of this playground will live.'
-                        }
+                        }]
                     }
                 }
             });

@@ -62,44 +62,47 @@
     
     function test_events(t) {
         
-        t.plan(3);
+        t.plan(6);
         
-        var log = {
-            loadstart: 0,
-            loadend: 0
-        };
+        var log = [];
+
+        var response = new OpenLayers.Protocol.Response();
         
         var map = new OpenLayers.Map("map");
         var layer = new OpenLayers.Layer.Vector(null, {
             strategies: [new OpenLayers.Strategy.Fixed()],
             protocol: new OpenLayers.Protocol({
                 read: function(config) {
-                    config.callback.call(config.scope, {});
+                    config.callback.call(config.scope, response);
                 }
             }),
             isBaseLayer: true,
             eventListeners: {
-                loadstart: function() {
-                    ++log.loadstart;
+                loadstart: function(event) {
+                    log.push(event);
                 },
-                loadend: function() {
-                    ++log.loadend;
+                loadend: function(event) {
+                    log.push(event);
                 }
             }
         });
 
         map.addLayer(layer);
         map.zoomToMaxExtent();
+
+        t.eq(log.length, 2, "2 events logged");
+        t.eq(log[0].type, "loadstart", "loadstart first");
+        t.eq(log[1].type, "loadend", "loadend second");
+        t.ok(log[1].response == response, "loadend includes response");
         
-        t.eq(log.loadstart, 1, "loadstart triggered");
-        t.eq(log.loadend, 1, "loadend triggered");
-        var log = {};
+        var calls = [];
         layer.protocol.read = function(obj) {
-            log.obj = obj;
+            calls.push(obj);
         }
         layer.refresh({whee: 'chicken'});
 
-        t.eq(log.obj && log.obj.whee, "chicken", "properties passed to read on refresh correctly.");
+        t.eq(calls.length, 1, "1 call to read");
+        t.eq(calls[0].whee, "chicken", "properties passed to read");
         
         map.destroy();
         

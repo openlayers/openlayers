@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>vendorPrefix.js Tests</title>
+        <script>
+        var div = document.createElement("div");
+        var style = div.style,
+            orgCreateElement = document.createElement;
+            
+        // wrap document.createElement to control property values
+        document.createElement = function(type) {
+            return div;
+        };
+
+        // dependencies for tests
+        var OpenLayers = [
+            "OpenLayers/Util/vendorPrefix.js"
+        ];
+
+        </script>
+        <script src="../OLLoader.js"></script>
+
+        <script>
+        
+        /**
+         * Test vendor prefixing
+         */
+        function test_vendor_prefixes(t) {
+            t.plan(20);
+            var err;
+            
+            function clearCache(type) {
+                var cache = OpenLayers.Util.vendorPrefix[type.replace("style", "js") + "Cache"];
+                for (var key in cache) {
+                    delete cache[key];
+                }
+            }
+            
+            function setStyleMockProp(prop, value) {
+                if (prop && value === undefined) {
+                    delete style[prop];
+                } else if (prop) {
+                    style[prop] = value;
+                }
+            }
+            
+            function curryTestPrefix(type) {
+                return function(standardProp, expectedPrefix, msg) {
+                        var prefixedProp, err;
+                        try {
+                            clearCache(type);
+                            setStyleMockProp(expectedPrefix, "");
+                            prefixedProp = OpenLayers.Util.vendorPrefix[type](standardProp);
+                        } catch(e) {
+                            err = e;
+                        } finally {
+                            setStyleMockProp(expectedPrefix, undefined);
+                        }
+                        
+                        if(!err) {
+                            t.eq(prefixedProp, expectedPrefix, msg);
+                        } else {
+                            t.fail("Error when testing " + type.toUpperCase() + " vendor prefix: " + err.message);
+                        }
+                };
+            }
+            var testDomPrefix = curryTestPrefix("style"),
+                testCssPrefix = curryTestPrefix("css");
+
+            testDomPrefix("unsupported", null, "DOM vendor prefix - unsupported");
+            testCssPrefix("unsupported", null, "CSS vendor prefix - unsupported");
+
+            testDomPrefix("test", "test", "DOM vendor prefix - single word");
+            testCssPrefix("test", "test", "CSS vendor prefix - single word");
+
+            testDomPrefix("testMultiWord", "testMultiWord", "DOM vendor prefix - multiple words");
+            testCssPrefix("test-multi-word", "test-multi-word", "CSS vendor prefix - multiple words");
+
+            testDomPrefix("multiWord", "WebkitMultiWord", "DOM vendor prefix - multiple words for WebKit");
+            testCssPrefix("multi-word", "-webkit-multi-word", "CSS vendor prefix - multiple words for WebKit");
+
+            testDomPrefix("multiWord", "MozMultiWord", "DOM vendor prefix - multiple words for Mozilla");
+            testCssPrefix("multi-word", "-moz-multi-word", "CSS vendor prefix - multiple words for Mozilla");
+
+            testDomPrefix("multiWord", "OMultiWord", "DOM vendor prefix - multiple words for Opera");
+            testCssPrefix("multi-word", "-o-multi-word", "CSS vendor prefix - multiple words for Opera");
+
+            testDomPrefix("multiWord", "msMultiWord", "DOM vendor prefix - multiple words for Internet Explorer");
+            testCssPrefix("multi-word", "-ms-multi-word", "CSS vendor prefix - multiple words for Internet Explorer");
+
+            // test vendor prefix on object
+            clearCache("js");
+            t.eq( OpenLayers.Util.vendorPrefix.js( {}, "unsupported" ), null, "Standard object property - unsupported");
+
+            clearCache("js");
+            t.eq( OpenLayers.Util.vendorPrefix.js( { "test": true }, "test" ), "test", "Standard object property");
+
+            clearCache("js");
+            t.eq( OpenLayers.Util.vendorPrefix.js( { "oTest": true }, "test" ), "oTest", "Standard object property");
+
+            clearCache("js");
+            t.eq( OpenLayers.Util.vendorPrefix.js( { "msTest": true }, "test" ), "msTest", "Standard object property");
+
+            clearCache("js");
+            t.eq( OpenLayers.Util.vendorPrefix.js( { "mozTest": true }, "test" ), "mozTest", "Standard object property");
+
+            clearCache("js");
+            t.eq( OpenLayers.Util.vendorPrefix.js( { "webkitTest": true }, "test" ), "webkitTest", "Standard object property");
+
+            // unwrap document.createElement
+            document.createElement = orgCreateElement;
+        }
+        
+        </script>
+    </head>
+    <body></body>
+</html>

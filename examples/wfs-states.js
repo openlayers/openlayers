@@ -13,7 +13,13 @@ function init() {
                 "http://vmap0.tiles.osgeo.org/wms/vmap0",
                 {layers: "basic"} 
             ),
+            new OpenLayers.Layer.WMS("States WMS",
+                "http://demo.opengeo.org/geoserver/wms",
+                {layers: "topp:states", format: "image/png", transparent: true},
+                {maxScale: 15000000}
+            ),
             new OpenLayers.Layer.Vector("States", {
+                minScale: 15000000,
                 strategies: [new OpenLayers.Strategy.BBOX()],
                 protocol: new OpenLayers.Protocol.WFS({
                     url: "http://demo.opengeo.org/geoserver/wfs",

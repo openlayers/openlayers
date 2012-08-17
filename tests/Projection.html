@@ -44,7 +44,7 @@
          // conditionally mock up proj4js
          var hasProj = !!window.Proj4js;
          if (!hasProj) {
-             window.Proj4js = true;
+             window.Proj4js = {};
          }
          proj1.proj = {defData: "+title= WGS84 +foo=bar +x=0"};
          proj2.proj = {defData: "+title=FOO +foo=bar +x=0", srsCode: "FOO"};

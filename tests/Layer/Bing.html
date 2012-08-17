@@ -126,9 +126,9 @@
         map.zoomToMaxExtent();
         
         t.delay_call(2, function() {
-            t.ok(layer.attribution.indexOf('olBingAttribution aerial') !== -1, "Attribution has the correct css class");
-            t.ok(layer.attribution.indexOf('<img src="">') == -1, "Attribution contains a logo");
-            t.ok(layer.attribution.indexOf('</img></div></a><a style=') == -1 , "Attribution contains a copyright");
+            t.ok(OpenLayers.Util.indexOf(layer.attribution, 'olBingAttribution aerial') !== -1, "Attribution has the correct css class");
+            t.ok(OpenLayers.Util.indexOf(layer.attribution, '<img src="">') == -1, "Attribution contains a logo");
+            t.ok(OpenLayers.Util.indexOf(layer.attribution, '</img></div></a><a style=') == -1 , "Attribution contains a copyright");
             map.destroy();
         });
     }
