@@ -2094,20 +2094,7 @@
         t.plan(1);
         OpenLayers.Event.unloadCache();
         var resizeListener = false;
-        var register = OpenLayers.Events.prototype.register;
-        OpenLayers.Events.prototype.register = function(name, el , func) {
-            if (name === 'resize') {
-                resizeListener = true;
-            }
-        };
         var map = new OpenLayers.Map({
-            events: {
-                register: function(name, el, func) {
-                    if (name === 'resize') {
-                        resizeListener = true;
-                    }
-                }
-            },
             autoUpdateSize: false,
             div: 'map',
             layers: [
@@ -2129,7 +2116,6 @@
         }
         t.eq(resizeListener, map.autoUpdateSize, "resize listener not registered when autoUpdateSize is false");
         map.destroy();
-        OpenLayers.Events.prototype.register = register;
     }
 
   </script>
