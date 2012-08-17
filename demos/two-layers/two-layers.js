@@ -36,7 +36,7 @@ var domMap;
 if (ol.TWO_LAYERS_DEMO_ENABLE_DOM) {
   domMap = ol.createMap(
       document.getElementById('domMap'),
-      {'layers': layers},
+      {},
       ol.RendererHint.DOM);
   domMap.bindTo('center', webglMap);
   domMap.bindTo('layers', webglMap);
