@@ -87,6 +87,19 @@
       client.execute({inputs: 'a', success: 'b', scope: 'c'});
       t.eq(log[0], {inputs: 'a', success: 'b', scope: 'c'}, "process executed with correct options");   
   }
+  
+  function test_destroy(t) {
+      t.plan(2);
+      client = new OpenLayers.WPSClient({
+          servers: {
+              local: "/geoserver/wps"
+          },
+          lazy: true
+      });
+      client.destroy();
+      t.eq(client.events, null, "Events nullified");
+      t.eq(client.servers, null, "Servers nullified");
+  }
 
   </script>
 </head>
