@@ -1,0 +1,108 @@
+<html>
+<head>
+  <script src="OLLoader.js"></script>
+  <script type="text/javascript">
+  
+  var client;
+  
+  function test_initialize(t) {
+      t.plan(3);
+      
+      client = new OpenLayers.WPSClient({
+          servers: {
+              local: "/geoserver/wps"
+          }
+      });
+      
+      t.ok(client instanceof OpenLayers.WPSClient, 'creates an instance');
+      t.ok(client.events, 'has an events instance');
+      t.eq(client.servers.local.url, '/geoserver/wps', 'servers stored on instance');
+  }
+  
+  function test_getProcess(t) {
+      t.plan(4);
+
+      client = new OpenLayers.WPSClient({
+          servers: {
+              local: "/geoserver/wps"
+          },
+          lazy: true
+      });
+
+      var process = client.getProcess('local', 'gs:splitPolygon');
+      t.ok(process instanceof OpenLayers.WPSProcess, 'creates a process');
+      t.ok(process.client === client, 'process knows about client');
+      t.eq(process.server, 'local', 'process created with correct server');
+      t.eq(process.identifier, 'gs:splitPolygon', 'process created with correct identifier');
+      
+  }
+  
+  function test_describeProcess(t) {
+      t.plan(6);
+      var log = {request: [], event: []};
+      var originalGET = OpenLayers.Request.GET;
+      OpenLayers.Request.GET = function(cfg) {
+          log.request.push(cfg);
+      }      
+      function describe(evt) {
+            log.event.push(evt);
+        }
+      client.events.register('describeprocess', this, describe);
+
+      process = client.getProcess('local', 'gs:splitPolygon');
+      t.eq(client.servers.local.processDescription['gs:splitPolyon'], null, 'describeProcess pending'); 
+      process.describe();
+      t.eq(log.request.length, 1, 'describeProcess request only sent once');
+      log.request[0].success.call(client, {
+          responseText: '<?xml version="1.0" encoding="UTF-8"?><wps:ProcessDescriptions xmlns:wps="http://www.opengis.net/wps/1.0.0"></wps:ProcessDescriptions>'
+      });
+      t.eq(log.event[0].type, 'describeprocess', 'describeprocess event triggered');
+      t.ok(client.servers.local.processDescription['gs:splitPolygon'], 'We have a process description!');
+      process.describe();
+      t.eq(log.request.length, 1, 'describeProcess request only sent once');
+      t.eq(log.event.length, 1, 'describeprocess event only triggered once');
+      
+      OpenLayers.Request.GET = originalGET;
+      client.events.unregister('describeprocess', this, describe);
+  }
+  
+  function test_execute(t) {
+      t.plan(1);
+
+      client = new OpenLayers.WPSClient({
+          servers: {
+              local: "/geoserver/wps"
+          },
+          lazy: true
+      });
+      var log = [];
+      client.getProcess = function() {
+          return {
+              execute: function(options) {
+                  log.push(options);
+              }
+          }
+      }
+      
+      client.execute({inputs: 'a', success: 'b', scope: 'c'});
+      t.eq(log[0], {inputs: 'a', success: 'b', scope: 'c'}, "process executed with correct options");   
+  }
+  
+  function test_destroy(t) {
+      t.plan(2);
+      client = new OpenLayers.WPSClient({
+          servers: {
+              local: "/geoserver/wps"
+          },
+          lazy: true
+      });
+      client.destroy();
+      t.eq(client.events, null, "Events nullified");
+      t.eq(client.servers, null, "Servers nullified");
+  }
+
+  </script>
+</head>
+<body>
+</body>
+</html>

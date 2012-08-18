@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers WPS Client Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="../lib/OpenLayers.js"></script>
+    <script src="wps-client.js"></script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">WPS Client Example</h1>
+
+    <div id="tags">
+        wps
+    </div>
+
+    <div id="shortdesc">Shows the usage of the WPS Client</div>
+
+    <div id="map" class="smallmap"></div>
+
+    <div id="docs">
+        <p>This example shows how simple it is to use the WPS Client. It
+            buffers an intersection of a geometry and a feature, which is
+            accomplished by chaining two processes. See
+        <a href="wps-client.js">wps-client.js</a> to see how this is done.</p>
+    </div>
+  </body>
+</html>
