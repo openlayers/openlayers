@@ -26,22 +26,10 @@ ol.dom.MapRenderer = function(container, map) {
    * @type {!Element}
    * @private
    */
-  this.viewport_ = goog.dom.createElement(goog.dom.TagName.DIV);
-  this.viewport_.className = 'ol-viewport';
-  this.viewport_.style.position = 'relative';
-  this.viewport_.style.overflow = 'hidden';
-  this.viewport_.style.width = '100%';
-  this.viewport_.style.height = '100%';
-  goog.dom.appendChild(target, this.viewport_);
-
-  /**
-   * @type {!Element}
-   * @private
-   */
   this.layersPane_ = goog.dom.createElement(goog.dom.TagName.DIV);
   this.layersPane_.className = 'ol-layers-pane';
   this.layersPane_.style.position = 'absolute';
-  goog.dom.appendChild(this.viewport_, this.layersPane_);
+  goog.dom.appendChild(container, this.layersPane_);
 
   /**
    * @type {Object}
