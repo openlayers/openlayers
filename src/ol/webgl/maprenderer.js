@@ -147,7 +147,6 @@ ol.webgl.MapRenderer = function(container, map) {
    * @type {Element}
    */
   this.canvas_ = goog.dom.createElement(goog.dom.TagName.CANVAS);
-  this.canvas_.style.overflow = 'hidden';
   this.canvas_.height = container.clientHeight;
   this.canvas_.width = container.clientWidth;
   goog.dom.appendChild(container, this.canvas_);
