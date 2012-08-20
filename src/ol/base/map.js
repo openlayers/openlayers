@@ -77,7 +77,7 @@ ol.MapPaneZIndex = {
  * @constructor
  * @extends {ol.Object}
  * @implements {goog.fx.anim.Animated}
- * @param {Element} target Target.
+ * @param {Element} container Container.
  * @param {function(new: ol.MapRenderer, Element, ol.Map)} rendererConstructor
  *     Renderer constructor.
  * @param {Object=} opt_values Values.
@@ -85,7 +85,7 @@ ol.MapPaneZIndex = {
  *     Viewport size monitor.
  */
 ol.Map = function(
-    target, rendererConstructor, opt_values, opt_viewportSizeMonitor) {
+    container, rendererConstructor, opt_values, opt_viewportSizeMonitor) {
 
   goog.base(this);
 
@@ -142,7 +142,7 @@ ol.Map = function(
   this.viewport_.style.width = '100%';
   this.viewport_.style.height = '100%';
   this.viewport_.style.zIndex = ol.MapPaneZIndex.VIEWPORT;
-  goog.dom.appendChild(target, this.viewport_);
+  goog.dom.appendChild(container, this.viewport_);
 
   goog.events.listen(this.viewport_, [
     goog.events.EventType.DBLCLICK
@@ -175,12 +175,6 @@ ol.Map = function(
    */
   this.renderer_ = new rendererConstructor(this.viewport_, this);
   this.registerDisposable(this.renderer_);
-
-  /**
-   * @private
-   * @type {Element}
-   */
-  this.target_ = target;
 
   /**
    * @private
@@ -270,6 +264,14 @@ goog.exportProperty(
     ol.Map.prototype,
     'getCenter',
     ol.Map.prototype.getCenter);
+
+
+/**
+ * @return {Element} Container.
+ */
+ol.Map.prototype.getContainer = function() {
+  return this.container_;
+};
 
 
 /**
@@ -427,14 +429,6 @@ goog.exportProperty(
 
 
 /**
- * @return {Element} Target.
- */
-ol.Map.prototype.getTarget = function() {
-  return this.target_;
-};
-
-
-/**
  * @return {ol.Coordinate|undefined} Center in user projection.
  */
 ol.Map.prototype.getUserCenter = function() {
@@ -527,7 +521,8 @@ ol.Map.prototype.handleUserProjectionChanged = function() {
  * @protected
  */
 ol.Map.prototype.handleViewportResize = function() {
-  var size = new ol.Size(this.target_.clientWidth, this.target_.clientHeight);
+  var size = new ol.Size(this.container_.clientWidth,
+      this.container_.clientHeight);
   this.setSize(size);
 };
 
