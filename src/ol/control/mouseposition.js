@@ -59,10 +59,10 @@ ol.control.MousePosition =
       ol.Object.getChangedEventType(ol.MapProperty.PROJECTION),
       this.handleMapProjectionChanged, false, this);
 
-  goog.events.listen(map.getTarget(), goog.events.EventType.MOUSEMOVE,
+  goog.events.listen(map.getViewport(), goog.events.EventType.MOUSEMOVE,
       this.handleMouseMove, false, this);
 
-  goog.events.listen(map.getTarget(), goog.events.EventType.MOUSEOUT,
+  goog.events.listen(map.getViewport(), goog.events.EventType.MOUSEOUT,
       this.handleMouseOut, false, this);
 
   this.handleMapProjectionChanged();
