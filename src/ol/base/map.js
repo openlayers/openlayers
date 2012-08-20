@@ -184,7 +184,7 @@ ol.Map = function(
       opt_viewportSizeMonitor || new goog.dom.ViewportSizeMonitor();
 
   goog.events.listen(this.viewportSizeMonitor_, goog.events.EventType.RESIZE,
-      this.handleViewportResize, false, this);
+      this.handleBrowserWindowResize, false, this);
 
   goog.events.listen(
       this, ol.Object.getChangedEventType(ol.MapProperty.PROJECTION),
@@ -198,7 +198,7 @@ ol.Map = function(
     this.setValues(opt_values);
   }
 
-  this.handleViewportResize();
+  this.handleBrowserWindowResize();
 
 };
 goog.inherits(ol.Map, ol.Object);
@@ -520,7 +520,7 @@ ol.Map.prototype.handleUserProjectionChanged = function() {
 /**
  * @protected
  */
-ol.Map.prototype.handleViewportResize = function() {
+ol.Map.prototype.handleBrowserWindowResize = function() {
   var size = new ol.Size(this.container_.clientWidth,
       this.container_.clientHeight);
   this.setSize(size);
