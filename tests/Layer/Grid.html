@@ -239,6 +239,23 @@
         t.eq( zoom, 2, "getZoomForExtent() returns correct value");
     }   
     
+    function test_moveGriddedTiles(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.WMS(name, url, params, {buffer: 2});
+        map.addLayer(layer);
+        map.setCenter([0, 0], 5);
+        var count = 0;
+        layer.shiftColumn = function(prepend) {
+            ++count;
+            OpenLayers.Layer.WMS.prototype.shiftColumn.apply(this, arguments);
+        }
+        map.moveTo([15, 0]);
+        t.delay_call(.5, function() {
+            t.eq(count, 1, "column shifted once");
+        });
+    }
+    
     function test_Layer_Grid_moveTo(t) {
 
         t.plan(17);
