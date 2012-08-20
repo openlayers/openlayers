@@ -68,7 +68,7 @@ ol.MapProperty = {
  * @enum {number}
  */
 ol.MapPaneZIndex = {
-  EVENTS: 1000
+  VIEWPORT: 1000
 };
 
 
@@ -129,16 +129,22 @@ ol.Map = function(
    * @private
    * @type {Element}
    */
-  this.eventsPane_ = goog.dom.createElement(goog.dom.TagName.DIV);
-  this.eventsPane_.className = 'ol-pane-events';
-  this.eventsPane_.style.position = 'absolute';
-  // FIXME why can't we use width and height 100% here?
-  this.eventsPane_.style.width = target.clientWidth + 'px';
-  this.eventsPane_.style.height = target.clientHeight + 'px';
-  this.eventsPane_.style.zIndex = ol.MapPaneZIndex.EVENTS;
-  goog.dom.appendChild(target, this.eventsPane_);
+  this.container_ = container;
 
-  goog.events.listen(this.eventsPane_, [
+  /**
+   * @private
+   * @type {Element}
+   */
+  this.viewport_ = goog.dom.createElement(goog.dom.TagName.DIV);
+  this.viewport_.className = 'ol-viewport';
+  this.viewport_.style.position = 'relative';
+  this.viewport_.style.overflow = 'hidden';
+  this.viewport_.style.width = '100%';
+  this.viewport_.style.height = '100%';
+  this.viewport_.style.zIndex = ol.MapPaneZIndex.VIEWPORT;
+  goog.dom.appendChild(target, this.viewport_);
+
+  goog.events.listen(this.viewport_, [
     goog.events.EventType.DBLCLICK
   ], this.handleBrowserEvent, false, this);
 
@@ -148,13 +154,13 @@ ol.Map = function(
       this.handleBrowserEvent, false, this);
   this.registerDisposable(keyHandler);
 
-  var mouseWheelHandler = new goog.events.MouseWheelHandler(this.eventsPane_);
+  var mouseWheelHandler = new goog.events.MouseWheelHandler(this.viewport_);
   goog.events.listen(mouseWheelHandler,
       goog.events.MouseWheelHandler.EventType.MOUSEWHEEL,
       this.handleBrowserEvent, false, this);
   this.registerDisposable(mouseWheelHandler);
 
-  var dragger = new goog.fx.Dragger(this.eventsPane_);
+  var dragger = new goog.fx.Dragger(this.viewport_);
   dragger.defaultAction = function() {};
   goog.events.listen(dragger, [
     goog.fx.Dragger.EventType.START,
@@ -167,7 +173,7 @@ ol.Map = function(
    * @type {ol.MapRenderer}
    * @private
    */
-  this.renderer_ = new rendererConstructor(target, this);
+  this.renderer_ = new rendererConstructor(this.viewport_, this);
   this.registerDisposable(this.renderer_);
 
   /**
@@ -465,6 +471,14 @@ goog.exportProperty(
     ol.Map.prototype,
     'getUserProjection',
     ol.Map.prototype.getUserProjection);
+
+
+/**
+ * @return {Element} Viewport.
+ */
+ol.Map.prototype.getViewport = function() {
+  return this.viewport_;
+};
 
 
 /**
