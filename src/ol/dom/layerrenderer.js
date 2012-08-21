@@ -48,6 +48,14 @@ ol.dom.LayerRenderer.prototype.getMapRenderer = function() {
 /**
  * @inheritDoc
  */
+ol.dom.LayerRenderer.prototype.handleLayerLoad = function() {
+  this.getMap().render();
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.dom.LayerRenderer.prototype.handleLayerOpacityChange = function() {
   goog.style.setOpacity(this.target, this.getLayer().getOpacity());
 };
