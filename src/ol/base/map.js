@@ -528,6 +528,14 @@ ol.Map.prototype.handleBrowserWindowResize = function() {
 
 
 /**
+ * @return {boolean} Is animating.
+ */
+ol.Map.prototype.isAnimating = function() {
+  return this.animatingCount_ > 0;
+};
+
+
+/**
  * @return {boolean} Is defined.
  */
 ol.Map.prototype.isDef = function() {
