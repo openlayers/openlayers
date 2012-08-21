@@ -11,7 +11,7 @@ goog.require('ol.layer.TileJSON');
  * FIXME Remove this define when it does
  * @define {boolean} Enable DOM map.
  */
-ol.TWO_LAYERS_DEMO_ENABLE_DOM = false;
+ol.TWO_LAYERS_DEMO_ENABLE_DOM = true;
 
 
 var layer1 = new ol.layer.BingMaps(
