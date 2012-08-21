@@ -135,22 +135,21 @@ goog.addSingletonGetter(ol.webgl.map.shader.Vertex);
 /**
  * @constructor
  * @extends {ol.MapRenderer}
- * @param {Element} target Target.
+ * @param {Element} container Container.
  * @param {ol.Map} map Map.
  */
-ol.webgl.MapRenderer = function(target, map) {
+ol.webgl.MapRenderer = function(container, map) {
 
-  goog.base(this, target, map);
+  goog.base(this, container, map);
 
   /**
    * @private
    * @type {Element}
    */
   this.canvas_ = goog.dom.createElement(goog.dom.TagName.CANVAS);
-  this.canvas_.height = target.clientHeight;
-  this.canvas_.width = target.clientWidth;
-  this.canvas_.style.overflow = 'hidden';
-  goog.dom.appendChild(target, this.canvas_);
+  this.canvas_.height = container.clientHeight;
+  this.canvas_.width = container.clientWidth;
+  goog.dom.appendChild(container, this.canvas_);
 
   /**
    * @private

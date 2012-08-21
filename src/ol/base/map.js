@@ -68,7 +68,7 @@ ol.MapProperty = {
  * @enum {number}
  */
 ol.MapPaneZIndex = {
-  EVENTS: 1000
+  VIEWPORT: 1000
 };
 
 
@@ -77,7 +77,7 @@ ol.MapPaneZIndex = {
  * @constructor
  * @extends {ol.Object}
  * @implements {goog.fx.anim.Animated}
- * @param {Element} target Target.
+ * @param {Element} container Container.
  * @param {function(new: ol.MapRenderer, Element, ol.Map)} rendererConstructor
  *     Renderer constructor.
  * @param {Object=} opt_values Values.
@@ -85,7 +85,7 @@ ol.MapPaneZIndex = {
  *     Viewport size monitor.
  */
 ol.Map = function(
-    target, rendererConstructor, opt_values, opt_viewportSizeMonitor) {
+    container, rendererConstructor, opt_values, opt_viewportSizeMonitor) {
 
   goog.base(this);
 
@@ -129,16 +129,22 @@ ol.Map = function(
    * @private
    * @type {Element}
    */
-  this.eventsPane_ = goog.dom.createElement(goog.dom.TagName.DIV);
-  this.eventsPane_.className = 'ol-pane-events';
-  this.eventsPane_.style.position = 'absolute';
-  // FIXME why can't we use width and height 100% here?
-  this.eventsPane_.style.width = target.clientWidth + 'px';
-  this.eventsPane_.style.height = target.clientHeight + 'px';
-  this.eventsPane_.style.zIndex = ol.MapPaneZIndex.EVENTS;
-  goog.dom.appendChild(target, this.eventsPane_);
+  this.container_ = container;
 
-  goog.events.listen(this.eventsPane_, [
+  /**
+   * @private
+   * @type {Element}
+   */
+  this.viewport_ = goog.dom.createElement(goog.dom.TagName.DIV);
+  this.viewport_.className = 'ol-viewport';
+  this.viewport_.style.position = 'relative';
+  this.viewport_.style.overflow = 'hidden';
+  this.viewport_.style.width = '100%';
+  this.viewport_.style.height = '100%';
+  this.viewport_.style.zIndex = ol.MapPaneZIndex.VIEWPORT;
+  goog.dom.appendChild(container, this.viewport_);
+
+  goog.events.listen(this.viewport_, [
     goog.events.EventType.DBLCLICK
   ], this.handleBrowserEvent, false, this);
 
@@ -148,13 +154,13 @@ ol.Map = function(
       this.handleBrowserEvent, false, this);
   this.registerDisposable(keyHandler);
 
-  var mouseWheelHandler = new goog.events.MouseWheelHandler(this.eventsPane_);
+  var mouseWheelHandler = new goog.events.MouseWheelHandler(this.viewport_);
   goog.events.listen(mouseWheelHandler,
       goog.events.MouseWheelHandler.EventType.MOUSEWHEEL,
       this.handleBrowserEvent, false, this);
   this.registerDisposable(mouseWheelHandler);
 
-  var dragger = new goog.fx.Dragger(this.eventsPane_);
+  var dragger = new goog.fx.Dragger(this.viewport_);
   dragger.defaultAction = function() {};
   goog.events.listen(dragger, [
     goog.fx.Dragger.EventType.START,
@@ -167,14 +173,8 @@ ol.Map = function(
    * @type {ol.MapRenderer}
    * @private
    */
-  this.renderer_ = new rendererConstructor(target, this);
+  this.renderer_ = new rendererConstructor(this.viewport_, this);
   this.registerDisposable(this.renderer_);
-
-  /**
-   * @private
-   * @type {Element}
-   */
-  this.target_ = target;
 
   /**
    * @private
@@ -184,7 +184,7 @@ ol.Map = function(
       opt_viewportSizeMonitor || new goog.dom.ViewportSizeMonitor();
 
   goog.events.listen(this.viewportSizeMonitor_, goog.events.EventType.RESIZE,
-      this.handleViewportResize, false, this);
+      this.handleBrowserWindowResize, false, this);
 
   goog.events.listen(
       this, ol.Object.getChangedEventType(ol.MapProperty.PROJECTION),
@@ -198,7 +198,7 @@ ol.Map = function(
     this.setValues(opt_values);
   }
 
-  this.handleViewportResize();
+  this.handleBrowserWindowResize();
 
 };
 goog.inherits(ol.Map, ol.Object);
@@ -264,6 +264,14 @@ goog.exportProperty(
     ol.Map.prototype,
     'getCenter',
     ol.Map.prototype.getCenter);
+
+
+/**
+ * @return {Element} Container.
+ */
+ol.Map.prototype.getContainer = function() {
+  return this.container_;
+};
 
 
 /**
@@ -421,14 +429,6 @@ goog.exportProperty(
 
 
 /**
- * @return {Element} Target.
- */
-ol.Map.prototype.getTarget = function() {
-  return this.target_;
-};
-
-
-/**
  * @return {ol.Coordinate|undefined} Center in user projection.
  */
 ol.Map.prototype.getUserCenter = function() {
@@ -465,6 +465,14 @@ goog.exportProperty(
     ol.Map.prototype,
     'getUserProjection',
     ol.Map.prototype.getUserProjection);
+
+
+/**
+ * @return {Element} Viewport.
+ */
+ol.Map.prototype.getViewport = function() {
+  return this.viewport_;
+};
 
 
 /**
@@ -512,8 +520,9 @@ ol.Map.prototype.handleUserProjectionChanged = function() {
 /**
  * @protected
  */
-ol.Map.prototype.handleViewportResize = function() {
-  var size = new ol.Size(this.target_.clientWidth, this.target_.clientHeight);
+ol.Map.prototype.handleBrowserWindowResize = function() {
+  var size = new ol.Size(this.container_.clientWidth,
+      this.container_.clientHeight);
   this.setSize(size);
 };
 
