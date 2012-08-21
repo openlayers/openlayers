@@ -105,16 +105,17 @@ ol.tilestore.TileJSON.prototype.handleTileJSONResponse = function() {
 
   var epsg4326Projection = ol.Projection.getFromCode('EPSG:4326');
 
-  var epsg4326Extent;
+  var epsg4326Extent, extent;
   if (goog.isDef(tileJSON.bounds)) {
     var bounds = tileJSON.bounds;
     epsg4326Extent = new ol.Extent(
         bounds[0], bounds[1], bounds[2], bounds[3]);
-    var transformedExtent = epsg4326Extent.transform(
+    extent = epsg4326Extent.transform(
         ol.Projection.getTransform(epsg4326Projection, this.getProjection()));
-    this.setExtent(transformedExtent);
+    this.setExtent(extent);
   } else {
     epsg4326Extent = null;
+    extent = null;
   }
 
   var scheme = goog.isDef(tileJSON.scheme) || 'xyz';
@@ -136,10 +137,16 @@ ol.tilestore.TileJSON.prototype.handleTileJSONResponse = function() {
         var y = -tileCoord.y - 1;
         if (y < 0 || n <= y) {
           return null;
-        } else {
-          var x = goog.math.modulo(tileCoord.x, n);
-          return new ol.TileCoord(tileCoord.z, x, y);
         }
+        var x = goog.math.modulo(tileCoord.x, n);
+        if (!goog.isNull(extent)) {
+          var tileExtent = tileGrid.getTileCoordExtent(
+              new ol.TileCoord(tileCoord.z, x, tileCoord.y));
+          if (!tileExtent.intersects(extent)) {
+            return null;
+          }
+        }
+        return new ol.TileCoord(tileCoord.z, x, y);
       },
       ol.TileUrlFunction.createFromTemplates(tileJSON.tiles));
 
