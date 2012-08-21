@@ -517,7 +517,7 @@ ol.webgl.MapRenderer.prototype.initializeGL_ = function() {
  * @return {boolean} Is image texture loaded.
  */
 ol.webgl.MapRenderer.prototype.isImageTextureLoaded = function(image) {
-  return image.src in this.textureCache_[image.src];
+  return image.src in this.textureCache_;
 };
 
 
