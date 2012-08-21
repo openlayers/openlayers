@@ -13,10 +13,10 @@ goog.require('ol.MapProperty');
 /**
  * @constructor
  * @extends {goog.Disposable}
- * @param {Element} target Target.
+ * @param {Element} container Container.
  * @param {ol.Map} map Map.
  */
-ol.MapRenderer = function(target, map) {
+ol.MapRenderer = function(container, map) {
 
   goog.base(this);
 
@@ -24,7 +24,7 @@ ol.MapRenderer = function(target, map) {
    * @private
    * @type {Element}
    */
-  this.target_ = target;
+  this.container_ = container;
 
   /**
    * @protected
