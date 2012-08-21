@@ -225,7 +225,7 @@ ol.webgl.TileLayerRenderer.prototype.bindFramebuffer_ =
 
 
 /**
- * @protected
+ * @inheritDoc
  */
 ol.webgl.TileLayerRenderer.prototype.disposeInternal = function() {
   var mapRenderer = this.getMapRenderer();
@@ -273,6 +273,7 @@ ol.webgl.TileLayerRenderer.prototype.handleTileChange = function() {
 
 
 /**
+ * @inheritDoc
  */
 ol.webgl.TileLayerRenderer.prototype.handleWebGLContextLost = function() {
   this.locations_ = null;
