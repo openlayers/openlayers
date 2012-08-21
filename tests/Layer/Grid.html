@@ -76,8 +76,8 @@
         layer = new OpenLayers.Layer.WMS(name, url, params, {buffer:2});
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,0),5);
-        t.eq( layer.grid.length, 7, "Grid rows is correct." );
-        t.eq( layer.grid[0].length, 6, "Grid cols is correct." );
+        t.eq( layer.grid.length, 8, "Grid rows is correct." );
+        t.eq( layer.grid[0].length, 7, "Grid cols is correct." );
         
     }
 
@@ -712,17 +712,17 @@
         map.setCenter(new OpenLayers.LonLat(0, 0), 4); 
         t.eq( layer0.grid.length, 3, "Grid rows with buffer:0" );
         map.setBaseLayer(layer1);
-        t.eq( layer1.grid.length, 4, "Grid rows with buffer:1" );
+        t.eq( layer1.grid.length, 5, "Grid rows with buffer:1" );
         map.setBaseLayer(layer2);
-        t.eq( layer2.grid.length, 6, "Grid rows with buffer:2" );
+        t.eq( layer2.grid.length, 7, "Grid rows with buffer:2" );
 
         // zooming in on Greenland exercises the bug from pre-r4313
         map.setCenter(new OpenLayers.LonLat(0, 90), 4); 
         t.eq( layer0.grid.length, 3, "Grid rows with buffer:0" );
         map.setBaseLayer(layer1);
-        t.eq( layer1.grid.length, 4, "Grid rows with buffer:1" );
+        t.eq( layer1.grid.length, 5, "Grid rows with buffer:1" );
         map.setBaseLayer(layer2);
-        t.eq( layer2.grid.length, 6, "Grid rows with buffer:2" );
+        t.eq( layer2.grid.length, 7, "Grid rows with buffer:2" );
     }
 
     function test_Layer_Grid_destroy (t) {
