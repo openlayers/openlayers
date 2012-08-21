@@ -24,15 +24,6 @@ goog.require('ol.webgl.shader.Fragment');
 goog.require('ol.webgl.shader.Vertex');
 
 
-if (goog.DEBUG) {
-  /**
-   * @type {goog.debug.Logger}
-   */
-  ol.webgl.tilelayerrenderer.logger =
-      goog.debug.Logger.getLogger('ol.webgl.tilelayerrenderer');
-}
-
-
 
 /**
  * @constructor
@@ -93,6 +84,14 @@ goog.addSingletonGetter(ol.webgl.tilelayerrenderer.shader.Vertex);
 ol.webgl.TileLayerRenderer = function(mapRenderer, tileLayer) {
 
   goog.base(this, mapRenderer, tileLayer);
+
+  if (goog.DEBUG) {
+    /**
+     * @inheritDoc
+     */
+    this.logger = goog.debug.Logger.getLogger(
+        'ol.webgl.tilelayerrenderer.' + goog.getUid(this));
+  }
 
   /**
    * @private
@@ -170,12 +169,12 @@ ol.webgl.TileLayerRenderer.prototype.bindFramebuffer_ =
       this.framebufferDimension_ != framebufferDimension) {
 
     if (goog.DEBUG) {
-      ol.webgl.tilelayerrenderer.logger.info('re-sizing framebuffer');
+      this.logger.info('re-sizing framebuffer');
     }
 
     if (ol.webgl.FREE_RESOURCES_IMMEDIATELY) {
       if (goog.DEBUG) {
-        ol.webgl.tilelayerrenderer.logger.info('freeing WebGL resources');
+        this.logger.info('freeing WebGL resources');
       }
       if (!gl.isContextLost()) {
         gl.deleteFramebuffer(this.framebuffer_);
@@ -188,8 +187,7 @@ ol.webgl.TileLayerRenderer.prototype.bindFramebuffer_ =
           ol.MapEventType.POST_RENDER,
           goog.partial(function(gl, framebuffer, texture) {
             if (goog.DEBUG) {
-              ol.webgl.tilelayerrenderer.logger.info(
-                  'freeing WebGL resources on postrender');
+              this.logger.info('freeing WebGL resources on postrender');
             }
             if (!gl.isContextLost()) {
               gl.deleteFramebuffer(framebuffer);
@@ -480,7 +478,7 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
         ol.MapEventType.POST_RENDER,
         goog.partial(function(mapRenderer, imagesToLoad) {
           if (goog.DEBUG) {
-            ol.webgl.tilelayerrenderer.logger.info('uploading textures');
+            this.logger.info('uploading textures');
           }
           goog.array.forEach(imagesToLoad, function(image) {
             mapRenderer.bindImageTexture(

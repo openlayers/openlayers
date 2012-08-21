@@ -26,14 +26,6 @@ goog.require('ol.webgl.shader.Fragment');
 goog.require('ol.webgl.shader.Vertex');
 
 
-if (goog.DEBUG) {
-  /**
-   * @type {goog.debug.Logger}
-   */
-  ol.webgl.map.logger = goog.debug.Logger.getLogger('ol.webgl.map');
-}
-
-
 /**
  * @typedef {{magFilter: number, minFilter: number, texture: WebGLTexture}}
  */
@@ -141,6 +133,14 @@ goog.addSingletonGetter(ol.webgl.map.shader.Vertex);
 ol.webgl.MapRenderer = function(container, map) {
 
   goog.base(this, container, map);
+
+  if (goog.DEBUG) {
+    /**
+     * @inheritDoc
+     */
+    this.logger = goog.debug.Logger.getLogger(
+        'ol.webgl.maprenderer.' + goog.getUid(this));
+  }
 
   /**
    * @private
@@ -360,7 +360,7 @@ ol.webgl.MapRenderer.prototype.getProgram = function(
     if (goog.DEBUG) {
       if (!gl.getProgramParameter(program, goog.webgl.LINK_STATUS) &&
           !gl.isContextLost()) {
-        ol.webgl.map.logger.severe(gl.getProgramInfoLog(program));
+        this.logger.severe(gl.getProgramInfoLog(program));
         goog.asserts.assert(
             gl.getProgramParameter(program, goog.webgl.LINK_STATUS));
       }
@@ -387,7 +387,7 @@ ol.webgl.MapRenderer.prototype.getShader = function(shaderObject) {
     if (goog.DEBUG) {
       if (!gl.getShaderParameter(shader, goog.webgl.COMPILE_STATUS) &&
           !gl.isContextLost()) {
-        ol.webgl.map.logger.severe(gl.getShaderInfoLog(shader));
+        this.logger.severe(gl.getShaderInfoLog(shader));
         goog.asserts.assert(
             gl.getShaderParameter(shader, goog.webgl.COMPILE_STATUS));
       }
@@ -473,7 +473,7 @@ ol.webgl.MapRenderer.prototype.handleSizeChanged = function() {
  */
 ol.webgl.MapRenderer.prototype.handleWebGLContextLost = function(event) {
   if (goog.DEBUG) {
-    ol.webgl.map.logger.info('WebGLContextLost');
+    this.logger.info('WebGLContextLost');
   }
   event.preventDefault();
   this.locations_ = null;
@@ -492,7 +492,7 @@ ol.webgl.MapRenderer.prototype.handleWebGLContextLost = function(event) {
  */
 ol.webgl.MapRenderer.prototype.handleWebGLContextRestored = function() {
   if (goog.DEBUG) {
-    ol.webgl.map.logger.info('WebGLContextRestored');
+    this.logger.info('WebGLContextRestored');
   }
   this.initializeGL_();
   this.getMap().render();
