@@ -558,6 +558,9 @@ ol.Map.prototype.isDef = function() {
  * @inheritDoc
  */
 ol.Map.prototype.onAnimationFrame = function() {
+  if (goog.DEBUG) {
+    this.logger.info('onAnimationFrame');
+  }
   this.renderFrame_();
 };
 
@@ -598,6 +601,9 @@ ol.Map.prototype.render = function() {
  * @private
  */
 ol.Map.prototype.renderFrame_ = function() {
+  if (goog.DEBUG) {
+    this.logger.info('renderFrame_');
+  }
   var animatedRenderer = this.renderer_.render();
   this.dirty_ = false;
   if (animatedRenderer != this.animatedRenderer_) {
@@ -607,6 +613,9 @@ ol.Map.prototype.renderFrame_ = function() {
       this.stopAnimating();
     }
     this.animatedRenderer_ = animatedRenderer;
+  }
+  if (goog.DEBUG) {
+    this.logger.info('postrender');
   }
   this.dispatchEvent(ol.MapEventType.POST_RENDER);
 };
@@ -745,6 +754,9 @@ goog.exportProperty(
  */
 ol.Map.prototype.startAnimating = function() {
   if (++this.animatingCount_ == 1) {
+    if (goog.DEBUG) {
+      this.logger.info('startAnimating');
+    }
     goog.fx.anim.registerAnimation(this);
   }
 };
@@ -755,6 +767,9 @@ ol.Map.prototype.startAnimating = function() {
 ol.Map.prototype.stopAnimating = function() {
   goog.asserts.assert(this.animatingCount_ > 0);
   if (--this.animatingCount_ === 0) {
+    if (goog.DEBUG) {
+      this.logger.info('stopAnimating');
+    }
     goog.fx.anim.unregisterAnimation(this);
   }
 };
