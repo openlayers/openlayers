@@ -177,8 +177,10 @@ ol.webgl.TileLayerRenderer.prototype.bindFramebuffer_ =
       if (goog.DEBUG) {
         ol.webgl.tilelayerrenderer.logger.info('freeing WebGL resources');
       }
-      gl.deleteFramebuffer(this.framebuffer_);
-      gl.deleteTexture(this.texture_);
+      if (!gl.isContextLost()) {
+        gl.deleteFramebuffer(this.framebuffer_);
+        gl.deleteTexture(this.texture_);
+      }
     } else {
       var map = this.getMap();
       goog.events.listenOnce(
@@ -189,8 +191,10 @@ ol.webgl.TileLayerRenderer.prototype.bindFramebuffer_ =
               ol.webgl.tilelayerrenderer.logger.info(
                   'freeing WebGL resources on postrender');
             }
-            gl.deleteFramebuffer(framebuffer);
-            gl.deleteTexture(texture);
+            if (!gl.isContextLost()) {
+              gl.deleteFramebuffer(framebuffer);
+              gl.deleteTexture(texture);
+            }
           }, gl, this.framebuffer_, this.texture_));
     }
 
