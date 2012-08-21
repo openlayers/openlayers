@@ -155,8 +155,8 @@
         t.delay_call(0.1, function() {
             t.eq( tile.imgDiv.src, expected.src, "tile.draw creates an image");
         });
-        t.eq( tile.imgDiv.style.width, "5%", "Image width is correct" );
-        t.eq( tile.imgDiv.style.height, "6%", "Image height is correct" );
+        t.eq( tile.imgDiv.style.width, "5px", "Image width is correct" );
+        t.eq( tile.imgDiv.style.height, "6px", "Image height is correct" );
         t.ok( tile.imgDiv.parentNode === layer.div, "Image is directly appended to the layer div" ); 
 
         // this should trigger a "reload" event (since the image never actually
