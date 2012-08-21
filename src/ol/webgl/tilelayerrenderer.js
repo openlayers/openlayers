@@ -1,6 +1,5 @@
 // FIXME large resolutions lead to too large framebuffers :-(
 // FIXME animated shaders! check in redraw
-// FIXME defer texture uploads
 
 goog.provide('ol.webgl.TileLayerRenderer');
 goog.provide('ol.webgl.tilelayerrenderer');
@@ -285,6 +284,8 @@ ol.webgl.TileLayerRenderer.prototype.handleWebGLContextLost = function() {
  */
 ol.webgl.TileLayerRenderer.prototype.render = function() {
 
+  var animate = false;
+
   var mapRenderer = this.getMapRenderer();
   var map = this.getMap();
   var gl = mapRenderer.getGL();
@@ -369,12 +370,24 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
    */
   var tilesToDrawByZ = {};
 
+  /**
+   * @type {Array.<ol.Tile>}
+   */
+  var imagesToLoad = [];
+
   tilesToDrawByZ[z] = {};
   tileBounds.forEachTileCoord(z, function(tileCoord) {
+
     var tile = tileStore.getTile(tileCoord);
+
     if (goog.isNull(tile)) {
     } else if (tile.getState() == ol.TileState.LOADED) {
-      tilesToDrawByZ[z][tileCoord.toString()] = tile;
+      if (mapRenderer.isImageTextureLoaded(tile.getImage())) {
+        tilesToDrawByZ[z][tileCoord.toString()] = tile;
+        return;
+      } else {
+        imagesToLoad.push(tile.getImage());
+      }
     } else {
       var tileKey = goog.getUid(tile);
       if (!(tileKey in this.tileChangeListenerKeys_)) {
@@ -383,30 +396,32 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
         this.tileChangeListenerKeys_[tileKey] = goog.events.listen(tile,
             goog.events.EventType.CHANGE, this.handleTileChange, false, this);
       }
-      // FIXME this could be more efficient about filling partial holes
-      tileGrid.forEachTileCoordParentTileBounds(
-          tileCoord,
-          function(z, tileBounds) {
-            var fullyCovered = true;
-            tileBounds.forEachTileCoord(z, function(tileCoord) {
-              var tileCoordKey = tileCoord.toString();
-              if (tilesToDrawByZ[z] && tilesToDrawByZ[z][tileCoordKey]) {
-                return;
-              }
-              var tile = tileStore.getTile(tileCoord);
-              if (!goog.isNull(tile) &&
-                  tile.getState() == ol.TileState.LOADED) {
-                if (!tilesToDrawByZ[z]) {
-                  tilesToDrawByZ[z] = {};
-                }
-                tilesToDrawByZ[z][tileCoordKey] = tile;
-              } else {
-                fullyCovered = false;
-              }
-            });
-            return fullyCovered;
-          });
     }
+
+    // FIXME this could be more efficient about filling partial holes
+    tileGrid.forEachTileCoordParentTileBounds(
+        tileCoord,
+        function(z, tileBounds) {
+          var fullyCovered = true;
+          tileBounds.forEachTileCoord(z, function(tileCoord) {
+            var tileCoordKey = tileCoord.toString();
+            if (tilesToDrawByZ[z] && tilesToDrawByZ[z][tileCoordKey]) {
+              return;
+            }
+            var tile = tileStore.getTile(tileCoord);
+            if (!goog.isNull(tile) &&
+                tile.getState() == ol.TileState.LOADED) {
+              if (!tilesToDrawByZ[z]) {
+                tilesToDrawByZ[z] = {};
+              }
+              tilesToDrawByZ[z][tileCoordKey] = tile;
+            } else {
+              fullyCovered = false;
+            }
+          });
+          return fullyCovered;
+        });
+
   }, this);
 
   var zs = goog.object.getKeys(tilesToDrawByZ);
@@ -453,5 +468,23 @@ ol.webgl.TileLayerRenderer.prototype.render = function() {
       -0.5,
       -0.5,
       0);
+
+  if (!goog.array.isEmpty(imagesToLoad)) {
+    goog.events.listenOnce(
+        map,
+        ol.MapEventType.POST_RENDER,
+        goog.partial(function(mapRenderer, imagesToLoad) {
+          if (goog.DEBUG) {
+            ol.webgl.tilelayerrenderer.logger.info('uploading textures');
+          }
+          goog.array.forEach(imagesToLoad, function(image) {
+            mapRenderer.bindImageTexture(
+                image, goog.webgl.LINEAR, goog.webgl.LINEAR);
+          });
+        }, mapRenderer, imagesToLoad));
+    animate = true;
+  }
+
+  return animate;
 
 };
