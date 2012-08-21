@@ -8,6 +8,7 @@ goog.provide('ol.MapEventType');
 goog.provide('ol.MapProperty');
 
 goog.require('goog.array');
+goog.require('goog.debug.Logger');
 goog.require('goog.dispose');
 goog.require('goog.dom');
 goog.require('goog.dom.ViewportSizeMonitor');
@@ -88,6 +89,14 @@ ol.Map = function(
     container, rendererConstructor, opt_values, opt_viewportSizeMonitor) {
 
   goog.base(this);
+
+  if (goog.DEBUG) {
+    /**
+     * @protected
+     * @type {goog.debug.Logger}
+     */
+    this.logger = goog.debug.Logger.getLogger('ol.map.' + goog.getUid(this));
+  }
 
   /**
    * @type {ol.TransformFunction}
