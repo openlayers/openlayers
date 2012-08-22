@@ -6,14 +6,6 @@ goog.require('ol.layer.BingMaps');
 goog.require('ol.layer.TileJSON');
 
 
-/**
- * FIXME The DOM renderer doesn't support partially-loaded layers yet
- * FIXME Remove this define when it does
- * @define {boolean} Enable DOM map.
- */
-ol.TWO_LAYERS_DEMO_ENABLE_DOM = false;
-
-
 var layer1 = new ol.layer.BingMaps(
     ol.BingMapsStyle.AERIAL,
     'AheP841R-MsLErKQChaTba_xDoOCl40-EeTubD9uNhNAyQTePwFY9iVD1_pyqqlE');
@@ -32,19 +24,14 @@ goog.events.listen(layer2, goog.events.EventType.LOAD, function() {
   webglMap.setResolution(layer2.getStore().getResolutions()[5]);
 });
 
-var domMap;
-if (ol.TWO_LAYERS_DEMO_ENABLE_DOM) {
-  domMap = ol.createMap(
-      document.getElementById('domMap'),
-      {},
-      ol.RendererHint.DOM);
-  domMap.bindTo('center', webglMap);
-  domMap.bindTo('layers', webglMap);
-  domMap.bindTo('resolution', webglMap);
-  domMap.bindTo('rotation', webglMap);
-} else {
-  domMap = null;
-}
+var domMap = ol.createMap(
+    document.getElementById('domMap'),
+    {},
+    ol.RendererHint.DOM);
+domMap.bindTo('center', webglMap);
+domMap.bindTo('layers', webglMap);
+domMap.bindTo('resolution', webglMap);
+domMap.bindTo('rotation', webglMap);
 
 var attributionControl = new ol.control.Attribution(webglMap);
 document.getElementById('attribution').appendChild(

@@ -84,6 +84,10 @@ ol.dom.MapRenderer.prototype.createLayerRenderer = function(layer) {
  */
 ol.dom.MapRenderer.prototype.handleCenterChanged = function() {
   goog.base(this, 'handleCenterChanged');
+  var map = this.getMap();
+  if (!map.isDef()) {
+    return;
+  }
   // FIXME: shiftLayersPane_ and resetLayersPane_ should be called
   // elsewhere as we may be frozen here
   if (goog.isDef(this.renderedCenter_)) {
@@ -91,7 +95,7 @@ ol.dom.MapRenderer.prototype.handleCenterChanged = function() {
   } else {
     this.resetLayersPane_();
   }
-  this.render();
+  map.render();
 };
 
 
@@ -100,10 +104,14 @@ ol.dom.MapRenderer.prototype.handleCenterChanged = function() {
  */
 ol.dom.MapRenderer.prototype.handleResolutionChanged = function() {
   goog.base(this, 'handleResolutionChanged');
+  var map = this.getMap();
+  if (!map.isDef()) {
+    return;
+  }
   // FIXME: resetLayersPane_ should be called
   // elsewhere as we may be frozen here
   this.resetLayersPane_();
-  this.render();
+  map.render();
 };
 
 
