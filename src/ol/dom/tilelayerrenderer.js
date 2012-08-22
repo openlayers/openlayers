@@ -1,6 +1,3 @@
-// FIXME ol.dom.TileLayerRenderer should cope with "not ready" layers
-// FIXME ol.dom.TileLayerRenderer should re-render when layer loads
-
 goog.provide('ol.dom.TileLayerRenderer');
 
 goog.require('goog.dom');
