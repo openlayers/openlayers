@@ -18,7 +18,7 @@
                 <th>WebGL</th>
             </tr>
             <tr>
-                <td><div id="domMap" class="map">Coming soon...</div></td>
+                <td><div id="domMap" class="map"></div></td>
                 <td><div id="webglMap" class="map"></div></td>
             </tr>
             <tr>
