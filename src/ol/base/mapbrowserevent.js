@@ -1,6 +1,7 @@
 goog.provide('ol.MapBrowserEvent');
 
 goog.require('goog.events.BrowserEvent');
+goog.require('goog.style');
 goog.require('ol.Coordinate');
 goog.require('ol.MapEvent');
 goog.require('ol.Pixel');
@@ -40,9 +41,12 @@ ol.MapBrowserEvent.prototype.getCoordinate = function() {
   if (goog.isDef(this.coordinate_)) {
     return this.coordinate_;
   } else {
+    var map = this.map;
     var browserEvent = this.browserEvent;
-    var pixel = new ol.Pixel(browserEvent.offsetX, browserEvent.offsetY);
-    var coordinate = this.map.getCoordinateFromPixel(pixel);
+    var eventPosition = goog.style.getRelativePosition(
+        browserEvent, map.getViewport());
+    var pixel = new ol.Pixel(eventPosition.x, eventPosition.y);
+    var coordinate = map.getCoordinateFromPixel(pixel);
     this.coordinate_ = coordinate;
     return coordinate;
   }
