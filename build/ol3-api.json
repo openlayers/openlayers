@@ -1,9 +1,0 @@
-{
-
-  "id": "ol3-api",
-
-  "inherits": "../base.json",
-
-  "inputs": "src/api/api.js"
-
-}

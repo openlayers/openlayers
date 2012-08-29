@@ -1,8 +1,8 @@
 /apidoc_config/Data/
 /bin/plovr*.jar
 /build/OpenLayers.js
+/build/ol.js
 /build/ol3.js
-/build/ol3-api.js
 /build/ol3-compiled.js
 /demos/*/advanced-optimizations.*
 /demos/*/build.html

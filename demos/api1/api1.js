@@ -1,6 +1,6 @@
-var map = ol3.map({
+var map = ol.map({
   renderTo: 'map',
-  layers: [ol3.layer.osm()],
+  layers: [ol.layer.osm()],
   center: [45, 5],
   zoom: 10
 });
