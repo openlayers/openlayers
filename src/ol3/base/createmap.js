@@ -6,8 +6,6 @@ goog.require('ol3.Collection');
 goog.require('ol3.Map');
 goog.require('ol3.MapProperty');
 goog.require('ol3.Projection');
-goog.require('ol3.dom');
-goog.require('ol3.dom.MapRenderer');
 goog.require('ol3.interaction.AltDragRotate');
 goog.require('ol3.interaction.CenterConstraint');
 goog.require('ol3.interaction.Constraints');
@@ -19,8 +17,10 @@ goog.require('ol3.interaction.MouseWheelZoom');
 goog.require('ol3.interaction.ResolutionConstraint');
 goog.require('ol3.interaction.RotationConstraint');
 goog.require('ol3.interaction.ShiftDragZoom');
-goog.require('ol3.webgl');
-goog.require('ol3.webgl.MapRenderer');
+goog.require('ol3.renderer.dom');
+goog.require('ol3.renderer.dom.Map');
+goog.require('ol3.renderer.webgl');
+goog.require('ol3.renderer.webgl.Map');
 
 
 /**
@@ -132,13 +132,13 @@ ol3.createMap = function(target, opt_values, opt_rendererHints) {
   for (i = 0; i < rendererHints.length; ++i) {
     rendererHint = rendererHints[i];
     if (rendererHint == ol3.RendererHint.DOM) {
-      if (ol3.ENABLE_DOM && ol3.dom.isSupported()) {
-        rendererConstructor = ol3.dom.MapRenderer;
+      if (ol3.ENABLE_DOM && ol3.renderer.dom.isSupported()) {
+        rendererConstructor = ol3.renderer.dom.Map;
         break;
       }
     } else if (rendererHint == ol3.RendererHint.WEBGL) {
-      if (ol3.ENABLE_WEBGL && ol3.webgl.isSupported()) {
-        rendererConstructor = ol3.webgl.MapRenderer;
+      if (ol3.ENABLE_WEBGL && ol3.renderer.webgl.isSupported()) {
+        rendererConstructor = ol3.renderer.webgl.Map;
         break;
       }
     }

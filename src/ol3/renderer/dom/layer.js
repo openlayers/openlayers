@@ -1,18 +1,18 @@
-goog.provide('ol3.dom.LayerRenderer');
+goog.provide('ol3.renderer.dom.Layer');
 
 goog.require('ol3.Coordinate');
-goog.require('ol3.LayerRenderer');
+goog.require('ol3.renderer.Layer');
 
 
 
 /**
  * @constructor
- * @extends {ol3.LayerRenderer}
- * @param {ol3.MapRenderer} mapRenderer Map renderer.
+ * @extends {ol3.renderer.Layer}
+ * @param {ol3.renderer.Map} mapRenderer Map renderer.
  * @param {ol3.Layer} layer Layer.
  * @param {!Element} target Target.
  */
-ol3.dom.LayerRenderer = function(mapRenderer, layer, target) {
+ol3.renderer.dom.Layer = function(mapRenderer, layer, target) {
   goog.base(this, mapRenderer, layer);
 
   /**
@@ -33,22 +33,22 @@ ol3.dom.LayerRenderer = function(mapRenderer, layer, target) {
   this.handleLayerVisibleChange();
 
 };
-goog.inherits(ol3.dom.LayerRenderer, ol3.LayerRenderer);
+goog.inherits(ol3.renderer.dom.Layer, ol3.renderer.Layer);
 
 
 /**
  * @override
- * @return {ol3.MapRenderer} Map renderer.
+ * @return {ol3.renderer.Map} Map renderer.
  */
-ol3.dom.LayerRenderer.prototype.getMapRenderer = function() {
-  return /** @type {ol3.dom.MapRenderer} */ goog.base(this, 'getMapRenderer');
+ol3.renderer.dom.Layer.prototype.getMapRenderer = function() {
+  return /** @type {ol3.renderer.dom.Map} */ goog.base(this, 'getMapRenderer');
 };
 
 
 /**
  * @inheritDoc
  */
-ol3.dom.LayerRenderer.prototype.handleLayerLoad = function() {
+ol3.renderer.dom.Layer.prototype.handleLayerLoad = function() {
   this.getMap().render();
 };
 
@@ -56,7 +56,7 @@ ol3.dom.LayerRenderer.prototype.handleLayerLoad = function() {
 /**
  * @inheritDoc
  */
-ol3.dom.LayerRenderer.prototype.handleLayerOpacityChange = function() {
+ol3.renderer.dom.Layer.prototype.handleLayerOpacityChange = function() {
   goog.style.setOpacity(this.target, this.getLayer().getOpacity());
 };
 
@@ -64,14 +64,14 @@ ol3.dom.LayerRenderer.prototype.handleLayerOpacityChange = function() {
 /**
  * @inheritDoc
  */
-ol3.dom.LayerRenderer.prototype.handleLayerVisibleChange = function() {
+ol3.renderer.dom.Layer.prototype.handleLayerVisibleChange = function() {
   goog.style.showElement(this.target, this.getLayer().getVisible());
 };
 
 
 /**
  */
-ol3.dom.LayerRenderer.prototype.render = goog.abstractMethod;
+ol3.renderer.dom.Layer.prototype.render = goog.abstractMethod;
 
 
 /**
@@ -79,6 +79,6 @@ ol3.dom.LayerRenderer.prototype.render = goog.abstractMethod;
  *
  * @param {ol3.Coordinate} origin Origin.
  */
-ol3.dom.LayerRenderer.prototype.setOrigin = function(origin) {
+ol3.renderer.dom.Layer.prototype.setOrigin = function(origin) {
   this.origin = origin;
 };

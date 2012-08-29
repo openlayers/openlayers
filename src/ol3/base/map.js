@@ -32,13 +32,13 @@ goog.require('ol3.Color');
 goog.require('ol3.Coordinate');
 goog.require('ol3.Extent');
 goog.require('ol3.Interaction');
-goog.require('ol3.LayerRenderer');
 goog.require('ol3.MapBrowserEvent');
 goog.require('ol3.Object');
 goog.require('ol3.Pixel');
 goog.require('ol3.Projection');
 goog.require('ol3.Size');
 goog.require('ol3.TransformFunction');
+goog.require('ol3.renderer.Layer');
 
 
 /**
@@ -79,7 +79,7 @@ ol3.MapPaneZIndex = {
  * @extends {ol3.Object}
  * @implements {goog.fx.anim.Animated}
  * @param {Element} container Container.
- * @param {function(new: ol3.MapRenderer, Element, ol3.Map)} rendererConstructor
+ * @param {function(new: ol3.renderer.Map, Element, ol3.Map)} rendererConstructor
  *     Renderer constructor.
  * @param {Object=} opt_values Values.
  * @param {goog.dom.ViewportSizeMonitor=} opt_viewportSizeMonitor
@@ -179,7 +179,7 @@ ol3.Map = function(
   this.registerDisposable(dragger);
 
   /**
-   * @type {ol3.MapRenderer}
+   * @type {ol3.renderer.Map}
    * @private
    */
   this.renderer_ = new rendererConstructor(this.viewport_, this);
