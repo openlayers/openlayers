@@ -1,3 +1,0 @@
-overflow	point	title	description	image
-auto	10,20	a	b	http://boston.openguides.org/markers/ORANGE.png
-hidden	15,25	c	d	http://boston.openguides.org/markers/ORANGE.png
