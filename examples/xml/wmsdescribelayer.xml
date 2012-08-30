@@ -1,5 +1,0 @@
-<WMS_DescribeLayerResponse version="1.1.1">
-  <LayerDescription name="topp:states" wfs="http://demo.opengeo.org:80/geoserver/wfs/WfsDispatcher?">
-    <Query typeName="topp:states"/>
-  </LayerDescription>
-</WMS_DescribeLayerResponse>
