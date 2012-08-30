@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+    <head>
+        <style type="text/css">
+            .map {
+                width: 400px;
+                height: 400px;
+                border: thin solid;
+            }
+        </style>
+        <script src="@SRC@" type="text/javascript"></script>
+        <title>ol3 api1 demo</title>
+    </head>
+    <body>
+        <h1>ol3 api1 demo</h1>
+        <div class="map" id="map"></div>
+        <script src="api1.js" type="text/javascript"></script>
+    </body>
+</html>
