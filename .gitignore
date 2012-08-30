@@ -1,9 +1,1 @@
-/build/OpenLayers.js
-/tools/closure-compiler.jar
-/tools/*.pyc
-/apidoc_config/Data/
-/doc/apidocs/
-/examples/example-list.js
-/examples/example-list.xml
 /bin/plovr.jar
-/jsdoc/
