@@ -1,0 +1,9 @@
+{
+
+  "id": "ol3",
+
+  "inherits": "../base.json",
+
+  "inputs": "build/ol3.js"
+
+}

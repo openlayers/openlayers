@@ -1,0 +1,37 @@
+{
+
+  "checks": {
+    "accessControls": "ERROR",
+    "visibility": "ERROR",
+    "checkTypes": "ERROR",
+    "checkRegExp": "ERROR",
+    "checkVars": "ERROR",
+    "deprecated": "ERROR",
+    "fileoverviewTags": "ERROR",
+    "invalidCasts": "ERROR",
+    "missingProperties": "ERROR",
+    "nonStandardJsDocs": "ERROR",
+    "undefinedVars": "ERROR"
+  },
+
+  "define": {
+    "goog.dom.ASSUME_STANDARDS_MODE": true,
+    "goog.DEBUG": false
+  },
+
+  "externs": [
+    "externs/bingmaps.js",
+    "externs/proj4js.js",
+    "externs/tilejson.js",
+    "externs/webgl-debug.js"
+  ],
+
+  "level": "VERBOSE",
+
+  "mode": "ADVANCED",
+
+  "paths": "src",
+
+  "treat-warnings-as-errors": true
+
+}
