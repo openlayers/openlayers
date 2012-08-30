@@ -1,3 +1,0 @@
-point	image
-10,20	http://boston.openguides.org/markers/ORANGE.png
-15,25	http://boston.openguides.org/markers/ORANGE.png

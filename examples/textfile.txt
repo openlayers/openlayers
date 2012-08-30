@@ -1,4 +1,0 @@
-point	title	description	icon
-10,20	my orange title	my orange description	
-2,4	my aqua title	my aqua description	
-42,-71	my purple title	my purple description<br/>is great.	http://www.openlayers.org/api/img/zoom-world-mini.png
