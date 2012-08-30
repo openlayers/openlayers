@@ -4,6 +4,7 @@
 /build/ol.js
 /build/ol3.js
 /build/ol3-compiled.js
+/build/webgl-debug.js
 /demos/*/advanced-optimizations.*
 /demos/*/build.html
 /demos/*/debug.html
@@ -15,4 +16,3 @@
 /proj4js-combined.js
 /tools/*.pyc
 /tools/closure-compiler.jar
-/webgl-debug.js
