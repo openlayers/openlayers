@@ -100,6 +100,62 @@
         map.destroy();
     }
 
+    function test_filterModificationOnSelected(t) {
+        t.plan(1);
+        var parser = new OpenLayers.Format.WFSDescribeFeatureType();
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS('Foo', 'http://foo', {LAYERS: 'AAA64'});
+        map.addLayer(layer);
+
+        var text =
+            '<?xml version="1.0" encoding="ISO-8859-1" ?>' +
+            '<schema' +
+            '   targetNamespace="http://mapserver.gis.umn.edu/mapserver" ' +
+            '   xmlns:rws="http://mapserver.gis.umn.edu/mapserver" ' +
+            '   xmlns:ogc="http://www.opengis.net/ogc"' +
+            '   xmlns:xsd="http://www.w3.org/2001/XMLSchema"' +
+            '   xmlns="http://www.w3.org/2001/XMLSchema"' +
+            '   xmlns:gml="http://www.opengis.net/gml"' +
+            '   elementFormDefault="qualified" version="0.1" >' +
+            '  <import namespace="http://www.opengis.net/gml"' +
+            '          schemaLocation="http://schemas.opengis.net/gml/2.1.2/feature.xsd" />' +
+            '  <element name="AAA64" ' +
+            '           type="rws:AAA64Type" ' +
+            '           substitutionGroup="gml:_Feature" />' +
+            '  <complexType name="AAA64Type">' +
+            '    <complexContent>' +
+            '      <extension base="gml:AbstractFeatureType">' +
+            '        <sequence>' +
+            '          <element name="geometry" type="gml:MultiLineStringPropertyType" minOccurs="0" maxOccurs="1"/>' +
+            '          <element name="OBJECTID" type="string"/>' +
+            '        </sequence>' +
+            '      </extension>' +
+            '    </complexContent>' +
+            '  </complexType>' +
+            '</schema>';
+
+        OpenLayers.Control.SLDSelect.prototype.wfsCache[layer.id] = parser.read(text);
+        var control = new OpenLayers.Control.SLDSelect(OpenLayers.Handler.RegularPolygon,
+            {layers: [layer], clearOnDeactivate: true, handlerOptions: {irregular: true} });
+
+        var testEvent = function(evt) {
+            // manipulate filter
+            var bbox = OpenLayers.Bounds.fromString('1,2,3,4');
+            evt.filters[0].value = bbox;
+        };
+        control.events.register("selected", this, testEvent);
+        map.addControl(control);
+        var geometry = OpenLayers.Geometry.Polygon.createRegularPolygon(
+            new OpenLayers.Geometry.Point(0, 0), 5, 4);
+        control.select(geometry);
+        control.events.unregister("selected", this, testEvent);
+
+        var expected_sld = '<sld:StyledLayerDescriptor xmlns:sld="http://www.opengis.net/sld" version="1.0.0" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml"><sld:NamedLayer><sld:Name>AAA64</sld:Name><sld:UserStyle><sld:Name>default</sld:Name><sld:FeatureTypeStyle><sld:Rule><ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"><ogc:BBOX><ogc:PropertyName>geometry</ogc:PropertyName><gml:Box xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326"><gml:coordinates decimal="." cs="," ts=" ">1,2 3,4</gml:coordinates></gml:Box></ogc:BBOX></ogc:Filter><sld:LineSymbolizer><sld:Stroke><sld:CssParameter name="stroke">#FF0000</sld:CssParameter><sld:CssParameter name="stroke-width">2</sld:CssParameter></sld:Stroke></sld:LineSymbolizer></sld:Rule></sld:FeatureTypeStyle></sld:UserStyle></sld:NamedLayer></sld:StyledLayerDescriptor>';
+
+        t.xml_eq(map.layers[1].params.SLD_BODY, expected_sld, "Filter / SLD manipulated in select-callback correctly");
+
+    }
+
     function test_multiselect(t) {
         t.plan(2);
 
