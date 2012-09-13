@@ -1,10 +1,10 @@
 // FIXME large resolutions lead to too large framebuffers :-(
 // FIXME animated shaders! check in redraw
 
-goog.provide('ol3.webgl.TileLayerRenderer');
-goog.provide('ol3.webgl.tilelayerrenderer');
-goog.provide('ol3.webgl.tilelayerrenderer.shader.Fragment');
-goog.provide('ol3.webgl.tilelayerrenderer.shader.Vertex');
+goog.provide('ol3.renderer.webgl.TileLayer');
+goog.provide('ol3.renderer.webgl.tilelayerrenderer');
+goog.provide('ol3.renderer.webgl.tilelayerrenderer.shader.Fragment');
+goog.provide('ol3.renderer.webgl.tilelayerrenderer.shader.Vertex');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -19,17 +19,17 @@ goog.require('ol3.MapEventType');
 goog.require('ol3.Size');
 goog.require('ol3.TileLayer');
 goog.require('ol3.TileState');
-goog.require('ol3.webgl.LayerRenderer');
-goog.require('ol3.webgl.shader.Fragment');
-goog.require('ol3.webgl.shader.Vertex');
+goog.require('ol3.renderer.webgl.FragmentShader');
+goog.require('ol3.renderer.webgl.Layer');
+goog.require('ol3.renderer.webgl.VertexShader');
 
 
 
 /**
  * @constructor
- * @extends {ol3.webgl.shader.Fragment}
+ * @extends {ol3.renderer.webgl.FragmentShader}
  */
-ol3.webgl.tilelayerrenderer.shader.Fragment = function() {
+ol3.renderer.webgl.tilelayerrenderer.shader.Fragment = function() {
   goog.base(this, [
     'precision mediump float;',
     '',
@@ -43,16 +43,17 @@ ol3.webgl.tilelayerrenderer.shader.Fragment = function() {
   ].join('\n'));
 };
 goog.inherits(
-    ol3.webgl.tilelayerrenderer.shader.Fragment, ol3.webgl.shader.Fragment);
-goog.addSingletonGetter(ol3.webgl.tilelayerrenderer.shader.Fragment);
+    ol3.renderer.webgl.tilelayerrenderer.shader.Fragment,
+    ol3.renderer.webgl.FragmentShader);
+goog.addSingletonGetter(ol3.renderer.webgl.tilelayerrenderer.shader.Fragment);
 
 
 
 /**
  * @constructor
- * @extends {ol3.webgl.shader.Vertex}
+ * @extends {ol3.renderer.webgl.VertexShader}
  */
-ol3.webgl.tilelayerrenderer.shader.Vertex = function() {
+ol3.renderer.webgl.tilelayerrenderer.shader.Vertex = function() {
   goog.base(this, [
     'attribute vec2 aPosition;',
     'attribute vec2 aTexCoord;',
@@ -70,18 +71,19 @@ ol3.webgl.tilelayerrenderer.shader.Vertex = function() {
   ].join('\n'));
 };
 goog.inherits(
-    ol3.webgl.tilelayerrenderer.shader.Vertex, ol3.webgl.shader.Vertex);
-goog.addSingletonGetter(ol3.webgl.tilelayerrenderer.shader.Vertex);
+    ol3.renderer.webgl.tilelayerrenderer.shader.Vertex,
+    ol3.renderer.webgl.VertexShader);
+goog.addSingletonGetter(ol3.renderer.webgl.tilelayerrenderer.shader.Vertex);
 
 
 
 /**
  * @constructor
- * @extends {ol3.webgl.LayerRenderer}
- * @param {ol3.MapRenderer} mapRenderer Map renderer.
+ * @extends {ol3.renderer.webgl.Layer}
+ * @param {ol3.renderer.Map} mapRenderer Map renderer.
  * @param {ol3.TileLayer} tileLayer Tile layer.
  */
-ol3.webgl.TileLayerRenderer = function(mapRenderer, tileLayer) {
+ol3.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
 
   goog.base(this, mapRenderer, tileLayer);
 
@@ -90,21 +92,22 @@ ol3.webgl.TileLayerRenderer = function(mapRenderer, tileLayer) {
      * @inheritDoc
      */
     this.logger = goog.debug.Logger.getLogger(
-        'ol3.webgl.tilelayerrenderer.' + goog.getUid(this));
+        'ol3.renderer.webgl.tilelayerrenderer.' + goog.getUid(this));
   }
 
   /**
    * @private
-   * @type {ol3.webgl.shader.Fragment}
+   * @type {ol3.renderer.webgl.FragmentShader}
    */
   this.fragmentShader_ =
-      ol3.webgl.tilelayerrenderer.shader.Fragment.getInstance();
+      ol3.renderer.webgl.tilelayerrenderer.shader.Fragment.getInstance();
 
   /**
    * @private
-   * @type {ol3.webgl.shader.Vertex}
+   * @type {ol3.renderer.webgl.VertexShader}
    */
-  this.vertexShader_ = ol3.webgl.tilelayerrenderer.shader.Vertex.getInstance();
+  this.vertexShader_ =
+      ol3.renderer.webgl.tilelayerrenderer.shader.Vertex.getInstance();
 
   /**
    * @private
@@ -152,14 +155,14 @@ ol3.webgl.TileLayerRenderer = function(mapRenderer, tileLayer) {
   this.matrix_ = goog.vec.Mat4.createNumber();
 
 };
-goog.inherits(ol3.webgl.TileLayerRenderer, ol3.webgl.LayerRenderer);
+goog.inherits(ol3.renderer.webgl.TileLayer, ol3.renderer.webgl.Layer);
 
 
 /**
  * @param {number} framebufferDimension Framebuffer dimension.
  * @private
  */
-ol3.webgl.TileLayerRenderer.prototype.bindFramebuffer_ =
+ol3.renderer.webgl.TileLayer.prototype.bindFramebuffer_ =
     function(framebufferDimension) {
 
   var mapRenderer = this.getMapRenderer();
@@ -172,7 +175,7 @@ ol3.webgl.TileLayerRenderer.prototype.bindFramebuffer_ =
       this.logger.info('re-sizing framebuffer');
     }
 
-    if (ol3.webgl.FREE_RESOURCES_IMMEDIATELY) {
+    if (ol3.renderer.webgl.FREE_RESOURCES_IMMEDIATELY) {
       if (goog.DEBUG) {
         this.logger.info('freeing WebGL resources');
       }
@@ -225,7 +228,7 @@ ol3.webgl.TileLayerRenderer.prototype.bindFramebuffer_ =
 /**
  * @inheritDoc
  */
-ol3.webgl.TileLayerRenderer.prototype.disposeInternal = function() {
+ol3.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
   var mapRenderer = this.getMapRenderer();
   var gl = mapRenderer.getGL();
   if (!gl.isContextLost()) {
@@ -241,7 +244,7 @@ ol3.webgl.TileLayerRenderer.prototype.disposeInternal = function() {
  * @return {ol3.TileLayer} Layer.
  * @override
  */
-ol3.webgl.TileLayerRenderer.prototype.getLayer = function() {
+ol3.renderer.webgl.TileLayer.prototype.getLayer = function() {
   return /** @type {ol3.TileLayer} */ goog.base(this, 'getLayer');
 };
 
@@ -249,7 +252,7 @@ ol3.webgl.TileLayerRenderer.prototype.getLayer = function() {
 /**
  * @inheritDoc
  */
-ol3.webgl.TileLayerRenderer.prototype.getMatrix = function() {
+ol3.renderer.webgl.TileLayer.prototype.getMatrix = function() {
   return this.matrix_;
 };
 
@@ -257,7 +260,7 @@ ol3.webgl.TileLayerRenderer.prototype.getMatrix = function() {
 /**
  * @inheritDoc
  */
-ol3.webgl.TileLayerRenderer.prototype.getTexture = function() {
+ol3.renderer.webgl.TileLayer.prototype.getTexture = function() {
   return this.texture_;
 };
 
@@ -265,7 +268,7 @@ ol3.webgl.TileLayerRenderer.prototype.getTexture = function() {
 /**
  * @protected
  */
-ol3.webgl.TileLayerRenderer.prototype.handleTileChange = function() {
+ol3.renderer.webgl.TileLayer.prototype.handleTileChange = function() {
   this.dispatchChangeEvent();
 };
 
@@ -273,7 +276,7 @@ ol3.webgl.TileLayerRenderer.prototype.handleTileChange = function() {
 /**
  * @inheritDoc
  */
-ol3.webgl.TileLayerRenderer.prototype.handleWebGLContextLost = function() {
+ol3.renderer.webgl.TileLayer.prototype.handleWebGLContextLost = function() {
   this.locations_ = null;
   this.arrayBuffer_ = null;
   this.texture_ = null;
@@ -285,7 +288,7 @@ ol3.webgl.TileLayerRenderer.prototype.handleWebGLContextLost = function() {
 /**
  * @inheritDoc
  */
-ol3.webgl.TileLayerRenderer.prototype.render = function() {
+ol3.renderer.webgl.TileLayer.prototype.render = function() {
 
   var animate = false;
 

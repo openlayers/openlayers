@@ -1,4 +1,4 @@
-goog.provide('ol3.dom.MapRenderer');
+goog.provide('ol3.renderer.dom.Map');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
@@ -6,19 +6,19 @@ goog.require('goog.dom.TagName');
 goog.require('goog.style');
 goog.require('ol3.Coordinate');
 goog.require('ol3.Map');
-goog.require('ol3.MapRenderer');
 goog.require('ol3.TileLayer');
-goog.require('ol3.dom.TileLayerRenderer');
+goog.require('ol3.renderer.Map');
+goog.require('ol3.renderer.dom.TileLayer');
 
 
 
 /**
  * @constructor
- * @extends {ol3.MapRenderer}
+ * @extends {ol3.renderer.Map}
  * @param {Element} container Container.
  * @param {ol3.Map} map Map.
  */
-ol3.dom.MapRenderer = function(container, map) {
+ol3.renderer.dom.Map = function(container, map) {
 
   goog.base(this, container, map);
 
@@ -51,13 +51,13 @@ ol3.dom.MapRenderer = function(container, map) {
    */
   this.layersPaneOffset_ = null;
 };
-goog.inherits(ol3.dom.MapRenderer, ol3.MapRenderer);
+goog.inherits(ol3.renderer.dom.Map, ol3.renderer.Map);
 
 
 /**
  * @inheritDoc
  */
-ol3.dom.MapRenderer.prototype.createLayerRenderer = function(layer) {
+ol3.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
 
   if (layer instanceof ol3.TileLayer) {
 
@@ -66,7 +66,7 @@ ol3.dom.MapRenderer.prototype.createLayerRenderer = function(layer) {
     layerPane.style.position = 'absolute';
     goog.dom.appendChild(this.layersPane_, layerPane);
 
-    var layerRenderer = new ol3.dom.TileLayerRenderer(this, layer, layerPane);
+    var layerRenderer = new ol3.renderer.dom.TileLayer(this, layer, layerPane);
 
     this.layerPanes_[goog.getUid(layerRenderer)] = layerPane;
 
@@ -82,7 +82,7 @@ ol3.dom.MapRenderer.prototype.createLayerRenderer = function(layer) {
 /**
  * @inheritDoc
  */
-ol3.dom.MapRenderer.prototype.handleCenterChanged = function() {
+ol3.renderer.dom.Map.prototype.handleCenterChanged = function() {
   goog.base(this, 'handleCenterChanged');
   var map = this.getMap();
   if (!map.isDef()) {
@@ -102,7 +102,7 @@ ol3.dom.MapRenderer.prototype.handleCenterChanged = function() {
 /**
  * @inheritDoc
  */
-ol3.dom.MapRenderer.prototype.handleResolutionChanged = function() {
+ol3.renderer.dom.Map.prototype.handleResolutionChanged = function() {
   goog.base(this, 'handleResolutionChanged');
   var map = this.getMap();
   if (!map.isDef()) {
@@ -119,7 +119,7 @@ ol3.dom.MapRenderer.prototype.handleResolutionChanged = function() {
  * Reset the layers pane to its initial position.
  * @private
  */
-ol3.dom.MapRenderer.prototype.resetLayersPane_ = function() {
+ol3.renderer.dom.Map.prototype.resetLayersPane_ = function() {
   var offset = new ol3.Coordinate(0, 0);
   goog.style.setPosition(this.layersPane_, offset);
 
@@ -134,7 +134,7 @@ ol3.dom.MapRenderer.prototype.resetLayersPane_ = function() {
  * Set the origin for each layer renderer.
  * @private
  */
-ol3.dom.MapRenderer.prototype.setOrigin_ = function() {
+ol3.renderer.dom.Map.prototype.setOrigin_ = function() {
   var center = this.map.getCenter();
   var resolution = this.map.getResolution();
   var targetSize = this.map.getSize();
@@ -153,7 +153,7 @@ ol3.dom.MapRenderer.prototype.setOrigin_ = function() {
  * Move the layers pane.
  * @private
  */
-ol3.dom.MapRenderer.prototype.shiftLayersPane_ = function() {
+ol3.renderer.dom.Map.prototype.shiftLayersPane_ = function() {
   var center = this.map.getCenter();
   var oldCenter = this.renderedCenter_;
   var resolution = this.map.getResolution();

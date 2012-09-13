@@ -1,4 +1,4 @@
-goog.provide('ol3.MapRenderer');
+goog.provide('ol3.renderer.Map');
 
 goog.require('goog.Disposable');
 goog.require('goog.events');
@@ -16,7 +16,7 @@ goog.require('ol3.MapProperty');
  * @param {Element} container Container.
  * @param {ol3.Map} map Map.
  */
-ol3.MapRenderer = function(container, map) {
+ol3.renderer.Map = function(container, map) {
 
   goog.base(this);
 
@@ -34,7 +34,7 @@ ol3.MapRenderer = function(container, map) {
 
   /**
    * @protected
-   * @type {Object.<number, ol3.LayerRenderer>}
+   * @type {Object.<number, ol3.renderer.Layer>}
    */
   this.layerRenderers = {};
 
@@ -93,14 +93,14 @@ ol3.MapRenderer = function(container, map) {
   ];
 
 };
-goog.inherits(ol3.MapRenderer, goog.Disposable);
+goog.inherits(ol3.renderer.Map, goog.Disposable);
 
 
 /**
  * @param {ol3.Layer} layer Layer.
  * @protected
  */
-ol3.MapRenderer.prototype.addLayer = function(layer) {
+ol3.renderer.Map.prototype.addLayer = function(layer) {
   var layerRenderer = this.createLayerRenderer(layer);
   this.setLayerRenderer(layer, layerRenderer);
 };
@@ -109,21 +109,21 @@ ol3.MapRenderer.prototype.addLayer = function(layer) {
 /**
  * @return {boolean} Can rotate.
  */
-ol3.MapRenderer.prototype.canRotate = goog.functions.FALSE;
+ol3.renderer.Map.prototype.canRotate = goog.functions.FALSE;
 
 
 /**
  * @param {ol3.Layer} layer Layer.
  * @protected
- * @return {ol3.LayerRenderer} layerRenderer Layer renderer.
+ * @return {ol3.renderer.Layer} layerRenderer Layer renderer.
  */
-ol3.MapRenderer.prototype.createLayerRenderer = goog.abstractMethod;
+ol3.renderer.Map.prototype.createLayerRenderer = goog.abstractMethod;
 
 
 /**
  * @inheritDoc
  */
-ol3.MapRenderer.prototype.disposeInternal = function() {
+ol3.renderer.Map.prototype.disposeInternal = function() {
   goog.object.forEach(this.layerRenderers, function(layerRenderer) {
     goog.dispose(layerRenderer);
   });
@@ -136,11 +136,11 @@ ol3.MapRenderer.prototype.disposeInternal = function() {
 
 
 /**
- * @param {function(this: T, ol3.Layer, ol3.LayerRenderer, number)} f Function.
+ * @param {function(this: T, ol3.Layer, ol3.renderer.Layer, number)} f Function.
  * @param {T=} opt_obj Object.
  * @template T
  */
-ol3.MapRenderer.prototype.forEachReadyVisibleLayer = function(f, opt_obj) {
+ol3.renderer.Map.prototype.forEachReadyVisibleLayer = function(f, opt_obj) {
   var layers = this.map.getLayers();
   layers.forEach(function(layer, index) {
     if (layer.isReady() && layer.getVisible()) {
@@ -155,7 +155,7 @@ ol3.MapRenderer.prototype.forEachReadyVisibleLayer = function(f, opt_obj) {
  * @param {ol3.Pixel} pixel Pixel.
  * @return {ol3.Coordinate} Coordinate.
  */
-ol3.MapRenderer.prototype.getCoordinateFromPixel = function(pixel) {
+ol3.renderer.Map.prototype.getCoordinateFromPixel = function(pixel) {
   this.updateMatrices_();
   var vec3 = [pixel.x, pixel.y, 0];
   goog.vec.Mat4.multVec3(this.pixelToCoordinateMatrix_, vec3, vec3);
@@ -166,9 +166,9 @@ ol3.MapRenderer.prototype.getCoordinateFromPixel = function(pixel) {
 /**
  * @param {ol3.Layer} layer Layer.
  * @protected
- * @return {ol3.LayerRenderer} Layer renderer.
+ * @return {ol3.renderer.Layer} Layer renderer.
  */
-ol3.MapRenderer.prototype.getLayerRenderer = function(layer) {
+ol3.renderer.Map.prototype.getLayerRenderer = function(layer) {
   var key = goog.getUid(layer);
   var layerRenderer = this.layerRenderers[key];
   goog.asserts.assert(goog.isDef(layerRenderer));
@@ -179,7 +179,7 @@ ol3.MapRenderer.prototype.getLayerRenderer = function(layer) {
 /**
  * @return {ol3.Map} Map.
  */
-ol3.MapRenderer.prototype.getMap = function() {
+ol3.renderer.Map.prototype.getMap = function() {
   return this.map;
 };
 
@@ -188,7 +188,7 @@ ol3.MapRenderer.prototype.getMap = function() {
  * @param {ol3.Coordinate} coordinate Coordinate.
  * @return {ol3.Pixel} Pixel.
  */
-ol3.MapRenderer.prototype.getPixelFromCoordinate = function(coordinate) {
+ol3.renderer.Map.prototype.getPixelFromCoordinate = function(coordinate) {
   this.updateMatrices_();
   var vec3 = [coordinate.x, coordinate.y, 0];
   goog.vec.Mat4.multVec3(this.coordinateToPixelMatrix_, vec3, vec3);
@@ -198,13 +198,13 @@ ol3.MapRenderer.prototype.getPixelFromCoordinate = function(coordinate) {
 
 /**
  */
-ol3.MapRenderer.prototype.handleBackgroundColorChanged = goog.nullFunction;
+ol3.renderer.Map.prototype.handleBackgroundColorChanged = goog.nullFunction;
 
 
 /**
  * @protected
  */
-ol3.MapRenderer.prototype.handleCenterChanged = function() {
+ol3.renderer.Map.prototype.handleCenterChanged = function() {
   this.matricesDirty_ = true;
 };
 
@@ -213,7 +213,7 @@ ol3.MapRenderer.prototype.handleCenterChanged = function() {
  * @param {ol3.CollectionEvent} collectionEvent Collection event.
  * @protected
  */
-ol3.MapRenderer.prototype.handleLayersAdd = function(collectionEvent) {
+ol3.renderer.Map.prototype.handleLayersAdd = function(collectionEvent) {
   var layer = /** @type {ol3.Layer} */ collectionEvent.elem;
   this.addLayer(layer);
 };
@@ -222,7 +222,7 @@ ol3.MapRenderer.prototype.handleLayersAdd = function(collectionEvent) {
 /**
  * @protected
  */
-ol3.MapRenderer.prototype.handleLayersChanged = function() {
+ol3.renderer.Map.prototype.handleLayersChanged = function() {
   var layerRenderers = goog.object.getValues(this.layerRenderers);
   goog.array.forEach(layerRenderers, function(layerRenderer) {
     this.removeLayerRenderer(layerRenderer);
@@ -249,7 +249,7 @@ ol3.MapRenderer.prototype.handleLayersChanged = function() {
  * @param {ol3.CollectionEvent} collectionEvent Collection event.
  * @protected
  */
-ol3.MapRenderer.prototype.handleLayersRemove = function(collectionEvent) {
+ol3.renderer.Map.prototype.handleLayersRemove = function(collectionEvent) {
   var layer = /** @type {ol3.Layer} */ collectionEvent.elem;
   this.removeLayer(layer);
 };
@@ -258,7 +258,7 @@ ol3.MapRenderer.prototype.handleLayersRemove = function(collectionEvent) {
 /**
  * @protected
  */
-ol3.MapRenderer.prototype.handleResolutionChanged = function() {
+ol3.renderer.Map.prototype.handleResolutionChanged = function() {
   this.matricesDirty_ = true;
 };
 
@@ -266,7 +266,7 @@ ol3.MapRenderer.prototype.handleResolutionChanged = function() {
 /**
  * @protected
  */
-ol3.MapRenderer.prototype.handleRotationChanged = function() {
+ol3.renderer.Map.prototype.handleRotationChanged = function() {
   this.matricesDirty_ = true;
 };
 
@@ -274,7 +274,7 @@ ol3.MapRenderer.prototype.handleRotationChanged = function() {
 /**
  * @protected
  */
-ol3.MapRenderer.prototype.handleSizeChanged = function() {
+ol3.renderer.Map.prototype.handleSizeChanged = function() {
   this.matricesDirty_ = true;
 };
 
@@ -283,17 +283,17 @@ ol3.MapRenderer.prototype.handleSizeChanged = function() {
  * @param {ol3.Layer} layer Layer.
  * @protected
  */
-ol3.MapRenderer.prototype.removeLayer = function(layer) {
+ol3.renderer.Map.prototype.removeLayer = function(layer) {
   goog.dispose(this.removeLayerRenderer(layer));
 };
 
 
 /**
  * @param {ol3.Layer} layer Layer.
- * @return {ol3.LayerRenderer} Layer renderer.
+ * @return {ol3.renderer.Layer} Layer renderer.
  * @protected
  */
-ol3.MapRenderer.prototype.removeLayerRenderer = function(layer) {
+ol3.renderer.Map.prototype.removeLayerRenderer = function(layer) {
   var key = goog.getUid(layer);
   if (key in this.layerRenderers) {
     var layerRenderer = this.layerRenderers[key];
@@ -308,7 +308,7 @@ ol3.MapRenderer.prototype.removeLayerRenderer = function(layer) {
 /**
  * @return {boolean} Animating.
  */
-ol3.MapRenderer.prototype.render = function() {
+ol3.renderer.Map.prototype.render = function() {
   var animate = false;
   this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
     if (layerRenderer.render()) {
@@ -321,10 +321,10 @@ ol3.MapRenderer.prototype.render = function() {
 
 /**
  * @param {ol3.Layer} layer Layer.
- * @param {ol3.LayerRenderer} layerRenderer Layer renderer.
+ * @param {ol3.renderer.Layer} layerRenderer Layer renderer.
  * @protected
  */
-ol3.MapRenderer.prototype.setLayerRenderer = function(layer, layerRenderer) {
+ol3.renderer.Map.prototype.setLayerRenderer = function(layer, layerRenderer) {
   var key = goog.getUid(layer);
   goog.asserts.assert(!(key in this.layerRenderers));
   this.layerRenderers[key] = layerRenderer;
@@ -334,7 +334,7 @@ ol3.MapRenderer.prototype.setLayerRenderer = function(layer, layerRenderer) {
 /**
  * @private
  */
-ol3.MapRenderer.prototype.updateMatrices_ = function() {
+ol3.renderer.Map.prototype.updateMatrices_ = function() {
 
   if (this.matricesDirty_) {
 
