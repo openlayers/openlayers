@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+    <head>
+        <style type="text/css">
+            .map {
+                width: 400px;
+                height: 400px;
+                border: thin solid;
+            }
+        </style>
+        <title>ol3 side-by-side demo</title>
+    </head>
+    <body>
+        <h1>ol3 side-by-side demo</h1>
+        <table>
+            <tr>
+                <th>DOM</th>
+                <th>WebGL</th>
+            </tr>
+            <tr>
+                <td><div id="domMap" class="map"></div></td>
+                <td><div id="webglMap" class="map"></div></td>
+            </tr>
+            <tr>
+                <td><div id="domMousePosition" class="mouseposition"></div></td>
+                <td><div id="webglMousePosition" class="mouseposition"></div></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div id="attribution" class="attribution"></div>
+                </td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td>Pan:</td>
+                <td>drag, arrow keys</td>
+            </tr>
+            <tr>
+                <td>Zoom:</td>
+                <td>double-click, <code>Shift</code>+double-click, mouse wheel, <code>+</code>/<code>-</code> keys; <code>Shift</code>+drag</td>
+            </tr>
+            <tr>
+                <td>Rotate:</td>
+                <td><code>Alt</code>+drag, <code>r</code> to reset (WebGL only)</td>
+            </tr>
+            <tr>
+                <td>Brightness/contrast:</td>
+                <td><code>b</code>/<code>B</code>/<code>c</code>/<code>C</code> keys (WebGL only)</td>
+            </tr>
+            <tr>
+                <td>Hue/saturation:</td>
+                <td><code>h</code>/<code>H</code>/<code>s</code>/<code>S</code> keys (WebGL only)</td>
+            </tr>
+            <tr>
+                <td>Opacity:</td>
+                <td><code>o</code>/<code>O</code> keys</td>
+            </tr>
+            <tr>
+                <td>Visibility:</td>
+                <td><code>v</code>/<code>V</code> keys</td>
+            </tr>
+            <tr>
+                <td>Reset</td>
+                <td><code>0</code> key</td>
+            </tr>
+        </table>
+        <p><b>Notes:</b> The two maps share the same center, resolution, rotation and layers.  Currently the DOM map does not support rotation.</p>
+        <p><b>Console tips:</b> If you want to play around with the API in the console, first make sure that you're using the <a href="simple-optimizations.html">simple optimizations version</a> of this demo, then open a console and experiment with the <code>domMap</code>, <code>webglMap</code> and <code>layer</code> variables in the console. The source code is in <a href="side-by-side.js">side-by-side.js</a>.</p>
+        <script src="@SRC@" type="text/javascript"></script>
+    </body>
+</html>

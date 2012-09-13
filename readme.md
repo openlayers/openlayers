@@ -1,79 +1,35 @@
-# OpenLayers
+# OpenLayers 3
 
-Copyright (c) 2005-2012 OpenLayers Contributors. See authors.txt for
-more details.
+## Build it
 
-OpenLayers is a JavaScript library for building map applications
-on the web. OpenLayers is made available under a BSD-license.
-Please see license.txt in this distribution for more details.
+Run make:
 
-## Getting OpenLayers
+    $ make
 
-OpenLayers lives at http://www.openlayers.org/.  Find details on downloading stable releases or the development version the [development site](http://trac.osgeo.org/openlayers/wiki/HowToDownload).
+## Run the examples
 
-## Installing OpenLayers
+Run make (as above), then explore the `demos/` directory with your web browser.
 
-You can use OpenLayers as-is by copying build/OpenLayers.js and the
-entire theme/ and img/ directories up to your webserver and putting them 
-in the same directory. The files can be in subdirectories on your website, 
-or right in the root of the site, as in these examples. 
-To include the OpenLayers library in your web page from the root of the site, use:
+## Run the examples in debug mode
 
-    <script type="text/javascript" src="/OpenLayers.js" />
+Run the [Plovr](http://plovr.com/) web server with:
 
-As an example, using bash (with the release files in ~/openlayers):
+    $ make serve
 
-    $ cd /var/www/html
-    $ cp ~/openlayers/OpenLayers.js ./
-    $ cp -R ~/openlayers/theme ./
-    $ cp -R ~/openlayers/img ./
+Then, start a simple webserver, for example:
 
-If you want to use the multiple-file version of OpenLayers (for, say,
-debugging or development purposes), copy the lib/ directory up to your
-webserver in the same directory you put the img/ folder. Then add
-the following to your web page instead:
+    $ python -mSimpleHTTPServer
 
-    <script type="text/javascript" src="/lib/OpenLayers.js" />
+Explore the `demos/` directory through this server, for example <http://localhost:8000/demos/side-by-side/debug.html>. You can turn off compilation by appending `?mode=RAW` to the URL, for example <http://localhost:8000/demos/side-by-side/debug.html?mode=RAW>.
 
-As an example, using bash (with the release files in ~/openlayers):
+Note that appending `?mode=RAW` doesn't work with `file://` URLs, which is why you need to access the `demos/` directory though a web server.
 
-    $ cd /var/www/html
-    $ cp -R ~/openlayers/lib ./
-    $ cp -R ~/openlayers/theme ./
-    $ cp -R ~/openlayers/img ./
+## Run tests
 
-## Alternate OpenLayers Versions in this Release
+Run the plovr web server (see above), then open <http://localhost:9810/> in your browser and select *List of tests* or *Test runner*.
 
-The following versions of OpenLayers single file builds are included in this release 
-and can be used in place of OpenLayers.js in any of the above instructions:
+## Run the linter
 
-1. OpenLayers.js - full build --> Includes everything except the alternate language
-    translations and deprecated classes.
-2. OpenLayers.mobile.js - a mobile focused build --> Includes a subset of the OpenLayers 
-    library to serve common mobile web app use cases. This build provides access to 
-    OpenStreetMap, Bing, WMS, WFS and vector layers; touch optimized controls; geolocation;
-    vector editing and interaction tools. The examples tagged ``mobile`` can use this build.
-3. OpenLayers.light.js - a simple use case focused build --> Includes a subset of the
-    OpenLayers library to serve the basic use case of displaying points and polygons
-    on a map. This build provides access to OpenStreetMap, Bing, Google, WMS, and 
-    vector layers; basic map controls; and vector interaction tools. The examples
-    tagged ``light`` can use this build.
-    
-## Using OpenLayers in Your Own Website
+First, install the [Closure Linter](https://developers.google.com/closure/utilities/docs/linter_howto).  Then:
 
-The [examples directory](http://openlayers.org/dev/examples/) is full of useful examples.
-
-Documentation is available at http://trac.osgeo.org/openlayers/wiki/Documentation.
-You can generate the API documentation with http://www.naturaldocs.org/
-As an example, using bash (with the release files in ~/openlayers):
-
-    $ cd ~/openlayers/
-    $ /path/to/NaturalDocs -i lib/ -o HTML doc/ -p doc_config/ -s Default OL
-
-Information on changes in the API is available in release notes found in the notes folder.
-
-## Contributing to OpenLayers
-
-Please join the email lists at http://openlayers.org/mailman/listinfo
-Patches are welcome!
-
+    $ make lint
