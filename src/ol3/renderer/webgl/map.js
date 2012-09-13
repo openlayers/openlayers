@@ -4,8 +4,8 @@
 // FIXME defer cleanup until post-render
 // FIXME check against gl.getParameter(webgl.MAX_TEXTURE_SIZE)
 
-goog.provide('ol3.webgl.MapRenderer');
-goog.provide('ol3.webgl.map.shader');
+goog.provide('ol3.renderer.webgl.Map');
+goog.provide('ol3.renderer.webgl.map.shader');
 
 goog.require('goog.debug.Logger');
 goog.require('goog.dispose');
@@ -20,26 +20,26 @@ goog.require('goog.webgl');
 goog.require('ol3.Layer');
 goog.require('ol3.Map');
 goog.require('ol3.TileLayer');
-goog.require('ol3.webgl.TileLayerRenderer');
+goog.require('ol3.renderer.webgl.FragmentShader');
+goog.require('ol3.renderer.webgl.TileLayer');
+goog.require('ol3.renderer.webgl.VertexShader');
 goog.require('ol3.webgl.WebGLContextEventType');
-goog.require('ol3.webgl.shader.Fragment');
-goog.require('ol3.webgl.shader.Vertex');
 
 
 /**
  * @typedef {{magFilter: number, minFilter: number, texture: WebGLTexture}}
  */
-ol3.webgl.TextureCacheEntry;
+ol3.renderer.webgl.TextureCacheEntry;
 
 
 
 /**
  * @constructor
- * @extends {ol3.webgl.shader.Fragment}
+ * @extends {ol3.renderer.webgl.FragmentShader}
  * @see https://github.com/evanw/glfx.js/blob/master/src/filters/adjust/brightnesscontrast.js
  * @see https://github.com/evanw/glfx.js/blob/master/src/filters/adjust/huesaturation.js
  */
-ol3.webgl.map.shader.Fragment = function() {
+ol3.renderer.webgl.map.shader.Fragment = function() {
   goog.base(this, [
     'precision mediump float;',
     '',
@@ -97,16 +97,17 @@ ol3.webgl.map.shader.Fragment = function() {
     '}'
   ].join('\n'));
 };
-goog.inherits(ol3.webgl.map.shader.Fragment, ol3.webgl.shader.Fragment);
-goog.addSingletonGetter(ol3.webgl.map.shader.Fragment);
+goog.inherits(
+    ol3.renderer.webgl.map.shader.Fragment, ol3.renderer.webgl.FragmentShader);
+goog.addSingletonGetter(ol3.renderer.webgl.map.shader.Fragment);
 
 
 
 /**
  * @constructor
- * @extends {ol3.webgl.shader.Vertex}
+ * @extends {ol3.renderer.webgl.VertexShader}
  */
-ol3.webgl.map.shader.Vertex = function() {
+ol3.renderer.webgl.map.shader.Vertex = function() {
   goog.base(this, [
     'attribute vec2 aPosition;',
     'attribute vec2 aTexCoord;',
@@ -119,18 +120,19 @@ ol3.webgl.map.shader.Vertex = function() {
     '}'
   ].join('\n'));
 };
-goog.inherits(ol3.webgl.map.shader.Vertex, ol3.webgl.shader.Vertex);
-goog.addSingletonGetter(ol3.webgl.map.shader.Vertex);
+goog.inherits(
+    ol3.renderer.webgl.map.shader.Vertex, ol3.renderer.webgl.VertexShader);
+goog.addSingletonGetter(ol3.renderer.webgl.map.shader.Vertex);
 
 
 
 /**
  * @constructor
- * @extends {ol3.MapRenderer}
+ * @extends {ol3.renderer.Map}
  * @param {Element} container Container.
  * @param {ol3.Map} map Map.
  */
-ol3.webgl.MapRenderer = function(container, map) {
+ol3.renderer.webgl.Map = function(container, map) {
 
   goog.base(this, container, map);
 
@@ -139,7 +141,7 @@ ol3.webgl.MapRenderer = function(container, map) {
      * @inheritDoc
      */
     this.logger = goog.debug.Logger.getLogger(
-        'ol3.webgl.maprenderer.' + goog.getUid(this));
+        'ol3.renderer.webgl.maprenderer.' + goog.getUid(this));
   }
 
   /**
@@ -209,21 +211,21 @@ ol3.webgl.MapRenderer = function(container, map) {
 
   /**
    * @private
-   * @type {Object.<string, ol3.webgl.TextureCacheEntry>}
+   * @type {Object.<string, ol3.renderer.webgl.TextureCacheEntry>}
    */
   this.textureCache_ = {};
 
   /**
    * @private
-   * @type {ol3.webgl.shader.Fragment}
+   * @type {ol3.renderer.webgl.FragmentShader}
    */
-  this.fragmentShader_ = ol3.webgl.map.shader.Fragment.getInstance();
+  this.fragmentShader_ = ol3.renderer.webgl.map.shader.Fragment.getInstance();
 
   /**
    * @private
-   * @type {ol3.webgl.shader.Vertex}
+   * @type {ol3.renderer.webgl.VertexShader}
    */
-  this.vertexShader_ = ol3.webgl.map.shader.Vertex.getInstance();
+  this.vertexShader_ = ol3.renderer.webgl.map.shader.Vertex.getInstance();
 
   /**
    * @private
@@ -234,13 +236,13 @@ ol3.webgl.MapRenderer = function(container, map) {
   this.initializeGL_();
 
 };
-goog.inherits(ol3.webgl.MapRenderer, ol3.MapRenderer);
+goog.inherits(ol3.renderer.webgl.Map, ol3.renderer.Map);
 
 
 /**
  * @inheritDoc
  */
-ol3.webgl.MapRenderer.prototype.addLayer = function(layer) {
+ol3.renderer.webgl.Map.prototype.addLayer = function(layer) {
   goog.base(this, 'addLayer', layer);
   if (layer.getVisible()) {
     this.getMap().render();
@@ -253,7 +255,7 @@ ol3.webgl.MapRenderer.prototype.addLayer = function(layer) {
  * @param {number} magFilter Mag filter.
  * @param {number} minFilter Min filter.
  */
-ol3.webgl.MapRenderer.prototype.bindImageTexture =
+ol3.renderer.webgl.Map.prototype.bindImageTexture =
     function(image, magFilter, minFilter) {
   var gl = this.getGL();
   var imageKey = image.src;
@@ -295,16 +297,16 @@ ol3.webgl.MapRenderer.prototype.bindImageTexture =
 /**
  * @inheritDoc
  */
-ol3.webgl.MapRenderer.prototype.canRotate = goog.functions.TRUE;
+ol3.renderer.webgl.Map.prototype.canRotate = goog.functions.TRUE;
 
 
 /**
  * @inheritDoc
  */
-ol3.webgl.MapRenderer.prototype.createLayerRenderer = function(layer) {
+ol3.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
   var gl = this.getGL();
   if (layer instanceof ol3.TileLayer) {
-    return new ol3.webgl.TileLayerRenderer(this, layer);
+    return new ol3.renderer.webgl.TileLayer(this, layer);
   } else {
     goog.asserts.assert(false);
     return null;
@@ -315,7 +317,7 @@ ol3.webgl.MapRenderer.prototype.createLayerRenderer = function(layer) {
 /**
  * @inheritDoc
  */
-ol3.webgl.MapRenderer.prototype.disposeInternal = function() {
+ol3.renderer.webgl.Map.prototype.disposeInternal = function() {
   var gl = this.getGL();
   if (!gl.isContextLost()) {
     goog.object.forEach(this.programCache_, function(program) {
@@ -335,17 +337,18 @@ ol3.webgl.MapRenderer.prototype.disposeInternal = function() {
 /**
  * @return {WebGLRenderingContext} GL.
  */
-ol3.webgl.MapRenderer.prototype.getGL = function() {
+ol3.renderer.webgl.Map.prototype.getGL = function() {
   return this.gl_;
 };
 
 
 /**
- * @param {ol3.webgl.shader.Fragment} fragmentShaderObject Fragment shader.
- * @param {ol3.webgl.shader.Vertex} vertexShaderObject Vertex shader.
+ * @param {ol3.renderer.webgl.FragmentShader} fragmentShaderObject
+ *     Fragment shader.
+ * @param {ol3.renderer.webgl.VertexShader} vertexShaderObject Vertex shader.
  * @return {WebGLProgram} Program.
  */
-ol3.webgl.MapRenderer.prototype.getProgram = function(
+ol3.renderer.webgl.Map.prototype.getProgram = function(
     fragmentShaderObject, vertexShaderObject) {
   var programKey =
       goog.getUid(fragmentShaderObject) + '/' + goog.getUid(vertexShaderObject);
@@ -372,10 +375,10 @@ ol3.webgl.MapRenderer.prototype.getProgram = function(
 
 
 /**
- * @param {ol3.webgl.Shader} shaderObject Shader object.
+ * @param {ol3.renderer.webgl.Shader} shaderObject Shader object.
  * @return {WebGLShader} Shader.
  */
-ol3.webgl.MapRenderer.prototype.getShader = function(shaderObject) {
+ol3.renderer.webgl.Map.prototype.getShader = function(shaderObject) {
   var shaderKey = goog.getUid(shaderObject);
   if (shaderKey in this.shaderCache_) {
     return this.shaderCache_[shaderKey];
@@ -401,7 +404,7 @@ ol3.webgl.MapRenderer.prototype.getShader = function(shaderObject) {
 /**
  * @inheritDoc
  */
-ol3.webgl.MapRenderer.prototype.handleBackgroundColorChanged = function() {
+ol3.renderer.webgl.Map.prototype.handleBackgroundColorChanged = function() {
   var backgroundColor = this.getMap().getBackgroundColor();
   this.clearColor_ = new ol3.Color(
       backgroundColor.r / 255,
@@ -415,7 +418,7 @@ ol3.webgl.MapRenderer.prototype.handleBackgroundColorChanged = function() {
 /**
  * @inheritDoc
  */
-ol3.webgl.MapRenderer.prototype.handleCenterChanged = function() {
+ol3.renderer.webgl.Map.prototype.handleCenterChanged = function() {
   goog.base(this, 'handleCenterChanged');
   this.getMap().render();
 };
@@ -425,7 +428,7 @@ ol3.webgl.MapRenderer.prototype.handleCenterChanged = function() {
  * @param {goog.events.Event} event Event.
  * @protected
  */
-ol3.webgl.MapRenderer.prototype.handleLayerRendererChange = function(event) {
+ol3.renderer.webgl.Map.prototype.handleLayerRendererChange = function(event) {
   this.getMap().render();
 };
 
@@ -433,7 +436,7 @@ ol3.webgl.MapRenderer.prototype.handleLayerRendererChange = function(event) {
 /**
  * @inheritDoc
  */
-ol3.webgl.MapRenderer.prototype.handleResolutionChanged = function() {
+ol3.renderer.webgl.Map.prototype.handleResolutionChanged = function() {
   goog.base(this, 'handleResolutionChanged');
   this.getMap().render();
 };
@@ -442,7 +445,7 @@ ol3.webgl.MapRenderer.prototype.handleResolutionChanged = function() {
 /**
  * @inheritDoc
  */
-ol3.webgl.MapRenderer.prototype.handleRotationChanged = function() {
+ol3.renderer.webgl.Map.prototype.handleRotationChanged = function() {
   goog.base(this, 'handleRotationChanged');
   this.getMap().render();
 };
@@ -451,7 +454,7 @@ ol3.webgl.MapRenderer.prototype.handleRotationChanged = function() {
 /**
  * @inheritDoc
  */
-ol3.webgl.MapRenderer.prototype.handleSizeChanged = function() {
+ol3.renderer.webgl.Map.prototype.handleSizeChanged = function() {
   goog.base(this, 'handleSizeChanged');
   var size = this.getMap().getSize();
   if (!goog.isDef(size)) {
@@ -471,7 +474,7 @@ ol3.webgl.MapRenderer.prototype.handleSizeChanged = function() {
  * @param {goog.events.Event} event Event.
  * @protected
  */
-ol3.webgl.MapRenderer.prototype.handleWebGLContextLost = function(event) {
+ol3.renderer.webgl.Map.prototype.handleWebGLContextLost = function(event) {
   if (goog.DEBUG) {
     this.logger.info('WebGLContextLost');
   }
@@ -490,7 +493,7 @@ ol3.webgl.MapRenderer.prototype.handleWebGLContextLost = function(event) {
 /**
  * @protected
  */
-ol3.webgl.MapRenderer.prototype.handleWebGLContextRestored = function() {
+ol3.renderer.webgl.Map.prototype.handleWebGLContextRestored = function() {
   if (goog.DEBUG) {
     this.logger.info('WebGLContextRestored');
   }
@@ -502,7 +505,7 @@ ol3.webgl.MapRenderer.prototype.handleWebGLContextRestored = function() {
 /**
  * @private
  */
-ol3.webgl.MapRenderer.prototype.initializeGL_ = function() {
+ol3.renderer.webgl.Map.prototype.initializeGL_ = function() {
   var gl = this.gl_;
   gl.activeTexture(goog.webgl.TEXTURE0);
   gl.blendFunc(goog.webgl.SRC_ALPHA, goog.webgl.ONE_MINUS_SRC_ALPHA);
@@ -516,7 +519,7 @@ ol3.webgl.MapRenderer.prototype.initializeGL_ = function() {
  * @param {Image} image Image.
  * @return {boolean} Is image texture loaded.
  */
-ol3.webgl.MapRenderer.prototype.isImageTextureLoaded = function(image) {
+ol3.renderer.webgl.Map.prototype.isImageTextureLoaded = function(image) {
   return image.src in this.textureCache_;
 };
 
@@ -524,7 +527,7 @@ ol3.webgl.MapRenderer.prototype.isImageTextureLoaded = function(image) {
 /**
  * @inheritDoc
  */
-ol3.webgl.MapRenderer.prototype.removeLayer = function(layer) {
+ol3.renderer.webgl.Map.prototype.removeLayer = function(layer) {
   goog.base(this, 'removeLayer', layer);
   if (layer.getVisible()) {
     this.getMap().render();
@@ -535,7 +538,7 @@ ol3.webgl.MapRenderer.prototype.removeLayer = function(layer) {
 /**
  * @inheritDoc
  */
-ol3.webgl.MapRenderer.prototype.removeLayerRenderer = function(layer) {
+ol3.renderer.webgl.Map.prototype.removeLayerRenderer = function(layer) {
   var layerRenderer = goog.base(this, 'removeLayerRenderer', layer);
   if (!goog.isNull(layerRenderer)) {
     var layerKey = goog.getUid(layer);
@@ -549,7 +552,7 @@ ol3.webgl.MapRenderer.prototype.removeLayerRenderer = function(layer) {
 /**
  * @inheritDoc
  */
-ol3.webgl.MapRenderer.prototype.render = function() {
+ol3.renderer.webgl.Map.prototype.render = function() {
 
   if (!this.getMap().isDef()) {
     return false;
@@ -627,7 +630,7 @@ ol3.webgl.MapRenderer.prototype.render = function() {
 /**
  * @inheritDoc
  */
-ol3.webgl.MapRenderer.prototype.setLayerRenderer = function(
+ol3.renderer.webgl.Map.prototype.setLayerRenderer = function(
     layer, layerRenderer) {
   goog.base(this, 'setLayerRenderer', layer, layerRenderer);
   var layerKey = goog.getUid(layer);

@@ -1,20 +1,20 @@
-goog.provide('ol3.dom.TileLayerRenderer');
+goog.provide('ol3.renderer.dom.TileLayer');
 
 goog.require('goog.dom');
 goog.require('ol3.Coordinate');
 goog.require('ol3.Extent');
-goog.require('ol3.dom.LayerRenderer');
+goog.require('ol3.renderer.dom.Layer');
 
 
 
 /**
  * @constructor
- * @extends {ol3.dom.LayerRenderer}
- * @param {ol3.MapRenderer} mapRenderer Map renderer.
+ * @extends {ol3.renderer.dom.Layer}
+ * @param {ol3.renderer.Map} mapRenderer Map renderer.
  * @param {ol3.TileLayer} tileLayer Tile layer.
  * @param {!Element} target Target.
  */
-ol3.dom.TileLayerRenderer = function(mapRenderer, tileLayer, target) {
+ol3.renderer.dom.TileLayer = function(mapRenderer, tileLayer, target) {
   goog.base(this, mapRenderer, tileLayer, target);
 
   /**
@@ -29,14 +29,14 @@ ol3.dom.TileLayerRenderer = function(mapRenderer, tileLayer, target) {
    */
   this.renderedMapResolution_ = undefined;
 };
-goog.inherits(ol3.dom.TileLayerRenderer, ol3.dom.LayerRenderer);
+goog.inherits(ol3.renderer.dom.TileLayer, ol3.renderer.dom.Layer);
 
 
 /**
  * @override
  * @return {ol3.TileLayer} Layer.
  */
-ol3.dom.TileLayerRenderer.prototype.getLayer = function() {
+ol3.renderer.dom.TileLayer.prototype.getLayer = function() {
   return /** @type {ol3.TileLayer} */ goog.base(this, 'getLayer');
 };
 
@@ -48,7 +48,7 @@ ol3.dom.TileLayerRenderer.prototype.getLayer = function() {
  * @param {number} resolution Resolution.
  * @return {ol3.Coordinate} Offset.
  */
-ol3.dom.TileLayerRenderer.prototype.getTileOffset_ = function(z, resolution) {
+ol3.renderer.dom.TileLayer.prototype.getTileOffset_ = function(z, resolution) {
   var tileLayer = this.getLayer();
   var tileStore = tileLayer.getStore();
   var tileGrid = tileStore.getTileGrid();
@@ -66,7 +66,7 @@ ol3.dom.TileLayerRenderer.prototype.getTileOffset_ = function(z, resolution) {
  * @param {ol3.TileBounds} tileBounds Tile bounds.
  * @param {number} z Z.
  */
-ol3.dom.TileLayerRenderer.prototype.removeInvisibleTiles_ = function(
+ol3.renderer.dom.TileLayer.prototype.removeInvisibleTiles_ = function(
     tileBounds, z) {
   var key, tileCoord, prune, tile;
   for (key in this.renderedTiles_) {
@@ -88,7 +88,7 @@ ol3.dom.TileLayerRenderer.prototype.removeInvisibleTiles_ = function(
 /**
  * @inheritDoc
  */
-ol3.dom.TileLayerRenderer.prototype.render = function() {
+ol3.renderer.dom.TileLayer.prototype.render = function() {
 
   var map = this.getMap();
   if (!map.isDef()) {

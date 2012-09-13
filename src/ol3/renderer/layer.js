@@ -1,4 +1,4 @@
-goog.provide('ol3.LayerRenderer');
+goog.provide('ol3.renderer.Layer');
 
 goog.require('goog.events');
 goog.require('goog.events.EventType');
@@ -11,16 +11,16 @@ goog.require('ol3.Object');
 /**
  * @constructor
  * @extends {ol3.Object}
- * @param {ol3.MapRenderer} mapRenderer Map renderer.
+ * @param {ol3.renderer.Map} mapRenderer Map renderer.
  * @param {ol3.Layer} layer Layer.
  */
-ol3.LayerRenderer = function(mapRenderer, layer) {
+ol3.renderer.Layer = function(mapRenderer, layer) {
 
   goog.base(this);
 
   /**
    * @private
-   * @type {ol3.MapRenderer}
+   * @type {ol3.renderer.Map}
    */
   this.mapRenderer_ = mapRenderer;
 
@@ -58,13 +58,13 @@ ol3.LayerRenderer = function(mapRenderer, layer) {
       this.handleLayerVisibleChange, false, this);
 
 };
-goog.inherits(ol3.LayerRenderer, ol3.Object);
+goog.inherits(ol3.renderer.Layer, ol3.Object);
 
 
 /**
  * @return {ol3.Layer} Layer.
  */
-ol3.LayerRenderer.prototype.getLayer = function() {
+ol3.renderer.Layer.prototype.getLayer = function() {
   return this.layer_;
 };
 
@@ -72,15 +72,15 @@ ol3.LayerRenderer.prototype.getLayer = function() {
 /**
  * @return {ol3.Map} Map.
  */
-ol3.LayerRenderer.prototype.getMap = function() {
+ol3.renderer.Layer.prototype.getMap = function() {
   return this.mapRenderer_.getMap();
 };
 
 
 /**
- * @return {ol3.MapRenderer} Map renderer.
+ * @return {ol3.renderer.Map} Map renderer.
  */
-ol3.LayerRenderer.prototype.getMapRenderer = function() {
+ol3.renderer.Layer.prototype.getMapRenderer = function() {
   return this.mapRenderer_;
 };
 
@@ -88,40 +88,40 @@ ol3.LayerRenderer.prototype.getMapRenderer = function() {
 /**
  * @protected
  */
-ol3.LayerRenderer.prototype.handleLayerBrightnessChange = goog.nullFunction;
+ol3.renderer.Layer.prototype.handleLayerBrightnessChange = goog.nullFunction;
 
 
 /**
  * @protected
  */
-ol3.LayerRenderer.prototype.handleLayerContrastChange = goog.nullFunction;
+ol3.renderer.Layer.prototype.handleLayerContrastChange = goog.nullFunction;
 
 
 /**
  * @protected
  */
-ol3.LayerRenderer.prototype.handleLayerHueChange = goog.nullFunction;
+ol3.renderer.Layer.prototype.handleLayerHueChange = goog.nullFunction;
 
 
 /**
  * @protected
  */
-ol3.LayerRenderer.prototype.handleLayerLoad = goog.nullFunction;
+ol3.renderer.Layer.prototype.handleLayerLoad = goog.nullFunction;
 
 
 /**
  * @protected
  */
-ol3.LayerRenderer.prototype.handleLayerOpacityChange = goog.nullFunction;
+ol3.renderer.Layer.prototype.handleLayerOpacityChange = goog.nullFunction;
 
 
 /**
  * @protected
  */
-ol3.LayerRenderer.prototype.handleLayerSaturationChange = goog.nullFunction;
+ol3.renderer.Layer.prototype.handleLayerSaturationChange = goog.nullFunction;
 
 
 /**
  * @protected
  */
-ol3.LayerRenderer.prototype.handleLayerVisibleChange = goog.nullFunction;
+ol3.renderer.Layer.prototype.handleLayerVisibleChange = goog.nullFunction;
