@@ -1,5 +1,7 @@
 {
 
+  "ambiguate-properties": true,
+
   "checks": {
     "accessControls": "ERROR",
     "visibility": "ERROR",
@@ -18,6 +20,8 @@
     "goog.dom.ASSUME_STANDARDS_MODE": true,
     "goog.DEBUG": false
   },
+
+  "disambiguate-properties": true,
 
   "externs": [
     "externs/bingmaps.js",
