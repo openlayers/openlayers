@@ -5,6 +5,7 @@
   "checks": {
     "accessControls": "ERROR",
     "ambiguousFunctionDecl": "ERROR",
+    "checkDebuggerStatement": "WARNING",
     "checkRegExp": "ERROR",
     "checkTypes": "ERROR",
     "checkVars": "ERROR",
@@ -45,6 +46,6 @@
 
   "paths": "src",
 
-  "treat-warnings-as-errors": true
+  "treat-warnings-as-errors": false
 
 }
