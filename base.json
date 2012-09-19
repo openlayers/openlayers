@@ -4,16 +4,25 @@
 
   "checks": {
     "accessControls": "ERROR",
-    "visibility": "ERROR",
-    "checkTypes": "ERROR",
+    "ambiguousFunctionDecl": "ERROR",
     "checkRegExp": "ERROR",
+    "checkTypes": "ERROR",
     "checkVars": "ERROR",
+    "const": "ERROR",
+    "constantProperty": "ERROR",
     "deprecated": "ERROR",
+    "duplicate": "ERROR",
+    "externsValidation": "ERROR",
     "fileoverviewTags": "ERROR",
+    "globalThis": "ERROR",
+    "internetExplorerChecks": "ERROR",
     "invalidCasts": "ERROR",
     "missingProperties": "ERROR",
     "nonStandardJsDocs": "ERROR",
-    "undefinedVars": "ERROR"
+    "strictModuleDepCheck": "ERROR",
+    "undefinedVars": "ERROR",
+    "uselessCode": "ERROR",
+    "visibility": "ERROR"
   },
 
   "define": {
