@@ -4,6 +4,8 @@
 
   "inherits": "../base.json",
 
-  "inputs": "src/ol/ol.js"
+  "inputs": "src/ol/ol.js",
+
+  "output-wrapper": "(function(){%output%})();"
 
 }
