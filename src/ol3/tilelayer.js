@@ -18,7 +18,7 @@ goog.inherits(ol3.TileLayer, ol3.Layer);
 
 
 /**
- * @override
+ * @inheritDoc
  * @return {ol3.TileStore} Store.
  */
 ol3.TileLayer.prototype.getStore = function() {

@@ -37,7 +37,7 @@ goog.inherits(ol3.renderer.dom.Layer, ol3.renderer.Layer);
 
 
 /**
- * @override
+ * @inheritDoc
  * @return {ol3.renderer.Map} Map renderer.
  */
 ol3.renderer.dom.Layer.prototype.getMapRenderer = function() {

@@ -27,7 +27,7 @@ ol3.renderer.webgl.Layer.prototype.dispatchChangeEvent = function() {
 
 
 /**
- * @override
+ * @inheritDoc
  * @return {ol3.renderer.Map} MapRenderer.
  */
 ol3.renderer.webgl.Layer.prototype.getMapRenderer = function() {

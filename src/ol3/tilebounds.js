@@ -96,7 +96,7 @@ ol3.TileBounds.prototype.forEachTileCoord = function(z, f, opt_obj) {
 
 
 /**
- * @override
+ * @inheritDoc
  * @return {number} Height.
  */
 ol3.TileBounds.prototype.getHeight = function() {
@@ -105,7 +105,7 @@ ol3.TileBounds.prototype.getHeight = function() {
 
 
 /**
- * @override
+ * @inheritDoc
  * @return {number} Width.
  */
 ol3.TileBounds.prototype.getWidth = function() {

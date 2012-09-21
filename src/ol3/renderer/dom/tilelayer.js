@@ -33,7 +33,7 @@ goog.inherits(ol3.renderer.dom.TileLayer, ol3.renderer.dom.Layer);
 
 
 /**
- * @override
+ * @inheritDoc
  * @return {ol3.TileLayer} Layer.
  */
 ol3.renderer.dom.TileLayer.prototype.getLayer = function() {
