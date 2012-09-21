@@ -70,6 +70,7 @@ ol3.renderer.dom.Layer.prototype.handleLayerVisibleChange = function() {
 
 
 /**
+ * Render.
  */
 ol3.renderer.dom.Layer.prototype.render = goog.abstractMethod;
 

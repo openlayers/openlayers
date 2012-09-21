@@ -197,6 +197,7 @@ ol3.renderer.Map.prototype.getPixelFromCoordinate = function(coordinate) {
 
 
 /**
+ * Handle background color changed.
  */
 ol3.renderer.Map.prototype.handleBackgroundColorChanged = goog.nullFunction;
 

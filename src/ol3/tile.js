@@ -132,6 +132,7 @@ ol3.Tile.prototype.handleImageLoad_ = function() {
 
 
 /**
+ * Load.
  */
 ol3.Tile.prototype.load = function() {
   if (this.state_ == ol3.TileState.IDLE) {

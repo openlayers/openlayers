@@ -91,6 +91,7 @@ goog.inherits(ol3.Collection, ol3.Object);
 
 
 /**
+ * Remove all elements from the collection.
  */
 ol3.Collection.prototype.clear = function() {
   while (this[ol3.CollectionProperty.LENGTH]) {

@@ -29,6 +29,7 @@ goog.inherits(ol3.MapEvent, goog.events.Event);
 
 
 /**
+ * Prevents the default action.
  */
 ol3.MapEvent.prototype.preventDefault = function() {
   goog.base(this, 'preventDefault');

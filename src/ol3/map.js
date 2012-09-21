@@ -244,6 +244,7 @@ ol3.Map.prototype.fitUserExtent = function(userExtent) {
 
 
 /**
+ * Freeze rendering.
  */
 ol3.Map.prototype.freezeRendering = function() {
   ++this.freezeRenderingCount_;
@@ -586,6 +587,7 @@ ol3.Map.prototype.recalculateTransforms_ = function() {
 
 
 /**
+ * Render.
  */
 ol3.Map.prototype.render = function() {
   if (this.animatingCount_ < 1) {
@@ -752,6 +754,7 @@ goog.exportProperty(
 
 
 /**
+ * Start animating.
  */
 ol3.Map.prototype.startAnimating = function() {
   if (++this.animatingCount_ == 1) {
@@ -764,6 +767,7 @@ ol3.Map.prototype.startAnimating = function() {
 
 
 /**
+ * Stop animating.
  */
 ol3.Map.prototype.stopAnimating = function() {
   goog.asserts.assert(this.animatingCount_ > 0);
@@ -777,6 +781,7 @@ ol3.Map.prototype.stopAnimating = function() {
 
 
 /**
+ * Unfreeze rendering.
  */
 ol3.Map.prototype.unfreezeRendering = function() {
   goog.asserts.assert(this.freezeRenderingCount_ > 0);

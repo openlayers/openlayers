@@ -105,10 +105,12 @@ ol3.renderer.webgl.Layer.prototype.handleLayerVisibleChange = function() {
 
 
 /**
+ * Handle webglcontextlost.
  */
 ol3.renderer.webgl.Layer.prototype.handleWebGLContextLost = goog.nullFunction;
 
 
 /**
+ * Render.
  */
 ol3.renderer.webgl.Layer.prototype.render = goog.abstractMethod;

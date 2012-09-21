@@ -257,6 +257,7 @@ ol3.Object.prototype.unbind = function(key) {
 
 
 /**
+ * Removes all bindings.
  */
 ol3.Object.prototype.unbindAll = function() {
   var listeners = ol3.Object.getListeners(this);
