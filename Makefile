@@ -1,4 +1,5 @@
 JSDOC = jsdoc
+PHANTOMJS = phantomjs
 PLOVR_JAR = bin/plovr-4b3caf2b7d84.jar
 SRC = $(shell find exports externs src/ol -name \*.js)
 TARGETS = $(shell find demos -name advanced-optimizations.js -o -name simple-optimizations.js)
@@ -109,6 +110,10 @@ $(PLOVR_JAR):
 .PHONY: doc
 doc:
 	$(JSDOC) -t doc/template -r src -d build/apidoc
+
+.PHONY: test
+test:
+	$(PHANTOMJS) test/phantom-jasmine/run_jasmine_test.coffee test/ol.html
 
 clean:
 	rm -f build/all.js
