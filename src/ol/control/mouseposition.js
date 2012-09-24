@@ -4,7 +4,7 @@ goog.provide('ol.control.MousePosition');
 
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('ol.Control');
+goog.require('ol.control.Control');
 goog.require('ol.MapProperty');
 goog.require('ol.Object');
 goog.require('ol.Projection');
@@ -14,7 +14,7 @@ goog.require('ol.TransformFunction');
 
 /**
  * @constructor
- * @extends {ol.Control}
+ * @extends {ol.control.Control}
  * @param {ol.Map} map Map.
  * @param {ol.Projection=} opt_projection Projection.
  * @param {ol.CoordinateFormatType=} opt_coordinateFormat Coordinate format.
@@ -68,7 +68,7 @@ ol.control.MousePosition =
   this.handleMapProjectionChanged();
 
 };
-goog.inherits(ol.control.MousePosition, ol.Control);
+goog.inherits(ol.control.MousePosition, ol.control.Control);
 
 
 /**

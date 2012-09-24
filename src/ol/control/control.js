@@ -1,4 +1,4 @@
-goog.provide('ol.Control');
+goog.provide('ol.control.Control');
 
 goog.require('ol.Map');
 
@@ -8,7 +8,7 @@ goog.require('ol.Map');
  * @constructor
  * @param {ol.Map} map Map.
  */
-ol.Control = function(map) {
+ol.control.Control = function(map) {
 
   /**
    * @private
@@ -22,12 +22,12 @@ ol.Control = function(map) {
 /**
  * @return {Element} Element.
  */
-ol.Control.prototype.getElement = goog.abstractMethod;
+ol.control.Control.prototype.getElement = goog.abstractMethod;
 
 
 /**
  * @return {ol.Map} Map.
  */
-ol.Control.prototype.getMap = function() {
+ol.control.Control.prototype.getMap = function() {
   return this.map_;
 };

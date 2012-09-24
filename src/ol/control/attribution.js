@@ -12,7 +12,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('goog.style');
 goog.require('ol.Collection');
-goog.require('ol.Control');
+goog.require('ol.control.Control');
 goog.require('ol.CoverageArea');
 goog.require('ol.layer.Layer');
 goog.require('ol.MapProperty');
@@ -22,7 +22,7 @@ goog.require('ol.TileCoverageArea');
 
 /**
  * @constructor
- * @extends {ol.Control}
+ * @extends {ol.control.Control}
  * @param {ol.Map} map Map.
  */
 ol.control.Attribution = function(map) {
@@ -77,7 +77,7 @@ ol.control.Attribution = function(map) {
   this.handleMapLayersChanged();
 
 };
-goog.inherits(ol.control.Attribution, ol.Control);
+goog.inherits(ol.control.Attribution, ol.control.Control);
 
 
 /**
