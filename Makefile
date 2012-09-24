@@ -1,4 +1,4 @@
-PLOVR_JAR=bin/plovr-4b3caf2b7d84.jar
+PLOVR_JAR = bin/plovr-4b3caf2b7d84.jar
 SRC = $(shell find externs src/ol -name \*.js)
 TARGETS = $(shell find demos -name advanced-optimizations.js -o -name simple-optimizations.js)
 comma := ,
