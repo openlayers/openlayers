@@ -7,6 +7,7 @@
   <link rel="stylesheet" type="text/css" href="jasmine-1.2.0/jasmine.css">
   <script type="text/javascript" src="jasmine-1.2.0/jasmine.js"></script>
   <script type="text/javascript" src="jasmine-1.2.0/jasmine-html.js"></script>
+  <script type="text/javascript" src="phantom-jasmine/console-runner.js"></script>
 
   <!-- include source files here... -->
   <script type="text/javascript">
@@ -88,6 +89,15 @@
       jasmineEnv.specFilter = function(spec) {
         return htmlReporter.specFilter(spec);
       };
+
+      var consoleReporter = new jasmine.ConsoleReporter();
+      jasmineEnv.addReporter(consoleReporter);
+
+      // The run_jasmine_test.coffee script (from phantom-jasmine)
+      // assumes that the console reporter instance is available
+      // in the global namespace object as "console_reporter".
+      // Stupid.
+      window.console_reporter = consoleReporter;
 
       var currentWindowOnload = window.onload;
 
