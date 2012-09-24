@@ -2,8 +2,8 @@ goog.provide('ol.renderer.Layer');
 
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('ol.Layer');
-goog.require('ol.LayerProperty');
+goog.require('ol.layer.Layer');
+goog.require('ol.layer.LayerProperty');
 goog.require('ol.Object');
 
 
@@ -12,7 +12,7 @@ goog.require('ol.Object');
  * @constructor
  * @extends {ol.Object}
  * @param {ol.renderer.Map} mapRenderer Map renderer.
- * @param {ol.Layer} layer Layer.
+ * @param {ol.layer.Layer} layer Layer.
  */
 ol.renderer.Layer = function(mapRenderer, layer) {
 
@@ -26,35 +26,35 @@ ol.renderer.Layer = function(mapRenderer, layer) {
 
   /**
    * @private
-   * @type {ol.Layer}
+   * @type {ol.layer.Layer}
    */
   this.layer_ = layer;
 
   goog.events.listen(this.layer_,
-      ol.Object.getChangedEventType(ol.LayerProperty.BRIGHTNESS),
+      ol.Object.getChangedEventType(ol.layer.LayerProperty.BRIGHTNESS),
       this.handleLayerBrightnessChange, false, this);
 
   goog.events.listen(this.layer_,
-      ol.Object.getChangedEventType(ol.LayerProperty.CONTRAST),
+      ol.Object.getChangedEventType(ol.layer.LayerProperty.CONTRAST),
       this.handleLayerContrastChange, false, this);
 
   goog.events.listen(this.layer_,
-      ol.Object.getChangedEventType(ol.LayerProperty.HUE),
+      ol.Object.getChangedEventType(ol.layer.LayerProperty.HUE),
       this.handleLayerHueChange, false, this);
 
   goog.events.listen(this.layer_, goog.events.EventType.LOAD,
       this.handleLayerLoad, false, this);
 
   goog.events.listen(this.layer_,
-      ol.Object.getChangedEventType(ol.LayerProperty.OPACITY),
+      ol.Object.getChangedEventType(ol.layer.LayerProperty.OPACITY),
       this.handleLayerOpacityChange, false, this);
 
   goog.events.listen(this.layer_,
-      ol.Object.getChangedEventType(ol.LayerProperty.SATURATION),
+      ol.Object.getChangedEventType(ol.layer.LayerProperty.SATURATION),
       this.handleLayerSaturationChange, false, this);
 
   goog.events.listen(this.layer_,
-      ol.Object.getChangedEventType(ol.LayerProperty.VISIBLE),
+      ol.Object.getChangedEventType(ol.layer.LayerProperty.VISIBLE),
       this.handleLayerVisibleChange, false, this);
 
 };
@@ -62,7 +62,7 @@ goog.inherits(ol.renderer.Layer, ol.Object);
 
 
 /**
- * @return {ol.Layer} Layer.
+ * @return {ol.layer.Layer} Layer.
  */
 ol.renderer.Layer.prototype.getLayer = function() {
   return this.layer_;

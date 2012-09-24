@@ -14,7 +14,7 @@ goog.require('goog.style');
 goog.require('ol.Collection');
 goog.require('ol.Control');
 goog.require('ol.CoverageArea');
-goog.require('ol.Layer');
+goog.require('ol.layer.Layer');
 goog.require('ol.MapProperty');
 goog.require('ol.TileCoverageArea');
 
@@ -81,7 +81,7 @@ goog.inherits(ol.control.Attribution, ol.Control);
 
 
 /**
- * @param {ol.Layer} layer Layer.
+ * @param {ol.layer.Layer} layer Layer.
  * @protected
  */
 ol.control.Attribution.prototype.addLayer = function(layer) {
@@ -89,7 +89,7 @@ ol.control.Attribution.prototype.addLayer = function(layer) {
   var layerKey = goog.getUid(layer);
 
   this.layerVisibleChangeListenerKeys_[layerKey] = goog.events.listen(
-      layer, ol.Object.getChangedEventType(ol.LayerProperty.VISIBLE),
+      layer, ol.Object.getChangedEventType(ol.layer.LayerProperty.VISIBLE),
       this.handleLayerVisibleChanged, false, this);
 
   if (layer.getStore().isReady()) {
@@ -103,7 +103,7 @@ ol.control.Attribution.prototype.addLayer = function(layer) {
 
 
 /**
- * @param {ol.Layer} layer Layer.
+ * @param {ol.layer.Layer} layer Layer.
  * @private
  */
 ol.control.Attribution.prototype.createAttributionElementsForLayer_ =
@@ -163,7 +163,7 @@ ol.control.Attribution.prototype.getElement = function() {
 
 
 /**
- * @param {ol.Layer} layer Layer.
+ * @param {ol.layer.Layer} layer Layer.
  * @param {ol.Extent} mapExtent Map extent.
  * @param {number} mapResolution Map resolution.
  * @param {ol.Projection} mapProjection Map projection.
@@ -249,7 +249,7 @@ ol.control.Attribution.prototype.getLayerAttributionVisiblities_ =
  * @param {goog.events.Event} event Event.
  */
 ol.control.Attribution.prototype.handleLayerLoad = function(event) {
-  var layer = /** @type {ol.Layer} */ event.target;
+  var layer = /** @type {ol.layer.Layer} */ event.target;
   this.createAttributionElementsForLayer_(layer);
 };
 
@@ -266,7 +266,7 @@ ol.control.Attribution.prototype.handleLayerVisibleChanged = function(event) {
   var mapProjection = /** @type {ol.Projection} */ map.getProjection();
   var mapResolution = /** @type {number} */ map.getResolution();
 
-  var layer = /** @type {ol.Layer} */ event.target;
+  var layer = /** @type {ol.layer.Layer} */ event.target;
 
   this.updateLayerAttributionsVisibility_(
       layer, mapIsDef, mapExtent, mapResolution, mapProjection);
@@ -279,7 +279,7 @@ ol.control.Attribution.prototype.handleLayerVisibleChanged = function(event) {
  * @protected
  */
 ol.control.Attribution.prototype.handleLayersAdd = function(collectionEvent) {
-  var layer = /** @type {ol.Layer} */ collectionEvent.elem;
+  var layer = /** @type {ol.layer.Layer} */ collectionEvent.elem;
   this.addLayer(layer);
 };
 
@@ -290,7 +290,7 @@ ol.control.Attribution.prototype.handleLayersAdd = function(collectionEvent) {
  */
 ol.control.Attribution.prototype.handleLayersRemove =
     function(collectionEvent) {
-  var layer = /** @type {ol.Layer} */ collectionEvent.elem;
+  var layer = /** @type {ol.layer.Layer} */ collectionEvent.elem;
   this.removeLayer(layer);
 };
 
@@ -343,7 +343,7 @@ ol.control.Attribution.prototype.handleMapLayersChanged = function() {
 
 
 /**
- * @param {ol.Layer} layer Layer.
+ * @param {ol.layer.Layer} layer Layer.
  * @protected
  */
 ol.control.Attribution.prototype.removeLayer = function(layer) {
@@ -365,7 +365,7 @@ ol.control.Attribution.prototype.removeLayer = function(layer) {
 
 
 /**
- * @param {ol.Layer} layer Layer.
+ * @param {ol.layer.Layer} layer Layer.
  * @param {boolean} mapIsDef Map is defined.
  * @param {ol.Extent} mapExtent Map extent.
  * @param {number} mapResolution Map resolution.

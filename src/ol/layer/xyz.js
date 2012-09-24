@@ -5,7 +5,7 @@ goog.provide('ol.tilestore.XYZ');
 goog.require('goog.math');
 goog.require('ol.Attribution');
 goog.require('ol.Coordinate');
-goog.require('ol.Layer');
+goog.require('ol.layer.Layer');
 goog.require('ol.Projection');
 goog.require('ol.Size');
 goog.require('ol.TileCoord');

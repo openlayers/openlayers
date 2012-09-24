@@ -1,7 +1,7 @@
 goog.provide('ol.renderer.webgl.Layer');
 
 goog.require('goog.vec.Mat4');
-goog.require('ol.Layer');
+goog.require('ol.layer.Layer');
 goog.require('ol.renderer.Layer');
 
 
@@ -10,7 +10,7 @@ goog.require('ol.renderer.Layer');
  * @constructor
  * @extends {ol.renderer.Layer}
  * @param {ol.renderer.Map} mapRenderer Map renderer.
- * @param {ol.Layer} layer Layer.
+ * @param {ol.layer.Layer} layer Layer.
  */
 ol.renderer.webgl.Layer = function(mapRenderer, layer) {
   goog.base(this, mapRenderer, layer);

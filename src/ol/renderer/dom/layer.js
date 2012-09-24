@@ -9,7 +9,7 @@ goog.require('ol.renderer.Layer');
  * @constructor
  * @extends {ol.renderer.Layer}
  * @param {ol.renderer.Map} mapRenderer Map renderer.
- * @param {ol.Layer} layer Layer.
+ * @param {ol.layer.Layer} layer Layer.
  * @param {!Element} target Target.
  */
 ol.renderer.dom.Layer = function(mapRenderer, layer, target) {

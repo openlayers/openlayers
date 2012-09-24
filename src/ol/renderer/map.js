@@ -97,7 +97,7 @@ goog.inherits(ol.renderer.Map, goog.Disposable);
 
 
 /**
- * @param {ol.Layer} layer Layer.
+ * @param {ol.layer.Layer} layer Layer.
  * @protected
  */
 ol.renderer.Map.prototype.addLayer = function(layer) {
@@ -113,7 +113,7 @@ ol.renderer.Map.prototype.canRotate = goog.functions.FALSE;
 
 
 /**
- * @param {ol.Layer} layer Layer.
+ * @param {ol.layer.Layer} layer Layer.
  * @protected
  * @return {ol.renderer.Layer} layerRenderer Layer renderer.
  */
@@ -136,7 +136,7 @@ ol.renderer.Map.prototype.disposeInternal = function() {
 
 
 /**
- * @param {function(this: T, ol.Layer, ol.renderer.Layer, number)} f Function.
+ * @param {function(this: T, ol.layer.Layer, ol.renderer.Layer, number)} f Function.
  * @param {T=} opt_obj Object.
  * @template T
  */
@@ -164,7 +164,7 @@ ol.renderer.Map.prototype.getCoordinateFromPixel = function(pixel) {
 
 
 /**
- * @param {ol.Layer} layer Layer.
+ * @param {ol.layer.Layer} layer Layer.
  * @protected
  * @return {ol.renderer.Layer} Layer renderer.
  */
@@ -215,7 +215,7 @@ ol.renderer.Map.prototype.handleCenterChanged = function() {
  * @protected
  */
 ol.renderer.Map.prototype.handleLayersAdd = function(collectionEvent) {
-  var layer = /** @type {ol.Layer} */ collectionEvent.elem;
+  var layer = /** @type {ol.layer.Layer} */ collectionEvent.elem;
   this.addLayer(layer);
 };
 
@@ -251,7 +251,7 @@ ol.renderer.Map.prototype.handleLayersChanged = function() {
  * @protected
  */
 ol.renderer.Map.prototype.handleLayersRemove = function(collectionEvent) {
-  var layer = /** @type {ol.Layer} */ collectionEvent.elem;
+  var layer = /** @type {ol.layer.Layer} */ collectionEvent.elem;
   this.removeLayer(layer);
 };
 
@@ -281,7 +281,7 @@ ol.renderer.Map.prototype.handleSizeChanged = function() {
 
 
 /**
- * @param {ol.Layer} layer Layer.
+ * @param {ol.layer.Layer} layer Layer.
  * @protected
  */
 ol.renderer.Map.prototype.removeLayer = function(layer) {
@@ -290,7 +290,7 @@ ol.renderer.Map.prototype.removeLayer = function(layer) {
 
 
 /**
- * @param {ol.Layer} layer Layer.
+ * @param {ol.layer.Layer} layer Layer.
  * @return {ol.renderer.Layer} Layer renderer.
  * @protected
  */
@@ -321,7 +321,7 @@ ol.renderer.Map.prototype.render = function() {
 
 
 /**
- * @param {ol.Layer} layer Layer.
+ * @param {ol.layer.Layer} layer Layer.
  * @param {ol.renderer.Layer} layerRenderer Layer renderer.
  * @protected
  */
