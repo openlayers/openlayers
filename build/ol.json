@@ -1,0 +1,11 @@
+{
+
+  "id": "ol",
+
+  "inherits": "../base.json",
+
+  "inputs": "build/ol.js",
+
+  "output-wrapper": "(function(){%output%})();"
+
+}

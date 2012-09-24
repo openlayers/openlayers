@@ -1,13 +1,13 @@
 goog.require('goog.debug.Console');
 goog.require('goog.debug.Logger');
 goog.require('goog.debug.Logger.Level');
-goog.require('ol3.CoordinateFormat');
-goog.require('ol3.RendererHint');
-goog.require('ol3.control.Attribution');
-goog.require('ol3.control.MousePosition');
-goog.require('ol3.createMap');
-goog.require('ol3.interaction.Keyboard');
-goog.require('ol3.layer.MapQuestOpenAerial');
+goog.require('ol.CoordinateFormat');
+goog.require('ol.RendererHint');
+goog.require('ol.control.Attribution');
+goog.require('ol.control.MousePosition');
+goog.require('ol.createMap');
+goog.require('ol.interaction.Keyboard');
+goog.require('ol.layer.MapQuestOpenAerial');
 
 
 if (goog.DEBUG) {
@@ -17,22 +17,22 @@ if (goog.DEBUG) {
 
 
 
-var layer = new ol3.layer.MapQuestOpenAerial();
+var layer = new ol.layer.MapQuestOpenAerial();
 
-var layers = new ol3.Collection();
+var layers = new ol.Collection();
 layers.push(layer);
 
-var domMap = ol3.createMap(
+var domMap = ol.createMap(
     document.getElementById('domMap'),
     {'layers': layers},
-    ol3.RendererHint.DOM);
-domMap.setCenter(new ol3.Coordinate(0, 0));
+    ol.RendererHint.DOM);
+domMap.setCenter(new ol.Coordinate(0, 0));
 domMap.setResolution(layer.getStore().getResolutions()[0]);
 
-var webglMap = ol3.createMap(
+var webglMap = ol.createMap(
     document.getElementById('webglMap'),
     {},
-    ol3.RendererHint.WEBGL);
+    ol.RendererHint.WEBGL);
 if (!goog.isNull(webglMap)) {
   webglMap.bindTo('center', domMap);
   webglMap.bindTo('layers', domMap);
@@ -40,23 +40,23 @@ if (!goog.isNull(webglMap)) {
   webglMap.bindTo('rotation', domMap);
 }
 
-var attributionControl = new ol3.control.Attribution(domMap);
+var attributionControl = new ol.control.Attribution(domMap);
 document.getElementById('attribution').appendChild(
     attributionControl.getElement());
 
-var domMousePositionControl = new ol3.control.MousePosition(domMap,
-    ol3.Projection.getFromCode('EPSG:4326'), ol3.CoordinateFormat.hdms,
+var domMousePositionControl = new ol.control.MousePosition(domMap,
+    ol.Projection.getFromCode('EPSG:4326'), ol.CoordinateFormat.hdms,
     '&nbsp;');
 document.getElementById('domMousePosition').appendChild(
     domMousePositionControl.getElement());
 
-var webglMousePositionControl = new ol3.control.MousePosition(webglMap,
-    ol3.Projection.getFromCode('EPSG:4326'), ol3.CoordinateFormat.hdms,
+var webglMousePositionControl = new ol.control.MousePosition(webglMap,
+    ol.Projection.getFromCode('EPSG:4326'), ol.CoordinateFormat.hdms,
     '&nbsp;');
 document.getElementById('webglMousePosition').appendChild(
     webglMousePositionControl.getElement());
 
-var keyboardInteraction = new ol3.interaction.Keyboard();
+var keyboardInteraction = new ol.interaction.Keyboard();
 keyboardInteraction.addCallback('0', function() {
   layer.setBrightness(0);
   layer.setContrast(0);
