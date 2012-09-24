@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
     <head>
-        <script src="../../proj4js-combined.js" type="text/javascript"></script>
+        <script src="../../build/proj4js-combined.js" type="text/javascript"></script>
         <script src="@SRC@" type="text/javascript"></script>
         <title>ol3 proj4js demo</title>
     </head>
