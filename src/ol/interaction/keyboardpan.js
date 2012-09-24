@@ -2,8 +2,8 @@ goog.provide('ol.interaction.KeyboardPan');
 
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler.EventType');
-goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Constraints');
+goog.require('ol.interaction.Interaction');
 
 
 

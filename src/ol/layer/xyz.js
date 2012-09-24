@@ -5,7 +5,6 @@ goog.provide('ol.tilestore.XYZ');
 goog.require('goog.math');
 goog.require('ol.Attribution');
 goog.require('ol.Coordinate');
-goog.require('ol.layer.Layer');
 goog.require('ol.Projection');
 goog.require('ol.Size');
 goog.require('ol.TileCoord');
@@ -13,6 +12,7 @@ goog.require('ol.TileGrid');
 goog.require('ol.TileLayer');
 goog.require('ol.TileStore');
 goog.require('ol.TileUrlFunction');
+goog.require('ol.layer.Layer');
 
 
 

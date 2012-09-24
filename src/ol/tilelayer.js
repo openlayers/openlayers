@@ -1,7 +1,7 @@
 goog.provide('ol.TileLayer');
 
-goog.require('ol.layer.Layer');
 goog.require('ol.TileStore');
+goog.require('ol.layer.Layer');
 
 
 

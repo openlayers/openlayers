@@ -31,13 +31,13 @@ goog.require('ol.Collection');
 goog.require('ol.Color');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
-goog.require('ol.interaction.Interaction');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.Object');
 goog.require('ol.Pixel');
 goog.require('ol.Projection');
 goog.require('ol.Size');
 goog.require('ol.TransformFunction');
+goog.require('ol.interaction.Interaction');
 goog.require('ol.renderer.Layer');
 
 

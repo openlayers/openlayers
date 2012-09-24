@@ -5,9 +5,9 @@ goog.require('goog.asserts');
 goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('ol.Coordinate');
-goog.require('ol.interaction.Interaction');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.interaction.Constraints');
+goog.require('ol.interaction.Interaction');
 
 
 
