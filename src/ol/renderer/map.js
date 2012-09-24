@@ -136,7 +136,8 @@ ol.renderer.Map.prototype.disposeInternal = function() {
 
 
 /**
- * @param {function(this: T, ol.layer.Layer, ol.renderer.Layer, number)} f Function.
+ * @param {function(this: T, ol.layer.Layer, ol.renderer.Layer, number)} f
+ *     Function.
  * @param {T=} opt_obj Object.
  * @template T
  */
