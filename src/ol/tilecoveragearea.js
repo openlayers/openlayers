@@ -51,9 +51,7 @@ ol.TileCoverageArea.prototype.intersectsExtentAndResolution =
 
 
 /**
- * @param {ol.Extent} extent Extent.
- * @param {number} z Z.
- * @return {boolean} Intersects.
+ * @inheritDoc
  */
 ol.TileCoverageArea.prototype.intersectsExtentAndZ = function(extent, z) {
   return this.minZ_ <= z && z <= this.maxZ_ && this.intersectsExtent(extent);

@@ -36,6 +36,14 @@ ol.CoverageArea.prototype.intersectsExtentAndResolution = goog.abstractMethod;
 
 
 /**
+ * @param {ol.Extent} extent Extent.
+ * @param {number} z Z.
+ * @return {boolean} Intersects.
+ */
+ol.CoverageArea.prototype.intersectsExtentAndZ = goog.abstractMethod;
+
+
+/**
  * @param {ol.TransformFunction} transformFn Transform.
  * @return {ol.CoverageArea} Transformed coverage area.
  */

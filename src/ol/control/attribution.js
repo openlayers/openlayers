@@ -217,15 +217,8 @@ ol.control.Attribution.prototype.getLayerAttributionVisiblities_ =
       if (store instanceof ol.TileStore) {
         attributionVisible = goog.array.some(
             coverageAreas,
-            /**
-             * @param {ol.TileCoverageArea} tileCoverageArea
-             *     Tile coverage area.
-             * @param {number} index Index.
-             */
-            function(tileCoverageArea, index) {
-              goog.asserts.assert(
-                  tileCoverageArea instanceof ol.TileCoverageArea);
-              return tileCoverageArea.intersectsExtentAndZ(mapExtent, mapZ);
+            function(coverageArea, index) {
+              return coverageArea.intersectsExtentAndZ(mapExtent, mapZ);
             });
       } else {
         attributionVisible = goog.array.some(
