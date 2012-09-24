@@ -144,7 +144,7 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
-   * @type {Object.<number, number>}
+   * @type {Object.<number, (number|null)>}
    */
   this.tileChangeListenerKeys_ = {};
 
@@ -372,7 +372,7 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
   gl.uniform1i(this.locations_.uTexture, 0);
 
   /**
-   * @type {Object.<number, Object.<string, ol.TileCoord>>}
+   * @type {Object.<number, Object.<string, ol.Tile>>}
    */
   var tilesToDrawByZ = {};
 
@@ -430,6 +430,7 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
 
   }, this);
 
+  /** @type {Array.<number>} */
   var zs = goog.object.getKeys(tilesToDrawByZ);
   goog.array.sort(zs);
   var uTileOffset = goog.vec.Vec4.createFloat32();

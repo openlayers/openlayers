@@ -220,8 +220,9 @@ ol.control.Attribution.prototype.getLayerAttributionVisiblities_ =
             /**
              * @param {ol.TileCoverageArea} tileCoverageArea
              *     Tile coverage area.
+             * @param {number} index Index.
              */
-            function(tileCoverageArea) {
+            function(tileCoverageArea, index) {
               goog.asserts.assert(
                   tileCoverageArea instanceof ol.TileCoverageArea);
               return tileCoverageArea.intersectsExtentAndZ(mapExtent, mapZ);
