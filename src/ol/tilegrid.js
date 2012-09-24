@@ -8,8 +8,8 @@ goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.PixelBounds');
 goog.require('ol.Size');
-goog.require('ol.TileBounds');
 goog.require('ol.TileCoord');
+goog.require('ol.TileRange');
 goog.require('ol.array');
 
 
@@ -76,18 +76,18 @@ ol.TileGrid = function(resolutions, extent, origin, opt_tileSize) {
 
 /**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {function(this: T, number, ol.TileBounds): boolean} callback
+ * @param {function(this: T, number, ol.TileRange): boolean} callback
  *     Callback.
  * @param {T=} opt_obj Object.
  * @template T
  */
-ol.TileGrid.prototype.forEachTileCoordParentTileBounds =
+ol.TileGrid.prototype.forEachTileCoordParentTileRange =
     function(tileCoord, callback, opt_obj) {
   var tileCoordExtent = this.getTileCoordExtent(tileCoord);
   var z = tileCoord.z - 1;
   while (z >= 0) {
     if (callback.call(
-        opt_obj, z, this.getTileBoundsForExtentAndZ(tileCoordExtent, z))) {
+        opt_obj, z, this.getTileRangeForExtentAndZ(tileCoordExtent, z))) {
       return;
     }
     --z;
@@ -158,17 +158,17 @@ ol.TileGrid.prototype.getResolutions = function() {
 
 /**
  * @param {number} z Z.
- * @param {ol.TileBounds} tileBounds Tile bounds.
+ * @param {ol.TileRange} tileRange Tile range.
  * @return {ol.Extent} Extent.
  */
-ol.TileGrid.prototype.getTileBoundsExtent = function(z, tileBounds) {
+ol.TileGrid.prototype.getTileRangeExtent = function(z, tileRange) {
   var origin = this.getOrigin(z);
   var resolution = this.getResolution(z);
   var tileSize = this.tileSize_;
-  var minX = origin.x + tileBounds.minX * tileSize.width * resolution;
-  var minY = origin.y + tileBounds.minY * tileSize.height * resolution;
-  var maxX = origin.x + (tileBounds.maxX + 1) * tileSize.width * resolution;
-  var maxY = origin.y + (tileBounds.maxY + 1) * tileSize.height * resolution;
+  var minX = origin.x + tileRange.minX * tileSize.width * resolution;
+  var minY = origin.y + tileRange.minY * tileSize.height * resolution;
+  var maxX = origin.x + (tileRange.maxX + 1) * tileSize.width * resolution;
+  var maxY = origin.y + (tileRange.maxY + 1) * tileSize.height * resolution;
   return new ol.Extent(minX, minY, maxX, maxY);
 };
 
@@ -176,26 +176,26 @@ ol.TileGrid.prototype.getTileBoundsExtent = function(z, tileBounds) {
 /**
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
- * @return {ol.TileBounds} Tile bounds.
+ * @return {ol.TileRange} Tile range.
  */
-ol.TileGrid.prototype.getTileBoundsForExtentAndResolution = function(
+ol.TileGrid.prototype.getTileRangeForExtentAndResolution = function(
     extent, resolution) {
   var min = this.getTileCoordForCoordAndResolution(
       new ol.Coordinate(extent.minX, extent.minY), resolution);
   var max = this.getTileCoordForCoordAndResolution(
       new ol.Coordinate(extent.maxX, extent.maxY), resolution);
-  return new ol.TileBounds(min.x, min.y, max.x, max.y);
+  return new ol.TileRange(min.x, min.y, max.x, max.y);
 };
 
 
 /**
  * @param {ol.Extent} extent Extent.
  * @param {number} z Z.
- * @return {ol.TileBounds} Tile bounds.
+ * @return {ol.TileRange} Tile range.
  */
-ol.TileGrid.prototype.getTileBoundsForExtentAndZ = function(extent, z) {
+ol.TileGrid.prototype.getTileRangeForExtentAndZ = function(extent, z) {
   var resolution = this.getResolution(z);
-  return this.getTileBoundsForExtentAndResolution(extent, resolution);
+  return this.getTileRangeForExtentAndResolution(extent, resolution);
 };
 
 

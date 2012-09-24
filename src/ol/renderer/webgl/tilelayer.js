@@ -308,22 +308,22 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
   var tileGrid = tileStore.getTileGrid();
   var z = tileGrid.getZForResolution(mapResolution);
   var tileResolution = tileGrid.getResolution(z);
-  var tileBounds = tileGrid.getTileBoundsForExtentAndResolution(
+  var tileRange = tileGrid.getTileRangeForExtentAndResolution(
       mapRotatedExtent, tileResolution);
-  var tileBoundsSize = tileBounds.getSize();
+  var tileRangeSize = tileRange.getSize();
   var tileSize = tileGrid.getTileSize();
 
   var maxDimension = Math.max(
-      tileBoundsSize.width * tileSize.width,
-      tileBoundsSize.height * tileSize.height);
+      tileRangeSize.width * tileSize.width,
+      tileRangeSize.height * tileSize.height);
   var framebufferDimension =
       Math.pow(2, Math.ceil(Math.log(maxDimension) / Math.log(2)));
   var framebufferExtentSize = new ol.Size(
       tileResolution * framebufferDimension,
       tileResolution * framebufferDimension);
   var origin = tileGrid.getOrigin(z);
-  var minX = origin.x + tileBounds.minX * tileSize.width * tileResolution;
-  var minY = origin.y + tileBounds.minY * tileSize.height * tileResolution;
+  var minX = origin.x + tileRange.minX * tileSize.width * tileResolution;
+  var minY = origin.y + tileRange.minY * tileSize.height * tileResolution;
   var framebufferExtent = new ol.Extent(
       minX,
       minY,
@@ -382,7 +382,7 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
   var imagesToLoad = [];
 
   tilesToDrawByZ[z] = {};
-  tileBounds.forEachTileCoord(z, function(tileCoord) {
+  tileRange.forEachTileCoord(z, function(tileCoord) {
 
     var tile = tileStore.getTile(tileCoord);
 
@@ -405,11 +405,11 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
     }
 
     // FIXME this could be more efficient about filling partial holes
-    tileGrid.forEachTileCoordParentTileBounds(
+    tileGrid.forEachTileCoordParentTileRange(
         tileCoord,
-        function(z, tileBounds) {
+        function(z, tileRange) {
           var fullyCovered = true;
-          tileBounds.forEachTileCoord(z, function(tileCoord) {
+          tileRange.forEachTileCoord(z, function(tileCoord) {
             var tileCoordKey = tileCoord.toString();
             if (tilesToDrawByZ[z] && tilesToDrawByZ[z][tileCoordKey]) {
               return;

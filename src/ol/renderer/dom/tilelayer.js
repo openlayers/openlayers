@@ -63,19 +63,19 @@ ol.renderer.dom.TileLayer.prototype.getTileOffset_ = function(z, resolution) {
 /**
  * Get rid of tiles outside the rendered extent.
  * @private
- * @param {ol.TileBounds} tileBounds Tile bounds.
+ * @param {ol.TileRange} tileRange Tile range.
  * @param {number} z Z.
  */
 ol.renderer.dom.TileLayer.prototype.removeInvisibleTiles_ = function(
-    tileBounds, z) {
+    tileRange, z) {
   var key, tileCoord, prune, tile;
   for (key in this.renderedTiles_) {
     tileCoord = ol.TileCoord.createFromString(key);
     prune = z !== tileCoord.z ||
-            tileCoord.x < tileBounds.minX ||
-            tileCoord.x > tileBounds.maxX ||
-            tileCoord.y < tileBounds.minY ||
-            tileCoord.y > tileBounds.maxY;
+            tileCoord.x < tileRange.minX ||
+            tileCoord.x > tileRange.maxX ||
+            tileCoord.y < tileRange.minY ||
+            tileCoord.y > tileRange.maxY;
     if (prune) {
       tile = this.renderedTiles_[key];
       delete this.renderedTiles_[key];
@@ -109,14 +109,14 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
   // z represents the "best" resolution
   var z = tileGrid.getZForResolution(mapResolution);
 
-  var tileBounds =
-      tileGrid.getTileBoundsForExtentAndResolution(mapExtent, mapResolution);
+  var tileRange =
+      tileGrid.getTileRangeForExtentAndResolution(mapExtent, mapResolution);
   var tileOffset = this.getTileOffset_(z, mapResolution);
 
   var fragment = document.createDocumentFragment();
 
   var key, tile, pixelBounds, img, newTiles = false;
-  tileBounds.forEachTileCoord(z, function(tileCoord) {
+  tileRange.forEachTileCoord(z, function(tileCoord) {
     key = tileCoord.toString();
     tile = this.renderedTiles_[key];
     if (!goog.isDef(tile)) {
@@ -143,6 +143,6 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
     goog.dom.appendChild(this.target, fragment);
   }
 
-  this.removeInvisibleTiles_(tileBounds, z);
+  this.removeInvisibleTiles_(tileRange, z);
   this.renderedMapResolution_ = mapResolution;
 };

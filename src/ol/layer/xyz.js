@@ -43,12 +43,12 @@ goog.inherits(ol.tilegrid.XYZ, ol.TileGrid);
 /**
  * @inheritDoc
  */
-ol.tilegrid.XYZ.prototype.forEachTileCoordParentTileBounds =
+ol.tilegrid.XYZ.prototype.forEachTileCoordParentTileRange =
     function(tileCoord, callback, opt_obj) {
   var x = tileCoord.x;
   var y = tileCoord.y;
   var z = tileCoord.z;
-  var tileBounds;
+  var tileRange;
   while (true) {
     z -= 1;
     if (z < 0) {
@@ -56,8 +56,8 @@ ol.tilegrid.XYZ.prototype.forEachTileCoordParentTileBounds =
     }
     x = Math.floor(x / 2);
     y = Math.floor(y / 2);
-    tileBounds = new ol.TileBounds(x, y, x, y);
-    if (callback.call(opt_obj, z, tileBounds)) {
+    tileRange = new ol.TileRange(x, y, x, y);
+    if (callback.call(opt_obj, z, tileRange)) {
       break;
     }
   }
