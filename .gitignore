@@ -1,5 +1,4 @@
 /bin/plovr*.jar
-/build/ol.js
 /build/ol3.js
 /build/ol3-compiled.js
 /build/webgl-debug.js

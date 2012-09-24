@@ -1,5 +1,4 @@
 PLOVR_JAR=bin/plovr-4b3caf2b7d84.jar
-SRC_OL = $(shell find src/ol -name \*.js)
 SRC_OL3 = $(shell find externs src/ol3 -name \*.js)
 TARGETS = $(shell find demos -name advanced-optimizations.js -o -name simple-optimizations.js)
 comma := ,
@@ -10,13 +9,7 @@ space := $(empty) $(empty)
 all: build demos
 
 .PHONY: build
-build: build/ol.js build/ol3-compiled.js build/webgl-debug.js
-
-build/ol.js: $(PLOVR_JAR) $(SRC_OL3) base.json \
-	build/ol.json src/ol/ol.js
-	java -jar $(PLOVR_JAR) build build/ol.json >$@
-	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
-	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
+build: build/ol3-compiled.js build/webgl-debug.js
 
 build/ol3-compiled.js: $(PLOVR_JAR) $(SRC_OL3) base.json \
 	build/ol3.json build/ol3.js
@@ -28,31 +21,18 @@ build/ol3.js: $(SRC_OL3)
 	( echo "goog.require('goog.dom');" ; find src/ol3 -name \*.js | xargs grep -rh ^goog.provide | sort | uniq | sed -e 's/provide/require/g' ) > $@
 
 .PHONY: demos
-demos: demos/api1 demos/proj4js demos/side-by-side demos/two-layers
-
-.PHONY: demos/api1
-demos/api1: \
-	build/ol.js \
-	demos/api1/build.html \
-	demos/api1/debug.html
-
-demos/api1/build.html: demos/api1/index.html.in
-	sed -e 's|@SRC@|../../build/ol.js|' $< > $@
-
-demos/api1/debug.html: demos/api1/index.html.in
-	sed -e 's|@SRC@|http://localhost:9810/compile?id=ol|' $< > $@
+demos: demos/proj4js demos/side-by-side demos/two-layers
 
 .PHONY: demos/proj4js
 demos/proj4js: \
-	build/ol.js \
 	demos/proj4js/build.html \
 	demos/proj4js/debug.html
 
 demos/proj4js/build.html: demos/proj4js/index.html.in
-	sed -e 's|@SRC@|../../build/ol.js|' $< > $@
+	sed -e 's|@SRC@|../../build/ol3.js|' $< > $@
 
 demos/proj4js/debug.html: demos/proj4js/index.html.in
-	sed -e 's|@SRC@|http://localhost:9810/compile?id=ol|' $< > $@
+	sed -e 's|@SRC@|http://localhost:9810/compile?id=ol3|' $< > $@
 
 .PHONY: demos/side-by-side
 demos/side-by-side: \
@@ -116,11 +96,11 @@ demos/two-layers/simple-optimizations.js: $(PLOVR_JAR) $(SRC_OL3) base.json \
 
 .PHONY: serve
 serve: $(PLOVR_JAR)
-	java -jar $(PLOVR_JAR) serve build/ol.json build/ol3.json demos/*/*.json
+	java -jar $(PLOVR_JAR) serve build/ol3.json demos/*/*.json
 
 .PHONY: lint
 lint:
-	gjslint --strict --limited_doc_files=$(subst $(space),$(comma),$(shell find externs -name \*.js)) $(SRC_OL3) $(SRC_OL) $(filter-out $(TARGETS),$(shell find demos -name \*.js))
+	gjslint --strict --limited_doc_files=$(subst $(space),$(comma),$(shell find externs -name \*.js)) $(SRC_OL3) $(filter-out $(TARGETS),$(shell find demos -name \*.js))
 
 build/webgl-debug.js:
 	curl https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/sdk/debug/webgl-debug.js > $@
@@ -130,7 +110,6 @@ $(PLOVR_JAR):
 
 clean:
 	rm -f build/all.js
-	rm -f build/ol.js
 	rm -f build/ol3.js
 	rm -f build/ol3-compiled.js
 	rm -f demos/*/*.html
