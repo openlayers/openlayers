@@ -163,7 +163,7 @@ h6 {
     display: none;
 }
 
-dt.tag-source dd.tag-source {
+dt.tag-source, dd.tag-source {
     display: none;
 }
 
