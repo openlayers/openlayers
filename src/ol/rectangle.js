@@ -42,24 +42,6 @@ ol.Rectangle = function(minX, minY, maxX, maxY) {
 
 
 /**
- * @return {ol.Rectangle} Clone.
- */
-ol.Rectangle.prototype.clone = function() {
-  return new ol.Rectangle(this.minX, this.minY, this.maxX, this.maxY);
-};
-
-
-/**
- * @param {ol.Coordinate} coordinate Coordinate.
- * @return {boolean} Contains.
- */
-ol.Rectangle.prototype.contains = function(coordinate) {
-  return this.minX <= coordinate.x && coordinate.x <= this.maxX &&
-      this.minY <= coordinate.y && coordinate.y <= this.maxY;
-};
-
-
-/**
  * @return {ol.Coordinate} Center.
  */
 ol.Rectangle.prototype.getCenter = function() {

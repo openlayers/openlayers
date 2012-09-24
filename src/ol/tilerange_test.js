@@ -2,18 +2,6 @@ goog.require('goog.testing.jsunit');
 goog.require('ol.TileRange');
 
 
-function testClone() {
-  var tileRange = new ol.TileRange(1, 2, 3, 4);
-  var clonedTileRange = tileRange.clone();
-  assertTrue(clonedTileRange instanceof ol.TileRange);
-  assertFalse(clonedTileRange === tileRange);
-  assertEquals(tileRange.minX, clonedTileRange.minX);
-  assertEquals(tileRange.minY, clonedTileRange.minY);
-  assertEquals(tileRange.maxX, clonedTileRange.maxX);
-  assertEquals(tileRange.maxY, clonedTileRange.maxY);
-}
-
-
 function testContains() {
   var tileRange = new ol.TileRange(1, 1, 3, 3);
   assertFalse(tileRange.contains(new ol.TileCoord(0, 0, 0)));
@@ -70,7 +58,7 @@ function testForEachTileCoord() {
 
   var tileCoords = [];
   tileRange.forEachTileCoord(5, function(tileCoord) {
-    tileCoords.push(tileCoord.clone());
+    tileCoords.push(new ol.TileCoord(tileCoord.z, tileCoord.x, tileCoord.y));
   });
 
   assertEquals(4, tileCoords.length);

@@ -3,15 +3,38 @@ goog.require('ol.Extent');
 goog.require('ol.Projection');
 
 
-function testClone() {
+function testContainsPositive() {
   var extent = new ol.Extent(1, 2, 3, 4);
-  var clonedExtent = extent.clone();
-  assertTrue(clonedExtent instanceof ol.Extent);
-  assertFalse(clonedExtent === extent);
-  assertEquals(extent.minX, clonedExtent.minX);
-  assertEquals(extent.minY, clonedExtent.minY);
-  assertEquals(extent.maxX, clonedExtent.maxX);
-  assertEquals(extent.maxY, clonedExtent.maxY);
+  assertTrue(extent.contains(new ol.Coordinate(1, 2)));
+  assertTrue(extent.contains(new ol.Coordinate(1, 3)));
+  assertTrue(extent.contains(new ol.Coordinate(1, 4)));
+  assertTrue(extent.contains(new ol.Coordinate(2, 2)));
+  assertTrue(extent.contains(new ol.Coordinate(2, 3)));
+  assertTrue(extent.contains(new ol.Coordinate(2, 4)));
+  assertTrue(extent.contains(new ol.Coordinate(3, 2)));
+  assertTrue(extent.contains(new ol.Coordinate(3, 3)));
+  assertTrue(extent.contains(new ol.Coordinate(3, 4)));
+}
+
+
+function testContainsNegative() {
+  var extent = new ol.Extent(1, 2, 3, 4);
+  assertFalse(extent.contains(new ol.Coordinate(0, 1)));
+  assertFalse(extent.contains(new ol.Coordinate(0, 2)));
+  assertFalse(extent.contains(new ol.Coordinate(0, 3)));
+  assertFalse(extent.contains(new ol.Coordinate(0, 4)));
+  assertFalse(extent.contains(new ol.Coordinate(0, 5)));
+  assertFalse(extent.contains(new ol.Coordinate(1, 1)));
+  assertFalse(extent.contains(new ol.Coordinate(1, 5)));
+  assertFalse(extent.contains(new ol.Coordinate(2, 1)));
+  assertFalse(extent.contains(new ol.Coordinate(2, 5)));
+  assertFalse(extent.contains(new ol.Coordinate(3, 1)));
+  assertFalse(extent.contains(new ol.Coordinate(3, 5)));
+  assertFalse(extent.contains(new ol.Coordinate(4, 1)));
+  assertFalse(extent.contains(new ol.Coordinate(4, 2)));
+  assertFalse(extent.contains(new ol.Coordinate(4, 3)));
+  assertFalse(extent.contains(new ol.Coordinate(4, 4)));
+  assertFalse(extent.contains(new ol.Coordinate(4, 5)));
 }
 
 

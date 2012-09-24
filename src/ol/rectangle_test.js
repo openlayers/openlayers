@@ -11,41 +11,6 @@ function testCenter() {
 }
 
 
-function testContainsPositive() {
-  var rectangle = new ol.Rectangle(1, 2, 3, 4);
-  assertTrue(rectangle.contains(new ol.Coordinate(1, 2)));
-  assertTrue(rectangle.contains(new ol.Coordinate(1, 3)));
-  assertTrue(rectangle.contains(new ol.Coordinate(1, 4)));
-  assertTrue(rectangle.contains(new ol.Coordinate(2, 2)));
-  assertTrue(rectangle.contains(new ol.Coordinate(2, 3)));
-  assertTrue(rectangle.contains(new ol.Coordinate(2, 4)));
-  assertTrue(rectangle.contains(new ol.Coordinate(3, 2)));
-  assertTrue(rectangle.contains(new ol.Coordinate(3, 3)));
-  assertTrue(rectangle.contains(new ol.Coordinate(3, 4)));
-}
-
-
-function testContainsNegative() {
-  var rectangle = new ol.Rectangle(1, 2, 3, 4);
-  assertFalse(rectangle.contains(new ol.Coordinate(0, 1)));
-  assertFalse(rectangle.contains(new ol.Coordinate(0, 2)));
-  assertFalse(rectangle.contains(new ol.Coordinate(0, 3)));
-  assertFalse(rectangle.contains(new ol.Coordinate(0, 4)));
-  assertFalse(rectangle.contains(new ol.Coordinate(0, 5)));
-  assertFalse(rectangle.contains(new ol.Coordinate(1, 1)));
-  assertFalse(rectangle.contains(new ol.Coordinate(1, 5)));
-  assertFalse(rectangle.contains(new ol.Coordinate(2, 1)));
-  assertFalse(rectangle.contains(new ol.Coordinate(2, 5)));
-  assertFalse(rectangle.contains(new ol.Coordinate(3, 1)));
-  assertFalse(rectangle.contains(new ol.Coordinate(3, 5)));
-  assertFalse(rectangle.contains(new ol.Coordinate(4, 1)));
-  assertFalse(rectangle.contains(new ol.Coordinate(4, 2)));
-  assertFalse(rectangle.contains(new ol.Coordinate(4, 3)));
-  assertFalse(rectangle.contains(new ol.Coordinate(4, 4)));
-  assertFalse(rectangle.contains(new ol.Coordinate(4, 5)));
-}
-
-
 function testIntersects() {
 
   var rectangle1 = new ol.Rectangle(50, 50, 100, 100);

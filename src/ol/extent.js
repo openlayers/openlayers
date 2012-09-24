@@ -41,10 +41,12 @@ ol.Extent.boundingExtent = function(var_args) {
 
 
 /**
- * @return {ol.Extent} Extent.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @return {boolean} Contains.
  */
-ol.Extent.prototype.clone = function() {
-  return new ol.Extent(this.minX, this.minY, this.maxX, this.maxY);
+ol.Extent.prototype.contains = function(coordinate) {
+  return this.minX <= coordinate.x && coordinate.x <= this.maxX &&
+      this.minY <= coordinate.y && coordinate.y <= this.maxY;
 };
 
 

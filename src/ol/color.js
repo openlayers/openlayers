@@ -46,11 +46,3 @@ ol.Color.createFromString = function(str, opt_a) {
   var a = opt_a || 255;
   return new ol.Color(rgb[0], rgb[1], rgb[2], a);
 };
-
-
-/**
- * @return {ol.Color} Clone.
- */
-ol.Color.prototype.clone = function() {
-  return new ol.Color(this.r, this.g, this.b, this.a);
-};

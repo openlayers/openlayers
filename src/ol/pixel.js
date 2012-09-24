@@ -14,11 +14,3 @@ ol.Pixel = function(x, y) {
   goog.base(this, x, y);
 };
 goog.inherits(ol.Pixel, goog.math.Coordinate);
-
-
-/**
- * @return {ol.Pixel} Clone.
- */
-ol.Pixel.prototype.clone = function() {
-  return new ol.Pixel(this.x, this.y);
-};

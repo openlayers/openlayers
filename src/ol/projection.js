@@ -350,7 +350,7 @@ ol.Projection.identityTransform = function(point) {
  * @return {ol.Coordinate} Point.
  */
 ol.Projection.cloneTransform = function(point) {
-  return point.clone();
+  return new ol.Coordinate(point.x, point.y);
 };
 
 
