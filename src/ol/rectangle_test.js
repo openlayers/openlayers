@@ -11,18 +11,6 @@ function testCenter() {
 }
 
 
-function testClone() {
-  var rectangle = new ol.Rectangle(1, 2, 3, 4);
-  var clonedRectangle = rectangle.clone();
-  assertTrue(clonedRectangle instanceof ol.Rectangle);
-  assertFalse(clonedRectangle === rectangle);
-  assertEquals(rectangle.minX, clonedRectangle.minX);
-  assertEquals(rectangle.minY, clonedRectangle.minY);
-  assertEquals(rectangle.maxX, clonedRectangle.maxX);
-  assertEquals(rectangle.maxY, clonedRectangle.maxY);
-}
-
-
 function testContainsPositive() {
   var rectangle = new ol.Rectangle(1, 2, 3, 4);
   assertTrue(rectangle.contains(new ol.Coordinate(1, 2)));
