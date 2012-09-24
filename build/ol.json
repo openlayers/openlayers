@@ -4,7 +4,14 @@
 
   "inherits": "../base.json",
 
-  "inputs": "build/ol-all.js",
+  "inputs": [
+    "build/ol-all.js",
+    "exports/ol/collection.js",
+    "exports/ol/coordinate.js",
+    "exports/ol/extent.js",
+    "exports/ol/object.js",
+    "exports/ol/projection.js"
+  ],
 
   "output-wrapper": "(function(){%output%})();"
 
