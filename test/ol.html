@@ -22,7 +22,7 @@
 //
 //   - mode
 //     which mode of compilation should be applied. Common values for this are
-//     RAW, SIMPLE or ADVANCED. If not provided, SIMPLE is used.
+//     RAW, SIMPLE or ADVANCED. If not provided, RAW is used.
 (function(doc, l){
     var hostRegex = /[\\?&]host=([^&#]*)/,
         modeRegex = /[\\?&]mode=([^&#]*)/,
@@ -35,7 +35,7 @@
                 : 'localhost:9810',
         mode = (modeResult && modeResult[1])
             ? decodeURIComponent(modeResult[1])
-            : 'SIMPLE',
+            : 'RAW',
 
         // Create the script tag which includes the derived variables from above
         script = '<sc' + 'ript type="text/javascript" '
@@ -74,30 +74,7 @@
   <script type="text/javascript" src="jasmine-extensions.js"></script>
 
   <!-- include spec files here... -->
-  <script type="text/javascript" src="spec/ol/UnreferencedBounds.test.js"></script>
-  <script type="text/javascript" src="spec/ol/Projection.test.js"></script>
-  <script type="text/javascript" src="spec/ol/Bounds.test.js"></script>
-  <script type="text/javascript" src="spec/ol/control/Control.test.js"></script>
-  <script type="text/javascript" src="spec/ol/Loc.test.js"></script>
-  <script type="text/javascript" src="spec/ol/Tile.test.js"></script>
-  <script type="text/javascript" src="spec/ol/TileSet.test.js"></script>
-  <script type="text/javascript" src="spec/ol/TileCache.test.js"></script>
-  <script type="text/javascript" src="spec/ol/geom/Point.test.js"></script>
-  <script type="text/javascript" src="spec/ol/geom/MultiPoint.test.js"></script>
-  <script type="text/javascript" src="spec/ol/geom/LineString.test.js"></script>
-  <script type="text/javascript" src="spec/ol/geom/MultiLineString.test.js"></script>
-  <script type="text/javascript" src="spec/ol/geom/Collection.test.js"></script>
-  <script type="text/javascript" src="spec/ol/handler/Drag.test.js"></script>
-  <script type="text/javascript" src="spec/ol/handler/MouseWheel.test.js"></script>
-  <script type="text/javascript" src="spec/ol/handler/Click.test.js"></script>
-  <script type="text/javascript" src="spec/ol/layer/TileLayer.test.js"></script>
-  <script type="text/javascript" src="spec/ol/layer/XYZ.test.js"></script>
-  <script type="text/javascript" src="spec/ol/layer/WMS.test.js"></script>
-  <script type="text/javascript" src="spec/ol/Feature.test.js"></script>
-  <script type="text/javascript" src="spec/ol/renderer/WebGL.test.js"></script>
-  <script type="text/javascript" src="spec/ol/renderer/TileLayerRenderer.test.js"></script>
-  <script type="text/javascript" src="spec/ol/Popup.test.js"></script>
-
+  <script type="text/javascript" src="spec/ol/object.test.js"></script>
 
   <script type="text/javascript">
     (function() {
