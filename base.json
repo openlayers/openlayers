@@ -36,8 +36,7 @@
   "externs": [
     "externs/bingmaps.js",
     "externs/proj4js.js",
-    "externs/tilejson.js",
-    "externs/webgl-debug.js"
+    "externs/tilejson.js"
   ],
 
   "level": "VERBOSE",

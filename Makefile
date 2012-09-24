@@ -9,7 +9,7 @@ space := $(empty) $(empty)
 all: build demos
 
 .PHONY: build
-build: build/ol-compiled.js build/webgl-debug.js
+build: build/ol-compiled.js
 
 build/ol-compiled.js: $(PLOVR_JAR) $(SRC) base.json \
 	build/ol.json build/ol.js
@@ -102,9 +102,6 @@ serve: $(PLOVR_JAR)
 lint:
 	gjslint --strict --limited_doc_files=$(subst $(space),$(comma),$(shell find externs -name \*.js)) $(SRC) $(filter-out $(TARGETS),$(shell find demos -name \*.js))
 
-build/webgl-debug.js:
-	curl https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/sdk/debug/webgl-debug.js > $@
-
 $(PLOVR_JAR):
 	curl http://plovr.googlecode.com/files/$(notdir $@) > $@
 
@@ -118,4 +115,3 @@ clean:
 
 reallyclean: clean
 	rm -f $(PLOVR_JAR)
-	rm -f build/webgl-debug.js
