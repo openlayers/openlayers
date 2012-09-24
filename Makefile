@@ -1,3 +1,4 @@
+JSDOC = jsdoc
 PLOVR_JAR = bin/plovr-4b3caf2b7d84.jar
 SRC = $(shell find exports externs src/ol -name \*.js)
 TARGETS = $(shell find demos -name advanced-optimizations.js -o -name simple-optimizations.js)
@@ -107,7 +108,7 @@ $(PLOVR_JAR):
 
 .PHONY: doc
 doc:
-	jsdoc -t doc/template -r src -d build/apidoc
+	$(JSDOC) -t doc/template -r src -d build/apidoc
 
 clean:
 	rm -f build/all.js
