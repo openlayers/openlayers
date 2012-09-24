@@ -105,6 +105,10 @@ lint:
 $(PLOVR_JAR):
 	curl http://plovr.googlecode.com/files/$(notdir $@) > $@
 
+.PHONY: doc
+doc:
+	jsdoc -t doc/template -r src -d build/apidoc
+
 clean:
 	rm -f build/all.js
 	rm -f build/ol.js
@@ -112,6 +116,7 @@ clean:
 	rm -f demos/*/*.html
 	rm -f demos/*/advanced-optimizations.*
 	rm -f demos/*/simple-optimizations.*
+	rm -rf build/apidoc
 
 reallyclean: clean
 	rm -f $(PLOVR_JAR)
