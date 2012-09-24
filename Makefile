@@ -9,15 +9,15 @@ space := $(empty) $(empty)
 all: build demos
 
 .PHONY: build
-build: build/ol-compiled.js
+build: build/ol.js
 
-build/ol-compiled.js: $(PLOVR_JAR) $(SRC) base.json \
-	build/ol.json build/ol.js
+build/ol.js: $(PLOVR_JAR) $(SRC) base.json \
+	build/ol.json build/ol-all.js
 	java -jar $(PLOVR_JAR) build build/ol.json >$@
 	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
 
-build/ol.js: $(SRC)
+build/ol-all.js: $(SRC)
 	( echo "goog.require('goog.dom');" ; find src/ol -name \*.js | xargs grep -rh ^goog.provide | sort | uniq | sed -e 's/provide/require/g' ) > $@
 
 .PHONY: demos

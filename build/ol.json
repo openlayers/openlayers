@@ -4,7 +4,7 @@
 
   "inherits": "../base.json",
 
-  "inputs": "build/ol.js",
+  "inputs": "build/ol-all.js",
 
   "output-wrapper": "(function(){%output%})();"
 

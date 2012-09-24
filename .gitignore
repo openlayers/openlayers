@@ -1,6 +1,6 @@
 /bin/plovr*.jar
 /build/ol.js
-/build/ol-compiled.js
+/build/ol-all.js
 /build/proj4js-combined.js
 /build/apidoc
 /demos/*/advanced-optimizations.*
