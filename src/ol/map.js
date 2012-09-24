@@ -31,7 +31,7 @@ goog.require('ol.Collection');
 goog.require('ol.Color');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
-goog.require('ol.Interaction');
+goog.require('ol.interaction.Interaction');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.Object');
 goog.require('ol.Pixel');
@@ -494,7 +494,7 @@ ol.Map.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
   var type = opt_type || browserEvent.type;
   var mapBrowserEvent = new ol.MapBrowserEvent(type, this, browserEvent);
   var interactions = this.getInteractions();
-  var interactionsArray = /** @type {Array.<ol.Interaction>} */
+  var interactionsArray = /** @type {Array.<ol.interaction.Interaction>} */
       interactions.getArray();
   goog.array.every(interactionsArray, function(interaction) {
     interaction.handleMapBrowserEvent(mapBrowserEvent);

@@ -1,7 +1,7 @@
 goog.provide('ol.interaction.DblClickZoom');
 
 goog.require('goog.events.EventType');
-goog.require('ol.Interaction');
+goog.require('ol.interaction.Interaction');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.interaction.Constraints');
 
@@ -9,13 +9,13 @@ goog.require('ol.interaction.Constraints');
 
 /**
  * @constructor
- * @extends {ol.Interaction}
+ * @extends {ol.interaction.Interaction}
  * @param {ol.interaction.Constraints} constraints Constraints.
  */
 ol.interaction.DblClickZoom = function(constraints) {
   goog.base(this, constraints);
 };
-goog.inherits(ol.interaction.DblClickZoom, ol.Interaction);
+goog.inherits(ol.interaction.DblClickZoom, ol.interaction.Interaction);
 
 
 /**

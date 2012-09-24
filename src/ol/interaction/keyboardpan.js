@@ -2,14 +2,14 @@ goog.provide('ol.interaction.KeyboardPan');
 
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler.EventType');
-goog.require('ol.Interaction');
+goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Constraints');
 
 
 
 /**
  * @constructor
- * @extends {ol.Interaction}
+ * @extends {ol.interaction.Interaction}
  * @param {ol.interaction.Constraints} constraints Constraints.
  * @param {number} pixelDelta Pixel delta.
  */
@@ -24,7 +24,7 @@ ol.interaction.KeyboardPan = function(constraints, pixelDelta) {
   this.pixelDelta_ = pixelDelta;
 
 };
-goog.inherits(ol.interaction.KeyboardPan, ol.Interaction);
+goog.inherits(ol.interaction.KeyboardPan, ol.interaction.Interaction);
 
 
 /**

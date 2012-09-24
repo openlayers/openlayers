@@ -2,13 +2,13 @@
 
 goog.provide('ol.interaction.Keyboard');
 
-goog.require('ol.Interaction');
+goog.require('ol.interaction.Interaction');
 
 
 
 /**
  * @constructor
- * @extends {ol.Interaction}
+ * @extends {ol.interaction.Interaction}
  */
 ol.interaction.Keyboard = function() {
 
@@ -21,7 +21,7 @@ ol.interaction.Keyboard = function() {
   this.charCodeCallbacks_ = {};
 
 };
-goog.inherits(ol.interaction.Keyboard, ol.Interaction);
+goog.inherits(ol.interaction.Keyboard, ol.interaction.Interaction);
 
 
 /**

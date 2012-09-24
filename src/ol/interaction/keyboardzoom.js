@@ -2,20 +2,20 @@ goog.provide('ol.interaction.KeyboardZoom');
 
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler.EventType');
-goog.require('ol.Interaction');
+goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.ResolutionConstraintType');
 
 
 
 /**
  * @constructor
- * @extends {ol.Interaction}
+ * @extends {ol.interaction.Interaction}
  * @param {ol.interaction.Constraints} constraints Constraints.
  */
 ol.interaction.KeyboardZoom = function(constraints) {
   goog.base(this, constraints);
 };
-goog.inherits(ol.interaction.KeyboardZoom, ol.Interaction);
+goog.inherits(ol.interaction.KeyboardZoom, ol.interaction.Interaction);
 
 
 /**

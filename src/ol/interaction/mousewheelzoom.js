@@ -9,13 +9,13 @@ goog.require('ol.interaction.Constraints');
 
 /**
  * @constructor
- * @extends {ol.Interaction}
+ * @extends {ol.interaction.Interaction}
  * @param {ol.interaction.Constraints} constraints Constraints.
  */
 ol.interaction.MouseWheelZoom = function(constraints) {
   goog.base(this, constraints);
 };
-goog.inherits(ol.interaction.MouseWheelZoom, ol.Interaction);
+goog.inherits(ol.interaction.MouseWheelZoom, ol.interaction.Interaction);
 
 
 /**
