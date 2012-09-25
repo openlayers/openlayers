@@ -459,12 +459,6 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
       (mapCenter.y - framebufferExtent.minY) /
           (framebufferExtent.maxY - framebufferExtent.minY),
       0);
-  goog.vec.Mat4.scale(this.matrix_,
-      (mapExtent.maxX - mapExtent.minX) /
-          (framebufferExtent.maxX - framebufferExtent.minX),
-      (mapExtent.maxY - mapExtent.minY) /
-          (framebufferExtent.maxY - framebufferExtent.minY),
-      1);
   if (goog.isDef(mapRotation)) {
     goog.vec.Mat4.rotate(this.matrix_,
         mapRotation,
@@ -472,6 +466,12 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
         0,
         1);
   }
+  goog.vec.Mat4.scale(this.matrix_,
+      (mapExtent.maxX - mapExtent.minX) /
+          (framebufferExtent.maxX - framebufferExtent.minX),
+      (mapExtent.maxY - mapExtent.minY) /
+          (framebufferExtent.maxY - framebufferExtent.minY),
+      1);
   goog.vec.Mat4.translate(this.matrix_,
       -0.5,
       -0.5,
