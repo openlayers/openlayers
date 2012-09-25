@@ -138,6 +138,9 @@ serve: $(PLOVR_JAR) build/ol-all.js
 lint:
 	gjslint --strict --limited_doc_files=$(subst $(space),$(comma),$(shell find externs -name \*.js)) $(SRC) $(filter-out $(TARGETS),$(shell find demos -name \*.js))
 
+.PHONY: plovr
+plovr: $(PLOVR_JAR)
+
 $(PLOVR_JAR):
 	curl http://plovr.googlecode.com/files/$(notdir $@) > $@
 
