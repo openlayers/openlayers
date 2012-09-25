@@ -92,6 +92,12 @@ ol.renderer.Map = function(container, map) {
         this.handleSizeChanged, false, this)
   ];
 
+  var viewport = map.getViewport();
+  goog.events.listen(viewport, goog.events.EventType.MOUSEDOWN,
+      goog.events.Event.preventDefault);
+  goog.events.listen(viewport, goog.events.EventType.TOUCHSTART,
+      goog.events.Event.preventDefault);
+
 };
 goog.inherits(ol.renderer.Map, goog.Disposable);
 
