@@ -26,7 +26,11 @@ Note that appending `?mode=RAW` doesn't work with `file://` URLs, which is why y
 
 ## Run tests
 
-Run the plovr web server (see above), then open <http://localhost:9810/> in your browser and select *List of tests* or *Test runner*.
+Run the plovr web server (see above), and either open the `test/ol.html` file
+in the browser (e.g. <http://localhost:8000/test/ol.html>), or run `make test`
+on the console (headless testing with PhantomJS).
+
+See also the test-specific [readme](https://github.com/openlayers/ol3/tree/master/test).
 
 ## Run the linter
 
