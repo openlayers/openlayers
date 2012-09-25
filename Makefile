@@ -31,23 +31,23 @@ demos: demos/full-screen demos/proj4js demos/side-by-side demos/two-layers
 .PHONY: demos/proj4js
 demos/proj4js: \
 	demos/proj4js/build.html \
-	demos/proj4js/debug.html
+	demos/proj4js/index.html
 
-demos/proj4js/build.html: demos/proj4js/index.html.in
+demos/proj4js/build.html: demos/proj4js/template.html.in
 	sed -e 's|@SRC@|../../build/ol.js|' $< > $@
 
-demos/proj4js/debug.html: demos/proj4js/index.html.in
+demos/proj4js/index.html: demos/proj4js/template.html.in
 	sed -e 's|@SRC@|http://localhost:9810/compile?id=ol|' $< > $@
 
 .PHONY: demos/full-screen
 demos/full-screen: \
 	demos/full-screen/advanced-optimizations.html \
 	demos/full-screen/advanced-optimizations.js \
-	demos/full-screen/debug.html \
+	demos/full-screen/index.html \
 	demos/full-screen/simple-optimizations.html \
 	demos/full-screen/simple-optimizations.js
 
-demos/full-screen/advanced-optimizations.html: demos/full-screen/index.html.in
+demos/full-screen/advanced-optimizations.html: demos/full-screen/template.html.in
 	sed -e 's|@SRC@|advanced-optimizations.js|' $< > $@
 
 demos/full-screen/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
@@ -56,10 +56,10 @@ demos/full-screen/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
 	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
 
-demos/full-screen/debug.html: demos/full-screen/index.html.in
+demos/full-screen/index.html: demos/full-screen/template.html.in
 	sed -e 's|@SRC@|../loader.js?id=demo-full-screen|' $< > $@
 
-demos/full-screen/simple-optimizations.html: demos/full-screen/index.html.in
+demos/full-screen/simple-optimizations.html: demos/full-screen/template.html.in
 	sed -e 's|@SRC@|simple-optimizations.js|' $< > $@
 
 # FIXME invoke plovr directly, rather than assuming that the server is running
@@ -74,11 +74,11 @@ demos/full-screen/simple-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
 demos/side-by-side: \
 	demos/side-by-side/advanced-optimizations.html \
 	demos/side-by-side/advanced-optimizations.js \
-	demos/side-by-side/debug.html \
+	demos/side-by-side/index.html \
 	demos/side-by-side/simple-optimizations.html \
 	demos/side-by-side/simple-optimizations.js
 
-demos/side-by-side/advanced-optimizations.html: demos/side-by-side/index.html.in
+demos/side-by-side/advanced-optimizations.html: demos/side-by-side/template.html.in
 	sed -e 's|@SRC@|advanced-optimizations.js|' $< > $@
 
 demos/side-by-side/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
@@ -87,10 +87,10 @@ demos/side-by-side/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
 	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
 
-demos/side-by-side/debug.html: demos/side-by-side/index.html.in
+demos/side-by-side/index.html: demos/side-by-side/template.html.in
 	sed -e 's|@SRC@|../loader.js?id=demo-side-by-side|' $< > $@
 
-demos/side-by-side/simple-optimizations.html: demos/side-by-side/index.html.in
+demos/side-by-side/simple-optimizations.html: demos/side-by-side/template.html.in
 	sed -e 's|@SRC@|simple-optimizations.js|' $< > $@
 
 # FIXME invoke plovr directly, rather than assuming that the server is running
@@ -104,11 +104,11 @@ demos/side-by-side/simple-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
 demos/two-layers: \
 	demos/two-layers/advanced-optimizations.html \
 	demos/two-layers/advanced-optimizations.js \
-	demos/two-layers/debug.html \
+	demos/two-layers/index.html \
 	demos/two-layers/simple-optimizations.html \
 	demos/two-layers/simple-optimizations.js
 
-demos/two-layers/advanced-optimizations.html: demos/two-layers/index.html.in
+demos/two-layers/advanced-optimizations.html: demos/two-layers/template.html.in
 	sed -e 's|@SRC@|advanced-optimizations.js|' $< > $@
 
 demos/two-layers/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
@@ -117,10 +117,10 @@ demos/two-layers/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
 	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
 
-demos/two-layers/debug.html: demos/two-layers/index.html.in
+demos/two-layers/index.html: demos/two-layers/template.html.in
 	sed -e 's|@SRC@|../loader.js?id=demo-two-layers|' $< > $@
 
-demos/two-layers/simple-optimizations.html: demos/two-layers/index.html.in
+demos/two-layers/simple-optimizations.html: demos/two-layers/template.html.in
 	sed -e 's|@SRC@|simple-optimizations.js|' $< > $@
 
 # FIXME invoke plovr directly, rather than assuming that the server is running
