@@ -14,6 +14,7 @@ goog.require('goog.asserts');
 goog.require('goog.events.EventType');
 goog.require('goog.net.jsloader');
 goog.require('goog.string');
+goog.require('ol.TileCoverageArea');
 goog.require('ol.TileLayer');
 goog.require('ol.TileStore');
 goog.require('ol.TileUrlFunction');
