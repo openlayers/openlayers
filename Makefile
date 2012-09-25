@@ -57,7 +57,7 @@ demos/full-screen/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
 
 demos/full-screen/debug.html: demos/full-screen/index.html.in
-	sed -e 's|@SRC@|http://localhost:9810/compile?id=demo-full-screen|' $< > $@
+	sed -e 's|@SRC@|../loader.js?id=demo-full-screen|' $< > $@
 
 demos/full-screen/simple-optimizations.html: demos/full-screen/index.html.in
 	sed -e 's|@SRC@|simple-optimizations.js|' $< > $@
@@ -88,7 +88,7 @@ demos/side-by-side/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
 
 demos/side-by-side/debug.html: demos/side-by-side/index.html.in
-	sed -e 's|@SRC@|http://localhost:9810/compile?id=demo-side-by-side|' $< > $@
+	sed -e 's|@SRC@|../loader.js?id=demo-side-by-side|' $< > $@
 
 demos/side-by-side/simple-optimizations.html: demos/side-by-side/index.html.in
 	sed -e 's|@SRC@|simple-optimizations.js|' $< > $@
@@ -118,7 +118,7 @@ demos/two-layers/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
 
 demos/two-layers/debug.html: demos/two-layers/index.html.in
-	sed -e 's|@SRC@|http://localhost:9810/compile?id=demo-two-layers|' $< > $@
+	sed -e 's|@SRC@|../loader.js?id=demo-two-layers|' $< > $@
 
 demos/two-layers/simple-optimizations.html: demos/two-layers/index.html.in
 	sed -e 's|@SRC@|simple-optimizations.js|' $< > $@
