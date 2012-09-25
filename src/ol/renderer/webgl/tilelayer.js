@@ -327,10 +327,8 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
 
   if (!goog.isNull(this.renderedTileRange_) &&
       this.renderedTileRange_.equals(tileRange)) {
-    this.logger.info('skipping re-render');
     framebufferExtent = this.renderedFramebufferExtent_;
   } else {
-    this.logger.info('re-render');
 
     var tileRangeSize = tileRange.getSize();
     var tileSize = tileGrid.getTileSize();
