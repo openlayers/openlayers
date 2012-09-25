@@ -377,7 +377,7 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
   var tilesToDrawByZ = {};
 
   /**
-   * @type {Array.<ol.Tile>}
+   * @type {Array.<Image>}
    */
   var imagesToLoad = [];
 
@@ -387,6 +387,7 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
     var tile = tileStore.getTile(tileCoord);
 
     if (goog.isNull(tile)) {
+      // FIXME - consider returning here as this is outside the store's extent
     } else if (tile.getState() == ol.TileState.LOADED) {
       if (mapRenderer.isImageTextureLoaded(tile.getImage())) {
         tilesToDrawByZ[z][tileCoord.toString()] = tile;
