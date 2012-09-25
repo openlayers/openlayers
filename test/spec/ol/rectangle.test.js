@@ -95,7 +95,7 @@ describe('ol.Rectangle', function() {
   describe('toString', function() {
     it('returns the expected string', function() {
       var rectangle = new ol.Rectangle(0, 1, 2, 3);
-      expect(1, 2, 3)', rectangle.toString()).toEqual('(0);
+      expect(rectangle.toString()).toEqual('(0, 1, 2, 3)');
     });
   });
 
