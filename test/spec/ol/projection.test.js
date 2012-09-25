@@ -82,7 +82,7 @@ describe('ol.Projection', function() {
       expect(point).not.toBeUndefined();
       expect(point).not.toBeNull();
       expect(point.x).toRoughlyEqual(-626172.13571216376, 1e-9);
-      expect(point.y).toRoughlyEqual(6887893.4928337997, 1e-9);
+      expect(point.y).toRoughlyEqual(6887893.4928337997, 1e-8);
     });
   });
 

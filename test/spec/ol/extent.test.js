@@ -54,7 +54,7 @@ describe('ol.Extent', function() {
       expect(destinationExtent).not.toBeNull();
       // FIXME check values with third-party tool
       expect(destinationExtent.minX).toRoughlyEqual(-1669792.3618991037, 1e-9);
-      expect(destinationExtent.minY).toRoughlyEqual(-3503549.843504376, 1e-9);
+      expect(destinationExtent.minY).toRoughlyEqual(-3503549.843504376, 1e-8);
       expect(destinationExtent.maxX).toRoughlyEqual(5009377.085697311, 1e-9);
       expect(destinationExtent.maxY).toRoughlyEqual(8399737.889818361, 1e-9);
     });
