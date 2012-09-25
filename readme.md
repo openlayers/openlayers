@@ -1,5 +1,7 @@
 # OpenLayers 3
 
+![Travis CI Status](https://secure.travis-ci.org/openlayers/ol3.png)
+
 ## Build it
 
 Run make:
