@@ -1,7 +1,7 @@
 goog.provide('ol.interaction.DblClickZoom');
 
-goog.require('goog.events.EventType');
 goog.require('ol.MapBrowserEvent');
+goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.interaction.Constraints');
 goog.require('ol.interaction.Interaction');
 
@@ -24,8 +24,8 @@ goog.inherits(ol.interaction.DblClickZoom, ol.interaction.Interaction);
 ol.interaction.DblClickZoom.prototype.handleMapBrowserEvent =
     function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
-  if (browserEvent.type == goog.events.EventType.DBLCLICK &&
-      browserEvent.isMouseActionButton()) {
+  if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DBLCLICK &&
+      mapBrowserEvent.isMouseActionButton()) {
     var map = mapBrowserEvent.map;
     var resolution = map.getResolution();
     var delta = mapBrowserEvent.browserEvent.shiftKey ? -1 : 1;

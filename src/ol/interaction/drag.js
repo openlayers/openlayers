@@ -93,19 +93,19 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
   }
   var browserEvent = mapBrowserEvent.browserEvent;
   if (this.dragging_) {
-    if (mapBrowserEvent.type == goog.fx.Dragger.EventType.DRAG) {
+    if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DRAG) {
       goog.asserts.assert(browserEvent instanceof goog.events.BrowserEvent);
       this.deltaX = browserEvent.clientX - this.startX;
       this.deltaY = browserEvent.clientY - this.startY;
       this.handleDrag(mapBrowserEvent);
-    } else if (mapBrowserEvent.type == goog.fx.Dragger.EventType.END) {
+    } else if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DRAGEND) {
       goog.asserts.assert(browserEvent instanceof goog.events.BrowserEvent);
       this.deltaX = browserEvent.clientX - this.startX;
       this.deltaY = browserEvent.clientY - this.startY;
       this.handleDragEnd(mapBrowserEvent);
       this.dragging_ = false;
     }
-  } else if (mapBrowserEvent.type == goog.fx.Dragger.EventType.START) {
+  } else if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DRAGSTART) {
     goog.asserts.assert(browserEvent instanceof goog.events.BrowserEvent);
     this.startX = browserEvent.clientX;
     this.startY = browserEvent.clientY;

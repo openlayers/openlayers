@@ -22,8 +22,6 @@ goog.require('goog.events.MouseWheelEvent');
 goog.require('goog.events.MouseWheelHandler');
 goog.require('goog.events.MouseWheelHandler.EventType');
 goog.require('goog.functions');
-goog.require('goog.fx.DragEvent');
-goog.require('goog.fx.Dragger');
 goog.require('goog.fx.anim');
 goog.require('goog.fx.anim.Animated');
 goog.require('goog.object');
@@ -99,12 +97,6 @@ ol.Map = function(
   }
 
   /**
-   * @type {boolean} Are we a touch device?
-   * @private
-   */
-  this.isTouch_ = false;
-
-  /**
    * @type {ol.TransformFunction}
    * @private
    */
@@ -159,9 +151,15 @@ ol.Map = function(
   this.viewport_.style.zIndex = ol.MapPaneZIndex.VIEWPORT;
   goog.dom.appendChild(container, this.viewport_);
 
-  goog.events.listen(this.viewport_, [
-    goog.events.EventType.DBLCLICK
-  ], this.handleBrowserEvent, false, this);
+  var mapBrowserEventHandler = new ol.MapBrowserEventHandler(this);
+  goog.events.listen(mapBrowserEventHandler, [
+    ol.MapBrowserEvent.EventType.CLICK,
+    ol.MapBrowserEvent.EventType.DBLCLICK,
+    ol.MapBrowserEvent.EventType.DRAGSTART,
+    ol.MapBrowserEvent.EventType.DRAG,
+    ol.MapBrowserEvent.EventType.DRAGEND
+  ], this.handleMapBrowserEvent, false, this);
+  this.registerDisposable(mapBrowserEventHandler);
 
   // FIXME we probably shouldn't listen on document...
   var keyHandler = new goog.events.KeyHandler(document);
@@ -174,17 +172,6 @@ ol.Map = function(
       goog.events.MouseWheelHandler.EventType.MOUSEWHEEL,
       this.handleBrowserEvent, false, this);
   this.registerDisposable(mouseWheelHandler);
-
-  var dragger = new goog.fx.Dragger(this.viewport_);
-  dragger.defaultAction = function() {};
-  goog.events.listen(dragger, [
-    goog.fx.Dragger.EventType.START,
-    goog.fx.Dragger.EventType.DRAG,
-    goog.fx.Dragger.EventType.END
-  ], this.handleDraggerEvent, false, this);
-  goog.events.listen(this.viewport_, goog.events.EventType.TOUCHSTART,
-      this.handleTouchstart, false, this);
-  this.registerDisposable(dragger);
 
   /**
    * @type {ol.renderer.Map}
@@ -501,6 +488,14 @@ ol.Map.prototype.getViewport = function() {
 ol.Map.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
   var type = opt_type || browserEvent.type;
   var mapBrowserEvent = new ol.MapBrowserEvent(type, this, browserEvent);
+  this.handleMapBrowserEvent(mapBrowserEvent);
+};
+
+
+/**
+ * @param {ol.MapBrowserEvent} mapBrowserEvent The event to handle.
+ */
+ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
   var interactions = this.getInteractions();
   var interactionsArray = /** @type {Array.<ol.interaction.Interaction>} */
       interactions.getArray();
@@ -512,27 +507,10 @@ ol.Map.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
 
 
 /**
- * @param {goog.events.Event} browserEvent Browser event.
- */
-ol.Map.prototype.handleTouchstart = function(browserEvent) {
-  this.isTouch_ = true;
-  // now we know that we are a touch device
-  goog.events.unlisten(this.viewport_, goog.events.EventType.TOUCHSTART,
-      this.handleTouchstart, false, this);
-};
-
-
-/**
  * @param {goog.fx.DragEvent} dragEvent Drag event.
  */
 ol.Map.prototype.handleDraggerEvent = function(dragEvent) {
-  var browserEvent = dragEvent.browserEvent;
-  // workaround for goog.fx.Dragger issue that causes both mousemove and
-  // touchmove to trigger a drag event on touch devices
-  if ((this.isTouch_ && browserEvent.type != goog.events.EventType.MOUSEMOVE) ||
-      !this.isTouch_) {
-    this.handleBrowserEvent(browserEvent, dragEvent.type);
-  }
+  this.handleBrowserEvent(dragEvent.browserEvent, dragEvent.type);
 };
 
 
