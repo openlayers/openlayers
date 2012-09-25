@@ -23,7 +23,7 @@ build/ol-all.js: $(SRC)
 	( echo "goog.require('goog.dom');" ; find src/ol -name \*.js | xargs grep -rh ^goog.provide | sort | uniq | sed -e 's/provide/require/g' ) > $@
 
 .PHONY: demos
-demos: demos/proj4js demos/side-by-side demos/two-layers
+demos: demos/full-screen demos/proj4js demos/side-by-side demos/two-layers
 
 .PHONY: demos/proj4js
 demos/proj4js: \
@@ -35,6 +35,37 @@ demos/proj4js/build.html: demos/proj4js/index.html.in
 
 demos/proj4js/debug.html: demos/proj4js/index.html.in
 	sed -e 's|@SRC@|http://localhost:9810/compile?id=ol|' $< > $@
+
+.PHONY: demos/full-screen
+demos/full-screen: \
+	demos/full-screen/advanced-optimizations.html \
+	demos/full-screen/advanced-optimizations.js \
+	demos/full-screen/debug.html \
+	demos/full-screen/simple-optimizations.html \
+	demos/full-screen/simple-optimizations.js
+
+demos/full-screen/advanced-optimizations.html: demos/full-screen/index.html.in
+	sed -e 's|@SRC@|advanced-optimizations.js|' $< > $@
+
+demos/full-screen/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
+	demos/full-screen/full-screen.json demos/full-screen/full-screen.js
+	java -jar $(PLOVR_JAR) build demos/full-screen/full-screen.json >$@
+	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
+	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
+
+demos/full-screen/debug.html: demos/full-screen/index.html.in
+	sed -e 's|@SRC@|http://localhost:9810/compile?id=demo-full-screen|' $< > $@
+
+demos/full-screen/simple-optimizations.html: demos/full-screen/index.html.in
+	sed -e 's|@SRC@|simple-optimizations.js|' $< > $@
+
+# FIXME invoke plovr directly, rather than assuming that the server is running
+demos/full-screen/simple-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
+	demos/full-screen/full-screen.json demos/full-screen/full-screen.js
+	curl 'http://localhost:9810/compile?id=demo-full-screen&mode=SIMPLE' > $@
+	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
+	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
+
 
 .PHONY: demos/side-by-side
 demos/side-by-side: \

@@ -1,0 +1,9 @@
+{
+
+  "id": "demo-full-screen",
+
+  "inherits": "../../base.json",
+
+  "inputs": "demos/full-screen/full-screen.js"
+
+}
