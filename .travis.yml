@@ -7,7 +7,3 @@ before_script:
   - "sleep 3"
 
 script: "make precommit"
-
-branches:
-  only:
-    - "master"
