@@ -10,6 +10,9 @@ space := $(empty) $(empty)
 .PHONY: all
 all: build demos
 
+.PHONY: precommit
+precommit: lint test build
+
 .PHONY: build
 build: build/ol.js
 
