@@ -150,9 +150,8 @@ test:
 	$(PHANTOMJS) test/phantom-jasmine/run_jasmine_test.coffee test/ol.html
 
 clean:
-	rm -f build/all.js
 	rm -f build/ol.js
-	rm -f build/ol-compiled.js
+	rm -f build/ol-all.js
 	rm -f demos/*/*.html
 	rm -f demos/*/advanced-optimizations.*
 	rm -f demos/*/simple-optimizations.*
