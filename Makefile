@@ -131,7 +131,7 @@ demos/two-layers/simple-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
 
 .PHONY: serve
-serve: $(PLOVR_JAR)
+serve: $(PLOVR_JAR) build/ol-all.js
 	java -jar $(PLOVR_JAR) serve build/ol.json demos/*/*.json
 
 .PHONY: lint
