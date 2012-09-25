@@ -97,6 +97,12 @@ ol.Map = function(
      */
     this.logger = goog.debug.Logger.getLogger('ol.map.' + goog.getUid(this));
   }
+  
+  /**
+   * @type {boolean} Are we a touch device?
+   * @private
+   */
+  this.isTouch_ = false;
 
   /**
    * @type {ol.TransformFunction}
@@ -176,6 +182,8 @@ ol.Map = function(
     goog.fx.Dragger.EventType.DRAG,
     goog.fx.Dragger.EventType.END
   ], this.handleDraggerEvent, false, this);
+  goog.events.listen(this.viewport_, goog.events.EventType.TOUCHSTART,
+      this.handleTouchstart, false, this);
   this.registerDisposable(dragger);
 
   /**
@@ -503,12 +511,25 @@ ol.Map.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
 };
 
 
+ol.Map.prototype.handleTouchstart = function(browserEvent) {
+  this.isTouch_ = true;
+  // now we know that we are a touch device
+  goog.events.unlisten(this.viewport_, goog.events.EventType.TOUCHSTART,
+      this.handleTouchstart, false, this);
+};
+
+
 /**
  * @param {goog.fx.DragEvent} dragEvent Drag event.
  */
 ol.Map.prototype.handleDraggerEvent = function(dragEvent) {
   var browserEvent = dragEvent.browserEvent;
-  this.handleBrowserEvent(browserEvent, dragEvent.type);
+  // workaround for goog.fx.Dragger issue that causes both mousemove and
+  // touchmove to trigger a drag event on touch devices
+  if ((this.isTouch_ && browserEvent.type != goog.events.EventType.MOUSEMOVE) ||
+      !this.isTouch_) {
+    this.handleBrowserEvent(browserEvent, dragEvent.type);
+  }
 };
 
 

@@ -3,6 +3,8 @@ goog.provide('ol.renderer.dom.Map');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.events');
+goog.require('goog.events.Event');
 goog.require('goog.style');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
@@ -29,6 +31,10 @@ ol.renderer.dom.Map = function(container, map) {
   this.layersPane_ = goog.dom.createElement(goog.dom.TagName.DIV);
   this.layersPane_.className = 'ol-layers-pane';
   this.layersPane_.style.position = 'absolute';
+  goog.events.listen(this.layersPane_, 'mousedown',
+      goog.events.Event.preventDefault);
+  goog.events.listen(this.layersPane_, 'touchstart',
+      goog.events.Event.preventDefault);
   goog.dom.appendChild(container, this.layersPane_);
 
   /**
