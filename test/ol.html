@@ -3,7 +3,17 @@
 <!-- FIXME console reporter output does not include name of top-level describe -->
 <!-- FIXME console reporter requires window.console_reporter. This is to be
      reported to phantom-jasmine -->
-<!-- FIXME simplify js code in this file (e.g. we only run tests in RAW mode -->
+
+
+<!--
+
+ Note: we assume that Plovr is available at <hostname>:9810, where
+ <hostname> is the name of the host used for loading that page. This
+ can be overriden by setting plovr_host in the query string. E.g.
+
+     http://localhost/ol3/test/ol.html?plovr_host=192.168.1.2:9810
+-->
+
 
 <html>
 <head>
@@ -14,44 +24,25 @@
   <script type="text/javascript" src="jasmine-1.2.0/jasmine.js"></script>
   <script type="text/javascript" src="jasmine-1.2.0/jasmine-html.js"></script>
   <script type="text/javascript" src="phantom-jasmine/console-runner.js"></script>
+  <script type="text/javascript" src="jasmine-extensions.js"></script>
 
-  <!-- include source files here... -->
   <script type="text/javascript">
-// the following code includes the source-files of OpenLayers as they are
-// defined in ol.js.
-//
-// You can control in which form the source will be loaded by passing
-// URL-parameters:
-//
-//   - host
-//     where the plovr compiler is running, if not passed this defaults to the
-//     current host on port 9810
-//
-//   - mode
-//     which mode of compilation should be applied. Common values for this are
-//     RAW, SIMPLE or ADVANCED. If not provided, RAW is used.
-(function(doc, l){
-    var hostRegex = /[\\?&]host=([^&#]*)/,
-        modeRegex = /[\\?&]mode=([^&#]*)/,
-        hostResult = hostRegex.exec(l.href),
-        modeResult = modeRegex.exec(l.href),
-        host = (hostResult && hostResult[1])
-            ? decodeURIComponent(hostResult[1])
-            : (l.host)
-                ? l.host + ':9810'
-                : 'localhost:9810',
-        mode = (modeResult && modeResult[1])
-            ? decodeURIComponent(modeResult[1])
-            : 'RAW',
+
+    (function(doc, l) {
+
+        var regexResult = /[\\?&]plovr_host=([^&#]*)/.exec(l.href);
+        var plovrHost = (regexResult && regexResult[1]) ?
+            decodeURIComponent(regexResult[1]) : l.hostname ?
+                l.hostname + ':9810' : 'localhost:9810';
 
         // Create the script tag which includes the derived variables from above
-        script = '<sc' + 'ript type="text/javascript" '
-            + 'src="http://' + host + '/compile?id=ol&amp;mode=' + mode + '">'
-            + '</scr' + 'ipt>',
+        var script = '<sc' + 'ript type="text/javascript" '
+            + 'src="http://' + plovrHost + '/compile?id=ol&mode=RAW">'
+            + '</scr' + 'ipt>';
 
         // this function will fix the links of the result to also include
         // the once defined URL Parametrs passed to the testsuite.
-        fixLinks = function() {
+        function fixLinks() {
             if (doc.getElementsByTagName) {
                 var candidates = doc.getElementsByTagName('a'),
                     link,
@@ -60,25 +51,23 @@
                 for(; i < len; i++){
                     link = candidates[i];
                     if (hrefExpression.test(link.href)) {
-                        link.href += '&host=' + encodeURIComponent(host)
-                            + '&mode=' + encodeURIComponent(mode);
+                        link.href += '&plov_host=' + encodeURIComponent(plovrHost);
                     }
                 }
             }
+        }
+
+        // write out the script-tag to load the compiled result
+        doc.write(script);
+
+        // overwrite jasmines finishCallback to fix the links
+        jasmine.Runner.prototype.finishCallback = function() {
+            jasmine.getEnv().reporter.reportRunnerResults(this);
+            fixLinks();
         };
+    })(document, location);
 
-    // write out the script-tag to load the compiled result
-    doc.write(script);
-
-    // overwrite jasmines finishCallback to run the fixLinks method afterwards
-    jasmine.Runner.prototype.finishCallback = function() {
-        jasmine.getEnv().reporter.reportRunnerResults(this);
-        fixLinks();
-    };
-})(document, location);
   </script>
-  <!-- common jasmine extensions -->
-  <script type="text/javascript" src="jasmine-extensions.js"></script>
 
   <!-- include spec files here... -->
   <script type="text/javascript" src="spec/ol/array.test.js"></script>
@@ -95,21 +84,23 @@
   <script type="text/javascript" src="spec/ol/layer/xyz.test.js"></script>
 
   <script type="text/javascript">
+
     (function() {
       var jasmineEnv = jasmine.getEnv();
       jasmineEnv.updateInterval = 1000;
 
+      // HTML reporter
+
       var htmlReporter = new jasmine.HtmlReporter();
-
       jasmineEnv.addReporter(htmlReporter);
-
       jasmineEnv.specFilter = function(spec) {
         return htmlReporter.specFilter(spec);
       };
 
+      // Console reporter (for headless testing)
+
       var consoleReporter = new jasmine.ConsoleReporter();
       jasmineEnv.addReporter(consoleReporter);
-
       // The run_jasmine_test.coffee script (from phantom-jasmine)
       // assumes that the console reporter instance is available
       // in the global namespace object as "console_reporter".
@@ -122,14 +113,11 @@
         if (currentWindowOnload) {
           currentWindowOnload();
         }
-        execJasmine();
+        jasmineEnv.execute();
       };
 
-      function execJasmine() {
-        jasmineEnv.execute();
-      }
-
     })();
+
   </script>
 
 </head>
