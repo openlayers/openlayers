@@ -5,5 +5,5 @@
 /build/apidoc
 /demos/*/advanced-optimizations.*
 /demos/*/build.html
-/demos/*/debug.html
+/demos/*/index.html
 /demos/*/simple-optimizations.*
