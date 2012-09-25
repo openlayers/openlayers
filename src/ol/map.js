@@ -97,7 +97,7 @@ ol.Map = function(
      */
     this.logger = goog.debug.Logger.getLogger('ol.map.' + goog.getUid(this));
   }
-  
+
   /**
    * @type {boolean} Are we a touch device?
    * @private
@@ -511,6 +511,9 @@ ol.Map.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
 };
 
 
+/**
+ * @param {goog.events.Event} browserEvent Browser event.
+ */
 ol.Map.prototype.handleTouchstart = function(browserEvent) {
   this.isTouch_ = true;
   // now we know that we are a touch device
