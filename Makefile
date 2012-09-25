@@ -1,6 +1,6 @@
 JSDOC = jsdoc
 PHANTOMJS = phantomjs
-PLOVR_JAR = bin/plovr-4b3caf2b7d84.jar
+PLOVR_JAR = bin/plovr-b254c26318c5.jar
 SRC = $(shell find exports externs src/ol -name \*.js)
 TARGETS = $(shell find demos -name advanced-optimizations.js -o -name simple-optimizations.js)
 comma := ,
@@ -141,8 +141,9 @@ lint:
 .PHONY: plovr
 plovr: $(PLOVR_JAR)
 
+# FIXME find a more permanent host for plovr jar
 $(PLOVR_JAR):
-	curl http://plovr.googlecode.com/files/$(notdir $@) > $@
+	curl http://dev.camptocamp.com/files/tpayne/plovr/$(notdir $@) > $@
 
 .PHONY: doc
 doc:
