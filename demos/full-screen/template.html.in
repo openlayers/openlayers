@@ -10,6 +10,7 @@
                 height: 100%;
             }
         </style>
+        <link rel="stylesheet" href="../../css/ol.css" type="text/css">
         <title>ol3 full-screen demo</title>
     </head>
     <body>

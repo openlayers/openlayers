@@ -8,6 +8,7 @@
                 border: thin solid;
             }
         </style>
+        <link rel="stylesheet" href="../../css/ol.css" type="text/css">
         <title>ol3 two-layers demo</title>
     </head>
     <body>

@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
     <head>
+        <link rel="stylesheet" href="../../css/ol.css" type="text/css">
         <script src="../../build/proj4js-combined.js" type="text/javascript"></script>
         <script src="@SRC@" type="text/javascript"></script>
         <title>ol3 proj4js demo</title>
