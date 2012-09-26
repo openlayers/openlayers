@@ -215,6 +215,9 @@ ol.MapBrowserEventHandler.prototype.dragstart_ = function(browserEvent) {
               goog.events.EventType.MOUSEUP,
           this.dragend_, false, this)
     ];
+    if (browserEvent.type === goog.events.EventType.MOUSEDOWN) {
+      browserEvent.preventDefault();
+    }
     var newEvent = new ol.MapBrowserEvent(
         ol.MapBrowserEvent.EventType.DRAGSTART, this.map_, browserEvent);
     this.dispatchEvent(newEvent);
