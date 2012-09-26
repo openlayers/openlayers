@@ -1,5 +1,5 @@
 goog.provide('ol.layer.BingMaps');
-goog.provide('ol.tilesource.BingMaps');
+goog.provide('ol.source.BingMaps');
 
 goog.require('goog.Uri');
 goog.require('goog.events');
@@ -33,7 +33,7 @@ ol.BingMapsStyle = {
  * @param {Object.<string, *>=} opt_values Values.
  */
 ol.layer.BingMaps = function(style, key, opt_culture, opt_values) {
-  var tileSource = new ol.tilesource.BingMaps(style, key, opt_culture,
+  var tileSource = new ol.source.BingMaps(style, key, opt_culture,
       function(tileSource) {
         this.dispatchEvent(goog.events.EventType.LOAD);
       }, this);
@@ -49,10 +49,10 @@ goog.inherits(ol.layer.BingMaps, ol.layer.TileLayer);
  * @param {ol.BingMapsStyle} style Bing Maps style.
  * @param {string} key Key.
  * @param {string=} opt_culture Culture.
- * @param {?function(ol.tilesource.BingMaps)=} opt_callback Callback.
+ * @param {?function(ol.source.BingMaps)=} opt_callback Callback.
  * @param {*=} opt_obj Object.
  */
-ol.tilesource.BingMaps =
+ol.source.BingMaps =
     function(style, key, opt_culture, opt_callback, opt_obj) {
 
   /**
@@ -69,7 +69,7 @@ ol.tilesource.BingMaps =
 
   /**
    * @private
-   * @type {?function(ol.tilesource.BingMaps)}
+   * @type {?function(ol.source.BingMaps)}
    */
   this.callback_ = opt_callback || null;
 
@@ -94,13 +94,13 @@ ol.tilesource.BingMaps =
       this, projection, null, ol.TileUrlFunction.nullTileUrlFunction, extent);
 
 };
-goog.inherits(ol.tilesource.BingMaps, ol.TileSource);
+goog.inherits(ol.source.BingMaps, ol.TileSource);
 
 
 /**
  * @param {BingMapsImageryMetadataResponse} response Response.
  */
-ol.tilesource.BingMaps.prototype.handleImageryMetadataResponse =
+ol.source.BingMaps.prototype.handleImageryMetadataResponse =
     function(response) {
 
   goog.asserts.assert(
@@ -184,6 +184,6 @@ ol.tilesource.BingMaps.prototype.handleImageryMetadataResponse =
 /**
  * @inheritDoc
  */
-ol.tilesource.BingMaps.prototype.isReady = function() {
+ol.source.BingMaps.prototype.isReady = function() {
   return this.ready_;
 };

@@ -1,11 +1,11 @@
-describe('ol.tilesource.XYZ', function() {
+describe('ol.source.XYZ', function() {
 
   describe('getTileCoordUrl', function() {
 
     var xyzTileSource, tileGrid;
 
     beforeEach(function() {
-      xyzTileSource = new ol.tilesource.XYZ(
+      xyzTileSource = new ol.source.XYZ(
           6, ol.TileUrlFunction.createFromTemplate('{z}/{x}/{y}'));
       tileGrid = xyzTileSource.getTileGrid();
     });
@@ -124,4 +124,4 @@ describe('ol.tilesource.XYZ', function() {
 goog.require('ol.Coordinate');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
-goog.require('ol.tilesource.XYZ');
+goog.require('ol.source.XYZ');

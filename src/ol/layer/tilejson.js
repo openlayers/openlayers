@@ -7,8 +7,8 @@
  */
 
 goog.provide('ol.layer.TileJSON');
+goog.provide('ol.source.TileJSON');
 goog.provide('ol.tilejson');
-goog.provide('ol.tilesource.TileJSON');
 
 goog.require('goog.asserts');
 goog.require('goog.events.EventType');
@@ -45,7 +45,7 @@ goog.exportSymbol('grid', grid);
  */
 ol.layer.TileJSON = function(url, opt_values) {
   goog.asserts.assert(goog.string.endsWith(url, '.jsonp'));
-  var tileSource = new ol.tilesource.TileJSON(url, function(tileSource) {
+  var tileSource = new ol.source.TileJSON(url, function(tileSource) {
     this.dispatchEvent(goog.events.EventType.LOAD);
   }, this);
   goog.base(this, tileSource, opt_values);
@@ -58,10 +58,10 @@ goog.inherits(ol.layer.TileJSON, ol.layer.TileLayer);
  * @constructor
  * @extends {ol.TileSource}
  * @param {string} uri URI.
- * @param {?function(ol.tilesource.TileJSON)=} opt_callback Callback.
+ * @param {?function(ol.source.TileJSON)=} opt_callback Callback.
  * @param {*=} opt_obj Object.
  */
-ol.tilesource.TileJSON = function(uri, opt_callback, opt_obj) {
+ol.source.TileJSON = function(uri, opt_callback, opt_obj) {
 
   var projection = ol.Projection.getFromCode('EPSG:3857');
 
@@ -70,7 +70,7 @@ ol.tilesource.TileJSON = function(uri, opt_callback, opt_obj) {
 
   /**
    * @private
-   * @type {?function(ol.tilesource.TileJSON)}
+   * @type {?function(ol.source.TileJSON)}
    */
   this.callback_ = opt_callback || null;
 
@@ -94,13 +94,13 @@ ol.tilesource.TileJSON = function(uri, opt_callback, opt_obj) {
   this.deferred_.addCallback(this.handleTileJSONResponse, this);
 
 };
-goog.inherits(ol.tilesource.TileJSON, ol.TileSource);
+goog.inherits(ol.source.TileJSON, ol.TileSource);
 
 
 /**
  * @protected
  */
-ol.tilesource.TileJSON.prototype.handleTileJSONResponse = function() {
+ol.source.TileJSON.prototype.handleTileJSONResponse = function() {
 
   var tileJSON = ol.tilejson.grids_.pop();
 
@@ -176,6 +176,6 @@ ol.tilesource.TileJSON.prototype.handleTileJSONResponse = function() {
 /**
  * @inheritDoc
  */
-ol.tilesource.TileJSON.prototype.isReady = function() {
+ol.source.TileJSON.prototype.isReady = function() {
   return this.ready_;
 };

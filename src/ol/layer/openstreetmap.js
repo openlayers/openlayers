@@ -3,7 +3,7 @@ goog.provide('ol.source.OpenStreetMap');
 
 goog.require('ol.TileUrlFunction');
 goog.require('ol.layer.TileLayer');
-goog.require('ol.tilesource.XYZ');
+goog.require('ol.source.XYZ');
 
 
 
@@ -22,7 +22,7 @@ goog.inherits(ol.layer.OpenStreetMap, ol.layer.TileLayer);
 
 /**
  * @constructor
- * @extends {ol.tilesource.XYZ}
+ * @extends {ol.source.XYZ}
  */
 ol.source.OpenStreetMap = function() {
 
@@ -37,4 +37,4 @@ ol.source.OpenStreetMap = function() {
   goog.base(this, 18, tileUrlFunction, [attribution]);
 
 };
-goog.inherits(ol.source.OpenStreetMap, ol.tilesource.XYZ);
+goog.inherits(ol.source.OpenStreetMap, ol.source.XYZ);
