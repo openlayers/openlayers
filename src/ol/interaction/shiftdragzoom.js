@@ -46,14 +46,14 @@ goog.inherits(ol.interaction.ShiftDragZoom, ol.interaction.Drag);
  */
 ol.interaction.ShiftDragZoom.prototype.handleDragEnd =
     function(mapBrowserEvent) {
+  goog.dispose(this.dragBox_);
+  this.dragBox_ = null;
   if (this.deltaX * this.deltaX + this.deltaY * this.deltaY >=
       ol.SHIFT_DRAG_ZOOM_HYSTERESIS_PIXELS_SQUARED) {
     var map = mapBrowserEvent.map;
     var extent = ol.Extent.boundingExtent(
         this.startCoordinate,
         mapBrowserEvent.getCoordinate());
-    goog.dispose(this.dragBox_);
-    this.dragBox_ = null;
     this.fitExtent(map, extent);
   }
 };
