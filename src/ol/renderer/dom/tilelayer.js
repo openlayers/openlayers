@@ -34,7 +34,7 @@ ol.renderer.dom.TileLayer = function(mapRenderer, tileLayer, target) {
   this.renderedMapResolution_ = undefined;
 
   /**
-   * @type {number|undefined}
+   * @type {ol.TileRange|undefined}
    * @private
    */
   this.renderedTileRange_ = undefined;
@@ -47,7 +47,7 @@ ol.renderer.dom.TileLayer = function(mapRenderer, tileLayer, target) {
 
   /**
    * Map of tile keys loading at the currently rendered z.
-   * @type {Object.<sring, ol.Tile>}
+   * @type {Object.<string, ol.Tile>}
    * @private
    */
   this.loadingTiles_ = {};
