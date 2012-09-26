@@ -64,7 +64,7 @@ ol.DEFAULT_RENDERER_HINTS = [
  *            mouseWheelZoom: (boolean|undefined),
  *            projection: (ol.Projection|string|undefined),
  *            renderer: (ol.RendererHint|undefined),
- *            renderers: (Array.<(ol.RendererHint)>|undefined),
+ *            renderers: (Array.<ol.RendererHint>|undefined),
  *            resolution: (number|undefined),
  *            rotate: (boolean|undefined),
  *            shiftDragZoom: (boolean|undefined),
