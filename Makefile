@@ -104,8 +104,10 @@ serve: $(PLOVR_JAR) build/require-all.js
 	java -jar $(PLOVR_JAR) serve build/*.json demos/*/*.json
 
 .PHONY: lint
-lint:
-	gjslint --strict --limited_doc_files=$(subst $(space),$(comma),$(shell find externs -name \*.js)) $(SRC) $(filter-out $(TARGETS),$(shell find demos -name \*.js))
+lint: build/lint-timestamp
+
+build/lint-timestamp: $(SRC)
+	gjslint --strict --limited_doc_files=$(subst $(space),$(comma),$(shell find externs -name \*.js)) $(SRC) $(filter-out $(TARGETS),$(shell find demos -name \*.js)) && touch $@
 
 .PHONY: plovr
 plovr: $(PLOVR_JAR)
@@ -123,6 +125,7 @@ test:
 	$(PHANTOMJS) test/phantom-jasmine/run_jasmine_test.coffee test/ol.html
 
 clean:
+	rm -f build/lint-timestamp
 	rm -f build/ol.js
 	rm -f build/ol-all.js
 	rm -f build/require-all.js
