@@ -248,7 +248,9 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
   goog.array.sort(zs);
 
   var fragment = document.createDocumentFragment();
+  var altFragment = document.createDocumentFragment();
   var newTiles = false;
+  var newAltTiles = false;
   for (var i = 0, ii = zs.length; i < ii; ++i) {
     var tileZ = zs[i];
     var tilesToDraw = tilesToDrawByZ[tileZ];
@@ -269,12 +271,25 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
       if (!(key in this.renderedTiles_)) {
         this.renderedTiles_[key] = tile;
         style.position = 'absolute';
-        goog.dom.appendChild(fragment, img);
-        newTiles = true;
+        if (tileZ === z) {
+          goog.dom.appendChild(fragment, img);
+          newTiles = true;
+        } else {
+          goog.dom.appendChild(altFragment, img);
+          newAltTiles = true;
+        }
       }
     }
   }
 
+  if (newAltTiles) {
+    var child = this.target.firstChild;
+    if (child) {
+      goog.dom.insertSiblingBefore(altFragment, child);
+    } else {
+      goog.dom.appendChild(this.target, altFragment);
+    }
+  }
   if (newTiles) {
     goog.dom.appendChild(this.target, fragment);
   }
