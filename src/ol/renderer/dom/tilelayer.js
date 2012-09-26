@@ -263,8 +263,6 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
           tileCoord, mapResolution);
       var img = tile.getImage(this);
       var style = img.style;
-      // TODO: use translate method
-      // TODO: only set this when changed (z change)
       var append = !(key in this.renderedTiles_);
       if (append || resolutionChanged) {
         style.left = (pixelBounds.minX - tileOffset.x) + 'px';
