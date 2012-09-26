@@ -23,7 +23,7 @@ build/ol.js: $(PLOVR_JAR) $(SRC) base.json \
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
 
 build/ol-all.js: $(SRC)
-	( echo "goog.require('goog.dom');" ; find src/ol -name \*.js | xargs grep -rh ^goog.provide | sort | uniq | sed -e 's/provide/require/g' ) > $@
+	( echo "goog.require('goog.dom');" ; find src/ol -name \*.js | xargs grep -rh ^goog.provide | sort | uniq | sed -e 's/provide/require/g' ) >$@
 
 .PHONY: demos
 demos: demos/full-screen demos/proj4js demos/side-by-side demos/two-layers
@@ -34,10 +34,10 @@ demos/proj4js: \
 	demos/proj4js/index.html
 
 demos/proj4js/build.html: demos/proj4js/template.html.in
-	sed -e 's|@SRC@|../../build/ol.js|' $< > $@
+	sed -e 's|@SRC@|../../build/ol.js|' $< >$@
 
 demos/proj4js/index.html: demos/proj4js/template.html.in
-	sed -e 's|@SRC@|http://localhost:9810/compile?id=ol|' $< > $@
+	sed -e 's|@SRC@|http://localhost:9810/compile?id=ol|' $< >$@
 
 .PHONY: demos/full-screen
 demos/full-screen: \
@@ -46,7 +46,7 @@ demos/full-screen: \
 	demos/full-screen/index.html
 
 demos/full-screen/advanced-optimizations.html: demos/full-screen/template.html.in
-	sed -e 's|@SRC@|advanced-optimizations.js|' $< > $@
+	sed -e 's|@SRC@|advanced-optimizations.js|' $< >$@
 
 demos/full-screen/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
 	demos/full-screen/full-screen.json demos/full-screen/full-screen.js
@@ -55,7 +55,7 @@ demos/full-screen/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
 
 demos/full-screen/index.html: demos/full-screen/template.html.in
-	sed -e 's|@SRC@|../loader.js?id=demo-full-screen|' $< > $@
+	sed -e 's|@SRC@|../loader.js?id=demo-full-screen|' $< >$@
 
 
 .PHONY: demos/side-by-side
@@ -65,7 +65,7 @@ demos/side-by-side: \
 	demos/side-by-side/index.html
 
 demos/side-by-side/advanced-optimizations.html: demos/side-by-side/template.html.in
-	sed -e 's|@SRC@|advanced-optimizations.js|' $< > $@
+	sed -e 's|@SRC@|advanced-optimizations.js|' $< >$@
 
 demos/side-by-side/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
 	demos/side-by-side/side-by-side.json demos/side-by-side/side-by-side.js
@@ -74,7 +74,7 @@ demos/side-by-side/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
 
 demos/side-by-side/index.html: demos/side-by-side/template.html.in
-	sed -e 's|@SRC@|../loader.js?id=demo-side-by-side|' $< > $@
+	sed -e 's|@SRC@|../loader.js?id=demo-side-by-side|' $< >$@
 
 .PHONY: demos/two-layers
 demos/two-layers: \
@@ -83,7 +83,7 @@ demos/two-layers: \
 	demos/two-layers/index.html
 
 demos/two-layers/advanced-optimizations.html: demos/two-layers/template.html.in
-	sed -e 's|@SRC@|advanced-optimizations.js|' $< > $@
+	sed -e 's|@SRC@|advanced-optimizations.js|' $< >$@
 
 demos/two-layers/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
 	demos/two-layers/two-layers.json demos/two-layers/two-layers.js
@@ -92,7 +92,7 @@ demos/two-layers/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
 
 demos/two-layers/index.html: demos/two-layers/template.html.in
-	sed -e 's|@SRC@|../loader.js?id=demo-two-layers|' $< > $@
+	sed -e 's|@SRC@|../loader.js?id=demo-two-layers|' $< >$@
 
 .PHONY: serve
 serve: $(PLOVR_JAR) build/ol-all.js
@@ -107,7 +107,7 @@ plovr: $(PLOVR_JAR)
 
 # FIXME find a more permanent host for plovr jar
 $(PLOVR_JAR):
-	curl http://dev.camptocamp.com/files/tpayne/plovr/$(notdir $@) > $@
+	curl http://dev.camptocamp.com/files/tpayne/plovr/$(notdir $@) >$@
 
 .PHONY: doc
 doc:
