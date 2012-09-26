@@ -34,6 +34,7 @@ goog.require('ol.Pixel');
 goog.require('ol.Projection');
 goog.require('ol.Size');
 goog.require('ol.TransformFunction');
+goog.require('ol.interaction.Constraints');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.renderer.Layer');
 
@@ -138,6 +139,13 @@ ol.Map = function(container, mapOptionsLiteral, opt_viewportSizeMonitor) {
 
   /**
    * @private
+   * FIXME change ol.interaction.Constraints -> ol.Constraints
+   * @type {ol.interaction.Constraints}
+   */
+  this.constraints_ = mapOptions.constraints;
+
+  /**
+   * @private
    * @type {Element}
    */
   this.viewport_ = goog.dom.createElement(goog.dom.TagName.DIV);
@@ -218,7 +226,9 @@ ol.Map.prototype.canRotate = function() {
 ol.Map.prototype.fitExtent = function(extent) {
   this.withFrozenRendering(function() {
     this.setCenter(extent.getCenter());
-    this.setResolution(this.getResolutionForExtent(extent));
+    var resolution = this.getResolutionForExtent(extent);
+    resolution = this.constraints_.resolution(resolution, 0);
+    this.setResolution(resolution);
     if (this.canRotate()) {
       this.setRotation(0);
     }
@@ -615,6 +625,16 @@ ol.Map.prototype.renderFrame_ = function() {
 
 
 /**
+ * @param {number|undefined} rotation Rotation.
+ * @param {number} delta Delta.
+ */
+ol.Map.prototype.rotate = function(rotation, delta) {
+  rotation = this.constraints_.rotation(rotation, delta);
+  this.setRotation(rotation);
+};
+
+
+/**
  * @param {ol.Color} backgroundColor Background color.
  */
 ol.Map.prototype.setBackgroundColor = function(backgroundColor) {
@@ -789,4 +809,63 @@ ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
   } finally {
     this.unfreezeRendering();
   }
+};
+
+
+/**
+ * @private
+ * @param {number|undefined} resolution Resolution to go to.
+ * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
+ */
+ol.Map.prototype.zoom_ = function(resolution, opt_anchor) {
+  if (goog.isDefAndNotNull(resolution) && goog.isDefAndNotNull(opt_anchor)) {
+    var anchor = opt_anchor;
+    var oldCenter = /** @type {!ol.Coordinate} */ this.getCenter();
+    var oldResolution = this.getResolution();
+    var x = anchor.x - resolution * (anchor.x - oldCenter.x) / oldResolution;
+    var y = anchor.y - resolution * (anchor.y - oldCenter.y) / oldResolution;
+    var center = new ol.Coordinate(x, y);
+    this.withFrozenRendering(function() {
+      this.setCenter(center);
+      this.setResolution(resolution);
+    }, this);
+  } else {
+    this.setResolution(resolution);
+  }
+};
+
+
+/**
+ * @param {number} delta Delta from previous zoom level.
+ * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
+ */
+ol.Map.prototype.zoomByDelta = function(delta, opt_anchor) {
+  var resolution = this.constraints_.resolution(this.getResolution(), delta);
+  this.zoom_(resolution, opt_anchor);
+};
+
+
+/**
+ * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
+ */
+ol.Map.prototype.zoomIn = function(opt_anchor) {
+  this.zoomByDelta(4, opt_anchor);
+};
+
+
+/**
+ * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
+ */
+ol.Map.prototype.zoomOut = function(opt_anchor) {
+  this.zoomByDelta(-4, opt_anchor);
+};
+
+
+/**
+ * @param {number|undefined} resolution Resolution to go to.
+ * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
+ */
+ol.Map.prototype.zoomToResolution = function(resolution, opt_anchor) {
+  resolution = this.constraints_.resolution(resolution, 0);
+  this.zoom_(resolution, opt_anchor);
 };

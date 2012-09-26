@@ -151,11 +151,33 @@ ol.MapOptions.create = function(mapOptionsLiteral) {
     }
   }
 
+  /**
+   * @type {ol.interaction.Constraints}
+   */
+  var constraints = ol.MapOptions.createConstraints_(mapOptionsLiteral);
+
   return {
     rendererConstructor: rendererConstructor,
+    constraints: constraints,
     values: values
   };
 
+};
+
+
+/**
+ * @private
+ * @param {ol.MapOptionsLiteral} mapOptionsLiteral Map options literal.
+ * @return {ol.interaction.Constraints} Map constraints.
+ */
+ol.MapOptions.createConstraints_ = function(mapOptionsLiteral) {
+  // FIXME this should be configurable
+  var resolutionConstraint =
+      ol.interaction.ResolutionConstraint.createSnapToPower(
+          Math.exp(Math.log(2) / 4), ol.Projection.EPSG_3857_HALF_SIZE / 128);
+  var rotationConstraint = ol.interaction.RotationConstraint.none;
+  return new ol.interaction.Constraints(
+      resolutionConstraint, rotationConstraint);
 };
 
 
@@ -166,33 +188,24 @@ ol.MapOptions.create = function(mapOptionsLiteral) {
  */
 ol.MapOptions.createInteractions_ = function(mapOptionsLiteral) {
 
-  // FIXME this should be a configuration option
-  var centerConstraint = ol.interaction.CenterConstraint.snapToPixel;
-  var resolutionConstraint =
-      ol.interaction.ResolutionConstraint.createSnapToPower(
-          Math.exp(Math.log(2) / 8), ol.Projection.EPSG_3857_HALF_SIZE / 128);
-  var rotationConstraint = ol.interaction.RotationConstraint.none;
-  var constraints = new ol.interaction.Constraints(
-      centerConstraint, resolutionConstraint, rotationConstraint);
-
   var interactions = new ol.Collection();
 
   var rotate = goog.isDef(mapOptionsLiteral.rotate) ?
       mapOptionsLiteral.rotate : true;
   if (rotate) {
-    interactions.push(new ol.interaction.AltDragRotate(constraints));
+    interactions.push(new ol.interaction.AltDragRotate());
   }
 
   var doubleClickZoom = goog.isDef(mapOptionsLiteral.doubleClickZoom) ?
       mapOptionsLiteral.doubleClickZoom : true;
   if (doubleClickZoom) {
-    interactions.push(new ol.interaction.DblClickZoom(constraints));
+    interactions.push(new ol.interaction.DblClickZoom());
   }
 
   var dragPan = goog.isDef(mapOptionsLiteral.dragPan) ?
       mapOptionsLiteral.dragPan : true;
   if (dragPan) {
-    interactions.push(new ol.interaction.DragPan(constraints));
+    interactions.push(new ol.interaction.DragPan());
   }
 
   var keyboard = goog.isDef(mapOptionsLiteral.keyboard) ?
@@ -200,21 +213,20 @@ ol.MapOptions.createInteractions_ = function(mapOptionsLiteral) {
   var keyboardPanOffset = goog.isDef(mapOptionsLiteral.keyboardPanOffset) ?
       mapOptionsLiteral.keyboardPanOffset : 80;
   if (keyboard) {
-    interactions.push(
-        new ol.interaction.KeyboardPan(constraints, keyboardPanOffset));
-    interactions.push(new ol.interaction.KeyboardZoom(constraints));
+    interactions.push(new ol.interaction.KeyboardPan(keyboardPanOffset));
+    interactions.push(new ol.interaction.KeyboardZoom());
   }
 
   var mouseWheelZoom = goog.isDef(mapOptionsLiteral.mouseWheelZoom) ?
       mapOptionsLiteral.mouseWheelZoom : true;
   if (mouseWheelZoom) {
-    interactions.push(new ol.interaction.MouseWheelZoom(constraints));
+    interactions.push(new ol.interaction.MouseWheelZoom());
   }
 
   var shiftDragZoom = goog.isDef(mapOptionsLiteral.shiftDragZoom) ?
       mapOptionsLiteral.shiftDragZoom : true;
   if (shiftDragZoom) {
-    interactions.push(new ol.interaction.ShiftDragZoom(constraints));
+    interactions.push(new ol.interaction.ShiftDragZoom());
   }
 
   return interactions;

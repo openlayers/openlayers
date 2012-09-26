@@ -2,7 +2,6 @@ goog.provide('ol.interaction.DragPan');
 
 goog.require('ol.Coordinate');
 goog.require('ol.MapBrowserEvent');
-goog.require('ol.interaction.Constraints');
 goog.require('ol.interaction.Drag');
 
 
@@ -10,10 +9,9 @@ goog.require('ol.interaction.Drag');
 /**
  * @constructor
  * @extends {ol.interaction.Drag}
- * @param {ol.interaction.Constraints} constraints Constraints.
  */
-ol.interaction.DragPan = function(constraints) {
-  goog.base(this, constraints);
+ol.interaction.DragPan = function() {
+  goog.base(this);
 };
 goog.inherits(ol.interaction.DragPan, ol.interaction.Drag);
 
@@ -30,7 +28,9 @@ ol.interaction.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
   if (map.canRotate() && goog.isDef(rotation)) {
     delta.rotate(rotation);
   }
-  this.pan(map, delta, this.startCenter);
+  var newCenter = new ol.Coordinate(
+      this.startCenter.x + delta.x, this.startCenter.y + delta.y);
+  map.setCenter(newCenter);
 };
 
 

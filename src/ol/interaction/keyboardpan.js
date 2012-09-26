@@ -2,7 +2,6 @@ goog.provide('ol.interaction.KeyboardPan');
 
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler.EventType');
-goog.require('ol.interaction.Constraints');
 goog.require('ol.interaction.Interaction');
 
 
@@ -10,12 +9,11 @@ goog.require('ol.interaction.Interaction');
 /**
  * @constructor
  * @extends {ol.interaction.Interaction}
- * @param {ol.interaction.Constraints} constraints Constraints.
  * @param {number} pixelDelta Pixel delta.
  */
-ol.interaction.KeyboardPan = function(constraints, pixelDelta) {
+ol.interaction.KeyboardPan = function(pixelDelta) {
 
-  goog.base(this, constraints);
+  goog.base(this);
 
   /**
    * @private
@@ -54,7 +52,10 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
         goog.asserts.assert(keyCode == goog.events.KeyCodes.UP);
         delta = new ol.Coordinate(0, mapUnitsDelta);
       }
-      this.pan(map, delta);
+      var oldCenter = map.getCenter();
+      var newCenter = new ol.Coordinate(
+          oldCenter.x + delta.x, oldCenter.y + delta.y);
+      map.setCenter(newCenter);
       keyEvent.preventDefault();
       mapBrowserEvent.preventDefault();
     }
