@@ -1,3 +1,5 @@
+// FIXME: remove constraints from here
+
 goog.provide('ol.control.Zoom');
 
 goog.require('goog.dom');
