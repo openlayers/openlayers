@@ -60,7 +60,7 @@ ol.control.DragBox.prototype.startBox = function(startCoordinate) {
   goog.asserts.assert(goog.isDef(this.startPixel_));
   goog.style.setPosition(this.divElement_, this.startPixel_);
   goog.style.setBorderBoxSize(this.divElement_, new ol.Size(0, 0));
-  goog.dom.append(map.getViewport(), this.divElement_);
+  goog.dom.append(/** @type {!Node} */ (map.getViewport()), this.divElement_);
   goog.events.listen(
       map, ol.MapBrowserEvent.EventType.DRAG,
       this.updateBox_, false, this);
