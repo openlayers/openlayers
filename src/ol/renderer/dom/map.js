@@ -118,6 +118,22 @@ ol.renderer.dom.Map.prototype.handleResolutionChanged = function() {
 
 
 /**
+ * @inheritDoc
+ */
+ol.renderer.dom.Map.prototype.handleSizeChanged = function() {
+  goog.base(this, 'handleSizeChanged');
+  var map = this.getMap();
+  if (!map.isDef()) {
+    return;
+  }
+  // FIXME: resetLayersPane_ should be called
+  // elsewhere as we may be frozen here
+  this.resetLayersPane_();
+  map.render();
+};
+
+
+/**
  * Reset the layers pane to its initial position.
  * @private
  */
