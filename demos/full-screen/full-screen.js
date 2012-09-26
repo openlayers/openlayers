@@ -4,7 +4,6 @@ goog.require('goog.debug.Logger.Level');
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.control.Zoom');
 goog.require('ol.layer.MapQuestOpenAerial');
 
