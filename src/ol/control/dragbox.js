@@ -106,7 +106,7 @@ ol.control.DragBox.prototype.finalizeBox_ = function() {
  * Removes the box from the map.
  */
 ol.control.DragBox.prototype.removeBox = function() {
-    goog.dom.removeNode(this.divElement_);
+  goog.dom.removeNode(this.divElement_);
 };
 
 
