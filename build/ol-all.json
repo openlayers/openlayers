@@ -1,0 +1,11 @@
+{
+
+  "id": "ol-all",
+
+  "inherits": "../base.json",
+
+  "inputs": [
+    "build/require-all.js"
+  ]
+
+}

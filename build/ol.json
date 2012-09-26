@@ -2,13 +2,26 @@
 
   "id": "ol",
 
+  "externs": [
+    "externs/bingmaps.js",
+    "externs/ol.js",
+    "externs/proj4js.js",
+    "externs/tilejson.js"
+  ],
+
   "inherits": "../base.json",
 
   "inputs": [
-    "build/ol-all.js",
+    "src/ol/mapoptions.js",
     "exports/ol/collection.js",
     "exports/ol/coordinate.js",
     "exports/ol/extent.js",
+    "exports/ol/layer/bingmaps.js",
+    "exports/ol/layer/mapquest.js",
+    "exports/ol/layer/openstreetmap.js",
+    "exports/ol/layer/tilejson.js",
+    "exports/ol/layer/stamen.js",
+    "exports/ol/map.js",
     "exports/ol/object.js",
     "exports/ol/projection.js"
   ],

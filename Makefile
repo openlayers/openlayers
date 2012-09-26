@@ -8,21 +8,26 @@ empty :=
 space := $(empty) $(empty)
 
 .PHONY: all
-all: build demos
+all: build-all build demos
 
 .PHONY: precommit
-precommit: lint test build
+precommit: lint build-all test build
 
 .PHONY: build
 build: build/ol.js
 
-build/ol.js: $(PLOVR_JAR) $(SRC) base.json \
-	build/ol.json build/ol-all.js
+build/ol.js: $(PLOVR_JAR) $(SRC) base.json build/ol.json
 	java -jar $(PLOVR_JAR) build build/ol.json >$@
 	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
 
-build/ol-all.js: $(SRC)
+.PHONY: build-all
+build-all: build/ol-all.js
+
+build/ol-all.js: $(PLOVR_JAR) $(SRC) base.json build/ol-all.json build/require-all.js
+	java -jar $(PLOVR_JAR) build build/ol-all.json >$@ || ( rm -f $@ ; false )
+
+build/require-all.js: $(SRC)
 	( echo "goog.require('goog.dom');" ; find src/ol -name \*.js | xargs grep -rh ^goog.provide | sort | uniq | sed -e 's/provide/require/g' ) >$@
 
 .PHONY: demos
@@ -95,8 +100,8 @@ demos/two-layers/index.html: demos/two-layers/template.html.in
 	sed -e 's|@SRC@|../loader.js?id=demo-two-layers|' $< >$@
 
 .PHONY: serve
-serve: $(PLOVR_JAR) build/ol-all.js
-	java -jar $(PLOVR_JAR) serve build/ol.json demos/*/*.json
+serve: $(PLOVR_JAR) build/require-all.js
+	java -jar $(PLOVR_JAR) serve build/*.json demos/*/*.json
 
 .PHONY: lint
 lint:
@@ -120,6 +125,7 @@ test:
 clean:
 	rm -f build/ol.js
 	rm -f build/ol-all.js
+	rm -f build/require-all.js
 	rm -f demos/*/*.html
 	rm -f demos/*/advanced-optimizations.*
 	rm -rf build/apidoc

@@ -2,6 +2,7 @@
 /build/ol.js
 /build/ol-all.js
 /build/proj4js-combined.js
+/build/require-all.js
 /build/apidoc
 /demos/*/advanced-optimizations.*
 /demos/*/build.html
