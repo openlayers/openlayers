@@ -18,8 +18,7 @@ var layers = new ol.Collection([
 
 var webglMap = new ol.Map(document.getElementById('webglMap'), {
   center: ol.Projection.transformWithCodes(
-      new ol.Coordinate(-77.93254999999999, 37.9555),
-      'EPSG:4326', 'EPSG:3857'),
+      new ol.Coordinate(-77.93255, 37.9555), 'EPSG:4326', 'EPSG:3857'),
   layers: layers,
   renderer: ol.RendererHint.WEBGL,
   zoom: 5
