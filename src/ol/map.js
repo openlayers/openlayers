@@ -77,10 +77,8 @@ ol.MapPaneZIndex = {
  * @implements {goog.fx.anim.Animated}
  * @param {Element} container Container.
  * @param {ol.MapOptionsLiteral} mapOptionsLiteral Map options literal.
- * @param {goog.dom.ViewportSizeMonitor=} opt_viewportSizeMonitor
- *     Viewport size monitor.
  */
-ol.Map = function(container, mapOptionsLiteral, opt_viewportSizeMonitor) {
+ol.Map = function(container, mapOptionsLiteral) {
 
   goog.base(this);
 
@@ -180,10 +178,8 @@ ol.Map = function(container, mapOptionsLiteral, opt_viewportSizeMonitor) {
 
   /**
    * @private
-   * @type {goog.dom.ViewportSizeMonitor}
    */
-  this.viewportSizeMonitor_ =
-      opt_viewportSizeMonitor || new goog.dom.ViewportSizeMonitor();
+  this.viewportSizeMonitor_ = new goog.dom.ViewportSizeMonitor();
 
   goog.events.listen(this.viewportSizeMonitor_, goog.events.EventType.RESIZE,
       this.handleBrowserWindowResize, false, this);

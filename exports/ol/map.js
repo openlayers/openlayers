@@ -7,10 +7,8 @@ goog.require('ol.Map');
  * @extends {ol.Map}
  * @param {Element} container Container.
  * @param {olx.MapOptionsExtern} mapOptionsExtern Map options literal.
- * @param {goog.dom.ViewportSizeMonitor=} opt_viewportSizeMonitor
- *     Viewport size monitor.
  */
-ol.MapExport = function(container, mapOptionsExtern, opt_viewportSizeMonitor) {
+ol.MapExport = function(container, mapOptionsExtern) {
 
   goog.base(this, container, {
     center: mapOptionsExtern.center,
@@ -29,7 +27,7 @@ ol.MapExport = function(container, mapOptionsExtern, opt_viewportSizeMonitor) {
     shiftDragZoom: mapOptionsExtern.shiftDragZoom,
     userProjection: mapOptionsExtern.userProjection,
     zoom: mapOptionsExtern.zoom
-  }, opt_viewportSizeMonitor);
+  });
 
 };
 goog.inherits(ol.MapExport, ol.Map);
