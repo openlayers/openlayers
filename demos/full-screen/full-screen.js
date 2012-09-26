@@ -5,6 +5,7 @@ goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
+goog.require('ol.control.Zoom');
 goog.require('ol.layer.MapQuestOpenAerial');
 
 
@@ -20,3 +21,4 @@ var map = new ol.Map(document.getElementById('map'), {
   layers: new ol.Collection([layer]),
   zoom: 0
 });
+var zoom = new ol.control.Zoom(map, layer.getStore().getResolutions());
