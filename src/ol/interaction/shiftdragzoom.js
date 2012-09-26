@@ -68,7 +68,6 @@ ol.interaction.ShiftDragZoom.prototype.handleDragStart =
   if (browserEvent.isMouseActionButton() && browserEvent.shiftKey) {
     this.dragBox_ =
         new ol.control.DragBox(mapBrowserEvent.map, this.startCoordinate);
-    browserEvent.preventDefault();
     return true;
   } else {
     return false;

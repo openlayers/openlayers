@@ -40,7 +40,6 @@ ol.interaction.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
 ol.interaction.DragPan.prototype.handleDragStart = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   if (!browserEvent.shiftKey) {
-    browserEvent.preventDefault();
     return true;
   } else {
     return false;

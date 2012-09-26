@@ -52,7 +52,6 @@ ol.interaction.AltDragRotate.prototype.handleDragStart =
         size.height / 2 - browserEvent.offsetY,
         browserEvent.offsetX - size.width / 2);
     this.startRotation_ = (map.getRotation() || 0) + theta;
-    browserEvent.preventDefault();
     return true;
   } else {
     return false;

@@ -67,7 +67,6 @@ ol.interaction.ShiftDragRotateAndZoom.prototype.handleDragStart =
     var theta = Math.atan2(delta.y, delta.x);
     this.startRotation_ = (map.getRotation() || 0) + theta;
     this.startRatio_ = resolution / delta.magnitude();
-    browserEvent.preventDefault();
     return true;
   } else {
     return false;
