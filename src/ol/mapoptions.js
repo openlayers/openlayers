@@ -4,17 +4,17 @@ goog.provide('ol.MapOptionsType');
 goog.provide('ol.RendererHint');
 
 goog.require('ol.Collection');
+goog.require('ol.Constraints');
 goog.require('ol.Projection');
+goog.require('ol.ResolutionConstraint');
+goog.require('ol.RotationConstraint');
 goog.require('ol.interaction.AltDragRotate');
 goog.require('ol.interaction.CenterConstraint');
-goog.require('ol.interaction.Constraints');
 goog.require('ol.interaction.DblClickZoom');
 goog.require('ol.interaction.DragPan');
 goog.require('ol.interaction.KeyboardPan');
 goog.require('ol.interaction.KeyboardZoom');
 goog.require('ol.interaction.MouseWheelZoom');
-goog.require('ol.interaction.ResolutionConstraint');
-goog.require('ol.interaction.RotationConstraint');
 goog.require('ol.interaction.ShiftDragZoom');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.dom');
@@ -152,7 +152,7 @@ ol.MapOptions.create = function(mapOptionsLiteral) {
   }
 
   /**
-   * @type {ol.interaction.Constraints}
+   * @type {ol.Constraints}
    */
   var constraints = ol.MapOptions.createConstraints_(mapOptionsLiteral);
 
@@ -168,16 +168,14 @@ ol.MapOptions.create = function(mapOptionsLiteral) {
 /**
  * @private
  * @param {ol.MapOptionsLiteral} mapOptionsLiteral Map options literal.
- * @return {ol.interaction.Constraints} Map constraints.
+ * @return {ol.Constraints} Map constraints.
  */
 ol.MapOptions.createConstraints_ = function(mapOptionsLiteral) {
   // FIXME this should be configurable
-  var resolutionConstraint =
-      ol.interaction.ResolutionConstraint.createSnapToPower(
-          Math.exp(Math.log(2) / 4), ol.Projection.EPSG_3857_HALF_SIZE / 128);
-  var rotationConstraint = ol.interaction.RotationConstraint.none;
-  return new ol.interaction.Constraints(
-      resolutionConstraint, rotationConstraint);
+  var resolutionConstraint = ol.ResolutionConstraint.createSnapToPower(
+      Math.exp(Math.log(2) / 4), ol.Projection.EPSG_3857_HALF_SIZE / 128);
+  var rotationConstraint = ol.RotationConstraint.none;
+  return new ol.Constraints(resolutionConstraint, rotationConstraint);
 };
 
 

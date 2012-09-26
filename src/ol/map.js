@@ -26,6 +26,7 @@ goog.require('goog.fx.anim.Animated');
 goog.require('goog.object');
 goog.require('ol.Collection');
 goog.require('ol.Color');
+goog.require('ol.Constraints');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.MapBrowserEvent');
@@ -34,7 +35,6 @@ goog.require('ol.Pixel');
 goog.require('ol.Projection');
 goog.require('ol.Size');
 goog.require('ol.TransformFunction');
-goog.require('ol.interaction.Constraints');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.renderer.Layer');
 
@@ -139,8 +139,7 @@ ol.Map = function(container, mapOptionsLiteral, opt_viewportSizeMonitor) {
 
   /**
    * @private
-   * FIXME change ol.interaction.Constraints -> ol.Constraints
-   * @type {ol.interaction.Constraints}
+   * @type {ol.Constraints}
    */
   this.constraints_ = mapOptions.constraints;
 
