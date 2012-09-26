@@ -9,10 +9,10 @@ goog.require('ol.Projection');
 goog.require('ol.Size');
 goog.require('ol.TileCoord');
 goog.require('ol.TileGrid');
-goog.require('ol.TileLayer');
 goog.require('ol.TileSource');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.layer.Layer');
+goog.require('ol.layer.TileLayer');
 
 
 
@@ -67,7 +67,7 @@ ol.tilegrid.XYZ.prototype.forEachTileCoordParentTileRange =
 
 /**
  * @constructor
- * @extends {ol.TileLayer}
+ * @extends {ol.layer.TileLayer}
  * @param {number} maxZoom Maximum zoom.
  * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
  * @param {Array.<ol.Attribution>=} opt_attributions Attributions.
@@ -80,7 +80,7 @@ ol.layer.XYZ = function(
       maxZoom, tileUrlFunction, opt_attributions, opt_crossOrigin);
   goog.base(this, tileSource, opt_values);
 };
-goog.inherits(ol.layer.XYZ, ol.TileLayer);
+goog.inherits(ol.layer.XYZ, ol.layer.TileLayer);
 
 
 

@@ -6,8 +6,8 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.net.Jsonp');
 goog.require('ol.TileCoverageArea');
-goog.require('ol.TileLayer');
 goog.require('ol.TileSource');
+goog.require('ol.layer.TileLayer');
 goog.require('ol.tilegrid.XYZ');
 
 
@@ -26,7 +26,7 @@ ol.BingMapsStyle = {
 
 /**
  * @constructor
- * @extends {ol.TileLayer}
+ * @extends {ol.layer.TileLayer}
  * @param {ol.BingMapsStyle} style Bing Maps style.
  * @param {string} key Key.
  * @param {string=} opt_culture Culture.
@@ -39,7 +39,7 @@ ol.layer.BingMaps = function(style, key, opt_culture, opt_values) {
       }, this);
   goog.base(this, tileSource, opt_values);
 };
-goog.inherits(ol.layer.BingMaps, ol.TileLayer);
+goog.inherits(ol.layer.BingMaps, ol.layer.TileLayer);
 
 
 

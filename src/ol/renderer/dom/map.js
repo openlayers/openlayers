@@ -8,7 +8,7 @@ goog.require('goog.events.Event');
 goog.require('goog.style');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
-goog.require('ol.TileLayer');
+goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.dom.TileLayer');
 
@@ -61,7 +61,7 @@ goog.inherits(ol.renderer.dom.Map, ol.renderer.Map);
  */
 ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
 
-  if (layer instanceof ol.TileLayer) {
+  if (layer instanceof ol.layer.TileLayer) {
 
     var layerPane = goog.dom.createElement(goog.dom.TagName.DIV);
     layerPane.className = 'ol-layer';

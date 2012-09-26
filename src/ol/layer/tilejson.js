@@ -15,9 +15,9 @@ goog.require('goog.events.EventType');
 goog.require('goog.net.jsloader');
 goog.require('goog.string');
 goog.require('ol.TileCoverageArea');
-goog.require('ol.TileLayer');
 goog.require('ol.TileSource');
 goog.require('ol.TileUrlFunction');
+goog.require('ol.layer.TileLayer');
 
 
 /**
@@ -39,7 +39,7 @@ goog.exportSymbol('grid', grid);
 
 /**
  * @constructor
- * @extends {ol.TileLayer}
+ * @extends {ol.layer.TileLayer}
  * @param {string} url URL.
  * @param {Object.<string, *>=} opt_values Values.
  */
@@ -50,7 +50,7 @@ ol.layer.TileJSON = function(url, opt_values) {
   }, this);
   goog.base(this, tileSource, opt_values);
 };
-goog.inherits(ol.layer.TileJSON, ol.TileLayer);
+goog.inherits(ol.layer.TileJSON, ol.layer.TileLayer);
 
 
 

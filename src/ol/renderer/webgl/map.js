@@ -18,8 +18,8 @@ goog.require('goog.functions');
 goog.require('goog.style');
 goog.require('goog.webgl');
 goog.require('ol.Map');
-goog.require('ol.TileLayer');
 goog.require('ol.layer.Layer');
+goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.webgl.FragmentShader');
 goog.require('ol.renderer.webgl.TileLayer');
 goog.require('ol.renderer.webgl.VertexShader');
@@ -305,7 +305,7 @@ ol.renderer.webgl.Map.prototype.canRotate = goog.functions.TRUE;
  */
 ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
   var gl = this.getGL();
-  if (layer instanceof ol.TileLayer) {
+  if (layer instanceof ol.layer.TileLayer) {
     return new ol.renderer.webgl.TileLayer(this, layer);
   } else {
     goog.asserts.assert(false);

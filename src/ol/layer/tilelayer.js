@@ -1,4 +1,4 @@
-goog.provide('ol.TileLayer');
+goog.provide('ol.layer.TileLayer');
 
 goog.require('ol.TileSource');
 goog.require('ol.layer.Layer');
@@ -11,16 +11,16 @@ goog.require('ol.layer.Layer');
  * @param {ol.TileSource} tileSource Tile source.
  * @param {Object.<string, *>=} opt_values Values.
  */
-ol.TileLayer = function(tileSource, opt_values) {
+ol.layer.TileLayer = function(tileSource, opt_values) {
   goog.base(this, tileSource, opt_values);
 };
-goog.inherits(ol.TileLayer, ol.layer.Layer);
+goog.inherits(ol.layer.TileLayer, ol.layer.Layer);
 
 
 /**
  * @inheritDoc
  * @return {ol.TileSource} Source.
  */
-ol.TileLayer.prototype.getSource = function() {
+ol.layer.TileLayer.prototype.getSource = function() {
   return /** @type {ol.TileSource} */ goog.base(this, 'getSource');
 };

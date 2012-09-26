@@ -17,8 +17,8 @@ goog.require('goog.webgl');
 goog.require('ol.Coordinate');
 goog.require('ol.MapEventType');
 goog.require('ol.Size');
-goog.require('ol.TileLayer');
 goog.require('ol.TileState');
+goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.webgl.FragmentShader');
 goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.renderer.webgl.VertexShader');
@@ -81,7 +81,7 @@ goog.addSingletonGetter(ol.renderer.webgl.tilelayerrenderer.shader.Vertex);
  * @constructor
  * @extends {ol.renderer.webgl.Layer}
  * @param {ol.renderer.Map} mapRenderer Map renderer.
- * @param {ol.TileLayer} tileLayer Tile layer.
+ * @param {ol.layer.TileLayer} tileLayer Tile layer.
  */
 ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
 
@@ -253,11 +253,11 @@ ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
 
 
 /**
- * @return {ol.TileLayer} Layer.
+ * @return {ol.layer.TileLayer} Layer.
  * @inheritDoc
  */
 ol.renderer.webgl.TileLayer.prototype.getLayer = function() {
-  return /** @type {ol.TileLayer} */ goog.base(this, 'getLayer');
+  return /** @type {ol.layer.TileLayer} */ goog.base(this, 'getLayer');
 };
 
 

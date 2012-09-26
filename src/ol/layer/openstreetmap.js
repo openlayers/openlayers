@@ -1,22 +1,22 @@
 goog.provide('ol.layer.OpenStreetMap');
 goog.provide('ol.source.OpenStreetMap');
 
-goog.require('ol.TileLayer');
 goog.require('ol.TileUrlFunction');
+goog.require('ol.layer.TileLayer');
 goog.require('ol.tilesource.XYZ');
 
 
 
 /**
  * @constructor
- * @extends {ol.TileLayer}
+ * @extends {ol.layer.TileLayer}
  * @param {Object.<string, *>=} opt_values Values.
  */
 ol.layer.OpenStreetMap = function(opt_values) {
   var tileSource = new ol.source.OpenStreetMap();
   goog.base(this, tileSource, opt_values);
 };
-goog.inherits(ol.layer.OpenStreetMap, ol.TileLayer);
+goog.inherits(ol.layer.OpenStreetMap, ol.layer.TileLayer);
 
 
 

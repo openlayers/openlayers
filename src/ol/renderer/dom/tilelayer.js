@@ -15,7 +15,7 @@ goog.require('ol.renderer.dom.Layer');
  * @constructor
  * @extends {ol.renderer.dom.Layer}
  * @param {ol.renderer.Map} mapRenderer Map renderer.
- * @param {ol.TileLayer} tileLayer Tile layer.
+ * @param {ol.layer.TileLayer} tileLayer Tile layer.
  * @param {!Element} target Target.
  */
 ol.renderer.dom.TileLayer = function(mapRenderer, tileLayer, target) {
@@ -58,10 +58,10 @@ goog.inherits(ol.renderer.dom.TileLayer, ol.renderer.dom.Layer);
 
 /**
  * @inheritDoc
- * @return {ol.TileLayer} Layer.
+ * @return {ol.layer.TileLayer} Layer.
  */
 ol.renderer.dom.TileLayer.prototype.getLayer = function() {
-  return /** @type {ol.TileLayer} */ goog.base(this, 'getLayer');
+  return /** @type {ol.layer.TileLayer} */ goog.base(this, 'getLayer');
 };
 
 
