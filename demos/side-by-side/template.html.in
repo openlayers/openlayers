@@ -67,7 +67,6 @@
             </tr>
         </table>
         <p><b>Notes:</b> The two maps share the same center, resolution, rotation and layers.  Currently the DOM map does not support rotation.</p>
-        <p><b>Console tips:</b> If you want to play around with the API in the console, first make sure that you're using the <a href="simple-optimizations.html">simple optimizations version</a> of this demo, then open a console and experiment with the <code>domMap</code>, <code>webglMap</code> and <code>layer</code> variables in the console. The source code is in <a href="side-by-side.js">side-by-side.js</a>.</p>
         <script src="@SRC@" type="text/javascript"></script>
     </body>
 </html>

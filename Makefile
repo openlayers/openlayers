@@ -2,7 +2,7 @@ JSDOC = jsdoc
 PHANTOMJS = phantomjs
 PLOVR_JAR = bin/plovr-b254c26318c5.jar
 SRC = $(shell find exports externs src/ol -name \*.js)
-TARGETS = $(shell find demos -name advanced-optimizations.js -o -name simple-optimizations.js)
+TARGETS = $(shell find demos -name advanced-optimizations.js)
 comma := ,
 empty :=
 space := $(empty) $(empty)
@@ -43,9 +43,7 @@ demos/proj4js/index.html: demos/proj4js/template.html.in
 demos/full-screen: \
 	demos/full-screen/advanced-optimizations.html \
 	demos/full-screen/advanced-optimizations.js \
-	demos/full-screen/index.html \
-	demos/full-screen/simple-optimizations.html \
-	demos/full-screen/simple-optimizations.js
+	demos/full-screen/index.html
 
 demos/full-screen/advanced-optimizations.html: demos/full-screen/template.html.in
 	sed -e 's|@SRC@|advanced-optimizations.js|' $< > $@
@@ -59,24 +57,12 @@ demos/full-screen/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
 demos/full-screen/index.html: demos/full-screen/template.html.in
 	sed -e 's|@SRC@|../loader.js?id=demo-full-screen|' $< > $@
 
-demos/full-screen/simple-optimizations.html: demos/full-screen/template.html.in
-	sed -e 's|@SRC@|simple-optimizations.js|' $< > $@
-
-# FIXME invoke plovr directly, rather than assuming that the server is running
-demos/full-screen/simple-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
-	demos/full-screen/full-screen.json demos/full-screen/full-screen.js
-	curl 'http://localhost:9810/compile?id=demo-full-screen&mode=SIMPLE' > $@
-	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
-	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
-
 
 .PHONY: demos/side-by-side
 demos/side-by-side: \
 	demos/side-by-side/advanced-optimizations.html \
 	demos/side-by-side/advanced-optimizations.js \
-	demos/side-by-side/index.html \
-	demos/side-by-side/simple-optimizations.html \
-	demos/side-by-side/simple-optimizations.js
+	demos/side-by-side/index.html
 
 demos/side-by-side/advanced-optimizations.html: demos/side-by-side/template.html.in
 	sed -e 's|@SRC@|advanced-optimizations.js|' $< > $@
@@ -90,23 +76,11 @@ demos/side-by-side/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
 demos/side-by-side/index.html: demos/side-by-side/template.html.in
 	sed -e 's|@SRC@|../loader.js?id=demo-side-by-side|' $< > $@
 
-demos/side-by-side/simple-optimizations.html: demos/side-by-side/template.html.in
-	sed -e 's|@SRC@|simple-optimizations.js|' $< > $@
-
-# FIXME invoke plovr directly, rather than assuming that the server is running
-demos/side-by-side/simple-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
-	demos/side-by-side/side-by-side.json demos/side-by-side/side-by-side.js
-	curl 'http://localhost:9810/compile?id=demo-side-by-side&mode=SIMPLE' > $@
-	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
-	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
-
 .PHONY: demos/two-layers
 demos/two-layers: \
 	demos/two-layers/advanced-optimizations.html \
 	demos/two-layers/advanced-optimizations.js \
-	demos/two-layers/index.html \
-	demos/two-layers/simple-optimizations.html \
-	demos/two-layers/simple-optimizations.js
+	demos/two-layers/index.html
 
 demos/two-layers/advanced-optimizations.html: demos/two-layers/template.html.in
 	sed -e 's|@SRC@|advanced-optimizations.js|' $< > $@
@@ -119,16 +93,6 @@ demos/two-layers/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
 
 demos/two-layers/index.html: demos/two-layers/template.html.in
 	sed -e 's|@SRC@|../loader.js?id=demo-two-layers|' $< > $@
-
-demos/two-layers/simple-optimizations.html: demos/two-layers/template.html.in
-	sed -e 's|@SRC@|simple-optimizations.js|' $< > $@
-
-# FIXME invoke plovr directly, rather than assuming that the server is running
-demos/two-layers/simple-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
-	demos/two-layers/two-layers.json demos/two-layers/two-layers.js
-	curl 'http://localhost:9810/compile?id=demo-two-layers&mode=SIMPLE' > $@
-	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
-	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
 
 .PHONY: serve
 serve: $(PLOVR_JAR) build/ol-all.js
@@ -158,7 +122,6 @@ clean:
 	rm -f build/ol-all.js
 	rm -f demos/*/*.html
 	rm -f demos/*/advanced-optimizations.*
-	rm -f demos/*/simple-optimizations.*
 	rm -rf build/apidoc
 
 reallyclean: clean
