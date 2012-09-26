@@ -85,21 +85,16 @@ ol.renderer.dom.TileLayer.prototype.getTileOffset_ = function(z, resolution) {
 
 
 /**
- * Get rid of tiles outside the rendered extent.
+ * Get rid of tiles that are not at the currently rendered z.
  * @private
  */
-ol.renderer.dom.TileLayer.prototype.removeInvisibleTiles_ = function() {
+ol.renderer.dom.TileLayer.prototype.removeAltZTiles_ = function() {
   var tileRange = this.renderedTileRange_;
   var z = this.renderedZ_;
-  var key, tileCoord, prune, tile;
+  var key, tileCoord, tile;
   for (key in this.renderedTiles_) {
     tileCoord = ol.TileCoord.createFromString(key);
-    prune = z !== tileCoord.z ||
-            tileCoord.x < tileRange.minX ||
-            tileCoord.x > tileRange.maxX ||
-            tileCoord.y < tileRange.minY ||
-            tileCoord.y > tileRange.maxY;
-    if (prune) {
+    if (tileCoord.z !== z) {
       tile = this.renderedTiles_[key];
       delete this.renderedTiles_[key];
       goog.dom.removeNode(tile.getImage(this));
@@ -107,6 +102,30 @@ ol.renderer.dom.TileLayer.prototype.removeInvisibleTiles_ = function() {
   }
 };
 
+/**
+ * Get rid of tiles outside the rendered extent.  Only removes tiles at the 
+ * currently rendered z.
+ * @private
+ */
+ol.renderer.dom.TileLayer.prototype.removeOutOfRangeTiles_ = function() {
+  var tileRange = this.renderedTileRange_;
+  var z = this.renderedZ_;
+  var key, tileCoord, prune, tile;
+  for (key in this.renderedTiles_) {
+    tileCoord = ol.TileCoord.createFromString(key);
+    if (tileCoord.z === z) {
+      prune = tileCoord.x < tileRange.minX ||
+            tileCoord.x > tileRange.maxX ||
+            tileCoord.y < tileRange.minY ||
+            tileCoord.y > tileRange.maxY;
+      if (prune) {
+        tile = this.renderedTiles_[key];
+        delete this.renderedTiles_[key];
+        goog.dom.removeNode(tile.getImage(this));
+      }
+    }
+  }
+};
 
 /**
  * @param {goog.events.Event} event Tile change event.
@@ -126,7 +145,7 @@ ol.renderer.dom.TileLayer.prototype.handleTileChange_ = function(event) {
       break;
     }
     if (loaded) {
-      this.removeInvisibleTiles_();
+      this.removeAltZTiles_();
     }
   }
 };
@@ -169,7 +188,6 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
   // first pass through the tile range to determine all the tiles needed
   var allTilesLoaded = true;
   tileRange.forEachTileCoord(z, function(tileCoord) {
-
     var tile = tileStore.getTile(tileCoord);
     if (goog.isNull(tile)) {
       // we're outside the store's extent, continue
@@ -185,17 +203,19 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
         goog.events.listen(tile, goog.events.EventType.CHANGE,
             this.handleTileChange_, false, this);
         this.loadingTiles_[key] = tile;
-        allTilesLoaded = false;
         tile.load();
       }
+      allTilesLoaded = false;
       // TODO: only append after load?
       tilesToDrawByZ[z][key] = tile;
     }
 
     /**
-     * Look for already loaded tiles that can serve as placeholders.
+     * Look for already loaded tiles at alternate z that can serve as 
+     * placeholders until tiles at the current z have loaded.
+     *
+     * TODO: make this more efficent for filling partial holes
      */
-    // FIXME this could be more efficient about filling partial holes
     tileGrid.forEachTileCoordParentTileRange(
         tileCoord,
         function(altZ, altTileRange) {
@@ -239,6 +259,7 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
       var img = tile.getImage(this);
       var style = img.style;
       // TODO: use translate method
+      // TODO: only set this when changed (z change)
       style.left = (pixelBounds.minX - tileOffset.x) + 'px';
       style.top = (-pixelBounds.maxY - tileOffset.y) + 'px';
       style.width = pixelBounds.getWidth() + 'px';
@@ -256,11 +277,12 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
     goog.dom.appendChild(this.target, fragment);
   }
 
-  if (allTilesLoaded) {
-    this.removeInvisibleTiles_();
-  }
-
   this.renderedTileRange_ = tileRange;
   this.renderedZ_ = z;
   this.renderedMapResolution_ = mapResolution;
+
+  if (allTilesLoaded) {
+    this.removeAltZTiles_();
+  }
+  this.removeOutOfRangeTiles_();
 };
