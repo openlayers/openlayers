@@ -216,6 +216,7 @@ ol.MapBrowserEventHandler.prototype.dragstart_ = function(browserEvent) {
           this.dragend_, false, this)
     ];
     if (browserEvent.type === goog.events.EventType.MOUSEDOWN) {
+      // prevent browser image dragging on pointer devices
       browserEvent.preventDefault();
     }
     var newEvent = new ol.MapBrowserEvent(
