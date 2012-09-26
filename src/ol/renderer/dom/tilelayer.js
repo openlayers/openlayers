@@ -164,6 +164,7 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
   }
   var mapExtent = /** @type {!ol.Extent} */ map.getExtent();
   var mapResolution = /** @type {number} */ map.getResolution();
+  var resolutionChanged = (mapResolution !== this.renderedMapResolution_);
 
   var tileLayer = this.getLayer();
   var tileStore = tileLayer.getStore();
@@ -264,11 +265,14 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
       var style = img.style;
       // TODO: use translate method
       // TODO: only set this when changed (z change)
-      style.left = (pixelBounds.minX - tileOffset.x) + 'px';
-      style.top = (-pixelBounds.maxY - tileOffset.y) + 'px';
-      style.width = pixelBounds.getWidth() + 'px';
-      style.height = pixelBounds.getHeight() + 'px';
-      if (!(key in this.renderedTiles_)) {
+      var append = !(key in this.renderedTiles_);
+      if (append || resolutionChanged) {
+        style.left = (pixelBounds.minX - tileOffset.x) + 'px';
+        style.top = (-pixelBounds.maxY - tileOffset.y) + 'px';
+        style.width = pixelBounds.getWidth() + 'px';
+        style.height = pixelBounds.getHeight() + 'px';
+      }
+      if (append) {
         this.renderedTiles_[key] = tile;
         style.position = 'absolute';
         if (tileZ === z) {
