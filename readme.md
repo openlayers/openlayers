@@ -1,6 +1,6 @@
 # OpenLayers 3
 
-![Travis CI Status](https://secure.travis-ci.org/openlayers/ol3.png)
+[![Travis CI Status](https://secure.travis-ci.org/openlayers/ol3.png)](http://travis-ci.org/#!/openlayers/ol3)
 
 ## Build it
 
