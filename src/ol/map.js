@@ -459,7 +459,6 @@ ol.Map.prototype.getUserExtent = function() {
 
 
 /**
- * @export
  * @return {ol.Projection|undefined} Projection.
  */
 ol.Map.prototype.getUserProjection = function() {
@@ -662,7 +661,6 @@ goog.exportProperty(
 
 
 /**
- * @export
  * @param {ol.Collection} layers Layers.
  */
 ol.Map.prototype.setLayers = function(layers) {
@@ -675,7 +673,6 @@ goog.exportProperty(
 
 
 /**
- * @export
  * @param {ol.Projection} projection Projection.
  */
 ol.Map.prototype.setProjection = function(projection) {
@@ -688,7 +685,6 @@ goog.exportProperty(
 
 
 /**
- * @export
  * @param {number|undefined} resolution Resolution.
  */
 ol.Map.prototype.setResolution = function(resolution) {
@@ -701,7 +697,6 @@ goog.exportProperty(
 
 
 /**
- * @export
  * @param {number|undefined} rotation Rotation.
  */
 ol.Map.prototype.setRotation = function(rotation) {
@@ -729,7 +724,6 @@ goog.exportProperty(
 
 
 /**
- * @export
  * @param {ol.Coordinate} userCenter Center in user projection.
  */
 ol.Map.prototype.setUserCenter = function(userCenter) {
@@ -742,7 +736,6 @@ goog.exportProperty(
 
 
 /**
- * @export
  * @param {ol.Projection} userProjection User projection.
  */
 ol.Map.prototype.setUserProjection = function(userProjection) {
