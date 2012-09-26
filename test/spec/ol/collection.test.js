@@ -1,7 +1,3 @@
-goog.require('goog.array');
-goog.require('ol.Collection');
-goog.require('ol.CollectionEventType');
-
 describe('ol.collection', function() {
   var collection;
 
@@ -235,3 +231,7 @@ describe('ol.collection', function() {
     });
   });
 });
+
+goog.require('goog.array');
+goog.require('ol.Collection');
+goog.require('ol.CollectionEventType');

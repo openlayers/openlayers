@@ -1,6 +1,3 @@
-goog.require('ol.Extent');
-goog.require('ol.Projection');
-
 describe('ol.Extent', function() {
 
   describe('contains', function() {
@@ -60,3 +57,6 @@ describe('ol.Extent', function() {
     });
   });
 });
+
+goog.require('ol.Extent');
+goog.require('ol.Projection');

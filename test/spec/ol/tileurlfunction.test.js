@@ -1,6 +1,3 @@
-goog.require('ol.TileCoord');
-goog.require('ol.TileUrlFunction');
-
 describe('ol.TileUrlFunction', function() {
 
   describe('createFromTemplate', function() {
@@ -36,3 +33,6 @@ describe('ol.TileUrlFunction', function() {
     });
   });
 });
+
+goog.require('ol.TileCoord');
+goog.require('ol.TileUrlFunction');

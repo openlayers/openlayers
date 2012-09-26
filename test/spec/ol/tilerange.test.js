@@ -1,5 +1,3 @@
-goog.require('ol.TileRange');
-
 describe('ol.TileRange', function() {
 
   describe('contains', function() {
@@ -92,3 +90,5 @@ describe('ol.TileRange', function() {
   });
 
 });
+
+goog.require('ol.TileRange');

@@ -1,8 +1,3 @@
-goog.require('ol.Coordinate');
-goog.require('ol.TileCoord');
-goog.require('ol.TileUrlFunction');
-goog.require('ol.tilestore.XYZ');
-
 describe('ol.tilestore.XYZ', function() {
 
   describe('getTileCoordUrl', function() {
@@ -125,3 +120,8 @@ describe('ol.tilestore.XYZ', function() {
   });
 
 });
+
+goog.require('ol.Coordinate');
+goog.require('ol.TileCoord');
+goog.require('ol.TileUrlFunction');
+goog.require('ol.tilestore.XYZ');

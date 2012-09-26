@@ -1,6 +1,3 @@
-goog.require('ol.Coordinate');
-goog.require('ol.Rectangle');
-
 describe('ol.Rectangle', function() {
 
   describe('getCenter', function() {
@@ -100,3 +97,6 @@ describe('ol.Rectangle', function() {
   });
 
 });
+
+goog.require('ol.Coordinate');
+goog.require('ol.Rectangle');

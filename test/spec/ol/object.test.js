@@ -1,5 +1,3 @@
-goog.require('ol.Object');
-
 describe('ol.Object', function() {
 
   var o;
@@ -367,3 +365,5 @@ describe('ol.Object', function() {
     });
   });
 });
+
+goog.require('ol.Object');

@@ -1,9 +1,3 @@
-goog.require('ol.Coordinate');
-goog.require('ol.Extent');
-goog.require('ol.Size');
-goog.require('ol.TileCoord');
-goog.require('ol.TileGrid');
-
 describe('ol.TileGrid', function() {
   var extent;
   var resolutions;
@@ -466,3 +460,9 @@ describe('ol.TileGrid', function() {
   });
 
 });
+
+goog.require('ol.Coordinate');
+goog.require('ol.Extent');
+goog.require('ol.Size');
+goog.require('ol.TileCoord');
+goog.require('ol.TileGrid');

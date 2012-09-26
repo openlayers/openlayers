@@ -1,5 +1,3 @@
-goog.require('ol.interaction.ResolutionConstraint');
-
 describe('ol.interaction.ResolutionConstraint', function() {
 
   describe('SnapToResolution', function() {
@@ -185,3 +183,5 @@ describe('ol.interaction.ResolutionConstraint', function() {
     });
   });
 });
+
+goog.require('ol.interaction.ResolutionConstraint');

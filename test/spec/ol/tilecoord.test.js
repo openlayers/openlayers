@@ -1,5 +1,3 @@
-goog.require('ol.TileCoord');
-
 describe('ol.TileCoord', function() {
 
   describe('create', function() {
@@ -46,3 +44,5 @@ describe('ol.TileCoord', function() {
     });
   });
 });
+
+goog.require('ol.TileCoord');

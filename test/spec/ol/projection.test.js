@@ -1,7 +1,3 @@
-goog.require('goog.array');
-goog.require('ol.Coordinate');
-goog.require('ol.Projection');
-
 describe('ol.Projection', function() {
 
   describe('projection equivalence', function() {
@@ -101,3 +97,7 @@ describe('ol.Projection', function() {
     });
   });
 });
+
+goog.require('goog.array');
+goog.require('ol.Coordinate');
+goog.require('ol.Projection');

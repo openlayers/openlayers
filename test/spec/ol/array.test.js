@@ -1,5 +1,3 @@
-goog.require('ol.array');
-
 describe('ol.array', function() {
 
   describe('binaryFindNearest', function() {
@@ -46,3 +44,5 @@ describe('ol.array', function() {
     });
   });
 });
+
+goog.require('ol.array');
