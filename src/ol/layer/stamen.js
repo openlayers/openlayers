@@ -1,7 +1,7 @@
 // FIXME Configure minZoom when supported by TileGrid
 
 goog.provide('ol.layer.Stamen');
-goog.provide('ol.store.Stamen');
+goog.provide('ol.source.Stamen');
 
 goog.require('ol.TileUrlFunction');
 goog.require('ol.layer.XYZ');

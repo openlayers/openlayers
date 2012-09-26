@@ -21,4 +21,4 @@ var map = new ol.Map(document.getElementById('map'), {
   layers: new ol.Collection([layer]),
   zoom: 0
 });
-var zoom = new ol.control.Zoom(map, layer.getStore().getResolutions());
+var zoom = new ol.control.Zoom(map, layer.getSource().getResolutions());

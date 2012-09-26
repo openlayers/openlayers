@@ -74,8 +74,8 @@ ol.renderer.dom.TileLayer.prototype.getLayer = function() {
  */
 ol.renderer.dom.TileLayer.prototype.getTileOffset_ = function(z, resolution) {
   var tileLayer = this.getLayer();
-  var tileStore = tileLayer.getStore();
-  var tileGrid = tileStore.getTileGrid();
+  var tileSource = tileLayer.getSource();
+  var tileGrid = tileSource.getTileGrid();
   var tileOrigin = tileGrid.getOrigin(z);
   var offset = new ol.Coordinate(
       Math.round((this.origin.x - tileOrigin.x) / resolution),
@@ -167,8 +167,8 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
   var resolutionChanged = (mapResolution !== this.renderedMapResolution_);
 
   var tileLayer = this.getLayer();
-  var tileStore = tileLayer.getStore();
-  var tileGrid = tileStore.getTileGrid();
+  var tileSource = tileLayer.getSource();
+  var tileGrid = tileSource.getTileGrid();
 
   // z represents the "best" resolution
   var z = tileGrid.getZForResolution(mapResolution);
@@ -191,9 +191,9 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
   // first pass through the tile range to determine all the tiles needed
   var allTilesLoaded = true;
   tileRange.forEachTileCoord(z, function(tileCoord) {
-    var tile = tileStore.getTile(tileCoord);
+    var tile = tileSource.getTile(tileCoord);
     if (goog.isNull(tile)) {
-      // we're outside the store's extent, continue
+      // we're outside the source's extent, continue
       return;
     }
 
@@ -228,7 +228,7 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
             if (tilesToDrawByZ[altZ] && tilesToDrawByZ[altZ][tileKey]) {
               return;
             }
-            var altTile = tileStore.getTile(altTileCoord);
+            var altTile = tileSource.getTile(altTileCoord);
             if (!goog.isNull(altTile) &&
                 altTile.getState() == ol.TileState.LOADED) {
               if (!(altZ in tilesToDrawByZ)) {

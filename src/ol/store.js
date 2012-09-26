@@ -1,4 +1,4 @@
-goog.provide('ol.Store');
+goog.provide('ol.Source');
 
 goog.require('goog.functions');
 goog.require('ol.Attribution');
@@ -13,7 +13,7 @@ goog.require('ol.Projection');
  * @param {ol.Extent=} opt_extent Extent.
  * @param {Array.<ol.Attribution>=} opt_attributions Attributions.
  */
-ol.Store = function(projection, opt_extent, opt_attributions) {
+ol.Source = function(projection, opt_extent, opt_attributions) {
 
   /**
    * @private
@@ -39,7 +39,7 @@ ol.Store = function(projection, opt_extent, opt_attributions) {
 /**
  * @return {Array.<ol.Attribution>} Attributions.
  */
-ol.Store.prototype.getAttributions = function() {
+ol.Source.prototype.getAttributions = function() {
   return this.attributions_;
 };
 
@@ -47,7 +47,7 @@ ol.Store.prototype.getAttributions = function() {
 /**
  * @return {ol.Extent} Extent.
  */
-ol.Store.prototype.getExtent = function() {
+ol.Source.prototype.getExtent = function() {
   return this.extent_;
 };
 
@@ -55,7 +55,7 @@ ol.Store.prototype.getExtent = function() {
 /**
  * @return {ol.Projection} Projection.
  */
-ol.Store.prototype.getProjection = function() {
+ol.Source.prototype.getProjection = function() {
   return this.projection_;
 };
 
@@ -63,19 +63,19 @@ ol.Store.prototype.getProjection = function() {
 /**
  * @return {Array.<number>|undefined} Resolutions.
  */
-ol.Store.prototype.getResolutions = goog.abstractMethod;
+ol.Source.prototype.getResolutions = goog.abstractMethod;
 
 
 /**
  * @return {boolean} Is ready.
  */
-ol.Store.prototype.isReady = goog.functions.TRUE;
+ol.Source.prototype.isReady = goog.functions.TRUE;
 
 
 /**
  * @param {Array.<ol.Attribution>} attributions Attributions.
  */
-ol.Store.prototype.setAttributions = function(attributions) {
+ol.Source.prototype.setAttributions = function(attributions) {
   this.attributions_ = attributions;
 };
 
@@ -83,7 +83,7 @@ ol.Store.prototype.setAttributions = function(attributions) {
 /**
  * @param {ol.Extent} extent Extent.
  */
-ol.Store.prototype.setExtent = function(extent) {
+ol.Source.prototype.setExtent = function(extent) {
   this.extent_ = extent;
 };
 
@@ -91,6 +91,6 @@ ol.Store.prototype.setExtent = function(extent) {
 /**
  * @param {ol.Projection} projection Projetion.
  */
-ol.Store.prototype.setProjection = function(projection) {
+ol.Source.prototype.setProjection = function(projection) {
   this.projection_ = projection;
 };

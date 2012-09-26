@@ -8,7 +8,7 @@
 
 goog.provide('ol.layer.TileJSON');
 goog.provide('ol.tilejson');
-goog.provide('ol.tilestore.TileJSON');
+goog.provide('ol.tilesource.TileJSON');
 
 goog.require('goog.asserts');
 goog.require('goog.events.EventType');
@@ -16,7 +16,7 @@ goog.require('goog.net.jsloader');
 goog.require('goog.string');
 goog.require('ol.TileCoverageArea');
 goog.require('ol.TileLayer');
-goog.require('ol.TileStore');
+goog.require('ol.TileSource');
 goog.require('ol.TileUrlFunction');
 
 
@@ -45,10 +45,10 @@ goog.exportSymbol('grid', grid);
  */
 ol.layer.TileJSON = function(url, opt_values) {
   goog.asserts.assert(goog.string.endsWith(url, '.jsonp'));
-  var tileStore = new ol.tilestore.TileJSON(url, function(tileStore) {
+  var tileSource = new ol.tilesource.TileJSON(url, function(tileSource) {
     this.dispatchEvent(goog.events.EventType.LOAD);
   }, this);
-  goog.base(this, tileStore, opt_values);
+  goog.base(this, tileSource, opt_values);
 };
 goog.inherits(ol.layer.TileJSON, ol.TileLayer);
 
@@ -56,12 +56,12 @@ goog.inherits(ol.layer.TileJSON, ol.TileLayer);
 
 /**
  * @constructor
- * @extends {ol.TileStore}
+ * @extends {ol.TileSource}
  * @param {string} uri URI.
- * @param {?function(ol.tilestore.TileJSON)=} opt_callback Callback.
+ * @param {?function(ol.tilesource.TileJSON)=} opt_callback Callback.
  * @param {*=} opt_obj Object.
  */
-ol.tilestore.TileJSON = function(uri, opt_callback, opt_obj) {
+ol.tilesource.TileJSON = function(uri, opt_callback, opt_obj) {
 
   var projection = ol.Projection.getFromCode('EPSG:3857');
 
@@ -70,7 +70,7 @@ ol.tilestore.TileJSON = function(uri, opt_callback, opt_obj) {
 
   /**
    * @private
-   * @type {?function(ol.tilestore.TileJSON)}
+   * @type {?function(ol.tilesource.TileJSON)}
    */
   this.callback_ = opt_callback || null;
 
@@ -94,13 +94,13 @@ ol.tilestore.TileJSON = function(uri, opt_callback, opt_obj) {
   this.deferred_.addCallback(this.handleTileJSONResponse, this);
 
 };
-goog.inherits(ol.tilestore.TileJSON, ol.TileStore);
+goog.inherits(ol.tilesource.TileJSON, ol.TileSource);
 
 
 /**
  * @protected
  */
-ol.tilestore.TileJSON.prototype.handleTileJSONResponse = function() {
+ol.tilesource.TileJSON.prototype.handleTileJSONResponse = function() {
 
   var tileJSON = ol.tilejson.grids_.pop();
 
@@ -176,6 +176,6 @@ ol.tilestore.TileJSON.prototype.handleTileJSONResponse = function() {
 /**
  * @inheritDoc
  */
-ol.tilestore.TileJSON.prototype.isReady = function() {
+ol.tilesource.TileJSON.prototype.isReady = function() {
   return this.ready_;
 };

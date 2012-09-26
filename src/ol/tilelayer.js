@@ -1,6 +1,6 @@
 goog.provide('ol.TileLayer');
 
-goog.require('ol.TileStore');
+goog.require('ol.TileSource');
 goog.require('ol.layer.Layer');
 
 
@@ -8,19 +8,19 @@ goog.require('ol.layer.Layer');
 /**
  * @constructor
  * @extends {ol.layer.Layer}
- * @param {ol.TileStore} tileStore Tile store.
+ * @param {ol.TileSource} tileSource Tile source.
  * @param {Object.<string, *>=} opt_values Values.
  */
-ol.TileLayer = function(tileStore, opt_values) {
-  goog.base(this, tileStore, opt_values);
+ol.TileLayer = function(tileSource, opt_values) {
+  goog.base(this, tileSource, opt_values);
 };
 goog.inherits(ol.TileLayer, ol.layer.Layer);
 
 
 /**
  * @inheritDoc
- * @return {ol.TileStore} Store.
+ * @return {ol.TileSource} Source.
  */
-ol.TileLayer.prototype.getStore = function() {
-  return /** @type {ol.TileStore} */ goog.base(this, 'getStore');
+ol.TileLayer.prototype.getSource = function() {
+  return /** @type {ol.TileSource} */ goog.base(this, 'getSource');
 };

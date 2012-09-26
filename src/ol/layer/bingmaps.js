@@ -1,5 +1,5 @@
 goog.provide('ol.layer.BingMaps');
-goog.provide('ol.tilestore.BingMaps');
+goog.provide('ol.tilesource.BingMaps');
 
 goog.require('goog.Uri');
 goog.require('goog.events');
@@ -7,7 +7,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.net.Jsonp');
 goog.require('ol.TileCoverageArea');
 goog.require('ol.TileLayer');
-goog.require('ol.TileStore');
+goog.require('ol.TileSource');
 goog.require('ol.tilegrid.XYZ');
 
 
@@ -33,11 +33,11 @@ ol.BingMapsStyle = {
  * @param {Object.<string, *>=} opt_values Values.
  */
 ol.layer.BingMaps = function(style, key, opt_culture, opt_values) {
-  var tileStore = new ol.tilestore.BingMaps(style, key, opt_culture,
-      function(tileStore) {
+  var tileSource = new ol.tilesource.BingMaps(style, key, opt_culture,
+      function(tileSource) {
         this.dispatchEvent(goog.events.EventType.LOAD);
       }, this);
-  goog.base(this, tileStore, opt_values);
+  goog.base(this, tileSource, opt_values);
 };
 goog.inherits(ol.layer.BingMaps, ol.TileLayer);
 
@@ -45,14 +45,14 @@ goog.inherits(ol.layer.BingMaps, ol.TileLayer);
 
 /**
  * @constructor
- * @extends {ol.TileStore}
+ * @extends {ol.TileSource}
  * @param {ol.BingMapsStyle} style Bing Maps style.
  * @param {string} key Key.
  * @param {string=} opt_culture Culture.
- * @param {?function(ol.tilestore.BingMaps)=} opt_callback Callback.
+ * @param {?function(ol.tilesource.BingMaps)=} opt_callback Callback.
  * @param {*=} opt_obj Object.
  */
-ol.tilestore.BingMaps =
+ol.tilesource.BingMaps =
     function(style, key, opt_culture, opt_callback, opt_obj) {
 
   /**
@@ -69,7 +69,7 @@ ol.tilestore.BingMaps =
 
   /**
    * @private
-   * @type {?function(ol.tilestore.BingMaps)}
+   * @type {?function(ol.tilesource.BingMaps)}
    */
   this.callback_ = opt_callback || null;
 
@@ -94,13 +94,13 @@ ol.tilestore.BingMaps =
       this, projection, null, ol.TileUrlFunction.nullTileUrlFunction, extent);
 
 };
-goog.inherits(ol.tilestore.BingMaps, ol.TileStore);
+goog.inherits(ol.tilesource.BingMaps, ol.TileSource);
 
 
 /**
  * @param {BingMapsImageryMetadataResponse} response Response.
  */
-ol.tilestore.BingMaps.prototype.handleImageryMetadataResponse =
+ol.tilesource.BingMaps.prototype.handleImageryMetadataResponse =
     function(response) {
 
   goog.asserts.assert(
@@ -184,6 +184,6 @@ ol.tilestore.BingMaps.prototype.handleImageryMetadataResponse =
 /**
  * @inheritDoc
  */
-ol.tilestore.BingMaps.prototype.isReady = function() {
+ol.tilesource.BingMaps.prototype.isReady = function() {
   return this.ready_;
 };

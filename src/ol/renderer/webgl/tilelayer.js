@@ -316,8 +316,8 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
   var mapRotation = map.getRotation();
 
   var tileLayer = this.getLayer();
-  var tileStore = tileLayer.getStore();
-  var tileGrid = tileStore.getTileGrid();
+  var tileSource = tileLayer.getSource();
+  var tileGrid = tileSource.getTileGrid();
   var z = tileGrid.getZForResolution(mapResolution);
   var tileResolution = tileGrid.getResolution(z);
   var tileRange = tileGrid.getTileRangeForExtentAndResolution(
@@ -406,10 +406,10 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
     tilesToDrawByZ[z] = {};
     tileRange.forEachTileCoord(z, function(tileCoord) {
 
-      var tile = tileStore.getTile(tileCoord);
+      var tile = tileSource.getTile(tileCoord);
 
       if (goog.isNull(tile)) {
-        // FIXME - consider returning here as this is outside the store's extent
+        // FIXME consider returning here as this is outside the source's extent
       } else if (tile.getState() == ol.TileState.LOADED) {
         if (mapRenderer.isImageTextureLoaded(tile.getImage())) {
           tilesToDrawByZ[z][tileCoord.toString()] = tile;
@@ -439,7 +439,7 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
               if (tilesToDrawByZ[z] && tilesToDrawByZ[z][tileCoordKey]) {
                 return;
               }
-              var tile = tileStore.getTile(tileCoord);
+              var tile = tileSource.getTile(tileCoord);
               if (!goog.isNull(tile) &&
                   tile.getState() == ol.TileState.LOADED) {
                 if (!tilesToDrawByZ[z]) {

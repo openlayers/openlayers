@@ -3,7 +3,7 @@ goog.provide('ol.layer.LayerProperty');
 
 goog.require('goog.math');
 goog.require('ol.Object');
-goog.require('ol.Store');
+goog.require('ol.Source');
 
 
 /**
@@ -23,18 +23,18 @@ ol.layer.LayerProperty = {
 /**
  * @constructor
  * @extends {ol.Object}
- * @param {ol.Store} store Store.
+ * @param {ol.Source} source Source.
  * @param {Object.<string, *>=} opt_values Values.
  */
-ol.layer.Layer = function(store, opt_values) {
+ol.layer.Layer = function(source, opt_values) {
 
   goog.base(this);
 
   /**
    * @private
-   * @type {ol.Store}
+   * @type {ol.Source}
    */
-  this.store_ = store;
+  this.source_ = source;
 
   this.setBrightness(0);
   this.setContrast(0);
@@ -112,10 +112,10 @@ goog.exportProperty(
 
 
 /**
- * @return {ol.Store} Store.
+ * @return {ol.Source} Source.
  */
-ol.layer.Layer.prototype.getStore = function() {
-  return this.store_;
+ol.layer.Layer.prototype.getSource = function() {
+  return this.source_;
 };
 
 
@@ -135,7 +135,7 @@ goog.exportProperty(
  * @return {boolean} Is ready.
  */
 ol.layer.Layer.prototype.isReady = function() {
-  return this.getStore().isReady();
+  return this.getSource().isReady();
 };
 
 

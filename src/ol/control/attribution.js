@@ -92,7 +92,7 @@ ol.control.Attribution.prototype.addLayer = function(layer) {
       layer, ol.Object.getChangedEventType(ol.layer.LayerProperty.VISIBLE),
       this.handleLayerVisibleChanged, false, this);
 
-  if (layer.getStore().isReady()) {
+  if (layer.getSource().isReady()) {
     this.createAttributionElementsForLayer_(layer);
   } else {
     goog.events.listenOnce(layer, goog.events.EventType.LOAD,
@@ -109,8 +109,8 @@ ol.control.Attribution.prototype.addLayer = function(layer) {
 ol.control.Attribution.prototype.createAttributionElementsForLayer_ =
     function(layer) {
 
-  var store = layer.getStore();
-  var attributions = store.getAttributions();
+  var source = layer.getSource();
+  var attributions = source.getAttributions();
   if (goog.isNull(attributions)) {
     return;
   }
@@ -173,17 +173,17 @@ ol.control.Attribution.prototype.getElement = function() {
 ol.control.Attribution.prototype.getLayerAttributionVisiblities_ =
     function(layer, mapExtent, mapResolution, mapProjection) {
 
-  var store = layer.getStore();
-  var attributions = store.getAttributions();
+  var source = layer.getSource();
+  var attributions = source.getAttributions();
 
   if (goog.isNull(attributions)) {
     return null;
   }
 
   var mapZ;
-  if (store instanceof ol.TileStore) {
-    var tileStore = /** @type {ol.TileStore} */ store;
-    var tileGrid = tileStore.getTileGrid();
+  if (source instanceof ol.TileSource) {
+    var tileSource = /** @type {ol.TileSource} */ source;
+    var tileGrid = tileSource.getTileGrid();
     mapZ = tileGrid.getZForResolution(mapResolution);
   }
 
@@ -214,7 +214,7 @@ ol.control.Attribution.prototype.getLayerAttributionVisiblities_ =
     }
 
     if (!goog.isNull(coverageAreas)) {
-      if (store instanceof ol.TileStore) {
+      if (source instanceof ol.TileSource) {
         attributionVisible = goog.array.some(
             coverageAreas,
             function(coverageArea, index) {
@@ -347,13 +347,16 @@ ol.control.Attribution.prototype.removeLayer = function(layer) {
   goog.events.unlistenByKey(this.layerVisibleChangeListenerKeys_[layerKey]);
   delete this.layerVisibleChangeListenerKeys_[layerKey];
 
-  goog.array.forEach(layer.getStore().getAttributions(), function(attribution) {
-    var attributionKey = goog.getUid(attribution);
-    delete this.coverageAreass_[attributionKey];
-    var attributionElement = this.attributionElements_[attributionKey];
-    goog.dom.removeNode(attributionElement);
-    delete this.attributionElements_[attributionKey];
-  }, this);
+  goog.array.forEach(
+      layer.getSource().getAttributions(),
+      function(attribution) {
+        var attributionKey = goog.getUid(attribution);
+        delete this.coverageAreass_[attributionKey];
+        var attributionElement = this.attributionElements_[attributionKey];
+        goog.dom.removeNode(attributionElement);
+        delete this.attributionElements_[attributionKey];
+      },
+      this);
 
 };
 
@@ -379,8 +382,8 @@ ol.control.Attribution.prototype.updateLayerAttributionsVisibility_ =
         },
         this);
   } else {
-    var store = layer.getStore();
-    var attributions = store.getAttributions();
+    var source = layer.getSource();
+    var attributions = source.getAttributions();
     if (!goog.isNull(attributions)) {
       goog.array.forEach(attributions, function(attribution) {
         var attributionKey = goog.getUid(attribution);

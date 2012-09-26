@@ -1,9 +1,9 @@
 goog.provide('ol.layer.OpenStreetMap');
-goog.provide('ol.store.OpenStreetMap');
+goog.provide('ol.source.OpenStreetMap');
 
 goog.require('ol.TileLayer');
 goog.require('ol.TileUrlFunction');
-goog.require('ol.tilestore.XYZ');
+goog.require('ol.tilesource.XYZ');
 
 
 
@@ -13,8 +13,8 @@ goog.require('ol.tilestore.XYZ');
  * @param {Object.<string, *>=} opt_values Values.
  */
 ol.layer.OpenStreetMap = function(opt_values) {
-  var tileStore = new ol.store.OpenStreetMap();
-  goog.base(this, tileStore, opt_values);
+  var tileSource = new ol.source.OpenStreetMap();
+  goog.base(this, tileSource, opt_values);
 };
 goog.inherits(ol.layer.OpenStreetMap, ol.TileLayer);
 
@@ -22,9 +22,9 @@ goog.inherits(ol.layer.OpenStreetMap, ol.TileLayer);
 
 /**
  * @constructor
- * @extends {ol.tilestore.XYZ}
+ * @extends {ol.tilesource.XYZ}
  */
-ol.store.OpenStreetMap = function() {
+ol.source.OpenStreetMap = function() {
 
   var tileUrlFunction = ol.TileUrlFunction.createFromTemplate(
       'http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png');
@@ -37,4 +37,4 @@ ol.store.OpenStreetMap = function() {
   goog.base(this, 18, tileUrlFunction, [attribution]);
 
 };
-goog.inherits(ol.store.OpenStreetMap, ol.tilestore.XYZ);
+goog.inherits(ol.source.OpenStreetMap, ol.tilesource.XYZ);

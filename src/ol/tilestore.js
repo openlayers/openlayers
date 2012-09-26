@@ -1,7 +1,7 @@
-goog.provide('ol.TileStore');
+goog.provide('ol.TileSource');
 
 goog.require('ol.Attribution');
-goog.require('ol.Store');
+goog.require('ol.Source');
 goog.require('ol.Tile');
 goog.require('ol.TileCoord');
 goog.require('ol.TileGrid');
@@ -11,7 +11,7 @@ goog.require('ol.TileUrlFunctionType');
 
 /**
  * @constructor
- * @extends {ol.Store}
+ * @extends {ol.Source}
  * @param {ol.Projection} projection Projection.
  * @param {ol.TileGrid} tileGrid Tile grid.
  * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL.
@@ -19,7 +19,7 @@ goog.require('ol.TileUrlFunctionType');
  * @param {Array.<string>=} opt_attributions Attributions.
  * @param {?string=} opt_crossOrigin Cross origin.
  */
-ol.TileStore = function(projection, tileGrid, tileUrlFunction, opt_extent,
+ol.TileSource = function(projection, tileGrid, tileUrlFunction, opt_extent,
     opt_attributions, opt_crossOrigin) {
 
   goog.base(this, projection, opt_extent, opt_attributions);
@@ -51,13 +51,13 @@ ol.TileStore = function(projection, tileGrid, tileUrlFunction, opt_extent,
   this.tileCache_ = {};
 
 };
-goog.inherits(ol.TileStore, ol.Store);
+goog.inherits(ol.TileSource, ol.Source);
 
 
 /**
  * @inheritDoc
  */
-ol.TileStore.prototype.getResolutions = function() {
+ol.TileSource.prototype.getResolutions = function() {
   return this.tileGrid.getResolutions();
 };
 
@@ -66,7 +66,7 @@ ol.TileStore.prototype.getResolutions = function() {
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @return {ol.Tile} Tile.
  */
-ol.TileStore.prototype.getTile = function(tileCoord) {
+ol.TileSource.prototype.getTile = function(tileCoord) {
   var key = tileCoord.toString();
   if (goog.object.containsKey(this.tileCache_, key)) {
     return this.tileCache_[key];
@@ -88,7 +88,7 @@ ol.TileStore.prototype.getTile = function(tileCoord) {
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @return {string|undefined} Tile URL.
  */
-ol.TileStore.prototype.getTileCoordUrl = function(tileCoord) {
+ol.TileSource.prototype.getTileCoordUrl = function(tileCoord) {
   return this.tileUrlFunction(tileCoord);
 };
 
@@ -96,6 +96,6 @@ ol.TileStore.prototype.getTileCoordUrl = function(tileCoord) {
 /**
  * @return {ol.TileGrid} Tile grid.
  */
-ol.TileStore.prototype.getTileGrid = function() {
+ol.TileSource.prototype.getTileGrid = function() {
   return this.tileGrid;
 };
