@@ -18,5 +18,5 @@ var layer = new ol.layer.MapQuestOpenAerial();
 var map = new ol.Map(document.getElementById('map'), {
   center: new ol.Coordinate(0, 0),
   layers: new ol.Collection([layer]),
-  resolution: layer.getStore().getResolutions()[0]
+  zoom: 0
 });
