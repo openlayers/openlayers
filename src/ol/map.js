@@ -92,7 +92,7 @@ ol.Map = function(container, mapOptionsLiteral, opt_viewportSizeMonitor) {
     this.logger = goog.debug.Logger.getLogger('ol.map.' + goog.getUid(this));
   }
 
-  var mapOptions = new ol.MapOptions(mapOptionsLiteral);
+  var mapOptions = ol.MapOptions.create(mapOptionsLiteral);
 
   /**
    * @type {ol.TransformFunction}

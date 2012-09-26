@@ -1,5 +1,6 @@
 goog.provide('ol.MapOptions');
 goog.provide('ol.MapOptionsLiteral');
+goog.provide('ol.MapOptionsType');
 goog.provide('ol.RendererHint');
 
 goog.require('ol.Collection');
@@ -73,47 +74,54 @@ ol.DEFAULT_RENDERER_HINTS = [
 ol.MapOptionsLiteral;
 
 
+/**
+ * @typedef {{rendererConstructor:
+ *                function(new: ol.renderer.Map, Element, ol.Map),
+ *            values: Object.<string, *>}}
+ */
+ol.MapOptionsType;
+
 
 /**
- * @constructor
  * @param {ol.MapOptionsLiteral} mapOptionsLiteral Map options.
+ * @return {ol.MapOptionsType} Map options.
  */
-ol.MapOptions = function(mapOptionsLiteral) {
+ol.MapOptions.create = function(mapOptionsLiteral) {
 
   /**
    * @type {Object.<string, *>}
    */
-  this.values = {};
+  var values = {};
 
   if (goog.isDef(mapOptionsLiteral.center)) {
-    this.values[ol.MapProperty.CENTER] = mapOptionsLiteral.center;
+    values[ol.MapProperty.CENTER] = mapOptionsLiteral.center;
   }
 
-  this.values[ol.MapProperty.INTERACTIONS] =
+  values[ol.MapProperty.INTERACTIONS] =
       goog.isDef(mapOptionsLiteral.interactions) ?
       mapOptionsLiteral.interactions :
       ol.MapOptions.createInteractions_(mapOptionsLiteral);
 
-  this.values[ol.MapProperty.LAYERS] = goog.isDef(mapOptionsLiteral.layers) ?
+  values[ol.MapProperty.LAYERS] = goog.isDef(mapOptionsLiteral.layers) ?
       mapOptionsLiteral.layers : new ol.Collection();
 
-  this.values[ol.MapProperty.PROJECTION] = ol.MapOptions.createProjection_(
+  values[ol.MapProperty.PROJECTION] = ol.MapOptions.createProjection_(
       mapOptionsLiteral.projection, 'EPSG:3857');
 
   if (goog.isDef(mapOptionsLiteral.resolution)) {
-    this.values[ol.MapProperty.RESOLUTION] = mapOptionsLiteral.resolution;
+    values[ol.MapProperty.RESOLUTION] = mapOptionsLiteral.resolution;
   } else if (goog.isDef(mapOptionsLiteral.zoom)) {
-    this.values[ol.MapProperty.RESOLUTION] =
+    values[ol.MapProperty.RESOLUTION] =
         ol.Projection.EPSG_3857_HALF_SIZE / (128 << mapOptionsLiteral.zoom);
   }
 
-  this.values[ol.MapProperty.USER_PROJECTION] = ol.MapOptions.createProjection_(
+  values[ol.MapProperty.USER_PROJECTION] = ol.MapOptions.createProjection_(
       mapOptionsLiteral.userProjection, 'EPSG:4326');
 
   /**
    * @type {function(new: ol.renderer.Map, Element, ol.Map)}
    */
-  this.rendererConstructor = ol.renderer.Map;
+  var rendererConstructor = ol.renderer.Map;
 
   /**
    * @type {Array.<ol.RendererHint>}
@@ -132,16 +140,21 @@ ol.MapOptions = function(mapOptionsLiteral) {
     rendererHint = rendererHints[i];
     if (rendererHint == ol.RendererHint.DOM) {
       if (ol.ENABLE_DOM && ol.renderer.dom.isSupported()) {
-        this.rendererConstructor = ol.renderer.dom.Map;
+        rendererConstructor = ol.renderer.dom.Map;
         break;
       }
     } else if (rendererHint == ol.RendererHint.WEBGL) {
       if (ol.ENABLE_WEBGL && ol.renderer.webgl.isSupported()) {
-        this.rendererConstructor = ol.renderer.webgl.Map;
+        rendererConstructor = ol.renderer.webgl.Map;
         break;
       }
     }
   }
+
+  return {
+    rendererConstructor: rendererConstructor,
+    values: values
+  };
 
 };
 
