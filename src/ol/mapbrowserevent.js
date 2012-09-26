@@ -160,9 +160,9 @@ ol.MapBrowserEventHandler.prototype.touchEnableBrowserEvent_ =
  */
 ol.MapBrowserEventHandler.prototype.click_ = function(browserEvent) {
   if (!this.dragged_) {
-    this.touchEnableBrowserEvent_(this.down_);
+    this.touchEnableBrowserEvent_(browserEvent);
     var newEvent = new ol.MapBrowserEvent(
-        ol.MapBrowserEvent.EventType.CLICK, this.map_, this.down_);
+        ol.MapBrowserEvent.EventType.CLICK, this.map_, browserEvent);
     this.down_ = null;
     this.dispatchEvent(newEvent);
   }
