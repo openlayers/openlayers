@@ -1,8 +1,10 @@
 goog.require('goog.debug.Console');
 goog.require('goog.debug.Logger');
 goog.require('goog.debug.Logger.Level');
+goog.require('ol.Collection');
+goog.require('ol.Coordinate');
+goog.require('ol.Map');
 goog.require('ol.RendererHint');
-goog.require('ol.createMap');
 goog.require('ol.layer.MapQuestOpenAerial');
 
 
@@ -11,9 +13,10 @@ if (goog.DEBUG) {
   goog.debug.Logger.getLogger('ol').setLevel(goog.debug.Logger.Level.INFO);
 }
 
-var rendererHint = [ol.RendererHint.WEBGL, ol.RendererHint.DOM];
-var map = ol.createMap(document.getElementById('map'), {}, rendererHint);
+
 var layer = new ol.layer.MapQuestOpenAerial();
-map.getLayers().push(layer);
-map.setCenter(new ol.Coordinate(0, 0));
-map.setResolution(layer.getStore().getResolutions()[0]);
+var map = new ol.Map(document.getElementById('map'), {
+  center: new ol.Coordinate(0, 0),
+  layers: new ol.Collection([layer]),
+  resolution: layer.getStore().getResolutions()[0]
+});

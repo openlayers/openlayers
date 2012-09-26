@@ -76,14 +76,11 @@ ol.MapPaneZIndex = {
  * @extends {ol.Object}
  * @implements {goog.fx.anim.Animated}
  * @param {Element} container Container.
- * @param {function(new: ol.renderer.Map, Element, ol.Map)} rendererConstructor
- *     Renderer constructor.
- * @param {Object=} opt_values Values.
+ * @param {ol.MapOptionsLiteral} mapOptionsLiteral Map options literal.
  * @param {goog.dom.ViewportSizeMonitor=} opt_viewportSizeMonitor
  *     Viewport size monitor.
  */
-ol.Map = function(
-    container, rendererConstructor, opt_values, opt_viewportSizeMonitor) {
+ol.Map = function(container, mapOptionsLiteral, opt_viewportSizeMonitor) {
 
   goog.base(this);
 
@@ -94,6 +91,8 @@ ol.Map = function(
      */
     this.logger = goog.debug.Logger.getLogger('ol.map.' + goog.getUid(this));
   }
+
+  var mapOptions = new ol.MapOptions(mapOptionsLiteral);
 
   /**
    * @type {ol.TransformFunction}
@@ -176,7 +175,7 @@ ol.Map = function(
    * @type {ol.renderer.Map}
    * @private
    */
-  this.renderer_ = new rendererConstructor(this.viewport_, this);
+  this.renderer_ = new mapOptions.rendererConstructor(this.viewport_, this);
   this.registerDisposable(this.renderer_);
 
   /**
@@ -197,9 +196,7 @@ ol.Map = function(
       this, ol.Object.getChangedEventType(ol.MapProperty.USER_PROJECTION),
       this.handleUserProjectionChanged, false, this);
 
-  if (goog.isDef(opt_values)) {
-    this.setValues(opt_values);
-  }
+  this.setValues(mapOptions.values);
 
   this.handleBrowserWindowResize();
 
