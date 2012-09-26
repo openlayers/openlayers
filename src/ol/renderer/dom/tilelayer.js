@@ -102,8 +102,9 @@ ol.renderer.dom.TileLayer.prototype.removeAltZTiles_ = function() {
   }
 };
 
+
 /**
- * Get rid of tiles outside the rendered extent.  Only removes tiles at the 
+ * Get rid of tiles outside the rendered extent.  Only removes tiles at the
  * currently rendered z.
  * @private
  */
@@ -115,9 +116,9 @@ ol.renderer.dom.TileLayer.prototype.removeOutOfRangeTiles_ = function() {
     tileCoord = ol.TileCoord.createFromString(key);
     if (tileCoord.z === z) {
       prune = tileCoord.x < tileRange.minX ||
-            tileCoord.x > tileRange.maxX ||
-            tileCoord.y < tileRange.minY ||
-            tileCoord.y > tileRange.maxY;
+          tileCoord.x > tileRange.maxX ||
+          tileCoord.y < tileRange.minY ||
+          tileCoord.y > tileRange.maxY;
       if (prune) {
         tile = this.renderedTiles_[key];
         delete this.renderedTiles_[key];
@@ -126,6 +127,7 @@ ol.renderer.dom.TileLayer.prototype.removeOutOfRangeTiles_ = function() {
     }
   }
 };
+
 
 /**
  * @param {goog.events.Event} event Tile change event.
@@ -211,7 +213,7 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
     }
 
     /**
-     * Look for already loaded tiles at alternate z that can serve as 
+     * Look for already loaded tiles at alternate z that can serve as
      * placeholders until tiles at the current z have loaded.
      *
      * TODO: make this more efficent for filling partial holes
