@@ -1,14 +1,18 @@
 goog.provide('ol.control.Control');
 
+goog.require('goog.Disposable');
 goog.require('ol.Map');
 
 
 
 /**
  * @constructor
+ * @extends {goog.Disposable}
  * @param {ol.Map} map Map.
  */
 ol.control.Control = function(map) {
+
+  goog.base(this);
 
   /**
    * @private
@@ -17,6 +21,7 @@ ol.control.Control = function(map) {
   this.map_ = map;
 
 };
+goog.inherits(ol.control.Control, goog.Disposable);
 
 
 /**

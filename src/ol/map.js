@@ -501,14 +501,7 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
     interaction.handleMapBrowserEvent(mapBrowserEvent);
     return !mapBrowserEvent.defaultPrevented;
   });
-};
-
-
-/**
- * @param {goog.fx.DragEvent} dragEvent Drag event.
- */
-ol.Map.prototype.handleDraggerEvent = function(dragEvent) {
-  this.handleBrowserEvent(dragEvent.browserEvent, dragEvent.type);
+  this.dispatchEvent(mapBrowserEvent);
 };
 
 

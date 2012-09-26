@@ -108,3 +108,4 @@ ol.interaction.Interaction.prototype.zoom = function(
     map.setResolution(resolution);
   }
 };
+

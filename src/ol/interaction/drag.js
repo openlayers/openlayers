@@ -114,7 +114,8 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
     this.startCenter = /** @type {!ol.Coordinate} */ map.getCenter();
     this.startCoordinate = /** @type {ol.Coordinate} */
         mapBrowserEvent.getCoordinate();
-    if (this.handleDragStart(mapBrowserEvent)) {
+    var handled = this.handleDragStart(mapBrowserEvent);
+    if (handled) {
       this.dragging_ = true;
       mapBrowserEvent.preventDefault();
     }

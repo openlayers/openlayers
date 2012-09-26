@@ -4,6 +4,7 @@ goog.provide('ol.interaction.ShiftDragZoom');
 
 goog.require('ol.Extent');
 goog.require('ol.MapBrowserEvent');
+goog.require('ol.control.DragBox');
 goog.require('ol.interaction.Constraints');
 goog.require('ol.interaction.Drag');
 
@@ -30,6 +31,12 @@ ol.SHIFT_DRAG_ZOOM_HYSTERESIS_PIXELS_SQUARED =
  */
 ol.interaction.ShiftDragZoom = function(constraints) {
   goog.base(this, constraints);
+
+  /**
+   * @type {ol.control.DragBox}
+   * @private
+   */
+  this.dragBox_ = null;
 };
 goog.inherits(ol.interaction.ShiftDragZoom, ol.interaction.Drag);
 
@@ -45,6 +52,8 @@ ol.interaction.ShiftDragZoom.prototype.handleDragEnd =
     var extent = ol.Extent.boundingExtent(
         this.startCoordinate,
         mapBrowserEvent.getCoordinate());
+    goog.dispose(this.dragBox_);
+    this.dragBox_ = null;
     this.fitExtent(map, extent);
   }
 };
@@ -57,6 +66,8 @@ ol.interaction.ShiftDragZoom.prototype.handleDragStart =
     function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   if (browserEvent.isMouseActionButton() && browserEvent.shiftKey) {
+    this.dragBox_ =
+        new ol.control.DragBox(mapBrowserEvent.map, this.startCoordinate);
     browserEvent.preventDefault();
     return true;
   } else {
