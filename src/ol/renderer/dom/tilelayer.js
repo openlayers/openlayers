@@ -74,7 +74,7 @@ ol.renderer.dom.TileLayer.prototype.getLayer = function() {
  */
 ol.renderer.dom.TileLayer.prototype.getTileOffset_ = function(z, resolution) {
   var tileLayer = this.getLayer();
-  var tileSource = tileLayer.getSource();
+  var tileSource = tileLayer.getTileSource();
   var tileGrid = tileSource.getTileGrid();
   var tileOrigin = tileGrid.getOrigin(z);
   var offset = new ol.Coordinate(
@@ -167,7 +167,7 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
   var resolutionChanged = (mapResolution !== this.renderedMapResolution_);
 
   var tileLayer = this.getLayer();
-  var tileSource = tileLayer.getSource();
+  var tileSource = tileLayer.getTileSource();
   var tileGrid = tileSource.getTileGrid();
 
   // z represents the "best" resolution

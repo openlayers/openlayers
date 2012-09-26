@@ -316,7 +316,7 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
   var mapRotation = map.getRotation();
 
   var tileLayer = this.getLayer();
-  var tileSource = tileLayer.getSource();
+  var tileSource = tileLayer.getTileSource();
   var tileGrid = tileSource.getTileGrid();
   var z = tileGrid.getZForResolution(mapResolution);
   var tileResolution = tileGrid.getResolution(z);
