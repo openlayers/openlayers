@@ -1,9 +1,10 @@
 before_install:
   - "sudo pip install http://closure-linter.googlecode.com/files/closure_linter-latest.tar.gz"
+  - "git clone https://github.com/jsdoc3/jsdoc"
 
 before_script:
   - "make plovr"
   - "make serve &"
   - "sleep 3"
 
-script: "make precommit"
+script: "make JSDOC=jsdoc/jsdoc precommit"
