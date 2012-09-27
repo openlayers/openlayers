@@ -718,10 +718,7 @@ goog.exportProperty(
  * @param {ol.Size} size Size.
  */
 ol.Map.prototype.setSize = function(size) {
-  var currentSize = this.getSize();
-  if (!goog.isDef(currentSize) || !currentSize.equals(size)) {
-    this.set(ol.MapProperty.SIZE, size);
-  }
+  this.set(ol.MapProperty.SIZE, size);
 };
 goog.exportProperty(
     ol.Map.prototype,
