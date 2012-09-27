@@ -154,6 +154,19 @@ ol.renderer.dom.TileLayer.prototype.handleTileChange_ = function(event) {
 
 
 /**
+ * Remove all loading tiles that have been appended.
+ * @private
+ */
+ol.renderer.dom.TileLayer.prototype.removeLoadingTiles_ = function() {
+  for (var key in this.loadingTiles_) {
+    var tile = this.loadingTiles_[key];
+    goog.dom.removeNode(tile.getImage(this));
+    delete this.loadingTiles_[key];
+  }
+};
+
+
+/**
  * @inheritDoc
  */
 ol.renderer.dom.TileLayer.prototype.render = function() {
@@ -175,7 +188,7 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
 
   if (z != this.renderedZ_) {
     // no longer wait for previously loading tiles
-    this.loadingTiles_ = {};
+    this.removeLoadingTiles_();
   }
 
   /**
