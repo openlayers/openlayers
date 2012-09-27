@@ -139,4 +139,10 @@ olx.MapOptionsExtern.prototype.zoom;
 /**
  * @type {number|undefined}
  */
+olx.MapOptionsExtern.prototype.zoomDelta;
+
+
+/**
+ * @type {number|undefined}
+ */
 olx.MapOptionsExtern.prototype.zoomFactor;

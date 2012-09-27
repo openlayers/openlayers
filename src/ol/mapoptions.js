@@ -75,6 +75,7 @@ ol.DEFAULT_RENDERER_HINTS = [
  *            shiftDragZoom: (boolean|undefined),
  *            userProjection: (ol.Projection|string|undefined),
  *            zoom: (number|undefined),
+ *            zoomDelta: (number|undefined),
  *            zoomFactor: (number|undefined)}}
  */
 ol.MapOptionsLiteral;
@@ -223,7 +224,9 @@ ol.MapOptions.createInteractions_ = function(mapOptionsLiteral) {
   var doubleClickZoom = goog.isDef(mapOptionsLiteral.doubleClickZoom) ?
       mapOptionsLiteral.doubleClickZoom : true;
   if (doubleClickZoom) {
-    interactions.push(new ol.interaction.DblClickZoom());
+    var zoomDelta = goog.isDef(mapOptionsLiteral.zoomDelta) ?
+        mapOptionsLiteral.zoomDelta : 4;
+    interactions.push(new ol.interaction.DblClickZoom(zoomDelta));
   }
 
   var dragPan = goog.isDef(mapOptionsLiteral.dragPan) ?

@@ -9,8 +9,15 @@ goog.require('ol.interaction.Interaction');
 /**
  * @constructor
  * @extends {ol.interaction.Interaction}
+ * @param {number} delta The zoom delta applied on each double click.
  */
-ol.interaction.DblClickZoom = function() {
+ol.interaction.DblClickZoom = function(delta) {
+  /**
+   * @private
+   * @type {number}
+   */
+  this.delta_ = delta;
+
   goog.base(this);
 };
 goog.inherits(ol.interaction.DblClickZoom, ol.interaction.Interaction);
@@ -26,7 +33,8 @@ ol.interaction.DblClickZoom.prototype.handleMapBrowserEvent =
       mapBrowserEvent.isMouseActionButton()) {
     var map = mapBrowserEvent.map;
     var anchor = mapBrowserEvent.getCoordinate();
-    var delta = mapBrowserEvent.browserEvent.shiftKey ? -4 : 4;
+    var delta = mapBrowserEvent.browserEvent.shiftKey ?
+        -this.delta_ : this.delta_;
     map.zoom(delta, anchor);
     mapBrowserEvent.preventDefault();
   }

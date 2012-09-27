@@ -92,6 +92,31 @@ describe('ol.MapOptions', function() {
         });
       });
     });
-  });
 
+    describe('create double click interaction', function() {
+
+      beforeEach(function() {
+        options.doubleClickZoom = true;
+      });
+
+      describe('default zoomDelta', function() {
+        it('create double click interaction with default delta', function() {
+          var interactions = ol.MapOptions.createInteractions_(options);
+          expect(interactions.getLength()).toEqual(1);
+          expect(interactions.getAt(0)).toBeA(ol.interaction.DblClickZoom);
+          expect(interactions.getAt(0).delta_).toEqual(4);
+        });
+      });
+
+      describe('set mouseWheelZoomDelta', function() {
+        it('create double click interaction with set delta', function() {
+          options.zoomDelta = 7;
+          var interactions = ol.MapOptions.createInteractions_(options);
+          expect(interactions.getLength()).toEqual(1);
+          expect(interactions.getAt(0)).toBeA(ol.interaction.DblClickZoom);
+          expect(interactions.getAt(0).delta_).toEqual(7);
+        });
+      });
+    });
+  });
 });
