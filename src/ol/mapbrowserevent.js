@@ -7,6 +7,7 @@ goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.style');
+goog.require('ol.BrowserFeature');
 goog.require('ol.Coordinate');
 goog.require('ol.MapEvent');
 goog.require('ol.Pixel');
@@ -63,7 +64,7 @@ ol.MapBrowserEvent.prototype.getCoordinate = function() {
  */
 ol.MapBrowserEvent.prototype.isMouseActionButton = function() {
   // always assume a left-click on touch devices
-  return ('ontouchstart' in document.documentElement) ||
+  return ol.BrowserFeature.HAS_TOUCH ||
       this.browserEvent.isMouseActionButton();
 };
 
@@ -113,20 +114,14 @@ ol.MapBrowserEventHandler = function(map) {
    */
   this.down_ = null;
 
-  /**
-   * @type {boolean}
-   * @private
-   */
-  this.isTouch_ = document && ('ontouchstart' in document.documentElement);
-
   var element = this.map_.getViewport();
   goog.events.listen(element,
-      this.isTouch_ ?
+      ol.BrowserFeature.HAS_TOUCH ?
           goog.events.EventType.TOUCHSTART :
           goog.events.EventType.MOUSEDOWN,
       this.dragstart_, false, this);
   goog.events.listen(element,
-      this.isTouch_ ?
+      ol.BrowserFeature.HAS_TOUCH ?
           goog.events.EventType.TOUCHEND :
           goog.events.EventType.MOUSEUP,
       this.dblclick_, false, this);
@@ -142,7 +137,7 @@ goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
  */
 ol.MapBrowserEventHandler.prototype.touchEnableBrowserEvent_ =
     function(browserEvent) {
-  if (this.isTouch_) {
+  if (ol.BrowserFeature.HAS_TOUCH) {
     goog.asserts.assert(browserEvent instanceof goog.events.BrowserEvent);
     var nativeEvent = browserEvent.getBrowserEvent();
     if (nativeEvent.touches && nativeEvent.touches.length) {
@@ -205,12 +200,12 @@ ol.MapBrowserEventHandler.prototype.dragstart_ = function(browserEvent) {
     this.dragged_ = false;
     this.dragListenerKeys_ = [
       goog.events.listen(document,
-          this.isTouch_ ?
+          ol.BrowserFeature.HAS_TOUCH ?
               goog.events.EventType.TOUCHMOVE :
               goog.events.EventType.MOUSEMOVE,
           this.drag_, false, this),
       goog.events.listen(document,
-          this.isTouch_ ?
+          ol.BrowserFeature.HAS_TOUCH ?
               goog.events.EventType.TOUCHEND :
               goog.events.EventType.MOUSEUP,
           this.dragend_, false, this)
@@ -266,12 +261,12 @@ ol.MapBrowserEventHandler.prototype.dragend_ = function(browserEvent) {
 ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
   var element = this.map_.getViewport();
   goog.events.unlisten(element,
-      this.isTouch_ ?
+      ol.BrowserFeature.HAS_TOUCH ?
           goog.events.EventType.TOUCHSTART :
           goog.events.EventType.MOUSEDOWN,
       this.dragstart_, false, this);
   goog.events.unlisten(element,
-      this.isTouch_ ?
+      ol.BrowserFeature.HAS_TOUCH ?
           goog.events.EventType.TOUCHEND :
           goog.events.EventType.MOUSEUP,
       this.dblclick_, false, this);
