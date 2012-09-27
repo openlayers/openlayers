@@ -62,15 +62,19 @@ ol.DEFAULT_RENDERER_HINTS = [
  *            keyboard: (boolean|undefined),
  *            keyboardPanOffset: (number|undefined),
  *            layers: (ol.Collection|undefined),
+ *            maxResolution: (number|undefined),
  *            mouseWheelZoom: (boolean|undefined),
+ *            numZoomLevels: (number|undefined),
  *            projection: (ol.Projection|string|undefined),
  *            renderer: (ol.RendererHint|undefined),
  *            renderers: (Array.<ol.RendererHint>|undefined),
  *            resolution: (number|undefined),
+ *            resolutions: (Array.<number>|undefined),
  *            rotate: (boolean|undefined),
  *            shiftDragZoom: (boolean|undefined),
  *            userProjection: (ol.Projection|string|undefined),
- *            zoom: (number|undefined)}}
+ *            zoom: (number|undefined),
+ *            zoomFactor: (number|undefined)}}
  */
 ol.MapOptionsLiteral;
 

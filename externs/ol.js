@@ -59,9 +59,21 @@ olx.MapOptionsExtern.prototype.layers;
 
 
 /**
+ * @type {number|undefined}
+ */
+olx.MapOptionsExtern.prototype.maxResolution;
+
+
+/**
  * @type {boolean|undefined}
  */
 olx.MapOptionsExtern.prototype.mouseWheelZoom;
+
+
+/**
+ * @type {number|undefined}
+ */
+olx.MapOptionsExtern.prototype.numZoomLevels;
 
 
 /**
@@ -89,6 +101,12 @@ olx.MapOptionsExtern.prototype.resolution;
 
 
 /**
+ * @type {Array.<number>|undefined}
+ */
+olx.MapOptionsExtern.prototype.resolutions;
+
+
+/**
  * @type {boolean|undefined}
  */
 olx.MapOptionsExtern.prototype.rotate;
@@ -110,3 +128,9 @@ olx.MapOptionsExtern.prototype.userProjection;
  * @type {number|undefined}
  */
 olx.MapOptionsExtern.prototype.zoom;
+
+
+/**
+ * @type {number|undefined}
+ */
+olx.MapOptionsExtern.prototype.zoomFactor;
