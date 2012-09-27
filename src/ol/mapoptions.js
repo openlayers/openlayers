@@ -11,7 +11,6 @@ goog.require('ol.Projection');
 goog.require('ol.ResolutionConstraint');
 goog.require('ol.RotationConstraint');
 goog.require('ol.interaction.AltDragRotate');
-goog.require('ol.interaction.CenterConstraint');
 goog.require('ol.interaction.DblClickZoom');
 goog.require('ol.interaction.DragPan');
 goog.require('ol.interaction.KeyboardPan');
