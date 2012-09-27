@@ -83,7 +83,7 @@ describe('ol.MapOptions', function() {
       });
 
       describe('set mouseWheelZoomDelta', function() {
-        it('create mousewheel interaction with default delta', function() {
+        it('create mousewheel interaction with set delta', function() {
           options.mouseWheelZoomDelta = 7;
           var interactions = ol.MapOptions.createInteractions_(options);
           expect(interactions.getLength()).toEqual(1);
