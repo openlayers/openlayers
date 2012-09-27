@@ -5,7 +5,6 @@ goog.provide('ol.interaction.ShiftDragZoom');
 goog.require('ol.Extent');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.control.DragBox');
-goog.require('ol.interaction.Constraints');
 goog.require('ol.interaction.Drag');
 
 
@@ -27,10 +26,9 @@ ol.SHIFT_DRAG_ZOOM_HYSTERESIS_PIXELS_SQUARED =
 /**
  * @constructor
  * @extends {ol.interaction.Drag}
- * @param {ol.interaction.Constraints} constraints Constraints.
  */
-ol.interaction.ShiftDragZoom = function(constraints) {
-  goog.base(this, constraints);
+ol.interaction.ShiftDragZoom = function() {
+  goog.base(this);
 
   /**
    * @type {ol.control.DragBox}
@@ -54,7 +52,7 @@ ol.interaction.ShiftDragZoom.prototype.handleDragEnd =
     var extent = ol.Extent.boundingExtent(
         this.startCoordinate,
         mapBrowserEvent.getCoordinate());
-    this.fitExtent(map, extent);
+    map.fitExtent(extent);
   }
 };
 

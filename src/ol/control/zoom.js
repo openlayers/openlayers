@@ -1,3 +1,5 @@
+// FIXME: remove constraints from here
+
 goog.provide('ol.control.Zoom');
 
 goog.require('goog.dom');
@@ -5,6 +7,7 @@ goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.Projection');
+goog.require('ol.ResolutionConstraint');
 goog.require('ol.control.Control');
 
 
@@ -30,9 +33,8 @@ ol.control.Zoom = function(map, opt_resolutions) {
    * @type {Function}
    * @private
    */
-  this.constraint_ =
-      ol.interaction.ResolutionConstraint.createSnapToResolutions(
-          opt_resolutions);
+  this.constraint_ = ol.ResolutionConstraint.createSnapToResolutions(
+      opt_resolutions);
 
   /**
    * @type {Element}

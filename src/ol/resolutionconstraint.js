@@ -1,5 +1,5 @@
-goog.provide('ol.interaction.ResolutionConstraint');
-goog.provide('ol.interaction.ResolutionConstraintType');
+goog.provide('ol.ResolutionConstraint');
+goog.provide('ol.ResolutionConstraintType');
 
 goog.require('goog.math');
 goog.require('ol.array');
@@ -8,16 +8,16 @@ goog.require('ol.array');
 /**
  * @typedef {function((number|undefined), number): (number|undefined)}
  */
-ol.interaction.ResolutionConstraintType;
+ol.ResolutionConstraintType;
 
 
 /**
  * @param {number} power Power.
  * @param {number} maxResolution Maximum resolution.
  * @param {number=} opt_minResolution Minimum resolution.
- * @return {ol.interaction.ResolutionConstraintType} Zoom function.
+ * @return {ol.ResolutionConstraintType} Zoom function.
  */
-ol.interaction.ResolutionConstraint.createContinuous =
+ol.ResolutionConstraint.createContinuous =
     function(power, maxResolution, opt_minResolution) {
   var minResolution = opt_minResolution || 0;
   return function(resolution, delta) {
@@ -33,9 +33,9 @@ ol.interaction.ResolutionConstraint.createContinuous =
 
 /**
  * @param {Array.<number>} resolutions Resolutions.
- * @return {ol.interaction.ResolutionConstraintType} Zoom function.
+ * @return {ol.ResolutionConstraintType} Zoom function.
  */
-ol.interaction.ResolutionConstraint.createSnapToResolutions =
+ol.ResolutionConstraint.createSnapToResolutions =
     function(resolutions) {
   return function(resolution, delta) {
     if (goog.isDef(resolution)) {
@@ -53,9 +53,9 @@ ol.interaction.ResolutionConstraint.createSnapToResolutions =
  * @param {number} power Power.
  * @param {number} maxResolution Maximum resolution.
  * @param {number=} opt_maxLevel Maximum level.
- * @return {ol.interaction.ResolutionConstraintType} Zoom function.
+ * @return {ol.ResolutionConstraintType} Zoom function.
  */
-ol.interaction.ResolutionConstraint.createSnapToPower =
+ol.ResolutionConstraint.createSnapToPower =
     function(power, maxResolution, opt_maxLevel) {
   return function(resolution, delta) {
     if (goog.isDef(resolution)) {

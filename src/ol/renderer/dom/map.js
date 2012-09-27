@@ -155,12 +155,12 @@ ol.renderer.dom.Map.prototype.resetLayersPane_ = function() {
 ol.renderer.dom.Map.prototype.setOrigin_ = function() {
   var center = this.map.getCenter();
   var resolution = this.map.getResolution();
-  var targetSize = this.map.getSize();
-  var targetWidth = targetSize.width;
-  var targetHeight = targetSize.height;
+  var mapSize = this.map.getSize();
+  var mapWidth = mapSize.width;
+  var mapHeight = mapSize.height;
   var origin = new ol.Coordinate(
-      center.x - resolution * targetWidth / 2,
-      center.y + resolution * targetHeight / 2);
+      center.x - resolution * mapWidth / 2,
+      center.y + resolution * mapHeight / 2);
   goog.object.forEach(this.layerRenderers, function(layerRenderer) {
     layerRenderer.setOrigin(origin);
   });
