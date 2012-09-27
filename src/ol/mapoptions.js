@@ -191,8 +191,10 @@ ol.MapOptions.createConstraints_ = function(mapOptionsLiteral) {
       zoomFactor = mapOptionsLiteral.zoomFactor;
     } else {
       maxResolution = ol.Projection.EPSG_3857_HALF_SIZE / 128;
-      numZoomLevels = 29;
-      zoomFactor = Math.exp(Math.log(2) / 4);
+      // number of steps we want between two data resolutions
+      var numSteps = 4;
+      numZoomLevels = 29 * numSteps;
+      zoomFactor = Math.exp(Math.log(2) / numSteps);
     }
     resolutionConstraint = ol.ResolutionConstraint.createSnapToPower(
         zoomFactor, maxResolution, numZoomLevels - 1);
