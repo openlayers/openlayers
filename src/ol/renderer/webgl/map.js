@@ -155,6 +155,12 @@ ol.renderer.webgl.Map = function(container, map) {
 
   /**
    * @private
+   * @type {ol.Size}
+   */
+  this.canvasSize_ = new ol.Size(container.clientHeight, container.clientWidth);
+
+  /**
+   * @private
    * @type {WebGLRenderingContext}
    */
   this.gl_ = this.canvas_.getContext('experimental-webgl', {
@@ -456,17 +462,7 @@ ol.renderer.webgl.Map.prototype.handleRotationChanged = function() {
  */
 ol.renderer.webgl.Map.prototype.handleSizeChanged = function() {
   goog.base(this, 'handleSizeChanged');
-  var size = this.getMap().getSize();
-  if (!goog.isDef(size)) {
-    return;
-  }
-  this.canvas_.width = size.width;
-  this.canvas_.height = size.height;
-  var gl = this.gl_;
-  if (!goog.isNull(gl)) {
-    gl.viewport(0, 0, size.width, size.height);
-    this.getMap().render();
-  }
+  this.getMap().render();
 };
 
 
@@ -558,7 +554,12 @@ ol.renderer.webgl.Map.prototype.render = function() {
     return false;
   }
 
-  var size = this.getMap().getSize();
+  var size = /** @type {ol.Size} */ this.getMap().getSize();
+  if (!this.canvasSize_.equals(size)) {
+    this.canvas_.width = size.width;
+    this.canvas_.height = size.height;
+    this.canvasSize_ = size;
+  }
 
   var animate = goog.base(this, 'render');
 
