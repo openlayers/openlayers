@@ -12,7 +12,7 @@ space := $(empty) $(empty)
 all: build-all build demos
 
 .PHONY: precommit
-precommit: lint build-all test build
+precommit: lint build-all doc test build
 
 .PHONY: build
 build: build/ol.js
