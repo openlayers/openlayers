@@ -6,7 +6,6 @@ goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('ol.Coordinate');
 goog.require('ol.MapBrowserEvent');
-goog.require('ol.interaction.Constraints');
 goog.require('ol.interaction.Interaction');
 
 
@@ -14,11 +13,10 @@ goog.require('ol.interaction.Interaction');
 /**
  * @constructor
  * @extends {ol.interaction.Interaction}
- * @param {ol.interaction.Constraints} constraints Constraints.
  */
-ol.interaction.Drag = function(constraints) {
+ol.interaction.Drag = function() {
 
-  goog.base(this, constraints);
+  goog.base(this);
 
   /**
    * @private

@@ -2,7 +2,6 @@ goog.provide('ol.interaction.ShiftDragRotateAndZoom');
 
 goog.require('goog.math.Vec2');
 goog.require('ol.MapBrowserEvent');
-goog.require('ol.interaction.Constraints');
 goog.require('ol.interaction.Drag');
 
 
@@ -10,11 +9,10 @@ goog.require('ol.interaction.Drag');
 /**
  * @constructor
  * @extends {ol.interaction.Drag}
- * @param {ol.interaction.Constraints} constraints Constraints.
  */
-ol.interaction.ShiftDragRotateAndZoom = function(constraints) {
+ol.interaction.ShiftDragRotateAndZoom = function() {
 
-  goog.base(this, constraints);
+  goog.base(this);
 
   /**
    * @private
@@ -45,9 +43,9 @@ ol.interaction.ShiftDragRotateAndZoom.prototype.handleDrag =
       size.height / 2 - browserEvent.offsetY);
   var theta = Math.atan2(delta.y, delta.x);
   // FIXME this should use map.withFrozenRendering but an assertion fails :-(
-  this.rotate(map, this.startRotation_, -theta);
+  map.rotate(this.startRotation_, -theta);
   var resolution = this.startRatio_ * delta.magnitude();
-  this.setResolution(map, resolution);
+  map.zoomToResolution(resolution);
 };
 
 

@@ -8,11 +8,10 @@ goog.require('ol.interaction.Drag');
 /**
  * @constructor
  * @extends {ol.interaction.Drag}
- * @param {ol.interaction.Constraints} constraints Constraints.
  */
-ol.interaction.AltDragRotate = function(constraints) {
+ol.interaction.AltDragRotate = function() {
 
-  goog.base(this, constraints);
+  goog.base(this);
 
   /**
    * @private
@@ -34,7 +33,7 @@ ol.interaction.AltDragRotate.prototype.handleDrag = function(mapBrowserEvent) {
   var theta = Math.atan2(
       size.height / 2 - browserEvent.offsetY,
       browserEvent.offsetX - size.width / 2);
-  this.rotate(map, this.startRotation_, -theta);
+  map.rotate(this.startRotation_, -theta);
 };
 
 

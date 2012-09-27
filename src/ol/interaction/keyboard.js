@@ -12,7 +12,7 @@ goog.require('ol.interaction.Interaction');
  */
 ol.interaction.Keyboard = function() {
 
-  goog.base(this, null);
+  goog.base(this);
 
   /**
    * @private

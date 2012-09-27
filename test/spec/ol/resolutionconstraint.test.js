@@ -1,4 +1,4 @@
-describe('ol.interaction.ResolutionConstraint', function() {
+describe('ol.ResolutionConstraint', function() {
 
   describe('SnapToResolution', function() {
 
@@ -6,7 +6,7 @@ describe('ol.interaction.ResolutionConstraint', function() {
 
     beforeEach(function() {
       resolutionConstraint =
-            ol.interaction.ResolutionConstraint.createSnapToResolutions(
+            ol.ResolutionConstraint.createSnapToResolutions(
                 [1000, 500, 250, 100]);
     });
 
@@ -44,7 +44,7 @@ describe('ol.interaction.ResolutionConstraint', function() {
 
     beforeEach(function() {
       resolutionConstraint =
-          ol.interaction.ResolutionConstraint.createSnapToResolutions(
+          ol.ResolutionConstraint.createSnapToResolutions(
               [1000, 500, 250, 100]);
     });
 
@@ -94,7 +94,7 @@ describe('ol.interaction.ResolutionConstraint', function() {
 
     beforeEach(function() {
       resolutionConstraint =
-          ol.interaction.ResolutionConstraint.createSnapToPower(2, 1024, 10);
+          ol.ResolutionConstraint.createSnapToPower(2, 1024, 10);
     });
 
     describe('delta 0', function() {
@@ -152,7 +152,7 @@ describe('ol.interaction.ResolutionConstraint', function() {
 
     beforeEach(function() {
       resolutionConstraint =
-          ol.interaction.ResolutionConstraint.createSnapToPower(2, 1024, 10);
+          ol.ResolutionConstraint.createSnapToPower(2, 1024, 10);
     });
 
     describe('delta 0', function() {
@@ -184,4 +184,4 @@ describe('ol.interaction.ResolutionConstraint', function() {
   });
 });
 
-goog.require('ol.interaction.ResolutionConstraint');
+goog.require('ol.ResolutionConstraint');
