@@ -129,8 +129,8 @@ clean:
 	rm -f build/ol.js
 	rm -f build/ol-all.js
 	rm -f build/require-all.js
-	rm -f demos/*/*.html
 	rm -f demos/*/advanced-optimizations.*
+	rm -f demos/*/index.html
 	rm -rf build/apidoc
 
 reallyclean: clean
