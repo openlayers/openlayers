@@ -510,11 +510,7 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
           (framebufferExtent.maxY - framebufferExtent.minY),
       0);
   if (goog.isDef(mapRotation)) {
-    goog.vec.Mat4.rotate(this.matrix_,
-        mapRotation,
-        0,
-        0,
-        1);
+    goog.vec.Mat4.rotateZ(this.matrix_, mapRotation);
   }
   goog.vec.Mat4.scale(this.matrix_,
       (mapExtent.maxX - mapExtent.minX) /
