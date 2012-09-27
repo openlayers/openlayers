@@ -199,7 +199,7 @@ ol.renderer.webgl.TileLayer.prototype.bindFramebuffer_ =
       var map = this.getMap();
       goog.events.listenOnce(
           map,
-          ol.MapEventType.POST_RENDER,
+          ol.MapEventType.POSTRENDER,
           goog.partial(function(gl, framebuffer, texture) {
             if (goog.DEBUG) {
               this.logger.info('freeing WebGL resources on postrender');
@@ -479,7 +479,7 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
     if (!goog.array.isEmpty(imagesToLoad)) {
       goog.events.listenOnce(
           map,
-          ol.MapEventType.POST_RENDER,
+          ol.MapEventType.POSTRENDER,
           goog.partial(function(mapRenderer, imagesToLoad) {
             if (goog.DEBUG) {
               this.logger.info('uploading textures');

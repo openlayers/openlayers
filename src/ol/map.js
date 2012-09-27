@@ -43,7 +43,7 @@ goog.require('ol.renderer.Layer');
  * @enum {string}
  */
 ol.MapEventType = {
-  POST_RENDER: 'postrender'
+  POSTRENDER: 'postrender'
 };
 
 
@@ -616,7 +616,7 @@ ol.Map.prototype.renderFrame_ = function() {
   if (goog.DEBUG) {
     this.logger.info('postrender');
   }
-  this.dispatchEvent(ol.MapEventType.POST_RENDER);
+  this.dispatchEvent(ol.MapEventType.POSTRENDER);
 };
 
 
