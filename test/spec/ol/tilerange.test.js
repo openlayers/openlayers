@@ -57,7 +57,8 @@ describe('ol.TileRange', function() {
 
       var tileCoords = [];
       tileRange.forEachTileCoord(5, function(tileCoord) {
-        tileCoords.push(new ol.TileCoord(tileCoord.z, tileCoord.x, tileCoord.y));
+        tileCoords.push(
+            new ol.TileCoord(tileCoord.z, tileCoord.x, tileCoord.y));
       });
 
       expect(tileCoords.length).toEqual(4);

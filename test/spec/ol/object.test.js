@@ -10,7 +10,7 @@ describe('ol.Object', function() {
     describe('get an unset property', function() {
       var v;
       beforeEach(function() {
-        v = o.get('k'); 
+        v = o.get('k');
       });
 
       it('returns undefined', function() {
@@ -108,7 +108,7 @@ describe('ol.Object', function() {
     });
 
     describe('bindTo after set', function() {
-     
+
       it('gets expected value', function() {
         o.set('k', 1);
         o2.bindTo('k', o);
@@ -118,7 +118,7 @@ describe('ol.Object', function() {
     });
 
     describe('bindTo before set', function() {
-     
+
       it('gets expected value', function() {
         o2.bindTo('k', o);
         o.set('k', 1);
@@ -129,7 +129,7 @@ describe('ol.Object', function() {
 
     describe('backwards', function() {
       describe('bindTo after set', function() {
-       
+
         it('gets expected value', function() {
           o2.set('k', 1);
           o2.bindTo('k', o);
@@ -139,7 +139,7 @@ describe('ol.Object', function() {
       });
 
       describe('bindTo before set', function() {
-       
+
         it('gets expected value', function() {
           o2.bindTo('k', o);
           o2.set('k', 1);

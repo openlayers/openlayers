@@ -106,10 +106,13 @@ describe('ol.collection', function() {
     it('does dispatch events', function() {
       var collection = new ol.Collection(['a', 'b']);
       var index, prev;
-      goog.events.listen(collection, ol.CollectionEventType.SET_AT, function(e) {
-        index = e.index;
-        prev = e.prev;
-      });
+      goog.events.listen(
+          collection,
+          ol.CollectionEventType.SET_AT,
+          function(e) {
+            index = e.index;
+            prev = e.prev;
+          });
       collection.setAt(1, 1);
       expect(index).toEqual(1);
       expect(prev).toEqual('b');
