@@ -53,6 +53,7 @@ goog.inherits(ol.source.Source, goog.events.EventTarget);
 
 
 /**
+ * @protected
  */
 ol.source.Source.prototype.dispatchLoadEvent = function() {
   this.dispatchEvent(goog.events.EventType.LOAD);

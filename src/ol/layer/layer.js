@@ -73,8 +73,9 @@ goog.inherits(ol.layer.Layer, ol.Object);
 
 
 /**
+ * @private
  */
-ol.layer.Layer.prototype.dispatchLoadEvent = function() {
+ol.layer.Layer.prototype.dispatchLoadEvent_ = function() {
   this.dispatchEvent(goog.events.EventType.LOAD);
 };
 
@@ -163,7 +164,7 @@ goog.exportProperty(
  * @private
  */
 ol.layer.Layer.prototype.handleSourceLoad_ = function() {
-  this.dispatchLoadEvent();
+  this.dispatchLoadEvent_();
 };
 
 
