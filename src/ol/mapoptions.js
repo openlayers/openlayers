@@ -1,3 +1,5 @@
+// FIXME rotation constraint is not configurable at the moment
+
 goog.provide('ol.MapOptions');
 goog.provide('ol.MapOptionsLiteral');
 goog.provide('ol.MapOptionsType');
@@ -171,9 +173,27 @@ ol.MapOptions.create = function(mapOptionsLiteral) {
  * @return {ol.Constraints} Map constraints.
  */
 ol.MapOptions.createConstraints_ = function(mapOptionsLiteral) {
-  // FIXME this should be configurable
-  var resolutionConstraint = ol.ResolutionConstraint.createSnapToPower(
-      Math.exp(Math.log(2) / 4), ol.Projection.EPSG_3857_HALF_SIZE / 128);
+  var resolutionConstraint;
+  if (goog.isDef(mapOptionsLiteral.resolutions)) {
+    resolutionConstraint = ol.ResolutionConstraint.createSnapToResolutions(
+        mapOptionsLiteral.resolutions);
+  } else {
+    var maxResolution, numZoomLevels, zoomFactor;
+    if (goog.isDef(mapOptionsLiteral.maxResolution) &&
+        goog.isDef(mapOptionsLiteral.numZoomLevels) &&
+        goog.isDef(mapOptionsLiteral.zoomFactor)) {
+      maxResolution = mapOptionsLiteral.maxResolution;
+      numZoomLevels = mapOptionsLiteral.numZoomLevels;
+      zoomFactor = mapOptionsLiteral.zoomFactor;
+    } else {
+      maxResolution = ol.Projection.EPSG_3857_HALF_SIZE / 128;
+      numZoomLevels = 29;
+      zoomFactor = Math.exp(Math.log(2) / 4);
+    }
+    resolutionConstraint = ol.ResolutionConstraint.createSnapToPower(
+        zoomFactor, maxResolution, numZoomLevels - 1);
+  }
+  // FIXME rotation constraint is not configurable at the moment
   var rotationConstraint = ol.RotationConstraint.none;
   return new ol.Constraints(resolutionConstraint, rotationConstraint);
 };
