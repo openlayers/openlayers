@@ -1,4 +1,5 @@
 // FIXME rotation constraint is not configurable at the moment
+// FIXME MapOptions should create a Zoom control
 
 goog.provide('ol.MapOptions');
 goog.provide('ol.MapOptionsLiteral');
