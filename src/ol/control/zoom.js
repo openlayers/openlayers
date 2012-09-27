@@ -1,4 +1,5 @@
 goog.provide('ol.control.Zoom');
+goog.provide('ol.control.ZoomOptions');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -8,65 +9,53 @@ goog.require('ol.Projection');
 goog.require('ol.control.Control');
 
 
+/**
+ * @typedef {{delta: (number|undefined),
+ *            map: (ol.Map|undefined),
+ *            target: (Element|undefined)}}
+ */
+ol.control.ZoomOptions;
+
+
 
 /**
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.Map} map Map.
- * @param {number=} opt_zoomDelta Optional zoom delta.
+ * @param {ol.control.ZoomOptions} zoomOptions Zoom options.
  */
-ol.control.Zoom = function(map, opt_zoomDelta) {
+ol.control.Zoom = function(zoomOptions) {
 
-  goog.base(this, map);
+  var inElement = goog.dom.createDom(goog.dom.TagName.A, {
+    'href': '#zoomIn',
+    'class': 'ol-zoom-in'
+  }, '+');
+  goog.events.listen(
+      inElement, goog.events.EventType.CLICK, this.handleIn_, false, this);
+
+  var outElement = goog.dom.createDom(goog.dom.TagName.A, {
+    'href': '#zoomOut',
+    'class': 'ol-zoom-out'
+  }, '\u2212');
+  goog.events.listen(
+      outElement, goog.events.EventType.CLICK, this.handleOut_, false, this);
+
+  var element = goog.dom.createDom(
+      goog.dom.TagName.DIV, 'ol-zoom', inElement, outElement);
+
+  goog.base(this, {
+    element: element,
+    map: zoomOptions.map,
+    target: zoomOptions.target
+  });
 
   /**
    * @type {number}
    * @private
    */
-  this.zoomDelta_ = goog.isDef(opt_zoomDelta) ? opt_zoomDelta : 1;
-
-  /**
-   * @type {Element}
-   * @private
-   */
-  this.divElement_ = goog.dom.createDom(goog.dom.TagName.DIV, 'ol-zoom');
-
-  /**
-   * @type {Element}
-   * @private
-   */
-  this.inButton_ = goog.dom.createDom(goog.dom.TagName.DIV, 'ol-zoom-in',
-      goog.dom.createDom(goog.dom.TagName.A, {'href': '#zoomIn'}));
-
-  /**
-   * @type {Element}
-   * @private
-   */
-  this.outButton_ = goog.dom.createDom(goog.dom.TagName.DIV, 'ol-zoom-out',
-      goog.dom.createDom(goog.dom.TagName.A, {'href': '#zoomOut'}));
-
-  goog.dom.setTextContent(
-      /** @type {Element} */ (this.inButton_.firstChild), '+');
-  goog.dom.setTextContent(
-      /** @type {Element} */ (this.outButton_.firstChild), '\u2212');
-  goog.dom.append(this.divElement_, this.inButton_, this.outButton_);
-  goog.dom.append(/** @type {!Node} */ (map.getViewport()), this.divElement_);
-
-  goog.events.listen(this.inButton_, goog.events.EventType.CLICK,
-      this.handleIn_, false, this);
-  goog.events.listen(this.outButton_, goog.events.EventType.CLICK,
-      this.handleOut_, false, this);
+  this.delta_ = goog.isDef(zoomOptions.delta) ? zoomOptions.delta : 1;
 
 };
 goog.inherits(ol.control.Zoom, ol.control.Control);
-
-
-/**
- * @inheritDoc
- */
-ol.control.Zoom.prototype.getElement = function() {
-  return this.divElement_;
-};
 
 
 /**
@@ -76,7 +65,7 @@ ol.control.Zoom.prototype.getElement = function() {
 ol.control.Zoom.prototype.handleIn_ = function(browserEvent) {
   browserEvent.stopPropagation();
   browserEvent.preventDefault();
-  this.getMap().zoom(this.zoomDelta_);
+  this.getMap().zoom(this.delta_);
 };
 
 
@@ -87,17 +76,5 @@ ol.control.Zoom.prototype.handleIn_ = function(browserEvent) {
 ol.control.Zoom.prototype.handleOut_ = function(browserEvent) {
   browserEvent.stopPropagation();
   browserEvent.preventDefault();
-  this.getMap().zoom(-this.zoomDelta_);
-};
-
-
-/**
- * @inheritDoc
- */
-ol.control.Zoom.prototype.disposeInternal = function() {
-  goog.dom.removeNode(this.divElement_);
-  delete this.inButton_;
-  delete this.outButton_;
-  delete this.divElement_;
-  goog.base(this, 'disposeInternal');
+  this.getMap().zoom(-this.delta_);
 };

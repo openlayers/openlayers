@@ -4,6 +4,7 @@
 // FIXME check clean-up code
 
 goog.provide('ol.control.Attribution');
+goog.provide('ol.control.AttributionOptions');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -19,21 +20,25 @@ goog.require('ol.control.Control');
 goog.require('ol.layer.Layer');
 
 
+/**
+ * @typedef {{map: (ol.Map|undefined),
+ *            target: (Element|undefined)}}
+ */
+ol.control.AttributionOptions;
+
+
 
 /**
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.Map} map Map.
+ * @param {ol.control.AttributionOptions} attributionOptions Attribution
+ *     options.
  */
-ol.control.Attribution = function(map) {
+ol.control.Attribution = function(attributionOptions) {
 
-  goog.base(this, map);
-
-  /**
-   * @private
-   * @type {Element}
-   */
-  this.ulElement_ = goog.dom.createElement(goog.dom.TagName.UL);
+  var element = goog.dom.createDom(goog.dom.TagName.UL, {
+    'class': 'ol-attribution'
+  });
 
   /**
    * @private
@@ -59,22 +64,17 @@ ol.control.Attribution = function(map) {
    */
   this.coverageAreass_ = {};
 
-  goog.events.listen(
-      map, ol.Object.getChangedEventType(ol.MapProperty.CENTER),
-      this.handleMapChanged, false, this);
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.mapListenerKeys_ = null;
 
-  goog.events.listen(
-      map, ol.Object.getChangedEventType(ol.MapProperty.LAYERS),
-      this.handleMapLayersChanged, false, this);
-
-  goog.events.listen(map,
-      ol.Object.getChangedEventType(ol.MapProperty.RESOLUTION),
-      this.handleMapChanged, false, this);
-
-  goog.events.listen(map, ol.Object.getChangedEventType(ol.MapProperty.SIZE),
-      this.handleMapChanged, false, this);
-
-  this.handleMapLayersChanged();
+  goog.base(this, {
+    element: element,
+    map: attributionOptions.map,
+    target: attributionOptions.target
+  });
 
 };
 goog.inherits(ol.control.Attribution, ol.control.Control);
@@ -145,20 +145,12 @@ ol.control.Attribution.prototype.createAttributionElementsForLayer_ =
       goog.style.showElement(attributionElement, false);
     }
 
-    goog.dom.appendChild(this.ulElement_, attributionElement);
+    goog.dom.appendChild(this.element, attributionElement);
 
     this.attributionElements_[attributionKey] = attributionElement;
 
   }, this);
 
-};
-
-
-/**
- * @inheritDoc
- */
-ol.control.Attribution.prototype.getElement = function() {
-  return this.ulElement_;
 };
 
 
@@ -358,6 +350,35 @@ ol.control.Attribution.prototype.removeLayer = function(layer) {
       },
       this);
 
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.control.Attribution.prototype.setMap = function(map) {
+  if (!goog.isNull(this.mapListenerKeys_)) {
+    goog.array.forEach(this.mapListenerKeys_, goog.events.unlistenByKey);
+  }
+  this.mapListenerKeys_ = null;
+  goog.base(this, 'setMap', map);
+  if (!goog.isNull(map)) {
+    this.mapListenerKeys_ = [
+      goog.events.listen(
+          map, ol.Object.getChangedEventType(ol.MapProperty.CENTER),
+          this.handleMapChanged, false, this),
+      goog.events.listen(
+          map, ol.Object.getChangedEventType(ol.MapProperty.LAYERS),
+          this.handleMapLayersChanged, false, this),
+      goog.events.listen(
+          map, ol.Object.getChangedEventType(ol.MapProperty.RESOLUTION),
+          this.handleMapChanged, false, this),
+      goog.events.listen(
+          map, ol.Object.getChangedEventType(ol.MapProperty.SIZE),
+          this.handleMapChanged, false, this)
+    ];
+    this.handleMapLayersChanged();
+  }
 };
 
 

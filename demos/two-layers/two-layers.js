@@ -39,6 +39,7 @@ domMap.bindTo('layers', webglMap);
 domMap.bindTo('resolution', webglMap);
 domMap.bindTo('rotation', webglMap);
 
-var attributionControl = new ol.control.Attribution(webglMap);
-document.getElementById('attribution').appendChild(
-    attributionControl.getElement());
+var attributionControl = new ol.control.Attribution({
+  map: webglMap,
+  target: document.getElementById('attribution')
+});
