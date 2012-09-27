@@ -16,25 +16,17 @@ goog.require('ol.control.Control');
  * @constructor
  * @extends {ol.control.Control}
  * @param {ol.Map} map Map.
- * @param {Array.<number>=} opt_resolutions The resolutions to zoom to.
+ * @param {number=} opt_zoomDelta Optional zoom delta.
  */
-ol.control.Zoom = function(map, opt_resolutions) {
+ol.control.Zoom = function(map, opt_zoomDelta) {
 
   goog.base(this, map);
-
-  if (!goog.isDef(opt_resolutions)) {
-    opt_resolutions = new Array(19);
-    for (var z = 0; z <= 18; ++z) {
-      opt_resolutions[z] = ol.Projection.EPSG_3857_HALF_SIZE / (128 << z);
-    }
-  }
-
+  
   /**
-   * @type {Function}
+   * @type {number}
    * @private
    */
-  this.constraint_ = ol.ResolutionConstraint.createSnapToResolutions(
-      opt_resolutions);
+  this.zoomDelta_ = goog.isDef(opt_zoomDelta) ? opt_zoomDelta : 1;
 
   /**
    * @type {Element}
@@ -87,7 +79,7 @@ ol.control.Zoom.prototype.getElement = function() {
 ol.control.Zoom.prototype.handleIn_ = function(browserEvent) {
   browserEvent.stopPropagation();
   browserEvent.preventDefault();
-  this.zoom_(1);
+  this.getMap().zoom(this.zoomDelta_);
 };
 
 
@@ -98,27 +90,12 @@ ol.control.Zoom.prototype.handleIn_ = function(browserEvent) {
 ol.control.Zoom.prototype.handleOut_ = function(browserEvent) {
   browserEvent.stopPropagation();
   browserEvent.preventDefault();
-  this.zoom_(-1);
+  this.getMap().zoom(-this.zoomDelta_);
 };
-
-
-/**
- * @param {number} delta Delta.
- * @private
- */
-ol.control.Zoom.prototype.zoom_ = function(delta) {
-  var map = this.getMap();
-  var resolution = this.constraint_(map.getResolution(), delta);
-  map.setResolution(resolution);
-};
-
-
 /**
  * @inheritDoc
  */
 ol.control.Zoom.prototype.disposeInternal = function() {
-  goog.dom.removeNode(this.inButton_);
-  goog.dom.removeNode(this.outButton_);
   goog.dom.removeNode(this.divElement_);
   delete this.inButton_;
   delete this.outButton_;
