@@ -490,11 +490,12 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
   var interactions = this.getInteractions();
   var interactionsArray = /** @type {Array.<ol.interaction.Interaction>} */
       interactions.getArray();
-  goog.array.every(interactionsArray, function(interaction) {
-    interaction.handleMapBrowserEvent(mapBrowserEvent);
-    return !mapBrowserEvent.defaultPrevented;
-  });
-  this.dispatchEvent(mapBrowserEvent);
+  if (this.dispatchEvent(mapBrowserEvent) !== false) {
+    goog.array.every(interactionsArray, function(interaction) {
+      interaction.handleMapBrowserEvent(mapBrowserEvent);
+      return !mapBrowserEvent.defaultPrevented;
+    });
+  }
 };
 
 
