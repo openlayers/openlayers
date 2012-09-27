@@ -21,7 +21,7 @@ goog.require('ol.control.Control');
 ol.control.Zoom = function(map, opt_zoomDelta) {
 
   goog.base(this, map);
-  
+
   /**
    * @type {number}
    * @private
@@ -92,6 +92,8 @@ ol.control.Zoom.prototype.handleOut_ = function(browserEvent) {
   browserEvent.preventDefault();
   this.getMap().zoom(-this.zoomDelta_);
 };
+
+
 /**
  * @inheritDoc
  */
