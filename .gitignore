@@ -1,5 +1,6 @@
 /bin/plovr*.jar
-/build/lint-timestamp
+/build/lint-spec-timestamp
+/build/lint-src-timestamp
 /build/ol.js
 /build/ol-all.js
 /build/proj4js-combined.js
