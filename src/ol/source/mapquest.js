@@ -1,21 +1,16 @@
-goog.provide('ol.layer.MapQuestOSM');
-goog.provide('ol.layer.MapQuestOpenAerial');
+goog.provide('ol.source.MapQuestOSM');
+goog.provide('ol.source.MapQuestOpenAerial');
 
 goog.require('ol.Attribution');
-goog.require('ol.TileUrlFunction');
-goog.require('ol.layer.XYZ');
+goog.require('ol.source.XYZ');
 
 
 
 /**
  * @constructor
- * @extends {ol.layer.XYZ}
- * @param {Object.<string, *>=} opt_values Values.
+ * @extends {ol.source.XYZ}
  */
-ol.layer.MapQuestOSM = function(opt_values) {
-
-  var tileUrlFunction = ol.TileUrlFunction.createFromTemplate(
-      'http://otile{1-4}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.jpg');
+ol.source.MapQuestOSM = function() {
 
   var attributions = [
     new ol.Attribution(
@@ -29,22 +24,22 @@ ol.layer.MapQuestOSM = function(opt_values) {
         '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA</a>')
   ];
 
-  goog.base(this, 18, tileUrlFunction, attributions);
+  goog.base(this, {
+    attributions: attributions,
+    maxZoom: 28,
+    url: 'http://otile{1-4}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.jpg'
+  });
 
 };
-goog.inherits(ol.layer.MapQuestOSM, ol.layer.XYZ);
+goog.inherits(ol.source.MapQuestOSM, ol.source.XYZ);
 
 
 
 /**
  * @constructor
- * @extends {ol.layer.XYZ}
- * @param {Object.<string, *>=} opt_values Values.
+ * @extends {ol.source.XYZ}
  */
-ol.layer.MapQuestOpenAerial = function(opt_values) {
-
-  var tileUrlFunction = ol.TileUrlFunction.createFromTemplate(
-      'http://oatile{1-4}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg');
+ol.source.MapQuestOpenAerial = function() {
 
   var attributions = [
     new ol.Attribution(
@@ -56,7 +51,11 @@ ol.layer.MapQuestOpenAerial = function(opt_values) {
         'U.S. Depart. of Agriculture, Farm Service Agency')
   ];
 
-  goog.base(this, 18, tileUrlFunction, attributions);
+  goog.base(this, {
+    attributions: attributions,
+    maxZoom: 18,
+    url: 'http://oatile{1-4}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg'
+  });
 
 };
-goog.inherits(ol.layer.MapQuestOpenAerial, ol.layer.XYZ);
+goog.inherits(ol.source.MapQuestOpenAerial, ol.source.XYZ);

@@ -1,4 +1,3 @@
-goog.provide('ol.layer.BingMaps');
 goog.provide('ol.source.BingMaps');
 
 goog.require('goog.Uri');
@@ -6,8 +5,7 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.net.Jsonp');
 goog.require('ol.TileCoverageArea');
-goog.require('ol.TileSource');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.source.TileSource');
 goog.require('ol.tilegrid.XYZ');
 
 
@@ -23,43 +21,32 @@ ol.BingMapsStyle = {
 };
 
 
-
 /**
- * @constructor
- * @extends {ol.layer.TileLayer}
- * @param {ol.BingMapsStyle} style Bing Maps style.
- * @param {string} key Key.
- * @param {string=} opt_culture Culture.
- * @param {Object.<string, *>=} opt_values Values.
+ * @typedef {{culture: (string|undefined),
+ *            key: string,
+ *            style: ol.BingMapsStyle}}
  */
-ol.layer.BingMaps = function(style, key, opt_culture, opt_values) {
-  var tileSource = new ol.source.BingMaps(style, key, opt_culture,
-      function(tileSource) {
-        this.dispatchEvent(goog.events.EventType.LOAD);
-      }, this);
-  goog.base(this, tileSource, opt_values);
-};
-goog.inherits(ol.layer.BingMaps, ol.layer.TileLayer);
+ol.source.BingMapsOptions;
 
 
 
 /**
  * @constructor
- * @extends {ol.TileSource}
- * @param {ol.BingMapsStyle} style Bing Maps style.
- * @param {string} key Key.
- * @param {string=} opt_culture Culture.
- * @param {?function(ol.source.BingMaps)=} opt_callback Callback.
- * @param {*=} opt_obj Object.
+ * @extends {ol.source.TileSource}
+ * @param {ol.source.BingMapsOptions} bingMapsOptions Bing Maps options.
  */
-ol.source.BingMaps =
-    function(style, key, opt_culture, opt_callback, opt_obj) {
+ol.source.BingMaps = function(bingMapsOptions) {
+
+  goog.base(this, {
+    projection: ol.Projection.getFromCode('EPSG:3857')
+  });
 
   /**
    * @private
    * @type {string}
    */
-  this.culture_ = opt_culture || 'en-us';
+  this.culture_ = goog.isDef(bingMapsOptions.culture) ?
+      bingMapsOptions.culture : 'en-us';
 
   /**
    * @private
@@ -67,34 +54,17 @@ ol.source.BingMaps =
    */
   this.ready_ = false;
 
-  /**
-   * @private
-   * @type {?function(ol.source.BingMaps)}
-   */
-  this.callback_ = opt_callback || null;
-
-  /**
-   * @private
-   * @type {*}
-   */
-  this.object_ = opt_obj;
-
   var uri = new goog.Uri(
-      'http://dev.virtualearth.net/REST/v1/Imagery/Metadata/' + style);
+      'http://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
+      bingMapsOptions.style);
   var jsonp = new goog.net.Jsonp(uri, 'jsonp');
   jsonp.send({
     'include': 'ImageryProviders',
-    'key': key
+    'key': bingMapsOptions.key
   }, goog.bind(this.handleImageryMetadataResponse, this));
 
-  var projection = ol.Projection.getFromCode('EPSG:3857');
-  var extent = projection.getExtent();
-
-  goog.base(
-      this, projection, null, ol.TileUrlFunction.nullTileUrlFunction, extent);
-
 };
-goog.inherits(ol.source.BingMaps, ol.TileSource);
+goog.inherits(ol.source.BingMaps, ol.source.TileSource);
 
 
 /**
@@ -118,7 +88,10 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
   var zoomMin = resource.zoomMin;
   var zoomMax = resource.zoomMax;
   var tileSize = new ol.Size(resource.imageWidth, resource.imageHeight);
-  var tileGrid = new ol.tilegrid.XYZ(zoomMax, tileSize);
+  var tileGrid = new ol.tilegrid.XYZ({
+    maxZoom: zoomMax,
+    tileSize: tileSize
+  });
   this.tileGrid = tileGrid;
 
   this.tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
@@ -172,11 +145,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
 
   this.ready_ = true;
 
-  if (!goog.isNull(this.callback_)) {
-    this.callback_.call(this.object_, this);
-    this.callback_ = null;
-    this.object_ = null;
-  }
+  this.dispatchLoadEvent();
 
 };
 

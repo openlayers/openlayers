@@ -5,8 +5,10 @@ describe('ol.source.XYZ', function() {
     var xyzTileSource, tileGrid;
 
     beforeEach(function() {
-      xyzTileSource = new ol.source.XYZ(
-          6, ol.TileUrlFunction.createFromTemplate('{z}/{x}/{y}'));
+      xyzTileSource = new ol.source.XYZ({
+        maxZoom: 6,
+        url: '{z}/{x}/{y}'
+      });
       tileGrid = xyzTileSource.getTileGrid();
     });
 
@@ -72,7 +74,7 @@ describe('ol.source.XYZ', function() {
 
   describe('forEachTileCoordParentTileRange', function() {
     it('iterates as expected', function() {
-      var xyzTileGrid = new ol.tilegrid.XYZ(6);
+      var xyzTileGrid = new ol.tilegrid.XYZ({maxZoom: 6});
 
       var tileCoord = new ol.TileCoord(5, 11, 21);
       var zs = [], tileRanges = [];

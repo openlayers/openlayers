@@ -7,7 +7,8 @@ goog.require('ol.RendererHint');
 goog.require('ol.control.Attribution');
 goog.require('ol.control.MousePosition');
 goog.require('ol.interaction.Keyboard');
-goog.require('ol.layer.MapQuestOpenAerial');
+goog.require('ol.layer.TileLayer');
+goog.require('ol.source.MapQuestOpenAerial');
 
 
 if (goog.DEBUG) {
@@ -16,7 +17,9 @@ if (goog.DEBUG) {
 }
 
 
-var layer = new ol.layer.MapQuestOpenAerial();
+var layer = new ol.layer.TileLayer({
+  source: new ol.source.MapQuestOpenAerial()
+});
 
 var domMap = new ol.Map(document.getElementById('domMap'), {
   center: new ol.Coordinate(0, 0),

@@ -181,8 +181,8 @@ ol.control.Attribution.prototype.getLayerAttributionVisiblities_ =
   }
 
   var mapZ;
-  if (source instanceof ol.TileSource) {
-    var tileSource = /** @type {ol.TileSource} */ source;
+  if (source instanceof ol.source.TileSource) {
+    var tileSource = /** @type {ol.source.TileSource} */ source;
     var tileGrid = tileSource.getTileGrid();
     mapZ = tileGrid.getZForResolution(mapResolution);
   }
@@ -214,7 +214,7 @@ ol.control.Attribution.prototype.getLayerAttributionVisiblities_ =
     }
 
     if (!goog.isNull(coverageAreas)) {
-      if (source instanceof ol.TileSource) {
+      if (source instanceof ol.source.TileSource) {
         attributionVisible = goog.array.some(
             coverageAreas,
             function(coverageArea, index) {

@@ -1,9 +1,24 @@
 goog.provide('ol.layer.Layer');
+goog.provide('ol.layer.LayerOptions');
 goog.provide('ol.layer.LayerProperty');
 
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.math');
 goog.require('ol.Object');
-goog.require('ol.Source');
+goog.require('ol.source.Source');
+
+
+/**
+ * @typedef {{brightness: (number|undefined),
+ *            contrast: (number|undefined),
+ *            hue: (number|undefined),
+ *            opacity: (number|undefined),
+ *            saturation: (number|undefined),
+ *            source: ol.source.Source,
+ *            visible: (boolean|undefined)}}
+ */
+ol.layer.LayerOptions;
 
 
 /**
@@ -23,32 +38,45 @@ ol.layer.LayerProperty = {
 /**
  * @constructor
  * @extends {ol.Object}
- * @param {ol.Source} source Source.
- * @param {Object.<string, *>=} opt_values Values.
+ * @param {ol.layer.LayerOptions} layerOptions LayerOptions.
  */
-ol.layer.Layer = function(source, opt_values) {
+ol.layer.Layer = function(layerOptions) {
 
   goog.base(this);
 
   /**
    * @private
-   * @type {ol.Source}
+   * @type {ol.source.Source}
    */
-  this.source_ = source;
+  this.source_ = layerOptions.source;
 
-  this.setBrightness(0);
-  this.setContrast(0);
-  this.setHue(0);
-  this.setOpacity(1);
-  this.setSaturation(0);
-  this.setVisible(true);
+  this.setBrightness(
+      goog.isDef(layerOptions.brightness) ? layerOptions.brightness : 0);
+  this.setContrast(
+      goog.isDef(layerOptions.contrast) ? layerOptions.contrast : 0);
+  this.setHue(
+      goog.isDef(layerOptions.hue) ? layerOptions.hue : 0);
+  this.setOpacity(
+      goog.isDef(layerOptions.opacity) ? layerOptions.opacity : 1);
+  this.setSaturation(
+      goog.isDef(layerOptions.saturation) ? layerOptions.saturation : 0);
+  this.setVisible(
+      goog.isDef(layerOptions.visible) ? layerOptions.visible : true);
 
-  if (goog.isDef(opt_values)) {
-    this.setValues(opt_values);
+  if (!this.source_.isReady()) {
+    goog.events.listenOnce(this.source_, goog.events.EventType.LOAD,
+        this.handleSourceLoad_, false, this);
   }
 
 };
 goog.inherits(ol.layer.Layer, ol.Object);
+
+
+/**
+ */
+ol.layer.Layer.prototype.dispatchLoadEvent = function() {
+  this.dispatchEvent(goog.events.EventType.LOAD);
+};
 
 
 /**
@@ -112,7 +140,7 @@ goog.exportProperty(
 
 
 /**
- * @return {ol.Source} Source.
+ * @return {ol.source.Source} Source.
  */
 ol.layer.Layer.prototype.getSource = function() {
   return this.source_;
@@ -129,6 +157,14 @@ goog.exportProperty(
     ol.layer.Layer.prototype,
     'getVisible',
     ol.layer.Layer.prototype.getVisible);
+
+
+/**
+ * @private
+ */
+ol.layer.Layer.prototype.handleSourceLoad_ = function() {
+  this.dispatchLoadEvent();
+};
 
 
 /**

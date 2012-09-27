@@ -1,4 +1,4 @@
-describe('ol.TileGrid', function() {
+describe('ol.tilegrid.TileGrid', function() {
   var extent;
   var resolutions;
   var origin;
@@ -16,16 +16,25 @@ describe('ol.TileGrid', function() {
   describe('create valid', function() {
     it('does not throw an exception', function() {
       expect(function() {
-        return new ol.TileGrid(resolutions, extent, origin, tileSize);
+        return new ol.tilegrid.TileGrid({
+          resolutions: resolutions,
+          extent: extent,
+          origin: origin,
+          tileSize: tileSize
+        });
       }).not.toThrow();
     });
   });
 
   describe('create with duplicate resolutions', function() {
     it('throws an exception', function() {
-      var resolutions = [100, 50, 50, 25, 10];
       expect(function() {
-        return new ol.TileGrid(resolutions, extent, origin, tileSize);
+        return new ol.tilegrid.TileGrid({
+          resolutions: [100, 50, 50, 25, 10],
+          extent: extent,
+          origin: origin,
+          tileSize: tileSize
+        });
       }).toThrow();
     });
   });
@@ -34,37 +43,51 @@ describe('ol.TileGrid', function() {
     it('throws an exception', function() {
       var resolutions = [100, 25, 50, 10];
       expect(function() {
-        return new ol.TileGrid(resolutions, extent, origin, tileSize);
+        return new ol.tilegrid.TileGrid({
+          resolutions: resolutions,
+          extent: extent,
+          origin: origin,
+          tileSize: tileSize
+        });
       }).toThrow();
     });
   });
 
   describe('create with multiple origins', function() {
     it('does not throw an exception', function() {
-      var resolutions = [100, 50, 25, 10];
-      var origins = [origin, origin, origin, origin];
       expect(function() {
-        return new ol.TileGrid(resolutions, extent, origins, tileSize);
+        return new ol.tilegrid.TileGrid({
+          resolutions: [100, 50, 25, 10],
+          extent: extent,
+          origins: [origin, origin, origin, origin],
+          tileSize: tileSize
+        });
       }).not.toThrow();
     });
   });
 
   describe('create with too few origins', function() {
     it('throws an exception', function() {
-      var resolutions = [100, 50, 25, 10];
-      var origins = [origin, origin, origin];
       expect(function() {
-        return new ol.TileGrid(resolutions, extent, origins, tileSize);
+        return new ol.tilegrid.TileGrid({
+          resolutions: [100, 50, 25, 10],
+          extent: extent,
+          origins: [origin, origin, origin],
+          tileSize: tileSize
+        });
       }).toThrow();
     });
   });
 
   describe('create with too many origins', function() {
     it('throws an exception', function() {
-      var resolutions = [100, 50, 25, 10];
-      var origins = [origin, origin, origin, origin, origin];
       expect(function() {
-        return new ol.TileGrid(resolutions, extent, origins, tileSize);
+        return new ol.tilegrid.TileGrid({
+          resolutions: [100, 50, 25, 10],
+          extent: extent,
+          origins: [origin, origin, origin, origin, origin],
+          tileSize: tileSize
+        });
       }).toThrow();
     });
   });
@@ -74,7 +97,12 @@ describe('ol.TileGrid', function() {
     describe('Y North, X East', function() {
       it('returns the expected TileCoord', function() {
         origin = new ol.Coordinate(0, 0);
-        var tileGrid = new ol.TileGrid(resolutions, extent, origin, tileSize);
+        var tileGrid = new ol.tilegrid.TileGrid({
+          resolutions: resolutions,
+          extent: extent,
+          origin: origin,
+          tileSize: tileSize
+        });
         var tileCoord;
 
         tileCoord = tileGrid.getTileCoordForCoordAndZ(
@@ -106,7 +134,12 @@ describe('ol.TileGrid', function() {
     describe('Y South, X East', function() {
       it('returns the expected TileCoord', function() {
         origin = new ol.Coordinate(0, 100000);
-        var tileGrid = new ol.TileGrid(resolutions, extent, origin, tileSize);
+        var tileGrid = new ol.tilegrid.TileGrid({
+          resolutions: resolutions,
+          extent: extent,
+          origin: origin,
+          tileSize: tileSize
+        });
         var tileCoord;
 
         tileCoord = tileGrid.getTileCoordForCoordAndZ(
@@ -139,7 +172,12 @@ describe('ol.TileGrid', function() {
   describe('getTileCoordForCoordAndResolution', function() {
     it('returns the expected TileCoord', function() {
       var tileSize = new ol.Size(256, 256);
-      var tileGrid = new ol.TileGrid([10], extent, origin, tileSize);
+      var tileGrid = new ol.tilegrid.TileGrid({
+        resolutions: [10],
+        extent: extent,
+        origin: origin,
+        tileSize: tileSize
+      });
 
       var coordinate;
       var tileCoord;
@@ -221,7 +259,12 @@ describe('ol.TileGrid', function() {
   describe('getTileCoordForCoordAndResolution fractional', function() {
     it('returns the expected TileCoord', function() {
       var tileSize = new ol.Size(256, 256);
-      var tileGrid = new ol.TileGrid([1 / 3], extent, origin, tileSize);
+      var tileGrid = new ol.tilegrid.TileGrid({
+        resolutions: [1 / 3],
+        extent: extent,
+        origin: origin,
+        tileSize: tileSize
+      });
 
       var coordinate;
       var tileCoord;
@@ -315,7 +358,12 @@ describe('ol.TileGrid', function() {
 
   describe('getTileCoordCenter', function() {
     it('returns the expected center', function() {
-      var tileGrid = new ol.TileGrid(resolutions, extent, origin, tileSize);
+      var tileGrid = new ol.tilegrid.TileGrid({
+        resolutions: resolutions,
+        extent: extent,
+        origin: origin,
+        tileSize: tileSize
+      });
       var center;
 
       center = tileGrid.getTileCoordCenter(new ol.TileCoord(0, 0, 0));
@@ -334,7 +382,12 @@ describe('ol.TileGrid', function() {
 
   describe('getTileCoordExent', function() {
     it('returns the expected extend', function() {
-      var tileGrid = new ol.TileGrid(resolutions, extent, origin, tileSize);
+      var tileGrid = new ol.tilegrid.TileGrid({
+        resolutions: resolutions,
+        extent: extent,
+        origin: origin,
+        tileSize: tileSize
+      });
       var tileCoordExtent;
 
       tileCoordExtent = tileGrid.getTileCoordExtent(new ol.TileCoord(0, 0, 0));
@@ -359,7 +412,12 @@ describe('ol.TileGrid', function() {
 
   describe('getTileRangeForExtentAndZ', function() {
     it('returns the expected TileRange', function() {
-      var tileGrid = new ol.TileGrid(resolutions, extent, origin, tileSize);
+      var tileGrid = new ol.tilegrid.TileGrid({
+        resolutions: resolutions,
+        extent: extent,
+        origin: origin,
+        tileSize: tileSize
+      });
       var e = new ol.Extent(45000, 5000, 55000, 15000);
       var tileRange;
 
@@ -391,7 +449,12 @@ describe('ol.TileGrid', function() {
 
   describe('forEachTileCoordParentTileRange', function() {
     it('iterates as expected', function() {
-      var tileGrid = new ol.TileGrid(resolutions, extent, origin, tileSize);
+      var tileGrid = new ol.tilegrid.TileGrid({
+        resolutions: resolutions,
+        extent: extent,
+        origin: origin,
+        tileSize: tileSize
+      });
       var zs = [], tileRanges = [];
 
       tileGrid.forEachTileCoordParentTileRange(
@@ -427,8 +490,12 @@ describe('ol.TileGrid', function() {
 
   describe('getZForResolution (exact)', function() {
     it('returns the expected z value', function() {
-      var tileGrid =
-          new ol.TileGrid(resolutions, extent, origin, tileSize);
+      var tileGrid = new ol.tilegrid.TileGrid({
+        resolutions: resolutions,
+        extent: extent,
+        origin: origin,
+        tileSize: tileSize
+      });
 
       expect(tileGrid.getZForResolution(1000)).toEqual(0);
       expect(tileGrid.getZForResolution(500)).toEqual(1);
@@ -439,9 +506,12 @@ describe('ol.TileGrid', function() {
 
   describe('getZForResolution (approcimate)', function() {
     it('returns the expected z value', function() {
-      var tileGrid =
-          new ol.TileGrid(resolutions, extent, origin, tileSize);
-
+      var tileGrid = new ol.tilegrid.TileGrid({
+        resolutions: resolutions,
+        extent: extent,
+        origin: origin,
+        tileSize: tileSize
+      });
 
       expect(tileGrid.getZForResolution(2000)).toEqual(0);
       expect(tileGrid.getZForResolution(1000)).toEqual(0);
@@ -465,4 +535,4 @@ goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.Size');
 goog.require('ol.TileCoord');
-goog.require('ol.TileGrid');
+goog.require('ol.tilegrid.TileGrid');

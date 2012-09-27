@@ -2,14 +2,14 @@ goog.provide('ol.TileCoverageArea');
 
 goog.require('ol.CoverageArea');
 goog.require('ol.Extent');
-goog.require('ol.TileGrid');
+goog.require('ol.tilegrid.TileGrid');
 
 
 
 /**
  * @constructor
  * @extends {ol.CoverageArea}
- * @param {ol.TileGrid} tileGrid Tile grid.
+ * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
  * @param {ol.Extent} extent Extent.
  * @param {number} minZ Minimum Z.
  * @param {number} maxZ Maximum Z.
@@ -20,7 +20,7 @@ ol.TileCoverageArea = function(tileGrid, extent, minZ, maxZ) {
 
   /**
    * @private
-   * @type {ol.TileGrid}
+   * @type {ol.tilegrid.TileGrid}
    */
   this.tileGrid_ = tileGrid;
 

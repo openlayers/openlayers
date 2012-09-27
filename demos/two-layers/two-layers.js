@@ -4,16 +4,23 @@ goog.require('ol.Map');
 goog.require('ol.Projection');
 goog.require('ol.RendererHint');
 goog.require('ol.control.Attribution');
-goog.require('ol.layer.BingMaps');
-goog.require('ol.layer.TileJSON');
+goog.require('ol.layer.TileLayer');
+goog.require('ol.source.BingMaps');
+goog.require('ol.source.TileJSON');
 
 
 var layers = new ol.Collection([
-  new ol.layer.BingMaps(
-      ol.BingMapsStyle.AERIAL,
-      'AheP841R-MsLErKQChaTba_xDoOCl40-EeTubD9uNhNAyQTePwFY9iVD1_pyqqlE'),
-  new ol.layer.TileJSON(
-      'http://api.tiles.mapbox.com/v3/mapbox.va-quake-aug.jsonp')
+  new ol.layer.TileLayer({
+    source: new ol.source.BingMaps({
+      key: 'AheP841R-MsLErKQChaTba_xDoOCl40-EeTubD9uNhNAyQTePwFY9iVD1_pyqqlE',
+      style: ol.BingMapsStyle.AERIAL
+    })
+  }),
+  new ol.layer.TileLayer({
+    source: new ol.source.TileJSON({
+      uri: 'http://api.tiles.mapbox.com/v3/mapbox.va-quake-aug.jsonp'
+    })
+  })
 ]);
 
 var webglMap = new ol.Map(document.getElementById('webglMap'), {
