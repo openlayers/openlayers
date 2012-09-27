@@ -21,6 +21,6 @@ var layer = new ol.layer.TileLayer({
 var map = new ol.Map(document.getElementById('map'), {
   center: new ol.Coordinate(0, 0),
   layers: new ol.Collection([layer]),
-  zoom: 0
+  zoom: 2
 });
 var zoom = new ol.control.Zoom(map, 4);
