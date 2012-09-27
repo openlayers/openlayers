@@ -40,10 +40,22 @@ ol.renderer.dom.Map = function(container, map) {
   this.layerPanes_ = {};
 
   /**
-   * @type {ol.Coordinate|undefined}
+   * @type {ol.Coordinate}
    * @private
    */
-  this.renderedCenter_ = undefined;
+  this.renderedCenter_ = null;
+
+  /**
+   * @type {number | undefined}
+   * @private
+   */
+  this.renderedResolution_ = undefined;
+
+  /**
+   * @type {ol.Size}
+   * @private
+   */
+  this.renderedSize_ = null;
 
   /**
    * The pixel offset of the layers pane with respect to its container.
@@ -90,13 +102,6 @@ ol.renderer.dom.Map.prototype.handleCenterChanged = function() {
   if (!map.isDef()) {
     return;
   }
-  // FIXME: shiftLayersPane_ and resetLayersPane_ should be called
-  // elsewhere as we may be frozen here
-  if (goog.isDef(this.renderedCenter_)) {
-    this.shiftLayersPane_();
-  } else {
-    this.resetLayersPane_();
-  }
   map.render();
 };
 
@@ -110,9 +115,6 @@ ol.renderer.dom.Map.prototype.handleResolutionChanged = function() {
   if (!map.isDef()) {
     return;
   }
-  // FIXME: resetLayersPane_ should be called
-  // elsewhere as we may be frozen here
-  this.resetLayersPane_();
   map.render();
 };
 
@@ -126,10 +128,52 @@ ol.renderer.dom.Map.prototype.handleSizeChanged = function() {
   if (!map.isDef()) {
     return;
   }
-  // FIXME: resetLayersPane_ should be called
-  // elsewhere as we may be frozen here
-  this.resetLayersPane_();
   map.render();
+};
+
+
+/**
+ * Render the map.  Sets up the layers pane on first render and adjusts its
+ * position as needed on subsequent calls.
+ *
+ * @return {boolean} Animating.
+ */
+ol.renderer.dom.Map.prototype.render = function() {
+  var map = this.getMap();
+  if (!map.isDef()) {
+    return false;
+  }
+
+  var mapSize = map.getSize();
+  var mapResolution = map.getResolution();
+  var mapCenter = map.getCenter();
+  goog.asserts.assert(goog.isDefAndNotNull(mapSize));
+  goog.asserts.assert(goog.isDef(mapResolution));
+  goog.asserts.assert(goog.isDefAndNotNull(mapCenter));
+
+  if (goog.isNull(this.renderedCenter_)) {
+    // first rendering
+    goog.asserts.assert(!goog.isDef(this.renderedResolution_));
+    goog.asserts.assert(goog.isNull(this.renderedSize_));
+    this.resetLayersPane_();
+  } else {
+    goog.asserts.assert(goog.isDef(this.renderedResolution_));
+    goog.asserts.assert(!goog.isNull(this.renderedSize_));
+    if (mapResolution !== this.renderedResolution_ ||
+        !mapSize.equals(this.renderedSize_)) {
+      // resolution or size changed, adjust layers pane
+      this.resetLayersPane_();
+    } else if (!mapCenter.equals(this.renderedCenter_)) {
+      // same resolution and size, new center
+      this.shiftLayersPane_();
+    }
+  }
+
+  this.renderedCenter_ = mapCenter;
+  this.renderedResolution_ = mapResolution;
+  this.renderedSize_ = mapSize;
+
+  return goog.base(this, 'render');
 };
 
 
@@ -140,19 +184,7 @@ ol.renderer.dom.Map.prototype.handleSizeChanged = function() {
 ol.renderer.dom.Map.prototype.resetLayersPane_ = function() {
   var offset = new ol.Coordinate(0, 0);
   goog.style.setPosition(this.layersPane_, offset);
-
   this.layersPaneOffset_ = offset;
-  this.renderedCenter_ = this.map.getCenter();
-
-  this.setOrigin_();
-};
-
-
-/**
- * Set the origin for each layer renderer.
- * @private
- */
-ol.renderer.dom.Map.prototype.setOrigin_ = function() {
   var center = this.map.getCenter();
   var resolution = this.map.getResolution();
   var mapSize = this.map.getSize();
@@ -182,6 +214,5 @@ ol.renderer.dom.Map.prototype.shiftLayersPane_ = function() {
     offset.x += Math.round((oldCenter.x - center.x) / resolution);
     offset.y += Math.round((center.y - oldCenter.y) / resolution);
     goog.style.setPosition(this.layersPane_, offset);
-    this.renderedCenter_ = center;
   }
 };
