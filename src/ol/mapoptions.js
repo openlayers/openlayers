@@ -64,6 +64,7 @@ ol.DEFAULT_RENDERER_HINTS = [
  *            layers: (ol.Collection|undefined),
  *            maxResolution: (number|undefined),
  *            mouseWheelZoom: (boolean|undefined),
+ *            mouseWheelZoomDelta: (number|undefined),
  *            numZoomLevels: (number|undefined),
  *            projection: (ol.Projection|string|undefined),
  *            renderer: (ol.RendererHint|undefined),
@@ -241,7 +242,10 @@ ol.MapOptions.createInteractions_ = function(mapOptionsLiteral) {
   var mouseWheelZoom = goog.isDef(mapOptionsLiteral.mouseWheelZoom) ?
       mapOptionsLiteral.mouseWheelZoom : true;
   if (mouseWheelZoom) {
-    interactions.push(new ol.interaction.MouseWheelZoom());
+    var mouseWheelZoomDelta =
+        goog.isDef(mapOptionsLiteral.mouseWheelZoomDelta) ?
+            mapOptionsLiteral.mouseWheelZoomDelta : 1;
+    interactions.push(new ol.interaction.MouseWheelZoom(mouseWheelZoomDelta));
   }
 
   var shiftDragZoom = goog.isDef(mapOptionsLiteral.shiftDragZoom) ?

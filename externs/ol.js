@@ -73,6 +73,12 @@ olx.MapOptionsExtern.prototype.mouseWheelZoom;
 /**
  * @type {number|undefined}
  */
+olx.MapOptionsExtern.prototype.mouseWheelZoomDelta;
+
+
+/**
+ * @type {number|undefined}
+ */
 olx.MapOptionsExtern.prototype.numZoomLevels;
 
 

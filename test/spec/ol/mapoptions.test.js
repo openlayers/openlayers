@@ -51,4 +51,47 @@ describe('ol.MapOptions', function() {
 
     });
   });
+
+  describe('create interactions', function() {
+
+    var options;
+
+    beforeEach(function() {
+      options = {
+          rotate: false,
+          doubleClickZoom: false,
+          dragPan: false,
+          keyboard: false,
+          mouseWheelZoom: false,
+          shiftDragZoom: false
+      };
+    });
+
+    describe('create mousewheel interaction', function() {
+
+      beforeEach(function() {
+        options.mouseWheelZoom = true;
+      });
+
+      describe('default mouseWheelZoomDelta', function() {
+        it('create mousewheel interaction with default delta', function() {
+          var interactions = ol.MapOptions.createInteractions_(options);
+          expect(interactions.getLength()).toEqual(1);
+          expect(interactions.getAt(0)).toBeA(ol.interaction.MouseWheelZoom);
+          expect(interactions.getAt(0).delta_).toEqual(1);
+        });
+      });
+
+      describe('set mouseWheelZoomDelta', function() {
+        it('create mousewheel interaction with default delta', function() {
+          options.mouseWheelZoomDelta = 7;
+          var interactions = ol.MapOptions.createInteractions_(options);
+          expect(interactions.getLength()).toEqual(1);
+          expect(interactions.getAt(0)).toBeA(ol.interaction.MouseWheelZoom);
+          expect(interactions.getAt(0).delta_).toEqual(7);
+        });
+      });
+    });
+  });
+
 });
