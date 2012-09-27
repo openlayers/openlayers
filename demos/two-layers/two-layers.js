@@ -12,7 +12,7 @@ goog.require('ol.source.TileJSON');
 var layers = new ol.Collection([
   new ol.layer.TileLayer({
     source: new ol.source.BingMaps({
-      key: 'AheP841R-MsLErKQChaTba_xDoOCl40-EeTubD9uNhNAyQTePwFY9iVD1_pyqqlE',
+      key: 'Ak0kFwyFsvMr0dVwuaURTqKAXytSSN47KOdj4uVpaWBhK-DT6Zo-FeHCiJUL0tYL',
       style: ol.BingMapsStyle.AERIAL
     })
   }),
@@ -39,6 +39,7 @@ domMap.bindTo('layers', webglMap);
 domMap.bindTo('resolution', webglMap);
 domMap.bindTo('rotation', webglMap);
 
-var attributionControl = new ol.control.Attribution(webglMap);
-document.getElementById('attribution').appendChild(
-    attributionControl.getElement());
+var attributionControl = new ol.control.Attribution({
+  map: webglMap,
+  target: document.getElementById('attribution')
+});

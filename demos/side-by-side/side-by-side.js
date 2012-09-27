@@ -38,21 +38,26 @@ if (!goog.isNull(webglMap)) {
   webglMap.bindTo('rotation', domMap);
 }
 
-var attributionControl = new ol.control.Attribution(domMap);
-document.getElementById('attribution').appendChild(
-    attributionControl.getElement());
+var attributionControl = new ol.control.Attribution({
+  map: domMap,
+  target: document.getElementById('attribution')
+});
 
-var domMousePositionControl = new ol.control.MousePosition(domMap,
-    ol.Projection.getFromCode('EPSG:4326'), ol.CoordinateFormat.hdms,
-    '&nbsp;');
-document.getElementById('domMousePosition').appendChild(
-    domMousePositionControl.getElement());
+var domMousePositionControl = new ol.control.MousePosition({
+  coordinateFormat: ol.CoordinateFormat.hdms,
+  map: domMap,
+  projection: ol.Projection.getFromCode('EPSG:4326'),
+  target: document.getElementById('domMousePosition'),
+  undefinedHtml: '&nbsp;'
+});
 
-var webglMousePositionControl = new ol.control.MousePosition(webglMap,
-    ol.Projection.getFromCode('EPSG:4326'), ol.CoordinateFormat.hdms,
-    '&nbsp;');
-document.getElementById('webglMousePosition').appendChild(
-    webglMousePositionControl.getElement());
+var webglMousePositionControl = new ol.control.MousePosition({
+  coordinateFormat: ol.CoordinateFormat.hdms,
+  map: webglMap,
+  projection: ol.Projection.getFromCode('EPSG:4326'),
+  target: document.getElementById('webglMousePosition'),
+  undefinedHtml: '&nbsp;'
+});
 
 var keyboardInteraction = new ol.interaction.Keyboard();
 keyboardInteraction.addCallback('0', function() {

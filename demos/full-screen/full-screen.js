@@ -23,4 +23,7 @@ var map = new ol.Map(document.getElementById('map'), {
   layers: new ol.Collection([layer]),
   zoom: 2
 });
-var zoom = new ol.control.Zoom(map, 4);
+var zoom = new ol.control.Zoom({
+  delta: 4,
+  map: map
+});
