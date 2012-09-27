@@ -26,11 +26,8 @@ ol.interaction.DblClickZoom.prototype.handleMapBrowserEvent =
       mapBrowserEvent.isMouseActionButton()) {
     var map = mapBrowserEvent.map;
     var anchor = mapBrowserEvent.getCoordinate();
-    if (mapBrowserEvent.browserEvent.shiftKey) {
-      map.zoomOut(anchor);
-    } else {
-      map.zoomIn(anchor);
-    }
+    var delta = mapBrowserEvent.browserEvent.shiftKey ? -4 : 4;
+    map.zoom(delta, anchor);
     mapBrowserEvent.preventDefault();
   }
 };

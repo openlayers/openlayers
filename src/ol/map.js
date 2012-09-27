@@ -838,25 +838,9 @@ ol.Map.prototype.zoom_ = function(resolution, opt_anchor) {
  * @param {number} delta Delta from previous zoom level.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  */
-ol.Map.prototype.zoomByDelta = function(delta, opt_anchor) {
+ol.Map.prototype.zoom = function(delta, opt_anchor) {
   var resolution = this.constraints_.resolution(this.getResolution(), delta);
   this.zoom_(resolution, opt_anchor);
-};
-
-
-/**
- * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
- */
-ol.Map.prototype.zoomIn = function(opt_anchor) {
-  this.zoomByDelta(4, opt_anchor);
-};
-
-
-/**
- * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
- */
-ol.Map.prototype.zoomOut = function(opt_anchor) {
-  this.zoomByDelta(-4, opt_anchor);
 };
 
 

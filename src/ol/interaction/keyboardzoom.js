@@ -27,11 +27,8 @@ ol.interaction.KeyboardZoom.prototype.handleMapBrowserEvent =
     var charCode = keyEvent.charCode;
     if (charCode == '+'.charCodeAt(0) || charCode == '-'.charCodeAt(0)) {
       var map = mapBrowserEvent.map;
-      if (charCode == '+'.charCodeAt(0)) {
-        map.zoomIn();
-      } else {
-        map.zoomOut();
-      }
+      var delta = (charCode == '+'.charCodeAt(0)) ? 4 : -4;
+      map.zoom(delta);
       keyEvent.preventDefault();
       mapBrowserEvent.preventDefault();
     }
