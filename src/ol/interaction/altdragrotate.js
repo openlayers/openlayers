@@ -30,9 +30,10 @@ ol.interaction.AltDragRotate.prototype.handleDrag = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   var map = mapBrowserEvent.map;
   var size = map.getSize();
+  var offset = mapBrowserEvent.getPixel();
   var theta = Math.atan2(
-      size.height / 2 - browserEvent.offsetY,
-      browserEvent.offsetX - size.width / 2);
+      size.height / 2 - offset.y,
+      offset.x - size.width / 2);
   map.rotate(this.startRotation_, -theta);
 };
 
@@ -47,9 +48,10 @@ ol.interaction.AltDragRotate.prototype.handleDragStart =
   if (browserEvent.isMouseActionButton() && browserEvent.altKey &&
       map.canRotate()) {
     var size = map.getSize();
+    var offset = mapBrowserEvent.getPixel();
     var theta = Math.atan2(
-        size.height / 2 - browserEvent.offsetY,
-        browserEvent.offsetX - size.width / 2);
+        size.height / 2 - offset.y,
+        offset.x - size.width / 2);
     this.startRotation_ = (map.getRotation() || 0) + theta;
     return true;
   } else {
