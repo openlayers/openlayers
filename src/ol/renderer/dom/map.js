@@ -30,13 +30,13 @@ ol.renderer.dom.Map = function(container, map) {
    * @private
    */
   this.layersPane_ = goog.dom.createElement(goog.dom.TagName.DIV);
-  this.layersPane_.className = 'ol-layers-pane';
+  this.layersPane_.className = 'ol-layers-pane ol-unselectable';
   var style = this.layersPane_.style;
   style.position = 'absolute';
   style.width = '100%';
   style.height = '100%';
 
-  goog.dom.appendChild(container, this.layersPane_);
+  goog.dom.insertChildAt(container, this.layersPane_, 0);
 
   /**
    * @type {Object}

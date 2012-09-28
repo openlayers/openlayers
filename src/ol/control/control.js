@@ -67,7 +67,8 @@ ol.control.Control.prototype.setMap = function(map) {
   }
   this.map_ = map;
   if (!goog.isNull(this.map_)) {
-    var target = goog.isDef(this.target_) ? this.target_ : map.getViewport();
+    var target = goog.isDef(this.target_) ?
+        this.target_ : map.getOverlayContainer();
     goog.dom.appendChild(target, this.element);
   }
 };
