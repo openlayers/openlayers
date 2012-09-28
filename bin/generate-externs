@@ -1,0 +1,101 @@
+#!/usr/bin/env python
+
+import fileinput
+from optparse import OptionParser
+import re
+import sys
+
+
+class Type(object):
+
+    def __init__(self, name, members=None):
+        self.name = name
+        self.namespace = '.'.join(self.name.split('.')[:-1]) or None
+        self.members = members or {}
+
+    def extern(self):
+        lines = []
+        lines.append('/**\n')
+        lines.append(' * @interface\n')
+        lines.append(' */\n')
+        lines.append('%s = function() {};\n' % (self.name,))
+        for key in sorted(self.members.keys()):
+            lines.append('\n')
+            lines.append('\n')
+            lines.append('/**\n')
+            lines.append(' * @type {%s}\n' % (self.members[key],))
+            lines.append(' */\n')
+            lines.append('%s.prototype.%s;\n' % (self.name, key))
+        return ''.join(lines)
+
+    def provide(self):
+        return 'goog.provide(\'%s\');\n' % (self.name,)
+
+    def typedef(self):
+        lines = []
+        lines.append('/**\n')
+        for i, key in enumerate(sorted(self.members.keys())):
+            prefix =  ' * @typedef {{' if i == 0 else ' *            '
+            suffix = '}}' if i == len(self.members) - 1 else ','
+            type = self.members[key]
+            if '|' in type:
+                type = '(%s)' % (type,)
+            lines.append('%s%s: %s%s\n' % (prefix, key, type, suffix))
+        lines.append(' */\n')
+        lines.append('%s;\n' % (self.name,))
+        return ''.join(lines)
+
+
+def main(argv):
+
+    option_parser = OptionParser()
+    option_parser.add_option('--externs', action='store_true')
+    option_parser.add_option('--typedef', action='store_true')
+    options, args = option_parser.parse_args(argv[1:])
+
+    types = []
+    for arg in args:
+        for line in open(arg):
+            line = line.strip()
+            if not line:
+                continue
+            m = re.match('@externtype\s*(?P<name>\S+)\Z', line)
+            if m:
+                name = m.group('name')
+                if options.externs:
+                    name = re.sub('\Aol\.', 'olx.', name + 'Extern')
+                if options.typedef:
+                    name = name + 'Literal'
+                type = Type(name)
+                types.append(type)
+                continue
+            m = re.match('(?P<key>\S+):\s+(?P<value>\S+)', line)
+            if m:
+                type.members[m.group('key')] = m.group('value')
+                continue
+            raise RuntimeError(line)
+
+    if options.externs:
+        sys.stdout.write('/**\n')
+        sys.stdout.write(' * @externs\n')
+        sys.stdout.write(' */\n')
+        namespaces = sorted(set(filter(None, (type.namespace for type in types))))
+        for namespace in namespaces:
+            sys.stdout.write('\n\n')
+            sys.stdout.write('/**\n')
+            sys.stdout.write(' * @type {Object}\n')
+            sys.stdout.write(' */\n')
+            sys.stdout.write('var %s;\n' % (namespace,))
+        for type in types:
+            sys.stdout.write('\n\n\n')
+            sys.stdout.write(type.extern())
+
+    if options.typedef:
+        sys.stdout.write(''.join(type.provide() for type in types))
+        for type in types:
+            sys.stdout.write('\n\n')
+            sys.stdout.write(type.typedef())
+
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv))

@@ -48,7 +48,10 @@
 
   "mode": "ADVANCED",
 
-  "paths": "src",
+  "paths": [
+    "build/src",
+    "src"
+  ],
 
   "treat-warnings-as-errors": false
 

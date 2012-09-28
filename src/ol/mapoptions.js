@@ -2,12 +2,12 @@
 // FIXME MapOptions should create a Zoom control
 
 goog.provide('ol.MapOptions');
-goog.provide('ol.MapOptionsLiteral');
 goog.provide('ol.MapOptionsType');
 goog.provide('ol.RendererHint');
 
 goog.require('ol.Collection');
 goog.require('ol.Constraints');
+goog.require('ol.MapOptionsLiteral');
 goog.require('ol.Projection');
 goog.require('ol.ResolutionConstraint');
 goog.require('ol.RotationConstraint');
@@ -55,34 +55,6 @@ ol.DEFAULT_RENDERER_HINTS = [
   ol.RendererHint.WEBGL,
   ol.RendererHint.DOM
 ];
-
-
-/**
- * @typedef {{center: (ol.Coordinate|undefined),
- *            controls: (ol.Collection|undefined),
- *            doubleClickZoom: (boolean|undefined),
- *            dragPan: (boolean|undefined),
- *            interactions: (ol.Collection|undefined),
- *            keyboard: (boolean|undefined),
- *            keyboardPanOffset: (number|undefined),
- *            layers: (ol.Collection|undefined),
- *            maxResolution: (number|undefined),
- *            mouseWheelZoom: (boolean|undefined),
- *            mouseWheelZoomDelta: (number|undefined),
- *            numZoomLevels: (number|undefined),
- *            projection: (ol.Projection|string|undefined),
- *            renderer: (ol.RendererHint|undefined),
- *            renderers: (Array.<ol.RendererHint>|undefined),
- *            resolution: (number|undefined),
- *            resolutions: (Array.<number>|undefined),
- *            rotate: (boolean|undefined),
- *            shiftDragZoom: (boolean|undefined),
- *            userProjection: (ol.Projection|string|undefined),
- *            zoom: (number|undefined),
- *            zoomDelta: (number|undefined),
- *            zoomFactor: (number|undefined)}}
- */
-ol.MapOptionsLiteral;
 
 
 /**

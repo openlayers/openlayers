@@ -13,8 +13,8 @@
   "css-output-file": "build/ol.css",
 
   "externs": [
+    "build/src/externs.js",
     "externs/bingmaps.js",
-    "externs/ol.js",
     "externs/proj4js.js",
     "externs/tilejson.js"
   ],

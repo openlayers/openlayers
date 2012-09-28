@@ -20,7 +20,7 @@ build: build/ol.css build/ol.js
 build/ol.css: build/ol.js
 	touch $@
 
-build/ol.js: $(PLOVR_JAR) $(SRC) base.json build/ol.json
+build/ol.js: $(PLOVR_JAR) $(SRC) base.json build/ol.json build/src/externs.js build/src/literals.js
 	java -jar $(PLOVR_JAR) build build/ol.json >$@
 	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
@@ -28,11 +28,19 @@ build/ol.js: $(PLOVR_JAR) $(SRC) base.json build/ol.json
 .PHONY: build-all
 build-all: build/ol-all.js
 
-build/ol-all.js: $(PLOVR_JAR) $(SRC) base.json build/ol-all.json build/require-all.js
+build/ol-all.js: $(PLOVR_JAR) $(SRC) base.json build/ol-all.json build/require-all.js build/src/externs.js build/src/literals.js
 	java -jar $(PLOVR_JAR) build build/ol-all.json >$@ || ( rm -f $@ ; false )
 
 build/require-all.js: $(SRC)
 	( echo "goog.require('goog.dom');" ; find src/ol -name \*.js | xargs grep -rh ^goog.provide | sort | uniq | sed -e 's/provide/require/g' ) >$@
+
+build/src/externs.js: bin/generate-externs src/ol/literals.txt
+	mkdir -p $(dir $@)
+	bin/generate-externs --externs src/ol/literals.txt >$@
+
+build/src/literals.js: bin/generate-externs src/ol/literals.txt
+	mkdir -p $(dir $@)
+	bin/generate-externs --typedef src/ol/literals.txt >$@
 
 .PHONY: examples
 examples: $(subst .html,.json,$(EXAMPLES))
@@ -84,6 +92,7 @@ clean:
 	rm -f build/ol.js
 	rm -f build/ol-all.js
 	rm -f build/require-all.js
+	rm -f build/src/*
 	rm -f examples/*.json
 	rm -f examples/*.combined.js
 	rm -rf build/apidoc
