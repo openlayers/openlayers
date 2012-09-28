@@ -11,6 +11,7 @@ goog.require('ol.Constraints');
 goog.require('ol.Projection');
 goog.require('ol.ResolutionConstraint');
 goog.require('ol.RotationConstraint');
+goog.require('ol.control.Zoom');
 goog.require('ol.interaction.AltDragRotate');
 goog.require('ol.interaction.DblClickZoom');
 goog.require('ol.interaction.DragPan');
@@ -57,6 +58,7 @@ ol.DEFAULT_RENDERER_HINTS = [
 
 /**
  * @typedef {{center: (ol.Coordinate|undefined),
+ *            controls: (ol.Collection|undefined),
  *            doubleClickZoom: (boolean|undefined),
  *            dragPan: (boolean|undefined),
  *            interactions: (ol.Collection|undefined),
@@ -83,7 +85,9 @@ ol.MapOptionsLiteral;
 
 
 /**
- * @typedef {{rendererConstructor:
+ * @typedef {{controls: ol.Collection,
+ *            constraints: ol.Constraints,
+ *            rendererConstructor:
  *                function(new: ol.renderer.Map, Element, ol.Map),
  *            values: Object.<string, *>}}
  */
@@ -164,9 +168,20 @@ ol.MapOptions.create = function(mapOptionsLiteral) {
    */
   var constraints = ol.MapOptions.createConstraints_(mapOptionsLiteral);
 
+  /**
+   * @type {ol.Collection}
+   */
+  var controls;
+  if (goog.isDef(mapOptionsLiteral.controls)) {
+    controls = mapOptionsLiteral.controls;
+  } else {
+    controls = ol.MapOptions.createControls_(mapOptionsLiteral);
+  }
+
   return {
-    rendererConstructor: rendererConstructor,
     constraints: constraints,
+    controls: controls,
+    rendererConstructor: rendererConstructor,
     values: values
   };
 
@@ -204,6 +219,26 @@ ol.MapOptions.createConstraints_ = function(mapOptionsLiteral) {
   // FIXME rotation constraint is not configurable at the moment
   var rotationConstraint = ol.RotationConstraint.none;
   return new ol.Constraints(resolutionConstraint, rotationConstraint);
+};
+
+
+/**
+ * @private
+ * @param {ol.MapOptionsLiteral} mapOptionsLiteral Map options literal.
+ * @return {ol.Collection} Controls.
+ */
+ol.MapOptions.createControls_ = function(mapOptionsLiteral) {
+
+  var controls = new ol.Collection();
+
+  var zoomDelta = goog.isDef(mapOptionsLiteral.zoomDelta) ?
+      mapOptionsLiteral.zoomDelta : 4;
+  controls.push(new ol.control.Zoom({
+    delta: zoomDelta
+  }));
+
+  return controls;
+
 };
 
 

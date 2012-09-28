@@ -177,6 +177,25 @@ ol.Map = function(container, mapOptionsLiteral) {
   this.registerDisposable(mouseWheelHandler);
 
   /**
+   * @type {ol.Collection}
+   * @private
+   */
+  this.controls_ = mapOptions.controls;
+
+  this.controls_.forEach(
+      /**
+       * @param {ol.control.Control} control Control.
+       */
+      function(control) {
+        control.setMap(this);
+      }, this);
+
+  goog.events.listen(this.controls_, ol.CollectionEventType.ADD,
+      this.handleControlsAdd_, false, this);
+  goog.events.listen(this.controls_, ol.CollectionEventType.REMOVE,
+      this.handleControlsRemove_, false, this);
+
+  /**
    * @type {ol.renderer.Map}
    * @private
    */
@@ -277,6 +296,14 @@ goog.exportProperty(
  */
 ol.Map.prototype.getContainer = function() {
   return this.container_;
+};
+
+
+/**
+ * @return {ol.Collection} Controls.
+ */
+ol.Map.prototype.getControls = function() {
+  return this.controls_;
 };
 
 
@@ -485,6 +512,26 @@ ol.Map.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
   var type = opt_type || browserEvent.type;
   var mapBrowserEvent = new ol.MapBrowserEvent(type, this, browserEvent);
   this.handleMapBrowserEvent(mapBrowserEvent);
+};
+
+
+/**
+ * @param {ol.CollectionEvent} collectionEvent Collection event.
+ * @private
+ */
+ol.Map.prototype.handleControlsAdd_ = function(collectionEvent) {
+  var control = /** @type {ol.control.Control} */ collectionEvent.elem;
+  control.setMap(this);
+};
+
+
+/**
+ * @param {ol.CollectionEvent} collectionEvent Collection event.
+ * @private
+ */
+ol.Map.prototype.handleControlsRemove_ = function(collectionEvent) {
+  var control = /** @type {ol.control.Control} */ collectionEvent.elem;
+  control.setMap(null);
 };
 
 

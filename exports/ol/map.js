@@ -12,6 +12,7 @@ ol.MapExport = function(container, mapOptionsExtern) {
 
   goog.base(this, container, {
     center: mapOptionsExtern.center,
+    controls: mapOptionsExtern.controls,
     doubleClickZoom: mapOptionsExtern.doubleClickZoom,
     dragPan: mapOptionsExtern.dragPan,
     interactions: mapOptionsExtern.interactions,

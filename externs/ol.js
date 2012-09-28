@@ -23,6 +23,12 @@ olx.MapOptionsExtern.prototype.center;
 
 
 /**
+ * @type {ol.Collection|undefined}
+ */
+olx.MapOptionsExtern.prototype.controls;
+
+
+/**
  * @type {boolean|undefined}
  */
 olx.MapOptionsExtern.prototype.doubleClickZoom;
