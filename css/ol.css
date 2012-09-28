@@ -1,3 +1,28 @@
+.ol-control-attribution {
+  position: absolute;
+  font-size: 10px;
+  text-align: right;
+  color: #eeeeee;
+  bottom: 0;
+  right: 0;
+  background: #130085; /* @alternate */
+  background: rgba(0,60,136,0.3);
+  filter: alpha(opacity=30);
+  font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
+  padding: 2px 4px;
+}
+.ol-control-attribution a {
+  color: white;
+  text-decoration: none;
+}
+.ol-dragbox {
+  position: absolute;
+  border: 2px solid red;
+}
+.ol-renderer-webgl-canvas {
+  width: 100%;
+  height: 100%;
+}
 .ol-viewport .ol-unselectable {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -5,14 +30,8 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  -webkit-tap-highlight-color: rgba(0,0,0,0);  
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
-
-.ol-dragbox {
-  position: absolute;
-  border: 2px solid red;
-}
-
 .ol-zoom {
   position: absolute;
   top: 8px;
@@ -27,25 +46,25 @@
   padding: 0;
   color: white;
   font-size: 18px;
-  font-family: 'Lucida Grande', Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif;
+  font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
   font-weight: bold;
   text-decoration: none;
   text-align: center;
   height: 22px;
-  width:22px;
+  width: 22px;
   line-height: 19px;
-  background: #130085; /* @alternate */ /* fallback for IE - IE6 requires background shorthand*/
-  background: rgba(0, 60, 136, 0.5);
+  background: #130085; /* @alternate */
+  background: rgba(0,60,136,0.5);
   filter: alpha(opacity=80);
 }
 .ol-zoom a:hover {
-  background: #130085; /* @alternate */ /* fallback for IE */
-  background: rgba(0, 60, 136, 0.7);
+  background: #130085; /* @alternate */
+  background: rgba(0,60,136,0.7);
   filter: alpha(opacity=100);
 }
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width:600px) {
   .ol-zoom a:hover {
-    background: rgba(0, 60, 136, 0.5);
+    background: rgba(0,60,136,0.5);
   }
 }
 .ol-zoom-in {
@@ -53,24 +72,4 @@
 }
 .ol-zoom-out {
   border-radius: 0 0 4px 4px;
-}
-
-.ol-renderer-webgl-canvas { width:100%; height:100%; }
-
-.ol-control-attribution {
-    position: absolute;
-    font-size: 10px;
-    text-align: right;
-    color: #eeeeee;
-    bottom: 0;
-    right: 0;
-    background: #130085; /* @alternate */ /* fallback for IE - IE6 requires background shorthand*/
-    background: rgba(0, 60, 136, 0.3);
-    filter: alpha(opacity=30);
-    font-family: 'Lucida Grande', Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif;
-    padding: 2px 4px;
-}
-.ol-control-attribution a {
-    color: white;
-    text-decoration: none;
 }
