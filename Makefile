@@ -17,7 +17,10 @@ precommit: lint build-all doc test build
 .PHONY: build
 build: build/ol.css build/ol.js
 
-build/ol.js build/ol.css: $(PLOVR_JAR) $(SRC) base.json build/ol.json
+build/ol.css: build/ol.js
+	touch $@
+
+build/ol.js: $(PLOVR_JAR) $(SRC) base.json build/ol.json
 	java -jar $(PLOVR_JAR) build build/ol.json >$@
 	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
