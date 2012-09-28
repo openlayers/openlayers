@@ -24,6 +24,7 @@ goog.require('goog.functions');
 goog.require('goog.fx.anim');
 goog.require('goog.fx.anim.Animated');
 goog.require('goog.object');
+goog.require('ol.BrowserFeature');
 goog.require('ol.Collection');
 goog.require('ol.Color');
 goog.require('ol.Constraints');
@@ -60,14 +61,6 @@ ol.MapProperty = {
   ROTATION: 'rotation',
   SIZE: 'size',
   USER_PROJECTION: 'userProjection'
-};
-
-
-/**
- * @enum {number}
- */
-ol.MapPaneZIndex = {
-  VIEWPORT: 1000
 };
 
 
@@ -145,14 +138,24 @@ ol.Map = function(container, mapOptionsLiteral) {
    * @private
    * @type {Element}
    */
-  this.viewport_ = goog.dom.createElement(goog.dom.TagName.DIV);
-  this.viewport_.className = 'ol-viewport';
+  this.viewport_ = goog.dom.createDom(goog.dom.TagName.DIV, 'ol-viewport');
   this.viewport_.style.position = 'relative';
   this.viewport_.style.overflow = 'hidden';
   this.viewport_.style.width = '100%';
   this.viewport_.style.height = '100%';
-  this.viewport_.style.zIndex = ol.MapPaneZIndex.VIEWPORT;
   goog.dom.appendChild(container, this.viewport_);
+
+  /**
+   * @private
+   * @type {Element}
+   */
+  this.overlayContainer_ = goog.dom.createDom(goog.dom.TagName.DIV,
+      'ol-overlaycontainer');
+  goog.events.listen(this.overlayContainer_,
+      ol.BrowserFeature.HAS_TOUCH ?
+          goog.events.EventType.TOUCHSTART : goog.events.EventType.MOUSEDOWN,
+      goog.events.Event.stopPropagation);
+  goog.dom.appendChild(this.viewport_, this.overlayContainer_);
 
   var mapBrowserEventHandler = new ol.MapBrowserEventHandler(this);
   goog.events.listen(mapBrowserEventHandler, [
@@ -501,6 +504,16 @@ goog.exportProperty(
  */
 ol.Map.prototype.getViewport = function() {
   return this.viewport_;
+};
+
+
+/**
+ * @return {Element} The map's overlay container. Elements added to this
+ * container won't let mousedown and touchstart events through to the map, so
+ * clicks and gestures on an overlay don't trigger any MapBrowserEvent.
+ */
+ol.Map.prototype.getOverlayContainer = function() {
+  return this.overlayContainer_;
 };
 
 
