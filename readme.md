@@ -45,3 +45,18 @@ Linter](https://developers.google.com/closure/utilities/docs/linter_howto).
 Then:
 
     $ make lint
+
+## Add examples
+
+The examples are located in the `examples` directory. Adding a new example
+implies creating two files in this directory, a `.html` file and `.js` file.
+See `examples/full-screen.html` and `examples/full-screen.js` for instance.
+
+The `.html` file needs to include a script tag with
+`loader.js?id=<example_name>` as its `src`. For example, if the two files for
+the examples are `myexample.js` and `myexample.html` then `id` should be set to
+`myexample` in the `loader.js` URL.
+
+`make serve` should be stopped and restarted for the
+`loader.js?id=<example_name>` script tag to refer to a valid URL. `make serve`
+triggers the `examples` target which creates Plovr JSON file for each example.
