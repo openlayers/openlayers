@@ -2,6 +2,7 @@
 /build/gh-pages
 /build/lint-spec-timestamp
 /build/lint-src-timestamp
+/build/ol.css
 /build/ol.js
 /build/ol-all.js
 /build/proj4js-combined.js

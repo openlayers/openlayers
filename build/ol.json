@@ -2,6 +2,16 @@
 
   "id": "ol",
 
+  "css-allowed-unrecognized-properties": [
+    "user-select"
+  ],
+
+  "css-inputs": [
+    "css/ol.css"
+  ],
+
+  "css-output-file": "build/ol.css",
+
   "externs": [
     "externs/bingmaps.js",
     "externs/ol.js",

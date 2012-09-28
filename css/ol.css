@@ -34,12 +34,12 @@
   height: 22px;
   width:22px;
   line-height: 19px;
-  background: #130085; /* fallback for IE - IE6 requires background shorthand*/
+  background: #130085; /* @alternate */ /* fallback for IE - IE6 requires background shorthand*/
   background: rgba(0, 60, 136, 0.5);
   filter: alpha(opacity=80);
 }
 .ol-zoom a:hover {
-  background: #130085; /* fallback for IE */
+  background: #130085; /* @alternate */ /* fallback for IE */
   background: rgba(0, 60, 136, 0.7);
   filter: alpha(opacity=100);
 }
@@ -188,12 +188,12 @@
     height: 22px;
     width:22px;
     line-height: 19px;
-    background: #130085; /* fallback for IE - IE6 requires background shorthand*/
+    background: #130085; /* @alternate */ /* fallback for IE - IE6 requires background shorthand*/
     background: rgba(0, 60, 136, 0.5);
     filter: alpha(opacity=80);
 }
 .ol-control-zoom a:hover {
-    background: #130085; /* fallback for IE */
+    background: #130085; /* @alternate */ /* fallback for IE */
     background: rgba(0, 60, 136, 0.7);
     filter: alpha(opacity=100);
 }
@@ -215,7 +215,7 @@
     color: #eeeeee;
     bottom: 0;
     right: 0;
-    background: #130085; /* fallback for IE - IE6 requires background shorthand*/
+    background: #130085; /* @alternate */ /* fallback for IE - IE6 requires background shorthand*/
     background: rgba(0, 60, 136, 0.3);
     filter: alpha(opacity=30);
     font-family: 'Lucida Grande', Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif;

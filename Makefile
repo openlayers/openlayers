@@ -15,9 +15,9 @@ all: build-all build examples
 precommit: lint build-all doc test build
 
 .PHONY: build
-build: build/ol.js
+build: build/ol.css build/ol.js
 
-build/ol.js: $(PLOVR_JAR) $(SRC) base.json build/ol.json
+build/ol.js build/ol.css: $(PLOVR_JAR) $(SRC) base.json build/ol.json
 	java -jar $(PLOVR_JAR) build build/ol.json >$@
 	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
@@ -77,6 +77,7 @@ test:
 clean:
 	rm -f build/lint-spec-timestamp
 	rm -f build/lint-src-timestamp
+	rm -f build/ol.css
 	rm -f build/ol.js
 	rm -f build/ol-all.js
 	rm -f build/require-all.js
