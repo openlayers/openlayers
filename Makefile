@@ -43,7 +43,7 @@ demos/%.combined.js: $(PLOVR_JAR) base.json demos/%.js
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
 
 .PHONY: serve
-serve: $(PLOVR_JAR) build/require-all.js
+serve: $(PLOVR_JAR) build/require-all.js demos
 	java -jar $(PLOVR_JAR) serve build/*.json demos/*.json
 
 .PHONY: lint
