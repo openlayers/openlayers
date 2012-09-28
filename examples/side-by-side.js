@@ -24,7 +24,7 @@ var domMap = new ol.Map(document.getElementById('domMap'), {
   center: new ol.Coordinate(0, 0),
   layers: new ol.Collection([layer]),
   renderer: ol.RendererHint.DOM,
-  zoom: 0
+  zoom: 1
 });
 
 domMap.getControls().push(new ol.control.MousePosition({
