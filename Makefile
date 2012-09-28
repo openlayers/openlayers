@@ -3,7 +3,6 @@ PHANTOMJS = phantomjs
 PLOVR_JAR = bin/plovr-b254c26318c5.jar
 SPEC = $(shell find test/spec -name \*.js)
 SRC = $(shell find exports externs src/ol -name \*.js)
-TARGETS = $(shell find demos -name advanced-optimizations.js)
 EXAMPLES = $(shell find demos -maxdepth 1 -name \*.html)
 comma := ,
 empty :=
@@ -51,7 +50,7 @@ serve: $(PLOVR_JAR) build/require-all.js
 lint: build/lint-src-timestamp build/lint-spec-timestamp
 
 build/lint-src-timestamp: $(SRC)
-	gjslint --strict --limited_doc_files=$(subst $(space),$(comma),$(shell find externs -name \*.js)) $(SRC) $(filter-out $(TARGETS),$(shell find demos -name \*.js)) && touch $@
+	gjslint --strict --limited_doc_files=$(subst $(space),$(comma),$(shell find externs -name \*.js)) $(SRC) $(filter-out $(shell find demos -name \*.combined.js),$(shell find demos -name \*.js)) && touch $@
 
 build/lint-spec-timestamp: $(SPEC)
 	gjslint $(SPEC) && touch $@
