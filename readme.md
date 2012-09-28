@@ -18,17 +18,15 @@ Run the [Plovr](http://plovr.com/) web server with:
 
     $ make serve
 
-Then, start a simple webserver, for example:
+Then, either open one of the example html files from the `examples` directory directly in your browser, or start a simple webserver, for example:
 
     $ python -mSimpleHTTPServer
 
-Explore the `examples/` directory through this server, for example
-<http://localhost:8000/examples/side-by-side.html>. You can turn off
-compilation by appending `?mode=RAW` to the URL, for example
-<http://localhost:8000/examples/side-by-side.html?mode=RAW>.
+and explore the `examples/` directory, for example by opening
+<http://localhost:8000/examples/side-by-side.html>.
 
-Note that appending `?mode=RAW` doesn't work with `file://` URLs, which is why
-you need to access the `examples/` directory though a web server.
+You can turn off compilation by appending `?mode=RAW` to the URL, for example
+<http://localhost:8000/examples/side-by-side.html?mode=RAW>.
 
 ## Run tests
 
