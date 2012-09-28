@@ -85,14 +85,18 @@ goog.inherits(ol.control.MousePosition, ol.control.Control);
  */
 ol.control.MousePosition.prototype.handleMapProjectionChanged = function() {
   var map = this.getMap();
-  var mapProjection = map.getProjection();
-  if (!goog.isDef(mapProjection) || !goog.isDef(this.projection_)) {
+  if (goog.isNull(map)) {
     this.transform_ = ol.Projection.identityTransform;
   } else {
-    this.transform_ =
-        ol.Projection.getTransform(mapProjection, this.projection_);
+    var mapProjection = map.getProjection();
+    if (!goog.isDef(mapProjection) || !goog.isDef(this.projection_)) {
+      this.transform_ = ol.Projection.identityTransform;
+    } else {
+      this.transform_ =
+          ol.Projection.getTransform(mapProjection, this.projection_);
+    }
+    // FIXME should we instead re-calculate using the last known mouse position?
   }
-  // FIXME should we instead re-calculate using the last known mouse position?
   this.element.innerHTML = this.undefinedHtml_;
 };
 
