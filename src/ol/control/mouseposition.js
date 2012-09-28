@@ -108,7 +108,7 @@ ol.control.MousePosition.prototype.handleMouseMove = function(browserEvent) {
   var pixel = new ol.Pixel(eventPosition.x, eventPosition.y);
   var coordinate = map.getCoordinateFromPixel(pixel);
   var html;
-  if (goog.isDef(coordinate)) {
+  if (!goog.isNull(coordinate)) {
     coordinate = this.transform_(coordinate);
     if (goog.isDef(this.coordinateFormat_)) {
       html = this.coordinateFormat_(coordinate);

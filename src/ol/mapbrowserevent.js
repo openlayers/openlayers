@@ -32,9 +32,9 @@ ol.MapBrowserEvent = function(type, map, browserEvent) {
 
   /**
    * @private
-   * @type {ol.Coordinate|undefined}
+   * @type {ol.Coordinate}
    */
-  this.coordinate_ = undefined;
+  this.coordinate_ = null;
 
   /**
    * @private
@@ -47,17 +47,13 @@ goog.inherits(ol.MapBrowserEvent, ol.MapEvent);
 
 
 /**
- * @return {ol.Coordinate|undefined} Coordinate.
+ * @return {ol.Coordinate} Coordinate.
  */
 ol.MapBrowserEvent.prototype.getCoordinate = function() {
-  if (goog.isDef(this.coordinate_)) {
-    return this.coordinate_;
-  } else {
-    var pixel = this.getPixel();
-    var coordinate = this.map.getCoordinateFromPixel(pixel);
-    this.coordinate_ = coordinate;
-    return coordinate;
+  if (goog.isNull(this.coordinate_)) {
+    this.coordinate_ = this.map.getCoordinateFromPixel(this.getPixel());
   }
+  return this.coordinate_;
 };
 
 
@@ -67,10 +63,8 @@ ol.MapBrowserEvent.prototype.getCoordinate = function() {
  */
 ol.MapBrowserEvent.prototype.getPixel = function() {
   if (goog.isNull(this.pixel_)) {
-    var map = this.map;
-    var browserEvent = this.browserEvent;
     var eventPosition = goog.style.getRelativePosition(
-        browserEvent, map.getViewport());
+        this.browserEvent, this.map.getViewport());
     this.pixel_ = new ol.Pixel(eventPosition.x, eventPosition.y);
   }
   return this.pixel_;

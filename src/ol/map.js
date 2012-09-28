@@ -282,14 +282,10 @@ ol.Map.prototype.getContainer = function() {
 
 /**
  * @param {ol.Pixel} pixel Pixel.
- * @return {ol.Coordinate|undefined} Coordinate.
+ * @return {ol.Coordinate} Coordinate.
  */
 ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
-  if (this.isDef()) {
-    return this.renderer_.getCoordinateFromPixel(pixel);
-  } else {
-    return undefined;
-  }
+  return this.isDef() ? this.renderer_.getCoordinateFromPixel(pixel) : null;
 };
 
 
