@@ -122,11 +122,11 @@ $(PLOVR_JAR):
 
 .PHONY: gh-pages
 gh-pages:
-	tools/git-update-ghpages openlayers/ol3 -i build/$(shell git rev-parse --abbrev-ref HEAD) -p $(shell git rev-parse --abbrev-ref HEAD)
+	tools/git-update-ghpages openlayers/ol3 -i build/gh-pages/$(shell git rev-parse --abbrev-ref HEAD) -p $(shell git rev-parse --abbrev-ref HEAD)
 
 .PHONY: doc
 doc:
-	$(JSDOC) -t doc/template -r src -d build/$(shell git rev-parse --abbrev-ref HEAD)/apidoc
+	$(JSDOC) -t doc/template -r src -d build/gh-pages/$(shell git rev-parse --abbrev-ref HEAD)/apidoc
 
 .PHONY: test
 test:
