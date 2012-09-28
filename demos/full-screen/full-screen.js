@@ -5,7 +5,6 @@ goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.MapOptions'); // FIXME this should not be required
-goog.require('ol.control.Zoom');
 goog.require('ol.source.MapQuestOpenAerial');
 
 
@@ -22,8 +21,4 @@ var map = new ol.Map(document.getElementById('map'), {
   center: new ol.Coordinate(0, 0),
   layers: new ol.Collection([layer]),
   zoom: 2
-});
-var zoom = new ol.control.Zoom({
-  delta: 4,
-  map: map
 });

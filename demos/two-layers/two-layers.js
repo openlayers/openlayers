@@ -31,6 +31,10 @@ var webglMap = new ol.Map(document.getElementById('webglMap'), {
   zoom: 5
 });
 
+webglMap.getControls().push(new ol.control.Attribution({
+  target: document.getElementById('attribution')
+}));
+
 var domMap = new ol.Map(document.getElementById('domMap'), {
   renderer: ol.RendererHint.DOM
 });
@@ -38,8 +42,3 @@ domMap.bindTo('center', webglMap);
 domMap.bindTo('layers', webglMap);
 domMap.bindTo('resolution', webglMap);
 domMap.bindTo('rotation', webglMap);
-
-var attributionControl = new ol.control.Attribution({
-  map: webglMap,
-  target: document.getElementById('attribution')
-});
