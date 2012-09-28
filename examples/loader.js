@@ -11,7 +11,7 @@
  *
  * Usage:
  *
- *     <script src="../loader.js?id=my-demo"></script>
+ *     <script src="loader.js?id=myexample"></script>
  */
 (function() {
   var scripts = document.getElementsByTagName('script');
