@@ -91,6 +91,7 @@ ol.overlay.Overlay.prototype.setElement = function(element) {
   }
   this.element_ = element;
   if (this.map_) {
+    goog.style.setStyle(this.element_, 'position', 'absolute');
     goog.dom.append(/** @type {!Node} */ (this.map_.getOverlayContainer()),
         this.element_);
   }
