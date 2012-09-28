@@ -22,9 +22,13 @@ Then, start a simple webserver, for example:
 
     $ python -mSimpleHTTPServer
 
-Explore the `examples/` directory through this server, for example <http://localhost:8000/examples/side-by-side/debug.html>. You can turn off compilation by appending `?mode=RAW` to the URL, for example <http://localhost:8000/examples/side-by-side/debug.html?mode=RAW>.
+Explore the `examples/` directory through this server, for example
+<http://localhost:8000/examples/side-by-side.html>. You can turn off
+compilation by appending `?mode=RAW` to the URL, for example
+<http://localhost:8000/examples/side-by-side.html?mode=RAW>.
 
-Note that appending `?mode=RAW` doesn't work with `file://` URLs, which is why you need to access the `examples/` directory though a web server.
+Note that appending `?mode=RAW` doesn't work with `file://` URLs, which is why
+you need to access the `examples/` directory though a web server.
 
 ## Run tests
 
@@ -36,6 +40,8 @@ See also the test-specific [readme](https://github.com/openlayers/ol3/tree/maste
 
 ## Run the linter
 
-First, install the [Closure Linter](https://developers.google.com/closure/utilities/docs/linter_howto).  Then:
+First, install the [Closure
+Linter](https://developers.google.com/closure/utilities/docs/linter_howto).
+Then:
 
     $ make lint
