@@ -38,6 +38,15 @@ Use the following to run the tests:
 
 This command assumes that the `phantomjs` command is on your PATH.
 
+## The `precommit` target
+
+The Makefile includes a `precommit` target for running all of the
+above (`lint`, `build-all`, `doc`, and `test`). As the name of the
+target suggests `make precommit` is the command to run before
+committing:
+
+    $ make precommit
+
 ## Commit messages
 
 We follow http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
