@@ -84,19 +84,8 @@ goog.inherits(ol.control.MousePosition, ol.control.Control);
  * @protected
  */
 ol.control.MousePosition.prototype.handleMapProjectionChanged = function() {
-  var map = this.getMap();
-  if (goog.isNull(map)) {
-    this.transform_ = ol.Projection.identityTransform;
-  } else {
-    var mapProjection = map.getProjection();
-    if (!goog.isDef(mapProjection) || !goog.isDef(this.projection_)) {
-      this.transform_ = ol.Projection.identityTransform;
-    } else {
-      this.transform_ =
-          ol.Projection.getTransform(mapProjection, this.projection_);
-    }
-    // FIXME should we instead re-calculate using the last known mouse position?
-  }
+  this.updateTransform_();
+  // FIXME should we instead re-calculate using the last known mouse position?
   this.element.innerHTML = this.undefinedHtml_;
 };
 
@@ -139,10 +128,10 @@ ol.control.MousePosition.prototype.handleMouseOut = function(browserEvent) {
  * @inheritDoc
  */
 ol.control.MousePosition.prototype.setMap = function(map) {
-  if (goog.isNull(this.listenerKeys_)) {
+  if (!goog.isNull(this.listenerKeys_)) {
     goog.array.forEach(this.listenerKeys_, goog.events.unlistenByKey);
+    this.listenerKeys_ = null;
   }
-  this.listenerKeys_ = null;
   goog.base(this, 'setMap', map);
   if (!goog.isNull(map)) {
     var viewport = map.getViewport();
@@ -155,5 +144,25 @@ ol.control.MousePosition.prototype.setMap = function(map) {
       goog.events.listen(viewport, goog.events.EventType.MOUSEOUT,
           this.handleMouseOut, false, this)
     ];
+    this.updateTransform_();
+  }
+};
+
+
+/**
+ * @private
+ */
+ol.control.MousePosition.prototype.updateTransform_ = function() {
+  var map = this.getMap();
+  if (goog.isNull(map)) {
+    this.transform_ = ol.Projection.identityTransform;
+  } else {
+    var mapProjection = map.getProjection();
+    if (!goog.isDef(mapProjection) || !goog.isDef(this.projection_)) {
+      this.transform_ = ol.Projection.identityTransform;
+    } else {
+      this.transform_ =
+          ol.Projection.getTransform(mapProjection, this.projection_);
+    }
   }
 };
