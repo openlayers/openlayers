@@ -36,6 +36,12 @@ ol.MapBrowserEvent = function(type, map, browserEvent) {
    */
   this.coordinate_ = undefined;
 
+  /**
+   * @private
+   * @type {ol.Pixel}
+   */
+  this.pixel_ = null;
+
 };
 goog.inherits(ol.MapBrowserEvent, ol.MapEvent);
 
@@ -47,15 +53,27 @@ ol.MapBrowserEvent.prototype.getCoordinate = function() {
   if (goog.isDef(this.coordinate_)) {
     return this.coordinate_;
   } else {
+    var pixel = this.getPixel();
+    var coordinate = this.map.getCoordinateFromPixel(pixel);
+    this.coordinate_ = coordinate;
+    return coordinate;
+  }
+};
+
+
+/**
+ * Get pixel offset of the event from the top-left corner of the map viewport.
+ * @return {ol.Pixel} Pixel offset.
+ */
+ol.MapBrowserEvent.prototype.getPixel = function() {
+  if (goog.isNull(this.pixel_)) {
     var map = this.map;
     var browserEvent = this.browserEvent;
     var eventPosition = goog.style.getRelativePosition(
         browserEvent, map.getViewport());
-    var pixel = new ol.Pixel(eventPosition.x, eventPosition.y);
-    var coordinate = map.getCoordinateFromPixel(pixel);
-    this.coordinate_ = coordinate;
-    return coordinate;
+    this.pixel_ = new ol.Pixel(eventPosition.x, eventPosition.y);
   }
+  return this.pixel_;
 };
 
 
