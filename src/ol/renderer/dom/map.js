@@ -154,7 +154,7 @@ ol.renderer.dom.Map.prototype.handleRotationChanged = function() {
     return;
   }
   var rotation = map.getRotation() * 180 / Math.PI;
-  this.applyTransform_('rotate(' + rotation + 'deg)');
+  this.applyTransform_('rotate(' + rotation + 'deg) scale3d(1, 1, 1)');
 };
 
 
