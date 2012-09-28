@@ -19,15 +19,20 @@ ol.MapExport = function(container, mapOptionsExtern) {
     keyboard: mapOptionsExtern.keyboard,
     keyboardPanOffset: mapOptionsExtern.keyboardPanOffset,
     layers: mapOptionsExtern.layers,
+    maxResolution: mapOptionsExtern.maxResolution,
     mouseWheelZoom: mapOptionsExtern.mouseWheelZoom,
+    mouseWheelZoomDelta: mapOptionsExtern.mouseWheelZoomDelta,
     projection: mapOptionsExtern.projection,
     renderer: mapOptionsExtern.renderer,
     renderers: mapOptionsExtern.renderers,
     resolution: mapOptionsExtern.resolution,
+    resolutions: mapOptionsExtern.resolutions,
     rotate: mapOptionsExtern.rotate,
     shiftDragZoom: mapOptionsExtern.shiftDragZoom,
     userProjection: mapOptionsExtern.userProjection,
-    zoom: mapOptionsExtern.zoom
+    zoom: mapOptionsExtern.zoom,
+    zoomDelta: mapOptionsExtern.zoomDelta,
+    zoomFactor: mapOptionsExtern.zoomFactor
   });
 
 };
