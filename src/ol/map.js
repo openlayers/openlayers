@@ -185,14 +185,6 @@ ol.Map = function(container, mapOptionsLiteral) {
    */
   this.controls_ = mapOptions.controls;
 
-  this.controls_.forEach(
-      /**
-       * @param {ol.control.Control} control Control.
-       */
-      function(control) {
-        control.setMap(this);
-      }, this);
-
   goog.events.listen(this.controls_, ol.CollectionEventType.ADD,
       this.handleControlsAdd_, false, this);
   goog.events.listen(this.controls_, ol.CollectionEventType.REMOVE,
@@ -224,6 +216,14 @@ ol.Map = function(container, mapOptionsLiteral) {
   this.setValues(mapOptions.values);
 
   this.handleBrowserWindowResize();
+
+  this.controls_.forEach(
+      /**
+       * @param {ol.control.Control} control Control.
+       */
+      function(control) {
+        control.setMap(this);
+      }, this);
 
 };
 goog.inherits(ol.Map, ol.Object);
