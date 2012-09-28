@@ -65,7 +65,7 @@ goog.inherits(ol.control.Zoom, ol.control.Control);
  * @private
  */
 ol.control.Zoom.prototype.handleIn_ = function(browserEvent) {
-  browserEvent.stopPropagation();
+  // prevent #zoomIn anchor from getting appended to the url
   browserEvent.preventDefault();
   this.getMap().zoom(this.delta_);
 };
@@ -76,7 +76,7 @@ ol.control.Zoom.prototype.handleIn_ = function(browserEvent) {
  * @private
  */
 ol.control.Zoom.prototype.handleOut_ = function(browserEvent) {
-  browserEvent.stopPropagation();
+  // prevent #zoomOut anchor from getting appended to the url
   browserEvent.preventDefault();
   this.getMap().zoom(-this.delta_);
 };

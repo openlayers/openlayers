@@ -151,10 +151,11 @@ ol.Map = function(container, mapOptionsLiteral) {
    */
   this.overlayContainer_ = goog.dom.createDom(goog.dom.TagName.DIV,
       'ol-overlaycontainer');
-  goog.events.listen(this.overlayContainer_,
-      ol.BrowserFeature.HAS_TOUCH ?
-          goog.events.EventType.TOUCHSTART : goog.events.EventType.MOUSEDOWN,
-      goog.events.Event.stopPropagation);
+  goog.events.listen(this.overlayContainer_, [
+    goog.events.EventType.CLICK,
+    ol.BrowserFeature.HAS_TOUCH ?
+        goog.events.EventType.TOUCHSTART : goog.events.EventType.MOUSEDOWN
+  ], goog.events.Event.stopPropagation);
   goog.dom.appendChild(this.viewport_, this.overlayContainer_);
 
   var mapBrowserEventHandler = new ol.MapBrowserEventHandler(this);
