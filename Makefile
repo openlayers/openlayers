@@ -67,7 +67,7 @@ $(PLOVR_JAR):
 
 .PHONY: gh-pages
 gh-pages:
-	tools/git-update-ghpages openlayers/ol3 -i build/gh-pages/$(shell git rev-parse --abbrev-ref HEAD) -p $(shell git rev-parse --abbrev-ref HEAD)
+	bin/git-update-ghpages openlayers/ol3 -i build/gh-pages/$(shell git rev-parse --abbrev-ref HEAD) -p $(shell git rev-parse --abbrev-ref HEAD)
 
 .PHONY: doc
 doc:
