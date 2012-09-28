@@ -5,6 +5,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.Event');
+goog.require('goog.functions');
 goog.require('goog.style');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
@@ -30,7 +31,11 @@ ol.renderer.dom.Map = function(container, map) {
    */
   this.layersPane_ = goog.dom.createElement(goog.dom.TagName.DIV);
   this.layersPane_.className = 'ol-layers-pane';
-  this.layersPane_.style.position = 'absolute';
+  var style = this.layersPane_.style;
+  style.position = 'absolute';
+  style.width = '100%';
+  style.height = '100%';
+
   goog.dom.appendChild(container, this.layersPane_);
 
   /**
@@ -66,6 +71,27 @@ ol.renderer.dom.Map = function(container, map) {
   this.layersPaneOffset_ = null;
 };
 goog.inherits(ol.renderer.dom.Map, ol.renderer.Map);
+
+
+/**
+ * Apply the given transform to the layers pane.
+ * @param {string} transform The transform to apply.
+ * @private
+ */
+ol.renderer.dom.Map.prototype.applyTransform_ = function(transform) {
+  var style = this.layersPane_.style;
+  style.WebkitTransform = transform;
+  style.MozTransform = transform;
+  style.OTransform = transform;
+  style.msTransform = transform;
+  style.transform = transform;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.dom.Map.prototype.canRotate = goog.functions.TRUE;
 
 
 /**
@@ -116,6 +142,19 @@ ol.renderer.dom.Map.prototype.handleResolutionChanged = function() {
     return;
   }
   map.render();
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.dom.Map.prototype.handleRotationChanged = function() {
+  var map = this.getMap();
+  if (!map.isDef()) {
+    return;
+  }
+  var rotation = map.getRotation() * 180 / Math.PI;
+  this.applyTransform_('rotate(' + rotation + 'deg)');
 };
 
 
@@ -205,14 +244,16 @@ ol.renderer.dom.Map.prototype.resetLayersPane_ = function() {
  */
 ol.renderer.dom.Map.prototype.shiftLayersPane_ = function() {
   var center = this.map.getCenter();
+  goog.asserts.assert(goog.isDef(center));
   var oldCenter = this.renderedCenter_;
-  var resolution = this.map.getResolution();
-  var dx = Math.round((oldCenter.x - center.x) / resolution);
-  var dy = Math.round((center.y - oldCenter.y) / resolution);
+  var currentPx = this.getPixelFromCoordinate(center);
+  var oldPx = this.getPixelFromCoordinate(oldCenter);
+  var dx = Math.round(oldPx.x - currentPx.x);
+  var dy = Math.round(oldPx.y - currentPx.y);
   if (!(dx === 0 && dy === 0)) {
     var offset = this.layersPaneOffset_;
-    offset.x += Math.round((oldCenter.x - center.x) / resolution);
-    offset.y += Math.round((center.y - oldCenter.y) / resolution);
+    offset.x += dx;
+    offset.y += dy;
     goog.style.setPosition(this.layersPane_, offset);
   }
 };

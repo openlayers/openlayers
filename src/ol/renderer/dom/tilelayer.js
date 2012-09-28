@@ -175,7 +175,7 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
   if (!map.isDef()) {
     return;
   }
-  var mapExtent = /** @type {!ol.Extent} */ map.getExtent();
+  var mapExtent = /** @type {!ol.Extent} */ map.getRotatedExtent();
   var mapResolution = /** @type {number} */ map.getResolution();
   var resolutionChanged = (mapResolution !== this.renderedMapResolution_);
 
