@@ -122,7 +122,7 @@ $(PLOVR_JAR):
 
 .PHONY: doc
 doc:
-	$(JSDOC) -t doc/template -r src -d build/apidoc
+	$(JSDOC) -t doc/template -r src -d build/$(shell git rev-parse --abbrev-ref HEAD)/apidoc
 
 .PHONY: test
 test:
