@@ -8,10 +8,6 @@ Run make:
 
     $ make
 
-## Run the examples
-
-Run make (as above), then explore the `examples/` directory with your web browser.
-
 ## Run the examples in debug mode
 
 Run the [Plovr](http://plovr.com/) web server with:
