@@ -120,6 +120,10 @@ plovr: $(PLOVR_JAR)
 $(PLOVR_JAR):
 	curl http://dev.camptocamp.com/files/tpayne/plovr/$(notdir $@) >$@
 
+.PHONY: gh-pages
+gh-pages:
+	tools/git-update-ghpages openlayers/ol3 -i build/$(shell git rev-parse --abbrev-ref HEAD) -p $(shell git rev-parse --abbrev-ref HEAD)
+
 .PHONY: doc
 doc:
 	$(JSDOC) -t doc/template -r src -d build/$(shell git rev-parse --abbrev-ref HEAD)/apidoc
