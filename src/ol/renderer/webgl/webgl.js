@@ -11,5 +11,9 @@ ol.renderer.webgl.FREE_RESOURCES_IMMEDIATELY = false;
  * @return {boolean} Is supported.
  */
 ol.renderer.webgl.isSupported = function() {
-  return 'WebGLRenderingContext' in goog.global;
+  if (!('WebGLRenderingContext' in goog.global)) {
+    return false;
+  }
+  var canvas = goog.dom.createElement(goog.dom.TagName.CANVAS);
+  return !goog.isNull(canvas.getContext('experimental-webgl'));
 };
