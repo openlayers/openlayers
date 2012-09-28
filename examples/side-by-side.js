@@ -4,7 +4,6 @@ goog.require('goog.debug.Logger.Level');
 goog.require('ol.CoordinateFormat');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
-goog.require('ol.control.Attribution');
 goog.require('ol.control.MousePosition');
 goog.require('ol.interaction.Keyboard');
 goog.require('ol.layer.TileLayer');
@@ -27,10 +26,6 @@ var domMap = new ol.Map(document.getElementById('domMap'), {
   renderer: ol.RendererHint.DOM,
   zoom: 0
 });
-
-domMap.getControls().push(new ol.control.Attribution({
-  target: document.getElementById('attribution')
-}));
 
 domMap.getControls().push(new ol.control.MousePosition({
   coordinateFormat: ol.CoordinateFormat.hdms,

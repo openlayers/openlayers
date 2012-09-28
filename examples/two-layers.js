@@ -3,7 +3,6 @@ goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.Projection');
 goog.require('ol.RendererHint');
-goog.require('ol.control.Attribution');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.source.BingMaps');
 goog.require('ol.source.TileJSON');
@@ -30,10 +29,6 @@ var webglMap = new ol.Map(document.getElementById('webglMap'), {
   renderer: ol.RendererHint.WEBGL,
   zoom: 5
 });
-
-webglMap.getControls().push(new ol.control.Attribution({
-  target: document.getElementById('attribution')
-}));
 
 var domMap = new ol.Map(document.getElementById('domMap'), {
   renderer: ol.RendererHint.DOM

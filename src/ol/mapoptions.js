@@ -11,6 +11,7 @@ goog.require('ol.Constraints');
 goog.require('ol.Projection');
 goog.require('ol.ResolutionConstraint');
 goog.require('ol.RotationConstraint');
+goog.require('ol.control.Attribution');
 goog.require('ol.control.Zoom');
 goog.require('ol.interaction.AltDragRotate');
 goog.require('ol.interaction.DblClickZoom');
@@ -230,6 +231,8 @@ ol.MapOptions.createConstraints_ = function(mapOptionsLiteral) {
 ol.MapOptions.createControls_ = function(mapOptionsLiteral) {
 
   var controls = new ol.Collection();
+
+  controls.push(new ol.control.Attribution({}));
 
   var zoomDelta = goog.isDef(mapOptionsLiteral.zoomDelta) ?
       mapOptionsLiteral.zoomDelta : 4;
