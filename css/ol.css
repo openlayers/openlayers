@@ -1,4 +1,4 @@
-.ol-control-attribution {
+.ol-attribution {
   position: absolute;
   font-size: 10px;
   text-align: right;
@@ -11,7 +11,7 @@
   font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
   padding: 2px 4px;
 }
-.ol-control-attribution a {
+.ol-attribution a {
   color: white;
   text-decoration: none;
 }
