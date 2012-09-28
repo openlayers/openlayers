@@ -1,9 +1,0 @@
-{
-
-  "id": "demo-side-by-side",
-
-  "inherits": "../../base.json",
-
-  "inputs": "demos/side-by-side/side-by-side.js"
-
-}

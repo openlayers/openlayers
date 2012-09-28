@@ -4,6 +4,7 @@ PLOVR_JAR = bin/plovr-b254c26318c5.jar
 SPEC = $(shell find test/spec -name \*.js)
 SRC = $(shell find exports externs src/ol -name \*.js)
 TARGETS = $(shell find demos -name advanced-optimizations.js)
+EXAMPLES = $(shell find demos -maxdepth 1 -name \*.html)
 comma := ,
 empty :=
 space := $(empty) $(empty)
@@ -32,77 +33,19 @@ build/require-all.js: $(SRC)
 	( echo "goog.require('goog.dom');" ; find src/ol -name \*.js | xargs grep -rh ^goog.provide | sort | uniq | sed -e 's/provide/require/g' ) >$@
 
 .PHONY: demos
-demos: demos/full-screen demos/proj4js demos/side-by-side demos/two-layers
+demos: $(subst .html,.json,$(EXAMPLES))
 
-.PHONY: demos/proj4js
-demos/proj4js: \
-	demos/proj4js/build.html \
-	demos/proj4js/index.html
+demos/%.json: base.json
+	@echo "{\"id\": \"$(basename $(notdir $@))\", \"inherits\": \"../base.json\", \"inputs\": \"$(subst .json,.js,$@)\"}" > $@
 
-demos/proj4js/build.html: demos/proj4js/template.html.in
-	sed -e 's|@SRC@|../../build/ol.js|' $< >$@
-
-demos/proj4js/index.html: demos/proj4js/template.html.in
-	sed -e 's|@SRC@|http://localhost:9810/compile?id=ol|' $< >$@
-
-.PHONY: demos/full-screen
-demos/full-screen: \
-	demos/full-screen/advanced-optimizations.html \
-	demos/full-screen/advanced-optimizations.js \
-	demos/full-screen/index.html
-
-demos/full-screen/advanced-optimizations.html: demos/full-screen/template.html.in
-	sed -e 's|@SRC@|advanced-optimizations.js|' $< >$@
-
-demos/full-screen/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
-	demos/full-screen/full-screen.json demos/full-screen/full-screen.js
-	java -jar $(PLOVR_JAR) build demos/full-screen/full-screen.json >$@
+demos/%.combined.js: $(PLOVR_JAR) base.json demos/%.js
+	java -jar $(PLOVR_JAR) build $(subst .combined.js,.json,$@) >$@
 	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
-
-demos/full-screen/index.html: demos/full-screen/template.html.in
-	sed -e 's|@SRC@|../loader.js?id=demo-full-screen|' $< >$@
-
-
-.PHONY: demos/side-by-side
-demos/side-by-side: \
-	demos/side-by-side/advanced-optimizations.html \
-	demos/side-by-side/advanced-optimizations.js \
-	demos/side-by-side/index.html
-
-demos/side-by-side/advanced-optimizations.html: demos/side-by-side/template.html.in
-	sed -e 's|@SRC@|advanced-optimizations.js|' $< >$@
-
-demos/side-by-side/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
-	demos/side-by-side/side-by-side.json demos/side-by-side/side-by-side.js
-	java -jar $(PLOVR_JAR) build demos/side-by-side/side-by-side.json >$@
-	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
-	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
-
-demos/side-by-side/index.html: demos/side-by-side/template.html.in
-	sed -e 's|@SRC@|../loader.js?id=demo-side-by-side|' $< >$@
-
-.PHONY: demos/two-layers
-demos/two-layers: \
-	demos/two-layers/advanced-optimizations.html \
-	demos/two-layers/advanced-optimizations.js \
-	demos/two-layers/index.html
-
-demos/two-layers/advanced-optimizations.html: demos/two-layers/template.html.in
-	sed -e 's|@SRC@|advanced-optimizations.js|' $< >$@
-
-demos/two-layers/advanced-optimizations.js: $(PLOVR_JAR) $(SRC) base.json \
-	demos/two-layers/two-layers.json demos/two-layers/two-layers.js
-	java -jar $(PLOVR_JAR) build demos/two-layers/two-layers.json >$@
-	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
-	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
-
-demos/two-layers/index.html: demos/two-layers/template.html.in
-	sed -e 's|@SRC@|../loader.js?id=demo-two-layers|' $< >$@
 
 .PHONY: serve
 serve: $(PLOVR_JAR) build/require-all.js
-	java -jar $(PLOVR_JAR) serve build/*.json demos/*/*.json
+	java -jar $(PLOVR_JAR) serve build/*.json demos/*.json
 
 .PHONY: lint
 lint: build/lint-src-timestamp build/lint-spec-timestamp
@@ -138,8 +81,8 @@ clean:
 	rm -f build/ol.js
 	rm -f build/ol-all.js
 	rm -f build/require-all.js
-	rm -f demos/*/advanced-optimizations.*
-	rm -f demos/*/index.html
+	rm -f demos/*.json
+	rm -f demos/*.combined.js
 	rm -rf build/apidoc
 
 reallyclean: clean

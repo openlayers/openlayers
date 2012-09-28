@@ -1,9 +1,0 @@
-{
-
-  "id": "demo-two-layers",
-
-  "inherits": "../../base.json",
-
-  "inputs": "demos/two-layers/two-layers.js"
-
-}

@@ -6,6 +6,5 @@
 /build/ol-all.js
 /build/proj4js-combined.js
 /build/require-all.js
-/demos/*/advanced-optimizations.*
-/demos/*/build.html
-/demos/*/index.html
+/demos/*.json
+/demos/*.combined.js
