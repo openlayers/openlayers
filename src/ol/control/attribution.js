@@ -138,7 +138,7 @@ ol.control.Attribution.prototype.createAttributionElementsForLayer_ =
     var attributionKey = goog.getUid(attribution);
 
     var attributionElement = goog.dom.createElement(goog.dom.TagName.LI);
-    attributionElement.innerHTML = attribution.getHtml() + ' ';
+    attributionElement.innerHTML = attribution.getHtml();
 
     if (!map.isDef ||
         !layerVisible ||

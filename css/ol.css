@@ -22,6 +22,9 @@
 .ol-attribution li {
   display: inline;
 }
+.ol-attribution li:not(:last-child):after {
+  content: " ";
+}
 .ol-dragbox {
   position: absolute;
   border: 2px solid red;
