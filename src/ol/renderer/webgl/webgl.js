@@ -14,6 +14,10 @@ ol.renderer.webgl.isSupported = function() {
   if (!('WebGLRenderingContext' in goog.global)) {
     return false;
   }
-  var canvas = goog.dom.createElement(goog.dom.TagName.CANVAS);
-  return !goog.isNull(canvas.getContext('experimental-webgl'));
+  try {
+    var canvas = goog.dom.createElement(goog.dom.TagName.CANVAS);
+    return !goog.isNull(canvas.getContext('experimental-webgl'));
+  } catch (e) {
+    return false;
+  }
 };
