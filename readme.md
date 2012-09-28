@@ -10,7 +10,7 @@ Run make:
 
 ## Run the examples
 
-Run make (as above), then explore the `demos/` directory with your web browser.
+Run make (as above), then explore the `examples/` directory with your web browser.
 
 ## Run the examples in debug mode
 
@@ -22,9 +22,9 @@ Then, start a simple webserver, for example:
 
     $ python -mSimpleHTTPServer
 
-Explore the `demos/` directory through this server, for example <http://localhost:8000/demos/side-by-side/debug.html>. You can turn off compilation by appending `?mode=RAW` to the URL, for example <http://localhost:8000/demos/side-by-side/debug.html?mode=RAW>.
+Explore the `examples/` directory through this server, for example <http://localhost:8000/examples/side-by-side/debug.html>. You can turn off compilation by appending `?mode=RAW` to the URL, for example <http://localhost:8000/examples/side-by-side/debug.html?mode=RAW>.
 
-Note that appending `?mode=RAW` doesn't work with `file://` URLs, which is why you need to access the `demos/` directory though a web server.
+Note that appending `?mode=RAW` doesn't work with `file://` URLs, which is why you need to access the `examples/` directory though a web server.
 
 ## Run tests
 
