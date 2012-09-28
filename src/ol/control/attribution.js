@@ -36,9 +36,11 @@ ol.control.AttributionOptions;
  */
 ol.control.Attribution = function(attributionOptions) {
 
-  var element = goog.dom.createDom(goog.dom.TagName.UL, {
+  this.ulElement_ = goog.dom.createElement(goog.dom.TagName.UL);
+
+  var element = goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': 'ol-attribution'
-  });
+  }, this.ulElement_);
 
   /**
    * @private
@@ -136,7 +138,7 @@ ol.control.Attribution.prototype.createAttributionElementsForLayer_ =
     var attributionKey = goog.getUid(attribution);
 
     var attributionElement = goog.dom.createElement(goog.dom.TagName.LI);
-    attributionElement.innerHTML = attribution.getHtml();
+    attributionElement.innerHTML = attribution.getHtml() + ' ';
 
     if (!map.isDef ||
         !layerVisible ||
@@ -145,7 +147,7 @@ ol.control.Attribution.prototype.createAttributionElementsForLayer_ =
       goog.style.showElement(attributionElement, false);
     }
 
-    goog.dom.appendChild(this.element, attributionElement);
+    goog.dom.appendChild(this.ulElement_, attributionElement);
 
     this.attributionElements_[attributionKey] = attributionElement;
 

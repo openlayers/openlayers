@@ -15,6 +15,13 @@
   color: white;
   text-decoration: none;
 }
+.ol-attribution li {
+  display: inline;
+  list-style: none;
+}
+.ol-attribution li {
+  display: inline;
+}
 .ol-dragbox {
   position: absolute;
   border: 2px solid red;
