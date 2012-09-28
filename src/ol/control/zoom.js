@@ -42,10 +42,7 @@ ol.control.Zoom = function(zoomOptions) {
   goog.events.listen(outElement, eventType, this.handleOut_, false, this);
 
   var element = goog.dom.createDom(
-      goog.dom.TagName.DIV, 'ol-zoom', inElement, outElement);
-  goog.events.listen(
-      element, ol.BrowserFeature.HAS_TOUCH ? goog.events.EventType.TOUCHSTART :
-      goog.events.EventType.MOUSEDOWN, goog.events.Event.stopPropagation);
+      goog.dom.TagName.DIV, 'ol-zoom ol-unselectable', inElement, outElement);
 
   goog.base(this, {
     element: element,

@@ -170,7 +170,6 @@ ol.MapBrowserEventHandler.prototype.click_ = function(browserEvent) {
     this.touchEnableBrowserEvent_(browserEvent);
     var newEvent = new ol.MapBrowserEvent(
         ol.MapBrowserEvent.EventType.CLICK, this.map_, browserEvent);
-    this.down_ = null;
     this.dispatchEvent(newEvent);
   }
 };
@@ -181,7 +180,7 @@ ol.MapBrowserEventHandler.prototype.click_ = function(browserEvent) {
  * @private
  */
 ol.MapBrowserEventHandler.prototype.dblclick_ = function(browserEvent) {
-  if (!this.dragged_) {
+  if (!this.dragged_ && this.down_) {
     var now = new Date().getTime();
     if (!this.timestamp_ || now - this.timestamp_ > 250) {
       this.timestamp_ = now;
