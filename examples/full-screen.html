@@ -9,12 +9,26 @@
                 width: 100%;
                 height: 100%;
             }
+            .overlay {
+                display: none;
+            }
+            .ol-overlaycontainer .overlay {
+                display: block;
+            }
+            #vienna {
+                font-family: Verdana, Arial, Helvetica, sans-serif;
+                font-size: 11pt;
+                color: white;
+                text-shadow: black 0.1em 0.1em 0.2em;
+            }
         </style>
         <link rel="stylesheet" href="../css/ol.css" type="text/css">
         <title>ol3 full-screen demo</title>
     </head>
     <body>
-        <div id="map"></div>
+        <div id="map">
+          <div class="overlay" id="vienna">Vienna</div>
+        </div>
         <script src="loader.js?id=full-screen" type="text/javascript"></script>
     </body>
 </html>
