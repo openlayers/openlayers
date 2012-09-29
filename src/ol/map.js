@@ -496,10 +496,10 @@ ol.Map.prototype.getRotatedExtent = function() {
 
 
 /**
- * @return {number|undefined} Rotation.
+ * @return {number} Rotation.
  */
 ol.Map.prototype.getRotation = function() {
-  return /** @type {number|undefined} */ this.get(ol.MapProperty.ROTATION);
+  return /** @type {number} */ this.get(ol.MapProperty.ROTATION) || 0;
 };
 goog.exportProperty(
     ol.Map.prototype,
