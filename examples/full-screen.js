@@ -29,7 +29,7 @@ var map = new ol.Map(document.getElementById('map'), {
 var vienna = new ol.overlay.Overlay({
   map: map,
   coordinate: ol.Projection.transformWithCodes(
-      new ol.Coordinate(16, 48), 'EPSG:4326', 'EPSG:3857'),
+      new ol.Coordinate(16.3725, 48.208889), 'EPSG:4326', 'EPSG:3857'),
   element: document.getElementById('vienna')
 });
 
