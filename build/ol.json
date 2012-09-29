@@ -22,17 +22,7 @@
   "inherits": "../base.json",
 
   "inputs": [
-    "exports/ol/collection.js",
-    "exports/ol/coordinate.js",
-    "exports/ol/extent.js",
-    "exports/ol/layer/tilelayer.js",
-    "exports/ol/map.js",
-    "exports/ol/object.js",
-    "exports/ol/overlay/overlay.js",
-    "exports/ol/projection.js",
-    "exports/ol/source/mapquest.js",
-    "exports/ol/source/openstreetmap.js",
-    "exports/ol/source/stamen.js"
+    "build/src/external/src/exports.js"
   ],
 
   "output-wrapper": "(function(){%output%})();",

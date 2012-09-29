@@ -1,0 +1,53 @@
+@exportSymbol ol.Collection
+@exportProperty ol.Collection.prototype.clear
+@exportProperty ol.Collection.prototype.forEach
+@exportProperty ol.Collection.prototype.getArray
+@exportProperty ol.Collection.prototype.getAt
+@exportProperty ol.Collection.prototype.getLength
+@exportProperty ol.Collection.prototype.insertAt
+@exportProperty ol.Collection.prototype.pop
+@exportProperty ol.Collection.prototype.push
+@exportProperty ol.Collection.prototype.removeAt
+@exportProperty ol.Collection.prototype.setAt
+
+@exportSymbol ol.Coordinate
+
+@exportSymbol ol.Extent
+
+@exportSymbol ol.Map
+
+@exportSymbol ol.Object
+@exportProperty ol.Object.prototype.bindTo
+@exportProperty ol.Object.prototype.changed
+@exportProperty ol.Object.prototype.get
+@exportProperty ol.Object.prototype.notify
+@exportProperty ol.Object.prototype.set
+@exportProperty ol.Object.prototype.setOptions
+@exportProperty ol.Object.prototype.setValues
+@exportProperty ol.Object.prototype.unbind
+@exportProperty ol.Object.prototype.unbindAll
+
+@exportSymbol ol.Projection
+@exportProperty ol.Projection.getFromCode
+@exportProperty ol.Projection.getTransform
+@exportProperty ol.Projection.getTransformFromCodes
+@exportProperty ol.Projection.transform
+@exportProperty ol.Projection.prototype.getCode
+@exportProperty ol.Projection.prototype.getExtent
+@exportProperty ol.Projection.prototype.getUnits
+
+@exportSymbol ol.layer.TileLayer
+
+@exportSymbol ol.overlay.Overlay
+
+@exportSymbol ol.source.BingMaps
+
+@exportSymbol ol.source.MapQuestOSM
+
+@exportSymbol ol.source.MapQuestOpenAerial
+
+@exportSymbol ol.source.OpenStreetMap
+
+@exportSymbol ol.source.Stamen
+
+@exportSymbol ol.source.TileJSON

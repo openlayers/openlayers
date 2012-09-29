@@ -3,8 +3,9 @@ JSDOC = jsdoc
 PHANTOMJS = phantomjs
 PLOVR_JAR = bin/plovr-b254c26318c5.jar
 SPEC = $(shell find test/spec -name \*.js)
-SRC = $(shell find exports externs src/ol -name \*.js)
+SRC = $(shell find externs src/ol -name \*.js)
 INTERNAL_SRC = build/src/internal/src/requireall.js build/src/internal/src/types.js
+EXTERNAL_SRC = build/src/external/externs/types.js build/src/external/src/exports.js
 EXAMPLES = $(shell find examples -maxdepth 1 -name \*.html)
 comma := ,
 empty :=
@@ -22,7 +23,7 @@ build: build/ol.css build/ol.js
 build/ol.css: build/ol.js
 	touch $@
 
-build/ol.js: $(PLOVR_JAR) $(SRC) base.json build/ol.json build/src/external/externs/types.js
+build/ol.js: $(PLOVR_JAR) $(SRC) $(EXTERNAL_SRC) base.json build/ol.json
 	java -jar $(PLOVR_JAR) build build/ol.json >$@
 	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
@@ -36,6 +37,10 @@ build/ol-all.js: $(PLOVR_JAR) $(SRC) $(INTERNAL_SRC) base.json build/ol-all.json
 build/src/external/externs/types.js: bin/generate-types src/ol/types.txt
 	mkdir -p $(dir $@)
 	bin/generate-types --externs src/ol/types.txt >$@
+
+build/src/external/src/exports.js: bin/generate-exports src/ol/exports.txt
+	mkdir -p $(dir $@)
+	bin/generate-exports src/ol/exports.txt >$@
 
 build/src/internal/src/requireall.js: bin/generate-requireall $(SRC)
 	mkdir -p $(dir $@)
@@ -70,8 +75,8 @@ serve-precommit: $(PLOVR_JAR) $(INTERNAL_SRC)
 .PHONY: lint
 lint: build/lint-src-timestamp build/lint-spec-timestamp
 
-build/lint-src-timestamp: $(SRC) $(INTERNAL_SRC)
-	gjslint --strict --limited_doc_files=$(subst $(space),$(comma),$(shell find externs -name \*.js)) $(SRC) $(INTERNAL_SRC) $(filter-out $(shell find examples -name \*.combined.js),$(shell find examples -name \*.js)) && touch $@
+build/lint-src-timestamp: $(SRC) $(INTERNAL_SRC) $(EXTERNAL_SRC)
+	gjslint --strict --limited_doc_files=$(subst $(space),$(comma),$(shell find externs build/src/external/externs -name \*.js)) $(SRC) $(INTERNAL_SRC) $(EXTERNAL_SRC) $(filter-out $(shell find examples -name \*.combined.js),$(shell find examples -name \*.js)) && touch $@
 
 build/lint-spec-timestamp: $(SPEC)
 	gjslint $(SPEC) && touch $@
