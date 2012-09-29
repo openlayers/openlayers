@@ -6,7 +6,6 @@ goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.functions');
-goog.require('goog.style');
 goog.require('ol.Coordinate');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.Map');
@@ -62,22 +61,35 @@ ol.renderer.dom.Map = function(container, map) {
   this.renderedSize_ = null;
 
   /**
-   * The pixel offset of the layers pane with respect to its container.
+   * @type {number | undefined}
+   * @private
+   */
+  this.renderedRotation_ = undefined;
+
+  /**
+   * The origin (top left) of the layers pane in map coordinates.
    *
    * @type {ol.Coordinate}
    * @private
    */
-  this.layersPaneOffset_ = null;
+  this.layersPaneOrigin_ = null;
 };
 goog.inherits(ol.renderer.dom.Map, ol.renderer.Map);
 
 
 /**
  * Apply the given transform to the layers pane.
- * @param {string} transform The transform to apply.
+ * @param {number} dx Translation along the x-axis.
+ * @param {number} dy Translation along the y-axis.
+ * @param {number} rotation Rotation angle.
  * @private
  */
-ol.renderer.dom.Map.prototype.applyTransform_ = function(transform) {
+ol.renderer.dom.Map.prototype.applyTransform_ = function(dx, dy, rotation) {
+  var transform =
+      'translate(' + Math.round(dx) + 'px, ' + Math.round(dy) + 'px) ' +
+      'rotate(' + rotation.toFixed(6) + 'rad) ' +
+      'scale3d(1, 1, 1)';
+
   var style = this.layersPane_.style;
   style.WebkitTransform = transform;
   style.MozTransform = transform;
@@ -152,8 +164,7 @@ ol.renderer.dom.Map.prototype.handleRotationChanged = function() {
   if (!map.isDef()) {
     return;
   }
-  var rotation = map.getRotation();
-  this.applyTransform_('rotate(' + rotation + 'rad) scale3d(1, 1, 1)');
+  map.render();
 };
 
 
@@ -182,16 +193,20 @@ ol.renderer.dom.Map.prototype.render = function() {
     return false;
   }
 
+  var mapCenter = map.getCenter();
   var mapSize = map.getSize();
   var mapResolution = map.getResolution();
-  var mapCenter = map.getCenter();
-  goog.asserts.assert(goog.isDefAndNotNull(mapSize));
-  goog.asserts.assert(goog.isDef(mapResolution));
+  var mapRotation = map.getRotation();
+
   goog.asserts.assert(goog.isDefAndNotNull(mapCenter));
+  goog.asserts.assert(goog.isDef(mapResolution));
+  goog.asserts.assert(goog.isDef(mapRotation));
+  goog.asserts.assert(goog.isDefAndNotNull(mapSize));
 
   if (goog.isNull(this.renderedCenter_)) {
     // first rendering
     goog.asserts.assert(!goog.isDef(this.renderedResolution_));
+    goog.asserts.assert(!goog.isDef(this.renderedRotation_));
     goog.asserts.assert(goog.isNull(this.renderedSize_));
     this.resetLayersPane_();
   } else {
@@ -201,14 +216,16 @@ ol.renderer.dom.Map.prototype.render = function() {
         !mapSize.equals(this.renderedSize_)) {
       // resolution or size changed, adjust layers pane
       this.resetLayersPane_();
-    } else if (!mapCenter.equals(this.renderedCenter_)) {
-      // same resolution and size, new center
-      this.shiftLayersPane_();
+    } else if (!mapCenter.equals(this.renderedCenter_) ||
+        mapRotation !== this.renderedRotation_) {
+      // same resolution and size, new center or rotation
+      this.transformLayersPane_();
     }
   }
 
   this.renderedCenter_ = mapCenter;
   this.renderedResolution_ = mapResolution;
+  this.renderedRotation_ = mapRotation;
   this.renderedSize_ = mapSize;
 
   return goog.base(this, 'render');
@@ -220,17 +237,18 @@ ol.renderer.dom.Map.prototype.render = function() {
  * @private
  */
 ol.renderer.dom.Map.prototype.resetLayersPane_ = function() {
-  var offset = new ol.Coordinate(0, 0);
-  goog.style.setPosition(this.layersPane_, offset);
-  this.layersPaneOffset_ = offset;
-  var center = this.map.getCenter();
-  var resolution = this.map.getResolution();
-  var mapSize = this.map.getSize();
-  var mapWidth = mapSize.width;
-  var mapHeight = mapSize.height;
+  var map = this.map;
+  var mapSize = map.getSize();
+  var halfWidth = mapSize.width / 2;
+  var halfHeight = mapSize.height / 2;
+  var center = map.getCenter();
+  var resolution = map.getResolution();
   var origin = new ol.Coordinate(
-      center.x - resolution * mapWidth / 2,
-      center.y + resolution * mapHeight / 2);
+      center.x - resolution * halfWidth,
+      center.y + resolution * halfHeight);
+  this.layersPaneOrigin_ = origin;
+  this.setTransformOrigin_(halfWidth, halfHeight);
+  this.applyTransform_(0, 0, map.getRotation());
   goog.object.forEach(this.layerRenderers, function(layerRenderer) {
     layerRenderer.setOrigin(origin);
   });
@@ -238,21 +256,37 @@ ol.renderer.dom.Map.prototype.resetLayersPane_ = function() {
 
 
 /**
- * Move the layers pane.
+ * Set the transform-origin CSS property of the layers pane.
+ * @param {number} x The x-axis origin.
+ * @param {number} y The y-axis origin.
  * @private
  */
-ol.renderer.dom.Map.prototype.shiftLayersPane_ = function() {
-  var center = this.map.getCenter();
-  goog.asserts.assert(goog.isDef(center));
-  var oldCenter = this.renderedCenter_;
-  var currentPx = this.getPixelFromCoordinate(center);
-  var oldPx = this.getPixelFromCoordinate(oldCenter);
-  var dx = Math.round(oldPx.x - currentPx.x);
-  var dy = Math.round(oldPx.y - currentPx.y);
-  if (!(dx === 0 && dy === 0)) {
-    var offset = this.layersPaneOffset_;
-    offset.x += dx;
-    offset.y += dy;
-    goog.style.setPosition(this.layersPane_, offset);
-  }
+ol.renderer.dom.Map.prototype.setTransformOrigin_ = function(x, y) {
+  var origin = Math.round(x) + 'px ' + Math.round(y) + 'px';
+  var style = this.layersPane_.style;
+  style.WebkitTransformOrigin = origin;
+  style.MozTransformOrigin = origin;
+  style.OTransformOrigin = origin;
+  style.msTransformOrigin = origin;
+  style.transformOrigin = origin;
+
+};
+
+
+/**
+ * Apply the appropriate transform to the layers pane.
+ * @private
+ */
+ol.renderer.dom.Map.prototype.transformLayersPane_ = function() {
+  var map = this.map;
+  var resolution = map.getResolution();
+  var center = map.getCenter();
+  var size = map.getSize();
+  var origin = this.layersPaneOrigin_;
+  var ox = (center.x - origin.x) / resolution;
+  var oy = (origin.y - center.y) / resolution;
+  this.setTransformOrigin_(ox, oy);
+  var dx = ox - (size.width / 2);
+  var dy = oy - (size.height / 2);
+  this.applyTransform_(-dx, -dy, map.getRotation());
 };
