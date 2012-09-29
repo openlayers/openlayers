@@ -100,6 +100,7 @@ ol.MapEventType = {
  *            constraints: ol.Constraints,
  *            rendererConstructor:
  *                function(new: ol.renderer.Map, Element, ol.Map),
+ *            target: Element,
  *            values: Object.<string, *>}}
  */
 ol.MapOptionsInternal;
@@ -126,10 +127,9 @@ ol.MapProperty = {
  * @constructor
  * @extends {ol.Object}
  * @implements {goog.fx.anim.Animated}
- * @param {Element} container Container.
  * @param {olx.MapOptions} mapOptions Map options.
  */
-ol.Map = function(container, mapOptions) {
+ol.Map = function(mapOptions) {
 
   goog.base(this);
 
@@ -183,7 +183,7 @@ ol.Map = function(container, mapOptions) {
    * @private
    * @type {Element}
    */
-  this.container_ = container;
+  this.target_ = mapOptionsInternal.target;
 
   /**
    * @private
@@ -200,7 +200,7 @@ ol.Map = function(container, mapOptions) {
   this.viewport_.style.overflow = 'hidden';
   this.viewport_.style.width = '100%';
   this.viewport_.style.height = '100%';
-  goog.dom.appendChild(container, this.viewport_);
+  goog.dom.appendChild(this.target_, this.viewport_);
 
   /**
    * @private
@@ -356,8 +356,8 @@ goog.exportProperty(
 /**
  * @return {Element} Container.
  */
-ol.Map.prototype.getContainer = function() {
-  return this.container_;
+ol.Map.prototype.getTarget = function() {
+  return this.target_;
 };
 
 
@@ -643,8 +643,7 @@ ol.Map.prototype.handleUserProjectionChanged = function() {
  * @protected
  */
 ol.Map.prototype.handleBrowserWindowResize = function() {
-  var size = new ol.Size(this.container_.clientWidth,
-      this.container_.clientHeight);
+  var size = new ol.Size(this.target_.clientWidth, this.target_.clientHeight);
   this.setSize(size);
 };
 
@@ -1047,10 +1046,16 @@ ol.Map.createOptionsInternal = function(mapOptions) {
     controls = ol.Map.createControls_(mapOptions);
   }
 
+  /**
+   * @type {Element}
+   */
+  var target = goog.dom.getElement(mapOptions.target);
+
   return {
     constraints: constraints,
     controls: controls,
     rendererConstructor: rendererConstructor,
+    target: target,
     values: values
   };
 

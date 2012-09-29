@@ -18,9 +18,10 @@ if (goog.DEBUG) {
 var layer = new ol.layer.TileLayer({
   source: new ol.source.MapQuestOpenAerial()
 });
-var map = new ol.Map(document.getElementById('map'), {
+var map = new ol.Map({
   center: new ol.Coordinate(0, 0),
   layers: new ol.Collection([layer]),
+  target: 'map',
   zoom: 2
 });
 

@@ -18,6 +18,7 @@ resolution: number|undefined
 resolutions: Array.<number>|undefined
 rotate: boolean|undefined
 shiftDragZoom: boolean|undefined
+target: Element|string
 userProjection: ol.Projection|string|undefined
 zoom: number|undefined
 zoomDelta: number|undefined

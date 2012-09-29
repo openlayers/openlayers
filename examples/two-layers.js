@@ -22,16 +22,18 @@ var layers = new ol.Collection([
   })
 ]);
 
-var webglMap = new ol.Map(document.getElementById('webglMap'), {
+var webglMap = new ol.Map({
   center: ol.Projection.transformWithCodes(
       new ol.Coordinate(-77.93255, 37.9555), 'EPSG:4326', 'EPSG:3857'),
   layers: layers,
   renderer: ol.RendererHint.WEBGL,
+  target: 'webglMap',
   zoom: 5
 });
 
-var domMap = new ol.Map(document.getElementById('domMap'), {
-  renderer: ol.RendererHint.DOM
+var domMap = new ol.Map({
+  renderer: ol.RendererHint.DOM,
+  target: 'domMap'
 });
 domMap.bindTo('center', webglMap);
 domMap.bindTo('layers', webglMap);

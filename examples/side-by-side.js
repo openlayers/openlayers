@@ -20,10 +20,11 @@ var layer = new ol.layer.TileLayer({
   source: new ol.source.MapQuestOpenAerial()
 });
 
-var domMap = new ol.Map(document.getElementById('domMap'), {
+var domMap = new ol.Map({
   center: new ol.Coordinate(0, 0),
   layers: new ol.Collection([layer]),
   renderer: ol.RendererHint.DOM,
+  target: 'domMap',
   zoom: 1
 });
 
@@ -34,8 +35,9 @@ domMap.getControls().push(new ol.control.MousePosition({
   undefinedHtml: '&nbsp;'
 }));
 
-var webglMap = new ol.Map(document.getElementById('webglMap'), {
-  renderer: ol.RendererHint.WEBGL
+var webglMap = new ol.Map({
+  renderer: ol.RendererHint.WEBGL,
+  target: 'webglMap'
 });
 if (!goog.isNull(webglMap)) {
   webglMap.bindTo('center', domMap);
