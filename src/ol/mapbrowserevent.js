@@ -109,6 +109,8 @@ ol.MapBrowserEventHandler = function(map) {
   this.dragged_ = false;
 
   /**
+   * Timestamp for the first click of a double click. Will be set back to 0
+   * as soon as a double click is detected.
    * @type {number}
    * @private
    */
@@ -126,16 +128,11 @@ ol.MapBrowserEventHandler = function(map) {
    */
   this.down_ = null;
 
-  /**
-   * @type {boolean}
-   * @private
-   */
-  this.isDblClick_ = false;
-
   var element = this.map_.getViewport();
   if (!ol.BrowserFeature.HAS_TOUCH) {
     goog.events.listen(element,
-        goog.events.EventType.CLICK, this.click_, false, this);
+        [goog.events.EventType.CLICK, goog.events.EventType.DBLCLICK],
+        this.click_, false, this);
   }
   goog.events.listen(element,
       ol.BrowserFeature.HAS_TOUCH ?
@@ -170,12 +167,13 @@ ol.MapBrowserEventHandler.prototype.touchEnableBrowserEvent_ =
  */
 ol.MapBrowserEventHandler.prototype.click_ = function(browserEvent) {
   if (!this.dragged_) {
-    this.touchEnableBrowserEvent_(browserEvent);
-    var newEvent = new ol.MapBrowserEvent(
-        ol.MapBrowserEvent.EventType.CLICK, this.map_, browserEvent);
-    this.dispatchEvent(newEvent);
-    if (this.isDblClick_) {
-      this.isDblClick_ = false;
+    var newEvent;
+    if (browserEvent.type !== goog.events.EventType.DBLCLICK) {
+      newEvent = new ol.MapBrowserEvent(
+          ol.MapBrowserEvent.EventType.CLICK, this.map_, browserEvent);
+      this.dispatchEvent(newEvent);
+    }
+    if (!this.timestamp_) {
       newEvent = new ol.MapBrowserEvent(
           ol.MapBrowserEvent.EventType.DBLCLICK, this.map_, browserEvent);
       this.dispatchEvent(newEvent);
@@ -196,7 +194,6 @@ ol.MapBrowserEventHandler.prototype.handleUp_ = function(browserEvent) {
         this.timestamp_ = now;
       } else {
         this.timestamp_ = 0;
-        this.isDblClick_ = true;
       }
       if (ol.BrowserFeature.HAS_TOUCH) {
         this.click_(this.down_);
@@ -206,9 +203,11 @@ ol.MapBrowserEventHandler.prototype.handleUp_ = function(browserEvent) {
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
     this.previous_ = null;
-    var newEvent = new ol.MapBrowserEvent(
-        ol.MapBrowserEvent.EventType.DRAGEND, this.map_, browserEvent);
-    this.dispatchEvent(newEvent);
+    if (this.dragged_) {
+      var newEvent = new ol.MapBrowserEvent(
+          ol.MapBrowserEvent.EventType.DRAGEND, this.map_, browserEvent);
+      this.dispatchEvent(newEvent);
+    }
   }
 };
 
@@ -219,8 +218,8 @@ ol.MapBrowserEventHandler.prototype.handleUp_ = function(browserEvent) {
  */
 ol.MapBrowserEventHandler.prototype.handleDown_ = function(browserEvent) {
   if (!this.previous_) {
-    this.down_ = browserEvent;
     this.touchEnableBrowserEvent_(browserEvent);
+    this.down_ = browserEvent;
     this.previous_ = {
       clientX: browserEvent.clientX,
       clientY: browserEvent.clientY
@@ -242,9 +241,6 @@ ol.MapBrowserEventHandler.prototype.handleDown_ = function(browserEvent) {
       // prevent browser image dragging on pointer devices
       browserEvent.preventDefault();
     }
-    var newEvent = new ol.MapBrowserEvent(
-        ol.MapBrowserEvent.EventType.DRAGSTART, this.map_, browserEvent);
-    this.dispatchEvent(newEvent);
   }
 };
 
@@ -254,7 +250,13 @@ ol.MapBrowserEventHandler.prototype.handleDown_ = function(browserEvent) {
  * @private
  */
 ol.MapBrowserEventHandler.prototype.drag_ = function(browserEvent) {
-  this.dragged_ = true;
+  var newEvent;
+  if (!this.dragged_) {
+    this.dragged_ = true;
+    newEvent = new ol.MapBrowserEvent(
+        ol.MapBrowserEvent.EventType.DRAGSTART, this.map_, this.down_);
+    this.dispatchEvent(newEvent);
+  }
   this.touchEnableBrowserEvent_(browserEvent);
   this.previous_ = {
     clientX: browserEvent.clientX,
@@ -262,7 +264,7 @@ ol.MapBrowserEventHandler.prototype.drag_ = function(browserEvent) {
   };
   // prevent viewport dragging on touch devices
   browserEvent.preventDefault();
-  var newEvent = new ol.MapBrowserEvent(
+  newEvent = new ol.MapBrowserEvent(
       ol.MapBrowserEvent.EventType.DRAG, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
 };
