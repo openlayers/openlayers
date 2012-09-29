@@ -4,7 +4,7 @@ before_install:
 
 before_script:
   - "make plovr"
-  - "make serve &"
+  - "make serve-precommit &"
   - "sleep 3"
 
 script: "make JSDOC=jsdoc/jsdoc precommit"

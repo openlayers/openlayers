@@ -57,6 +57,10 @@ examples/%.combined.js: $(PLOVR_JAR) base.json examples/%.js
 serve: $(PLOVR_JAR) build/require-all.js examples
 	java -jar $(PLOVR_JAR) serve build/*.json examples/*.json
 
+.PHONY: serve-precommit
+serve-precommit: $(PLOVR_JAR)
+	java -jar $(PLOVR_JAR) serve build/ol.json
+
 .PHONY: lint
 lint: build/lint-src-timestamp build/lint-spec-timestamp
 
