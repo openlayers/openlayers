@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+from optparse import OptionParser
+import os
+import os.path
+import re
+import sys
+
+
+def main(argv):
+
+    option_parser = OptionParser()
+    option_parser.add_option('--require', action='append')
+    options, args = option_parser.parse_args(argv[1:])
+
+    requires = set(options.require or ())
+    for arg in args:
+        for dirpath, dirnames, filenames in os.walk(arg):
+            for filename in filenames:
+                if not filename.endswith('.js'):
+                    continue
+                for line in open(os.path.join(dirpath, filename)):
+                    m = re.match(r'goog\.provide\(\'(.*)\'\);', line)
+                    if m:
+                        requires.add(m.group(1))
+
+    for require in sorted(requires):
+        sys.stdout.write('goog.require(\'%s\');\n' % (require,))
+
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv))

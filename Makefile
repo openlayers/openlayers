@@ -36,9 +36,9 @@ build/src/external/externs/types.js: bin/generate-src src/ol/literals.txt
 	mkdir -p $(dir $@)
 	bin/generate-src --externs src/ol/literals.txt >$@
 
-build/src/internal/src/requireall.js: $(SRC)
+build/src/internal/src/requireall.js: bin/generate-requireall $(SRC)
 	mkdir -p $(dir $@)
-	( echo "goog.require('goog.dom');" ; find src/ol -name \*.js | xargs grep -rh ^goog.provide | sort | uniq | sed -e 's/provide/require/g' ) >$@
+	bin/generate-requireall --require=goog.dom src/ol >$@
 
 build/src/internal/src/types.js: bin/generate-src src/ol/literals.txt
 	mkdir -p $(dir $@)
