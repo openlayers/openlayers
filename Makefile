@@ -33,17 +33,17 @@ build-all: build/ol-all.js
 build/ol-all.js: $(PLOVR_JAR) $(SRC) $(INTERNAL_SRC) base.json build/ol-all.json
 	java -jar $(PLOVR_JAR) build build/ol-all.json >$@ || ( rm -f $@ ; false )
 
-build/src/external/externs/types.js: bin/generate-src src/ol/literals.txt
+build/src/external/externs/types.js: bin/generate-types src/ol/types.txt
 	mkdir -p $(dir $@)
-	bin/generate-src --externs src/ol/literals.txt >$@
+	bin/generate-types --externs src/ol/types.txt >$@
 
 build/src/internal/src/requireall.js: bin/generate-requireall $(SRC)
 	mkdir -p $(dir $@)
 	bin/generate-requireall --require=goog.dom src/ol >$@
 
-build/src/internal/src/types.js: bin/generate-src src/ol/literals.txt
+build/src/internal/src/types.js: bin/generate-types src/ol/types.txt
 	mkdir -p $(dir $@)
-	bin/generate-src --typedef src/ol/literals.txt >$@
+	bin/generate-types --typedef src/ol/types.txt >$@
 
 .PHONY: build-examples
 build-examples: examples $(subst .html,.combined.js,$(EXAMPLES))

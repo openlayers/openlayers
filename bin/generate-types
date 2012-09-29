@@ -60,7 +60,7 @@ def main(argv):
             line = line.strip()
             if not line:
                 continue
-            m = re.match('@externtype\s*(?P<name>\S+)\Z', line)
+            m = re.match('@exportType\s*(?P<name>\S+)\Z', line)
             if m:
                 type = Type(m.group('name'))
                 types.append(type)

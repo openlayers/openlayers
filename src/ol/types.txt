@@ -1,4 +1,4 @@
-@externtype olx.MapOptions
+@exportType olx.MapOptions
 center: ol.Coordinate|undefined
 controls: ol.Collection|undefined
 doubleClickZoom: boolean|undefined
