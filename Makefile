@@ -45,6 +45,9 @@ build/src/internal/src/types.js: bin/generate-src src/ol/literals.txt
 	mkdir -p $(dir $@)
 	bin/generate-src --typedef src/ol/literals.txt >$@
 
+.PHONY: build-examples
+build-examples: examples $(subst .html,.combined.js,$(EXAMPLES))
+
 .PHONY: examples
 examples: $(subst .html,.json,$(EXAMPLES))
 
