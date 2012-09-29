@@ -82,7 +82,10 @@ def main(argv):
             sys.stdout.write('/**\n')
             sys.stdout.write(' * @type {Object}\n')
             sys.stdout.write(' */\n')
-            sys.stdout.write('var %s;\n' % (namespace,))
+            if '.' in namespace:
+                sys.stdout.write('%s = {};\n' % (namespace,))
+            else:
+                sys.stdout.write('var %s;\n' % (namespace,))
         for type in types:
             sys.stdout.write('\n\n\n')
             sys.stdout.write(type.extern())
