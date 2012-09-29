@@ -1,3 +1,4 @@
+BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
 JSDOC = jsdoc
 PHANTOMJS = phantomjs
 PLOVR_JAR = bin/plovr-b254c26318c5.jar
@@ -81,17 +82,21 @@ $(PLOVR_JAR):
 
 .PHONY: gh-pages
 gh-pages:
-	bin/git-update-ghpages openlayers/ol3 -i build/gh-pages/$(shell git rev-parse --abbrev-ref HEAD) -p $(shell git rev-parse --abbrev-ref HEAD)
+	bin/git-update-ghpages openlayers/ol3 -i build/gh-pages/$(BRANCH) -p $(BRANCH)
 
 .PHONY: doc
-doc:
-	$(JSDOC) -t doc/template -r src -d build/gh-pages/$(shell git rev-parse --abbrev-ref HEAD)/apidoc
+doc: build/jsdoc-$(BRANCH)-timestamp
+
+build/jsdoc-$(BRANCH)-timestamp: $(SRC) $(shell find doc/template -type f)
+	$(JSDOC) -t doc/template -r src -d build/gh-pages/$(BRANCH)/apidoc
+	touch $@
 
 .PHONY: test
 test: $(INTERNAL_SRC)
 	$(PHANTOMJS) test/phantom-jasmine/run_jasmine_test.coffee test/ol.html
 
 clean:
+	rm -f jsdoc/jsdoc-*-timestamp
 	rm -f build/lint-spec-timestamp
 	rm -f build/lint-src-timestamp
 	rm -f build/ol.css

@@ -1,5 +1,6 @@
 /bin/plovr*.jar
 /build/gh-pages
+/build/jsdoc-*-timestamp
 /build/lint-spec-timestamp
 /build/lint-src-timestamp
 /build/ol.css
