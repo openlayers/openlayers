@@ -23,3 +23,12 @@ userProjection: ol.Projection|string|undefined
 zoom: number|undefined
 zoomDelta: number|undefined
 zoomFactor: number|undefined
+
+@exportType olx.layer.LayerOptions
+brightness: number|undefined
+contrast: number|undefined
+hue: number|undefined
+opacity: number|undefined
+saturation: number|undefined
+source: ol.source.Source
+visible: boolean|undefined

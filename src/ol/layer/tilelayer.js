@@ -1,7 +1,6 @@
 goog.provide('ol.layer.TileLayer');
 
 goog.require('ol.layer.Layer');
-goog.require('ol.layer.LayerOptions');
 goog.require('ol.source.TileSource');
 
 
@@ -9,7 +8,7 @@ goog.require('ol.source.TileSource');
 /**
  * @constructor
  * @extends {ol.layer.Layer}
- * @param {ol.layer.LayerOptions} layerOptions Layer options.
+ * @param {olx.layer.LayerOptions} layerOptions Layer options.
  */
 ol.layer.TileLayer = function(layerOptions) {
   goog.base(this, layerOptions);

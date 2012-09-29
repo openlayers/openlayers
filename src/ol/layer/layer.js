@@ -1,5 +1,4 @@
 goog.provide('ol.layer.Layer');
-goog.provide('ol.layer.LayerOptions');
 goog.provide('ol.layer.LayerProperty');
 
 goog.require('goog.events');
@@ -7,18 +6,6 @@ goog.require('goog.events.EventType');
 goog.require('goog.math');
 goog.require('ol.Object');
 goog.require('ol.source.Source');
-
-
-/**
- * @typedef {{brightness: (number|undefined),
- *            contrast: (number|undefined),
- *            hue: (number|undefined),
- *            opacity: (number|undefined),
- *            saturation: (number|undefined),
- *            source: ol.source.Source,
- *            visible: (boolean|undefined)}}
- */
-ol.layer.LayerOptions;
 
 
 /**
@@ -38,7 +25,7 @@ ol.layer.LayerProperty = {
 /**
  * @constructor
  * @extends {ol.Object}
- * @param {ol.layer.LayerOptions} layerOptions LayerOptions.
+ * @param {olx.layer.LayerOptions} layerOptions LayerOptions.
  */
 ol.layer.Layer = function(layerOptions) {
 
