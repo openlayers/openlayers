@@ -54,7 +54,7 @@ examples: $(subst .html,.json,$(EXAMPLES))
 examples/%.json: Makefile base.json
 	echo "{\"id\": \"$(basename $(notdir $@))\", \"inherits\": \"../base.json\", \"inputs\": [\"$(subst .json,.js,$@)\", \"build/src/internal/src/types.js\"]}" > $@
 
-examples/%.combined.js: $(PLOVR_JAR) base.json examples/%.js
+examples/%.combined.js: $(PLOVR_JAR) $(SRC) $(INTERNAL_SRC) base.json examples/%.js
 	java -jar $(PLOVR_JAR) build $(subst .combined.js,.json,$@) >$@
 	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
