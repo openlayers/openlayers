@@ -104,7 +104,7 @@ test: $(INTERNAL_SRC)
 	$(PHANTOMJS) test/phantom-jasmine/run_jasmine_test.coffee test/ol.html
 
 clean:
-	rm -f jsdoc/jsdoc-*-timestamp
+	rm -f build/jsdoc-*-timestamp
 	rm -f build/lint-spec-timestamp
 	rm -f build/lint-src-timestamp
 	rm -f build/ol.css
