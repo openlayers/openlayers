@@ -24,7 +24,7 @@ build/ol.css: build/ol.js
 	touch $@
 
 build/ol.js: $(PLOVR_JAR) $(SRC) $(EXTERNAL_SRC) base.json build/ol.json
-	java -jar $(PLOVR_JAR) build build/ol.json >$@
+	java -jar $(PLOVR_JAR) build build/ol.json >$@ || ( rm -f $@ ; false )
 	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
 
@@ -60,7 +60,7 @@ examples/%.json: Makefile base.json
 	echo "{\"id\": \"$(basename $(notdir $@))\", \"inherits\": \"../base.json\", \"inputs\": [\"$(subst .json,.js,$@)\", \"build/src/internal/src/types.js\"]}" > $@
 
 examples/%.combined.js: $(PLOVR_JAR) $(SRC) $(INTERNAL_SRC) base.json examples/%.js
-	java -jar $(PLOVR_JAR) build $(subst .combined.js,.json,$@) >$@
+	java -jar $(PLOVR_JAR) build $(subst .combined.js,.json,$@) >$@ || ( rm -f $@ ; false )
 	@echo $@ "uncompressed:" $$(wc -c <$@) bytes
 	@echo $@ "  compressed:" $$(gzip -9 -c <$@ | wc -c) bytes
 
