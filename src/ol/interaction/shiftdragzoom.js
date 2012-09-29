@@ -48,7 +48,7 @@ goog.inherits(ol.interaction.ShiftDragZoom, ol.interaction.Drag);
 ol.interaction.ShiftDragZoom.prototype.handleDragEnd =
     function(mapBrowserEvent) {
   this.dragBox_.setMap(null);
-  this.dragBox = null;
+  this.dragBox_ = null;
   if (this.deltaX * this.deltaX + this.deltaY * this.deltaY >=
       ol.SHIFT_DRAG_ZOOM_HYSTERESIS_PIXELS_SQUARED) {
     var map = mapBrowserEvent.map;
