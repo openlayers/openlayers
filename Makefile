@@ -14,7 +14,7 @@ space := $(empty) $(empty)
 all: build-all build examples
 
 .PHONY: precommit
-precommit: lint build-all doc test build
+precommit: lint build-all test doc build
 
 .PHONY: build
 build: build/ol.css build/ol.js
