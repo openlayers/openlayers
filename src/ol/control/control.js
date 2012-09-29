@@ -2,7 +2,6 @@ goog.provide('ol.control.Control');
 goog.provide('ol.control.ControlOptions');
 
 goog.require('goog.Disposable');
-goog.require('ol.Map');
 
 
 /**

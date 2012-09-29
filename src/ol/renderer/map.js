@@ -5,8 +5,6 @@ goog.require('goog.events');
 goog.require('goog.fx.anim');
 goog.require('goog.fx.anim.Animated');
 goog.require('goog.vec.Mat4');
-goog.require('ol.Map');
-goog.require('ol.MapProperty');
 
 
 

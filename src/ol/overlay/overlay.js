@@ -4,8 +4,6 @@ goog.provide('ol.overlay.OverlayPositioning');
 
 goog.require('goog.events');
 goog.require('goog.style');
-goog.require('ol.Map');
-goog.require('ol.MapProperty');
 
 
 /**

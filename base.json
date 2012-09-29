@@ -49,7 +49,7 @@
   "mode": "ADVANCED",
 
   "paths": [
-    "build/src",
+    "build/src/internal/src",
     "src"
   ],
 

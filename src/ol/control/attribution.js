@@ -14,7 +14,6 @@ goog.require('goog.object');
 goog.require('goog.style');
 goog.require('ol.Collection');
 goog.require('ol.CoverageArea');
-goog.require('ol.MapProperty');
 goog.require('ol.TileCoverageArea');
 goog.require('ol.control.Control');
 goog.require('ol.layer.Layer');

@@ -5,7 +5,6 @@ goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.CoordinateFormat');
 goog.require('ol.Map');
-goog.require('ol.MapOptions'); // FIXME this should not be required
 goog.require('ol.overlay.Overlay');
 goog.require('ol.source.MapQuestOpenAerial');
 

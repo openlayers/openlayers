@@ -17,7 +17,6 @@ goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('goog.style');
 goog.require('goog.webgl');
-goog.require('ol.Map');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.webgl.FragmentShader');

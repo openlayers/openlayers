@@ -6,7 +6,6 @@ goog.provide('ol.control.MousePositionOptions');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.style');
-goog.require('ol.MapProperty');
 goog.require('ol.Object');
 goog.require('ol.Pixel');
 goog.require('ol.Projection');

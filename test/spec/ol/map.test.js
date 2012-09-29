@@ -1,6 +1,6 @@
-goog.require('ol.MapOptions');
+goog.require('ol.Map');
 
-describe('ol.MapOptions', function() {
+describe('ol.Map', function() {
 
   describe('create constraints', function() {
 
@@ -9,7 +9,7 @@ describe('ol.MapOptions', function() {
       describe('with no options', function() {
         it('gives a correct resolution constraint function', function() {
           var options = {};
-          var fn = ol.MapOptions.createConstraints_(options).resolution;
+          var fn = ol.Map.createConstraints_(options).resolution;
           expect(fn(156543.03392804097, 0))
               .toRoughlyEqual(156543.03392804097, 1e-9);
           expect(fn(78271.51696402048, 0))
@@ -25,7 +25,7 @@ describe('ol.MapOptions', function() {
             numZoomLevels: 4,
             zoomFactor: 3
           };
-          var fn = ol.MapOptions.createConstraints_(options).resolution;
+          var fn = ol.Map.createConstraints_(options).resolution;
           expect(fn(82, 0)).toEqual(81);
           expect(fn(81, 0)).toEqual(81);
           expect(fn(27, 0)).toEqual(27);
@@ -40,7 +40,7 @@ describe('ol.MapOptions', function() {
           var options = {
             resolutions: [97, 76, 65, 54, 0.45]
           };
-          var fn = ol.MapOptions.createConstraints_(options).resolution;
+          var fn = ol.Map.createConstraints_(options).resolution;
           expect(fn(97, 0), 97);
           expect(fn(76, 0), 76);
           expect(fn(65, 0), 65);
@@ -75,7 +75,7 @@ describe('ol.MapOptions', function() {
 
       describe('default mouseWheelZoomDelta', function() {
         it('create mousewheel interaction with default delta', function() {
-          var interactions = ol.MapOptions.createInteractions_(options);
+          var interactions = ol.Map.createInteractions_(options);
           expect(interactions.getLength()).toEqual(1);
           expect(interactions.getAt(0)).toBeA(ol.interaction.MouseWheelZoom);
           expect(interactions.getAt(0).delta_).toEqual(1);
@@ -85,7 +85,7 @@ describe('ol.MapOptions', function() {
       describe('set mouseWheelZoomDelta', function() {
         it('create mousewheel interaction with set delta', function() {
           options.mouseWheelZoomDelta = 7;
-          var interactions = ol.MapOptions.createInteractions_(options);
+          var interactions = ol.Map.createInteractions_(options);
           expect(interactions.getLength()).toEqual(1);
           expect(interactions.getAt(0)).toBeA(ol.interaction.MouseWheelZoom);
           expect(interactions.getAt(0).delta_).toEqual(7);
@@ -101,7 +101,7 @@ describe('ol.MapOptions', function() {
 
       describe('default zoomDelta', function() {
         it('create double click interaction with default delta', function() {
-          var interactions = ol.MapOptions.createInteractions_(options);
+          var interactions = ol.Map.createInteractions_(options);
           expect(interactions.getLength()).toEqual(1);
           expect(interactions.getAt(0)).toBeA(ol.interaction.DblClickZoom);
           expect(interactions.getAt(0).delta_).toEqual(4);
@@ -111,7 +111,7 @@ describe('ol.MapOptions', function() {
       describe('set mouseWheelZoomDelta', function() {
         it('create double click interaction with set delta', function() {
           options.zoomDelta = 7;
-          var interactions = ol.MapOptions.createInteractions_(options);
+          var interactions = ol.Map.createInteractions_(options);
           expect(interactions.getLength()).toEqual(1);
           expect(interactions.getAt(0)).toBeA(ol.interaction.DblClickZoom);
           expect(interactions.getAt(0).delta_).toEqual(7);

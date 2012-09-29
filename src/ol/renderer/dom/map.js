@@ -8,7 +8,6 @@ goog.require('goog.events.Event');
 goog.require('goog.functions');
 goog.require('goog.style');
 goog.require('ol.Coordinate');
-goog.require('ol.Map');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.dom.TileLayer');

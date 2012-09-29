@@ -5,6 +5,7 @@
 goog.provide('ol.Map');
 goog.provide('ol.MapEventType');
 goog.provide('ol.MapProperty');
+goog.provide('ol.RendererHint');
 
 goog.require('goog.array');
 goog.require('goog.debug.Logger');
@@ -34,10 +35,56 @@ goog.require('ol.MapBrowserEvent');
 goog.require('ol.Object');
 goog.require('ol.Pixel');
 goog.require('ol.Projection');
+goog.require('ol.ResolutionConstraint');
+goog.require('ol.RotationConstraint');
 goog.require('ol.Size');
 goog.require('ol.TransformFunction');
+goog.require('ol.control.Attribution');
+goog.require('ol.control.Zoom');
+goog.require('ol.interaction.AltDragRotate');
+goog.require('ol.interaction.DblClickZoom');
+goog.require('ol.interaction.DragPan');
 goog.require('ol.interaction.Interaction');
+goog.require('ol.interaction.KeyboardPan');
+goog.require('ol.interaction.KeyboardZoom');
+goog.require('ol.interaction.MouseWheelZoom');
+goog.require('ol.interaction.ShiftDragZoom');
 goog.require('ol.renderer.Layer');
+goog.require('ol.renderer.Map');
+goog.require('ol.renderer.dom');
+goog.require('ol.renderer.dom.Map');
+goog.require('ol.renderer.webgl');
+goog.require('ol.renderer.webgl.Map');
+
+
+/**
+ * @define {boolean} Whether to enable DOM.
+ */
+ol.ENABLE_DOM = true;
+
+
+/**
+ * @define {boolean} Whether to enable WebGL.
+ */
+ol.ENABLE_WEBGL = true;
+
+
+/**
+ * @enum {string}
+ */
+ol.RendererHint = {
+  DOM: 'dom',
+  WEBGL: 'webgl'
+};
+
+
+/**
+ * @type {Array.<ol.RendererHint>}
+ */
+ol.DEFAULT_RENDERER_HINTS = [
+  ol.RendererHint.WEBGL,
+  ol.RendererHint.DOM
+];
 
 
 /**
@@ -46,6 +93,16 @@ goog.require('ol.renderer.Layer');
 ol.MapEventType = {
   POSTRENDER: 'postrender'
 };
+
+
+/**
+ * @typedef {{controls: ol.Collection,
+ *            constraints: ol.Constraints,
+ *            rendererConstructor:
+ *                function(new: ol.renderer.Map, Element, ol.Map),
+ *            values: Object.<string, *>}}
+ */
+ol.MapOptionsInternal;
 
 
 /**
@@ -70,9 +127,9 @@ ol.MapProperty = {
  * @extends {ol.Object}
  * @implements {goog.fx.anim.Animated}
  * @param {Element} container Container.
- * @param {ol.MapOptionsLiteral} mapOptionsLiteral Map options literal.
+ * @param {olx.MapOptions} mapOptions Map options.
  */
-ol.Map = function(container, mapOptionsLiteral) {
+ol.Map = function(container, mapOptions) {
 
   goog.base(this);
 
@@ -84,7 +141,7 @@ ol.Map = function(container, mapOptionsLiteral) {
     this.logger = goog.debug.Logger.getLogger('ol.map.' + goog.getUid(this));
   }
 
-  var mapOptions = ol.MapOptions.create(mapOptionsLiteral);
+  var mapOptionsInternal = ol.Map.createOptionsInternal(mapOptions);
 
   /**
    * @type {ol.TransformFunction}
@@ -132,7 +189,7 @@ ol.Map = function(container, mapOptionsLiteral) {
    * @private
    * @type {ol.Constraints}
    */
-  this.constraints_ = mapOptions.constraints;
+  this.constraints_ = mapOptionsInternal.constraints;
 
   /**
    * @private
@@ -184,7 +241,7 @@ ol.Map = function(container, mapOptionsLiteral) {
    * @type {ol.Collection}
    * @private
    */
-  this.controls_ = mapOptions.controls;
+  this.controls_ = mapOptionsInternal.controls;
 
   goog.events.listen(this.controls_, ol.CollectionEventType.ADD,
       this.handleControlsAdd_, false, this);
@@ -195,7 +252,8 @@ ol.Map = function(container, mapOptionsLiteral) {
    * @type {ol.renderer.Map}
    * @private
    */
-  this.renderer_ = new mapOptions.rendererConstructor(this.viewport_, this);
+  this.renderer_ =
+      new mapOptionsInternal.rendererConstructor(this.viewport_, this);
   this.registerDisposable(this.renderer_);
 
   /**
@@ -214,7 +272,7 @@ ol.Map = function(container, mapOptionsLiteral) {
       this, ol.Object.getChangedEventType(ol.MapProperty.USER_PROJECTION),
       this.handleUserProjectionChanged, false, this);
 
-  this.setValues(mapOptions.values);
+  this.setValues(mapOptionsInternal.values);
 
   this.handleBrowserWindowResize();
 
@@ -902,4 +960,230 @@ ol.Map.prototype.zoom = function(delta, opt_anchor) {
 ol.Map.prototype.zoomToResolution = function(resolution, opt_anchor) {
   resolution = this.constraints_.resolution(resolution, 0);
   this.zoom_(resolution, opt_anchor);
+};
+
+
+/**
+ * @param {olx.MapOptions} mapOptions Map options.
+ * @return {ol.MapOptionsInternal} Map options.
+ */
+ol.Map.createOptionsInternal = function(mapOptions) {
+
+  /**
+   * @type {Object.<string, *>}
+   */
+  var values = {};
+
+  if (goog.isDef(mapOptions.center)) {
+    values[ol.MapProperty.CENTER] = mapOptions.center;
+  }
+
+  values[ol.MapProperty.INTERACTIONS] =
+      goog.isDef(mapOptions.interactions) ?
+      mapOptions.interactions :
+      ol.Map.createInteractions_(mapOptions);
+
+  values[ol.MapProperty.LAYERS] = goog.isDef(mapOptions.layers) ?
+      mapOptions.layers : new ol.Collection();
+
+  values[ol.MapProperty.PROJECTION] = ol.Map.createProjection_(
+      mapOptions.projection, 'EPSG:3857');
+
+  if (goog.isDef(mapOptions.resolution)) {
+    values[ol.MapProperty.RESOLUTION] = mapOptions.resolution;
+  } else if (goog.isDef(mapOptions.zoom)) {
+    values[ol.MapProperty.RESOLUTION] =
+        ol.Projection.EPSG_3857_HALF_SIZE / (128 << mapOptions.zoom);
+  }
+
+  values[ol.MapProperty.USER_PROJECTION] = ol.Map.createProjection_(
+      mapOptions.userProjection, 'EPSG:4326');
+
+  /**
+   * @type {function(new: ol.renderer.Map, Element, ol.Map)}
+   */
+  var rendererConstructor = ol.renderer.Map;
+
+  /**
+   * @type {Array.<ol.RendererHint>}
+   */
+  var rendererHints;
+  if (goog.isDef(mapOptions.renderers)) {
+    rendererHints = mapOptions.renderers;
+  } else if (goog.isDef(mapOptions.renderer)) {
+    rendererHints = [mapOptions.renderer];
+  } else {
+    rendererHints = ol.DEFAULT_RENDERER_HINTS;
+  }
+
+  var i, rendererHint;
+  for (i = 0; i < rendererHints.length; ++i) {
+    rendererHint = rendererHints[i];
+    if (rendererHint == ol.RendererHint.DOM) {
+      if (ol.ENABLE_DOM && ol.renderer.dom.isSupported()) {
+        rendererConstructor = ol.renderer.dom.Map;
+        break;
+      }
+    } else if (rendererHint == ol.RendererHint.WEBGL) {
+      if (ol.ENABLE_WEBGL && ol.renderer.webgl.isSupported()) {
+        rendererConstructor = ol.renderer.webgl.Map;
+        break;
+      }
+    }
+  }
+
+  /**
+   * @type {ol.Constraints}
+   */
+  var constraints = ol.Map.createConstraints_(mapOptions);
+
+  /**
+   * @type {ol.Collection}
+   */
+  var controls;
+  if (goog.isDef(mapOptions.controls)) {
+    controls = mapOptions.controls;
+  } else {
+    controls = ol.Map.createControls_(mapOptions);
+  }
+
+  return {
+    constraints: constraints,
+    controls: controls,
+    rendererConstructor: rendererConstructor,
+    values: values
+  };
+
+};
+
+
+/**
+ * @private
+ * @param {olx.MapOptions} mapOptions Map options.
+ * @return {ol.Constraints} Map constraints.
+ */
+ol.Map.createConstraints_ = function(mapOptions) {
+  var resolutionConstraint;
+  if (goog.isDef(mapOptions.resolutions)) {
+    resolutionConstraint = ol.ResolutionConstraint.createSnapToResolutions(
+        mapOptions.resolutions);
+  } else {
+    var maxResolution, numZoomLevels, zoomFactor;
+    if (goog.isDef(mapOptions.maxResolution) &&
+        goog.isDef(mapOptions.numZoomLevels) &&
+        goog.isDef(mapOptions.zoomFactor)) {
+      maxResolution = mapOptions.maxResolution;
+      numZoomLevels = mapOptions.numZoomLevels;
+      zoomFactor = mapOptions.zoomFactor;
+    } else {
+      maxResolution = ol.Projection.EPSG_3857_HALF_SIZE / 128;
+      // number of steps we want between two data resolutions
+      var numSteps = 4;
+      numZoomLevels = 29 * numSteps;
+      zoomFactor = Math.exp(Math.log(2) / numSteps);
+    }
+    resolutionConstraint = ol.ResolutionConstraint.createSnapToPower(
+        zoomFactor, maxResolution, numZoomLevels - 1);
+  }
+  // FIXME rotation constraint is not configurable at the moment
+  var rotationConstraint = ol.RotationConstraint.none;
+  return new ol.Constraints(resolutionConstraint, rotationConstraint);
+};
+
+
+/**
+ * @private
+ * @param {olx.MapOptions} mapOptions Map options.
+ * @return {ol.Collection} Controls.
+ */
+ol.Map.createControls_ = function(mapOptions) {
+
+  var controls = new ol.Collection();
+
+  controls.push(new ol.control.Attribution({}));
+
+  var zoomDelta = goog.isDef(mapOptions.zoomDelta) ?
+      mapOptions.zoomDelta : 4;
+  controls.push(new ol.control.Zoom({
+    delta: zoomDelta
+  }));
+
+  return controls;
+
+};
+
+
+/**
+ * @private
+ * @param {olx.MapOptions} mapOptions Map options.
+ * @return {ol.Collection} Interactions.
+ */
+ol.Map.createInteractions_ = function(mapOptions) {
+
+  var interactions = new ol.Collection();
+
+  var rotate = goog.isDef(mapOptions.rotate) ?
+      mapOptions.rotate : true;
+  if (rotate) {
+    interactions.push(new ol.interaction.AltDragRotate());
+  }
+
+  var doubleClickZoom = goog.isDef(mapOptions.doubleClickZoom) ?
+      mapOptions.doubleClickZoom : true;
+  if (doubleClickZoom) {
+    var zoomDelta = goog.isDef(mapOptions.zoomDelta) ?
+        mapOptions.zoomDelta : 4;
+    interactions.push(new ol.interaction.DblClickZoom(zoomDelta));
+  }
+
+  var dragPan = goog.isDef(mapOptions.dragPan) ?
+      mapOptions.dragPan : true;
+  if (dragPan) {
+    interactions.push(new ol.interaction.DragPan());
+  }
+
+  var keyboard = goog.isDef(mapOptions.keyboard) ?
+      mapOptions.keyboard : true;
+  var keyboardPanOffset = goog.isDef(mapOptions.keyboardPanOffset) ?
+      mapOptions.keyboardPanOffset : 80;
+  if (keyboard) {
+    interactions.push(new ol.interaction.KeyboardPan(keyboardPanOffset));
+    interactions.push(new ol.interaction.KeyboardZoom());
+  }
+
+  var mouseWheelZoom = goog.isDef(mapOptions.mouseWheelZoom) ?
+      mapOptions.mouseWheelZoom : true;
+  if (mouseWheelZoom) {
+    var mouseWheelZoomDelta =
+        goog.isDef(mapOptions.mouseWheelZoomDelta) ?
+            mapOptions.mouseWheelZoomDelta : 1;
+    interactions.push(new ol.interaction.MouseWheelZoom(mouseWheelZoomDelta));
+  }
+
+  var shiftDragZoom = goog.isDef(mapOptions.shiftDragZoom) ?
+      mapOptions.shiftDragZoom : true;
+  if (shiftDragZoom) {
+    interactions.push(new ol.interaction.ShiftDragZoom());
+  }
+
+  return interactions;
+
+};
+
+
+/**
+ * @private
+ * @param {ol.Projection|string|undefined} projection Projection.
+ * @param {string} defaultCode Default code.
+ * @return {ol.Projection} Projection.
+ */
+ol.Map.createProjection_ = function(projection, defaultCode) {
+  if (!goog.isDefAndNotNull(projection)) {
+    return ol.Projection.getFromCode(defaultCode);
+  } else if (goog.isString(projection)) {
+    return ol.Projection.getFromCode(projection);
+  } else {
+    goog.asserts.assert(projection instanceof ol.Projection);
+    return projection;
+  }
 };

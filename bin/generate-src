@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import fileinput
+from operator import attrgetter
 from optparse import OptionParser
 import re
 import sys
@@ -29,7 +30,7 @@ class Type(object):
         return ''.join(lines)
 
     def provide(self):
-        return 'goog.provide(\'%s\');\n' % (self.name,)
+        return 'goog.provide(\'%sType\');\n' % (self.name,)
 
     def typedef(self):
         lines = []
@@ -61,12 +62,7 @@ def main(argv):
                 continue
             m = re.match('@externtype\s*(?P<name>\S+)\Z', line)
             if m:
-                name = m.group('name')
-                if options.externs:
-                    name = re.sub('\Aol\.', 'olx.', name + 'Extern')
-                if options.typedef:
-                    name = name + 'Literal'
-                type = Type(name)
+                type = Type(m.group('name'))
                 types.append(type)
                 continue
             m = re.match('(?P<key>\S+):\s+(?P<value>\S+)', line)
@@ -74,6 +70,7 @@ def main(argv):
                 type.members[m.group('key')] = m.group('value')
                 continue
             raise RuntimeError(line)
+    types = sorted(types, key=attrgetter('name'))
 
     if options.externs:
         sys.stdout.write('/**\n')
@@ -91,7 +88,8 @@ def main(argv):
             sys.stdout.write(type.extern())
 
     if options.typedef:
-        sys.stdout.write(''.join(type.provide() for type in types))
+        for type in types:
+            sys.stdout.write(type.provide())
         for type in types:
             sys.stdout.write('\n\n')
             sys.stdout.write(type.typedef())

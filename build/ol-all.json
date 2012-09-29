@@ -5,7 +5,8 @@
   "inherits": "../base.json",
 
   "inputs": [
-    "build/require-all.js"
+    "build/src/internal/src/requireall.js",
+    "build/src/internal/src/types.js"
   ]
 
 }
