@@ -17,6 +17,7 @@ goog.require('ol.Projection');
 goog.require('ol.TileCoverageArea');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.source.TileSource');
+goog.require('ol.tilegrid.XYZ');
 
 
 /**
