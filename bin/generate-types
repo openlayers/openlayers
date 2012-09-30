@@ -30,7 +30,7 @@ class Type(object):
         return ''.join(lines)
 
     def provide(self):
-        return 'goog.provide(\'%sType\');\n' % (self.name,)
+        return 'goog.provide(\'%s\');\n' % (self.name,)
 
     def typedef(self):
         lines = []
