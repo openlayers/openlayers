@@ -96,17 +96,6 @@ ol.MapEventType = {
 
 
 /**
- * @typedef {{controls: ol.Collection,
- *            constraints: ol.Constraints,
- *            rendererConstructor:
- *                function(new: ol.renderer.Map, Element, ol.Map),
- *            target: Element,
- *            values: Object.<string, *>}}
- */
-ol.MapOptionsInternal;
-
-
-/**
  * @enum {string}
  */
 ol.MapProperty = {
@@ -960,6 +949,17 @@ ol.Map.prototype.zoomToResolution = function(resolution, opt_anchor) {
   resolution = this.constraints_.resolution(resolution, 0);
   this.zoom_(resolution, opt_anchor);
 };
+
+
+/**
+ * @typedef {{controls: ol.Collection,
+ *            constraints: ol.Constraints,
+ *            rendererConstructor:
+ *                function(new: ol.renderer.Map, Element, ol.Map),
+ *            target: Element,
+ *            values: Object.<string, *>}}
+ */
+ol.MapOptionsInternal;
 
 
 /**
