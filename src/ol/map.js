@@ -8,6 +8,7 @@ goog.provide('ol.MapProperty');
 goog.provide('ol.RendererHint');
 
 goog.require('goog.array');
+goog.require('goog.async.AnimationDelay');
 goog.require('goog.debug.Logger');
 goog.require('goog.dispose');
 goog.require('goog.dom');
@@ -158,18 +159,6 @@ ol.Map = function(mapOptions) {
 
   /**
    * @private
-   * @type {number}
-   */
-  this.freezeRenderingCount_ = 0;
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.dirty_ = false;
-
-  /**
-   * @private
    * @type {Element}
    */
   this.target_ = mapOptionsInternal.target;
@@ -246,6 +235,26 @@ ol.Map = function(mapOptions) {
   this.registerDisposable(this.renderer_);
 
   /**
+   * Calls to this.delayedRender_.start take advantage of requestAnimationFrame
+   * (and friends) where available.  The provided listener is called once in
+   * the next available frame after the start method is called.  A call to stop
+   * will cancel the animation.
+   *
+   * @type {goog.async.AnimationDelay}
+   * @private
+   */
+  this.delayedRender_ = new goog.async.AnimationDelay(
+      this.renderFrame_, null, this);
+
+  /**
+   * Flag to indicate whether this.delayedRender_.start has been called.
+   *
+   * @type {boolean}
+   * @private
+   */
+  this.pendingRender_ = false;
+
+  /**
    * @private
    */
   this.viewportSizeMonitor_ = new goog.dom.ViewportSizeMonitor();
@@ -289,15 +298,13 @@ ol.Map.prototype.canRotate = function() {
  * @param {ol.Extent} extent Extent.
  */
 ol.Map.prototype.fitExtent = function(extent) {
-  this.withFrozenRendering(function() {
-    this.setCenter(extent.getCenter());
-    var resolution = this.getResolutionForExtent(extent);
-    resolution = this.constraints_.resolution(resolution, 0);
-    this.setResolution(resolution);
-    if (this.canRotate()) {
-      this.setRotation(0);
-    }
-  }, this);
+  this.setCenter(extent.getCenter());
+  var resolution = this.getResolutionForExtent(extent);
+  resolution = this.constraints_.resolution(resolution, 0);
+  this.setResolution(resolution);
+  if (this.canRotate()) {
+    this.setRotation(0);
+  }
 };
 
 
@@ -306,14 +313,6 @@ ol.Map.prototype.fitExtent = function(extent) {
  */
 ol.Map.prototype.fitUserExtent = function(userExtent) {
   this.fitExtent(userExtent.transform(this.userToMapTransform_));
-};
-
-
-/**
- * Freeze rendering.
- */
-ol.Map.prototype.freezeRendering = function() {
-  ++this.freezeRenderingCount_;
 };
 
 
@@ -689,12 +688,9 @@ ol.Map.prototype.recalculateTransforms_ = function() {
  * Render.
  */
 ol.Map.prototype.render = function() {
-  if (this.animatingCount_ < 1) {
-    if (this.freezeRenderingCount_ === 0) {
-      this.renderFrame_();
-    } else {
-      this.dirty_ = true;
-    }
+  if (this.animatingCount_ < 1 && !this.pendingRender_) {
+    this.delayedRender_.start();
+    this.pendingRender_ = true;
   }
 };
 
@@ -706,8 +702,8 @@ ol.Map.prototype.renderFrame_ = function() {
   if (goog.DEBUG) {
     this.logger.info('renderFrame_');
   }
+  this.pendingRender_ = false;
   var animatedRenderer = this.renderer_.render();
-  this.dirty_ = false;
   if (animatedRenderer != this.animatedRenderer_) {
     if (animatedRenderer) {
       this.startAnimating();
@@ -881,34 +877,6 @@ ol.Map.prototype.stopAnimating = function() {
 
 
 /**
- * Unfreeze rendering.
- */
-ol.Map.prototype.unfreezeRendering = function() {
-  goog.asserts.assert(this.freezeRenderingCount_ > 0);
-  if (--this.freezeRenderingCount_ === 0 &&
-      this.animatingCount_ < 1 &&
-      this.dirty_) {
-    this.renderFrame_();
-  }
-};
-
-
-/**
- * @param {function(this: T)} f Function.
- * @param {T=} opt_obj Object.
- * @template T
- */
-ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
-  this.freezeRendering();
-  try {
-    f.call(opt_obj);
-  } finally {
-    this.unfreezeRendering();
-  }
-};
-
-
-/**
  * @private
  * @param {number|undefined} resolution Resolution to go to.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
@@ -921,10 +889,8 @@ ol.Map.prototype.zoom_ = function(resolution, opt_anchor) {
     var x = anchor.x - resolution * (anchor.x - oldCenter.x) / oldResolution;
     var y = anchor.y - resolution * (anchor.y - oldCenter.y) / oldResolution;
     var center = new ol.Coordinate(x, y);
-    this.withFrozenRendering(function() {
-      this.setCenter(center);
-      this.setResolution(resolution);
-    }, this);
+    this.setCenter(center);
+    this.setResolution(resolution);
   } else {
     this.setResolution(resolution);
   }
