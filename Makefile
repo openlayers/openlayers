@@ -96,6 +96,7 @@ gh-pages:
 doc: build/jsdoc-$(BRANCH)-timestamp
 
 build/jsdoc-$(BRANCH)-timestamp: $(SRC) $(shell find doc/template -type f)
+	mkdir -p build/gh-pages/$(BRANCH)/apidoc
 	$(JSDOC) -t doc/template -r src -d build/gh-pages/$(BRANCH)/apidoc
 	touch $@
 
