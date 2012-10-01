@@ -1,4 +1,4 @@
-OpenLayers.ProxyHost = "/proxy/?url=";
+OpenLayers.ProxyHost = "proxy.cgi/?url=";
 
 var map, format;
 
