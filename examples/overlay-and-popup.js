@@ -44,5 +44,5 @@ map.addEventListener('click', function(evt) {
       'Welcome to ol3. The location you clicked was<br>' +
       ol.CoordinateFormat.hdms(ol.Projection.transformWithCodes(
           coordinate, 'EPSG:3857', 'EPSG:4326'));
-  popup.setCoordinate(evt.getCoordinate());
+  popup.setCoordinate(coordinate);
 });
