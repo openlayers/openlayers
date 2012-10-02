@@ -1,7 +1,5 @@
 goog.provide('ol.renderer.dom.Layer');
 
-goog.require('goog.math');
-
 goog.require('ol.Coordinate');
 goog.require('ol.renderer.Layer');
 
