@@ -35,6 +35,7 @@ var vienna = new ol.overlay.Overlay({
 
 // Popup showing the position the user clicked
 var popup = new ol.overlay.Overlay({
+  map: map,
   element: document.getElementById('popup')
 });
 map.addEventListener('click', function(evt) {
@@ -43,6 +44,5 @@ map.addEventListener('click', function(evt) {
       'Welcome to ol3. The location you clicked was<br>' +
       ol.CoordinateFormat.hdms(ol.Projection.transformWithCodes(
           coordinate, 'EPSG:3857', 'EPSG:4326'));
-  popup.setMap(evt.map);
-  popup.setCoordinate(evt.getCoordinate());
+  popup.setCoordinate(coordinate);
 });
