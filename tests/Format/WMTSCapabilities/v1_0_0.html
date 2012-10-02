@@ -45,7 +45,7 @@
         }
 
         function test_layers(t) {
-            t.plan(37);
+            t.plan(43);
             var xml = document.getElementById("ogcsample").firstChild.nodeValue;
             var doc = new OpenLayers.Format.XML().read(xml);
 
@@ -96,6 +96,16 @@
             t.eq(layer.resourceUrl.FeatureInfo.template, "http://www.example.com/wmts/coastlines/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml",
                  "resourceUrl.FeatureInfo.template is correct");
 
+            t.eq(layer.resourceUrls[0].format, "image/png", "resourceUrls[0].format is correct");
+            t.eq(layer.resourceUrls[0].resourceType, "tile", "resourceUrls[0].resourceType is correct");
+            t.eq(layer.resourceUrls[0].template, "http://www.example.com/wmts/coastlines/{TileMatrix}/{TileRow}/{TileCol}.png",
+                 "resourceUrls[0].template is correct");
+
+            t.eq(layer.resourceUrls[1].format, "application/gml+xml; version=3.1", "resourceUrls[0].format is correct");
+            t.eq(layer.resourceUrls[1].resourceType, "FeatureInfo", "resourceUrls[0].resourceType is correct");
+            t.eq(layer.resourceUrls[1].template, "http://www.example.com/wmts/coastlines/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml",
+                 "resourceUrls[0].template is correct");
+
             var dimensions = layer.dimensions;
             t.eq(dimensions.length, 1, "correct count of dimensions");
             t.eq(dimensions[0].title, "Time", "first dimension title is correct");
@@ -140,7 +150,7 @@
         }
 
         function test_createLayer(t) {
-            t.plan(38);
+            t.plan(41);
 
             var format = new OpenLayers.Format.WMTSCapabilities();
 
@@ -207,7 +217,8 @@
                 matrixSet: "21781"
             });
             t.ok(layer instanceof OpenLayers.Layer.WMTS, "correct instance");
-            t.eq(layer.url, "http://wmts.geo.admin.ch/1.0.0/ch.are.agglomerationen_isolierte_staedte-2000/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png", "correct url");
+            t.eq(layer.url[0], "http://wmts.geo.admin.ch/1.0.0/ch.are.agglomerationen_isolierte_staedte-2000/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png", "correct url");
+            t.eq(layer.url[1], "http://wmts1.geo.admin.ch/1.0.0/ch.are.agglomerationen_isolierte_staedte-2000/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png", "correct url");
             t.eq(layer.matrixIds.length, 3, "correct matrixIds length");
             t.eq(layer.requestEncoding, "REST", "correct requestEncoding");
             t.eq(layer.name, "Agglomérations et villes isolées", "correct layer title");
@@ -272,13 +283,15 @@
                 matrixSet: "21781",
                 requestEncoding: 'REST'
             });
-            t.eq(layer.url, "http://wmts.geo.admin.ch/rest", "correct rest url 1");
+            t.eq(layer.url[0], "http://wmts.geo.admin.ch/rest", "correct rest url 1");
+            t.eq(layer.url[1], "http://wmts1.geo.admin.ch/rest", "correct rest url 1");
             layer = format.createLayer(caps, {
                 layer: "ch.are.agglomerationen_isolierte_staedte-2000",
                 matrixSet: "21781",
                 requestEncoding: 'KVP'
             });
-            t.eq(layer.url, "http://wmts.geo.admin.ch/kvp", "correct kvp url 2");
+            t.eq(layer.url[0], "http://wmts.geo.admin.ch/kvp", "correct kvp url 2");
+            t.eq(layer.url[1], "http://wmts1.geo.admin.ch/kvp", "correct kvp url 2");
             xml = document.getElementById("multi-getile-2").firstChild.nodeValue;
             doc = new OpenLayers.Format.XML().read(xml);
             caps = format.read(doc);
@@ -287,13 +300,13 @@
                 matrixSet: "21781",
                 requestEncoding: 'REST'
             });
-            t.eq(layer.url, "http://wmts.geo.admin.ch/rest", "correct rest url 2");
+            t.eq(layer.url[0], "http://wmts.geo.admin.ch/rest", "correct rest url 2");
             layer = format.createLayer(caps, {
                 layer: "ch.are.agglomerationen_isolierte_staedte-2000",
                 matrixSet: "21781",
                 requestEncoding: 'KVP'
             });
-            t.eq(layer.url, "http://wmts.geo.admin.ch/kvp", "correct kvp url 2");
+            t.eq(layer.url[0], "http://wmts.geo.admin.ch/kvp", "correct kvp url 2");
         }
 
         function test_parse_projection(t) {
@@ -579,6 +592,7 @@ http://schemas.opengis.net/wmts/1.0/examples/wmtsGetCapabilities_response.xml
                 <TileMatrixSet>21781</TileMatrixSet>
             </TileMatrixSetLink>
             <ResourceURL format="image/png" resourceType="tile" template="http://wmts.geo.admin.ch/1.0.0/ch.are.agglomerationen_isolierte_staedte-2000/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+            <ResourceURL format="image/png" resourceType="tile" template="http://wmts1.geo.admin.ch/1.0.0/ch.are.agglomerationen_isolierte_staedte-2000/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
         </Layer>
         <TileMatrixSet>
             <ows:Identifier>21781</ows:Identifier>
@@ -793,7 +807,21 @@ http://schemas.opengis.net/wmts/1.0/examples/wmtsGetCapabilities_response.xml
                             </ows:AllowedValues>
                         </ows:Constraint>
                     </ows:Get>
+                    <ows:Get xlink:href="http://wmts1.geo.admin.ch/rest">
+                        <ows:Constraint name="GetEncoding">
+                            <ows:AllowedValues>
+                                <ows:Value>REST</ows:Value>
+                            </ows:AllowedValues>
+                        </ows:Constraint>
+                    </ows:Get>
                     <ows:Get xlink:href="http://wmts.geo.admin.ch/kvp">
+                        <ows:Constraint name="GetEncoding">
+                            <ows:AllowedValues>
+                                <ows:Value>KVP</ows:Value>
+                            </ows:AllowedValues>
+                        </ows:Constraint>
+                    </ows:Get>
+                    <ows:Get xlink:href="http://wmts1.geo.admin.ch/kvp">
                         <ows:Constraint name="GetEncoding">
                             <ows:AllowedValues>
                                 <ows:Value>KVP</ows:Value>
