@@ -143,7 +143,9 @@ ol.control.Attribution.prototype.createAttributionElementsForLayer_ =
         !layerVisible ||
         goog.isNull(attributionVisibilities) ||
         !attributionVisibilities[attributionKey]) {
-      goog.style.showElement(attributionElement, false);
+      if (goog.style.isElementShown(attributionElement)) {
+        goog.style.showElement(attributionElement, false);
+      }
     }
 
     goog.dom.appendChild(this.ulElement_, attributionElement);
@@ -400,7 +402,10 @@ ol.control.Attribution.prototype.updateLayerAttributionsVisibility_ =
         attributionVisibilities,
         function(attributionVisible, attributionKey) {
           var attributionElement = this.attributionElements_[attributionKey];
-          goog.style.showElement(attributionElement, attributionVisible);
+          if (goog.style.isElementShown(attributionElement) !=
+              attributionVisible) {
+            goog.style.showElement(attributionElement, attributionVisible);
+          }
         },
         this);
   } else {
