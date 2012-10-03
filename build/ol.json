@@ -22,7 +22,8 @@
   "inherits": "../base.json",
 
   "inputs": [
-    "build/src/external/src/exports.js"
+    "build/src/external/src/exports.js",
+    "build/src/external/src/types.js"
   ],
 
   "output-wrapper": "(function(){%output%})();",

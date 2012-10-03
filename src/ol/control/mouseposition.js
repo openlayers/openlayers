@@ -1,7 +1,6 @@
 // FIXME should listen on appropriate pane, once it is defined
 
 goog.provide('ol.control.MousePosition');
-goog.provide('ol.control.MousePositionOptions');
 
 goog.require('goog.events');
 goog.require('goog.events.EventType');
@@ -11,16 +10,6 @@ goog.require('ol.Pixel');
 goog.require('ol.Projection');
 goog.require('ol.TransformFunction');
 goog.require('ol.control.Control');
-
-
-/**
- * @typedef {{coordinateFormat: (ol.CoordinateFormatType|undefined),
- *            map: (ol.Map|undefined),
- *            projection: (ol.Projection|undefined),
- *            target: (Element|undefined),
- *            undefinedHtml: (string|undefined)}}
- */
-ol.control.MousePositionOptions;
 
 
 
