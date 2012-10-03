@@ -25,7 +25,7 @@
 .ol-attribution li:not(:last-child):after {
   content: " ";
 }
-.ol-dragbox {
+.ol-dragbox, .ol-zoombox {
   position: absolute;
   border: 2px solid red;
 }
