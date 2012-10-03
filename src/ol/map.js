@@ -605,7 +605,7 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
   var interactionsArray = /** @type {Array.<ol.interaction.Interaction>} */
       interactions.getArray();
   if (this.dispatchEvent(mapBrowserEvent) !== false) {
-    goog.array.every(interactionsArray, function(interaction) {
+    goog.array.every(interactionsArray.reverse(), function(interaction) {
       interaction.handleMapBrowserEvent(mapBrowserEvent);
       return !mapBrowserEvent.defaultPrevented;
     });
