@@ -184,10 +184,6 @@ ol.Map = function(mapOptions) {
    * @type {Element}
    */
   this.viewport_ = goog.dom.createDom(goog.dom.TagName.DIV, 'ol-viewport');
-  this.viewport_.style.position = 'relative';
-  this.viewport_.style.overflow = 'hidden';
-  this.viewport_.style.width = '100%';
-  this.viewport_.style.height = '100%';
   goog.dom.appendChild(this.target_, this.viewport_);
 
   /**

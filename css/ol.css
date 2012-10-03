@@ -33,6 +33,12 @@
   width: 100%;
   height: 100%;
 }
+.ol-viewport {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
 .ol-viewport .ol-unselectable {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
