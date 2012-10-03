@@ -605,10 +605,13 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
   var interactionsArray = /** @type {Array.<ol.interaction.Interaction>} */
       interactions.getArray();
   if (this.dispatchEvent(mapBrowserEvent) !== false) {
-    goog.array.every(interactionsArray, function(interaction) {
+    for (var i = interactionsArray.length - 1; i >= 0; i--) {
+      var interaction = interactionsArray[i];
       interaction.handleMapBrowserEvent(mapBrowserEvent);
-      return !mapBrowserEvent.defaultPrevented;
-    });
+      if (mapBrowserEvent.defaultPrevented) {
+        break;
+      }
+    }
   }
 };
 
