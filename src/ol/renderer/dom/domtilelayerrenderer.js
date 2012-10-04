@@ -108,7 +108,7 @@ ol.renderer.dom.TileLayer.prototype.handleTileChange_ = function(event) {
 /**
  * @inheritDoc
  */
-ol.renderer.dom.TileLayer.prototype.render = function() {
+ol.renderer.dom.TileLayer.prototype.renderFrame = function(time) {
 
   var map = this.getMap();
   if (!map.isDef()) {

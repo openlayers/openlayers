@@ -601,7 +601,7 @@ ol.renderer.webgl.Map.prototype.removeLayerRenderer = function(layer) {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.render = function() {
+ol.renderer.webgl.Map.prototype.renderFrame = function(time) {
 
   if (!this.getMap().isDef()) {
     return;
@@ -610,7 +610,7 @@ ol.renderer.webgl.Map.prototype.render = function() {
   var requestRenderFrame = false;
 
   this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
-    if (layerRenderer.render()) {
+    if (layerRenderer.renderFrame(time)) {
       requestRenderFrame = true;
     }
   });
@@ -624,7 +624,7 @@ ol.renderer.webgl.Map.prototype.render = function() {
 
   var animate = false;
   this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
-    if (layerRenderer.render()) {
+    if (layerRenderer.renderFrame(time)) {
       animate = true;
     }
   });

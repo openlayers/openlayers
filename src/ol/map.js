@@ -690,7 +690,7 @@ ol.Map.prototype.render = function() {
 
 
 /**
- * Request that render be called some time in the future.
+ * Request that renderFrame_ be called some time in the future.
  */
 ol.Map.prototype.requestRenderFrame = function() {
   if (this.freezeRenderingCount_ === 0) {
@@ -714,7 +714,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
   if (goog.DEBUG) {
     this.logger.info('renderFrame_');
   }
-  this.renderer_.render();
+  this.renderer_.renderFrame(time);
   this.dirty_ = false;
   if (goog.DEBUG) {
     this.logger.info('postrender');

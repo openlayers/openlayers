@@ -184,8 +184,9 @@ ol.renderer.dom.Map.prototype.handleSizeChanged = function() {
 /**
  * Render the map.  Sets up the layers pane on first render and adjusts its
  * position as needed on subsequent calls.
+ * @inheritDoc
  */
-ol.renderer.dom.Map.prototype.render = function() {
+ol.renderer.dom.Map.prototype.renderFrame = function(time) {
   var map = this.getMap();
   if (!map.isDef()) {
     return;
@@ -228,7 +229,7 @@ ol.renderer.dom.Map.prototype.render = function() {
 
   var animate = false;
   this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
-    if (layerRenderer.render()) {
+    if (layerRenderer.renderFrame(time)) {
       animate = true;
     }
   });

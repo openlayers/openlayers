@@ -285,7 +285,7 @@ ol.renderer.webgl.TileLayer.prototype.handleWebGLContextLost = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.TileLayer.prototype.render = function() {
+ol.renderer.webgl.TileLayer.prototype.renderFrame = function(time) {
 
   var requestRenderFrame = false;
 
