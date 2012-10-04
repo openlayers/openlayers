@@ -115,7 +115,7 @@ ol.MapProperty = {
  * @constructor
  * @extends {ol.Object}
  * @implements {goog.fx.anim.Animated}
- * @param {olx.MapOptions} mapOptions Map options.
+ * @param {ol.MapOptions} mapOptions Map options.
  */
 ol.Map = function(mapOptions) {
 
@@ -956,7 +956,7 @@ ol.MapOptionsInternal;
 
 
 /**
- * @param {olx.MapOptions} mapOptions Map options.
+ * @param {ol.MapOptions} mapOptions Map options.
  * @return {ol.MapOptionsInternal} Map options.
  */
 ol.Map.createOptionsInternal = function(mapOptions) {
@@ -1063,7 +1063,7 @@ ol.Map.createOptionsInternal = function(mapOptions) {
 
 /**
  * @private
- * @param {olx.MapOptions} mapOptions Map options.
+ * @param {ol.MapOptions} mapOptions Map options.
  * @return {ol.Constraints} Map constraints.
  */
 ol.Map.createConstraints_ = function(mapOptions) {
@@ -1097,7 +1097,7 @@ ol.Map.createConstraints_ = function(mapOptions) {
 
 /**
  * @private
- * @param {olx.MapOptions} mapOptions Map options.
+ * @param {ol.MapOptions} mapOptions Map options.
  * @return {ol.Collection} Controls.
  */
 ol.Map.createControls_ = function(mapOptions) {
@@ -1119,7 +1119,7 @@ ol.Map.createControls_ = function(mapOptions) {
 
 /**
  * @private
- * @param {olx.MapOptions} mapOptions Map options.
+ * @param {ol.MapOptions} mapOptions Map options.
  * @return {ol.Collection} Interactions.
  */
 ol.Map.createInteractions_ = function(mapOptions) {
