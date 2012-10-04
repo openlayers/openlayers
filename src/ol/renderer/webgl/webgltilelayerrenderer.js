@@ -1,5 +1,7 @@
 // FIXME large resolutions lead to too large framebuffers :-(
 // FIXME animated shaders! check in redraw
+// FIXME throttle texture uploads
+// FIXME prioritize texture uploads
 
 goog.provide('ol.renderer.webgl.TileLayer');
 goog.provide('ol.renderer.webgl.tilelayerrenderer');
