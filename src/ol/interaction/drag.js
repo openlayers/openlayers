@@ -9,6 +9,14 @@ goog.require('ol.MapBrowserEvent');
 goog.require('ol.interaction.Interaction');
 
 
+/**
+ * @typedef {{capture: boolean,
+ *            box: (boolean|undefined),
+ *            boxClass: (string|undefined)}}
+ */
+ol.DragCaptureResponse;
+
+
 
 /**
  * @constructor
@@ -17,6 +25,12 @@ goog.require('ol.interaction.Interaction');
 ol.interaction.Drag = function() {
 
   goog.base(this);
+
+  /**
+   * @private
+   * @type {Element}
+   */
+  this.box_ = null;
 
   /**
    * @private
@@ -75,9 +89,11 @@ ol.interaction.Drag.prototype.handleDragEnd = goog.nullFunction;
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
  * @protected
- * @return {boolean} Capture dragging.
+ * @return {ol.DragCaptureResponse} Capture dragging response.
  */
-ol.interaction.Drag.prototype.handleDragStart = goog.functions.FALSE;
+ol.interaction.Drag.prototype.handleDragStart = function(mapBrowserEvent) {
+  return {capture: false};
+};
 
 
 /**
@@ -95,12 +111,23 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
       goog.asserts.assert(browserEvent instanceof goog.events.BrowserEvent);
       this.deltaX = browserEvent.clientX - this.startX;
       this.deltaY = browserEvent.clientY - this.startY;
+      if (this.box_) {
+        goog.style.setPosition(this.box_,
+            Math.min(browserEvent.clientX, this.startX),
+            Math.min(browserEvent.clientY, this.startY));
+        goog.style.setBorderBoxSize(this.box_,
+            new ol.Size(Math.abs(this.deltaX), Math.abs(this.deltaY)));
+      }
       this.handleDrag(mapBrowserEvent);
     } else if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DRAGEND) {
       goog.asserts.assert(browserEvent instanceof goog.events.BrowserEvent);
       this.deltaX = browserEvent.clientX - this.startX;
       this.deltaY = browserEvent.clientY - this.startY;
       this.handleDragEnd(mapBrowserEvent);
+      if (this.box_) {
+        goog.dom.removeNode(this.box_);
+        this.box_ = null;
+      }
       this.dragging_ = false;
     }
   } else if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DRAGSTART) {
@@ -113,9 +140,15 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
     this.startCoordinate = /** @type {ol.Coordinate} */
         mapBrowserEvent.getCoordinate();
     var handled = this.handleDragStart(mapBrowserEvent);
-    if (handled) {
+    if (handled.capture) {
       this.dragging_ = true;
       mapBrowserEvent.preventDefault();
+      if (handled.box) {
+        this.box_ = goog.dom.createDom(goog.dom.TagName.DIV, handled.boxClass);
+        goog.style.setPosition(this.box_, this.startX, this.startY);
+        goog.style.setBorderBoxSize(this.box_, new ol.Size(0, 0));
+        goog.dom.appendChild(map.getOverlayContainer(), this.box_);
+      }
     }
   }
 };
