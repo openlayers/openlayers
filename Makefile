@@ -4,8 +4,13 @@ PHANTOMJS = phantomjs
 PLOVR_JAR = bin/plovr-b254c26318c5.jar
 SPEC = $(shell find test/spec -name \*.js)
 SRC = $(shell find externs src/ol -name \*.js)
-INTERNAL_SRC = build/src/internal/src/requireall.js build/src/internal/src/types.js
-EXTERNAL_SRC = build/src/external/externs/types.js build/src/external/src/exports.js
+INTERNAL_SRC = \
+	build/src/internal/src/requireall.js \
+	build/src/internal/src/types.js
+EXTERNAL_SRC = \
+	build/src/external/externs/types.js \
+	build/src/external/src/exports.js \
+	build/src/external/src/types.js
 EXAMPLES = $(shell find examples -maxdepth 1 -name \*.html)
 comma := ,
 empty :=
@@ -34,21 +39,25 @@ build-all: build/ol-all.js
 build/ol-all.js: $(PLOVR_JAR) $(SRC) $(INTERNAL_SRC) base.json build/ol-all.json
 	java -jar $(PLOVR_JAR) build build/ol-all.json >$@ || ( rm -f $@ ; false )
 
-build/src/external/externs/types.js: bin/generate-types src/ol/types.txt
+build/src/external/externs/types.js: bin/generate-exports src/ol/exports.txt
 	mkdir -p $(dir $@)
-	bin/generate-types --externs src/ol/types.txt >$@
+	bin/generate-exports --externs src/ol/exports.txt >$@ || ( rm -f $@ ; false )
 
 build/src/external/src/exports.js: bin/generate-exports src/ol/exports.txt
 	mkdir -p $(dir $@)
-	bin/generate-exports src/ol/exports.txt >$@
+	bin/generate-exports --exports src/ol/exports.txt >$@ || ( rm -f $@ ; false )
+
+build/src/external/src/types.js: bin/generate-exports src/ol/exports.txt
+	mkdir -p $(dir $@)
+	bin/generate-exports --typedef src/ol/exports.txt >$@ || ( rm -f $@ ; false )
 
 build/src/internal/src/requireall.js: bin/generate-requireall $(SRC)
 	mkdir -p $(dir $@)
-	bin/generate-requireall --require=goog.dom src/ol >$@
+	bin/generate-requireall --require=goog.dom src/ol >$@ || ( rm -f $@ ; false )
 
-build/src/internal/src/types.js: bin/generate-types src/ol/types.txt
+build/src/internal/src/types.js: bin/generate-exports src/ol/exports.txt
 	mkdir -p $(dir $@)
-	bin/generate-types --typedef src/ol/types.txt >$@
+	bin/generate-exports --typedef src/ol/exports.txt >$@ || ( rm -f $@ ; false )
 
 .PHONY: build-examples
 build-examples: examples $(subst .html,.combined.js,$(EXAMPLES))
@@ -70,7 +79,7 @@ serve: $(PLOVR_JAR) $(INTERNAL_SRC) examples
 
 .PHONY: serve-precommit
 serve-precommit: $(PLOVR_JAR) $(INTERNAL_SRC)
-	java -jar $(PLOVR_JAR) serve build/ol.json
+	java -jar $(PLOVR_JAR) serve build/ol-all.json
 
 .PHONY: lint
 lint: build/lint-src-timestamp build/lint-spec-timestamp

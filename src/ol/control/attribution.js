@@ -4,7 +4,6 @@
 // FIXME check clean-up code
 
 goog.provide('ol.control.Attribution');
-goog.provide('ol.control.AttributionOptions');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -17,13 +16,6 @@ goog.require('ol.CoverageArea');
 goog.require('ol.TileCoverageArea');
 goog.require('ol.control.Control');
 goog.require('ol.layer.Layer');
-
-
-/**
- * @typedef {{map: (ol.Map|undefined),
- *            target: (Element|undefined)}}
- */
-ol.control.AttributionOptions;
 
 
 

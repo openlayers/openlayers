@@ -1,5 +1,4 @@
 goog.provide('ol.control.Zoom');
-goog.provide('ol.control.ZoomOptions');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -8,14 +7,6 @@ goog.require('goog.events.EventType');
 goog.require('ol.BrowserFeature');
 goog.require('ol.Projection');
 goog.require('ol.control.Control');
-
-
-/**
- * @typedef {{delta: (number|undefined),
- *            map: (ol.Map|undefined),
- *            target: (Element|undefined)}}
- */
-ol.control.ZoomOptions;
 
 
 

@@ -25,7 +25,7 @@ ol.layer.LayerProperty = {
 /**
  * @constructor
  * @extends {ol.Object}
- * @param {olx.layer.LayerOptions} layerOptions LayerOptions.
+ * @param {ol.layer.LayerOptions} layerOptions LayerOptions.
  */
 ol.layer.Layer = function(layerOptions) {
 
