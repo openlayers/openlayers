@@ -604,8 +604,16 @@ ol.renderer.webgl.Map.prototype.removeLayerRenderer = function(layer) {
 ol.renderer.webgl.Map.prototype.render = function() {
 
   if (!this.getMap().isDef()) {
-    return false;
+    return;
   }
+
+  var requestRenderFrame = false;
+
+  this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
+    if (layerRenderer.render()) {
+      requestRenderFrame = true;
+    }
+  });
 
   var size = /** @type {ol.Size} */ this.getMap().getSize();
   if (!this.canvasSize_.equals(size)) {
@@ -684,7 +692,9 @@ ol.renderer.webgl.Map.prototype.render = function() {
     gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
   }, this);
 
-  return animate;
+  if (requestRenderFrame) {
+    this.getMap().requestRenderFrame();
+  }
 
 };
 
