@@ -481,12 +481,16 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
           ol.MapEventType.POSTRENDER,
           goog.partial(function(mapRenderer, imagesToLoad) {
             if (goog.DEBUG) {
-              this.logger.info('uploading textures');
+              this.logger.info(
+                  'uploading ' + imagesToLoad.length + ' textures');
             }
             goog.array.forEach(imagesToLoad, function(image) {
               mapRenderer.bindImageTexture(
                   image, goog.webgl.LINEAR, goog.webgl.LINEAR);
             });
+            if (goog.DEBUG) {
+              this.logger.info('uploaded textures');
+            }
           }, mapRenderer, imagesToLoad));
       animate = true;
     }
