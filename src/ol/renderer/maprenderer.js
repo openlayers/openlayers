@@ -309,7 +309,7 @@ ol.renderer.Map.prototype.removeLayerRenderer = function(layer) {
 
 
 /**
- * @return {boolean} Animating.
+ * Render.
  */
 ol.renderer.Map.prototype.render = goog.functions.FALSE;
 

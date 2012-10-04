@@ -8,6 +8,7 @@ goog.provide('ol.MapProperty');
 goog.provide('ol.RendererHint');
 
 goog.require('goog.array');
+goog.require('goog.async.AnimationDelay');
 goog.require('goog.debug.Logger');
 goog.require('goog.dispose');
 goog.require('goog.dom');
@@ -22,8 +23,6 @@ goog.require('goog.events.MouseWheelEvent');
 goog.require('goog.events.MouseWheelHandler');
 goog.require('goog.events.MouseWheelHandler.EventType');
 goog.require('goog.functions');
-goog.require('goog.fx.anim');
-goog.require('goog.fx.anim.Animated');
 goog.require('goog.object');
 goog.require('ol.BrowserFeature');
 goog.require('ol.Collection');
@@ -115,7 +114,6 @@ ol.MapProperty = {
 /**
  * @constructor
  * @extends {ol.Object}
- * @implements {goog.fx.anim.Animated}
  * @param {ol.MapOptions} mapOptions Map options.
  */
 ol.Map = function(mapOptions) {
@@ -146,15 +144,11 @@ ol.Map = function(mapOptions) {
 
   /**
    * @private
-   * @type {boolean}
+   * @type {goog.async.AnimationDelay}
    */
-  this.animatedRenderer_ = false;
-
-  /**
-   * @private
-   * @type {number}
-   */
-  this.animatingCount_ = 0;
+  this.animationDelay_ =
+      new goog.async.AnimationDelay(this.renderFrame_, undefined, this);
+  this.registerDisposable(this.animationDelay_);
 
   /**
    * @private
@@ -653,31 +647,12 @@ ol.Map.prototype.handleBrowserWindowResize = function() {
 
 
 /**
- * @return {boolean} Is animating.
- */
-ol.Map.prototype.isAnimating = function() {
-  return this.animatingCount_ > 0;
-};
-
-
-/**
  * @return {boolean} Is defined.
  */
 ol.Map.prototype.isDef = function() {
   return goog.isDefAndNotNull(this.getCenter()) &&
       goog.isDef(this.getResolution()) &&
       goog.isDefAndNotNull(this.getSize());
-};
-
-
-/**
- * @inheritDoc
- */
-ol.Map.prototype.onAnimationFrame = function() {
-  if (goog.DEBUG) {
-    this.logger.info('onAnimationFrame');
-  }
-  this.renderFrame_();
 };
 
 
@@ -704,33 +679,43 @@ ol.Map.prototype.recalculateTransforms_ = function() {
  * Render.
  */
 ol.Map.prototype.render = function() {
-  if (this.animatingCount_ < 1) {
-    if (this.freezeRenderingCount_ === 0) {
-      this.renderFrame_();
-    } else {
-      this.dirty_ = true;
-    }
+  if (this.animationDelay_.isActive()) {
+    // pass
+  } else if (this.freezeRenderingCount_ === 0) {
+    this.animationDelay_.fire();
+  } else {
+    this.dirty_ = true;
   }
 };
 
 
 /**
+ * Request that render be called some time in the future.
+ */
+ol.Map.prototype.requestRenderFrame = function() {
+  if (this.freezeRenderingCount_ === 0) {
+    if (!this.animationDelay_.isActive()) {
+      this.animationDelay_.start();
+    }
+  } else {
+    this.dirty_ = true;
+  }
+};
+
+
+/**
+ * @param {number} time Time.
  * @private
  */
-ol.Map.prototype.renderFrame_ = function() {
+ol.Map.prototype.renderFrame_ = function(time) {
+  if (this.freezeRenderingCount_ != 0) {
+    return;
+  }
   if (goog.DEBUG) {
     this.logger.info('renderFrame_');
   }
-  var animatedRenderer = this.renderer_.render();
+  this.renderer_.render();
   this.dirty_ = false;
-  if (animatedRenderer != this.animatedRenderer_) {
-    if (animatedRenderer) {
-      this.startAnimating();
-    } else {
-      this.stopAnimating();
-    }
-    this.animatedRenderer_ = animatedRenderer;
-  }
   if (goog.DEBUG) {
     this.logger.info('postrender');
   }
@@ -853,41 +838,12 @@ goog.exportProperty(
 
 
 /**
- * Start animating.
- */
-ol.Map.prototype.startAnimating = function() {
-  if (++this.animatingCount_ == 1) {
-    if (goog.DEBUG) {
-      this.logger.info('startAnimating');
-    }
-    goog.fx.anim.registerAnimation(this);
-  }
-};
-
-
-/**
- * Stop animating.
- */
-ol.Map.prototype.stopAnimating = function() {
-  goog.asserts.assert(this.animatingCount_ > 0);
-  if (--this.animatingCount_ === 0) {
-    if (goog.DEBUG) {
-      this.logger.info('stopAnimating');
-    }
-    goog.fx.anim.unregisterAnimation(this);
-  }
-};
-
-
-/**
  * Unfreeze rendering.
  */
 ol.Map.prototype.unfreezeRendering = function() {
   goog.asserts.assert(this.freezeRenderingCount_ > 0);
-  if (--this.freezeRenderingCount_ === 0 &&
-      this.animatingCount_ < 1 &&
-      this.dirty_) {
-    this.renderFrame_();
+  if (--this.freezeRenderingCount_ === 0 && this.dirty_) {
+    this.animationDelay_.fire();
   }
 };
 

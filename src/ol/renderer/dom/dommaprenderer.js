@@ -184,13 +184,11 @@ ol.renderer.dom.Map.prototype.handleSizeChanged = function() {
 /**
  * Render the map.  Sets up the layers pane on first render and adjusts its
  * position as needed on subsequent calls.
- *
- * @return {boolean} Animating.
  */
 ol.renderer.dom.Map.prototype.render = function() {
   var map = this.getMap();
   if (!map.isDef()) {
-    return false;
+    return;
   }
 
   var mapCenter = map.getCenter();
