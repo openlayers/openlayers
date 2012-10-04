@@ -29,7 +29,18 @@
   position: absolute;
   border: 2px solid red;
 }
+.ol-layers-pane {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
 .ol-renderer-webgl-canvas {
+  width: 100%;
+  height: 100%;
+}
+.ol-viewport {
+  overflow: hidden;
+  position: relative;
   width: 100%;
   height: 100%;
 }
