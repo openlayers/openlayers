@@ -40,6 +40,7 @@ ol.interaction.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
   }
   var newCenter = new ol.Coordinate(
       this.startCenter.x + delta.x, this.startCenter.y + delta.y);
+  map.requestRenderFrame();
   map.setCenter(newCenter);
 };
 
@@ -50,6 +51,7 @@ ol.interaction.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
 ol.interaction.DragPan.prototype.handleDragStart = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   if (this.condition_(browserEvent)) {
+    mapBrowserEvent.map.requestRenderFrame();
     return true;
   } else {
     return false;
