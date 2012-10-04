@@ -141,12 +141,14 @@ ol.renderer.Map.prototype.disposeInternal = function() {
  */
 ol.renderer.Map.prototype.forEachReadyVisibleLayer = function(f, opt_obj) {
   var layers = this.map.getLayers();
-  layers.forEach(function(layer, index) {
-    if (layer.isReady() && layer.getVisible()) {
-      var layerRenderer = this.getLayerRenderer(layer);
-      f.call(opt_obj, layer, layerRenderer, index);
-    }
-  }, this);
+  if (goog.isDef(layers)) {
+    layers.forEach(function(layer, index) {
+      if (layer.isReady() && layer.getVisible()) {
+        var layerRenderer = this.getLayerRenderer(layer);
+        f.call(opt_obj, layer, layerRenderer, index);
+      }
+    }, this);
+  }
 };
 
 
