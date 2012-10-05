@@ -2,8 +2,10 @@
 <head>
   <script src="../OLLoader.js"></script>
   <script type="text/javascript">
-    // turn off animation frame handling, so we can check img urls in tests
+    // turn off tile queue, so we can check img urls in tests
     delete OpenLayers.Layer.Grid.prototype.queueTileDraw;
+    // turn off animation, so we don't need to test asynchronously
+    OpenLayers.Animation.requestFrame = function(fn) { fn(); };
 
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var tile; 
