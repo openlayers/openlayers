@@ -55,7 +55,7 @@ ol.source.BingMaps = function(bingMapsOptions) {
   this.ready_ = false;
 
   var uri = new goog.Uri(
-      'http://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
+      '//dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
       bingMapsOptions.style);
   var jsonp = new goog.net.Jsonp(uri, 'jsonp');
   jsonp.send({

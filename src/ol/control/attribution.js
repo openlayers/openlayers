@@ -4,7 +4,6 @@
 // FIXME check clean-up code
 
 goog.provide('ol.control.Attribution');
-goog.provide('ol.control.AttributionOptions');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -17,13 +16,6 @@ goog.require('ol.CoverageArea');
 goog.require('ol.TileCoverageArea');
 goog.require('ol.control.Control');
 goog.require('ol.layer.Layer');
-
-
-/**
- * @typedef {{map: (ol.Map|undefined),
- *            target: (Element|undefined)}}
- */
-ol.control.AttributionOptions;
 
 
 
@@ -143,7 +135,9 @@ ol.control.Attribution.prototype.createAttributionElementsForLayer_ =
         !layerVisible ||
         goog.isNull(attributionVisibilities) ||
         !attributionVisibilities[attributionKey]) {
-      goog.style.showElement(attributionElement, false);
+      if (goog.style.isElementShown(attributionElement)) {
+        goog.style.showElement(attributionElement, false);
+      }
     }
 
     goog.dom.appendChild(this.ulElement_, attributionElement);
@@ -400,7 +394,10 @@ ol.control.Attribution.prototype.updateLayerAttributionsVisibility_ =
         attributionVisibilities,
         function(attributionVisible, attributionKey) {
           var attributionElement = this.attributionElements_[attributionKey];
-          goog.style.showElement(attributionElement, attributionVisible);
+          if (goog.style.isElementShown(attributionElement) !=
+              attributionVisible) {
+            goog.style.showElement(attributionElement, attributionVisible);
+          }
         },
         this);
   } else {

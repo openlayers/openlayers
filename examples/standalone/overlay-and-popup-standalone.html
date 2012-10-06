@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-    <link rel="stylesheet" href="style.css" type="text/css">
+    <link rel="stylesheet" href="../style.css" type="text/css">
     <style type="text/css">
       html, body, #map {
         margin: 0;
@@ -66,8 +66,9 @@
         margin-left: -13px;
       }
     </style>
-    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="../../css/ol.css" type="text/css">
     <title>ol3 overlay-and-popup demo</title>
+    <script src="../../build/ol.js" type="text/javascript"></script>
   </head>
   <body>
     <div id="map">
@@ -76,6 +77,40 @@
       <!-- Popup -->
       <div class="overlay arrow_box" id="popup"></div>
     </div>
-    <script src="loader.js?id=overlay-and-popup" type="text/javascript"></script>
+    <script type="text/javascript">
+
+      var layer = new ol.layer.TileLayer({
+        source: new ol.source.MapQuestOpenAerial()
+      });
+      var map = new ol.Map({
+        center: new ol.Coordinate(0, 0),
+        layers: new ol.Collection([layer]),
+        target: 'map',
+        zoom: 2
+      });
+
+      // Vienna label
+      var vienna = new ol.overlay.Overlay({
+        map: map,
+        coordinate: ol.Projection.transformWithCodes(
+            new ol.Coordinate(16.3725, 48.208889), 'EPSG:4326', 'EPSG:3857'),
+        element: document.getElementById('vienna')
+      });
+
+      // Popup showing the position the user clicked
+      var popup = new ol.overlay.Overlay({
+        element: document.getElementById('popup')
+      });
+      map.addEventListener('click', function(evt) {
+        var coordinate = evt.getCoordinate();
+        popup.getElement().innerHTML =
+            'Welcome to ol3. The location you clicked was<br>' +
+            ol.CoordinateFormat.hdms(ol.Projection.transformWithCodes(
+                coordinate, 'EPSG:3857', 'EPSG:4326'));
+        popup.setMap(evt.map);
+        popup.setCoordinate(evt.getCoordinate());
+      });
+
+    </script>
   </body>
 </html>

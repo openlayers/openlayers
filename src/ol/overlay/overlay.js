@@ -1,18 +1,8 @@
 goog.provide('ol.overlay.Overlay');
-goog.provide('ol.overlay.OverlayOptions');
 goog.provide('ol.overlay.OverlayPositioning');
 
 goog.require('goog.events');
 goog.require('goog.style');
-
-
-/**
- * @typedef {{coordinate: (ol.Coordinate|undefined),
- *            element: (Element|undefined),
- *            map: (ol.Map|undefined),
- *            positioning: (Array.<string>|undefined)}}
- */
-ol.overlay.OverlayOptions;
 
 
 

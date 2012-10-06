@@ -1,0 +1,157 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="../../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="../style.css" type="text/css">
+    <style type="text/css">
+      .map {
+        width: 400px;
+        height: 400px;
+        border: thin solid #cccccc;
+        margin: 1em;
+      }
+    </style>
+    <title>ol3 side-by-side demo</title>
+    <script src="../../build/ol.js" type="text/javascript"></script>
+  </head>
+  <body>
+    <h1>ol3 side-by-side demo</h1>
+    <table>
+      <tr>
+        <th>DOM</th>
+        <th>WebGL</th>
+      </tr>
+      <tr>
+        <td><div id="domMap" class="map"></div></td>
+        <td><div id="webglMap" class="map"></div></td>
+      </tr>
+      <tr>
+        <td><div id="domMousePosition" class="mouseposition"></div></td>
+        <td><div id="webglMousePosition" class="mouseposition"></div></td>
+      </tr>
+    </table>
+    <table>
+      <tr>
+        <td>Pan:</td>
+        <td>drag, arrow keys</td>
+      </tr>
+      <tr>
+        <td>Zoom:</td>
+        <td>double-click, <code>Shift</code>+double-click, mouse wheel, <code>+</code>/<code>-</code> keys; <code>Shift</code>+drag</td>
+      </tr>
+      <tr>
+        <td>Rotate:</td>
+        <td><code>Alt</code>+drag, <code>r</code> to reset</td>
+      </tr>
+      <tr>
+        <td>Brightness/contrast:</td>
+        <td><code>b</code>/<code>B</code>/<code>c</code>/<code>C</code> keys (WebGL only)</td>
+      </tr>
+      <tr>
+        <td>Hue/saturation:</td>
+        <td><code>h</code>/<code>H</code>/<code>s</code>/<code>S</code> keys (WebGL only)</td>
+      </tr>
+      <tr>
+        <td>Opacity:</td>
+        <td><code>o</code>/<code>O</code> keys</td>
+      </tr>
+      <tr>
+        <td>Visibility:</td>
+        <td><code>v</code>/<code>V</code> keys</td>
+      </tr>
+      <tr>
+        <td>Reset</td>
+        <td><code>0</code> key</td>
+      </tr>
+    </table>
+    <p><b>Notes:</b> The two maps share the same center, resolution, rotation and layers.</p>
+    <script type="text/javascript">
+
+        var layer = new ol.layer.TileLayer({
+          source: new ol.source.MapQuestOpenAerial()
+        });
+
+        var domMap = new ol.Map({
+          center: new ol.Coordinate(0, 0),
+          layers: new ol.Collection([layer]),
+          renderer: ol.RendererHint.DOM,
+          target: 'domMap',
+          zoom: 1
+        });
+
+        domMap.getControls().push(new ol.control.MousePosition({
+          coordinateFormat: ol.CoordinateFormat.hdms,
+          projection: ol.Projection.getFromCode('EPSG:4326'),
+          target: document.getElementById('domMousePosition'),
+          undefinedHtml: '&nbsp;'
+        }));
+
+        var webglMap = new ol.Map({
+          renderer: ol.RendererHint.WEBGL,
+          target: 'webglMap'
+        });
+        if (webglMap) {
+          webglMap.bindTo('center', domMap);
+          webglMap.bindTo('layers', domMap);
+          webglMap.bindTo('resolution', domMap);
+          webglMap.bindTo('rotation', domMap);
+        }
+
+        webglMap.getControls().push(new ol.control.MousePosition({
+          coordinateFormat: ol.CoordinateFormat.hdms,
+          projection: ol.Projection.getFromCode('EPSG:4326'),
+          target: document.getElementById('webglMousePosition'),
+          undefinedHtml: '&nbsp;'
+        }));
+
+        var keyboardInteraction = new ol.interaction.Keyboard();
+        keyboardInteraction.addCallback('0', function() {
+          layer.setBrightness(0);
+          layer.setContrast(0);
+          layer.setHue(0);
+          layer.setSaturation(0);
+          layer.setOpacity(1);
+          layer.setVisible(true);
+        });
+        keyboardInteraction.addCallback('b', function() {
+          layer.setBrightness(layer.getBrightness() - 0.1);
+        });
+        keyboardInteraction.addCallback('B', function() {
+          layer.setBrightness(layer.getBrightness() + 0.1);
+        });
+        keyboardInteraction.addCallback('c', function() {
+          layer.setContrast(layer.getContrast() - 0.1);
+        });
+        keyboardInteraction.addCallback('C', function() {
+          layer.setContrast(layer.getContrast() + 0.1);
+        });
+        keyboardInteraction.addCallback('h', function() {
+          layer.setHue(layer.getHue() - 0.1);
+        });
+        keyboardInteraction.addCallback('H', function() {
+          layer.setHue(layer.getHue() + 0.1);
+        });
+        keyboardInteraction.addCallback('o', function() {
+          layer.setOpacity(layer.getOpacity() - 0.1);
+        });
+        keyboardInteraction.addCallback('O', function() {
+          layer.setOpacity(layer.getOpacity() + 0.1);
+        });
+        keyboardInteraction.addCallback('r', function() {
+          webglMap.setRotation(0);
+        });
+        keyboardInteraction.addCallback('s', function() {
+          layer.setSaturation(layer.getSaturation() - 0.1);
+        });
+        keyboardInteraction.addCallback('S', function() {
+          layer.setSaturation(layer.getSaturation() + 0.1);
+        });
+        keyboardInteraction.addCallback('vV', function() {
+          layer.setVisible(!layer.getVisible());
+        });
+        domMap.getInteractions().push(keyboardInteraction);
+
+    </script>
+  </body>
+</html>

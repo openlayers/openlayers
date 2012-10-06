@@ -100,7 +100,6 @@ ol.MapEventType = {
 ol.MapProperty = {
   BACKGROUND_COLOR: 'backgroundColor',
   CENTER: 'center',
-  INTERACTIONS: 'interactions',
   LAYERS: 'layers',
   PROJECTION: 'projection',
   RESOLUTION: 'resolution',
@@ -114,7 +113,7 @@ ol.MapProperty = {
 /**
  * @constructor
  * @extends {ol.Object}
- * @param {olx.MapOptions} mapOptions Map options.
+ * @param {ol.MapOptions} mapOptions Map options.
  */
 ol.Map = function(mapOptions) {
 
@@ -210,6 +209,12 @@ ol.Map = function(mapOptions) {
       this.handleControlsAdd_, false, this);
   goog.events.listen(this.controls_, ol.CollectionEventType.REMOVE,
       this.handleControlsRemove_, false, this);
+
+  /**
+   * @type {ol.Collection}
+   * @private
+   */
+  this.interactions_ = mapOptionsInternal.interactions;
 
   /**
    * @type {ol.renderer.Map}
@@ -375,12 +380,8 @@ ol.Map.prototype.getExtent = function() {
  * @return {ol.Collection} Interactions.
  */
 ol.Map.prototype.getInteractions = function() {
-  return /** @type {ol.Collection} */ this.get(ol.MapProperty.INTERACTIONS);
+  return this.interactions_;
 };
-goog.exportProperty(
-    ol.Map.prototype,
-    'getInteractions',
-    ol.Map.prototype.getInteractions);
 
 
 /**
@@ -589,10 +590,13 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
   var interactionsArray = /** @type {Array.<ol.interaction.Interaction>} */
       interactions.getArray();
   if (this.dispatchEvent(mapBrowserEvent) !== false) {
-    goog.array.every(interactionsArray, function(interaction) {
+    for (var i = interactionsArray.length - 1; i >= 0; i--) {
+      var interaction = interactionsArray[i];
       interaction.handleMapBrowserEvent(mapBrowserEvent);
-      return !mapBrowserEvent.defaultPrevented;
-    });
+      if (mapBrowserEvent.defaultPrevented) {
+        break;
+      }
+    }
   }
 };
 
@@ -718,18 +722,6 @@ goog.exportProperty(
     ol.Map.prototype,
     'setCenter',
     ol.Map.prototype.setCenter);
-
-
-/**
- * @param {ol.Collection} interactions Interactions.
- */
-ol.Map.prototype.setInteractions = function(interactions) {
-  this.set(ol.MapProperty.INTERACTIONS, interactions);
-};
-goog.exportProperty(
-    ol.Map.prototype,
-    'setInteractions',
-    ol.Map.prototype.setInteractions);
 
 
 /**
@@ -859,6 +851,7 @@ ol.Map.prototype.zoomToResolution = function(resolution, opt_anchor) {
 
 /**
  * @typedef {{controls: ol.Collection,
+ *            interactions: ol.Collection,
  *            constraints: ol.Constraints,
  *            rendererConstructor:
  *                function(new: ol.renderer.Map, Element, ol.Map),
@@ -869,7 +862,7 @@ ol.MapOptionsInternal;
 
 
 /**
- * @param {olx.MapOptions} mapOptions Map options.
+ * @param {ol.MapOptions} mapOptions Map options.
  * @return {ol.MapOptionsInternal} Map options.
  */
 ol.Map.createOptionsInternal = function(mapOptions) {
@@ -882,11 +875,6 @@ ol.Map.createOptionsInternal = function(mapOptions) {
   if (goog.isDef(mapOptions.center)) {
     values[ol.MapProperty.CENTER] = mapOptions.center;
   }
-
-  values[ol.MapProperty.INTERACTIONS] =
-      goog.isDef(mapOptions.interactions) ?
-      mapOptions.interactions :
-      ol.Map.createInteractions_(mapOptions);
 
   values[ol.MapProperty.LAYERS] = goog.isDef(mapOptions.layers) ?
       mapOptions.layers : new ol.Collection();
@@ -953,6 +941,16 @@ ol.Map.createOptionsInternal = function(mapOptions) {
   }
 
   /**
+   * @type {ol.Collection}
+   */
+  var interactions;
+  if (goog.isDef(mapOptions.interactions)) {
+    interactions = mapOptions.interactions;
+  } else {
+    interactions = ol.Map.createInteractions_(mapOptions);
+  }
+
+  /**
    * @type {Element}
    */
   var target = goog.dom.getElement(mapOptions.target);
@@ -960,6 +958,7 @@ ol.Map.createOptionsInternal = function(mapOptions) {
   return {
     constraints: constraints,
     controls: controls,
+    interactions: interactions,
     rendererConstructor: rendererConstructor,
     target: target,
     values: values
@@ -970,7 +969,7 @@ ol.Map.createOptionsInternal = function(mapOptions) {
 
 /**
  * @private
- * @param {olx.MapOptions} mapOptions Map options.
+ * @param {ol.MapOptions} mapOptions Map options.
  * @return {ol.Constraints} Map constraints.
  */
 ol.Map.createConstraints_ = function(mapOptions) {
@@ -1004,7 +1003,7 @@ ol.Map.createConstraints_ = function(mapOptions) {
 
 /**
  * @private
- * @param {olx.MapOptions} mapOptions Map options.
+ * @param {ol.MapOptions} mapOptions Map options.
  * @return {ol.Collection} Controls.
  */
 ol.Map.createControls_ = function(mapOptions) {
@@ -1026,7 +1025,7 @@ ol.Map.createControls_ = function(mapOptions) {
 
 /**
  * @private
- * @param {olx.MapOptions} mapOptions Map options.
+ * @param {ol.MapOptions} mapOptions Map options.
  * @return {ol.Collection} Interactions.
  */
 ol.Map.createInteractions_ = function(mapOptions) {

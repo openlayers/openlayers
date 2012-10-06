@@ -23,7 +23,7 @@
   display: inline;
 }
 .ol-attribution li:not(:last-child):after {
-  content: " ";
+  content: "\2003";
 }
 .ol-dragbox {
   position: absolute;
