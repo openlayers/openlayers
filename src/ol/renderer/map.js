@@ -2,8 +2,6 @@ goog.provide('ol.renderer.Map');
 
 goog.require('goog.Disposable');
 goog.require('goog.events');
-goog.require('goog.fx.anim');
-goog.require('goog.fx.anim.Animated');
 goog.require('goog.vec.Mat4');
 
 
@@ -306,16 +304,12 @@ ol.renderer.Map.prototype.removeLayerRenderer = function(layer) {
 
 
 /**
- * @return {boolean} Animating.
+ * Render.
  */
 ol.renderer.Map.prototype.render = function() {
-  var animate = false;
   this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
-    if (layerRenderer.render()) {
-      animate = true;
-    }
+    layerRenderer.render();
   });
-  return animate;
 };
 
 

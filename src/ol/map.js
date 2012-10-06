@@ -23,8 +23,6 @@ goog.require('goog.events.MouseWheelEvent');
 goog.require('goog.events.MouseWheelHandler');
 goog.require('goog.events.MouseWheelHandler.EventType');
 goog.require('goog.functions');
-goog.require('goog.fx.anim');
-goog.require('goog.fx.anim.Animated');
 goog.require('goog.object');
 goog.require('ol.BrowserFeature');
 goog.require('ol.Collection');
@@ -116,7 +114,6 @@ ol.MapProperty = {
 /**
  * @constructor
  * @extends {ol.Object}
- * @implements {goog.fx.anim.Animated}
  * @param {olx.MapOptions} mapOptions Map options.
  */
 ol.Map = function(mapOptions) {
@@ -144,18 +141,6 @@ ol.Map = function(mapOptions) {
    * @private
    */
   this.mapToUserTransform_ = ol.Projection.cloneTransform;
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.animatedRenderer_ = false;
-
-  /**
-   * @private
-   * @type {number}
-   */
-  this.animatingCount_ = 0;
 
   /**
    * @private
@@ -245,6 +230,7 @@ ol.Map = function(mapOptions) {
    */
   this.delayedRender_ = new goog.async.AnimationDelay(
       this.renderFrame_, null, this);
+  this.registerDisposable(this.delayedRender_);
 
   /**
    * Flag to indicate whether this.delayedRender_.start has been called.
@@ -637,31 +623,12 @@ ol.Map.prototype.handleBrowserWindowResize = function() {
 
 
 /**
- * @return {boolean} Is animating.
- */
-ol.Map.prototype.isAnimating = function() {
-  return this.animatingCount_ > 0;
-};
-
-
-/**
  * @return {boolean} Is defined.
  */
 ol.Map.prototype.isDef = function() {
   return goog.isDefAndNotNull(this.getCenter()) &&
       goog.isDef(this.getResolution()) &&
       goog.isDefAndNotNull(this.getSize());
-};
-
-
-/**
- * @inheritDoc
- */
-ol.Map.prototype.onAnimationFrame = function() {
-  if (goog.DEBUG) {
-    this.logger.info('onAnimationFrame');
-  }
-  this.renderFrame_();
 };
 
 
@@ -688,7 +655,7 @@ ol.Map.prototype.recalculateTransforms_ = function() {
  * Render.
  */
 ol.Map.prototype.render = function() {
-  if (this.animatingCount_ < 1 && !this.pendingRender_) {
+  if (!this.pendingRender_) {
     this.delayedRender_.start();
     this.pendingRender_ = true;
   }
@@ -703,15 +670,7 @@ ol.Map.prototype.renderFrame_ = function() {
     this.logger.info('renderFrame_');
   }
   this.pendingRender_ = false;
-  var animatedRenderer = this.renderer_.render();
-  if (animatedRenderer != this.animatedRenderer_) {
-    if (animatedRenderer) {
-      this.startAnimating();
-    } else {
-      this.stopAnimating();
-    }
-    this.animatedRenderer_ = animatedRenderer;
-  }
+  this.renderer_.render();
   if (goog.DEBUG) {
     this.logger.info('postrender');
   }
@@ -847,33 +806,6 @@ goog.exportProperty(
     ol.Map.prototype,
     'setUserProjection',
     ol.Map.prototype.setUserProjection);
-
-
-/**
- * Start animating.
- */
-ol.Map.prototype.startAnimating = function() {
-  if (++this.animatingCount_ == 1) {
-    if (goog.DEBUG) {
-      this.logger.info('startAnimating');
-    }
-    goog.fx.anim.registerAnimation(this);
-  }
-};
-
-
-/**
- * Stop animating.
- */
-ol.Map.prototype.stopAnimating = function() {
-  goog.asserts.assert(this.animatingCount_ > 0);
-  if (--this.animatingCount_ === 0) {
-    if (goog.DEBUG) {
-      this.logger.info('stopAnimating');
-    }
-    goog.fx.anim.unregisterAnimation(this);
-  }
-};
 
 
 /**
