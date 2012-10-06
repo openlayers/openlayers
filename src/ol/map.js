@@ -652,12 +652,20 @@ ol.Map.prototype.recalculateTransforms_ = function() {
 
 
 /**
- * Render.
+ * Render the map.  Map rendering will be called with requestAnimationFrame
+ * or in a timeout depending on the environment.
+ *
+ * @param {boolean=} opt_force Render immediately.  If called with force,
+ *   rendering will occur before method returns.  If called without force,
+ *   method will return before rendering occurs.
  */
-ol.Map.prototype.render = function() {
-  if (!this.pendingRender_) {
-    this.delayedRender_.start();
+ol.Map.prototype.render = function(opt_force) {
+  if (opt_force) {
+    this.delayedRender_.stop();
+    this.renderFrame_();
+  } else if (!this.pendingRender_) {
     this.pendingRender_ = true;
+    this.delayedRender_.start();
   }
 };
 
