@@ -89,7 +89,6 @@ ol.renderer.dom.TileLayer.prototype.getTileOffset_ = function(z, resolution) {
  * @private
  */
 ol.renderer.dom.TileLayer.prototype.removeAltZTiles_ = function() {
-  var tileRange = this.renderedTileRange_;
   var z = this.renderedZ_;
   var key, tileCoord, tile;
   for (key in this.renderedTiles_) {
