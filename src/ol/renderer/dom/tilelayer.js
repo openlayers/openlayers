@@ -34,10 +34,10 @@ ol.renderer.dom.TileLayer = function(mapRenderer, tileLayer, target) {
   this.renderedMapResolution_ = undefined;
 
   /**
-   * @type {ol.TileRange|undefined}
+   * @type {ol.Extent}
    * @private
    */
-  this.renderedTileRange_ = undefined;
+  this.renderedExtent_ = null;
 
   /**
    * @type {number|undefined}
@@ -103,26 +103,20 @@ ol.renderer.dom.TileLayer.prototype.removeAltZTiles_ = function() {
 
 
 /**
- * Get rid of tiles outside the rendered extent.  Only removes tiles at the
- * currently rendered z.
+ * Get rid of tiles outside the rendered extent.
  * @private
  */
 ol.renderer.dom.TileLayer.prototype.removeOutOfRangeTiles_ = function() {
-  var tileRange = this.renderedTileRange_;
-  var z = this.renderedZ_;
-  var key, tileCoord, prune, tile;
+  var mapExtent = this.renderedExtent_;
+  var grid = this.getLayer().getTileSource().getTileGrid();
+  var key, tileCoord, tileExtent, tile;
   for (key in this.renderedTiles_) {
     tileCoord = ol.TileCoord.createFromString(key);
-    if (tileCoord.z === z) {
-      prune = tileCoord.x < tileRange.minX ||
-          tileCoord.x > tileRange.maxX ||
-          tileCoord.y < tileRange.minY ||
-          tileCoord.y > tileRange.maxY;
-      if (prune) {
-        tile = this.renderedTiles_[key];
-        delete this.renderedTiles_[key];
-        goog.dom.removeNode(tile.getImage(this));
-      }
+    tileExtent = grid.getTileCoordExtent(tileCoord);
+    if (!tileExtent.intersects(mapExtent)) {
+      tile = this.renderedTiles_[key];
+      delete this.renderedTiles_[key];
+      goog.dom.removeNode(tile.getImage(this));
     }
   }
 };
@@ -308,7 +302,7 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
     goog.dom.appendChild(this.target, fragment);
   }
 
-  this.renderedTileRange_ = tileRange;
+  this.renderedExtent_ = mapExtent;
   this.renderedZ_ = z;
   this.renderedMapResolution_ = mapResolution;
 
