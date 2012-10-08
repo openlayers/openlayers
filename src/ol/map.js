@@ -41,14 +41,15 @@ goog.require('ol.Size');
 goog.require('ol.TransformFunction');
 goog.require('ol.control.Attribution');
 goog.require('ol.control.Zoom');
-goog.require('ol.interaction.AltDragRotate');
 goog.require('ol.interaction.DblClickZoom');
 goog.require('ol.interaction.DragPan');
+goog.require('ol.interaction.DragRotate');
+goog.require('ol.interaction.DragZoom');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.KeyboardPan');
 goog.require('ol.interaction.KeyboardZoom');
 goog.require('ol.interaction.MouseWheelZoom');
-goog.require('ol.interaction.ShiftDragZoom');
+goog.require('ol.interaction.condition');
 goog.require('ol.renderer.Layer');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.dom');
@@ -1129,7 +1130,8 @@ ol.Map.createInteractions_ = function(mapOptions) {
   var rotate = goog.isDef(mapOptions.rotate) ?
       mapOptions.rotate : true;
   if (rotate) {
-    interactions.push(new ol.interaction.AltDragRotate());
+    interactions.push(
+        new ol.interaction.DragRotate(ol.interaction.condition.altKeyOnly));
   }
 
   var doubleClickZoom = goog.isDef(mapOptions.doubleClickZoom) ?
@@ -1143,7 +1145,8 @@ ol.Map.createInteractions_ = function(mapOptions) {
   var dragPan = goog.isDef(mapOptions.dragPan) ?
       mapOptions.dragPan : true;
   if (dragPan) {
-    interactions.push(new ol.interaction.DragPan());
+    interactions.push(
+        new ol.interaction.DragPan(ol.interaction.condition.noModifierKeys));
   }
 
   var keyboard = goog.isDef(mapOptions.keyboard) ?
@@ -1167,7 +1170,8 @@ ol.Map.createInteractions_ = function(mapOptions) {
   var shiftDragZoom = goog.isDef(mapOptions.shiftDragZoom) ?
       mapOptions.shiftDragZoom : true;
   if (shiftDragZoom) {
-    interactions.push(new ol.interaction.ShiftDragZoom());
+    interactions.push(
+        new ol.interaction.DragZoom(ol.interaction.condition.shiftKeyOnly));
   }
 
   return interactions;

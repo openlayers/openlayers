@@ -2,6 +2,7 @@ goog.provide('ol.interaction.DragPan');
 
 goog.require('ol.Coordinate');
 goog.require('ol.MapBrowserEvent');
+goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Drag');
 
 
@@ -9,9 +10,18 @@ goog.require('ol.interaction.Drag');
 /**
  * @constructor
  * @extends {ol.interaction.Drag}
+ * @param {ol.interaction.ConditionType} condition Condition.
  */
-ol.interaction.DragPan = function() {
+ol.interaction.DragPan = function(condition) {
+
   goog.base(this);
+
+  /**
+   * @private
+   * @type {ol.interaction.ConditionType}
+   */
+  this.condition_ = condition;
+
 };
 goog.inherits(ol.interaction.DragPan, ol.interaction.Drag);
 
@@ -39,7 +49,7 @@ ol.interaction.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
  */
 ol.interaction.DragPan.prototype.handleDragStart = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
-  if (!browserEvent.shiftKey) {
+  if (this.condition_(browserEvent)) {
     return true;
   } else {
     return false;
