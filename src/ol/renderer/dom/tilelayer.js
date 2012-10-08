@@ -34,12 +34,6 @@ ol.renderer.dom.TileLayer = function(mapRenderer, tileLayer, target) {
   this.renderedMapResolution_ = undefined;
 
   /**
-   * @type {ol.Extent}
-   * @private
-   */
-  this.renderedExtent_ = null;
-
-  /**
    * @type {number|undefined}
    * @private
    */
@@ -85,35 +79,18 @@ ol.renderer.dom.TileLayer.prototype.getTileOffset_ = function(z, resolution) {
 
 
 /**
- * Get rid of tiles that are not at the currently rendered z.
+ * Get rid of all tiles that weren't drawn in the most recent rendering.
+ * @param {Object.<number, Object.<string, ol.Tile>>} tilesDrawnByZ Tiles just
+ *    rendered.
  * @private
  */
-ol.renderer.dom.TileLayer.prototype.removeAltZTiles_ = function() {
-  var z = this.renderedZ_;
-  var key, tileCoord, tile;
+ol.renderer.dom.TileLayer.prototype.removeExtraTiles_ =
+    function(tilesDrawnByZ) {
+  var key, tileCoord, tilesDrawn, tile;
   for (key in this.renderedTiles_) {
     tileCoord = ol.TileCoord.createFromString(key);
-    if (tileCoord.z !== z) {
-      tile = this.renderedTiles_[key];
-      delete this.renderedTiles_[key];
-      goog.dom.removeNode(tile.getImage(this));
-    }
-  }
-};
-
-
-/**
- * Get rid of tiles outside the rendered extent.
- * @private
- */
-ol.renderer.dom.TileLayer.prototype.removeOutOfRangeTiles_ = function() {
-  var mapExtent = this.renderedExtent_;
-  var grid = this.getLayer().getTileSource().getTileGrid();
-  var key, tileCoord, tileExtent, tile;
-  for (key in this.renderedTiles_) {
-    tileCoord = ol.TileCoord.createFromString(key);
-    tileExtent = grid.getTileCoordExtent(tileCoord);
-    if (!tileExtent.intersects(mapExtent)) {
+    tilesDrawn = tilesDrawnByZ[tileCoord.z];
+    if (!(tilesDrawn && key in tilesDrawn)) {
       tile = this.renderedTiles_[key];
       delete this.renderedTiles_[key];
       goog.dom.removeNode(tile.getImage(this));
@@ -133,15 +110,6 @@ ol.renderer.dom.TileLayer.prototype.handleTileChange_ = function(event) {
   if (tileCoord.z === this.renderedZ_) {
     var key = tileCoord.toString();
     delete this.loadingTiles_[key];
-    // determine if we've fully loaded this zoom level
-    var loaded = true;
-    for (key in this.loadingTiles_) {
-      loaded = false;
-      break;
-    }
-    if (loaded) {
-      this.removeAltZTiles_();
-    }
   }
 };
 
@@ -195,7 +163,6 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
 
 
   // first pass through the tile range to determine all the tiles needed
-  var allTilesLoaded = true;
   tileRange.forEachTileCoord(z, function(tileCoord) {
     var tile = tileSource.getTile(tileCoord);
     if (goog.isNull(tile)) {
@@ -214,7 +181,6 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
         this.loadingTiles_[key] = tile;
         tile.load();
       }
-      allTilesLoaded = false;
       // TODO: only append after load?
       tilesToDrawByZ[z][key] = tile;
     }
@@ -302,12 +268,8 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
     goog.dom.appendChild(this.target, fragment);
   }
 
-  this.renderedExtent_ = mapExtent;
   this.renderedZ_ = z;
   this.renderedMapResolution_ = mapResolution;
 
-  if (allTilesLoaded) {
-    this.removeAltZTiles_();
-  }
-  this.removeOutOfRangeTiles_();
+  this.removeExtraTiles_(tilesToDrawByZ);
 };
