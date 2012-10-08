@@ -45,13 +45,6 @@ ol.renderer.dom.TileLayer = function(mapRenderer, tileLayer, target) {
    */
   this.renderedZ_ = undefined;
 
-  /**
-   * Map of tile keys loading at the currently rendered z.
-   * @type {Object.<string, ol.Tile>}
-   * @private
-   */
-  this.loadingTiles_ = {};
-
 };
 goog.inherits(ol.renderer.dom.TileLayer, ol.renderer.dom.Layer);
 
@@ -134,35 +127,8 @@ ol.renderer.dom.TileLayer.prototype.removeOutOfRangeTiles_ = function() {
  * @private
  */
 ol.renderer.dom.TileLayer.prototype.handleTileChange_ = function(event) {
-  var tile = event.target;
-  goog.asserts.assert(tile.getState() == ol.TileState.LOADED);
-  var tileCoord = tile.tileCoord;
-  if (tileCoord.z === this.renderedZ_) {
-    var key = tileCoord.toString();
-    delete this.loadingTiles_[key];
-    // determine if we've fully loaded this zoom level
-    var loaded = true;
-    for (key in this.loadingTiles_) {
-      loaded = false;
-      break;
-    }
-    if (loaded) {
-      this.removeAltZTiles_();
-    }
-  }
-};
-
-
-/**
- * Remove all loading tiles that have been appended.
- * @private
- */
-ol.renderer.dom.TileLayer.prototype.removeLoadingTiles_ = function() {
-  for (var key in this.loadingTiles_) {
-    var tile = this.loadingTiles_[key];
-    goog.dom.removeNode(tile.getImage(this));
-    delete this.loadingTiles_[key];
-  }
+  goog.asserts.assert(event.target.getState() == ol.TileState.LOADED);
+  this.getMap().render();
 };
 
 
@@ -186,11 +152,6 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
   // z represents the "best" resolution
   var z = tileGrid.getZForResolution(mapResolution);
 
-  if (z != this.renderedZ_) {
-    // no longer wait for previously loading tiles
-    this.removeLoadingTiles_();
-  }
-
   /**
    * @type {Object.<number, Object.<string, ol.Tile>>}
    */
@@ -211,19 +172,17 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
     }
 
     var key = tile.tileCoord.toString();
-    if (tile.getState() == ol.TileState.LOADED) {
+    var state = tile.getState();
+    if (state == ol.TileState.LOADED) {
       tilesToDrawByZ[z][key] = tile;
       return;
     } else {
-      if (!(key in this.loadingTiles_)) {
+      allTilesLoaded = false;
+      if (state != ol.TileState.LOADING) {
         goog.events.listen(tile, goog.events.EventType.CHANGE,
             this.handleTileChange_, false, this);
-        this.loadingTiles_[key] = tile;
         tile.load();
       }
-      allTilesLoaded = false;
-      // TODO: only append after load?
-      tilesToDrawByZ[z][key] = tile;
     }
 
     /**
