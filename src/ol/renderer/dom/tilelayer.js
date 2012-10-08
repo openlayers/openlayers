@@ -33,12 +33,6 @@ ol.renderer.dom.TileLayer = function(mapRenderer, tileLayer, target) {
    */
   this.renderedMapResolution_ = undefined;
 
-  /**
-   * @type {number|undefined}
-   * @private
-   */
-  this.renderedZ_ = undefined;
-
 };
 goog.inherits(ol.renderer.dom.TileLayer, ol.renderer.dom.Layer);
 
@@ -236,7 +230,6 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
     goog.dom.appendChild(this.target, fragment);
   }
 
-  this.renderedZ_ = z;
   this.renderedMapResolution_ = mapResolution;
 
   this.removeExtraTiles_(tilesToDrawByZ);
