@@ -859,7 +859,7 @@
     }
 
     function test_display(t) {
-        t.plan(8);
+        t.plan(9);
 
         var map, layer, log;
 
@@ -887,11 +887,14 @@
         layer.display(true);
         t.eq(layer.div.style.display, "block", "display() set layer's display style to correct value");
         t.eq(layer.getVisibility(), false, "display() does not affect layer's visibility state");
+        layer.setVisibility(true);
 
         // This call must not trig the event because the opacity value is the same.
         log = [];
         layer.display(true);
         t.eq(log.length, 0, "display() does not trigger changelayer if the display value is the same");
+        layer.setVisibility(false);
+        t.eq(log.length, 1, "changelayer event called only once. setVisibility doesn't fire any extra changelayer events");
     }
 
 /******
