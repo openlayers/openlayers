@@ -111,6 +111,22 @@ ol.renderer.dom.TileLayer.prototype.handleTileChange_ = function(event) {
     var key = tileCoord.toString();
     delete this.loadingTiles_[key];
   }
+  var loaded = true;
+  for (var key in this.loadingTiles_) {
+    loaded = false;
+    break;
+  }
+  if (loaded) {
+    var z = this.renderedZ_;
+    for (var key in this.renderedTiles_) {
+      tileCoord = ol.TileCoord.createFromString(key);
+      if (tileCoord.z !== z) {
+        tile = this.renderedTiles_[key];
+        delete this.renderedTiles_[key];
+        goog.dom.removeNode(tile.getImage(this));
+      }
+    }
+  }
 };
 
 
