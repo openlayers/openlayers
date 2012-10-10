@@ -533,6 +533,18 @@
         
         map.destroy();
     }
+    
+    function test_tileBounds(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map("map", {projection: "EPSG:3857"});
+        var layer = new OpenLayers.Layer.WMS("wms", "../../img/blank.gif");
+        map.addLayer(layer);
+        map.setCenter([0, 0], 1);
+        map.pan(2, -100);
+        map.zoomIn();
+        t.eq(layer.grid[1][0].bounds, new OpenLayers.Bounds(-10018754.17, 0, 0, 10018754.17), "no floating point errors");
+        map.destroy();
+    }
 
 
   </script>
