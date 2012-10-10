@@ -50,6 +50,14 @@ goog.inherits(ol.control.Control, goog.Disposable);
 
 
 /**
+ * @inheritDoc
+ */
+ol.control.Control.prototype.disposeInternal = function() {
+  goog.dom.removeNode(this.element);
+};
+
+
+/**
  * @return {ol.Map} Map.
  */
 ol.control.Control.prototype.getMap = function() {
