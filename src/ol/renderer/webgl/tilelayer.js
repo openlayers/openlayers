@@ -455,7 +455,7 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
     }, this);
 
     /** @type {Array.<number>} */
-    var zs = goog.object.getKeys(tilesToDrawByZ).map(Number);
+    var zs = goog.array.map(goog.object.getKeys(tilesToDrawByZ), Number);
     goog.array.sort(zs);
     var uTileOffset = goog.vec.Vec4.createFloat32();
     goog.array.forEach(zs, function(z) {
