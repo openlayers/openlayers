@@ -1,5 +1,5 @@
-goog.require('ol.Map');
 goog.require('goog.dom');
+goog.require('ol.Map');
 
 describe('ol.Map', function() {
 

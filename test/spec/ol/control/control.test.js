@@ -1,6 +1,6 @@
+goog.require('goog.dom');
 goog.require('ol.Map');
 goog.require('ol.control.Control');
-goog.require('goog.dom');
 
 describe('ol.control.Control', function() {
   var map, control;
@@ -10,7 +10,7 @@ describe('ol.control.Control', function() {
       target: document.getElementById('map')
     });
     var element = goog.dom.createDom(goog.dom.TagName.DIV);
-    control = new ol.control.Control({element:element});
+    control = new ol.control.Control({element: element});
     control.setMap(map);
   });
 
