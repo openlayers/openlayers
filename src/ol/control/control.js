@@ -54,6 +54,7 @@ goog.inherits(ol.control.Control, goog.Disposable);
  */
 ol.control.Control.prototype.disposeInternal = function() {
   goog.dom.removeNode(this.element);
+  goog.base(this, 'disposeInternal');
 };
 
 

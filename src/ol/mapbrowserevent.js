@@ -289,6 +289,7 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
   }
+  goog.base(this, 'disposeInternal');
 };
 
 
