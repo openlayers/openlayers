@@ -1,6 +1,7 @@
 goog.provide('ol.renderer.Map');
 
 goog.require('goog.Disposable');
+goog.require('goog.async.AnimationDelay');
 goog.require('goog.events');
 goog.require('goog.vec.Mat4');
 
@@ -59,6 +60,27 @@ ol.renderer.Map = function(container, map) {
   this.matricesDirty_ = true;
 
   /**
+   * Calls to this.delayedRender_.start take advantage of requestAnimationFrame
+   * (and friends) where available.  The provided listener is called once in
+   * the next available frame after the start method is called.  A call to stop
+   * will cancel the animation.
+   *
+   * @type {goog.async.AnimationDelay}
+   * @private
+   */
+  this.delayedRender_ = new goog.async.AnimationDelay(
+      this.renderFrame, null, this);
+  this.registerDisposable(this.delayedRender_);
+
+  /**
+   * Flag to indicate whether this.delayedRender_.start has been called.
+   *
+   * @type {boolean}
+   * @private
+   */
+  this.pendingRender_ = false;
+
+  /**
    * @private
    * @type {Array.<number>}
    */
@@ -99,6 +121,24 @@ goog.inherits(ol.renderer.Map, goog.Disposable);
 ol.renderer.Map.prototype.addLayer = function(layer) {
   var layerRenderer = this.createLayerRenderer(layer);
   this.setLayerRenderer(layer, layerRenderer);
+};
+
+
+/**
+ * Must be called by subclasses after renderFrame completes.
+ * @protected
+ */
+ol.renderer.Map.prototype.afterRenderFrame = function() {
+  this.map.dispatchEvent(ol.MapEventType.POSTRENDER);
+};
+
+
+/**
+ * Must be called by subclasses before renderFrame executes.
+ * @protected
+ */
+ol.renderer.Map.prototype.beforeRenderFrame = function() {
+  this.pendingRender_ = false;
 };
 
 
@@ -309,10 +349,17 @@ ol.renderer.Map.prototype.removeLayerRenderer = function(layer) {
  * Render.
  */
 ol.renderer.Map.prototype.render = function() {
-  this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
-    layerRenderer.render();
-  });
+  if (!this.pendingRender_ && this.getMap().isDef()) {
+    this.pendingRender_ = true;
+    this.delayedRender_.start();
+  }
 };
+
+
+/**
+ * Render the map.
+ */
+ol.renderer.Map.prototype.renderFrame = goog.abstractMethod;
 
 
 /**

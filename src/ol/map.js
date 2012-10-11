@@ -8,7 +8,6 @@ goog.provide('ol.MapProperty');
 goog.provide('ol.RendererHint');
 
 goog.require('goog.array');
-goog.require('goog.async.AnimationDelay');
 goog.require('goog.debug.Logger');
 goog.require('goog.dispose');
 goog.require('goog.dom');
@@ -223,27 +222,6 @@ ol.Map = function(mapOptions) {
   this.renderer_ =
       new mapOptionsInternal.rendererConstructor(this.viewport_, this);
   this.registerDisposable(this.renderer_);
-
-  /**
-   * Calls to this.delayedRender_.start take advantage of requestAnimationFrame
-   * (and friends) where available.  The provided listener is called once in
-   * the next available frame after the start method is called.  A call to stop
-   * will cancel the animation.
-   *
-   * @type {goog.async.AnimationDelay}
-   * @private
-   */
-  this.delayedRender_ = new goog.async.AnimationDelay(
-      this.renderFrame_, null, this);
-  this.registerDisposable(this.delayedRender_);
-
-  /**
-   * Flag to indicate whether this.delayedRender_.start has been called.
-   *
-   * @type {boolean}
-   * @private
-   */
-  this.pendingRender_ = false;
 
   /**
    * @private
@@ -656,37 +634,10 @@ ol.Map.prototype.recalculateTransforms_ = function() {
 
 
 /**
- * Render the map.  Map rendering will be called with requestAnimationFrame
- * or in a timeout depending on the environment.
- *
- * @param {boolean=} opt_force Render immediately.  If called with force,
- *   rendering will occur before method returns.  If called without force,
- *   method will return before rendering occurs.
+ * Render the map.
  */
-ol.Map.prototype.render = function(opt_force) {
-  if (opt_force) {
-    this.delayedRender_.stop();
-    this.renderFrame_();
-  } else if (!this.pendingRender_) {
-    this.pendingRender_ = true;
-    this.delayedRender_.start();
-  }
-};
-
-
-/**
- * @private
- */
-ol.Map.prototype.renderFrame_ = function() {
-  if (goog.DEBUG) {
-    this.logger.info('renderFrame_');
-  }
-  this.pendingRender_ = false;
+ol.Map.prototype.render = function() {
   this.renderer_.render();
-  if (goog.DEBUG) {
-    this.logger.info('postrender');
-  }
-  this.dispatchEvent(ol.MapEventType.POSTRENDER);
 };
 
 

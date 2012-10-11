@@ -548,11 +548,9 @@ ol.renderer.webgl.Map.prototype.removeLayerRenderer = function(layer) {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.render = function() {
+ol.renderer.webgl.Map.prototype.renderFrame = function() {
 
-  if (!this.getMap().isDef()) {
-    return;
-  }
+  this.beforeRenderFrame();
 
   var size = /** @type {ol.Size} */ this.getMap().getSize();
   if (!this.canvasSize_.equals(size)) {
@@ -561,11 +559,8 @@ ol.renderer.webgl.Map.prototype.render = function() {
     this.canvasSize_ = size;
   }
 
-  var rerender = false;
   this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
-    if (layerRenderer.render()) {
-      rerender = true;
-    }
+    layerRenderer.render();
   });
 
   var gl = this.getGL();
@@ -628,10 +623,7 @@ ol.renderer.webgl.Map.prototype.render = function() {
     gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
   }, this);
 
-  if (rerender) {
-    this.getMap().render();
-  }
-
+  this.afterRenderFrame();
 };
 
 

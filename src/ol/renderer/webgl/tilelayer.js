@@ -526,6 +526,8 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
       -0.5,
       0);
 
-  return rerender;
+  if (rerender) {
+    mapRenderer.render();
+  }
 
 };

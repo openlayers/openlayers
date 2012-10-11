@@ -102,9 +102,7 @@ ol.renderer.dom.TileLayer.prototype.handleTileChange_ = function(event) {
 ol.renderer.dom.TileLayer.prototype.render = function() {
 
   var map = this.getMap();
-  if (!map.isDef()) {
-    return;
-  }
+
   var mapExtent = /** @type {!ol.Extent} */ map.getRotatedExtent();
   var mapResolution = /** @type {number} */ map.getResolution();
   var resolutionChanged = (mapResolution !== this.renderedMapResolution_);
