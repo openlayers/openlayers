@@ -535,15 +535,27 @@
     }
     
     function test_tileBounds(t) {
-        t.plan(1);
+        // do not defer moveGriddedTiles
+        var isNative = OpenLayers.Animation.isNative;
+        OpenLayers.Animation.isNative = true;
+        t.plan(2);
+        
         var map = new OpenLayers.Map("map", {projection: "EPSG:3857"});
         var layer = new OpenLayers.Layer.WMS("wms", "../../img/blank.gif");
         map.addLayer(layer);
         map.setCenter([0, 0], 1);
         map.pan(2, -100);
         map.zoomIn();
-        t.eq(layer.grid[1][0].bounds, new OpenLayers.Bounds(-10018754.17, 0, 0, 10018754.17), "no floating point errors");
+        t.eq(layer.grid[1][0].bounds, new OpenLayers.Bounds(-10018754.17, 0, 0, 10018754.17), "no floating point errors after zooming");
+        map.zoomTo(14);
+        var bounds = layer.grid[0][0].bounds.clone();
+        map.pan(260, 520);
+        map.pan(-260, -520);
+        t.eq(layer.grid[0][0].bounds, bounds, "no floating point errors after dragging back and forth");
+        console.log(bounds.toString())
+        
         map.destroy();
+        OpenLayers.Animation.isNative = isNative;
     }
 
 
