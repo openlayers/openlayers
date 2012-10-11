@@ -552,7 +552,6 @@
         map.pan(260, 520);
         map.pan(-260, -520);
         t.eq(layer.grid[0][0].bounds, bounds, "no floating point errors after dragging back and forth");
-        console.log(bounds.toString())
         
         map.destroy();
         OpenLayers.Animation.isNative = isNative;
