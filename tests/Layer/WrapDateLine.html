@@ -154,9 +154,9 @@
         var m = new OpenLayers.Map('map', {adjustZoom: function(z) {return z;}});
         m.addLayer(layer);
         m.zoomToMaxExtent();
-        t.eq(layer.grid[5][7].url, "http://www.openlayers.org/world/index.php?g=satellite&map=world&i=jpeg&t=0&l=-256&s=221471921.25", "grid[5][7] kamap is okay");
-        t.eq(layer.grid[5][6].url, "http://www.openlayers.org/world/index.php?g=satellite&map=world&i=jpeg&t=0&l=0&s=221471921.25", "grid[5][6] kamap is okay");
-        t.eq(layer.grid[5][5].url, "http://www.openlayers.org/world/index.php?g=satellite&map=world&i=jpeg&t=0&l=-256&s=221471921.25", "grid[5][5] is okay");
+        t.eq(layer.grid[4][7].url, "http://www.openlayers.org/world/index.php?g=satellite&map=world&i=jpeg&t=0&l=-256&s=221471921.25", "grid[5][7] kamap is okay");
+        t.eq(layer.grid[4][6].url, "http://www.openlayers.org/world/index.php?g=satellite&map=world&i=jpeg&t=0&l=0&s=221471921.25", "grid[5][6] kamap is okay");
+        t.eq(layer.grid[4][5].url, "http://www.openlayers.org/world/index.php?g=satellite&map=world&i=jpeg&t=0&l=-256&s=221471921.25", "grid[5][5] is okay");
         t.ok(layer.grid[7][6].url == null, "no latitudinal wrapping - tile not loaded if outside maxExtent");
         m.destroy();
     }
