@@ -58,6 +58,8 @@
         var test_xml, format, xml;
 
         format = new OpenLayers.Format.Filter.v1();
+
+        // Test reading a PropertyIsNull filter from an XML doc
         xml = new OpenLayers.Format.XML();
 
         test_xml =
@@ -74,6 +76,7 @@
         t.eq(filter.property, 'prop',
              "[0] record correct property name");
 
+        // Test writing a PropertyIsNull filter out to XML
         var filter = new OpenLayers.Filter.Comparison({
             type: OpenLayers.Filter.Comparison.IS_NULL,
             property: "prop"
