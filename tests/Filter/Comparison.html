@@ -164,6 +164,34 @@
             }),
             context: {prop: "FOO"},
             expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.IS_NULL,
+                property: "prop"
+            }),
+            context: {prop: null},
+            expect: true
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.IS_NULL,
+                property: "prop"
+            }),
+            context: {prop: undefined},
+            expect: true
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.IS_NULL,
+                property: "prop"
+            }),
+            context: {prop: "foo"},
+            expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.IS_NULL,
+                property: "prop"
+            }),
+            context: {prop: 0},
+            expect: false
         }];
         
         t.plan(cases.length);
