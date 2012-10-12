@@ -1,6 +1,7 @@
-goog.provide('ol.interaction.AltDragRotate');
+goog.provide('ol.interaction.DragRotate');
 
 goog.require('ol.MapBrowserEvent');
+goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Drag');
 
 
@@ -8,10 +9,17 @@ goog.require('ol.interaction.Drag');
 /**
  * @constructor
  * @extends {ol.interaction.Drag}
+ * @param {ol.interaction.ConditionType} condition Condition.
  */
-ol.interaction.AltDragRotate = function() {
+ol.interaction.DragRotate = function(condition) {
 
   goog.base(this);
+
+  /**
+   * @private
+   * @type {ol.interaction.ConditionType}
+   */
+  this.condition_ = condition;
 
   /**
    * @private
@@ -20,13 +28,13 @@ ol.interaction.AltDragRotate = function() {
   this.startRotation_ = 0;
 
 };
-goog.inherits(ol.interaction.AltDragRotate, ol.interaction.Drag);
+goog.inherits(ol.interaction.DragRotate, ol.interaction.Drag);
 
 
 /**
  * @inheritDoc
  */
-ol.interaction.AltDragRotate.prototype.handleDrag = function(mapBrowserEvent) {
+ol.interaction.DragRotate.prototype.handleDrag = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   var map = mapBrowserEvent.map;
   var size = map.getSize();
@@ -41,11 +49,11 @@ ol.interaction.AltDragRotate.prototype.handleDrag = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-ol.interaction.AltDragRotate.prototype.handleDragStart =
+ol.interaction.DragRotate.prototype.handleDragStart =
     function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   var map = mapBrowserEvent.map;
-  if (browserEvent.isMouseActionButton() && browserEvent.altKey &&
+  if (browserEvent.isMouseActionButton() && this.condition_(browserEvent) &&
       map.canRotate()) {
     var size = map.getSize();
     var offset = mapBrowserEvent.getPixel();
