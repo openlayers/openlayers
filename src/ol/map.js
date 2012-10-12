@@ -291,6 +291,16 @@ ol.Map.prototype.canRotate = function() {
 
 
 /**
+ *
+ * @inheritDoc
+ */
+ol.Map.prototype.disposeInternal = function() {
+  goog.dom.removeNode(this.viewport_);
+  goog.base(this, 'disposeInternal');
+};
+
+
+/**
  * @param {ol.Extent} extent Extent.
  */
 ol.Map.prototype.fitExtent = function(extent) {
