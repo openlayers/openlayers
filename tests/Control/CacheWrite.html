@@ -40,7 +40,7 @@
             return;
         }
 
-        t.plan(3);
+        t.plan(4);
         OpenLayers.Control.CacheWrite.clearCache();
         var length = window.localStorage.length;
         
@@ -68,6 +68,9 @@
             // content will be null for browsers that have localStorage but no canvas support
             var content = canvasContext ? canvasContext.canvas.toDataURL("image/png") : null;
             t.eq(window.localStorage.getItem("olCache_"+url), content, "localStorage contains correct image data");
+
+            layer.events.triggerEvent('tileloaded', {aborted: true, tile: layer.grid[1][1]});
+            t.eq(window.localStorage.length, length + (canvasContext ? tiles-1 : 0), "tile aborted during load not cached");
             
             var key = Math.random();
             window.localStorage.setItem(key, "bar");
