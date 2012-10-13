@@ -302,6 +302,34 @@
             }),
             context: new OpenLayers.Feature.Vector(null, {prop: "FOO"}),
             expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.IS_NULL,
+                property: "prop"
+            }),
+            context: new OpenLayers.Feature.Vector(null, {prop: null}),
+            expect: true
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.IS_NULL,
+                property: "prop"
+            }),
+            context: new OpenLayers.Feature.Vector(null, {}),
+            expect: true
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.IS_NULL,
+                property: "prop"
+            }),
+            context: new OpenLayers.Feature.Vector(null, {prop: "foo"}),
+            expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.IS_NULL,
+                property: "prop"
+            }),
+            context: new OpenLayers.Feature.Vector(null, {prop: 0}),
+            expect: false
         }];
         
         t.plan(cases.length);
