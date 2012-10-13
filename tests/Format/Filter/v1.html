@@ -72,7 +72,6 @@
         var filter = format.read(xml.read(test_xml).documentElement);
         t.eq(filter.type, OpenLayers.Filter.Comparison.IS_NULL,
              "[0] read correct type");
-        console.log(filter);
         t.eq(filter.property, 'prop',
              "[0] record correct property name");
 
