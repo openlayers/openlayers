@@ -55,7 +55,7 @@
 
         t.plan(3);
 
-        var format, test_xml, xml, filter;
+        var format, test_xml, xml, filter, node;
 
         format = new OpenLayers.Format.Filter.v1();
 
@@ -79,7 +79,7 @@
             type: OpenLayers.Filter.Comparison.IS_NULL,
             property: "prop"
         });
-        var node = format.write(filter);
+        node = format.write(filter);
         t.xml_eq(node, test_xml, "filter correctly written");
 
     }
