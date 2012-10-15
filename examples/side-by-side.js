@@ -39,7 +39,7 @@ var webglMap = new ol.Map({
   renderer: ol.RendererHint.WEBGL,
   target: 'webglMap'
 });
-if (!goog.isNull(webglMap)) {
+if (webglMap !== null) {
   webglMap.bindTo('center', domMap);
   webglMap.bindTo('layers', domMap);
   webglMap.bindTo('resolution', domMap);
