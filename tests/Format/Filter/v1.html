@@ -53,14 +53,11 @@
 
     function test_PropertyIsNull(t) {
 
-        t.plan(6);
+        t.plan(3);
 
-        var test_xml, format, xml, filter;
+        var format, test_xml, xml, filter;
 
         format = new OpenLayers.Format.Filter.v1();
-
-        // Test reading a PropertyIsNull filter from an XML doc
-        xml = new OpenLayers.Format.XML();
 
         test_xml =
             '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
@@ -69,6 +66,8 @@
                 '</ogc:PropertyIsNull>' +
             '</ogc:Filter>';
 
+        // Test reading a PropertyIsNull filter from an XML doc
+        xml = new OpenLayers.Format.XML();
         filter = format.read(xml.read(test_xml).documentElement);
         t.eq(filter.type, OpenLayers.Filter.Comparison.IS_NULL,
              "[0] read correct type");
@@ -80,15 +79,8 @@
             type: OpenLayers.Filter.Comparison.IS_NULL,
             property: "prop"
         });
-        var element = format.write(filter);
-        t.eq(element.firstChild.nodeName, 'ogc:PropertyIsNull',
-            "[1] write correct filter node name");
-        t.eq(element.firstChild.childNodes.length, 1,
-            "[1] write correct number of filter arguments");
-        t.eq(element.firstChild.firstChild.nodeName, 'ogc:PropertyName',
-            "[1] write correct filter argument name");
-        t.eq(element.firstChild.firstChild.textContent, 'prop',
-            "[1] write correct filter argument value");
+        var node = format.write(filter);
+        t.xml_eq(node, test_xml, "filter correctly written");
 
     }
 
