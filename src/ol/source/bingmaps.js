@@ -1,4 +1,5 @@
 goog.provide('ol.source.BingMaps');
+goog.provide('ol.BingMapsStyle');
 
 goog.require('goog.Uri');
 goog.require('goog.events');
@@ -19,15 +20,6 @@ ol.BingMapsStyle = {
   ORDNANCE_SURVEY: 'OrdnanceSurvey',
   COLLINS_BART: 'CollinsBart'
 };
-
-
-/**
- * @typedef {{culture: (string|undefined),
- *            key: string,
- *            style: ol.BingMapsStyle}}
- */
-ol.source.BingMapsOptions;
-
 
 
 /**
