@@ -1,3 +1,5 @@
+@exportSymbol goog.require goog.nullFunction
+
 @exportProperty ol.MapBrowserEvent.prototype.getCoordinate
 
 @exportSymbol ol.Collection
