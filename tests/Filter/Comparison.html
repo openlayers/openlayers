@@ -164,6 +164,34 @@
             }),
             context: {prop: "FOO"},
             expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.IS_NULL,
+                property: "prop"
+            }),
+            context: {prop: null},
+            expect: true
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.IS_NULL,
+                property: "prop"
+            }),
+            context: {},
+            expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.IS_NULL,
+                property: "prop"
+            }),
+            context: {prop: "foo"},
+            expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.IS_NULL,
+                property: "prop"
+            }),
+            context: {prop: 0},
+            expect: false
         }];
         
         t.plan(cases.length);
@@ -273,6 +301,34 @@
                 value: "foo"
             }),
             context: new OpenLayers.Feature.Vector(null, {prop: "FOO"}),
+            expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.IS_NULL,
+                property: "prop"
+            }),
+            context: new OpenLayers.Feature.Vector(null, {prop: null}),
+            expect: true
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.IS_NULL,
+                property: "prop"
+            }),
+            context: new OpenLayers.Feature.Vector(null, {}),
+            expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.IS_NULL,
+                property: "prop"
+            }),
+            context: new OpenLayers.Feature.Vector(null, {prop: "foo"}),
+            expect: false
+        }, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.IS_NULL,
+                property: "prop"
+            }),
+            context: new OpenLayers.Feature.Vector(null, {prop: 0}),
             expect: false
         }];
         

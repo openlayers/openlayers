@@ -51,6 +51,38 @@
              "[1] record correct upper boundary value");
     }
 
+    function test_PropertyIsNull(t) {
+
+        t.plan(3);
+
+        var format, test_xml, xml, filter, node;
+
+        format = new OpenLayers.Format.Filter.v1();
+
+        test_xml =
+            '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+                '<ogc:PropertyIsNull>' +
+                    '<ogc:PropertyName>prop</ogc:PropertyName>' +
+                '</ogc:PropertyIsNull>' +
+            '</ogc:Filter>';
+
+        // Test reading a PropertyIsNull filter from an XML doc
+        xml = new OpenLayers.Format.XML();
+        filter = format.read(xml.read(test_xml).documentElement);
+        t.eq(filter.type, OpenLayers.Filter.Comparison.IS_NULL,
+             "[0] read correct type");
+        t.eq(filter.property, 'prop',
+             "[0] record correct property name");
+
+        // Test writing a PropertyIsNull filter out to XML
+        filter = new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.IS_NULL,
+            property: "prop"
+        });
+        node = format.write(filter);
+        t.xml_eq(node, test_xml, "filter correctly written");
+
+    }
 
     function test_Intersects(t) {
         
