@@ -109,6 +109,14 @@ build/jsdoc-$(BRANCH)-timestamp: $(SRC) $(shell find doc/template -type f)
 	$(JSDOC) -t doc/template -r src -d build/gh-pages/$(BRANCH)/apidoc
 	touch $@
 
+.PHONY: hostexamples
+hostexamples: build examples
+	mkdir -p build/gh-pages/$(BRANCH)/examples
+	mkdir -p build/gh-pages/$(BRANCH)/build
+	cp $(EXAMPLES) $(subst .html,.js,$(EXAMPLES)) examples/style.css build/gh-pages/$(BRANCH)/examples/
+	cp build/loader_hosted_examples.js build/gh-pages/$(BRANCH)/examples/loader.js
+	cp build/ol.js build/ol.css build/gh-pages/$(BRANCH)/build/
+
 .PHONY: test
 test: $(INTERNAL_SRC)
 	$(PHANTOMJS) test/phantom-jasmine/run_jasmine_test.coffee test/ol.html
