@@ -176,8 +176,8 @@
                 type: OpenLayers.Filter.Comparison.IS_NULL,
                 property: "prop"
             }),
-            context: {prop: undefined},
-            expect: true
+            context: {},
+            expect: false
         }, {
             filter: new OpenLayers.Filter.Comparison({
                 type: OpenLayers.Filter.Comparison.IS_NULL,
@@ -315,7 +315,7 @@
                 property: "prop"
             }),
             context: new OpenLayers.Feature.Vector(null, {}),
-            expect: true
+            expect: false
         }, {
             filter: new OpenLayers.Filter.Comparison({
                 type: OpenLayers.Filter.Comparison.IS_NULL,
