@@ -233,7 +233,7 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
   }, this);
 
   /** @type {Array.<number>} */
-  var zs = goog.object.getKeys(tilesToDrawByZ);
+  var zs = goog.array.map(goog.object.getKeys(tilesToDrawByZ), Number);
   goog.array.sort(zs);
 
   var fragment = document.createDocumentFragment();
