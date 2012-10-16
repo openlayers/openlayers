@@ -54,6 +54,8 @@
     pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(params[key]));
   }
 
+  document.write('<link rel="stylesheet" href="../css/ol.css" ' +
+                 'type="text/css">');
   var url = 'http://' + host + '/compile?' + pairs.join('&');
   document.write('<script type="text/javascript" src="' + url + '"></script>');
 }());
