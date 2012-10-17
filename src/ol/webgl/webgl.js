@@ -30,7 +30,7 @@ ol.webgl.isSupported = function() {
   }
   try {
     var canvas = goog.dom.createElement(goog.dom.TagName.CANVAS);
-    return !goog.isNull(canvas.getContext('experimental-webgl'));
+    return !goog.isNull(ol.webgl.getContext(canvas));
   } catch (e) {
     return false;
   }
