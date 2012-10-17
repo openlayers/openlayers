@@ -119,6 +119,7 @@ hostexamples: build examples
 	cp $(EXAMPLES) $(subst .html,.js,$(EXAMPLES)) examples/style.css build/gh-pages/$(BRANCH)/examples/
 	cp build/loader_hosted_examples.js build/gh-pages/$(BRANCH)/examples/loader.js
 	cp build/ol.js build/ol.css build/gh-pages/$(BRANCH)/build/
+	cp examples/index.html examples/index.js build/gh-pages/$(BRANCH)/examples
 
 .PHONY: test
 test: $(INTERNAL_SRC)
