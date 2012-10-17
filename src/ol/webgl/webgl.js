@@ -3,6 +3,19 @@ goog.provide('ol.webgl.WebGLContextEventType');
 
 
 /**
+ * @const
+ * @private
+ * @type {Array.<string>}
+ */
+ol.webgl.CONTEXT_IDS_ = [
+  'webgl',
+  'webgl-experimental',
+  'webkit-3d',
+  'moz-webgl'
+];
+
+
+/**
  * @enum {string}
  */
 ol.webgl.WebGLContextEventType = {
@@ -17,7 +30,17 @@ ol.webgl.WebGLContextEventType = {
  * @return {WebGLRenderingContext} WebGL rendering context.
  */
 ol.webgl.getContext = function(canvas, opt_attributes) {
-  return canvas.getContext('experimental-webgl', opt_attributes);
+  var context, i, ii = ol.webgl.CONTEXT_IDS_.length;
+  for (i = 0; i < ii; ++i) {
+    try {
+      context = canvas.getContext(ol.webgl.CONTEXT_IDS_[i], opt_attributes);
+      if (!goog.isNull(context)) {
+        return context;
+      }
+    } catch (e) {
+    }
+  }
+  return null;
 };
 
 
