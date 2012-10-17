@@ -19,7 +19,7 @@
     }
 
     function test_clusters(t) {
-        t.plan(17);
+        t.plan(22);
 
         function featuresEq(got, exp) {
             var eq = false;
@@ -103,7 +103,24 @@
         // the one feature with no geometry is not added to the layer
         t.eq(layer.features.length, features.length-1, "[1-threshold 100] layer has " + (features.length-1) + " clusters");
         t.ok(featuresEq(layer.features, features.slice(0, 80)), "[1-threshold 100] layer has all features with geometry");
-        
+
+        // remove features and zoom
+        strategy.threshold = 1;
+        map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+        t.eq(strategy.features.length, 81,
+                    "[remove features] cluster has cache");
+        layer.removeAllFeatures();
+        t.eq(layer.features.length, 0,
+                    "[remove features] layer has no features after remove");
+        t.ok(!strategy.features,
+                    "[remove features] cluster has no cache after remove");
+        map.zoomIn();
+        t.eq(layer.features.length, 0,
+                    "[remove features] layer has no features after zoom");
+        t.ok(!strategy.features,
+                    "[remove features] cluster has no cache after zoom");
+
+        map.destroy();
     }
 
     function test_deactivate(t) {
