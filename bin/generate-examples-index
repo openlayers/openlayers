@@ -18,6 +18,8 @@ def main(argv):
 
     option_parser = OptionParser()
     option_parser.add_option('--output', '-o', metavar='FILENAME')
+    option_parser.add_option('--script', '-s', action='append', default=[],
+                             dest='scripts', metavar='SCRIPT')
     options, args = option_parser.parse_args(argv[1:])
     if options.output:
         outputdir = os.path.dirname(options.output)
@@ -46,6 +48,10 @@ def main(argv):
                         with tag(tb, 'a', {'href': href}):
                             tb.data(os.path.splitext(os.path.basename(arg))[0]
                                     .replace('-', ' '))
+            for script in sorted(options.scripts):
+                src = os.path.relpath(script, outputdir)
+                with tag(tb, 'script', {'src': src, 'type': 'text/javascript'}):
+                    tb.data('')
 
     if options.output:
         output = open(options.output, 'w')
