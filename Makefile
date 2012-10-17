@@ -66,7 +66,7 @@ build-examples: examples $(subst .html,.combined.js,$(EXAMPLES))
 examples: examples/index.html $(subst .html,.json,$(EXAMPLES))
 
 examples/index.html: bin/generate-examples-index $(EXAMPLES)
-	bin/generate-examples-index -o $@ $(EXAMPLES)
+	bin/generate-examples-index -o $@ -s examples/index.js $(EXAMPLES)
 
 examples/%.json: Makefile base.json
 	echo "{\"id\": \"$(basename $(notdir $@))\", \"inherits\": \"../base.json\", \"inputs\": [\"$(subst .json,.js,$@)\", \"build/src/internal/src/types.js\"]}" > $@
