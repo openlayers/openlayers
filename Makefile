@@ -11,7 +11,7 @@ EXTERNAL_SRC = \
 	build/src/external/externs/types.js \
 	build/src/external/src/exports.js \
 	build/src/external/src/types.js
-EXAMPLES = $(shell find examples -maxdepth 1 -name \*.html)
+EXAMPLES = $(filter-out examples/index.html,$(shell find examples -maxdepth 1 -name \*.html))
 comma := ,
 empty :=
 space := $(empty) $(empty)
@@ -63,7 +63,10 @@ build/src/internal/src/types.js: bin/generate-exports src/ol/exports.txt
 build-examples: examples $(subst .html,.combined.js,$(EXAMPLES))
 
 .PHONY: examples
-examples: $(subst .html,.json,$(EXAMPLES))
+examples: examples/index.html $(subst .html,.json,$(EXAMPLES))
+
+examples/index.html: bin/generate-examples-index $(EXAMPLES)
+	bin/generate-examples-index -o $@ $(EXAMPLES)
 
 examples/%.json: Makefile base.json
 	echo "{\"id\": \"$(basename $(notdir $@))\", \"inherits\": \"../base.json\", \"inputs\": [\"$(subst .json,.js,$@)\", \"build/src/internal/src/types.js\"]}" > $@
