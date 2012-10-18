@@ -11,6 +11,7 @@ EXTERNAL_SRC = \
 	build/src/external/externs/types.js \
 	build/src/external/src/exports.js \
 	build/src/external/src/types.js
+EXAMPLES_SRC = $(filter-out $(shell find examples -name \*.combined.js),$(shell find examples -name \*.js))
 EXAMPLES = $(filter-out examples/index.html,$(shell find examples -maxdepth 1 -name \*.html))
 comma := ,
 empty :=
@@ -87,8 +88,8 @@ serve-precommit: $(PLOVR_JAR) $(INTERNAL_SRC)
 .PHONY: lint
 lint: build/lint-src-timestamp build/lint-spec-timestamp
 
-build/lint-src-timestamp: $(SRC) $(INTERNAL_SRC) $(EXTERNAL_SRC)
-	gjslint --strict --limited_doc_files=$(subst $(space),$(comma),$(shell find externs build/src/external/externs -name \*.js)) $(SRC) $(INTERNAL_SRC) $(EXTERNAL_SRC) $(filter-out $(shell find examples -name \*.combined.js),$(shell find examples -name \*.js)) && touch $@
+build/lint-src-timestamp: $(SRC) $(INTERNAL_SRC) $(EXTERNAL_SRC) $(EXAMPLES_SRC)
+	gjslint --strict --limited_doc_files=$(subst $(space),$(comma),$(shell find externs build/src/external/externs -name \*.js)) $(SRC) $(INTERNAL_SRC) $(EXTERNAL_SRC) $(EXAMPLES_SRC) && touch $@
 
 build/lint-spec-timestamp: $(SPEC)
 	gjslint $(SPEC) && touch $@
