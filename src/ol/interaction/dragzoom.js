@@ -65,8 +65,8 @@ ol.interaction.DragZoom.prototype.handleDragStart =
     function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   if (browserEvent.isMouseActionButton() && this.condition_(browserEvent)) {
-    return {capture: true, box: true, boxClass: 'ol-zoombox'};
+    return {box: true, boxClass: 'ol-zoombox'};
   } else {
-    return {capture: false};
+    return null;
   }
 };

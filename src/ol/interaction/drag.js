@@ -9,9 +9,8 @@ goog.require('ol.interaction.Interaction');
 
 
 /**
- * @typedef {{capture: boolean,
- *            box: (boolean|undefined),
- *            boxClass: (string|undefined)}}
+ * @typedef {{box: (boolean|undefined),
+ *            boxClass: (string|undefined)}|null}
  */
 ol.DragCaptureResponse;
 
@@ -90,9 +89,7 @@ ol.interaction.Drag.prototype.handleDragEnd = goog.nullFunction;
  * @protected
  * @return {ol.DragCaptureResponse} Capture dragging response.
  */
-ol.interaction.Drag.prototype.handleDragStart = function(mapBrowserEvent) {
-  return {capture: false};
-};
+ol.interaction.Drag.prototype.handleDragStart = goog.functions.NULL;
 
 
 /**
@@ -138,12 +135,12 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
     this.startCenter = /** @type {!ol.Coordinate} */ map.getCenter();
     this.startCoordinate = /** @type {ol.Coordinate} */
         mapBrowserEvent.getCoordinate();
-    var handled = this.handleDragStart(mapBrowserEvent);
-    if (handled.capture) {
+    var capture = this.handleDragStart(mapBrowserEvent);
+    if (!goog.isNull(capture)) {
       this.dragging_ = true;
       mapBrowserEvent.preventDefault();
-      if (handled.box) {
-        this.box_ = goog.dom.createDom(goog.dom.TagName.DIV, handled.boxClass);
+      if (capture.box) {
+        this.box_ = goog.dom.createDom(goog.dom.TagName.DIV, capture.boxClass);
         goog.style.setPosition(this.box_, this.startX, this.startY);
         goog.style.setBorderBoxSize(this.box_, new ol.Size(0, 0));
         goog.dom.appendChild(map.getOverlayContainer(), this.box_);
