@@ -1,6 +1,22 @@
+goog.require('goog.dom');
 goog.require('ol.Map');
 
 describe('ol.Map', function() {
+
+  describe('dispose', function() {
+    var map;
+
+    beforeEach(function() {
+      map = new ol.Map({
+        target: document.getElementById('map')
+      });
+    });
+
+    it('removes the viewport from its parent', function() {
+      map.dispose();
+      expect(goog.dom.getParentElement(map.getViewport())).toBeNull();
+    });
+  });
 
   describe('create constraints', function() {
 

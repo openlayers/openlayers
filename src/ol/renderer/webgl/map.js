@@ -22,6 +22,7 @@ goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.webgl.FragmentShader');
 goog.require('ol.renderer.webgl.TileLayer');
 goog.require('ol.renderer.webgl.VertexShader');
+goog.require('ol.webgl');
 goog.require('ol.webgl.WebGLContextEventType');
 
 
@@ -163,7 +164,7 @@ ol.renderer.webgl.Map = function(container, map) {
    * @private
    * @type {WebGLRenderingContext}
    */
-  this.gl_ = this.canvas_.getContext('experimental-webgl', {
+  this.gl_ = ol.webgl.getContext(this.canvas_, {
     alpha: false,
     antialias: true,
     depth: false,

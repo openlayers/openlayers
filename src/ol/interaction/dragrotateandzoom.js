@@ -1,7 +1,8 @@
-goog.provide('ol.interaction.ShiftDragRotateAndZoom');
+goog.provide('ol.interaction.DragRotateAndZoom');
 
 goog.require('goog.math.Vec2');
 goog.require('ol.MapBrowserEvent');
+goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Drag');
 
 
@@ -9,10 +10,17 @@ goog.require('ol.interaction.Drag');
 /**
  * @constructor
  * @extends {ol.interaction.Drag}
+ * @param {ol.interaction.ConditionType} condition Condition.
  */
-ol.interaction.ShiftDragRotateAndZoom = function() {
+ol.interaction.DragRotateAndZoom = function(condition) {
 
   goog.base(this);
+
+  /**
+   * @private
+   * @type {ol.interaction.ConditionType}
+   */
+  this.condition_ = condition;
 
   /**
    * @private
@@ -27,13 +35,13 @@ ol.interaction.ShiftDragRotateAndZoom = function() {
   this.startRotation_ = 0;
 
 };
-goog.inherits(ol.interaction.ShiftDragRotateAndZoom, ol.interaction.Drag);
+goog.inherits(ol.interaction.DragRotateAndZoom, ol.interaction.Drag);
 
 
 /**
  * @inheritDoc
  */
-ol.interaction.ShiftDragRotateAndZoom.prototype.handleDrag =
+ol.interaction.DragRotateAndZoom.prototype.handleDrag =
     function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   var map = mapBrowserEvent.map;
@@ -52,11 +60,11 @@ ol.interaction.ShiftDragRotateAndZoom.prototype.handleDrag =
 /**
  * @inheritDoc
  */
-ol.interaction.ShiftDragRotateAndZoom.prototype.handleDragStart =
+ol.interaction.DragRotateAndZoom.prototype.handleDragStart =
     function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   var map = mapBrowserEvent.map;
-  if (map.canRotate() && browserEvent.shiftKey) {
+  if (map.canRotate() && this.condition_(browserEvent)) {
     var resolution = map.getResolution();
     var size = map.getSize();
     var delta = new goog.math.Vec2(

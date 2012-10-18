@@ -116,10 +116,10 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
   var z = tileGrid.getZForResolution(mapResolution);
 
   /**
-   * @type {Object.<string, Object.<string, ol.Tile>>}
+   * @type {Object.<number, Object.<string, ol.Tile>>}
    */
   var tilesToDrawByZ = {};
-  tilesToDrawByZ[String(z)] = {};
+  tilesToDrawByZ[z] = {};
 
   var tileRange =
       tileGrid.getTileRangeForExtentAndResolution(mapExtent, mapResolution);
@@ -136,7 +136,7 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
     var key = tile.tileCoord.toString();
     var state = tile.getState();
     if (state == ol.TileState.LOADED) {
-      tilesToDrawByZ[String(z)][key] = tile;
+      tilesToDrawByZ[z][key] = tile;
       return;
     } else {
       if (state != ol.TileState.LOADING) {
@@ -155,12 +155,10 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
     tileGrid.forEachTileCoordParentTileRange(
         tileCoord,
         function(altZ, altTileRange) {
-          altZ = String(altZ);
           var fullyCovered = true;
           altTileRange.forEachTileCoord(altZ, function(altTileCoord) {
             var tileKey = altTileCoord.toString();
-            if (tilesToDrawByZ[altZ] &&
-                tilesToDrawByZ[altZ][tileKey]) {
+            if (tilesToDrawByZ[altZ] && tilesToDrawByZ[altZ][tileKey]) {
               return;
             }
             var altTile = tileSource.getTile(altTileCoord);
@@ -179,16 +177,17 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
 
   }, this);
 
-  var zs = goog.object.getKeys(tilesToDrawByZ);
-  zs.sort(function(a, b) {return a - b});
+  /** @type {Array.<number>} */
+  var zs = goog.array.map(goog.object.getKeys(tilesToDrawByZ), Number);
+  goog.array.sort(zs);
 
   var fragment = document.createDocumentFragment();
   var altFragment = document.createDocumentFragment();
   var newTiles = false;
   var newAltTiles = false;
   for (var i = 0, ii = zs.length; i < ii; ++i) {
-    var tileZ = +zs[i];
-    var tilesToDraw = tilesToDrawByZ[String(tileZ)];
+    var tileZ = zs[i];
+    var tilesToDraw = tilesToDrawByZ[tileZ];
     var tileOffset = this.getTileOffset_(tileZ, mapResolution);
     for (var key in tilesToDraw) {
       var tile = tilesToDraw[key];

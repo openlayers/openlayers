@@ -27,6 +27,7 @@ Eric Lemoine
 Philip Lindsay
 Martijn van Oosterhout
 David Overstrom
+Tom Payne
 Corey Puffault
 Peter William Robins
 Gregers Rygg
