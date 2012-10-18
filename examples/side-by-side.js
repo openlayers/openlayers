@@ -1,7 +1,7 @@
 goog.require('goog.debug.Console');
 goog.require('goog.debug.Logger');
 goog.require('goog.debug.Logger.Level');
-goog.require('ol.CoordinateFormat');
+goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.control.MousePosition');
@@ -29,7 +29,7 @@ var domMap = new ol.Map({
 });
 
 domMap.getControls().push(new ol.control.MousePosition({
-  coordinateFormat: ol.CoordinateFormat.hdms,
+  coordinateFormat: ol.Coordinate.toStringHDMS,
   projection: ol.Projection.getFromCode('EPSG:4326'),
   target: document.getElementById('domMousePosition'),
   undefinedHtml: '&nbsp;'
@@ -47,7 +47,7 @@ if (webglMap !== null) {
 }
 
 webglMap.getControls().push(new ol.control.MousePosition({
-  coordinateFormat: ol.CoordinateFormat.hdms,
+  coordinateFormat: ol.Coordinate.toStringHDMS,
   projection: ol.Projection.getFromCode('EPSG:4326'),
   target: document.getElementById('webglMousePosition'),
   undefinedHtml: '&nbsp;'

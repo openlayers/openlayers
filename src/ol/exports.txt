@@ -15,9 +15,7 @@
 @exportProperty ol.Collection.prototype.setAt
 
 @exportSymbol ol.Coordinate
-
-@exportSymbol ol.CoordinateFormat
-@exportProperty ol.CoordinateFormat.hdms
+@exportProperty ol.Coordinate.toStringHDMS
 
 @exportSymbol ol.Extent
 

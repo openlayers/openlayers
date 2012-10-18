@@ -3,7 +3,6 @@ goog.require('goog.debug.Logger');
 goog.require('goog.debug.Logger.Level');
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
-goog.require('ol.CoordinateFormat');
 goog.require('ol.Map');
 goog.require('ol.overlay.Overlay');
 goog.require('ol.source.MapQuestOpenAerial');
@@ -42,7 +41,7 @@ map.addEventListener('click', function(evt) {
   var coordinate = evt.getCoordinate();
   popup.getElement().innerHTML =
       'Welcome to ol3. The location you clicked was<br>' +
-      ol.CoordinateFormat.hdms(ol.Projection.transformWithCodes(
+      ol.Coordinate.toStringHDMS(ol.Projection.transformWithCodes(
           coordinate, 'EPSG:3857', 'EPSG:4326'));
   popup.setCoordinate(coordinate);
 });
