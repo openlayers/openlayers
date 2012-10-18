@@ -1,0 +1,65 @@
+#!/usr/bin/env python
+
+from contextlib import contextmanager
+from optparse import OptionParser
+import os
+import sys
+import xml.etree.cElementTree as ElementTree
+
+
+@contextmanager
+def tag(tb, name, attrs=None):
+    tb.start(name, attrs)
+    yield tb
+    tb.end(name)
+
+
+def main(argv):
+
+    option_parser = OptionParser()
+    option_parser.add_option('--output', '-o', metavar='FILENAME')
+    option_parser.add_option('--script', '-s', action='append', default=[],
+                             dest='scripts', metavar='SCRIPT')
+    options, args = option_parser.parse_args(argv[1:])
+    if options.output:
+        outputdir = os.path.dirname(options.output)
+    else:
+        outputdir = os.curdir()
+
+    tb = ElementTree.TreeBuilder()
+    with tag(tb, 'html'):
+        with tag(tb, 'head'):
+            with tag(tb, 'meta', {'content': 'text/html; charset=utf-8',
+                                  'http-equiv': 'Content-Type'}):
+                pass
+            with tag(tb, 'link', {'href': 'style.css',
+                                  'rel': 'stylesheet',
+                                  'type': 'text/css'}):
+                pass
+            with tag(tb, 'title'):
+                tb.data('ol3 examples')
+        with tag(tb, 'body'):
+            with tag(tb, 'h1'):
+                tb.data('ol3 examples')
+            with tag(tb, 'ul'):
+                for arg in sorted(args):
+                    with tag(tb, 'li'):
+                        href = os.path.relpath(arg, outputdir)
+                        with tag(tb, 'a', {'href': href}):
+                            tb.data(os.path.splitext(os.path.basename(arg))[0]
+                                    .replace('-', ' '))
+            for script in sorted(options.scripts):
+                src = os.path.relpath(script, outputdir)
+                with tag(tb, 'script', {'src': src, 'type': 'text/javascript'}):
+                    tb.data('')
+
+    if options.output:
+        output = open(options.output, 'w')
+    else:
+        output = sys.stdout
+    output.write('<!doctype html>')
+    output.write(ElementTree.tostring(tb.close(), 'utf-8', 'html'))
+
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv))

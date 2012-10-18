@@ -9,3 +9,4 @@
 /build/src
 /examples/*.json
 /examples/*.combined.js
+/examples/index.html
