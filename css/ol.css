@@ -26,7 +26,7 @@
   content: "\2003";
 }
 .ol-dragbox, .ol-zoombox {
-  position: absolute;
+  position: relative;
   border: 2px solid red;
 }
 .ol-renderer-webgl-canvas {
