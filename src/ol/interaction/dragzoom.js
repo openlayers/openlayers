@@ -1,5 +1,3 @@
-// FIXME draw drag box
-
 goog.provide('ol.interaction.DragZoom');
 
 goog.require('ol.Extent');
