@@ -527,7 +527,7 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
       0);
 
   if (rerender) {
-    mapRenderer.render();
+    mapRenderer.render(true);
   }
 
 };

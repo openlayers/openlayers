@@ -92,7 +92,8 @@ ol.renderer.dom.TileLayer.prototype.removeExtraTiles_ =
  */
 ol.renderer.dom.TileLayer.prototype.handleTileChange_ = function(event) {
   goog.asserts.assert(event.target.getState() == ol.TileState.LOADED);
-  this.getMap().render();
+  // do not cancel any pending callback
+  this.getMapRenderer().render(true);
 };
 
 

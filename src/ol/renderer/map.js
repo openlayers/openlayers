@@ -30,6 +30,24 @@ ol.renderer.Map = function(container, map) {
   this.map = map;
 
   /**
+   * @private
+   * @type {Function}
+   */
+  this.callback_ = null;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.rendering_ = false;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.pendingRender_ = false;
+
+  /**
    * @protected
    * @type {Object.<number, ol.renderer.Layer>}
    */
@@ -71,14 +89,6 @@ ol.renderer.Map = function(container, map) {
   this.delayedRender_ = new goog.async.AnimationDelay(
       this.renderFrame, null, this);
   this.registerDisposable(this.delayedRender_);
-
-  /**
-   * Flag to indicate whether this.delayedRender_.start has been called.
-   *
-   * @type {boolean}
-   * @private
-   */
-  this.pendingRender_ = false;
 
   /**
    * @private
@@ -129,6 +139,7 @@ ol.renderer.Map.prototype.addLayer = function(layer) {
  * @protected
  */
 ol.renderer.Map.prototype.afterRenderFrame = function() {
+  this.rendering_ = false;
   this.map.dispatchEvent(ol.MapEventType.POSTRENDER);
 };
 
@@ -138,7 +149,20 @@ ol.renderer.Map.prototype.afterRenderFrame = function() {
  * @protected
  */
 ol.renderer.Map.prototype.beforeRenderFrame = function() {
+  this.rendering_ = true;
+  var rerender = false;
+  if (!goog.isNull(this.callback_)) {
+    // allow state to be set before rendering
+    rerender = !!this.callback_();
+  }
   this.pendingRender_ = false;
+  if (rerender) {
+    // schedule another rendering
+    this.render();
+  } else {
+    // remove any exhausted callback
+    this.callback_ = null;
+  }
 };
 
 
@@ -346,9 +370,16 @@ ol.renderer.Map.prototype.removeLayerRenderer = function(layer) {
 
 
 /**
- * Render.
+ * Render the map.
+ * @param {Function|boolean=} opt_callback Optional callback.  See the
+ *     ol.Map.prototype#render method for a description of this callback.
  */
-ol.renderer.Map.prototype.render = function() {
+ol.renderer.Map.prototype.render = function(opt_callback) {
+  if (!this.rendering_ && opt_callback !== true) {
+    // we only replace the callback during calls to render that are
+    // not triggered during a rendering
+    this.callback_ = /** @type {Function} */ opt_callback || null;
+  }
   if (!this.pendingRender_ && this.getMap().isDef()) {
     this.pendingRender_ = true;
     this.delayedRender_.start();

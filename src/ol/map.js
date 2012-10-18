@@ -635,9 +635,18 @@ ol.Map.prototype.recalculateTransforms_ = function() {
 
 /**
  * Render the map.
+ * @param {Function|boolean=} opt_callback Function to be called immediately
+ *     before the map is rendered.  For renderers that are able to perform
+ *     animations this callback can be used to set various map properties
+ *     without incurring multiple repaints.  If the callback returns true,
+ *     another rendering will be scheduled.  In this way, the callback works as
+ *     a state generator for an animation.  Subsequent calls to render can
+ *     replace or remove this callback (if render is called with no callback).
+ *     If render is called with a boolean, this will retain any pending callback
+ *     (if true) or cancel the pending callback (if false).
  */
-ol.Map.prototype.render = function() {
-  this.renderer_.render();
+ol.Map.prototype.render = function(opt_callback) {
+  this.renderer_.render(opt_callback);
 };
 
 
