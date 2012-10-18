@@ -51,6 +51,38 @@ ol.Extent.prototype.contains = function(coordinate) {
 
 
 /**
+ * @return {ol.Coordinate} Bottom left coordinate.
+ */
+ol.Extent.prototype.getBottomLeft = function() {
+  return new ol.Coordinate(this.minX, this.minY);
+};
+
+
+/**
+ * @return {ol.Coordinate} Bottom right coordinate.
+ */
+ol.Extent.prototype.getBottomRight = function() {
+  return new ol.Coordinate(this.maxX, this.minY);
+};
+
+
+/**
+ * @return {ol.Coordinate} Top left coordinate.
+ */
+ol.Extent.prototype.getTopLeft = function() {
+  return new ol.Coordinate(this.minX, this.maxY);
+};
+
+
+/**
+ * @return {ol.Coordinate} Top right coordinate.
+ */
+ol.Extent.prototype.getTopRight = function() {
+  return new ol.Coordinate(this.maxX, this.maxY);
+};
+
+
+/**
  * @param {ol.TransformFunction} transformFn Transform function.
  * @return {ol.Extent} Extent.
  */
