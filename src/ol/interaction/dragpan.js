@@ -34,7 +34,7 @@ ol.interaction.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
   var resolution = map.getResolution();
   var rotation = map.getRotation();
   var delta =
-      new ol.Coordinate(-resolution * this.deltaX, resolution * this.deltaY);
+      new ol.Coordinate(-resolution * this.delta.x, resolution * this.delta.y);
   if (map.canRotate() && goog.isDef(rotation)) {
     delta.rotate(rotation);
   }
@@ -50,8 +50,8 @@ ol.interaction.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
 ol.interaction.DragPan.prototype.handleDragStart = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   if (this.condition_(browserEvent)) {
-    return true;
+    return {};
   } else {
-    return false;
+    return null;
   }
 };

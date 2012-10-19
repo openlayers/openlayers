@@ -61,8 +61,8 @@ ol.interaction.DragRotate.prototype.handleDragStart =
         size.height / 2 - offset.y,
         offset.x - size.width / 2);
     this.startRotation_ = (map.getRotation() || 0) + theta;
-    return true;
+    return {};
   } else {
-    return false;
+    return null;
   }
 };

@@ -1,12 +1,19 @@
-
 goog.provide('ol.interaction.Drag');
 
 goog.require('goog.asserts');
 goog.require('goog.events.EventType');
 goog.require('goog.functions');
+goog.require('goog.math.Coordinate');
 goog.require('ol.Coordinate');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.interaction.Interaction');
+
+
+/**
+ * @typedef {{box: (boolean|undefined),
+ *            boxClass: (string|undefined)}|null}
+ */
+ol.DragCaptureResponse;
 
 
 
@@ -20,19 +27,25 @@ ol.interaction.Drag = function() {
 
   /**
    * @private
+   * @type {Element}
+   */
+  this.box_ = null;
+
+  /**
+   * @private
    * @type {boolean}
    */
   this.dragging_ = false;
 
   /**
-   * @type {number}
+   * @type {goog.math.Coordinate}
    */
-  this.startX = 0;
+  this.start = null;
 
   /**
-   * @type {number}
+   * @type {goog.math.Coordinate}
    */
-  this.startY = 0;
+  this.delta = null;
 
   /**
    * @type {number}
@@ -75,9 +88,9 @@ ol.interaction.Drag.prototype.handleDragEnd = goog.nullFunction;
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
  * @protected
- * @return {boolean} Capture dragging.
+ * @return {ol.DragCaptureResponse} Capture dragging response.
  */
-ol.interaction.Drag.prototype.handleDragStart = goog.functions.FALSE;
+ol.interaction.Drag.prototype.handleDragStart = goog.functions.NULL;
 
 
 /**
@@ -90,32 +103,49 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
     return;
   }
   var browserEvent = mapBrowserEvent.browserEvent;
+  goog.asserts.assert(browserEvent instanceof goog.events.BrowserEvent);
+  var overlayContainer = map.getOverlayContainer();
+  var position = goog.style.getRelativePosition(browserEvent, overlayContainer);
   if (this.dragging_) {
+    goog.asserts.assert(!goog.isNull(this.start));
+    this.delta = goog.math.Coordinate.difference(position, this.start);
     if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DRAG) {
-      goog.asserts.assert(browserEvent instanceof goog.events.BrowserEvent);
-      this.deltaX = browserEvent.clientX - this.startX;
-      this.deltaY = browserEvent.clientY - this.startY;
+      if (this.box_) {
+        goog.style.setPosition(
+            this.box_,
+            Math.min(this.start.x, position.x),
+            Math.min(this.start.y, position.y));
+        goog.style.setBorderBoxSize(
+            this.box_,
+            new ol.Size(Math.abs(this.delta.x), Math.abs(this.delta.y)));
+      }
       this.handleDrag(mapBrowserEvent);
     } else if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DRAGEND) {
-      goog.asserts.assert(browserEvent instanceof goog.events.BrowserEvent);
-      this.deltaX = browserEvent.clientX - this.startX;
-      this.deltaY = browserEvent.clientY - this.startY;
       this.handleDragEnd(mapBrowserEvent);
+      if (this.box_) {
+        goog.dom.removeNode(this.box_);
+        this.box_ = null;
+      }
       this.dragging_ = false;
+      this.start = null;
+      this.delta = null;
     }
   } else if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DRAGSTART) {
-    goog.asserts.assert(browserEvent instanceof goog.events.BrowserEvent);
-    this.startX = browserEvent.clientX;
-    this.startY = browserEvent.clientY;
-    this.deltaX = 0;
-    this.deltaY = 0;
+    this.start = position;
+    this.delta = new goog.math.Coordinate(0, 0);
     this.startCenter = /** @type {!ol.Coordinate} */ map.getCenter();
     this.startCoordinate = /** @type {ol.Coordinate} */
         mapBrowserEvent.getCoordinate();
-    var handled = this.handleDragStart(mapBrowserEvent);
-    if (handled) {
+    var capture = this.handleDragStart(mapBrowserEvent);
+    if (!goog.isNull(capture)) {
       this.dragging_ = true;
       mapBrowserEvent.preventDefault();
+      if (capture.box) {
+        this.box_ = goog.dom.createDom(goog.dom.TagName.DIV, capture.boxClass);
+        goog.style.setPosition(this.box_, this.start.x, this.start.y);
+        goog.style.setBorderBoxSize(this.box_, new ol.Size(0, 0));
+        goog.dom.appendChild(overlayContainer, this.box_);
+      }
     }
   }
 };

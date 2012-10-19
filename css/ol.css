@@ -25,10 +25,6 @@
 .ol-attribution li:not(:last-child):after {
   content: "\2003";
 }
-.ol-dragbox {
-  position: absolute;
-  border: 2px solid red;
-}
 .ol-renderer-webgl-canvas {
   width: 100%;
   height: 100%;
@@ -76,6 +72,10 @@
   .ol-zoom a:hover {
     background: rgba(0,60,136,0.5);
   }
+}
+.ol-zoombox {
+  position: relative;
+  border: 2px solid red;
 }
 .ol-zoom-in {
   border-radius: 4px 4px 0 0;
