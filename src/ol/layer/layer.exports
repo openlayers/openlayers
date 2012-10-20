@@ -1,0 +1,9 @@
+@exportObjectLiteral ol.layer.LayerOptions
+@exportObjectLiteralProperty ol.layer.LayerOptions.brightness number|undefined
+@exportObjectLiteralProperty ol.layer.LayerOptions.contrast number|undefined
+@exportObjectLiteralProperty ol.layer.LayerOptions.hue number|undefined
+@exportObjectLiteralProperty ol.layer.LayerOptions.opacity number|undefined
+@exportObjectLiteralProperty ol.layer.LayerOptions.saturation number|undefined
+@exportObjectLiteralProperty ol.layer.LayerOptions.source ol.source.Source
+@exportObjectLiteralProperty ol.layer.LayerOptions.visible boolean|undefined
+

@@ -1,0 +1,6 @@
+@exportObjectLiteral ol.control.AttributionOptions
+@exportObjectLiteralProperty ol.control.AttributionOptions.map ol.Map|undefined
+@exportObjectLiteralProperty ol.control.AttributionOptions.target Element|undefined
+
+@exportClass ol.control.Attribution ol.control.AttributionOptions
+

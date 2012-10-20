@@ -1,0 +1,2 @@
+@exportSymbol ol.Coordinate
+@exportProperty ol.Coordinate.toStringHDMS

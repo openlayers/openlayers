@@ -1,0 +1,35 @@
+@exportObjectLiteral ol.MapOptions
+@exportObjectLiteralProperty ol.MapOptions.center ol.Coordinate|undefined
+@exportObjectLiteralProperty ol.MapOptions.controls ol.Collection|undefined
+@exportObjectLiteralProperty ol.MapOptions.doubleClickZoom boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.dragPan boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.interactions ol.Collection|undefined
+@exportObjectLiteralProperty ol.MapOptions.keyboard boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.keyboardPanOffset number|undefined
+@exportObjectLiteralProperty ol.MapOptions.layers ol.Collection|undefined
+@exportObjectLiteralProperty ol.MapOptions.maxResolution number|undefined
+@exportObjectLiteralProperty ol.MapOptions.mouseWheelZoom boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.mouseWheelZoomDelta number|undefined
+@exportObjectLiteralProperty ol.MapOptions.numZoomLevels number|undefined
+@exportObjectLiteralProperty ol.MapOptions.projection ol.Projection|string|undefined
+@exportObjectLiteralProperty ol.MapOptions.renderer ol.RendererHint|undefined
+@exportObjectLiteralProperty ol.MapOptions.renderers Array.<ol.RendererHint>|undefined
+@exportObjectLiteralProperty ol.MapOptions.resolution number|undefined
+@exportObjectLiteralProperty ol.MapOptions.resolutions Array.<number>|undefined
+@exportObjectLiteralProperty ol.MapOptions.rotate boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.shiftDragZoom boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.target Element|string
+@exportObjectLiteralProperty ol.MapOptions.userProjection ol.Projection|string|undefined
+@exportObjectLiteralProperty ol.MapOptions.zoom number|undefined
+@exportObjectLiteralProperty ol.MapOptions.zoomDelta number|undefined
+@exportObjectLiteralProperty ol.MapOptions.zoomFactor number|undefined
+
+@exportClass ol.Map ol.MapOptions
+@exportProperty ol.Map.prototype.getControls
+@exportProperty ol.Map.prototype.getInteractions
+
+@exportSymbol ol.RendererHint
+@exportProperty ol.RendererHint.DOM
+@exportProperty ol.RendererHint.WEBGL
+
+

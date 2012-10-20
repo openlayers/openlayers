@@ -1,0 +1,7 @@
+@exportObjectLiteral ol.control.ZoomOptions
+@exportObjectLiteralProperty ol.control.ZoomOptions.delta number|undefined
+@exportObjectLiteralProperty ol.control.ZoomOptions.map ol.Map|undefined
+@exportObjectLiteralProperty ol.control.ZoomOptions.target Element|undefined
+
+@exportClass ol.control.Zoom ol.control.ZoomOptions
+

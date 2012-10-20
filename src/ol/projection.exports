@@ -1,0 +1,10 @@
+@exportSymbol ol.Projection
+@exportProperty ol.Projection.getFromCode
+@exportProperty ol.Projection.getTransform
+@exportProperty ol.Projection.getTransformFromCodes
+@exportProperty ol.Projection.transform
+@exportProperty ol.Projection.transformWithCodes
+@exportProperty ol.Projection.prototype.getCode
+@exportProperty ol.Projection.prototype.getExtent
+@exportProperty ol.Projection.prototype.getUnits
+
