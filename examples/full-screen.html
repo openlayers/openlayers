@@ -14,12 +14,17 @@
       }
       #text {
           position: absolute;
-          bottom: 1em;
-          left: 1em;
-          width: 512px;
+          top: 8px;
+          right: 8px;
           z-index: 20000;
           background-color: white;
           padding: 0 0.5em 0.5em 0.5em;
+          border-radius: 4px;
+      }
+      @media only screen and (max-width: 600px) {
+        #text {
+          display: none;
+        }
       }
     </style>
     <title>Full-screen example</title>
