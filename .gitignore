@@ -1,4 +1,5 @@
 /bin/plovr*.jar
+/bin/*.pyc
 /build/gh-pages
 /build/jsdoc-*-timestamp
 /build/lint-spec-timestamp
@@ -9,4 +10,5 @@
 /build/src
 /examples/*.json
 /examples/*.combined.js
-/examples/index.html
+/examples/example-list.js
+/examples/example-list.xml

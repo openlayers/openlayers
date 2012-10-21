@@ -12,6 +12,20 @@
         width: 100%;
         height: 100%;
       }
+      #text {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          z-index: 20000;
+          background-color: white;
+          padding: 0 0.5em 0.5em 0.5em;
+          border-radius: 4px;
+      }
+      @media only screen and (max-width: 600px) {
+        #text {
+          display: none;
+        }
+      }
       .overlay {
         display: none;
         font-size: 10pt;
@@ -33,7 +47,6 @@
         border-radius: 5px;
         padding: 5px;
       }
-
 
       /* Popup CSS generated with http://cssarrowplease.com/ */
 
@@ -67,7 +80,7 @@
         margin-left: -13px;
       }
     </style>
-    <title>ol3 overlay-and-popup demo</title>
+    <title>Overlay example</title>
   </head>
   <body>
     <div id="map">
@@ -75,7 +88,17 @@
       <a class="overlay" id="vienna" target="_blank" href="http://en.wikipedia.org/wiki/Vienna">Vienna</a>
       <!-- Popup -->
       <div class="overlay arrow_box" id="popup"></div>
+      <div id="text">
+        <h1 id="title">Overlay example</h1>
+        <div id="shortdesc">Demonstrates Overlays.</div>
+        <div id="docs">
+          <p>See the
+          <a href="overlay-and-popup.js" target="_blank">overlay-and-popup.js source</a>
+          to see how this is done.</p>
+        </div>
+      </div>
     </div>
+    <div id="tags">overlay, popup, mapquest, openaerial</div>
     <script src="loader.js?id=overlay-and-popup" type="text/javascript"></script>
   </body>
 </html>
