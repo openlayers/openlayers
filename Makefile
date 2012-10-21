@@ -11,8 +11,8 @@ EXTERNAL_SRC = \
 	build/src/external/externs/types.js \
 	build/src/external/src/exports.js \
 	build/src/external/src/types.js
-EXAMPLES_SRC = $(filter-out $(shell find examples -name \*.combined.js),$(shell find examples -name \*.js))
-EXAMPLES = $(filter-out examples/index.html,$(shell find examples -maxdepth 1 -name \*.html))
+EXAMPLES_SRC = $(filter-out $(shell find examples -name \*.combined.js) examples/Jugl.js examples/example-list.js,$(shell find examples -name \*.js))
+EXAMPLES = $(filter-out examples/example-list.html,$(shell find examples -maxdepth 1 -name \*.html))
 comma := ,
 empty :=
 space := $(empty) $(empty)
@@ -64,10 +64,10 @@ build/src/internal/src/types.js: bin/generate-exports src/ol/exports.txt
 build-examples: examples $(subst .html,.combined.js,$(EXAMPLES))
 
 .PHONY: examples
-examples: examples/index.html $(subst .html,.json,$(EXAMPLES))
+examples: examples/example-list.js $(subst .html,.json,$(EXAMPLES))
 
-examples/index.html: bin/generate-examples-index $(EXAMPLES)
-	bin/generate-examples-index -o $@ -s examples/index.js $(EXAMPLES)
+examples/example-list.js: bin/exampleparser.py $(EXAMPLES)
+	bin/exampleparser.py examples examples
 
 examples/%.json: Makefile base.json
 	echo "{\"id\": \"$(basename $(notdir $@))\", \"inherits\": \"../base.json\", \"inputs\": [\"$(subst .json,.js,$@)\", \"build/src/internal/src/types.js\"]}" > $@
@@ -120,7 +120,8 @@ hostexamples: build examples
 	cp $(EXAMPLES) $(subst .html,.js,$(EXAMPLES)) examples/style.css build/gh-pages/$(BRANCH)/examples/
 	cp build/loader_hosted_examples.js build/gh-pages/$(BRANCH)/examples/loader.js
 	cp build/ol.js build/ol.css build/gh-pages/$(BRANCH)/build/
-	cp examples/index.html examples/index.js build/gh-pages/$(BRANCH)/examples
+	cp examples/example-list.html build/gh-pages/$(BRANCH)/examples/index.html
+	cp examples/example-list.js examples/example-list.xml examples/Jugl.js build/gh-pages/$(BRANCH)/examples/
 
 .PHONY: test
 test: $(INTERNAL_SRC)
@@ -136,6 +137,8 @@ clean:
 	rm -rf build/src
 	rm -f examples/*.json
 	rm -f examples/*.combined.js
+	rm -f examples/example-list.js
+	rm -f examples/example-list.xml
 	rm -rf build/apidoc
 
 reallyclean: clean

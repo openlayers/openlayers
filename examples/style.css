@@ -54,3 +54,9 @@ h6 {
     font-size: 80%;
     font-weight: bold;
 }
+#tags {
+  display: none;
+}
+#shortdesc {
+  margin-bottom: 2em;
+}
