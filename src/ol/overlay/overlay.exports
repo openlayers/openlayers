@@ -1,9 +1,3 @@
-@exportObjectLiteral ol.overlay.OverlayOptions
-@exportObjectLiteralProperty ol.overlay.OverlayOptions.coordinate ol.Coordinate|undefined
-@exportObjectLiteralProperty ol.overlay.OverlayOptions.element Element|undefined
-@exportObjectLiteralProperty ol.overlay.OverlayOptions.map ol.Map|undefined
-@exportObjectLiteralProperty ol.overlay.OverlayOptions.positioning Array.<string>|undefined
-
 @exportClass ol.overlay.Overlay ol.overlay.OverlayOptions
 @exportProperty ol.overlay.Overlay.prototype.getElement
 @exportProperty ol.overlay.Overlay.prototype.setCoordinate

@@ -1,9 +1,2 @@
-@exportObjectLiteral ol.control.MousePositionOptions
-@exportObjectLiteralProperty ol.control.MousePositionOptions.coordinateFormat ol.CoordinateFormatType|undefined
-@exportObjectLiteralProperty ol.control.MousePositionOptions.map ol.Map|undefined
-@exportObjectLiteralProperty ol.control.MousePositionOptions.projection ol.Projection|undefined
-@exportObjectLiteralProperty ol.control.MousePositionOptions.target Element|undefined
-@exportObjectLiteralProperty ol.control.MousePositionOptions.undefinedHtml string|undefined
-
 @exportClass ol.control.MousePosition ol.control.MousePositionOptions
 
