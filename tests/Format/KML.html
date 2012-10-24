@@ -259,14 +259,14 @@
     
     function test_extractTracks(t) {
         
-        t.plan(12);
+        t.plan(13);
         
         var xml = new OpenLayers.Format.XML(); 
         var doc = xml.read(document.getElementById("macnoise.kml").firstChild.nodeValue);
         
         var format = new OpenLayers.Format.KML({
             extractTracks: true,
-            trackAttributes: ["speed"] // additional custom attributes
+            trackAttributes: ["speed", "num"] // additional custom attributes
         });
         
         var features = format.read(doc.documentElement);
@@ -289,6 +289,7 @@
         
         // additional per point attributes (determined by trackAttributes property)
         t.eq(attr.speed, "166", "correct speed");
+        t.eq(attr.num, "50", "correct num");
         
         var exp = new OpenLayers.Geometry.Point(-93.0753620391713, 44.9879724110872);
         exp.z = 1006;
@@ -525,6 +526,21 @@
     <speed>180</speed>
     <speed>184</speed>
     <speed>177</speed>
+    <num>10</num>
+    <num>20</num>
+    <num>30</num>
+    <num>40</num>
+    <num>50</num>
+    <num>60</num>
+    <num>70</num>
+    <num>80</num>
+    <num>90</num>
+    <num>100</num>
+    <num>110</num>
+    <num>120</num>
+    <num>130</num>
+    <num>140</num>
+    <num>150</num>
 </gx:Track></Placemark>
 <Placemark>
   <name>E170</name>
@@ -590,6 +606,20 @@
     <speed>347</speed>
     <speed>334</speed>
     <speed>337</speed>
+    <num>10</num>
+    <num>20</num>
+    <num>30</num>
+    <num>40</num>
+    <num>50</num>
+    <num>60</num>
+    <num>70</num>
+    <num>80</num>
+    <num>90</num>
+    <num>100</num>
+    <num>110</num>
+    <num>120</num>
+    <num>130</num>
+    <num>140</num>
 </gx:Track></Placemark>
 <Placemark>
   <name>BE33</name>
@@ -659,6 +689,21 @@
     <speed>155</speed>
     <speed>155</speed>
     <speed>156</speed>
+    <num>10</num>
+    <num>20</num>
+    <num>30</num>
+    <num>40</num>
+    <num>50</num>
+    <num>60</num>
+    <num>70</num>
+    <num>80</num>
+    <num>90</num>
+    <num>100</num>
+    <num>110</num>
+    <num>120</num>
+    <num>130</num>
+    <num>140</num>
+    <num>150</num>
 </gx:Track></Placemark>
 <Placemark>
   <name>A319</name>
@@ -728,6 +773,21 @@
     <speed>365</speed>
     <speed>350</speed>
     <speed>354</speed>
+    <num>10</num>
+    <num>20</num>
+    <num>30</num>
+    <num>40</num>
+    <num>50</num>
+    <num>60</num>
+    <num>70</num>
+    <num>80</num>
+    <num>90</num>
+    <num>100</num>
+    <num>110</num>
+    <num>120</num>
+    <num>130</num>
+    <num>140</num>
+    <num>150</num>
 </gx:Track></Placemark>
 <Placemark>
   <name>E145</name>
@@ -797,6 +857,21 @@
     <speed>228</speed>
     <speed>232</speed>
     <speed>236</speed>
+    <num>10</num>
+    <num>20</num>
+    <num>30</num>
+    <num>40</num>
+    <num>50</num>
+    <num>60</num>
+    <num>70</num>
+    <num>80</num>
+    <num>90</num>
+    <num>100</num>
+    <num>110</num>
+    <num>120</num>
+    <num>130</num>
+    <num>140</num>
+    <num>150</num>
 </gx:Track></Placemark>
 <Placemark>
   <name>E170</name>
@@ -854,6 +929,18 @@
     <speed>278</speed>
     <speed>283</speed>
     <speed>288</speed>
+    <num>10</num>
+    <num>20</num>
+    <num>30</num>
+    <num>40</num>
+    <num>50</num>
+    <num>60</num>
+    <num>70</num>
+    <num>80</num>
+    <num>90</num>
+    <num>100</num>
+    <num>110</num>
+    <num>120</num>
 </gx:Track></Placemark>
 <Placemark>
   <name>DC95</name>
@@ -923,6 +1010,21 @@
     <speed>368</speed>
     <speed>355</speed>
     <speed>362</speed>
+    <num>10</num>
+    <num>20</num>
+    <num>30</num>
+    <num>40</num>
+    <num>50</num>
+    <num>60</num>
+    <num>70</num>
+    <num>80</num>
+    <num>90</num>
+    <num>100</num>
+    <num>110</num>
+    <num>120</num>
+    <num>130</num>
+    <num>140</num>
+    <num>150</num>
 </gx:Track></Placemark>
 <Placemark>
   <name>B737</name>
@@ -992,6 +1094,21 @@
     <speed>270</speed>
     <speed>277</speed>
     <speed>287</speed>
+    <num>10</num>
+    <num>20</num>
+    <num>30</num>
+    <num>40</num>
+    <num>50</num>
+    <num>60</num>
+    <num>70</num>
+    <num>80</num>
+    <num>90</num>
+    <num>100</num>
+    <num>110</num>
+    <num>120</num>
+    <num>130</num>
+    <num>140</num>
+    <num>150</num>
 </gx:Track></Placemark>
 <Placemark>
   <name>A318</name>
@@ -1057,6 +1174,20 @@
     <speed>215</speed>
     <speed>222</speed>
     <speed>231</speed>
+    <num>10</num>
+    <num>20</num>
+    <num>30</num>
+    <num>40</num>
+    <num>50</num>
+    <num>60</num>
+    <num>70</num>
+    <num>80</num>
+    <num>90</num>
+    <num>100</num>
+    <num>110</num>
+    <num>120</num>
+    <num>130</num>
+    <num>140</num>
 </gx:Track></Placemark>
 <Placemark>
   <name></name>
@@ -1114,6 +1245,18 @@
     <speed>147</speed>
     <speed>147</speed>
     <speed>150</speed>
+    <num>10</num>
+    <num>20</num>
+    <num>30</num>
+    <num>40</num>
+    <num>50</num>
+    <num>60</num>
+    <num>70</num>
+    <num>80</num>
+    <num>90</num>
+    <num>100</num>
+    <num>110</num>
+    <num>120</num>
 </gx:Track></Placemark>
 <Placemark>
   <name>CRJ2</name>
@@ -1181,6 +1324,19 @@
     <speed>136</speed>
     <speed>136</speed>
     <speed>123</speed>
+    <num>10</num>
+    <num>20</num>
+    <num>30</num>
+    <num>40</num>
+    <num>50</num>
+    <num>60</num>
+    <num>70</num>
+    <num>80</num>
+    <num>90</num>
+    <num>100</num>
+    <num>110</num>
+    <num>120</num>
+    <num>130</num>
 </gx:Track></Placemark>
 <Placemark>
   <name>E170</name>
@@ -1250,6 +1406,21 @@
     <speed>193</speed>
     <speed>194</speed>
     <speed>185</speed>
+    <num>10</num>
+    <num>20</num>
+    <num>30</num>
+    <num>40</num>
+    <num>50</num>
+    <num>60</num>
+    <num>70</num>
+    <num>80</num>
+    <num>90</num>
+    <num>100</num>
+    <num>110</num>
+    <num>120</num>
+    <num>130</num>
+    <num>140</num>
+    <num>150</num>
 </gx:Track></Placemark>
 </Folder>
 <Folder>
