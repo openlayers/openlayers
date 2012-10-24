@@ -37,5 +37,6 @@ ol.interaction.DblClickZoom.prototype.handleMapBrowserEvent =
         -this.delta_ : this.delta_;
     map.zoom(delta, anchor);
     mapBrowserEvent.preventDefault();
+    browserEvent.preventDefault();
   }
 };
