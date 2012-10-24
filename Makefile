@@ -4,6 +4,7 @@ PHANTOMJS = phantomjs
 PLOVR_JAR = bin/plovr-b254c26318c5.jar
 SPEC = $(shell find test/spec -name \*.js)
 SRC = $(shell find externs src/ol -name \*.js)
+EXPORTS = $(filter-out src/objectliterals.exports, $(shell find src -name \*.exports))
 INTERNAL_SRC = \
 	build/src/internal/src/requireall.js \
 	build/src/internal/src/types.js
@@ -40,25 +41,25 @@ build-all: build/ol-all.js
 build/ol-all.js: $(PLOVR_JAR) $(SRC) $(INTERNAL_SRC) base.json build/ol-all.json
 	java -jar $(PLOVR_JAR) build build/ol-all.json >$@ || ( rm -f $@ ; false )
 
-build/src/external/externs/types.js: bin/generate-exports src/ol/exports.txt
+build/src/external/externs/types.js: bin/generate-exports src/objectliterals.exports
 	mkdir -p $(dir $@)
-	bin/generate-exports --externs src/ol/exports.txt >$@ || ( rm -f $@ ; false )
+	bin/generate-exports --externs src/objectliterals.exports >$@ || ( rm -f $@ ; false )
 
-build/src/external/src/exports.js: bin/generate-exports src/ol/exports.txt
+build/src/external/src/exports.js: bin/generate-exports src/objectliterals.exports $(EXPORTS)
 	mkdir -p $(dir $@)
-	bin/generate-exports --exports src/ol/exports.txt >$@ || ( rm -f $@ ; false )
+	bin/generate-exports --exports src/objectliterals.exports $(EXPORTS) >$@ || ( rm -f $@ ; false )
 
-build/src/external/src/types.js: bin/generate-exports src/ol/exports.txt
+build/src/external/src/types.js: bin/generate-exports src/objectliterals.exports
 	mkdir -p $(dir $@)
-	bin/generate-exports --typedef src/ol/exports.txt >$@ || ( rm -f $@ ; false )
+	bin/generate-exports --typedef src/objectliterals.exports >$@ || ( rm -f $@ ; false )
 
 build/src/internal/src/requireall.js: bin/generate-requireall $(SRC)
 	mkdir -p $(dir $@)
 	bin/generate-requireall --require=goog.dom src/ol >$@ || ( rm -f $@ ; false )
 
-build/src/internal/src/types.js: bin/generate-exports src/ol/exports.txt
+build/src/internal/src/types.js: bin/generate-exports src/objectliterals.exports
 	mkdir -p $(dir $@)
-	bin/generate-exports --typedef src/ol/exports.txt >$@ || ( rm -f $@ ; false )
+	bin/generate-exports --typedef src/objectliterals.exports >$@ || ( rm -f $@ ; false )
 
 .PHONY: build-examples
 build-examples: examples $(subst .html,.combined.js,$(EXAMPLES))

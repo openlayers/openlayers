@@ -1,0 +1,7 @@
+@exportSymbol ol.source.BingMaps
+@exportSymbol ol.BingMapsStyle
+@exportProperty ol.BingMapsStyle.AERIAL
+@exportProperty ol.BingMapsStyle.AERIAL_WITH_LABELS
+@exportProperty ol.BingMapsStyle.ROAD
+@exportProperty ol.BingMapsStyle.ORDNANCE_SURVEY
+@exportProperty ol.BingMapsStyle.COLLINS_BART

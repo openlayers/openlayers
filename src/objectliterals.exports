@@ -1,0 +1,61 @@
+@exportObjectLiteral ol.control.AttributionOptions
+@exportObjectLiteralProperty ol.control.AttributionOptions.map ol.Map|undefined
+@exportObjectLiteralProperty ol.control.AttributionOptions.target Element|undefined
+
+@exportObjectLiteral ol.control.MousePositionOptions
+@exportObjectLiteralProperty ol.control.MousePositionOptions.coordinateFormat ol.CoordinateFormatType|undefined
+@exportObjectLiteralProperty ol.control.MousePositionOptions.map ol.Map|undefined
+@exportObjectLiteralProperty ol.control.MousePositionOptions.projection ol.Projection|undefined
+@exportObjectLiteralProperty ol.control.MousePositionOptions.target Element|undefined
+@exportObjectLiteralProperty ol.control.MousePositionOptions.undefinedHtml string|undefined
+
+@exportObjectLiteral ol.control.ZoomOptions
+@exportObjectLiteralProperty ol.control.ZoomOptions.delta number|undefined
+@exportObjectLiteralProperty ol.control.ZoomOptions.map ol.Map|undefined
+@exportObjectLiteralProperty ol.control.ZoomOptions.target Element|undefined
+
+@exportObjectLiteral ol.layer.LayerOptions
+@exportObjectLiteralProperty ol.layer.LayerOptions.brightness number|undefined
+@exportObjectLiteralProperty ol.layer.LayerOptions.contrast number|undefined
+@exportObjectLiteralProperty ol.layer.LayerOptions.hue number|undefined
+@exportObjectLiteralProperty ol.layer.LayerOptions.opacity number|undefined
+@exportObjectLiteralProperty ol.layer.LayerOptions.saturation number|undefined
+@exportObjectLiteralProperty ol.layer.LayerOptions.source ol.source.Source
+@exportObjectLiteralProperty ol.layer.LayerOptions.visible boolean|undefined
+
+@exportObjectLiteral ol.MapOptions
+@exportObjectLiteralProperty ol.MapOptions.center ol.Coordinate|undefined
+@exportObjectLiteralProperty ol.MapOptions.controls ol.Collection|undefined
+@exportObjectLiteralProperty ol.MapOptions.doubleClickZoom boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.dragPan boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.interactions ol.Collection|undefined
+@exportObjectLiteralProperty ol.MapOptions.keyboard boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.keyboardPanOffset number|undefined
+@exportObjectLiteralProperty ol.MapOptions.layers ol.Collection|undefined
+@exportObjectLiteralProperty ol.MapOptions.maxResolution number|undefined
+@exportObjectLiteralProperty ol.MapOptions.mouseWheelZoom boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.mouseWheelZoomDelta number|undefined
+@exportObjectLiteralProperty ol.MapOptions.numZoomLevels number|undefined
+@exportObjectLiteralProperty ol.MapOptions.projection ol.Projection|string|undefined
+@exportObjectLiteralProperty ol.MapOptions.renderer ol.RendererHint|undefined
+@exportObjectLiteralProperty ol.MapOptions.renderers Array.<ol.RendererHint>|undefined
+@exportObjectLiteralProperty ol.MapOptions.resolution number|undefined
+@exportObjectLiteralProperty ol.MapOptions.resolutions Array.<number>|undefined
+@exportObjectLiteralProperty ol.MapOptions.rotate boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.shiftDragZoom boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.target Element|string
+@exportObjectLiteralProperty ol.MapOptions.userProjection ol.Projection|string|undefined
+@exportObjectLiteralProperty ol.MapOptions.zoom number|undefined
+@exportObjectLiteralProperty ol.MapOptions.zoomDelta number|undefined
+@exportObjectLiteralProperty ol.MapOptions.zoomFactor number|undefined
+
+@exportObjectLiteral ol.overlay.OverlayOptions
+@exportObjectLiteralProperty ol.overlay.OverlayOptions.coordinate ol.Coordinate|undefined
+@exportObjectLiteralProperty ol.overlay.OverlayOptions.element Element|undefined
+@exportObjectLiteralProperty ol.overlay.OverlayOptions.map ol.Map|undefined
+@exportObjectLiteralProperty ol.overlay.OverlayOptions.positioning Array.<string>|undefined
+
+@exportObjectLiteral ol.source.BingMapsOptions
+@exportObjectLiteralProperty ol.source.BingMapsOptions.culture string|undefined
+@exportObjectLiteralProperty ol.source.BingMapsOptions.key string
+@exportObjectLiteralProperty ol.source.BingMapsOptions.style ol.BingMapsStyle
