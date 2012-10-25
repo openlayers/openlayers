@@ -838,10 +838,6 @@ goog.exportProperty(
 ol.Map.prototype.setUserCenter = function(userCenter) {
   this.setCenter(this.userToMapTransform_(userCenter));
 };
-goog.exportProperty(
-    ol.Map.prototype,
-    'setUserCenter',
-    ol.Map.prototype.setUserCenter);
 
 
 /**
