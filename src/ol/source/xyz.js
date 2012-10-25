@@ -20,6 +20,7 @@ goog.require('ol.tilegrid.XYZ');
  *            crossOrigin: (string|undefined),
  *            extent: (ol.Extent|undefined),
  *            maxZoom: number,
+ *            projection: (ol.Projection|undefined),
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
  *            url: (string|undefined),
  *            urls: (Array.<string>|undefined)}}
@@ -34,6 +35,9 @@ ol.source.XYZOptions;
  * @param {ol.source.XYZOptions} xyzOptions XYZ options.
  */
 ol.source.XYZ = function(xyzOptions) {
+
+  var projection = xyzOptions.projection ||
+      ol.Projection.getFromCode('EPSG:3857');
 
   /**
    * @type {ol.TileUrlFunctionType}
@@ -100,7 +104,7 @@ ol.source.XYZ = function(xyzOptions) {
     attributions: xyzOptions.attributions,
     crossOrigin: xyzOptions.crossOrigin,
     extent: xyzOptions.extent,
-    projection: ol.Projection.getFromCode('EPSG:3857'),
+    projection: projection,
     tileGrid: tileGrid,
     tileUrlFunction: tileUrlFunction
   });
