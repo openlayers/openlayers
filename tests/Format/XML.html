@@ -166,6 +166,35 @@
              "node can be appended to a doc root");
     }
 
+    function test_createDocumentFragment(t) {
+        t.plan(3);
+
+        var format = new OpenLayers.Format.XML();
+        var uri = "http://foo.com";
+        var prefix = "foo";
+        var localName = "bar";
+        var qualifiedName = prefix + ":" + localName;
+        var parent = format.createElementNS(uri, qualifiedName);
+
+        var fragment = format.createDocumentFragment();
+        t.eq(fragment.nodeType, 11, "fragment type");
+
+        try {
+            fragment.appendChild(format.createTextNode("one"));
+            fragment.appendChild(format.createTextNode("two"));
+            t.eq(fragment.childNodes.length, 2, "fragment has two child nodes");
+        } catch (err) {
+            t.fail("trouble appending text nodes to fragment: " + err.message);
+        }
+
+        try {
+            parent.appendChild(fragment);
+            t.eq(parent.childNodes.length, 2, "parent has two child nodes");
+        } catch (err) {
+            t.fail("trouble appending fragment to parent: " + err.message);
+        }
+    }
+
     function test_Format_XML_createTextNode(t) {
         t.plan(10);
 
