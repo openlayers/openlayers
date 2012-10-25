@@ -301,7 +301,7 @@ ol.renderer.webgl.TileLayer.prototype.handleWebGLContextLost = function() {
  */
 ol.renderer.webgl.TileLayer.prototype.render = function() {
 
-  var animate = false;
+  var rerender = false;
 
   var mapRenderer = this.getMapRenderer();
   var map = this.getMap();
@@ -492,7 +492,7 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
               this.logger.info('uploaded textures');
             }
           }, mapRenderer, imagesToLoad));
-      animate = true;
+      rerender = true;
     }
 
     if (allTilesLoaded) {
@@ -526,6 +526,8 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
       -0.5,
       0);
 
-  return animate;
+  if (rerender) {
+    mapRenderer.render(true);
+  }
 
 };

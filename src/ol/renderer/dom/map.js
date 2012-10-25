@@ -135,11 +135,7 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
  */
 ol.renderer.dom.Map.prototype.handleCenterChanged = function() {
   goog.base(this, 'handleCenterChanged');
-  var map = this.getMap();
-  if (!map.isDef()) {
-    return;
-  }
-  map.render();
+  this.render();
 };
 
 
@@ -148,11 +144,7 @@ ol.renderer.dom.Map.prototype.handleCenterChanged = function() {
  */
 ol.renderer.dom.Map.prototype.handleResolutionChanged = function() {
   goog.base(this, 'handleResolutionChanged');
-  var map = this.getMap();
-  if (!map.isDef()) {
-    return;
-  }
-  map.render();
+  this.render();
 };
 
 
@@ -161,10 +153,7 @@ ol.renderer.dom.Map.prototype.handleResolutionChanged = function() {
  */
 ol.renderer.dom.Map.prototype.handleRotationChanged = function() {
   var map = this.getMap();
-  if (!map.isDef()) {
-    return;
-  }
-  map.render();
+  this.render();
 };
 
 
@@ -173,26 +162,19 @@ ol.renderer.dom.Map.prototype.handleRotationChanged = function() {
  */
 ol.renderer.dom.Map.prototype.handleSizeChanged = function() {
   goog.base(this, 'handleSizeChanged');
-  var map = this.getMap();
-  if (!map.isDef()) {
-    return;
-  }
-  map.render();
+  this.render();
 };
 
 
 /**
  * Render the map.  Sets up the layers pane on first render and adjusts its
  * position as needed on subsequent calls.
- *
- * @return {boolean} Animating.
  */
-ol.renderer.dom.Map.prototype.render = function() {
-  var map = this.getMap();
-  if (!map.isDef()) {
-    return false;
-  }
+ol.renderer.dom.Map.prototype.renderFrame = function() {
 
+  this.beforeRenderFrame();
+
+  var map = this.getMap();
   var mapCenter = map.getCenter();
   var mapSize = map.getSize();
   var mapResolution = map.getResolution();
@@ -228,7 +210,11 @@ ol.renderer.dom.Map.prototype.render = function() {
   this.renderedRotation_ = mapRotation;
   this.renderedSize_ = mapSize;
 
-  return goog.base(this, 'render');
+  this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
+    layerRenderer.render();
+  });
+
+  this.afterRenderFrame();
 };
 
 

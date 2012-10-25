@@ -252,7 +252,7 @@ goog.inherits(ol.renderer.webgl.Map, ol.renderer.Map);
 ol.renderer.webgl.Map.prototype.addLayer = function(layer) {
   goog.base(this, 'addLayer', layer);
   if (layer.getVisible()) {
-    this.getMap().render();
+    this.render();
   }
 };
 
@@ -418,7 +418,7 @@ ol.renderer.webgl.Map.prototype.handleBackgroundColorChanged = function() {
       backgroundColor.g / 255,
       backgroundColor.b / 255,
       backgroundColor.a / 255);
-  this.getMap().render();
+  this.render();
 };
 
 
@@ -427,7 +427,7 @@ ol.renderer.webgl.Map.prototype.handleBackgroundColorChanged = function() {
  */
 ol.renderer.webgl.Map.prototype.handleCenterChanged = function() {
   goog.base(this, 'handleCenterChanged');
-  this.getMap().render();
+  this.render();
 };
 
 
@@ -436,7 +436,7 @@ ol.renderer.webgl.Map.prototype.handleCenterChanged = function() {
  * @protected
  */
 ol.renderer.webgl.Map.prototype.handleLayerRendererChange = function(event) {
-  this.getMap().render();
+  this.render(true);
 };
 
 
@@ -445,7 +445,7 @@ ol.renderer.webgl.Map.prototype.handleLayerRendererChange = function(event) {
  */
 ol.renderer.webgl.Map.prototype.handleResolutionChanged = function() {
   goog.base(this, 'handleResolutionChanged');
-  this.getMap().render();
+  this.render();
 };
 
 
@@ -454,7 +454,7 @@ ol.renderer.webgl.Map.prototype.handleResolutionChanged = function() {
  */
 ol.renderer.webgl.Map.prototype.handleRotationChanged = function() {
   goog.base(this, 'handleRotationChanged');
-  this.getMap().render();
+  this.render();
 };
 
 
@@ -463,7 +463,7 @@ ol.renderer.webgl.Map.prototype.handleRotationChanged = function() {
  */
 ol.renderer.webgl.Map.prototype.handleSizeChanged = function() {
   goog.base(this, 'handleSizeChanged');
-  this.getMap().render();
+  this.render();
 };
 
 
@@ -495,7 +495,7 @@ ol.renderer.webgl.Map.prototype.handleWebGLContextResourced = function() {
     this.logger.info('WebGLContextResourced');
   }
   this.initializeGL_();
-  this.getMap().render();
+  this.render();
 };
 
 
@@ -527,7 +527,7 @@ ol.renderer.webgl.Map.prototype.isImageTextureLoaded = function(image) {
 ol.renderer.webgl.Map.prototype.removeLayer = function(layer) {
   goog.base(this, 'removeLayer', layer);
   if (layer.getVisible()) {
-    this.getMap().render();
+    this.render();
   }
 };
 
@@ -549,11 +549,9 @@ ol.renderer.webgl.Map.prototype.removeLayerRenderer = function(layer) {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.render = function() {
+ol.renderer.webgl.Map.prototype.renderFrame = function() {
 
-  if (!this.getMap().isDef()) {
-    return false;
-  }
+  this.beforeRenderFrame();
 
   var size = /** @type {ol.Size} */ this.getMap().getSize();
   if (!this.canvasSize_.equals(size)) {
@@ -562,7 +560,9 @@ ol.renderer.webgl.Map.prototype.render = function() {
     this.canvasSize_ = size;
   }
 
-  var animate = goog.base(this, 'render');
+  this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
+    layerRenderer.render();
+  });
 
   var gl = this.getGL();
 
@@ -624,8 +624,7 @@ ol.renderer.webgl.Map.prototype.render = function() {
     gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
   }, this);
 
-  return animate;
-
+  this.afterRenderFrame();
 };
 
 

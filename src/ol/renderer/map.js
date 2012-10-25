@@ -1,9 +1,8 @@
 goog.provide('ol.renderer.Map');
 
 goog.require('goog.Disposable');
+goog.require('goog.async.AnimationDelay');
 goog.require('goog.events');
-goog.require('goog.fx.anim');
-goog.require('goog.fx.anim.Animated');
 goog.require('goog.vec.Mat4');
 
 
@@ -29,6 +28,24 @@ ol.renderer.Map = function(container, map) {
    * @type {ol.Map}
    */
   this.map = map;
+
+  /**
+   * @private
+   * @type {Function}
+   */
+  this.callback_ = null;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.rendering_ = false;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.pendingRender_ = false;
 
   /**
    * @protected
@@ -59,6 +76,19 @@ ol.renderer.Map = function(container, map) {
    * @type {boolean}
    */
   this.matricesDirty_ = true;
+
+  /**
+   * Calls to this.delayedRender_.start take advantage of requestAnimationFrame
+   * (and friends) where available.  The provided listener is called once in
+   * the next available frame after the start method is called.  A call to stop
+   * will cancel the animation.
+   *
+   * @type {goog.async.AnimationDelay}
+   * @private
+   */
+  this.delayedRender_ = new goog.async.AnimationDelay(
+      this.renderFrame, null, this);
+  this.registerDisposable(this.delayedRender_);
 
   /**
    * @private
@@ -101,6 +131,38 @@ goog.inherits(ol.renderer.Map, goog.Disposable);
 ol.renderer.Map.prototype.addLayer = function(layer) {
   var layerRenderer = this.createLayerRenderer(layer);
   this.setLayerRenderer(layer, layerRenderer);
+};
+
+
+/**
+ * Must be called by subclasses after renderFrame completes.
+ * @protected
+ */
+ol.renderer.Map.prototype.afterRenderFrame = function() {
+  this.rendering_ = false;
+  this.map.dispatchEvent(ol.MapEventType.POSTRENDER);
+};
+
+
+/**
+ * Must be called by subclasses before renderFrame executes.
+ * @protected
+ */
+ol.renderer.Map.prototype.beforeRenderFrame = function() {
+  this.rendering_ = true;
+  var rerender = false;
+  if (!goog.isNull(this.callback_)) {
+    // allow state to be set before rendering
+    rerender = !!this.callback_();
+  }
+  this.pendingRender_ = false;
+  if (rerender) {
+    // schedule another rendering
+    this.render();
+  } else {
+    // remove any exhausted callback
+    this.callback_ = null;
+  }
 };
 
 
@@ -308,17 +370,27 @@ ol.renderer.Map.prototype.removeLayerRenderer = function(layer) {
 
 
 /**
- * @return {boolean} Animating.
+ * Render the map.
+ * @param {Function|boolean=} opt_callback Optional callback.  See the
+ *     ol.Map.prototype#render method for a description of this callback.
  */
-ol.renderer.Map.prototype.render = function() {
-  var animate = false;
-  this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
-    if (layerRenderer.render()) {
-      animate = true;
-    }
-  });
-  return animate;
+ol.renderer.Map.prototype.render = function(opt_callback) {
+  if (!this.rendering_ && opt_callback !== true) {
+    // we only replace the callback during calls to render that are
+    // not triggered during a rendering
+    this.callback_ = /** @type {Function} */ opt_callback || null;
+  }
+  if (!this.pendingRender_ && this.getMap().isDef()) {
+    this.pendingRender_ = true;
+    this.delayedRender_.start();
+  }
 };
+
+
+/**
+ * Render the map.
+ */
+ol.renderer.Map.prototype.renderFrame = goog.abstractMethod;
 
 
 /**

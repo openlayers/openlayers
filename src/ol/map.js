@@ -22,8 +22,6 @@ goog.require('goog.events.MouseWheelEvent');
 goog.require('goog.events.MouseWheelHandler');
 goog.require('goog.events.MouseWheelHandler.EventType');
 goog.require('goog.functions');
-goog.require('goog.fx.anim');
-goog.require('goog.fx.anim.Animated');
 goog.require('goog.object');
 goog.require('ol.BrowserFeature');
 goog.require('ol.Collection');
@@ -115,7 +113,6 @@ ol.MapProperty = {
 /**
  * @constructor
  * @extends {ol.Object}
- * @implements {goog.fx.anim.Animated}
  * @param {ol.MapOptions} mapOptions Map options.
  */
 ol.Map = function(mapOptions) {
@@ -143,30 +140,6 @@ ol.Map = function(mapOptions) {
    * @private
    */
   this.mapToUserTransform_ = ol.Projection.cloneTransform;
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.animatedRenderer_ = false;
-
-  /**
-   * @private
-   * @type {number}
-   */
-  this.animatingCount_ = 0;
-
-  /**
-   * @private
-   * @type {number}
-   */
-  this.freezeRenderingCount_ = 0;
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.dirty_ = false;
 
   /**
    * @private
@@ -305,15 +278,13 @@ ol.Map.prototype.disposeInternal = function() {
  * @param {ol.Extent} extent Extent.
  */
 ol.Map.prototype.fitExtent = function(extent) {
-  this.withFrozenRendering(function() {
-    this.setCenter(extent.getCenter());
-    var resolution = this.getResolutionForExtent(extent);
-    resolution = this.constraints_.resolution(resolution, 0);
-    this.setResolution(resolution);
-    if (this.canRotate()) {
-      this.setRotation(0);
-    }
-  }, this);
+  this.setCenter(extent.getCenter());
+  var resolution = this.getResolutionForExtent(extent);
+  resolution = this.constraints_.resolution(resolution, 0);
+  this.setResolution(resolution);
+  if (this.canRotate()) {
+    this.setRotation(0);
+  }
 };
 
 
@@ -322,14 +293,6 @@ ol.Map.prototype.fitExtent = function(extent) {
  */
 ol.Map.prototype.fitUserExtent = function(userExtent) {
   this.fitExtent(userExtent.transform(this.userToMapTransform_));
-};
-
-
-/**
- * Freeze rendering.
- */
-ol.Map.prototype.freezeRendering = function() {
-  ++this.freezeRenderingCount_;
 };
 
 
@@ -653,31 +616,12 @@ ol.Map.prototype.handleBrowserWindowResize = function() {
 
 
 /**
- * @return {boolean} Is animating.
- */
-ol.Map.prototype.isAnimating = function() {
-  return this.animatingCount_ > 0;
-};
-
-
-/**
  * @return {boolean} Is defined.
  */
 ol.Map.prototype.isDef = function() {
   return goog.isDefAndNotNull(this.getCenter()) &&
       goog.isDef(this.getResolution()) &&
       goog.isDefAndNotNull(this.getSize());
-};
-
-
-/**
- * @inheritDoc
- */
-ol.Map.prototype.onAnimationFrame = function() {
-  if (goog.DEBUG) {
-    this.logger.info('onAnimationFrame');
-  }
-  this.renderFrame_();
 };
 
 
@@ -701,40 +645,19 @@ ol.Map.prototype.recalculateTransforms_ = function() {
 
 
 /**
- * Render.
+ * Render the map.
+ * @param {Function|boolean=} opt_callback Function to be called immediately
+ *     before the map is rendered.  For renderers that are able to perform
+ *     animations this callback can be used to set various map properties
+ *     without incurring multiple repaints.  If the callback returns true,
+ *     another rendering will be scheduled.  In this way, the callback works as
+ *     a state generator for an animation.  Subsequent calls to render can
+ *     replace or remove this callback (if render is called with no callback).
+ *     If render is called with a boolean, this will retain any pending callback
+ *     (if true) or cancel the pending callback (if false).
  */
-ol.Map.prototype.render = function() {
-  if (this.animatingCount_ < 1) {
-    if (this.freezeRenderingCount_ === 0) {
-      this.renderFrame_();
-    } else {
-      this.dirty_ = true;
-    }
-  }
-};
-
-
-/**
- * @private
- */
-ol.Map.prototype.renderFrame_ = function() {
-  if (goog.DEBUG) {
-    this.logger.info('renderFrame_');
-  }
-  var animatedRenderer = this.renderer_.render();
-  this.dirty_ = false;
-  if (animatedRenderer != this.animatedRenderer_) {
-    if (animatedRenderer) {
-      this.startAnimating();
-    } else {
-      this.stopAnimating();
-    }
-    this.animatedRenderer_ = animatedRenderer;
-  }
-  if (goog.DEBUG) {
-    this.logger.info('postrender');
-  }
-  this.dispatchEvent(ol.MapEventType.POSTRENDER);
+ol.Map.prototype.render = function(opt_callback) {
+  this.renderer_.render(opt_callback);
 };
 
 
@@ -857,61 +780,6 @@ goog.exportProperty(
 
 
 /**
- * Start animating.
- */
-ol.Map.prototype.startAnimating = function() {
-  if (++this.animatingCount_ == 1) {
-    if (goog.DEBUG) {
-      this.logger.info('startAnimating');
-    }
-    goog.fx.anim.registerAnimation(this);
-  }
-};
-
-
-/**
- * Stop animating.
- */
-ol.Map.prototype.stopAnimating = function() {
-  goog.asserts.assert(this.animatingCount_ > 0);
-  if (--this.animatingCount_ === 0) {
-    if (goog.DEBUG) {
-      this.logger.info('stopAnimating');
-    }
-    goog.fx.anim.unregisterAnimation(this);
-  }
-};
-
-
-/**
- * Unfreeze rendering.
- */
-ol.Map.prototype.unfreezeRendering = function() {
-  goog.asserts.assert(this.freezeRenderingCount_ > 0);
-  if (--this.freezeRenderingCount_ === 0 &&
-      this.animatingCount_ < 1 &&
-      this.dirty_) {
-    this.renderFrame_();
-  }
-};
-
-
-/**
- * @param {function(this: T)} f Function.
- * @param {T=} opt_obj Object.
- * @template T
- */
-ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
-  this.freezeRendering();
-  try {
-    f.call(opt_obj);
-  } finally {
-    this.unfreezeRendering();
-  }
-};
-
-
-/**
  * @private
  * @param {number|undefined} resolution Resolution to go to.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
@@ -924,10 +792,8 @@ ol.Map.prototype.zoom_ = function(resolution, opt_anchor) {
     var x = anchor.x - resolution * (anchor.x - oldCenter.x) / oldResolution;
     var y = anchor.y - resolution * (anchor.y - oldCenter.y) / oldResolution;
     var center = new ol.Coordinate(x, y);
-    this.withFrozenRendering(function() {
-      this.setCenter(center);
-      this.setResolution(resolution);
-    }, this);
+    this.setCenter(center);
+    this.setResolution(resolution);
   } else {
     this.setResolution(resolution);
   }
