@@ -150,7 +150,7 @@
         }
 
         function test_createLayer(t) {
-            t.plan(41);
+            t.plan(42);
 
             var format = new OpenLayers.Format.WMTSCapabilities();
 
@@ -225,6 +225,7 @@
             t.eq(layer.style, "ch.are.agglomerationen_isolierte_staedte-2000", "correct style identifier");
             t.eq(layer.projection.getCode(), "EPSG:21781", "correct projection");
             t.eq(layer.units, "m", "correct untis");
+            t.ok(layer.serverResolutions === layer.resolutions, "serverResolutions set");
             t.eq(layer.resolutions.length, 3, "correct resolutions length");
             t.ok((layer.resolutions[0] - 4000) < 1, "correct first resolution");
             t.eq(layer.dimensions.length, 1, "correct dimensions length");
