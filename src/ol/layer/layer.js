@@ -40,13 +40,13 @@ ol.layer.Layer = function(layerOptions) {
   this.setBrightness(
       goog.isDef(layerOptions.brightness) ? layerOptions.brightness : 0);
   this.setContrast(
-      goog.isDef(layerOptions.contrast) ? layerOptions.contrast : 0);
+      goog.isDef(layerOptions.contrast) ? layerOptions.contrast : 1);
   this.setHue(
       goog.isDef(layerOptions.hue) ? layerOptions.hue : 0);
   this.setOpacity(
       goog.isDef(layerOptions.opacity) ? layerOptions.opacity : 1);
   this.setSaturation(
-      goog.isDef(layerOptions.saturation) ? layerOptions.saturation : 0);
+      goog.isDef(layerOptions.saturation) ? layerOptions.saturation : 1);
   this.setVisible(
       goog.isDef(layerOptions.visible) ? layerOptions.visible : true);
 
@@ -164,6 +164,23 @@ ol.layer.Layer.prototype.isReady = function() {
 
 
 /**
+ * Adjust the layer brightness.  A value of -1 will render the layer completely
+ * black.  A value of 0 will leave the brightness unchanged.  A value of 1 will
+ * render the layer completely white.  Other values are linear multipliers on
+ * the effect (values are clamped between -1 and 1).
+ *
+ * The filter effects draft [1] says the brightness function is supposed to
+ * render 0 black, 1 unchanged, and all other values as a linear multiplier.
+ *
+ * The current WebKit implementation clamps values between -1 (black) and 1
+ * (white) [2].  There is a bug open to change the filter effect spec [3].
+ *
+ * TODO: revisit this if the spec is still unmodified before we release
+ *
+ * [1] https://dvcs.w3.org/hg/FXTF/raw-file/tip/filters/index.html
+ * [2] https://github.com/WebKit/webkit/commit/8f4765e569
+ * [3] https://www.w3.org/Bugs/Public/show_bug.cgi?id=15647
+ *
  * @param {number} brightness Brightness.
  */
 ol.layer.Layer.prototype.setBrightness = function(brightness) {
@@ -179,10 +196,14 @@ goog.exportProperty(
 
 
 /**
+ * Adjust the layer contrast.  A value of 0 will render the layer completely
+ * grey.  A value of 1 will leave the contrast unchanged.  Other values are
+ * linear multipliers on the effect (and values over 1 are permitted).
+ *
  * @param {number} contrast Contrast.
  */
 ol.layer.Layer.prototype.setContrast = function(contrast) {
-  contrast = goog.math.clamp(contrast, -1, 1);
+  contrast = Math.max(0, contrast);
   if (contrast != this.getContrast()) {
     this.set(ol.layer.LayerProperty.CONTRAST, contrast);
   }
@@ -194,6 +215,8 @@ goog.exportProperty(
 
 
 /**
+ * Apply a hue-rotation to the layer.  A value of 0 will leave the hue
+ * unchanged.  Other values are degrees around the color circle.
  * @param {number} hue Hue.
  */
 ol.layer.Layer.prototype.setHue = function(hue) {
@@ -223,10 +246,15 @@ goog.exportProperty(
 
 
 /**
+ * Adjust layer saturation.  A value of 0 will render the layer completely
+ * unsaturated.  A value of 1 will leave the saturation unchanged.  Other
+ * values are linear multipliers of the effect (and values over 1 are
+ * permitted).
+ *
  * @param {number} saturation Saturation.
  */
 ol.layer.Layer.prototype.setSaturation = function(saturation) {
-  saturation = goog.math.clamp(saturation, -1, 1);
+  saturation = Math.max(0, saturation);
   if (saturation != this.getSaturation()) {
     this.set(ol.layer.LayerProperty.SATURATION, saturation);
   }

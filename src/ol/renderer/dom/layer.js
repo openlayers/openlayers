@@ -78,33 +78,36 @@ ol.renderer.dom.Layer.prototype.handleLayerHueChange = function() {
 ol.renderer.dom.Layer.prototype.applyHSBCFilter_ = function() {
   var layer = this.getLayer();
 
-  /**
-   * Hue currently has no restrictions in range, but we map 1 to 180 and -1 to
-   * -180.  The hue-rotate function has a domain of 0 to 360 degrees.
-   */
-  var hue = Math.round((360 + (180 * layer.getHue())) % 360);
+  var hue = (layer.getHue() % 360).toFixed(3);
+  var hueFilter = (+hue !== 0) ?
+      'hue-rotate(' + hue + 'deg) ' : '';
+
+  var saturation = layer.getSaturation().toFixed(3);
+  var saturationFilter = (+saturation !== 1) ?
+      'saturate(' + saturation + ') ' : '';
 
   /**
-   * Saturation has a range of -1 to 1.  We linearly map -1 to 0% and 1 to 200%
-   * saturation change.
+   * The filter effects draft [1] says the brightness function is supposed to
+   * render 0 black, 1 unchanged, and all other values as a linear multiplier.
+   *
+   * The current WebKit implementation clamps values between -1 (black) and 1
+   * (white) [2].  There is a bug open to change the filter effect spec [3].
+   *
+   * TODO: revisit this if the spec is still unmodified before we release
+   *
+   * [1] https://dvcs.w3.org/hg/FXTF/raw-file/tip/filters/index.html
+   * [2] https://github.com/WebKit/webkit/commit/8f4765e569
+   * [3] https://www.w3.org/Bugs/Public/show_bug.cgi?id=15647
    */
-  var saturation = Math.round(100 * (layer.getSaturation() + 1));
+  var brightness = layer.getBrightness().toFixed(3);
+  var brightnessFilter = (+brightness !== 0) ?
+      'brightness(' + brightness + ') ' : '';
 
-  /**
-   * Brightness has a range of -1 to 1, and we use it directly.
-   */
-  var brightness = layer.getBrightness().toFixed(6);
+  var contrast = layer.getContrast().toFixed(3);
+  var contrastFilter = (+contrast !== 1) ?
+      'contrast(' + contrast + ') ' : '';
 
-  /**
-   * Contrast has a range of -1 to 1.  We linearly map -1 to 0 and 1 to 200%
-   * contrast change.
-   */
-  var contrast = Math.round(100 * (layer.getContrast() + 1));
-
-  var filter = 'hue-rotate(' + hue + 'deg) ' +
-      'saturate(' + saturation + '%)' +
-      'brightness(' + brightness + ')' +
-      'contrast(' + contrast + '%)';
+  var filter = hueFilter + saturationFilter + brightnessFilter + contrastFilter;
 
   var style = this.target.style;
   style.WebkitFilter = filter;
