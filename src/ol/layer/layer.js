@@ -216,7 +216,7 @@ goog.exportProperty(
 
 /**
  * Apply a hue-rotation to the layer.  A value of 0 will leave the hue
- * unchanged.  Other values are degrees around the color circle.
+ * unchanged.  Other values are radians around the color circle.
  * @param {number} hue Hue.
  */
 ol.layer.Layer.prototype.setHue = function(hue) {

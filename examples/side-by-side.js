@@ -76,10 +76,10 @@ keyboardInteraction.addCallback('C', function() {
   layer.setContrast(Math.min(3, layer.getContrast() + 0.1));
 });
 keyboardInteraction.addCallback('h', function() {
-  layer.setHue(layer.getHue() - 10);
+  layer.setHue(layer.getHue() - (Math.PI / 5));
 });
 keyboardInteraction.addCallback('H', function() {
-  layer.setHue(layer.getHue() + 10);
+  layer.setHue(layer.getHue() + (Math.PI / 5));
 });
 keyboardInteraction.addCallback('o', function() {
   layer.setOpacity(layer.getOpacity() - 0.1);
