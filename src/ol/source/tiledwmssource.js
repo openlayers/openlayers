@@ -39,6 +39,7 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
 
   var projection = goog.isDef(tiledWMSOptions.projection) ?
       tiledWMSOptions.projection : ol.Projection.getFromCode('EPSG:3857');
+  var projectionExtent = projection.getExtent();
 
   var extent = goog.isDef(tiledWMSOptions.extent) ?
       tiledWMSOptions.extent : projection.getExtent();
@@ -49,7 +50,9 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
   var tileGrid = tiledWMSOptions.tileGrid;
   if (!goog.isDef(tileGrid)) {
     // FIXME Factor this out to a more central/generic place.
-    var size = Math.max(extent.maxX - extent.minX, extent.maxY - extent.minY);
+    var size = Math.max(
+        projectionExtent.maxX - projectionExtent.minX,
+        projectionExtent.maxY - projectionExtent.minY);
     var maxZoom = goog.isDef(tiledWMSOptions.maxZoom) ?
         tiledWMSOptions.maxZoom : 18;
     var resolutions = new Array(maxZoom + 1);
@@ -100,7 +103,6 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
       return null;
     }
     var x = tileCoord.x;
-    var projectionExtent = projection.getExtent();
     // FIXME do we want a wrapDateLine param? The code below will break maps
     // with projections that do not span the whole world width.
     if (extent.minX === projectionExtent.minX &&
