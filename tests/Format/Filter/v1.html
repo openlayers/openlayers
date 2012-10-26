@@ -247,6 +247,59 @@
     }
 
 
+    function test_date_writing(t) {
+        t.plan(1);
+
+        // ISO 8601: 2010-11-27T18:19:15.123Z
+        var start = new Date(Date.UTC(2010, 10, 27, 18, 19, 15, 123));
+
+        // ISO 8601: 2011-12-27T18:19:15.123Z
+        var end = new Date(Date.UTC(2011, 11, 27, 18, 19, 15, 123));
+
+        var filter = new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.BETWEEN,
+            property: "when",
+            lowerBoundary: start,
+            upperBoundary: end
+        });
+
+        var format = new OpenLayers.Format.Filter.v1_0_0();
+
+        var got = format.write(filter);
+        var exp = readXML("BetweenDates");
+        t.xml_eq(got, exp, "comparison filter with dates");
+    }
+
+
+    function test_custom_date_writing(t) {
+        t.plan(1);
+
+        // ISO 8601: 2010-11-27T18:19:15.123Z
+        var start = new Date(Date.UTC(2010, 10, 27, 18, 19, 15, 123));
+
+        // ISO 8601: 2011-12-27T18:19:15.123Z
+        var end = new Date(Date.UTC(2011, 11, 27, 18, 19, 15, 123));
+
+        var filter = new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.BETWEEN,
+            property: "when",
+            lowerBoundary: start,
+            upperBoundary: end
+        });
+
+        var format = new OpenLayers.Format.Filter({
+            encodeLiteral: function(value) {
+                // return just the date and not the time portion
+                return OpenLayers.Date.toISOString(value).split("T").shift();
+            }
+        });
+
+        var got = format.write(filter);
+        var exp = readXML("CustomBetweenDates");
+        t.xml_eq(got, exp, "comparison filter with dates");
+    }
+
+
     function readXML(id) {
         var xml = document.getElementById(id).firstChild.nodeValue;
         return new OpenLayers.Format.XML().read(xml).documentElement;
@@ -286,6 +339,32 @@
     <ogc:Not>
         <ogc:FeatureId fid="foo.2"/>
     </ogc:Not>
+</ogc:Filter>
+--></div>
+<div id="BetweenDates"><!--
+<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+    <ogc:PropertyIsBetween>
+        <ogc:PropertyName>when</ogc:PropertyName>
+        <ogc:LowerBoundary>
+            <ogc:Literal>2010-11-27T18:19:15.123Z</ogc:Literal>
+        </ogc:LowerBoundary>
+        <ogc:UpperBoundary>
+            <ogc:Literal>2011-12-27T18:19:15.123Z</ogc:Literal>
+        </ogc:UpperBoundary>
+    </ogc:PropertyIsBetween>
+</ogc:Filter>
+--></div>
+<div id="CustomBetweenDates"><!--
+<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+    <ogc:PropertyIsBetween>
+        <ogc:PropertyName>when</ogc:PropertyName>
+        <ogc:LowerBoundary>
+            <ogc:Literal>2010-11-27</ogc:Literal>
+        </ogc:LowerBoundary>
+        <ogc:UpperBoundary>
+            <ogc:Literal>2011-12-27</ogc:Literal>
+        </ogc:UpperBoundary>
+    </ogc:PropertyIsBetween>
 </ogc:Filter>
 --></div>
 
