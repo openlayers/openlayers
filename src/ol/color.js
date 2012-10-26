@@ -46,3 +46,16 @@ ol.Color.createFromString = function(str, opt_a) {
   var a = opt_a || 255;
   return new ol.Color(rgb[0], rgb[1], rgb[2], a);
 };
+
+
+/**
+ * @param {ol.Color} color1 Color 1.
+ * @param {ol.Color} color2 Color 2.
+ * @return {boolean} Equals.
+ */
+ol.Color.equals = function(color1, color2) {
+  return (color1.r == color2.r &&
+          color1.g == color2.g &&
+          color1.b == color2.b &&
+          color1.a == color2.a);
+};
