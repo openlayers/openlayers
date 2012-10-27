@@ -5,6 +5,7 @@ import glob
 import gzip
 import json
 import os
+import re
 import shutil
 import time
 
@@ -103,9 +104,17 @@ def build_src_external_src_types_js(t):
     t.output('bin/generate-exports', '--typedef', 'src/objectliterals.exports')
 
 
-@pake.target('build/src/internal/src/requireall.js', 'bin/generate-requireall', SRC)
+@pake.target('build/src/internal/src/requireall.js', SRC)
 def build_src_internal_src_requireall_js(t):
-    t.output('bin/generate-requireall', '--require=goog.dom')
+    requires = set(('goog.dom',))
+    for dependency in t.dependencies:
+        for line in open(dependency):
+            match = re.match(r'goog\.provide\(\'(.*)\'\);', line)
+            if match:
+                requires.add(match.group(1))
+    with open(t.name, 'w') as f:
+        for require in sorted(requires):
+            f.write('goog.require(\'%s\');\n' % (require,))
 
 
 @pake.target('build/src/internal/src/types.js', 'bin/generate-exports', 'src/objectliterals.exports')
