@@ -17,7 +17,7 @@ goog.require('ol.tilegrid.TileGrid');
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *            params: Object,
  *            version: (string|undefined),
- *            crossOrigin: (string|undefined),
+ *            crossOrigin: (null|string|undefined),
  *            extent: (ol.Extent|undefined),
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            maxZoom: (number|undefined),

@@ -21,13 +21,15 @@ var layers = new ol.Collection([
   new ol.layer.TileLayer({
     source: new ol.source.TiledWMS({
       url: 'http://demo.opengeo.org/geoserver/wms',
+      crossOrigin: null,
       params: {'LAYERS': 'topp:states', 'TILED': true}
     })
   })
 ]);
 var map = new ol.Map({
-  center: new ol.Coordinate(-10997148, 4569099),
+  renderer: ol.RendererHint.DOM,
   layers: layers,
   target: 'map',
+  center: new ol.Coordinate(-10997148, 4569099),
   zoom: 4
 });
