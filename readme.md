@@ -6,13 +6,13 @@
 
 Run make:
 
-    $ make
+    $ ./build.py
 
 ## Run the examples in debug mode
 
 Run the [Plovr](http://plovr.com/) web server with:
 
-    $ make serve
+    $ ./build.py serve
 
 Then, either open one of the example html files from the `examples` directory directly in your browser, or start a simple webserver, for example:
 
@@ -38,7 +38,7 @@ First, install the [Closure
 Linter](https://developers.google.com/closure/utilities/docs/linter_howto).
 Then:
 
-    $ make lint
+    $ ./build.py lint
 
 ## Add examples
 
