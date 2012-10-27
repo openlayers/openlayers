@@ -35,14 +35,12 @@ ol.source.TiledWMSOptions;
  * @param {ol.source.TiledWMSOptions} tiledWMSOptions options.
  */
 ol.source.TiledWMS = function(tiledWMSOptions) {
-  goog.asserts.assert(tiledWMSOptions.params);
-
   var projection = goog.isDef(tiledWMSOptions.projection) ?
       tiledWMSOptions.projection : ol.Projection.getFromCode('EPSG:3857');
   var projectionExtent = projection.getExtent();
 
   var extent = goog.isDef(tiledWMSOptions.extent) ?
-      tiledWMSOptions.extent : projection.getExtent();
+      tiledWMSOptions.extent : projectionExtent;
 
   var version = goog.isDef(tiledWMSOptions.version) ?
       tiledWMSOptions.version : '1.3';
@@ -60,7 +58,7 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
       resolutions[z] = size / (256 << z);
     }
     tileGrid = new ol.tilegrid.TileGrid({
-      origin: extent.getTopLeft(),
+      origin: projectionExtent.getTopLeft(),
       resolutions: resolutions
     });
   }

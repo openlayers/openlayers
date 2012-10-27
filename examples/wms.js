@@ -22,7 +22,8 @@ var layers = new ol.Collection([
     source: new ol.source.TiledWMS({
       url: 'http://demo.opengeo.org/geoserver/wms',
       crossOrigin: null,
-      params: {'LAYERS': 'topp:states', 'TILED': true}
+      params: {'LAYERS': 'topp:states', 'TILED': true},
+      extent: new ol.Extent(-13884991, 2870341, -7455066, 6338219)
     })
   })
 ]);
