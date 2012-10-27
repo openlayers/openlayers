@@ -10,15 +10,14 @@ import time
 
 import pake
 
-pake.variables['JSDOC'] = 'jsdoc'
-pake.variables['PHANTOMJS'] = 'phantomjs'
+pake.variables.BRANCH = pake.output('git', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
+pake.variables.JSDOC = 'jsdoc'
+pake.variables.PHANTOMJS = 'phantomjs'
 
 EXPORTS = [path
            for path in pake.ifind('src')
            if path.endswith('.exports')
            if path != 'src/objectliterals.exports']
-
-BRANCH = pake.output('git', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
 
 EXTERNAL_SRC = [
     'build/src/external/externs/types.js',
@@ -184,41 +183,37 @@ pake.virtual('plovr', PLOVR_JAR)
 
 @pake.target(PLOVR_JAR, clean=False)
 def plovr_jar(t):
-    import urllib2
-    url = 'https://plovr.googlecode.com/files/' + os.path.basename(PLOVR_JAR)
-    content = urllib2.urlopen(url).read()
-    with open(t.name, 'w') as f:
-        f.write(content)
+    t.download('https://plovr.googlecode.com/files/' + os.path.basename(PLOVR_JAR))
 
 
 @pake.target('gh-pages', phony=True)
 def gh_pages(t):
-    t.run('bin/git-update-ghpages', 'openlayers/ol3', '-i', 'build/gh-pages/%(BRANCH)s' % globals(), '-p', BRANCH)
+    t.run('bin/git-update-ghpages', 'openlayers/ol3', '-i', 'build/gh-pages/%(BRANCH)s', '-p', '%(BRANCH)s')
 
 
-pake.virtual('doc', 'build/jsdoc-%(BRANCH)s-timestamp' % globals())
+pake.virtual('doc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(pake.variables))
 
 
-@pake.target('build/jsdoc-%(BRANCH)s-timestamp' % globals(), SRC, pake.ifind('doc/template'))
+@pake.target('build/jsdoc-%(BRANCH)s-timestamp' % vars(pake.variables), SRC, pake.ifind('doc/template'))
 def jsdoc_BRANCH_timestamp(t):
-    t.run(pake.variables['JSDOC'], '-t', 'doc/template', '-r', 'src', '-d', 'build/gh-pages/%(BRANCH)s/apidoc' % globals())
+    t.run('%(JSDOC)s', '-t', 'doc/template', '-r', 'src', '-d', 'build/gh-pages/%(BRANCH)s/apidoc')
     t.touch()
 
 
 @pake.target('hostexamples', 'build', 'examples', phony=True)
 def hostexamples(t):
-    t.makedirs('build/gh-pages/%(BRANCH)s/examples' % globals())
-    t.makedirs('build/gh-pages/%(BRANCH)s/build' % globals())
-    t.cp(EXAMPLES, (path.replace('.html', '.js') for path in EXAMPLES), 'examples/style.css', 'build/gh-pages/%(BRANCH)s/examples/' % globals())
-    t.cp('build/loader_hosted_examples.js', 'build/gh-pages/%(BRANCH)s/examples/loader.js' % globals())
-    t.cp('build/ol.js', 'build/ol.css', 'build/gh-pages/%(BRANCH)s/build/' % globals())
-    t.cp('examples/example-list.html', 'build/gh-pages/%(BRANCH)s/examples/index.html' % globals())
-    t.cp('examples/example-list.js', 'examples/example-list.xml', 'examples/Jugl.js', 'build/gh-pages/%(BRANCH)s/examples/' % globals())
+    t.makedirs('build/gh-pages/%(BRANCH)s/examples')
+    t.makedirs('build/gh-pages/%(BRANCH)s/build')
+    t.cp(EXAMPLES, (path.replace('.html', '.js') for path in EXAMPLES), 'examples/style.css', 'build/gh-pages/%(BRANCH)s/examples/')
+    t.cp('build/loader_hosted_examples.js', 'build/gh-pages/%(BRANCH)s/examples/loader.js')
+    t.cp('build/ol.js', 'build/ol.css', 'build/gh-pages/%(BRANCH)s/build/')
+    t.cp('examples/example-list.html', 'build/gh-pages/%(BRANCH)s/examples/index.html')
+    t.cp('examples/example-list.js', 'examples/example-list.xml', 'examples/Jugl.js', 'build/gh-pages/%(BRANCH)s/examples/')
 
 
 @pake.target('test', INTERNAL_SRC, phony=True)
 def test(t):
-    t.run(pake.variables['PHANTOMJS'], 'test/phantom-jasmine/run_jasmine_test.coffee', 'test/ol.html')
+    t.run('%(PHANTOMJS)s', 'test/phantom-jasmine/run_jasmine_test.coffee', 'test/ol.html')
 
 
 if __name__ == '__main__':
