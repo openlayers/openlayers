@@ -24,16 +24,29 @@ var layers = new ol.Collection([
   new ol.layer.TileLayer({
     source: new ol.source.TiledWMS({
       url: 'http://wms.geo.admin.ch/?',
+      attributions: [new ol.Attribution('&copy; <a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">Pixelmap 1:1000000 / geo.admin.ch</a>')],
+      crossOrigin: null,
       params: {'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale'},
-      projection: epsg21781
+      projection: epsg21781,
+      extent: extent
+    })
+  }),
+  new ol.layer.TileLayer({
+    source: new ol.source.TiledWMS({
+      url: 'http://wms.geo.admin.ch/?',
+      attributions: [new ol.Attribution('&copy; <a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">National parks / geo.admin.ch</a>')],
+      crossOrigin: null,
+      params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
+      projection: epsg21781,
+      extent: extent
     })
   })
 ]);
 
 var map = new ol.Map({
-  center: new ol.Coordinate(600000, 200000),
+  center: new ol.Coordinate(660000, 190000),
   projection: epsg21781,
   layers: layers,
   target: 'map',
-  zoom: 8
+  zoom: 9
 });
