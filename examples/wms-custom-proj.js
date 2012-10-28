@@ -16,15 +16,16 @@ if (goog.DEBUG) {
 var extent = new ol.Extent(420000, 30000, 900000, 350000);
 
 var epsg21781 = new ol.Projection('EPSG:21781',
-  ol.ProjectionUnits.METERS,
-  extent
-);
+    ol.ProjectionUnits.METERS, extent);
 
 var layers = new ol.Collection([
   new ol.layer.TileLayer({
     source: new ol.source.TiledWMS({
       url: 'http://wms.geo.admin.ch/?',
-      attributions: [new ol.Attribution('&copy; <a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">Pixelmap 1:1000000 / geo.admin.ch</a>')],
+      attributions: [new ol.Attribution(
+          '&copy; ' +
+          '<a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">' +
+          'Pixelmap 1:1000000 / geo.admin.ch</a>')],
       crossOrigin: null,
       params: {'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale'},
       projection: epsg21781,
@@ -34,7 +35,10 @@ var layers = new ol.Collection([
   new ol.layer.TileLayer({
     source: new ol.source.TiledWMS({
       url: 'http://wms.geo.admin.ch/?',
-      attributions: [new ol.Attribution('&copy; <a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">National parks / geo.admin.ch</a>')],
+      attributions: [new ol.Attribution(
+          '&copy; ' +
+          '<a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">' +
+          'National parks / geo.admin.ch</a>')],
       crossOrigin: null,
       params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
       projection: epsg21781,
