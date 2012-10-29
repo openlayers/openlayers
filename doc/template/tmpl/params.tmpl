@@ -1,5 +1,5 @@
 <?js
-    var params = data;
+    var params = obj;
     
     /* sort subparams under their parent params (like opts.classname) */
     var parentParam = null;
@@ -47,6 +47,10 @@
 		
 		<th>Type</th>
 		
+		<?js if (params.hasAttributes) {?>
+		<th>Argument</th>
+		<?js } ?>
+		
 		<?js if (params.hasDefault) {?>
 		<th>Default</th>
 		<?js } ?>
@@ -72,6 +76,18 @@
                 <?js= self.partial('type.tmpl', param.type.names) ?>
             <?js } ?>
             </td>
+            
+            <?js if (params.hasAttributes) {?>
+                <td class="attributes">
+                <?js if (param.optional) { ?>
+                    &lt;optional><br>
+                <?js } ?>
+                    
+                <?js if (param.nullable) { ?>
+                    &lt;nullable><br>
+                <?js } ?>
+                </td>
+            <?js } ?>
             
             <?js if (params.hasDefault) {?>
                 <td class="default">

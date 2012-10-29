@@ -130,6 +130,9 @@ ol.Projection.transforms_ = {};
 
 
 /**
+ * Registers transformation functions that don't alter coordinates. Those allow
+ * to transform between projections with equal meaning.
+ *
  * @param {Array.<ol.Projection>} projections Projections.
  * @private
  */
@@ -145,10 +148,15 @@ ol.Projection.addEquivalentProjections_ = function(projections) {
 
 
 /**
- * @param {Array.<ol.Projection>} projections1 Projections.
- * @param {Array.<ol.Projection>} projections2 Projections.
- * @param {ol.TransformFunction} forwardTransform Forward transform.
- * @param {ol.TransformFunction} inverseTransform Inverse transform.
+ * Registers transformation functions to convert coordinates in any projection
+ * in projection1 to any projection in projection2.
+ *
+ * @param {Array.<ol.Projection>} projections1 Projections with equal meaning.
+ * @param {Array.<ol.Projection>} projections2 Projections with equal meaning.
+ * @param {ol.TransformFunction} forwardTransform Transformation from any
+ *   projection in projection1 to any projection in projection2.
+ * @param {ol.TransformFunction} inverseTransform Transform from any projection
+ *   in projection2 to any projection in projection1..
  * @private
  */
 ol.Projection.addEquivalentTransforms_ =
@@ -195,6 +203,9 @@ ol.Projection.addProjections = function(projections) {
 
 
 /**
+ * Registers a conversion function to convert coordinates from the source
+ * projection to the destination projection.
+ *
  * @param {ol.Projection} source Source.
  * @param {ol.Projection} destination Destination.
  * @param {ol.TransformFunction} transformFn Transform.
@@ -214,7 +225,8 @@ ol.Projection.addTransform = function(source, destination, transformFn) {
 
 
 /**
- * @param {string} code Code.
+ * @param {string} code Code which is a combination of authority and identifier
+ *   such as “EPSG:4326”.
  * @return {ol.Projection} Projection.
  */
 ol.Projection.getFromCode = function(code) {
@@ -248,6 +260,10 @@ ol.Projection.getProj4jsProjectionFromCode_ = function(code) {
 
 
 /**
+ * Checks if two projections are the same, that is every coordinate in one
+ * projection does represent the same geographic point as the same coordinate in
+ * the other projection.
+ *
  * @param {ol.Projection} projection1 Projection 1.
  * @param {ol.Projection} projection2 Projection 2.
  * @return {boolean} Equivalent.
@@ -265,6 +281,9 @@ ol.Projection.equivalent = function(projection1, projection2) {
 
 
 /**
+ * Searches a function that can be used to convert coordinates from the source
+ * projection to the destination projection.
+ *
  * @param {ol.Projection} source Source.
  * @param {ol.Projection} destination Destination.
  * @return {ol.TransformFunction} Transform.
@@ -317,6 +336,10 @@ ol.Projection.getTransform = function(source, destination) {
 
 
 /**
+ * Given the projection codes this method searches for a transformation function
+ * to convert coordinate from the source projection to the destination
+ * projection.
+ *
  * @param {string} sourceCode Source code.
  * @param {string} destinationCode Destination code.
  * @return {ol.TransformFunction} Transform.
@@ -329,7 +352,7 @@ ol.Projection.getTransformFromCodes = function(sourceCode, destinationCode) {
 
 
 /**
- * @return {boolean} Has Proj4js.
+ * @return {boolean} True if Proj4js is available and enabled.
  */
 ol.Projection.isProj4jsSupported = function() {
   return ol.ENABLE_PROJ4JS && 'Proj4js' in goog.global;
@@ -338,7 +361,7 @@ ol.Projection.isProj4jsSupported = function() {
 
 /**
  * @param {ol.Coordinate} point Point.
- * @return {ol.Coordinate} Point.
+ * @return {ol.Coordinate} Unaltered point (same reference).
  */
 ol.Projection.identityTransform = function(point) {
   return point;
@@ -347,7 +370,7 @@ ol.Projection.identityTransform = function(point) {
 
 /**
  * @param {ol.Coordinate} point Point.
- * @return {ol.Coordinate} Point.
+ * @return {ol.Coordinate} Equal point (different reference).
  */
 ol.Projection.cloneTransform = function(point) {
   return new ol.Coordinate(point.x, point.y);
@@ -355,6 +378,8 @@ ol.Projection.cloneTransform = function(point) {
 
 
 /**
+ * Transforms the given point to the destination projection.
+ *
  * @param {ol.Coordinate} point Point.
  * @param {ol.Projection} source Source.
  * @param {ol.Projection} destination Destination.
@@ -388,6 +413,8 @@ ol.Projection.EPSG_3857_RADIUS = 6378137;
 
 
 /**
+ * Transformation from EPSG:4326 to EPSG:3857.
+ *
  * @param {ol.Coordinate} point Point.
  * @return {ol.Coordinate} Point.
  */
@@ -400,6 +427,8 @@ ol.Projection.forwardSphericalMercator = function(point) {
 
 
 /**
+ * Transformation from EPSG:3857 to EPSG:4326.
+ *
  * @param {ol.Coordinate} point Point.
  * @return {ol.Coordinate} Point.
  */
@@ -430,6 +459,8 @@ ol.Projection.EPSG_3857_EXTENT = new ol.Extent(
 
 
 /**
+ * Lists several projection codes with the same meaning as EPSG:3857.
+ *
  * @private
  * @type {Array.<string>}
  */
@@ -442,6 +473,8 @@ ol.Projection.EPSG_3857_LIKE_CODES_ = [
 
 
 /**
+ * Projections equal to EPSG:3857.
+ *
  * @const
  * @private
  * @type {Array.<ol.Projection>}
@@ -457,6 +490,8 @@ ol.Projection.EPSG_3857_LIKE_PROJECTIONS_ = goog.array.map(
 
 
 /**
+ * Extent of the EPSG:4326 projection which is the whole world.
+ *
  * @const
  * @private
  * @type {ol.Extent}
@@ -465,6 +500,7 @@ ol.Projection.EPSG_4326_EXTENT_ = new ol.Extent(-180, -90, 180, 90);
 
 
 /**
+ * Several projection code with the same meaning as EPSG:4326.
  * @private
  * @type {Array.<string>}
  */
@@ -476,6 +512,8 @@ ol.Projection.EPSG_4326_LIKE_CODES_ = [
 
 
 /**
+ * Projections equal to EPSG:4326.
+ *
  * @const
  * @type {Array.<ol.Projection>}
  */
@@ -489,10 +527,14 @@ ol.Projection.EPSG_4326_LIKE_PROJECTIONS = goog.array.map(
     });
 
 
+// Add transformations that don't alter coordinates to convert within set of
+// projections with equal meaning.
 ol.Projection.addEquivalentProjections_(
     ol.Projection.EPSG_3857_LIKE_PROJECTIONS_);
 ol.Projection.addEquivalentProjections_(
     ol.Projection.EPSG_4326_LIKE_PROJECTIONS);
+// Add transformations to convert EPSG:4326 like coordinates to EPSG:3857 like
+// coordinates and back.
 ol.Projection.addEquivalentTransforms_(
     ol.Projection.EPSG_4326_LIKE_PROJECTIONS,
     ol.Projection.EPSG_3857_LIKE_PROJECTIONS_,
