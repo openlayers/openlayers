@@ -305,7 +305,8 @@ ol.control.Attribution.prototype.handleMapChanged = function() {
 
 
 /**
- * @protected Clears attribution and triggers refill whenever layers get added to the map or are removed from the map.
+ * Clears attribution and triggers refill whenever layers get added to the map or are removed from the map.
+ * @protected 
  */
 ol.control.Attribution.prototype.handleMapLayersChanged = function() {
   if (!goog.isNull(this.layersListenerKeys_)) {
