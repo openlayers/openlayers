@@ -37,8 +37,8 @@ ol.Tile = function(tileCoord, src, crossOrigin) {
   this.tileCoord = tileCoord;
 
   /**
-	 * Image URI
-	 * 
+   * Image URI
+   *
    * @private
    * @type {string}
    */
@@ -116,19 +116,19 @@ ol.Tile.prototype.getState = function() {
 
 /**
  * Tracks loading or read errors.
- * 
+ *
  * @private
  */
 ol.Tile.prototype.handleImageError_ = function() {
   this.state_ = ol.TileState.ERROR;
   this.unlistenImage_();
-	// TODO Why not dispatchChangeEvent here?
+  // TODO Why not dispatchChangeEvent here?
 };
 
 
 /**
  * Tracks successful image load.
- * 
+ *
  * @private
  */
 ol.Tile.prototype.handleImageLoad_ = function() {
@@ -158,7 +158,7 @@ ol.Tile.prototype.load = function() {
 
 /**
  * Discards event handlers which listen for load completion or errors.
- * 
+ *
  * @private
  */
 ol.Tile.prototype.unlistenImage_ = function() {

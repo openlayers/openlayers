@@ -80,7 +80,8 @@ ol.RendererHint = {
 
 
 /**
- * @type {Array.<ol.RendererHint>} Desired renderers with most favoured renderer first
+ * @type {Array.<ol.RendererHint>} Desired renderers with most favoured renderer
+ *   first.
  */
 ol.DEFAULT_RENDERER_HINTS = [
   ol.RendererHint.WEBGL,
@@ -113,8 +114,9 @@ ol.MapProperty = {
 
 
 /**
- * Map composed of multiple layers. Maps in OpenLayers are responsible for binding together the other components.
- * 
+ * Map composed of multiple layers. Maps in OpenLayers are responsible for
+ * binding together the other components.
+ *
  * @constructor
  * @extends {ol.Object}
  * @implements {goog.fx.anim.Animated}
@@ -195,7 +197,8 @@ ol.Map = function(mapOptions) {
 
   /**
    * @private
-   * @type {Element} Captures click events and cancels them so that interactions within overlays don't influence the map.
+   * @type {Element} Captures click events and cancels them so that interactions
+   *   within overlays don't influence the map.
    */
   this.overlayContainer_ = goog.dom.createDom(goog.dom.TagName.DIV,
       'ol-overlaycontainer');
@@ -246,7 +249,8 @@ ol.Map = function(mapOptions) {
   this.interactions_ = mapOptionsInternal.interactions;
 
   /**
-   * @type {ol.renderer.Map} Most favoured renderer given the supported of the choices
+   * @type {ol.renderer.Map} Most favoured renderer given the supported of the
+   *   choices.
    * @private
    */
   this.renderer_ =
@@ -647,8 +651,9 @@ ol.Map.prototype.handleUserProjectionChanged = function() {
 
 /**
  * Adjusts the map to its new size whenever the viewport size changes.
- * One should react the the resize of the map's viewport instead of the browser viewport but there is no API to do so.
- * 
+ * One should react the the resize of the map's viewport instead of the browser
+ * viewport but there is no API to do so.
+ *
  * @protected
  */
 ol.Map.prototype.handleBrowserWindowResize = function() {
@@ -1008,14 +1013,15 @@ ol.Map.createOptionsInternal = function(mapOptions) {
    */
   var rendererHints;
   if (goog.isDef(mapOptions.renderers)) {
-		// Use first supported renderer of the supported ones
+    // Use first supported renderer of the supported ones
     rendererHints = mapOptions.renderers;
   } else if (goog.isDef(mapOptions.renderer)) {
-		// Use the given renderer
-		// TODO Why is this needed, one could just use a single element list for mapOptions.renderers
+    // Use the given renderer
+    // TODO Why is this needed, one could just use a single element list for
+    //      mapOptions.renderers
     rendererHints = [mapOptions.renderer];
   } else {
-		// Use first supported renderer of default renderers
+    // Use first supported renderer of default renderers
     rendererHints = ol.DEFAULT_RENDERER_HINTS;
   }
 

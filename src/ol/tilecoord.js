@@ -64,7 +64,8 @@ ol.TileCoord.createFromQuadKey = function(quadKey) {
 
 
 /**
- * @param {string} str String that follows pattern “z/x/y” where x, y and z are numbers
+ * @param {string} str String that follows pattern “z/x/y” where x, y and z are
+ *   numbers.
  * @return {ol.TileCoord} Tile coord.
  */
 ol.TileCoord.createFromString = function(str) {
