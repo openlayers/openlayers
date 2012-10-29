@@ -170,6 +170,13 @@ h6
 	font-style: italic;
 }
 
+.protected {
+    display: none;
+}
+dt.tag-source, dd.tag-source {
+    display: none;
+}
+
 .ancestors { color: #999; }
 .ancestors a
 {

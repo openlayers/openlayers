@@ -94,7 +94,7 @@ function buildNav(members) {
         nav += '<h3>Modules</h3><ul>';
         members.modules.forEach(function(m) {
             if ( !hasOwnProp.call(seen, m.longname) ) {
-                nav += '<li>'+linkto(m.longname, m.name)+'</li>';
+                nav += '<li>'+linkto(m.longname, m.longname)+'</li>';
             }
             seen[m.longname] = true;
         });
@@ -128,7 +128,7 @@ function buildNav(members) {
                 moduleClasses = -1;
             }
             if ( !hasOwnProp.call(seen, c.longname) ) {
-                nav += '<li>'+linkto(c.longname, c.name)+'</li>';
+                nav += '<li>'+linkto(c.longname, c.longname)+'</li>';
             }
             seen[c.longname] = true;
         });
@@ -140,7 +140,7 @@ function buildNav(members) {
         nav += '<h3>Namespaces</h3><ul>';
         members.namespaces.forEach(function(n) {
             if ( !hasOwnProp.call(seen, n.longname) ) {
-                nav += '<li>'+linkto(n.longname, n.name)+'</li>';
+                nav += '<li>'+linkto(n.longname, n.longname)+'</li>';
             }
             seen[n.longname] = true;
         });
@@ -152,7 +152,7 @@ function buildNav(members) {
         nav += '<h3>Mixins</h3><ul>';
         members.mixins.forEach(function(m) {
             if ( !hasOwnProp.call(seen, m.longname) ) {
-                nav += '<li>'+linkto(m.longname, m.name)+'</li>';
+                nav += '<li>'+linkto(m.longname, m.longname)+'</li>';
             }
             seen[m.longname] = true;
         });
@@ -163,7 +163,7 @@ function buildNav(members) {
     if (members.tutorials.length) {
         nav += '<h3>Tutorials</h3><ul>';
         members.tutorials.forEach(function(t) {
-            nav += '<li>'+tutoriallink(t.name)+'</li>';
+            nav += '<li>'+tutoriallink(t.longname)+'</li>';
         });
         
         nav += '</ul>';
@@ -173,7 +173,7 @@ function buildNav(members) {
         nav += '<h3>Global</h3><ul>';
         members.globals.forEach(function(g) {
             if ( g.kind !== 'typedef' && !hasOwnProp.call(seen, g.longname) ) {
-                nav += '<li>'+linkto(g.longname, g.name)+'</li>';
+                nav += '<li>'+linkto(g.longname, g.longname)+'</li>';
             }
             seen[g.longname] = true;
         });
@@ -305,31 +305,31 @@ exports.publish = function(taffyData, opts, tutorials) {
             var classes = taffy(members.classes);
             classes = helper.find(classes, {longname: longname});
             if (classes.length) {
-                generate('Class: ' + classes[0].name, classes, helper.longnameToUrl[longname]);
+                generate('Class: ' + classes[0].longname, classes, helper.longnameToUrl[longname]);
             }
     
             var modules = taffy(members.modules);
             modules = helper.find(modules, {longname: longname});
             if (modules.length) {
-                generate('Module: ' + modules[0].name, modules, helper.longnameToUrl[longname]);
+                generate('Module: ' + modules[0].longname, modules, helper.longnameToUrl[longname]);
             }
         
             var namespaces = taffy(members.namespaces);
             namespaces = helper.find(namespaces, {longname: longname});
             if (namespaces.length) {
-                generate('Namespace: ' + namespaces[0].name, namespaces, helper.longnameToUrl[longname]);
+                generate('Namespace: ' + namespaces[0].longname, namespaces, helper.longnameToUrl[longname]);
             }
         
             var mixins = taffy(members.mixins);
             mixins = helper.find(mixins, {longname: longname});
             if (mixins.length) {
-                generate('Mixin: ' + mixins[0].name, mixins, helper.longnameToUrl[longname]);
+                generate('Mixin: ' + mixins[0].longname, mixins, helper.longnameToUrl[longname]);
             }
     
             var externals = taffy(members.externals);
             externals = helper.find(externals, {longname: longname});
             if (externals.length) {
-                generate('External: ' + externals[0].name, externals, helper.longnameToUrl[longname]);
+                generate('External: ' + externals[0].longname, externals, helper.longnameToUrl[longname]);
             }
         }
     }
