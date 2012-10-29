@@ -1,7 +1,6 @@
 // FIXME add minZoom support
 
 goog.provide('ol.source.TiledWMS');
-goog.provide('ol.source.TiledWMSOptions');
 
 goog.require('goog.asserts');
 goog.require('goog.object');
@@ -11,21 +10,6 @@ goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.source.TileSource');
 goog.require('ol.tilegrid.TileGrid');
-
-
-/**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *            params: Object,
- *            version: (string|undefined),
- *            crossOrigin: (null|string|undefined),
- *            extent: (ol.Extent|undefined),
- *            tileGrid: (ol.tilegrid.TileGrid|undefined),
- *            maxZoom: (number|undefined),
- *            projection: (ol.Projection|undefined),
- *            url: (string|undefined),
- *            urls: (Array.<string>|undefined)}}
- */
-ol.source.TiledWMSOptions;
 
 
 
