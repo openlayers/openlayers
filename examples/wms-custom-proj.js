@@ -28,8 +28,7 @@ var layers = new ol.Collection([
           'Pixelmap 1:1000000 / geo.admin.ch</a>')],
       crossOrigin: null,
       params: {'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale'},
-      projection: epsg21781,
-      extent: extent
+      projection: epsg21781
     })
   }),
   new ol.layer.TileLayer({
@@ -41,13 +40,13 @@ var layers = new ol.Collection([
           'National parks / geo.admin.ch</a>')],
       crossOrigin: null,
       params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
-      projection: epsg21781,
-      extent: extent
+      projection: epsg21781
     })
   })
 ]);
 
 var map = new ol.Map({
+  renderer: ol.RendererHint.DOM,
   center: new ol.Coordinate(660000, 190000),
   projection: epsg21781,
   layers: layers,
