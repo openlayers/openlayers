@@ -1,7 +1,7 @@
 BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
 JSDOC = jsdoc
 PHANTOMJS = phantomjs
-PLOVR_JAR = bin/plovr-b254c26318c5.jar
+PLOVR_JAR = bin/plovr-eba786b34df9.jar
 SPEC = $(shell find test/spec -name \*.js)
 SRC = $(shell find externs src/ol -name \*.js)
 EXPORTS = $(filter-out src/objectliterals.exports, $(shell find src -name \*.exports))
@@ -98,9 +98,8 @@ build/lint-spec-timestamp: $(SPEC)
 .PHONY: plovr
 plovr: $(PLOVR_JAR)
 
-# FIXME find a more permanent host for plovr jar
 $(PLOVR_JAR):
-	curl http://dev.camptocamp.com/files/tpayne/plovr/$(notdir $@) >$@
+	curl https://plovr.googlecode.com/files/$(notdir $@) >$@
 
 .PHONY: gh-pages
 gh-pages:
