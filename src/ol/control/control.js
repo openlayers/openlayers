@@ -14,8 +14,9 @@ ol.control.ControlOptions;
 
 
 /**
- * A thing which is painted over the map to provide a means for interaction (buttons) of show annotations (status bars).
- * 
+ * A thing which is painted over the map to provide a means for interaction
+ * (buttons) of show annotations (status bars).
+ *
  * @constructor
  * @extends {goog.Disposable}
  * @param {ol.control.ControlOptions} controlOptions Control options.
@@ -70,8 +71,9 @@ ol.control.Control.prototype.getMap = function() {
 
 /**
  * Removes the control from its current map and attaches it to the new map.
- * Subtypes might also wish set up event handlers to get notified about changes to the map here.
- * 
+ * Subtypes might also wish set up event handlers to get notified about changes
+ * to the map here.
+ *
  * @param {ol.Map} map Map.
  */
 ol.control.Control.prototype.setMap = function(map) {

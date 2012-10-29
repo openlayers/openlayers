@@ -7,7 +7,8 @@ goog.require('ol.TransformFunction');
 
 
 /**
- * Rectangular extent which is not rotated. An extent does not know its projection.
+ * Rectangular extent which is not rotated. An extent does not know its
+ * projection.
  *
  * @constructor
  * @extends {ol.Rectangle}
