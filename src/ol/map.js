@@ -980,7 +980,7 @@ ol.Map.createOptionsInternal = function(mapOptions) {
   values[ol.MapProperty.LAYERS] = goog.isDef(mapOptions.layers) ?
       mapOptions.layers : new ol.Collection();
 
-  values[ol.MapProperty.PROJECTION] = ol.Map.createProjection_(
+  values[ol.MapProperty.PROJECTION] = ol.Projection.createProjection(
       mapOptions.projection, 'EPSG:3857');
 
   if (goog.isDef(mapOptions.resolution)) {
@@ -990,7 +990,7 @@ ol.Map.createOptionsInternal = function(mapOptions) {
         ol.Projection.EPSG_3857_HALF_SIZE / (128 << mapOptions.zoom);
   }
 
-  values[ol.MapProperty.USER_PROJECTION] = ol.Map.createProjection_(
+  values[ol.MapProperty.USER_PROJECTION] = ol.Projection.createProjection(
       mapOptions.userProjection, 'EPSG:4326');
 
   /**
@@ -1182,22 +1182,4 @@ ol.Map.createInteractions_ = function(mapOptions) {
 
   return interactions;
 
-};
-
-
-/**
- * @private
- * @param {ol.Projection|string|undefined} projection Projection.
- * @param {string} defaultCode Default code.
- * @return {ol.Projection} Projection.
- */
-ol.Map.createProjection_ = function(projection, defaultCode) {
-  if (!goog.isDefAndNotNull(projection)) {
-    return ol.Projection.getFromCode(defaultCode);
-  } else if (goog.isString(projection)) {
-    return ol.Projection.getFromCode(projection);
-  } else {
-    goog.asserts.assert(projection instanceof ol.Projection);
-    return projection;
-  }
 };

@@ -137,8 +137,10 @@ ol.Projection.addEquivalentProjections_ = function(projections) {
   ol.Projection.addProjections(projections);
   goog.array.forEach(projections, function(source) {
     goog.array.forEach(projections, function(destination) {
-      ol.Projection.addTransform(
-          source, destination, ol.Projection.cloneTransform);
+      if (source !== destination) {
+        ol.Projection.addTransform(
+            source, destination, ol.Projection.cloneTransform);
+      }
     });
   });
 };
@@ -181,6 +183,8 @@ ol.Projection.addProjection = function(projection) {
   var code = projection.getCode();
   goog.asserts.assert(!goog.object.containsKey(projections, code));
   projections[code] = projection;
+  ol.Projection.addTransform(
+      projection, projection, ol.Projection.cloneTransform);
 };
 
 
@@ -191,6 +195,23 @@ ol.Projection.addProjections = function(projections) {
   goog.array.forEach(projections, function(projection) {
     ol.Projection.addProjection(projection);
   });
+};
+
+
+/**
+ * @param {ol.Projection|string|undefined} projection Projection.
+ * @param {string} defaultCode Default code.
+ * @return {ol.Projection} Projection.
+ */
+ol.Projection.createProjection = function(projection, defaultCode) {
+  if (!goog.isDefAndNotNull(projection)) {
+    return ol.Projection.getFromCode(defaultCode);
+  } else if (goog.isString(projection)) {
+    return ol.Projection.getFromCode(projection);
+  } else {
+    goog.asserts.assert(projection instanceof ol.Projection);
+    return projection;
+  }
 };
 
 
