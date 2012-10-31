@@ -2,6 +2,7 @@
 var template = require('jsdoc/template'),
     fs = require('fs'),
     path = require('path'),
+    taffy = require('taffydb').taffy,
     helper = require('jsdoc/util/templateHelper'),
     scopeToPunc = helper.scopeToPunc,
     hasOwnProp = Object.prototype.hasOwnProperty,
@@ -9,8 +10,9 @@ var template = require('jsdoc/template'),
     view,
     outdir = env.opts.destination;
 
-function find(spec, sort) {
-    return helper.find(data, spec, sort);
+
+function find(spec) {
+    return helper.find(data, spec);
 }
 
 function tutoriallink(tutorial) {
@@ -26,7 +28,7 @@ var linkto = helper.linkto;
 var htmlsafe = helper.htmlsafe;
 
 function hashToLink(doclet, hash) {
-    if (!/^(#.+)/.test(hash)) { return hash; }
+    if ( !/^(#.+)/.test(hash) ) { return hash; }
     
     var url = helper.createLink(doclet);
     
@@ -64,7 +66,7 @@ function generate(title, docs, filename) {
         docs: docs
     };
     
-    var outpath = outdir + '/' + filename,
+    var outpath = path.join(outdir, filename),
         html = view.render('container.tmpl', docData);
     
     html = helper.resolveLinks(html); // turn {@link foo} into <a href="foodoc.html">foo</a>
@@ -87,15 +89,28 @@ function generate(title, docs, filename) {
 function buildNav(members) {
     var nav = '<h2><a href="index.html">Index</a></h2>',
         seen = {};
-
-    function byLongName(a, b) {
-        return a.longname.localeCompare(b.longname); 
+    
+    /**
+     * Sorts elements by their qualified names (property longname).
+     * See https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Array/sort
+     * @param {object} a
+     * @param {object} b
+     * @return {number}
+     */
+    function byLongName(a, b){
+        if(a.longname===b.longname){
+            return 0;
+        } else if(a.longname < b.longname){
+            return -1;
+        } else {
+            return 1;
+        }
     }
 
     if (members.modules.length) {
         nav += '<h3>Modules</h3><ul>';
         members.modules.sort(byLongName).forEach(function(m) {
-            if (!hasOwnProp.call(seen, m.longname)) {
+            if ( !hasOwnProp.call(seen, m.longname) ) {
                 nav += '<li>'+linkto(m.longname, m.longname)+'</li>';
             }
             seen[m.longname] = true;
@@ -107,8 +122,8 @@ function buildNav(members) {
     if (members.externals.length) {
         nav += '<h3>Externals</h3><ul>';
         members.externals.sort(byLongName).forEach(function(e) {
-            if (!hasOwnProp.call(seen, e.longname)) {
-                nav += '<li>'+linkto(e.longname, e.name.replace(/(^"|"$)/g, ''))+'</li>';
+            if ( !hasOwnProp.call(seen, e.longname) ) {
+                nav += '<li>'+linkto( e.longname, e.name.replace(/(^"|"$)/g, '') )+'</li>';
             }
             seen[e.longname] = true;
         });
@@ -119,7 +134,7 @@ function buildNav(members) {
     if (members.classes.length) {
         var moduleClasses = 0;
         members.classes.sort(byLongName).forEach(function(c) {
-            var moduleSameName = find({kind: 'module', longname: c.longname}, false);
+            var moduleSameName = find({kind: 'module', longname: c.longname});
             if (moduleSameName.length) {
                 c.name = c.name.replace('module:', 'require("')+'")';
                 moduleClasses++;
@@ -129,7 +144,7 @@ function buildNav(members) {
                 nav += '<h3>Classes</h3><ul>';
                 moduleClasses = -1;
             }
-            if (!hasOwnProp.call(seen, c.longname)) {
+            if ( !hasOwnProp.call(seen, c.longname) ) {
                 nav += '<li>'+linkto(c.longname, c.longname)+'</li>';
             }
             seen[c.longname] = true;
@@ -141,7 +156,7 @@ function buildNav(members) {
     if (members.namespaces.length) {
         nav += '<h3>Namespaces</h3><ul>';
         members.namespaces.sort(byLongName).forEach(function(n) {
-            if (!hasOwnProp.call(seen, n.longname)) {
+            if ( !hasOwnProp.call(seen, n.longname) ) {
                 nav += '<li>'+linkto(n.longname, n.longname)+'</li>';
             }
             seen[n.longname] = true;
@@ -153,7 +168,7 @@ function buildNav(members) {
     if (members.mixins.length) {
         nav += '<h3>Mixins</h3><ul>';
         members.mixins.sort(byLongName).forEach(function(m) {
-            if (!hasOwnProp.call(seen, m.longname)) {
+            if ( !hasOwnProp.call(seen, m.longname) ) {
                 nav += '<li>'+linkto(m.longname, m.longname)+'</li>';
             }
             seen[m.longname] = true;
@@ -174,7 +189,7 @@ function buildNav(members) {
     if (members.globals.length) {
         nav += '<h3>Global</h3><ul>';
         members.globals.sort(byLongName).forEach(function(g) {
-            if (g.kind !== 'typedef' && !hasOwnProp.call(seen, g.longname)) {
+            if ( g.kind !== 'typedef' && !hasOwnProp.call(seen, g.longname) ) {
                 nav += '<li>'+linkto(g.longname, g.longname)+'</li>';
             }
             seen[g.longname] = true;
@@ -205,9 +220,9 @@ exports.publish = function(taffyData, opts, tutorials) {
     helper.setTutorials(tutorials);
 
     data = helper.prune(data);
-    data.orderBy(['longname', 'version', 'since']);
+    data.sort('longname, version, since');
 
-    data.forEach(function(doclet) {
+    data().each(function(doclet) {
          doclet.attribs = '';
         
         if (doclet.examples) {
@@ -233,28 +248,28 @@ exports.publish = function(taffyData, opts, tutorials) {
     });
     
     // update outdir if necessary, then create outdir
-    var packageInfo = (find({kind: 'package'}, false) || []) [0];
+    var packageInfo = ( find({kind: 'package'}) || [] ) [0];
     if (packageInfo && packageInfo.name) {
-        outdir += '/' + packageInfo.name + '/' + packageInfo.version + '/';
+        outdir = path.join(outdir, packageInfo.name, packageInfo.version);
     }
     fs.mkPath(outdir);
 
     // copy static files to outdir
-    var fromDir = templatePath + '/static',
+    var fromDir = path.join(templatePath, 'static'),
         staticFiles = fs.ls(fromDir, 3);
         
     staticFiles.forEach(function(fileName) {
-        var toDir = fs.toDir(fileName.replace(fromDir, outdir));
+        var toDir = fs.toDir( fileName.replace(fromDir, outdir) );
         fs.mkPath(toDir);
         fs.copyFileSync(fileName, toDir);
     });
     
-    data.forEach(function(doclet) {
+    data().each(function(doclet) {
         var url = helper.createLink(doclet);
         helper.registerLink(doclet.longname, url);
     });
     
-    data.forEach(function(doclet) {
+    data().each(function(doclet) {
         var url = helper.longnameToUrl[doclet.longname];
 
         if (url.indexOf('#') > -1) {
@@ -272,7 +287,7 @@ exports.publish = function(taffyData, opts, tutorials) {
     });
     
     // do this after the urls have all been generated
-    data.forEach(function(doclet) {
+    data().each(function(doclet) {
         doclet.ancestors = getAncestorLinks(doclet);
 
         doclet.signature = '';
@@ -302,47 +317,45 @@ exports.publish = function(taffyData, opts, tutorials) {
     view.nav = buildNav(members);
 
     for (var longname in helper.longnameToUrl) {
-        if (hasOwnProp.call(helper.longnameToUrl, longname)) {
+        if ( hasOwnProp.call(helper.longnameToUrl, longname) ) {
             // reuse 'members', which speeds things up a bit
-            var classes = new (require('typicaljoe/taffy'))(members.classes);
-            classes = helper.find(classes, {longname: longname}, false);
+            var classes = taffy(members.classes);
+            classes = helper.find(classes, {longname: longname});
             if (classes.length) {
                 generate('Class: ' + classes[0].longname, classes, helper.longnameToUrl[longname]);
             }
     
-            var modules = new (require('typicaljoe/taffy'))(members.modules);
-            modules = helper.find(modules, {longname: longname}, false);
+            var modules = taffy(members.modules);
+            modules = helper.find(modules, {longname: longname});
             if (modules.length) {
                 generate('Module: ' + modules[0].longname, modules, helper.longnameToUrl[longname]);
             }
         
-            var namespaces = new (require('typicaljoe/taffy'))(members.namespaces);
-            namespaces = helper.find(namespaces, {longname: longname}, false);
+            var namespaces = taffy(members.namespaces);
+            namespaces = helper.find(namespaces, {longname: longname});
             if (namespaces.length) {
                 generate('Namespace: ' + namespaces[0].longname, namespaces, helper.longnameToUrl[longname]);
             }
         
-            var mixins = new (require('typicaljoe/taffy'))(members.mixins);
-            mixins = helper.find(mixins, {longname: longname}, false);
+            var mixins = taffy(members.mixins);
+            mixins = helper.find(mixins, {longname: longname});
             if (mixins.length) {
                 generate('Mixin: ' + mixins[0].longname, mixins, helper.longnameToUrl[longname]);
             }
     
-            var externals = new (require('typicaljoe/taffy'))(members.externals);
-            externals = helper.find(externals, {longname: longname}, false);
+            var externals = taffy(members.externals);
+            externals = helper.find(externals, {longname: longname});
             if (externals.length) {
                 generate('External: ' + externals[0].longname, externals, helper.longnameToUrl[longname]);
             }
         }
     }
 
-    if (members.globals.length) { 
-        generate('Global', [{kind: 'globalobj'}], 'global.html'); 
-    }
+    if (members.globals.length) { generate('Global', members.globals, 'global.html'); }
     
     // index page displays information from package.json and lists files
-    var files = find({kind: 'file'}, false),
-        packages = find({kind: 'package'}, false);
+    var files = find({kind: 'file'}),
+        packages = find({kind: 'package'});
 
     generate('Index',
 		packages.concat(
@@ -359,7 +372,7 @@ exports.publish = function(taffyData, opts, tutorials) {
             children: tutorial.children
         };
         
-        var tutorialPath = outdir + '/' + filename,
+        var tutorialPath = path.join(outdir, filename),
             html = view.render('tutorial.tmpl', tutorialData);
         
         // yes, you can use {@link} in tutorials too!
