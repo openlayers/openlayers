@@ -2,6 +2,7 @@
 
 goog.provide('ol.source.TiledWMS');
 
+
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol.Attribution');
@@ -19,8 +20,8 @@ goog.require('ol.tilegrid.TileGrid');
  * @param {ol.source.TiledWMSOptions} tiledWMSOptions options.
  */
 ol.source.TiledWMS = function(tiledWMSOptions) {
-  var projection = goog.isDef(tiledWMSOptions.projection) ?
-      tiledWMSOptions.projection : ol.Projection.getFromCode('EPSG:3857');
+  var projection = ol.Projection.createProjection(
+      tiledWMSOptions.projection, 'EPSG:3857');
   var projectionExtent = projection.getExtent();
 
   var extent = goog.isDef(tiledWMSOptions.extent) ?
@@ -39,7 +40,7 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
         tiledWMSOptions.maxZoom : 18;
     var resolutions = new Array(maxZoom + 1);
     for (var z = 0, zz = resolutions.length; z < zz; ++z) {
-      resolutions[z] = size / (256 << z);
+      resolutions[z] = ol.Projection.EPSG_3857_HALF_SIZE / (128 << z);
     }
     tileGrid = new ol.tilegrid.TileGrid({
       origin: projectionExtent.getTopLeft(),
@@ -85,15 +86,17 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
       return null;
     }
     var x = tileCoord.x;
+    var tileExtent = tileGrid.getTileCoordExtent(tileCoord);
     // FIXME do we want a wrapDateLine param? The code below will break maps
     // with projections that do not span the whole world width.
     if (extent.minX === projectionExtent.minX &&
         extent.maxX === projectionExtent.maxX) {
-      var n = 1 << tileCoord.z;
-      x = goog.math.modulo(x, n);
+      var numCols = Math.ceil(
+          (extent.maxX - extent.minX) / (tileExtent.maxX - tileExtent.minX));
+      x = goog.math.modulo(x, numCols);
+      tileExtent = tileGrid.getTileCoordExtent(
+          new ol.TileCoord(tileCoord.z, x, tileCoord.y));
     }
-    var tileExtent = tileGrid.getTileCoordExtent(
-        new ol.TileCoord(tileCoord.z, x, tileCoord.y));
     // FIXME We shouldn't need a typecast here.
     if (!tileExtent.intersects(/** @type {ol.Extent} */ (extent))) {
       return null;
