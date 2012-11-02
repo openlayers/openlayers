@@ -2,6 +2,7 @@ goog.provide('ol.renderer.Map');
 
 goog.require('goog.Disposable');
 goog.require('goog.events');
+goog.require('goog.functions');
 goog.require('goog.fx.anim');
 goog.require('goog.fx.anim.Animated');
 goog.require('goog.vec.Mat4');
@@ -202,7 +203,7 @@ ol.renderer.Map.prototype.getPixelFromCoordinate = function(coordinate) {
 /**
  * Handle background color changed.
  */
-ol.renderer.Map.prototype.handleBackgroundColorChanged = goog.nullFunction;
+ol.renderer.Map.prototype.handleBackgroundColorChanged = goog.functions.NULL;
 
 
 /**
