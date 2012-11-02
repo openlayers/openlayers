@@ -116,9 +116,7 @@ ol.renderer.Map.prototype.canRotate = goog.functions.FALSE;
  * @protected
  * @return {ol.renderer.Layer} layerRenderer Layer renderer.
  */
-ol.renderer.Map.prototype.createLayerRenderer = function(layer) {
-  return null;
-};
+ol.renderer.Map.prototype.createLayerRenderer = goog.functions.NULL;
 
 
 /**
@@ -203,7 +201,7 @@ ol.renderer.Map.prototype.getPixelFromCoordinate = function(coordinate) {
 /**
  * Handle background color changed.
  */
-ol.renderer.Map.prototype.handleBackgroundColorChanged = goog.functions.NULL;
+ol.renderer.Map.prototype.handleBackgroundColorChanged = goog.nullFunction;
 
 
 /**
