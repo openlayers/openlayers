@@ -115,7 +115,9 @@ ol.renderer.Map.prototype.canRotate = goog.functions.FALSE;
  * @protected
  * @return {ol.renderer.Layer} layerRenderer Layer renderer.
  */
-ol.renderer.Map.prototype.createLayerRenderer = goog.abstractMethod;
+ol.renderer.Map.prototype.createLayerRenderer = function(layer) {
+  return null;
+};
 
 
 /**
@@ -310,15 +312,7 @@ ol.renderer.Map.prototype.removeLayerRenderer = function(layer) {
 /**
  * @return {boolean} Animating.
  */
-ol.renderer.Map.prototype.render = function() {
-  var animate = false;
-  this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
-    if (layerRenderer.render()) {
-      animate = true;
-    }
-  });
-  return animate;
-};
+ol.renderer.Map.prototype.render = goog.functions.FALSE;
 
 
 /**
