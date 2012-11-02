@@ -228,7 +228,15 @@ ol.renderer.dom.Map.prototype.render = function() {
   this.renderedRotation_ = mapRotation;
   this.renderedSize_ = mapSize;
 
-  return goog.base(this, 'render');
+  var animate = false;
+  this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
+    if (layerRenderer.render()) {
+      animate = true;
+    }
+  });
+
+  return animate;
+
 };
 
 

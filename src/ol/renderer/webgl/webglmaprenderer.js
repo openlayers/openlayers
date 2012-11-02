@@ -562,7 +562,12 @@ ol.renderer.webgl.Map.prototype.render = function() {
     this.canvasSize_ = size;
   }
 
-  var animate = goog.base(this, 'render');
+  var animate = false;
+  this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
+    if (layerRenderer.render()) {
+      animate = true;
+    }
+  });
 
   var gl = this.getGL();
 
