@@ -1,4 +1,5 @@
 goog.provide('ol.Projection');
+goog.provide('ol.ProjectionUnits');
 
 goog.require('goog.array');
 goog.require('goog.asserts');

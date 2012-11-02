@@ -1,4 +1,5 @@
 @exportSymbol ol.Projection
+@exportProperty ol.Projection.addProjection
 @exportProperty ol.Projection.getFromCode
 @exportProperty ol.Projection.getTransform
 @exportProperty ol.Projection.getTransformFromCodes
@@ -8,3 +9,6 @@
 @exportProperty ol.Projection.prototype.getExtent
 @exportProperty ol.Projection.prototype.getUnits
 
+@exportSymbol ol.ProjectionUnits
+@exportProperty ol.ProjectionUnits.DEGREES
+@exportProperty ol.ProjectionUnits.METERS
