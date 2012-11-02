@@ -6,6 +6,32 @@ describe('ol.TileUrlFunction', function() {
       expect(tileUrl(new ol.TileCoord(3, 2, 1))).toEqual('3/2/1');
       expect(tileUrl(null)).toBeUndefined();
     });
+    describe('with number range', function() {
+      it('creates expected URL', function() {
+        var template = 'http://tile-{1-3}/{z}/{x}/{y}';
+        var tileUrlFunction = ol.TileUrlFunction.createFromTemplate(template);
+        var tileCoord = new ol.TileCoord(3, 2, 1);
+        tileCoord.hash = function() { return 3; };
+        expect(tileUrlFunction(tileCoord)).toEqual('http://tile-1/3/2/1');
+        tileCoord.hash = function() { return 2; };
+        expect(tileUrlFunction(tileCoord)).toEqual('http://tile-3/3/2/1');
+        tileCoord.hash = function() { return 1; };
+        expect(tileUrlFunction(tileCoord)).toEqual('http://tile-2/3/2/1');
+      });
+    });
+    describe('with character range', function() {
+      it('creates expected URL', function() {
+        var template = 'http://tile-{c-e}/{z}/{x}/{y}';
+        var tileUrlFunction = ol.TileUrlFunction.createFromTemplate(template);
+        var tileCoord = new ol.TileCoord(3, 2, 1);
+        tileCoord.hash = function() { return 3; };
+        expect(tileUrlFunction(tileCoord)).toEqual('http://tile-c/3/2/1');
+        tileCoord.hash = function() { return 2; };
+        expect(tileUrlFunction(tileCoord)).toEqual('http://tile-e/3/2/1');
+        tileCoord.hash = function() { return 1; };
+        expect(tileUrlFunction(tileCoord)).toEqual('http://tile-d/3/2/1');
+      });
+    });
   });
 
   describe('withTileCoordTransform', function() {
