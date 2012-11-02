@@ -28,7 +28,10 @@ var layers = new ol.Collection([
           '<a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">' +
           'Pixelmap 1:1000000 / geo.admin.ch</a>')],
       crossOrigin: null,
-      params: {'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale'},
+      params: {
+        'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
+        'FORMAT': 'image/jpeg'
+      },
       projection: epsg21781,
       extent: extent
     })
