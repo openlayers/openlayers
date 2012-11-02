@@ -2,6 +2,7 @@ goog.provide('ol.renderer.Map');
 
 goog.require('goog.Disposable');
 goog.require('goog.events');
+goog.require('goog.functions');
 goog.require('goog.fx.anim');
 goog.require('goog.fx.anim.Animated');
 goog.require('goog.vec.Mat4');
@@ -115,7 +116,9 @@ ol.renderer.Map.prototype.canRotate = goog.functions.FALSE;
  * @protected
  * @return {ol.renderer.Layer} layerRenderer Layer renderer.
  */
-ol.renderer.Map.prototype.createLayerRenderer = goog.abstractMethod;
+ol.renderer.Map.prototype.createLayerRenderer = function(layer) {
+  return null;
+};
 
 
 /**
@@ -200,7 +203,7 @@ ol.renderer.Map.prototype.getPixelFromCoordinate = function(coordinate) {
 /**
  * Handle background color changed.
  */
-ol.renderer.Map.prototype.handleBackgroundColorChanged = goog.nullFunction;
+ol.renderer.Map.prototype.handleBackgroundColorChanged = goog.functions.NULL;
 
 
 /**
@@ -310,15 +313,7 @@ ol.renderer.Map.prototype.removeLayerRenderer = function(layer) {
 /**
  * @return {boolean} Animating.
  */
-ol.renderer.Map.prototype.render = function() {
-  var animate = false;
-  this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
-    if (layerRenderer.render()) {
-      animate = true;
-    }
-  });
-  return animate;
-};
+ol.renderer.Map.prototype.render = goog.functions.FALSE;
 
 
 /**
