@@ -30,8 +30,10 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
   var version = goog.isDef(tiledWMSOptions.version) ?
       tiledWMSOptions.version : '1.3';
 
-  var tileGrid = tiledWMSOptions.tileGrid;
-  if (!goog.isDef(tileGrid)) {
+  var tileGrid;
+  if (goog.isDef(tiledWMSOptions.tileGrid)) {
+    tileGrid = tiledWMSOptions.tileGrid;
+  } else {
     // FIXME Factor this out to a more central/generic place.
     var size = Math.max(
         projectionExtent.maxX - projectionExtent.minX,
@@ -48,37 +50,34 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
     });
   }
 
-  function tileUrlFunction(tileCoord) {
-    if (goog.isNull(tileCoord)) {
-      return undefined;
-    }
-    var tileSize = tileGrid.getTileSize();
-    var tileExtent = tileGrid.getTileCoordExtent(tileCoord);
-    var params = {
-      'SERVICE': 'WMS',
-      'VERSION': version,
-      'REQUEST': 'GetMap',
-      'WIDTH': tileSize.width,
-      'HEIGHT': tileSize.height,
-      'STYLES': '',
-      'FORMAT': 'image/png',
-      'TRANSPARENT': true,
-      // FIXME Projection dependant axis order.
-      'BBOX': [
-        tileExtent.minX, tileExtent.minY, tileExtent.maxX, tileExtent.maxY
-      ].join(',')
-    };
-    params[version >= '1.3' ? 'CRS' : 'SRS'] = projection.getCode();
-    goog.object.extend(params, tiledWMSOptions.params);
-    var url = tiledWMSOptions.urls ?
-        tiledWMSOptions.urls[goog.math.modulo(
-            tileCoord.hash(), tiledWMSOptions.urls.length)] :
-        tiledWMSOptions.url;
-    for (var param in params) {
-      url += (~url.indexOf('?') ? '&' : '?') +
-          param + '=' + encodeURIComponent(params[param]);
-    }
-    return url;
+  var baseParams = {
+    'SERVICE': 'WMS',
+    'VERSION': version,
+    'REQUEST': 'GetMap',
+    'STYLES': '',
+    'FORMAT': 'image/png',
+    'TRANSPARENT': true
+  };
+  var tileSize = tileGrid.getTileSize();
+  baseParams['WIDTH'] = tileSize.width;
+  baseParams['HEIGHT'] = tileSize.height;
+  baseParams[version >= '1.3' ? 'CRS' : 'SRS'] = projection.getCode();
+  goog.object.extend(baseParams, tiledWMSOptions.params);
+
+  var tileUrlFunction;
+  if (tiledWMSOptions.urls) {
+    var tileUrlFunctions = goog.array.map(
+        tiledWMSOptions.urls, function(url) {
+          return ol.TileUrlFunction.createBboxParam(
+              url, baseParams, tileGrid);
+        });
+    tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
+        tileUrlFunctions);
+  } else if (tiledWMSOptions.url) {
+    tileUrlFunction = ol.TileUrlFunction.createBboxParam(
+        tiledWMSOptions.url, baseParams, tileGrid);
+  } else {
+    tileUrlFunction = ol.TileUrlFunction.nullTileUrlFunction;
   }
 
   function tileCoordTransform(tileCoord) {
