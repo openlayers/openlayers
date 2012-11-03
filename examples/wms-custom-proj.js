@@ -27,7 +27,6 @@ var layers = new ol.Collection([
           '&copy; ' +
           '<a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">' +
           'Pixelmap 1:1000000 / geo.admin.ch</a>')],
-      crossOrigin: null,
       params: {
         'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
         'FORMAT': 'image/jpeg'
@@ -43,7 +42,6 @@ var layers = new ol.Collection([
           '&copy; ' +
           '<a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">' +
           'National parks / geo.admin.ch</a>')],
-      crossOrigin: null,
       params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
       projection: epsg21781,
       extent: extent
@@ -52,7 +50,6 @@ var layers = new ol.Collection([
 ]);
 
 var map = new ol.Map({
-  renderer: ol.RendererHint.DOM,
   center: new ol.Coordinate(660000, 190000),
   projection: epsg21781,
   // By setting userProjection to the same as projection, we do not need
