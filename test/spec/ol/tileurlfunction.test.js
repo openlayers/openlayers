@@ -69,27 +69,14 @@ describe('ol.TileUrlFunction', function() {
         maxZoom: 10
       });
     });
-    describe('base params in object', function() {
-      it('creates expected URL', function() {
-        var tileUrlFunction = ol.TileUrlFunction.createBboxParam(
-           'http://wms', {'foo': 'bar'}, tileGrid);
-        var tileCoord = new ol.TileCoord(1, 0, 0);
-        var tileUrl = tileUrlFunction(tileCoord);
-        var expected = 'http://wms?foo=bar&BBOX=-20037508.342789244' +
-                       '%2C20037508.342789244%2C0%2C40075016.68557849';
-        expect(tileUrl).toEqual(expected);
-      });
-    });
-    describe('base params in URL', function() {
-      it('creates expected URL', function() {
-        var tileUrlFunction = ol.TileUrlFunction.createBboxParam(
-           'http://wms?foo=bar', {}, tileGrid);
-        var tileCoord = new ol.TileCoord(1, 0, 0);
-        var tileUrl = tileUrlFunction(tileCoord);
-        var expected = 'http://wms?foo=bar&BBOX=-20037508.342789244' +
-                       '%2C20037508.342789244%2C0%2C40075016.68557849';
-        expect(tileUrl).toEqual(expected);
-      });
+    it('creates expected URL', function() {
+      var tileUrlFunction = ol.TileUrlFunction.createBboxParam(
+         'http://wms?foo=bar', tileGrid);
+      var tileCoord = new ol.TileCoord(1, 0, 0);
+      var tileUrl = tileUrlFunction(tileCoord);
+      var expected = 'http://wms?foo=bar&BBOX=-20037508.342789244' +
+                     '%2C20037508.342789244%2C0%2C40075016.68557849';
+      expect(tileUrl).toEqual(expected);
     });
   });
 });

@@ -5,6 +5,7 @@ goog.provide('ol.source.TiledWMS');
 
 goog.require('goog.asserts');
 goog.require('goog.object');
+goog.require('goog.uri.utils');
 goog.require('ol.Attribution');
 goog.require('ol.Projection');
 goog.require('ol.TileCoord');
@@ -68,14 +69,15 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
   if (tiledWMSOptions.urls) {
     var tileUrlFunctions = goog.array.map(
         tiledWMSOptions.urls, function(url) {
-          return ol.TileUrlFunction.createBboxParam(
-              url, baseParams, tileGrid);
+          url = goog.uri.utils.appendParamsFromMap(url, baseParams);
+          return ol.TileUrlFunction.createBboxParam(url, tileGrid);
         });
     tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
         tileUrlFunctions);
   } else if (tiledWMSOptions.url) {
-    tileUrlFunction = ol.TileUrlFunction.createBboxParam(
-        tiledWMSOptions.url, baseParams, tileGrid);
+    var url = goog.uri.utils.appendParamsFromMap(
+        tiledWMSOptions.url, baseParams);
+    tileUrlFunction = ol.TileUrlFunction.createBboxParam(url, tileGrid);
   } else {
     tileUrlFunction = ol.TileUrlFunction.nullTileUrlFunction;
   }

@@ -2,6 +2,7 @@ goog.provide('ol.TileUrlFunction');
 goog.provide('ol.TileUrlFunctionType');
 
 goog.require('goog.math');
+goog.require('goog.uri.utils');
 goog.require('ol.TileCoord');
 goog.require('ol.tilegrid.TileGrid');
 
@@ -69,29 +70,21 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
 
 
 /**
- * @param {string} baseUrl WMS base URL.
- * @param {Object} baseParams Query string parameters.
+ * @param {string} baseUrl Base URL (may have query data).
  * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
-ol.TileUrlFunction.createBboxParam = function(baseUrl, baseParams, tileGrid) {
+ol.TileUrlFunction.createBboxParam = function(baseUrl, tileGrid) {
   return function(tileCoord) {
     if (goog.isNull(tileCoord)) {
       return undefined;
     } else {
       var tileExtent = tileGrid.getTileCoordExtent(tileCoord);
-      var params = goog.object.clone(baseParams);
       // FIXME Projection dependant axis order.
       var bboxValue = [
         tileExtent.minX, tileExtent.minY, tileExtent.maxX, tileExtent.maxY
       ].join(',');
-      goog.object.extend(params, {'BBOX': bboxValue});
-      var url = baseUrl;
-      for (var p in params) {
-        url += (~url.indexOf('?') ? '&' : '?') +
-            p + '=' + encodeURIComponent(params[p]);
-      }
-      return url;
+      return goog.uri.utils.appendParam(baseUrl, 'BBOX', bboxValue);
     }
   };
 };
