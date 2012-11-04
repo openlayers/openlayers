@@ -195,9 +195,17 @@ def plovr_jar(t):
     t.download('https://plovr.googlecode.com/files/' + os.path.basename(PLOVR_JAR))
 
 
-@pake.target('gh-pages', phony=True)
+@pake.target('gh-pages', 'hostexamples', 'doc', phony=True)
 def gh_pages(t):
-    t.run('bin/git-update-ghpages', 'openlayers/ol3', '-i', 'build/gh-pages/%(BRANCH)s', '-p', '%(BRANCH)s')
+    with t.tempdir() as tempdir:
+        t.run('git', 'clone', '--branch', 'gh-pages', 'git@github.com:openlayers/ol3.git', tempdir)
+        with t.chdir(tempdir):
+            t.rm_rf('%(BRANCH)s')
+        t.cp_r('build/gh-pages/%(BRANCH)s', tempdir + '/%(BRANCH)s')
+        with t.chdir(tempdir):
+            t.run('git', 'add', '--all', '%(BRANCH)s')
+            t.run('git', 'commit', '--message', 'Updated')
+            t.run('git', 'push', 'origin', 'gh-pages')
 
 
 pake.virtual('doc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(pake.variables))
