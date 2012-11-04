@@ -2,7 +2,9 @@ goog.provide('ol.TileUrlFunction');
 goog.provide('ol.TileUrlFunctionType');
 
 goog.require('goog.math');
+goog.require('goog.uri.utils');
 goog.require('ol.TileCoord');
+goog.require('ol.tilegrid.TileGrid');
 
 
 /**
@@ -62,6 +64,27 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
     } else {
       var index = goog.math.modulo(tileCoord.hash(), tileUrlFunctions.length);
       return tileUrlFunctions[index](tileCoord);
+    }
+  };
+};
+
+
+/**
+ * @param {string} baseUrl Base URL (may have query data).
+ * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
+ * @return {ol.TileUrlFunctionType} Tile URL function.
+ */
+ol.TileUrlFunction.createBboxParam = function(baseUrl, tileGrid) {
+  return function(tileCoord) {
+    if (goog.isNull(tileCoord)) {
+      return undefined;
+    } else {
+      var tileExtent = tileGrid.getTileCoordExtent(tileCoord);
+      // FIXME Projection dependant axis order.
+      var bboxValue = [
+        tileExtent.minX, tileExtent.minY, tileExtent.maxX, tileExtent.maxY
+      ].join(',');
+      return goog.uri.utils.appendParam(baseUrl, 'BBOX', bboxValue);
     }
   };
 };
