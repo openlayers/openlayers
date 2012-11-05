@@ -35,6 +35,69 @@ function test_Comparison_string(t) {
     t.eq(format.write(filter), test_cql, "write returned test cql");
 }
 
+function test_read_whitespace(t) {
+    t.plan(4);
+    var cql = "TYPEDESC = 'BOE Numbered Plans'";
+    var format = new OpenLayers.Format.CQL();
+    var filter = format.read(cql);
+    t.ok(filter instanceof OpenLayers.Filter.Comparison, "filter parsed correctly with whitespace in string");
+    t.eq(filter.property, 'TYPEDESC', "filter property parsed correctly");
+    t.eq(filter.value, 'BOE Numbered Plans', "value parsed correctly");
+    t.eq(filter.type, '==', 'filter type parsed correctly');
+}
+
+function test_read_escaped_quotes(t) {
+    t.plan(14);
+    var cql = "PROP = 'don''t worry' or PROP = 'value''s value' or PROP = 'foo'";
+    var format = new OpenLayers.Format.CQL();
+
+    var filter = format.read(cql);
+    t.ok(filter instanceof OpenLayers.Filter.Logical, "filter type");
+    t.eq(filter.filters.length, 2, "filter children");
+
+    var f0 = filter.filters[0];
+    t.ok(f0 instanceof OpenLayers.Filter.Logical, "f0 type");
+    t.eq(f0.filters.length, 2, "f0 children");
+
+    var f00 = f0.filters[0];
+    t.eq(f00.property, "PROP", "f000 property");
+    t.eq(f00.type, "==", "f000 type");
+    t.eq(f00.value, "don't worry", "f000 value");
+
+    var f01 = f0.filters[1];
+    t.eq(f01.property, "PROP", "f001 property");
+    t.eq(f01.type, "==", "f001 type");
+    t.eq(f01.value, "value's value", "f001 value");
+
+    var f1 = filter.filters[1];
+    t.ok(f1 instanceof OpenLayers.Filter.Comparison, "f1 type");
+    t.eq(f1.property, "PROP", "f1 property");
+    t.eq(f1.type, "==", "f1 type");
+    t.eq(f1.value, "foo", "f1 value");
+}
+
+function test_write_escaped_quotes(t) {
+    t.plan(1);
+    var filter = new OpenLayers.Filter.Logical({
+        type: OpenLayers.Filter.Logical.OR,
+        filters: [
+            new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                property: "PROP",
+                value: "quot'd string"
+            }),
+            new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                property: "PROP",
+                value: "don't quote's"
+            })
+        ]
+    });
+    var format = new OpenLayers.Format.CQL();
+    var cql = format.write(filter);
+    t.eq(cql, "(PROP = 'quot''d string') OR (PROP = 'don''t quote''s')", "escaped");
+}
+
 function test_Comparison_number(t) {
     t.plan(5);
     var test_cql, format, filter;
