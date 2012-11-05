@@ -281,6 +281,20 @@ function test_BETWEEN(t) {
 
 }
 
+function test_NULL(t) {
+    t.plan(3);
+    var filter = new OpenLayers.Filter.Comparison({
+        property: "GEOM",
+        type: "NULL"
+    });
+    var format = new OpenLayers.Format.CQL();
+    var str = 'GEOM IS NULL';
+    t.eq(format.write(filter), str, "NULL filter written correctly");
+    filter = format.read(str);
+    t.eq(filter.type, OpenLayers.Filter.Comparison.IS_NULL, "filter type is correctly parsed");
+    t.eq(filter.property, "GEOM", "filter property is correctly parsed");
+}
+
         </script>
     </head>
     <body></body>
