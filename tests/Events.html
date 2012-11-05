@@ -314,7 +314,7 @@
         t.eq(evt.clientY, 1.5, "evt.clientY value is correct");
         
         // test bug where clientX/clientY includes scroll offset
-        window._mockWin = {
+        window.olMockWin = {
             pageXOffset: 10,
             pageYOffset: 20
         };
@@ -345,7 +345,7 @@
         t.eq(evt.clientX, 1, "evt.clientX value is correct");
         t.eq(evt.clientY, 1, "evt.clientY value is correct");
         
-        window._mockWin = {
+        window.olMockWin = {
             pageXOffset: 11,
             pageYOffset: 299
         };
@@ -362,7 +362,7 @@
         t.eq(evt.clientX, 231, "evt.clientX value is correct");
         t.eq(evt.clientY, 324, "evt.clientY value is correct");
         
-        window._mockWin = undefined;
+        window.olMockWin = undefined;
     }
     
     function test_Events_attachToElement(t) {
