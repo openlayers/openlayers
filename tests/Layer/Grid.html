@@ -770,9 +770,6 @@
     }
 
     function test_setOpacity(t) {
-        var origRequestFrame = OpenLayers.Animation.requestFrame;
-        OpenLayers.Animation.requestFrame = function(fn) { fn(); };
-        
         t.plan(5);
 
         var map = new OpenLayers.Map('map');
@@ -801,8 +798,6 @@
         t.eq(parseFloat(tile.imgDiv.style.opacity), 0.2, "tile opacity is correc");
 
         map.destroy();
-        
-        OpenLayers.Animation.requestFrame = origRequestFrame
     }
     
     function test_getServerResolution(t) {
@@ -1313,9 +1308,6 @@
     }
 
     function test_delayed_back_buffer_removal(t) {
-        var origRequestFrame = OpenLayers.Animation.requestFrame;
-        OpenLayers.Animation.requestFrame = function(fn) { fn(); };
-
         //
         // Test that the delaying of the back buffer removal behaves
         // as expected.
@@ -1359,8 +1351,6 @@
         // tear down
 
         map.destroy();
-        
-        OpenLayers.Animation.requestFrame = origRequestFrame;
     }
     
     function test_getGridData(t) {
