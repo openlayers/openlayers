@@ -198,7 +198,6 @@
         }
         OpenLayers.Event.isMultiTouch = function(evt) {
             var res = old_isMultiTouch(evt);
-            if (!res) debugger;
             t.ok(res, "fake event is a mutitouch touch event");
             return res;
         }
