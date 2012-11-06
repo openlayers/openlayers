@@ -280,7 +280,7 @@
         ];
 
         // call merge with a mocked up response
-        strategy.merge({features: features});
+        strategy.merge({features: features, success: OpenLayers.Function.True});
         
         // test that feature geometries have been transformed to map projection
         var from = layer.projection;
@@ -298,7 +298,7 @@
         ];
         
         // call merge again with mocked up response
-        strategy.merge({features: features});
+        strategy.merge({features: features, success: OpenLayers.Function.True});
 
         // test that feature geometries have not been transformed
         t.geom_eq(layer.features[0].geometry, features[0].geometry, "[same proj] feature 0 geometry not transformed");
