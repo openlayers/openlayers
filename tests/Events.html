@@ -300,7 +300,7 @@
     }
 
     function test_Events_handleBrowserEvent(t) {
-        t.plan(2);
+        t.plan(8);
         var events = new OpenLayers.Events({}, null);
         events.on({'sometouchevent': function() {}});
 
@@ -312,6 +312,57 @@
         events.handleBrowserEvent(evt);
         t.eq(evt.clientX, 1.5, "evt.clientX value is correct");
         t.eq(evt.clientY, 1.5, "evt.clientY value is correct");
+        
+        // test bug where clientX/clientY includes scroll offset
+        window.olMockWin = {
+            pageXOffset: 10,
+            pageYOffset: 20
+        };
+        evt = {type: 'sometouchevent',
+               touches: [{
+                   clientX: 11,
+                   clientY: 21,
+                   pageX: 0,
+                   pageY: 0
+               }]
+              };
+        events.handleBrowserEvent(evt);
+        t.eq(evt.clientX, 1, "evt.clientX value is correct");
+        t.eq(evt.clientY, 1, "evt.clientY value is correct");
+        
+        
+        // test bug where clientX/clientY have negative values
+        evt = {
+            type: 'sometouchevent',
+            touches: [{
+                clientX: -412,
+                clientY: -1005,
+                pageX: 11,
+                pageY: 21
+            }]
+        };
+        events.handleBrowserEvent(evt);
+        t.eq(evt.clientX, 1, "evt.clientX value is correct");
+        t.eq(evt.clientY, 1, "evt.clientY value is correct");
+        
+        window.olMockWin = {
+            pageXOffset: 11,
+            pageYOffset: 299
+        };
+        evt = {
+            type: 'sometouchevent',
+                touches: [{
+                clientX: 223,
+                clientY: 119,
+                pageX: 242,
+                pageY: 623
+            }]
+        };
+        events.handleBrowserEvent(evt);
+        t.eq(evt.clientX, 231, "evt.clientX value is correct");
+        t.eq(evt.clientY, 324, "evt.clientY value is correct");
+        
+        window.olMockWin = undefined;
     }
     
     function test_Events_attachToElement(t) {

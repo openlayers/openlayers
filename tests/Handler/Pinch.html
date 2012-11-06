@@ -95,7 +95,7 @@
     }
 
     function test_callbacks(t) {
-        t.plan(23);
+        t.plan(32);
 
         var map = new OpenLayers.Map('map', {controls: []});
 
@@ -105,7 +105,7 @@
         // set fake values for touches
         var testEvents = {
             start: {
-                type: 'start',
+                type: 'touchstart',
                 touches: [{
                     clientX: 100,
                     clientY: 0
@@ -115,7 +115,7 @@
                 }]
             },
             move: {
-                type: 'move',
+                type: 'touchmove',
                 touches: [{
                     clientX: 100,
                     clientY: 0
@@ -125,7 +125,7 @@
                 }]
             },
             done: {
-                type: 'done',
+                type: 'touchend',
                 touches: []
             }
         };
@@ -133,7 +133,8 @@
         // set callback methods
         var customCb = OpenLayers.Function.False;
         var cb = function(evt) {
-            var tch = testEvents[evt.type].touches;
+            var callback = evt.type.replace("touch", "").replace("end", "done");;
+            var tch = testEvents[callback].touches;
             t.ok(evt.touches[0].clientX == tch[0].clientX &&
                 evt.touches[0].clientY == tch[0].clientY,
                 "touchstart sets first touch position correctly in evt");
@@ -147,7 +148,9 @@
         var callbacks = {
             start: cb,
             move: cb,
-            done: customCb
+            done: function () {
+                customCb.apply(this, arguments);
+            }
         };
 
         var handler = new OpenLayers.Handler.Pinch(control, callbacks);
@@ -160,6 +163,14 @@
         OpenLayers.Event.isMultiTouch = function() {
             return false;
         }
+        
+        // no callbacks with tests expected (pinch not started)
+        map.events.handleBrowserEvent(testEvents.start);
+        // test 1, 2, 3
+        t.ok(!handler.started, "1) touchstart (singletouch) sets started to false");
+        t.eq(handler.start, null, "1) touchstart (singletouch) sets start to null");
+        t.eq(handler.last, null, "1) touchstart (singletouch) sets last to null");
+        
         handler.started = true;
         handler.start = {
             distance: 100,
@@ -171,10 +182,13 @@
             delta: 10,
             scale: 1.5
         };
-        map.events.triggerEvent("touchstart", testEvents.start);
-        t.ok(!handler.started, "1) touchstart (singletouch) sets started to false");
-        t.eq(handler.start, null, "1) touchstart (singletouch) sets start to null");
-        t.eq(handler.last, null, "1) touchstart (singletouch) sets last to null");
+        
+        // no callbacks with tests expected (multitouch pinch started, so ignores singletouch)
+        map.events.handleBrowserEvent(testEvents.start);
+        // test 4, 5, 6
+        t.ok(handler.started, "1) touchstart (singletouch) after pinch started is ignored");
+        t.ok(!!handler.start, "1) touchstart (singletouch) after pinch started is ignored");
+        t.ok(!!handler.last, "1) touchstart (singletouch) after pinch started is ignored");
 
         OpenLayers.Event.stop = function(evt, allowDefault) {
             if(allowDefault) {
@@ -192,7 +206,9 @@
             t.eq(pinchdata.delta, 0, "2) calculated delta is correct");
             t.eq(pinchdata.scale, 1, "2) calculated scale is correct");
         }
-        map.events.triggerEvent("touchstart", testEvents.start);
+        // test 7, 8, 9, 10, 11, 12, 13
+        map.events.handleBrowserEvent(testEvents.start);
+        // test 14, 15
         t.ok(handler.started, "2) touchstart sets the started flag to true");
         t.ok(!handler.pinching, "2) touchstart sets the pinching flag to false");
 
@@ -201,11 +217,14 @@
             t.eq(pinchdata.delta, 20, "3) calculated delta is correct");
             t.eq(pinchdata.scale, 0.8, "3) calculated scale is correct");
         }
-        map.events.triggerEvent("touchmove", testEvents.move);
+        // test 16, 17, 18, 19, 20, 21, 22
+        map.events.handleBrowserEvent(testEvents.move);
+        // test 23, 24
         t.ok(handler.started, "3) started flag still set to true");
         t.ok(handler.pinching, "3) touchmove sets the pinching flag to true");
 
-
+        OpenLayers.Event.isMultiTouch = old_isMultiTouch;
+        
         customCb = function(evt, first, last) {
             t.eq(first.distance, 100, "4) calculated distance is correct");
             t.eq(first.delta, 0, "4) calculated delta is correct");
@@ -214,19 +233,21 @@
             t.eq(last.delta, 20, "4) calculated delta is correct");
             t.eq(last.scale, 0.8, "4) calculated scale is correct");
         }
-        map.events.triggerEvent("touchend", testEvents.done);
+        // test 25, 26, 27, 28, 29, 30
+        map.events.handleBrowserEvent(testEvents.done);
+        // test 31, 32
         t.ok(!handler.started, "4) started flag is set to false");
         t.ok(!handler.pinching, "4) touchdone sets the pinching flag to false");
 
         OpenLayers.Event.stop = old_stop;
-        OpenLayers.Event.isMultiTouch = old_isMultiTouch;
 
         // test move or done before start
         customCb = function(evt) {
             t.fail("should not pass here")
         }
-        map.events.triggerEvent("touchmove", testEvents.move);
-        map.events.triggerEvent("touchend", testEvents.end);
+        // no callbacks with tests expected
+        map.events.handleBrowserEvent(testEvents.move);
+        map.events.handleBrowserEvent(testEvents.done);
 
     }
 
