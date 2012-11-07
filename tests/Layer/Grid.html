@@ -614,7 +614,7 @@
         
         layer.numLoadingTiles = 2; 
         g_events = [];
-        tile.onLoadEnd.apply(layer);
+        tile.onLoadEnd.apply(layer, [{}]);
         t.eq(g_events[0][0], "tileloaded", "tileloaded triggered when numLoadingTiles is > 0");
         t.ok(g_events[0][1].tile === tile, "tile passed as tile property to event object");
         t.eq(g_events.length, 1, "loadend event not triggered when numLoadingTiles is > 0");
@@ -623,7 +623,7 @@
 
         g_events = [];
         layer.grid = [[{}]]; // to prevent error in updateBackBuffer
-        tile.onLoadEnd.apply(layer);
+        tile.onLoadEnd.apply(layer, [{}]);
         t.eq(g_events[0][0], "tileloaded", "tileloaded triggered when numLoadingTiles is 0");
         t.eq(g_events[1][0], "loadend", "loadend event triggered when numLoadingTiles is 0");
         t.eq(layer.numLoadingTiles, 0, "numLoadingTiles decremented");
