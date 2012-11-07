@@ -62,7 +62,7 @@
     
     function test_events(t) {
         
-        t.plan(6);
+        t.plan(7);
         
         var log = [];
 
@@ -70,6 +70,11 @@
         
         var map = new OpenLayers.Map("map");
         var layer = new OpenLayers.Layer.Vector(null, {
+            filter: new OpenLayers.Filter.Comparison({
+                type: '==',
+                property: 'foo',
+                value: 'bar'
+            }),
             strategies: [new OpenLayers.Strategy.Fixed()],
             protocol: new OpenLayers.Protocol({
                 read: function(config) {
@@ -92,6 +97,7 @@
 
         t.eq(log.length, 2, "2 events logged");
         t.eq(log[0].type, "loadstart", "loadstart first");
+        t.eq(log[0].filter, layer.filter, "filter passed on as argument to loadstart");
         t.eq(log[1].type, "loadend", "loadend second");
         t.ok(log[1].response == response, "loadend includes response");
         
