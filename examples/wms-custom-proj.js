@@ -22,7 +22,7 @@ var extent = new ol.Extent(420000, 30000, 900000, 350000);
 var layers = new ol.Collection([
   new ol.layer.TileLayer({
     source: new ol.source.TiledWMS({
-      url: 'http://wms.geo.admin.ch/?',
+      url: 'http://wms.geo.admin.ch/',
       attributions: [new ol.Attribution(
           '&copy; ' +
           '<a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">' +
@@ -37,7 +37,7 @@ var layers = new ol.Collection([
   }),
   new ol.layer.TileLayer({
     source: new ol.source.TiledWMS({
-      url: 'http://wms.geo.admin.ch/?',
+      url: 'http://wms.geo.admin.ch/',
       attributions: [new ol.Attribution(
           '&copy; ' +
           '<a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">' +
