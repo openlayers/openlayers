@@ -139,11 +139,9 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
       tilesToDrawByZ[z][key] = tile;
       return;
     } else {
-      if (state != ol.TileState.LOADING) {
-        goog.events.listen(tile, goog.events.EventType.CHANGE,
-            this.handleTileChange_, false, this);
-        tile.load();
-      }
+      goog.events.listen(tile, goog.events.EventType.CHANGE,
+          this.handleTileChange_, false, this);
+      tile.load();
     }
 
     /**
