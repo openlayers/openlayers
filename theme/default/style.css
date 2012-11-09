@@ -482,3 +482,8 @@ a.olControlZoomOut {
     -o-transition: opacity 0.2s linear;
     transition: opacity 0.2s linear;
 }
+
+/* override any max-width image settings (e.g. bootstrap.css) */
+img.olTileImage {
+    max-width: none !important;
+}
