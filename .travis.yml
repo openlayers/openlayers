@@ -3,8 +3,8 @@ before_install:
   - "git clone https://github.com/jsdoc3/jsdoc"
 
 before_script:
-  - "make plovr"
-  - "make serve-precommit &"
+  - "./build.py plovr"
+  - "./build.py serve-precommit &"
   - "sleep 3"
 
-script: "make JSDOC=jsdoc/jsdoc precommit"
+script: "./build.py JSDOC=jsdoc/jsdoc precommit"

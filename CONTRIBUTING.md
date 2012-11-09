@@ -20,7 +20,7 @@ Linter](https://developers.google.com/closure/utilities/docs/linter_howto) to
 check source files for potential syntax and coding style issues. To execute the
 linter run the following after making your changes:
 
-    $ make lint
+    $ ./build.py lint
 
 This command assumes that the `gjslint` command in on your PATH.
 
@@ -30,7 +30,7 @@ The OpenLayers 3 is compiled and type-checked using the [Closure
 Compiler](https://developers.google.com/closure/compiler/). To
 compile the code use:
 
-    $ make build-all
+    $ ./build.py build-all
 
 ### Documentation
 
@@ -38,7 +38,7 @@ We use [jsdoc3](https://github.com/jsdoc3/jsdoc) to generate the API
 documentation.  To ensure that your changes are properly documented (and don't
 break API doc generation), run the following:
 
-    $ make doc
+    $ ./build.py doc
 
 This command assumes that the `jsdoc` command is on your PATH.
 
@@ -48,7 +48,7 @@ Any modifications must not break existing tests. We use
 [PhantomJS](http://phantomjs.org/) to run tests *headlessly*.
 Use the following to run the tests:
 
-    $ make test
+    $ ./build.py test
 
 This command assumes that the `phantomjs` command is on your PATH.
 
@@ -56,10 +56,10 @@ This command assumes that the `phantomjs` command is on your PATH.
 
 The Makefile includes a `precommit` target for running all of the
 above (`lint`, `build-all`, `doc`, and `test`). As the name of the
-target suggests `make precommit` is the command to run before
+target suggests `./build.py precommit` is the command to run before
 committing:
 
-    $ make precommit
+    $ ./build.py precommit
 
 ### Commit messages
 
