@@ -19,7 +19,7 @@ ol.QuadKeyCharCode = {
 /**
  * @constructor
  * @extends {ol.Coordinate}
- * @param {number} z Z.
+ * @param {number} z Zoom level.
  * @param {number} x X.
  * @param {number} y Y.
  */
@@ -28,7 +28,7 @@ ol.TileCoord = function(z, x, y) {
   goog.base(this, x, y);
 
   /**
-   * @type {number}
+   * @type {number} Zoom level
    */
   this.z = z;
 
@@ -64,7 +64,8 @@ ol.TileCoord.createFromQuadKey = function(quadKey) {
 
 
 /**
- * @param {string} str String.
+ * @param {string} str String that follows pattern “z/x/y” where x, y and z are
+ *   numbers.
  * @return {ol.TileCoord} Tile coord.
  */
 ol.TileCoord.createFromString = function(str) {

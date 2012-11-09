@@ -24,7 +24,7 @@ ol.TileState = {
  * @constructor
  * @extends {goog.events.EventTarget}
  * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {string} src Source.
+ * @param {string} src Image source URI.
  * @param {?string} crossOrigin Cross origin.
  */
 ol.Tile = function(tileCoord, src, crossOrigin) {
@@ -37,6 +37,8 @@ ol.Tile = function(tileCoord, src, crossOrigin) {
   this.tileCoord = tileCoord;
 
   /**
+   * Image URI
+   *
    * @private
    * @type {string}
    */
@@ -113,6 +115,8 @@ ol.Tile.prototype.getState = function() {
 
 
 /**
+ * Tracks loading or read errors.
+ *
  * @private
  */
 ol.Tile.prototype.handleImageError_ = function() {
@@ -122,6 +126,8 @@ ol.Tile.prototype.handleImageError_ = function() {
 
 
 /**
+ * Tracks successful image load.
+ *
  * @private
  */
 ol.Tile.prototype.handleImageLoad_ = function() {
@@ -132,7 +138,7 @@ ol.Tile.prototype.handleImageLoad_ = function() {
 
 
 /**
- * Load.
+ * Load not yet loaded URI.
  */
 ol.Tile.prototype.load = function() {
   if (this.state_ == ol.TileState.IDLE) {
@@ -150,6 +156,8 @@ ol.Tile.prototype.load = function() {
 
 
 /**
+ * Discards event handlers which listen for load completion or errors.
+ *
  * @private
  */
 ol.Tile.prototype.unlistenImage_ = function() {

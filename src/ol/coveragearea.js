@@ -5,6 +5,8 @@ goog.require('ol.Extent');
 
 
 /**
+ * Represents a rectangular area.
+ *
  * @constructor
  * @param {ol.Extent} extent Extent.
  */
