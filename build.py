@@ -62,6 +62,7 @@ SRC = [path
        if path.endswith('.js')]
 
 PLOVR_JAR = 'bin/plovr-eba786b34df9.jar'
+PLOVR_JAR_MD5 = '20eac8ccc4578676511cf7ccbfc65100'
 
 
 def report_sizes(t):
@@ -205,7 +206,7 @@ pake.virtual('plovr', PLOVR_JAR)
 
 @pake.target(PLOVR_JAR, clean=False)
 def plovr_jar(t):
-    t.download('https://plovr.googlecode.com/files/' + os.path.basename(PLOVR_JAR))
+    t.download('https://plovr.googlecode.com/files/' + os.path.basename(PLOVR_JAR), md5=PLOVR_JAR_MD5)
 
 
 @pake.target('gh-pages', 'hostexamples', 'doc', phony=True)

@@ -2,6 +2,7 @@
 
 import collections
 import contextlib
+import hashlib
 import logging
 import optparse
 import os
@@ -126,8 +127,12 @@ class Target(object):
     def debug(self, *args, **kwargs):
         self.logger.debug(*args, **kwargs)
 
-    def download(self, url):
+    def download(self, url, md5=None):
         content = urllib2.urlopen(url).read()
+        if md5 and hashlib.md5(content).hexdigest() != md5:
+            raise pake.BuildError(t, 'corrupt download')
+        # FIXME Python on Windoze corrupts the content when writing it
+        # FIXME probably something to do with encodings
         with open(self.name, 'w') as f:
             f.write(content)
 
