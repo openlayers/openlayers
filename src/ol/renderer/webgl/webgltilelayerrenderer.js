@@ -277,9 +277,14 @@ ol.renderer.webgl.TileLayer.prototype.getTexture = function() {
 
 
 /**
+ * @param {goog.events.Event} event Event.
  * @protected
  */
-ol.renderer.webgl.TileLayer.prototype.handleTileChange = function() {
+ol.renderer.webgl.TileLayer.prototype.handleTileChange = function(event) {
+  var tile = /** @type {ol.Tile} */ (event.target);
+  var tileKey = goog.getUid(tile);
+  goog.asserts.assert(tileKey in this.tileChangeListenerKeys_);
+  delete this.tileChangeListenerKeys_[tileKey];
   this.dispatchChangeEvent();
 };
 
