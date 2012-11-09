@@ -7,12 +7,26 @@ import json
 import os
 import re
 import shutil
+import sys
 
 import pake
 
-pake.variables.BRANCH = pake.output('git', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
-pake.variables.JSDOC = 'jsdoc'
-pake.variables.PHANTOMJS = 'phantomjs'
+if sys.platform == 'win32':
+    pake.variables.GIT = 'C:/Program Files/Git/bin/git.exe'
+    pake.variables.GJSLINT = 'gjslint'  # FIXME
+    pake.variables.JAVA = 'C:/Program Files/Java/jre7/bin/java.exe'
+    pake.variables.JSDOC = 'jsdoc'  # FIXME
+    pake.variables.PHANTOMJS = 'phantomjs'  # FIXME
+    pake.variables.PYTHON = 'C:/Python27/python.exe'
+else:
+    pake.variables.GIT = 'git'
+    pake.variables.GJSLINT = 'gjslint'
+    pake.variables.JAVA = 'java'
+    pake.variables.JSDOC = 'jsdoc'
+    pake.variables.PHANTOMJS = 'phantomjs'
+    pake.variables.PYTHON = 'python'
+
+pake.variables.BRANCH = pake.output('%(GIT)s', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
 
 EXPORTS = [path
            for path in pake.ifind('src')
@@ -76,7 +90,7 @@ def build_ol_css(t):
 
 @pake.target('build/ol.js', PLOVR_JAR, SRC, EXTERNAL_SRC, 'base.json', 'build/ol.json')
 def build_ol_js(t):
-    t.output('java', '-jar', PLOVR_JAR, 'build', 'build/ol.json')
+    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'build/ol.json')
     report_sizes(t)
 
 
@@ -85,22 +99,22 @@ pake.virtual('build-all', 'build/ol-all.js')
 
 @pake.target('build/ol-all.js', PLOVR_JAR, SRC, INTERNAL_SRC, 'base.json', 'build/ol-all.json')
 def build_ol_all_js(t):
-    t.output('java', '-jar', PLOVR_JAR, 'build', 'build/ol-all.json')
+    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'build/ol-all.json')
 
 
-@pake.target('build/src/external/externs/types.js', 'bin/generate-exports', 'src/objectliterals.exports')
+@pake.target('build/src/external/externs/types.js', 'bin/generate-exports.py', 'src/objectliterals.exports')
 def build_src_external_externs_types_js(t):
-    t.output('bin/generate-exports', '--externs', 'src/objectliterals.exports')
+    t.output('%(PYTHON)s', 'bin/generate-exports.py', '--externs', 'src/objectliterals.exports')
 
 
-@pake.target('build/src/external/src/exports.js', 'bin/generate-exports', 'src/objectliterals.exports', EXPORTS)
+@pake.target('build/src/external/src/exports.js', 'bin/generate-exports.py', 'src/objectliterals.exports', EXPORTS)
 def build_src_external_src_exports_js(t):
-    t.output('bin/generate-exports', '--exports', 'src/objectliterals.exports', EXPORTS)
+    t.output('%(PYTHON)s', 'bin/generate-exports.py', '--exports', 'src/objectliterals.exports', EXPORTS)
 
 
 @pake.target('build/src/external/src/types.js', 'bin/generate-exports', 'src/objectliterals.exports')
 def build_src_external_src_types_js(t):
-    t.output('bin/generate-exports', '--typedef', 'src/objectliterals.exports')
+    t.output('%(PYTHON)s', 'bin/generate-exports.py', '--typedef', 'src/objectliterals.exports')
 
 
 @pake.target('build/src/internal/src/requireall.js', SRC)
@@ -116,9 +130,9 @@ def build_src_internal_src_requireall_js(t):
             f.write('goog.require(\'%s\');\n' % (require,))
 
 
-@pake.target('build/src/internal/src/types.js', 'bin/generate-exports', 'src/objectliterals.exports')
+@pake.target('build/src/internal/src/types.js', 'bin/generate-exports.py', 'src/objectliterals.exports')
 def build_src_internal_types_js(t):
-    t.output('bin/generate-exports', '--typedef', 'src/objectliterals.exports')
+    t.output('%(PYTHON)s', 'bin/generate-exports.py', '--typedef', 'src/objectliterals.exports')
 
 
 pake.virtual('build-examples', 'examples', (path.replace('.html', '.combined.js') for path in EXAMPLES))
@@ -129,7 +143,7 @@ pake.virtual('examples', 'examples/example-list.js', (path.replace('.html', '.js
 
 @pake.target('examples/example-list.js', 'bin/exampleparser.py', EXAMPLES)
 def examples_examples_list_js(t):
-    t.run('bin/exampleparser.py', 'examples', 'examples')
+    t.run('%(PYTHON)s', 'bin/exampleparser.py', 'examples', 'examples')
 
 
 @pake.rule(r'\Aexamples/(?P<id>.*).json\Z')
@@ -152,7 +166,7 @@ def examples_star_json(name, match):
 @pake.rule(r'\Aexamples/(?P<id>.*).combined.js\Z')
 def examples_star_combined_js(name, match):
     def action(t):
-        t.output('java', '-jar', PLOVR_JAR, 'build', 'examples/%(id)s.json' % match.groupdict())
+        t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'examples/%(id)s.json' % match.groupdict())
         report_sizes(t)
     dependencies = [PLOVR_JAR, SRC, INTERNAL_SRC, 'base.json', 'examples/%(id)s.js' % match.groupdict(), 'examples/%(id)s.json' % match.groupdict()]
     return pake.Target(name, action=action, dependencies=dependencies)
@@ -160,12 +174,12 @@ def examples_star_combined_js(name, match):
 
 @pake.target('serve', PLOVR_JAR, INTERNAL_SRC, 'examples')
 def serve(t):
-    t.run('java', '-jar', PLOVR_JAR, 'serve', glob.glob('build/*.json'), glob.glob('examples/*.json'))
+    t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', glob.glob('build/*.json'), glob.glob('examples/*.json'))
 
 
 @pake.target('serve-precommit', PLOVR_JAR, INTERNAL_SRC)
 def serve_precommit(t):
-    t.run('java', '-jar', PLOVR_JAR, 'serve', 'build/ol-all.json')
+    t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'build/ol-all.json')
 
 
 pake.virtual('lint', 'build/lint-src-timestamp', 'build/lint-spec-timestamp')
@@ -176,13 +190,13 @@ def build_lint_src_timestamp(t):
     limited_doc_files = [path
                          for path in pake.ifind('externs', 'build/src/external/externs')
                          if path.endswith('.js')]
-    t.run('gjslint', '--strict', '--limited_doc_files=%s' % (','.join(limited_doc_files),), SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC)
+    t.run('%(GJSLINT)s', '--strict', '--limited_doc_files=%s' % (','.join(limited_doc_files),), SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC)
     t.touch()
 
 
 @pake.target('build/lint-spec-timestamp', SPEC)
 def build_lint_spec_timestamp(t):
-    t.run('gjslint', SPEC)
+    t.run('%(GJSLINT)s', SPEC)
     t.touch()
 
 
@@ -197,14 +211,14 @@ def plovr_jar(t):
 @pake.target('gh-pages', 'hostexamples', 'doc', phony=True)
 def gh_pages(t):
     with t.tempdir() as tempdir:
-        t.run('git', 'clone', '--branch', 'gh-pages', 'git@github.com:openlayers/ol3.git', tempdir)
+        t.run('%(GIT)s', 'clone', '--branch', 'gh-pages', 'git@github.com:openlayers/ol3.git', tempdir)
         with t.chdir(tempdir):
             t.rm_rf('%(BRANCH)s')
         t.cp_r('build/gh-pages/%(BRANCH)s', tempdir + '/%(BRANCH)s')
         with t.chdir(tempdir):
-            t.run('git', 'add', '--all', '%(BRANCH)s')
-            t.run('git', 'commit', '--message', 'Updated')
-            t.run('git', 'push', 'origin', 'gh-pages')
+            t.run('%(GIT)s', 'add', '--all', '%(BRANCH)s')
+            t.run('%(GIT)s', 'commit', '--message', 'Updated')
+            t.run('%(GIT)s', 'push', 'origin', 'gh-pages')
 
 
 pake.virtual('doc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(pake.variables))
