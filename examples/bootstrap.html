@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bootstraped OpenLayers</title>
+    <link rel="stylesheet" href="../theme/default/style.css">
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+        #map {
+            height: 350px;
+            background-color: #eee;
+        }
+        .olControlAttribution {
+            bottom: 3px;
+            left: 10px;
+            line-height: 9px;
+            font-size: 9px;
+            color: #ccc;
+        }
+    </style>
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-responsive.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container-fluid">
+                <a class="brand" href="/">openlayers.org</a>
+                <ul class="nav">
+                    <li>
+                        <a href="./">
+                            <i class="icon-globe icon-white"></i> examples
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid" ng-controller="AlertsCtrl">
+        <div class="row-fluid">
+            <div class="span7">
+                <div id="map"></div>
+            </div>
+            <div class="span5">
+                <h4>OpenLayers and Bootstrap</h4>
+                <p>
+                    This example demonstrates an OpenLayers map in a fluid 
+                    layout using Bootstrap CSS.
+                </p>
+                <p>
+                    Note that the OpenLayers stylesheet is loaded before 
+                    Bootstrap.  The Bootstrap CSS sets the maximum width for
+                    images to be 100% (of their containing element).
+<pre><code>img {
+    max-width: 100%;
+}
+</code></pre>
+                    This causes problems for images that you might want to be
+                    bigger than their containing element (e.g. big tile in small
+                    map viewport).  To overcome this, the OpenLayers CSS
+                    overrides this <code>max-width</code> setting.  If you are 
+                    not loading the OpenLayers default CSS or are having trouble 
+                    with tile sizing and Bootstrap, add the following to your
+                    markup:
+<pre><code>&lt;style>
+    max-width: none !important;
+&lt;/style><code></pre>
+                </p>
+            </div>
+        </div>
+    </div>
+    <script src="../lib/OpenLayers.js"></script>
+    <script src="bootstrap.js"></script>
+</body>
+</html>
