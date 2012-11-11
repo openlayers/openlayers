@@ -32,6 +32,12 @@ ol.renderer.dom.TileLayer = function(mapRenderer, tileLayer, target) {
    * @private
    */
   this.renderedMapResolution_ = undefined;
+
+  /**
+   * @type {Object.<number, (number|null)>}
+   * @private
+   */
+  this.tileChangeListenerKeys_ = {};
 };
 goog.inherits(ol.renderer.dom.TileLayer, ol.renderer.dom.Layer);
 
@@ -90,7 +96,11 @@ ol.renderer.dom.TileLayer.prototype.removeExtraTiles_ =
  * @private
  */
 ol.renderer.dom.TileLayer.prototype.handleTileChange_ = function(event) {
-  goog.asserts.assert(event.target.getState() == ol.TileState.LOADED);
+  var tile = /** @type {ol.Tile} */ (event.target);
+  goog.asserts.assert(tile.getState() == ol.TileState.LOADED);
+  var tileKey = goog.getUid(tile);
+  goog.asserts.assert(tileKey in this.tileChangeListenerKeys_);
+  delete this.tileChangeListenerKeys_[tileKey];
   this.render();
 };
 
@@ -139,9 +149,12 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
       tilesToDrawByZ[z][key] = tile;
       return;
     } else {
-      goog.events.listen(tile, goog.events.EventType.CHANGE,
-          this.handleTileChange_, false, this);
-      tile.load();
+      var tileKey = goog.getUid(tile);
+      if (!(tileKey in this.tileChangeListenerKeys_)) {
+        this.tileChangeListenerKeys_[tileKey] = goog.events.listen(tile,
+            goog.events.EventType.CHANGE, this.handleTileChange_, false, this);
+        tile.load();
+      }
     }
 
     /**
