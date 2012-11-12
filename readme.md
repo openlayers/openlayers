@@ -8,8 +8,6 @@ Run make:
 
     $ ./build.py
 
-Python 2.7, at least, is required to run this command.
-
 ## Run the examples in debug mode
 
 Run the [Plovr](http://plovr.com/) web server with:
