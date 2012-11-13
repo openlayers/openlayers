@@ -16,7 +16,35 @@
     function teardown() {
         OpenLayers.Request.XMLHttpRequest = window._xhr;
     }
-    
+
+    function test_defaultHeaders(t) {
+        setup();
+        t.plan(2);
+        var config = {
+            headers: {
+                x: 'y'
+            }
+        };
+        OpenLayers.Request.DEFAULT_CONFIG.headers = {
+            foo: 'bar'
+        };
+        var proto = OpenLayers.Request.XMLHttpRequest.prototype;
+        var issue = OpenLayers.Function.bind(OpenLayers.Request.issue,
+                                             OpenLayers.Request);
+
+        var headers = {};
+        var _setRequestHeader = proto.setRequestHeader;
+        proto.setRequestHeader = function(key, value) {
+            headers[key] = value;
+        };
+        request = issue(config);
+        t.eq(headers.foo, 'bar', "Header from DEFAULT_CONFIG set correctly");
+        t.eq(headers.x, 'y', "Header from config set correctly");
+        proto.setRequestHeader = _setRequestHeader;
+        OpenLayers.Request.DEFAULT_CONFIG.headers = {};
+        teardown();
+    }
+ 
     function test_issue(t) {
         setup();
 
