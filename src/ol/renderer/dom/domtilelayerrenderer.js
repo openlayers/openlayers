@@ -34,18 +34,10 @@ ol.renderer.dom.TileLayer = function(mapRenderer, tileLayer, target) {
   this.renderedMapResolution_ = undefined;
 
   /**
-   * @type {number|undefined}
+   * @type {Object.<number, (number|null)>}
    * @private
    */
-  this.renderedZ_ = undefined;
-
-  /**
-   * Map of tile keys loading at the currently rendered z.
-   * @type {Object.<string, ol.Tile>}
-   * @private
-   */
-  this.loadingTiles_ = {};
-
+  this.tileChangeListenerKeys_ = {};
 };
 goog.inherits(ol.renderer.dom.TileLayer, ol.renderer.dom.Layer);
 
@@ -104,42 +96,12 @@ ol.renderer.dom.TileLayer.prototype.removeExtraTiles_ =
  * @private
  */
 ol.renderer.dom.TileLayer.prototype.handleTileChange_ = function(event) {
-  var tile = event.target;
+  var tile = /** @type {ol.Tile} */ (event.target);
   goog.asserts.assert(tile.getState() == ol.TileState.LOADED);
-  var tileCoord = tile.tileCoord;
-  if (tileCoord.z === this.renderedZ_) {
-    var key = tileCoord.toString();
-    delete this.loadingTiles_[key];
-  }
-  var loaded = true;
-  for (var key in this.loadingTiles_) {
-    loaded = false;
-    break;
-  }
-  if (loaded) {
-    var z = this.renderedZ_;
-    for (var key in this.renderedTiles_) {
-      tileCoord = ol.TileCoord.createFromString(key);
-      if (tileCoord.z !== z) {
-        tile = this.renderedTiles_[key];
-        delete this.renderedTiles_[key];
-        goog.dom.removeNode(tile.getImage(this));
-      }
-    }
-  }
-};
-
-
-/**
- * Remove all loading tiles that have been appended.
- * @private
- */
-ol.renderer.dom.TileLayer.prototype.removeLoadingTiles_ = function() {
-  for (var key in this.loadingTiles_) {
-    var tile = this.loadingTiles_[key];
-    goog.dom.removeNode(tile.getImage(this));
-    delete this.loadingTiles_[key];
-  }
+  var tileKey = goog.getUid(tile);
+  goog.asserts.assert(tileKey in this.tileChangeListenerKeys_);
+  delete this.tileChangeListenerKeys_[tileKey];
+  this.render();
 };
 
 
@@ -163,11 +125,6 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
   // z represents the "best" resolution
   var z = tileGrid.getZForResolution(mapResolution);
 
-  if (z != this.renderedZ_) {
-    // no longer wait for previously loading tiles
-    this.removeLoadingTiles_();
-  }
-
   /**
    * @type {Object.<number, Object.<string, ol.Tile>>}
    */
@@ -187,18 +144,17 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
     }
 
     var key = tile.tileCoord.toString();
-    if (tile.getState() == ol.TileState.LOADED) {
+    var state = tile.getState();
+    if (state == ol.TileState.LOADED) {
       tilesToDrawByZ[z][key] = tile;
       return;
     } else {
-      if (!(key in this.loadingTiles_)) {
-        goog.events.listen(tile, goog.events.EventType.CHANGE,
-            this.handleTileChange_, false, this);
-        this.loadingTiles_[key] = tile;
+      var tileKey = goog.getUid(tile);
+      if (!(tileKey in this.tileChangeListenerKeys_)) {
+        this.tileChangeListenerKeys_[tileKey] = goog.events.listen(tile,
+            goog.events.EventType.CHANGE, this.handleTileChange_, false, this);
         tile.load();
       }
-      // TODO: only append after load?
-      tilesToDrawByZ[z][key] = tile;
     }
 
     /**
@@ -284,7 +240,6 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
     goog.dom.appendChild(this.target, fragment);
   }
 
-  this.renderedZ_ = z;
   this.renderedMapResolution_ = mapResolution;
 
   this.removeExtraTiles_(tilesToDrawByZ);
