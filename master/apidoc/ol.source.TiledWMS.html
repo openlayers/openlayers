@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>OpenLayers: Class: ol.Rectangle</title>
+    <title>OpenLayers: Class: ol.source.TiledWMS</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Class: ol.Rectangle</h1>
+    <h1 class="page-title">Class: ol.source.TiledWMS</h1>
     
     
 
@@ -27,7 +27,7 @@
     
 <header>
     <h2>
-    ol.Rectangle
+    ol.source.TiledWMS
     </h2>
     
 </header>  
@@ -39,7 +39,7 @@
     
         
 <dt>
-    <h4 class="name" id="Rectangle"><span class="type-signature"></span>new Rectangle</h4>
+    <h4 class="name" id="TiledWMS"><span class="type-signature"></span>new TiledWMS</h4>
     
     
 </dt>
@@ -77,13 +77,13 @@
 	
         <tr>
             
-                <td class="name"><code>minX</code></td>
+                <td class="name"><code>tiledWMSOptions</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">ol.source.TiledWMSOptions</span>
 
 
             
@@ -93,76 +93,7 @@
             
             
             
-            <td class="description last">Minimum X.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>minY</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Minimum Y.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>maxX</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Maximum X.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>maxY</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Maximum Y.</td>
+            <td class="description last">options.</td>
         </tr>
 	
 	
@@ -192,7 +123,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rectangle.js, line 16</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>tiledwmssource.js, line 23</li></ul></dd>
 	
     
     
@@ -216,6 +147,12 @@
     </div>
     
     
+        <h3 class="subsection-title">Extends</h3>
+        
+        <ul>
+            <li><a href="ol.source.TileSource.html">ol.source.TileSource</a></li>
+        </ul>
+    
     
     
     
@@ -231,7 +168,7 @@
         <dl>
             
 <dt class="">
-    <h4 class="name" id="maxX"><span class="type-signature"></span>maxX<span class="type-signature"> :number</span></h4>
+    <h4 class="name" id="isReady"><span class="type-signature"></span>isReady<span class="type-signature"></span></h4>
     
     
 </dt>
@@ -247,6 +184,11 @@
 	
 
 	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#isReady">ol.source.TileSource#isReady</a>
+	</li></dd>
+	
 	
 	
 	
@@ -260,7 +202,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rectangle.js, line 34</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 96</li></ul></dd>
 	
     
     
@@ -276,12 +218,12 @@
 
         
             
-<dt class="">
-    <h4 class="name" id="maxY"><span class="type-signature"></span>maxY<span class="type-signature"> :number</span></h4>
+<dt class="protected">
+    <h4 class="name" id="tileGrid"><span class="type-signature">&lt;protected> </span>tileGrid<span class="type-signature"> :<a href="ol.tilegrid.TileGrid.html">ol.tilegrid.TileGrid</a></span></h4>
     
     
 </dt>
-<dd class="">
+<dd class="protected">
     
     
     
@@ -292,6 +234,11 @@
 	
 	
 
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#tileGrid">ol.source.TileSource#tileGrid</a>
+	</li></dd>
 	
 	
 	
@@ -306,7 +253,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rectangle.js, line 39</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>tilesource.js, line 44</li></ul></dd>
 	
     
     
@@ -322,12 +269,12 @@
 
         
             
-<dt class="">
-    <h4 class="name" id="minX"><span class="type-signature"></span>minX<span class="type-signature"> :number</span></h4>
+<dt class="protected">
+    <h4 class="name" id="tileUrlFunction"><span class="type-signature">&lt;protected> </span>tileUrlFunction<span class="type-signature"> :ol.TileUrlFunctionType</span></h4>
     
     
 </dt>
-<dd class="">
+<dd class="protected">
     
     
     
@@ -338,6 +285,11 @@
 	
 	
 
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#tileUrlFunction">ol.source.TileSource#tileUrlFunction</a>
+	</li></dd>
 	
 	
 	
@@ -352,53 +304,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rectangle.js, line 24</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt class="">
-    <h4 class="name" id="minY"><span class="type-signature"></span>minY<span class="type-signature"> :number</span></h4>
-    
-    
-</dt>
-<dd class="">
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rectangle.js, line 29</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>tilesource.js, line 51</li></ul></dd>
 	
     
     
@@ -421,7 +327,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="getCenter"><span class="type-signature"></span>getCenter</h4>
+    <h4 class="name" id="dispatchLoadEvent"><span class="type-signature">&lt;protected> </span>dispatchLoadEvent</h4>
     
     
 </dt>
@@ -444,6 +350,11 @@
 	
 
 	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#dispatchLoadEvent">ol.source.TileSource#dispatchLoadEvent</a>
+	</li></dd>
+	
 	
 	
 	
@@ -457,7 +368,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rectangle.js, line 47</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 58</li></ul></dd>
 	
     
     
@@ -473,28 +384,6 @@
     
     
     
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Center.
-</div>
-
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type"><a href="ol.Coordinate.html">ol.Coordinate</a></span>
-
-
-	</dd>
-</dl>
-
-        
     
     
 </dd>
@@ -502,7 +391,7 @@
         
             
 <dt>
-    <h4 class="name" id="getHeight"><span class="type-signature"></span>getHeight</h4>
+    <h4 class="name" id="getAttributions"><span class="type-signature"></span>getAttributions</h4>
     
     
 </dt>
@@ -525,6 +414,11 @@
 	
 
 	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#getAttributions">ol.source.TileSource#getAttributions</a>
+	</li></dd>
+	
 	
 	
 	
@@ -538,7 +432,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rectangle.js, line 56</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 66</li></ul></dd>
 	
     
     
@@ -558,7 +452,7 @@
     
             
 <div class="param-desc">
-    Height.
+    Attributions.
 </div>
 
 
@@ -569,7 +463,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">number</span>
+<span class="param-type">Array.&lt;ol.Attribution></span>
 
 
 	</dd>
@@ -583,7 +477,7 @@
         
             
 <dt>
-    <h4 class="name" id="getSize"><span class="type-signature"></span>getSize</h4>
+    <h4 class="name" id="getExtent"><span class="type-signature"></span>getExtent</h4>
     
     
 </dt>
@@ -606,6 +500,11 @@
 	
 
 	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#getExtent">ol.source.TileSource#getExtent</a>
+	</li></dd>
+	
 	
 	
 	
@@ -619,7 +518,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rectangle.js, line 64</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 74</li></ul></dd>
 	
     
     
@@ -639,7 +538,7 @@
     
             
 <div class="param-desc">
-    Size.
+    Extent.
 </div>
 
 
@@ -650,7 +549,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="ol.Size.html">ol.Size</a></span>
+<span class="param-type"><a href="ol.Extent.html">ol.Extent</a></span>
 
 
 	</dd>
@@ -664,7 +563,7 @@
         
             
 <dt>
-    <h4 class="name" id="getWidth"><span class="type-signature"></span>getWidth</h4>
+    <h4 class="name" id="getProjection"><span class="type-signature"></span>getProjection</h4>
     
     
 </dt>
@@ -687,6 +586,11 @@
 	
 
 	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#getProjection">ol.source.TileSource#getProjection</a>
+	</li></dd>
+	
 	
 	
 	
@@ -700,7 +604,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rectangle.js, line 72</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 82</li></ul></dd>
 	
     
     
@@ -720,7 +624,7 @@
     
             
 <div class="param-desc">
-    Width.
+    Projection.
 </div>
 
 
@@ -731,7 +635,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">number</span>
+<span class="param-type"><a href="ol.Projection.html">ol.Projection</a></span>
 
 
 	</dd>
@@ -745,7 +649,71 @@
         
             
 <dt>
-    <h4 class="name" id="intersects"><span class="type-signature"></span>intersects</h4>
+    <h4 class="name" id="getResolutions"><span class="type-signature"></span>getResolutions</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#getResolutions">ol.source.TileSource#getResolutions</a>
+	</li></dd>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>tilesource.js, line 77</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getTile"><span class="type-signature"></span>getTile</h4>
     
     
 </dt>
@@ -783,13 +751,13 @@
 	
         <tr>
             
-                <td class="name"><code>rectangle</code></td>
+                <td class="name"><code>tileCoord</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type"><a href="ol.Rectangle.html">ol.Rectangle</a></span>
+<span class="param-type"><a href="ol.TileCoord.html">ol.TileCoord</a></span>
 
 
             
@@ -799,7 +767,7 @@
             
             
             
-            <td class="description last">Rectangle.</td>
+            <td class="description last">Tile coordinate.</td>
         </tr>
 	
 	
@@ -816,6 +784,11 @@
 	
 
 	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#getTile">ol.source.TileSource#getTile</a>
+	</li></dd>
+	
 	
 	
 	
@@ -829,7 +802,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rectangle.js, line 81</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>tilesource.js, line 86</li></ul></dd>
 	
     
     
@@ -849,7 +822,7 @@
     
             
 <div class="param-desc">
-    Intersects.
+    Tile.
 </div>
 
 
@@ -860,7 +833,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">boolean</span>
+<span class="param-type"><a href="ol.Tile.html">ol.Tile</a></span>
 
 
 	</dd>
@@ -874,7 +847,7 @@
         
             
 <dt>
-    <h4 class="name" id="normalize"><span class="type-signature"></span>normalize</h4>
+    <h4 class="name" id="getTileCoordUrl"><span class="type-signature"></span>getTileCoordUrl</h4>
     
     
 </dt>
@@ -912,13 +885,13 @@
 	
         <tr>
             
-                <td class="name"><code>coordinate</code></td>
+                <td class="name"><code>tileCoord</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type"><a href="ol.Coordinate.html">ol.Coordinate</a></span>
+<span class="param-type"><a href="ol.TileCoord.html">ol.TileCoord</a></span>
 
 
             
@@ -928,7 +901,7 @@
             
             
             
-            <td class="description last">Coordinate.</td>
+            <td class="description last">Tile coordinate.</td>
         </tr>
 	
 	
@@ -945,6 +918,11 @@
 	
 
 	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#getTileCoordUrl">ol.source.TileSource#getTileCoordUrl</a>
+	</li></dd>
+	
 	
 	
 	
@@ -958,7 +936,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rectangle.js, line 93</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>tilesource.js, line 108</li></ul></dd>
 	
     
     
@@ -978,88 +956,7 @@
     
             
 <div class="param-desc">
-    Coordinate.
-</div>
-
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type"><a href="ol.Coordinate.html">ol.Coordinate</a></span>
-
-
-	</dd>
-</dl>
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="toString"><span class="type-signature"></span>toString</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rectangle.js, line 103</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    String.
+    Tile URL.
 </div>
 
 
@@ -1071,12 +968,437 @@
 	<dd>
 		
 <span class="param-type">string</span>
+|
+
+<span class="param-type">undefined</span>
 
 
 	</dd>
 </dl>
 
         
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getTileGrid"><span class="type-signature"></span>getTileGrid</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#getTileGrid">ol.source.TileSource#getTileGrid</a>
+	</li></dd>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>tilesource.js, line 116</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Tile grid.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="ol.tilegrid.TileGrid.html">ol.tilegrid.TileGrid</a></span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setAttributions"><span class="type-signature"></span>setAttributions</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>attributions</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;ol.Attribution></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Attributions.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#setAttributions">ol.source.TileSource#setAttributions</a>
+	</li></dd>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 102</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setExtent"><span class="type-signature"></span>setExtent</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>extent</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.Extent.html">ol.Extent</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Extent.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#setExtent">ol.source.TileSource#setExtent</a>
+	</li></dd>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 110</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setProjection"><span class="type-signature"></span>setProjection</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>projection</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.Projection.html">ol.Projection</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Projetion.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#setProjection">ol.source.TileSource#setProjection</a>
+	</li></dd>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 118</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
     
     
 </dd>
@@ -1103,7 +1425,7 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> on Wed Nov 14 2012 21:15:17 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> on Wed Nov 14 2012 21:15:23 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>
