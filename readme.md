@@ -27,7 +27,7 @@ You can turn off compilation by appending `?mode=RAW` to the URL, for example
 ## Run tests
 
 Run the plovr web server (see above), and either open the `test/ol.html` file
-in the browser (e.g. <http://localhost:8000/test/ol.html>), or run `make test`
+in the browser (e.g. <http://localhost:8000/test/ol.html>), or run `./build.py test`
 on the console (headless testing with PhantomJS).
 
 See also the test-specific [readme](https://github.com/openlayers/ol3/tree/master/test).
