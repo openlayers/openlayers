@@ -100,6 +100,39 @@
         map.destroy();
     }
     
+    function test_manageTileCache(t) {
+        t.plan(9);
+        
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.WMS(name, "../../img/blank.gif", params, {
+            tileCacheSize: 12
+        });
+        map.addLayer(layer);
+        map.setCenter([16, 48], 9);
+        
+        var firstInCache, sharedTile;
+        t.delay_call(2, function() {
+            t.eq(layer.tileCacheIndex.length, 12, "tiles cached");
+            t.ok(~OpenLayers.Util.indexOf(layer.tileCacheIndex, layer.grid[1][2].url), "tile found in cache");
+            t.ok(layer.tileCache[layer.grid[1][2].url] === layer.grid[1][2].imgDiv, "correct object cached");
+            firstInCache = layer.tileCache[layer.tileCacheIndex[0]];
+            sharedTile = layer.tileCache[layer.tileCacheIndex[11]];
+            map.setCenter([17, 47]);
+        });
+        t.delay_call(4, function() {
+            t.eq(layer.tileCacheIndex.length, 12, "tiles cached");
+            t.ok(layer.tileCache[layer.grid[1][2].url] === layer.grid[1][2].imgDiv, "correct object cached");
+            t.ok(!(firstInCache.getAttribute("src") in layer.tileCache), "old tile discarded");
+            t.ok(sharedTile.getAttribute("src") in layer.tileCache, "shared tile still in cache");
+            firstInCache = layer.tileCache[layer.tileCacheIndex[0]];
+            map.setCenter([16, 48]);
+        });
+        t.delay_call(6, function() {
+            t.ok(!(firstInCache.getAttribute("src") in layer.tileCache), "old tile discarded");
+            t.ok(sharedTile.getAttribute("src") in layer.tileCache, "shared tile still in cache");
+        });
+    }
+    
     function test_queueTileDraw(t) {
         t.plan(3);
         OpenLayers.Layer.Grid.prototype.queueTileDraw = origQueueTileDraw;
