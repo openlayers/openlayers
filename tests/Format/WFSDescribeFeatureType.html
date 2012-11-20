@@ -390,6 +390,45 @@
         t.ok(!!obj.error, "Error reported correctly");
     }
 
+    function test_read_annotation(t) {
+        t.plan(2);
+        var text = 
+            '<?xml version="1.0" encoding="UTF-8"?>' +
+            '<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"' +
+            '  xmlns:analytics="http://opengeo.org/analytics" xmlns:cite="http://www.opengeospatial.net/cite"' +
+            '  xmlns:gml="http://www.opengis.net/gml" xmlns:it.geosolutions="http://www.geo-solutions.it"' +
+            '  xmlns:nurc="http://www.nurc.nato.int" xmlns:og="http://opengeo.org"' +
+            '  xmlns:sde="http://geoserver.sf.net" xmlns:sf="http://www.openplans.org/spearfish"' +
+            '  xmlns:tiger="http://www.census.gov" xmlns:tike="http://opengeo.org/#tike"' +
+            '  xmlns:topp="http://www.openplans.org/topp" xmlns:usgs="http://www.usgs.gov/"' +
+            '  xmlns:za="http://opengeo.org/za" elementFormDefault="qualified"' +
+            '  targetNamespace="http://www.openplans.org/topp">' +
+            '  <xsd:import namespace="http://www.opengis.net/gml"' +
+            '    schemaLocation="http://demo.opengeo.org/geoserver/schemas/gml/3.1.1/base/gml.xsd"/>' +
+            '  <xsd:complexType name="statesType">' +
+            '    <xsd:complexContent>' +
+            '      <xsd:extension base="gml:AbstractFeatureType">' +
+            '        <xsd:sequence>' +
+            '          <xsd:element maxOccurs="1" minOccurs="0" name="PERSONS" nillable="true" type="xsd:double">' +
+            '            <xsd:annotation>' +
+            '              <xsd:appinfo>{"title":{"en":"Population"}}</xsd:appinfo>' +
+            '              <xsd:documentation xml:lang="en"> Number of persons living in the state' +
+            '              </xsd:documentation>' +
+            '            </xsd:annotation>' +
+            '          </xsd:element>' +
+            '        </xsd:sequence>' +
+            '      </xsd:extension>' +
+            '    </xsd:complexContent>' +
+            '  </xsd:complexType>' +
+            '  <xsd:element name="states" substitutionGroup="gml:_Feature" type="topp:statesType"/>' +
+            '</xsd:schema>';
+        var format = new OpenLayers.Format.WFSDescribeFeatureType();
+        var res = format.read(text);
+        var property = res.featureTypes[0].properties[0];
+        t.eq(property.annotation.appinfo[0], '{"title":{"en":"Population"}}', "appinfo read correctly");
+        t.eq(property.annotation.documentation[0], {lang: "en", textContent: 'Number of persons living in the state'}, "documentation read correctly");
+    }
+
     </script> 
 </head> 
 <body>
