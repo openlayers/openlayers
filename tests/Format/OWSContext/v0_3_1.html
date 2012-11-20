@@ -120,6 +120,43 @@
         t.xml_eq(output, expected, "OWSContext with a WMS and an inline GML vector layer generated correctly");
     }
 
+    function test_write_inlinegml_no_features(t){
+        var lon = 5,
+            lat = 40,
+            zoom = 5,
+            map = new OpenLayers.Map( 'map' ),
+            layer = new OpenLayers.Layer.WMS(
+                "OpenLayers WMS",
+                "http://labs.metacarta.com/wms/vmap0",
+                {layers: 'basic'},
+                {singleTile: true}
+            ),
+            vector = new OpenLayers.Layer.Vector();
+
+        map.addLayers( [ layer, vector ] );
+        map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+
+        var owc = new OpenLayers.Format.OWSContext(),
+            output,
+            caughtException = false,
+            expectedXml = '<OWSContext xmlns="http://www.opengis.net/ows-context" version="0.3.1" id="foo" xsi:schemaLocation="http://www.opengis.net/ows-context http://www.ogcnetwork.net/schemas/owc/0.3.1/owsContext.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><General><ows:BoundingBox xmlns:ows="http://www.opengis.net/ows" crs="EPSG:4326"><ows:LowerCorner>-5.986328125 29.013671875</ows:LowerCorner><ows:UpperCorner>15.986328125 50.986328125</ows:UpperCorner></ows:BoundingBox><ows:Title xmlns:ows="http://www.opengis.net/ows">OpenLayers OWSContext</ows:Title></General><ResourceList><Layer name="basic" queryable="0" hidden="0"><ows:Title xmlns:ows="http://www.opengis.net/ows">OpenLayers WMS</ows:Title><ows:OutputFormat xmlns:ows="http://www.opengis.net/ows">image/jpeg</ows:OutputFormat><Server version="1.1.1" service="urn:ogc:serviceType:WMS"><OnlineResource xlink:href="http://labs.metacarta.com/wms/vmap0" xmlns:xlink="http://www.w3.org/1999/xlink"/></Server></Layer><Layer name="vector" hidden="0"><ows:Title xmlns:ows="http://www.opengis.net/ows"/><InlineGeometry/></Layer></ResourceList></OWSContext>';
+
+        try {
+            output = owc.write(map, {id: 'foo'});
+        } catch (e){
+            caughtException = true;
+        }
+
+        if (caughtException) {
+            t.plan(1);
+            t.fail('OWSContext with a WMS and an inline vector layer failed and threw an exception');
+        } else {
+            t.plan(2);
+            t.ok(true, 'OWSContext with a WMS and an inline vector layer generated without exception');
+            t.xml_eq(output, expectedXml, "OWSContext with a WMS and an inline vector layer generated correctly");
+        }
+    }
+
     function test_read_inline(t) {
         t.plan(10);
         var text = '<?xml version="1.0" encoding="UTF-8"?><OWSContext xmlns="http://www.opengis.net/ows-context" xmlns:gml="http://www.opengis.net/gml" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:ogc="http://www.opengis.net/ogc" xmlns:ows="http://www.opengis.net/ows" xmlns:sld="http://www.opengis.net/sld" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3.1" id="ows-context-ex-1-v3" xsi:schemaLocation="http://www.opengis.net/ows-context http://www.ogcnetwork.net/schemas/owc/0.3.0/owsContext.xsd"><General><ows:BoundingBox crs="urn:ogc:def:crs:EPSG:6.6:4326"><ows:LowerCorner>-117.44667178362664 32.57086210449395</ows:LowerCorner><ows:UpperCorner>-116.74066794885977 32.921986352104064</ows:UpperCorner></ows:BoundingBox><ows:Title>OWS Context version 0.3.0 Inline KML and GML examples</ows:Title></General><ResourceList><!-- WMS Example --><Layer name="topp:major_roads" queryable="1" hidden="1">	<ows:Title>Tiger 2005fe major roads</ows:Title>	<ows:OutputFormat>image/png</ows:OutputFormat><Server service="urn:ogc:serviceType:WMS" version="1.1.1"><OnlineResource xlink:href="http://sigma.openplans.org:8080/geoserver/wms?SERVICE=WMS"/></Server></Layer><!-- Inline KML Example --><Layer name="archsites"><ows:Title>Architectural Sites</ows:Title><kml:Document><kml:name>opengeo:archsites 1 to 100</kml:name><kml:Style id="archsitesStyle"><kml:IconStyle><kml:color>ffffffff</kml:color><kml:colorMode>normal</kml:colorMode><kml:Icon><kml:href>http://maps.google.com/mapfiles/kml/pal4/icon25.png</kml:href></kml:Icon></kml:IconStyle></kml:Style><kml:Placemark id="archsites.1"><kml:name>Signature Rock</kml:name><kml:description>Signature Rock Description</kml:description><kml:styleUrl>#archsitesStyle</kml:styleUrl><kml:Point><kml:coordinates>-103.82681673,44.38162255</kml:coordinates></kml:Point></kml:Placemark></kml:Document></Layer><!-- Inline GML Example --><Layer name="coastg"><ows:Title>Coastg as GML Points</ows:Title><InlineGeometry><gml:boundedBy><gml:Box><gml:coord><gml:X>-43.379</gml:X><gml:Y>72.746</gml:Y></gml:coord><gml:coord><gml:X>-43.390</gml:X><gml:Y>72.755</gml:Y></gml:coord></gml:Box></gml:boundedBy><gml:featureMember><au1:coastg xmlns:au1="http://www.ionicsoft.com/wfs" fid="coastg.0"><au1:MERGE>1</au1:MERGE><au1:AREA>0.0020000000000000005</au1:AREA><au1:PERIMETER>0.167</au1:PERIMETER><au1:GEOMETRY><gml:Polygon srsName="urn:ogc:def:crs:EPSG:6.6:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>129.29167335893825,71.9583353847737 129.29167335893825,72.0000014248896 129.33332733905414,72.0000014248896 129.33332733905414,71.9583353847737 129.29167335893825,71.9583353847737</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></au1:GEOMETRY></au1:coastg></gml:featureMember><gml:featureMember><au1:coastg xmlns:au1="http://www.ionicsoft.com/wfs" fid="coastg.1"><au1:MERGE>1</au1:MERGE><au1:AREA>0.0020000000000000005</au1:AREA><au1:PERIMETER>0.167</au1:PERIMETER><au1:GEOMETRY><gml:Polygon srsName="urn:ogc:def:crs:EPSG:6.6:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>135.45832829609282,35.66666796381659 135.41667179597695,35.66666796381659 135.41667179597695,35.70833202393249 135.45832829609282,35.70833202393249 135.45832829609282,35.66666796381659</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></au1:GEOMETRY></au1:coastg></gml:featureMember></InlineGeometry></Layer></ResourceList></OWSContext>';
