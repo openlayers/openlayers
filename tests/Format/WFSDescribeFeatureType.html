@@ -426,7 +426,7 @@
         var res = format.read(text);
         var property = res.featureTypes[0].properties[0];
         t.eq(property.annotation.appinfo[0], '{"title":{"en":"Population"}}', "appinfo read correctly");
-        t.eq(property.annotation.documentation["en"], "Number of persons living in the state", "documentation read correctly");
+        t.eq(property.annotation.documentation[0], {lang: "en", textContent: 'Number of persons living in the state'}, "documentation read correctly");
     }
 
     </script> 
