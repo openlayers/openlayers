@@ -332,7 +332,7 @@
 
     }
     function test_ogc(t) {
-        t.plan(14)
+        t.plan(16)
 
         /*
          * Set up
@@ -386,6 +386,8 @@
         t.eq(capability.layers[0].minScale, 250000, "layer.minScale is correct");
         t.eq(capability.layers[0].maxScale, 1000, "layer.maxScale is correct");
 
+        t.eq(capability.layers[1].minScale, undefined, "layer.minScale for max='Infinity' is correct");
+        t.eq(capability.layers[1].maxScale, undefined, "layer.maxScale for min='0' is correct");
         /*
          * Tear down
          */
@@ -590,8 +592,6 @@ Changes:
         </StyleSheetURL>
       </Style>
 
-      <ScaleHint min="4000" max="35000"></ScaleHint>
-
 
       <Layer queryable="1">
     <Name>ROADS_1M</Name> 
@@ -641,6 +641,7 @@ Changes:
           <Keyword>canal</Keyword>
           <Keyword>waterway</Keyword>
     </KeywordList>
+    <ScaleHint min="0" max="Infinity" />
       </Layer>
     </Layer>
     <Layer queryable="1">
