@@ -11,7 +11,7 @@
     }
     
     function test_read(t) {
-        t.plan(2);
+        t.plan(3);
         
         var data = readXML("TransactionResponse");        
         var format = new OpenLayers.Format.WFST.v1_1_0({
@@ -19,7 +19,8 @@
             featureType: "states"
         });
         var result = format.read(data);
-        t.eq(result.insertIds[0], "none", "InsertIds read correctly");
+        t.eq(result.insertIds[0], "parcelle.40", "First InsertId read correctly");
+        t.eq(result.insertIds[1], "parcelle.41", "Second InsertId read correctly");
         t.eq(result.success, true, "Success read correctly");
     }
 
@@ -137,7 +138,10 @@
     <wfs:TransactionResults/>
     <wfs:InsertResults>
         <wfs:Feature>
-            <ogc:FeatureId fid="none"/>
+            <ogc:FeatureId fid="parcelle.40"/>
+        </wfs:Feature>
+        <wfs:Feature>
+            <ogc:FeatureId fid="parcelle.41"/>
         </wfs:Feature>
     </wfs:InsertResults>
 </wfs:TransactionResponse>
