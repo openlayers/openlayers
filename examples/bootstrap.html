@@ -53,10 +53,12 @@
                     Note that the OpenLayers stylesheet is loaded before 
                     Bootstrap.  The Bootstrap CSS sets the maximum width for
                     images to be 100% (of their containing element).
+                </p>
 <pre><code>img {
     max-width: 100%;
 }
 </code></pre>
+                <p>
                     This causes problems for images that you might want to be
                     bigger than their containing element (e.g. big tile in small
                     map viewport).  To overcome this, the OpenLayers CSS
@@ -64,10 +66,12 @@
                     not loading the OpenLayers default CSS or are having trouble 
                     with tile sizing and Bootstrap, add the following to your
                     markup:
-<pre><code>&lt;style>
-    max-width: none !important;
-&lt;/style><code></pre>
                 </p>
+<pre><code>&lt;style>
+    img.olTileImage {
+        max-width: none;
+    }
+&lt;/style></code></pre>
             </div>
         </div>
     </div>

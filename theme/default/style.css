@@ -485,5 +485,5 @@ a.olControlZoomOut {
 
 /* override any max-width image settings (e.g. bootstrap.css) */
 img.olTileImage {
-    max-width: none !important;
+    max-width: none;
 }
