@@ -1,0 +1,107 @@
+<html>
+<head>
+  <script src="OLLoader.js"></script>
+  <script type="text/javascript">
+  
+    function test_initialize(t) {
+        t.plan(4);
+        
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS('WMS1', '../img/blank.gif');
+        map.addLayer(layer);
+        var tileManager = new OpenLayers.TileManager({map: map});
+        map.setCenter([16, 48], 9);
+        t.ok(tileManager.tileQueue.length, "Tiles queued from layer");
+        map.removeLayer(layer);
+        t.eq(tileManager.tileQueue.length, 0, "Tiles unqueued when layer is removed");
+        map.addLayer(new OpenLayers.Layer.WMS('WMS2', '../img/blank.gif'));
+        map.zoomIn();
+        t.ok(tileManager.tileQueue.length, "Tiles queued from added layer");
+        map.destroy();
+        t.eq(tileManager.tileQueue.length, 0, "Tiles unqueued when map is destroyed");
+    }
+
+    function test_manageTileCache(t) {
+        t.plan(9);
+        
+        var map = new OpenLayers.Map('map');
+        var tileManager = new OpenLayers.TileManager({
+            map: map,
+            cacheSize: 12
+        });
+        layer = new OpenLayers.Layer.WMS('WMS', '../img/blank.gif');
+        map.addLayer(layer);
+        map.setCenter([16, 48], 9);
+        
+        var firstInCache, sharedTile;
+        t.delay_call(2, function() {
+            t.eq(tileManager.tileCacheIndex.length, 12, "tiles cached");
+            t.ok(~OpenLayers.Util.indexOf(tileManager.tileCacheIndex, layer.grid[1][2].url), "tile found in cache");
+            t.ok(tileManager.tileCache[layer.grid[1][2].url] === layer.grid[1][2].imgDiv, "correct object cached");
+            firstInCache = tileManager.tileCache[tileManager.tileCacheIndex[0]];
+            sharedTile = tileManager.tileCache[tileManager.tileCacheIndex[11]];
+            map.setCenter([17, 47]);
+        });
+        t.delay_call(4, function() {
+            t.eq(tileManager.tileCacheIndex.length, 12, "tiles cached");
+            t.ok(tileManager.tileCache[layer.grid[1][2].url] === layer.grid[1][2].imgDiv, "correct object cached");
+            t.ok(!(firstInCache.getAttribute("src") in tileManager.tileCache), "old tile discarded");
+            t.ok(sharedTile.getAttribute("src") in tileManager.tileCache, "shared tile still in cache");
+            firstInCache = tileManager.tileCache[tileManager.tileCacheIndex[0]];
+            map.setCenter([16, 48]);
+        });
+        t.delay_call(6, function() {
+            t.ok(!(firstInCache.getAttribute("src") in tileManager.tileCache), "old tile discarded");
+            t.ok(sharedTile.getAttribute("src") in tileManager.tileCache, "shared tile still in cache");
+            map.destroy();
+        });
+    }
+    
+    function test_queueTileDraw(t) {
+        t.plan(3);
+
+        var map = new OpenLayers.Map('map');
+        var tileManager = new OpenLayers.TileManager({
+            map: map
+        });
+        layer = new OpenLayers.Layer.WMS('WMS', '../img/blank.gif');
+        map.addLayer(layer);
+        map.setCenter([0, 0], 3);
+        var queued = tileManager.tileQueue.length;
+        t.ok(tileManager.tileQueue.length, "Tiles queued for drawing");
+        map.zoomIn();
+        t.eq(tileManager.tileQueue.length, queued, "Tile queue has same length after immediate zoom change");
+        t.delay_call(1, function() {
+            t.eq(tileManager.tileQueue.length, 0, "Tiles from queue processed");        
+            map.destroy();
+        });
+    }
+    
+    function test_deferTileDraw(t) {
+
+        t.plan(3);
+
+        var map = new OpenLayers.Map('map');
+        var tileManager = new OpenLayers.TileManager({
+            map: map
+        });
+        layer = new OpenLayers.Layer.WMS('WMS', '../img/blank.gif');
+        layer.destroy = function() {}; //we're going to do funky things with the grid
+        layer.applyBackBuffer = function() {}; // backbuffering isn't under test here
+        map.addLayer(layer);
+        map.setCenter([-10, 0], 5);
+        
+        map.moveTo([5, 0]);
+        t.ok(tileManager.tileQueue.length, "tile loading deferred after moveTo");
+        map.moveTo([0, 0]);
+        t.ok(tileManager.tileQueue.length, "deferred again after another moveTo");
+        t.delay_call(1, function() {
+            t.eq(tileManager.tileQueue.length, 0, "tiles loaded after moveDelay");
+        });
+    }
+  </script>
+</head>
+<body>
+<div id="map" style="width:499px;height:549px;display:none"></div>
+</body>
+</html>

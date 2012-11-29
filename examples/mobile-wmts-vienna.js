@@ -1,4 +1,4 @@
-var map;
+var map, tileManager;
 
 (function() {
     // Set document language for css content 
@@ -124,6 +124,7 @@ var map;
             }
         }
     });
+    tileManager = new OpenLayers.TileManager({map: map});
     layerPanel.activateControl(mapButton);
     layerPanel.activateControl(labelButton);
 

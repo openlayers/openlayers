@@ -85,7 +85,7 @@
         var drawn = tile.draw();
         t.eq(log[0], "clear", "tile cleared");
         t.eq(log[1], "beforedraw", "beforedraw event fired");
-        t.eq(drawn, false, "tile not drawn when beforedraw listener returns false");
+        t.eq(drawn, null, "tile not drawn when beforedraw listener returns false");
         drawn = tile.draw(true);
         t.eq(log.length, 2, "no beforedraw event fired and tile not cleared when draw called with 'deferred' argument set to true");
         t.eq(drawn, true, "tile drawn when draw called with 'deferred' argument set to true");

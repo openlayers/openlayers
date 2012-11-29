@@ -2,9 +2,6 @@
 <head>
   <script src="../OLLoader.js"></script>
   <script type="text/javascript">
-    // turn off animation frame handling, so we can check img urls in tests
-    var origQueueTileDraw = OpenLayers.Layer.Grid.prototype.queueTileDraw;
-    delete OpenLayers.Layer.Grid.prototype.queueTileDraw;
 
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var layer; 
@@ -100,59 +97,6 @@
         map.destroy();
     }
     
-    function test_manageTileCache(t) {
-        t.plan(9);
-        
-        var map = new OpenLayers.Map('map');
-        layer = new OpenLayers.Layer.WMS(name, "../../img/blank.gif", params, {
-            tileCacheSize: 12
-        });
-        map.addLayer(layer);
-        map.setCenter([16, 48], 9);
-        
-        var firstInCache, sharedTile;
-        t.delay_call(2, function() {
-            t.eq(layer.tileCacheIndex.length, 12, "tiles cached");
-            t.ok(~OpenLayers.Util.indexOf(layer.tileCacheIndex, layer.grid[1][2].url), "tile found in cache");
-            t.ok(layer.tileCache[layer.grid[1][2].url] === layer.grid[1][2].imgDiv, "correct object cached");
-            firstInCache = layer.tileCache[layer.tileCacheIndex[0]];
-            sharedTile = layer.tileCache[layer.tileCacheIndex[11]];
-            map.setCenter([17, 47]);
-        });
-        t.delay_call(4, function() {
-            t.eq(layer.tileCacheIndex.length, 12, "tiles cached");
-            t.ok(layer.tileCache[layer.grid[1][2].url] === layer.grid[1][2].imgDiv, "correct object cached");
-            t.ok(!(firstInCache.getAttribute("src") in layer.tileCache), "old tile discarded");
-            t.ok(sharedTile.getAttribute("src") in layer.tileCache, "shared tile still in cache");
-            firstInCache = layer.tileCache[layer.tileCacheIndex[0]];
-            map.setCenter([16, 48]);
-        });
-        t.delay_call(6, function() {
-            t.ok(!(firstInCache.getAttribute("src") in layer.tileCache), "old tile discarded");
-            t.ok(sharedTile.getAttribute("src") in layer.tileCache, "shared tile still in cache");
-        });
-    }
-    
-    function test_queueTileDraw(t) {
-        t.plan(3);
-        OpenLayers.Layer.Grid.prototype.queueTileDraw = origQueueTileDraw;
-
-        var map = new OpenLayers.Map('map');
-        layer = new OpenLayers.Layer.WMS(name, url, params);
-        map.addLayer(layer);
-        map.setCenter([0, 0], 3);
-        var queued = layer.tileQueue.length;
-        t.ok(layer.tileQueue.length, "Tiles queued for drawing");
-        map.zoomIn();
-        t.eq(layer.tileQueue.length, queued, "Tile queue has same length after immediate zoom change");
-        t.delay_call(1, function() {
-            t.eq(layer.tileQueue.length, 0, "Tiles from queue processed");
-        });
-        
-        map.destroy();
-        delete OpenLayers.Layer.Grid.prototype.queueTileDraw;
-    }
-
     function test_Layer_Grid_clearTiles (t) {
         t.plan(4);
 
@@ -291,10 +235,7 @@
     
     function test_Layer_Grid_moveTo(t) {
 
-        t.plan(17);
-
-        var origIsNative = OpenLayers.Animation.isNative;
-        OpenLayers.Animation.isNative = false;
+        t.plan(13);
 
         var map = new OpenLayers.Map('map');
         layer = new OpenLayers.Layer.WMS(name, url, params);
@@ -304,23 +245,6 @@
         map.setCenter([-10, 0], 5);
         
         var log = [];
-        var origDeferMoveGriddedTiles = layer.deferMoveGriddedTiles;
-        layer.deferMoveGriddedTiles = function() {
-            log.push("deferMoveGriddedTiles");
-            origDeferMoveGriddedTiles.apply(this, arguments);
-        };
-        layer.moveGriddedTiles = function() {
-            log.push("moveGriddedTiles");
-            OpenLayers.Layer.WMS.prototype.moveGriddedTiles.apply(this, arguments);
-        };
-        map.moveTo([5, 0]);
-        t.eq(log[0], "moveGriddedTiles", "deferred after moveTo");
-        map.moveTo([0, 0]);
-        t.eq(log[1], "moveGriddedTiles", "deferred again after another moveTo");
-        t.eq(log.length, 2, "no tiles loaded yet");
-        t.delay_call(1, function() {
-            t.eq(log[2], "deferMoveGriddedTiles", "tiles moved after tileLoadingDelay");
-        });
 
     //make sure null bounds doesnt cause script error. 
     // no test necessary, just action
@@ -342,9 +266,6 @@
             g_WhichFunc = "MoveGridded";
             g_Bounds = layer.map.getExtent();
         };
-        layer.deferMoveGriddedTiles = function() {
-            g_WhichFunc = "DeferMoveGridded";
-        }
         var clearTestBounds = function() {
             g_WhichFunc = null;
             g_Bounds = null;
@@ -451,8 +372,6 @@
         layer.moveTo(null, zoomChanged);
         t.ok(g_WhichFunc == "InitGridded", "if tiles drastically out of bounds, we call initGriddedTile()");
         t.ok(g_Bounds.equals(b), "if tiles drastically out of bounds, we call initGriddedTile() with correct bounds");
-
-        OpenLayers.Animation.isNative = origIsNative;
     }
 
     /** THIS WOULD BE WHERE THE TESTS WOULD GO FOR 
@@ -471,7 +390,7 @@
      */
 
     function test_Layer_Grid_clone(t) {
-        t.plan(7);
+        t.plan(6);
         
         var options = {tileSize: new OpenLayers.Size(500,50)};
         var map = new OpenLayers.Map('map', options);
@@ -486,7 +405,6 @@
         t.ok( clone.grid != layer.grid, "clone does not copy grid");
         t.ok( clone.grid.length == 0, "clone creates a new array instead");
         
-        t.ok(clone.tileQueue !== layer.tileQueue, "new tileQueue for clone");
         t.eq(clone.backBuffer, null, "no backbuffer from original");
 
         t.ok( clone.tileSize.equals(layer.tileSize), "tileSize correctly cloned");
