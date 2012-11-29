@@ -19,6 +19,25 @@
         t.ok(tileManager.tileQueue.length, "Tiles queued from added layer");
         map.destroy();
         t.eq(tileManager.tileQueue.length, 0, "Tiles unqueued when map is destroyed");
+        tileManager.destroy();
+    }
+    
+    function test_destroy(t) {
+        t.plan(3);
+        
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS('WMS', '../img/blank.gif');
+        map.addLayer(layer);
+        map.setCenter([16, 48], 9);
+        var numTileListeners = (layer.grid[0][0].events.listeners.reload || []).length;
+        var numLayerListeners = (layer.events.listeners.retile || []).length;
+        var numMapListeners = (map.events.listeners.removelayer || []).length;
+        var tileManager = new OpenLayers.TileManager({map: map});
+        tileManager.destroy();
+        t.eq(layer.grid[0][0].events.listeners.reload.length, numTileListeners, "no listener on tile after destroy");
+        t.eq(layer.events.listeners.retile.length, numLayerListeners, "no listeners on layer after destroy");
+        t.eq(map.events.listeners.removelayer.length, numMapListeners, "no listeners on map after destroy");
+        map.destroy();
     }
 
     function test_manageTileCache(t) {
