@@ -3,7 +3,7 @@
 var apiKey = "AqTGBsziZHIJYYxgivLBf0hVdrAk9mWO5cQcb8Yux8sW5M8c8opEC2lZqKR1ZZXf";
 
 // initialize map when page ready
-var map, tileManager;
+var map;
 var gg = new OpenLayers.Projection("EPSG:4326");
 var sm = new OpenLayers.Projection("EPSG:900913");
 
@@ -42,6 +42,7 @@ var init = function (onSelectFeatureFunction) {
         theme: null,
         projection: sm,
         numZoomLevels: 18,
+        tileManager: new OpenLayers.TileManager(),
         controls: [
             new OpenLayers.Control.Attribution(),
             new OpenLayers.Control.TouchNavigation({
@@ -85,7 +86,6 @@ var init = function (onSelectFeatureFunction) {
         center: new OpenLayers.LonLat(0, 0),
         zoom: 1
     });
-    tileManager = new OpenLayers.TileManager({map: map});
 
     var style = {
         fillOpacity: 0.1,

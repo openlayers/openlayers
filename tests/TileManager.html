@@ -6,48 +6,48 @@
     function test_initialize(t) {
         t.plan(4);
         
-        var map = new OpenLayers.Map('map');
+        var tileManager = new OpenLayers.TileManager();
+        var map = new OpenLayers.Map('map', {
+            tileManager: tileManager
+        });
         var layer = new OpenLayers.Layer.WMS('WMS1', '../img/blank.gif');
         map.addLayer(layer);
-        var tileManager = new OpenLayers.TileManager({map: map});
         map.setCenter([16, 48], 9);
-        t.ok(tileManager.tileQueue.length, "Tiles queued from layer");
+        t.ok(tileManager.tileQueue[map.id].length, "Tiles queued from layer");
         map.removeLayer(layer);
-        t.eq(tileManager.tileQueue.length, 0, "Tiles unqueued when layer is removed");
+        t.eq(tileManager.tileQueue[map.id].length, 0, "Tiles unqueued when layer is removed");
         map.addLayer(new OpenLayers.Layer.WMS('WMS2', '../img/blank.gif'));
         map.zoomIn();
-        t.ok(tileManager.tileQueue.length, "Tiles queued from added layer");
+        t.ok(tileManager.tileQueue[map.id].length, "Tiles queued from added layer");
         map.destroy();
-        t.eq(tileManager.tileQueue.length, 0, "Tiles unqueued when map is destroyed");
-        tileManager.destroy();
+        t.eq(tileManager.tileQueue[map.id], undefined, "Tile queue removed when map was destroyed");
     }
     
     function test_destroy(t) {
         t.plan(3);
         
-        var map = new OpenLayers.Map('map');
+        var tileManager = new OpenLayers.TileManager();
+        var map = new OpenLayers.Map('map', {tileManager: tileManager});
         var layer = new OpenLayers.Layer.WMS('WMS', '../img/blank.gif');
         map.addLayer(layer);
         map.setCenter([16, 48], 9);
-        var numTileListeners = (layer.grid[0][0].events.listeners.reload || []).length;
-        var numLayerListeners = (layer.events.listeners.retile || []).length;
-        var numMapListeners = (map.events.listeners.removelayer || []).length;
-        var tileManager = new OpenLayers.TileManager({map: map});
+        var numTileListeners = layer.grid[0][0].events.listeners.reload.length;
+        var numLayerListeners = layer.events.listeners.retile.length;
+        var numMapListeners = map.events.listeners.preremovelayer.length;
         tileManager.destroy();
-        t.eq(layer.grid[0][0].events.listeners.reload.length, numTileListeners, "no listener on tile after destroy");
-        t.eq(layer.events.listeners.retile.length, numLayerListeners, "no listeners on layer after destroy");
-        t.eq(map.events.listeners.removelayer.length, numMapListeners, "no listeners on map after destroy");
+        t.eq(layer.grid[0][0].events.listeners.reload.length, numTileListeners - 1, "no listener on tile after destroy");
+        t.eq(layer.events.listeners.retile.length, numLayerListeners - 1, "no listeners on layer after destroy");
+        t.eq(map.events.listeners.preremovelayer.length, numMapListeners - 1, "no listeners on map after destroy");
         map.destroy();
     }
 
     function test_manageTileCache(t) {
         t.plan(9);
         
-        var map = new OpenLayers.Map('map');
         var tileManager = new OpenLayers.TileManager({
-            map: map,
             cacheSize: 12
         });
+        var map = new OpenLayers.Map('map', {tileManager: tileManager});
         layer = new OpenLayers.Layer.WMS('WMS', '../img/blank.gif');
         map.addLayer(layer);
         map.setCenter([16, 48], 9);
@@ -79,19 +79,17 @@
     function test_queueTileDraw(t) {
         t.plan(3);
 
-        var map = new OpenLayers.Map('map');
-        var tileManager = new OpenLayers.TileManager({
-            map: map
-        });
+        var tileManager = new OpenLayers.TileManager();
+        var map = new OpenLayers.Map('map', {tileManager: tileManager});
         layer = new OpenLayers.Layer.WMS('WMS', '../img/blank.gif');
         map.addLayer(layer);
         map.setCenter([0, 0], 3);
-        var queued = tileManager.tileQueue.length;
-        t.ok(tileManager.tileQueue.length, "Tiles queued for drawing");
+        var queued = tileManager.tileQueue[map.id].length;
+        t.ok(tileManager.tileQueue[map.id].length, "Tiles queued for drawing");
         map.zoomIn();
-        t.eq(tileManager.tileQueue.length, queued, "Tile queue has same length after immediate zoom change");
+        t.eq(tileManager.tileQueue[map.id].length, queued, "Tile queue has same length after immediate zoom change");
         t.delay_call(1, function() {
-            t.eq(tileManager.tileQueue.length, 0, "Tiles from queue processed");        
+            t.eq(tileManager.tileQueue[map.id].length, 0, "Tiles from queue processed");        
             map.destroy();
         });
     }
@@ -100,10 +98,8 @@
 
         t.plan(3);
 
-        var map = new OpenLayers.Map('map');
-        var tileManager = new OpenLayers.TileManager({
-            map: map
-        });
+        var tileManager = new OpenLayers.TileManager();
+        var map = new OpenLayers.Map('map', {tileManager: tileManager});
         layer = new OpenLayers.Layer.WMS('WMS', '../img/blank.gif');
         layer.destroy = function() {}; //we're going to do funky things with the grid
         layer.applyBackBuffer = function() {}; // backbuffering isn't under test here
@@ -111,11 +107,11 @@
         map.setCenter([-10, 0], 5);
         
         map.moveTo([5, 0]);
-        t.ok(tileManager.tileQueue.length, "tile loading deferred after moveTo");
+        t.ok(tileManager.tileQueue[map.id].length, "tile loading deferred after moveTo");
         map.moveTo([0, 0]);
-        t.ok(tileManager.tileQueue.length, "deferred again after another moveTo");
+        t.ok(tileManager.tileQueue[map.id].length, "deferred again after another moveTo");
         t.delay_call(1, function() {
-            t.eq(tileManager.tileQueue.length, 0, "tiles loaded after moveDelay");
+            t.eq(tileManager.tileQueue[map.id].length, 0, "tiles loaded after moveDelay");
         });
     }
   </script>

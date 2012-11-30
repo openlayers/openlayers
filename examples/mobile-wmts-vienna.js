@@ -1,4 +1,4 @@
-var map, tileManager;
+var map;
 
 (function() {
     // Set document language for css content 
@@ -99,6 +99,7 @@ var map, tileManager;
         maxExtent: [-20037508.34, -20037508.34, 20037508.34, 20037508.34],
         maxResolution: 156543.0339,
         numZoomLevels: 20,
+        tileManager: new OpenLayers.TileManager(),
         controls: [
             new OpenLayers.Control.Navigation({
                 mouseWheelOptions: {
@@ -124,7 +125,6 @@ var map, tileManager;
             }
         }
     });
-    tileManager = new OpenLayers.TileManager({map: map});
     layerPanel.activateControl(mapButton);
     layerPanel.activateControl(labelButton);
 
