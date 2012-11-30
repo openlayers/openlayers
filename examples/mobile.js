@@ -22,6 +22,9 @@ var init = function () {
         controls: [
             new OpenLayers.Control.Attribution(),
             new OpenLayers.Control.TouchNavigation({
+                pinchZoomOptions: {
+                    preserveCenter: true
+                },
                 dragPanOptions: {
                     enableKinetic: true
                 }
