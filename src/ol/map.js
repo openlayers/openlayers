@@ -80,8 +80,7 @@ ol.RendererHint = {
 
 
 /**
- * @type {Array.<ol.RendererHint>} Desired renderers with most favoured renderer
- *   first.
+ * @type {Array.<ol.RendererHint>}
  */
 ol.DEFAULT_RENDERER_HINTS = [
   ol.RendererHint.WEBGL,
@@ -114,9 +113,6 @@ ol.MapProperty = {
 
 
 /**
- * Map composed of multiple layers. Maps in OpenLayers are responsible for
- * binding together the other components.
- *
  * @constructor
  * @extends {ol.Object}
  * @implements {goog.fx.anim.Animated}
@@ -174,7 +170,7 @@ ol.Map = function(mapOptions) {
 
   /**
    * @private
-   * @type {Element} Container into which the map is painted.
+   * @type {Element}
    */
   this.target_ = mapOptionsInternal.target;
 
@@ -186,7 +182,7 @@ ol.Map = function(mapOptions) {
 
   /**
    * @private
-   * @type {Element} Reference to the root element of the map in the DOM.
+   * @type {Element}
    */
   this.viewport_ = goog.dom.createDom(goog.dom.TagName.DIV, 'ol-viewport');
   this.viewport_.style.position = 'relative';
@@ -197,8 +193,7 @@ ol.Map = function(mapOptions) {
 
   /**
    * @private
-   * @type {Element} Captures click events and cancels them so that interactions
-   *   within overlays don't influence the map.
+   * @type {Element}
    */
   this.overlayContainer_ = goog.dom.createDom(goog.dom.TagName.DIV,
       'ol-overlaycontainer');
@@ -249,8 +244,7 @@ ol.Map = function(mapOptions) {
   this.interactions_ = mapOptionsInternal.interactions;
 
   /**
-   * @type {ol.renderer.Map} Most favoured renderer given the supported of the
-   *   choices.
+   * @type {ol.renderer.Map}
    * @private
    */
   this.renderer_ =
@@ -277,7 +271,6 @@ ol.Map = function(mapOptions) {
 
   this.handleBrowserWindowResize();
 
-  // Notify all controls about the map they are assigned to
   this.controls_.forEach(
       /**
        * @param {ol.control.Control} control Control.
@@ -299,6 +292,7 @@ ol.Map.prototype.canRotate = function() {
 
 
 /**
+ *
  * @inheritDoc
  */
 ol.Map.prototype.disposeInternal = function() {
@@ -365,7 +359,7 @@ goog.exportProperty(
 
 
 /**
- * @return {Element} Container into which the map is painted.
+ * @return {Element} Container.
  */
 ol.Map.prototype.getTarget = function() {
   return this.target_;
@@ -650,10 +644,6 @@ ol.Map.prototype.handleUserProjectionChanged = function() {
 
 
 /**
- * Adjusts the map to its new size whenever the viewport size changes.
- * One should react the the resize of the map's viewport instead of the browser
- * viewport but there is no API to do so.
- *
  * @protected
  */
 ol.Map.prototype.handleBrowserWindowResize = function() {
@@ -1013,16 +1003,10 @@ ol.Map.createOptionsInternal = function(mapOptions) {
    */
   var rendererHints;
   if (goog.isDef(mapOptions.renderers)) {
-    // Use first supported renderer of the supported ones
     rendererHints = mapOptions.renderers;
   } else if (goog.isDef(mapOptions.renderer)) {
-    // Use the given renderer
-    // Support accepting a renderer instead of an array with a single renderer
-    // for mapOptions.renderers.
     rendererHints = [mapOptions.renderer];
   } else {
-    // Use the default order of preferred renderers if user did not specify a
-    // preference.
     rendererHints = ol.DEFAULT_RENDERER_HINTS;
   }
 
@@ -1068,7 +1052,7 @@ ol.Map.createOptionsInternal = function(mapOptions) {
   }
 
   /**
-   * @type {Element} Container into which the map is painted.
+   * @type {Element}
    */
   var target = goog.dom.getElement(mapOptions.target);
 

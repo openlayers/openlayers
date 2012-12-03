@@ -20,19 +20,13 @@ goog.require('ol.layer.Layer');
 
 
 /**
- * Shows credits / names of data providers for shown map layers.
- *
  * @constructor
  * @extends {ol.control.Control}
  * @param {ol.control.AttributionOptions} attributionOptions Attribution
  *     options.
  */
 ol.control.Attribution = function(attributionOptions) {
-  /**
-   * @private
-   * @type {Element} List of map's data sources. One list items gets appended
-   *   per data source.
-   */
+
   this.ulElement_ = goog.dom.createElement(goog.dom.TagName.UL);
 
   var element = goog.dom.createDom(goog.dom.TagName.DIV, {
@@ -41,8 +35,7 @@ ol.control.Attribution = function(attributionOptions) {
 
   /**
    * @private
-   * @type {Array.<number>} Event handler identifiers to change attribution when
-   *   layers get added and removed.
+   * @type {Array.<number>}
    */
   this.layersListenerKeys_ = null;
 
@@ -66,8 +59,7 @@ ol.control.Attribution = function(attributionOptions) {
 
   /**
    * @private
-   * @type {Array.<number>} Event handler identifiers for handlers that monitor
-   *   changes to the map.
+   * @type {Array.<number>}
    */
   this.mapListenerKeys_ = null;
 
@@ -82,9 +74,6 @@ goog.inherits(ol.control.Attribution, ol.control.Control);
 
 
 /**
- * Attaches handler to track visibility changes and creates attribution list
- * item.
- *
  * @param {ol.layer.Layer} layer Layer.
  * @protected
  */
@@ -308,8 +297,6 @@ ol.control.Attribution.prototype.handleMapChanged = function() {
 
 
 /**
- * Clears attribution and triggers refill whenever layers get added to the map
- * or are removed from the map.
  * @protected
  */
 ol.control.Attribution.prototype.handleMapLayersChanged = function() {
@@ -317,19 +304,15 @@ ol.control.Attribution.prototype.handleMapLayersChanged = function() {
     goog.array.forEach(this.layersListenerKeys_, goog.events.unlistenByKey);
     this.layersListenerKeys_ = null;
   }
-  // Clear all attributions
   goog.object.forEach(this.attributionElements_, function(attributionElement) {
     goog.dom.removeNode(attributionElement);
   }, this);
-
   this.attributionElements_ = {};
   this.coverageAreass_ = {};
   var map = this.getMap();
   var layers = map.getLayers();
   if (goog.isDefAndNotNull(layers)) {
-    // Add attribution for layer
     layers.forEach(this.addLayer, this);
-
     this.layersListenerKeys_ = [
       goog.events.listen(layers, ol.CollectionEventType.ADD,
           this.handleLayersAdd, false, this),
@@ -395,8 +378,6 @@ ol.control.Attribution.prototype.setMap = function(map) {
 
 
 /**
- * Shows or hides attribution for a layer. The attribution is shown whenever the
- * layer is visible to the user.
  * @param {ol.layer.Layer} layer Layer.
  * @param {boolean} mapIsDef Map is defined.
  * @param {ol.Extent} mapExtent Map extent.
