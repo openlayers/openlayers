@@ -6,10 +6,10 @@ goog.require('goog.color');
 
 /**
  * @constructor
- * @param {number} r Red.
- * @param {number} g Green.
- * @param {number} b Blue.
- * @param {number} a Alpha.
+ * @param {number} r Red, 0 to 255.
+ * @param {number} g Green, 0 to 255.
+ * @param {number} b Blue, 0 to 255.
+ * @param {number} a Alpha, 0 (fully transparent) to 255 (fully opaque).
  */
 ol.Color = function(r, g, b, a) {
 
