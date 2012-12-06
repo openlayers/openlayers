@@ -170,68 +170,6 @@
         t.eq(satellite.div.style.display, "block", "Satellite layer is visible.");
     }    
     
-    function test_Layer_Google_setGMapVisibility(t) {
-        t.plan(3);
-    
-        var map = new OpenLayers.Map('map');
-        var gmap = new OpenLayers.Layer.Google("Google Streets");
-        var dummy = new OpenLayers.Layer("Dummy", {isBaseLayer: true});
-        map.addLayers([dummy, gmap]);
-        map.zoomToMaxExtent();
-    
-        // In v3, the terms of use and powered by elements are not available 
-        // until the layer loads.  This can occur before the layer is visible,
-        // but we don't try to access these elements until after the layer is
-        // made visible for the first time.  
-        var cache = OpenLayers.Layer.Google.cache[map.id];
-        t.ok(!cache.termsOfUse, "termsOfUse is not yet cached");
-        t.ok(!cache.poweredBy, "poweredBy is not yet cached");
-
-        var called = 0;
-        var original = gmap.repositionMapElements;
-        gmap.repositionMapElements = function() {
-            ++called;
-            original.apply(gmap, arguments);
-        }
-
-        map.setBaseLayer(gmap);
-        t.delay_call(4, function() {
-            t.ok(called > 0, "repositionMapElements called");
-            map.destroy();
-        });            
-    }
-
-    function test_Layer_Google_setGMapVisibility_allOverlays(t) {
-         t.plan(3);
-     
-         var map = new OpenLayers.Map('map', {allOverlays: true});
-         var gmap = new OpenLayers.Layer.Google("Google Streets", {visibility: false});
-         var dummy = new OpenLayers.Layer("Dummy");
-         map.addLayers([gmap, dummy]);
-         map.zoomToMaxExtent();
-         
-         // In v3, the terms of use and powered by elements are not available 
-         // until the layer loads.  This can occur before the layer is visible,
-         // but we don't try to access these elements until after the layer is
-         // made visible for the first time.
-         var cache = OpenLayers.Layer.Google.cache[map.id];
-         t.ok(!cache.termsOfUse, "termsOfUse is not yet cached");
-         t.ok(!cache.poweredBy, "poweredBy is not yet cached");
-     
-         var called = 0;
-         var original = gmap.repositionMapElements;
-         gmap.repositionMapElements = function() {
-             ++called;
-             original.apply(gmap, arguments);
-         }    
-
-         gmap.setVisibility(true);
-         t.delay_call(2, function() {
-             t.ok(called > 0, "repositionMapElements called");
-             map.destroy();
-         });            
-     }
-
      function test_allOverlays_invisible(t) {
 
          t.plan(1);
@@ -319,10 +257,9 @@
          t.plan(2);
 
          var origPrecision = OpenLayers.Util.DEFAULT_PRECISION;
-         // GMaps v3 seems to use a default precision of 13, which is lower
-         // than what we use in OpenLayers.
+         // Our default precision is very high - millimeters should be enough.
          // See http://trac.osgeo.org/openlayers/ticket/3059
-         OpenLayers.Util.DEFAULT_PRECISION = 13;
+         OpenLayers.Util.DEFAULT_PRECISION = 12;
 
          var map = new OpenLayers.Map("map");
 
@@ -368,6 +305,28 @@
          
          map.destroy();
          
+     }
+     
+     function test_moveViewportDiv(t) {
+         t.plan(2);
+         
+         var map = new OpenLayers.Map('map', {
+             projection: 'EPSG:3857',
+             center: [0, 0],
+             zoom: 1
+         });
+         var gmap = new OpenLayers.Layer.Google();
+         map.addLayer(gmap);
+         
+         t.delay_call(1, function() {
+             t.ok(map.viewPortDiv.parentNode !== map.div, 'viewport moved inside GMaps');
+
+             var osm = new OpenLayers.Layer.OSM();
+             map.addLayer(osm);
+             map.setBaseLayer(osm);
+
+             t.ok(map.viewPortDiv.parentNode === map.div, 'viewport moved back');
+         });
      }
      
   </script>

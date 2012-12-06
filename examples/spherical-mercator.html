@@ -17,6 +17,10 @@
             right: inherit;
             width: 400px;
         }
+        /* conditionally position control differently for Google Maps */
+        .olForeignContainer div.olControlMousePosition {
+            bottom: 28px;
+        }
         #map {
             height: 512px;
         }
@@ -38,7 +42,12 @@
     </p>
     <div id="map" class="smallmap"></div>
 
-    <div id="docs"></div>
+    <div id="docs">
+        <p>Note that maps with Google layers are a special case, because we
+            cannot control the position of the attribution. To conditionally
+            position controls differently for Google layers, prepend the
+            css selector with <code>.olForeignContainer</code>.</p>
+    </div>
     <script type="text/javascript">
 
     var map = new OpenLayers.Map({
