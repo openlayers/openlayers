@@ -28,6 +28,10 @@ div.olLayerDiv {
 .olLayerGoogleV3.olLayerGooglePoweredBy {
     bottom: 15px !important;
 }
+/* GMaps should not set styles on its container */
+.olForeignContainer {
+    opacity: 1 !important;
+}
 .olControlAttribution {
     font-size: smaller;
     right: 3px;
