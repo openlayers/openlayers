@@ -246,6 +246,25 @@
         t.xml_eq(got, exp, "wrote FID filter in logical NOT without complaint");
     }
 
+    function test_between_literal(t) {
+        t.plan(3);
+
+        var filter = new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.BETWEEN,
+            property: "foo",
+            lowerBoundary: 1.0,
+            upperBoundary: 2.0
+        });
+        var format = new OpenLayers.Format.Filter.v1_0_0();
+        
+        var exp = format.read(readXML("BetweenLiteral"));
+
+        // confirm that reading works as expected
+        t.eq(exp.property, "foo", "property");
+        t.eq(exp.lowerBoundary, 1.0, "lowerBoundary");
+        t.eq(exp.upperBoundary, 2.0, "upperBoundary");
+    }
+
 
     function test_date_writing(t) {
         t.plan(1);
@@ -339,6 +358,19 @@
     <ogc:Not>
         <ogc:FeatureId fid="foo.2"/>
     </ogc:Not>
+</ogc:Filter>
+--></div>
+<div id="BetweenLiteral"><!--
+<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+    <ogc:PropertyIsBetween>
+        <ogc:PropertyName>foo</ogc:PropertyName>
+        <ogc:LowerBoundary>
+            <ogc:Literal>1.0</ogc:Literal>
+        </ogc:LowerBoundary>
+        <ogc:UpperBoundary>
+            <ogc:Literal>2.0</ogc:Literal>
+        </ogc:UpperBoundary>
+    </ogc:PropertyIsBetween>
 </ogc:Filter>
 --></div>
 <div id="BetweenDates"><!--
