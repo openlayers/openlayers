@@ -318,7 +318,7 @@
          var gmap = new OpenLayers.Layer.Google();
          map.addLayer(gmap);
          
-         t.delay_call(1, function() {
+         t.delay_call(4, function() {
              t.ok(map.viewPortDiv.parentNode !== map.div, 'viewport moved inside GMaps');
 
              var osm = new OpenLayers.Layer.OSM();
