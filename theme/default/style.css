@@ -487,6 +487,13 @@ a.olControlZoomOut {
     transition: opacity 0.2s linear;
 }
 
+.olTileImage, .olLayerDiv {
+    -webkit-transform: translate3d(0, 0, 0);
+    -moz-transform: translate3d(0, 0, 0);
+    -o-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+}
+
 /* override any max-width image settings (e.g. bootstrap.css) */
 img.olTileImage {
     max-width: none;

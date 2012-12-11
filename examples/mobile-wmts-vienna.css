@@ -17,8 +17,6 @@ html, body, #map {
     -moz-transition: opacity 0.2s linear;
     -o-transition: opacity 0.2s linear;
     transition: opacity 0.2s linear;
-    /* workaround for strange border tile squeezing on Android 4.x */
-    -webkit-transform: scale(1.001);
 }
 div.olControlAttribution {
     position: absolute;
