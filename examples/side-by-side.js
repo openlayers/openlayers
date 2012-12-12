@@ -56,9 +56,9 @@ webglMap.getControls().push(new ol.control.MousePosition({
 var keyboardInteraction = new ol.interaction.Keyboard();
 keyboardInteraction.addCallback('0', function() {
   layer.setBrightness(0);
-  layer.setContrast(0);
+  layer.setContrast(1);
   layer.setHue(0);
-  layer.setSaturation(0);
+  layer.setSaturation(1);
   layer.setOpacity(1);
   layer.setVisible(true);
 });
@@ -72,13 +72,14 @@ keyboardInteraction.addCallback('c', function() {
   layer.setContrast(layer.getContrast() - 0.1);
 });
 keyboardInteraction.addCallback('C', function() {
-  layer.setContrast(layer.getContrast() + 0.1);
+  // contrast is unbounded, but for this example we clamp to 3
+  layer.setContrast(Math.min(3, layer.getContrast() + 0.1));
 });
 keyboardInteraction.addCallback('h', function() {
-  layer.setHue(layer.getHue() - 0.1);
+  layer.setHue(layer.getHue() - (Math.PI / 5));
 });
 keyboardInteraction.addCallback('H', function() {
-  layer.setHue(layer.getHue() + 0.1);
+  layer.setHue(layer.getHue() + (Math.PI / 5));
 });
 keyboardInteraction.addCallback('o', function() {
   layer.setOpacity(layer.getOpacity() - 0.1);
@@ -93,7 +94,8 @@ keyboardInteraction.addCallback('s', function() {
   layer.setSaturation(layer.getSaturation() - 0.1);
 });
 keyboardInteraction.addCallback('S', function() {
-  layer.setSaturation(layer.getSaturation() + 0.1);
+  // saturation is unbounded, but for this example we clamp to 3
+  layer.setSaturation(Math.min(3, layer.getSaturation() + 0.1));
 });
 keyboardInteraction.addCallback('vV', function() {
   layer.setVisible(!layer.getVisible());
