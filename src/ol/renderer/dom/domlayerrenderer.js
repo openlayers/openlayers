@@ -107,7 +107,13 @@ ol.renderer.dom.Layer.prototype.applyHSBCFilter_ = function() {
   var contrastFilter = (+contrast !== 1) ?
       'contrast(' + contrast + ') ' : '';
 
-  var filter = hueFilter + saturationFilter + brightnessFilter + contrastFilter;
+  var opacity = layer.getOpacity() * 100;
+  var opacityFilter = (+opacity !== 100) ?
+      'opacity(' + opacity + '%) ' : '';
+
+  var filter = hueFilter + saturationFilter +
+               brightnessFilter + contrastFilter +
+               opacityFilter;
 
   var style = this.target.style;
   style['WebkitFilter'] = filter;
@@ -126,7 +132,7 @@ ol.renderer.dom.Layer.prototype.handleLayerLoad = function() {
  * @inheritDoc
  */
 ol.renderer.dom.Layer.prototype.handleLayerOpacityChange = function() {
-  goog.style.setOpacity(this.target, this.getLayer().getOpacity());
+  this.applyHSBCFilter_();
 };
 
 
