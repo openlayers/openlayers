@@ -178,6 +178,37 @@
         t.ok(clone instanceof OpenLayers.Layer.Bing, "clone is a Layer.Bing instance");
     }
 
+    function test_protocol(t)
+    {
+        t.plan(5);
+
+        var map = new OpenLayers.Map("map");
+        layer = new OpenLayers.Layer.Bing(options);
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        var tile = layer.tileQueue[0];
+        
+        t.delay_call(5, function() {
+            t.ok(OpenLayers.Util.indexOf(layer.attribution, '<img src="//') != -1, "Attribution contains a logo with protocol //");
+            t.ok(OpenLayers.Util.indexOf(layer.attribution, '<img src="http://') == -1, "Attribution logo does not have http:// protocol");
+            t.ok(OpenLayers.Util.indexOf(tile.url, 'http:') == -1, "Tile url does not contain http:");
+
+            map.destroy();
+        });
+
+        var map2 = new OpenLayers.Map("map");
+        layer_https = new OpenLayers.Layer.Bing(OpenLayers.Util.applyDefaults({protocol: 'https:'}, options));
+        map2.addLayer(layer_https);
+        map2.zoomToMaxExtent();
+        var tile = layer_https.tileQueue[0];
+
+        t.delay_call(5, function() {
+            t.ok(OpenLayers.Util.indexOf(layer_https.attribution, '<img src="https://') != -1, "Attribution logo has https:// protocol");
+            t.ok(OpenLayers.Util.indexOf(tile.url, 'https:') == 0, "Tile url contains https:");
+            map2.destroy();
+        });
+    }
+
   </script>
 </head>
 <body>
