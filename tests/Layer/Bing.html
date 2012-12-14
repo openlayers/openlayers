@@ -191,7 +191,7 @@
         t.delay_call(5, function() {
             t.ok(OpenLayers.Util.indexOf(layer.attribution, '<img src="//') != -1, "Attribution contains a logo with protocol //");
             t.ok(OpenLayers.Util.indexOf(layer.attribution, '<img src="http://') == -1, "Attribution logo does not have http:// protocol");
-            t.ok(OpenLayers.Util.indexOf(tile.url, 'http:') == -1, "Tile url does not contain http:");
+            t.ok(tile.url.indexOf('http:') == -1, "Tile url does not contain http:");
 
             map.destroy();
         });
@@ -204,7 +204,7 @@
 
         t.delay_call(5, function() {
             t.ok(OpenLayers.Util.indexOf(layer_https.attribution, '<img src="https://') != -1, "Attribution logo has https:// protocol");
-            t.ok(OpenLayers.Util.indexOf(tile.url, 'https:') == 0, "Tile url contains https:");
+            t.ok(tile.url.indexOf('https:') == 0, "Tile url contains https:");
             map2.destroy();
         });
     }
