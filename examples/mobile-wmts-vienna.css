@@ -14,7 +14,7 @@ html, body, #map {
 }
 
 /* Turn on GPU support on devices that support it */
-.olMapViewport * {
+.olMapViewport, .olMapViewport * {
     -webkit-transform: translate3d(0,0,0);
     -moz-transform: translate3d(0,0,0);
     -o-transform: translate3d(0,0,0);

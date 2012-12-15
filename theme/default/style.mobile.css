@@ -49,15 +49,11 @@ div.olControlZoom a:hover {
     -o-transition: opacity 0.2s linear;
     transition: opacity 0.2s linear;
 }
-/* Enable 3d acceleration when operating on tiles, this is
-   known to yield better performance on IOS Safari.
-   http://osgeo-org.1803224.n2.nabble.com/Harware-accelerated-CSS3-animations-for-iOS-td6255560.html
-
-   It also prevents tile blinking effects in iOS 5.
-   See https://github.com/openlayers/openlayers/issues/511
-*/
-@media (-webkit-transform-3d) {
-img.olTileImage {
-    -webkit-transform: translate3d(0, 0, 0);
-}
+/* Turn on GPU support on devices that support it */
+.olMapViewport, .olMapViewport * {
+    -webkit-transform: translate3d(0,0,0);
+    -moz-transform: translate3d(0,0,0);
+    -o-transform: translate3d(0,0,0);
+    -ms-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
 }
