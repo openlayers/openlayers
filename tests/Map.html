@@ -2065,33 +2065,45 @@
     }
     
     function test_applyTransform(t) {
-        t.plan(4);
+        t.plan(10);
+        var origStylePrefix = OpenLayers.Util.vendorPrefix.style;
+        OpenLayers.Util.vendorPrefix.style = function(key) { return 'transform'; };
         
         var map = new OpenLayers.Map('map');
         map.layerContainerDiv = {style: {}};
         delete map.applyTransform.transform;
         delete map.applyTransform.template;
-        var origStylePrefix = OpenLayers.Util.vendorPrefix.style;
-        OpenLayers.Util.vendorPrefix.style = function(key) { return 'transform'; };
+        var origGetStyle = OpenLayers.Element.getStyle;
+        OpenLayers.Element.getStyle = function() { return 'foo'; }
         map.applyTransform(1, 2, 3);
-        OpenLayers.Util.vendorPrefix.style = origStylePrefix;
+        OpenLayers.Element.getStyle = origGetStyle;
         t.eq(map.layerContainerDiv.style.transform, 'translate3d(1px,2px,0) scale3d(3,3,1)', '3d transform and scale used when available');
         
+        delete map.applyTransform.transform;
         delete map.applyTransform.template;
         var origIndexOf = String.prototype.indexOf;
         String.prototype.indexOf = function() { return -1; };
+        map.layerContainerOriginPx = {x: -3, y: 2};
         map.applyTransform(1, 2, 3);
         String.prototype.indexOf = origIndexOf;
-        t.eq(map.layerContainerDiv.style.transform, 'translate(1px,2px) scale(3,3)', '2d translate and scale correct');
+        t.eq(map.layerContainerDiv.style.transform, 'translate(4px,0px) scale(3,3)', '2d translate and scale correct');
+        t.eq(map.layerContainerDiv.style.left, '-3px', 'container origin x set as style.left');
+        t.eq(map.layerContainerDiv.style.top, '2px', 'container origin y set as style.top');
+        map.applyTransform(1, 2);
+        t.ok(!map.layerContainerDiv.style.transform, 'no transform set when no transform needed');
+        t.eq(map.layerContainerDiv.style.left, '1px', 'style.left correct when no transform needed');
+        t.eq(map.layerContainerDiv.style.top, '2px', 'style.top correct when no transform needed');
         
         map.applyTransform.transform = null;
         map.applyTransform(4, 5, 6);
         t.eq(map.layerContainerDiv.style.left, '4px', 'style.left set when transform not available')
         t.eq(map.layerContainerDiv.style.top, '5px', 'style.top set when transform not available')
+        t.ok(!map.layerContainerDiv.style.transform, 'no transform set, because not supported');
 
         map.destroy();
         delete map.applyTransform.transform;
         delete map.applyTransform.template;
+        OpenLayers.Util.vendorPrefix.style = origStylePrefix;
     }
 
     function test_options(t) {
