@@ -92,7 +92,7 @@
         });
         map.zoomToMaxExtent();
 
-        centerPx = map.getPixelFromLonLat(map.getCenter());
+        var centerPx = map.getPixelFromLonLat(map.getCenter());
 
         control.pinchStart = function(evt, pinchData) {
             t.eq(control.pinchOrigin, centerPx, "center preserved");
