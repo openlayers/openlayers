@@ -977,7 +977,7 @@
     }
 
     function test_Map_moveTo(t) {
-        t.plan(8);
+        t.plan(12);
 
         map = new OpenLayers.Map('map');
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
@@ -992,10 +992,15 @@
                 property: event.property
             });
         });
-        baseLayer.events.on({
+        map.events.on({
             move: function() {
                 t.ok(true, "move listener called");
             },
+            movestart: function(e) {
+                t.eq(e.zoomChanged, true, "movestart listener called with expected value");
+            }
+        });
+        baseLayer.events.on({
             moveend: function(e) {
                 t.eq(e.zoomChanged, true, "moveend listener called with expected value");
             }
