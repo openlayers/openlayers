@@ -42,7 +42,7 @@
     }
 
     function test_manageTileCache(t) {
-        t.plan(9);
+        t.plan(10);
         
         var tileManager = new OpenLayers.TileManager({
             cacheSize: 12
@@ -51,6 +51,7 @@
         layer = new OpenLayers.Layer.WMS('WMS', '../img/blank.gif');
         map.addLayer(layer);
         map.setCenter([16, 48], 9);
+        var gridSize;
         
         var firstInCache, sharedTile;
         t.delay_call(2, function() {
@@ -59,6 +60,7 @@
             t.ok(tileManager.tileCache[layer.grid[1][2].url] === layer.grid[1][2].imgDiv, "correct object cached");
             firstInCache = tileManager.tileCache[tileManager.tileCacheIndex[0]];
             sharedTile = tileManager.tileCache[tileManager.tileCacheIndex[11]];
+            gridSize = layer.div.childNodes.length;
             map.setCenter([17, 47]);
         });
         t.delay_call(4, function() {
@@ -72,6 +74,7 @@
         t.delay_call(6, function() {
             t.ok(!(firstInCache.getAttribute("src") in tileManager.tileCache), "old tile discarded");
             t.ok(sharedTile.getAttribute("src") in tileManager.tileCache, "shared tile still in cache");
+            t.eq(layer.div.childNodes.length, gridSize, 'no unused images left in dom');
             map.destroy();
         });
     }
