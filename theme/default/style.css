@@ -497,6 +497,10 @@ a.olControlZoomOut {
 }
 .olLayerDiv svg * {
     -webkit-transform: none;
+    -moz-transform: none;
+    -o-transform: none;
+    -ms-transform: none;
+    transform: none;
 }
 
 /* override any max-width image settings (e.g. bootstrap.css) */

@@ -23,6 +23,10 @@ html, body, #map {
 }
 .olLayerDiv svg * {
     -webkit-transform: none;
+    -moz-transform: none;
+    -o-transform: none;
+    -ms-transform: none;
+    transform: none;
 }
 
 .olLayerGrid .olTileImage {

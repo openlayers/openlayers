@@ -59,4 +59,8 @@ div.olControlZoom a:hover {
 }
 .olLayerDiv svg * {
     -webkit-transform: none;
+    -moz-transform: none;
+    -o-transform: none;
+    -ms-transform: none;
+    transform: none;
 }
