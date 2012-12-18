@@ -1043,7 +1043,7 @@
         layer.applyBackBuffer(2);
         t.ok(layer.backBuffer === backBuffer,
              'back buffer set in layer');
-        t.ok(layer.div.firstChild === backBuffer,
+        t.ok(map.layerContainerDiv.firstChild === backBuffer,
              'back buffer inserted as first child');
         t.eq(layer.backBuffer.style.left, '250px',
              'back buffer has correct left');
@@ -1063,7 +1063,7 @@
         layer.applyBackBuffer(2);
         t.ok(layer.backBuffer === backBuffer,
              'back buffer set in layer');
-        t.ok(layer.div.firstChild === backBuffer,
+        t.ok(map.layerContainerDiv.firstChild === backBuffer,
              'back buffer inserted as first child');
         t.eq(layer.backBuffer.style.left, '230px',
              'back buffer has correct left');
