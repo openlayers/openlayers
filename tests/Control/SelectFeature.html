@@ -546,7 +546,7 @@
         map.destroy();
     }
 	
-    function test_setLayerWithRemoved(t) {
+    function test_setLayerWithRemoving(t) {
         t.plan(2);
         var map = new OpenLayers.Map("map");
         var layer1 = new OpenLayers.Layer.Vector();
@@ -556,17 +556,17 @@
         var control = new OpenLayers.Control.SelectFeature(layer1);
         map.addControl(control);
         control.activate();
-		var noError = true;
+		var noError = null;
 		map.events.register("preremovelayer", this, function(e) {
 			try {
 				control.setLayer(layer2);
 			} catch (e) {
-				noError = false;
+				noError = e;
 			}
 		});
 		layer1.destroy();
 		t.eq(layer2.id, control.layer.id, "Layer is set correctly without error");
-		t.eq(noError, true,"No error occured during setLayer");
+		t.eq(noError, null,"No error occured during setLayer. Error is: '"+noError+"'");
         control.destroy();
         map.destroy();
     }
