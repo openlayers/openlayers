@@ -79,6 +79,53 @@
         
     }
 
+    function test_pinchMove_preservecenter(t) {
+
+        var control = new OpenLayers.Control.PinchZoom({
+            preserveCenter: true
+        });
+
+        var map = new OpenLayers.Map({
+            div: "map",
+            controls: [control],
+            layers: [new OpenLayers.Layer('fake', {isBaseLayer: true})]
+        });
+        map.zoomToMaxExtent();
+
+        var centerPx = map.getPixelFromLonLat(map.getCenter());
+
+        control.pinchStart = function(evt, pinchData) {
+            t.eq(control.pinchOrigin, centerPx, "center preserved");
+            t.eq(control.currentCenter, centerPx, "center preserved");
+        }
+
+        control.pinchStart(null);
+
+        var log = [];
+        control.applyTransform = function(transform) {
+            log.push(transform);
+        }
+        control.pinchOrigin = map.getPixelFromLonLat(map.getCenter());
+
+        var cases = [
+            {scale: 1, transform: "translate(0px, 0px) scale(1)"},
+            {scale: 2, transform: "translate(-128px, -128px) scale(2)"},
+            {scale: 2.5, transform: "translate(-192px, -192px) scale(2.5)"},
+            {scale: 0.25, transform: "translate(96px, 96px) scale(0.25)"}
+        ];
+
+        var len = cases.length;
+        t.plan(2 + len*2);
+
+        var c;
+        for (var i=0; i<len; ++i) {
+            c = cases[i];
+            control.pinchMove(null, {scale: c.scale});
+            t.eq(log.length, i+1, i + " called once");
+            t.eq(log[i], c.transform, i + " correct transform");
+        }
+    }
+
   </script>
 </head>
 <body>
