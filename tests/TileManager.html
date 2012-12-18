@@ -31,11 +31,11 @@
         var layer = new OpenLayers.Layer.WMS('WMS', '../img/blank.gif');
         map.addLayer(layer);
         map.setCenter([16, 48], 9);
-        var numTileListeners = layer.grid[0][0].events.listeners.reload.length;
+        var numTileListeners = layer.grid[0][0].events.listeners.beforeload.length;
         var numLayerListeners = layer.events.listeners.retile.length;
         var numMapListeners = map.events.listeners.preremovelayer.length;
         tileManager.destroy();
-        t.eq(layer.grid[0][0].events.listeners.reload.length, numTileListeners - 1, "no listener on tile after destroy");
+        t.eq(layer.grid[0][0].events.listeners.beforeload.length, numTileListeners - 1, "no listener on tile after destroy");
         t.eq(layer.events.listeners.retile.length, numLayerListeners - 1, "no listeners on layer after destroy");
         t.eq(map.events.listeners.preremovelayer.length, numMapListeners - 1, "no listeners on map after destroy");
         map.destroy();
