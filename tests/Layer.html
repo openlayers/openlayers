@@ -315,7 +315,7 @@
             for (var i=0; i<expectedResolutions.length; ++i) {
                 got = layer.resolutions[i];
                 exp = expectedResolutions[i];
-                if (got.toFixed(10) !== exp.toFixed(10)) {
+                if (got.toFixed(3) !== exp.toFixed(3)) {
                     t.fail(id + ": bad resolutions - index " + i + " got " + got + " but expected " + exp);
                     same = false;
                     break;
@@ -325,11 +325,11 @@
                 t.ok(true, id + ": correct resolutions");
             }
             t.eq(
-                layer.maxResolution, expectedMaxResolution,
+                layer.maxResolution.toFixed(3), expectedMaxResolution.toFixed(3),
                 id + ": maxResolution set"
             );
             t.eq(
-                layer.minResolution, expectedMinResolution,
+                layer.minResolution.toFixed(3), expectedMinResolution.toFixed(3),
                 id + ": minResolution set"
             );
 
