@@ -17,7 +17,7 @@
 '</ows:ExceptionReport>';
 
         var obj = parser.read(text);
-        t.ok(!!obj.error, "Error reported correctly");
+        t.ok(!!obj.error, "Error not correctly reported");      // That is, the above should place an error in obj.error
     }
     
     function test_read(t) {
