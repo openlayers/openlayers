@@ -706,6 +706,12 @@
         t.ok(OpenLayers.String.startsWith(id, "chicken"),
              "OpenLayers.Util.createUniqueID starts id correctly");
     }
+    
+    function test_units(t) {
+        t.plan(2);
+        t.eq(OpenLayers.INCHES_PER_UNIT.m, OpenLayers.INCHES_PER_UNIT.Meter, 'Same inches per m and Meters');
+        t.eq(OpenLayers.INCHES_PER_UNIT.km, OpenLayers.INCHES_PER_UNIT.Kilometer, 'Same inches per km and Kilometers');
+    }
         
     function test_Util_normalizeScale(t) {
         t.plan(2); 
@@ -728,7 +734,7 @@
 
         var scale = 1/150000000; 
         var resolution = OpenLayers.Util.getResolutionFromScale(scale, 'm');
-        t.eq(resolution.toFixed(6), "52916.638092", "Calculated correct resolution for " + scale);
+        t.eq(resolution.toFixed(6), "52916.772500", "Calculated correct resolution for " + scale);
 
         scale = 150000000; 
         resolution = OpenLayers.Util.getResolutionFromScale(scale);
