@@ -79,29 +79,32 @@
         t.plan(2);
         
         var tween = new OpenLayers.Tween();
-        var log1 = 0;
+        var log = 0;
         tween.start({count: 0}, {count: 10}, 10, {
             callbacks: {
                 eachStep: function() {
-                    log1++;
+                    log++;
                 }
             },
             minFrameRate: 10000
         });
         
-        var log2 = 0;
-        tween.start({count: 0}, {count: 10}, 10, {
-            callbacks: {
-                eachStep: function() {
-                    log2++;
-                }
-            },
-            minFrameRate: 1
-        });
-
         t.delay_call(0.8, function() {
-            t.eq(log1, 0, 'all frames skipped at a frame rate of 10000');            
-            t.eq(log2, 11, 'no frames skipped at a frame rate of 1');            
+            t.eq(log, 0, 'all frames skipped at a frame rate of 10000');
+            
+            log = 0;
+            tween.start({count: 0}, {count: 10}, 10, {
+                callbacks: {
+                    eachStep: function() {
+                        log++;
+                    }
+                },
+                minFrameRate: 1
+            });
+        });
+        
+        t.delay_call(1.6, function() {
+            t.eq(log, 11, 'no frames skipped at a frame rate of 1');            
         });
     }
 
