@@ -245,7 +245,8 @@
                     layers: [layer],
                     projection: "EPSG:4326",                                    
                     maxResolution: 0.3515625,
-                    maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90)
+                    maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
+                    zoomMethod: null
                 });
                 map.setCenter(new OpenLayers.LonLat(-97.0, 38.0), 1);
                 t.eq(layer.getURL(new OpenLayers.Bounds(-135.0, 0.0, -90.0, 45.0)), 

@@ -44,7 +44,8 @@
         });
         var map = new OpenLayers.Map('map', {
             resolutions: [4, 2, 1],
-            maxExtent: new OpenLayers.Bounds(-40, -40, 40, 40)
+            maxExtent: new OpenLayers.Bounds(-40, -40, 40, 40),
+            zoomMethod: null,
         });
         map.addLayer(layer);
         

@@ -77,7 +77,7 @@
 
     function test_Control_PanZoomBar_onButtonClick (t) {
         t.plan(2);
-        map = new OpenLayers.Map('map', {controls:[]});
+        map = new OpenLayers.Map('map', {controls:[], zoomMethod: null});
         var layer = new OpenLayers.Layer.WMS("Test Layer",
             "http://octo.metacarta.com/cgi-bin/mapserv?",
             {map: "/mapdata/vmap_wms.map", layers: "basic"});
@@ -97,7 +97,8 @@
         t.plan(1);
         map = new OpenLayers.Map('map', {
             controls: [],
-            fractionalZoom: true
+            fractionalZoom: true,
+            zoomMethod: null
         });
         var layer = new OpenLayers.Layer.WMS("Test Layer", "http://octo.metacarta.com/cgi-bin/mapserv?", {
             map: "/mapdata/vmap_wms.map",
@@ -127,7 +128,8 @@
         
         var map = new OpenLayers.Map('map', {
             controls: [],
-            fractionalZoom: true
+            fractionalZoom: true,
+            zoomMethod: null,
         });
         var layer = new OpenLayers.Layer.WMS("Test Layer", "http://octo.metacarta.com/cgi-bin/mapserv?", {
             map: "/mapdata/vmap_wms.map",

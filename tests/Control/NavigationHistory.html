@@ -170,7 +170,7 @@
 
     function test_clear(t) {
         t.plan(7);
-        var map = new OpenLayers.Map("map");
+        var map = new OpenLayers.Map("map", {zoomMethod: null});
         var layer = new OpenLayers.Layer(
             "test", {isBaseLayer: true}
         );

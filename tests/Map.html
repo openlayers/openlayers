@@ -216,6 +216,7 @@
         t.plan(14);
         var log = [];
         map = new OpenLayers.Map('map', {
+            zoomMethod: null,
             eventListeners: {
                 "movestart": function() {log.push("movestart");},
                 "move": function() {log.push("move");},
@@ -268,7 +269,7 @@
     function test_Map_zoomend_event (t) {
         t.plan(2);
 
-        map = new OpenLayers.Map('map');
+        map = new OpenLayers.Map('map', {zoomMethod: null});
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
             {map: "/mapdata/vmap_wms.map", layers: "basic"});
@@ -1292,7 +1293,8 @@
 
         extent = new OpenLayers.Bounds(8, 44.5, 19, 50);
         var options = {
-            restrictedExtent: extent
+            restrictedExtent: extent,
+            zoomMethod: null
         };
         map = new OpenLayers.Map('map', options);
 
@@ -1330,7 +1332,7 @@
     function test_zoomTo(t) {
         t.plan(8);
         
-        var map = new OpenLayers.Map("map");
+        var map = new OpenLayers.Map("map", {zoomMethod: null});
         map.addLayer(new OpenLayers.Layer(null, {
             isBaseLayer: true
         }));
@@ -1365,6 +1367,38 @@
         t.eq(map.getZoom(), 1.2, '[fractionalZoom] zoomTo("1.2")');
         
         map.destroy();
+    }
+    
+    function test_zoomTo_animated(t) {
+        t.plan(2);
+        
+        var map = new OpenLayers.Map("map");
+        map.addLayer(new OpenLayers.Layer(null, {
+            isBaseLayer: true
+        }));
+        
+        map.zoomToMaxExtent();
+        
+        map.zoomTo(2);
+        map.zoomIn();
+        map.zoomOut();
+        map.zoomIn();
+        t.delay_call(2, function() {
+            t.eq(map.getZoom(), 3, '[fractionalZoom: false] zoomTo(2) - zoomIn() - zoomOut() - zoomIn()');
+
+            // now allow fractional zoom
+            map.fractionalZoom = true;
+
+            map.zoomTo(2.6);
+            map.zoomIn();
+            map.zoomOut();
+            map.zoomIn();
+        });
+        t.delay_call(4, function() {
+            t.eq(map.getZoom(), 3.6, '[fractionalZoom: true] zoomTo(2) - zoomIn() - zoomOut() - zoomIn()');
+            map.destroy();
+        });
+        
     }
     
     function test_Map_getUnits(t) {
@@ -2165,6 +2199,24 @@
         map.moveTo(null, 0);
         var center  = map.getCenter();
         t.ok(center.equals(new OpenLayers.LonLat(-13.25, 56)), "Center is correct and not equal to maxExtent's center");
+    }
+    
+    function test_getZoomTargetCenter(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map({
+            div: 'map',
+            layers: [
+                new OpenLayers.Layer('', {isBaseLayer: true})
+            ],
+            center: [0, 0],
+            zoom: 1
+        });
+        
+        var ll = map.getZoomTargetCenter({x: 44, y: 22}, map.getMaxResolution());
+
+        t.eq(ll.toShortString(), "180, -90", "getZoomTargetCenter works.");
+        
+        map.destroy();
     }
 
     function test_autoUpdateSize(t) {

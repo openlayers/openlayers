@@ -211,7 +211,8 @@
             div: "map",
             layers: [layer],
             center: new OpenLayers.LonLat(0, 0),
-            zoom: 1
+            zoom: 1,
+            zoomMethod: null
         });
         
         t.eq(layer.features.length, 50, "50 features at zoom 1");

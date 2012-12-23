@@ -233,7 +233,7 @@
     }
     function test_Layer_KaMap_getTileBounds(t) {
         t.plan(2);
-        var map = new OpenLayers.Map("map");
+        var map = new OpenLayers.Map("map", {zoomMethod: null});
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
         layer = new OpenLayers.Layer.KaMap(name, url, params);
         
