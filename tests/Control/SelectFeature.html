@@ -545,6 +545,31 @@
         t.eq((control.layers === null), true, "When using setLayer with a single layer, the layers property is removed if present before");
         map.destroy();
     }
+	
+    function test_setLayerWithRemoving(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var layer1 = new OpenLayers.Layer.Vector();
+        var layer2 = new OpenLayers.Layer.Vector();
+        map.addLayer(layer1, layer2);
+        // initialize it with a single layer
+        var control = new OpenLayers.Control.SelectFeature(layer1);
+        map.addControl(control);
+        control.activate();
+		var noError = null;
+		map.events.register("preremovelayer", this, function(e) {
+			try {
+				control.setLayer(layer2);
+			} catch (e) {
+				noError = e;
+			}
+		});
+		layer1.destroy();
+		t.eq(layer2.id, control.layer.id, "Layer is set correctly without error");
+		t.eq(noError, null,"No error occured during setLayer. Error is: '"+noError+"'");
+        control.destroy();
+        map.destroy();
+    }
 
     function test_destroy(t) {
         t.plan(1);
