@@ -51,7 +51,7 @@
     }
 
     function test_Format_EncodedPolyline_read(t) {
-        t.plan(4);
+        t.plan(5);
 
         var format = new OpenLayers.Format.EncodedPolyline();
 
@@ -71,6 +71,10 @@
         format.geometryType = "polygon";
         t.ok(polygon.geometry.equals(format.read(encoded).geometry),
              "format correctly reads encoded polygon");
+
+        format.geometryType = "point";
+        t.ok(points[0].equals(format.read(encoded).geometry),
+             "format correctly reads encoded point");
     }
 
     function test_Format_EncodedPolyline_decode(t) {
