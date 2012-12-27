@@ -30,7 +30,6 @@
 
         var res = parser.read(text);
 
-        debugger;
 
         t.ok(!res.error, "Parsing XML generated no errors");
         t.eq(res.service.fees, "mucho dinero", "Service>Fees correctly parsed");
@@ -64,8 +63,6 @@
 
             
         res = parser.read(text);
-debugger;
-
 
         t.ok(!res.error, "Parsing XML generated no errors");
         // ft = res.featureTypeList.featureTypes;
