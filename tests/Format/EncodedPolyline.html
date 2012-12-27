@@ -3,11 +3,27 @@
     <script src="../OLLoader.js"></script>
     <script type="text/javascript">
 
+    var points = [
+        new OpenLayers.Geometry.Point(-120.2, 38.5),
+        new OpenLayers.Geometry.Point(-120.95, 40.7),
+        new OpenLayers.Geometry.Point(-126.45300000000002, 43.252)
+    ];
+
     var linestring = new OpenLayers.Feature.Vector(
-        new OpenLayers.Geometry.LineString([
-            new OpenLayers.Geometry.Point(-120.2, 38.5),
-            new OpenLayers.Geometry.Point(-120.95, 40.7),
-            new OpenLayers.Geometry.Point(-126.45300000000002, 43.252)
+        new OpenLayers.Geometry.LineString(points)
+    );
+
+    var multipoint = new OpenLayers.Feature.Vector(
+        new OpenLayers.Geometry.MultiPoint(points)
+    );
+
+    var linearring = new OpenLayers.Feature.Vector(
+        new OpenLayers.Geometry.LinearRing(points)
+    );
+
+    var polygon = new OpenLayers.Feature.Vector(
+        new OpenLayers.Geometry.Polygon([
+            new OpenLayers.Geometry.LinearRing(points)
         ])
     );
 
@@ -26,12 +42,25 @@
     }
 
     function test_Format_EncodedPolyline_read(t) {
-        t.plan(1);
+        t.plan(4);
 
         var format = new OpenLayers.Format.EncodedPolyline();
-
         t.ok(linestring.geometry.equals(format.read(encoded).geometry),
              "format correctly reads encoded polyline");
+
+        format = new OpenLayers.Format.EncodedPolyline({
+            geometryType: "multipoint"
+        });
+        t.ok(multipoint.geometry.equals(format.read(encoded).geometry),
+             "format correctly reads encoded multipoint");
+
+        format.geometryType = "linearring";
+        t.ok(linearring.geometry.equals(format.read(encoded).geometry),
+             "format correctly reads encoded linearring");
+
+        format.geometryType = "polygon";
+        t.ok(polygon.geometry.equals(format.read(encoded).geometry),
+             "format correctly reads encoded polygon");
     }
 
     </script>
