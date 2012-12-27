@@ -3,10 +3,19 @@
     <script src="../OLLoader.js"></script>
     <script type="text/javascript">
 
+    var basePoints = new Array(
+        new Array(3850000, -12020000),
+        new Array(4070000, -12095000),
+        new Array(4325200, -12645300)
+    );
+
     var points = [
-        new OpenLayers.Geometry.Point(-120.2, 38.5),
-        new OpenLayers.Geometry.Point(-120.95, 40.7),
-        new OpenLayers.Geometry.Point(-126.45300000000002, 43.252)
+        new OpenLayers.Geometry.Point(basePoints[0][1] * 1e-5,
+                                      basePoints[0][0] * 1e-5),
+        new OpenLayers.Geometry.Point(basePoints[1][1] * 1e-5,
+                                      basePoints[1][0] * 1e-5),
+        new OpenLayers.Geometry.Point(basePoints[2][1] * 1e-5,
+                                      basePoints[2][0] * 1e-5)
     ];
 
     var linestring = new OpenLayers.Feature.Vector(
@@ -45,6 +54,7 @@
         t.plan(4);
 
         var format = new OpenLayers.Format.EncodedPolyline();
+
         t.ok(linestring.geometry.equals(format.read(encoded).geometry),
              "format correctly reads encoded polyline");
 
@@ -61,6 +71,20 @@
         format.geometryType = "polygon";
         t.ok(polygon.geometry.equals(format.read(encoded).geometry),
              "format correctly reads encoded polygon");
+    }
+
+    function test_Format_EncodedPolyline_decode(t) {
+        t.plan(6);
+
+        var format = new OpenLayers.Format.EncodedPolyline();
+
+        var decodedPoints = format.decode(encoded, 2);
+        for (i in decodedPoints) {
+            var point = basePoints[i];
+            var decodedPoint = decodedPoints[i];
+            t.eq(point[0], decodedPoint[0]);
+            t.eq(point[1], decodedPoint[1]);
+        }
     }
 
     </script>
