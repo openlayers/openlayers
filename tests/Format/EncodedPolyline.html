@@ -18,6 +18,8 @@
                                       basePoints[2][0] * 1e-5)
     ];
 
+    var singlePoint = new OpenLayers.Feature.Vector(points[0]);
+
     var linestring = new OpenLayers.Feature.Vector(
         new OpenLayers.Geometry.LineString(points)
     );
@@ -89,6 +91,31 @@
             t.eq(point[0], decodedPoint[0]);
             t.eq(point[1], decodedPoint[1]);
         }
+    }
+
+    function test_Format_EncodedPolyline_write(t) {
+        t.plan(5);
+
+        var format = new OpenLayers.Format.EncodedPolyline();
+
+        t.eq(format.write(linestring), encoded,
+             "format correctly writes encoded polyline");
+
+        t.eq(format.write(multipoint), encoded,
+             "format correctly writes encoded multipoint");
+
+        // Different output than encoded,
+        // because polygon closing point is included
+        t.eq(format.write(linearring),
+             "_p~iF~ps|U_ulLnnqC_mqNvxq`@~b_\\ghde@",
+             "format correctly writes encoded linearring");
+
+        t.eq(format.write(polygon),
+             "_p~iF~ps|U_ulLnnqC_mqNvxq`@~b_\\ghde@",
+             "format correctly writes encoded polygon");
+
+        t.eq(format.write(singlePoint), "_p~iF~ps|U",
+             "format correctly writes encoded point");
     }
 
     function test_Format_EncodedPolyline_encode(t) {
