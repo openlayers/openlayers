@@ -91,6 +91,14 @@
         }
     }
 
+    function test_Format_EncodedPolyline_encode(t) {
+        t.plan(1);
+
+        var format = new OpenLayers.Format.EncodedPolyline();
+
+        t.eq(format.encode(basePoints, 2), encoded);
+    }
+
     </script>
 </head>
 <body>
