@@ -68,16 +68,16 @@
 
         // Most of the parsing is handled by other objects, so not much actually requires testing here
         t.ok(!res.error, "Parsing XML generated no errors");
-        t.eq(res.contents.length, 4, "number of features correct");
+        t.eq(res.contentMetadata.length, 4, "number of features correct");
 
-        var contents = res.contents[0];
-        t.eq(contents.identifier, "ro_dsm", "correct identifier");
-        t.eq(contents.title, "Rotterdam DSM", "correct title");
-        t.eq(contents.abstract, "Digital Surface Model (DSM) raster data set of inner city Rotterdam", "correct abstract");
-        t.eq(contents.supportedFormat.length, 1, "correct number of supported formats");
-        t.eq(contents.supportedFormat[0], "image/tiff", "correct format");
-        t.eq(contents.supportedCRS.length, 4, "correct number of CRS records");
-        t.eq(contents.supportedCRS[2], "urn:ogc:def:crs:EPSG::3857", "correct CRS");
+        var metadata = res.contentMetadata[0];
+        t.eq(metadata.identifier, "ro_dsm", "correct identifier");
+        t.eq(metadata.title, "Rotterdam DSM", "correct title");
+        t.eq(metadata.abstract, "Digital Surface Model (DSM) raster data set of inner city Rotterdam", "correct abstract");
+        t.eq(metadata.supportedFormat.length, 1, "correct number of supported formats");
+        t.eq(metadata.supportedFormat[0], "image/tiff", "correct format");
+        t.eq(metadata.supportedCRS.length, 4, "correct number of CRS records");
+        t.eq(metadata.supportedCRS[2], "urn:ogc:def:crs:EPSG::3857", "correct CRS");
     }
 
     </script> 
