@@ -71,8 +71,9 @@ ol.renderer.dom.Layer.prototype.handleLayerVisibleChange = function() {
 
 /**
  * Render.
+ * @param {number} time Time.
  */
-ol.renderer.dom.Layer.prototype.render = goog.abstractMethod;
+ol.renderer.dom.Layer.prototype.renderFrame = goog.abstractMethod;
 
 
 /**
