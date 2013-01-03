@@ -135,11 +135,7 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
  */
 ol.renderer.dom.Map.prototype.handleCenterChanged = function() {
   goog.base(this, 'handleCenterChanged');
-  var map = this.getMap();
-  if (!map.isDef()) {
-    return;
-  }
-  map.render();
+  this.getMap().render();
 };
 
 
@@ -148,11 +144,7 @@ ol.renderer.dom.Map.prototype.handleCenterChanged = function() {
  */
 ol.renderer.dom.Map.prototype.handleResolutionChanged = function() {
   goog.base(this, 'handleResolutionChanged');
-  var map = this.getMap();
-  if (!map.isDef()) {
-    return;
-  }
-  map.render();
+  this.getMap().render();
 };
 
 
@@ -160,11 +152,8 @@ ol.renderer.dom.Map.prototype.handleResolutionChanged = function() {
  * @inheritDoc
  */
 ol.renderer.dom.Map.prototype.handleRotationChanged = function() {
-  var map = this.getMap();
-  if (!map.isDef()) {
-    return;
-  }
-  map.render();
+  goog.base(this, 'handleRotationChanged');
+  this.getMap().render();
 };
 
 
@@ -173,11 +162,7 @@ ol.renderer.dom.Map.prototype.handleRotationChanged = function() {
  */
 ol.renderer.dom.Map.prototype.handleSizeChanged = function() {
   goog.base(this, 'handleSizeChanged');
-  var map = this.getMap();
-  if (!map.isDef()) {
-    return;
-  }
-  map.render();
+  this.getMap().render();
 };
 
 
@@ -227,14 +212,16 @@ ol.renderer.dom.Map.prototype.renderFrame = function(time) {
   this.renderedRotation_ = mapRotation;
   this.renderedSize_ = mapSize;
 
-  var animate = false;
+  var requestRenderFrame = false;
   this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
     if (layerRenderer.renderFrame(time)) {
-      animate = true;
+      requestRenderFrame = true;
     }
   });
 
-  return animate;
+  if (requestRenderFrame) {
+    map.requestRenderFrame();
+  }
 
 };
 
