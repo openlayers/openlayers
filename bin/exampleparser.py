@@ -101,12 +101,16 @@ def getGitInfo(exampleDir, exampleName):
     log = h.read()
     h.close()
     d = {}
-    parts = log.split("|")
-    d["author"] = parts[0]
-    # compensate for spaces in git log time
-    td = parts[1].split(" ")
-    td.insert(1, "T")
-    d["date"] = "".join(td)
+    if log:
+        parts = log.split("|")
+        d["author"] = parts[0]
+        # compensate for spaces in git log time
+        td = parts[1].split(" ")
+        td.insert(1, "T")
+        d["date"] = "".join(td)
+    else:
+        d["author"] = ""
+        d["date"] = ""
     return d
 
 
