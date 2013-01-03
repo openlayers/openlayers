@@ -255,7 +255,7 @@ You don't have them. \n(%s)""" % E
     json = json.dumps({"examples": exampleList, "index": index})
     # Give the json a global variable we can use in our js.
     # This should be replaced or made optional.
-    json = 'var info=' + json
+    json = 'var info=' + json + ';'
     outFile.write(json)
     outFile.close()
 
