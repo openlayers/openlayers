@@ -48,6 +48,81 @@ ol.renderer.dom.Layer.prototype.getMapRenderer = function() {
 /**
  * @inheritDoc
  */
+ol.renderer.dom.Layer.prototype.handleLayerBrightnessChange = function() {
+  this.applyHSBCFilter_();
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.dom.Layer.prototype.handleLayerContrastChange = function() {
+  this.applyHSBCFilter_();
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.dom.Layer.prototype.handleLayerHueChange = function() {
+  this.applyHSBCFilter_();
+};
+
+
+/**
+ * Create a CSS filter to match the current hue, saturation, brightness, and
+ * contrast values.
+ *
+ * @private
+ */
+ol.renderer.dom.Layer.prototype.applyHSBCFilter_ = function() {
+  var layer = this.getLayer();
+
+  var hue = (layer.getHue() % (2 * Math.PI)).toFixed(3);
+  var hueFilter = (+hue !== 0) ?
+      'hue-rotate(' + hue + 'rad) ' : '';
+
+  var saturation = layer.getSaturation().toFixed(3);
+  var saturationFilter = (+saturation !== 1) ?
+      'saturate(' + saturation + ') ' : '';
+
+  /**
+   * The filter effects draft [1] says the brightness function is supposed to
+   * render 0 black, 1 unchanged, and all other values as a linear multiplier.
+   *
+   * The current WebKit implementation clamps values between -1 (black) and 1
+   * (white) [2].  There is a bug open to change the filter effect spec [3].
+   *
+   * TODO: revisit this if the spec is still unmodified before we release
+   *
+   * [1] https://dvcs.w3.org/hg/FXTF/raw-file/tip/filters/index.html
+   * [2] https://github.com/WebKit/webkit/commit/8f4765e569
+   * [3] https://www.w3.org/Bugs/Public/show_bug.cgi?id=15647
+   */
+  var brightness = layer.getBrightness().toFixed(3);
+  var brightnessFilter = (+brightness !== 0) ?
+      'brightness(' + brightness + ') ' : '';
+
+  var contrast = layer.getContrast().toFixed(3);
+  var contrastFilter = (+contrast !== 1) ?
+      'contrast(' + contrast + ') ' : '';
+
+  var opacity = layer.getOpacity() * 100;
+  var opacityFilter = (+opacity !== 100) ?
+      'opacity(' + opacity + '%) ' : '';
+
+  var filter = hueFilter + saturationFilter +
+               brightnessFilter + contrastFilter +
+               opacityFilter;
+
+  var style = this.target.style;
+  style['WebkitFilter'] = filter;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.renderer.dom.Layer.prototype.handleLayerLoad = function() {
   this.getMap().render();
 };
@@ -57,7 +132,15 @@ ol.renderer.dom.Layer.prototype.handleLayerLoad = function() {
  * @inheritDoc
  */
 ol.renderer.dom.Layer.prototype.handleLayerOpacityChange = function() {
-  goog.style.setOpacity(this.target, this.getLayer().getOpacity());
+  this.applyHSBCFilter_();
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.dom.Layer.prototype.handleLayerSaturationChange = function() {
+  this.applyHSBCFilter_();
 };
 
 
