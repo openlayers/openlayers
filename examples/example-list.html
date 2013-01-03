@@ -247,6 +247,9 @@
                 }
             }
             window.onload = function() {
+                for(var i=0; i<info.examples.length; ++i) {
+                    info.examples[i].link += window.location.search;
+                }
                 //document.getElementById('keywords').focus();
                 template = new jugl.Template("template");
                 target = document.getElementById("examples");
