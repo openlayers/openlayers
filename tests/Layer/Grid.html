@@ -1541,6 +1541,32 @@
 
         map.destroy();
     }
+
+    function test_addOptions(t) {
+        t.plan(15);
+        var map = new OpenLayers.Map('map');
+        layer = new OpenLayers.Layer.WMS(name, url, params, {buffer:2});
+        map.addLayer(layer);
+        t.eq(layer.tileSize, map.getTileSize(), "layer's tile size is equal to the map's tile size");
+        t.ok(layer.removeBackBufferDelay !== 0, "removeBackBufferDelay should not be 0 since we are not singleTile");
+        t.eq(layer.className, "olLayerGrid", "className correct for gridded mode");
+        map.setCenter(new OpenLayers.LonLat(0,0),5);
+        t.eq(layer.grid.length, 8, "Grid rows is correct.");
+        t.eq(layer.grid[0].length, 7, "Grid cols is correct.");
+        t.eq(layer.singleTile, false, "singleTile is false by default");
+        layer.addOptions({singleTile: true});
+        t.eq(layer.removeBackBufferDelay, 0, "removeBackBufferDelay set to 0 since singleTile is true");
+        t.eq(layer.singleTile, true, "singleTile set to true");
+        t.eq(layer.className, "olLayerGridSingleTile", "className correct for singleTile mode");
+        t.eq(layer.grid.length, 1, "Grid rows is correct.");
+        t.eq(layer.grid[0].length, 1, "Grid cols is correct.");
+        t.eq(layer.tileSize, new OpenLayers.Size(748, 823), "tile size changed");
+        layer.addOptions({singleTile: false});
+        t.eq(layer.grid.length, 8, "Grid rows is correct.");
+        t.eq(layer.grid[0].length, 7, "Grid cols is correct.");
+        t.eq(layer.tileSize, map.getTileSize(), "layer's tile size is equal to the map's tile size");
+        map.destroy();
+    }
     
   </script>
 </head>
