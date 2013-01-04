@@ -1,3 +1,5 @@
+// FIXME works for View2D only
+
 goog.provide('ol.control.Zoom');
 
 goog.require('goog.dom');
@@ -58,7 +60,9 @@ goog.inherits(ol.control.Zoom, ol.control.Control);
 ol.control.Zoom.prototype.handleIn_ = function(browserEvent) {
   // prevent #zoomIn anchor from getting appended to the url
   browserEvent.preventDefault();
-  this.getMap().zoom(this.delta_);
+  var map = this.getMap();
+  // FIXME works for View2D only
+  map.getView().zoom(map, this.delta_);
 };
 
 
@@ -69,5 +73,7 @@ ol.control.Zoom.prototype.handleIn_ = function(browserEvent) {
 ol.control.Zoom.prototype.handleOut_ = function(browserEvent) {
   // prevent #zoomOut anchor from getting appended to the url
   browserEvent.preventDefault();
-  this.getMap().zoom(-this.delta_);
+  var map = this.getMap();
+  // FIXME works for View2D only
+  map.getView().zoom(map, -this.delta_);
 };

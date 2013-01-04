@@ -1,7 +1,11 @@
+// FIXME works for View2D only
+
 goog.provide('ol.interaction.DragPan');
 
+goog.require('goog.asserts');
 goog.require('ol.Coordinate');
 goog.require('ol.MapBrowserEvent');
+goog.require('ol.View2D');
 goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Drag');
 
@@ -31,8 +35,11 @@ goog.inherits(ol.interaction.DragPan, ol.interaction.Drag);
  */
 ol.interaction.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
-  var resolution = map.getResolution();
-  var rotation = map.getRotation();
+  // FIXME works for View2D only
+  var view = map.getView();
+  goog.asserts.assert(view instanceof ol.View2D);
+  var resolution = view.getResolution();
+  var rotation = view.getRotation();
   var delta =
       new ol.Coordinate(-resolution * this.deltaX, resolution * this.deltaY);
   if (map.canRotate() && goog.isDef(rotation)) {
@@ -41,7 +48,7 @@ ol.interaction.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
   var newCenter = new ol.Coordinate(
       this.startCenter.x + delta.x, this.startCenter.y + delta.y);
   map.requestRenderFrame();
-  map.setCenter(newCenter);
+  view.setCenter(newCenter);
 };
 
 

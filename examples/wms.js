@@ -4,6 +4,7 @@ goog.require('goog.debug.Logger.Level');
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
+goog.require('ol.View2D');
 goog.require('ol.source.MapQuestOpenAerial');
 goog.require('ol.source.TiledWMS');
 
@@ -31,6 +32,8 @@ var map = new ol.Map({
   renderer: ol.RendererHint.DOM,
   layers: layers,
   target: 'map',
-  center: new ol.Coordinate(-10997148, 4569099),
-  zoom: 4
+  view: new ol.View2D({
+    center: new ol.Coordinate(-10997148, 4569099),
+    zoom: 4
+  })
 });
