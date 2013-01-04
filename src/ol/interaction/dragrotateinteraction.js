@@ -42,6 +42,7 @@ ol.interaction.DragRotate.prototype.handleDrag = function(mapBrowserEvent) {
   var theta = Math.atan2(
       size.height / 2 - offset.y,
       offset.x - size.width / 2);
+  map.requestRenderFrame();
   map.rotate(this.startRotation_, -theta);
 };
 
@@ -55,6 +56,7 @@ ol.interaction.DragRotate.prototype.handleDragStart =
   var map = mapBrowserEvent.map;
   if (browserEvent.isMouseActionButton() && this.condition_(browserEvent) &&
       map.canRotate()) {
+    map.requestRenderFrame();
     var size = map.getSize();
     var offset = mapBrowserEvent.getPixel();
     var theta = Math.atan2(

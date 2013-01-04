@@ -135,11 +135,7 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
  */
 ol.renderer.dom.Map.prototype.handleCenterChanged = function() {
   goog.base(this, 'handleCenterChanged');
-  var map = this.getMap();
-  if (!map.isDef()) {
-    return;
-  }
-  map.render();
+  this.getMap().render();
 };
 
 
@@ -148,11 +144,7 @@ ol.renderer.dom.Map.prototype.handleCenterChanged = function() {
  */
 ol.renderer.dom.Map.prototype.handleResolutionChanged = function() {
   goog.base(this, 'handleResolutionChanged');
-  var map = this.getMap();
-  if (!map.isDef()) {
-    return;
-  }
-  map.render();
+  this.getMap().render();
 };
 
 
@@ -160,11 +152,8 @@ ol.renderer.dom.Map.prototype.handleResolutionChanged = function() {
  * @inheritDoc
  */
 ol.renderer.dom.Map.prototype.handleRotationChanged = function() {
-  var map = this.getMap();
-  if (!map.isDef()) {
-    return;
-  }
-  map.render();
+  goog.base(this, 'handleRotationChanged');
+  this.getMap().render();
 };
 
 
@@ -173,24 +162,19 @@ ol.renderer.dom.Map.prototype.handleRotationChanged = function() {
  */
 ol.renderer.dom.Map.prototype.handleSizeChanged = function() {
   goog.base(this, 'handleSizeChanged');
-  var map = this.getMap();
-  if (!map.isDef()) {
-    return;
-  }
-  map.render();
+  this.getMap().render();
 };
 
 
 /**
  * Render the map.  Sets up the layers pane on first render and adjusts its
  * position as needed on subsequent calls.
- *
- * @return {boolean} Animating.
+ * @inheritDoc
  */
-ol.renderer.dom.Map.prototype.render = function() {
+ol.renderer.dom.Map.prototype.renderFrame = function(time) {
   var map = this.getMap();
   if (!map.isDef()) {
-    return false;
+    return;
   }
 
   var mapCenter = map.getCenter();
@@ -228,14 +212,16 @@ ol.renderer.dom.Map.prototype.render = function() {
   this.renderedRotation_ = mapRotation;
   this.renderedSize_ = mapSize;
 
-  var animate = false;
+  var requestRenderFrame = false;
   this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
-    if (layerRenderer.render()) {
-      animate = true;
+    if (layerRenderer.renderFrame(time)) {
+      requestRenderFrame = true;
     }
   });
 
-  return animate;
+  if (requestRenderFrame) {
+    map.requestRenderFrame();
+  }
 
 };
 
