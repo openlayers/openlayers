@@ -1,13 +1,22 @@
+// FIXME probably need to reset TileLayerZ if offsets get too large
+// FIXME when zooming out, preserve higher Z divs to avoid white flash
+
 goog.provide('ol.renderer.dom.TileLayer');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.events');
-goog.require('goog.events.Event');
-goog.require('goog.events.EventType');
+goog.require('goog.math.Vec2');
+goog.require('goog.style');
+goog.require('goog.vec.Mat4');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
+goog.require('ol.Size');
+goog.require('ol.TileCoord');
+goog.require('ol.TileRange');
+goog.require('ol.TileState');
+goog.require('ol.dom');
 goog.require('ol.renderer.dom.Layer');
+goog.require('ol.tilegrid.TileGrid');
 
 
 
@@ -16,73 +25,42 @@ goog.require('ol.renderer.dom.Layer');
  * @extends {ol.renderer.dom.Layer}
  * @param {ol.renderer.Map} mapRenderer Map renderer.
  * @param {ol.layer.TileLayer} tileLayer Tile layer.
- * @param {!Element} target Target.
  */
-ol.renderer.dom.TileLayer = function(mapRenderer, tileLayer, target) {
+ol.renderer.dom.TileLayer = function(mapRenderer, tileLayer) {
+
+  var target = goog.dom.createElement(goog.dom.TagName.DIV);
+  target.className = 'ol-layer';
+  target.style.position = 'absolute';
+
   goog.base(this, mapRenderer, tileLayer, target);
 
   /**
-   * @type {Object}
    * @private
+   * @type {boolean}
    */
-  this.renderedTiles_ = {};
+  this.renderedVisible_ = true;
 
   /**
-   * @type {number|undefined}
    * @private
+   * @type {number}
    */
-  this.renderedMapResolution_ = undefined;
+  this.renderedOpacity_ = 1;
+
+  /**
+   * @private
+   * @type {Object.<number, ol.renderer.dom.TileLayerZ_>}
+   */
+  this.tileLayerZs_ = {};
 
 };
 goog.inherits(ol.renderer.dom.TileLayer, ol.renderer.dom.Layer);
 
 
 /**
- * @inheritDoc
- * @return {ol.layer.TileLayer} Layer.
+ * @return {ol.layer.TileLayer} Tile layer.
  */
-ol.renderer.dom.TileLayer.prototype.getLayer = function() {
-  return /** @type {ol.layer.TileLayer} */ (goog.base(this, 'getLayer'));
-};
-
-
-/**
- * Get the pixel offset between the tile origin and the container origin.
- * @private
- * @param {number} z Z.
- * @param {number} resolution Resolution.
- * @return {ol.Coordinate} Offset.
- */
-ol.renderer.dom.TileLayer.prototype.getTileOffset_ = function(z, resolution) {
-  var tileLayer = this.getLayer();
-  var tileSource = tileLayer.getTileSource();
-  var tileGrid = tileSource.getTileGrid();
-  var tileOrigin = tileGrid.getOrigin(z);
-  var offset = new ol.Coordinate(
-      Math.round((this.origin.x - tileOrigin.x) / resolution),
-      Math.round((tileOrigin.y - this.origin.y) / resolution));
-  return offset;
-};
-
-
-/**
- * Get rid of all tiles that weren't drawn in the most recent rendering.
- * @param {Object.<number, Object.<string, ol.Tile>>} tilesDrawnByZ Tiles just
- *    rendered.
- * @private
- */
-ol.renderer.dom.TileLayer.prototype.removeExtraTiles_ =
-    function(tilesDrawnByZ) {
-  var key, tileCoord, tilesDrawn, tile;
-  for (key in this.renderedTiles_) {
-    tileCoord = ol.TileCoord.createFromString(key);
-    tilesDrawn = tilesDrawnByZ[tileCoord.z];
-    if (!(tilesDrawn && key in tilesDrawn)) {
-      tile = this.renderedTiles_[key];
-      delete this.renderedTiles_[key];
-      goog.dom.removeNode(tile.getImage(this));
-    }
-  }
+ol.renderer.dom.TileLayer.prototype.getTileLayer = function() {
+  return /** @type {ol.layer.TileLayer} */ (this.getLayer());
 };
 
 
@@ -92,74 +70,85 @@ ol.renderer.dom.TileLayer.prototype.removeExtraTiles_ =
 ol.renderer.dom.TileLayer.prototype.renderFrame = function(time) {
 
   var map = this.getMap();
-  if (!map.isDef()) {
+  goog.asserts.assert(map.isDef());
+
+  var view = map.getView().getView2D();
+  var mapCenter = /** @type {!ol.Coordinate} */ (view.getCenter());
+  var mapResolution = /** @type {number} */ (view.getResolution());
+  var mapSize = /** @type {!ol.Size} */ (map.getSize());
+  var mapRotatedExtent = /** @type {!ol.Extent} */
+      (view.getRotatedExtent(mapSize));
+  var mapRotation = view.getRotation();
+  var mapScale = 1 / mapResolution;
+
+  var tileLayer = this.getTileLayer();
+
+  var visible = tileLayer.getVisible();
+  if (!visible) {
+    if (this.renderedVisible_) {
+      goog.style.showElement(this.target, false);
+      this.renderedVisible_ = false;
+    }
     return;
   }
-  var mapSize = /** @type {ol.Size} */ (map.getSize());
-  var view = map.getView().getView2D();
-  var mapExtent = /** @type {!ol.Extent} */ (view.getRotatedExtent(mapSize));
-  var mapResolution = /** @type {number} */ (view.getResolution());
-  var resolutionChanged = (mapResolution !== this.renderedMapResolution_);
 
-  var tileLayer = this.getLayer();
+  var opacity = tileLayer.getOpacity();
+  if (opacity != this.renderedOpacity_) {
+    goog.style.setOpacity(this.target, opacity);
+    this.renderedOpacity_ = opacity;
+  }
+
   var tileSource = tileLayer.getTileSource();
   var tileGrid = tileSource.getTileGrid();
 
-  // z represents the "best" resolution
   var z = tileGrid.getZForResolution(mapResolution);
 
-  /**
-   * @type {Object.<number, Object.<string, ol.Tile>>}
-   */
+  /** @type {Object.<number, Object.<string, ol.Tile>>} */
   var tilesToDrawByZ = {};
-  tilesToDrawByZ[z] = {};
 
-  var tileRange =
-      tileGrid.getTileRangeForExtentAndResolution(mapExtent, mapResolution);
+  var tileRange = tileGrid.getTileRangeForExtentAndResolution(
+      mapRotatedExtent, mapResolution);
 
   var allTilesLoaded = true;
 
-  // first pass through the tile range to determine all the tiles needed
+  tilesToDrawByZ[z] = {};
   tileRange.forEachTileCoord(z, function(tileCoord) {
+
     var tile = tileSource.getTile(tileCoord);
+
     if (goog.isNull(tile)) {
-      // we're outside the source's extent, continue
       return;
     }
 
-    var key = tile.tileCoord.toString();
-    var state = tile.getState();
-    if (state == ol.TileState.IDLE) {
+    var tileState = tile.getState();
+    if (tileState == ol.TileState.IDLE) {
       tile.load();
-    } else if (state == ol.TileState.LOADED) {
-      tilesToDrawByZ[z][key] = tile;
+    } else if (tileState == ol.TileState.LOADED) {
+      tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
+      return;
+    } else if (tileState == ol.TileState.ERROR) {
       return;
     }
 
     allTilesLoaded = false;
 
-    /**
-     * Look for already loaded tiles at alternate z that can serve as
-     * placeholders until tiles at the current z have loaded.
-     *
-     * TODO: make this more efficent for filling partial holes
-     */
+    // FIXME this could be more efficient about filling partial holes
     tileGrid.forEachTileCoordParentTileRange(
         tileCoord,
-        function(altZ, altTileRange) {
+        function(z, tileRange) {
           var fullyCovered = true;
-          altTileRange.forEachTileCoord(altZ, function(altTileCoord) {
-            var tileKey = altTileCoord.toString();
-            if (tilesToDrawByZ[altZ] && tilesToDrawByZ[altZ][tileKey]) {
+          tileRange.forEachTileCoord(z, function(tileCoord) {
+            var tileCoordKey = tileCoord.toString();
+            if (tilesToDrawByZ[z] && tilesToDrawByZ[z][tileCoordKey]) {
               return;
             }
-            var altTile = tileSource.getTile(altTileCoord);
-            if (!goog.isNull(altTile) &&
-                altTile.getState() == ol.TileState.LOADED) {
-              if (!(altZ in tilesToDrawByZ)) {
-                tilesToDrawByZ[altZ] = {};
+            var tile = tileSource.getTile(tileCoord);
+            if (!goog.isNull(tile) &&
+                tile.getState() == ol.TileState.LOADED) {
+              if (!tilesToDrawByZ[z]) {
+                tilesToDrawByZ[z] = {};
               }
-              tilesToDrawByZ[altZ][tileKey] = altTile;
+              tilesToDrawByZ[z][tileCoordKey] = tile;
             } else {
               fullyCovered = false;
             }
@@ -173,57 +162,227 @@ ol.renderer.dom.TileLayer.prototype.renderFrame = function(time) {
   var zs = goog.array.map(goog.object.getKeys(tilesToDrawByZ), Number);
   goog.array.sort(zs);
 
-  var fragment = document.createDocumentFragment();
-  var altFragment = document.createDocumentFragment();
-  var newTiles = false;
-  var newAltTiles = false;
-  for (var i = 0, ii = zs.length; i < ii; ++i) {
-    var tileZ = zs[i];
-    var tilesToDraw = tilesToDrawByZ[tileZ];
-    var tileOffset = this.getTileOffset_(tileZ, mapResolution);
-    for (var key in tilesToDraw) {
-      var tile = tilesToDraw[key];
-      var tileCoord = tile.tileCoord;
-      var pixelBounds = tileGrid.getPixelBoundsForTileCoordAndResolution(
-          tileCoord, mapResolution);
-      var img = tile.getImage(this);
-      var style = img.style;
-      var append = !(key in this.renderedTiles_);
-      if (append || resolutionChanged) {
-        style.left = (pixelBounds.minX - tileOffset.x) + 'px';
-        style.top = (-pixelBounds.maxY - tileOffset.y) + 'px';
-        style.width = pixelBounds.getWidth() + 'px';
-        style.height = pixelBounds.getHeight() + 'px';
-      }
-      if (append) {
-        this.renderedTiles_[key] = tile;
-        style.position = 'absolute';
-        if (tileZ === z) {
-          goog.dom.appendChild(fragment, img);
-          newTiles = true;
-        } else {
-          goog.dom.appendChild(altFragment, img);
-          newAltTiles = true;
+  /** @type {Object.<number, boolean>} */
+  var newTileLayerZKeys = {};
+
+  var tileSize = tileGrid.getTileSize();
+  var iz, tileCoordKey, tileCoordOrigin, tileLayerZ, tileLayerZKey, tilesToDraw;
+  for (iz = 0; iz < zs.length; ++iz) {
+    tileLayerZKey = zs[iz];
+    if (tileLayerZKey in this.tileLayerZs_) {
+      tileLayerZ = this.tileLayerZs_[tileLayerZKey];
+    } else {
+      tileCoordOrigin =
+          tileGrid.getTileCoordForCoordAndZ(mapCenter, tileLayerZKey);
+      tileLayerZ = new ol.renderer.dom.TileLayerZ_(tileGrid, tileCoordOrigin);
+      newTileLayerZKeys[tileLayerZKey] = true;
+      this.tileLayerZs_[tileLayerZKey] = tileLayerZ;
+    }
+    tilesToDraw = tilesToDrawByZ[tileLayerZKey];
+    for (tileCoordKey in tilesToDraw) {
+      tileLayerZ.addTile(tilesToDraw[tileCoordKey]);
+    }
+    tileLayerZ.finalizeAddTiles();
+  }
+
+  /** @type {Array.<number>} */
+  var tileLayerZKeys =
+      goog.array.map(goog.object.getKeys(this.tileLayerZs_), Number);
+  goog.array.sort(tileLayerZKeys);
+
+  var i, j, origin, resolution;
+  var transform = goog.vec.Mat4.createNumber();
+  for (i = 0; i < tileLayerZKeys.length; ++i) {
+    tileLayerZKey = tileLayerZKeys[i];
+    tileLayerZ = this.tileLayerZs_[tileLayerZKey];
+    if (!(tileLayerZKey in tilesToDrawByZ)) {
+      goog.dom.removeNode(tileLayerZ.target);
+      delete this.tileLayerZs_[tileLayerZKey];
+      continue;
+    }
+    resolution = tileLayerZ.getResolution();
+    origin = tileLayerZ.getOrigin();
+    goog.vec.Mat4.makeIdentity(transform);
+    goog.vec.Mat4.translate(
+        transform, mapSize.width / 2, mapSize.height / 2, 0);
+    if (goog.isDef(mapRotation)) {
+      goog.vec.Mat4.rotateZ(transform, mapRotation);
+    }
+    goog.vec.Mat4.scale(
+        transform, resolution / mapResolution, resolution / mapResolution, 1);
+    goog.vec.Mat4.translate(transform, (origin.x - mapCenter.x) / resolution,
+        (mapCenter.y - origin.y) / resolution, 0);
+    tileLayerZ.setTransform(transform);
+    if (tileLayerZKey in newTileLayerZKeys) {
+      for (j = tileLayerZKey - 1; j >= 0; --j) {
+        if (j in this.tileLayerZs_) {
+          goog.dom.insertSiblingAfter(
+              tileLayerZ.target, this.tileLayerZs_[j].target);
+          break;
         }
       }
-    }
-  }
-
-  if (newAltTiles) {
-    var child = this.target.firstChild;
-    if (child) {
-      goog.dom.insertSiblingBefore(altFragment, child);
+      if (j < 0) {
+        goog.dom.insertChildAt(this.target, tileLayerZ.target, 0);
+      }
     } else {
-      goog.dom.appendChild(this.target, altFragment);
+      tileLayerZ.removeTilesOutsideExtent(mapRotatedExtent);
     }
   }
-  if (newTiles) {
-    goog.dom.appendChild(this.target, fragment);
+
+  if (visible && !this.renderedVisible_) {
+    goog.style.showElement(this.target, true);
+    this.renderedVisible_ = true;
   }
-
-  this.renderedMapResolution_ = mapResolution;
-
-  this.removeExtraTiles_(tilesToDrawByZ);
 
   return !allTilesLoaded;
+
+};
+
+
+
+/**
+ * @constructor
+ * @private
+ * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
+ * @param {ol.TileCoord} tileCoordOrigin Tile coord origin.
+ */
+ol.renderer.dom.TileLayerZ_ = function(tileGrid, tileCoordOrigin) {
+
+  /**
+   * @type {!Element}
+   */
+  this.target = goog.dom.createElement(goog.dom.TagName.DIV);
+  this.target.style.position = 'absolute';
+
+  /**
+   * @private
+   * @type {ol.tilegrid.TileGrid}
+   */
+  this.tileGrid_ = tileGrid;
+
+  /**
+   * @private
+   * @type {ol.TileCoord}
+   */
+  this.tileCoordOrigin_ = tileCoordOrigin;
+
+  /**
+   * @private
+   * @type {!ol.Coordinate}
+   */
+  this.origin_ = /** @type {!ol.Coordinate} */
+      (tileGrid.getTileCoordExtent(tileCoordOrigin).getTopLeft());
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.resolution_ = tileGrid.getResolution(tileCoordOrigin.z);
+
+  /**
+   * @private
+   * @type {Object.<string, ol.Tile>}
+   */
+  this.tiles_ = {};
+
+  /**
+   * @private
+   * @type {DocumentFragment}
+   */
+  this.documentFragment_ = null;
+
+  /**
+   * @private
+   * @type {goog.vec.Mat4.AnyType}
+   */
+  this.transform_ = goog.vec.Mat4.createNumberIdentity();
+
+};
+
+
+/**
+ * @param {ol.Tile} tile Tile.
+ */
+ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile) {
+  var tileCoord = tile.tileCoord;
+  goog.asserts.assert(tileCoord.z == this.tileCoordOrigin_.z);
+  var tileCoordKey = tileCoord.toString();
+  if (tileCoordKey in this.tiles_) {
+    return;
+  }
+  var tileSize = this.tileGrid_.getTileSize();
+  var image = tile.getImage(this);
+  var style = image.style;
+  style.position = 'absolute';
+  style.left =
+      ((tileCoord.x - this.tileCoordOrigin_.x) * tileSize.width) + 'px';
+  style.top =
+      ((this.tileCoordOrigin_.y - tileCoord.y) * tileSize.height) + 'px';
+  if (goog.isNull(this.documentFragment_)) {
+    this.documentFragment_ = document.createDocumentFragment();
+  }
+  goog.dom.appendChild(this.documentFragment_, image);
+  this.tiles_[tileCoordKey] = tile;
+};
+
+
+/**
+ */
+ol.renderer.dom.TileLayerZ_.prototype.finalizeAddTiles = function() {
+  if (!goog.isNull(this.documentFragment_)) {
+    goog.dom.appendChild(this.target, this.documentFragment_);
+    this.documentFragment_ = null;
+  }
+};
+
+
+/**
+ * @return {!ol.Coordinate} Origin.
+ */
+ol.renderer.dom.TileLayerZ_.prototype.getOrigin = function() {
+  return this.origin_;
+};
+
+
+/**
+ * @return {number} Resolution.
+ */
+ol.renderer.dom.TileLayerZ_.prototype.getResolution = function() {
+  return this.resolution_;
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ */
+ol.renderer.dom.TileLayerZ_.prototype.removeTilesOutsideExtent =
+    function(extent) {
+  var tileRange =
+      this.tileGrid_.getTileRangeForExtentAndZ(extent, this.tileCoordOrigin_.z);
+  var tilesToRemove = [];
+  var tile, tileCoordKey;
+  for (tileCoordKey in this.tiles_) {
+    tile = this.tiles_[tileCoordKey];
+    if (!tileRange.contains(tile.tileCoord)) {
+      tilesToRemove.push(tile);
+    }
+  }
+  var i;
+  for (i = 0; i < tilesToRemove.length; ++i) {
+    tile = tilesToRemove[i];
+    tileCoordKey = tile.tileCoord.toString();
+    goog.dom.removeNode(tile.getImage(this));
+    delete this.tiles_[tileCoordKey];
+  }
+};
+
+
+/**
+ * @param {goog.vec.Mat4.AnyType} transform Transform.
+ */
+ol.renderer.dom.TileLayerZ_.prototype.setTransform = function(transform) {
+  if (!goog.vec.Mat4.equals(transform, this.transform_)) {
+    ol.dom.transformElement2D(this.target, transform);
+    goog.vec.Mat4.setFromArray(this.transform_, transform);
+  }
 };
