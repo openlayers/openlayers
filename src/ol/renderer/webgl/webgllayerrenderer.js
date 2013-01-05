@@ -37,7 +37,7 @@ ol.renderer.webgl.Layer.prototype.getMapRenderer = function() {
 
 
 /**
- * @return {goog.vec.Mat4.AnyType} Matrix.
+ * @return {!goog.vec.Mat4.Number} Matrix.
  */
 ol.renderer.webgl.Layer.prototype.getMatrix = goog.abstractMethod;
 

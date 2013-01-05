@@ -145,7 +145,7 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
-   * @type {goog.vec.Mat4.AnyType}
+   * @type {!goog.vec.Mat4.Number}
    */
   this.matrix_ = goog.vec.Mat4.createNumber();
 
