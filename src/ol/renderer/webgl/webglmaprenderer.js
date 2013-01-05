@@ -622,13 +622,6 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(time) {
     this.canvasSize_ = size;
   }
 
-  var animate = false;
-  this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
-    if (layerRenderer.renderFrame(time)) {
-      animate = true;
-    }
-  });
-
   var gl = this.getGL();
 
   gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, null);
