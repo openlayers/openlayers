@@ -6,7 +6,7 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.net.Jsonp');
 goog.require('ol.TileCoverageArea');
-goog.require('ol.source.TileSource');
+goog.require('ol.source.ImageTileSource');
 goog.require('ol.tilegrid.XYZ');
 
 
@@ -25,7 +25,7 @@ ol.BingMapsStyle = {
 
 /**
  * @constructor
- * @extends {ol.source.TileSource}
+ * @extends {ol.source.ImageTileSource}
  * @param {ol.source.BingMapsOptions} bingMapsOptions Bing Maps options.
  */
 ol.source.BingMaps = function(bingMapsOptions) {
@@ -57,7 +57,7 @@ ol.source.BingMaps = function(bingMapsOptions) {
   }, goog.bind(this.handleImageryMetadataResponse, this));
 
 };
-goog.inherits(ol.source.BingMaps, ol.source.TileSource);
+goog.inherits(ol.source.BingMaps, ol.source.ImageTileSource);
 
 
 /**

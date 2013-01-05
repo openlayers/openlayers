@@ -386,9 +386,9 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame = function(time) {
     var tilesToDrawByZ = {};
 
     /**
-     * @type {Array.<Image>}
+     * @type {Array.<ol.Tile>}
      */
-    var imagesToLoad = [];
+    var tilesToLoad = [];
 
     var allTilesLoaded = true;
 
@@ -405,12 +405,11 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame = function(time) {
       if (tileState == ol.TileState.IDLE) {
         tile.load();
       } else if (tileState == ol.TileState.LOADED) {
-        var image = tile.getImage();
-        if (mapRenderer.isImageTextureLoaded(image)) {
+        if (mapRenderer.isTileTextureLoaded(tile)) {
           tilesToDrawByZ[z][tileCoord.toString()] = tile;
           return;
         } else {
-          imagesToLoad.push(image);
+          tilesToLoad.push(tile);
         }
       } else if (tileState == ol.TileState.ERROR) {
         return;
@@ -459,29 +458,28 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame = function(time) {
             framebufferExtentSize.height - 1;
         goog.vec.Vec4.setFromValues(uTileOffset, sx, sy, tx, ty);
         gl.uniform4fv(this.locations_.uTileOffset, uTileOffset);
-        mapRenderer.bindImageTexture(
-            tile.getImage(), goog.webgl.LINEAR, goog.webgl.LINEAR);
+        mapRenderer.bindTileTexture(tile, goog.webgl.LINEAR, goog.webgl.LINEAR);
         gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
       }, this);
     }, this);
 
-    if (!goog.array.isEmpty(imagesToLoad)) {
+    if (!goog.array.isEmpty(tilesToLoad)) {
       goog.events.listenOnce(
           map,
           ol.MapEventType.POSTRENDER,
-          goog.partial(function(mapRenderer, imagesToLoad) {
+          goog.partial(function(mapRenderer, tilesToLoad) {
             if (goog.DEBUG) {
               this.logger.info(
-                  'uploading ' + imagesToLoad.length + ' textures');
+                  'uploading ' + tilesToLoad.length + ' textures');
             }
-            goog.array.forEach(imagesToLoad, function(image) {
-              mapRenderer.bindImageTexture(
-                  image, goog.webgl.LINEAR, goog.webgl.LINEAR);
+            goog.array.forEach(tilesToLoad, function(tile) {
+              mapRenderer.bindTileTexture(
+                  tile, goog.webgl.LINEAR, goog.webgl.LINEAR);
             });
             if (goog.DEBUG) {
               this.logger.info('uploaded textures');
             }
-          }, mapRenderer, imagesToLoad));
+          }, mapRenderer, tilesToLoad));
     }
 
     if (allTilesLoaded) {

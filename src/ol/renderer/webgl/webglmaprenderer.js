@@ -17,6 +17,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('goog.style');
 goog.require('goog.webgl');
+goog.require('ol.Tile');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.webgl.FragmentShader');
@@ -219,15 +220,15 @@ ol.renderer.webgl.Map.prototype.addLayer = function(layer) {
 
 
 /**
- * @param {Image} image Image.
+ * @param {ol.Tile} tile Tile.
  * @param {number} magFilter Mag filter.
  * @param {number} minFilter Min filter.
  */
-ol.renderer.webgl.Map.prototype.bindImageTexture =
-    function(image, magFilter, minFilter) {
+ol.renderer.webgl.Map.prototype.bindTileTexture =
+    function(tile, magFilter, minFilter) {
   var gl = this.getGL();
-  var imageKey = image.src;
-  var textureCacheEntry = this.textureCache_[imageKey];
+  var tileKey = tile.getKey();
+  var textureCacheEntry = this.textureCache_[tileKey];
   if (goog.isDef(textureCacheEntry)) {
     gl.bindTexture(goog.webgl.TEXTURE_2D, textureCacheEntry.texture);
     if (textureCacheEntry.magFilter != magFilter) {
@@ -244,7 +245,7 @@ ol.renderer.webgl.Map.prototype.bindImageTexture =
     var texture = gl.createTexture();
     gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
     gl.texImage2D(goog.webgl.TEXTURE_2D, 0, goog.webgl.RGBA, goog.webgl.RGBA,
-        goog.webgl.UNSIGNED_BYTE, image);
+        goog.webgl.UNSIGNED_BYTE, tile.getImage());
     gl.texParameteri(
         goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MAG_FILTER, magFilter);
     gl.texParameteri(
@@ -253,7 +254,7 @@ ol.renderer.webgl.Map.prototype.bindImageTexture =
         goog.webgl.CLAMP_TO_EDGE);
     gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_T,
         goog.webgl.CLAMP_TO_EDGE);
-    this.textureCache_[imageKey] = {
+    this.textureCache_[tileKey] = {
       texture: texture,
       magFilter: magFilter,
       minFilter: minFilter
@@ -485,11 +486,11 @@ ol.renderer.webgl.Map.prototype.initializeGL_ = function() {
 
 
 /**
- * @param {Image} image Image.
- * @return {boolean} Is image texture loaded.
+ * @param {ol.Tile} tile Tile.
+ * @return {boolean} Is tile texture loaded.
  */
-ol.renderer.webgl.Map.prototype.isImageTextureLoaded = function(image) {
-  return image.src in this.textureCache_;
+ol.renderer.webgl.Map.prototype.isTileTextureLoaded = function(tile) {
+  return tile.getKey() in this.textureCache_;
 };
 
 
