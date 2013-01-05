@@ -140,25 +140,6 @@ ol.renderer.Map.prototype.disposeInternal = function() {
 
 
 /**
- * @param {function(this: T, ol.layer.Layer, ol.renderer.Layer, number)} f
- *     Function.
- * @param {T=} opt_obj Object.
- * @template T
- */
-ol.renderer.Map.prototype.forEachReadyVisibleLayer = function(f, opt_obj) {
-  var layers = this.map.getLayers();
-  if (goog.isDef(layers)) {
-    layers.forEach(function(layer, index) {
-      if (layer.isReady() && layer.getVisible()) {
-        var layerRenderer = this.getLayerRenderer(layer);
-        f.call(opt_obj, layer, layerRenderer, index);
-      }
-    }, this);
-  }
-};
-
-
-/**
  * @param {ol.Pixel} pixel Pixel.
  * @return {ol.Coordinate} Coordinate.
  */
