@@ -78,7 +78,7 @@ def report_sizes(t):
 pake.virtual('all', 'build-all', 'build', 'examples')
 
 
-pake.virtual('precommit', 'lint', 'build-all', 'test', 'doc', 'build', 'build-examples')
+pake.virtual('precommit', 'lint', 'build-all', 'test', 'build', 'build-examples')
 
 
 pake.virtual('build', 'build/ol.css', 'build/ol.js')
