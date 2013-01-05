@@ -603,7 +603,8 @@ ol.renderer.webgl.Map.prototype.removeLayerRenderer = function(layer) {
  */
 ol.renderer.webgl.Map.prototype.renderFrame = function(time) {
 
-  if (!this.getMap().isDef()) {
+  var map = this.getMap();
+  if (!map.isDef()) {
     return;
   }
 
