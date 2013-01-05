@@ -16,7 +16,6 @@ goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('goog.style');
-goog.require('goog.vec.Mat4');
 goog.require('goog.webgl');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.TileLayer');
@@ -270,64 +269,6 @@ ol.renderer.webgl.Map.prototype.canRotate = goog.functions.TRUE;
 
 
 /**
- * @param {number} value Hue value.
- * @return {!goog.vec.Mat4.Float32} Matrix.
- */
-ol.renderer.webgl.Map.prototype.createHueRotateMatrix = function(value) {
-  var cosHue = Math.cos(value);
-  var sinHue = Math.sin(value);
-  var v00 = 0.213 + cosHue * 0.787 - sinHue * 0.213;
-  var v01 = 0.715 - cosHue * 0.715 - sinHue * 0.715;
-  var v02 = 0.072 - cosHue * 0.072 + sinHue * 0.928;
-  var v03 = 0;
-  var v10 = 0.213 - cosHue * 0.213 + sinHue * 0.143;
-  var v11 = 0.715 + cosHue * 0.285 + sinHue * 0.140;
-  var v12 = 0.072 - cosHue * 0.072 - sinHue * 0.283;
-  var v13 = 0;
-  var v20 = 0.213 - cosHue * 0.213 - sinHue * 0.787;
-  var v21 = 0.715 - cosHue * 0.715 + sinHue * 0.715;
-  var v22 = 0.072 + cosHue * 0.928 + sinHue * 0.072;
-  var v23 = 0;
-  var v30 = 0;
-  var v31 = 0;
-  var v32 = 0;
-  var v33 = 1;
-  var matrix = goog.vec.Mat4.createFloat32();
-  goog.vec.Mat4.setFromValues(matrix,
-      v00, v10, v20, v30,
-      v01, v11, v21, v31,
-      v02, v12, v22, v32,
-      v03, v13, v23, v33);
-  return matrix;
-};
-
-
-/**
- * @param {number} value Brightness value.
- * @return {!goog.vec.Mat4.Float32} Matrix.
- */
-ol.renderer.webgl.Map.prototype.createBrightnessMatrix = function(value) {
-  var matrix = goog.vec.Mat4.createFloat32Identity();
-  goog.vec.Mat4.setColumnValues(matrix, 3, value, value, value, 1);
-  return matrix;
-};
-
-
-/**
- * @param {number} value Contrast value.
- * @return {!goog.vec.Mat4.Float32} Matrix.
- */
-ol.renderer.webgl.Map.prototype.createContrastMatrix = function(value) {
-  var matrix = goog.vec.Mat4.createFloat32();
-  goog.vec.Mat4.setDiagonalValues(matrix, value, value, value, 1);
-  var translateValue = (-0.5 * value + 0.5);
-  goog.vec.Mat4.setColumnValues(matrix, 3,
-      translateValue, translateValue, translateValue, 1);
-  return matrix;
-};
-
-
-/**
  * @inheritDoc
  */
 ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
@@ -338,38 +279,6 @@ ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
     goog.asserts.assert(false);
     return null;
   }
-};
-
-
-/**
- * @param {number} value Saturation value.
- * @return {!goog.vec.Mat4.Float32} Matrix.
- */
-ol.renderer.webgl.Map.prototype.createSaturateMatrix = function(value) {
-  var v00 = 0.213 + 0.787 * value;
-  var v01 = 0.715 - 0.715 * value;
-  var v02 = 0.072 - 0.072 * value;
-  var v03 = 0;
-  var v10 = 0.213 - 0.213 * value;
-  var v11 = 0.715 + 0.285 * value;
-  var v12 = 0.072 - 0.072 * value;
-  var v13 = 0;
-  var v20 = 0.213 - 0.213 * value;
-  var v21 = 0.715 - 0.715 * value;
-  var v22 = 0.072 + 0.928 * value;
-  var v23 = 0;
-  var v30 = 0;
-  var v31 = 0;
-  var v32 = 0;
-  var v33 = 1;
-  var matrix = goog.vec.Mat4.createFloat32();
-  goog.vec.Mat4.setFromValues(matrix,
-      v00, v10, v20, v30,
-      v01, v11, v21, v31,
-      v02, v12, v22, v32,
-      v03, v13, v23, v33);
-  return matrix;
-
 };
 
 
@@ -603,7 +512,8 @@ ol.renderer.webgl.Map.prototype.removeLayerRenderer = function(layer) {
  */
 ol.renderer.webgl.Map.prototype.renderFrame = function(time) {
 
-  if (!this.getMap().isDef()) {
+  var map = this.getMap();
+  if (!map.isDef()) {
     return;
   }
 
@@ -621,13 +531,6 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(time) {
     this.canvas_.height = size.height;
     this.canvasSize_ = size;
   }
-
-  var animate = false;
-  this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
-    if (layerRenderer.renderFrame(time)) {
-      animate = true;
-    }
-  });
 
   var gl = this.getGL();
 
@@ -677,16 +580,8 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(time) {
   this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
     gl.uniformMatrix4fv(
         this.locations_.uMatrix, false, layerRenderer.getMatrix());
-    var hueRotateMatrix = this.createHueRotateMatrix(layer.getHue());
-    var saturateMatrix = this.createSaturateMatrix(layer.getSaturation());
-    var brightnessMatrix = this.createBrightnessMatrix(layer.getBrightness());
-    var contrastMatrix = this.createContrastMatrix(layer.getContrast());
-    var colorMatrix = goog.vec.Mat4.createFloat32Identity();
-    goog.vec.Mat4.multMat(colorMatrix, contrastMatrix, colorMatrix);
-    goog.vec.Mat4.multMat(colorMatrix, brightnessMatrix, colorMatrix);
-    goog.vec.Mat4.multMat(colorMatrix, saturateMatrix, colorMatrix);
-    goog.vec.Mat4.multMat(colorMatrix, hueRotateMatrix, colorMatrix);
-    gl.uniformMatrix4fv(this.locations_.uColorMatrix, false, colorMatrix);
+    gl.uniformMatrix4fv(
+        this.locations_.uColorMatrix, false, layerRenderer.getColorMatrix());
     gl.uniform1f(this.locations_.uOpacity, layer.getOpacity());
     gl.bindTexture(goog.webgl.TEXTURE_2D, layerRenderer.getTexture());
     gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
