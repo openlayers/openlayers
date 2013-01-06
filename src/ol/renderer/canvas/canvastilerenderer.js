@@ -6,6 +6,20 @@ goog.require('ol.Pixel');
 goog.require('ol.Projection');
 
 
+/**
+ * TODO(tschaub): get rid of this
+ * @typedef {{coordinates: (Array)}}
+ */
+ol.GeoJSONGeometry;
+
+
+/**
+ * TODO(tschaub): get rid of this
+ * @typedef {{geometry: (ol.GeoJSONGeometry)}}
+ */
+ol.GeoJSONFeature;
+
+
 
 /**
  * @constructor
@@ -50,13 +64,19 @@ ol.renderer.tile.Canvas = function(layerRenderer) {
   this.size_;
 
   /**
-   * @type {CanvasContext}
+   * @type {Element}
+   * @private
+   */
+  this.canvas_;
+
+  /**
+   * @type {CanvasRenderingContext2D}
    * @private
    */
   this.context_;
 
   /**
-   * @type {CanvasImageData}
+   * @type {ImageData}
    * @private
    */
   this.pixelData_;
@@ -73,9 +93,10 @@ ol.renderer.tile.Canvas.prototype.setSize = function(size) {
   }
   this.size_ = size;
   if (!this.context_) {
-    this.context_ = document.createElement('canvas').getContext('2d');
+    this.canvas_ = goog.dom.createElement(goog.dom.TagName.CANVAS);
+    this.context_ = this.canvas_.getContext('2d');
     this.pixelData_ = this.context_.createImageData(1, 1).data;
-    this.pixelData[3] = 1; // opacity
+    this.pixelData_[3] = 1; // opacity
   }
   goog.style.setSize(this.canvas_, size);
 };
@@ -89,7 +110,8 @@ ol.renderer.tile.Canvas.prototype.setOrigin = function(origin) {
     origin = new ol.Coordinate(origin.x, origin.y);
   }
   this.origin_ = origin;
-  this.originPixel_ = this.layerRenderer_.getPixelFromCoordinate(origin);
+  var mapRenderer = this.layerRenderer_.getMapRenderer();
+  this.originPixel_ = mapRenderer.getPixelFromCoordinate(origin);
 };
 
 
@@ -106,9 +128,10 @@ ol.renderer.tile.Canvas.prototype.setResolution = function(resolution) {
  * @param {ol.Projection=} opt_projection Projection.
  */
 ol.renderer.tile.Canvas.prototype.render = function(geoJson, opt_projection) {
-  var map = this.map;
-  this.projection_ = map.getProjection();
-  this.resolution_ = map.getResolution();
+  var map = this.layerRenderer_.getMap();
+  // TODO(tschaub): make it so this isn't required everywhere
+  this.projection_ = /** @type {ol.Projection} */ map.getProjection();
+  this.resolution_ = /** @type {number} */ map.getResolution();
 
   var features;
   if (goog.isArray(geoJson)) {
@@ -121,12 +144,12 @@ ol.renderer.tile.Canvas.prototype.render = function(geoJson, opt_projection) {
 
   if (features) {
     //FIXME Support geometry level projections
-    // @type {ol.Projection}
+    /** @type {ol.Projection} */
     var projection;
     if (goog.isDef(opt_projection)) {
       projection = opt_projection;
     } else {
-      projection = new ol.Projection('EPSG:4326');
+      projection = ol.Projection.getFromCode('EPSG:4326');
     }
     for (var i = 0, ii = features.length; i < ii; ++i) {
       this.renderGeometry(features[i].geometry, projection);
@@ -141,7 +164,7 @@ ol.renderer.tile.Canvas.prototype.render = function(geoJson, opt_projection) {
  */
 ol.renderer.tile.Canvas.prototype.renderGeometry =
     function(geometry, projection) {
-  var i, coordinates, hole = false;
+  var i, ii, coordinates, hole = false;
   if (geometry.type === 'Point') {
     this.renderPosList([geometry.coordinates],
         projection, false, false, hole);
@@ -172,17 +195,18 @@ ol.renderer.tile.Canvas.prototype.renderGeometry =
  * @param {boolean} fill Fill.
  * @param {boolean} hole Treat as hole.
  */
-ol.renderer.tileCanvas.prototype.renderPosList =
+ol.renderer.tile.Canvas.prototype.renderPosList =
     function(posList, projection, connect, fill, hole) {
-  var position, coordinate, pixel, localX, localY;
+  var i, ii, position, coordinate, pixel, localX, localY;
   if (connect === true) {
     this.context_.beginPath();
   }
   for (i = 0, ii = posList.length; i < ii; ++i) {
     position = posList[i];
     coordinate = ol.Projection.transform(new ol.Coordinate(
-        position[0], position[1]), projection, this.projection);
-    pixel = this.layerRenderer_.getPixelFromCoordinate(coordinate);
+        position[0], position[1]), projection, this.projection_);
+    var mapRenderer = this.layerRenderer_.getMapRenderer();
+    pixel = mapRenderer.getPixelFromCoordinate(coordinate);
     localX = pixel.x - this.originPixel_.x;
     localY = pixel.y - this.originPixel_.y + this.size_.height;
     if (connect === false && fill === false) {
