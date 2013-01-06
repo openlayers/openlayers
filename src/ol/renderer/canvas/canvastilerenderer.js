@@ -7,8 +7,16 @@ goog.require('ol.Projection');
 
 
 
+/**
+ * @constructor
+ * @param {ol.renderer.Layer} layerRenderer Layer renderer.
+ */
 ol.renderer.tile.Canvas = function(layerRenderer) {
-  
+
+  /**
+   * @type {ol.renderer.Layer}
+   * @private
+   */
   this.layerRenderer_ = layerRenderer;
 
   /**
@@ -16,7 +24,7 @@ ol.renderer.tile.Canvas = function(layerRenderer) {
    * @private
    */
   this.projection_;
-  
+
   /**
    * @type {number}
    * @private
@@ -28,7 +36,7 @@ ol.renderer.tile.Canvas = function(layerRenderer) {
    * @private
    */
   this.origin_ = new ol.Coordinate(0, 0);
-  
+
   /**
    * @type {ol.Pixel}
    * @private
@@ -40,13 +48,13 @@ ol.renderer.tile.Canvas = function(layerRenderer) {
    * @private
    */
   this.size_;
-  
+
   /**
    * @type {CanvasContext}
    * @private
    */
   this.context_;
-  
+
   /**
    * @type {CanvasImageData}
    * @private
@@ -55,8 +63,9 @@ ol.renderer.tile.Canvas = function(layerRenderer) {
 
 };
 
+
 /**
- * @param size {Object|ol.Size}
+ * @param {Object|ol.Size} size Tile size.
  */
 ol.renderer.tile.Canvas.prototype.setSize = function(size) {
   if (!(size instanceof ol.Size)) {
@@ -65,14 +74,15 @@ ol.renderer.tile.Canvas.prototype.setSize = function(size) {
   this.size_ = size;
   if (!this.context_) {
     this.context_ = document.createElement('canvas').getContext('2d');
-    this.pixelData_ = this.context_.createImageData(1,1).data;
+    this.pixelData_ = this.context_.createImageData(1, 1).data;
     this.pixelData[3] = 1; // opacity
   }
   goog.style.setSize(this.canvas_, size);
 };
 
+
 /**
- * @param size {Object|ol.Coordinate}
+ * @param {Object|ol.Coordinate} origin Tile origin.
  */
 ol.renderer.tile.Canvas.prototype.setOrigin = function(origin) {
   if (!(origin instanceof ol.Coordinate)) {
@@ -82,22 +92,24 @@ ol.renderer.tile.Canvas.prototype.setOrigin = function(origin) {
   this.originPixel_ = this.layerRenderer_.getPixelFromCoordinate(origin);
 };
 
+
 /**
- * @param resolution {number}
+ * @param {number} resolution Tile resolution.
  */
 ol.renderer.tile.Canvas.prototype.setResolution = function(resolution) {
   this.resolution_ = resolution;
 };
 
-/*
- * @param geoJson {Object|Array} GeoJSON or an array of GeoJSON features 
- * @param projection {ol.Projection=}
+
+/**
+ * @param {Object|Array} geoJson GeoJSON or an array of GeoJSON features.
+ * @param {ol.Projection=} opt_projection Projection.
  */
-ol.renderer.tile.Canvas.prototype.render = function(geoJson, projection) {
+ol.renderer.tile.Canvas.prototype.render = function(geoJson, opt_projection) {
   var map = this.map;
   this.projection_ = map.getProjection();
   this.resolution_ = map.getResolution();
-  
+
   var features;
   if (goog.isArray(geoJson)) {
     features = geoJson;
@@ -106,49 +118,67 @@ ol.renderer.tile.Canvas.prototype.render = function(geoJson, projection) {
   } else if (geoJson.type === 'Feature') {
     features = [geoJson];
   }
-  
+
   if (features) {
     //FIXME Support geometry level projections
-    projection = projection || new ol.Projection('EPSG:4326');
-    if (!(projection instanceof ol.Projection)) {
-      projection = new ol.Projection(projection);
+    // @type {ol.Projection}
+    var projection;
+    if (goog.isDef(opt_projection)) {
+      projection = opt_projection;
+    } else {
+      projection = new ol.Projection('EPSG:4326');
     }
-    for (var i=0, ii=features.length; i<ii; ++i) {
+    for (var i = 0, ii = features.length; i < ii; ++i) {
       this.renderGeometry(features[i].geometry, projection);
     }
   }
 };
 
+
+/**
+ * @param {Object} geometry GeoJSON geometry.
+ * @param {ol.Projection} projection Projection.
+ */
 ol.renderer.tile.Canvas.prototype.renderGeometry =
     function(geometry, projection) {
   var i, coordinates, hole = false;
   if (geometry.type === 'Point') {
-    this.renderPosList([geometry.coordinates], projection, false, false, hole);
+    this.renderPosList([geometry.coordinates],
+        projection, false, false, hole);
   } else if (geometry.type === 'MultiPoint') {
-    this.renderPosList(geometry.coordinates, projection, false, false, hole);
+    this.renderPosList(geometry.coordinates,
+        projection, false, false, hole);
   } else if (geometry.type === 'LineString') {
     this.renderPosList(geometry.coordinates, projection, true, false, hole);
   } else if (geometry.type === 'MultiLineString') {
     coordinates = geometry.coordinates;
-    for (i=0, ii=coordinates.length; i<ii; ++i) {
+    for (i = 0, ii = coordinates.length; i < ii; ++i) {
       this.renderPosList(coordinates[i], projection, true, false, hole);
     }
   } else if (geometry.type === 'Polygon') {
     coordinates = geometry.coordinates;
-    for (i=0, ii=coordinates.length; i<ii; ++i) {
+    for (i = 0, ii = coordinates.length; i < ii; ++i) {
       this.renderPosList(coordinates[i], projection, true, true, hole);
       hole = true;
     }
   }
 };
 
+
+/**
+ * @param {Array} posList Coordinates.
+ * @param {ol.Projection} projection Projection.
+ * @param {boolean} connect Connect endpoints.
+ * @param {boolean} fill Fill.
+ * @param {boolean} hole Treat as hole.
+ */
 ol.renderer.tileCanvas.prototype.renderPosList =
     function(posList, projection, connect, fill, hole) {
   var position, coordinate, pixel, localX, localY;
   if (connect === true) {
     this.context_.beginPath();
   }
-  for (i=0, ii=posList.length; i<ii; ++i) {
+  for (i = 0, ii = posList.length; i < ii; ++i) {
     position = posList[i];
     coordinate = ol.Projection.transform(new ol.Coordinate(
         position[0], position[1]), projection, this.projection);
@@ -170,5 +200,5 @@ ol.renderer.tileCanvas.prototype.renderPosList =
     //FIXME deal with holes
     this.context_.fill();
   }
-  
+
 };
