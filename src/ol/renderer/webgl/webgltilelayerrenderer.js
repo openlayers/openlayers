@@ -1,5 +1,7 @@
 // FIXME large resolutions lead to too large framebuffers :-(
 // FIXME animated shaders! check in redraw
+// FIXME throttle texture uploads
+// FIXME prioritize texture uploads
 
 goog.provide('ol.renderer.webgl.TileLayer');
 goog.provide('ol.renderer.webgl.tilelayerrenderer');
@@ -143,12 +145,6 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
-   * @type {Object.<number, (number|null)>}
-   */
-  this.tileChangeListenerKeys_ = {};
-
-  /**
-   * @private
    * @type {goog.vec.Mat4.AnyType}
    */
   this.matrix_ = goog.vec.Mat4.createNumber();
@@ -277,19 +273,6 @@ ol.renderer.webgl.TileLayer.prototype.getTexture = function() {
 
 
 /**
- * @param {goog.events.Event} event Event.
- * @protected
- */
-ol.renderer.webgl.TileLayer.prototype.handleTileChange = function(event) {
-  var tile = /** @type {ol.Tile} */ (event.target);
-  var tileKey = goog.getUid(tile);
-  goog.asserts.assert(tileKey in this.tileChangeListenerKeys_);
-  delete this.tileChangeListenerKeys_[tileKey];
-  this.dispatchChangeEvent();
-};
-
-
-/**
  * @inheritDoc
  */
 ol.renderer.webgl.TileLayer.prototype.handleWebGLContextLost = function() {
@@ -304,9 +287,9 @@ ol.renderer.webgl.TileLayer.prototype.handleWebGLContextLost = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.TileLayer.prototype.render = function() {
+ol.renderer.webgl.TileLayer.prototype.renderFrame = function(time) {
 
-  var animate = false;
+  var requestRenderFrame = false;
 
   var mapRenderer = this.getMapRenderer();
   var map = this.getMap();
@@ -413,25 +396,25 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
       var tile = tileSource.getTile(tileCoord);
 
       if (goog.isNull(tile)) {
-        // FIXME consider returning here as this is outside the source's extent
-      } else if (tile.getState() == ol.TileState.LOADED) {
-        if (mapRenderer.isImageTextureLoaded(tile.getImage())) {
+        return;
+      }
+
+      var tileState = tile.getState();
+      if (tileState == ol.TileState.IDLE) {
+        tile.load();
+      } else if (tileState == ol.TileState.LOADED) {
+        var image = tile.getImage();
+        if (mapRenderer.isImageTextureLoaded(image)) {
           tilesToDrawByZ[z][tileCoord.toString()] = tile;
           return;
         } else {
-          imagesToLoad.push(tile.getImage());
-          allTilesLoaded = false;
+          imagesToLoad.push(image);
         }
-      } else {
-        var tileKey = goog.getUid(tile);
-        if (!(tileKey in this.tileChangeListenerKeys_)) {
-          tile.load();
-          // FIXME will need to handle aborts as well
-          this.tileChangeListenerKeys_[tileKey] = goog.events.listen(tile,
-              goog.events.EventType.CHANGE, this.handleTileChange, false, this);
-        }
-        allTilesLoaded = false;
+      } else if (tileState == ol.TileState.ERROR) {
+        return;
       }
+
+      allTilesLoaded = false;
 
       // FIXME this could be more efficient about filling partial holes
       tileGrid.forEachTileCoordParentTileRange(
@@ -497,7 +480,6 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
               this.logger.info('uploaded textures');
             }
           }, mapRenderer, imagesToLoad));
-      animate = true;
     }
 
     if (allTilesLoaded) {
@@ -506,6 +488,7 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
     } else {
       this.renderedTileRange_ = null;
       this.renderedFramebufferExtent_ = null;
+      requestRenderFrame = true;
     }
 
   }
@@ -531,6 +514,6 @@ ol.renderer.webgl.TileLayer.prototype.render = function() {
       -0.5,
       0);
 
-  return animate;
+  return requestRenderFrame;
 
 };

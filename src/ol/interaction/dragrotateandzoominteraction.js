@@ -50,7 +50,9 @@ ol.interaction.DragRotateAndZoom.prototype.handleDrag =
       browserEvent.offsetX - size.width / 2,
       size.height / 2 - browserEvent.offsetY);
   var theta = Math.atan2(delta.y, delta.x);
-  // FIXME this should use map.withFrozenRendering but an assertion fails :-(
+  map.requestRenderFrame();
+  // FIXME the calls to map.rotate and map.zoomToResolution should use
+  // map.withFrozenRendering but an assertion fails :-(
   map.rotate(this.startRotation_, -theta);
   var resolution = this.startRatio_ * delta.magnitude();
   map.zoomToResolution(resolution);
@@ -73,6 +75,7 @@ ol.interaction.DragRotateAndZoom.prototype.handleDragStart =
     var theta = Math.atan2(delta.y, delta.x);
     this.startRotation_ = (map.getRotation() || 0) + theta;
     this.startRatio_ = resolution / delta.magnitude();
+    map.requestRenderFrame();
     return true;
   } else {
     return false;

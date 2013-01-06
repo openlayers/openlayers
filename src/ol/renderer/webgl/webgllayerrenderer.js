@@ -112,5 +112,7 @@ ol.renderer.webgl.Layer.prototype.handleWebGLContextLost = goog.nullFunction;
 
 /**
  * Render.
+ * @param {number} time Time.
+ * @return {boolean} Request render frame.
  */
-ol.renderer.webgl.Layer.prototype.render = goog.abstractMethod;
+ol.renderer.webgl.Layer.prototype.renderFrame = goog.abstractMethod;

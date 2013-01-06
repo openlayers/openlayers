@@ -1,5 +1,11 @@
+goog.require('goog.async.AnimationDelay');
 goog.require('goog.dom');
+goog.require('ol.Collection');
+goog.require('ol.Coordinate');
 goog.require('ol.Map');
+goog.require('ol.RendererHint');
+goog.require('ol.layer.TileLayer');
+goog.require('ol.source.XYZ');
 
 describe('ol.Map', function() {
 
@@ -135,4 +141,102 @@ describe('ol.Map', function() {
       });
     });
   });
+
+  describe('user animation', function() {
+
+    var layer, map;
+    beforeEach(function() {
+      // always use setTimeout based shim for requestAnimationFrame
+      spyOn(goog.async.AnimationDelay.prototype, 'getRaf_')
+          .andCallFake(function() {return null;});
+
+      layer = new ol.layer.TileLayer({
+        source: new ol.source.XYZ({
+          url: 'foo',
+          maxZoom: 2
+        })
+      });
+
+      map = new ol.Map({
+        center: new ol.Coordinate(0, 0),
+        layers: new ol.Collection([layer]),
+        renderer: ol.RendererHint.DOM,
+        target: 'map',
+        zoom: 1
+      });
+    });
+
+    afterEach(function() {
+      map.dispose();
+      layer.dispose();
+    });
+
+    it('can set up an animation loop', function() {
+
+      function quadInOut(t, b, c, d) {
+        if ((t /= d / 2) < 1) {
+          return c / 2 * t * t + b;
+        }
+        return -c / 2 * ((--t) * (t - 2) - 1) + b;
+      }
+
+      var duration = 500;
+      var destination = new ol.Coordinate(1000, 1000);
+
+      var origin = map.getCenter();
+      var start = new Date().getTime();
+      var x0 = origin.x;
+      var y0 = origin.y;
+      var dx = destination.x - origin.x;
+      var dy = destination.y - origin.y;
+
+      var o = {
+        callback: function() {
+          var dt = new Date().getTime() - start;
+          var more = dt <= duration,
+              x, y;
+          if (more) {
+            x = quadInOut(dt, x0, dx, duration);
+            y = quadInOut(dt, y0, dy, duration);
+          } else {
+            x = destination.x;
+            y = destination.y;
+          }
+          map.setCenter(new ol.Coordinate(x, y));
+          if (more) {
+            animationDelay.start();
+          }
+        }
+      };
+
+      spyOn(o, 'callback').andCallThrough();
+
+      var animationDelay = new goog.async.AnimationDelay(o.callback);
+
+      animationDelay.start();
+
+      // confirm that the center is somewhere between origin and destination
+      // after a short delay
+      waits(100);
+      runs(function() {
+        expect(o.callback).toHaveBeenCalled();
+        var loc = map.getCenter();
+        expect(loc.x).not.toEqual(origin.x);
+        expect(loc.y).not.toEqual(origin.y);
+        expect(loc.x).not.toEqual(destination.x);
+        expect(loc.y).not.toEqual(destination.y);
+      });
+
+      // confirm that the map has reached the destination after the duration
+      waits(duration);
+      runs(function() {
+        var loc = map.getCenter();
+        expect(loc.x).toEqual(destination.x);
+        expect(loc.y).toEqual(destination.y);
+      });
+
+    });
+
+  });
+
 });

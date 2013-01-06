@@ -33,11 +33,6 @@ ol.renderer.dom.TileLayer = function(mapRenderer, tileLayer, target) {
    */
   this.renderedMapResolution_ = undefined;
 
-  /**
-   * @type {Object.<number, (number|null)>}
-   * @private
-   */
-  this.tileChangeListenerKeys_ = {};
 };
 goog.inherits(ol.renderer.dom.TileLayer, ol.renderer.dom.Layer);
 
@@ -92,23 +87,9 @@ ol.renderer.dom.TileLayer.prototype.removeExtraTiles_ =
 
 
 /**
- * @param {goog.events.Event} event Tile change event.
- * @private
- */
-ol.renderer.dom.TileLayer.prototype.handleTileChange_ = function(event) {
-  var tile = /** @type {ol.Tile} */ (event.target);
-  goog.asserts.assert(tile.getState() == ol.TileState.LOADED);
-  var tileKey = goog.getUid(tile);
-  goog.asserts.assert(tileKey in this.tileChangeListenerKeys_);
-  delete this.tileChangeListenerKeys_[tileKey];
-  this.render();
-};
-
-
-/**
  * @inheritDoc
  */
-ol.renderer.dom.TileLayer.prototype.render = function() {
+ol.renderer.dom.TileLayer.prototype.renderFrame = function(time) {
 
   var map = this.getMap();
   if (!map.isDef()) {
@@ -134,6 +115,7 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
   var tileRange =
       tileGrid.getTileRangeForExtentAndResolution(mapExtent, mapResolution);
 
+  var allTilesLoaded = true;
 
   // first pass through the tile range to determine all the tiles needed
   tileRange.forEachTileCoord(z, function(tileCoord) {
@@ -145,17 +127,14 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
 
     var key = tile.tileCoord.toString();
     var state = tile.getState();
-    if (state == ol.TileState.LOADED) {
+    if (state == ol.TileState.IDLE) {
+      tile.load();
+    } else if (state == ol.TileState.LOADED) {
       tilesToDrawByZ[z][key] = tile;
       return;
-    } else {
-      var tileKey = goog.getUid(tile);
-      if (!(tileKey in this.tileChangeListenerKeys_)) {
-        this.tileChangeListenerKeys_[tileKey] = goog.events.listen(tile,
-            goog.events.EventType.CHANGE, this.handleTileChange_, false, this);
-        tile.load();
-      }
     }
+
+    allTilesLoaded = false;
 
     /**
      * Look for already loaded tiles at alternate z that can serve as
@@ -243,4 +222,6 @@ ol.renderer.dom.TileLayer.prototype.render = function() {
   this.renderedMapResolution_ = mapResolution;
 
   this.removeExtraTiles_(tilesToDrawByZ);
+
+  return !allTilesLoaded;
 };
