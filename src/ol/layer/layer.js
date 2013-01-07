@@ -71,7 +71,7 @@ ol.layer.Layer.prototype.dispatchLoadEvent_ = function() {
  * @return {number} Brightness.
  */
 ol.layer.Layer.prototype.getBrightness = function() {
-  return /** @type {number} */ this.get(ol.layer.LayerProperty.BRIGHTNESS);
+  return /** @type {number} */ (this.get(ol.layer.LayerProperty.BRIGHTNESS));
 };
 goog.exportProperty(
     ol.layer.Layer.prototype,
@@ -83,7 +83,7 @@ goog.exportProperty(
  * @return {number} Contrast.
  */
 ol.layer.Layer.prototype.getContrast = function() {
-  return /** @type {number} */ this.get(ol.layer.LayerProperty.CONTRAST);
+  return /** @type {number} */ (this.get(ol.layer.LayerProperty.CONTRAST));
 };
 goog.exportProperty(
     ol.layer.Layer.prototype,
@@ -95,7 +95,7 @@ goog.exportProperty(
  * @return {number} Hue.
  */
 ol.layer.Layer.prototype.getHue = function() {
-  return /** @type {number} */ this.get(ol.layer.LayerProperty.HUE);
+  return /** @type {number} */ (this.get(ol.layer.LayerProperty.HUE));
 };
 goog.exportProperty(
     ol.layer.Layer.prototype,
@@ -107,7 +107,7 @@ goog.exportProperty(
  * @return {number} Opacity.
  */
 ol.layer.Layer.prototype.getOpacity = function() {
-  return /** @type {number} */ this.get(ol.layer.LayerProperty.OPACITY);
+  return /** @type {number} */ (this.get(ol.layer.LayerProperty.OPACITY));
 };
 goog.exportProperty(
     ol.layer.Layer.prototype,
@@ -119,7 +119,7 @@ goog.exportProperty(
  * @return {number} Saturation.
  */
 ol.layer.Layer.prototype.getSaturation = function() {
-  return /** @type {number} */ this.get(ol.layer.LayerProperty.SATURATION);
+  return /** @type {number} */ (this.get(ol.layer.LayerProperty.SATURATION));
 };
 goog.exportProperty(
     ol.layer.Layer.prototype,
@@ -139,7 +139,7 @@ ol.layer.Layer.prototype.getSource = function() {
  * @return {boolean} Visible.
  */
 ol.layer.Layer.prototype.getVisible = function() {
-  return /** @type {boolean} */ this.get(ol.layer.LayerProperty.VISIBLE);
+  return /** @type {boolean} */ (this.get(ol.layer.LayerProperty.VISIBLE));
 };
 goog.exportProperty(
     ol.layer.Layer.prototype,
