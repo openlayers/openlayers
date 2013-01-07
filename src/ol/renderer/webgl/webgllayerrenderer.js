@@ -86,8 +86,8 @@ ol.renderer.webgl.Layer.prototype.getColorMatrix = function() {
  * @return {ol.renderer.Map} MapRenderer.
  */
 ol.renderer.webgl.Layer.prototype.getMapRenderer = function() {
-  return /** @type {ol.renderer.webgl.Map} */ goog.base(
-      this, 'getMapRenderer');
+  return /** @type {ol.renderer.webgl.Map} */ (goog.base(
+      this, 'getMapRenderer'));
 };
 
 
