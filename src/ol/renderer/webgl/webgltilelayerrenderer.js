@@ -252,7 +252,7 @@ ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
  * @inheritDoc
  */
 ol.renderer.webgl.TileLayer.prototype.getLayer = function() {
-  return /** @type {ol.layer.TileLayer} */ goog.base(this, 'getLayer');
+  return /** @type {ol.layer.TileLayer} */ (goog.base(this, 'getLayer'));
 };
 
 
