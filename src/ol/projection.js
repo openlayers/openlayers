@@ -87,7 +87,7 @@ ol.Projection.prototype.getUnits = function() {
  */
 ol.Proj4jsProjection = function(code, proj4jsProj) {
 
-  var units = /** @type {ol.ProjectionUnits} */ proj4jsProj.units;
+  var units = /** @type {ol.ProjectionUnits} */ (proj4jsProj.units);
 
   goog.base(this, code, units, null);
 
