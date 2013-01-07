@@ -169,7 +169,7 @@ ol.control.Attribution.prototype.getLayerAttributionVisiblities_ =
 
   var mapZ;
   if (source instanceof ol.source.TileSource) {
-    var tileSource = /** @type {ol.source.TileSource} */ source;
+    var tileSource = /** @type {ol.source.TileSource} */ (source);
     var tileGrid = tileSource.getTileGrid();
     mapZ = tileGrid.getZForResolution(mapResolution);
   }
@@ -230,7 +230,7 @@ ol.control.Attribution.prototype.getLayerAttributionVisiblities_ =
  * @param {goog.events.Event} event Event.
  */
 ol.control.Attribution.prototype.handleLayerLoad = function(event) {
-  var layer = /** @type {ol.layer.Layer} */ event.target;
+  var layer = /** @type {ol.layer.Layer} */ (event.target);
   this.createAttributionElementsForLayer_(layer);
 };
 
@@ -247,7 +247,7 @@ ol.control.Attribution.prototype.handleLayerVisibleChanged = function(event) {
   var mapProjection = /** @type {ol.Projection} */ map.getProjection();
   var mapResolution = /** @type {number} */ map.getResolution();
 
-  var layer = /** @type {ol.layer.Layer} */ event.target;
+  var layer = /** @type {ol.layer.Layer} */ (event.target);
 
   this.updateLayerAttributionsVisibility_(
       layer, mapIsDef, mapExtent, mapResolution, mapProjection);
@@ -260,7 +260,7 @@ ol.control.Attribution.prototype.handleLayerVisibleChanged = function(event) {
  * @protected
  */
 ol.control.Attribution.prototype.handleLayersAdd = function(collectionEvent) {
-  var layer = /** @type {ol.layer.Layer} */ collectionEvent.elem;
+  var layer = /** @type {ol.layer.Layer} */ (collectionEvent.elem);
   this.addLayer(layer);
 };
 
@@ -271,7 +271,7 @@ ol.control.Attribution.prototype.handleLayersAdd = function(collectionEvent) {
  */
 ol.control.Attribution.prototype.handleLayersRemove =
     function(collectionEvent) {
-  var layer = /** @type {ol.layer.Layer} */ collectionEvent.elem;
+  var layer = /** @type {ol.layer.Layer} */ (collectionEvent.elem);
   this.removeLayer(layer);
 };
 
