@@ -1132,12 +1132,17 @@
             var tile = layer.grid[1][1];
             t.ok(OpenLayers.Element.hasClass(tile.imgDiv, 'olTileReplacing'), 'tile is marked for being replaced');
             t.ok(document.getElementById(tile.id + '_bb'), 'backbuffer created for tile');
+            // simulate a css declaration where '.olTileReplacing' sets display
+            // to none.
+            tile.imgDiv.style.display = 'none';
             tile.onImageLoad();
             t.ok(!OpenLayers.Element.hasClass(tile.imgDiv, 'olTileReplacing'), 'tile replaced, no longer marked');
             t.ok(!document.getElementById(tile.id + '_bb'), 'backbuffer removed for tile');
             
             layer.mergeNewParams({foo: 'baz'});
             tile = layer.grid[1][1];
+            // simulate a css declaration where '.olTileReplacing' does not set
+            // display to none.
             tile.imgDiv.style.display = 'block';
             tile.onImageLoad();
             t.ok(!OpenLayers.Element.hasClass(tile.imgDiv, 'olTileReplacing'), 'tile replaced, no longer marked');
