@@ -226,10 +226,7 @@ ol.renderer.Map.prototype.handleLayersAdd = function(collectionEvent) {
  * @protected
  */
 ol.renderer.Map.prototype.handleLayersChanged = function() {
-  var layerRenderers = goog.object.getValues(this.layerRenderers);
-  goog.array.forEach(layerRenderers, function(layerRenderer) {
-    this.removeLayerRenderer(layerRenderer);
-  }, this);
+  goog.disposeAll(goog.object.getValues(this.layerRenderers));
   this.layerRenderers = {};
   if (!goog.isNull(this.layersListenerKeys_)) {
     goog.array.forEach(this.layersListenerKeys_, goog.events.unlistenByKey);
