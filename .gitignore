@@ -1,6 +1,5 @@
 *.pyc
 /bin/plovr*.jar
-/bin/*.pyc
 /build/gh-pages
 /build/jsdoc-*-timestamp
 /build/lint-spec-timestamp
