@@ -42,7 +42,7 @@ goog.inherits(ol.renderer.dom.TileLayer, ol.renderer.dom.Layer);
  * @return {ol.layer.TileLayer} Layer.
  */
 ol.renderer.dom.TileLayer.prototype.getLayer = function() {
-  return /** @type {ol.layer.TileLayer} */ goog.base(this, 'getLayer');
+  return /** @type {ol.layer.TileLayer} */ (goog.base(this, 'getLayer'));
 };
 
 
