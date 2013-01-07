@@ -130,7 +130,7 @@ ol.Collection.prototype.getAt = function(index) {
  * @return {number} Length.
  */
 ol.Collection.prototype.getLength = function() {
-  return /** @type {number} */ this.get(ol.CollectionProperty.LENGTH);
+  return /** @type {number} */ (this.get(ol.CollectionProperty.LENGTH));
 };
 
 
