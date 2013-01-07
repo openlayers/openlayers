@@ -217,7 +217,7 @@ ol.renderer.Map.prototype.handleCenterChanged = function() {
  * @protected
  */
 ol.renderer.Map.prototype.handleLayersAdd = function(collectionEvent) {
-  var layer = /** @type {ol.layer.Layer} */ collectionEvent.elem;
+  var layer = /** @type {ol.layer.Layer} */ (collectionEvent.elem);
   this.addLayer(layer);
 };
 
@@ -250,7 +250,7 @@ ol.renderer.Map.prototype.handleLayersChanged = function() {
  * @protected
  */
 ol.renderer.Map.prototype.handleLayersRemove = function(collectionEvent) {
-  var layer = /** @type {ol.layer.Layer} */ collectionEvent.elem;
+  var layer = /** @type {ol.layer.Layer} */ (collectionEvent.elem);
   this.removeLayer(layer);
 };
 
