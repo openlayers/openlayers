@@ -23,7 +23,7 @@ ol.interaction.KeyboardZoom.prototype.handleMapBrowserEvent =
     function(mapBrowserEvent) {
   if (mapBrowserEvent.type == goog.events.KeyHandler.EventType.KEY) {
     var keyEvent = /** @type {goog.events.KeyEvent} */
-        mapBrowserEvent.browserEvent;
+        (mapBrowserEvent.browserEvent);
     var charCode = keyEvent.charCode;
     if (charCode == '+'.charCodeAt(0) || charCode == '-'.charCodeAt(0)) {
       var map = mapBrowserEvent.map;

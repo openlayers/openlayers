@@ -32,7 +32,7 @@ ol.interaction.MouseWheelZoom.prototype.handleMapBrowserEvent =
       goog.events.MouseWheelHandler.EventType.MOUSEWHEEL) {
     var map = mapBrowserEvent.map;
     var mouseWheelEvent = /** @type {goog.events.MouseWheelEvent} */
-        mapBrowserEvent.browserEvent;
+        (mapBrowserEvent.browserEvent);
     goog.asserts.assert(mouseWheelEvent instanceof goog.events.MouseWheelEvent);
     var anchor = mapBrowserEvent.getCoordinate();
     var delta = mouseWheelEvent.deltaY < 0 ? this.delta_ : -this.delta_;
