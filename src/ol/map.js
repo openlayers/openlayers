@@ -429,7 +429,7 @@ ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
  * @return {ol.Projection|undefined} Projection.
  */
 ol.Map.prototype.getProjection = function() {
-  return /** @type {ol.Projection} */ this.get(ol.MapProperty.PROJECTION);
+  return /** @type {ol.Projection} */ (this.get(ol.MapProperty.PROJECTION));
 };
 goog.exportProperty(
     ol.Map.prototype,
@@ -587,7 +587,7 @@ ol.Map.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
  * @private
  */
 ol.Map.prototype.handleControlsAdd_ = function(collectionEvent) {
-  var control = /** @type {ol.control.Control} */ collectionEvent.elem;
+  var control = /** @type {ol.control.Control} */ (collectionEvent.elem);
   control.setMap(this);
 };
 
@@ -597,7 +597,7 @@ ol.Map.prototype.handleControlsAdd_ = function(collectionEvent) {
  * @private
  */
 ol.Map.prototype.handleControlsRemove_ = function(collectionEvent) {
-  var control = /** @type {ol.control.Control} */ collectionEvent.elem;
+  var control = /** @type {ol.control.Control} */ (collectionEvent.elem);
   control.setMap(null);
 };
 
@@ -608,7 +608,7 @@ ol.Map.prototype.handleControlsRemove_ = function(collectionEvent) {
 ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
   var interactions = this.getInteractions();
   var interactionsArray = /** @type {Array.<ol.interaction.Interaction>} */
-      interactions.getArray();
+      (interactions.getArray());
   if (this.dispatchEvent(mapBrowserEvent) !== false) {
     for (var i = interactionsArray.length - 1; i >= 0; i--) {
       var interaction = interactionsArray[i];
