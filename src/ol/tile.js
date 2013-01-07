@@ -96,7 +96,7 @@ ol.Tile.prototype.getImage = function(opt_context) {
     } else if (goog.object.isEmpty(this.imageByContext_)) {
       image = this.image_;
     } else {
-      image = /** @type {Image} */ this.image_.cloneNode(false);
+      image = /** @type {Image} */ (this.image_.cloneNode(false));
     }
     this.imageByContext_[key] = image;
     return image;
