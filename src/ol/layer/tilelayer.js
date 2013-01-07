@@ -20,5 +20,5 @@ goog.inherits(ol.layer.TileLayer, ol.layer.Layer);
  * @return {ol.source.TileSource} Source.
  */
 ol.layer.TileLayer.prototype.getTileSource = function() {
-  return /** @type {ol.source.TileSource} */ this.getSource();
+  return /** @type {ol.source.TileSource} */ (this.getSource());
 };
