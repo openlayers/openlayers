@@ -4,9 +4,6 @@
     <script type="text/javascript">window.alert = oldAlert;</script>
 <script src="../OLLoader.js"></script>
   <script type="text/javascript">
-    // turn off animation frame handling, so we can check img urls in tests
-    delete OpenLayers.Layer.Grid.prototype.queueTileDraw;
-    
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var layer; 
 

@@ -555,9 +555,6 @@
     }
     
     function test_tileBounds(t) {
-        // do not defer moveGriddedTiles
-        var isNative = OpenLayers.Animation.isNative;
-        OpenLayers.Animation.isNative = true;
         t.plan(3);
         
         var map = new OpenLayers.Map("map", {projection: "EPSG:3857"});
@@ -575,7 +572,6 @@
         t.eq(bounds.right, 0, "0 is 0, and not some super small number");
         
         map.destroy();
-        OpenLayers.Animation.isNative = isNative;
     }
 
 
