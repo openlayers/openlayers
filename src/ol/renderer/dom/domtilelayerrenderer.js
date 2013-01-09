@@ -382,7 +382,7 @@ ol.renderer.dom.TileLayerZ_.prototype.removeTilesOutsideExtent =
  */
 ol.renderer.dom.TileLayerZ_.prototype.setTransform = function(transform) {
   if (!goog.vec.Mat4.equals(transform, this.transform_)) {
-    ol.dom.transformElement2D(this.target, transform);
+    ol.dom.transformElement2D(this.target, transform, 6);
     goog.vec.Mat4.setFromArray(this.transform_, transform);
   }
 };
