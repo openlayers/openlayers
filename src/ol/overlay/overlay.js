@@ -43,7 +43,13 @@ ol.overlay.Overlay = function(overlayOptions) {
    * @private
    * @type {Array.<number>}
    */
-  this.mapListenerKeys_ = [];
+  this.mapListenerKeys_ = null;
+
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.viewListenerKeys_ = null;
 
   if (goog.isDef(overlayOptions.coordinate)) {
     this.setCoordinate(overlayOptions.coordinate);
@@ -56,6 +62,37 @@ ol.overlay.Overlay = function(overlayOptions) {
   }
   if (goog.isDef(overlayOptions.positioning)) {
     this.setPositioning(overlayOptions.positioning);
+  }
+};
+
+
+/**
+ * @private
+ */
+ol.overlay.Overlay.prototype.handleViewChanged_ = function() {
+  goog.asserts.assert(!goog.isNull(this.map_));
+  if (!goog.isNull(this.viewListenerKeys_)) {
+    goog.array.forEach(this.viewListenerKeys_, goog.events.unlistenByKey);
+    this.viewListenerKeys_ = null;
+  }
+  var view = this.map_.getView();
+  if (goog.isDefAndNotNull(view)) {
+    // FIXME works for View2D only
+    goog.asserts.assert(view instanceof ol.View2D);
+    this.viewListenerKeys_ = [
+      goog.events.listen(
+          view, ol.Object.getChangedEventType(ol.View2DProperty.CENTER),
+          this.updatePixelPosition_, false, this),
+
+      goog.events.listen(
+          view, ol.Object.getChangedEventType(ol.View2DProperty.RESOLUTION),
+          this.updatePixelPosition_, false, this),
+
+      goog.events.listen(
+          view, ol.Object.getChangedEventType(ol.View2DProperty.ROTATION),
+          this.updatePixelPosition_, false, this)
+    ];
+    this.updatePixelPosition_();
   }
 };
 
@@ -100,25 +137,24 @@ ol.overlay.Overlay.prototype.getElement = function() {
  */
 ol.overlay.Overlay.prototype.setMap = function(map) {
   this.map_ = map;
-  goog.array.forEach(this.mapListenerKeys_, goog.events.unlistenByKey);
+  if (!goog.isNull(this.mapListenerKeys_)) {
+    goog.array.forEach(this.mapListenerKeys_, goog.events.unlistenByKey);
+    this.mapListenerKeys_ = null;
+  }
   if (this.element_) {
     this.setElement(this.element_);
   }
-  this.mapListenerKeys_ = map ? [
-    goog.events.listen(
-        map, ol.Object.getChangedEventType(ol.MapProperty.CENTER),
-        this.updatePixelPosition_, false, this),
-    goog.events.listen(
-        map, ol.Object.getChangedEventType(ol.MapProperty.RESOLUTION),
-        this.updatePixelPosition_, false, this),
-    goog.events.listen(
-        map, ol.Object.getChangedEventType(ol.MapProperty.ROTATION),
-        this.updatePixelPosition_, false, this),
-    goog.events.listen(
-        map, ol.Object.getChangedEventType(ol.MapProperty.SIZE),
-        this.updatePixelPosition_, false, this)
-  ] : [];
-  this.updatePixelPosition_();
+  if (goog.isDefAndNotNull(map)) {
+    this.mapListenerKeys_ = [
+      goog.events.listen(
+          map, ol.Object.getChangedEventType(ol.MapProperty.SIZE),
+          this.updatePixelPosition_, false, this),
+      goog.events.listen(
+          map, ol.Object.getChangedEventType(ol.MapProperty.VIEW),
+          this.handleViewChanged_, false, this)
+    ];
+    this.handleViewChanged_();
+  }
 };
 
 

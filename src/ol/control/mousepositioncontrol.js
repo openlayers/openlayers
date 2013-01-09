@@ -1,4 +1,5 @@
 // FIXME should listen on appropriate pane, once it is defined
+// FIXME works for View2D only
 
 goog.provide('ol.control.MousePosition');
 
@@ -60,21 +61,40 @@ ol.control.MousePosition = function(mousePositionOptions) {
    * @private
    * @type {Array.<number>}
    */
-  this.listenerKeys_ = [];
+  this.mapListenerKeys_ = null;
 
-  this.handleMapProjectionChanged();
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.viewListenerKeys_ = null;
 
+  this.handleViewProjectionChanged_();
 };
 goog.inherits(ol.control.MousePosition, ol.control.Control);
 
 
 /**
- * @protected
+ * @private
  */
-ol.control.MousePosition.prototype.handleMapProjectionChanged = function() {
-  this.updateTransform_();
-  // FIXME should we instead re-calculate using the last known mouse position?
-  this.element.innerHTML = this.undefinedHtml_;
+ol.control.MousePosition.prototype.handleMapViewChanged_ = function() {
+  var map = this.getMap();
+  goog.asserts.assert(!goog.isNull(map));
+  if (!goog.isNull(this.viewListenerKeys_)) {
+    goog.array.forEach(this.viewListenerKeys_, goog.events.unlistenByKey);
+    this.viewListenerKeys_ = null;
+  }
+  var view = map.getView();
+  if (goog.isDefAndNotNull(view)) {
+    // FIXME works for View2D only
+    goog.asserts.assert(view instanceof ol.View2D);
+    this.viewListenerKeys_ = [
+      goog.events.listen(
+          view, ol.Object.getChangedEventType(ol.View2DProperty.ROTATION),
+          this.handleViewProjectionChanged_, false, this)
+    ];
+    this.handleViewProjectionChanged_();
+  }
 };
 
 
@@ -113,24 +133,35 @@ ol.control.MousePosition.prototype.handleMouseOut = function(browserEvent) {
 
 
 /**
+ * @private
+ */
+ol.control.MousePosition.prototype.handleViewProjectionChanged_ = function() {
+  this.updateTransform_();
+  // FIXME should we instead re-calculate using the last known
+  // mouse position?
+  this.element.innerHTML = this.undefinedHtml_;
+};
+
+
+/**
  * @inheritDoc
  */
 ol.control.MousePosition.prototype.setMap = function(map) {
-  if (!goog.isNull(this.listenerKeys_)) {
-    goog.array.forEach(this.listenerKeys_, goog.events.unlistenByKey);
-    this.listenerKeys_ = null;
+  if (!goog.isNull(this.mapListenerKeys_)) {
+    goog.array.forEach(this.mapListenerKeys_, goog.events.unlistenByKey);
+    this.mapListenerKeys_ = null;
   }
   goog.base(this, 'setMap', map);
   if (!goog.isNull(map)) {
     var viewport = map.getViewport();
     this.listenerKeys = [
-      goog.events.listen(map,
-          ol.Object.getChangedEventType(ol.MapProperty.PROJECTION),
-          this.handleMapProjectionChanged, false, this),
       goog.events.listen(viewport, goog.events.EventType.MOUSEMOVE,
           this.handleMouseMove, false, this),
       goog.events.listen(viewport, goog.events.EventType.MOUSEOUT,
-          this.handleMouseOut, false, this)
+          this.handleMouseOut, false, this),
+      goog.events.listen(map,
+          ol.Object.getChangedEventType(ol.MapProperty.VIEW),
+          this.handleMapViewChanged_, false, this)
     ];
     this.updateTransform_();
   }
@@ -141,16 +172,19 @@ ol.control.MousePosition.prototype.setMap = function(map) {
  * @private
  */
 ol.control.MousePosition.prototype.updateTransform_ = function() {
-  var map = this.getMap();
-  if (goog.isNull(map)) {
-    this.transform_ = ol.Projection.identityTransform;
-  } else {
-    var mapProjection = map.getProjection();
-    if (!goog.isDef(mapProjection) || !goog.isDef(this.projection_)) {
+  var map, view;
+  if (!goog.isNull(map = this.getMap()) &&
+      !goog.isNull(view = map.getView())) {
+    // FIXME works for View2D only
+    goog.asserts.assert(view instanceof ol.View2D);
+    var viewProjection = view.getProjection();
+    if (!goog.isDef(viewProjection) || !goog.isDef(this.projection_)) {
       this.transform_ = ol.Projection.identityTransform;
     } else {
       this.transform_ =
-          ol.Projection.getTransform(mapProjection, this.projection_);
+          ol.Projection.getTransform(viewProjection, this.projection_);
     }
+  } else {
+    this.transform_ = ol.Projection.identityTransform;
   }
 };

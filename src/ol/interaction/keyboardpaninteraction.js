@@ -1,7 +1,10 @@
+// FIXME works for View2D only
+
 goog.provide('ol.interaction.KeyboardPan');
 
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler.EventType');
+goog.require('ol.View2D');
 goog.require('ol.interaction.Interaction');
 
 
@@ -39,7 +42,10 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
         keyCode == goog.events.KeyCodes.RIGHT ||
         keyCode == goog.events.KeyCodes.UP) {
       var map = mapBrowserEvent.map;
-      var resolution = map.getResolution();
+      // FIXME works for View2D only
+      var view = map.getView();
+      goog.asserts.assert(view instanceof ol.View2D);
+      var resolution = view.getResolution();
       var delta;
       var mapUnitsDelta = resolution * this.pixelDelta_;
       if (keyCode == goog.events.KeyCodes.DOWN) {
@@ -52,10 +58,10 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
         goog.asserts.assert(keyCode == goog.events.KeyCodes.UP);
         delta = new ol.Coordinate(0, mapUnitsDelta);
       }
-      var oldCenter = map.getCenter();
+      var oldCenter = view.getCenter();
       var newCenter = new ol.Coordinate(
           oldCenter.x + delta.x, oldCenter.y + delta.y);
-      map.setCenter(newCenter);
+      view.setCenter(newCenter);
       keyEvent.preventDefault();
       mapBrowserEvent.preventDefault();
     }

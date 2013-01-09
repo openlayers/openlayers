@@ -133,26 +133,8 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
 /**
  * @inheritDoc
  */
-ol.renderer.dom.Map.prototype.handleCenterChanged = function() {
-  goog.base(this, 'handleCenterChanged');
-  this.getMap().render();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.dom.Map.prototype.handleResolutionChanged = function() {
-  goog.base(this, 'handleResolutionChanged');
-  this.getMap().render();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.dom.Map.prototype.handleRotationChanged = function() {
-  goog.base(this, 'handleRotationChanged');
+ol.renderer.dom.Map.prototype.handleViewPropertyChanged = function() {
+  goog.base(this, 'handleViewPropertyChanged');
   this.getMap().render();
 };
 
@@ -162,6 +144,15 @@ ol.renderer.dom.Map.prototype.handleRotationChanged = function() {
  */
 ol.renderer.dom.Map.prototype.handleSizeChanged = function() {
   goog.base(this, 'handleSizeChanged');
+  this.getMap().render();
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.dom.Map.prototype.handleViewChanged = function() {
+  goog.base(this, 'handleViewChanged');
   this.getMap().render();
 };
 
@@ -177,10 +168,11 @@ ol.renderer.dom.Map.prototype.renderFrame = function(time) {
     return;
   }
 
-  var mapCenter = map.getCenter();
+  var view = map.getView().getView2D();
+  var mapCenter = view.getCenter();
   var mapSize = map.getSize();
-  var mapResolution = map.getResolution();
-  var mapRotation = map.getRotation();
+  var mapResolution = view.getResolution();
+  var mapRotation = view.getRotation();
 
   goog.asserts.assert(goog.isDefAndNotNull(mapCenter));
   goog.asserts.assert(goog.isDef(mapResolution));
@@ -235,14 +227,15 @@ ol.renderer.dom.Map.prototype.resetLayersPane_ = function() {
   var mapSize = map.getSize();
   var halfWidth = mapSize.width / 2;
   var halfHeight = mapSize.height / 2;
-  var center = map.getCenter();
-  var resolution = map.getResolution();
+  var view = /** @type {ol.View2D} */ (map.getView().getView2D());
+  var center = view.getCenter();
+  var resolution = view.getResolution();
   var origin = new ol.Coordinate(
       center.x - resolution * halfWidth,
       center.y + resolution * halfHeight);
   this.layersPaneOrigin_ = origin;
   this.setTransformOrigin_(halfWidth, halfHeight);
-  this.applyTransform_(0, 0, map.getRotation());
+  this.applyTransform_(0, 0, view.getRotation());
   goog.object.forEach(this.layerRenderers, function(layerRenderer) {
     layerRenderer.setOrigin(origin);
   });
@@ -273,8 +266,9 @@ ol.renderer.dom.Map.prototype.setTransformOrigin_ = function(x, y) {
  */
 ol.renderer.dom.Map.prototype.transformLayersPane_ = function() {
   var map = this.map;
-  var resolution = map.getResolution();
-  var center = map.getCenter();
+  var view = map.getView();
+  var resolution = view.getResolution();
+  var center = view.getCenter();
   var size = map.getSize();
   var origin = this.layersPaneOrigin_;
   var ox = (center.x - origin.x) / resolution;
@@ -282,5 +276,5 @@ ol.renderer.dom.Map.prototype.transformLayersPane_ = function() {
   this.setTransformOrigin_(ox, oy);
   var dx = ox - (size.width / 2);
   var dy = oy - (size.height / 2);
-  this.applyTransform_(-dx, -dy, map.getRotation());
+  this.applyTransform_(-dx, -dy, view.getRotation());
 };
