@@ -488,7 +488,7 @@ a.olControlZoomOut {
 }
 
 /* Turn on GPU support where available */
-.olMapViewport, .olMapViewport * {
+.olTileImage {
     -webkit-transform: translateZ(0);
     -moz-transform: translateZ(0);
     -o-transform: translateZ(0);
@@ -502,13 +502,6 @@ a.olControlZoomOut {
     -moz-perspective: 1000;
     -ms-perspective: 1000;
     perspective: 1000;
-}
-.olLayerDiv svg * {
-    -webkit-transform: none;
-    -moz-transform: none;
-    -o-transform: none;
-    -ms-transform: none;
-    transform: none;
 }
 
 /* when replacing tiles, do not show tile and backbuffer at the same time */
