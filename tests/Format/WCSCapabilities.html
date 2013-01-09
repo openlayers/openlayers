@@ -1,0 +1,43 @@
+<html> 
+<head> 
+    <script src="../OLLoader.js"></script>
+    <script type="text/javascript">
+    
+    function test_read(t) {
+        t.plan(4);
+
+        var _v1_0_0 = OpenLayers.Format.WCSCapabilities.v1_0_0.prototype.read;
+        var _v1_1_0 = OpenLayers.Format.WCSCapabilities.v1_1_0.prototype.read;
+
+        var parser = new OpenLayers.Format.WCSCapabilities();
+
+        // version 1.0.0
+        var text =
+            '<?xml version="1.0" encoding="UTF-8"?>' +
+            '<wcs:WCS_Capabilities version="1.0.0" xmlns:wcs="http://www.opengis.net/wcs"></wcs:WCS_Capabilities>';
+        OpenLayers.Format.WCSCapabilities.v1_0_0.prototype.read = function() {
+            t.ok(true, "Version 1.0.0 detected");
+            return {};
+        }
+        var res = parser.read(text);
+        t.eq(res.version, "1.0.0", "version 1.0.0 written to result object");
+        OpenLayers.Format.WCSCapabilities.v1_1_0.prototype.read = _v1_1_0;
+
+        // version 1.1.0
+        var text =
+            '<?xml version="1.0" encoding="UTF-8"?>' +
+            '<wcs:WCS_Capabilities version="1.1.0" xmlns:wcs="http://www.opengis.net/wcs/1.1"></wcs:WCS_Capabilities>';
+        OpenLayers.Format.WCSCapabilities.v1_1_0.prototype.read = function() {
+            t.ok(true, "Version 1.1.0 detected");
+            return {};
+        }
+        var res = parser.read(text);
+        t.eq(res.version, "1.1.0", "version 1.1.0 written to result object");
+        OpenLayers.Format.WCSCapabilities.v1_1_0.prototype.read = _v1_1_0;
+    }
+
+    </script> 
+</head> 
+<body>
+</body> 
+</html>
