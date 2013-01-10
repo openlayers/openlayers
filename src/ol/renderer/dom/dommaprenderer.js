@@ -9,6 +9,7 @@ goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.functions');
 goog.require('ol.Coordinate');
+goog.require('ol.FrameState');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.dom.TileLayer');
@@ -93,26 +94,20 @@ ol.renderer.dom.Map.prototype.handleViewChanged = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.dom.Map.prototype.renderFrame = function(time) {
+ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
 
-  var map = this.getMap();
-  if (!map.isDef()) {
+  if (goog.isNull(frameState)) {
+    // FIXME remove everything
     return;
   }
 
-  var requestRenderFrame = false;
-  var layers = map.getLayers();
-  if (goog.isDef(layers)) {
-    layers.forEach(function(layer) {
-      var layerRenderer = this.getLayerRenderer(layer);
-      if (layerRenderer.renderFrame(time)) {
-        requestRenderFrame = true;
-      }
-    }, this);
-  }
-
-  if (requestRenderFrame) {
-    map.requestRenderFrame();
-  }
+  goog.array.forEach(frameState.layersArray, function(layer) {
+    var layerState = frameState.layerStates[goog.getUid(layer)];
+    if (!layerState.ready) {
+      return;
+    }
+    var layerRenderer = this.getLayerRenderer(layer);
+    layerRenderer.renderFrame(frameState, layerState);
+  }, this);
 
 };

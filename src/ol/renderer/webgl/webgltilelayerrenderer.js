@@ -287,30 +287,21 @@ ol.renderer.webgl.TileLayer.prototype.handleWebGLContextLost = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.TileLayer.prototype.renderFrame = function(time) {
-
-  var requestRenderFrame = false;
+ol.renderer.webgl.TileLayer.prototype.renderFrame =
+    function(frameState, layerState) {
 
   var mapRenderer = this.getMapRenderer();
-  var map = this.getMap();
   var gl = mapRenderer.getGL();
-  var view = map.getView().getView2D();
 
-  goog.asserts.assert(map.isDef());
-  var mapSize = map.getSize();
-  var mapCenter = view.getCenter();
-  var mapExtent = view.getExtent(mapSize);
-  var mapResolution = /** @type {number} */ (view.getResolution());
-  var mapRotatedExtent = view.getRotatedExtent(mapSize);
-  var mapRotation = view.getRotation();
+  var view2DState = frameState.view2DState;
 
   var tileLayer = this.getLayer();
   var tileSource = tileLayer.getTileSource();
   var tileGrid = tileSource.getTileGrid();
-  var z = tileGrid.getZForResolution(mapResolution);
+  var z = tileGrid.getZForResolution(view2DState.resolution);
   var tileResolution = tileGrid.getResolution(z);
   var tileRange = tileGrid.getTileRangeForExtentAndResolution(
-      mapRotatedExtent, tileResolution);
+      frameState.extent, tileResolution);
 
   var framebufferExtent;
 
@@ -465,7 +456,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame = function(time) {
 
     if (!goog.array.isEmpty(tilesToLoad)) {
       goog.events.listenOnce(
-          map,
+          this.getMap(),
           ol.MapEventType.POSTRENDER,
           goog.partial(function(mapRenderer, tilesToLoad) {
             if (goog.DEBUG) {
@@ -488,32 +479,28 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame = function(time) {
     } else {
       this.renderedTileRange_ = null;
       this.renderedFramebufferExtent_ = null;
-      requestRenderFrame = true;
+      frameState.animate = true;
     }
 
   }
 
   goog.vec.Mat4.makeIdentity(this.matrix_);
   goog.vec.Mat4.translate(this.matrix_,
-      (mapCenter.x - framebufferExtent.minX) /
+      (view2DState.center.x - framebufferExtent.minX) /
           (framebufferExtent.maxX - framebufferExtent.minX),
-      (mapCenter.y - framebufferExtent.minY) /
+      (view2DState.center.y - framebufferExtent.minY) /
           (framebufferExtent.maxY - framebufferExtent.minY),
       0);
-  if (goog.isDef(mapRotation)) {
-    goog.vec.Mat4.rotateZ(this.matrix_, mapRotation);
-  }
+  goog.vec.Mat4.rotateZ(this.matrix_, view2DState.rotation);
   goog.vec.Mat4.scale(this.matrix_,
-      (mapExtent.maxX - mapExtent.minX) /
+      frameState.size.width * view2DState.resolution /
           (framebufferExtent.maxX - framebufferExtent.minX),
-      (mapExtent.maxY - mapExtent.minY) /
+      frameState.size.height * view2DState.resolution /
           (framebufferExtent.maxY - framebufferExtent.minY),
       1);
   goog.vec.Mat4.translate(this.matrix_,
       -0.5,
       -0.5,
       0);
-
-  return requestRenderFrame;
 
 };

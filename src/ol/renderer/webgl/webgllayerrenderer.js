@@ -1,7 +1,11 @@
+// FIXME move colorMatrix_ elsewhere?
+
 goog.provide('ol.renderer.webgl.Layer');
 
 goog.require('goog.vec.Mat4');
+goog.require('ol.FrameState');
 goog.require('ol.layer.Layer');
+goog.require('ol.layer.LayerState');
 goog.require('ol.renderer.Layer');
 goog.require('ol.vec.Mat4');
 
@@ -179,8 +183,8 @@ ol.renderer.webgl.Layer.prototype.handleWebGLContextLost = goog.nullFunction;
 
 /**
  * Render.
- * @param {number} time Time.
- * @return {boolean} Request render frame.
+ * @param {ol.FrameState} frameState Frame state.
+ * @param {ol.layer.LayerState} layerState Layer state.
  */
 ol.renderer.webgl.Layer.prototype.renderFrame = goog.abstractMethod;
 
