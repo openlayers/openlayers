@@ -5,6 +5,7 @@ goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
+goog.require('ol.animation');
 goog.require('ol.control.MousePosition');
 goog.require('ol.interaction.Keyboard');
 goog.require('ol.layer.TileLayer');
@@ -16,6 +17,11 @@ if (goog.DEBUG) {
   goog.debug.Logger.getLogger('ol').setLevel(goog.debug.Logger.Level.INFO);
 }
 
+
+var LONDON = ol.Projection.transformWithCodes(
+    new ol.Coordinate(-0.12755, 51.507222), 'EPSG:4326', 'EPSG:3857');
+var MOSCOW = ol.Projection.transformWithCodes(
+    new ol.Coordinate(37.6178, 55.7517), 'EPSG:4326', 'EPSG:3857');
 
 var layer = new ol.layer.TileLayer({
   source: new ol.source.MapQuestOpenAerial()
@@ -84,6 +90,47 @@ keyboardInteraction.addCallback('h', function() {
 keyboardInteraction.addCallback('H', function() {
   layer.setHue(layer.getHue() + (Math.PI / 5));
 });
+keyboardInteraction.addCallback('j', function() {
+  var bounce = ol.animation.createBounce(2 * view.getResolution());
+  domMap.addPreRenderFunction(bounce);
+  webglMap.addPreRenderFunction(bounce);
+});
+keyboardInteraction.addCallback('l', function() {
+  var panFrom = ol.animation.createPanFrom(view.getCenter());
+  domMap.addPreRenderFunction(panFrom);
+  webglMap.addPreRenderFunction(panFrom);
+  view.setCenter(LONDON);
+});
+keyboardInteraction.addCallback('L', function() {
+  var start = Date.now();
+  var duration = 5000;
+  var bounce = ol.animation.createBounce(
+      2 * view.getResolution(), duration, start);
+  var panFrom = ol.animation.createPanFrom(view.getCenter(), duration, start);
+  var spin = ol.animation.createSpin(duration, 2, start);
+  var preRenderFunctions = [bounce, panFrom, spin];
+  domMap.addPreRenderFunctions(preRenderFunctions);
+  webglMap.addPreRenderFunctions(preRenderFunctions);
+  view.setCenter(LONDON);
+});
+keyboardInteraction.addCallback('m', function() {
+  var panFrom = ol.animation.createPanFrom(view.getCenter(), 1000);
+  domMap.addPreRenderFunction(panFrom);
+  webglMap.addPreRenderFunction(panFrom);
+  view.setCenter(MOSCOW);
+});
+keyboardInteraction.addCallback('M', function() {
+  var start = Date.now();
+  var duration = 5000;
+  var bounce = ol.animation.createBounce(
+      2 * view.getResolution(), duration, start);
+  var panFrom = ol.animation.createPanFrom(view.getCenter(), duration, start);
+  var spin = ol.animation.createSpin(duration, -2, start);
+  var preRenderFunctions = [bounce, panFrom, spin];
+  domMap.addPreRenderFunctions(preRenderFunctions);
+  webglMap.addPreRenderFunctions(preRenderFunctions);
+  view.setCenter(MOSCOW);
+});
 keyboardInteraction.addCallback('o', function() {
   layer.setOpacity(layer.getOpacity() - 0.1);
 });
@@ -102,5 +149,15 @@ keyboardInteraction.addCallback('S', function() {
 });
 keyboardInteraction.addCallback('vV', function() {
   layer.setVisible(!layer.getVisible());
+});
+keyboardInteraction.addCallback('x', function() {
+  var spin = ol.animation.createSpin(2000, 2);
+  domMap.addPreRenderFunction(spin);
+  webglMap.addPreRenderFunction(spin);
+});
+keyboardInteraction.addCallback('X', function() {
+  var spin = ol.animation.createSpin(2000, -2);
+  domMap.addPreRenderFunction(spin);
+  webglMap.addPreRenderFunction(spin);
 });
 domMap.getInteractions().push(keyboardInteraction);
