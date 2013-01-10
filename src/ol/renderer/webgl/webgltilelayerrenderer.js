@@ -294,13 +294,15 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame = function(time) {
   var mapRenderer = this.getMapRenderer();
   var map = this.getMap();
   var gl = mapRenderer.getGL();
+  var view = map.getView().getView2D();
 
   goog.asserts.assert(map.isDef());
-  var mapCenter = map.getCenter();
-  var mapExtent = map.getExtent();
-  var mapResolution = /** @type {number} */ map.getResolution();
-  var mapRotatedExtent = map.getRotatedExtent();
-  var mapRotation = map.getRotation();
+  var mapSize = map.getSize();
+  var mapCenter = view.getCenter();
+  var mapExtent = view.getExtent(mapSize);
+  var mapResolution = /** @type {number} */ (view.getResolution());
+  var mapRotatedExtent = view.getRotatedExtent(mapSize);
+  var mapRotation = view.getRotation();
 
   var tileLayer = this.getLayer();
   var tileSource = tileLayer.getTileSource();

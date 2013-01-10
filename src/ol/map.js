@@ -27,17 +27,17 @@ goog.require('goog.object');
 goog.require('ol.BrowserFeature');
 goog.require('ol.Collection');
 goog.require('ol.Color');
-goog.require('ol.Constraints');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.Object');
 goog.require('ol.Pixel');
-goog.require('ol.Projection');
 goog.require('ol.ResolutionConstraint');
 goog.require('ol.RotationConstraint');
 goog.require('ol.Size');
 goog.require('ol.TransformFunction');
+goog.require('ol.View');
+goog.require('ol.View2D');
 goog.require('ol.control.Attribution');
 goog.require('ol.control.Zoom');
 goog.require('ol.interaction.DblClickZoom');
@@ -100,13 +100,9 @@ ol.MapEventType = {
  */
 ol.MapProperty = {
   BACKGROUND_COLOR: 'backgroundColor',
-  CENTER: 'center',
   LAYERS: 'layers',
-  PROJECTION: 'projection',
-  RESOLUTION: 'resolution',
-  ROTATION: 'rotation',
   SIZE: 'size',
-  USER_PROJECTION: 'userProjection'
+  VIEW: 'view'
 };
 
 
@@ -129,18 +125,6 @@ ol.Map = function(mapOptions) {
   }
 
   var mapOptionsInternal = ol.Map.createOptionsInternal(mapOptions);
-
-  /**
-   * @type {ol.TransformFunction}
-   * @private
-   */
-  this.userToMapTransform_ = ol.Projection.identityTransform;
-
-  /**
-   * @type {ol.TransformFunction}
-   * @private
-   */
-  this.mapToUserTransform_ = ol.Projection.cloneTransform;
 
   /**
    * @private
@@ -167,12 +151,6 @@ ol.Map = function(mapOptions) {
    * @type {Element}
    */
   this.target_ = mapOptionsInternal.target;
-
-  /**
-   * @private
-   * @type {ol.Constraints}
-   */
-  this.constraints_ = mapOptionsInternal.constraints;
 
   /**
    * @private
@@ -253,14 +231,6 @@ ol.Map = function(mapOptions) {
   goog.events.listen(this.viewportSizeMonitor_, goog.events.EventType.RESIZE,
       this.handleBrowserWindowResize, false, this);
 
-  goog.events.listen(
-      this, ol.Object.getChangedEventType(ol.MapProperty.PROJECTION),
-      this.handleProjectionChanged, false, this);
-
-  goog.events.listen(
-      this, ol.Object.getChangedEventType(ol.MapProperty.USER_PROJECTION),
-      this.handleUserProjectionChanged, false, this);
-
   this.setValues(mapOptionsInternal.values);
 
   this.handleBrowserWindowResize();
@@ -296,30 +266,6 @@ ol.Map.prototype.disposeInternal = function() {
 
 
 /**
- * @param {ol.Extent} extent Extent.
- */
-ol.Map.prototype.fitExtent = function(extent) {
-  this.withFrozenRendering(function() {
-    this.setCenter(extent.getCenter());
-    var resolution = this.getResolutionForExtent(extent);
-    resolution = this.constraints_.resolution(resolution, 0);
-    this.setResolution(resolution);
-    if (this.canRotate()) {
-      this.setRotation(0);
-    }
-  }, this);
-};
-
-
-/**
- * @param {ol.Extent} userExtent Extent in user projection.
- */
-ol.Map.prototype.fitUserExtent = function(userExtent) {
-  this.fitExtent(userExtent.transform(this.userToMapTransform_));
-};
-
-
-/**
  * Freeze rendering.
  */
 ol.Map.prototype.freezeRendering = function() {
@@ -338,18 +284,6 @@ goog.exportProperty(
     ol.Map.prototype,
     'getBackgroundColor',
     ol.Map.prototype.getBackgroundColor);
-
-
-/**
- * @return {ol.Coordinate|undefined} Center.
- */
-ol.Map.prototype.getCenter = function() {
-  return /** @type {ol.Coordinate} */ this.get(ol.MapProperty.CENTER);
-};
-goog.exportProperty(
-    ol.Map.prototype,
-    'getCenter',
-    ol.Map.prototype.getCenter);
 
 
 /**
@@ -374,25 +308,6 @@ ol.Map.prototype.getControls = function() {
  */
 ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
   return this.isDef() ? this.renderer_.getCoordinateFromPixel(pixel) : null;
-};
-
-
-/**
- * @return {ol.Extent|undefined} Extent.
- */
-ol.Map.prototype.getExtent = function() {
-  if (this.isDef()) {
-    var center = this.getCenter();
-    var resolution = this.getResolution();
-    var size = this.getSize();
-    var minX = center.x - resolution * size.width / 2;
-    var minY = center.y - resolution * size.height / 2;
-    var maxX = center.x + resolution * size.width / 2;
-    var maxY = center.y + resolution * size.height / 2;
-    return new ol.Extent(minX, minY, maxX, maxY);
-  } else {
-    return undefined;
-  }
 };
 
 
@@ -426,87 +341,10 @@ ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
 
 
 /**
- * @return {ol.Projection|undefined} Projection.
- */
-ol.Map.prototype.getProjection = function() {
-  return /** @type {ol.Projection} */ (this.get(ol.MapProperty.PROJECTION));
-};
-goog.exportProperty(
-    ol.Map.prototype,
-    'getProjection',
-    ol.Map.prototype.getProjection);
-
-
-/**
- * @return {number|undefined} Resolution.
- */
-ol.Map.prototype.getResolution = function() {
-  return /** @type {number} */ this.get(ol.MapProperty.RESOLUTION);
-};
-goog.exportProperty(
-    ol.Map.prototype,
-    'getResolution',
-    ol.Map.prototype.getResolution);
-
-
-/**
- * @param {ol.Extent} extent Extent.
- * @return {number|undefined} Resolution.
- */
-ol.Map.prototype.getResolutionForExtent = function(extent) {
-  var size = this.getSize();
-  if (goog.isDef(size)) {
-    var xResolution = (extent.maxX - extent.minX) / size.width;
-    var yResolution = (extent.maxY - extent.minY) / size.height;
-    return Math.max(xResolution, yResolution);
-  } else {
-    return undefined;
-  }
-};
-
-
-/**
- * @return {ol.Extent} Rotated extent.
- */
-ol.Map.prototype.getRotatedExtent = function() {
-  goog.asserts.assert(this.isDef());
-  var center = /** @type {!ol.Coordinate} */ this.getCenter();
-  var resolution = this.getResolution();
-  var rotation = this.getRotation() || 0;
-  var size = this.getSize();
-  var xScale = resolution * size.width / 2;
-  var yScale = resolution * size.height / 2;
-  var corners = [
-    new ol.Coordinate(-xScale, -yScale),
-    new ol.Coordinate(-xScale, yScale),
-    new ol.Coordinate(xScale, -yScale),
-    new ol.Coordinate(xScale, yScale)
-  ];
-  goog.array.forEach(corners, function(corner) {
-    corner.rotate(rotation);
-    corner.add(center);
-  });
-  return ol.Extent.boundingExtent.apply(null, corners);
-};
-
-
-/**
- * @return {number} Rotation.
- */
-ol.Map.prototype.getRotation = function() {
-  return /** @type {number} */ this.get(ol.MapProperty.ROTATION) || 0;
-};
-goog.exportProperty(
-    ol.Map.prototype,
-    'getRotation',
-    ol.Map.prototype.getRotation);
-
-
-/**
  * @return {ol.Size|undefined} Size.
  */
 ol.Map.prototype.getSize = function() {
-  return /** @type {ol.Size|undefined} */ this.get(ol.MapProperty.SIZE);
+  return /** @type {ol.Size|undefined} */ (this.get(ol.MapProperty.SIZE));
 };
 goog.exportProperty(
     ol.Map.prototype,
@@ -515,42 +353,15 @@ goog.exportProperty(
 
 
 /**
- * @return {ol.Coordinate|undefined} Center in user projection.
+ * @return {ol.View} View.
  */
-ol.Map.prototype.getUserCenter = function() {
-  var center = this.getCenter();
-  if (goog.isDef(center)) {
-    return this.mapToUserTransform_(center);
-  } else {
-    return undefined;
-  }
-};
-
-
-/**
- * @return {ol.Extent|undefined} Extent in user projection.
- */
-ol.Map.prototype.getUserExtent = function() {
-  var extent = this.getExtent();
-  if (goog.isDef(extent)) {
-    return extent.transform(this.mapToUserTransform_);
-  } else {
-    return undefined;
-  }
-};
-
-
-/**
- * @return {ol.Projection|undefined} Projection.
- */
-ol.Map.prototype.getUserProjection = function() {
-  return /** @type {ol.Projection} */ this.get(
-      ol.MapProperty.USER_PROJECTION);
+ol.Map.prototype.getView = function() {
+  return /** @type {ol.View} */ (this.get(ol.MapProperty.VIEW));
 };
 goog.exportProperty(
     ol.Map.prototype,
-    'getUserProjection',
-    ol.Map.prototype.getUserProjection);
+    'getView',
+    ol.Map.prototype.getView);
 
 
 /**
@@ -624,22 +435,6 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
 /**
  * @protected
  */
-ol.Map.prototype.handleProjectionChanged = function() {
-  this.recalculateTransforms_();
-};
-
-
-/**
- * @protected
- */
-ol.Map.prototype.handleUserProjectionChanged = function() {
-  this.recalculateTransforms_();
-};
-
-
-/**
- * @protected
- */
 ol.Map.prototype.handleBrowserWindowResize = function() {
   var size = new ol.Size(this.target_.clientWidth, this.target_.clientHeight);
   this.setSize(size);
@@ -650,28 +445,9 @@ ol.Map.prototype.handleBrowserWindowResize = function() {
  * @return {boolean} Is defined.
  */
 ol.Map.prototype.isDef = function() {
-  return goog.isDefAndNotNull(this.getCenter()) &&
-      goog.isDef(this.getResolution()) &&
+  var view = this.getView();
+  return goog.isDef(view) && view.isDef() &&
       goog.isDefAndNotNull(this.getSize());
-};
-
-
-/**
- * @private
- */
-ol.Map.prototype.recalculateTransforms_ = function() {
-  var projection = this.getProjection();
-  var userProjection = this.getUserProjection();
-  if (goog.isDefAndNotNull(projection) &&
-      goog.isDefAndNotNull(userProjection)) {
-    this.mapToUserTransform_ = ol.Projection.getTransform(
-        projection, userProjection);
-    this.userToMapTransform_ = ol.Projection.getTransform(
-        userProjection, projection);
-  } else {
-    this.mapToUserTransform_ = ol.Projection.cloneTransform;
-    this.userToMapTransform_ = ol.Projection.identityTransform;
-  }
 };
 
 
@@ -724,16 +500,6 @@ ol.Map.prototype.renderFrame_ = function(time) {
 
 
 /**
- * @param {number|undefined} rotation Rotation.
- * @param {number} delta Delta.
- */
-ol.Map.prototype.rotate = function(rotation, delta) {
-  rotation = this.constraints_.rotation(rotation, delta);
-  this.setRotation(rotation);
-};
-
-
-/**
  * @param {ol.Color} backgroundColor Background color.
  */
 ol.Map.prototype.setBackgroundColor = function(backgroundColor) {
@@ -743,18 +509,6 @@ goog.exportProperty(
     ol.Map.prototype,
     'setBackgroundColor',
     ol.Map.prototype.setBackgroundColor);
-
-
-/**
- * @param {ol.Coordinate|undefined} center Center.
- */
-ol.Map.prototype.setCenter = function(center) {
-  this.set(ol.MapProperty.CENTER, center);
-};
-goog.exportProperty(
-    ol.Map.prototype,
-    'setCenter',
-    ol.Map.prototype.setCenter);
 
 
 /**
@@ -770,42 +524,6 @@ goog.exportProperty(
 
 
 /**
- * @param {ol.Projection} projection Projection.
- */
-ol.Map.prototype.setProjection = function(projection) {
-  this.set(ol.MapProperty.PROJECTION, projection);
-};
-goog.exportProperty(
-    ol.Map.prototype,
-    'setProjection',
-    ol.Map.prototype.setProjection);
-
-
-/**
- * @param {number|undefined} resolution Resolution.
- */
-ol.Map.prototype.setResolution = function(resolution) {
-  this.set(ol.MapProperty.RESOLUTION, resolution);
-};
-goog.exportProperty(
-    ol.Map.prototype,
-    'setResolution',
-    ol.Map.prototype.setResolution);
-
-
-/**
- * @param {number|undefined} rotation Rotation.
- */
-ol.Map.prototype.setRotation = function(rotation) {
-  this.set(ol.MapProperty.ROTATION, rotation);
-};
-goog.exportProperty(
-    ol.Map.prototype,
-    'setRotation',
-    ol.Map.prototype.setRotation);
-
-
-/**
  * @param {ol.Size} size Size.
  */
 ol.Map.prototype.setSize = function(size) {
@@ -818,23 +536,15 @@ goog.exportProperty(
 
 
 /**
- * @param {ol.Coordinate} userCenter Center in user projection.
+ * @param {ol.IView} view View.
  */
-ol.Map.prototype.setUserCenter = function(userCenter) {
-  this.setCenter(this.userToMapTransform_(userCenter));
-};
-
-
-/**
- * @param {ol.Projection} userProjection User projection.
- */
-ol.Map.prototype.setUserProjection = function(userProjection) {
-  this.set(ol.MapProperty.USER_PROJECTION, userProjection);
+ol.Map.prototype.setView = function(view) {
+  this.set(ol.MapProperty.VIEW, view);
 };
 goog.exportProperty(
     ol.Map.prototype,
-    'setUserProjection',
-    ol.Map.prototype.setUserProjection);
+    'setView',
+    ol.Map.prototype.setView);
 
 
 /**
@@ -864,52 +574,8 @@ ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
 
 
 /**
- * @private
- * @param {number|undefined} resolution Resolution to go to.
- * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
- */
-ol.Map.prototype.zoom_ = function(resolution, opt_anchor) {
-  if (goog.isDefAndNotNull(resolution) && goog.isDefAndNotNull(opt_anchor)) {
-    var anchor = opt_anchor;
-    var oldCenter = /** @type {!ol.Coordinate} */ this.getCenter();
-    var oldResolution = this.getResolution();
-    var x = anchor.x - resolution * (anchor.x - oldCenter.x) / oldResolution;
-    var y = anchor.y - resolution * (anchor.y - oldCenter.y) / oldResolution;
-    var center = new ol.Coordinate(x, y);
-    this.withFrozenRendering(function() {
-      this.setCenter(center);
-      this.setResolution(resolution);
-    }, this);
-  } else {
-    this.setResolution(resolution);
-  }
-};
-
-
-/**
- * @param {number} delta Delta from previous zoom level.
- * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
- */
-ol.Map.prototype.zoom = function(delta, opt_anchor) {
-  var resolution = this.constraints_.resolution(this.getResolution(), delta);
-  this.zoom_(resolution, opt_anchor);
-};
-
-
-/**
- * @param {number|undefined} resolution Resolution to go to.
- * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
- */
-ol.Map.prototype.zoomToResolution = function(resolution, opt_anchor) {
-  resolution = this.constraints_.resolution(resolution, 0);
-  this.zoom_(resolution, opt_anchor);
-};
-
-
-/**
  * @typedef {{controls: ol.Collection,
  *            interactions: ol.Collection,
- *            constraints: ol.Constraints,
  *            rendererConstructor:
  *                function(new: ol.renderer.Map, Element, ol.Map),
  *            target: Element,
@@ -929,25 +595,11 @@ ol.Map.createOptionsInternal = function(mapOptions) {
    */
   var values = {};
 
-  if (goog.isDef(mapOptions.center)) {
-    values[ol.MapProperty.CENTER] = mapOptions.center;
-  }
-
   values[ol.MapProperty.LAYERS] = goog.isDef(mapOptions.layers) ?
       mapOptions.layers : new ol.Collection();
 
-  values[ol.MapProperty.PROJECTION] = ol.Projection.createProjection(
-      mapOptions.projection, 'EPSG:3857');
-
-  if (goog.isDef(mapOptions.resolution)) {
-    values[ol.MapProperty.RESOLUTION] = mapOptions.resolution;
-  } else if (goog.isDef(mapOptions.zoom)) {
-    values[ol.MapProperty.RESOLUTION] =
-        ol.Projection.EPSG_3857_HALF_SIZE / (128 << mapOptions.zoom);
-  }
-
-  values[ol.MapProperty.USER_PROJECTION] = ol.Projection.createProjection(
-      mapOptions.userProjection, 'EPSG:4326');
+  values[ol.MapProperty.VIEW] = goog.isDef(mapOptions.view) ?
+      mapOptions.view : new ol.View2D();
 
   /**
    * @type {function(new: ol.renderer.Map, Element, ol.Map)}
@@ -983,11 +635,6 @@ ol.Map.createOptionsInternal = function(mapOptions) {
   }
 
   /**
-   * @type {ol.Constraints}
-   */
-  var constraints = ol.Map.createConstraints_(mapOptions);
-
-  /**
    * @type {ol.Collection}
    */
   var controls;
@@ -1013,7 +660,6 @@ ol.Map.createOptionsInternal = function(mapOptions) {
   var target = goog.dom.getElement(mapOptions.target);
 
   return {
-    constraints: constraints,
     controls: controls,
     interactions: interactions,
     rendererConstructor: rendererConstructor,
@@ -1021,40 +667,6 @@ ol.Map.createOptionsInternal = function(mapOptions) {
     values: values
   };
 
-};
-
-
-/**
- * @private
- * @param {ol.MapOptions} mapOptions Map options.
- * @return {ol.Constraints} Map constraints.
- */
-ol.Map.createConstraints_ = function(mapOptions) {
-  var resolutionConstraint;
-  if (goog.isDef(mapOptions.resolutions)) {
-    resolutionConstraint = ol.ResolutionConstraint.createSnapToResolutions(
-        mapOptions.resolutions);
-  } else {
-    var maxResolution, numZoomLevels, zoomFactor;
-    if (goog.isDef(mapOptions.maxResolution) &&
-        goog.isDef(mapOptions.numZoomLevels) &&
-        goog.isDef(mapOptions.zoomFactor)) {
-      maxResolution = mapOptions.maxResolution;
-      numZoomLevels = mapOptions.numZoomLevels;
-      zoomFactor = mapOptions.zoomFactor;
-    } else {
-      maxResolution = ol.Projection.EPSG_3857_HALF_SIZE / 128;
-      // number of steps we want between two data resolutions
-      var numSteps = 4;
-      numZoomLevels = 29 * numSteps;
-      zoomFactor = Math.exp(Math.log(2) / numSteps);
-    }
-    resolutionConstraint = ol.ResolutionConstraint.createSnapToPower(
-        zoomFactor, maxResolution, numZoomLevels - 1);
-  }
-  // FIXME rotation constraint is not configurable at the moment
-  var rotationConstraint = ol.RotationConstraint.none;
-  return new ol.Constraints(resolutionConstraint, rotationConstraint);
 };
 
 

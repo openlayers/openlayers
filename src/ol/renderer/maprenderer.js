@@ -1,11 +1,14 @@
 goog.provide('ol.renderer.Map');
 
 goog.require('goog.Disposable');
+goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.functions');
 goog.require('goog.fx.anim');
 goog.require('goog.fx.anim.Animated');
 goog.require('goog.vec.Mat4');
+goog.require('ol.View2D');
+goog.require('ol.View2DProperty');
 
 
 
@@ -43,6 +46,13 @@ ol.renderer.Map = function(container, map) {
    */
   this.layersListenerKeys_ = null;
 
+
+  /**
+   * @private
+   * @type {?number}
+   */
+  this.viewPropertyListenerKey_ = null;
+
   /**
    * @private
    * @type {goog.vec.Mat4.Number}
@@ -71,24 +81,16 @@ ol.renderer.Map = function(container, map) {
         this.handleBackgroundColorChanged, false, this),
 
     goog.events.listen(
-        map, ol.Object.getChangedEventType(ol.MapProperty.CENTER),
-        this.handleCenterChanged, false, this),
-
-    goog.events.listen(
         map, ol.Object.getChangedEventType(ol.MapProperty.LAYERS),
         this.handleLayersChanged, false, this),
 
     goog.events.listen(
-        map, ol.Object.getChangedEventType(ol.MapProperty.RESOLUTION),
-        this.handleResolutionChanged, false, this),
-
-    goog.events.listen(
-        map, ol.Object.getChangedEventType(ol.MapProperty.ROTATION),
-        this.handleRotationChanged, false, this),
-
-    goog.events.listen(
         map, ol.Object.getChangedEventType(ol.MapProperty.SIZE),
-        this.handleSizeChanged, false, this)
+        this.handleSizeChanged, false, this),
+
+    goog.events.listen(
+        map, ol.Object.getChangedEventType(ol.MapProperty.VIEW),
+        this.handleViewChanged, false, this)
   ];
 
 };
@@ -127,6 +129,9 @@ ol.renderer.Map.prototype.disposeInternal = function() {
     goog.dispose(layerRenderer);
   });
   goog.array.forEach(this.mapListenerKeys_, goog.events.unlistenByKey);
+  if (!goog.isNull(this.viewPropertyListenerKey_)) {
+    goog.events.unlistenByKey(this.viewPropertyListenerKey_);
+  }
   if (!goog.isNull(this.layersListenerKeys_)) {
     goog.array.forEach(this.layersListenerKeys_, goog.events.unlistenByKey);
   }
@@ -205,14 +210,6 @@ ol.renderer.Map.prototype.handleBackgroundColorChanged = goog.nullFunction;
 
 
 /**
- * @protected
- */
-ol.renderer.Map.prototype.handleCenterChanged = function() {
-  this.matricesDirty_ = true;
-};
-
-
-/**
  * @param {ol.CollectionEvent} collectionEvent Collection event.
  * @protected
  */
@@ -258,15 +255,7 @@ ol.renderer.Map.prototype.handleLayersRemove = function(collectionEvent) {
 /**
  * @protected
  */
-ol.renderer.Map.prototype.handleResolutionChanged = function() {
-  this.matricesDirty_ = true;
-};
-
-
-/**
- * @protected
- */
-ol.renderer.Map.prototype.handleRotationChanged = function() {
+ol.renderer.Map.prototype.handleViewPropertyChanged = function() {
   this.matricesDirty_ = true;
 };
 
@@ -276,6 +265,23 @@ ol.renderer.Map.prototype.handleRotationChanged = function() {
  */
 ol.renderer.Map.prototype.handleSizeChanged = function() {
   this.matricesDirty_ = true;
+};
+
+
+/**
+ * @protected
+ */
+ol.renderer.Map.prototype.handleViewChanged = function() {
+  if (!goog.isNull(this.viewPropertyListenerKey_)) {
+    goog.events.unlistenByKey(this.viewPropertyListenerKey_);
+    this.viewPropertyListenerKey_ = null;
+  }
+  var view = this.getMap().getView();
+  if (goog.isDefAndNotNull(view)) {
+    this.viewPropertyListenerKey_ = goog.events.listen(
+        view, ol.ObjectEventType.CHANGED,
+        this.handleViewPropertyChanged, false, this);
+  }
 };
 
 
@@ -332,10 +338,11 @@ ol.renderer.Map.prototype.updateMatrices_ = function() {
   if (this.matricesDirty_) {
 
     var map = this.map;
-    var center = /** @type {!ol.Coordinate} */ map.getCenter();
-    var resolution = /** @type {number} */ map.getResolution();
-    var rotation = map.getRotation();
-    var size = /** @type {!ol.Size} */ map.getSize();
+    var view = map.getView().getView2D();
+    var center = /** @type {!ol.Coordinate} */ (view.getCenter());
+    var resolution = /** @type {number} */ (view.getResolution());
+    var rotation = view.getRotation();
+    var size = /** @type {!ol.Size} */ (map.getSize());
 
     goog.vec.Mat4.makeIdentity(this.coordinateToPixelMatrix_);
     goog.vec.Mat4.translate(this.coordinateToPixelMatrix_,

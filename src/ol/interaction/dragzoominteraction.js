@@ -1,4 +1,5 @@
 // FIXME draw drag box
+// FIXME works for View2D only
 
 goog.provide('ol.interaction.DragZoom');
 
@@ -63,7 +64,19 @@ ol.interaction.DragZoom.prototype.handleDragEnd =
     var extent = ol.Extent.boundingExtent(
         this.startCoordinate,
         mapBrowserEvent.getCoordinate());
-    map.fitExtent(extent);
+    map.withFrozenRendering(function() {
+      // FIXME works for View2D only
+      var view = map.getView();
+      goog.asserts.assert(view instanceof ol.View2D);
+      var mapSize = /** @type {ol.Size} */ (map.getSize());
+      view.fitExtent(extent, mapSize);
+      if (map.canRotate()) {
+        // FIXME we don't set the rotation if the map doesn't
+        // support rotation, this will prevent any map using
+        // that view from rotating, which may not be desired
+        view.setRotation(0);
+      }
+    });
   }
 };
 

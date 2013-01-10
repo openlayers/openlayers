@@ -4,6 +4,7 @@ goog.require('goog.debug.Logger.Level');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
+goog.require('ol.View2D');
 goog.require('ol.control.MousePosition');
 goog.require('ol.interaction.Keyboard');
 goog.require('ol.layer.TileLayer');
@@ -20,12 +21,16 @@ var layer = new ol.layer.TileLayer({
   source: new ol.source.MapQuestOpenAerial()
 });
 
-var domMap = new ol.Map({
+var view = new ol.View2D({
   center: new ol.Coordinate(0, 0),
+  zoom: 1
+});
+
+var domMap = new ol.Map({
   layers: new ol.Collection([layer]),
   renderer: ol.RendererHint.DOM,
   target: 'domMap',
-  zoom: 1
+  view: view
 });
 
 domMap.getControls().push(new ol.control.MousePosition({
@@ -40,10 +45,8 @@ var webglMap = new ol.Map({
   target: 'webglMap'
 });
 if (webglMap !== null) {
-  webglMap.bindTo('center', domMap);
   webglMap.bindTo('layers', domMap);
-  webglMap.bindTo('resolution', domMap);
-  webglMap.bindTo('rotation', domMap);
+  webglMap.bindTo('view', domMap);
 }
 
 webglMap.getControls().push(new ol.control.MousePosition({
@@ -88,7 +91,7 @@ keyboardInteraction.addCallback('O', function() {
   layer.setOpacity(layer.getOpacity() + 0.1);
 });
 keyboardInteraction.addCallback('r', function() {
-  webglMap.setRotation(0);
+  view.setRotation(0);
 });
 keyboardInteraction.addCallback('s', function() {
   layer.setSaturation(layer.getSaturation() - 0.1);

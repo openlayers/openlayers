@@ -2,6 +2,7 @@
 // FIXME handle date line wrap
 // FIXME handle layer order
 // FIXME check clean-up code
+// FIXME works for View2D only
 
 goog.provide('ol.control.Attribution');
 
@@ -14,6 +15,8 @@ goog.require('goog.style');
 goog.require('ol.Collection');
 goog.require('ol.CoverageArea');
 goog.require('ol.TileCoverageArea');
+goog.require('ol.View2D');
+goog.require('ol.View2DProperty');
 goog.require('ol.control.Control');
 goog.require('ol.layer.Layer');
 
@@ -32,12 +35,6 @@ ol.control.Attribution = function(attributionOptions) {
   var element = goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': 'ol-attribution'
   }, this.ulElement_);
-
-  /**
-   * @private
-   * @type {Array.<number>}
-   */
-  this.layersListenerKeys_ = null;
 
   /**
    * @private
@@ -62,6 +59,18 @@ ol.control.Attribution = function(attributionOptions) {
    * @type {Array.<number>}
    */
   this.mapListenerKeys_ = null;
+
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.layersListenerKeys_ = null;
+
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.viewListenerKeys_ = null;
 
   goog.base(this, {
     element: element,
@@ -110,14 +119,17 @@ ol.control.Attribution.prototype.createAttributionElementsForLayer_ =
 
   var map = this.getMap();
   var mapIsDef = map.isDef();
-  var mapExtent = /** @type {ol.Extent} */ map.getExtent();
-  var mapProjection = /** @type {ol.Projection} */ map.getProjection();
-  var mapResolution = /** @type {number} */ map.getResolution();
-
   var layerVisible = layer.getVisible();
 
   var attributionVisibilities;
   if (mapIsDef && layerVisible) {
+    var mapSize = /** @type {ol.Size} */ (map.getSize());
+    // FIXME works for View2D only
+    var view = map.getView();
+    goog.asserts.assert(view instanceof ol.View2D);
+    var mapExtent = view.getExtent(mapSize);
+    var mapProjection = /** @type {ol.Projection} */ (view.getProjection());
+    var mapResolution = /** @type {number} */ (view.getResolution());
     attributionVisibilities = this.getLayerAttributionVisiblities_(
         layer, mapExtent, mapResolution, mapProjection);
   } else {
@@ -131,7 +143,7 @@ ol.control.Attribution.prototype.createAttributionElementsForLayer_ =
     var attributionElement = goog.dom.createElement(goog.dom.TagName.LI);
     attributionElement.innerHTML = attribution.getHtml();
 
-    if (!map.isDef ||
+    if (!mapIsDef ||
         !layerVisible ||
         goog.isNull(attributionVisibilities) ||
         !attributionVisibilities[attributionKey]) {
@@ -151,8 +163,8 @@ ol.control.Attribution.prototype.createAttributionElementsForLayer_ =
 
 /**
  * @param {ol.layer.Layer} layer Layer.
- * @param {ol.Extent} mapExtent Map extent.
- * @param {number} mapResolution Map resolution.
+ * @param {ol.Extent} mapExtent View extent.
+ * @param {number} mapResolution View resolution.
  * @param {ol.Projection} mapProjection Map projection.
  * @return {Object.<number, boolean>} Attribution visibilities.
  * @private
@@ -240,17 +252,8 @@ ol.control.Attribution.prototype.handleLayerLoad = function(event) {
  * @protected
  */
 ol.control.Attribution.prototype.handleLayerVisibleChanged = function(event) {
-
-  var map = this.getMap();
-  var mapIsDef = map.isDef();
-  var mapExtent = /** @type {ol.Extent} */ map.getExtent();
-  var mapProjection = /** @type {ol.Projection} */ map.getProjection();
-  var mapResolution = /** @type {number} */ map.getResolution();
-
   var layer = /** @type {ol.layer.Layer} */ (event.target);
-
-  this.updateLayerAttributionsVisibility_(
-      layer, mapIsDef, mapExtent, mapResolution, mapProjection);
+  this.updateLayerAttributionsVisibility_(layer);
 
 };
 
@@ -279,20 +282,26 @@ ol.control.Attribution.prototype.handleLayersRemove =
 /**
  * @protected
  */
-ol.control.Attribution.prototype.handleMapChanged = function() {
-
+ol.control.Attribution.prototype.handleMapViewChanged = function() {
+  if (!goog.isNull(this.viewListenerKeys_)) {
+    goog.array.forEach(this.viewListenerKeys_, goog.events.unlistenByKey);
+    this.viewListenerKeys_ = null;
+  }
   var map = this.getMap();
-  var mapIsDef = map.isDef();
-  var mapExtent = /** @type {ol.Extent} */ map.getExtent();
-  var mapProjection = /** @type {ol.Projection} */ map.getProjection();
-  var mapResolution = map.getResolution();
-
-  var layers = map.getLayers();
-  layers.forEach(function(layer) {
-    this.updateLayerAttributionsVisibility_(
-        layer, mapIsDef, mapExtent, mapResolution, mapProjection);
-  }, this);
-
+  goog.asserts.assert(!goog.isNull(map));
+  var view = map.getView();
+  if (!goog.isNull(view)) {
+    // FIXME works for View2D only
+    goog.asserts.assert(view instanceof ol.View2D);
+    this.viewListenerKeys_ = [
+      goog.events.listen(
+          view, ol.Object.getChangedEventType(ol.View2DProperty.CENTER),
+          this.updateAttributions, false, this),
+      goog.events.listen(
+          view, ol.Object.getChangedEventType(ol.View2DProperty.RESOLUTION),
+          this.updateAttributions, false, this)
+    ];
+  }
 };
 
 
@@ -360,34 +369,50 @@ ol.control.Attribution.prototype.setMap = function(map) {
   if (!goog.isNull(map)) {
     this.mapListenerKeys_ = [
       goog.events.listen(
-          map, ol.Object.getChangedEventType(ol.MapProperty.CENTER),
-          this.handleMapChanged, false, this),
-      goog.events.listen(
           map, ol.Object.getChangedEventType(ol.MapProperty.LAYERS),
           this.handleMapLayersChanged, false, this),
       goog.events.listen(
-          map, ol.Object.getChangedEventType(ol.MapProperty.RESOLUTION),
-          this.handleMapChanged, false, this),
-      goog.events.listen(
           map, ol.Object.getChangedEventType(ol.MapProperty.SIZE),
-          this.handleMapChanged, false, this)
+          this.updateAttributions, false, this),
+      goog.events.listen(
+          map, ol.Object.getChangedEventType(ol.MapProperty.VIEW),
+          this.updateAttributions, false, this)
     ];
+    this.handleMapViewChanged();
     this.handleMapLayersChanged();
   }
 };
 
 
 /**
+ * @protected
+ */
+ol.control.Attribution.prototype.updateAttributions = function() {
+
+  var map = this.getMap();
+  var layers = map.getLayers();
+  layers.forEach(function(layer) {
+    this.updateLayerAttributionsVisibility_(layer);
+  }, this);
+
+};
+
+
+/**
  * @param {ol.layer.Layer} layer Layer.
- * @param {boolean} mapIsDef Map is defined.
- * @param {ol.Extent} mapExtent Map extent.
- * @param {number} mapResolution Map resolution.
- * @param {ol.Projection} mapProjection Map projection.
  * @private
  */
 ol.control.Attribution.prototype.updateLayerAttributionsVisibility_ =
-    function(layer, mapIsDef, mapExtent, mapResolution, mapProjection) {
-  if (mapIsDef && layer.getVisible()) {
+    function(layer) {
+  var map = this.getMap();
+  if (map.isDef() && layer.getVisible()) {
+    var mapSize = /** @type {ol.Size} */ (map.getSize());
+    var view = map.getView();
+    // FIXME works for View2D only
+    goog.asserts.assert(view instanceof ol.View2D);
+    var mapExtent = view.getExtent(mapSize);
+    var mapProjection = /** @type {ol.Projection} */ (view.getProjection());
+    var mapResolution = /** @type {number} */ (view.getResolution());
     var attributionVisibilities = this.getLayerAttributionVisiblities_(
         layer, mapExtent, mapResolution, mapProjection);
     goog.object.forEach(

@@ -95,8 +95,10 @@ ol.renderer.dom.TileLayer.prototype.renderFrame = function(time) {
   if (!map.isDef()) {
     return;
   }
-  var mapExtent = /** @type {!ol.Extent} */ map.getRotatedExtent();
-  var mapResolution = /** @type {number} */ map.getResolution();
+  var mapSize = /** @type {ol.Size} */ (map.getSize());
+  var view = map.getView().getView2D();
+  var mapExtent = /** @type {!ol.Extent} */ (view.getRotatedExtent(mapSize));
+  var mapResolution = /** @type {number} */ (view.getResolution());
   var resolutionChanged = (mapResolution !== this.renderedMapResolution_);
 
   var tileLayer = this.getLayer();

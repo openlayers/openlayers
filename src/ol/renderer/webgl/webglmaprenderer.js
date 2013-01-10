@@ -386,8 +386,8 @@ ol.renderer.webgl.Map.prototype.handleBackgroundColorChanged = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.handleCenterChanged = function() {
-  goog.base(this, 'handleCenterChanged');
+ol.renderer.webgl.Map.prototype.handleViewPropertyChanged = function() {
+  goog.base(this, 'handleViewPropertyChanged');
   this.getMap().render();
 };
 
@@ -404,26 +404,17 @@ ol.renderer.webgl.Map.prototype.handleLayerRendererChange = function(event) {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.handleResolutionChanged = function() {
-  goog.base(this, 'handleResolutionChanged');
-  this.getMap().render();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.Map.prototype.handleRotationChanged = function() {
-  goog.base(this, 'handleRotationChanged');
-  this.getMap().render();
-};
-
-
-/**
- * @inheritDoc
- */
 ol.renderer.webgl.Map.prototype.handleSizeChanged = function() {
   goog.base(this, 'handleSizeChanged');
+  this.getMap().render();
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.webgl.Map.prototype.handleViewChanged = function() {
+  goog.base(this, 'handleViewChanged');
   this.getMap().render();
 };
 
@@ -525,7 +516,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(time) {
     }
   });
 
-  var size = /** @type {ol.Size} */ this.getMap().getSize();
+  var size = /** @type {ol.Size} */ (this.getMap().getSize());
   if (!this.canvasSize_.equals(size)) {
     this.canvas_.width = size.width;
     this.canvas_.height = size.height;
