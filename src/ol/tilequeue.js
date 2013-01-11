@@ -105,11 +105,12 @@ ol.TileQueue.prototype.loadMoreTiles = function() {
  */
 ol.TileQueue.prototype.reprioritize = function() {
   if (!this.queue_.isEmpty()) {
-    var queue = this.queue_;
-    this.queue_ = new goog.structs.PriorityQueue();
+    var values = /** @type {Array.<Array>} */ this.queue_.getValues();
+    this.queue_.clear();
     this.queuedTileKeys_ = {};
-    while (!queue.isEmpty()) {
-      this.enqueue.apply(this, /** @type {Array} */ (queue.remove()));
+    var i;
+    for (i = 0; i < values.length; ++i) {
+      this.enqueue.apply(this, values[i]);
     }
   }
 };
