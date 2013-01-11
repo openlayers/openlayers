@@ -17,6 +17,7 @@ goog.require('goog.vec.Mat4');
 goog.require('goog.vec.Vec4');
 goog.require('goog.webgl');
 goog.require('ol.Coordinate');
+goog.require('ol.FrameState');
 goog.require('ol.Size');
 goog.require('ol.TileState');
 goog.require('ol.layer.TileLayer');
@@ -166,11 +167,12 @@ goog.inherits(ol.renderer.webgl.TileLayer, ol.renderer.webgl.Layer);
 
 
 /**
+ * @param {ol.FrameState} frameState Frame state.
  * @param {number} framebufferDimension Framebuffer dimension.
  * @private
  */
 ol.renderer.webgl.TileLayer.prototype.bindFramebuffer_ =
-    function(framebufferDimension) {
+    function(frameState, framebufferDimension) {
 
   var mapRenderer = this.getMapRenderer();
   var gl = mapRenderer.getGL();
@@ -192,13 +194,8 @@ ol.renderer.webgl.TileLayer.prototype.bindFramebuffer_ =
       }
     } else {
       var map = this.getMap();
-      goog.events.listenOnce(
-          map,
-          ol.MapEventType.POSTRENDER,
+      frameState.postRenderFunctions.push(
           goog.partial(function(gl, framebuffer, texture) {
-            if (goog.DEBUG) {
-              this.logger.info('freeing WebGL resources on postrender');
-            }
             if (!gl.isContextLost()) {
               gl.deleteFramebuffer(framebuffer);
               gl.deleteTexture(texture);
@@ -330,7 +327,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
         minX + framebufferExtentSize.width,
         minY + framebufferExtentSize.height);
 
-    this.bindFramebuffer_(framebufferDimension);
+    this.bindFramebuffer_(frameState, framebufferDimension);
     gl.viewport(0, 0, framebufferDimension, framebufferDimension);
 
     gl.clearColor(0, 0, 0, 0);
@@ -455,21 +452,12 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
     }, this);
 
     if (!goog.array.isEmpty(tilesToLoad)) {
-      goog.events.listenOnce(
-          this.getMap(),
-          ol.MapEventType.POSTRENDER,
+      frameState.postRenderFunctions.push(
           goog.partial(function(mapRenderer, tilesToLoad) {
-            if (goog.DEBUG) {
-              this.logger.info(
-                  'uploading ' + tilesToLoad.length + ' textures');
-            }
             goog.array.forEach(tilesToLoad, function(tile) {
               mapRenderer.bindTileTexture(
                   tile, goog.webgl.LINEAR, goog.webgl.LINEAR);
             });
-            if (goog.DEBUG) {
-              this.logger.info('uploaded textures');
-            }
           }, mapRenderer, tilesToLoad));
     }
 

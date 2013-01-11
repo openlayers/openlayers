@@ -92,14 +92,6 @@ ol.DEFAULT_RENDERER_HINTS = [
 /**
  * @enum {string}
  */
-ol.MapEventType = {
-  POSTRENDER: 'postrender'
-};
-
-
-/**
- * @enum {string}
- */
 ol.MapProperty = {
   BACKGROUND_COLOR: 'backgroundColor',
   LAYERS: 'layers',
@@ -245,9 +237,17 @@ ol.Map = function(mapOptions) {
    */
   this.preRenderFunctions_ = [];
 
-  this.dispatchPostRenderEvent_ = goog.bind(function() {
-    this.dispatchEvent(ol.MapEventType.POSTRENDER);
-  }, this);
+  /**
+   * @private
+   * @type {Array.<ol.PostRenderFunction>}
+   */
+  this.postRenderFunctions_ = [];
+
+  /**
+   * @private
+   * @type {function(this: ol.Map)}
+   */
+  this.handlePostRender_ = goog.bind(this.handlePostRender, this);
 
   this.setValues(mapOptionsInternal.values);
 
@@ -473,6 +473,20 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
 /**
  * @protected
  */
+ol.Map.prototype.handlePostRender = function() {
+  goog.array.forEach(
+      this.postRenderFunctions_,
+      function(postRenderFunction) {
+        postRenderFunction(this, this.frameState_);
+      },
+      this);
+  this.postRenderFunctions_.length = 0;
+};
+
+
+/**
+ * @protected
+ */
 ol.Map.prototype.handleBrowserWindowResize = function() {
   var size = new ol.Size(this.target_.clientWidth, this.target_.clientHeight);
   this.setSize(size);
@@ -556,6 +570,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       extent: null,
       layersArray: layersArray,
       layerStates: layerStates,
+      postRenderFunctions: [],
       size: size,
       view2DState: view2DState,
       time: time
@@ -596,15 +611,13 @@ ol.Map.prototype.renderFrame_ = function(time) {
     if (frameState.animate) {
       this.requestRenderFrame();
     }
+    Array.prototype.push.apply(
+        this.postRenderFunctions_, frameState.postRenderFunctions);
   }
   this.frameState_ = frameState;
   this.dirty_ = false;
 
-  if (goog.DEBUG) {
-    this.logger.info('postrender');
-  }
-
-  goog.global.setTimeout(this.dispatchPostRenderEvent_, 0);
+  goog.global.setTimeout(this.handlePostRender_, 0);
 
 };
 

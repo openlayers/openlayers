@@ -1,4 +1,5 @@
 goog.provide('ol.FrameState');
+goog.provide('ol.PostRenderFunction');
 goog.provide('ol.PreRenderFunction');
 
 goog.require('ol.Color');
@@ -15,11 +16,18 @@ goog.require('ol.layer.LayerState');
  *            extent: (null|ol.Extent),
  *            layersArray: Array.<ol.layer.Layer>,
  *            layerStates: Object.<number, ol.layer.LayerState>,
+ *            postRenderFunctions: Array.<ol.PostRenderFunction>,
  *            size: ol.Size,
  *            time: number,
  *            view2DState: ol.View2DState}}
  */
 ol.FrameState;
+
+
+/**
+ * @typedef {function(ol.Map, ?ol.FrameState): boolean}
+ */
+ol.PostRenderFunction;
 
 
 /**
