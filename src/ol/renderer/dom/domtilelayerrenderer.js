@@ -67,47 +67,36 @@ ol.renderer.dom.TileLayer.prototype.getTileLayer = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.dom.TileLayer.prototype.renderFrame = function(time) {
+ol.renderer.dom.TileLayer.prototype.renderFrame =
+    function(frameState, layerState) {
 
-  var map = this.getMap();
-  goog.asserts.assert(map.isDef());
-
-  var view = map.getView().getView2D();
-  var mapCenter = /** @type {!ol.Coordinate} */ (view.getCenter());
-  var mapResolution = /** @type {number} */ (view.getResolution());
-  var mapSize = /** @type {!ol.Size} */ (map.getSize());
-  var mapRotatedExtent = /** @type {!ol.Extent} */
-      (view.getRotatedExtent(mapSize));
-  var mapRotation = view.getRotation();
-  var mapScale = 1 / mapResolution;
+  var view2DState = frameState.view2DState;
 
   var tileLayer = this.getTileLayer();
 
-  var visible = tileLayer.getVisible();
-  if (!visible) {
+  if (!layerState.visible) {
     if (this.renderedVisible_) {
       goog.style.showElement(this.target, false);
       this.renderedVisible_ = false;
     }
-    return;
+    return false;
   }
 
-  var opacity = tileLayer.getOpacity();
-  if (opacity != this.renderedOpacity_) {
-    goog.style.setOpacity(this.target, opacity);
-    this.renderedOpacity_ = opacity;
+  if (layerState.opacity != this.renderedOpacity_) {
+    goog.style.setOpacity(this.target, layerState.opacity);
+    this.renderedOpacity_ = layerState.opacity;
   }
 
   var tileSource = tileLayer.getTileSource();
   var tileGrid = tileSource.getTileGrid();
 
-  var z = tileGrid.getZForResolution(mapResolution);
+  var z = tileGrid.getZForResolution(view2DState.resolution);
 
   /** @type {Object.<number, Object.<string, ol.Tile>>} */
   var tilesToDrawByZ = {};
 
   var tileRange = tileGrid.getTileRangeForExtentAndResolution(
-      mapRotatedExtent, mapResolution);
+      frameState.extent, view2DState.resolution);
 
   var allTilesLoaded = true;
 
@@ -173,7 +162,7 @@ ol.renderer.dom.TileLayer.prototype.renderFrame = function(time) {
       tileLayerZ = this.tileLayerZs_[tileLayerZKey];
     } else {
       tileCoordOrigin =
-          tileGrid.getTileCoordForCoordAndZ(mapCenter, tileLayerZKey);
+          tileGrid.getTileCoordForCoordAndZ(view2DState.center, tileLayerZKey);
       tileLayerZ = new ol.renderer.dom.TileLayerZ_(tileGrid, tileCoordOrigin);
       newTileLayerZKeys[tileLayerZKey] = true;
       this.tileLayerZs_[tileLayerZKey] = tileLayerZ;
@@ -204,14 +193,15 @@ ol.renderer.dom.TileLayer.prototype.renderFrame = function(time) {
     origin = tileLayerZ.getOrigin();
     goog.vec.Mat4.makeIdentity(transform);
     goog.vec.Mat4.translate(
-        transform, mapSize.width / 2, mapSize.height / 2, 0);
-    if (goog.isDef(mapRotation)) {
-      goog.vec.Mat4.rotateZ(transform, mapRotation);
-    }
-    goog.vec.Mat4.scale(
-        transform, resolution / mapResolution, resolution / mapResolution, 1);
-    goog.vec.Mat4.translate(transform, (origin.x - mapCenter.x) / resolution,
-        (mapCenter.y - origin.y) / resolution, 0);
+        transform, frameState.size.width / 2, frameState.size.height / 2, 0);
+    goog.vec.Mat4.rotateZ(transform, view2DState.rotation);
+    goog.vec.Mat4.scale(transform, resolution / view2DState.resolution,
+        resolution / view2DState.resolution, 1);
+    goog.vec.Mat4.translate(
+        transform,
+        (origin.x - view2DState.center.x) / resolution,
+        (view2DState.center.y - origin.y) / resolution,
+        0);
     tileLayerZ.setTransform(transform);
     if (tileLayerZKey in newTileLayerZKeys) {
       for (j = tileLayerZKey - 1; j >= 0; --j) {
@@ -225,16 +215,18 @@ ol.renderer.dom.TileLayer.prototype.renderFrame = function(time) {
         goog.dom.insertChildAt(this.target, tileLayerZ.target, 0);
       }
     } else {
-      tileLayerZ.removeTilesOutsideExtent(mapRotatedExtent);
+      tileLayerZ.removeTilesOutsideExtent(frameState.extent);
     }
   }
 
-  if (visible && !this.renderedVisible_) {
+  if (layerState.visible && !this.renderedVisible_) {
     goog.style.showElement(this.target, true);
     this.renderedVisible_ = true;
   }
 
-  return !allTilesLoaded;
+  if (!allTilesLoaded) {
+    frameState.animate = true;
+  }
 
 };
 

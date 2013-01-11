@@ -7,6 +7,7 @@ goog.require('goog.functions');
 goog.require('goog.fx.anim');
 goog.require('goog.fx.anim.Animated');
 goog.require('goog.vec.Mat4');
+goog.require('ol.FrameState');
 goog.require('ol.View2D');
 goog.require('ol.View2DProperty');
 
@@ -294,9 +295,9 @@ ol.renderer.Map.prototype.removeLayerRenderer = function(layer) {
 
 /**
  * Render.
- * @param {number} time Time.
+ * @param {?ol.FrameState} frameState Frame state.
  */
-ol.renderer.Map.prototype.renderFrame = goog.functions.FALSE;
+ol.renderer.Map.prototype.renderFrame = goog.nullFunction;
 
 
 /**

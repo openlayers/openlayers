@@ -145,12 +145,6 @@ ol.renderer.webgl.Map = function(container, map) {
 
   /**
    * @private
-   * @type {ol.Color}
-   */
-  this.clearColor_ = new ol.Color(1, 1, 1, 1);
-
-  /**
-   * @private
    * @type {{aPosition: number,
    *         aTexCoord: number,
    *         uColorMatrix: WebGLUniformLocation,
@@ -304,26 +298,6 @@ ol.renderer.webgl.Map.prototype.disposeInternal = function() {
 
 
 /**
- * @param {function(this: T, ol.layer.Layer, ol.renderer.webgl.Layer, number)} f
- *     Function.
- * @param {T=} opt_obj Object.
- * @template T
- */
-ol.renderer.webgl.Map.prototype.forEachReadyVisibleLayer =
-    function(f, opt_obj) {
-  var layers = this.map.getLayers();
-  if (goog.isDef(layers)) {
-    layers.forEach(function(layer, index) {
-      if (layer.isReady() && layer.getVisible()) {
-        var layerRenderer = this.getLayerRenderer(layer);
-        f.call(opt_obj, layer, layerRenderer, index);
-      }
-    }, this);
-  }
-};
-
-
-/**
  * @return {WebGLRenderingContext} GL.
  */
 ol.renderer.webgl.Map.prototype.getGL = function() {
@@ -394,12 +368,6 @@ ol.renderer.webgl.Map.prototype.getShader = function(shaderObject) {
  * @inheritDoc
  */
 ol.renderer.webgl.Map.prototype.handleBackgroundColorChanged = function() {
-  var backgroundColor = this.getMap().getBackgroundColor();
-  this.clearColor_ = new ol.Color(
-      backgroundColor.r / 255,
-      backgroundColor.g / 255,
-      backgroundColor.b / 255,
-      backgroundColor.a / 255);
   this.getMap().render();
 };
 
@@ -522,34 +490,37 @@ ol.renderer.webgl.Map.prototype.removeLayerRenderer = function(layer) {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.renderFrame = function(time) {
+ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 
-  var map = this.getMap();
-  if (!map.isDef()) {
-    return;
+  var gl = this.getGL();
+
+  if (goog.isNull(frameState)) {
+    gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, null);
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(goog.webgl.COLOR_BUFFER_BIT);
+    return false;
   }
 
-  var requestRenderFrame = false;
-
-  this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
-    if (layerRenderer.renderFrame(time)) {
-      requestRenderFrame = true;
+  goog.array.forEach(frameState.layersArray, function(layer) {
+    var layerState = frameState.layerStates[goog.getUid(layer)];
+    if (!layerState.visible || !layerState.ready) {
+      return;
     }
-  });
+    var layerRenderer = this.getLayerRenderer(layer);
+    layerRenderer.renderFrame(frameState, layerState);
+  }, this);
 
-  var size = /** @type {ol.Size} */ (this.getMap().getSize());
+  var size = frameState.size;
   if (!this.canvasSize_.equals(size)) {
     this.canvas_.width = size.width;
     this.canvas_.height = size.height;
     this.canvasSize_ = size;
   }
 
-  var gl = this.getGL();
-
   gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, null);
 
-  gl.clearColor(this.clearColor_.r, this.clearColor_.g, this.clearColor_.b,
-      this.clearColor_.a);
+  var clearColor = frameState.backgroundColor;
+  gl.clearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
   gl.clear(goog.webgl.COLOR_BUFFER_BIT);
   gl.enable(goog.webgl.BLEND);
   gl.viewport(0, 0, size.width, size.height);
@@ -589,7 +560,12 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(time) {
       this.locations_.aTexCoord, 2, goog.webgl.FLOAT, false, 16, 8);
   gl.uniform1i(this.locations_.uTexture, 0);
 
-  this.forEachReadyVisibleLayer(function(layer, layerRenderer) {
+  goog.array.forEach(frameState.layersArray, function(layer) {
+    var layerState = frameState.layerStates[goog.getUid(layer)];
+    if (!layerState.visible || !layerState.ready) {
+      return;
+    }
+    var layerRenderer = this.getLayerRenderer(layer);
     gl.uniformMatrix4fv(
         this.locations_.uMatrix, false, layerRenderer.getMatrix());
     gl.uniformMatrix4fv(
@@ -598,10 +574,6 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(time) {
     gl.bindTexture(goog.webgl.TEXTURE_2D, layerRenderer.getTexture());
     gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
   }, this);
-
-  if (requestRenderFrame) {
-    this.getMap().requestRenderFrame();
-  }
 
 };
 

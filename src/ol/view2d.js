@@ -1,4 +1,5 @@
 // FIXME getView3D has not return type
+// FIXME remove getExtent?
 
 goog.provide('ol.View2D');
 goog.provide('ol.View2DProperty');
@@ -93,32 +94,6 @@ ol.View2D.prototype.getExtent = function(size) {
 
 
 /**
- * @param {ol.Size} size Box pixel size.
- * @return {ol.Extent} Rotated extent.
- */
-ol.View2D.prototype.getRotatedExtent = function(size) {
-  goog.asserts.assert(this.isDef());
-  // FIXME try w/o casting
-  var center = /** @type {!ol.Coordinate} */ (this.getCenter());
-  var resolution = this.getResolution();
-  var rotation = this.getRotation();
-  var xScale = resolution * size.width / 2;
-  var yScale = resolution * size.height / 2;
-  var corners = [
-    new ol.Coordinate(-xScale, -yScale),
-    new ol.Coordinate(-xScale, yScale),
-    new ol.Coordinate(xScale, -yScale),
-    new ol.Coordinate(xScale, yScale)
-  ];
-  goog.array.forEach(corners, function(corner) {
-    corner.rotate(rotation);
-    corner.add(center);
-  });
-  return ol.Extent.boundingExtent.apply(null, corners);
-};
-
-
-/**
  * @inheritDoc
  */
 ol.View2D.prototype.getProjection = function() {
@@ -174,6 +149,24 @@ goog.exportProperty(
  */
 ol.View2D.prototype.getView2D = function() {
   return this;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.View2D.prototype.getView2DState = function() {
+  goog.asserts.assert(this.isDef());
+  var center = /** @type {ol.Coordinate} */ (this.getCenter());
+  var projection = /** @type {ol.Projection} */ (this.getProjection());
+  var resolution = /** @type {number} */ (this.getResolution());
+  var rotation = /** @type {number} */ (this.getRotation());
+  return {
+    center: new ol.Coordinate(center.x, center.y),
+    projection: projection,
+    resolution: resolution,
+    rotation: rotation
+  };
 };
 
 
