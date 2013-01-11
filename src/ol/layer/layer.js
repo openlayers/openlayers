@@ -1,5 +1,6 @@
 goog.provide('ol.layer.Layer');
 goog.provide('ol.layer.LayerProperty');
+goog.provide('ol.layer.LayerState');
 
 goog.require('goog.events');
 goog.require('goog.events.EventType');
@@ -19,6 +20,18 @@ ol.layer.LayerProperty = {
   SATURATION: 'saturation',
   VISIBLE: 'visible'
 };
+
+
+/**
+ * @typedef {{brightness: number,
+ *            contrast: number,
+ *            hue: number,
+ *            opacity: number,
+ *            ready: boolean,
+ *            saturation: number,
+ *            visible: boolean}}
+ */
+ol.layer.LayerState;
 
 
 
@@ -101,6 +114,29 @@ goog.exportProperty(
     ol.layer.Layer.prototype,
     'getHue',
     ol.layer.Layer.prototype.getHue);
+
+
+/**
+ * @return {ol.layer.LayerState} Layer state.
+ */
+ol.layer.Layer.prototype.getLayerState = function() {
+  var brightness = this.getBrightness();
+  var contrast = this.getContrast();
+  var hue = this.getHue();
+  var opacity = this.getOpacity();
+  var ready = this.isReady();
+  var saturation = this.getSaturation();
+  var visible = this.getVisible();
+  return {
+    brightness: goog.isDef(brightness) ? brightness : 0,
+    contrast: goog.isDef(contrast) ? contrast : 1,
+    hue: goog.isDef(hue) ? hue : 0,
+    opacity: goog.isDef(opacity) ? opacity : 1,
+    ready: ready,
+    saturation: goog.isDef(saturation) ? saturation : 1,
+    visible: goog.isDef(visible) ? visible : true
+  };
+};
 
 
 /**
