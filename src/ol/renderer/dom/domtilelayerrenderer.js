@@ -319,6 +319,7 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile) {
 
 
 /**
+ * FIXME empty description for jsdoc
  */
 ol.renderer.dom.TileLayerZ_.prototype.finalizeAddTiles = function() {
   if (!goog.isNull(this.documentFragment_)) {

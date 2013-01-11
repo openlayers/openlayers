@@ -76,5 +76,6 @@ ol.Tile.prototype.getState = function() {
 
 
 /**
+ * FIXME empty description for jsdoc
  */
 ol.Tile.prototype.load = goog.abstractMethod;
