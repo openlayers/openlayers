@@ -1,3 +1,5 @@
+// FIXME add view3DState
+
 goog.provide('ol.FrameState');
 goog.provide('ol.PostRenderFunction');
 goog.provide('ol.PreRenderFunction');

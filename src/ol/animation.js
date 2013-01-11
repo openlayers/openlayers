@@ -1,3 +1,5 @@
+// FIXME works for View2D only
+
 goog.provide('ol.animation');
 
 goog.require('goog.fx.easing');

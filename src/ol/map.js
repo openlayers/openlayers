@@ -585,6 +585,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       this);
 
   if (!goog.isNull(frameState)) {
+    // FIXME works for View2D only
     var center = view2DState.center;
     var resolution = view2DState.resolution;
     var rotation = view2DState.rotation;
