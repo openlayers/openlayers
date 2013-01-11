@@ -10,14 +10,14 @@ goog.require('ol.Attribution');
 goog.require('ol.Projection');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
-goog.require('ol.source.TileSource');
+goog.require('ol.source.ImageTileSource');
 goog.require('ol.tilegrid.TileGrid');
 
 
 
 /**
  * @constructor
- * @extends {ol.source.TileSource}
+ * @extends {ol.source.ImageTileSource}
  * @param {ol.source.TiledWMSOptions} tiledWMSOptions options.
  */
 ol.source.TiledWMS = function(tiledWMSOptions) {
@@ -116,4 +116,4 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
   });
 
 };
-goog.inherits(ol.source.TiledWMS, ol.source.TileSource);
+goog.inherits(ol.source.TiledWMS, ol.source.ImageTileSource);
