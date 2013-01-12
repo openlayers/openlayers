@@ -1,5 +1,3 @@
-// FIXME re-enable rotation when supported
-
 goog.provide('ol.renderer.dom.Map');
 
 goog.require('goog.asserts');
