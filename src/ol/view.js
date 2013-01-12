@@ -1,6 +1,7 @@
 goog.provide('ol.View');
 goog.provide('ol.ViewHint');
 
+goog.require('goog.array');
 goog.require('ol.IView');
 goog.require('ol.IView2D');
 goog.require('ol.IView3D');
@@ -37,7 +38,7 @@ goog.inherits(ol.View, ol.Object);
  * @return {Array.<number>} Hint.
  */
 ol.View.prototype.getHints = function() {
-  return this.hints_;
+  return goog.array.clone(this.hints_);
 };
 
 
