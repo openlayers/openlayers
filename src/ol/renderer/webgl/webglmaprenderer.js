@@ -267,7 +267,6 @@ ol.renderer.webgl.Map.prototype.canRotate = goog.functions.TRUE;
  * @inheritDoc
  */
 ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
-  var gl = this.getGL();
   if (layer instanceof ol.layer.TileLayer) {
     return new ol.renderer.webgl.TileLayer(this, layer);
   } else {
