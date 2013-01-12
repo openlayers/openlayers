@@ -492,9 +492,10 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   var gl = this.getGL();
 
   if (goog.isNull(frameState)) {
-    gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, null);
-    gl.clearColor(0, 0, 0, 0);
-    gl.clear(goog.webgl.COLOR_BUFFER_BIT);
+    if (this.renderedVisible_) {
+      goog.style.showElement(this.canvas_, false);
+      this.renderedVisible_ = false;
+    }
     return false;
   }
 
@@ -571,6 +572,11 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
     gl.bindTexture(goog.webgl.TEXTURE_2D, layerRenderer.getTexture());
     gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
   }, this);
+
+  if (!this.renderedVisible_) {
+    goog.style.showElement(this.canvas_, true);
+    this.renderedVisible_ = true;
+  }
 
 };
 
