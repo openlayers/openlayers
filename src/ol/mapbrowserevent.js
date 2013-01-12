@@ -270,7 +270,9 @@ ol.MapBrowserEventHandler.prototype.drag_ = function(browserEvent) {
 };
 
 
-/** @override */
+/**
+ * FIXME empty description for jsdoc
+ */
 ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
   var element = this.map_.getViewport();
   goog.events.unlisten(element,
