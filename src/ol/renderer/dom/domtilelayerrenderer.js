@@ -14,6 +14,7 @@ goog.require('ol.Size');
 goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
+goog.require('ol.ViewHint');
 goog.require('ol.dom');
 goog.require('ol.renderer.dom.Layer');
 goog.require('ol.tilegrid.TileGrid');
@@ -210,7 +211,9 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
         goog.dom.insertChildAt(this.target, tileLayerZ.target, 0);
       }
     } else {
-      tileLayerZ.removeTilesOutsideExtent(frameState.extent);
+      if (!frameState.viewHints[ol.ViewHint.PANNING]) {
+        tileLayerZ.removeTilesOutsideExtent(frameState.extent);
+      }
     }
   }
 
