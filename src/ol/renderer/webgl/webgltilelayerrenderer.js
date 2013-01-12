@@ -234,15 +234,6 @@ ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
 
 
 /**
- * @return {ol.layer.TileLayer} Layer.
- * @inheritDoc
- */
-ol.renderer.webgl.TileLayer.prototype.getLayer = function() {
-  return /** @type {ol.layer.TileLayer} */ (goog.base(this, 'getLayer'));
-};
-
-
-/**
  * @inheritDoc
  */
 ol.renderer.webgl.TileLayer.prototype.getMatrix = function() {
@@ -255,6 +246,14 @@ ol.renderer.webgl.TileLayer.prototype.getMatrix = function() {
  */
 ol.renderer.webgl.TileLayer.prototype.getTexture = function() {
   return this.texture_;
+};
+
+
+/**
+ * @return {ol.layer.TileLayer} Tile layer.
+ */
+ol.renderer.webgl.TileLayer.prototype.getTileLayer = function() {
+  return /** @type {ol.layer.TileLayer} */ (this.getLayer());
 };
 
 
@@ -282,7 +281,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
   var view2DState = frameState.view2DState;
   var center = view2DState.center;
 
-  var tileLayer = this.getLayer();
+  var tileLayer = this.getTileLayer();
   var tileSource = tileLayer.getTileSource();
   var tileGrid = tileSource.getTileGrid();
   var z = tileGrid.getZForResolution(view2DState.resolution);
