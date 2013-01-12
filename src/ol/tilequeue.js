@@ -109,7 +109,7 @@ ol.TileQueue.prototype.loadMoreTiles = function() {
  */
 ol.TileQueue.prototype.reprioritize = function() {
   if (!this.queue_.isEmpty()) {
-    var values = /** @type {Array.<Array>} */ this.queue_.getValues();
+    var values = /** @type {Array.<Array>} */ (this.queue_.getValues());
     this.queue_.clear();
     this.queuedTileKeys_ = {};
     var i;
