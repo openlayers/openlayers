@@ -211,7 +211,8 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
         goog.dom.insertChildAt(this.target, tileLayerZ.target, 0);
       }
     } else {
-      if (!frameState.viewHints[ol.ViewHint.PANNING]) {
+      if (!frameState.viewHints[ol.ViewHint.ANIMATING] &&
+          !frameState.viewHints[ol.ViewHint.PANNING]) {
         tileLayerZ.removeTilesOutsideExtent(frameState.extent);
       }
     }
