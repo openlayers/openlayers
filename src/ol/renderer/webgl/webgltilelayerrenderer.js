@@ -8,7 +8,6 @@ goog.provide('ol.renderer.webgl.tilelayerrenderer.shader.Vertex');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.debug.Logger');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('goog.structs.PriorityQueue');
@@ -87,14 +86,6 @@ goog.addSingletonGetter(ol.renderer.webgl.tilelayerrenderer.shader.Vertex);
 ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
 
   goog.base(this, mapRenderer, tileLayer);
-
-  if (goog.DEBUG) {
-    /**
-     * @inheritDoc
-     */
-    this.logger = goog.debug.Logger.getLogger(
-        'ol.renderer.webgl.tilelayerrenderer.' + goog.getUid(this));
-  }
 
   /**
    * @private
@@ -178,10 +169,6 @@ ol.renderer.webgl.TileLayer.prototype.bindFramebuffer_ =
 
   if (!goog.isDef(this.framebufferDimension_) ||
       this.framebufferDimension_ != framebufferDimension) {
-
-    if (goog.DEBUG) {
-      this.logger.info('re-sizing framebuffer');
-    }
 
     var map = this.getMap();
     frameState.postRenderFunctions.push(
