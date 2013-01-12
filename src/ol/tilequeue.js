@@ -63,7 +63,9 @@ ol.TileQueue = function(tilePriorityFunction) {
  */
 ol.TileQueue.prototype.enqueue =
     function(tile, tileCenter, tileResolution) {
-  goog.asserts.assert(tile.getState() == ol.TileState.IDLE);
+  if (tile.getState() != ol.TileState.IDLE) {
+    return;
+  }
   var tileKey = tile.getKey();
   if (!(tileKey in this.queuedTileKeys_)) {
     var priority = this.tilePriorityFunction_(tile, tileCenter, tileResolution);
