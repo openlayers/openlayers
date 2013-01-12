@@ -1,6 +1,7 @@
 goog.provide('ol.source.DebugTileSource');
 goog.provide('ol.source.DebugTileSourceOptions');
 
+goog.require('ol.Size');
 goog.require('ol.Tile');
 goog.require('ol.TileCoord');
 goog.require('ol.source.TileSource');
@@ -21,28 +22,17 @@ ol.DebugTile_ = function(tileCoord, tileGrid) {
 
   this.state = ol.TileState.LOADED;
 
-  var tileSize = tileGrid.getTileSize();
+  /**
+   * @private
+   * @type {ol.TileCoord}
+   */
+  this.tileCoord_ = tileCoord;
 
   /**
    * @private
-   * @type {HTMLCanvasElement}
+   * @type {ol.Size}
    */
-  this.canvas_ = /** @type {HTMLCanvasElement} */
-      (goog.dom.createElement(goog.dom.TagName.CANVAS));
-  this.canvas_.width = tileSize.width;
-  this.canvas_.height = tileSize.height;
-
-  var context = this.canvas_.getContext('2d');
-
-  context.strokeStyle = 'black';
-  context.strokeRect(0.5, 0.5, tileSize.width + 0.5, tileSize.height + 0.5);
-
-  context.fillStyle = 'black';
-  context.textAlign = 'center';
-  context.textBaseline = 'middle';
-  context.font = '24px sans-serif';
-  context.fillText(
-      tileCoord.toString(), tileSize.width / 2, tileSize.height / 2);
+  this.tileSize_ = tileGrid.getTileSize();
 
   /**
    * @private
@@ -58,20 +48,33 @@ goog.inherits(ol.DebugTile_, ol.Tile);
  * @inheritDoc
  */
 ol.DebugTile_.prototype.getImage = function(opt_context) {
-  if (goog.isDef(opt_context)) {
-    var canvas;
-    var key = goog.getUid(opt_context);
-    if (key in this.canvasByContext_) {
-      return this.canvasByContext_[key];
-    } else if (goog.object.isEmpty(this.canvasByContext_)) {
-      canvas = this.canvas_;
-    } else {
-      canvas = /** @type {HTMLCanvasElement} */ (this.canvas_.cloneNode(false));
-    }
+  var key = goog.isDef(opt_context) ? goog.getUid(opt_context) : -1;
+  if (key in this.canvasByContext_) {
+    return this.canvasByContext_[key];
+  } else {
+
+    var tileSize = this.tileSize_;
+
+    var canvas = /** @type {HTMLCanvasElement} */
+        (goog.dom.createElement(goog.dom.TagName.CANVAS));
+    canvas.width = tileSize.width;
+    canvas.height = tileSize.height;
+
+    var context = canvas.getContext('2d');
+
+    context.strokeStyle = 'black';
+    context.strokeRect(0.5, 0.5, tileSize.width + 0.5, tileSize.height + 0.5);
+
+    context.fillStyle = 'black';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.font = '24px sans-serif';
+    context.fillText(
+        this.tileCoord_.toString(), tileSize.width / 2, tileSize.height / 2);
+
     this.canvasByContext_[key] = canvas;
     return canvas;
-  } else {
-    return this.canvas_;
+
   }
 };
 
