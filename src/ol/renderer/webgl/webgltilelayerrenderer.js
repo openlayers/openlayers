@@ -183,24 +183,14 @@ ol.renderer.webgl.TileLayer.prototype.bindFramebuffer_ =
       this.logger.info('re-sizing framebuffer');
     }
 
-    if (ol.renderer.webgl.FREE_RESOURCES_IMMEDIATELY) {
-      if (goog.DEBUG) {
-        this.logger.info('freeing WebGL resources');
-      }
-      if (!gl.isContextLost()) {
-        gl.deleteFramebuffer(this.framebuffer_);
-        gl.deleteTexture(this.texture_);
-      }
-    } else {
-      var map = this.getMap();
-      frameState.postRenderFunctions.push(
-          goog.partial(function(gl, framebuffer, texture) {
-            if (!gl.isContextLost()) {
-              gl.deleteFramebuffer(framebuffer);
-              gl.deleteTexture(texture);
-            }
-          }, gl, this.framebuffer_, this.texture_));
-    }
+    var map = this.getMap();
+    frameState.postRenderFunctions.push(
+        goog.partial(function(gl, framebuffer, texture) {
+          if (!gl.isContextLost()) {
+            gl.deleteFramebuffer(framebuffer);
+            gl.deleteTexture(texture);
+          }
+        }, gl, this.framebuffer_, this.texture_));
 
     var texture = gl.createTexture();
     gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
