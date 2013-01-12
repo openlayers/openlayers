@@ -86,6 +86,7 @@ ol.TileQueue.prototype.handleTileChange = function() {
 
 
 /**
+ * FIXME empty description for jsdoc
  */
 ol.TileQueue.prototype.loadMoreTiles = function() {
   var tile, tileKey;
@@ -102,6 +103,7 @@ ol.TileQueue.prototype.loadMoreTiles = function() {
 
 
 /**
+ * FIXME empty description for jsdoc
  */
 ol.TileQueue.prototype.reprioritize = function() {
   if (!this.queue_.isEmpty()) {
