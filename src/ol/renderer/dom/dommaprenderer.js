@@ -6,6 +6,7 @@ goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.functions');
+goog.require('goog.style');
 goog.require('ol.Coordinate');
 goog.require('ol.FrameState');
 goog.require('ol.layer.TileLayer');
@@ -36,6 +37,12 @@ ol.renderer.dom.Map = function(container, map) {
   style.height = '100%';
 
   goog.dom.insertChildAt(container, this.layersPane_, 0);
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.renderedVisible_ = true;
 
 };
 goog.inherits(ol.renderer.dom.Map, ol.renderer.Map);
@@ -95,7 +102,10 @@ ol.renderer.dom.Map.prototype.handleViewChanged = function() {
 ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
 
   if (goog.isNull(frameState)) {
-    // FIXME remove everything
+    if (this.renderedVisible_) {
+      goog.style.showElement(this.layersPane_, false);
+      this.renderedVisible_ = false;
+    }
     return;
   }
 
@@ -107,5 +117,10 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
     var layerRenderer = this.getLayerRenderer(layer);
     layerRenderer.renderFrame(frameState, layerState);
   }, this);
+
+  if (!this.renderedVisible_) {
+    goog.style.showElement(this.layersPane_, true);
+    this.renderedVisible_ = true;
+  }
 
 };
