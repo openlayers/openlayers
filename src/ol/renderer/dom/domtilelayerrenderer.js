@@ -260,10 +260,9 @@ ol.renderer.dom.TileLayerZ_ = function(tileGrid, tileCoordOrigin) {
 
   /**
    * @private
-   * @type {!ol.Coordinate}
+   * @type {ol.Coordinate}
    */
-  this.origin_ = /** @type {!ol.Coordinate} */
-      (tileGrid.getTileCoordExtent(tileCoordOrigin).getTopLeft());
+  this.origin_ = tileGrid.getTileCoordExtent(tileCoordOrigin).getTopLeft();
 
   /**
    * @private
@@ -330,7 +329,7 @@ ol.renderer.dom.TileLayerZ_.prototype.finalizeAddTiles = function() {
 
 
 /**
- * @return {!ol.Coordinate} Origin.
+ * @return {ol.Coordinate} Origin.
  */
 ol.renderer.dom.TileLayerZ_.prototype.getOrigin = function() {
   return this.origin_;
