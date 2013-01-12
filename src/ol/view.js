@@ -10,7 +10,8 @@ goog.require('ol.IView3D');
  * @enum {number}
  */
 ol.ViewHint = {
-  PANNING: 0
+  ANIMATING: 0,
+  PANNING: 1
 };
 
 
@@ -26,7 +27,7 @@ ol.View = function() {
    * @private
    * @type {Array.<number>}
    */
-  this.hints_ = [0];
+  this.hints_ = [0, 0];
 
 };
 goog.inherits(ol.View, ol.Object);
