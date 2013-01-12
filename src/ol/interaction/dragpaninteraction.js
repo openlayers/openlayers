@@ -56,10 +56,22 @@ ol.interaction.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
+ol.interaction.DragPan.prototype.handleDragEnd = function(mapBrowserEvent) {
+  var map = mapBrowserEvent.map;
+  map.requestRenderFrame();
+  map.getView().setHint(ol.ViewHint.PANNING, -1);
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.interaction.DragPan.prototype.handleDragStart = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   if (this.condition_(browserEvent)) {
-    mapBrowserEvent.map.requestRenderFrame();
+    var map = mapBrowserEvent.map;
+    map.requestRenderFrame();
+    map.getView().setHint(ol.ViewHint.PANNING, 1);
     return true;
   } else {
     return false;
