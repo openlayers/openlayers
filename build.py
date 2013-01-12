@@ -79,7 +79,7 @@ def report_sizes(t):
 virtual('all', 'build-all', 'build', 'examples')
 
 
-virtual('precommit', 'lint', 'build-all', 'test', 'build', 'build-examples')
+virtual('precommit', 'lint', 'build-all', 'test', 'build', 'build-examples', 'doc')
 
 
 virtual('build', 'build/ol.css', 'build/ol.js')
