@@ -61,8 +61,7 @@ ol.interaction.DragRotate.prototype.handleDragStart =
   // FIXME supports View2D only
   var view = map.getView();
   goog.asserts.assert(view instanceof ol.View2D);
-  if (browserEvent.isMouseActionButton() && this.condition_(browserEvent) &&
-      map.canRotate()) {
+  if (browserEvent.isMouseActionButton() && this.condition_(browserEvent)) {
     map.requestRenderFrame();
     var size = map.getSize();
     var offset = mapBrowserEvent.getPixel();

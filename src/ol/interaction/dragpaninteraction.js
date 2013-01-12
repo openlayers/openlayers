@@ -43,9 +43,7 @@ ol.interaction.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
   var rotation = view.getRotation();
   var delta =
       new ol.Coordinate(-resolution * this.deltaX, resolution * this.deltaY);
-  if (map.canRotate() && goog.isDef(rotation)) {
-    delta.rotate(rotation);
-  }
+  delta.rotate(rotation);
   var newCenter = new ol.Coordinate(
       this.startCenter.x + delta.x, this.startCenter.y + delta.y);
   map.requestRenderFrame();

@@ -51,12 +51,6 @@ goog.inherits(ol.renderer.dom.Map, ol.renderer.Map);
 /**
  * @inheritDoc
  */
-ol.renderer.dom.Map.prototype.canRotate = goog.functions.TRUE;
-
-
-/**
- * @inheritDoc
- */
 ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
   if (layer instanceof ol.layer.TileLayer) {
     var layerRenderer = new ol.renderer.dom.TileLayer(this, layer);
@@ -73,7 +67,6 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
  * @inheritDoc
  */
 ol.renderer.dom.Map.prototype.handleViewPropertyChanged = function() {
-  goog.base(this, 'handleViewPropertyChanged');
   this.getMap().render();
 };
 
@@ -82,7 +75,6 @@ ol.renderer.dom.Map.prototype.handleViewPropertyChanged = function() {
  * @inheritDoc
  */
 ol.renderer.dom.Map.prototype.handleSizeChanged = function() {
-  goog.base(this, 'handleSizeChanged');
   this.getMap().render();
 };
 
@@ -122,5 +114,7 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
     goog.style.showElement(this.layersPane_, true);
     this.renderedVisible_ = true;
   }
+
+  this.calculateMatrices2D(frameState);
 
 };
