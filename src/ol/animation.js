@@ -24,12 +24,14 @@ ol.animation.createBounce =
   return function(map, frameState) {
     if (frameState.time < start) {
       frameState.animate = true;
+      frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
       return true;
     } else if (frameState.time < start + duration) {
       var delta = easingFunction((frameState.time - start) / duration);
       var deltaResolution = resolution - frameState.view2DState.resolution;
       frameState.animate = true;
       frameState.view2DState.resolution += delta * deltaResolution;
+      frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
       return true;
     } else {
       return false;
@@ -56,6 +58,7 @@ ol.animation.createPanFrom =
   return function(map, frameState) {
     if (frameState.time < start) {
       frameState.animate = true;
+      frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
       return true;
     } else if (frameState.time < start + duration) {
       var delta = 1 - easingFunction((frameState.time - start) / duration);
@@ -64,6 +67,7 @@ ol.animation.createPanFrom =
       frameState.animate = true;
       frameState.view2DState.center.x += delta * deltaX;
       frameState.view2DState.center.y += delta * deltaY;
+      frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
       return true;
     } else {
       return false;
@@ -90,11 +94,13 @@ ol.animation.createSpin =
   return function(map, frameState) {
     if (frameState.time < start) {
       frameState.animate = true;
+      frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
       return true;
     } else if (frameState.time < start + duration) {
       var delta = easingFunction((frameState.time - start) / duration);
       frameState.animate = true;
       frameState.view2DState.rotation += delta * deltaTheta;
+      frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
       return true;
     } else {
       return false;
