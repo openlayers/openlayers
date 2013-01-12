@@ -1,7 +1,5 @@
 // FIXME large resolutions lead to too large framebuffers :-(
 // FIXME animated shaders! check in redraw
-// FIXME throttle texture uploads
-// FIXME prioritize texture uploads
 
 goog.provide('ol.renderer.webgl.TileLayer');
 goog.provide('ol.renderer.webgl.tilelayerrenderer');
@@ -13,6 +11,7 @@ goog.require('goog.asserts');
 goog.require('goog.debug.Logger');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
+goog.require('goog.structs.PriorityQueue');
 goog.require('goog.vec.Mat4');
 goog.require('goog.vec.Vec4');
 goog.require('goog.webgl');
@@ -291,6 +290,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
   var gl = mapRenderer.getGL();
 
   var view2DState = frameState.view2DState;
+  var center = view2DState.center;
 
   var tileLayer = this.getLayer();
   var tileSource = tileLayer.getTileSource();
@@ -373,10 +373,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
      */
     var tilesToDrawByZ = {};
 
-    /**
-     * @type {Array.<ol.Tile>}
-     */
-    var tilesToLoad = [];
+    var tilesToLoad = new goog.structs.PriorityQueue();
 
     var allTilesLoaded = true;
 
@@ -397,7 +394,11 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
           tilesToDrawByZ[z][tileCoord.toString()] = tile;
           return;
         } else {
-          tilesToLoad.push(tile);
+          var tileCenter = tileGrid.getTileCoordCenter(tileCoord);
+          var deltaX = tileCenter.x - center.x;
+          var deltaY = tileCenter.y - center.y;
+          var priority = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+          tilesToLoad.enqueue(priority, tile);
         }
       } else if (tileState == ol.TileState.ERROR) {
         return;
@@ -451,13 +452,16 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
       }, this);
     }, this);
 
-    if (!goog.array.isEmpty(tilesToLoad)) {
+    if (!tilesToLoad.isEmpty()) {
       frameState.postRenderFunctions.push(
           goog.partial(function(mapRenderer, tilesToLoad) {
-            goog.array.forEach(tilesToLoad, function(tile) {
+            var i, tile;
+            // FIXME determine a suitable number of textures to upload per frame
+            for (i = 0; !tilesToLoad.isEmpty() && i < 4; ++i) {
+              tile = /** @type {ol.Tile} */ (tilesToLoad.remove());
               mapRenderer.bindTileTexture(
                   tile, goog.webgl.LINEAR, goog.webgl.LINEAR);
-            });
+            }
           }, mapRenderer, tilesToLoad));
     }
 
