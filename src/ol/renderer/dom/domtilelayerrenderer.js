@@ -70,26 +70,19 @@ ol.renderer.dom.TileLayer.prototype.getTileLayer = function() {
 ol.renderer.dom.TileLayer.prototype.renderFrame =
     function(frameState, layerState) {
 
-  var view2DState = frameState.view2DState;
-
-  var tileLayer = this.getTileLayer();
-
   if (!layerState.visible) {
     if (this.renderedVisible_) {
       goog.style.showElement(this.target, false);
       this.renderedVisible_ = false;
     }
-    return false;
+    return;
   }
 
-  if (layerState.opacity != this.renderedOpacity_) {
-    goog.style.setOpacity(this.target, layerState.opacity);
-    this.renderedOpacity_ = layerState.opacity;
-  }
-
+  var tileLayer = this.getTileLayer();
   var tileSource = tileLayer.getTileSource();
   var tileGrid = tileSource.getTileGrid();
 
+  var view2DState = frameState.view2DState;
   var z = tileGrid.getZForResolution(view2DState.resolution);
 
   /** @type {Object.<number, Object.<string, ol.Tile>>} */
@@ -217,6 +210,11 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
     } else {
       tileLayerZ.removeTilesOutsideExtent(frameState.extent);
     }
+  }
+
+  if (layerState.opacity != this.renderedOpacity_) {
+    goog.style.setOpacity(this.target, layerState.opacity);
+    this.renderedOpacity_ = layerState.opacity;
   }
 
   if (layerState.visible && !this.renderedVisible_) {
