@@ -23,7 +23,8 @@ goog.require('ol.layer.LayerState');
  *            size: ol.Size,
  *            tileQueue: ol.TileQueue,
  *            time: number,
- *            view2DState: ol.View2DState}}
+ *            view2DState: ol.View2DState,
+ *            viewHints: Array.<number>}}
  */
 ol.FrameState;
 
