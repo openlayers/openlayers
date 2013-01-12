@@ -36,6 +36,7 @@ goog.require('ol.Pixel');
 goog.require('ol.ResolutionConstraint');
 goog.require('ol.RotationConstraint');
 goog.require('ol.Size');
+goog.require('ol.TileQueue');
 goog.require('ol.TransformFunction');
 goog.require('ol.View');
 goog.require('ol.View2D');
@@ -249,6 +250,12 @@ ol.Map = function(mapOptions) {
    */
   this.handlePostRender_ = goog.bind(this.handlePostRender, this);
 
+  /**
+   * @private
+   * @type {ol.TileQueue}
+   */
+  this.tileQueue_ = new ol.TileQueue(goog.bind(this.getTilePriority, this));
+
   this.setValues(mapOptionsInternal.values);
 
   this.handleBrowserWindowResize();
@@ -421,6 +428,24 @@ ol.Map.prototype.getOverlayContainer = function() {
 
 
 /**
+ * @param {ol.Tile} tile Tile.
+ * @param {ol.Coordinate} tileCenter Tile center.
+ * @param {number} tileResolution Tile resolution.
+ * @return {number|undefined} Tile priority.
+ */
+ol.Map.prototype.getTilePriority = function(tile, tileCenter, tileResolution) {
+  if (goog.isNull(this.frameState_)) {
+    return undefined;
+  } else {
+    var center = this.frameState_.view2DState.center;
+    var deltaX = tileCenter.x - center.x;
+    var deltaY = tileCenter.y - center.y;
+    return Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
+  }
+};
+
+
+/**
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @param {string=} opt_type Type.
  */
@@ -474,6 +499,8 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
  * @protected
  */
 ol.Map.prototype.handlePostRender = function() {
+  this.tileQueue_.reprioritize(); // FIXME only call if needed
+  this.tileQueue_.loadMoreTiles();
   goog.array.forEach(
       this.postRenderFunctions_,
       function(postRenderFunction) {
@@ -572,6 +599,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       layerStates: layerStates,
       postRenderFunctions: [],
       size: size,
+      tileQueue: this.tileQueue_,
       view2DState: view2DState,
       time: time
     };

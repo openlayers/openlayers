@@ -84,6 +84,7 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
 
   var view2DState = frameState.view2DState;
   var z = tileGrid.getZForResolution(view2DState.resolution);
+  var tileResolution = tileGrid.getResolution(z);
 
   /** @type {Object.<number, Object.<string, ol.Tile>>} */
   var tilesToDrawByZ = {};
@@ -104,7 +105,8 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
 
     var tileState = tile.getState();
     if (tileState == ol.TileState.IDLE) {
-      tile.load();
+      var tileCenter = tileGrid.getTileCoordCenter(tileCoord);
+      frameState.tileQueue.enqueue(tile, tileCenter, tileResolution);
     } else if (tileState == ol.TileState.LOADED) {
       tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
       return;

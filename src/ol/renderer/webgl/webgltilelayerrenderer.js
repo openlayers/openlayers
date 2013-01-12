@@ -391,7 +391,8 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
 
       var tileState = tile.getState();
       if (tileState == ol.TileState.IDLE) {
-        tile.load();
+        var tileCenter = tileGrid.getTileCoordCenter(tileCoord);
+        frameState.tileQueue.enqueue(tile, tileCenter, tileResolution);
       } else if (tileState == ol.TileState.LOADED) {
         if (mapRenderer.isTileTextureLoaded(tile)) {
           tilesToDrawByZ[z][tileCoord.toString()] = tile;
