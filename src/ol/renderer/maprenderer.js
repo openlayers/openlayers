@@ -221,13 +221,17 @@ ol.renderer.Map.prototype.handleLayersRemove = function(collectionEvent) {
 /**
  * @protected
  */
-ol.renderer.Map.prototype.handleViewPropertyChanged = goog.nullFunction;
+ol.renderer.Map.prototype.handleViewPropertyChanged = function() {
+  this.getMap().render();
+};
 
 
 /**
  * @protected
  */
-ol.renderer.Map.prototype.handleSizeChanged = goog.nullFunction;
+ol.renderer.Map.prototype.handleSizeChanged = function() {
+  this.getMap().render();
+};
 
 
 /**
@@ -244,6 +248,7 @@ ol.renderer.Map.prototype.handleViewChanged = function() {
         view, ol.ObjectEventType.CHANGED,
         this.handleViewPropertyChanged, false, this);
   }
+  this.getMap().render();
 };
 
 

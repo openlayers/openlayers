@@ -370,35 +370,10 @@ ol.renderer.webgl.Map.prototype.handleBackgroundColorChanged = function() {
 
 
 /**
- * @inheritDoc
- */
-ol.renderer.webgl.Map.prototype.handleViewPropertyChanged = function() {
-  this.getMap().render();
-};
-
-
-/**
  * @param {goog.events.Event} event Event.
  * @protected
  */
 ol.renderer.webgl.Map.prototype.handleLayerRendererChange = function(event) {
-  this.getMap().render();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.Map.prototype.handleSizeChanged = function() {
-  this.getMap().render();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.Map.prototype.handleViewChanged = function() {
-  goog.base(this, 'handleViewChanged');
   this.getMap().render();
 };
 

@@ -66,31 +66,6 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
 /**
  * @inheritDoc
  */
-ol.renderer.dom.Map.prototype.handleViewPropertyChanged = function() {
-  this.getMap().render();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.dom.Map.prototype.handleSizeChanged = function() {
-  this.getMap().render();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.dom.Map.prototype.handleViewChanged = function() {
-  goog.base(this, 'handleViewChanged');
-  this.getMap().render();
-};
-
-
-/**
- * @inheritDoc
- */
 ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
 
   if (goog.isNull(frameState)) {
