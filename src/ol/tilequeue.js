@@ -93,7 +93,7 @@ ol.TileQueue.prototype.handleTileChange = function() {
 ol.TileQueue.prototype.loadMoreTiles = function() {
   var tile, tileKey;
   while (!this.queue_.isEmpty() && this.tilesLoading_ < this.maxTilesLoading_) {
-    tile = (/** @type {Array} */ (this.queue_.remove()))[0];
+    tile = (/** @type {Array} */ (this.queue_.dequeue()))[0];
     tileKey = tile.getKey();
     delete this.queuedTileKeys_[tileKey];
     goog.events.listen(tile, goog.events.EventType.CHANGE,
