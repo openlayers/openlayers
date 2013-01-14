@@ -1,7 +1,5 @@
 // FIXME clear textureCache
-// FIXME defer texture loads until after render when animating
 // FIXME generational tile texture garbage collector newFrame/get
-// FIXME defer cleanup until post-render
 // FIXME check against gl.getParameter(webgl.MAX_TEXTURE_SIZE)
 
 goog.provide('ol.renderer.webgl.Map');
@@ -118,6 +116,12 @@ ol.renderer.webgl.Map = function(container, map) {
   this.canvas_.width = container.clientWidth;
   this.canvas_.className = 'ol-unselectable';
   goog.dom.insertChildAt(container, this.canvas_, 0);
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.renderedVisible_ = true;
 
   /**
    * @private
@@ -267,7 +271,6 @@ ol.renderer.webgl.Map.prototype.canRotate = goog.functions.TRUE;
  * @inheritDoc
  */
 ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
-  var gl = this.getGL();
   if (layer instanceof ol.layer.TileLayer) {
     return new ol.renderer.webgl.TileLayer(this, layer);
   } else {
@@ -495,9 +498,10 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   var gl = this.getGL();
 
   if (goog.isNull(frameState)) {
-    gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, null);
-    gl.clearColor(0, 0, 0, 0);
-    gl.clear(goog.webgl.COLOR_BUFFER_BIT);
+    if (this.renderedVisible_) {
+      goog.style.showElement(this.canvas_, false);
+      this.renderedVisible_ = false;
+    }
     return false;
   }
 
@@ -574,6 +578,11 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
     gl.bindTexture(goog.webgl.TEXTURE_2D, layerRenderer.getTexture());
     gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
   }, this);
+
+  if (!this.renderedVisible_) {
+    goog.style.showElement(this.canvas_, true);
+    this.renderedVisible_ = true;
+  }
 
 };
 
