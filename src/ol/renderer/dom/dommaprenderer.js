@@ -51,7 +51,10 @@ goog.inherits(ol.renderer.dom.Map, ol.renderer.Map);
 /**
  * @inheritDoc
  */
-ol.renderer.dom.Map.prototype.canRotate = goog.functions.TRUE;
+ol.renderer.dom.Map.prototype.addLayer = function(layer) {
+  goog.base(this, 'addLayer', layer);
+  this.getMap().render();
+};
 
 
 /**
@@ -72,26 +75,8 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
 /**
  * @inheritDoc
  */
-ol.renderer.dom.Map.prototype.handleViewPropertyChanged = function() {
-  goog.base(this, 'handleViewPropertyChanged');
-  this.getMap().render();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.dom.Map.prototype.handleSizeChanged = function() {
-  goog.base(this, 'handleSizeChanged');
-  this.getMap().render();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.dom.Map.prototype.handleViewChanged = function() {
-  goog.base(this, 'handleViewChanged');
+ol.renderer.dom.Map.prototype.removeLayer = function(layer) {
+  goog.base(this, 'removeLayer', layer);
   this.getMap().render();
 };
 
@@ -122,5 +107,7 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
     goog.style.showElement(this.layersPane_, true);
     this.renderedVisible_ = true;
   }
+
+  this.calculateMatrices2D(frameState);
 
 };

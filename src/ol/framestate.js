@@ -4,6 +4,7 @@ goog.provide('ol.FrameState');
 goog.provide('ol.PostRenderFunction');
 goog.provide('ol.PreRenderFunction');
 
+goog.require('goog.vec.Mat4');
 goog.require('ol.Color');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
@@ -16,9 +17,11 @@ goog.require('ol.layer.LayerState');
 /**
  * @typedef {{animate: boolean,
  *            backgroundColor: ol.Color,
+ *            coordinateToPixelMatrix: goog.vec.Mat4.Number,
  *            extent: (null|ol.Extent),
  *            layersArray: Array.<ol.layer.Layer>,
  *            layerStates: Object.<number, ol.layer.LayerState>,
+ *            pixelToCoordinateMatrix: goog.vec.Mat4.Number,
  *            postRenderFunctions: Array.<ol.PostRenderFunction>,
  *            size: ol.Size,
  *            tileQueue: ol.TileQueue,

@@ -73,7 +73,7 @@ ol.interaction.DragRotateAndZoom.prototype.handleDragStart =
   var browserEvent = mapBrowserEvent.browserEvent;
   var map = mapBrowserEvent.map;
   var view = map.getView().getView2D();
-  if (map.canRotate() && this.condition_(browserEvent)) {
+  if (this.condition_(browserEvent)) {
     var resolution = view.getResolution();
     var size = map.getSize();
     var delta = new goog.math.Vec2(
