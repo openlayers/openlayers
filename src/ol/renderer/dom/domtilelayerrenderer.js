@@ -79,15 +79,15 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
     return;
   }
 
+  var view2DState = frameState.view2DState;
+
   var tileLayer = this.getTileLayer();
   var tileSource = tileLayer.getTileSource();
   var tileGrid = tileSource.getTileGrid();
-
-  var view2DState = frameState.view2DState;
   var z = tileGrid.getZForResolution(view2DState.resolution);
-  var tileRange = tileGrid.getTileRangeForExtentAndResolution(
-      frameState.extent, view2DState.resolution);
   var tileResolution = tileGrid.getResolution(z);
+  var tileRange = tileGrid.getTileRangeForExtentAndResolution(
+      frameState.extent, tileResolution);
 
   /** @type {Object.<number, Object.<string, ol.Tile>>} */
   var tilesToDrawByZ = {};
