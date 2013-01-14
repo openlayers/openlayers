@@ -264,12 +264,6 @@ ol.renderer.webgl.Map.prototype.bindTileTexture =
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.canRotate = goog.functions.TRUE;
-
-
-/**
- * @inheritDoc
- */
 ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
   if (layer instanceof ol.layer.TileLayer) {
     return new ol.renderer.webgl.TileLayer(this, layer);
@@ -376,37 +370,10 @@ ol.renderer.webgl.Map.prototype.handleBackgroundColorChanged = function() {
 
 
 /**
- * @inheritDoc
- */
-ol.renderer.webgl.Map.prototype.handleViewPropertyChanged = function() {
-  goog.base(this, 'handleViewPropertyChanged');
-  this.getMap().render();
-};
-
-
-/**
  * @param {goog.events.Event} event Event.
  * @protected
  */
 ol.renderer.webgl.Map.prototype.handleLayerRendererChange = function(event) {
-  this.getMap().render();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.Map.prototype.handleSizeChanged = function() {
-  goog.base(this, 'handleSizeChanged');
-  this.getMap().render();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.Map.prototype.handleViewChanged = function() {
-  goog.base(this, 'handleViewChanged');
   this.getMap().render();
 };
 
@@ -583,6 +550,8 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
     goog.style.showElement(this.canvas_, true);
     this.renderedVisible_ = true;
   }
+
+  this.calculateMatrices2D(frameState);
 
 };
 

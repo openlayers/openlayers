@@ -131,6 +131,18 @@ ol.Map = function(mapOptions) {
 
   /**
    * @private
+   * @type {goog.vec.Mat4.Number}
+   */
+  this.coordinateToPixelMatrix_ = goog.vec.Mat4.createNumber();
+
+  /**
+   * @private
+   * @type {goog.vec.Mat4.Number}
+   */
+  this.pixelToCoordinateMatrix_ = goog.vec.Mat4.createNumber();
+
+  /**
+   * @private
    * @type {?ol.FrameState}
    */
   this.frameState_ = null;
@@ -293,14 +305,6 @@ ol.Map.prototype.addPreRenderFunctions = function(preRenderFunctions) {
 
 
 /**
- * @return {boolean} Can rotate.
- */
-ol.Map.prototype.canRotate = function() {
-  return this.renderer_.canRotate();
-};
-
-
-/**
  *
  * @inheritDoc
  */
@@ -352,7 +356,14 @@ ol.Map.prototype.getControls = function() {
  * @return {ol.Coordinate} Coordinate.
  */
 ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
-  return this.isDef() ? this.renderer_.getCoordinateFromPixel(pixel) : null;
+  var frameState = this.frameState_;
+  if (goog.isNull(frameState)) {
+    return null;
+  } else {
+    var vec3 = [pixel.x, pixel.y, 0];
+    goog.vec.Mat4.multVec3(frameState.pixelToCoordinateMatrix, vec3, vec3);
+    return new ol.Coordinate(vec3[0], vec3[1]);
+  }
 };
 
 
@@ -374,13 +385,16 @@ ol.Map.prototype.getLayers = function() {
 
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
- * @return {ol.Pixel|undefined} Pixel.
+ * @return {ol.Pixel} Pixel.
  */
 ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
-  if (this.isDef()) {
-    return this.renderer_.getPixelFromCoordinate(coordinate);
+  var frameState = this.frameState_;
+  if (goog.isNull(frameState)) {
+    return null;
   } else {
-    return undefined;
+    var vec3 = [coordinate.x, coordinate.y, 0];
+    goog.vec.Mat4.multVec3(frameState.coordinateToPixelMatrix, vec3, vec3);
+    return new ol.Pixel(vec3[0], vec3[1]);
   }
 };
 
@@ -595,9 +609,11 @@ ol.Map.prototype.renderFrame_ = function(time) {
       animate: false,
       backgroundColor: goog.isDef(backgroundColor) ?
           backgroundColor : new ol.Color(1, 1, 1, 1),
+      coordinateToPixelMatrix: this.coordinateToPixelMatrix_,
       extent: null,
       layersArray: layersArray,
       layerStates: layerStates,
+      pixelToCoordinateMatrix: this.pixelToCoordinateMatrix_,
       postRenderFunctions: [],
       size: size,
       tileQueue: this.tileQueue_,
