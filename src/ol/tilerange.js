@@ -28,9 +28,9 @@ ol.TileRange.boundingTileRange = function(var_args) {
   var tileCoord0 = arguments[0];
   var tileRange = new ol.TileRange(tileCoord0.x, tileCoord0.y,
                                    tileCoord0.x, tileCoord0.y);
-  var i;
+  var i, tileCoord;
   for (i = 1; i < arguments.length; ++i) {
-    var tileCoord = arguments[i];
+    tileCoord = arguments[i];
     goog.asserts.assert(tileCoord.z == tileCoord0.z);
     tileRange.minX = Math.min(tileRange.minX, tileCoord.x);
     tileRange.minY = Math.min(tileRange.minY, tileCoord.y);
