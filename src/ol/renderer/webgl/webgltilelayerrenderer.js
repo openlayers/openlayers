@@ -348,12 +348,38 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
      * @type {Object.<number, Object.<string, ol.Tile>>}
      */
     var tilesToDrawByZ = {};
+    tilesToDrawByZ[z] = {};
+
+    var findInterimTiles = function(z, tileRange) {
+      // FIXME this could be more efficient about filling partial holes
+      var fullyCovered = true;
+      var tile, tileCoord, tileCoordKey, x, y;
+      for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
+        for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
+          tileCoord = new ol.TileCoord(z, x, y);
+          tileCoordKey = tileCoord.toString();
+          if (tilesToDrawByZ[z] && tilesToDrawByZ[z][tileCoordKey]) {
+            return;
+          }
+          tile = tileSource.getTile(tileCoord);
+          if (!goog.isNull(tile) &&
+              tile.getState() == ol.TileState.LOADED &&
+              mapRenderer.isTileTextureLoaded(tile)) {
+            if (!tilesToDrawByZ[z]) {
+              tilesToDrawByZ[z] = {};
+            }
+            tilesToDrawByZ[z][tileCoordKey] = tile;
+          } else {
+            fullyCovered = false;
+          }
+        }
+      }
+      return fullyCovered;
+    };
 
     var tilesToLoad = new goog.structs.PriorityQueue();
 
     var allTilesLoaded = true;
-
-    tilesToDrawByZ[z] = {};
     var deltaX, deltaY, priority, tile, tileCenter, tileCoord, tileState, x, y;
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
@@ -384,31 +410,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
         }
 
         allTilesLoaded = false;
-
-        // FIXME this could be more efficient about filling partial holes
-        tileGrid.forEachTileCoordParentTileRange(
-            tileCoord,
-            function(z, tileRange) {
-              var fullyCovered = true;
-              tileRange.forEachTileCoord(z, function(tileCoord) {
-                var tileCoordKey = tileCoord.toString();
-                if (tilesToDrawByZ[z] && tilesToDrawByZ[z][tileCoordKey]) {
-                  return;
-                }
-                var tile = tileSource.getTile(tileCoord);
-                if (!goog.isNull(tile) &&
-                    tile.getState() == ol.TileState.LOADED &&
-                    mapRenderer.isTileTextureLoaded(tile)) {
-                  if (!tilesToDrawByZ[z]) {
-                    tilesToDrawByZ[z] = {};
-                  }
-                  tilesToDrawByZ[z][tileCoordKey] = tile;
-                } else {
-                  fullyCovered = false;
-                }
-              });
-              return fullyCovered;
-            });
+        tileGrid.forEachTileCoordParentTileRange(tileCoord, findInterimTiles);
 
       }
 
