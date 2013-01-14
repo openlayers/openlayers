@@ -119,6 +119,12 @@ ol.renderer.webgl.Map = function(container, map) {
 
   /**
    * @private
+   * @type {boolean}
+   */
+  this.renderedVisible_ = true;
+
+  /**
+   * @private
    * @type {ol.Size}
    */
   this.canvasSize_ = new ol.Size(container.clientHeight, container.clientWidth);
