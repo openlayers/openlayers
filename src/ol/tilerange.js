@@ -72,22 +72,6 @@ ol.TileRange.prototype.equals = function(tileRange) {
 
 
 /**
- * @param {number} z Z.
- * @param {function(this: T, ol.TileCoord)} f Callback.
- * @param {T=} opt_obj The object to be used for the value of 'this' within f.
- * @template T
- */
-ol.TileRange.prototype.forEachTileCoord = function(z, f, opt_obj) {
-  var x, y;
-  for (x = this.minX; x <= this.maxX; ++x) {
-    for (y = this.minY; y <= this.maxY; ++y) {
-      f.call(opt_obj, new ol.TileCoord(z, x, y));
-    }
-  }
-};
-
-
-/**
  * @inheritDoc
  * @return {number} Height.
  */
