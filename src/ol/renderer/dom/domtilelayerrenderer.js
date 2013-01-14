@@ -105,8 +105,7 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
           return;
         }
         tile = tileSource.getTile(tileCoord);
-        if (!goog.isNull(tile) &&
-            tile.getState() == ol.TileState.LOADED) {
+        if (!goog.isNull(tile) && tile.getState() == ol.TileState.LOADED) {
           if (!tilesToDrawByZ[z]) {
             tilesToDrawByZ[z] = {};
           }
