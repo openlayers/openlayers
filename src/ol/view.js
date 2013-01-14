@@ -1,5 +1,6 @@
 goog.provide('ol.View');
 
+goog.require('ol.Object');
 goog.require('ol.IView');
 goog.require('ol.IView2D');
 goog.require('ol.IView3D');
