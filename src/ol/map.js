@@ -585,6 +585,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
   if (goog.isDef(layersArray) && goog.isDef(size) && goog.isDef(view2D) &&
       view2D.isDef()) {
     var backgroundColor = this.getBackgroundColor();
+    var viewHints = view.getHints();
     var layerStates = {};
     goog.array.forEach(layersArray, function(layer) {
       layerStates[goog.getUid(layer)] = layer.getLayerState();
@@ -601,6 +602,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       size: size,
       tileQueue: this.tileQueue_,
       view2DState: view2DState,
+      viewHints: viewHints,
       time: time
     };
   }
