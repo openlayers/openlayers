@@ -316,3 +316,26 @@ ol.tilegrid.TileGrid.prototype.getTileSize = function() {
 ol.tilegrid.TileGrid.prototype.getZForResolution = function(resolution) {
   return ol.array.linearFindNearest(this.resolutions_, resolution);
 };
+
+
+/**
+ * @param {ol.Projection} projection Projection.
+ * @param {number=} opt_maxZoom Maximum zoom level (optional). Default is 18.
+ * @return {ol.tilegrid.TileGrid} TileGrid instance.
+ */
+ol.tilegrid.createForProjection = function(projection, opt_maxZoom) {
+  var projectionExtent = projection.getExtent();
+  var size = Math.max(
+      projectionExtent.maxX - projectionExtent.minX,
+      projectionExtent.maxY - projectionExtent.minY);
+  var maxZoom = goog.isDef(opt_maxZoom) ?
+      opt_maxZoom : 18;
+  var resolutions = new Array(maxZoom + 1);
+  for (var z = 0, zz = resolutions.length; z < zz; ++z) {
+    resolutions[z] = size / (256 << z);
+  }
+  return new ol.tilegrid.TileGrid({
+    origin: projectionExtent.getTopLeft(),
+    resolutions: resolutions
+  });
+};

@@ -51,14 +51,14 @@ var layers = new ol.Collection([
 ]);
 
 var map = new ol.Map({
-  projection: epsg21781,
   // By setting userProjection to the same as projection, we do not need
   // proj4js because we do not need any transforms.
   userProjection: epsg21781,
   layers: layers,
   target: 'map',
   view: new ol.View2D({
+    projection: epsg21781,
     center: new ol.Coordinate(660000, 190000),
-    zoom: 9
+    zoom: 2
   })
 });

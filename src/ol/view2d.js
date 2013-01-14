@@ -48,8 +48,11 @@ ol.View2D = function(opt_view2DOptions) {
   if (goog.isDef(view2DOptions.resolution)) {
     values[ol.View2DProperty.RESOLUTION] = view2DOptions.resolution;
   } else if (goog.isDef(view2DOptions.zoom)) {
-    values[ol.View2DProperty.RESOLUTION] =
-        ol.Projection.EPSG_3857_HALF_SIZE / (128 << view2DOptions.zoom);
+    var projectionExtent = values[ol.View2DProperty.PROJECTION].getExtent();
+    var size = Math.max(
+        projectionExtent.maxX - projectionExtent.minX,
+        projectionExtent.maxY - projectionExtent.minY);
+    values[ol.View2DProperty.RESOLUTION] = size / (256 << view2DOptions.zoom);
   }
   values[ol.View2DProperty.ROTATION] = view2DOptions.rotation;
   this.setValues(values);
@@ -322,7 +325,11 @@ ol.View2D.createConstraints_ = function(view2DOptions) {
       numZoomLevels = view2DOptions.numZoomLevels;
       zoomFactor = view2DOptions.zoomFactor;
     } else {
-      maxResolution = ol.Projection.EPSG_3857_HALF_SIZE / 128;
+      var projectionExtent = ol.Projection.createProjection(
+          view2DOptions.projection, 'EPSG:3857').getExtent();
+      maxResolution = Math.max(
+          projectionExtent.maxX - projectionExtent.minX,
+          projectionExtent.maxY - projectionExtent.minY) / 256;
       // number of steps we want between two data resolutions
       var numSteps = 4;
       numZoomLevels = 29 * numSteps;
