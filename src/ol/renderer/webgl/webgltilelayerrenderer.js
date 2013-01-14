@@ -8,7 +8,6 @@ goog.provide('ol.renderer.webgl.tilelayerrenderer.shader.Vertex');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.debug.Logger');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('goog.structs.PriorityQueue');
@@ -87,14 +86,6 @@ goog.addSingletonGetter(ol.renderer.webgl.tilelayerrenderer.shader.Vertex);
 ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
 
   goog.base(this, mapRenderer, tileLayer);
-
-  if (goog.DEBUG) {
-    /**
-     * @inheritDoc
-     */
-    this.logger = goog.debug.Logger.getLogger(
-        'ol.renderer.webgl.tilelayerrenderer.' + goog.getUid(this));
-  }
 
   /**
    * @private
@@ -179,28 +170,14 @@ ol.renderer.webgl.TileLayer.prototype.bindFramebuffer_ =
   if (!goog.isDef(this.framebufferDimension_) ||
       this.framebufferDimension_ != framebufferDimension) {
 
-    if (goog.DEBUG) {
-      this.logger.info('re-sizing framebuffer');
-    }
-
-    if (ol.renderer.webgl.FREE_RESOURCES_IMMEDIATELY) {
-      if (goog.DEBUG) {
-        this.logger.info('freeing WebGL resources');
-      }
-      if (!gl.isContextLost()) {
-        gl.deleteFramebuffer(this.framebuffer_);
-        gl.deleteTexture(this.texture_);
-      }
-    } else {
-      var map = this.getMap();
-      frameState.postRenderFunctions.push(
-          goog.partial(function(gl, framebuffer, texture) {
-            if (!gl.isContextLost()) {
-              gl.deleteFramebuffer(framebuffer);
-              gl.deleteTexture(texture);
-            }
-          }, gl, this.framebuffer_, this.texture_));
-    }
+    var map = this.getMap();
+    frameState.postRenderFunctions.push(
+        goog.partial(function(gl, framebuffer, texture) {
+          if (!gl.isContextLost()) {
+            gl.deleteFramebuffer(framebuffer);
+            gl.deleteTexture(texture);
+          }
+        }, gl, this.framebuffer_, this.texture_));
 
     var texture = gl.createTexture();
     gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
@@ -244,15 +221,6 @@ ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
 
 
 /**
- * @return {ol.layer.TileLayer} Layer.
- * @inheritDoc
- */
-ol.renderer.webgl.TileLayer.prototype.getLayer = function() {
-  return /** @type {ol.layer.TileLayer} */ (goog.base(this, 'getLayer'));
-};
-
-
-/**
  * @inheritDoc
  */
 ol.renderer.webgl.TileLayer.prototype.getMatrix = function() {
@@ -265,6 +233,14 @@ ol.renderer.webgl.TileLayer.prototype.getMatrix = function() {
  */
 ol.renderer.webgl.TileLayer.prototype.getTexture = function() {
   return this.texture_;
+};
+
+
+/**
+ * @return {ol.layer.TileLayer} Tile layer.
+ */
+ol.renderer.webgl.TileLayer.prototype.getTileLayer = function() {
+  return /** @type {ol.layer.TileLayer} */ (this.getLayer());
 };
 
 
@@ -292,7 +268,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
   var view2DState = frameState.view2DState;
   var center = view2DState.center;
 
-  var tileLayer = this.getLayer();
+  var tileLayer = this.getTileLayer();
   var tileSource = tileLayer.getTileSource();
   var tileGrid = tileSource.getTileGrid();
   var z = tileGrid.getZForResolution(view2DState.resolution);
