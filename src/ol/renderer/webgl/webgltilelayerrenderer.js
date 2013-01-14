@@ -354,60 +354,65 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
     var allTilesLoaded = true;
 
     tilesToDrawByZ[z] = {};
-    tileRange.forEachTileCoord(z, function(tileCoord) {
+    var deltaX, deltaY, priority, tile, tileCenter, tileCoord, tileState, x, y;
+    for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
+      for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
 
-      var tile = tileSource.getTile(tileCoord);
-
-      if (goog.isNull(tile)) {
-        return;
-      }
-
-      var tileState = tile.getState();
-      if (tileState == ol.TileState.IDLE) {
-        var tileCenter = tileGrid.getTileCoordCenter(tileCoord);
-        frameState.tileQueue.enqueue(tile, tileCenter, tileResolution);
-      } else if (tileState == ol.TileState.LOADED) {
-        if (mapRenderer.isTileTextureLoaded(tile)) {
-          tilesToDrawByZ[z][tileCoord.toString()] = tile;
-          return;
-        } else {
-          var tileCenter = tileGrid.getTileCoordCenter(tileCoord);
-          var deltaX = tileCenter.x - center.x;
-          var deltaY = tileCenter.y - center.y;
-          var priority = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-          tilesToLoad.enqueue(priority, tile);
+        tileCoord = new ol.TileCoord(z, x, y);
+        tile = tileSource.getTile(tileCoord);
+        if (goog.isNull(tile)) {
+          continue;
         }
-      } else if (tileState == ol.TileState.ERROR) {
-        return;
+
+        tileState = tile.getState();
+        if (tileState == ol.TileState.IDLE) {
+          tileCenter = tileGrid.getTileCoordCenter(tileCoord);
+          frameState.tileQueue.enqueue(tile, tileCenter, tileResolution);
+        } else if (tileState == ol.TileState.LOADED) {
+          if (mapRenderer.isTileTextureLoaded(tile)) {
+            tilesToDrawByZ[z][tileCoord.toString()] = tile;
+            continue;
+          } else {
+            tileCenter = tileGrid.getTileCoordCenter(tileCoord);
+            deltaX = tileCenter.x - center.x;
+            deltaY = tileCenter.y - center.y;
+            priority = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            tilesToLoad.enqueue(priority, tile);
+          }
+        } else if (tileState == ol.TileState.ERROR) {
+          continue;
+        }
+
+        allTilesLoaded = false;
+
+        // FIXME this could be more efficient about filling partial holes
+        tileGrid.forEachTileCoordParentTileRange(
+            tileCoord,
+            function(z, tileRange) {
+              var fullyCovered = true;
+              tileRange.forEachTileCoord(z, function(tileCoord) {
+                var tileCoordKey = tileCoord.toString();
+                if (tilesToDrawByZ[z] && tilesToDrawByZ[z][tileCoordKey]) {
+                  return;
+                }
+                var tile = tileSource.getTile(tileCoord);
+                if (!goog.isNull(tile) &&
+                    tile.getState() == ol.TileState.LOADED &&
+                    mapRenderer.isTileTextureLoaded(tile)) {
+                  if (!tilesToDrawByZ[z]) {
+                    tilesToDrawByZ[z] = {};
+                  }
+                  tilesToDrawByZ[z][tileCoordKey] = tile;
+                } else {
+                  fullyCovered = false;
+                }
+              });
+              return fullyCovered;
+            });
+
       }
 
-      allTilesLoaded = false;
-
-      // FIXME this could be more efficient about filling partial holes
-      tileGrid.forEachTileCoordParentTileRange(
-          tileCoord,
-          function(z, tileRange) {
-            var fullyCovered = true;
-            tileRange.forEachTileCoord(z, function(tileCoord) {
-              var tileCoordKey = tileCoord.toString();
-              if (tilesToDrawByZ[z] && tilesToDrawByZ[z][tileCoordKey]) {
-                return;
-              }
-              var tile = tileSource.getTile(tileCoord);
-              if (!goog.isNull(tile) &&
-                  tile.getState() == ol.TileState.LOADED) {
-                if (!tilesToDrawByZ[z]) {
-                  tilesToDrawByZ[z] = {};
-                }
-                tilesToDrawByZ[z][tileCoordKey] = tile;
-              } else {
-                fullyCovered = false;
-              }
-            });
-            return fullyCovered;
-          });
-
-    }, this);
+    }
 
     /** @type {Array.<number>} */
     var zs = goog.array.map(goog.object.getKeys(tilesToDrawByZ), Number);

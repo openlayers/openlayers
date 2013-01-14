@@ -96,52 +96,55 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   var allTilesLoaded = true;
 
   tilesToDrawByZ[z] = {};
-  tileRange.forEachTileCoord(z, function(tileCoord) {
+  var tile, tileCenter, tileCoord, tileState, x, y;
+  for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
+    for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
 
-    var tile = tileSource.getTile(tileCoord);
+      tileCoord = new ol.TileCoord(z, x, y);
+      tile = tileSource.getTile(tileCoord);
+      if (goog.isNull(tile)) {
+        continue;
+      }
 
-    if (goog.isNull(tile)) {
-      return;
-    }
+      tileState = tile.getState();
+      if (tileState == ol.TileState.IDLE) {
+        tileCenter = tileGrid.getTileCoordCenter(tileCoord);
+        frameState.tileQueue.enqueue(tile, tileCenter, tileResolution);
+      } else if (tileState == ol.TileState.LOADED) {
+        tilesToDrawByZ[z][tileCoord.toString()] = tile;
+        continue;
+      } else if (tileState == ol.TileState.ERROR) {
+        continue;
+      }
 
-    var tileState = tile.getState();
-    if (tileState == ol.TileState.IDLE) {
-      var tileCenter = tileGrid.getTileCoordCenter(tileCoord);
-      frameState.tileQueue.enqueue(tile, tileCenter, tileResolution);
-    } else if (tileState == ol.TileState.LOADED) {
-      tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
-      return;
-    } else if (tileState == ol.TileState.ERROR) {
-      return;
-    }
+      allTilesLoaded = false;
 
-    allTilesLoaded = false;
-
-    // FIXME this could be more efficient about filling partial holes
-    tileGrid.forEachTileCoordParentTileRange(
-        tileCoord,
-        function(z, tileRange) {
-          var fullyCovered = true;
-          tileRange.forEachTileCoord(z, function(tileCoord) {
-            var tileCoordKey = tileCoord.toString();
-            if (tilesToDrawByZ[z] && tilesToDrawByZ[z][tileCoordKey]) {
-              return;
-            }
-            var tile = tileSource.getTile(tileCoord);
-            if (!goog.isNull(tile) &&
-                tile.getState() == ol.TileState.LOADED) {
-              if (!tilesToDrawByZ[z]) {
-                tilesToDrawByZ[z] = {};
+      // FIXME this could be more efficient about filling partial holes
+      tileGrid.forEachTileCoordParentTileRange(
+          tileCoord,
+          function(z, tileRange) {
+            var fullyCovered = true;
+            tileRange.forEachTileCoord(z, function(tileCoord) {
+              var tileCoordKey = tileCoord.toString();
+              if (tilesToDrawByZ[z] && tilesToDrawByZ[z][tileCoordKey]) {
+                return;
               }
-              tilesToDrawByZ[z][tileCoordKey] = tile;
-            } else {
-              fullyCovered = false;
-            }
+              var tile = tileSource.getTile(tileCoord);
+              if (!goog.isNull(tile) &&
+                  tile.getState() == ol.TileState.LOADED) {
+                if (!tilesToDrawByZ[z]) {
+                  tilesToDrawByZ[z] = {};
+                }
+                tilesToDrawByZ[z][tileCoordKey] = tile;
+              } else {
+                fullyCovered = false;
+              }
+            });
+            return fullyCovered;
           });
-          return fullyCovered;
-        });
+    }
 
-  }, this);
+  }
 
   /** @type {Array.<number>} */
   var zs = goog.array.map(goog.object.getKeys(tilesToDrawByZ), Number);
