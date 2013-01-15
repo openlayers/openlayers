@@ -4,6 +4,7 @@ goog.require('goog.debug.Logger.Level');
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
+goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.overlay.Overlay');
 goog.require('ol.source.MapQuestOpenAerial');
@@ -21,6 +22,7 @@ var layer = new ol.layer.TileLayer({
 
 var map = new ol.Map({
   layers: new ol.Collection([layer]),
+  renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
   view: new ol.View2D({
     center: new ol.Coordinate(0, 0),

@@ -5,6 +5,7 @@ goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.Projection');
+goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.source.TiledWMS');
 
@@ -56,6 +57,7 @@ var map = new ol.Map({
   // proj4js because we do not need any transforms.
   userProjection: epsg21781,
   layers: layers,
+  renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
   view: new ol.View2D({
     center: new ol.Coordinate(660000, 190000),
