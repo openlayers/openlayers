@@ -5,7 +5,6 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.Event');
-goog.require('goog.functions');
 goog.require('goog.style');
 goog.require('ol.Coordinate');
 goog.require('ol.FrameState');

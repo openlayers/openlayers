@@ -12,7 +12,6 @@ goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
-goog.require('goog.functions');
 goog.require('goog.style');
 goog.require('goog.webgl');
 goog.require('ol.Tile');

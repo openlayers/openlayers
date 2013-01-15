@@ -51,36 +51,6 @@ describe('ol.TileRange', function() {
     });
   });
 
-  describe('forEachTileCoord', function() {
-    it('iterates as expected', function() {
-      var tileRange = new ol.TileRange(0, 2, 1, 3);
-
-      var tileCoords = [];
-      tileRange.forEachTileCoord(5, function(tileCoord) {
-        tileCoords.push(
-            new ol.TileCoord(tileCoord.z, tileCoord.x, tileCoord.y));
-      });
-
-      expect(tileCoords.length).toEqual(4);
-
-      expect(tileCoords[0].z).toEqual(5);
-      expect(tileCoords[0].x).toEqual(0);
-      expect(tileCoords[0].y).toEqual(2);
-
-      expect(tileCoords[1].z).toEqual(5);
-      expect(tileCoords[1].x).toEqual(0);
-      expect(tileCoords[1].y).toEqual(3);
-
-      expect(tileCoords[2].z).toEqual(5);
-      expect(tileCoords[2].x).toEqual(1);
-      expect(tileCoords[2].y).toEqual(2);
-
-      expect(tileCoords[3].z).toEqual(5);
-      expect(tileCoords[3].x).toEqual(1);
-      expect(tileCoords[3].y).toEqual(3);
-    });
-  });
-
   describe('getSize', function() {
     it('returns the expected size', function() {
       var tileRange = new ol.TileRange(0, 1, 2, 4);
