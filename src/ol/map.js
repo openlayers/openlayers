@@ -6,7 +6,9 @@ goog.provide('ol.Map');
 goog.provide('ol.MapEventType');
 goog.provide('ol.MapProperty');
 goog.provide('ol.RendererHint');
+goog.provide('ol.RendererHints');
 
+goog.require('goog.Uri.QueryData');
 goog.require('goog.array');
 goog.require('goog.async.AnimationDelay');
 goog.require('goog.debug.Logger');
@@ -919,4 +921,21 @@ ol.Map.createInteractions_ = function(mapOptions) {
 
   return interactions;
 
+};
+
+
+/**
+ * @param {goog.Uri.QueryData=} opt_queryData Query data.
+ * @return {Array.<ol.RendererHint>} Renderer hints.
+ */
+ol.RendererHints.createFromQueryData = function(opt_queryData) {
+  var queryData = goog.isDef(opt_queryData) ?
+      opt_queryData : new goog.Uri.QueryData(goog.global.location.search);
+  if (queryData.containsKey('renderers')) {
+    return queryData.get('renderers').split(',');
+  } else if (queryData.containsKey('renderer')) {
+    return [queryData.get('renderer')];
+  } else {
+    return ol.DEFAULT_RENDERER_HINTS;
+  }
 };
