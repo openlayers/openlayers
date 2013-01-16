@@ -276,6 +276,21 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
   var tileRange = tileGrid.getTileRangeForExtentAndResolution(
       frameState.extent, tileResolution);
 
+  // FIXME should also consider interim tiles
+  var tileUsage = frameState.tileUsage;
+  var tileSourceKey = goog.getUid(tileSource).toString();
+  var zKey = z.toString();
+  if (tileSourceKey in tileUsage) {
+    if (z in tileUsage[tileSourceKey]) {
+      tileUsage[tileSourceKey][zKey].extend(tileRange);
+    } else {
+      tileUsage[tileSourceKey][zKey] = tileRange;
+    }
+  } else {
+    tileUsage[tileSourceKey] = {};
+    tileUsage[tileSourceKey][zKey] = tileRange;
+  }
+
   var framebufferExtent;
 
   if (!goog.isNull(this.renderedTileRange_) &&
