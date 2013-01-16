@@ -1150,6 +1150,23 @@
         });
     }
 
+    function test_backbuffer_replace_singleTile(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS('', '../../img/blank.gif', null, {
+            singleTile: true,
+            transitionEffect: 'resize'
+        });
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        
+        t.delay_call(1, function() {
+            map.zoomIn();
+            var tile = layer.grid[0][0];
+            t.ok(!OpenLayers.Element.hasClass(tile.imgDiv, 'olTileReplacing'), 'tile is not marked for being replaced for singleTile layers');
+        });
+    }
+
     function test_singleTile_move_and_zoom(t) {
 
         //
