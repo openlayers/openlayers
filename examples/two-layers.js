@@ -12,7 +12,7 @@ goog.require('ol.source.TileJSON');
 var layers = new ol.Collection([
   new ol.layer.TileLayer({
     source: new ol.source.BingMaps({
-      key: 'Ak0kFwyFsvMr0dVwuaURTqKAXytSSN47KOdj4uVpaWBhK-DT6Zo-FeHCiJUL0tYL',
+      key: 'AgtFlPYDnymLEe9zJ5PCkghbNiFZE9aAtTy3mPaEnEBXqLHtFuTcKoZ-miMC3w7R',
       style: ol.BingMapsStyle.AERIAL
     })
   }),
