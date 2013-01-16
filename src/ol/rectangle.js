@@ -42,6 +42,17 @@ ol.Rectangle = function(minX, minY, maxX, maxY) {
 
 
 /**
+ * @param {ol.Rectangle} rectangle Rectangle.
+ */
+ol.Rectangle.prototype.extend = function(rectangle) {
+  this.minX = Math.min(this.minX, rectangle.minX);
+  this.minY = Math.min(this.minY, rectangle.minY);
+  this.maxX = Math.max(this.maxX, rectangle.maxX);
+  this.maxY = Math.max(this.maxY, rectangle.maxY);
+};
+
+
+/**
  * @return {ol.Coordinate} Center.
  */
 ol.Rectangle.prototype.getCenter = function() {
