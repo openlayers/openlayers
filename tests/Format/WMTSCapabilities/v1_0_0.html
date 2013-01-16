@@ -150,7 +150,7 @@
         }
 
         function test_createLayer(t) {
-            t.plan(42);
+            t.plan(43);
 
             var format = new OpenLayers.Format.WMTSCapabilities();
 
@@ -308,6 +308,15 @@
                 requestEncoding: 'KVP'
             });
             t.eq(layer.url[0], "http://wmts.geo.admin.ch/kvp", "correct kvp url 2");
+
+            // test RESTfull
+            xml = document.getElementById("arcgis").firstChild.nodeValue;
+            doc = new OpenLayers.Format.XML().read(xml);
+            caps = format.read(doc);
+            layer = format.createLayer(caps, {
+                layer: "WorldTimeZones"
+            });
+            t.eq(layer.requestEncoding, "REST", "correct requestEncoding (in RESTfull)");
         }
 
         function test_parse_projection(t) {
@@ -873,6 +882,78 @@ http://schemas.opengis.net/wmts/1.0/examples/wmtsGetCapabilities_response.xml
         </TileMatrixSet>
     </Contents>
     <ServiceMetadataURL xlink:href="http://www.opengis.uab.es/SITiled/world/1.0.0/WMTSCapabilities.xml"/>
+</Capabilities>
+--></div>
+<div id="arcgis"><!--
+<?xml version="1.0" encoding="UTF-8"?>
+<Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0">
+    <ows:ServiceIdentification>
+        <ows:Title>WorldTimeZones</ows:Title>
+        <ows:ServiceType>OGC WMTS</ows:ServiceType>
+        <ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
+    </ows:ServiceIdentification>
+    <ows:OperationsMetadata>
+        <ows:Operation name="GetTile">
+            <ows:DCP>
+                <ows:HTTP>
+                    <ows:Get xlink:href="http://sampleserver6.arcgisonline.com/arcgis/rest/services/WorldTimeZones/MapServer/WMTS/tile/1.0.0/">
+                        <ows:Constraint name="GetEncoding">
+                            <ows:AllowedValues>
+                                <ows:Value>RESTful</ows:Value>
+                            </ows:AllowedValues>
+                        </ows:Constraint>
+                    </ows:Get>
+                    <ows:Get xlink:href="http://sampleserver6.arcgisonline.com/arcgis/rest/services/WorldTimeZones/MapServer/WMTS?">
+                        <ows:Constraint name="GetEncoding">
+                            <ows:AllowedValues>
+                                <ows:Value>KVP</ows:Value>
+                            </ows:AllowedValues>
+                        </ows:Constraint>
+                    </ows:Get>
+                </ows:HTTP>
+            </ows:DCP>
+        </ows:Operation>
+    </ows:OperationsMetadata>
+    <Contents>
+        <Layer>
+            <ows:Title>WorldTimeZones</ows:Title>
+            <ows:Identifier>WorldTimeZones</ows:Identifier>
+            <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::102100">
+                <ows:LowerCorner>-2.0037507067161843E7 -3.024097195838617E7</ows:LowerCorner>
+                <ows:UpperCorner>2.0037507067161843E7 3.0240971458386205E7</ows:UpperCorner>
+            </ows:BoundingBox>
+            <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+                <ows:LowerCorner>-179.99999550841463 -88.99999992161119</ows:LowerCorner>
+                <ows:UpperCorner>179.99999550841463 88.99999992161118</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
+            <Style isDefault="true">
+                <ows:Title>Default Style</ows:Title>
+                <ows:Identifier>default</ows:Identifier>
+            </Style>
+            <Format>image/png</Format>
+            <TileMatrixSetLink>
+                <TileMatrixSet>GoogleMapsCompatible</TileMatrixSet>
+            </TileMatrixSetLink>
+            <ResourceURL format="image/png" resourceType="tile" template="http://sampleserver6.arcgisonline.com/arcgis/rest/services/WorldTimeZones/MapServer/WMTS/tile/1.0.0/WorldTimeZones/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png" />
+        </Layer>
+        <TileMatrixSet>
+            <ows:Title>GoogleMapsCompatible</ows:Title>
+            <ows:Abstract>the wellknown 'GoogleMapsCompatible' tile matrix set defined by OGC WMTS specification</ows:Abstract>
+            <ows:Identifier>GoogleMapsCompatible</ows:Identifier>
+            <ows:SupportedCRS>urn:ogc:def:crs:EPSG:6.18:3:3857</ows:SupportedCRS>
+            <WellKnownScaleSet>urn:ogc:def:wkss:OGC:1.0:GoogleMapsCompatible</WellKnownScaleSet>
+            <TileMatrix>
+                <ows:Identifier>5</ows:Identifier>
+                <ScaleDenominator>17471320.75089743</ScaleDenominator>
+                <TopLeftCorner>-20037508.34278925 20037508.34278925</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>32</MatrixWidth>
+                <MatrixHeight>32</MatrixHeight>
+            </TileMatrix>
+        </TileMatrixSet>
+    </Contents>
+    <ServiceMetadataURL xlink:href="http://sampleserver6.arcgisonline.com/arcgis/rest/services/WorldTimeZones/MapServer/WMTS/1.0.0/WMTSCapabilities.xml" />
 </Capabilities>
 --></div>
 

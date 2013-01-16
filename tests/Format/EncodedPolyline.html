@@ -1,0 +1,133 @@
+<html>
+<head>
+    <script src="../OLLoader.js"></script>
+    <script type="text/javascript">
+
+    var basePoints = new Array(
+        new Array(3850000, -12020000),
+        new Array(4070000, -12095000),
+        new Array(4325200, -12645300)
+    );
+
+    var points = [
+        new OpenLayers.Geometry.Point(basePoints[0][1] * 1e-5,
+                                      basePoints[0][0] * 1e-5),
+        new OpenLayers.Geometry.Point(basePoints[1][1] * 1e-5,
+                                      basePoints[1][0] * 1e-5),
+        new OpenLayers.Geometry.Point(basePoints[2][1] * 1e-5,
+                                      basePoints[2][0] * 1e-5)
+    ];
+
+    var singlePoint = new OpenLayers.Feature.Vector(points[0]);
+
+    var linestring = new OpenLayers.Feature.Vector(
+        new OpenLayers.Geometry.LineString(points)
+    );
+
+    var multipoint = new OpenLayers.Feature.Vector(
+        new OpenLayers.Geometry.MultiPoint(points)
+    );
+
+    var linearring = new OpenLayers.Feature.Vector(
+        new OpenLayers.Geometry.LinearRing(points)
+    );
+
+    var polygon = new OpenLayers.Feature.Vector(
+        new OpenLayers.Geometry.Polygon([
+            new OpenLayers.Geometry.LinearRing(points)
+        ])
+    );
+
+    var encoded = "_p~iF~ps|U_ulLnnqC_mqNvxq`@";
+
+    function test_Format_EncodedPolyline_constructor(t) {
+        t.plan(4);
+
+        var options = {'foo': 'bar'};
+        var format = new OpenLayers.Format.EncodedPolyline(options);
+        t.ok(format instanceof OpenLayers.Format.EncodedPolyline,
+             "new OpenLayers.Format.EncodedPolyline returns object" );
+        t.eq(format.foo, "bar", "constructor sets options correctly");
+        t.eq(typeof format.read, "function", "format has a read function");
+        t.eq(typeof format.write, "function", "format has a write function");
+    }
+
+    function test_Format_EncodedPolyline_read(t) {
+        t.plan(5);
+
+        var format = new OpenLayers.Format.EncodedPolyline();
+
+        t.ok(linestring.geometry.equals(format.read(encoded).geometry),
+             "format correctly reads encoded polyline");
+
+        format = new OpenLayers.Format.EncodedPolyline({
+            geometryType: "multipoint"
+        });
+        t.ok(multipoint.geometry.equals(format.read(encoded).geometry),
+             "format correctly reads encoded multipoint");
+
+        format.geometryType = "linearring";
+        t.ok(linearring.geometry.equals(format.read(encoded).geometry),
+             "format correctly reads encoded linearring");
+
+        format.geometryType = "polygon";
+        t.ok(polygon.geometry.equals(format.read(encoded).geometry),
+             "format correctly reads encoded polygon");
+
+        format.geometryType = "point";
+        t.ok(points[0].equals(format.read(encoded).geometry),
+             "format correctly reads encoded point");
+    }
+
+    function test_Format_EncodedPolyline_decode(t) {
+        t.plan(6);
+
+        var format = new OpenLayers.Format.EncodedPolyline();
+
+        var decodedPoints = format.decode(encoded, 2);
+        for (i in decodedPoints) {
+            var point = basePoints[i];
+            var decodedPoint = decodedPoints[i];
+            t.eq(point[0], decodedPoint[0]);
+            t.eq(point[1], decodedPoint[1]);
+        }
+    }
+
+    function test_Format_EncodedPolyline_write(t) {
+        t.plan(5);
+
+        var format = new OpenLayers.Format.EncodedPolyline();
+
+        t.eq(format.write(linestring), encoded,
+             "format correctly writes encoded polyline");
+
+        t.eq(format.write(multipoint), encoded,
+             "format correctly writes encoded multipoint");
+
+        // Different output than encoded,
+        // because polygon closing point is included
+        t.eq(format.write(linearring),
+             "_p~iF~ps|U_ulLnnqC_mqNvxq`@~b_\\ghde@",
+             "format correctly writes encoded linearring");
+
+        t.eq(format.write(polygon),
+             "_p~iF~ps|U_ulLnnqC_mqNvxq`@~b_\\ghde@",
+             "format correctly writes encoded polygon");
+
+        t.eq(format.write(singlePoint), "_p~iF~ps|U",
+             "format correctly writes encoded point");
+    }
+
+    function test_Format_EncodedPolyline_encode(t) {
+        t.plan(1);
+
+        var format = new OpenLayers.Format.EncodedPolyline();
+
+        t.eq(format.encode(basePoints, 2), encoded);
+    }
+
+    </script>
+</head>
+<body>
+</body>
+</html>

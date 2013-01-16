@@ -1,19 +1,5 @@
 <html>
 <head>
-  <script>
-    /**
-    * Because browsers that implement requestAnimationFrame may not execute
-    * animation functions while a window is not displayed (e.g. in a hidden
-    * iframe as in these tests), we mask the native implementations here.  The
-    * native requestAnimationFrame functionality is tested in Util.html and
-    * in PanZoom.html (where a popup is opened before panning).
-    */
-    window.requestAnimationFrame = 
-        window.webkitRequestAnimationFrame =
-        window.mozRequestAnimationFrame =
-        window.oRequestAnimationFrame =
-        window.msRequestAnimationFrame = null;
-  </script>
   <script src="../OLLoader.js"></script>
   <script type="text/javascript">
     var map, layer; 
@@ -108,10 +94,9 @@
             isBaseLayer: false
         }, options));
         map.addLayer(layer);
-        var tile = layer.tileQueue[0];
         
         t.delay_call(5, function() {
-            t.ok(tile.url, "Tile not empty");
+            t.ok(layer.grid[0][0].url, "Tile not empty");
             map.destroy();
         });
     }
@@ -186,12 +171,11 @@
         layer = new OpenLayers.Layer.Bing(options);
         map.addLayer(layer);
         map.zoomToMaxExtent();
-        var tile = layer.tileQueue[0];
         
         t.delay_call(5, function() {
             t.ok(OpenLayers.Util.indexOf(layer.attribution, '<img src="//') != -1, "Attribution contains a logo with protocol //");
             t.ok(OpenLayers.Util.indexOf(layer.attribution, '<img src="http://') == -1, "Attribution logo does not have http:// protocol");
-            t.ok(tile.url.indexOf('http:') == -1, "Tile url does not contain http:");
+            t.ok(layer.grid[1][1].url.indexOf('http:') == -1, "Tile url does not contain http:");
 
             map.destroy();
         });
@@ -200,11 +184,10 @@
         layer_https = new OpenLayers.Layer.Bing(OpenLayers.Util.applyDefaults({protocol: 'https:'}, options));
         map2.addLayer(layer_https);
         map2.zoomToMaxExtent();
-        var tile = layer_https.tileQueue[0];
 
         t.delay_call(5, function() {
             t.ok(OpenLayers.Util.indexOf(layer_https.attribution, '<img src="https://') != -1, "Attribution logo has https:// protocol");
-            t.ok(tile.url.indexOf('https:') == 0, "Tile url contains https:");
+            t.ok(layer_https.grid[1][1].url.indexOf('https:') == 0, "Tile url contains https:");
             map2.destroy();
         });
     }

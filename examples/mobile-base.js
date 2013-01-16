@@ -42,6 +42,7 @@ var init = function (onSelectFeatureFunction) {
         theme: null,
         projection: sm,
         numZoomLevels: 18,
+        tileManager: new OpenLayers.TileManager(),
         controls: [
             new OpenLayers.Control.Attribution(),
             new OpenLayers.Control.TouchNavigation({

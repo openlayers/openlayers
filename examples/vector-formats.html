@@ -87,8 +87,9 @@
                 gml3: new OpenLayers.Format.GML.v3(gmlOptionsIn),
                 kml: new OpenLayers.Format.KML(kmlOptionsIn),
                 atom: new OpenLayers.Format.Atom(in_options),
-                gpx: new OpenLayers.Format.GPX(in_options)
-              }, 
+                gpx: new OpenLayers.Format.GPX(in_options),
+                encoded_polyline: new OpenLayers.Format.EncodedPolyline(in_options)
+              },
               'out': {
                 wkt: new OpenLayers.Format.WKT(out_options),
                 geojson: new OpenLayers.Format.GeoJSON(out_options),
@@ -97,8 +98,9 @@
                 gml3: new OpenLayers.Format.GML.v3(gmlOptionsOut),
                 kml: new OpenLayers.Format.KML(out_options),
                 atom: new OpenLayers.Format.Atom(out_options),
-                gpx: new OpenLayers.Format.GPX(out_options)
-              } 
+                gpx: new OpenLayers.Format.GPX(out_options),
+                encoded_polyline: new OpenLayers.Format.EncodedPolyline(out_options)
+              }
             };
         }
         function init(){
@@ -202,6 +204,7 @@
                 <option value="gml3">GML (v3)</option>
                 <option value="wkt">Well-Known Text (WKT)</option>
                 <option value="gpx">GPX</option>
+                <option value="encoded_polyline">Encoded Polyline</option>
             </select>
             &nbsp;
             <label for="prettyPrint">Pretty print</label>

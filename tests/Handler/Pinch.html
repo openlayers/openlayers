@@ -97,7 +97,7 @@
     function test_callbacks(t) {
         t.plan(32);
 
-        var map = new OpenLayers.Map('map', {controls: []});
+        var map = new OpenLayers.Map('map', {controls: [], fallThrough: true});
 
         var control = new OpenLayers.Control();
         map.addControl(control);
