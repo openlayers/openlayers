@@ -1,6 +1,16 @@
 goog.provide('ol.MapEvent');
+goog.provide('ol.MapEventType');
 
 goog.require('goog.events.Event');
+goog.require('ol.FrameState');
+
+
+/**
+ * @enum {string}
+ */
+ol.MapEventType = {
+  POSTRENDER: 'postrender'
+};
 
 
 
@@ -9,8 +19,9 @@ goog.require('goog.events.Event');
  * @extends {goog.events.Event}
  * @param {string} type Event type.
  * @param {ol.Map} map Map.
+ * @param {?ol.FrameState=} opt_frameState Frame state.
  */
-ol.MapEvent = function(type, map) {
+ol.MapEvent = function(type, map, opt_frameState) {
 
   goog.base(this, type);
 
@@ -23,6 +34,11 @@ ol.MapEvent = function(type, map) {
    * @type {boolean}
    */
   this.defaultPrevented = false;
+
+  /**
+   * @type {?ol.FrameState}
+   */
+  this.frameState = goog.isDef(opt_frameState) ? opt_frameState : null;
 
 };
 goog.inherits(ol.MapEvent, goog.events.Event);

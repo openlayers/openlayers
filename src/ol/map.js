@@ -3,7 +3,6 @@
 // FIXME add tilt and height?
 
 goog.provide('ol.Map');
-goog.provide('ol.MapEventType');
 goog.provide('ol.MapProperty');
 goog.provide('ol.RendererHint');
 goog.provide('ol.RendererHints');
@@ -664,6 +663,9 @@ ol.Map.prototype.renderFrame_ = function(time) {
   }
   this.frameState_ = frameState;
   this.dirty_ = false;
+
+  this.dispatchEvent(
+      new ol.MapEvent(ol.MapEventType.POSTRENDER, this, frameState));
 
   goog.global.setTimeout(this.handlePostRender_, 0);
 
