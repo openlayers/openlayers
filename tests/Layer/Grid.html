@@ -390,7 +390,7 @@
      */
 
     function test_Layer_Grid_clone(t) {
-        t.plan(6);
+        t.plan(7);
         
         var options = {tileSize: new OpenLayers.Size(500,50)};
         var map = new OpenLayers.Map('map', options);
@@ -400,8 +400,10 @@
         layer.grid = [ [6, 7], 
                        [8, 9]];
 
+        // if we clone when tiles are still loading, this should not influence the clone
+        layer.numLoadingTiles = 1;
         var clone = layer.clone();
-
+        t.eq( clone.numLoadingTiles, 0, "numLoadingTiles should be reset");
         t.ok( clone.grid != layer.grid, "clone does not copy grid");
         t.ok( clone.grid.length == 0, "clone creates a new array instead");
         
