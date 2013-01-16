@@ -35,20 +35,8 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
   if (goog.isDef(tiledWMSOptions.tileGrid)) {
     tileGrid = tiledWMSOptions.tileGrid;
   } else {
-    // FIXME Factor this out to a more central/generic place.
-    var size = Math.max(
-        projectionExtent.maxX - projectionExtent.minX,
-        projectionExtent.maxY - projectionExtent.minY);
-    var maxZoom = goog.isDef(tiledWMSOptions.maxZoom) ?
-        tiledWMSOptions.maxZoom : 18;
-    var resolutions = new Array(maxZoom + 1);
-    for (var z = 0, zz = resolutions.length; z < zz; ++z) {
-      resolutions[z] = ol.Projection.EPSG_3857_HALF_SIZE / (128 << z);
-    }
-    tileGrid = new ol.tilegrid.TileGrid({
-      origin: projectionExtent.getTopLeft(),
-      resolutions: resolutions
-    });
+    tileGrid = ol.tilegrid.createForProjection(projection,
+        tiledWMSOptions.maxZoom);
   }
 
   var baseParams = {
