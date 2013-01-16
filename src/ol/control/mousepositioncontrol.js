@@ -54,15 +54,33 @@ ol.control.MousePosition = function(mousePositionOptions) {
 
   /**
    * @private
-   * @type {ol.TransformFunction|undefined}
+   * @type {string}
    */
-  this.transform_ = undefined;
+  this.renderedHTML_ = element.innerHTML;
 
   /**
    * @private
    * @type {ol.Projection}
    */
-  this.transformProjection_ = null;
+  this.mapProjection_ = null;
+
+  /**
+   * @private
+   * @type {ol.TransformFunction}
+   */
+  this.transform_ = ol.Projection.identityTransform;
+
+  /**
+   * @private
+   * @type {ol.Projection}
+   */
+  this.renderedProjection_ = null;
+
+  /**
+   * @private
+   * @type {ol.Pixel}
+   */
+  this.lastMouseMovePixel_ = null;
 
   /**
    * @private
@@ -81,20 +99,11 @@ goog.inherits(ol.control.MousePosition, ol.control.Control);
 ol.control.MousePosition.prototype.handleMapPostrender = function(mapEvent) {
   var frameState = mapEvent.frameState;
   if (goog.isNull(frameState)) {
-    this.transform_ = undefined;
-    this.transformProjection_ = null;
+    this.mapProjection_ = null;
   } else {
-    var projection = frameState.view2DState.projection;
-    if (projection != this.transformProjection_) {
-      if (goog.isDef(this.projection_)) {
-        this.transform_ = ol.Projection.getTransform(
-            projection, this.projection_);
-      } else {
-        this.transform_ = ol.Projection.identityTransform;
-      }
-      this.transformProjection_ = projection;
-    }
+    this.mapProjection_ = frameState.view2DState.projection;
   }
+  this.updateHTML_(this.lastMouseMovePixel_);
 };
 
 
@@ -103,23 +112,12 @@ ol.control.MousePosition.prototype.handleMapPostrender = function(mapEvent) {
  * @protected
  */
 ol.control.MousePosition.prototype.handleMouseMove = function(browserEvent) {
-  var html = this.undefinedHTML_;
-  if (goog.isDef(this.transform_)) {
-    var map = this.getMap();
-    var eventPosition = goog.style.getRelativePosition(
-        browserEvent, map.getViewport());
-    var pixel = new ol.Pixel(eventPosition.x, eventPosition.y);
-    var coordinate = map.getCoordinateFromPixel(pixel);
-    if (!goog.isNull(coordinate)) {
-      coordinate = this.transform_(coordinate);
-      if (goog.isDef(this.coordinateFormat_)) {
-        html = this.coordinateFormat_(coordinate);
-      } else {
-        html = coordinate.toString();
-      }
-    }
-  }
-  this.element.innerHTML = html;
+  var map = this.getMap();
+  var eventPosition = goog.style.getRelativePosition(
+      browserEvent, map.getViewport());
+  var pixel = new ol.Pixel(eventPosition.x, eventPosition.y);
+  this.updateHTML_(pixel);
+  this.lastMouseMovePixel_ = pixel;
 };
 
 
@@ -128,7 +126,8 @@ ol.control.MousePosition.prototype.handleMouseMove = function(browserEvent) {
  * @protected
  */
 ol.control.MousePosition.prototype.handleMouseOut = function(browserEvent) {
-  this.element.innerHTML = this.undefinedHTML_;
+  this.updateHTML_(null);
+  this.lastMouseMovePixel_ = null;
 };
 
 
@@ -151,5 +150,39 @@ ol.control.MousePosition.prototype.setMap = function(map) {
       goog.events.listen(map, ol.MapEventType.POSTRENDER,
           this.handleMapPostrender, false, this)
     ];
+  }
+};
+
+
+/**
+ * @param {?ol.Pixel} pixel Pixel.
+ * @private
+ */
+ol.control.MousePosition.prototype.updateHTML_ = function(pixel) {
+  var html = this.undefinedHTML_;
+  if (!goog.isNull(pixel)) {
+    if (this.renderedProjection_ != this.mapProjection_) {
+      if (goog.isDef(this.projection_)) {
+        this.transform_ = ol.Projection.getTransform(
+            this.mapProjection_, this.projection_);
+      } else {
+        this.transform_ = ol.Projection.identityTransform;
+      }
+      this.renderedProjection_ = this.mapProjection_;
+    }
+    var map = this.getMap();
+    var coordinate = map.getCoordinateFromPixel(pixel);
+    if (!goog.isNull(coordinate)) {
+      coordinate = this.transform_(coordinate);
+      if (goog.isDef(this.coordinateFormat_)) {
+        html = this.coordinateFormat_(coordinate);
+      } else {
+        html = coordinate.toString();
+      }
+    }
+  }
+  if (!goog.isDef(this.renderedHTML_) || html != this.renderedHTML_) {
+    this.element.innerHTML = html;
+    this.renderedHTML_ = html;
   }
 };
