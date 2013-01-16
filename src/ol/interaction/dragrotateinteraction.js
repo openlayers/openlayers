@@ -1,6 +1,7 @@
 goog.provide('ol.interaction.DragRotate');
 
 goog.require('ol.MapBrowserEvent');
+goog.require('ol.View2D');
 goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Drag');
 
@@ -42,8 +43,11 @@ ol.interaction.DragRotate.prototype.handleDrag = function(mapBrowserEvent) {
   var theta = Math.atan2(
       size.height / 2 - offset.y,
       offset.x - size.width / 2);
+  // FIXME supports View2D only
+  var view = map.getView();
+  goog.asserts.assert(view instanceof ol.View2D);
   map.requestRenderFrame();
-  map.rotate(this.startRotation_, -theta);
+  view.rotate(map, this.startRotation_, -theta);
 };
 
 
@@ -54,15 +58,17 @@ ol.interaction.DragRotate.prototype.handleDragStart =
     function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   var map = mapBrowserEvent.map;
-  if (browserEvent.isMouseActionButton() && this.condition_(browserEvent) &&
-      map.canRotate()) {
+  // FIXME supports View2D only
+  var view = map.getView();
+  goog.asserts.assert(view instanceof ol.View2D);
+  if (browserEvent.isMouseActionButton() && this.condition_(browserEvent)) {
     map.requestRenderFrame();
     var size = map.getSize();
     var offset = mapBrowserEvent.getPixel();
     var theta = Math.atan2(
         size.height / 2 - offset.y,
         offset.x - size.width / 2);
-    this.startRotation_ = (map.getRotation() || 0) + theta;
+    this.startRotation_ = (view.getRotation() || 0) + theta;
     return true;
   } else {
     return false;

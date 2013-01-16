@@ -1,7 +1,10 @@
+// FIXME works for View2D only
+
 goog.provide('ol.interaction.DragRotateAndZoom');
 
 goog.require('goog.math.Vec2');
 goog.require('ol.MapBrowserEvent');
+goog.require('ol.View2D');
 goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Drag');
 
@@ -50,12 +53,15 @@ ol.interaction.DragRotateAndZoom.prototype.handleDrag =
       browserEvent.offsetX - size.width / 2,
       size.height / 2 - browserEvent.offsetY);
   var theta = Math.atan2(delta.y, delta.x);
+  var resolution = this.startRatio_ * delta.magnitude();
+  // FIXME works for View2D only
+  var view = map.getView();
+  goog.asserts.assert(view instanceof ol.View2D);
   map.requestRenderFrame();
   // FIXME the calls to map.rotate and map.zoomToResolution should use
   // map.withFrozenRendering but an assertion fails :-(
-  map.rotate(this.startRotation_, -theta);
-  var resolution = this.startRatio_ * delta.magnitude();
-  map.zoomToResolution(resolution);
+  view.rotate(map, this.startRotation_, -theta);
+  view.zoomToResolution(map, resolution);
 };
 
 
@@ -66,14 +72,15 @@ ol.interaction.DragRotateAndZoom.prototype.handleDragStart =
     function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   var map = mapBrowserEvent.map;
-  if (map.canRotate() && this.condition_(browserEvent)) {
-    var resolution = map.getResolution();
+  var view = map.getView().getView2D();
+  if (this.condition_(browserEvent)) {
+    var resolution = view.getResolution();
     var size = map.getSize();
     var delta = new goog.math.Vec2(
         browserEvent.offsetX - size.width / 2,
         size.height / 2 - browserEvent.offsetY);
     var theta = Math.atan2(delta.y, delta.x);
-    this.startRotation_ = (map.getRotation() || 0) + theta;
+    this.startRotation_ = (view.getRotation() || 0) + theta;
     this.startRatio_ = resolution / delta.magnitude();
     map.requestRenderFrame();
     return true;

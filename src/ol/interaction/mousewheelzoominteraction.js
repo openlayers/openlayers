@@ -1,8 +1,11 @@
+// FIXME works for View2D only
+
 goog.provide('ol.interaction.MouseWheelZoom');
 
 goog.require('goog.events.MouseWheelEvent');
 goog.require('goog.events.MouseWheelHandler.EventType');
 goog.require('ol.MapBrowserEvent');
+goog.require('ol.View2D');
 
 
 
@@ -32,12 +35,15 @@ ol.interaction.MouseWheelZoom.prototype.handleMapBrowserEvent =
       goog.events.MouseWheelHandler.EventType.MOUSEWHEEL) {
     var map = mapBrowserEvent.map;
     var mouseWheelEvent = /** @type {goog.events.MouseWheelEvent} */
-        mapBrowserEvent.browserEvent;
+        (mapBrowserEvent.browserEvent);
     goog.asserts.assert(mouseWheelEvent instanceof goog.events.MouseWheelEvent);
     var anchor = mapBrowserEvent.getCoordinate();
     var delta = mouseWheelEvent.deltaY < 0 ? this.delta_ : -this.delta_;
+    // FIXME works for View2D only
+    var view = map.getView();
+    goog.asserts.assert(view instanceof ol.View2D);
     map.requestRenderFrame();
-    map.zoom(delta, anchor);
+    view.zoom(map, delta, anchor);
     mapBrowserEvent.preventDefault();
     mouseWheelEvent.preventDefault();
   }

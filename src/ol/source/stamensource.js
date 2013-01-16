@@ -26,7 +26,7 @@ ol.source.StamenFlavor = {
 
 
 /**
- * @typedef {{flavor: ol.source.StamenFlavor,
+ * @typedef {{flavor: (ol.source.StamenFlavor|undefined),
  *            provider: ol.source.StamenProvider}}
  */
 ol.source.StamenOptions;

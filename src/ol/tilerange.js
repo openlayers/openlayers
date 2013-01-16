@@ -28,9 +28,9 @@ ol.TileRange.boundingTileRange = function(var_args) {
   var tileCoord0 = arguments[0];
   var tileRange = new ol.TileRange(tileCoord0.x, tileCoord0.y,
                                    tileCoord0.x, tileCoord0.y);
-  var i;
+  var i, tileCoord;
   for (i = 1; i < arguments.length; ++i) {
-    var tileCoord = arguments[i];
+    tileCoord = arguments[i];
     goog.asserts.assert(tileCoord.z == tileCoord0.z);
     tileRange.minX = Math.min(tileRange.minX, tileCoord.x);
     tileRange.minY = Math.min(tileRange.minY, tileCoord.y);
@@ -68,22 +68,6 @@ ol.TileRange.prototype.containsTileRange = function(tileRange) {
 ol.TileRange.prototype.equals = function(tileRange) {
   return this.minX == tileRange.minX && tileRange.maxX == this.maxX &&
       this.minY == tileRange.minY && tileRange.minY == this.minY;
-};
-
-
-/**
- * @param {number} z Z.
- * @param {function(this: T, ol.TileCoord)} f Callback.
- * @param {T=} opt_obj The object to be used for the value of 'this' within f.
- * @template T
- */
-ol.TileRange.prototype.forEachTileCoord = function(z, f, opt_obj) {
-  var x, y;
-  for (x = this.minX; x <= this.maxX; ++x) {
-    for (y = this.minY; y <= this.maxY; ++y) {
-      f.call(opt_obj, new ol.TileCoord(z, x, y));
-    }
-  }
 };
 
 

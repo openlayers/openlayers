@@ -89,6 +89,7 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
   if (!map.isDef()) {
     return;
   }
+  var view = map.getView();
   var browserEvent = mapBrowserEvent.browserEvent;
   if (this.dragging_) {
     if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DRAG) {
@@ -109,9 +110,9 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
     this.startY = browserEvent.clientY;
     this.deltaX = 0;
     this.deltaY = 0;
-    this.startCenter = /** @type {!ol.Coordinate} */ map.getCenter();
+    this.startCenter = /** @type {!ol.Coordinate} */ (view.getCenter());
     this.startCoordinate = /** @type {ol.Coordinate} */
-        mapBrowserEvent.getCoordinate();
+        (mapBrowserEvent.getCoordinate());
     var handled = this.handleDragStart(mapBrowserEvent);
     if (handled) {
       this.dragging_ = true;

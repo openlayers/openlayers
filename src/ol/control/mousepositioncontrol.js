@@ -1,7 +1,9 @@
 // FIXME should listen on appropriate pane, once it is defined
+// FIXME works for View2D only
 
 goog.provide('ol.control.MousePosition');
 
+goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.style');
@@ -47,8 +49,20 @@ ol.control.MousePosition = function(mousePositionOptions) {
    * @private
    * @type {string}
    */
-  this.undefinedHtml_ = goog.isDef(mousePositionOptions.undefinedHtml) ?
-      mousePositionOptions.undefinedHtml : '';
+  this.undefinedHTML_ = goog.isDef(mousePositionOptions.undefinedHTML) ?
+      mousePositionOptions.undefinedHTML : '';
+
+  /**
+   * @private
+   * @type {string}
+   */
+  this.renderedHTML_ = element.innerHTML;
+
+  /**
+   * @private
+   * @type {ol.Projection}
+   */
+  this.mapProjection_ = null;
 
   /**
    * @private
@@ -58,23 +72,38 @@ ol.control.MousePosition = function(mousePositionOptions) {
 
   /**
    * @private
-   * @type {Array.<number>}
+   * @type {ol.Projection}
    */
-  this.listenerKeys_ = [];
+  this.renderedProjection_ = null;
 
-  this.handleMapProjectionChanged();
+  /**
+   * @private
+   * @type {ol.Pixel}
+   */
+  this.lastMouseMovePixel_ = null;
+
+  /**
+   * @private
+   * @type {Array.<?number>}
+   */
+  this.listenerKeys_ = null;
 
 };
 goog.inherits(ol.control.MousePosition, ol.control.Control);
 
 
 /**
+ * @param {ol.MapEvent} mapEvent Map event.
  * @protected
  */
-ol.control.MousePosition.prototype.handleMapProjectionChanged = function() {
-  this.updateTransform_();
-  // FIXME should we instead re-calculate using the last known mouse position?
-  this.element.innerHTML = this.undefinedHtml_;
+ol.control.MousePosition.prototype.handleMapPostrender = function(mapEvent) {
+  var frameState = mapEvent.frameState;
+  if (goog.isNull(frameState)) {
+    this.mapProjection_ = null;
+  } else {
+    this.mapProjection_ = frameState.view2DState.projection;
+  }
+  this.updateHTML_(this.lastMouseMovePixel_);
 };
 
 
@@ -87,19 +116,8 @@ ol.control.MousePosition.prototype.handleMouseMove = function(browserEvent) {
   var eventPosition = goog.style.getRelativePosition(
       browserEvent, map.getViewport());
   var pixel = new ol.Pixel(eventPosition.x, eventPosition.y);
-  var coordinate = map.getCoordinateFromPixel(pixel);
-  var html;
-  if (!goog.isNull(coordinate)) {
-    coordinate = this.transform_(coordinate);
-    if (goog.isDef(this.coordinateFormat_)) {
-      html = this.coordinateFormat_(coordinate);
-    } else {
-      html = coordinate.toString();
-    }
-  } else {
-    html = this.undefinedHtml_;
-  }
-  this.element.innerHTML = html;
+  this.updateHTML_(pixel);
+  this.lastMouseMovePixel_ = pixel;
 };
 
 
@@ -108,7 +126,8 @@ ol.control.MousePosition.prototype.handleMouseMove = function(browserEvent) {
  * @protected
  */
 ol.control.MousePosition.prototype.handleMouseOut = function(browserEvent) {
-  this.element.innerHTML = this.undefinedHtml_;
+  this.updateHTML_(null);
+  this.lastMouseMovePixel_ = null;
 };
 
 
@@ -123,34 +142,47 @@ ol.control.MousePosition.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);
   if (!goog.isNull(map)) {
     var viewport = map.getViewport();
-    this.listenerKeys = [
-      goog.events.listen(map,
-          ol.Object.getChangedEventType(ol.MapProperty.PROJECTION),
-          this.handleMapProjectionChanged, false, this),
+    this.listenerKeys_ = [
       goog.events.listen(viewport, goog.events.EventType.MOUSEMOVE,
           this.handleMouseMove, false, this),
       goog.events.listen(viewport, goog.events.EventType.MOUSEOUT,
-          this.handleMouseOut, false, this)
+          this.handleMouseOut, false, this),
+      goog.events.listen(map, ol.MapEventType.POSTRENDER,
+          this.handleMapPostrender, false, this)
     ];
-    this.updateTransform_();
   }
 };
 
 
 /**
+ * @param {?ol.Pixel} pixel Pixel.
  * @private
  */
-ol.control.MousePosition.prototype.updateTransform_ = function() {
-  var map = this.getMap();
-  if (goog.isNull(map)) {
-    this.transform_ = ol.Projection.identityTransform;
-  } else {
-    var mapProjection = map.getProjection();
-    if (!goog.isDef(mapProjection) || !goog.isDef(this.projection_)) {
-      this.transform_ = ol.Projection.identityTransform;
-    } else {
-      this.transform_ =
-          ol.Projection.getTransform(mapProjection, this.projection_);
+ol.control.MousePosition.prototype.updateHTML_ = function(pixel) {
+  var html = this.undefinedHTML_;
+  if (!goog.isNull(pixel)) {
+    if (this.renderedProjection_ != this.mapProjection_) {
+      if (goog.isDef(this.projection_)) {
+        this.transform_ = ol.Projection.getTransform(
+            this.mapProjection_, this.projection_);
+      } else {
+        this.transform_ = ol.Projection.identityTransform;
+      }
+      this.renderedProjection_ = this.mapProjection_;
     }
+    var map = this.getMap();
+    var coordinate = map.getCoordinateFromPixel(pixel);
+    if (!goog.isNull(coordinate)) {
+      coordinate = this.transform_(coordinate);
+      if (goog.isDef(this.coordinateFormat_)) {
+        html = this.coordinateFormat_(coordinate);
+      } else {
+        html = coordinate.toString();
+      }
+    }
+  }
+  if (!goog.isDef(this.renderedHTML_) || html != this.renderedHTML_) {
+    this.element.innerHTML = html;
+    this.renderedHTML_ = html;
   }
 };

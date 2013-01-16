@@ -51,6 +51,6 @@ The `.html` file needs to include a script tag with
 the examples are `myexample.js` and `myexample.html` then `id` should be set to
 `myexample` in the `loader.js` URL.
 
-`make serve` should be stopped and restarted for the
-`loader.js?id=<example_name>` script tag to refer to a valid URL. `make serve`
+`build.py serve` should be stopped and restarted for the
+`loader.js?id=<example_name>` script tag to refer to a valid URL. `build.py serve`
 triggers the `examples` target which creates Plovr JSON file for each example.
