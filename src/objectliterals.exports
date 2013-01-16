@@ -7,7 +7,7 @@
 @exportObjectLiteralProperty ol.control.MousePositionOptions.map ol.Map|undefined
 @exportObjectLiteralProperty ol.control.MousePositionOptions.projection ol.Projection|undefined
 @exportObjectLiteralProperty ol.control.MousePositionOptions.target Element|undefined
-@exportObjectLiteralProperty ol.control.MousePositionOptions.undefinedHtml string|undefined
+@exportObjectLiteralProperty ol.control.MousePositionOptions.undefinedHTML string|undefined
 
 @exportObjectLiteral ol.control.ZoomOptions
 @exportObjectLiteralProperty ol.control.ZoomOptions.delta number|undefined

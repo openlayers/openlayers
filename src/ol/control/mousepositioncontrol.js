@@ -3,6 +3,7 @@
 
 goog.provide('ol.control.MousePosition');
 
+goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.style');
@@ -48,8 +49,20 @@ ol.control.MousePosition = function(mousePositionOptions) {
    * @private
    * @type {string}
    */
-  this.undefinedHtml_ = goog.isDef(mousePositionOptions.undefinedHtml) ?
-      mousePositionOptions.undefinedHtml : '';
+  this.undefinedHTML_ = goog.isDef(mousePositionOptions.undefinedHTML) ?
+      mousePositionOptions.undefinedHTML : '';
+
+  /**
+   * @private
+   * @type {string}
+   */
+  this.renderedHTML_ = element.innerHTML;
+
+  /**
+   * @private
+   * @type {ol.Projection}
+   */
+  this.mapProjection_ = null;
 
   /**
    * @private
@@ -59,42 +72,38 @@ ol.control.MousePosition = function(mousePositionOptions) {
 
   /**
    * @private
-   * @type {Array.<number>}
+   * @type {ol.Projection}
    */
-  this.mapListenerKeys_ = null;
+  this.renderedProjection_ = null;
 
   /**
    * @private
-   * @type {Array.<number>}
+   * @type {ol.Pixel}
    */
-  this.viewListenerKeys_ = null;
+  this.lastMouseMovePixel_ = null;
 
-  this.handleViewProjectionChanged_();
+  /**
+   * @private
+   * @type {Array.<?number>}
+   */
+  this.listenerKeys_ = null;
+
 };
 goog.inherits(ol.control.MousePosition, ol.control.Control);
 
 
 /**
- * @private
+ * @param {ol.MapEvent} mapEvent Map event.
+ * @protected
  */
-ol.control.MousePosition.prototype.handleMapViewChanged_ = function() {
-  var map = this.getMap();
-  goog.asserts.assert(!goog.isNull(map));
-  if (!goog.isNull(this.viewListenerKeys_)) {
-    goog.array.forEach(this.viewListenerKeys_, goog.events.unlistenByKey);
-    this.viewListenerKeys_ = null;
+ol.control.MousePosition.prototype.handleMapPostrender = function(mapEvent) {
+  var frameState = mapEvent.frameState;
+  if (goog.isNull(frameState)) {
+    this.mapProjection_ = null;
+  } else {
+    this.mapProjection_ = frameState.view2DState.projection;
   }
-  var view = map.getView();
-  if (goog.isDefAndNotNull(view)) {
-    // FIXME works for View2D only
-    goog.asserts.assert(view instanceof ol.View2D);
-    this.viewListenerKeys_ = [
-      goog.events.listen(
-          view, ol.Object.getChangedEventType(ol.View2DProperty.ROTATION),
-          this.handleViewProjectionChanged_, false, this)
-    ];
-    this.handleViewProjectionChanged_();
-  }
+  this.updateHTML_(this.lastMouseMovePixel_);
 };
 
 
@@ -107,19 +116,8 @@ ol.control.MousePosition.prototype.handleMouseMove = function(browserEvent) {
   var eventPosition = goog.style.getRelativePosition(
       browserEvent, map.getViewport());
   var pixel = new ol.Pixel(eventPosition.x, eventPosition.y);
-  var coordinate = map.getCoordinateFromPixel(pixel);
-  var html;
-  if (!goog.isNull(coordinate)) {
-    coordinate = this.transform_(coordinate);
-    if (goog.isDef(this.coordinateFormat_)) {
-      html = this.coordinateFormat_(coordinate);
-    } else {
-      html = coordinate.toString();
-    }
-  } else {
-    html = this.undefinedHtml_;
-  }
-  this.element.innerHTML = html;
+  this.updateHTML_(pixel);
+  this.lastMouseMovePixel_ = pixel;
 };
 
 
@@ -128,18 +126,8 @@ ol.control.MousePosition.prototype.handleMouseMove = function(browserEvent) {
  * @protected
  */
 ol.control.MousePosition.prototype.handleMouseOut = function(browserEvent) {
-  this.element.innerHTML = this.undefinedHtml_;
-};
-
-
-/**
- * @private
- */
-ol.control.MousePosition.prototype.handleViewProjectionChanged_ = function() {
-  this.updateTransform_();
-  // FIXME should we instead re-calculate using the last known
-  // mouse position?
-  this.element.innerHTML = this.undefinedHtml_;
+  this.updateHTML_(null);
+  this.lastMouseMovePixel_ = null;
 };
 
 
@@ -147,44 +135,54 @@ ol.control.MousePosition.prototype.handleViewProjectionChanged_ = function() {
  * @inheritDoc
  */
 ol.control.MousePosition.prototype.setMap = function(map) {
-  if (!goog.isNull(this.mapListenerKeys_)) {
-    goog.array.forEach(this.mapListenerKeys_, goog.events.unlistenByKey);
-    this.mapListenerKeys_ = null;
+  if (!goog.isNull(this.listenerKeys_)) {
+    goog.array.forEach(this.listenerKeys_, goog.events.unlistenByKey);
+    this.listenerKeys_ = null;
   }
   goog.base(this, 'setMap', map);
   if (!goog.isNull(map)) {
     var viewport = map.getViewport();
-    this.listenerKeys = [
+    this.listenerKeys_ = [
       goog.events.listen(viewport, goog.events.EventType.MOUSEMOVE,
           this.handleMouseMove, false, this),
       goog.events.listen(viewport, goog.events.EventType.MOUSEOUT,
           this.handleMouseOut, false, this),
-      goog.events.listen(map,
-          ol.Object.getChangedEventType(ol.MapProperty.VIEW),
-          this.handleMapViewChanged_, false, this)
+      goog.events.listen(map, ol.MapEventType.POSTRENDER,
+          this.handleMapPostrender, false, this)
     ];
-    this.updateTransform_();
   }
 };
 
 
 /**
+ * @param {?ol.Pixel} pixel Pixel.
  * @private
  */
-ol.control.MousePosition.prototype.updateTransform_ = function() {
-  var map, view;
-  if (!goog.isNull(map = this.getMap()) &&
-      !goog.isNull(view = map.getView())) {
-    // FIXME works for View2D only
-    goog.asserts.assert(view instanceof ol.View2D);
-    var viewProjection = view.getProjection();
-    if (!goog.isDef(viewProjection) || !goog.isDef(this.projection_)) {
-      this.transform_ = ol.Projection.identityTransform;
-    } else {
-      this.transform_ =
-          ol.Projection.getTransform(viewProjection, this.projection_);
+ol.control.MousePosition.prototype.updateHTML_ = function(pixel) {
+  var html = this.undefinedHTML_;
+  if (!goog.isNull(pixel)) {
+    if (this.renderedProjection_ != this.mapProjection_) {
+      if (goog.isDef(this.projection_)) {
+        this.transform_ = ol.Projection.getTransform(
+            this.mapProjection_, this.projection_);
+      } else {
+        this.transform_ = ol.Projection.identityTransform;
+      }
+      this.renderedProjection_ = this.mapProjection_;
     }
-  } else {
-    this.transform_ = ol.Projection.identityTransform;
+    var map = this.getMap();
+    var coordinate = map.getCoordinateFromPixel(pixel);
+    if (!goog.isNull(coordinate)) {
+      coordinate = this.transform_(coordinate);
+      if (goog.isDef(this.coordinateFormat_)) {
+        html = this.coordinateFormat_(coordinate);
+      } else {
+        html = coordinate.toString();
+      }
+    }
+  }
+  if (!goog.isDef(this.renderedHTML_) || html != this.renderedHTML_) {
+    this.element.innerHTML = html;
+    this.renderedHTML_ = html;
   }
 };

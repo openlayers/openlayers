@@ -43,7 +43,7 @@ domMap.getControls().push(new ol.control.MousePosition({
   coordinateFormat: ol.Coordinate.toStringHDMS,
   projection: ol.Projection.getFromCode('EPSG:4326'),
   target: document.getElementById('domMousePosition'),
-  undefinedHtml: '&nbsp;'
+  undefinedHTML: '&nbsp;'
 }));
 
 var webglMap = new ol.Map({
@@ -59,7 +59,7 @@ webglMap.getControls().push(new ol.control.MousePosition({
   coordinateFormat: ol.Coordinate.toStringHDMS,
   projection: ol.Projection.getFromCode('EPSG:4326'),
   target: document.getElementById('webglMousePosition'),
-  undefinedHtml: '&nbsp;'
+  undefinedHTML: '&nbsp;'
 }));
 
 var keyboardInteraction = new ol.interaction.Keyboard();
