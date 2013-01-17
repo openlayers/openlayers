@@ -1,17 +1,10 @@
 goog.provide('ol.tilegrid.XYZ');
-goog.provide('ol.tilegrid.XYZOptions');
 
 goog.require('ol.Coordinate');
 goog.require('ol.Projection');
 goog.require('ol.Size');
 goog.require('ol.TileRange');
 goog.require('ol.tilegrid.TileGrid');
-
-
-/**
- * @typedef {{maxZoom: number}}
- */
-ol.tilegrid.XYZOptions;
 
 
 

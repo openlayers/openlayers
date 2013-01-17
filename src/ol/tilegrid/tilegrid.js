@@ -1,7 +1,6 @@
 // FIXME cope with tile grids whose minium zoom is not zero
 
 goog.provide('ol.tilegrid.TileGrid');
-goog.provide('ol.tilegrid.TileGridOptions');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -18,16 +17,6 @@ goog.require('ol.array');
  * @define {number} Default tile size.
  */
 ol.DEFAULT_TILE_SIZE = 256;
-
-
-/**
- * @typedef {{extent: (ol.Extent|undefined),
- *            origin: (ol.Coordinate|undefined),
- *            origins: (Array.<ol.Coordinate>|undefined),
- *            resolutions: !Array.<number>,
- *            tileSize: (ol.Size|undefined)}}
- */
-ol.tilegrid.TileGridOptions;
 
 
 
