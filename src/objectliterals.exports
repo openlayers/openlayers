@@ -63,6 +63,13 @@
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.url string|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.urls Array.<string>|undefined
 
+@exportObjectLiteral ol.tilegrid.TileGridOptions
+@exportObjectLiteralProperty ol.tilegrid.TileGridOptions.extent ol.Extent|undefined
+@exportObjectLiteralProperty ol.tilegrid.TileGridOptions.origin ol.Coordinate|undefined
+@exportObjectLiteralProperty ol.tilegrid.TileGridOptions.origins Array.<ol.Coordinate>|undefined
+@exportObjectLiteralProperty ol.tilegrid.TileGridOptions.resolutions !Array.<number>
+@exportObjectLiteralProperty ol.tilegrid.TileGridOptions.tileSize ol.Size|undefined
+
 @exportObjectLiteral ol.View2DOptions
 @exportObjectLiteralProperty ol.View2DOptions.center ol.Coordinate|undefined
 @exportObjectLiteralProperty ol.View2DOptions.maxResolution number|undefined
