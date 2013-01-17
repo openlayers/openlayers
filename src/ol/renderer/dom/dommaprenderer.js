@@ -76,7 +76,6 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
  */
 ol.renderer.dom.Map.prototype.removeLayer = function(layer) {
   goog.base(this, 'removeLayer', layer);
-  this.getMap().render();
 };
 
 
