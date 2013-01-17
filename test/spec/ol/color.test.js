@@ -69,5 +69,3 @@ describe('ol.Color', function() {
   });
 
 });
-
-goog.require('ol.array');
