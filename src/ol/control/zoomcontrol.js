@@ -11,6 +11,12 @@ goog.require('ol.Projection');
 goog.require('ol.control.Control');
 
 
+/**
+ * @define {number} Zoom duration.
+ */
+ol.control.ZOOM_DURATION = 250;
+
+
 
 /**
  * @constructor
@@ -61,8 +67,9 @@ ol.control.Zoom.prototype.handleIn_ = function(browserEvent) {
   // prevent #zoomIn anchor from getting appended to the url
   browserEvent.preventDefault();
   var map = this.getMap();
+  map.requestRenderFrame();
   // FIXME works for View2D only
-  map.getView().zoom(map, this.delta_);
+  map.getView().zoom(map, this.delta_, undefined, ol.control.ZOOM_DURATION);
 };
 
 
@@ -74,6 +81,7 @@ ol.control.Zoom.prototype.handleOut_ = function(browserEvent) {
   // prevent #zoomOut anchor from getting appended to the url
   browserEvent.preventDefault();
   var map = this.getMap();
+  map.requestRenderFrame();
   // FIXME works for View2D only
-  map.getView().zoom(map, -this.delta_);
+  map.getView().zoom(map, -this.delta_, undefined, ol.control.ZOOM_DURATION);
 };

@@ -1,10 +1,10 @@
 // FIXME works for View2D only
+// FIXME dependency on ol.View2D suppressed to prevent dependency loop
 
 goog.provide('ol.animation');
 
 goog.require('goog.fx.easing');
 goog.require('ol.PreRenderFunction');
-goog.require('ol.View2D');
 goog.require('ol.easing');
 
 
@@ -100,6 +100,39 @@ ol.animation.createSpin =
       var delta = easingFunction((frameState.time - start) / duration);
       frameState.animate = true;
       frameState.view2DState.rotation += delta * deltaTheta;
+      frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
+      return true;
+    } else {
+      return false;
+    }
+  };
+};
+
+
+/**
+ * @param {number} sourceResolution Source resolution.
+ * @param {number=} opt_duration Duration.
+ * @param {number=} opt_start Start.
+ * @param {function(number): number=} opt_easingFunction Easing function.
+ * @return {ol.PreRenderFunction} Pre-render function.
+ */
+ol.animation.createZoomFrom =
+    function(sourceResolution, opt_duration, opt_start, opt_easingFunction) {
+  var start = goog.isDef(opt_start) ? opt_start : Date.now();
+  var duration = goog.isDef(opt_duration) ? opt_duration : 1000;
+  var easingFunction = goog.isDef(opt_easingFunction) ?
+      opt_easingFunction : ol.easing.linear;
+  return function(map, frameState) {
+    if (frameState.time < start) {
+      frameState.animate = true;
+      frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
+      return true;
+    } else if (frameState.time < start + duration) {
+      var delta = 1 - easingFunction((frameState.time - start) / duration);
+      var deltaResolution =
+          sourceResolution - frameState.view2DState.resolution;
+      frameState.animate = true;
+      frameState.view2DState.resolution += delta * deltaResolution;
       frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
       return true;
     } else {
