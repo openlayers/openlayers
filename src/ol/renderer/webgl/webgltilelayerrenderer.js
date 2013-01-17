@@ -277,7 +277,6 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
       frameState.extent, tileResolution);
 
   var framebufferExtent;
-
   if (!goog.isNull(this.renderedTileRange_) &&
       this.renderedTileRange_.equals(tileRange)) {
     framebufferExtent = this.renderedFramebufferExtent_;
@@ -459,6 +458,8 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
     }
 
   }
+
+  this.updateTileUsage(frameState.tileUsage, tileSource, z, tileRange);
 
   goog.vec.Mat4.makeIdentity(this.matrix_);
   goog.vec.Mat4.translate(this.matrix_,

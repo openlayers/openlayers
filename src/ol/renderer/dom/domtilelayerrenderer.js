@@ -236,6 +236,8 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
     frameState.animate = true;
   }
 
+  this.updateTileUsage(frameState.tileUsage, tileSource, z, tileRange);
+
 };
 
 

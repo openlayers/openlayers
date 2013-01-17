@@ -10,6 +10,7 @@ goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.Size');
 goog.require('ol.TileQueue');
+goog.require('ol.TileRange');
 goog.require('ol.View2DState');
 goog.require('ol.layer.LayerState');
 
@@ -25,6 +26,7 @@ goog.require('ol.layer.LayerState');
  *            postRenderFunctions: Array.<ol.PostRenderFunction>,
  *            size: ol.Size,
  *            tileQueue: ol.TileQueue,
+ *            tileUsage: Object.<string, Object.<string, ol.TileRange>>,
  *            time: number,
  *            view2DState: ol.View2DState,
  *            viewHints: Array.<number>}}

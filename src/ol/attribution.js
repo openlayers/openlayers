@@ -1,17 +1,13 @@
 goog.provide('ol.Attribution');
 
-goog.require('ol.CoverageArea');
-goog.require('ol.Projection');
-
 
 
 /**
  * @constructor
  * @param {string} html HTML.
- * @param {Array.<ol.CoverageArea>=} opt_coverageAreas Coverage areas.
- * @param {ol.Projection=} opt_projection Projection.
+ * @param {Object.<string, Array.<ol.TileRange>>=} opt_tileRanges Tile ranges.
  */
-ol.Attribution = function(html, opt_coverageAreas, opt_projection) {
+ol.Attribution = function(html, opt_tileRanges) {
 
   /**
    * @private
@@ -21,38 +17,40 @@ ol.Attribution = function(html, opt_coverageAreas, opt_projection) {
 
   /**
    * @private
-   * @type {Array.<ol.CoverageArea>}
+   * @type {Object.<string, Array.<ol.TileRange>>}
    */
-  this.coverageAreas_ = opt_coverageAreas || null;
+  this.tileRanges_ = opt_tileRanges || null;
 
-  /**
-   * @private
-   * @type {ol.Projection}
-   */
-  this.projection_ = opt_projection || null;
-
-};
-
-
-/**
- * @return {Array.<ol.CoverageArea>} Coverage areas.
- */
-ol.Attribution.prototype.getCoverageAreas = function() {
-  return this.coverageAreas_;
 };
 
 
 /**
  * @return {string} HTML.
  */
-ol.Attribution.prototype.getHtml = function() {
+ol.Attribution.prototype.getHTML = function() {
   return this.html_;
 };
 
 
 /**
- * @return {ol.Projection} Projection.
+ * @param {Object.<string, ol.TileRange>} tileRanges Tile ranges.
+ * @return {boolean} Intersects any tile range.
  */
-ol.Attribution.prototype.getProjection = function() {
-  return this.projection_;
+ol.Attribution.prototype.intersectsAnyTileRange = function(tileRanges) {
+  if (goog.isNull(this.tileRanges_)) {
+    return true;
+  }
+  var i, tileRange, z;
+  for (z in tileRanges) {
+    if (!(z in this.tileRanges_)) {
+      continue;
+    }
+    tileRange = tileRanges[z];
+    for (i = 0; i < this.tileRanges_[z].length; ++i) {
+      if (this.tileRanges_[z][i].intersects(tileRange)) {
+        return true;
+      }
+    }
+  }
+  return false;
 };
