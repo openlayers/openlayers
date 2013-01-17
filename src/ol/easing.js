@@ -5,6 +5,15 @@ goog.provide('ol.easing');
  * @param {number} t Input between 0 and 1.
  * @return {number} Output between 0 and 1.
  */
+ol.easing.linear = function(t) {
+  return t;
+};
+
+
+/**
+ * @param {number} t Input between 0 and 1.
+ * @return {number} Output between 0 and 1.
+ */
 ol.easing.upAndDown = function(t) {
   if (t < 0.5) {
     return goog.fx.easing.inAndOut(2 * t);
