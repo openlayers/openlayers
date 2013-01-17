@@ -89,21 +89,6 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   var tileRange = tileGrid.getTileRangeForExtentAndResolution(
       frameState.extent, tileResolution);
 
-  // FIXME should also consider interim tiles
-  var tileUsage = frameState.tileUsage;
-  var tileSourceKey = goog.getUid(tileSource).toString();
-  var zKey = z.toString();
-  if (tileSourceKey in tileUsage) {
-    if (z in tileUsage[tileSourceKey]) {
-      tileUsage[tileSourceKey][zKey].extend(tileRange);
-    } else {
-      tileUsage[tileSourceKey][zKey] = tileRange;
-    }
-  } else {
-    tileUsage[tileSourceKey] = {};
-    tileUsage[tileSourceKey][zKey] = tileRange;
-  }
-
   /** @type {Object.<number, Object.<string, ol.Tile>>} */
   var tilesToDrawByZ = {};
   tilesToDrawByZ[z] = {};
@@ -250,6 +235,8 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   if (!allTilesLoaded) {
     frameState.animate = true;
   }
+
+  this.updateTileUsage(frameState.tileUsage, tileSource, z, tileRange);
 
 };
 
