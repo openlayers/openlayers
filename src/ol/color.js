@@ -1,6 +1,7 @@
 goog.provide('ol.Color');
 
 goog.require('goog.color');
+goog.require('goog.math');
 
 
 
@@ -9,29 +10,29 @@ goog.require('goog.color');
  * @param {number} r Red, 0 to 255.
  * @param {number} g Green, 0 to 255.
  * @param {number} b Blue, 0 to 255.
- * @param {number} a Alpha, 0 (fully transparent) to 255 (fully opaque).
+ * @param {number} a Alpha, 0 (fully transparent) to 1 (fully opaque).
  */
 ol.Color = function(r, g, b, a) {
 
   /**
    * @type {number}
    */
-  this.r = r;
+  this.r = goog.math.clamp(r, 0, 255);
 
   /**
    * @type {number}
    */
-  this.g = g;
+  this.g = goog.math.clamp(g, 0, 255);
 
   /**
    * @type {number}
    */
-  this.b = b;
+  this.b = goog.math.clamp(b, 0, 255);
 
   /**
    * @type {number}
    */
-  this.a = a;
+  this.a = goog.math.clamp(a, 0, 1);
 
 };
 

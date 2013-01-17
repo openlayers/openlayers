@@ -490,7 +490,8 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, null);
 
   var clearColor = frameState.backgroundColor;
-  gl.clearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+  gl.clearColor(clearColor.r / 255, clearColor.g / 255,
+      clearColor.b / 255, clearColor.a);
   gl.clear(goog.webgl.COLOR_BUFFER_BIT);
   gl.enable(goog.webgl.BLEND);
   gl.viewport(0, 0, size.width, size.height);

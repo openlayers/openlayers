@@ -618,7 +618,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
     frameState = {
       animate: false,
       backgroundColor: goog.isDef(backgroundColor) ?
-          backgroundColor : new ol.Color(1, 1, 1, 1),
+          backgroundColor : new ol.Color(255, 255, 255, 1),
       coordinateToPixelMatrix: this.coordinateToPixelMatrix_,
       extent: null,
       layersArray: layersArray,
