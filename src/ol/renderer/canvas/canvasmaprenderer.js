@@ -131,9 +131,8 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
     this.canvasSize_ = size;
   }
 
-  // FIXME filling the background doesn't seem to work
   var context = this.context_;
-  context.setTransform(1, 0, 1, 0, 0, 0);
+  context.setTransform(1, 0, 0, 1, 0, 0);
   var backgroundColor = frameState.backgroundColor;
   context.fillStyle = 'rgb(' +
       backgroundColor.r.toFixed(0) + ',' +
