@@ -62,6 +62,22 @@ webglMap.getControls().push(new ol.control.MousePosition({
   undefinedHTML: '&nbsp;'
 }));
 
+var canvasMap = new ol.Map({
+  renderer: ol.RendererHint.CANVAS,
+  target: 'canvasMap'
+});
+if (canvasMap !== null) {
+  canvasMap.bindTo('layers', domMap);
+  canvasMap.bindTo('view', domMap);
+}
+
+canvasMap.getControls().push(new ol.control.MousePosition({
+  coordinateFormat: ol.Coordinate.toStringHDMS,
+  projection: ol.Projection.getFromCode('EPSG:4326'),
+  target: document.getElementById('canvasMousePosition'),
+  undefinedHtml: '&nbsp;'
+}));
+
 var keyboardInteraction = new ol.interaction.Keyboard();
 keyboardInteraction.addCallback('0', function() {
   layer.setBrightness(0);
@@ -94,11 +110,13 @@ keyboardInteraction.addCallback('j', function() {
   var bounce = ol.animation.createBounce(2 * view.getResolution());
   domMap.addPreRenderFunction(bounce);
   webglMap.addPreRenderFunction(bounce);
+  canvasMap.addPreRenderFunction(bounce);
 });
 keyboardInteraction.addCallback('l', function() {
   var panFrom = ol.animation.createPanFrom(view.getCenter());
   domMap.addPreRenderFunction(panFrom);
   webglMap.addPreRenderFunction(panFrom);
+  canvasMap.addPreRenderFunction(panFrom);
   view.setCenter(LONDON);
 });
 keyboardInteraction.addCallback('L', function() {
@@ -111,12 +129,14 @@ keyboardInteraction.addCallback('L', function() {
   var preRenderFunctions = [bounce, panFrom, spin];
   domMap.addPreRenderFunctions(preRenderFunctions);
   webglMap.addPreRenderFunctions(preRenderFunctions);
+  canvasMap.addPreRenderFunctions(preRenderFunctions);
   view.setCenter(LONDON);
 });
 keyboardInteraction.addCallback('m', function() {
   var panFrom = ol.animation.createPanFrom(view.getCenter(), 1000);
   domMap.addPreRenderFunction(panFrom);
   webglMap.addPreRenderFunction(panFrom);
+  canvasMap.addPreRenderFunction(panFrom);
   view.setCenter(MOSCOW);
 });
 keyboardInteraction.addCallback('M', function() {
@@ -129,6 +149,7 @@ keyboardInteraction.addCallback('M', function() {
   var preRenderFunctions = [bounce, panFrom, spin];
   domMap.addPreRenderFunctions(preRenderFunctions);
   webglMap.addPreRenderFunctions(preRenderFunctions);
+  canvasMap.addPreRenderFunctions(preRenderFunctions);
   view.setCenter(MOSCOW);
 });
 keyboardInteraction.addCallback('o', function() {
@@ -154,10 +175,12 @@ keyboardInteraction.addCallback('x', function() {
   var spin = ol.animation.createSpin(2000, 2);
   domMap.addPreRenderFunction(spin);
   webglMap.addPreRenderFunction(spin);
+  canvasMap.addPreRenderFunction(spin);
 });
 keyboardInteraction.addCallback('X', function() {
   var spin = ol.animation.createSpin(2000, -2);
   domMap.addPreRenderFunction(spin);
   webglMap.addPreRenderFunction(spin);
+  canvasMap.addPreRenderFunction(spin);
 });
 domMap.getInteractions().push(keyboardInteraction);
