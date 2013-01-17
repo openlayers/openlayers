@@ -947,8 +947,9 @@ ol.Map.createInteractions_ = function(mapOptions) {
  * @return {Array.<ol.RendererHint>} Renderer hints.
  */
 ol.RendererHints.createFromQueryData = function(opt_queryData) {
-  var queryData = goog.isDef(opt_queryData) ?
-      opt_queryData : new goog.Uri.QueryData(goog.global.location.search);
+  var query = goog.global.location.search.substring(1),
+      queryData = goog.isDef(opt_queryData) ?
+          opt_queryData : new goog.Uri.QueryData(query);
   if (queryData.containsKey('renderers')) {
     return queryData.get('renderers').split(',');
   } else if (queryData.containsKey('renderer')) {
