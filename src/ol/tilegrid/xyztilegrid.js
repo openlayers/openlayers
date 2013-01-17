@@ -25,7 +25,8 @@ ol.tilegrid.XYZ = function(xyzOptions) {
   var resolutions = new Array(xyzOptions.maxZoom + 1);
   var z;
   for (z = 0; z <= xyzOptions.maxZoom; ++z) {
-    resolutions[z] = ol.Projection.EPSG_3857_HALF_SIZE / (128 << z);
+    resolutions[z] =
+        2 * ol.Projection.EPSG_3857_HALF_SIZE / (ol.DEFAULT_TILE_SIZE << z);
   }
 
   goog.base(this, {
@@ -33,7 +34,7 @@ ol.tilegrid.XYZ = function(xyzOptions) {
     origin: new ol.Coordinate(-ol.Projection.EPSG_3857_HALF_SIZE,
                               ol.Projection.EPSG_3857_HALF_SIZE),
     resolutions: resolutions,
-    tileSize: new ol.Size(256, 256)
+    tileSize: new ol.Size(ol.DEFAULT_TILE_SIZE, ol.DEFAULT_TILE_SIZE)
   });
 
 };
