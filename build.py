@@ -192,13 +192,13 @@ def build_lint_src_timestamp(t):
     limited_doc_files = [path
                          for path in ifind('externs', 'build/src/external/externs')
                          if path.endswith('.js')]
-    t.run('%(GJSLINT)s', '--strict', '--limited_doc_files=%s' % (','.join(limited_doc_files),), SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC)
+    t.run('%(GJSLINT)s', '--strict', '--limited_doc_files=%s' % (','.join(limited_doc_files),), t.newer(SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC))
     t.touch()
 
 
 @target('build/lint-spec-timestamp', SPEC)
 def build_lint_spec_timestamp(t):
-    t.run('%(GJSLINT)s', SPEC)
+    t.run('%(GJSLINT)s', t.newer(SPEC))
     t.touch()
 
 
