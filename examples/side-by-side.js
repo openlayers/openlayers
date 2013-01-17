@@ -113,7 +113,8 @@ keyboardInteraction.addCallback('j', function() {
   canvasMap.addPreRenderFunction(bounce);
 });
 keyboardInteraction.addCallback('l', function() {
-  var panFrom = ol.animation.createPanFrom(view.getCenter());
+  var panFrom = ol.animation.createPanFrom(
+      view.getCenter(), undefined, undefined, ol.easing.elastic);
   domMap.addPreRenderFunction(panFrom);
   webglMap.addPreRenderFunction(panFrom);
   canvasMap.addPreRenderFunction(panFrom);
@@ -133,7 +134,8 @@ keyboardInteraction.addCallback('L', function() {
   view.setCenter(LONDON);
 });
 keyboardInteraction.addCallback('m', function() {
-  var panFrom = ol.animation.createPanFrom(view.getCenter(), 1000);
+  var panFrom = ol.animation.createPanFrom(
+      view.getCenter(), 1000, undefined, ol.easing.bounce);
   domMap.addPreRenderFunction(panFrom);
   webglMap.addPreRenderFunction(panFrom);
   canvasMap.addPreRenderFunction(panFrom);
