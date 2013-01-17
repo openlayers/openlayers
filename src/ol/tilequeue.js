@@ -1,12 +1,23 @@
 goog.provide('ol.TilePriorityFunction');
 goog.provide('ol.TileQueue');
 
+goog.require('goog.array');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('goog.structs.PriorityQueue');
 goog.require('ol.Coordinate');
 goog.require('ol.Tile');
 goog.require('ol.TileState');
+
+
+/**
+ * Tile Queue.
+ *
+ * The implementation is inspired from the Closure Library's Heap
+ * class and Python's heapq module.
+ *
+ * http://closure-library.googlecode.com/svn/docs/closure_goog_structs_heap.js.source.html
+ * http://hg.python.org/cpython/file/2.7/Lib/heapq.py
+ */
 
 
 /**
@@ -43,9 +54,9 @@ ol.TileQueue = function(tilePriorityFunction) {
 
   /**
    * @private
-   * @type {goog.structs.PriorityQueue}
+   * @type {Array.<Array.<*>>}
    */
-  this.queue_ = new goog.structs.PriorityQueue();
+  this.heap_ = [];
 
   /**
    * @private
@@ -57,12 +68,44 @@ ol.TileQueue = function(tilePriorityFunction) {
 
 
 /**
+ * FIXME empty description for jsdoc
+ */
+ol.TileQueue.prototype.clear = function() {
+  goog.array.clear(this.heap_);
+};
+
+
+/**
+ * Remove and return the highest-priority tile. O(logn).
+ * @private
+ * @return {ol.Tile|undefined} Tile.
+ */
+ol.TileQueue.prototype.dequeue_ = function() {
+  var heap = this.heap_;
+  var count = heap.length;
+  if (count <= 0) {
+    return undefined;
+  }
+  var tile = /** @type {ol.Tile} */ (heap[0][1]);
+  if (count == 1) {
+    goog.array.clear(heap);
+  } else {
+    heap[0] = heap.pop();
+    this.siftUp_(0);
+  }
+  var tileKey = tile.getKey();
+  delete this.queuedTileKeys_[tileKey];
+  return tile;
+};
+
+
+/**
+ * Enqueue a tile. O(logn).
  * @param {ol.Tile} tile Tile.
  * @param {ol.Coordinate} tileCenter Tile center.
  * @param {number} tileResolution Tile resolution.
  */
-ol.TileQueue.prototype.enqueue =
-    function(tile, tileCenter, tileResolution) {
+ol.TileQueue.prototype.enqueue = function(tile, tileCenter, tileResolution) {
   if (tile.getState() != ol.TileState.IDLE) {
     return;
   }
@@ -70,8 +113,9 @@ ol.TileQueue.prototype.enqueue =
   if (!(tileKey in this.queuedTileKeys_)) {
     var priority = this.tilePriorityFunction_(tile, tileCenter, tileResolution);
     if (goog.isDef(priority)) {
-      this.queue_.enqueue(priority, arguments);
+      this.heap_.push([priority, tile, tileCenter, tileResolution]);
       this.queuedTileKeys_[tileKey] = true;
+      this.siftDown_(0, this.heap_.length - 1);
     } else {
       // FIXME fire drop event?
     }
@@ -88,14 +132,56 @@ ol.TileQueue.prototype.handleTileChange = function() {
 
 
 /**
+ * Gets the index of the left child of the node at the given index.
+ * @param {number} index The index of the node to get the left child for.
+ * @return {number} The index of the left child.
+ * @private
+ */
+ol.TileQueue.prototype.getLeftChildIndex_ = function(index) {
+  return index * 2 + 1;
+};
+
+
+/**
+ * Gets the index of the right child of the node at the given index.
+ * @param {number} index The index of the node to get the right child for.
+ * @return {number} The index of the right child.
+ * @private
+ */
+ol.TileQueue.prototype.getRightChildIndex_ = function(index) {
+  return index * 2 + 2;
+};
+
+
+/**
+ * Gets the index of the parent of the node at the given index.
+ * @param {number} index The index of the node to get the parent for.
+ * @return {number} The index of the parent.
+ * @private
+ */
+ol.TileQueue.prototype.getParentIndex_ = function(index) {
+  return (index - 1) >> 1;
+};
+
+
+/**
+ * Make _heap a heap. O(n).
+ * @private
+ */
+ol.TileQueue.prototype.heapify_ = function() {
+  for (var i = (this.heap_.length >> 1) - 1; i >= 0; i--) {
+    this.siftUp_(i);
+  }
+};
+
+
+/**
  * FIXME empty description for jsdoc
  */
 ol.TileQueue.prototype.loadMoreTiles = function() {
-  var tile, tileKey;
-  while (!this.queue_.isEmpty() && this.tilesLoading_ < this.maxTilesLoading_) {
-    tile = (/** @type {Array} */ (this.queue_.dequeue()))[0];
-    tileKey = tile.getKey();
-    delete this.queuedTileKeys_[tileKey];
+  var tile;
+  while (this.heap_.length > 0 && this.tilesLoading_ < this.maxTilesLoading_) {
+    tile = /** @type {ol.Tile} */ (this.dequeue_());
     goog.events.listen(tile, goog.events.EventType.CHANGE,
         this.handleTileChange, false, this);
     tile.load();
@@ -105,16 +191,72 @@ ol.TileQueue.prototype.loadMoreTiles = function() {
 
 
 /**
+ * @param {number} index The index of the node to move down.
+ * @private
+ */
+ol.TileQueue.prototype.siftUp_ = function(index) {
+  var heap = this.heap_;
+  var count = heap.length;
+  var node = heap[index];
+  var startIndex = index;
+
+  while (index < (count >> 1)) {
+    var lIndex = this.getLeftChildIndex_(index);
+    var rIndex = this.getRightChildIndex_(index);
+
+    var smallerChildIndex = rIndex < count &&
+        heap[rIndex][0] < heap[lIndex][0] ?
+        rIndex : lIndex;
+
+    heap[index] = heap[smallerChildIndex];
+    index = smallerChildIndex;
+  }
+
+  heap[index] = node;
+  this.siftDown_(startIndex, index);
+};
+
+
+/**
+ * @param {number} startIndex The index of the root.
+ * @param {number} index The index of the node to move up.
+ * @private
+ */
+ol.TileQueue.prototype.siftDown_ = function(startIndex, index) {
+  var heap = this.heap_;
+  var node = heap[index];
+
+  while (index > startIndex) {
+    var parentIndex = this.getParentIndex_(index);
+    if (heap[parentIndex][0] > node[0]) {
+      heap[index] = heap[parentIndex];
+      index = parentIndex;
+    } else {
+      break;
+    }
+  }
+  heap[index] = node;
+};
+
+
+/**
  * FIXME empty description for jsdoc
  */
 ol.TileQueue.prototype.reprioritize = function() {
-  if (!this.queue_.isEmpty()) {
-    var values = /** @type {Array.<Array>} */ (this.queue_.getValues());
-    this.queue_.clear();
-    this.queuedTileKeys_ = {};
-    var i;
-    for (i = 0; i < values.length; ++i) {
-      this.enqueue.apply(this, values[i]);
+  var heap = this.heap_;
+  var count = heap.length;
+  var i, priority, node, tile, tileCenter, tileResolution;
+  for (i = count - 1; i >= 0; i--) {
+    node = heap[i];
+    tile = /** @type {ol.Tile} */ (node[1]);
+    tileCenter = /** @type {ol.Coordinate} */ (node[2]);
+    tileResolution = /** @type {number} */ (node[3]);
+    priority = this.tilePriorityFunction_(tile, tileCenter, tileResolution);
+    if (goog.isDef(priority)) {
+      node[0] = priority;
+    } else {
+      goog.array.removeAt(heap, i);
     }
   }
+  this.heapify_();
 };
