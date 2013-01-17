@@ -3,6 +3,7 @@ goog.provide('ol.renderer.Layer');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.Object');
+goog.require('ol.TileRange');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.LayerProperty');
 
@@ -125,3 +126,28 @@ ol.renderer.Layer.prototype.handleLayerSaturationChange = goog.nullFunction;
  * @protected
  */
 ol.renderer.Layer.prototype.handleLayerVisibleChange = goog.nullFunction;
+
+
+/**
+ * @protected
+ * @param {Object.<string, Object.<string, ol.TileRange>>} tileUsage Tile usage.
+ * @param {ol.source.Source} source Source.
+ * @param {number} z Z.
+ * @param {ol.TileRange} tileRange Tile range.
+ */
+ol.renderer.Layer.prototype.updateTileUsage =
+    function(tileUsage, source, z, tileRange) {
+  // FIXME should we use tilesToDrawByZ instead?
+  var sourceKey = goog.getUid(source).toString();
+  var zKey = z.toString();
+  if (sourceKey in tileUsage) {
+    if (z in tileUsage[sourceKey]) {
+      tileUsage[sourceKey][zKey].extend(tileRange);
+    } else {
+      tileUsage[sourceKey][zKey] = tileRange;
+    }
+  } else {
+    tileUsage[sourceKey] = {};
+    tileUsage[sourceKey][zKey] = tileRange;
+  }
+};

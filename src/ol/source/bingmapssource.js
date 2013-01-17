@@ -5,7 +5,7 @@ goog.require('goog.Uri');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.net.Jsonp');
-goog.require('ol.TileCoverageArea');
+goog.require('ol.TileRange');
 goog.require('ol.source.ImageTileSource');
 goog.require('ol.tilegrid.XYZ');
 
@@ -118,21 +118,35 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
                 };
               })));
 
-  var projection = ol.Projection.getFromCode('EPSG:4326');
+  var transform = ol.Projection.getTransform(
+      ol.Projection.getFromCode('EPSG:4326'), this.getProjection());
   var attributions = goog.array.map(
       resource.imageryProviders,
       function(imageryProvider) {
         var html = imageryProvider.attribution;
-        var coverageAreas = goog.array.map(
+        /** @type {Object.<string, Array.<ol.TileRange>>} */
+        var tileRanges = {};
+        goog.array.forEach(
             imageryProvider.coverageAreas,
             function(coverageArea) {
-              var bbox = coverageArea.bbox;
-              var extent = new ol.Extent(bbox[1], bbox[0], bbox[3], bbox[2]);
               var minZ = coverageArea.zoomMin;
               var maxZ = coverageArea.zoomMax;
-              return new ol.TileCoverageArea(tileGrid, extent, minZ, maxZ);
+              var bbox = coverageArea.bbox;
+              var epsg4326Extent =
+                  new ol.Extent(bbox[1], bbox[0], bbox[3], bbox[2]);
+              var extent = epsg4326Extent.transform(transform);
+              var tileRange, z, zKey;
+              for (z = minZ; z <= maxZ; ++z) {
+                zKey = z.toString();
+                tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
+                if (zKey in tileRanges) {
+                  tileRanges[zKey].push(tileRange);
+                } else {
+                  tileRanges[zKey] = [tileRange];
+                }
+              }
             });
-        return new ol.Attribution(html, coverageAreas, projection);
+        return new ol.Attribution(html, tileRanges);
       });
   this.setAttributions(attributions);
 
