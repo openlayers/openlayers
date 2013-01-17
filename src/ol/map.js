@@ -54,10 +54,18 @@ goog.require('ol.interaction.MouseWheelZoom');
 goog.require('ol.interaction.condition');
 goog.require('ol.renderer.Layer');
 goog.require('ol.renderer.Map');
+goog.require('ol.renderer.canvas');
+goog.require('ol.renderer.canvas.Map');
 goog.require('ol.renderer.dom');
 goog.require('ol.renderer.dom.Map');
 goog.require('ol.renderer.webgl');
 goog.require('ol.renderer.webgl.Map');
+
+
+/**
+ * @define {boolean} Whether to enable canvas.
+ */
+ol.ENABLE_CANVAS = true;
 
 
 /**
@@ -76,6 +84,7 @@ ol.ENABLE_WEBGL = true;
  * @enum {string}
  */
 ol.RendererHint = {
+  CANVAS: 'canvas',
   DOM: 'dom',
   WEBGL: 'webgl'
 };
@@ -86,6 +95,7 @@ ol.RendererHint = {
  */
 ol.DEFAULT_RENDERER_HINTS = [
   ol.RendererHint.WEBGL,
+  ol.RendererHint.CANVAS,
   ol.RendererHint.DOM
 ];
 
@@ -795,7 +805,12 @@ ol.Map.createOptionsInternal = function(mapOptions) {
   var i, rendererHint;
   for (i = 0; i < rendererHints.length; ++i) {
     rendererHint = rendererHints[i];
-    if (rendererHint == ol.RendererHint.DOM) {
+    if (rendererHint == ol.RendererHint.CANVAS) {
+      if (ol.ENABLE_CANVAS && ol.renderer.canvas.isSupported()) {
+        rendererConstructor = ol.renderer.canvas.Map;
+        break;
+      }
+    } else if (rendererHint == ol.RendererHint.DOM) {
       if (ol.ENABLE_DOM && ol.renderer.dom.isSupported()) {
         rendererConstructor = ol.renderer.dom.Map;
         break;

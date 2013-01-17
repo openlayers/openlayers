@@ -3,6 +3,7 @@
 @exportProperty ol.Map.prototype.getInteractions
 
 @exportSymbol ol.RendererHint
+@exportProperty ol.RendererHint.CANVAS
 @exportProperty ol.RendererHint.DOM
 @exportProperty ol.RendererHint.WEBGL
 
