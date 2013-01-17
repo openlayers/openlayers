@@ -1,10 +1,10 @@
 // FIXME works for View2D only
+// FIXME dependency on ol.View2D suppressed to prevent dependency loop
 
 goog.provide('ol.animation');
 
 goog.require('goog.fx.easing');
 goog.require('ol.PreRenderFunction');
-goog.require('ol.View2D');
 goog.require('ol.easing');
 
 

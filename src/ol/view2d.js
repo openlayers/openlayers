@@ -12,6 +12,7 @@ goog.require('ol.Projection');
 goog.require('ol.ResolutionConstraint');
 goog.require('ol.RotationConstraint');
 goog.require('ol.View');
+goog.require('ol.animation');
 
 
 /**
@@ -289,9 +290,16 @@ ol.View2D.prototype.zoom_ = function(map, resolution, opt_anchor) {
  * @param {ol.Map} map Map.
  * @param {number} delta Delta from previous zoom level.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
+ * @param {number=} opt_duration Duration.
  */
-ol.View2D.prototype.zoom = function(map, delta, opt_anchor) {
-  var resolution = this.constraints_.resolution(this.getResolution(), delta);
+ol.View2D.prototype.zoom = function(map, delta, opt_anchor, opt_duration) {
+  var currentResolution = this.getResolution();
+  if (goog.isDef(currentResolution) && goog.isDef(opt_duration)) {
+    map.requestRenderFrame();
+    map.addPreRenderFunction(ol.animation.createZoomFrom(
+        currentResolution, opt_duration));
+  }
+  var resolution = this.constraints_.resolution(currentResolution, delta);
   this.zoom_(map, resolution, opt_anchor);
 };
 
