@@ -74,15 +74,6 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
 /**
  * @inheritDoc
  */
-ol.renderer.dom.Map.prototype.removeLayer = function(layer) {
-  goog.base(this, 'removeLayer', layer);
-  this.getMap().render();
-};
-
-
-/**
- * @inheritDoc
- */
 ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
 
   if (goog.isNull(frameState)) {
