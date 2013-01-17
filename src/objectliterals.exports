@@ -51,6 +51,10 @@
 @exportObjectLiteralProperty ol.source.BingMapsOptions.key string
 @exportObjectLiteralProperty ol.source.BingMapsOptions.style ol.BingMapsStyle
 
+@exportObjectLiteral ol.source.StamenOptions
+@exportObjectLiteralProperty ol.source.StamenOptions.flavor string|undefined
+@exportObjectLiteralProperty ol.source.StamenOptions.provider string
+
 @exportObjectLiteral ol.source.TiledWMSOptions
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.attributions Array.<ol.Attribution>|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.params Object
