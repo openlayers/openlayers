@@ -5,14 +5,12 @@ goog.require('ol.Projection');
 goog.require('ol.RendererHint');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.source.DebugTileSource');
-goog.require('ol.source.Stamen');
+goog.require('ol.source.OpenStreetMap');
 
 
 var layers = new ol.Collection([
   new ol.layer.TileLayer({
-    source: new ol.source.Stamen({
-      provider: ol.source.StamenProvider.WATERCOLOR
-    })
+    source: new ol.source.OpenStreetMap()
   }),
   new ol.layer.TileLayer({
     source: new ol.source.DebugTileSource({
