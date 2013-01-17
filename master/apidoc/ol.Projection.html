@@ -237,7 +237,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 447</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 476</li></ul></dd>
 	
     
     
@@ -283,7 +283,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 440</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 469</li></ul></dd>
 	
     
     
@@ -329,7 +329,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 409</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 434</li></ul></dd>
 	
     
     
@@ -351,6 +351,10 @@
     
 </dt>
 <dd class="">
+    
+    <div class="description">
+        Projections equal to EPSG:4326.
+    </div>
     
     
     
@@ -375,7 +379,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 504</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 542</li></ul></dd>
 	
     
     
@@ -482,7 +486,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 171</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 179</li></ul></dd>
 	
     
     
@@ -589,7 +593,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 182</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 190</li></ul></dd>
 	
     
     
@@ -696,7 +700,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 195</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 203</li></ul></dd>
 	
     
     
@@ -725,6 +729,11 @@
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Registers a conversion function to convert coordinates from the source
+projection to the destination projection.
+    </div>
     
 
     
@@ -849,7 +858,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 224</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 235</li></ul></dd>
 	
     
     
@@ -956,7 +965,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 374</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 397</li></ul></dd>
 	
     
     
@@ -976,7 +985,7 @@
     
             
 <div class="param-desc">
-    Point.
+    Equal point (different reference).
 </div>
 
 
@@ -1114,7 +1123,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 207</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 215</li></ul></dd>
 	
     
     
@@ -1165,6 +1174,12 @@
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Checks if two projections are the same, that is every coordinate in one
+projection does represent the same geographic point as the same coordinate in
+the other projection.
+    </div>
     
 
     
@@ -1266,7 +1281,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 277</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 293</li></ul></dd>
 	
     
     
@@ -1317,6 +1332,10 @@
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Transformation from EPSG:4326 to EPSG:3857.
+    </div>
     
 
     
@@ -1395,7 +1414,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 416</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 443</li></ul></dd>
 	
     
     
@@ -1494,7 +1513,8 @@
             
             
             
-            <td class="description last">Code.</td>
+            <td class="description last">Code which is a combination of authority and identifier
+  such as “EPSG:4326”.</td>
         </tr>
 	
 	
@@ -1524,7 +1544,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 242</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 254</li></ul></dd>
 	
     
     
@@ -1575,6 +1595,11 @@
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Searches a function that can be used to convert coordinates from the source
+projection to the destination projection.
+    </div>
     
 
     
@@ -1676,7 +1701,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 294</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 313</li></ul></dd>
 	
     
     
@@ -1727,6 +1752,12 @@
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Given the projection codes this method searches for a transformation function
+to convert coordinate from the source projection to the destination
+projection.
+    </div>
     
 
     
@@ -1828,7 +1859,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 346</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 369</li></ul></dd>
 	
     
     
@@ -1957,7 +1988,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 365</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 388</li></ul></dd>
 	
     
     
@@ -1977,7 +2008,7 @@
     
             
 <div class="param-desc">
-    Point.
+    Unaltered point (same reference).
 </div>
 
 
@@ -2008,6 +2039,10 @@
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Transformation from EPSG:3857 to EPSG:4326.
+    </div>
     
 
     
@@ -2086,7 +2121,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 428</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 457</li></ul></dd>
 	
     
     
@@ -2167,7 +2202,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 356</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 379</li></ul></dd>
 	
     
     
@@ -2187,7 +2222,7 @@
     
             
 <div class="param-desc">
-    Has Proj4js.
+    True if Proj4js is available and enabled.
 </div>
 
 
@@ -2218,6 +2253,10 @@
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Transforms the given point to the destination projection.
+    </div>
     
 
     
@@ -2342,7 +2381,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 385</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 410</li></ul></dd>
 	
     
     
@@ -2517,7 +2556,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 397</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>projection.js, line 422</li></ul></dd>
 	
     
     
@@ -2818,13 +2857,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="ol.Attribution.html">ol.Attribution</a></li><li><a href="ol.Collection.html">ol.Collection</a></li><li><a href="ol.CollectionEvent.html">ol.CollectionEvent</a></li><li><a href="ol.Color.html">ol.Color</a></li><li><a href="ol.Constraints.html">ol.Constraints</a></li><li><a href="ol.Coordinate.html">ol.Coordinate</a></li><li><a href="ol.CoverageArea.html">ol.CoverageArea</a></li><li><a href="ol.Extent.html">ol.Extent</a></li><li><a href="ol.Map.html">ol.Map</a></li><li><a href="ol.MapBrowserEvent.html">ol.MapBrowserEvent</a></li><li><a href="ol.MapBrowserEventHandler.html">ol.MapBrowserEventHandler</a></li><li><a href="ol.MapEvent.html">ol.MapEvent</a></li><li><a href="ol.Object.html">ol.Object</a></li><li><a href="ol.Pixel.html">ol.Pixel</a></li><li><a href="ol.PixelBounds.html">ol.PixelBounds</a></li><li><a href="ol.Proj4jsProjection.html">ol.Proj4jsProjection</a></li><li><a href="ol.Projection.html">ol.Projection</a></li><li><a href="ol.Rectangle.html">ol.Rectangle</a></li><li><a href="ol.Size.html">ol.Size</a></li><li><a href="ol.Tile.html">ol.Tile</a></li><li><a href="ol.TileCoord.html">ol.TileCoord</a></li><li><a href="ol.TileCoverageArea.html">ol.TileCoverageArea</a></li><li><a href="ol.TileRange.html">ol.TileRange</a></li><li><a href="ol.control.Attribution.html">ol.control.Attribution</a></li><li><a href="ol.control.Control.html">ol.control.Control</a></li><li><a href="ol.control.DragBox.html">ol.control.DragBox</a></li><li><a href="ol.control.MousePosition.html">ol.control.MousePosition</a></li><li><a href="ol.control.Zoom.html">ol.control.Zoom</a></li><li><a href="ol.interaction.DblClickZoom.html">ol.interaction.DblClickZoom</a></li><li><a href="ol.interaction.Drag.html">ol.interaction.Drag</a></li><li><a href="ol.interaction.DragPan.html">ol.interaction.DragPan</a></li><li><a href="ol.interaction.DragRotate.html">ol.interaction.DragRotate</a></li><li><a href="ol.interaction.DragRotateAndZoom.html">ol.interaction.DragRotateAndZoom</a></li><li><a href="ol.interaction.DragZoom.html">ol.interaction.DragZoom</a></li><li><a href="ol.interaction.Interaction.html">ol.interaction.Interaction</a></li><li><a href="ol.interaction.Keyboard.html">ol.interaction.Keyboard</a></li><li><a href="ol.interaction.KeyboardPan.html">ol.interaction.KeyboardPan</a></li><li><a href="ol.interaction.KeyboardZoom.html">ol.interaction.KeyboardZoom</a></li><li><a href="ol.interaction.MouseWheelZoom.html">ol.interaction.MouseWheelZoom</a></li><li><a href="ol.layer.Layer.html">ol.layer.Layer</a></li><li><a href="ol.layer.TileLayer.html">ol.layer.TileLayer</a></li><li><a href="ol.overlay.Overlay.html">ol.overlay.Overlay</a></li><li><a href="ol.renderer.Layer.html">ol.renderer.Layer</a></li><li><a href="ol.renderer.Map.html">ol.renderer.Map</a></li><li><a href="ol.renderer.dom.Layer.html">ol.renderer.dom.Layer</a></li><li><a href="ol.renderer.dom.Map.html">ol.renderer.dom.Map</a></li><li><a href="ol.renderer.dom.TileLayer.html">ol.renderer.dom.TileLayer</a></li><li><a href="ol.renderer.webgl.FragmentShader.html">ol.renderer.webgl.FragmentShader</a></li><li><a href="ol.renderer.webgl.Layer.html">ol.renderer.webgl.Layer</a></li><li><a href="ol.renderer.webgl.Map.html">ol.renderer.webgl.Map</a></li><li><a href="ol.renderer.webgl.Shader.html">ol.renderer.webgl.Shader</a></li><li><a href="ol.renderer.webgl.TileLayer.html">ol.renderer.webgl.TileLayer</a></li><li><a href="ol.renderer.webgl.VertexShader.html">ol.renderer.webgl.VertexShader</a></li><li><a href="ol.renderer.webgl.map.shader.Fragment.html">ol.renderer.webgl.map.shader.Fragment</a></li><li><a href="ol.renderer.webgl.map.shader.Vertex.html">ol.renderer.webgl.map.shader.Vertex</a></li><li><a href="ol.renderer.webgl.tilelayerrenderer.shader.Fragment.html">ol.renderer.webgl.tilelayerrenderer.shader.Fragment</a></li><li><a href="ol.renderer.webgl.tilelayerrenderer.shader.Vertex.html">ol.renderer.webgl.tilelayerrenderer.shader.Vertex</a></li><li><a href="ol.source.BingMaps.html">ol.source.BingMaps</a></li><li><a href="ol.source.MapQuestOSM.html">ol.source.MapQuestOSM</a></li><li><a href="ol.source.MapQuestOpenAerial.html">ol.source.MapQuestOpenAerial</a></li><li><a href="ol.source.OpenStreetMap.html">ol.source.OpenStreetMap</a></li><li><a href="ol.source.Source.html">ol.source.Source</a></li><li><a href="ol.source.Stamen.html">ol.source.Stamen</a></li><li><a href="ol.source.TileJSON.html">ol.source.TileJSON</a></li><li><a href="ol.source.TileSource.html">ol.source.TileSource</a></li><li><a href="ol.source.TiledWMS.html">ol.source.TiledWMS</a></li><li><a href="ol.source.XYZ.html">ol.source.XYZ</a></li><li><a href="ol.tilegrid.TileGrid.html">ol.tilegrid.TileGrid</a></li><li><a href="ol.tilegrid.XYZ.html">ol.tilegrid.XYZ</a></li></ul><h3>Global</h3><ul><li><a href="global.html#grid">grid</a></li><li><a href="global.html#{number}">{number}</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="ol.Attribution.html">ol.Attribution</a></li><li><a href="ol.Collection.html">ol.Collection</a></li><li><a href="ol.CollectionEvent.html">ol.CollectionEvent</a></li><li><a href="ol.Color.html">ol.Color</a></li><li><a href="ol.Constraints.html">ol.Constraints</a></li><li><a href="ol.Coordinate.html">ol.Coordinate</a></li><li><a href="ol.Extent.html">ol.Extent</a></li><li><a href="ol.ImageTile.html">ol.ImageTile</a></li><li><a href="ol.Map.html">ol.Map</a></li><li><a href="ol.MapBrowserEvent.html">ol.MapBrowserEvent</a></li><li><a href="ol.MapBrowserEventHandler.html">ol.MapBrowserEventHandler</a></li><li><a href="ol.MapEvent.html">ol.MapEvent</a></li><li><a href="ol.Object.html">ol.Object</a></li><li><a href="ol.Pixel.html">ol.Pixel</a></li><li><a href="ol.PixelBounds.html">ol.PixelBounds</a></li><li><a href="ol.Proj4jsProjection.html">ol.Proj4jsProjection</a></li><li><a href="ol.Projection.html">ol.Projection</a></li><li><a href="ol.Rectangle.html">ol.Rectangle</a></li><li><a href="ol.Size.html">ol.Size</a></li><li><a href="ol.Tile.html">ol.Tile</a></li><li><a href="ol.TileCoord.html">ol.TileCoord</a></li><li><a href="ol.TileQueue.html">ol.TileQueue</a></li><li><a href="ol.TileRange.html">ol.TileRange</a></li><li><a href="ol.View.html">ol.View</a></li><li><a href="ol.View2D.html">ol.View2D</a></li><li><a href="ol.control.Attribution.html">ol.control.Attribution</a></li><li><a href="ol.control.Control.html">ol.control.Control</a></li><li><a href="ol.control.DragBox.html">ol.control.DragBox</a></li><li><a href="ol.control.MousePosition.html">ol.control.MousePosition</a></li><li><a href="ol.control.Zoom.html">ol.control.Zoom</a></li><li><a href="ol.interaction.DblClickZoom.html">ol.interaction.DblClickZoom</a></li><li><a href="ol.interaction.Drag.html">ol.interaction.Drag</a></li><li><a href="ol.interaction.DragPan.html">ol.interaction.DragPan</a></li><li><a href="ol.interaction.DragRotate.html">ol.interaction.DragRotate</a></li><li><a href="ol.interaction.DragRotateAndZoom.html">ol.interaction.DragRotateAndZoom</a></li><li><a href="ol.interaction.DragZoom.html">ol.interaction.DragZoom</a></li><li><a href="ol.interaction.Interaction.html">ol.interaction.Interaction</a></li><li><a href="ol.interaction.Keyboard.html">ol.interaction.Keyboard</a></li><li><a href="ol.interaction.KeyboardPan.html">ol.interaction.KeyboardPan</a></li><li><a href="ol.interaction.KeyboardZoom.html">ol.interaction.KeyboardZoom</a></li><li><a href="ol.interaction.MouseWheelZoom.html">ol.interaction.MouseWheelZoom</a></li><li><a href="ol.layer.Layer.html">ol.layer.Layer</a></li><li><a href="ol.layer.TileLayer.html">ol.layer.TileLayer</a></li><li><a href="ol.overlay.Overlay.html">ol.overlay.Overlay</a></li><li><a href="ol.renderer.Layer.html">ol.renderer.Layer</a></li><li><a href="ol.renderer.Map.html">ol.renderer.Map</a></li><li><a href="ol.renderer.canvas.Layer.html">ol.renderer.canvas.Layer</a></li><li><a href="ol.renderer.canvas.Map.html">ol.renderer.canvas.Map</a></li><li><a href="ol.renderer.canvas.TileLayer.html">ol.renderer.canvas.TileLayer</a></li><li><a href="ol.renderer.dom.Layer.html">ol.renderer.dom.Layer</a></li><li><a href="ol.renderer.dom.Map.html">ol.renderer.dom.Map</a></li><li><a href="ol.renderer.dom.TileLayer.html">ol.renderer.dom.TileLayer</a></li><li><a href="ol.renderer.webgl.FragmentShader.html">ol.renderer.webgl.FragmentShader</a></li><li><a href="ol.renderer.webgl.Layer.html">ol.renderer.webgl.Layer</a></li><li><a href="ol.renderer.webgl.Map.html">ol.renderer.webgl.Map</a></li><li><a href="ol.renderer.webgl.Shader.html">ol.renderer.webgl.Shader</a></li><li><a href="ol.renderer.webgl.TileLayer.html">ol.renderer.webgl.TileLayer</a></li><li><a href="ol.renderer.webgl.VertexShader.html">ol.renderer.webgl.VertexShader</a></li><li><a href="ol.renderer.webgl.map.shader.Fragment.html">ol.renderer.webgl.map.shader.Fragment</a></li><li><a href="ol.renderer.webgl.map.shader.Vertex.html">ol.renderer.webgl.map.shader.Vertex</a></li><li><a href="ol.renderer.webgl.tilelayerrenderer.shader.Fragment.html">ol.renderer.webgl.tilelayerrenderer.shader.Fragment</a></li><li><a href="ol.renderer.webgl.tilelayerrenderer.shader.Vertex.html">ol.renderer.webgl.tilelayerrenderer.shader.Vertex</a></li><li><a href="ol.source.BingMaps.html">ol.source.BingMaps</a></li><li><a href="ol.source.DebugTileSource.html">ol.source.DebugTileSource</a></li><li><a href="ol.source.ImageTileSource.html">ol.source.ImageTileSource</a></li><li><a href="ol.source.MapQuestOSM.html">ol.source.MapQuestOSM</a></li><li><a href="ol.source.MapQuestOpenAerial.html">ol.source.MapQuestOpenAerial</a></li><li><a href="ol.source.OpenStreetMap.html">ol.source.OpenStreetMap</a></li><li><a href="ol.source.Source.html">ol.source.Source</a></li><li><a href="ol.source.Stamen.html">ol.source.Stamen</a></li><li><a href="ol.source.TileJSON.html">ol.source.TileJSON</a></li><li><a href="ol.source.TileSource.html">ol.source.TileSource</a></li><li><a href="ol.source.TiledWMS.html">ol.source.TiledWMS</a></li><li><a href="ol.source.XYZ.html">ol.source.XYZ</a></li><li><a href="ol.tilegrid.TileGrid.html">ol.tilegrid.TileGrid</a></li><li><a href="ol.tilegrid.XYZ.html">ol.tilegrid.XYZ</a></li></ul><h3>Global</h3><ul><li><a href="global.html#grid">grid</a></li><li><a href="global.html#{number}">{number}</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> on Wed Nov 14 2012 21:15:16 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> on Thu Jan 17 2013 23:02:41 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

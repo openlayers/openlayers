@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>OpenLayers: Class: ol.renderer.Layer</title>
+    <title>OpenLayers: Class: ol.View</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Class: ol.renderer.Layer</h1>
+    <h1 class="page-title">Class: ol.View</h1>
     
     
 
@@ -27,7 +27,7 @@
     
 <header>
     <h2>
-    ol.renderer.Layer
+    ol.View
     </h2>
     
 </header>  
@@ -39,7 +39,7 @@
     
         
 <dt>
-    <h4 class="name" id="Layer"><span class="type-signature"></span>new Layer</h4>
+    <h4 class="name" id="View"><span class="type-signature"></span>new View</h4>
     
     
 </dt>
@@ -51,77 +51,6 @@
     
     
     
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>mapRenderer</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type"><a href="ol.renderer.Map.html">ol.renderer.Map</a></span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Map renderer.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>layer</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type"><a href="ol.layer.Layer.html">ol.layer.Layer</a></span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Layer.</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
     
     
     
@@ -146,7 +75,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>layerrenderer.js, line 18</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>view.js, line 25</li></ul></dd>
 	
     
     
@@ -241,12 +170,12 @@
 
         
             
-<dt class="protected">
-    <h4 class="name" id="handleLayerBrightnessChange"><span class="type-signature">&lt;protected> </span>handleLayerBrightnessChange<span class="type-signature"></span></h4>
+<dt class="">
+    <h4 class="name" id="getView2D"><span class="type-signature"></span>getView2D<span class="type-signature"></span></h4>
     
     
 </dt>
-<dd class="protected">
+<dd class="">
     
     
     
@@ -271,7 +200,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>layerrenderer.js, line 92</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>view.js, line 48</li></ul></dd>
 	
     
     
@@ -287,12 +216,12 @@
 
         
             
-<dt class="protected">
-    <h4 class="name" id="handleLayerContrastChange"><span class="type-signature">&lt;protected> </span>handleLayerContrastChange<span class="type-signature"></span></h4>
+<dt class="">
+    <h4 class="name" id="getView3D"><span class="type-signature"></span>getView3D<span class="type-signature"></span></h4>
     
     
 </dt>
-<dd class="protected">
+<dd class="">
     
     
     
@@ -317,237 +246,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>layerrenderer.js, line 98</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt class="protected">
-    <h4 class="name" id="handleLayerHueChange"><span class="type-signature">&lt;protected> </span>handleLayerHueChange<span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd class="protected">
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>layerrenderer.js, line 104</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt class="protected">
-    <h4 class="name" id="handleLayerLoad"><span class="type-signature">&lt;protected> </span>handleLayerLoad<span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd class="protected">
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>layerrenderer.js, line 110</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt class="protected">
-    <h4 class="name" id="handleLayerOpacityChange"><span class="type-signature">&lt;protected> </span>handleLayerOpacityChange<span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd class="protected">
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>layerrenderer.js, line 116</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt class="protected">
-    <h4 class="name" id="handleLayerSaturationChange"><span class="type-signature">&lt;protected> </span>handleLayerSaturationChange<span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd class="protected">
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>layerrenderer.js, line 122</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt class="protected">
-    <h4 class="name" id="handleLayerVisibleChange"><span class="type-signature">&lt;protected> </span>handleLayerVisibleChange<span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd class="protected">
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>layerrenderer.js, line 128</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>view.js, line 54</li></ul></dd>
 	
     
     
@@ -966,7 +665,7 @@
         
             
 <dt>
-    <h4 class="name" id="getLayer"><span class="type-signature"></span>getLayer</h4>
+    <h4 class="name" id="getHints"><span class="type-signature"></span>getHints</h4>
     
     
 </dt>
@@ -1002,7 +701,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>layerrenderer.js, line 68</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>view.js, line 40</li></ul></dd>
 	
     
     
@@ -1022,7 +721,7 @@
     
             
 <div class="param-desc">
-    Layer.
+    Hint.
 </div>
 
 
@@ -1033,169 +732,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="ol.layer.Layer.html">ol.layer.Layer</a></span>
-
-
-	</dd>
-</dl>
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="getMap"><span class="type-signature"></span>getMap</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>layerrenderer.js, line 76</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Map.
-</div>
-
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type"><a href="ol.Map.html">ol.Map</a></span>
-
-
-	</dd>
-</dl>
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="getMapRenderer"><span class="type-signature"></span>getMapRenderer</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>layerrenderer.js, line 84</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Map renderer.
-</div>
-
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type"><a href="ol.renderer.Map.html">ol.renderer.Map</a></span>
+<span class="param-type">Array.&lt;number></span>
 
 
 	</dd>
@@ -1434,6 +971,136 @@
 	
 	<dt class="tag-source">Source:</dt>
 	<dd class="tag-source"><ul class="dummy"><li>object.js, line 212</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setHint"><span class="type-signature"></span>setHint</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>hint</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.html#ViewHint">ol.ViewHint</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Hint.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>delta</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Delta.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>view.js, line 61</li></ul></dd>
 	
     
     
@@ -1745,182 +1412,6 @@
     
 </dd>
 
-        
-            
-<dt>
-    <h4 class="name" id="updateTileUsage"><span class="type-signature">&lt;protected> </span>updateTileUsage</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>tileUsage</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Object.&lt;string, Object.&lt;string, ol.TileRange>></span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Tile usage.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>source</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type"><a href="ol.source.Source.html">ol.source.Source</a></span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Source.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>z</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Z.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>tileRange</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type"><a href="ol.TileRange.html">ol.TileRange</a></span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Tile range.</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>layerrenderer.js, line 138</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
         </dl>
     
     
@@ -1943,7 +1434,7 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> on Thu Jan 17 2013 23:02:44 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> on Thu Jan 17 2013 23:02:53 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

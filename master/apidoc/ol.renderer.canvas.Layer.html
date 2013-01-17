@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>OpenLayers: Class: ol.renderer.Layer</title>
+    <title>OpenLayers: Class: ol.renderer.canvas.Layer</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Class: ol.renderer.Layer</h1>
+    <h1 class="page-title">Class: ol.renderer.canvas.Layer</h1>
     
     
 
@@ -27,7 +27,7 @@
     
 <header>
     <h2>
-    ol.renderer.Layer
+    ol.renderer.canvas.Layer
     </h2>
     
 </header>  
@@ -146,7 +146,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>layerrenderer.js, line 18</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>canvaslayerrenderer.js, line 15</li></ul></dd>
 	
     
     
@@ -173,7 +173,7 @@
         <h3 class="subsection-title">Extends</h3>
         
         <ul>
-            <li><a href="ol.Object.html">ol.Object</a></li>
+            <li><a href="ol.renderer.Layer.html">ol.renderer.Layer</a></li>
         </ul>
     
     
@@ -209,7 +209,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.Object.html#changed">ol.Object#changed</a>
+		<a href="ol.renderer.Layer.html#changed">ol.renderer.Layer#changed</a>
 	</li></dd>
 	
 	
@@ -241,6 +241,98 @@
 
         
             
+<dt class="">
+    <h4 class="name" id="getImage"><span class="type-signature"></span>getImage<span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd class="">
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>canvaslayerrenderer.js, line 24</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt class="">
+    <h4 class="name" id="getTransform"><span class="type-signature"></span>getTransform<span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd class="">
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>canvaslayerrenderer.js, line 30</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+</dd>
+
+        
+            
 <dt class="protected">
     <h4 class="name" id="handleLayerBrightnessChange"><span class="type-signature">&lt;protected> </span>handleLayerBrightnessChange<span class="type-signature"></span></h4>
     
@@ -257,6 +349,11 @@
 	
 	
 
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.renderer.Layer.html#handleLayerBrightnessChange">ol.renderer.Layer#handleLayerBrightnessChange</a>
+	</li></dd>
 	
 	
 	
@@ -304,6 +401,11 @@
 	
 
 	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.renderer.Layer.html#handleLayerContrastChange">ol.renderer.Layer#handleLayerContrastChange</a>
+	</li></dd>
+	
 	
 	
 	
@@ -349,6 +451,11 @@
 	
 	
 
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.renderer.Layer.html#handleLayerHueChange">ol.renderer.Layer#handleLayerHueChange</a>
+	</li></dd>
 	
 	
 	
@@ -396,6 +503,11 @@
 	
 
 	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.renderer.Layer.html#handleLayerLoad">ol.renderer.Layer#handleLayerLoad</a>
+	</li></dd>
+	
 	
 	
 	
@@ -441,6 +553,11 @@
 	
 	
 
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.renderer.Layer.html#handleLayerOpacityChange">ol.renderer.Layer#handleLayerOpacityChange</a>
+	</li></dd>
 	
 	
 	
@@ -488,6 +605,11 @@
 	
 
 	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.renderer.Layer.html#handleLayerSaturationChange">ol.renderer.Layer#handleLayerSaturationChange</a>
+	</li></dd>
+	
 	
 	
 	
@@ -534,6 +656,11 @@
 	
 
 	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.renderer.Layer.html#handleLayerVisibleChange">ol.renderer.Layer#handleLayerVisibleChange</a>
+	</li></dd>
+	
 	
 	
 	
@@ -548,6 +675,52 @@
 	
 	<dt class="tag-source">Source:</dt>
 	<dd class="tag-source"><ul class="dummy"><li>layerrenderer.js, line 128</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt class="">
+    <h4 class="name" id="renderFrame"><span class="type-signature"></span>renderFrame<span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd class="">
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>canvaslayerrenderer.js, line 37</li></ul></dd>
 	
     
     
@@ -582,7 +755,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.Object.html#setValues">ol.Object#setValues</a>
+		<a href="ol.renderer.Layer.html#setValues">ol.renderer.Layer#setValues</a>
 	</li></dd>
 	
 	
@@ -793,7 +966,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.Object.html#bindTo">ol.Object#bindTo</a>
+		<a href="ol.renderer.Layer.html#bindTo">ol.renderer.Layer#bindTo</a>
 	</li></dd>
 	
 	
@@ -905,7 +1078,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.Object.html#get">ol.Object#get</a>
+		<a href="ol.renderer.Layer.html#get">ol.renderer.Layer#get</a>
 	</li></dd>
 	
 	
@@ -989,6 +1162,11 @@
 	
 
 	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.renderer.Layer.html#getLayer">ol.renderer.Layer#getLayer</a>
+	</li></dd>
+	
 	
 	
 	
@@ -1070,6 +1248,11 @@
 	
 
 	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.renderer.Layer.html#getMap">ol.renderer.Layer#getMap</a>
+	</li></dd>
+	
 	
 	
 	
@@ -1150,6 +1333,11 @@
 	
 	
 
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.renderer.Layer.html#getMapRenderer">ol.renderer.Layer#getMapRenderer</a>
+	</li></dd>
 	
 	
 	
@@ -1282,7 +1470,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.Object.html#notify">ol.Object#notify</a>
+		<a href="ol.renderer.Layer.html#notify">ol.renderer.Layer#notify</a>
 	</li></dd>
 	
 	
@@ -1417,7 +1605,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.Object.html#set">ol.Object#set</a>
+		<a href="ol.renderer.Layer.html#set">ol.renderer.Layer#set</a>
 	</li></dd>
 	
 	
@@ -1529,7 +1717,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.Object.html#setOptions">ol.Object#setOptions</a>
+		<a href="ol.renderer.Layer.html#setOptions">ol.renderer.Layer#setOptions</a>
 	</li></dd>
 	
 	
@@ -1641,7 +1829,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.Object.html#unbind">ol.Object#unbind</a>
+		<a href="ol.renderer.Layer.html#unbind">ol.renderer.Layer#unbind</a>
 	</li></dd>
 	
 	
@@ -1709,7 +1897,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.Object.html#unbindAll">ol.Object#unbindAll</a>
+		<a href="ol.renderer.Layer.html#unbindAll">ol.renderer.Layer#unbindAll</a>
 	</li></dd>
 	
 	
@@ -1888,6 +2076,11 @@
 	
 
 	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.renderer.Layer.html#updateTileUsage">ol.renderer.Layer#updateTileUsage</a>
+	</li></dd>
+	
 	
 	
 	
@@ -1943,7 +2136,7 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> on Thu Jan 17 2013 23:02:44 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> on Thu Jan 17 2013 23:02:42 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

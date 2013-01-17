@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>OpenLayers: Class: ol.renderer.dom.Map</title>
+    <title>OpenLayers: Class: ol.renderer.canvas.Map</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Class: ol.renderer.dom.Map</h1>
+    <h1 class="page-title">Class: ol.renderer.canvas.Map</h1>
     
     
 
@@ -27,7 +27,7 @@
     
 <header>
     <h2>
-    ol.renderer.dom.Map
+    ol.renderer.canvas.Map
     </h2>
     
 </header>  
@@ -146,7 +146,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>dommaprenderer.js, line 23</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>canvasmaprenderer.js, line 21</li></ul></dd>
 	
     
     
@@ -189,61 +189,6 @@
         <h3 class="subsection-title">Members</h3>
         
         <dl>
-            
-<dt class="">
-    <h4 class="name" id="handleBackgroundColorChanged"><span class="type-signature"></span>handleBackgroundColorChanged<span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd class="">
-    
-    <div class="description">
-        Handle background color changed.
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.Map.html#handleBackgroundColorChanged">ol.renderer.Map#handleBackgroundColorChanged</a>
-	</li></dd>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>maprenderer.js, line 175</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-</dd>
-
-        
             
 <dt class="protected">
     <h4 class="name" id="layerRenderers"><span class="type-signature">&lt;protected> </span>layerRenderers<span class="type-signature"> :Object.&lt;number, ol.renderer.Layer></span></h4>
@@ -354,7 +299,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="addLayer"><span class="type-signature"></span>addLayer</h4>
+    <h4 class="name" id="addLayer"><span class="type-signature">&lt;protected> </span>addLayer</h4>
     
     
 </dt>
@@ -367,6 +312,54 @@
     
     
     
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>layer</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.layer.Layer.html">ol.layer.Layer</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Layer.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
     
     
 <dl class="details">
@@ -376,6 +369,11 @@
 	
 	
 
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.renderer.Map.html#addLayer">ol.renderer.Map#addLayer</a>
+	</li></dd>
 	
 	
 	
@@ -390,7 +388,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>dommaprenderer.js, line 53</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>maprenderer.js, line 87</li></ul></dd>
 	
     
     
@@ -561,7 +559,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>dommaprenderer.js, line 62</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>canvasmaprenderer.js, line 60</li></ul></dd>
 	
     
     
@@ -868,6 +866,172 @@
         
             
 <dt>
+    <h4 class="name" id="handleBackgroundColorChanged"><span class="type-signature"></span>handleBackgroundColorChanged</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>canvasmaprenderer.js, line 73</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="handleLayerRendererChange"><span class="type-signature">&lt;protected> </span>handleLayerRendererChange</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">goog.events.Event</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Event.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>canvasmaprenderer.js, line 91</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
     <h4 class="name" id="handleLayersAdd"><span class="type-signature">&lt;protected> </span>handleLayersAdd</h4>
     
     
@@ -1156,7 +1320,7 @@
         
             
 <dt>
-    <h4 class="name" id="handleSizeChanged"><span class="type-signature">&lt;protected> </span>handleSizeChanged</h4>
+    <h4 class="name" id="handleSizeChanged"><span class="type-signature"></span>handleSizeChanged</h4>
     
     
 </dt>
@@ -1179,11 +1343,6 @@
 	
 
 	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.Map.html#handleSizeChanged">ol.renderer.Map#handleSizeChanged</a>
-	</li></dd>
-	
 	
 	
 	
@@ -1197,7 +1356,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>maprenderer.js, line 232</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>canvasmaprenderer.js, line 99</li></ul></dd>
 	
     
     
@@ -1220,7 +1379,7 @@
         
             
 <dt>
-    <h4 class="name" id="handleViewChanged"><span class="type-signature">&lt;protected> </span>handleViewChanged</h4>
+    <h4 class="name" id="handleViewChanged"><span class="type-signature"></span>handleViewChanged</h4>
     
     
 </dt>
@@ -1243,11 +1402,6 @@
 	
 
 	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.Map.html#handleViewChanged">ol.renderer.Map#handleViewChanged</a>
-	</li></dd>
-	
 	
 	
 	
@@ -1261,7 +1415,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>maprenderer.js, line 240</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>canvasmaprenderer.js, line 108</li></ul></dd>
 	
     
     
@@ -1284,7 +1438,7 @@
         
             
 <dt>
-    <h4 class="name" id="handleViewPropertyChanged"><span class="type-signature">&lt;protected> </span>handleViewPropertyChanged</h4>
+    <h4 class="name" id="handleViewPropertyChanged"><span class="type-signature"></span>handleViewPropertyChanged</h4>
     
     
 </dt>
@@ -1307,11 +1461,6 @@
 	
 
 	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.Map.html#handleViewPropertyChanged">ol.renderer.Map#handleViewPropertyChanged</a>
-	</li></dd>
-	
 	
 	
 	
@@ -1325,7 +1474,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>maprenderer.js, line 224</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>canvasmaprenderer.js, line 81</li></ul></dd>
 	
     
     
@@ -1630,7 +1779,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>dommaprenderer.js, line 77</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>canvasmaprenderer.js, line 117</li></ul></dd>
 	
     
     
@@ -1807,7 +1956,7 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> on Thu Jan 17 2013 23:02:44 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> on Thu Jan 17 2013 23:02:42 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>OpenLayers: Class: ol.renderer.dom.Map</title>
+    <title>OpenLayers: Class: ol.source.ImageTileSource</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Class: ol.renderer.dom.Map</h1>
+    <h1 class="page-title">Class: ol.source.ImageTileSource</h1>
     
     
 
@@ -27,7 +27,7 @@
     
 <header>
     <h2>
-    ol.renderer.dom.Map
+    ol.source.ImageTileSource
     </h2>
     
 </header>  
@@ -39,7 +39,7 @@
     
         
 <dt>
-    <h4 class="name" id="Map"><span class="type-signature"></span>new Map</h4>
+    <h4 class="name" id="ImageTileSource"><span class="type-signature"></span>new ImageTileSource</h4>
     
     
 </dt>
@@ -77,13 +77,13 @@
 	
         <tr>
             
-                <td class="name"><code>container</code></td>
+                <td class="name"><code>options</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">Element</span>
+<span class="param-type">ol.source.ImageTileSourceOptions</span>
 
 
             
@@ -93,30 +93,7 @@
             
             
             
-            <td class="description last">Container.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>map</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type"><a href="ol.Map.html">ol.Map</a></span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Map.</td>
+            <td class="description last">Options.</td>
         </tr>
 	
 	
@@ -146,7 +123,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>dommaprenderer.js, line 23</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>imagetilesource.js, line 32</li></ul></dd>
 	
     
     
@@ -173,7 +150,7 @@
         <h3 class="subsection-title">Extends</h3>
         
         <ul>
-            <li><a href="ol.renderer.Map.html">ol.renderer.Map</a></li>
+            <li><a href="ol.source.TileSource.html">ol.source.TileSource</a></li>
         </ul>
     
     
@@ -191,16 +168,12 @@
         <dl>
             
 <dt class="">
-    <h4 class="name" id="handleBackgroundColorChanged"><span class="type-signature"></span>handleBackgroundColorChanged<span class="type-signature"></span></h4>
+    <h4 class="name" id="isReady"><span class="type-signature"></span>isReady<span class="type-signature"></span></h4>
     
     
 </dt>
 <dd class="">
     
-    <div class="description">
-        Handle background color changed.
-    </div>
-    
     
     
 <dl class="details">
@@ -213,7 +186,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.Map.html#handleBackgroundColorChanged">ol.renderer.Map#handleBackgroundColorChanged</a>
+		<a href="ol.source.TileSource.html#isReady">ol.source.TileSource#isReady</a>
 	</li></dd>
 	
 	
@@ -229,7 +202,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>maprenderer.js, line 175</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 96</li></ul></dd>
 	
     
     
@@ -246,7 +219,7 @@
         
             
 <dt class="protected">
-    <h4 class="name" id="layerRenderers"><span class="type-signature">&lt;protected> </span>layerRenderers<span class="type-signature"> :Object.&lt;number, ol.renderer.Layer></span></h4>
+    <h4 class="name" id="tileGrid"><span class="type-signature">&lt;protected> </span>tileGrid<span class="type-signature"> :<a href="ol.tilegrid.TileGrid.html">ol.tilegrid.TileGrid</a></span></h4>
     
     
 </dt>
@@ -264,7 +237,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.Map.html#layerRenderers">ol.renderer.Map#layerRenderers</a>
+		<a href="ol.source.TileSource.html#tileGrid">ol.source.TileSource#tileGrid</a>
 	</li></dd>
 	
 	
@@ -280,7 +253,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>maprenderer.js, line 42</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>tilesource.js, line 42</li></ul></dd>
 	
     
     
@@ -297,7 +270,7 @@
         
             
 <dt class="protected">
-    <h4 class="name" id="map"><span class="type-signature">&lt;protected> </span>map<span class="type-signature"> :<a href="ol.Map.html">ol.Map</a></span></h4>
+    <h4 class="name" id="tileUrlFunction"><span class="type-signature">&lt;protected> </span>tileUrlFunction<span class="type-signature"> :ol.TileUrlFunctionType</span></h4>
     
     
 </dt>
@@ -313,11 +286,6 @@
 	
 
 	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.Map.html#map">ol.renderer.Map#map</a>
-	</li></dd>
-	
 	
 	
 	
@@ -331,7 +299,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>maprenderer.js, line 36</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>imagetilesource.js, line 45</li></ul></dd>
 	
     
     
@@ -354,237 +322,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="addLayer"><span class="type-signature"></span>addLayer</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>dommaprenderer.js, line 53</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="calculateMatrices2D"><span class="type-signature">&lt;protected> </span>calculateMatrices2D</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>frameState</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">ol.FrameState</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">FrameState.</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.Map.html#calculateMatrices2D">ol.renderer.Map#calculateMatrices2D</a>
-	</li></dd>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>maprenderer.js, line 97</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="createLayerRenderer"><span class="type-signature"></span>createLayerRenderer</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>dommaprenderer.js, line 62</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="disposeInternal"><span class="type-signature"></span>disposeInternal</h4>
+    <h4 class="name" id="dispatchLoadEvent"><span class="type-signature">&lt;protected> </span>dispatchLoadEvent</h4>
     
     
 </dt>
@@ -609,7 +347,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.Map.html#disposeInternal">ol.renderer.Map#disposeInternal</a>
+		<a href="ol.source.TileSource.html#dispatchLoadEvent">ol.source.TileSource#dispatchLoadEvent</a>
 	</li></dd>
 	
 	
@@ -625,7 +363,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>maprenderer.js, line 136</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 58</li></ul></dd>
 	
     
     
@@ -648,7 +386,7 @@
         
             
 <dt>
-    <h4 class="name" id="getLayerRenderer"><span class="type-signature">&lt;protected> </span>getLayerRenderer</h4>
+    <h4 class="name" id="getAttributions"><span class="type-signature"></span>getAttributions</h4>
     
     
 </dt>
@@ -660,54 +398,6 @@
     
     
     
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>layer</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type"><a href="ol.layer.Layer.html">ol.layer.Layer</a></span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Layer.</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
     
     
     
@@ -721,7 +411,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.Map.html#getLayerRenderer">ol.renderer.Map#getLayerRenderer</a>
+		<a href="ol.source.TileSource.html#getAttributions">ol.source.TileSource#getAttributions</a>
 	</li></dd>
 	
 	
@@ -737,7 +427,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>maprenderer.js, line 156</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 66</li></ul></dd>
 	
     
     
@@ -757,7 +447,7 @@
     
             
 <div class="param-desc">
-    Layer renderer.
+    Attributions.
 </div>
 
 
@@ -768,7 +458,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="ol.renderer.Layer.html">ol.renderer.Layer</a></span>
+<span class="param-type">Array.&lt;ol.Attribution></span>
 
 
 	</dd>
@@ -782,7 +472,7 @@
         
             
 <dt>
-    <h4 class="name" id="getMap"><span class="type-signature"></span>getMap</h4>
+    <h4 class="name" id="getExtent"><span class="type-signature"></span>getExtent</h4>
     
     
 </dt>
@@ -807,7 +497,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.Map.html#getMap">ol.renderer.Map#getMap</a>
+		<a href="ol.source.TileSource.html#getExtent">ol.source.TileSource#getExtent</a>
 	</li></dd>
 	
 	
@@ -823,7 +513,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>maprenderer.js, line 167</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 74</li></ul></dd>
 	
     
     
@@ -843,7 +533,7 @@
     
             
 <div class="param-desc">
-    Map.
+    Extent.
 </div>
 
 
@@ -854,7 +544,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="ol.Map.html">ol.Map</a></span>
+<span class="param-type"><a href="ol.Extent.html">ol.Extent</a></span>
 
 
 	</dd>
@@ -868,119 +558,7 @@
         
             
 <dt>
-    <h4 class="name" id="handleLayersAdd"><span class="type-signature">&lt;protected> </span>handleLayersAdd</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>collectionEvent</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type"><a href="ol.CollectionEvent.html">ol.CollectionEvent</a></span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Collection event.</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.Map.html#handleLayersAdd">ol.renderer.Map#handleLayersAdd</a>
-	</li></dd>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>maprenderer.js, line 182</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="handleLayersChanged"><span class="type-signature">&lt;protected> </span>handleLayersChanged</h4>
+    <h4 class="name" id="getProjection"><span class="type-signature"></span>getProjection</h4>
     
     
 </dt>
@@ -1005,7 +583,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.Map.html#handleLayersChanged">ol.renderer.Map#handleLayersChanged</a>
+		<a href="ol.source.TileSource.html#getProjection">ol.source.TileSource#getProjection</a>
 	</li></dd>
 	
 	
@@ -1021,535 +599,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>maprenderer.js, line 191</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="handleLayersRemove"><span class="type-signature">&lt;protected> </span>handleLayersRemove</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>collectionEvent</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type"><a href="ol.CollectionEvent.html">ol.CollectionEvent</a></span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Collection event.</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.Map.html#handleLayersRemove">ol.renderer.Map#handleLayersRemove</a>
-	</li></dd>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>maprenderer.js, line 215</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="handleSizeChanged"><span class="type-signature">&lt;protected> </span>handleSizeChanged</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.Map.html#handleSizeChanged">ol.renderer.Map#handleSizeChanged</a>
-	</li></dd>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>maprenderer.js, line 232</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="handleViewChanged"><span class="type-signature">&lt;protected> </span>handleViewChanged</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.Map.html#handleViewChanged">ol.renderer.Map#handleViewChanged</a>
-	</li></dd>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>maprenderer.js, line 240</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="handleViewPropertyChanged"><span class="type-signature">&lt;protected> </span>handleViewPropertyChanged</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.Map.html#handleViewPropertyChanged">ol.renderer.Map#handleViewPropertyChanged</a>
-	</li></dd>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>maprenderer.js, line 224</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="removeLayer"><span class="type-signature">&lt;protected> </span>removeLayer</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>layer</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type"><a href="ol.layer.Layer.html">ol.layer.Layer</a></span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Layer.</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.Map.html#removeLayer">ol.renderer.Map#removeLayer</a>
-	</li></dd>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>maprenderer.js, line 259</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="removeLayerRenderer"><span class="type-signature">&lt;protected> </span>removeLayerRenderer</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>layer</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type"><a href="ol.layer.Layer.html">ol.layer.Layer</a></span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Layer.</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.Map.html#removeLayerRenderer">ol.renderer.Map#removeLayerRenderer</a>
-	</li></dd>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>maprenderer.js, line 269</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 82</li></ul></dd>
 	
     
     
@@ -1569,7 +619,7 @@
     
             
 <div class="param-desc">
-    Layer renderer.
+    Projection.
 </div>
 
 
@@ -1580,7 +630,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="ol.renderer.Layer.html">ol.renderer.Layer</a></span>
+<span class="param-type"><a href="ol.Projection.html">ol.Projection</a></span>
 
 
 	</dd>
@@ -1594,7 +644,71 @@
         
             
 <dt>
-    <h4 class="name" id="renderFrame"><span class="type-signature"></span>renderFrame</h4>
+    <h4 class="name" id="getResolutions"><span class="type-signature"></span>getResolutions</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#getResolutions">ol.source.TileSource#getResolutions</a>
+	</li></dd>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>tilesource.js, line 52</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getTile"><span class="type-signature"></span>getTile</h4>
     
     
 </dt>
@@ -1630,7 +744,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>dommaprenderer.js, line 77</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>imagetilesource.js, line 71</li></ul></dd>
 	
     
     
@@ -1653,7 +767,7 @@
         
             
 <dt>
-    <h4 class="name" id="setLayerRenderer"><span class="type-signature">&lt;protected> </span>setLayerRenderer</h4>
+    <h4 class="name" id="getTileCoordUrl"><span class="type-signature"></span>getTileCoordUrl</h4>
     
     
 </dt>
@@ -1691,13 +805,13 @@
 	
         <tr>
             
-                <td class="name"><code>layer</code></td>
+                <td class="name"><code>tileCoord</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type"><a href="ol.layer.Layer.html">ol.layer.Layer</a></span>
+<span class="param-type"><a href="ol.TileCoord.html">ol.TileCoord</a></span>
 
 
             
@@ -1707,20 +821,215 @@
             
             
             
-            <td class="description last">Layer.</td>
+            <td class="description last">Tile coordinate.</td>
         </tr>
 	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>imagetilesource.js, line 93</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Tile URL.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">string</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getTileGrid"><span class="type-signature"></span>getTileGrid</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#getTileGrid">ol.source.TileSource#getTileGrid</a>
+	</li></dd>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>tilesource.js, line 67</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Tile grid.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="ol.tilegrid.TileGrid.html">ol.tilegrid.TileGrid</a></span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setAttributions"><span class="type-signature"></span>setAttributions</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
 	
 	
         <tr>
             
-                <td class="name"><code>layerRenderer</code></td>
+                <td class="name"><code>attributions</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type"><a href="ol.renderer.Layer.html">ol.renderer.Layer</a></span>
+<span class="param-type">Array.&lt;ol.Attribution></span>
 
 
             
@@ -1730,7 +1039,7 @@
             
             
             
-            <td class="description last">Layer renderer.</td>
+            <td class="description last">Attributions.</td>
         </tr>
 	
 	
@@ -1749,7 +1058,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.Map.html#setLayerRenderer">ol.renderer.Map#setLayerRenderer</a>
+		<a href="ol.source.TileSource.html#setAttributions">ol.source.TileSource#setAttributions</a>
 	</li></dd>
 	
 	
@@ -1765,7 +1074,231 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>maprenderer.js, line 293</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 102</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setExtent"><span class="type-signature"></span>setExtent</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>extent</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.Extent.html">ol.Extent</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Extent.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#setExtent">ol.source.TileSource#setExtent</a>
+	</li></dd>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 110</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setProjection"><span class="type-signature"></span>setProjection</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>projection</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.Projection.html">ol.Projection</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Projetion.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#setProjection">ol.source.TileSource#setProjection</a>
+	</li></dd>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 118</li></ul></dd>
 	
     
     
@@ -1807,7 +1340,7 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> on Thu Jan 17 2013 23:02:44 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> on Thu Jan 17 2013 23:02:49 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>OpenLayers: Class: ol.renderer.webgl.TileLayer</title>
+    <title>OpenLayers: Class: ol.View2D</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Class: ol.renderer.webgl.TileLayer</h1>
+    <h1 class="page-title">Class: ol.View2D</h1>
     
     
 
@@ -27,7 +27,7 @@
     
 <header>
     <h2>
-    ol.renderer.webgl.TileLayer
+    ol.View2D
     </h2>
     
 </header>  
@@ -39,7 +39,7 @@
     
         
 <dt>
-    <h4 class="name" id="TileLayer"><span class="type-signature"></span>new TileLayer</h4>
+    <h4 class="name" id="View2D"><span class="type-signature"></span>new View2D</h4>
     
     
 </dt>
@@ -65,6 +65,8 @@
 		<th>Type</th>
 		
 		
+		<th>Argument</th>
+		
 		
 		
 		
@@ -77,46 +79,31 @@
 	
         <tr>
             
-                <td class="name"><code>mapRenderer</code></td>
+                <td class="name"><code>view2DOptions</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type"><a href="ol.renderer.Map.html">ol.renderer.Map</a></span>
+<span class="param-type">ol.View2DOptions</span>
 
 
             
             </td>
             
             
-            
-            
-            
-            <td class="description last">Map renderer.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>tileLayer</code></td>
-            
-            
-            <td class="type">
-            
+                <td class="attributes">
                 
-<span class="param-type"><a href="ol.layer.TileLayer.html">ol.layer.TileLayer</a></span>
-
-
-            
-            </td>
-            
-            
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last">Tile layer.</td>
+            
+            <td class="description last">(Optional) View2D options.</td>
         </tr>
 	
 	
@@ -146,7 +133,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>webgltilelayerrenderer.js, line 86</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 36</li></ul></dd>
 	
     
     
@@ -173,7 +160,7 @@
         <h3 class="subsection-title">Extends</h3>
         
         <ul>
-            <li><a href="ol.renderer.webgl.Layer.html">ol.renderer.webgl.Layer</a></li>
+            <li><a href="ol.View.html">ol.View</a></li>
         </ul>
     
     
@@ -209,7 +196,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.Layer.html#changed">ol.renderer.webgl.Layer#changed</a>
+		<a href="ol.View.html#changed">ol.View#changed</a>
 	</li></dd>
 	
 	
@@ -260,7 +247,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.Layer.html#setValues">ol.renderer.webgl.Layer#setValues</a>
+		<a href="ol.View.html#setValues">ol.View#setValues</a>
 	</li></dd>
 	
 	
@@ -277,6 +264,52 @@
 	
 	<dt class="tag-source">Source:</dt>
 	<dd class="tag-source"><ul class="dummy"><li>object.js, line 249</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt class="">
+    <h4 class="name" id="values"><span class="type-signature">&lt;inner> </span>values<span class="type-signature"> :Object.&lt;string, *></span></h4>
+    
+    
+</dt>
+<dd class="">
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 43</li></ul></dd>
 	
     
     
@@ -471,7 +504,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.Layer.html#bindTo">ol.renderer.webgl.Layer#bindTo</a>
+		<a href="ol.View.html#bindTo">ol.View#bindTo</a>
 	</li></dd>
 	
 	
@@ -510,7 +543,7 @@
         
             
 <dt>
-    <h4 class="name" id="dispatchChangeEvent"><span class="type-signature">&lt;protected> </span>dispatchChangeEvent</h4>
+    <h4 class="name" id="fitExtent"><span class="type-signature"></span>fitExtent</h4>
     
     
 </dt>
@@ -523,69 +556,76 @@
     
     
     
-    
-    
-<dl class="details">
-    
+        <h5>Parameters:</h5>
         
-	
-	
-	
 
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
 	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.Layer.html#dispatchChangeEvent">ol.renderer.webgl.Layer#dispatchChangeEvent</a>
-	</li></dd>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>webgllayerrenderer.js, line 72</li></ul></dd>
-	
-    
-    
+	<tbody>
 	
 	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
+        <tr>
             
-<dt>
-    <h4 class="name" id="disposeInternal"><span class="type-signature"></span>disposeInternal</h4>
-    
-    
-</dt>
-<dd>
-    
-    
+                <td class="name"><code>extent</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.Extent.html">ol.Extent</a></span>
 
-    
-    
-    
-    
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Extent.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>size</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.Size.html">ol.Size</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Box pixel size.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -610,7 +650,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>webgltilelayerrenderer.js, line 211</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 188</li></ul></dd>
 	
     
     
@@ -706,7 +746,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.Layer.html#get">ol.renderer.webgl.Layer#get</a>
+		<a href="ol.View.html#get">ol.View#get</a>
 	</li></dd>
 	
 	
@@ -767,7 +807,7 @@
         
             
 <dt>
-    <h4 class="name" id="getColorMatrix"><span class="type-signature"></span>getColorMatrix</h4>
+    <h4 class="name" id="getCenter"><span class="type-signature"></span>getCenter</h4>
     
     
 </dt>
@@ -790,10 +830,112 @@
 	
 
 	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.Layer.html#getColorMatrix">ol.renderer.webgl.Layer#getColorMatrix</a>
-	</li></dd>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 74</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getExtent"><span class="type-signature"></span>getExtent</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>size</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.Size.html">ol.Size</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Box pixel size.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
 	
 	
 	
@@ -808,7 +950,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>webgllayerrenderer.js, line 80</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 88</li></ul></dd>
 	
     
     
@@ -828,7 +970,7 @@
     
             
 <div class="param-desc">
-    Color matrix.
+    Extent.
 </div>
 
 
@@ -839,7 +981,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">goog.vec.Mat4.Float32</span>
+<span class="param-type"><a href="ol.Extent.html">ol.Extent</a></span>
 
 
 	</dd>
@@ -853,7 +995,7 @@
         
             
 <dt>
-    <h4 class="name" id="getLayer"><span class="type-signature"></span>getLayer</h4>
+    <h4 class="name" id="getHints"><span class="type-signature"></span>getHints</h4>
     
     
 </dt>
@@ -878,7 +1020,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.Layer.html#getLayer">ol.renderer.webgl.Layer#getLayer</a>
+		<a href="ol.View.html#getHints">ol.View#getHints</a>
 	</li></dd>
 	
 	
@@ -894,7 +1036,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>layerrenderer.js, line 68</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>view.js, line 40</li></ul></dd>
 	
     
     
@@ -914,7 +1056,7 @@
     
             
 <div class="param-desc">
-    Layer.
+    Hint.
 </div>
 
 
@@ -925,7 +1067,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="ol.layer.Layer.html">ol.layer.Layer</a></span>
+<span class="param-type">Array.&lt;number></span>
 
 
 	</dd>
@@ -939,7 +1081,7 @@
         
             
 <dt>
-    <h4 class="name" id="getMap"><span class="type-signature"></span>getMap</h4>
+    <h4 class="name" id="getProjection"><span class="type-signature"></span>getProjection</h4>
     
     
 </dt>
@@ -962,10 +1104,64 @@
 	
 
 	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.Layer.html#getMap">ol.renderer.webgl.Layer#getMap</a>
-	</li></dd>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 103</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getResolution"><span class="type-signature"></span>getResolution</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
 	
 	
 	
@@ -980,7 +1176,137 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>layerrenderer.js, line 76</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 116</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getResolutionForExtent"><span class="type-signature"></span>getResolutionForExtent</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>extent</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.Extent.html">ol.Extent</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Extent.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>size</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.Size.html">ol.Size</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Box pixel size.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 131</li></ul></dd>
 	
     
     
@@ -1000,7 +1326,7 @@
     
             
 <div class="param-desc">
-    Map.
+    Resolution.
 </div>
 
 
@@ -1011,7 +1337,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="ol.Map.html">ol.Map</a></span>
+<span class="param-type">number</span>
 
 
 	</dd>
@@ -1025,7 +1351,7 @@
         
             
 <dt>
-    <h4 class="name" id="getMapRenderer"><span class="type-signature"></span>getMapRenderer</h4>
+    <h4 class="name" id="getRotation"><span class="type-signature"></span>getRotation</h4>
     
     
 </dt>
@@ -1048,11 +1374,6 @@
 	
 
 	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.Layer.html#getMapRenderer">ol.renderer.webgl.Layer#getMapRenderer</a>
-	</li></dd>
-	
 	
 	
 	
@@ -1066,7 +1387,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>webgllayerrenderer.js, line 92</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 141</li></ul></dd>
 	
     
     
@@ -1086,7 +1407,7 @@
     
             
 <div class="param-desc">
-    MapRenderer.
+    Map rotation.
 </div>
 
 
@@ -1097,7 +1418,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="ol.renderer.Map.html">ol.renderer.Map</a></span>
+<span class="param-type">number</span>
 
 
 	</dd>
@@ -1111,7 +1432,7 @@
         
             
 <dt>
-    <h4 class="name" id="getMatrix"><span class="type-signature"></span>getMatrix</h4>
+    <h4 class="name" id="getView2D"><span class="type-signature"></span>getView2D</h4>
     
     
 </dt>
@@ -1147,7 +1468,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>webgltilelayerrenderer.js, line 226</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 154</li></ul></dd>
 	
     
     
@@ -1170,7 +1491,7 @@
         
             
 <dt>
-    <h4 class="name" id="getTexture"><span class="type-signature"></span>getTexture</h4>
+    <h4 class="name" id="getView2DState"><span class="type-signature"></span>getView2DState</h4>
     
     
 </dt>
@@ -1206,7 +1527,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>webgltilelayerrenderer.js, line 234</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 162</li></ul></dd>
 	
     
     
@@ -1229,7 +1550,70 @@
         
             
 <dt>
-    <h4 class="name" id="getTileLayer"><span class="type-signature"></span>getTileLayer</h4>
+    <h4 class="name" id="getView3D"><span class="type-signature"></span>getView3D</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        FIXME return type
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 180</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="isDef"><span class="type-signature"></span>isDef</h4>
     
     
 </dt>
@@ -1265,7 +1649,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>webgltilelayerrenderer.js, line 242</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 199</li></ul></dd>
 	
     
     
@@ -1285,7 +1669,7 @@
     
             
 <div class="param-desc">
-    Tile layer.
+    Is defined.
 </div>
 
 
@@ -1296,520 +1680,13 @@
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="ol.layer.TileLayer.html">ol.layer.TileLayer</a></span>
+<span class="param-type">boolean</span>
 
 
 	</dd>
 </dl>
 
         
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="handleLayerBrightnessChange"><span class="type-signature"></span>handleLayerBrightnessChange</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.Layer.html#handleLayerBrightnessChange">ol.renderer.webgl.Layer#handleLayerBrightnessChange</a>
-	</li></dd>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>webgllayerrenderer.js, line 113</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="handleLayerContrastChange"><span class="type-signature"></span>handleLayerContrastChange</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.Layer.html#handleLayerContrastChange">ol.renderer.webgl.Layer#handleLayerContrastChange</a>
-	</li></dd>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>webgllayerrenderer.js, line 124</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="handleLayerHueChange"><span class="type-signature"></span>handleLayerHueChange</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.Layer.html#handleLayerHueChange">ol.renderer.webgl.Layer#handleLayerHueChange</a>
-	</li></dd>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>webgllayerrenderer.js, line 135</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="handleLayerLoad"><span class="type-signature"></span>handleLayerLoad</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.Layer.html#handleLayerLoad">ol.renderer.webgl.Layer#handleLayerLoad</a>
-	</li></dd>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>webgllayerrenderer.js, line 146</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="handleLayerOpacityChange"><span class="type-signature"></span>handleLayerOpacityChange</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.Layer.html#handleLayerOpacityChange">ol.renderer.webgl.Layer#handleLayerOpacityChange</a>
-	</li></dd>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>webgllayerrenderer.js, line 154</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="handleLayerSaturationChange"><span class="type-signature"></span>handleLayerSaturationChange</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.Layer.html#handleLayerSaturationChange">ol.renderer.webgl.Layer#handleLayerSaturationChange</a>
-	</li></dd>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>webgllayerrenderer.js, line 162</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="handleLayerVisibleChange"><span class="type-signature"></span>handleLayerVisibleChange</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.Layer.html#handleLayerVisibleChange">ol.renderer.webgl.Layer#handleLayerVisibleChange</a>
-	</li></dd>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>webgllayerrenderer.js, line 173</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="handleWebGLContextLost"><span class="type-signature"></span>handleWebGLContextLost</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>webgltilelayerrenderer.js, line 250</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
     
     
 </dd>
@@ -1890,7 +1767,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.Layer.html#notify">ol.renderer.webgl.Layer#notify</a>
+		<a href="ol.View.html#notify">ol.View#notify</a>
 	</li></dd>
 	
 	
@@ -1929,7 +1806,7 @@
         
             
 <dt>
-    <h4 class="name" id="renderFrame"><span class="type-signature"></span>renderFrame</h4>
+    <h4 class="name" id="rotate"><span class="type-signature"></span>rotate</h4>
     
     
 </dt>
@@ -1941,6 +1818,103 @@
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>map</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.Map.html">ol.Map</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Map.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>rotation</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Rotation.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>delta</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Delta.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -1965,7 +1939,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>webgltilelayerrenderer.js, line 262</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 258</li></ul></dd>
 	
     
     
@@ -2084,7 +2058,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.Layer.html#set">ol.renderer.webgl.Layer#set</a>
+		<a href="ol.View.html#set">ol.View#set</a>
 	</li></dd>
 	
 	
@@ -2101,6 +2075,251 @@
 	
 	<dt class="tag-source">Source:</dt>
 	<dd class="tag-source"><ul class="dummy"><li>object.js, line 212</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setCenter"><span class="type-signature"></span>setCenter</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>center</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.Coordinate.html">ol.Coordinate</a></span>
+|
+
+<span class="param-type">undefined</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Center.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 208</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setHint"><span class="type-signature"></span>setHint</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>hint</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.html#ViewHint">ol.ViewHint</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Hint.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>delta</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Delta.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.View.html#setHint">ol.View#setHint</a>
+	</li></dd>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>view.js, line 61</li></ul></dd>
 	
     
     
@@ -2196,7 +2415,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.Layer.html#setOptions">ol.renderer.webgl.Layer#setOptions</a>
+		<a href="ol.View.html#setOptions">ol.View#setOptions</a>
 	</li></dd>
 	
 	
@@ -2213,6 +2432,336 @@
 	
 	<dt class="tag-source">Source:</dt>
 	<dd class="tag-source"><ul class="dummy"><li>object.js, line 234</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setProjection"><span class="type-signature"></span>setProjection</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>projection</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.Projection.html">ol.Projection</a></span>
+|
+
+<span class="param-type">undefined</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Projection.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 220</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setResolution"><span class="type-signature"></span>setResolution</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>resolution</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Resolution.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 232</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setRotation"><span class="type-signature"></span>setRotation</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>rotation</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Rotation.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 244</li></ul></dd>
 	
     
     
@@ -2308,7 +2857,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.Layer.html#unbind">ol.renderer.webgl.Layer#unbind</a>
+		<a href="ol.View.html#unbind">ol.View#unbind</a>
 	</li></dd>
 	
 	
@@ -2376,7 +2925,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.Layer.html#unbindAll">ol.renderer.webgl.Layer#unbindAll</a>
+		<a href="ol.View.html#unbindAll">ol.View#unbindAll</a>
 	</li></dd>
 	
 	
@@ -2415,7 +2964,7 @@
         
             
 <dt>
-    <h4 class="name" id="updateTileUsage"><span class="type-signature">&lt;protected> </span>updateTileUsage</h4>
+    <h4 class="name" id="zoom"><span class="type-signature"></span>zoom</h4>
     
     
 </dt>
@@ -2441,6 +2990,8 @@
 		<th>Type</th>
 		
 		
+		<th>Argument</th>
+		
 		
 		
 		
@@ -2453,53 +3004,36 @@
 	
         <tr>
             
-                <td class="name"><code>tileUsage</code></td>
+                <td class="name"><code>map</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">Object.&lt;string, Object.&lt;string, ol.TileRange>></span>
+<span class="param-type"><a href="ol.Map.html">ol.Map</a></span>
 
 
             
             </td>
             
             
-            
-            
-            
-            <td class="description last">Tile usage.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>source</code></td>
-            
-            
-            <td class="type">
-            
+                <td class="attributes">
                 
-<span class="param-type"><a href="ol.source.Source.html">ol.source.Source</a></span>
-
-
-            
-            </td>
+                    
+                
+                </td>
             
             
             
             
-            
-            <td class="description last">Source.</td>
+            <td class="description last">Map.</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>z</code></td>
+                <td class="name"><code>delta</code></td>
             
             
             <td class="type">
@@ -2512,33 +3046,47 @@
             </td>
             
             
+                <td class="attributes">
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last">Z.</td>
+            
+            <td class="description last">Delta from previous zoom level.</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>tileRange</code></td>
+                <td class="name"><code>anchor</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type"><a href="ol.TileRange.html">ol.TileRange</a></span>
+<span class="param-type"><a href="ol.Coordinate.html">ol.Coordinate</a></span>
 
 
             
             </td>
             
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last">Tile range.</td>
+            
+            <td class="description last">(Optional) Anchor coordinate.</td>
         </tr>
 	
 	
@@ -2555,10 +3103,183 @@
 	
 
 	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.Layer.html#updateTileUsage">ol.renderer.webgl.Layer#updateTileUsage</a>
-	</li></dd>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 293</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="zoomToResolution"><span class="type-signature"></span>zoomToResolution</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>map</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.Map.html">ol.Map</a></span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">Map.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>resolution</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">Resolution to go to.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>anchor</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.Coordinate.html">ol.Coordinate</a></span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">(Optional) Anchor coordinate.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
 	
 	
 	
@@ -2573,7 +3294,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>layerrenderer.js, line 138</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 304</li></ul></dd>
 	
     
     
@@ -2615,7 +3336,7 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> on Thu Jan 17 2013 23:02:47 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> on Thu Jan 17 2013 23:02:53 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>OpenLayers: Class: ol.renderer.webgl.tilelayerrenderer.shader.Fragment</title>
+    <title>OpenLayers: Class: ol.TileQueue</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Class: ol.renderer.webgl.tilelayerrenderer.shader.Fragment</h1>
+    <h1 class="page-title">Class: ol.TileQueue</h1>
     
     
 
@@ -27,7 +27,7 @@
     
 <header>
     <h2>
-    ol.renderer.webgl.tilelayerrenderer.shader.Fragment
+    ol.TileQueue
     </h2>
     
 </header>  
@@ -39,7 +39,7 @@
     
         
 <dt>
-    <h4 class="name" id="Fragment"><span class="type-signature"></span>new Fragment</h4>
+    <h4 class="name" id="TileQueue"><span class="type-signature"></span>new TileQueue</h4>
     
     
 </dt>
@@ -51,6 +51,54 @@
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>tilePriorityFunction</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">ol.TilePriorityFunction</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Tile priority function.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -75,7 +123,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>webgltilelayerrenderer.js, line 32</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>tilequeue.js, line 24</li></ul></dd>
 	
     
     
@@ -99,11 +147,6 @@
     </div>
     
     
-        <h3 class="subsection-title">Extends</h3>
-        
-        <ul>
-            <li><a href="ol.renderer.webgl.FragmentShader.html">ol.renderer.webgl.FragmentShader</a></li>
-        </ul>
     
     
     
@@ -113,62 +156,6 @@
     
     
     
-    
-    
-        <h3 class="subsection-title">Members</h3>
-        
-        <dl>
-            
-<dt class="">
-    <h4 class="name" id="isAnimated"><span class="type-signature"></span>isAnimated<span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd class="">
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
-	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.FragmentShader.html#isAnimated">ol.renderer.webgl.FragmentShader#isAnimated</a>
-	</li></dd>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>shader.js, line 41</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-</dd>
-
-        </dl>
     
     
     
@@ -177,7 +164,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="getSource"><span class="type-signature"></span>getSource</h4>
+    <h4 class="name" id="enqueue"><span class="type-signature"></span>enqueue</h4>
     
     
 </dt>
@@ -190,6 +177,100 @@
     
     
     
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>tile</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.Tile.html">ol.Tile</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Tile.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>tileCenter</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.Coordinate.html">ol.Coordinate</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Tile center.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>tileResolution</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Tile resolution.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
     
     
 <dl class="details">
@@ -199,11 +280,6 @@
 	
 	
 
-	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.FragmentShader.html#getSource">ol.renderer.webgl.FragmentShader#getSource</a>
-	</li></dd>
 	
 	
 	
@@ -218,7 +294,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>shader.js, line 33</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>tilequeue.js, line 64</li></ul></dd>
 	
     
     
@@ -234,28 +310,6 @@
     
     
     
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Source.
-</div>
-
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">string</span>
-
-
-	</dd>
-</dl>
-
-        
     
     
 </dd>
@@ -263,7 +317,7 @@
         
             
 <dt>
-    <h4 class="name" id="getType"><span class="type-signature"></span>getType</h4>
+    <h4 class="name" id="handleTileChange"><span class="type-signature">&lt;protected> </span>handleTileChange</h4>
     
     
 </dt>
@@ -286,10 +340,68 @@
 	
 
 	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.FragmentShader.html#getType">ol.renderer.webgl.FragmentShader#getType</a>
-	</li></dd>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>tilequeue.js, line 85</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="loadMoreTiles"><span class="type-signature"></span>loadMoreTiles</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        FIXME empty description for jsdoc
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
 	
 	
 	
@@ -304,7 +416,70 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>shader.js, line 59</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>tilequeue.js, line 93</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="reprioritize"><span class="type-signature"></span>reprioritize</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        FIXME empty description for jsdoc
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>tilequeue.js, line 110</li></ul></dd>
 	
     
     
@@ -346,7 +521,7 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> on Thu Jan 17 2013 23:02:47 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> on Thu Jan 17 2013 23:02:53 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -5,6 +5,8 @@ goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.Projection');
+goog.require('ol.RendererHints');
+goog.require('ol.View2D');
 goog.require('ol.source.TiledWMS');
 
 
@@ -50,12 +52,15 @@ var layers = new ol.Collection([
 ]);
 
 var map = new ol.Map({
-  center: new ol.Coordinate(660000, 190000),
-  projection: epsg21781,
   // By setting userProjection to the same as projection, we do not need
   // proj4js because we do not need any transforms.
   userProjection: epsg21781,
   layers: layers,
+  renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
-  zoom: 9
+  view: new ol.View2D({
+    projection: epsg21781,
+    center: new ol.Coordinate(660000, 190000),
+    zoom: 2
+  })
 });

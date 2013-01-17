@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>OpenLayers: Class: ol.renderer.webgl.tilelayerrenderer.shader.Fragment</title>
+    <title>OpenLayers: Class: ol.ImageTile</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Class: ol.renderer.webgl.tilelayerrenderer.shader.Fragment</h1>
+    <h1 class="page-title">Class: ol.ImageTile</h1>
     
     
 
@@ -27,7 +27,7 @@
     
 <header>
     <h2>
-    ol.renderer.webgl.tilelayerrenderer.shader.Fragment
+    ol.ImageTile
     </h2>
     
 </header>  
@@ -39,7 +39,7 @@
     
         
 <dt>
-    <h4 class="name" id="Fragment"><span class="type-signature"></span>new Fragment</h4>
+    <h4 class="name" id="ImageTile"><span class="type-signature"></span>new ImageTile</h4>
     
     
 </dt>
@@ -51,6 +51,122 @@
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>tileCoord</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.TileCoord.html">ol.TileCoord</a></span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">Tile coordinate.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>src</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">Image source URI.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>crossOrigin</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                    &lt;nullable><br>
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">Cross origin.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -75,7 +191,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>webgltilelayerrenderer.js, line 32</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>imagetile.js, line 20</li></ul></dd>
 	
     
     
@@ -102,7 +218,7 @@
         <h3 class="subsection-title">Extends</h3>
         
         <ul>
-            <li><a href="ol.renderer.webgl.FragmentShader.html">ol.renderer.webgl.FragmentShader</a></li>
+            <li><a href="ol.Tile.html">ol.Tile</a></li>
         </ul>
     
     
@@ -120,7 +236,7 @@
         <dl>
             
 <dt class="">
-    <h4 class="name" id="isAnimated"><span class="type-signature"></span>isAnimated<span class="type-signature"></span></h4>
+    <h4 class="name" id="tileCoord"><span class="type-signature"></span>tileCoord<span class="type-signature"> :<a href="ol.TileCoord.html">ol.TileCoord</a></span></h4>
     
     
 </dt>
@@ -138,7 +254,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.FragmentShader.html#isAnimated">ol.renderer.webgl.FragmentShader#isAnimated</a>
+		<a href="ol.Tile.html#tileCoord">ol.Tile#tileCoord</a>
 	</li></dd>
 	
 	
@@ -154,7 +270,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>shader.js, line 41</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>tile.js, line 35</li></ul></dd>
 	
     
     
@@ -177,7 +293,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="getSource"><span class="type-signature"></span>getSource</h4>
+    <h4 class="name" id="dispatchChangeEvent"><span class="type-signature">&lt;protected> </span>dispatchChangeEvent</h4>
     
     
 </dt>
@@ -202,7 +318,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.FragmentShader.html#getSource">ol.renderer.webgl.FragmentShader#getSource</a>
+		<a href="ol.Tile.html#dispatchChangeEvent">ol.Tile#dispatchChangeEvent</a>
 	</li></dd>
 	
 	
@@ -218,7 +334,189 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>shader.js, line 33</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>tile.js, line 50</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getImage"><span class="type-signature"></span>getImage</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>imagetile.js, line 60</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getKey"><span class="type-signature"></span>getKey</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>imagetile.js, line 82</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getState"><span class="type-signature"></span>getState</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.Tile.html#getState">ol.Tile#getState</a>
+	</li></dd>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>tile.js, line 73</li></ul></dd>
 	
     
     
@@ -238,7 +536,7 @@
     
             
 <div class="param-desc">
-    Source.
+    State.
 </div>
 
 
@@ -249,7 +547,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">string</span>
+<span class="param-type"><a href="ol.html#TileState">ol.TileState</a></span>
 
 
 	</dd>
@@ -263,12 +561,16 @@
         
             
 <dt>
-    <h4 class="name" id="getType"><span class="type-signature"></span>getType</h4>
+    <h4 class="name" id="load"><span class="type-signature"></span>load</h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Load not yet loaded URI.
+    </div>
     
 
     
@@ -286,11 +588,6 @@
 	
 
 	
-	<dt class="inherited-from">Inherited From:</dt>
-	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.renderer.webgl.FragmentShader.html#getType">ol.renderer.webgl.FragmentShader#getType</a>
-	</li></dd>
-	
 	
 	
 	
@@ -304,7 +601,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>shader.js, line 59</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>imagetile.js, line 114</li></ul></dd>
 	
     
     
@@ -346,7 +643,7 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> on Thu Jan 17 2013 23:02:47 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> on Thu Jan 17 2013 23:02:35 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

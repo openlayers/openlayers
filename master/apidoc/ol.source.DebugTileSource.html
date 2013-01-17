@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>OpenLayers: Class: ol.control.MousePosition</title>
+    <title>OpenLayers: Class: ol.source.DebugTileSource</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Class: ol.control.MousePosition</h1>
+    <h1 class="page-title">Class: ol.source.DebugTileSource</h1>
     
     
 
@@ -27,7 +27,7 @@
     
 <header>
     <h2>
-    ol.control.MousePosition
+    ol.source.DebugTileSource
     </h2>
     
 </header>  
@@ -39,7 +39,7 @@
     
         
 <dt>
-    <h4 class="name" id="MousePosition"><span class="type-signature"></span>new MousePosition</h4>
+    <h4 class="name" id="DebugTileSource"><span class="type-signature"></span>new DebugTileSource</h4>
     
     
 </dt>
@@ -77,13 +77,13 @@
 	
         <tr>
             
-                <td class="name"><code>mousePositionOptions</code></td>
+                <td class="name"><code>options</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">ol.control.MousePositionOptions</span>
+<span class="param-type">ol.source.DebugTileSourceOptions</span>
 
 
             
@@ -93,8 +93,7 @@
             
             
             
-            <td class="description last">Mouse position
-    options.</td>
+            <td class="description last">Options.</td>
         </tr>
 	
 	
@@ -124,7 +123,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>mousepositioncontrol.js, line 24</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>debugtilesource.js, line 96</li></ul></dd>
 	
     
     
@@ -151,7 +150,7 @@
         <h3 class="subsection-title">Extends</h3>
         
         <ul>
-            <li><a href="ol.control.Control.html">ol.control.Control</a></li>
+            <li><a href="ol.source.TileSource.html">ol.source.TileSource</a></li>
         </ul>
     
     
@@ -168,8 +167,59 @@
         
         <dl>
             
+<dt class="">
+    <h4 class="name" id="isReady"><span class="type-signature"></span>isReady<span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd class="">
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#isReady">ol.source.TileSource#isReady</a>
+	</li></dd>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 96</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+</dd>
+
+        
+            
 <dt class="protected">
-    <h4 class="name" id="element"><span class="type-signature">&lt;protected> </span>element<span class="type-signature"> :Element</span></h4>
+    <h4 class="name" id="tileGrid"><span class="type-signature">&lt;protected> </span>tileGrid<span class="type-signature"> :<a href="ol.tilegrid.TileGrid.html">ol.tilegrid.TileGrid</a></span></h4>
     
     
 </dt>
@@ -187,7 +237,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.control.Control.html#element">ol.control.Control#element</a>
+		<a href="ol.source.TileSource.html#tileGrid">ol.source.TileSource#tileGrid</a>
 	</li></dd>
 	
 	
@@ -203,7 +253,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>control.js, line 32</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>tilesource.js, line 42</li></ul></dd>
 	
     
     
@@ -226,7 +276,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="disposeInternal"><span class="type-signature"></span>disposeInternal</h4>
+    <h4 class="name" id="dispatchLoadEvent"><span class="type-signature">&lt;protected> </span>dispatchLoadEvent</h4>
     
     
 </dt>
@@ -251,7 +301,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.control.Control.html#disposeInternal">ol.control.Control#disposeInternal</a>
+		<a href="ol.source.TileSource.html#dispatchLoadEvent">ol.source.TileSource#dispatchLoadEvent</a>
 	</li></dd>
 	
 	
@@ -267,7 +317,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>control.js, line 58</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 58</li></ul></dd>
 	
     
     
@@ -290,7 +340,7 @@
         
             
 <dt>
-    <h4 class="name" id="getMap"><span class="type-signature"></span>getMap</h4>
+    <h4 class="name" id="getAttributions"><span class="type-signature"></span>getAttributions</h4>
     
     
 </dt>
@@ -315,7 +365,7 @@
 	
 	<dt class="inherited-from">Inherited From:</dt>
 	<dd class="inherited-from"><ul class="dummy"><li>
-		<a href="ol.control.Control.html#getMap">ol.control.Control#getMap</a>
+		<a href="ol.source.TileSource.html#getAttributions">ol.source.TileSource#getAttributions</a>
 	</li></dd>
 	
 	
@@ -331,7 +381,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>control.js, line 67</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 66</li></ul></dd>
 	
     
     
@@ -351,7 +401,7 @@
     
             
 <div class="param-desc">
-    Map.
+    Attributions.
 </div>
 
 
@@ -362,7 +412,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="ol.Map.html">ol.Map</a></span>
+<span class="param-type">Array.&lt;ol.Attribution></span>
 
 
 	</dd>
@@ -376,7 +426,388 @@
         
             
 <dt>
-    <h4 class="name" id="handleMapPostrender"><span class="type-signature">&lt;protected> </span>handleMapPostrender</h4>
+    <h4 class="name" id="getExtent"><span class="type-signature"></span>getExtent</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#getExtent">ol.source.TileSource#getExtent</a>
+	</li></dd>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 74</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Extent.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="ol.Extent.html">ol.Extent</a></span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getProjection"><span class="type-signature"></span>getProjection</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#getProjection">ol.source.TileSource#getProjection</a>
+	</li></dd>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 82</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Projection.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="ol.Projection.html">ol.Projection</a></span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getResolutions"><span class="type-signature"></span>getResolutions</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#getResolutions">ol.source.TileSource#getResolutions</a>
+	</li></dd>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>tilesource.js, line 52</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getTile"><span class="type-signature"></span>getTile</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>debugtilesource.js, line 119</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getTileGrid"><span class="type-signature"></span>getTileGrid</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#getTileGrid">ol.source.TileSource#getTileGrid</a>
+	</li></dd>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>tilesource.js, line 67</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Tile grid.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="ol.tilegrid.TileGrid.html">ol.tilegrid.TileGrid</a></span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setAttributions"><span class="type-signature"></span>setAttributions</h4>
     
     
 </dt>
@@ -414,13 +845,13 @@
 	
         <tr>
             
-                <td class="name"><code>mapEvent</code></td>
+                <td class="name"><code>attributions</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type"><a href="ol.MapEvent.html">ol.MapEvent</a></span>
+<span class="param-type">Array.&lt;ol.Attribution></span>
 
 
             
@@ -430,7 +861,7 @@
             
             
             
-            <td class="description last">Map event.</td>
+            <td class="description last">Attributions.</td>
         </tr>
 	
 	
@@ -447,6 +878,11 @@
 	
 
 	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#setAttributions">ol.source.TileSource#setAttributions</a>
+	</li></dd>
+	
 	
 	
 	
@@ -460,7 +896,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>mousepositioncontrol.js, line 99</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 102</li></ul></dd>
 	
     
     
@@ -483,7 +919,7 @@
         
             
 <dt>
-    <h4 class="name" id="handleMouseMove"><span class="type-signature">&lt;protected> </span>handleMouseMove</h4>
+    <h4 class="name" id="setExtent"><span class="type-signature"></span>setExtent</h4>
     
     
 </dt>
@@ -521,13 +957,13 @@
 	
         <tr>
             
-                <td class="name"><code>browserEvent</code></td>
+                <td class="name"><code>extent</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">goog.events.BrowserEvent</span>
+<span class="param-type"><a href="ol.Extent.html">ol.Extent</a></span>
 
 
             
@@ -537,7 +973,7 @@
             
             
             
-            <td class="description last">Browser event.</td>
+            <td class="description last">Extent.</td>
         </tr>
 	
 	
@@ -554,6 +990,11 @@
 	
 
 	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#setExtent">ol.source.TileSource#setExtent</a>
+	</li></dd>
+	
 	
 	
 	
@@ -567,7 +1008,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>mousepositioncontrol.js, line 114</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 110</li></ul></dd>
 	
     
     
@@ -590,7 +1031,7 @@
         
             
 <dt>
-    <h4 class="name" id="handleMouseOut"><span class="type-signature">&lt;protected> </span>handleMouseOut</h4>
+    <h4 class="name" id="setProjection"><span class="type-signature"></span>setProjection</h4>
     
     
 </dt>
@@ -628,13 +1069,13 @@
 	
         <tr>
             
-                <td class="name"><code>browserEvent</code></td>
+                <td class="name"><code>projection</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">goog.events.BrowserEvent</span>
+<span class="param-type"><a href="ol.Projection.html">ol.Projection</a></span>
 
 
             
@@ -644,7 +1085,7 @@
             
             
             
-            <td class="description last">Browser event.</td>
+            <td class="description last">Projetion.</td>
         </tr>
 	
 	
@@ -661,64 +1102,10 @@
 	
 
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>mousepositioncontrol.js, line 128</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="setMap"><span class="type-signature"></span>setMap</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.source.TileSource.html#setProjection">ol.source.TileSource#setProjection</a>
+	</li></dd>
 	
 	
 	
@@ -733,7 +1120,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>mousepositioncontrol.js, line 137</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>source.js, line 118</li></ul></dd>
 	
     
     
@@ -775,7 +1162,7 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> on Thu Jan 17 2013 23:02:34 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> on Thu Jan 17 2013 23:02:48 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

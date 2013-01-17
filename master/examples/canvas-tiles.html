@@ -12,29 +12,27 @@
         margin: 1em;
       }
     </style>
-    <title>ol3 two-layers demo</title>
+    <title>ol3 canvas tiles demo</title>
   </head>
   <body>
-    <h1 id="title">Two-layer example</h1>
-    <div id="shortdesc">Sync'ed DOM, WebGL and Canvas maps with two layers.</div>
+    <h1 id="title">Canvas tiles example</h1>
+    <div id="shortdesc">The black grid tiles are generated on the client with an HTML5 canvas. Note that the tile coordinates are ol3 normalized tile coordinates (origin bottom left), not OSM tile coordinates (origin top left).</div>
     <table>
       <tr>
         <th>DOM</th>
         <th>WebGL</th>
-        <th>Canvas</th>
       </tr>
       <tr>
         <td><div id="domMap" class="map"></div></td>
         <td><div id="webglMap" class="map"></div></td>
-        <td><div id="canvasMap" class="map"></div></td>
       </tr>
     </table>
     <div id="docs">
       <p>See the
-      <a href="two-layers.js" target="_blank">two-layers.js source</a>
+      <a href="canvas-tiles.js" target="_blank">canvas-tiles.js source</a>
       to see how this is done.</p>
     </div>
-    <div id="tags">layers, tilejson, bing, bingmaps</div>
-    <script src="loader.js?id=two-layers" type="text/javascript"></script>
+    <div id="tags">layers, stamen, canvas</div>
+    <script src="loader.js?id=canvas-tiles" type="text/javascript"></script>
   </body>
 </html>
