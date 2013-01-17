@@ -138,7 +138,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
       backgroundColor.r.toFixed(0) + ',' +
       backgroundColor.g.toFixed(0) + ',' +
       backgroundColor.b.toFixed(0) + ')';
-  context.globalAlpha = 1;
+  context.globalAlpha = backgroundColor.a;
   context.fillRect(0, 0, size.width, size.height);
 
   goog.array.forEach(frameState.layersArray, function(layer) {
