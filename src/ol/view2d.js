@@ -52,7 +52,8 @@ ol.View2D = function(opt_view2DOptions) {
     var size = Math.max(
         projectionExtent.maxX - projectionExtent.minX,
         projectionExtent.maxY - projectionExtent.minY);
-    values[ol.View2DProperty.RESOLUTION] = size / (256 << view2DOptions.zoom);
+    values[ol.View2DProperty.RESOLUTION] =
+        size / (ol.DEFAULT_TILE_SIZE << view2DOptions.zoom);
   }
   values[ol.View2DProperty.ROTATION] = view2DOptions.rotation;
   this.setValues(values);
@@ -329,7 +330,7 @@ ol.View2D.createConstraints_ = function(view2DOptions) {
           view2DOptions.projection, 'EPSG:3857').getExtent();
       maxResolution = Math.max(
           projectionExtent.maxX - projectionExtent.minX,
-          projectionExtent.maxY - projectionExtent.minY) / 256;
+          projectionExtent.maxY - projectionExtent.minY) / ol.DEFAULT_TILE_SIZE;
       // number of steps we want between two data resolutions
       var numSteps = 4;
       numZoomLevels = 29 * numSteps;
