@@ -214,10 +214,10 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
 
   if (!allTilesLoaded) {
     frameState.animate = true;
+    this.updateWantedTiles(frameState.wantedTiles, tileSource, z, tileRange);
   }
 
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
-  this.updateWantedTiles(frameState.wantedTiles, tileSource, z, tileRange);
 
   var transform = this.transform_;
   goog.vec.Mat4.makeIdentity(transform);

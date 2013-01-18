@@ -235,10 +235,10 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
 
   if (!allTilesLoaded) {
     frameState.animate = true;
+    this.updateWantedTiles(frameState.wantedTiles, tileSource, z, tileRange);
   }
 
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
-  this.updateWantedTiles(frameState.wantedTiles, tileSource, z, tileRange);
 
 };
 

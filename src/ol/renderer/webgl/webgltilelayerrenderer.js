@@ -456,12 +456,12 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
       this.renderedTileRange_ = null;
       this.renderedFramebufferExtent_ = null;
       frameState.animate = true;
+      this.updateWantedTiles(frameState.wantedTiles, tileSource, z, tileRange);
     }
 
   }
 
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
-  this.updateWantedTiles(frameState.wantedTiles, tileSource, z, tileRange);
 
   goog.vec.Mat4.makeIdentity(this.matrix_);
   goog.vec.Mat4.translate(this.matrix_,
