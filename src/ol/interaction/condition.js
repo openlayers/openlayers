@@ -22,6 +22,18 @@ ol.interaction.condition.altKeyOnly = function(browserEvent) {
 
 /**
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @return {boolean} True if only the alt and shift keys are pressed.
+ */
+ol.interaction.condition.altShiftKeysOnly = function(browserEvent) {
+  return (
+      browserEvent.altKey &&
+      !browserEvent.platformModifierKey &&
+      browserEvent.shiftKey);
+};
+
+
+/**
+ * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @return {boolean} True if only the no modifier keys are pressed.
  */
 ol.interaction.condition.noModifierKeys = function(browserEvent) {
