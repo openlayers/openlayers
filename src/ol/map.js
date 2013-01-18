@@ -664,6 +664,8 @@ ol.Map.prototype.renderFrame_ = function(time) {
   }
 
   this.renderer_.renderFrame(frameState);
+  this.frameState_ = frameState;
+  this.dirty_ = false;
 
   if (!goog.isNull(frameState)) {
     if (frameState.animate) {
@@ -672,8 +674,6 @@ ol.Map.prototype.renderFrame_ = function(time) {
     Array.prototype.push.apply(
         this.postRenderFunctions_, frameState.postRenderFunctions);
   }
-  this.frameState_ = frameState;
-  this.dirty_ = false;
 
   this.dispatchEvent(
       new ol.MapEvent(ol.MapEventType.POSTRENDER, this, frameState));
