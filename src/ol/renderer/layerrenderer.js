@@ -141,7 +141,7 @@ ol.renderer.Layer.prototype.updateTileUsage =
   var sourceKey = goog.getUid(source).toString();
   var zKey = z.toString();
   if (sourceKey in tileUsage) {
-    if (z in tileUsage[sourceKey]) {
+    if (zKey in tileUsage[sourceKey]) {
       tileUsage[sourceKey][zKey].extend(tileRange);
     } else {
       tileUsage[sourceKey][zKey] = tileRange;
