@@ -1,5 +1,4 @@
 goog.provide('ol.source.DebugTileSource');
-goog.provide('ol.source.DebugTileSourceOptions');
 
 goog.require('ol.Size');
 goog.require('ol.Tile');
@@ -77,14 +76,6 @@ ol.DebugTile_.prototype.getImage = function(opt_context) {
 
   }
 };
-
-
-/**
- * @typedef {{extent: (ol.Extent|undefined),
- *            projection: (ol.Projection|undefined),
- *            tileGrid: (ol.tilegrid.TileGrid|undefined)}}
- */
-ol.source.DebugTileSourceOptions;
 
 
 
