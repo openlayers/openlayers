@@ -632,8 +632,8 @@ ol.Map.prototype.renderFrame_ = function(time) {
       postRenderFunctions: [],
       size: size,
       tileQueue: this.tileQueue_,
-      tileUsage: {},
       time: time,
+      usedTiles: {},
       view2DState: view2DState,
       viewHints: viewHints,
       wantedTiles: {}

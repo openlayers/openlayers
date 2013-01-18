@@ -460,7 +460,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
 
   }
 
-  this.updateTileUsage(frameState.tileUsage, tileSource, z, tileRange);
+  this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
   this.updateWantedTiles(frameState.wantedTiles, tileSource, z, tileRange);
 
   goog.vec.Mat4.makeIdentity(this.matrix_);

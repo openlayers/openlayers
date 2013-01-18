@@ -216,7 +216,7 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
     frameState.animate = true;
   }
 
-  this.updateTileUsage(frameState.tileUsage, tileSource, z, tileRange);
+  this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
   this.updateWantedTiles(frameState.wantedTiles, tileSource, z, tileRange);
 
   var transform = this.transform_;

@@ -69,7 +69,7 @@ ol.control.Attribution.prototype.handleMapPostrender = function(mapEvent) {
   if (goog.isNull(frameState)) {
     this.updateElement_(null);
   } else {
-    this.updateElement_(frameState.tileUsage);
+    this.updateElement_(frameState.usedTiles);
   }
 };
 
@@ -94,12 +94,12 @@ ol.control.Attribution.prototype.setMap = function(map) {
 
 /**
  * @private
- * @param {?Object.<string, Object.<string, ol.TileRange>>} tileUsage Tile
- *     usage.
+ * @param {?Object.<string, Object.<string, ol.TileRange>>} usedTiles Used
+ *     tiles.
  */
-ol.control.Attribution.prototype.updateElement_ = function(tileUsage) {
+ol.control.Attribution.prototype.updateElement_ = function(usedTiles) {
 
-  if (goog.isNull(tileUsage)) {
+  if (goog.isNull(usedTiles)) {
     if (this.renderedVisible_) {
       goog.style.showElement(this.element, false);
       this.renderedVisible_ = false;
@@ -136,14 +136,14 @@ ol.control.Attribution.prototype.updateElement_ = function(tileUsage) {
   var attributions = {};
   var i, tileRanges, tileSource, tileSourceAttribution,
       tileSourceAttributionKey, tileSourceAttributions, tileSourceKey, z;
-  for (tileSourceKey in tileUsage) {
+  for (tileSourceKey in usedTiles) {
     goog.asserts.assert(tileSourceKey in tileSources);
     tileSource = tileSources[tileSourceKey];
     tileSourceAttributions = tileSource.getAttributions();
     if (goog.isNull(tileSourceAttributions)) {
       continue;
     }
-    tileRanges = tileUsage[tileSourceKey];
+    tileRanges = usedTiles[tileSourceKey];
     for (i = 0; i < tileSourceAttributions.length; ++i) {
       tileSourceAttribution = tileSourceAttributions[i];
       tileSourceAttributionKey = goog.getUid(tileSourceAttribution).toString();
