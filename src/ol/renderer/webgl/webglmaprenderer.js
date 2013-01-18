@@ -17,6 +17,7 @@ goog.require('goog.webgl');
 goog.require('ol.Tile');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.TileLayer');
+goog.require('ol.renderer.Map');
 goog.require('ol.renderer.webgl.FragmentShader');
 goog.require('ol.renderer.webgl.TileLayer');
 goog.require('ol.renderer.webgl.VertexShader');
