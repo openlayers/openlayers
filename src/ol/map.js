@@ -628,9 +628,9 @@ ol.Map.prototype.renderFrame_ = function(time) {
       size: size,
       tileQueue: this.tileQueue_,
       tileUsage: {},
+      time: time,
       view2DState: view2DState,
-      viewHints: viewHints,
-      time: time
+      viewHints: viewHints
     };
   }
 
