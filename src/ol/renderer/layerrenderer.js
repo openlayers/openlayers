@@ -151,3 +151,28 @@ ol.renderer.Layer.prototype.updateTileUsage =
     tileUsage[sourceKey][zKey] = tileRange;
   }
 };
+
+
+/**
+ * @protected
+ * @param {Object.<string, Object.<string, ol.TileRange>>} wantedTiles Wanted
+ *     tile ranges.
+ * @param {ol.source.Source} source Source.
+ * @param {number} z Z.
+ * @param {ol.TileRange} tileRange Tile range.
+ */
+ol.renderer.Layer.prototype.updateWantedTiles =
+    function(wantedTiles, source, z, tileRange) {
+  var sourceKey = goog.getUid(source).toString();
+  var zKey = z.toString();
+  if (sourceKey in wantedTiles) {
+    if (zKey in wantedTiles[sourceKey]) {
+      wantedTiles[sourceKey][zKey].extend(tileRange);
+    } else {
+      wantedTiles[sourceKey][zKey] = tileRange;
+    }
+  } else {
+    wantedTiles[sourceKey] = {};
+    wantedTiles[sourceKey][zKey] = tileRange;
+  }
+};

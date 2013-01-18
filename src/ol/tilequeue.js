@@ -21,7 +21,7 @@ goog.require('ol.TileState');
 
 
 /**
- * @typedef {function(ol.Tile, ol.Coordinate, number): (number|undefined)}
+ * @typedef {function(ol.Tile, string, ol.Coordinate): (number|undefined)}
  */
 ol.TilePriorityFunction;
 
@@ -102,18 +102,18 @@ ol.TileQueue.prototype.dequeue_ = function() {
 /**
  * Enqueue a tile. O(logn).
  * @param {ol.Tile} tile Tile.
+ * @param {string} tileSourceKey Tile source key.
  * @param {ol.Coordinate} tileCenter Tile center.
- * @param {number} tileResolution Tile resolution.
  */
-ol.TileQueue.prototype.enqueue = function(tile, tileCenter, tileResolution) {
+ol.TileQueue.prototype.enqueue = function(tile, tileSourceKey, tileCenter) {
   if (tile.getState() != ol.TileState.IDLE) {
     return;
   }
   var tileKey = tile.getKey();
   if (!(tileKey in this.queuedTileKeys_)) {
-    var priority = this.tilePriorityFunction_(tile, tileCenter, tileResolution);
+    var priority = this.tilePriorityFunction_(tile, tileSourceKey, tileCenter);
     if (goog.isDef(priority)) {
-      this.heap_.push([priority, tile, tileCenter, tileResolution]);
+      this.heap_.push([priority, tile, tileSourceKey, tileCenter]);
       this.queuedTileKeys_[tileKey] = true;
       this.siftDown_(0, this.heap_.length - 1);
     } else {
@@ -245,13 +245,13 @@ ol.TileQueue.prototype.siftDown_ = function(startIndex, index) {
 ol.TileQueue.prototype.reprioritize = function() {
   var heap = this.heap_;
   var count = heap.length;
-  var i, priority, node, tile, tileCenter, tileResolution;
+  var i, priority, node, tile, tileCenter, tileSourceKey;
   for (i = count - 1; i >= 0; i--) {
     node = heap[i];
     tile = /** @type {ol.Tile} */ (node[1]);
-    tileCenter = /** @type {ol.Coordinate} */ (node[2]);
-    tileResolution = /** @type {number} */ (node[3]);
-    priority = this.tilePriorityFunction_(tile, tileCenter, tileResolution);
+    tileSourceKey = /** @type {string} */ (node[2]);
+    tileCenter = /** @type {ol.Coordinate} */ (node[3]);
+    priority = this.tilePriorityFunction_(tile, tileSourceKey, tileCenter);
     if (goog.isDef(priority)) {
       node[0] = priority;
     } else {

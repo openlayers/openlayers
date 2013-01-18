@@ -453,19 +453,24 @@ ol.Map.prototype.getOverlayContainer = function() {
 
 /**
  * @param {ol.Tile} tile Tile.
+ * @param {string} tileSourceKey Tile source key.
  * @param {ol.Coordinate} tileCenter Tile center.
- * @param {number} tileResolution Tile resolution.
  * @return {number|undefined} Tile priority.
  */
-ol.Map.prototype.getTilePriority = function(tile, tileCenter, tileResolution) {
-  if (goog.isNull(this.frameState_)) {
+ol.Map.prototype.getTilePriority = function(tile, tileSourceKey, tileCenter) {
+  var frameState = this.frameState_;
+  if (goog.isNull(frameState) || !(tileSourceKey in frameState.wantedTiles)) {
     return undefined;
-  } else {
-    var center = this.frameState_.view2DState.center;
-    var deltaX = tileCenter.x - center.x;
-    var deltaY = tileCenter.y - center.y;
-    return Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
   }
+  var zKey = tile.tileCoord.z.toString();
+  if (!(zKey in frameState.wantedTiles[tileSourceKey]) ||
+      !frameState.wantedTiles[tileSourceKey][zKey].contains(tile.tileCoord)) {
+    return undefined;
+  }
+  var center = frameState.view2DState.center;
+  var deltaX = tileCenter.x - center.x;
+  var deltaY = tileCenter.y - center.y;
+  return deltaX * deltaX + deltaY * deltaY;
 };
 
 
@@ -630,7 +635,8 @@ ol.Map.prototype.renderFrame_ = function(time) {
       tileUsage: {},
       time: time,
       view2DState: view2DState,
-      viewHints: viewHints
+      viewHints: viewHints,
+      wantedTiles: {}
     };
   }
 

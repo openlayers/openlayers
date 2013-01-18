@@ -23,7 +23,7 @@ describe('ol.TileQueue', function() {
     for (i = 0; i < num; i++) {
       tile = new ol.Tile();
       priority = Math.floor(Math.random() * 100);
-      tq.heap_.push([priority, tile, new ol.Coordinate(0, 0), 1]);
+      tq.heap_.push([priority, tile, '', new ol.Coordinate(0, 0)]);
       tq.queuedTileKeys_[tile.getKey()] = true;
     }
   }

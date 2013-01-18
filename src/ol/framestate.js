@@ -1,4 +1,6 @@
 // FIXME add view3DState
+// FIXME rename tileUsage to usedTiles
+// FIXME factor out common code between tileUsage and wantedTiles
 
 goog.provide('ol.FrameState');
 goog.provide('ol.PostRenderFunction');
@@ -29,7 +31,8 @@ goog.require('ol.layer.LayerState');
  *            tileUsage: Object.<string, Object.<string, ol.TileRange>>,
  *            time: number,
  *            view2DState: ol.View2DState,
- *            viewHints: Array.<number>}}
+ *            viewHints: Array.<number>,
+ *            wantedTiles: Object.<string, Object.<string, ol.TileRange>>}}
  */
 ol.FrameState;
 
