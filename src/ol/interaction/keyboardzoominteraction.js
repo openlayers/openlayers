@@ -8,6 +8,12 @@ goog.require('ol.View2D');
 goog.require('ol.interaction.Interaction');
 
 
+/**
+ * @define {number} Zoom duration.
+ */
+ol.interaction.KEYBOARD_ZOOM_DURATION = 100;
+
+
 
 /**
  * @constructor
@@ -31,10 +37,11 @@ ol.interaction.KeyboardZoom.prototype.handleMapBrowserEvent =
     if (charCode == '+'.charCodeAt(0) || charCode == '-'.charCodeAt(0)) {
       var map = mapBrowserEvent.map;
       var delta = (charCode == '+'.charCodeAt(0)) ? 4 : -4;
+      map.requestRenderFrame();
       // FIXME works for View2D only
       var view = map.getView();
       goog.asserts.assert(view instanceof ol.View2D);
-      view.zoom(map, delta);
+      view.zoom(map, delta, undefined, ol.interaction.KEYBOARD_ZOOM_DURATION);
       keyEvent.preventDefault();
       mapBrowserEvent.preventDefault();
     }

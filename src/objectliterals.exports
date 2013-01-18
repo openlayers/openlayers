@@ -51,6 +51,10 @@
 @exportObjectLiteralProperty ol.source.BingMapsOptions.key string
 @exportObjectLiteralProperty ol.source.BingMapsOptions.style ol.BingMapsStyle
 
+@exportObjectLiteral ol.source.StamenOptions
+@exportObjectLiteralProperty ol.source.StamenOptions.flavor string|undefined
+@exportObjectLiteralProperty ol.source.StamenOptions.provider string
+
 @exportObjectLiteral ol.source.TiledWMSOptions
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.attributions Array.<ol.Attribution>|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.params Object
@@ -62,6 +66,16 @@
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.projection ol.Projection|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.url string|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.urls Array.<string>|undefined
+
+@exportObjectLiteral ol.tilegrid.TileGridOptions
+@exportObjectLiteralProperty ol.tilegrid.TileGridOptions.extent ol.Extent|undefined
+@exportObjectLiteralProperty ol.tilegrid.TileGridOptions.origin ol.Coordinate|undefined
+@exportObjectLiteralProperty ol.tilegrid.TileGridOptions.origins Array.<ol.Coordinate>|undefined
+@exportObjectLiteralProperty ol.tilegrid.TileGridOptions.resolutions !Array.<number>
+@exportObjectLiteralProperty ol.tilegrid.TileGridOptions.tileSize ol.Size|undefined
+
+@exportObjectLiteral ol.tilegrid.XYZOptions
+@exportObjectLiteralProperty ol.tilegrid.XYZOptions.maxZoom number
 
 @exportObjectLiteral ol.View2DOptions
 @exportObjectLiteralProperty ol.View2DOptions.center ol.Coordinate|undefined

@@ -30,6 +30,15 @@ goog.inherits(ol.renderer.dom.Layer, ol.renderer.Layer);
 
 
 /**
+ * @inheritDoc
+ */
+ol.renderer.dom.Layer.prototype.disposeInternal = function() {
+  goog.dom.removeNode(this.target);
+  goog.base(this, 'disposeInternal');
+};
+
+
+/**
  * @return {!Element} Target.
  */
 ol.renderer.dom.Layer.prototype.getTarget = function() {

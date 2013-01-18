@@ -14,7 +14,6 @@ goog.require('goog.events.EventType');
 goog.require('goog.net.jsloader');
 goog.require('goog.string');
 goog.require('ol.Projection');
-goog.require('ol.TileCoverageArea');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.source.ImageTileSource');
 goog.require('ol.tilegrid.XYZ');
@@ -98,17 +97,17 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function() {
   if (goog.isDef(tileJSON.scheme)) {
     goog.asserts.assert(tileJSON.scheme == 'xyz');
   }
-  var minzoom = tileJSON.minzoom || 0;
-  goog.asserts.assert(minzoom === 0); // FIXME
-  var maxzoom = tileJSON.maxzoom || 22;
+  var minZoom = tileJSON.minzoom || 0;
+  goog.asserts.assert(minZoom === 0); // FIXME
+  var maxZoom = tileJSON.maxzoom || 22;
   var tileGrid = new ol.tilegrid.XYZ({
-    maxZoom: maxzoom
+    maxZoom: maxZoom
   });
   this.tileGrid = tileGrid;
 
   this.tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
       function(tileCoord) {
-        if (tileCoord.z < minzoom || maxzoom < tileCoord.z) {
+        if (tileCoord.z < minZoom || maxZoom < tileCoord.z) {
           return null;
         }
         var n = 1 << tileCoord.z;
@@ -129,13 +128,18 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function() {
       ol.TileUrlFunction.createFromTemplates(tileJSON.tiles));
 
   if (goog.isDef(tileJSON.attribution)) {
-    var coverageAreas = [
-      new ol.TileCoverageArea(tileGrid, epsg4326Extent, minzoom, maxzoom)
-    ];
-    var coverageAreaProjection = epsg4326Projection;
+    var attributionExtent = goog.isNull(extent) ?
+        epsg4326Projection.getExtent() : extent;
+    /** @type {Object.<string, Array.<ol.TileRange>>} */
+    var tileRanges = {};
+    var z, zKey;
+    for (z = minZoom; z <= maxZoom; ++z) {
+      zKey = z.toString();
+      tileRanges[zKey] =
+          [tileGrid.getTileRangeForExtentAndZ(attributionExtent, z)];
+    }
     this.setAttributions([
-      new ol.Attribution(
-          tileJSON.attribution, coverageAreas, coverageAreaProjection)
+      new ol.Attribution(tileJSON.attribution, tileRanges)
     ]);
   }
 

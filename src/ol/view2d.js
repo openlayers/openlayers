@@ -12,6 +12,7 @@ goog.require('ol.Projection');
 goog.require('ol.ResolutionConstraint');
 goog.require('ol.RotationConstraint');
 goog.require('ol.View');
+goog.require('ol.animation');
 
 
 /**
@@ -52,7 +53,8 @@ ol.View2D = function(opt_view2DOptions) {
     var size = Math.max(
         projectionExtent.maxX - projectionExtent.minX,
         projectionExtent.maxY - projectionExtent.minY);
-    values[ol.View2DProperty.RESOLUTION] = size / (256 << view2DOptions.zoom);
+    values[ol.View2DProperty.RESOLUTION] =
+        size / (ol.DEFAULT_TILE_SIZE << view2DOptions.zoom);
   }
   values[ol.View2DProperty.ROTATION] = view2DOptions.rotation;
   this.setValues(values);
@@ -288,9 +290,16 @@ ol.View2D.prototype.zoom_ = function(map, resolution, opt_anchor) {
  * @param {ol.Map} map Map.
  * @param {number} delta Delta from previous zoom level.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
+ * @param {number=} opt_duration Duration.
  */
-ol.View2D.prototype.zoom = function(map, delta, opt_anchor) {
-  var resolution = this.constraints_.resolution(this.getResolution(), delta);
+ol.View2D.prototype.zoom = function(map, delta, opt_anchor, opt_duration) {
+  var currentResolution = this.getResolution();
+  if (goog.isDef(currentResolution) && goog.isDef(opt_duration)) {
+    map.requestRenderFrame();
+    map.addPreRenderFunction(ol.animation.createZoomFrom(
+        currentResolution, opt_duration));
+  }
+  var resolution = this.constraints_.resolution(currentResolution, delta);
   this.zoom_(map, resolution, opt_anchor);
 };
 
@@ -329,7 +338,7 @@ ol.View2D.createConstraints_ = function(view2DOptions) {
           view2DOptions.projection, 'EPSG:3857').getExtent();
       maxResolution = Math.max(
           projectionExtent.maxX - projectionExtent.minX,
-          projectionExtent.maxY - projectionExtent.minY) / 256;
+          projectionExtent.maxY - projectionExtent.minY) / ol.DEFAULT_TILE_SIZE;
       // number of steps we want between two data resolutions
       var numSteps = 4;
       numZoomLevels = 29 * numSteps;

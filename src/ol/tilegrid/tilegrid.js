@@ -1,7 +1,6 @@
 // FIXME cope with tile grids whose minium zoom is not zero
 
 goog.provide('ol.tilegrid.TileGrid');
-goog.provide('ol.tilegrid.TileGridOptions');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -15,13 +14,9 @@ goog.require('ol.array');
 
 
 /**
- * @typedef {{extent: (ol.Extent|undefined),
- *            origin: (ol.Coordinate|undefined),
- *            origins: (Array.<ol.Coordinate>|undefined),
- *            resolutions: !Array.<number>,
- *            tileSize: (ol.Size|undefined)}}
+ * @define {number} Default tile size.
  */
-ol.tilegrid.TileGridOptions;
+ol.DEFAULT_TILE_SIZE = 256;
 
 
 
@@ -75,7 +70,8 @@ ol.tilegrid.TileGrid = function(tileGridOptions) {
    * @type {ol.Size}
    */
   this.tileSize_ = goog.isDef(tileGridOptions.tileSize) ?
-      tileGridOptions.tileSize : new ol.Size(256, 256);
+      tileGridOptions.tileSize :
+      new ol.Size(ol.DEFAULT_TILE_SIZE, ol.DEFAULT_TILE_SIZE);
 
 };
 
@@ -321,21 +317,27 @@ ol.tilegrid.TileGrid.prototype.getZForResolution = function(resolution) {
 /**
  * @param {ol.Projection} projection Projection.
  * @param {number=} opt_maxZoom Maximum zoom level (optional). Default is 18.
+ * @param {ol.Size=} opt_tileSize Tile size.
  * @return {ol.tilegrid.TileGrid} TileGrid instance.
  */
-ol.tilegrid.createForProjection = function(projection, opt_maxZoom) {
+ol.tilegrid.createForProjection =
+    function(projection, opt_maxZoom, opt_tileSize) {
   var projectionExtent = projection.getExtent();
   var size = Math.max(
       projectionExtent.maxX - projectionExtent.minX,
       projectionExtent.maxY - projectionExtent.minY);
   var maxZoom = goog.isDef(opt_maxZoom) ?
       opt_maxZoom : 18;
+  var tileSize = goog.isDef(opt_tileSize) ?
+      opt_tileSize : new ol.Size(ol.DEFAULT_TILE_SIZE, ol.DEFAULT_TILE_SIZE);
   var resolutions = new Array(maxZoom + 1);
+  goog.asserts.assert(tileSize.width == tileSize.height);
   for (var z = 0, zz = resolutions.length; z < zz; ++z) {
-    resolutions[z] = size / (256 << z);
+    resolutions[z] = size / (tileSize.width << z);
   }
   return new ol.tilegrid.TileGrid({
     origin: projectionExtent.getTopLeft(),
-    resolutions: resolutions
+    resolutions: resolutions,
+    tileSize: tileSize
   });
 };

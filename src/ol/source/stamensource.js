@@ -1,6 +1,8 @@
 // FIXME Configure minZoom when supported by TileGrid
 
 goog.provide('ol.source.Stamen');
+goog.provide('ol.source.StamenFlavor');
+goog.provide('ol.source.StamenProvider');
 
 goog.require('ol.source.XYZ');
 
@@ -26,13 +28,6 @@ ol.source.StamenFlavor = {
 
 
 /**
- * @typedef {{flavor: (ol.source.StamenFlavor|undefined),
- *            provider: ol.source.StamenProvider}}
- */
-ol.source.StamenOptions;
-
-
-/**
  * @enum {string}
  */
 ol.source.StamenProvider = {
@@ -43,8 +38,7 @@ ol.source.StamenProvider = {
 
 
 /**
- * @type {Object.<ol.source.StamenProvider,
- *                {type: string, minZoom: number, maxZoom: number}>}
+ * @type {Object.<string, {type: string, minZoom: number, maxZoom: number}>}
  */
 ol.source.StamenProviderConfig = {};
 ol.source.StamenProviderConfig[ol.source.StamenProvider.TERRAIN] = {

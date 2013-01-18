@@ -1,2 +1,21 @@
 @exportSymbol ol.source.Stamen
 
+@exportSymbol ol.source.StamenFlavor
+@exportProperty ol.source.StamenFlavor.TERRAIN_BACKGROUND
+@exportProperty ol.source.StamenFlavor.TERRAIN_LABELS
+@exportProperty ol.source.StamenFlavor.TERRAIN_LINES
+@exportProperty ol.source.StamenFlavor.TONER_2010
+@exportProperty ol.source.StamenFlavor.TONER_2011
+@exportProperty ol.source.StamenFlavor.TONER_2011_LABELS
+@exportProperty ol.source.StamenFlavor.TONER_2011_LINES
+@exportProperty ol.source.StamenFlavor.TONER_2011_LITE
+@exportProperty ol.source.StamenFlavor.TONER_BACKGROUND
+@exportProperty ol.source.StamenFlavor.TONER_HYBRID
+@exportProperty ol.source.StamenFlavor.TONER_LABELS
+@exportProperty ol.source.StamenFlavor.TONER_LINES
+@exportProperty ol.source.StamenFlavor.TONER_LITE
+
+@exportSymbol ol.source.StamenProvider
+@exportProperty ol.source.StamenProvider.TERRAIN
+@exportProperty ol.source.StamenProvider.TONER
+@exportProperty ol.source.StamenProvider.WATERCOLOR

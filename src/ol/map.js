@@ -54,10 +54,18 @@ goog.require('ol.interaction.MouseWheelZoom');
 goog.require('ol.interaction.condition');
 goog.require('ol.renderer.Layer');
 goog.require('ol.renderer.Map');
+goog.require('ol.renderer.canvas');
+goog.require('ol.renderer.canvas.Map');
 goog.require('ol.renderer.dom');
 goog.require('ol.renderer.dom.Map');
 goog.require('ol.renderer.webgl');
 goog.require('ol.renderer.webgl.Map');
+
+
+/**
+ * @define {boolean} Whether to enable canvas.
+ */
+ol.ENABLE_CANVAS = true;
 
 
 /**
@@ -76,6 +84,7 @@ ol.ENABLE_WEBGL = true;
  * @enum {string}
  */
 ol.RendererHint = {
+  CANVAS: 'canvas',
   DOM: 'dom',
   WEBGL: 'webgl'
 };
@@ -86,6 +95,7 @@ ol.RendererHint = {
  */
 ol.DEFAULT_RENDERER_HINTS = [
   ol.RendererHint.WEBGL,
+  ol.RendererHint.CANVAS,
   ol.RendererHint.DOM
 ];
 
@@ -608,7 +618,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
     frameState = {
       animate: false,
       backgroundColor: goog.isDef(backgroundColor) ?
-          backgroundColor : new ol.Color(1, 1, 1, 1),
+          backgroundColor : new ol.Color(255, 255, 255, 1),
       coordinateToPixelMatrix: this.coordinateToPixelMatrix_,
       extent: null,
       layersArray: layersArray,
@@ -617,6 +627,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       postRenderFunctions: [],
       size: size,
       tileQueue: this.tileQueue_,
+      tileUsage: {},
       view2DState: view2DState,
       viewHints: viewHints,
       time: time
@@ -794,7 +805,12 @@ ol.Map.createOptionsInternal = function(mapOptions) {
   var i, rendererHint;
   for (i = 0; i < rendererHints.length; ++i) {
     rendererHint = rendererHints[i];
-    if (rendererHint == ol.RendererHint.DOM) {
+    if (rendererHint == ol.RendererHint.CANVAS) {
+      if (ol.ENABLE_CANVAS && ol.renderer.canvas.isSupported()) {
+        rendererConstructor = ol.renderer.canvas.Map;
+        break;
+      }
+    } else if (rendererHint == ol.RendererHint.DOM) {
       if (ol.ENABLE_DOM && ol.renderer.dom.isSupported()) {
         rendererConstructor = ol.renderer.dom.Map;
         break;
@@ -931,8 +947,9 @@ ol.Map.createInteractions_ = function(mapOptions) {
  * @return {Array.<ol.RendererHint>} Renderer hints.
  */
 ol.RendererHints.createFromQueryData = function(opt_queryData) {
-  var queryData = goog.isDef(opt_queryData) ?
-      opt_queryData : new goog.Uri.QueryData(goog.global.location.search);
+  var query = goog.global.location.search.substring(1),
+      queryData = goog.isDef(opt_queryData) ?
+          opt_queryData : new goog.Uri.QueryData(query);
   if (queryData.containsKey('renderers')) {
     return queryData.get('renderers').split(',');
   } else if (queryData.containsKey('renderer')) {
