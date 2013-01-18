@@ -1,4 +1,6 @@
 @exportClass ol.Map ol.MapOptions
+@exportProperty ol.Map.prototype.addPreRenderFunction
+@exportProperty ol.Map.prototype.addPreRenderFunctions
 @exportProperty ol.Map.prototype.getControls
 @exportProperty ol.Map.prototype.getInteractions
 
