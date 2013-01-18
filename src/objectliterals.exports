@@ -1,3 +1,31 @@
+@exportObjectLiteral ol.MapOptions
+@exportObjectLiteralProperty ol.MapOptions.controls ol.Collection|undefined
+@exportObjectLiteralProperty ol.MapOptions.doubleClickZoom boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.dragPan boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.interactions ol.Collection|undefined
+@exportObjectLiteralProperty ol.MapOptions.keyboard boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.keyboardPanOffset number|undefined
+@exportObjectLiteralProperty ol.MapOptions.layers ol.Collection|undefined
+@exportObjectLiteralProperty ol.MapOptions.mouseWheelZoom boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.mouseWheelZoomDelta number|undefined
+@exportObjectLiteralProperty ol.MapOptions.renderer ol.RendererHint|undefined
+@exportObjectLiteralProperty ol.MapOptions.renderers Array.<ol.RendererHint>|undefined
+@exportObjectLiteralProperty ol.MapOptions.shiftDragZoom boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.target Element|string
+@exportObjectLiteralProperty ol.MapOptions.view ol.IView|undefined
+@exportObjectLiteralProperty ol.MapOptions.zoomDelta number|undefined
+
+@exportObjectLiteral ol.View2DOptions
+@exportObjectLiteralProperty ol.View2DOptions.center ol.Coordinate|undefined
+@exportObjectLiteralProperty ol.View2DOptions.maxResolution number|undefined
+@exportObjectLiteralProperty ol.View2DOptions.numZoomLevels number|undefined
+@exportObjectLiteralProperty ol.View2DOptions.projection ol.Projection|string|undefined
+@exportObjectLiteralProperty ol.View2DOptions.resolution number|undefined
+@exportObjectLiteralProperty ol.View2DOptions.resolutions Array.<number>|undefined
+@exportObjectLiteralProperty ol.View2DOptions.rotation number|undefined
+@exportObjectLiteralProperty ol.View2DOptions.zoom number|undefined
+@exportObjectLiteralProperty ol.View2DOptions.zoomFactor number|undefined
+
 @exportObjectLiteral ol.control.AttributionOptions
 @exportObjectLiteralProperty ol.control.AttributionOptions.map ol.Map|undefined
 @exportObjectLiteralProperty ol.control.AttributionOptions.target Element|undefined
@@ -22,23 +50,6 @@
 @exportObjectLiteralProperty ol.layer.LayerOptions.saturation number|undefined
 @exportObjectLiteralProperty ol.layer.LayerOptions.source ol.source.Source
 @exportObjectLiteralProperty ol.layer.LayerOptions.visible boolean|undefined
-
-@exportObjectLiteral ol.MapOptions
-@exportObjectLiteralProperty ol.MapOptions.controls ol.Collection|undefined
-@exportObjectLiteralProperty ol.MapOptions.doubleClickZoom boolean|undefined
-@exportObjectLiteralProperty ol.MapOptions.dragPan boolean|undefined
-@exportObjectLiteralProperty ol.MapOptions.interactions ol.Collection|undefined
-@exportObjectLiteralProperty ol.MapOptions.keyboard boolean|undefined
-@exportObjectLiteralProperty ol.MapOptions.keyboardPanOffset number|undefined
-@exportObjectLiteralProperty ol.MapOptions.layers ol.Collection|undefined
-@exportObjectLiteralProperty ol.MapOptions.mouseWheelZoom boolean|undefined
-@exportObjectLiteralProperty ol.MapOptions.mouseWheelZoomDelta number|undefined
-@exportObjectLiteralProperty ol.MapOptions.renderer ol.RendererHint|undefined
-@exportObjectLiteralProperty ol.MapOptions.renderers Array.<ol.RendererHint>|undefined
-@exportObjectLiteralProperty ol.MapOptions.shiftDragZoom boolean|undefined
-@exportObjectLiteralProperty ol.MapOptions.target Element|string
-@exportObjectLiteralProperty ol.MapOptions.view ol.IView|undefined
-@exportObjectLiteralProperty ol.MapOptions.zoomDelta number|undefined
 
 @exportObjectLiteral ol.overlay.OverlayOptions
 @exportObjectLiteralProperty ol.overlay.OverlayOptions.coordinate ol.Coordinate|undefined
@@ -81,14 +92,3 @@
 
 @exportObjectLiteral ol.tilegrid.XYZOptions
 @exportObjectLiteralProperty ol.tilegrid.XYZOptions.maxZoom number
-
-@exportObjectLiteral ol.View2DOptions
-@exportObjectLiteralProperty ol.View2DOptions.center ol.Coordinate|undefined
-@exportObjectLiteralProperty ol.View2DOptions.maxResolution number|undefined
-@exportObjectLiteralProperty ol.View2DOptions.numZoomLevels number|undefined
-@exportObjectLiteralProperty ol.View2DOptions.projection ol.Projection|string|undefined
-@exportObjectLiteralProperty ol.View2DOptions.resolution number|undefined
-@exportObjectLiteralProperty ol.View2DOptions.resolutions Array.<number>|undefined
-@exportObjectLiteralProperty ol.View2DOptions.rotation number|undefined
-@exportObjectLiteralProperty ol.View2DOptions.zoom number|undefined
-@exportObjectLiteralProperty ol.View2DOptions.zoomFactor number|undefined
