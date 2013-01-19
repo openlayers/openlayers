@@ -250,9 +250,8 @@ ol.TileQueue.prototype.siftDown_ = function(startIndex, index) {
  */
 ol.TileQueue.prototype.reprioritize = function() {
   var heap = this.heap_;
-  var count = heap.length;
-  var i, priority, node, tile, tileCenter, tileSourceKey;
-  for (i = count - 1; i >= 0; i--) {
+  var i, n = 0, node, priority, tile, tileCenter, tileSourceKey;
+  for (i = 0; i < heap.length; ++i) {
     node = heap[i];
     tile = /** @type {ol.Tile} */ (node[1]);
     tileSourceKey = /** @type {string} */ (node[2]);
@@ -260,9 +259,9 @@ ol.TileQueue.prototype.reprioritize = function() {
     priority = this.tilePriorityFunction_(tile, tileSourceKey, tileCenter);
     if (priority != ol.TileQueue.DROP) {
       node[0] = priority;
-    } else {
-      goog.array.removeAt(heap, i);
+      heap[n++] = node;
     }
   }
+  heap.length = n;
   this.heapify_();
 };
