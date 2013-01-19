@@ -7,8 +7,9 @@ goog.require('ol.Coordinate');
 goog.require('ol.Pixel');
 goog.require('ol.canvas');
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
-goog.require('ol.renderer.Layer');
+goog.require('ol.style.LiteralLine');
 goog.require('ol.style.LiteralPoint');
 goog.require('ol.style.LiteralShape');
 goog.require('ol.style.ShapeType');
@@ -54,6 +55,40 @@ ol.renderer.canvas.Renderer = function(canvas, transform, opt_offset) {
 
 
 /**
+ * @param {Array.<ol.geom.LineString>} lines Line array.
+ * @param {ol.style.LiteralLine} symbolizer Line symbolizer.
+ */
+ol.renderer.canvas.Renderer.prototype.renderLineStrings =
+    function(lines, symbolizer) {
+
+  var context = this.context_,
+      i, ii, line, coords, dim, j, jj, x, y;
+
+  context.globalAlpha = symbolizer.opacity;
+  context.strokeStyle = symbolizer.strokeStyle;
+  context.lineWidth = symbolizer.strokeWidth;
+  context.beginPath();
+
+  for (i = 0, ii = lines.length; i < ii; ++i) {
+    line = lines[i];
+    dim = line.dimension;
+    coords = line.coordinates;
+    for (j = 0, jj = coords.length; j < jj; j += dim) {
+      x = coords[j];
+      y = coords[j + 1];
+      if (j === 0) {
+        context.moveTo(x, y);
+      } else {
+        context.lineTo(x, y);
+      }
+    }
+  }
+
+  context.stroke();
+};
+
+
+/**
  * @param {Array.<ol.geom.Point>} points Point array.
  * @param {ol.style.LiteralPoint} symbolizer Point symbolizer.
  */
@@ -78,7 +113,6 @@ ol.renderer.canvas.Renderer.prototype.renderPoints =
     context.drawImage(canvas, coords[0], coords[1]);
   }
   context.restore();
-
 };
 
 
