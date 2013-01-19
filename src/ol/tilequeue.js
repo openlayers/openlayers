@@ -78,6 +78,7 @@ ol.TileQueue.DROP = Infinity;
  */
 ol.TileQueue.prototype.clear = function() {
   goog.array.clear(this.heap_);
+  this.queuedTileKeys_ = {};
 };
 
 
