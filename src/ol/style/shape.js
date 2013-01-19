@@ -1,8 +1,7 @@
 goog.provide('ol.style.LiteralShape');
+goog.provide('ol.style.ShapeType');
 
-goog.require('ol.style.LiteralFill');
-goog.require('ol.style.LiteralStroke');
-goog.require('ol.style.LiteralSymbolizer');
+goog.require('ol.style.LiteralPoint');
 
 
 /**
@@ -16,8 +15,10 @@ ol.style.ShapeType = {
 /**
  * @typedef {{type: (ol.style.ShapeType),
  *            size: (number),
- *            fill: (ol.style.LiteralFill),
- *            stroke: (ol.style.LiteralStroke)}}
+ *            fillStyle: (string),
+ *            strokeStyle: (string),
+ *            strokeWidth: (number),
+ *            opacity: (number)}}
  */
 ol.style.LiteralShapeConfig;
 
@@ -25,7 +26,7 @@ ol.style.LiteralShapeConfig;
 
 /**
  * @constructor
- * @implements {ol.style.LiteralSymbolizer}
+ * @implements {ol.style.LiteralPoint}
  * @param {ol.style.LiteralShapeConfig} config Symbolizer properties.
  */
 ol.style.LiteralShape = function(config) {
@@ -36,10 +37,16 @@ ol.style.LiteralShape = function(config) {
   /** @type {number} */
   this.size = config.size;
 
-  /** @type {ol.style.LiteralFill} */
-  this.fill = config.fill;
+  /** @type {string} */
+  this.fillStyle = config.fillStyle;
 
-  /** @type {ol.style.LiteralStroke} */
-  this.stroke = config.stroke;
+  /** @type {string} */
+  this.strokeStyle = config.strokeStyle;
+
+  /** @type {number} */
+  this.strokeWidth = config.strokeWidth;
+
+  /** @type {number} */
+  this.opacity = config.opacity;
 
 };
