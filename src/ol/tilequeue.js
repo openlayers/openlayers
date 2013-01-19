@@ -122,8 +122,6 @@ ol.TileQueue.prototype.enqueue = function(tile, tileSourceKey, tileCenter) {
       this.heap_.push([priority, tile, tileSourceKey, tileCenter]);
       this.queuedTileKeys_[tileKey] = true;
       this.siftDown_(0, this.heap_.length - 1);
-    } else {
-      // FIXME fire drop event?
     }
   }
 };
