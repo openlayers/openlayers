@@ -21,7 +21,7 @@ goog.require('ol.TileState');
 
 
 /**
- * @typedef {function(ol.Tile, string, ol.Coordinate): (number|undefined)}
+ * @typedef {function(ol.Tile, string, ol.Coordinate): number}
  */
 ol.TilePriorityFunction;
 
@@ -65,6 +65,12 @@ ol.TileQueue = function(tilePriorityFunction) {
   this.queuedTileKeys_ = {};
 
 };
+
+
+/**
+ * @const {number}
+ */
+ol.TileQueue.DROP = Infinity;
 
 
 /**
@@ -112,7 +118,7 @@ ol.TileQueue.prototype.enqueue = function(tile, tileSourceKey, tileCenter) {
   var tileKey = tile.getKey();
   if (!(tileKey in this.queuedTileKeys_)) {
     var priority = this.tilePriorityFunction_(tile, tileSourceKey, tileCenter);
-    if (goog.isDef(priority)) {
+    if (priority != ol.TileQueue.DROP) {
       this.heap_.push([priority, tile, tileSourceKey, tileCenter]);
       this.queuedTileKeys_[tileKey] = true;
       this.siftDown_(0, this.heap_.length - 1);
@@ -252,7 +258,7 @@ ol.TileQueue.prototype.reprioritize = function() {
     tileSourceKey = /** @type {string} */ (node[2]);
     tileCenter = /** @type {ol.Coordinate} */ (node[3]);
     priority = this.tilePriorityFunction_(tile, tileSourceKey, tileCenter);
-    if (goog.isDef(priority)) {
+    if (priority != ol.TileQueue.DROP) {
       node[0] = priority;
     } else {
       goog.array.removeAt(heap, i);

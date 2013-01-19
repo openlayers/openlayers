@@ -455,17 +455,17 @@ ol.Map.prototype.getOverlayContainer = function() {
  * @param {ol.Tile} tile Tile.
  * @param {string} tileSourceKey Tile source key.
  * @param {ol.Coordinate} tileCenter Tile center.
- * @return {number|undefined} Tile priority.
+ * @return {number} Tile priority.
  */
 ol.Map.prototype.getTilePriority = function(tile, tileSourceKey, tileCenter) {
   var frameState = this.frameState_;
   if (goog.isNull(frameState) || !(tileSourceKey in frameState.wantedTiles)) {
-    return undefined;
+    return ol.TileQueue.DROP;
   }
   var zKey = tile.tileCoord.z.toString();
   if (!(zKey in frameState.wantedTiles[tileSourceKey]) ||
       !frameState.wantedTiles[tileSourceKey][zKey].contains(tile.tileCoord)) {
-    return undefined;
+    return ol.TileQueue.DROP;
   }
   var center = frameState.view2DState.center;
   var deltaX = tileCenter.x - center.x;

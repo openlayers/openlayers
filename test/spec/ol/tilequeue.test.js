@@ -53,7 +53,7 @@ describe('ol.TileQueue', function() {
       var i = 0;
       tq.tilePriorityFunction_ = function() {
         if ((i++) % 2 === 0) {
-          return undefined;
+          return ol.TileQueue.DROP;
         }
         return Math.floor(Math.random() * 100);
       };
