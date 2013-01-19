@@ -245,14 +245,17 @@ ol.TileQueue.prototype.siftDown_ = function(startIndex, index) {
  */
 ol.TileQueue.prototype.reprioritize = function() {
   var heap = this.heap_;
-  var i, n = 0, node, priority, tile, tileCenter, tileSourceKey;
+  var i, n = 0, node, priority, tile, tileCenter, tileKey, tileSourceKey;
   for (i = 0; i < heap.length; ++i) {
     node = heap[i];
     tile = /** @type {ol.Tile} */ (node[1]);
     tileSourceKey = /** @type {string} */ (node[2]);
     tileCenter = /** @type {ol.Coordinate} */ (node[3]);
     priority = this.tilePriorityFunction_(tile, tileSourceKey, tileCenter);
-    if (priority != ol.TileQueue.DROP) {
+    if (priority == ol.TileQueue.DROP) {
+      tileKey = tile.getKey();
+      delete this.queuedTileKeys_[tileKey];
+    } else {
       node[0] = priority;
       heap[n++] = node;
     }
