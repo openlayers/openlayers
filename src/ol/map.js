@@ -893,8 +893,8 @@ ol.Map.createInteractions_ = function(mapOptions) {
   var rotate = goog.isDef(mapOptions.rotate) ?
       mapOptions.rotate : true;
   if (rotate) {
-    interactions.push(
-        new ol.interaction.DragRotate(ol.interaction.condition.altKeyOnly));
+    interactions.push(new ol.interaction.DragRotate(
+        ol.interaction.condition.altShiftKeysOnly));
   }
 
   var doubleClickZoom = goog.isDef(mapOptions.doubleClickZoom) ?
