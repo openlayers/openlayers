@@ -1,7 +1,6 @@
 goog.provide('ol.TilePriorityFunction');
 goog.provide('ol.TileQueue');
 
-goog.require('goog.array');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.Coordinate');
@@ -77,7 +76,7 @@ ol.TileQueue.DROP = Infinity;
  * FIXME empty description for jsdoc
  */
 ol.TileQueue.prototype.clear = function() {
-  goog.array.clear(this.heap_);
+  this.heap_.length = 0;
   this.queuedTileKeys_ = {};
 };
 
@@ -85,17 +84,14 @@ ol.TileQueue.prototype.clear = function() {
 /**
  * Remove and return the highest-priority tile. O(logn).
  * @private
- * @return {ol.Tile|undefined} Tile.
+ * @return {ol.Tile} Tile.
  */
 ol.TileQueue.prototype.dequeue_ = function() {
   var heap = this.heap_;
-  var count = heap.length;
-  if (count <= 0) {
-    return undefined;
-  }
+  goog.asserts.assert(heap.length > 0);
   var tile = /** @type {ol.Tile} */ (heap[0][1]);
-  if (count == 1) {
-    goog.array.clear(heap);
+  if (heap.length == 1) {
+    heap.length = 0;
   } else {
     heap[0] = heap.pop();
     this.siftUp_(0);
