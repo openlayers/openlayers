@@ -9,8 +9,10 @@ goog.require('ol.canvas');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
+goog.require('ol.geom.Polygon');
 goog.require('ol.style.LiteralLine');
 goog.require('ol.style.LiteralPoint');
+goog.require('ol.style.LiteralPolygon');
 goog.require('ol.style.LiteralShape');
 goog.require('ol.style.ShapeType');
 
@@ -113,6 +115,77 @@ ol.renderer.canvas.Renderer.prototype.renderPoints =
     context.drawImage(canvas, coords[0], coords[1]);
   }
   context.restore();
+};
+
+
+/**
+ * @param {Array.<ol.geom.Polygon>} polygons Array of polygons.
+ * @param {ol.style.LiteralPolygon} symbolizer Polygon symbolizer.
+ */
+ol.renderer.canvas.Renderer.prototype.renderPolygons =
+    function(polygons, symbolizer) {
+
+  var context = this.context_,
+      strokeStyle = symbolizer.strokeStyle,
+      fillStyle = symbolizer.fillStyle,
+      i, ii, poly, rings, numRings, coords, dim, j, jj, x, y;
+
+  context.globalAlpha = symbolizer.opacity;
+  if (strokeStyle) {
+    context.strokeStyle = symbolizer.strokeStyle;
+    context.lineWidth = symbolizer.strokeWidth;
+  }
+  if (fillStyle) {
+    context.fillStyle = fillStyle;
+  }
+
+  /**
+   * Four scenarios covered here:
+   * 1) stroke only, no holes - only need to have a single path
+   * 2) fill only, no holes - only need to have a single path
+   * 3) fill and stroke, no holes
+   * 4) holes - render polygon to sketch canvas first
+   */
+  context.beginPath();
+  for (i = 0, ii = polygons.length; i < ii; ++i) {
+    poly = polygons[i];
+    dim = poly.dimension;
+    rings = poly.rings;
+    numRings = rings.length;
+    if (numRings > 1) {
+      // scenario 4
+      // TODO: use sketch canvas to render outer and punch holes for inner rings
+      throw new Error('Rendering holes not implemented');
+    } else {
+      coords = rings[0].coordinates;
+      for (j = 0, jj = coords.length; j < jj; j += dim) {
+        x = coords[j];
+        y = coords[j + 1];
+        if (j === 0) {
+          context.moveTo(x, y);
+        } else {
+          context.lineTo(x, y);
+        }
+      }
+      if (fillStyle && strokeStyle) {
+        // scenario 3 - fill and stroke each time
+        context.fill();
+        context.stroke();
+        if (i < ii - 1) {
+          context.beginPath();
+        }
+      }
+    }
+  }
+  if (!(fillStyle && strokeStyle)) {
+    if (fillStyle) {
+      // scenario 2 - fill all at once
+      context.fill();
+    } else {
+      // scenario 1 - stroke all at once
+      context.stroke();
+    }
+  }
 };
 
 
