@@ -615,9 +615,11 @@ ol.Map.prototype.renderFrame_ = function(time) {
     var backgroundColor = this.getBackgroundColor();
     var viewHints = view.getHints();
     var layerStates = {};
-    goog.array.forEach(layersArray, function(layer) {
+    var layer;
+    for (i = 0; i < layersArray.length; ++i) {
+      layer = layersArray[i];
       layerStates[goog.getUid(layer)] = layer.getLayerState();
-    });
+    }
     var view2DState = view2D.getView2DState();
     frameState = {
       animate: false,
