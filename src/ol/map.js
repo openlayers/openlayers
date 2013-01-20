@@ -530,13 +530,12 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
 ol.Map.prototype.handlePostRender = function() {
   this.tileQueue_.reprioritize(); // FIXME only call if needed
   this.tileQueue_.loadMoreTiles();
-  goog.array.forEach(
-      this.postRenderFunctions_,
-      function(postRenderFunction) {
-        postRenderFunction(this, this.frameState_);
-      },
-      this);
-  this.postRenderFunctions_.length = 0;
+  var postRenderFunctions = this.postRenderFunctions_;
+  var i;
+  for (i = 0; i < postRenderFunctions.length; ++i) {
+    postRenderFunctions[i](this, this.frameState_);
+  }
+  postRenderFunctions.length = 0;
 };
 
 
