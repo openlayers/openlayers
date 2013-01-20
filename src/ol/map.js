@@ -8,7 +8,6 @@ goog.provide('ol.RendererHint');
 goog.provide('ol.RendererHints');
 
 goog.require('goog.Uri.QueryData');
-goog.require('goog.array');
 goog.require('goog.async.AnimationDelay');
 goog.require('goog.debug.Logger');
 goog.require('goog.dispose');
