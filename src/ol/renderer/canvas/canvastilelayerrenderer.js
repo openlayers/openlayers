@@ -4,6 +4,7 @@
 
 goog.provide('ol.renderer.canvas.TileLayer');
 
+goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
