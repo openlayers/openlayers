@@ -73,15 +73,6 @@ ol.TileQueue.DROP = Infinity;
 
 
 /**
- * FIXME empty description for jsdoc
- */
-ol.TileQueue.prototype.clear = function() {
-  this.heap_.length = 0;
-  this.queuedTileKeys_ = {};
-};
-
-
-/**
  * Remove and return the highest-priority tile. O(logn).
  * @private
  * @return {ol.Tile} Tile.
