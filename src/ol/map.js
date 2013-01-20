@@ -641,12 +641,15 @@ ol.Map.prototype.renderFrame_ = function(time) {
     };
   }
 
-  this.preRenderFunctions_ = goog.array.filter(
-      this.preRenderFunctions_,
-      function(preRenderFunction) {
-        return preRenderFunction(this, frameState);
-      },
-      this);
+  var preRenderFunctions = this.preRenderFunctions_;
+  var n = 0, preRenderFunction;
+  for (i = 0; i < preRenderFunctions.length; ++i) {
+    preRenderFunction = preRenderFunctions[i];
+    if (preRenderFunction(this, frameState)) {
+      preRenderFunctions[n++] = preRenderFunction;
+    }
+  }
+  preRenderFunctions.length = n;
 
   if (!goog.isNull(frameState)) {
     // FIXME works for View2D only
