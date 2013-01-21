@@ -7,8 +7,8 @@ goog.require('ol.geom.Geometry');
 
 
 /**
- * A mixed collection of geometries.  This constructor is typically not called
- * directly.  Instead call @see ol.geom.GeometryCollection#fromGeometries.
+ * A collection of geometries.  This constructor should not called.  Instead
+ * create one of the fixed type collections.
  * @constructor
  * @implements {ol.geom.Geometry}
  */
@@ -56,15 +56,4 @@ ol.geom.GeometryCollection.prototype.getBounds = function() {
     this.bounds = new ol.Extent(minX, minY, maxX, maxY);
   }
   return this.bounds;
-};
-
-
-/**
- * @param {Array.<ol.geom.Geometry>} components Array of geometries.
- * @return {ol.geom.GeometryCollection} A mixed geometry collection.
- */
-ol.geom.GeometryCollection.fromGeometries = function(components) {
-  var collection = new ol.geom.GeometryCollection();
-  collection.components = components;
-  return collection;
 };
