@@ -295,6 +295,14 @@ ol.renderer.webgl.Map.prototype.disposeInternal = function() {
 
 
 /**
+ * @inheritDoc
+ */
+ol.renderer.webgl.Map.prototype.getCanvas = function() {
+  return this.canvas_;
+};
+
+
+/**
  * @return {WebGLRenderingContext} GL.
  */
 ol.renderer.webgl.Map.prototype.getGL = function() {

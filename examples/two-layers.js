@@ -48,3 +48,7 @@ var canvasMap = new ol.Map({
 });
 canvasMap.bindTo('layers', webglMap);
 canvasMap.bindTo('view', webglMap);
+
+goog.events.listen(goog.dom.getElement('canvas-export'), 'click', function(e) {
+  e.target.href = canvasMap.getRenderer().getCanvas().toDataURL();
+});
