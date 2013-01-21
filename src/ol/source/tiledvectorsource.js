@@ -58,7 +58,7 @@ goog.inherits(ol.VectorTile_, ol.Tile);
 
 /**
  * @private
- * @param {ol.TileGrid} tileGrid tileGrid.
+ * @param {ol.tilegrid.TileGrid} tileGrid tileGrid.
  * @return {ol.renderer.canvas.Renderer} The renderer for this tile.
  */
 ol.VectorTile_.prototype.createRenderer_ = function(tileGrid) {
@@ -69,16 +69,16 @@ ol.VectorTile_.prototype.createRenderer_ = function(tileGrid) {
   canvas.height = tileSize.height;
 
   var transform = this.transform_;
-  var origin = tileGrid.getExtent_.getTopLeft();
-  var resolution = tileGrid.getResolution();
+  var origin = tileGrid.getExtent().getTopLeft();
+  var resolution = tileGrid.getResolution(this.tileCoord.z);
   goog.vec.Mat4.makeIdentity(transform);
   goog.vec.Mat4.scale(transform, resolution, resolution, 1);
   goog.vec.Mat4.translate(transform,
       origin.x / resolution, -origin.y / resolution, 0);
 
-  this.canvasByContext_[key] = canvas;
+  this.canvasByContext_[goog.getUid(canvas.getContext('2d'))] = canvas;
 
-  return ol.renderer.canvas.Renderer(canvas, transform);
+  return new ol.renderer.canvas.Renderer(canvas, transform);
 };
 
 
@@ -111,7 +111,7 @@ ol.VectorTile_.prototype.setContent = function(geometries, symbolizers) {
     }
   }
   for (var i = 0, ii = uniqueSymbolizers.length; i < ii; ++i) {
-    buckets = ol.array.bucket(geometriesBySymbolizer[i], sortByGeometryType);
+    buckets = goog.array.bucket(geometriesBySymbolizer[i], sortByGeometryType);
     renderer.renderLineStrings(buckets[type['line']], uniqueSymbolizers[i]);
     renderer.renderPoints(buckets[type['point']], uniqueSymbolizers[i]);
     renderer.renderPolygons(buckets[type['polygon']], uniqueSymbolizers[i]);
@@ -124,13 +124,8 @@ ol.VectorTile_.prototype.setContent = function(geometries, symbolizers) {
  */
 ol.VectorTile_.prototype.getImage = function(opt_context) {
   var key = goog.isDef(opt_context) ? goog.getUid(opt_context) : -1;
-  if (key in this.canvasByContext_) {
-    return this.canvasByContext_[key];
-  } else {
-
-    return canvas;
-
-  }
+  goog.asserts.assert(key in this.canvasByContext_);
+  return this.canvasByContext_[key];
 };
 
 
@@ -151,7 +146,7 @@ ol.source.TiledVector = function(options) {
 
   /**
    * @private
-   * @type {Object.<string, ol.DebugTile_>}
+   * @type {Object.<string, ol.VectorTile_>}
    * FIXME will need to expire elements from this cache
    * FIXME will need to invalidate tiles when data changes
    */

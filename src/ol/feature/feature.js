@@ -59,6 +59,6 @@ ol.feature.Feature.prototype.getSymbolizer = function() {
 /**
  * @param {?ol.style.LiteralSymbolizer} symbolizer The symbolizer.
  */
-ol.feature.Feature.prototype.setGeometry = function(symbolizer) {
-  this.symbolizer_ = symbolizer_;
+ol.feature.Feature.prototype.setSymblizer = function(symbolizer) {
+  this.symbolizer_ = symbolizer;
 };
