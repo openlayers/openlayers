@@ -43,10 +43,10 @@ ol.VectorTile_ = function(tileCoord, tileGrid) {
    * @type {Object.<number, HTMLCanvasElement>}
    */
   this.canvasByContext_ = {};
-  
+
   /**
    * @private
-   * @type {HTMLCanvasElement>}
+   * @type {HTMLCanvasElement}
    */
   this.canvas_;
 
