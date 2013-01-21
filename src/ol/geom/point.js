@@ -1,7 +1,7 @@
 goog.provide('ol.geom.Point');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Float32Array');
+goog.require('goog.vec.Float64Array');
 goog.require('ol.geom.Coordinate');
 goog.require('ol.geom.Geometry');
 
@@ -15,9 +15,9 @@ goog.require('ol.geom.Geometry');
 ol.geom.Point = function(coordinates) {
 
   /**
-   * @type {Float32Array}
+   * @type {Float64Array}
    */
-  this.coordinates = new Float32Array(coordinates);
+  this.coordinates = new Float64Array(coordinates);
 
   /**
    * @type {number}

@@ -1,7 +1,7 @@
 goog.provide('ol.geom.LinearRing');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Float32Array');
+goog.require('goog.vec.Float64Array');
 goog.require('ol.geom.CoordinateArray');
 goog.require('ol.geom.LineString');
 

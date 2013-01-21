@@ -1,7 +1,7 @@
 goog.provide('ol.geom.LineString');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Float32Array');
+goog.require('goog.vec.Float64Array');
 goog.require('ol.geom.CoordinateArray');
 goog.require('ol.geom.Geometry');
 
@@ -21,9 +21,9 @@ ol.geom.LineString = function(coordinates) {
       length = count * dimension;
 
   /**
-   * @type {Float32Array}
+   * @type {Float64Array}
    */
-  this.coordinates = new Float32Array(length);
+  this.coordinates = new Float64Array(length);
   for (var i = 0; i < count; ++i) {
     goog.asserts.assert(coordinates[i].length === dimension);
     this.coordinates.set(coordinates[i], i * dimension);

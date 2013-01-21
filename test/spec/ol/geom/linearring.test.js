@@ -17,9 +17,9 @@ describe('ol.geom.LinearRing', function() {
 
   describe('coordinates', function() {
 
-    it('is a Float32Array', function() {
+    it('is a Float64Array', function() {
       var ring = new ol.geom.LinearRing([[10, 20], [30, 40]]);
-      expect(ring.coordinates).toBeA(Float32Array);
+      expect(ring.coordinates).toBeA(Float64Array);
 
       expect(ring.coordinates.length).toBe(4);
       expect(ring.coordinates[0]).toBe(10);
