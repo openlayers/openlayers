@@ -70,6 +70,14 @@ ol.renderer.canvas.Map.prototype.createLayerRenderer = function(layer) {
 /**
  * @inheritDoc
  */
+ol.renderer.canvas.Map.prototype.getCanvas = function() {
+  return this.canvas_;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.renderer.canvas.Map.prototype.handleBackgroundColorChanged = function() {
   this.getMap().render();
 };
