@@ -346,6 +346,14 @@ goog.exportProperty(
 
 
 /**
+ * @return {ol.renderer.Map} Renderer.
+ */
+ol.Map.prototype.getRenderer = function() {
+  return this.renderer_;
+};
+
+
+/**
  * @return {Element} Container.
  */
 ol.Map.prototype.getTarget = function() {
