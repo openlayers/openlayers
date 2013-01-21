@@ -270,6 +270,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
 
   var tileLayer = this.getTileLayer();
   var tileSource = tileLayer.getTileSource();
+  var tileSourceKey = goog.getUid(tileSource).toString();
   var tileGrid = tileSource.getTileGrid();
   var z = tileGrid.getZForResolution(view2DState.resolution);
   var tileResolution = tileGrid.getResolution(z);
@@ -392,7 +393,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
         tileState = tile.getState();
         if (tileState == ol.TileState.IDLE) {
           tileCenter = tileGrid.getTileCoordCenter(tileCoord);
-          frameState.tileQueue.enqueue(tile, tileCenter, tileResolution);
+          frameState.tileQueue.enqueue(tile, tileSourceKey, tileCenter);
         } else if (tileState == ol.TileState.LOADED) {
           if (mapRenderer.isTileTextureLoaded(tile)) {
             tilesToDrawByZ[z][tileCoord.toString()] = tile;
@@ -455,11 +456,12 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
       this.renderedTileRange_ = null;
       this.renderedFramebufferExtent_ = null;
       frameState.animate = true;
+      this.updateWantedTiles(frameState.wantedTiles, tileSource, z, tileRange);
     }
 
   }
 
-  this.updateTileUsage(frameState.tileUsage, tileSource, z, tileRange);
+  this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
 
   goog.vec.Mat4.makeIdentity(this.matrix_);
   goog.vec.Mat4.translate(this.matrix_,

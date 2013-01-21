@@ -130,24 +130,49 @@ ol.renderer.Layer.prototype.handleLayerVisibleChange = goog.nullFunction;
 
 /**
  * @protected
- * @param {Object.<string, Object.<string, ol.TileRange>>} tileUsage Tile usage.
+ * @param {Object.<string, Object.<string, ol.TileRange>>} usedTiles Used tiles.
  * @param {ol.source.Source} source Source.
  * @param {number} z Z.
  * @param {ol.TileRange} tileRange Tile range.
  */
-ol.renderer.Layer.prototype.updateTileUsage =
-    function(tileUsage, source, z, tileRange) {
+ol.renderer.Layer.prototype.updateUsedTiles =
+    function(usedTiles, source, z, tileRange) {
   // FIXME should we use tilesToDrawByZ instead?
   var sourceKey = goog.getUid(source).toString();
   var zKey = z.toString();
-  if (sourceKey in tileUsage) {
-    if (z in tileUsage[sourceKey]) {
-      tileUsage[sourceKey][zKey].extend(tileRange);
+  if (sourceKey in usedTiles) {
+    if (zKey in usedTiles[sourceKey]) {
+      usedTiles[sourceKey][zKey].extend(tileRange);
     } else {
-      tileUsage[sourceKey][zKey] = tileRange;
+      usedTiles[sourceKey][zKey] = tileRange;
     }
   } else {
-    tileUsage[sourceKey] = {};
-    tileUsage[sourceKey][zKey] = tileRange;
+    usedTiles[sourceKey] = {};
+    usedTiles[sourceKey][zKey] = tileRange;
+  }
+};
+
+
+/**
+ * @protected
+ * @param {Object.<string, Object.<string, ol.TileRange>>} wantedTiles Wanted
+ *     tile ranges.
+ * @param {ol.source.Source} source Source.
+ * @param {number} z Z.
+ * @param {ol.TileRange} tileRange Tile range.
+ */
+ol.renderer.Layer.prototype.updateWantedTiles =
+    function(wantedTiles, source, z, tileRange) {
+  var sourceKey = goog.getUid(source).toString();
+  var zKey = z.toString();
+  if (sourceKey in wantedTiles) {
+    if (zKey in wantedTiles[sourceKey]) {
+      wantedTiles[sourceKey][zKey].extend(tileRange);
+    } else {
+      wantedTiles[sourceKey][zKey] = tileRange;
+    }
+  } else {
+    wantedTiles[sourceKey] = {};
+    wantedTiles[sourceKey][zKey] = tileRange;
   }
 };
