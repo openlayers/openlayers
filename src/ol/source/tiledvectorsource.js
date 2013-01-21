@@ -41,9 +41,14 @@ ol.VectorTile_ = function(tileCoord, tileGrid) {
   /**
    * @private
    * @type {Object.<number, HTMLCanvasElement>}
-   * FIXME needs to be cleared when the data changes
    */
   this.canvasByContext_ = {};
+  
+  /**
+   * @private
+   * @type {HTMLCanvasElement>}
+   */
+  this.canvas_;
 
   /**
    * @private
@@ -69,7 +74,7 @@ ol.VectorTile_.prototype.createRenderer_ = function(tileGrid) {
   canvas.height = tileSize.height;
 
   var transform = this.transform_;
-  var origin = tileGrid.getExtent().getTopLeft();
+  var origin = tileGrid.getOrigin(this.tileCoord.z);
   var resolution = tileGrid.getResolution(this.tileCoord.z);
   goog.vec.Mat4.makeIdentity(transform);
   goog.vec.Mat4.scale(transform, resolution, resolution, 1);
@@ -77,6 +82,7 @@ ol.VectorTile_.prototype.createRenderer_ = function(tileGrid) {
       origin.x / resolution, -origin.y / resolution, 0);
 
   this.canvasByContext_[goog.getUid(canvas.getContext('2d'))] = canvas;
+  this.canvas_ = canvas;
 
   return new ol.renderer.canvas.Renderer(canvas, transform);
 };
@@ -112,9 +118,15 @@ ol.VectorTile_.prototype.setContent = function(geometries, symbolizers) {
   }
   for (var i = 0, ii = uniqueSymbolizers.length; i < ii; ++i) {
     buckets = goog.array.bucket(geometriesBySymbolizer[i], sortByGeometryType);
-    renderer.renderLineStrings(buckets[type['line']], uniqueSymbolizers[i]);
-    renderer.renderPoints(buckets[type['point']], uniqueSymbolizers[i]);
-    renderer.renderPolygons(buckets[type['polygon']], uniqueSymbolizers[i]);
+    if (goog.object.containsKey(buckets, type['line'])) {
+      renderer.renderLineStrings(buckets[type['line']], uniqueSymbolizers[i]);
+    }
+    if (goog.object.containsKey(buckets, type['point'])) {
+      renderer.renderPoints(buckets[type['point']], uniqueSymbolizers[i]);
+    }
+    if (goog.object.containsKey(buckets, type['polygon'])) {
+      renderer.renderPolygons(buckets[type['polygon']], uniqueSymbolizers[i]);
+    }
   }
 };
 
@@ -124,8 +136,12 @@ ol.VectorTile_.prototype.setContent = function(geometries, symbolizers) {
  */
 ol.VectorTile_.prototype.getImage = function(opt_context) {
   var key = goog.isDef(opt_context) ? goog.getUid(opt_context) : -1;
-  goog.asserts.assert(key in this.canvasByContext_);
-  return this.canvasByContext_[key];
+  if (key in this.canvasByContext_) {
+    return this.canvasByContext_[key];
+  } else {
+    this.canvasByContext_[key] = this.canvas_;
+    return this.canvas_;
+  }
 };
 
 
