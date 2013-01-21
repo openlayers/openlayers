@@ -15,7 +15,7 @@ describe('ol.geom.LinearRing', function() {
 
   });
 
-  describe('coordinates', function() {
+  describe('#coordinates', function() {
 
     it('is a Float64Array', function() {
       var ring = new ol.geom.LinearRing([[10, 20], [30, 40]]);
@@ -30,7 +30,7 @@ describe('ol.geom.LinearRing', function() {
 
   });
 
-  describe('dimension', function() {
+  describe('#dimension', function() {
 
     it('can be 2', function() {
       var ring = new ol.geom.LinearRing([[10, 20], [30, 40]]);

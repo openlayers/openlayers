@@ -2,6 +2,7 @@ goog.provide('ol.geom.Polygon');
 
 goog.require('goog.asserts');
 goog.require('goog.vec.Float64Array');
+goog.require('ol.Extent');
 goog.require('ol.geom.CoordinateArray');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.LinearRing');
@@ -38,4 +39,18 @@ ol.geom.Polygon = function(coordinates) {
   this.dimension = dimension;
   goog.asserts.assert(this.dimension >= 2);
 
+  /**
+   * @type {ol.Extent}
+   * @private
+   */
+  this.bounds_ = null;
+
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.Polygon.prototype.getBounds = function() {
+  return this.rings[0].getBounds();
 };

@@ -2,18 +2,19 @@ goog.provide('ol.geom.MultiPolygon');
 
 goog.require('goog.asserts');
 goog.require('ol.geom.CoordinateArray');
-goog.require('ol.geom.Geometry');
+goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.Polygon');
 
 
 
 /**
  * @constructor
- * @implements {ol.geom.Geometry}
+ * @extends {ol.geom.GeometryCollection}
  * @param {Array.<Array.<ol.geom.CoordinateArray>>} coordinates Coordinates
  *    array.
  */
 ol.geom.MultiPolygon = function(coordinates) {
+  goog.base(this);
 
   var numParts = coordinates.length,
       dimension;
@@ -25,7 +26,7 @@ ol.geom.MultiPolygon = function(coordinates) {
   for (var i = 0; i < numParts; ++i) {
     this.components[i] = new ol.geom.Polygon(coordinates[i]);
     if (!goog.isDef(dimension)) {
-      dimension = this.components[i];
+      dimension = this.components[i].dimension;
     } else {
       goog.asserts.assert(this.components[i].dimension === dimension);
     }
@@ -38,3 +39,4 @@ ol.geom.MultiPolygon = function(coordinates) {
   goog.asserts.assert(this.dimension >= 2);
 
 };
+goog.inherits(ol.geom.MultiPolygon, ol.geom.GeometryCollection);

@@ -19,7 +19,7 @@ describe('ol.geom.Polygon', function() {
 
   });
 
-  describe('rings', function() {
+  describe('#rings', function() {
 
     it('is an array of LinearRing', function() {
       var poly = new ol.geom.Polygon([outer, inner1, inner2]);
@@ -32,7 +32,7 @@ describe('ol.geom.Polygon', function() {
 
   });
 
-  describe('dimension', function() {
+  describe('#dimension', function() {
 
     it('can be 2', function() {
       var poly = new ol.geom.Polygon([outer, inner1, inner2]);
@@ -42,6 +42,19 @@ describe('ol.geom.Polygon', function() {
     it('can be 3', function() {
       var poly = new ol.geom.Polygon([[[10, 20, 30], [40, 50, 60]]]);
       expect(poly.dimension).toBe(3);
+    });
+
+  });
+
+  describe('#getBounds()', function() {
+
+    it('returns the bounding extent', function() {
+      var poly = new ol.geom.Polygon([outer, inner1, inner2]);
+      var bounds = poly.getBounds();
+      expect(bounds.minX).toBe(0);
+      expect(bounds.minY).toBe(0);
+      expect(bounds.maxX).toBe(10);
+      expect(bounds.maxY).toBe(10);
     });
 
   });

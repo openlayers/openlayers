@@ -15,7 +15,7 @@ describe('ol.geom.LineString', function() {
 
   });
 
-  describe('coordinates', function() {
+  describe('#coordinates', function() {
 
     it('is a Float64Array', function() {
       var line = new ol.geom.LineString([[10, 20], [30, 40]]);
@@ -30,7 +30,7 @@ describe('ol.geom.LineString', function() {
 
   });
 
-  describe('dimension', function() {
+  describe('#dimension', function() {
 
     it('can be 2', function() {
       var line = new ol.geom.LineString([[10, 20], [30, 40]]);
@@ -40,6 +40,19 @@ describe('ol.geom.LineString', function() {
     it('can be 3', function() {
       var line = new ol.geom.LineString([[10, 20, 30], [40, 50, 60]]);
       expect(line.dimension).toBe(3);
+    });
+
+  });
+
+  describe('#getBounds()', function() {
+
+    it('returns the bounding extent', function() {
+      var line = new ol.geom.LineString([[10, 20], [20, 30], [30, 40]]);
+      var bounds = line.getBounds();
+      expect(bounds.minX).toBe(10);
+      expect(bounds.minY).toBe(20);
+      expect(bounds.maxX).toBe(30);
+      expect(bounds.maxY).toBe(40);
     });
 
   });

@@ -2,6 +2,7 @@ goog.provide('ol.geom.LineString');
 
 goog.require('goog.asserts');
 goog.require('goog.vec.Float64Array');
+goog.require('ol.Extent');
 goog.require('ol.geom.CoordinateArray');
 goog.require('ol.geom.Geometry');
 
@@ -35,4 +36,38 @@ ol.geom.LineString = function(coordinates) {
   this.dimension = dimension;
   goog.asserts.assert(this.dimension >= 2);
 
+  /**
+   * @type {ol.Extent}
+   * @private
+   */
+  this.bounds_ = null;
+
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.LineString.prototype.getBounds = function() {
+  if (goog.isNull(this.bounds_)) {
+    var minX,
+        minY = minX = Number.POSITIVE_INFINITY,
+        maxX,
+        maxY = maxX = Number.NEGATIVE_INFINITY,
+        coordinates = this.coordinates,
+        len = coordinates.length,
+        dim = this.dimension,
+        x, y, i;
+
+    for (i = 0; i < len; i += dim) {
+      x = coordinates[i];
+      y = coordinates[i + 1];
+      minX = Math.min(minX, x);
+      minY = Math.min(minY, y);
+      maxX = Math.max(maxX, x);
+      maxY = Math.max(maxY, y);
+    }
+    this.bounds_ = new ol.Extent(minX, minY, maxX, maxY);
+  }
+  return this.bounds_;
 };

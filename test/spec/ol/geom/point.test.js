@@ -15,7 +15,7 @@ describe('ol.geom.Point', function() {
 
   });
 
-  describe('coordinates', function() {
+  describe('#coordinates', function() {
 
     it('is a Float64Array', function() {
       var point = new ol.geom.Point([10, 20]);
@@ -29,7 +29,7 @@ describe('ol.geom.Point', function() {
 
   });
 
-  describe('dimension', function() {
+  describe('#dimension', function() {
 
     it('can be 2', function() {
       var point = new ol.geom.Point([10, 20]);
@@ -43,6 +43,18 @@ describe('ol.geom.Point', function() {
 
   });
 
+  describe('#getBounds()', function() {
+
+    it('returns the bounding extent', function() {
+      var point = new ol.geom.Point([10, 20]);
+      var bounds = point.getBounds();
+      expect(bounds.minX).toBe(10);
+      expect(bounds.minY).toBe(20);
+      expect(bounds.maxX).toBe(10);
+      expect(bounds.maxY).toBe(20);
+    });
+
+  });
 
 });
 

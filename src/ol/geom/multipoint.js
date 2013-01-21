@@ -2,17 +2,18 @@ goog.provide('ol.geom.MultiPoint');
 
 goog.require('goog.asserts');
 goog.require('ol.geom.CoordinateArray');
-goog.require('ol.geom.Geometry');
+goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.Point');
 
 
 
 /**
  * @constructor
- * @implements {ol.geom.Geometry}
+ * @extends {ol.geom.GeometryCollection}
  * @param {ol.geom.CoordinateArray} coordinates Coordinates array.
  */
 ol.geom.MultiPoint = function(coordinates) {
+  goog.base(this);
 
   var numParts = coordinates.length,
       dimension;
@@ -37,3 +38,4 @@ ol.geom.MultiPoint = function(coordinates) {
   goog.asserts.assert(this.dimension >= 2);
 
 };
+goog.inherits(ol.geom.MultiPoint, ol.geom.GeometryCollection);
