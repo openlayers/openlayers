@@ -453,19 +453,24 @@ ol.Map.prototype.getOverlayContainer = function() {
 
 /**
  * @param {ol.Tile} tile Tile.
+ * @param {string} tileSourceKey Tile source key.
  * @param {ol.Coordinate} tileCenter Tile center.
- * @param {number} tileResolution Tile resolution.
- * @return {number|undefined} Tile priority.
+ * @return {number} Tile priority.
  */
-ol.Map.prototype.getTilePriority = function(tile, tileCenter, tileResolution) {
-  if (goog.isNull(this.frameState_)) {
-    return undefined;
-  } else {
-    var center = this.frameState_.view2DState.center;
-    var deltaX = tileCenter.x - center.x;
-    var deltaY = tileCenter.y - center.y;
-    return Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
+ol.Map.prototype.getTilePriority = function(tile, tileSourceKey, tileCenter) {
+  var frameState = this.frameState_;
+  if (goog.isNull(frameState) || !(tileSourceKey in frameState.wantedTiles)) {
+    return ol.TileQueue.DROP;
   }
+  var zKey = tile.tileCoord.z.toString();
+  if (!(zKey in frameState.wantedTiles[tileSourceKey]) ||
+      !frameState.wantedTiles[tileSourceKey][zKey].contains(tile.tileCoord)) {
+    return ol.TileQueue.DROP;
+  }
+  var center = frameState.view2DState.center;
+  var deltaX = tileCenter.x - center.x;
+  var deltaY = tileCenter.y - center.y;
+  return deltaX * deltaX + deltaY * deltaY;
 };
 
 
@@ -627,10 +632,11 @@ ol.Map.prototype.renderFrame_ = function(time) {
       postRenderFunctions: [],
       size: size,
       tileQueue: this.tileQueue_,
-      tileUsage: {},
+      time: time,
+      usedTiles: {},
       view2DState: view2DState,
       viewHints: viewHints,
-      time: time
+      wantedTiles: {}
     };
   }
 
@@ -664,6 +670,8 @@ ol.Map.prototype.renderFrame_ = function(time) {
   }
 
   this.renderer_.renderFrame(frameState);
+  this.frameState_ = frameState;
+  this.dirty_ = false;
 
   if (!goog.isNull(frameState)) {
     if (frameState.animate) {
@@ -672,8 +680,6 @@ ol.Map.prototype.renderFrame_ = function(time) {
     Array.prototype.push.apply(
         this.postRenderFunctions_, frameState.postRenderFunctions);
   }
-  this.frameState_ = frameState;
-  this.dirty_ = false;
 
   this.dispatchEvent(
       new ol.MapEvent(ol.MapEventType.POSTRENDER, this, frameState));

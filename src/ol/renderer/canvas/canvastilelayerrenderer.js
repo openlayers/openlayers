@@ -87,6 +87,7 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
 
   var tileLayer = this.getTileLayer();
   var tileSource = tileLayer.getTileSource();
+  var tileSourceKey = goog.getUid(tileSource).toString();
   var tileGrid = tileSource.getTileGrid();
   var tileSize = tileGrid.getTileSize();
   var z = tileGrid.getZForResolution(view2DState.resolution);
@@ -165,7 +166,7 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
       tileState = tile.getState();
       if (tileState == ol.TileState.IDLE) {
         tileCenter = tileGrid.getTileCoordCenter(tileCoord);
-        frameState.tileQueue.enqueue(tile, tileCenter, tileResolution);
+        frameState.tileQueue.enqueue(tile, tileSourceKey, tileCenter);
       } else if (tileState == ol.TileState.LOADED) {
         tilesToDrawByZ[z][tileCoord.toString()] = tile;
         continue;
@@ -213,9 +214,10 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
 
   if (!allTilesLoaded) {
     frameState.animate = true;
+    this.updateWantedTiles(frameState.wantedTiles, tileSource, z, tileRange);
   }
 
-  this.updateTileUsage(frameState.tileUsage, tileSource, z, tileRange);
+  this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
 
   var transform = this.transform_;
   goog.vec.Mat4.makeIdentity(transform);
