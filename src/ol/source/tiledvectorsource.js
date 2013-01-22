@@ -206,7 +206,7 @@ ol.source.TiledVector.prototype.getTile = function(tileCoord) {
     // FIXME only pass geometries for tile extent
     this.features_.forEach(function(feature) {
       geometries.push(feature.getGeometry());
-      symbolizers.push(feature.getSymbolizer());
+      // symbolizers.push(feature.getSymbolizer());
     });
     tile.setContent(geometries, symbolizers);
 
