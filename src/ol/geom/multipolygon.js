@@ -3,6 +3,7 @@ goog.provide('ol.geom.MultiPolygon');
 goog.require('goog.asserts');
 goog.require('ol.geom.CoordinateArray');
 goog.require('ol.geom.GeometryCollection');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.Polygon');
 
 
@@ -40,3 +41,11 @@ ol.geom.MultiPolygon = function(coordinates) {
 
 };
 goog.inherits(ol.geom.MultiPolygon, ol.geom.GeometryCollection);
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.MultiPolygon.prototype.getType = function() {
+  return ol.geom.GeometryType.MULTIPOLYGON;
+};

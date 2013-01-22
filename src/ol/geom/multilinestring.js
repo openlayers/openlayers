@@ -3,6 +3,7 @@ goog.provide('ol.geom.MultiLineString');
 goog.require('goog.asserts');
 goog.require('ol.geom.CoordinateArray');
 goog.require('ol.geom.GeometryCollection');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 
 
@@ -39,3 +40,11 @@ ol.geom.MultiLineString = function(coordinates) {
 
 };
 goog.inherits(ol.geom.MultiLineString, ol.geom.GeometryCollection);
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.MultiLineString.prototype.getType = function() {
+  return ol.geom.GeometryType.MULTILINESTRING;
+};

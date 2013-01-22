@@ -39,3 +39,11 @@ ol.geom.MultiPoint = function(coordinates) {
 
 };
 goog.inherits(ol.geom.MultiPoint, ol.geom.GeometryCollection);
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.MultiPoint.prototype.getType = function() {
+  return ol.geom.GeometryType.MULTIPOINT;
+};

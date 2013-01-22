@@ -5,6 +5,7 @@ goog.require('goog.vec.Float64Array');
 goog.require('ol.Extent');
 goog.require('ol.geom.Coordinate');
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.GeometryType');
 
 
 
@@ -45,4 +46,12 @@ ol.geom.Point.prototype.getBounds = function() {
     this.bounds_ = new ol.Extent(x, y, x, y);
   }
   return this.bounds_;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.Point.prototype.getType = function() {
+  return ol.geom.GeometryType.POINT;
 };

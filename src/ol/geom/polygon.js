@@ -5,6 +5,7 @@ goog.require('goog.vec.Float64Array');
 goog.require('ol.Extent');
 goog.require('ol.geom.CoordinateArray');
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LinearRing');
 
 
@@ -53,4 +54,12 @@ ol.geom.Polygon = function(coordinates) {
  */
 ol.geom.Polygon.prototype.getBounds = function() {
   return this.rings[0].getBounds();
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.Polygon.prototype.getType = function() {
+  return ol.geom.GeometryType.POLYGON;
 };
