@@ -399,6 +399,10 @@ ol.Map.prototype.getInteractions = function() {
 ol.Map.prototype.getLayers = function() {
   return /** @type {ol.Collection} */ (this.get(ol.MapProperty.LAYERS));
 };
+goog.exportProperty(
+    ol.Map.prototype,
+    'getLayers',
+    ol.Map.prototype.getLayers);
 
 
 /**
