@@ -8,7 +8,6 @@ goog.provide('ol.RendererHint');
 goog.provide('ol.RendererHints');
 
 goog.require('goog.Uri.QueryData');
-goog.require('goog.array');
 goog.require('goog.async.AnimationDelay');
 goog.require('goog.debug.Logger');
 goog.require('goog.dispose');
@@ -542,13 +541,12 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
 ol.Map.prototype.handlePostRender = function() {
   this.tileQueue_.reprioritize(); // FIXME only call if needed
   this.tileQueue_.loadMoreTiles();
-  goog.array.forEach(
-      this.postRenderFunctions_,
-      function(postRenderFunction) {
-        postRenderFunction(this, this.frameState_);
-      },
-      this);
-  this.postRenderFunctions_.length = 0;
+  var postRenderFunctions = this.postRenderFunctions_;
+  var i;
+  for (i = 0; i < postRenderFunctions.length; ++i) {
+    postRenderFunctions[i](this, this.frameState_);
+  }
+  postRenderFunctions.length = 0;
 };
 
 
@@ -628,9 +626,11 @@ ol.Map.prototype.renderFrame_ = function(time) {
     var backgroundColor = this.getBackgroundColor();
     var viewHints = view.getHints();
     var layerStates = {};
-    goog.array.forEach(layersArray, function(layer) {
+    var layer;
+    for (i = 0; i < layersArray.length; ++i) {
+      layer = layersArray[i];
       layerStates[goog.getUid(layer)] = layer.getLayerState();
-    });
+    }
     var view2DState = view2D.getView2DState();
     frameState = {
       animate: false,
@@ -652,12 +652,15 @@ ol.Map.prototype.renderFrame_ = function(time) {
     };
   }
 
-  this.preRenderFunctions_ = goog.array.filter(
-      this.preRenderFunctions_,
-      function(preRenderFunction) {
-        return preRenderFunction(this, frameState);
-      },
-      this);
+  var preRenderFunctions = this.preRenderFunctions_;
+  var n = 0, preRenderFunction;
+  for (i = 0; i < preRenderFunctions.length; ++i) {
+    preRenderFunction = preRenderFunctions[i];
+    if (preRenderFunction(this, frameState)) {
+      preRenderFunctions[n++] = preRenderFunction;
+    }
+  }
+  preRenderFunctions.length = n;
 
   if (!goog.isNull(frameState)) {
     // FIXME works for View2D only
