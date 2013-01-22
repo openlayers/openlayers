@@ -155,8 +155,10 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
     filter = filters[i];
     type = filter.getType();
     features = source.getFeatures(filter);
-    symbolizer = symbolizers[type];
-    canvasRenderer.renderFeaturesByGeometryType(type, features, symbolizer);
+    if (features.length) {
+      symbolizer = symbolizers[type];
+      canvasRenderer.renderFeaturesByGeometryType(type, features, symbolizer);
+    }
   }
 
 };
