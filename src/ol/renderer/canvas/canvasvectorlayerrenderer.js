@@ -88,8 +88,6 @@ ol.renderer.canvas.VectorLayer.prototype.getTransform = function() {
 ol.renderer.canvas.VectorLayer.prototype.renderFrame =
     function(frameState, layerState) {
 
-  var view2DState = frameState.view2DState;
-
   var layer = this.getVectorLayer();
   var source = layer.getVectorSource();
   var extent = frameState.extent;
@@ -123,7 +121,8 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   var canvasRenderer = new ol.renderer.canvas.Renderer(
       canvas, frameState.coordinateToPixelMatrix);
 
-  // TODO: get these elsewhere
+  // TODO: implement layer.setStyle(style) where style is a set of rules
+  // and a rule has a filter and array of symbolizers
   var symbolizers = {};
   symbolizers[ol.geom.GeometryType.POINT] = new ol.style.LiteralShape({
     type: ol.style.ShapeType.CIRCLE,
@@ -155,6 +154,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
     type = filter.getType();
     features = source.getFeatures(filter);
     if (features.length) {
+      // TODO: layer.getSymbolizerLiterals(features) or similar
       symbolizer = symbolizers[type];
       canvasRenderer.renderFeaturesByGeometryType(type, features, symbolizer);
     }
