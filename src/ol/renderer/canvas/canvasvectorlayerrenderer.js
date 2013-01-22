@@ -124,27 +124,26 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       canvas, frameState.coordinateToPixelMatrix);
 
   // TODO: get these elsewhere
-  var symbolizers = {
-    point: new ol.style.LiteralShape({
-      type: ol.style.ShapeType.CIRCLE,
-      size: 10,
-      fillStyle: '#ffcc99',
-      strokeStyle: '#ff9933',
-      strokeWidth: 2,
-      opacity: 0.75
-    }),
-    linestring: new ol.style.LiteralLine({
-      strokeStyle: '#ff9933',
-      strokeWidth: 2,
-      opacity: 1
-    }),
-    polygon: new ol.style.LiteralPolygon({
-      fillStyle: '#ffcc99',
-      strokeStyle: '#ff9933',
-      strokeWidth: 2,
-      opacity: 0.5
-    })
-  };
+  var symbolizers = {};
+  symbolizers[ol.geom.GeometryType.POINT] = new ol.style.LiteralShape({
+    type: ol.style.ShapeType.CIRCLE,
+    size: 10,
+    fillStyle: '#ffcc99',
+    strokeStyle: '#ff9933',
+    strokeWidth: 2,
+    opacity: 0.75
+  });
+  symbolizers[ol.geom.GeometryType.LINESTRING] = new ol.style.LiteralLine({
+    strokeStyle: '#ff9933',
+    strokeWidth: 2,
+    opacity: 1
+  });
+  symbolizers[ol.geom.GeometryType.POLYGON] = new ol.style.LiteralPolygon({
+    fillStyle: '#ffcc99',
+    strokeStyle: '#ff9933',
+    strokeWidth: 2,
+    opacity: 0.5
+  });
 
   // render features by geometry type
   var filters = this.geometryFilters_,
