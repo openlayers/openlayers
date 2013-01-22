@@ -2,13 +2,18 @@
 
 [![Travis CI Status](https://secure.travis-ci.org/openlayers/ol3.png)](http://travis-ci.org/#!/openlayers/ol3)
 
-## Build it
 
-Run make:
+## Hosted Examples
+
+The examples are hosted on GitHub (as GitHub pages). See http://openlayers.github.com/ol3/master/examples/.
+
+## Build OpenLayers 3
+
+Run build.py:
 
     $ ./build.py
 
-## Run the examples in debug mode
+## Run examples locally
 
 Run the [Plovr](http://plovr.com/) web server with:
 
