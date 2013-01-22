@@ -9,6 +9,7 @@ goog.require('ol.Size');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.TileLayer');
+goog.require('ol.renderer.canvas.VectorLayer');
 
 
 
@@ -60,6 +61,8 @@ goog.inherits(ol.renderer.canvas.Map, ol.renderer.Map);
 ol.renderer.canvas.Map.prototype.createLayerRenderer = function(layer) {
   if (layer instanceof ol.layer.TileLayer) {
     return new ol.renderer.canvas.TileLayer(this, layer);
+  } else if (layer instanceof ol.layer.Vector) {
+    return new ol.renderer.canvas.VectorLayer(this, layer);
   } else {
     goog.asserts.assert(false);
     return null;
@@ -141,6 +144,8 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   context.globalAlpha = 1;
   context.fillRect(0, 0, size.width, size.height);
 
+  this.calculateMatrices2D(frameState);
+
   goog.array.forEach(frameState.layersArray, function(layer) {
 
     var layerState = frameState.layerStates[goog.getUid(layer)];
@@ -171,7 +176,5 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
     goog.style.showElement(this.canvas_, true);
     this.renderedVisible_ = true;
   }
-
-  this.calculateMatrices2D(frameState);
 
 };

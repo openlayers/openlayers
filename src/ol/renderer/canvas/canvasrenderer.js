@@ -14,6 +14,7 @@ goog.require('ol.style.LiteralLine');
 goog.require('ol.style.LiteralPoint');
 goog.require('ol.style.LiteralPolygon');
 goog.require('ol.style.LiteralShape');
+goog.require('ol.style.LiteralSymbolizer');
 goog.require('ol.style.ShapeType');
 
 
@@ -26,8 +27,8 @@ ol.renderer.canvas.isSupported = ol.canvas.isSupported;
 
 /**
  * @constructor
- * @param {!HTMLCanvasElement} canvas Target canvas.
- * @param {!goog.vec.Mat4.Number} transform Transform.
+ * @param {HTMLCanvasElement} canvas Target canvas.
+ * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {ol.Pixel=} opt_offset Pixel offset for top-left corner.  This is
  *    provided as an optional argument as a convenience in cases where the
  *    transform applies to a separate canvas.
@@ -39,6 +40,11 @@ ol.renderer.canvas.Renderer = function(canvas, transform, opt_offset) {
       dx = goog.isDef(opt_offset) ? opt_offset.x : 0,
       dy = goog.isDef(opt_offset) ? opt_offset.y : 0;
 
+  /**
+   * @type {goog.vec.Mat4.Number}
+   * @private
+   */
+  this.transform_ = transform;
   context.setTransform(
       goog.vec.Mat4.getElement(transform, 0, 0),
       goog.vec.Mat4.getElement(transform, 1, 0),
@@ -46,6 +52,15 @@ ol.renderer.canvas.Renderer = function(canvas, transform, opt_offset) {
       goog.vec.Mat4.getElement(transform, 1, 1),
       goog.vec.Mat4.getElement(transform, 0, 3) + dx,
       goog.vec.Mat4.getElement(transform, 1, 3) + dy);
+
+  var vec = [1, 0, 0];
+  goog.vec.Mat4.multVec3NoTranslate(transform, vec, vec);
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.inverseScale_ = 1 / Math.sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
 
   /**
    * @type {CanvasRenderingContext2D}
@@ -57,22 +72,52 @@ ol.renderer.canvas.Renderer = function(canvas, transform, opt_offset) {
 
 
 /**
- * @param {Array.<ol.geom.LineString>} lines Line array.
- * @param {ol.style.LiteralLine} symbolizer Line symbolizer.
+ * @param {ol.geom.GeometryType} type Geometry type.
+ * @param {Array.<ol.Feature>} features Array of features.
+ * @param {ol.style.LiteralSymbolizer} symbolizer Symbolizer.
  */
-ol.renderer.canvas.Renderer.prototype.renderLineStrings =
-    function(lines, symbolizer) {
+ol.renderer.canvas.Renderer.prototype.renderFeaturesByGeometryType =
+    function(type, features, symbolizer) {
+  switch (type) {
+    case ol.geom.GeometryType.POINT:
+      goog.asserts.assert(symbolizer instanceof ol.style.LiteralPoint);
+      this.renderPointFeatures_(
+          features, /** @type {ol.style.LiteralPoint} */ (symbolizer));
+      break;
+    case ol.geom.GeometryType.LINESTRING:
+      goog.asserts.assert(symbolizer instanceof ol.style.LiteralLine);
+      this.renderLineStringFeatures_(
+          features, /** @type {ol.style.LiteralLine} */ (symbolizer));
+      break;
+    case ol.geom.GeometryType.POLYGON:
+      goog.asserts.assert(symbolizer instanceof ol.style.LiteralPolygon);
+      this.renderPolygonFeatures_(
+          features, /** @type {ol.style.LiteralPolygon} */ (symbolizer));
+      break;
+    default:
+      throw new Error('Rendering not implemented for geometry type: ' + type);
+  }
+};
+
+
+/**
+ * @param {Array.<ol.Feature>} features Array of line features.
+ * @param {ol.style.LiteralLine} symbolizer Line symbolizer.
+ * @private
+ */
+ol.renderer.canvas.Renderer.prototype.renderLineStringFeatures_ =
+    function(features, symbolizer) {
 
   var context = this.context_,
       i, ii, line, coords, dim, j, jj, x, y;
 
   context.globalAlpha = symbolizer.opacity;
   context.strokeStyle = symbolizer.strokeStyle;
-  context.lineWidth = symbolizer.strokeWidth;
+  context.lineWidth = symbolizer.strokeWidth * this.inverseScale_;
   context.beginPath();
 
-  for (i = 0, ii = lines.length; i < ii; ++i) {
-    line = lines[i];
+  for (i = 0, ii = features.length; i < ii; ++i) {
+    line = features[i].getGeometry();
     dim = line.dimension;
     coords = line.coordinates;
     for (j = 0, jj = coords.length; j < jj; j += dim) {
@@ -91,14 +136,15 @@ ol.renderer.canvas.Renderer.prototype.renderLineStrings =
 
 
 /**
- * @param {Array.<ol.geom.Point>} points Point array.
+ * @param {Array.<ol.Feature>} features Array of point features.
  * @param {ol.style.LiteralPoint} symbolizer Point symbolizer.
+ * @private
  */
-ol.renderer.canvas.Renderer.prototype.renderPoints =
-    function(points, symbolizer) {
+ol.renderer.canvas.Renderer.prototype.renderPointFeatures_ =
+    function(features, symbolizer) {
 
   var context = this.context_,
-      canvas, i, ii, coords;
+      canvas, i, ii, coords, vec;
 
   if (symbolizer instanceof ol.style.LiteralShape) {
     canvas = ol.renderer.canvas.Renderer.renderShape(symbolizer);
@@ -108,22 +154,25 @@ ol.renderer.canvas.Renderer.prototype.renderPoints =
 
   var mid = canvas.width / 2;
   context.save();
-  context.translate(-mid, -mid);
+  context.setTransform(1, 0, 0, 1, -mid, -mid);
   context.globalAlpha = 1;
-  for (i = 0, ii = points.length; i < ii; ++i) {
-    coords = points[i].coordinates;
-    context.drawImage(canvas, coords[0], coords[1]);
+  for (i = 0, ii = features.length; i < ii; ++i) {
+    coords = features[i].getGeometry().coordinates;
+    vec = goog.vec.Mat4.multVec3(
+        this.transform_, [coords[0], coords[1], 0], []);
+    context.drawImage(canvas, vec[0], vec[1]);
   }
   context.restore();
 };
 
 
 /**
- * @param {Array.<ol.geom.Polygon>} polygons Array of polygons.
+ * @param {Array.<ol.Feature>} features Array of polygon features.
  * @param {ol.style.LiteralPolygon} symbolizer Polygon symbolizer.
+ * @private
  */
-ol.renderer.canvas.Renderer.prototype.renderPolygons =
-    function(polygons, symbolizer) {
+ol.renderer.canvas.Renderer.prototype.renderPolygonFeatures_ =
+    function(features, symbolizer) {
 
   var context = this.context_,
       strokeStyle = symbolizer.strokeStyle,
@@ -133,7 +182,7 @@ ol.renderer.canvas.Renderer.prototype.renderPolygons =
   context.globalAlpha = symbolizer.opacity;
   if (strokeStyle) {
     context.strokeStyle = symbolizer.strokeStyle;
-    context.lineWidth = symbolizer.strokeWidth;
+    context.lineWidth = symbolizer.strokeWidth * this.inverseScale_;
   }
   if (fillStyle) {
     context.fillStyle = fillStyle;
@@ -147,8 +196,8 @@ ol.renderer.canvas.Renderer.prototype.renderPolygons =
    * 4) holes - render polygon to sketch canvas first
    */
   context.beginPath();
-  for (i = 0, ii = polygons.length; i < ii; ++i) {
-    poly = polygons[i];
+  for (i = 0, ii = features.length; i < ii; ++i) {
+    poly = features[i].getGeometry();
     dim = poly.dimension;
     rings = poly.rings;
     numRings = rings.length;

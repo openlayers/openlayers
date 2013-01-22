@@ -132,7 +132,6 @@ ol.source.VectorOptions;
 
 
 
-
 /**
  * @constructor
  * @extends {ol.source.Source}
@@ -150,19 +149,16 @@ ol.source.Vector = function(options) {
    * @type {ol.source.FeatureCache}
    * @private
    */
-  this.featureCache_ = null;
+  this.featureCache_ = new ol.source.FeatureCache();
 
 };
 goog.inherits(ol.source.Vector, ol.source.Source);
 
 
-
 /**
  * @param {Array.<ol.Feature>} features Array of features.
  */
-ol.source.Vector.prototype.setFeatures = function(features) {
-  this.featureCache_.clear();
-
+ol.source.Vector.prototype.addFeatures = function(features) {
   for (var i = 0, ii = features.length; i < ii; ++i) {
     this.featureCache_.add(features[i]);
   }
