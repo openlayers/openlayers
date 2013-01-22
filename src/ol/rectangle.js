@@ -43,6 +43,16 @@ ol.Rectangle = function(minX, minY, maxX, maxY) {
 
 /**
  * @param {ol.Rectangle} rectangle Rectangle.
+ * @return {boolean} Equals.
+ */
+ol.Rectangle.prototype.equals = function(rectangle) {
+  return this.minX == rectangle.minX && this.minY == rectangle.minY &&
+      this.maxX == rectangle.maxX && this.maxY == rectangle.maxY;
+};
+
+
+/**
+ * @param {ol.Rectangle} rectangle Rectangle.
  */
 ol.Rectangle.prototype.extend = function(rectangle) {
   this.minX = Math.min(this.minX, rectangle.minX);
