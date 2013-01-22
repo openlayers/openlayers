@@ -92,6 +92,16 @@
 @exportObjectLiteralProperty ol.source.DebugTileSourceOptions.projection ol.Projection|undefined
 @exportObjectLiteralProperty ol.source.DebugTileSourceOptions.tileGrid ol.tilegrid.TileGrid|undefined
 
+@exportObjectLiteral ol.source.SingleImageWMSOptions
+@exportObjectLiteralProperty ol.source.SingleImageWMSOptions.attributions Array.<ol.Attribution>|undefined
+@exportObjectLiteralProperty ol.source.SingleImageWMSOptions.crossOrigin null|string|undefined
+@exportObjectLiteralProperty ol.source.SingleImageWMSOptions.extent ol.Extent|undefined
+@exportObjectLiteralProperty ol.source.SingleImageWMSOptions.params Object.<string,*>
+@exportObjectLiteralProperty ol.source.SingleImageWMSOptions.projection ol.Projection|undefined
+@exportObjectLiteralProperty ol.source.SingleImageWMSOptions.resolutions Array.<number>|undefined
+@exportObjectLiteralProperty ol.source.SingleImageWMSOptions.url string|undefined
+@exportObjectLiteralProperty ol.source.SingleImageWMSOptions.version string|undefined
+
 @exportObjectLiteral ol.source.StamenOptions
 @exportObjectLiteralProperty ol.source.StamenOptions.flavor string|undefined
 @exportObjectLiteralProperty ol.source.StamenOptions.provider string
