@@ -17,7 +17,7 @@ goog.require('ol.easing');
  */
 ol.animation.createBounce =
     function(resolution, opt_duration, opt_start, opt_easingFunction) {
-  var start = goog.isDef(opt_start) ? opt_start : Date.now();
+  var start = goog.isDef(opt_start) ? opt_start : goog.now();
   var duration = goog.isDef(opt_duration) ? opt_duration : 1000;
   var easingFunction = goog.isDef(opt_easingFunction) ?
       opt_easingFunction : ol.easing.upAndDown;
@@ -49,7 +49,7 @@ ol.animation.createBounce =
  */
 ol.animation.createPanFrom =
     function(source, opt_duration, opt_start, opt_easingFunction) {
-  var start = goog.isDef(opt_start) ? opt_start : Date.now();
+  var start = goog.isDef(opt_start) ? opt_start : goog.now();
   var sourceX = source.x;
   var sourceY = source.y;
   var duration = goog.isDef(opt_duration) ? opt_duration : 1000;
@@ -85,7 +85,7 @@ ol.animation.createPanFrom =
  */
 ol.animation.createSpin =
     function(opt_duration, opt_turns, opt_start, opt_easingFunction) {
-  var start = goog.isDef(opt_start) ? opt_start : Date.now();
+  var start = goog.isDef(opt_start) ? opt_start : goog.now();
   var duration = goog.isDef(opt_duration) ? opt_duration : 1000;
   var turns = goog.isDef(opt_turns) ? opt_turns : 1;
   var deltaTheta = 2 * turns * Math.PI;
@@ -118,7 +118,7 @@ ol.animation.createSpin =
  */
 ol.animation.createZoomFrom =
     function(sourceResolution, opt_duration, opt_start, opt_easingFunction) {
-  var start = goog.isDef(opt_start) ? opt_start : Date.now();
+  var start = goog.isDef(opt_start) ? opt_start : goog.now();
   var duration = goog.isDef(opt_duration) ? opt_duration : 1000;
   var easingFunction = goog.isDef(opt_easingFunction) ?
       opt_easingFunction : ol.easing.linear;
