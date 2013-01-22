@@ -235,20 +235,18 @@
         t.eq(elevation.values,
              ["0","1000","3000","5000","10000"],
              "Parsing of comma-separated values done correctly");
+
+
     }
 
     function test_contactinfo(t) {
-        t.plan(18);
+        t.plan(15);
 
         var xml = document.getElementById("ogcsample").firstChild.nodeValue;
         var doc = new OpenLayers.Format.XML().read(xml);
 
         var obj = new OpenLayers.Format.WMSCapabilities().read(doc);
         var service = obj.service;
-
-        t.eq(personPrimary.name, "OGC:WMS", "name parsed correctly");
-        t.eq(personPrimary.title, "Acme Corp. Map Server", "title parsed correctly");
-        t.eq(personPrimary.abstract, "WMT Map Server maintained by Acme Corporation.  Contact: webmaster@wmt.acme.com.  High-quality maps showing roadrunner nests and possible ambush locations.", "abstract parsed correctly");
 
         var contactinfo = service.contactInformation;
         t.ok(contactinfo, "object contains contactInformation property");
