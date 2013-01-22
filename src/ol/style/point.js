@@ -5,7 +5,7 @@ goog.require('ol.style.LiteralSymbolizer');
 
 
 /**
- * @interface
- * @extends {ol.style.LiteralSymbolizer}
+ * @constructor
+ * @implements {ol.style.LiteralSymbolizer}
  */
 ol.style.LiteralPoint = function() {};

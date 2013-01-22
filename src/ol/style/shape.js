@@ -26,7 +26,7 @@ ol.style.LiteralShapeConfig;
 
 /**
  * @constructor
- * @implements {ol.style.LiteralPoint}
+ * @extends {ol.style.LiteralPoint}
  * @param {ol.style.LiteralShapeConfig} config Symbolizer properties.
  */
 ol.style.LiteralShape = function(config) {
@@ -50,3 +50,4 @@ ol.style.LiteralShape = function(config) {
   this.opacity = config.opacity;
 
 };
+goog.inherits(ol.style.LiteralShape, ol.style.LiteralPoint);
