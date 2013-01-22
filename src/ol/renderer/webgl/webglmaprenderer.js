@@ -5,6 +5,7 @@
 goog.provide('ol.renderer.webgl.Map');
 goog.provide('ol.renderer.webgl.map.shader');
 
+goog.require('goog.array');
 goog.require('goog.debug.Logger');
 goog.require('goog.dispose');
 goog.require('goog.dom');

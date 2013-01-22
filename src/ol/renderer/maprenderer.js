@@ -1,6 +1,7 @@
 goog.provide('ol.renderer.Map');
 
 goog.require('goog.Disposable');
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.functions');

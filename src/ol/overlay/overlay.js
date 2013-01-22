@@ -1,6 +1,7 @@
 goog.provide('ol.overlay.Overlay');
 goog.provide('ol.overlay.OverlayPositioning');
 
+goog.require('goog.array');
 goog.require('goog.events');
 goog.require('goog.style');
 

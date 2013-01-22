@@ -1,5 +1,6 @@
 goog.provide('ol.renderer.dom.Map');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
