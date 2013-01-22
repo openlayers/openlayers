@@ -1,8 +1,7 @@
 goog.provide('ol.geom.LinearRing');
 
-goog.require('goog.asserts');
-goog.require('goog.vec.Float64Array');
 goog.require('ol.geom.CoordinateArray');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 
 
@@ -25,3 +24,11 @@ ol.geom.LinearRing = function(coordinates) {
 
 };
 goog.inherits(ol.geom.LinearRing, ol.geom.LineString);
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.LinearRing.prototype.getType = function() {
+  return ol.geom.GeometryType.GEOMETRYCOLLECTION;
+};

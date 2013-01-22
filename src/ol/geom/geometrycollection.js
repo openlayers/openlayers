@@ -3,6 +3,7 @@ goog.provide('ol.geom.GeometryCollection');
 goog.require('goog.asserts');
 goog.require('ol.Extent');
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.GeometryType');
 
 
 
@@ -56,4 +57,12 @@ ol.geom.GeometryCollection.prototype.getBounds = function() {
     this.bounds = new ol.Extent(minX, minY, maxX, maxY);
   }
   return this.bounds;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.GeometryCollection.prototype.getType = function() {
+  return ol.geom.GeometryType.GEOMETRYCOLLECTION;
 };

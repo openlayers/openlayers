@@ -51,8 +51,10 @@ ol.geom.CoordinateArray;
 ol.geom.GeometryType = {
   POINT: 'point',
   LINESTRING: 'linestring',
+  LINEARRING: 'linearring',
   POLYGON: 'polygon',
   MULTIPOINT: 'multipoint',
   MULTILINESTRING: 'multilinestring',
-  MULTIPOLYGON: 'multipolygon'
+  MULTIPOLYGON: 'multipolygon',
+  GEOMETRYCOLLECTION: 'geometrycollection'
 };
