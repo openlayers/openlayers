@@ -1,5 +1,6 @@
 goog.provide('ol.io.geojson');
 
+goog.require('ol.Feature');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
@@ -12,7 +13,8 @@ goog.require('ol.geom.Polygon');
 /**
  * Parse a GeoJSON string.
  * @param {string} str GeoJSON string.
- * @return {ol.geom.Geometry|Array.<ol.geom.Geometry>} Parsed geometry or array
+ * @return {ol.Feature|Array.<ol.Feature>|
+ *    ol.geom.Geometry|Array.<ol.geom.Geometry>} Parsed geometry or array
  *    of geometries.
  */
 ol.io.geojson.read = function(str) {
@@ -24,13 +26,22 @@ ol.io.geojson.read = function(str) {
 
 /**
  * @param {GeoJSONObject} json GeoJSON object.
- * @return {ol.geom.Geometry|Array.<ol.geom.Geometry>} Parsed geometry or array
+ * @return {ol.Feature|Array.<ol.Feature>|
+ *    ol.geom.Geometry|Array.<ol.geom.Geometry>} Parsed geometry or array
  *    of geometries.
  * @private
  */
 ol.io.geojson.parse_ = function(json) {
   var result;
   switch (json.type) {
+    case 'FeatureCollection':
+      result = ol.io.geojson.parseFeatureCollection_(
+          /** @type {GeoJSONFeatureCollection} */ (json));
+      break;
+    case 'Feature':
+      result = ol.io.geojson.parseFeature_(
+          /** @type {GeoJSONFeature} */ (json));
+      break;
     case 'GeometryCollection':
       result = ol.io.geojson.parseGeometryCollection_(
           /** @type {GeoJSONGeometryCollection} */ (json));
@@ -61,6 +72,41 @@ ol.io.geojson.parse_ = function(json) {
       break;
     default:
       throw new Error('GeoJSON parsing not implemented for type: ' + json.type);
+  }
+  return result;
+};
+
+
+/**
+ * @param {GeoJSONFeature} json GeoJSON feature.
+ * @return {ol.Feature} Parsed feature.
+ * @private
+ */
+ol.io.geojson.parseFeature_ = function(json) {
+  var geomJson = json.geometry,
+      geometry;
+  if (geomJson) {
+    geometry = /** @type {ol.geom.Geometry} */ (ol.io.geojson.parse_(
+        /** @type {GeoJSONGeometry} */ (geomJson)));
+  }
+  return new ol.Feature(geometry, json.properties);
+};
+
+
+/**
+ * @param {GeoJSONFeatureCollection} json GeoJSON feature collection.
+ * @return {Array.<ol.Feature>} Parsed array of features.
+ * @private
+ */
+ol.io.geojson.parseFeatureCollection_ = function(json) {
+  var features = json.features,
+      len = features.length,
+      result = new Array(len),
+      i;
+
+  for (i = 0; i < len; ++i) {
+    result[i] = ol.io.geojson.parse_(
+        /** @type {GeoJSONFeature} */ (features[i]));
   }
   return result;
 };
