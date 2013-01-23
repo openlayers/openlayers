@@ -4,6 +4,7 @@ goog.require('goog.vec.Mat4');
 goog.require('ol.filter.Geometry');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.layer.Vector');
+goog.require('ol.tilegrid.TileGrid');
 
 
 
@@ -34,6 +35,18 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
    * @type {CanvasRenderingContext2D}
    */
   this.context_ = null;
+
+  /**
+   * @private
+   * @type {HTMLCanvasElement}
+   */
+  this.sketchCanvas_ = null;
+
+  /**
+   * @private
+   * @type {Object.<string, HTMLCanvasElement>}
+   */
+  this.tileCache_ = {};
 
   /**
    * @private
@@ -91,8 +104,25 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   var layer = this.getVectorLayer();
   var source = layer.getVectorSource();
   var extent = frameState.extent;
+  var view2DState = frameState.view2DState;
+  var tileGrid = source.getTileGrid();
 
-  var canvasSize = frameState.size;
+  if (goog.isNull(tileGrid)) {
+    // lazy tile source creation to match the view projection
+    tileGrid = ol.tilegrid.createForProjection(
+        view2DState.projection, 22);
+    source.setTileGrid(tileGrid);
+  }
+
+  var tileSize = tileGrid.getTileSize();
+  var z = tileGrid.getZForResolution(view2DState.resolution);
+  var tileResolution = tileGrid.getResolution(z);
+  var tileRange = tileGrid.getTileRangeForExtentAndResolution(
+      frameState.extent, tileResolution);
+
+  var canvasSize = new ol.Size(
+      tileSize.width * tileRange.getWidth(),
+      tileSize.height * tileRange.getHeight());
 
   var canvas, context;
   if (goog.isNull(this.canvas_)) {
@@ -104,6 +134,8 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
     this.canvas_ = canvas;
     this.canvasSize_ = canvasSize;
     this.context_ = context;
+    this.sketchCanvas_ = /** @type {HTMLCanvasElement} */
+        canvas.cloneNode(false);
   } else {
     canvas = this.canvas_;
     context = this.context_;
@@ -112,14 +144,6 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
     canvas.height = canvasSize.height;
     this.canvasSize_ = canvasSize;
   }
-
-  /**
-   * For now, we create a canvas renderer and have it render all features with
-   * every call to renderFrame.
-   * TODO: only render newly visible/dirty areas
-   */
-  var canvasRenderer = new ol.renderer.canvas.Renderer(
-      canvas, frameState.coordinateToPixelMatrix);
 
   // TODO: implement layer.setStyle(style) where style is a set of rules
   // and a rule has a filter and array of symbolizers
@@ -144,19 +168,68 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
     opacity: 0.5
   });
 
+  var sketchCanvas = this.sketchCanvas_;
+  // clear the sketch canvas
+  sketchCanvas.width = canvasSize.width;
+  sketchCanvas.height = canvasSize.height;
+  // TODO: Use transform for tile resolution, not frameState resolution
+  var sketchCanvasRenderer = new ol.renderer.canvas.Renderer(
+      sketchCanvas, frameState.coordinateToPixelMatrix);
+  var renderedFeatures = {};
+  var tile, tileContext, tileCoord, key, tileExtent, tileState, x, y;
   // render features by geometry type
   var filters = this.geometryFilters_,
       numFilters = filters.length,
       i, filter, type, features, symbolizer;
-
-  for (i = 0; i < numFilters; ++i) {
-    filter = filters[i];
-    type = filter.getType();
-    features = source.getFeatures(filter);
-    if (features.length) {
-      // TODO: layer.getSymbolizerLiterals(features) or similar
-      symbolizer = symbolizers[type];
-      canvasRenderer.renderFeaturesByGeometryType(type, features, symbolizer);
+  for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
+    for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
+      tileCoord = new ol.TileCoord(z, x, y);
+      key = tileCoord.toString();
+      if (key in this.tileCache_) {
+        tile = this.tileCache_[key];
+      } else {
+        tileExtent = tileGrid.getTileCoordExtent(tileCoord);
+        // TODO: instead of filtering here, do this on the source and maintain
+        // a spatial index
+        function filterFn(feature) {
+          var id = goog.getUid(feature);
+          var include = !(id in renderedFeatures) &&
+              feature.getGeometry().getBounds().intersects(tileExtent);
+          if (include === true) {
+            renderedFeatures[id] = true;
+          }
+          return include;
+        }
+        for (i = 0; i < numFilters; ++i) {
+          filter = filters[i];
+          type = filter.getType();
+          features = source.getFeatures(filter);
+          // TODO: spatial indes of tiles - see filterFn above
+          features = goog.array.filter(features, filterFn);
+          if (features.length) {
+            // TODO: layer.getSymbolizerLiterals(features) or similar
+            symbolizer = symbolizers[type];
+            sketchCanvasRenderer.renderFeaturesByGeometryType(
+                type, features, symbolizer);
+          }
+        }
+        tile = /** @type {HTMLCanvasElement} */
+            goog.dom.createElement(goog.dom.TagName.CANVAS);
+        tile.width = tileSize.width;
+        tile.height = tileSize.height;
+        tileContext = tile.getContext('2d');
+        tileContext.drawImage(sketchCanvas,
+            x * tileSize.width, (tileRange.maxY - y) * tileSize.height,
+            tileSize.width, tileSize.height,
+            0, 0, tileSize.width, tileSize.height);
+        this.tileCache_[key] = tile;
+      }
+      // TODO: transform (scale, offset)
+      context.drawImage(tile,
+          0, 0,
+          tileSize.width, tileSize.height,
+          x * tileSize.width, (tileRange.maxY - y) * tileSize.height,
+          tileSize.width, tileSize.height);
     }
   }
 

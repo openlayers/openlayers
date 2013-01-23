@@ -126,7 +126,8 @@ ol.source.FeatureCache.prototype.getFeaturesByIds_ = function(ids) {
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *            extent: (ol.Extent|undefined),
- *            projection: (ol.Projection|undefined)}}
+ *            projection: (ol.Projection|undefined),
+ *            tileGrid: (ol.tilegrid.TileGrid|undefined)}}
  */
 ol.source.VectorOptions;
 
@@ -134,7 +135,7 @@ ol.source.VectorOptions;
 
 /**
  * @constructor
- * @extends {ol.source.Source}
+ * @extends {ol.source.TileSource}
  * @param {ol.source.VectorOptions} options Source options.
  */
 ol.source.Vector = function(options) {
@@ -142,7 +143,8 @@ ol.source.Vector = function(options) {
   goog.base(this, {
     attributions: options.attributions,
     extent: options.extent,
-    projection: options.projection
+    projection: options.projection,
+    tileGrid: options.tileGrid
   });
 
   /**
@@ -152,7 +154,15 @@ ol.source.Vector = function(options) {
   this.featureCache_ = new ol.source.FeatureCache();
 
 };
-goog.inherits(ol.source.Vector, ol.source.Source);
+goog.inherits(ol.source.Vector, ol.source.TileSource);
+
+
+/**
+ * @param {ol.tilegrid.TileGrid} tileGrid tile grid.
+ */
+ol.source.Vector.prototype.setTileGrid = function(tileGrid) {
+  this.tileGrid = tileGrid;
+};
 
 
 /**
