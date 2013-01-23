@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// FIXME replace this with goog.structs.LinkedMap when goog.structs.LinkedMap
+//       adds peekLastKey()
+
 /**
  * @fileoverview A LinkedMap data structure that is accessed using key/value
  * pairs like an ordinary Map, but which guarantees a consistent iteration
@@ -161,6 +164,16 @@ ol.structs.LinkedMap.prototype.peek = function() {
  */
 ol.structs.LinkedMap.prototype.peekLast = function() {
   return this.head_.prev.value;
+};
+
+
+/**
+ * Returns the key of the last node without making any modifications.
+ * @return {string|undefined} The key of the last node or undefined if the map
+ *     is empty.
+ */
+ol.structs.LinkedMap.prototype.peekLastKey = function() {
+  return this.head_.prev.key;
 };
 
 
