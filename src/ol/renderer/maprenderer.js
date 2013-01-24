@@ -42,20 +42,18 @@ ol.renderer.Map = function(container, map) {
 
   /**
    * @private
-   * @type {Array.<number>}
+   * @type {?number}
    */
-  this.layersListenerKeys_ = null;
-
+  this.mapLayersChangedListenerKey_ =
+      goog.events.listen(
+          map, ol.Object.getChangedEventType(ol.MapProperty.LAYERS),
+          this.handleLayersChanged, false, this);
 
   /**
    * @private
    * @type {Array.<number>}
    */
-  this.mapListenerKeys_ = [
-    goog.events.listen(
-        map, ol.Object.getChangedEventType(ol.MapProperty.LAYERS),
-        this.handleLayersChanged, false, this)
-  ];
+  this.layersListenerKeys_ = null;
 
 };
 goog.inherits(ol.renderer.Map, goog.Disposable);
@@ -118,7 +116,7 @@ ol.renderer.Map.prototype.disposeInternal = function() {
   goog.object.forEach(this.layerRenderers, function(layerRenderer) {
     goog.dispose(layerRenderer);
   });
-  goog.array.forEach(this.mapListenerKeys_, goog.events.unlistenByKey);
+  goog.events.unlistenByKey(this.mapLayersChangedListenerKey_);
   if (!goog.isNull(this.layersListenerKeys_)) {
     goog.array.forEach(this.layersListenerKeys_, goog.events.unlistenByKey);
   }

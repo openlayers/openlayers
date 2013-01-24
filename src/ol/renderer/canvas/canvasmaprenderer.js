@@ -77,15 +77,6 @@ ol.renderer.canvas.Map.prototype.getCanvas = function() {
 
 
 /**
- * @param {goog.events.Event} event Event.
- * @protected
- */
-ol.renderer.canvas.Map.prototype.handleLayerRendererChange = function(event) {
-  this.getMap().render();
-};
-
-
-/**
  * @inheritDoc
  */
 ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
