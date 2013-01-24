@@ -67,14 +67,6 @@ goog.inherits(ol.renderer.webgl.Layer, ol.renderer.Layer);
 
 
 /**
- * @protected
- */
-ol.renderer.webgl.Layer.prototype.dispatchChangeEvent = function() {
-  this.dispatchEvent(goog.events.EventType.CHANGE);
-};
-
-
-/**
  * @return {!goog.vec.Mat4.Float32} Color matrix.
  */
 ol.renderer.webgl.Layer.prototype.getColorMatrix = function() {

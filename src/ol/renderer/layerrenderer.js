@@ -65,6 +65,14 @@ goog.inherits(ol.renderer.Layer, ol.Object);
 
 
 /**
+ * @protected
+ */
+ol.renderer.Layer.prototype.dispatchChangeEvent = function() {
+  this.dispatchEvent(goog.events.EventType.CHANGE);
+};
+
+
+/**
  * @return {ol.layer.Layer} Layer.
  */
 ol.renderer.Layer.prototype.getLayer = function() {
