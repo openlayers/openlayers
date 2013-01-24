@@ -55,6 +55,23 @@ describe('ol.Extent', function() {
       expect(destinationExtent.maxX).toRoughlyEqual(5009377.085697311, 1e-9);
       expect(destinationExtent.maxY).toRoughlyEqual(8399737.889818361, 1e-9);
     });
+
+    it('takes arbitrary function', function() {
+      var transformFn = function(coordinate) {
+        return new ol.Coordinate(-coordinate.x, -coordinate.y);
+      }
+      var sourceExtent = new ol.Extent(-15, -30, 45, 60);
+      var destinationExtent = sourceExtent.transform(transformFn);
+      expect(destinationExtent).not.toBeUndefined();
+      expect(destinationExtent).not.toBeNull();
+      // FIXME check values with third-party tool
+      expect(destinationExtent.minX).toBe(-45);
+      expect(destinationExtent.minY).toBe(-60);
+      expect(destinationExtent.maxX).toBe(15);
+      expect(destinationExtent.maxY).toBe(30);
+    });
+
+
   });
 });
 
