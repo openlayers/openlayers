@@ -321,7 +321,7 @@ ol.renderer.webgl.Map.prototype.expireCache_ = function(map, frameState) {
     textureCacheEntry = /** @type {?ol.renderer.webgl.TextureCacheEntry} */
         (this.textureCache_.peekLast());
     if (goog.isNull(textureCacheEntry)) {
-      if (Number(this.textureCache_.peekLastKey()) == frameState.time) {
+      if (+this.textureCache_.peekLastKey() == frameState.time) {
         break;
       } else {
         --this.textureCacheFrameMarkerCount_;
