@@ -64,13 +64,11 @@ describe('ol.Extent', function() {
       var destinationExtent = sourceExtent.transform(transformFn);
       expect(destinationExtent).not.toBeUndefined();
       expect(destinationExtent).not.toBeNull();
-      // FIXME check values with third-party tool
       expect(destinationExtent.minX).toBe(-45);
       expect(destinationExtent.minY).toBe(-60);
       expect(destinationExtent.maxX).toBe(15);
       expect(destinationExtent.maxY).toBe(30);
     });
-
 
   });
 });
