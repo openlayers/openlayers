@@ -52,9 +52,6 @@ var layers = new ol.Collection([
 ]);
 
 var map = new ol.Map({
-  // By setting userProjection to the same as projection, we do not need
-  // proj4js because we do not need any transforms.
-  userProjection: epsg21781,
   layers: layers,
   renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
