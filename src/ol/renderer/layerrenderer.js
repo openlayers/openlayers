@@ -109,13 +109,17 @@ ol.renderer.Layer.prototype.handleLayerHueChange = goog.nullFunction;
 /**
  * @protected
  */
-ol.renderer.Layer.prototype.handleLayerLoad = goog.nullFunction;
+ol.renderer.Layer.prototype.handleLayerLoad = function() {
+  this.dispatchChangeEvent();
+};
 
 
 /**
  * @protected
  */
-ol.renderer.Layer.prototype.handleLayerOpacityChange = goog.nullFunction;
+ol.renderer.Layer.prototype.handleLayerOpacityChange = function() {
+  this.dispatchChangeEvent();
+};
 
 
 /**
@@ -127,7 +131,9 @@ ol.renderer.Layer.prototype.handleLayerSaturationChange = goog.nullFunction;
 /**
  * @protected
  */
-ol.renderer.Layer.prototype.handleLayerVisibleChange = goog.nullFunction;
+ol.renderer.Layer.prototype.handleLayerVisibleChange = function() {
+  this.dispatchChangeEvent();
+};
 
 
 /**

@@ -143,34 +143,10 @@ ol.renderer.webgl.Layer.prototype.handleLayerHueChange = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Layer.prototype.handleLayerLoad = function() {
-  this.dispatchChangeEvent();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.Layer.prototype.handleLayerOpacityChange = function() {
-  this.dispatchChangeEvent();
-};
-
-
-/**
- * @inheritDoc
- */
 ol.renderer.webgl.Layer.prototype.handleLayerSaturationChange = function() {
   var saturation = this.getLayer().getSaturation();
   ol.vec.Mat4.makeSaturation(this.saturationMatrix_, saturation);
   this.colorMatrixDirty_ = true;
-  this.dispatchChangeEvent();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.Layer.prototype.handleLayerVisibleChange = function() {
   this.dispatchChangeEvent();
 };
 

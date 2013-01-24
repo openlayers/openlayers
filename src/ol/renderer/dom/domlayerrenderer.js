@@ -47,30 +47,6 @@ ol.renderer.dom.Layer.prototype.getTarget = function() {
 
 
 /**
- * @inheritDoc
- */
-ol.renderer.dom.Layer.prototype.handleLayerLoad = function() {
-  this.getMap().render();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.dom.Layer.prototype.handleLayerOpacityChange = function() {
-  this.getMap().render();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.dom.Layer.prototype.handleLayerVisibleChange = function() {
-  this.getMap().render();
-};
-
-
-/**
  * @param {ol.FrameState} frameState Frame state.
  * @param {ol.layer.LayerState} layerState Layer state.
  */
