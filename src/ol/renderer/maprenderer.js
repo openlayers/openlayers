@@ -40,6 +40,10 @@ ol.renderer.Map = function(container, map) {
    */
   this.layerRenderers = {};
 
+  //
+  // We listen to layer add/remove to add/remove layer renderers.
+  //
+
   /**
    * @private
    * @type {?number}
