@@ -94,7 +94,8 @@ ol.Extent.prototype.getTopRight = function() {
  * @return {ol.Extent} Extent.
  */
 ol.Extent.prototype.transform = function(transformFn) {
-  var min = transformFn(new ol.Coordinate(this.minX, this.minY));
-  var max = transformFn(new ol.Coordinate(this.maxX, this.maxY));
-  return new ol.Extent(min.x, min.y, max.x, max.y);
+  var a = transformFn(new ol.Coordinate(this.minX, this.minY));
+  var b = transformFn(new ol.Coordinate(this.maxX, this.maxY));
+  return new ol.Extent(Math.min(a.x, b.x), Math.min(a.y, b.y),
+      Math.max(a.x, b.x), Math.max(a.y, b.y));
 };
