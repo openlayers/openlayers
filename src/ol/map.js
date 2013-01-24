@@ -289,6 +289,7 @@ ol.Map = function(mapOptions) {
       this.handleSizeChanged_, false, this);
   this.setValues(mapOptionsInternal.values);
 
+  // this gives the map an initial size
   this.handleBrowserWindowResize();
 
   this.controls_.forEach(
