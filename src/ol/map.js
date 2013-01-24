@@ -176,6 +176,12 @@ ol.Map = function(mapOptions) {
 
   /**
    * @private
+   * @type {?number}
+   */
+  this.viewPropertyListenerKey_ = null;
+
+  /**
+   * @private
    * @type {Element}
    */
   this.viewport_ = goog.dom.createDom(goog.dom.TagName.DIV, 'ol-viewport');
@@ -277,6 +283,8 @@ ol.Map = function(mapOptions) {
    */
   this.tileQueue_ = new ol.TileQueue(goog.bind(this.getTilePriority, this));
 
+  goog.events.listen(this, ol.Object.getChangedEventType(ol.MapProperty.VIEW),
+      this.handleViewChanged_, false, this);
   this.setValues(mapOptionsInternal.values);
 
   this.handleBrowserWindowResize();
@@ -556,6 +564,32 @@ ol.Map.prototype.handlePostRender = function() {
 ol.Map.prototype.handleBrowserWindowResize = function() {
   var size = new ol.Size(this.target_.clientWidth, this.target_.clientHeight);
   this.setSize(size);
+};
+
+
+/**
+ * @private
+ */
+ol.Map.prototype.handleViewPropertyChanged_ = function() {
+  this.render();
+};
+
+
+/**
+ * @private
+ */
+ol.Map.prototype.handleViewChanged_ = function() {
+  if (!goog.isNull(this.viewPropertyListenerKey_)) {
+    goog.events.unlistenByKey(this.viewPropertyListenerKey_);
+    this.viewPropertyListenerKey_ = null;
+  }
+  var view = this.getView();
+  if (goog.isDefAndNotNull(view)) {
+    this.viewPropertyListenerKey_ = goog.events.listen(
+        view, ol.ObjectEventType.CHANGED,
+        this.handleViewPropertyChanged_, false, this);
+  }
+  this.render();
 };
 
 

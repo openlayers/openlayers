@@ -85,15 +85,6 @@ ol.renderer.canvas.Map.prototype.handleBackgroundColorChanged = function() {
 
 
 /**
- * @inheritDoc
- */
-ol.renderer.canvas.Map.prototype.handleViewPropertyChanged = function() {
-  goog.base(this, 'handleViewPropertyChanged');
-  this.getMap().render();
-};
-
-
-/**
  * @param {goog.events.Event} event Event.
  * @protected
  */
@@ -107,15 +98,6 @@ ol.renderer.canvas.Map.prototype.handleLayerRendererChange = function(event) {
  */
 ol.renderer.canvas.Map.prototype.handleSizeChanged = function() {
   goog.base(this, 'handleSizeChanged');
-  this.getMap().render();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.canvas.Map.prototype.handleViewChanged = function() {
-  goog.base(this, 'handleViewChanged');
   this.getMap().render();
 };
 
