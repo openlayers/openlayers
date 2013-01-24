@@ -79,12 +79,6 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
 
   /**
    * @private
-   * @type {ol.Extent}
-   */
-  this.renderedExtent_;
-
-  /**
-   * @private
    * @type {boolean}
    */
   this.layerChanged_ = false;
@@ -169,15 +163,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   var tileResolution = tileGrid.getResolution(z);
   var tileRange = tileGrid.getTileRangeForExtentAndResolution(
       extent, tileResolution);
-  var tileExtent = tileGrid.getTileRangeExtent(z, tileRange);
-
-  // bail out if nothing to do
-  // TODO: try to make it less work to determine that nothing changed
-  if (!this.layerChanged_ && this.renderedResolution_ == tileResolution &&
-      // TODO: extent.equals(other)
-      this.renderedExtent_.toString() == tileExtent.toString()) {
-    return;
-  }
+  var tileRangeExtent = tileGrid.getTileRangeExtent(z, tileRange);
 
   // clear tiles at alt-z
   if (this.renderedResolution_ != tileResolution) {
@@ -202,11 +188,26 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   finalCanvas.height = sketchSize.height;
   var finalContext = this.context_;
 
+  var sketchOrigin = tileRangeExtent.getTopLeft();
+  var frameOrigin = extent.getTopLeft();
+  var transform = this.transform_;
+  goog.vec.Mat4.makeIdentity(transform);
+  goog.vec.Mat4.translate(transform,
+      frameState.size.width / 2, frameState.size.height / 2, 0);
+  goog.vec.Mat4.rotateZ(transform, view2DState.rotation);
+  goog.vec.Mat4.scale(
+      transform,
+      tileResolution / view2DState.resolution,
+      tileResolution / view2DState.resolution,
+      1);
+  goog.vec.Mat4.translate(
+      transform,
+      (frameOrigin.x - view2DState.center.x) / tileResolution,
+      (view2DState.center.y - frameOrigin.y) / tileResolution,
+      0);
+
   var sketchTransform = this.sketchTransform_;
   goog.vec.Mat4.makeIdentity(sketchTransform);
-  goog.vec.Mat4.translate(sketchTransform,
-      sketchSize.width / 2, sketchSize.height / 2, 0);
-  goog.vec.Mat4.rotateZ(sketchTransform, view2DState.rotation);
   goog.vec.Mat4.scale(
       sketchTransform,
       1 / tileResolution,
@@ -214,8 +215,8 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       1);
   goog.vec.Mat4.translate(
       sketchTransform,
-      -view2DState.center.x,
-      -view2DState.center.y,
+      -sketchOrigin.x,
+      -sketchOrigin.y,
       0);
 
   var sketchCanvasRenderer = new ol.renderer.canvas.Renderer(
@@ -231,8 +232,8 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       tileCoord = new ol.TileCoord(z, x, y);
       key = tileCoord.toString();
       tile = this.tileCache_[key];
+      tileExtent = tileGrid.getTileCoordExtent(tileCoord);
       if (tile === undefined) {
-        tileExtent = tileGrid.getTileCoordExtent(tileCoord);
         // TODO: instead of filtering here, do this on the source and maintain
         // a spatial index
         function filterFn(feature) {
@@ -248,7 +249,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
           filter = filters[i];
           type = filter.getType();
           features = source.getFeatures(filter);
-          // TODO: spatial indes of tiles - see filterFn above
+          // TODO: spatial index of tiles - see filterFn above
           features = goog.array.filter(features, filterFn);
           if (features.length) {
             // TODO: layer.getSymbolizerLiterals(features) or similar
@@ -268,25 +269,11 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
         this.tileCache_[key] = tile;
       }
       finalContext.drawImage(tile,
-          x * tileSize.width, (tileRange.maxY - y) * tileSize.height);
+          (tileExtent.minX - frameOrigin.x) / tileResolution,
+          (frameOrigin.y - tileExtent.maxY) / tileResolution);
     }
   }
-  var sketchOrigin = tileExtent.getTopLeft();
-  var frameOrigin = extent.getTopLeft();
-
-  var dx = (sketchOrigin.x - frameOrigin.x) / resolution;
-  var dy = (frameOrigin.y - sketchOrigin.y) / resolution;
-
-  var transform = this.transform_;
-  goog.vec.Mat4.makeIdentity(transform);
-  goog.vec.Mat4.translate(transform, dx, dy, 0);
-  goog.vec.Mat4.scale(
-      transform,
-      tileResolution / resolution,
-      tileResolution / resolution,
-      1);
 
   this.renderedResolution_ = tileResolution;
-  this.renderedExtent_ = tileExtent;
 
 };
