@@ -410,14 +410,6 @@ ol.renderer.webgl.Map.prototype.getShader = function(shaderObject) {
 
 
 /**
- * @inheritDoc
- */
-ol.renderer.webgl.Map.prototype.handleBackgroundColorChanged = function() {
-  this.getMap().render();
-};
-
-
-/**
  * @param {goog.events.Event} event Event.
  * @protected
  */

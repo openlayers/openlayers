@@ -77,14 +77,6 @@ ol.renderer.canvas.Map.prototype.getCanvas = function() {
 
 
 /**
- * @inheritDoc
- */
-ol.renderer.canvas.Map.prototype.handleBackgroundColorChanged = function() {
-  this.getMap().render();
-};
-
-
-/**
  * @param {goog.events.Event} event Event.
  * @protected
  */

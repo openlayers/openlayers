@@ -287,6 +287,9 @@ ol.Map = function(mapOptions) {
       this.handleViewChanged_, false, this);
   goog.events.listen(this, ol.Object.getChangedEventType(ol.MapProperty.SIZE),
       this.handleSizeChanged_, false, this);
+  goog.events.listen(
+      this, ol.Object.getChangedEventType(ol.MapProperty.BACKGROUND_COLOR),
+      this.handleBackgroundColorChanged_, false, this),
   this.setValues(mapOptionsInternal.values);
 
   // this gives the map an initial size
@@ -558,6 +561,14 @@ ol.Map.prototype.handlePostRender = function() {
     postRenderFunctions[i](this, this.frameState_);
   }
   postRenderFunctions.length = 0;
+};
+
+
+/**
+ * @private
+ */
+ol.Map.prototype.handleBackgroundColorChanged_ = function() {
+  this.render();
 };
 
 

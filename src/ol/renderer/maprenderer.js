@@ -53,10 +53,6 @@ ol.renderer.Map = function(container, map) {
    */
   this.mapListenerKeys_ = [
     goog.events.listen(
-        map, ol.Object.getChangedEventType(ol.MapProperty.BACKGROUND_COLOR),
-        this.handleBackgroundColorChanged, false, this),
-
-    goog.events.listen(
         map, ol.Object.getChangedEventType(ol.MapProperty.LAYERS),
         this.handleLayersChanged, false, this)
   ];
@@ -155,12 +151,6 @@ ol.renderer.Map.prototype.getLayerRenderer = function(layer) {
 ol.renderer.Map.prototype.getMap = function() {
   return this.map;
 };
-
-
-/**
- * Handle background color changed.
- */
-ol.renderer.Map.prototype.handleBackgroundColorChanged = goog.nullFunction;
 
 
 /**
