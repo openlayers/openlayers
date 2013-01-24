@@ -1,6 +1,7 @@
 goog.provide('ol.source.TileSource');
 goog.provide('ol.source.TileSourceOptions');
 
+goog.require('goog.functions');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
 goog.require('ol.Projection');
@@ -44,6 +45,18 @@ ol.source.TileSource = function(tileSourceOptions) {
 
 };
 goog.inherits(ol.source.TileSource, ol.source.Source);
+
+
+/**
+ * @return {boolean} Can expire cache.
+ */
+ol.source.TileSource.prototype.canExpireCache = goog.functions.FALSE;
+
+
+/**
+ * @param {Object.<string, ol.TileRange>} usedTiles Used tiles.
+ */
+ol.source.TileSource.prototype.expireCache = goog.abstractMethod;
 
 
 /**
