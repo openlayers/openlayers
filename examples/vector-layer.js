@@ -37,3 +37,7 @@ var map = new ol.Map({
     zoom: 0
   })
 });
+
+// TODO: remove me
+document.getElementById('canvas').appendChild(
+    map.renderer_.getLayerRenderer(vector).canvas_);

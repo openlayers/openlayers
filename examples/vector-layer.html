@@ -5,11 +5,12 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
     <link rel="stylesheet" href="style.css" type="text/css">
     <style type="text/css">
-      html, body, #map {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
+      #map {
+        width: 512px;
+        height: 256px;
+      }
+      #canvas {
+        padding-top: 2em;
       }
     </style>
     <link rel="stylesheet" href="../css/ol.css" type="text/css">
@@ -17,6 +18,7 @@
   </head>
   <body>
     <div id="map"></div>
+    <div id="canvas"></div>
     <script src="loader.js?id=vector-layer" type="text/javascript"></script>
   </body>
 </html>
