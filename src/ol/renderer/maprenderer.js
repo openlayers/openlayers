@@ -58,11 +58,7 @@ ol.renderer.Map = function(container, map) {
 
     goog.events.listen(
         map, ol.Object.getChangedEventType(ol.MapProperty.LAYERS),
-        this.handleLayersChanged, false, this),
-
-    goog.events.listen(
-        map, ol.Object.getChangedEventType(ol.MapProperty.SIZE),
-        this.handleSizeChanged, false, this)
+        this.handleLayersChanged, false, this)
   ];
 
 };
@@ -207,14 +203,6 @@ ol.renderer.Map.prototype.handleLayersChanged = function() {
 ol.renderer.Map.prototype.handleLayersRemove = function(collectionEvent) {
   var layer = /** @type {ol.layer.Layer} */ (collectionEvent.elem);
   this.removeLayer(layer);
-};
-
-
-/**
- * @protected
- */
-ol.renderer.Map.prototype.handleSizeChanged = function() {
-  this.getMap().render();
 };
 
 

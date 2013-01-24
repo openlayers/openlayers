@@ -285,6 +285,8 @@ ol.Map = function(mapOptions) {
 
   goog.events.listen(this, ol.Object.getChangedEventType(ol.MapProperty.VIEW),
       this.handleViewChanged_, false, this);
+  goog.events.listen(this, ol.Object.getChangedEventType(ol.MapProperty.SIZE),
+      this.handleSizeChanged_, false, this);
   this.setValues(mapOptionsInternal.values);
 
   this.handleBrowserWindowResize();
@@ -564,6 +566,14 @@ ol.Map.prototype.handlePostRender = function() {
 ol.Map.prototype.handleBrowserWindowResize = function() {
   var size = new ol.Size(this.target_.clientWidth, this.target_.clientHeight);
   this.setSize(size);
+};
+
+
+/**
+ * @private
+ */
+ol.Map.prototype.handleSizeChanged_ = function() {
+  this.render();
 };
 
 

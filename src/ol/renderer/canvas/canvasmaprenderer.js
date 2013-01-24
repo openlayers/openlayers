@@ -96,15 +96,6 @@ ol.renderer.canvas.Map.prototype.handleLayerRendererChange = function(event) {
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.Map.prototype.handleSizeChanged = function() {
-  goog.base(this, 'handleSizeChanged');
-  this.getMap().render();
-};
-
-
-/**
- * @inheritDoc
- */
 ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
 
   if (goog.isNull(frameState)) {
