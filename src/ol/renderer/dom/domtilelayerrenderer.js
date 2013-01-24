@@ -239,6 +239,7 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   }
 
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
+  this.scheduleExpireCache(frameState, tileSource);
 
 };
 

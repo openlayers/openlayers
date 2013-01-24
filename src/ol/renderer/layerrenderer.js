@@ -2,10 +2,12 @@ goog.provide('ol.renderer.Layer');
 
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('ol.FrameState');
 goog.require('ol.Object');
 goog.require('ol.TileRange');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.LayerProperty');
+goog.require('ol.source.TileSource');
 
 
 
@@ -126,6 +128,23 @@ ol.renderer.Layer.prototype.handleLayerSaturationChange = goog.nullFunction;
  * @protected
  */
 ol.renderer.Layer.prototype.handleLayerVisibleChange = goog.nullFunction;
+
+
+/**
+ * @protected
+ * @param {ol.FrameState} frameState Frame state.
+ * @param {ol.source.TileSource} tileSource Tile source.
+ */
+ol.renderer.Layer.prototype.scheduleExpireCache =
+    function(frameState, tileSource) {
+  if (tileSource.canExpireCache()) {
+    frameState.postRenderFunctions.push(
+        goog.partial(function(tileSource, map, frameState) {
+          var tileSourceKey = goog.getUid(tileSource).toString();
+          tileSource.expireCache(frameState.usedTiles[tileSourceKey]);
+        }, tileSource));
+  }
+};
 
 
 /**
