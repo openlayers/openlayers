@@ -75,11 +75,11 @@
 @exportObjectLiteralProperty ol.layer.LayerOptions.source ol.source.Source
 @exportObjectLiteralProperty ol.layer.LayerOptions.visible boolean|undefined
 
-@exportObjectLiteral ol.overlay.OverlayOptions
-@exportObjectLiteralProperty ol.overlay.OverlayOptions.coordinate ol.Coordinate|undefined
-@exportObjectLiteralProperty ol.overlay.OverlayOptions.element Element|undefined
-@exportObjectLiteralProperty ol.overlay.OverlayOptions.map ol.Map|undefined
-@exportObjectLiteralProperty ol.overlay.OverlayOptions.positioning Array.<string>|undefined
+@exportObjectLiteral ol.AnchoredElementOptions
+@exportObjectLiteralProperty ol.AnchoredElementOptions.element Element|undefined
+@exportObjectLiteralProperty ol.AnchoredElementOptions.map ol.Map|undefined
+@exportObjectLiteralProperty ol.AnchoredElementOptions.position ol.Coordinate|undefined
+@exportObjectLiteralProperty ol.AnchoredElementOptions.positioning ol.AnchoredElementPositioning|undefined
 
 @exportObjectLiteral ol.source.BingMapsOptions
 @exportObjectLiteralProperty ol.source.BingMapsOptions.culture string|undefined
