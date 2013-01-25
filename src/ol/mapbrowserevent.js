@@ -287,7 +287,8 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
           goog.events.EventType.MOUSEUP,
       this.handleUp_, false, this);
   goog.events.unlisten(element,
-      goog.events.EventType.CLICK, this.click_, false, this);
+      [goog.events.EventType.CLICK, goog.events.EventType.DBLCLICK],
+      this.click_, false, this);
   if (!goog.isNull(this.dragListenerKeys_)) {
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
