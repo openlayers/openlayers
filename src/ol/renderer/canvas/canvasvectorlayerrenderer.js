@@ -264,6 +264,19 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
         tile.height = tileSize.height;
         tileContext = tile.getContext('2d');
 
+        // TODO: remove me
+        if (goog.DEBUG) {
+          tileContext.strokeStyle = '#999999';
+          tileContext.fillStyle = '#999999';
+          tileContext.textAlign = 'center';
+          tileContext.textBaseline = 'middle';
+          tileContext.font = '24px sans-serif';
+          tileContext.strokeRect(0.5, 0.5, tileSize.width - 1,
+              tileSize.height - 1);
+          tileContext.fillText(tileCoord.toString(), tileSize.width / 2,
+              tileSize.height / 2);
+        }
+
         tileContext.drawImage(sketchCanvas,
             -x * tileSize.width, -(tileRange.maxY - y) * tileSize.height);
         this.tileCache_[key] = tile;
