@@ -222,9 +222,6 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   var sketchCanvasRenderer = new ol.renderer.canvas.Renderer(
       sketchCanvas, sketchTransform);
   var renderedFeatures = {};
-  // TODO: wrap date line properly
-  var numCols = Math.ceil((tileRangeExtent.maxX - tileRangeExtent.minX) /
-      tileSize.width / tileResolution);
   var tile, tileContext, tileCoord, key, tileExtent, tileState, x, y;
   // render features by geometry type
   var filters = this.geometryFilters_,
@@ -232,7 +229,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       i, filter, type, features, symbolizer;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-      tileCoord = new ol.TileCoord(z, goog.math.modulo(x, numCols), y);
+      tileCoord = new ol.TileCoord(z, x, y);
       key = tileCoord.toString();
       tile = this.tileCache_[key];
       tileExtent = tileGrid.getTileCoordExtent(tileCoord);
