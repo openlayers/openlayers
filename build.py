@@ -85,6 +85,9 @@ virtual('precommit', 'lint', 'build-all', 'test', 'build', 'build-examples', 'do
 virtual('build', 'build/ol.css', 'build/ol.js')
 
 
+virtual('todo', 'fixme')
+
+
 @target('build/ol.css', 'build/ol.js')
 def build_ol_css(t):
     t.touch()
@@ -247,6 +250,27 @@ def hostexamples(t):
 def test(t):
     t.run('%(PHANTOMJS)s', 'test/phantom-jasmine/run_jasmine_test.coffee', 'test/ol.html')
 
+@target('fixme', phony=True)
+def find_fixme(t):
+    regex = re.compile(".(FIXME|TODO).")
+    matches = dict()
+    totalcount = 0
+    for filename in SRC:
+        f = open(filename, 'r')
+        for lineno, line in enumerate(f):
+            if regex.search(line):
+                if (filename not in matches):
+                    matches[filename] = list()
+                matches[filename].append("#" + str(lineno + 1).ljust(10) + line.strip())
+                totalcount += 1
+        f.close()
+
+    for filename in matches:
+        print "  ", filename, "has", len(matches[filename]), "matches:"
+        for match in matches[filename]:
+            print "    ", match
+        print
+    print "A total number of", totalcount, "TODO/FIXME was found"
 
 if __name__ == '__main__':
     main()
