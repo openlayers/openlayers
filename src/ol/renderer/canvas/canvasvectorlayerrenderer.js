@@ -60,6 +60,12 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
   this.tileCache_ = {};
 
   /**
+   * @private
+   * @type {HTMLCanvasElement}
+   */
+  this.tileArchetype_ = null;
+
+  /**
    * Geometry filters in rendering order.
    * @private
    * @type {Array.<ol.filter.Geometry>}
@@ -209,6 +215,13 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
     this.tileCache_ = {};
   }
 
+  if (goog.isNull(this.tileArchetype_)) {
+    this.tileArchetype_ = /** @type {HTMLCanvasElement} */
+        goog.dom.createElement(goog.dom.TagName.CANVAS);
+    this.tileArchetype_.width = tileSize.width;
+    this.tileArchetype_.height = tileSize.height;
+  }
+
   /**
    * Prepare the sketch canvas.  This covers the currently visible tile range
    * and will have rendered all newly visible features.
@@ -250,7 +263,8 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   var finalContext = this.context_;
 
   var renderedFeatures = {};
-  var tile, tileContext, tileCoord, key, tileExtent, tileState, x, y;
+  var tilesToRender = {};
+  var tile, tileCoord, key, tileExtent, tileState, x, y;
   // render features by geometry type
   var filters = this.geometryFilters_,
       numFilters = filters.length,
@@ -260,8 +274,8 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       tileCoord = new ol.TileCoord(z, x, y);
       key = tileCoord.toString();
       tile = this.tileCache_[key];
-      tileExtent = tileGrid.getTileCoordExtent(tileCoord);
       if (tile === undefined) {
+        tileExtent = tileGrid.getTileCoordExtent(tileCoord);
         // TODO: instead of filtering here, do this on the source and maintain
         // a spatial index
         function filterFn(feature) {
@@ -286,23 +300,27 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
                 type, features, symbolizer);
           }
         }
-        tile = /** @type {HTMLCanvasElement} */
-            goog.dom.createElement(goog.dom.TagName.CANVAS);
-        tile.width = tileSize.width;
-        tile.height = tileSize.height;
-        tileContext = tile.getContext('2d');
-
-        tileContext.drawImage(sketchCanvas,
-            (tileRange.minX - x) * tileSize.width,
-            (y - tileRange.maxY) * tileSize.height);
-        this.tileCache_[key] = tile;
       }
-      finalContext.drawImage(tile,
-          tileSize.width * (x - tileRange.minX),
-          tileSize.height * (tileRange.maxY - y));
+      tilesToRender[key] = tileCoord;
     }
   }
-
+  
+  for (key in tilesToRender) {
+    tile = this.tileCache_[key];
+    tileCoord = tilesToRender[key];
+    if (tile === undefined) {
+      tile = /** @type {HTMLCanvasElement} */
+          this.tileArchetype_.cloneNode(false);
+      tile.getContext('2d').drawImage(sketchCanvas,
+          (tileRange.minX - tileCoord.x) * tileSize.width,
+          (tileCoord.y - tileRange.maxY) * tileSize.height);
+      this.tileCache_[key] = tile;
+    }
+    finalContext.drawImage(tile,
+        tileSize.width * (tileCoord.x - tileRange.minX),
+        tileSize.height * (tileRange.maxY - tileCoord.y));
+  }
+  
   this.renderedResolution_ = tileResolution;
 
 };
