@@ -189,6 +189,7 @@ ol.Map = function(mapOptions) {
   this.viewport_.style.overflow = 'hidden';
   this.viewport_.style.width = '100%';
   this.viewport_.style.height = '100%';
+  this.viewport_.style.msTouchAction = 'none';
   goog.dom.appendChild(this.target_, this.viewport_);
 
   /**
