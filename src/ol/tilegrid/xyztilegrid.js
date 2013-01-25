@@ -48,8 +48,8 @@ ol.tilegrid.XYZ.prototype.forEachTileCoordParentTileRange =
     if (z < 0) {
       break;
     }
-    x = Math.floor(x / 2);
-    y = Math.floor(y / 2);
+    x >>= 1;
+    y >>= 1;
     tileRange = new ol.TileRange(x, y, x, y);
     if (callback.call(opt_obj, z, tileRange)) {
       break;

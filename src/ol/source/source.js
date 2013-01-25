@@ -10,7 +10,7 @@ goog.require('ol.TileUrlFunction');
 
 
 /**
- * @typedef {{attribtions: (Array.<ol.Attribution>|undefined),
+ * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *            extent: (ol.Extent|undefined),
  *            projection: (ol.Projection|undefined)}}
  */

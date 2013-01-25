@@ -1,11 +1,10 @@
 goog.provide('ol.renderer.Map');
 
 goog.require('goog.Disposable');
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.functions');
-goog.require('goog.fx.anim');
-goog.require('goog.fx.anim.Animated');
 goog.require('goog.vec.Mat4');
 goog.require('ol.FrameState');
 goog.require('ol.View2D');
@@ -41,40 +40,24 @@ ol.renderer.Map = function(container, map) {
    */
   this.layerRenderers = {};
 
-  /**
-   * @private
-   * @type {Array.<number>}
-   */
-  this.layersListenerKeys_ = null;
-
+  //
+  // We listen to layer add/remove to add/remove layer renderers.
+  //
 
   /**
    * @private
    * @type {?number}
    */
-  this.viewPropertyListenerKey_ = null;
+  this.mapLayersChangedListenerKey_ =
+      goog.events.listen(
+          map, ol.Object.getChangedEventType(ol.MapProperty.LAYERS),
+          this.handleLayersChanged, false, this);
 
   /**
    * @private
    * @type {Array.<number>}
    */
-  this.mapListenerKeys_ = [
-    goog.events.listen(
-        map, ol.Object.getChangedEventType(ol.MapProperty.BACKGROUND_COLOR),
-        this.handleBackgroundColorChanged, false, this),
-
-    goog.events.listen(
-        map, ol.Object.getChangedEventType(ol.MapProperty.LAYERS),
-        this.handleLayersChanged, false, this),
-
-    goog.events.listen(
-        map, ol.Object.getChangedEventType(ol.MapProperty.SIZE),
-        this.handleSizeChanged, false, this),
-
-    goog.events.listen(
-        map, ol.Object.getChangedEventType(ol.MapProperty.VIEW),
-        this.handleViewChanged, false, this)
-  ];
+  this.layersListenerKeys_ = null;
 
 };
 goog.inherits(ol.renderer.Map, goog.Disposable);
@@ -137,15 +120,18 @@ ol.renderer.Map.prototype.disposeInternal = function() {
   goog.object.forEach(this.layerRenderers, function(layerRenderer) {
     goog.dispose(layerRenderer);
   });
-  goog.array.forEach(this.mapListenerKeys_, goog.events.unlistenByKey);
-  if (!goog.isNull(this.viewPropertyListenerKey_)) {
-    goog.events.unlistenByKey(this.viewPropertyListenerKey_);
-  }
+  goog.events.unlistenByKey(this.mapLayersChangedListenerKey_);
   if (!goog.isNull(this.layersListenerKeys_)) {
     goog.array.forEach(this.layersListenerKeys_, goog.events.unlistenByKey);
   }
   goog.base(this, 'disposeInternal');
 };
+
+
+/**
+ * @return {Element} Canvas.
+ */
+ol.renderer.Map.prototype.getCanvas = goog.functions.NULL;
 
 
 /**
@@ -167,12 +153,6 @@ ol.renderer.Map.prototype.getLayerRenderer = function(layer) {
 ol.renderer.Map.prototype.getMap = function() {
   return this.map;
 };
-
-
-/**
- * Handle background color changed.
- */
-ol.renderer.Map.prototype.handleBackgroundColorChanged = goog.nullFunction;
 
 
 /**
@@ -215,40 +195,6 @@ ol.renderer.Map.prototype.handleLayersChanged = function() {
 ol.renderer.Map.prototype.handleLayersRemove = function(collectionEvent) {
   var layer = /** @type {ol.layer.Layer} */ (collectionEvent.elem);
   this.removeLayer(layer);
-};
-
-
-/**
- * @protected
- */
-ol.renderer.Map.prototype.handleViewPropertyChanged = function() {
-  this.getMap().render();
-};
-
-
-/**
- * @protected
- */
-ol.renderer.Map.prototype.handleSizeChanged = function() {
-  this.getMap().render();
-};
-
-
-/**
- * @protected
- */
-ol.renderer.Map.prototype.handleViewChanged = function() {
-  if (!goog.isNull(this.viewPropertyListenerKey_)) {
-    goog.events.unlistenByKey(this.viewPropertyListenerKey_);
-    this.viewPropertyListenerKey_ = null;
-  }
-  var view = this.getMap().getView();
-  if (goog.isDefAndNotNull(view)) {
-    this.viewPropertyListenerKey_ = goog.events.listen(
-        view, ol.ObjectEventType.CHANGED,
-        this.handleViewPropertyChanged, false, this);
-  }
-  this.getMap().render();
 };
 
 

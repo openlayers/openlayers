@@ -2,6 +2,7 @@ goog.provide('ol.BingMapsStyle');
 goog.provide('ol.source.BingMaps');
 
 goog.require('goog.Uri');
+goog.require('goog.array');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.net.Jsonp');

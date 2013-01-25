@@ -296,8 +296,10 @@ ol.View2D.prototype.zoom = function(map, delta, opt_anchor, opt_duration) {
   var currentResolution = this.getResolution();
   if (goog.isDef(currentResolution) && goog.isDef(opt_duration)) {
     map.requestRenderFrame();
-    map.addPreRenderFunction(ol.animation.createZoomFrom(
-        currentResolution, opt_duration));
+    map.addPreRenderFunction(ol.animation.createZoomFrom({
+      resolution: currentResolution,
+      duration: opt_duration
+    }));
   }
   var resolution = this.constraints_.resolution(currentResolution, delta);
   this.zoom_(map, resolution, opt_anchor);

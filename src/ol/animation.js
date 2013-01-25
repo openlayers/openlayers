@@ -9,25 +9,22 @@ goog.require('ol.easing');
 
 
 /**
- * @param {number} resolution Resolution.
- * @param {number=} opt_duration Duration.
- * @param {number=} opt_start Start.
- * @param {function(number): number=} opt_easingFunction Easing function.
+ * @param {ol.animation.BounceOptions} options Options.
  * @return {ol.PreRenderFunction} Pre-render function.
  */
-ol.animation.createBounce =
-    function(resolution, opt_duration, opt_start, opt_easingFunction) {
-  var start = goog.isDef(opt_start) ? opt_start : Date.now();
-  var duration = goog.isDef(opt_duration) ? opt_duration : 1000;
-  var easingFunction = goog.isDef(opt_easingFunction) ?
-      opt_easingFunction : ol.easing.upAndDown;
+ol.animation.createBounce = function(options) {
+  var resolution = options.resolution;
+  var start = goog.isDef(options.start) ? options.start : goog.now();
+  var duration = goog.isDef(options.duration) ? options.duration : 1000;
+  var easing = goog.isDef(options.easing) ?
+      options.easing : ol.easing.upAndDown;
   return function(map, frameState) {
     if (frameState.time < start) {
       frameState.animate = true;
       frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
       return true;
     } else if (frameState.time < start + duration) {
-      var delta = easingFunction((frameState.time - start) / duration);
+      var delta = easing((frameState.time - start) / duration);
       var deltaResolution = resolution - frameState.view2DState.resolution;
       frameState.animate = true;
       frameState.view2DState.resolution += delta * deltaResolution;
@@ -41,27 +38,24 @@ ol.animation.createBounce =
 
 
 /**
- * @param {ol.Coordinate} source Source.
- * @param {number=} opt_duration Duration.
- * @param {number=} opt_start Start.
- * @param {function(number): number=} opt_easingFunction Easing function.
+ * @param {ol.animation.PanFromOptions} options Options.
  * @return {ol.PreRenderFunction} Pre-render function.
  */
-ol.animation.createPanFrom =
-    function(source, opt_duration, opt_start, opt_easingFunction) {
-  var start = goog.isDef(opt_start) ? opt_start : Date.now();
+ol.animation.createPanFrom = function(options) {
+  var source = options.source;
+  var start = goog.isDef(options.start) ? options.start : goog.now();
   var sourceX = source.x;
   var sourceY = source.y;
-  var duration = goog.isDef(opt_duration) ? opt_duration : 1000;
-  var easingFunction = goog.isDef(opt_easingFunction) ?
-      opt_easingFunction : goog.fx.easing.inAndOut;
+  var duration = goog.isDef(options.duration) ? options.duration : 1000;
+  var easing = goog.isDef(options.easing) ?
+      options.easing : goog.fx.easing.inAndOut;
   return function(map, frameState) {
     if (frameState.time < start) {
       frameState.animate = true;
       frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
       return true;
     } else if (frameState.time < start + duration) {
-      var delta = 1 - easingFunction((frameState.time - start) / duration);
+      var delta = 1 - easing((frameState.time - start) / duration);
       var deltaX = sourceX - frameState.view2DState.center.x;
       var deltaY = sourceY - frameState.view2DState.center.y;
       frameState.animate = true;
@@ -77,27 +71,23 @@ ol.animation.createPanFrom =
 
 
 /**
- * @param {number=} opt_duration Duration.
- * @param {number=} opt_turns Turns.
- * @param {number=} opt_start Start.
- * @param {function(number): number=} opt_easingFunction Easing function.
+ * @param {ol.animation.SpinOptions} options Options.
  * @return {ol.PreRenderFunction} Pre-render function.
  */
-ol.animation.createSpin =
-    function(opt_duration, opt_turns, opt_start, opt_easingFunction) {
-  var start = goog.isDef(opt_start) ? opt_start : Date.now();
-  var duration = goog.isDef(opt_duration) ? opt_duration : 1000;
-  var turns = goog.isDef(opt_turns) ? opt_turns : 1;
-  var deltaTheta = 2 * turns * Math.PI;
-  var easingFunction = goog.isDef(opt_easingFunction) ?
-      opt_easingFunction : goog.fx.easing.inAndOut;
+ol.animation.createSpin = function(options) {
+  var start = goog.isDef(options.start) ? options.start : goog.now();
+  var duration = goog.isDef(options.duration) ? options.duration : 1000;
+  var easing = goog.isDef(options.easing) ?
+      options.easing : goog.fx.easing.inAndOut;
+  var deltaTheta = 2 * options.turns * Math.PI;
+
   return function(map, frameState) {
     if (frameState.time < start) {
       frameState.animate = true;
       frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
       return true;
     } else if (frameState.time < start + duration) {
-      var delta = easingFunction((frameState.time - start) / duration);
+      var delta = easing((frameState.time - start) / duration);
       frameState.animate = true;
       frameState.view2DState.rotation += delta * deltaTheta;
       frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
@@ -110,25 +100,22 @@ ol.animation.createSpin =
 
 
 /**
- * @param {number} sourceResolution Source resolution.
- * @param {number=} opt_duration Duration.
- * @param {number=} opt_start Start.
- * @param {function(number): number=} opt_easingFunction Easing function.
+ * @param {ol.animation.ZoomFromOptions} options Options.
  * @return {ol.PreRenderFunction} Pre-render function.
  */
-ol.animation.createZoomFrom =
-    function(sourceResolution, opt_duration, opt_start, opt_easingFunction) {
-  var start = goog.isDef(opt_start) ? opt_start : Date.now();
-  var duration = goog.isDef(opt_duration) ? opt_duration : 1000;
-  var easingFunction = goog.isDef(opt_easingFunction) ?
-      opt_easingFunction : ol.easing.linear;
+ol.animation.createZoomFrom = function(options) {
+  var sourceResolution = options.resolution;
+  var start = goog.isDef(options.start) ? options.start : goog.now();
+  var duration = goog.isDef(options.duration) ? options.duration : 1000;
+  var easing = goog.isDef(options.easing) ?
+      options.easing : ol.easing.linear;
   return function(map, frameState) {
     if (frameState.time < start) {
       frameState.animate = true;
       frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
       return true;
     } else if (frameState.time < start + duration) {
-      var delta = 1 - easingFunction((frameState.time - start) / duration);
+      var delta = 1 - easing((frameState.time - start) / duration);
       var deltaResolution =
           sourceResolution - frameState.view2DState.resolution;
       frameState.animate = true;

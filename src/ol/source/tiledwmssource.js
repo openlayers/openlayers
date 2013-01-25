@@ -3,6 +3,7 @@
 goog.provide('ol.source.TiledWMS');
 
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('goog.uri.utils');

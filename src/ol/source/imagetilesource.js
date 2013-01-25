@@ -5,6 +5,7 @@ goog.require('ol.Attribution');
 goog.require('ol.Extent');
 goog.require('ol.ImageTile');
 goog.require('ol.Projection');
+goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
@@ -55,11 +56,9 @@ ol.source.ImageTileSource = function(options) {
 
   /**
    * @private
-   * @type {Object.<string, ol.ImageTile>}
-   * FIXME will need to expire elements from this cache
-   * FIXME see elemoine's work with goog.structs.LinkedMap
+   * @type {ol.TileCache}
    */
-  this.tileCache_ = {};
+  this.tileCache_ = new ol.TileCache();
 
 };
 goog.inherits(ol.source.ImageTileSource, ol.source.TileSource);
@@ -68,19 +67,35 @@ goog.inherits(ol.source.ImageTileSource, ol.source.TileSource);
 /**
  * @inheritDoc
  */
+ol.source.ImageTileSource.prototype.canExpireCache = function() {
+  return this.tileCache_.canExpireCache();
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.ImageTileSource.prototype.expireCache = function(usedTiles) {
+  this.tileCache_.expireCache(usedTiles);
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.source.ImageTileSource.prototype.getTile = function(tileCoord) {
   var key = tileCoord.toString();
-  if (goog.object.containsKey(this.tileCache_, key)) {
-    return this.tileCache_[key];
+  if (this.tileCache_.containsKey(key)) {
+    return /** @type {ol.Tile} */ (this.tileCache_.get(key));
   } else {
     var tileUrl = this.getTileCoordUrl(tileCoord);
     var tile;
     if (goog.isDef(tileUrl)) {
       tile = new ol.ImageTile(tileCoord, tileUrl, this.crossOrigin_);
+      this.tileCache_.set(key, tile);
     } else {
       tile = null;
     }
-    this.tileCache_[key] = tile;
     return tile;
   }
 };

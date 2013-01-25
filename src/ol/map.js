@@ -8,7 +8,6 @@ goog.provide('ol.RendererHint');
 goog.provide('ol.RendererHints');
 
 goog.require('goog.Uri.QueryData');
-goog.require('goog.array');
 goog.require('goog.async.AnimationDelay');
 goog.require('goog.debug.Logger');
 goog.require('goog.dispose');
@@ -177,6 +176,12 @@ ol.Map = function(mapOptions) {
 
   /**
    * @private
+   * @type {?number}
+   */
+  this.viewPropertyListenerKey_ = null;
+
+  /**
+   * @private
    * @type {Element}
    */
   this.viewport_ = goog.dom.createDom(goog.dom.TagName.DIV, 'ol-viewport');
@@ -278,8 +283,16 @@ ol.Map = function(mapOptions) {
    */
   this.tileQueue_ = new ol.TileQueue(goog.bind(this.getTilePriority, this));
 
+  goog.events.listen(this, ol.Object.getChangedEventType(ol.MapProperty.VIEW),
+      this.handleViewChanged_, false, this);
+  goog.events.listen(this, ol.Object.getChangedEventType(ol.MapProperty.SIZE),
+      this.handleSizeChanged_, false, this);
+  goog.events.listen(
+      this, ol.Object.getChangedEventType(ol.MapProperty.BACKGROUND_COLOR),
+      this.handleBackgroundColorChanged_, false, this),
   this.setValues(mapOptionsInternal.values);
 
+  // this gives the map an initial size
   this.handleBrowserWindowResize();
 
   this.controls_.forEach(
@@ -346,6 +359,14 @@ goog.exportProperty(
 
 
 /**
+ * @return {ol.renderer.Map} Renderer.
+ */
+ol.Map.prototype.getRenderer = function() {
+  return this.renderer_;
+};
+
+
+/**
  * @return {Element} Container.
  */
 ol.Map.prototype.getTarget = function() {
@@ -391,6 +412,10 @@ ol.Map.prototype.getInteractions = function() {
 ol.Map.prototype.getLayers = function() {
   return /** @type {ol.Collection} */ (this.get(ol.MapProperty.LAYERS));
 };
+goog.exportProperty(
+    ol.Map.prototype,
+    'getLayers',
+    ol.Map.prototype.getLayers);
 
 
 /**
@@ -453,19 +478,24 @@ ol.Map.prototype.getOverlayContainer = function() {
 
 /**
  * @param {ol.Tile} tile Tile.
+ * @param {string} tileSourceKey Tile source key.
  * @param {ol.Coordinate} tileCenter Tile center.
- * @param {number} tileResolution Tile resolution.
- * @return {number|undefined} Tile priority.
+ * @return {number} Tile priority.
  */
-ol.Map.prototype.getTilePriority = function(tile, tileCenter, tileResolution) {
-  if (goog.isNull(this.frameState_)) {
-    return undefined;
-  } else {
-    var center = this.frameState_.view2DState.center;
-    var deltaX = tileCenter.x - center.x;
-    var deltaY = tileCenter.y - center.y;
-    return Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
+ol.Map.prototype.getTilePriority = function(tile, tileSourceKey, tileCenter) {
+  var frameState = this.frameState_;
+  if (goog.isNull(frameState) || !(tileSourceKey in frameState.wantedTiles)) {
+    return ol.TileQueue.DROP;
   }
+  var zKey = tile.tileCoord.z.toString();
+  if (!(zKey in frameState.wantedTiles[tileSourceKey]) ||
+      !frameState.wantedTiles[tileSourceKey][zKey].contains(tile.tileCoord)) {
+    return ol.TileQueue.DROP;
+  }
+  var center = frameState.view2DState.center;
+  var deltaX = tileCenter.x - center.x;
+  var deltaY = tileCenter.y - center.y;
+  return deltaX * deltaX + deltaY * deltaY;
 };
 
 
@@ -525,13 +555,20 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
 ol.Map.prototype.handlePostRender = function() {
   this.tileQueue_.reprioritize(); // FIXME only call if needed
   this.tileQueue_.loadMoreTiles();
-  goog.array.forEach(
-      this.postRenderFunctions_,
-      function(postRenderFunction) {
-        postRenderFunction(this, this.frameState_);
-      },
-      this);
-  this.postRenderFunctions_.length = 0;
+  var postRenderFunctions = this.postRenderFunctions_;
+  var i;
+  for (i = 0; i < postRenderFunctions.length; ++i) {
+    postRenderFunctions[i](this, this.frameState_);
+  }
+  postRenderFunctions.length = 0;
+};
+
+
+/**
+ * @private
+ */
+ol.Map.prototype.handleBackgroundColorChanged_ = function() {
+  this.render();
 };
 
 
@@ -541,6 +578,40 @@ ol.Map.prototype.handlePostRender = function() {
 ol.Map.prototype.handleBrowserWindowResize = function() {
   var size = new ol.Size(this.target_.clientWidth, this.target_.clientHeight);
   this.setSize(size);
+};
+
+
+/**
+ * @private
+ */
+ol.Map.prototype.handleSizeChanged_ = function() {
+  this.render();
+};
+
+
+/**
+ * @private
+ */
+ol.Map.prototype.handleViewPropertyChanged_ = function() {
+  this.render();
+};
+
+
+/**
+ * @private
+ */
+ol.Map.prototype.handleViewChanged_ = function() {
+  if (!goog.isNull(this.viewPropertyListenerKey_)) {
+    goog.events.unlistenByKey(this.viewPropertyListenerKey_);
+    this.viewPropertyListenerKey_ = null;
+  }
+  var view = this.getView();
+  if (goog.isDefAndNotNull(view)) {
+    this.viewPropertyListenerKey_ = goog.events.listen(
+        view, ol.ObjectEventType.CHANGED,
+        this.handleViewPropertyChanged_, false, this);
+  }
+  this.render();
 };
 
 
@@ -611,9 +682,11 @@ ol.Map.prototype.renderFrame_ = function(time) {
     var backgroundColor = this.getBackgroundColor();
     var viewHints = view.getHints();
     var layerStates = {};
-    goog.array.forEach(layersArray, function(layer) {
+    var layer;
+    for (i = 0; i < layersArray.length; ++i) {
+      layer = layersArray[i];
       layerStates[goog.getUid(layer)] = layer.getLayerState();
-    });
+    }
     var view2DState = view2D.getView2DState();
     frameState = {
       animate: false,
@@ -627,19 +700,23 @@ ol.Map.prototype.renderFrame_ = function(time) {
       postRenderFunctions: [],
       size: size,
       tileQueue: this.tileQueue_,
-      tileUsage: {},
+      time: time,
+      usedTiles: {},
       view2DState: view2DState,
       viewHints: viewHints,
-      time: time
+      wantedTiles: {}
     };
   }
 
-  this.preRenderFunctions_ = goog.array.filter(
-      this.preRenderFunctions_,
-      function(preRenderFunction) {
-        return preRenderFunction(this, frameState);
-      },
-      this);
+  var preRenderFunctions = this.preRenderFunctions_;
+  var n = 0, preRenderFunction;
+  for (i = 0; i < preRenderFunctions.length; ++i) {
+    preRenderFunction = preRenderFunctions[i];
+    if (preRenderFunction(this, frameState)) {
+      preRenderFunctions[n++] = preRenderFunction;
+    }
+  }
+  preRenderFunctions.length = n;
 
   if (!goog.isNull(frameState)) {
     // FIXME works for View2D only
@@ -664,6 +741,8 @@ ol.Map.prototype.renderFrame_ = function(time) {
   }
 
   this.renderer_.renderFrame(frameState);
+  this.frameState_ = frameState;
+  this.dirty_ = false;
 
   if (!goog.isNull(frameState)) {
     if (frameState.animate) {
@@ -672,8 +751,6 @@ ol.Map.prototype.renderFrame_ = function(time) {
     Array.prototype.push.apply(
         this.postRenderFunctions_, frameState.postRenderFunctions);
   }
-  this.frameState_ = frameState;
-  this.dirty_ = false;
 
   this.dispatchEvent(
       new ol.MapEvent(ol.MapEventType.POSTRENDER, this, frameState));
@@ -893,8 +970,8 @@ ol.Map.createInteractions_ = function(mapOptions) {
   var rotate = goog.isDef(mapOptions.rotate) ?
       mapOptions.rotate : true;
   if (rotate) {
-    interactions.push(
-        new ol.interaction.DragRotate(ol.interaction.condition.altKeyOnly));
+    interactions.push(new ol.interaction.DragRotate(
+        ol.interaction.condition.altShiftKeysOnly));
   }
 
   var doubleClickZoom = goog.isDef(mapOptions.doubleClickZoom) ?
