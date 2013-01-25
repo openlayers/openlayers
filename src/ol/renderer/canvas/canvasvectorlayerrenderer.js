@@ -79,9 +79,19 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
 
   /**
    * @private
+   * @type {ol.Extent}
+   */
+  this.renderedExtent_ = null;
+
+  /**
+   * Flag to be set internally when we know something has changed that suggests
+   * we need to re-render.
+   * TODO: discuss setting this for all layers when something changes before
+   * calling map.render().
+   * @private
    * @type {boolean}
    */
-  this.layerChanged_ = false;
+  this.dirty_ = false;
 
 
   // TODO: implement layer.setStyle(style) where style is a set of rules
@@ -143,13 +153,14 @@ ol.renderer.canvas.VectorLayer.prototype.getTransform = function() {
 ol.renderer.canvas.VectorLayer.prototype.renderFrame =
     function(frameState, layerState) {
 
+  // TODO: consider bailing out here if rendered center and resolution
+  // have not changed.  Requires that other change listeners set a dirty flag.
+
   var view2DState = frameState.view2DState,
       resolution = view2DState.resolution,
-      extent = frameState.extent;
-
-  var layer = this.getVectorLayer();
-  var source = layer.getVectorSource();
-  var tileGrid = source.getTileGrid();
+      extent = frameState.extent,
+      source = this.getVectorLayer().getVectorSource(),
+      tileGrid = source.getTileGrid();
 
   if (goog.isNull(tileGrid)) {
     // lazy tile source creation to match the view projection
@@ -158,12 +169,40 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
     source.setTileGrid(tileGrid);
   }
 
-  var tileSize = tileGrid.getTileSize();
-  var z = tileGrid.getZForResolution(resolution);
-  var tileResolution = tileGrid.getResolution(z);
-  var tileRange = tileGrid.getTileRangeForExtentAndResolution(
-      extent, tileResolution);
-  var tileRangeExtent = tileGrid.getTileRangeExtent(z, tileRange);
+  // set up transform for the layer canvas to be drawn to the map canvas
+  var tileSize = tileGrid.getTileSize(),
+      z = tileGrid.getZForResolution(resolution),
+      tileResolution = tileGrid.getResolution(z),
+      tileRange = tileGrid.getTileRangeForExtentAndResolution(
+          extent, tileResolution),
+      tileRangeExtent = tileGrid.getTileRangeExtent(z, tileRange),
+      sketchOrigin = tileRangeExtent.getTopLeft(),
+      transform = this.transform_;
+
+  goog.vec.Mat4.makeIdentity(transform);
+  goog.vec.Mat4.translate(transform,
+      frameState.size.width / 2,
+      frameState.size.height / 2,
+      0);
+  goog.vec.Mat4.scale(transform,
+      tileResolution / resolution, tileResolution / resolution, 1);
+  goog.vec.Mat4.rotateZ(transform, view2DState.rotation);
+  goog.vec.Mat4.translate(transform,
+      (sketchOrigin.x - view2DState.center.x) / tileResolution,
+      (view2DState.center.y - sketchOrigin.y) / tileResolution,
+      0);
+
+  /**
+   * Fastest path out of here.  This method is called many many times while
+   * there is nothing to do (e.g. while waiting for tiles from every other
+   * layer to load.)  Do not put anything above here that is more expensive than
+   * necessary.  And look for ways to get here faster.
+   */
+  if (!this.dirty_ && this.renderedResolution_ === tileResolution &&
+      // TODO: extent.equals()
+      this.renderedResolution_.toString() === tileRangeExtent.toString()) {
+    return;
+  }
 
   // clear tiles at alt-z
   if (this.renderedResolution_ != tileResolution) {
@@ -179,8 +218,30 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       tileSize.width * tileRange.getWidth(),
       tileSize.height * tileRange.getHeight());
 
+  // transform for map coords to sketch canvas pixel coords
+  var sketchTransform = this.sketchTransform_;
+  var halfWidth = sketchSize.width / 2;
+  var halfHeight = sketchSize.height / 2;
+  goog.vec.Mat4.makeIdentity(sketchTransform);
+  goog.vec.Mat4.translate(sketchTransform,
+      halfWidth,
+      halfHeight,
+      0);
+  goog.vec.Mat4.scale(sketchTransform,
+      1 / tileResolution,
+      -1 / tileResolution,
+      1);
+  goog.vec.Mat4.translate(sketchTransform,
+      -(sketchOrigin.x + halfWidth * tileResolution),
+      -(sketchOrigin.y - halfHeight * tileResolution),
+      0);
+
+  // clear/resize sketch canvas
   sketchCanvas.width = sketchSize.width;
   sketchCanvas.height = sketchSize.height;
+
+  var sketchCanvasRenderer = new ol.renderer.canvas.Renderer(
+      sketchCanvas, sketchTransform);
 
   // clear/resize final canvas
   var finalCanvas = this.canvas_;
@@ -188,39 +249,6 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   finalCanvas.height = sketchSize.height;
   var finalContext = this.context_;
 
-  var sketchOrigin = tileRangeExtent.getTopLeft();
-  var frameOrigin = extent.getTopLeft();
-  var transform = this.transform_;
-  goog.vec.Mat4.makeIdentity(transform);
-  goog.vec.Mat4.translate(transform,
-      frameState.size.width / 2, frameState.size.height / 2, 0);
-  goog.vec.Mat4.rotateZ(transform, view2DState.rotation);
-  goog.vec.Mat4.scale(
-      transform,
-      tileResolution / view2DState.resolution,
-      tileResolution / view2DState.resolution,
-      1);
-  goog.vec.Mat4.translate(
-      transform,
-      (frameOrigin.x - view2DState.center.x) / tileResolution,
-      (view2DState.center.y - frameOrigin.y) / tileResolution,
-      0);
-
-  var sketchTransform = this.sketchTransform_;
-  goog.vec.Mat4.makeIdentity(sketchTransform);
-  goog.vec.Mat4.scale(
-      sketchTransform,
-      1 / tileResolution,
-      -1 / tileResolution,
-      1);
-  goog.vec.Mat4.translate(
-      sketchTransform,
-      -sketchOrigin.x,
-      -sketchOrigin.y,
-      0);
-
-  var sketchCanvasRenderer = new ol.renderer.canvas.Renderer(
-      sketchCanvas, sketchTransform);
   var renderedFeatures = {};
   var tile, tileContext, tileCoord, key, tileExtent, tileState, x, y;
   // render features by geometry type
@@ -264,26 +292,14 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
         tile.height = tileSize.height;
         tileContext = tile.getContext('2d');
 
-        // TODO: remove me
-        if (goog.DEBUG) {
-          tileContext.strokeStyle = '#999999';
-          tileContext.fillStyle = '#999999';
-          tileContext.textAlign = 'center';
-          tileContext.textBaseline = 'middle';
-          tileContext.font = '24px sans-serif';
-          tileContext.strokeRect(0.5, 0.5, tileSize.width - 1,
-              tileSize.height - 1);
-          tileContext.fillText(tileCoord.toString(), tileSize.width / 2,
-              tileSize.height / 2);
-        }
-
         tileContext.drawImage(sketchCanvas,
-            -x * tileSize.width, -(tileRange.maxY - y) * tileSize.height);
+            (tileRange.minX - x) * tileSize.width,
+            (y - tileRange.maxY) * tileSize.height);
         this.tileCache_[key] = tile;
       }
       finalContext.drawImage(tile,
-          (tileExtent.minX - frameOrigin.x) / tileResolution,
-          (frameOrigin.y - tileExtent.maxY) / tileResolution);
+          tileSize.width * (x - tileRange.minX),
+          tileSize.height * (tileRange.maxY - y));
     }
   }
 
