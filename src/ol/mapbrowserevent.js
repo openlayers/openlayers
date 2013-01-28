@@ -153,7 +153,7 @@ ol.MapBrowserEventHandler = function(map) {
       ol.BrowserFeature.HAS_TOUCH ?
           goog.events.EventType.TOUCHSTART :
           goog.events.EventType.MOUSEDOWN,
-      this.handleDown_, false, this);
+      this.handleMouseDown_, false, this);
 };
 goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
 
@@ -201,7 +201,7 @@ ol.MapBrowserEventHandler.prototype.click_ = function(browserEvent) {
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @private
  */
-ol.MapBrowserEventHandler.prototype.handleUp_ = function(browserEvent) {
+ol.MapBrowserEventHandler.prototype.handleMouseUp_ = function(browserEvent) {
   if (this.previous_) {
     if (!this.dragged_) {
       var now = new Date().getTime();
@@ -231,7 +231,7 @@ ol.MapBrowserEventHandler.prototype.handleUp_ = function(browserEvent) {
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @private
  */
-ol.MapBrowserEventHandler.prototype.handleDown_ = function(browserEvent) {
+ol.MapBrowserEventHandler.prototype.handleMouseDown_ = function(browserEvent) {
   var newEvent = new ol.MapBrowserEvent(
       ol.MapBrowserEvent.EventType.DOWN, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
@@ -248,12 +248,12 @@ ol.MapBrowserEventHandler.prototype.handleDown_ = function(browserEvent) {
           ol.BrowserFeature.HAS_TOUCH ?
               goog.events.EventType.TOUCHMOVE :
               goog.events.EventType.MOUSEMOVE,
-          this.drag_, false, this),
+          this.handleMouseMove_, false, this),
       goog.events.listen(document,
           ol.BrowserFeature.HAS_TOUCH ?
               goog.events.EventType.TOUCHEND :
               goog.events.EventType.MOUSEUP,
-          this.handleUp_, false, this)
+          this.handleMouseUp_, false, this)
     ];
     if (browserEvent.type === goog.events.EventType.MOUSEDOWN) {
       // prevent browser image dragging on pointer devices
@@ -267,7 +267,7 @@ ol.MapBrowserEventHandler.prototype.handleDown_ = function(browserEvent) {
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @private
  */
-ol.MapBrowserEventHandler.prototype.drag_ = function(browserEvent) {
+ol.MapBrowserEventHandler.prototype.handleMouseMove_ = function(browserEvent) {
   var newEvent;
   if (!this.dragged_) {
     this.dragged_ = true;
