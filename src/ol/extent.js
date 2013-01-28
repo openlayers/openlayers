@@ -46,14 +46,28 @@ ol.Extent.boundingExtent = function(var_args) {
 
 
 /**
- * Checks if the given coordinate is contained or on the edge of the extent.
+ * Checks if the passed coordinate is contained or on the edge
+ * of the extent.
  *
  * @param {ol.Coordinate} coordinate Coordinate.
  * @return {boolean} Contains.
  */
-ol.Extent.prototype.contains = function(coordinate) {
+ol.Extent.prototype.containsCoordinate = function(coordinate) {
   return this.minX <= coordinate.x && coordinate.x <= this.maxX &&
       this.minY <= coordinate.y && coordinate.y <= this.maxY;
+};
+
+
+/**
+ * Checks if the passed extent is contained or on the edge of the
+ * extent.
+ *
+ * @param {ol.Extent} extent Extent.
+ * @return {boolean} Contains.
+ */
+ol.Extent.prototype.containsExtent = function(extent) {
+  return this.minX <= extent.minX && extent.maxX <= this.maxX &&
+      this.minY <= extent.minY && extent.maxY <= this.maxY;
 };
 
 

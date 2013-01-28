@@ -2,42 +2,67 @@ goog.provide('ol.test.Extent');
 
 describe('ol.Extent', function() {
 
-  describe('contains', function() {
+  describe('containsCoordinate', function() {
 
     describe('positive', function() {
       it('returns true', function() {
         var extent = new ol.Extent(1, 2, 3, 4);
-        expect(extent.contains(new ol.Coordinate(1, 2))).toBeTruthy();
-        expect(extent.contains(new ol.Coordinate(1, 3))).toBeTruthy();
-        expect(extent.contains(new ol.Coordinate(1, 4))).toBeTruthy();
-        expect(extent.contains(new ol.Coordinate(2, 2))).toBeTruthy();
-        expect(extent.contains(new ol.Coordinate(2, 3))).toBeTruthy();
-        expect(extent.contains(new ol.Coordinate(2, 4))).toBeTruthy();
-        expect(extent.contains(new ol.Coordinate(3, 2))).toBeTruthy();
-        expect(extent.contains(new ol.Coordinate(3, 3))).toBeTruthy();
-        expect(extent.contains(new ol.Coordinate(3, 4))).toBeTruthy();
+        expect(extent.containsCoordinate(
+            new ol.Coordinate(1, 2))).toBeTruthy();
+        expect(extent.containsCoordinate(
+            new ol.Coordinate(1, 3))).toBeTruthy();
+        expect(extent.containsCoordinate(
+            new ol.Coordinate(1, 4))).toBeTruthy();
+        expect(extent.containsCoordinate(
+            new ol.Coordinate(2, 2))).toBeTruthy();
+        expect(extent.containsCoordinate(
+            new ol.Coordinate(2, 3))).toBeTruthy();
+        expect(extent.containsCoordinate(
+            new ol.Coordinate(2, 4))).toBeTruthy();
+        expect(extent.containsCoordinate(
+            new ol.Coordinate(3, 2))).toBeTruthy();
+        expect(extent.containsCoordinate(
+            new ol.Coordinate(3, 3))).toBeTruthy();
+        expect(extent.containsCoordinate(
+            new ol.Coordinate(3, 4))).toBeTruthy();
       });
     });
 
     describe('negative', function() {
       it('returns false', function() {
         var extent = new ol.Extent(1, 2, 3, 4);
-        expect(extent.contains(new ol.Coordinate(0, 1))).toBeFalsy();
-        expect(extent.contains(new ol.Coordinate(0, 2))).toBeFalsy();
-        expect(extent.contains(new ol.Coordinate(0, 3))).toBeFalsy();
-        expect(extent.contains(new ol.Coordinate(0, 4))).toBeFalsy();
-        expect(extent.contains(new ol.Coordinate(0, 5))).toBeFalsy();
-        expect(extent.contains(new ol.Coordinate(1, 1))).toBeFalsy();
-        expect(extent.contains(new ol.Coordinate(1, 5))).toBeFalsy();
-        expect(extent.contains(new ol.Coordinate(2, 1))).toBeFalsy();
-        expect(extent.contains(new ol.Coordinate(2, 5))).toBeFalsy();
-        expect(extent.contains(new ol.Coordinate(3, 1))).toBeFalsy();
-        expect(extent.contains(new ol.Coordinate(3, 5))).toBeFalsy();
-        expect(extent.contains(new ol.Coordinate(4, 1))).toBeFalsy();
-        expect(extent.contains(new ol.Coordinate(4, 2))).toBeFalsy();
-        expect(extent.contains(new ol.Coordinate(4, 3))).toBeFalsy();
-        expect(extent.contains(new ol.Coordinate(4, 4))).toBeFalsy();
-        expect(extent.contains(new ol.Coordinate(4, 5))).toBeFalsy();
+        expect(extent.containsCoordinate(
+            new ol.Coordinate(0, 1))).toBeFalsy();
+        expect(extent.containsCoordinate(
+            new ol.Coordinate(0, 2))).toBeFalsy();
+        expect(extent.containsCoordinate(
+            new ol.Coordinate(0, 3))).toBeFalsy();
+        expect(extent.containsCoordinate(
+            new ol.Coordinate(0, 4))).toBeFalsy();
+        expect(extent.containsCoordinate(
+            new ol.Coordinate(0, 5))).toBeFalsy();
+        expect(extent.containsCoordinate(
+            new ol.Coordinate(1, 1))).toBeFalsy();
+        expect(extent.containsCoordinate(
+            new ol.Coordinate(1, 5))).toBeFalsy();
+        expect(extent.containsCoordinate(
+            new ol.Coordinate(2, 1))).toBeFalsy();
+        expect(extent.containsCoordinate(
+            new ol.Coordinate(2, 5))).toBeFalsy();
+        expect(extent.containsCoordinate(
+            new ol.Coordinate(3, 1))).toBeFalsy();
+        expect(extent.containsCoordinate(
+              new ol.Coordinate(3, 5))).toBeFalsy();
+        expect(extent.containsCoordinate(
+              new ol.Coordinate(4, 1))).toBeFalsy();
+        expect(extent.containsCoordinate(
+              new ol.Coordinate(4, 2))).toBeFalsy();
+        expect(extent.containsCoordinate(
+              new ol.Coordinate(4, 3))).toBeFalsy();
+        expect(extent.containsCoordinate(
+              new ol.Coordinate(4, 4))).toBeFalsy();
+        expect(extent.containsCoordinate(
+              new ol.Coordinate(4, 5))).toBeFalsy();
       });
     });
   });
