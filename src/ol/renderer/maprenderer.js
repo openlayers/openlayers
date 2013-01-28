@@ -59,6 +59,12 @@ ol.renderer.Map = function(container, map) {
    */
   this.layersListenerKeys_ = null;
 
+  /**
+   * @private
+   * @type {Object.<number, ?number>}
+   */
+  this.layerRendererChangeListenKeys_ = {};
+
 };
 goog.inherits(ol.renderer.Map, goog.Disposable);
 
@@ -140,8 +146,8 @@ ol.renderer.Map.prototype.getCanvas = goog.functions.NULL;
  * @return {ol.renderer.Layer} Layer renderer.
  */
 ol.renderer.Map.prototype.getLayerRenderer = function(layer) {
-  var key = goog.getUid(layer);
-  var layerRenderer = this.layerRenderers[key];
+  var layerKey = goog.getUid(layer);
+  var layerRenderer = this.layerRenderers[layerKey];
   goog.asserts.assert(goog.isDef(layerRenderer));
   return layerRenderer;
 };
@@ -152,6 +158,15 @@ ol.renderer.Map.prototype.getLayerRenderer = function(layer) {
  */
 ol.renderer.Map.prototype.getMap = function() {
   return this.map;
+};
+
+
+/**
+ * @param {goog.events.Event} event Event.
+ * @protected
+ */
+ol.renderer.Map.prototype.handleLayerRendererChange = function(event) {
+  this.getMap().render();
 };
 
 
@@ -213,10 +228,12 @@ ol.renderer.Map.prototype.removeLayer = function(layer) {
  * @protected
  */
 ol.renderer.Map.prototype.removeLayerRenderer = function(layer) {
-  var key = goog.getUid(layer);
-  if (key in this.layerRenderers) {
-    var layerRenderer = this.layerRenderers[key];
-    delete this.layerRenderers[key];
+  var layerKey = goog.getUid(layer);
+  if (layerKey in this.layerRenderers) {
+    var layerRenderer = this.layerRenderers[layerKey];
+    delete this.layerRenderers[layerKey];
+    goog.events.unlistenByKey(this.layerRendererChangeListenKeys_[layerKey]);
+    delete this.layerRendererChangeListenKeys_[layerKey];
     return layerRenderer;
   } else {
     return null;
@@ -237,7 +254,11 @@ ol.renderer.Map.prototype.renderFrame = goog.nullFunction;
  * @protected
  */
 ol.renderer.Map.prototype.setLayerRenderer = function(layer, layerRenderer) {
-  var key = goog.getUid(layer);
-  goog.asserts.assert(!(key in this.layerRenderers));
-  this.layerRenderers[key] = layerRenderer;
+  var layerKey = goog.getUid(layer);
+  goog.asserts.assert(!(layerKey in this.layerRenderers));
+  this.layerRenderers[layerKey] = layerRenderer;
+  goog.asserts.assert(!(layerKey in this.layerRendererChangeListenKeys_));
+  this.layerRendererChangeListenKeys_[layerKey] = goog.events.listen(
+      layerRenderer, goog.events.EventType.CHANGE,
+      this.handleLayerRendererChange, false, this);
 };

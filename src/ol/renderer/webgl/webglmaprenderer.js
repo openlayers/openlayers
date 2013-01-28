@@ -206,12 +206,6 @@ ol.renderer.webgl.Map = function(container, map) {
    */
   this.vertexShader_ = ol.renderer.webgl.map.shader.Vertex.getInstance();
 
-  /**
-   * @private
-   * @type {Object.<number, null|number>}
-   */
-  this.layerRendererChangeListenKeys_ = {};
-
   this.initializeGL_();
 
 };
@@ -413,15 +407,6 @@ ol.renderer.webgl.Map.prototype.getShader = function(shaderObject) {
  * @param {goog.events.Event} event Event.
  * @protected
  */
-ol.renderer.webgl.Map.prototype.handleLayerRendererChange = function(event) {
-  this.getMap().render();
-};
-
-
-/**
- * @param {goog.events.Event} event Event.
- * @protected
- */
 ol.renderer.webgl.Map.prototype.handleWebGLContextLost = function(event) {
   if (goog.DEBUG) {
     this.logger.info('WebGLContextLost');
@@ -481,20 +466,6 @@ ol.renderer.webgl.Map.prototype.removeLayer = function(layer) {
   if (layer.getVisible()) {
     this.getMap().render();
   }
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.Map.prototype.removeLayerRenderer = function(layer) {
-  var layerRenderer = goog.base(this, 'removeLayerRenderer', layer);
-  if (!goog.isNull(layerRenderer)) {
-    var layerKey = goog.getUid(layer);
-    goog.events.unlistenByKey(this.layerRendererChangeListenKeys_[layerKey]);
-    delete this.layerRendererChangeListenKeys_[layerKey];
-  }
-  return layerRenderer;
 };
 
 
@@ -603,17 +574,4 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
     frameState.postRenderFunctions.push(goog.bind(this.expireCache_, this));
   }
 
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.Map.prototype.setLayerRenderer = function(
-    layer, layerRenderer) {
-  goog.base(this, 'setLayerRenderer', layer, layerRenderer);
-  var layerKey = goog.getUid(layer);
-  this.layerRendererChangeListenKeys_[layerKey] = goog.events.listen(
-      layerRenderer, goog.events.EventType.CHANGE,
-      this.handleLayerRendererChange, false, this);
 };
