@@ -118,17 +118,20 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
     var layerRenderer = this.getLayerRenderer(layer);
     layerRenderer.renderFrame(frameState, layerState);
 
-    var transform = layerRenderer.getTransform();
-    context.setTransform(
-        goog.vec.Mat4.getElement(transform, 0, 0),
-        goog.vec.Mat4.getElement(transform, 1, 0),
-        goog.vec.Mat4.getElement(transform, 0, 1),
-        goog.vec.Mat4.getElement(transform, 1, 1),
-        goog.vec.Mat4.getElement(transform, 0, 3),
-        goog.vec.Mat4.getElement(transform, 1, 3));
+    var image = layerRenderer.getImage();
+    if (!goog.isNull(image)) {
+      var transform = layerRenderer.getTransform();
+      context.setTransform(
+          goog.vec.Mat4.getElement(transform, 0, 0),
+          goog.vec.Mat4.getElement(transform, 1, 0),
+          goog.vec.Mat4.getElement(transform, 0, 1),
+          goog.vec.Mat4.getElement(transform, 1, 1),
+          goog.vec.Mat4.getElement(transform, 0, 3),
+          goog.vec.Mat4.getElement(transform, 1, 3));
 
-    context.globalAlpha = layerState.opacity;
-    context.drawImage(layerRenderer.getImage(), 0, 0);
+      context.globalAlpha = layerState.opacity;
+      context.drawImage(image, 0, 0);
+    }
 
   }, this);
 
