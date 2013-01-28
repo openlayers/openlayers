@@ -1,4 +1,5 @@
 // FIXME handle date line wrap
+// FIXME does not handle image sources
 
 goog.provide('ol.control.Attribution');
 
