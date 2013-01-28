@@ -1,9 +1,7 @@
 goog.provide('ol.renderer.dom.Layer');
 
 goog.require('ol.Coordinate');
-goog.require('ol.FrameState');
 goog.require('ol.layer.Layer');
-goog.require('ol.layer.LayerState');
 goog.require('ol.renderer.Layer');
 
 
@@ -44,10 +42,3 @@ ol.renderer.dom.Layer.prototype.disposeInternal = function() {
 ol.renderer.dom.Layer.prototype.getTarget = function() {
   return this.target;
 };
-
-
-/**
- * @param {ol.FrameState} frameState Frame state.
- * @param {ol.layer.LayerState} layerState Layer state.
- */
-ol.renderer.dom.Layer.prototype.renderFrame = goog.abstractMethod;

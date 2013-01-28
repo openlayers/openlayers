@@ -7,6 +7,7 @@ goog.require('ol.Object');
 goog.require('ol.TileRange');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.LayerProperty');
+goog.require('ol.layer.LayerState');
 goog.require('ol.source.TileSource');
 
 
@@ -142,6 +143,13 @@ ol.renderer.Layer.prototype.handleLayerSaturationChange = goog.nullFunction;
 ol.renderer.Layer.prototype.handleLayerVisibleChange = function() {
   this.dispatchChangeEvent();
 };
+
+
+/**
+ * @param {ol.FrameState} frameState Frame state.
+ * @param {ol.layer.LayerState} layerState Layer state.
+ */
+ol.renderer.Layer.prototype.renderFrame = goog.abstractMethod;
 
 
 /**
