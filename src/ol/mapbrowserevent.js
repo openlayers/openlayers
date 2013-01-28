@@ -118,6 +118,12 @@ ol.MapBrowserEventHandler = function(map) {
   this.timestamp_ = 0;
 
   /**
+   * @type {?number}
+   * @private
+   */
+  this.clickListenerKey_ = null;
+
+  /**
    * @type {Array.<number>}
    * @private
    */
@@ -131,7 +137,7 @@ ol.MapBrowserEventHandler = function(map) {
 
   var element = this.map_.getViewport();
   if (!ol.BrowserFeature.HAS_TOUCH) {
-    goog.events.listen(element,
+    this.clickListenerKey_ = goog.events.listen(element,
         [goog.events.EventType.CLICK, goog.events.EventType.DBLCLICK],
         this.click_, false, this);
   }
@@ -286,9 +292,7 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
           goog.events.EventType.TOUCHEND :
           goog.events.EventType.MOUSEUP,
       this.handleUp_, false, this);
-  goog.events.unlisten(element,
-      [goog.events.EventType.CLICK, goog.events.EventType.DBLCLICK],
-      this.click_, false, this);
+  goog.events.unlistenByKey(this.clickListenerKey_);
   if (!goog.isNull(this.dragListenerKeys_)) {
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
