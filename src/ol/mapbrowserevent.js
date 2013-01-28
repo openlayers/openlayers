@@ -138,6 +138,12 @@ ol.MapBrowserEventHandler = function(map) {
   this.dragListenerKeys_ = null;
 
   /**
+   * @type {Array.<number>}
+   * @private
+   */
+  this.touchListenerKeys_ = null;
+
+  /**
    * @type {goog.events.BrowserEvent}
    * @private
    */
@@ -151,6 +157,18 @@ ol.MapBrowserEventHandler = function(map) {
     this.downListenerKey_ = goog.events.listen(element,
         goog.events.EventType.MOUSEDOWN,
         this.handleMouseDown_, false, this);
+  } else {
+    this.touchListenerKeys_ = [
+      goog.events.listen(element,
+          goog.events.EventType.TOUCHSTART,
+          this.handleTouchStart_, false, this),
+      goog.events.listen(element,
+          goog.events.EventType.TOUCHMOVE,
+          this.handleTouchMove_, false, this),
+      goog.events.listen(element,
+          goog.events.EventType.TOUCHEND,
+          this.handleTouchEnd_, false, this)
+    ];
   }
 };
 goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
@@ -257,6 +275,41 @@ ol.MapBrowserEventHandler.prototype.handleMouseMove_ = function(browserEvent) {
 
 
 /**
+ * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @private
+ */
+ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
+  // prevent context menu
+  browserEvent.preventDefault();
+  var newEvent = new ol.MapBrowserEvent(
+      ol.MapBrowserEvent.EventType.TOUCHSTART, this.map_, browserEvent);
+  this.dispatchEvent(newEvent);
+};
+
+
+/**
+ * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @private
+ */
+ol.MapBrowserEventHandler.prototype.handleTouchMove_ = function(browserEvent) {
+  var newEvent = new ol.MapBrowserEvent(
+      ol.MapBrowserEvent.EventType.TOUCHMOVE, this.map_, browserEvent);
+  this.dispatchEvent(newEvent);
+};
+
+
+/**
+ * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @private
+ */
+ol.MapBrowserEventHandler.prototype.handleTouchEnd_ = function(browserEvent) {
+  var newEvent = new ol.MapBrowserEvent(
+      ol.MapBrowserEvent.EventType.TOUCHEND, this.map_, browserEvent);
+  this.dispatchEvent(newEvent);
+};
+
+
+/**
  * FIXME empty description for jsdoc
  */
 ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
@@ -265,6 +318,10 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
   if (!goog.isNull(this.dragListenerKeys_)) {
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
+  }
+  if (!goog.isNull(this.touchListenerKeys_)) {
+    goog.array.forEach(this.touchListenerKeys_, goog.events.unlistenByKey);
+    this.touchListenerKeys_ = null;
   }
   goog.base(this, 'disposeInternal');
 };
@@ -277,8 +334,11 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
 ol.MapBrowserEvent.EventType = {
   CLICK: goog.events.EventType.CLICK,
   DBLCLICK: goog.events.EventType.DBLCLICK,
+  DOWN: 'down',
   DRAGSTART: 'dragstart',
   DRAG: 'drag',
   DRAGEND: 'dragend',
-  DOWN: 'down'
+  TOUCHSTART: goog.events.EventType.TOUCHSTART,
+  TOUCHMOVE: goog.events.EventType.TOUCHMOVE,
+  TOUCHEND: goog.events.EventType.TOUCHEND
 };
