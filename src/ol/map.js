@@ -29,6 +29,7 @@ goog.require('ol.Color');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.FrameState');
+goog.require('ol.Kinetic');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.Object');
 goog.require('ol.Pixel');
@@ -984,7 +985,8 @@ ol.Map.createInteractions_ = function(mapOptions) {
       mapOptions.dragPan : true;
   if (dragPan) {
     interactions.push(
-        new ol.interaction.DragPan(ol.interaction.condition.noModifierKeys));
+        new ol.interaction.DragPan(ol.interaction.condition.noModifierKeys,
+            new ol.Kinetic(-0.005, 0.05, 100)));
   }
 
   var keyboard = goog.isDef(mapOptions.keyboard) ?
