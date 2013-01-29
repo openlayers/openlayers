@@ -207,13 +207,9 @@ ol.Map = function(mapOptions) {
   goog.dom.appendChild(this.viewport_, this.overlayContainer_);
 
   var mapBrowserEventHandler = new ol.MapBrowserEventHandler(this);
-  goog.events.listen(mapBrowserEventHandler, [
-    ol.MapBrowserEvent.EventType.CLICK,
-    ol.MapBrowserEvent.EventType.DBLCLICK,
-    ol.MapBrowserEvent.EventType.DRAGSTART,
-    ol.MapBrowserEvent.EventType.DRAG,
-    ol.MapBrowserEvent.EventType.DRAGEND
-  ], this.handleMapBrowserEvent, false, this);
+  goog.events.listen(mapBrowserEventHandler,
+      goog.object.getValues(ol.MapBrowserEvent.EventType),
+      this.handleMapBrowserEvent, false, this);
   this.registerDisposable(mapBrowserEventHandler);
 
   // FIXME we probably shouldn't listen on document...
