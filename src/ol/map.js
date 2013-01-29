@@ -291,7 +291,7 @@ ol.Map = function(mapOptions) {
       this.handleSizeChanged_, false, this);
   goog.events.listen(
       this, ol.Object.getChangedEventType(ol.MapProperty.BACKGROUND_COLOR),
-      this.handleBackgroundColorChanged_, false, this),
+      this.handleBackgroundColorChanged_, false, this);
   this.setValues(mapOptionsInternal.values);
 
   // this gives the map an initial size
