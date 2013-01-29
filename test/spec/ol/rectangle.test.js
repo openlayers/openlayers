@@ -98,6 +98,17 @@ describe('ol.Rectangle', function() {
     });
   });
 
+  describe('scale', function() {
+    it('scales the extent', function() {
+      var rectangle = new ol.Rectangle(1, 1, 3, 3);
+      rectangle.scale(2);
+      expect(rectangle.minX).toEqual(0);
+      expect(rectangle.minY).toEqual(0);
+      expect(rectangle.maxX).toEqual(4);
+      expect(rectangle.maxY).toEqual(4);
+    });
+  });
+
 });
 
 goog.require('ol.Coordinate');

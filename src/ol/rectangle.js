@@ -124,3 +124,16 @@ ol.Rectangle.prototype.normalize = function(coordinate) {
 ol.Rectangle.prototype.toString = function() {
   return '(' + [this.minX, this.minY, this.maxX, this.maxY].join(', ') + ')';
 };
+
+
+/**
+ * @param {number} value Value.
+ */
+ol.Rectangle.prototype.scale = function(value) {
+  var deltaX = (this.getWidth() / 2.0) * (value - 1);
+  var deltaY = (this.getHeight() / 2.0) * (value - 1);
+  this.minX -= deltaX;
+  this.minY -= deltaY;
+  this.maxX += deltaX;
+  this.maxY += deltaY;
+};
