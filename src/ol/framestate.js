@@ -12,6 +12,7 @@ goog.require('ol.Size');
 goog.require('ol.TileQueue');
 goog.require('ol.TileRange');
 goog.require('ol.View2DState');
+goog.require('ol.layer.Layer');
 goog.require('ol.layer.LayerState');
 
 

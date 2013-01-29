@@ -6,6 +6,7 @@ goog.provide('ol.source.TiledWMS');
 goog.require('goog.array');
 goog.require('goog.object');
 goog.require('goog.uri.utils');
+goog.require('ol.Extent');
 goog.require('ol.Projection');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');

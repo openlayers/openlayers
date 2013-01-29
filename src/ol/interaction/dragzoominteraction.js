@@ -4,6 +4,8 @@
 goog.provide('ol.interaction.DragZoom');
 
 goog.require('ol.Extent');
+goog.require('ol.Size');
+goog.require('ol.View2D');
 goog.require('ol.control.DragBox');
 goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Drag');

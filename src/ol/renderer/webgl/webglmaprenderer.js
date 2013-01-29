@@ -11,6 +11,8 @@ goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.style');
 goog.require('goog.webgl');
+goog.require('ol.FrameState');
+goog.require('ol.Size');
 goog.require('ol.Tile');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.Map');

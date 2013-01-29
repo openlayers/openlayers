@@ -5,6 +5,7 @@ goog.provide('ol.interaction.MouseWheelZoom');
 goog.require('goog.events.MouseWheelEvent');
 goog.require('goog.events.MouseWheelHandler.EventType');
 goog.require('ol.View2D');
+goog.require('ol.interaction.Interaction');
 
 
 

@@ -6,7 +6,12 @@ goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.functions');
 goog.require('goog.vec.Mat4');
+goog.require('ol.CollectionEvent');
+goog.require('ol.CollectionEventType');
 goog.require('ol.FrameState');
+goog.require('ol.Object');
+goog.require('ol.layer.Layer');
+goog.require('ol.renderer.Layer');
 
 
 
