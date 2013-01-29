@@ -1,3 +1,4 @@
+goog.require('ol.BingMapsStyle');
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
