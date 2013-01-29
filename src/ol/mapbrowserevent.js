@@ -128,10 +128,10 @@ ol.MapBrowserEventHandler = function(map) {
   /**
    * Timestamp for the first click of a double click. Will be set back to 0
    * as soon as a double click is detected.
-   * @type {number}
+   * @type {?number}
    * @private
    */
-  this.timestamp_ = 0;
+  this.timestamp_ = null;
 
   /**
    * @type {?number}
@@ -198,14 +198,14 @@ goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
 ol.MapBrowserEventHandler.prototype.click_ = function(browserEvent) {
   if (!this.dragged_) {
     var newEvent;
-    if (browserEvent.type !== goog.events.EventType.DBLCLICK) {
-      newEvent = new ol.MapBrowserEvent(
-          ol.MapBrowserEvent.EventType.CLICK, this.map_, browserEvent);
-      this.dispatchEvent(newEvent);
-    }
-    if (!this.timestamp_) {
+    var type = browserEvent.type;
+    if (this.timestamp_ == 0 || type == goog.events.EventType.DBLCLICK) {
       newEvent = new ol.MapBrowserEvent(
           ol.MapBrowserEvent.EventType.DBLCLICK, this.map_, browserEvent);
+      this.dispatchEvent(newEvent);
+    } else if (type == goog.events.EventType.CLICK) {
+      newEvent = new ol.MapBrowserEvent(
+          ol.MapBrowserEvent.EventType.CLICK, this.map_, browserEvent);
       this.dispatchEvent(newEvent);
     }
   }
@@ -218,17 +218,6 @@ ol.MapBrowserEventHandler.prototype.click_ = function(browserEvent) {
  */
 ol.MapBrowserEventHandler.prototype.handleMouseUp_ = function(browserEvent) {
   if (this.previous_) {
-    if (!this.dragged_) {
-      var now = new Date().getTime();
-      if (!this.timestamp_ || now - this.timestamp_ > 250) {
-        this.timestamp_ = now;
-      } else {
-        this.timestamp_ = 0;
-      }
-      if (ol.BrowserFeature.HAS_TOUCH) {
-        this.click_(this.down_);
-      }
-    }
     this.down_ = null;
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
@@ -298,6 +287,8 @@ ol.MapBrowserEventHandler.prototype.handleMouseMove_ = function(browserEvent) {
 ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
   // prevent context menu
   browserEvent.preventDefault();
+  this.down_ = browserEvent;
+  this.dragged_ = false;
   var newEvent = new ol.MapBrowserEvent(
       ol.MapBrowserEvent.EventType.TOUCHSTART, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
@@ -309,6 +300,7 @@ ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
  * @private
  */
 ol.MapBrowserEventHandler.prototype.handleTouchMove_ = function(browserEvent) {
+  this.dragged_ = true;
   var newEvent = new ol.MapBrowserEvent(
       ol.MapBrowserEvent.EventType.TOUCHMOVE, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
@@ -323,6 +315,16 @@ ol.MapBrowserEventHandler.prototype.handleTouchEnd_ = function(browserEvent) {
   var newEvent = new ol.MapBrowserEvent(
       ol.MapBrowserEvent.EventType.TOUCHEND, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
+  if (!this.dragged_) {
+    var now = goog.now();
+    if (!this.timestamp_ || now - this.timestamp_ > 250) {
+      this.timestamp_ = now;
+    } else {
+      this.timestamp_ = 0;
+    }
+    this.click_(this.down_);
+  }
+  this.down_ = null;
 };
 
 
