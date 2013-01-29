@@ -7,7 +7,6 @@ goog.require('ol.Coordinate');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.View2D');
 goog.require('ol.ViewHint');
-goog.require('ol.animation');
 goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Drag');
 
@@ -83,11 +82,7 @@ ol.interaction.DragPan.prototype.handleDragEnd = function(mapBrowserEvent) {
     var distance = this.kinetic_.getDistance();
     var angle = this.kinetic_.getAngle();
     var center = view.getCenter();
-    this.kineticPreRenderFn_ = ol.animation.createPanFrom({
-      source: center,
-      duration: this.kinetic_.getDuration(),
-      easing: this.kinetic_.getEasingFn()
-    });
+    this.kineticPreRenderFn_ = this.kinetic_.createPanFrom(center);
     map.addPreRenderFunction(this.kineticPreRenderFn_);
 
     var centerpx = map.getPixelFromCoordinate(center);

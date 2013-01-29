@@ -3,6 +3,7 @@ goog.provide('ol.Kinetic');
 
 goog.require('goog.array');
 goog.require('ol.Pixel');
+goog.require('ol.animation');
 
 
 /**
@@ -106,16 +107,22 @@ ol.Kinetic.prototype.end = function() {
 
 
 /**
- * @return {function(number): number} Easing function for kinetic animation.
+ * @param {ol.Coordinate} source Source coordinate for the animation.
+ * @return {ol.PreRenderFunction} Pre-render function for kinetic animation.
  */
-ol.Kinetic.prototype.getEasingFn = function() {
+ol.Kinetic.prototype.createPanFrom = function(source) {
   var decay = this.decay_;
   var v_0 = this.v_0_;
   var v_min = this.v_min_;
   var duration = this.getDuration();
-  return function(t) {
+  var easingFunction = function(t) {
     return v_0 * (Math.exp((decay * t) * duration) - 1) / (v_min - v_0);
   };
+  return ol.animation.createPanFrom({
+    source: source,
+    duration: duration,
+    easing: easingFunction
+  });
 };
 
 
