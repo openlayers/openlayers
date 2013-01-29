@@ -201,7 +201,8 @@ def build_lint_src_timestamp(t):
 
 @target('build/check-requires-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC)
 def build_check_requires_timestamp(t):
-    count = 0
+    unused_count = 0
+    all_provides = set()
     for filename in sorted(t.dependencies):
         if filename == 'build/src/internal/src/requireall.js':
             continue
@@ -210,6 +211,10 @@ def build_check_requires_timestamp(t):
         lineno = 0
         for line in open(filename):
             lineno += 1
+            m = re.match(r'goog.provide\(\'(.*)\'\);', line)
+            if m:
+                all_provides.add(m.group(1))
+                continue
             m = re.match(r'goog.require\(\'(.*)\'\);', line)
             if m:
                 require_linenos[m.group(1)] = lineno
@@ -218,10 +223,45 @@ def build_check_requires_timestamp(t):
                 if require in line:
                     uses.add(require)
         for require in sorted(set(require_linenos.keys()) - uses):
-            t.info('%s:%d: unused goog.require %r' % (filename, require_linenos[require], require))
-            count += 1
-    if count:
-        t.error('%d unused goog.requires' % (count,))
+            t.info('%s:%d: unused goog.require: %r' % (filename, require_linenos[require], require))
+            unused_count += 1
+    all_provides.discard('ol')
+    all_provides.discard('ol.Map')
+    all_provides.discard('ol.MapProperty')
+    provide_res = dict((provide, re.compile(r'\b%s\b' % (re.escape(provide)),)) for provide in all_provides)
+    missing_count = 0
+    for filename in sorted(t.dependencies):
+        if filename in INTERNAL_SRC or filename in EXTERNAL_SRC:
+            continue
+        provides = set()
+        requires = set()
+        uses = set()
+        lineno = 0
+        for line in open(filename):
+            lineno += 1
+            m = re.match(r'goog.provide\(\'(.*)\'\);', line)
+            if m:
+                provides.add(m.group(1))
+                continue
+            m = re.match(r'goog.require\(\'(.*)\'\);', line)
+            if m:
+                requires.add(m.group(1))
+                continue
+            for provide, provide_re in provide_res.iteritems():
+                if provide_re.search(line):
+                    uses.add(provide)
+        if filename == 'src/ol/renderer/layerrenderer.js':
+            uses.discard('ol.renderer.Map')
+        m = re.match(r'src/ol/renderer/(\w+)/\1(\w*)layerrenderer\.js\Z', filename)
+        if m:
+            uses.discard('ol.renderer.Map')
+            uses.discard('ol.renderer.%s.Map' % (m.group(1),))
+        missing_requires = uses - requires - provides
+        if missing_requires:
+            t.info('%s: missing goog.requires: %s', filename, ', '.join(sorted(missing_requires)))
+            missing_count += len(missing_requires)
+    if unused_count or missing_count:
+        t.error('%d unused goog.requires, %d missing goog.requires' % (unused_count, missing_count))
     t.touch()
 
 
