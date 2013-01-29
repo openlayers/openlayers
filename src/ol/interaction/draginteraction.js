@@ -1,8 +1,6 @@
-
 goog.provide('ol.interaction.Drag');
 
 goog.require('goog.asserts');
-goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('ol.Coordinate');
 goog.require('ol.MapBrowserEvent');

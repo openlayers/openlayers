@@ -8,7 +8,6 @@ goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.style');
-goog.require('ol.Object');
 goog.require('ol.Pixel');
 goog.require('ol.Projection');
 goog.require('ol.TransformFunction');

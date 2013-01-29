@@ -3,7 +3,6 @@
 goog.provide('ol.interaction.DragRotateAndZoom');
 
 goog.require('goog.math.Vec2');
-goog.require('ol.MapBrowserEvent');
 goog.require('ol.View2D');
 goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Drag');

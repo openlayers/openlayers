@@ -10,9 +10,7 @@ goog.provide('ol.source.TileJSON');
 goog.provide('ol.tilejson');
 
 goog.require('goog.asserts');
-goog.require('goog.events.EventType');
 goog.require('goog.net.jsloader');
-goog.require('goog.string');
 goog.require('ol.Projection');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.source.ImageTileSource');

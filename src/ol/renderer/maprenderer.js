@@ -7,8 +7,6 @@ goog.require('goog.events');
 goog.require('goog.functions');
 goog.require('goog.vec.Mat4');
 goog.require('ol.FrameState');
-goog.require('ol.View2D');
-goog.require('ol.View2DProperty');
 
 
 

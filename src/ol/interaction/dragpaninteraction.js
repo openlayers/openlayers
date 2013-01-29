@@ -4,7 +4,6 @@ goog.provide('ol.interaction.DragPan');
 
 goog.require('goog.asserts');
 goog.require('ol.Coordinate');
-goog.require('ol.MapBrowserEvent');
 goog.require('ol.View2D');
 goog.require('ol.ViewHint');
 goog.require('ol.interaction.ConditionType');

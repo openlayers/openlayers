@@ -4,15 +4,12 @@ goog.provide('ol.source.TiledWMS');
 
 
 goog.require('goog.array');
-goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('goog.uri.utils');
-goog.require('ol.Attribution');
 goog.require('ol.Projection');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.source.ImageTileSource');
-goog.require('ol.tilegrid.TileGrid');
 
 
 

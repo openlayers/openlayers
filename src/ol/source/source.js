@@ -6,7 +6,6 @@ goog.require('goog.functions');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
 goog.require('ol.Projection');
-goog.require('ol.TileUrlFunction');
 
 
 /**

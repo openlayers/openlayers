@@ -7,8 +7,6 @@ goog.require('ol.Extent');
 goog.require('ol.Projection');
 goog.require('ol.Tile');
 goog.require('ol.TileCoord');
-goog.require('ol.TileUrlFunction');
-goog.require('ol.TileUrlFunctionType');
 goog.require('ol.source.Source');
 goog.require('ol.tilegrid.TileGrid');
 
