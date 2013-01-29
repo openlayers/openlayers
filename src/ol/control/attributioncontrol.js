@@ -24,7 +24,7 @@ ol.control.Attribution = function(attributionOptions) {
   this.ulElement_ = goog.dom.createElement(goog.dom.TagName.UL);
 
   var element = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': 'ol-attribution'
+    'class': 'ol-attribution ol-unselectable'
   }, this.ulElement_);
 
   goog.base(this, {
