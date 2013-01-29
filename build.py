@@ -187,7 +187,7 @@ def serve_precommit(t):
     t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'build/ol-all.json')
 
 
-virtual('lint', 'build/lint-src-timestamp', 'build/lint-spec-timestamp')
+virtual('lint', 'build/lint-src-timestamp', 'build/lint-spec-timestamp', 'build/check-requires-timestamp')
 
 
 @target('build/lint-src-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC)
@@ -196,6 +196,32 @@ def build_lint_src_timestamp(t):
                          for path in ifind('externs', 'build/src/external/externs')
                          if path.endswith('.js')]
     t.run('%(GJSLINT)s', '--strict', '--limited_doc_files=%s' % (','.join(limited_doc_files),), t.newer(SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC))
+    t.touch()
+
+
+@target('build/check-requires-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC)
+def build_check_requires_timestamp(t):
+    count = 0
+    for filename in sorted(t.dependencies):
+        if filename == 'build/src/internal/src/requireall.js':
+            continue
+        require_linenos = {}
+        uses = set()
+        lineno = 0
+        for line in open(filename):
+            lineno += 1
+            m = re.match(r'goog.require\(\'(.*)\'\);', line)
+            if m:
+                require_linenos[m.group(1)] = lineno
+                continue
+            for require in require_linenos.iterkeys():
+                if require in line:
+                    uses.add(require)
+        for require in sorted(set(require_linenos.keys()) - uses):
+            t.info('%s:%d: unused goog.require %r' % (filename, require_linenos[require], require))
+            count += 1
+    if count:
+        t.error('%d unused goog.requires' % (count,))
     t.touch()
 
 
