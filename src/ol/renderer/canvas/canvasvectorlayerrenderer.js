@@ -61,6 +61,12 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
 
   /**
    * @private
+   * @type {Array.<string>}
+   */
+  this.tileCacheIndex_ = [];
+
+  /**
+   * @private
    * @type {HTMLCanvasElement}
    */
   this.tileArchetype_ = null;
@@ -210,11 +216,6 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
     return;
   }
 
-  // clear tiles at alt-z
-  if (this.renderedResolution_ != tileResolution) {
-    this.tileCache_ = {};
-  }
-
   if (goog.isNull(this.tileArchetype_)) {
     this.tileArchetype_ = /** @type {HTMLCanvasElement} */
         goog.dom.createElement(goog.dom.TagName.CANVAS);
@@ -304,10 +305,13 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       tilesToRender[key] = tileCoord;
     }
   }
-  
+
   for (key in tilesToRender) {
     tile = this.tileCache_[key];
     tileCoord = tilesToRender[key];
+    // LRU - move tile key to the beginning of the index
+    goog.array.remove(this.tileCacheIndex_, key);
+    this.tileCacheIndex_.unshift(key);
     if (tile === undefined) {
       tile = /** @type {HTMLCanvasElement} */
           this.tileArchetype_.cloneNode(false);
@@ -315,12 +319,23 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
           (tileRange.minX - tileCoord.x) * tileSize.width,
           (tileCoord.y - tileRange.maxY) * tileSize.height);
       this.tileCache_[key] = tile;
+      // manage cache
+      if (this.tileCacheIndex_.length >=
+          ol.renderer.canvas.VectorLayer.TILECACHE_SIZE) {
+        delete this.tileCache_[this.tileCacheIndex_.pop()];
+      }
     }
     finalContext.drawImage(tile,
         tileSize.width * (tileCoord.x - tileRange.minX),
         tileSize.height * (tileRange.maxY - tileCoord.y));
   }
-  
+
   this.renderedResolution_ = tileResolution;
 
 };
+
+
+/**
+ * @type {number}
+ */
+ol.renderer.canvas.VectorLayer.TILECACHE_SIZE = 128;
