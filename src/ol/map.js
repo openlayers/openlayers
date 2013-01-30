@@ -43,7 +43,7 @@ goog.require('ol.View2DState');
 goog.require('ol.control.Attribution');
 goog.require('ol.control.Zoom');
 goog.require('ol.interaction.DblClickZoom');
-goog.require('ol.interaction.DragPan');
+goog.require('ol.interaction.DragPanInertia');
 goog.require('ol.interaction.DragRotate');
 goog.require('ol.interaction.DragZoom');
 goog.require('ol.interaction.Interaction');
@@ -984,7 +984,7 @@ ol.Map.createInteractions_ = function(mapOptions) {
       mapOptions.dragPan : true;
   if (dragPan) {
     interactions.push(
-        new ol.interaction.DragPan(ol.interaction.condition.noModifierKeys));
+        new ol.interaction.DragPanInertia(ol.interaction.condition.noModifierKeys));
   }
 
   var keyboard = goog.isDef(mapOptions.keyboard) ?
