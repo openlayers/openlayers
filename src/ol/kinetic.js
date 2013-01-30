@@ -90,12 +90,14 @@ ol.Kinetic.prototype.update = function(browserEvent) {
  */
 ol.Kinetic.prototype.end = function() {
   var now = goog.now();
-  var index = Math.abs(goog.array.binarySelect(this.points_, function(elt) {
-    return elt.t < now - this.delay_;
-  }, this));
-  if (index < this.points_.length - 1) {
-    var first = this.points_[index];
-    var last = this.points_[this.points_.length - 1];
+  var lastIndex = this.points_.length - 1;
+  var firstIndex = lastIndex - 1;
+  while (firstIndex >= 0 && this.points_[firstIndex].t > now - this.delay_) {
+    firstIndex--;
+  }
+  if (firstIndex >= 0) {
+    var first = this.points_[firstIndex];
+    var last = this.points_[lastIndex];
     var dx = last.x - first.x;
     var dy = last.y - first.y;
     this.angle_ = Math.atan2(dy, dx);
