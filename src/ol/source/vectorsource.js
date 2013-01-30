@@ -21,7 +21,7 @@ ol.source.FeatureCache = function() {
 
 
   /**
-   * @type {Object.<string, Array.<string>>}
+   * @type {Object.<ol.Feature>}
    * @private
    */
   this.geometryTypeIndex_;
@@ -37,11 +37,11 @@ ol.source.FeatureCache = function() {
 ol.source.FeatureCache.prototype.clear = function() {
   this.idLookup_ = {};
 
-  var geometryTypeIndex_ = {};
+  var geometryTypeIndex = {};
   for (var key in ol.geom.GeometryType) {
-    geometryTypeIndex_[ol.geom.GeometryType[key]] = [];
+    geometryTypeIndex[ol.geom.GeometryType[key]] = {};
   }
-  this.geometryTypeIndex_ = geometryTypeIndex_;
+  this.geometryTypeIndex_ = geometryTypeIndex;
 };
 
 
@@ -57,7 +57,7 @@ ol.source.FeatureCache.prototype.add = function(feature) {
 
   // index by geometry type
   if (!goog.isNull(geometry)) {
-    this.geometryTypeIndex_[geometry.getType()].push(id);
+    this.geometryTypeIndex_[geometry.getType()][id] = feature;
   }
 
   /**
@@ -99,10 +99,7 @@ ol.source.FeatureCache.prototype.getFeatures = function(opt_filter) {
  * @private
  */
 ol.source.FeatureCache.prototype.getFeaturesByGeometryType_ = function(filter) {
-  var type = filter.getType(),
-      ids = this.geometryTypeIndex_[filter.getType()];
-
-  return this.getFeaturesByIds_(ids);
+  return goog.object.getValues(this.geometryTypeIndex_[filter.getType()]);
 };
 
 
