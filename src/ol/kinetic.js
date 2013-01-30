@@ -18,11 +18,11 @@ ol.KineticPoint;
 /**
  * @constructor
  * @param {number} decay Rate of decay (must be negative).
- * @param {number} v_min Minimum velocity (pixels/millisecond).
+ * @param {number} minVelocity Minimum velocity (pixels/millisecond).
  * @param {number} delay Delay to consider to calculate the kinetic
  *     initial values (milliseconds).
  */
-ol.Kinetic = function(decay, v_min, delay) {
+ol.Kinetic = function(decay, minVelocity, delay) {
 
   /**
    * @private
@@ -34,7 +34,7 @@ ol.Kinetic = function(decay, v_min, delay) {
    * @private
    * @type {number}
    */
-  this.v_min_ = v_min;
+  this.minVelocity_ = minVelocity;
 
   /**
    * @private
@@ -58,7 +58,7 @@ ol.Kinetic = function(decay, v_min, delay) {
    * @private
    * @type {number}
    */
-  this.v_0_ = 0;
+  this.initialVelocity_ = 0;
 };
 
 
@@ -68,7 +68,7 @@ ol.Kinetic = function(decay, v_min, delay) {
 ol.Kinetic.prototype.begin = function(browserEvent) {
   this.points_.length = 0;
   this.angle_ = 0;
-  this.v_0_ = 0;
+  this.initialVelocity_ = 0;
   this.update(browserEvent);
 };
 
@@ -101,8 +101,8 @@ ol.Kinetic.prototype.end = function() {
     var dx = last.x - first.x;
     var dy = last.y - first.y;
     this.angle_ = Math.atan2(dy, dx);
-    this.v_0_ = Math.sqrt(dx * dx + dy * dy) / (last.t - first.t);
-    return this.v_0_ > this.v_min_;
+    this.initialVelocity_ = Math.sqrt(dx * dx + dy * dy) / (last.t - first.t);
+    return this.initialVelocity_ > this.minVelocity_;
   }
   return false;
 };
@@ -114,11 +114,12 @@ ol.Kinetic.prototype.end = function() {
  */
 ol.Kinetic.prototype.createPanFrom = function(source) {
   var decay = this.decay_;
-  var v_0 = this.v_0_;
-  var v_min = this.v_min_;
+  var initialVelocity = this.initialVelocity_;
+  var minVelocity = this.minVelocity_;
   var duration = this.getDuration();
   var easingFunction = function(t) {
-    return v_0 * (Math.exp((decay * t) * duration) - 1) / (v_min - v_0);
+    return initialVelocity * (Math.exp((decay * t) * duration) - 1) /
+        (minVelocity - initialVelocity);
   };
   return ol.animation.createPanFrom({
     source: source,
@@ -132,7 +133,7 @@ ol.Kinetic.prototype.createPanFrom = function(source) {
  * @return {number} Duration of animation (milliseconds).
  */
 ol.Kinetic.prototype.getDuration = function() {
-  return Math.log(this.v_min_ / this.v_0_) / this.decay_;
+  return Math.log(this.minVelocity_ / this.initialVelocity_) / this.decay_;
 };
 
 
@@ -140,7 +141,7 @@ ol.Kinetic.prototype.getDuration = function() {
  * @return {number} Total distance travelled (pixels).
  */
 ol.Kinetic.prototype.getDistance = function() {
-  return (this.v_min_ - this.v_0_) / this.decay_;
+  return (this.minVelocity_ - this.initialVelocity_) / this.decay_;
 };
 
 
