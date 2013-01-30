@@ -81,6 +81,13 @@ ol.interaction.Drag.prototype.handleDragStart = goog.functions.FALSE;
 
 
 /**
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
+ * @protected
+ */
+ol.interaction.Drag.prototype.handleDown = goog.nullFunction;
+
+
+/**
  * @inheritDoc
  */
 ol.interaction.Drag.prototype.handleMapBrowserEvent =
@@ -89,7 +96,12 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
   if (!map.isDef()) {
     return;
   }
+  var view = map.getView();
   var browserEvent = mapBrowserEvent.browserEvent;
+  if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DOWN) {
+    goog.asserts.assert(browserEvent instanceof goog.events.BrowserEvent);
+    this.handleDown(mapBrowserEvent);
+  }
   if (this.dragging_) {
     if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DRAG) {
       goog.asserts.assert(browserEvent instanceof goog.events.BrowserEvent);
@@ -109,9 +121,9 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
     this.startY = browserEvent.clientY;
     this.deltaX = 0;
     this.deltaY = 0;
-    this.startCenter = /** @type {!ol.Coordinate} */ map.getCenter();
+    this.startCenter = /** @type {!ol.Coordinate} */ (view.getCenter());
     this.startCoordinate = /** @type {ol.Coordinate} */
-        mapBrowserEvent.getCoordinate();
+        (mapBrowserEvent.getCoordinate());
     var handled = this.handleDragStart(mapBrowserEvent);
     if (handled) {
       this.dragging_ = true;

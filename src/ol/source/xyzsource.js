@@ -11,7 +11,7 @@ goog.require('ol.Size');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
-goog.require('ol.source.TileSource');
+goog.require('ol.source.ImageTileSource');
 goog.require('ol.tilegrid.XYZ');
 
 
@@ -31,7 +31,7 @@ ol.source.XYZOptions;
 
 /**
  * @constructor
- * @extends {ol.source.TileSource}
+ * @extends {ol.source.ImageTileSource}
  * @param {ol.source.XYZOptions} xyzOptions XYZ options.
  */
 ol.source.XYZ = function(xyzOptions) {
@@ -110,4 +110,4 @@ ol.source.XYZ = function(xyzOptions) {
   });
 
 };
-goog.inherits(ol.source.XYZ, ol.source.TileSource);
+goog.inherits(ol.source.XYZ, ol.source.ImageTileSource);

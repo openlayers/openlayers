@@ -6,11 +6,20 @@
  */
 
 goog.provide('ol.Object');
+goog.provide('ol.ObjectEventType');
 
 goog.require('goog.array');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
 goog.require('goog.object');
+
+
+/**
+ * @enum {string}
+ */
+ol.ObjectEventType = {
+  CHANGED: 'changed'
+};
 
 
 /**
@@ -192,6 +201,7 @@ ol.Object.prototype.notify = function(key) {
 ol.Object.prototype.notifyInternal_ = function(key) {
   var eventType = ol.Object.getChangedEventType(key);
   this.dispatchEvent(eventType);
+  this.dispatchEvent(ol.ObjectEventType.CHANGED);
 };
 
 

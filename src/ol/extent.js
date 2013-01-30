@@ -7,6 +7,9 @@ goog.require('ol.TransformFunction');
 
 
 /**
+ * Rectangular extent which is not rotated. An extent does not know its
+ * projection.
+ *
  * @constructor
  * @extends {ol.Rectangle}
  * @param {number} minX Minimum X.
@@ -21,6 +24,8 @@ goog.inherits(ol.Extent, ol.Rectangle);
 
 
 /**
+ * Builds an extent that includes all given coordinates.
+ *
  * @param {...ol.Coordinate} var_args Coordinates.
  * @return {!ol.Extent} Bounding extent.
  */
@@ -41,6 +46,8 @@ ol.Extent.boundingExtent = function(var_args) {
 
 
 /**
+ * Checks if the given coordinate is contained or on the edge of the extent.
+ *
  * @param {ol.Coordinate} coordinate Coordinate.
  * @return {boolean} Contains.
  */
@@ -87,7 +94,8 @@ ol.Extent.prototype.getTopRight = function() {
  * @return {ol.Extent} Extent.
  */
 ol.Extent.prototype.transform = function(transformFn) {
-  var min = transformFn(new ol.Coordinate(this.minX, this.minY));
-  var max = transformFn(new ol.Coordinate(this.maxX, this.maxY));
-  return new ol.Extent(min.x, min.y, max.x, max.y);
+  var a = transformFn(new ol.Coordinate(this.minX, this.minY));
+  var b = transformFn(new ol.Coordinate(this.maxX, this.maxY));
+  return new ol.Extent(Math.min(a.x, b.x), Math.min(a.y, b.y),
+      Math.max(a.x, b.x), Math.max(a.y, b.y));
 };

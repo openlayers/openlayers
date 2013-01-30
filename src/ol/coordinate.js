@@ -13,6 +13,8 @@ ol.CoordinateFormatType;
 
 
 /**
+ * Two dimensional coordinate which does not know its projection.
+ *
  * @constructor
  * @extends {goog.math.Vec2}
  * @param {number} x X.

@@ -19,9 +19,6 @@
   display: inline;
   list-style: none;
 }
-.ol-attribution li {
-  display: inline;
-}
 .ol-attribution li:not(:last-child):after {
   content: "\2003";
 }
@@ -78,8 +75,8 @@
   }
 }
 .ol-zoom-in {
-  border-radius: 4px 4px 0 0;
+  border-radius: 2px 2px 0 0;
 }
 .ol-zoom-out {
-  border-radius: 0 0 4px 4px;
+  border-radius: 0 0 2px 2px;
 }

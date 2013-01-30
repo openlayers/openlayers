@@ -1,5 +1,0 @@
-@exportClass ol.overlay.Overlay ol.overlay.OverlayOptions
-@exportProperty ol.overlay.Overlay.prototype.getElement
-@exportProperty ol.overlay.Overlay.prototype.setCoordinate
-@exportProperty ol.overlay.Overlay.prototype.setMap
-

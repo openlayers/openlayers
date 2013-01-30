@@ -2,9 +2,13 @@ goog.provide('ol.renderer.Layer');
 
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('ol.FrameState');
 goog.require('ol.Object');
+goog.require('ol.TileRange');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.LayerProperty');
+goog.require('ol.layer.LayerState');
+goog.require('ol.source.TileSource');
 
 
 
@@ -62,6 +66,14 @@ goog.inherits(ol.renderer.Layer, ol.Object);
 
 
 /**
+ * @protected
+ */
+ol.renderer.Layer.prototype.dispatchChangeEvent = function() {
+  this.dispatchEvent(goog.events.EventType.CHANGE);
+};
+
+
+/**
  * @return {ol.layer.Layer} Layer.
  */
 ol.renderer.Layer.prototype.getLayer = function() {
@@ -106,13 +118,17 @@ ol.renderer.Layer.prototype.handleLayerHueChange = goog.nullFunction;
 /**
  * @protected
  */
-ol.renderer.Layer.prototype.handleLayerLoad = goog.nullFunction;
+ol.renderer.Layer.prototype.handleLayerLoad = function() {
+  this.dispatchChangeEvent();
+};
 
 
 /**
  * @protected
  */
-ol.renderer.Layer.prototype.handleLayerOpacityChange = goog.nullFunction;
+ol.renderer.Layer.prototype.handleLayerOpacityChange = function() {
+  this.dispatchChangeEvent();
+};
 
 
 /**
@@ -124,4 +140,80 @@ ol.renderer.Layer.prototype.handleLayerSaturationChange = goog.nullFunction;
 /**
  * @protected
  */
-ol.renderer.Layer.prototype.handleLayerVisibleChange = goog.nullFunction;
+ol.renderer.Layer.prototype.handleLayerVisibleChange = function() {
+  this.dispatchChangeEvent();
+};
+
+
+/**
+ * @param {ol.FrameState} frameState Frame state.
+ * @param {ol.layer.LayerState} layerState Layer state.
+ */
+ol.renderer.Layer.prototype.renderFrame = goog.abstractMethod;
+
+
+/**
+ * @protected
+ * @param {ol.FrameState} frameState Frame state.
+ * @param {ol.source.TileSource} tileSource Tile source.
+ */
+ol.renderer.Layer.prototype.scheduleExpireCache =
+    function(frameState, tileSource) {
+  if (tileSource.canExpireCache()) {
+    frameState.postRenderFunctions.push(
+        goog.partial(function(tileSource, map, frameState) {
+          var tileSourceKey = goog.getUid(tileSource).toString();
+          tileSource.expireCache(frameState.usedTiles[tileSourceKey]);
+        }, tileSource));
+  }
+};
+
+
+/**
+ * @protected
+ * @param {Object.<string, Object.<string, ol.TileRange>>} usedTiles Used tiles.
+ * @param {ol.source.Source} source Source.
+ * @param {number} z Z.
+ * @param {ol.TileRange} tileRange Tile range.
+ */
+ol.renderer.Layer.prototype.updateUsedTiles =
+    function(usedTiles, source, z, tileRange) {
+  // FIXME should we use tilesToDrawByZ instead?
+  var sourceKey = goog.getUid(source).toString();
+  var zKey = z.toString();
+  if (sourceKey in usedTiles) {
+    if (zKey in usedTiles[sourceKey]) {
+      usedTiles[sourceKey][zKey].extend(tileRange);
+    } else {
+      usedTiles[sourceKey][zKey] = tileRange;
+    }
+  } else {
+    usedTiles[sourceKey] = {};
+    usedTiles[sourceKey][zKey] = tileRange;
+  }
+};
+
+
+/**
+ * @protected
+ * @param {Object.<string, Object.<string, ol.TileRange>>} wantedTiles Wanted
+ *     tile ranges.
+ * @param {ol.source.Source} source Source.
+ * @param {number} z Z.
+ * @param {ol.TileRange} tileRange Tile range.
+ */
+ol.renderer.Layer.prototype.updateWantedTiles =
+    function(wantedTiles, source, z, tileRange) {
+  var sourceKey = goog.getUid(source).toString();
+  var zKey = z.toString();
+  if (sourceKey in wantedTiles) {
+    if (zKey in wantedTiles[sourceKey]) {
+      wantedTiles[sourceKey][zKey].extend(tileRange);
+    } else {
+      wantedTiles[sourceKey][zKey] = tileRange;
+    }
+  } else {
+    wantedTiles[sourceKey] = {};
+    wantedTiles[sourceKey][zKey] = tileRange;
+  }
+};

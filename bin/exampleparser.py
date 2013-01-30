@@ -101,12 +101,16 @@ def getGitInfo(exampleDir, exampleName):
     log = h.read()
     h.close()
     d = {}
-    parts = log.split("|")
-    d["author"] = parts[0]
-    # compensate for spaces in git log time
-    td = parts[1].split(" ")
-    td.insert(1, "T")
-    d["date"] = "".join(td)
+    if log:
+        parts = log.split("|")
+        d["author"] = parts[0]
+        # compensate for spaces in git log time
+        td = parts[1].split(" ")
+        td.insert(1, "T")
+        d["date"] = "".join(td)
+    else:
+        d["author"] = ""
+        d["date"] = ""
     return d
 
 
@@ -251,7 +255,7 @@ You don't have them. \n(%s)""" % E
     json = json.dumps({"examples": exampleList, "index": index})
     # Give the json a global variable we can use in our js.
     # This should be replaced or made optional.
-    json = 'var info=' + json
+    json = 'var info=' + json + ';'
     outFile.write(json)
     outFile.close()
 

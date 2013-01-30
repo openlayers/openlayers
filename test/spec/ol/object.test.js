@@ -46,16 +46,19 @@ describe('ol.Object', function() {
 
   describe('notify', function() {
 
-    var listener1, listener2;
+    var listener1, listener2, listener3;
 
     beforeEach(function() {
       listener1 = jasmine.createSpy();
       goog.events.listen(o, 'k_changed', listener1);
 
+      listener2 = jasmine.createSpy();
+      goog.events.listen(o, 'changed', listener2);
+
       var o2 = new ol.Object();
       o2.bindTo('k', o);
-      listener2 = jasmine.createSpy();
-      goog.events.listen(o2, 'k_changed', listener2);
+      listener3 = jasmine.createSpy();
+      goog.events.listen(o2, 'k_changed', listener3);
     });
 
     it('dispatches events', function() {
@@ -63,24 +66,32 @@ describe('ol.Object', function() {
       expect(listener1).toHaveBeenCalled();
     });
 
-    it('dispatches events to bound objects', function() {
+    it('dispatches generic change events to bound objects', function() {
       o.notify('k');
       expect(listener2).toHaveBeenCalled();
+    });
+
+    it('dispatches events to bound objects', function() {
+      o.notify('k');
+      expect(listener3).toHaveBeenCalled();
     });
   });
 
   describe('set', function() {
 
-    var listener1, o2, listener2;
+    var listener1, o2, listener2, listener3;
 
     beforeEach(function() {
       listener1 = jasmine.createSpy();
       goog.events.listen(o, 'k_changed', listener1);
 
+      listener2 = jasmine.createSpy();
+      goog.events.listen(o, 'changed', listener2);
+
       o2 = new ol.Object();
       o2.bindTo('k', o);
-      listener2 = jasmine.createSpy();
-      goog.events.listen(o2, 'k_changed', listener2);
+      listener3 = jasmine.createSpy();
+      goog.events.listen(o2, 'k_changed', listener3);
     });
 
     it('dispatches events to object', function() {
@@ -88,14 +99,24 @@ describe('ol.Object', function() {
       expect(listener1).toHaveBeenCalled();
     });
 
-    it('dispatches events to bound object', function() {
+    it('dispatches generic change events to object', function() {
       o.set('k', 1);
       expect(listener2).toHaveBeenCalled();
+    });
+
+    it('dispatches events to bound object', function() {
+      o.set('k', 1);
+      expect(listener3).toHaveBeenCalled();
     });
 
     it('dispatches events to object bound to', function() {
       o2.set('k', 2);
       expect(listener1).toHaveBeenCalled();
+    });
+
+    it('dispatches generic change events to object bound to', function() {
+      o2.set('k', 2);
+      expect(listener2).toHaveBeenCalled();
     });
   });
 

@@ -152,9 +152,7 @@ class Target(object):
         content = urllib2.urlopen(url).read()
         if md5 and hashlib.md5(content).hexdigest() != md5:
             raise BuildError(self, 'corrupt download')
-        # FIXME Python on Windoze corrupts the content when writing it
-        # FIXME probably something to do with encodings
-        with open(self.name, 'w') as f:
+        with open(self.name, 'wb') as f:
             f.write(content)
 
     def error(self, message):
@@ -177,6 +175,10 @@ class Target(object):
         if path and not os.path.exists(path):
             self.info('mkdir -p %s', path)
             os.makedirs(path)
+
+    def newer(self, *args):
+        args = flatten_expand_list(args)
+        return [arg for arg in args if targets.get(arg).timestamp > self.timestamp]
 
     def output(self, *args, **kwargs):
         args = flatten_expand_list(args)

@@ -1,0 +1,129 @@
+// FIXME works for View2D only
+// FIXME dependency on ol.View2D suppressed to prevent dependency loop
+
+goog.provide('ol.animation');
+
+goog.require('goog.fx.easing');
+goog.require('ol.PreRenderFunction');
+goog.require('ol.easing');
+
+
+/**
+ * @param {ol.animation.BounceOptions} options Options.
+ * @return {ol.PreRenderFunction} Pre-render function.
+ */
+ol.animation.createBounce = function(options) {
+  var resolution = options.resolution;
+  var start = goog.isDef(options.start) ? options.start : goog.now();
+  var duration = goog.isDef(options.duration) ? options.duration : 1000;
+  var easing = goog.isDef(options.easing) ?
+      options.easing : ol.easing.upAndDown;
+  return function(map, frameState) {
+    if (frameState.time < start) {
+      frameState.animate = true;
+      frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
+      return true;
+    } else if (frameState.time < start + duration) {
+      var delta = easing((frameState.time - start) / duration);
+      var deltaResolution = resolution - frameState.view2DState.resolution;
+      frameState.animate = true;
+      frameState.view2DState.resolution += delta * deltaResolution;
+      frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
+      return true;
+    } else {
+      return false;
+    }
+  };
+};
+
+
+/**
+ * @param {ol.animation.PanFromOptions} options Options.
+ * @return {ol.PreRenderFunction} Pre-render function.
+ */
+ol.animation.createPanFrom = function(options) {
+  var source = options.source;
+  var start = goog.isDef(options.start) ? options.start : goog.now();
+  var sourceX = source.x;
+  var sourceY = source.y;
+  var duration = goog.isDef(options.duration) ? options.duration : 1000;
+  var easing = goog.isDef(options.easing) ?
+      options.easing : goog.fx.easing.inAndOut;
+  return function(map, frameState) {
+    if (frameState.time < start) {
+      frameState.animate = true;
+      frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
+      return true;
+    } else if (frameState.time < start + duration) {
+      var delta = 1 - easing((frameState.time - start) / duration);
+      var deltaX = sourceX - frameState.view2DState.center.x;
+      var deltaY = sourceY - frameState.view2DState.center.y;
+      frameState.animate = true;
+      frameState.view2DState.center.x += delta * deltaX;
+      frameState.view2DState.center.y += delta * deltaY;
+      frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
+      return true;
+    } else {
+      return false;
+    }
+  };
+};
+
+
+/**
+ * @param {ol.animation.SpinOptions} options Options.
+ * @return {ol.PreRenderFunction} Pre-render function.
+ */
+ol.animation.createSpin = function(options) {
+  var start = goog.isDef(options.start) ? options.start : goog.now();
+  var duration = goog.isDef(options.duration) ? options.duration : 1000;
+  var easing = goog.isDef(options.easing) ?
+      options.easing : goog.fx.easing.inAndOut;
+  var deltaTheta = 2 * options.turns * Math.PI;
+
+  return function(map, frameState) {
+    if (frameState.time < start) {
+      frameState.animate = true;
+      frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
+      return true;
+    } else if (frameState.time < start + duration) {
+      var delta = easing((frameState.time - start) / duration);
+      frameState.animate = true;
+      frameState.view2DState.rotation += delta * deltaTheta;
+      frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
+      return true;
+    } else {
+      return false;
+    }
+  };
+};
+
+
+/**
+ * @param {ol.animation.ZoomFromOptions} options Options.
+ * @return {ol.PreRenderFunction} Pre-render function.
+ */
+ol.animation.createZoomFrom = function(options) {
+  var sourceResolution = options.resolution;
+  var start = goog.isDef(options.start) ? options.start : goog.now();
+  var duration = goog.isDef(options.duration) ? options.duration : 1000;
+  var easing = goog.isDef(options.easing) ?
+      options.easing : ol.easing.linear;
+  return function(map, frameState) {
+    if (frameState.time < start) {
+      frameState.animate = true;
+      frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
+      return true;
+    } else if (frameState.time < start + duration) {
+      var delta = 1 - easing((frameState.time - start) / duration);
+      var deltaResolution =
+          sourceResolution - frameState.view2DState.resolution;
+      frameState.animate = true;
+      frameState.view2DState.resolution += delta * deltaResolution;
+      frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
+      return true;
+    } else {
+      return false;
+    }
+  };
+};
