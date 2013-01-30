@@ -29,6 +29,7 @@ goog.require('ol.Color');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.FrameState');
+goog.require('ol.Kinetic');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.Object');
 goog.require('ol.Pixel');
@@ -189,6 +190,8 @@ ol.Map = function(mapOptions) {
   this.viewport_.style.overflow = 'hidden';
   this.viewport_.style.width = '100%';
   this.viewport_.style.height = '100%';
+  // prevent page zoom on IE >= 10 browsers
+  this.viewport_.style.msTouchAction = 'none';
   goog.dom.appendChild(this.target_, this.viewport_);
 
   /**
@@ -205,13 +208,9 @@ ol.Map = function(mapOptions) {
   goog.dom.appendChild(this.viewport_, this.overlayContainer_);
 
   var mapBrowserEventHandler = new ol.MapBrowserEventHandler(this);
-  goog.events.listen(mapBrowserEventHandler, [
-    ol.MapBrowserEvent.EventType.CLICK,
-    ol.MapBrowserEvent.EventType.DBLCLICK,
-    ol.MapBrowserEvent.EventType.DRAGSTART,
-    ol.MapBrowserEvent.EventType.DRAG,
-    ol.MapBrowserEvent.EventType.DRAGEND
-  ], this.handleMapBrowserEvent, false, this);
+  goog.events.listen(mapBrowserEventHandler,
+      goog.object.getValues(ol.MapBrowserEvent.EventType),
+      this.handleMapBrowserEvent, false, this);
   this.registerDisposable(mapBrowserEventHandler);
 
   // FIXME we probably shouldn't listen on document...
@@ -289,7 +288,7 @@ ol.Map = function(mapOptions) {
       this.handleSizeChanged_, false, this);
   goog.events.listen(
       this, ol.Object.getChangedEventType(ol.MapProperty.BACKGROUND_COLOR),
-      this.handleBackgroundColorChanged_, false, this),
+      this.handleBackgroundColorChanged_, false, this);
   this.setValues(mapOptionsInternal.values);
 
   // this gives the map an initial size
@@ -324,6 +323,15 @@ ol.Map.prototype.addPreRenderFunctions = function(preRenderFunctions) {
   this.requestRenderFrame();
   Array.prototype.push.apply(
       this.preRenderFunctions_, preRenderFunctions);
+};
+
+
+/**
+ * @param {ol.PreRenderFunction} preRenderFunction Pre-render function.
+ * @return {boolean} Whether the preRenderFunction has been found and removed.
+ */
+ol.Map.prototype.removePreRenderFunction = function(preRenderFunction) {
+  return goog.array.remove(this.preRenderFunctions_, preRenderFunction);
 };
 
 
@@ -534,6 +542,7 @@ ol.Map.prototype.handleControlsRemove_ = function(collectionEvent) {
  * @param {ol.MapBrowserEvent} mapBrowserEvent The event to handle.
  */
 ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
+  mapBrowserEvent.frameState = this.frameState_;
   var interactions = this.getInteractions();
   var interactionsArray = /** @type {Array.<ol.interaction.Interaction>} */
       (interactions.getArray());
@@ -986,7 +995,8 @@ ol.Map.createInteractions_ = function(mapOptions) {
       mapOptions.dragPan : true;
   if (dragPan) {
     interactions.push(
-        new ol.interaction.DragPan(ol.interaction.condition.noModifierKeys));
+        new ol.interaction.DragPan(ol.interaction.condition.noModifierKeys,
+            new ol.Kinetic(-0.005, 0.05, 100)));
   }
 
   var keyboard = goog.isDef(mapOptions.keyboard) ?

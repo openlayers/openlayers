@@ -19,9 +19,6 @@
   display: inline;
   list-style: none;
 }
-.ol-attribution li {
-  display: inline;
-}
 .ol-attribution li:not(:last-child):after {
   content: "\2003";
 }

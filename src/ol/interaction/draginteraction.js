@@ -81,6 +81,13 @@ ol.interaction.Drag.prototype.handleDragStart = goog.functions.FALSE;
 
 
 /**
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
+ * @protected
+ */
+ol.interaction.Drag.prototype.handleDown = goog.nullFunction;
+
+
+/**
  * @inheritDoc
  */
 ol.interaction.Drag.prototype.handleMapBrowserEvent =
@@ -91,6 +98,10 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
   }
   var view = map.getView();
   var browserEvent = mapBrowserEvent.browserEvent;
+  if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DOWN) {
+    goog.asserts.assert(browserEvent instanceof goog.events.BrowserEvent);
+    this.handleDown(mapBrowserEvent);
+  }
   if (this.dragging_) {
     if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DRAG) {
       goog.asserts.assert(browserEvent instanceof goog.events.BrowserEvent);

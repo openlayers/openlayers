@@ -3,9 +3,7 @@
 goog.provide('ol.renderer.webgl.Layer');
 
 goog.require('goog.vec.Mat4');
-goog.require('ol.FrameState');
 goog.require('ol.layer.Layer');
-goog.require('ol.layer.LayerState');
 goog.require('ol.renderer.Layer');
 goog.require('ol.vec.Mat4');
 
@@ -64,14 +62,6 @@ ol.renderer.webgl.Layer = function(mapRenderer, layer) {
 
 };
 goog.inherits(ol.renderer.webgl.Layer, ol.renderer.Layer);
-
-
-/**
- * @protected
- */
-ol.renderer.webgl.Layer.prototype.dispatchChangeEvent = function() {
-  this.dispatchEvent(goog.events.EventType.CHANGE);
-};
 
 
 /**
@@ -143,22 +133,6 @@ ol.renderer.webgl.Layer.prototype.handleLayerHueChange = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Layer.prototype.handleLayerLoad = function() {
-  this.dispatchChangeEvent();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.Layer.prototype.handleLayerOpacityChange = function() {
-  this.dispatchChangeEvent();
-};
-
-
-/**
- * @inheritDoc
- */
 ol.renderer.webgl.Layer.prototype.handleLayerSaturationChange = function() {
   var saturation = this.getLayer().getSaturation();
   ol.vec.Mat4.makeSaturation(this.saturationMatrix_, saturation);
@@ -168,25 +142,9 @@ ol.renderer.webgl.Layer.prototype.handleLayerSaturationChange = function() {
 
 
 /**
- * @inheritDoc
- */
-ol.renderer.webgl.Layer.prototype.handleLayerVisibleChange = function() {
-  this.dispatchChangeEvent();
-};
-
-
-/**
  * Handle webglcontextlost.
  */
 ol.renderer.webgl.Layer.prototype.handleWebGLContextLost = goog.nullFunction;
-
-
-/**
- * Render.
- * @param {ol.FrameState} frameState Frame state.
- * @param {ol.layer.LayerState} layerState Layer state.
- */
-ol.renderer.webgl.Layer.prototype.renderFrame = goog.abstractMethod;
 
 
 /**

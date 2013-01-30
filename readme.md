@@ -33,7 +33,7 @@ You can turn off compilation by appending `?mode=RAW` to the URL, for example
 
 Run the plovr web server (see above), and either open the `test/ol.html` file
 in the browser (e.g. <http://localhost:8000/test/ol.html>), or run `./build.py test`
-on the console (headless testing with PhantomJS).
+on the console (headless testing with PhantomJS, make sure to install it first from http://phantomjs.org/download.html).
 
 See also the test-specific [readme](https://github.com/openlayers/ol3/tree/master/test).
 
@@ -44,6 +44,10 @@ Linter](https://developers.google.com/closure/utilities/docs/linter_howto).
 Then:
 
     $ ./build.py lint
+
+## Run the precommit hook before pushing a commit:
+
+    $ ./build.py precommit
 
 ## Add examples
 
