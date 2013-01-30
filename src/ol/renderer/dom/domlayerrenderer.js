@@ -1,6 +1,5 @@
 goog.provide('ol.renderer.dom.Layer');
 
-goog.require('ol.Coordinate');
 goog.require('ol.layer.Layer');
 goog.require('ol.renderer.Layer');
 

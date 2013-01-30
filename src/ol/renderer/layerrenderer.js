@@ -8,6 +8,7 @@ goog.require('ol.TileRange');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.LayerProperty');
 goog.require('ol.layer.LayerState');
+goog.require('ol.source.Source');
 goog.require('ol.source.TileSource');
 
 

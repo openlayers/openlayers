@@ -1,5 +1,6 @@
 goog.provide('ol.renderer.canvas.Layer');
 
+goog.require('ol.layer.Layer');
 goog.require('ol.renderer.Layer');
 
 
