@@ -116,7 +116,7 @@ ol.Kinetic.prototype.createPanFrom = function(source) {
   var decay = this.decay_;
   var initialVelocity = this.initialVelocity_;
   var minVelocity = this.minVelocity_;
-  var duration = this.getDuration();
+  var duration = this.getDuration_();
   var easingFunction = function(t) {
     return initialVelocity * (Math.exp((decay * t) * duration) - 1) /
         (minVelocity - initialVelocity);
@@ -130,9 +130,10 @@ ol.Kinetic.prototype.createPanFrom = function(source) {
 
 
 /**
+ * @private
  * @return {number} Duration of animation (milliseconds).
  */
-ol.Kinetic.prototype.getDuration = function() {
+ol.Kinetic.prototype.getDuration_ = function() {
   return Math.log(this.minVelocity_ / this.initialVelocity_) / this.decay_;
 };
 
