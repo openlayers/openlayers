@@ -8,8 +8,12 @@ goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.object');
 goog.require('goog.style');
+goog.require('ol.Attribution');
+goog.require('ol.MapEvent');
 goog.require('ol.MapEventType');
+goog.require('ol.TileRange');
 goog.require('ol.control.Control');
+goog.require('ol.source.TileSource');
 
 
 

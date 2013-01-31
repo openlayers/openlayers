@@ -3,8 +3,6 @@ goog.provide('ol.ViewHint');
 
 goog.require('goog.array');
 goog.require('ol.IView');
-goog.require('ol.IView2D');
-goog.require('ol.IView3D');
 goog.require('ol.Object');
 
 

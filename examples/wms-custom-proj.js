@@ -1,12 +1,16 @@
 goog.require('goog.debug.Console');
 goog.require('goog.debug.Logger');
 goog.require('goog.debug.Logger.Level');
+goog.require('ol.Attribution');
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
+goog.require('ol.Extent');
 goog.require('ol.Map');
 goog.require('ol.Projection');
+goog.require('ol.ProjectionUnits');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
+goog.require('ol.layer.TileLayer');
 goog.require('ol.source.TiledWMS');
 
 

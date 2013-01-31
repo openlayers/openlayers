@@ -1,3 +1,5 @@
+goog.provide('ol.test.Rectangle');
+
 describe('ol.Rectangle', function() {
 
   describe('getCenter', function() {

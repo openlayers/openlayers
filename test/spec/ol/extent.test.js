@@ -1,3 +1,5 @@
+goog.provide('ol.test.Extent');
+
 describe('ol.Extent', function() {
 
   describe('contains', function() {

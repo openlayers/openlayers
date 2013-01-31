@@ -1,8 +1,8 @@
 
 goog.provide('ol.Kinetic');
 
-goog.require('goog.array');
-goog.require('ol.Pixel');
+goog.require('ol.Coordinate');
+goog.require('ol.PreRenderFunction');
 goog.require('ol.animation');
 
 

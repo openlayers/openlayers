@@ -9,7 +9,6 @@ goog.provide('ol.CollectionEvent');
 goog.provide('ol.CollectionEventType');
 
 goog.require('goog.array');
-goog.require('goog.asserts');
 goog.require('goog.events.Event');
 goog.require('ol.Object');
 

@@ -2,7 +2,6 @@ goog.provide('ol.IView2D');
 goog.provide('ol.View2DState');
 
 goog.require('ol.Coordinate');
-goog.require('ol.Extent');
 goog.require('ol.Projection');
 
 

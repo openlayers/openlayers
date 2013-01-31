@@ -5,17 +5,16 @@ goog.provide('ol.renderer.dom.TileLayer');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.math.Vec2');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
-goog.require('ol.Size');
+goog.require('ol.Tile');
 goog.require('ol.TileCoord');
-goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
+goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.dom.Layer');
 goog.require('ol.tilegrid.TileGrid');
 
