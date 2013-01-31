@@ -1,4 +1,4 @@
-goog.require('ol.View2D');
+goog.provide('ol.test.View2D');
 
 describe('ol.View2D', function() {
   describe('create constraints', function() {
@@ -51,3 +51,5 @@ describe('ol.View2D', function() {
     });
   });
 });
+
+goog.require('ol.View2D');

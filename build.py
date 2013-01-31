@@ -122,17 +122,26 @@ def build_src_external_src_types_js(t):
     t.output('%(PYTHON)s', 'bin/generate-exports.py', '--typedef', 'src/objectliterals.exports')
 
 
-@target('build/src/internal/src/requireall.js', SRC)
-def build_src_internal_src_requireall_js(t):
-    requires = set(('goog.dom',))
-    for dependency in t.dependencies:
+def _build_require_list(dependencies, output_file_name):
+    requires = set()
+    for dependency in dependencies:
         for line in open(dependency):
             match = re.match(r'goog\.provide\(\'(.*)\'\);', line)
             if match:
                 requires.add(match.group(1))
-    with open(t.name, 'w') as f:
+    with open(output_file_name, 'w') as f:
         for require in sorted(requires):
             f.write('goog.require(\'%s\');\n' % (require,))
+
+
+@target('build/src/internal/src/requireall.js', SRC)
+def build_src_internal_src_requireall_js(t):
+    _build_require_list(t.dependencies, t.name)
+
+
+@target('test/requireall.js', SPEC)
+def build_test_requireall_js(t):
+    _build_require_list(t.dependencies, t.name)
 
 
 @target('build/src/internal/src/types.js', 'bin/generate-exports.py', 'src/objectliterals.exports')
@@ -177,9 +186,9 @@ def examples_star_combined_js(name, match):
     return Target(name, action=action, dependencies=dependencies)
 
 
-@target('serve', PLOVR_JAR, INTERNAL_SRC, 'examples')
+@target('serve', PLOVR_JAR, INTERNAL_SRC, 'test/requireall.js', 'examples')
 def serve(t):
-    t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', glob.glob('build/*.json'), glob.glob('examples/*.json'))
+    t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', glob.glob('build/*.json'), glob.glob('examples/*.json'), glob.glob('test/*.json'))
 
 
 @target('serve-precommit', PLOVR_JAR, INTERNAL_SRC)
@@ -312,9 +321,10 @@ def hostexamples(t):
     t.cp('examples/example-list.js', 'examples/example-list.xml', 'examples/Jugl.js', 'build/gh-pages/%(BRANCH)s/examples/')
 
 
-@target('test', INTERNAL_SRC, phony=True)
+@target('test', INTERNAL_SRC, 'test/requireall.js', phony=True)
 def test(t):
     t.run('%(PHANTOMJS)s', 'test/phantom-jasmine/run_jasmine_test.coffee', 'test/ol.html')
+
 
 @target('fixme', phony=True)
 def find_fixme(t):

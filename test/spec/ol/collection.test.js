@@ -1,3 +1,5 @@
+goog.provide('ol.test.Collection');
+
 describe('ol.collection', function() {
   var collection;
 
