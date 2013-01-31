@@ -13,3 +13,4 @@
 /examples/*.combined.js
 /examples/example-list.js
 /examples/example-list.xml
+/test/requireall.js

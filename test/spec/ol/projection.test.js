@@ -1,3 +1,5 @@
+goog.provide('ol.test.Projection');
+
 describe('ol.Projection', function() {
 
   describe('projection equivalence', function() {

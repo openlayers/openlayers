@@ -1,3 +1,5 @@
+goog.provide('ol.test.TileCoord');
+
 describe('ol.TileCoord', function() {
 
   describe('create', function() {

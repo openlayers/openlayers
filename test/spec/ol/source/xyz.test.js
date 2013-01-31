@@ -1,3 +1,5 @@
+goog.provide('ol.test.source.XYZ');
+
 describe('ol.source.XYZ', function() {
 
   describe('getTileCoordUrl', function() {
