@@ -7,6 +7,7 @@ goog.require('goog.asserts');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.PixelBounds');
+goog.require('ol.Projection');
 goog.require('ol.Size');
 goog.require('ol.TileCoord');
 goog.require('ol.TileRange');

@@ -1,5 +1,7 @@
 goog.provide('ol.Attribution');
 
+goog.require('ol.TileRange');
+
 
 
 /**

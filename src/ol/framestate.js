@@ -7,12 +7,12 @@ goog.provide('ol.PreRenderFunction');
 
 goog.require('goog.vec.Mat4');
 goog.require('ol.Color');
-goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.Size');
 goog.require('ol.TileQueue');
 goog.require('ol.TileRange');
 goog.require('ol.View2DState');
+goog.require('ol.layer.Layer');
 goog.require('ol.layer.LayerState');
 
 

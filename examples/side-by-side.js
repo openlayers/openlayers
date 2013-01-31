@@ -1,12 +1,15 @@
 goog.require('goog.debug.Console');
 goog.require('goog.debug.Logger');
 goog.require('goog.debug.Logger.Level');
+goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
+goog.require('ol.Projection');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.animation');
 goog.require('ol.control.MousePosition');
+goog.require('ol.easing');
 goog.require('ol.interaction.Keyboard');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.source.MapQuestOpenAerial');

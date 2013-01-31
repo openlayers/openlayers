@@ -1,6 +1,5 @@
 goog.provide('ol.TileCache');
 
-goog.require('goog.dispose');
 goog.require('ol.Tile');
 goog.require('ol.TileRange');
 goog.require('ol.structs.LinkedMap');

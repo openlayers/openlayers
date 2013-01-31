@@ -1,5 +1,6 @@
 goog.provide('ol.source.OpenStreetMap');
 
+goog.require('ol.Attribution');
 goog.require('ol.source.XYZ');
 
 
