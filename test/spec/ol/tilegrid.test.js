@@ -1,3 +1,5 @@
+goog.provide('ol.test.TileGrid');
+
 describe('ol.tilegrid.TileGrid', function() {
   var extent;
   var resolutions;

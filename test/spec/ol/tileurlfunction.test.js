@@ -1,5 +1,4 @@
-goog.require('ol.TileUrlFunction');
-goog.require('ol.tilegrid.XYZ');
+goog.provide('ol.test.TileUrlFunction');
 
 describe('ol.TileUrlFunction', function() {
 
@@ -51,7 +50,7 @@ describe('ol.TileUrlFunction', function() {
 
   describe('createFromTileUrlFunctions', function() {
     it('creates expected URL', function() {
-      tileUrl = ol.TileUrlFunction.createFromTileUrlFunctions([
+      var tileUrl = ol.TileUrlFunction.createFromTileUrlFunctions([
           ol.TileUrlFunction.createFromTemplate('a'),
           ol.TileUrlFunction.createFromTemplate('b')
       ]);
@@ -83,3 +82,4 @@ describe('ol.TileUrlFunction', function() {
 
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
+goog.require('ol.tilegrid.XYZ');

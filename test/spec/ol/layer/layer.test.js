@@ -1,3 +1,5 @@
+goog.provide('ol.test.layer.Layer');
+
 describe('ol.layer.Layer', function() {
 
   describe('constructor (defaults)', function() {

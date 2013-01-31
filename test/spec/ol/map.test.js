@@ -1,12 +1,5 @@
-goog.require('goog.async.AnimationDelay');
-goog.require('goog.dom');
-goog.require('ol.Collection');
-goog.require('ol.Coordinate');
-goog.require('ol.Map');
-goog.require('ol.RendererHint');
-goog.require('ol.View2D');
-goog.require('ol.layer.TileLayer');
-goog.require('ol.source.XYZ');
+goog.provide('ol.test.Map');
+goog.provide('ol.test.RendererHints');
 
 describe('ol.RendererHints', function() {
 
@@ -241,3 +234,13 @@ describe('ol.Map', function() {
   });
 
 });
+
+goog.require('goog.async.AnimationDelay');
+goog.require('goog.dom');
+goog.require('ol.Collection');
+goog.require('ol.Coordinate');
+goog.require('ol.Map');
+goog.require('ol.RendererHint');
+goog.require('ol.View2D');
+goog.require('ol.layer.TileLayer');
+goog.require('ol.source.XYZ');
