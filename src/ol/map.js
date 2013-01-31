@@ -664,6 +664,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
     var view2DState = view2D.getView2DState();
     frameState = {
       animate: false,
+      attributions: {},
       backgroundColor: goog.isDef(backgroundColor) ?
           backgroundColor : new ol.Color(255, 255, 255, 1),
       coordinateToPixelMatrix: this.coordinateToPixelMatrix_,

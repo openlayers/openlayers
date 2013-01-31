@@ -198,6 +198,8 @@ ol.renderer.webgl.ImageLayer.prototype.renderFrame =
 
     this.image_ = image;
     this.texture_ = texture;
+
+    this.updateAttributions(frameState.attributions, image.getAttributions());
   }
 };
 

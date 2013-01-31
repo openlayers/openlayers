@@ -2,6 +2,7 @@ goog.provide('ol.renderer.Layer');
 
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('ol.Attribution');
 goog.require('ol.FrameState');
 goog.require('ol.Image');
 goog.require('ol.ImageState');
@@ -197,6 +198,23 @@ ol.renderer.Layer.prototype.scheduleExpireCache =
           var tileSourceKey = goog.getUid(tileSource).toString();
           tileSource.expireCache(frameState.usedTiles[tileSourceKey]);
         }, tileSource));
+  }
+};
+
+
+/**
+ * @protected
+ * @param {Object.<string, ol.Attribution>} attributionsSet Attributions
+ *     set (target).
+ * @param {Array.<ol.Attribution>} attributions Attributions (source).
+ */
+ol.renderer.Layer.prototype.updateAttributions =
+    function(attributionsSet, attributions) {
+  var i;
+  var attribution;
+  for (i = 0; i < attributions.length; ++i) {
+    attribution = attributions[i];
+    attributionsSet[goog.getUid(attribution).toString()] = attribution;
   }
 };
 

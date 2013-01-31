@@ -84,7 +84,8 @@ ol.source.ImageSource.prototype.createImage =
   var imageUrl = this.imageUrlFunction(extent, size);
   if (goog.isDef(imageUrl)) {
     image = new ol.Image(
-        extent, resolution, imageUrl, this.crossOrigin_);
+        extent, resolution, imageUrl, this.crossOrigin_,
+        this.getAttributions());
   }
   return image;
 };
