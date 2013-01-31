@@ -47,7 +47,8 @@ describe('ol.source.XYZ', function() {
 
     describe('wrap x', function() {
       it('returns the expected URL', function() {
-        tileUrl = xyzTileSource.getTileCoordUrl(new ol.TileCoord(6, -31, -23));
+        var tileUrl = xyzTileSource.getTileCoordUrl(
+            new ol.TileCoord(6, -31, -23));
         expect(tileUrl).toEqual('6/33/22');
 
         tileUrl = xyzTileSource.getTileCoordUrl(new ol.TileCoord(6, 33, -23));
@@ -60,7 +61,8 @@ describe('ol.source.XYZ', function() {
 
     describe('crop y', function() {
       it('returns the expected URL', function() {
-        tileUrl = xyzTileSource.getTileCoordUrl(new ol.TileCoord(6, 33, -87));
+        var tileUrl = xyzTileSource.getTileCoordUrl(
+            new ol.TileCoord(6, 33, -87));
         expect(tileUrl).toBeUndefined();
 
         tileUrl = xyzTileSource.getTileCoordUrl(new ol.TileCoord(6, 33, -23));
