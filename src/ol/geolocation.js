@@ -13,7 +13,8 @@ goog.require('ol.Projection');
  */
 ol.GeolocationProperty = {
   ACCURACY: 'accuracy',
-  POSITION: 'position'
+  POSITION: 'position',
+  PROJECTION: 'projection'
 };
 
 
@@ -21,15 +22,14 @@ ol.GeolocationProperty = {
 /**
  * @constructor
  * @extends {ol.Object}
- * @param {ol.Projection} projection Projection.
  * @param {GeolocationPositionOptions=} opt_positionOptions PositionOptions.
  */
-ol.Geolocation = function(projection, opt_positionOptions) {
+ol.Geolocation = function(opt_positionOptions) {
 
   goog.base(this);
 
-  this.transformCoords_ = ol.Projection.getTransform(
-      ol.Projection.getFromCode('EPSG:4326'), projection);
+  // set the default projection
+  this.setProjection(ol.Projection.getFromCode('EPSG:4326'));
 
   /**
    * @private
@@ -98,3 +98,37 @@ goog.exportProperty(
     ol.Geolocation.prototype,
     'getAccuracy',
     ol.Geolocation.prototype.getAccuracy);
+
+
+/**
+ * @return {ol.Projection} projection.
+ */
+ol.Geolocation.prototype.getProjection = function() {
+  return /** @type {ol.Projection} */ (
+      this.get(ol.GeolocationProperty.PROJECTION));
+};
+goog.exportProperty(
+    ol.Geolocation.prototype,
+    'getProjection',
+    ol.Geolocation.prototype.getProjection);
+
+
+/**
+ * @param {ol.Projection} projection Projection.
+ */
+ol.Geolocation.prototype.setProjection = function(projection) {
+  this.set(ol.GeolocationProperty.PROJECTION, projection);
+
+  this.transformCoords_ = ol.Projection.getTransform(
+      ol.Projection.getFromCode('EPSG:4326'), projection);
+};
+goog.exportProperty(
+    ol.Geolocation.prototype,
+    'setProjection',
+    ol.Geolocation.prototype.setProjection);
+
+
+/**
+ * @private
+ */
+ol.Geolocation.prototype.transformCoords_ = goog.functions.identity;
