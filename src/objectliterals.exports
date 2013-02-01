@@ -1,5 +1,5 @@
 @exportObjectLiteral ol.MapOptions
-@exportObjectLiteralProperty ol.MapOptions.controls ol.Collection|undefined
+@exportObjectLiteralProperty ol.MapOptions.attributionControl boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.doubleClickZoom boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.dragPan boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.interactions ol.Collection|undefined
@@ -13,6 +13,7 @@
 @exportObjectLiteralProperty ol.MapOptions.shiftDragZoom boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.target Element|string
 @exportObjectLiteralProperty ol.MapOptions.view ol.IView|undefined
+@exportObjectLiteralProperty ol.MapOptions.zoomControl boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.zoomDelta number|undefined
 
 @exportObjectLiteral ol.View2DOptions

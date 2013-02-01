@@ -42,12 +42,13 @@ var domMap = new ol.Map({
   view: view
 });
 
-domMap.getControls().push(new ol.control.MousePosition({
+var domMousePosition = new ol.control.MousePosition({
   coordinateFormat: ol.Coordinate.toStringHDMS,
   projection: ol.Projection.getFromCode('EPSG:4326'),
   target: document.getElementById('domMousePosition'),
   undefinedHTML: '&nbsp;'
-}));
+});
+domMousePosition.setMap(domMap);
 
 var webglMap = new ol.Map({
   renderer: ol.RendererHint.WEBGL,
@@ -58,12 +59,13 @@ if (webglMap !== null) {
   webglMap.bindTo('view', domMap);
 }
 
-webglMap.getControls().push(new ol.control.MousePosition({
+var webglMousePosition = new ol.control.MousePosition({
   coordinateFormat: ol.Coordinate.toStringHDMS,
   projection: ol.Projection.getFromCode('EPSG:4326'),
   target: document.getElementById('webglMousePosition'),
   undefinedHTML: '&nbsp;'
-}));
+});
+webglMousePosition.setMap(webglMap);
 
 var canvasMap = new ol.Map({
   renderer: ol.RendererHint.CANVAS,
@@ -74,12 +76,13 @@ if (canvasMap !== null) {
   canvasMap.bindTo('view', domMap);
 }
 
-canvasMap.getControls().push(new ol.control.MousePosition({
+var canvasMousePosition = new ol.control.MousePosition({
   coordinateFormat: ol.Coordinate.toStringHDMS,
   projection: ol.Projection.getFromCode('EPSG:4326'),
   target: document.getElementById('canvasMousePosition'),
   undefinedHtml: '&nbsp;'
-}));
+});
+canvasMousePosition.setMap(canvasMap);
 
 var keyboardInteraction = new ol.interaction.Keyboard();
 keyboardInteraction.addCallback('0', function() {
