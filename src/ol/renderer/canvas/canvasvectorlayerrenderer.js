@@ -309,9 +309,9 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   for (key in tilesToRender) {
     tile = this.tileCache_[key];
     tileCoord = tilesToRender[key];
-    // LRU - move tile key to the beginning of the index
+    // LRU - move tile key to the end of the index
     goog.array.remove(this.tileCacheIndex_, key);
-    this.tileCacheIndex_.unshift(key);
+    this.tileCacheIndex_.push(key);
     if (tile === undefined) {
       tile = /** @type {HTMLCanvasElement} */
           this.tileArchetype_.cloneNode(false);
@@ -322,7 +322,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       // manage cache
       if (this.tileCacheIndex_.length >=
           ol.renderer.canvas.VectorLayer.TILECACHE_SIZE) {
-        delete this.tileCache_[this.tileCacheIndex_.pop()];
+        delete this.tileCache_[this.tileCacheIndex_.shift()];
       }
     }
     finalContext.drawImage(tile,
