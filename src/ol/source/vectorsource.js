@@ -1,10 +1,12 @@
 goog.provide('ol.source.Vector');
 
 goog.require('ol.Feature');
-goog.require('ol.filter.Filter');
+goog.require('ol.filter.Extent');
 goog.require('ol.filter.Geometry');
+goog.require('ol.filter.Logical');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.source.Source');
+goog.require('ol.structs.RTree');
 
 
 
@@ -19,12 +21,17 @@ ol.source.FeatureCache = function() {
    */
   this.idLookup_;
 
-
   /**
    * @type {Object.<ol.Feature>}
    * @private
    */
   this.geometryTypeIndex_;
+
+  /**
+   * @type {ol.structs.RTree}
+   * @private
+   */
+  this.rTree_;
 
   this.clear();
 
@@ -42,6 +49,8 @@ ol.source.FeatureCache.prototype.clear = function() {
     geometryTypeIndex[ol.geom.GeometryType[key]] = {};
   }
   this.geometryTypeIndex_ = geometryTypeIndex;
+
+  this.rTree_ = new ol.structs.RTree();
 };
 
 
@@ -55,17 +64,51 @@ ol.source.FeatureCache.prototype.add = function(feature) {
 
   this.idLookup_[id] = feature;
 
-  // index by geometry type
+  // index by geometry type and bounding box
   if (!goog.isNull(geometry)) {
     this.geometryTypeIndex_[geometry.getType()][id] = feature;
+    this.rTree_.put(geometry.getBounds(), feature);
   }
+};
 
-  /**
-   * TODO: Index by tile coord.  To do this for real requires knowledge about
-   * the evaluated symbolizer literal for each feature.  Initially, a pixel
-   * buffer could be provided.
-   */
 
+/**
+ * @param {ol.filter.Filter=} opt_filter Optional filter.
+ * @return {Object.<string, ol.Feature>} Object of features, keyed by id.
+ * @private
+ */
+ol.source.FeatureCache.prototype.getFeaturesObject_ = function(opt_filter) {
+  var features;
+  if (!goog.isDef(opt_filter)) {
+    features = this.idLookup_;
+  } else {
+    if (opt_filter instanceof ol.filter.Logical) {
+      features = {};
+      var filters = opt_filter.getFilters(),
+          filterFeatures, key, or;
+      for (var i = filters.length - 1; i >= 0; --i) {
+        filterFeatures = this.getFeaturesObject_(filters[i]);
+        goog.object.extend(features, filterFeatures);
+        if (opt_filter.operator === ol.filter.LogicalOperator.AND) {
+          or = features;
+          features = {};
+          for (key in or) {
+            if (filterFeatures[key]) {
+              features[key] = or[key];
+            }
+          }
+        }
+      }
+    } else if (opt_filter instanceof ol.filter.Geometry) {
+      features = this.geometryTypeIndex_[opt_filter.getType()];
+    } else if (opt_filter instanceof ol.filter.Extent) {
+      features = this.rTree_.find(opt_filter.getExtent());
+    } else {
+      // TODO: support other filter types
+      throw new Error('Filter type not supported: ' + opt_filter);
+    }
+  }
+  return features;
 };
 
 
@@ -74,22 +117,7 @@ ol.source.FeatureCache.prototype.add = function(feature) {
  * @return {Array.<ol.Feature>} Array of features.
  */
 ol.source.FeatureCache.prototype.getFeatures = function(opt_filter) {
-  var features;
-  if (!goog.isDef(opt_filter)) {
-    features = new Array();
-    for (var id in this.idLookup_) {
-      features.push(this.idLookup_[id]);
-    }
-  } else {
-    if (opt_filter instanceof ol.filter.Geometry) {
-      features = this.getFeaturesByGeometryType_(
-          /** @type {ol.filter.Geometry} */ (opt_filter));
-    } else {
-      // TODO: support other filter types
-      throw new Error('Filter type not supported: ' + opt_filter);
-    }
-  }
-  return features;
+  return goog.object.getValues(this.getFeaturesObject_(opt_filter));
 };
 
 
