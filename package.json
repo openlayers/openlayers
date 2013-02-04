@@ -1,0 +1,20 @@
+{
+  "name": "openlayers",
+  "version": "3.0.0beta",
+  "description": "Mapping library",
+  "homepage": "http://openlayers.org",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/openlayers/ol3.git"
+  },
+  "bugs": "https://github.com/openlayers/ol3/issues",
+  "devDependencies": {
+    "testacular": ">= 0.4.0"
+  },
+  "scripts": {
+    "install": "./build.py",
+    "test": "./node_modules/.bin/testacular --single-run=true start test/testacular.conf.js",
+    "test-forever": "./node_modules/.bin/testacular start test/testacular.conf.js",
+    "start": "./build.py serve"
+  }
+}

@@ -1,3 +1,4 @@
+/node_modules/
 *.pyc
 /build
 /examples/*.html.png
