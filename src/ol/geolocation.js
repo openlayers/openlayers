@@ -3,6 +3,7 @@
 goog.provide('ol.Geolocation');
 goog.provide('ol.GeolocationProperty');
 
+goog.require('goog.functions');
 goog.require('ol.Coordinate');
 goog.require('ol.Object');
 goog.require('ol.Projection');
@@ -28,8 +29,16 @@ ol.Geolocation = function(opt_positionOptions) {
 
   goog.base(this);
 
-  // set the default projection
-  this.setProjection(ol.Projection.getFromCode('EPSG:4326'));
+  /**
+   * The unprojected (EPSG:4326) device position.
+   * @private
+   * @type {ol.Coordinate}
+   */
+  this.position_ = null;
+
+  goog.events.listen(
+      this, ol.Object.getChangedEventType(ol.GeolocationProperty.PROJECTION),
+      this.handleProjectionChanged, false, this);
 
   /**
    * @private
@@ -53,13 +62,27 @@ ol.Geolocation.prototype.disposeInternal = function() {
 
 
 /**
+ * @protected
+ */
+ol.Geolocation.prototype.handleProjectionChanged = function() {
+  this.transformCoords_ = ol.Projection.getTransform(
+      ol.Projection.getFromCode('EPSG:4326'), this.getProjection());
+  if (!goog.isNull(this.position_)) {
+    this.set(ol.GeolocationProperty.POSITION,
+        this.transformCoords_(this.position_));
+  }
+};
+
+
+/**
  * @private
  * @param {GeolocationPosition} position position event.
  */
 ol.Geolocation.prototype.positionChange_ = function(position) {
   var coords = position.coords;
-  var coord = new ol.Coordinate(coords.longitude, coords.latitude);
-  this.set(ol.GeolocationProperty.POSITION, this.transformCoords_(coord));
+  this.position_ = new ol.Coordinate(coords.longitude, coords.latitude);
+  this.set(ol.GeolocationProperty.POSITION,
+      this.transformCoords_(this.position_));
   this.set(ol.GeolocationProperty.ACCURACY, coords.accuracy);
 };
 
@@ -118,9 +141,6 @@ goog.exportProperty(
  */
 ol.Geolocation.prototype.setProjection = function(projection) {
   this.set(ol.GeolocationProperty.PROJECTION, projection);
-
-  this.transformCoords_ = ol.Projection.getTransform(
-      ol.Projection.getFromCode('EPSG:4326'), projection);
 };
 goog.exportProperty(
     ol.Geolocation.prototype,
@@ -130,5 +150,7 @@ goog.exportProperty(
 
 /**
  * @private
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @return {ol.Coordinate} Coordinate.
  */
 ol.Geolocation.prototype.transformCoords_ = goog.functions.identity;
