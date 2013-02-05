@@ -348,5 +348,16 @@ def find_fixme(t):
         print
     print "A total number of", totalcount, "TODO/FIXME was found"
 
+@target('reallyclean')
+def reallyclean(t):
+    """Removes untracked files and folders from previous builds."""
+    # -X => only clean up files that are usually ignored e.g.
+    #       through .gitignore
+    # -d => also consider directories for deletion
+    # -f => if git configuration variable clean.requireForce != false,
+    #       git clean will refuse to run unless given -f or -n.
+    t.run('%(GIT)s', 'clean', '-X', '-d', '-f', '.')
+
+
 if __name__ == '__main__':
     main()
