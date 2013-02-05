@@ -9,7 +9,7 @@
   },
   "bugs": "https://github.com/openlayers/ol3/issues",
   "devDependencies": {
-    "testacular": ">= 0.4.0"
+    "testacular": ">= 0.5.2"
   },
   "scripts": {
     "install": "./build.py",
