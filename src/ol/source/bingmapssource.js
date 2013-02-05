@@ -3,10 +3,14 @@ goog.provide('ol.source.BingMaps');
 
 goog.require('goog.Uri');
 goog.require('goog.array');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
 goog.require('goog.net.Jsonp');
+goog.require('ol.Attribution');
+goog.require('ol.Extent');
+goog.require('ol.Projection');
+goog.require('ol.Size');
+goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
+goog.require('ol.TileUrlFunction');
 goog.require('ol.source.ImageTileSource');
 goog.require('ol.tilegrid.XYZ');
 

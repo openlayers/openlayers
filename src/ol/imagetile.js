@@ -2,7 +2,6 @@ goog.provide('ol.ImageTile');
 
 goog.require('goog.array');
 goog.require('goog.events');
-goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('ol.Tile');
 goog.require('ol.TileCoord');

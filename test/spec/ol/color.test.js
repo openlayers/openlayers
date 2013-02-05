@@ -1,3 +1,5 @@
+goog.provide('ol.test.Color');
+
 describe('ol.Color', function() {
 
   describe('constructor', function() {

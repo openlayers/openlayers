@@ -5,16 +5,15 @@ goog.provide('ol.renderer.webgl.map.shader');
 
 goog.require('goog.array');
 goog.require('goog.debug.Logger');
-goog.require('goog.dispose');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.Event');
-goog.require('goog.events.EventType');
 goog.require('goog.style');
 goog.require('goog.webgl');
+goog.require('ol.FrameState');
+goog.require('ol.Size');
 goog.require('ol.Tile');
-goog.require('ol.layer.Layer');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.webgl.FragmentShader');

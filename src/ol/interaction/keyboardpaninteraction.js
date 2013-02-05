@@ -4,6 +4,7 @@ goog.provide('ol.interaction.KeyboardPan');
 
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler.EventType');
+goog.require('ol.Coordinate');
 goog.require('ol.View2D');
 goog.require('ol.interaction.Interaction');
 

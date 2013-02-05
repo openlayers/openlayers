@@ -1,6 +1,7 @@
 *.pyc
 /bin/plovr*.jar
 /build/gh-pages
+/build/check-requires-timestamp
 /build/jsdoc-*-timestamp
 /build/lint-spec-timestamp
 /build/lint-src-timestamp
@@ -12,3 +13,4 @@
 /examples/*.combined.js
 /examples/example-list.js
 /examples/example-list.xml
+/test/requireall.js

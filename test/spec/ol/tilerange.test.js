@@ -1,3 +1,5 @@
+goog.provide('ol.test.TileRange');
+
 describe('ol.TileRange', function() {
 
   describe('contains', function() {

@@ -6,10 +6,11 @@ goog.provide('ol.renderer.canvas.TileLayer');
 
 goog.require('goog.array');
 goog.require('goog.dom');
-goog.require('goog.style');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Size');
-goog.require('ol.TileRange');
+goog.require('ol.Tile');
+goog.require('ol.TileCoord');
+goog.require('ol.TileState');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Layer');

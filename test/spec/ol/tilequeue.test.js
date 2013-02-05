@@ -1,3 +1,5 @@
+goog.provide('ol.test.TileQueue');
+
 describe('ol.TileQueue', function() {
 
   // is the tile queue's array a heap?

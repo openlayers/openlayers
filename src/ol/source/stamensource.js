@@ -4,6 +4,7 @@ goog.provide('ol.source.Stamen');
 goog.provide('ol.source.StamenFlavor');
 goog.provide('ol.source.StamenProvider');
 
+goog.require('ol.Attribution');
 goog.require('ol.source.XYZ');
 
 

@@ -5,12 +5,14 @@ goog.provide('ol.View2D');
 goog.provide('ol.View2DProperty');
 
 goog.require('ol.Constraints');
+goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.IView2D');
 goog.require('ol.IView3D');
 goog.require('ol.Projection');
 goog.require('ol.ResolutionConstraint');
 goog.require('ol.RotationConstraint');
+goog.require('ol.Size');
 goog.require('ol.View');
 goog.require('ol.animation');
 

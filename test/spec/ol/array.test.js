@@ -1,3 +1,5 @@
+goog.provide('ol.test.array');
+
 describe('ol.array', function() {
 
   describe('binaryFindNearest', function() {

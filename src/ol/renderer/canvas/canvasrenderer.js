@@ -1,4 +1,5 @@
 goog.provide('ol.renderer.canvas');
+goog.provide('ol.renderer.canvas.isSupported');
 goog.provide('ol.renderer.canvas.Renderer');
 
 goog.require('goog.asserts');

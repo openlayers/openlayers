@@ -5,6 +5,10 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.style');
+goog.require('ol.Coordinate');
+goog.require('ol.MapBrowserEvent');
+goog.require('ol.MapBrowserEvent.EventType');
+goog.require('ol.Pixel');
 goog.require('ol.Size');
 goog.require('ol.control.Control');
 
