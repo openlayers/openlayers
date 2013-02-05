@@ -1,6 +1,6 @@
 // FIXME add some error checking
 // FIXME check order of async callbacks
-// FIXME use minzoom when supported by ol.tilegrid.TileGrid
+// FIXME use minzoom when supported
 
 /**
  * @see http://mapbox.com/developers/api/
@@ -10,10 +10,12 @@ goog.provide('ol.source.TileJSON');
 goog.provide('ol.tilejson');
 
 goog.require('goog.asserts');
-goog.require('goog.events.EventType');
 goog.require('goog.net.jsloader');
-goog.require('goog.string');
+goog.require('ol.Attribution');
+goog.require('ol.Extent');
 goog.require('ol.Projection');
+goog.require('ol.TileCoord');
+goog.require('ol.TileRange');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.source.ImageTileSource');
 goog.require('ol.tilegrid.XYZ');

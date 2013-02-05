@@ -1,3 +1,5 @@
+goog.provide('ol.test.Object');
+
 describe('ol.Object', function() {
 
   var o;

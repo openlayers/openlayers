@@ -122,17 +122,26 @@ def build_src_external_src_types_js(t):
     t.output('%(PYTHON)s', 'bin/generate-exports.py', '--typedef', 'src/objectliterals.exports')
 
 
-@target('build/src/internal/src/requireall.js', SRC)
-def build_src_internal_src_requireall_js(t):
-    requires = set(('goog.dom',))
-    for dependency in t.dependencies:
+def _build_require_list(dependencies, output_file_name):
+    requires = set()
+    for dependency in dependencies:
         for line in open(dependency):
             match = re.match(r'goog\.provide\(\'(.*)\'\);', line)
             if match:
                 requires.add(match.group(1))
-    with open(t.name, 'w') as f:
+    with open(output_file_name, 'w') as f:
         for require in sorted(requires):
             f.write('goog.require(\'%s\');\n' % (require,))
+
+
+@target('build/src/internal/src/requireall.js', SRC)
+def build_src_internal_src_requireall_js(t):
+    _build_require_list(t.dependencies, t.name)
+
+
+@target('test/requireall.js', SPEC)
+def build_test_requireall_js(t):
+    _build_require_list(t.dependencies, t.name)
 
 
 @target('build/src/internal/src/types.js', 'bin/generate-exports.py', 'src/objectliterals.exports')
@@ -177,9 +186,9 @@ def examples_star_combined_js(name, match):
     return Target(name, action=action, dependencies=dependencies)
 
 
-@target('serve', PLOVR_JAR, INTERNAL_SRC, 'examples')
+@target('serve', PLOVR_JAR, INTERNAL_SRC, 'test/requireall.js', 'examples')
 def serve(t):
-    t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', glob.glob('build/*.json'), glob.glob('examples/*.json'))
+    t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', glob.glob('build/*.json'), glob.glob('examples/*.json'), glob.glob('test/*.json'))
 
 
 @target('serve-precommit', PLOVR_JAR, INTERNAL_SRC)
@@ -187,7 +196,7 @@ def serve_precommit(t):
     t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'build/ol-all.json')
 
 
-virtual('lint', 'build/lint-src-timestamp', 'build/lint-spec-timestamp')
+virtual('lint', 'build/lint-src-timestamp', 'build/lint-spec-timestamp', 'build/check-requires-timestamp')
 
 
 @target('build/lint-src-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC)
@@ -196,6 +205,72 @@ def build_lint_src_timestamp(t):
                          for path in ifind('externs', 'build/src/external/externs')
                          if path.endswith('.js')]
     t.run('%(GJSLINT)s', '--strict', '--limited_doc_files=%s' % (','.join(limited_doc_files),), t.newer(SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC))
+    t.touch()
+
+
+@target('build/check-requires-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC)
+def build_check_requires_timestamp(t):
+    unused_count = 0
+    all_provides = set()
+    for filename in sorted(t.dependencies):
+        if filename == 'build/src/internal/src/requireall.js':
+            continue
+        require_linenos = {}
+        uses = set()
+        lineno = 0
+        for line in open(filename):
+            lineno += 1
+            m = re.match(r'goog.provide\(\'(.*)\'\);', line)
+            if m:
+                all_provides.add(m.group(1))
+                continue
+            m = re.match(r'goog.require\(\'(.*)\'\);', line)
+            if m:
+                require_linenos[m.group(1)] = lineno
+                continue
+            for require in require_linenos.iterkeys():
+                if require in line:
+                    uses.add(require)
+        for require in sorted(set(require_linenos.keys()) - uses):
+            t.info('%s:%d: unused goog.require: %r' % (filename, require_linenos[require], require))
+            unused_count += 1
+    all_provides.discard('ol')
+    all_provides.discard('ol.Map')
+    all_provides.discard('ol.MapProperty')
+    provide_res = dict((provide, re.compile(r'\b%s\b' % (re.escape(provide)),)) for provide in all_provides)
+    missing_count = 0
+    for filename in sorted(t.dependencies):
+        if filename in INTERNAL_SRC or filename in EXTERNAL_SRC:
+            continue
+        provides = set()
+        requires = set()
+        uses = set()
+        lineno = 0
+        for line in open(filename):
+            lineno += 1
+            m = re.match(r'goog.provide\(\'(.*)\'\);', line)
+            if m:
+                provides.add(m.group(1))
+                continue
+            m = re.match(r'goog.require\(\'(.*)\'\);', line)
+            if m:
+                requires.add(m.group(1))
+                continue
+            for provide, provide_re in provide_res.iteritems():
+                if provide_re.search(line):
+                    uses.add(provide)
+        if filename == 'src/ol/renderer/layerrenderer.js':
+            uses.discard('ol.renderer.Map')
+        m = re.match(r'src/ol/renderer/(\w+)/\1(\w*)layerrenderer\.js\Z', filename)
+        if m:
+            uses.discard('ol.renderer.Map')
+            uses.discard('ol.renderer.%s.Map' % (m.group(1),))
+        missing_requires = uses - requires - provides
+        if missing_requires:
+            t.info('%s: missing goog.requires: %s', filename, ', '.join(sorted(missing_requires)))
+            missing_count += len(missing_requires)
+    if unused_count or missing_count:
+        t.error('%d unused goog.requires, %d missing goog.requires' % (unused_count, missing_count))
     t.touch()
 
 
@@ -246,9 +321,10 @@ def hostexamples(t):
     t.cp('examples/example-list.js', 'examples/example-list.xml', 'examples/Jugl.js', 'build/gh-pages/%(BRANCH)s/examples/')
 
 
-@target('test', INTERNAL_SRC, phony=True)
+@target('test', INTERNAL_SRC, 'test/requireall.js', phony=True)
 def test(t):
     t.run('%(PHANTOMJS)s', 'test/phantom-jasmine/run_jasmine_test.coffee', 'test/ol.html')
+
 
 @target('fixme', phony=True)
 def find_fixme(t):

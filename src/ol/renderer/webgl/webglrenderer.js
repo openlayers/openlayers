@@ -1,4 +1,4 @@
-goog.provide('ol.renderer.webgl');
+goog.provide('ol.renderer.webgl.isSupported');
 
 goog.require('ol.webgl');
 

@@ -10,6 +10,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.style');
 goog.require('ol.BrowserFeature');
 goog.require('ol.Coordinate');
+goog.require('ol.FrameState');
 goog.require('ol.MapEvent');
 goog.require('ol.Pixel');
 

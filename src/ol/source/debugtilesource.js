@@ -4,6 +4,7 @@ goog.require('ol.Size');
 goog.require('ol.Tile');
 goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
+goog.require('ol.TileState');
 goog.require('ol.source.TileSource');
 goog.require('ol.tilegrid.TileGrid');
 

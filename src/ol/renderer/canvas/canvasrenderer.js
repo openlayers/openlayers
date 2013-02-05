@@ -1,5 +1,6 @@
 goog.provide('ol.renderer.canvas');
 goog.provide('ol.renderer.canvas.Renderer');
+goog.provide('ol.renderer.canvas.isSupported');
 
 goog.require('goog.asserts');
 goog.require('goog.vec.Mat4');

@@ -5,9 +5,8 @@ goog.provide('ol.source.XYZOptions');
 
 goog.require('goog.math');
 goog.require('ol.Attribution');
-goog.require('ol.Coordinate');
+goog.require('ol.Extent');
 goog.require('ol.Projection');
-goog.require('ol.Size');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
