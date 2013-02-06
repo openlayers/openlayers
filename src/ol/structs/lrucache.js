@@ -156,15 +156,6 @@ ol.structs.LRUCache.prototype.getKeys = function() {
 
 
 /**
- * @return {string} Last key.
- */
-ol.structs.LRUCache.prototype.getLastKey = function() {
-  goog.asserts.assert(!goog.isNull(this.newest_));
-  return this.newest_.key_;
-};
-
-
-/**
  * @return {Array} Values.
  */
 ol.structs.LRUCache.prototype.getValues = function() {
