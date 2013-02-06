@@ -84,7 +84,7 @@ ol.interaction.DragPan.prototype.handleDragEnd = function(mapBrowserEvent) {
     var distance = this.kinetic_.getDistance();
     var angle = this.kinetic_.getAngle();
     var center = view.getCenter();
-    this.kineticPreRenderFn_ = this.kinetic_.createPanFrom(center);
+    this.kineticPreRenderFn_ = this.kinetic_.pan(center);
     map.addPreRenderFunction(this.kineticPreRenderFn_);
 
     var centerpx = map.getPixelFromCoordinate(center);

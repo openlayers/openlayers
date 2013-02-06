@@ -1,4 +1,4 @@
 @exportSymbol ol.animation
-@exportProperty ol.animation.createBounce
-@exportProperty ol.animation.createPanFrom
-@exportProperty ol.animation.createRotateFrom
+@exportProperty ol.animation.bounce
+@exportProperty ol.animation.pan
+@exportProperty ol.animation.rotate

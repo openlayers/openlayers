@@ -112,7 +112,7 @@ ol.Kinetic.prototype.end = function() {
  * @param {ol.Coordinate} source Source coordinate for the animation.
  * @return {ol.PreRenderFunction} Pre-render function for kinetic animation.
  */
-ol.Kinetic.prototype.createPanFrom = function(source) {
+ol.Kinetic.prototype.pan = function(source) {
   var decay = this.decay_;
   var initialVelocity = this.initialVelocity_;
   var minVelocity = this.minVelocity_;
@@ -121,7 +121,7 @@ ol.Kinetic.prototype.createPanFrom = function(source) {
     return initialVelocity * (Math.exp((decay * t) * duration) - 1) /
         (minVelocity - initialVelocity);
   };
-  return ol.animation.createPanFrom({
+  return ol.animation.pan({
     source: source,
     duration: duration,
     easing: easingFunction

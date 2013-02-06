@@ -12,7 +12,7 @@ goog.require('ol.easing');
  * @param {ol.animation.BounceOptions} options Options.
  * @return {ol.PreRenderFunction} Pre-render function.
  */
-ol.animation.createBounce = function(options) {
+ol.animation.bounce = function(options) {
   var resolution = options.resolution;
   var start = goog.isDef(options.start) ? options.start : goog.now();
   var duration = goog.isDef(options.duration) ? options.duration : 1000;
@@ -38,10 +38,10 @@ ol.animation.createBounce = function(options) {
 
 
 /**
- * @param {ol.animation.PanFromOptions} options Options.
+ * @param {ol.animation.PanOptions} options Options.
  * @return {ol.PreRenderFunction} Pre-render function.
  */
-ol.animation.createPanFrom = function(options) {
+ol.animation.pan = function(options) {
   var source = options.source;
   var start = goog.isDef(options.start) ? options.start : goog.now();
   var sourceX = source.x;
@@ -71,10 +71,10 @@ ol.animation.createPanFrom = function(options) {
 
 
 /**
- * @param {ol.animation.RotateFromOptions} options Options.
+ * @param {ol.animation.RotateOptions} options Options.
  * @return {ol.PreRenderFunction} Pre-render function.
  */
-ol.animation.createRotateFrom = function(options) {
+ol.animation.rotate = function(options) {
   var sourceRotation = options.rotation;
   var start = goog.isDef(options.start) ? options.start : goog.now();
   var duration = goog.isDef(options.duration) ? options.duration : 1000;
@@ -102,10 +102,10 @@ ol.animation.createRotateFrom = function(options) {
 
 
 /**
- * @param {ol.animation.ZoomFromOptions} options Options.
+ * @param {ol.animation.ZoomOptions} options Options.
  * @return {ol.PreRenderFunction} Pre-render function.
  */
-ol.animation.createZoomFrom = function(options) {
+ol.animation.zoom = function(options) {
   var sourceResolution = options.resolution;
   var start = goog.isDef(options.start) ? options.start : goog.now();
   var duration = goog.isDef(options.duration) ? options.duration : 1000;

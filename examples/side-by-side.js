@@ -110,7 +110,7 @@ keyboardInteraction.addCallback('H', function() {
   layer.setHue(layer.getHue() + (Math.PI / 5));
 });
 keyboardInteraction.addCallback('j', function() {
-  var bounce = ol.animation.createBounce({
+  var bounce = ol.animation.bounce({
     resolution: 2 * view.getResolution()
   });
   domMap.addPreRenderFunction(bounce);
@@ -118,69 +118,69 @@ keyboardInteraction.addCallback('j', function() {
   canvasMap.addPreRenderFunction(bounce);
 });
 keyboardInteraction.addCallback('l', function() {
-  var panFrom = ol.animation.createPanFrom({
+  var pan = ol.animation.pan({
     source: view.getCenter(),
     easing: ol.easing.elastic
   });
-  domMap.addPreRenderFunction(panFrom);
-  webglMap.addPreRenderFunction(panFrom);
-  canvasMap.addPreRenderFunction(panFrom);
+  domMap.addPreRenderFunction(pan);
+  webglMap.addPreRenderFunction(pan);
+  canvasMap.addPreRenderFunction(pan);
   view.setCenter(LONDON);
 });
 keyboardInteraction.addCallback('L', function() {
   var start = goog.now();
   var duration = 5000;
-  var bounce = ol.animation.createBounce({
+  var bounce = ol.animation.bounce({
     resolution: 2 * view.getResolution(),
     start: start,
     duration: duration
   });
-  var panFrom = ol.animation.createPanFrom({
+  var pan = ol.animation.pan({
     source: view.getCenter(),
     start: start,
     duration: duration
   });
-  var rotateFrom = ol.animation.createRotateFrom({
+  var rotate = ol.animation.rotate({
     rotation: 4 * Math.PI,
     start: start,
     duration: duration
   });
-  var preRenderFunctions = [bounce, panFrom, rotateFrom];
+  var preRenderFunctions = [bounce, pan, rotate];
   domMap.addPreRenderFunctions(preRenderFunctions);
   webglMap.addPreRenderFunctions(preRenderFunctions);
   canvasMap.addPreRenderFunctions(preRenderFunctions);
   view.setCenter(LONDON);
 });
 keyboardInteraction.addCallback('m', function() {
-  var panFrom = ol.animation.createPanFrom({
+  var pan = ol.animation.pan({
     source: view.getCenter(),
     duration: 1000,
     easing: ol.easing.bounce
   });
-  domMap.addPreRenderFunction(panFrom);
-  webglMap.addPreRenderFunction(panFrom);
-  canvasMap.addPreRenderFunction(panFrom);
+  domMap.addPreRenderFunction(pan);
+  webglMap.addPreRenderFunction(pan);
+  canvasMap.addPreRenderFunction(pan);
   view.setCenter(MOSCOW);
 });
 keyboardInteraction.addCallback('M', function() {
   var start = goog.now();
   var duration = 5000;
-  var bounce = ol.animation.createBounce({
+  var bounce = ol.animation.bounce({
     resolution: 2 * view.getResolution(),
     start: start,
     duration: duration
   });
-  var panFrom = ol.animation.createPanFrom({
+  var pan = ol.animation.pan({
     source: view.getCenter(),
     start: start,
     duration: duration
   });
-  var rotateFrom = ol.animation.createRotateFrom({
+  var rotate = ol.animation.rotate({
     rotation: -4 * Math.PI,
     start: start,
     duration: duration
   });
-  var preRenderFunctions = [bounce, panFrom, rotateFrom];
+  var preRenderFunctions = [bounce, pan, rotate];
   domMap.addPreRenderFunctions(preRenderFunctions);
   webglMap.addPreRenderFunctions(preRenderFunctions);
   canvasMap.addPreRenderFunctions(preRenderFunctions);
@@ -206,21 +206,21 @@ keyboardInteraction.addCallback('vV', function() {
   layer.setVisible(!layer.getVisible());
 });
 keyboardInteraction.addCallback('x', function() {
-  var rotateFrom = ol.animation.createRotateFrom({
+  var rotate = ol.animation.rotate({
     rotation: 4 * Math.PI,
     duration: 2000
   });
-  domMap.addPreRenderFunction(rotateFrom);
-  webglMap.addPreRenderFunction(rotateFrom);
-  canvasMap.addPreRenderFunction(rotateFrom);
+  domMap.addPreRenderFunction(rotate);
+  webglMap.addPreRenderFunction(rotate);
+  canvasMap.addPreRenderFunction(rotate);
 });
 keyboardInteraction.addCallback('X', function() {
-  var rotateFrom = ol.animation.createRotateFrom({
+  var rotate = ol.animation.rotate({
     rotation: -4 * Math.PI,
     duration: 2000
   });
-  domMap.addPreRenderFunction(rotateFrom);
-  webglMap.addPreRenderFunction(rotateFrom);
-  canvasMap.addPreRenderFunction(rotateFrom);
+  domMap.addPreRenderFunction(rotate);
+  webglMap.addPreRenderFunction(rotate);
+  canvasMap.addPreRenderFunction(rotate);
 });
 domMap.getInteractions().push(keyboardInteraction);
