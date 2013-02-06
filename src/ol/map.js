@@ -754,8 +754,8 @@ ol.Map.prototype.renderFrame_ = function(time) {
     frameState.extent = ol.Extent.boundingExtent.apply(null, corners);
   }
 
-  this.renderer_.renderFrame(frameState);
   this.frameState_ = frameState;
+  this.renderer_.renderFrame(frameState);
   this.dirty_ = false;
 
   if (!goog.isNull(frameState)) {
