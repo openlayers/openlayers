@@ -2,7 +2,7 @@ goog.provide('ol.TileCache');
 
 goog.require('ol.Tile');
 goog.require('ol.TileRange');
-goog.require('ol.structs.LinkedMap');
+goog.require('ol.structs.LRUCache');
 
 
 /**
@@ -14,12 +14,12 @@ ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK = 512;
 
 /**
  * @constructor
- * @extends {ol.structs.LinkedMap}
+ * @extends {ol.structs.LRUCache}
  * @param {number=} opt_highWaterMark High water mark.
  */
 ol.TileCache = function(opt_highWaterMark) {
 
-  goog.base(this, undefined, true);
+  goog.base(this);
 
   /**
    * @private
@@ -29,7 +29,7 @@ ol.TileCache = function(opt_highWaterMark) {
       opt_highWaterMark : ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK;
 
 };
-goog.inherits(ol.TileCache, ol.structs.LinkedMap);
+goog.inherits(ol.TileCache, ol.structs.LRUCache);
 
 
 /**
