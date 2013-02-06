@@ -65,11 +65,14 @@ ol.Geolocation.prototype.disposeInternal = function() {
  * @private
  */
 ol.Geolocation.prototype.handleProjectionChanged_ = function() {
-  this.transformCoords_ = ol.Projection.getTransform(
-      ol.Projection.getFromCode('EPSG:4326'), this.getProjection());
-  if (!goog.isNull(this.position_)) {
-    this.set(ol.GeolocationProperty.POSITION,
-        this.transformCoords_(this.position_));
+  var projection = this.getProjection();
+  if (goog.isDefAndNotNull(projection)) {
+    this.transformCoords_ = ol.Projection.getTransform(
+        ol.Projection.getFromCode('EPSG:4326'), projection);
+    if (!goog.isNull(this.position_)) {
+      this.set(ol.GeolocationProperty.POSITION,
+          this.transformCoords_(this.position_));
+    }
   }
 };
 
@@ -97,7 +100,7 @@ ol.Geolocation.prototype.positionError_ = function(error) {
 
 /**
  * The position of the device.
- * @return {ol.Coordinate} position.
+ * @return {ol.Coordinate|undefined} position.
  */
 ol.Geolocation.prototype.getPosition = function() {
   return /** @type {ol.Coordinate} */ (
@@ -111,7 +114,7 @@ goog.exportProperty(
 
 /**
  * The accuracy of the position in meters.
- * @return {number} accuracy.
+ * @return {number|undefined} accuracy.
  */
 ol.Geolocation.prototype.getAccuracy = function() {
   return /** @type {number} */ (
@@ -124,7 +127,7 @@ goog.exportProperty(
 
 
 /**
- * @return {ol.Projection} projection.
+ * @return {ol.Projection|undefined} projection.
  */
 ol.Geolocation.prototype.getProjection = function() {
   return /** @type {ol.Projection} */ (
