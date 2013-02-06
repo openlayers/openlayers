@@ -19,7 +19,7 @@ goog.require('ol.renderer.Map');
 goog.require('ol.renderer.webgl.FragmentShader');
 goog.require('ol.renderer.webgl.TileLayer');
 goog.require('ol.renderer.webgl.VertexShader');
-goog.require('ol.structs.LinkedMap');
+goog.require('ol.structs.LRUCache');
 goog.require('ol.webgl');
 goog.require('ol.webgl.WebGLContextEventType');
 
@@ -183,9 +183,9 @@ ol.renderer.webgl.Map = function(container, map) {
 
   /**
    * @private
-   * @type {ol.structs.LinkedMap}
+   * @type {ol.structs.LRUCache}
    */
-  this.textureCache_ = new ol.structs.LinkedMap(undefined, true);
+  this.textureCache_ = new ol.structs.LRUCache();
 
   /**
    * @private
