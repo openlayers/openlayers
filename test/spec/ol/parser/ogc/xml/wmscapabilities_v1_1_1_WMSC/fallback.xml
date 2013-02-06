@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding="ISO-8859-1" standalone="no" ?>
+<!DOCTYPE WMT_MS_Capabilities SYSTEM "http://schemas.opengis.net/wms/1.1.0/capabilities_1_1_0.dtd"
+ [
+ <!ELEMENT VendorSpecificCapabilities EMPTY>
+ ]>  
+<WMT_MS_Capabilities version="1.1.0">
+
+<Service>
+  <Name>OGC:WMS</Name>
+  <Title>i3Geo - i3geo</Title>
+  <Abstract>Web services gerados da base de dados do i3Geo. Para chamar um tema especificamente, veja o sistema de ajuda, digitando no navegador web ogc.php?ajuda=, para uma lista compacta de todos os servicos, digite ogc.php?lista=temas</Abstract>
+        <KeywordList>
+          <Keyword>i3Geo</Keyword>
+        </KeywordList>
+  <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://mapas.mma.gov.br/i3geo/ogc.php?"/>
+  <ContactInformation>
+    <ContactPersonPrimary>
+      <ContactPerson>Web Master</ContactPerson>
+      <ContactOrganization>Coordena??o Geral de TI</ContactOrganization>
+    </ContactPersonPrimary>
+      <ContactPosition>Administrador do s?tio web</ContactPosition>
+    <ContactAddress>
+        <AddressType>uri</AddressType>
+        <Address>http://www.mma.gov.br</Address>
+        <City>Brasilia</City>
+        <StateOrProvince>DF</StateOrProvince>
+        <PostCode></PostCode>
+        <Country>Brasil</Country>
+    </ContactAddress>
+  <ContactElectronicMailAddress>geoprocessamento@mma.gov.br</ContactElectronicMailAddress>
+  </ContactInformation>
+  <Fees>none</Fees>
+  <AccessConstraints>vedado o uso comercial</AccessConstraints>
+</Service>
+
+<Capability>
+  <Request>
+    <GetCapabilities>
+      <Format>application/vnd.ogc.wms_xml</Format>
+      <DCPType>
+        <HTTP>
+          <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://mapas.mma.gov.br/i3geo/ogc.php?"/></Get>
+          <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://mapas.mma.gov.br/i3geo/ogc.php?"/></Post>
+        </HTTP>
+      </DCPType>
+    </GetCapabilities>
+    <GetMap>
+      <Format>image/png</Format>
+      <Format>image/jpeg</Format>
+      <Format>image/gif</Format>
+      <Format>image/png; mode=8bit</Format>
+      <Format>application/x-pdf</Format>
+      <Format>image/svg+xml</Format>
+      <Format>image/tiff</Format>
+      <Format>application/vnd.google-earth.kml+xml</Format>
+      <Format>application/vnd.google-earth.kmz</Format>
+      <DCPType>
+        <HTTP>
+          <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://mapas.mma.gov.br/i3geo/ogc.php?"/></Get>
+          <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://mapas.mma.gov.br/i3geo/ogc.php?"/></Post>
+        </HTTP>
+      </DCPType>
+    </GetMap>
+    <GetFeatureInfo>
+      <Format>text/plain</Format>
+      <Format>application/vnd.ogc.gml</Format>
+      <DCPType>
+        <HTTP>
+          <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://mapas.mma.gov.br/i3geo/ogc.php?"/></Get>
+          <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://mapas.mma.gov.br/i3geo/ogc.php?"/></Post>
+        </HTTP>
+      </DCPType>
+    </GetFeatureInfo>
+    <DescribeLayer>
+      <Format>text/xml</Format>
+      <DCPType>
+        <HTTP>
+          <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://mapas.mma.gov.br/i3geo/ogc.php?"/></Get>
+          <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://mapas.mma.gov.br/i3geo/ogc.php?"/></Post>
+        </HTTP>
+      </DCPType>
+    </DescribeLayer>
+  </Request>
+  <Exception>
+    <Format>application/vnd.ogc.se_xml</Format>
+    <Format>application/vnd.ogc.se_inimage</Format>
+    <Format>application/vnd.ogc.se_blank</Format>
+  </Exception>
+  <VendorSpecificCapabilities />
+  <UserDefinedSymbolization SupportSLD="1" UserLayer="0" UserStyle="1" RemoteWFS="0"/>
+  <Layer>
+    <Name>i3geoogc</Name>
+    <Title>i3Geo - i3geo</Title>
+    <Abstract>Web services gerados da base de dados do i3Geo. Para chamar um tema especificamente, veja o sistema de ajuda, digitando no navegador web ogc.php?ajuda=, para uma lista compacta de todos os servicos, digite ogc.php?lista=temas</Abstract>
+    <KeywordList>
+     <Keyword>i3Geo</Keyword>
+    </KeywordList>
+    <SRS></SRS>
+    <LatLonBoundingBox minx="-76.5126" miny="-36.9484" maxx="-29.5852" maxy="7.04601" />
+    <BoundingBox SRS=""
+                minx="-76.5126" miny="-36.9484" maxx="-29.5852" maxy="7.04601" />
+    <Attribution>
+        <Title>i3Geo</Title>
+        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://mapas.mma.gov.br/i3geo"/>
+        <LogoURL width="85" height="56">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://mapas.mma.gov.br/i3geo/imagens/i3geo.png"/>
+          </LogoURL>
+    </Attribution>
+    <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>antigo_caminantes</Name>
+        <Title>Guia de Caminantes - 1817</Title>
+        <SRS> EPSG:4618 EPSG:4291 EPSG:4326 EPSG:22521 EPSG:22522 EPSG:22523 EPSG:22524 EPSG:22525 EPSG:29101 EPSG:29119 EPSG:29120 EPSG:29121 EPSG:29122 EPSG:29177 EPSG:29178 EPSG:29179 EPSG:29180 EPSG:29181 EPSG:29182 EPSG:29183 EPSG:29184 EPSG:29185</SRS>
+        <LatLonBoundingBox minx="-75.2336" miny="-33.7516" maxx="-27.593" maxy="5.27216" />
+        <BoundingBox SRS=""
+                    minx="-75.2336" miny="-33.7516" maxx="-27.593" maxy="5.27216" />
+        <MetadataURL type="TC211">
+          <Format>text/html</Format>
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://consorcio.bn.br"/>
+        </MetadataURL>
+    </Layer>
+  </Layer>
+</Capability>
+</WMT_MS_Capabilities>

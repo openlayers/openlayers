@@ -1,0 +1,284 @@
+<?xml version='1.0' encoding="UTF-8"?>
+<WMS_Capabilities version="1.3.0" xmlns="http://www.opengis.net/wms"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd">
+<Service>
+  <Name>WMS</Name>
+  <Title>Acme Corp. Map Server</Title>
+  <Abstract>Map Server maintained by Acme Corporation.  Contact: webmaster@wmt.acme.com.  High-quality maps showing roadrunner nests and possible ambush locations.</Abstract>
+
+  <KeywordList>
+    <Keyword>bird</Keyword>
+    <Keyword>roadrunner</Keyword>
+    <Keyword>ambush</Keyword>
+  </KeywordList>
+  <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple"
+   xlink:href="http://hostname/" />
+
+
+  <ContactInformation>
+    <ContactPersonPrimary>
+      <ContactPerson>Jeff Smith</ContactPerson>
+      <ContactOrganization>NASA</ContactOrganization>
+    </ContactPersonPrimary>
+    <ContactPosition>Computer Scientist</ContactPosition>
+
+    <ContactAddress>
+      <AddressType>postal</AddressType>
+      <Address>NASA Goddard Space Flight Center</Address>
+      <City>Greenbelt</City>
+      <StateOrProvince>MD</StateOrProvince>
+      <PostCode>20771</PostCode>
+
+      <Country>USA</Country>
+    </ContactAddress>
+    <ContactVoiceTelephone>+1 301 555-1212</ContactVoiceTelephone>
+    <ContactElectronicMailAddress>user@host.com</ContactElectronicMailAddress>
+  </ContactInformation>
+
+  <Fees>none</Fees>
+
+  <AccessConstraints>none</AccessConstraints>
+  <LayerLimit>16</LayerLimit>
+  <MaxWidth>2048</MaxWidth>
+  <MaxHeight>2048</MaxHeight>
+</Service>
+<Capability>
+  <Request>
+    <GetCapabilities>
+
+      <Format>text/xml</Format>
+      <DCPType>
+        <HTTP>
+          <Get>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+             xlink:type="simple"
+             xlink:href="http://hostname/path?" />
+          </Get>
+          <Post>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+             xlink:type="simple"
+             xlink:href="http://hostname/path?" />
+
+          </Post>
+        </HTTP>
+      </DCPType>
+    </GetCapabilities>
+    <GetMap>
+      <Format>image/gif</Format>
+      <Format>image/png</Format>
+      <Format>image/jpeg</Format>
+
+      <DCPType>
+        <HTTP>
+          <Get>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+             xlink:type="simple"
+             xlink:href="http://hostname/path?" />
+          </Get>
+        </HTTP>
+      </DCPType>
+    </GetMap>
+
+    <GetFeatureInfo>
+      <Format>text/xml</Format>
+      <Format>text/plain</Format>
+      <Format>text/html</Format>
+      <DCPType>
+        <HTTP>
+          <Get>
+
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+             xlink:type="simple"
+             xlink:href="http://hostname/path?" />
+          </Get>
+        </HTTP>
+      </DCPType>
+    </GetFeatureInfo>
+  </Request>
+  <Exception>
+    <Format>XML</Format>
+
+    <Format>INIMAGE</Format>
+    <Format>BLANK</Format>
+  </Exception>
+  <Layer>
+    <Title>Acme Corp. Map Server</Title>
+    <CRS>CRS:84</CRS>
+
+    <AuthorityURL name="DIF_ID">
+      <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple"
+       xlink:href="http://gcmd.gsfc.nasa.gov/difguide/whatisadif.html" />
+    </AuthorityURL>
+    <BoundingBox CRS="CRS:84"
+     minx="-1" miny="-1" maxx="1" maxy="1" resx="0.0" resy="0.0"/>
+    <Layer>
+
+      <Name>ROADS_RIVERS</Name>
+      <Title>Roads and Rivers</Title>
+
+      <CRS>EPSG:26986</CRS>
+      <EX_GeographicBoundingBox>
+        <westBoundLongitude>-71.63</westBoundLongitude>
+        <eastBoundLongitude>-70.78</eastBoundLongitude>
+        <southBoundLatitude>41.75</southBoundLatitude>
+        <northBoundLatitude>42.90</northBoundLatitude>
+
+      </EX_GeographicBoundingBox>
+      <BoundingBox CRS="CRS:84"
+       minx="-71.63" miny="41.75" maxx="-70.78" maxy="42.90" resx="0.01" resy="0.01"/>
+      <BoundingBox CRS="EPSG:26986"
+       minx="189000" miny="834000" maxx="285000" maxy="962000" resx="1" resy="1" />
+      <Attribution>
+        <Title>State College University</Title>
+        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple"
+         xlink:href="http://www.university.edu/" />
+
+        <LogoURL width="100" height="100">
+          <Format>image/gif</Format>
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+           xlink:type="simple"
+           xlink:href="http://www.university.edu/icons/logo.gif" />
+        </LogoURL>
+      </Attribution>
+      <Identifier authority="DIF_ID">123456</Identifier>
+      <FeatureListURL>
+
+        <Format>XML</Format>
+        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple"
+         xlink:href="http://www.university.edu/data/roads_rivers.gml" />
+      </FeatureListURL>
+      <Style>
+        <Name>USGS</Name>
+        <Title>USGS Topo Map Style</Title>
+        <Abstract>Features are shown in a style like that used in USGS topographic maps.</Abstract>
+
+        <LegendURL width="72" height="72">
+          <Format>image/gif</Format>
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+           xlink:type="simple"
+           xlink:href="http://www.university.edu/legends/usgs.gif" />
+        </LegendURL>
+        <StyleSheetURL>
+          <Format>text/xsl</Format>
+
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+           xlink:type="simple"
+           xlink:href="http://www.university.edu/stylesheets/usgs.xsl" />
+        </StyleSheetURL>
+      </Style>
+      <MinScaleDenominator>1000</MinScaleDenominator>
+      <MaxScaleDenominator>250000</MaxScaleDenominator>
+      <Layer queryable="1">
+        <Name>ROADS_1M</Name>
+        <Title>Roads at 1:1M scale</Title>
+        <Abstract>Roads at a scale of 1 to 1 million.</Abstract>
+
+        <KeywordList>
+          <Keyword>road</Keyword>
+          <Keyword>transportation</Keyword>
+          <Keyword>atlas</Keyword>
+        </KeywordList>
+        <Identifier authority="DIF_ID">123456</Identifier>
+        <MetadataURL type="FGDC:1998">
+
+                <Format>text/plain</Format>
+                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+                 xlink:type="simple"
+                 xlink:href="http://www.university.edu/metadata/roads.txt" />
+             </MetadataURL>
+        <MetadataURL type="ISO19115:2003">
+               <Format>text/xml</Format>
+               <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+                xlink:type="simple"
+                xlink:href="http://www.university.edu/metadata/roads.xml" />
+             </MetadataURL>
+
+        <Style>
+          <Name>ATLAS</Name>
+          <Title>Road atlas style</Title>
+          <Abstract>Roads are shown in a style like that used in a commercial road atlas.</Abstract>
+        <LegendURL width="72" height="72">
+          <Format>image/gif</Format>
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+           xlink:type="simple"
+           xlink:href="http://www.university.edu/legends/atlas.gif" />
+
+        </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1">
+        <Name>RIVERS_1M</Name>
+        <Title>Rivers at 1:1M scale</Title>
+        <Abstract>Rivers at a scale of 1 to 1 million.</Abstract>
+
+        <KeywordList>
+          <Keyword>river</Keyword>
+          <Keyword>canal</Keyword>
+          <Keyword>waterway</Keyword>
+        </KeywordList>
+      </Layer>
+    </Layer>
+
+    <Layer queryable="1">
+      <Title>Weather Forecast Data</Title>
+      <CRS>CRS:84</CRS>
+
+      <EX_GeographicBoundingBox>
+        <westBoundLongitude>-180</westBoundLongitude>
+        <eastBoundLongitude>180</eastBoundLongitude>
+
+        <southBoundLatitude>-90</southBoundLatitude>
+        <northBoundLatitude>90</northBoundLatitude>
+      </EX_GeographicBoundingBox>
+      <Dimension name="time" units="ISO8601" default="2000-08-22">1999-01-01/2000-08-22/P1D</Dimension>
+      <Layer>
+
+        <Name>Clouds</Name>
+        <Title>Forecast cloud cover</Title>
+      </Layer>
+      <Layer>
+        <Name>Temperature</Name>
+        <Title>Forecast temperature</Title>
+      </Layer>
+
+      <Layer>
+        <Name>Pressure</Name>
+        <Title>Forecast barometric pressure</Title>
+         <Dimension name="elevation" units="EPSG:5030" />
+         <Dimension name="time" units="ISO8601" default="2000-08-22">
+           1999-01-01/2000-08-22/P1D</Dimension>
+
+         <Dimension name="elevation" units="CRS:88" default="0" nearestValue="1">0,1000,3000,5000,10000</Dimension>
+      </Layer>
+    </Layer>
+    <Layer opaque="1" noSubsets="1" fixedWidth="512" fixedHeight="256">
+      <Name>ozone_image</Name>
+      <Title>Global ozone distribution (1992)</Title>
+
+      <EX_GeographicBoundingBox>
+        <westBoundLongitude>-180</westBoundLongitude>
+        <eastBoundLongitude>180</eastBoundLongitude>
+        <southBoundLatitude>-90</southBoundLatitude>
+        <northBoundLatitude>90</northBoundLatitude>
+      </EX_GeographicBoundingBox>
+      <Dimension name="time" units="ISO8601" default="1992">1992</Dimension>
+
+    </Layer>
+    <Layer cascaded="1">
+      <Name>population</Name>
+      <Title>World population, annual</Title>
+      <EX_GeographicBoundingBox>
+        <westBoundLongitude>-180</westBoundLongitude>
+
+        <eastBoundLongitude>180</eastBoundLongitude>
+        <southBoundLatitude>-90</southBoundLatitude>
+        <northBoundLatitude>90</northBoundLatitude>
+      </EX_GeographicBoundingBox>
+      <Dimension name="time" units="ISO8601" default="2000">1990/2000/P1Y</Dimension>
+    </Layer>
+  </Layer>
+
+</Capability>
+</WMS_Capabilities>
