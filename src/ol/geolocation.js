@@ -38,7 +38,7 @@ ol.Geolocation = function(opt_positionOptions) {
 
   goog.events.listen(
       this, ol.Object.getChangedEventType(ol.GeolocationProperty.PROJECTION),
-      this.handleProjectionChanged, false, this);
+      this.handleProjectionChanged_, false, this);
 
   /**
    * @private
@@ -62,9 +62,9 @@ ol.Geolocation.prototype.disposeInternal = function() {
 
 
 /**
- * @protected
+ * @private
  */
-ol.Geolocation.prototype.handleProjectionChanged = function() {
+ol.Geolocation.prototype.handleProjectionChanged_ = function() {
   this.transformCoords_ = ol.Projection.getTransform(
       ol.Projection.getFromCode('EPSG:4326'), this.getProjection());
   if (!goog.isNull(this.position_)) {
