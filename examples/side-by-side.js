@@ -140,12 +140,12 @@ keyboardInteraction.addCallback('L', function() {
     start: start,
     duration: duration
   });
-  var spin = ol.animation.createSpin({
-    turns: 2,
+  var rotateFrom = ol.animation.createRotateFrom({
+    rotation: 4 * Math.PI,
     start: start,
     duration: duration
   });
-  var preRenderFunctions = [bounce, panFrom, spin];
+  var preRenderFunctions = [bounce, panFrom, rotateFrom];
   domMap.addPreRenderFunctions(preRenderFunctions);
   webglMap.addPreRenderFunctions(preRenderFunctions);
   canvasMap.addPreRenderFunctions(preRenderFunctions);
@@ -175,12 +175,12 @@ keyboardInteraction.addCallback('M', function() {
     start: start,
     duration: duration
   });
-  var spin = ol.animation.createSpin({
-    turns: -2,
+  var rotateFrom = ol.animation.createRotateFrom({
+    rotation: -4 * Math.PI,
     start: start,
     duration: duration
   });
-  var preRenderFunctions = [bounce, panFrom, spin];
+  var preRenderFunctions = [bounce, panFrom, rotateFrom];
   domMap.addPreRenderFunctions(preRenderFunctions);
   webglMap.addPreRenderFunctions(preRenderFunctions);
   canvasMap.addPreRenderFunctions(preRenderFunctions);
@@ -206,21 +206,21 @@ keyboardInteraction.addCallback('vV', function() {
   layer.setVisible(!layer.getVisible());
 });
 keyboardInteraction.addCallback('x', function() {
-  var spin = ol.animation.createSpin({
-    turns: 2,
+  var rotateFrom = ol.animation.createRotateFrom({
+    rotation: 4 * Math.PI,
     duration: 2000
   });
-  domMap.addPreRenderFunction(spin);
-  webglMap.addPreRenderFunction(spin);
-  canvasMap.addPreRenderFunction(spin);
+  domMap.addPreRenderFunction(rotateFrom);
+  webglMap.addPreRenderFunction(rotateFrom);
+  canvasMap.addPreRenderFunction(rotateFrom);
 });
 keyboardInteraction.addCallback('X', function() {
-  var spin = ol.animation.createSpin({
-    turns: -2,
+  var rotateFrom = ol.animation.createRotateFrom({
+    rotation: -4 * Math.PI,
     duration: 2000
   });
-  domMap.addPreRenderFunction(spin);
-  webglMap.addPreRenderFunction(spin);
-  canvasMap.addPreRenderFunction(spin);
+  domMap.addPreRenderFunction(rotateFrom);
+  webglMap.addPreRenderFunction(rotateFrom);
+  canvasMap.addPreRenderFunction(rotateFrom);
 });
 domMap.getInteractions().push(keyboardInteraction);
