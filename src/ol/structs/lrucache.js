@@ -102,7 +102,7 @@ ol.structs.LRUCache.prototype.containsKey = function(key) {
 ol.structs.LRUCache.prototype.forEach = function(f, opt_obj) {
   var entry = this.oldest_;
   while (!goog.isNull(entry)) {
-    f.call(opt_obj, entry.value, entry.key, this);
+    f.call(opt_obj, entry.value_, entry.key_, this);
     entry = entry.newer;
   }
 };
@@ -116,7 +116,7 @@ ol.structs.LRUCache.prototype.get = function(key) {
   var entry = this.entries_[key];
   goog.asserts.assert(goog.isDef(entry));
   if (entry === this.newest_) {
-    return entry.value;
+    return entry.value_;
   } else if (entry === this.oldest_) {
     this.oldest_ = this.oldest_.newer;
     this.oldest_.older = null;
@@ -128,7 +128,7 @@ ol.structs.LRUCache.prototype.get = function(key) {
   entry.older = this.newest_;
   this.newest_.newer = entry;
   this.newest_ = entry;
-  return entry.value;
+  return entry.value_;
 };
 
 
@@ -148,7 +148,7 @@ ol.structs.LRUCache.prototype.getKeys = function() {
   var i = 0;
   var entry;
   for (entry = this.newest_; !goog.isNull(entry); entry = entry.older) {
-    keys[i++] = entry.key;
+    keys[i++] = entry.key_;
   }
   goog.asserts.assert(i == this.count_);
   return keys;
@@ -160,7 +160,7 @@ ol.structs.LRUCache.prototype.getKeys = function() {
  */
 ol.structs.LRUCache.prototype.getLastKey = function() {
   goog.asserts.assert(!goog.isNull(this.newest_));
-  return this.newest_.key;
+  return this.newest_.key_;
 };
 
 
@@ -172,7 +172,7 @@ ol.structs.LRUCache.prototype.getValues = function() {
   var i = 0;
   var entry;
   for (entry = this.newest_; !goog.isNull(entry); entry = entry.older) {
-    values[i++] = entry.value;
+    values[i++] = entry.value_;
   }
   goog.asserts.assert(i == this.count_);
   return values;
@@ -184,7 +184,7 @@ ol.structs.LRUCache.prototype.getValues = function() {
  */
 ol.structs.LRUCache.prototype.peekLast = function() {
   goog.asserts.assert(!goog.isNull(this.oldest_));
-  return this.oldest_.value;
+  return this.oldest_.value_;
 };
 
 
@@ -193,7 +193,7 @@ ol.structs.LRUCache.prototype.peekLast = function() {
  */
 ol.structs.LRUCache.prototype.peekLastKey = function() {
   goog.asserts.assert(!goog.isNull(this.oldest_));
-  return this.oldest_.key;
+  return this.oldest_.key_;
 };
 
 
@@ -204,8 +204,8 @@ ol.structs.LRUCache.prototype.pop = function() {
   goog.asserts.assert(!goog.isNull(this.oldest_));
   goog.asserts.assert(!goog.isNull(this.newest_));
   var entry = this.oldest_;
-  goog.asserts.assert(entry.key in this.entries_);
-  delete this.entries_[entry.key];
+  goog.asserts.assert(entry.key_ in this.entries_);
+  delete this.entries_[entry.key_];
   if (!goog.isNull(entry.newer)) {
     entry.newer.older = null;
   }
@@ -214,7 +214,7 @@ ol.structs.LRUCache.prototype.pop = function() {
     this.newest_ = null;
   }
   --this.count_;
-  return entry.value;
+  return entry.value_;
 };
 
 
@@ -226,10 +226,10 @@ ol.structs.LRUCache.prototype.set = function(key, value) {
   goog.asserts.assert(!(key in {}));
   goog.asserts.assert(!(key in this.entries_));
   var entry = {
-    key: key,
+    key_: key,
     newer: null,
     older: this.newest_,
-    value: value
+    value_: value
   };
   if (goog.isNull(this.newest_)) {
     this.oldest_ = entry;
@@ -243,9 +243,9 @@ ol.structs.LRUCache.prototype.set = function(key, value) {
 
 
 /**
- * @typedef {{key: string,
+ * @typedef {{key_: string,
  *            newer: ol.structs.LRUCacheEntry_,
  *            older: ol.structs.LRUCacheEntry_,
- *            value: *}}
+ *            value_: *}}
  */
 ol.structs.LRUCacheEntry_;
