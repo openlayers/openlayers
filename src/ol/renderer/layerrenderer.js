@@ -4,8 +4,10 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.FrameState');
 goog.require('ol.Object');
+goog.require('ol.Tile');
 goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
+goog.require('ol.TileState');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.LayerProperty');
 goog.require('ol.layer.LayerState');
@@ -144,6 +146,19 @@ ol.renderer.Layer.prototype.handleLayerSaturationChange = goog.nullFunction;
  */
 ol.renderer.Layer.prototype.handleLayerVisibleChange = function() {
   this.dispatchChangeEvent();
+};
+
+
+/**
+ * Handle changes in tile state.
+ * @param {goog.events.Event} event Tile change event.
+ * @protected
+ */
+ol.renderer.Layer.prototype.handleTileChange = function(event) {
+  var tile = /** @type {ol.Tile} */ (event.target);
+  if (tile.getState() === ol.TileState.LOADED) {
+    this.getMap().requestRenderFrame();
+  }
 };
 
 

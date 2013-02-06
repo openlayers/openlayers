@@ -131,6 +131,8 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
 
       tileState = tile.getState();
       if (tileState == ol.TileState.IDLE) {
+        goog.events.listen(tile, goog.events.EventType.CHANGE,
+            this.handleTileChange, false, this);
         this.updateWantedTiles(frameState.wantedTiles, tileSource, tileCoord);
         tileCenter = tileGrid.getTileCoordCenter(tileCoord);
         frameState.tileQueue.enqueue(tile, tileSourceKey, tileCenter);
@@ -231,10 +233,6 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   if (layerState.visible && !this.renderedVisible_) {
     goog.style.showElement(this.target, true);
     this.renderedVisible_ = true;
-  }
-
-  if (!allTilesLoaded) {
-    frameState.animate = true;
   }
 
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
