@@ -225,7 +225,12 @@ ol.structs.LRUCache.prototype.pop = function() {
 ol.structs.LRUCache.prototype.set = function(key, value) {
   goog.asserts.assert(!(key in {}));
   goog.asserts.assert(!(key in this.entries_));
-  var entry = new ol.structs.LRUCacheEntry_(key, value, null, this.newest_);
+  var entry = {
+    key: key,
+    newer: null,
+    older: this.newest_,
+    value: value
+  };
   if (goog.isNull(this.newest_)) {
     this.oldest_ = entry;
   } else {
@@ -237,35 +242,10 @@ ol.structs.LRUCache.prototype.set = function(key, value) {
 };
 
 
-
 /**
- * @constructor
- * @private
- * @param {string} key Key.
- * @param {*} value Value.
- * @param {ol.structs.LRUCacheEntry_} newer Newer.
- * @param {ol.structs.LRUCacheEntry_} older Older.
+ * @typedef {{key: string,
+ *            newer: ol.structs.LRUCacheEntry_,
+ *            older: ol.structs.LRUCacheEntry_,
+ *            value: *}}
  */
-ol.structs.LRUCacheEntry_ = function(key, value, newer, older) {
-
-  /**
-   * @type {string}
-   */
-  this.key = key;
-
-  /**
-   * @type {*}
-   */
-  this.value = value;
-
-  /**
-   * @type {ol.structs.LRUCacheEntry_}
-   */
-  this.newer = newer;
-
-  /**
-   * @type {ol.structs.LRUCacheEntry_}
-   */
-  this.older = older;
-
-};
+ol.structs.LRUCacheEntry_;
