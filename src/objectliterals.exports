@@ -38,11 +38,11 @@
 @exportObjectLiteralProperty ol.animation.PanFromOptions.duration number|undefined
 @exportObjectLiteralProperty ol.animation.PanFromOptions.easing function(number):number|undefined
 
-@exportObjectLiteral ol.animation.SpinOptions
-@exportObjectLiteralProperty ol.animation.SpinOptions.turns number
-@exportObjectLiteralProperty ol.animation.SpinOptions.start number|undefined
-@exportObjectLiteralProperty ol.animation.SpinOptions.duration number|undefined
-@exportObjectLiteralProperty ol.animation.SpinOptions.easing function(number):number|undefined
+@exportObjectLiteral ol.animation.RotateFromOptions
+@exportObjectLiteralProperty ol.animation.RotateFromOptions.rotation number
+@exportObjectLiteralProperty ol.animation.RotateFromOptions.start number|undefined
+@exportObjectLiteralProperty ol.animation.RotateFromOptions.duration number|undefined
+@exportObjectLiteralProperty ol.animation.RotateFromOptions.easing function(number):number|undefined
 
 @exportObjectLiteral ol.animation.ZoomFromOptions
 @exportObjectLiteralProperty ol.animation.ZoomFromOptions.resolution number

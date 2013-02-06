@@ -71,15 +71,15 @@ ol.animation.createPanFrom = function(options) {
 
 
 /**
- * @param {ol.animation.SpinOptions} options Options.
+ * @param {ol.animation.RotateFromOptions} options Options.
  * @return {ol.PreRenderFunction} Pre-render function.
  */
-ol.animation.createSpin = function(options) {
+ol.animation.createRotateFrom = function(options) {
+  var sourceRotation = options.rotation;
   var start = goog.isDef(options.start) ? options.start : goog.now();
   var duration = goog.isDef(options.duration) ? options.duration : 1000;
   var easing = goog.isDef(options.easing) ?
       options.easing : goog.fx.easing.inAndOut;
-  var deltaTheta = 2 * options.turns * Math.PI;
 
   return function(map, frameState) {
     if (frameState.time < start) {
@@ -87,9 +87,11 @@ ol.animation.createSpin = function(options) {
       frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
       return true;
     } else if (frameState.time < start + duration) {
-      var delta = easing((frameState.time - start) / duration);
+      var delta = 1 - easing((frameState.time - start) / duration);
+      var deltaRotation =
+          sourceRotation - frameState.view2DState.rotation;
       frameState.animate = true;
-      frameState.view2DState.rotation += delta * deltaTheta;
+      frameState.view2DState.rotation += delta * deltaRotation;
       frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
       return true;
     } else {
