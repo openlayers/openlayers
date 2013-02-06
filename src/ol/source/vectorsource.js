@@ -27,16 +27,16 @@ ol.source.FeatureCache = function() {
   this.idLookup_;
 
   /**
-   * @type {Object.<ol.Feature>}
+   * @type {Object.<string, ol.Feature>}
    * @private
    */
   this.geometryTypeIndex_;
 
   /**
-   * @type {ol.structs.RTree}
+   * @type {Object.<ol.geom.GeometryType, ol.structs.RTree>}
    * @private
    */
-  this.rTree_;
+  this.boundsByGeometryType_;
 
   this.clear();
 
@@ -49,13 +49,16 @@ ol.source.FeatureCache = function() {
 ol.source.FeatureCache.prototype.clear = function() {
   this.idLookup_ = {};
 
-  var geometryTypeIndex = {};
+  var geometryTypeIndex = {},
+      boundsByGeometryType = {},
+      geometryType;
   for (var key in ol.geom.GeometryType) {
-    geometryTypeIndex[ol.geom.GeometryType[key]] = {};
+    geometryType = ol.geom.GeometryType[key];
+    geometryTypeIndex[geometryType] = {};
+    boundsByGeometryType[geometryType] = new ol.structs.RTree();
   }
   this.geometryTypeIndex_ = geometryTypeIndex;
-
-  this.rTree_ = new ol.structs.RTree();
+  this.boundsByGeometryType_ = boundsByGeometryType;
 };
 
 
@@ -71,8 +74,10 @@ ol.source.FeatureCache.prototype.add = function(feature) {
 
   // index by geometry type and bounding box
   if (!goog.isNull(geometry)) {
-    this.geometryTypeIndex_[geometry.getType()][id] = feature;
-    this.rTree_.put(geometry.getBounds(), feature);
+    var geometryType = geometry.getType();
+    this.geometryTypeIndex_[geometryType][id] = feature;
+    this.boundsByGeometryType_[geometryType].put(geometry.getBounds(),
+        feature);
   }
 };
 
@@ -83,34 +88,48 @@ ol.source.FeatureCache.prototype.add = function(feature) {
  * @private
  */
 ol.source.FeatureCache.prototype.getFeaturesObject_ = function(opt_filter) {
-  var features;
+  var i, features;
   if (!goog.isDef(opt_filter)) {
     features = this.idLookup_;
   } else {
-    if (opt_filter instanceof ol.filter.Logical) {
-      features = {};
-      var filters = opt_filter.getFilters(),
-          filterFeatures, key, or;
-      for (var i = filters.length - 1; i >= 0; --i) {
-        filterFeatures = this.getFeaturesObject_(filters[i]);
-        goog.object.extend(features, filterFeatures);
-        if (opt_filter.operator === ol.filter.LogicalOperator.AND) {
-          or = features;
-          features = {};
-          for (key in or) {
-            if (filterFeatures[key]) {
-              features[key] = or[key];
-            }
-          }
-        }
-      }
-    } else if (opt_filter instanceof ol.filter.Geometry) {
+    if (opt_filter instanceof ol.filter.Geometry) {
       features = this.geometryTypeIndex_[opt_filter.getType()];
     } else if (opt_filter instanceof ol.filter.Extent) {
-      features = this.rTree_.find(opt_filter.getExtent());
-    } else {
-      // TODO: support other filter types
-      throw new Error('Filter type not supported: ' + opt_filter);
+      var boundsByGeometryType = this.boundsByGeometryType_,
+          extent = opt_filter.getExtent();
+      features = {};
+      for (i in boundsByGeometryType) {
+        goog.object.extend(features, boundsByGeometryType[i].find(extent));
+      }
+    } else if (opt_filter instanceof ol.filter.Logical) {
+      var filters = opt_filter.getFilters();
+      if (filters.length === 2) {
+        var filter, geometryFilter, extentFilter;
+        for (i = 0; i <= 1; ++i) {
+          filter = filters[i];
+          if (filter instanceof ol.filter.Geometry) {
+            geometryFilter = filter;
+          } else if (filter instanceof ol.filter.Extent) {
+            extentFilter = filter;
+          }
+        }
+        if (extentFilter && geometryFilter) {
+          features = this.boundsByGeometryType_[geometryFilter.getType()]
+              .find(extentFilter.getExtent());
+        }
+      }
+    }
+    if (!goog.isDef(features)) {
+      // TODO: support fast lane for other filter types
+      var candidates = this.idLookup_,
+          feature;
+      features = {};
+      for (i in candidates) {
+        feature = candidates[i];
+        if (opt_filter.evaluate(feature) === true) {
+          features[i] = feature;
+        }
+      }
     }
   }
   return features;
