@@ -5,26 +5,32 @@ goog.require('ol.parser.ogc.WMSCapabilities_v1_1_1');
 goog.require('ol.parser.ogc.WMSCapabilities_v1_1_1_WMSC');
 goog.require('ol.parser.ogc.WMSCapabilities_v1_3_0');
 
+
 /**
  * @define {boolean} Whether to enable WMS Capabilities version 1.1.0.
  */
 ol.ENABLE_WMSCAPS_1_1_0 = true;
+
 
 /**
  * @define {boolean} Whether to enable WMS Capabilities version 1.1.1.
  */
 ol.ENABLE_WMSCAPS_1_1_1 = true;
 
+
 /**
  * @define {boolean} Whether to enable WMS Capabilities version 1.3.0.
  */
 ol.ENABLE_WMSCAPS_1_3_0 = true;
 
+
 /**
- * @define {boolean} Whether to enable WMS Capabilities version 1.1.1 
+ * @define {boolean} Whether to enable WMS Capabilities version 1.1.1.
  * WMSC profile.
  */
 ol.ENABLE_WMSCAPS_1_1_1_WMSC = true;
+
+
 
 /**
  * @constructor
