@@ -211,14 +211,16 @@ describe('ol.Map', function() {
 
       // confirm that the center is somewhere between origin and destination
       // after a short delay
-      waits(100);
+      waits(goog.async.AnimationDelay.TIMEOUT);
       runs(function() {
         expect(o.callback).toHaveBeenCalled();
         var loc = map.getView().getCenter();
         expect(loc.x).not.toEqual(origin.x);
         expect(loc.y).not.toEqual(origin.y);
-        expect(loc.x).not.toEqual(destination.x);
-        expect(loc.y).not.toEqual(destination.y);
+        if (new Date().getTime() - start < duration) {
+          expect(loc.x).not.toEqual(destination.x);
+          expect(loc.y).not.toEqual(destination.y);
+        }
       });
 
       // confirm that the map has reached the destination after the duration
