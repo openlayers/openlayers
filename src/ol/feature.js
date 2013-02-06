@@ -1,6 +1,7 @@
 goog.provide('ol.Feature');
 
 goog.require('ol.Object');
+goog.require('ol.geom.Geometry');
 
 
 

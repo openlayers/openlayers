@@ -1,7 +1,6 @@
 goog.provide('ol.filter.Logical');
 goog.provide('ol.filter.LogicalOperator');
 
-goog.require('ol.Feature');
 goog.require('ol.filter.Filter');
 
 

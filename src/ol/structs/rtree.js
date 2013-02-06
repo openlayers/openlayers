@@ -1,5 +1,7 @@
 goog.provide('ol.structs.RTree');
 
+goog.require('ol.Rectangle');
+
 
 
 /**

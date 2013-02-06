@@ -1,15 +1,8 @@
 goog.provide('ol.filter.Geometry');
 goog.provide('ol.filter.GeometryType');
 
-goog.require('ol.Feature');
 goog.require('ol.filter.Filter');
 goog.require('ol.geom.GeometryType');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.MultiLineString');
-goog.require('ol.geom.MultiPoint');
-goog.require('ol.geom.MultiPolygon');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
 
 
 

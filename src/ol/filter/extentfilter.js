@@ -1,6 +1,7 @@
 goog.provide('ol.filter.Extent');
 
-goog.require('ol.Feature');
+goog.require('ol.Extent');
+goog.require('ol.filter.Filter');
 
 
 

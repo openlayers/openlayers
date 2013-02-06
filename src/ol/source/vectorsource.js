@@ -1,12 +1,17 @@
 goog.provide('ol.source.Vector');
 
+goog.require('ol.Attribution');
+goog.require('ol.Extent');
 goog.require('ol.Feature');
+goog.require('ol.Projection');
 goog.require('ol.filter.Extent');
+goog.require('ol.filter.Filter');
 goog.require('ol.filter.Geometry');
 goog.require('ol.filter.Logical');
 goog.require('ol.geom.GeometryType');
-goog.require('ol.source.Source');
+goog.require('ol.source.TileSource');
 goog.require('ol.structs.RTree');
+goog.require('ol.tilegrid.TileGrid');
 
 
 

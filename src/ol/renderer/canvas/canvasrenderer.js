@@ -4,13 +4,11 @@ goog.provide('ol.renderer.canvas.isSupported');
 
 goog.require('goog.asserts');
 goog.require('goog.vec.Mat4');
-goog.require('ol.Coordinate');
+goog.require('ol.Feature');
 goog.require('ol.Pixel');
 goog.require('ol.canvas');
 goog.require('ol.geom.Geometry');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.style.LiteralLine');
 goog.require('ol.style.LiteralPoint');
 goog.require('ol.style.LiteralPolygon');

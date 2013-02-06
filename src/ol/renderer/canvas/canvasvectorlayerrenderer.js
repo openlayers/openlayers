@@ -1,10 +1,19 @@
 goog.provide('ol.renderer.canvas.VectorLayer');
 
 goog.require('goog.vec.Mat4');
+goog.require('ol.Extent');
+goog.require('ol.Size');
+goog.require('ol.TileCoord');
 goog.require('ol.filter.Geometry');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.layer.Vector');
-goog.require('ol.tilegrid.TileGrid');
+goog.require('ol.renderer.canvas');
+goog.require('ol.renderer.canvas.Layer');
+goog.require('ol.renderer.canvas.Renderer');
+goog.require('ol.style.LiteralLine');
+goog.require('ol.style.LiteralPolygon');
+goog.require('ol.style.LiteralShape');
+goog.require('ol.style.ShapeType');
 
 
 

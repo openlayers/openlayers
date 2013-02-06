@@ -1,7 +1,12 @@
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
+goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.Projection');
+goog.require('ol.RendererHint');
+goog.require('ol.View2D');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.Point');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.MapQuestOpenAerial');
