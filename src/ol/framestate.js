@@ -31,7 +31,7 @@ goog.require('ol.layer.LayerState');
  *            usedTiles: Object.<string, Object.<string, ol.TileRange>>,
  *            view2DState: ol.View2DState,
  *            viewHints: Array.<number>,
- *            wantedTiles: Object.<string, Object.<string, ol.TileRange>>}}
+ *            wantedTiles: Object.<string, Object.<string, boolean>>}}
  */
 ol.FrameState;
 

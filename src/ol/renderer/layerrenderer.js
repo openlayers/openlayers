@@ -4,6 +4,7 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.FrameState');
 goog.require('ol.Object');
+goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.LayerProperty');
@@ -197,24 +198,16 @@ ol.renderer.Layer.prototype.updateUsedTiles =
 
 /**
  * @protected
- * @param {Object.<string, Object.<string, ol.TileRange>>} wantedTiles Wanted
- *     tile ranges.
+ * @param {Object.<string, Object.<string, boolean>>} wantedTiles Wanted tiles.
  * @param {ol.source.Source} source Source.
- * @param {number} z Z.
- * @param {ol.TileRange} tileRange Tile range.
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
  */
 ol.renderer.Layer.prototype.updateWantedTiles =
-    function(wantedTiles, source, z, tileRange) {
+    function(wantedTiles, source, tileCoord) {
   var sourceKey = goog.getUid(source).toString();
-  var zKey = z.toString();
-  if (sourceKey in wantedTiles) {
-    if (zKey in wantedTiles[sourceKey]) {
-      wantedTiles[sourceKey][zKey].extend(tileRange);
-    } else {
-      wantedTiles[sourceKey][zKey] = tileRange;
-    }
-  } else {
+  var coordKey = tileCoord.toString();
+  if (!(sourceKey in wantedTiles)) {
     wantedTiles[sourceKey] = {};
-    wantedTiles[sourceKey][zKey] = tileRange;
   }
+  wantedTiles[sourceKey][coordKey] = true;
 };

@@ -500,9 +500,8 @@ ol.Map.prototype.getTilePriority = function(tile, tileSourceKey, tileCenter) {
   if (goog.isNull(frameState) || !(tileSourceKey in frameState.wantedTiles)) {
     return ol.TileQueue.DROP;
   }
-  var zKey = tile.tileCoord.z.toString();
-  if (!(zKey in frameState.wantedTiles[tileSourceKey]) ||
-      !frameState.wantedTiles[tileSourceKey][zKey].contains(tile.tileCoord)) {
+  var coordKey = tile.tileCoord.toString();
+  if (!frameState.wantedTiles[tileSourceKey][coordKey]) {
     return ol.TileQueue.DROP;
   }
   var center = frameState.view2DState.center;

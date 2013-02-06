@@ -393,6 +393,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
 
         tileState = tile.getState();
         if (tileState == ol.TileState.IDLE) {
+          this.updateWantedTiles(frameState.wantedTiles, tileSource, tileCoord);
           tileCenter = tileGrid.getTileCoordCenter(tileCoord);
           frameState.tileQueue.enqueue(tile, tileSourceKey, tileCenter);
         } else if (tileState == ol.TileState.LOADED) {
@@ -457,7 +458,6 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
       this.renderedTileRange_ = null;
       this.renderedFramebufferExtent_ = null;
       frameState.animate = true;
-      this.updateWantedTiles(frameState.wantedTiles, tileSource, z, tileRange);
     }
 
   }
