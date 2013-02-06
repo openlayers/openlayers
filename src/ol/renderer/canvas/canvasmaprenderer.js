@@ -8,6 +8,7 @@ goog.require('goog.style');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Size');
 goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Vector');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.renderer.canvas.VectorLayer');

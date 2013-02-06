@@ -1,4 +1,3 @@
-goog.provide('ol.renderer.canvas');
 goog.provide('ol.renderer.canvas.Renderer');
 goog.provide('ol.renderer.canvas.isSupported');
 

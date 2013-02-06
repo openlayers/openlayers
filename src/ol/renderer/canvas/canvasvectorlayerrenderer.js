@@ -7,7 +7,6 @@ goog.require('ol.TileCoord');
 goog.require('ol.filter.Geometry');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.layer.Vector');
-goog.require('ol.renderer.canvas');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.Renderer');
 goog.require('ol.style.LiteralLine');
