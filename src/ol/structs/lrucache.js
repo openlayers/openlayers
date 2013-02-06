@@ -21,19 +21,19 @@ ol.structs.LRUCache = function() {
 
   /**
    * @private
-   * @type {Object.<string, ol.structs.LRUCacheEntry_>}
+   * @type {Object.<string, ol.structs.LRUCacheEntry>}
    */
   this.entries_ = {};
 
   /**
    * @private
-   * @type {?ol.structs.LRUCacheEntry_}
+   * @type {?ol.structs.LRUCacheEntry}
    */
   this.oldest_ = null;
 
   /**
    * @private
-   * @type {?ol.structs.LRUCacheEntry_}
+   * @type {?ol.structs.LRUCacheEntry}
    */
   this.newest_ = null;
 
@@ -244,8 +244,8 @@ ol.structs.LRUCache.prototype.set = function(key, value) {
 
 /**
  * @typedef {{key_: string,
- *            newer: ol.structs.LRUCacheEntry_,
- *            older: ol.structs.LRUCacheEntry_,
+ *            newer: ol.structs.LRUCacheEntry,
+ *            older: ol.structs.LRUCacheEntry,
  *            value_: *}}
  */
-ol.structs.LRUCacheEntry_;
+ol.structs.LRUCacheEntry;
