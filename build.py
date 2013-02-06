@@ -76,7 +76,7 @@ def report_sizes(t):
     t.info('  compressed: %d bytes', len(stringio.getvalue()))
 
 
-virtual('all', 'build-all', 'build', 'examples')
+virtual('all', 'build-all', 'build', 'examples', 'precommit')
 
 
 virtual('precommit', 'lint', 'build-all', 'test', 'build', 'build-examples', 'doc')
