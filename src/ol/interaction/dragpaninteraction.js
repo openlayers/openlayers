@@ -51,7 +51,9 @@ goog.inherits(ol.interaction.DragPan, ol.interaction.Drag);
  */
 ol.interaction.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
   if (this.kinetic_) {
-    this.kinetic_.update(mapBrowserEvent.browserEvent);
+    this.kinetic_.update(
+        mapBrowserEvent.browserEvent.clientX,
+        mapBrowserEvent.browserEvent.clientY);
   }
   var map = mapBrowserEvent.map;
   // FIXME works for View2D only
@@ -104,7 +106,7 @@ ol.interaction.DragPan.prototype.handleDragStart = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   if (this.condition_(browserEvent)) {
     if (this.kinetic_) {
-      this.kinetic_.begin(browserEvent);
+      this.kinetic_.begin(browserEvent.clientX, browserEvent.clientY);
     }
     var map = mapBrowserEvent.map;
     map.requestRenderFrame();
