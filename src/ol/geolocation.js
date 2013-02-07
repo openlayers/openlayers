@@ -1,4 +1,5 @@
-// FIXME: handle errors ?
+// FIXME handle geolocation not supported
+// FIXME handle geolocation errors
 
 goog.provide('ol.Geolocation');
 goog.provide('ol.GeolocationProperty');
@@ -36,18 +37,20 @@ ol.Geolocation = function(opt_positionOptions) {
    */
   this.position_ = null;
 
-  goog.events.listen(
-      this, ol.Object.getChangedEventType(ol.GeolocationProperty.PROJECTION),
-      this.handleProjectionChanged_, false, this);
+  if (ol.Geolocation.isSupported) {
+    goog.events.listen(
+        this, ol.Object.getChangedEventType(ol.GeolocationProperty.PROJECTION),
+        this.handleProjectionChanged_, false, this);
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.watchId_ = navigator.geolocation.watchPosition(
-      goog.bind(this.positionChange_, this),
-      goog.bind(this.positionError_, this),
-      opt_positionOptions);
+    /**
+     * @private
+     * @type {number}
+     */
+    this.watchId_ = navigator.geolocation.watchPosition(
+        goog.bind(this.positionChange_, this),
+        goog.bind(this.positionError_, this),
+        opt_positionOptions);
+  }
 };
 goog.inherits(ol.Geolocation, ol.Object);
 
