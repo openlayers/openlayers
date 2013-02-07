@@ -3,7 +3,9 @@ goog.provide('ol.renderer.canvas.VectorLayer');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Extent');
 goog.require('ol.Size');
+goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
+goog.require('ol.ViewHint');
 goog.require('ol.filter.Geometry');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.layer.Vector');
@@ -63,15 +65,10 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
 
   /**
    * @private
-   * @type {Object.<string, HTMLCanvasElement>}
+   * @type {ol.TileCache}
    */
-  this.tileCache_ = {};
-
-  /**
-   * @private
-   * @type {Array.<string>}
-   */
-  this.tileCacheIndex_ = [];
+  this.tileCache_ = new ol.TileCache(
+      ol.renderer.canvas.VectorLayer.TILECACHE_SIZE);
 
   /**
    * @private
@@ -138,6 +135,12 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
   });
   // TODO: remove this
   this.symbolizers_ = symbolizers;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.pendingCachePrune_ = false;
 
 };
 goog.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
@@ -282,8 +285,10 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       tileCoord = new ol.TileCoord(z, x, y);
       key = tileCoord.toString();
-      tile = this.tileCache_[key];
-      if (tile === undefined && !frameState.viewHints[ol.ViewHint.ANIMATING]) {
+      if (this.tileCache_.containsKey(key)) {
+        tilesToRender[key] = tileCoord;
+      } else if (!frameState.viewHints[ol.ViewHint.ANIMATING]) {
+        tilesToRender[key] = tileCoord;
         tileExtent = tileGrid.getTileCoordExtent(tileCoord);
         // TODO: instead of filtering here, do this on the source and maintain
         // a spatial index
@@ -310,42 +315,48 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
           }
         }
       }
-      tilesToRender[key] = tileCoord;
     }
   }
 
+  this.dirty_ = true;
   for (key in tilesToRender) {
-    tile = this.tileCache_[key];
     tileCoord = tilesToRender[key];
-    // LRU - move tile key to the end of the index
-    goog.array.remove(this.tileCacheIndex_, key);
-    this.tileCacheIndex_.push(key);
-    if (tile === undefined && !frameState.viewHints[ol.ViewHint.ANIMATING]) {
+    if (this.tileCache_.containsKey(key)) {
+      tile = /** @type {HTMLCanvasElement} */ (this.tileCache_.get(key));
+    } else {
       tile = /** @type {HTMLCanvasElement} */
           this.tileArchetype_.cloneNode(false);
       tile.getContext('2d').drawImage(sketchCanvas,
           (tileRange.minX - tileCoord.x) * tileSize.width,
           (tileCoord.y - tileRange.maxY) * tileSize.height);
-      this.tileCache_[key] = tile;
-      // manage cache
-      if (this.tileCacheIndex_.length >=
-          ol.renderer.canvas.VectorLayer.TILECACHE_SIZE) {
-        delete this.tileCache_[this.tileCacheIndex_.shift()];
-      }
+      this.tileCache_.set(key, tile);
     }
-    if (tile) {
-      finalContext.drawImage(tile,
-          tileSize.width * (tileCoord.x - tileRange.minX),
-          tileSize.height * (tileRange.maxY - tileCoord.y));
-    } else {
-      // we decided not to generate a tile during animation
-      this.dirty_ = true;
-    }
+    finalContext.drawImage(tile,
+        tileSize.width * (tileCoord.x - tileRange.minX),
+        tileSize.height * (tileRange.maxY - tileCoord.y));
+    this.dirty_ = false;
   }
 
   this.renderedResolution_ = tileResolution;
   this.renderedExtent_ = tileRangeExtent;
+  if (!this.pendingCachePrune_) {
+    this.pendingCachePrune_ = true;
+    goog.global.setTimeout(goog.bind(this.pruneTileCache_, this), 0);
+  }
 
+};
+
+
+/**
+ * Get rid of tiles that exceed the cache capacity.
+ * TODO: add a method to the cache to handle this
+ * @private
+ */
+ol.renderer.canvas.VectorLayer.prototype.pruneTileCache_ = function() {
+  while (this.tileCache_.canExpireCache()) {
+    this.tileCache_.pop();
+  }
+  this.pendingCachePrune_ = false;
 };
 
 
