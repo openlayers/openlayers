@@ -32,23 +32,23 @@
 @exportObjectLiteralProperty ol.animation.BounceOptions.duration number|undefined
 @exportObjectLiteralProperty ol.animation.BounceOptions.easing function(number):number|undefined
 
-@exportObjectLiteral ol.animation.PanFromOptions
-@exportObjectLiteralProperty ol.animation.PanFromOptions.source ol.Coordinate
-@exportObjectLiteralProperty ol.animation.PanFromOptions.start number|undefined
-@exportObjectLiteralProperty ol.animation.PanFromOptions.duration number|undefined
-@exportObjectLiteralProperty ol.animation.PanFromOptions.easing function(number):number|undefined
+@exportObjectLiteral ol.animation.PanOptions
+@exportObjectLiteralProperty ol.animation.PanOptions.source ol.Coordinate
+@exportObjectLiteralProperty ol.animation.PanOptions.start number|undefined
+@exportObjectLiteralProperty ol.animation.PanOptions.duration number|undefined
+@exportObjectLiteralProperty ol.animation.PanOptions.easing function(number):number|undefined
 
-@exportObjectLiteral ol.animation.RotateFromOptions
-@exportObjectLiteralProperty ol.animation.RotateFromOptions.rotation number
-@exportObjectLiteralProperty ol.animation.RotateFromOptions.start number|undefined
-@exportObjectLiteralProperty ol.animation.RotateFromOptions.duration number|undefined
-@exportObjectLiteralProperty ol.animation.RotateFromOptions.easing function(number):number|undefined
+@exportObjectLiteral ol.animation.RotateOptions
+@exportObjectLiteralProperty ol.animation.RotateOptions.rotation number
+@exportObjectLiteralProperty ol.animation.RotateOptions.start number|undefined
+@exportObjectLiteralProperty ol.animation.RotateOptions.duration number|undefined
+@exportObjectLiteralProperty ol.animation.RotateOptions.easing function(number):number|undefined
 
-@exportObjectLiteral ol.animation.ZoomFromOptions
-@exportObjectLiteralProperty ol.animation.ZoomFromOptions.resolution number
-@exportObjectLiteralProperty ol.animation.ZoomFromOptions.start number|undefined
-@exportObjectLiteralProperty ol.animation.ZoomFromOptions.duration number|undefined
-@exportObjectLiteralProperty ol.animation.ZoomFromOptions.easing function(number):number|undefined
+@exportObjectLiteral ol.animation.ZoomOptions
+@exportObjectLiteralProperty ol.animation.ZoomOptions.resolution number
+@exportObjectLiteralProperty ol.animation.ZoomOptions.start number|undefined
+@exportObjectLiteralProperty ol.animation.ZoomOptions.duration number|undefined
+@exportObjectLiteralProperty ol.animation.ZoomOptions.easing function(number):number|undefined
 
 @exportObjectLiteral ol.control.AttributionOptions
 @exportObjectLiteralProperty ol.control.AttributionOptions.map ol.Map|undefined
