@@ -78,6 +78,12 @@ ol.Geolocation.prototype.handleProjectionChanged_ = function() {
 
 
 /**
+ * @type {boolean} Is supported.
+ */
+ol.Geolocation.isSupported = 'geolocation' in navigator;
+
+
+/**
  * @private
  * @param {GeolocationPosition} position position event.
  */
