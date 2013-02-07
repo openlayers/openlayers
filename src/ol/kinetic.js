@@ -63,23 +63,25 @@ ol.Kinetic = function(decay, minVelocity, delay) {
 
 
 /**
- * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @param {number} x X.
+ * @param {number} y Y.
  */
-ol.Kinetic.prototype.begin = function(browserEvent) {
+ol.Kinetic.prototype.begin = function(x, y) {
   this.points_.length = 0;
   this.angle_ = 0;
   this.initialVelocity_ = 0;
-  this.update(browserEvent);
+  this.update(x, y);
 };
 
 
 /**
- * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @param {number} x X.
+ * @param {number} y Y.
  */
-ol.Kinetic.prototype.update = function(browserEvent) {
+ol.Kinetic.prototype.update = function(x, y) {
   this.points_.push({
-    x: browserEvent.clientX,
-    y: browserEvent.clientY,
+    x: x,
+    y: y,
     t: goog.now()
   });
 };
