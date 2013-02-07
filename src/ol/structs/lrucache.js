@@ -91,7 +91,7 @@ ol.structs.LRUCache.prototype.clear = function() {
  * @return {boolean} Contains key.
  */
 ol.structs.LRUCache.prototype.containsKey = function(key) {
-  return key in this.entries_;
+  return this.entries_.hasOwnProperty(key);
 };
 
 
