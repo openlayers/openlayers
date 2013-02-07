@@ -220,7 +220,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
    */
   if (!this.dirty_ && this.renderedResolution_ === tileResolution &&
       // TODO: extent.equals()
-      this.renderedResolution_.toString() === tileRangeExtent.toString()) {
+      this.renderedExtent_.toString() === tileRangeExtent.toString()) {
     return;
   }
 
@@ -283,7 +283,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       tileCoord = new ol.TileCoord(z, x, y);
       key = tileCoord.toString();
       tile = this.tileCache_[key];
-      if (tile === undefined) {
+      if (tile === undefined && !frameState.viewHints[ol.ViewHint.ANIMATING]) {
         tileExtent = tileGrid.getTileCoordExtent(tileCoord);
         // TODO: instead of filtering here, do this on the source and maintain
         // a spatial index
@@ -320,7 +320,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
     // LRU - move tile key to the end of the index
     goog.array.remove(this.tileCacheIndex_, key);
     this.tileCacheIndex_.push(key);
-    if (tile === undefined) {
+    if (tile === undefined && !frameState.viewHints[ol.ViewHint.ANIMATING]) {
       tile = /** @type {HTMLCanvasElement} */
           this.tileArchetype_.cloneNode(false);
       tile.getContext('2d').drawImage(sketchCanvas,
@@ -333,12 +333,18 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
         delete this.tileCache_[this.tileCacheIndex_.shift()];
       }
     }
-    finalContext.drawImage(tile,
-        tileSize.width * (tileCoord.x - tileRange.minX),
-        tileSize.height * (tileRange.maxY - tileCoord.y));
+    if (tile) {
+      finalContext.drawImage(tile,
+          tileSize.width * (tileCoord.x - tileRange.minX),
+          tileSize.height * (tileRange.maxY - tileCoord.y));
+    } else {
+      // we decided not to generate a tile during animation
+      this.dirty_ = true;
+    }
   }
 
   this.renderedResolution_ = tileResolution;
+  this.renderedExtent_ = tileRangeExtent;
 
 };
 
