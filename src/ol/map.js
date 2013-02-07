@@ -640,6 +640,16 @@ ol.Map.prototype.isDef = function() {
 
 
 /**
+ * @return {boolean} No animation is progress and all tiles loaded.
+ */
+ol.Map.prototype.isIdle = function() {
+  var frameState = this.frameState_;
+  return !goog.isNull(frameState) &&
+      !frameState.animate && goog.object.isEmpty(frameState.wantedTiles);
+};
+
+
+/**
  * Render.
  */
 ol.Map.prototype.render = function() {
