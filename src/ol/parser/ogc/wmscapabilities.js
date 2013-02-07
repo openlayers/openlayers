@@ -34,12 +34,12 @@ ol.ENABLE_WMSCAPS_1_1_1_WMSC = true;
 
 /**
  * @constructor
- * @param {Object} formatOptions Options which will be set on this object.
+ * @param {Object=} opt_options Options which will be set on this object.
  * @extends {ol.parser.ogc.Versioned}
  */
-ol.parser.ogc.WMSCapabilities = function(formatOptions) {
-  formatOptions = formatOptions || {};
-  formatOptions['defaultVersion'] = '1.1.1';
+ol.parser.ogc.WMSCapabilities = function(opt_options) {
+  opt_options = opt_options || {};
+  opt_options['defaultVersion'] = '1.1.1';
   this.parsers = {};
   if (ol.ENABLE_WMSCAPS_1_1_0) {
     this.parsers['v1_1_0'] = ol.parser.ogc.WMSCapabilities_v1_1_0;
@@ -53,6 +53,6 @@ ol.parser.ogc.WMSCapabilities = function(formatOptions) {
   if (ol.ENABLE_WMSCAPS_1_3_0) {
     this.parsers['v1_3_0'] = ol.parser.ogc.WMSCapabilities_v1_3_0;
   }
-  goog.base(this, formatOptions);
+  goog.base(this, opt_options);
 };
 goog.inherits(ol.parser.ogc.WMSCapabilities, ol.parser.ogc.Versioned);
