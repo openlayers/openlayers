@@ -575,6 +575,10 @@ ol.Map.prototype.handlePostRender = function() {
     postRenderFunctions[i](this, this.frameState_);
   }
   postRenderFunctions.length = 0;
+  if (this.isIdle()) {
+    this.dispatchEvent(
+        new ol.MapEvent(ol.MapEventType.IDLE, this, this.frameState_));
+  }
 };
 
 
