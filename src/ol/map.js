@@ -22,8 +22,6 @@ goog.require('goog.events.MouseWheelHandler');
 goog.require('goog.events.MouseWheelHandler.EventType');
 goog.require('ol.BrowserFeature');
 goog.require('ol.Collection');
-goog.require('ol.CollectionEvent');
-goog.require('ol.CollectionEventType');
 goog.require('ol.Color');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
@@ -234,17 +232,6 @@ ol.Map = function(mapOptions) {
    * @type {ol.Collection}
    * @private
    */
-  this.controls_ = mapOptionsInternal.controls;
-
-  goog.events.listen(this.controls_, ol.CollectionEventType.ADD,
-      this.handleControlsAdd_, false, this);
-  goog.events.listen(this.controls_, ol.CollectionEventType.REMOVE,
-      this.handleControlsRemove_, false, this);
-
-  /**
-   * @type {ol.Collection}
-   * @private
-   */
   this.interactions_ = mapOptionsInternal.interactions;
 
   /**
@@ -299,7 +286,9 @@ ol.Map = function(mapOptions) {
   // this gives the map an initial size
   this.handleBrowserWindowResize();
 
-  this.controls_.forEach(
+  /** @type {Array.<ol.control.Control>} */
+  var controls = mapOptionsInternal.controls;
+  goog.array.forEach(controls,
       /**
        * @param {ol.control.Control} control Control.
        */
@@ -384,14 +373,6 @@ ol.Map.prototype.getRenderer = function() {
  */
 ol.Map.prototype.getTarget = function() {
   return this.target_;
-};
-
-
-/**
- * @return {ol.Collection} Controls.
- */
-ol.Map.prototype.getControls = function() {
-  return this.controls_;
 };
 
 
@@ -519,26 +500,6 @@ ol.Map.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
   var type = opt_type || browserEvent.type;
   var mapBrowserEvent = new ol.MapBrowserEvent(type, this, browserEvent);
   this.handleMapBrowserEvent(mapBrowserEvent);
-};
-
-
-/**
- * @param {ol.CollectionEvent} collectionEvent Collection event.
- * @private
- */
-ol.Map.prototype.handleControlsAdd_ = function(collectionEvent) {
-  var control = /** @type {ol.control.Control} */ (collectionEvent.elem);
-  control.setMap(this);
-};
-
-
-/**
- * @param {ol.CollectionEvent} collectionEvent Collection event.
- * @private
- */
-ol.Map.prototype.handleControlsRemove_ = function(collectionEvent) {
-  var control = /** @type {ol.control.Control} */ (collectionEvent.elem);
-  control.setMap(null);
 };
 
 
@@ -848,7 +809,7 @@ ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
 
 
 /**
- * @typedef {{controls: ol.Collection,
+ * @typedef {{controls: Array.<ol.control.Control>,
  *            interactions: ol.Collection,
  *            rendererConstructor:
  *                function(new: ol.renderer.Map, Element, ol.Map),
@@ -914,14 +875,9 @@ ol.Map.createOptionsInternal = function(mapOptions) {
   }
 
   /**
-   * @type {ol.Collection}
+   * @type {Array.<ol.control.Control>}
    */
-  var controls;
-  if (goog.isDef(mapOptions.controls)) {
-    controls = mapOptions.controls;
-  } else {
-    controls = ol.Map.createControls_(mapOptions);
-  }
+  var controls = ol.Map.createControls_(mapOptions);
 
   /**
    * @type {ol.Collection}
@@ -952,22 +908,29 @@ ol.Map.createOptionsInternal = function(mapOptions) {
 /**
  * @private
  * @param {ol.MapOptions} mapOptions Map options.
- * @return {ol.Collection} Controls.
+ * @return {Array.<ol.control.Control>} Controls.
  */
 ol.Map.createControls_ = function(mapOptions) {
+  /** @type {Array.<ol.control.Control>} */
+  var controls = [];
 
-  var controls = new ol.Collection();
+  var attributionControl = goog.isDef(mapOptions.attributionControl) ?
+      mapOptions.attributionControl : true;
+  if (attributionControl) {
+    controls.push(new ol.control.Attribution({}));
+  }
 
-  controls.push(new ol.control.Attribution({}));
-
-  var zoomDelta = goog.isDef(mapOptions.zoomDelta) ?
-      mapOptions.zoomDelta : 4;
-  controls.push(new ol.control.Zoom({
-    delta: zoomDelta
-  }));
+  var zoomControl = goog.isDef(mapOptions.zoomControl) ?
+      mapOptions.zoomControl : true;
+  if (zoomControl) {
+    var zoomDelta = goog.isDef(mapOptions.zoomDelta) ?
+        mapOptions.zoomDelta : 4;
+    controls.push(new ol.control.Zoom({
+      delta: zoomDelta
+    }));
+  }
 
   return controls;
-
 };
 
 
