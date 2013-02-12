@@ -15,12 +15,13 @@ from pake import Target, ifind, main, output, rule, target, variables, virtual
 if sys.platform == 'win32':
     ProgramFiles = os.environ.get('ProgramFiles', 'C:\\Program Files')
     ProgramFiles_X86 = os.environ.get('ProgramFiles(X86)', 'C:\\Program Files')
+    Python27 = os.environ.get('SystemDrive', 'C:') + '\\Python27'
     variables.GIT = os.path.join(ProgramFiles_X86, 'Git', 'bin', 'git.exe')
-    variables.GJSLINT = 'gjslint'  # FIXME
+    variables.GJSLINT = os.path.join(Python27, 'Scripts', 'gjslint.exe')
     variables.JAVA = os.path.join(ProgramFiles, 'Java', 'jre7', 'bin', 'java.exe')
     variables.JSDOC = 'jsdoc'  # FIXME
     variables.PHANTOMJS = 'phantomjs'  # FIXME
-    variables.PYTHON = os.path.join(os.environ['SystemDrive'] + '\\', 'Python27', 'python.exe')
+    variables.PYTHON = os.path.join(Python27, 'python.exe')
 else:
     variables.GIT = 'git'
     variables.GJSLINT = 'gjslint'
