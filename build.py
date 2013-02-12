@@ -207,7 +207,7 @@ def serve(t):
 
 @target('serve-precommit', PLOVR_JAR, INTERNAL_SRC)
 def serve_precommit(t):
-    t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'build/ol-all.json', glob.glob('test/*.json'))
+    t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'build/ol-all.json', 'test/test.json')
 
 
 virtual('lint', 'build/lint-src-timestamp', 'build/lint-spec-timestamp', 'build/check-requires-timestamp')
