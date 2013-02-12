@@ -13,11 +13,15 @@ Run build.py:
 
     $ ./build.py
 
+Windows users should run `build` instead.
+
 ## Run examples locally
 
 Run the [Plovr](http://plovr.com/) web server with:
 
     $ ./build.py serve
+
+Windows users should run `build serve` instead.
 
 Then, either open one of the example html files from the `examples` directory directly in your browser, or start a simple webserver, for example:
 
