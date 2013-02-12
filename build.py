@@ -20,15 +20,16 @@ if sys.platform == 'win32':
     variables.GJSLINT = os.path.join(Python27, 'Scripts', 'gjslint.exe')
     variables.JAVA = os.path.join(ProgramFiles, 'Java', 'jre7', 'bin', 'java.exe')
     variables.JSDOC = 'jsdoc'  # FIXME
-    variables.PHANTOMJS = 'phantomjs'  # FIXME
     variables.PYTHON = os.path.join(Python27, 'python.exe')
+    PHANTOMJS_WINDOWS_ZIP = 'build/phantomjs-1.8.1-windows.zip'
+    PHANTOMJS = 'build/phantomjs-1.8.1-windows/phantomjs.exe'
 else:
     variables.GIT = 'git'
     variables.GJSLINT = 'gjslint'
     variables.JAVA = 'java'
     variables.JSDOC = 'jsdoc'
-    variables.PHANTOMJS = 'phantomjs'
     variables.PYTHON = 'python'
+    PHANTOMJS = 'phantomjs'
 
 variables.BRANCH = output('%(GIT)s', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
 
@@ -334,9 +335,23 @@ def hostexamples(t):
     t.cp('examples/example-list.js', 'examples/example-list.xml', 'examples/Jugl.js', 'build/gh-pages/%(BRANCH)s/examples/')
 
 
-@target('test', INTERNAL_SRC, 'test/requireall.js', phony=True)
+@target('test', PHANTOMJS, INTERNAL_SRC, 'test/requireall.js', phony=True)
 def test(t):
-    t.run('%(PHANTOMJS)s', 'test/phantom-jasmine/run_jasmine_test.coffee', 'test/ol.html')
+    t.run(PHANTOMJS, 'test/phantom-jasmine/run_jasmine_test.coffee', 'test/ol.html')
+
+
+if sys.platform == 'win32':
+    @target(PHANTOMJS, PHANTOMJS_WINDOWS_ZIP, clean=False)
+    def phantom_js(t):
+        from zipfile import ZipFile
+        ZipFile(PHANTOMJS_WINDOWS_ZIP).extractall('build')
+
+    @target(PHANTOMJS_WINDOWS_ZIP, clean=False)
+    def phantomjs_windows_zip(t):
+        t.download('http://phantomjs.googlecode.com/files/' + os.path.basename(t.name))
+
+else:
+    virtual(PHANTOMJS)
 
 
 @target('fixme', phony=True)
