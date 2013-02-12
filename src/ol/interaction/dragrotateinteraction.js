@@ -67,7 +67,7 @@ ol.interaction.DragRotate.prototype.handleDragStart =
     var theta = Math.atan2(
         size.height / 2 - offset.y,
         offset.x - size.width / 2);
-    this.startRotation_ = (view.getRotation() || 0) + theta;
+    this.startRotation_ = view.getRotation() + theta;
     return true;
   } else {
     return false;
