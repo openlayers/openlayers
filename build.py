@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 from cStringIO import StringIO
-import glob
 import gzip
 import json
 import os
+import os.path
 import re
 import shutil
 import sys
@@ -13,19 +13,23 @@ from pake import Target, ifind, main, output, rule, target, variables, virtual
 
 
 if sys.platform == 'win32':
-    variables.GIT = 'C:/Program Files/Git/bin/git.exe'
-    variables.GJSLINT = 'gjslint'  # FIXME
-    variables.JAVA = 'C:/Program Files/Java/jre7/bin/java.exe'
+    ProgramFiles = os.environ.get('ProgramFiles', 'C:\\Program Files')
+    ProgramFiles_X86 = os.environ.get('ProgramFiles(X86)', 'C:\\Program Files')
+    Python27 = os.environ.get('SystemDrive', 'C:') + '\\Python27'
+    variables.GIT = os.path.join(ProgramFiles_X86, 'Git', 'bin', 'git.exe')
+    variables.GJSLINT = os.path.join(Python27, 'Scripts', 'gjslint.exe')
+    variables.JAVA = os.path.join(ProgramFiles, 'Java', 'jre7', 'bin', 'java.exe')
     variables.JSDOC = 'jsdoc'  # FIXME
-    variables.PHANTOMJS = 'phantomjs'  # FIXME
-    variables.PYTHON = 'C:/Python27/python.exe'
+    variables.PYTHON = os.path.join(Python27, 'python.exe')
+    PHANTOMJS_WINDOWS_ZIP = 'build/phantomjs-1.8.1-windows.zip'
+    PHANTOMJS = 'build/phantomjs-1.8.1-windows/phantomjs.exe'
 else:
     variables.GIT = 'git'
     variables.GJSLINT = 'gjslint'
     variables.JAVA = 'java'
     variables.JSDOC = 'jsdoc'
-    variables.PHANTOMJS = 'phantomjs'
     variables.PYTHON = 'python'
+    PHANTOMJS = 'phantomjs'
 
 variables.BRANCH = output('%(GIT)s', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
 
@@ -40,8 +44,13 @@ EXTERNAL_SRC = [
     'build/src/external/src/types.js']
 
 EXAMPLES = [path
-            for path in glob.glob('examples/*.html')
+            for path in ifind('examples')
+            if not path.startswith('examples/standalone/')
+            if path.endswith('.html')
             if path != 'examples/example-list.html']
+
+EXAMPLES_JSON = [example.replace('.html', '.json')
+                 for example in EXAMPLES]
 
 EXAMPLES_SRC = [path
                 for path in ifind('examples')
@@ -193,7 +202,7 @@ def examples_star_combined_js(name, match):
 
 @target('serve', PLOVR_JAR, INTERNAL_SRC, 'test/requireall.js', 'examples')
 def serve(t):
-    t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', glob.glob('build/*.json'), glob.glob('examples/*.json'), glob.glob('test/*.json'))
+    t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'build/ol.json', 'build/ol-all.json', EXAMPLES_JSON, 'test/test.json')
 
 
 @target('serve-precommit', PLOVR_JAR, INTERNAL_SRC)
@@ -326,9 +335,23 @@ def hostexamples(t):
     t.cp('examples/example-list.js', 'examples/example-list.xml', 'examples/Jugl.js', 'build/gh-pages/%(BRANCH)s/examples/')
 
 
-@target('test', INTERNAL_SRC, 'test/requireall.js', phony=True)
+@target('test', PHANTOMJS, INTERNAL_SRC, 'test/requireall.js', phony=True)
 def test(t):
-    t.run('%(PHANTOMJS)s', 'test/phantom-jasmine/run_jasmine_test.coffee', 'test/ol.html')
+    t.run(PHANTOMJS, 'test/phantom-jasmine/run_jasmine_test.coffee', 'test/ol.html')
+
+
+if sys.platform == 'win32':
+    @target(PHANTOMJS, PHANTOMJS_WINDOWS_ZIP, clean=False)
+    def phantom_js(t):
+        from zipfile import ZipFile
+        ZipFile(PHANTOMJS_WINDOWS_ZIP).extractall('build')
+
+    @target(PHANTOMJS_WINDOWS_ZIP, clean=False)
+    def phantomjs_windows_zip(t):
+        t.download('http://phantomjs.googlecode.com/files/' + os.path.basename(t.name))
+
+else:
+    virtual(PHANTOMJS)
 
 
 @target('fixme', phony=True)
