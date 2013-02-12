@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 from cStringIO import StringIO
-import glob
 import gzip
 import json
 import os
+import os.path
 import re
 import shutil
 import sys
@@ -42,8 +42,13 @@ EXTERNAL_SRC = [
     'build/src/external/src/types.js']
 
 EXAMPLES = [path
-            for path in glob.glob('examples/*.html')
+            for path in ifind('examples')
+            if not path.startswith('examples/standalone/')
+            if path.endswith('.html')
             if path != 'examples/example-list.html']
+
+EXAMPLES_JSON = [example.replace('.html', '.json')
+                 for example in EXAMPLES]
 
 EXAMPLES_SRC = [path
                 for path in ifind('examples')
@@ -195,7 +200,7 @@ def examples_star_combined_js(name, match):
 
 @target('serve', PLOVR_JAR, INTERNAL_SRC, 'test/requireall.js', 'examples')
 def serve(t):
-    t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', glob.glob('build/*.json'), glob.glob('examples/*.json'), glob.glob('test/*.json'))
+    t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'build/ol.json', 'build/ol-all.json', EXAMPLES_JSON, 'test/test.json')
 
 
 @target('serve-precommit', PLOVR_JAR, INTERNAL_SRC)
