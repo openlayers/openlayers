@@ -1,5 +1,4 @@
 goog.provide('ol.parser.XML');
-goog.require('goog.object');
 
 
 
@@ -7,12 +6,6 @@ goog.require('goog.object');
  * @constructor
  */
 ol.parser.XML = function() {
-  // clone the namespaces object and set all namespace aliases
-  this.namespaces = goog.object.clone(this.namespaces);
-  this.namespaceAlias = {};
-  for (var alias in this.namespaces) {
-    this.namespaceAlias[this.namespaces[alias]] = alias;
-  }
 };
 
 
@@ -30,8 +23,8 @@ ol.parser.XML.prototype.readNode = function(node, obj) {
   if (!obj) {
     obj = {};
   }
-  var group = this.readers[node.namespaceURI ?
-      this.namespaceAlias[node.namespaceURI] : this.defaultPrefix];
+  var group = this.readers[node.namespaceURI] ||
+      this.readers[this.defaultNamespaceURI];
   if (group) {
     var local = node.localName || node.nodeName.split(':').pop();
     var reader = group[local] || group['*'];

@@ -9,11 +9,6 @@ goog.require('ol.parser.XML');
  * @extends {ol.parser.XML}
  */
 ol.parser.ogc.ExceptionReport = function() {
-  this.defaultPrefix = 'ogc';
-  this.namespaces = {};
-  this.namespaces['ogc'] = 'http://www.opengis.net/ogc';
-  this.namespaces['ows'] = 'http://www.opengis.net/ows';
-  this.namespaces['ows11'] = 'http://www.opengis.net/ows/1.1';
   var exceptionReader = function(node, exceptionReport) {
     var exception = {
       code: node.getAttribute('exceptionCode'),
@@ -28,7 +23,7 @@ ol.parser.ogc.ExceptionReport = function() {
     exception.texts.push(text);
   };
   this.readers = {
-    'ogc': {
+    'http://www.opengis.net/ogc': {
       'ServiceExceptionReport': function(node, obj) {
         obj['exceptionReport'] = {};
         obj['exceptionReport']['exceptions'] = [];
@@ -42,7 +37,7 @@ ol.parser.ogc.ExceptionReport = function() {
         exceptionReport['exceptions'].push(exception);
       }
     },
-    'ows': {
+    'http://www.opengis.net/ows': {
       'ExceptionReport': function(node, obj) {
         obj.success = false;
         obj.exceptionReport = {
@@ -59,7 +54,7 @@ ol.parser.ogc.ExceptionReport = function() {
         exceptionTextReader.apply(this, arguments);
       }
     },
-    'ows11': {
+    'http://www.opengis.net/ows/1.1': {
       'ExceptionReport': function(node, obj) {
         obj.exceptionReport = {
           version: node.getAttribute('version'),

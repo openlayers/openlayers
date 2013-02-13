@@ -9,8 +9,8 @@ goog.require('ol.parser.ogc.WMSCapabilities_v1');
  */
 ol.parser.ogc.WMSCapabilities_v1_3_0 = function() {
   goog.base(this);
-  var bboxreader = this.readers['wms']['BoundingBox'];
-  goog.object.extend(this.readers['wms'], {
+  var bboxreader = this.readers['http://www.opengis.net/wms']['BoundingBox'];
+  goog.object.extend(this.readers['http://www.opengis.net/wms'], {
     'WMS_Capabilities': function(node, obj) {
       this.readChildNodes(node, obj);
     },
@@ -30,7 +30,7 @@ ol.parser.ogc.WMSCapabilities_v1_3_0 = function() {
     },
     'CRS': function(node, obj) {
       // CRS is the synonym of SRS
-      this.readers['wms']['SRS'].apply(this, arguments);
+      this.readers['http://www.opengis.net/wms']['SRS'].apply(this, arguments);
     },
     'EX_GeographicBoundingBox': function(node, obj) {
       // replacement of LatLonBoundingBox
@@ -87,7 +87,8 @@ ol.parser.ogc.WMSCapabilities_v1_3_0 = function() {
   });
   this.readers['sld'] = {
     'UserDefinedSymbolization': function(node, obj) {
-      this.readers.wms.UserDefinedSymbolization.apply(this, arguments);
+      var readers = this.readers['http://www.opengis.net/wms'];
+      readers.UserDefinedSymbolization.apply(this, arguments);
       // add the two extra attributes
       var value = node.getAttribute('InlineFeature');
       obj['userSymbols'].inlineFeature = parseInt(value, 10) == 1;
@@ -95,10 +96,12 @@ ol.parser.ogc.WMSCapabilities_v1_3_0 = function() {
       obj['userSymbols'].remoteWCS = parseInt(value, 10) == 1;
     },
     'DescribeLayer': function(node, obj) {
-      this.readers.wms.DescribeLayer.apply(this, arguments);
+      var readers = this.readers['http://www.opengis.net/wms'];
+      readers.DescribeLayer.apply(this, arguments);
     },
     'GetLegendGraphic': function(node, obj) {
-      this.readers.wms.GetLegendGraphic.apply(this, arguments);
+      var readers = this.readers['http://www.opengis.net/wms'];
+      readers.GetLegendGraphic.apply(this, arguments);
     }
   };
 };

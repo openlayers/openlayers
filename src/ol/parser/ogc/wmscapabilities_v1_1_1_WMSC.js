@@ -10,7 +10,7 @@ goog.require('ol.parser.ogc.WMSCapabilities_v1_1_1');
 ol.parser.ogc.WMSCapabilities_v1_1_1_WMSC = function() {
   goog.base(this);
   this.profile = 'WMSC';
-  goog.object.extend(this.readers['wms'], {
+  goog.object.extend(this.readers['http://www.opengis.net/wms'], {
     'VendorSpecificCapabilities': function(node, obj) {
       obj.vendorSpecific = {tileSets: []};
       this.readChildNodes(node, obj.vendorSpecific);

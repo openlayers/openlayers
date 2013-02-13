@@ -10,14 +10,10 @@ goog.require('ol.parser.XML');
  * @extends {ol.parser.XML}
  */
 ol.parser.ogc.WMSCapabilities_v1 = function() {
-  this.defaultPrefix = 'wms';
+  this.defaultNamespaceURI = 'http://www.opengis.net/wms';
   this.errorProperty = 'service';
-  this.namespaces = {};
-  this.namespaces['wms'] = 'http://www.opengis.net/wms';
-  this.namespaces['xlink'] = 'http://www.w3.org/1999/xlink';
-  this.namespaces['xsi'] = 'http://www.w3.org/2001/XMLSchema-instance';
   this.readers = {
-    'wms': {
+    'http://www.opengis.net/wms': {
       'Service': function(node, obj) {
         obj['service'] = {};
         this.readChildNodes(node, obj['service']);
@@ -51,7 +47,7 @@ ol.parser.ogc.WMSCapabilities_v1 = function() {
         return bbox;
       },
       'OnlineResource': function(node, obj) {
-        obj.href = this.getAttributeNS(node, this.namespaces['xlink'],
+        obj.href = this.getAttributeNS(node, 'http://www.w3.org/1999/xlink',
             'href');
       },
       'ContactInformation': function(node, obj) {

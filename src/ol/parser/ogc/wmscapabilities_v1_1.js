@@ -9,8 +9,8 @@ goog.require('ol.parser.ogc.WMSCapabilities_v1');
  */
 ol.parser.ogc.WMSCapabilities_v1_1 = function() {
   goog.base(this);
-  var bboxreader = this.readers['wms']['BoundingBox'];
-  goog.object.extend(this.readers['wms'], {
+  var bboxreader = this.readers['http://www.opengis.net/wms']['BoundingBox'];
+  goog.object.extend(this.readers['http://www.opengis.net/wms'], {
     'WMT_MS_Capabilities': function(node, obj) {
       this.readChildNodes(node, obj);
     },
