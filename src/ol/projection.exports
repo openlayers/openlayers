@@ -5,6 +5,7 @@
 @exportProperty ol.Projection.getTransformFromCodes
 @exportProperty ol.Projection.transform
 @exportProperty ol.Projection.transformWithCodes
+@exportProperty ol.Projection.prototype.getAxisOrientation
 @exportProperty ol.Projection.prototype.getCode
 @exportProperty ol.Projection.prototype.getExtent
 @exportProperty ol.Projection.prototype.getUnits

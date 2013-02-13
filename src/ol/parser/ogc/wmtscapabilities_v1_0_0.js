@@ -76,9 +76,10 @@ ol.parser.ogc.WMTSCapabilities_v1_0_0 = function() {
       'TopLeftCorner': function(node, obj) {
         var topLeftCorner = this.getChildValue(node);
         var coords = topLeftCorner.split(' ');
-        var axis = ol.Projection.getFromCode(obj['supportedCRS']).getAxis();
+        var axisOrientation =
+            ol.Projection.getFromCode(obj['supportedCRS']).getAxisOrientation();
         obj['topLeftCorner'] = ol.Coordinate.fromProjectedArray(
-            [parseFloat(coords[0]), parseFloat(coords[1])], axis);
+            [parseFloat(coords[0]), parseFloat(coords[1])], axisOrientation);
       },
       'TileWidth': function(node, obj) {
         obj['tileWidth'] = parseInt(this.getChildValue(node), 10);

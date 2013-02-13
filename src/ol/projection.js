@@ -36,9 +36,9 @@ ol.ProjectionUnits = {
  * @param {string} code Code.
  * @param {ol.ProjectionUnits} units Units.
  * @param {ol.Extent} extent Extent.
- * @param {string=} opt_axis Axis order.
+ * @param {string=} opt_axisOrientation Axis orientation.
  */
-ol.Projection = function(code, units, extent, opt_axis) {
+ol.Projection = function(code, units, extent, opt_axisOrientation) {
 
   /**
    * @private
@@ -62,7 +62,8 @@ ol.Projection = function(code, units, extent, opt_axis) {
    * @private
    * @type {string}
    */
-  this.axis_ = opt_axis || 'enu';
+  this.axisOrientation_ = goog.isDef(opt_axisOrientation) ?
+      opt_axisOrientation : 'enu';
 
 };
 
@@ -92,10 +93,10 @@ ol.Projection.prototype.getUnits = function() {
 
 
 /**
- * @return {string} Axis.
+ * @return {string} Axis orientation.
  */
-ol.Projection.prototype.getAxis = function() {
-  return this.axis_;
+ol.Projection.prototype.getAxisOrientation = function() {
+  return this.axisOrientation_;
 };
 
 
@@ -110,7 +111,7 @@ ol.Proj4jsProjection = function(code, proj4jsProj) {
 
   var units = /** @type {ol.ProjectionUnits} */ (proj4jsProj.units);
 
-  goog.base(this, code, units, null);
+  goog.base(this, code, units, null, proj4jsProj.axis);
 
   /**
    * @private
@@ -156,9 +157,8 @@ ol.Projection.transforms_ = {};
  * to transform between projections with equal meaning.
  *
  * @param {Array.<ol.Projection>} projections Projections.
- * @private
  */
-ol.Projection.addEquivalentProjections_ = function(projections) {
+ol.Projection.addEquivalentProjections = function(projections) {
   ol.Projection.addProjections(projections);
   goog.array.forEach(projections, function(source) {
     goog.array.forEach(projections, function(destination) {
@@ -181,9 +181,8 @@ ol.Projection.addEquivalentProjections_ = function(projections) {
  *   projection in projection1 to any projection in projection2.
  * @param {ol.TransformFunction} inverseTransform Transform from any projection
  *   in projection2 to any projection in projection1..
- * @private
  */
-ol.Projection.addEquivalentTransforms_ =
+ol.Projection.addEquivalentTransforms =
     function(projections1, projections2, forwardTransform, inverseTransform) {
   goog.array.forEach(projections1, function(projection1) {
     goog.array.forEach(projections2, function(projection2) {
@@ -225,6 +224,18 @@ ol.Projection.addProjections = function(projections) {
   goog.array.forEach(projections, function(projection) {
     ol.Projection.addProjection(projection);
   });
+};
+
+
+/**
+ * FIXME empty description for jsdoc
+ */
+ol.Projection.clearAllProjections = function() {
+  if (ol.ENABLE_PROJ4JS) {
+    ol.Projection.proj4jsProjections_ = {};
+  }
+  ol.Projection.projections_ = {};
+  ol.Projection.transforms_ = {};
 };
 
 
@@ -462,143 +473,3 @@ ol.Projection.transformWithCodes =
       sourceCode, destinationCode);
   return transformFn(point);
 };
-
-
-/**
- * @const
- * @type {number}
- */
-ol.Projection.EPSG_3857_RADIUS = 6378137;
-
-
-/**
- * Transformation from EPSG:4326 to EPSG:3857.
- *
- * @param {ol.Coordinate} point Point.
- * @return {ol.Coordinate} Point.
- */
-ol.Projection.forwardSphericalMercator = function(point) {
-  var x = ol.Projection.EPSG_3857_RADIUS * Math.PI * point.x / 180;
-  var y = ol.Projection.EPSG_3857_RADIUS *
-      Math.log(Math.tan(Math.PI * (point.y + 90) / 360));
-  return new ol.Coordinate(x, y);
-};
-
-
-/**
- * Transformation from EPSG:3857 to EPSG:4326.
- *
- * @param {ol.Coordinate} point Point.
- * @return {ol.Coordinate} Point.
- */
-ol.Projection.inverseSphericalMercator = function(point) {
-  var x = 180 * point.x / (ol.Projection.EPSG_3857_RADIUS * Math.PI);
-  var y = 360 * Math.atan(
-      Math.exp(point.y / ol.Projection.EPSG_3857_RADIUS)) / Math.PI - 90;
-  return new ol.Coordinate(x, y);
-};
-
-
-/**
- * @const
- * @type {number}
- */
-ol.Projection.EPSG_3857_HALF_SIZE = Math.PI * ol.Projection.EPSG_3857_RADIUS;
-
-
-/**
- * @const
- * @type {ol.Extent}
- */
-ol.Projection.EPSG_3857_EXTENT = new ol.Extent(
-    -ol.Projection.EPSG_3857_HALF_SIZE,
-    -ol.Projection.EPSG_3857_HALF_SIZE,
-    ol.Projection.EPSG_3857_HALF_SIZE,
-    ol.Projection.EPSG_3857_HALF_SIZE);
-
-
-/**
- * Lists several projection codes with the same meaning as EPSG:3857.
- *
- * @private
- * @type {Array.<string>}
- */
-ol.Projection.EPSG_3857_LIKE_CODES_ = [
-  'EPSG:3857',
-  'EPSG:102100',
-  'EPSG:102113',
-  'EPSG:900913'
-];
-
-
-/**
- * Projections equal to EPSG:3857.
- *
- * @const
- * @private
- * @type {Array.<ol.Projection>}
- */
-ol.Projection.EPSG_3857_LIKE_PROJECTIONS_ = goog.array.map(
-    ol.Projection.EPSG_3857_LIKE_CODES_,
-    function(code) {
-      return new ol.Projection(
-          code,
-          ol.ProjectionUnits.METERS,
-          ol.Projection.EPSG_3857_EXTENT);
-    });
-
-
-/**
- * Extent of the EPSG:4326 projection which is the whole world.
- *
- * @const
- * @private
- * @type {ol.Extent}
- */
-ol.Projection.EPSG_4326_EXTENT_ = new ol.Extent(-180, -90, 180, 90);
-
-
-/**
- * Several projection code with the same meaning as EPSG:4326.
- * @private
- * @type {Array.<string>}
- */
-ol.Projection.EPSG_4326_LIKE_CODES_ = [
-  'CRS:84',
-  'urn:ogc:def:crs:OGC:1.3:CRS84',
-  'EPSG:4326',
-  'urn:ogc:def:crs:EPSG:6.6:4326'
-];
-
-
-/**
- * Projections equal to EPSG:4326.
- *
- * @const
- * @type {Array.<ol.Projection>}
- */
-ol.Projection.EPSG_4326_LIKE_PROJECTIONS = goog.array.map(
-    ol.Projection.EPSG_4326_LIKE_CODES_,
-    function(code) {
-      return new ol.Projection(
-          code,
-          ol.ProjectionUnits.DEGREES,
-          ol.Projection.EPSG_4326_EXTENT_,
-          code === 'CRS:84' || code === 'urn:ogc:def:crs:OGC:1.3:CRS84' ?
-              'enu' : 'neu');
-    });
-
-
-// Add transformations that don't alter coordinates to convert within set of
-// projections with equal meaning.
-ol.Projection.addEquivalentProjections_(
-    ol.Projection.EPSG_3857_LIKE_PROJECTIONS_);
-ol.Projection.addEquivalentProjections_(
-    ol.Projection.EPSG_4326_LIKE_PROJECTIONS);
-// Add transformations to convert EPSG:4326 like coordinates to EPSG:3857 like
-// coordinates and back.
-ol.Projection.addEquivalentTransforms_(
-    ol.Projection.EPSG_4326_LIKE_PROJECTIONS,
-    ol.Projection.EPSG_3857_LIKE_PROJECTIONS_,
-    ol.Projection.forwardSphericalMercator,
-    ol.Projection.inverseSphericalMercator);

@@ -58,6 +58,7 @@ goog.require('ol.interaction.TouchPan');
 goog.require('ol.interaction.TouchRotateAndZoom');
 goog.require('ol.interaction.condition');
 goog.require('ol.layer.Layer');
+goog.require('ol.projection.addCommonProjections');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Map');
 goog.require('ol.renderer.canvas.SUPPORTED');
@@ -1027,3 +1028,6 @@ ol.RendererHints.createFromQueryData = function(opt_queryData) {
     return ol.DEFAULT_RENDERER_HINTS;
   }
 };
+
+
+ol.projection.addCommonProjections();
