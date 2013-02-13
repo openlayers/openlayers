@@ -48,15 +48,13 @@ ol.renderer.webgl.map.shader.Fragment = function() {
     '',
     'uniform mat4 uColorMatrix;',
     'uniform float uOpacity;',
-    'uniform mat4 uMatrix;',
     'uniform sampler2D uTexture;',
     '',
-    'varying vec2 vTexCoord;',
+    'varying vec4 vTexCoord;',
     '',
     'void main(void) {',
     '',
-    '  vec4 texCoord = uMatrix * vec4(vTexCoord, 0., 1.);',
-    '  vec4 texColor = texture2D(uTexture, texCoord.st);',
+    '  vec4 texColor = texture2D(uTexture, vTexCoord.st);',
     '  vec4 color = uColorMatrix * vec4(texColor.rgb, 1.);',
     '  color.a = texColor.a * uOpacity;',
     '',
@@ -80,11 +78,13 @@ ol.renderer.webgl.map.shader.Vertex = function() {
     'attribute vec2 aPosition;',
     'attribute vec2 aTexCoord;',
     '',
-    'varying vec2 vTexCoord;',
+    'uniform mat4 uTexCoordMatrix;',
+    '',
+    'varying vec4 vTexCoord;',
     '',
     'void main(void) {',
     '  gl_Position = vec4(aPosition, 0., 1.);',
-    '  vTexCoord = aTexCoord;',
+    '  vTexCoord = uTexCoordMatrix * vec4(aTexCoord, 0., 1.);',
     '}'
   ].join('\n'));
 };
@@ -157,9 +157,9 @@ ol.renderer.webgl.Map = function(container, map) {
    * @type {{aPosition: number,
    *         aTexCoord: number,
    *         uColorMatrix: WebGLUniformLocation,
-   *         uMatrix: WebGLUniformLocation,
    *         uOpacity: WebGLUniformLocation,
-   *         uTexture: WebGLUniformLocation}|null}
+   *         uTexture: WebGLUniformLocation,
+   *         uTexCoordMatrix: WebGLUniformLocation}|null}
    */
   this.locations_ = null;
 
@@ -518,7 +518,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
       aPosition: gl.getAttribLocation(program, 'aPosition'),
       aTexCoord: gl.getAttribLocation(program, 'aTexCoord'),
       uColorMatrix: gl.getUniformLocation(program, 'uColorMatrix'),
-      uMatrix: gl.getUniformLocation(program, 'uMatrix'),
+      uTexCoordMatrix: gl.getUniformLocation(program, 'uTexCoordMatrix'),
       uOpacity: gl.getUniformLocation(program, 'uOpacity'),
       uTexture: gl.getUniformLocation(program, 'uTexture')
     };
@@ -553,7 +553,8 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
     }
     var layerRenderer = this.getLayerRenderer(layer);
     gl.uniformMatrix4fv(
-        this.locations_.uMatrix, false, layerRenderer.getMatrix());
+        this.locations_.uTexCoordMatrix, false,
+        layerRenderer.getTexCoordMatrix());
     gl.uniformMatrix4fv(
         this.locations_.uColorMatrix, false, layerRenderer.getColorMatrix());
     gl.uniform1f(this.locations_.uOpacity, layer.getOpacity());
