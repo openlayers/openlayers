@@ -57,7 +57,9 @@ ol.RTreeNode_.prototype.find = function(bounds, results) {
   if (this.intersects(bounds)) {
     var numChildren = this.children.length;
     if (numChildren === 0) {
-      results[this.objectId] = this.object;
+      if (goog.isDef(this.object)) {
+        results[this.objectId] = this.object;
+      }
     } else {
       for (var i = 0; i < numChildren; ++i) {
         this.children[i].find(bounds, results);

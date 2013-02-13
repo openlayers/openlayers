@@ -6,7 +6,10 @@ goog.require('ol.Size');
 goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
 goog.require('ol.ViewHint');
+goog.require('ol.filter.Extent');
 goog.require('ol.filter.Geometry');
+goog.require('ol.filter.Logical');
+goog.require('ol.filter.LogicalOperator');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.layer.Vector');
 goog.require('ol.renderer.canvas.Layer');
@@ -276,11 +279,11 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
 
   var renderedFeatures = {};
   var tilesToRender = {};
-  var tile, tileCoord, key, tileExtent, tileState, x, y;
+  var tile, tileCoord, key, tileState, x, y;
   // render features by geometry type
   var filters = this.geometryFilters_,
       numFilters = filters.length,
-      i, filter, type, features, symbolizer;
+      i, spatialFilter, extentFilter, type, features, symbolizer;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       tileCoord = new ol.TileCoord(z, x, y);
@@ -289,24 +292,13 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
         tilesToRender[key] = tileCoord;
       } else if (!frameState.viewHints[ol.ViewHint.ANIMATING]) {
         tilesToRender[key] = tileCoord;
-        tileExtent = tileGrid.getTileCoordExtent(tileCoord);
-        // TODO: instead of filtering here, do this on the source and maintain
-        // a spatial index
-        function filterFn(feature) {
-          var id = goog.getUid(feature);
-          var include = !(id in renderedFeatures) &&
-              feature.getGeometry().getBounds().intersects(tileExtent);
-          if (include === true) {
-            renderedFeatures[id] = true;
-          }
-          return include;
-        }
+        extentFilter = new ol.filter.Extent(
+            tileGrid.getTileCoordExtent(tileCoord));
         for (i = 0; i < numFilters; ++i) {
-          filter = filters[i];
-          type = filter.getType();
-          features = source.getFeatures(filter);
-          // TODO: spatial index of tiles - see filterFn above
-          features = goog.array.filter(features, filterFn);
+          spatialFilter = filters[i];
+          type = spatialFilter.getType();
+          features = source.getFeatures(new ol.filter.Logical(
+              [spatialFilter, extentFilter], ol.filter.LogicalOperator.AND));
           if (features.length) {
             // TODO: layer.getSymbolizerLiterals(features) or similar
             symbolizer = this.symbolizers_[type];
