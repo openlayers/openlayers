@@ -191,7 +191,8 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   if (goog.isNull(tileGrid)) {
     // lazy tile source creation to match the view projection
     tileGrid = ol.tilegrid.createForProjection(
-        view2DState.projection, /** TODO: get this elsewhere */ 22);
+        view2DState.projection, /** TODO: get this elsewhere */ 22,
+        new ol.Size(512, 512));
     source.setTileGrid(tileGrid);
   }
 
