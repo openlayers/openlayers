@@ -9,6 +9,8 @@
 /build/ol.js
 /build/ol-all.js
 /build/src
+/build/phantomjs-*-windows
+/build/phantomjs-*-windows.zip
 /examples/*.json
 /examples/*.combined.js
 /examples/example-list.js

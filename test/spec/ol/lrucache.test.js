@@ -99,11 +99,38 @@ describe('ol.structs.LRUCache', function() {
     });
   });
 
-  describe('setting a disallowed key', function() {
-    it('raises an exception', function() {
+  describe('disallowed keys', function() {
+    it('setting raises an exception', function() {
+      expect(function() {
+        lruCache.set('constructor', 0);
+      }).toThrow();
       expect(function() {
         lruCache.set('hasOwnProperty', 0);
       }).toThrow();
+      expect(function() {
+        lruCache.set('isPrototypeOf', 0);
+      }).toThrow();
+      expect(function() {
+        lruCache.set('propertyIsEnumerable', 0);
+      }).toThrow();
+      expect(function() {
+        lruCache.set('toLocaleString', 0);
+      }).toThrow();
+      expect(function() {
+        lruCache.set('toString', 0);
+      }).toThrow();
+      expect(function() {
+        lruCache.set('valueOf', 0);
+      }).toThrow();
+    });
+    it('getting returns false', function() {
+      expect(lruCache.containsKey('constructor')).toBeFalsy();
+      expect(lruCache.containsKey('hasOwnProperty')).toBeFalsy();
+      expect(lruCache.containsKey('isPrototypeOf')).toBeFalsy();
+      expect(lruCache.containsKey('propertyIsEnumerable')).toBeFalsy();
+      expect(lruCache.containsKey('toLocaleString')).toBeFalsy();
+      expect(lruCache.containsKey('toString')).toBeFalsy();
+      expect(lruCache.containsKey('valueOf')).toBeFalsy();
     });
   });
 

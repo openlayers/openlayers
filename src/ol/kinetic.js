@@ -63,23 +63,25 @@ ol.Kinetic = function(decay, minVelocity, delay) {
 
 
 /**
- * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @param {number} x X.
+ * @param {number} y Y.
  */
-ol.Kinetic.prototype.begin = function(browserEvent) {
+ol.Kinetic.prototype.begin = function(x, y) {
   this.points_.length = 0;
   this.angle_ = 0;
   this.initialVelocity_ = 0;
-  this.update(browserEvent);
+  this.update(x, y);
 };
 
 
 /**
- * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @param {number} x X.
+ * @param {number} y Y.
  */
-ol.Kinetic.prototype.update = function(browserEvent) {
+ol.Kinetic.prototype.update = function(x, y) {
   this.points_.push({
-    x: browserEvent.clientX,
-    y: browserEvent.clientY,
+    x: x,
+    y: y,
     t: goog.now()
   });
 };
@@ -112,7 +114,7 @@ ol.Kinetic.prototype.end = function() {
  * @param {ol.Coordinate} source Source coordinate for the animation.
  * @return {ol.PreRenderFunction} Pre-render function for kinetic animation.
  */
-ol.Kinetic.prototype.createPanFrom = function(source) {
+ol.Kinetic.prototype.pan = function(source) {
   var decay = this.decay_;
   var initialVelocity = this.initialVelocity_;
   var minVelocity = this.minVelocity_;
@@ -121,7 +123,7 @@ ol.Kinetic.prototype.createPanFrom = function(source) {
     return initialVelocity * (Math.exp((decay * t) * duration) - 1) /
         (minVelocity - initialVelocity);
   };
-  return ol.animation.createPanFrom({
+  return ol.animation.pan({
     source: source,
     duration: duration,
     easing: easingFunction
