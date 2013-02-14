@@ -2022,7 +2022,7 @@
         map.applyTransform = function(x, y, scale) {
             log.push([x || map.layerContainerOriginPx.x, y || map.layerContainerOriginPx.y, scale]);
             OpenLayers.Map.prototype.applyTransform.apply(this, arguments);
-        }
+        };
 
         moved = {};
         map.zoomToExtent(new OpenLayers.Bounds(-1, -1, 1, 1));
@@ -2091,7 +2091,7 @@
         map.applyTransform = function(x, y, scale) {
             log.push([x || map.layerContainerOriginPx.x, y || map.layerContainerOriginPx.y, scale]);
             OpenLayers.Map.prototype.applyTransform.apply(this, arguments);
-        }
+        };
 
         map.moveByPx(-10, -10);
         t.eq(log[0][0], 10, 'layer container left correct');
