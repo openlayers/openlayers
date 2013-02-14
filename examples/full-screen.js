@@ -1,8 +1,11 @@
 goog.require('goog.debug.Console');
 goog.require('goog.debug.Logger');
 goog.require('goog.debug.Logger.Level');
+goog.require('goog.style');
+goog.require('ol.AnchoredElement');
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
+goog.require('ol.Geolocation');
 goog.require('ol.Map');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
@@ -28,3 +31,14 @@ var map = new ol.Map({
     zoom: 0
   })
 });
+
+var geolocation = new ol.Geolocation();
+geolocation.bindTo('projection', map.getView());
+
+var element = document.getElementById('geolocation');
+var marker = new ol.AnchoredElement({
+  map: map,
+  element: element
+});
+marker.bindTo('position', geolocation);
+goog.style.showElement(element, true);
