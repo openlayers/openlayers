@@ -50,11 +50,11 @@ ol.renderer.webgl.map.shader.Fragment = function() {
     'uniform float uOpacity;',
     'uniform sampler2D uTexture;',
     '',
-    'varying vec4 vTexCoord;',
+    'varying vec2 vTexCoord;',
     '',
     'void main(void) {',
     '',
-    '  vec4 texColor = texture2D(uTexture, vTexCoord.st);',
+    '  vec4 texColor = texture2D(uTexture, vTexCoord);',
     '  vec4 color = uColorMatrix * vec4(texColor.rgb, 1.);',
     '  color.a = texColor.a * uOpacity;',
     '',
@@ -80,11 +80,11 @@ ol.renderer.webgl.map.shader.Vertex = function() {
     '',
     'uniform mat4 uTexCoordMatrix;',
     '',
-    'varying vec4 vTexCoord;',
+    'varying vec2 vTexCoord;',
     '',
     'void main(void) {',
     '  gl_Position = vec4(aPosition, 0., 1.);',
-    '  vTexCoord = uTexCoordMatrix * vec4(aTexCoord, 0., 1.);',
+    '  vTexCoord = (uTexCoordMatrix * vec4(aTexCoord, 0., 1.)).st;',
     '}'
   ].join('\n'));
 };
