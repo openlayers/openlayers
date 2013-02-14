@@ -38,7 +38,8 @@
         t.eq(map.getZoom(), 2, "not zoomed with zoomOnClick set to false");
         
         map.zoomToMaxExtent();
-        control.zoomBox(new OpenLayers.Bounds(128, 64, 256, 128));
+        // pixel bounds bottom > top
+        control.zoomBox(new OpenLayers.Bounds(128, 128, 256, 64));
         t.eq(map.getCenter().toShortString(), "-45, 22.5", "centered to box center");
         t.eq(map.getZoom(), 3, "zoomed to box extent");
         
