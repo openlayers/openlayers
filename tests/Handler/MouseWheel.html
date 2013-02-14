@@ -115,12 +115,13 @@
     }
 
     function test_Handler_MouseWheel_cumulative(t) {
-        t.plan(1);
+        t.plan(2);
 
-        var deltaUp = 0;
+        var deltaUp = 0, ticks = 0;
         var callbacks = {
             up: function(evt, delta) {
                 deltaUp += delta;
+                ticks++;
             }
         };
 
@@ -131,7 +132,8 @@
         map.addControl(control);
         var handler = new OpenLayers.Handler.MouseWheel(control, callbacks, {
             interval: 150,
-            cumulative: false    
+            cumulative: false,
+            maxDelta: 6
         });
 
         var delta = 120;
@@ -140,8 +142,9 @@
             handler.onWheelEvent({'target':map.layers[0].div, wheelDelta: delta});
         }
         
-        t.delay_call(1, function() {
-            t.eq(deltaUp, 1, "Non cumulative mode works");
+        t.delay_call(2, function() {
+            t.eq(deltaUp / ticks, 1, "Cumulative mode works");
+            t.eq(ticks, 4, "up called 4x with maxDelta of 6");
         });
     }
 
