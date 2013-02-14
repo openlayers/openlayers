@@ -213,7 +213,7 @@ def serve_precommit(t):
 virtual('lint', 'build/lint-src-timestamp', 'build/lint-spec-timestamp', 'build/check-requires-timestamp')
 
 
-@target('build/lint-src-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC)
+@target('build/lint-src-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC, precious=True)
 def build_lint_src_timestamp(t):
     limited_doc_files = [path
                          for path in ifind('externs', 'build/src/external/externs')
@@ -288,7 +288,7 @@ def build_check_requires_timestamp(t):
     t.touch()
 
 
-@target('build/lint-spec-timestamp', SPEC)
+@target('build/lint-spec-timestamp', SPEC, precious=True)
 def build_lint_spec_timestamp(t):
     t.run('%(GJSLINT)s', t.newer(SPEC))
     t.touch()
