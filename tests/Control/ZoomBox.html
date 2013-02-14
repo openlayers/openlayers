@@ -23,6 +23,7 @@
     function test_zoomBox(t) {
         t.plan(4);
         var map = new OpenLayers.Map("map", {
+            zoomMethod: null,
             layers: [new OpenLayers.Layer("", {isBaseLayer: true})],
             center: [0, 0],
             zoom: 1

@@ -557,7 +557,7 @@
     function test_tileBounds(t) {
         t.plan(3);
         
-        var map = new OpenLayers.Map("map", {projection: "EPSG:3857"});
+        var map = new OpenLayers.Map("map", {projection: "EPSG:3857", zoomMethod: null});
         var layer = new OpenLayers.Layer.WMS("wms", "../../img/blank.gif");
         map.addLayer(layer);
         map.setCenter([0, 0], 1);
