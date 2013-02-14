@@ -22,14 +22,17 @@ if sys.platform == 'win32':
     variables.JSDOC = 'jsdoc'  # FIXME
     variables.PYTHON = os.path.join(Python27, 'python.exe')
     PHANTOMJS_WINDOWS_ZIP = 'build/phantomjs-1.8.1-windows.zip'
-    PHANTOMJS = 'build/phantomjs-1.8.1-windows/phantomjs.exe'
+    # FIXME we should not need both a pake variable and a Python constant here
+    # FIXME this requires pake to be modified to lazily evaluate variables in target names
+    variables.PHANTOMJS = 'build/phantomjs-1.8.1-windows/phantomjs.exe'
+    PHANTOMJS = variables.PHANTOMJS
 else:
     variables.GIT = 'git'
     variables.GJSLINT = 'gjslint'
     variables.JAVA = 'java'
     variables.JSDOC = 'jsdoc'
     variables.PYTHON = 'python'
-    PHANTOMJS = 'phantomjs'
+    variables.PHANTOMJS = 'phantomjs'
 
 variables.BRANCH = output('%(GIT)s', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
 
@@ -335,12 +338,12 @@ def hostexamples(t):
     t.cp('examples/example-list.js', 'examples/example-list.xml', 'examples/Jugl.js', 'build/gh-pages/%(BRANCH)s/examples/')
 
 
-@target('test', PHANTOMJS, INTERNAL_SRC, 'test/requireall.js', phony=True)
-def test(t):
-    t.run(PHANTOMJS, 'test/phantom-jasmine/run_jasmine_test.coffee', 'test/ol.html')
-
-
 if sys.platform == 'win32':
+    @target('test', '%(PHANTOMJS)s', INTERNAL_SRC, 'test/requireall.js', phony=True)
+    def test(t):
+        t.run(PHANTOMJS, 'test/phantom-jasmine/run_jasmine_test.coffee', 'test/ol.html')
+
+    # FIXME the PHANTOMJS should be a pake variable, not a constant
     @target(PHANTOMJS, PHANTOMJS_WINDOWS_ZIP, clean=False)
     def phantom_js(t):
         from zipfile import ZipFile
@@ -351,7 +354,9 @@ if sys.platform == 'win32':
         t.download('http://phantomjs.googlecode.com/files/' + os.path.basename(t.name))
 
 else:
-    virtual(PHANTOMJS)
+    @target('test', INTERNAL_SRC, 'test/requireall.js', phony=True)
+    def test(t):
+        t.run('%(PHANTOMJS)s', 'test/phantom-jasmine/run_jasmine_test.coffee', 'test/ol.html')
 
 
 @target('fixme', phony=True)
