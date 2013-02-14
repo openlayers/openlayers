@@ -45,8 +45,8 @@
         });
         
         var log = [];
-        control.applyTransform = function(transform) {
-            log.push(transform);
+        map.applyTransform = function(x, y, scale) {
+            log.push([x, y, scale]);
         }
         
         map.layerContainerOriginPx = {
@@ -58,12 +58,12 @@
         };
 
         var cases = [
-            {x: 100, y: 60, scale: 1, transform: "translate(0px, 10px) scale(1)"},
-            {x: 150, y: 60, scale: 1, transform: "translate(50px, 10px) scale(1)"},
-            {x: 150, y: 60, scale: 2, transform: "translate(-100px, -90px) scale(2)"},
-            {x: 50, y: 20, scale: 2.5, transform: "translate(-275px, -180px) scale(2.5)"},
-            {x: 150, y: 60, scale: 2, transform: "translate(-100px, -90px) scale(2)"},
-            {x: 50, y: 20, scale: 0.25, transform: "translate(63px, 45px) scale(0.25)"}
+            {x: 100, y: 60, scale: 1, transform: [-50, -40, 1]},
+            {x: 150, y: 60, scale: 1, transform: [0, -40, 1]},
+            {x: 150, y: 60, scale: 2, transform: [-150, -140, 2]},
+            {x: 50, y: 20, scale: 2.5, transform: [-325, -230, 2.5]},
+            {x: 150, y: 60, scale: 2, transform: [-150, -140, 2]},
+            {x: 50, y: 20, scale: 0.25, transform: [13, -5, 0.25]}
         ];
         
         var len = cases.length;
