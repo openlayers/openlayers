@@ -6,6 +6,12 @@ goog.provide('ol.parser.XML');
  * @constructor
  */
 ol.parser.XML = function() {
+  this.regExes = {
+    trimSpace: (/^\s*|\s*$/g),
+    removeSpace: (/\s*/g),
+    splitSpace: (/\s+/),
+    trimComma: (/\s*,\s*/g)
+  };
 };
 
 
