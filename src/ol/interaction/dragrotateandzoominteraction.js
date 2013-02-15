@@ -26,15 +26,15 @@ ol.interaction.DragRotateAndZoom = function(condition) {
 
   /**
    * @private
-   * @type {number}
+   * @type {number|undefined}
    */
-  this.startRatio_ = 0;
+  this.lastAngle_;
 
   /**
    * @private
-   * @type {number}
+   * @type {number|undefined}
    */
-  this.startRotation_ = 0;
+  this.lastMagnitude_;
 
 };
 goog.inherits(ol.interaction.DragRotateAndZoom, ol.interaction.Drag);
@@ -52,15 +52,23 @@ ol.interaction.DragRotateAndZoom.prototype.handleDrag =
       browserEvent.offsetX - size.width / 2,
       size.height / 2 - browserEvent.offsetY);
   var theta = Math.atan2(delta.y, delta.x);
-  var resolution = this.startRatio_ * delta.magnitude();
+  var magnitude = delta.magnitude();
   // FIXME works for View2D only
   var view = map.getView();
   goog.asserts.assert(view instanceof ol.View2D);
   map.requestRenderFrame();
   // FIXME the calls to map.rotate and map.zoomToResolution should use
   // map.withFrozenRendering but an assertion fails :-(
-  view.rotate(map, this.startRotation_, -theta);
-  view.zoomToResolution(map, resolution);
+  if (goog.isDef(this.lastAngle_)) {
+    var angleDelta = theta - this.lastAngle_;
+    view.rotate(map, view.getRotation() - angleDelta);
+  }
+  this.lastAngle_ = theta;
+  if (goog.isDef(this.lastMagnitude_)) {
+    var resolution = this.lastMagnitude_ * (view.getResolution() / magnitude);
+    view.zoomToResolution(map, resolution);
+  }
+  this.lastMagnitude_ = magnitude;
 };
 
 
@@ -70,18 +78,9 @@ ol.interaction.DragRotateAndZoom.prototype.handleDrag =
 ol.interaction.DragRotateAndZoom.prototype.handleDragStart =
     function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
-  var map = mapBrowserEvent.map;
-  var view = map.getView().getView2D();
   if (this.condition_(browserEvent)) {
-    var resolution = view.getResolution();
-    var size = map.getSize();
-    var delta = new goog.math.Vec2(
-        browserEvent.offsetX - size.width / 2,
-        size.height / 2 - browserEvent.offsetY);
-    var theta = Math.atan2(delta.y, delta.x);
-    this.startRotation_ = view.getRotation() + theta;
-    this.startRatio_ = resolution / delta.magnitude();
-    map.requestRenderFrame();
+    this.lastAngle_ = undefined;
+    this.lastMagnitude_ = undefined;
     return true;
   } else {
     return false;
