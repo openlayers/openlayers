@@ -1,3 +1,6 @@
+goog.provide('ol.test.filter.Geometry');
+
+
 describe('ol.filter.Geometry', function() {
 
   describe('constructor', function() {
@@ -43,3 +46,6 @@ describe('ol.filter.Geometry', function() {
   });
 
 });
+
+goog.require('ol.filter.Geometry');
+goog.require('ol.filter.GeometryType');
