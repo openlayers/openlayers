@@ -89,7 +89,7 @@ ol.source.SingleImageWMS.prototype.getImage =
 
   extent = new ol.Extent(extent.minX, extent.minY,
       extent.maxX, extent.maxY);
-  extent.scale(this.ratio_);
+  extent.scaleFromCenter(this.ratio_);
   var width = extent.getWidth() / resolution;
   var height = extent.getHeight() / resolution;
   var size = new ol.Size(width, height);

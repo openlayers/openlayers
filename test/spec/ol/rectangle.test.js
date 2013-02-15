@@ -98,10 +98,10 @@ describe('ol.Rectangle', function() {
     });
   });
 
-  describe('scale', function() {
-    it('scales the extent', function() {
+  describe('scaleFromCenter', function() {
+    it('scales the extent from its center', function() {
       var rectangle = new ol.Rectangle(1, 1, 3, 3);
-      rectangle.scale(2);
+      rectangle.scaleFromCenter(2);
       expect(rectangle.minX).toEqual(0);
       expect(rectangle.minY).toEqual(0);
       expect(rectangle.maxX).toEqual(4);

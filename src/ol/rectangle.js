@@ -129,7 +129,7 @@ ol.Rectangle.prototype.toString = function() {
 /**
  * @param {number} value Value.
  */
-ol.Rectangle.prototype.scale = function(value) {
+ol.Rectangle.prototype.scaleFromCenter = function(value) {
   var deltaX = (this.getWidth() / 2.0) * (value - 1);
   var deltaY = (this.getHeight() / 2.0) * (value - 1);
   this.minX -= deltaX;
