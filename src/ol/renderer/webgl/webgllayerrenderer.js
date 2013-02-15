@@ -88,7 +88,7 @@ ol.renderer.webgl.Layer.prototype.getMapRenderer = function() {
 /**
  * @return {!goog.vec.Mat4.Number} Matrix.
  */
-ol.renderer.webgl.Layer.prototype.getMatrix = goog.abstractMethod;
+ol.renderer.webgl.Layer.prototype.getTexCoordMatrix = goog.abstractMethod;
 
 
 /**

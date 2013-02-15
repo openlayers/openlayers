@@ -139,7 +139,7 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
    * @private
    * @type {!goog.vec.Mat4.Number}
    */
-  this.matrix_ = goog.vec.Mat4.createNumber();
+  this.texCoordMatrix_ = goog.vec.Mat4.createNumber();
 
   /**
    * @private
@@ -224,8 +224,8 @@ ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.TileLayer.prototype.getMatrix = function() {
-  return this.matrix_;
+ol.renderer.webgl.TileLayer.prototype.getTexCoordMatrix = function() {
+  return this.texCoordMatrix_;
 };
 
 
@@ -393,6 +393,9 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
 
         tileState = tile.getState();
         if (tileState == ol.TileState.IDLE) {
+          goog.events.listenOnce(tile, goog.events.EventType.CHANGE,
+              this.handleTileChange, false, this);
+          this.updateWantedTiles(frameState.wantedTiles, tileSource, tileCoord);
           tileCenter = tileGrid.getTileCoordCenter(tileCoord);
           frameState.tileQueue.enqueue(tile, tileSourceKey, tileCenter);
         } else if (tileState == ol.TileState.LOADED) {
@@ -457,7 +460,6 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
       this.renderedTileRange_ = null;
       this.renderedFramebufferExtent_ = null;
       frameState.animate = true;
-      this.updateWantedTiles(frameState.wantedTiles, tileSource, z, tileRange);
     }
 
   }
@@ -465,21 +467,21 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
   this.scheduleExpireCache(frameState, tileSource);
 
-  goog.vec.Mat4.makeIdentity(this.matrix_);
-  goog.vec.Mat4.translate(this.matrix_,
+  goog.vec.Mat4.makeIdentity(this.texCoordMatrix_);
+  goog.vec.Mat4.translate(this.texCoordMatrix_,
       (view2DState.center.x - framebufferExtent.minX) /
           (framebufferExtent.maxX - framebufferExtent.minX),
       (view2DState.center.y - framebufferExtent.minY) /
           (framebufferExtent.maxY - framebufferExtent.minY),
       0);
-  goog.vec.Mat4.rotateZ(this.matrix_, view2DState.rotation);
-  goog.vec.Mat4.scale(this.matrix_,
+  goog.vec.Mat4.rotateZ(this.texCoordMatrix_, view2DState.rotation);
+  goog.vec.Mat4.scale(this.texCoordMatrix_,
       frameState.size.width * view2DState.resolution /
           (framebufferExtent.maxX - framebufferExtent.minX),
       frameState.size.height * view2DState.resolution /
           (framebufferExtent.maxY - framebufferExtent.minY),
       1);
-  goog.vec.Mat4.translate(this.matrix_,
+  goog.vec.Mat4.translate(this.texCoordMatrix_,
       -0.5,
       -0.5,
       0);

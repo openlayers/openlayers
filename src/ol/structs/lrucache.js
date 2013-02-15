@@ -91,7 +91,7 @@ ol.structs.LRUCache.prototype.clear = function() {
  * @return {boolean} Contains key.
  */
 ol.structs.LRUCache.prototype.containsKey = function(key) {
-  return key in this.entries_;
+  return this.entries_.hasOwnProperty(key);
 };
 
 
@@ -152,15 +152,6 @@ ol.structs.LRUCache.prototype.getKeys = function() {
   }
   goog.asserts.assert(i == this.count_);
   return keys;
-};
-
-
-/**
- * @return {string} Last key.
- */
-ol.structs.LRUCache.prototype.getLastKey = function() {
-  goog.asserts.assert(!goog.isNull(this.newest_));
-  return this.newest_.key_;
 };
 
 
