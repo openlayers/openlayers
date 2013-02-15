@@ -3,6 +3,8 @@ goog.provide('ol.ImageState');
 
 goog.require('goog.array');
 goog.require('goog.events');
+goog.require('goog.events.EventTarget');
+goog.require('goog.events.EventType');
 goog.require('ol.Extent');
 
 
@@ -20,6 +22,7 @@ ol.ImageState = {
 
 /**
  * @constructor
+ * @extends {goog.events.EventTarget}
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @param {string} src Image source URI.
@@ -71,6 +74,15 @@ ol.Image = function(extent, resolution, src, crossOrigin) {
    * @type {ol.ImageState}
    */
   this.state = ol.ImageState.IDLE;
+};
+goog.inherits(ol.Image, goog.events.EventTarget);
+
+
+/**
+ * @protected
+ */
+ol.Image.prototype.dispatchChangeEvent = function() {
+  this.dispatchEvent(goog.events.EventType.CHANGE);
 };
 
 
@@ -129,6 +141,7 @@ ol.Image.prototype.getState = function() {
 ol.Image.prototype.handleImageError_ = function() {
   this.state = ol.ImageState.ERROR;
   this.unlistenImage_();
+  this.dispatchChangeEvent();
 };
 
 
@@ -140,6 +153,7 @@ ol.Image.prototype.handleImageError_ = function() {
 ol.Image.prototype.handleImageLoad_ = function() {
   this.state = ol.ImageState.LOADED;
   this.unlistenImage_();
+  this.dispatchChangeEvent();
 };
 
 
