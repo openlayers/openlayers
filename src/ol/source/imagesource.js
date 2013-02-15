@@ -61,9 +61,11 @@ ol.source.ImageSource = function(options) {
    */
   this.resolutions_ = goog.isDef(options.resolutions) ?
       options.resolutions : null;
-  if (!goog.isNull(this.resolutions_)) {
-    goog.array.sort(this.resolutions_, function(a, b) {return b - a; });
-  }
+  goog.asserts.assert(goog.isNull(this.resolutions_) ||
+      goog.array.isSorted(this.resolutions_,
+          function(a, b) {
+            return b - a;
+          }, true));
 
 };
 goog.inherits(ol.source.ImageSource, ol.source.Source);
