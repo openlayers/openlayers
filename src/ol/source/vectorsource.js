@@ -101,7 +101,8 @@ ol.source.FeatureCache.prototype.getFeaturesObject_ = function(opt_filter) {
       for (i in boundsByGeometryType) {
         goog.object.extend(features, boundsByGeometryType[i].find(extent));
       }
-    } else if (opt_filter instanceof ol.filter.Logical) {
+    } else if (opt_filter instanceof ol.filter.Logical &&
+        opt_filter.operator === ol.filter.LogicalOperator.AND) {
       var filters = opt_filter.getFilters();
       if (filters.length === 2) {
         var filter, geometryFilter, extentFilter;
