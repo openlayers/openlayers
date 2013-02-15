@@ -2,7 +2,7 @@ goog.provide('ol.test.source.Vector');
 
 
 describe('ol.source.Vector', function() {
-    
+
   var vectorSource, features;
 
   beforeEach(function() {
@@ -29,7 +29,7 @@ describe('ol.source.Vector', function() {
     vectorSource.addFeatures([new ol.Feature()]);
     expect(vectorSource.getFeatures().length).toEqual(features.length + 1);
   });
-    
+
   var geomFilter = new ol.filter.Geometry(ol.geom.GeometryType.LINESTRING);
   var extentFilter = new ol.filter.Extent(new ol.Extent(16, 48, 16.3, 48.3));
 
@@ -40,7 +40,7 @@ describe('ol.source.Vector', function() {
     expect(lineStrings.length).toEqual(4);
     expect(lineStrings).toContain(features[4]);
   });
-  
+
   it('can filter by extent using its RTree', function() {
     spyOn(extentFilter, 'evaluate');
     var subset = vectorSource.getFeatures(extentFilter);
@@ -48,7 +48,7 @@ describe('ol.source.Vector', function() {
     expect(subset.length).toEqual(4);
     expect(subset).not.toContain(features[7]);
   });
-  
+
   it('can filter by extent and geometry type using its index', function() {
     var filter1 = new ol.filter.Logical([geomFilter, extentFilter],
         ol.filter.LogicalOperator.AND);
@@ -63,7 +63,7 @@ describe('ol.source.Vector', function() {
     expect(subset1.length).toEqual(0);
     expect(subset2.length).toEqual(0);
   });
-  
+
   it('can handle any query using the filter\'s evaluate function', function() {
     var filter = new ol.filter.Logical([geomFilter, extentFilter],
         ol.filter.LogicalOperator.OR);
@@ -76,7 +76,9 @@ describe('ol.source.Vector', function() {
 });
 
 goog.require('ol.Projection');
-goog.require('ol.filter.GeometryType');
+goog.require('ol.filter.Geometry');
+goog.require('ol.filter.Logical');
+goog.require('ol.filter.LogicalOperator');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.LineString');
