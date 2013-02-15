@@ -194,8 +194,8 @@ ol.parser.ogc.OWSCommon_v1 = function() {
         var pointList = str.split(this.regExes.splitSpace);
         obj.right = pointList[0];
         obj.top = pointList[1];
-        obj.bounds = new ol.Extent(obj.left, obj.bottom,
-            obj.right, obj.top);
+        obj.bounds = new ol.Extent(parseFloat(obj.left), parseFloat(obj.bottom),
+            parseFloat(obj.right), parseFloat(obj.top));
         delete obj.left;
         delete obj.bottom;
         delete obj.right;

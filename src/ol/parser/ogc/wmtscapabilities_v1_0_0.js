@@ -85,9 +85,11 @@ ol.parser.ogc.WMTSCapabilities_v1_0_0 = function() {
           //yx = !!this.yx[crs];
         }
         if (yx) {
-          obj.topLeftCorner = new ol.Coordinate(coords[1], coords[0]);
+          obj.topLeftCorner = new ol.Coordinate(parseFloat(coords[1]),
+              parseFloat(coords[0]));
         } else {
-          obj.topLeftCorner = new ol.Coordinate(coords[0], coords[1]);
+          obj.topLeftCorner = new ol.Coordinate(parseFloat(coords[0]),
+              parseFloat(coords[1]));
         }
       },
       'TileWidth': function(node, obj) {
