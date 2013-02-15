@@ -1,6 +1,7 @@
 goog.provide('ol.parser.ogc.WMTSCapabilities_v1_0_0');
 goog.require('goog.dom.xml');
 goog.require('ol.Coordinate');
+goog.require('ol.Projection');
 goog.require('ol.parser.XML');
 goog.require('ol.parser.ogc.OWSCommon_v1_1_0');
 
@@ -78,11 +79,7 @@ ol.parser.ogc.WMTSCapabilities_v1_0_0 = function() {
         // decide on axis order for the given CRS
         var yx;
         if (obj.supportedCRS) {
-          // extract out version from URN
-          var crs = obj.supportedCRS.replace(/urn:ogc:def:crs:(\w+):.+:(\w+)$/,
-              'urn:ogc:def:crs:$1::$2');
-          // TODO
-          //yx = !!this.yx[crs];
+          yx = ol.Projection.getFromCode(obj.supportedCRS).getAxis() === 'neu';
         }
         if (yx) {
           obj.topLeftCorner = new ol.Coordinate(parseFloat(coords[1]),
