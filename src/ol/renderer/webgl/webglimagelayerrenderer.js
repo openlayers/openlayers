@@ -160,14 +160,10 @@ ol.renderer.webgl.ImageLayer.prototype.renderFrame =
   if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.PANNING]) {
     var image_ = imageSource.getImage(frameState.extent, viewResolution);
     var imageState = image_.getState();
-    var animate = false;
-    if (imageState == ol.ImageState.ERROR) {
-      // pass
-    } else if (imageState == ol.ImageState.IDLE) {
-      animate = true;
+    if (imageState == ol.ImageState.IDLE) {
+      goog.events.listenOnce(image_, goog.events.EventType.CHANGE,
+          this.handleImageChange, false, this);
       image_.load();
-    } else if (imageState == ol.ImageState.LOADING) {
-      animate = true;
     } else if (imageState == ol.ImageState.LOADED) {
       image = image_;
       texture = this.createTexture_(image_);
@@ -179,9 +175,6 @@ ol.renderer.webgl.ImageLayer.prototype.renderFrame =
               }
             }, gl, this.texture_));
       }
-    }
-    if (animate) {
-      frameState.animate = true;
     }
   }
 

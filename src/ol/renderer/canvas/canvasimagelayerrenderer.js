@@ -82,19 +82,12 @@ ol.renderer.canvas.ImageLayer.prototype.renderFrame =
     image = imageSource.getImage(
         frameState.extent, viewResolution);
     var imageState = image.getState();
-    var animate = false;
-    if (imageState == ol.ImageState.ERROR) {
-      // pass
-    } else if (imageState == ol.ImageState.IDLE) {
-      animate = true;
+    if (imageState == ol.ImageState.IDLE) {
+      goog.events.listenOnce(image, goog.events.EventType.CHANGE,
+          this.handleImageChange, false, this);
       image.load();
-    } else if (imageState == ol.ImageState.LOADING) {
-      animate = true;
     } else if (imageState == ol.ImageState.LOADED) {
       this.image_ = image;
-    }
-    if (animate) {
-      frameState.animate = true;
     }
   }
 
