@@ -15,8 +15,12 @@ goog.require('ol.Projection');
  */
 ol.GeolocationProperty = {
   ACCURACY: 'accuracy',
+  ALTITUDE: 'altitude',
+  ALTITUDE_ACCURACY: 'altitudeAccuracy',
+  HEADING: 'heading',
   POSITION: 'position',
-  PROJECTION: 'projection'
+  PROJECTION: 'projection',
+  SPEED: 'speed'
 };
 
 
@@ -92,10 +96,19 @@ ol.Geolocation.isSupported = 'geolocation' in navigator;
  */
 ol.Geolocation.prototype.positionChange_ = function(position) {
   var coords = position.coords;
+  this.set(ol.GeolocationProperty.ACCURACY, coords.accuracy);
+  this.set(ol.GeolocationProperty.ALTITUDE,
+      goog.isNull(coords.altitude) ? undefined : coords.altitude);
+  this.set(ol.GeolocationProperty.ALTITUDE_ACCURACY,
+      goog.isNull(coords.altitudeAccuracy) ?
+      undefined : coords.altitudeAccuracy);
+  this.set(ol.GeolocationProperty.HEADING,
+      goog.isNull(coords.heading) ? undefined : coords.heading);
   this.position_ = new ol.Coordinate(coords.longitude, coords.latitude);
   this.set(ol.GeolocationProperty.POSITION,
       this.transformCoords_(this.position_));
-  this.set(ol.GeolocationProperty.ACCURACY, coords.accuracy);
+  this.set(ol.GeolocationProperty.SPEED,
+      goog.isNull(coords.speed) ? undefined : coords.speed);
 };
 
 
@@ -105,20 +118,6 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
  */
 ol.Geolocation.prototype.positionError_ = function(error) {
 };
-
-
-/**
- * The position of the device.
- * @return {ol.Coordinate|undefined} position.
- */
-ol.Geolocation.prototype.getPosition = function() {
-  return /** @type {ol.Coordinate} */ (
-      this.get(ol.GeolocationProperty.POSITION));
-};
-goog.exportProperty(
-    ol.Geolocation.prototype,
-    'getPosition',
-    ol.Geolocation.prototype.getPosition);
 
 
 /**
@@ -136,6 +135,59 @@ goog.exportProperty(
 
 
 /**
+ * @return {number|undefined} Altitude.
+ */
+ol.Geolocation.prototype.getAltitude = function() {
+  return /** @type {number|undefined} */ (
+      this.get(ol.GeolocationProperty.ALTITUDE));
+};
+goog.exportProperty(
+    ol.Geolocation.prototype,
+    'getAltitude',
+    ol.Geolocation.prototype.getAltitude);
+
+
+/**
+ * @return {number|undefined} Altitude accuracy.
+ */
+ol.Geolocation.prototype.getAltitudeAccuracy = function() {
+  return /** @type {number|undefined} */ (
+      this.get(ol.GeolocationProperty.ALTITUDE_ACCURACY));
+};
+goog.exportProperty(
+    ol.Geolocation.prototype,
+    'getAltitudeAccuracy',
+    ol.Geolocation.prototype.getAltitudeAccuracy);
+
+
+/**
+ * @return {number|undefined} Heading.
+ */
+ol.Geolocation.prototype.getHeading = function() {
+  return /** @type {number|undefined} */ (
+      this.get(ol.GeolocationProperty.HEADING));
+};
+goog.exportProperty(
+    ol.Geolocation.prototype,
+    'getHeading',
+    ol.Geolocation.prototype.getHeading);
+
+
+/**
+ * The position of the device.
+ * @return {ol.Coordinate|undefined} position.
+ */
+ol.Geolocation.prototype.getPosition = function() {
+  return /** @type {ol.Coordinate} */ (
+      this.get(ol.GeolocationProperty.POSITION));
+};
+goog.exportProperty(
+    ol.Geolocation.prototype,
+    'getPosition',
+    ol.Geolocation.prototype.getPosition);
+
+
+/**
  * @return {ol.Projection|undefined} projection.
  */
 ol.Geolocation.prototype.getProjection = function() {
@@ -146,6 +198,19 @@ goog.exportProperty(
     ol.Geolocation.prototype,
     'getProjection',
     ol.Geolocation.prototype.getProjection);
+
+
+/**
+ * @return {number|undefined} Speed.
+ */
+ol.Geolocation.prototype.getSpeed = function() {
+  return /** @type {number|undefined} */ (
+      this.get(ol.GeolocationProperty.SPEED));
+};
+goog.exportProperty(
+    ol.Geolocation.prototype,
+    'getSpeed',
+    ol.Geolocation.prototype.getSpeed);
 
 
 /**
