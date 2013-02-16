@@ -30,12 +30,27 @@ html, body, #map {
     perspective: 1000;
 }
 
+/* Tile fade animation */
 .olLayerGrid .olTileImage {
     -webkit-transition: opacity 0.2s linear;
     -moz-transition: opacity 0.2s linear;
     -o-transition: opacity 0.2s linear;
     transition: opacity 0.2s linear;
 }
+
+/* Zoom Box */
+.olHandlerBoxZoomBox {
+    border: 2px solid red;
+    position: absolute;
+    background-color: white;
+    opacity: 0.50;
+    font-size: 1px;
+    filter: alpha(opacity=50);
+}
+.olDrawBox {
+    cursor: crosshair;
+}
+
 div.olControlAttribution {
     position: absolute;
     font-size: 10px;

@@ -46,49 +46,53 @@ var map;
     
     // Geolocate control for the Locate button - the locationupdated handler
     // draws a cross at the location and a circle showing the accuracy radius.
-    zoomPanel.addControls([
-        new OpenLayers.Control.Geolocate({
-            type: OpenLayers.Control.TYPE_TOGGLE,
-            geolocationOptions: {
-                enableHighAccuracy: false,
-                maximumAge: 0,
-                timeout: 7000
+    var geolocate = new OpenLayers.Control.Geolocate({
+        type: OpenLayers.Control.TYPE_TOGGLE,
+        bind: false,
+        watch: true,
+        geolocationOptions: {
+            enableHighAccuracy: false,
+            maximumAge: 0,
+            timeout: 7000
+        },
+        eventListeners: {
+            activate: function() {
+                map.addLayer(vector);
             },
-            eventListeners: {
-                activate: function() {
-                    map.addLayer(vector);
-                },
-                deactivate: function() {
-                    map.removeLayer(vector);
-                    vector.removeAllFeatures();
-                },
-                locationupdated: function(e) {
-                    vector.removeAllFeatures();
-                    vector.addFeatures([
-                        new OpenLayers.Feature.Vector(e.point, null, {
-                            graphicName: 'cross',
+            deactivate: function() {
+                map.removeLayer(vector);
+                vector.removeAllFeatures();
+            },
+            locationupdated: function(e) {
+                vector.removeAllFeatures();
+                vector.addFeatures([
+                    new OpenLayers.Feature.Vector(e.point, null, {
+                        graphicName: 'cross',
+                        strokeColor: '#f00',
+                        strokeWidth: 2,
+                        fillOpacity: 0,
+                        pointRadius: 10
+                    }),
+                    new OpenLayers.Feature.Vector(
+                        OpenLayers.Geometry.Polygon.createRegularPolygon(
+                            new OpenLayers.Geometry.Point(e.point.x, e.point.y),
+                            e.position.coords.accuracy / 2, 50, 0
+                        ), null, {
+                            fillOpacity: 0.1,
+                            fillColor: '#000',
                             strokeColor: '#f00',
-                            strokeWidth: 2,
-                            fillOpacity: 0,
-                            pointRadius: 10
-                        }),
-                        new OpenLayers.Feature.Vector(
-                            OpenLayers.Geometry.Polygon.createRegularPolygon(
-                                new OpenLayers.Geometry.Point(e.point.x, e.point.y),
-                                e.position.coords.accuracy / 2, 50, 0
-                            ), null, {
-                                fillOpacity: 0.1,
-                                fillColor: '#000',
-                                strokeColor: '#f00',
-                                strokeOpacity: 0.6
-                            }
-                        )
-                    ]);
-                    map.zoomToExtent(vector.getDataExtent());
-                }
+                            strokeOpacity: 0.6
+                        }
+                    )
+                ]);
+                map.zoomToExtent(vector.getDataExtent());
             }
-        })
-    ]);
+        }
+    })
+    zoomPanel.addControls([geolocate]);
+
+    // Fallback layer when outside Vienna
+    var osm = new OpenLayers.Layer.OSM();
 
     // Map with navigation controls optimized for touch devices
     map = new OpenLayers.Map({
@@ -96,17 +100,11 @@ var map;
         theme: null,
         projection: "EPSG:3857",
         units: "m",
-        restrictedExtent: [1799448.394855, 6124949.747770, 1848250.442089, 6162571.828177],
         maxResolution: 38.21851413574219,
         numZoomLevels: 8,
         tileManager: new OpenLayers.TileManager(),
         controls: [
-            new OpenLayers.Control.Navigation({
-                dragPanOptions: {
-                    enableKinetic: true
-                },
-                zoomBoxEnabled: false
-            }),
+            new OpenLayers.Control.Navigation(),
             new OpenLayers.Control.Attribution(),
             zoomPanel,
             layerPanel
@@ -116,6 +114,13 @@ var map;
                 // update anchor for permalinks
                 var ctr = map.getCenter();
                 window.location.hash = "x="+ctr.lon+"&y="+ctr.lat+"&z="+map.getZoom();
+                // switch to OSM when outside Vienna
+                if (!map.getExtent().intersectsBounds(fmzk.tileFullExtent)) {
+                    if (map.baseLayer !== osm) {
+                        map.addLayer(osm);
+                        map.setBaseLayer(osm);
+                    }
+                }
             }
         }
     });
@@ -130,8 +135,7 @@ var map;
         zoomOffset: 12,
         requestEncoding: "REST",
         matrixSet: "google3857",
-        attribution: 'Datenquelle: Stadt Wien - <a href="http://data.wien.gv.at">data.wien.gv.at</a>',
-        transitionEffect: "resize"
+        attribution: 'Datenquelle: Stadt Wien - <a href="http://data.wien.gv.at">data.wien.gv.at</a>'
     };
 
     // The WMTS layers we're going to add
