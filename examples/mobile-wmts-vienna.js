@@ -88,7 +88,7 @@ var map;
                 map.zoomToExtent(vector.getDataExtent());
             }
         }
-    })
+    });
     zoomPanel.addControls([geolocate]);
 
     // Fallback layer when outside Vienna
@@ -120,6 +120,8 @@ var map;
                         map.addLayer(osm);
                         map.setBaseLayer(osm);
                     }
+                } else if (map.baseLayer === osm) {
+                    map.removeLayer(osm);
                 }
             }
         }
