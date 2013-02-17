@@ -161,21 +161,23 @@ ol.renderer.webgl.ImageLayer.prototype.renderFrame =
 
   if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.PANNING]) {
     var image_ = imageSource.getImage(frameState.extent, viewResolution);
-    var imageState = image_.getState();
-    if (imageState == ol.ImageState.IDLE) {
-      goog.events.listenOnce(image_, goog.events.EventType.CHANGE,
-          this.handleImageChange, false, this);
-      image_.load();
-    } else if (imageState == ol.ImageState.LOADED) {
-      image = image_;
-      texture = this.createTexture_(image_);
-      if (!goog.isNull(this.texture_)) {
-        frameState.postRenderFunctions.push(
-            goog.partial(function(gl, texture) {
-              if (!gl.isContextLost()) {
-                gl.deleteTexture(texture);
-              }
-            }, gl, this.texture_));
+    if (!goog.isNull(image_)) {
+      var imageState = image_.getState();
+      if (imageState == ol.ImageState.IDLE) {
+        goog.events.listenOnce(image_, goog.events.EventType.CHANGE,
+            this.handleImageChange, false, this);
+        image_.load();
+      } else if (imageState == ol.ImageState.LOADED) {
+        image = image_;
+        texture = this.createTexture_(image_);
+        if (!goog.isNull(this.texture_)) {
+          frameState.postRenderFunctions.push(
+              goog.partial(function(gl, texture) {
+                if (!gl.isContextLost()) {
+                  gl.deleteTexture(texture);
+                }
+              }, gl, this.texture_));
+        }
       }
     }
   }

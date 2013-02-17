@@ -68,13 +68,15 @@ ol.renderer.dom.ImageLayer.prototype.renderFrame =
 
   if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.PANNING]) {
     var image_ = imageSource.getImage(frameState.extent, viewResolution);
-    var imageState = image_.getState();
-    if (imageState == ol.ImageState.IDLE) {
-      goog.events.listenOnce(image_, goog.events.EventType.CHANGE,
-          this.handleImageChange, false, this);
-      image_.load();
-    } else if (imageState == ol.ImageState.LOADED) {
-      image = image_;
+    if (!goog.isNull(image_)) {
+      var imageState = image_.getState();
+      if (imageState == ol.ImageState.IDLE) {
+        goog.events.listenOnce(image_, goog.events.EventType.CHANGE,
+            this.handleImageChange, false, this);
+        image_.load();
+      } else if (imageState == ol.ImageState.LOADED) {
+        image = image_;
+      }
     }
   }
 
