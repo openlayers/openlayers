@@ -62,16 +62,6 @@ ol.TileRange.prototype.containsTileRange = function(tileRange) {
 
 
 /**
- * @param {ol.TileRange} tileRange Tile range.
- * @return {boolean} Equals.
- */
-ol.TileRange.prototype.equals = function(tileRange) {
-  return this.minX == tileRange.minX && tileRange.maxX == this.maxX &&
-      this.minY == tileRange.minY && tileRange.minY == this.minY;
-};
-
-
-/**
  * @inheritDoc
  * @return {number} Height.
  */

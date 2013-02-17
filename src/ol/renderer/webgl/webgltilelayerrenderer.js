@@ -143,6 +143,12 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
+   * @type {!goog.vec.Mat4.Number}
+   */
+  this.vertexCoordMatrix_ = goog.vec.Mat4.createNumberIdentity();
+
+  /**
+   * @private
    * @type {ol.TileRange}
    */
   this.renderedTileRange_ = null;
@@ -234,6 +240,14 @@ ol.renderer.webgl.TileLayer.prototype.getTexCoordMatrix = function() {
  */
 ol.renderer.webgl.TileLayer.prototype.getTexture = function() {
   return this.texture_;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.webgl.TileLayer.prototype.getVertexCoordMatrix = function() {
+  return this.vertexCoordMatrix_;
 };
 
 

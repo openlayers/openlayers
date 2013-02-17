@@ -7,8 +7,10 @@ goog.require('goog.dom');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Size');
+goog.require('ol.layer.ImageLayer');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.Map');
+goog.require('ol.renderer.canvas.ImageLayer');
 goog.require('ol.renderer.canvas.TileLayer');
 
 
@@ -59,7 +61,9 @@ goog.inherits(ol.renderer.canvas.Map, ol.renderer.Map);
  * @inheritDoc
  */
 ol.renderer.canvas.Map.prototype.createLayerRenderer = function(layer) {
-  if (layer instanceof ol.layer.TileLayer) {
+  if (layer instanceof ol.layer.ImageLayer) {
+    return new ol.renderer.canvas.ImageLayer(this, layer);
+  } else if (layer instanceof ol.layer.TileLayer) {
     return new ol.renderer.canvas.TileLayer(this, layer);
   } else {
     goog.asserts.assert(false);
