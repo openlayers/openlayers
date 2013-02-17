@@ -5,6 +5,7 @@ goog.provide('ol.Geolocation');
 goog.provide('ol.GeolocationProperty');
 
 goog.require('goog.functions');
+goog.require('goog.math');
 goog.require('ol.Coordinate');
 goog.require('ol.Object');
 goog.require('ol.Projection');
@@ -102,8 +103,8 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
   this.set(ol.GeolocationProperty.ALTITUDE_ACCURACY,
       goog.isNull(coords.altitudeAccuracy) ?
       undefined : coords.altitudeAccuracy);
-  this.set(ol.GeolocationProperty.HEADING,
-      goog.isNull(coords.heading) ? undefined : coords.heading);
+  this.set(ol.GeolocationProperty.HEADING, goog.isNull(coords.heading) ?
+      undefined : goog.math.toRadians(coords.heading));
   this.position_ = new ol.Coordinate(coords.longitude, coords.latitude);
   this.set(ol.GeolocationProperty.POSITION,
       this.transformCoords_(this.position_));
