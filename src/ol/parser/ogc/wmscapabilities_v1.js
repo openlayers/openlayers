@@ -19,17 +19,17 @@ ol.parser.ogc.WMSCapabilities_v1 = function() {
         this.readChildNodes(node, obj['service']);
       },
       'Name': function(node, obj) {
-        obj.name = this.getChildValue(node);
+        obj['name'] = this.getChildValue(node);
       },
       'Title': function(node, obj) {
-        obj.title = this.getChildValue(node);
+        obj['title'] = this.getChildValue(node);
       },
       'Abstract': function(node, obj) {
         obj['abstract'] = this.getChildValue(node);
       },
       'BoundingBox': function(node, obj) {
         var bbox = {};
-        bbox.bbox = [
+        bbox['bbox'] = [
           parseFloat(node.getAttribute('minx')),
           parseFloat(node.getAttribute('miny')),
           parseFloat(node.getAttribute('maxx')),
@@ -40,96 +40,96 @@ ol.parser.ogc.WMSCapabilities_v1 = function() {
           y: parseFloat(node.getAttribute('resy'))
         };
         if (! (isNaN(res.x) && isNaN(res.y))) {
-          bbox.res = res;
+          bbox['res'] = res;
         }
         // return the bbox so that descendant classes can set the
         // CRS and SRS and add it to the obj
         return bbox;
       },
       'OnlineResource': function(node, obj) {
-        obj.href = this.getAttributeNS(node, 'http://www.w3.org/1999/xlink',
+        obj['href'] = this.getAttributeNS(node, 'http://www.w3.org/1999/xlink',
             'href');
       },
       'ContactInformation': function(node, obj) {
-        obj.contactInformation = {};
-        this.readChildNodes(node, obj.contactInformation);
+        obj['contactInformation'] = {};
+        this.readChildNodes(node, obj['contactInformation']);
       },
       'ContactPersonPrimary': function(node, obj) {
-        obj.personPrimary = {};
-        this.readChildNodes(node, obj.personPrimary);
+        obj['personPrimary'] = {};
+        this.readChildNodes(node, obj['personPrimary']);
       },
       'ContactPerson': function(node, obj) {
-        obj.person = this.getChildValue(node);
+        obj['person'] = this.getChildValue(node);
       },
       'ContactOrganization': function(node, obj) {
-        obj.organization = this.getChildValue(node);
+        obj['organization'] = this.getChildValue(node);
       },
       'ContactPosition': function(node, obj) {
-        obj.position = this.getChildValue(node);
+        obj['position'] = this.getChildValue(node);
       },
       'ContactAddress': function(node, obj) {
-        obj.contactAddress = {};
-        this.readChildNodes(node, obj.contactAddress);
+        obj['contactAddress'] = {};
+        this.readChildNodes(node, obj['contactAddress']);
       },
       'AddressType': function(node, obj) {
-        obj.type = this.getChildValue(node);
+        obj['type'] = this.getChildValue(node);
       },
       'Address': function(node, obj) {
-        obj.address = this.getChildValue(node);
+        obj['address'] = this.getChildValue(node);
       },
       'City': function(node, obj) {
-        obj.city = this.getChildValue(node);
+        obj['city'] = this.getChildValue(node);
       },
       'StateOrProvince': function(node, obj) {
-        obj.stateOrProvince = this.getChildValue(node);
+        obj['stateOrProvince'] = this.getChildValue(node);
       },
       'PostCode': function(node, obj) {
-        obj.postcode = this.getChildValue(node);
+        obj['postcode'] = this.getChildValue(node);
       },
       'Country': function(node, obj) {
-        obj.country = this.getChildValue(node);
+        obj['country'] = this.getChildValue(node);
       },
       'ContactVoiceTelephone': function(node, obj) {
-        obj.phone = this.getChildValue(node);
+        obj['phone'] = this.getChildValue(node);
       },
       'ContactFacsimileTelephone': function(node, obj) {
-        obj.fax = this.getChildValue(node);
+        obj['fax'] = this.getChildValue(node);
       },
       'ContactElectronicMailAddress': function(node, obj) {
-        obj.email = this.getChildValue(node);
+        obj['email'] = this.getChildValue(node);
       },
       'Fees': function(node, obj) {
         var fees = this.getChildValue(node);
         if (fees && fees.toLowerCase() != 'none') {
-          obj.fees = fees;
+          obj['fees'] = fees;
         }
       },
       'AccessConstraints': function(node, obj) {
         var constraints = this.getChildValue(node);
         if (constraints && constraints.toLowerCase() != 'none') {
-          obj.accessConstraints = constraints;
+          obj['accessConstraints'] = constraints;
         }
       },
       'Capability': function(node, obj) {
-        obj.capability = {
-          nestedLayers: [],
-          layers: []
-        };
-        this.readChildNodes(node, obj.capability);
+        obj['capability'] = {};
+        obj['capability']['nestedLayers'] = [];
+        obj['capability']['layers'] = [];
+        this.readChildNodes(node, obj['capability']);
       },
       'Request': function(node, obj) {
-        obj.request = {};
-        this.readChildNodes(node, obj.request);
+        obj['request'] = {};
+        this.readChildNodes(node, obj['request']);
       },
       'GetCapabilities': function(node, obj) {
-        obj.getcapabilities = {formats: []};
-        this.readChildNodes(node, obj.getcapabilities);
+        obj['getcapabilities'] = {};
+        obj['getcapabilities']['formats'] = [];
+        this.readChildNodes(node, obj['getcapabilities']);
       },
       'Format': function(node, obj) {
-        if (goog.isArray(obj.formats)) {
-          obj.formats.push(this.getChildValue(node));
+        if (goog.isArray(obj['formats'])) {
+          obj['formats'].push(this.getChildValue(node));
         } else {
-          obj.format = this.getChildValue(node);
+          obj['format'] = this.getChildValue(node);
         }
       },
       'DCPType': function(node, obj) {
@@ -139,37 +139,32 @@ ol.parser.ogc.WMSCapabilities_v1 = function() {
         this.readChildNodes(node, obj);
       },
       'Get': function(node, obj) {
-        obj.get = {};
-        this.readChildNodes(node, obj.get);
-        // backwards compatibility
-        if (!obj.href) {
-          obj.href = obj.get.href;
-        }
+        obj['get'] = {};
+        this.readChildNodes(node, obj['get']);
       },
       'Post': function(node, obj) {
-        obj.post = {};
-        this.readChildNodes(node, obj.post);
-        // backwards compatibility
-        if (!obj.href) {
-          obj.href = obj.get.href;
-        }
+        obj['post'] = {};
+        this.readChildNodes(node, obj['post']);
       },
       'GetMap': function(node, obj) {
-        obj.getmap = {formats: []};
-        this.readChildNodes(node, obj.getmap);
+        obj['getmap'] = {};
+        obj['getmap']['formats'] = [];
+        this.readChildNodes(node, obj['getmap']);
       },
       'GetFeatureInfo': function(node, obj) {
-        obj.getfeatureinfo = {formats: []};
-        this.readChildNodes(node, obj.getfeatureinfo);
+        obj['getfeatureinfo'] = {};
+        obj['getfeatureinfo']['formats'] = [];
+        this.readChildNodes(node, obj['getfeatureinfo']);
       },
       'Exception': function(node, obj) {
-        obj.exception = {formats: []};
-        this.readChildNodes(node, obj.exception);
+        obj['exception'] = {};
+        obj['exception']['formats'] = [];
+        this.readChildNodes(node, obj['exception']);
       },
       'Layer': function(node, obj) {
         var parentLayer, capability;
-        if (obj.capability) {
-          capability = obj.capability;
+        if (obj['capability']) {
+          capability = obj['capability'];
           parentLayer = obj;
         } else {
           capability = obj;
@@ -188,113 +183,113 @@ ol.parser.ogc.WMSCapabilities_v1 = function() {
         var fixedHeight = node.getAttribute('fixedHeight');
         var parent = parentLayer || {};
         var layer = {
-          nestedLayers: [],
-          styles: parentLayer ? [].concat(parentLayer.styles) : [],
-          srs: {},
-          metadataURLs: [],
-          bbox: {},
-          llbbox: parent.llbbox,
-          dimensions: {},
-          authorityURLs: {},
-          identifiers: {},
-          keywords: [],
-          queryable: (queryable && queryable !== '') ?
+          'nestedLayers': [],
+          'styles': parentLayer ? [].concat(parentLayer['styles']) : [],
+          'srs': {},
+          'metadataURLs': [],
+          'bbox': {},
+          'llbbox': parent['llbbox'],
+          'dimensions': {},
+          'authorityURLs': {},
+          'identifiers': {},
+          'keywords': [],
+          'queryable': (queryable && queryable !== '') ?
               (queryable === '1' || queryable === 'true') :
-              (parent.queryable || false),
-          cascaded: (cascaded !== null) ? parseInt(cascaded, 10) :
-              (parent.cascaded || 0),
-          opaque: opaque ?
+              (parent['queryable'] || false),
+          'cascaded': (cascaded !== null) ? parseInt(cascaded, 10) :
+              (parent['cascaded'] || 0),
+          'opaque': opaque ?
               (opaque === '1' || opaque === 'true') :
-              (parent.opaque || false),
-          noSubsets: (noSubsets !== null) ?
+              (parent['opaque'] || false),
+          'noSubsets': (noSubsets !== null) ?
               (noSubsets === '1' || noSubsets === 'true') :
-              (parent.noSubsets || false),
-          fixedWidth: (fixedWidth !== null) ?
-              parseInt(fixedWidth, 10) : (parent.fixedWidth || 0),
-          fixedHeight: (fixedHeight !== null) ?
-              parseInt(fixedHeight, 10) : (parent.fixedHeight || 0),
-          minScale: parent.minScale,
-          maxScale: parent.maxScale,
-          attribution: parent.attribution
+              (parent['noSubsets'] || false),
+          'fixedWidth': (fixedWidth !== null) ?
+              parseInt(fixedWidth, 10) : (parent['fixedWidth'] || 0),
+          'fixedHeight': (fixedHeight !== null) ?
+              parseInt(fixedHeight, 10) : (parent['fixedHeight'] || 0),
+          'minScale': parent['minScale'],
+          'maxScale': parent['maxScale'],
+          'attribution': parent['attribution']
         };
         if (parentLayer) {
-          goog.object.extend(layer.srs, parent.srs);
-          goog.object.extend(layer.bbox, parent.bbox);
-          goog.object.extend(layer.dimensions, parent.dimensions);
-          goog.object.extend(layer.authorityURLs, parent.authorityURLs);
+          goog.object.extend(layer['srs'], parent['srs']);
+          goog.object.extend(layer['bbox'], parent['bbox']);
+          goog.object.extend(layer['dimensions'], parent['dimensions']);
+          goog.object.extend(layer['authorityURLs'], parent['authorityURLs']);
         }
-        obj.nestedLayers.push(layer);
-        layer.capability = capability;
+        obj['nestedLayers'].push(layer);
+        layer['capability'] = capability;
         this.readChildNodes(node, layer);
-        delete layer.capability;
-        if (layer.name) {
-          var parts = layer.name.split(':'),
-              request = capability.request,
-              gfi = request.getfeatureinfo;
+        delete layer['capability'];
+        if (layer['name']) {
+          var parts = layer['name'].split(':'),
+              request = capability['request'],
+              gfi = request['getfeatureinfo'];
           if (parts.length > 0) {
-            layer.prefix = parts[0];
+            layer['prefix'] = parts[0];
           }
-          capability.layers.push(layer);
-          if (layer.formats === undefined) {
-            layer.formats = request.getmap.formats;
+          capability['layers'].push(layer);
+          if (layer['formats'] === undefined) {
+            layer['formats'] = request['getmap']['formats'];
           }
-          if (layer.infoFormats === undefined && gfi) {
-            layer.infoFormats = gfi.formats;
+          if (layer['infoFormats'] === undefined && gfi) {
+            layer['infoFormats'] = gfi['formats'];
           }
         }
       },
       'Attribution': function(node, obj) {
-        obj.attribution = {};
-        this.readChildNodes(node, obj.attribution);
+        obj['attribution'] = {};
+        this.readChildNodes(node, obj['attribution']);
       },
       'LogoURL': function(node, obj) {
-        obj.logo = {
-          width: node.getAttribute('width'),
-          height: node.getAttribute('height')
+        obj['logo'] = {
+          'width': node.getAttribute('width'),
+          'height': node.getAttribute('height')
         };
-        this.readChildNodes(node, obj.logo);
+        this.readChildNodes(node, obj['logo']);
       },
       'Style': function(node, obj) {
         var style = {};
-        obj.styles.push(style);
+        obj['styles'].push(style);
         this.readChildNodes(node, style);
       },
       'LegendURL': function(node, obj) {
         var legend = {
-          width: node.getAttribute('width'),
-          height: node.getAttribute('height')
+          'width': node.getAttribute('width'),
+          'height': node.getAttribute('height')
         };
-        obj.legend = legend;
+        obj['legend'] = legend;
         this.readChildNodes(node, legend);
       },
       'MetadataURL': function(node, obj) {
-        var metadataURL = {type: node.getAttribute('type')};
-        obj.metadataURLs.push(metadataURL);
+        var metadataURL = {'type': node.getAttribute('type')};
+        obj['metadataURLs'].push(metadataURL);
         this.readChildNodes(node, metadataURL);
       },
       'DataURL': function(node, obj) {
-        obj.dataURL = {};
-        this.readChildNodes(node, obj.dataURL);
+        obj['dataURL'] = {};
+        this.readChildNodes(node, obj['dataURL']);
       },
       'FeatureListURL': function(node, obj) {
-        obj.featureListURL = {};
-        this.readChildNodes(node, obj.featureListURL);
+        obj['featureListURL'] = {};
+        this.readChildNodes(node, obj['featureListURL']);
       },
       'AuthorityURL': function(node, obj) {
         var name = node.getAttribute('name');
         var authority = {};
         this.readChildNodes(node, authority);
-        obj.authorityURLs[name] = authority.href;
+        obj['authorityURLs'][name] = authority['href'];
       },
       'Identifier': function(node, obj) {
         var authority = node.getAttribute('authority');
-        obj.identifiers[authority] = this.getChildValue(node);
+        obj['identifiers'][authority] = this.getChildValue(node);
       },
       'KeywordList': function(node, obj) {
         this.readChildNodes(node, obj);
       },
       'SRS': function(node, obj) {
-        obj.srs[this.getChildValue(node)] = true;
+        obj['srs'][this.getChildValue(node)] = true;
       }
     }
   };
