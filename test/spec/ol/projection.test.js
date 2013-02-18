@@ -99,6 +99,33 @@ describe('ol.Projection', function() {
       expect(point.y).toRoughlyEqual(52.4827802220782, 1e-9);
     });
   });
+
+  describe('Proj4js integration', function() {
+
+    it('allows Proj4js projections to be used transparently', function() {
+      var point = ol.Projection.transformWithCodes(
+          new ol.Coordinate(-626172.13571216376, 6887893.4928337997),
+          'GOOGLE',
+          'WGS84');
+      expect(point.x).toRoughlyEqual(-5.625, 1e-9);
+      expect(point.y).toRoughlyEqual(52.4827802220782, 1e-9);
+    });
+
+    it('allows new Proj4js projections to be defined', function() {
+      Proj4js.defs['EPSG:21781'] =
+          '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 ' +
+          '+k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel ' +
+          '+towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs';
+      var point = ol.Projection.transformWithCodes(
+          new ol.Coordinate(7.439583333333333, 46.95240555555556),
+          'EPSG:4326',
+          'EPSG:21781');
+      expect(point.x).toRoughlyEqual(600072.300, 1);
+      expect(point.y).toRoughlyEqual(200146.976, 1);
+    });
+
+  });
+
 });
 
 goog.require('goog.array');
