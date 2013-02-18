@@ -334,7 +334,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   this.renderedExtent_ = tileRangeExtent;
   if (!this.pendingCachePrune_) {
     this.pendingCachePrune_ = true;
-    goog.global.setTimeout(goog.bind(this.pruneTileCache_, this), 0);
+    frameState.postRenderFunctions.push(goog.bind(this.pruneTileCache_, this));
   }
 
 };
