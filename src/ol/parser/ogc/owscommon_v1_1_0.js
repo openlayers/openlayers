@@ -14,30 +14,30 @@ ol.parser.ogc.OWSCommon_v1_1_0 = function() {
       this.readers['http://www.opengis.net/ows'];
   goog.object.extend(this.readers['http://www.opengis.net/ows/1.1'], {
     'AllowedValues': function(node, parameter) {
-      parameter.allowedValues = {};
-      this.readChildNodes(node, parameter.allowedValues);
+      parameter['allowedValues'] = {};
+      this.readChildNodes(node, parameter['allowedValues']);
     },
     'AnyValue': function(node, parameter) {
-      parameter.anyValue = true;
+      parameter['anyValue'] = true;
     },
     'DataType': function(node, parameter) {
-      parameter.dataType = this.getChildValue(node);
+      parameter['dataType'] = this.getChildValue(node);
     },
     'Range': function(node, allowedValues) {
-      allowedValues.range = {};
-      this.readChildNodes(node, allowedValues.range);
+      allowedValues['range'] = {};
+      this.readChildNodes(node, allowedValues['range']);
     },
     'MinimumValue': function(node, range) {
-      range.minValue = this.getChildValue(node);
+      range['minValue'] = this.getChildValue(node);
     },
     'MaximumValue': function(node, range) {
-      range.maxValue = this.getChildValue(node);
+      range['maxValue'] = this.getChildValue(node);
     },
     'Identifier': function(node, obj) {
-      obj.identifier = this.getChildValue(node);
+      obj['identifier'] = this.getChildValue(node);
     },
     'SupportedCRS': function(node, obj) {
-      obj.supportedCRS = this.getChildValue(node);
+      obj['supportedCRS'] = this.getChildValue(node);
     }
   });
 };
