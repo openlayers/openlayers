@@ -251,28 +251,10 @@ ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndResolution = function(
   tileSize = new ol.Size(tileSize.width / scale,
                          tileSize.height / scale);
 
-  var x, y;
-  x = Math.floor(offsetFromOrigin.x / tileSize.width);
-  y = Math.floor(offsetFromOrigin.y / tileSize.height);
+  var x = Math.floor(offsetFromOrigin.x / tileSize.width);
+  var y = Math.floor(offsetFromOrigin.y / tileSize.height);
 
-  var tileCoord = new ol.TileCoord(z, x, y);
-  var tileCoordPixelBounds = this.getPixelBoundsForTileCoordAndResolution(
-      tileCoord, resolution);
-
-  // adjust x to allow for stretched tiles
-  if (offsetFromOrigin.x < tileCoordPixelBounds.minX) {
-    tileCoord.x -= 1;
-  } else if (offsetFromOrigin.x >= tileCoordPixelBounds.maxX) {
-    tileCoord.x += 1;
-  }
-  // adjust y to allow for stretched tiles
-  if (offsetFromOrigin.y < tileCoordPixelBounds.minY) {
-    tileCoord.y -= 1;
-  } else if (offsetFromOrigin.y >= tileCoordPixelBounds.maxY) {
-    tileCoord.y += 1;
-  }
-
-  return tileCoord;
+  return new ol.TileCoord(z, x, y);
 };
 
 
