@@ -354,7 +354,7 @@ def proj4js_zip(t):
 
 
 if sys.platform == 'win32':
-    @target('test', '%(PHANTOMJS)s', INTERNAL_SRC, 'test/requireall.js', phony=True)
+    @target('test', '%(PHANTOMJS)s', INTERNAL_SRC, PROJ4JS, 'test/requireall.js', phony=True)
     def test(t):
         t.run(PHANTOMJS, 'test/phantom-jasmine/run_jasmine_test.coffee', 'test/ol.html')
 
@@ -369,7 +369,7 @@ if sys.platform == 'win32':
         t.download('http://phantomjs.googlecode.com/files/' + os.path.basename(t.name))
 
 else:
-    @target('test', INTERNAL_SRC, 'test/requireall.js', phony=True)
+    @target('test', INTERNAL_SRC, PROJ4JS, 'test/requireall.js', phony=True)
     def test(t):
         t.run('%(PHANTOMJS)s', 'test/phantom-jasmine/run_jasmine_test.coffee', 'test/ol.html')
 
