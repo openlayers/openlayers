@@ -106,7 +106,8 @@ ol.interaction.DragPan.prototype.handleDragStart = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   if (this.condition_(browserEvent)) {
     if (this.kinetic_) {
-      this.kinetic_.begin(browserEvent.clientX, browserEvent.clientY);
+      this.kinetic_.begin();
+      this.kinetic_.update(browserEvent.clientX, browserEvent.clientY);
     }
     var map = mapBrowserEvent.map;
     map.requestRenderFrame();
