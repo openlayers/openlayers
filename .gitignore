@@ -11,6 +11,8 @@
 /build/src
 /build/phantomjs-*-windows
 /build/phantomjs-*-windows.zip
+/build/proj4js-*.zip
+/build/proj4js
 /examples/*.json
 /examples/*.combined.js
 /examples/example-list.js
