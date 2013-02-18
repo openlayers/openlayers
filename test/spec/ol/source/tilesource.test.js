@@ -75,7 +75,7 @@ describe('ol.source.TileSource', function() {
         '1/1/2': true,
         '1/2/0': true,
         '1/2/1': true,
-        '1/2/2': true,
+        '1/2/2': true
       });
 
       var loadedTilesByZ = {};
@@ -99,7 +99,7 @@ describe('ol.source.TileSource', function() {
           '1/1/2': true,
           '1/2/0': true,
           '1/2/1': true,
-          '1/2/2': true,
+          '1/2/2': true
         }
       };
       var grid = source.getTileGrid();
@@ -119,7 +119,7 @@ describe('ol.source.TileSource', function() {
         '1/1/2': true,
         '1/2/0': true,
         '1/2/1': true,
-        '1/2/2': true,
+        '1/2/2': true
       });
 
       var loadedTilesByZ = {};
@@ -143,7 +143,7 @@ describe('ol.source.TileSource', function() {
           '1/1/2': true,
           '1/2/0': true,
           '1/2/1': true,
-          '1/2/2': true,
+          '1/2/2': true
         }
       };
       var grid = source.getTileGrid();
@@ -226,7 +226,7 @@ describe('ol.test.source.MockTileSource', function() {
       expect(tile.state).toBe(ol.TileState.LOADED);
 
       // check a tile that is not loaded
-      tile = source.getTile(new ol.TileCoord(1, 0, 0));
+      tile = source.getTile(new ol.TileCoord(1, 0, -1));
       expect(tile).toBeA(ol.Tile);
       expect(tile.state).toBe(ol.TileState.IDLE);
 
