@@ -3,6 +3,8 @@ goog.provide('ol.renderer.Layer');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.FrameState');
+goog.require('ol.Image');
+goog.require('ol.ImageState');
 goog.require('ol.Object');
 goog.require('ol.Tile');
 goog.require('ol.TileCoord');
@@ -117,6 +119,19 @@ ol.renderer.Layer.prototype.handleLayerContrastChange = goog.nullFunction;
  * @protected
  */
 ol.renderer.Layer.prototype.handleLayerHueChange = goog.nullFunction;
+
+
+/**
+ * Handle changes in image state.
+ * @param {goog.events.Event} event Image change event.
+ * @protected
+ */
+ol.renderer.Layer.prototype.handleImageChange = function(event) {
+  var image = /** @type {ol.Image} */ (event.target);
+  if (image.getState() === ol.ImageState.LOADED) {
+    this.getMap().requestRenderFrame();
+  }
+};
 
 
 /**

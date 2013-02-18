@@ -98,6 +98,12 @@ ol.renderer.webgl.Layer.prototype.getTexture = goog.abstractMethod;
 
 
 /**
+ * @return {!goog.vec.Mat4.Number} Matrix.
+ */
+ol.renderer.webgl.Layer.prototype.getVertexCoordMatrix = goog.abstractMethod;
+
+
+/**
  * @inheritDoc
  */
 ol.renderer.webgl.Layer.prototype.handleLayerBrightnessChange = function() {

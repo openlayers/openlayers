@@ -22,14 +22,17 @@ if sys.platform == 'win32':
     variables.JSDOC = 'jsdoc'  # FIXME
     variables.PYTHON = os.path.join(Python27, 'python.exe')
     PHANTOMJS_WINDOWS_ZIP = 'build/phantomjs-1.8.1-windows.zip'
-    PHANTOMJS = 'build/phantomjs-1.8.1-windows/phantomjs.exe'
+    # FIXME we should not need both a pake variable and a Python constant here
+    # FIXME this requires pake to be modified to lazily evaluate variables in target names
+    variables.PHANTOMJS = 'build/phantomjs-1.8.1-windows/phantomjs.exe'
+    PHANTOMJS = variables.PHANTOMJS
 else:
     variables.GIT = 'git'
     variables.GJSLINT = 'gjslint'
     variables.JAVA = 'java'
     variables.JSDOC = 'jsdoc'
     variables.PYTHON = 'python'
-    PHANTOMJS = 'phantomjs'
+    variables.PHANTOMJS = 'phantomjs'
 
 variables.BRANCH = output('%(GIT)s', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
 
@@ -73,6 +76,10 @@ SRC = [path
 
 PLOVR_JAR = 'bin/plovr-eba786b34df9.jar'
 PLOVR_JAR_MD5 = '20eac8ccc4578676511cf7ccbfc65100'
+
+PROJ4JS = 'build/proj4js/lib/proj4js-combined.js'
+PROJ4JS_ZIP = 'build/proj4js-1.1.0.zip'
+PROJ4JS_ZIP_MD5 = '17caad64cf6ebc6e6fe62f292b134897'
 
 
 def report_sizes(t):
@@ -335,12 +342,23 @@ def hostexamples(t):
     t.cp('examples/example-list.js', 'examples/example-list.xml', 'examples/Jugl.js', 'build/gh-pages/%(BRANCH)s/examples/')
 
 
-@target('test', PHANTOMJS, INTERNAL_SRC, 'test/requireall.js', phony=True)
-def test(t):
-    t.run(PHANTOMJS, 'test/phantom-jasmine/run_jasmine_test.coffee', 'test/ol.html')
+@target(PROJ4JS, PROJ4JS_ZIP)
+def proj4js(t):
+    from zipfile import ZipFile
+    ZipFile(PROJ4JS_ZIP).extractall('build')
+
+
+@target(PROJ4JS_ZIP, clean=False)
+def proj4js_zip(t):
+    t.download('http://download.osgeo.org/proj4js/' + os.path.basename(t.name), md5=PROJ4JS_ZIP_MD5)
 
 
 if sys.platform == 'win32':
+    @target('test', '%(PHANTOMJS)s', INTERNAL_SRC, PROJ4JS, 'test/requireall.js', phony=True)
+    def test(t):
+        t.run(PHANTOMJS, 'test/phantom-jasmine/run_jasmine_test.coffee', 'test/ol.html')
+
+    # FIXME the PHANTOMJS should be a pake variable, not a constant
     @target(PHANTOMJS, PHANTOMJS_WINDOWS_ZIP, clean=False)
     def phantom_js(t):
         from zipfile import ZipFile
@@ -351,7 +369,9 @@ if sys.platform == 'win32':
         t.download('http://phantomjs.googlecode.com/files/' + os.path.basename(t.name))
 
 else:
-    virtual(PHANTOMJS)
+    @target('test', INTERNAL_SRC, PROJ4JS, 'test/requireall.js', phony=True)
+    def test(t):
+        t.run('%(PHANTOMJS)s', 'test/phantom-jasmine/run_jasmine_test.coffee', 'test/ol.html')
 
 
 @target('fixme', phony=True)

@@ -63,14 +63,12 @@ ol.Kinetic = function(decay, minVelocity, delay) {
 
 
 /**
- * @param {number} x X.
- * @param {number} y Y.
+ * FIXME empty description for jsdoc
  */
-ol.Kinetic.prototype.begin = function(x, y) {
+ol.Kinetic.prototype.begin = function() {
   this.points_.length = 0;
   this.angle_ = 0;
   this.initialVelocity_ = 0;
-  this.update(x, y);
 };
 
 
