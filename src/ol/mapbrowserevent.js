@@ -163,29 +163,28 @@ ol.MapBrowserEventHandler = function(map) {
   this.down_ = null;
 
   var element = this.map_.getViewport();
-  if (!ol.BrowserFeature.HAS_TOUCH) {
-    this.clickListenerKey_ = goog.events.listen(element,
-        [goog.events.EventType.CLICK, goog.events.EventType.DBLCLICK],
-        this.click_, false, this);
-    this.downListenerKey_ = goog.events.listen(element,
-        goog.events.EventType.MOUSEDOWN,
-        this.handleMouseDown_, false, this);
-  } else {
-    this.touchListenerKeys_ = [
-      goog.events.listen(element, [
-        goog.events.EventType.TOUCHSTART,
-        ol.MapBrowserEvent.IEEventType.MSPOINTERDOWN
-      ], this.handleTouchStart_, false, this),
-      goog.events.listen(element, [
-        goog.events.EventType.TOUCHMOVE,
-        ol.MapBrowserEvent.IEEventType.MSPOINTERMOVE
-      ], this.handleTouchMove_, false, this),
-      goog.events.listen(element, [
-        goog.events.EventType.TOUCHEND,
-        ol.MapBrowserEvent.IEEventType.MSPOINTERUP
-      ], this.handleTouchEnd_, false, this)
-    ];
-  }
+  this.clickListenerKey_ = goog.events.listen(element,
+      [goog.events.EventType.CLICK, goog.events.EventType.DBLCLICK],
+      this.click_, false, this);
+  this.downListenerKey_ = goog.events.listen(element,
+      goog.events.EventType.MOUSEDOWN,
+      this.handleMouseDown_, false, this);
+  // touch events
+  this.touchListenerKeys_ = [
+    goog.events.listen(element, [
+      goog.events.EventType.TOUCHSTART,
+      ol.MapBrowserEvent.IEEventType.MSPOINTERDOWN
+    ], this.handleTouchStart_, false, this),
+    goog.events.listen(element, [
+      goog.events.EventType.TOUCHMOVE,
+      ol.MapBrowserEvent.IEEventType.MSPOINTERMOVE
+    ], this.handleTouchMove_, false, this),
+    goog.events.listen(element, [
+      goog.events.EventType.TOUCHEND,
+      ol.MapBrowserEvent.IEEventType.MSPOINTERUP
+    ], this.handleTouchEnd_, false, this)
+  ];
+
 };
 goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
 
