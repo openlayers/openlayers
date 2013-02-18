@@ -75,12 +75,13 @@ ol.source.TileSource.prototype.findLoadedTiles = function(loadedTilesByZ, z,
   // FIXME this could be more efficient about filling partial holes
   var fullyCovered = true;
   var tile, tileCoord, tileCoordKey, x, y;
+  // TODO: tile range is misunderstood (inclusive or not?)
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       tileCoord = new ol.TileCoord(z, x, y);
       tileCoordKey = tileCoord.toString();
       if (loadedTilesByZ[z] && loadedTilesByZ[z][tileCoordKey]) {
-        return false; // TODO: fix this
+        continue;
       }
       tile = this.getTile(tileCoord);
       if (!goog.isNull(tile) && tile.getState() == ol.TileState.LOADED) {
