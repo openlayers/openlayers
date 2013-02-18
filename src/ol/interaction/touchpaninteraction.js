@@ -45,19 +45,14 @@ ol.interaction.TouchPan.prototype.handleTouchMove = function(mapBrowserEvent) {
     this.kinetic_.update(centroid.x, centroid.y);
     var map = mapBrowserEvent.map;
     var view = map.getView();
-    var resolution = view.getResolution();
-    var rotation = view.getRotation();
-    var center = view.getCenter();
 
     var deltaX = this.lastCentroid.x - centroid.x;
     var deltaY = centroid.y - this.lastCentroid.y;
-    var newCenter = new ol.Coordinate(deltaX, deltaY)
+    var center = new ol.Coordinate(deltaX, deltaY)
       .scale(view.getResolution())
-      .rotate(view.getRotation());
-    // FIXME: nice to have center.add(...);
-    newCenter.x += center.x;
-    newCenter.y += center.y;
-    view.setCenter(newCenter);
+      .rotate(view.getRotation())
+      .add(view.getCenter());
+    view.setCenter(center);
   }
   this.lastCentroid = centroid;
 };
