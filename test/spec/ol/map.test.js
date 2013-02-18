@@ -78,7 +78,8 @@ describe('ol.Map', function() {
         keyboard: false,
         mouseWheelZoom: false,
         shiftDragZoom: false,
-        touchPan: false
+        touchPan: false,
+        touchRotateZoom: false
       };
     });
 

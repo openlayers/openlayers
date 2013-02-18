@@ -13,6 +13,7 @@
 @exportObjectLiteralProperty ol.MapOptions.shiftDragZoom boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.target Element|string
 @exportObjectLiteralProperty ol.MapOptions.touchPan boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.touchRotateZoom boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.view ol.IView|undefined
 @exportObjectLiteralProperty ol.MapOptions.zoomControl boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.zoomDelta number|undefined
