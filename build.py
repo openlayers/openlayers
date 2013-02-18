@@ -345,7 +345,10 @@ def hostexamples(t):
 @target(PROJ4JS, PROJ4JS_ZIP)
 def proj4js(t):
     from zipfile import ZipFile
-    ZipFile(PROJ4JS_ZIP).extractall('build')
+    zf = ZipFile(PROJ4JS_ZIP)
+    contents = zf.open('proj4js/lib/proj4js-combined.js').read()
+    with open(t.name, 'wb') as f:
+        f.write(contents)
 
 
 @target(PROJ4JS_ZIP, clean=False)
