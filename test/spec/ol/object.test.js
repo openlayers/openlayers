@@ -65,6 +65,23 @@ describe('ol.Object', function() {
     });
   });
 
+  describe('#getKeys()', function() {
+
+    it('returns property names set at construction', function() {
+      var o = new ol.Object({
+        prop1: 'val1',
+        prop2: 'val2',
+        toString: 'string',
+        get: 'foo'
+      });
+
+      var keys = o.getKeys();
+      expect(keys.length).toBe(4);
+      expect(keys.sort()).toEqual(['get', 'prop1', 'prop2', 'toString']);
+    });
+
+  });
+
   describe('setValues', function() {
 
     it('sets multiple values at once', function() {
@@ -74,6 +91,9 @@ describe('ol.Object', function() {
       });
       expect(o.get('k1')).toEqual(1);
       expect(o.get('k2')).toEqual(2);
+
+      var keys = o.getKeys().sort();
+      expect(keys).toEqual(['k1', 'k2']);
     });
   });
 
@@ -130,6 +150,9 @@ describe('ol.Object', function() {
     it('dispatches events to object', function() {
       o.set('k', 1);
       expect(listener1).toHaveBeenCalled();
+
+      expect(o.getKeys()).toEqual(['k']);
+      expect(o2.getKeys()).toEqual(['k']);
     });
 
     it('dispatches generic change events to object', function() {
@@ -145,6 +168,9 @@ describe('ol.Object', function() {
     it('dispatches events to object bound to', function() {
       o2.set('k', 2);
       expect(listener1).toHaveBeenCalled();
+
+      expect(o.getKeys()).toEqual(['k']);
+      expect(o2.getKeys()).toEqual(['k']);
     });
 
     it('dispatches generic change events to object bound to', function() {
@@ -168,6 +194,9 @@ describe('ol.Object', function() {
         o2.bindTo('k', o);
         expect(o.get('k')).toEqual(1);
         expect(o2.get('k')).toEqual(1);
+
+        expect(o.getKeys()).toEqual(['k']);
+        expect(o2.getKeys()).toEqual(['k']);
       });
     });
 
@@ -178,6 +207,9 @@ describe('ol.Object', function() {
         o.set('k', 1);
         expect(o.get('k')).toEqual(1);
         expect(o2.get('k')).toEqual(1);
+
+        expect(o.getKeys()).toEqual(['k']);
+        expect(o2.getKeys()).toEqual(['k']);
       });
     });
 
@@ -270,6 +302,9 @@ describe('ol.Object', function() {
       expect(o2.get('k1')).toBeUndefined();
       expect(listener1).toHaveBeenCalled();
       expect(listener2).toHaveBeenCalled();
+
+      expect(o.getKeys()).toEqual(['k1']);
+      expect(o2.getKeys()).toEqual(['k2']);
     });
   });
 
@@ -288,6 +323,10 @@ describe('ol.Object', function() {
       expect(o.get('k1')).toEqual(1);
       expect(o2.get('k2')).toEqual(1);
       expect(o3.get('k3')).toEqual(1);
+
+      expect(o.getKeys()).toEqual(['k1']);
+      expect(o2.getKeys()).toEqual(['k2']);
+      expect(o3.getKeys()).toEqual(['k3']);
     });
 
     describe('backward', function() {
@@ -297,6 +336,10 @@ describe('ol.Object', function() {
         expect(o.get('k1')).toEqual(1);
         expect(o2.get('k2')).toEqual(1);
         expect(o3.get('k3')).toEqual(1);
+
+        expect(o.getKeys()).toEqual(['k1']);
+        expect(o2.getKeys()).toEqual(['k2']);
+        expect(o3.getKeys()).toEqual(['k3']);
       });
     });
   });
@@ -350,6 +393,8 @@ describe('ol.Object', function() {
         o.set('x', 1);
         expect(o.get('x')).toEqual(1);
         expect(o.setX).not.toHaveBeenCalled();
+
+        expect(o.getKeys()).toEqual(['x']);
       });
     });
 
@@ -360,6 +405,9 @@ describe('ol.Object', function() {
         o2.set('x', 1);
         expect(o.setX).toHaveBeenCalled();
         expect(o.get('x')).toEqual(1);
+
+        expect(o.getKeys()).toEqual(['x']);
+        expect(o2.getKeys()).toEqual(['x']);
       });
     });
   });
@@ -385,6 +433,9 @@ describe('ol.Object', function() {
         o2.bindTo('x', o);
         expect(o2.get('x')).toEqual(1);
         expect(o.getX).toHaveBeenCalled();
+
+        expect(o.getKeys()).toEqual([]);
+        expect(o2.getKeys()).toEqual(['x']);
       });
     });
   });
@@ -399,6 +450,8 @@ describe('ol.Object', function() {
     it('sets the property', function() {
       var o = new ol.Object({k: 1});
       expect(o.get('k')).toEqual(1);
+
+      expect(o.getKeys()).toEqual(['k']);
     });
   });
 
@@ -416,6 +469,8 @@ describe('ol.Object', function() {
       o.set('K', 1);
       expect(listener1).toHaveBeenCalled();
       expect(listener2).not.toHaveBeenCalled();
+
+      expect(o.getKeys()).toEqual(['K']);
     });
   });
 });
