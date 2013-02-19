@@ -5,9 +5,10 @@ goog.require('goog.dom.TagName');
 
 
 /**
- * @return {boolean} Is supported.
+ * @const
+ * @type {boolean} Is supported.
  */
-ol.canvas.isSupported = function() {
+ol.canvas.SUPPORTED = (function() {
   if (!('HTMLCanvasElement' in goog.global)) {
     return false;
   }
@@ -18,4 +19,4 @@ ol.canvas.isSupported = function() {
   } catch (e) {
     return false;
   }
-};
+})();
