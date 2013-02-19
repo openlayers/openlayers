@@ -1,23 +1,44 @@
 goog.provide('ol.TileRange');
 
 goog.require('goog.asserts');
-goog.require('ol.Rectangle');
+goog.require('ol.Size');
 goog.require('ol.TileCoord');
 
 
 
 /**
+ * A representation of a contiguous block of tiles.  A tile range is specified
+ * by its min/max tile coordinates and is inclusive of coordinates.
+ *
  * @constructor
- * @extends {ol.Rectangle}
  * @param {number} minX Minimum X.
  * @param {number} minY Minimum Y.
  * @param {number} maxX Maximum X.
  * @param {number} maxY Maximum Y.
  */
 ol.TileRange = function(minX, minY, maxX, maxY) {
-  goog.base(this, minX, minY, maxX, maxY);
+
+  /**
+   * @type {number}
+   */
+  this.minX = minX;
+
+  /**
+   * @type {number}
+   */
+  this.minY = minY;
+
+  /**
+   * @type {number}
+   */
+  this.maxX = maxX;
+
+  /**
+   * @type {number}
+   */
+  this.maxY = maxY;
+
 };
-goog.inherits(ol.TileRange, ol.Rectangle);
 
 
 /**
@@ -62,7 +83,28 @@ ol.TileRange.prototype.containsTileRange = function(tileRange) {
 
 
 /**
- * @inheritDoc
+ * @param {ol.TileRange} range Other range.
+ * @return {boolean} The two ranges are equivalent.
+ */
+ol.TileRange.prototype.equals = function(range) {
+  return this.minX == range.minX && this.minY == range.minY &&
+      this.maxX == range.maxX && this.maxY == range.maxY;
+};
+
+
+/**
+ * Extend this range so it includes the other.
+ * @param {ol.TileRange} other Other range.
+ */
+ol.TileRange.prototype.extend = function(other) {
+  this.minX = Math.min(this.minX, other.minX);
+  this.minY = Math.min(this.minY, other.minY);
+  this.maxX = Math.max(this.maxX, other.maxX);
+  this.maxY = Math.max(this.maxY, other.maxY);
+};
+
+
+/**
  * @return {number} Height.
  */
 ol.TileRange.prototype.getHeight = function() {
@@ -71,9 +113,30 @@ ol.TileRange.prototype.getHeight = function() {
 
 
 /**
- * @inheritDoc
+ * @return {ol.Size} Size.
+ */
+ol.TileRange.prototype.getSize = function() {
+  return new ol.Size(this.getWidth(), this.getHeight());
+};
+
+
+/**
  * @return {number} Width.
  */
 ol.TileRange.prototype.getWidth = function() {
   return this.maxX - this.minX + 1;
 };
+
+
+/**
+ * Test for range intersection.
+ * @param {ol.TileRange} other Other range.
+ * @return {boolean} The two ranges intersect.
+ */
+ol.TileRange.prototype.intersects = function(other) {
+  return this.minX <= other.maxX &&
+      this.maxX >= other.minX &&
+      this.minY <= other.maxY &&
+      this.maxY >= other.minY;
+};
+
