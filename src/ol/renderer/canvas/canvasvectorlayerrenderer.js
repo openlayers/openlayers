@@ -18,6 +18,7 @@ goog.require('ol.style.LiteralLine');
 goog.require('ol.style.LiteralPolygon');
 goog.require('ol.style.LiteralShape');
 goog.require('ol.style.ShapeType');
+goog.require('ol.tilegrid.TileGrid');
 
 
 
@@ -150,7 +151,7 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
    * lazily so we have access to the view projection.
    *
    * @private
-   * @type {ol.TileGrid}
+   * @type {ol.tilegrid.TileGrid}
    */
   this.tileGrid_ = null;
 
@@ -200,7 +201,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   if (goog.isNull(tileGrid)) {
     // lazy tile source creation to match the view projection
     tileGrid = ol.tilegrid.createForProjection(
-        view2DState.projection, 
+        view2DState.projection,
         22, // should be no harm in going big here - ideally, it would be ∞
         new ol.Size(512, 512));
     this.tileGrid_ = tileGrid;
@@ -294,7 +295,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   // render features by geometry type
   var filters = this.geometryFilters_,
       numFilters = filters.length,
-      i, spatialFilter, extentFilter, type, features, symbolizer;
+      i, geomFilter, extentFilter, type, features, symbolizer;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       tileCoord = new ol.TileCoord(z, x, y);
@@ -306,10 +307,10 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
         extentFilter = new ol.filter.Extent(
             tileGrid.getTileCoordExtent(tileCoord));
         for (i = 0; i < numFilters; ++i) {
-          spatialFilter = filters[i];
-          type = spatialFilter.getType();
+          geomFilter = filters[i];
+          type = geomFilter.getType();
           features = source.getFeatures(new ol.filter.Logical(
-              [spatialFilter, extentFilter], ol.filter.LogicalOperator.AND));
+              [geomFilter, extentFilter], ol.filter.LogicalOperator.AND));
           if (features.length) {
             // TODO: layer.getSymbolizerLiterals(features) or similar
             symbolizer = this.symbolizers_[type];
