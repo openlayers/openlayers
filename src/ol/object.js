@@ -91,7 +91,8 @@ ol.Object.getAccessors = function(obj) {
  * @return {string} Changed name.
  */
 ol.Object.getChangedEventType = function(key) {
-  return ol.Object.changedEventTypeCache_[key] ||
+  return ol.Object.changedEventTypeCache_.hasOwnProperty(key) ?
+      ol.Object.changedEventTypeCache_[key] :
       (ol.Object.changedEventTypeCache_[key] = key.toLowerCase() + '_changed');
 };
 
@@ -101,7 +102,8 @@ ol.Object.getChangedEventType = function(key) {
  * @return {string} Getter name.
  */
 ol.Object.getGetterName = function(key) {
-  return ol.Object.getterNameCache_[key] ||
+  return ol.Object.getterNameCache_.hasOwnProperty(key) ?
+      ol.Object.getterNameCache_[key] :
       (ol.Object.getterNameCache_[key] = 'get' + ol.Object.capitalize(key));
 };
 
@@ -121,7 +123,8 @@ ol.Object.getListeners = function(obj) {
  * @return {string} Setter name.
  */
 ol.Object.getSetterName = function(key) {
-  return ol.Object.setterNameCache_[key] ||
+  return ol.Object.setterNameCache_.hasOwnProperty(key) ?
+      ol.Object.setterNameCache_[key] :
       (ol.Object.setterNameCache_[key] = 'set' + ol.Object.capitalize(key));
 };
 
