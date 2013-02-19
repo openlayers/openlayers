@@ -1,5 +1,4 @@
 // FIXME handle date line wrap
-// FIXME does not handle image sources
 
 goog.provide('ol.control.Attribution');
 
@@ -10,11 +9,12 @@ goog.require('goog.events');
 goog.require('goog.object');
 goog.require('goog.style');
 goog.require('ol.Attribution');
+goog.require('ol.FrameState');
 goog.require('ol.MapEvent');
 goog.require('ol.MapEventType');
 goog.require('ol.TileRange');
 goog.require('ol.control.Control');
-goog.require('ol.source.TileSource');
+goog.require('ol.source.Source');
 
 
 
@@ -67,15 +67,45 @@ goog.inherits(ol.control.Attribution, ol.control.Control);
 
 
 /**
+ * @param {?Object.<string, Object.<string, ol.TileRange>>} usedTiles Used
+ *     tiles.
+ * @param {Object.<string, ol.source.Source>} sources Sources.
+ * @return {Object.<string, ol.Attribution>} Attributions.
+ */
+ol.control.Attribution.prototype.getTileSourceAttributions =
+    function(usedTiles, sources) {
+  /** @type {Object.<string, ol.Attribution>} */
+  var attributions = {};
+  var i, tileRanges, tileSource, tileSourceAttribution,
+      tileSourceAttributionKey, tileSourceAttributions, tileSourceKey, z;
+  for (tileSourceKey in usedTiles) {
+    goog.asserts.assert(tileSourceKey in sources);
+    tileSource = sources[tileSourceKey];
+    tileSourceAttributions = tileSource.getAttributions();
+    if (goog.isNull(tileSourceAttributions)) {
+      continue;
+    }
+    tileRanges = usedTiles[tileSourceKey];
+    for (i = 0; i < tileSourceAttributions.length; ++i) {
+      tileSourceAttribution = tileSourceAttributions[i];
+      tileSourceAttributionKey = goog.getUid(tileSourceAttribution).toString();
+      if (tileSourceAttributionKey in attributions) {
+        continue;
+      }
+      if (tileSourceAttribution.intersectsAnyTileRange(tileRanges)) {
+        attributions[tileSourceAttributionKey] = tileSourceAttribution;
+      }
+    }
+  }
+  return attributions;
+};
+
+
+/**
  * @param {ol.MapEvent} mapEvent Map event.
  */
 ol.control.Attribution.prototype.handleMapPostrender = function(mapEvent) {
-  var frameState = mapEvent.frameState;
-  if (goog.isNull(frameState)) {
-    this.updateElement_(null);
-  } else {
-    this.updateElement_(frameState.usedTiles);
-  }
+  this.updateElement_(mapEvent.frameState);
 };
 
 
@@ -99,12 +129,11 @@ ol.control.Attribution.prototype.setMap = function(map) {
 
 /**
  * @private
- * @param {?Object.<string, Object.<string, ol.TileRange>>} usedTiles Used
- *     tiles.
+ * @param {?ol.FrameState} frameState Frame state.
  */
-ol.control.Attribution.prototype.updateElement_ = function(usedTiles) {
+ol.control.Attribution.prototype.updateElement_ = function(frameState) {
 
-  if (goog.isNull(usedTiles)) {
+  if (goog.isNull(frameState)) {
     if (this.renderedVisible_) {
       goog.style.showElement(this.element, false);
       this.renderedVisible_ = false;
@@ -116,15 +145,13 @@ ol.control.Attribution.prototype.updateElement_ = function(usedTiles) {
 
   /** @type {Object.<string, boolean>} */
   var attributionsToRemove = {};
-  /** @type {Object.<string, ol.source.TileSource>} */
-  var tileSources = {};
+  /** @type {Object.<string, ol.source.Source>} */
+  var sources = {};
   var layers = map.getLayers();
   if (goog.isDef(layers)) {
     layers.forEach(function(layer) {
       var source = layer.getSource();
-      if (source instanceof ol.source.TileSource) {
-        tileSources[goog.getUid(source).toString()] = source;
-      }
+      sources[goog.getUid(source).toString()] = source;
       var attributions = source.getAttributions();
       if (!goog.isNull(attributions)) {
         var attribution, i;
@@ -138,34 +165,16 @@ ol.control.Attribution.prototype.updateElement_ = function(usedTiles) {
   }
 
   /** @type {Object.<string, ol.Attribution>} */
-  var attributions = {};
-  var i, tileRanges, tileSource, tileSourceAttribution,
-      tileSourceAttributionKey, tileSourceAttributions, tileSourceKey, z;
-  for (tileSourceKey in usedTiles) {
-    goog.asserts.assert(tileSourceKey in tileSources);
-    tileSource = tileSources[tileSourceKey];
-    tileSourceAttributions = tileSource.getAttributions();
-    if (goog.isNull(tileSourceAttributions)) {
-      continue;
-    }
-    tileRanges = usedTiles[tileSourceKey];
-    for (i = 0; i < tileSourceAttributions.length; ++i) {
-      tileSourceAttribution = tileSourceAttributions[i];
-      tileSourceAttributionKey = goog.getUid(tileSourceAttribution).toString();
-      if (tileSourceAttributionKey in attributions) {
-        continue;
-      }
-      if (tileSourceAttribution.intersectsAnyTileRange(tileRanges)) {
-        attributions[tileSourceAttributionKey] = tileSourceAttribution;
-      }
-    }
-  }
+  var attributions = goog.object.clone(frameState.attributions);
+  var tileSourceAttributions = this.getTileSourceAttributions(
+      frameState.usedTiles, sources);
+  goog.object.extend(attributions, tileSourceAttributions);
 
   /** @type {Array.<number>} */
   var attributionKeys =
       goog.array.map(goog.object.getKeys(attributions), Number);
   goog.array.sort(attributionKeys);
-  var attributionElement, attributionKey;
+  var i, attributionElement, attributionKey;
   for (i = 0; i < attributionKeys.length; ++i) {
     attributionKey = attributionKeys[i].toString();
     if (attributionKey in this.attributionElements_) {
