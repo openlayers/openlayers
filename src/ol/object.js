@@ -165,7 +165,7 @@ ol.Object.prototype.changed = goog.nullFunction;
  */
 ol.Object.prototype.get = function(key) {
   var accessors = ol.Object.getAccessors(this);
-  if (goog.object.containsKey(accessors, key)) {
+  if (accessors.hasOwnProperty(key)) {
     var accessor = accessors[key];
     var target = accessor.target;
     var targetKey = accessor.key;
@@ -186,7 +186,7 @@ ol.Object.prototype.get = function(key) {
  */
 ol.Object.prototype.notify = function(key) {
   var accessors = ol.Object.getAccessors(this);
-  if (goog.object.containsKey(accessors, key)) {
+  if (accessors.hasOwnProperty(key)) {
     var accessor = accessors[key];
     var target = accessor.target;
     var targetKey = accessor.key;
@@ -214,7 +214,7 @@ ol.Object.prototype.notifyInternal_ = function(key) {
  */
 ol.Object.prototype.set = function(key, value) {
   var accessors = ol.Object.getAccessors(this);
-  if (goog.object.containsKey(accessors, key)) {
+  if (accessors.hasOwnProperty(key)) {
     var accessor = accessors[key];
     var target = accessor.target;
     var targetKey = accessor.key;
