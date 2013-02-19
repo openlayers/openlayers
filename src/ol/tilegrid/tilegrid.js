@@ -183,10 +183,10 @@ ol.tilegrid.TileGrid.prototype.getTileRangeExtent = function(z, tileRange) {
  */
 ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndResolution = function(
     extent, resolution) {
-  var min = this.getTileCoordForCoordAndResolution(
+  var min = this.getTileCoordForCoordAndResolution_(
       new ol.Coordinate(extent.minX, extent.minY), resolution);
-  var max = this.getTileCoordForCoordAndResolution(
-      new ol.Coordinate(extent.maxX, extent.maxY), resolution);
+  var max = this.getTileCoordForCoordAndResolution_(
+      new ol.Coordinate(extent.maxX, extent.maxY), resolution, true);
   return new ol.TileRange(min.x, min.y, max.x, max.y);
 };
 
@@ -233,46 +233,48 @@ ol.tilegrid.TileGrid.prototype.getTileCoordExtent = function(tileCoord) {
 
 
 /**
+ * Get the tile coordinate for the given map coordinate and resolution.  This
+ * method considers that coordinates that intersect tile boundaries should be
+ * assigned the higher tile coordinate.
+ *
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
  * @return {ol.TileCoord} Tile coordinate.
  */
 ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndResolution = function(
     coordinate, resolution) {
+  return this.getTileCoordForCoordAndResolution_(coordinate, resolution);
+};
+
+
+/**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {number} resolution Resolution.
+ * @param {boolean=} opt_reverseIntersectionPolicy Instead of letting edge
+ *     intersections go to the higher tile coordinate, let edge intersections
+ *     go to the lower tile coordinate.
+ * @return {ol.TileCoord} Tile coordinate.
+ * @private
+ */
+ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndResolution_ = function(
+    coordinate, resolution, opt_reverseIntersectionPolicy) {
   var z = this.getZForResolution(resolution);
   var scale = resolution / this.getResolution(z);
   var origin = this.getOrigin(z);
-
-  var offsetFromOrigin = new ol.Coordinate(
-      Math.floor((coordinate.x - origin.x) / resolution),
-      Math.floor((coordinate.y - origin.y) / resolution));
-
   var tileSize = this.getTileSize();
-  tileSize = new ol.Size(tileSize.width / scale,
-                         tileSize.height / scale);
 
-  var x, y;
-  x = Math.floor(offsetFromOrigin.x / tileSize.width);
-  y = Math.floor(offsetFromOrigin.y / tileSize.height);
+  var x = scale * (coordinate.x - origin.x) / (resolution * tileSize.width);
+  var y = scale * (coordinate.y - origin.y) / (resolution * tileSize.height);
 
-  var tileCoord = new ol.TileCoord(z, x, y);
-  var tileCoordPixelBounds = this.getPixelBoundsForTileCoordAndResolution(
-      tileCoord, resolution);
-
-  // adjust x to allow for stretched tiles
-  if (offsetFromOrigin.x < tileCoordPixelBounds.minX) {
-    tileCoord.x -= 1;
-  } else if (offsetFromOrigin.x >= tileCoordPixelBounds.maxX) {
-    tileCoord.x += 1;
-  }
-  // adjust y to allow for stretched tiles
-  if (offsetFromOrigin.y < tileCoordPixelBounds.minY) {
-    tileCoord.y -= 1;
-  } else if (offsetFromOrigin.y >= tileCoordPixelBounds.maxY) {
-    tileCoord.y += 1;
+  if (!opt_reverseIntersectionPolicy) {
+    x = Math.floor(x);
+    y = Math.floor(y);
+  } else {
+    x = Math.ceil(x) - 1;
+    y = Math.ceil(y) - 1;
   }
 
-  return tileCoord;
+  return new ol.TileCoord(z, x, y);
 };
 
 
@@ -284,7 +286,7 @@ ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndResolution = function(
 ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndZ =
     function(coordinate, z) {
   var resolution = this.getResolution(z);
-  return this.getTileCoordForCoordAndResolution(coordinate, resolution);
+  return this.getTileCoordForCoordAndResolution_(coordinate, resolution);
 };
 
 
