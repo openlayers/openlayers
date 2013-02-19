@@ -36,8 +36,9 @@ ol.ProjectionUnits = {
  * @param {string} code Code.
  * @param {ol.ProjectionUnits} units Units.
  * @param {ol.Extent} extent Extent.
+ * @param {string=} opt_axis Axis order.
  */
-ol.Projection = function(code, units, extent) {
+ol.Projection = function(code, units, extent, opt_axis) {
 
   /**
    * @private
@@ -56,6 +57,12 @@ ol.Projection = function(code, units, extent) {
    * @type {ol.Extent}
    */
   this.extent_ = extent;
+
+  /**
+   * @private
+   * @type {string}
+   */
+  this.axis_ = opt_axis || 'enu';
 
 };
 
@@ -81,6 +88,14 @@ ol.Projection.prototype.getExtent = function() {
  */
 ol.Projection.prototype.getUnits = function() {
   return this.units_;
+};
+
+
+/**
+ * @return {string} Axis.
+ */
+ol.Projection.prototype.getAxis = function() {
+  return this.axis_;
 };
 
 
@@ -526,6 +541,7 @@ ol.Projection.EPSG_4326_EXTENT_ = new ol.Extent(-180, -90, 180, 90);
  */
 ol.Projection.EPSG_4326_LIKE_CODES_ = [
   'CRS:84',
+  'urn:ogc:def:crs:OGC:1.3:CRS84',
   'EPSG:4326',
   'urn:ogc:def:crs:EPSG:6.6:4326'
 ];
@@ -543,7 +559,9 @@ ol.Projection.EPSG_4326_LIKE_PROJECTIONS = goog.array.map(
       return new ol.Projection(
           code,
           ol.ProjectionUnits.DEGREES,
-          ol.Projection.EPSG_4326_EXTENT_);
+          ol.Projection.EPSG_4326_EXTENT_,
+          code === 'CRS:84' || code === 'urn:ogc:def:crs:OGC:1.3:CRS84' ?
+              'enu' : 'neu');
     });
 
 
