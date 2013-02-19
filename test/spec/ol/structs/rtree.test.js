@@ -34,7 +34,7 @@ describe('ol.structs.RTree', function() {
       expect(goog.object.getCount(rTree.find(new ol.Rectangle(5, 5, 6, 6))))
           .toBe(0);
     });
-    
+
     it('can store thosands of items and find fast', function() {
       for (var i = 7; i <= 10000; ++i) {
         rTree.put(new ol.Rectangle(Math.random() * -10, Math.random() * -10,
