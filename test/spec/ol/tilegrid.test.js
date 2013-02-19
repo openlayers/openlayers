@@ -289,11 +289,11 @@ describe('ol.tilegrid.TileGrid', function() {
     });
   });
 
-  describe('getTileCoordForCoordAndResolution fractional', function() {
-    it('returns the expected TileCoord', function() {
-      var tileSize = new ol.Size(256, 256);
+
+  describe('getTileCoordForCoordAndResolution_', function() {
+    it('returns higher tile coord for intersections by default', function() {
       var tileGrid = new ol.tilegrid.TileGrid({
-        resolutions: [1 / 3],
+        resolutions: resolutions,
         extent: extent,
         origin: origin,
         tileSize: tileSize
@@ -302,91 +302,53 @@ describe('ol.tilegrid.TileGrid', function() {
       var coordinate;
       var tileCoord;
 
-      // These tests render at a resolution of 1. Because the layer's
-      // closest resolution is 1/3, the images are scaled by 1/3.
-      // In this scenario, every third tile will be one pixel wider when
-      // rendered (0,0 is normal; 1,0 is wider; 0,1 is taller; etc.)
-
-      // gets the first tile at the origin
+      // gets higher tile for edge intersection
       coordinate = new ol.Coordinate(0, 0);
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution(
-          coordinate, 1);
-      expect(tileCoord.z).toEqual(0);
+      tileCoord = tileGrid.getTileCoordForCoordAndResolution_(
+          coordinate, 100);
+      expect(tileCoord.z).toEqual(3);
       expect(tileCoord.x).toEqual(0);
       expect(tileCoord.y).toEqual(0);
 
-      // gets the 1,0 tile at 256/3,0
-      coordinate = new ol.Coordinate(256 / 3, 0);
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution(
-          coordinate, 1);
-      expect(tileCoord.z).toEqual(0);
-      expect(tileCoord.x).toEqual(1);
-      expect(tileCoord.y).toEqual(0);
+      // gets higher tile for edge intersection
+      coordinate = new ol.Coordinate(100000, 100000);
+      tileCoord = tileGrid.getTileCoordForCoordAndResolution_(
+          coordinate, 100);
+      expect(tileCoord.z).toEqual(3);
+      expect(tileCoord.x).toEqual(10);
+      expect(tileCoord.y).toEqual(10);
 
-      // still gets the 1,0 tile at 512/3,0 - wider tile
-      coordinate = new ol.Coordinate(512 / 3, 0);
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution(
-          coordinate, 1);
-      expect(tileCoord.z).toEqual(0);
-      expect(tileCoord.x).toEqual(1);
-      expect(tileCoord.y).toEqual(0);
-
-      // gets the 2,0 tile at 513/3,0
-      coordinate = new ol.Coordinate(513 / 3, 0);
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution(
-          coordinate, 1);
-      expect(tileCoord.z).toEqual(0);
-      expect(tileCoord.x).toEqual(2);
-      expect(tileCoord.y).toEqual(0);
-
-      // gets the 3,0 tile at 768/3,0
-      coordinate = new ol.Coordinate(768 / 3, 0);
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution(
-          coordinate, 1);
-      expect(tileCoord.z).toEqual(0);
-      expect(tileCoord.x).toEqual(3);
-      expect(tileCoord.y).toEqual(0);
-
-      // gets the 4,0 tile at 1024/3,0
-      coordinate = new ol.Coordinate(1024 / 3, 0);
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution(
-          coordinate, 1);
-      expect(tileCoord.z).toEqual(0);
-      expect(tileCoord.x).toEqual(4);
-      expect(tileCoord.y).toEqual(0);
-
-      // still gets the 4,0 tile at 1280/3,0 - wider tile
-      coordinate = new ol.Coordinate(1280 / 3, 0);
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution(
-          coordinate, 1);
-      expect(tileCoord.z).toEqual(0);
-      expect(tileCoord.x).toEqual(4);
-      expect(tileCoord.y).toEqual(0);
-
-      // gets the 5,0 tile at 1281/3,0
-      coordinate = new ol.Coordinate(1281 / 3, 0);
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution(
-          coordinate, 1);
-      expect(tileCoord.z).toEqual(0);
-      expect(tileCoord.x).toEqual(5);
-      expect(tileCoord.y).toEqual(0);
-
-      // gets the 0,1 tile at 0,-256/3
-      coordinate = new ol.Coordinate(0, -256 / 3);
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution(
-          coordinate, 1);
-      expect(tileCoord.z).toEqual(0);
-      expect(tileCoord.x).toEqual(0);
-      expect(tileCoord.y).toEqual(-2);
-
-      // still gets the 0,1 tile at 0,-512/3 - taller tile
-      coordinate = new ol.Coordinate(0, -512 / 3);
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution(
-          coordinate, 1);
-      expect(tileCoord.z).toEqual(0);
-      expect(tileCoord.x).toEqual(0);
-      expect(tileCoord.y).toEqual(-2);
     });
+
+    it('handles alt intersection policy', function() {
+      var tileGrid = new ol.tilegrid.TileGrid({
+        resolutions: resolutions,
+        extent: extent,
+        origin: origin,
+        tileSize: tileSize
+      });
+
+      var coordinate;
+      var tileCoord;
+
+      // can get lower tile for edge intersection
+      coordinate = new ol.Coordinate(0, 0);
+      tileCoord = tileGrid.getTileCoordForCoordAndResolution_(
+          coordinate, 100, true);
+      expect(tileCoord.z).toEqual(3);
+      expect(tileCoord.x).toEqual(-1);
+      expect(tileCoord.y).toEqual(-1);
+
+      // gets higher tile for edge intersection
+      coordinate = new ol.Coordinate(100000, 100000);
+      tileCoord = tileGrid.getTileCoordForCoordAndResolution_(
+          coordinate, 100, true);
+      expect(tileCoord.z).toEqual(3);
+      expect(tileCoord.x).toEqual(9);
+      expect(tileCoord.y).toEqual(9);
+
+    });
+
   });
 
   describe('getTileCoordCenter', function() {
@@ -440,6 +402,46 @@ describe('ol.tilegrid.TileGrid', function() {
       expect(tileCoordExtent.minY).toEqual(90000);
       expect(tileCoordExtent.maxX).toEqual(10000);
       expect(tileCoordExtent.maxY).toEqual(100000);
+    });
+  });
+
+  describe('getTileRangeForExtentAndResolution', function() {
+    it('returns the expected TileRange', function() {
+      var tileGrid = new ol.tilegrid.TileGrid({
+        resolutions: resolutions,
+        extent: extent,
+        origin: origin,
+        tileSize: tileSize
+      });
+      var tileRange;
+
+      tileRange = tileGrid.getTileRangeForExtentAndResolution(extent,
+          resolutions[0]);
+      expect(tileRange.minY).toEqual(0);
+      expect(tileRange.minX).toEqual(0);
+      expect(tileRange.maxX).toEqual(0);
+      expect(tileRange.maxY).toEqual(0);
+
+      tileRange = tileGrid.getTileRangeForExtentAndResolution(extent,
+          resolutions[1]);
+      expect(tileRange.minX).toEqual(0);
+      expect(tileRange.minY).toEqual(0);
+      expect(tileRange.maxX).toEqual(1);
+      expect(tileRange.maxY).toEqual(1);
+
+      tileRange = tileGrid.getTileRangeForExtentAndResolution(extent,
+          resolutions[2]);
+      expect(tileRange.minX).toEqual(0);
+      expect(tileRange.minY).toEqual(0);
+      expect(tileRange.maxX).toEqual(3);
+      expect(tileRange.maxY).toEqual(3);
+
+      tileRange = tileGrid.getTileRangeForExtentAndResolution(extent,
+          resolutions[3]);
+      expect(tileRange.minX).toEqual(0);
+      expect(tileRange.minY).toEqual(0);
+      expect(tileRange.maxX).toEqual(9);
+      expect(tileRange.maxY).toEqual(9);
     });
   });
 
