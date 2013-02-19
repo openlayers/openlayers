@@ -42,7 +42,7 @@ ol.Geolocation = function(opt_positionOptions) {
    */
   this.position_ = null;
 
-  if (ol.Geolocation.isSupported) {
+  if (ol.Geolocation.SUPPORTED) {
     goog.events.listen(
         this, ol.Object.getChangedEventType(ol.GeolocationProperty.PROJECTION),
         this.handleProjectionChanged_, false, this);
@@ -86,9 +86,10 @@ ol.Geolocation.prototype.handleProjectionChanged_ = function() {
 
 
 /**
+ * @const
  * @type {boolean} Is supported.
  */
-ol.Geolocation.isSupported = 'geolocation' in navigator;
+ol.Geolocation.SUPPORTED = 'geolocation' in navigator;
 
 
 /**
