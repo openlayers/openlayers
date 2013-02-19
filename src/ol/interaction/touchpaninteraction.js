@@ -6,6 +6,7 @@ goog.require('goog.asserts');
 goog.require('ol.Coordinate');
 goog.require('ol.Kinetic');
 goog.require('ol.Pixel');
+goog.require('ol.PreRenderFunction');
 goog.require('ol.View');
 goog.require('ol.ViewHint');
 goog.require('ol.interaction.Touch');
@@ -27,6 +28,12 @@ ol.interaction.TouchPan = function() {
   this.kinetic_ = new ol.Kinetic(-0.005, 0.05, 100);
 
   /**
+   * @private
+   * @type {?ol.PreRenderFunction}
+   */
+  this.kineticPreRenderFn_ = null;
+
+  /**
    * @type {ol.Pixel}
    */
   this.lastCentroid = null;
@@ -43,11 +50,9 @@ ol.interaction.TouchPan.prototype.handleTouchMove = function(mapBrowserEvent) {
   var centroid = ol.interaction.Touch.centroid(this.targetTouches);
   if (!goog.isNull(this.lastCentroid)) {
     this.kinetic_.update(centroid.x, centroid.y);
-    var map = mapBrowserEvent.map;
-    var view = map.getView();
-
     var deltaX = this.lastCentroid.x - centroid.x;
     var deltaY = centroid.y - this.lastCentroid.y;
+    var view = mapBrowserEvent.map.getView();
     var center = new ol.Coordinate(deltaX, deltaY)
       .scale(view.getResolution())
       .rotate(view.getRotation())
@@ -71,7 +76,8 @@ ol.interaction.TouchPan.prototype.handleTouchEnd =
       var distance = this.kinetic_.getDistance();
       var angle = this.kinetic_.getAngle();
       var center = view.getCenter();
-      map.addPreRenderFunction(this.kinetic_.pan(center));
+      this.kineticPreRenderFn_ = this.kinetic_.pan(center);
+      map.addPreRenderFunction(this.kineticPreRenderFn_);
       var centerpx = map.getPixelFromCoordinate(center);
       var destpx = new ol.Pixel(
           centerpx.x - distance * Math.cos(angle),
@@ -95,6 +101,12 @@ ol.interaction.TouchPan.prototype.handleTouchStart =
     var map = mapBrowserEvent.map;
     var view = map.getView();
     this.lastCentroid = null;
+    if (!goog.isNull(this.kineticPreRenderFn_) &&
+        map.removePreRenderFunction(this.kineticPreRenderFn_)) {
+      map.requestRenderFrame();
+      view.setCenter(mapBrowserEvent.frameState.view2DState.center);
+      this.kineticPreRenderFn_ = null;
+    }
     this.kinetic_.begin();
     view.setHint(ol.ViewHint.PANNING, 1);
     return true;
