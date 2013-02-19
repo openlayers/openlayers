@@ -232,14 +232,16 @@ ol.Object.prototype.set = function(key, value) {
  * @param {Object.<string, *>} options Options.
  */
 ol.Object.prototype.setOptions = function(options) {
-  goog.object.forEach(options, function(value, key) {
-    var setterName = ol.Object.getSetterName(key);
+  var key, value, setterName;
+  for (key in options) {
+    value = options[key];
+    setterName = ol.Object.getSetterName(key);
     if (this[setterName]) {
       this[setterName](value);
     } else {
       this.set(key, value);
     }
-  }, this);
+  }
 };
 
 
@@ -270,9 +272,7 @@ ol.Object.prototype.unbind = function(key) {
  * Removes all bindings.
  */
 ol.Object.prototype.unbindAll = function() {
-  var listeners = ol.Object.getListeners(this);
-  var keys = goog.object.getKeys(listeners);
-  goog.array.forEach(keys, function(key) {
+  for (var key in ol.Object.getListeners(this)) {
     this.unbind(key);
-  }, this);
+  }
 };
