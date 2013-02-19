@@ -66,16 +66,10 @@ describe('ol.source.TileSource', function() {
     it('returns true when all tiles are already loaded', function() {
       // a source with no loaded tiles
       var source = new ol.test.source.MockTileSource({
-        // TODO: tile range is misunderstood
         '1/0/0': true,
         '1/0/1': true,
-        '1/0/2': true,
         '1/1/0': true,
-        '1/1/1': true,
-        '1/1/2': true,
-        '1/2/0': true,
-        '1/2/1': true,
-        '1/2/2': true
+        '1/1/1': true
       });
 
       var loadedTilesByZ = {};
@@ -93,13 +87,9 @@ describe('ol.source.TileSource', function() {
         '1': {
           '1/0/0': true,
           '1/0/1': true,
-          '1/0/2': true,
           '1/1/0': true,
           '1/1/1': true,
-          '1/1/2': true,
-          '1/2/0': true,
-          '1/2/1': true,
-          '1/2/2': true
+          '1/1/2': true
         }
       };
       var grid = source.getTileGrid();
@@ -113,13 +103,8 @@ describe('ol.source.TileSource', function() {
       var source = new ol.test.source.MockTileSource({
         '1/0/0': true,
         '1/0/1': true,
-        '1/0/2': true,
         '1/1/0': true,
-        '1/1/1': false,
-        '1/1/2': true,
-        '1/2/0': true,
-        '1/2/1': true,
-        '1/2/2': true
+        '1/1/1': false
       });
 
       var loadedTilesByZ = {};
@@ -137,13 +122,8 @@ describe('ol.source.TileSource', function() {
         '1': {
           '1/0/0': true,
           '1/0/1': true,
-          '1/0/2': true,
           '1/1/0': true,
-          '1/1/1': false,
-          '1/1/2': true,
-          '1/2/0': true,
-          '1/2/1': true,
-          '1/2/2': true
+          '1/1/1': false
         }
       };
       var grid = source.getTileGrid();
@@ -155,6 +135,8 @@ describe('ol.source.TileSource', function() {
   });
 
 });
+
+
 
 /**
  * Tile source for tests that uses a EPSG:4326 based grid with 4 resolutions and
