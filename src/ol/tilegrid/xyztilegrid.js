@@ -17,9 +17,9 @@ ol.tilegrid.XYZ = function(xyzOptions) {
 
   var resolutions = new Array(xyzOptions.maxZoom + 1);
   var z;
+  var size = 2 * ol.Projection.EPSG_3857_HALF_SIZE / ol.DEFAULT_TILE_SIZE;
   for (z = 0; z <= xyzOptions.maxZoom; ++z) {
-    resolutions[z] =
-        2 * ol.Projection.EPSG_3857_HALF_SIZE / (ol.DEFAULT_TILE_SIZE << z);
+    resolutions[z] = size / Math.pow(2, z);
   }
 
   goog.base(this, {

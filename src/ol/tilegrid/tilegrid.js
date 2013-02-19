@@ -333,8 +333,9 @@ ol.tilegrid.createForProjection =
       opt_tileSize : new ol.Size(ol.DEFAULT_TILE_SIZE, ol.DEFAULT_TILE_SIZE);
   var resolutions = new Array(maxZoom + 1);
   goog.asserts.assert(tileSize.width == tileSize.height);
+  size = size / tileSize.width;
   for (var z = 0, zz = resolutions.length; z < zz; ++z) {
-    resolutions[z] = size / (tileSize.width << z);
+    resolutions[z] = size / Math.pow(2, z);
   }
   return new ol.tilegrid.TileGrid({
     origin: projectionExtent.getTopLeft(),
