@@ -56,7 +56,7 @@ ol.View2D = function(opt_view2DOptions) {
         projectionExtent.maxX - projectionExtent.minX,
         projectionExtent.maxY - projectionExtent.minY);
     values[ol.View2DProperty.RESOLUTION] =
-        size / (ol.DEFAULT_TILE_SIZE << view2DOptions.zoom);
+        size / (ol.DEFAULT_TILE_SIZE * Math.pow(2, view2DOptions.zoom));
   }
   values[ol.View2DProperty.ROTATION] = view2DOptions.rotation;
   this.setValues(values);
