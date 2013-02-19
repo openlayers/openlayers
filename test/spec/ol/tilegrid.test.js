@@ -94,6 +94,37 @@ describe('ol.tilegrid.TileGrid', function() {
     });
   });
 
+  describe('createForProjection', function() {
+
+    it('allows easier creation of a tile grid', function() {
+      var projection = ol.Projection.getFromCode('EPSG:3857');
+      var grid = ol.tilegrid.createForProjection(projection);
+      expect(grid).toBeA(ol.tilegrid.TileGrid);
+
+      var resolutions = grid.getResolutions();
+      expect(resolutions.length).toBe(19);
+    });
+
+    it('accepts a number of zoom levels', function() {
+      var projection = ol.Projection.getFromCode('EPSG:3857');
+      var grid = ol.tilegrid.createForProjection(projection, 22);
+      expect(grid).toBeA(ol.tilegrid.TileGrid);
+
+      var resolutions = grid.getResolutions();
+      expect(resolutions.length).toBe(23);
+    });
+
+    it('accepts a big number of zoom levels', function() {
+      var projection = ol.Projection.getFromCode('EPSG:3857');
+      var grid = ol.tilegrid.createForProjection(projection, 23);
+      expect(grid).toBeA(ol.tilegrid.TileGrid);
+
+      var resolutions = grid.getResolutions();
+      expect(resolutions.length).toBe(24);
+    });
+
+  });
+
   describe('getTileCoordFromCoordAndZ', function() {
 
     describe('Y North, X East', function() {
