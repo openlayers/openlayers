@@ -36,6 +36,7 @@ ol.BingMapsStyle = {
 ol.source.BingMaps = function(bingMapsOptions) {
 
   goog.base(this, {
+    opaque: true,
     projection: ol.projection.getFromCode('EPSG:3857')
   });
 
