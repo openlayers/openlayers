@@ -1,9 +1,10 @@
-goog.provide('ol.renderer.webgl.isSupported');
+goog.provide('ol.renderer.webgl.SUPPORTED');
 
 goog.require('ol.webgl');
 
 
 /**
- * @return {boolean} Is supported.
+ * @const
+ * @type {boolean} Is supported.
  */
-ol.renderer.webgl.isSupported = ol.webgl.isSupported;
+ol.renderer.webgl.SUPPORTED = ol.webgl.SUPPORTED;
