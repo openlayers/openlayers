@@ -365,8 +365,12 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
     var tilesToDrawByZ = {};
     tilesToDrawByZ[z] = {};
 
+    function isLoaded(tile) {
+      return !goog.isNull(tile) && tile.getState() == ol.TileState.LOADED &&
+          mapRenderer.isTileTextureLoaded(tile);
+    }
     var findLoadedTiles = goog.bind(tileSource.findLoadedTiles, tileSource,
-        tilesToDrawByZ);
+        tilesToDrawByZ, isLoaded);
 
     var tilesToLoad = new goog.structs.PriorityQueue();
 

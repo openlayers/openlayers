@@ -8,7 +8,6 @@ goog.require('ol.Projection');
 goog.require('ol.Tile');
 goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
-goog.require('ol.TileState');
 goog.require('ol.source.Source');
 goog.require('ol.tilegrid.TileGrid');
 
@@ -66,16 +65,17 @@ ol.source.TileSource.prototype.expireCache = goog.abstractMethod;
  *
  * @param {Object.<number, Object.<string, ol.Tile>>} loadedTilesByZ A lookup of
  *     loaded tiles by zoom level.
+ * @param {function(ol.Tile): boolean} isLoaded A function to determine if a
+ *     tile is fully loaded.
  * @param {number} z Zoom level.
  * @param {ol.TileRange} tileRange Tile range.
  * @return {boolean} The tile range is fully covered with loaded tiles.
  */
-ol.source.TileSource.prototype.findLoadedTiles = function(loadedTilesByZ, z,
-    tileRange) {
+ol.source.TileSource.prototype.findLoadedTiles = function(loadedTilesByZ,
+    isLoaded, z, tileRange) {
   // FIXME this could be more efficient about filling partial holes
   var fullyCovered = true;
   var tile, tileCoord, tileCoordKey, x, y;
-  // TODO: tile range is misunderstood (inclusive or not?)
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       tileCoord = new ol.TileCoord(z, x, y);
@@ -84,7 +84,7 @@ ol.source.TileSource.prototype.findLoadedTiles = function(loadedTilesByZ, z,
         continue;
       }
       tile = this.getTile(tileCoord);
-      if (!goog.isNull(tile) && tile.getState() == ol.TileState.LOADED) {
+      if (isLoaded(tile)) {
         if (!loadedTilesByZ[z]) {
           loadedTilesByZ[z] = {};
         }

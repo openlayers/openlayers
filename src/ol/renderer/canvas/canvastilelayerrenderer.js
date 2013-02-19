@@ -129,8 +129,11 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   var tilesToDrawByZ = {};
   tilesToDrawByZ[z] = {};
 
+  function isLoaded(tile) {
+    return !goog.isNull(tile) && tile.getState() == ol.TileState.LOADED;
+  }
   var findLoadedTiles = goog.bind(tileSource.findLoadedTiles, tileSource,
-      tilesToDrawByZ);
+      tilesToDrawByZ, isLoaded);
 
   var allTilesLoaded = true;
   var tile, tileCenter, tileCoord, tileState, x, y;
