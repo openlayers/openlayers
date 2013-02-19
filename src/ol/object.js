@@ -39,6 +39,13 @@ ol.ObjectProperty = {
  */
 ol.Object = function(opt_values) {
   goog.base(this);
+
+  /**
+   * @private
+   * @type {Object.<string, *>}
+   */
+  this.values_ = {};
+
   if (goog.isDef(opt_values)) {
     this.setValues(opt_values);
   }
@@ -164,6 +171,7 @@ ol.Object.prototype.changed = goog.nullFunction;
  * @return {*} Value.
  */
 ol.Object.prototype.get = function(key) {
+  var value;
   var accessors = ol.Object.getAccessors(this);
   if (accessors.hasOwnProperty(key)) {
     var accessor = accessors[key];
@@ -171,13 +179,14 @@ ol.Object.prototype.get = function(key) {
     var targetKey = accessor.key;
     var getterName = ol.Object.getGetterName(targetKey);
     if (target[getterName]) {
-      return target[getterName]();
+      value = target[getterName]();
     } else {
-      return target.get(targetKey);
+      value = target.get(targetKey);
     }
-  } else {
-    return this[key];
+  } else if (this.values_.hasOwnProperty(key)) {
+    value = this.values_[key];
   }
+  return value;
 };
 
 
@@ -225,7 +234,7 @@ ol.Object.prototype.set = function(key, value) {
       target.set(targetKey, value);
     }
   } else {
-    this[key] = value;
+    this.values_[key] = value;
     this.notifyInternal_(key);
   }
 };
@@ -266,7 +275,7 @@ ol.Object.prototype.unbind = function(key) {
     var value = this.get(key);
     var accessors = ol.Object.getAccessors(this);
     delete accessors[key];
-    this[key] = value;
+    this.values_[key] = value;
   }
 };
 

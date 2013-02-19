@@ -34,6 +34,37 @@ describe('ol.Object', function() {
     });
   });
 
+  describe('#get()', function() {
+
+    it('does not return values that are not explicitly set', function() {
+      var o = new ol.Object();
+      expect(o.get('constructor')).toBeUndefined();
+      expect(o.get('hasOwnProperty')).toBeUndefined();
+      expect(o.get('isPrototypeOf')).toBeUndefined();
+      expect(o.get('propertyIsEnumerable')).toBeUndefined();
+      expect(o.get('toLocaleString')).toBeUndefined();
+      expect(o.get('toString')).toBeUndefined();
+      expect(o.get('valueOf')).toBeUndefined();
+    });
+
+  });
+
+  describe('#set()', function() {
+    it('can be used with arbitrary names', function() {
+      var o = new ol.Object();
+
+      o.set('set', 'sat');
+      expect(o.get('set')).toBe('sat');
+
+      o.set('get', 'got');
+      expect(o.get('get')).toBe('got');
+
+      o.set('toString', 'string');
+      expect(o.get('toString')).toBe('string');
+      expect(typeof o.toString).toBe('function');
+    });
+  });
+
   describe('setValues', function() {
 
     it('sets multiple values at once', function() {
@@ -309,7 +340,7 @@ describe('ol.Object', function() {
   describe('setter', function() {
     beforeEach(function() {
       o.setX = function(x) {
-        this.x = x;
+        this.set('x', x);
       };
       spyOn(o, 'setX').andCallThrough();
     });
@@ -327,8 +358,8 @@ describe('ol.Object', function() {
         var o2 = new ol.Object();
         o2.bindTo('x', o);
         o2.set('x', 1);
-        expect(o.get('x')).toEqual(1);
         expect(o.setX).toHaveBeenCalled();
+        expect(o.get('x')).toEqual(1);
       });
     });
   });
