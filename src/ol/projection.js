@@ -16,6 +16,12 @@ ol.ENABLE_PROJ4JS = true;
 
 
 /**
+ * @const {boolean} Have Proj4js.
+ */
+ol.HAVE_PROJ4JS = ol.ENABLE_PROJ4JS && typeof Proj4js == 'object';
+
+
+/**
  * @enum {string}
  */
 ol.ProjectionUnits = {
@@ -253,7 +259,7 @@ ol.Projection.addTransform = function(source, destination, transformFn) {
  */
 ol.Projection.getFromCode = function(code) {
   var projection = ol.Projection.projections_[code];
-  if (ol.Projection.isProj4jsSupported() && !goog.isDef(projection)) {
+  if (ol.HAVE_PROJ4JS && !goog.isDef(projection)) {
     projection = ol.Projection.getProj4jsProjectionFromCode_(code);
   }
   if (!goog.isDef(projection)) {
@@ -319,7 +325,7 @@ ol.Projection.getTransform = function(source, destination) {
       goog.object.containsKey(transforms[sourceCode], destinationCode)) {
     transform = transforms[sourceCode][destinationCode];
   }
-  if (ol.Projection.isProj4jsSupported() && !goog.isDef(transform)) {
+  if (ol.HAVE_PROJ4JS && !goog.isDef(transform)) {
     var proj4jsSource;
     if (source instanceof ol.Proj4jsProjection) {
       proj4jsSource = source;
@@ -370,14 +376,6 @@ ol.Projection.getTransformFromCodes = function(sourceCode, destinationCode) {
   var source = ol.Projection.getFromCode(sourceCode);
   var destination = ol.Projection.getFromCode(destinationCode);
   return ol.Projection.getTransform(source, destination);
-};
-
-
-/**
- * @return {boolean} True if Proj4js is available and enabled.
- */
-ol.Projection.isProj4jsSupported = function() {
-  return ol.ENABLE_PROJ4JS && 'Proj4js' in goog.global;
 };
 
 
