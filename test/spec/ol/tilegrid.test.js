@@ -258,6 +258,68 @@ describe('ol.tilegrid.TileGrid', function() {
     });
   });
 
+
+  describe('getTileCoordForCoordAndResolution_', function() {
+    it('returns higher tile coord for intersections by default', function() {
+      var tileGrid = new ol.tilegrid.TileGrid({
+        resolutions: resolutions,
+        extent: extent,
+        origin: origin,
+        tileSize: tileSize
+      });
+
+      var coordinate;
+      var tileCoord;
+
+      // gets higher tile for edge intersection
+      coordinate = new ol.Coordinate(0, 0);
+      tileCoord = tileGrid.getTileCoordForCoordAndResolution_(
+          coordinate, 100);
+      expect(tileCoord.z).toEqual(3);
+      expect(tileCoord.x).toEqual(0);
+      expect(tileCoord.y).toEqual(0);
+
+      // gets higher tile for edge intersection
+      coordinate = new ol.Coordinate(100000, 100000);
+      tileCoord = tileGrid.getTileCoordForCoordAndResolution_(
+          coordinate, 100);
+      expect(tileCoord.z).toEqual(3);
+      expect(tileCoord.x).toEqual(10);
+      expect(tileCoord.y).toEqual(10);
+
+    });
+
+    it('handles alt intersection policy', function() {
+      var tileGrid = new ol.tilegrid.TileGrid({
+        resolutions: resolutions,
+        extent: extent,
+        origin: origin,
+        tileSize: tileSize
+      });
+
+      var coordinate;
+      var tileCoord;
+
+      // can get lower tile for edge intersection
+      coordinate = new ol.Coordinate(0, 0);
+      tileCoord = tileGrid.getTileCoordForCoordAndResolution_(
+          coordinate, 100, true);
+      expect(tileCoord.z).toEqual(3);
+      expect(tileCoord.x).toEqual(-1);
+      expect(tileCoord.y).toEqual(-1);
+
+      // gets higher tile for edge intersection
+      coordinate = new ol.Coordinate(100000, 100000);
+      tileCoord = tileGrid.getTileCoordForCoordAndResolution_(
+          coordinate, 100, true);
+      expect(tileCoord.z).toEqual(3);
+      expect(tileCoord.x).toEqual(9);
+      expect(tileCoord.y).toEqual(9);
+
+    });
+
+  });
+
   describe('getTileCoordCenter', function() {
     it('returns the expected center', function() {
       var tileGrid = new ol.tilegrid.TileGrid({
@@ -309,6 +371,46 @@ describe('ol.tilegrid.TileGrid', function() {
       expect(tileCoordExtent.minY).toEqual(90000);
       expect(tileCoordExtent.maxX).toEqual(10000);
       expect(tileCoordExtent.maxY).toEqual(100000);
+    });
+  });
+
+  describe('getTileRangeForExtentAndResolution', function() {
+    it('returns the expected TileRange', function() {
+      var tileGrid = new ol.tilegrid.TileGrid({
+        resolutions: resolutions,
+        extent: extent,
+        origin: origin,
+        tileSize: tileSize
+      });
+      var tileRange;
+
+      tileRange = tileGrid.getTileRangeForExtentAndResolution(extent,
+          resolutions[0]);
+      expect(tileRange.minY).toEqual(0);
+      expect(tileRange.minX).toEqual(0);
+      expect(tileRange.maxX).toEqual(0);
+      expect(tileRange.maxY).toEqual(0);
+
+      tileRange = tileGrid.getTileRangeForExtentAndResolution(extent,
+          resolutions[1]);
+      expect(tileRange.minX).toEqual(0);
+      expect(tileRange.minY).toEqual(0);
+      expect(tileRange.maxX).toEqual(1);
+      expect(tileRange.maxY).toEqual(1);
+
+      tileRange = tileGrid.getTileRangeForExtentAndResolution(extent,
+          resolutions[2]);
+      expect(tileRange.minX).toEqual(0);
+      expect(tileRange.minY).toEqual(0);
+      expect(tileRange.maxX).toEqual(3);
+      expect(tileRange.maxY).toEqual(3);
+
+      tileRange = tileGrid.getTileRangeForExtentAndResolution(extent,
+          resolutions[3]);
+      expect(tileRange.minX).toEqual(0);
+      expect(tileRange.minY).toEqual(0);
+      expect(tileRange.maxX).toEqual(9);
+      expect(tileRange.maxY).toEqual(9);
     });
   });
 
