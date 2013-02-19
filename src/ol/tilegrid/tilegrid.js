@@ -44,13 +44,6 @@ ol.tilegrid.TileGrid = function(tileGridOptions) {
 
   /**
    * @private
-   * @type {ol.Extent}
-   */
-  this.extent_ = goog.isDef(tileGridOptions.extent) ?
-      tileGridOptions.extent : null;
-
-  /**
-   * @private
    * @type {ol.Coordinate}
    */
   this.origin_ = goog.isDef(tileGridOptions.origin) ?
@@ -95,14 +88,6 @@ ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange =
     }
     --z;
   }
-};
-
-
-/**
- * @return {ol.Extent} Extent.
- */
-ol.tilegrid.TileGrid.prototype.getExtent = function() {
-  return this.extent_;
 };
 
 
