@@ -145,6 +145,15 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
    */
   this.pendingCachePrune_ = false;
 
+  /**
+   * Grid used for internal generation of canvas tiles.  This is created
+   * lazily so we have access to the view projection.
+   *
+   * @private
+   * @type {ol.TileGrid}
+   */
+  this.tileGrid_ = null;
+
 };
 goog.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
 
@@ -186,14 +195,15 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       resolution = view2DState.resolution,
       extent = frameState.extent,
       source = this.getVectorLayer().getVectorSource(),
-      tileGrid = source.getTileGrid();
+      tileGrid = this.tileGrid_;
 
   if (goog.isNull(tileGrid)) {
     // lazy tile source creation to match the view projection
     tileGrid = ol.tilegrid.createForProjection(
-        view2DState.projection, /** TODO: get this elsewhere */ 22,
+        view2DState.projection, 
+        22, // should be no harm in going big here - ideally, it would be ∞
         new ol.Size(512, 512));
-    source.setTileGrid(tileGrid);
+    this.tileGrid_ = tileGrid;
   }
 
   // set up transform for the layer canvas to be drawn to the map canvas
