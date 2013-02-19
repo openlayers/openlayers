@@ -200,7 +200,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   if (goog.isNull(tileGrid)) {
     // lazy tile source creation to match the view projection
     tileGrid = ol.tilegrid.createForProjection(
-        view2DState.projection, 
+        view2DState.projection,
         22, // should be no harm in going big here - ideally, it would be ∞
         new ol.Size(512, 512));
     this.tileGrid_ = tileGrid;
