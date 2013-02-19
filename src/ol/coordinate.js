@@ -88,3 +88,19 @@ ol.Coordinate.toStringXY = function(coordinate, opt_precision) {
     return '';
   }
 };
+
+
+/**
+ * Create an ol.Coordinate from an Array and take into account axis order.
+ * @param {Array} array The array with coordinates.
+ * @param {string} axis the axis info.
+ * @return {ol.Coordinate} The coordinate created.
+ */
+ol.Coordinate.fromProjectedArray = function(array, axis) {
+  var firstAxis = axis.charAt(0);
+  if (firstAxis === 'n' || firstAxis === 's') {
+    return new ol.Coordinate(array[1], array[0]);
+  } else {
+    return new ol.Coordinate(array[0], array[1]);
+  }
+};

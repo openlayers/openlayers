@@ -106,6 +106,8 @@ ol.renderer.dom.ImageLayer.prototype.renderFrame =
       this.image_ = image;
     }
     this.setTransform(transform);
+
+    this.updateAttributions(frameState.attributions, image.getAttributions());
   }
 
 };

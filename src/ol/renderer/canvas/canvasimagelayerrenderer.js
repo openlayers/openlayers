@@ -94,6 +94,7 @@ ol.renderer.canvas.ImageLayer.prototype.renderFrame =
 
   if (!goog.isNull(this.image_)) {
     image = this.image_;
+
     var imageExtent = image.getExtent();
     var imageResolution = image.getResolution();
     var transform = this.transform_;
@@ -111,5 +112,7 @@ ol.renderer.canvas.ImageLayer.prototype.renderFrame =
         (imageExtent.minX - viewCenter.x) / imageResolution,
         (viewCenter.y - imageExtent.maxY) / imageResolution,
         0);
+
+    this.updateAttributions(frameState.attributions, image.getAttributions());
   }
 };

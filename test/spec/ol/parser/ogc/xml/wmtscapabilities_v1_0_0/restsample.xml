@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0">
+    <ows:ServiceIdentification>
+        <ows:Title>Federal Geodata Infrastructure of Switzerland</ows:Title>
+        <ows:Abstract>Some Geodata are subject to license and fees</ows:Abstract>
+        <ows:Keywords>
+            <ows:Keyword>FGDI</ows:Keyword>
+            <ows:Keyword>Pixelkarte</ows:Keyword>
+            <ows:Keyword>Switzerland</ows:Keyword>
+        </ows:Keywords>
+        <ows:ServiceType>OGC WMTS</ows:ServiceType>
+        <ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
+        <ows:Fees>yes</ows:Fees>
+        <ows:AccessConstraints>license</ows:AccessConstraints>
+    </ows:ServiceIdentification>
+    <ows:ServiceProvider>
+        <ows:ProviderName>swisstopo</ows:ProviderName>
+        <ows:ProviderSite xlink:href="http://www.swisstopo.admin.ch"/>
+        <ows:ServiceContact>
+            <ows:IndividualName>David Oesch</ows:IndividualName>
+            <ows:PositionName></ows:PositionName>
+            <ows:ContactInfo>
+                <ows:Phone>
+                    <ows:Voice>+41 (0)31 / 963 21 11</ows:Voice>
+                    <ows:Facsimile>+41 (0)31 / 963 24 59</ows:Facsimile>
+                </ows:Phone>
+                <ows:Address>
+                    <ows:DeliveryPoint>swisstopo</ows:DeliveryPoint>
+                    <ows:City>Bern</ows:City>
+                    <ows:AdministrativeArea>BE</ows:AdministrativeArea>
+                    <ows:PostalCode>3084</ows:PostalCode>
+                    <ows:Country>Switzerland</ows:Country>
+                    <ows:ElectronicMailAddress/>
+                </ows:Address>
+            </ows:ContactInfo>
+        </ows:ServiceContact>
+    </ows:ServiceProvider>
+    <ows:OperationsMetadata>
+        <ows:Operation name="GetCapabilities">
+            <ows:DCP>
+                <ows:HTTP>
+                    <ows:Get xlink:href="http://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml">
+                        <ows:Constraint name="GetEncoding">
+                            <ows:AllowedValues>
+                                <ows:Value>REST</ows:Value>
+                            </ows:AllowedValues>
+                        </ows:Constraint>
+                    </ows:Get>
+                </ows:HTTP>
+            </ows:DCP>
+        </ows:Operation>
+        <ows:Operation name="GetTile">
+            <ows:DCP>
+                <ows:HTTP>
+                    <ows:Get xlink:href="http://wmts.geo.admin.ch/">
+                        <ows:Constraint name="GetEncoding">
+                            <ows:AllowedValues>
+                                <ows:Value>REST</ows:Value>
+                            </ows:AllowedValues>
+                        </ows:Constraint>
+                    </ows:Get>
+                </ows:HTTP>
+            </ows:DCP>
+        </ows:Operation>
+    </ows:OperationsMetadata>
+    <Contents>
+        <Layer>
+            <ows:Title>Agglomérations et villes isolées</ows:Title>
+            <ows:Abstract>Les agglomérations et villes isolées (communes non rattachées à une agglomération et comptant au moins 10`000 habitants) font partie des régions d’analyse de la statistique suisse. Ce niveau géographique est défini depuis plus de 100 ans, afin de mesurer l’urbanisation, phénomène fondamental structurant l’organisation du territoire. Sa fonction principale est de permettre une comparaison spatiale entre des espaces urbains inégalement délimités sur le plan institutionnel. Une version ancienne est appliquée pour la première fois en 1930, puis révisée en 1984 et 1990, toujours sur la base des recensements de la population. La version actuelle classe les 2896 communes de Suisse (état 2000) selon leur appartenance ou pas à une agglomération ou ville isolée en fonction de critères statistiques (Etat et évolution de la population, lien de continuité de la zone bâtie, rapport entre population active occupée et population résidante, structure économique et flux de pendulaires). Les agglomérations et les villes isolées forment l`espace urbain, les territoires restant l`espace rural. La définition des agglomérations de l’OFS n’a pas valeur d’obligation légale.</ows:Abstract>
+            <ows:WGS84BoundingBox>
+                <ows:LowerCorner>5.140242 45.398181</ows:LowerCorner>
+                <ows:UpperCorner>11.47757 48.230651</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
+            <ows:Identifier>ch.are.agglomerationen_isolierte_staedte-2000</ows:Identifier>
+            <ows:Metadata xlink:href="http://www.swisstopo.admin.ch/SITiled/world/AdminBoundaries/metadata.htm"/>
+            <Style>
+                <ows:Title>Agglomérations et villes isolées</ows:Title>
+                <ows:Identifier>ch.are.agglomerationen_isolierte_staedte-2000</ows:Identifier>
+                <LegendURL format="image/png" xlink:href="http://api.geo.admin.ch/legend/ch.are.agglomerationen_isolierte_staedte-2000_fr.png" />
+            </Style>
+            <Format>image/png</Format>
+            <Dimension>
+                <ows:Identifier>Time</ows:Identifier>
+                <Default>20090101</Default>
+                <Value>20090101</Value>
+            </Dimension>
+            <TileMatrixSetLink>
+                <TileMatrixSet>21781</TileMatrixSet>
+            </TileMatrixSetLink>
+            <ResourceURL format="image/png" resourceType="tile" template="http://wmts.geo.admin.ch/1.0.0/ch.are.agglomerationen_isolierte_staedte-2000/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+            <ResourceURL format="image/png" resourceType="tile" template="http://wmts1.geo.admin.ch/1.0.0/ch.are.agglomerationen_isolierte_staedte-2000/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+        </Layer>
+        <TileMatrixSet>
+            <ows:Identifier>21781</ows:Identifier>
+            <ows:SupportedCRS>urn:ogc:def:crs:EPSG::21781</ows:SupportedCRS>
+            <TileMatrix>
+                <ows:Identifier>0</ows:Identifier>
+                <ScaleDenominator>14285750.5715</ScaleDenominator>
+                <TopLeftCorner>420000.0 350000.0</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>1</MatrixWidth>
+                <MatrixHeight>1</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>8</ows:Identifier>
+                <ScaleDenominator>7142875.28575</ScaleDenominator>
+                <TopLeftCorner>420000.0 350000.0</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>1</MatrixWidth>
+                <MatrixHeight>1</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>12</ows:Identifier>
+                <ScaleDenominator>3571437.64288</ScaleDenominator>
+                <TopLeftCorner>420000.0 350000.0</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>2</MatrixWidth>
+                <MatrixHeight>2</MatrixHeight>
+            </TileMatrix>
+        </TileMatrixSet>
+    </Contents>
+    <ServiceMetadataURL xlink:href="http://www.opengis.uab.es/SITiled/world/1.0.0/WMTSCapabilities.xml"/>
+</Capabilities>
