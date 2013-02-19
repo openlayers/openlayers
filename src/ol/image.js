@@ -5,6 +5,7 @@ goog.require('goog.array');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
+goog.require('ol.Attribution');
 goog.require('ol.Extent');
 
 
@@ -27,8 +28,15 @@ ol.ImageState = {
  * @param {number} resolution Resolution.
  * @param {string} src Image source URI.
  * @param {?string} crossOrigin Cross origin.
+ * @param {Array.<ol.Attribution>} attributions Attributions.
  */
-ol.Image = function(extent, resolution, src, crossOrigin) {
+ol.Image = function(extent, resolution, src, crossOrigin, attributions) {
+
+  /**
+   * @private
+   * @type {Array.<ol.Attribution>}
+   */
+  this.attributions_ = attributions;
 
   /**
    * @private
@@ -83,6 +91,14 @@ goog.inherits(ol.Image, goog.events.EventTarget);
  */
 ol.Image.prototype.dispatchChangeEvent = function() {
   this.dispatchEvent(goog.events.EventType.CHANGE);
+};
+
+
+/**
+ * @return {Array.<ol.Attribution>} Attributions.
+ */
+ol.Image.prototype.getAttributions = function() {
+  return this.attributions_;
 };
 
 
