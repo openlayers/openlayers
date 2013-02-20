@@ -29,9 +29,8 @@ ol.Projection.addProjection(epsg21781);
 // We give the single image source a set of resolutions. This prevents the
 // source from requesting images of arbitrary resolutions.
 var projectionExtent = epsg21781.getExtent();
-var maxResolution = Math.max(
-    projectionExtent.maxX - projectionExtent.minX,
-    projectionExtent.maxY - projectionExtent.minY) / 256;
+var maxResolution = Math.max(projectionExtent.getWidth(),
+    projectionExtent.getHeight()) / 256;
 var resolutions = new Array(10);
 for (var i = 0; i < 10; ++i) {
   resolutions[i] = maxResolution / Math.pow(2.0, i);
